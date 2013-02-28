@@ -1,0 +1,7 @@
+SUBDIRS = src
+ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
+headers = config.h
+
+EXTRA_DIST = \
+README INSTALL COPYING COPYRIGHT \
+$(headers)
