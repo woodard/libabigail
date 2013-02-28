@@ -4,10 +4,12 @@ libabigaildir=$(libdir)/
 h=$(abs_srcdir)
 
 headers = \
-$(h)/abgl-ir.h
+$(h)/abg-ir.h
 
 libabigail_la_SOURCES = $(headers) \
-$(h)/abgl-ir.cc
+$(h)/abg-ir.cc
 
 publicheaders_DATA=$(headers)
 publicheadersdir=$(includedir)/libabigail
+
+AM_CPPFLAGS=
