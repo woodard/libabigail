@@ -1,0 +1,5 @@
+This is the Application Binary Interface Generic Analysis and
+Instrumentation Library.
+
+It aims at constructing, manipulating, serializing and de-serializing
+ABI-relevant artifacts.
