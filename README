@@ -3,3 +3,14 @@ Instrumentation Library.
 
 It aims at constructing, manipulating, serializing and de-serializing
 ABI-relevant artifacts.
+
+The set of artifacts that we are intersted is made of quantities like
+types, variable, fonctions and declarations of a given library or
+program.  For a given library or program this set of quantities is
+called an ABI corpus.
+
+This library aims at (among other things) providing a way to comparing
+two ABI Corpuses, provide detailed information about their
+differences, and help build tools to infer interesting conclusions
+about these differences.
+
