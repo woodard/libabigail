@@ -15,7 +15,7 @@ location::location()
 {
 }
 
-location::location (unsigned value)
+location::location(unsigned value)
   : m_value(value)
 {
 }
@@ -142,5 +142,198 @@ location_manager::expand_location(const location	location,
   line = l.m_line;
   column = l.m_column;
 }
+
+// <Decl definition>
+decl::decl()
+  : m_kind(KIND_DECL)
+{
+}
+
+decl::decl(const std::string&		name,
+	   const shared_ptr<scope_decl> context,
+	   location			locus)
+  :m_kind(KIND_DECL),
+   m_location(locus),
+   m_name(name),
+   m_context(context)
+{
+}
+
+decl::decl(kind			what_kind,
+       const std::string&		name,
+       const shared_ptr<scope_decl>	context,
+       location			locus)
+  : m_kind(what_kind),
+    m_location(locus),
+    m_name(name),
+    m_context(context)
+{
+}
+
+decl::decl(location l)
+  :m_kind(KIND_DECL),
+   m_location(l)
+{
+}
+
+decl::decl(const decl& d)
+{
+  m_kind = d.m_kind;
+  m_location = d.m_location;
+  m_name = d.m_name;
+  m_context = d.m_context;
+}
+
+enum decl::kind
+decl::what_decl_kind () const
+{
+  return m_kind;
+}
+
+location
+decl::get_location() const
+{
+  return m_location;
+}
+
+void
+decl::set_location(const location& loc)
+{
+  m_location = loc;
+}
+
+shared_ptr<scope_decl>
+decl::get_context() const
+{
+  return m_context;
+}
+
+// </Decl definition>
+
+// <scope_decl definitions>
+scope_decl::scope_decl(const std::string&		name,
+		       const shared_ptr<scope_decl>	context,
+		       location			locus)
+  : decl(KIND_SCOPE_DECL, name, context, locus)
+{
+}
+
+scope_decl::scope_decl(kind				akind,
+		       const std::string&		name,
+		       const shared_ptr<scope_decl>	context,
+		       location			locus)
+  : decl(akind, name, context, locus)
+{
+}
+
+scope_decl::scope_decl(location l)
+  : decl(KIND_SCOPE_DECL, "", shared_ptr<scope_decl>(), l)
+{
+}
+
+void
+scope_decl::add_member_decl(const shared_ptr<decl> member)
+{
+  m_members.push_back(member);
+}
+
+const std::list<shared_ptr<decl> >&
+scope_decl::get_member_decls() const
+{
+  return m_members;
+}
+// </scope_decl definition>
+
+// <type_base definitions>
+type_base::type_base(size_t s = 8, size_t a = 8)
+  : m_size_in_bits(s),
+    m_alignment_in_bits(a)
+{
+}
+
+void
+type_base::set_size_in_bits(size_t s)
+{
+  m_size_in_bits = s;
+}
+
+size_t
+type_base::get_size_in_bits() const
+{
+  return m_size_in_bits;
+}
+
+void
+type_base::set_alignment_in_bits(size_t a)
+{
+  m_alignment_in_bits = a;
+}
+
+size_t
+type_base::get_alignment_in_bits() const
+{
+  return m_alignment_in_bits;
+}
+
+// </type_base definitions>
+
+//<type_decl definitions>
+
+type_decl::type_decl(const std::string&		name,
+		     size_t				size_in_bits,
+		     size_t				alignment_in_bits,
+		     const shared_ptr<scope_decl>	context,
+		     location				locus)
+  : decl(KIND_TYPE_DECL, name, context, locus),
+    type_base(size_in_bits, alignment_in_bits)
+{
+}
+
+type_decl::type_decl(kind				akind,
+		     const std::string&		name,
+		     size_t				size_in_bits,
+		     size_t				alignment_in_bits,
+		     const shared_ptr<scope_decl>	context,
+		     location				locus)
+  :    decl(akind, name, context, locus),
+       type_base(size_in_bits, alignment_in_bits)
+{
+}
+
+//</type_decl definitions>
+
+// <scope_type_decl definitions>
+
+scope_type_decl::scope_type_decl(const std::string&		name,
+				 size_t			size_in_bits,
+				 size_t			alignment_in_bits,
+				 const shared_ptr<scope_decl>	context,
+				 location			locus)
+  :scope_decl(KIND_SCOPE_TYPE_DECL, name, context, locus),
+   type_base(size_in_bits, alignment_in_bits)
+{
+}
+
+scope_type_decl::scope_type_decl(kind				akind,
+				 const std::string&		name,
+				 size_t			size_in_bits,
+				 size_t			alignment_in_bits,
+				 const shared_ptr<scope_decl>	context,
+				 location			locus)
+  : scope_decl(akind, name, context, locus),
+    type_base(size_in_bits, alignment_in_bits)
+{
+}
+
+// </scope_type_decl definitions>
+
+// <namespace_decl>
+namespace_decl::namespace_decl(const std::string& name,
+			       const shared_ptr<namespace_decl> context,
+			       location locus)
+  : scope_decl(KIND_NAMESPACE_DECL, name, context, locus)
+{
+}
+// </namespace_decl>
 
 }//end namespace abigail
