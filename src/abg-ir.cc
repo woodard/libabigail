@@ -2,23 +2,15 @@
 #include <utility>
 #include <algorithm>
 #include <iterator>
+#include <typeinfo>
 
 #include "abg-ir.h"
+#include "abg-hash.h"
 
 using std::string;
 
 namespace abigail
 {
-
-location::location()
-  : m_value(0)
-{
-}
-
-location::location(unsigned value)
-  : m_value(value)
-{
-}
 
 /// \brief the location of a token represented in its simplest form.
 /// Instances of this type are to be stored in a sorted vector, so the
@@ -144,39 +136,43 @@ location_manager::expand_location(const location	location,
 }
 
 // <Decl definition>
-decl::decl()
+decl_base::decl_base()
   : m_kind(KIND_DECL)
 {
 }
 
-decl::decl(const std::string&		name,
-	   const shared_ptr<scope_decl> context,
-	   location			locus)
+decl_base::decl_base(const std::string&	name,
+		     shared_ptr<scope_decl>	context,
+		     location			locus)
   :m_kind(KIND_DECL),
    m_location(locus),
    m_name(name),
    m_context(context)
 {
+  if (m_context)
+    m_context->add_member_decl(shared_ptr<decl_base>(this));
 }
 
-decl::decl(kind			what_kind,
-       const std::string&		name,
-       const shared_ptr<scope_decl>	context,
-       location			locus)
+decl_base::decl_base(kind				what_kind,
+		     const std::string&		name,
+		     const shared_ptr<scope_decl>	context,
+		     location				locus)
   : m_kind(what_kind),
     m_location(locus),
     m_name(name),
     m_context(context)
 {
+    if (m_context)
+      m_context->add_member_decl(shared_ptr<decl_base>(this));
 }
 
-decl::decl(location l)
+decl_base::decl_base(location l)
   :m_kind(KIND_DECL),
    m_location(l)
 {
 }
 
-decl::decl(const decl& d)
+decl_base::decl_base(const decl_base& d)
 {
   m_kind = d.m_kind;
   m_location = d.m_location;
@@ -184,28 +180,14 @@ decl::decl(const decl& d)
   m_context = d.m_context;
 }
 
-enum decl::kind
-decl::what_decl_kind () const
+enum decl_base::kind
+decl_base::what_kind () const
 {
   return m_kind;
 }
 
-location
-decl::get_location() const
+decl_base::~decl_base()
 {
-  return m_location;
-}
-
-void
-decl::set_location(const location& loc)
-{
-  m_location = loc;
-}
-
-shared_ptr<scope_decl>
-decl::get_context() const
-{
-  return m_context;
 }
 
 // </Decl definition>
@@ -214,7 +196,7 @@ decl::get_context() const
 scope_decl::scope_decl(const std::string&		name,
 		       const shared_ptr<scope_decl>	context,
 		       location			locus)
-  : decl(KIND_SCOPE_DECL, name, context, locus)
+  : decl_base(KIND_SCOPE_DECL, name, context, locus)
 {
 }
 
@@ -222,26 +204,31 @@ scope_decl::scope_decl(kind				akind,
 		       const std::string&		name,
 		       const shared_ptr<scope_decl>	context,
 		       location			locus)
-  : decl(akind, name, context, locus)
+  : decl_base(akind, name, context, locus)
 {
 }
 
 scope_decl::scope_decl(location l)
-  : decl(KIND_SCOPE_DECL, "", shared_ptr<scope_decl>(), l)
+  : decl_base(KIND_SCOPE_DECL, "", shared_ptr<scope_decl>(), l)
 {
 }
 
 void
-scope_decl::add_member_decl(const shared_ptr<decl> member)
+scope_decl::add_member_decl(const shared_ptr<decl_base> member)
 {
   m_members.push_back(member);
 }
 
-const std::list<shared_ptr<decl> >&
+const std::list<shared_ptr<decl_base> >&
 scope_decl::get_member_decls() const
 {
   return m_members;
 }
+
+scope_decl::~scope_decl()
+{
+}
+
 // </scope_decl definition>
 
 // <type_base definitions>
@@ -275,28 +262,36 @@ type_base::get_alignment_in_bits() const
   return m_alignment_in_bits;
 }
 
+type_base::~type_base()
+{
+}
+
 // </type_base definitions>
 
 //<type_decl definitions>
 
-type_decl::type_decl(const std::string&		name,
-		     size_t				size_in_bits,
-		     size_t				alignment_in_bits,
-		     const shared_ptr<scope_decl>	context,
-		     location				locus)
-  : decl(KIND_TYPE_DECL, name, context, locus),
+type_decl::type_decl(const std::string&	name,
+		     size_t			size_in_bits,
+		     size_t			alignment_in_bits,
+		     shared_ptr<scope_decl>	context,
+		     location			locus)
+  : decl_base(KIND_TYPE_DECL, name, context, locus),
     type_base(size_in_bits, alignment_in_bits)
 {
 }
 
-type_decl::type_decl(kind				akind,
-		     const std::string&		name,
-		     size_t				size_in_bits,
-		     size_t				alignment_in_bits,
-		     const shared_ptr<scope_decl>	context,
-		     location				locus)
-  :    decl(akind, name, context, locus),
+type_decl::type_decl(kind			akind,
+		     const std::string&	name,
+		     size_t			size_in_bits,
+		     size_t			alignment_in_bits,
+		     shared_ptr<scope_decl>	context,
+		     location			locus)
+  :    decl_base(akind, name, context, locus),
        type_base(size_in_bits, alignment_in_bits)
+{
+}
+
+type_decl::~type_decl()
 {
 }
 
@@ -322,6 +317,10 @@ scope_type_decl::scope_type_decl(kind				akind,
 				 location			locus)
   : scope_decl(akind, name, context, locus),
     type_base(size_in_bits, alignment_in_bits)
+{
+}
+
+scope_type_decl::~scope_type_decl()
 {
 }
 
