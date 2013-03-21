@@ -20,7 +20,7 @@ using std::string;
 namespace abigail
 {
 /// \brief The source location of a token.
-/// 
+///
 /// This represents the location of a token coming from a given ABI
 /// Corpus.  This location is actually an abstraction of cursor in the
 /// table of all the locations of all the tokens of the ABI Corpus.
@@ -78,7 +78,7 @@ public:
   expand_location(const location	location,
 		  std::string&		path,
 		  unsigned&		line,
-		  unsigned&		column);
+		  unsigned&		column) const;
 };
 
 class scope_decl;

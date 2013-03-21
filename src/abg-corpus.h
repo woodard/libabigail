@@ -18,12 +18,24 @@ class abi_corpus
   abi_corpus();
 
 public:
+  typedef std::list<shared_ptr<decl_base> > decls_type;
+
   abi_corpus(const std::string& name);
 
-  void add(const shared_ptr<decl_base> declaration);
-  const std::list<shared_ptr<decl_base> >& get_decls() const;
-  location_manager& get_loc_mgr();
-  const location_manager& get_loc_mgr() const;
+  void
+  add(const shared_ptr<decl_base> declaration);
+
+  const std::list<shared_ptr<decl_base> >&
+  get_decls() const;
+
+  location_manager&
+  get_loc_mgr();
+
+  const location_manager&
+  get_loc_mgr() const;
+
+  bool
+  is_empty() const;
 
 private:
   std::string m_name;

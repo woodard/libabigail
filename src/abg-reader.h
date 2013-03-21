@@ -8,7 +8,7 @@ namespace abigail
 {
 namespace reader
 {
-bool read_file(std::string& file_path,
+bool read_file(const std::string& file_path,
 	       abi_corpus&  abi_corpus);
 
 }// end namespace reader

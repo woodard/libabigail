@@ -3,13 +3,18 @@
 #ifndef __ABG_WRITER_H__
 #define __ABG_WRITER_H__
 
-#include "abg-ir.h"
+#include <ostream>
+#include "abg-corpus.h"
 
 namespace abigail
 {
 namespace writer
 {
-bool write(const namespace_decl ns);
-}//writer
-}
+
+bool write_to_ostream(const abi_corpus&	corpus,
+		      std::ostream&	out);
+
+}//end namespace writer
+
+}// end namespace abigail
 #endif //__ABG_WRITER_H__

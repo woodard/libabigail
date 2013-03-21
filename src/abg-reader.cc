@@ -129,7 +129,7 @@ static bool handle_type_decl(read_context&, abi_corpus&);
 static bool handle_namespace_decl(read_context&, abi_corpus&);
 
 bool
-read_file(string&	file_path,
+read_file(const string&	file_path,
 	  abi_corpus&	corpus)
 {
   read_context read_ctxt(xml::new_reader_from_file(file_path));

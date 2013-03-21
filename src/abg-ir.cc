@@ -94,7 +94,6 @@ location_manager::create_new_location(const std::string&	file_path,
 		     m_priv->locs.end(),
 		     l);
 
-  unsigned opaque = 0;
   if (i == m_priv->locs.end())
     {
       m_priv->locs.push_back(l);
@@ -127,7 +126,7 @@ void
 location_manager::expand_location(const location	location,
 				  std::string&		path,
 				  unsigned&		line,
-				  unsigned&		column)
+				  unsigned&		column) const
 {
   expanded_location &l = m_priv->locs[location.m_value];
   path = l.m_path;
