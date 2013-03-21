@@ -332,6 +332,11 @@ namespace_decl::namespace_decl(const std::string& name,
   : scope_decl(KIND_NAMESPACE_DECL, name, context, locus)
 {
 }
+
+namespace_decl::~namespace_decl()
+{
+}
+
 // </namespace_decl>
 
 }//end namespace abigail

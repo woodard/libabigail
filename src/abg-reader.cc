@@ -82,6 +82,9 @@ public:
   shared_ptr<decl_base>
   get_cur_decl() const
   {
+    if (m_decls_stack.empty())
+      return shared_ptr<decl_base>(static_cast<decl_base*>(0));
+
     return m_decls_stack.top();
   }
 
@@ -94,6 +97,9 @@ public:
   shared_ptr<decl_base>
   pop_decl()
   {
+    if (m_decls_stack.empty())
+      return shared_ptr<decl_base>(static_cast<decl_base*>(0));
+
     shared_ptr<decl_base> t = get_cur_decl();
     m_decls_stack.pop();
     return t;
@@ -164,7 +170,7 @@ update_read_context(read_context& ctxt)
       shared_ptr<decl_base> cur_decl = ctxt.get_cur_decl();
       if (dynamic_cast<scope_decl*> (cur_decl.get()))
 	ctxt.set_cur_scope(dynamic_pointer_cast<scope_decl>(cur_decl));
-      else
+      else if (cur_decl)
 	ctxt.set_cur_scope(cur_decl->get_scope());
     }
 
@@ -203,9 +209,6 @@ read_input(read_context& ctxt,
   if (!reader)
     return false;
 
-  if (!xmlTextReaderIsValid(reader.get()))
-    return false;
-
   // The document must start with the abi-instr node.
   int status = advance_cursor (ctxt);
   if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
@@ -213,7 +216,7 @@ read_input(read_context& ctxt,
     return false;
 
   for (status = advance_cursor(ctxt);
-       status;
+       status == 1;
        status = advance_cursor(ctxt))
     {
       xmlReaderTypes node_type = XML_READER_GET_NODE_TYPE(reader);

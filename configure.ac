@@ -37,7 +37,15 @@ ABIGAIL_LIBS="$ABIGAIL_DEPS_LIBS"
 AC_SUBST(ABIGAIL_CFLAGS)
 AC_SUBST(ABIGAIL_LIBS)
 
+if test x$ABIGAIL_DEVEL != x; then
+   DEVEL_CFLAGS="-g -Wall -Wextra -Werror"
+   DEVEL_CXXFLAGS="-g -Wall -Wextra -Werror"
+   CFLAGS=$DEVEL_CFLAGS
+   CXXFLAGS=$DEVEL_CXXFLAGS
+fi
+
 AC_CONFIG_FILES([Makefile
-src/Makefile])
+src/Makefile
+tests/Makefile])
 
 AC_OUTPUT
