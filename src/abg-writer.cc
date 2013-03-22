@@ -109,6 +109,16 @@ static bool write_namespace_decl(const shared_ptr<namespace_decl>,
 				 write_context&,
 				 unsigned);
 
+void do_indent(ostream&, unsigned);
+
+/// Emit #nb_whitespaces white spaces into the output stream #o.
+void
+do_indent(ostream& o, unsigned nb_whitespaces)
+{
+  for (unsigned i = 0; i < nb_whitespaces; ++i)
+    o << ' ';
+}
+
 /// Serialize an abi corpus into an output stream.
 ///
 /// \param corpus the corpus to serialize
@@ -171,12 +181,11 @@ write_corpus(const abi_corpus& corpus, write_context& ctxt, unsigned indent)
   ostream &o = ctxt.get_ostream();
   const config &c = ctxt.get_config();
 
-  for (unsigned i = 0; i < indent; ++i)
-    o << ' ';
+  do_indent(o, indent);
 
   o << "<abi-instr version='"
-    << c.get_format_major_version_number()
-    << "." << c.get_format_minor_version_number()
+    << static_cast<int> (c.get_format_major_version_number())
+    << "." << static_cast<int>(c.get_format_minor_version_number())
     << "'";
 
   if (corpus.is_empty())
@@ -184,6 +193,8 @@ write_corpus(const abi_corpus& corpus, write_context& ctxt, unsigned indent)
       o << "/>";
       return true;
     }
+  else
+    o << ">";
 
   for (abi_corpus::decls_type::const_iterator i = corpus.get_decls().begin();
        i != corpus.get_decls().end();
@@ -193,6 +204,10 @@ write_corpus(const abi_corpus& corpus, write_context& ctxt, unsigned indent)
       write_decl(*i, corpus, ctxt,
 		 indent + c.get_xml_element_indent());
     }
+
+  o << "\n";
+  do_indent(o, indent);
+  o << "</abi-instr>\n";
 
   return true;
 }
@@ -218,15 +233,14 @@ write_type_decl(const shared_ptr<type_decl>	d,
 		write_context&			ctxt,
 		unsigned			indent)
 {
+  if (!d)
+    return false;
+
   ostream &o = ctxt.get_ostream();
 
-  for (unsigned i = 0; i < indent; ++i)
-    o << ' ';
+  do_indent(o, indent);
 
-  o << "<type-decl name='" << d->get_name() << "'"
-    << "xml:id='"
-    << ctxt.get_id_manager().get_id_with_prefix("type-decl-")
-    << "'";
+  o << "<type-decl name='" << d->get_name() << "'";
 
   size_t size_in_bits = d->get_size_in_bits();
   if (size_in_bits)
@@ -245,6 +259,11 @@ write_type_decl(const shared_ptr<type_decl>	d,
 	<< " line='" << line << "'"
 	<< " column='" << column << "'";
     }
+
+  o << " xml:id='"
+    << ctxt.get_id_manager().get_id_with_prefix("type-decl-")
+    << "'";
+
   o<< "/>";
 
   return true;
@@ -270,11 +289,13 @@ write_namespace_decl(const shared_ptr<namespace_decl> decl,
 		     write_context& ctxt,
 		     unsigned indent)
 {
+  if (!decl)
+    return false;
+
   ostream &o = ctxt.get_ostream();
   const config &c = ctxt.get_config();
 
-  for (unsigned i = 0; i < indent; ++i)
-    o << ' ';
+  do_indent(o, indent);
 
   o << "<namespace-decl name='" << decl->get_name() << "'>";
 

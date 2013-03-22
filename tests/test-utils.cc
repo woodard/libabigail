@@ -1,5 +1,11 @@
 // -*- Mode: C++ -*-
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <libgen.h>
+#include <cstring>
+#include <cstdlib>
 #include "test-utils.h"
 
 using std::string;
@@ -9,7 +15,10 @@ namespace abigail
 namespace tests
 {
 
-std::string&
+/// Returns the absolute path to the source directory.
+///
+/// \return the absolute path tho the source directory.
+const std::string&
 get_src_dir()
 {
 #ifndef ABIGAIL_SRC_DIR
@@ -20,7 +29,10 @@ get_src_dir()
   return s;
 }
 
-std::string&
+/// Returns the absolute path to the build directory.
+///
+/// \return the absolute path the build directory.
+const std::string&
 get_build_dir()
 {
 #ifndef ABIGAIL_BUILD_DIR
@@ -29,6 +41,73 @@ get_build_dir()
 
   static string s(ABIGAIL_BUILD_DIR);
   return s;
+}
+
+/// Tests whether #path is a directory.
+///
+/// \return true iff #path is a directory.
+bool
+is_dir(const string& path)
+{
+  struct stat st;
+  memset(&st, 0, sizeof (st));
+
+  if (stat(path.c_str(), &st) != 0)
+    return false;
+
+  return !!S_ISDIR(st.st_mode);
+}
+
+/// Ensures #dir_path is a directory and is created.  If #dir_path is
+/// not created, this function creates it.
+///
+/// \return true if #dir_path is a directory that is already present,
+/// of if the function has successfuly created it.
+bool
+ensure_dir_path_created(const string& dir_path)
+{
+  struct stat st;
+  memset(&st, 0, sizeof (st));
+
+  int stat_result = 0;
+
+  stat_result = stat(dir_path.c_str(), &st);
+  if (stat_result == 0)
+    {
+      // A file or directory already exists with the same name.
+      if (!S_ISDIR (st.st_mode))
+	return false;
+      return true;
+    }
+
+  string cmd;
+  cmd = "mkdir -p " + dir_path;
+
+  if (system(cmd.c_str()))
+    return false;
+
+  return true;
+}
+
+/// Ensures that the parent directory of #path is created.
+///
+/// \return true if the parent directory of #path is already present,
+/// or if this function has successfuly created it.
+bool
+ensure_parent_dir_created(const string& path)
+{
+  bool is_ok = false;
+
+  if (path.empty())
+    return is_ok;
+
+  char * p = strdup(path.c_str());
+  char *parent = dirname(p);
+  is_ok = ensure_dir_path_created(parent);
+  free(p);
+
+  return is_ok;
+
 }
 
 }//end namespace tests
