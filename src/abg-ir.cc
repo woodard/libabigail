@@ -141,28 +141,20 @@ decl_base::decl_base()
 }
 
 decl_base::decl_base(const std::string&	name,
-		     shared_ptr<scope_decl>	context,
 		     location			locus)
   :m_kind(KIND_DECL),
    m_location(locus),
-   m_name(name),
-   m_context(context)
+   m_name(name)
 {
-  if (m_context)
-    m_context->add_member_decl(shared_ptr<decl_base>(this));
 }
 
 decl_base::decl_base(kind				what_kind,
 		     const std::string&		name,
-		     const shared_ptr<scope_decl>	context,
 		     location				locus)
   : m_kind(what_kind),
     m_location(locus),
-    m_name(name),
-    m_context(context)
+    m_name(name)
 {
-    if (m_context)
-      m_context->add_member_decl(shared_ptr<decl_base>(this));
 }
 
 decl_base::decl_base(location l)
@@ -189,29 +181,37 @@ decl_base::~decl_base()
 {
 }
 
+void
+decl_base::set_scope(shared_ptr<scope_decl> scope)
+{
+  m_context = scope;
+}
+
 // </Decl definition>
 
 // <scope_decl definitions>
 scope_decl::scope_decl(const std::string&		name,
-		       const shared_ptr<scope_decl>	context,
 		       location			locus)
-  : decl_base(KIND_SCOPE_DECL, name, context, locus)
+  : decl_base(KIND_SCOPE_DECL, name, locus)
 {
 }
 
 scope_decl::scope_decl(kind				akind,
 		       const std::string&		name,
-		       const shared_ptr<scope_decl>	context,
 		       location			locus)
-  : decl_base(akind, name, context, locus)
+  : decl_base(akind, name, locus)
 {
 }
 
 scope_decl::scope_decl(location l)
-  : decl_base(KIND_SCOPE_DECL, "", shared_ptr<scope_decl>(), l)
+  : decl_base(KIND_SCOPE_DECL, "", l)
 {
 }
 
+/// Add a member decl to this scope.  Note that user code should not
+/// use this, but rather use #add_decl_to_scope.
+///
+/// \param member the new member decl to add to this scope.
 void
 scope_decl::add_member_decl(const shared_ptr<decl_base> member)
 {
@@ -226,6 +226,22 @@ scope_decl::get_member_decls() const
 
 scope_decl::~scope_decl()
 {
+}
+
+/// Appends a decl to a given scope.
+///
+/// \param the decl to add append to the scope
+///
+/// \paramt the scope to append the decl to
+void
+add_decl_to_scope(shared_ptr<decl_base> decl,
+		  shared_ptr<scope_decl> scope)
+{
+  if (scope && decl)
+    {
+      scope->add_member_decl (decl);
+      decl->set_scope(scope);
+    }
 }
 
 // </scope_decl definition>
@@ -272,9 +288,8 @@ type_base::~type_base()
 type_decl::type_decl(const std::string&	name,
 		     size_t			size_in_bits,
 		     size_t			alignment_in_bits,
-		     shared_ptr<scope_decl>	context,
 		     location			locus)
-  : decl_base(KIND_TYPE_DECL, name, context, locus),
+  : decl_base(KIND_TYPE_DECL, name, locus),
     type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -283,9 +298,8 @@ type_decl::type_decl(kind			akind,
 		     const std::string&	name,
 		     size_t			size_in_bits,
 		     size_t			alignment_in_bits,
-		     shared_ptr<scope_decl>	context,
 		     location			locus)
-  :    decl_base(akind, name, context, locus),
+  :    decl_base(akind, name, locus),
        type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -301,9 +315,8 @@ type_decl::~type_decl()
 scope_type_decl::scope_type_decl(const std::string&		name,
 				 size_t			size_in_bits,
 				 size_t			alignment_in_bits,
-				 const shared_ptr<scope_decl>	context,
 				 location			locus)
-  :scope_decl(KIND_SCOPE_TYPE_DECL, name, context, locus),
+  :scope_decl(KIND_SCOPE_TYPE_DECL, name, locus),
    type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -312,9 +325,8 @@ scope_type_decl::scope_type_decl(kind				akind,
 				 const std::string&		name,
 				 size_t			size_in_bits,
 				 size_t			alignment_in_bits,
-				 const shared_ptr<scope_decl>	context,
 				 location			locus)
-  : scope_decl(akind, name, context, locus),
+  : scope_decl(akind, name, locus),
     type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -327,9 +339,8 @@ scope_type_decl::~scope_type_decl()
 
 // <namespace_decl>
 namespace_decl::namespace_decl(const std::string& name,
-			       const shared_ptr<namespace_decl> context,
 			       location locus)
-  : scope_decl(KIND_NAMESPACE_DECL, name, context, locus)
+  : scope_decl(KIND_NAMESPACE_DECL, name, locus)
 {
 }
 

@@ -81,12 +81,19 @@ public:
 		  unsigned&		column) const;
 };
 
+class decl_base;
 class scope_decl;
+
+void add_decl_to_scope(shared_ptr<decl_base>,
+		       shared_ptr<scope_decl>);
 
 /// \brief The base type of all declarations.
 class decl_base
 {
   decl_base();
+
+  void
+  set_scope(shared_ptr<scope_decl>);
 
 public:
 
@@ -106,13 +113,11 @@ protected:
 
   decl_base(kind			what_kind,
 	    const std::string&		name,
-	    shared_ptr<scope_decl>	context,
 	    location			locus);
 
 public:
 
   decl_base(const std::string&		name,
-	    shared_ptr<scope_decl>	context,
 	    location			locus);
   decl_base(location);
   decl_base(const decl_base&);
@@ -148,6 +153,9 @@ public:
     return m_context;
   }
 
+  friend void
+  add_decl_to_scope(shared_ptr<decl_base>,
+		    shared_ptr<scope_decl>);
 private:
   kind m_kind;
   location m_location;
@@ -160,25 +168,27 @@ class scope_decl : public decl_base
 {
   scope_decl();
 
+  void
+  add_member_decl(const shared_ptr<decl_base>);
+
 protected:
   scope_decl(kind				akind,
 	     const std::string&		name,
-	     const shared_ptr<scope_decl>	context,
 	     location				locus);
 
 public:
   scope_decl(const std::string&		name,
-	     const shared_ptr<scope_decl>	context,
 	     location				locus);
   scope_decl(location);
-
-  void
-  add_member_decl(const shared_ptr<decl_base>);
 
   const std::list<shared_ptr<decl_base> >&
   get_member_decls() const;
 
   virtual ~scope_decl();
+
+  friend void
+  add_decl_to_scope(shared_ptr<decl_base>,
+		    shared_ptr<scope_decl>);
 
 private:
   std::list<shared_ptr<decl_base> > m_members;
@@ -245,7 +255,6 @@ protected:
 	    const std::string&		name,
 	    size_t			size_in_bits,
 	    size_t			alignment_in_bits,
-	    shared_ptr<scope_decl>	context,
 	    location			locus);
 
 public:
@@ -253,7 +262,6 @@ public:
   type_decl(const std::string&			name,
 	    size_t				size_in_bits,
 	    size_t				alignment_in_bits,
-	    const shared_ptr<scope_decl>	context,
 	    location				locus);
 
   virtual ~type_decl();
@@ -288,14 +296,12 @@ protected:
 		  const std::string&		name,
 		  size_t			size_in_bits,
 		  size_t			alignment_in_bits,
-		  const shared_ptr<scope_decl>	context,
 		  location			locus);
 public:
 
   scope_type_decl(const std::string&		name,
 		  size_t			size_in_bits,
 		  size_t			alignment_in_bits,
-		  const shared_ptr<scope_decl>	context,
 		  location			locus);
 
   virtual ~scope_type_decl();
@@ -306,7 +312,6 @@ class namespace_decl : public scope_decl
 public:
 
   namespace_decl(const std::string& name,
-		 const shared_ptr<namespace_decl> context,
 		 location locus);
 
   virtual ~namespace_decl();

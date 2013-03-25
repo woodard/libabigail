@@ -260,7 +260,7 @@ write_type_decl(const shared_ptr<type_decl>	d,
 	<< " column='" << column << "'";
     }
 
-  o << " xml:id='"
+  o << " id='"
     << ctxt.get_id_manager().get_id_with_prefix("type-decl-")
     << "'";
 
@@ -309,7 +309,9 @@ write_namespace_decl(const shared_ptr<namespace_decl> decl,
 		 indent + c.get_xml_element_indent());
     }
 
-  o << "</namespace-decl-name>";
+  o << "\n";
+  do_indent(o, indent);
+  o << "</namespace-decl>";
 
   return true;
 }

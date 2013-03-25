@@ -67,8 +67,14 @@ public:
     return shared_ptr<type_base>(i->second);
   }
 
-  shared_ptr<scope_decl>
+  const shared_ptr<scope_decl>
   get_cur_scope() const
+  {
+    return m_cur_scope;
+  }
+
+  shared_ptr<scope_decl>
+  get_cur_scope()
   {
     return m_cur_scope;
   }
@@ -327,8 +333,8 @@ handle_type_decl(read_context& ctxt,
 
   shared_ptr<decl_base> decl(new type_decl(name, size_in_bits,
 					   alignment_in_bits,
-					   ctxt.get_cur_scope(),
 					   loc));
+  add_decl_to_scope (decl, ctxt.get_cur_scope());
 
   // If This decl is at global scope, then it needs to be added to the
   // corpus.  If it's not at global scope, then it's scope is (maybe
@@ -365,7 +371,8 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
 
   shared_ptr<namespace_decl> scope(dynamic_pointer_cast<namespace_decl>
 				   (ctxt.get_cur_scope()));
-  shared_ptr<decl_base> decl(new namespace_decl(name, scope, loc));
+  shared_ptr<decl_base> decl(new namespace_decl(name, loc));
+  add_decl_to_scope(decl, scope);
 
   // If This decl is at global scope, then it needs to be added to the
   // corpus.  If it's not at global scope, then it's scope is (maybe

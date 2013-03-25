@@ -20,5 +20,6 @@ runtestreadwrite_LDADD=$(hb)/libtestutils.la $(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${top_srcdir}/src
 
-EXTRA_DIST= \
-$(h)/data/test-read-write/input0.xml
+EXTRA_DIST=				\
+$(h)/data/test-read-write/test0.xml	\
+$(h)/data/test-read-write/test1.xml

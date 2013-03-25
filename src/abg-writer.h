@@ -11,7 +11,7 @@ namespace abigail
 namespace writer
 {
 
-bool write_to_ostream(const abi_corpus&	corpus,
+bool write_to_ostream(const abi_corpus& corpus,
 		      std::ostream&	out);
 
 }//end namespace writer
