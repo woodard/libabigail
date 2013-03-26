@@ -67,22 +67,25 @@ public:
     return shared_ptr<type_base>(i->second);
   }
 
-  const shared_ptr<scope_decl>
-  get_cur_scope() const
-  {
-    return m_cur_scope;
-  }
-
+  /// Return the current lexical scope.  For this function to return a
+  /// sane result, the path to the current decl element (starting from the
+  /// root element) must be up to date.  It is updated by a call to
+  /// #update_read_context.
   shared_ptr<scope_decl>
   get_cur_scope()
   {
-    return m_cur_scope;
-  }
+    shared_ptr<decl_base> cur_decl = get_cur_decl();
 
-  void
-  set_cur_scope(shared_ptr<scope_decl> s)
-  {
-    m_cur_scope = s;
+    if (dynamic_cast<scope_decl*>(cur_decl.get()))
+      // The current decl is a scope_decl, so it's our lexical scope.
+      return dynamic_pointer_cast<scope_decl>(cur_decl);
+    else if (cur_decl)
+      // The current decl is not a scope_decl, so our lexical scope is
+      // the scope of this decl.
+      return cur_decl->get_scope();
+    else
+      // We are at global scope.
+      return shared_ptr<scope_decl>(static_cast<scope_decl*>(0));
   }
 
   shared_ptr<decl_base>
@@ -129,7 +132,6 @@ private:
   unordered_map<string, shared_ptr<type_base> > m_types_map;
   xml::reader_sptr m_reader;
   stack<shared_ptr<decl_base> > m_decls_stack;
-  shared_ptr<scope_decl> m_cur_scope;
 };//end class read_context
 
 static void update_read_context(read_context&);
@@ -149,12 +151,17 @@ read_file(const string&	file_path,
   return read_input(read_ctxt, corpus);
 }
 
-// Updates the instance of read_context.  This function needs to be
-// called after each call to xmlTextReaderReader.
+/// Updates the instance of read_context.  Basically update thee path
+/// of elements from the root to the current element, that we maintain
+/// to know the current scope.  This function needs to be called after
+/// each call to xmlTextReaderRead.
 static void
 update_read_context(read_context& ctxt)
 {
   xml::reader_sptr reader = ctxt.get_reader();
+
+  if (XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+    return;
 
   // Update the depth of the current reader cursor in the reader
   // context.
@@ -162,22 +169,14 @@ update_read_context(read_context& ctxt)
     ctxt_depth = ctxt.get_depth();
 
   if (depth > ctxt_depth)
+    // we went down the tree.  There is nothing to do until we
+    // actually parse the new element.
+    ;
+  else if (depth <= ctxt_depth)
     {
-      // we went down the tree.
-      shared_ptr<decl_base> cur_decl = ctxt.get_cur_decl();
-      if (dynamic_cast<scope_decl*>(cur_decl.get()))
-	ctxt.set_cur_scope(dynamic_pointer_cast<scope_decl>(cur_decl));
-    }
-  else if (depth < ctxt_depth)
-    {
-      // we went up the tree.
-      for (int nb = ctxt_depth - depth; nb; --nb)
+      // we went up the tree or went to a sibbling
+      for (int nb = ctxt_depth - depth + 1; nb; --nb)
 	ctxt.pop_decl();
-      shared_ptr<decl_base> cur_decl = ctxt.get_cur_decl();
-      if (dynamic_cast<scope_decl*> (cur_decl.get()))
-	ctxt.set_cur_scope(dynamic_pointer_cast<scope_decl>(cur_decl));
-      else if (cur_decl)
-	ctxt.set_cur_scope(cur_decl->get_scope());
     }
 
   ctxt.set_depth(depth);
