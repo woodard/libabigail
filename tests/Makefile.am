@@ -1,5 +1,4 @@
 h=$(abs_srcdir)
-hb=$(abs_builddir)
 
 TESTS=runtestreadwrite
 
@@ -16,7 +15,7 @@ libtestutils_la_CXXFLAGS=		\
 -DABIGAIL_BUILD_DIR=\"${top_builddir}\"
 
 runtestreadwrite_SOURCES=$(h)/test-read-write.cc
-runtestreadwrite_LDADD=$(hb)/libtestutils.la $(top_builddir)/src/libabigail.la
+runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${top_srcdir}/src
 
