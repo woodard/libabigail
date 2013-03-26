@@ -136,45 +136,26 @@ location_manager::expand_location(const location	location,
 
 // <Decl definition>
 decl_base::decl_base()
-  : m_kind(KIND_DECL)
 {
 }
 
 decl_base::decl_base(const std::string&	name,
 		     location			locus)
-  :m_kind(KIND_DECL),
-   m_location(locus),
-   m_name(name)
-{
-}
-
-decl_base::decl_base(kind				what_kind,
-		     const std::string&		name,
-		     location				locus)
-  : m_kind(what_kind),
-    m_location(locus),
+  : m_location(locus),
     m_name(name)
 {
 }
 
 decl_base::decl_base(location l)
-  :m_kind(KIND_DECL),
-   m_location(l)
+  : m_location(l)
 {
 }
 
 decl_base::decl_base(const decl_base& d)
 {
-  m_kind = d.m_kind;
   m_location = d.m_location;
   m_name = d.m_name;
   m_context = d.m_context;
-}
-
-enum decl_base::kind
-decl_base::what_kind () const
-{
-  return m_kind;
 }
 
 decl_base::~decl_base()
@@ -192,19 +173,13 @@ decl_base::set_scope(shared_ptr<scope_decl> scope)
 // <scope_decl definitions>
 scope_decl::scope_decl(const std::string&		name,
 		       location			locus)
-  : decl_base(KIND_SCOPE_DECL, name, locus)
+  : decl_base(name, locus)
 {
 }
 
-scope_decl::scope_decl(kind				akind,
-		       const std::string&		name,
-		       location			locus)
-  : decl_base(akind, name, locus)
-{
-}
 
 scope_decl::scope_decl(location l)
-  : decl_base(KIND_SCOPE_DECL, "", l)
+  : decl_base("", l)
 {
 }
 
@@ -289,18 +264,8 @@ type_decl::type_decl(const std::string&	name,
 		     size_t			size_in_bits,
 		     size_t			alignment_in_bits,
 		     location			locus)
-  : decl_base(KIND_TYPE_DECL, name, locus),
+  : decl_base(name, locus),
     type_base(size_in_bits, alignment_in_bits)
-{
-}
-
-type_decl::type_decl(kind			akind,
-		     const std::string&	name,
-		     size_t			size_in_bits,
-		     size_t			alignment_in_bits,
-		     location			locus)
-  :    decl_base(akind, name, locus),
-       type_base(size_in_bits, alignment_in_bits)
 {
 }
 
@@ -316,18 +281,8 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 				 size_t			size_in_bits,
 				 size_t			alignment_in_bits,
 				 location			locus)
-  :scope_decl(KIND_SCOPE_TYPE_DECL, name, locus),
+  :scope_decl(name, locus),
    type_base(size_in_bits, alignment_in_bits)
-{
-}
-
-scope_type_decl::scope_type_decl(kind				akind,
-				 const std::string&		name,
-				 size_t			size_in_bits,
-				 size_t			alignment_in_bits,
-				 location			locus)
-  : scope_decl(akind, name, locus),
-    type_base(size_in_bits, alignment_in_bits)
 {
 }
 
@@ -340,7 +295,7 @@ scope_type_decl::~scope_type_decl()
 // <namespace_decl>
 namespace_decl::namespace_decl(const std::string& name,
 			       location locus)
-  : scope_decl(KIND_NAMESPACE_DECL, name, locus)
+  : scope_decl(name, locus)
 {
 }
 

@@ -97,26 +97,6 @@ class decl_base
 
 public:
 
-  enum kind
-  {
-    KIND_DECL,
-    KIND_SCOPE_DECL,
-    KIND_TYPE_DECL,
-    KIND_SCOPE_TYPE_DECL,
-    KIND_NAMESPACE_DECL
-  };
-
-  enum kind
-  what_kind () const;
-
-protected:
-
-  decl_base(kind			what_kind,
-	    const std::string&		name,
-	    location			locus);
-
-public:
-
   decl_base(const std::string&		name,
 	    location			locus);
   decl_base(location);
@@ -157,7 +137,6 @@ public:
   add_decl_to_scope(shared_ptr<decl_base>,
 		    shared_ptr<scope_decl>);
 private:
-  kind m_kind;
   location m_location;
   std::string m_name;
   shared_ptr<scope_decl> m_context;
@@ -170,11 +149,6 @@ class scope_decl : public decl_base
 
   void
   add_member_decl(const shared_ptr<decl_base>);
-
-protected:
-  scope_decl(kind				akind,
-	     const std::string&		name,
-	     location				locus);
 
 public:
   scope_decl(const std::string&		name,
@@ -249,14 +223,6 @@ class type_decl : public decl_base, public type_base
   // Forbidden.
   type_decl();
 
-protected:
-
-  type_decl(kind			akind,
-	    const std::string&		name,
-	    size_t			size_in_bits,
-	    size_t			alignment_in_bits,
-	    location			locus);
-
 public:
 
   type_decl(const std::string&			name,
@@ -290,13 +256,6 @@ class scope_type_decl : public scope_decl, public type_base
 {
   scope_type_decl();
 
-protected:
-
-  scope_type_decl(kind				akind,
-		  const std::string&		name,
-		  size_t			size_in_bits,
-		  size_t			alignment_in_bits,
-		  location			locus);
 public:
 
   scope_type_decl(const std::string&		name,
