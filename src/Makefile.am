@@ -21,9 +21,9 @@ $(h)/abg-hash.cc			\
 $(h)/abg-writer.cc			\
 $(h)/abg-config.cc
 
-libabigail_la_LDFLAGS=@ABIGAIL_LIBS@ -Wl,--as-needed
+libabigail_la_LDFLAGS=@XML_LIBS@ -Wl,--as-needed
 
 publicheaders_DATA=$(headers)
 publicheadersdir=$(includedir)/libabigail
 
-AM_CPPFLAGS=@ABIGAIL_CFLAGS@ -Wall
+AM_CPPFLAGS=@XML_CFLAGS@ -Wall
