@@ -172,7 +172,7 @@ private:
 struct decl_base_hash
 {
   size_t
-  operator() (const decl_base& d)
+  operator() (const decl_base& d) const
   {
     hash<string> str_hash;
     hash<unsigned> unsigned_hash;
@@ -183,7 +183,8 @@ struct decl_base_hash
     if (d.get_location())
       v = hashing::combine_hashes(v, unsigned_hash(d.get_location()));
 
-    v = hashing::combine_hashes(v, this->operator()(*d.get_scope()));
+    if (d.get_scope())
+      v = hashing::combine_hashes(v, this->operator()(*d.get_scope()));
     return v;
   }
 };//end struct decl_base_hash
@@ -215,7 +216,42 @@ private:
 
   size_t m_size_in_bits;
   size_t m_alignment_in_bits;
-};
+};//class type_base;
+
+/// A hasher for type_base types.
+struct type_base_hash
+{
+  size_t
+  operator()(const type_base& t) const
+  {
+    hash<size_t> size_t_hash;
+
+    size_t v = size_t_hash(t.get_size_in_bits());
+    v = hashing::combine_hashes(v, size_t_hash(t.get_alignment_in_bits()));
+    return v;
+  }
+};//end struct type_base_hash
+
+/// A hasher for types.  It gets the dynamic type of the current
+/// instance of type and hashes it accordingly.  Note that the hashing
+/// function of this hasher must be updated each time a new kind of
+/// type is added to the IR.
+struct dynamic_type_hash
+{
+  size_t
+  operator()(const type_base* t) const;
+};//end struct dynamic_type_hash
+
+/// A hasher for shared_ptr<type_base> that will hash it based on the
+/// runtime type of the type pointed to.
+struct type_shared_ptr_hash
+{
+  size_t
+  operator()(const shared_ptr<type_base> t) const
+  {
+    return dynamic_type_hash()(t.get());
+  }
+};//end struct type_shared_ptr_hash
 
 /// A basic type declaration that introduces no scope.
 class type_decl : public decl_base, public type_base
@@ -231,21 +267,19 @@ public:
 	    location				locus);
 
   virtual ~type_decl();
-
-};
+};// class type_decl
 
 /// Facility to hash instance of type_decl
 struct type_decl_hash
 {
   size_t
-  operator()(const type_decl& t)
+  operator()(const type_decl& t) const
   {
     decl_base_hash decl_hash;
-    hash<size_t> size_t_hash;
+    type_base_hash type_hash;
 
-    size_t v = decl_hash(static_cast<type_decl>(t));
-    v = hashing::combine_hashes(v, size_t_hash(t.get_size_in_bits()));
-    v = hashing::combine_hashes(v, size_t_hash(t.get_alignment_in_bits()));
+    size_t v = decl_hash(t);
+    v = hashing::combine_hashes(v, type_hash(t));
 
     return v;
   }
@@ -266,6 +300,23 @@ public:
   virtual ~scope_type_decl();
 };
 
+/// Hasher for instances of scope_type_decl
+struct scope_type_decl_hash
+{
+  size_t
+  operator()(const scope_type_decl& t) const
+  {
+    decl_base_hash decl_hash;
+    type_base_hash type_hash;
+
+    size_t v = decl_hash(t);
+    v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
+
+    return v;
+  }
+};//end struct scope_type_decl_hash
+
+/// The abstraction of a namespace declaration
 class namespace_decl : public scope_decl
 {
 public:
@@ -274,7 +325,58 @@ public:
 		 location locus);
 
   virtual ~namespace_decl();
-};
+};//end class namespace_decl
+
+/// The abstraction of a qualified type.
+class qualified_type_def : public type_base, public decl_base
+{
+
+public:
+  /// Bit field values representing the cv qualifiers of the
+  /// underlying type.
+  enum CV
+  {
+    CV_NONE = 0,
+    CV_CONST = 1,
+    CV_VOLATILE = 1 << 1
+  };
+
+  qualified_type_def(shared_ptr<type_base>	underlying_type,
+		      CV			quals,
+		      location			locus);
+
+  char
+  get_cv_quals() const;
+
+  void
+  set_cv_quals(char cv_quals);
+
+  const shared_ptr<type_base>
+  get_underlying_type() const;
+
+  virtual ~qualified_type_def();
+
+private:
+  char m_cv_quals;
+  shared_ptr<type_base> m_underlying_type;
+};//end class qualified_type_def
+
+/// A Hasher for instances of qualified_type_def
+struct qualified_type_def_hash
+{
+  size_t
+  operator()(const qualified_type_def& t) const
+  {
+    type_base_hash type_hash;
+    decl_base_hash decl_hash;
+
+    size_t v = type_hash(static_cast<type_base>(t));
+    v = hashing::combine_hashes(v, decl_hash(static_cast<decl_base>(t)));
+    v = hashing::combine_hashes(v, t.get_cv_quals());
+
+    return v;
+  }
+};//end struct qualified_type_def_hash
 
 } // end namespace abigail
 #endif // __ABL_IR_H__

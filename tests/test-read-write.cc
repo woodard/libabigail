@@ -36,6 +36,10 @@ InOutSpec in_out_specs[] =
     "data/test-read-write/test2.xml",
     "output/test-read-write/test2.xml"
   },
+  {
+    "data/test-read-write/test3.xml",
+    "output/test-read-write/test3.xml"
+  },
 
   // This should be the last entry.
   {NULL, NULL}
@@ -79,7 +83,8 @@ main()
 	  continue;
 	}
 
-      is_ok = (is_ok && abigail::writer::write_to_ostream(corpus, of));
+      bool r = abigail::writer::write_to_ostream(corpus, of);
+      is_ok = (is_ok && r);
       of.close();
       string cmd = "diff -u " + in_path + " " + out_path;
       if (system(cmd.c_str()))

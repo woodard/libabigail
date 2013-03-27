@@ -3,11 +3,12 @@
 #include <algorithm>
 #include <iterator>
 #include <typeinfo>
+#include <tr1/memory>
 
 #include "abg-ir.h"
-#include "abg-hash.h"
 
 using std::string;
+using std::tr1::dynamic_pointer_cast;
 
 namespace abigail
 {
@@ -305,4 +306,81 @@ namespace_decl::~namespace_decl()
 
 // </namespace_decl>
 
+// <qualified_type_def>
+
+/// Constructor of the qualified_type_def
+///
+/// \param type the underlying type
+///
+/// \params quals a bitfield representing the const/volatile qualifiers
+///
+/// \param locus the location of the qualified type definition
+qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
+				       CV			quals,
+				       location		locus)
+  : type_base(type->get_size_in_bits(),
+	      type->get_alignment_in_bits()),
+    decl_base("", locus),
+    m_cv_quals(quals),
+    m_underlying_type(type)
+{
+  if (quals & qualified_type_def::CV_CONST)
+    set_name(get_name() + "const ");
+  if (quals & qualified_type_def::CV_VOLATILE)
+    set_name(get_name() + "volatile ");
+  set_name(get_name() + dynamic_pointer_cast<decl_base>(type)->get_name());
+}
+
+/// The destructor of the qualified type
+qualified_type_def::~qualified_type_def()
+{
+}
+
+/// Getter of the const/volatile qualifier bit field
+char
+qualified_type_def::get_cv_quals() const
+{
+  return m_cv_quals;
+}
+
+/// Setter of the const/value qualifiers bit field
+void
+qualified_type_def::set_cv_quals(char cv_quals)
+{
+  m_cv_quals = cv_quals;
+}
+
+/// Getter of the underlying type
+const shared_ptr<type_base>
+qualified_type_def::get_underlying_type() const
+{
+  return m_underlying_type;
+}
+
+// </qualified_type_def>
+
+/// A hashing function for type declarations.
+///
+/// This function gets the dynamic type of the actualy type
+/// declaration and calls the right hashing function for that type.
+///
+/// Note that each time a new type declaration kind is added to the
+/// system, this function needs to be updated.
+///
+/// \param t a pointer to the type declaration to be hashed
+///
+/// \return the resulting hash
+size_t
+dynamic_type_hash::operator()(const type_base* t) const
+{
+  if (const type_decl* d = dynamic_cast<const type_decl*> (t))
+    return type_decl_hash()(*d);
+  if (const scope_type_decl* d = dynamic_cast<const scope_type_decl*>(t))
+    return scope_type_decl_hash()(*d);
+  if (const qualified_type_def* d = dynamic_cast<const qualified_type_def*>(t))
+    return qualified_type_def_hash()(*d);
+
+  // Poor man's fallback case.
+  return type_base_hash()(*t);
+}
 }//end namespace abigail

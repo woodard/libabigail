@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <tr1/unordered_map>
 #include <stack>
+#include <assert.h>
 #include <libxml/xmlstring.h>
 #include <libxml/xmlreader.h>
 #include "abg-reader.h"
@@ -16,6 +17,9 @@ using std::tr1::dynamic_pointer_cast;
 
 namespace abigail
 {
+
+using xml::xml_char_sptr;
+
 namespace reader
 {
 
@@ -118,6 +122,8 @@ public:
   add_type_decl(const string&         id,
 		shared_ptr<type_base> type)
   {
+    assert(type);
+
     const_types_map_it i = m_types_map.find(id);
     if (i != m_types_map.end())
       return false;
@@ -141,6 +147,7 @@ static bool read_location(read_context&, abi_corpus& , location&);
 static bool handle_element(read_context&, abi_corpus&);
 static bool handle_type_decl(read_context&, abi_corpus&);
 static bool handle_namespace_decl(read_context&, abi_corpus&);
+static bool handle_qualified_type_decl(read_context&, abi_corpus&);
 
 bool
 read_file(const string&	file_path,
@@ -266,6 +273,9 @@ handle_element(read_context&	ctxt,
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("type-decl")))
     return handle_type_decl(ctxt, corpus);
+  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		   BAD_CAST("qualified-type-def")))
+    return handle_qualified_type_decl(ctxt, corpus);
 
   return false;
 }
@@ -316,12 +326,21 @@ handle_type_decl(read_context& ctxt,
   if (!reader)
     return false;
 
-  string name = CHAR_STR(XML_READER_GET_ATTRIBUTE(reader, "name"));
-  string id = CHAR_STR(XML_READER_GET_ATTRIBUTE(reader, "id"));
-  size_t size_in_bits=
-    atoi(CHAR_STR(XML_READER_GET_ATTRIBUTE(reader, "size-in-bits")));
-  size_t alignment_in_bits =
-    atoi(CHAR_STR (XML_READER_GET_ATTRIBUTE(reader, "alignment-in-bits")));
+  string name;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "name"))
+    name = CHAR_STR(s);
+  string id;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "id"))
+    id = CHAR_STR(s);
+
+  size_t size_in_bits= 0;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "size-in-bits"))
+    size_in_bits = atoi(CHAR_STR(s));
+
+  size_t alignment_in_bits = 0;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "alignment-in-bits"))
+    alignment_in_bits = atoi(CHAR_STR(s));
+
   location loc;
   read_location(ctxt, corpus, loc);
 
@@ -343,6 +362,8 @@ handle_type_decl(read_context& ctxt,
 
   ctxt.push_decl(decl);
 
+  ctxt.add_type_decl(id, dynamic_pointer_cast<type_base>(decl));
+
   return true;
 }
 
@@ -360,11 +381,17 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
   xml::reader_sptr r = ctxt.get_reader();
   if (!r)
     return false;
+
+  /// If we are not at global scope, then the current scope must
+  /// itself be a namespace.
   if (ctxt.get_cur_scope()
       && !dynamic_cast<namespace_decl*>(ctxt.get_cur_scope().get()))
     return false;
 
-  string name = CHAR_STR(XML_READER_GET_ATTRIBUTE(r, "name"));
+  string name;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
+      name = CHAR_STR(s);
+
   location loc;
   read_location(ctxt, corpus, loc);
 
@@ -384,5 +411,74 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
   return true;
 }
 
+/// Parse qualified-type-def xml element
+///
+/// \param ctxt the parsing context.
+///
+/// \param corpus the ABI corpus the resulting in-memory
+/// representation is added to.
+///
+/// \return true upon successful parsing, false otherwise.
+static bool
+handle_qualified_type_decl(read_context& ctxt, abi_corpus& corpus)
+{
+ xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
+    return false;
+
+  string type_id;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
+    type_id = CHAR_STR(s);
+
+  shared_ptr<type_base> underlying_type = ctxt.get_type_decl(type_id);
+  if (!underlying_type)
+    // The type-id must point to a pre-existing type.
+    return false;
+
+  string id;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE (r, "id"))
+    id = CHAR_STR(s);
+
+  if (id.empty() || ctxt.get_type_decl(id))
+    // We should have an id and it should be a new one.
+    return false;
+
+  string const_str;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "const"))
+    const_str = CHAR_STR(s);
+  bool const_cv = const_str == "yes" ? true : false;
+
+  string volatile_str;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "volatile"))
+    volatile_str = CHAR_STR(s);
+  bool volatile_cv = volatile_str == "yes" ? true : false;
+
+  qualified_type_def::CV cv = qualified_type_def::CV_NONE;
+  if (const_cv)
+    cv =
+      static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_CONST);
+  if (volatile_cv)
+    cv =
+      static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_VOLATILE);
+
+  location loc;
+  read_location(ctxt, corpus, loc);
+
+  shared_ptr<decl_base> decl(new qualified_type_def(underlying_type,
+						    cv, loc));
+  add_decl_to_scope(decl, ctxt.get_cur_scope());
+
+  // If This decl is at global scope, then it needs to be added to the
+  // corpus.  If it's not at global scope, then it's scope is (maybe
+  // indirectely) in the corpus already.
+  if (!decl->get_scope())
+    corpus.add(decl);
+
+  ctxt.push_decl(decl);
+
+  ctxt.add_type_decl(id, dynamic_pointer_cast<type_base>(decl));
+
+  return true;
+}
 }//end namespace reader
 }//end namespace abigail
