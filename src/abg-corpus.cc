@@ -25,6 +25,7 @@
 /// @file
 
 #include "abg-corpus.h"
+#include <stdexcept>
 
 namespace abigail
 {
