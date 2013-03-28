@@ -9,6 +9,7 @@
 
 using std::tr1::shared_ptr;
 using std::tr1::dynamic_pointer_cast;
+using std::tr1::static_pointer_cast;
 using std::ostream;
 using std::ostringstream;
 using std::list;
@@ -61,7 +62,8 @@ private:
 
 typedef unordered_map<shared_ptr<type_base>,
 		      string,
-		      type_shared_ptr_hash> type_shared_ptr_map;
+		      type_shared_ptr_hash,
+		      type_shared_ptr_equal> type_shared_ptr_map;
 class write_context
 {
   write_context();
@@ -138,7 +140,11 @@ static bool write_qualified_type_def(const shared_ptr<qualified_type_def>,
 				     const abi_corpus&,
 				     write_context&,
 				     unsigned);
-void do_indent(ostream&, unsigned);
+static bool write_pointer_type_def(const shared_ptr<pointer_type_def>,
+				   const abi_corpus&,
+				   write_context&,
+				   unsigned);
+static void	do_indent(ostream&, unsigned);
 
 /// Emit #nb_whitespaces white spaces into the output stream #o.
 void
@@ -215,13 +221,14 @@ write_decl(const shared_ptr<decl_base>	decl,
 	   unsigned			indent)
 {
   if (write_type_decl(dynamic_pointer_cast<type_decl> (decl),
-		      corpus, ctxt, indent))
-    return true;
-  if (write_namespace_decl(dynamic_pointer_cast<namespace_decl>(decl),
-			    corpus, ctxt, indent))
-    return true;
-  if (write_qualified_type_def(dynamic_pointer_cast<qualified_type_def>(decl),
-			       corpus, ctxt, indent))
+		      corpus, ctxt, indent)
+      || write_namespace_decl(dynamic_pointer_cast<namespace_decl>(decl),
+			      corpus, ctxt, indent)
+      || write_qualified_type_def (dynamic_pointer_cast<qualified_type_def>
+				   (decl),
+				   corpus, ctxt, indent)
+      || write_pointer_type_def(dynamic_pointer_cast<pointer_type_def>(decl),
+				corpus, ctxt, indent))
     return true;
 
   return false;
@@ -400,7 +407,7 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
   if (decl->get_cv_quals() & qualified_type_def::CV_VOLATILE)
     o << " volatile='yes'";
 
-  write_decl_location(dynamic_pointer_cast<decl_base>(decl), corpus, o);
+  write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
 
   o<< " id='"
     << ctxt.get_id_for_type(decl)
@@ -411,5 +418,45 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
   return true;
 }
 
+/// Serialize a pointer to an instance of pointer_type_def.
+///
+/// \param decl the pointer_type_def to serialize.
+///
+/// \param corpus the ABI corpus it belongs to.
+///
+/// \param ctxt the context of the serialization.
+///
+/// \param indent the number of indentation white spaces to use.
+///
+/// \return true upon succesful completion, false otherwise.
+static bool
+write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
+		       const abi_corpus&			corpus,
+		       write_context&				ctxt,
+		       unsigned				indent)
+{
+  if (!decl)
+    return false;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<pointer-type-def type-id='"
+    << ctxt.get_id_for_type(decl->get_pointed_to_type())
+    << "'";
+
+  if (size_t s = decl->get_size_in_bits())
+    o << " size-in-bits='" << s << "'";
+  if (size_t s = decl->get_alignment_in_bits())
+    o << " alignment-in-bits='" << s << "'";
+
+  o << " id='" << ctxt.get_id_for_type(decl) << "'";
+
+  write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  o << "/>";
+
+  return true;
+}
 }//end namespace writer
 }//end namespace abigail

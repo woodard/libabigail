@@ -9,7 +9,7 @@
 #include <string>
 #include <tr1/functional>
 #include <typeinfo>
-
+#include <utility> // for std::rel_ops, at least.
 #include "abg-hash.h"
 
 using std::tr1::shared_ptr;
@@ -19,6 +19,10 @@ using std::string;
 // Our real stuff
 namespace abigail
 {
+
+using namespace std::rel_ops; // Pull in relational operators so that
+			      // we don't have to define them all here.
+
 /// \brief The source location of a token.
 ///
 /// This represents the location of a token coming from a given ABI
@@ -49,6 +53,14 @@ public:
   {
     return !!m_value;
   }
+
+  bool
+  operator==(const location other) const
+  {return m_value == other.m_value;}
+
+  bool
+  operator<(const location other) const
+  {return m_value < other.m_value;}
 
   friend class location_manager;
 
@@ -99,8 +111,14 @@ public:
 
   decl_base(const std::string&		name,
 	    location			locus);
+
   decl_base(location);
+
   decl_base(const decl_base&);
+
+  virtual bool
+  operator==(const decl_base&) const;
+
   virtual ~decl_base();
 
   location
@@ -153,7 +171,11 @@ class scope_decl : public decl_base
 public:
   scope_decl(const std::string&		name,
 	     location				locus);
+
   scope_decl(location);
+
+  virtual bool
+  operator==(const scope_decl&) const;
 
   const std::list<shared_ptr<decl_base> >&
   get_member_decls() const;
@@ -198,6 +220,10 @@ class type_base
 public:
 
   type_base(size_t s, size_t a);
+
+  virtual bool
+  operator==(const type_base&) const;
+
   virtual ~type_base();
 
   void
@@ -253,6 +279,24 @@ struct type_shared_ptr_hash
   }
 };//end struct type_shared_ptr_hash
 
+/// A predicate for deep equality of instances of
+/// shared_ptr<type_base>
+struct type_shared_ptr_equal
+{
+  bool
+  operator()(const shared_ptr<type_base>l,
+	     const shared_ptr<type_base>r) const
+  {
+    if (l != r)
+      return false;
+
+    if (l)
+      return *l == *r;
+
+    return true;
+  }
+};//end struct type_shared_ptr_equal
+
 /// A basic type declaration that introduces no scope.
 class type_decl : public decl_base, public type_base
 {
@@ -265,6 +309,9 @@ public:
 	    size_t				size_in_bits,
 	    size_t				alignment_in_bits,
 	    location				locus);
+
+  virtual bool
+  operator==(const type_decl&) const;
 
   virtual ~type_decl();
 };// class type_decl
@@ -297,6 +344,9 @@ public:
 		  size_t			alignment_in_bits,
 		  location			locus);
 
+  virtual bool
+  operator==(const scope_type_decl&) const;
+
   virtual ~scope_type_decl();
 };
 
@@ -324,6 +374,9 @@ public:
   namespace_decl(const std::string& name,
 		 location locus);
 
+  virtual bool
+  operator==(const namespace_decl&) const;
+
   virtual ~namespace_decl();
 };//end class namespace_decl
 
@@ -331,6 +384,8 @@ public:
 class qualified_type_def : public type_base, public decl_base
 {
 
+  // Forbidden.
+  qualified_type_def();
 public:
   /// Bit field values representing the cv qualifiers of the
   /// underlying type.
@@ -344,6 +399,9 @@ public:
   qualified_type_def(shared_ptr<type_base>	underlying_type,
 		      CV			quals,
 		      location			locus);
+
+  virtual bool
+  operator==(const qualified_type_def&) const;
 
   char
   get_cv_quals() const;
@@ -377,6 +435,31 @@ struct qualified_type_def_hash
     return v;
   }
 };//end struct qualified_type_def_hash
+
+/// The abstraction of a pointer type.
+class pointer_type_def : public type_base, public decl_base
+{
+  // Forbidden.
+  pointer_type_def();
+
+public:
+
+  pointer_type_def(shared_ptr<type_base>&	pointed_to_type,
+		   size_t			size_in_bits,
+		   size_t			alignment_in_bits,
+		   location			locus);
+
+  virtual bool
+  operator==(const pointer_type_def&) const;
+
+  shared_ptr<type_base>
+  get_pointed_to_type() const;
+
+  virtual ~pointer_type_def();
+
+private:
+  shared_ptr<type_base> m_pointed_to_type;
+};//end class pointer_type_def
 
 } // end namespace abigail
 #endif // __ABL_IR_H__

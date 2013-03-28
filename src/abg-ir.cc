@@ -4,7 +4,6 @@
 #include <iterator>
 #include <typeinfo>
 #include <tr1/memory>
-
 #include "abg-ir.h"
 
 using std::string;
@@ -159,6 +158,20 @@ decl_base::decl_base(const decl_base& d)
   m_context = d.m_context;
 }
 
+/// Return true iff the two decls have the same name.
+///
+/// This function doesn't test if the scopes of the the two decls are
+/// equal.
+bool
+decl_base::operator==(const decl_base& other) const
+{
+  // Runtime types must be equal.
+  if (typeid(*this) != typeid(other))
+    return false;
+
+  return get_name() == other.get_name();
+}
+
 decl_base::~decl_base()
 {
 }
@@ -182,6 +195,34 @@ scope_decl::scope_decl(const std::string&		name,
 scope_decl::scope_decl(location l)
   : decl_base("", l)
 {
+}
+
+/// Return true iff both scopes have the same names and have the same
+/// member decls.
+///
+/// This function doesn't check for equality of the scopes of its
+/// arguments.
+bool
+scope_decl::operator==(const scope_decl& other) const
+{
+  // Runtime types must be equal.
+  if (typeid(*this) != typeid(other))
+    return false;
+
+  if (static_cast<decl_base>(*this) != static_cast<decl_base>(other))
+    return false;
+
+  std::list<shared_ptr<decl_base> >::const_iterator i, j;
+  for (i = get_member_decls().begin(), j = other.get_member_decls().begin();
+       i != get_member_decls().end() && j != other.get_member_decls().end();
+       ++i, ++j)
+    if (**i != **j)
+      return false;
+
+  if (i != get_member_decls().end() || j != other.get_member_decls().end())
+    return false;
+
+  return true;
 }
 
 /// Add a member decl to this scope.  Note that user code should not
@@ -229,6 +270,20 @@ type_base::type_base(size_t s = 8, size_t a = 8)
 {
 }
 
+/// Return true iff both type declarations are equal.
+///
+/// Note that this doesn't test if the scopes of both types are equal.
+bool
+type_base::operator==(const type_base& other) const
+{
+  // Runtime types must be equal.
+  if (typeid(*this) != typeid(other))
+    return false;
+
+  return (get_size_in_bits() == other.get_size_in_bits()
+	  && get_alignment_in_bits() == other.get_alignment_in_bits());
+}
+
 void
 type_base::set_size_in_bits(size_t s)
 {
@@ -270,6 +325,20 @@ type_decl::type_decl(const std::string&	name,
 {
 }
 
+/// Return true if both types equals.
+///
+/// Note that this does not check the scopes of any of the types.
+bool
+type_decl::operator==(const type_decl& other) const
+{
+  // Runtime types must be equal.
+  if (typeid(*this) != typeid(other))
+    return false;
+
+  return (static_cast<decl_base>(*this) == other
+	  && static_cast<type_base>(*this) == other);
+}
+
 type_decl::~type_decl()
 {
 }
@@ -287,6 +356,21 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 {
 }
 
+/// Return true iff both scope types are equal.
+///
+/// Note that this function does not consider the scope of the scope
+/// types themselves.
+bool
+scope_type_decl::operator==(const scope_type_decl& other) const
+{
+  // Runtime types must be equal.
+  if (typeid(*this) != typeid(other))
+    return false;
+
+  return (static_cast<scope_decl>(*this) == other
+	  && static_cast<type_base>(*this) == other);
+}
+
 scope_type_decl::~scope_type_decl()
 {
 }
@@ -298,6 +382,20 @@ namespace_decl::namespace_decl(const std::string& name,
 			       location locus)
   : scope_decl(name, locus)
 {
+}
+
+/// Return true iff both namespaces and their members are equal.
+///
+/// Note that this function does not check if the scope of these
+/// namespaces are equal.
+bool
+namespace_decl::operator==(const namespace_decl& other) const
+{
+  // Runtime types must be equal.
+  if (typeid(*this) != typeid(other))
+    return false;
+
+  return (static_cast<scope_decl>(*this) == other);
 }
 
 namespace_decl::~namespace_decl()
@@ -329,6 +427,24 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
   if (quals & qualified_type_def::CV_VOLATILE)
     set_name(get_name() + "volatile ");
   set_name(get_name() + dynamic_pointer_cast<decl_base>(type)->get_name());
+}
+
+/// Return true iff both qualified types are equal.
+///
+/// Note that this function does not check for equality of the scopes.
+bool
+qualified_type_def::operator==(const qualified_type_def& other) const
+{
+  // Runtime types must be equal.
+  if (typeid(*this) != typeid(other)
+      || get_cv_quals() != other.get_cv_quals()
+      || get_underlying_type() != other.get_underlying_type())
+    return false;
+
+  if (shared_ptr<type_base> u = get_underlying_type())
+    return (*u == *other.get_underlying_type());
+
+  return true;
 }
 
 /// The destructor of the qualified type
@@ -383,4 +499,43 @@ dynamic_type_hash::operator()(const type_base* t) const
   // Poor man's fallback case.
   return type_base_hash()(*t);
 }
+
+pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
+				   size_t			size_in_bits,
+				   size_t			align_in_bits,
+				   location			locus)
+  : type_base(size_in_bits, align_in_bits),
+    decl_base("", locus),
+    m_pointed_to_type(pointed_to)
+{
+}
+
+/// Return true iff both instances of pointer_type_def are equal.
+///
+/// Note that this function does not check for the scopes of the this
+/// types.
+bool
+pointer_type_def::operator==(const pointer_type_def& other) const
+{
+  // Runtime types must be equal.
+  if (typeid(*this) != typeid(other)
+      || get_pointed_to_type() != other.get_pointed_to_type())
+    return false;
+
+  if (shared_ptr<type_base> c = get_pointed_to_type())
+    return *c == *other.get_pointed_to_type();
+
+  return true;
+}
+
+shared_ptr<type_base>
+pointer_type_def::get_pointed_to_type() const
+{
+  return m_pointed_to_type;
+}
+
+pointer_type_def::~pointer_type_def()
+{
+}
+
 }//end namespace abigail

@@ -140,14 +140,15 @@ private:
   stack<shared_ptr<decl_base> > m_decls_stack;
 };//end class read_context
 
-static void update_read_context(read_context&);
-static int advance_cursor(read_context&);
-static bool read_input(read_context&, abi_corpus&);
-static bool read_location(read_context&, abi_corpus& , location&);
-static bool handle_element(read_context&, abi_corpus&);
-static bool handle_type_decl(read_context&, abi_corpus&);
-static bool handle_namespace_decl(read_context&, abi_corpus&);
-static bool handle_qualified_type_decl(read_context&, abi_corpus&);
+static void	update_read_context(read_context&);
+static int	advance_cursor(read_context&);
+static bool	read_input(read_context&, abi_corpus&);
+static bool	read_location(read_context&, abi_corpus& , location&);
+static bool	handle_element(read_context&, abi_corpus&);
+static bool	handle_type_decl(read_context&, abi_corpus&);
+static bool	handle_namespace_decl(read_context&, abi_corpus&);
+static bool	handle_qualified_type_decl(read_context&, abi_corpus&);
+static bool	handle_pointer_type_def(read_context&, abi_corpus&);
 
 bool
 read_file(const string&	file_path,
@@ -212,7 +213,7 @@ advance_cursor(read_context& ctxt)
 ///
 /// \param corpus the result of the parsing.
 ///
-/// \return true upon successufl parsing, false otherwise.
+/// \return true upon successful parsing, false otherwise.
 static bool
 read_input(read_context& ctxt,
 	   abi_corpus&   corpus)
@@ -276,6 +277,9 @@ handle_element(read_context&	ctxt,
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("qualified-type-def")))
     return handle_qualified_type_decl(ctxt, corpus);
+  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		   BAD_CAST("pointer-type-def")))
+    return handle_pointer_type_def(ctxt, corpus);
 
   return false;
 }
@@ -411,7 +415,7 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
   return true;
 }
 
-/// Parse qualified-type-def xml element
+/// Parse a qualified-type-def xml element.
 ///
 /// \param ctxt the parsing context.
 ///
@@ -480,5 +484,61 @@ handle_qualified_type_decl(read_context& ctxt, abi_corpus& corpus)
 
   return true;
 }
+
+/// Parse a pointer-type-decl element.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param corpus the ABI Corpus to augment with the result of the
+/// parsing.
+///
+/// \return true upon successful completion, false otherwise.
+static bool
+handle_pointer_type_def(read_context& ctxt, abi_corpus& corpus)
+{
+   xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
+    return false;
+
+  string type_id;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
+    type_id = CHAR_STR(s);
+
+  shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
+  if (!pointed_to_type)
+    return false;
+
+  size_t size_in_bits = 0, alignment_in_bits = 0;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "size-in-bits"))
+    size_in_bits = atoi(CHAR_STR(s));
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "alignment-in-bits"))
+    alignment_in_bits = atoi(CHAR_STR(s));
+
+  string id;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "id"))
+    id = CHAR_STR(s);
+  if (id.empty() || ctxt.get_type_decl(id))
+    return false;
+
+  location loc;
+  read_location(ctxt, corpus, loc);
+
+  shared_ptr<decl_base> decl =
+    shared_ptr<decl_base> (new pointer_type_def(pointed_to_type,
+						size_in_bits,
+						alignment_in_bits,
+						loc));
+  add_decl_to_scope(decl, ctxt.get_cur_scope());
+
+  if (!decl->get_scope())
+    corpus.add(decl);
+
+  ctxt.push_decl(decl);
+
+  ctxt.add_type_decl(id, dynamic_pointer_cast<type_base>(decl));
+
+  return true;
+}
+
 }//end namespace reader
 }//end namespace abigail

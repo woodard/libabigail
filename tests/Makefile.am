@@ -23,4 +23,5 @@ EXTRA_DIST=				\
 $(h)/data/test-read-write/test0.xml	\
 $(h)/data/test-read-write/test1.xml	\
 $(h)/data/test-read-write/test2.xml	\
-$(h)/data/test-read-write/test3.xml
+$(h)/data/test-read-write/test3.xml	\
+$(h)/data/test-read-write/test4.xml
