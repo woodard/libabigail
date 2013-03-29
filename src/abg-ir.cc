@@ -495,10 +495,16 @@ dynamic_type_hash::operator()(const type_base* t) const
     return scope_type_decl_hash()(*d);
   if (const qualified_type_def* d = dynamic_cast<const qualified_type_def*>(t))
     return qualified_type_def_hash()(*d);
+  if (const pointer_type_def* d = dynamic_cast<const pointer_type_def*>(t))
+    return pointer_type_def_hash()(*d);
+  if (const reference_type_def* d = dynamic_cast<const reference_type_def*>(t))
+    return reference_type_def_hash()(*d);
 
   // Poor man's fallback case.
   return type_base_hash()(*t);
 }
+
+//<pointer_type_def definitions>
 
 pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
 				   size_t			size_in_bits,
@@ -537,5 +543,53 @@ pointer_type_def::get_pointed_to_type() const
 pointer_type_def::~pointer_type_def()
 {
 }
+
+// </pointer_type_def definitions>
+
+// <reference_type_def definitions>
+
+reference_type_def::reference_type_def(shared_ptr<type_base>&	pointed_to,
+				       bool			lvalue,
+				       size_t			size_in_bits,
+				       size_t			align_in_bits,
+				       location		locus)
+  : type_base(size_in_bits, align_in_bits),
+    decl_base("", locus),
+    m_pointed_to_type(pointed_to),
+    m_is_lvalue(lvalue)
+{
+}
+
+bool
+reference_type_def::operator==(const reference_type_def& other) const
+{
+    // Runtime types must be equal.
+  if (typeid(*this) != typeid(other)
+      || get_pointed_to_type() != other.get_pointed_to_type())
+    return false;
+
+  if (shared_ptr<type_base> c = get_pointed_to_type())
+    return *c == *other.get_pointed_to_type();
+
+  return true;
+}
+
+shared_ptr<type_base>
+reference_type_def::get_pointed_to_type() const
+{
+  return m_pointed_to_type;
+}
+
+bool
+reference_type_def::is_lvalue() const
+{
+  return m_is_lvalue;
+}
+
+reference_type_def::~reference_type_def()
+{
+}
+
+// </reference_type_def definitions>
 
 }//end namespace abigail

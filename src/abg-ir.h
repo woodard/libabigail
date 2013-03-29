@@ -1,7 +1,7 @@
 // -*- mode: C++ -*-
 
-#ifndef __ABL_IR_H__
-#define __ABL_IR_H__
+#ifndef __ABG_IR_H__
+#define __ABG_IR_H__
 
 #include <cstddef>
 #include <tr1/memory>
@@ -251,8 +251,10 @@ struct type_base_hash
   operator()(const type_base& t) const
   {
     hash<size_t> size_t_hash;
+    hash<string> str_hash;
 
-    size_t v = size_t_hash(t.get_size_in_bits());
+    size_t v = str_hash(typeid(t).name());
+    v = hashing::combine_hashes(v, size_t_hash(t.get_size_in_bits()));
     v = hashing::combine_hashes(v, size_t_hash(t.get_alignment_in_bits()));
     return v;
   }
@@ -324,8 +326,10 @@ struct type_decl_hash
   {
     decl_base_hash decl_hash;
     type_base_hash type_hash;
+    hash<string> str_hash;
 
-    size_t v = decl_hash(t);
+    size_t v = str_hash(typeid(t).name());
+    v = hashing::combine_hashes(v, decl_hash(t));
     v = hashing::combine_hashes(v, type_hash(t));
 
     return v;
@@ -358,8 +362,10 @@ struct scope_type_decl_hash
   {
     decl_base_hash decl_hash;
     type_base_hash type_hash;
+    hash<string> str_hash;
 
-    size_t v = decl_hash(t);
+    size_t v = str_hash(typeid(t).name());
+    v = hashing::combine_hashes(v, decl_hash(t));
     v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
 
     return v;
@@ -427,8 +433,10 @@ struct qualified_type_def_hash
   {
     type_base_hash type_hash;
     decl_base_hash decl_hash;
+    hash<string> str_hash;
 
-    size_t v = type_hash(static_cast<type_base>(t));
+    size_t v = str_hash(typeid(t).name());
+    v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
     v = hashing::combine_hashes(v, decl_hash(static_cast<decl_base>(t)));
     v = hashing::combine_hashes(v, t.get_cv_quals());
 
@@ -461,5 +469,71 @@ private:
   shared_ptr<type_base> m_pointed_to_type;
 };//end class pointer_type_def
 
+/// A hasher for instances of pointer_type_def
+struct pointer_type_def_hash
+{
+  size_t
+  operator()(const pointer_type_def& t) const
+  {
+    hash<string> str_hash;
+    type_base_hash type_hash;
+    decl_base_hash decl_hash;
+
+    size_t v = str_hash(typeid(t).name());
+    v = hashing::combine_hashes(v, decl_hash(static_cast<decl_base>(t)));
+    v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
+    return v;
+  }
+};// end struct pointer_type_def_hash
+
+/// Abstracts a reference type.
+class reference_type_def : public type_base, public decl_base
+{
+  // Forbidden.
+  reference_type_def();
+
+public:
+  reference_type_def(shared_ptr<type_base>&	pointed_to_type,
+		     bool			lvalue,
+		     size_t			size_in_bits,
+		     size_t			alignment_in_bits,
+		     location			locus);
+
+  virtual bool
+  operator==(const reference_type_def&) const;
+
+  shared_ptr<type_base>
+  get_pointed_to_type() const;
+
+  bool
+  is_lvalue() const;
+
+  virtual ~reference_type_def();
+
+private:
+  shared_ptr<type_base> m_pointed_to_type;
+  bool m_is_lvalue;
+};//end class reference_type_def
+
+/// Hasher for intances of reference_type_def.
+struct reference_type_def_hash
+{
+  size_t
+  operator() (const reference_type_def& t)
+  {
+    hash<string> str_hash;
+    type_base_hash type_hash;
+    decl_base_hash decl_hash;
+
+    size_t v = str_hash(typeid(t).name());
+    v = hashing::combine_hashes(v, str_hash(t.is_lvalue()
+					    ? "lvalue"
+					    : "rvalue"));
+    v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
+    v = hashing::combine_hashes(v, decl_hash(static_cast<decl_base>(t)));
+    return v;
+  }
+};//end struct reference_type_def_hash
+
 } // end namespace abigail
-#endif // __ABL_IR_H__
+#endif // __ABG_IR_H__
