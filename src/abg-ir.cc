@@ -437,14 +437,10 @@ qualified_type_def::operator==(const qualified_type_def& other) const
 {
   // Runtime types must be equal.
   if (typeid(*this) != typeid(other)
-      || get_cv_quals() != other.get_cv_quals()
-      || get_underlying_type() != other.get_underlying_type())
+      || get_cv_quals() != other.get_cv_quals())
     return false;
 
-  if (shared_ptr<type_base> u = get_underlying_type())
-    return (*u == *other.get_underlying_type());
-
-  return true;
+  return *get_underlying_type() == *other.get_underlying_type();
 }
 
 /// The destructor of the qualified type
@@ -526,14 +522,10 @@ bool
 pointer_type_def::operator==(const pointer_type_def& other) const
 {
   // Runtime types must be equal.
-  if (typeid(*this) != typeid(other)
-      || get_pointed_to_type() != other.get_pointed_to_type())
+  if (typeid(*this) != typeid(other))
     return false;
 
-  if (shared_ptr<type_base> c = get_pointed_to_type())
-    return *c == *other.get_pointed_to_type();
-
-  return true;
+  return *get_pointed_to_type() == *other.get_pointed_to_type();
 }
 
 shared_ptr<type_base>
@@ -566,14 +558,10 @@ bool
 reference_type_def::operator==(const reference_type_def& other) const
 {
     // Runtime types must be equal.
-  if (typeid(*this) != typeid(other)
-      || get_pointed_to_type() != other.get_pointed_to_type())
+  if (typeid(*this) != typeid(other))
     return false;
 
-  if (shared_ptr<type_base> c = get_pointed_to_type())
-    return *c == *other.get_pointed_to_type();
-
-  return true;
+  return *get_pointed_to_type() == *other.get_pointed_to_type();
 }
 
 shared_ptr<type_base>
@@ -644,9 +632,9 @@ enum_type_decl::~enum_type_decl()
 bool
 enum_type_decl::operator==(const enum_type_decl& other) const
 {
-      // Runtime types must be equal.
+  // Runtime types must be equal.
   if (typeid(*this) != typeid(other)
-      || get_underlying_type() != other.get_underlying_type())
+      || *get_underlying_type() != *other.get_underlying_type())
     return false;
 
   std::list<enumerator>::const_iterator i, j;
