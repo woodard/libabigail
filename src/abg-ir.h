@@ -535,5 +535,98 @@ struct reference_type_def_hash
   }
 };//end struct reference_type_def_hash
 
+/// Abstracts a declaration for an enum type.
+class enum_type_decl: public type_base, public decl_base
+{
+  // Forbidden
+  enum_type_decl();
+
+public:
+
+  class enumerator
+  {
+    //Forbidden
+    enumerator();
+  public:
+
+    enumerator(const string& name,
+	       size_t value)
+      :m_name(name),
+       m_value(value)
+    {
+    }
+
+    bool
+    operator==(const enumerator& other) const
+    {
+      return (get_name() == other.get_name()
+	      && get_value() == other.get_value());
+    }
+    const string&
+    get_name() const
+    {return m_name;}
+
+    void
+    set_name(const string& n)
+    {m_name = n;}
+
+    size_t
+    get_value() const
+    {return m_value;}
+
+    void
+    set_value(size_t v)
+    {m_value=v;}
+
+  private:
+    string m_name;
+    size_t m_value;
+  };//end struct enumerator
+
+  enum_type_decl(const string&			name,
+		 location			locus,
+		 shared_ptr<type_base>		underlying_type,
+		 const std::list<enumerator>&	enumerators);
+
+  shared_ptr<type_base>
+  get_underlying_type() const;
+
+  const std::list<enumerator>&
+  get_enumerators() const;
+
+  bool
+  operator==(const enum_type_decl&) const;
+
+  virtual ~enum_type_decl();
+
+private:
+  shared_ptr<type_base> m_underlying_type;
+  std::list<enumerator> m_enumerators;
+};// end class enum_type_decl
+
+/// A hasher for an enum_type_decl.
+struct enum_type_decl_hash
+{
+  size_t
+  operator()(const enum_type_decl& t) const
+  {
+    hash<string> str_hash;
+    type_shared_ptr_hash type_ptr_hash;
+    hash<size_t> size_t_hash;
+
+    size_t v = str_hash(typeid(t).name());
+    v = hashing::combine_hashes(v, type_ptr_hash(t.get_underlying_type()));
+    for (std::list<enum_type_decl::enumerator>::const_iterator i =
+	   t.get_enumerators().begin();
+	 i != t.get_enumerators().end();
+	 ++i)
+      {
+	v = hashing::combine_hashes(v, str_hash(i->get_name()));
+	v = hashing::combine_hashes(v, size_t_hash(i->get_value()));
+      }
+    return v;
+  }
+};//end struct enum_type_decl_hash
+
 } // end namespace abigail
 #endif // __ABG_IR_H__

@@ -148,6 +148,10 @@ static bool write_reference_type_def(const shared_ptr<reference_type_def>,
 				     const abi_corpus&,
 				     write_context&,
 				     unsigned);
+static bool write_enum_type_decl(const shared_ptr<enum_type_decl>,
+				 const abi_corpus&,
+				 write_context&,
+				 unsigned);
 static void	do_indent(ostream&, unsigned);
 
 /// Emit #nb_whitespaces white spaces into the output stream #o.
@@ -235,7 +239,9 @@ write_decl(const shared_ptr<decl_base>	decl,
 				corpus, ctxt, indent)
       || write_reference_type_def(dynamic_pointer_cast
 				  <reference_type_def>(decl),
-				  corpus, ctxt, indent))
+				  corpus, ctxt, indent)
+      || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(decl),
+			      corpus, ctxt, indent))
     return true;
 
   return false;
@@ -508,6 +514,59 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
   write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
 
   o << "/>";
+  return true;
+}
+
+/// Serialize a pointer to an instance of enum_type_decl.
+///
+/// \param decl the enum_type_decl to serialize.
+///
+/// \param corpus the ABI corpus it belongs to.
+///
+/// \param ctxt the context of the serialization.
+///
+/// \param indent the number of indentation white spaces to use.
+///
+/// \return true upon succesful completion, false otherwise.
+static bool
+write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
+		     const abi_corpus&			corpus,
+		     write_context&			ctxt,
+		     unsigned				indent)
+{
+    if (!decl)
+    return false;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+  o << "<enum-decl name='" << decl->get_name() << "'";
+
+  write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
+
+  o << " id='" << ctxt.get_id_for_type(decl) << "'>\n";
+
+  do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+  o << "<base type-id='"
+    << ctxt.get_id_for_type(decl->get_underlying_type())
+    << "'/>\n";
+
+  for (list<enum_type_decl::enumerator>::const_iterator i =
+	 decl->get_enumerators().begin();
+       i != decl->get_enumerators().end();
+       ++i)
+    {
+      do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+      o << "<enumerator name='"
+	<< i->get_name()
+	<< "' value='"
+	<< i->get_value()
+	<< "'/>\n";
+    }
+
+  do_indent(o, indent);
+  o << "</enum-decl>";
+
   return true;
 }
 

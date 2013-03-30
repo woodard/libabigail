@@ -499,6 +499,8 @@ dynamic_type_hash::operator()(const type_base* t) const
     return pointer_type_def_hash()(*d);
   if (const reference_type_def* d = dynamic_cast<const reference_type_def*>(t))
     return reference_type_def_hash()(*d);
+  if (const enum_type_decl* d = dynamic_cast<const enum_type_decl*>(t))
+    return enum_type_decl_hash()(*d);
 
   // Poor man's fallback case.
   return type_base_hash()(*t);
@@ -591,5 +593,73 @@ reference_type_def::~reference_type_def()
 }
 
 // </reference_type_def definitions>
+
+/// Constructor of an enum type declaration.
+///
+/// \param name the name of the enum
+///
+/// \param locus the locus at which the enum appears in the source
+/// code.
+///
+/// \param underlying_type the underlying type of the enum
+///
+/// \param enumerators a list of enumerators for this enum.
+enum_type_decl::enum_type_decl(const string&			name,
+			       location			locus,
+			       shared_ptr<type_base>		underlying_type,
+			       const std::list<enumerator>&	enumerators)
+  : type_base(underlying_type->get_size_in_bits(),
+	      underlying_type->get_alignment_in_bits()),
+    decl_base(name, locus),
+    m_underlying_type(underlying_type),
+    m_enumerators(enumerators)
+  {
+  }
+
+/// Return the underlying type of the enum.
+shared_ptr<type_base>
+enum_type_decl::get_underlying_type() const
+{
+  return m_underlying_type;
+}
+
+/// Return the list of enumerators of the enum.
+const std::list<enum_type_decl::enumerator>&
+enum_type_decl::get_enumerators() const
+{
+  return m_enumerators;
+}
+
+/// Destructor for the enum type declaration.
+enum_type_decl::~enum_type_decl()
+{
+}
+
+/// Equality operator.
+///
+/// \param other the other enum to test against.
+///
+/// \return true iff other is equals the current instance of enum type
+/// decl.
+bool
+enum_type_decl::operator==(const enum_type_decl& other) const
+{
+      // Runtime types must be equal.
+  if (typeid(*this) != typeid(other)
+      || get_underlying_type() != other.get_underlying_type())
+    return false;
+
+  std::list<enumerator>::const_iterator i, j;
+  for (i = get_enumerators().begin(), j = other.get_enumerators().begin();
+       i != get_enumerators().end() && j != other.get_enumerators().end();
+       ++i, ++j)
+    if (*i != *j)
+      return false;
+
+  if (i != get_enumerators().end() || j != other.get_enumerators().end())
+    return false;
+
+  return true;
+}
 
 }//end namespace abigail
