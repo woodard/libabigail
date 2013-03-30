@@ -145,7 +145,7 @@ static bool write_pointer_type_def(const shared_ptr<pointer_type_def>,
 				   write_context&,
 				   unsigned);
 static bool write_reference_type_def(const shared_ptr<reference_type_def>,
-				     const abi_corpus,
+				     const abi_corpus&,
 				     write_context&,
 				     unsigned);
 static void	do_indent(ostream&, unsigned);
@@ -479,7 +479,7 @@ write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
 /// \return true upon succesful completion, false otherwise.
 static bool
 write_reference_type_def(const shared_ptr<reference_type_def>	decl,
-			 const abi_corpus			corpus,
+			 const abi_corpus&			corpus,
 			 write_context&			ctxt,
 			 unsigned				indent)
 {
@@ -495,18 +495,19 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
     o << "lvalue";
   else
     o << "rvalue";
+  o << "'";
 
   o << " type-id='" << ctxt.get_id_for_type(decl->get_pointed_to_type()) << "'";
   if (size_t s = decl->get_size_in_bits())
-    o << " size-in-bits='" << s;
+    o << " size-in-bits='" << s << "'";
   if (size_t s = decl->get_alignment_in_bits())
-    o << " alignment-in-bits='" << s;
+    o << " alignment-in-bits='" << s << "'";
 
-  o << "id='" << ctxt.get_id_for_type(decl) << "'";
+  o << " id='" << ctxt.get_id_for_type(decl) << "'";
 
   write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
 
-  o << " />";
+  o << "/>";
   return true;
 }
 
