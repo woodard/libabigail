@@ -366,7 +366,7 @@ struct scope_type_decl_hash
 
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, decl_hash(t));
-    v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
+    v = hashing::combine_hashes(v, type_hash(t));
 
     return v;
   }
@@ -436,8 +436,8 @@ struct qualified_type_def_hash
     hash<string> str_hash;
 
     size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
-    v = hashing::combine_hashes(v, decl_hash(static_cast<decl_base>(t)));
+    v = hashing::combine_hashes(v, type_hash(t));
+    v = hashing::combine_hashes(v, decl_hash(t));
     v = hashing::combine_hashes(v, t.get_cv_quals());
 
     return v;
@@ -480,8 +480,8 @@ struct pointer_type_def_hash
     decl_base_hash decl_hash;
 
     size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, decl_hash(static_cast<decl_base>(t)));
-    v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
+    v = hashing::combine_hashes(v, decl_hash(t));
+    v = hashing::combine_hashes(v, type_hash(t));
     return v;
   }
 };// end struct pointer_type_def_hash
@@ -529,8 +529,8 @@ struct reference_type_def_hash
     v = hashing::combine_hashes(v, str_hash(t.is_lvalue()
 					    ? "lvalue"
 					    : "rvalue"));
-    v = hashing::combine_hashes(v, type_hash(static_cast<type_base>(t)));
-    v = hashing::combine_hashes(v, decl_hash(static_cast<decl_base>(t)));
+    v = hashing::combine_hashes(v, type_hash(t));
+    v = hashing::combine_hashes(v, decl_hash(t));
     return v;
   }
 };//end struct reference_type_def_hash
