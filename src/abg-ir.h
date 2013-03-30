@@ -628,5 +628,48 @@ struct enum_type_decl_hash
   }
 };//end struct enum_type_decl_hash
 
+/// The abstraction of a typedef declaration.
+class typedef_decl: public type_base, public decl_base
+{
+  // Forbidden
+  typedef_decl();
+
+public:
+
+  typedef_decl(const string&			name,
+	       const shared_ptr<type_base>	underlying_type,
+	       location locus);
+
+  bool
+  operator==(const typedef_decl&) const;
+
+  shared_ptr<type_base>
+  get_underlying_type() const;
+
+  virtual ~typedef_decl();
+
+private:
+  shared_ptr<type_base> m_underlying_type;
+};//end class typedef_decl
+
+/// Hasher for the typedef_decl type.
+struct typedef_decl_hash
+{
+  size_t
+  operator()(const typedef_decl& t) const
+  {
+    hash<string> str_hash;
+    type_base_hash type_hash;
+    decl_base_hash decl_hash;
+    type_shared_ptr_hash type_ptr_hash;
+
+    size_t v = str_hash(typeid(t).name());
+    v = hashing::combine_hashes(v, type_hash(t));
+    v = hashing::combine_hashes(v, decl_hash(t));
+    v = hashing::combine_hashes(v, type_ptr_hash(t.get_underlying_type()));
+
+    return v;
+  }
+};// end struct typedef_decl_hash
 } // end namespace abigail
 #endif // __ABG_IR_H__

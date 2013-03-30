@@ -152,6 +152,10 @@ static bool write_enum_type_decl(const shared_ptr<enum_type_decl>,
 				 const abi_corpus&,
 				 write_context&,
 				 unsigned);
+static bool write_typedef_decl(const shared_ptr<typedef_decl>,
+			       const abi_corpus&,
+			       write_context&,
+			       unsigned);
 static void	do_indent(ostream&, unsigned);
 
 /// Emit #nb_whitespaces white spaces into the output stream #o.
@@ -241,7 +245,9 @@ write_decl(const shared_ptr<decl_base>	decl,
 				  <reference_type_def>(decl),
 				  corpus, ctxt, indent)
       || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(decl),
-			      corpus, ctxt, indent))
+			      corpus, ctxt, indent)
+      || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(decl),
+			    corpus, ctxt, indent))
     return true;
 
   return false;
@@ -566,6 +572,43 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
 
   do_indent(o, indent);
   o << "</enum-decl>";
+
+  return true;
+}
+
+/// Serialize a pointer to an instance of typedef_decl.
+///
+/// \param decl the typedef_decl to serialize.
+///
+/// \param corpus the ABI corpus it belongs to.
+///
+/// \param ctxt the context of the serialization.
+///
+/// \param indent the number of indentation white spaces to use.
+///
+/// \return true upon succesful completion, false otherwise.
+static bool
+write_typedef_decl(const shared_ptr<typedef_decl>	decl,
+		   const abi_corpus&			corpus,
+		   write_context&			ctxt,
+		   unsigned				indent)
+{
+  if (!decl)
+    return false;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<typedef-decl name='" << decl->get_name() << "'";
+
+  o << " type-id='" << ctxt.get_id_for_type(decl->get_underlying_type()) << "'";
+
+  write_decl_location(decl, corpus, o);
+
+  o << " id='"
+    << ctxt.get_id_for_type(decl)
+    << "'/>";
 
   return true;
 }

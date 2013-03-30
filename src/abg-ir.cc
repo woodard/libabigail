@@ -497,6 +497,8 @@ dynamic_type_hash::operator()(const type_base* t) const
     return reference_type_def_hash()(*d);
   if (const enum_type_decl* d = dynamic_cast<const enum_type_decl*>(t))
     return enum_type_decl_hash()(*d);
+  if (const typedef_decl* d = dynamic_cast<const typedef_decl*>(t))
+    return typedef_decl_hash()(*d);
 
   // Poor man's fallback case.
   return type_base_hash()(*t);
@@ -650,4 +652,49 @@ enum_type_decl::operator==(const enum_type_decl& other) const
   return true;
 }
 
+// <typedef_decl definitions>
+
+/// Constructor of the typedef_decl type.
+///
+/// \param name the name of the typedef.
+///
+/// \param underlying_type the underlying type of the typedef.
+///
+/// \param locus the source location of the typedef declaration.
+typedef_decl::typedef_decl(const string&		name,
+			   const shared_ptr<type_base>	underlying_type,
+			   location			locus)
+  : type_base(underlying_type->get_size_in_bits(),
+	      underlying_type->get_alignment_in_bits()),
+    decl_base(name, locus),
+    m_underlying_type(underlying_type)
+{
+}
+
+/// Equality operator
+///
+/// \param other the other typedef_decl to test against.
+bool
+typedef_decl::operator==(const typedef_decl& other) const
+{
+  return (typeid(*this) == typeid(other)
+	  && get_name() == other.get_name()
+	  && *get_underlying_type() == *other.get_underlying_type());
+}
+
+/// Getter of the underlying type of the typedef.
+///
+/// \return the underlying_type.
+shared_ptr<type_base>
+typedef_decl::get_underlying_type() const
+{
+  return m_underlying_type;
+}
+
+/// Destructor of the typedef_decl.
+typedef_decl::~typedef_decl()
+{
+}
+
+// </typedef_decl definitions>
 }//end namespace abigail

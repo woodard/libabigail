@@ -191,6 +191,7 @@ static bool	handle_qualified_type_decl(read_context&, abi_corpus&);
 static bool	handle_pointer_type_def(read_context&, abi_corpus&);
 static bool	handle_reference_type_def(read_context&, abi_corpus&);
 static bool	handle_enum_type_decl(read_context&, abi_corpus&);
+static bool	handle_typedef_decl(read_context&, abi_corpus&);
 
 bool
 read_file(const string&	file_path,
@@ -328,6 +329,9 @@ handle_element(read_context&	ctxt,
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("enum-decl")))
     return handle_enum_type_decl(ctxt, corpus);
+  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		   BAD_CAST("typedef-decl")))
+    return handle_typedef_decl(ctxt, corpus);
 
   return false;
 }
@@ -664,6 +668,44 @@ handle_enum_type_decl(read_context& ctxt, abi_corpus& corpus)
   shared_ptr<type_base> t(new enum_type_decl(name, loc,
 					     underlying_type,
 					     enumerators));
+  return ctxt.finish_type_decl_creation(t, id, corpus);
+}
+
+/// Parse a typedef-decl element.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param corpus the corpus the resulting pointer to
+/// typedef_decl is added to.
+static bool
+handle_typedef_decl(read_context& ctxt, abi_corpus& corpus)
+{
+    xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
+    return false;
+
+  string name;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
+    name = CHAR_STR(s);
+
+  string type_id;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
+    type_id = CHAR_STR(s);
+  shared_ptr<type_base> underlying_type(ctxt.get_type_decl(type_id));
+  if (!underlying_type)
+    return false;
+
+  string id;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "id"))
+    id = CHAR_STR(s);
+  if (id.empty() || ctxt.get_type_decl(id))
+    return false;
+
+  location loc;
+  read_location(ctxt, corpus, loc);
+
+  shared_ptr<type_base> t(new typedef_decl(name, underlying_type, loc));
+
   return ctxt.finish_type_decl_creation(t, id, corpus);
 }
 
