@@ -149,9 +149,7 @@ public:
 
   scope_decl*
   get_scope() const
-  {
-    return m_context;
-  }
+  {return m_context;}
 
   visibility
   get_visibility() const
