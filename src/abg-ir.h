@@ -133,27 +133,19 @@ public:
 
   location
   get_location() const
-  {
-    return m_location;
-  }
+  {return m_location;}
 
   void
   set_location(const location&l)
-  {
-    m_location = l;
-  }
+  {m_location = l;}
 
   const string&
   get_name() const
-  {
-    return m_name;
-  }
+  {return m_name;}
 
   void
   set_name(const string& n)
-  {
-    m_name = n;
-  }
+  {m_name = n;}
 
   scope_decl*
   get_scope() const
