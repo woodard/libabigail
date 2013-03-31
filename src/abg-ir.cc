@@ -140,10 +140,12 @@ decl_base::decl_base()
 }
 
 decl_base::decl_base(const std::string&	name,
-		     location			locus)
+		     location			locus,
+		     visibility vis)
   : m_location(locus),
     m_name(name),
-    m_context(0)
+    m_context(0),
+    m_visibility(vis)
 {
 }
 
@@ -191,8 +193,9 @@ decl_base::set_scope(scope_decl* scope)
 
 // <scope_decl definitions>
 scope_decl::scope_decl(const std::string&		name,
-		       location			locus)
-  : decl_base(name, locus)
+		       location			locus,
+		       visibility vis)
+  : decl_base(name, locus, vis)
 {
 }
 
@@ -324,8 +327,10 @@ type_base::~type_base()
 type_decl::type_decl(const std::string&	name,
 		     size_t			size_in_bits,
 		     size_t			alignment_in_bits,
-		     location			locus)
-  : decl_base(name, locus),
+		     location			locus,
+		     visibility		vis)
+
+  : decl_base(name, locus, vis),
     type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -423,7 +428,8 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
 				       location		locus)
   : type_base(type->get_size_in_bits(),
 	      type->get_alignment_in_bits()),
-    decl_base("", locus),
+    decl_base("", locus,
+	      dynamic_pointer_cast<decl_base>(type)->get_visibility()),
     m_cv_quals(quals),
     m_underlying_type(type)
 {
@@ -516,7 +522,8 @@ pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
 				   size_t			align_in_bits,
 				   location			locus)
   : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus),
+    decl_base("", locus,
+	      dynamic_pointer_cast<decl_base>(pointed_to)->get_visibility()),
     m_pointed_to_type(pointed_to)
 {
 }
@@ -555,7 +562,8 @@ reference_type_def::reference_type_def(shared_ptr<type_base>&	pointed_to,
 				       size_t			align_in_bits,
 				       location		locus)
   : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus),
+    decl_base("", locus,
+	      dynamic_pointer_cast<decl_base>(pointed_to)->get_visibility()),
     m_pointed_to_type(pointed_to),
     m_is_lvalue(lvalue)
 {
@@ -602,10 +610,11 @@ reference_type_def::~reference_type_def()
 enum_type_decl::enum_type_decl(const string&			name,
 			       location			locus,
 			       shared_ptr<type_base>		underlying_type,
-			       const std::list<enumerator>&	enumerators)
+			       const std::list<enumerator>&	enumerators,
+			       visibility			vis)
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
-    decl_base(name, locus),
+    decl_base(name, locus, vis),
     m_underlying_type(underlying_type),
     m_enumerators(enumerators)
   {
@@ -668,10 +677,11 @@ enum_type_decl::operator==(const enum_type_decl& other) const
 /// \param locus the source location of the typedef declaration.
 typedef_decl::typedef_decl(const string&		name,
 			   const shared_ptr<type_base>	underlying_type,
-			   location			locus)
+			   location			locus,
+			   visibility vis)
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
-    decl_base(name, locus),
+    decl_base(name, locus, vis),
     m_underlying_type(underlying_type)
 {
 }

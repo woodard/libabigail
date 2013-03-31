@@ -109,8 +109,18 @@ class decl_base
 
 public:
 
+  enum visibility
+  {
+    VISIBILITY_NONE,
+    VISIBILITY_DEFAULT,
+    VISIBILITY_PROTECTED,
+    VISIBILITY_HIDDEN,
+    VISIBILITY_INTERNAL
+  };
+
   decl_base(const std::string&		name,
-	    location			locus);
+	    location			locus,
+	    visibility = VISIBILITY_DEFAULT);
 
   decl_base(location);
 
@@ -151,6 +161,14 @@ public:
     return m_context;
   }
 
+  visibility
+  get_visibility() const
+  {return m_visibility;}
+
+  void
+  set_visibility(visibility v)
+  {m_visibility = v;}
+
   friend void
   add_decl_to_scope(shared_ptr<decl_base>,
 		    scope_decl*);
@@ -159,6 +177,7 @@ private:
   location m_location;
   std::string m_name;
   scope_decl* m_context;
+  visibility m_visibility;
 };
 
 /// \brief A declaration that introduces a scope.
@@ -170,8 +189,9 @@ class scope_decl : public decl_base
   add_member_decl(const shared_ptr<decl_base>);
 
 public:
-  scope_decl(const std::string&		name,
-	     location				locus);
+  scope_decl(const std::string& name,
+	     location		locus,
+	     visibility	vis = VISIBILITY_DEFAULT);
 
   scope_decl(location);
 
@@ -308,10 +328,11 @@ class type_decl : public decl_base, public type_base
 
 public:
 
-  type_decl(const std::string&			name,
-	    size_t				size_in_bits,
-	    size_t				alignment_in_bits,
-	    location				locus);
+  type_decl(const std::string&	name,
+	    size_t		size_in_bits,
+	    size_t		alignment_in_bits,
+	    location		locus,
+	    visibility		vis = VISIBILITY_DEFAULT);
 
   virtual bool
   operator==(const type_decl&) const;
@@ -587,7 +608,8 @@ public:
   enum_type_decl(const string&			name,
 		 location			locus,
 		 shared_ptr<type_base>		underlying_type,
-		 const std::list<enumerator>&	enumerators);
+		 const std::list<enumerator>&	enumerators,
+		 visibility			vis = VISIBILITY_DEFAULT);
 
   shared_ptr<type_base>
   get_underlying_type() const;
@@ -639,7 +661,8 @@ public:
 
   typedef_decl(const string&			name,
 	       const shared_ptr<type_base>	underlying_type,
-	       location locus);
+	       location locus,
+	       visibility vis = VISIBILITY_DEFAULT);
 
   bool
   operator==(const typedef_decl&) const;
