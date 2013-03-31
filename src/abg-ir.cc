@@ -142,7 +142,8 @@ decl_base::decl_base()
 decl_base::decl_base(const std::string&	name,
 		     location			locus)
   : m_location(locus),
-    m_name(name)
+    m_name(name),
+    m_context(0)
 {
 }
 
@@ -176,8 +177,12 @@ decl_base::~decl_base()
 {
 }
 
+/// Setter of the scope of the current decl.
+///
+/// Note that the decl won't hold a reference on the scope.  It's
+/// rather the scope that holds a reference on its members.
 void
-decl_base::set_scope(shared_ptr<scope_decl> scope)
+decl_base::set_scope(scope_decl* scope)
 {
   m_context = scope;
 }
@@ -249,10 +254,10 @@ scope_decl::~scope_decl()
 ///
 /// \param the decl to add append to the scope
 ///
-/// \paramt the scope to append the decl to
+/// \param the scope to append the decl to
 void
 add_decl_to_scope(shared_ptr<decl_base> decl,
-		  shared_ptr<scope_decl> scope)
+		  scope_decl*		scope)
 {
   if (scope && decl)
     {

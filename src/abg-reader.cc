@@ -75,21 +75,21 @@ public:
   /// sane result, the path to the current decl element (starting from the
   /// root element) must be up to date.  It is updated by a call to
   /// #update_read_context.
-  shared_ptr<scope_decl>
+  scope_decl*
   get_cur_scope()
   {
     shared_ptr<decl_base> cur_decl = get_cur_decl();
 
     if (dynamic_cast<scope_decl*>(cur_decl.get()))
       // The current decl is a scope_decl, so it's our lexical scope.
-      return dynamic_pointer_cast<scope_decl>(cur_decl);
+      return dynamic_pointer_cast<scope_decl>(cur_decl).get();
     else if (cur_decl)
       // The current decl is not a scope_decl, so our lexical scope is
       // the scope of this decl.
       return cur_decl->get_scope();
     else
       // We are at global scope.
-      return shared_ptr<scope_decl>(static_cast<scope_decl*>(0));
+      return 0;
   }
 
   shared_ptr<decl_base>
@@ -429,7 +429,7 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
   /// If we are not at global scope, then the current scope must
   /// itself be a namespace.
   if (ctxt.get_cur_scope()
-      && !dynamic_cast<namespace_decl*>(ctxt.get_cur_scope().get()))
+      && !dynamic_cast<namespace_decl*>(ctxt.get_cur_scope()))
     return false;
 
   string name;
@@ -439,8 +439,6 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
   location loc;
   read_location(ctxt, corpus, loc);
 
-  shared_ptr<namespace_decl> scope(dynamic_pointer_cast<namespace_decl>
-				   (ctxt.get_cur_scope()));
   shared_ptr<decl_base> decl(new namespace_decl(name, loc));
   ctxt.finish_decl_creation(decl, corpus);
   return true;

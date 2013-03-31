@@ -97,7 +97,7 @@ class decl_base;
 class scope_decl;
 
 void add_decl_to_scope(shared_ptr<decl_base>,
-		       shared_ptr<scope_decl>);
+		       scope_decl*);
 
 /// \brief The base type of all declarations.
 class decl_base
@@ -105,7 +105,7 @@ class decl_base
   decl_base();
 
   void
-  set_scope(shared_ptr<scope_decl>);
+  set_scope(scope_decl*);
 
 public:
 
@@ -145,7 +145,7 @@ public:
     m_name = n;
   }
 
-  shared_ptr<scope_decl>
+  scope_decl*
   get_scope() const
   {
     return m_context;
@@ -153,11 +153,12 @@ public:
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base>,
-		    shared_ptr<scope_decl>);
+		    scope_decl*);
+
 private:
   location m_location;
   std::string m_name;
-  shared_ptr<scope_decl> m_context;
+  scope_decl* m_context;
 };
 
 /// \brief A declaration that introduces a scope.
@@ -184,7 +185,7 @@ public:
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base>,
-		    shared_ptr<scope_decl>);
+		    scope_decl*);
 
 private:
   std::list<shared_ptr<decl_base> > m_members;
