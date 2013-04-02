@@ -150,7 +150,9 @@ decl_base::decl_base(const std::string&	name,
 }
 
 decl_base::decl_base(location l)
-  : m_location(l)
+  : m_location(l),
+    m_context(0),
+    m_visibility(VISIBILITY_DEFAULT)
 {
 }
 
@@ -159,6 +161,7 @@ decl_base::decl_base(const decl_base& d)
   m_location = d.m_location;
   m_name = d.m_name;
   m_context = d.m_context;
+  m_visibility = m_visibility;
 }
 
 /// Return true iff the two decls have the same name.
