@@ -184,6 +184,8 @@ static void	update_read_context(read_context&);
 static int	advance_cursor(read_context&);
 static bool	read_input(read_context&, abi_corpus&);
 static bool	read_location(read_context&, abi_corpus& , location&);
+static bool	read_visibility(read_context&, decl_base::visibility&);
+static bool	read_binding(read_context&, decl_base::binding&);
 static bool	handle_element(read_context&, abi_corpus&);
 static bool	handle_type_decl(read_context&, abi_corpus&);
 static bool	handle_namespace_decl(read_context&, abi_corpus&);
@@ -192,6 +194,7 @@ static bool	handle_pointer_type_def(read_context&, abi_corpus&);
 static bool	handle_reference_type_def(read_context&, abi_corpus&);
 static bool	handle_enum_type_decl(read_context&, abi_corpus&);
 static bool	handle_typedef_decl(read_context&, abi_corpus&);
+static bool	handle_var_decl(read_context&, abi_corpus&);
 
 bool
 read_file(const string&	file_path,
@@ -332,6 +335,9 @@ handle_element(read_context&	ctxt,
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("typedef-decl")))
     return handle_typedef_decl(ctxt, corpus);
+  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		   BAD_CAST("var-decl")))
+    return handle_var_decl(ctxt, corpus);
 
   return false;
 }
@@ -364,6 +370,69 @@ read_location(read_context& ctxt, abi_corpus& corpus, location& loc)
      atoi(reinterpret_cast<char*>(l.get())),
      atoi(reinterpret_cast<char*>(c.get())));
   return true;
+}
+
+/// Parse the visibility attribute.
+///
+/// \param ctxt the read context to use for the parsing.
+///
+/// \param vis the resulting visibility.
+///
+/// \return true upon successful completion, false otherwise.
+static bool
+read_visibility(read_context&		ctxt,
+		decl_base::visibility&	vis)
+{
+  xml::reader_sptr r = ctxt.get_reader();
+
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "visibility"))
+    {
+      string v = CHAR_STR(s);
+
+      if (v == "default")
+	vis = decl_base::VISIBILITY_DEFAULT;
+      else if (v == "hidden")
+	vis = decl_base::VISIBILITY_HIDDEN;
+      else if (v == "internal")
+	vis = decl_base::VISIBILITY_INTERNAL;
+      else if (v == "protected")
+	vis = decl_base::VISIBILITY_PROTECTED;
+      else
+	vis = decl_base::VISIBILITY_DEFAULT;
+      return true;
+    }
+  return false;
+}
+
+/// Parse the "binding" attribute on the current element.
+///
+/// \param ctxt the context to use for the parsing.
+///
+/// \param bind the resulting binding attribute.
+///
+/// \return true upon successful completion, false otherwise.
+static bool
+read_binding(read_context&		ctxt,
+	     decl_base::binding&	bind)
+{
+  xml::reader_sptr r = ctxt.get_reader();
+
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "binding"))
+    {
+      string b = CHAR_STR(s);
+
+      if (b == "global")
+	bind = decl_base::BINDING_GLOBAL;
+      if (b == "local")
+	bind = decl_base::BINDING_LOCAL;
+      if (b == "weak")
+	bind = decl_base::BINDING_WEAK;
+      else
+	bind = decl_base::BINDING_GLOBAL;
+      return true;
+    }
+
+  return false;
 }
 
 /// Parses 'type-decl' xml element.
@@ -705,6 +774,50 @@ handle_typedef_decl(read_context& ctxt, abi_corpus& corpus)
   shared_ptr<type_base> t(new typedef_decl(name, underlying_type, loc));
 
   return ctxt.finish_type_decl_creation(t, id, corpus);
+}
+
+/// Parse a var-decl element.
+/// \param ctxt the context of the parsing.
+///
+/// \param corpus the corpus the resulting pointer to
+/// var_decl is added to.
+static bool
+handle_var_decl(read_context& ctxt, abi_corpus& corpus)
+{
+  xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
+    return false;
+
+  string name;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
+    name = CHAR_STR(s);
+
+  string type_id;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
+    type_id = CHAR_STR(s);
+  shared_ptr<type_base> underlying_type = ctxt.get_type_decl(type_id);
+  if (!underlying_type)
+    return false;
+
+  string mangled_name;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "mangled-name"))
+    mangled_name = CHAR_STR(s);
+
+  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
+  read_visibility(ctxt, vis);
+
+  decl_base::binding bind = decl_base::BINDING_NONE;
+  read_binding(ctxt, bind);
+
+  location locus;
+  read_location(ctxt, corpus, locus);
+
+  shared_ptr<decl_base> decl(new var_decl(name, underlying_type,
+					  locus, mangled_name,
+					  vis, bind));
+  ctxt.finish_decl_creation(decl, corpus);
+
+  return true;
 }
 
 }//end namespace reader

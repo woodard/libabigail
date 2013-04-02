@@ -122,8 +122,10 @@ private:
 static bool write_corpus(const abi_corpus&,
 			 write_context&,
 			 unsigned);
-static void write_decl_location(const shared_ptr<decl_base>&,
-				const abi_corpus&, ostream&);
+static void write_location(const shared_ptr<decl_base>&,
+			   const abi_corpus&, ostream&);
+static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
+static bool write_binding(const shared_ptr<decl_base>&, ostream&);
 static bool write_decl(const shared_ptr<decl_base>,
 		       const abi_corpus&,
 		       write_context&,
@@ -156,6 +158,9 @@ static bool write_typedef_decl(const shared_ptr<typedef_decl>,
 			       const abi_corpus&,
 			       write_context&,
 			       unsigned);
+static bool write_var_decl(const shared_ptr<var_decl>,
+			   const abi_corpus&, write_context&,
+			   unsigned);
 static void	do_indent(ostream&, unsigned);
 
 /// Emit #nb_whitespaces white spaces into the output stream #o.
@@ -193,9 +198,9 @@ write_to_ostream(const abi_corpus& corpus,
 ///
 /// \param o the output stream to write to.
 static void
-write_decl_location(const shared_ptr<decl_base>&	decl,
-		    const abi_corpus&			corpus,
-		    ostream&				o)
+write_location(const shared_ptr<decl_base>&	decl,
+	       const abi_corpus&		corpus,
+	       ostream&			o)
 {
   if (!decl)
     return;
@@ -211,6 +216,92 @@ write_decl_location(const shared_ptr<decl_base>&	decl,
   o << " filepath='" << filepath << "'"
     << " line='"     << line     << "'"
     << " column='"   << column   << "'";
+}
+
+/// Serialize the visibility property of the current decl as the
+/// 'visibility' attribute for the current xml element.
+///
+/// \param decl the instance of decl_base to consider.
+///
+/// \param o the output stream to serialize the property to.
+///
+/// \return true upon successful completion, false otherwise.
+static bool
+write_visibility(const shared_ptr<decl_base>&	decl,
+		 ostream&			o)
+{
+  if (!decl)
+    return false;
+
+  decl_base::visibility v = decl->get_visibility();
+  string str;
+
+  switch (v)
+    {
+    case decl_base::VISIBILITY_NONE:
+      return true;
+    case decl_base::VISIBILITY_DEFAULT:
+      str = "default";
+      break;
+    case decl_base::VISIBILITY_PROTECTED:
+      str = "protected";
+      break;
+    case decl_base::VISIBILITY_HIDDEN:
+      str = "hidden";
+      break;
+    case decl_base::VISIBILITY_INTERNAL:
+	str = "internal";
+	break;
+    }
+
+  if (str.empty())
+    return false;
+
+  o << " visibility='" << str << "'";
+
+  return true;
+}
+
+/// Serialize the 'binding' property of the current decl.
+///
+/// \param decl the decl to consider.
+///
+/// \param o the output stream to serialize the property to.
+static bool
+write_binding(const shared_ptr<decl_base>&	decl,
+	      ostream&				o)
+{
+  if (!decl)
+    return false;
+
+  decl_base::binding bind = decl_base::BINDING_NONE;
+
+  shared_ptr<var_decl> var =
+    dynamic_pointer_cast<var_decl>(decl);
+
+  if (var)
+    bind = var->get_binding();
+
+  string str;
+  switch (bind)
+    {
+    case decl_base::BINDING_NONE:
+      break;
+    case decl_base::BINDING_LOCAL:
+      str = "local";
+      break;
+    case decl_base::BINDING_GLOBAL:
+	str = "global";
+      break;
+    case decl_base::BINDING_WEAK:
+      str = "weak";
+      break;
+    }
+
+  if (!str.empty())
+    o << " binding='" << str << "'";
+
+  return true;
 }
 
 /// Serialize a pointer to an of decl_base into an output stream.
@@ -247,7 +338,9 @@ write_decl(const shared_ptr<decl_base>	decl,
       || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(decl),
 			      corpus, ctxt, indent)
       || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(decl),
-			    corpus, ctxt, indent))
+			    corpus, ctxt, indent)
+      || write_var_decl(dynamic_pointer_cast<var_decl>(decl),
+			corpus, ctxt, indent))
     return true;
 
   return false;
@@ -338,7 +431,7 @@ write_type_decl(const shared_ptr<type_decl>	d,
   if (alignment_in_bits)
     o << " alignment-in-bits='" << alignment_in_bits << "'";
 
-  write_decl_location(d, corpus, o);
+  write_location(d, corpus, o);
 
   o << " id='" << ctxt.get_id_for_type(d) << "'" <<  "/>";
 
@@ -426,7 +519,7 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
   if (decl->get_cv_quals() & qualified_type_def::CV_VOLATILE)
     o << " volatile='yes'";
 
-  write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  write_location(static_pointer_cast<decl_base>(decl), corpus, o);
 
   o<< " id='"
     << ctxt.get_id_for_type(decl)
@@ -472,7 +565,7 @@ write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'";
 
-  write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  write_location(static_pointer_cast<decl_base>(decl), corpus, o);
   o << "/>";
 
   return true;
@@ -517,7 +610,7 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'";
 
-  write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  write_location(static_pointer_cast<decl_base>(decl), corpus, o);
 
   o << "/>";
   return true;
@@ -548,7 +641,7 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
   do_indent(o, indent);
   o << "<enum-decl name='" << decl->get_name() << "'";
 
-  write_decl_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  write_location(static_pointer_cast<decl_base>(decl), corpus, o);
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'>\n";
 
@@ -604,11 +697,54 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 
   o << " type-id='" << ctxt.get_id_for_type(decl->get_underlying_type()) << "'";
 
-  write_decl_location(decl, corpus, o);
+  write_location(decl, corpus, o);
 
   o << " id='"
     << ctxt.get_id_for_type(decl)
     << "'/>";
+
+  return true;
+}
+
+/// Serialize a pointer to an instances of var_decl.
+///
+/// \param decl the var_decl to serialize.
+///
+/// \param corpus the ABI corpus it belongs to.
+///
+/// \param ctxt the context of the serialization.
+///
+/// \param indent the number of indentation white spaces to use.
+///
+/// \return true upon succesful completion, false otherwise.
+static bool
+write_var_decl(const shared_ptr<var_decl>	decl,
+	       const abi_corpus&		corpus,
+	       write_context&			ctxt,
+	       unsigned			indent)
+{
+  if (!decl)
+    return false;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<var-decl name='" << decl->get_name() << "'";
+  o << " type-id='" << ctxt.get_id_for_type(decl->get_type()) << "'";
+
+  const string& mangled_name = decl->get_mangled_name();
+
+  if (!mangled_name.empty())
+    o << " mangled-name='" << mangled_name << "'";
+
+  write_visibility(decl, o);
+
+  write_binding(decl, o);
+
+  write_location(decl, corpus, o);
+
+  o << "/>";
 
   return true;
 }

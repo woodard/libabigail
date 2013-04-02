@@ -141,9 +141,11 @@ decl_base::decl_base()
 
 decl_base::decl_base(const std::string&	name,
 		     location			locus,
+		     const std::string&	mangled_name,
 		     visibility vis)
   : m_location(locus),
     m_name(name),
+    m_mangled_name(mangled_name),
     m_context(0),
     m_visibility(vis)
 {
@@ -160,6 +162,7 @@ decl_base::decl_base(const decl_base& d)
 {
   m_location = d.m_location;
   m_name = d.m_name;
+  m_mangled_name = d.m_mangled_name;
   m_context = d.m_context;
   m_visibility = m_visibility;
 }
@@ -197,8 +200,9 @@ decl_base::set_scope(scope_decl* scope)
 // <scope_decl definitions>
 scope_decl::scope_decl(const std::string&		name,
 		       location			locus,
+		       const std::string& mangled_name,
 		       visibility vis)
-  : decl_base(name, locus, vis)
+  : decl_base(name, locus, mangled_name, vis)
 {
 }
 
@@ -331,9 +335,10 @@ type_decl::type_decl(const std::string&	name,
 		     size_t			size_in_bits,
 		     size_t			alignment_in_bits,
 		     location			locus,
+		     const std::string&	mangled_name,
 		     visibility		vis)
 
-  : decl_base(name, locus, vis),
+  : decl_base(name, locus, mangled_name, vis),
     type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -363,8 +368,10 @@ type_decl::~type_decl()
 scope_type_decl::scope_type_decl(const std::string&		name,
 				 size_t			size_in_bits,
 				 size_t			alignment_in_bits,
-				 location			locus)
-  :scope_decl(name, locus),
+				 location			locus,
+				 const std::string&		mangled_name,
+				 visibility			vis)
+  :scope_decl(name, locus, mangled_name, vis),
    type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -391,9 +398,10 @@ scope_type_decl::~scope_type_decl()
 // </scope_type_decl definitions>
 
 // <namespace_decl>
-namespace_decl::namespace_decl(const std::string& name,
-			       location locus)
-  : scope_decl(name, locus)
+namespace_decl::namespace_decl(const std::string&	name,
+			       location		locus,
+			       visibility		vis)
+  : scope_decl(name, locus, name, vis)
 {
 }
 
@@ -431,7 +439,7 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
 				       location		locus)
   : type_base(type->get_size_in_bits(),
 	      type->get_alignment_in_bits()),
-    decl_base("", locus,
+    decl_base("", locus, "",
 	      dynamic_pointer_cast<decl_base>(type)->get_visibility()),
     m_cv_quals(quals),
     m_underlying_type(type)
@@ -525,7 +533,7 @@ pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
 				   size_t			align_in_bits,
 				   location			locus)
   : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus,
+    decl_base("", locus, "",
 	      dynamic_pointer_cast<decl_base>(pointed_to)->get_visibility()),
     m_pointed_to_type(pointed_to)
 {
@@ -565,7 +573,7 @@ reference_type_def::reference_type_def(shared_ptr<type_base>&	pointed_to,
 				       size_t			align_in_bits,
 				       location		locus)
   : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus,
+    decl_base("", locus, "",
 	      dynamic_pointer_cast<decl_base>(pointed_to)->get_visibility()),
     m_pointed_to_type(pointed_to),
     m_is_lvalue(lvalue)
@@ -614,10 +622,11 @@ enum_type_decl::enum_type_decl(const string&			name,
 			       location			locus,
 			       shared_ptr<type_base>		underlying_type,
 			       const std::list<enumerator>&	enumerators,
+			       const string&			mangled_name,
 			       visibility			vis)
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
-    decl_base(name, locus, vis),
+    decl_base(name, locus, mangled_name, vis),
     m_underlying_type(underlying_type),
     m_enumerators(enumerators)
   {
@@ -681,10 +690,11 @@ enum_type_decl::operator==(const enum_type_decl& other) const
 typedef_decl::typedef_decl(const string&		name,
 			   const shared_ptr<type_base>	underlying_type,
 			   location			locus,
+			   const std::string&		mangled_name,
 			   visibility vis)
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
-    decl_base(name, locus, vis),
+    decl_base(name, locus, mangled_name, vis),
     m_underlying_type(underlying_type)
 {
 }
@@ -715,4 +725,32 @@ typedef_decl::~typedef_decl()
 }
 
 // </typedef_decl definitions>
+
+// <var_decl definitions>
+
+var_decl::var_decl(const std::string&		name,
+		   shared_ptr<type_base>&	type,
+		   location			locus,
+		   const std::string&		mangled_name,
+		   visibility			vis,
+		   binding			bind)
+  : decl_base(name, locus, mangled_name, vis),
+    m_type(type),
+    m_binding(bind)
+{
+}
+
+bool
+var_decl::operator==(const var_decl& other) const
+{
+  return (typeid(*this) == typeid(other)
+	  && static_cast<decl_base>(*this) == static_cast<decl_base>(other)
+	  && *get_type() == *other.get_type());
+}
+
+var_decl::~var_decl()
+{
+}
+
+// </var_decl definitions>
 }//end namespace abigail

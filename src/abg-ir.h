@@ -116,11 +116,20 @@ public:
     VISIBILITY_PROTECTED,
     VISIBILITY_HIDDEN,
     VISIBILITY_INTERNAL
-  };
+  };// end enum visibility
 
-  decl_base(const std::string&		name,
-	    location			locus,
-	    visibility = VISIBILITY_DEFAULT);
+  enum binding
+  {
+    BINDING_NONE,
+    BINDING_LOCAL,
+    BINDING_GLOBAL,
+    BINDING_WEAK,
+  };// end enum binding
+
+  decl_base(const std::string&	name,
+	    location		locus,
+	    const std::string&	mangled_name = "",
+	    visibility		vis = VISIBILITY_DEFAULT);
 
   decl_base(location);
 
@@ -136,7 +145,7 @@ public:
   {return m_location;}
 
   void
-  set_location(const location&l)
+  set_location(const location& l)
   {m_location = l;}
 
   const string&
@@ -146,6 +155,14 @@ public:
   void
   set_name(const string& n)
   {m_name = n;}
+
+  const string&
+  get_mangled_name() const
+  {return m_mangled_name;}
+
+  void
+  set_mangled_name(const std::string& m)
+  {m_mangled_name = m;}
 
   scope_decl*
   get_scope() const
@@ -166,6 +183,7 @@ public:
 private:
   location m_location;
   std::string m_name;
+  std::string m_mangled_name;
   scope_decl* m_context;
   visibility m_visibility;
 };
@@ -181,6 +199,7 @@ class scope_decl : public decl_base
 public:
   scope_decl(const std::string& name,
 	     location		locus,
+	     const std::string& mangled_name = "",
 	     visibility	vis = VISIBILITY_DEFAULT);
 
   scope_decl(location);
@@ -322,6 +341,7 @@ public:
 	    size_t		size_in_bits,
 	    size_t		alignment_in_bits,
 	    location		locus,
+	    const std::string&	mangled_name = "",
 	    visibility		vis = VISIBILITY_DEFAULT);
 
   virtual bool
@@ -358,7 +378,9 @@ public:
   scope_type_decl(const std::string&		name,
 		  size_t			size_in_bits,
 		  size_t			alignment_in_bits,
-		  location			locus);
+		  location			locus,
+		  const std::string&		mangled_name = "",
+		  visibility			visiblity = VISIBILITY_DEFAULT);
 
   virtual bool
   operator==(const scope_type_decl&) const;
@@ -389,8 +411,9 @@ class namespace_decl : public scope_decl
 {
 public:
 
-  namespace_decl(const std::string& name,
-		 location locus);
+  namespace_decl(const std::string&	name,
+		 location		locus,
+		 visibility		vis = VISIBILITY_DEFAULT);
 
   virtual bool
   operator==(const namespace_decl&) const;
@@ -559,6 +582,7 @@ public:
   {
     //Forbidden
     enumerator();
+
   public:
 
     enumerator(const string& name,
@@ -599,6 +623,7 @@ public:
 		 location			locus,
 		 shared_ptr<type_base>		underlying_type,
 		 const std::list<enumerator>&	enumerators,
+		 const std::string&		mangled_name = "",
 		 visibility			vis = VISIBILITY_DEFAULT);
 
   shared_ptr<type_base>
@@ -607,7 +632,7 @@ public:
   const std::list<enumerator>&
   get_enumerators() const;
 
-  bool
+  virtual bool
   operator==(const enum_type_decl&) const;
 
   virtual ~enum_type_decl();
@@ -651,10 +676,11 @@ public:
 
   typedef_decl(const string&			name,
 	       const shared_ptr<type_base>	underlying_type,
-	       location locus,
-	       visibility vis = VISIBILITY_DEFAULT);
+	       location				locus,
+	       const std::string&		mangled_name = "",
+	       visibility			vis = VISIBILITY_DEFAULT);
 
-  bool
+  virtual bool
   operator==(const typedef_decl&) const;
 
   shared_ptr<type_base>
@@ -685,5 +711,43 @@ struct typedef_decl_hash
     return v;
   }
 };// end struct typedef_decl_hash
+
+/// Abstracts a variable declaration.
+class var_decl : public decl_base
+{
+  // Forbidden
+  var_decl();
+
+public:
+
+  var_decl(const std::string&		name,
+	   shared_ptr<type_base>&	type,
+	   location			locus,
+	   const std::string&		mangled_name,
+	   visibility			vis = VISIBILITY_DEFAULT,
+	   binding			bind = BINDING_NONE);
+
+  virtual bool
+  operator==(const var_decl&) const;
+
+  shared_ptr<type_base>
+  get_type() const
+  {return m_type;}
+
+  binding
+  get_binding() const
+  {return m_binding;}
+
+  void
+  set_binding(binding b)
+  {m_binding = b;}
+
+  virtual ~var_decl();
+
+private:
+  shared_ptr<type_base> m_type;
+  binding m_binding;
+};// end class var_decl
+
 } // end namespace abigail
 #endif // __ABG_IR_H__
