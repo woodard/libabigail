@@ -23,6 +23,24 @@ namespace abigail
 using namespace std::rel_ops; // Pull in relational operators so that
 			      // we don't have to define them all here.
 
+class decl_base;
+class scope_decl;
+class global_scope;
+class translation_unit;
+
+void add_decl_to_scope(shared_ptr<decl_base>,
+		       scope_decl*);
+
+global_scope* get_global_scope(const shared_ptr<decl_base>);
+
+translation_unit* get_translation_unit(const shared_ptr<decl_base>);
+
+bool is_global_scope(const scope_decl*);
+
+bool is_global_scope(const shared_ptr<scope_decl>);
+
+bool is_decl_at_global_scope(const shared_ptr<decl_base>);
+
 /// \brief The source location of a token.
 ///
 /// This represents the location of a token coming from a given ABI
@@ -93,11 +111,37 @@ public:
 		  unsigned&		column) const;
 };
 
-class decl_base;
-class scope_decl;
+/// This is the abstraction of the set of relevant artefacts (types,
+/// variable declarations, functions, templates, etc) bundled together
+/// into a translation unit.
+class translation_unit
+{
+  // Forbidden
+  translation_unit();
 
-void add_decl_to_scope(shared_ptr<decl_base>,
-		       scope_decl*);
+public:
+
+  typedef std::list<shared_ptr<decl_base> > decls_type;
+
+  translation_unit(const std::string& path);
+
+  const shared_ptr<global_scope>
+  get_global_scope() const;
+
+  location_manager&
+  get_loc_mgr();
+
+  const location_manager&
+  get_loc_mgr() const;
+
+  bool
+  is_empty() const;
+
+private:
+  std::string m_path;
+  location_manager m_loc_mgr;
+  mutable shared_ptr<global_scope> m_global_scope;
+};//end class translation_unit
 
 /// \brief The base type of all declarations.
 class decl_base
@@ -193,22 +237,37 @@ class scope_decl : public decl_base
 {
   scope_decl();
 
+  /// Add a member decl to this scope.  Note that user code should not
+  /// use this, but rather use #add_decl_to_scope.
+  ///
+  /// \param member the new member decl to add to this scope.
   void
-  add_member_decl(const shared_ptr<decl_base>);
+  add_member_decl(const shared_ptr<decl_base> member)
+  {m_members.push_back(member);}
 
 public:
   scope_decl(const std::string& name,
 	     location		locus,
 	     const std::string& mangled_name = "",
-	     visibility	vis = VISIBILITY_DEFAULT);
+	     visibility	vis = VISIBILITY_DEFAULT)
+    : decl_base(name, locus, mangled_name, vis)
+  {}
 
-  scope_decl(location);
+
+  scope_decl(location l)
+    : decl_base("", l)
+  {}
 
   virtual bool
   operator==(const scope_decl&) const;
 
   const std::list<shared_ptr<decl_base> >&
-  get_member_decls() const;
+  get_member_decls() const
+  {return m_members;}
+
+  bool
+  is_empty() const
+  {return get_member_decls().empty();}
 
   virtual ~scope_decl();
 
@@ -240,6 +299,33 @@ struct decl_base_hash
     return v;
   }
 };//end struct decl_base_hash
+
+/// This abstracts the global scope of a given translation unit.
+///
+/// Only one instance of this class must be present in a given
+/// translation_unit.  That instance is implicitely created the first
+/// time translatin_unit::get_global_scope is invoked.
+class global_scope : public scope_decl
+{
+  global_scope()
+    : scope_decl("", location()),
+      m_translation_unit(0)
+  {
+  }
+
+public:
+
+  friend class translation_unit;
+
+  translation_unit*
+  get_translation_unit() const
+  {return m_translation_unit;}
+
+  virtual ~global_scope();
+
+private:
+  translation_unit* m_translation_unit;
+};// end class global_scope;
 
 /// An abstraction helper for type declarations
 class type_base

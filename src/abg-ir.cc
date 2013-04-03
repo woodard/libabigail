@@ -134,6 +134,57 @@ location_manager::expand_location(const location	location,
   column = l.m_column;
 }
 
+/// Constructor of translation_unit.
+///
+/// \param the path of the translation unit.
+translation_unit::translation_unit(const std::string& path)
+  : m_path (path)
+{
+}
+
+/// Getter of the the global scope of the translation unit.
+///
+/// \return the global scope of the current translation unit.  If
+/// there is not global scope allocated yet, this function creates one
+/// and returns it.
+const shared_ptr<global_scope>
+translation_unit::get_global_scope() const
+{
+  if (!m_global_scope)
+    m_global_scope.reset(new global_scope);
+  return m_global_scope;
+}
+
+/// Getter of the location manager for the current translation unit.
+///
+/// \return a reference to the location manager for the current
+/// translation unit.
+location_manager&
+translation_unit::get_loc_mgr()
+{
+  return m_loc_mgr;
+}
+
+/// const Getter of the location manager.
+///
+/// \return a const reference to the location manager for the current
+/// translation unit.
+const location_manager&
+translation_unit::get_loc_mgr() const
+{
+  return m_loc_mgr;
+}
+
+/// Tests whether if the current translation unit contains ABI
+/// artifacts or not.
+///
+/// \return true iff the current translation unit is empty.
+bool
+translation_unit::is_empty() const
+{
+  return get_global_scope()->is_empty();
+}
+
 // <Decl definition>
 decl_base::decl_base()
 {
@@ -197,21 +248,6 @@ decl_base::set_scope(scope_decl* scope)
 
 // </Decl definition>
 
-// <scope_decl definitions>
-scope_decl::scope_decl(const std::string&		name,
-		       location			locus,
-		       const std::string& mangled_name,
-		       visibility vis)
-  : decl_base(name, locus, mangled_name, vis)
-{
-}
-
-
-scope_decl::scope_decl(location l)
-  : decl_base("", l)
-{
-}
-
 /// Return true iff both scopes have the same names and have the same
 /// member decls.
 ///
@@ -240,22 +276,6 @@ scope_decl::operator==(const scope_decl& other) const
   return true;
 }
 
-/// Add a member decl to this scope.  Note that user code should not
-/// use this, but rather use #add_decl_to_scope.
-///
-/// \param member the new member decl to add to this scope.
-void
-scope_decl::add_member_decl(const shared_ptr<decl_base> member)
-{
-  m_members.push_back(member);
-}
-
-const std::list<shared_ptr<decl_base> >&
-scope_decl::get_member_decls() const
-{
-  return m_members;
-}
-
 scope_decl::~scope_decl()
 {
 }
@@ -276,7 +296,80 @@ add_decl_to_scope(shared_ptr<decl_base> decl,
     }
 }
 
+/// Return the global scope as seen by a given decl.
+///
+/// \param decl the decl to consider.
+///
+/// \return the global scope of the decl, or a null pointer if the
+/// decl is not yet added to a translation_unit.
+global_scope*
+get_global_scope(const shared_ptr<decl_base> decl)
+{
+  scope_decl* scope = decl->get_scope();
+  while (scope && !dynamic_cast<global_scope*>(scope))
+    scope = scope->get_scope();
+
+  return scope ? dynamic_cast<global_scope*> (scope) : 0;
+}
+
+/// Return the translation unit a decl belongs to.
+///
+/// \param decl the decl to consider.
+///
+/// \return the resulting translation unit, or null if the decl is not
+/// yet added to a translation unit.
+translation_unit*
+get_translation_unit(const shared_ptr<decl_base> decl)
+{
+  global_scope* global = get_global_scope(decl);
+
+  if (global)
+    return global->get_translation_unit();
+
+  return 0;
+}
+
+/// Tests whether if a given scope is the global scope.
+///
+/// \param scope the scope to consider.
+///
+/// \return true iff the current scope is the global one.
+bool
+is_global_scope(const shared_ptr<scope_decl>scope)
+{
+  return !!dynamic_pointer_cast<global_scope>(scope);
+}
+
+/// Tests whether if a given scope is the global scope.
+///
+/// \param scope the scope to consider.
+///
+/// \return true iff the current scope is the global one.
+bool
+is_global_scope(const scope_decl* scope)
+{
+  return !!dynamic_cast<const global_scope*>(scope);
+}
+
+/// Tests wether if a given decl is at global scope.
+///
+/// \param decl the decl to consider.
+///
+/// \return true iff #decl is at global scope.
+bool
+is_decl_at_global_scope(const shared_ptr<decl_base> decl)
+{
+  if (!decl)
+    return false;
+
+  return is_global_scope(decl->get_scope());
+}
+
 // </scope_decl definition>
+
+global_scope::~global_scope()
+{
+}
 
 // <type_base definitions>
 type_base::type_base(size_t s = 8, size_t a = 8)

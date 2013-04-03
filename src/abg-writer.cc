@@ -119,48 +119,31 @@ private:
   type_shared_ptr_map m_type_id_map;
 };//end write_context
 
-static bool write_corpus(const abi_corpus&,
-			 write_context&,
-			 unsigned);
-static void write_location(const shared_ptr<decl_base>&,
-			   const abi_corpus&, ostream&);
+static bool write_translation_unit(const translation_unit&,
+				   write_context&,
+				   unsigned);
+static void write_location(const shared_ptr<decl_base>&, ostream&);
 static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
 static bool write_binding(const shared_ptr<decl_base>&, ostream&);
 static bool write_decl(const shared_ptr<decl_base>,
-		       const abi_corpus&,
 		       write_context&,
 		       unsigned);
 static bool write_type_decl(const shared_ptr<type_decl>,
-			    const abi_corpus&,
-			    write_context&,
-			    unsigned);
+			    write_context&, unsigned);
 static bool write_namespace_decl(const shared_ptr<namespace_decl>,
-				 const abi_corpus&,
-				 write_context&,
-				 unsigned);
+				 write_context&, unsigned);
 static bool write_qualified_type_def(const shared_ptr<qualified_type_def>,
-				     const abi_corpus&,
-				     write_context&,
-				     unsigned);
+				     write_context&, unsigned);
 static bool write_pointer_type_def(const shared_ptr<pointer_type_def>,
-				   const abi_corpus&,
-				   write_context&,
-				   unsigned);
+				   write_context&, unsigned);
 static bool write_reference_type_def(const shared_ptr<reference_type_def>,
-				     const abi_corpus&,
-				     write_context&,
-				     unsigned);
+				     write_context&, unsigned);
 static bool write_enum_type_decl(const shared_ptr<enum_type_decl>,
-				 const abi_corpus&,
-				 write_context&,
-				 unsigned);
+				 write_context&, unsigned);
 static bool write_typedef_decl(const shared_ptr<typedef_decl>,
-			       const abi_corpus&,
-			       write_context&,
-			       unsigned);
+			       write_context&, unsigned);
 static bool write_var_decl(const shared_ptr<var_decl>,
-			   const abi_corpus&, write_context&,
-			   unsigned);
+			   write_context&, unsigned);
 static void	do_indent(ostream&, unsigned);
 
 /// Emit #nb_whitespaces white spaces into the output stream #o.
@@ -171,20 +154,20 @@ do_indent(ostream& o, unsigned nb_whitespaces)
     o << ' ';
 }
 
-/// Serialize an abi corpus into an output stream.
+/// Serialize a translation_unit into an output stream.
 ///
-/// \param corpus the corpus to serialize
+/// \param tu the translation unit to serialize.
 ///
 /// \param out the output stream.
 ///
 /// \return true upon successful completion, false otherwise.
 bool
-write_to_ostream(const abi_corpus& corpus,
+write_to_ostream(const translation_unit& tu,
 		 ostream &out)
 {
   write_context ctxt(out);
 
-  return write_corpus(corpus, ctxt, /*indent=*/0);
+  return write_translation_unit(tu, ctxt, /*indent=*/0);
 }
 
 /// Write the location of a decl to the output stream.
@@ -193,13 +176,9 @@ write_to_ostream(const abi_corpus& corpus,
 ///
 /// \param decl the decl to consider.
 ///
-/// \param corpus the corpus the decl belongs to.  The location
-/// manager to use belongs to that that corpus.
-///
 /// \param o the output stream to write to.
 static void
 write_location(const shared_ptr<decl_base>&	decl,
-	       const abi_corpus&		corpus,
 	       ostream&			o)
 {
   if (!decl)
@@ -211,7 +190,9 @@ write_location(const shared_ptr<decl_base>&	decl,
 
   string filepath;
   unsigned line = 0, column = 0;
-  corpus.get_loc_mgr().expand_location(loc, filepath, line, column);
+  translation_unit& tu = *get_translation_unit(decl);
+
+  tu.get_loc_mgr().expand_location(loc, filepath, line, column);
 
   o << " filepath='" << filepath << "'"
     << " line='"     << line     << "'"
@@ -308,8 +289,6 @@ write_binding(const shared_ptr<decl_base>&	decl,
 ///
 /// \param decl, the pointer to decl_base to serialize
 ///
-/// \param corpus the abi corpus the decl belongs to.
-///
 /// \param ctxt the context of the serialization.  It contains e.g, the
 /// output stream to serialize to.
 ///
@@ -319,36 +298,35 @@ write_binding(const shared_ptr<decl_base>&	decl,
 /// \return true upon successful completion, false otherwise.
 static bool
 write_decl(const shared_ptr<decl_base>	decl,
-	   const abi_corpus&		corpus,
 	   write_context&		ctxt,
 	   unsigned			indent)
 {
   if (write_type_decl(dynamic_pointer_cast<type_decl> (decl),
-		      corpus, ctxt, indent)
+		      ctxt, indent)
       || write_namespace_decl(dynamic_pointer_cast<namespace_decl>(decl),
-			      corpus, ctxt, indent)
+			      ctxt, indent)
       || write_qualified_type_def (dynamic_pointer_cast<qualified_type_def>
 				   (decl),
-				   corpus, ctxt, indent)
+				   ctxt, indent)
       || write_pointer_type_def(dynamic_pointer_cast<pointer_type_def>(decl),
-				corpus, ctxt, indent)
+				ctxt, indent)
       || write_reference_type_def(dynamic_pointer_cast
 				  <reference_type_def>(decl),
-				  corpus, ctxt, indent)
+				  ctxt, indent)
       || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(decl),
-			      corpus, ctxt, indent)
+			      ctxt, indent)
       || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(decl),
-			    corpus, ctxt, indent)
+			    ctxt, indent)
       || write_var_decl(dynamic_pointer_cast<var_decl>(decl),
-			corpus, ctxt, indent))
+			ctxt, indent))
     return true;
 
   return false;
 }
 
-/// Serialize an abi corpus into an output stream.
+/// Serialize a translation unit into an output stream.
 ///
-/// \param a corpus the abi corpus to serialize.
+/// \param tu the translation unit to serialize.
 ///
 /// \param ctxt the context of the serialization.  It contains e.g,
 /// the output stream to serialize to.
@@ -358,7 +336,9 @@ write_decl(const shared_ptr<decl_base>	decl,
 ///
 /// \return true upon successful completion, false otherwise.
 static bool
-write_corpus(const abi_corpus& corpus, write_context& ctxt, unsigned indent)
+write_translation_unit(const translation_unit&	tu,
+		       write_context&		ctxt,
+		       unsigned		indent)
 {
   ostream &o = ctxt.get_ostream();
   const config &c = ctxt.get_config();
@@ -370,7 +350,7 @@ write_corpus(const abi_corpus& corpus, write_context& ctxt, unsigned indent)
     << "." << static_cast<int>(c.get_format_minor_version_number())
     << "'";
 
-  if (corpus.is_empty())
+  if (tu.is_empty())
     {
       o << "/>";
       return true;
@@ -378,13 +358,13 @@ write_corpus(const abi_corpus& corpus, write_context& ctxt, unsigned indent)
   else
     o << ">";
 
-  for (abi_corpus::decls_type::const_iterator i = corpus.get_decls().begin();
-       i != corpus.get_decls().end();
+  for (translation_unit::decls_type::const_iterator i =
+	 tu.get_global_scope()->get_member_decls().begin();
+       i != tu.get_global_scope()->get_member_decls().end();
        ++i)
     {
       o << "\n";
-      write_decl(*i, corpus, ctxt,
-		 indent + c.get_xml_element_indent());
+      write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
 
   o << "\n";
@@ -399,9 +379,6 @@ write_corpus(const abi_corpus& corpus, write_context& ctxt, unsigned indent)
 ///
 /// \param d the basic type declaration to serialize.
 ///
-/// \param corpus the instance of abi corpus the declaration belongs
-/// to.
-///
 /// \param ctxt the context of the serialization.  It contains e.g, the
 /// output stream to serialize to.
 ///
@@ -411,7 +388,6 @@ write_corpus(const abi_corpus& corpus, write_context& ctxt, unsigned indent)
 /// \return true upon successful completion, false otherwise.
 static bool
 write_type_decl(const shared_ptr<type_decl>	d,
-		const abi_corpus&		corpus,
 		write_context&			ctxt,
 		unsigned			indent)
 {
@@ -431,7 +407,7 @@ write_type_decl(const shared_ptr<type_decl>	d,
   if (alignment_in_bits)
     o << " alignment-in-bits='" << alignment_in_bits << "'";
 
-  write_location(d, corpus, o);
+  write_location(d, o);
 
   o << " id='" << ctxt.get_id_for_type(d) << "'" <<  "/>";
 
@@ -442,9 +418,6 @@ write_type_decl(const shared_ptr<type_decl>	d,
 ///
 /// \param decl the namespace declaration to serialize.
 ///
-/// \param corpus the instance of abi corpus the declaration belongs
-/// to.
-///
 /// \param ctxt the context of the serialization.  It contains e.g, the
 /// output stream to serialize to.
 ///
@@ -454,7 +427,6 @@ write_type_decl(const shared_ptr<type_decl>	d,
 /// \return true upon successful completion, false otherwise.
 static bool
 write_namespace_decl(const shared_ptr<namespace_decl>	decl,
-		     const abi_corpus&			corpus,
 		     write_context&			ctxt,
 		     unsigned				indent)
 {
@@ -474,8 +446,7 @@ write_namespace_decl(const shared_ptr<namespace_decl>	decl,
        ++i)
     {
       o << "\n";
-      write_decl(*i, corpus, ctxt,
-		 indent + c.get_xml_element_indent());
+      write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
 
   o << "\n";
@@ -489,8 +460,6 @@ write_namespace_decl(const shared_ptr<namespace_decl>	decl,
 ///
 /// \param decl the qualfied type declaration to write.
 ///
-/// \param corpus the abi corpus it belongs to.
-///
 /// \param ctxt the write context.
 ///
 /// \param indent the number of space to indent to during the
@@ -499,7 +468,6 @@ write_namespace_decl(const shared_ptr<namespace_decl>	decl,
 /// \return true upon successful completion, false otherwise.
 static bool
 write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
-			 const abi_corpus&			corpus,
 			 write_context&			ctxt,
 			 unsigned				indent)
 {
@@ -519,7 +487,7 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
   if (decl->get_cv_quals() & qualified_type_def::CV_VOLATILE)
     o << " volatile='yes'";
 
-  write_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  write_location(static_pointer_cast<decl_base>(decl), o);
 
   o<< " id='"
     << ctxt.get_id_for_type(decl)
@@ -534,8 +502,6 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
 ///
 /// \param decl the pointer_type_def to serialize.
 ///
-/// \param corpus the ABI corpus it belongs to.
-///
 /// \param ctxt the context of the serialization.
 ///
 /// \param indent the number of indentation white spaces to use.
@@ -543,7 +509,6 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
 /// \return true upon succesful completion, false otherwise.
 static bool
 write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
-		       const abi_corpus&			corpus,
 		       write_context&				ctxt,
 		       unsigned				indent)
 {
@@ -565,7 +530,7 @@ write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'";
 
-  write_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  write_location(static_pointer_cast<decl_base>(decl), o);
   o << "/>";
 
   return true;
@@ -575,8 +540,6 @@ write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
 ///
 /// \param decl the reference_type_def to serialize.
 ///
-/// \param corpus the ABI corpus it belongs to.
-///
 /// \param ctxt the context of the serialization.
 ///
 /// \param indent the number of indentation white spaces to use.
@@ -584,7 +547,6 @@ write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
 /// \return true upon succesful completion, false otherwise.
 static bool
 write_reference_type_def(const shared_ptr<reference_type_def>	decl,
-			 const abi_corpus&			corpus,
 			 write_context&			ctxt,
 			 unsigned				indent)
 {
@@ -610,7 +572,7 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'";
 
-  write_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  write_location(static_pointer_cast<decl_base>(decl), o);
 
   o << "/>";
   return true;
@@ -620,8 +582,6 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
 ///
 /// \param decl the enum_type_decl to serialize.
 ///
-/// \param corpus the ABI corpus it belongs to.
-///
 /// \param ctxt the context of the serialization.
 ///
 /// \param indent the number of indentation white spaces to use.
@@ -629,7 +589,6 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
 /// \return true upon succesful completion, false otherwise.
 static bool
 write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
-		     const abi_corpus&			corpus,
 		     write_context&			ctxt,
 		     unsigned				indent)
 {
@@ -641,7 +600,7 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
   do_indent(o, indent);
   o << "<enum-decl name='" << decl->get_name() << "'";
 
-  write_location(static_pointer_cast<decl_base>(decl), corpus, o);
+  write_location(static_pointer_cast<decl_base>(decl), o);
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'>\n";
 
@@ -673,8 +632,6 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
 ///
 /// \param decl the typedef_decl to serialize.
 ///
-/// \param corpus the ABI corpus it belongs to.
-///
 /// \param ctxt the context of the serialization.
 ///
 /// \param indent the number of indentation white spaces to use.
@@ -682,7 +639,6 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
 /// \return true upon succesful completion, false otherwise.
 static bool
 write_typedef_decl(const shared_ptr<typedef_decl>	decl,
-		   const abi_corpus&			corpus,
 		   write_context&			ctxt,
 		   unsigned				indent)
 {
@@ -697,7 +653,7 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 
   o << " type-id='" << ctxt.get_id_for_type(decl->get_underlying_type()) << "'";
 
-  write_location(decl, corpus, o);
+  write_location(decl, o);
 
   o << " id='"
     << ctxt.get_id_for_type(decl)
@@ -710,8 +666,6 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 ///
 /// \param decl the var_decl to serialize.
 ///
-/// \param corpus the ABI corpus it belongs to.
-///
 /// \param ctxt the context of the serialization.
 ///
 /// \param indent the number of indentation white spaces to use.
@@ -719,7 +673,6 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 /// \return true upon succesful completion, false otherwise.
 static bool
 write_var_decl(const shared_ptr<var_decl>	decl,
-	       const abi_corpus&		corpus,
 	       write_context&			ctxt,
 	       unsigned			indent)
 {
@@ -742,7 +695,7 @@ write_var_decl(const shared_ptr<var_decl>	decl,
 
   write_binding(decl, o);
 
-  write_location(decl, corpus, o);
+  write_location(decl, o);
 
   o << "/>";
 

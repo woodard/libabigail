@@ -78,10 +78,10 @@ main()
     {
       string input_suffix(s->in_path);
       in_path = abigail::tests::get_src_dir() + "/tests/" + input_suffix;
-      abigail::abi_corpus corpus(input_suffix);
-      if (!abigail::reader::read_file(in_path, corpus))
+      abigail::translation_unit tu(input_suffix);
+      if (!abigail::reader::read_file(in_path, tu))
 	{
-	  cerr << "failed to read " << in_path;
+	  cerr << "failed to read " << in_path << "\n";
 	  is_ok = false;
 	  continue;
 	}
@@ -98,12 +98,12 @@ main()
       ofstream of(out_path.c_str(), std::ios_base::trunc);
       if (!of.is_open())
 	{
-	  cerr << "failed to read " << out_path;
+	  cerr << "failed to read " << out_path << "\n";
 	  is_ok = false;
 	  continue;
 	}
 
-      bool r = abigail::writer::write_to_ostream(corpus, of);
+      bool r = abigail::writer::write_to_ostream(tu, of);
       is_ok = (is_ok && r);
       of.close();
       string cmd = "diff -u " + in_path + " " + out_path;

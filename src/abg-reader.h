@@ -9,7 +9,7 @@ namespace abigail
 namespace reader
 {
 bool read_file(const std::string&	file_path,
-	       abi_corpus&		abi_corpus);
+	       translation_unit&	tu);
 
 }// end namespace reader
 }// end namespace abigail

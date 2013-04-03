@@ -88,7 +88,7 @@ public:
       // the scope of this decl.
       return cur_decl->get_scope();
     else
-      // We are at global scope.
+      // We have no scope set.
       return 0;
   }
 
@@ -99,6 +99,19 @@ public:
       return shared_ptr<decl_base>(static_cast<decl_base*>(0));
 
     return m_decls_stack.top();
+  }
+
+  translation_unit*
+  get_translation_unit()
+  {
+    global_scope* global = 0;
+    if (shared_ptr<decl_base> d = get_cur_decl ())
+      global = get_global_scope(d);
+
+    if (global)
+      return global->get_translation_unit();
+
+    return 0;
   }
 
   void
@@ -133,41 +146,32 @@ public:
   }
 
   /// This function must be called on each decl that is created during
-  /// the parsing.  It adds the decl to the current scope, make sure
-  /// it's part of the current corpus and updates the state of the
-  /// parsing context accordingly.
+  /// the parsing.  It adds the decl to the current scope, and updates
+  /// the state of the parsing context accordingly.
   ///
   /// \param decl the newly created decl.
-  ///
-  /// \param corpus the corpus the decl belongs to.
   void
-  finish_decl_creation(shared_ptr<decl_base>	decl,
-		       abi_corpus&		corpus)
+  finish_decl_creation(shared_ptr<decl_base>	decl)
   {
     add_decl_to_scope(decl, get_cur_scope());
-    if (!(decl->get_scope()))
-      corpus.add(decl);
     push_decl(decl);
   }
 
   /// This function must be called on each type decl that is created
-  /// during the parsing.  It adds the decl to the current scope, make
-  /// sure it's part of the current corpus and updates the state of
-  /// the parsing context accordingly.
+  /// during the parsing.  It adds the decl to the current scope and
+  /// updates the state of the parsing context accordingly.
   ///
   /// \param decl the newly created decl.
   ///
-  /// \param corpus the corpus the decl belongs to.
   bool
   finish_type_decl_creation(shared_ptr<type_base> t,
-			    const string& id,
-			    abi_corpus& corpus)
+			    const string& id)
   {
     shared_ptr<decl_base> decl = dynamic_pointer_cast<decl_base>(t);
     if (!decl)
       return false;
 
-    finish_decl_creation(decl, corpus);
+    finish_decl_creation(decl);
     add_type_decl(id, t);
     return true;
   }
@@ -182,27 +186,27 @@ private:
 
 static void	update_read_context(read_context&);
 static int	advance_cursor(read_context&);
-static bool	read_input(read_context&, abi_corpus&);
-static bool	read_location(read_context&, abi_corpus& , location&);
+static bool	read_input(read_context&, translation_unit&);
+static bool	read_location(read_context&, location&);
 static bool	read_visibility(read_context&, decl_base::visibility&);
 static bool	read_binding(read_context&, decl_base::binding&);
-static bool	handle_element(read_context&, abi_corpus&);
-static bool	handle_type_decl(read_context&, abi_corpus&);
-static bool	handle_namespace_decl(read_context&, abi_corpus&);
-static bool	handle_qualified_type_decl(read_context&, abi_corpus&);
-static bool	handle_pointer_type_def(read_context&, abi_corpus&);
-static bool	handle_reference_type_def(read_context&, abi_corpus&);
-static bool	handle_enum_type_decl(read_context&, abi_corpus&);
-static bool	handle_typedef_decl(read_context&, abi_corpus&);
-static bool	handle_var_decl(read_context&, abi_corpus&);
+static bool	handle_element(read_context&);
+static bool	handle_type_decl(read_context&);
+static bool	handle_namespace_decl(read_context&);
+static bool	handle_qualified_type_decl(read_context&);
+static bool	handle_pointer_type_def(read_context&);
+static bool	handle_reference_type_def(read_context&);
+static bool	handle_enum_type_decl(read_context&);
+static bool	handle_typedef_decl(read_context&);
+static bool	handle_var_decl(read_context&);
 
 bool
 read_file(const string&	file_path,
-	  abi_corpus&	corpus)
+	  translation_unit&	tu)
 {
   read_context read_ctxt(xml::new_reader_from_file(file_path));
 
-  return read_input(read_ctxt, corpus);
+  return read_input(read_ctxt, tu);
 }
 
 /// Updates the instance of read_context.  Basically update thee path
@@ -257,12 +261,12 @@ advance_cursor(read_context& ctxt)
 ///
 /// \param ctxt the current input context
 ///
-/// \param corpus the result of the parsing.
+/// \param tu the translation unit resulting from the parsing.
 ///
 /// \return true upon successful parsing, false otherwise.
 static bool
-read_input(read_context& ctxt,
-	   abi_corpus&   corpus)
+read_input(read_context&	ctxt,
+	   translation_unit&	tu)
 {
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
@@ -274,8 +278,15 @@ read_input(read_context& ctxt,
 				   BAD_CAST("abi-instr")))
     return false;
 
+  // We are at global scope, as we've just seen the top-most
+  // "abi-instr" element.
+  ctxt.push_decl(tu.get_global_scope());
+
   for (status = advance_cursor(ctxt);
-       status == 1;
+       (status == 1
+	// There must be at least one decl pushed in the context
+	// during the parsing.
+	&& ctxt.get_cur_decl());
        status = advance_cursor(ctxt))
     {
       xmlReaderTypes node_type = XML_READER_GET_NODE_TYPE(reader);
@@ -283,7 +294,7 @@ read_input(read_context& ctxt,
       switch (node_type)
 	{
 	case XML_READER_TYPE_ELEMENT:
-	  if (!handle_element(ctxt, corpus))
+	  if (!handle_element(ctxt))
 	    return false;
 	  break;
 	default:
@@ -299,16 +310,13 @@ read_input(read_context& ctxt,
 /// This function is called by #read_input.  It handles the current
 /// xml element node of the reading context.  The result of the
 /// "handling" is to build the representation of the xml node and tied
-/// it to the corpus.
+/// it to the current translation unit.
 ///
 /// \param ctxt the current parsing context.
 ///
-/// \param corpus the resulting ABI Corpus.
-///
 /// \return true upon successful completion, false otherwise.
 static bool
-handle_element(read_context&	ctxt,
-	       abi_corpus&	corpus)
+handle_element(read_context&	ctxt)
 {
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
@@ -316,28 +324,28 @@ handle_element(read_context&	ctxt,
 
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("namespace-decl")))
-    return handle_namespace_decl(ctxt, corpus);
+    return handle_namespace_decl(ctxt);
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("type-decl")))
-    return handle_type_decl(ctxt, corpus);
+    return handle_type_decl(ctxt);
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("qualified-type-def")))
-    return handle_qualified_type_decl(ctxt, corpus);
+    return handle_qualified_type_decl(ctxt);
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("pointer-type-def")))
-    return handle_pointer_type_def(ctxt, corpus);
+    return handle_pointer_type_def(ctxt);
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("reference-type-def")))
-    return handle_reference_type_def(ctxt, corpus);
+    return handle_reference_type_def(ctxt);
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("enum-decl")))
-    return handle_enum_type_decl(ctxt, corpus);
+    return handle_enum_type_decl(ctxt);
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("typedef-decl")))
-    return handle_typedef_decl(ctxt, corpus);
+    return handle_typedef_decl(ctxt);
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("var-decl")))
-    return handle_var_decl(ctxt, corpus);
+    return handle_var_decl(ctxt);
 
   return false;
 }
@@ -350,8 +358,10 @@ handle_element(read_context&	ctxt,
 ///
 /// \return true upon sucessful parsing, false otherwise.
 static bool
-read_location(read_context& ctxt, abi_corpus& corpus, location& loc)
+read_location(read_context& ctxt, location& loc)
 {
+  translation_unit& tu = *ctxt.get_translation_unit();
+
   xml::reader_sptr r = ctxt.get_reader();
   xml::xml_char_sptr f = XML_READER_GET_ATTRIBUTE(r, "filepath");
   if (!f)
@@ -365,7 +375,7 @@ read_location(read_context& ctxt, abi_corpus& corpus, location& loc)
   if (!l || !c)
     return false;
 
-  loc = corpus.get_loc_mgr().create_new_location
+  loc = tu.get_loc_mgr().create_new_location
     (reinterpret_cast<char*>(f.get()),
      atoi(reinterpret_cast<char*>(l.get())),
      atoi(reinterpret_cast<char*>(c.get())));
@@ -439,13 +449,9 @@ read_binding(read_context&		ctxt,
 ///
 /// \param ctxt the parsing context.
 ///
-/// \param corpus the ABI corpus the resulting in-memory
-/// representation is added to.
-///
 /// \return true upon successful parsing, false otherwise.
 static bool
-handle_type_decl(read_context& ctxt,
-		 abi_corpus&   corpus)
+handle_type_decl(read_context& ctxt)
 {
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
@@ -467,7 +473,7 @@ handle_type_decl(read_context& ctxt,
     alignment_in_bits = atoi(CHAR_STR(s));
 
   location loc;
-  read_location(ctxt, corpus, loc);
+  read_location(ctxt, loc);
 
   if (ctxt.get_type_decl(id))
     // Hugh?  How come a type which ID is supposed to be unique exist
@@ -477,19 +483,16 @@ handle_type_decl(read_context& ctxt,
   shared_ptr<type_base> decl(new type_decl(name, size_in_bits,
 					   alignment_in_bits,
 					   loc));
-  return ctxt.finish_type_decl_creation(decl, id, corpus);
+  return ctxt.finish_type_decl_creation(decl, id);
 }
 
 /// Parses 'namespace-decl' xml element.
 ///
 /// \param ctxt the parsing context.
 ///
-/// \param corpus the ABI corpus the resulting in-memory
-/// representation is added to.
-///
 /// \return true upon successful parsing, false otherwise.
 static bool
-handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
+handle_namespace_decl(read_context& ctxt)
 {
   xml::reader_sptr r = ctxt.get_reader();
   if (!r)
@@ -497,7 +500,7 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
 
   /// If we are not at global scope, then the current scope must
   /// itself be a namespace.
-  if (ctxt.get_cur_scope()
+  if (!is_global_scope(ctxt.get_cur_scope())
       && !dynamic_cast<namespace_decl*>(ctxt.get_cur_scope()))
     return false;
 
@@ -506,10 +509,10 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
       name = CHAR_STR(s);
 
   location loc;
-  read_location(ctxt, corpus, loc);
+  read_location(ctxt, loc);
 
   shared_ptr<decl_base> decl(new namespace_decl(name, loc));
-  ctxt.finish_decl_creation(decl, corpus);
+  ctxt.finish_decl_creation(decl);
   return true;
 }
 
@@ -517,12 +520,9 @@ handle_namespace_decl(read_context& ctxt, abi_corpus& corpus)
 ///
 /// \param ctxt the parsing context.
 ///
-/// \param corpus the ABI corpus the resulting in-memory
-/// representation is added to.
-///
 /// \return true upon successful parsing, false otherwise.
 static bool
-handle_qualified_type_decl(read_context& ctxt, abi_corpus& corpus)
+handle_qualified_type_decl(read_context& ctxt)
 {
  xml::reader_sptr r = ctxt.get_reader();
   if (!r)
@@ -564,23 +564,20 @@ handle_qualified_type_decl(read_context& ctxt, abi_corpus& corpus)
       static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_VOLATILE);
 
   location loc;
-  read_location(ctxt, corpus, loc);
+  read_location(ctxt, loc);
 
   shared_ptr<type_base> decl(new qualified_type_def(underlying_type,
 						    cv, loc));
-  return ctxt.finish_type_decl_creation(decl, id, corpus);
+  return ctxt.finish_type_decl_creation(decl, id);
 }
 
 /// Parse a pointer-type-decl element.
 ///
 /// \param ctxt the context of the parsing.
 ///
-/// \param corpus the ABI Corpus to augment with the result of the
-/// parsing.
-///
 /// \return true upon successful completion, false otherwise.
 static bool
-handle_pointer_type_def(read_context& ctxt, abi_corpus& corpus)
+handle_pointer_type_def(read_context& ctxt)
 {
    xml::reader_sptr r = ctxt.get_reader();
   if (!r)
@@ -607,23 +604,22 @@ handle_pointer_type_def(read_context& ctxt, abi_corpus& corpus)
     return false;
 
   location loc;
-  read_location(ctxt, corpus, loc);
+  read_location(ctxt, loc);
 
   shared_ptr<type_base> t(new pointer_type_def(pointed_to_type,
 					       size_in_bits,
 					       alignment_in_bits,
 					       loc));
-  return ctxt.finish_type_decl_creation(t, id, corpus);
+  return ctxt.finish_type_decl_creation(t, id);
 }
 
 /// Parse a reference-type-def element.
 ///
 /// \param ctxt the context of the parsing.
 ///
-/// \param corpus the corpus the resulting pointer to
 /// reference_type_def is added to.
 static bool
-handle_reference_type_def(read_context& ctxt, abi_corpus& corpus)
+handle_reference_type_def(read_context& ctxt)
 {
   xml::reader_sptr r = ctxt.get_reader();
   if (!r)
@@ -655,24 +651,21 @@ handle_reference_type_def(read_context& ctxt, abi_corpus& corpus)
     return false;
 
   location loc;
-  read_location(ctxt, corpus, loc);
+  read_location(ctxt, loc);
 
   shared_ptr<type_base> t(new reference_type_def(pointed_to_type,
 						 is_lvalue,
 						 size_in_bits,
 						 alignment_in_bits,
 						 loc));
-  return ctxt.finish_type_decl_creation(t, id, corpus);
+  return ctxt.finish_type_decl_creation(t, id);
 }
 
 /// Parse an enum-decl element.
 ///
 /// \param ctxt the context of the parsing.
-///
-/// \param corpus the corpus the resulting pointer to
-/// enum_type_decl is added to.
 static bool
-handle_enum_type_decl(read_context& ctxt, abi_corpus& corpus)
+handle_enum_type_decl(read_context& ctxt)
 {
   xml::reader_sptr r = ctxt.get_reader();
   if (!r)
@@ -731,21 +724,18 @@ handle_enum_type_decl(read_context& ctxt, abi_corpus& corpus)
     return false;
 
   location loc;
-  read_location(ctxt, corpus, loc);
+  read_location(ctxt, loc);
   shared_ptr<type_base> t(new enum_type_decl(name, loc,
 					     underlying_type,
 					     enumerators));
-  return ctxt.finish_type_decl_creation(t, id, corpus);
+  return ctxt.finish_type_decl_creation(t, id);
 }
 
 /// Parse a typedef-decl element.
 ///
 /// \param ctxt the context of the parsing.
-///
-/// \param corpus the corpus the resulting pointer to
-/// typedef_decl is added to.
 static bool
-handle_typedef_decl(read_context& ctxt, abi_corpus& corpus)
+handle_typedef_decl(read_context& ctxt)
 {
     xml::reader_sptr r = ctxt.get_reader();
   if (!r)
@@ -769,20 +759,18 @@ handle_typedef_decl(read_context& ctxt, abi_corpus& corpus)
     return false;
 
   location loc;
-  read_location(ctxt, corpus, loc);
+  read_location(ctxt, loc);
 
   shared_ptr<type_base> t(new typedef_decl(name, underlying_type, loc));
 
-  return ctxt.finish_type_decl_creation(t, id, corpus);
+  return ctxt.finish_type_decl_creation(t, id);
 }
 
 /// Parse a var-decl element.
-/// \param ctxt the context of the parsing.
 ///
-/// \param corpus the corpus the resulting pointer to
-/// var_decl is added to.
+/// \param ctxt the context of the parsing.
 static bool
-handle_var_decl(read_context& ctxt, abi_corpus& corpus)
+handle_var_decl(read_context& ctxt)
 {
   xml::reader_sptr r = ctxt.get_reader();
   if (!r)
@@ -810,12 +798,12 @@ handle_var_decl(read_context& ctxt, abi_corpus& corpus)
   read_binding(ctxt, bind);
 
   location locus;
-  read_location(ctxt, corpus, locus);
+  read_location(ctxt, locus);
 
   shared_ptr<decl_base> decl(new var_decl(name, underlying_type,
 					  locus, mangled_name,
 					  vis, bind));
-  ctxt.finish_decl_creation(decl, corpus);
+  ctxt.finish_decl_creation(decl);
 
   return true;
 }
