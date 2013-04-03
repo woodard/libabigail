@@ -1,4 +1,5 @@
 // -*- mode: C++ -*-
+/// @file
 
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
