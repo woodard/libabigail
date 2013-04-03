@@ -1,3 +1,6 @@
+// -*- mode: C++ -*-
+/// @file
+
 #include <vector>
 #include <utility>
 #include <algorithm>

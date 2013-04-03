@@ -1,4 +1,6 @@
 // -*- mode: C++ -*-
+/// @file
+
 #ifndef __ABG_READER_H__
 #define __ABG_READER_H__
 

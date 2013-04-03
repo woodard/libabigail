@@ -1,4 +1,6 @@
 // -*- Mode: C++ -*-
+/// @file
+
 #ifndef __ABG_CONFIG_H__
 #define __ABG_CONFIG_H__
 

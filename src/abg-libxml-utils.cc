@@ -1,4 +1,5 @@
 // -*- mode: C++ -*-
+/// @file
 
 #include <string>
 #include "abg-libxml-utils.h"

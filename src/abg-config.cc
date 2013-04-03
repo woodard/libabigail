@@ -1,4 +1,5 @@
-// -*- mode: C++ -*-
+// -*- Mode: C++ -*-
+/// @file
 
 #include "abg-config.h"
 

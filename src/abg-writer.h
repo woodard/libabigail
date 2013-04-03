@@ -1,4 +1,5 @@
 // -*- mode: C++ -*-
+/// @file
 
 #ifndef __ABG_WRITER_H__
 #define __ABG_WRITER_H__

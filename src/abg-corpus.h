@@ -1,4 +1,5 @@
-// -*- mode: c++ -*-
+// -*- mode: C++ -*-
+/// @file
 
 #ifndef __ABG_CORPUS_H__
 #define __ABG_CORPUS_H__

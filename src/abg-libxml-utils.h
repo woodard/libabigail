@@ -1,4 +1,5 @@
 // -*- mode: C++ -*-
+/// @file
 
 #include <tr1/memory>
 #include <libxml/xmlreader.h>

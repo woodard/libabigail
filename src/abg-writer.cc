@@ -1,4 +1,5 @@
 // -*- mode: C++ -*-
+/// @file
 
 #include <ostream>
 #include <sstream>

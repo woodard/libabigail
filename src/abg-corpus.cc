@@ -1,4 +1,5 @@
-// -*- mode: c++ -*-
+// -*- mode: C++ -*-
+/// @file
 
 #include "abg-corpus.h"
 

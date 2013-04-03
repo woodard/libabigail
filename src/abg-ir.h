@@ -1,4 +1,5 @@
 // -*- mode: C++ -*-
+/// @file
 
 #ifndef __ABG_IR_H__
 #define __ABG_IR_H__

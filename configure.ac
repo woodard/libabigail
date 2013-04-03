@@ -42,6 +42,7 @@ if test x$ABIGAIL_DEVEL != x; then
 fi
 
 AC_CONFIG_FILES([Makefile
+doc/Makefile
 src/Makefile
 tests/Makefile])
 

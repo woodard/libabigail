@@ -1,4 +1,5 @@
 // -*- mode: C++ -*-
+/// @file
 
 #ifndef __ABG_HASH_H__
 #define __ABG_HASH_H__

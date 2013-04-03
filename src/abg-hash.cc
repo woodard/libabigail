@@ -1,4 +1,5 @@
 // -*- mode: C++ -*-
+/// @file
 
 #include "abg-hash.h"
 
