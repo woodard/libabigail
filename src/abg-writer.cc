@@ -123,6 +123,7 @@ private:
 static bool write_translation_unit(const translation_unit&,
 				   write_context&,
 				   unsigned);
+static void write_location(location, translation_unit&, ostream&);
 static void write_location(const shared_ptr<decl_base>&, ostream&);
 static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
 static bool write_binding(const shared_ptr<decl_base>&, ostream&);
@@ -145,6 +146,8 @@ static bool write_typedef_decl(const shared_ptr<typedef_decl>,
 			       write_context&, unsigned);
 static bool write_var_decl(const shared_ptr<var_decl>,
 			   write_context&, unsigned);
+static bool write_function_decl(const shared_ptr<function_decl>,
+				write_context&, unsigned);
 static void	do_indent(ostream&, unsigned);
 
 /// Emit #nb_whitespaces white spaces into the output stream #o.
@@ -169,6 +172,33 @@ write_to_ostream(const translation_unit& tu,
   write_context ctxt(out);
 
   return write_translation_unit(tu, ctxt, /*indent=*/0);
+}
+
+/// Write a location to the output stream.
+///
+/// If the location is empty, nothing is written.
+///
+/// \param loc the location to consider.
+///
+/// \param tu the translation unit the location belongs to.
+///
+/// \param o the output stream to write to.
+static void
+write_location(location		loc,
+	       translation_unit&	tu,
+	       ostream&		o)
+{
+  if (!loc)
+    return;
+
+  string filepath;
+  unsigned line = 0, column = 0;
+
+  tu.get_loc_mgr().expand_location(loc, filepath, line, column);
+
+  o << " filepath='" << filepath << "'"
+    << " line='"     << line     << "'"
+    << " column='"   << column   << "'";
 }
 
 /// Write the location of a decl to the output stream.
@@ -260,9 +290,15 @@ write_binding(const shared_ptr<decl_base>&	decl,
 
   shared_ptr<var_decl> var =
     dynamic_pointer_cast<var_decl>(decl);
-
   if (var)
     bind = var->get_binding();
+  else
+    {
+      shared_ptr<function_decl> fun =
+	dynamic_pointer_cast<function_decl>(decl);
+      if (fun)
+	bind = fun->get_binding();
+    }
 
   string str;
   switch (bind)
@@ -319,7 +355,9 @@ write_decl(const shared_ptr<decl_base>	decl,
       || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(decl),
 			    ctxt, indent)
       || write_var_decl(dynamic_pointer_cast<var_decl>(decl),
-			ctxt, indent))
+			ctxt, indent)
+      || write_function_decl(dynamic_pointer_cast<function_decl>(decl),
+			     ctxt, indent))
     return true;
 
   return false;
@@ -699,6 +737,73 @@ write_var_decl(const shared_ptr<var_decl>	decl,
   write_location(decl, o);
 
   o << "/>";
+
+  return true;
+}
+
+/// Serialize a pointer to a function_decl.
+///
+/// \param decl the pointer to function_decl to serialize.
+///
+/// \param ctxt the context of the serialization.
+///
+/// \param indent the number of indentation white spaces to use.
+///
+/// \return true upon succesful completion, false otherwise.
+static bool
+write_function_decl(const shared_ptr<function_decl>	decl,
+		    write_context&			ctxt,
+		    unsigned				indent)
+{
+  if (!decl)
+    return false;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<function-decl name='" << decl->get_name() << "'";
+
+  if (!decl->get_mangled_name().empty())
+    o << " mangled-name='" << decl->get_mangled_name() << "'";
+
+  write_location(decl, o);
+
+  if (decl->is_declared_inline())
+    o << " declared-inline='yes'";
+
+  write_visibility(decl, o);
+
+  write_binding(decl, o);
+
+  o << ">\n";
+
+  std::list<shared_ptr<function_decl::parameter> >::const_iterator pi;
+  for (pi = decl->get_parameters().begin();
+       pi != decl->get_parameters().end();
+       ++pi)
+    {
+      do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+      o << "<parameter type-id='"
+	<< ctxt.get_id_for_type((*pi)->get_type())
+	<< "'";
+
+      if (!(*pi)->get_name().empty())
+	o << " name='" << (*pi)->get_name() << "'";
+
+      write_location((*pi)->get_location(), *get_translation_unit(decl), o);
+
+      o << "/>\n";
+    }
+
+  if (shared_ptr<type_base> return_type = decl->get_return_type())
+    {
+      do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+      o << "<return type-id='" << ctxt.get_id_for_type(return_type) << "'/>\n";
+    }
+
+  do_indent(o, indent);
+  o << "</function-decl>";
 
   return true;
 }

@@ -836,5 +836,95 @@ private:
   binding m_binding;
 };// end class var_decl
 
+/// Abstraction for a function declaration.
+class function_decl: public decl_base
+{
+public:
+
+  /// Abtraction for the parameter of a function.
+  class parameter
+  {
+  public:
+
+    parameter(const shared_ptr<type_base> type,
+	      std::string name,
+	      location loc)
+      : m_type(type),
+	m_name(name),
+	m_location(loc)
+    {}
+
+    const shared_ptr<type_base>
+    get_type()const
+    {return m_type;}
+
+    const std::string&
+    get_name() const
+    {return m_name;}
+
+    location
+    get_location() const
+    {return m_location;}
+
+  private:
+    shared_ptr<type_base> m_type;
+    std::string m_name;
+    location m_location;
+  };// end class function::parameter
+
+  function_decl
+  (const std::string&			name,
+   std::list<shared_ptr<parameter> >	parms,
+   shared_ptr<type_base>		return_type,
+   bool				declared_inline,
+   location				locus,
+   const std::string&			mangled_name = "",
+   visibility				vis = VISIBILITY_DEFAULT,
+   binding				bind = BINDING_GLOBAL)
+    : decl_base(name, locus, mangled_name, vis),
+      m_parms(parms),
+      m_return_type(return_type),
+      m_declared_inline(declared_inline),
+      m_binding(bind)
+  {}
+
+  const std::list<shared_ptr<parameter> >&
+  get_parameters() const
+  {return m_parms;}
+
+  void
+  add_parameter(shared_ptr<parameter> parm)
+  {m_parms.push_back(parm);}
+
+  void
+  add_parameters(std::list<shared_ptr<parameter> >parms)
+  {
+    for (std::list<shared_ptr<parameter> >::const_iterator i = parms.begin();
+	 i != parms.end();
+	 ++i)
+      m_parms.push_back(*i);
+  }
+
+  const shared_ptr<type_base>
+  get_return_type() const
+  {return m_return_type;}
+
+  bool
+  is_declared_inline() const
+  {return m_declared_inline;}
+
+  binding
+  get_binding() const
+  {return m_binding;}
+
+  virtual ~function_decl();
+
+private:
+  std::list<shared_ptr<parameter> > m_parms;
+  shared_ptr<type_base> m_return_type;
+  bool m_declared_inline;
+  decl_base::binding m_binding;
+};// end class function_decl
+
 } // end namespace abigail
 #endif // __ABG_IR_H__

@@ -849,4 +849,11 @@ var_decl::~var_decl()
 }
 
 // </var_decl definitions>
+
+// <function_decl definitions>
+function_decl::~function_decl()
+{
+}
+
+// <function_decl definitions>
 }//end namespace abigail

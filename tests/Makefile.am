@@ -28,4 +28,5 @@ $(h)/data/test-read-write/test4.xml	\
 $(h)/data/test-read-write/test5.xml	\
 $(h)/data/test-read-write/test6.xml	\
 $(h)/data/test-read-write/test7.xml	\
-$(h)/data/test-read-write/test8.xml
+$(h)/data/test-read-write/test8.xml	\
+$(h)/data/test-read-write/test9.xml

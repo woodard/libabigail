@@ -189,7 +189,10 @@ static void	update_read_context(read_context&);
 static int	advance_cursor(read_context&);
 static bool	read_input(read_context&, translation_unit&);
 static bool	read_location(read_context&, location&);
+static bool	read_location(read_context&, xmlNodePtr, location&);
 static bool	read_visibility(read_context&, decl_base::visibility&);
+static shared_ptr<function_decl::parameter>
+build_function_parameter (read_context&, const xmlNodePtr);
 static bool	read_binding(read_context&, decl_base::binding&);
 static bool	handle_element(read_context&);
 static bool	handle_type_decl(read_context&);
@@ -200,6 +203,7 @@ static bool	handle_reference_type_def(read_context&);
 static bool	handle_enum_type_decl(read_context&);
 static bool	handle_typedef_decl(read_context&);
 static bool	handle_var_decl(read_context&);
+static bool	handle_function_decl(read_context&);
 
 bool
 read_file(const string&	file_path,
@@ -347,6 +351,9 @@ handle_element(read_context&	ctxt)
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("var-decl")))
     return handle_var_decl(ctxt);
+  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		   BAD_CAST("function-decl")))
+    return handle_function_decl(ctxt);
 
   return false;
 }
@@ -380,6 +387,40 @@ read_location(read_context& ctxt, location& loc)
     (reinterpret_cast<char*>(f.get()),
      atoi(reinterpret_cast<char*>(l.get())),
      atoi(reinterpret_cast<char*>(c.get())));
+  return true;
+}
+
+/// Parses location attributes on an xmlNodePtr.
+///
+///\param ctxt the current parsing context
+///
+///\param loc the resulting location.
+///
+/// \return true upon sucessful parsing, false otherwise.
+static bool
+read_location(read_context&	ctxt,
+	      xmlNodePtr	node,
+	      location&	loc)
+{
+  string file_path;
+  size_t line = 0, column = 0;
+
+  if (xml_char_sptr f = xml::build_sptr(xmlGetProp(node, BAD_CAST("filepath"))))
+    file_path = CHAR_STR(f);
+
+  if (file_path.empty())
+    return false;
+
+  if (xml_char_sptr l = xml::build_sptr(xmlGetProp(node, BAD_CAST("line"))))
+    line = atoi(CHAR_STR(l));
+
+  if (xml_char_sptr c = xml::build_sptr(xmlGetProp(node, BAD_CAST("column"))))
+    column = atoi(CHAR_STR(c));
+
+  loc =
+    ctxt.get_translation_unit()->get_loc_mgr().create_new_location(file_path,
+								   line,
+								   column);
   return true;
 }
 
@@ -804,6 +845,106 @@ handle_var_decl(read_context& ctxt)
   shared_ptr<decl_base> decl(new var_decl(name, underlying_type,
 					  locus, mangled_name,
 					  vis, bind));
+  ctxt.finish_decl_creation(decl);
+
+  return true;
+}
+
+/// Build function parameter from an 'parameter' xml element node.
+///
+/// \param ctxt the contexte of the xml parsing.
+///
+/// \param node the xml 'parameter' element node to de-serialize from.
+static shared_ptr<function_decl::parameter>
+build_function_parameter (read_context& ctxt, const xmlNodePtr node)
+{
+  string type_id;
+  if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("type-id"))))
+    type_id = CHAR_STR(a);
+
+  shared_ptr<type_base> type = ctxt.get_type_decl(type_id);
+  if (!type)
+    return shared_ptr<function_decl::parameter>((function_decl::parameter*)0);
+
+  string name;
+  if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("name"))))
+    name = CHAR_STR(a);
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  shared_ptr<function_decl::parameter> p
+    (new function_decl::parameter(type, name, loc));
+
+  return p;
+}
+
+/// Parse a function-decl element.
+///
+/// \param ctxt the context of the parsing
+///
+/// \return true upon successful completion of the parsing, false
+/// otherwise.
+static bool
+handle_function_decl(read_context& ctxt)
+{
+  xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
+    return false;
+
+  string name;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
+    name = CHAR_STR(s);
+
+  string mangled_name;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "mangled-name"))
+    mangled_name = CHAR_STR(s);
+
+  string inline_prop;
+  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "declared-inline"))
+    inline_prop = CHAR_STR(s);
+  bool declared_inline = inline_prop == "yes" ? true : false;
+
+  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
+  read_visibility(ctxt, vis);
+
+  decl_base::binding bind = decl_base::BINDING_NONE;
+  read_binding(ctxt, bind);
+
+  location loc;
+  read_location(ctxt, loc);
+
+  xmlNodePtr node = xmlTextReaderExpand(r.get());
+  std::list<shared_ptr<function_decl::parameter> > parms;
+  shared_ptr<type_base> return_type;
+  for (xmlNodePtr n = node->children; n ; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      if (xmlStrEqual(n->name, BAD_CAST("parameter")))
+	{
+	  if (shared_ptr<function_decl::parameter> p =
+	      build_function_parameter(ctxt, n))
+	    parms.push_back(p);
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("return")))
+	{
+	  string type_id;
+	  if (xml_char_sptr s =
+	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
+	    type_id = CHAR_STR(s);
+	  if (!type_id.empty())
+	    return_type = ctxt.get_type_decl(type_id);
+	}
+    }
+  // now advance the xml reader cursor to the xml node after this
+  // expanded 'enum-decl' node.
+  xmlTextReaderNext(r.get());
+
+  shared_ptr<decl_base> decl(new function_decl(name, parms, return_type,
+					       declared_inline, loc,
+					       mangled_name, vis));
   ctxt.finish_decl_creation(decl);
 
   return true;
