@@ -732,7 +732,7 @@ handle_enum_type_decl(read_context& ctxt)
       if (n->type != XML_ELEMENT_NODE)
 	continue;
 
-      if (xmlStrEqual(n->name, BAD_CAST("base")))
+      if (xmlStrEqual(n->name, BAD_CAST("underlying-type")))
 	{
 	  xml_char_sptr a = xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id")));
 	  if (a)

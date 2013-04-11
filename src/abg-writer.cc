@@ -644,7 +644,7 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
   o << " id='" << ctxt.get_id_for_type(decl) << "'>\n";
 
   do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
-  o << "<base type-id='"
+  o << "<underlying-type type-id='"
     << ctxt.get_id_for_type(decl->get_underlying_type())
     << "'/>\n";
 

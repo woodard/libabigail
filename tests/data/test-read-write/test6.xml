@@ -1,7 +1,7 @@
 <abi-instr version='1.0'>
   <type-decl name='char' size-in-bits='8' alignment-in-bits='8' id='type-id-1'/>
   <enum-decl name='enum_foo' id='type-id-2'>
-    <base type-id='type-id-1'/>
+    <underlying-type type-id='type-id-1'/>
     <enumerator name='e0' value='0'/>
     <enumerator name='e1' value='1'/>
     <enumerator name='e2' value='2'/>
@@ -10,7 +10,7 @@
   <namespace-decl name='foo'>
     <type-decl name='int32' size-in-bits='32' alignment-in-bits='32' id='type-id-3'/>
     <enum-decl name='enum_foo' id='type-id-4'>
-      <base type-id='type-id-3'/>
+      <underlying-type type-id='type-id-3'/>
       <enumerator name='e0' value='0'/>
       <enumerator name='e1' value='1'/>
       <enumerator name='e2' value='2'/>
