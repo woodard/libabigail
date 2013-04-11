@@ -249,9 +249,8 @@ class scope_decl : public decl_base
 public:
   scope_decl(const std::string& name,
 	     location		locus,
-	     const std::string& mangled_name = "",
 	     visibility	vis = VISIBILITY_DEFAULT)
-    : decl_base(name, locus, mangled_name, vis)
+    : decl_base(name, locus, /*mangled_name=*/"", vis)
   {}
 
 
@@ -466,8 +465,7 @@ public:
 		  size_t			size_in_bits,
 		  size_t			alignment_in_bits,
 		  location			locus,
-		  const std::string&		mangled_name = "",
-		  visibility			visiblity = VISIBILITY_DEFAULT);
+		  visibility			vis = VISIBILITY_DEFAULT);
 
   virtual bool
   operator==(const scope_type_decl&) const;
@@ -808,7 +806,7 @@ class var_decl : public decl_base
 public:
 
   var_decl(const std::string&		name,
-	   shared_ptr<type_base>&	type,
+	   shared_ptr<type_base>	type,
 	   location			locus,
 	   const std::string&		mangled_name,
 	   visibility			vis = VISIBILITY_DEFAULT,
@@ -835,6 +833,23 @@ private:
   shared_ptr<type_base> m_type;
   binding m_binding;
 };// end class var_decl
+
+/// Hasher for a var_decl type.
+struct var_decl_hash
+{
+  size_t
+  operator()(const var_decl& t) const
+  {
+    hash<string> hash_string;
+    decl_base_hash hash_decl;
+    type_shared_ptr_hash hash_type_ptr;
+
+    size_t v = hash_string(typeid(t).name());
+    v = hashing::combine_hashes(v, hash_decl(t));
+    v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
+    return v;
+  }
+};// end struct var_decl_hash
 
 /// Abstraction for a function declaration.
 class function_decl: public decl_base
@@ -866,11 +881,26 @@ public:
     get_location() const
     {return m_location;}
 
+    bool
+    operator==(const parameter& o) const
+    {return *get_type() == *o.get_type();}
+
   private:
     shared_ptr<type_base> m_type;
     std::string m_name;
     location m_location;
   };// end class function::parameter
+
+  /// Hasher for an instance of function::parameter
+  struct parameter_hash
+  {
+    size_t
+    operator()(const parameter& p) const
+    {
+      type_shared_ptr_hash hash_type_ptr;
+      return hash_type_ptr(p.get_type());
+    }
+  };//end struct parameter_hash
 
   function_decl
   (const std::string&			name,
@@ -917,6 +947,9 @@ public:
   get_binding() const
   {return m_binding;}
 
+  virtual bool
+  operator==(const function_decl& o) const;
+
   virtual ~function_decl();
 
 private:
@@ -925,6 +958,458 @@ private:
   bool m_declared_inline;
   decl_base::binding m_binding;
 };// end class function_decl
+
+/// Hasher for function_decl
+struct function_decl_hash
+{
+  size_t
+  operator()(const function_decl& t) const
+  {
+    hash<int> hash_int;
+    hash<bool> hash_bool;
+    hash<string> hash_string;
+    function_decl::parameter_hash hash_parm;
+    type_shared_ptr_hash hash_type_ptr;
+
+    size_t v = hash_string(typeid(t).name());
+    v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
+    for (std::list<shared_ptr<function_decl::parameter> >::const_iterator p =
+	   t.get_parameters().begin();
+	 p != t.get_parameters().end();
+	 ++p)
+      v = hashing::combine_hashes(v, hash_parm(**p));
+
+    v = hashing::combine_hashes(v, hash_bool(t.is_declared_inline()));
+    v = hashing::combine_hashes(v, hash_int(t.get_binding()));
+
+    return v;
+  }
+};// end function_decl_hash
+
+/// Abstracts a class declaration.
+class class_decl : public scope_type_decl
+{
+  // Forbidden
+  class_decl();
+
+public:
+
+  enum access_specifier
+  {
+    private_access,
+    protected_access,
+    public_access,
+  };//end enum access_specifier
+
+  /// The base class for member types, data members and member
+  /// functions.  Its purpose is to mainly to carry the access
+  /// specifier (and possibly other properties that might be shared by
+  /// all class members) for the member.
+  class member : scope_decl
+  {
+    // Forbidden
+    member();
+  public:
+
+    member(access_specifier a)
+      : scope_decl("", location(), VISIBILITY_NONE),
+	m_access(a)
+    {}
+
+    access_specifier
+    get_access_specifier() const
+    {return m_access;}
+
+    bool
+    operator==(const member& o)
+    {return get_access_specifier() == o.get_access_specifier();}
+
+  private:
+    enum access_specifier m_access;
+  };//end class member.
+
+  /// Hasher for a class_decl::member
+  struct member_hash
+  {
+    size_t
+    operator()(const member& m) const
+    {
+      hash<int> hash_int;
+      return hash_int(m.get_access_specifier());
+    }
+  };// struct member_hash
+
+  /// Abstracts a member type declaration.
+  class member_type : public member
+  {
+    //Forbidden
+    member_type();
+
+  public:
+
+    member_type(shared_ptr<type_base> t,
+		access_specifier access)
+      : member(access),
+	m_type(t)
+    {
+    }
+
+    bool
+    operator==(const member_type& o) const
+    {
+      return (*get_type() == *o.get_type()
+	      && static_cast<member>(*this) == o);
+    }
+
+    operator shared_ptr<type_base>() const
+    {return m_type;}
+
+    shared_ptr<type_base>
+    get_type() const
+    {return m_type;}
+
+  private:
+    shared_ptr<type_base> m_type;
+  };//end class member_type
+
+  /// A hash functor for instances class_decl::member_type.
+  struct member_type_hash
+  {
+    size_t
+    operator()(const member_type& t)const
+    {
+      member_hash hash_member;
+      type_shared_ptr_hash hash_type;
+
+      size_t v = hash_member(t);
+      v = hashing::combine_hashes(v, hash_type(t.get_type()));
+      return v;
+    }
+  };// end struct member_type_hash
+
+  /// Abstraction of a base specifier in a class declaration.
+  class base_spec : public member
+  {
+
+    // Forbidden
+    base_spec();
+
+  public:
+
+    base_spec(shared_ptr<class_decl> base,
+	      access_specifier a)
+      : member(a),
+	m_base_class(base)
+    {}
+
+    const shared_ptr<class_decl>
+    get_base_class() const
+    {return m_base_class;}
+
+    bool
+    operator==(const base_spec& other) const
+    {
+      return (static_cast<member>(*this) == other
+	      && *get_base_class() == *other.get_base_class());
+    }
+
+  private:
+    shared_ptr<class_decl> m_base_class;
+  };// end class base_spec
+
+  /// A hashing functor for instances of class_decl::base_spec.
+  struct base_spec_hash
+  {
+    size_t
+    operator()(const base_spec& t) const
+    {
+      member_hash hash_member;
+      type_shared_ptr_hash hash_type_ptr;
+
+      size_t v = hash_member(t);
+      v = hashing::combine_hashes(v, hash_type_ptr(t.get_base_class()));
+      return v;
+    }
+  };// end struct base_spec_hash
+
+  /// Abstract a data member declaration in a class declaration.
+  class data_member : public var_decl, public member
+  {
+    // Forbidden
+    data_member();
+
+  public:
+
+    data_member(shared_ptr<var_decl> data_member,
+		access_specifier access,
+		bool is_laid_out,
+		bool is_static,
+		size_t offset_in_bits)
+      : var_decl(data_member->get_name(),
+		 data_member->get_type(),
+		 data_member->get_location(),
+		 data_member->get_mangled_name(),
+		 data_member->get_visibility(),
+		 data_member->get_binding()),
+	member(access),
+	m_is_laid_out(is_laid_out),
+	m_is_static(is_static),
+	m_offset_in_bits(offset_in_bits)
+    {}
+
+    data_member(const std::string&	name,
+		shared_ptr<type_base>&	type,
+		access_specifier access,
+		location		locus,
+		const std::string&	mangled_name,
+		visibility		vis,
+		binding		bind,
+		bool			is_laid_out,
+		bool			is_static,
+		size_t			offset_in_bits)
+      : var_decl(name, type, locus, mangled_name, vis, bind),
+	member(access),
+	m_is_laid_out(is_laid_out),
+	m_is_static(is_static),
+	m_offset_in_bits(offset_in_bits)
+    {}
+
+    bool
+    is_laid_out() const
+    {return m_is_laid_out;}
+
+    bool
+    is_static() const
+    {return m_is_static;}
+
+    size_t
+    get_offset_in_bits() const
+    {return m_offset_in_bits;}
+
+    bool
+    operator==(const data_member& other) const
+    {
+      return (is_laid_out() == other.is_laid_out()
+	      && is_static() == other.is_static()
+	      && get_offset_in_bits() == other.get_offset_in_bits()
+	      && static_cast<var_decl>(*this) ==other
+	      && static_cast<member>(*this) == other);
+    }
+
+  private:
+    bool m_is_laid_out;
+    bool m_is_static;
+    size_t m_offset_in_bits;
+  };// end class data_member
+
+  /// Hasher for a data_member.
+  struct data_member_hash
+  {
+    size_t
+    operator()(data_member& t)
+    {
+      hash<size_t> hash_size_t;
+      var_decl_hash hash_var_decl;
+      member_hash hash_member;
+
+      size_t v = hash_member(t);
+      v = hashing::combine_hashes(v, hash_var_decl(t));
+      if (t.is_laid_out())
+	v = hashing::combine_hashes(v, hash_size_t(t.get_offset_in_bits()));
+      v = hashing::combine_hashes(v, t.is_static());
+
+      return v;
+    }
+  };// end struct data_member_hash
+
+  /// Abstracts a member function declaration in a class declaration.
+  class member_function : public function_decl, public member
+  {
+    // Forbidden
+    member_function();
+
+  public:
+
+    member_function
+    (const std::string&		name,
+     std::list<shared_ptr<parameter> >	parms,
+     shared_ptr<type_base>		return_type,
+     access_specifier			access,
+     bool				declared_inline,
+     location				locus,
+     const std::string&		mangled_name,
+     visibility			vis,
+     binding				bind,
+     size_t				vtable_offset_in_bits,
+     bool				is_static,
+     bool				is_constructor,
+     bool				is_destructor,
+     bool				is_const)
+      : function_decl(name, parms, return_type, declared_inline,
+		      locus, mangled_name, vis, bind),
+      member(access),
+      m_vtable_offset_in_bits(vtable_offset_in_bits),
+      m_is_static(is_static),
+      m_is_constructor(is_constructor),
+      m_is_destructor(is_destructor),
+      m_is_const(is_const)
+    {}
+
+    member_function(shared_ptr<function_decl>	fn,
+		    access_specifier		access,
+		    size_t			vtable_offset_in_bits,
+		    bool			is_static,
+		    bool			is_constructor,
+		    bool			is_destructor,
+		    bool			is_const)
+      : function_decl(fn->get_name(),
+		      fn->get_parameters(),
+		      fn->get_return_type(),
+		      fn->is_declared_inline(),
+		      fn->get_location(),
+		      fn->get_mangled_name(),
+		      fn->get_visibility(),
+		      fn->get_binding()),
+	member(access),
+	m_vtable_offset_in_bits(vtable_offset_in_bits),
+      m_is_static(is_static),
+      m_is_constructor(is_constructor),
+      m_is_destructor(is_destructor),
+      m_is_const(is_const)
+    {}
+
+    size_t
+    get_vtable_offset_in_bits() const
+    {return m_vtable_offset_in_bits;}
+
+    bool
+    is_static() const
+    {return m_is_static;}
+
+    bool
+    is_constructor() const
+    {return m_is_constructor;}
+
+    bool
+    is_destructor() const
+    {return m_is_destructor;}
+
+    bool
+    is_const() const
+    {return m_is_const;}
+
+    bool
+    operator==(const member_function& o) const
+    {
+      return (get_vtable_offset_in_bits() == o.get_vtable_offset_in_bits()
+	      && is_static() == o.is_static()
+	      && is_constructor() == o.is_constructor()
+	      && is_destructor() == o.is_destructor()
+	      && is_const() == o.is_const()
+	      && static_cast<member>(*this) == o
+	      && static_cast<function_decl>(*this) == o);
+    }
+
+  private:
+    size_t m_vtable_offset_in_bits;
+    bool m_is_static;
+    bool m_is_constructor;
+    bool m_is_destructor;
+    bool m_is_const;
+  };// end class member_function
+
+  /// A hashing functor for instances of class_decl::member_function.
+  struct member_function_hash
+  {
+    size_t
+    operator()(const member_function& t) const
+    {
+      hash<bool> hash_bool;
+      hash<size_t> hash_size_t;
+      member_hash hash_member;
+      function_decl_hash hash_fn;
+
+      size_t v = hash_member(t);
+      v = hashing::combine_hashes(v, hash_fn(t));
+      v = hashing::combine_hashes(v, hash_bool(t.is_static()));
+      v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
+      v = hashing::combine_hashes(v, hash_bool(t.is_const()));
+
+      if (!t.is_static() && !t.is_constructor())
+	v = hashing::combine_hashes(v,
+				    hash_size_t(t.get_vtable_offset_in_bits()));
+
+      return v;
+    }
+  };// end struct member_function_hash
+
+  class_decl(const std::string&				name,
+	     size_t						size_in_bits,
+	     size_t						align_in_bits,
+	     location						locus,
+	     visibility					vis,
+	     const std::list<shared_ptr<base_spec> >&		bases,
+	     const std::list<shared_ptr<member_type> >&	member_types,
+	     const std::list<shared_ptr<data_member> >&	data_members,
+	     const std::list<shared_ptr<member_function> >&	member_fns)
+    : scope_type_decl(name, size_in_bits, align_in_bits,
+		      locus, vis),
+    m_bases(bases),
+    m_member_types(member_types),
+    m_data_members(data_members),
+    m_member_functions(member_fns)
+  {}
+
+  void
+  add_base_specifier(shared_ptr<base_spec> b)
+  {m_bases.push_back(b);}
+
+  const std::list<shared_ptr<base_spec> >&
+  get_base_specifiers() const
+  {return m_bases;}
+
+  void
+  add_member_type(shared_ptr<member_type>t)
+  {m_member_types.push_back(t);}
+
+  const std::list<shared_ptr<member_type> >&
+  get_member_types() const
+  {return m_member_types;}
+
+  void
+  add_data_member(shared_ptr<data_member> m)
+  {m_data_members.push_back(m);}
+
+  const std::list<shared_ptr<data_member> >&
+  get_data_members() const
+  {return m_data_members;}
+
+  void
+  add_member_function(shared_ptr<member_function> m)
+  {m_member_functions.push_back(m);}
+
+  const std::list<shared_ptr<member_function> >&
+  get_member_functions() const
+  {return m_member_functions;}
+
+  virtual bool
+  operator==(const class_decl&) const;
+
+  virtual ~class_decl();
+
+private:
+  std::list<shared_ptr<base_spec> > m_bases;
+  std::list<shared_ptr<member_type> > m_member_types;
+  std::list<shared_ptr<data_member> > m_data_members;
+  std::list<shared_ptr<member_function> > m_member_functions;
+};// end class class_decl
+
+/// Hasher for the class_decl type
+struct class_decl_hash
+{
+  size_t operator()(const class_decl& t) const;
+
+};//end struct class_decl_hash
 
 } // end namespace abigail
 #endif // __ABG_IR_H__

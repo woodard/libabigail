@@ -38,5 +38,26 @@ build_sptr<xmlChar>(xmlChar *p)
   return shared_ptr<xmlChar>(p, charDeleter());
 }
 
+/// Return the depth of an xml element node.
+///
+/// Note that the node must be attached to an XML document.
+///
+/// \param n the xml to consider.
+///
+/// \return a positive or zero number for an XML node properly
+/// attached to an xml document, -1 otherwise.  Note that the function
+/// returns -1 if passed an xml document as well.
+int
+get_xml_node_depth(xmlNodePtr n)
+{
+  if (n->type == XML_DOCUMENT_NODE || n->parent == NULL)
+    return -1;
+
+  if (n->parent->type == XML_DOCUMENT_NODE)
+    return 0;
+
+  return 1 + get_xml_node_depth(n->parent);
+}
+
 }//end namespace xml
 }//end namespace abigail

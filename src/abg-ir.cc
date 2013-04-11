@@ -10,6 +10,7 @@
 #include "abg-ir.h"
 
 using std::string;
+using std::list;
 using std::tr1::dynamic_pointer_cast;
 
 namespace abigail
@@ -465,9 +466,8 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 				 size_t			size_in_bits,
 				 size_t			alignment_in_bits,
 				 location			locus,
-				 const std::string&		mangled_name,
 				 visibility			vis)
-  :scope_decl(name, locus, mangled_name, vis),
+  :scope_decl(name, locus, vis),
    type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -497,7 +497,7 @@ scope_type_decl::~scope_type_decl()
 namespace_decl::namespace_decl(const std::string&	name,
 			       location		locus,
 			       visibility		vis)
-  : scope_decl(name, locus, name, vis)
+  : scope_decl(name, locus, vis)
 {
 }
 
@@ -591,7 +591,7 @@ qualified_type_def::get_underlying_type() const
 
 /// A hashing function for type declarations.
 ///
-/// This function gets the dynamic type of the actualy type
+/// This function gets the dynamic type of the actual type
 /// declaration and calls the right hashing function for that type.
 ///
 /// Note that each time a new type declaration kind is added to the
@@ -605,8 +605,6 @@ dynamic_type_hash::operator()(const type_base* t) const
 {
   if (const type_decl* d = dynamic_cast<const type_decl*> (t))
     return type_decl_hash()(*d);
-  if (const scope_type_decl* d = dynamic_cast<const scope_type_decl*>(t))
-    return scope_type_decl_hash()(*d);
   if (const qualified_type_def* d = dynamic_cast<const qualified_type_def*>(t))
     return qualified_type_def_hash()(*d);
   if (const pointer_type_def* d = dynamic_cast<const pointer_type_def*>(t))
@@ -617,6 +615,10 @@ dynamic_type_hash::operator()(const type_base* t) const
     return enum_type_decl_hash()(*d);
   if (const typedef_decl* d = dynamic_cast<const typedef_decl*>(t))
     return typedef_decl_hash()(*d);
+  if (const class_decl* d = dynamic_cast<const class_decl*>(t))
+    return class_decl_hash()(*d);
+  if (const scope_type_decl* d = dynamic_cast<const scope_type_decl*>(t))
+    return scope_type_decl_hash()(*d);
 
   // Poor man's fallback case.
   return type_base_hash()(*t);
@@ -825,7 +827,7 @@ typedef_decl::~typedef_decl()
 // <var_decl definitions>
 
 var_decl::var_decl(const std::string&		name,
-		   shared_ptr<type_base>&	type,
+		   shared_ptr<type_base>	type,
 		   location			locus,
 		   const std::string&		mangled_name,
 		   visibility			vis,
@@ -851,9 +853,139 @@ var_decl::~var_decl()
 // </var_decl definitions>
 
 // <function_decl definitions>
+
+bool
+function_decl::operator==(const function_decl& o) const
+{
+
+  // Compare function return types.
+  shared_ptr<type_base> r0 = get_return_type(), r1 = o.get_return_type();
+  if ((r0 && r1 && *r0 != *r1)
+      || !!r0 != !!r1)
+    return false;
+
+  // Compare function parameters.
+  list<shared_ptr<parameter> >::const_iterator p0, p1;
+  for (p0 = get_parameters().begin(), p1 = o.get_parameters().begin();
+       p0 != get_parameters().end(), p1 != o.get_parameters().end();
+       ++p0, ++p1)
+    {
+      if (**p0 != **p1)
+	return false;
+    }
+  if (p0 != get_parameters().end() || p1 != o.get_parameters().end())
+    return false;
+
+  // Compare the remaining properties
+  if (is_declared_inline() != o.is_declared_inline()
+      || get_binding() != o.get_binding())
+    return false;
+
+  return true;
+}
+
 function_decl::~function_decl()
 {
 }
 
 // <function_decl definitions>
+
+// <class_decl definitions>
+bool
+class_decl::operator==(const class_decl& o) const
+{
+  // Compare bases.
+  list<shared_ptr<class_decl::base_spec> >::const_iterator b0, b1;
+  for(b0 = get_base_specifiers().begin(), b1 = o.get_base_specifiers().begin();
+      b0 != get_base_specifiers().end() && b1 != o.get_base_specifiers().end();
+      ++b0, ++b1)
+      if (**b0 != **b1)
+	return false;
+  if (b0 != get_base_specifiers().end() || b1 != o.get_base_specifiers().end())
+    return false;
+
+  //Compare member types
+  list<shared_ptr<class_decl::member_type> >::const_iterator t0, t1;
+  for (t0 = get_member_types().begin(), t1 = o.get_member_types().begin();
+       t0 != get_member_types().end() && t1 != o.get_member_types().end();
+       ++t0, ++t1)
+    if (**t0 != **t1)
+      return false;
+  if (t0 != get_member_types().end() || t1 != o.get_member_types().end())
+    return false;
+
+  //compare data_members
+  list<shared_ptr<class_decl::data_member> >::const_iterator d0, d1;
+  for (d0 = get_data_members().begin(), d1 = o.get_data_members().begin();
+       d0 != get_data_members().end() && d1 != o.get_data_members().end();
+       ++d0, ++d1)
+    if (**d0 != **d1)
+      return false;
+  if (d0 != get_data_members().end() || d1 != o.get_data_members().end())
+    return false;
+
+  //compare member functions
+  list<shared_ptr<class_decl::member_function> >::const_iterator f0, f1;
+  for (f0 = get_member_functions().begin(),
+	 f1 = o.get_member_functions().begin();
+       f0 != get_member_functions().end(), f1 != o.get_member_functions().end();
+       ++f0, ++f1)
+    if (**d0 != **d1)
+      return false;
+  if (f0 != get_member_functions().end()
+      || f1 != o.get_member_functions().end())
+    return false;
+
+  return true;
+}
+
+class_decl::~class_decl()
+{
+}
+
+size_t
+class_decl_hash::operator()(const class_decl& t) const
+{
+  hash<string> hash_string;
+  scope_type_decl_hash hash_scope_type;
+  class_decl::base_spec_hash hash_base;
+  class_decl::member_type_hash hash_member_type;
+  class_decl::data_member_hash hash_data_member;
+  class_decl::member_function_hash hash_member_fn;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_scope_type(t));
+
+  // Hash bases.
+  for (std::list<shared_ptr<class_decl::base_spec> >::const_iterator b =
+	 t.get_base_specifiers().begin();
+       b != t.get_base_specifiers().end();
+       ++b)
+    v = hashing::combine_hashes(v, hash_base(**b));
+
+  // Hash member types.
+  for (std::list<shared_ptr<class_decl::member_type> >::const_iterator ti =
+	 t.get_member_types().begin();
+       ti != t.get_member_types().end();
+       ++ti)
+    v = hashing::combine_hashes(v, hash_member_type(**ti));
+
+  // Hash data members.
+  for (std::list<shared_ptr<class_decl::data_member> >::const_iterator d =
+	 t.get_data_members().begin();
+       d != t.get_data_members().end();
+       ++d)
+    v = hashing::combine_hashes(v, hash_data_member(**d));
+
+  // Hash member_function
+  for (std::list<shared_ptr<class_decl::member_function> > ::const_iterator f =
+	 t.get_member_functions().begin();
+       f != t.get_member_functions().end();
+       ++f)
+    v = hashing::combine_hashes(v, hash_member_fn(**f));
+
+  return v;
+}
+
+// </class_decl
 }//end namespace abigail

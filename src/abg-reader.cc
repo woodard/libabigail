@@ -165,8 +165,8 @@ public:
   /// \param decl the newly created decl.
   ///
   bool
-  finish_type_decl_creation(shared_ptr<type_base> t,
-			    const string& id)
+  finish_type_decl_creation(shared_ptr<type_base>	t,
+			    const string&		id)
   {
     shared_ptr<decl_base> decl = dynamic_pointer_cast<decl_base>(t);
     if (!decl)
@@ -186,14 +186,56 @@ private:
 };//end class read_context
 
 static void	update_read_context(read_context&);
+static void	update_read_context(read_context&, xmlNodePtr);
+static void	update_depth_info_of_read_context(read_context&, int);
 static int	advance_cursor(read_context&);
 static bool	read_input(read_context&, translation_unit&);
 static bool	read_location(read_context&, location&);
 static bool	read_location(read_context&, xmlNodePtr, location&);
 static bool	read_visibility(read_context&, decl_base::visibility&);
+static bool	read_visibility(xmlNodePtr, decl_base::visibility&);
+static bool	read_binding(read_context&, decl_base::binding&);
+static bool	read_binding(xmlNodePtr, decl_base::binding&);
+static bool	read_access(xmlNodePtr, class_decl::access_specifier&);
+static bool	read_size_and_alignment(xmlNodePtr, size_t&, size_t&);
+static bool	read_static(xmlNodePtr, bool&);
+static bool	read_var_offset_in_bits(xmlNodePtr, size_t&);
+static bool	read_cdtor_const(xmlNodePtr, bool&, bool&, bool&);
+
+// <build a c++ class  from an instance of xmlNodePtr>
+//
+// Note that whenever a new function to build a type is added here,
+// you should make sure to call it from the build_type function, which
+// should be the last function of the list of declarated function below.
 static shared_ptr<function_decl::parameter>
 build_function_parameter (read_context&, const xmlNodePtr);
-static bool	read_binding(read_context&, decl_base::binding&);
+static shared_ptr<function_decl>
+build_function_decl(read_context&, const xmlNodePtr);
+static shared_ptr<var_decl>
+build_var_decl(read_context&, const xmlNodePtr);
+static shared_ptr<type_decl>
+build_type_decl(read_context&, const xmlNodePtr);
+static shared_ptr<qualified_type_def>
+build_qualified_type_decl(read_context&, const xmlNodePtr);
+static shared_ptr<pointer_type_def>
+build_pointer_type_def(read_context&, const xmlNodePtr);
+static shared_ptr<reference_type_def>
+build_reference_type_def(read_context&, const xmlNodePtr);
+static shared_ptr<enum_type_decl>
+build_enum_type_decl(read_context&, const xmlNodePtr);
+static shared_ptr<typedef_decl>
+build_typedef_decl(read_context&, const xmlNodePtr);
+static shared_ptr<class_decl>
+build_class_decl(read_context&, const xmlNodePtr);
+
+// Please make this build_type function be the last one of the list.
+// Note that it should call each type-building function above.  So
+// please make sure to update it accordingly, whenever a new
+// type-building function is added here.
+static shared_ptr<type_base>
+build_type(read_context&, const xmlNodePtr);
+// </build a c++ class  from an instance of xmlNodePtr>
+
 static bool	handle_element(read_context&);
 static bool	handle_type_decl(read_context&);
 static bool	handle_namespace_decl(read_context&);
@@ -204,6 +246,7 @@ static bool	handle_enum_type_decl(read_context&);
 static bool	handle_typedef_decl(read_context&);
 static bool	handle_var_decl(read_context&);
 static bool	handle_function_decl(read_context&);
+static bool	handle_class_decl(read_context&);
 
 bool
 read_file(const string&	file_path,
@@ -218,6 +261,8 @@ read_file(const string&	file_path,
 /// of elements from the root to the current element, that we maintain
 /// to know the current scope.  This function needs to be called after
 /// each call to xmlTextReaderRead.
+///
+/// \param ctxt the context to update.
 static void
 update_read_context(read_context& ctxt)
 {
@@ -228,21 +273,69 @@ update_read_context(read_context& ctxt)
 
   // Update the depth of the current reader cursor in the reader
   // context.
-  int depth = xmlTextReaderDepth(reader.get()),
-    ctxt_depth = ctxt.get_depth();
+  int depth = xmlTextReaderDepth(reader.get());
+  update_depth_info_of_read_context(ctxt, depth);
+}
 
-  if (depth > ctxt_depth)
+/// Updates the instance of read_context, from an instance of xmlNode.
+/// Basically update thee path of elements from the root to the
+/// current element, that we maintain to know the current scope.  This
+/// function needs to be called each time a build_xxx builds an C++
+/// from an xmlNodePtr.
+static void
+update_read_context(read_context& ctxt, xmlNodePtr node)
+{
+  if (node->type != XML_ELEMENT_NODE)
+    return;
+
+  int depth = xml::get_xml_node_depth(node);
+
+  if (depth >= 0)
+    update_depth_info_of_read_context(ctxt, depth);
+}
+
+/// Helper function used by update_read_context.
+///
+/// Updates the depth information maintained in the read_context.
+/// Updates the stack of IR node we maintain to know our current
+/// context.
+static void
+update_depth_info_of_read_context(read_context& ctxt, int new_depth)
+{
+  int ctxt_depth = ctxt.get_depth();
+
+  if (new_depth > ctxt_depth)
     // we went down the tree.  There is nothing to do until we
     // actually parse the new element.
     ;
-  else if (depth <= ctxt_depth)
+  else if (new_depth <= ctxt_depth)
     {
       // we went up the tree or went to a sibbling
-      for (int nb = ctxt_depth - depth + 1; nb; --nb)
-	ctxt.pop_decl();
+      for (int nb = ctxt_depth - new_depth + 1; nb; --nb)
+	{
+	  shared_ptr<decl_base> d = ctxt.pop_decl();
+
+	  /// OK, this is a hack needed because the libxml reader
+	  /// interface doesn't provide us with a reliable way to know
+	  /// when we read the end of an XML element.
+	  if (d
+	      && dynamic_cast<class_decl*>(d->get_scope())
+	      && nb > 2)
+	    // This means we logically poped out at least a member of
+	    // a class (i.e, during the xml parsing, we went up so
+	    // that we got out of an e.g, member-type, data-member or
+	    // member-function xml element.  The issue is that there
+	    // are two nested XML elment in that case (e.g,
+	    // data-member -> var-decl) to represent just one concrete
+	    // c++ type (e.g, the var_decl that is in the class_decl
+	    // scope).  So libxml reports that we should pop two *XML*
+	    // elements, but we should only pop one *C++* instance
+	    // from our stack.
+	    nb--;
+	}
     }
 
-  ctxt.set_depth(depth);
+  ctxt.set_depth(new_depth);
 }
 
 /// Moves the xmlTextReader cursor to the next xml node in the input
@@ -354,6 +447,9 @@ handle_element(read_context&	ctxt)
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("function-decl")))
     return handle_function_decl(ctxt);
+  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		   BAD_CAST("class-decl")))
+    return handle_class_decl(ctxt);
 
   return false;
 }
@@ -456,6 +552,35 @@ read_visibility(read_context&		ctxt,
   return false;
 }
 
+/// Parse the visibility attribute.
+///
+/// \param node the xml node to read from.
+///
+/// \param vis the resulting visibility.
+///
+/// \return true upon successful completion, false otherwise.
+static bool
+read_visibility(xmlNodePtr node, decl_base::visibility& vis)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "visibility"))
+    {
+      string v = CHAR_STR(s);
+
+      if (v == "default")
+	vis = decl_base::VISIBILITY_DEFAULT;
+      else if (v == "hidden")
+	vis = decl_base::VISIBILITY_HIDDEN;
+      else if (v == "internal")
+	vis = decl_base::VISIBILITY_INTERNAL;
+      else if (v == "protected")
+	vis = decl_base::VISIBILITY_PROTECTED;
+      else
+	vis = decl_base::VISIBILITY_DEFAULT;
+      return true;
+    }
+  return false;
+}
+
 /// Parse the "binding" attribute on the current element.
 ///
 /// \param ctxt the context to use for the parsing.
@@ -485,6 +610,885 @@ read_binding(read_context&		ctxt,
     }
 
   return false;
+}
+
+/// Parse the "binding" attribute on the current element.
+///
+/// \param ctxt the context to use for the parsing.
+///
+/// \param node the xml node to build parse the bind from.
+///
+/// \param bind the resulting binding attribute.
+///
+/// \return true upon successful completion, false otherwise.
+static bool
+read_binding(xmlNodePtr node, decl_base::binding& bind)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "binding"))
+    {
+      string b = CHAR_STR(s);
+
+      if (b == "global")
+	bind = decl_base::BINDING_GLOBAL;
+      else if (b == "local")
+	bind = decl_base::BINDING_LOCAL;
+      else if (b == "weak")
+	bind = decl_base::BINDING_WEAK;
+      else
+	bind = decl_base::BINDING_GLOBAL;
+      return true;
+    }
+
+  return false;
+}
+
+/// Read the 'access' attribute on the current xml node.
+///
+/// \param node the xml node to consider.
+///
+/// \param the access attribute.  Set iff the function returns true.
+///
+/// \return true upon sucessful completion, false otherwise.
+static bool
+read_access(xmlNodePtr node, class_decl::access_specifier& access)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "access"))
+    {
+      string a = CHAR_STR(s);
+
+      if (a == "private")
+	access = class_decl::private_access;
+      else if (a == "protected")
+	access = class_decl::protected_access;
+      else if (a == "public")
+	access = class_decl::public_access;
+      else
+	access = class_decl::private_access;
+
+      return true;
+    }
+  return false;
+}
+
+/// Parse 'size-in-bits' and 'alignment-in-bits' attributes of a given
+/// xmlNodePtr reprensting an xml element.
+///
+/// \param node the xml element node to consider.
+///
+/// \param size_in_bits the resulting value for the 'size-in-bits'
+/// attribute.  This set only if this function returns true and the if
+/// the attribute was present on the xml element node.
+///
+/// \param align_in_bits the resulting value for the
+/// 'alignment-in-bits' attribute.  This set only if this function
+/// returns true and the if the attribute was present on the xml
+/// element node.
+///
+/// \return true if either one of the two attributes above were set,
+/// false otherwise.
+static bool
+read_size_and_alignment(xmlNodePtr node,
+			size_t& size_in_bits,
+			size_t& align_in_bits)
+{
+
+  bool got_something = false;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
+    {
+      size_in_bits = atoi(CHAR_STR(s));
+      got_something = true;
+    }
+
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
+    {
+      align_in_bits = atoi(CHAR_STR(s));
+      got_something = true;
+    }
+  return got_something;
+}
+
+/// Parse the 'static' attribute of a given xml element node.
+///
+/// \param node the xml element node to consider.
+///
+/// \param is_static the resulting the parsing.  Is set if the
+/// function returns true.
+///
+/// \return true if the xml element node has the 'static' attribute
+/// set, false otherwise.
+static bool
+read_static(xmlNodePtr node, bool& is_static)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "static"))
+    {
+      string b = CHAR_STR(s);
+      is_static = (b == "yes") ? true : false;
+      return true;
+    }
+  return false;
+}
+
+/// Parse the 'layout-offset-in-bits' attribute of a given xml element node.
+///
+/// \param offset_in_bits set to true if the element node contains the
+/// attribute.
+///
+/// \return true iff the xml element node contain$s the attribute.
+static bool
+read_var_offset_in_bits(xmlNodePtr	node,
+			size_t&	offset_in_bits)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "layout-offset-in-bits"))
+    {
+      offset_in_bits = atoi(CHAR_STR(s));
+      return true;
+    }
+  return false;
+}
+
+/// Parse the 'constructor', 'destructor' and 'const' attribute of a
+/// given xml node.
+///
+/// \param is_constructor the resulting value of the parsing of the
+/// 'constructor' attribute.  Is set if the xml node contains the
+/// attribute and if the function returns true.
+///
+/// \param is_destructor the resulting value of the parsing of the
+/// 'destructor' attribute.  Is set if the xml node contains the
+/// attribute and if the function returns true.
+///
+/// \param is_const the resulting value of the parsing of the 'const'
+/// attribute.  Is set if the xml node contains the attribute and if
+/// the function returns true.
+///
+/// \return true if at least of the attributes above is set, false
+/// otherwise.
+///
+/// Note that callers of this function should initialize
+/// #is_constructor, is_destructor and is_const prior to passing them
+/// to this function.
+static bool
+read_cdtor_const(xmlNodePtr	node,
+		 bool&		is_constructor,
+		 bool&		is_destructor,
+		 bool&		is_const)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "constructor"))
+    {
+      string b = CHAR_STR(s);
+      if (b == "yes")
+	is_constructor = true;
+      else
+	is_constructor = false;
+
+      return true;
+    }
+
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "destructor"))
+    {
+      string b = CHAR_STR(s);
+      if (b == "yes")
+	is_destructor = true;
+      else
+	is_destructor = false;
+
+      return true;
+    }
+
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is_const"))
+    {
+      string b = CHAR_STR(s);
+      if (b == "yes")
+	is_const = true;
+      else
+	is_const = false;
+
+      return true;
+    }
+
+  return false;
+}
+
+/// Build a function parameter from a 'parameter' xml element node.
+///
+/// \param ctxt the contexte of the xml parsing.
+///
+/// \param node the xml 'parameter' element node to de-serialize from.
+static shared_ptr<function_decl::parameter>
+build_function_parameter(read_context& ctxt, const xmlNodePtr node)
+{
+  shared_ptr<function_decl::parameter> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("parameter")))
+    return nil;
+
+  string type_id;
+  if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("type-id"))))
+    type_id = CHAR_STR(a);
+
+  shared_ptr<type_base> type = ctxt.get_type_decl(type_id);
+  if (!type)
+    return nil;
+
+  string name;
+  if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("name"))))
+    name = CHAR_STR(a);
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  shared_ptr<function_decl::parameter> p
+    (new function_decl::parameter(type, name, loc));
+
+  return p;
+}
+
+/// Build a function_decl from a 'function-decl' xml node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the function_decl from.
+///
+/// \return a pointer to a newly created function_decl upon successful
+/// completion, a null pointer otherwise.
+static shared_ptr<function_decl>
+build_function_decl(read_context&	ctxt,
+		    const xmlNodePtr	node)
+{
+  shared_ptr<function_decl> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("function-decl")))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  string mangled_name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "mangled-name"))
+    mangled_name = CHAR_STR(s);
+
+  string inline_prop;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "declared-inline"))
+    inline_prop = CHAR_STR(s);
+  bool declared_inline = inline_prop == "yes" ? true : false;
+
+  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
+  read_visibility(node, vis);
+
+  decl_base::binding bind = decl_base::BINDING_NONE;
+  read_binding(node, bind);
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  std::list<shared_ptr<function_decl::parameter> > parms;
+  shared_ptr<type_base> return_type;
+  for (xmlNodePtr n = node->children; n ; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      if (xmlStrEqual(n->name, BAD_CAST("parameter")))
+	{
+	  if (shared_ptr<function_decl::parameter> p =
+	      build_function_parameter(ctxt, n))
+	    parms.push_back(p);
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("return")))
+	{
+	  string type_id;
+	  if (xml_char_sptr s =
+	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
+	    type_id = CHAR_STR(s);
+	  if (!type_id.empty())
+	    return_type = ctxt.get_type_decl(type_id);
+	}
+    }
+
+   shared_ptr<function_decl> decl(new function_decl(name, parms, return_type,
+						    declared_inline, loc,
+						    mangled_name, vis));
+   update_read_context(ctxt, node);
+   ctxt.finish_decl_creation(decl);
+
+  return decl;
+}
+
+/// Build pointer to var_decl from a 'var-decl' xml Node
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the var_decl from.
+///
+/// \return a pointer to a newly built var_decl upon successful
+/// completion, a null pointer otherwise.
+static shared_ptr<var_decl>
+build_var_decl(read_context& ctxt, const xmlNodePtr node)
+{
+  shared_ptr<var_decl> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("var-decl")))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+  shared_ptr<type_base> underlying_type = ctxt.get_type_decl(type_id);
+  if (!underlying_type)
+    return nil;
+
+  string mangled_name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "mangled-name"))
+    mangled_name = CHAR_STR(s);
+
+  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
+  read_visibility(node, vis);
+
+  decl_base::binding bind = decl_base::BINDING_NONE;
+  read_binding(node, bind);
+
+  location locus;
+  read_location(ctxt, node, locus);
+
+  shared_ptr<var_decl> decl(new var_decl(name, underlying_type,
+					 locus, mangled_name,
+					 vis, bind));
+  update_read_context(ctxt, node);
+  ctxt.finish_decl_creation(decl);
+
+  return decl;
+}
+
+/// Build a type_decl from a "type-decl" XML Node.
+///
+/// \param cxt the context of the parsing.
+///
+/// \param node the XML node to build the type_decl from.
+///
+/// \return a pointer to type_decl upon successful completion, a null
+/// pointer otherwise.
+static shared_ptr<type_decl>
+build_type_decl(read_context&		ctxt,
+		const xmlNodePtr	node)
+{
+  if (!xmlStrEqual(node->name, BAD_CAST("type-decl")))
+    return shared_ptr<type_decl>((type_decl*)0);
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+
+  size_t size_in_bits= 0;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
+    size_in_bits = atoi(CHAR_STR(s));
+
+  size_t alignment_in_bits = 0;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
+    alignment_in_bits = atoi(CHAR_STR(s));
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  if (ctxt.get_type_decl(id))
+    // Hugh?  How come a type which ID is supposed to be unique exist
+    // already?  Bail out!
+    return shared_ptr<type_decl>((type_decl*)0);
+
+  shared_ptr<type_decl> decl(new type_decl(name, size_in_bits,
+					   alignment_in_bits,
+					   loc));
+  update_read_context(ctxt, node);
+  if (ctxt.finish_type_decl_creation(decl, id))
+    return decl;
+
+  return shared_ptr<type_decl>((type_decl*)0);
+}
+
+/// Build a qualified_type_def from a 'qualified-type-def' xml node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the qualified_type_def from.
+///
+/// \return a pointer to a newly built qualified_type_def upon
+/// successful completion, a null pointer otherwise.
+static shared_ptr<qualified_type_def>
+build_qualified_type_decl(read_context& ctxt,
+			  const xmlNodePtr node)
+{
+  if (!xmlStrEqual(node->name, BAD_CAST("qualified-type-def")))
+    return shared_ptr<qualified_type_def>((qualified_type_def*)0);
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+
+  shared_ptr<type_base> underlying_type = ctxt.get_type_decl(type_id);
+  if (!underlying_type)
+    // The type-id must point to a pre-existing type.
+    return shared_ptr<qualified_type_def>((qualified_type_def*)0);
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE (node, "id"))
+    id = CHAR_STR(s);
+
+  if (id.empty() || ctxt.get_type_decl(id))
+    // We should have an id and it should be a new one.
+    return shared_ptr<qualified_type_def>((qualified_type_def*)0);
+
+  string const_str;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "const"))
+    const_str = CHAR_STR(s);
+  bool const_cv = const_str == "yes" ? true : false;
+
+  string volatile_str;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "volatile"))
+    volatile_str = CHAR_STR(s);
+  bool volatile_cv = volatile_str == "yes" ? true : false;
+
+  qualified_type_def::CV cv = qualified_type_def::CV_NONE;
+  if (const_cv)
+    cv =
+      static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_CONST);
+  if (volatile_cv)
+    cv =
+      static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_VOLATILE);
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  shared_ptr<qualified_type_def> decl(new qualified_type_def(underlying_type,
+							     cv, loc));
+  update_read_context(ctxt, node);
+  if (ctxt.finish_type_decl_creation(decl, id))
+    return decl;
+
+  return shared_ptr<qualified_type_def>((qualified_type_def*)0);
+}
+
+/// Build a pointer_type_def from a 'pointer-type-def' xml node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the pointer_type_def from.
+///
+/// \return a pointer to a newly built pointer_type_def upon
+/// successful completion, a null pointer otherwise.
+static shared_ptr<pointer_type_def>
+build_pointer_type_def(read_context&	ctxt,
+		       const xmlNodePtr node)
+{
+
+  shared_ptr<pointer_type_def> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("poihnter-type-def")))
+    return nil;
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+
+  shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
+  if (!pointed_to_type)
+    shared_ptr<pointer_type_def>((pointer_type_def*)0);
+
+  size_t size_in_bits = 0, alignment_in_bits = 0;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
+    size_in_bits = atoi(CHAR_STR(s));
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
+    alignment_in_bits = atoi(CHAR_STR(s));
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  if (id.empty() || ctxt.get_type_decl(id))
+    return nil;
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  shared_ptr<pointer_type_def> t(new pointer_type_def(pointed_to_type,
+						      size_in_bits,
+						      alignment_in_bits,
+						      loc));
+  update_read_context(ctxt, node);
+  if (ctxt.finish_type_decl_creation(t, id))
+    return t;
+
+  return nil;
+}
+
+/// Build a reference_type_def from a pointer to 'reference-type-def'
+/// xml node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the reference_type_def from.
+///
+/// \return a pointer to a newly built reference_type_def upon
+/// successful completio, a null pointer otherwise.
+static shared_ptr<reference_type_def>
+build_reference_type_def(read_context&		ctxt,
+			 const xmlNodePtr	node)
+{
+  shared_ptr<reference_type_def> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("reference-type-def")))
+    return nil;
+
+  string kind;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "kind"))
+    kind = CHAR_STR(s); // this should be either "lvalue" or "rvalue".
+  bool is_lvalue = kind == "lvalue" ? true : false;
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+
+  shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
+  if (!pointed_to_type)
+    return nil;
+
+  size_t size_in_bits = 0, alignment_in_bits = 0;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
+    size_in_bits = atoi(CHAR_STR(s));
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
+    alignment_in_bits = atoi(CHAR_STR(s));
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  if (id.empty() || ctxt.get_type_decl(id))
+    return nil;
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  shared_ptr<reference_type_def> t(new reference_type_def(pointed_to_type,
+							  is_lvalue,
+							  size_in_bits,
+							  alignment_in_bits,
+							  loc));
+  update_read_context(ctxt, node);
+  if (ctxt.finish_type_decl_creation(t, id))
+    return t;
+
+  return nil;
+}
+
+/// Build an enum_type_decl from an 'enum-type-decl' xml node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the enum_type_decl from.
+///
+/// \return a pointer to a newly built enum_type_decl upon successful
+/// completion, a null pointer otherwise.
+static shared_ptr<enum_type_decl>
+build_enum_type_decl(read_context&	ctxt,
+		     const xmlNodePtr	node)
+{
+  shared_ptr<enum_type_decl> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("enum-decl")))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+
+  if (id.empty() || ctxt.get_type_decl(id))
+    return nil;
+
+  string base_type_id;
+  std::list<enum_type_decl::enumerator> enumerators;
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      if (xmlStrEqual(n->name, BAD_CAST("underlying-type")))
+	{
+	  xml_char_sptr a = xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id")));
+	  if (a)
+	    base_type_id = CHAR_STR(a);
+	  continue;
+	}
+
+      if (xmlStrEqual(n->name, BAD_CAST("enumerator")))
+	{
+	  string name;
+	  size_t value = 0;
+
+	  xml_char_sptr a = xml::build_sptr(xmlGetProp(n, BAD_CAST("name")));
+	  if (a)
+	    name = CHAR_STR(a);
+
+	  a = xml::build_sptr(xmlGetProp(n, BAD_CAST("value")));
+	  if (a)
+	    value = atoi(CHAR_STR(a));
+
+	  enumerators.push_back(enum_type_decl::enumerator(name, value));
+	}
+    }
+
+  shared_ptr<type_base> underlying_type = ctxt.get_type_decl(base_type_id);
+  if (!underlying_type)
+    return nil;
+
+  location loc;
+  read_location(ctxt, node, loc);
+  shared_ptr<enum_type_decl> t(new enum_type_decl(name, loc,
+						  underlying_type,
+						  enumerators));
+  update_read_context(ctxt, node);
+  if (ctxt.finish_type_decl_creation(t, id))
+    return t;
+
+  return nil;
+}
+
+/// Build a typedef_decl from a 'typedef-decl' xml node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the typedef_decl from.
+///
+/// \return a pointer to a newly built typedef_decl upon successful
+/// completion, a null pointer otherwise.
+static shared_ptr<typedef_decl>
+build_typedef_decl(read_context&	ctxt,
+		   const xmlNodePtr	node)
+{
+  shared_ptr<typedef_decl> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("typedef-decl")))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+  shared_ptr<type_base> underlying_type(ctxt.get_type_decl(type_id));
+  if (!underlying_type)
+    return nil;
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  if (id.empty() || ctxt.get_type_decl(id))
+    return nil;
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  shared_ptr<typedef_decl> t(new typedef_decl(name, underlying_type, loc));
+
+  update_read_context(ctxt, node);
+  if (ctxt.finish_type_decl_creation(t, id))
+    return t;
+
+  return nil;
+}
+
+static shared_ptr<class_decl>
+build_class_decl(read_context&		ctxt,
+		 const xmlNodePtr	node)
+{
+  shared_ptr<class_decl> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("class-decl")))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  size_t size_in_bits = 0, alignment_in_bits = 0;
+  read_size_and_alignment(node, size_in_bits, alignment_in_bits);
+
+  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
+  read_visibility(node, vis);
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+
+  if (id.empty() || ctxt.get_type_decl(id))
+    return nil;
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  std::list<shared_ptr<class_decl::member_type> > member_types;
+  std::list<shared_ptr<class_decl::data_member> > data_members;
+  std::list<shared_ptr<class_decl::member_function> > member_functions;
+  std::list<shared_ptr<class_decl::base_spec> > bases;
+
+  shared_ptr<class_decl> decl(new class_decl(name, size_in_bits,
+					     alignment_in_bits,
+					     loc, vis, bases,
+					     member_types,
+					     data_members,
+					     member_functions));
+  // No need to call update_read_context(ctxt, node) here, as it as
+  // already been called for this class-decl node by advance_cursor.
+  if (!ctxt.finish_type_decl_creation(decl, id))
+    return nil;
+
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      if (xmlStrEqual(n->name, BAD_CAST("base-class")))
+	{
+	  class_decl::access_specifier access = class_decl::private_access;
+	  read_access(n, access);
+
+	  string type_id;
+	  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(n, "type-id"))
+	    type_id = CHAR_STR(s);
+	  shared_ptr<class_decl> b =
+	    dynamic_pointer_cast<class_decl>(ctxt.get_type_decl(type_id));
+	  if (!b)
+	    return nil;
+	  shared_ptr<class_decl::base_spec> base
+	    (new class_decl::base_spec(b, access));
+	  decl->add_base_specifier(base);
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("member-type")))
+	{
+	  class_decl::access_specifier access = class_decl::private_access;
+	  read_access(n, access);
+
+	  for (xmlNodePtr p = n->children; p; p = p->next)
+	    {
+	      if (p->type != XML_ELEMENT_NODE)
+		continue;
+
+	      if (shared_ptr<type_base> t =
+		  build_type(ctxt, p))
+		{
+		  shared_ptr<class_decl::member_type> m
+		    (new class_decl::member_type(t, access));
+
+		  decl->add_member_type(m);
+		}
+	    }
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("data-member")))
+	{
+	  class_decl::access_specifier access = class_decl::private_access;
+	  read_access(n, access);
+
+	  bool is_laid_out = false;
+	  size_t offset_in_bits = 0;
+	  if (read_var_offset_in_bits(n, offset_in_bits))
+	    is_laid_out = true;
+
+	  bool is_static = false;
+	  read_static(n, is_static);
+
+	  for (xmlNodePtr p = n->children; p; p = p->next)
+	    {
+	      if (p->type != XML_ELEMENT_NODE)
+		continue;
+
+	      if (shared_ptr<var_decl> v =
+		  build_var_decl(ctxt, p))
+		{
+		  shared_ptr<class_decl::data_member> m
+		    (new class_decl::data_member(v, access,
+						 is_laid_out,
+						 is_static,
+						 offset_in_bits));
+
+		  decl->add_data_member(m);
+		}
+	    }
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("member-function")))
+	{
+	  class_decl::access_specifier access = class_decl::private_access;
+	  read_access(n, access);
+
+	  size_t vtable_offset = 0;
+	  if (xml_char_sptr s =
+	      XML_NODE_GET_ATTRIBUTE(n, "vtable-offset-in-bits"))
+	    vtable_offset = atoi(CHAR_STR(s));
+
+	  bool is_static = false;
+	  read_static(n, is_static);
+
+	  bool is_ctor = false, is_dtor = false, is_const = false;
+	  read_cdtor_const(n, is_ctor, is_dtor, is_const);
+
+	  for (xmlNodePtr p = n->children; p; p = p->next)
+	    {
+	      if (p->type != XML_ELEMENT_NODE)
+		continue;
+
+	      if (shared_ptr<function_decl> f =
+		  build_function_decl(ctxt, p))
+		{
+		  shared_ptr<class_decl::member_function> m
+		    (new class_decl::member_function(f, access,
+						     vtable_offset,
+						     is_static,
+						     is_ctor, is_dtor,
+						     is_const));
+
+		  decl->add_member_function(m);
+		}
+	    }
+	}
+    }
+
+  return decl;
+}
+
+/// Build a type from an xml node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the type_base from.
+///
+/// \return a pointer to the newly built type_base upon successful
+/// completion, a null pointer otherwise.
+static shared_ptr<type_base>
+build_type(read_context& ctxt, const xmlNodePtr node)
+{
+  shared_ptr<type_base> t;
+
+  if ((t = build_type_decl(ctxt, node))
+      || (t = build_qualified_type_decl(ctxt, node))
+      || (t = build_pointer_type_def(ctxt, node))
+      || (t = build_reference_type_def(ctxt, node))
+      || (t = build_enum_type_decl(ctxt, node))
+      || (t = build_typedef_decl(ctxt, node))
+      || (t = build_class_decl(ctxt, node)))
+    {
+      ;// t is set now.
+    }
+
+  return t;
 }
 
 /// Parses 'type-decl' xml element.
@@ -850,35 +1854,6 @@ handle_var_decl(read_context& ctxt)
   return true;
 }
 
-/// Build function parameter from an 'parameter' xml element node.
-///
-/// \param ctxt the contexte of the xml parsing.
-///
-/// \param node the xml 'parameter' element node to de-serialize from.
-static shared_ptr<function_decl::parameter>
-build_function_parameter (read_context& ctxt, const xmlNodePtr node)
-{
-  string type_id;
-  if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("type-id"))))
-    type_id = CHAR_STR(a);
-
-  shared_ptr<type_base> type = ctxt.get_type_decl(type_id);
-  if (!type)
-    return shared_ptr<function_decl::parameter>((function_decl::parameter*)0);
-
-  string name;
-  if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("name"))))
-    name = CHAR_STR(a);
-
-  location loc;
-  read_location(ctxt, node, loc);
-
-  shared_ptr<function_decl::parameter> p
-    (new function_decl::parameter(type, name, loc));
-
-  return p;
-}
-
 /// Parse a function-decl element.
 ///
 /// \param ctxt the context of the parsing
@@ -948,6 +1923,30 @@ handle_function_decl(read_context& ctxt)
   ctxt.finish_decl_creation(decl);
 
   return true;
+}
+
+/// Parse a 'class-decl' xml element.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \return true upon successful completion of the parsing, false
+/// otherwise.
+static bool
+handle_class_decl(read_context& ctxt)
+{
+  xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
+    return false;
+
+  xmlNodePtr node = xmlTextReaderExpand(r.get());
+  if (!node)
+    return false;
+
+  shared_ptr<class_decl> decl = build_class_decl(ctxt, node);
+
+  xmlTextReaderNext(r.get());
+
+  return decl;
 }
 
 }//end namespace reader

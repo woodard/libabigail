@@ -64,6 +64,10 @@ InOutSpec in_out_specs[] =
     "data/test-read-write/test9.xml",
     "output/test-read-write/test9.xml"
   },
+  {
+    "data/test-read-write/test10.xml",
+    "output/test-read-write/test10.xml"
+  },
   // This should be the last entry.
   {NULL, NULL}
 };

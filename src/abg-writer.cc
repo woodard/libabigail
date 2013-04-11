@@ -127,9 +127,11 @@ static void write_location(location, translation_unit&, ostream&);
 static void write_location(const shared_ptr<decl_base>&, ostream&);
 static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
 static bool write_binding(const shared_ptr<decl_base>&, ostream&);
+static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
+static void write_access(class_decl::access_specifier, ostream&);
+static void write_access(shared_ptr<class_decl::member>, ostream&);
 static bool write_decl(const shared_ptr<decl_base>,
-		       write_context&,
-		       unsigned);
+		       write_context&, unsigned);
 static bool write_type_decl(const shared_ptr<type_decl>,
 			    write_context&, unsigned);
 static bool write_namespace_decl(const shared_ptr<namespace_decl>,
@@ -148,7 +150,11 @@ static bool write_var_decl(const shared_ptr<var_decl>,
 			   write_context&, unsigned);
 static bool write_function_decl(const shared_ptr<function_decl>,
 				write_context&, unsigned);
+static bool write_class_decl(const shared_ptr<class_decl>,
+			     write_context&, unsigned);
 static void	do_indent(ostream&, unsigned);
+static void	do_indent_to_level(write_context&, unsigned, unsigned);
+static unsigned get_indent_to_level(write_context&, unsigned, unsigned);
 
 /// Emit #nb_whitespaces white spaces into the output stream #o.
 void
@@ -156,6 +162,40 @@ do_indent(ostream& o, unsigned nb_whitespaces)
 {
   for (unsigned i = 0; i < nb_whitespaces; ++i)
     o << ' ';
+}
+
+/// Indent #initial_indent + level number of xml element indentation.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param initial_indent the initial number of white space to indent to.
+///
+/// \param level the number of indentation level to indent to.
+static void
+do_indent_to_level(write_context&	ctxt,
+		   unsigned		initial_indent,
+		   unsigned		level)
+{
+  do_indent(ctxt.get_ostream(),
+	    get_indent_to_level(ctxt, initial_indent, level));
+}
+
+/// Return the number of white space of indentation that
+/// #do_indent_to_level would have used.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param initial_indent the initial number of white space to indent to.
+///
+/// \param level the number of indentation level to indent to.
+static unsigned
+get_indent_to_level(write_context& ctxt,
+		    unsigned initial_indent,
+		    unsigned level)
+{
+    int nb_ws = initial_indent +
+      level * ctxt.get_config().get_xml_element_indent();
+    return nb_ws;
 }
 
 /// Serialize a translation_unit into an output stream.
@@ -322,6 +362,67 @@ write_binding(const shared_ptr<decl_base>&	decl,
   return true;
 }
 
+/// Serialize the size and alignment attributes of a given type.
+///
+/// \param decl the type to consider.
+///
+/// \param o the output stream to serialize to.
+static void
+write_size_and_alignment(const shared_ptr<type_base> decl,
+			 ostream& o)
+{
+  size_t size_in_bits = decl->get_size_in_bits();
+  if (size_in_bits)
+    o << " size-in-bits='" << size_in_bits << "'";
+
+  size_t alignment_in_bits = decl->get_alignment_in_bits();
+  if (alignment_in_bits)
+    o << " alignment-in-bits='" << alignment_in_bits << "'";
+}
+
+/// Serialize the access specifier.
+///
+/// \param a the access specifier to serialize.
+///
+/// \param o the output stream to serialize it to.
+static void
+write_access(class_decl::access_specifier a, ostream& o)
+{
+  string access_str = "private";
+
+  switch (a)
+    {
+    case class_decl::private_access:
+      access_str = "private";
+      break;
+
+    case class_decl::protected_access:
+      access_str = "protected";
+      break;
+
+    case class_decl::public_access:
+      access_str = "public";
+      break;
+
+    default:
+      break;
+    }
+
+  o << " access='" << access_str << "'";
+}
+
+/// Serialize the access specifier of a class member.
+///
+/// \param member a pointer to the class member to consider.
+///
+/// \param o the ostream to serialize the member to.
+static void
+write_access(shared_ptr<class_decl::member> member,
+	     ostream& o)
+{
+  write_access(member->get_access_specifier(), o);
+}
+
 /// Serialize a pointer to an of decl_base into an output stream.
 ///
 /// \param decl, the pointer to decl_base to serialize
@@ -357,7 +458,9 @@ write_decl(const shared_ptr<decl_base>	decl,
       || write_var_decl(dynamic_pointer_cast<var_decl>(decl),
 			ctxt, indent)
       || write_function_decl(dynamic_pointer_cast<function_decl>(decl),
-			     ctxt, indent))
+			     ctxt, indent)
+      || write_class_decl(dynamic_pointer_cast<class_decl>(decl),
+			  ctxt, indent))
     return true;
 
   return false;
@@ -439,12 +542,7 @@ write_type_decl(const shared_ptr<type_decl>	d,
 
   o << "<type-decl name='" << d->get_name() << "'";
 
-  size_t size_in_bits = d->get_size_in_bits();
-  if (size_in_bits)
-    o << " size-in-bits='" << size_in_bits << "'";
-  size_t alignment_in_bits = d->get_alignment_in_bits();
-  if (alignment_in_bits)
-    o << " alignment-in-bits='" << alignment_in_bits << "'";
+  write_size_and_alignment(d, o);
 
   write_location(d, o);
 
@@ -562,10 +660,7 @@ write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
     << ctxt.get_id_for_type(decl->get_pointed_to_type())
     << "'";
 
-  if (size_t s = decl->get_size_in_bits())
-    o << " size-in-bits='" << s << "'";
-  if (size_t s = decl->get_alignment_in_bits())
-    o << " alignment-in-bits='" << s << "'";
+  write_size_and_alignment(decl, o);
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'";
 
@@ -604,10 +699,8 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
   o << "'";
 
   o << " type-id='" << ctxt.get_id_for_type(decl->get_pointed_to_type()) << "'";
-  if (size_t s = decl->get_size_in_bits())
-    o << " size-in-bits='" << s << "'";
-  if (size_t s = decl->get_alignment_in_bits())
-    o << " alignment-in-bits='" << s << "'";
+
+  write_size_and_alignment(decl, o);
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'";
 
@@ -804,6 +897,107 @@ write_function_decl(const shared_ptr<function_decl>	decl,
 
   do_indent(o, indent);
   o << "</function-decl>";
+
+  return true;
+}
+
+/// Serialize a class_decl type.
+///
+/// \param decl the pointer to class_decl to serialize.
+///
+/// \param ctxt the context of the serialization.
+///
+/// \param indent the initial indentation to use.
+static bool
+write_class_decl(const shared_ptr<class_decl> decl,
+		 write_context& ctxt, unsigned indent)
+{
+  if (!decl)
+    return false;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent_to_level(ctxt, indent, 0);
+
+  o << "<class-decl name='" << decl->get_name() << "'";
+
+  write_size_and_alignment(decl, o);
+
+  write_visibility(decl, o);
+
+  write_location(decl, o);
+
+  o << " id='" << ctxt.get_id_for_type(decl) << "'";
+  o << ">\n";
+
+  for (list<shared_ptr<class_decl::base_spec> >::const_iterator base =
+	 decl->get_base_specifiers().begin();
+       base != decl->get_base_specifiers().end();
+       ++base)
+    {
+      do_indent_to_level(ctxt, indent, 1);
+      o << "<base-class";
+      write_access(*base, o);
+      o << " type-id='"
+	<< ctxt.get_id_for_type((*base)->get_base_class())
+	<< "'/>\n";
+    }
+
+  for (list<shared_ptr<class_decl::member_type> >::const_iterator ti =
+	 decl->get_member_types().begin();
+       ti != decl->get_member_types().end();
+       ++ti)
+    {
+      do_indent_to_level(ctxt, indent, 1);
+      o << "<member-type";
+      write_access(*ti, o);
+      o << ">\n";
+
+      write_decl(dynamic_pointer_cast<decl_base>((*ti)->get_type()), ctxt,
+		 get_indent_to_level(ctxt, indent, 2));
+      o << "\n";
+
+      do_indent_to_level(ctxt, indent, 1);
+      o << "</member-type>\n";
+    }
+
+  for (list<shared_ptr<class_decl::data_member> >::const_iterator data =
+	 decl->get_data_members().begin();
+       data != decl->get_data_members().end();
+       ++data)
+    {
+      do_indent_to_level(ctxt, indent, 1);
+      o << "<data-member";
+      write_access(*data, o);
+      o << ">\n";
+
+      write_var_decl(*data, ctxt, get_indent_to_level(ctxt, indent, 2));
+      o << "\n";
+
+      do_indent_to_level(ctxt, indent, 1);
+      o << "</data-member>\n";
+    }
+
+  for (list<shared_ptr<class_decl::member_function> >::const_iterator fn =
+	 decl->get_member_functions().begin();
+       fn != decl->get_member_functions().end();
+       ++fn)
+    {
+      do_indent_to_level(ctxt, indent, 1);
+      o << "<member-function";
+      write_access(*fn, o);
+      o << ">\n";
+
+      write_function_decl(*fn, ctxt, get_indent_to_level(ctxt, indent, 2));
+      o << "\n";
+
+      do_indent_to_level(ctxt, indent, 1);
+      o << "</member-function>\n";
+    }
+
+  do_indent_to_level(ctxt, indent, 0);
+
+  o << "</class-decl>";
 
   return true;
 }
