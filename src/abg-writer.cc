@@ -1,3 +1,4 @@
+// -*- mode: C++ -*-
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
@@ -21,7 +22,6 @@
 // program; see the files COPYING3 and COPYING.RUNTIME respectively.
 // If not, see <http://www.gnu.org/licenses/>.
 
-// -*- mode: C++ -*-
 /// @file
 
 #include <ostream>

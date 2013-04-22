@@ -1,3 +1,5 @@
+// -*- mode: C++ -*-
+
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
@@ -21,7 +23,6 @@
 // program; see the files COPYING3 and COPYING.RUNTIME respectively.
 // If not, see <http://www.gnu.org/licenses/>.
 
-// -*- mode: C++ -*-
 /// @file
 
 #include <cstring>
@@ -86,6 +87,14 @@ public:
     return m_reader;
   }
 
+  /// Return the type that is identified by a unique ID.  Note that
+  /// for a type to be "identified" by #id, the function key_type_decl
+  /// must have been previously called with that type and with #id.
+  ///
+  /// \param id the unique id to consider.
+  ///
+  /// \return the type identified by the unique id #id, or a null
+  /// pointer if no type has ever been associated with id before.
   shared_ptr<type_base>
   get_type_decl(const string& id) const
   {
@@ -155,6 +164,15 @@ public:
     return t;
   }
 
+  /// Associate an ID with a type.
+  ///
+  /// \param type the type to associate witht he ID.
+  ///
+  /// \param the ID to associate to the type.
+  ///
+  /// \return true upon successful completion, false otherwise.  Note
+  /// that this returns false if the was already associate to an ID
+  /// before.
   bool
   add_type_decl(const string&         id,
 		shared_ptr<type_base> type)
@@ -1575,7 +1593,7 @@ handle_namespace_decl(read_context& ctxt)
 
   string name;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
-      name = CHAR_STR(s);
+    name = CHAR_STR(s);
 
   location loc;
   read_location(ctxt, loc);

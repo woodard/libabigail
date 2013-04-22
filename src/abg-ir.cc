@@ -1,3 +1,5 @@
+// -*- mode: C++ -*-
+//
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
@@ -21,7 +23,6 @@
 // program; see the files COPYING3 and COPYING.RUNTIME respectively.
 // If not, see <http://www.gnu.org/licenses/>.
 
-// -*- mode: C++ -*-
 /// @file
 
 #include <vector>
@@ -93,7 +94,7 @@ struct location_manager::priv
   // location in the table gives us an integer that is used to build
   // instance of location types.
   std::vector<expanded_location> locs;
-};
+};// end struct location_manager::priv
 
 location_manager::location_manager()
 {
@@ -966,6 +967,7 @@ class_decl::~class_decl()
 {
 }
 
+/// A hashing function for instances of class_decl.
 size_t
 class_decl_hash::operator()(const class_decl& t) const
 {

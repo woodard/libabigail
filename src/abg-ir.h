@@ -1,3 +1,5 @@
+// -*- Mode: C++ -*-
+//
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
@@ -21,7 +23,6 @@
 // program; see the files COPYING3 and COPYING.RUNTIME respectively.
 // If not, see <http://www.gnu.org/licenses/>.
 
-// -*- mode: C++ -*-
 /// @file
 
 #ifndef __ABG_IR_H__
@@ -170,6 +171,7 @@ private:
 /// \brief The base type of all declarations.
 class decl_base
 {
+  // Forbidden
   decl_base();
 
   void
@@ -254,7 +256,8 @@ private:
   std::string m_mangled_name;
   scope_decl* m_context;
   visibility m_visibility;
-};
+};// end class decl_base
+
 
 /// \brief A declaration that introduces a scope.
 class scope_decl : public decl_base
@@ -300,7 +303,7 @@ public:
 
 private:
   std::list<shared_ptr<decl_base> > m_members;
-};
+};// end class scope_decl.
 
 /// \brief Facility to hash instances of decl_base.
 struct decl_base_hash
