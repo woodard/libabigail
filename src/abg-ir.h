@@ -309,21 +309,7 @@ private:
 struct decl_base_hash
 {
   size_t
-  operator() (const decl_base& d) const
-  {
-    hash<string> str_hash;
-    hash<unsigned> unsigned_hash;
-
-    size_t v = str_hash(typeid(d).name());
-    if (!d.get_name().empty())
-      v = hashing::combine_hashes(v, str_hash(d.get_name()));
-    if (d.get_location())
-      v = hashing::combine_hashes(v, unsigned_hash(d.get_location()));
-
-    if (d.get_scope())
-      v = hashing::combine_hashes(v, this->operator()(*d.get_scope()));
-    return v;
-  }
+  operator() (const decl_base& d) const;
 };//end struct decl_base_hash
 
 /// This abstracts the global scope of a given translation unit.
@@ -390,16 +376,7 @@ private:
 struct type_base_hash
 {
   size_t
-  operator()(const type_base& t) const
-  {
-    hash<size_t> size_t_hash;
-    hash<string> str_hash;
-
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, size_t_hash(t.get_size_in_bits()));
-    v = hashing::combine_hashes(v, size_t_hash(t.get_alignment_in_bits()));
-    return v;
-  }
+  operator()(const type_base& t) const;
 };//end struct type_base_hash
 
 /// A hasher for types.  It gets the dynamic type of the current
@@ -466,18 +443,7 @@ public:
 struct type_decl_hash
 {
   size_t
-  operator()(const type_decl& t) const
-  {
-    decl_base_hash decl_hash;
-    type_base_hash type_hash;
-    hash<string> str_hash;
-
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, decl_hash(t));
-    v = hashing::combine_hashes(v, type_hash(t));
-
-    return v;
-  }
+  operator()(const type_decl& t) const;
 };//end struct type_decl_hash
 
 /// A type that introduces a scope.
@@ -503,18 +469,8 @@ public:
 struct scope_type_decl_hash
 {
   size_t
-  operator()(const scope_type_decl& t) const
-  {
-    decl_base_hash decl_hash;
-    type_base_hash type_hash;
-    hash<string> str_hash;
+  operator()(const scope_type_decl& t) const;
 
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, decl_hash(t));
-    v = hashing::combine_hashes(v, type_hash(t));
-
-    return v;
-  }
 };//end struct scope_type_decl_hash
 
 /// The abstraction of a namespace declaration
@@ -575,19 +531,7 @@ private:
 struct qualified_type_def_hash
 {
   size_t
-  operator()(const qualified_type_def& t) const
-  {
-    type_base_hash type_hash;
-    decl_base_hash decl_hash;
-    hash<string> str_hash;
-
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, type_hash(t));
-    v = hashing::combine_hashes(v, decl_hash(t));
-    v = hashing::combine_hashes(v, t.get_cv_quals());
-
-    return v;
-  }
+  operator()(const qualified_type_def& t) const;
 };//end struct qualified_type_def_hash
 
 /// The abstraction of a pointer type.
@@ -619,17 +563,7 @@ private:
 struct pointer_type_def_hash
 {
   size_t
-  operator()(const pointer_type_def& t) const
-  {
-    hash<string> str_hash;
-    type_base_hash type_hash;
-    decl_base_hash decl_hash;
-
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, decl_hash(t));
-    v = hashing::combine_hashes(v, type_hash(t));
-    return v;
-  }
+  operator()(const pointer_type_def& t) const;
 };// end struct pointer_type_def_hash
 
 /// Abstracts a reference type.
@@ -665,20 +599,7 @@ private:
 struct reference_type_def_hash
 {
   size_t
-  operator() (const reference_type_def& t)
-  {
-    hash<string> str_hash;
-    type_base_hash type_hash;
-    decl_base_hash decl_hash;
-
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, str_hash(t.is_lvalue()
-					    ? "lvalue"
-					    : "rvalue"));
-    v = hashing::combine_hashes(v, type_hash(t));
-    v = hashing::combine_hashes(v, decl_hash(t));
-    return v;
-  }
+  operator()(const reference_type_def& t);
 };//end struct reference_type_def_hash
 
 /// Abstracts a declaration for an enum type.
@@ -757,24 +678,8 @@ private:
 struct enum_type_decl_hash
 {
   size_t
-  operator()(const enum_type_decl& t) const
-  {
-    hash<string> str_hash;
-    type_shared_ptr_hash type_ptr_hash;
-    hash<size_t> size_t_hash;
+  operator()(const enum_type_decl& t) const;
 
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, type_ptr_hash(t.get_underlying_type()));
-    for (std::list<enum_type_decl::enumerator>::const_iterator i =
-	   t.get_enumerators().begin();
-	 i != t.get_enumerators().end();
-	 ++i)
-      {
-	v = hashing::combine_hashes(v, str_hash(i->get_name()));
-	v = hashing::combine_hashes(v, size_t_hash(i->get_value()));
-      }
-    return v;
-  }
 };//end struct enum_type_decl_hash
 
 /// The abstraction of a typedef declaration.
@@ -807,20 +712,8 @@ private:
 struct typedef_decl_hash
 {
   size_t
-  operator()(const typedef_decl& t) const
-  {
-    hash<string> str_hash;
-    type_base_hash type_hash;
-    decl_base_hash decl_hash;
-    type_shared_ptr_hash type_ptr_hash;
+  operator()(const typedef_decl& t) const;
 
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, type_hash(t));
-    v = hashing::combine_hashes(v, decl_hash(t));
-    v = hashing::combine_hashes(v, type_ptr_hash(t.get_underlying_type()));
-
-    return v;
-  }
 };// end struct typedef_decl_hash
 
 /// Abstracts a variable declaration.
@@ -864,17 +757,8 @@ private:
 struct var_decl_hash
 {
   size_t
-  operator()(const var_decl& t) const
-  {
-    hash<string> hash_string;
-    decl_base_hash hash_decl;
-    type_shared_ptr_hash hash_type_ptr;
+  operator()(const var_decl& t) const;
 
-    size_t v = hash_string(typeid(t).name());
-    v = hashing::combine_hashes(v, hash_decl(t));
-    v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
-    return v;
-  }
 };// end struct var_decl_hash
 
 /// Abstraction for a function declaration.
@@ -989,27 +873,8 @@ private:
 struct function_decl_hash
 {
   size_t
-  operator()(const function_decl& t) const
-  {
-    hash<int> hash_int;
-    hash<bool> hash_bool;
-    hash<string> hash_string;
-    function_decl::parameter_hash hash_parm;
-    type_shared_ptr_hash hash_type_ptr;
+  operator()(const function_decl& t) const;
 
-    size_t v = hash_string(typeid(t).name());
-    v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
-    for (std::list<shared_ptr<function_decl::parameter> >::const_iterator p =
-	   t.get_parameters().begin();
-	 p != t.get_parameters().end();
-	 ++p)
-      v = hashing::combine_hashes(v, hash_parm(**p));
-
-    v = hashing::combine_hashes(v, hash_bool(t.is_declared_inline()));
-    v = hashing::combine_hashes(v, hash_int(t.get_binding()));
-
-    return v;
-  }
 };// end function_decl_hash
 
 /// Abstracts a class declaration.
@@ -1102,15 +967,7 @@ public:
   struct member_type_hash
   {
     size_t
-    operator()(const member_type& t)const
-    {
-      member_hash hash_member;
-      type_shared_ptr_hash hash_type;
-
-      size_t v = hash_member(t);
-      v = hashing::combine_hashes(v, hash_type(t.get_type()));
-      return v;
-    }
+    operator()(const member_type& t)const;
   };// end struct member_type_hash
 
   /// Abstraction of a base specifier in a class declaration.
@@ -1147,15 +1004,7 @@ public:
   struct base_spec_hash
   {
     size_t
-    operator()(const base_spec& t) const
-    {
-      member_hash hash_member;
-      type_shared_ptr_hash hash_type_ptr;
-
-      size_t v = hash_member(t);
-      v = hashing::combine_hashes(v, hash_type_ptr(t.get_base_class()));
-      return v;
-    }
+    operator()(const base_spec& t) const;
   };// end struct base_spec_hash
 
   /// Abstract a data member declaration in a class declaration.
@@ -1232,20 +1081,7 @@ public:
   struct data_member_hash
   {
     size_t
-    operator()(data_member& t)
-    {
-      hash<size_t> hash_size_t;
-      var_decl_hash hash_var_decl;
-      member_hash hash_member;
-
-      size_t v = hash_member(t);
-      v = hashing::combine_hashes(v, hash_var_decl(t));
-      if (t.is_laid_out())
-	v = hashing::combine_hashes(v, hash_size_t(t.get_offset_in_bits()));
-      v = hashing::combine_hashes(v, t.is_static());
-
-      return v;
-    }
+    operator()(data_member& t);
   };// end struct data_member_hash
 
   /// Abstracts a member function declaration in a class declaration.
@@ -1348,25 +1184,7 @@ public:
   struct member_function_hash
   {
     size_t
-    operator()(const member_function& t) const
-    {
-      hash<bool> hash_bool;
-      hash<size_t> hash_size_t;
-      member_hash hash_member;
-      function_decl_hash hash_fn;
-
-      size_t v = hash_member(t);
-      v = hashing::combine_hashes(v, hash_fn(t));
-      v = hashing::combine_hashes(v, hash_bool(t.is_static()));
-      v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
-      v = hashing::combine_hashes(v, hash_bool(t.is_const()));
-
-      if (!t.is_static() && !t.is_constructor())
-	v = hashing::combine_hashes(v,
-				    hash_size_t(t.get_vtable_offset_in_bits()));
-
-      return v;
-    }
+    operator()(const member_function& t) const;
   };// end struct member_function_hash
 
   class_decl(const std::string&				name,
