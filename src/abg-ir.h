@@ -276,7 +276,7 @@ public:
   scope_decl(const std::string& name,
 	     location		locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
-    : decl_base(name, locus, /*mangled_name=*/"", vis)
+    : decl_base(name, locus, /*mangled_name=*/name, vis)
   {}
 
 
