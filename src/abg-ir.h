@@ -1227,24 +1227,21 @@ public:
   {return m_bases;}
 
   void
-  add_member_type(shared_ptr<member_type>t)
-  {m_member_types.push_back(t);}
+  add_member_type(shared_ptr<member_type>t);
 
   const std::list<shared_ptr<member_type> >&
   get_member_types() const
   {return m_member_types;}
 
   void
-  add_data_member(shared_ptr<data_member> m)
-  {m_data_members.push_back(m);}
+  add_data_member(shared_ptr<data_member> m);
 
   const std::list<shared_ptr<data_member> >&
   get_data_members() const
   {return m_data_members;}
 
   void
-  add_member_function(shared_ptr<member_function> m)
-  {m_member_functions.push_back(m);}
+  add_member_function(shared_ptr<member_function> m);
 
   const std::list<shared_ptr<member_function> >&
   get_member_functions() const

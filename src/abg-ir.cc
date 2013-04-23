@@ -25,6 +25,7 @@
 
 /// @file
 
+#include <assert.h>
 #include <vector>
 #include <utility>
 #include <algorithm>
@@ -1103,6 +1104,55 @@ function_decl::~function_decl()
 // <function_decl definitions>
 
 // <class_decl definitions>
+
+/// Add a member type to the current instnace of class_decl
+///
+/// \param the member type to add.
+void
+class_decl::add_member_type(shared_ptr<member_type>t)
+{
+  decl_base* c = dynamic_pointer_cast<decl_base>(t->as_type())->get_scope();
+  /// TODO: use our own assertion facility that adds a meaningful
+  /// error message or something like a structured error.
+  assert(!c || c == this);
+  if (!c)
+    add_decl_to_scope(t, this);
+
+  m_member_types.push_back(t);
+}
+
+/// Add a data member to the current instance of class_decl.
+///
+/// \param m the data member to add.
+void
+class_decl::add_data_member(shared_ptr<data_member> m)
+{
+  decl_base* c = m->get_scope();
+  /// TODO: use our own assertion facility that adds a meaningful
+  /// error message or something like a structured error.
+  assert(!c || c == this);
+  if (!c)
+    add_decl_to_scope(m, this);
+
+  m_data_members.push_back(m);
+}
+
+/// Add a member function to the current instance of class_decl.
+///
+/// \param m the member function to add.
+void
+class_decl::add_member_function(shared_ptr<member_function> m)
+{
+  decl_base* c = m->get_scope();
+  /// TODO: use our own assertion facility that adds a meaningful
+  /// error message or something like a structured error.
+  assert(!c || c == this);
+  if (!c)
+    add_decl_to_scope(m, this);
+
+  m_member_functions.push_back(m);
+}
+
 bool
 class_decl::operator==(const class_decl& o) const
 {
