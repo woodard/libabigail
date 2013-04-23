@@ -63,6 +63,10 @@ public:
 			shared_ptr<type_base> >::const_iterator
   const_types_map_it;
 
+  typedef unordered_map<string,
+			shared_ptr<function_template_decl> >::const_iterator
+  const_fn_tmpl_map_it;
+
   read_context(xml::reader_sptr reader)
     : m_depth(0),
       m_reader(reader)
@@ -102,6 +106,25 @@ public:
     if (i == m_types_map.end())
       return shared_ptr<type_base>();
     return shared_ptr<type_base>(i->second);
+  }
+
+  /// Return the function template that is identified by a unique ID.
+  /// Note that a function template to be indentified by #id, the
+  /// function key_fn_tmpl_decl must have been previously called
+  /// with that function template and with #id.
+  ///
+  /// \param id the ID to consider.
+  ///
+  /// \return the function template identified by #id, or a null
+  /// pointer if no function template has ever been associated with
+  /// #id before.
+  shared_ptr<function_template_decl>
+  get_fn_tmpl_decl(const string& id) const
+  {
+    const_fn_tmpl_map_it i = m_fn_tmpl_map.find(id);
+    if (i == m_fn_tmpl_map.end())
+      return shared_ptr<function_template_decl>();
+    return i->second;
   }
 
   /// Return the current lexical scope.  For this function to return a
@@ -174,8 +197,8 @@ public:
   /// that this returns false if the was already associate to an ID
   /// before.
   bool
-  add_type_decl(const string&         id,
-		shared_ptr<type_base> type)
+  key_type_decl(shared_ptr<type_base> type,
+		const string&         id)
   {
     assert(type);
 
@@ -187,34 +210,63 @@ public:
     return true;
   }
 
+  /// Associate an ID to a function template.
+  ///
+  /// \param fn_tmpl_decl the function template to consider.
+  ///
+  /// \param id the ID to associate to the function template.
+  ///
+  /// \return true upon successful completion, false otherwise.  Note
+  /// that the function returns false if an ID was previously
+  /// associated to the function template.
+  bool
+  key_fn_tmpl_decl(shared_ptr<function_template_decl>	fn_tmpl_decl,
+		   const string&			id)
+  {
+    assert(fn_tmpl_decl);
+
+    const_fn_tmpl_map_it i = m_fn_tmpl_map.find(id);
+    if (i != m_fn_tmpl_map.end())
+      return false;
+
+    m_fn_tmpl_map[id] = fn_tmpl_decl;
+    return true;
+  }
+
   /// This function must be called on each decl that is created during
   /// the parsing.  It adds the decl to the current scope, and updates
   /// the state of the parsing context accordingly.
   ///
   /// \param decl the newly created decl.
   void
-  finish_decl_creation(shared_ptr<decl_base>	decl)
+  push_decl_to_current_scope(shared_ptr<decl_base>	decl)
   {
+    assert(decl);
+
     add_decl_to_scope(decl, get_cur_scope());
     push_decl(decl);
   }
 
   /// This function must be called on each type decl that is created
-  /// during the parsing.  It adds the decl to the current scope and
-  /// updates the state of the parsing context accordingly.
+  /// during the parsing.  It adds the type decl to the current scope
+  /// and associates a unique ID to it.
   ///
-  /// \param decl the newly created decl.
+  /// \param decl the newly created decl
+  ///
+  /// \param id the unique ID to be associated to #t
+  ///
+  /// \return true upon successful completion.
   ///
   bool
-  finish_type_decl_creation(shared_ptr<type_base>	t,
-			    const string&		id)
+  push_and_key_type_decl(shared_ptr<type_base>	t,
+			 const string&		id)
   {
     shared_ptr<decl_base> decl = dynamic_pointer_cast<decl_base>(t);
     if (!decl)
       return false;
 
-    finish_decl_creation(decl);
-    add_type_decl(id, t);
+    push_decl_to_current_scope(decl);
+    key_type_decl(t, id);
     return true;
   }
 
@@ -222,6 +274,7 @@ private:
   // The depth of the current node in the xml tree.
   int m_depth;
   unordered_map<string, shared_ptr<type_base> > m_types_map;
+  unordered_map<string, shared_ptr<function_template_decl> > m_fn_tmpl_map;
   xml::reader_sptr m_reader;
   stack<shared_ptr<decl_base> > m_decls_stack;
 };//end class read_context
@@ -251,7 +304,7 @@ static bool	read_cdtor_const(xmlNodePtr, bool&, bool&, bool&);
 static shared_ptr<function_decl::parameter>
 build_function_parameter (read_context&, const xmlNodePtr);
 static shared_ptr<function_decl>
-build_function_decl(read_context&, const xmlNodePtr);
+build_function_decl(read_context&, const xmlNodePtr, bool);
 static shared_ptr<var_decl>
 build_var_decl(read_context&, const xmlNodePtr);
 static shared_ptr<type_decl>
@@ -267,7 +320,17 @@ build_enum_type_decl(read_context&, const xmlNodePtr);
 static shared_ptr<typedef_decl>
 build_typedef_decl(read_context&, const xmlNodePtr);
 static shared_ptr<class_decl>
-build_class_decl(read_context&, const xmlNodePtr);
+build_class_decl(read_context&, const xmlNodePtr, bool);
+static shared_ptr<function_template_decl>
+build_function_template_decl(read_context&, const xmlNodePtr, bool);
+static shared_ptr<template_type_parameter>
+build_template_type_parameter(read_context&, const xmlNodePtr, unsigned);
+static shared_ptr<template_non_type_parameter>
+build_template_non_type_parameter(read_context&, const xmlNodePtr, unsigned);
+static shared_ptr<template_template_parameter>
+build_template_template_parameter(read_context&, const xmlNodePtr, unsigned);
+static shared_ptr<template_parameter>
+build_template_parameter(read_context&, const xmlNodePtr, unsigned);
 
 // Please make this build_type function be the last one of the list.
 // Note that it should call each type-building function above.  So
@@ -288,7 +351,7 @@ static bool	handle_typedef_decl(read_context&);
 static bool	handle_var_decl(read_context&);
 static bool	handle_function_decl(read_context&);
 static bool	handle_class_decl(read_context&);
-
+static bool	handle_function_template_decl(read_context&);
 bool
 read_file(const string&	file_path,
 	  translation_unit&	tu)
@@ -491,6 +554,9 @@ handle_element(read_context&	ctxt)
   if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 		   BAD_CAST("class-decl")))
     return handle_class_decl(ctxt);
+  if (xmlStrEqual(XML_READER_GET_NODE_NAME(reader).get(),
+		  BAD_CAST("function-template-decl")))
+    return handle_function_template_decl(ctxt);
 
   return false;
 }
@@ -894,7 +960,8 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 /// completion, a null pointer otherwise.
 static shared_ptr<function_decl>
 build_function_decl(read_context&	ctxt,
-		    const xmlNodePtr	node)
+		    const xmlNodePtr	node,
+		    bool seen_by_reader)
 {
   shared_ptr<function_decl> nil;
 
@@ -925,6 +992,15 @@ build_function_decl(read_context&	ctxt,
 
   std::list<shared_ptr<function_decl::parameter> > parms;
   shared_ptr<type_base> return_type;
+
+  shared_ptr<function_decl> fn_decl(new function_decl(name, parms, return_type,
+						      declared_inline, loc,
+						      mangled_name, vis));
+
+  if (!seen_by_reader)
+    update_read_context(ctxt, node);
+  ctxt.push_decl_to_current_scope(fn_decl);
+
   for (xmlNodePtr n = node->children; n ; n = n->next)
     {
       if (n->type != XML_ELEMENT_NODE)
@@ -934,7 +1010,7 @@ build_function_decl(read_context&	ctxt,
 	{
 	  if (shared_ptr<function_decl::parameter> p =
 	      build_function_parameter(ctxt, n))
-	    parms.push_back(p);
+	    fn_decl->add_parameter(p);
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("return")))
 	{
@@ -943,17 +1019,11 @@ build_function_decl(read_context&	ctxt,
 	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
 	    type_id = CHAR_STR(s);
 	  if (!type_id.empty())
-	    return_type = ctxt.get_type_decl(type_id);
+	    fn_decl->set_return_type(ctxt.get_type_decl(type_id));
 	}
     }
 
-   shared_ptr<function_decl> decl(new function_decl(name, parms, return_type,
-						    declared_inline, loc,
-						    mangled_name, vis));
-   update_read_context(ctxt, node);
-   ctxt.finish_decl_creation(decl);
-
-  return decl;
+  return fn_decl;
 }
 
 /// Build pointer to var_decl from a 'var-decl' xml Node
@@ -1000,7 +1070,7 @@ build_var_decl(read_context& ctxt, const xmlNodePtr node)
 					 locus, mangled_name,
 					 vis, bind));
   update_read_context(ctxt, node);
-  ctxt.finish_decl_creation(decl);
+  ctxt.push_decl_to_current_scope(decl);
 
   return decl;
 }
@@ -1017,6 +1087,8 @@ static shared_ptr<type_decl>
 build_type_decl(read_context&		ctxt,
 		const xmlNodePtr	node)
 {
+  shared_ptr<type_decl> nil;
+
   if (!xmlStrEqual(node->name, BAD_CAST("type-decl")))
     return shared_ptr<type_decl>((type_decl*)0);
 
@@ -1048,10 +1120,10 @@ build_type_decl(read_context&		ctxt,
 					   alignment_in_bits,
 					   loc));
   update_read_context(ctxt, node);
-  if (ctxt.finish_type_decl_creation(decl, id))
+  if (ctxt.push_and_key_type_decl(decl, id))
     return decl;
 
-  return shared_ptr<type_decl>((type_decl*)0);
+  return nil;
 }
 
 /// Build a qualified_type_def from a 'qualified-type-def' xml node.
@@ -1110,7 +1182,7 @@ build_qualified_type_decl(read_context& ctxt,
   shared_ptr<qualified_type_def> decl(new qualified_type_def(underlying_type,
 							     cv, loc));
   update_read_context(ctxt, node);
-  if (ctxt.finish_type_decl_creation(decl, id))
+  if (ctxt.push_and_key_type_decl(decl, id))
     return decl;
 
   return shared_ptr<qualified_type_def>((qualified_type_def*)0);
@@ -1162,7 +1234,7 @@ build_pointer_type_def(read_context&	ctxt,
 						      alignment_in_bits,
 						      loc));
   update_read_context(ctxt, node);
-  if (ctxt.finish_type_decl_creation(t, id))
+  if (ctxt.push_and_key_type_decl(t, id))
     return t;
 
   return nil;
@@ -1220,7 +1292,7 @@ build_reference_type_def(read_context&		ctxt,
 							  alignment_in_bits,
 							  loc));
   update_read_context(ctxt, node);
-  if (ctxt.finish_type_decl_creation(t, id))
+  if (ctxt.push_and_key_type_decl(t, id))
     return t;
 
   return nil;
@@ -1296,7 +1368,7 @@ build_enum_type_decl(read_context&	ctxt,
 						  underlying_type,
 						  enumerators));
   update_read_context(ctxt, node);
-  if (ctxt.finish_type_decl_creation(t, id))
+  if (ctxt.push_and_key_type_decl(t, id))
     return t;
 
   return nil;
@@ -1342,15 +1414,24 @@ build_typedef_decl(read_context&	ctxt,
   shared_ptr<typedef_decl> t(new typedef_decl(name, underlying_type, loc));
 
   update_read_context(ctxt, node);
-  if (ctxt.finish_type_decl_creation(t, id))
+  if (ctxt.push_and_key_type_decl(t, id))
     return t;
 
   return nil;
 }
 
+/// Build a class_decl from a 'class-decl' xml node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to build the class_decl from.
+///
+/// \return a pointer to class_decl upon successful completion, a null
+/// pointer otherwise.
 static shared_ptr<class_decl>
 build_class_decl(read_context&		ctxt,
-		 const xmlNodePtr	node)
+		 const xmlNodePtr	node,
+		 bool seen_by_reader)
 {
   shared_ptr<class_decl> nil;
 
@@ -1388,10 +1469,11 @@ build_class_decl(read_context&		ctxt,
 					     member_types,
 					     data_members,
 					     member_functions));
-  // No need to call update_read_context(ctxt, node) here, as it as
-  // already been called for this class-decl node by advance_cursor.
-  if (!ctxt.finish_type_decl_creation(decl, id))
-    return nil;
+
+  if (!seen_by_reader)
+    update_read_context(ctxt, node);
+
+    ctxt.push_decl_to_current_scope(decl);
 
   for (xmlNodePtr n = node->children; n; n = n->next)
     {
@@ -1487,7 +1569,7 @@ build_class_decl(read_context&		ctxt,
 		continue;
 
 	      if (shared_ptr<function_decl> f =
-		  build_function_decl(ctxt, p))
+		  build_function_decl(ctxt, p, seen_by_reader))
 		{
 		  shared_ptr<class_decl::member_function> m
 		    (new class_decl::member_function(f, access,
@@ -1502,7 +1584,275 @@ build_class_decl(read_context&		ctxt,
 	}
     }
 
+  if (decl)
+    ctxt.key_type_decl(decl, id);
+
   return decl;
+}
+
+/// Build an intance of #function_template_decl, from an
+/// 'function-template-decl' xml element node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to parse from.
+///
+/// \param seen_by_reader this must be set to true, if we reachedthis
+/// xml node by calling the xmlTextReaderRead function.  In that case,
+/// build_function_decl doesn't have to update the depth information
+/// that is maintained in the context of the parsing.  Otherwise if this
+/// node if just a child grand child of a node that we reached using
+/// xmlTextReaderRead, of if it wasn't reached via xmlTextReaderRead
+/// at all,then the argument to this parameter should be false.  In
+/// that case this function will update the depth information that is
+/// maintained by in the context of the parsing.
+///
+/// \return the newly built function_template_decl upon successful
+/// completion, a null pointer otherwise.
+static shared_ptr<function_template_decl>
+build_function_template_decl(read_context& ctxt,
+			     const xmlNodePtr node,
+			     bool seen_by_reader)
+{
+  shared_ptr<function_template_decl> nil, result;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("function-template-decl")))
+    return nil;
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  if (id.empty() || ctxt.get_fn_tmpl_decl(id))
+    return nil;
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
+  read_visibility(node, vis);
+
+  decl_base::binding bind = decl_base::BINDING_NONE;
+  read_binding(node, bind);
+
+  shared_ptr<function_template_decl> fn_tmpl_decl
+    (new function_template_decl(loc, vis, bind));
+
+  if (!seen_by_reader)
+    update_read_context(ctxt, node);
+
+  ctxt.push_decl_to_current_scope(fn_tmpl_decl);
+
+  unsigned parm_index = 0;
+  for (xmlNodePtr n = node->children; n ; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      if (shared_ptr<template_parameter> parm =
+	  build_template_parameter(ctxt, n, parm_index))
+	{
+	  fn_tmpl_decl->add_template_parameter(parm);
+	  ++parm_index;
+	}
+      else if (shared_ptr<function_decl> f =
+	       build_function_decl(ctxt, n, seen_by_reader))
+	fn_tmpl_decl->set_pattern(f);
+    }
+
+  ctxt.key_fn_tmpl_decl(fn_tmpl_decl, id);
+
+  return fn_tmpl_decl;
+}
+
+/// Build a template_type_parameter from a 'template-type-parameter'
+/// xml element node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to parse from.
+///
+/// \param index the index (occurrence index, starting from 0) of the
+/// template parameter.
+///
+/// \return a pointer to a newly created instance of
+/// template_type_parameter, a null pointer otherwise.
+static shared_ptr<template_type_parameter>
+build_template_type_parameter(read_context& ctxt,
+			      const xmlNodePtr node,
+			      unsigned index)
+{
+  shared_ptr<template_type_parameter> nil, result;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("template-type-parameter")))
+    return nil;
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  if (!id.empty() && ctxt.get_type_decl(id))
+    return nil;
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+  if (!type_id.empty()
+      && !(result = dynamic_pointer_cast<template_type_parameter>
+	   (ctxt.get_type_decl(type_id))))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  location loc;
+  read_location(ctxt, node,loc);
+
+  result.reset(new template_type_parameter(index, name, loc));
+
+  if (id.empty())
+    ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result));
+  else
+    ctxt.push_and_key_type_decl(result, id);
+
+  return result;
+}
+
+/// Build an instance of template_non_type_parameter from a
+/// 'template-non-type-parameter' xml element node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to parse from.
+///
+/// \param index the index of the parameter.
+///
+/// \return a pointer to a newly created instance of
+/// template_non_type_parameter upon successful completion, a null
+/// pointer code otherwise.
+static shared_ptr<template_non_type_parameter>
+build_template_non_type_parameter(read_context&	ctxt,
+				  const xmlNodePtr	node,
+				  unsigned		index)
+{
+  shared_ptr<template_non_type_parameter> r;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("template-non-type-parameter")))
+    return r;
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+  shared_ptr<type_base> type;
+  if (type_id.empty()
+      || !(type = ctxt.get_type_decl(type_id)))
+    return r;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  location loc;
+  read_location(ctxt, node,loc);
+
+  r.reset(new template_non_type_parameter(index, name, type, loc));
+  ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(r));
+
+  return r;
+}
+
+/// Build an intance of template_template_parameter from a
+/// 'template-template-parameter' xml element node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to parse from.
+///
+/// \param index the index of the template parameter.
+///
+/// \return a pointer to a new instance of template_template_parameter
+/// upon successful completion, a null pointer otherwise.
+static shared_ptr<template_template_parameter>
+build_template_template_parameter(read_context& ctxt,
+				  const xmlNodePtr node,
+				  unsigned index)
+{
+  shared_ptr<template_template_parameter> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("template-template-parameter")))
+    return nil;
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  // Bail out if a type with the same ID already exists.
+  if (!id.empty() && ctxt.get_type_decl(id))
+    return nil;
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+  // Bail out if no type with this ID exists.
+  if (!type_id.empty()
+      && !(dynamic_pointer_cast<template_template_parameter>
+	   (ctxt.get_type_decl(type_id))))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = CHAR_STR(s);
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  shared_ptr<template_template_parameter> result
+    (new template_template_parameter(index, name, loc));
+
+  ctxt.push_decl_to_current_scope(result);
+
+  // Go parse template parameters that are children nodes
+  int parm_index = 0;
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (node->type != XML_ELEMENT_NODE)
+	continue;
+
+      if (shared_ptr<template_parameter> p =
+	  build_template_parameter(ctxt, n, parm_index))
+	{
+	  result->add_template_parameter(p);
+	  ++parm_index;
+	}
+    }
+
+  if (result)
+    ctxt.key_type_decl(result, id);
+
+  return result;
+}
+
+/// Build a template parameter type from several possible xml elment
+/// nodes representing a serialized form a template parameter.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml element node to parse from.
+///
+/// \param the index of the template parameter we are parsing.
+///
+/// \return a pointer to a newly created instance of
+/// template_parameter upon successful completion, a null pointer
+/// otherwise.
+static shared_ptr<template_parameter>
+build_template_parameter(read_context&		ctxt,
+			 const xmlNodePtr	node,
+			 unsigned		index)
+{
+  shared_ptr<template_parameter> r;
+  ((r = build_template_type_parameter(ctxt, node, index))
+   || (r = build_template_non_type_parameter(ctxt, node, index))
+   || (r = build_template_template_parameter(ctxt, node, index)));
+
+  return r;
 }
 
 /// Build a type from an xml node.
@@ -1518,16 +1868,14 @@ build_type(read_context& ctxt, const xmlNodePtr node)
 {
   shared_ptr<type_base> t;
 
-  if ((t = build_type_decl(ctxt, node))
-      || (t = build_qualified_type_decl(ctxt, node))
-      || (t = build_pointer_type_def(ctxt, node))
-      || (t = build_reference_type_def(ctxt, node))
-      || (t = build_enum_type_decl(ctxt, node))
-      || (t = build_typedef_decl(ctxt, node))
-      || (t = build_class_decl(ctxt, node)))
-    {
-      ;// t is set now.
-    }
+  ((t = build_type_decl(ctxt, node))
+   || (t = build_qualified_type_decl(ctxt, node))
+   || (t = build_pointer_type_def(ctxt, node))
+   || (t = build_reference_type_def(ctxt, node))
+   || (t = build_enum_type_decl(ctxt, node))
+   || (t = build_typedef_decl(ctxt, node))
+   || (t = build_class_decl(ctxt, node,
+			    /*seen_by_reader=*/false)));
 
   return t;
 }
@@ -1570,7 +1918,7 @@ handle_type_decl(read_context& ctxt)
   shared_ptr<type_base> decl(new type_decl(name, size_in_bits,
 					   alignment_in_bits,
 					   loc));
-  return ctxt.finish_type_decl_creation(decl, id);
+  return ctxt.push_and_key_type_decl(decl, id);
 }
 
 /// Parses 'namespace-decl' xml element.
@@ -1599,7 +1947,7 @@ handle_namespace_decl(read_context& ctxt)
   read_location(ctxt, loc);
 
   shared_ptr<decl_base> decl(new namespace_decl(name, loc));
-  ctxt.finish_decl_creation(decl);
+  ctxt.push_decl_to_current_scope(decl);
   return true;
 }
 
@@ -1655,7 +2003,7 @@ handle_qualified_type_decl(read_context& ctxt)
 
   shared_ptr<type_base> decl(new qualified_type_def(underlying_type,
 						    cv, loc));
-  return ctxt.finish_type_decl_creation(decl, id);
+  return ctxt.push_and_key_type_decl(decl, id);
 }
 
 /// Parse a pointer-type-decl element.
@@ -1697,7 +2045,7 @@ handle_pointer_type_def(read_context& ctxt)
 					       size_in_bits,
 					       alignment_in_bits,
 					       loc));
-  return ctxt.finish_type_decl_creation(t, id);
+  return ctxt.push_and_key_type_decl(t, id);
 }
 
 /// Parse a reference-type-def element.
@@ -1745,7 +2093,7 @@ handle_reference_type_def(read_context& ctxt)
 						 size_in_bits,
 						 alignment_in_bits,
 						 loc));
-  return ctxt.finish_type_decl_creation(t, id);
+  return ctxt.push_and_key_type_decl(t, id);
 }
 
 /// Parse an enum-decl element.
@@ -1815,7 +2163,7 @@ handle_enum_type_decl(read_context& ctxt)
   shared_ptr<type_base> t(new enum_type_decl(name, loc,
 					     underlying_type,
 					     enumerators));
-  return ctxt.finish_type_decl_creation(t, id);
+  return ctxt.push_and_key_type_decl(t, id);
 }
 
 /// Parse a typedef-decl element.
@@ -1850,7 +2198,7 @@ handle_typedef_decl(read_context& ctxt)
 
   shared_ptr<type_base> t(new typedef_decl(name, underlying_type, loc));
 
-  return ctxt.finish_type_decl_creation(t, id);
+  return ctxt.push_and_key_type_decl(t, id);
 }
 
 /// Parse a var-decl element.
@@ -1890,7 +2238,7 @@ handle_var_decl(read_context& ctxt)
   shared_ptr<decl_base> decl(new var_decl(name, underlying_type,
 					  locus, mangled_name,
 					  vis, bind));
-  ctxt.finish_decl_creation(decl);
+  ctxt.push_decl_to_current_scope(decl);
 
   return true;
 }
@@ -1961,7 +2309,7 @@ handle_function_decl(read_context& ctxt)
   shared_ptr<decl_base> decl(new function_decl(name, parms, return_type,
 					       declared_inline, loc,
 					       mangled_name, vis));
-  ctxt.finish_decl_creation(decl);
+  ctxt.push_decl_to_current_scope(decl);
 
   return true;
 }
@@ -1983,11 +2331,37 @@ handle_class_decl(read_context& ctxt)
   if (!node)
     return false;
 
-  shared_ptr<class_decl> decl = build_class_decl(ctxt, node);
+  shared_ptr<class_decl> decl = build_class_decl(ctxt, node,
+						 /*seen_by_reader=*/true);
 
   xmlTextReaderNext(r.get());
 
   return decl;
+}
+
+/// Parse a 'function-template-decl' xml element.
+///
+/// \param the parsing context.
+///
+/// \return true upon successful completion of the parsing, false
+/// otherwise.
+static bool
+handle_function_template_decl(read_context& ctxt)
+{
+  xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
+    return false;
+
+  xmlNodePtr node = xmlTextReaderExpand(r.get());
+  if (!node)
+    return false;
+
+  bool is_ok = build_function_template_decl(ctxt, node,
+					    /*seen_by_reader=*/true);
+
+  xmlTextReaderNext(r.get());
+
+  return is_ok;
 }
 
 }//end namespace reader

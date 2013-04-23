@@ -854,6 +854,10 @@ public:
   get_return_type() const
   {return m_return_type;}
 
+  void
+  set_return_type(shared_ptr<type_base> t)
+  {m_return_type = t;}
+
   bool
   is_declared_inline() const
   {return m_declared_inline;}
@@ -1266,5 +1270,241 @@ struct class_decl_hash
 
 };//end struct class_decl_hash
 
+
+class template_parameter;
+class template_type_parameter;
+class template_non_type_parameter;
+class template_template_parameter;
+
+/// Abstract a function template parameter.
+class template_decl
+{
+
+public:
+
+  template_decl()
+  {}
+
+  void
+  add_template_parameter(shared_ptr<template_parameter> p)
+  {m_parms.push_back(p);}
+
+  const std::list<shared_ptr<template_parameter> >&
+  get_template_parameters() const
+  {return m_parms;}
+
+  virtual bool
+  operator==(const template_decl& o) const;
+
+  virtual ~template_decl();
+
+private:
+  std::list<shared_ptr<template_parameter> > m_parms;
+};// end class template_decl
+
+struct template_decl_hash
+{
+  size_t
+  operator()(const template_decl&) const;
+
+};//end struct template_decl_hash
+
+/// Base class for a template parameter.  Client code should use the
+/// more specialized type_template_parameter,
+/// non_type_template_parameter and template_template_parameter below.
+class template_parameter
+{
+  // Forbidden
+  template_parameter();
+
+ public:
+
+  template_parameter(unsigned index)
+    : m_index(index)
+  {}
+
+  virtual bool
+  operator==(const template_parameter&) const;
+
+  unsigned
+  get_index() const
+  {return m_index;}
+
+  virtual ~template_parameter();
+
+private:
+  unsigned m_index;
+};//end class template_parameter
+
+struct template_parameter_hash
+{
+  size_t
+  operator()(const template_parameter& t) const;
+};//end class template_parameter_hash
+
+struct dynamic_template_parameter_hash
+{
+  size_t
+  operator()(const template_parameter*) const;
+};//end struct dynamic_template_parameter_hash
+
+struct template_parameter_shared_ptr_hash
+{
+  size_t
+  operator()(const shared_ptr<template_parameter> t) const
+  {
+    return dynamic_template_parameter_hash()(t.get());
+  }
+};// end struct template_parameter_shared_ptr_hash
+
+/// Abstracts a type template parameter.
+class template_type_parameter : public template_parameter,
+				public virtual type_decl
+{
+  // Forbidden
+  template_type_parameter();
+
+public:
+  template_type_parameter(unsigned index,
+			  const std::string& name,
+			  location locus)
+    : decl_base(name, locus),
+      type_base(0, 0),
+      type_decl(name, 0, 0, locus),
+      template_parameter(index)
+  {}
+
+  virtual bool
+  operator==(const template_type_parameter&) const;
+
+  virtual ~template_type_parameter();
+};//end class template_type_parameter
+
+struct template_type_parameter_hash
+{
+  size_t
+  operator()(const template_type_parameter& t) const;
+};//end struct template_type_parameter_hash
+
+/// Abstracts non type template parameters.
+class template_non_type_parameter : public template_parameter, public decl_base
+{
+  // Forbidden
+  template_non_type_parameter();
+
+public:
+
+  template_non_type_parameter(unsigned index,
+			      const std::string& name,
+			      shared_ptr<type_base> type,
+			      location locus)
+    : template_parameter(index),
+      decl_base(name, locus, ""),
+      m_type(type)
+  {}
+
+  virtual bool
+  operator==(const template_non_type_parameter&) const;
+
+
+  shared_ptr<type_base>
+  get_type() const
+  {return m_type;}
+
+  virtual ~template_non_type_parameter();
+
+private:
+  shared_ptr<type_base> m_type;
+};// class template_non_type_parameter
+
+struct template_non_type_parameter_hash
+{
+  size_t
+  operator()(const template_non_type_parameter& t) const;
+};// end struct template_non_type_parameter_hash
+
+/// Abstracts a template template parameter.
+class template_template_parameter : public template_type_parameter,
+				    public template_decl
+{
+  // Forbidden
+  template_template_parameter();
+
+public:
+
+  template_template_parameter(unsigned index,
+			      const std::string& name,
+			      location locus)
+    : decl_base(name, locus),
+      type_base(0, 0),
+      type_decl(name, 0, 0, locus, name, VISIBILITY_DEFAULT),
+      template_type_parameter(index, name, locus)
+  {}
+
+  virtual bool
+  operator==(const template_template_parameter& o) const;
+
+  virtual ~template_template_parameter();
+};//end class template_template_parameter
+
+/// A hasher for instances of template_template_parameter
+struct template_template_parameter_hash
+{
+  size_t
+  operator()(const template_template_parameter& t) const;
+};// end struct template_template_parameter_hash
+
+class function_template_decl : public template_decl, public scope_decl
+{
+  // Forbidden
+  function_template_decl();
+
+public:
+
+  function_template_decl(location		locus,
+			 visibility vis = VISIBILITY_DEFAULT,
+			 binding bind = BINDING_NONE)
+    : decl_base("", locus, "",  vis),
+      scope_decl("", locus),
+      m_binding(bind)
+  {}
+
+  virtual bool
+  operator==(const function_template_decl&) const;
+
+  void
+  set_pattern(shared_ptr<function_decl> p)
+  {
+    m_pattern = p;
+    add_decl_to_scope(p, this);
+    set_name(p->get_name());
+  }
+
+  shared_ptr<function_decl>
+  get_pattern() const
+  {return m_pattern;}
+
+  binding
+  get_binding() const
+  {return m_binding;}
+
+  virtual ~function_template_decl();
+
+private:
+  shared_ptr<function_decl> m_pattern;
+  binding m_binding;
+};//end class function_template_decl
+
+struct function_template_decl_hash
+{
+  size_t
+  operator()(const function_template_decl&) const;
+};// end struct function_template_decl_hash
+
+struct fn_tmpl_shared_ptr_hash
+{
+  size_t
+  operator()(const shared_ptr<function_template_decl>) const;
+};//end struct fn_tmpl_shared_ptr_hash
 } // end namespace abigail
 #endif // __ABG_IR_H__

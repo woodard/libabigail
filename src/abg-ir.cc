@@ -704,6 +704,12 @@ qualified_type_def_hash::operator()(const qualified_type_def& t) const
 size_t
 dynamic_type_hash::operator()(const type_base* t) const
 {
+  if (const template_template_parameter* d =
+      dynamic_cast<const template_template_parameter*>(t))
+    return template_template_parameter_hash()(*d);
+  if (const template_type_parameter* d =
+      dynamic_cast<const template_type_parameter*>(t))
+    return template_type_parameter_hash()(*d);
   if (const type_decl* d = dynamic_cast<const type_decl*> (t))
     return type_decl_hash()(*d);
   if (const qualified_type_def* d = dynamic_cast<const qualified_type_def*>(t))
@@ -1309,5 +1315,220 @@ class_decl_hash::operator()(const class_decl& t) const
   return v;
 }
 
-// </class_decl
+// </class_decl>
+
+// <template_decl stuff>
+
+template_decl::~template_decl()
+{
+}
+
+bool
+template_decl::operator==(const template_decl& o) const
+{
+  if (typeid(*this) != typeid(o))
+    return false;
+
+  list<shared_ptr<template_parameter> >::const_iterator t0, t1;
+  for (t0 = get_template_parameters().begin(),
+	 t1 = o.get_template_parameters().begin();
+       (t0 != get_template_parameters().end()
+	&& t1 != o.get_template_parameters().end());
+	++t0, ++t1)
+    {
+      if (**t0 != **t1)
+	return false;
+    }
+
+  if (t0 != get_template_parameters().end()
+      || t1 != o.get_template_parameters().end())
+    return false;
+
+  return true;
+}
+
+size_t
+template_decl_hash::operator()(const template_decl& t) const
+{
+  hash<string> hash_string;
+  template_parameter_shared_ptr_hash hash_template_parameter;
+
+  size_t v = hash_string(typeid(t).name());
+
+  for (list<shared_ptr<template_parameter> >::const_iterator p =
+	 t.get_template_parameters().begin();
+       p != t.get_template_parameters().end();
+       ++p)
+    {
+      v = hashing::combine_hashes(v, hash_template_parameter(*p));
+    }
+  return v;
+}
+
+// </template_decl stuff>
+
+//<template_parameter>
+
+bool
+template_parameter::operator==(const template_parameter& o) const
+{
+  return (get_index() == o.get_index());
+}
+
+template_parameter::~template_parameter()
+{
+}
+
+size_t
+template_parameter_hash::operator()(const template_parameter& t) const
+{
+  hash<unsigned> hash_unsigned;
+  hash<std::string> hash_string;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_unsigned(t.get_index()));
+
+  return v;
+}
+
+size_t
+dynamic_template_parameter_hash::operator()(const template_parameter* t) const
+{
+  if (const template_template_parameter* p =
+      dynamic_cast<const template_template_parameter*>(t))
+    return template_template_parameter_hash()(*p);
+  else if (const template_type_parameter* p =
+	   dynamic_cast<const template_type_parameter*>(t))
+    return template_type_parameter_hash()(*p);
+  if (const template_non_type_parameter* p =
+      dynamic_cast<const template_non_type_parameter*>(t))
+    return template_non_type_parameter_hash()(*p);
+
+  // Poor man's fallback.
+  return template_parameter_hash()(*t);
+}
+
+bool
+template_type_parameter::operator==(const template_type_parameter& o) const
+{
+  return (static_cast<template_parameter>(*this) == o);
+}
+
+template_type_parameter::~template_type_parameter()
+{
+}
+
+size_t
+template_type_parameter_hash::operator()(const template_type_parameter& t) const
+{
+  hash<string> hash_string;
+  template_parameter_hash hash_template_parameter;
+  type_decl_hash hash_type;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_template_parameter(t));
+  v = hashing::combine_hashes(v, hash_type(t));
+
+  return v;
+}
+
+bool
+template_non_type_parameter::operator==
+(const template_non_type_parameter& o) const
+{
+  return (static_cast<template_parameter>(*this) == o
+      && *get_type() == *o.get_type());
+}
+
+template_non_type_parameter::~template_non_type_parameter()
+{
+}
+
+size_t
+template_non_type_parameter_hash::operator()
+  (const template_non_type_parameter& t) const
+{
+  template_parameter_hash hash_template_parameter;
+  hash<string> hash_string;
+  type_shared_ptr_hash hash_type;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_template_parameter(t));
+  v = hashing::combine_hashes(v, hash_string(t.get_name()));
+  v = hashing::combine_hashes(v, hash_type(t.get_type()));
+
+  return v;
+}
+
+bool
+template_template_parameter::operator==
+(const template_template_parameter& o) const
+{
+  return (static_cast<template_type_parameter>(*this) == o
+	  && (static_cast<template_decl>(*this) == o));
+}
+
+template_template_parameter::~template_template_parameter()
+{
+}
+
+size_t
+template_template_parameter_hash::operator()
+  (const template_template_parameter& t) const
+{
+  hash<string> hash_string;
+  template_type_parameter_hash hash_template_type_parm;
+  template_decl_hash hash_template_decl;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_template_type_parm(t));
+  v = hashing::combine_hashes(v, hash_template_decl(t));
+
+  return v;
+}
+
+//</template_parameter>
+
+// <function_template>
+bool
+function_template_decl::operator==(const function_template_decl& o) const
+{
+  return (get_binding() == o.get_binding()
+	  && static_cast<template_decl>(*this) == o
+	  && static_cast<scope_decl>(*this) == o
+	  && get_pattern() == o.get_pattern());
+}
+
+size_t
+function_template_decl_hash::operator()
+(const function_template_decl& t) const
+{
+  hash<string> hash_string;
+  decl_base_hash hash_decl_base;
+  template_decl_hash hash_template_decl;
+  function_decl_hash hash_function_decl;
+
+  size_t v = hash_string(typeid(t).name());
+
+  v = hashing::combine_hashes(v, hash_decl_base(t));
+  v = hashing::combine_hashes(v, hash_template_decl(t));
+  v = hashing::combine_hashes(v, hash_function_decl(*t.get_pattern()));
+
+  return v;
+}
+
+size_t
+fn_tmpl_shared_ptr_hash::operator()
+(const shared_ptr<function_template_decl> f) const
+{
+  function_template_decl_hash hash_fn_tmpl_decl;
+  if (f)
+    return hash_fn_tmpl_decl(*f);
+  return 0;
+}
+
+function_template_decl::~function_template_decl()
+{
+}
+// </function_template>
 }//end namespace abigail
