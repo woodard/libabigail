@@ -260,7 +260,7 @@ private:
 
 
 /// \brief A declaration that introduces a scope.
-class scope_decl : public decl_base
+class scope_decl : public virtual decl_base
 {
   scope_decl();
 
@@ -320,7 +320,8 @@ struct decl_base_hash
 class global_scope : public scope_decl
 {
   global_scope()
-    : scope_decl("", location()),
+    : decl_base("", location()),
+      scope_decl("", location()),
       m_translation_unit(0)
   {
   }
@@ -419,7 +420,7 @@ struct type_shared_ptr_equal
 };//end struct type_shared_ptr_equal
 
 /// A basic type declaration that introduces no scope.
-class type_decl : public decl_base, public type_base
+class type_decl : public virtual decl_base, public virtual type_base
 {
   // Forbidden.
   type_decl();
@@ -447,7 +448,7 @@ struct type_decl_hash
 };//end struct type_decl_hash
 
 /// A type that introduces a scope.
-class scope_type_decl : public scope_decl, public type_base
+class scope_type_decl : public scope_decl, public virtual type_base
 {
   scope_type_decl();
 
@@ -489,7 +490,7 @@ public:
 };//end class namespace_decl
 
 /// The abstraction of a qualified type.
-class qualified_type_def : public type_base, public decl_base
+class qualified_type_def : public virtual type_base, public virtual decl_base
 {
 
   // Forbidden.
@@ -535,7 +536,8 @@ struct qualified_type_def_hash
 };//end struct qualified_type_def_hash
 
 /// The abstraction of a pointer type.
-class pointer_type_def : public type_base, public decl_base
+class pointer_type_def : public virtual type_base,
+			 public virtual decl_base
 {
   // Forbidden.
   pointer_type_def();
@@ -567,7 +569,8 @@ struct pointer_type_def_hash
 };// end struct pointer_type_def_hash
 
 /// Abstracts a reference type.
-class reference_type_def : public type_base, public decl_base
+class reference_type_def : public virtual type_base,
+			   public virtual decl_base
 {
   // Forbidden.
   reference_type_def();
@@ -603,7 +606,8 @@ struct reference_type_def_hash
 };//end struct reference_type_def_hash
 
 /// Abstracts a declaration for an enum type.
-class enum_type_decl: public type_base, public decl_base
+class enum_type_decl: public virtual type_base,
+		      public virtual decl_base
 {
   // Forbidden
   enum_type_decl();
@@ -683,7 +687,8 @@ struct enum_type_decl_hash
 };//end struct enum_type_decl_hash
 
 /// The abstraction of a typedef declaration.
-class typedef_decl: public type_base, public decl_base
+class typedef_decl: public virtual type_base,
+		    public virtual decl_base
 {
   // Forbidden
   typedef_decl();
@@ -717,7 +722,7 @@ struct typedef_decl_hash
 };// end struct typedef_decl_hash
 
 /// Abstracts a variable declaration.
-class var_decl : public decl_base
+class var_decl : public virtual decl_base
 {
   // Forbidden
   var_decl();
@@ -762,7 +767,7 @@ struct var_decl_hash
 };// end struct var_decl_hash
 
 /// Abstraction for a function declaration.
-class function_decl: public decl_base
+class function_decl: public virtual decl_base
 {
 public:
 
@@ -896,15 +901,14 @@ public:
   /// functions.  Its purpose is to mainly to carry the access
   /// specifier (and possibly other properties that might be shared by
   /// all class members) for the member.
-  class member : scope_decl
+  class member
   {
     // Forbidden
     member();
   public:
 
     member(access_specifier a)
-      : scope_decl("", location(), VISIBILITY_NONE),
-	m_access(a)
+      : m_access(a)
     {}
 
     access_specifier
@@ -931,7 +935,7 @@ public:
   };// struct member_hash
 
   /// Abstracts a member type declaration.
-  class member_type : public member
+  class member_type : public member, public virtual decl_base
   {
     //Forbidden
     member_type();
@@ -940,7 +944,8 @@ public:
 
     member_type(shared_ptr<type_base> t,
 		access_specifier access)
-      : member(access),
+      : decl_base("", location()),
+	member(access),
 	m_type(t)
     {
     }
@@ -1020,7 +1025,11 @@ public:
 		bool is_laid_out,
 		bool is_static,
 		size_t offset_in_bits)
-      : var_decl(data_member->get_name(),
+      : decl_base(data_member->get_name(),
+		  data_member->get_location(),
+		  data_member->get_mangled_name(),
+		  data_member->get_visibility()),
+	var_decl(data_member->get_name(),
 		 data_member->get_type(),
 		 data_member->get_location(),
 		 data_member->get_mangled_name(),
@@ -1042,7 +1051,8 @@ public:
 		bool			is_laid_out,
 		bool			is_static,
 		size_t			offset_in_bits)
-      : var_decl(name, type, locus, mangled_name, vis, bind),
+      : decl_base(name, locus, name, vis),
+	var_decl(name, type, locus, mangled_name, vis, bind),
 	member(access),
 	m_is_laid_out(is_laid_out),
 	m_is_static(is_static),
@@ -1107,7 +1117,8 @@ public:
      bool				is_constructor,
      bool				is_destructor,
      bool				is_const)
-      : function_decl(name, parms, return_type, declared_inline,
+      : decl_base(name, locus, name, vis),
+	function_decl(name, parms, return_type, declared_inline,
 		      locus, mangled_name, vis, bind),
       member(access),
       m_vtable_offset_in_bits(vtable_offset_in_bits),
@@ -1124,7 +1135,9 @@ public:
 		    bool			is_constructor,
 		    bool			is_destructor,
 		    bool			is_const)
-      : function_decl(fn->get_name(),
+      : decl_base(fn->get_name(), fn->get_location(),
+		  fn->get_mangled_name(), fn->get_visibility()),
+	function_decl(fn->get_name(),
 		      fn->get_parameters(),
 		      fn->get_return_type(),
 		      fn->is_declared_inline(),
@@ -1196,8 +1209,9 @@ public:
 	     const std::list<shared_ptr<member_type> >&	member_types,
 	     const std::list<shared_ptr<data_member> >&	data_members,
 	     const std::list<shared_ptr<member_function> >&	member_fns)
-    : scope_type_decl(name, size_in_bits, align_in_bits,
-		      locus, vis),
+    : decl_base(name, locus, name, vis),
+      type_base(size_in_bits, align_in_bits),
+      scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
     m_bases(bases),
     m_member_types(member_types),
     m_data_members(data_members),

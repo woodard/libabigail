@@ -214,9 +214,6 @@ translation_unit::is_empty() const
 }
 
 // <Decl definition>
-decl_base::decl_base()
-{
-}
 
 decl_base::decl_base(const std::string&	name,
 		     location			locus,
@@ -417,7 +414,7 @@ global_scope::~global_scope()
 }
 
 // <type_base definitions>
-type_base::type_base(size_t s = 8, size_t a = 8)
+type_base::type_base(size_t s, size_t a)
   : m_size_in_bits(s),
     m_alignment_in_bits(a)
 {
@@ -533,8 +530,9 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 				 size_t			alignment_in_bits,
 				 location			locus,
 				 visibility			vis)
-  :scope_decl(name, locus, vis),
-   type_base(size_in_bits, alignment_in_bits)
+  : decl_base(name, locus, "", vis),
+    type_base(size_in_bits, alignment_in_bits),
+    scope_decl(name, locus)
 {
 }
 
@@ -577,7 +575,14 @@ scope_type_decl_hash::operator()(const scope_type_decl& t) const
 namespace_decl::namespace_decl(const std::string&	name,
 			       location		locus,
 			       visibility		vis)
-  : scope_decl(name, locus, vis)
+  : // We need to call the constructor of decl_base directly here
+    // because it is virtually inherited by scope_decl.  Note that we
+    // just implicitely call the default constructor for scope_decl
+    // here, as what we really want is to initialize the decl_base
+    // subobject.  Wow, virtual inheritance is useful, but setting it
+    // up is ugly.
+  decl_base(name, locus, "", vis),
+  scope_decl(name, locus)
 {
 }
 
