@@ -953,7 +953,7 @@ public:
     bool
     operator==(const member_type& o) const
     {
-      return (*get_type() == *o.get_type()
+      return (*as_type() == *o.as_type()
 	      && static_cast<member>(*this) == o);
     }
 
@@ -961,7 +961,7 @@ public:
     {return m_type;}
 
     shared_ptr<type_base>
-    get_type() const
+    as_type() const
     {return m_type;}
 
   private:

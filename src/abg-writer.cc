@@ -976,7 +976,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
       write_access(*ti, o);
       o << ">\n";
 
-      write_decl(dynamic_pointer_cast<decl_base>((*ti)->get_type()), ctxt,
+      write_decl(dynamic_pointer_cast<decl_base>((*ti)->as_type()), ctxt,
 		 get_indent_to_level(ctxt, indent, 2));
       o << "\n";
 
