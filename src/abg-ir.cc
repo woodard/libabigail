@@ -284,8 +284,6 @@ decl_base_hash::operator()(const decl_base& d) const
   if (d.get_location())
     v = hashing::combine_hashes(v, unsigned_hash(d.get_location()));
 
-  if (d.get_scope())
-    v = hashing::combine_hashes(v, this->operator()(*d.get_scope()));
   return v;
 }
 
