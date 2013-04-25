@@ -486,9 +486,7 @@ update_depth_info_of_read_context(read_context& ctxt, int new_depth)
 	  /// OK, this is a hack needed because the libxml reader
 	  /// interface doesn't provide us with a reliable way to know
 	  /// when we read the end of an XML element.
-	  if (d
-	      && dynamic_cast<class_decl*>(d->get_scope())
-	      && nb > 2)
+	  if (is_at_class_scope(d) && nb > 2)
 	    // This means we logically poped out at least a member of
 	    // a class (i.e, during the xml parsing, we went up so
 	    // that we got out of an e.g, member-type, data-member or

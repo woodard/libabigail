@@ -392,18 +392,103 @@ is_global_scope(const scope_decl* scope)
   return !!dynamic_cast<const global_scope*>(scope);
 }
 
-/// Tests wether if a given decl is at global scope.
+/// Tests whether a given decl is at global scope.
 ///
 /// \param decl the decl to consider.
 ///
 /// \return true iff #decl is at global scope.
 bool
-is_decl_at_global_scope(const shared_ptr<decl_base> decl)
+is_at_global_scope(const shared_ptr<decl_base> decl)
 {
-  if (!decl)
-    return false;
+  return (decl && is_global_scope(decl->get_scope()));
+}
 
-  return is_global_scope(decl->get_scope());
+/// Tests whether a given decl is at class scope.
+///
+/// \param the decl to consider.
+///
+/// \return true iff #decl is at class scope.
+bool
+is_at_class_scope(const shared_ptr<decl_base> decl)
+{
+  return (decl && dynamic_cast<class_decl*>(decl->get_scope()));
+}
+
+/// Tests whether a given decl is at template scope.
+///
+/// Note that only template parameters , types that are compositions,
+/// and template patterns (function or class) can be at template scope.
+///
+/// \param the decl to consider.
+///
+/// \return true iff the decl is at template scope.
+bool
+is_at_template_scope(const shared_ptr<decl_base> decl)
+{
+  return (decl && dynamic_cast<template_decl*>(decl->get_scope()));
+}
+
+/// Tests whether a decl is a template parameter.
+///
+/// \param the decl to consider.
+///
+/// \return true iff #decl is a template parameter.
+bool
+is_template_parameter(const shared_ptr<decl_base> decl)
+{
+  return (decl && (dynamic_pointer_cast<template_type_parameter>(decl)
+		   || dynamic_pointer_cast<template_non_type_parameter>(decl)
+		   || dynamic_pointer_cast<template_template_parameter>(decl)));
+}
+
+/// Tests whether a declaration is a type.
+///
+/// \param decl the decl to consider.
+///
+/// \return true iff #decl is a type.
+bool
+is_type(const shared_ptr<decl_base> decl)
+{
+  return decl && dynamic_pointer_cast<type_base>(decl);
+}
+
+/// Tests whether a decl is a template parameter composition type.
+///
+/// \param decl the declaration to consider.
+///
+/// \return true iff #decl is a template parameter composition type.
+bool
+is_template_parm_composition_type(const shared_ptr<decl_base> decl)
+{
+  return (decl
+	  && is_at_template_scope(decl)
+	  && is_type(decl)
+	  && !is_template_parameter(decl));
+}
+
+/// Test whether a decl is the pattern of a function template.
+///
+/// \param decl the decl to consider.
+///
+/// \return true iff #decl is the pattern of a function template.
+bool
+is_function_template_pattern(const shared_ptr<decl_base> decl)
+{
+  return (decl
+	  && dynamic_pointer_cast<function_decl>(decl)
+	  && dynamic_cast<template_decl*>(decl->get_scope()));
+}
+
+/// Tests whether a decl is a template.
+///
+/// \param decl the decl to consider.
+///
+/// \return true iff #decl is a function template, class template, or
+/// template template parameter.
+bool
+is_template_decl(const shared_ptr<decl_base> decl)
+{
+  return decl && dynamic_pointer_cast<template_decl>(decl);
 }
 
 // </scope_decl definition>

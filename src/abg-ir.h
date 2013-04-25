@@ -64,7 +64,21 @@ bool is_global_scope(const scope_decl*);
 
 bool is_global_scope(const shared_ptr<scope_decl>);
 
-bool is_decl_at_global_scope(const shared_ptr<decl_base>);
+bool is_at_global_scope(const shared_ptr<decl_base>);
+
+bool is_at_class_scope(const shared_ptr<decl_base>);
+
+bool is_at_template_scope(const shared_ptr<decl_base>);
+
+bool is_template_parameter(const shared_ptr<decl_base>);
+
+bool is_type(const shared_ptr<decl_base>);
+
+bool is_template_parm_composition_type(const shared_ptr<decl_base>);
+
+bool is_template_decl(const shared_ptr<decl_base>);
+
+bool is_function_template_pattern(const shared_ptr<decl_base>);
 
 /// \brief The source location of a token.
 ///
