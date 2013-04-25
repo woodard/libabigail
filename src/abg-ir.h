@@ -1454,6 +1454,35 @@ struct template_template_parameter_hash
   operator()(const template_template_parameter& t) const;
 };// end struct template_template_parameter_hash
 
+/// This abstracts a composition of types based on template type
+/// parameters.  The result of the composition is a type that can be
+/// referred to by a template non-type parameter.  Instances of this
+/// type can appear at the same level as template parameters, in the
+/// scope of a template_decl.
+class tmpl_parm_type_composition : public template_parameter,
+				   public virtual decl_base
+{
+  tmpl_parm_type_composition();
+
+public:
+  tmpl_parm_type_composition(unsigned			index,
+			     shared_ptr<type_base>	composed_type);
+
+  shared_ptr<type_base>
+  get_composed_type() const
+  {return m_type;}
+
+  void
+  set_composed_type(shared_ptr<type_base> t)
+  {m_type = t;}
+
+
+  virtual ~tmpl_parm_type_composition();
+
+private:
+  shared_ptr<type_base> m_type;
+};// end class tmpl_parm_type_composition
+
 class function_template_decl : public template_decl, public scope_decl
 {
   // Forbidden

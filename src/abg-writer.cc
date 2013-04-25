@@ -202,6 +202,8 @@ static bool write_template_non_type_parameter
 (const shared_ptr<template_non_type_parameter>, write_context&, unsigned);
 static bool write_template_template_parameter
 (const shared_ptr<template_template_parameter>, write_context&, unsigned);
+static bool write_tmpl_parm_type_composition
+(const shared_ptr<tmpl_parm_type_composition>, write_context&, unsigned);
 static bool write_template_parameter(const shared_ptr<template_parameter>,
 				     write_context&, unsigned);
 static bool write_function_template_decl
@@ -1123,7 +1125,7 @@ write_template_non_type_parameter
 
   o << "<template-non-type-parameter type-id='"
     << ctxt.get_id_for_type(decl->get_type())
-    << "";
+    << "'";
 
   string name = decl->get_name();
   if (!name.empty())
@@ -1187,6 +1189,48 @@ write_template_template_parameter
   return true;
 }
 
+/// Serialize an instance of tmpl_parm_type_composition.
+///
+/// \param decl the decl to serialize.
+///
+/// \param ctxt the context of the serialization.
+///
+/// \param indent the initial indentation to use.
+///
+/// \return true upon successful completion, false otherwise.
+static bool
+write_tmpl_parm_type_composition
+(const shared_ptr<tmpl_parm_type_composition> decl,
+ write_context& ctxt, unsigned indent)
+{
+  if (!decl)
+    return false;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent_to_level(ctxt, indent, 0);
+
+  o << "<template-parameter-type-composition>\n";
+
+  unsigned nb_spaces = get_indent_to_level(ctxt, indent, 1);
+  (write_pointer_type_def
+   (dynamic_pointer_cast<pointer_type_def>(decl->get_composed_type()),
+			  ctxt, nb_spaces)
+   || write_reference_type_def
+   (dynamic_pointer_cast<reference_type_def>(decl->get_composed_type()),
+    ctxt, nb_spaces)
+   || write_qualified_type_def
+   (dynamic_pointer_cast<qualified_type_def>(decl->get_composed_type()),
+    ctxt, nb_spaces));
+
+  o << "\n";
+
+  do_indent_to_level(ctxt, indent, 0);
+  o << "</template-parameter-type-composition>";
+
+  return true;
+}
+
 /// Serialize an instance of template_parameter.
 ///
 /// \param decl the instance to serialize.
@@ -1207,6 +1251,9 @@ write_template_parameter(const shared_ptr<template_parameter> decl,
 	   ctxt, indent))
       && (!write_template_template_parameter
 	  (dynamic_pointer_cast<template_template_parameter>(decl),
+	   ctxt, indent))
+      && (!write_tmpl_parm_type_composition
+	  (dynamic_pointer_cast<tmpl_parm_type_composition>(decl),
 	   ctxt, indent)))
     return false;
 

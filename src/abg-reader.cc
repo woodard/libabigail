@@ -382,6 +382,10 @@ static shared_ptr<function_template_decl>
 build_function_template_decl(read_context&, const xmlNodePtr, bool);
 static shared_ptr<template_type_parameter>
 build_template_type_parameter(read_context&, const xmlNodePtr, unsigned, bool);
+static shared_ptr<tmpl_parm_type_composition>
+build_tmpl_parm_type_composition(read_context&,
+				 const xmlNodePtr,
+				 unsigned, bool);
 static shared_ptr<template_non_type_parameter>
 build_template_non_type_parameter(read_context&, const xmlNodePtr,
 				  unsigned, bool);
@@ -1263,7 +1267,7 @@ build_pointer_type_def(read_context&	ctxt,
 
   shared_ptr<pointer_type_def> nil;
 
-  if (!xmlStrEqual(node->name, BAD_CAST("poihnter-type-def")))
+  if (!xmlStrEqual(node->name, BAD_CAST("pointer-type-def")))
     return nil;
 
   string type_id;
@@ -1773,6 +1777,60 @@ build_template_type_parameter(read_context& ctxt,
   return result;
 }
 
+
+/// Build a tmpl_parm_type_composition from a
+/// "template-parameter-type-composition" xml element node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to parse from.
+///
+/// \param index the index of the previous normal template parameter.
+///
+/// \param update_depth_info wheter to udpate the depth information
+/// maintained in the context of the parsing.
+///
+/// \return a pointer to a new instance of tmpl_parm_type_composition
+/// upon successful completion, a null pointer otherwise.
+static shared_ptr<tmpl_parm_type_composition>
+build_tmpl_parm_type_composition(read_context& ctxt,
+				 const xmlNodePtr node,
+				 unsigned index,
+				 bool update_depth_info)
+{
+  shared_ptr<tmpl_parm_type_composition> nil, result;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("template-parameter-type-composition")))
+    return nil;
+
+  shared_ptr<type_base> composed_type;
+  result.reset(new tmpl_parm_type_composition(index, composed_type));
+  ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result),
+				  node, update_depth_info);
+
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      if ((composed_type =
+	   build_pointer_type_def(ctxt, n,
+				  /*update_depth_info=*/true))
+	  ||(composed_type =
+	     build_reference_type_def(ctxt, n,
+				      /*update_depth_info=*/true))
+	  || (composed_type =
+	      build_qualified_type_decl(ctxt, n,
+					/**update_depth_info=*/true)))
+	{
+	  result->set_composed_type(composed_type);
+	  break;
+	}
+    }
+
+  return result;
+}
+
 /// Build an instance of template_non_type_parameter from a
 /// 'template-non-type-parameter' xml element node.
 ///
@@ -1914,7 +1972,9 @@ build_template_parameter(read_context&		ctxt,
    || (r = build_template_non_type_parameter(ctxt, node, index,
 					     update_depth_info))
    || (r = build_template_template_parameter(ctxt, node, index,
-					     update_depth_info)));
+					     update_depth_info))
+   || (r = build_tmpl_parm_type_composition(ctxt, node, index,
+					    update_depth_info)));
 
   return r;
 }

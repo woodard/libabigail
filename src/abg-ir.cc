@@ -1484,6 +1484,18 @@ template_template_parameter_hash::operator()
 
   return v;
 }
+tmpl_parm_type_composition::tmpl_parm_type_composition
+(unsigned		index,
+ shared_ptr<type_base>	t)
+  : decl_base("", location()),
+    template_parameter(index),
+    m_type(std::tr1::dynamic_pointer_cast<type_base>(t))
+{
+}
+
+tmpl_parm_type_composition::~tmpl_parm_type_composition()
+{
+}
 
 //</template_parameter>
 
