@@ -1290,7 +1290,7 @@ class template_type_parameter;
 class template_non_type_parameter;
 class template_template_parameter;
 
-/// Abstract a function template parameter.
+/// The base class of templates.
 class template_decl
 {
 
