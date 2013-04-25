@@ -1401,7 +1401,8 @@ struct template_type_parameter_hash
 };//end struct template_type_parameter_hash
 
 /// Abstracts non type template parameters.
-class template_non_type_parameter : public template_parameter, public decl_base
+class template_non_type_parameter : public template_parameter,
+				    public virtual decl_base
 {
   // Forbidden
   template_non_type_parameter();
@@ -1412,8 +1413,8 @@ public:
 			      const std::string& name,
 			      shared_ptr<type_base> type,
 			      location locus)
-    : template_parameter(index),
-      decl_base(name, locus, ""),
+    : decl_base(name, locus, ""),
+      template_parameter(index),
       m_type(type)
   {}
 
