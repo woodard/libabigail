@@ -1242,6 +1242,23 @@ class_decl::add_member_function(shared_ptr<member_function> m)
   m_member_functions.push_back(m);
 }
 
+/// Append a member template function to the class.
+///
+/// \param m the member function template to append.
+void
+class_decl::add_member_function_template
+(shared_ptr<member_function_template> m)
+{
+  decl_base* c = m->as_function_template_decl()->get_scope();
+  /// TODO: use our own assertion facility that adds a meaningful
+  /// error message or something like a structured error.
+  assert(!c || c == this);
+  if (!c)
+    add_decl_to_scope(m->as_function_template_decl(), this);
+
+  m_member_function_templates.push_back(m);
+}
+
 bool
 class_decl::operator==(const class_decl& o) const
 {
@@ -1353,6 +1370,28 @@ class_decl::member_function_hash::operator()(const member_function& t) const
   return v;
 }
 
+/// Hashing function for instances of class_decl::member_function_template_hash.
+///
+/// \param t the instance of class_decl::member_function_template to hash.
+///
+/// \return the resulting hash.
+size_t
+class_decl::member_function_template_hash::operator()
+(const member_function_template& t) const
+{
+  hash<bool> hash_bool;
+  function_template_decl_hash hash_function_template_decl;
+  member_hash hash_member;
+
+  size_t v = hash_member(t);
+  v = hashing::combine_hashes(v, hash_function_template_decl(t));
+  v = hashing::combine_hashes(v, hash_bool(t.is_static()));
+  v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
+  v = hashing::combine_hashes(v, hash_bool(t.is_const()));
+
+  return v;
+}
+
 /// A hashing function for instances of class_decl.
 size_t
 class_decl_hash::operator()(const class_decl& t) const
@@ -1363,6 +1402,7 @@ class_decl_hash::operator()(const class_decl& t) const
   class_decl::member_type_hash hash_member_type;
   class_decl::data_member_hash hash_data_member;
   class_decl::member_function_hash hash_member_fn;
+  class_decl::member_function_template_hash hash_member_fn_tmpl;
 
   size_t v = hash_string(typeid(t).name());
   v = hashing::combine_hashes(v, hash_scope_type(t));
@@ -1394,6 +1434,13 @@ class_decl_hash::operator()(const class_decl& t) const
        f != t.get_member_functions().end();
        ++f)
     v = hashing::combine_hashes(v, hash_member_fn(**f));
+
+  // Hash member templates
+  for (class_decl::member_function_templates_type::const_iterator f =
+	 t.get_member_function_templates().begin();
+       f != t.get_member_function_templates().end();
+       ++f)
+    v = hashing::combine_hashes(v, hash_member_fn_tmpl(**f));
 
   return v;
 }

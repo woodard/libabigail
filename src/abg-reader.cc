@@ -1519,10 +1519,10 @@ build_class_decl(read_context&		ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  std::list<shared_ptr<class_decl::member_type> > member_types;
-  std::list<shared_ptr<class_decl::data_member> > data_members;
-  std::list<shared_ptr<class_decl::member_function> > member_functions;
-  std::list<shared_ptr<class_decl::base_spec> > bases;
+  class_decl::member_types_type member_types;
+  class_decl::data_members_type data_members;
+  class_decl::member_functions_type member_functions;
+  class_decl::base_specs_type  bases;
 
   shared_ptr<class_decl> decl(new class_decl(name, size_in_bits,
 					     alignment_in_bits,
@@ -1637,6 +1637,35 @@ build_class_decl(read_context&		ctxt,
 						     is_const));
 
 		  decl->add_member_function(m);
+		}
+	    }
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("member-template")))
+	{
+	  class_decl::access_specifier access = class_decl::private_access;
+	  read_access(n, access);
+
+	  bool is_static = false;
+	  read_static(n, is_static);
+
+	  bool is_ctor = false, is_dtor = false, is_const = false;
+	  read_cdtor_const(n, is_ctor, is_dtor, is_const);
+
+	  for (xmlNodePtr p = n->children; p; p = p->next)
+	    {
+	      if (p->type != XML_ELEMENT_NODE)
+		continue;
+
+	      if (shared_ptr<function_template_decl> f =
+		  build_function_template_decl(ctxt, p,
+					       /*update_depth_info=*/true))
+		{
+		  shared_ptr<class_decl::member_function_template> m
+		    (new class_decl::member_function_template(f, access,
+							      is_static,
+							      is_ctor,
+							      is_const));
+		  decl->add_member_function_template(m);
 		}
 	    }
 	}
