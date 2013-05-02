@@ -1635,10 +1635,16 @@ tmpl_parm_type_composition::~tmpl_parm_type_composition()
 bool
 function_template_decl::operator==(const function_template_decl& o) const
 {
-  return (get_binding() == o.get_binding()
-	  && static_cast<template_decl>(*this) == o
-	  && static_cast<scope_decl>(*this) == o
-	  && get_pattern() == o.get_pattern());
+  if (!(get_binding() == o.get_binding()
+	&& static_cast<template_decl>(*this) == o
+	&& static_cast<scope_decl>(*this) == o
+	&& !!get_pattern() == !!o.get_pattern()))
+    return false;
+
+  if (get_pattern())
+    return (*get_pattern() == *o.get_pattern());
+
+  return true;
 }
 
 size_t
@@ -1654,7 +1660,8 @@ function_template_decl_hash::operator()
 
   v = hashing::combine_hashes(v, hash_decl_base(t));
   v = hashing::combine_hashes(v, hash_template_decl(t));
-  v = hashing::combine_hashes(v, hash_function_decl(*t.get_pattern()));
+  if (t.get_pattern())
+    v = hashing::combine_hashes(v, hash_function_decl(*t.get_pattern()));
 
   return v;
 }

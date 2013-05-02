@@ -1137,9 +1137,8 @@ public:
     : decl_base(pattern->get_name(), locus,
 		pattern->get_name(), vis),
       scope_decl(pattern->get_name(), locus),
-      m_pattern(pattern),
       m_binding(bind)
-  {}
+  {set_pattern(pattern);}
 
   virtual bool
   operator==(const function_template_decl&) const;
