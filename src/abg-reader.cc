@@ -1725,6 +1725,15 @@ build_class_decl(read_context&		ctxt,
 							      is_const));
 		  decl->add_member_function_template(m);
 		}
+	      else if (shared_ptr<class_template_decl> c =
+		       build_class_template_decl(ctxt, p,
+						 /*update_depth_info=*/true))
+		{
+		  shared_ptr<class_decl::member_class_template> m
+		    (new class_decl::member_class_template(c, access,
+							   is_static));
+		  decl->add_member_class_template(m);
+		}
 	    }
 	}
     }

@@ -1242,7 +1242,7 @@ class_decl::add_member_function(shared_ptr<member_function> m)
   m_member_functions.push_back(m);
 }
 
-/// Append a member template function to the class.
+/// Append a member function template to the class.
 ///
 /// \param m the member function template to append.
 void
@@ -1257,6 +1257,22 @@ class_decl::add_member_function_template
     add_decl_to_scope(m->as_function_template_decl(), this);
 
   m_member_function_templates.push_back(m);
+}
+
+/// Append a member class template to the class.
+///
+/// \param m the member function template to append.
+void
+class_decl::add_member_class_template(shared_ptr<member_class_template> m)
+{
+    decl_base* c = m->as_class_template_decl()->get_scope();
+  /// TODO: use our own assertion facility that adds a meaningful
+  /// error message or something like a structured error.
+  assert(!c || c == this);
+  if (!c)
+    add_decl_to_scope(m->as_class_template_decl(), this);
+
+  m_member_class_templates.push_back(m);
 }
 
 bool
@@ -1296,12 +1312,39 @@ class_decl::operator==(const class_decl& o) const
   list<shared_ptr<class_decl::member_function> >::const_iterator f0, f1;
   for (f0 = get_member_functions().begin(),
 	 f1 = o.get_member_functions().begin();
-       f0 != get_member_functions().end(), f1 != o.get_member_functions().end();
+       f0 != get_member_functions().end()
+	 && f1 != o.get_member_functions().end();
        ++f0, ++f1)
     if (**d0 != **d1)
       return false;
   if (f0 != get_member_functions().end()
       || f1 != o.get_member_functions().end())
+    return false;
+
+  // compare member function templates
+  member_function_templates_type::const_iterator fn_tmpl_it0, fn_tmpl_it1;
+  for (fn_tmpl_it0 = get_member_function_templates().begin(),
+	 fn_tmpl_it1 = o.get_member_function_templates().begin();
+       fn_tmpl_it0 != get_member_function_templates().end()
+	 &&  fn_tmpl_it1 != o.get_member_function_templates().end();
+       ++fn_tmpl_it0, ++fn_tmpl_it1)
+    if (**fn_tmpl_it0 != **fn_tmpl_it1)
+      return false;
+  if (fn_tmpl_it0 != get_member_function_templates().end()
+      || fn_tmpl_it1 != o.get_member_function_templates().end())
+    return false;
+
+  // compare member class templates
+  member_class_templates_type::const_iterator cl_tmpl_it0, cl_tmpl_it1;
+  for (cl_tmpl_it0 = get_member_class_templates().begin(),
+	 cl_tmpl_it1 = o.get_member_class_templates().begin();
+       cl_tmpl_it0 != get_member_class_templates().end()
+	 &&  cl_tmpl_it1 != o.get_member_class_templates().end();
+       ++cl_tmpl_it0, ++cl_tmpl_it1)
+    if (**cl_tmpl_it0 != **cl_tmpl_it1)
+      return false;
+  if (cl_tmpl_it0 != get_member_class_templates().end()
+      || cl_tmpl_it1 != o.get_member_class_templates().end())
     return false;
 
   return true;
@@ -1344,7 +1387,6 @@ class_decl::data_member_hash::operator()(data_member& t)
   v = hashing::combine_hashes(v, hash_var_decl(t));
   if (t.is_laid_out())
     v = hashing::combine_hashes(v, hash_size_t(t.get_offset_in_bits()));
-  v = hashing::combine_hashes(v, t.is_static());
 
   return v;
 }
@@ -1359,7 +1401,6 @@ class_decl::member_function_hash::operator()(const member_function& t) const
 
   size_t v = hash_member(t);
   v = hashing::combine_hashes(v, hash_fn(t));
-  v = hashing::combine_hashes(v, hash_bool(t.is_static()));
   v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
   v = hashing::combine_hashes(v, hash_bool(t.is_const()));
 
@@ -1368,6 +1409,21 @@ class_decl::member_function_hash::operator()(const member_function& t) const
 				hash_size_t(t.get_vtable_offset_in_bits()));
 
   return v;
+}
+
+bool
+class_decl::member_function_template::operator==
+(const member_function_template& o) const
+{
+  if (!(is_constructor() == o.is_constructor()
+	&& is_const() == o.is_const()
+	&& static_cast<member>(*this) == o))
+    return false;
+
+  if (as_function_template_decl())
+    return static_cast<function_template_decl>(*this) == o;
+
+  return true;
 }
 
 /// Hashing function for instances of class_decl::member_function_template_hash.
@@ -1385,10 +1441,34 @@ class_decl::member_function_template_hash::operator()
 
   size_t v = hash_member(t);
   v = hashing::combine_hashes(v, hash_function_template_decl(t));
-  v = hashing::combine_hashes(v, hash_bool(t.is_static()));
   v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
   v = hashing::combine_hashes(v, hash_bool(t.is_const()));
 
+  return v;
+}
+
+bool
+class_decl::member_class_template::operator==
+(const member_class_template& o) const
+{
+  if (!(static_cast<member>(*this) == o))
+    return false;
+
+  if (as_class_template_decl())
+    return static_cast<class_template_decl>(*this) == o;
+
+  return true;
+}
+
+size_t
+class_decl::member_class_template_hash::operator()
+(member_class_template& t) const
+{
+  member_hash hash_member;
+  class_template_decl_hash hash_class_template_decl;
+
+  size_t v = hash_member(t);
+  v = hashing::combine_hashes(v, hash_class_template_decl(t));
   return v;
 }
 
@@ -1403,6 +1483,7 @@ class_decl_hash::operator()(const class_decl& t) const
   class_decl::data_member_hash hash_data_member;
   class_decl::member_function_hash hash_member_fn;
   class_decl::member_function_template_hash hash_member_fn_tmpl;
+  class_decl::member_class_template_hash hash_member_class_tmpl;
 
   size_t v = hash_string(typeid(t).name());
   v = hashing::combine_hashes(v, hash_scope_type(t));
@@ -1435,12 +1516,19 @@ class_decl_hash::operator()(const class_decl& t) const
        ++f)
     v = hashing::combine_hashes(v, hash_member_fn(**f));
 
-  // Hash member templates
+  // Hash member function templates
   for (class_decl::member_function_templates_type::const_iterator f =
 	 t.get_member_function_templates().begin();
        f != t.get_member_function_templates().end();
        ++f)
     v = hashing::combine_hashes(v, hash_member_fn_tmpl(**f));
+
+  // Hash member class templates
+  for (class_decl::member_class_templates_type::const_iterator c =
+	 t.get_member_class_templates().begin();
+       c != t.get_member_class_templates().end();
+       ++c)
+    v = hashing::combine_hashes(v, hash_member_class_tmpl(**c));
 
   return v;
 }

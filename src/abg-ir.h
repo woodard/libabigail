@@ -1263,8 +1263,10 @@ public:
     member();
   public:
 
-    member(access_specifier a)
-      : m_access(a)
+    member(access_specifier a,
+	   bool is_static = false)
+      : m_access(a),
+	m_is_static(is_static)
     {}
 
     access_specifier
@@ -1272,11 +1274,19 @@ public:
     {return m_access;}
 
     bool
-    operator==(const member& o)
-    {return get_access_specifier() == o.get_access_specifier();}
+    is_static() const
+    {return m_is_static;}
+
+    bool
+    operator==(const member& o) const
+    {
+      return (get_access_specifier() == o.get_access_specifier()
+	      && is_static() == o.is_static());
+    }
 
   private:
     enum access_specifier m_access;
+    bool m_is_static;
   };//end class member.
 
   /// Hasher for a class_decl::member
@@ -1391,9 +1401,8 @@ public:
 		 data_member->get_mangled_name(),
 		 data_member->get_visibility(),
 		 data_member->get_binding()),
-	member(access),
+	member(access, is_static),
 	m_is_laid_out(is_laid_out),
-	m_is_static(is_static),
 	m_offset_in_bits(offset_in_bits)
     {}
 
@@ -1409,19 +1418,14 @@ public:
 		size_t			offset_in_bits)
       : decl_base(name, locus, name, vis),
 	var_decl(name, type, locus, mangled_name, vis, bind),
-	member(access),
+	member(access, is_static),
 	m_is_laid_out(is_laid_out),
-	m_is_static(is_static),
 	m_offset_in_bits(offset_in_bits)
     {}
 
     bool
     is_laid_out() const
     {return m_is_laid_out;}
-
-    bool
-    is_static() const
-    {return m_is_static;}
 
     size_t
     get_offset_in_bits() const
@@ -1431,7 +1435,6 @@ public:
     operator==(const data_member& other) const
     {
       return (is_laid_out() == other.is_laid_out()
-	      && is_static() == other.is_static()
 	      && get_offset_in_bits() == other.get_offset_in_bits()
 	      && static_cast<var_decl>(*this) ==other
 	      && static_cast<member>(*this) == other);
@@ -1439,7 +1442,6 @@ public:
 
   private:
     bool m_is_laid_out;
-    bool m_is_static;
     size_t m_offset_in_bits;
   };// end class data_member
 
@@ -1476,9 +1478,8 @@ public:
       : decl_base(name, locus, name, vis),
 	function_decl(name, parms, return_type, declared_inline,
 		      locus, mangled_name, vis, bind),
-      member(access),
+      member(access, is_static),
       m_vtable_offset_in_bits(vtable_offset_in_bits),
-      m_is_static(is_static),
       m_is_constructor(is_constructor),
       m_is_destructor(is_destructor),
       m_is_const(is_const)
@@ -1501,9 +1502,8 @@ public:
 		      fn->get_mangled_name(),
 		      fn->get_visibility(),
 		      fn->get_binding()),
-	member(access),
-	m_vtable_offset_in_bits(vtable_offset_in_bits),
-      m_is_static(is_static),
+      member(access, is_static),
+      m_vtable_offset_in_bits(vtable_offset_in_bits),
       m_is_constructor(is_constructor),
       m_is_destructor(is_destructor),
       m_is_const(is_const)
@@ -1512,10 +1512,6 @@ public:
     size_t
     get_vtable_offset_in_bits() const
     {return m_vtable_offset_in_bits;}
-
-    bool
-    is_static() const
-    {return m_is_static;}
 
     bool
     is_constructor() const
@@ -1533,7 +1529,6 @@ public:
     operator==(const member_function& o) const
     {
       return (get_vtable_offset_in_bits() == o.get_vtable_offset_in_bits()
-	      && is_static() == o.is_static()
 	      && is_constructor() == o.is_constructor()
 	      && is_destructor() == o.is_destructor()
 	      && is_const() == o.is_const()
@@ -1543,7 +1538,6 @@ public:
 
   private:
     size_t m_vtable_offset_in_bits;
-    bool m_is_static;
     bool m_is_constructor;
     bool m_is_destructor;
     bool m_is_const;
@@ -1569,16 +1563,11 @@ public:
      bool				is_static,
      bool				is_constructor,
      bool				is_const)
-      : member(access),
-	m_is_static(is_static),
+      : member(access, is_static),
 	m_is_constructor(is_constructor),
 	m_is_const(is_const),
 	m_fn_tmpl(f)
     {}
-
-    bool
-    is_static() const
-    {return m_is_static;}
 
     bool
     is_constructor() const
@@ -1596,17 +1585,9 @@ public:
     {return m_fn_tmpl;}
 
     bool
-    operator==(const member_function_template& o) const
-    {
-      return (is_static() == o.is_static()
-	      && is_constructor() == o.is_constructor()
-	      && is_const() == o.is_const()
-	      && static_cast<member>(*this) == o
-	      && static_cast<function_template_decl>(*this) == o);
-    }
+    operator==(const member_function_template& o) const;
 
   private:
-    bool m_is_static;
     bool m_is_constructor;
     bool m_is_const;
     shared_ptr<function_template_decl> m_fn_tmpl;
@@ -1618,12 +1599,49 @@ public:
     operator()(const member_function_template&) const;
   };// end struct member_function_template_hash
 
+  /// Abstracts a member class template template
+  class member_class_template : public member
+  {
+    // Forbidden
+    member_class_template();
+
+  public:
+    member_class_template(shared_ptr<class_template_decl>c,
+			  access_specifier access,
+			  bool is_static)
+      : member(access, is_static),
+	m_class_tmpl(c)
+    {}
+
+    operator const class_template_decl& () const
+    {return *m_class_tmpl;}
+
+    shared_ptr<class_template_decl>
+    as_class_template_decl() const
+    {return m_class_tmpl;}
+
+    bool
+    operator==(const member_class_template& o) const;
+
+  private:
+    shared_ptr<class_template_decl> m_class_tmpl;
+  };// end class member_class_template
+
+  /// A hashing functor for instances of member_class_template.
+  struct member_class_template_hash
+  {
+    size_t
+    operator()(member_class_template&) const;
+  };// end struct member_class_template_hash
+
   typedef std::list<shared_ptr<base_spec> > base_specs_type;
   typedef std::list<shared_ptr<member_type> > member_types_type;
   typedef std::list<shared_ptr<data_member> > data_members_type;
   typedef std::list<shared_ptr<member_function> > member_functions_type;
   typedef std::list<shared_ptr<member_function_template> >
   member_function_templates_type;
+  typedef std::list<shared_ptr<member_class_template> >
+  member_class_templates_type;
 
   class_decl(const std::string&				name,
 	     size_t						size_in_bits,
@@ -1672,13 +1690,19 @@ public:
   get_member_functions() const
   {return m_member_functions;}
 
-
   void
-  add_member_function_template(shared_ptr<member_function_template> t);
+  add_member_function_template(shared_ptr<member_function_template>);
 
-  const std::list<shared_ptr<member_function_template> >&
+  const member_function_templates_type&
   get_member_function_templates() const
   {return m_member_function_templates;}
+
+  void
+  add_member_class_template(shared_ptr<member_class_template>);
+
+  const member_class_templates_type&
+  get_member_class_templates() const
+  {return m_member_class_templates;}
 
   virtual bool
   operator==(const class_decl&) const;
@@ -1686,11 +1710,12 @@ public:
   virtual ~class_decl();
 
 private:
-  std::list<shared_ptr<base_spec> > m_bases;
-  std::list<shared_ptr<member_type> > m_member_types;
-  std::list<shared_ptr<data_member> > m_data_members;
-  std::list<shared_ptr<member_function> > m_member_functions;
-  std::list<shared_ptr<member_function_template> > m_member_function_templates;
+  base_specs_type m_bases;
+  member_types_type m_member_types;
+  data_members_type m_data_members;
+  member_functions_type m_member_functions;
+  member_function_templates_type m_member_function_templates;
+  member_class_templates_type m_member_class_templates;
 };// end class class_decl
 
 /// Hasher for the class_decl type

@@ -1122,6 +1122,23 @@ write_class_decl(const shared_ptr<class_decl> decl,
       o << "</member-template>\n";
     }
 
+    for (class_decl::member_class_templates_type::const_iterator cl =
+	   decl->get_member_class_templates().begin();
+	 cl != decl->get_member_class_templates().end();
+	 ++cl)
+    {
+      do_indent(o, nb_ws);
+      o << "<member-template";
+      write_access(*cl, o);
+      write_cdtor_const_static(false, false, (*cl)->is_static(), o);
+      o << ">\n";
+      write_class_template_decl((*cl)->as_class_template_decl(), ctxt,
+				get_indent_to_level(ctxt, indent, 2));
+      o << "\n";
+      do_indent(o, nb_ws);
+      o << "</member-template>\n";
+    }
+
   do_indent_to_level(ctxt, indent, 0);
 
   o << "</class-decl>";
