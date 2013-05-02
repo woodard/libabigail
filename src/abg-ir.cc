@@ -1680,4 +1680,66 @@ function_template_decl::~function_template_decl()
 {
 }
 // </function_template>
+
+// <class template>
+class_template_decl::class_template_decl(shared_ptr<class_decl> pattern,
+					 location locus,
+					 visibility vis)
+  : decl_base(pattern->get_name(), locus,
+	      pattern->get_name(), vis),
+    scope_decl(pattern->get_name(), locus)
+{set_pattern(pattern);}
+
+void
+class_template_decl::set_pattern(shared_ptr<class_decl> p)
+{
+  m_pattern = p;
+  add_decl_to_scope(p, this);
+  set_name(p->get_name());
+}
+
+bool
+class_template_decl::operator==(const class_template_decl& o) const
+{
+  if (!(static_cast<template_decl>(*this) == o
+	&& static_cast<scope_decl>(*this) == o
+	&& !!get_pattern() == !!o.get_pattern()))
+    return false;
+
+  return (*get_pattern() == *o.get_pattern());
+}
+
+class_template_decl::~class_template_decl()
+{
+}
+
+size_t
+class_template_decl_hash::operator()(const class_template_decl& t) const
+{
+  hash<string> hash_string;
+  decl_base_hash hash_decl_base;
+  template_decl_hash hash_template_decl;
+  class_decl_hash hash_class_decl;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_decl_base(t));
+  v = hashing::combine_hashes(v, hash_template_decl(t));
+  if (t.get_pattern())
+    v = hashing::combine_hashes(v, hash_class_decl(*t.get_pattern()));
+
+  return v;
+}
+
+size_t
+class_tmpl_shared_ptr_hash::operator()
+(const shared_ptr<class_template_decl> t) const
+{
+  class_template_decl_hash hash_class_tmpl_decl;
+
+  if (t)
+    return hash_class_tmpl_decl(*t);
+  return 0;
+}
+
+// </class template>
 }//end namespace abigail

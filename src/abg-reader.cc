@@ -73,6 +73,10 @@ public:
 			shared_ptr<function_template_decl> >::const_iterator
   const_fn_tmpl_map_it;
 
+  typedef unordered_map<string,
+			shared_ptr<class_template_decl> >::const_iterator
+  const_class_tmpl_map_it;
+
   read_context(xml::reader_sptr reader)
     : m_depth(0),
       m_reader(reader)
@@ -115,9 +119,10 @@ public:
   }
 
   /// Return the function template that is identified by a unique ID.
-  /// Note that a function template to be indentified by #id, the
-  /// function key_fn_tmpl_decl must have been previously called
-  /// with that function template and with #id.
+  ///
+  /// Note that for a function template to be identified by #id, the
+  /// function key_fn_tmpl_decl must have been previously called with
+  /// that function template and with #id.
   ///
   /// \param id the ID to consider.
   ///
@@ -130,6 +135,25 @@ public:
     const_fn_tmpl_map_it i = m_fn_tmpl_map.find(id);
     if (i == m_fn_tmpl_map.end())
       return shared_ptr<function_template_decl>();
+    return i->second;
+  }
+
+  /// Return the class template that is identified by a unique ID.
+  ///
+  /// Note that for a class template to be identified by #id, the
+  /// function key_class_tmpl_decl must have been previously called
+  /// with that class template and with #id.
+  ///
+  /// \param id the ID to consider.
+  ///
+  /// \return the class template identified by #id, or a null pointer
+  /// if no class template has ever been associated with #id before.
+  shared_ptr<class_template_decl>
+  get_class_tmpl_decl(const string& id) const
+  {
+    const_class_tmpl_map_it i = m_class_tmpl_map.find(id);
+    if (i == m_class_tmpl_map.end())
+      return shared_ptr<class_template_decl>();
     return i->second;
   }
 
@@ -239,6 +263,29 @@ public:
     return true;
   }
 
+    /// Associate an ID to a class template.
+  ///
+  /// \param class_tmpl_decl the class template to consider.
+  ///
+  /// \param id the ID to associate to the class template.
+  ///
+  /// \return true upon successful completion, false otherwise.  Note
+  /// that the function returns false if an ID was previously
+  /// associated to the class template.
+  bool
+  key_class_tmpl_decl(shared_ptr<class_template_decl>	class_tmpl_decl,
+		      const string&			id)
+  {
+    assert(class_tmpl_decl);
+
+    const_class_tmpl_map_it i = m_class_tmpl_map.find(id);
+    if (i != m_class_tmpl_map.end())
+      return false;
+
+    m_class_tmpl_map[id] = class_tmpl_decl;
+    return true;
+  }
+
   /// This function must be called on each decl that is created during
   /// the parsing.  It adds the decl to the current scope, and updates
   /// the state of the parsing context accordingly.
@@ -335,6 +382,7 @@ private:
   int m_depth;
   unordered_map<string, shared_ptr<type_base> > m_types_map;
   unordered_map<string, shared_ptr<function_template_decl> > m_fn_tmpl_map;
+  unordered_map<string, shared_ptr<class_template_decl> > m_class_tmpl_map;
   xml::reader_sptr m_reader;
   stack<shared_ptr<decl_base> > m_decls_stack;
 };//end class read_context
@@ -380,6 +428,8 @@ static shared_ptr<class_decl>
 build_class_decl(read_context&, const xmlNodePtr, bool);
 static shared_ptr<function_template_decl>
 build_function_template_decl(read_context&, const xmlNodePtr, bool);
+static shared_ptr<class_template_decl>
+build_class_template_decl(read_context&, const xmlNodePtr, bool);
 static shared_ptr<template_type_parameter>
 build_template_type_parameter(read_context&, const xmlNodePtr, unsigned, bool);
 static shared_ptr<tmpl_parm_type_composition>
@@ -416,6 +466,8 @@ static bool	handle_var_decl(read_context&);
 static bool	handle_function_decl(read_context&);
 static bool	handle_class_decl(read_context&);
 static bool	handle_function_template_decl(read_context&);
+static bool	handle_class_template_decl(read_context&);
+
 bool
 read_file(const string&	file_path,
 	  translation_unit&	tu)
@@ -619,6 +671,9 @@ handle_element(read_context&	ctxt)
   if (xmlStrEqual(XML_READER_GET_NODE_NAME(reader).get(),
 		  BAD_CAST("function-template-decl")))
     return handle_function_template_decl(ctxt);
+  if (xmlStrEqual(XML_READER_GET_NODE_NAME(reader).get(),
+		  BAD_CAST("class-template-decl")))
+    return handle_class_template_decl(ctxt);
 
   return false;
 }
@@ -1487,6 +1542,9 @@ build_typedef_decl(read_context&	ctxt,
 ///
 /// \param node the xml node to build the class_decl from.
 ///
+/// \param update_depth_info whether to update the depth info carried
+/// by the parsing context.
+///
 /// \return a pointer to class_decl upon successful completion, a null
 /// pointer otherwise.
 static shared_ptr<class_decl>
@@ -1727,7 +1785,7 @@ build_function_template_decl(read_context& ctxt,
   ctxt.push_decl_to_current_scope(fn_tmpl_decl, node, update_depth_info);
 
   unsigned parm_index = 0;
-  for (xmlNodePtr n = node->children; n ; n = n->next)
+  for (xmlNodePtr n = node->children; n; n = n->next)
     {
       if (n->type != XML_ELEMENT_NODE)
 	continue;
@@ -1747,6 +1805,75 @@ build_function_template_decl(read_context& ctxt,
   ctxt.key_fn_tmpl_decl(fn_tmpl_decl, id);
 
   return fn_tmpl_decl;
+}
+
+/// Build an intance of #class_template_decl, from a
+/// 'class-template-decl' xml element node.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \param node the xml node to parse from.
+///
+/// \param update_depth_info this must be set to false, if we reached
+/// this xml node by calling the xmlTextReaderRead function.  In that
+/// case, build_class_decl doesn't have to update the depth
+/// information that is maintained in the context of the parsing.
+/// Otherwise if this node if just a child grand child of a node that
+/// we reached using xmlTextReaderRead, of if it wasn't reached via
+/// xmlTextReaderRead at all,then the argument to this parameter
+/// should be true.  In that case this function will update the depth
+/// information that is maintained by in the context of the parsing.
+///
+/// \return the newly built function_template_decl upon successful
+/// completion, a null pointer otherwise.
+static shared_ptr<class_template_decl>
+build_class_template_decl(read_context&	ctxt,
+			  const xmlNodePtr	node,
+			  bool			update_depth_info)
+{
+  shared_ptr<class_template_decl> nil, result;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("class-template-decl")))
+    return nil;
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  if (id.empty() || ctxt.get_class_tmpl_decl(id))
+    return nil;
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
+  read_visibility(node, vis);
+
+  shared_ptr<class_template_decl> class_tmpl
+    (new class_template_decl(loc, vis));
+
+  ctxt.push_decl_to_current_scope(class_tmpl, node, update_depth_info);
+
+  unsigned parm_index = 0;
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      if (shared_ptr<template_parameter> parm=
+	  build_template_parameter(ctxt, n, parm_index,
+				   /*update_depth_info=*/true))
+	{
+	  class_tmpl->add_template_parameter(parm);
+	  ++parm_index;
+	}
+      else if (shared_ptr<class_decl> c =
+	       build_class_decl(ctxt, n, /*update_depth_info=*/true))
+	class_tmpl->set_pattern(c);
+    }
+
+  ctxt.key_class_tmpl_decl(class_tmpl, id);
+
+  return class_tmpl;
 }
 
 /// Build a template_type_parameter from a 'template-type-parameter'
@@ -2509,6 +2636,29 @@ handle_function_template_decl(read_context& ctxt)
   bool is_ok = build_function_template_decl(ctxt, node,
 					    /*update_depth_info=*/false);
 
+  xmlTextReaderNext(r.get());
+
+  return is_ok;
+}
+
+/// Parse a 'class-template-decl' xml element.
+///
+/// \param ctxt the context of the parsing.
+///
+/// \return true upon successful completion, false otherwise.
+static bool
+handle_class_template_decl(read_context& ctxt)
+{
+  xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
+    return false;
+
+  xmlNodePtr node = xmlTextReaderExpand(r.get());
+  if (!node)
+    return false;
+
+  bool is_ok = build_class_template_decl(ctxt, node,
+					 /*update_depth_info=*/false);
   xmlTextReaderNext(r.get());
 
   return is_ok;

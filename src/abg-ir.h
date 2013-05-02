@@ -51,6 +51,7 @@ using namespace std::rel_ops; // Pull in relational operators so that
 class decl_base;
 class scope_decl;
 class global_scope;
+class class_decl;
 class translation_unit;
 
 void add_decl_to_scope(shared_ptr<decl_base>,
@@ -1166,18 +1167,76 @@ private:
   binding m_binding;
 };//end class function_template_decl
 
-/// Hash functor for 
+/// Hashing functor for pointer to a function template.
+struct fn_tmpl_shared_ptr_hash
+{
+  size_t
+  operator()(const shared_ptr<function_template_decl>) const;
+};//end struct fn_tmpl_shared_ptr_hash
+
+/// Hash functor for function templates
 struct function_template_decl_hash
 {
   size_t
   operator()(const function_template_decl&) const;
 };// end struct function_template_decl_hash
 
-struct fn_tmpl_shared_ptr_hash
+/// Abstract a class template.
+class class_template_decl : public template_decl, public scope_decl
+{
+  // Forbidden
+  class_template_decl();
+
+public:
+  class_template_decl(location locus,
+		      visibility vis = VISIBILITY_DEFAULT)
+    : decl_base("", locus, "", vis),
+      scope_decl("", locus)
+  {}
+
+  /// Constructor for the class_template_decl type.
+  ///
+  /// \param the pattern of the class template.  This must NOT be a
+  /// null pointer.  If you really this to be null, please use the
+  /// constructor above instead.
+  ///
+  /// \param the source location of the declaration of the type.
+  ///
+  /// \param the visibility of the instances of class instantiated
+  /// from this template.
+  class_template_decl(shared_ptr<class_decl> pattern,
+		      location locus,
+		      visibility vis = VISIBILITY_DEFAULT);
+
+
+  virtual bool
+  operator==(const class_template_decl&) const;
+
+  void
+  set_pattern(shared_ptr<class_decl> p);
+
+  shared_ptr<class_decl>
+  get_pattern() const
+  {return m_pattern;}
+
+
+  virtual ~class_template_decl();
+
+private:
+  shared_ptr<class_decl> m_pattern;
+};// end class class_template_decl
+
+struct class_template_decl_hash
 {
   size_t
-  operator()(const shared_ptr<function_template_decl>) const;
-};//end struct fn_tmpl_shared_ptr_hash
+  operator()(const class_template_decl&) const;
+};// end struct class_template_decl_hash
+
+struct class_tmpl_shared_ptr_hash
+{
+  size_t
+  operator()(const shared_ptr<class_template_decl>) const;
+};// end struct class_tmpl_shared_ptr_hash
 
 /// Abstracts a class declaration.
 class class_decl : public scope_type_decl

@@ -34,4 +34,5 @@ $(h)/data/test-read-write/test10.xml	\
 $(h)/data/test-read-write/test11.xml	\
 $(h)/data/test-read-write/test12.xml	\
 $(h)/data/test-read-write/test13.xml	\
-$(h)/data/test-read-write/test14.xml
+$(h)/data/test-read-write/test14.xml	\
+$(h)/data/test-read-write/test15.xml
