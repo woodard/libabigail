@@ -4,22 +4,22 @@ libabigaildir=$(libdir)/
 h=$(abs_srcdir)
 
 headers =		\
-$(h)/abg-ir.h		\
-$(h)/abg-reader.h	\
-$(h)/abg-corpus.h	\
-$(h)/abg-libxml-utils.h	\
-$(h)/abg-hash.h		\
-$(h)/abg-writer.h	\
-$(h)/abg-config.h
+abg-ir.h		\
+abg-reader.h	\
+abg-corpus.h	\
+abg-libxml-utils.h	\
+abg-hash.h		\
+abg-writer.h	\
+abg-config.h
 
 libabigail_la_SOURCES = $(headers)	\
-$(h)/abg-ir.cc				\
-$(h)/abg-reader.cc			\
-$(h)/abg-corpus.cc			\
-$(h)/abg-libxml-utils.cc		\
-$(h)/abg-hash.cc			\
-$(h)/abg-writer.cc			\
-$(h)/abg-config.cc
+abg-ir.cc				\
+abg-reader.cc			\
+abg-corpus.cc			\
+abg-libxml-utils.cc		\
+abg-hash.cc			\
+abg-writer.cc			\
+abg-config.cc
 
 libabigail_la_LDFLAGS=@XML_LIBS@ -Wl,--as-needed
 

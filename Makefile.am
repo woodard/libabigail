@@ -1,7 +1,7 @@
-SUBDIRS = src tests
+SUBDIRS = src tests doc
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 headers = config.h
 
 EXTRA_DIST = \
-README INSTALL COPYING COPYRIGHT \
+README INSTALL COPYING \
 $(headers)
