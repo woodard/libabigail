@@ -32,6 +32,9 @@
 # Note that this macro defines the handling of --with-abigail,
 # --with-abigail-include, --with-abigail-lib and
 # --enable-abigail-version-check switches to the configure script.
+#
+# If libabigail has been found, this macro sets the variable
+# HAVE_LIBABIGAIL to 'yes', otherwise, it sets it to 'no'.
 AC_DEFUN([ABIGAIL_INIT],
 [
  AC_ARG_WITH([abigail],
@@ -96,6 +99,19 @@ AC_DEFUN([ABIGAIL_INIT],
  else
     HAVE_LIBABIGAIL=no
  fi
+
+ #Test whether libabigail is in the gcc source tree.
+ if test x$HAVE_LIBABIGAIL != xyes; then
+   if test -d $srcdir/libabigail -a -f $srcdir/gcc/gcc.c; then
+      abigaillibs='-L$$r/$(HOST_SUBDIR)/libabigail/src/'"${lt_cv_objdir} ${abigaillibs}"
+      abigailinc='-I${srcdir}/libabigail/src '"${abigailinc}"
+      found_abigail_lib=yes
+      found_abigail_inc=yes
+      HAVE_LIBABIGAIL=yes
+      AC_MSG_WARN([using in-tree libabigail, disabling version check]);
+      ENABLE_ABIGAIL_VERSION_CHECK=no
+   fi
+ fi
 ]
 )
 
@@ -128,7 +144,7 @@ AC_DEFUN([IF_ABIGAIL_NOT_PRESENT],
 # put in the variable has_right_abigail_version.
 AC_DEFUN([ABIGAIL_CHECK_VERSION],
 [
- AC_REQUIRE([ABIGAIL_INIT])	
+ AC_REQUIRE([ABIGAIL_INIT])
 
  if test x$ENABLE_ABIGAIL_VERSION_CHECK = xyes; then
    _abigail_saved_CXXFLAGS=$CXXFLAGLS
@@ -152,6 +168,10 @@ AC_DEFUN([ABIGAIL_CHECK_VERSION],
 
    CXXFLAGS=$_abigail_saved_CXXFLAGS
    LDFLAGS=$_abigail_saved_LDFLAGS
+ else
+   # Version checking was disabled, so assume we have the right
+   # version of libabigail.
+   has_right_abigail_version=yes
  fi
 ]
 )
