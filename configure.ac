@@ -1,5 +1,9 @@
+m4_define([version_major],   [0])
+m4_define([version_minor],   [1])
+m4_define([version_revision],[0])
+
 AC_INIT([libabigail],
-	[0.1],
+	[version_major.version_minor.version_revision],
 	[http://sourceware.org/bugzilla],
 	[libabigail],
 	[http://sourceware.org/libabigail])
@@ -13,6 +17,14 @@ AM_INIT_AUTOMAKE([1.11.1])
 AM_MAINTAINER_MODE([enable])
 
 AM_SILENT_RULES([yes])
+
+VERSION_MAJOR=version_major
+VERSION_MINOR=version_minor
+VERSION_REVISION=version_revision
+
+AC_SUBST(VERSION_MAJOR)
+AC_SUBST(VERSION_MINOR)
+AC_SUBST(VERSION_REVISION)
 
 dnl *************************************************
 dnl Here is the list of versions of the dependencies

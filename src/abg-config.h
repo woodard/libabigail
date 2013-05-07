@@ -1,3 +1,5 @@
+// -*- Mode: C++ -*-
+
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
@@ -21,7 +23,6 @@
 // program; see the files COPYING3 and COPYING.RUNTIME respectively.
 // If not, see <http://www.gnu.org/licenses/>.
 
-// -*- Mode: C++ -*-
 /// @file
 
 #ifndef __ABG_CONFIG_H__
@@ -63,4 +64,9 @@ private:
 
 }//end namespace abigail
 
+extern "C"
+{
+  void
+  abigail_get_library_version(int& major, int& minor, int& revision);
+}
 #endif //__ABG_CONFIG_H__

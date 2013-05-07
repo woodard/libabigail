@@ -1,3 +1,4 @@
+// -*- Mode: C++ -*-
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
@@ -21,10 +22,11 @@
 // program; see the files COPYING3 and COPYING.RUNTIME respectively.
 // If not, see <http://www.gnu.org/licenses/>.
 
-// -*- Mode: C++ -*-
+
 /// @file
 
 #include "abg-config.h"
+#include "abg-version.h"
 
 namespace abigail
 {
@@ -73,3 +75,23 @@ config::set_xml_element_indent(unsigned indent)
 }
 
 }//end namespace abigail
+
+extern "C"
+{
+
+  /// Return the relevant version numbers of the library.
+  ///
+  /// \param major the majar version number of the library.
+  ///
+  /// \param minor the minor version number of the library.
+  ///
+  /// \param revision the revision version number of the library.
+void
+abigail_get_library_version(int& major, int& minor, int& revision)
+{
+  major = ABIGAIL_VERSION_MAJOR;
+  minor = ABIGAIL_VERSION_MINOR;
+  revision = ABIGAIL_VERSION_REVISION;
+}
+
+}
