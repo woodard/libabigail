@@ -208,7 +208,7 @@ public:
     BINDING_NONE,
     BINDING_LOCAL,
     BINDING_GLOBAL,
-    BINDING_WEAK,
+    BINDING_WEAK
   };// end enum binding
 
   decl_base(const std::string&	name,
@@ -1250,7 +1250,7 @@ public:
   {
     private_access,
     protected_access,
-    public_access,
+    public_access
   };//end enum access_specifier
 
   /// The base class for member types, data members and member
