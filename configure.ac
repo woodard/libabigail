@@ -56,7 +56,6 @@ fi
 AC_CONFIG_FILES([Makefile
 doc/Makefile
 src/Makefile
-src/abg-version.h
 tests/Makefile])
 AC_CONFIG_FILES([src/abg-version.h])
 
