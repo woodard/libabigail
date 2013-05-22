@@ -1,9 +1,0 @@
-2013-03-27  Benjamin Kosnik  <bkoz@redhat.com>
-
-        * configure: Add.
-	* configure.ac (AM_INIT_AUTOMAKE): Use gcc versions.
-        (PKG_CHECK_MODULES): Re-use libjava/classpath solution, naming.
-	* m4/pkg.m4: Add, take from classpath.
-	* src/Makefile.am: Adjust names.
-	* src/abg-corpus.cc: Throw logic_error for unimplemented.
-	* src/abg-ir.cc: Remove unused.
