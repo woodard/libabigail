@@ -118,27 +118,14 @@ location_manager::create_new_location(const std::string&	file_path,
 {
   expanded_location l(file_path, line, col);
 
-  std::vector<expanded_location>::iterator i =
-    std::upper_bound(m_priv->locs.begin(),
-		     m_priv->locs.end(),
-		     l);
-
-  if (i == m_priv->locs.end())
-    {
-      m_priv->locs.push_back(l);
-      i = m_priv->locs.end();
-      i--;
-    }
-  else
-    {
-      std::vector<expanded_location>::iterator prev = i;
-      prev--;
-      if (*prev == l)
-	i = prev;
-      else
-	i = m_priv->locs.insert(i, l);
-    }
-  return location(std::distance (m_priv->locs.begin(), i));
+  // Just append the new expanded location to the end of the vector
+  // and return its index.  Note that indexes start at 1.  This way
+  // the returning location number is doesn't grow monotonically
+  // with respect to the expanded locations, but it has the advantage
+  // to keep the location numbers stable accross the filling of the
+  // expanded location vector.
+  m_priv->locs.push_back(l);
+  return location(m_priv->locs.size());
 }
 
 /// Given an instance of location type, return the triplet
@@ -157,7 +144,9 @@ location_manager::expand_location(const location	location,
 				  unsigned&		line,
 				  unsigned&		column) const
 {
-  expanded_location &l = m_priv->locs[location.m_value];
+  if (location.m_value == 0)
+    return;
+  expanded_location &l = m_priv->locs[location.m_value - 1];
   path = l.m_path;
   line = l.m_line;
   column = l.m_column;
