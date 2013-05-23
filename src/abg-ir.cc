@@ -347,6 +347,18 @@ add_decl_to_scope(shared_ptr<decl_base> decl,
     }
 }
 
+/// Appends a decl to a given scope.
+///
+/// \param the decl to add append to the scope
+///
+/// \param the scope to append the decl to
+void
+add_decl_to_scope (shared_ptr<decl_base> decl,
+		   shared_ptr<scope_decl> scope)
+{
+  add_decl_to_scope (decl, scope.get ());
+}
+
 /// Return the global scope as seen by a given decl.
 ///
 /// \param decl the decl to consider.

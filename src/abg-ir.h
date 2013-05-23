@@ -57,6 +57,9 @@ class translation_unit;
 void add_decl_to_scope(shared_ptr<decl_base>,
 		       scope_decl*);
 
+void add_decl_to_scope (shared_ptr<decl_base>,
+			shared_ptr<scope_decl>);
+
 global_scope* get_global_scope(const shared_ptr<decl_base>);
 
 translation_unit* get_translation_unit(const shared_ptr<decl_base>);
