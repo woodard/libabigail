@@ -165,6 +165,9 @@ public:
 
   translation_unit(const std::string& path);
 
+  const std::string&
+  get_path() const;
+
   const shared_ptr<global_scope>
   get_global_scope() const;
 

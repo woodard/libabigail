@@ -173,6 +173,14 @@ translation_unit::get_global_scope() const
   return m_global_scope;
 }
 
+/// \return the path of the compilation unit that gave birth to this
+/// instance of tranlation_unit.
+const std::string&
+translation_unit::get_path() const
+{
+  return m_path;
+}
+
 /// Getter of the location manager for the current translation unit.
 ///
 /// \return a reference to the location manager for the current
