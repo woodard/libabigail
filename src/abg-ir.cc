@@ -286,6 +286,19 @@ decl_base_hash::operator()(const decl_base& d) const
 
 // </Decl definition>
 
+/// Add a member decl to this scope.  Note that user code should not
+/// use this, but rather use #add_decl_to_scope.
+///
+/// \param member the new member decl to add to this scope.
+void
+scope_decl::add_member_decl(const shared_ptr<decl_base> member)
+{
+  m_members.push_back(member);
+
+  if (shared_ptr<scope_decl> m = dynamic_pointer_cast<scope_decl>(member))
+    m_member_scopes.push_back(m);
+}
+
 /// Return true iff both scopes have the same names and have the same
 /// member decls.
 ///

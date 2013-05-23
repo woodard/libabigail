@@ -282,13 +282,9 @@ class scope_decl : public virtual decl_base
 {
   scope_decl();
 
-  /// Add a member decl to this scope.  Note that user code should not
-  /// use this, but rather use #add_decl_to_scope.
-  ///
-  /// \param member the new member decl to add to this scope.
+
   void
-  add_member_decl(const shared_ptr<decl_base> member)
-  {m_members.push_back(member);}
+  add_member_decl(const shared_ptr<decl_base>);
 
 public:
   scope_decl(const std::string& name,
@@ -309,6 +305,10 @@ public:
   get_member_decls() const
   {return m_members;}
 
+  const std::list<shared_ptr<scope_decl> >&
+  get_member_scopes() const
+  {return m_member_scopes;}
+
   bool
   is_empty() const
   {return get_member_decls().empty();}
@@ -321,6 +321,7 @@ public:
 
 private:
   std::list<shared_ptr<decl_base> > m_members;
+  std::list<shared_ptr<scope_decl> > m_member_scopes;
 };// end class scope_decl.
 
 /// \brief Facility to hash instances of decl_base.
