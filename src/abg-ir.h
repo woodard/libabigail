@@ -334,10 +334,10 @@ struct decl_base_hash
 /// time translatin_unit::get_global_scope is invoked.
 class global_scope : public scope_decl
 {
-  global_scope()
+  global_scope(translation_unit *tu)
     : decl_base("", location()),
       scope_decl("", location()),
-      m_translation_unit(0)
+      m_translation_unit(tu)
   {
   }
 

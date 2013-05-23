@@ -169,7 +169,7 @@ const shared_ptr<global_scope>
 translation_unit::get_global_scope() const
 {
   if (!m_global_scope)
-    m_global_scope.reset(new global_scope);
+    m_global_scope.reset(new global_scope(const_cast<translation_unit*>(this)));
   return m_global_scope;
 }
 
