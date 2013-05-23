@@ -28,6 +28,8 @@
 #ifndef __ABG_CONFIG_H__
 #define __ABG_CONFIG_H__
 
+#include <string>
+
 namespace abigail
 {
 
@@ -46,7 +48,6 @@ public:
   unsigned char
   get_format_major_version_number() const;
 
-
   void
   set_format_major_version_number(unsigned char);
 
@@ -56,10 +57,24 @@ public:
   void
   set_xml_element_indent(unsigned);
 
+  const std::string&
+  get_tu_instr_suffix() const;
+
+  void
+  set_tu_instr_suffix(const std::string&);
+
+  const std::string&
+  get_tu_instr_archive_suffix() const;
+
+  void
+  set_tu_instr_archive_suffix(const std::string&);
+
 private:
   unsigned char m_format_minor;
   unsigned char m_format_major;
   unsigned m_xml_element_indent;
+  std::string m_tu_instr_suffix;
+  std::string m_tu_instr_archive_suffix;
 };//end class config
 
 }//end namespace abigail

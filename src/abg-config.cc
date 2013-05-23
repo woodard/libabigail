@@ -34,7 +34,9 @@ config::config()
   : m_format_minor(0),
     m_format_major(1),// The version number of the serialization
 		     // format.
-    m_xml_element_indent(2)
+    m_xml_element_indent(2),
+    m_tu_instr_suffix(".bi"),
+    m_tu_instr_archive_suffix (".abi")
 {
 }
 
@@ -72,6 +74,30 @@ void
 config::set_xml_element_indent(unsigned indent)
 {
   m_xml_element_indent = indent;
+}
+
+const std::string&
+config::get_tu_instr_suffix() const
+{
+  return m_tu_instr_suffix;
+}
+
+void
+config::set_tu_instr_suffix(const std::string& s)
+{
+  m_tu_instr_suffix = s;
+}
+
+const std::string&
+config::get_tu_instr_archive_suffix() const
+{
+  return m_tu_instr_archive_suffix;
+}
+
+void
+config::set_tu_instr_archive_suffix(const std::string& s)
+{
+  m_tu_instr_archive_suffix = s;
 }
 
 }//end namespace abigail
