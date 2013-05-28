@@ -1,4 +1,6 @@
-TESTS=runtestreadwrite
+TESTS= \
+runtestreadwrite \
+runtestsvg
 
 noinst_PROGRAMS= $(TESTS)
 
@@ -15,7 +17,11 @@ libtestutils_la_CXXFLAGS=		\
 runtestreadwrite_SOURCES=test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
+runtestsvg_SOURCES=test-svg.cc
+runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
+
 AM_CPPFLAGS=-I${top_srcdir}/src
+AM_CXXFLAGS="-std=gnu++11"
 
 EXTRA_DIST=				\
 data/test-read-write/test0.xml	\
@@ -40,4 +46,4 @@ clean-local: clean-local-check
 .PHONY: clean-local-check
 
 clean-local-check:
-	-rm -rf ${builddir}/output
+	-rm -rf ${builddir}/output *.svg
