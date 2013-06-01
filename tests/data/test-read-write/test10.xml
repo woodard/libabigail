@@ -19,7 +19,7 @@
     <class-decl name='C' size-in-bits='40' alignment-in-bits='8' visibility='default' id='type-id-6'>
       <base-class access='public' type-id='type-id-4'/>
       <member-function access='public'>
-        <function-decl name='get_first' mangled-name='blibli' binding='global'>
+        <function-decl name='get_first' mangled-name='blibli' binding='global' size-in-bits='8' alignment-in-bits='8'>
           <return type-id='type-id-1'/>
         </function-decl>
       </member-function>

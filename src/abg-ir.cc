@@ -36,6 +36,7 @@
 
 using std::string;
 using std::list;
+using std::vector;
 using std::tr1::dynamic_pointer_cast;
 
 namespace abigail
@@ -833,6 +834,8 @@ dynamic_type_hash::operator()(const type_base* t) const
     return class_decl_hash()(*d);
   if (const scope_type_decl* d = dynamic_cast<const scope_type_decl*>(t))
     return scope_type_decl_hash()(*d);
+  if (const function_type* d = dynamic_cast<const function_type*>(t))
+    return function_type_hash()(*d);
 
   // Poor man's fallback case.
   return type_base_hash()(*t);
@@ -1148,28 +1151,209 @@ var_decl_hash::operator()(const var_decl& t) const
 
 // </var_decl definitions>
 
+// <function_type>
+
+bool
+function_type::operator==(const function_type& other) const
+{
+  if (!!m_return_type != !!other.m_return_type)
+    return false;
+
+  vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
+  for (i = get_parameters().begin(),
+	 j = other.get_parameters().begin();
+       (i != get_parameters().end()
+	&& j != other.get_parameters().end());
+       ++i, ++j)
+    if (**i != **j)
+      return false;
+
+  if ((i != get_parameters().end()
+       || j != other.get_parameters().end()))
+    return false;
+
+  return true;
+}
+
+function_type::~function_type()
+{
+}
+
+/// Hashing function for instance of function_type.
+///
+/// \param t the instance of function_type to hash.
+///
+/// \return the hash value.
+size_t
+function_type_hash::operator()(const function_type& t) const
+{
+  hash<string> hash_string;
+  type_shared_ptr_hash hash_type_ptr;
+  function_decl::parameter_hash hash_parameter;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
+  for (vector<shared_ptr<function_decl::parameter> >::const_iterator i =
+	 t.get_parameters ().begin();
+       i != t.get_parameters().end();
+       ++i)
+    v = hashing::combine_hashes(v, hash_parameter(**i));
+  return v;
+}
+
+// </function_type>
 // <function_decl definitions>
+
+/// Constructor for function_decl.
+///
+/// This constructor builds the necessary function_type on behalf of
+/// the client, so it takes parameters -- like the return types, the
+/// function parameters and the size/alignment of the pointer to the
+/// type of the function --  necessary to build the function_type
+/// under the hood.
+///
+/// If the client code already has the function_type at hand, it
+/// should instead the other constructor that takes the function_decl.
+///
+/// \param name the name of the function declaration.
+///
+/// \param parms a vector of parameters of the function.
+///
+/// \param return_type the return type of the function.
+///
+/// \param fptr_size_in_bits the size of the type of this function, in
+/// bits.
+///
+/// \param fptr_align_in_bits the alignment of the type of this
+/// function.
+///
+/// \param declared_inline whether this function was declared inline.
+///
+/// \param locus the source location of this function declaration.
+///
+/// \param mangled_name the mangled name of the function declaration.
+///
+/// \param vis the visibility of the function declaration.
+///
+/// \param the type of binding of the function.
+function_decl::function_decl
+  (const std::string&			name,
+   const vector<shared_ptr<parameter> >&	parms,
+   shared_ptr<type_base>		return_type,
+   size_t				fptr_size_in_bits,
+   size_t				fptr_align_in_bits,
+   bool				declared_inline,
+   location				locus,
+   const std::string&			mangled_name,
+   visibility				vis,
+   binding				bind)
+    : decl_base(name, locus, mangled_name, vis),
+      m_type(new function_type(return_type, parms,
+			       fptr_size_in_bits,
+			       fptr_align_in_bits)),
+      m_declared_inline(declared_inline),
+      m_binding(bind)
+{
+}
+
+/// Constructor of the function_decl type.
+///
+/// This flavour of constructor is for when the pointer to the
+/// instance of function_type that the client code has is presented as
+/// a pointer to type_base.  In that case, this constructor saves the
+/// client code from doing a dynamic_cast to get the function_type
+/// pointer.
+///
+/// \param name the name of the function declaration.
+///
+/// \param fn_type the type of the function declaration.  The dynamic
+/// type of this parameter should be 'pointer to function_type'
+///
+/// \param declared_inline whether this function was declared inline
+///
+/// \param locus the source location of the function declaration.
+///
+/// \param mangled_name the mangled name of the function declaration.
+///
+/// \param vis the visibility of the function declaration.
+///
+/// \param binding the kind of the binding of the function
+/// declaration.
+function_decl::function_decl
+  (const std::string&			name,
+   shared_ptr<type_base>		fn_type,
+   bool				declared_inline,
+   location				locus,
+   const std::string&			mangled_name,
+   visibility				vis,
+   binding				bind)
+    : decl_base(name, locus, mangled_name, vis),
+      m_type(dynamic_pointer_cast<function_type>(fn_type)),
+      m_declared_inline(declared_inline),
+      m_binding(bind)
+{
+}
+
+/// \return the return type of the current instance of function_decl.
+const shared_ptr<type_base>
+function_decl::get_return_type() const
+{return m_type->get_return_type ();}
+
+/// \return the parameters of the function.
+const std::vector<shared_ptr<function_decl::parameter> >&
+function_decl::get_parameters() const
+{
+  return m_type->get_parameters ();
+}
+
+/// Append a parameter to the type of this function.
+///
+/// \param parm the parameter to append.
+void
+function_decl::append_parameter(shared_ptr<parameter> parm)
+{
+  m_type->append_parameter(parm);
+}
+
+/// Append a vector of parameters to the type of this function.
+///
+/// \param parms the vector of parameters to append.
+void
+function_decl::append_parameters(std::vector<shared_ptr<parameter> >& parms)
+{
+  for (std::vector<shared_ptr<parameter> >::const_iterator i = parms.begin();
+       i != parms.end();
+       ++i)
+    m_type->get_parameters().push_back(*i);
+}
+
+/// The hashing function for an instance of function_decl::parameter
+///
+/// \param p the instance of function_decl::parameter to hash.
+///
+/// \return the computed hash of the instance of function_decl::parameter.
+size_t
+function_decl::parameter_hash::operator()
+  (const function_decl::parameter& p) const
+{
+  type_shared_ptr_hash hash_type_ptr;
+  hash<bool> hash_bool;
+  size_t v = hash_type_ptr(p.get_type());
+  v = hashing::combine_hashes(v, hash_bool(p.get_variadic_marker()));
+  return v;
+}
 
 bool
 function_decl::operator==(const function_decl& o) const
 {
 
-  // Compare function return types.
-  shared_ptr<type_base> r0 = get_return_type(), r1 = o.get_return_type();
-  if ((r0 && r1 && *r0 != *r1)
-      || !!r0 != !!r1)
+  if (!(static_cast<decl_base>(*this) == o))
     return false;
 
-  // Compare function parameters.
-  list<shared_ptr<parameter> >::const_iterator p0, p1;
-  for (p0 = get_parameters().begin(), p1 = o.get_parameters().begin();
-       p0 != get_parameters().end(), p1 != o.get_parameters().end();
-       ++p0, ++p1)
-    {
-      if (**p0 != **p1)
-	return false;
-    }
-  if (p0 != get_parameters().end() || p1 != o.get_parameters().end())
+  // Compare function types
+  shared_ptr<function_type> t0 = get_type(), t1 = o.get_type();
+  if ((t0 && t1 && *t0 != *t1)
+      || !!t0 != !!t1)
     return false;
 
   // Compare the remaining properties
@@ -1192,18 +1376,11 @@ function_decl_hash::operator()(const function_decl& t) const
   hash<bool> hash_bool;
   hash<string> hash_string;
   decl_base_hash hash_decl_base;
-  function_decl::parameter_hash hash_parm;
   type_shared_ptr_hash hash_type_ptr;
 
   size_t v = hash_string(typeid(t).name());
   v = hashing::combine_hashes(v, hash_decl_base(t));
-  v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
-  for (std::list<shared_ptr<function_decl::parameter> >::const_iterator p =
-	   t.get_parameters().begin();
-	 p != t.get_parameters().end();
-	 ++p)
-    v = hashing::combine_hashes(v, hash_parm(**p));
-
+  v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
   v = hashing::combine_hashes(v, hash_bool(t.is_declared_inline()));
   v = hashing::combine_hashes(v, hash_int(t.get_binding()));
 

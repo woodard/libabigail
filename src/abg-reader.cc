@@ -39,6 +39,7 @@ using std::string;
 using std::stack;
 using std::tr1::unordered_map;
 using std::tr1::dynamic_pointer_cast;
+using std::vector;
 
 namespace abigail
 {
@@ -1104,13 +1105,16 @@ build_function_decl(read_context&	ctxt,
   decl_base::binding bind = decl_base::BINDING_NONE;
   read_binding(node, bind);
 
+  size_t size = 0, align = 0;
+  read_size_and_alignment(node, size, align);
+
   location loc;
   read_location(ctxt, node, loc);
 
-  std::list<shared_ptr<function_decl::parameter> > parms;
-  shared_ptr<type_base> return_type;
+  std::vector<shared_ptr<function_decl::parameter> > parms;
+  shared_ptr<function_type> fn_type(new function_type(size, align));
 
-  shared_ptr<function_decl> fn_decl(new function_decl(name, parms, return_type,
+  shared_ptr<function_decl> fn_decl(new function_decl(name, fn_type,
 						      declared_inline, loc,
 						      mangled_name, vis));
 
@@ -1125,7 +1129,7 @@ build_function_decl(read_context&	ctxt,
 	{
 	  if (shared_ptr<function_decl::parameter> p =
 	      build_function_parameter(ctxt, n))
-	    fn_decl->add_parameter(p);
+	    fn_type->append_parameter(p);
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("return")))
 	{
@@ -1134,7 +1138,7 @@ build_function_decl(read_context&	ctxt,
 	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
 	    type_id = CHAR_STR(s);
 	  if (!type_id.empty())
-	    fn_decl->set_return_type(ctxt.get_type_decl(type_id));
+	    fn_type->set_return_type(ctxt.get_type_decl(type_id));
 	}
     }
 
@@ -2542,60 +2546,17 @@ handle_function_decl(read_context& ctxt)
   if (!r)
     return false;
 
-  string name;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
-    name = CHAR_STR(s);
-
-  string mangled_name;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "mangled-name"))
-    mangled_name = CHAR_STR(s);
-
-  string inline_prop;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "declared-inline"))
-    inline_prop = CHAR_STR(s);
-  bool declared_inline = inline_prop == "yes" ? true : false;
-
-  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
-  read_visibility(ctxt, vis);
-
-  decl_base::binding bind = decl_base::BINDING_NONE;
-  read_binding(ctxt, bind);
-
-  location loc;
-  read_location(ctxt, loc);
-
   xmlNodePtr node = xmlTextReaderExpand(r.get());
-  std::list<shared_ptr<function_decl::parameter> > parms;
-  shared_ptr<type_base> return_type;
-  for (xmlNodePtr n = node->children; n ; n = n->next)
-    {
-      if (n->type != XML_ELEMENT_NODE)
-	continue;
+  if (!node)
+    return false;
 
-      if (xmlStrEqual(n->name, BAD_CAST("parameter")))
-	{
-	  if (shared_ptr<function_decl::parameter> p =
-	      build_function_parameter(ctxt, n))
-	    parms.push_back(p);
-	}
-      else if (xmlStrEqual(n->name, BAD_CAST("return")))
-	{
-	  string type_id;
-	  if (xml_char_sptr s =
-	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
-	    type_id = CHAR_STR(s);
-	  if (!type_id.empty())
-	    return_type = ctxt.get_type_decl(type_id);
-	}
-    }
+  shared_ptr<function_decl> fn =
+    build_function_decl(ctxt, node,
+			/*update_depth_info=*/false);
+
   // now advance the xml reader cursor to the xml node after this
   // expanded 'enum-decl' node.
   xmlTextReaderNext(r.get());
-
-  shared_ptr<decl_base> decl(new function_decl(name, parms, return_type,
-					       declared_inline, loc,
-					       mangled_name, vis));
-  ctxt.push_decl_to_current_scope(decl);
 
   return true;
 }

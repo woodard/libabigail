@@ -5,7 +5,7 @@
       <function-template-decl id='fn-tmpl-id-2'>
         <template-type-parameter id='type-id-3' name='T'/>
         <template-type-parameter id='type-id-4' name='U'/>
-        <function-decl name='foo' binding='global'>
+        <function-decl name='foo' binding='global' size-in-bits='8' alignment-in-bits='8'>
           <parameter type-id='type-id-3' name='first'/>
           <parameter type-id='type-id-4' name='second'/>
           <return type-id='type-id-1'/>

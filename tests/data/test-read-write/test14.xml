@@ -8,7 +8,7 @@
           <pointer-type-def type-id='type-id-4' id='type-id-5'/>
         </template-parameter-type-composition>
         <template-non-type-parameter type-id='type-id-5' name='U'/>
-        <function-decl name='foo' binding='global'>
+        <function-decl name='foo' binding='global' size-in-bits='8' alignment-in-bits='8'>
           <parameter type-id='type-id-5' name='first'/>
           <return type-id='type-id-1'/>
         </function-decl>

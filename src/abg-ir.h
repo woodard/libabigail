@@ -31,6 +31,7 @@
 #include <cstddef>
 #include <tr1/memory>
 #include <list>
+#include <vector>
 #include <string>
 #include <tr1/functional>
 #include <typeinfo>
@@ -788,6 +789,8 @@ struct var_decl_hash
 
 };// end struct var_decl_hash
 
+class function_type;
+
 /// Abstraction for a function declaration.
 class function_decl: public virtual decl_base
 {
@@ -799,15 +802,21 @@ public:
   public:
 
     parameter(const shared_ptr<type_base> type,
-	      std::string name,
-	      location loc)
+	      const std::string& name,
+	      location loc,
+	      bool variadic_marker = false)
       : m_type(type),
 	m_name(name),
-	m_location(loc)
+	m_location(loc),
+	m_variadic_marker (variadic_marker)
     {}
 
     const shared_ptr<type_base>
     get_type()const
+    {return m_type;}
+
+    const shared_ptr<type_base>
+    get_type()
     {return m_type;}
 
     const std::string&
@@ -822,63 +831,78 @@ public:
     operator==(const parameter& o) const
     {return *get_type() == *o.get_type();}
 
+    bool
+    get_variadic_marker () const
+    {return m_variadic_marker;}
+
   private:
     shared_ptr<type_base> m_type;
     std::string m_name;
     location m_location;
+    bool m_variadic_marker;
   };// end class function::parameter
 
   /// Hasher for an instance of function::parameter
   struct parameter_hash
   {
     size_t
-    operator()(const parameter& p) const
-    {
-      type_shared_ptr_hash hash_type_ptr;
-      return hash_type_ptr(p.get_type());
-    }
+    operator()(const parameter& p) const;
   };//end struct parameter_hash
 
   function_decl
   (const std::string&			name,
-   std::list<shared_ptr<parameter> >	parms,
+   const std::vector<shared_ptr<parameter> >& parms,
    shared_ptr<type_base>		return_type,
+   size_t				ftype_size_in_bits,
+   size_t				ftype_align_in_bits,
+   bool				declared_inline,
+   location				locus,
+   const std::string&			mangled_name = "",
+   visibility				vis = VISIBILITY_DEFAULT,
+   binding				bind = BINDING_GLOBAL);
+
+  function_decl
+  (const std::string&			name,
+   shared_ptr<function_type>		function_type,
    bool				declared_inline,
    location				locus,
    const std::string&			mangled_name = "",
    visibility				vis = VISIBILITY_DEFAULT,
    binding				bind = BINDING_GLOBAL)
     : decl_base(name, locus, mangled_name, vis),
-      m_parms(parms),
-      m_return_type(return_type),
+      m_type(function_type),
       m_declared_inline(declared_inline),
       m_binding(bind)
   {}
 
-  const std::list<shared_ptr<parameter> >&
-  get_parameters() const
-  {return m_parms;}
+  function_decl
+  (const std::string&			name,
+   shared_ptr<type_base>		function_type,
+   bool				declared_inline,
+   location				locus,
+   const std::string&			mangled_name = "",
+   visibility				vis = VISIBILITY_DEFAULT,
+   binding				bind = BINDING_GLOBAL);
+
+  const std::vector<shared_ptr<parameter> >&
+  get_parameters() const;
 
   void
-  add_parameter(shared_ptr<parameter> parm)
-  {m_parms.push_back(parm);}
+  append_parameter(shared_ptr<parameter> parm);
 
   void
-  add_parameters(std::list<shared_ptr<parameter> >parms)
-  {
-    for (std::list<shared_ptr<parameter> >::const_iterator i = parms.begin();
-	 i != parms.end();
-	 ++i)
-      m_parms.push_back(*i);
-  }
+  append_parameters(std::vector<shared_ptr<parameter> >& parms);
+
+  const shared_ptr<function_type>
+  get_type() const
+  {return m_type;}
 
   const shared_ptr<type_base>
-  get_return_type() const
-  {return m_return_type;}
+  get_return_type() const;
 
   void
-  set_return_type(shared_ptr<type_base> t)
-  {m_return_type = t;}
+  set_type(shared_ptr<function_type> fn_type)
+  {m_type = fn_type;}
 
   bool
   is_declared_inline() const
@@ -891,11 +915,20 @@ public:
   virtual bool
   operator==(const function_decl& o) const;
 
+  /// Return true iff the function takes a variable number of
+  /// parameters.
+  ///
+  /// \return true if the function taks a variable number
+  /// of parameters.
+  bool
+  is_variadic() const
+  {return (!get_parameters().empty()
+	   && get_parameters().back()->get_variadic_marker());}
+
   virtual ~function_decl();
 
 private:
-  std::list<shared_ptr<parameter> > m_parms;
-  shared_ptr<type_base> m_return_type;
+  shared_ptr<function_type> m_type;
   bool m_declared_inline;
   decl_base::binding m_binding;
 };// end class function_decl
@@ -908,6 +941,110 @@ struct function_decl_hash
 
 };// end function_decl_hash
 
+/// Abstraction of a function type.
+class function_type : public virtual type_base
+{
+  function_type ();
+
+public:
+
+  /// The most straightforward constructor for the the function_type
+  /// class.
+  ///
+  /// \param return_type the return type of the function type.
+  ///
+  /// \param parms the list of parameters of the function type.
+  /// Stricto sensu, we just need a list of types; we are using a list
+  /// of parameters (where each parameter also carries the name of the
+  /// parameter and its source location) to try and provide better
+  /// diagnostics whenever it makes sense.  If it appears that this
+  /// wasts too many resources, we can fall back to taking just a
+  /// vector of types here.
+  ///
+  /// \param size_in_bits the size of this type, in bits.
+  ///
+  /// \param alignment_in_bits the alignment of this type, in bits.
+  ///
+  /// \param size_in_bits the size of this type.
+  function_type(shared_ptr<type_base> return_type,
+		const std::vector<shared_ptr<function_decl::parameter> >& parms,
+		size_t size_in_bits,
+		size_t alignment_in_bits)
+    : type_base(size_in_bits, alignment_in_bits),
+      m_return_type(return_type),
+      m_parms(parms)
+  {}
+
+  /// A constructor for a function_type that takes no parameters.
+  ///
+  /// \param return_type the return type of this function_type.
+  ///
+  /// \param size_in_bits the size of this type, in bits.
+  ///
+  /// \param alignment_in_bits the alignment of this type, in bits.
+  function_type(shared_ptr<type_base> return_type,
+		size_t size_in_bits,
+		size_t alignment_in_bits)
+    : type_base(size_in_bits, alignment_in_bits),
+      m_return_type (return_type)
+  {}
+
+  /// A constructor for a function_type that takes no parameter and
+  /// that has no return_type yet.  These missing parts can (and must)
+  /// be added later.
+  ///
+  /// \param size_in_bits the size of this type, in bits.
+  ///
+  /// \param alignment_in_bits the alignment of this type, in bits.
+  function_type(size_t size_in_bits,
+		size_t alignment_in_bits)
+    : type_base(size_in_bits, alignment_in_bits)
+  {}
+
+  const shared_ptr<type_base>
+  get_return_type() const
+  {return m_return_type;}
+
+  void
+  set_return_type(shared_ptr<type_base> t)
+  {m_return_type = t;}
+
+  const std::vector<shared_ptr<function_decl::parameter> >&
+  get_parameters() const
+  {return m_parms;}
+
+  std::vector<shared_ptr<function_decl::parameter> >&
+  get_parameters()
+  {return m_parms;}
+
+  void
+  set_parameters(const std::vector<shared_ptr<function_decl::parameter> > &p)
+  {m_parms = p;}
+
+  void
+  append_parameter(shared_ptr<function_decl::parameter> parm)
+  {m_parms.push_back (parm);}
+
+  bool
+  is_variadic() const
+  {return !m_parms.empty() && m_parms.back()->get_variadic_marker();}
+
+  bool
+  operator==(const function_type&) const;
+
+  virtual ~function_type();
+
+private:
+  shared_ptr<type_base> m_return_type;
+  std::vector<shared_ptr<function_decl::parameter> > m_parms;
+};// end class function_type
+
+/// Hasher for an instance of function_type
+struct function_type_hash
+{
+  size_t
+  operator()(const function_type& t) const;
+}; // end struct function_type_hash
 
 class template_parameter;
 class template_type_parameter;
@@ -1468,23 +1605,27 @@ public:
   public:
 
     member_function
-    (const std::string&		name,
-     std::list<shared_ptr<parameter> >	parms,
-     shared_ptr<type_base>		return_type,
-     access_specifier			access,
-     bool				declared_inline,
-     location				locus,
-     const std::string&		mangled_name,
-     visibility			vis,
-     binding				bind,
-     size_t				vtable_offset_in_bits,
-     bool				is_static,
-     bool				is_constructor,
-     bool				is_destructor,
-     bool				is_const)
+    (const std::string&	name,
+     std::vector<shared_ptr<parameter> > parms,
+     shared_ptr<type_base>	return_type,
+     size_t			ftype_size_in_bits,
+     size_t			ftype_align_in_bits,
+     access_specifier		access,
+     bool			declared_inline,
+     location			locus,
+     const std::string&	mangled_name,
+     visibility		vis,
+     binding			bind,
+     size_t			vtable_offset_in_bits,
+     bool			is_static,
+     bool			is_constructor,
+     bool			is_destructor,
+     bool			is_const)
       : decl_base(name, locus, name, vis),
-	function_decl(name, parms, return_type, declared_inline,
-		      locus, mangled_name, vis, bind),
+      function_decl(name, parms, return_type,
+		    ftype_size_in_bits, ftype_align_in_bits,
+		    declared_inline, locus,
+		    mangled_name, vis, bind),
       member(access, is_static),
       m_vtable_offset_in_bits(vtable_offset_in_bits),
       m_is_constructor(is_constructor),
@@ -1502,8 +1643,7 @@ public:
       : decl_base(fn->get_name(), fn->get_location(),
 		  fn->get_mangled_name(), fn->get_visibility()),
 	function_decl(fn->get_name(),
-		      fn->get_parameters(),
-		      fn->get_return_type(),
+		      fn->get_type(),
 		      fn->is_declared_inline(),
 		      fn->get_location(),
 		      fn->get_mangled_name(),

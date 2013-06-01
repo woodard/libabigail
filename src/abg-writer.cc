@@ -977,9 +977,11 @@ write_function_decl(const shared_ptr<function_decl>	decl,
 
   write_binding(decl, o);
 
+  write_size_and_alignment(decl->get_type(), o);
+
   o << ">\n";
 
-  std::list<shared_ptr<function_decl::parameter> >::const_iterator pi;
+  std::vector<shared_ptr<function_decl::parameter> >::const_iterator pi;
   for (pi = decl->get_parameters().begin();
        pi != decl->get_parameters().end();
        ++pi)
