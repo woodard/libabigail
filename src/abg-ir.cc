@@ -809,6 +809,8 @@ qualified_type_def_hash::operator()(const qualified_type_def& t) const
 size_t
 dynamic_type_hash::operator()(const type_base* t) const
 {
+  if (t == 0)
+    return 0;
   if (const template_template_parameter* d =
       dynamic_cast<const template_template_parameter*>(t))
     return template_template_parameter_hash()(*d);
