@@ -181,7 +181,7 @@ private:
   type_shared_ptr_map m_type_id_map;
   fn_tmpl_shared_ptr_map m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map m_class_tmpl_id_map;
-};//end write_context
+}; //end write_context
 
 static bool write_translation_unit(const translation_unit&,
 				   write_context&,
@@ -194,6 +194,8 @@ static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
 static void write_access(class_decl::access_specifier, ostream&);
 static void write_access(shared_ptr<class_decl::member>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, ostream&);
+static void write_class_is_declaration_only(const shared_ptr<class_decl>,
+					    ostream&);
 static bool write_decl(const shared_ptr<decl_base>,
 		       write_context&, unsigned);
 static bool write_type_decl(const shared_ptr<type_decl>,
@@ -211,9 +213,9 @@ static bool write_enum_type_decl(const shared_ptr<enum_type_decl>,
 static bool write_typedef_decl(const shared_ptr<typedef_decl>,
 			       write_context&, unsigned);
 static bool write_var_decl(const shared_ptr<var_decl>,
-			   write_context&, unsigned);
+			   write_context&, bool, unsigned);
 static bool write_function_decl(const shared_ptr<function_decl>,
-				write_context&, unsigned);
+				write_context&, bool, unsigned);
 static bool write_class_decl(const shared_ptr<class_decl>,
 			     write_context&, unsigned);
 static bool write_template_type_parameter
@@ -523,11 +525,25 @@ write_cdtor_const_static(bool is_ctor, bool is_dtor,
 			 bool is_static, ostream& o)
 {
   if (is_static)
-    o << " static='true'";
+    o << " static='yes'";
   if (is_ctor)
-    o << " constructor='true'";
+    o << " constructor='yes'";
   else if (is_dtor)
-    o << " destructor='true'";
+    o << " destructor='yes'";
+}
+
+/// Serialize the attribute "is-declaration-only", if the class has
+/// its 'is_declaration_only property set.
+///
+/// \param klass the pointer to instance of class_decl to consider.
+///
+/// \param o the output stream to serialize to.
+static void
+write_class_is_declaration_only(const shared_ptr<class_decl> klass,
+				ostream& o)
+{
+  if (klass->is_declaration_only())
+    o << " is-declaration-only='yes'";
 }
 
 /// Serialize a pointer to an of decl_base into an output stream.
@@ -561,9 +577,13 @@ write_decl(const shared_ptr<decl_base>	decl,
 			      ctxt, indent)
       || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(decl),
 			    ctxt, indent)
-      || write_var_decl(dynamic_pointer_cast<var_decl>(decl), ctxt, indent)
+      || write_var_decl(dynamic_pointer_cast<var_decl>(decl), ctxt,
+			/*write_mangled_name=*/true, indent)
+      || write_function_decl(dynamic_pointer_cast<class_decl::method_decl>
+			     (decl), ctxt, /*skip_first_parameter=*/true,
+			     indent)
       || write_function_decl(dynamic_pointer_cast<function_decl>(decl),
-			     ctxt, indent)
+			     ctxt, /*skip_first_parameter=*/false, indent)
       || write_class_decl(dynamic_pointer_cast<class_decl>(decl), ctxt, indent)
       || (write_function_template_decl
 	  (dynamic_pointer_cast<function_template_decl>(decl), ctxt, indent))
@@ -840,7 +860,7 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
   do_indent(o, indent);
   o << "<enum-decl name='" << decl->get_name() << "'";
 
-  write_location(static_pointer_cast<decl_base>(decl), o);
+  write_location(decl, o);
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'>\n";
 
@@ -908,12 +928,16 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 ///
 /// \param ctxt the context of the serialization.
 ///
+/// \param write_mangled_name if true, serialize the mangled name of
+/// this variable.
+///
 /// \param indent the number of indentation white spaces to use.
 ///
 /// \return true upon succesful completion, false otherwise.
 static bool
 write_var_decl(const shared_ptr<var_decl>	decl,
 	       write_context&			ctxt,
+	       bool write_mangled_name,
 	       unsigned			indent)
 {
   if (!decl)
@@ -926,10 +950,12 @@ write_var_decl(const shared_ptr<var_decl>	decl,
   o << "<var-decl name='" << decl->get_name() << "'";
   o << " type-id='" << ctxt.get_id_for_type(decl->get_type()) << "'";
 
-  const string& mangled_name = decl->get_mangled_name();
-
-  if (!mangled_name.empty())
-    o << " mangled-name='" << mangled_name << "'";
+  if (write_mangled_name)
+    {
+      const string& mangled_name = decl->get_mangled_name();
+      if (!mangled_name.empty())
+	o << " mangled-name='" << mangled_name << "'";
+    }
 
   write_visibility(decl, o);
 
@@ -948,12 +974,16 @@ write_var_decl(const shared_ptr<var_decl>	decl,
 ///
 /// \param ctxt the context of the serialization.
 ///
+/// \param skip_first_parm if true, do not serialize the first
+/// parameter of the function decl.
+///
 /// \param indent the number of indentation white spaces to use.
 ///
 /// \return true upon succesful completion, false otherwise.
 static bool
 write_function_decl(const shared_ptr<function_decl>	decl,
 		    write_context&			ctxt,
+		    bool				skip_first_parm,
 		    unsigned				indent)
 {
   if (!decl)
@@ -981,8 +1011,9 @@ write_function_decl(const shared_ptr<function_decl>	decl,
 
   o << ">\n";
 
-  std::vector<shared_ptr<function_decl::parameter> >::const_iterator pi;
-  for (pi = decl->get_parameters().begin();
+  std::vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
+    decl->get_parameters().begin();
+  for ((skip_first_parm && pi != decl->get_parameters().end()) ? ++pi: pi;
        pi != decl->get_parameters().end();
        ++pi)
     {
@@ -1037,113 +1068,137 @@ write_class_decl(const shared_ptr<class_decl> decl,
 
   write_location(decl, o);
 
+  write_class_is_declaration_only(decl, o);
+
+  if (decl->get_earlier_declaration())
+    {
+      // This instance is the definition of an earlier declaration.
+      o << "def-of-decl-id='"
+	<< ctxt.get_id_for_type(decl->get_earlier_declaration())
+	<< "'";
+    }
+
   o << " id='" << ctxt.get_id_for_type(decl) << "'";
-  o << ">\n";
-
-  unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
-  for (class_decl::base_specs_type::const_iterator base =
-	 decl->get_base_specifiers().begin();
-       base != decl->get_base_specifiers().end();
-       ++base)
+  if (decl->is_declaration_only())
+    o << "/>";
+  else
     {
-      do_indent(o, nb_ws);
-      o << "<base-class";
-      write_access(*base, o);
-      o << " type-id='"
-	<< ctxt.get_id_for_type((*base)->get_base_class())
-	<< "'/>\n";
-    }
-
-  for (class_decl::member_types_type::const_iterator ti =
-	 decl->get_member_types().begin();
-       ti != decl->get_member_types().end();
-       ++ti)
-    {
-      do_indent(o, nb_ws);
-      o << "<member-type";
-      write_access(*ti, o);
       o << ">\n";
 
-      write_decl(dynamic_pointer_cast<decl_base>((*ti)->as_type()), ctxt,
-		 get_indent_to_level(ctxt, indent, 2));
-      o << "\n";
+      unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
+      for (class_decl::base_specs_type::const_iterator base =
+	     decl->get_base_specifiers().begin();
+	   base != decl->get_base_specifiers().end();
+	   ++base)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<base-class";
+	  write_access(*base, o);
+	  o << " type-id='"
+	    << ctxt.get_id_for_type((*base)->get_base_class())
+	    << "'/>\n";
+	}
 
-      do_indent_to_level(ctxt, indent, 1);
-      o << "</member-type>\n";
+      for (class_decl::member_types_type::const_iterator ti =
+	     decl->get_member_types().begin();
+	   ti != decl->get_member_types().end();
+	   ++ti)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<member-type";
+	  write_access(*ti, o);
+	  o << ">\n";
+
+	  write_decl(dynamic_pointer_cast<decl_base>((*ti)->as_type()), ctxt,
+		     get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+
+	  do_indent_to_level(ctxt, indent, 1);
+	  o << "</member-type>\n";
+	}
+
+      for (class_decl::data_members_type::const_iterator data =
+	     decl->get_data_members().begin();
+	   data != decl->get_data_members().end();
+	   ++data)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<data-member";
+	  write_access(*data, o);
+
+	  bool is_static = (*data)->is_static();
+	  write_cdtor_const_static(/*is_ctor=*/false,
+				   /*is_dtor=*/false,
+				   /*is_static=*/is_static,
+				   o);
+	  o << ">\n";
+
+	  write_var_decl(*data, ctxt, is_static,
+			 get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+
+	  do_indent_to_level(ctxt, indent, 1);
+	  o << "</data-member>\n";
+	}
+
+      for (class_decl::member_functions_type::const_iterator fn =
+	     decl->get_member_functions().begin();
+	   fn != decl->get_member_functions().end();
+	   ++fn)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<member-function";
+	  write_access(*fn, o);
+	  o << ">\n";
+
+	  write_function_decl(*fn, ctxt,
+			      /*skip_first_parameter=*/true,
+			      get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+
+	  do_indent_to_level(ctxt, indent, 1);
+	  o << "</member-function>\n";
+	}
+
+      for (class_decl::member_function_templates_type::const_iterator fn =
+	     decl->get_member_function_templates().begin();
+	   fn != decl->get_member_function_templates().end();
+	   ++fn)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<member-template";
+	  write_access(*fn, o);
+	  write_cdtor_const_static((*fn)->is_constructor(), false,
+				   (*fn)->is_static(), o);
+	  o << ">\n";
+	  write_function_template_decl((*fn)->as_function_template_decl(), ctxt,
+				       get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+	  do_indent(o, nb_ws);
+	  o << "</member-template>\n";
+	}
+
+      for (class_decl::member_class_templates_type::const_iterator cl =
+	     decl->get_member_class_templates().begin();
+	   cl != decl->get_member_class_templates().end();
+	   ++cl)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<member-template";
+	  write_access(*cl, o);
+	  write_cdtor_const_static(false, false, (*cl)->is_static(), o);
+	  o << ">\n";
+	  write_class_template_decl((*cl)->as_class_template_decl(), ctxt,
+				    get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+	  do_indent(o, nb_ws);
+	  o << "</member-template>\n";
+	}
+
+      do_indent_to_level(ctxt, indent, 0);
+
+      o << "</class-decl>";
     }
-
-  for (class_decl::data_members_type::const_iterator data =
-	 decl->get_data_members().begin();
-       data != decl->get_data_members().end();
-       ++data)
-    {
-      do_indent(o, nb_ws);
-      o << "<data-member";
-      write_access(*data, o);
-      o << ">\n";
-
-      write_var_decl(*data, ctxt, get_indent_to_level(ctxt, indent, 2));
-      o << "\n";
-
-      do_indent_to_level(ctxt, indent, 1);
-      o << "</data-member>\n";
-    }
-
-  for (class_decl::member_functions_type::const_iterator fn =
-	 decl->get_member_functions().begin();
-       fn != decl->get_member_functions().end();
-       ++fn)
-    {
-      do_indent(o, nb_ws);
-      o << "<member-function";
-      write_access(*fn, o);
-      o << ">\n";
-
-      write_function_decl(*fn, ctxt, get_indent_to_level(ctxt, indent, 2));
-      o << "\n";
-
-      do_indent_to_level(ctxt, indent, 1);
-      o << "</member-function>\n";
-    }
-
-  for (class_decl::member_function_templates_type::const_iterator fn =
-	 decl->get_member_function_templates().begin();
-       fn != decl->get_member_function_templates().end();
-       ++fn)
-    {
-      do_indent(o, nb_ws);
-      o << "<member-template";
-      write_access(*fn, o);
-      write_cdtor_const_static((*fn)->is_constructor(), false,
-			       (*fn)->is_static(), o);
-      o << ">\n";
-      write_function_template_decl((*fn)->as_function_template_decl(), ctxt,
-				   get_indent_to_level(ctxt, indent, 2));
-      o << "\n";
-      do_indent(o, nb_ws);
-      o << "</member-template>\n";
-    }
-
-    for (class_decl::member_class_templates_type::const_iterator cl =
-	   decl->get_member_class_templates().begin();
-	 cl != decl->get_member_class_templates().end();
-	 ++cl)
-    {
-      do_indent(o, nb_ws);
-      o << "<member-template";
-      write_access(*cl, o);
-      write_cdtor_const_static(false, false, (*cl)->is_static(), o);
-      o << ">\n";
-      write_class_template_decl((*cl)->as_class_template_decl(), ctxt,
-				get_indent_to_level(ctxt, indent, 2));
-      o << "\n";
-      do_indent(o, nb_ws);
-      o << "</member-template>\n";
-    }
-
-  do_indent_to_level(ctxt, indent, 0);
-
-  o << "</class-decl>";
 
   return true;
 }
@@ -1400,6 +1455,7 @@ write_function_template_decl(const shared_ptr<function_template_decl> decl,
   write_template_parameters(decl, ctxt, indent);
 
   write_function_decl(decl->get_pattern(), ctxt,
+		      /*skip_first_parameter=*/false,
 		      get_indent_to_level(ctxt, indent, 1));
   o << "\n";
 

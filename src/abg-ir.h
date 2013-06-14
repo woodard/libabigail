@@ -811,6 +811,12 @@ public:
 	m_variadic_marker (variadic_marker)
     {}
 
+    parameter(const shared_ptr<type_base> type,
+	      bool variadic_marker = false)
+      : m_type(type),
+	m_variadic_marker (variadic_marker)
+    {}
+
     const shared_ptr<type_base>
     get_type()const
     {return m_type;}
@@ -894,8 +900,7 @@ public:
   append_parameters(std::vector<shared_ptr<parameter> >& parms);
 
   const shared_ptr<function_type>
-  get_type() const
-  {return m_type;}
+  get_type() const;
 
   const shared_ptr<type_base>
   get_return_type() const;
@@ -927,8 +932,9 @@ public:
 
   virtual ~function_decl();
 
-private:
+protected:
   shared_ptr<function_type> m_type;
+private:
   bool m_declared_inline;
   decl_base::binding m_binding;
 };// end class function_decl
@@ -1036,6 +1042,8 @@ public:
 
 private:
   shared_ptr<type_base> m_return_type;
+
+protected:
   std::vector<shared_ptr<function_decl::parameter> > m_parms;
 };// end class function_type
 
@@ -1045,6 +1053,52 @@ struct function_type_hash
   size_t
   operator()(const function_type& t) const;
 }; // end struct function_type_hash
+
+/// Abstracts the type of a class member function.
+class method_type : public function_type
+{
+  method_type();
+
+public:
+
+  method_type(shared_ptr<type_base> return_type,
+	      shared_ptr<class_decl> class_type,
+	      const std::vector<shared_ptr<function_decl::parameter> >& parms,
+	      size_t size_in_bits,
+	      size_t alignment_in_bits);
+
+  method_type(shared_ptr<type_base> return_type,
+	      shared_ptr<type_base> class_type,
+	      const std::vector<shared_ptr<function_decl::parameter> >& parms,
+	      size_t size_in_bits,
+	      size_t alignment_in_bits);
+
+  method_type(shared_ptr<class_decl> class_type,
+	      size_t size_in_bits,
+	      size_t alignment_in_bits);
+
+  method_type(size_t size_in_bits,
+	      size_t alignment_in_bits);
+
+  shared_ptr<class_decl>
+  get_class_type() const
+  {return m_class_type;}
+
+  void
+  set_class_type(shared_ptr<class_decl>);
+
+  virtual ~method_type();
+
+private:
+  shared_ptr<class_decl> m_class_type;
+};// end class method_type
+
+/// Hasher for intances of method_type
+struct method_type_hash
+{
+  size_t
+  operator()(const method_type& t)const;
+};//end struct method_type_hash
 
 class template_parameter;
 class template_type_parameter;
@@ -1392,6 +1446,7 @@ public:
 
   enum access_specifier
   {
+    no_access,
     private_access,
     protected_access,
     public_access
@@ -1534,21 +1589,7 @@ public:
 		access_specifier access,
 		bool is_laid_out,
 		bool is_static,
-		size_t offset_in_bits)
-      : decl_base(data_member->get_name(),
-		  data_member->get_location(),
-		  data_member->get_mangled_name(),
-		  data_member->get_visibility()),
-	var_decl(data_member->get_name(),
-		 data_member->get_type(),
-		 data_member->get_location(),
-		 data_member->get_mangled_name(),
-		 data_member->get_visibility(),
-		 data_member->get_binding()),
-	member(access, is_static),
-	m_is_laid_out(is_laid_out),
-	m_offset_in_bits(offset_in_bits)
-    {}
+		size_t offset_in_bits);
 
     data_member(const std::string&	name,
 		shared_ptr<type_base>&	type,
@@ -1559,13 +1600,7 @@ public:
 		binding		bind,
 		bool			is_laid_out,
 		bool			is_static,
-		size_t			offset_in_bits)
-      : decl_base(name, locus, name, vis),
-	var_decl(name, type, locus, mangled_name, vis, bind),
-	member(access, is_static),
-	m_is_laid_out(is_laid_out),
-	m_offset_in_bits(offset_in_bits)
-    {}
+		size_t			offset_in_bits);
 
     bool
     is_laid_out() const
@@ -1584,6 +1619,8 @@ public:
 	      && static_cast<member>(*this) == other);
     }
 
+    virtual ~data_member();
+
   private:
     bool m_is_laid_out;
     size_t m_offset_in_bits;
@@ -1596,8 +1633,63 @@ public:
     operator()(data_member& t);
   };// end struct data_member_hash
 
+
+  /// Abstraction of the declaration of a method. This is an
+  /// implementation detail for class_decl::member_function.
+  class method_decl : public function_decl
+  {
+    method_decl();
+
+  public:
+
+    method_decl(const std::string&			name,
+		const std::vector<shared_ptr<parameter> >& parms,
+		shared_ptr<type_base>		return_type,
+		shared_ptr<class_decl>		class_type,
+		size_t				ftype_size_in_bits,
+		size_t				ftype_align_in_bits,
+		bool				declared_inline,
+		location				locus,
+		const std::string&			mangled_name = "",
+		visibility				vis = VISIBILITY_DEFAULT,
+		binding				bind = BINDING_GLOBAL);
+
+    method_decl(const std::string&	name,
+		shared_ptr<method_type> type,
+		bool			declared_inline,
+		location		locus,
+		const std::string&	mangled_name = "",
+		visibility		vis	     = VISIBILITY_DEFAULT,
+		binding		bind	     = BINDING_GLOBAL);
+
+    method_decl(const std::string&		name,
+		shared_ptr<function_type>	type,
+		bool				declared_inline,
+		location			locus,
+		const std::string&		mangled_name = "",
+		visibility			vis	     = VISIBILITY_DEFAULT,
+		binding			bind	     = BINDING_GLOBAL);
+
+    method_decl(const std::string&	name,
+		shared_ptr<type_base>	type,
+		bool			declared_inline,
+		location		locus,
+		const std::string&	mangled_name = "",
+		visibility		vis	     = VISIBILITY_DEFAULT,
+		binding		bind	     = BINDING_GLOBAL);
+
+    const shared_ptr<method_type>
+    get_type() const;
+
+    void
+    set_type(shared_ptr<method_type> fn_type)
+    {function_decl::set_type(fn_type);}
+
+    virtual ~method_decl();
+  };//end class method_decl;
+
   /// Abstracts a member function declaration in a class declaration.
-  class member_function : public function_decl, public member
+  class member_function : public method_decl, public member
   {
     // Forbidden
     member_function();
@@ -1608,6 +1700,7 @@ public:
     (const std::string&	name,
      std::vector<shared_ptr<parameter> > parms,
      shared_ptr<type_base>	return_type,
+     shared_ptr<class_decl>	class_type,
      size_t			ftype_size_in_bits,
      size_t			ftype_align_in_bits,
      access_specifier		access,
@@ -1622,10 +1715,33 @@ public:
      bool			is_destructor,
      bool			is_const)
       : decl_base(name, locus, name, vis),
-      function_decl(name, parms, return_type,
-		    ftype_size_in_bits, ftype_align_in_bits,
-		    declared_inline, locus,
-		    mangled_name, vis, bind),
+      method_decl(name, parms, return_type, class_type,
+		  ftype_size_in_bits, ftype_align_in_bits,
+		  declared_inline, locus,
+		  mangled_name, vis, bind),
+      member(access, is_static),
+      m_vtable_offset_in_bits(vtable_offset_in_bits),
+      m_is_constructor(is_constructor),
+      m_is_destructor(is_destructor),
+      m_is_const(is_const)
+    {}
+
+    member_function(shared_ptr<method_decl>	fn,
+		    access_specifier		access,
+		    size_t			vtable_offset_in_bits,
+		    bool			is_static,
+		    bool			is_constructor,
+		    bool			is_destructor,
+		    bool			is_const)
+      : decl_base(fn->get_name(), fn->get_location(),
+		  fn->get_mangled_name(), fn->get_visibility()),
+	method_decl(fn->get_name(),
+		    fn->get_type(),
+		    fn->is_declared_inline(),
+		    fn->get_location(),
+		    fn->get_mangled_name(),
+		    fn->get_visibility(),
+		    fn->get_binding()),
       member(access, is_static),
       m_vtable_offset_in_bits(vtable_offset_in_bits),
       m_is_constructor(is_constructor),
@@ -1639,22 +1755,7 @@ public:
 		    bool			is_static,
 		    bool			is_constructor,
 		    bool			is_destructor,
-		    bool			is_const)
-      : decl_base(fn->get_name(), fn->get_location(),
-		  fn->get_mangled_name(), fn->get_visibility()),
-	function_decl(fn->get_name(),
-		      fn->get_type(),
-		      fn->is_declared_inline(),
-		      fn->get_location(),
-		      fn->get_mangled_name(),
-		      fn->get_visibility(),
-		      fn->get_binding()),
-      member(access, is_static),
-      m_vtable_offset_in_bits(vtable_offset_in_bits),
-      m_is_constructor(is_constructor),
-      m_is_destructor(is_destructor),
-      m_is_const(is_const)
-    {}
+		    bool			is_const);
 
     size_t
     get_vtable_offset_in_bits() const
@@ -1795,18 +1896,39 @@ public:
 	     size_t						align_in_bits,
 	     location						locus,
 	     visibility					vis,
-	     const std::list<shared_ptr<base_spec> >&		bases,
-	     const std::list<shared_ptr<member_type> >&	member_types,
-	     const std::list<shared_ptr<data_member> >&	data_members,
-	     const std::list<shared_ptr<member_function> >&	member_fns)
-    : decl_base(name, locus, name, vis),
-      type_base(size_in_bits, align_in_bits),
-      scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
-    m_bases(bases),
-    m_member_types(member_types),
-    m_data_members(data_members),
-    m_member_functions(member_fns)
-  {}
+	     std::list<shared_ptr<base_spec> >&		bases,
+	     std::list<shared_ptr<member_type> >&	member_types,
+	     std::list<shared_ptr<data_member> >&	data_members,
+	     std::list<shared_ptr<member_function> >&	member_fns);
+
+  class_decl(const std::string& name,
+	     size_t		size_in_bits,
+	     size_t		align_in_bits,
+	     location		locus,
+	     visibility	vis);
+
+  class_decl(const std::string& name,
+	     bool is_declaration_only = true);
+
+  bool
+  hashing_started() const
+  {return m_hashing_started;}
+
+  void
+  hashing_started(bool b) const
+  {m_hashing_started = b;}
+
+  bool
+  is_declaration_only() const
+  {return m_is_declaration_only;}
+
+  void
+  set_earlier_declaration(shared_ptr<class_decl> declaration)
+  {m_declaration = declaration;}
+
+  shared_ptr<class_decl>
+  get_earlier_declaration() const
+  {return m_declaration;}
 
   void
   add_base_specifier(shared_ptr<base_spec> b)
@@ -1857,12 +1979,15 @@ public:
   virtual ~class_decl();
 
 private:
-  base_specs_type m_bases;
-  member_types_type m_member_types;
-  data_members_type m_data_members;
-  member_functions_type m_member_functions;
-  member_function_templates_type m_member_function_templates;
-  member_class_templates_type m_member_class_templates;
+  mutable bool				m_hashing_started;
+  shared_ptr<class_decl>		m_declaration;
+  bool					m_is_declaration_only;
+  base_specs_type			m_bases;
+  member_types_type			m_member_types;
+  data_members_type			m_data_members;
+  member_functions_type		m_member_functions;
+  member_function_templates_type	m_member_function_templates;
+  member_class_templates_type		m_member_class_templates;
 };// end class class_decl
 
 /// Hasher for the class_decl type

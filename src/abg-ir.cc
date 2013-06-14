@@ -38,6 +38,7 @@ using std::string;
 using std::list;
 using std::vector;
 using std::tr1::dynamic_pointer_cast;
+using std::tr1::static_pointer_cast;
 
 namespace abigail
 {
@@ -332,7 +333,8 @@ scope_decl::~scope_decl()
 {
 }
 
-/// Appends a decl to a given scope.
+/// Appends a decl to a given scope, if the decl doesn't already
+/// belong to a scope.
 ///
 /// \param the decl to add append to the scope
 ///
@@ -341,14 +343,15 @@ void
 add_decl_to_scope(shared_ptr<decl_base> decl,
 		  scope_decl*		scope)
 {
-  if (scope && decl)
+  if (scope && decl && !decl->get_scope())
     {
       scope->add_member_decl (decl);
       decl->set_scope(scope);
     }
 }
 
-/// Appends a decl to a given scope.
+/// Appends a decl to a given scope, if the decl doesn't already
+/// belong to a scope.
 ///
 /// \param the decl to add append to the scope
 ///
@@ -369,6 +372,9 @@ add_decl_to_scope (shared_ptr<decl_base> decl,
 global_scope*
 get_global_scope(const shared_ptr<decl_base> decl)
 {
+  if (shared_ptr<global_scope> s = dynamic_pointer_cast<global_scope>(decl))
+    return s.get();
+
   scope_decl* scope = decl->get_scope();
   while (scope && !dynamic_cast<global_scope*>(scope))
     scope = scope->get_scope();
@@ -802,7 +808,9 @@ qualified_type_def_hash::operator()(const qualified_type_def& t) const
 /// declaration and calls the right hashing function for that type.
 ///
 /// Note that each time a new type declaration kind is added to the
-/// system, this function needs to be updated.
+/// system, this function needs to be updated.  For a given
+/// inheritance hierarchy, make sure to handle the most derived type
+/// first.
 ///
 /// \param t a pointer to the type declaration to be hashed
 ///
@@ -834,6 +842,8 @@ dynamic_type_hash::operator()(const type_base* t) const
     return class_decl_hash()(*d);
   if (const scope_type_decl* d = dynamic_cast<const scope_type_decl*>(t))
     return scope_type_decl_hash()(*d);
+  if (const method_type* d = dynamic_cast<const method_type*>(t))
+    return method_type_hash()(*d);
   if (const function_type* d = dynamic_cast<const function_type*>(t))
     return function_type_hash()(*d);
 
@@ -1202,6 +1212,161 @@ function_type_hash::operator()(const function_type& t) const
 }
 
 // </function_type>
+
+// <method_type>
+
+/// Constructor for instances of method_type.
+///
+/// Instances of #method_decl must be of type #method_type.
+///
+/// \param return_type the type of the return value of the method.
+///
+/// \param class_type the base type of the method type.  That is, the
+/// type of the class the method belongs to.
+///
+/// \param parms the vector of the parameters of the method.
+///
+/// \param size_in_bits the size of an instance of method_type,
+/// expressed in bits.
+///
+/// \param alignment_in_bits the alignment of an instance of
+/// method_type, expressed in bits.
+method_type::method_type
+(shared_ptr<type_base> return_type,
+ shared_ptr<class_decl> class_type,
+ const std::vector<shared_ptr<function_decl::parameter> >& parms,
+ size_t size_in_bits,
+ size_t alignment_in_bits)
+  : type_base(size_in_bits, alignment_in_bits),
+    function_type(return_type, parms, size_in_bits, alignment_in_bits)
+{
+  set_class_type(class_type);
+}
+
+/// Constructor of instances of method_type.
+///
+///Instances of #method_decl must be of type method_type.
+///
+/// \param return_type the type of the return value of the method.
+///
+/// \param class_type the type of the class the method belongs to.
+/// The actual (dynamic) type of class_type must be a pointer
+/// class_type.  We are setting it to pointer to type_base here to
+/// help client code that is compiled without rtti and thus cannot
+/// perform dynamic casts.
+///
+/// \param parms the vector of the parameters of the method type.
+///
+/// \param size_in_bits the size of an instance of method_type,
+/// expressed in bits.
+///
+/// \param alignment_in_bits the alignment of an instance of
+/// method_type, expressed in bits.
+method_type::method_type(shared_ptr<type_base> return_type,
+			 shared_ptr<type_base> class_type,
+			 const std::vector<shared_ptr<function_decl::parameter> >& parms,
+			 size_t size_in_bits,
+			 size_t alignment_in_bits)
+  : type_base(size_in_bits, alignment_in_bits),
+    function_type(return_type, parms, size_in_bits, alignment_in_bits)
+{
+  set_class_type(dynamic_pointer_cast<class_decl>(class_type));
+}
+
+/// Constructor of instances of method_type.
+///
+/// When constructed with this constructor, and instane of method_type
+/// must set a return type and class type using
+/// method_type::set_return_type and method_type::set_class_type.
+///
+/// \param size_in_bits the size of an instance of method_type,
+/// expressed in bits.
+///
+/// \param alignment_in_bits the alignment of an instance of
+/// method_type, expressed in bits.
+method_type::method_type(size_t size_in_bits,
+			 size_t alignment_in_bits)
+  : type_base(size_in_bits, alignment_in_bits),
+    function_type(size_in_bits, alignment_in_bits)
+{
+}
+
+/// Constructor of instances of method_type.
+///
+/// When constructed with this constructor, and instane of method_type
+/// must set a return type using method_type::set_return_type
+///
+/// \param class_type the base type of the method type.  That is, the
+/// type of the class the method belongs to.
+///
+/// \param size_in_bits the size of an instance of method_type,
+/// expressed in bits.
+///
+/// \param alignment_in_bits the alignment of an instance of
+/// method_type, expressed in bits.
+method_type::method_type(shared_ptr<class_decl> class_type,
+			 size_t size_in_bits,
+			 size_t alignment_in_bits)
+  : type_base(size_in_bits, alignment_in_bits),
+    function_type(size_in_bits, alignment_in_bits)
+{
+  set_class_type(class_type);
+}
+
+/// Sets the class type of the current instance of method_type.
+///
+/// The class type is the type of the class the method belongs to.
+///
+/// \param t the new class type to set.
+void
+method_type::set_class_type(shared_ptr<class_decl> t)
+{
+  if (!t)
+    return;
+
+  function_decl::parameter p(t, "");
+  if (m_class_type)
+    {
+      assert(!m_parms.empty());
+      m_parms.erase(m_parms.begin());
+    }
+    m_class_type = t;
+    m_parms.insert(m_parms.begin(),
+		   shared_ptr<function_decl::parameter>
+		   (new function_decl::parameter(t)));
+}
+
+/// The destructor of method_type
+method_type::~method_type()
+{
+}
+
+/// The hashing function of instance of method_type.
+///
+/// \param t the instance of method_type to hash.
+///
+/// \return the hash value.
+size_t
+method_type_hash::operator()(const method_type& t) const
+{
+  hash<string> hash_string;
+  type_shared_ptr_hash hash_type_ptr;
+  function_decl::parameter_hash hash_parameter;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
+  vector<shared_ptr<function_decl::parameter> >::const_iterator i =
+    t.get_parameters ().begin();
+
+  for (vector<shared_ptr<function_decl::parameter> >::const_iterator i =
+	 t.get_parameters ().begin();
+       i != t.get_parameters().end(); ++i)
+    v = hashing::combine_hashes(v, hash_parameter(**i));
+
+  return v;
+}
+
+// </method_type>
 // <function_decl definitions>
 
 /// Constructor for function_decl.
@@ -1292,6 +1457,16 @@ function_decl::function_decl
       m_declared_inline(declared_inline),
       m_binding(bind)
 {
+}
+
+/// Return the type of the current instance of #function_decl.
+///
+/// It's either a function_type or method_type.
+/// \return the type of the current instance of #function_decl.
+const shared_ptr<function_type>
+function_decl::get_type() const
+{
+  return m_type;
 }
 
 /// \return the return type of the current instance of function_decl.
@@ -1395,6 +1570,112 @@ function_decl::~function_decl()
 
 // <class_decl definitions>
 
+/// A Constructor for instances of #class_decl
+///
+/// \param name the name of the class.
+///
+/// \param size_in_bits the size of an instance of class_decl, expressed
+/// in bits
+///
+/// \param align_in_bits the alignment of an instance of class_decl,
+/// expressed in bits.
+///
+/// \param locus the source location of declaration point this class.
+///
+/// \param vis the visibility of instances of class_decl.
+///
+/// \param bases the vector of base classes for this instance of class_decl.
+///
+/// \param member_types the vector of member types of this instance of
+/// class_decl.
+///
+/// \param data_members the vector of data members of this instance of
+/// class_decl.
+///
+/// \param the vector of member functions of this instance of
+/// class_decl.
+class_decl::class_decl(const std::string&				name,
+		       size_t						size_in_bits,
+		       size_t						align_in_bits,
+		       location						locus,
+		       visibility					vis,
+		       std::list<shared_ptr<base_spec> >&		bases,
+		       std::list<shared_ptr<member_type> >&	member_types,
+		       std::list<shared_ptr<data_member> >&	data_members,
+		       std::list<shared_ptr<member_function> >&	member_fns)
+  : decl_base(name, locus, name, vis),
+    type_base(size_in_bits, align_in_bits),
+  scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
+  m_hashing_started(false),
+  m_is_declaration_only(false),
+  m_bases(bases),
+  m_member_types(member_types),
+  m_data_members(data_members),
+  m_member_functions(member_fns)
+{
+  for (member_types_type::iterator i = member_types.begin();
+       i != member_types.end();
+       ++i)
+    if (!(*i)->get_scope())
+      add_decl_to_scope(*i, this);
+
+  for (data_members_type::iterator i = data_members.begin();
+       i != data_members.end();
+       ++i)
+    if (!(*i)->get_scope())
+      add_decl_to_scope(*i, this);
+
+  for (member_functions_type::iterator i = member_fns.begin();
+       i != member_fns.end();
+       ++i)
+    if (!(*i)->get_scope())
+      add_decl_to_scope(*i, this);
+
+}
+
+/// A constructor for instances of #class_decl.
+///
+/// \param name the name of the class.
+///
+/// \param size_in_bits the size of an instance of class_decl, expressed
+/// in bits
+///
+/// \param align_in_bits the alignment of an instance of class_decl,
+/// expressed in bits.
+///
+/// \param locus the source location of declaration point this class.
+///
+/// \param vis the visibility of instances of class_decl.
+class_decl::class_decl(const std::string&				name,
+		       size_t						size_in_bits,
+		       size_t						align_in_bits,
+		       location						locus,
+		       visibility					vis)
+  : decl_base(name, locus, name, vis),
+    type_base(size_in_bits, align_in_bits),
+    scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
+    m_hashing_started(false),
+    m_is_declaration_only(false)
+{
+}
+
+/// A constuctor for instances of #class_decl that represent a
+/// declaration without definition.
+///
+/// \param name the name of the class.
+///
+/// \param is_declared_inline a boolean saying whether the instance
+/// represents a declaration only, or not.
+class_decl::class_decl(const std::string& name,
+		       bool is_declaration_only)
+  : decl_base(name, location(), name),
+    type_base(0, 0),
+    scope_type_decl(name, 0, 0, location()),
+    m_hashing_started(false),
+    m_is_declaration_only(is_declaration_only)
+{
+}
+
 /// Add a member type to the current instnace of class_decl
 ///
 /// \param the member type to add.
@@ -1425,6 +1706,202 @@ class_decl::add_data_member(shared_ptr<data_member> m)
     add_decl_to_scope(m, this);
 
   m_data_members.push_back(m);
+}
+
+/// A constructor for instances of class_decl::method_decl.
+///
+/// \param name the name of the method.
+///
+/// \param parms the parameters of the method
+///
+/// \param return_type the return type of the method.
+///
+/// \param class_type the type of the class the method belongs to.
+///
+/// \param ftype_size_in_bits the size of instances of
+/// class_decl::method_decl, expressed in bits.
+///
+/// \param ftype_align_in_bits the alignment of instance of
+/// class_decl::method_decl, expressed in bits.
+///
+/// \param declared_inline whether the method was declared inline or
+/// not.
+///
+/// \param locus the source location of the method.
+///
+/// \param mangled_name the mangled name of the method.
+///
+/// \param vis the visibility of the method.
+///
+/// \param bind the binding of the method.
+class_decl::method_decl::method_decl
+(const std::string&			name,
+ const std::vector<shared_ptr<parameter> >& parms,
+ shared_ptr<type_base>		return_type,
+ shared_ptr<class_decl>		class_type,
+ size_t				ftype_size_in_bits,
+ size_t				ftype_align_in_bits,
+ bool				declared_inline,
+ location				locus,
+  const std::string&			mangled_name,
+ visibility				vis,
+ binding				bind)
+  : decl_base(name, locus, mangled_name, vis),
+	function_decl(name,
+		      shared_ptr<function_type>
+		      (new method_type(return_type, class_type, parms,
+				       ftype_size_in_bits,
+				       ftype_align_in_bits)),
+		      declared_inline, locus, mangled_name, vis, bind)
+{
+}
+
+/// A constructor for instances of class_decl::method_decl.
+///
+/// \param name the name of the method.
+///
+/// \param type the type of the method.
+///
+/// \param declared_inline whether the method was
+/// declared inline or not.
+///
+/// \param locus the source location of the method.
+///
+/// \param mangled_name the mangled name of the method.
+///
+/// \param vis the visibility of the method.
+///
+/// \param bind the binding of the method.
+class_decl::method_decl::method_decl
+(const std::string&			name,
+ shared_ptr<method_type>		type,
+ bool					declared_inline,
+ location				locus,
+ const std::string&			mangled_name,
+ visibility				vis,
+ binding				bind)
+  : decl_base(name, locus, mangled_name, vis),
+    function_decl(name, static_pointer_cast<function_type>(type),
+		  declared_inline, locus,
+		  mangled_name, vis, bind)
+{
+}
+
+/// A constructor for instances of class_decl::method_decl.
+///
+/// \param name the name of the method.
+///
+/// \param type the type of the method.  Must be an instance of
+/// #method_type.
+///
+/// \param declared_inline whether the method was
+/// declared inline or not.
+///
+/// \param locus the source location of the method.
+///
+/// \param mangled_name the mangled name of the method.
+///
+/// \param vis the visibility of the method.
+///
+/// \param bind the binding of the method.
+class_decl::method_decl::method_decl(const std::string&	name,
+				     shared_ptr<function_type>	type,
+				     bool			declared_inline,
+				     location			locus,
+			const std::string&			mangled_name,
+			visibility				vis,
+			binding				bind)
+  : decl_base(name, locus, mangled_name, vis),
+    function_decl(name, static_pointer_cast<function_type>
+		  (dynamic_pointer_cast<method_type>(type)),
+		  declared_inline, locus, mangled_name, vis, bind)
+{
+}
+
+/// A constructor for instances of class_decl::method_decl.
+///
+/// \param name the name of the method.
+///
+/// \param type the type of the method.  Must be an instance of
+/// #method_type.
+///
+/// \param declared_inline whether the method was
+/// declared inline or not.
+///
+/// \param locus the source location of the method.
+///
+/// \param mangled_name the mangled name of the method.
+///
+/// \param vis the visibility of the method.
+///
+/// \param bind the binding of the method.
+class_decl::method_decl::method_decl(const std::string&	name,
+				     shared_ptr<type_base>	type,
+				     bool			declared_inline,
+				     location			locus,
+				     const std::string&	mangled_name,
+				     visibility		vis,
+				     binding			bind)
+  : decl_base(name, locus, mangled_name, vis),
+    function_decl(name, static_pointer_cast<function_type>
+		  (dynamic_pointer_cast<method_type>(type)),
+		  declared_inline, locus, mangled_name, vis, bind)
+{
+}
+
+/// Destructor for instances of class_decl::method_decl.
+class_decl::method_decl::~method_decl()
+{
+}
+
+/// \return the type of the current instance of the
+/// class_decl::method_decl.
+const shared_ptr<method_type>
+class_decl::method_decl::get_type() const
+{
+  return dynamic_pointer_cast<method_type>(m_type);
+}
+
+/// Constructor for instances of class_decl::member_function.
+///
+/// \param fn the method decl to be used as a member function.  This
+/// must be an intance of class_decl::method_decl.
+///
+/// \param access the access specifier for the member function.
+///
+/// \param vtable_offset_in_bits the offset of the this member
+/// function in the vtable, or zero.
+///
+/// \param is_static set to true if this member function is static.
+///
+/// \param is_constructor set to true if this member function is a constructor.
+///
+/// \param is_destructor set to true if this member function is a destructor.
+///
+/// \param is_const set to true if this member function is const.
+class_decl::member_function::member_function
+(shared_ptr<function_decl>	fn,
+ access_specifier		access,
+ size_t			vtable_offset_in_bits,
+ bool			is_static,
+ bool			is_constructor,
+ bool			is_destructor,
+ bool			is_const)
+  : decl_base(fn->get_name(), fn->get_location(),
+		    fn->get_mangled_name(), fn->get_visibility()),
+    method_decl(fn->get_name(),
+		dynamic_pointer_cast<method_decl>(fn)->get_type(),
+		fn->is_declared_inline(),
+		fn->get_location(),
+		fn->get_mangled_name(),
+		fn->get_visibility(),
+		fn->get_binding()),
+    member(access, is_static),
+  m_vtable_offset_in_bits(vtable_offset_in_bits),
+  m_is_constructor(is_constructor),
+  m_is_destructor(is_destructor),
+  m_is_const(is_const)
+{
 }
 
 /// Add a member function to the current instance of class_decl.
@@ -1577,6 +2054,86 @@ class_decl::base_spec_hash::operator()(const base_spec& t) const
   return v;
 }
 
+/// Constructor for instances of class_decl::data_member.
+///
+/// \param data_member the variable to be used as data member.
+///
+/// \param access the access specifier for the data member.
+///
+/// \param is_laid_out set to true if the data member has been laid out.
+///
+/// \param is_static set ot true if the data member is static.
+///
+/// \param offset_in_bits the offset of the data member, expressed in bits.
+class_decl::data_member::data_member(shared_ptr<var_decl> data_member,
+				     access_specifier access,
+				     bool is_laid_out,
+				     bool is_static,
+				     size_t offset_in_bits)
+  : decl_base(data_member->get_name(),
+	      data_member->get_location(),
+	      data_member->get_mangled_name(),
+	      data_member->get_visibility()),
+    var_decl(data_member->get_name(),
+	     data_member->get_type(),
+	     data_member->get_location(),
+	     data_member->get_mangled_name(),
+	     data_member->get_visibility(),
+	     data_member->get_binding()),
+  member(access, is_static),
+	m_is_laid_out(is_laid_out),
+	m_offset_in_bits(offset_in_bits)
+{
+}
+
+/// Constructor for instances of class_decl::data_member.
+///
+/// \param name the name of the data member.
+///
+/// \param type the type of the data member.
+///
+/// \param access the access specifier for the data member.
+///
+/// \param locus the source location of the data member.
+///
+/// \param mangled_name the mangled name of the data member, or an
+/// empty string if not applicable.
+///
+/// \param vis the visibility of the data member.
+///
+/// \param bind the binding of the data member.
+///
+/// \param is_laid_out set to true if the data member has been laid out.
+///
+/// \param is_static set ot true if the data member is static.
+///
+/// \param offset_in_bits the offset of the data member, expressed in bits.
+class_decl::data_member::data_member(const std::string&	name,
+				     shared_ptr<type_base>&	type,
+				     access_specifier		access,
+				     location			locus,
+				     const string&		mangled_name,
+				     visibility		vis,
+				     binding			bind,
+				     bool			is_laid_out,
+				     bool			is_static,
+				     size_t			offset_in_bits)
+  : decl_base(name, locus, mangled_name, vis),
+    var_decl(name, type, locus, mangled_name, vis, bind),
+    member(access, is_static),
+    m_is_laid_out(is_laid_out),
+    m_offset_in_bits(offset_in_bits)
+{
+}
+
+/// Destructor for instances of class_decl::data_member.
+class_decl::data_member::~data_member()
+{
+}
+
+/// Hashing function for instances of class_decl::data_member.
+///
+/// \param t the instance of class_decl::data_member to hash.
 size_t
 class_decl::data_member_hash::operator()(data_member& t)
 {
@@ -1592,6 +2149,9 @@ class_decl::data_member_hash::operator()(data_member& t)
   return v;
 }
 
+/// Hashing function for instances of class_decl::member_function.
+///
+/// \param t the intance of class_decl::member_function to hash.
 size_t
 class_decl::member_function_hash::operator()(const member_function& t) const
 {
@@ -1677,6 +2237,11 @@ class_decl::member_class_template_hash::operator()
 size_t
 class_decl_hash::operator()(const class_decl& t) const
 {
+  if (t.hashing_started())
+    return 0;
+
+  t.hashing_started(true);
+
   hash<string> hash_string;
   scope_type_decl_hash hash_scope_type;
   class_decl::base_spec_hash hash_base;
@@ -1730,6 +2295,8 @@ class_decl_hash::operator()(const class_decl& t) const
        c != t.get_member_class_templates().end();
        ++c)
     v = hashing::combine_hashes(v, hash_member_class_tmpl(**c));
+
+  t.hashing_started(false);
 
   return v;
 }

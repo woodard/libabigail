@@ -10,7 +10,7 @@
       <data-member access='private'>
         <var-decl name='m_first' type-id='type-id-1'/>
       </data-member>
-      <data-member access='private'>
+      <data-member access='public' static='yes'>
         <var-decl name='m_second' type-id='type-id-2'/>
       </data-member>
     </class-decl>
