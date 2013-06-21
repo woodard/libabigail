@@ -193,6 +193,7 @@ static bool write_binding(const shared_ptr<decl_base>&, ostream&);
 static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
 static void write_access(class_decl::access_specifier, ostream&);
 static void write_access(shared_ptr<class_decl::member>, ostream&);
+static void write_layout_offset(shared_ptr<class_decl::data_member>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
@@ -493,6 +494,17 @@ write_access(class_decl::access_specifier a, ostream& o)
     }
 
   o << " access='" << access_str << "'";
+}
+
+/// Serialize the layout offset of a data member.
+static void
+write_layout_offset(shared_ptr<class_decl::data_member> member, ostream& o)
+{
+  if (!member)
+    return;
+
+  if (member->is_laid_out())
+    o << " layout-offset-in-bits='" << member->get_offset_in_bits() << "'";
 }
 
 /// Serialize the access specifier of a class member.
@@ -1131,6 +1143,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 				   /*is_dtor=*/false,
 				   /*is_static=*/is_static,
 				   o);
+	  write_layout_offset(*data, o);
 	  o << ">\n";
 
 	  write_var_decl(*data, ctxt, is_static,
