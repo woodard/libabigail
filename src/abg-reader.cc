@@ -1299,11 +1299,9 @@ build_qualified_type_decl(read_context& ctxt,
 
   qualified_type_def::CV cv = qualified_type_def::CV_NONE;
   if (const_cv)
-    cv =
-      static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_CONST);
+    cv = cv | qualified_type_def::CV_CONST;
   if (volatile_cv)
-    cv =
-      static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_VOLATILE);
+    cv = cv | qualified_type_def::CV_VOLATILE;
 
   location loc;
   read_location(ctxt, node, loc);

@@ -525,7 +525,8 @@ public:
   {
     CV_NONE = 0,
     CV_CONST = 1,
-    CV_VOLATILE = 1 << 1
+    CV_VOLATILE = 1 << 1,
+    CV_RESTRICT = 1 << 2
   };
 
   qualified_type_def(shared_ptr<type_base>	underlying_type,
@@ -550,6 +551,9 @@ private:
   char m_cv_quals;
   shared_ptr<type_base> m_underlying_type;
 };//end class qualified_type_def
+
+qualified_type_def::CV operator| (qualified_type_def::CV,
+				  qualified_type_def::CV);
 
 /// A Hasher for instances of qualified_type_def
 struct qualified_type_def_hash

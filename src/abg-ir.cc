@@ -785,6 +785,16 @@ qualified_type_def::get_underlying_type() const
   return m_underlying_type;
 }
 
+/// Overloaded bitwise OR operator for cv qualifiers.
+qualified_type_def::CV
+operator| (qualified_type_def::CV lhs,
+	   qualified_type_def::CV rhs)
+{
+  return static_cast<qualified_type_def::CV>
+    (static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs));
+}
+
+/// Hash function for instances of qualified_type_def.
 size_t
 qualified_type_def_hash::operator()(const qualified_type_def& t) const
 {
