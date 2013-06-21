@@ -1085,7 +1085,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
   if (decl->get_earlier_declaration())
     {
       // This instance is the definition of an earlier declaration.
-      o << "def-of-decl-id='"
+      o << " def-of-decl-id='"
 	<< ctxt.get_id_for_type(decl->get_earlier_declaration())
 	<< "'";
     }

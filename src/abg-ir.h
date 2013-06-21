@@ -1927,8 +1927,10 @@ public:
   {return m_is_declaration_only;}
 
   void
-  set_earlier_declaration(shared_ptr<class_decl> declaration)
-  {m_declaration = declaration;}
+  set_earlier_declaration(shared_ptr<class_decl> declaration);
+
+  void
+  set_earlier_declaration(shared_ptr<type_base> declaration);
 
   shared_ptr<class_decl>
   get_earlier_declaration() const

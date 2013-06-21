@@ -1686,6 +1686,29 @@ class_decl::class_decl(const std::string& name,
 {
 }
 
+/// Set the earlier declaration of this class definition.
+///
+/// \param declaration the earlier declaration to set.  Note that it's
+/// set only if it's a pure declaration.
+void
+class_decl::set_earlier_declaration(shared_ptr<class_decl> declaration)
+{
+  if (declaration && declaration->is_declaration_only())
+    m_declaration = declaration;
+}
+
+/// Set the earlier declaration of this class definition.
+///
+/// \param declaration the earlier declaration to set.  Note that it's
+/// set only if it's a pure declaration.  It's dynamic type must be
+/// pointer to class_decl.
+void
+class_decl::set_earlier_declaration(shared_ptr<type_base> declaration)
+{
+  shared_ptr<class_decl> d = dynamic_pointer_cast<class_decl>(declaration);
+  set_earlier_declaration(d);
+}
+
 /// Add a member type to the current instnace of class_decl
 ///
 /// \param the member type to add.

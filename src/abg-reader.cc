@@ -1608,7 +1608,7 @@ build_class_decl(read_context&		ctxt,
 
   string def_id;
   bool is_def_of_decl = false;
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "def-of-decl"))
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "def-of-decl-id"))
     def_id = CHAR_STR(s);
 
   if (!def_id.empty())
@@ -1782,12 +1782,7 @@ build_class_decl(read_context&		ctxt,
     }
 
   if (decl)
-    {
-      if (decl->get_earlier_declaration())
-	ctxt.key_replacement_of_type_decl(decl, def_id);
-      else
-	ctxt.key_type_decl(decl, id);
-    }
+    ctxt.key_type_decl(decl, id);
 
   return decl;
 }
