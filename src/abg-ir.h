@@ -1554,10 +1554,10 @@ public:
   public:
 
     base_spec(shared_ptr<class_decl> base,
-	      access_specifier a)
-      : member(a),
-	m_base_class(base)
-    {}
+	      access_specifier a);
+
+    base_spec(shared_ptr<type_base> base,
+	      access_specifier a);
 
     const shared_ptr<class_decl>
     get_base_class() const

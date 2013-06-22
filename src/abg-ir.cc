@@ -1725,6 +1725,33 @@ class_decl::add_member_type(shared_ptr<member_type>t)
   m_member_types.push_back(t);
 }
 
+/// Constructor for base_spec instances.
+///
+/// \param base the base class to consider
+///
+/// \param a the access specifier of the base class.
+class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
+				 access_specifier a)
+  : member(a),
+    m_base_class(base)
+{}
+
+/// Constructor for base_spec instances.
+///
+/// Note that this constructor is for clients that don't support RTTI
+/// and that have a base class of type #type_base, but of dynamic type
+/// #class_decl.
+///
+/// \param base the base class to consider.  Must be a pointer to an
+/// instance of #class_decl
+///
+/// \param a the access specifier of the base class.
+class_decl::base_spec::base_spec(shared_ptr<type_base> base,
+				 access_specifier a)
+  : member(a),
+    m_base_class(dynamic_pointer_cast<class_decl>(base))
+{}
+
 /// Add a data member to the current instance of class_decl.
 ///
 /// \param m the data member to add.
