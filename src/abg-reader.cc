@@ -421,9 +421,10 @@ static bool	read_binding(xmlNodePtr, decl_base::binding&);
 static bool	read_access(xmlNodePtr, class_decl::access_specifier&);
 static bool	read_size_and_alignment(xmlNodePtr, size_t&, size_t&);
 static bool	read_static(xmlNodePtr, bool&);
-static bool	read_var_offset_in_bits(xmlNodePtr, size_t&);
+static bool	read_offset_in_bits(xmlNodePtr, size_t&);
 static bool	read_cdtor_const(xmlNodePtr, bool&, bool&, bool&);
 static bool	read_is_declaration_only(xmlNodePtr, bool&);
+static bool	read_is_virtual(xmlNodePtr, bool&);
 
 // <build a c++ class  from an instance of xmlNodePtr>
 //
@@ -921,8 +922,8 @@ read_static(xmlNodePtr node, bool& is_static)
 ///
 /// \return true iff the xml element node contain$s the attribute.
 static bool
-read_var_offset_in_bits(xmlNodePtr	node,
-			size_t&	offset_in_bits)
+read_offset_in_bits(xmlNodePtr	node,
+		    size_t&	offset_in_bits)
 {
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "layout-offset-in-bits"))
     {
@@ -1016,6 +1017,29 @@ read_is_declaration_only(xmlNodePtr node, bool& is_decl_only)
 	return true;
       }
     return false;
+}
+
+/// Read the "is-virtual" attribute of the current xml node.
+///
+/// \param node the xml node to read the attribute from
+///
+/// \param is_virtual is set to true iff the "is-virtual" attribute is
+/// present and set to "yes".
+///
+/// \return true iff the is-virtual attribute is present.
+static bool
+read_is_virtual(xmlNodePtr node, bool& is_virtual)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-virtual"))
+    {
+      string str = CHAR_STR(s);
+      if (str == "yes")
+	is_virtual = true;
+      else
+	is_virtual = false;
+      return true;
+    }
+  return false;
 }
 
 /// Build a function parameter from a 'parameter' xml element node.
@@ -1650,8 +1674,19 @@ build_class_decl(read_context&		ctxt,
 	    dynamic_pointer_cast<class_decl>(ctxt.get_type_decl(type_id));
 	  if (!b)
 	    return nil;
-	  shared_ptr<class_decl::base_spec> base
-	    (new class_decl::base_spec(b, access));
+
+	  size_t offset_in_bits = 0;
+	  bool offset_present = read_offset_in_bits (n, offset_in_bits);
+
+	  bool is_virtual = false;
+	  read_is_virtual (n, is_virtual);
+
+	  shared_ptr<class_decl::base_spec> base (new class_decl::base_spec
+						  (b, access,
+						   offset_present
+						   ? (long) offset_in_bits
+						   : -1,
+						   is_virtual));
 	  decl->add_base_specifier(base);
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("member-type")))
@@ -1681,7 +1716,7 @@ build_class_decl(read_context&		ctxt,
 
 	  bool is_laid_out = false;
 	  size_t offset_in_bits = 0;
-	  if (read_var_offset_in_bits(n, offset_in_bits))
+	  if (read_offset_in_bits(n, offset_in_bits))
 	    is_laid_out = true;
 
 	  bool is_static = false;

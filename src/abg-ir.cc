@@ -1730,10 +1730,21 @@ class_decl::add_member_type(shared_ptr<member_type>t)
 /// \param base the base class to consider
 ///
 /// \param a the access specifier of the base class.
+///
+/// \param offset_in_bits if positive or null, represents the offset
+/// of the base in the layout of its containing type..  If negative,
+/// means that the current base is not laid out in its containing type.
+///
+/// \param is_virtual if true, means that the current base class is
+/// virtual in it's containing type.
 class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
-				 access_specifier a)
+				 access_specifier a,
+				 long offset_in_bits,
+				 bool is_virtual)
   : member(a),
-    m_base_class(base)
+    m_base_class(base),
+    m_offset_in_bits(offset_in_bits),
+    m_is_virtual(is_virtual)
 {}
 
 /// Constructor for base_spec instances.
@@ -1746,10 +1757,21 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 /// instance of #class_decl
 ///
 /// \param a the access specifier of the base class.
+///
+/// \param offset_in_bits if positive or null, represents the offset
+/// of the base in the layout of its containing type..  If negative,
+/// means that the current base is not laid out in its containing type.
+///
+/// \param is_virtual if true, means that the current base class is
+/// virtual in it's containing type.
 class_decl::base_spec::base_spec(shared_ptr<type_base> base,
-				 access_specifier a)
+				 access_specifier a,
+				 long offset_in_bits,
+				 bool is_virtual)
   : member(a),
-    m_base_class(dynamic_pointer_cast<class_decl>(base))
+    m_base_class(dynamic_pointer_cast<class_decl>(base)),
+    m_offset_in_bits(offset_in_bits),
+    m_is_virtual(is_virtual)
 {}
 
 /// Add a data member to the current instance of class_decl.
@@ -2011,6 +2033,18 @@ class_decl::add_member_class_template(shared_ptr<member_class_template> m)
     add_decl_to_scope(m->as_class_template_decl(), this);
 
   m_member_class_templates.push_back(m);
+}
+
+/// Return true iff the class has no entity in its scope.
+bool
+class_decl::has_no_base_nor_member() const
+{
+  return (m_bases.empty()
+	  && m_member_types.empty()
+	  && m_data_members.empty()
+	  && m_member_functions.empty()
+	  && m_member_function_templates.empty()
+	  && m_member_class_templates.empty());
 }
 
 bool

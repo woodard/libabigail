@@ -1554,14 +1554,26 @@ public:
   public:
 
     base_spec(shared_ptr<class_decl> base,
-	      access_specifier a);
+	      access_specifier a,
+	      long offset_in_bits = -1,
+	      bool is_virtual = false);
 
     base_spec(shared_ptr<type_base> base,
-	      access_specifier a);
+	      access_specifier a,
+	      long offset_in_bits = -1,
+	      bool is_virtual = false);
 
     const shared_ptr<class_decl>
     get_base_class() const
     {return m_base_class;}
+
+    bool
+    get_is_virtual() const
+    {return m_is_virtual;}
+
+    long
+    get_offset_in_bits() const
+    {return m_offset_in_bits;}
 
     bool
     operator==(const base_spec& other) const
@@ -1572,6 +1584,8 @@ public:
 
   private:
     shared_ptr<class_decl> m_base_class;
+    long m_offset_in_bits;
+    bool m_is_virtual;
   };// end class base_spec
 
   /// A hashing functor for instances of class_decl::base_spec.
@@ -1977,7 +1991,10 @@ public:
 
   const member_class_templates_type&
   get_member_class_templates() const
+
   {return m_member_class_templates;}
+
+  bool has_no_base_nor_member() const;
 
   virtual bool
   operator==(const class_decl&) const;

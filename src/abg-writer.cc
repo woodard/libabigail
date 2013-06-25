@@ -194,6 +194,7 @@ static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
 static void write_access(class_decl::access_specifier, ostream&);
 static void write_access(shared_ptr<class_decl::member>, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::data_member>, ostream&);
+static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
@@ -505,6 +506,17 @@ write_layout_offset(shared_ptr<class_decl::data_member> member, ostream& o)
 
   if (member->is_laid_out())
     o << " layout-offset-in-bits='" << member->get_offset_in_bits() << "'";
+}
+
+/// Serialize the layout offset of a base class
+static void
+write_layout_offset(shared_ptr<class_decl::base_spec> base, ostream& o)
+{
+  if (!base)
+    return;
+
+  if (base->get_offset_in_bits() >= 0)
+    o << " layout-offset-in-bits='" << base->get_offset_in_bits() << "'";
 }
 
 /// Serialize the access specifier of a class member.
@@ -1091,7 +1103,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
     }
 
   o << " id='" << ctxt.get_id_for_type(decl) << "'";
-  if (decl->is_declaration_only())
+  if (decl->is_declaration_only() || decl->has_no_base_nor_member())
     o << "/>";
   else
     {
@@ -1105,7 +1117,14 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	{
 	  do_indent(o, nb_ws);
 	  o << "<base-class";
+
 	  write_access(*base, o);
+
+	  write_layout_offset (*base, o);
+
+	  if ((*base)->get_is_virtual ())
+	    o << " is-virtual='yes'";
+
 	  o << " type-id='"
 	    << ctxt.get_id_for_type((*base)->get_base_class())
 	    << "'/>\n";
