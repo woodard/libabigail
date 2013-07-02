@@ -1,6 +1,7 @@
 TESTS= \
 runtestreadwrite \
-runtestsvg
+runtestsvg \
+runtestdot 
 
 noinst_PROGRAMS= $(TESTS)
 
@@ -19,6 +20,9 @@ runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
+
+runtestdot_SOURCES=test-dot.cc
+runtestdot_LDADD=$(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${top_srcdir}/src
 AM_CXXFLAGS="-std=gnu++11"

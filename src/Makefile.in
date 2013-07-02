@@ -99,7 +99,7 @@ libabigail_la_LIBADD =
 am__objects_1 =
 am_libabigail_la_OBJECTS = $(am__objects_1) abg-ir.lo abg-reader.lo \
 	abg-corpus.lo abg-libxml-utils.lo abg-hash.lo abg-writer.lo \
-	abg-config.lo abg-viz-svg.lo
+	abg-config.lo abg-viz-dot.lo abg-viz-svg.lo
 libabigail_la_OBJECTS = $(am_libabigail_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -309,7 +309,8 @@ abg-hash.h		\
 abg-writer.h		\
 abg-config.h		\
 abg-version.h		\
-abg-viz-svg.h
+abg-viz-dot.h		\
+abg-viz-svg.h		
 
 libabigail_la_SOURCES = $(headers)	\
 abg-ir.cc				\
@@ -319,7 +320,8 @@ abg-libxml-utils.cc		\
 abg-hash.cc			\
 abg-writer.cc			\
 abg-config.cc			\
-abg-viz-svg.cc
+abg-viz-dot.cc			\
+abg-viz-svg.cc			
 
 libabigail_la_LDFLAGS = @XML_LIBS@ -Wl,--as-needed
 publicheaders_DATA = $(headers)
@@ -411,6 +413,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-libxml-utils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-reader.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-viz-dot.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-viz-svg.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-writer.Plo@am__quote@
 

@@ -10,7 +10,8 @@ abg-hash.h		\
 abg-writer.h		\
 abg-config.h		\
 abg-version.h		\
-abg-viz-svg.h
+abg-viz-dot.h		\
+abg-viz-svg.h		
 
 libabigail_la_SOURCES = $(headers)	\
 abg-ir.cc				\
@@ -20,7 +21,8 @@ abg-libxml-utils.cc		\
 abg-hash.cc			\
 abg-writer.cc			\
 abg-config.cc			\
-abg-viz-svg.cc
+abg-viz-dot.cc			\
+abg-viz-svg.cc			
 
 libabigail_la_LDFLAGS=@XML_LIBS@ -Wl,--as-needed
 
