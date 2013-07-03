@@ -50,4 +50,4 @@ clean-local: clean-local-check
 .PHONY: clean-local-check
 
 clean-local-check:
-	-rm -rf ${builddir}/output *.svg
+	-rm -rf ${builddir}/output *.svg *.gv

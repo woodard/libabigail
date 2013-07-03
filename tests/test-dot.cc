@@ -32,31 +32,45 @@ int main()
   // sa-base
   {
     dot obj("sa-base");
-    parent r = { "base", parent_sty };
+    parent_node p("base");
     obj.start(); 
-    obj.add_parent(r);
+    obj.add_parent(p);
     obj.finish();
   }
+
 
   // sa-A
   {
     dot obj("sa-A");
-    child r1 = { "A", child_sty };
-    parent r2 = { "base", parent_sty };
+    parent_node p("base");
+    child_node c1("A");
     obj.start(); 
-    obj.add_parent(r2);
-    obj.add_child(r1);
+    obj.add_parent(p);
+    obj.add_child_to_node(c1, p);
     obj.finish();
   }
 
   // sa-B
   {
     dot obj("sa-B");
-    child r1 = { "B", child_sty };
-    parent r2 = { "base", parent_sty };
+    parent_node p("base");
+    child_node c1("B");
     obj.start(); 
-    obj.add_parent(r2);
-    obj.add_child(r1);
+    obj.add_parent(p);
+    obj.add_child_to_node(c1, p);
+    obj.finish();
+  }
+
+  // sa-D1
+  {
+    dot obj("sa-D1");
+    parent_node p("base");
+    child_node c1("A");
+    child_node c2("D1");
+    obj.start(); 
+    obj.add_parent(p);
+    obj.add_child_to_node(c1, p);
+    obj.add_child_to_node(c2, c1);
     obj.finish();
   }
 

@@ -1,4 +1,3 @@
-
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
@@ -60,10 +59,18 @@ dot::write()
 void
 dot::start_element() 
 { 
-  const std::string start = R"_delimiter_(digraph "__title" {)_delimiter_";
-  _M_sstream << "digraph " << std::endl;
+  // Open up digraph.
+  _M_sstream << "digraph ";
   add_title();
   _M_sstream << "{" << std::endl;
+
+  // Defaults.
+  // XXX typo control
+  const std::string edge_default = R"_delimiter_(edge [fontname="FreeSans",fontsize="9",labelfontname="FreeSans",labelfontsize="9"];)_delimiter_";
+  const std::string node_default = R"_delimiter_(node [fontname="FreeSans",fontsize="9",shape=record];)_delimiter_";
+
+   _M_sstream << edge_default << std::endl;
+   _M_sstream << node_default << std::endl;
 }
 
 void
@@ -79,16 +86,49 @@ dot::add_title()
   _M_sstream << '"' << _M_title << '"' << std::endl;
 }
 
+// See test 19, class-decl to base-class
+// Variable: height, width
 void
-dot::add_parent(const parent& __p) 
+dot::add_node(const node_base& __node) 
 { 
-   _M_sstream << "" << std::endl;
+  _M_sstream << "Node" << __node._M_count << " ";
+  
+  const std::string label("__label");
+  const std::string height("__height");
+  const std::string width("__width");
+
+  std::string strip = R"_delimiter_([label="__label", height=__height, width=__width, color="black", fillcolor="white", style="filled"];)_delimiter_";
+
+  string_replace(strip, label, __node._M_id);
+  string_replace(strip, height, std::to_string(__node._M_y_space));
+  string_replace(strip, width, std::to_string(__node._M_x_space));
+  
+  _M_sstream << strip << std::endl;
 }
 
 void
-dot::add_child(const child& __c) 
+dot::add_edge(const node_base& __parent, const node_base& __child) 
 { 
-   _M_sstream << "" << std::endl;
+  // XX typo control
+  std::string style = R"_delimiter_([dir="forward",color="midnightblue",fontsize="9",style="solid",fontname="FreeSans"];)_delimiter_";
+
+  _M_sstream << "Node" << __parent._M_count << "->";
+  _M_sstream << "Node" << __child._M_count;
+  _M_sstream << style << std::endl;
+}
+
+void
+dot::add_parent(const parent_node& __p) 
+{ 
+  add_node(__p);
+}
+
+void
+dot::add_child_to_node(const child_node& __c, const node_base& __p) 
+{ 
+  // XX remove duplicates
+  add_node(__c);
+  add_edge(__p, __c);
 }
 
 }//end namespace abigail

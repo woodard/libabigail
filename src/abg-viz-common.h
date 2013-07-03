@@ -103,7 +103,7 @@ struct typography
   std::string		_M_face;	// System font name
   unsigned short	_M_size;	// Display size
   color			_M_color;
-  std::string		_M_style;	// Any other attributes
+  std::string		_M_attributes;	// Any other attributes
 
   std::string
   to_attribute(anchor) const;

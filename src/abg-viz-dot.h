@@ -34,27 +34,49 @@ namespace abigail
 
 /// Base class for graph nodes.
 struct node_base
-{ };
+{ 
+  enum type { child, parent }; 
+
+  std::string		_M_id;
+  static units_type 	_M_count_total;	// Start at zero.
+  units_type 		_M_count;
+  type			_M_type;
+  float   		_M_x_space;	// Column spacing.
+  float   		_M_y_space;	// Row spacing.
+  const style&		_M_style;
+
+  explicit
+  node_base(std::string __id, type __t, const style& __sty)
+    : _M_id(__id), _M_count(++_M_count_total), 
+    _M_type(__t), _M_x_space(0.4), _M_y_space(0.2), _M_style(__sty)
+  { }
+};
+
+// Define.
+units_type node_base::_M_count_total;
+
+
+/// Useful constants.
+extern const style parent_sty;
+extern const style child_sty;
+
 
 /*
   Parent node.
 
   Some characteristics:
-  - horizontal name (text anchor = start ie left).
-  - background box
+  - name (text anchor = start ie left).
+  - background box x and y size
+  - style info
   - (optional) template parameters
 
  */
-struct parent
+struct parent_node : public node_base 
 {
-  std::string		_M_id;
-  const style&		_M_style;
-
-  //units_type		_M_size;
+   parent_node(std::string __id) 
+   : node_base(__id, node_base::parent, parent_sty)
+   { }
 };
-
-/// Useful parent constants.
-extern const style parent_sty;
 
 
 /*
@@ -66,25 +88,20 @@ extern const style parent_sty;
   - (optional) template parameters
 
  */
-struct child
+struct child_node : public node_base 
 {
-  std::string		_M_id;
-  const style&		_M_style;
-
-  //units_type		_M_size;
+   child_node(std::string __id) 
+   : node_base(__id, node_base::child, child_sty)
+   { }
 };
-
-/// Useful child constants.
-extern const style child_sty;
 
 
 /*
   DOT "graph" style notation for class inheritance.
 
-  This is a compact DOT representation of class inheritance.
+  This is a compact DOT representation of a single class inheritance.
 
-  It is composed of a minimum of three data points for each member or
-  base of a class:
+  It is composed of the following data points for each parent
 
   - parent classes
   - child classes
@@ -104,32 +121,15 @@ private:
   const canvas&	       	_M_canvas;
   const typography&    	_M_typo;	
 
-  const units_type	_M_x_size = 3;	// Number of columns
-  units_type   		_M_x_space;	// Column spacing.
-  units_type   		_M_x_origin;	// X origin
-
-  units_type   		_M_y_size;	// Number of rows
-  units_type   		_M_y_space;	// Row spacing.
-  units_type   		_M_y_origin;	// Y origin
-
   std::ostringstream   	_M_sstream;
   
-  // static const units_type _M_stroke_width = 1;
-  // static const units_type _M_text_padding = 10;
-
 public:
 
   dot(const std::string __title, 
       const canvas& __cv = ansi_letter_canvas,
       const typography& __typo = arial_typo) 
-  : _M_title(__title), _M_canvas(__cv), _M_typo(__typo), _M_y_size(0)
-  { 
-    // Offsets require: typo, canvas units, size.
-    _M_x_space = 40;
-    _M_y_space = 40;
-    _M_x_origin = _M_x_space * 1;
-    _M_y_origin = _M_y_space * 2;
-  }
+  : _M_title(__title), _M_canvas(__cv), _M_typo(__typo)
+  { }
   
   // Empty when the output buffer is.
   bool
@@ -145,10 +145,16 @@ public:
   add_title();
 
   void
-  add_parent(const parent&);
+  add_node(const node_base&);
 
   void
-  add_child(const child&);
+  add_edge(const node_base&, const node_base&);
+
+  void
+  add_parent(const parent_node&);
+
+  void
+  add_child_to_node(const child_node&, const node_base&);
 
   void
   write();
@@ -157,7 +163,6 @@ public:
   start()
   {
     this->start_element();
-    this->add_title();
   }
 
   void 
