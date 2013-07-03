@@ -35,6 +35,11 @@
 namespace abigail
 {
 
+// Utility function, like regex_replace.
+void
+string_replace(std::string&, const std::string&, const std::string&);
+
+
 /// Measurement abstraction type, conversion function.
 enum class units
 {
@@ -47,19 +52,6 @@ std::string
 units_to_string(units);
 
 typedef unsigned short	units_type;
-
-
-/// Color, conversion function.
-enum class color
-{
-  white,
-  gray25,		// gainsboro
-  gray75,		// slategray
-  black
-};
-
-std::string
-color_to_string(color);
 
 
 /*
@@ -81,6 +73,19 @@ struct canvas
 /// Useful canvas constants.
 extern const canvas	ansi_letter_canvas;
 extern const canvas	iso_a4_canvas;
+
+
+/// Color, conversion function.
+enum class color
+{
+  white,
+  gray25,		// gainsboro
+  gray75,		// slategray
+  black
+};
+
+std::string
+color_to_string(color);
 
 
 /*
@@ -112,9 +117,15 @@ extern const typography arial_typo;
 extern const typography source_code_pro_typo;
 extern const typography roboto_light_typo;
 
-// Utility function, like regex_replace.
-void
-string_replace(std::string&, const std::string&, const std::string&);
+ 
+/// Datum consolidating style preferences.
+struct style
+{
+  color	       		_M_text_color;
+  color	       		_M_fill_color;
+  std::string		_M_attributes;
+};
+
 
 }// end namespace abigail
 

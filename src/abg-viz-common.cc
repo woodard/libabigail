@@ -53,10 +53,10 @@ const typography source_code_pro_typo = \
 const typography roboto_typo = \
   { "Roboto Light", 12, color::black, R"(text-anchor="middle")"};
 
-const row::style primary_row_sty = { color::white, color::black, "" };
-const row::style base_row_sty = { color::white, color::gray75, "" };
-const row::style member_row_sty = { color::black, color::gray25, "" };
-const row::style implementation_row_sty = { color::black, color::white, "" };
+const style primary_row_sty = { color::white, color::black, "" };
+const style base_row_sty = { color::white, color::gray75, "" };
+const style member_row_sty = { color::black, color::gray25, "" };
+const style implementation_row_sty = { color::black, color::white, "" };
 
 
 // XXX Do not export.
@@ -147,7 +147,7 @@ typography::to_attribute(anchor __a) const
   string_replace(strip, size, std::to_string(_M_size));
   string_replace(strip, anchor, anchor_to_string(__a));
 
-  // NB: Add in extra _M_style if necessary.
+  // NB: Add in extra _M_attributes if necessary.
   return strip;
 }
 

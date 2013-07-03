@@ -35,33 +35,60 @@ using std::ostream;
 using std::ostringstream;
 
 // Constants.
-const parent::style parent_sty = { color::white, color::black, "" };
-const child::style child_sty = { color::white, color::gray75, "" };
-
-// DOT element beginning boilerplate.
-// Variable: units, x=0, y=0, width, height
-void
-dot::start_element() 
-{ }
-
-void
-dot::finish_element() 
-{ }
-
-void
-dot::add_title() 
-{ }
+const style parent_sty = { color::white, color::black, "" };
+const style child_sty = { color::white, color::gray75, "" };
 
 void
 dot::write() 
-{ }
+{
+  try
+    {
+      std::string filename(_M_title + ".gv");
+      std::ofstream f(filename);
+      if (!f.is_open() || !f.good())
+	throw std::runtime_error("abigail::dot::write fail");
+	  
+      f << _M_sstream.str() << std::endl; 
+    }
+  catch(std::exception& e)
+    {
+      throw e;
+    }
+}
+
+// DOT element beginning boilerplate.
+void
+dot::start_element() 
+{ 
+  const std::string start = R"_delimiter_(digraph "__title" {)_delimiter_";
+  _M_sstream << "digraph " << std::endl;
+  add_title();
+  _M_sstream << "{" << std::endl;
+}
 
 void
-dot::add_parent(const parent&) 
-{ }
+dot::finish_element() 
+{
+  _M_sstream << "}" << std::endl;
+}
 
 void
-dot::add_child(const child&) 
-{ }
+dot::add_title() 
+{
+
+  _M_sstream << '"' << _M_title << '"' << std::endl;
+}
+
+void
+dot::add_parent(const parent& __p) 
+{ 
+   _M_sstream << "" << std::endl;
+}
+
+void
+dot::add_child(const child& __c) 
+{ 
+   _M_sstream << "" << std::endl;
+}
 
 }//end namespace abigail

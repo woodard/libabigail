@@ -47,14 +47,6 @@ struct node_base
  */
 struct parent
 {
-  // XXX need type-based mechanism for styles
-  struct style
-  {
-    color	       	_M_text_color;
-    color	       	_M_fill_color;
-    std::string		_M_style;	// Any other attributes
-  };
-
   std::string		_M_id;
   const style&		_M_style;
 
@@ -62,7 +54,7 @@ struct parent
 };
 
 /// Useful parent constants.
- extern const parent::style parent_sty;
+extern const style parent_sty;
 
 
 /*
@@ -76,14 +68,6 @@ struct parent
  */
 struct child
 {
-  // XXX need type-based mechanism for styles
-  struct style
-  {
-    color	       	_M_text_color;
-    color	       	_M_fill_color;
-    std::string		_M_style;	// Any other attributes
-  };
-
   std::string		_M_id;
   const style&		_M_style;
 
@@ -91,7 +75,7 @@ struct child
 };
 
 /// Useful child constants.
- extern const child::style child_sty;
+extern const style child_sty;
 
 
 /*

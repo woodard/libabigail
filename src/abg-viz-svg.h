@@ -45,14 +45,6 @@ namespace abigail
  */
 struct row
 {
-  // XXX need type-based mechanism for styles
-  struct style
-  {
-    color	       	_M_text_color;
-    color	       	_M_fill_color;
-    std::string		_M_style;	// Any other attributes
-  };
-
   std::string		_M_id;
   const style&		_M_style;
 
@@ -62,10 +54,10 @@ struct row
 };
 
 /// Useful row constants. Maybe just do enum->value map.
- extern const row::style primary_row_sty;
- extern const row::style base_row_sty;
- extern const row::style member_row_sty;
- extern const row::style implementation_row_sty;
+extern const style primary_row_sty;
+extern const style base_row_sty;
+extern const style member_row_sty;
+extern const style implementation_row_sty;
 
 
 /*
