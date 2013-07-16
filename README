@@ -14,3 +14,9 @@ two ABI Corpuses, provide detailed information about their
 differences, and help build tools to infer interesting conclusions
 about these differences.
 
+You are welcome to contribute to this project after reading the files
+CONTRIBUTING and COMMIT-LOG-GUIDELINES files in the source tree.
+
+Communicating with the maintainers of this project -- including
+sending patches to be include to the source code -- happens via email
+at libabigail@sourceware.org.
