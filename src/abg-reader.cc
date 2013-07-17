@@ -1,6 +1,5 @@
 // -*- mode: C++ -*-
-/// @file
-
+//
 // Copyright (C) 2013 Free Software Foundation, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
