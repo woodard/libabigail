@@ -24,7 +24,7 @@ runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
 runtestdot_SOURCES=test-dot.cc
 runtestdot_LDADD=$(top_builddir)/src/libabigail.la
 
-AM_CPPFLAGS=-I${top_srcdir}/src
+AM_CPPFLAGS=-I${top_srcdir}/include/libabigail -I${top_builddir}/include/libabigail
 AM_CXXFLAGS="-std=gnu++11"
 
 EXTRA_DIST=				\

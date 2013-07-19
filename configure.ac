@@ -54,9 +54,11 @@ if test x$ABIGAIL_DEVEL != x; then
 fi
 
 AC_CONFIG_FILES([Makefile
+include/Makefile
+include/libabigail/Makefile
 doc/Makefile
 src/Makefile
 tests/Makefile])
-AC_CONFIG_FILES([src/abg-version.h])
+AC_CONFIG_FILES([include/libabigail/abg-version.h])
 
 AC_OUTPUT
