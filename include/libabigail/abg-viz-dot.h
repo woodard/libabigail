@@ -48,10 +48,6 @@ struct node_base
   { }
 };
 
-// Define.
-units_type node_base::_M_count_total;
-
-
 /// Useful constants.
 extern const style parent_sty;
 extern const style child_sty;

@@ -32,6 +32,9 @@ using std::ostringstream;
 const style parent_sty = { color::white, color::black, "" };
 const style child_sty = { color::white, color::gray75, "" };
 
+// Define.
+units_type node_base::_M_count_total;
+
 void
 dot::write() 
 {
