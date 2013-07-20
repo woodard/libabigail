@@ -208,6 +208,17 @@ translation_unit::is_empty() const
   return get_global_scope()->is_empty();
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the member nodes of the translation
+/// unit during the traversal.
+void
+translation_unit::traverse(ir_node_visitor& v)
+{
+  get_global_scope()->traverse(v);
+}
+
 // <Decl definition>
 
 decl_base::decl_base(const std::string&	name,
@@ -322,6 +333,27 @@ scope_decl::operator==(const scope_decl& other) const
     return false;
 
   return true;
+}
+
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance of scope_decl
+/// and on its member nodes.
+void
+scope_decl::traverse(ir_node_visitor &v)
+{
+  v.visit(*this);
+
+  std::list<shared_ptr<decl_base> >::const_iterator i;
+  for (i = get_member_decls().begin();
+       i != get_member_decls ().end();
+       ++i)
+    {
+      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      if (t)
+	t->traverse (v);
+    }
 }
 
 scope_decl::~scope_decl()
@@ -611,6 +643,16 @@ type_decl::operator==(const type_decl& other) const
 	  && static_cast<type_base>(*this) == other);
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+type_decl::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+}
+
 type_decl::~type_decl()
 {
 }
@@ -708,6 +750,27 @@ namespace_decl::operator==(const namespace_decl& other) const
   return (static_cast<scope_decl>(*this) == other);
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance and on its
+/// member nodes.
+void
+namespace_decl::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+
+  std::list<shared_ptr<decl_base> >::const_iterator i;
+  for (i = get_member_decls().begin();
+       i != get_member_decls ().end();
+       ++i)
+    {
+      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      if (t)
+	t->traverse (v);
+    }
+}
+
 namespace_decl::~namespace_decl()
 {
 }
@@ -752,6 +815,16 @@ qualified_type_def::operator==(const qualified_type_def& other) const
     return false;
 
   return *get_underlying_type() == *other.get_underlying_type();
+}
+
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+qualified_type_def::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
 }
 
 /// The destructor of the qualified type
@@ -889,6 +962,16 @@ pointer_type_def::get_pointed_to_type() const
   return m_pointed_to_type;
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+pointer_type_def::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+}
+
 pointer_type_def::~pointer_type_def()
 {
 }
@@ -946,6 +1029,16 @@ bool
 reference_type_def::is_lvalue() const
 {
   return m_is_lvalue;
+}
+
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+reference_type_def::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
 }
 
 reference_type_def::~reference_type_def()
@@ -1008,6 +1101,16 @@ const std::list<enum_type_decl::enumerator>&
 enum_type_decl::get_enumerators() const
 {
   return m_enumerators;
+}
+
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+enum_type_decl::traverse(ir_node_visitor &v)
+{
+  v.visit(*this);
 }
 
 /// Destructor for the enum type declaration.
@@ -1103,6 +1206,16 @@ typedef_decl::get_underlying_type() const
   return m_underlying_type;
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+typedef_decl::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+}
+
 /// Destructor of the typedef_decl.
 typedef_decl::~typedef_decl()
 {
@@ -1145,6 +1258,16 @@ var_decl::operator==(const var_decl& other) const
   return (typeid(*this) == typeid(other)
 	  && static_cast<decl_base>(*this) == static_cast<decl_base>(other)
 	  && *get_type() == *other.get_type());
+}
+
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+var_decl::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
 }
 
 var_decl::~var_decl()
@@ -1567,6 +1690,16 @@ function_decl_hash::operator()(const function_decl& t) const
   return v;
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+function_decl::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+}
+
 function_decl::~function_decl()
 {
 }
@@ -1981,6 +2114,16 @@ class_decl::member_function::member_function
 {
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+class_decl::member_function::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+}
+
 /// Add a member function to the current instance of class_decl.
 ///
 /// \param m the member function to add.
@@ -2117,6 +2260,63 @@ class_decl::operator==(const class_decl& o) const
   return true;
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance and on its members.
+void
+class_decl::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+
+  for (member_types_type::const_iterator i = get_member_types().begin();
+       i != get_member_types().end();
+       ++i)
+    {
+      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      if (t)
+	t->traverse(v);
+    }
+
+  for (member_function_templates_type::const_iterator i =
+	 get_member_function_templates().begin();
+       i != get_member_function_templates().end();
+       ++i)
+    {
+      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      if (t)
+	t->traverse(v);
+    }
+
+  for (member_class_templates_type::const_iterator i =
+	 get_member_class_templates().begin();
+       i != get_member_class_templates().end();
+       ++i)
+    {
+      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      if (t)
+	t->traverse(v);
+    }
+
+  for (data_members_type::const_iterator i = get_data_members().begin();
+       i != get_data_members().end();
+       ++i)
+    {
+      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      if (t)
+	t->traverse(v);
+    }
+
+  for (member_functions_type::const_iterator i= get_member_functions().begin();
+       i != get_member_functions().end();
+       ++i)
+    {
+      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      if (t)
+	t->traverse(v);
+    }
+}
+
 class_decl::~class_decl()
 {
 }
@@ -2215,6 +2415,16 @@ class_decl::data_member::data_member(const std::string&	name,
 {
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance.
+void
+class_decl::data_member::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+}
+
 /// Destructor for instances of class_decl::data_member.
 class_decl::data_member::~data_member()
 {
@@ -2276,6 +2486,18 @@ class_decl::member_function_template::operator==
   return true;
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance and on its
+/// underlying function template.
+void
+class_decl::member_function_template::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+  as_function_template_decl()->traverse(v);
+}
+
 /// Hashing function for instances of class_decl::member_function_template_hash.
 ///
 /// \param t the instance of class_decl::member_function_template to hash.
@@ -2308,6 +2530,18 @@ class_decl::member_class_template::operator==
     return static_cast<class_template_decl>(*this) == o;
 
   return true;
+}
+
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance and on the class
+/// pattern of the template.
+void
+class_decl::member_class_template::traverse(ir_node_visitor& v)
+{
+  v.visit(*this);
+  as_class_template_decl()->get_pattern()->traverse(v);
 }
 
 size_t
@@ -2621,6 +2855,18 @@ fn_tmpl_shared_ptr_hash::operator()
   return 0;
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance and on the
+/// function pattern of the template.
+void
+function_template_decl::traverse(ir_node_visitor&v)
+{
+  v.visit(*this);
+  get_pattern()->traverse(v);
+}
+
 function_template_decl::~function_template_decl()
 {
 }
@@ -2654,6 +2900,21 @@ class_template_decl::operator==(const class_template_decl& o) const
   return (*get_pattern() == *o.get_pattern());
 }
 
+/// This implements the traversable::traverse pure virtual
+/// function.
+///
+/// \param v the visitor used on the current instance and on the class
+/// pattern of the template.
+void
+class_template_decl::traverse(ir_node_visitor&v)
+{
+  v.visit(*this);
+
+  shared_ptr<class_decl> pattern = get_pattern();
+  if (pattern)
+    pattern->traverse(v);
+}
+
 class_template_decl::~class_template_decl()
 {
 }
@@ -2684,6 +2945,90 @@ class_tmpl_shared_ptr_hash::operator()
   if (t)
     return hash_class_tmpl_decl(*t);
   return 0;
+}
+
+void
+ir_node_visitor::visit(scope_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(type_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(namespace_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(qualified_type_def&)
+{
+}
+
+void
+ir_node_visitor::visit(pointer_type_def&)
+{
+}
+
+void
+ir_node_visitor::visit(reference_type_def&)
+{
+}
+
+void
+ir_node_visitor::visit(enum_type_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(typedef_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(var_decl&){
+}
+
+void
+ir_node_visitor::visit(function_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(function_template_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(class_template_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(class_decl&)
+{
+}
+
+void
+ir_node_visitor::visit(class_decl::data_member&)
+{
+}
+
+void
+ir_node_visitor::visit(class_decl::member_function&)
+{
+}
+
+void
+ir_node_visitor::visit(class_decl::member_function_template&)
+{
+}
+
+void
+ir_node_visitor::visit(class_decl::member_class_template&)
+{
 }
 
 // </class template>

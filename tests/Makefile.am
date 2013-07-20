@@ -3,7 +3,7 @@ runtestreadwrite \
 runtestsvg \
 runtestdot 
 
-noinst_PROGRAMS= $(TESTS)
+noinst_PROGRAMS= $(TESTS) testwalker
 
 noinst_LTLIBRARIES = libtestutils.la
 
@@ -23,6 +23,9 @@ runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
 
 runtestdot_SOURCES=test-dot.cc
 runtestdot_LDADD=$(top_builddir)/src/libabigail.la
+
+testwalker_SOURCES=test-walker.cc
+testwalker_LDADD=$(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${top_srcdir}/include/libabigail -I${top_builddir}/include/libabigail
 AM_CXXFLAGS="-std=gnu++11"

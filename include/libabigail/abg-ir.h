@@ -150,10 +150,29 @@ public:
 		  unsigned&		column) const;
 };
 
+class ir_node_visitor;
+
+/// The Base interface implemented by types which instances are
+/// visited during the traversal of translation unit nodes.
+struct traversable
+{
+  /// This virtual pure method is implemented by any single type which
+  /// instance is going to be visited during the traversal of
+  /// translation unit nodes.
+  ///
+  /// The method visits a given node and, for scopes, visits their
+  /// member nodes.  Visiting a node means calling the
+  /// ir_node_visitor::visit method with the node passed as an
+  /// argument.
+  ///
+  /// \param v the visitor used during the t
+  virtual void traverse(ir_node_visitor& v) = 0;
+};
+
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
-class translation_unit
+class translation_unit : public virtual traversable
 {
   // Forbidden
   translation_unit();
@@ -178,6 +197,9 @@ public:
 
   bool
   is_empty() const;
+
+  void
+  traverse(ir_node_visitor&);
 
 private:
   std::string m_path;
@@ -277,7 +299,7 @@ private:
 
 
 /// \brief A declaration that introduces a scope.
-class scope_decl : public virtual decl_base
+class scope_decl : public virtual decl_base, public virtual traversable
 {
   scope_decl();
 
@@ -311,6 +333,9 @@ public:
   bool
   is_empty() const
   {return get_member_decls().empty();}
+
+  void
+  traverse(ir_node_visitor&);
 
   virtual ~scope_decl();
 
@@ -438,7 +463,9 @@ struct type_shared_ptr_equal
 };//end struct type_shared_ptr_equal
 
 /// A basic type declaration that introduces no scope.
-class type_decl : public virtual decl_base, public virtual type_base
+class type_decl : public virtual decl_base,
+		  public virtual type_base,
+		  public virtual traversable
 {
   // Forbidden.
   type_decl();
@@ -454,6 +481,9 @@ public:
 
   virtual bool
   operator==(const type_decl&) const;
+
+  void
+  traverse(ir_node_visitor&);
 
   virtual ~type_decl();
 };// class type_decl
@@ -504,11 +534,16 @@ public:
   virtual bool
   operator==(const namespace_decl&) const;
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~namespace_decl();
 };//end class namespace_decl
 
 /// The abstraction of a qualified type.
-class qualified_type_def : public virtual type_base, public virtual decl_base
+class qualified_type_def : public virtual type_base,
+			   public virtual decl_base,
+			   public virtual traversable
 {
 
   // Forbidden.
@@ -540,6 +575,9 @@ public:
   const shared_ptr<type_base>
   get_underlying_type() const;
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~qualified_type_def();
 
 private:
@@ -559,7 +597,8 @@ struct qualified_type_def_hash
 
 /// The abstraction of a pointer type.
 class pointer_type_def : public virtual type_base,
-			 public virtual decl_base
+			 public virtual decl_base,
+			 public virtual traversable
 {
   // Forbidden.
   pointer_type_def();
@@ -577,6 +616,9 @@ public:
   shared_ptr<type_base>
   get_pointed_to_type() const;
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~pointer_type_def();
 
 private:
@@ -592,7 +634,8 @@ struct pointer_type_def_hash
 
 /// Abstracts a reference type.
 class reference_type_def : public virtual type_base,
-			   public virtual decl_base
+			   public virtual decl_base,
+			   public virtual traversable
 {
   // Forbidden.
   reference_type_def();
@@ -613,6 +656,9 @@ public:
   bool
   is_lvalue() const;
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~reference_type_def();
 
 private:
@@ -629,7 +675,8 @@ struct reference_type_def_hash
 
 /// Abstracts a declaration for an enum type.
 class enum_type_decl: public virtual type_base,
-		      public virtual decl_base
+		      public virtual decl_base,
+		      public virtual traversable
 {
   // Forbidden
   enum_type_decl();
@@ -693,6 +740,9 @@ public:
   virtual bool
   operator==(const enum_type_decl&) const;
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~enum_type_decl();
 
 private:
@@ -710,7 +760,8 @@ struct enum_type_decl_hash
 
 /// The abstraction of a typedef declaration.
 class typedef_decl: public virtual type_base,
-		    public virtual decl_base
+		    public virtual decl_base,
+		    public virtual traversable
 {
   // Forbidden
   typedef_decl();
@@ -729,6 +780,9 @@ public:
   shared_ptr<type_base>
   get_underlying_type() const;
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~typedef_decl();
 
 private:
@@ -744,7 +798,7 @@ struct typedef_decl_hash
 };// end struct typedef_decl_hash
 
 /// Abstracts a variable declaration.
-class var_decl : public virtual decl_base
+class var_decl : public virtual decl_base, public virtual traversable
 {
   // Forbidden
   var_decl();
@@ -773,6 +827,9 @@ public:
   set_binding(binding b)
   {m_binding = b;}
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~var_decl();
 
 private:
@@ -791,7 +848,8 @@ struct var_decl_hash
 class function_type;
 
 /// Abstraction for a function declaration.
-class function_decl: public virtual decl_base
+class function_decl: public virtual decl_base,
+		     public virtual traversable
 {
 public:
 
@@ -928,6 +986,9 @@ public:
   is_variadic() const
   {return (!get_parameters().empty()
 	   && get_parameters().back()->get_variadic_marker());}
+
+  void
+  traverse(ir_node_visitor&);
 
   virtual ~function_decl();
 
@@ -1357,6 +1418,9 @@ public:
   get_binding() const
   {return m_binding;}
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~function_template_decl();
 
 private:
@@ -1416,6 +1480,8 @@ public:
   get_pattern() const
   {return m_pattern;}
 
+  void
+  traverse(ir_node_visitor&);
 
   virtual ~class_template_decl();
 
@@ -1591,7 +1657,9 @@ public:
   };// end struct base_spec_hash
 
   /// Abstract a data member declaration in a class declaration.
-  class data_member : public var_decl, public member
+  class data_member : public var_decl,
+		      public member,
+		      public virtual traversable
   {
     // Forbidden
     data_member();
@@ -1631,6 +1699,9 @@ public:
 	      && static_cast<var_decl>(*this) ==other
 	      && static_cast<member>(*this) == other);
     }
+
+   void
+   traverse(ir_node_visitor&);
 
     virtual ~data_member();
 
@@ -1702,7 +1773,9 @@ public:
   };//end class method_decl;
 
   /// Abstracts a member function declaration in a class declaration.
-  class member_function : public method_decl, public member
+  class member_function : public method_decl,
+			  public member,
+			  public virtual traversable
   {
     // Forbidden
     member_function();
@@ -1797,6 +1870,11 @@ public:
 	      && static_cast<function_decl>(*this) == o);
     }
 
+    /// This implements the traversable::traverse pure virtual
+    /// function.
+    void
+    traverse(ir_node_visitor&);
+
   private:
     size_t m_vtable_offset_in_bits;
     bool m_is_constructor;
@@ -1812,7 +1890,8 @@ public:
   };// end struct member_function_hash
 
   /// Abstract a member function template.
-  class member_function_template : public member
+  class member_function_template : public member,
+				   public virtual traversable
   {
     // Forbiden
     member_function_template();
@@ -1848,6 +1927,9 @@ public:
     bool
     operator==(const member_function_template& o) const;
 
+    void
+    traverse(ir_node_visitor&);
+
   private:
     bool m_is_constructor;
     bool m_is_const;
@@ -1861,7 +1943,7 @@ public:
   };// end struct member_function_template_hash
 
   /// Abstracts a member class template template
-  class member_class_template : public member
+  class member_class_template : public member, public virtual traversable
   {
     // Forbidden
     member_class_template();
@@ -1883,6 +1965,9 @@ public:
 
     bool
     operator==(const member_class_template& o) const;
+
+    void
+    traverse(ir_node_visitor&);
 
   private:
     shared_ptr<class_template_decl> m_class_tmpl;
@@ -1994,6 +2079,9 @@ public:
   virtual bool
   operator==(const class_decl&) const;
 
+  void
+  traverse(ir_node_visitor&);
+
   virtual ~class_decl();
 
 private:
@@ -2014,6 +2102,37 @@ struct class_decl_hash
   size_t operator()(const class_decl& t) const;
 
 };//end struct class_decl_hash
+
+/// The base class for the visitor type hierarchy used for traversing
+/// a translation unit.
+///
+/// Client code willing to get notified for a certain kind of node
+/// during the IR traversal might want to define a visitor class that
+/// inherit #ir_node_visitor, overload the ir_node_visitor::visit
+/// method of its choice, and provide and implementation for it.  That
+/// new visitor class would then be passed to e.g,
+/// translation_unit::traverse or to the #traverse method of any type
+/// where the traversal is supposed to start from.
+struct ir_node_visitor
+{
+  virtual void visit(scope_decl&);
+  virtual void visit(type_decl&);
+  virtual void visit(namespace_decl&);
+  virtual void visit(qualified_type_def&);
+  virtual void visit(pointer_type_def&);
+  virtual void visit(reference_type_def&);
+  virtual void visit(enum_type_decl&);
+  virtual void visit(typedef_decl&);
+  virtual void visit(var_decl&);
+  virtual void visit(function_decl&);
+  virtual void visit(function_template_decl&);
+  virtual void visit(class_template_decl&);
+  virtual void visit(class_decl&);
+  virtual void visit(class_decl::data_member&);
+  virtual void visit(class_decl::member_function&);
+  virtual void visit(class_decl::member_function_template&);
+  virtual void visit(class_decl::member_class_template&);
+};
 
 } // end namespace abigail
 #endif // __ABG_IR_H__
