@@ -27,7 +27,7 @@ runtestdot_LDADD=$(top_builddir)/src/libabigail.la
 testwalker_SOURCES=test-walker.cc
 testwalker_LDADD=$(top_builddir)/src/libabigail.la
 
-AM_CPPFLAGS=-I${top_srcdir}/include/libabigail -I${top_builddir}/include/libabigail
+AM_CPPFLAGS=-I${top_srcdir}/include -I${top_builddir}/include
 AM_CXXFLAGS="-std=gnu++11"
 
 EXTRA_DIST=				\

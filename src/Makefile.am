@@ -15,5 +15,5 @@ abg-viz-svg.cc
 
 libabigail_la_LDFLAGS=@XML_LIBS@ -Wl,--as-needed
 
-AM_CPPFLAGS=@XML_CFLAGS@ -Wall -I$(top_srcdir)/include/libabigail -I$(top_builddir)/include/libabigail
+AM_CPPFLAGS=@XML_CFLAGS@ -Wall -I$(top_srcdir)/include -I$(top_builddir)/include
 AM_CXXFLAGS="-std=gnu++11"
