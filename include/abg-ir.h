@@ -172,7 +172,7 @@ struct traversable
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
-class translation_unit : public virtual traversable
+class translation_unit : public traversable
 {
   // Forbidden
   translation_unit();
@@ -200,6 +200,8 @@ public:
 
   void
   traverse(ir_node_visitor&);
+
+  virtual ~translation_unit();
 
 private:
   std::string m_path;

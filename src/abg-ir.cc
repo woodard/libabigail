@@ -219,6 +219,10 @@ translation_unit::traverse(ir_node_visitor& v)
   get_global_scope()->traverse(v);
 }
 
+translation_unit::~translation_unit()
+{
+}
+
 // <Decl definition>
 
 decl_base::decl_base(const std::string&	name,
