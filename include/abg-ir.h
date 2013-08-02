@@ -68,22 +68,38 @@ public:
 /// given ABI Corpus
 class location_manager
 {
-  struct priv;
+  struct _Impl;
 
-  shared_ptr<priv>			m_priv;
+  shared_ptr<_Impl>			m_priv;
 
 public:
 
   location_manager();
 
+  /// Insert the triplet representing a source locus into our internal
+  /// vector of location triplet.  Return an instance of location type,
+  /// built from an integral type that represents the index of the
+  /// source locus triplet into our source locus table.
+  ///
+  /// @param fle the file path of the source locus
+  /// @param lne the line number of the source location
+  /// @param col the column number of the source location
   location
-  create_new_location(const std::string& file, size_t line, size_t column);
+  create_new_location(const std::string& fle, size_t lne, size_t col);
 
+  /// Given an instance of location type, return the triplet
+  /// {path,line,column} that represents the source locus.  Note that
+  /// the location must have been previously created from the function
+  /// location_manager::expand_location otherwise this function yields
+  /// unexpected results, including possibly a crash.
+  ///
+  /// @param location the instance of location type to expand
+  /// @param path the resulting path of the source locus
+  /// @param line the resulting line of the source locus
+  /// @param column the resulting colum of the source locus
   void
-  expand_location(const location	location,
-		  std::string&		path,
-		  unsigned&		line,
-		  unsigned&		column) const;
+  expand_location(const location location, std::string& path,
+		  unsigned& line, unsigned& column) const;
 };
 
 
@@ -100,9 +116,10 @@ struct traversable
   /// ir_node_visitor::visit method with the node passed as an
   /// argument.
   ///
-  /// @param v the visitor used during the t
+  /// @param v the visitor used during the traverse.
   virtual void traverse(ir_node_visitor& v) = 0;
 };
+
 
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
@@ -120,25 +137,52 @@ public:
 
   typedef std::list<shared_ptr<decl_base> > decls_type;
 
+  /// Constructor of translation_unit.
+  ///
+  /// @param path the path of the translation unit.
   translation_unit(const std::string& path);
 
+  /// @return the path of the compilation unit that gave birth to this
+  /// instance of tranlation_unit.
   const std::string&
   get_path() const;
 
+  /// Getter of the the global scope of the translation unit.
+  ///
+  /// @return the global scope of the current translation unit.  If
+  /// there is not global scope allocated yet, this function creates one
+  /// and returns it.
   const shared_ptr<global_scope>
   get_global_scope() const;
 
+  /// Getter of the location manager for the current translation unit.
+  ///
+  /// @return a reference to the location manager for the current
+  /// translation unit.
   location_manager&
   get_loc_mgr();
 
+  /// const Getter of the location manager.
+  ///
+  /// @return a const reference to the location manager for the current
+  /// translation unit.
   const location_manager&
   get_loc_mgr() const;
 
+  /// Tests whether if the current translation unit contains ABI
+  /// artifacts or not.
+  ///
+  /// @return true iff the current translation unit is empty.
   bool
   is_empty() const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the member nodes of the translation
+  /// unit during the traversal.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~translation_unit();
 };
@@ -177,6 +221,10 @@ private:
   // Forbidden
   decl_base();
 
+  /// Setter of the scope of the current decl.
+  ///
+  /// Note that the decl won't hold a reference on the scope.  It's
+  /// rather the scope that holds a reference on its members.
   void
   set_scope(scope_decl*);
 
@@ -191,6 +239,10 @@ public:
 
   decl_base(const decl_base&);
 
+  /// Return true iff the two decls have the same name.
+  ///
+  /// This function doesn't test if the scopes of the the two decls are
+  /// equal.
   virtual bool
   operator==(const decl_base&) const;
 
@@ -233,8 +285,7 @@ public:
   {m_visibility = v; }
 
   friend void
-  add_decl_to_scope(shared_ptr<decl_base>,
-		    scope_decl*);
+  add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
 };
 
 
@@ -246,21 +297,28 @@ class scope_decl : public virtual decl_base, public virtual traversable
 
   scope_decl();
 
+  /// Add a member decl to this scope.  Note that user code should not
+  /// use this, but rather use add_decl_to_scope.
+  ///
+  /// @param member the new member decl to add to this scope.
   void
-  add_member_decl(const shared_ptr<decl_base>);
+  add_member_decl(const shared_ptr<decl_base> member);
 
 public:
-  scope_decl(const std::string& name,
-	     location		locus,
+  scope_decl(const std::string& name, location locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
-    : decl_base(name, locus, /*mangled_name=*/name, vis)
+  : decl_base(name, locus, /*mangled_name=*/name, vis)
   { }
 
 
-  scope_decl(location l)
-    : decl_base("", l)
+  scope_decl(location l) : decl_base("", l)
   { }
 
+  /// Return true iff both scopes have the same names and have the same
+  /// member decls.
+  ///
+  /// This function doesn't check for equality of the scopes of its
+  /// arguments.
   virtual bool
   operator==(const scope_decl&) const;
 
@@ -276,14 +334,18 @@ public:
   is_empty() const
   { return get_member_decls().empty(); }
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance of scope_decl
+  /// and on its member nodes.
   void
   traverse(ir_node_visitor&);
 
   virtual ~scope_decl();
 
   friend void
-  add_decl_to_scope(shared_ptr<decl_base>,
-		    scope_decl*);
+  add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
 };
 
 /// Facility to hash instances of decl_base.
@@ -331,6 +393,9 @@ public:
 
   type_base(size_t s, size_t a);
 
+  /// Return true iff both type declarations are equal.
+  ///
+  /// Note that this doesn't test if the scopes of both types are equal.
   virtual bool
   operator==(const type_base&) const;
 
@@ -362,6 +427,19 @@ struct type_base_hash
 /// type is added to the IR.
 struct dynamic_type_hash
 {
+  /// A hashing function for type declarations.
+  ///
+  /// This function gets the dynamic type of the actual type
+  /// declaration and calls the right hashing function for that type.
+  ///
+  /// Note that each time a new type declaration kind is added to the
+  /// system, this function needs to be updated.  For a given
+  /// inheritance hierarchy, make sure to handle the most derived type
+  /// first.
+  ///
+  /// @param t a pointer to the type declaration to be hashed
+  ///
+  /// @return the resulting hash
   size_t
   operator()(const type_base* t) const;
 };
@@ -395,7 +473,8 @@ struct type_shared_ptr_equal
 
 /// A basic type declaration that introduces no scope.
 class type_decl 
-: public virtual decl_base, public virtual type_base,
+: public virtual decl_base, 
+  public virtual type_base,
   public virtual traversable
 {
   // Forbidden.
@@ -403,16 +482,21 @@ class type_decl
 
 public:
 
-  type_decl(const std::string&	name,
-	    size_t		size_in_bits,
-	    size_t		alignment_in_bits,
-	    location		locus,
-	    const std::string&	mangled_name = "",
-	    visibility		vis = VISIBILITY_DEFAULT);
+  type_decl(const std::string& name,
+	    size_t size_in_bits, size_t alignment_in_bits,
+	    location locus, const std::string&	mangled_name = "",
+	    visibility vis = VISIBILITY_DEFAULT);
 
+  /// Return true if both types equals.
+  ///
+  /// Note that this does not check the scopes of any of the types.
   virtual bool
   operator==(const type_decl&) const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
   void
   traverse(ir_node_visitor&);
 
@@ -433,12 +517,14 @@ class scope_type_decl : public scope_decl, public virtual type_base
 
 public:
 
-  scope_type_decl(const std::string&		name,
-		  size_t			size_in_bits,
-		  size_t			alignment_in_bits,
-		  location			locus,
-		  visibility			vis = VISIBILITY_DEFAULT);
+  scope_type_decl(const std::string& name, size_t size_in_bits,
+		  size_t alignment_in_bits, location locus,
+		  visibility vis = VISIBILITY_DEFAULT);
 
+  /// Return true iff both scope types are equal.
+  ///
+  /// Note that this function does not consider the scope of the scope
+  /// types themselves.
   virtual bool
   operator==(const scope_type_decl&) const;
 
@@ -462,9 +548,18 @@ public:
 		 location		locus,
 		 visibility		vis = VISIBILITY_DEFAULT);
 
+  /// Return true iff both namespaces and their members are equal.
+  ///
+  /// Note that this function does not check if the scope of these
+  /// namespaces are equal.
   virtual bool
   operator==(const namespace_decl&) const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance and on its
+  /// member nodes.
   void
   traverse(ir_node_visitor&);
 
@@ -481,7 +576,9 @@ class qualified_type_def
 
   // Forbidden.
   qualified_type_def();
+
 public:
+
   /// Bit field values representing the cv qualifiers of the
   /// underlying type.
   enum CV
@@ -492,33 +589,51 @@ public:
     CV_RESTRICT = 1 << 2
   };
 
-  qualified_type_def(shared_ptr<type_base> underlying_type,
-		     CV	quals, location locus);
+  /// Constructor of the qualified_type_def
+  ///
+  /// @param type the underlying type
+  ///
+  /// @param quals a bitfield representing the const/volatile qualifiers
+  ///
+  /// @param locus the location of the qualified type definition
+  qualified_type_def(shared_ptr<type_base> type, CV quals, location locus);
 
+  /// Return true iff both qualified types are equal.
+  ///
+  /// Note that this function does not check for equality of the scopes.
   virtual bool
   operator==(const qualified_type_def&) const;
 
+  /// Getter of the const/volatile qualifier bit field
   char
   get_cv_quals() const;
 
+  /// Setter of the const/value qualifiers bit field
   void
   set_cv_quals(char cv_quals);
 
+  /// Getter of the underlying type
   const shared_ptr<type_base>
   get_underlying_type() const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~qualified_type_def();
 };
 
-qualified_type_def::CV operator| (qualified_type_def::CV,
-				  qualified_type_def::CV);
+/// Overloaded bitwise OR operator for cv qualifiers.
+qualified_type_def::CV 
+operator|(qualified_type_def::CV, qualified_type_def::CV);
 
 /// A Hasher for instances of qualified_type_def
 struct qualified_type_def_hash
 {
+  /// Hash function for instances of qualified_type_def.
   size_t
   operator()(const qualified_type_def& t) const;
 };
@@ -535,19 +650,25 @@ class pointer_type_def
 
 public:
 
-  pointer_type_def(shared_ptr<type_base>&	pointed_to_type,
-		   size_t			size_in_bits,
-		   size_t			alignment_in_bits,
-		   location			locus);
+  pointer_type_def(shared_ptr<type_base>& pointed_to_type, size_t size_in_bits,
+		   size_t alignment_in_bits, location locus);
 
+  /// Return true iff both instances of pointer_type_def are equal.
+  ///
+  /// Note that this function does not check for the scopes of the this
+  /// types.
   virtual bool
   operator==(const pointer_type_def&) const;
 
   shared_ptr<type_base>
   get_pointed_to_type() const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~pointer_type_def();
 };
@@ -570,11 +691,9 @@ class reference_type_def
   reference_type_def();
 
 public:
-  reference_type_def(shared_ptr<type_base>&	pointed_to_type,
-		     bool			lvalue,
-		     size_t			size_in_bits,
-		     size_t			alignment_in_bits,
-		     location			locus);
+  reference_type_def(shared_ptr<type_base>& pointed_to_type,
+		     bool lvalue, size_t size_in_bits,
+		     size_t alignment_in_bits, location locus);
 
   virtual bool
   operator==(const reference_type_def&) const;
@@ -585,8 +704,12 @@ public:
   bool
   is_lvalue() const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~reference_type_def();
 };
@@ -600,8 +723,7 @@ struct reference_type_def_hash
 
 /// Abstracts a declaration for an enum type.
 class enum_type_decl
-: public virtual type_base, public virtual decl_base,
-  public virtual traversable
+: public virtual type_base, public virtual decl_base, public virtual traversable
 {
 public:
   /// Enumerator Datum.
@@ -651,24 +773,51 @@ private:
 
 public:
 
-  enum_type_decl(const string&			name,
-		 location			locus,
-		 shared_ptr<type_base>		underlying_type,
-		 const std::list<enumerator>&	enumerators,
-		 const std::string&		mangled_name = "",
-		 visibility			vis = VISIBILITY_DEFAULT);
+  /// Constructor of an enum type declaration.
+  ///
+  /// @param name the name of the enum
+  ///
+  /// @param locus the locus at which the enum appears in the source
+  /// code.
+  ///
+  /// @param underlying_type the underlying type of the enum
+  ///
+  /// @param enumerators a list of enumerators for this enum.
+  enum_type_decl(const string& name, location locus,
+		 shared_ptr<type_base> underlying_type,
+		 const std::list<enumerator>& enumerators,
+		 const std::string& mangled_name = "",
+		 visibility vis = VISIBILITY_DEFAULT)
+  : type_base(underlying_type->get_size_in_bits(),
+	      underlying_type->get_alignment_in_bits()),
+    decl_base(name, locus, mangled_name, vis),
+    m_underlying_type(underlying_type),
+    m_enumerators(enumerators)
+  { }
 
+  /// Return the underlying type of the enum.
   shared_ptr<type_base>
   get_underlying_type() const;
 
+  /// Return the list of enumerators of the enum.
   const std::list<enumerator>&
   get_enumerators() const;
 
+  /// Equality operator.
+  ///
+  /// @param other the other enum to test against.
+  ///
+  /// @return true iff other is equals the current instance of enum type
+  /// decl.  
   virtual bool
   operator==(const enum_type_decl&) const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~enum_type_decl();
 };
@@ -692,18 +841,33 @@ class typedef_decl
 
 public:
 
-  typedef_decl(const string&			name,
-	       const shared_ptr<type_base>	underlying_type,
-	       location				locus,
-	       const std::string&		mangled_name = "",
-	       visibility			vis = VISIBILITY_DEFAULT);
+  /// Constructor of the typedef_decl type.
+  ///
+  /// @param name the name of the typedef.
+  ///
+  /// @param underlying_type the underlying type of the typedef.
+  ///
+  /// @param locus the source location of the typedef declaration.
+  typedef_decl(const string& name, const shared_ptr<type_base> underlying_type,
+	       location	locus, const std::string& mangled_name = "",
+	       visibility vis = VISIBILITY_DEFAULT);
 
+  /// Equality operator
+  ///
+  /// @param other the other typedef_decl to test against.
   virtual bool
   operator==(const typedef_decl&) const;
 
+  /// Getter of the underlying type of the typedef.
+  ///
+  /// @return the underlying_type.
   shared_ptr<type_base>
   get_underlying_type() const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
   void
   traverse(ir_node_visitor&);
 
@@ -751,8 +915,13 @@ public:
   set_binding(binding b)
   {m_binding = b; }
 
+
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~var_decl();
 };
@@ -788,20 +957,15 @@ public:
 
   public:
 
-    parameter(const shared_ptr<type_base> type,
-	      const std::string& name,
-	      location loc,
-	      bool variadic_marker = false)
-      : m_type(type),
-	m_name(name),
-	m_location(loc),
-	m_variadic_marker (variadic_marker)
+    parameter(const shared_ptr<type_base> type, const std::string& name,
+	      location loc, bool variadic_marker = false)
+    : m_type(type), m_name(name), m_location(loc),
+      m_variadic_marker (variadic_marker)
     { }
 
-    parameter(const shared_ptr<type_base> type,
-	      bool variadic_marker = false)
-      : m_type(type),
-	m_variadic_marker (variadic_marker)
+    parameter(const shared_ptr<type_base> type, bool variadic_marker = false)
+    : m_type(type),
+      m_variadic_marker (variadic_marker)
     { }
 
     const shared_ptr<type_base>
@@ -825,64 +989,131 @@ public:
     { return *get_type() == *o.get_type(); }
 
     bool
-    get_variadic_marker () const
+    get_variadic_marker() const
     { return m_variadic_marker; }
   };
 
   /// Hasher for an instance of function::parameter
   struct parameter_hash
   {
+    /// The hashing function for an instance of function_decl::parameter
+    ///
+    /// @param p the instance of function_decl::parameter to hash.
+    ///
+    /// @return the computed hash of the instance of function_decl::parameter.
     size_t
     operator()(const parameter& p) const;
   };
 
-  function_decl
-  (const std::string&			name,
-   const std::vector<shared_ptr<parameter> >& parms,
-   shared_ptr<type_base>		return_type,
-   size_t				ftype_size_in_bits,
-   size_t				ftype_align_in_bits,
-   bool				declared_inline,
-   location				locus,
-   const std::string&			mangled_name = "",
-   visibility				vis = VISIBILITY_DEFAULT,
-   binding				bind = BINDING_GLOBAL);
+  /// Constructor for function_decl.
+  ///
+  /// This constructor builds the necessary function_type on behalf of
+  /// the client, so it takes parameters -- like the return types, the
+  /// function parameters and the size/alignment of the pointer to the
+  /// type of the function --  necessary to build the function_type
+  /// under the hood.
+  ///
+  /// If the client code already has the function_type at hand, it
+  /// should instead the other constructor that takes the function_decl.
+  ///
+  /// @param name the name of the function declaration.
+  ///
+  /// @param parms a vector of parameters of the function.
+  ///
+  /// @param return_type the return type of the function.
+  ///
+  /// @param fptr_size_in_bits the size of the type of this function, in
+  /// bits.
+  ///
+  /// @param fptr_align_in_bits the alignment of the type of this
+  /// function.
+  ///
+  /// @param declared_inline whether this function was declared inline.
+  ///
+  /// @param locus the source location of this function declaration.
+  ///
+  /// @param mangled_name the mangled name of the function declaration.
+  ///
+  /// @param vis the visibility of the function declaration.
+  ///
+  /// @param bind the type of binding of the function.
+  function_decl(const std::string&  name,
+		const std::vector<shared_ptr<parameter> >& parms,
+		shared_ptr<type_base> return_type,
+		size_t fptr_size_in_bits,
+		size_t fptr_align_in_bits,
+		bool declared_inline,
+		location locus,
+		const std::string& mangled_name = "",
+		visibility vis = VISIBILITY_DEFAULT,
+		binding bind = BINDING_GLOBAL);
 
-  function_decl
-  (const std::string&			name,
-   shared_ptr<function_type>		function_type,
-   bool				declared_inline,
-   location				locus,
-   const std::string&			mangled_name = "",
-   visibility				vis = VISIBILITY_DEFAULT,
-   binding				bind = BINDING_GLOBAL)
-    : decl_base(name, locus, mangled_name, vis),
-      m_type(function_type),
-      m_declared_inline(declared_inline),
-      m_binding(bind)
+  function_decl(const std::string& name,
+		shared_ptr<function_type> function_type, bool declared_inline,
+		location locus, const std::string& mangled_name = "",
+		visibility vis = VISIBILITY_DEFAULT,
+		binding bind = BINDING_GLOBAL)
+  : decl_base(name, locus, mangled_name, vis),
+    m_type(function_type),
+    m_declared_inline(declared_inline),
+    m_binding(bind)
   { }
 
-  function_decl
-  (const std::string&			name,
-   shared_ptr<type_base>		function_type,
-   bool				declared_inline,
-   location				locus,
-   const std::string&			mangled_name = "",
-   visibility				vis = VISIBILITY_DEFAULT,
-   binding				bind = BINDING_GLOBAL);
+  /// Constructor of the function_decl type.
+  ///
+  /// This flavour of constructor is for when the pointer to the
+  /// instance of function_type that the client code has is presented as
+  /// a pointer to type_base.  In that case, this constructor saves the
+  /// client code from doing a dynamic_cast to get the function_type
+  /// pointer.
+  ///
+  /// @param name the name of the function declaration.
+  ///
+  /// @param fn_type the type of the function declaration.  The dynamic
+  /// type of this parameter should be 'pointer to function_type'
+  ///
+  /// @param declared_inline whether this function was declared inline
+  ///
+  /// @param locus the source location of the function declaration.
+  ///
+  /// @param mangled_name the mangled name of the function declaration.
+  ///
+  /// @param vis the visibility of the function declaration.
+  ///
+  /// @param binding  the kind of the binding of the function
+  /// declaration.
+  function_decl(const std::string& name,
+		shared_ptr<type_base> fn_type,
+		bool declared_inline,
+		location locus,
+		const std::string& mangled_name = "",
+		visibility vis = VISIBILITY_DEFAULT,
+		binding bind = BINDING_GLOBAL);
 
+  /// @return the parameters of the function.
   const std::vector<shared_ptr<parameter> >&
   get_parameters() const;
 
+  /// Append a parameter to the type of this function.
+  ///
+  /// @param parm the parameter to append.
   void
   append_parameter(shared_ptr<parameter> parm);
 
+  /// Append a vector of parameters to the type of this function.
+  ///
+  /// @param parms the vector of parameters to append.
   void
   append_parameters(std::vector<shared_ptr<parameter> >& parms);
 
+  /// Return the type of the current instance of #function_decl.
+  ///
+  /// It's either a function_type or method_type.
+  /// @return the type of the current instance of #function_decl.
   const shared_ptr<function_type>
   get_type() const;
 
+  /// @return the return type of the current instance of function_decl.
   const shared_ptr<type_base>
   get_return_type() const;
 
@@ -911,6 +1142,10 @@ public:
   { return (!get_parameters().empty()
 	   && get_parameters().back()->get_variadic_marker()); }
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
   void
   traverse(ir_node_visitor&);
 
@@ -920,6 +1155,11 @@ public:
 /// Hasher for function_decl
 struct function_decl_hash
 {
+  /// A hashing function for instances of function_decl.
+  ///
+  /// @param t the instance of function_decl to calculate a hash value for.
+  ///
+  /// @return a the computed hash value.
   size_t
   operator()(const function_decl& t) const;
 
@@ -1029,6 +1269,11 @@ public:
 /// Hasher for an instance of function_type
 struct function_type_hash
 {
+  /// Hashing function for instance of function_type.
+  ///
+  /// @param t the instance of function_type to hash.
+  ///
+  /// @return the hash value.
   size_t
   operator()(const function_type& t) const;
 };
@@ -1043,22 +1288,81 @@ class method_type : public function_type
 
 public:
 
+  /// Constructor for instances of method_type.
+  ///
+  /// Instances of method_decl must be of type method_type.
+  ///
+  /// @param return_type the type of the return value of the method.
+  ///
+  /// @param class_type the base type of the method type.  That is, the
+  /// type of the class the method belongs to.
+  ///
+  /// @param parms the vector of the parameters of the method.
+  ///
+  /// @param size_in_bits the size of an instance of method_type,
+  /// expressed in bits.
+  ///
+  /// @param alignment_in_bits the alignment of an instance of
+  /// method_type, expressed in bits.
   method_type(shared_ptr<type_base> return_type,
 	      shared_ptr<class_decl> class_type,
 	      const std::vector<shared_ptr<function_decl::parameter> >& parms,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
+  /// Constructor of instances of method_type.
+  ///
+  ///Instances of method_decl must be of type method_type.
+  ///
+  /// @param return_type the type of the return value of the method.
+  ///
+  /// @param class_type the type of the class the method belongs to.
+  /// The actual (dynamic) type of class_type must be a pointer
+  /// class_type.  We are setting it to pointer to type_base here to
+  /// help client code that is compiled without rtti and thus cannot
+  /// perform dynamic casts.
+  ///
+  /// @param parms the vector of the parameters of the method type.
+  ///
+  /// @param size_in_bits the size of an instance of method_type,
+  /// expressed in bits.
+  ///
+  /// @param alignment_in_bits the alignment of an instance of
+  /// method_type, expressed in bits.
   method_type(shared_ptr<type_base> return_type,
 	      shared_ptr<type_base> class_type,
 	      const std::vector<shared_ptr<function_decl::parameter> >& parms,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
+  /// Constructor of instances of method_type.
+  ///
+  /// When constructed with this constructor, and instane of method_type
+  /// must set a return type using method_type::set_return_type
+  ///
+  /// @param class_type the base type of the method type.  That is, the
+  /// type of the class the method belongs to.
+  ///
+  /// @param size_in_bits the size of an instance of method_type,
+  /// expressed in bits.
+  ///
+  /// @param alignment_in_bits the alignment of an instance of
+  /// method_type, expressed in bits.
   method_type(shared_ptr<class_decl> class_type,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
+  /// Constructor of instances of method_type.
+  ///
+  /// When constructed with this constructor, and instane of method_type
+  /// must set a return type and class type using
+  /// method_type::set_return_type and method_type::set_class_type.
+  ///
+  /// @param size_in_bits the size of an instance of method_type,
+  /// expressed in bits.
+  ///
+  /// @param alignment_in_bits the alignment of an instance of
+  /// method_type, expressed in bits.
   method_type(size_t size_in_bits,
 	      size_t alignment_in_bits);
 
@@ -1066,8 +1370,13 @@ public:
   get_class_type() const
   { return m_class_type; }
 
+  /// Sets the class type of the current instance of method_type.
+  ///
+  /// The class type is the type of the class the method belongs to.
+  ///
+  /// @param t the new class type to set.
   void
-  set_class_type(shared_ptr<class_decl>);
+  set_class_type(shared_ptr<class_decl> t);
 
   virtual ~method_type();
 };
@@ -1075,6 +1384,11 @@ public:
 /// Hasher for intances of method_type
 struct method_type_hash
 {
+  /// The hashing function of instance of method_type.
+  ///
+  /// @param t the instance of method_type to hash.
+  ///
+  /// @return the hash value.
   size_t
   operator()(const method_type& t)const;
 };
@@ -1157,8 +1471,8 @@ struct template_parameter_shared_ptr_hash
 };
 
 /// Abstracts a type template parameter.
-class template_type_parameter : public template_parameter,
-				public virtual type_decl
+class template_type_parameter 
+: public template_parameter, public virtual type_decl
 {
   // Forbidden
   template_type_parameter();
@@ -1186,8 +1500,8 @@ struct template_type_parameter_hash
 };
 
 /// Abstracts non type template parameters.
-class template_non_type_parameter : public template_parameter,
-				    public virtual decl_base
+class template_non_type_parameter 
+: public template_parameter, public virtual decl_base
 {
   shared_ptr<type_base> m_type;
 
@@ -1196,10 +1510,8 @@ class template_non_type_parameter : public template_parameter,
 
 public:
 
-  template_non_type_parameter(unsigned index,
-			      const std::string& name,
-			      shared_ptr<type_base> type,
-			      location locus)
+  template_non_type_parameter(unsigned index, const std::string& name,
+			      shared_ptr<type_base> type, location locus)
     : decl_base(name, locus, ""),
       template_parameter(index),
       m_type(type)
@@ -1223,8 +1535,8 @@ struct template_non_type_parameter_hash
 };
 
 /// Abstracts a template template parameter.
-class template_template_parameter : public template_type_parameter,
-				    public template_decl
+class template_template_parameter 
+: public template_type_parameter, public template_decl
 {
   // Forbidden
   template_template_parameter();
@@ -1258,8 +1570,8 @@ struct template_template_parameter_hash
 /// referred to by a template non-type parameter.  Instances of this
 /// type can appear at the same level as template parameters, in the
 /// scope of a template_decl.
-class tmpl_parm_type_composition : public template_parameter,
-				   public virtual decl_base
+class tmpl_parm_type_composition 
+: public template_parameter, public virtual decl_base
 {
   shared_ptr<type_base> m_type;
 
@@ -1282,7 +1594,8 @@ public:
 };
 
 /// Abstract a function template declaration.
-class function_template_decl : public template_decl, public scope_decl
+class function_template_decl 
+: public template_decl, public scope_decl
 {
   shared_ptr<function_decl> m_pattern;
   binding m_binding;
@@ -1292,9 +1605,9 @@ class function_template_decl : public template_decl, public scope_decl
 
 public:
 
-  function_template_decl(location	locus,
-			 visibility	vis = VISIBILITY_DEFAULT,
-			 binding	bind	    = BINDING_NONE)
+  function_template_decl(location locus,
+			 visibility vis = VISIBILITY_DEFAULT,
+			 binding bind = BINDING_NONE)
     : decl_base("", locus, "", vis),
       scope_decl("", locus),
       m_binding(bind)
@@ -1329,8 +1642,13 @@ public:
   get_binding() const
   { return m_binding; }
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance and on the
+  /// function pattern of the template.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~function_template_decl();
 };
@@ -1366,17 +1684,16 @@ public:
 
   /// Constructor for the class_template_decl type.
   ///
-  /// @param the pattern of the class template.  This must NOT be a
+  /// @param pattrn The details of the class template. This must NOT be a
   /// null pointer.  If you really this to be null, please use the
   /// constructor above instead.
   ///
-  /// @param the source location of the declaration of the type.
+  /// @param locus the source location of the declaration of the type.
   ///
-  /// @param the visibility of the instances of class instantiated
+  /// @param vis the visibility of the instances of class instantiated
   /// from this template.
-  class_template_decl(shared_ptr<class_decl> pattern,
-		      location locus,
-		      visibility vis = VISIBILITY_DEFAULT);
+  class_template_decl(shared_ptr<class_decl> pattrn,
+		      location locus, visibility vis = VISIBILITY_DEFAULT);
 
 
   virtual bool
@@ -1389,8 +1706,13 @@ public:
   get_pattern() const
   { return m_pattern; }
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance and on the class
+  /// pattern of the template.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~class_template_decl();
 };
@@ -1516,11 +1838,40 @@ public:
 
   public:
 
+    /// Constructor for base_spec instances.
+    ///
+    /// @param base the base class to consider
+    ///
+    /// @param a the access specifier of the base class.
+    ///
+    /// @param offset_in_bits if positive or null, represents the offset
+    /// of the base in the layout of its containing type..  If negative,
+    /// means that the current base is not laid out in its containing type.
+    ///
+    /// @param is_virtual if true, means that the current base class is
+    /// virtual in it's containing type.
     base_spec(shared_ptr<class_decl> base,
 	      access_specifier a,
 	      long offset_in_bits = -1,
 	      bool is_virtual = false);
 
+    /// Constructor for base_spec instances.
+    ///
+    /// Note that this constructor is for clients that don't support RTTI
+    /// and that have a base class of type_base, but of dynamic type
+    /// class_decl.
+    ///
+    /// @param base the base class to consider.  Must be a pointer to an
+    /// instance of class_decl
+    ///
+    /// @param a the access specifier of the base class.
+    ///
+    /// @param offset_in_bits if positive or null, represents the offset
+    /// of the base in the layout of its containing type..  If negative,
+    /// means that the current base is not laid out in its containing type.
+    ///
+    /// @param is_virtual if true, means that the current base class is
+    /// virtual in it's containing type.
     base_spec(shared_ptr<type_base> base,
 	      access_specifier a,
 	      long offset_in_bits = -1,
@@ -1554,34 +1905,84 @@ public:
   };
 
   /// Abstract a data member declaration in a class declaration.
-  class data_member : public var_decl,
-		      public member,
-		      public virtual traversable
+  class data_member 
+  : public var_decl, public member, public virtual traversable
   {
-    bool m_is_laid_out;
-    size_t m_offset_in_bits;
+    bool 		m_is_laid_out;
+    size_t 		m_offset_in_bits;
 
     // Forbidden
     data_member();
 
   public:
 
-    data_member(shared_ptr<var_decl> data_member,
+    /// Constructor for instances of class_decl::data_member.
+    ///
+    /// @param data_member the variable to be used as data member.
+    ///
+    /// @param access the access specifier for the data member.
+    ///
+    /// @param is_laid_out set to true if the data member has been laid out.
+    ///
+    /// @param is_static set ot true if the data member is static.
+    ///
+    /// @param offset_in_bits the offset of the data member, expressed in bits.
+    data_member(shared_ptr<var_decl> data_member, access_specifier access,
+		bool is_laid_out, bool is_static, size_t offset_in_bits)
+    : decl_base(data_member->get_name(),
+	      data_member->get_location(),
+	      data_member->get_mangled_name(),
+	      data_member->get_visibility()),
+      var_decl(data_member->get_name(),
+	     data_member->get_type(),
+	     data_member->get_location(),
+	     data_member->get_mangled_name(),
+	     data_member->get_visibility(),
+	     data_member->get_binding()),
+      member(access, is_static),
+      m_is_laid_out(is_laid_out),
+      m_offset_in_bits(offset_in_bits)
+    { }
+
+
+    /// Constructor for instances of class_decl::data_member.
+    ///
+    /// @param name the name of the data member.
+    ///
+    /// @param type the type of the data member.
+    ///
+    /// @param access the access specifier for the data member.
+    ///
+    /// @param locus the source location of the data member.
+    ///
+    /// @param mangled_name the mangled name of the data member, or an
+    /// empty string if not applicable.
+    ///
+    /// @param vis the visibility of the data member.
+    ///
+    /// @param bind the binding of the data member.
+    ///
+    /// @param is_laid_out set to true if the data member has been laid out.
+    ///
+    /// @param is_static set ot true if the data member is static.
+    ///
+    /// @param offset_in_bits the offset of the data member, expressed in bits.
+    data_member(const std::string& name,
+		shared_ptr<type_base>& type,
 		access_specifier access,
+		location locus,
+		const std::string& mangled_name,
+		visibility vis,
+		binding	bind,
 		bool is_laid_out,
 		bool is_static,
-		size_t offset_in_bits);
-
-    data_member(const std::string&	name,
-		shared_ptr<type_base>&	type,
-		access_specifier access,
-		location		locus,
-		const std::string&	mangled_name,
-		visibility		vis,
-		binding		bind,
-		bool			is_laid_out,
-		bool			is_static,
-		size_t			offset_in_bits);
+		size_t offset_in_bits)
+    : decl_base(name, locus, mangled_name, vis),
+      var_decl(name, type, locus, mangled_name, vis, bind),
+      member(access, is_static),
+      m_is_laid_out(is_laid_out),
+      m_offset_in_bits(offset_in_bits)
+    { }
 
     bool
     is_laid_out() const
@@ -1600,6 +2001,10 @@ public:
 	      && static_cast<member>(*this) == other);
     }
 
+    /// This implements the traversable::traverse pure virtual
+    /// function.
+    ///
+    /// @param v the visitor used on the current instance.
    void
    traverse(ir_node_visitor&);
 
@@ -1609,6 +2014,9 @@ public:
   /// Hasher for a data_member.
   struct data_member_hash
   {
+    /// Hashing function for instances of class_decl::data_member.
+    ///
+    /// @param t the instance of class_decl::data_member to hash.
     size_t
     operator()(data_member& t);
   };
@@ -1622,42 +2030,116 @@ public:
 
   public:
 
-    method_decl(const std::string&			name,
+    /// A constructor for instances of class_decl::method_decl.
+    ///
+    /// @param name the name of the method.
+    ///
+    /// @param parms the parameters of the method
+    ///
+    /// @param return_type the return type of the method.
+    ///
+    /// @param class_type the type of the class the method belongs to.
+    ///
+    /// @param ftype_size_in_bits the size of instances of
+    /// class_decl::method_decl, expressed in bits.
+    ///
+    /// @param ftype_align_in_bits the alignment of instance of
+    /// class_decl::method_decl, expressed in bits.
+    ///
+    /// @param declared_inline whether the method was declared inline or
+    /// not.
+    ///
+    /// @param locus the source location of the method.
+    ///
+    /// @param mangled_name the mangled name of the method.
+    ///
+    /// @param vis the visibility of the method.
+    ///
+    /// @param bind the binding of the method.
+    method_decl(const std::string&  name,
 		const std::vector<shared_ptr<parameter> >& parms,
-		shared_ptr<type_base>		return_type,
-		shared_ptr<class_decl>		class_type,
-		size_t				ftype_size_in_bits,
-		size_t				ftype_align_in_bits,
-		bool				declared_inline,
-		location				locus,
-		const std::string&			mangled_name = "",
-		visibility				vis = VISIBILITY_DEFAULT,
-		binding				bind = BINDING_GLOBAL);
+		shared_ptr<type_base> return_type,
+		shared_ptr<class_decl> class_type,
+		size_t	ftype_size_in_bits,
+		size_t ftype_align_in_bits,
+		bool declared_inline,
+		location locus,
+		const std::string& mangled_name = "",
+		visibility vis = VISIBILITY_DEFAULT,
+		binding bind = BINDING_GLOBAL);
 
-    method_decl(const std::string&	name,
-		shared_ptr<method_type> type,
-		bool			declared_inline,
-		location		locus,
-		const std::string&	mangled_name = "",
-		visibility		vis	     = VISIBILITY_DEFAULT,
-		binding		bind	     = BINDING_GLOBAL);
+    /// A constructor for instances of class_decl::method_decl.
+    ///
+    /// @param name the name of the method.
+    ///
+    /// @param type the type of the method.
+    ///
+    /// @param declared_inline whether the method was
+    /// declared inline or not.
+    ///
+    /// @param locus the source location of the method.
+    ///
+    /// @param mangled_name the mangled name of the method.
+    ///
+    /// @param vis the visibility of the method.
+    ///
+    /// @param bind the binding of the method.
+    method_decl(const std::string& name, shared_ptr<method_type> type,
+		bool declared_inline, location locus,
+		const std::string& mangled_name = "",
+		visibility vis = VISIBILITY_DEFAULT,
+		binding	bind = BINDING_GLOBAL);
 
-    method_decl(const std::string&		name,
-		shared_ptr<function_type>	type,
-		bool				declared_inline,
-		location			locus,
-		const std::string&		mangled_name = "",
-		visibility			vis  = VISIBILITY_DEFAULT,
-		binding			bind = BINDING_GLOBAL);
+    /// A constructor for instances of class_decl::method_decl.
+    ///
+    /// @param name the name of the method.
+    ///
+    /// @param type the type of the method.  Must be an instance of
+    /// method_type.
+    ///
+    /// @param declared_inline whether the method was
+    /// declared inline or not.
+    ///
+    /// @param locus the source location of the method.
+    ///
+    /// @param mangled_name the mangled name of the method.
+    ///
+    /// @param vis the visibility of the method.
+    ///
+    /// @param bind the binding of the method.
+    method_decl(const std::string& name,
+		shared_ptr<function_type> type,
+		bool declared_inline,
+		location locus,
+		const std::string& mangled_name = "",
+		visibility vis  = VISIBILITY_DEFAULT,
+		binding	bind = BINDING_GLOBAL);
 
-    method_decl(const std::string&	name,
-		shared_ptr<type_base>	type,
-		bool			declared_inline,
-		location		locus,
-		const std::string&	mangled_name = "",
-		visibility		vis	     = VISIBILITY_DEFAULT,
-		binding		bind	     = BINDING_GLOBAL);
+    /// A constructor for instances of class_decl::method_decl.
+    ///
+    /// @param name the name of the method.
+    ///
+    /// @param type the type of the method.  Must be an instance of
+    /// method_type.
+    ///
+    /// @param declared_inline whether the method was
+    /// declared inline or not.
+    ///
+    /// @param locus the source location of the method.
+    ///
+    /// @param mangled_name the mangled name of the method.
+    ///
+    /// @param vis the visibility of the method.
+    ///
+    /// @param bind the binding of the method.
+    method_decl(const std::string& name, shared_ptr<type_base> type,
+		bool declared_inline, location locus,
+		const std::string& mangled_name = "",
+		visibility vis = VISIBILITY_DEFAULT,
+		binding bind = BINDING_GLOBAL);
 
+    /// @return the type of the current instance of the
+    /// class_decl::method_decl.
     const shared_ptr<method_type>
     get_type() const;
 
@@ -1683,24 +2165,23 @@ public:
 
   public:
 
-    member_function
-    (const std::string&	name,
-     std::vector<shared_ptr<parameter> > parms,
-     shared_ptr<type_base>	return_type,
-     shared_ptr<class_decl>	class_type,
-     size_t			ftype_size_in_bits,
-     size_t			ftype_align_in_bits,
-     access_specifier		access,
-     bool			declared_inline,
-     location			locus,
-     const std::string&	mangled_name,
-     visibility		vis,
-     binding			bind,
-     size_t			vtable_offset_in_bits,
-     bool			is_static,
-     bool			is_constructor,
-     bool			is_destructor,
-     bool			is_const)
+    member_function(const std::string&	name,
+		    std::vector<shared_ptr<parameter> > parms,
+		    shared_ptr<type_base>	return_type,
+		    shared_ptr<class_decl>	class_type,
+		    size_t			ftype_size_in_bits,
+		    size_t			ftype_align_in_bits,
+		    access_specifier		access,
+		    bool			declared_inline,
+		    location			locus,
+		    const std::string&	mangled_name,
+		    visibility		vis,
+		    binding			bind,
+		    size_t			vtable_offset_in_bits,
+		    bool			is_static,
+		    bool			is_constructor,
+		    bool			is_destructor,
+		    bool			is_const)
       : decl_base(name, locus, name, vis),
       method_decl(name, parms, return_type, class_type,
 		  ftype_size_in_bits, ftype_align_in_bits,
@@ -1736,6 +2217,25 @@ public:
       m_is_const(is_const)
     { }
 
+    /// Constructor for instances of class_decl::member_function.
+    ///
+    /// @param fn the method decl to be used as a member function.  This
+    /// must be an intance of class_decl::method_decl.
+    ///
+    /// @param access the access specifier for the member function.
+    ///
+    /// @param vtable_offset_in_bits the offset of the this member
+    /// function in the vtable, or zero.
+    ///
+    /// @param is_static set to true if this member function is static.
+    ///
+    /// @param is_constructor set to true if this member function is a
+    /// constructor.
+    ///
+    /// @param is_destructor set to true if this member function is a
+    /// destructor.
+    ///
+    /// @param is_const set to true if this member function is const.
     member_function(shared_ptr<function_decl>	fn,
 		    access_specifier		access,
 		    size_t			vtable_offset_in_bits,
@@ -1773,13 +2273,18 @@ public:
 
     /// This implements the traversable::traverse pure virtual
     /// function.
+    ///
+    /// @param v the visitor used on the current instance.
     void
-    traverse(ir_node_visitor&);
+    traverse(ir_node_visitor& v);
   };
 
   /// A hashing functor for instances of class_decl::member_function.
   struct member_function_hash
   {
+    /// Hashing function for instances of class_decl::member_function.
+    ///
+    /// @param t the intance of class_decl::member_function to hash.
     size_t
     operator()(const member_function& t) const;
   };
@@ -1826,12 +2331,23 @@ public:
     bool
     operator==(const member_function_template& o) const;
 
+    /// This implements the traversable::traverse pure virtual
+    /// function.
+    ///
+    /// @param v the visitor used on the current instance and on its
+    /// underlying function template.
     void
     traverse(ir_node_visitor&);
   };
 
   struct member_function_template_hash
   {
+    /// Hashing function for instances of
+    /// class_decl::member_function_template_hash.
+    ///
+    /// @param t the instance of class_decl::member_function_template to hash.
+    ///
+    /// @return the resulting hash.
     size_t
     operator()(const member_function_template&) const;
   };
@@ -1863,8 +2379,13 @@ public:
     bool
     operator==(const member_class_template& o) const;
 
+    /// This implements the traversable::traverse pure virtual
+    /// function.
+    ///
+    /// @param v the visitor used on the current instance and on the class
+    /// pattern of the template.
     void
-    traverse(ir_node_visitor&);
+    traverse(ir_node_visitor& v);
   };
 
   /// A hashing functor for instances of member_class_template.
@@ -1896,24 +2417,62 @@ private:
 
 public:
 
-  class_decl(const std::string&				name,
-	     size_t					size_in_bits,
-	     size_t					align_in_bits,
-	     location					locus,
-	     visibility					vis,
-	     std::list<shared_ptr<base_spec> >&		bases,
-	     std::list<shared_ptr<member_type> >&	member_types,
-	     std::list<shared_ptr<data_member> >&	data_members,
-	     std::list<shared_ptr<member_function> >&	member_fns);
+  /// A Constructor for instances of class_decl
+  ///
+  /// @param name the identifier of the class.
+  ///
+  /// @param size_in_bits the size of an instance of class_decl, expressed
+  /// in bits
+  ///
+  /// @param align_in_bits the alignment of an instance of class_decl,
+  /// expressed in bits.
+  ///
+  /// @param locus the source location of declaration point this class.
+  ///
+  /// @param vis the visibility of instances of class_decl.
+  ///
+  /// @param bases the vector of base classes for this instance of class_decl.
+  ///
+  /// @param member_types the vector of member types of this instance of
+  /// class_decl.
+  ///
+  /// @param data_members the vector of data members of this instance of
+  /// class_decl.
+  ///
+  /// @param member_fns the vector of member functions of this instance of
+  /// class_decl.
+  class_decl(const std::string& name, size_t size_in_bits,
+	     size_t align_in_bits, location locus, visibility vis,
+	     std::list<shared_ptr<base_spec> >& bases,
+	     std::list<shared_ptr<member_type> >& member_types,
+	     std::list<shared_ptr<data_member> >& data_members,
+	     std::list<shared_ptr<member_function> >& member_fns);
+  
+  /// A constructor for instances of class_decl.
+  ///
+  /// @param name the name of the class.
+  ///
+  /// @param size_in_bits the size of an instance of class_decl, expressed
+  /// in bits
+  ///
+  /// @param align_in_bits the alignment of an instance of class_decl,
+  /// expressed in bits.
+  ///
+  /// @param locus the source location of declaration point this class.
+  ///
+  /// @param vis the visibility of instances of class_decl.
+  class_decl(const std::string& name, size_t size_in_bits, 
+	     size_t align_in_bits, location locus, visibility vis);
 
-  class_decl(const std::string& name,
-	     size_t		size_in_bits,
-	     size_t		align_in_bits,
-	     location		locus,
-	     visibility	vis);
 
-  class_decl(const std::string& name,
-	     bool is_declaration_only = true);
+  /// A constuctor for instances of class_decl that represent a
+  /// declaration without definition.
+  ///
+  /// @param name the name of the class.
+  ///
+  /// @param is_declaration_only a boolean saying whether the instance
+  /// represents a declaration only, or not.
+  class_decl(const std::string& name, bool is_declaration_only = true);
 
   bool
   hashing_started() const
@@ -1927,9 +2486,18 @@ public:
   is_declaration_only() const
   { return m_is_declaration_only; }
 
+  /// Set the earlier declaration of this class definition.
+  ///
+  /// @param declaration the earlier declaration to set.  Note that it's
+  /// set only if it's a pure declaration.
   void
   set_earlier_declaration(shared_ptr<class_decl> declaration);
 
+  /// Set the earlier declaration of this class definition.
+  ///
+  /// @param declaration the earlier declaration to set.  Note that it's
+  /// set only if it's a pure declaration.  It's dynamic type must be
+  /// pointer to class_decl.
   void
   set_earlier_declaration(shared_ptr<type_base> declaration);
 
@@ -1945,13 +2513,19 @@ public:
   get_base_specifiers() const
   { return m_bases; }
 
+  /// Add a member type to the current instance of class_decl
+  ///
+  /// @param t the member type to add.
   void
-  add_member_type(shared_ptr<member_type>t);
+  add_member_type(shared_ptr<member_type> t);
 
   const std::list<shared_ptr<member_type> >&
   get_member_types() const
   { return m_member_types; }
 
+  /// Add a data member to the current instance of class_decl.
+  ///
+  /// @param m the data member to add.
   void
   add_data_member(shared_ptr<data_member> m);
 
@@ -1959,6 +2533,9 @@ public:
   get_data_members() const
   { return m_data_members; }
 
+  /// Add a member function to the current instance of class_decl.
+  ///
+  /// @param m the member function to add.
   void
   add_member_function(shared_ptr<member_function> m);
 
@@ -1966,6 +2543,9 @@ public:
   get_member_functions() const
   { return m_member_functions; }
 
+  /// Append a member function template to the class.
+  ///
+  /// @param m the member function template to append.
   void
   add_member_function_template(shared_ptr<member_function_template>);
 
@@ -1973,22 +2553,30 @@ public:
   get_member_function_templates() const
   { return m_member_function_templates; }
 
+  /// Append a member class template to the class.
+  ///
+  /// @param m the member function template to append.
   void
-  add_member_class_template(shared_ptr<member_class_template>);
+  add_member_class_template(shared_ptr<member_class_template> m);
 
   const member_class_templates_type&
   get_member_class_templates() const
 
   { return m_member_class_templates; }
 
+  /// Return true iff the class has no entity in its scope.
   bool
   has_no_base_nor_member() const;
 
   virtual bool
   operator==(const class_decl&) const;
 
+  /// This implements the traversable::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance and on its members.
   void
-  traverse(ir_node_visitor&);
+  traverse(ir_node_visitor& v);
 
   virtual ~class_decl();
 };
@@ -2004,10 +2592,10 @@ struct class_decl_hash
 ///
 /// Client code willing to get notified for a certain kind of node
 /// during the IR traversal might want to define a visitor class that
-/// inherit #ir_node_visitor, overload the ir_node_visitor::visit
+/// inherit ir_node_visitor, overload the ir_node_visitor::visit
 /// method of its choice, and provide and implementation for it.  That
 /// new visitor class would then be passed to e.g,
-/// translation_unit::traverse or to the #traverse method of any type
+/// translation_unit::traverse or to the traverse method of any type
 /// where the traversal is supposed to start from.
 struct ir_node_visitor
 {

@@ -36,6 +36,25 @@
 /// Toplevel namespace for libabigail.
 namespace abigail
 {
+  /**
+     @mainpage libabigail 
+     
+     aka
+     GNU Application Binary Interface 
+     Generic Analysis and Instrumentation Library
+
+     This is an interface to the GNU Compiler Collection for the
+     collection and analysis of compiler-generated binaries.
+
+     The project homepage is at https://sourceware.org/libabigail
+     
+     The current libabigail source code can be checked out with:
+     git clone git://git.sourceware.org/git/libabigail
+
+     The mailing list to send messages and patches to is
+     libabigail@sourceware.org.
+  */
+
   // Inject some types.
   using std::tr1::shared_ptr;
   using std::tr1::hash;
@@ -45,13 +64,11 @@ namespace abigail
   using namespace std::rel_ops;
 
   // Forward class declarations.
-  class base_spec;
   class class_decl;
   class class_template_decl;
-  class data_member;
   class decl_base;
-  class enumerator;
   class enum_type_decl;
+  //class enumerator;
   class function_decl;
   class function_template_decl;
   class function_type;
@@ -59,12 +76,6 @@ namespace abigail
   class ir_node_visitor;
   class location;
   class location_manager;
-  class member;
-  class member_class_template;
-  class member_function;
-  class member_function_template;
-  class member_type;
-  class method_decl;
   class method_type;
   class namespace_decl;
   class parameter;
@@ -86,11 +97,10 @@ namespace abigail
   class var_decl;
 
   // Forward struct declarations.
-  struct base_spec_hash;
   struct class_decl_hash;
   struct class_template_decl_hash;
   struct class_tmpl_shared_ptr_hash;
-  struct data_member_hash;
+
   struct decl_base_hash;
   struct dynamic_template_parameter_hash;
   struct dynamic_type_hash;
@@ -99,11 +109,6 @@ namespace abigail
   struct function_decl_hash;
   struct function_template_decl_hash;
   struct function_type_hash;
-  struct member_class_template_hash;
-  struct member_function_hash;
-  struct member_function_template_hash;
-  struct member_hash;
-  struct member_type_hash;
   struct parameter_hash;
   struct pointer_type_def_hash;
   struct qualified_type_def_hash;
@@ -125,6 +130,26 @@ namespace abigail
 
   struct traversable;
 
+  /*
+    Nested types in class_decl:
+
+    class member;
+    struct member_hash;
+    class member_type;
+    struct member_type_hash;
+    class base_spec;
+    struct base_spec_hash;
+    class data_member;
+    struct data_member_hash;
+    class method_decl;
+    class member_function;
+    struct member_function_hash;
+    class member_function_template;
+    struct member_function_template_hash;
+    class member_class_template;
+    struct member_class_template_hash;
+  */
+
   void
   add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
 
@@ -137,34 +162,127 @@ namespace abigail
   translation_unit*
   get_translation_unit(const shared_ptr<decl_base>);
   
+  /// Tests whether if a given scope is the global scope.
+  ///
+  /// @param scpe the scope to consider.
+  ///
+  /// @return true iff the current scope is the global one.
   bool
-  is_global_scope(const scope_decl*);
+  is_global_scope(const scope_decl* scpe);
 
+  /// Tests whether if a given scope is the global scope.
+  ///
+  /// @param scpe the scope to consider.
+  ///
+  /// @return true iff the current scope is the global one.
   bool
-  is_global_scope(const shared_ptr<scope_decl>);
+  is_global_scope(const shared_ptr<scope_decl> scpe);
 
+  /// Tests whether a given declaration is at global scope.
+  ///
+  /// @param dcl the decl to consider.
+  ///
+  /// @return true iff dcl is at global scope.
   bool
-  is_at_global_scope(const shared_ptr<decl_base>);
+  is_at_global_scope(const shared_ptr<decl_base> dcl);
 
+  /// Tests whether a given decl is at class scope.
+  ///
+  /// @param dcl the decl to consider.
+  ///
+  /// @return true iff dcl is at class scope.
   bool
-  is_at_class_scope(const shared_ptr<decl_base>);
+  is_at_class_scope(const shared_ptr<decl_base> dcl);
 
+  /// Tests whether a given decl is at template scope.
+  ///
+  /// Note that only template parameters , types that are compositions,
+  /// and template patterns (function or class) can be at template scope.
+  ///
+  /// @param dcl the decl to consider.
+  ///
+  /// @return true iff the dcl is at template scope.
   bool
-  is_at_template_scope(const shared_ptr<decl_base>);
+  is_at_template_scope(const shared_ptr<decl_base> dcl);
 
+  /// Tests whether a decl is a template parameter.
+  ///
+  /// @param dcl the decl to consider.
+  ///
+  /// @return true iff decl is a template parameter.
   bool
-  is_template_parameter(const shared_ptr<decl_base>);
+  is_template_parameter(const shared_ptr<decl_base> dcl);
 
+  /// Tests whether a declaration is a type.
+  ///
+  /// @param decl the decl to consider.
+  ///
+  /// @return true iff decl is a type.
   bool
-  is_type(const shared_ptr<decl_base>);
+  is_type(const shared_ptr<decl_base> decl);
 
+  /// Tests whether a decl is a template parameter composition type.
+  ///
+  /// @param dcl the declaration to consider.
+  ///
+  /// @return true iff dcl is a template parameter composition type.
   bool
-  is_template_parm_composition_type(const shared_ptr<decl_base>);
+  is_template_parm_composition_type(const shared_ptr<decl_base> dcl);
 
+  /// Tests whether a decl is a template.
+  ///
+  /// @param dcl the decl to consider.
+  ///
+  /// @return true iff dcl is a function template, class template, or
+  /// template template parameter.
   bool
-  is_template_decl(const shared_ptr<decl_base>);
+  is_template_decl(const shared_ptr<decl_base> dcl);
 
+  /// Test whether a decl is the pattern of a function template.
+  ///
+  /// @param dcl the decl to consider.
+  ///
+  /// @return true iff dcl is the pattern of a function template.
   bool
-  is_function_template_pattern(const shared_ptr<decl_base>);
+  is_function_template_pattern(const shared_ptr<decl_base> dcl);
+
+
+  /// Appends a declaration to a given scope, if the declaration
+  /// doesn't already belong to one.
+  ///
+  /// @param dcl the declaration to add to the scope
+  ///
+  /// @param scpe the scope to append the declaration to
+  void
+  add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
+
+  /// Appends a declaration to a given scope, if the declaration doesn't already
+  /// belong to a scope.
+  ///
+  /// @param dcl the declaration to add append to the scope
+  ///
+  /// @param scpe the scope to append the dcl to
+  void
+  add_decl_to_scope(shared_ptr<decl_base> dcl, shared_ptr<scope_decl> scpe);
+
+  /// Return the global scope as seen by a given declaration.
+  ///
+  /// @param dcl the declaration to consider.
+  ///
+  /// @return the global scope of the decl, or a null pointer if the
+  /// decl is not yet added to a translation_unit.
+  global_scope*
+  get_global_scope(const shared_ptr<decl_base> dcl);
+
+  /// Return the translation unit a declaration belongs to.
+  ///
+  /// @param dcl the declaration to consider.
+  ///
+  /// @return the resulting translation unit, or null if the decl is not
+  /// yet added to a translation unit.
+  translation_unit*
+  get_translation_unit(const shared_ptr<decl_base> dcl);
+
+
 } // end namespace abigail
 #endif // __ABG_IRFWD_H__

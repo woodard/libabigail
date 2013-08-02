@@ -73,8 +73,15 @@ public:
 
 extern "C"
 {
+  /// Return the relevant version numbers of the library.
+  ///
+  /// \param maj the major version number of the library.
+  ///
+  /// \param min the minor version number of the library.
+  ///
+  /// \param rev the revision version number of the library.
   void
-  abigail_get_library_version(int& major, int& minor, int& revision);
+  abigail_get_library_version(int& maj, int& min, int& rev);
 }
 
 }//end namespace abigail

@@ -98,12 +98,12 @@ public:
   }
 
   /// Return the type that is identified by a unique ID.  Note that
-  /// for a type to be "identified" by #id, the function key_type_decl
-  /// must have been previously called with that type and with #id.
+  /// for a type to be "identified" by id, the function key_type_decl
+  /// must have been previously called with that type and with id.
   ///
   /// @param id the unique id to consider.
   ///
-  /// @return the type identified by the unique id #id, or a null
+  /// @return the type identified by the unique id id, or a null
   /// pointer if no type has ever been associated with id before.
   shared_ptr<type_base>
   get_type_decl(const string& id) const
@@ -116,15 +116,15 @@ public:
 
   /// Return the function template that is identified by a unique ID.
   ///
-  /// Note that for a function template to be identified by #id, the
+  /// Note that for a function template to be identified by id, the
   /// function key_fn_tmpl_decl must have been previously called with
-  /// that function template and with #id.
+  /// that function template and with id.
   ///
   /// @param id the ID to consider.
   ///
-  /// @return the function template identified by #id, or a null
+  /// @return the function template identified by id, or a null
   /// pointer if no function template has ever been associated with
-  /// #id before.
+  /// id before.
   shared_ptr<function_template_decl>
   get_fn_tmpl_decl(const string& id) const
   {
@@ -136,14 +136,14 @@ public:
 
   /// Return the class template that is identified by a unique ID.
   ///
-  /// Note that for a class template to be identified by #id, the
+  /// Note that for a class template to be identified by id, the
   /// function key_class_tmpl_decl must have been previously called
-  /// with that class template and with #id.
+  /// with that class template and with id.
   ///
   /// @param id the ID to consider.
   ///
-  /// @return the class template identified by #id, or a null pointer
-  /// if no class template has ever been associated with #id before.
+  /// @return the class template identified by id, or a null pointer
+  /// if no class template has ever been associated with id before.
   shared_ptr<class_template_decl>
   get_class_tmpl_decl(const string& id) const
   {
@@ -217,7 +217,7 @@ public:
   ///
   /// @param type the type to associate witht he ID.
   ///
-  /// @param the ID to associate to the type.
+  /// @param id the ID to associate to the type.
   ///
   /// @return true upon successful completion, false otherwise.  Note
   /// that this returns false if the was already associate to an ID
@@ -236,21 +236,21 @@ public:
     return true;
   }
 
-    /// Associate an ID with a type.
+  /// Associate an ID with a type.
   ///
   /// If ID is an id for an existing type, this function replaces the
   /// exising type with the new DEFINITION type passe in argument.
   ///
-  /// @param type the type to associate witht he ID.
+  /// @param definition the type to associate witht he ID.
   ///
-  /// @param the ID to associate to the type.
+  /// @param id the ID to associate to the type.
   ///
   /// @return true upon successful completion, false otherwise.  Note
   /// that this returns false if the was already associate to an ID
   /// before.
   bool
-  key_replacement_of_type_decl(shared_ptr<type_base>	definition,
-			       const string&		id)
+  key_replacement_of_type_decl(shared_ptr<type_base> definition,
+			       const string& id)
   {
     const_types_map_it i = m_types_map.find(id);
     if (i != m_types_map.end())
@@ -270,8 +270,8 @@ public:
   /// that the function returns false if an ID was previously
   /// associated to the function template.
   bool
-  key_fn_tmpl_decl(shared_ptr<function_template_decl>	fn_tmpl_decl,
-		   const string&			id)
+  key_fn_tmpl_decl(shared_ptr<function_template_decl> fn_tmpl_decl,
+		   const string& id)
   {
     assert(fn_tmpl_decl);
 
@@ -293,8 +293,8 @@ public:
   /// that the function returns false if an ID was previously
   /// associated to the class template.
   bool
-  key_class_tmpl_decl(shared_ptr<class_template_decl>	class_tmpl_decl,
-		      const string&			id)
+  key_class_tmpl_decl(shared_ptr<class_template_decl> class_tmpl_decl,
+		      const string& id)
   {
     assert(class_tmpl_decl);
 
@@ -306,13 +306,13 @@ public:
     return true;
   }
 
-  /// This function must be called on each decl that is created during
-  /// the parsing.  It adds the decl to the current scope, and updates
+  /// This function must be called on each declaration that is created during
+  /// the parsing.  It adds the declaration to the current scope, and updates
   /// the state of the parsing context accordingly.
   ///
-  /// @param decl the newly created decl.
+  /// @param decl the newly created declaration.
   void
-  push_decl_to_current_scope(shared_ptr<decl_base>	decl)
+  push_decl_to_current_scope(shared_ptr<decl_base> decl)
   {
     assert(decl);
 
@@ -324,7 +324,9 @@ public:
   /// the parsing.  It adds the decl to the current scope, and updates
   /// the state of the parsing context accordingly.
   ///
-  /// @param the xml node from which the decl has been created if any.
+  /// @param decl the newly created decl.
+  ///
+  /// @param node the xml node from which the decl has been created if any.
   ///
   /// @param update_depth_info should be set to true if the function
   /// should update the depth information maintained in the parsing
@@ -332,12 +334,9 @@ public:
   /// advence_cursor then this should be set to false, because that
   /// function updates the depth information maintained in the parsing
   /// context already.
-  ///
-  /// @param decl the newly created decl.
  void
- push_decl_to_current_scope(shared_ptr<decl_base>	decl,
-			    xmlNodePtr			node,
-			    bool			update_depth_info)
+ push_decl_to_current_scope(shared_ptr<decl_base> decl,
+			    xmlNodePtr node, bool update_depth_info)
   {
     assert(decl);
 
@@ -351,15 +350,14 @@ public:
   /// during the parsing.  It adds the type decl to the current scope
   /// and associates a unique ID to it.
   ///
-  /// @param decl the newly created decl
+  /// @param t type_decl
   ///
-  /// @param id the unique ID to be associated to #t
+  /// @param id the unique ID to be associated to t
   ///
   /// @return true upon successful completion.
   ///
   bool
-  push_and_key_type_decl(shared_ptr<type_base>	t,
-			 const string&		id)
+  push_and_key_type_decl(shared_ptr<type_base> t, const string& id)
   {
     shared_ptr<decl_base> decl = dynamic_pointer_cast<decl_base>(t);
     if (!decl)
@@ -376,20 +374,18 @@ public:
   ///
   /// @param t the type decl to consider.
   ///
-  /// @param the ID to associate to it.
+  /// @param id the ID to associate to it.
   ///
-  /// @param node the xml elment node that #t was constructed from.
+  /// @param node the xml elment node that t was constructed from.
   ///
-  /// @param update_read_context should be set to true if this
+  /// @param update_depth_info should be set to true if this
   /// function should update the depth information maintained in the
   /// parsing context.
   ///
   /// @return true upon successful completion, false otherwise.
   bool
-  push_and_key_type_decl(shared_ptr<type_base>	t,
-			 const string&		id,
-			 xmlNodePtr		node,
-			 bool			update_depth_info)
+  push_and_key_type_decl(shared_ptr<type_base>	t, const string& id,
+			 xmlNodePtr node, bool update_depth_info)
   {
     if (update_depth_info)
       update_read_context(*this, node);
@@ -405,7 +401,7 @@ private:
   unordered_map<string, shared_ptr<class_template_decl> > m_class_tmpl_map;
   xml::reader_sptr m_reader;
   stack<shared_ptr<decl_base> > m_decls_stack;
-};//end class read_context
+};
 
 static int	advance_cursor(read_context&);
 static bool	read_input(read_context&, translation_unit&);
@@ -796,8 +792,6 @@ read_visibility(xmlNodePtr node, decl_base::visibility& vis)
 
 /// Parse the "binding" attribute on the current element.
 ///
-/// @param ctxt the context to use for the parsing.
-///
 /// @param node the xml node to build parse the bind from.
 ///
 /// @param bind the resulting binding attribute.
@@ -828,7 +822,7 @@ read_binding(xmlNodePtr node, decl_base::binding& bind)
 ///
 /// @param node the xml node to consider.
 ///
-/// @param the access attribute.  Set iff the function returns true.
+/// @param access the access attribute.  Set iff the function returns true.
 ///
 /// @return true upon sucessful completion, false otherwise.
 static bool
@@ -947,7 +941,7 @@ read_offset_in_bits(xmlNodePtr	node,
 /// otherwise.
 ///
 /// Note that callers of this function should initialize
-/// #is_constructor, is_destructor and is_const prior to passing them
+/// is_constructor, is_destructor and is_const prior to passing them
 /// to this function.
 static bool
 read_cdtor_const(xmlNodePtr	node,
@@ -995,7 +989,7 @@ read_cdtor_const(xmlNodePtr	node,
 ///
 /// @param node the xml node to consider.
 ///
-/// @param bool is set to true iff the "is-declaration-only" attribute
+/// @param is_decl_only is set to true iff the "is-declaration-only" attribute
 /// is present and set to "yes"
 ///
 /// @return true iff the is_decl_only attribute was set.
@@ -1224,7 +1218,7 @@ build_var_decl(read_context& ctxt, const xmlNodePtr node,
 
 /// Build a type_decl from a "type-decl" XML Node.
 ///
-/// @param cxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
 /// @param node the XML node to build the type_decl from.
 ///
@@ -1395,9 +1389,8 @@ build_pointer_type_def(read_context&	ctxt,
 /// @return a pointer to a newly built reference_type_def upon
 /// successful completio, a null pointer otherwise.
 static shared_ptr<reference_type_def>
-build_reference_type_def(read_context&		ctxt,
-			 const xmlNodePtr	node,
-			 bool update_depth_info)
+build_reference_type_def(read_context&	ctxt,
+			 const xmlNodePtr node, bool update_depth_info)
 {
   shared_ptr<reference_type_def> nil;
 
@@ -1452,8 +1445,7 @@ build_reference_type_def(read_context&		ctxt,
 /// @return a pointer to a newly built enum_type_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<enum_type_decl>
-build_enum_type_decl(read_context&	ctxt,
-		     const xmlNodePtr	node,
+build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
 		     bool update_depth_info)
 {
   shared_ptr<enum_type_decl> nil;
@@ -1817,7 +1809,7 @@ build_class_decl(read_context&		ctxt,
   return decl;
 }
 
-/// Build an intance of #function_template_decl, from an
+/// Build an intance of function_template_decl, from an
 /// 'function-template-decl' xml element node.
 ///
 /// @param ctxt the context of the parsing.
@@ -1890,7 +1882,7 @@ build_function_template_decl(read_context& ctxt,
   return fn_tmpl_decl;
 }
 
-/// Build an intance of #class_template_decl, from a
+/// Build an intance of class_template_decl, from a
 /// 'class-template-decl' xml element node.
 ///
 /// @param ctxt the context of the parsing.
@@ -2192,7 +2184,7 @@ build_template_template_parameter(read_context& ctxt,
 ///
 /// @param node the xml element node to parse from.
 ///
-/// @param the index of the template parameter we are parsing.
+/// @param index the index of the template parameter we are parsing.
 ///
 /// @return a pointer to a newly created instance of
 /// template_parameter upon successful completion, a null pointer
@@ -2590,7 +2582,7 @@ handle_class_decl(read_context& ctxt)
 
 /// Parse a 'function-template-decl' xml element.
 ///
-/// @param the parsing context.
+/// @param ctxt the parsing context.
 ///
 /// @return true upon successful completion of the parsing, false
 /// otherwise.

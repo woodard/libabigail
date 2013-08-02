@@ -25,8 +25,10 @@
 
 namespace abigail
 {
+/// Namespace for xml.
 namespace xml
 {
+
 using std::tr1::shared_ptr;
 
 /// This functor is used to instantiate a shared_ptr for the
@@ -46,26 +48,27 @@ struct charDeleter
 {
   void
   operator()(xmlChar* str)
-  {
-    xmlFree(str);
-  }
+  { xmlFree(str); }
 };
+
 typedef shared_ptr<xmlChar> xml_char_sptr;
 
 reader_sptr new_reader_from_file(const std::string& path);
-xml_char_sptr build_xml_char_sptr(xmlChar *);
+xml_char_sptr build_xml_char_sptr(xmlChar*);
 
-template<class T> shared_ptr<T> build_sptr(T* p);
+template<class T> 
+  shared_ptr<T> 
+  build_sptr(T*);
 
 /// Specialization of build_sptr for xmlTextReader
 template<>
-shared_ptr<xmlTextReader>
-build_sptr<xmlTextReader>(xmlTextReader *p);
+  shared_ptr<xmlTextReader>
+  build_sptr<xmlTextReader>(xmlTextReader *p);
 
 /// Specialization of build_str for xmlChar.
 template<>
-shared_ptr<xmlChar>
-build_sptr<xmlChar>(xmlChar *p);
+  shared_ptr<xmlChar>
+  build_sptr<xmlChar>(xmlChar *p);
 
 int get_xml_node_depth(xmlNodePtr);
 

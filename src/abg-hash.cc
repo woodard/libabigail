@@ -42,8 +42,6 @@ namespace hashing
   c -= a; c -= b; c = (c ^ (b>>15)) & 0xffffffff; \
 }
 
-/// Produce good hash value combining val1 and val2.  This is copied
-/// from tree.c in GCC.
 size_t
 combine_hashes(size_t val1, size_t val2)
 {

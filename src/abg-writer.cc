@@ -61,7 +61,7 @@ public:
   }
 
   /// Return a unique string representing a numerical ID, prefixed by
-  /// #prefix.
+  /// prefix.
   ///
   /// @param prefix the prefix of the returned unique id.
   string
@@ -115,7 +115,7 @@ public:
     return m_id_manager;
   }
 
-  /// @return true iff #type has already beend assigned an ID.
+  /// @return true iff type has already beend assigned an ID.
   bool
   type_has_existing_id(shared_ptr<type_base> type) const
   { return (m_type_id_map.find(type) != m_type_id_map.end());}
@@ -231,7 +231,7 @@ static void	do_indent(ostream&, unsigned);
 static void	do_indent_to_level(write_context&, unsigned, unsigned);
 static unsigned get_indent_to_level(write_context&, unsigned, unsigned);
 
-/// Emit #nb_whitespaces white spaces into the output stream #o.
+/// Emit nb_whitespaces white spaces into the output stream.
 void
 do_indent(ostream& o, unsigned nb_whitespaces)
 {
@@ -239,7 +239,7 @@ do_indent(ostream& o, unsigned nb_whitespaces)
     o << ' ';
 }
 
-/// Indent #initial_indent + level number of xml element indentation.
+/// Indent initial_indent + level number of xml element indentation.
 ///
 /// @param ctxt the context of the parsing.
 ///
@@ -247,9 +247,9 @@ do_indent(ostream& o, unsigned nb_whitespaces)
 ///
 /// @param level the number of indentation level to indent to.
 static void
-do_indent_to_level(write_context&	ctxt,
-		   unsigned		initial_indent,
-		   unsigned		level)
+do_indent_to_level(write_context& ctxt,
+		   unsigned initial_indent,
+		   unsigned level)
 {
   do_indent(ctxt.get_ostream(),
 	    get_indent_to_level(ctxt, initial_indent, level));
@@ -264,8 +264,7 @@ do_indent_to_level(write_context&	ctxt,
 ///
 /// @param level the number of indentation level to indent to.
 static unsigned
-get_indent_to_level(write_context& ctxt,
-		    unsigned initial_indent,
+get_indent_to_level(write_context& ctxt, unsigned initial_indent,
 		    unsigned level)
 {
     int nb_ws = initial_indent +
@@ -281,11 +280,9 @@ get_indent_to_level(write_context& ctxt,
 ///
 /// @return true upon successful completion, false otherwise.
 bool
-write_to_ostream(const translation_unit& tu,
-		 ostream &out)
+write_to_ostream(const translation_unit& tu, ostream &out)
 {
   write_context ctxt(out);
-
   return write_translation_unit(tu, ctxt, /*indent=*/0);
 }
 
@@ -299,9 +296,7 @@ write_to_ostream(const translation_unit& tu,
 ///
 /// @param o the output stream to write to.
 static void
-write_location(location		loc,
-	       translation_unit&	tu,
-	       ostream&		o)
+write_location(location	loc, translation_unit& tu, ostream&	o)
 {
   if (!loc)
     return;
@@ -354,8 +349,7 @@ write_location(const shared_ptr<decl_base>&	decl,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_visibility(const shared_ptr<decl_base>&	decl,
-		 ostream&			o)
+write_visibility(const shared_ptr<decl_base>&	decl, ostream& o)
 {
   if (!decl)
     return false;
@@ -395,8 +389,7 @@ write_visibility(const shared_ptr<decl_base>&	decl,
 ///
 /// @param o the output stream to serialize the property to.
 static bool
-write_binding(const shared_ptr<decl_base>&	decl,
-	      ostream&				o)
+write_binding(const shared_ptr<decl_base>& decl, ostream& o)
 {
   if (!decl)
     return false;
@@ -443,8 +436,7 @@ write_binding(const shared_ptr<decl_base>&	decl,
 ///
 /// @param o the output stream to serialize to.
 static void
-write_size_and_alignment(const shared_ptr<type_base> decl,
-			 ostream& o)
+write_size_and_alignment(const shared_ptr<type_base> decl, ostream& o)
 {
   size_t size_in_bits = decl->get_size_in_bits();
   if (size_in_bits)
@@ -514,8 +506,7 @@ write_layout_offset(shared_ptr<class_decl::base_spec> base, ostream& o)
 ///
 /// @param o the ostream to serialize the member to.
 static void
-write_access(shared_ptr<class_decl::member> member,
-	     ostream& o)
+write_access(shared_ptr<class_decl::member> member, ostream& o)
 {
   write_access(member->get_access_specifier(), o);
 }
@@ -534,8 +525,7 @@ write_access(shared_ptr<class_decl::member> member,
 ///
 /// @param o the output stream to use for the serialization.
 static void
-write_cdtor_const_static(bool is_ctor, bool is_dtor,
-			 bool is_static, ostream& o)
+write_cdtor_const_static(bool is_ctor, bool is_dtor, bool is_static, ostream& o)
 {
   if (is_static)
     o << " static='yes'";
@@ -552,8 +542,7 @@ write_cdtor_const_static(bool is_ctor, bool is_dtor,
 ///
 /// @param o the output stream to serialize to.
 static void
-write_class_is_declaration_only(const shared_ptr<class_decl> klass,
-				ostream& o)
+write_class_is_declaration_only(const shared_ptr<class_decl> klass, ostream& o)
 {
   if (klass->is_declaration_only())
     o << " is-declaration-only='yes'";
@@ -561,7 +550,7 @@ write_class_is_declaration_only(const shared_ptr<class_decl> klass,
 
 /// Serialize a pointer to an of decl_base into an output stream.
 ///
-/// @param decl, the pointer to decl_base to serialize
+/// @param decl the pointer to decl_base to serialize
 ///
 /// @param ctxt the context of the serialization.  It contains e.g, the
 /// output stream to serialize to.
@@ -571,9 +560,8 @@ write_class_is_declaration_only(const shared_ptr<class_decl> klass,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_decl(const shared_ptr<decl_base>	decl,
-	   write_context&		ctxt,
-	   unsigned			indent)
+write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
+	   unsigned indent)
 {
   if (write_type_decl(dynamic_pointer_cast<type_decl> (decl),
 		      ctxt, indent)
@@ -619,9 +607,8 @@ write_decl(const shared_ptr<decl_base>	decl,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_translation_unit(const translation_unit&	tu,
-		       write_context&		ctxt,
-		       unsigned		indent)
+write_translation_unit(const translation_unit& tu, write_context& ctxt,
+		       unsigned	indent)
 {
   ostream &o = ctxt.get_ostream();
   const config &c = ctxt.get_config();
@@ -745,9 +732,8 @@ write_namespace_decl(const shared_ptr<namespace_decl>	decl,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
-			 write_context&			ctxt,
-			 unsigned				indent)
+write_qualified_type_def(const shared_ptr<qualified_type_def> decl,
+			 write_context&	ctxt, unsigned indent)
 {
   if (!decl)
     return false;
@@ -786,9 +772,8 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
-		       write_context&				ctxt,
-		       unsigned				indent)
+write_pointer_type_def(const shared_ptr<pointer_type_def> decl,
+		       write_context& ctxt, unsigned indent)
 {
   if (!decl)
     return false;
@@ -821,9 +806,8 @@ write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_reference_type_def(const shared_ptr<reference_type_def>	decl,
-			 write_context&			ctxt,
-			 unsigned				indent)
+write_reference_type_def(const shared_ptr<reference_type_def> decl,
+			 write_context&	ctxt, unsigned indent)
 {
   if (!decl)
     return false;
@@ -861,9 +845,8 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
-		     write_context&			ctxt,
-		     unsigned				indent)
+write_enum_type_decl(const shared_ptr<enum_type_decl> decl,
+		     write_context& ctxt, unsigned indent)
 {
     if (!decl)
     return false;
@@ -911,9 +894,8 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_typedef_decl(const shared_ptr<typedef_decl>	decl,
-		   write_context&			ctxt,
-		   unsigned				indent)
+write_typedef_decl(const shared_ptr<typedef_decl> decl,
+		   write_context& ctxt, unsigned indent)
 {
   if (!decl)
     return false;
@@ -948,10 +930,8 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_var_decl(const shared_ptr<var_decl>	decl,
-	       write_context&			ctxt,
-	       bool write_mangled_name,
-	       unsigned			indent)
+write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
+	       bool write_mangled_name, unsigned indent)
 {
   if (!decl)
     return false;
@@ -994,10 +974,8 @@ write_var_decl(const shared_ptr<var_decl>	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_function_decl(const shared_ptr<function_decl>	decl,
-		    write_context&			ctxt,
-		    bool				skip_first_parm,
-		    unsigned				indent)
+write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
+		    bool skip_first_parm, unsigned indent)
 {
   if (!decl)
     return false;
@@ -1313,8 +1291,7 @@ write_template_non_type_parameter
 static bool
 write_template_template_parameter
 (const shared_ptr<template_template_parameter>	decl,
- write_context&				ctxt,
- unsigned					indent)
+ write_context&	ctxt, unsigned indent)
 {
   if (!decl)
     return false;
