@@ -101,9 +101,9 @@ public:
   /// for a type to be "identified" by #id, the function key_type_decl
   /// must have been previously called with that type and with #id.
   ///
-  /// \param id the unique id to consider.
+  /// @param id the unique id to consider.
   ///
-  /// \return the type identified by the unique id #id, or a null
+  /// @return the type identified by the unique id #id, or a null
   /// pointer if no type has ever been associated with id before.
   shared_ptr<type_base>
   get_type_decl(const string& id) const
@@ -120,9 +120,9 @@ public:
   /// function key_fn_tmpl_decl must have been previously called with
   /// that function template and with #id.
   ///
-  /// \param id the ID to consider.
+  /// @param id the ID to consider.
   ///
-  /// \return the function template identified by #id, or a null
+  /// @return the function template identified by #id, or a null
   /// pointer if no function template has ever been associated with
   /// #id before.
   shared_ptr<function_template_decl>
@@ -140,9 +140,9 @@ public:
   /// function key_class_tmpl_decl must have been previously called
   /// with that class template and with #id.
   ///
-  /// \param id the ID to consider.
+  /// @param id the ID to consider.
   ///
-  /// \return the class template identified by #id, or a null pointer
+  /// @return the class template identified by #id, or a null pointer
   /// if no class template has ever been associated with #id before.
   shared_ptr<class_template_decl>
   get_class_tmpl_decl(const string& id) const
@@ -215,11 +215,11 @@ public:
 
   /// Associate an ID with a type.
   ///
-  /// \param type the type to associate witht he ID.
+  /// @param type the type to associate witht he ID.
   ///
-  /// \param the ID to associate to the type.
+  /// @param the ID to associate to the type.
   ///
-  /// \return true upon successful completion, false otherwise.  Note
+  /// @return true upon successful completion, false otherwise.  Note
   /// that this returns false if the was already associate to an ID
   /// before.
   bool
@@ -241,11 +241,11 @@ public:
   /// If ID is an id for an existing type, this function replaces the
   /// exising type with the new DEFINITION type passe in argument.
   ///
-  /// \param type the type to associate witht he ID.
+  /// @param type the type to associate witht he ID.
   ///
-  /// \param the ID to associate to the type.
+  /// @param the ID to associate to the type.
   ///
-  /// \return true upon successful completion, false otherwise.  Note
+  /// @return true upon successful completion, false otherwise.  Note
   /// that this returns false if the was already associate to an ID
   /// before.
   bool
@@ -262,11 +262,11 @@ public:
 
   /// Associate an ID to a function template.
   ///
-  /// \param fn_tmpl_decl the function template to consider.
+  /// @param fn_tmpl_decl the function template to consider.
   ///
-  /// \param id the ID to associate to the function template.
+  /// @param id the ID to associate to the function template.
   ///
-  /// \return true upon successful completion, false otherwise.  Note
+  /// @return true upon successful completion, false otherwise.  Note
   /// that the function returns false if an ID was previously
   /// associated to the function template.
   bool
@@ -285,11 +285,11 @@ public:
 
     /// Associate an ID to a class template.
   ///
-  /// \param class_tmpl_decl the class template to consider.
+  /// @param class_tmpl_decl the class template to consider.
   ///
-  /// \param id the ID to associate to the class template.
+  /// @param id the ID to associate to the class template.
   ///
-  /// \return true upon successful completion, false otherwise.  Note
+  /// @return true upon successful completion, false otherwise.  Note
   /// that the function returns false if an ID was previously
   /// associated to the class template.
   bool
@@ -310,7 +310,7 @@ public:
   /// the parsing.  It adds the decl to the current scope, and updates
   /// the state of the parsing context accordingly.
   ///
-  /// \param decl the newly created decl.
+  /// @param decl the newly created decl.
   void
   push_decl_to_current_scope(shared_ptr<decl_base>	decl)
   {
@@ -324,16 +324,16 @@ public:
   /// the parsing.  It adds the decl to the current scope, and updates
   /// the state of the parsing context accordingly.
   ///
-  /// \param the xml node from which the decl has been created if any.
+  /// @param the xml node from which the decl has been created if any.
   ///
-  /// \param update_depth_info should be set to true if the function
+  /// @param update_depth_info should be set to true if the function
   /// should update the depth information maintained in the parsing
   /// context.  If the xml element node has been 'hit' by the
   /// advence_cursor then this should be set to false, because that
   /// function updates the depth information maintained in the parsing
   /// context already.
   ///
-  /// \param decl the newly created decl.
+  /// @param decl the newly created decl.
  void
  push_decl_to_current_scope(shared_ptr<decl_base>	decl,
 			    xmlNodePtr			node,
@@ -351,11 +351,11 @@ public:
   /// during the parsing.  It adds the type decl to the current scope
   /// and associates a unique ID to it.
   ///
-  /// \param decl the newly created decl
+  /// @param decl the newly created decl
   ///
-  /// \param id the unique ID to be associated to #t
+  /// @param id the unique ID to be associated to #t
   ///
-  /// \return true upon successful completion.
+  /// @return true upon successful completion.
   ///
   bool
   push_and_key_type_decl(shared_ptr<type_base>	t,
@@ -374,17 +374,17 @@ public:
   /// during the parsing.  It adds the type decl to the current scope
   /// and associates a unique ID to it.
   ///
-  /// \param t the type decl to consider.
+  /// @param t the type decl to consider.
   ///
-  /// \param the ID to associate to it.
+  /// @param the ID to associate to it.
   ///
-  /// \param node the xml elment node that #t was constructed from.
+  /// @param node the xml elment node that #t was constructed from.
   ///
-  /// \param update_read_context should be set to true if this
+  /// @param update_read_context should be set to true if this
   /// function should update the depth information maintained in the
   /// parsing context.
   ///
-  /// \return true upon successful completion, false otherwise.
+  /// @return true upon successful completion, false otherwise.
   bool
   push_and_key_type_decl(shared_ptr<type_base>	t,
 			 const string&		id,
@@ -503,7 +503,7 @@ read_file(const string&	file_path,
 /// to know the current scope.  This function needs to be called after
 /// each call to xmlTextReaderRead.
 ///
-/// \param ctxt the context to update.
+/// @param ctxt the context to update.
 static void
 update_read_context(read_context& ctxt)
 {
@@ -581,7 +581,7 @@ update_depth_info_of_read_context(read_context& ctxt, int new_depth)
 /// document.  Return 1 of the parsing was successful, 0 if no input
 /// xml token is left, or -1 in case of error.
 ///
-/// \param ctxt the read context
+/// @param ctxt the read context
 ///
 static int
 advance_cursor(read_context& ctxt)
@@ -596,11 +596,11 @@ advance_cursor(read_context& ctxt)
 
 /// Parse the input xml document associated to the current context.
 ///
-/// \param ctxt the current input context
+/// @param ctxt the current input context
 ///
-/// \param tu the translation unit resulting from the parsing.
+/// @param tu the translation unit resulting from the parsing.
 ///
-/// \return true upon successful parsing, false otherwise.
+/// @return true upon successful parsing, false otherwise.
 static bool
 read_input(read_context&	ctxt,
 	   translation_unit&	tu)
@@ -649,9 +649,9 @@ read_input(read_context&	ctxt,
 /// "handling" is to build the representation of the xml node and tied
 /// it to the current translation unit.
 ///
-/// \param ctxt the current parsing context.
+/// @param ctxt the current parsing context.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 handle_element(read_context&	ctxt)
 {
@@ -701,11 +701,11 @@ handle_element(read_context&	ctxt)
 
 /// Parses location attributes on the current xml element node.
 ///
-///\param ctxt the current parsing context
+///@param ctxt the current parsing context
 ///
-///\param loc the resulting location.
+///@param loc the resulting location.
 ///
-/// \return true upon sucessful parsing, false otherwise.
+/// @return true upon sucessful parsing, false otherwise.
 static bool
 read_location(read_context& ctxt, location& loc)
 {
@@ -733,11 +733,11 @@ read_location(read_context& ctxt, location& loc)
 
 /// Parses location attributes on an xmlNodePtr.
 ///
-///\param ctxt the current parsing context
+///@param ctxt the current parsing context
 ///
-///\param loc the resulting location.
+///@param loc the resulting location.
 ///
-/// \return true upon sucessful parsing, false otherwise.
+/// @return true upon sucessful parsing, false otherwise.
 static bool
 read_location(read_context&	ctxt,
 	      xmlNodePtr	node,
@@ -767,11 +767,11 @@ read_location(read_context&	ctxt,
 
 /// Parse the visibility attribute.
 ///
-/// \param node the xml node to read from.
+/// @param node the xml node to read from.
 ///
-/// \param vis the resulting visibility.
+/// @param vis the resulting visibility.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 read_visibility(xmlNodePtr node, decl_base::visibility& vis)
 {
@@ -796,13 +796,13 @@ read_visibility(xmlNodePtr node, decl_base::visibility& vis)
 
 /// Parse the "binding" attribute on the current element.
 ///
-/// \param ctxt the context to use for the parsing.
+/// @param ctxt the context to use for the parsing.
 ///
-/// \param node the xml node to build parse the bind from.
+/// @param node the xml node to build parse the bind from.
 ///
-/// \param bind the resulting binding attribute.
+/// @param bind the resulting binding attribute.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 read_binding(xmlNodePtr node, decl_base::binding& bind)
 {
@@ -826,11 +826,11 @@ read_binding(xmlNodePtr node, decl_base::binding& bind)
 
 /// Read the 'access' attribute on the current xml node.
 ///
-/// \param node the xml node to consider.
+/// @param node the xml node to consider.
 ///
-/// \param the access attribute.  Set iff the function returns true.
+/// @param the access attribute.  Set iff the function returns true.
 ///
-/// \return true upon sucessful completion, false otherwise.
+/// @return true upon sucessful completion, false otherwise.
 static bool
 read_access(xmlNodePtr node, class_decl::access_specifier& access)
 {
@@ -855,18 +855,18 @@ read_access(xmlNodePtr node, class_decl::access_specifier& access)
 /// Parse 'size-in-bits' and 'alignment-in-bits' attributes of a given
 /// xmlNodePtr reprensting an xml element.
 ///
-/// \param node the xml element node to consider.
+/// @param node the xml element node to consider.
 ///
-/// \param size_in_bits the resulting value for the 'size-in-bits'
+/// @param size_in_bits the resulting value for the 'size-in-bits'
 /// attribute.  This set only if this function returns true and the if
 /// the attribute was present on the xml element node.
 ///
-/// \param align_in_bits the resulting value for the
+/// @param align_in_bits the resulting value for the
 /// 'alignment-in-bits' attribute.  This set only if this function
 /// returns true and the if the attribute was present on the xml
 /// element node.
 ///
-/// \return true if either one of the two attributes above were set,
+/// @return true if either one of the two attributes above were set,
 /// false otherwise.
 static bool
 read_size_and_alignment(xmlNodePtr node,
@@ -891,12 +891,12 @@ read_size_and_alignment(xmlNodePtr node,
 
 /// Parse the 'static' attribute of a given xml element node.
 ///
-/// \param node the xml element node to consider.
+/// @param node the xml element node to consider.
 ///
-/// \param is_static the resulting the parsing.  Is set if the
+/// @param is_static the resulting the parsing.  Is set if the
 /// function returns true.
 ///
-/// \return true if the xml element node has the 'static' attribute
+/// @return true if the xml element node has the 'static' attribute
 /// set, false otherwise.
 static bool
 read_static(xmlNodePtr node, bool& is_static)
@@ -912,10 +912,10 @@ read_static(xmlNodePtr node, bool& is_static)
 
 /// Parse the 'layout-offset-in-bits' attribute of a given xml element node.
 ///
-/// \param offset_in_bits set to true if the element node contains the
+/// @param offset_in_bits set to true if the element node contains the
 /// attribute.
 ///
-/// \return true iff the xml element node contain$s the attribute.
+/// @return true iff the xml element node contain$s the attribute.
 static bool
 read_offset_in_bits(xmlNodePtr	node,
 		    size_t&	offset_in_bits)
@@ -931,19 +931,19 @@ read_offset_in_bits(xmlNodePtr	node,
 /// Parse the 'constructor', 'destructor' and 'const' attribute of a
 /// given xml node.
 ///
-/// \param is_constructor the resulting value of the parsing of the
+/// @param is_constructor the resulting value of the parsing of the
 /// 'constructor' attribute.  Is set if the xml node contains the
 /// attribute and if the function returns true.
 ///
-/// \param is_destructor the resulting value of the parsing of the
+/// @param is_destructor the resulting value of the parsing of the
 /// 'destructor' attribute.  Is set if the xml node contains the
 /// attribute and if the function returns true.
 ///
-/// \param is_const the resulting value of the parsing of the 'const'
+/// @param is_const the resulting value of the parsing of the 'const'
 /// attribute.  Is set if the xml node contains the attribute and if
 /// the function returns true.
 ///
-/// \return true if at least of the attributes above is set, false
+/// @return true if at least of the attributes above is set, false
 /// otherwise.
 ///
 /// Note that callers of this function should initialize
@@ -993,12 +993,12 @@ read_cdtor_const(xmlNodePtr	node,
 
 /// Read the "is-declaration-only" attribute of the current xml node.
 ///
-/// \param node the xml node to consider.
+/// @param node the xml node to consider.
 ///
-/// \param bool is set to true iff the "is-declaration-only" attribute
+/// @param bool is set to true iff the "is-declaration-only" attribute
 /// is present and set to "yes"
 ///
-/// \return true iff the is_decl_only attribute was set.
+/// @return true iff the is_decl_only attribute was set.
 static bool
 read_is_declaration_only(xmlNodePtr node, bool& is_decl_only)
 {
@@ -1016,12 +1016,12 @@ read_is_declaration_only(xmlNodePtr node, bool& is_decl_only)
 
 /// Read the "is-virtual" attribute of the current xml node.
 ///
-/// \param node the xml node to read the attribute from
+/// @param node the xml node to read the attribute from
 ///
-/// \param is_virtual is set to true iff the "is-virtual" attribute is
+/// @param is_virtual is set to true iff the "is-virtual" attribute is
 /// present and set to "yes".
 ///
-/// \return true iff the is-virtual attribute is present.
+/// @return true iff the is-virtual attribute is present.
 static bool
 read_is_virtual(xmlNodePtr node, bool& is_virtual)
 {
@@ -1039,9 +1039,9 @@ read_is_virtual(xmlNodePtr node, bool& is_virtual)
 
 /// Build a function parameter from a 'parameter' xml element node.
 ///
-/// \param ctxt the contexte of the xml parsing.
+/// @param ctxt the contexte of the xml parsing.
 ///
-/// \param node the xml 'parameter' element node to de-serialize from.
+/// @param node the xml 'parameter' element node to de-serialize from.
 static shared_ptr<function_decl::parameter>
 build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 {
@@ -1073,25 +1073,25 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 
 /// Build a function_decl from a 'function-decl' xml node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the function_decl from.
+/// @param node the xml node to build the function_decl from.
 ///
-/// \param as_method_decl if this is set to a class_decl pointer, it
+/// @param as_method_decl if this is set to a class_decl pointer, it
 /// means that the 'function-decl' xml node should be parsed as a
 /// method_decl.  The class_decl pointer is the class decl to which
 /// the resulting method_decl is a member function of.  The resulting
 /// shared_ptr<function_decl> that is returned is then really a
 /// shared_ptr<class_decl::method_decl>.
 ///
-/// \param update_depth_info should be set to true if the function
+/// @param update_depth_info should be set to true if the function
 /// should update the depth information maintained in the parsing
 /// context.  If the xml element node has been 'hit' by the
 /// advence_cursor then this should be set to false, because that
 /// function updates the depth information maintained in the parsing
 /// context already.
 ///
-/// \return a pointer to a newly created function_decl upon successful
+/// @return a pointer to a newly created function_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<function_decl>
 build_function_decl(read_context&	ctxt,
@@ -1174,11 +1174,11 @@ build_function_decl(read_context&	ctxt,
 
 /// Build pointer to var_decl from a 'var-decl' xml Node
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the var_decl from.
+/// @param node the xml node to build the var_decl from.
 ///
-/// \return a pointer to a newly built var_decl upon successful
+/// @return a pointer to a newly built var_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<var_decl>
 build_var_decl(read_context& ctxt, const xmlNodePtr node,
@@ -1224,11 +1224,11 @@ build_var_decl(read_context& ctxt, const xmlNodePtr node,
 
 /// Build a type_decl from a "type-decl" XML Node.
 ///
-/// \param cxt the context of the parsing.
+/// @param cxt the context of the parsing.
 ///
-/// \param node the XML node to build the type_decl from.
+/// @param node the XML node to build the type_decl from.
 ///
-/// \return a pointer to type_decl upon successful completion, a null
+/// @return a pointer to type_decl upon successful completion, a null
 /// pointer otherwise.
 static shared_ptr<type_decl>
 build_type_decl(read_context&		ctxt,
@@ -1275,11 +1275,11 @@ build_type_decl(read_context&		ctxt,
 
 /// Build a qualified_type_def from a 'qualified-type-def' xml node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the qualified_type_def from.
+/// @param node the xml node to build the qualified_type_def from.
 ///
-/// \return a pointer to a newly built qualified_type_def upon
+/// @return a pointer to a newly built qualified_type_def upon
 /// successful completion, a null pointer otherwise.
 static shared_ptr<qualified_type_def>
 build_qualified_type_decl(read_context& ctxt,
@@ -1335,11 +1335,11 @@ build_qualified_type_decl(read_context& ctxt,
 
 /// Build a pointer_type_def from a 'pointer-type-def' xml node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the pointer_type_def from.
+/// @param node the xml node to build the pointer_type_def from.
 ///
-/// \return a pointer to a newly built pointer_type_def upon
+/// @return a pointer to a newly built pointer_type_def upon
 /// successful completion, a null pointer otherwise.
 static shared_ptr<pointer_type_def>
 build_pointer_type_def(read_context&	ctxt,
@@ -1388,11 +1388,11 @@ build_pointer_type_def(read_context&	ctxt,
 /// Build a reference_type_def from a pointer to 'reference-type-def'
 /// xml node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the reference_type_def from.
+/// @param node the xml node to build the reference_type_def from.
 ///
-/// \return a pointer to a newly built reference_type_def upon
+/// @return a pointer to a newly built reference_type_def upon
 /// successful completio, a null pointer otherwise.
 static shared_ptr<reference_type_def>
 build_reference_type_def(read_context&		ctxt,
@@ -1445,11 +1445,11 @@ build_reference_type_def(read_context&		ctxt,
 
 /// Build an enum_type_decl from an 'enum-type-decl' xml node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the enum_type_decl from.
+/// @param node the xml node to build the enum_type_decl from.
 ///
-/// \return a pointer to a newly built enum_type_decl upon successful
+/// @return a pointer to a newly built enum_type_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<enum_type_decl>
 build_enum_type_decl(read_context&	ctxt,
@@ -1522,11 +1522,11 @@ build_enum_type_decl(read_context&	ctxt,
 
 /// Build a typedef_decl from a 'typedef-decl' xml node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the typedef_decl from.
+/// @param node the xml node to build the typedef_decl from.
 ///
-/// \return a pointer to a newly built typedef_decl upon successful
+/// @return a pointer to a newly built typedef_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<typedef_decl>
 build_typedef_decl(read_context&	ctxt,
@@ -1568,14 +1568,14 @@ build_typedef_decl(read_context&	ctxt,
 
 /// Build a class_decl from a 'class-decl' xml node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the class_decl from.
+/// @param node the xml node to build the class_decl from.
 ///
-/// \param update_depth_info whether to update the depth info carried
+/// @param update_depth_info whether to update the depth info carried
 /// by the parsing context.
 ///
-/// \return a pointer to class_decl upon successful completion, a null
+/// @return a pointer to class_decl upon successful completion, a null
 /// pointer otherwise.
 static shared_ptr<class_decl>
 build_class_decl(read_context&		ctxt,
@@ -1820,11 +1820,11 @@ build_class_decl(read_context&		ctxt,
 /// Build an intance of #function_template_decl, from an
 /// 'function-template-decl' xml element node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to parse from.
+/// @param node the xml node to parse from.
 ///
-/// \param update_depth_info this must be set to false, if we reached
+/// @param update_depth_info this must be set to false, if we reached
 /// this xml node by calling the xmlTextReaderRead function.  In that
 /// case, build_function_decl doesn't have to update the depth
 /// information that is maintained in the context of the parsing.
@@ -1834,7 +1834,7 @@ build_class_decl(read_context&		ctxt,
 /// should be true.  In that case this function will update the depth
 /// information that is maintained by in the context of the parsing.
 ///
-/// \return the newly built function_template_decl upon successful
+/// @return the newly built function_template_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<function_template_decl>
 build_function_template_decl(read_context& ctxt,
@@ -1893,11 +1893,11 @@ build_function_template_decl(read_context& ctxt,
 /// Build an intance of #class_template_decl, from a
 /// 'class-template-decl' xml element node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to parse from.
+/// @param node the xml node to parse from.
 ///
-/// \param update_depth_info this must be set to false, if we reached
+/// @param update_depth_info this must be set to false, if we reached
 /// this xml node by calling the xmlTextReaderRead function.  In that
 /// case, build_class_decl doesn't have to update the depth
 /// information that is maintained in the context of the parsing.
@@ -1907,7 +1907,7 @@ build_function_template_decl(read_context& ctxt,
 /// should be true.  In that case this function will update the depth
 /// information that is maintained by in the context of the parsing.
 ///
-/// \return the newly built function_template_decl upon successful
+/// @return the newly built function_template_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<class_template_decl>
 build_class_template_decl(read_context&	ctxt,
@@ -1962,14 +1962,14 @@ build_class_template_decl(read_context&	ctxt,
 /// Build a template_type_parameter from a 'template-type-parameter'
 /// xml element node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to parse from.
+/// @param node the xml node to parse from.
 ///
-/// \param index the index (occurrence index, starting from 0) of the
+/// @param index the index (occurrence index, starting from 0) of the
 /// template parameter.
 ///
-/// \return a pointer to a newly created instance of
+/// @return a pointer to a newly created instance of
 /// template_type_parameter, a null pointer otherwise.
 static shared_ptr<template_type_parameter>
 build_template_type_parameter(read_context& ctxt,
@@ -2018,16 +2018,16 @@ build_template_type_parameter(read_context& ctxt,
 /// Build a tmpl_parm_type_composition from a
 /// "template-parameter-type-composition" xml element node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to parse from.
+/// @param node the xml node to parse from.
 ///
-/// \param index the index of the previous normal template parameter.
+/// @param index the index of the previous normal template parameter.
 ///
-/// \param update_depth_info wheter to udpate the depth information
+/// @param update_depth_info wheter to udpate the depth information
 /// maintained in the context of the parsing.
 ///
-/// \return a pointer to a new instance of tmpl_parm_type_composition
+/// @return a pointer to a new instance of tmpl_parm_type_composition
 /// upon successful completion, a null pointer otherwise.
 static shared_ptr<tmpl_parm_type_composition>
 build_tmpl_parm_type_composition(read_context& ctxt,
@@ -2071,13 +2071,13 @@ build_tmpl_parm_type_composition(read_context& ctxt,
 /// Build an instance of template_non_type_parameter from a
 /// 'template-non-type-parameter' xml element node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to parse from.
+/// @param node the xml node to parse from.
 ///
-/// \param index the index of the parameter.
+/// @param index the index of the parameter.
 ///
-/// \return a pointer to a newly created instance of
+/// @return a pointer to a newly created instance of
 /// template_non_type_parameter upon successful completion, a null
 /// pointer code otherwise.
 static shared_ptr<template_non_type_parameter>
@@ -2116,13 +2116,13 @@ build_template_non_type_parameter(read_context&	ctxt,
 /// Build an intance of template_template_parameter from a
 /// 'template-template-parameter' xml element node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to parse from.
+/// @param node the xml node to parse from.
 ///
-/// \param index the index of the template parameter.
+/// @param index the index of the template parameter.
 ///
-/// \return a pointer to a new instance of template_template_parameter
+/// @return a pointer to a new instance of template_template_parameter
 /// upon successful completion, a null pointer otherwise.
 static shared_ptr<template_template_parameter>
 build_template_template_parameter(read_context& ctxt,
@@ -2188,13 +2188,13 @@ build_template_template_parameter(read_context& ctxt,
 /// Build a template parameter type from several possible xml elment
 /// nodes representing a serialized form a template parameter.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml element node to parse from.
+/// @param node the xml element node to parse from.
 ///
-/// \param the index of the template parameter we are parsing.
+/// @param the index of the template parameter we are parsing.
 ///
-/// \return a pointer to a newly created instance of
+/// @return a pointer to a newly created instance of
 /// template_parameter upon successful completion, a null pointer
 /// otherwise.
 static shared_ptr<template_parameter>
@@ -2218,11 +2218,11 @@ build_template_parameter(read_context&		ctxt,
 
 /// Build a type from an xml node.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param node the xml node to build the type_base from.
+/// @param node the xml node to build the type_base from.
 ///
-/// \return a pointer to the newly built type_base upon successful
+/// @return a pointer to the newly built type_base upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<type_base>
 build_type(read_context& ctxt, const xmlNodePtr node, bool update_depth_info)
@@ -2242,9 +2242,9 @@ build_type(read_context& ctxt, const xmlNodePtr node, bool update_depth_info)
 
 /// Parses 'type-decl' xml element.
 ///
-/// \param ctxt the parsing context.
+/// @param ctxt the parsing context.
 ///
-/// \return true upon successful parsing, false otherwise.
+/// @return true upon successful parsing, false otherwise.
 static bool
 handle_type_decl(read_context& ctxt)
 {
@@ -2283,9 +2283,9 @@ handle_type_decl(read_context& ctxt)
 
 /// Parses 'namespace-decl' xml element.
 ///
-/// \param ctxt the parsing context.
+/// @param ctxt the parsing context.
 ///
-/// \return true upon successful parsing, false otherwise.
+/// @return true upon successful parsing, false otherwise.
 static bool
 handle_namespace_decl(read_context& ctxt)
 {
@@ -2313,9 +2313,9 @@ handle_namespace_decl(read_context& ctxt)
 
 /// Parse a qualified-type-def xml element.
 ///
-/// \param ctxt the parsing context.
+/// @param ctxt the parsing context.
 ///
-/// \return true upon successful parsing, false otherwise.
+/// @return true upon successful parsing, false otherwise.
 static bool
 handle_qualified_type_decl(read_context& ctxt)
 {
@@ -2368,9 +2368,9 @@ handle_qualified_type_decl(read_context& ctxt)
 
 /// Parse a pointer-type-decl element.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 handle_pointer_type_def(read_context& ctxt)
 {
@@ -2410,7 +2410,7 @@ handle_pointer_type_def(read_context& ctxt)
 
 /// Parse a reference-type-def element.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
 /// reference_type_def is added to.
 static bool
@@ -2458,7 +2458,7 @@ handle_reference_type_def(read_context& ctxt)
 
 /// Parse an enum-decl element.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 static bool
 handle_enum_type_decl(read_context& ctxt)
 {
@@ -2481,7 +2481,7 @@ handle_enum_type_decl(read_context& ctxt)
 
 /// Parse a typedef-decl element.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 static bool
 handle_typedef_decl(read_context& ctxt)
 {
@@ -2516,7 +2516,7 @@ handle_typedef_decl(read_context& ctxt)
 
 /// Parse a var-decl element.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 static bool
 handle_var_decl(read_context& ctxt)
 {
@@ -2537,9 +2537,9 @@ handle_var_decl(read_context& ctxt)
 
 /// Parse a function-decl element.
 ///
-/// \param ctxt the context of the parsing
+/// @param ctxt the context of the parsing
 ///
-/// \return true upon successful completion of the parsing, false
+/// @return true upon successful completion of the parsing, false
 /// otherwise.
 static bool
 handle_function_decl(read_context& ctxt)
@@ -2565,9 +2565,9 @@ handle_function_decl(read_context& ctxt)
 
 /// Parse a 'class-decl' xml element.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \return true upon successful completion of the parsing, false
+/// @return true upon successful completion of the parsing, false
 /// otherwise.
 static bool
 handle_class_decl(read_context& ctxt)
@@ -2590,9 +2590,9 @@ handle_class_decl(read_context& ctxt)
 
 /// Parse a 'function-template-decl' xml element.
 ///
-/// \param the parsing context.
+/// @param the parsing context.
 ///
-/// \return true upon successful completion of the parsing, false
+/// @return true upon successful completion of the parsing, false
 /// otherwise.
 static bool
 handle_function_template_decl(read_context& ctxt)
@@ -2615,9 +2615,9 @@ handle_function_template_decl(read_context& ctxt)
 
 /// Parse a 'class-template-decl' xml element.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 handle_class_template_decl(read_context& ctxt)
 {

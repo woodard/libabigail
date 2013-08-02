@@ -23,64 +23,12 @@
 #ifndef __ABG_IR_H__
 #define __ABG_IR_H__
 
-#include <cstddef>
-#include <tr1/memory>
-#include <list>
-#include <vector>
-#include <string>
-#include <tr1/functional>
-#include <typeinfo>
-#include <utility> // for std::rel_ops, at least.
-#include "abg-hash.h"
+#include "abg-irfwd.h"
 
-using std::tr1::shared_ptr;
-using std::tr1::hash;
-using std::string;
-
-// Our real stuff
 namespace abigail
 {
 
-using namespace std::rel_ops; // Pull in relational operators so that
-			      // we don't have to define them all here.
-
-class decl_base;
-class scope_decl;
-class global_scope;
-class class_decl;
-class translation_unit;
-
-void add_decl_to_scope(shared_ptr<decl_base>,
-		       scope_decl*);
-
-void add_decl_to_scope (shared_ptr<decl_base>,
-			shared_ptr<scope_decl>);
-
-global_scope* get_global_scope(const shared_ptr<decl_base>);
-
-translation_unit* get_translation_unit(const shared_ptr<decl_base>);
-
-bool is_global_scope(const scope_decl*);
-
-bool is_global_scope(const shared_ptr<scope_decl>);
-
-bool is_at_global_scope(const shared_ptr<decl_base>);
-
-bool is_at_class_scope(const shared_ptr<decl_base>);
-
-bool is_at_template_scope(const shared_ptr<decl_base>);
-
-bool is_template_parameter(const shared_ptr<decl_base>);
-
-bool is_type(const shared_ptr<decl_base>);
-
-bool is_template_parm_composition_type(const shared_ptr<decl_base>);
-
-bool is_template_decl(const shared_ptr<decl_base>);
-
-bool is_function_template_pattern(const shared_ptr<decl_base>);
-
-/// \brief The source location of a token.
+/// @brief The source location of a token.
 ///
 /// This represents the location of a token coming from a given ABI
 /// Corpus.  This location is actually an abstraction of cursor in the
@@ -88,60 +36,48 @@ bool is_function_template_pattern(const shared_ptr<decl_base>);
 /// That table is managed by the location_manager type.
 class location
 {
-  location (unsigned v)
-    : m_value(v)
-  {
-  }
+  unsigned		m_value;
+
+  location(unsigned v) : m_value(v) { }
 
 public:
 
-  location()
-    : m_value(0)
-  {
-  }
+  location() : m_value(0) { }
 
   unsigned
   get_value() const
-  {
-    return m_value;
-  }
+  { return m_value; }
 
   operator bool() const
-  {
-    return !!m_value;
-  }
+  { return !!m_value; }
 
   bool
   operator==(const location other) const
-  {return m_value == other.m_value;}
+  { return m_value == other.m_value; }
 
   bool
   operator<(const location other) const
-  {return m_value < other.m_value;}
+  { return m_value < other.m_value; }
 
   friend class location_manager;
-
-private:
-  unsigned m_value;
 };
 
-/// \brief The entry point to manage locations.
+/// @brief The entry point to manage locations.
 ///
 /// This type keeps a table of all the locations for tokens of a
 /// given ABI Corpus
 class location_manager
 {
   struct priv;
-  shared_ptr<priv> m_priv;
+
+  shared_ptr<priv>			m_priv;
 
 public:
 
   location_manager();
 
   location
-  create_new_location(const std::string&	file,
-		      size_t			line,
-		      size_t			column);
+  create_new_location(const std::string& file, size_t line, size_t column);
 
   void
   expand_location(const location	location,
@@ -150,7 +86,6 @@ public:
 		  unsigned&		column) const;
 };
 
-class ir_node_visitor;
 
 /// The Base interface implemented by types which instances are
 /// visited during the traversal of translation unit nodes.
@@ -165,7 +100,7 @@ struct traversable
   /// ir_node_visitor::visit method with the node passed as an
   /// argument.
   ///
-  /// \param v the visitor used during the t
+  /// @param v the visitor used during the t
   virtual void traverse(ir_node_visitor& v) = 0;
 };
 
@@ -174,6 +109,10 @@ struct traversable
 /// into a translation unit.
 class translation_unit : public traversable
 {
+  std::string 				m_path;
+  location_manager 			m_loc_mgr;
+  mutable shared_ptr<global_scope> 	m_global_scope;
+
   // Forbidden
   translation_unit();
 
@@ -202,24 +141,14 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~translation_unit();
+};
 
-private:
-  std::string m_path;
-  location_manager m_loc_mgr;
-  mutable shared_ptr<global_scope> m_global_scope;
-};//end class translation_unit
-
-/// \brief The base type of all declarations.
+/// The base type of all declarations.
 class decl_base
 {
-  // Forbidden
-  decl_base();
-
-  void
-  set_scope(scope_decl*);
-
 public:
 
+  /// ELF visibility
   enum visibility
   {
     VISIBILITY_NONE,
@@ -227,15 +156,31 @@ public:
     VISIBILITY_PROTECTED,
     VISIBILITY_HIDDEN,
     VISIBILITY_INTERNAL
-  };// end enum visibility
+  };
 
+  /// ELF binding
   enum binding
   {
     BINDING_NONE,
     BINDING_LOCAL,
     BINDING_GLOBAL,
     BINDING_WEAK
-  };// end enum binding
+  };
+
+private:
+  location 				m_location;
+  std::string 				m_name;
+  std::string 				m_mangled_name;
+  scope_decl* 				m_context;
+  visibility 				m_visibility;
+
+  // Forbidden
+  decl_base();
+
+  void
+  set_scope(scope_decl*);
+
+public:
 
   decl_base(const std::string&	name,
 	    location		locus,
@@ -253,58 +198,53 @@ public:
 
   location
   get_location() const
-  {return m_location;}
+  { return m_location; }
 
   void
   set_location(const location& l)
-  {m_location = l;}
+  {m_location = l; }
 
   const string&
   get_name() const
-  {return m_name;}
+  { return m_name; }
 
   void
   set_name(const string& n)
-  {m_name = n;}
+  {m_name = n; }
 
   const string&
   get_mangled_name() const
-  {return m_mangled_name;}
+  { return m_mangled_name; }
 
   void
   set_mangled_name(const std::string& m)
-  {m_mangled_name = m;}
+  {m_mangled_name = m; }
 
   scope_decl*
   get_scope() const
-  {return m_context;}
+  { return m_context; }
 
   visibility
   get_visibility() const
-  {return m_visibility;}
+  { return m_visibility; }
 
   void
   set_visibility(visibility v)
-  {m_visibility = v;}
+  {m_visibility = v; }
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base>,
 		    scope_decl*);
-
-private:
-  location m_location;
-  std::string m_name;
-  std::string m_mangled_name;
-  scope_decl* m_context;
-  visibility m_visibility;
-};// end class decl_base
+};
 
 
-/// \brief A declaration that introduces a scope.
+/// A declaration that introduces a scope.
 class scope_decl : public virtual decl_base, public virtual traversable
 {
-  scope_decl();
+  std::list<shared_ptr<decl_base> > 	m_members;
+  std::list<shared_ptr<scope_decl> > 	m_member_scopes;
 
+  scope_decl();
 
   void
   add_member_decl(const shared_ptr<decl_base>);
@@ -314,27 +254,27 @@ public:
 	     location		locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
     : decl_base(name, locus, /*mangled_name=*/name, vis)
-  {}
+  { }
 
 
   scope_decl(location l)
     : decl_base("", l)
-  {}
+  { }
 
   virtual bool
   operator==(const scope_decl&) const;
 
   const std::list<shared_ptr<decl_base> >&
   get_member_decls() const
-  {return m_members;}
+  { return m_members; }
 
   const std::list<shared_ptr<scope_decl> >&
   get_member_scopes() const
-  {return m_member_scopes;}
+  { return m_member_scopes; }
 
   bool
   is_empty() const
-  {return get_member_decls().empty();}
+  { return get_member_decls().empty(); }
 
   void
   traverse(ir_node_visitor&);
@@ -344,18 +284,14 @@ public:
   friend void
   add_decl_to_scope(shared_ptr<decl_base>,
 		    scope_decl*);
+};
 
-private:
-  std::list<shared_ptr<decl_base> > m_members;
-  std::list<shared_ptr<scope_decl> > m_member_scopes;
-};// end class scope_decl.
-
-/// \brief Facility to hash instances of decl_base.
+/// Facility to hash instances of decl_base.
 struct decl_base_hash
 {
   size_t
   operator() (const decl_base& d) const;
-};//end struct decl_base_hash
+};
 
 /// This abstracts the global scope of a given translation unit.
 ///
@@ -364,12 +300,12 @@ struct decl_base_hash
 /// time translatin_unit::get_global_scope is invoked.
 class global_scope : public scope_decl
 {
+  translation_unit*		m_translation_unit;
+
   global_scope(translation_unit *tu)
-    : decl_base("", location()),
-      scope_decl("", location()),
-      m_translation_unit(tu)
-  {
-  }
+  : decl_base("", location()), scope_decl("", location()),
+    m_translation_unit(tu)
+  { }
 
 public:
 
@@ -377,17 +313,17 @@ public:
 
   translation_unit*
   get_translation_unit() const
-  {return m_translation_unit;}
+  { return m_translation_unit; }
 
   virtual ~global_scope();
-
-private:
-  translation_unit* m_translation_unit;
-};// end class global_scope;
+};
 
 /// An abstraction helper for type declarations
 class type_base
 {
+  size_t			m_size_in_bits;
+  size_t			m_alignment_in_bits;
+
   // Forbid this.
   type_base();
 
@@ -411,19 +347,14 @@ public:
 
   size_t
   get_alignment_in_bits() const;
-
-private:
-
-  size_t m_size_in_bits;
-  size_t m_alignment_in_bits;
-};//class type_base;
+};
 
 /// A hasher for type_base types.
 struct type_base_hash
 {
   size_t
   operator()(const type_base& t) const;
-};//end struct type_base_hash
+};
 
 /// A hasher for types.  It gets the dynamic type of the current
 /// instance of type and hashes it accordingly.  Note that the hashing
@@ -433,7 +364,7 @@ struct dynamic_type_hash
 {
   size_t
   operator()(const type_base* t) const;
-};//end struct dynamic_type_hash
+};
 
 /// A hasher for shared_ptr<type_base> that will hash it based on the
 /// runtime type of the type pointed to.
@@ -444,15 +375,13 @@ struct type_shared_ptr_hash
   {
     return dynamic_type_hash()(t.get());
   }
-};//end struct type_shared_ptr_hash
+};
 
-/// A predicate for deep equality of instances of
-/// shared_ptr<type_base>
+/// A predicate for deep equality of instances of shared_ptr<type_base>
 struct type_shared_ptr_equal
 {
   bool
-  operator()(const shared_ptr<type_base>l,
-	     const shared_ptr<type_base>r) const
+  operator()(const shared_ptr<type_base> l, const shared_ptr<type_base> r) const
   {
     if (l != r)
       return false;
@@ -462,12 +391,12 @@ struct type_shared_ptr_equal
 
     return true;
   }
-};//end struct type_shared_ptr_equal
+};
 
 /// A basic type declaration that introduces no scope.
-class type_decl : public virtual decl_base,
-		  public virtual type_base,
-		  public virtual traversable
+class type_decl 
+: public virtual decl_base, public virtual type_base,
+  public virtual traversable
 {
   // Forbidden.
   type_decl();
@@ -488,14 +417,14 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~type_decl();
-};// class type_decl
+};
 
 /// Facility to hash instance of type_decl
 struct type_decl_hash
 {
   size_t
   operator()(const type_decl& t) const;
-};//end struct type_decl_hash
+};
 
 /// A type that introduces a scope.
 class scope_type_decl : public scope_decl, public virtual type_base
@@ -522,7 +451,7 @@ struct scope_type_decl_hash
   size_t
   operator()(const scope_type_decl& t) const;
 
-};//end struct scope_type_decl_hash
+};
 
 /// The abstraction of a namespace declaration
 class namespace_decl : public scope_decl
@@ -540,13 +469,15 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~namespace_decl();
-};//end class namespace_decl
+};
 
 /// The abstraction of a qualified type.
-class qualified_type_def : public virtual type_base,
-			   public virtual decl_base,
-			   public virtual traversable
+class qualified_type_def 
+: public virtual type_base, public virtual decl_base,
+  public virtual traversable
 {
+  char				m_cv_quals;
+  shared_ptr<type_base>		m_underlying_type;
 
   // Forbidden.
   qualified_type_def();
@@ -561,9 +492,8 @@ public:
     CV_RESTRICT = 1 << 2
   };
 
-  qualified_type_def(shared_ptr<type_base>	underlying_type,
-		      CV			quals,
-		      location			locus);
+  qualified_type_def(shared_ptr<type_base> underlying_type,
+		     CV	quals, location locus);
 
   virtual bool
   operator==(const qualified_type_def&) const;
@@ -581,11 +511,7 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~qualified_type_def();
-
-private:
-  char m_cv_quals;
-  shared_ptr<type_base> m_underlying_type;
-};//end class qualified_type_def
+};
 
 qualified_type_def::CV operator| (qualified_type_def::CV,
 				  qualified_type_def::CV);
@@ -595,13 +521,15 @@ struct qualified_type_def_hash
 {
   size_t
   operator()(const qualified_type_def& t) const;
-};//end struct qualified_type_def_hash
+};
 
 /// The abstraction of a pointer type.
-class pointer_type_def : public virtual type_base,
-			 public virtual decl_base,
-			 public virtual traversable
+class pointer_type_def 
+: public virtual type_base, public virtual decl_base,
+  public virtual traversable
 {
+  shared_ptr<type_base>	       	m_pointed_to_type;
+
   // Forbidden.
   pointer_type_def();
 
@@ -622,23 +550,22 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~pointer_type_def();
-
-private:
-  shared_ptr<type_base> m_pointed_to_type;
-};//end class pointer_type_def
+};
 
 /// A hasher for instances of pointer_type_def
 struct pointer_type_def_hash
 {
   size_t
   operator()(const pointer_type_def& t) const;
-};// end struct pointer_type_def_hash
+};
 
 /// Abstracts a reference type.
-class reference_type_def : public virtual type_base,
-			   public virtual decl_base,
-			   public virtual traversable
+class reference_type_def 
+: public virtual type_base, public virtual decl_base, public virtual traversable
 {
+  shared_ptr<type_base>		m_pointed_to_type;
+  bool				m_is_lvalue;
+
   // Forbidden.
   reference_type_def();
 
@@ -662,42 +589,34 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~reference_type_def();
-
-private:
-  shared_ptr<type_base> m_pointed_to_type;
-  bool m_is_lvalue;
-};//end class reference_type_def
+};
 
 /// Hasher for intances of reference_type_def.
 struct reference_type_def_hash
 {
   size_t
   operator()(const reference_type_def& t);
-};//end struct reference_type_def_hash
+};
 
 /// Abstracts a declaration for an enum type.
-class enum_type_decl: public virtual type_base,
-		      public virtual decl_base,
-		      public virtual traversable
+class enum_type_decl
+: public virtual type_base, public virtual decl_base,
+  public virtual traversable
 {
-  // Forbidden
-  enum_type_decl();
-
 public:
-
+  /// Enumerator Datum.
   class enumerator
   {
+    string		m_name;
+    size_t		m_value;
+
     //Forbidden
     enumerator();
 
   public:
 
-    enumerator(const string& name,
-	       size_t value)
-      :m_name(name),
-       m_value(value)
-    {
-    }
+    enumerator(const string& name, size_t value)
+    : m_name(name), m_value(value) { }
 
     bool
     operator==(const enumerator& other) const
@@ -707,24 +626,30 @@ public:
     }
     const string&
     get_name() const
-    {return m_name;}
+    { return m_name; }
 
     void
     set_name(const string& n)
-    {m_name = n;}
+    { m_name = n; }
 
     size_t
     get_value() const
-    {return m_value;}
+    { return m_value; }
 
     void
     set_value(size_t v)
-    {m_value=v;}
+    { m_value=v; }
+  };
 
-  private:
-    string m_name;
-    size_t m_value;
-  };//end struct enumerator
+private:
+
+  shared_ptr<type_base>         m_underlying_type;
+  std::list<enumerator>		m_enumerators;
+
+  // Forbidden
+  enum_type_decl();
+
+public:
 
   enum_type_decl(const string&			name,
 		 location			locus,
@@ -746,11 +671,7 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~enum_type_decl();
-
-private:
-  shared_ptr<type_base> m_underlying_type;
-  std::list<enumerator> m_enumerators;
-};// end class enum_type_decl
+};
 
 /// A hasher for an enum_type_decl.
 struct enum_type_decl_hash
@@ -758,13 +679,14 @@ struct enum_type_decl_hash
   size_t
   operator()(const enum_type_decl& t) const;
 
-};//end struct enum_type_decl_hash
+};
 
 /// The abstraction of a typedef declaration.
-class typedef_decl: public virtual type_base,
-		    public virtual decl_base,
-		    public virtual traversable
+class typedef_decl
+: public virtual type_base, public virtual decl_base, public virtual traversable
 {
+  shared_ptr<type_base>		m_underlying_type;
+
   // Forbidden
   typedef_decl();
 
@@ -786,10 +708,7 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~typedef_decl();
-
-private:
-  shared_ptr<type_base> m_underlying_type;
-};//end class typedef_decl
+};
 
 /// Hasher for the typedef_decl type.
 struct typedef_decl_hash
@@ -797,11 +716,14 @@ struct typedef_decl_hash
   size_t
   operator()(const typedef_decl& t) const;
 
-};// end struct typedef_decl_hash
+};
 
 /// Abstracts a variable declaration.
 class var_decl : public virtual decl_base, public virtual traversable
 {
+  shared_ptr<type_base>	       	m_type;
+  binding		  	m_binding;
+
   // Forbidden
   var_decl();
 
@@ -819,25 +741,21 @@ public:
 
   shared_ptr<type_base>
   get_type() const
-  {return m_type;}
+  { return m_type; }
 
   binding
   get_binding() const
-  {return m_binding;}
+  { return m_binding; }
 
   void
   set_binding(binding b)
-  {m_binding = b;}
+  {m_binding = b; }
 
   void
   traverse(ir_node_visitor&);
 
   virtual ~var_decl();
-
-private:
-  shared_ptr<type_base> m_type;
-  binding m_binding;
-};// end class var_decl
+};
 
 /// Hasher for a var_decl type.
 struct var_decl_hash
@@ -845,19 +763,29 @@ struct var_decl_hash
   size_t
   operator()(const var_decl& t) const;
 
-};// end struct var_decl_hash
-
-class function_type;
+};
 
 /// Abstraction for a function declaration.
 class function_decl: public virtual decl_base,
 		     public virtual traversable
 {
+protected:
+  shared_ptr<function_type> 	m_type;
+
+private:
+  bool 				m_declared_inline;
+  decl_base::binding 		m_binding;
+
 public:
 
   /// Abtraction for the parameter of a function.
   class parameter
   {
+    shared_ptr<type_base>	m_type;
+    std::string			m_name;
+    location			m_location;
+    bool			m_variadic_marker;
+
   public:
 
     parameter(const shared_ptr<type_base> type,
@@ -868,51 +796,45 @@ public:
 	m_name(name),
 	m_location(loc),
 	m_variadic_marker (variadic_marker)
-    {}
+    { }
 
     parameter(const shared_ptr<type_base> type,
 	      bool variadic_marker = false)
       : m_type(type),
 	m_variadic_marker (variadic_marker)
-    {}
+    { }
 
     const shared_ptr<type_base>
     get_type()const
-    {return m_type;}
+    { return m_type; }
 
     const shared_ptr<type_base>
     get_type()
-    {return m_type;}
+    { return m_type; }
 
     const std::string&
     get_name() const
-    {return m_name;}
+    { return m_name; }
 
     location
     get_location() const
-    {return m_location;}
+    { return m_location; }
 
     bool
     operator==(const parameter& o) const
-    {return *get_type() == *o.get_type();}
+    { return *get_type() == *o.get_type(); }
 
     bool
     get_variadic_marker () const
-    {return m_variadic_marker;}
-
-  private:
-    shared_ptr<type_base> m_type;
-    std::string m_name;
-    location m_location;
-    bool m_variadic_marker;
-  };// end class function::parameter
+    { return m_variadic_marker; }
+  };
 
   /// Hasher for an instance of function::parameter
   struct parameter_hash
   {
     size_t
     operator()(const parameter& p) const;
-  };//end struct parameter_hash
+  };
 
   function_decl
   (const std::string&			name,
@@ -938,7 +860,7 @@ public:
       m_type(function_type),
       m_declared_inline(declared_inline),
       m_binding(bind)
-  {}
+  { }
 
   function_decl
   (const std::string&			name,
@@ -966,15 +888,15 @@ public:
 
   void
   set_type(shared_ptr<function_type> fn_type)
-  {m_type = fn_type;}
+  {m_type = fn_type; }
 
   bool
   is_declared_inline() const
-  {return m_declared_inline;}
+  { return m_declared_inline; }
 
   binding
   get_binding() const
-  {return m_binding;}
+  { return m_binding; }
 
   virtual bool
   operator==(const function_decl& o) const;
@@ -982,24 +904,18 @@ public:
   /// Return true iff the function takes a variable number of
   /// parameters.
   ///
-  /// \return true if the function taks a variable number
+  /// @return true if the function taks a variable number
   /// of parameters.
   bool
   is_variadic() const
-  {return (!get_parameters().empty()
-	   && get_parameters().back()->get_variadic_marker());}
+  { return (!get_parameters().empty()
+	   && get_parameters().back()->get_variadic_marker()); }
 
   void
   traverse(ir_node_visitor&);
 
   virtual ~function_decl();
-
-protected:
-  shared_ptr<function_type> m_type;
-private:
-  bool m_declared_inline;
-  decl_base::binding m_binding;
-};// end class function_decl
+};
 
 /// Hasher for function_decl
 struct function_decl_hash
@@ -1007,21 +923,28 @@ struct function_decl_hash
   size_t
   operator()(const function_decl& t) const;
 
-};// end function_decl_hash
+};
 
 /// Abstraction of a function type.
 class function_type : public virtual type_base
 {
+
+private:
   function_type ();
+
+  shared_ptr<type_base>			m_return_type;
+
+protected:
+  std::vector<shared_ptr<function_decl::parameter> > m_parms;
 
 public:
 
   /// The most straightforward constructor for the the function_type
   /// class.
   ///
-  /// \param return_type the return type of the function type.
+  /// @param return_type the return type of the function type.
   ///
-  /// \param parms the list of parameters of the function type.
+  /// @param parms the list of parameters of the function type.
   /// Stricto sensu, we just need a list of types; we are using a list
   /// of parameters (where each parameter also carries the name of the
   /// parameter and its source location) to try and provide better
@@ -1029,11 +952,11 @@ public:
   /// wasts too many resources, we can fall back to taking just a
   /// vector of types here.
   ///
-  /// \param size_in_bits the size of this type, in bits.
+  /// @param size_in_bits the size of this type, in bits.
   ///
-  /// \param alignment_in_bits the alignment of this type, in bits.
+  /// @param alignment_in_bits the alignment of this type, in bits.
   ///
-  /// \param size_in_bits the size of this type.
+  /// @param size_in_bits the size of this type.
   function_type(shared_ptr<type_base> return_type,
 		const std::vector<shared_ptr<function_decl::parameter> >& parms,
 		size_t size_in_bits,
@@ -1041,84 +964,81 @@ public:
     : type_base(size_in_bits, alignment_in_bits),
       m_return_type(return_type),
       m_parms(parms)
-  {}
+  { }
 
   /// A constructor for a function_type that takes no parameters.
   ///
-  /// \param return_type the return type of this function_type.
+  /// @param return_type the return type of this function_type.
   ///
-  /// \param size_in_bits the size of this type, in bits.
+  /// @param size_in_bits the size of this type, in bits.
   ///
-  /// \param alignment_in_bits the alignment of this type, in bits.
+  /// @param alignment_in_bits the alignment of this type, in bits.
   function_type(shared_ptr<type_base> return_type,
 		size_t size_in_bits,
 		size_t alignment_in_bits)
     : type_base(size_in_bits, alignment_in_bits),
       m_return_type (return_type)
-  {}
+  { }
 
   /// A constructor for a function_type that takes no parameter and
   /// that has no return_type yet.  These missing parts can (and must)
   /// be added later.
   ///
-  /// \param size_in_bits the size of this type, in bits.
+  /// @param size_in_bits the size of this type, in bits.
   ///
-  /// \param alignment_in_bits the alignment of this type, in bits.
+  /// @param alignment_in_bits the alignment of this type, in bits.
   function_type(size_t size_in_bits,
 		size_t alignment_in_bits)
     : type_base(size_in_bits, alignment_in_bits)
-  {}
+  { }
 
   const shared_ptr<type_base>
   get_return_type() const
-  {return m_return_type;}
+  { return m_return_type; }
 
   void
   set_return_type(shared_ptr<type_base> t)
-  {m_return_type = t;}
+  {m_return_type = t; }
 
   const std::vector<shared_ptr<function_decl::parameter> >&
   get_parameters() const
-  {return m_parms;}
+  { return m_parms; }
 
   std::vector<shared_ptr<function_decl::parameter> >&
   get_parameters()
-  {return m_parms;}
+  { return m_parms; }
 
   void
   set_parameters(const std::vector<shared_ptr<function_decl::parameter> > &p)
-  {m_parms = p;}
+  {m_parms = p; }
 
   void
   append_parameter(shared_ptr<function_decl::parameter> parm)
-  {m_parms.push_back (parm);}
+  {m_parms.push_back (parm); }
 
   bool
   is_variadic() const
-  {return !m_parms.empty() && m_parms.back()->get_variadic_marker();}
+  { return !m_parms.empty() && m_parms.back()->get_variadic_marker(); }
 
   bool
   operator==(const function_type&) const;
 
   virtual ~function_type();
-
-private:
-  shared_ptr<type_base> m_return_type;
-
-protected:
-  std::vector<shared_ptr<function_decl::parameter> > m_parms;
-};// end class function_type
+};
 
 /// Hasher for an instance of function_type
 struct function_type_hash
 {
   size_t
   operator()(const function_type& t) const;
-}; // end struct function_type_hash
+};
 
 /// Abstracts the type of a class member function.
 class method_type : public function_type
 {
+
+  shared_ptr<class_decl> m_class_type;
+
   method_type();
 
 public:
@@ -1144,100 +1064,88 @@ public:
 
   shared_ptr<class_decl>
   get_class_type() const
-  {return m_class_type;}
+  { return m_class_type; }
 
   void
   set_class_type(shared_ptr<class_decl>);
 
   virtual ~method_type();
-
-private:
-  shared_ptr<class_decl> m_class_type;
-};// end class method_type
+};
 
 /// Hasher for intances of method_type
 struct method_type_hash
 {
   size_t
   operator()(const method_type& t)const;
-};//end struct method_type_hash
-
-class template_parameter;
-class template_type_parameter;
-class template_non_type_parameter;
-class template_template_parameter;
+};
 
 /// The base class of templates.
 class template_decl
 {
+  std::list<shared_ptr<template_parameter> > m_parms;
 
 public:
 
   template_decl()
-  {}
+  { }
 
   void
   add_template_parameter(shared_ptr<template_parameter> p)
-  {m_parms.push_back(p);}
+  {m_parms.push_back(p); }
 
   const std::list<shared_ptr<template_parameter> >&
   get_template_parameters() const
-  {return m_parms;}
+  { return m_parms; }
 
   virtual bool
   operator==(const template_decl& o) const;
 
   virtual ~template_decl();
-
-private:
-  std::list<shared_ptr<template_parameter> > m_parms;
-};// end class template_decl
+};
 
 struct template_decl_hash
 {
   size_t
   operator()(const template_decl&) const;
 
-};//end struct template_decl_hash
+};
 
 /// Base class for a template parameter.  Client code should use the
 /// more specialized type_template_parameter,
 /// non_type_template_parameter and template_template_parameter below.
 class template_parameter
 {
+  unsigned m_index;
+
   // Forbidden
   template_parameter();
 
  public:
 
-  template_parameter(unsigned index)
-    : m_index(index)
-  {}
+  template_parameter(unsigned index) : m_index(index)
+  { }
 
   virtual bool
   operator==(const template_parameter&) const;
 
   unsigned
   get_index() const
-  {return m_index;}
+  { return m_index; }
 
   virtual ~template_parameter();
-
-private:
-  unsigned m_index;
-};//end class template_parameter
+};
 
 struct template_parameter_hash
 {
   size_t
   operator()(const template_parameter& t) const;
-};//end class template_parameter_hash
+};
 
 struct dynamic_template_parameter_hash
 {
   size_t
   operator()(const template_parameter*) const;
-};//end struct dynamic_template_parameter_hash
+};
 
 struct template_parameter_shared_ptr_hash
 {
@@ -1246,7 +1154,7 @@ struct template_parameter_shared_ptr_hash
   {
     return dynamic_template_parameter_hash()(t.get());
   }
-};// end struct template_parameter_shared_ptr_hash
+};
 
 /// Abstracts a type template parameter.
 class template_type_parameter : public template_parameter,
@@ -1263,24 +1171,26 @@ public:
       type_base(0, 0),
       type_decl(name, 0, 0, locus),
       template_parameter(index)
-  {}
+  { }
 
   virtual bool
   operator==(const template_type_parameter&) const;
 
   virtual ~template_type_parameter();
-};//end class template_type_parameter
+};
 
 struct template_type_parameter_hash
 {
   size_t
   operator()(const template_type_parameter& t) const;
-};//end struct template_type_parameter_hash
+};
 
 /// Abstracts non type template parameters.
 class template_non_type_parameter : public template_parameter,
 				    public virtual decl_base
 {
+  shared_ptr<type_base> m_type;
+
   // Forbidden
   template_non_type_parameter();
 
@@ -1293,7 +1203,7 @@ public:
     : decl_base(name, locus, ""),
       template_parameter(index),
       m_type(type)
-  {}
+  { }
 
   virtual bool
   operator==(const template_non_type_parameter&) const;
@@ -1301,19 +1211,16 @@ public:
 
   shared_ptr<type_base>
   get_type() const
-  {return m_type;}
+  { return m_type; }
 
   virtual ~template_non_type_parameter();
-
-private:
-  shared_ptr<type_base> m_type;
-};// class template_non_type_parameter
+};
 
 struct template_non_type_parameter_hash
 {
   size_t
   operator()(const template_non_type_parameter& t) const;
-};// end struct template_non_type_parameter_hash
+};
 
 /// Abstracts a template template parameter.
 class template_template_parameter : public template_type_parameter,
@@ -1331,20 +1238,20 @@ public:
       type_base(0, 0),
       type_decl(name, 0, 0, locus, name, VISIBILITY_DEFAULT),
       template_type_parameter(index, name, locus)
-  {}
+  { }
 
   virtual bool
   operator==(const template_template_parameter& o) const;
 
   virtual ~template_template_parameter();
-};//end class template_template_parameter
+};
 
 /// A hasher for instances of template_template_parameter
 struct template_template_parameter_hash
 {
   size_t
   operator()(const template_template_parameter& t) const;
-};// end struct template_template_parameter_hash
+};
 
 /// This abstracts a composition of types based on template type
 /// parameters.  The result of the composition is a type that can be
@@ -1354,6 +1261,8 @@ struct template_template_parameter_hash
 class tmpl_parm_type_composition : public template_parameter,
 				   public virtual decl_base
 {
+  shared_ptr<type_base> m_type;
+
   tmpl_parm_type_composition();
 
 public:
@@ -1362,22 +1271,22 @@ public:
 
   shared_ptr<type_base>
   get_composed_type() const
-  {return m_type;}
+  { return m_type; }
 
   void
   set_composed_type(shared_ptr<type_base> t)
-  {m_type = t;}
+  {m_type = t; }
 
 
   virtual ~tmpl_parm_type_composition();
-
-private:
-  shared_ptr<type_base> m_type;
-};// end class tmpl_parm_type_composition
+};
 
 /// Abstract a function template declaration.
 class function_template_decl : public template_decl, public scope_decl
 {
+  shared_ptr<function_decl> m_pattern;
+  binding m_binding;
+
   // Forbidden
   function_template_decl();
 
@@ -1389,7 +1298,7 @@ public:
     : decl_base("", locus, "", vis),
       scope_decl("", locus),
       m_binding(bind)
-  {}
+  { }
 
   function_template_decl(shared_ptr<function_decl> pattern,
 			 location locus,
@@ -1399,7 +1308,7 @@ public:
 		pattern->get_name(), vis),
       scope_decl(pattern->get_name(), locus),
       m_binding(bind)
-  {set_pattern(pattern);}
+  {set_pattern(pattern); }
 
   virtual bool
   operator==(const function_template_decl&) const;
@@ -1414,39 +1323,37 @@ public:
 
   shared_ptr<function_decl>
   get_pattern() const
-  {return m_pattern;}
+  { return m_pattern; }
 
   binding
   get_binding() const
-  {return m_binding;}
+  { return m_binding; }
 
   void
   traverse(ir_node_visitor&);
 
   virtual ~function_template_decl();
-
-private:
-  shared_ptr<function_decl> m_pattern;
-  binding m_binding;
-};//end class function_template_decl
+};
 
 /// Hashing functor for pointer to a function template.
 struct fn_tmpl_shared_ptr_hash
 {
   size_t
   operator()(const shared_ptr<function_template_decl>) const;
-};//end struct fn_tmpl_shared_ptr_hash
+};
 
 /// Hash functor for function templates
 struct function_template_decl_hash
 {
   size_t
   operator()(const function_template_decl&) const;
-};// end struct function_template_decl_hash
+};
 
 /// Abstract a class template.
 class class_template_decl : public template_decl, public scope_decl
 {
+  shared_ptr<class_decl> m_pattern;
+
   // Forbidden
   class_template_decl();
 
@@ -1455,17 +1362,17 @@ public:
 		      visibility vis = VISIBILITY_DEFAULT)
     : decl_base("", locus, "", vis),
       scope_decl("", locus)
-  {}
+  { }
 
   /// Constructor for the class_template_decl type.
   ///
-  /// \param the pattern of the class template.  This must NOT be a
+  /// @param the pattern of the class template.  This must NOT be a
   /// null pointer.  If you really this to be null, please use the
   /// constructor above instead.
   ///
-  /// \param the source location of the declaration of the type.
+  /// @param the source location of the declaration of the type.
   ///
-  /// \param the visibility of the instances of class instantiated
+  /// @param the visibility of the instances of class instantiated
   /// from this template.
   class_template_decl(shared_ptr<class_decl> pattern,
 		      location locus,
@@ -1480,28 +1387,25 @@ public:
 
   shared_ptr<class_decl>
   get_pattern() const
-  {return m_pattern;}
+  { return m_pattern; }
 
   void
   traverse(ir_node_visitor&);
 
   virtual ~class_template_decl();
-
-private:
-  shared_ptr<class_decl> m_pattern;
-};// end class class_template_decl
+};
 
 struct class_template_decl_hash
 {
   size_t
   operator()(const class_template_decl&) const;
-};// end struct class_template_decl_hash
+};
 
 struct class_tmpl_shared_ptr_hash
 {
   size_t
   operator()(const shared_ptr<class_template_decl>) const;
-};// end struct class_tmpl_shared_ptr_hash
+};
 
 /// Abstracts a class declaration.
 class class_decl : public scope_type_decl
@@ -1511,13 +1415,14 @@ class class_decl : public scope_type_decl
 
 public:
 
+  /// Language access specifier.
   enum access_specifier
   {
     no_access,
     private_access,
     protected_access,
     public_access
-  };//end enum access_specifier
+  };
 
   /// The base class for member types, data members and member
   /// functions.  Its purpose is to mainly to carry the access
@@ -1525,23 +1430,24 @@ public:
   /// all class members) for the member.
   class member
   {
+    enum access_specifier	m_access;
+    bool			m_is_static;
+
     // Forbidden
     member();
   public:
 
-    member(access_specifier a,
-	   bool is_static = false)
-      : m_access(a),
-	m_is_static(is_static)
-    {}
+    member(access_specifier a, bool is_static = false)
+    : m_access(a), m_is_static(is_static)
+    { }
 
     access_specifier
     get_access_specifier() const
-    {return m_access;}
+    { return m_access; }
 
     bool
     is_static() const
-    {return m_is_static;}
+    { return m_is_static; }
 
     bool
     operator==(const member& o) const
@@ -1549,11 +1455,7 @@ public:
       return (get_access_specifier() == o.get_access_specifier()
 	      && is_static() == o.is_static());
     }
-
-  private:
-    enum access_specifier m_access;
-    bool m_is_static;
-  };//end class member.
+  };
 
   /// Hasher for a class_decl::member
   struct member_hash
@@ -1564,52 +1466,50 @@ public:
       hash<int> hash_int;
       return hash_int(m.get_access_specifier());
     }
-  };// struct member_hash
+  };
 
   /// Abstracts a member type declaration.
   class member_type : public member, public virtual decl_base
   {
+    shared_ptr<type_base> m_type;
+
     //Forbidden
     member_type();
 
   public:
 
-    member_type(shared_ptr<type_base> t,
-		access_specifier access)
-      : decl_base("", location()),
-	member(access),
-	m_type(t)
-    {
-    }
+    member_type(shared_ptr<type_base> t, access_specifier access)
+    : decl_base("", location()), member(access), m_type(t)
+    { }
 
     bool
     operator==(const member_type& o) const
     {
-      return (*as_type() == *o.as_type()
-	      && static_cast<member>(*this) == o);
+      return (*as_type() == *o.as_type() && static_cast<member>(*this) == o);
     }
 
     operator shared_ptr<type_base>() const
-    {return m_type;}
+    { return m_type; }
 
     shared_ptr<type_base>
     as_type() const
-    {return m_type;}
-
-  private:
-    shared_ptr<type_base> m_type;
-  };//end class member_type
+    { return m_type; }
+  };
 
   /// A hash functor for instances class_decl::member_type.
   struct member_type_hash
   {
     size_t
     operator()(const member_type& t)const;
-  };// end struct member_type_hash
+  };
 
   /// Abstraction of a base specifier in a class declaration.
   class base_spec : public member
   {
+
+    shared_ptr<class_decl> m_base_class;
+    long m_offset_in_bits;
+    bool m_is_virtual;
 
     // Forbidden
     base_spec();
@@ -1628,15 +1528,15 @@ public:
 
     const shared_ptr<class_decl>
     get_base_class() const
-    {return m_base_class;}
+    { return m_base_class; }
 
     bool
     get_is_virtual() const
-    {return m_is_virtual;}
+    { return m_is_virtual; }
 
     long
     get_offset_in_bits() const
-    {return m_offset_in_bits;}
+    { return m_offset_in_bits; }
 
     bool
     operator==(const base_spec& other) const
@@ -1644,25 +1544,23 @@ public:
       return (static_cast<member>(*this) == other
 	      && *get_base_class() == *other.get_base_class());
     }
-
-  private:
-    shared_ptr<class_decl> m_base_class;
-    long m_offset_in_bits;
-    bool m_is_virtual;
-  };// end class base_spec
+  };
 
   /// A hashing functor for instances of class_decl::base_spec.
   struct base_spec_hash
   {
     size_t
     operator()(const base_spec& t) const;
-  };// end struct base_spec_hash
+  };
 
   /// Abstract a data member declaration in a class declaration.
   class data_member : public var_decl,
 		      public member,
 		      public virtual traversable
   {
+    bool m_is_laid_out;
+    size_t m_offset_in_bits;
+
     // Forbidden
     data_member();
 
@@ -1687,11 +1585,11 @@ public:
 
     bool
     is_laid_out() const
-    {return m_is_laid_out;}
+    { return m_is_laid_out; }
 
     size_t
     get_offset_in_bits() const
-    {return m_offset_in_bits;}
+    { return m_offset_in_bits; }
 
     bool
     operator==(const data_member& other) const
@@ -1706,18 +1604,14 @@ public:
    traverse(ir_node_visitor&);
 
     virtual ~data_member();
-
-  private:
-    bool m_is_laid_out;
-    size_t m_offset_in_bits;
-  };// end class data_member
+  };
 
   /// Hasher for a data_member.
   struct data_member_hash
   {
     size_t
     operator()(data_member& t);
-  };// end struct data_member_hash
+  };
 
 
   /// Abstraction of the declaration of a method. This is an
@@ -1753,8 +1647,8 @@ public:
 		bool				declared_inline,
 		location			locus,
 		const std::string&		mangled_name = "",
-		visibility			vis	     = VISIBILITY_DEFAULT,
-		binding			bind	     = BINDING_GLOBAL);
+		visibility			vis  = VISIBILITY_DEFAULT,
+		binding			bind = BINDING_GLOBAL);
 
     method_decl(const std::string&	name,
 		shared_ptr<type_base>	type,
@@ -1769,16 +1663,21 @@ public:
 
     void
     set_type(shared_ptr<method_type> fn_type)
-    {function_decl::set_type(fn_type);}
+    {function_decl::set_type(fn_type); }
 
     virtual ~method_decl();
-  };//end class method_decl;
+  };
 
   /// Abstracts a member function declaration in a class declaration.
   class member_function : public method_decl,
 			  public member,
 			  public virtual traversable
   {
+    size_t m_vtable_offset_in_bits;
+    bool m_is_constructor;
+    bool m_is_destructor;
+    bool m_is_const;
+
     // Forbidden
     member_function();
 
@@ -1812,7 +1711,7 @@ public:
       m_is_constructor(is_constructor),
       m_is_destructor(is_destructor),
       m_is_const(is_const)
-    {}
+    { }
 
     member_function(shared_ptr<method_decl>	fn,
 		    access_specifier		access,
@@ -1835,7 +1734,7 @@ public:
       m_is_constructor(is_constructor),
       m_is_destructor(is_destructor),
       m_is_const(is_const)
-    {}
+    { }
 
     member_function(shared_ptr<function_decl>	fn,
 		    access_specifier		access,
@@ -1847,19 +1746,19 @@ public:
 
     size_t
     get_vtable_offset_in_bits() const
-    {return m_vtable_offset_in_bits;}
+    { return m_vtable_offset_in_bits; }
 
     bool
     is_constructor() const
-    {return m_is_constructor;}
+    { return m_is_constructor; }
 
     bool
     is_destructor() const
-    {return m_is_destructor;}
+    { return m_is_destructor; }
 
     bool
     is_const() const
-    {return m_is_const;}
+    { return m_is_const; }
 
     bool
     operator==(const member_function& o) const
@@ -1876,25 +1775,23 @@ public:
     /// function.
     void
     traverse(ir_node_visitor&);
-
-  private:
-    size_t m_vtable_offset_in_bits;
-    bool m_is_constructor;
-    bool m_is_destructor;
-    bool m_is_const;
-  };// end class member_function
+  };
 
   /// A hashing functor for instances of class_decl::member_function.
   struct member_function_hash
   {
     size_t
     operator()(const member_function& t) const;
-  };// end struct member_function_hash
+  };
 
   /// Abstract a member function template.
-  class member_function_template : public member,
-				   public virtual traversable
+  class member_function_template
+  : public member, public virtual traversable
   {
+    bool m_is_constructor;
+    bool m_is_const;
+    shared_ptr<function_template_decl> m_fn_tmpl;
+
     // Forbiden
     member_function_template();
 
@@ -1909,44 +1806,42 @@ public:
 	m_is_constructor(is_constructor),
 	m_is_const(is_const),
 	m_fn_tmpl(f)
-    {}
+    { }
 
     bool
     is_constructor() const
-    {return m_is_constructor;}
+    { return m_is_constructor; }
 
     bool
     is_const() const
-    {return m_is_const;}
+    { return m_is_const; }
 
     operator const function_template_decl& () const
-    {return *m_fn_tmpl;}
+    { return *m_fn_tmpl; }
 
     shared_ptr<function_template_decl>
     as_function_template_decl() const
-    {return m_fn_tmpl;}
+    { return m_fn_tmpl; }
 
     bool
     operator==(const member_function_template& o) const;
 
     void
     traverse(ir_node_visitor&);
-
-  private:
-    bool m_is_constructor;
-    bool m_is_const;
-    shared_ptr<function_template_decl> m_fn_tmpl;
-  };//end class member_function_template
+  };
 
   struct member_function_template_hash
   {
     size_t
     operator()(const member_function_template&) const;
-  };// end struct member_function_template_hash
+  };
 
   /// Abstracts a member class template template
-  class member_class_template : public member, public virtual traversable
+  class member_class_template 
+  : public member, public virtual traversable
   {
+    shared_ptr<class_template_decl> m_class_tmpl;
+
     // Forbidden
     member_class_template();
 
@@ -1956,31 +1851,28 @@ public:
 			  bool is_static)
       : member(access, is_static),
 	m_class_tmpl(c)
-    {}
+    { }
 
     operator const class_template_decl& () const
-    {return *m_class_tmpl;}
+    { return *m_class_tmpl; }
 
     shared_ptr<class_template_decl>
     as_class_template_decl() const
-    {return m_class_tmpl;}
+    { return m_class_tmpl; }
 
     bool
     operator==(const member_class_template& o) const;
 
     void
     traverse(ir_node_visitor&);
-
-  private:
-    shared_ptr<class_template_decl> m_class_tmpl;
-  };// end class member_class_template
+  };
 
   /// A hashing functor for instances of member_class_template.
   struct member_class_template_hash
   {
     size_t
     operator()(member_class_template&) const;
-  };// end struct member_class_template_hash
+  };
 
   typedef std::list<shared_ptr<base_spec> > base_specs_type;
   typedef std::list<shared_ptr<member_type> > member_types_type;
@@ -1991,10 +1883,23 @@ public:
   typedef std::list<shared_ptr<member_class_template> >
   member_class_templates_type;
 
+private:
+  mutable bool				m_hashing_started;
+  shared_ptr<class_decl>		m_declaration;
+  bool					m_is_declaration_only;
+  base_specs_type			m_bases;
+  member_types_type			m_member_types;
+  data_members_type			m_data_members;
+  member_functions_type			m_member_functions;
+  member_function_templates_type	m_member_function_templates;
+  member_class_templates_type		m_member_class_templates;
+
+public:
+
   class_decl(const std::string&				name,
-	     size_t						size_in_bits,
-	     size_t						align_in_bits,
-	     location						locus,
+	     size_t					size_in_bits,
+	     size_t					align_in_bits,
+	     location					locus,
 	     visibility					vis,
 	     std::list<shared_ptr<base_spec> >&		bases,
 	     std::list<shared_ptr<member_type> >&	member_types,
@@ -2012,15 +1917,15 @@ public:
 
   bool
   hashing_started() const
-  {return m_hashing_started;}
+  { return m_hashing_started; }
 
   void
   hashing_started(bool b) const
-  {m_hashing_started = b;}
+  { m_hashing_started = b; }
 
   bool
   is_declaration_only() const
-  {return m_is_declaration_only;}
+  { return m_is_declaration_only; }
 
   void
   set_earlier_declaration(shared_ptr<class_decl> declaration);
@@ -2030,43 +1935,43 @@ public:
 
   shared_ptr<class_decl>
   get_earlier_declaration() const
-  {return m_declaration;}
+  { return m_declaration; }
 
   void
   add_base_specifier(shared_ptr<base_spec> b)
-  {m_bases.push_back(b);}
+  {m_bases.push_back(b); }
 
   const std::list<shared_ptr<base_spec> >&
   get_base_specifiers() const
-  {return m_bases;}
+  { return m_bases; }
 
   void
   add_member_type(shared_ptr<member_type>t);
 
   const std::list<shared_ptr<member_type> >&
   get_member_types() const
-  {return m_member_types;}
+  { return m_member_types; }
 
   void
   add_data_member(shared_ptr<data_member> m);
 
   const std::list<shared_ptr<data_member> >&
   get_data_members() const
-  {return m_data_members;}
+  { return m_data_members; }
 
   void
   add_member_function(shared_ptr<member_function> m);
 
   const std::list<shared_ptr<member_function> >&
   get_member_functions() const
-  {return m_member_functions;}
+  { return m_member_functions; }
 
   void
   add_member_function_template(shared_ptr<member_function_template>);
 
   const member_function_templates_type&
   get_member_function_templates() const
-  {return m_member_function_templates;}
+  { return m_member_function_templates; }
 
   void
   add_member_class_template(shared_ptr<member_class_template>);
@@ -2074,9 +1979,10 @@ public:
   const member_class_templates_type&
   get_member_class_templates() const
 
-  {return m_member_class_templates;}
+  { return m_member_class_templates; }
 
-  bool has_no_base_nor_member() const;
+  bool
+  has_no_base_nor_member() const;
 
   virtual bool
   operator==(const class_decl&) const;
@@ -2085,25 +1991,13 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~class_decl();
-
-private:
-  mutable bool				m_hashing_started;
-  shared_ptr<class_decl>		m_declaration;
-  bool					m_is_declaration_only;
-  base_specs_type			m_bases;
-  member_types_type			m_member_types;
-  data_members_type			m_data_members;
-  member_functions_type		m_member_functions;
-  member_function_templates_type	m_member_function_templates;
-  member_class_templates_type		m_member_class_templates;
-};// end class class_decl
+};
 
 /// Hasher for the class_decl type
 struct class_decl_hash
 {
   size_t operator()(const class_decl& t) const;
-
-};//end struct class_decl_hash
+};
 
 /// The base class for the visitor type hierarchy used for traversing
 /// a translation unit.

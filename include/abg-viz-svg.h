@@ -28,7 +28,7 @@
 namespace abigail
 {
 
-/*
+/**
   Row displaying one element of member data.
 
   Wide open background spaces, what do they look like, what do the
@@ -56,7 +56,7 @@ extern const style member_row_sty;
 extern const style implementation_row_sty;
 
 
-/*
+/**
   SVG "array" style notation for size/layout/alignment.
 
   This is a compact SVG representation of class layout.

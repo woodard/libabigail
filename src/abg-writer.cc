@@ -27,6 +27,11 @@
 #include "abg-writer.h"
 #include "abg-config.h"
 
+
+namespace abigail
+{
+namespace writer
+{
 using std::tr1::shared_ptr;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
@@ -35,25 +40,16 @@ using std::ostringstream;
 using std::list;
 using std::tr1::unordered_map;
 
-namespace abigail
-{
-namespace writer
-{
-
 class id_manager
 {
+  unsigned long long m_cur_id;
 
   unsigned long long
   get_new_id()
-  {
-    return ++m_cur_id;
-  }
+  { return ++m_cur_id; }
 
 public:
-  id_manager()
-    : m_cur_id(0)
-  {
-  }
+  id_manager() : m_cur_id(0) { }
 
   /// Return a unique string representing a numerical id.
   string
@@ -67,7 +63,7 @@ public:
   /// Return a unique string representing a numerical ID, prefixed by
   /// #prefix.
   ///
-  /// \param prefix the prefix of the returned unique id.
+  /// @param prefix the prefix of the returned unique id.
   string
   get_id_with_prefix(const string& prefix)
   {
@@ -75,10 +71,7 @@ public:
     o << prefix << get_new_id();
     return o.str();
   }
-
-private:
-  unsigned long long m_cur_id;
-};//end class id_manager
+};
 
 typedef unordered_map<shared_ptr<type_base>,
 		      string,
@@ -122,7 +115,7 @@ public:
     return m_id_manager;
   }
 
-  /// \return true iff #type has already beend assigned an ID.
+  /// @return true iff #type has already beend assigned an ID.
   bool
   type_has_existing_id(shared_ptr<type_base> type) const
   { return (m_type_id_map.find(type) != m_type_id_map.end());}
@@ -248,11 +241,11 @@ do_indent(ostream& o, unsigned nb_whitespaces)
 
 /// Indent #initial_indent + level number of xml element indentation.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param initial_indent the initial number of white space to indent to.
+/// @param initial_indent the initial number of white space to indent to.
 ///
-/// \param level the number of indentation level to indent to.
+/// @param level the number of indentation level to indent to.
 static void
 do_indent_to_level(write_context&	ctxt,
 		   unsigned		initial_indent,
@@ -265,11 +258,11 @@ do_indent_to_level(write_context&	ctxt,
 /// Return the number of white space of indentation that
 /// #do_indent_to_level would have used.
 ///
-/// \param ctxt the context of the parsing.
+/// @param ctxt the context of the parsing.
 ///
-/// \param initial_indent the initial number of white space to indent to.
+/// @param initial_indent the initial number of white space to indent to.
 ///
-/// \param level the number of indentation level to indent to.
+/// @param level the number of indentation level to indent to.
 static unsigned
 get_indent_to_level(write_context& ctxt,
 		    unsigned initial_indent,
@@ -282,11 +275,11 @@ get_indent_to_level(write_context& ctxt,
 
 /// Serialize a translation_unit into an output stream.
 ///
-/// \param tu the translation unit to serialize.
+/// @param tu the translation unit to serialize.
 ///
-/// \param out the output stream.
+/// @param out the output stream.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 bool
 write_to_ostream(const translation_unit& tu,
 		 ostream &out)
@@ -300,11 +293,11 @@ write_to_ostream(const translation_unit& tu,
 ///
 /// If the location is empty, nothing is written.
 ///
-/// \param loc the location to consider.
+/// @param loc the location to consider.
 ///
-/// \param tu the translation unit the location belongs to.
+/// @param tu the translation unit the location belongs to.
 ///
-/// \param o the output stream to write to.
+/// @param o the output stream to write to.
 static void
 write_location(location		loc,
 	       translation_unit&	tu,
@@ -327,9 +320,9 @@ write_location(location		loc,
 ///
 /// If the location is empty, nothing is written.
 ///
-/// \param decl the decl to consider.
+/// @param decl the decl to consider.
 ///
-/// \param o the output stream to write to.
+/// @param o the output stream to write to.
 static void
 write_location(const shared_ptr<decl_base>&	decl,
 	       ostream&			o)
@@ -355,11 +348,11 @@ write_location(const shared_ptr<decl_base>&	decl,
 /// Serialize the visibility property of the current decl as the
 /// 'visibility' attribute for the current xml element.
 ///
-/// \param decl the instance of decl_base to consider.
+/// @param decl the instance of decl_base to consider.
 ///
-/// \param o the output stream to serialize the property to.
+/// @param o the output stream to serialize the property to.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_visibility(const shared_ptr<decl_base>&	decl,
 		 ostream&			o)
@@ -398,9 +391,9 @@ write_visibility(const shared_ptr<decl_base>&	decl,
 
 /// Serialize the 'binding' property of the current decl.
 ///
-/// \param decl the decl to consider.
+/// @param decl the decl to consider.
 ///
-/// \param o the output stream to serialize the property to.
+/// @param o the output stream to serialize the property to.
 static bool
 write_binding(const shared_ptr<decl_base>&	decl,
 	      ostream&				o)
@@ -446,9 +439,9 @@ write_binding(const shared_ptr<decl_base>&	decl,
 
 /// Serialize the size and alignment attributes of a given type.
 ///
-/// \param decl the type to consider.
+/// @param decl the type to consider.
 ///
-/// \param o the output stream to serialize to.
+/// @param o the output stream to serialize to.
 static void
 write_size_and_alignment(const shared_ptr<type_base> decl,
 			 ostream& o)
@@ -464,9 +457,9 @@ write_size_and_alignment(const shared_ptr<type_base> decl,
 
 /// Serialize the access specifier.
 ///
-/// \param a the access specifier to serialize.
+/// @param a the access specifier to serialize.
 ///
-/// \param o the output stream to serialize it to.
+/// @param o the output stream to serialize it to.
 static void
 write_access(class_decl::access_specifier a, ostream& o)
 {
@@ -517,9 +510,9 @@ write_layout_offset(shared_ptr<class_decl::base_spec> base, ostream& o)
 
 /// Serialize the access specifier of a class member.
 ///
-/// \param member a pointer to the class member to consider.
+/// @param member a pointer to the class member to consider.
 ///
-/// \param o the ostream to serialize the member to.
+/// @param o the ostream to serialize the member to.
 static void
 write_access(shared_ptr<class_decl::member> member,
 	     ostream& o)
@@ -530,16 +523,16 @@ write_access(shared_ptr<class_decl::member> member,
 /// Serialize the attributes "constructor", "destructor" or "static"
 /// if they have true value.
 ///
-/// \param is_ctor if set to true, the "constructor='true'" string is
+/// @param is_ctor if set to true, the "constructor='true'" string is
 /// emitted.
 ///
-/// \param is_dtor if set to true the "destructor='true' string is
+/// @param is_dtor if set to true the "destructor='true' string is
 /// emitted.
 ///
-/// \param is_static if set to true the "static='true'" string is
+/// @param is_static if set to true the "static='true'" string is
 /// emitted.
 ///
-/// \param o the output stream to use for the serialization.
+/// @param o the output stream to use for the serialization.
 static void
 write_cdtor_const_static(bool is_ctor, bool is_dtor,
 			 bool is_static, ostream& o)
@@ -555,9 +548,9 @@ write_cdtor_const_static(bool is_ctor, bool is_dtor,
 /// Serialize the attribute "is-declaration-only", if the class has
 /// its 'is_declaration_only property set.
 ///
-/// \param klass the pointer to instance of class_decl to consider.
+/// @param klass the pointer to instance of class_decl to consider.
 ///
-/// \param o the output stream to serialize to.
+/// @param o the output stream to serialize to.
 static void
 write_class_is_declaration_only(const shared_ptr<class_decl> klass,
 				ostream& o)
@@ -568,15 +561,15 @@ write_class_is_declaration_only(const shared_ptr<class_decl> klass,
 
 /// Serialize a pointer to an of decl_base into an output stream.
 ///
-/// \param decl, the pointer to decl_base to serialize
+/// @param decl, the pointer to decl_base to serialize
 ///
-/// \param ctxt the context of the serialization.  It contains e.g, the
+/// @param ctxt the context of the serialization.  It contains e.g, the
 /// output stream to serialize to.
 ///
-/// \param indent how many indentation spaces to use during the
+/// @param indent how many indentation spaces to use during the
 /// serialization.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_decl(const shared_ptr<decl_base>	decl,
 	   write_context&		ctxt,
@@ -616,15 +609,15 @@ write_decl(const shared_ptr<decl_base>	decl,
 
 /// Serialize a translation unit into an output stream.
 ///
-/// \param tu the translation unit to serialize.
+/// @param tu the translation unit to serialize.
 ///
-/// \param ctxt the context of the serialization.  It contains e.g,
+/// @param ctxt the context of the serialization.  It contains e.g,
 /// the output stream to serialize to.
 ///
-/// \param indent how many indentation spaces to use during the
+/// @param indent how many indentation spaces to use during the
 /// serialization.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_translation_unit(const translation_unit&	tu,
 		       write_context&		ctxt,
@@ -667,15 +660,15 @@ write_translation_unit(const translation_unit&	tu,
 /// Serialize a pointer to an instance of basic type declaration, into
 /// an output stream.
 ///
-/// \param d the basic type declaration to serialize.
+/// @param d the basic type declaration to serialize.
 ///
-/// \param ctxt the context of the serialization.  It contains e.g, the
+/// @param ctxt the context of the serialization.  It contains e.g, the
 /// output stream to serialize to.
 ///
-/// \param indent how many indentation spaces to use during the
+/// @param indent how many indentation spaces to use during the
 /// serialization.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_type_decl(const shared_ptr<type_decl>	d,
 		write_context&			ctxt,
@@ -701,15 +694,15 @@ write_type_decl(const shared_ptr<type_decl>	d,
 
 /// Serialize a namespace declaration int an output stream.
 ///
-/// \param decl the namespace declaration to serialize.
+/// @param decl the namespace declaration to serialize.
 ///
-/// \param ctxt the context of the serialization.  It contains e.g, the
+/// @param ctxt the context of the serialization.  It contains e.g, the
 /// output stream to serialize to.
 ///
-/// \param indent how many indentation spaces to use during the
+/// @param indent how many indentation spaces to use during the
 /// serialization.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_namespace_decl(const shared_ptr<namespace_decl>	decl,
 		     write_context&			ctxt,
@@ -743,14 +736,14 @@ write_namespace_decl(const shared_ptr<namespace_decl>	decl,
 
 /// Serialize a qualified type declaration to an output stream.
 ///
-/// \param decl the qualfied type declaration to write.
+/// @param decl the qualfied type declaration to write.
 ///
-/// \param ctxt the write context.
+/// @param ctxt the write context.
 ///
-/// \param indent the number of space to indent to during the
+/// @param indent the number of space to indent to during the
 /// serialization.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
 			 write_context&			ctxt,
@@ -785,13 +778,13 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
 
 /// Serialize a pointer to an instance of pointer_type_def.
 ///
-/// \param decl the pointer_type_def to serialize.
+/// @param decl the pointer_type_def to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the number of indentation white spaces to use.
+/// @param indent the number of indentation white spaces to use.
 ///
-/// \return true upon succesful completion, false otherwise.
+/// @return true upon succesful completion, false otherwise.
 static bool
 write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
 		       write_context&				ctxt,
@@ -820,13 +813,13 @@ write_pointer_type_def(const shared_ptr<pointer_type_def>	decl,
 
 /// Serialize a pointer to an instance of reference_type_def.
 ///
-/// \param decl the reference_type_def to serialize.
+/// @param decl the reference_type_def to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the number of indentation white spaces to use.
+/// @param indent the number of indentation white spaces to use.
 ///
-/// \return true upon succesful completion, false otherwise.
+/// @return true upon succesful completion, false otherwise.
 static bool
 write_reference_type_def(const shared_ptr<reference_type_def>	decl,
 			 write_context&			ctxt,
@@ -860,13 +853,13 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
 
 /// Serialize a pointer to an instance of enum_type_decl.
 ///
-/// \param decl the enum_type_decl to serialize.
+/// @param decl the enum_type_decl to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the number of indentation white spaces to use.
+/// @param indent the number of indentation white spaces to use.
 ///
-/// \return true upon succesful completion, false otherwise.
+/// @return true upon succesful completion, false otherwise.
 static bool
 write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
 		     write_context&			ctxt,
@@ -910,13 +903,13 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
 
 /// Serialize a pointer to an instance of typedef_decl.
 ///
-/// \param decl the typedef_decl to serialize.
+/// @param decl the typedef_decl to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the number of indentation white spaces to use.
+/// @param indent the number of indentation white spaces to use.
 ///
-/// \return true upon succesful completion, false otherwise.
+/// @return true upon succesful completion, false otherwise.
 static bool
 write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 		   write_context&			ctxt,
@@ -944,16 +937,16 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 
 /// Serialize a pointer to an instances of var_decl.
 ///
-/// \param decl the var_decl to serialize.
+/// @param decl the var_decl to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param write_mangled_name if true, serialize the mangled name of
+/// @param write_mangled_name if true, serialize the mangled name of
 /// this variable.
 ///
-/// \param indent the number of indentation white spaces to use.
+/// @param indent the number of indentation white spaces to use.
 ///
-/// \return true upon succesful completion, false otherwise.
+/// @return true upon succesful completion, false otherwise.
 static bool
 write_var_decl(const shared_ptr<var_decl>	decl,
 	       write_context&			ctxt,
@@ -990,16 +983,16 @@ write_var_decl(const shared_ptr<var_decl>	decl,
 
 /// Serialize a pointer to a function_decl.
 ///
-/// \param decl the pointer to function_decl to serialize.
+/// @param decl the pointer to function_decl to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param skip_first_parm if true, do not serialize the first
+/// @param skip_first_parm if true, do not serialize the first
 /// parameter of the function decl.
 ///
-/// \param indent the number of indentation white spaces to use.
+/// @param indent the number of indentation white spaces to use.
 ///
-/// \return true upon succesful completion, false otherwise.
+/// @return true upon succesful completion, false otherwise.
 static bool
 write_function_decl(const shared_ptr<function_decl>	decl,
 		    write_context&			ctxt,
@@ -1064,11 +1057,11 @@ write_function_decl(const shared_ptr<function_decl>	decl,
 
 /// Serialize a class_decl type.
 ///
-/// \param decl the pointer to class_decl to serialize.
+/// @param decl the pointer to class_decl to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the initial indentation to use.
+/// @param indent the initial indentation to use.
 static bool
 write_class_decl(const shared_ptr<class_decl> decl,
 		 write_context& ctxt, unsigned indent)
@@ -1233,13 +1226,13 @@ write_class_decl(const shared_ptr<class_decl> decl,
 
 /// Serialize an instance of template_type_parameter.
 ///
-/// \param decl the instance to serialize.
+/// @param decl the instance to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the initial indentation to use.
+/// @param indent the initial indentation to use.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool write_template_type_parameter
 (const shared_ptr<template_type_parameter>	decl,
  write_context&				ctxt,
@@ -1273,13 +1266,13 @@ static bool write_template_type_parameter
 
 /// Serialize an instance of template_non_type_parameter.
 ///
-/// \param decl the instance to serialize.
+/// @param decl the instance to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the intial indentation to use.
+/// @param indent the intial indentation to use.
 ///
-/// \return true open successful completion, false otherwise.
+/// @return true open successful completion, false otherwise.
 static bool
 write_template_non_type_parameter
 (const shared_ptr<template_non_type_parameter>	decl,
@@ -1309,13 +1302,13 @@ write_template_non_type_parameter
 
 /// Serialize an instance of template template parameter.
 ///
-/// \param decl the instance to serialize.
+/// @param decl the instance to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the initial indentation to use.
+/// @param indent the initial indentation to use.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 
 static bool
 write_template_template_parameter
@@ -1360,13 +1353,13 @@ write_template_template_parameter
 
 /// Serialize an instance of tmpl_parm_type_composition.
 ///
-/// \param decl the decl to serialize.
+/// @param decl the decl to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the initial indentation to use.
+/// @param indent the initial indentation to use.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_tmpl_parm_type_composition
 (const shared_ptr<tmpl_parm_type_composition> decl,
@@ -1402,13 +1395,13 @@ write_tmpl_parm_type_composition
 
 /// Serialize an instance of template_parameter.
 ///
-/// \param decl the instance to serialize.
+/// @param decl the instance to serialize.
 ///
-/// \param ctxt the context of the serialization.
+/// @param ctxt the context of the serialization.
 ///
-/// \param indent the initial indentation to use.
+/// @param indent the initial indentation to use.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_template_parameter(const shared_ptr<template_parameter> decl,
 			 write_context& ctxt, unsigned indent)
@@ -1431,7 +1424,7 @@ write_template_parameter(const shared_ptr<template_parameter> decl,
 
 /// Serialize the template parameters of the a given template.
 ///
-/// \param tmpl the template for which to emit the template parameters.
+/// @param tmpl the template for which to emit the template parameters.
 static void
 write_template_parameters(const shared_ptr<template_decl> tmpl,
 			  write_context& ctxt, unsigned indent)
@@ -1454,11 +1447,11 @@ write_template_parameters(const shared_ptr<template_decl> tmpl,
 
 /// Serialize an instance of function_template_decl.
 ///
-/// \param decl the instance to serialize.
+/// @param decl the instance to serialize.
 ///
-/// \param ctxt the context of the serialization
+/// @param ctxt the context of the serialization
 ///
-/// \param indent the initial indentation.
+/// @param indent the initial indentation.
 static bool
 write_function_template_decl(const shared_ptr<function_template_decl> decl,
 			     write_context& ctxt, unsigned indent)
@@ -1497,14 +1490,14 @@ write_function_template_decl(const shared_ptr<function_template_decl> decl,
 
 /// Serialize an instance of class_template_decl
 ///
-/// \param decl a pointer to the instance of class_template_decl to serialize.
+/// @param decl a pointer to the instance of class_template_decl to serialize.
 ///
-/// \param ctxt the context of the serializtion.
+/// @param ctxt the context of the serializtion.
 ///
-/// \param indent the initial number of white space to use for
+/// @param indent the initial number of white space to use for
 /// indentation.
 ///
-/// \return true upon successful completion, false otherwise.
+/// @return true upon successful completion, false otherwise.
 static bool
 write_class_template_decl (const shared_ptr<class_template_decl> decl,
 			   write_context& ctxt, unsigned indent)

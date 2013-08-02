@@ -30,7 +30,7 @@ namespace xml
 /// Instanciate an xmlTextReader, wrap it into a smart pointer and
 /// return it.
 ///
-/// \param path the path to the file to be parsed by the returned
+/// @param path the path to the file to be parsed by the returned
 /// instance of xmlTextReader.
 reader_sptr
 new_reader_from_file(const std::string& path)
@@ -61,9 +61,9 @@ build_sptr<xmlChar>(xmlChar *p)
 ///
 /// Note that the node must be attached to an XML document.
 ///
-/// \param n the xml to consider.
+/// @param n the xml to consider.
 ///
-/// \return a positive or zero number for an XML node properly
+/// @return a positive or zero number for an XML node properly
 /// attached to an xml document, -1 otherwise.  Note that the function
 /// returns -1 if passed an xml document as well.
 int

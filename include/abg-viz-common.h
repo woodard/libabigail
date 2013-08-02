@@ -31,7 +31,7 @@
 namespace abigail
 {
 
-// Utility function, like regex_replace.
+/// Utility function, like regex_replace.
 void
 string_replace(std::string&, const std::string&, const std::string&);
 
@@ -50,7 +50,7 @@ units_to_string(units);
 typedef unsigned short	units_type;
 
 
-/*
+/**
   Page/Canvas/Drawing area description.
   Size, origin location in 2D (x,y), heigh, width
 
@@ -84,7 +84,7 @@ std::string
 color_to_string(color);
 
 
-/*
+/**
   Character rendering, type, fonts, styles.
 
   Expect to keep changing the output, so use this abstraction to set

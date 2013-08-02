@@ -23,12 +23,11 @@
 #include <tr1/memory>
 #include <libxml/xmlreader.h>
 
-using std::tr1::shared_ptr;
-
 namespace abigail
 {
 namespace xml
 {
+using std::tr1::shared_ptr;
 
 /// This functor is used to instantiate a shared_ptr for the
 /// xmlTextReader.
@@ -36,10 +35,8 @@ struct textReaderDeleter
 {
   void
   operator()(xmlTextReaderPtr reader)
-  {
-    xmlFreeTextReader(reader);
-  }
-};//end struct textReaderDeleter
+  { xmlFreeTextReader(reader); }
+};
 
 
 typedef shared_ptr<xmlTextReader> reader_sptr;
@@ -52,7 +49,7 @@ struct charDeleter
   {
     xmlFree(str);
   }
-};//end struct xmlCharDeleter
+};
 typedef shared_ptr<xmlChar> xml_char_sptr;
 
 reader_sptr new_reader_from_file(const std::string& path);

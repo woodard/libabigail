@@ -24,12 +24,14 @@
 #define __ABG_HASH_H__
 
 #include <cstddef>
+
 namespace abigail
 {
+/// Namespace for hashing.
 namespace hashing
 {
-size_t combine_hashes(size_t, size_t);
-
+  std::size_t 
+  combine_hashes(std::size_t, std::size_t);
 }//end namespace hash
 }//end namespace abigail
 

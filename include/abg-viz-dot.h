@@ -31,6 +31,7 @@ namespace abigail
 /// Base class for graph nodes.
 struct node_base
 { 
+  /// Possible derived types.
   enum type { child, parent }; 
 
   std::string		_M_id;
@@ -53,7 +54,7 @@ extern const style parent_sty;
 extern const style child_sty;
 
 
-/*
+/**
   Parent node.
 
   Some characteristics:
@@ -71,7 +72,7 @@ struct parent_node : public node_base
 };
 
 
-/*
+/**
   Child node.
 
   Some characteristics:
@@ -88,7 +89,7 @@ struct child_node : public node_base
 };
 
 
-/*
+/**
   DOT "graph" style notation for class inheritance.
 
   This is a compact DOT representation of a single class inheritance.

@@ -26,8 +26,6 @@
 #include <tr1/memory>
 #include "abg-ir.h"
 
-using std::tr1::shared_ptr;
-
 namespace abigail
 {
 
@@ -38,25 +36,30 @@ namespace abigail
 /// put together.
 class abi_corpus
 {
+public:
+  typedef std::string					string;
+  typedef std::tr1::shared_ptr<translation_unit>	translation_unit_sptr;
+  typedef std::list<translation_unit_sptr>		translation_units;
+
+private:
+  string 			m_name;
+  translation_units 		m_members;
+
   abi_corpus();
 
 public:
 
-  abi_corpus(const std::string& name);
+  abi_corpus(const string&);
 
   void
-  add(const shared_ptr<translation_unit>);
+  add(const translation_unit_sptr);
 
-  const std::list<shared_ptr<translation_unit> >&
+  const translation_units&
   get_translation_units() const;
 
   bool
   is_empty() const;
-
-private:
-  std::string m_name;
-  std::list<shared_ptr<translation_unit> > m_members;
-};// end class abi_corpus
+};
 
 }//end namespace abigail
 #endif //__ABG_CORPUS_H__

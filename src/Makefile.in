@@ -71,9 +71,9 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libabigaildir)"
 LTLIBRARIES = $(libabigail_LTLIBRARIES)
 libabigail_la_LIBADD =
-am_libabigail_la_OBJECTS = abg-ir.lo abg-reader.lo abg-corpus.lo \
-	abg-libxml-utils.lo abg-hash.lo abg-writer.lo abg-config.lo \
-	abg-viz-common.lo abg-viz-dot.lo abg-viz-svg.lo
+am_libabigail_la_OBJECTS = abg-ir.lo abg-reader.lo abg-libxml-utils.lo \
+	abg-hash.lo abg-writer.lo abg-config.lo abg-viz-common.lo \
+	abg-viz-dot.lo abg-viz-svg.lo
 libabigail_la_OBJECTS = $(am_libabigail_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -244,7 +244,6 @@ libabigaildir = $(libdir)/
 libabigail_la_SOURCES = $(headers)	\
 abg-ir.cc				\
 abg-reader.cc			\
-abg-corpus.cc			\
 abg-libxml-utils.cc		\
 abg-hash.cc			\
 abg-writer.cc			\
@@ -331,7 +330,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-config.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-corpus.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-hash.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-ir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/abg-libxml-utils.Plo@am__quote@

@@ -4,7 +4,6 @@ libabigaildir=$(libdir)/
 libabigail_la_SOURCES = $(headers)	\
 abg-ir.cc				\
 abg-reader.cc			\
-abg-corpus.cc			\
 abg-libxml-utils.cc		\
 abg-hash.cc			\
 abg-writer.cc			\

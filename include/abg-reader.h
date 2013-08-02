@@ -27,11 +27,11 @@
 
 namespace abigail
 {
+/// Namespace for reader.
 namespace reader
 {
-bool read_file(const std::string&	file_path,
-	       translation_unit&	tu);
-
+  bool 
+  read_file(const std::string& file_path, translation_unit& tu);
 }// end namespace reader
 }// end namespace abigail
 

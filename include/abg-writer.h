@@ -23,17 +23,16 @@
 #ifndef __ABG_WRITER_H__
 #define __ABG_WRITER_H__
 
-#include <ostream>
+#include <iosfwd>
 #include "abg-corpus.h"
 
 namespace abigail
 {
+/// Namespace for writer.
 namespace writer
 {
-
-bool write_to_ostream(const translation_unit& tu,
-		      std::ostream&	out);
-
+bool 
+write_to_ostream(const translation_unit& tu, std::ostream& out);
 }//end namespace writer
 
 }// end namespace abigail
