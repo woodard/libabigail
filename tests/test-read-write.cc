@@ -22,13 +22,11 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include "abg-ir.h"
 #include "test-utils.h"
-#include "abg-reader.h"
-#include "abg-writer.h"
 
 using std::string;
 using std::ofstream;
-
 using std::cerr;
 
 /// This is an aggregate that specifies where a test shall get its
@@ -143,8 +141,8 @@ main()
     {
       string input_suffix(s->in_path);
       in_path = abigail::tests::get_src_dir() + "/tests/" + input_suffix;
-      abigail::translation_unit tu(input_suffix);
-      if (!abigail::reader::read_file(tu))
+      abigail::translation_unit tu(in_path);
+      if (!tu.read())
 	{
 	  cerr << "failed to read " << in_path << "\n";
 	  is_ok = false;
@@ -168,7 +166,7 @@ main()
 	  continue;
 	}
 
-      bool r = abigail::writer::write_to_ostream(tu, of);
+      bool r = tu.write(of);
       is_ok = (is_ok && r);
       of.close();
       string cmd = "diff -u " + in_path + " " + out_path;

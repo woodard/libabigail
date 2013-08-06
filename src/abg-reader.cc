@@ -27,28 +27,28 @@
 #include <assert.h>
 #include <libxml/xmlstring.h>
 #include <libxml/xmlreader.h>
-#include "abg-reader.h"
 #include "abg-libxml-utils.h"
-
-using std::string;
-using std::stack;
-using std::tr1::unordered_map;
-using std::tr1::dynamic_pointer_cast;
-using std::vector;
+#include "abg-ir.h"
 
 namespace abigail
 {
 
 using xml::xml_char_sptr;
 
+/// Internal namespace for reader.
 namespace reader
 {
+using std::string;
+using std::stack;
+using std::tr1::unordered_map;
+using std::tr1::dynamic_pointer_cast;
+using std::vector;
 
 class read_context;
 
-static void	update_read_context(read_context&);
-static void	update_read_context(read_context&, xmlNodePtr);
-static void	update_depth_info_of_read_context(read_context&, int);
+static void update_read_context(read_context&);
+static void update_read_context(read_context&, xmlNodePtr);
+static void update_depth_info_of_read_context(read_context&, int);
 
 /// This abstracts the context in which the current ABI
 /// instrumentation dump is being de-serialized.  It carries useful
@@ -484,14 +484,6 @@ static bool	handle_function_decl(read_context&);
 static bool	handle_class_decl(read_context&);
 static bool	handle_function_template_decl(read_context&);
 static bool	handle_class_template_decl(read_context&);
-
-bool
-read_file(translation_unit& tu)
-{
-  read_context read_ctxt(xml::new_reader_from_file(tu.get_path()));
-
-  return read_input(read_ctxt, tu);
-}
 
 /// Updates the instance of read_context.  Basically update thee path
 /// of elements from the root to the current element, that we maintain
@@ -2622,4 +2614,13 @@ handle_class_template_decl(read_context& ctxt)
 }
 
 }//end namespace reader
+
+
+// Define reader.
+bool
+translation_unit::read()
+{
+  reader::read_context read_ctxt(xml::new_reader_from_file(this->get_path()));
+  return reader::read_input(read_ctxt, *this);
+}
 }//end namespace abigail

@@ -24,12 +24,12 @@
 #include <sstream>
 #include <tr1/memory>
 #include <tr1/unordered_map>
-#include "abg-writer.h"
 #include "abg-config.h"
-
+#include "abg-ir.h"
 
 namespace abigail
 {
+/// Internal namespace for writer.
 namespace writer
 {
 using std::tr1::shared_ptr;
@@ -67,7 +67,7 @@ public:
   string
   get_id_with_prefix(const string& prefix)
   {
-  ostringstream o;
+    ostringstream o;
     o << prefix << get_new_id();
     return o.str();
   }
@@ -173,8 +173,7 @@ private:
 }; //end write_context
 
 static bool write_translation_unit(const translation_unit&,
-				   write_context&,
-				   unsigned);
+				   write_context&, unsigned);
 static void write_location(location, translation_unit&, ostream&);
 static void write_location(const shared_ptr<decl_base>&, ostream&);
 static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
@@ -270,20 +269,6 @@ get_indent_to_level(write_context& ctxt, unsigned initial_indent,
     int nb_ws = initial_indent +
       level * ctxt.get_config().get_xml_element_indent();
     return nb_ws;
-}
-
-/// Serialize a translation_unit into an output stream.
-///
-/// @param tu the translation unit to serialize.
-///
-/// @param out the output stream.
-///
-/// @return true upon successful completion, false otherwise.
-bool
-write_to_ostream(const translation_unit& tu, ostream &out)
-{
-  write_context ctxt(out);
-  return write_translation_unit(tu, ctxt, /*indent=*/0);
 }
 
 /// Write a location to the output stream.
@@ -606,7 +591,7 @@ write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
 /// serialization.
 ///
 /// @return true upon successful completion, false otherwise.
-static bool
+bool
 write_translation_unit(const translation_unit& tu, write_context& ctxt,
 		       unsigned	indent)
 {
@@ -1505,5 +1490,13 @@ write_class_template_decl (const shared_ptr<class_template_decl> decl,
   return true;
 }
 
-}//end namespace writer
-}//end namespace abigail
+} //end namespace writer
+
+bool
+translation_unit::write(std::ostream &out)
+{
+  writer::write_context ctxt(out);
+  return writer::write_translation_unit(*this, ctxt, /*indent=*/0);
+}
+
+} //end namespace abigail

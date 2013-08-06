@@ -22,8 +22,8 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include "abg-ir.h"
 #include "test-utils.h"
-#include "abg-reader.h"
 
 using std::string;
 using std::ofstream;
@@ -50,7 +50,7 @@ main(int argc, char **argv)
   string file_name = argv[1];
 
   abigail::translation_unit tu(file_name);
-  if (!abigail::reader::read_file(tu))
+  if (!tu.read())
     {
       cerr << "failed to read " << file_name << "\n";
       return 1;

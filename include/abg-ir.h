@@ -142,7 +142,7 @@ public:
 
   /// Constructor of translation_unit.
   ///
-  /// @param path the path of the translation unit.
+  /// @param path the location of the translation unit.
   translation_unit(const std::string& path);
 
   /// @return the path of the compilation unit that gave birth to this
@@ -178,6 +178,18 @@ public:
   /// @return true iff the current translation unit is empty.
   bool
   is_empty() const;
+
+  /// Deserialize the contents of the external file into this
+  /// translation_unit object.
+  bool
+  read();
+
+  /// Serialize the contents of this translation unit object into an
+  /// external file.
+  ///
+  /// @param out the ostream output object.
+  bool
+  write(std::ostream& out); 
 
   /// This implements the traversable_base::traverse pure virtual
   /// function.
