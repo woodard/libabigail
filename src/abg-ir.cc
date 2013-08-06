@@ -204,6 +204,13 @@ decl_base::~decl_base()
 { }
 
 void
+decl_base::traverse(ir_node_visitor& v)
+{
+  // Do nothing in the base class. 
+}
+
+
+void
 decl_base::set_scope(scope_decl* scope)
 { m_context = scope; }
 
@@ -266,7 +273,7 @@ scope_decl::traverse(ir_node_visitor &v)
        i != get_member_decls ().end();
        ++i)
     {
-      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse (v);
     }
@@ -574,7 +581,7 @@ namespace_decl::traverse(ir_node_visitor& v)
        i != get_member_decls ().end();
        ++i)
     {
-      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse (v);
     }
@@ -1591,7 +1598,7 @@ class_decl::traverse(ir_node_visitor& v)
        i != get_member_types().end();
        ++i)
     {
-      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse(v);
     }
@@ -1601,7 +1608,7 @@ class_decl::traverse(ir_node_visitor& v)
        i != get_member_function_templates().end();
        ++i)
     {
-      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse(v);
     }
@@ -1611,7 +1618,7 @@ class_decl::traverse(ir_node_visitor& v)
        i != get_member_class_templates().end();
        ++i)
     {
-      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse(v);
     }
@@ -1620,7 +1627,7 @@ class_decl::traverse(ir_node_visitor& v)
        i != get_data_members().end();
        ++i)
     {
-      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse(v);
     }
@@ -1629,7 +1636,7 @@ class_decl::traverse(ir_node_visitor& v)
        i != get_member_functions().end();
        ++i)
     {
-      shared_ptr<traversable> t = dynamic_pointer_cast<traversable>(*i);
+      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse(v);
     }

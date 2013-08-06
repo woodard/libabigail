@@ -103,9 +103,9 @@ public:
 };
 
 
-/// The Base interface implemented by types which instances are
-/// visited during the traversal of translation unit nodes.
-struct traversable
+/// The interface for types which are feeling social and want to 
+/// be visited during the traversal of translation unit nodes.
+struct traversable_base
 {
   /// This virtual pure method is implemented by any single type which
   /// instance is going to be visited during the traversal of
@@ -124,7 +124,7 @@ struct traversable
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
-class translation_unit : public traversable
+class translation_unit : public traversable_base
 {
 public:
 
@@ -179,7 +179,7 @@ public:
   bool
   is_empty() const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the member nodes of the translation
@@ -191,7 +191,7 @@ public:
 };
 
 /// The base type of all declarations.
-class decl_base
+class decl_base : public traversable_base
 {
 public:
 
@@ -249,6 +249,14 @@ public:
   virtual bool
   operator==(const decl_base&) const;
 
+  /// This implements the traversable_base::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the member nodes of the translation
+  /// unit during the traversal.
+  void
+  traverse(ir_node_visitor& v);
+
   virtual ~decl_base();
 
   location
@@ -293,7 +301,7 @@ public:
 
 
 /// A declaration that introduces a scope.
-class scope_decl : public virtual decl_base, public virtual traversable
+class scope_decl : public virtual decl_base
 {
 public:
   typedef std::list<shared_ptr<decl_base> >	declarations;
@@ -342,7 +350,7 @@ public:
   is_empty() const
   { return get_member_decls().empty(); }
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance of scope_decl
@@ -482,8 +490,7 @@ struct type_shared_ptr_equal
 /// A basic type declaration that introduces no scope.
 class type_decl 
 : public virtual decl_base, 
-  public virtual type_base,
-  public virtual traversable
+  public virtual type_base
 {
   // Forbidden.
   type_decl();
@@ -501,7 +508,7 @@ public:
   virtual bool
   operator==(const type_decl&) const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance.
@@ -562,7 +569,7 @@ public:
   virtual bool
   operator==(const namespace_decl&) const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance and on its
@@ -575,7 +582,7 @@ public:
 
 /// The abstraction of a qualified type.
 class qualified_type_def 
-: public virtual type_base, public virtual decl_base, public virtual traversable
+: public virtual type_base, public virtual decl_base
 {
   char				m_cv_quals;
   shared_ptr<type_base>		m_underlying_type;
@@ -622,7 +629,7 @@ public:
   const shared_ptr<type_base>
   get_underlying_type() const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance.
@@ -646,8 +653,7 @@ struct qualified_type_def_hash
 
 /// The abstraction of a pointer type.
 class pointer_type_def 
-: public virtual type_base, public virtual decl_base,
-  public virtual traversable
+: public virtual type_base, public virtual decl_base
 {
   shared_ptr<type_base>	       	m_pointed_to_type;
 
@@ -669,7 +675,7 @@ public:
   shared_ptr<type_base>
   get_pointed_to_type() const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance.
@@ -688,7 +694,7 @@ struct pointer_type_def_hash
 
 /// Abstracts a reference type.
 class reference_type_def 
-: public virtual type_base, public virtual decl_base, public virtual traversable
+: public virtual type_base, public virtual decl_base
 {
   shared_ptr<type_base>		m_pointed_to_type;
   bool				m_is_lvalue;
@@ -710,7 +716,7 @@ public:
   bool
   is_lvalue() const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance.
@@ -729,7 +735,7 @@ struct reference_type_def_hash
 
 /// Abstracts a declaration for an enum type.
 class enum_type_decl
-: public virtual type_base, public virtual decl_base, public virtual traversable
+: public virtual type_base, public virtual decl_base
 {
 public:
   /// Enumerator Datum.
@@ -819,7 +825,7 @@ public:
   virtual bool
   operator==(const enum_type_decl&) const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance.
@@ -839,7 +845,7 @@ struct enum_type_decl_hash
 
 /// The abstraction of a typedef declaration.
 class typedef_decl
-: public virtual type_base, public virtual decl_base, public virtual traversable
+: public virtual type_base, public virtual decl_base
 {
   shared_ptr<type_base>		m_underlying_type;
 
@@ -871,7 +877,7 @@ public:
   shared_ptr<type_base>
   get_underlying_type() const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance.
@@ -890,7 +896,7 @@ struct typedef_decl_hash
 };
 
 /// Abstracts a variable declaration.
-class var_decl : public virtual decl_base, public virtual traversable
+class var_decl : public virtual decl_base
 {
   shared_ptr<type_base>	       	m_type;
   binding		  	m_binding;
@@ -923,7 +929,7 @@ public:
   {m_binding = b; }
 
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance.
@@ -942,8 +948,7 @@ struct var_decl_hash
 };
 
 /// Abstraction for a function declaration.
-class function_decl
-: public virtual decl_base, public virtual traversable
+class function_decl : public virtual decl_base
 {
 protected:
   shared_ptr<function_type> 	m_type;
@@ -1149,7 +1154,7 @@ public:
   { return (!get_parameters().empty()
 	   && get_parameters().back()->get_variadic_marker()); }
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance.
@@ -1647,7 +1652,7 @@ public:
   get_binding() const
   { return m_binding; }
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance and on the
@@ -1709,7 +1714,7 @@ public:
   get_pattern() const
   { return m_pattern; }
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance and on the class
@@ -1906,7 +1911,7 @@ public:
 
   /// Abstract a data member declaration in a class declaration.
   class data_member 
-  : public var_decl, public member, public virtual traversable
+  : public var_decl, public member
   {
     bool 		m_is_laid_out;
     size_t 		m_offset_in_bits;
@@ -2001,7 +2006,7 @@ public:
 	      && static_cast<member>(*this) == other);
     }
 
-    /// This implements the traversable::traverse pure virtual
+    /// This implements the traversable_base::traverse pure virtual
     /// function.
     ///
     /// @param v the visitor used on the current instance.
@@ -2151,9 +2156,7 @@ public:
   };
 
   /// Abstracts a member function declaration in a class declaration.
-  class member_function : public method_decl,
-			  public member,
-			  public virtual traversable
+  class member_function : public method_decl, public member
   {
     size_t m_vtable_offset_in_bits;
     bool m_is_constructor;
@@ -2271,7 +2274,7 @@ public:
 	      && static_cast<function_decl>(*this) == o);
     }
 
-    /// This implements the traversable::traverse pure virtual
+    /// This implements the traversable_base::traverse pure virtual
     /// function.
     ///
     /// @param v the visitor used on the current instance.
@@ -2291,7 +2294,7 @@ public:
 
   /// Abstract a member function template.
   class member_function_template
-  : public member, public virtual traversable
+  : public member, public virtual traversable_base
   {
     bool m_is_constructor;
     bool m_is_const;
@@ -2331,7 +2334,7 @@ public:
     bool
     operator==(const member_function_template& o) const;
 
-    /// This implements the traversable::traverse pure virtual
+    /// This implements the traversable_base::traverse pure virtual
     /// function.
     ///
     /// @param v the visitor used on the current instance and on its
@@ -2354,7 +2357,7 @@ public:
 
   /// Abstracts a member class template template
   class member_class_template 
-  : public member, public virtual traversable
+  : public member, public virtual traversable_base
   {
     shared_ptr<class_template_decl> m_class_tmpl;
 
@@ -2379,7 +2382,7 @@ public:
     bool
     operator==(const member_class_template& o) const;
 
-    /// This implements the traversable::traverse pure virtual
+    /// This implements the traversable_base::traverse pure virtual
     /// function.
     ///
     /// @param v the visitor used on the current instance and on the class
@@ -2569,7 +2572,7 @@ public:
   virtual bool
   operator==(const class_decl&) const;
 
-  /// This implements the traversable::traverse pure virtual
+  /// This implements the traversable_base::traverse pure virtual
   /// function.
   ///
   /// @param v the visitor used on the current instance and on its members.
