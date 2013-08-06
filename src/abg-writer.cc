@@ -610,8 +610,8 @@ static bool
 write_translation_unit(const translation_unit& tu, write_context& ctxt,
 		       unsigned	indent)
 {
-  ostream &o = ctxt.get_ostream();
-  const config &c = ctxt.get_config();
+  ostream& o = ctxt.get_ostream();
+  const config& c = ctxt.get_config();
 
   do_indent(o, indent);
 
@@ -628,10 +628,11 @@ write_translation_unit(const translation_unit& tu, write_context& ctxt,
   else
     o << ">";
 
-  for (translation_unit::decls_type::const_iterator i =
-	 tu.get_global_scope()->get_member_decls().begin();
-       i != tu.get_global_scope()->get_member_decls().end();
-       ++i)
+  typedef scope_decl::declarations 		declarations;
+  typedef typename declarations::const_iterator const_iterator;
+  const declarations& d = tu.get_global_scope()->get_member_decls();
+
+  for (const_iterator i = d.begin(); i != d.end(); ++i)
     {
       o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
@@ -657,14 +658,13 @@ write_translation_unit(const translation_unit& tu, write_context& ctxt,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_type_decl(const shared_ptr<type_decl>	d,
-		write_context&			ctxt,
-		unsigned			indent)
+write_type_decl(const shared_ptr<type_decl> d, write_context& ctxt, 
+		unsigned indent)
 {
   if (!d)
     return false;
 
-  ostream &o = ctxt.get_ostream();
+  ostream& o = ctxt.get_ostream();
 
   do_indent(o, indent);
 
@@ -691,24 +691,24 @@ write_type_decl(const shared_ptr<type_decl>	d,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_namespace_decl(const shared_ptr<namespace_decl>	decl,
-		     write_context&			ctxt,
-		     unsigned				indent)
+write_namespace_decl(const shared_ptr<namespace_decl> decl,
+		     write_context& ctxt, unsigned indent)
 {
   if (!decl)
     return false;
 
-  ostream &o = ctxt.get_ostream();
+  ostream& o = ctxt.get_ostream();
   const config &c = ctxt.get_config();
 
   do_indent(o, indent);
 
   o << "<namespace-decl name='" << decl->get_name() << "'>";
 
-  for (list<shared_ptr<decl_base> >::const_iterator i =
-	 decl->get_member_decls ().begin();
-       i != decl->get_member_decls ().end();
-       ++i)
+  typedef scope_decl::declarations 		declarations;
+  typedef typename declarations::const_iterator const_iterator;
+  const declarations& d = decl->get_member_decls();
+
+  for (const_iterator i = d.begin(); i != d.end(); ++i)
     {
       o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
@@ -738,7 +738,7 @@ write_qualified_type_def(const shared_ptr<qualified_type_def> decl,
   if (!decl)
     return false;
 
-  ostream &o = ctxt.get_ostream();
+  ostream& o = ctxt.get_ostream();
 
   do_indent(o, indent);
 
@@ -778,7 +778,7 @@ write_pointer_type_def(const shared_ptr<pointer_type_def> decl,
   if (!decl)
     return false;
 
-  ostream &o = ctxt.get_ostream();
+  ostream& o = ctxt.get_ostream();
 
   do_indent(o, indent);
 
@@ -812,7 +812,7 @@ write_reference_type_def(const shared_ptr<reference_type_def> decl,
   if (!decl)
     return false;
 
-  ostream &o = ctxt.get_ostream();
+  ostream& o = ctxt.get_ostream();
 
   do_indent(o, indent);
 
@@ -851,7 +851,7 @@ write_enum_type_decl(const shared_ptr<enum_type_decl> decl,
     if (!decl)
     return false;
 
-  ostream &o = ctxt.get_ostream();
+  ostream& o = ctxt.get_ostream();
 
   do_indent(o, indent);
   o << "<enum-decl name='" << decl->get_name() << "'";
@@ -1077,7 +1077,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
       o << ">\n";
 
       unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
-      for (class_decl::base_specs_type::const_iterator base =
+      for (class_decl::base_specs::const_iterator base =
 	     decl->get_base_specifiers().begin();
 	   base != decl->get_base_specifiers().end();
 	   ++base)
@@ -1097,7 +1097,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	    << "'/>\n";
 	}
 
-      for (class_decl::member_types_type::const_iterator ti =
+      for (class_decl::member_types::const_iterator ti =
 	     decl->get_member_types().begin();
 	   ti != decl->get_member_types().end();
 	   ++ti)
@@ -1115,7 +1115,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  o << "</member-type>\n";
 	}
 
-      for (class_decl::data_members_type::const_iterator data =
+      for (class_decl::data_members::const_iterator data =
 	     decl->get_data_members().begin();
 	   data != decl->get_data_members().end();
 	   ++data)
@@ -1140,7 +1140,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  o << "</data-member>\n";
 	}
 
-      for (class_decl::member_functions_type::const_iterator fn =
+      for (class_decl::member_functions::const_iterator fn =
 	     decl->get_member_functions().begin();
 	   fn != decl->get_member_functions().end();
 	   ++fn)
@@ -1159,7 +1159,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  o << "</member-function>\n";
 	}
 
-      for (class_decl::member_function_templates_type::const_iterator fn =
+      for (class_decl::member_function_templates::const_iterator fn =
 	     decl->get_member_function_templates().begin();
 	   fn != decl->get_member_function_templates().end();
 	   ++fn)
@@ -1177,7 +1177,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  o << "</member-template>\n";
 	}
 
-      for (class_decl::member_class_templates_type::const_iterator cl =
+      for (class_decl::member_class_templates::const_iterator cl =
 	     decl->get_member_class_templates().begin();
 	   cl != decl->get_member_class_templates().end();
 	   ++cl)
@@ -1211,10 +1211,9 @@ write_class_decl(const shared_ptr<class_decl> decl,
 /// @param indent the initial indentation to use.
 ///
 /// @return true upon successful completion, false otherwise.
-static bool write_template_type_parameter
-(const shared_ptr<template_type_parameter>	decl,
- write_context&				ctxt,
- unsigned					indent)
+static bool 
+write_template_type_parameter(const shared_ptr<template_type_parameter>	decl,
+			      write_context&  ctxt, unsigned indent)
 {
   if (!decl)
     return false;
@@ -1252,10 +1251,9 @@ static bool write_template_type_parameter
 ///
 /// @return true open successful completion, false otherwise.
 static bool
-write_template_non_type_parameter
-(const shared_ptr<template_non_type_parameter>	decl,
- write_context&				ctxt,
- unsigned					indent)
+write_template_non_type_parameter(
+ const shared_ptr<template_non_type_parameter>	decl,
+ write_context&	ctxt, unsigned indent)
 {
   if (!decl)
     return false;

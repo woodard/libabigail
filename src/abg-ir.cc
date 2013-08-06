@@ -1242,33 +1242,29 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
 		       size_t align_in_bits, location	locus,
 		       visibility vis,
 		       std::list<shared_ptr<base_spec> >& bases,
-		       std::list<shared_ptr<member_type> >& member_types,
-		       std::list<shared_ptr<data_member> >& data_members,
-		       std::list<shared_ptr<member_function> >&	member_fns)
+		       std::list<shared_ptr<member_type> >& mbrs,
+		       std::list<shared_ptr<data_member> >& data_mbrs,
+		       std::list<shared_ptr<member_function> >&	mbr_fns)
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
   scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
   m_hashing_started(false),
   m_is_declaration_only(false),
   m_bases(bases),
-  m_member_types(member_types),
-  m_data_members(data_members),
-  m_member_functions(member_fns)
+  m_member_types(mbrs),
+  m_data_members(data_mbrs),
+  m_member_functions(mbr_fns)
 {
-  for (member_types_type::iterator i = member_types.begin();
-       i != member_types.end();
+  for (member_types::iterator i = mbrs.begin(); i != mbrs.end(); ++i)
+    if (!(*i)->get_scope())
+      add_decl_to_scope(*i, this);
+
+  for (data_members::iterator i = data_mbrs.begin(); i != data_mbrs.end();
        ++i)
     if (!(*i)->get_scope())
       add_decl_to_scope(*i, this);
 
-  for (data_members_type::iterator i = data_members.begin();
-       i != data_members.end();
-       ++i)
-    if (!(*i)->get_scope())
-      add_decl_to_scope(*i, this);
-
-  for (member_functions_type::iterator i = member_fns.begin();
-       i != member_fns.end();
+  for (member_functions::iterator i = mbr_fns.begin(); i != mbr_fns.end();
        ++i)
     if (!(*i)->get_scope())
       add_decl_to_scope(*i, this);
@@ -1558,7 +1554,7 @@ class_decl::operator==(const class_decl& o) const
     return false;
 
   // compare member function templates
-  member_function_templates_type::const_iterator fn_tmpl_it0, fn_tmpl_it1;
+  member_function_templates::const_iterator fn_tmpl_it0, fn_tmpl_it1;
   for (fn_tmpl_it0 = get_member_function_templates().begin(),
 	 fn_tmpl_it1 = o.get_member_function_templates().begin();
        fn_tmpl_it0 != get_member_function_templates().end()
@@ -1571,7 +1567,7 @@ class_decl::operator==(const class_decl& o) const
     return false;
 
   // compare member class templates
-  member_class_templates_type::const_iterator cl_tmpl_it0, cl_tmpl_it1;
+  member_class_templates::const_iterator cl_tmpl_it0, cl_tmpl_it1;
   for (cl_tmpl_it0 = get_member_class_templates().begin(),
 	 cl_tmpl_it1 = o.get_member_class_templates().begin();
        cl_tmpl_it0 != get_member_class_templates().end()
@@ -1591,7 +1587,7 @@ class_decl::traverse(ir_node_visitor& v)
 {
   v.visit(*this);
 
-  for (member_types_type::const_iterator i = get_member_types().begin();
+  for (member_types::const_iterator i = get_member_types().begin();
        i != get_member_types().end();
        ++i)
     {
@@ -1600,7 +1596,7 @@ class_decl::traverse(ir_node_visitor& v)
 	t->traverse(v);
     }
 
-  for (member_function_templates_type::const_iterator i =
+  for (member_function_templates::const_iterator i =
 	 get_member_function_templates().begin();
        i != get_member_function_templates().end();
        ++i)
@@ -1610,7 +1606,7 @@ class_decl::traverse(ir_node_visitor& v)
 	t->traverse(v);
     }
 
-  for (member_class_templates_type::const_iterator i =
+  for (member_class_templates::const_iterator i =
 	 get_member_class_templates().begin();
        i != get_member_class_templates().end();
        ++i)
@@ -1620,7 +1616,7 @@ class_decl::traverse(ir_node_visitor& v)
 	t->traverse(v);
     }
 
-  for (data_members_type::const_iterator i = get_data_members().begin();
+  for (data_members::const_iterator i = get_data_members().begin();
        i != get_data_members().end();
        ++i)
     {
@@ -1629,7 +1625,7 @@ class_decl::traverse(ir_node_visitor& v)
 	t->traverse(v);
     }
 
-  for (member_functions_type::const_iterator i= get_member_functions().begin();
+  for (member_functions::const_iterator i= get_member_functions().begin();
        i != get_member_functions().end();
        ++i)
     {
@@ -1829,14 +1825,14 @@ class_decl_hash::operator()(const class_decl& t) const
     v = hashing::combine_hashes(v, hash_member_fn(**f));
 
   // Hash member function templates
-  for (class_decl::member_function_templates_type::const_iterator f =
+  for (class_decl::member_function_templates::const_iterator f =
 	 t.get_member_function_templates().begin();
        f != t.get_member_function_templates().end();
        ++f)
     v = hashing::combine_hashes(v, hash_member_fn_tmpl(**f));
 
   // Hash member class templates
-  for (class_decl::member_class_templates_type::const_iterator c =
+  for (class_decl::member_class_templates::const_iterator c =
 	 t.get_member_class_templates().begin();
        c != t.get_member_class_templates().end();
        ++c)

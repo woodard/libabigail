@@ -1570,8 +1570,7 @@ build_typedef_decl(read_context&	ctxt,
 /// @return a pointer to class_decl upon successful completion, a null
 /// pointer otherwise.
 static shared_ptr<class_decl>
-build_class_decl(read_context&		ctxt,
-		 const xmlNodePtr	node,
+build_class_decl(read_context& ctxt, const xmlNodePtr node,
 		 bool update_depth_info)
 {
   shared_ptr<class_decl> nil;
@@ -1599,10 +1598,10 @@ build_class_decl(read_context&		ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  class_decl::member_types_type member_types;
-  class_decl::data_members_type data_members;
-  class_decl::member_functions_type member_functions;
-  class_decl::base_specs_type  bases;
+  class_decl::member_types mbrs;
+  class_decl::data_members data_mbrs;
+  class_decl::member_functions mbr_functions;
+  class_decl::base_specs  bases;
 
   shared_ptr<class_decl> decl;
 
@@ -1610,12 +1609,9 @@ build_class_decl(read_context&		ctxt,
   read_is_declaration_only(node, is_decl_only);
 
   if (!is_decl_only)
-    decl.reset(new class_decl(name, size_in_bits,
-			      alignment_in_bits,
-			      loc, vis, bases,
-			      member_types,
-			      data_members,
-			      member_functions));
+    decl.reset(new class_decl(name, size_in_bits, alignment_in_bits,
+			      loc, vis, bases, mbrs, data_mbrs,
+			      mbr_functions));
 
   string def_id;
   bool is_def_of_decl = false;
@@ -1642,9 +1638,7 @@ build_class_decl(read_context&		ctxt,
 
   ctxt.push_decl_to_current_scope(decl, node, update_depth_info);
 
-  for (xmlNodePtr n = node->children;
-       !is_decl_only && n;
-       n = n->next)
+  for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
     {
       if (n->type != XML_ELEMENT_NODE)
 	continue;
