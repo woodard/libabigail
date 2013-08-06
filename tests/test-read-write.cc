@@ -144,7 +144,7 @@ main()
       string input_suffix(s->in_path);
       in_path = abigail::tests::get_src_dir() + "/tests/" + input_suffix;
       abigail::translation_unit tu(input_suffix);
-      if (!abigail::reader::read_file(in_path, tu))
+      if (!abigail::reader::read_file(tu))
 	{
 	  cerr << "failed to read " << in_path << "\n";
 	  is_ok = false;

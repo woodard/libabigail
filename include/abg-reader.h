@@ -31,7 +31,7 @@ namespace abigail
 namespace reader
 {
   bool 
-  read_file(const std::string& file_path, translation_unit& tu);
+  read_file(translation_unit& tu);
 }// end namespace reader
 }// end namespace abigail
 

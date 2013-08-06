@@ -486,10 +486,9 @@ static bool	handle_function_template_decl(read_context&);
 static bool	handle_class_template_decl(read_context&);
 
 bool
-read_file(const string&	file_path,
-	  translation_unit&	tu)
+read_file(translation_unit& tu)
 {
-  read_context read_ctxt(xml::new_reader_from_file(file_path));
+  read_context read_ctxt(xml::new_reader_from_file(tu.get_path()));
 
   return read_input(read_ctxt, tu);
 }

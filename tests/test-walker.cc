@@ -50,7 +50,7 @@ main(int argc, char **argv)
   string file_name = argv[1];
 
   abigail::translation_unit tu(file_name);
-  if (!abigail::reader::read_file(file_name, tu))
+  if (!abigail::reader::read_file(tu))
     {
       cerr << "failed to read " << file_name << "\n";
       return 1;
