@@ -34,7 +34,7 @@ namespace abigail
 /// bundled together as a corpus.  A corpus is thus the Application
 /// binary interface of a program, a library or just a set of modules
 /// put together.
-class abi_corpus
+class corpus
 {
 public:
   typedef std::string					string;
@@ -45,11 +45,11 @@ private:
   string 			m_name;
   translation_units 		m_members;
 
-  abi_corpus();
+  corpus();
 
 public:
 
-  abi_corpus(const string&);
+  corpus(const string&);
 
   void
   add(const translation_unit_sptr);

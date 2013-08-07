@@ -30,7 +30,6 @@ namespace abigail
 /// Namespace for hashing.
 namespace hashing
 {
-
   /// Produce good hash value combining val1 and val2.  
   /// This is copied from tree.c in GCC.
   std::size_t 

@@ -25,7 +25,7 @@
 
 namespace abigail
 {
-/// Namespace for xml.
+/// Internal namespace for xml.
 namespace xml
 {
 
