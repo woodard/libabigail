@@ -29,6 +29,7 @@
 
 namespace abigail
 {
+
 /// Internal namespace for writer.
 namespace writer
 {
@@ -73,18 +74,19 @@ public:
   }
 };
 
+
 typedef unordered_map<shared_ptr<type_base>,
 		      string,
-		      type_shared_ptr_hash,
+		      type_base::shared_ptr_hash,
 		      type_shared_ptr_equal> type_shared_ptr_map;
 
 typedef unordered_map<shared_ptr<function_template_decl>,
 		      string,
-		      fn_tmpl_shared_ptr_hash> fn_tmpl_shared_ptr_map;
+	       function_template_decl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
 
 typedef unordered_map<shared_ptr<class_template_decl>,
 		      string,
-		      class_tmpl_shared_ptr_hash> class_tmpl_shared_ptr_map;
+	       class_template_decl::shared_ptr_hash> class_tmpl_shared_ptr_map;
 
 class write_context
 {
@@ -92,28 +94,20 @@ class write_context
 
 public:
 
-  write_context(ostream& os)
-    : m_ostream(os)
-  {
-  }
+  write_context(ostream& os) : m_ostream(os)
+  { }
 
   const config&
   get_config() const
-  {
-    return m_config;
-  }
+  { return m_config; }
 
   ostream&
   get_ostream()
-  {
-    return m_ostream;
-  }
+  { return m_ostream; }
 
   id_manager&
   get_id_manager()
-  {
-    return m_id_manager;
-  }
+  { return m_id_manager; }
 
   /// @return true iff type has already beend assigned an ID.
   bool

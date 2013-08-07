@@ -57,7 +57,6 @@ namespace abigail
 
   // Inject some types.
   using std::tr1::shared_ptr;
-  using std::tr1::hash;
   using std::string;
 
   // Pull in relational operators.
@@ -97,57 +96,20 @@ namespace abigail
   class var_decl;
 
   // Forward struct declarations.
-  struct class_decl_hash;
-  struct class_template_decl_hash;
-  struct class_tmpl_shared_ptr_hash;
-
-  struct decl_base_hash;
-  struct dynamic_template_parameter_hash;
-  struct dynamic_type_hash;
-  struct enum_type_decl_hash;
-  struct fn_tmpl_shared_ptr_hash;
-  struct function_decl_hash;
-  struct function_template_decl_hash;
-  struct function_type_hash;
-  struct parameter_hash;
-  struct pointer_type_def_hash;
-  struct qualified_type_def_hash;
-  struct reference_type_def_hash;
-  struct scope_type_decl_hash;
-  struct template_decl_hash;
-  struct template_non_type_parameter_hash;
-  struct template_parameter_hash;
-  struct template_parameter_shared_ptr_hash;
-  struct template_template_parameter_hash;
-  struct template_type_parameter_hash;
-  struct type_base_hash;
-  struct type_decl_hash;
-  struct typedef_decl_hash;
-  struct type_shared_ptr_hash;
-  struct var_decl_hash;
-
   struct type_shared_ptr_equal;
-
   struct traversable;
 
   /*
     Nested types in class_decl:
 
     class member;
-    struct member_hash;
     class member_type;
-    struct member_type_hash;
     class base_spec;
-    struct base_spec_hash;
     class data_member;
-    struct data_member_hash;
     class method_decl;
     class member_function;
-    struct member_function_hash;
     class member_function_template;
-    struct member_function_template_hash;
     class member_class_template;
-    struct member_class_template_hash;
   */
 
   void

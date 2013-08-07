@@ -73,29 +73,20 @@ public:
 			shared_ptr<class_template_decl> >::const_iterator
   const_class_tmpl_map_it;
 
-  read_context(xml::reader_sptr reader)
-    : m_depth(0),
-      m_reader(reader)
-  {
-  }
+  read_context(xml::reader_sptr reader) : m_depth(0), m_reader(reader)
+  { }
 
   int
   get_depth() const
-  {
-    return m_depth;
-  }
+  { return m_depth; }
 
   void
   set_depth(int d)
-  {
-    m_depth = d;
-  }
+  { m_depth = d; }
 
   xml::reader_sptr
   get_reader() const
-  {
-    return m_reader;
-  }
+  { return m_reader; }
 
   /// Return the type that is identified by a unique ID.  Note that
   /// for a type to be "identified" by id, the function key_type_decl
@@ -223,8 +214,7 @@ public:
   /// that this returns false if the was already associate to an ID
   /// before.
   bool
-  key_type_decl(shared_ptr<type_base> type,
-		const string&         id)
+  key_type_decl(shared_ptr<type_base> type, const string& id)
   {
     assert(type);
 

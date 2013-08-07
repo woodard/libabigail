@@ -34,7 +34,7 @@ namespace hashing
   /// This is copied from tree.c in GCC.
   std::size_t 
   combine_hashes(std::size_t, std::size_t);
-}//end namespace hash
+}//end namespace hashing
 }//end namespace abigail
 
 #endif //__ABG_HASH_H__
