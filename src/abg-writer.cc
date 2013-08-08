@@ -174,7 +174,7 @@ static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
 static bool write_binding(const shared_ptr<decl_base>&, ostream&);
 static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
 static void write_access(class_decl::access_specifier, ostream&);
-static void write_access(shared_ptr<class_decl::member>, ostream&);
+static void write_access(shared_ptr<class_decl::member_base>, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::data_member>, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, ostream&);
@@ -485,7 +485,7 @@ write_layout_offset(shared_ptr<class_decl::base_spec> base, ostream& o)
 ///
 /// @param o the ostream to serialize the member to.
 static void
-write_access(shared_ptr<class_decl::member> member, ostream& o)
+write_access(shared_ptr<class_decl::member_base> member, ostream& o)
 {
   write_access(member->get_access_specifier(), o);
 }

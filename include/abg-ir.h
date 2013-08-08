@@ -474,8 +474,7 @@ struct type_shared_ptr_equal
 
 /// A basic type declaration that introduces no scope.
 class type_decl 
-: public virtual decl_base, 
-  public virtual type_base
+: public virtual decl_base, public virtual type_base
 {
   // Forbidden.
   type_decl();
@@ -1627,19 +1626,19 @@ public:
   /// functions.  Its purpose is to mainly to carry the access
   /// specifier (and possibly other properties that might be shared by
   /// all class members) for the member.
-  class member
+  class member_base
   {
     enum access_specifier	m_access;
     bool			m_is_static;
 
     // Forbidden
-    member();
+    member_base();
 
   public:
     /// Hasher.
     struct hash;
 
-    member(access_specifier a, bool is_static = false)
+    member_base(access_specifier a, bool is_static = false)
     : m_access(a), m_is_static(is_static)
     { }
 
@@ -1652,7 +1651,7 @@ public:
     { return m_is_static; }
 
     bool
-    operator==(const member& o) const
+    operator==(const member_base& o) const
     {
       return (get_access_specifier() == o.get_access_specifier()
 	      && is_static() == o.is_static());
@@ -1660,7 +1659,7 @@ public:
   };
 
   /// Abstracts a member type declaration.
-  class member_type : public member, public virtual decl_base
+  class member_type : public member_base, public virtual decl_base
   {
     shared_ptr<type_base> m_type;
 
@@ -1672,13 +1671,13 @@ public:
     struct hash;
 
     member_type(shared_ptr<type_base> t, access_specifier access)
-    : decl_base("", location()), member(access), m_type(t)
+    : decl_base("", location()), member_base(access), m_type(t)
     { }
 
     bool
     operator==(const member_type& o) const
     {
-      return (*as_type() == *o.as_type() && static_cast<member>(*this) == o);
+      return (*as_type() == *o.as_type() && static_cast<member_base>(*this) == o);
     }
 
     operator shared_ptr<type_base>() const
@@ -1691,7 +1690,7 @@ public:
 
 
   /// Abstraction of a base specifier in a class declaration.
-  class base_spec : public member
+  class base_spec : public member_base
   {
 
     shared_ptr<class_decl> m_base_class;
@@ -1756,7 +1755,7 @@ public:
     bool
     operator==(const base_spec& other) const
     {
-      return (static_cast<member>(*this) == other
+      return (static_cast<member_base>(*this) == other
 	      && *get_base_class() == *other.get_base_class());
     }
   };
@@ -1764,7 +1763,7 @@ public:
 
   /// Abstract a data member declaration in a class declaration.
   class data_member 
-  : public var_decl, public member
+  : public var_decl, public member_base
   {
     bool 		m_is_laid_out;
     size_t 		m_offset_in_bits;
@@ -1800,7 +1799,7 @@ public:
 	       data_member->get_mangled_name(),
 	       data_member->get_visibility(),
 	       data_member->get_binding()),
-      member(access, is_static),
+      member_base(access, is_static),
       m_is_laid_out(is_laid_out),
       m_offset_in_bits(offset_in_bits)
     { }
@@ -1840,7 +1839,7 @@ public:
 		size_t offset_in_bits)
     : decl_base(name, locus, mangled_name, vis),
       var_decl(name, type, locus, mangled_name, vis, bind),
-      member(access, is_static),
+      member_base(access, is_static),
       m_is_laid_out(is_laid_out),
       m_offset_in_bits(offset_in_bits)
     { }
@@ -1859,7 +1858,7 @@ public:
       return (is_laid_out() == other.is_laid_out()
 	      && get_offset_in_bits() == other.get_offset_in_bits()
 	      && static_cast<var_decl>(*this) ==other
-	      && static_cast<member>(*this) == other);
+	      && static_cast<member_base>(*this) == other);
     }
 
     /// This implements the traversable_base::traverse pure virtual
@@ -2002,7 +2001,7 @@ public:
   };
 
   /// Abstracts a member function declaration in a class declaration.
-  class member_function : public method_decl, public member
+  class member_function : public method_decl, public member_base
   {
     size_t m_vtable_offset_in_bits;
     bool m_is_constructor;
@@ -2039,7 +2038,7 @@ public:
 		  ftype_size_in_bits, ftype_align_in_bits,
 		  declared_inline, locus,
 		  mangled_name, vis, bind),
-      member(access, is_static),
+      member_base(access, is_static),
       m_vtable_offset_in_bits(vtable_offset_in_bits),
       m_is_constructor(is_constructor),
       m_is_destructor(is_destructor),
@@ -2062,7 +2061,7 @@ public:
 		    fn->get_mangled_name(),
 		    fn->get_visibility(),
 		    fn->get_binding()),
-      member(access, is_static),
+      member_base(access, is_static),
       m_vtable_offset_in_bits(vtable_offset_in_bits),
       m_is_constructor(is_constructor),
       m_is_destructor(is_destructor),
@@ -2119,7 +2118,7 @@ public:
 	      && is_constructor() == o.is_constructor()
 	      && is_destructor() == o.is_destructor()
 	      && is_const() == o.is_const()
-	      && static_cast<member>(*this) == o
+	      && static_cast<member_base>(*this) == o
 	      && static_cast<function_decl>(*this) == o);
     }
 
@@ -2134,7 +2133,7 @@ public:
 
   /// Abstract a member function template.
   class member_function_template
-  : public member, public virtual traversable_base
+  : public member_base, public virtual traversable_base
   {
     bool m_is_constructor;
     bool m_is_const;
@@ -2153,7 +2152,7 @@ public:
      bool				is_static,
      bool				is_constructor,
      bool				is_const)
-      : member(access, is_static),
+      : member_base(access, is_static),
 	m_is_constructor(is_constructor),
 	m_is_const(is_const),
 	m_fn_tmpl(f)
@@ -2188,7 +2187,7 @@ public:
 
   /// Abstracts a member class template template
   class member_class_template 
-  : public member, public virtual traversable_base
+  : public member_base, public virtual traversable_base
   {
     shared_ptr<class_template_decl> m_class_tmpl;
 
@@ -2202,7 +2201,7 @@ public:
 
     member_class_template(shared_ptr<class_template_decl> c,
 			  access_specifier access, bool is_static)
-    : member(access, is_static), m_class_tmpl(c)
+    : member_base(access, is_static), m_class_tmpl(c)
     { }
 
     operator const class_template_decl& () const

@@ -322,10 +322,10 @@ struct method_type::hash
   }
 };
 
-struct class_decl::member::hash
+struct class_decl::member_base::hash
 {
   size_t
-  operator()(const member& m) const
+  operator()(const member_base& m) const
   {
     std::tr1::hash<int> hash_int;
     return hash_int(m.get_access_specifier());
@@ -337,7 +337,7 @@ struct class_decl::member_type::hash
   size_t
   operator()(const member_type& t)const
   {
-    member::hash hash_member;
+    member_base::hash hash_member;
     type_base::shared_ptr_hash hash_type;
     
     size_t v = hash_member(t);
@@ -351,7 +351,7 @@ struct class_decl::base_spec::hash
   size_t
   operator()(const base_spec& t) const
   {
-    member::hash hash_member;
+    member_base::hash hash_member;
     type_base::shared_ptr_hash hash_type_ptr;
     
     size_t v = hash_member(t);
@@ -367,7 +367,7 @@ struct class_decl::data_member::hash
   {
     std::tr1::hash<size_t> hash_size_t;
     var_decl::hash hash_var_decl;
-    member::hash hash_member;
+    member_base::hash hash_member;
     
     size_t v = hash_member(t);
     v = hashing::combine_hashes(v, hash_var_decl(t));
@@ -385,7 +385,7 @@ struct class_decl::member_function::hash
   {
     std::tr1::hash<bool> hash_bool;
     std::tr1::hash<size_t> hash_size_t;
-    member::hash hash_member;
+    member_base::hash hash_member;
     function_decl::hash hash_fn;
     
     size_t v = hash_member(t);
@@ -408,7 +408,7 @@ struct class_decl::member_function_template::hash
   {
     std::tr1::hash<bool> hash_bool;
     function_template_decl::hash hash_function_template_decl;
-    member::hash hash_member;
+    member_base::hash hash_member;
     
     size_t v = hash_member(t);
     v = hashing::combine_hashes(v, hash_function_template_decl(t));
@@ -424,7 +424,7 @@ struct class_decl::member_class_template::hash
   size_t
   operator()(member_class_template& t) const
   {
-    member::hash hash_member;
+    member_base::hash hash_member;
     class_template_decl::hash hash_class_template_decl;
     
     size_t v = hash_member(t);

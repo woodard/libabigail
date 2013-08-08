@@ -1051,7 +1051,7 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
-  : member(a),
+  : member_base(a),
     m_base_class(base),
     m_offset_in_bits(offset_in_bits),
     m_is_virtual(is_virtual)
@@ -1062,7 +1062,7 @@ class_decl::base_spec::base_spec(shared_ptr<type_base> base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
-  : member(a),
+  : member_base(a),
     m_base_class(dynamic_pointer_cast<class_decl>(base)),
     m_offset_in_bits(offset_in_bits),
     m_is_virtual(is_virtual)
@@ -1173,7 +1173,7 @@ class_decl::member_function::member_function
 		fn->get_mangled_name(),
 		fn->get_visibility(),
 		fn->get_binding()),
-    member(access, is_static),
+    member_base(access, is_static),
   m_vtable_offset_in_bits(vtable_offset_in_bits),
   m_is_constructor(is_constructor),
   m_is_destructor(is_destructor),
@@ -1383,7 +1383,7 @@ class_decl::member_function_template::operator==
 {
   if (!(is_constructor() == o.is_constructor()
 	&& is_const() == o.is_const()
-	&& static_cast<member>(*this) == o))
+	&& static_cast<member_base>(*this) == o))
     return false;
 
   if (as_function_template_decl())
@@ -1403,7 +1403,7 @@ bool
 class_decl::member_class_template::operator==
 (const member_class_template& o) const
 {
-  if (!(static_cast<member>(*this) == o))
+  if (!(static_cast<member_base>(*this) == o))
     return false;
 
   if (as_class_template_decl())
