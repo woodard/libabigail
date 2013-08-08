@@ -1622,607 +1622,17 @@ public:
     public_access
   };
 
-  /// The base class for member types, data members and member
-  /// functions.  Its purpose is to mainly to carry the access
-  /// specifier (and possibly other properties that might be shared by
-  /// all class members) for the member.
-  class member_base
-  {
-    enum access_specifier	m_access;
-    bool			m_is_static;
-
-    // Forbidden
-    member_base();
-
-  public:
-    /// Hasher.
-    struct hash;
-
-    member_base(access_specifier a, bool is_static = false)
-    : m_access(a), m_is_static(is_static)
-    { }
-
-    access_specifier
-    get_access_specifier() const
-    { return m_access; }
-
-    bool
-    is_static() const
-    { return m_is_static; }
-
-    bool
-    operator==(const member_base& o) const
-    {
-      return (get_access_specifier() == o.get_access_specifier()
-	      && is_static() == o.is_static());
-    }
-  };
-
-  /// Abstracts a member type declaration.
-  class member_type : public member_base, public virtual decl_base
-  {
-    shared_ptr<type_base> m_type;
-
-    //Forbidden
-    member_type();
-
-  public:
-    // Hasher.
-    struct hash;
-
-    member_type(shared_ptr<type_base> t, access_specifier access)
-    : decl_base("", location()), member_base(access), m_type(t)
-    { }
-
-    bool
-    operator==(const member_type& o) const
-    {
-      return (*as_type() == *o.as_type() && static_cast<member_base>(*this) == o);
-    }
-
-    operator shared_ptr<type_base>() const
-    { return m_type; }
-
-    shared_ptr<type_base>
-    as_type() const
-    { return m_type; }
-  };
-
-
-  /// Abstraction of a base specifier in a class declaration.
-  class base_spec : public member_base
-  {
-
-    shared_ptr<class_decl> m_base_class;
-    long m_offset_in_bits;
-    bool m_is_virtual;
-
-    // Forbidden
-    base_spec();
-
-  public:
-
-    /// Hasher.
-    struct hash;
-
-    /// Constructor for base_spec instances.
-    ///
-    /// @param base the base class to consider
-    ///
-    /// @param a the access specifier of the base class.
-    ///
-    /// @param offset_in_bits if positive or null, represents the offset
-    /// of the base in the layout of its containing type..  If negative,
-    /// means that the current base is not laid out in its containing type.
-    ///
-    /// @param is_virtual if true, means that the current base class is
-    /// virtual in it's containing type.
-    base_spec(shared_ptr<class_decl> base, access_specifier a,
-	      long offset_in_bits = -1, bool is_virtual = false);
-
-    /// Constructor for base_spec instances.
-    ///
-    /// Note that this constructor is for clients that don't support RTTI
-    /// and that have a base class of type_base, but of dynamic type
-    /// class_decl.
-    ///
-    /// @param base the base class to consider.  Must be a pointer to an
-    /// instance of class_decl
-    ///
-    /// @param a the access specifier of the base class.
-    ///
-    /// @param offset_in_bits if positive or null, represents the offset
-    /// of the base in the layout of its containing type..  If negative,
-    /// means that the current base is not laid out in its containing type.
-    ///
-    /// @param is_virtual if true, means that the current base class is
-    /// virtual in it's containing type.
-    base_spec(shared_ptr<type_base> base, access_specifier a,
-	      long offset_in_bits = -1, bool is_virtual = false);
-
-    const shared_ptr<class_decl>
-    get_base_class() const
-    { return m_base_class; }
-
-    bool
-    get_is_virtual() const
-    { return m_is_virtual; }
-
-    long
-    get_offset_in_bits() const
-    { return m_offset_in_bits; }
-
-    bool
-    operator==(const base_spec& other) const
-    {
-      return (static_cast<member_base>(*this) == other
-	      && *get_base_class() == *other.get_base_class());
-    }
-  };
-
-
-  /// Abstract a data member declaration in a class declaration.
-  class data_member 
-  : public var_decl, public member_base
-  {
-    bool 		m_is_laid_out;
-    size_t 		m_offset_in_bits;
-
-    // Forbidden
-    data_member();
-
-  public:
-    
-    /// Hasher.
-    struct hash;
-
-    /// Constructor for instances of class_decl::data_member.
-    ///
-    /// @param data_member the variable to be used as data member.
-    ///
-    /// @param access the access specifier for the data member.
-    ///
-    /// @param is_laid_out set to true if the data member has been laid out.
-    ///
-    /// @param is_static set ot true if the data member is static.
-    ///
-    /// @param offset_in_bits the offset of the data member, expressed in bits.
-    data_member(shared_ptr<var_decl> data_member, access_specifier access,
-		bool is_laid_out, bool is_static, size_t offset_in_bits)
-    : decl_base(data_member->get_name(),
-		data_member->get_location(),
-		data_member->get_mangled_name(),
-		data_member->get_visibility()),
-      var_decl(data_member->get_name(),
-	       data_member->get_type(),
-	       data_member->get_location(),
-	       data_member->get_mangled_name(),
-	       data_member->get_visibility(),
-	       data_member->get_binding()),
-      member_base(access, is_static),
-      m_is_laid_out(is_laid_out),
-      m_offset_in_bits(offset_in_bits)
-    { }
-
-
-    /// Constructor for instances of class_decl::data_member.
-    ///
-    /// @param name the name of the data member.
-    ///
-    /// @param type the type of the data member.
-    ///
-    /// @param access the access specifier for the data member.
-    ///
-    /// @param locus the source location of the data member.
-    ///
-    /// @param mangled_name the mangled name of the data member, or an
-    /// empty string if not applicable.
-    ///
-    /// @param vis the visibility of the data member.
-    ///
-    /// @param bind the binding of the data member.
-    ///
-    /// @param is_laid_out set to true if the data member has been laid out.
-    ///
-    /// @param is_static set ot true if the data member is static.
-    ///
-    /// @param offset_in_bits the offset of the data member, expressed in bits.
-    data_member(const std::string& name,
-		shared_ptr<type_base>& type,
-		access_specifier access,
-		location locus,
-		const std::string& mangled_name,
-		visibility vis,
-		binding	bind,
-		bool is_laid_out,
-		bool is_static,
-		size_t offset_in_bits)
-    : decl_base(name, locus, mangled_name, vis),
-      var_decl(name, type, locus, mangled_name, vis, bind),
-      member_base(access, is_static),
-      m_is_laid_out(is_laid_out),
-      m_offset_in_bits(offset_in_bits)
-    { }
-
-    bool
-    is_laid_out() const
-    { return m_is_laid_out; }
-
-    size_t
-    get_offset_in_bits() const
-    { return m_offset_in_bits; }
-
-    bool
-    operator==(const data_member& other) const
-    {
-      return (is_laid_out() == other.is_laid_out()
-	      && get_offset_in_bits() == other.get_offset_in_bits()
-	      && static_cast<var_decl>(*this) ==other
-	      && static_cast<member_base>(*this) == other);
-    }
-
-    /// This implements the traversable_base::traverse pure virtual
-    /// function.
-    ///
-    /// @param v the visitor used on the current instance.
-   void
-   traverse(ir_node_visitor&);
-
-    virtual ~data_member();
-  };
-
-
-  /// Abstraction of the declaration of a method. This is an
-  /// implementation detail for class_decl::member_function.
-  class method_decl : public function_decl
-  {
-    method_decl();
-
-  public:
-
-    /// A constructor for instances of class_decl::method_decl.
-    ///
-    /// @param name the name of the method.
-    ///
-    /// @param parms the parameters of the method
-    ///
-    /// @param return_type the return type of the method.
-    ///
-    /// @param class_type the type of the class the method belongs to.
-    ///
-    /// @param ftype_size_in_bits the size of instances of
-    /// class_decl::method_decl, expressed in bits.
-    ///
-    /// @param ftype_align_in_bits the alignment of instance of
-    /// class_decl::method_decl, expressed in bits.
-    ///
-    /// @param declared_inline whether the method was declared inline or
-    /// not.
-    ///
-    /// @param locus the source location of the method.
-    ///
-    /// @param mangled_name the mangled name of the method.
-    ///
-    /// @param vis the visibility of the method.
-    ///
-    /// @param bind the binding of the method.
-    method_decl(const std::string&  name,
-		const std::vector<shared_ptr<parameter> >& parms,
-		shared_ptr<type_base> return_type,
-		shared_ptr<class_decl> class_type,
-		size_t	ftype_size_in_bits,
-		size_t ftype_align_in_bits,
-		bool declared_inline,
-		location locus,
-		const std::string& mangled_name = "",
-		visibility vis = VISIBILITY_DEFAULT,
-		binding bind = BINDING_GLOBAL);
-
-    /// A constructor for instances of class_decl::method_decl.
-    ///
-    /// @param name the name of the method.
-    ///
-    /// @param type the type of the method.
-    ///
-    /// @param declared_inline whether the method was
-    /// declared inline or not.
-    ///
-    /// @param locus the source location of the method.
-    ///
-    /// @param mangled_name the mangled name of the method.
-    ///
-    /// @param vis the visibility of the method.
-    ///
-    /// @param bind the binding of the method.
-    method_decl(const std::string& name, shared_ptr<method_type> type,
-		bool declared_inline, location locus,
-		const std::string& mangled_name = "",
-		visibility vis = VISIBILITY_DEFAULT,
-		binding	bind = BINDING_GLOBAL);
-
-    /// A constructor for instances of class_decl::method_decl.
-    ///
-    /// @param name the name of the method.
-    ///
-    /// @param type the type of the method.  Must be an instance of
-    /// method_type.
-    ///
-    /// @param declared_inline whether the method was
-    /// declared inline or not.
-    ///
-    /// @param locus the source location of the method.
-    ///
-    /// @param mangled_name the mangled name of the method.
-    ///
-    /// @param vis the visibility of the method.
-    ///
-    /// @param bind the binding of the method.
-    method_decl(const std::string& name,
-		shared_ptr<function_type> type,
-		bool declared_inline,
-		location locus,
-		const std::string& mangled_name = "",
-		visibility vis  = VISIBILITY_DEFAULT,
-		binding	bind = BINDING_GLOBAL);
-
-    /// A constructor for instances of class_decl::method_decl.
-    ///
-    /// @param name the name of the method.
-    ///
-    /// @param type the type of the method.  Must be an instance of
-    /// method_type.
-    ///
-    /// @param declared_inline whether the method was
-    /// declared inline or not.
-    ///
-    /// @param locus the source location of the method.
-    ///
-    /// @param mangled_name the mangled name of the method.
-    ///
-    /// @param vis the visibility of the method.
-    ///
-    /// @param bind the binding of the method.
-    method_decl(const std::string& name, shared_ptr<type_base> type,
-		bool declared_inline, location locus,
-		const std::string& mangled_name = "",
-		visibility vis = VISIBILITY_DEFAULT,
-		binding bind = BINDING_GLOBAL);
-
-    /// @return the type of the current instance of the
-    /// class_decl::method_decl.
-    const shared_ptr<method_type>
-    get_type() const;
-
-    void
-    set_type(shared_ptr<method_type> fn_type)
-    {function_decl::set_type(fn_type); }
-
-    virtual ~method_decl();
-  };
-
-  /// Abstracts a member function declaration in a class declaration.
-  class member_function : public method_decl, public member_base
-  {
-    size_t m_vtable_offset_in_bits;
-    bool m_is_constructor;
-    bool m_is_destructor;
-    bool m_is_const;
-
-    // Forbidden
-    member_function();
-
-  public:
-
-    /// Hasher.
-    struct hash;
-
-    member_function(const std::string&	name,
-		    std::vector<shared_ptr<parameter> > parms,
-		    shared_ptr<type_base>	return_type,
-		    shared_ptr<class_decl>	class_type,
-		    size_t			ftype_size_in_bits,
-		    size_t			ftype_align_in_bits,
-		    access_specifier		access,
-		    bool			declared_inline,
-		    location			locus,
-		    const std::string&	mangled_name,
-		    visibility		vis,
-		    binding			bind,
-		    size_t			vtable_offset_in_bits,
-		    bool			is_static,
-		    bool			is_constructor,
-		    bool			is_destructor,
-		    bool			is_const)
-      : decl_base(name, locus, name, vis),
-      method_decl(name, parms, return_type, class_type,
-		  ftype_size_in_bits, ftype_align_in_bits,
-		  declared_inline, locus,
-		  mangled_name, vis, bind),
-      member_base(access, is_static),
-      m_vtable_offset_in_bits(vtable_offset_in_bits),
-      m_is_constructor(is_constructor),
-      m_is_destructor(is_destructor),
-      m_is_const(is_const)
-    { }
-
-    member_function(shared_ptr<method_decl>	fn,
-		    access_specifier		access,
-		    size_t			vtable_offset_in_bits,
-		    bool			is_static,
-		    bool			is_constructor,
-		    bool			is_destructor,
-		    bool			is_const)
-      : decl_base(fn->get_name(), fn->get_location(),
-		  fn->get_mangled_name(), fn->get_visibility()),
-	method_decl(fn->get_name(),
-		    fn->get_type(),
-		    fn->is_declared_inline(),
-		    fn->get_location(),
-		    fn->get_mangled_name(),
-		    fn->get_visibility(),
-		    fn->get_binding()),
-      member_base(access, is_static),
-      m_vtable_offset_in_bits(vtable_offset_in_bits),
-      m_is_constructor(is_constructor),
-      m_is_destructor(is_destructor),
-      m_is_const(is_const)
-    { }
-
-    /// Constructor for instances of class_decl::member_function.
-    ///
-    /// @param fn the method decl to be used as a member function.  This
-    /// must be an intance of class_decl::method_decl.
-    ///
-    /// @param access the access specifier for the member function.
-    ///
-    /// @param vtable_offset_in_bits the offset of the this member
-    /// function in the vtable, or zero.
-    ///
-    /// @param is_static set to true if this member function is static.
-    ///
-    /// @param is_constructor set to true if this member function is a
-    /// constructor.
-    ///
-    /// @param is_destructor set to true if this member function is a
-    /// destructor.
-    ///
-    /// @param is_const set to true if this member function is const.
-    member_function(shared_ptr<function_decl>	fn,
-		    access_specifier		access,
-		    size_t			vtable_offset_in_bits,
-		    bool			is_static,
-		    bool			is_constructor,
-		    bool			is_destructor,
-		    bool			is_const);
-
-    size_t
-    get_vtable_offset_in_bits() const
-    { return m_vtable_offset_in_bits; }
-
-    bool
-    is_constructor() const
-    { return m_is_constructor; }
-
-    bool
-    is_destructor() const
-    { return m_is_destructor; }
-
-    bool
-    is_const() const
-    { return m_is_const; }
-
-    bool
-    operator==(const member_function& o) const
-    {
-      return (get_vtable_offset_in_bits() == o.get_vtable_offset_in_bits()
-	      && is_constructor() == o.is_constructor()
-	      && is_destructor() == o.is_destructor()
-	      && is_const() == o.is_const()
-	      && static_cast<member_base>(*this) == o
-	      && static_cast<function_decl>(*this) == o);
-    }
-
-    /// This implements the traversable_base::traverse pure virtual
-    /// function.
-    ///
-    /// @param v the visitor used on the current instance.
-    void
-    traverse(ir_node_visitor& v);
-  };
-
-
-  /// Abstract a member function template.
-  class member_function_template
-  : public member_base, public virtual traversable_base
-  {
-    bool m_is_constructor;
-    bool m_is_const;
-    shared_ptr<function_template_decl> m_fn_tmpl;
-
-    // Forbiden
-    member_function_template();
-
-  public:
-    /// Hasher.
-    struct hash;
-
-    member_function_template
-    (shared_ptr<function_template_decl> f,
-     access_specifier			access,
-     bool				is_static,
-     bool				is_constructor,
-     bool				is_const)
-      : member_base(access, is_static),
-	m_is_constructor(is_constructor),
-	m_is_const(is_const),
-	m_fn_tmpl(f)
-    { }
-
-    bool
-    is_constructor() const
-    { return m_is_constructor; }
-
-    bool
-    is_const() const
-    { return m_is_const; }
-
-    operator const function_template_decl& () const
-    { return *m_fn_tmpl; }
-
-    shared_ptr<function_template_decl>
-    as_function_template_decl() const
-    { return m_fn_tmpl; }
-
-    bool
-    operator==(const member_function_template& o) const;
-
-    /// This implements the traversable_base::traverse pure virtual
-    /// function.
-    ///
-    /// @param v the visitor used on the current instance and on its
-    /// underlying function template.
-    void
-    traverse(ir_node_visitor&);
-  };
-
-  /// Abstracts a member class template template
-  class member_class_template 
-  : public member_base, public virtual traversable_base
-  {
-    shared_ptr<class_template_decl> m_class_tmpl;
-
-    // Forbidden
-    member_class_template();
-
-  public:
-
-    /// Hasher.
-    struct hash;
-
-    member_class_template(shared_ptr<class_template_decl> c,
-			  access_specifier access, bool is_static)
-    : member_base(access, is_static), m_class_tmpl(c)
-    { }
-
-    operator const class_template_decl& () const
-    { return *m_class_tmpl; }
-
-    shared_ptr<class_template_decl>
-    as_class_template_decl() const
-    { return m_class_tmpl; }
-
-    bool
-    operator==(const member_class_template& o) const;
-
-    /// This implements the traversable_base::traverse pure virtual
-    /// function.
-    ///
-    /// @param v the visitor used on the current instance and on the class
-    /// pattern of the template.
-    void
-    traverse(ir_node_visitor& v);
-  };
-
+  /// Forward declarations.
+  class member_base;
+  class member_type;
+  class base_spec;
+  class data_member;
+  class method_decl;
+  class member_function;
+  class member_function_template;
+  class member_class_template;
+
+  /// Typedefs.
   typedef std::list<shared_ptr<base_spec> > 		base_specs;
   typedef std::list<shared_ptr<member_type> > 		member_types;
   typedef std::list<shared_ptr<data_member> > 		data_members;
@@ -2403,6 +1813,610 @@ public:
   traverse(ir_node_visitor& v);
 
   virtual ~class_decl();
+};
+
+
+/// The base class for member types, data members and member
+/// functions.  Its purpose is to mainly to carry the access
+/// specifier (and possibly other properties that might be shared by
+/// all class members) for the member.
+class class_decl::member_base
+{
+  enum access_specifier	m_access;
+  bool			m_is_static;
+
+  // Forbidden
+  member_base();
+
+public:
+  /// Hasher.
+  struct hash;
+
+  member_base(access_specifier a, bool is_static = false)
+    : m_access(a), m_is_static(is_static)
+  { }
+
+  access_specifier
+  get_access_specifier() const
+  { return m_access; }
+
+  bool
+  is_static() const
+  { return m_is_static; }
+
+  bool
+  operator==(const member_base& o) const
+  {
+    return (get_access_specifier() == o.get_access_specifier()
+	    && is_static() == o.is_static());
+  }
+};
+
+/// Abstracts a member type declaration.
+class class_decl::member_type : public member_base, public virtual decl_base
+{
+  shared_ptr<type_base> m_type;
+
+  //Forbidden
+  member_type();
+
+public:
+  // Hasher.
+  struct hash;
+
+  member_type(shared_ptr<type_base> t, access_specifier access)
+    : decl_base("", location()), member_base(access), m_type(t)
+  { }
+
+  bool
+  operator==(const member_type& o) const
+  {
+    return (*as_type() == *o.as_type() && static_cast<member_base>(*this) == o);
+  }
+
+  operator shared_ptr<type_base>() const
+  { return m_type; }
+
+  shared_ptr<type_base>
+  as_type() const
+  { return m_type; }
+};
+
+/// Abstraction of a base specifier in a class declaration.
+class class_decl::base_spec : public member_base
+{
+
+  shared_ptr<class_decl> m_base_class;
+  long m_offset_in_bits;
+  bool m_is_virtual;
+
+  // Forbidden
+  base_spec();
+
+public:
+
+  /// Hasher.
+  struct hash;
+
+  /// Constructor for base_spec instances.
+  ///
+  /// @param base the base class to consider
+  ///
+  /// @param a the access specifier of the base class.
+  ///
+  /// @param offset_in_bits if positive or null, represents the offset
+  /// of the base in the layout of its containing type..  If negative,
+  /// means that the current base is not laid out in its containing type.
+  ///
+  /// @param is_virtual if true, means that the current base class is
+  /// virtual in it's containing type.
+  base_spec(shared_ptr<class_decl> base, access_specifier a,
+	    long offset_in_bits = -1, bool is_virtual = false);
+
+  /// Constructor for base_spec instances.
+  ///
+  /// Note that this constructor is for clients that don't support RTTI
+  /// and that have a base class of type_base, but of dynamic type
+  /// class_decl.
+  ///
+  /// @param base the base class to consider.  Must be a pointer to an
+  /// instance of class_decl
+  ///
+  /// @param a the access specifier of the base class.
+  ///
+  /// @param offset_in_bits if positive or null, represents the offset
+  /// of the base in the layout of its containing type..  If negative,
+  /// means that the current base is not laid out in its containing type.
+  ///
+  /// @param is_virtual if true, means that the current base class is
+  /// virtual in it's containing type.
+  base_spec(shared_ptr<type_base> base, access_specifier a,
+	    long offset_in_bits = -1, bool is_virtual = false);
+
+  const shared_ptr<class_decl>
+  get_base_class() const
+  { return m_base_class; }
+
+  bool
+  get_is_virtual() const
+  { return m_is_virtual; }
+
+  long
+  get_offset_in_bits() const
+  { return m_offset_in_bits; }
+
+  bool
+  operator==(const base_spec& other) const
+  {
+    return (static_cast<member_base>(*this) == other
+	    && *get_base_class() == *other.get_base_class());
+  }
+};
+
+
+/// Abstract a data member declaration in a class declaration.
+class class_decl::data_member 
+: public var_decl, public member_base
+{
+  bool 		m_is_laid_out;
+  size_t 		m_offset_in_bits;
+
+  // Forbidden
+  data_member();
+
+public:
+    
+  /// Hasher.
+  struct hash;
+
+  /// Constructor for instances of class_decl::data_member.
+  ///
+  /// @param data_member the variable to be used as data member.
+  ///
+  /// @param access the access specifier for the data member.
+  ///
+  /// @param is_laid_out set to true if the data member has been laid out.
+  ///
+  /// @param is_static set ot true if the data member is static.
+  ///
+  /// @param offset_in_bits the offset of the data member, expressed in bits.
+  data_member(shared_ptr<var_decl> data_member, access_specifier access,
+	      bool is_laid_out, bool is_static, size_t offset_in_bits)
+    : decl_base(data_member->get_name(),
+		data_member->get_location(),
+		data_member->get_mangled_name(),
+		data_member->get_visibility()),
+      var_decl(data_member->get_name(),
+	       data_member->get_type(),
+	       data_member->get_location(),
+	       data_member->get_mangled_name(),
+	       data_member->get_visibility(),
+	       data_member->get_binding()),
+      member_base(access, is_static),
+    m_is_laid_out(is_laid_out),
+    m_offset_in_bits(offset_in_bits)
+  { }
+
+
+  /// Constructor for instances of class_decl::data_member.
+  ///
+  /// @param name the name of the data member.
+  ///
+  /// @param type the type of the data member.
+  ///
+  /// @param access the access specifier for the data member.
+  ///
+  /// @param locus the source location of the data member.
+  ///
+  /// @param mangled_name the mangled name of the data member, or an
+  /// empty string if not applicable.
+  ///
+  /// @param vis the visibility of the data member.
+  ///
+  /// @param bind the binding of the data member.
+  ///
+  /// @param is_laid_out set to true if the data member has been laid out.
+  ///
+  /// @param is_static set ot true if the data member is static.
+  ///
+  /// @param offset_in_bits the offset of the data member, expressed in bits.
+  data_member(const std::string& name,
+	      shared_ptr<type_base>& type,
+	      access_specifier access,
+	      location locus,
+	      const std::string& mangled_name,
+	      visibility vis,
+	      binding	bind,
+	      bool is_laid_out,
+	      bool is_static,
+	      size_t offset_in_bits)
+    : decl_base(name, locus, mangled_name, vis),
+      var_decl(name, type, locus, mangled_name, vis, bind),
+      member_base(access, is_static),
+      m_is_laid_out(is_laid_out),
+      m_offset_in_bits(offset_in_bits)
+  { }
+
+  bool
+  is_laid_out() const
+  { return m_is_laid_out; }
+
+  size_t
+  get_offset_in_bits() const
+  { return m_offset_in_bits; }
+
+  bool
+  operator==(const data_member& other) const
+  {
+    return (is_laid_out() == other.is_laid_out()
+	    && get_offset_in_bits() == other.get_offset_in_bits()
+	    && static_cast<var_decl>(*this) ==other
+	    && static_cast<member_base>(*this) == other);
+  }
+
+  /// This implements the traversable_base::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
+  void
+  traverse(ir_node_visitor&);
+
+  virtual ~data_member();
+};
+
+
+/// Abstraction of the declaration of a method. This is an
+/// implementation detail for class_decl::member_function.
+class class_decl::method_decl : public function_decl
+{
+  method_decl();
+
+public:
+
+  /// A constructor for instances of class_decl::method_decl.
+  ///
+  /// @param name the name of the method.
+  ///
+  /// @param parms the parameters of the method
+  ///
+  /// @param return_type the return type of the method.
+  ///
+  /// @param class_type the type of the class the method belongs to.
+  ///
+  /// @param ftype_size_in_bits the size of instances of
+  /// class_decl::method_decl, expressed in bits.
+  ///
+  /// @param ftype_align_in_bits the alignment of instance of
+  /// class_decl::method_decl, expressed in bits.
+  ///
+  /// @param declared_inline whether the method was declared inline or
+  /// not.
+  ///
+  /// @param locus the source location of the method.
+  ///
+  /// @param mangled_name the mangled name of the method.
+  ///
+  /// @param vis the visibility of the method.
+  ///
+  /// @param bind the binding of the method.
+  method_decl(const std::string&  name,
+	      const std::vector<shared_ptr<parameter> >& parms,
+	      shared_ptr<type_base> return_type,
+	      shared_ptr<class_decl> class_type,
+	      size_t	ftype_size_in_bits,
+	      size_t ftype_align_in_bits,
+	      bool declared_inline,
+	      location locus,
+	      const std::string& mangled_name = "",
+	      visibility vis = VISIBILITY_DEFAULT,
+	      binding bind = BINDING_GLOBAL);
+
+  /// A constructor for instances of class_decl::method_decl.
+  ///
+  /// @param name the name of the method.
+  ///
+  /// @param type the type of the method.
+  ///
+  /// @param declared_inline whether the method was
+  /// declared inline or not.
+  ///
+  /// @param locus the source location of the method.
+  ///
+  /// @param mangled_name the mangled name of the method.
+  ///
+  /// @param vis the visibility of the method.
+  ///
+  /// @param bind the binding of the method.
+  method_decl(const std::string& name, shared_ptr<method_type> type,
+	      bool declared_inline, location locus,
+	      const std::string& mangled_name = "",
+	      visibility vis = VISIBILITY_DEFAULT,
+	      binding	bind = BINDING_GLOBAL);
+
+  /// A constructor for instances of class_decl::method_decl.
+  ///
+  /// @param name the name of the method.
+  ///
+  /// @param type the type of the method.  Must be an instance of
+  /// method_type.
+  ///
+  /// @param declared_inline whether the method was
+  /// declared inline or not.
+  ///
+  /// @param locus the source location of the method.
+  ///
+  /// @param mangled_name the mangled name of the method.
+  ///
+  /// @param vis the visibility of the method.
+  ///
+  /// @param bind the binding of the method.
+  method_decl(const std::string& name,
+	      shared_ptr<function_type> type,
+	      bool declared_inline,
+	      location locus,
+	      const std::string& mangled_name = "",
+	      visibility vis  = VISIBILITY_DEFAULT,
+	      binding	bind = BINDING_GLOBAL);
+
+  /// A constructor for instances of class_decl::method_decl.
+  ///
+  /// @param name the name of the method.
+  ///
+  /// @param type the type of the method.  Must be an instance of
+  /// method_type.
+  ///
+  /// @param declared_inline whether the method was
+  /// declared inline or not.
+  ///
+  /// @param locus the source location of the method.
+  ///
+  /// @param mangled_name the mangled name of the method.
+  ///
+  /// @param vis the visibility of the method.
+  ///
+  /// @param bind the binding of the method.
+  method_decl(const std::string& name, shared_ptr<type_base> type,
+	      bool declared_inline, location locus,
+	      const std::string& mangled_name = "",
+	      visibility vis = VISIBILITY_DEFAULT,
+	      binding bind = BINDING_GLOBAL);
+
+  /// @return the type of the current instance of the
+  /// class_decl::method_decl.
+  const shared_ptr<method_type>
+  get_type() const;
+
+  void
+  set_type(shared_ptr<method_type> fn_type)
+  { function_decl::set_type(fn_type); }
+
+  virtual ~method_decl();
+};
+
+
+/// Abstracts a member function declaration in a class declaration.
+class class_decl::member_function 
+  : public method_decl, public member_base
+{
+  size_t m_vtable_offset_in_bits;
+  bool m_is_constructor;
+  bool m_is_destructor;
+  bool m_is_const;
+
+  // Forbidden
+  member_function();
+
+public:
+
+  /// Hasher.
+  struct hash;
+
+  member_function(const std::string&	name,
+		  std::vector<shared_ptr<parameter> > parms,
+		  shared_ptr<type_base>	return_type,
+		  shared_ptr<class_decl>	class_type,
+		  size_t			ftype_size_in_bits,
+		  size_t			ftype_align_in_bits,
+		  access_specifier		access,
+		  bool			declared_inline,
+		  location			locus,
+		  const std::string&	mangled_name,
+		  visibility		vis,
+		  binding			bind,
+		  size_t			vtable_offset_in_bits,
+		  bool			is_static,
+		  bool			is_constructor,
+		  bool			is_destructor,
+		  bool			is_const)
+  : decl_base(name, locus, name, vis),
+    method_decl(name, parms, return_type, class_type,
+		ftype_size_in_bits, ftype_align_in_bits,
+		declared_inline, locus,
+		mangled_name, vis, bind),
+    member_base(access, is_static),
+    m_vtable_offset_in_bits(vtable_offset_in_bits),
+    m_is_constructor(is_constructor),
+    m_is_destructor(is_destructor),
+    m_is_const(is_const)
+  { }
+
+  member_function(shared_ptr<method_decl>	fn,
+		  access_specifier		access,
+		  size_t			vtable_offset_in_bits,
+		  bool			is_static,
+		  bool			is_constructor,
+		  bool			is_destructor,
+		  bool			is_const)
+    : decl_base(fn->get_name(), fn->get_location(),
+		fn->get_mangled_name(), fn->get_visibility()),
+      method_decl(fn->get_name(),
+		  fn->get_type(),
+		  fn->is_declared_inline(),
+		  fn->get_location(),
+		  fn->get_mangled_name(),
+		  fn->get_visibility(),
+		  fn->get_binding()),
+      member_base(access, is_static),
+    m_vtable_offset_in_bits(vtable_offset_in_bits),
+    m_is_constructor(is_constructor),
+    m_is_destructor(is_destructor),
+    m_is_const(is_const)
+  { }
+
+  /// Constructor for instances of class_decl::member_function.
+  ///
+  /// @param fn the method decl to be used as a member function.  This
+  /// must be an intance of class_decl::method_decl.
+  ///
+  /// @param access the access specifier for the member function.
+  ///
+  /// @param vtable_offset_in_bits the offset of the this member
+  /// function in the vtable, or zero.
+  ///
+  /// @param is_static set to true if this member function is static.
+  ///
+  /// @param is_constructor set to true if this member function is a
+  /// constructor.
+  ///
+  /// @param is_destructor set to true if this member function is a
+  /// destructor.
+  ///
+  /// @param is_const set to true if this member function is const.
+  member_function(shared_ptr<function_decl>	fn,
+		  access_specifier		access,
+		  size_t			vtable_offset_in_bits,
+		  bool			is_static,
+		  bool			is_constructor,
+		  bool			is_destructor,
+		  bool			is_const);
+
+  size_t
+  get_vtable_offset_in_bits() const
+  { return m_vtable_offset_in_bits; }
+
+  bool
+  is_constructor() const
+  { return m_is_constructor; }
+
+  bool
+  is_destructor() const
+  { return m_is_destructor; }
+
+  bool
+  is_const() const
+  { return m_is_const; }
+
+  bool
+  operator==(const member_function& o) const
+  {
+    return (get_vtable_offset_in_bits() == o.get_vtable_offset_in_bits()
+	    && is_constructor() == o.is_constructor()
+	    && is_destructor() == o.is_destructor()
+	    && is_const() == o.is_const()
+	    && static_cast<member_base>(*this) == o
+	    && static_cast<function_decl>(*this) == o);
+  }
+
+  /// This implements the traversable_base::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance.
+  void
+  traverse(ir_node_visitor& v);
+};
+
+
+/// Abstract a member function template.
+class class_decl::member_function_template
+  : public member_base, public virtual traversable_base
+{
+  bool m_is_constructor;
+  bool m_is_const;
+  shared_ptr<function_template_decl> m_fn_tmpl;
+
+  // Forbiden
+  member_function_template();
+
+public:
+  /// Hasher.
+  struct hash;
+
+  member_function_template
+  (shared_ptr<function_template_decl> f,
+   access_specifier			access,
+   bool				is_static,
+   bool				is_constructor,
+   bool				is_const)
+    : member_base(access, is_static),
+      m_is_constructor(is_constructor),
+      m_is_const(is_const),
+      m_fn_tmpl(f)
+  { }
+
+  bool
+  is_constructor() const
+  { return m_is_constructor; }
+
+  bool
+  is_const() const
+  { return m_is_const; }
+
+  operator const function_template_decl& () const
+  { return *m_fn_tmpl; }
+
+  shared_ptr<function_template_decl>
+  as_function_template_decl() const
+  { return m_fn_tmpl; }
+
+  bool
+  operator==(const member_function_template& o) const;
+
+  /// This implements the traversable_base::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance and on its
+  /// underlying function template.
+  void
+  traverse(ir_node_visitor&);
+};
+
+
+/// Abstracts a member class template template
+class class_decl::member_class_template 
+  : public member_base, public virtual traversable_base
+{
+  shared_ptr<class_template_decl> m_class_tmpl;
+
+  // Forbidden
+  member_class_template();
+
+public:
+
+  /// Hasher.
+  struct hash;
+
+  member_class_template(shared_ptr<class_template_decl> c,
+			access_specifier access, bool is_static)
+    : member_base(access, is_static), m_class_tmpl(c)
+  { }
+
+  operator const class_template_decl& () const
+  { return *m_class_tmpl; }
+
+  shared_ptr<class_template_decl>
+  as_class_template_decl() const
+  { return m_class_tmpl; }
+
+  bool
+  operator==(const member_class_template& o) const;
+
+  /// This implements the traversable_base::traverse pure virtual
+  /// function.
+  ///
+  /// @param v the visitor used on the current instance and on the class
+  /// pattern of the template.
+  void
+  traverse(ir_node_visitor& v);
 };
 
 
