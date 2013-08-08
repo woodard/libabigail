@@ -62,7 +62,13 @@ namespace abigail
   // Pull in relational operators.
   using namespace std::rel_ops;
 
-  // Forward class declarations.
+  // Forward declarations for corpus.
+  class location;
+  class location_manager;
+  class translation_unit;
+  class corpus;
+
+  // Forward declarations for ir.
   class class_decl;
   class class_tdecl;
   class decl_base;
@@ -90,15 +96,13 @@ namespace abigail
   class template_tparameter;
 
   class type_composition;
-  class translation_unit;
   class type_base;
   class type_decl;
   class typedef_decl;
   class var_decl;
 
-  // Forward struct declarations.
   struct type_shared_ptr_equal;
-  struct traversable;
+  struct traversable_base;
 
   /*
     Nested types in class_decl:
