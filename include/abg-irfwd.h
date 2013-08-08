@@ -64,12 +64,12 @@ namespace abigail
 
   // Forward class declarations.
   class class_decl;
-  class class_template_decl;
+  class class_tdecl;
   class decl_base;
   class enum_type_decl;
   //class enumerator;
   class function_decl;
-  class function_template_decl;
+  class function_tdecl;
   class function_type;
   class global_scope;
   class ir_node_visitor;
@@ -84,11 +84,12 @@ namespace abigail
   class scope_decl;
   class scope_type_decl;
   class template_decl;
-  class template_non_type_parameter;
   class template_parameter;
-  class template_template_parameter;
-  class template_type_parameter;
-  class tmpl_parm_type_composition;
+  class non_type_tparameter;
+  class type_tparameter;
+  class template_tparameter;
+
+  class type_composition;
   class translation_unit;
   class type_base;
   class type_decl;

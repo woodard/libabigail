@@ -337,9 +337,9 @@ is_at_template_scope(const shared_ptr<decl_base> decl)
 bool
 is_template_parameter(const shared_ptr<decl_base> decl)
 {
-  return (decl && (dynamic_pointer_cast<template_type_parameter>(decl)
-		   || dynamic_pointer_cast<template_non_type_parameter>(decl)
-		   || dynamic_pointer_cast<template_template_parameter>(decl)));
+  return (decl && (dynamic_pointer_cast<type_tparameter>(decl)
+		   || dynamic_pointer_cast<non_type_tparameter>(decl)
+		   || dynamic_pointer_cast<template_tparameter>(decl)));
 }
 
 bool
@@ -1203,12 +1203,12 @@ void
 class_decl::add_member_function_template
 (shared_ptr<member_function_template> m)
 {
-  decl_base* c = m->as_function_template_decl()->get_scope();
+  decl_base* c = m->as_function_tdecl()->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
   assert(!c || c == this);
   if (!c)
-    add_decl_to_scope(m->as_function_template_decl(), this);
+    add_decl_to_scope(m->as_function_tdecl(), this);
 
   m_member_function_templates.push_back(m);
 }
@@ -1216,12 +1216,12 @@ class_decl::add_member_function_template
 void
 class_decl::add_member_class_template(shared_ptr<member_class_template> m)
 {
-    decl_base* c = m->as_class_template_decl()->get_scope();
+    decl_base* c = m->as_class_tdecl()->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
   assert(!c || c == this);
   if (!c)
-    add_decl_to_scope(m->as_class_template_decl(), this);
+    add_decl_to_scope(m->as_class_tdecl(), this);
 
   m_member_class_templates.push_back(m);
 }
@@ -1386,8 +1386,8 @@ class_decl::member_function_template::operator==
 	&& static_cast<member_base>(*this) == o))
     return false;
 
-  if (as_function_template_decl())
-    return static_cast<function_template_decl>(*this) == o;
+  if (as_function_tdecl())
+    return static_cast<function_tdecl>(*this) == o;
 
   return true;
 }
@@ -1396,7 +1396,7 @@ void
 class_decl::member_function_template::traverse(ir_node_visitor& v)
 {
   v.visit(*this);
-  as_function_template_decl()->traverse(v);
+  as_function_tdecl()->traverse(v);
 }
 
 bool
@@ -1406,8 +1406,8 @@ class_decl::member_class_template::operator==
   if (!(static_cast<member_base>(*this) == o))
     return false;
 
-  if (as_class_template_decl())
-    return static_cast<class_template_decl>(*this) == o;
+  if (as_class_tdecl())
+    return static_cast<class_tdecl>(*this) == o;
 
   return true;
 }
@@ -1416,7 +1416,7 @@ void
 class_decl::member_class_template::traverse(ir_node_visitor& v)
 {
   v.visit(*this);
-  as_class_template_decl()->get_pattern()->traverse(v);
+  as_class_tdecl()->get_pattern()->traverse(v);
 }
 // </class_decl>
 
@@ -1464,54 +1464,49 @@ template_parameter::~template_parameter()
 { }
 
 bool
-template_type_parameter::operator==(const template_type_parameter& o) const
+type_tparameter::operator==(const type_tparameter& o) const
 {
   return (static_cast<template_parameter>(*this) == o);
 }
 
-template_type_parameter::~template_type_parameter()
+type_tparameter::~type_tparameter()
 { }
 
 bool
-template_non_type_parameter::operator==
-(const template_non_type_parameter& o) const
+non_type_tparameter::operator==
+(const non_type_tparameter& o) const
 {
   return (static_cast<template_parameter>(*this) == o
       && *get_type() == *o.get_type());
 }
 
-template_non_type_parameter::~template_non_type_parameter()
+non_type_tparameter::~non_type_tparameter()
 { }
 
 bool
-template_template_parameter::operator==
-(const template_template_parameter& o) const
+template_tparameter::operator==
+(const template_tparameter& o) const
 {
-  return (static_cast<template_type_parameter>(*this) == o
+  return (static_cast<type_tparameter>(*this) == o
 	  && (static_cast<template_decl>(*this) == o));
 }
 
-template_template_parameter::~template_template_parameter()
+template_tparameter::~template_tparameter()
 { }
 
-tmpl_parm_type_composition::tmpl_parm_type_composition
-(unsigned		index,
- shared_ptr<type_base>	t)
-  : decl_base("", location()),
-    template_parameter(index),
-    m_type(std::tr1::dynamic_pointer_cast<type_base>(t))
-{
-}
+type_composition::type_composition(unsigned index, shared_ptr<type_base> t)
+: decl_base("", location()), template_parameter(index),
+  m_type(std::tr1::dynamic_pointer_cast<type_base>(t))
+{ }
 
-tmpl_parm_type_composition::~tmpl_parm_type_composition()
-{
-}
+type_composition::~type_composition()
+{ }
 
 //</template_parameter>
 
 // <function_template>
 bool
-function_template_decl::operator==(const function_template_decl& o) const
+function_tdecl::operator==(const function_tdecl& o) const
 {
   if (!(get_binding() == o.get_binding()
 	&& static_cast<template_decl>(*this) == o
@@ -1526,18 +1521,18 @@ function_template_decl::operator==(const function_template_decl& o) const
 }
 
 void
-function_template_decl::traverse(ir_node_visitor&v)
+function_tdecl::traverse(ir_node_visitor&v)
 {
   v.visit(*this);
   get_pattern()->traverse(v);
 }
 
-function_template_decl::~function_template_decl()
+function_tdecl::~function_tdecl()
 { }
 // </function_template>
 
 // <class template>
-class_template_decl::class_template_decl(shared_ptr<class_decl> pattern,
+class_tdecl::class_tdecl(shared_ptr<class_decl> pattern,
 					 location locus, visibility vis)
 : decl_base(pattern->get_name(), locus,
 	    pattern->get_name(), vis),
@@ -1545,7 +1540,7 @@ class_template_decl::class_template_decl(shared_ptr<class_decl> pattern,
 { set_pattern(pattern);}
 
 void
-class_template_decl::set_pattern(shared_ptr<class_decl> p)
+class_tdecl::set_pattern(shared_ptr<class_decl> p)
 {
   m_pattern = p;
   add_decl_to_scope(p, this);
@@ -1553,7 +1548,7 @@ class_template_decl::set_pattern(shared_ptr<class_decl> p)
 }
 
 bool
-class_template_decl::operator==(const class_template_decl& o) const
+class_tdecl::operator==(const class_tdecl& o) const
 {
   if (!(static_cast<template_decl>(*this) == o
 	&& static_cast<scope_decl>(*this) == o
@@ -1564,7 +1559,7 @@ class_template_decl::operator==(const class_template_decl& o) const
 }
 
 void
-class_template_decl::traverse(ir_node_visitor&v)
+class_tdecl::traverse(ir_node_visitor&v)
 {
   v.visit(*this);
 
@@ -1573,7 +1568,7 @@ class_template_decl::traverse(ir_node_visitor&v)
     pattern->traverse(v);
 }
 
-class_template_decl::~class_template_decl()
+class_tdecl::~class_tdecl()
 { }
 
 void
@@ -1617,11 +1612,11 @@ ir_node_visitor::visit(function_decl&)
 { }
 
 void
-ir_node_visitor::visit(function_template_decl&)
+ir_node_visitor::visit(function_tdecl&)
 { }
 
 void
-ir_node_visitor::visit(class_template_decl&)
+ir_node_visitor::visit(class_tdecl&)
 { }
 
 void

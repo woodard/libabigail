@@ -407,11 +407,11 @@ struct class_decl::member_function_template::hash
   operator()(const member_function_template& t) const
   {
     std::tr1::hash<bool> hash_bool;
-    function_template_decl::hash hash_function_template_decl;
+    function_tdecl::hash hash_function_tdecl;
     member_base::hash hash_member;
     
     size_t v = hash_member(t);
-    v = hashing::combine_hashes(v, hash_function_template_decl(t));
+    v = hashing::combine_hashes(v, hash_function_tdecl(t));
     v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
     v = hashing::combine_hashes(v, hash_bool(t.is_const()));
     
@@ -425,10 +425,10 @@ struct class_decl::member_class_template::hash
   operator()(member_class_template& t) const
   {
     member_base::hash hash_member;
-    class_template_decl::hash hash_class_template_decl;
+    class_tdecl::hash hash_class_tdecl;
     
     size_t v = hash_member(t);
-    v = hashing::combine_hashes(v, hash_class_template_decl(t));
+    v = hashing::combine_hashes(v, hash_class_tdecl(t));
     return v;
   }
 };
@@ -552,10 +552,10 @@ struct template_decl::hash
   }
 };
 
-struct template_type_parameter::hash
+struct type_tparameter::hash
 {
   size_t
-  operator()(const template_type_parameter& t) const
+  operator()(const type_tparameter& t) const
   {
     std::tr1::hash<string> hash_string;
     template_parameter::hash hash_template_parameter;
@@ -569,10 +569,10 @@ struct template_type_parameter::hash
   }
 };
 
-struct template_non_type_parameter::hash
+struct non_type_tparameter::hash
 {
   size_t
-  operator()(const template_non_type_parameter& t) const
+  operator()(const non_type_tparameter& t) const
   {
     template_parameter::hash hash_template_parameter;
     std::tr1::hash<string> hash_string;
@@ -587,13 +587,13 @@ struct template_non_type_parameter::hash
   }
 };
 
-struct template_template_parameter::hash
+struct template_tparameter::hash
 {
   size_t 
-  operator()(const template_template_parameter& t) const
+  operator()(const template_tparameter& t) const
   {
     std::tr1::hash<string> hash_string;
-    template_type_parameter::hash hash_template_type_parm;
+    type_tparameter::hash hash_template_type_parm;
     template_decl::hash hash_template_decl;
 
     size_t v = hash_string(typeid(t).name());
@@ -608,23 +608,23 @@ size_t
 template_parameter::dynamic_hash::
 operator()(const template_parameter* t) const
 {
-  if (const template_template_parameter* p =
-      dynamic_cast<const template_template_parameter*>(t))
-    return template_template_parameter::hash()(*p);
-  else if (const template_type_parameter* p =
-	   dynamic_cast<const template_type_parameter*>(t))
-    return template_type_parameter::hash()(*p);
-  if (const template_non_type_parameter* p =
-      dynamic_cast<const template_non_type_parameter*>(t))
-    return template_non_type_parameter::hash()(*p);
+  if (const template_tparameter* p =
+      dynamic_cast<const template_tparameter*>(t))
+    return template_tparameter::hash()(*p);
+  else if (const type_tparameter* p =
+	   dynamic_cast<const type_tparameter*>(t))
+    return type_tparameter::hash()(*p);
+  if (const non_type_tparameter* p =
+      dynamic_cast<const non_type_tparameter*>(t))
+    return non_type_tparameter::hash()(*p);
   
   // Poor man's fallback.
   return template_parameter::hash()(*t);
 }
 
 size_t
-function_template_decl::hash::
-operator()(const function_template_decl& t) const
+function_tdecl::hash::
+operator()(const function_tdecl& t) const
 {
   std::tr1::hash<string> hash_string;
   decl_base::hash hash_decl_base;
@@ -642,18 +642,18 @@ operator()(const function_template_decl& t) const
 }
 
 size_t
-function_template_decl::shared_ptr_hash::
-operator()(const shared_ptr<function_template_decl> f) const
+function_tdecl::shared_ptr_hash::
+operator()(const shared_ptr<function_tdecl> f) const
 {
-  function_template_decl::hash hash_fn_tmpl_decl;
+  function_tdecl::hash hash_fn_tmpl_decl;
   if (f)
     return hash_fn_tmpl_decl(*f);
   return 0;
 }
 
 size_t
-class_template_decl::hash::
-operator()(const class_template_decl& t) const
+class_tdecl::hash::
+operator()(const class_tdecl& t) const
 {
   std::tr1::hash<string> hash_string;
   decl_base::hash hash_decl_base;
@@ -670,10 +670,10 @@ operator()(const class_template_decl& t) const
 }
 
 size_t
-class_template_decl::shared_ptr_hash::
-operator()(const shared_ptr<class_template_decl> t) const
+class_tdecl::shared_ptr_hash::
+operator()(const shared_ptr<class_tdecl> t) const
 {
-  class_template_decl::hash hash_class_tmpl_decl;
+  class_tdecl::hash hash_class_tmpl_decl;
   
   if (t)
     return hash_class_tmpl_decl(*t);
@@ -699,12 +699,12 @@ operator()(const type_base* t) const
 {
   if (t == 0)
     return 0;
-  if (const template_template_parameter* d =
-      dynamic_cast<const template_template_parameter*>(t))
-    return template_template_parameter::hash()(*d);
-  if (const template_type_parameter* d =
-      dynamic_cast<const template_type_parameter*>(t))
-    return template_type_parameter::hash()(*d);
+  if (const template_tparameter* d =
+      dynamic_cast<const template_tparameter*>(t))
+    return template_tparameter::hash()(*d);
+  if (const type_tparameter* d =
+      dynamic_cast<const type_tparameter*>(t))
+    return type_tparameter::hash()(*d);
   if (const type_decl* d = dynamic_cast<const type_decl*> (t))
     return type_decl::hash()(*d);
   if (const qualified_type_def* d = dynamic_cast<const qualified_type_def*>(t))

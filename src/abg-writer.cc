@@ -80,13 +80,13 @@ typedef unordered_map<shared_ptr<type_base>,
 		      type_base::shared_ptr_hash,
 		      type_shared_ptr_equal> type_shared_ptr_map;
 
-typedef unordered_map<shared_ptr<function_template_decl>,
+typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
-	       function_template_decl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
+	       function_tdecl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
 
-typedef unordered_map<shared_ptr<class_template_decl>,
+typedef unordered_map<shared_ptr<class_tdecl>,
 		      string,
-	       class_template_decl::shared_ptr_hash> class_tmpl_shared_ptr_map;
+	       class_tdecl::shared_ptr_hash> class_tmpl_shared_ptr_map;
 
 class write_context
 {
@@ -132,7 +132,7 @@ public:
   }
 
   string
-  get_id_for_fn_tmpl(shared_ptr<function_template_decl> f)
+  get_id_for_fn_tmpl(shared_ptr<function_tdecl> f)
   {
     fn_tmpl_shared_ptr_map::const_iterator it = m_fn_tmpl_id_map.find(f);
     if (it == m_fn_tmpl_id_map.end())
@@ -145,7 +145,7 @@ public:
   }
 
   string
-  get_id_for_class_tmpl(shared_ptr<class_template_decl> c)
+  get_id_for_class_tmpl(shared_ptr<class_tdecl> c)
   {
     class_tmpl_shared_ptr_map::const_iterator it = m_class_tmpl_id_map.find(c);
     if (it == m_class_tmpl_id_map.end())
@@ -202,23 +202,23 @@ static bool write_function_decl(const shared_ptr<function_decl>,
 				write_context&, bool, unsigned);
 static bool write_class_decl(const shared_ptr<class_decl>,
 			     write_context&, unsigned);
-static bool write_template_type_parameter
-(const shared_ptr<template_type_parameter>, write_context&, unsigned);
-static bool write_template_non_type_parameter
-(const shared_ptr<template_non_type_parameter>, write_context&, unsigned);
-static bool write_template_template_parameter
-(const shared_ptr<template_template_parameter>, write_context&, unsigned);
-static bool write_tmpl_parm_type_composition
-(const shared_ptr<tmpl_parm_type_composition>, write_context&, unsigned);
+static bool write_type_tparameter
+(const shared_ptr<type_tparameter>, write_context&, unsigned);
+static bool write_non_type_tparameter
+(const shared_ptr<non_type_tparameter>, write_context&, unsigned);
+static bool write_template_tparameter
+(const shared_ptr<template_tparameter>, write_context&, unsigned);
+static bool write_type_composition
+(const shared_ptr<type_composition>, write_context&, unsigned);
 static bool write_template_parameter(const shared_ptr<template_parameter>,
 				     write_context&, unsigned);
 static void write_template_parameters(const shared_ptr<template_decl>,
 				      write_context&, unsigned);
-static bool write_function_template_decl
-(const shared_ptr<function_template_decl>,
+static bool write_function_tdecl
+(const shared_ptr<function_tdecl>,
  write_context&, unsigned);
-static bool write_class_template_decl
-(const shared_ptr<class_template_decl>,
+static bool write_class_tdecl
+(const shared_ptr<class_tdecl>,
  write_context&, unsigned);
 static void	do_indent(ostream&, unsigned);
 static void	do_indent_to_level(write_context&, unsigned, unsigned);
@@ -565,10 +565,10 @@ write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
       || write_function_decl(dynamic_pointer_cast<function_decl>(decl),
 			     ctxt, /*skip_first_parameter=*/false, indent)
       || write_class_decl(dynamic_pointer_cast<class_decl>(decl), ctxt, indent)
-      || (write_function_template_decl
-	  (dynamic_pointer_cast<function_template_decl>(decl), ctxt, indent))
-      || (write_class_template_decl
-	  (dynamic_pointer_cast<class_template_decl>(decl), ctxt, indent)))
+      || (write_function_tdecl
+	  (dynamic_pointer_cast<function_tdecl>(decl), ctxt, indent))
+      || (write_class_tdecl
+	  (dynamic_pointer_cast<class_tdecl>(decl), ctxt, indent)))
     return true;
 
   return false;
@@ -1149,7 +1149,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  write_cdtor_const_static((*fn)->is_constructor(), false,
 				   (*fn)->is_static(), o);
 	  o << ">\n";
-	  write_function_template_decl((*fn)->as_function_template_decl(), ctxt,
+	  write_function_tdecl((*fn)->as_function_tdecl(), ctxt,
 				       get_indent_to_level(ctxt, indent, 2));
 	  o << "\n";
 	  do_indent(o, nb_ws);
@@ -1166,7 +1166,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  write_access(*cl, o);
 	  write_cdtor_const_static(false, false, (*cl)->is_static(), o);
 	  o << ">\n";
-	  write_class_template_decl((*cl)->as_class_template_decl(), ctxt,
+	  write_class_tdecl((*cl)->as_class_tdecl(), ctxt,
 				    get_indent_to_level(ctxt, indent, 2));
 	  o << "\n";
 	  do_indent(o, nb_ws);
@@ -1181,7 +1181,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
   return true;
 }
 
-/// Serialize an instance of template_type_parameter.
+/// Serialize an instance of type_tparameter.
 ///
 /// @param decl the instance to serialize.
 ///
@@ -1191,7 +1191,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool 
-write_template_type_parameter(const shared_ptr<template_type_parameter>	decl,
+write_type_tparameter(const shared_ptr<type_tparameter>	decl,
 			      write_context&  ctxt, unsigned indent)
 {
   if (!decl)
@@ -1220,7 +1220,7 @@ write_template_type_parameter(const shared_ptr<template_type_parameter>	decl,
   return true;
 }
 
-/// Serialize an instance of template_non_type_parameter.
+/// Serialize an instance of non_type_tparameter.
 ///
 /// @param decl the instance to serialize.
 ///
@@ -1230,8 +1230,8 @@ write_template_type_parameter(const shared_ptr<template_type_parameter>	decl,
 ///
 /// @return true open successful completion, false otherwise.
 static bool
-write_template_non_type_parameter(
- const shared_ptr<template_non_type_parameter>	decl,
+write_non_type_tparameter(
+ const shared_ptr<non_type_tparameter>	decl,
  write_context&	ctxt, unsigned indent)
 {
   if (!decl)
@@ -1266,8 +1266,8 @@ write_template_non_type_parameter(
 /// @return true upon successful completion, false otherwise.
 
 static bool
-write_template_template_parameter
-(const shared_ptr<template_template_parameter>	decl,
+write_template_tparameter
+(const shared_ptr<template_tparameter>	decl,
  write_context&	ctxt, unsigned indent)
 {
   if (!decl)
@@ -1305,7 +1305,7 @@ write_template_template_parameter
   return true;
 }
 
-/// Serialize an instance of tmpl_parm_type_composition.
+/// Serialize an instance of type_composition.
 ///
 /// @param decl the decl to serialize.
 ///
@@ -1315,8 +1315,8 @@ write_template_template_parameter
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_tmpl_parm_type_composition
-(const shared_ptr<tmpl_parm_type_composition> decl,
+write_type_composition
+(const shared_ptr<type_composition> decl,
  write_context& ctxt, unsigned indent)
 {
   if (!decl)
@@ -1360,16 +1360,16 @@ static bool
 write_template_parameter(const shared_ptr<template_parameter> decl,
 			 write_context& ctxt, unsigned indent)
 {
-  if ((!write_template_type_parameter
-       (dynamic_pointer_cast<template_type_parameter>(decl), ctxt, indent))
-      && (!write_template_non_type_parameter
-	  (dynamic_pointer_cast<template_non_type_parameter>(decl),
+  if ((!write_type_tparameter
+       (dynamic_pointer_cast<type_tparameter>(decl), ctxt, indent))
+      && (!write_non_type_tparameter
+	  (dynamic_pointer_cast<non_type_tparameter>(decl),
 	   ctxt, indent))
-      && (!write_template_template_parameter
-	  (dynamic_pointer_cast<template_template_parameter>(decl),
+      && (!write_template_tparameter
+	  (dynamic_pointer_cast<template_tparameter>(decl),
 	   ctxt, indent))
-      && (!write_tmpl_parm_type_composition
-	  (dynamic_pointer_cast<tmpl_parm_type_composition>(decl),
+      && (!write_type_composition
+	  (dynamic_pointer_cast<type_composition>(decl),
 	   ctxt, indent)))
     return false;
 
@@ -1399,7 +1399,7 @@ write_template_parameters(const shared_ptr<template_decl> tmpl,
     }
 }
 
-/// Serialize an instance of function_template_decl.
+/// Serialize an instance of function_tdecl.
 ///
 /// @param decl the instance to serialize.
 ///
@@ -1407,8 +1407,8 @@ write_template_parameters(const shared_ptr<template_decl> tmpl,
 ///
 /// @param indent the initial indentation.
 static bool
-write_function_template_decl(const shared_ptr<function_template_decl> decl,
-			     write_context& ctxt, unsigned indent)
+write_function_tdecl(const shared_ptr<function_tdecl> decl,
+		     write_context& ctxt, unsigned indent)
 {
   if (!decl)
     return false;
@@ -1442,9 +1442,9 @@ write_function_template_decl(const shared_ptr<function_template_decl> decl,
 }
 
 
-/// Serialize an instance of class_template_decl
+/// Serialize an instance of class_tdecl
 ///
-/// @param decl a pointer to the instance of class_template_decl to serialize.
+/// @param decl a pointer to the instance of class_tdecl to serialize.
 ///
 /// @param ctxt the context of the serializtion.
 ///
@@ -1453,8 +1453,8 @@ write_function_template_decl(const shared_ptr<function_template_decl> decl,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_class_template_decl (const shared_ptr<class_template_decl> decl,
-			   write_context& ctxt, unsigned indent)
+write_class_tdecl(const shared_ptr<class_tdecl> decl,
+		  write_context& ctxt, unsigned indent)
 {
   if (!decl)
     return false;
