@@ -12,5 +12,6 @@ abg-viz-dot.h		\
 abg-viz-svg.h		
 
 publicheaders_DATA=$(headers)
-publicheadersdir=$(includedir)
+publicheadersdir=$(includedir)/libabigail
+
 
