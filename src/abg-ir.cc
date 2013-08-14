@@ -204,7 +204,7 @@ decl_base::~decl_base()
 { }
 
 void
-decl_base::traverse(ir_node_visitor& v)
+decl_base::traverse(ir_node_visitor&)
 {
   // Do nothing in the base class. 
 }
