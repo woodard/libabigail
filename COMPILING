@@ -1,0 +1,70 @@
+To compile libabigail, you first need to install its dependencies.  At
+the moment the dependencies are the following Free Software packages:
+
+    libxml2
+ 
+Once you have installed the development packages of the dependencies,
+there are two options for compiling libabigail, depending on the two
+kinds of source code package you have: either you've got the source
+code from our Git source control management system, or you've got a
+released tarball.
+
+* Getting and compiling libabigail from Git
+===========================================
+
+To get the source code from git, you have to type:
+
+    git clone git://sourceware.org/git/libabigail.git
+
+Please note that to compile libabigail from its sources in this case,
+you need to have the 'autoconf' page installed on your machine.
+
+Then go to your local libabigail.git directory where the source code
+you've checked out lies and create a 'build' directory that will
+receive the binaries resulting from the compilation:
+
+    cd libabigail.git
+    mkdir build
+
+Generate the relevant build-system-related information needed to
+configure the package for compilation, by typing:
+
+    autoreconf
+
+Then configure the package:
+
+    cd build
+    ../configure --prefix=<absolute-path-of-where-you-want-the-binaries-to-be-installed>
+
+Then build the package
+
+    make
+
+And then install its resulting binaries and documentation:
+
+ make install
+
+* Getting and compiling libabigail from released tarballs
+=========================================================
+
+First, get a tarball from ftp://sourceware.org/pub/libabigail.
+
+Then untar it and go to the resulting source directory.
+
+Then create a build directory that is to receive the result of the
+compilation and cd into it:
+
+    mkdir build
+    cd build
+
+Then configure the package:
+
+    ../configure --prefix=<absolute-path-of-where-you-want-the-binaries-to-be-installed>
+
+Then compile it:
+
+    make
+
+Then install the resulting binaries
+
+    make install
