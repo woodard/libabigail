@@ -1,0 +1,100 @@
+/*!
+
+\mainpage Home page of the ABI Generic Analysis and Instrumentation Library
+
+\par Introduction
+
+This project aims at providing a C++ library for constructing,
+manipulating, serializing and de-serializing ABI-relevant artifacts.
+The set of artifacts that we are interested in is made of
+constructions like types, variables, fonctions and declarations of a
+given library or program.  For a given program or library, this set of
+constructions is called an ABI corpus.
+
+Thus This project aims at providing a library to manipulate ABI
+corpuses, compare them, provide detailed information about their
+differences and help build tools to infer interesting conclusions
+about these differences.
+
+\par Documentation
+
+The html documentation of the library is available online <a
+href="http://sourceware.org/libabigail/apidoc">here</a>.
+
+\par Getting the source code
+
+This project is still in an early stage; we haven't released any
+official tarball yet.  You can get the source code in a read-only
+manner from our <a
+href="http://sourceware.org/git/gitweb.cgi?p=libabigail.git">Git
+repository</a> by doing:
+
+\code{.sh}
+	git clone git://sourceware.org/git/libabigail.git
+\endcode
+
+If you have write access on sourceware.org, you can check the source
+out in read-write by doing:
+
+\code{.sh}
+	git clone ssh://sourceware.org/git/libabigail.git
+\endcode
+
+\par Compiling
+
+To compile libabigail, you first need to install its dependencies.  At
+the moment the dependencies are the following Free Software packages:
+
+    \li <a href="http://www.xmlsoft.org">libxml2</a>
+    \li <a href="http://www.gnu.org/software/autoconf/">autoconf</a>
+
+
+Then go to your local libabigail.git directory where the source code
+you've checked out lies and create a 'build' directory that will
+receive the binaries resulting from the compilation:
+
+\code{.sh}
+    cd libabigail.git
+    mkdir build
+\endcode
+
+Generate the relevant build-system-related information needed to
+configure the package for compilation, by typing:
+
+\code{.sh}
+    autoreconf
+\endcode
+
+Then configure the package:
+
+\code{.sh}
+    cd build
+    ../configure --prefix=<absolute-path-of-where-you-want-the-binaries-to-be-installed>
+\endcode
+
+Then build the package
+
+\code{.sh}
+    make
+\endcode
+
+And then install its resulting binaries and documentation:
+
+\code{.sh}
+    make install
+\endcode
+
+\par Contribute and file bug reports
+
+To send us patches or just drop by to say hi, feel free to send an
+email to our mailing list libabigail@sourceware.org.
+
+Bug reports are to be filed into our <a
+href="http://sourceware.org/bugzilla/enter_bug.cgi?product=libabigail">Bugzilla
+database</a>.
+
+\par License
+
+The source code of the library is under <a href="http://www.gnu.org/licenses/lgpl.html"> LGPL version 3</a> or later.
+
+*/
