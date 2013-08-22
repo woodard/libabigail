@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: libabigail
 Description: The ABI Generic Analysis and Instrumentation Library
 Version: @VERSION@
-Requires: libxml-2.0 >= @LIBXML2_VERSION@
+Requires.private: libxml-2.0 >= @LIBXML2_VERSION@
 Libs: -L${libdir} -labigail
 Cflags: -I${includedir}/libabigail
