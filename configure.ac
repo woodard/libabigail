@@ -43,6 +43,8 @@ AC_LANG_COMPILER_REQUIRE
 dnl Check for dependency: libxml
 LIBXML2_VERSION=2.6.22
 PKG_CHECK_MODULES(XML, libxml-2.0 >= $LIBXML2_VERSION)
+
+AC_SUBST(LIBXML2_VERSION)
 AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
 
@@ -54,6 +56,7 @@ if test x$ABIGAIL_DEVEL != x; then
 fi
 
 AC_CONFIG_FILES([Makefile
+libabigail.pc
 include/Makefile
 doc/Makefile
 src/Makefile
