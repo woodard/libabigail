@@ -58,9 +58,9 @@ fi
 AC_CONFIG_FILES([Makefile
 libabigail.pc
 include/Makefile
+include/abg-version.h
 doc/Makefile
 src/Makefile
 tests/Makefile])
-AC_CONFIG_FILES([include/abg-version.h])
 
 AC_OUTPUT

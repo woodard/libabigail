@@ -14,4 +14,4 @@ abg-viz-svg.h
 publicheaders_DATA=$(headers)
 publicheadersdir=$(includedir)/libabigail
 
-
+EXTRA_DIST = abg-version.h.in
