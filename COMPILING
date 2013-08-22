@@ -42,7 +42,7 @@ Then build the package
 
 And then install its resulting binaries and documentation:
 
- make install
+    make install
 
 * Getting and compiling libabigail from released tarballs
 =========================================================
