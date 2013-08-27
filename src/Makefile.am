@@ -1,16 +1,17 @@
+h=$(abs_srcdir)
 libabigail_LTLIBRARIES=libabigail.la
 libabigaildir=$(libdir)/
 
 libabigail_la_SOURCES = $(headers)	\
-abg-ir.cc				\
-abg-reader.cc			\
-abg-libxml-utils.cc		\
-abg-hash.cc			\
-abg-writer.cc			\
-abg-config.cc			\
-abg-viz-common.cc		\
-abg-viz-dot.cc			\
-abg-viz-svg.cc			
+$(h)/abg-ir.cc				\
+$(h)/abg-reader.cc			\
+$(h)/abg-libxml-utils.cc		\
+$(h)/abg-hash.cc			\
+$(h)/abg-writer.cc			\
+$(h)/abg-config.cc			\
+$(h)/abg-viz-common.cc			\
+$(h)/abg-viz-dot.cc			\
+$(h)/abg-viz-svg.cc
 
 libabigail_la_LDFLAGS=@XML_LIBS@ -Wl,--as-needed
 

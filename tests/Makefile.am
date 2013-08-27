@@ -1,6 +1,8 @@
-TESTS= \
-runtestreadwrite \
-runtestsvg \
+h=$(abs_srcdir)
+
+TESTS=				 \
+runtestreadwrite		 \
+runtestsvg			 \
 runtestdot 
 
 noinst_PROGRAMS= $(TESTS) testwalker
@@ -15,16 +17,16 @@ libtestutils_la_CXXFLAGS=		\
 -DABIGAIL_SRC_DIR=\"${top_srcdir}\"  	\
 -DABIGAIL_BUILD_DIR=\"${top_builddir}\"
 
-runtestreadwrite_SOURCES=test-read-write.cc
+runtestreadwrite_SOURCES=$(h)/test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestsvg_SOURCES=test-svg.cc
+runtestsvg_SOURCES=$(h)/test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
 
-runtestdot_SOURCES=test-dot.cc
+runtestdot_SOURCES=$(h)/test-dot.cc
 runtestdot_LDADD=$(top_builddir)/src/libabigail.la
 
-testwalker_SOURCES=test-walker.cc
+testwalker_SOURCES=$(h)/test-walker.cc
 testwalker_LDADD=$(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${top_srcdir}/include -I${top_builddir}/include
