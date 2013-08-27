@@ -104,11 +104,7 @@ location_manager::create_new_location(const std::string&	file_path,
   expanded_location l(file_path, line, col);
 
   // Just append the new expanded location to the end of the vector
-  // and return its index.  Note that indexes start at 1.  This way
-  // the returning location number is doesn't grow monotonically
-  // with respect to the expanded locations, but it has the advantage
-  // to keep the location numbers stable accross the filling of the
-  // expanded location vector.
+  // and return its index.  Note that indexes start at 1.
   m_priv->locs.push_back(l);
   return location(m_priv->locs.size());
 }
@@ -127,11 +123,19 @@ location_manager::expand_location(const location	location,
   column = l.m_column;
 }
 
+/// Constructor of translation_unit.
+///
+/// @param path the location of the translation unit.
 translation_unit::translation_unit(const std::string& path)
   : m_path (path)
 {
 }
 
+/// Getter of the the global scope of the translation unit.
+///
+/// @return the global scope of the current translation unit.  If
+/// there is not global scope allocated yet, this function creates one
+/// and returns it.
 const shared_ptr<global_scope>
 translation_unit::get_global_scope() const
 {
@@ -140,23 +144,43 @@ translation_unit::get_global_scope() const
   return m_global_scope;
 }
 
+/// @return the path of the compilation unit associated to the current
+/// instance of translation_unit.
 const std::string&
 translation_unit::get_path() const
-{ return m_path; }
+{
+  return m_path;
+}
 
+/// Getter of the location manager for the current translation unit.
+///
+/// @return a reference to the location manager for the current
+/// translation unit.
 location_manager&
 translation_unit::get_loc_mgr()
 { return m_loc_mgr; }
 
+/// const Getter of the location manager.
+///
+/// @return a const reference to the location manager for the current
+/// translation unit.
 const location_manager&
 translation_unit::get_loc_mgr() const
 { return m_loc_mgr; }
 
+/// Tests whether if the current translation unit contains ABI
+/// artifacts or not.
+///
+/// @return true iff the current translation unit is empty.
 bool
 translation_unit::is_empty() const
 { return get_global_scope()->is_empty(); }
 
-
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the member nodes of the translation
+/// unit during the traversal.
 void
 translation_unit::traverse(ir_node_visitor& v)
 { get_global_scope()->traverse(v); }

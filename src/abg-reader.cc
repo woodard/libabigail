@@ -2608,7 +2608,10 @@ handle_class_tdecl(read_context& ctxt)
 }//end namespace reader
 
 
-// Define reader.
+/// De-serialize the contents of the disk file associated to current
+/// instance of translation_unit, into the current object.
+///
+/// @return true upon successful de-serialization, false otherwise.
 bool
 translation_unit::read()
 {

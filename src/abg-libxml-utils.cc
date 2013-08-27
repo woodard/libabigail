@@ -27,8 +27,8 @@ namespace abigail
 {
 namespace xml
 {
-/// Instanciate an xmlTextReader, wrap it into a smart pointer and
-/// return it.
+/// Instantiate an xmlTextReader that parses the content of an on-disk
+/// file, wrap it into a smart pointer and return it.
 ///
 /// @param path the path to the file to be parsed by the returned
 /// instance of xmlTextReader.
