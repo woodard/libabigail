@@ -20,6 +20,7 @@
 
 /// @file
 
+#include "config.h"
 #include "abg-config.h"
 #include "abg-version.h"
 
