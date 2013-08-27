@@ -64,17 +64,17 @@ namespace abigail
   using namespace std::rel_ops;
 
   // Forward declarations for corpus.
-  class location;
-  class location_manager;
-  class translation_unit;
+
   class corpus;
 
   // Forward declarations for ir.
+  class location;
+  class location_manager;
+  class translation_unit;
   class class_decl;
   class class_tdecl;
   class decl_base;
   class enum_type_decl;
-  //class enumerator;
   class function_decl;
   class function_tdecl;
   class function_type;
@@ -104,19 +104,6 @@ namespace abigail
 
   struct type_shared_ptr_equal;
   struct traversable_base;
-
-  /*
-    Nested types in class_decl:
-
-    class member;
-    class member_type;
-    class base_spec;
-    class data_member;
-    class method_decl;
-    class member_function;
-    class member_function_template;
-    class member_class_template;
-  */
 
   void
   add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
