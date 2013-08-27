@@ -23,13 +23,12 @@
 #ifndef __ABG_TRAVERSE_H__
 #define __ABG_TRAVERSE_H__
 
-#include <tr1/memory>
 #include "abg-fwd.h"
 
 namespace abigail
 {
 
-/// The interface for types which are feeling social and want to 
+/// The interface for types which are feeling social and want to
 /// be visited during the traversal of translation unit nodes.
 struct traversable_base
 {
