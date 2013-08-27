@@ -116,7 +116,7 @@ namespace abigail
 
   translation_unit*
   get_translation_unit(const shared_ptr<decl_base>);
-  
+
   /// Tests whether if a given scope is the global scope.
   ///
   /// @param scpe the scope to consider.

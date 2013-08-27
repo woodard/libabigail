@@ -37,9 +37,9 @@ namespace abigail
 class corpus
 {
 public:
-  typedef std::string					string;
-  typedef std::tr1::shared_ptr<translation_unit>	translation_unit_sptr;
-  typedef std::list<translation_unit_sptr>		translation_units;
+  typedef std::string				string;
+  typedef shared_ptr<translation_unit>		translation_unit_sptr;
+  typedef std::vector<translation_unit_sptr>	translation_units;
 
 private:
   string 			m_name;

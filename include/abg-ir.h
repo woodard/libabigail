@@ -192,11 +192,11 @@ public:
 
 private:
 
-  location 				m_location;
-  std::string 				m_name;
-  std::string 				m_mangled_name;
-  scope_decl* 				m_context;
-  visibility 				m_visibility;
+  location				m_location;
+  std::string				m_name;
+  std::string				m_mangled_name;
+  scope_decl*				m_context;
+  visibility				m_visibility;
 
   // Forbidden
   decl_base();
@@ -281,11 +281,11 @@ class scope_decl : public virtual decl_base
 {
 public:
   typedef std::list<shared_ptr<decl_base> >	declarations;
-  typedef std::list<shared_ptr<scope_decl> > 	scopes;
+  typedef std::list<shared_ptr<scope_decl> >	scopes;
 
 private:
-  declarations 			m_members;
-  scopes 			m_member_scopes;
+  declarations				m_members;
+  scopes			m_member_scopes;
 
   scope_decl();
 
@@ -366,7 +366,6 @@ public:
   virtual ~global_scope();
 };
 
-
 /// An abstraction helper for type declarations
 class type_base
 {
@@ -432,7 +431,7 @@ struct type_shared_ptr_equal
 };
 
 /// A basic type declaration that introduces no scope.
-class type_decl 
+class type_decl
 : public virtual decl_base, public virtual type_base
 {
   // Forbidden.
@@ -515,7 +514,7 @@ public:
 };
 
 /// The abstraction of a qualified type.
-class qualified_type_def 
+class qualified_type_def
 : public virtual type_base, public virtual decl_base
 {
   char				m_cv_quals;
@@ -577,14 +576,14 @@ public:
 };
 
 /// Overloaded bitwise OR operator for cv qualifiers.
-qualified_type_def::CV 
+qualified_type_def::CV
 operator|(qualified_type_def::CV, qualified_type_def::CV);
 
 /// The abstraction of a pointer type.
-class pointer_type_def 
+class pointer_type_def
 : public virtual type_base, public virtual decl_base
 {
-  shared_ptr<type_base>	       	m_pointed_to_type;
+  shared_ptr<type_base>			m_pointed_to_type;
 
   // Forbidden.
   pointer_type_def();
@@ -619,7 +618,7 @@ public:
 
 
 /// Abstracts a reference type.
-class reference_type_def 
+class reference_type_def
 : public virtual type_base, public virtual decl_base
 {
   shared_ptr<type_base>		m_pointed_to_type;
@@ -707,7 +706,7 @@ public:
 
 private:
 
-  type_sptr         			m_underlying_type;
+  type_sptr				m_underlying_type;
   enumerators				m_enumerators;
 
   // Forbidden
@@ -748,7 +747,7 @@ public:
   /// @param other the other enum to test against.
   ///
   /// @return true iff other is equals the current instance of enum type
-  /// decl.  
+  /// decl.
   virtual bool
   operator==(const enum_type_decl&) const;
 
@@ -812,8 +811,8 @@ public:
 /// Abstracts a variable declaration.
 class var_decl : public virtual decl_base
 {
-  shared_ptr<type_base>	       	m_type;
-  binding		  	m_binding;
+  shared_ptr<type_base>	m_type;
+  binding			m_binding;
 
   // Forbidden
   var_decl();
@@ -860,11 +859,11 @@ public:
 class function_decl : public virtual decl_base
 {
 protected:
-  shared_ptr<function_type> 	m_type;
+  shared_ptr<function_type>	m_type;
 
 private:
-  bool 				m_declared_inline;
-  decl_base::binding 		m_binding;
+  bool			m_declared_inline;
+  decl_base::binding	m_binding;
 
 public:
   /// Hasher for function_decl
@@ -1333,7 +1332,7 @@ class template_parameter
 };
 
 /// Abstracts a type template parameter.
-class type_tparameter 
+class type_tparameter
 : public template_parameter, public virtual type_decl
 {
   // Forbidden
@@ -1359,7 +1358,7 @@ public:
 };
 
 /// Abstracts non type template parameters.
-class non_type_tparameter 
+class non_type_tparameter
 : public template_parameter, public virtual decl_base
 {
   shared_ptr<type_base> m_type;
@@ -1390,7 +1389,7 @@ public:
 };
 
 /// Abstracts a template template parameter.
-class template_tparameter 
+class template_tparameter
 : public type_tparameter, public template_decl
 {
   // Forbidden
@@ -1421,7 +1420,7 @@ public:
 /// referred to by a template non-type parameter.  Instances of this
 /// type can appear at the same level as template parameters, in the
 /// scope of a template_decl.
-class type_composition 
+class type_composition
 : public template_parameter, public virtual decl_base
 {
   shared_ptr<type_base> m_type;
@@ -1445,7 +1444,7 @@ public:
 };
 
 /// Abstract a function template declaration.
-class function_tdecl 
+class function_tdecl
 : public template_decl, public scope_decl
 {
   shared_ptr<function_decl> m_pattern;
@@ -1517,7 +1516,7 @@ class class_tdecl : public template_decl, public scope_decl
   class_tdecl();
 
 public:
-  
+
   /// Hashers.
   struct hash;
   struct shared_ptr_hash;
@@ -1592,10 +1591,10 @@ public:
   class member_class_template;
 
   /// Typedefs.
-  typedef std::list<shared_ptr<base_spec> > 		base_specs;
-  typedef std::list<shared_ptr<member_type> > 		member_types;
-  typedef std::list<shared_ptr<data_member> > 		data_members;
-  typedef std::list<shared_ptr<member_function> > 	member_functions;
+  typedef std::list<shared_ptr<base_spec> >		base_specs;
+  typedef std::list<shared_ptr<member_type> >		member_types;
+  typedef std::list<shared_ptr<data_member> >		data_members;
+  typedef std::list<shared_ptr<member_function> >	member_functions;
   typedef std::list<shared_ptr<member_function_template> >  member_function_templates;
   typedef std::list<shared_ptr<member_class_template> > member_class_templates;
 
@@ -1640,7 +1639,7 @@ public:
 	     size_t align_in_bits, location locus, visibility vis,
 	     base_specs& bases, member_types& mbrs,
 	     data_members& data_mbrs, member_functions& member_fns);
-  
+
   /// A constructor for instances of class_decl.
   ///
   /// @param name the name of the class.
@@ -1654,7 +1653,7 @@ public:
   /// @param locus the source location of declaration point this class.
   ///
   /// @param vis the visibility of instances of class_decl.
-  class_decl(const std::string& name, size_t size_in_bits, 
+  class_decl(const std::string& name, size_t size_in_bits,
 	     size_t align_in_bits, location locus, visibility vis);
 
 
@@ -1914,17 +1913,17 @@ public:
 
 
 /// Abstract a data member declaration in a class declaration.
-class class_decl::data_member 
+class class_decl::data_member
 : public var_decl, public member_base
 {
-  bool 		m_is_laid_out;
-  size_t 		m_offset_in_bits;
+  bool			m_is_laid_out;
+  size_t		m_offset_in_bits;
 
   // Forbidden
   data_member();
 
 public:
-    
+
   /// Hasher.
   struct hash;
 
@@ -2154,7 +2153,7 @@ public:
 
 
 /// Abstracts a member function declaration in a class declaration.
-class class_decl::member_function 
+class class_decl::member_function
   : public method_decl, public member_base
 {
   size_t m_vtable_offset_in_bits;
@@ -2336,7 +2335,7 @@ public:
 
 
 /// Abstracts a member class template template
-class class_decl::member_class_template 
+class class_decl::member_class_template
 : public member_base, public virtual traversable_base
 {
   shared_ptr<class_tdecl> m_class_tmpl;
@@ -2380,7 +2379,7 @@ struct type_base::shared_ptr_hash
   size_t
   operator()(const shared_ptr<type_base> t) const;
 };
-  
+
 struct type_base::dynamic_hash
 {
   size_t

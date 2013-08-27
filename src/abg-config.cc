@@ -85,4 +85,3 @@ abigail_get_library_version(int& major, int& minor, int& revision)
 
 }
 }//end namespace abigail
-

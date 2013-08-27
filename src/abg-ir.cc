@@ -257,7 +257,8 @@ scope_decl::traverse(ir_node_visitor &v)
        i != get_member_decls ().end();
        ++i)
     {
-      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
+      shared_ptr<traversable_base> t =
+	dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse (v);
     }

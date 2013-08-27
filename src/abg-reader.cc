@@ -2599,7 +2599,7 @@ handle_class_tdecl(read_context& ctxt)
     return false;
 
   bool is_ok = build_class_tdecl(ctxt, node,
-					 /*update_depth_info=*/false);
+				 /*update_depth_info=*/false);
   xmlTextReaderNext(r.get());
 
   return is_ok;

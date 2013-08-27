@@ -586,7 +586,8 @@ write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
 ///
 /// @return true upon successful completion, false otherwise.
 bool
-write_translation_unit(const translation_unit& tu, write_context& ctxt,
+write_translation_unit(const translation_unit& tu,
+		       write_context& ctxt,
 		       unsigned	indent)
 {
   ostream& o = ctxt.get_ostream();
