@@ -23,11 +23,146 @@
 #ifndef __ABG_IR_H__
 #define __ABG_IR_H__
 
-#include "abg-corpus.h"
+#include "abg-fwd.h"
 #include "abg-hash.h"
+#include "abg-traverse.h"
 
 namespace abigail
 {
+
+/// @brief The source location of a token.
+///
+/// This represents the location of a token coming from a given
+/// translation unit.  This location is actually an abstraction of
+/// cursor in the table of all the locations of all the tokens of the
+/// translation unit.  That table is managed by the location_manager
+/// type.
+class location
+{
+  unsigned		m_value;
+
+  location(unsigned v) : m_value(v) { }
+
+public:
+
+  location() : m_value(0) { }
+
+  unsigned
+  get_value() const
+  { return m_value; }
+
+  operator bool() const
+  { return !!m_value; }
+
+  bool
+  operator==(const location other) const
+  { return m_value == other.m_value; }
+
+  bool
+  operator<(const location other) const
+  { return m_value < other.m_value; }
+
+  friend class location_manager;
+};
+
+/// @brief The entry point to manage locations.
+///
+/// This type keeps a table of all the locations for tokens of a
+/// given translation unit.
+class location_manager
+{
+  struct _Impl;
+
+  /// Pimpl.
+  shared_ptr<_Impl>			m_priv;
+
+public:
+
+  location_manager();
+
+  /// Insert the triplet representing a source locus into our internal
+  /// vector of location triplet.  Return an instance of location type,
+  /// built from an integral type that represents the index of the
+  /// source locus triplet into our source locus table.
+  ///
+  /// @param fle the file path of the source locus
+  /// @param lne the line number of the source location
+  /// @param col the column number of the source location
+  location
+  create_new_location(const std::string& fle, size_t lne, size_t col);
+
+  /// Given an instance of location type, return the triplet
+  /// {path,line,column} that represents the source locus.  Note that
+  /// the location must have been previously created from the function
+  /// location_manager::expand_location otherwise this function yields
+  /// unexpected results, including possibly a crash.
+  ///
+  /// @param location the instance of location type to expand
+  /// @param path the resulting path of the source locus
+  /// @param line the resulting line of the source locus
+  /// @param column the resulting colum of the source locus
+  void
+  expand_location(const location location, std::string& path,
+		  unsigned& line, unsigned& column) const;
+};
+
+/// This is the abstraction of the set of relevant artefacts (types,
+/// variable declarations, functions, templates, etc) bundled together
+/// into a translation unit.
+class translation_unit : public traversable_base
+{
+public:
+
+  typedef shared_ptr<global_scope>		global_scope_sptr;
+
+private:
+  std::string				m_path;
+  location_manager			m_loc_mgr;
+  mutable global_scope_sptr		m_global_scope;
+
+  // Forbidden
+  translation_unit();
+
+public:
+
+
+  translation_unit(const std::string& path);
+
+  virtual ~translation_unit();
+
+  const std::string&
+  get_path() const;
+
+  void
+  set_path(const string&);
+
+  const global_scope_sptr
+  get_global_scope() const;
+
+  location_manager&
+  get_loc_mgr();
+
+  const location_manager&
+  get_loc_mgr() const;
+
+  bool
+  is_empty() const;
+
+  bool
+  read();
+
+  bool
+  read(const string& buffer);
+
+  bool
+  write(std::ostream& out) const;
+
+  bool
+  write(const string& path) const;
+
+  void
+  traverse(ir_node_visitor& v);
+};//end class translation_unit
 
 /// The base type of all declarations.
 class decl_base : public traversable_base
