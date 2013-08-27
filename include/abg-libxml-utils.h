@@ -54,6 +54,7 @@ struct charDeleter
 typedef shared_ptr<xmlChar> xml_char_sptr;
 
 reader_sptr new_reader_from_file(const std::string& path);
+reader_sptr new_reader_from_buffer(const std::string& buffer);
 xml_char_sptr build_xml_char_sptr(xmlChar*);
 
 template<class T>

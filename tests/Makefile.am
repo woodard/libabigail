@@ -2,6 +2,7 @@ h=$(abs_srcdir)
 
 TESTS=				 \
 runtestreadwrite		 \
+runtestwritereadarchive		 \
 runtestsvg			 \
 runtestdot 
 
@@ -9,8 +10,8 @@ noinst_PROGRAMS= $(TESTS) testwalker
 
 noinst_LTLIBRARIES = libtestutils.la
 
-libtestutils_la_SOURCES=\
-test-utils.h \
+libtestutils_la_SOURCES=	\
+test-utils.h 			\
 test-utils.cc
 
 libtestutils_la_CXXFLAGS=		\
@@ -19,6 +20,9 @@ libtestutils_la_CXXFLAGS=		\
 
 runtestreadwrite_SOURCES=$(h)/test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestwritereadarchive_SOURCES=$(h)/test-write-read-archive.cc
+runtestwritereadarchive_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=$(h)/test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
@@ -49,7 +53,13 @@ data/test-read-write/test12.xml	\
 data/test-read-write/test13.xml	\
 data/test-read-write/test14.xml	\
 data/test-read-write/test15.xml	\
-data/test-read-write/test16.xml
+data/test-read-write/test16.xml \
+\
+data/test-write-read-archive/test0.xml \
+data/test-write-read-archive/test1.xml \
+data/test-write-read-archive/test2.xml \
+data/test-write-read-archive/test3.xml \
+data/test-write-read-archive/test4.xml
 
 clean-local: clean-local-check
 .PHONY: clean-local-check

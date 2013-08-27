@@ -152,6 +152,16 @@ translation_unit::get_path() const
   return m_path;
 }
 
+/// Set the path associated to the current instance of
+/// translation_unit.
+///
+/// @param a_path the new path to set.
+void
+translation_unit::set_path(const string& a_path)
+{
+  m_path = a_path;
+}
+
 /// Getter of the location manager for the current translation unit.
 ///
 /// @return a reference to the location manager for the current

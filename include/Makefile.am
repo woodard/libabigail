@@ -2,6 +2,7 @@ headers =		\
 abg-ir.h		\
 abg-corpus.h		\
 abg-libxml-utils.h	\
+abg-libzip-utils.h	\
 abg-fwd.h		\
 abg-hash.h		\
 abg-config.h		\

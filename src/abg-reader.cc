@@ -2618,4 +2618,17 @@ translation_unit::read()
   reader::read_context read_ctxt(xml::new_reader_from_file(this->get_path()));
   return reader::read_input(read_ctxt, *this);
 }
+
+/// Deserialize the contents of an in-memory buffer into this
+/// translation_unit object.
+///
+///@param buffer the in-memory buffer to de-serialize from.
+///
+/// @return true upon successful de-serialization, false otherwise.
+bool
+translation_unit::read(const string& buffer)
+{
+  reader::read_context read_ctxt(xml::new_reader_from_buffer(buffer));
+  return reader::read_input(read_ctxt, *this);
+}
 }//end namespace abigail

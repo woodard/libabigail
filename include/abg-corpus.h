@@ -37,13 +37,13 @@ namespace abigail
 class corpus
 {
 public:
+  struct impl;
   typedef std::string				string;
   typedef shared_ptr<translation_unit>		translation_unit_sptr;
   typedef std::vector<translation_unit_sptr>	translation_units;
 
 private:
-  string 			m_name;
-  translation_units 		m_members;
+  shared_ptr<impl> m_priv;
 
   corpus();
 
@@ -57,8 +57,24 @@ public:
   const translation_units&
   get_translation_units() const;
 
+  void
+  drop_translation_units();
+
+  string&
+  get_file_path() const;
+
+  void
+  set_file_path(const string&);
+
   bool
   is_empty() const;
+
+  bool
+  write() const;
+
+  int
+  read();
+
 };
 }//end namespace abigail
 #endif //__ABG_CORPUS_H__

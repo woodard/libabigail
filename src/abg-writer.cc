@@ -20,26 +20,28 @@
 
 /// @file
 
-#include <ostream>
+#include <iostream>
+#include <fstream>
 #include <sstream>
-#include <tr1/memory>
 #include <tr1/unordered_map>
 #include "abg-config.h"
 #include "abg-ir.h"
 
 namespace abigail
 {
-
-/// Internal namespace for writer.
-namespace writer
-{
+using std::cerr;
 using std::tr1::shared_ptr;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
+using std::ofstream;
 using std::ostream;
 using std::ostringstream;
 using std::list;
 using std::tr1::unordered_map;
+
+/// Internal namespace for writer.
+namespace writer
+{
 
 class id_manager
 {
@@ -1487,11 +1489,48 @@ write_class_tdecl(const shared_ptr<class_tdecl> decl,
 
 } //end namespace writer
 
+/// Serialize the contents of this translation unit object into an
+/// output stream.
+///
+/// @param out the output stream.
 bool
-translation_unit::write(std::ostream &out)
+translation_unit::write(std::ostream &out) const
 {
   writer::write_context ctxt(out);
   return writer::write_translation_unit(*this, ctxt, /*indent=*/0);
+}
+
+/// Serialize the contents of this translation unit object into an
+/// external file.
+///
+/// @param out the path to the external file.
+bool
+translation_unit::write(const string& path) const
+{
+  bool result = true;
+
+  try
+    {
+      ofstream of(path, std::ios_base::trunc);
+      if (!of.is_open())
+	{
+	  cerr << "failed to access " << path << "\n";
+	  return false;
+	}
+
+      if (!write(of))
+	{
+	  cerr << "failed to access " << path << "\n";
+	  result = false;
+	}
+
+      of.close();
+    }
+  catch(...)
+    {
+      result = false;
+    }
+  return result;
 }
 
 } //end namespace abigail

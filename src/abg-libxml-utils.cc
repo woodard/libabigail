@@ -41,6 +41,21 @@ new_reader_from_file(const std::string& path)
   return p;
 }
 
+/// Instanciate an xmlTextReader that parses the content of an
+/// in-memory buffer, wrap it into a smart pointer and return it.
+///
+/// @param buffer the in-memory buffer to be parsed by the returned
+/// instance of xmlTextReader.
+reader_sptr
+new_reader_from_buffer(const std::string& buffer)
+{
+  reader_sptr p =
+    build_sptr(xmlReaderForMemory(buffer.c_str(),
+				  buffer.length(),
+				  "", 0, 0));
+  return p;
+}
+
 /// Build and return a shared_ptr for a pointer to xmlTextReader
 template<>
 shared_ptr<xmlTextReader>

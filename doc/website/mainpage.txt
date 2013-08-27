@@ -11,7 +11,7 @@ constructions like types, variables, functions and declarations of a
 given library or program.  For a given program or library, this set of
 constructions is called an ABI corpus.
 
-Thus This project aims at providing a library to manipulate ABI
+Thus the project aims at providing a library to manipulate ABI
 corpuses, compare them, provide detailed information about their
 differences and help build tools to infer interesting conclusions
 about these differences.
@@ -47,7 +47,7 @@ the moment the dependencies are the following Free Software packages:
 
     \li <a href="http://www.xmlsoft.org">libxml2</a>
     \li <a href="http://www.gnu.org/software/autoconf/">autoconf</a>
-
+    \li <a href="http://www.nih.at/libzip">libzip</a>
 
 Then go to your local libabigail.git directory where the source code
 you've checked out lies and create a 'build' directory that will

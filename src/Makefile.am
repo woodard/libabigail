@@ -4,8 +4,10 @@ libabigaildir=$(libdir)/
 
 libabigail_la_SOURCES = $(headers)	\
 $(h)/abg-ir.cc				\
+$(h)/abg-corpus.cc			\
 $(h)/abg-reader.cc			\
 $(h)/abg-libxml-utils.cc		\
+$(h)/abg-libzip-utils.cc		\
 $(h)/abg-hash.cc			\
 $(h)/abg-writer.cc			\
 $(h)/abg-config.cc			\
@@ -13,7 +15,7 @@ $(h)/abg-viz-common.cc			\
 $(h)/abg-viz-dot.cc			\
 $(h)/abg-viz-svg.cc
 
-libabigail_la_LDFLAGS=@XML_LIBS@ -Wl,--as-needed
+libabigail_la_LDFLAGS=@DEPS_LIBS@ -Wl,--as-needed
 
-AM_CPPFLAGS=@XML_CFLAGS@ -Wall -I$(top_srcdir)/include -I$(top_builddir)/include
+AM_CPPFLAGS=@DEPS_CPPFLAGS@ -Wall -I$(abs_top_srcdir)/include -I$(abs_top_builddir)/include -I$(abs_top_builddir)
 AM_CXXFLAGS="-std=gnu++11"
