@@ -61,10 +61,10 @@ public:
   drop_translation_units();
 
   string&
-  get_file_path() const;
+  get_path() const;
 
   void
-  set_file_path(const string&);
+  set_path(const string&);
 
   bool
   is_empty() const;

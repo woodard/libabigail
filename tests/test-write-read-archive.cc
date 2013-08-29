@@ -112,7 +112,7 @@ main()
 
   if (!abi_corpus.write())
     {
-      cerr  << "failed to write archive file: " << abi_corpus.get_file_path();
+      cerr  << "failed to write archive file: " << abi_corpus.get_path();
       return 1;
     }
 
@@ -126,7 +126,7 @@ main()
   if (abi_corpus.get_translation_units().size())
     {
       cerr << "In-memory object of abi corpus at '"
-	   << abi_corpus.get_file_path()
+	   << abi_corpus.get_path()
 	   << "' still has translation units after call to "
 	      "corpus::drop_translation_units!";
       return false;
@@ -135,7 +135,7 @@ main()
   if (!abi_corpus.read())
     {
       cerr << "Failed to load the abi corpus from path '"
-	   << abi_corpus.get_file_path()
+	   << abi_corpus.get_path()
 	   << "'";
       return 1;
     }
@@ -144,7 +144,7 @@ main()
     {
       cerr << "Read " << abi_corpus.get_translation_units().size()
 	   << " elements from the abi corpus at "
-	   << abi_corpus.get_file_path()
+	   << abi_corpus.get_path()
 	   << " instead of "
 	   << NUM_ARCHIVES_ELEMENTS;
       return 1;

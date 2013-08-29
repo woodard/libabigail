@@ -239,7 +239,7 @@ corpus::drop_translation_units()
 
  /// @return the file path associated to the current corpus.
  string&
- corpus::get_file_path() const
+ corpus::get_path() const
  {
    return m_priv->path;
  }
@@ -252,7 +252,7 @@ corpus::drop_translation_units()
 /// the corpus object into the on-disk file at this path.
 /// @param the new file path to assciate to the current corpus.
 void
-corpus::set_file_path(const string& path)
+corpus::set_path(const string& path)
 {
   m_priv->path = path;
 }
@@ -267,7 +267,7 @@ corpus::set_file_path(const string& path)
  }
 
  /// Serialize the current corpus to disk in a file which path is given
- /// by corpus::get_file_path.
+ /// by corpus::get_path.
  ///
  /// @return true upon successful completion, false otherwise.
 bool
@@ -285,7 +285,7 @@ corpus::write() const
   return true;
 }
 
-/// Open the archive which path is given by corpus::get_file_path and
+/// Open the archive which path is given by corpus::get_path and
 /// de-serialize each of the translation units it contains.
 ///
 /// @return the number of entries read and properly de-serialized,
