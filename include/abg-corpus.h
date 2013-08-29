@@ -23,8 +23,7 @@
 #ifndef __ABG_CORPUS_H__
 #define __ABG_CORPUS_H__
 
-#include "abg-traverse.h"
-#include "abg-fwd.h"
+#include <abg-ir.h>
 
 namespace abigail
 {
