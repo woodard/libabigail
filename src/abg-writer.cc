@@ -1528,6 +1528,7 @@ translation_unit::write(const string& path) const
     }
   catch(...)
     {
+      cerr << "failed to write to " << path << "\n";
       result = false;
     }
   return result;
