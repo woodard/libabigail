@@ -36,10 +36,8 @@ namespace abigail
 class corpus
 {
 public:
-  struct impl;
-  typedef std::string				string;
-  typedef shared_ptr<translation_unit>		translation_unit_sptr;
-  typedef std::vector<translation_unit_sptr>	translation_units;
+  struct		impl;
+  typedef std::string	string;
 
 private:
   shared_ptr<impl> m_priv;

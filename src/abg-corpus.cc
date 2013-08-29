@@ -214,7 +214,7 @@ struct corpus::impl
  /// Return the list of translation units of the current corpus.
  ///
  /// @return the list of translation units of the current corpus.
- const corpus::translation_units&
+ const translation_units&
  corpus::get_translation_units() const
  {
    return m_priv->members;

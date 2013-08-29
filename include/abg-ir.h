@@ -164,6 +164,9 @@ public:
   traverse(ir_node_visitor& v);
 };//end class translation_unit
 
+typedef shared_ptr<translation_unit> translation_unit_sptr;
+typedef std::vector<translation_unit_sptr> translation_units;
+
 /// The base type of all declarations.
 class decl_base : public traversable_base
 {
