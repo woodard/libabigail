@@ -23,6 +23,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "abg-ir.h"
+#include "abg-tools-utils.h"
 #include "test-utils.h"
 
 using std::string;
@@ -151,7 +152,7 @@ main()
 
       string output_suffix(s->out_path);
       out_path = abigail::tests::get_build_dir() + "/tests/" + output_suffix;
-      if (!abigail::tests::ensure_parent_dir_created(out_path))
+      if (!abigail::tools::ensure_parent_dir_created(out_path))
 	{
 	  cerr << "Could not create parent director for " << out_path;
 	  is_ok = false;

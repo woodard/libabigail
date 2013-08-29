@@ -14,15 +14,20 @@ libtestutils_la_SOURCES=	\
 test-utils.h 			\
 test-utils.cc
 
+libtestutils_la_LIBADD=$(top_builddir)/tools/libtoolsutils.la
+libtestutils_la_DEPENDENCIES=$(top_builddir)/tools/libtoolsutils.la
+
 libtestutils_la_CXXFLAGS=		\
--DABIGAIL_SRC_DIR=\"${top_srcdir}\"  	\
--DABIGAIL_BUILD_DIR=\"${top_builddir}\"
+-DABIGAIL_SRC_DIR=\"${abs_top_srcdir}\"  	\
+-DABIGAIL_BUILD_DIR=\"${abs_top_builddir}\"
 
 runtestreadwrite_SOURCES=$(h)/test-read-write.cc
-runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
+runtestreadwrite_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la
+runtestreadwrite_DEPENDENCIES = libtestutils.la
 
 runtestwritereadarchive_SOURCES=$(h)/test-write-read-archive.cc
-runtestwritereadarchive_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
+runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la $(top_builddir)/tools/libtoolsutils.la
+runtestwritereadarchive_DEPENDENCIES = libtestutils.la
 
 runtestsvg_SOURCES=$(h)/test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
@@ -33,10 +38,11 @@ runtestdot_LDADD=$(top_builddir)/src/libabigail.la
 testwalker_SOURCES=$(h)/test-walker.cc
 testwalker_LDADD=$(top_builddir)/src/libabigail.la
 
-AM_CPPFLAGS=-I${top_srcdir}/include -I${top_builddir}/include
+AM_CPPFLAGS=-I${abs_top_srcdir}/include \
+-I${abs_top_builddir}/include -I${abs_top_srcdir}/tools
 AM_CXXFLAGS="-std=gnu++11"
 
-EXTRA_DIST=				\
+EXTRA_DIST=			\
 data/test-read-write/test0.xml	\
 data/test-read-write/test1.xml	\
 data/test-read-write/test2.xml	\

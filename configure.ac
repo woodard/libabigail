@@ -75,6 +75,7 @@ include/Makefile
 include/abg-version.h
 doc/Makefile
 src/Makefile
+tools/Makefile
 tests/Makefile])
 
 AC_OUTPUT

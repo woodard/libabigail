@@ -1,4 +1,4 @@
-SUBDIRS = include src tests doc
+SUBDIRS = include src tools tests doc
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 headers = config.h
 

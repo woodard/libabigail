@@ -18,43 +18,23 @@
 // License along with this program; see the file COPYING-LGPLV3.  If
 // not, see <http://www.gnu.org/licenses/>.
 
+///@file
 
-#include "test-utils.h"
-
-using std::string;
+#include <string>
 
 namespace abigail
 {
-namespace tests
+
+namespace tools
 {
 
-/// Returns the absolute path to the source directory.
-///
-/// \return the absolute path tho the source directory.
-const std::string&
-get_src_dir()
-{
-#ifndef ABIGAIL_SRC_DIR
-#error the macro ABIGAIL_SRC_DIR must be set at compile time
-#endif
+bool is_dir(const std::string&);
+bool dirname(std::string const& path,
+	     std::string& dir_name);
+bool base_name(std::string const& path,
+	       std::string& file_name);
+bool ensure_dir_path_created(const std::string&);
+bool ensure_parent_dir_created(const std::string&);
 
-  static string s(ABIGAIL_SRC_DIR);
-  return s;
-}
-
-/// Returns the absolute path to the build directory.
-///
-/// \return the absolute path the build directory.
-const std::string&
-get_build_dir()
-{
-#ifndef ABIGAIL_BUILD_DIR
-#error the macro ABIGAIL_BUILD_DIR must be set at compile time
-#endif
-
-  static string s(ABIGAIL_BUILD_DIR);
-  return s;
-}
-
-}//end namespace tests
+}// end namespace tools
 }//end namespace abigail
