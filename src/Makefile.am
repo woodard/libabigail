@@ -1,6 +1,6 @@
 h=$(abs_srcdir)
-libabigail_LTLIBRARIES=libabigail.la
-libabigaildir=$(libdir)/
+lib_LTLIBRARIES=libabigail.la
+libabigaildir=$(libdir)
 
 libabigail_la_SOURCES = $(headers)	\
 $(h)/abg-ir.cc				\
