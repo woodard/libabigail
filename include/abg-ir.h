@@ -39,28 +39,28 @@ namespace abigail
 /// type.
 class location
 {
-  unsigned		m_value;
+  unsigned		value_;
 
-  location(unsigned v) : m_value(v) { }
+  location(unsigned v) : value_(v) { }
 
 public:
 
-  location() : m_value(0) { }
+  location() : value_(0) { }
 
   unsigned
   get_value() const
-  { return m_value; }
+  {return value_;}
 
   operator bool() const
-  { return !!m_value; }
+  { return !!value_; }
 
   bool
   operator==(const location other) const
-  { return m_value == other.m_value; }
+  { return value_ == other.value_; }
 
   bool
   operator<(const location other) const
-  { return m_value < other.m_value; }
+  { return value_ < other.value_; }
 
   friend class location_manager;
 };
@@ -74,7 +74,7 @@ class location_manager
   struct _Impl;
 
   /// Pimpl.
-  shared_ptr<_Impl>			m_priv;
+  shared_ptr<_Impl>			priv_;
 
 public:
 
@@ -116,9 +116,9 @@ public:
   typedef shared_ptr<global_scope>		global_scope_sptr;
 
 private:
-  std::string				m_path;
-  location_manager			m_loc_mgr;
-  mutable global_scope_sptr		m_global_scope;
+  std::string				path_;
+  location_manager			loc_mgr_;
+  mutable global_scope_sptr		global_scope_;
 
   // Forbidden
   translation_unit();
@@ -195,11 +195,11 @@ public:
 
 private:
 
-  location				m_location;
-  std::string				m_name;
-  std::string				m_mangled_name;
-  scope_decl*				m_context;
-  visibility				m_visibility;
+  location				location_;
+  std::string				name_;
+  std::string				mangled_name_;
+  scope_decl*				context_;
+  visibility				visibility_;
 
   // Forbidden
   decl_base();
@@ -240,44 +240,43 @@ public:
 
   location
   get_location() const
-  { return m_location; }
+  {return location_;}
 
   void
   set_location(const location& l)
-  { m_location = l; }
+  { location_ = l; }
 
   const string&
   get_name() const
-  { return m_name; }
+  {return name_;}
 
   void
   set_name(const string& n)
-  { m_name = n; }
+  { name_ = n; }
 
   const string&
   get_mangled_name() const
-  { return m_mangled_name; }
+  {return mangled_name_;}
 
   void
   set_mangled_name(const std::string& m)
-  { m_mangled_name = m; }
+  { mangled_name_ = m; }
 
   scope_decl*
   get_scope() const
-  { return m_context; }
+  {return context_;}
 
   visibility
   get_visibility() const
-  { return m_visibility; }
+  {return visibility_;}
 
   void
   set_visibility(visibility v)
-  { m_visibility = v; }
+  { visibility_ = v; }
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
 };
-
 
 /// A declaration that introduces a scope.
 class scope_decl : public virtual decl_base
@@ -287,8 +286,8 @@ public:
   typedef std::list<shared_ptr<scope_decl> >	scopes;
 
 private:
-  declarations				m_members;
-  scopes			m_member_scopes;
+  declarations			members_;
+  scopes			member_scopes_;
 
   scope_decl();
 
@@ -319,11 +318,11 @@ public:
 
   const declarations&
   get_member_decls() const
-  { return m_members; }
+  {return members_;}
 
   const scopes&
   get_member_scopes() const
-  { return m_member_scopes; }
+  {return member_scopes_;}
 
   bool
   is_empty() const
@@ -351,11 +350,11 @@ public:
 /// time translatin_unit::get_global_scope is invoked.
 class global_scope : public scope_decl
 {
-  translation_unit*		m_translation_unit;
+  translation_unit*		translation_unit_;
 
   global_scope(translation_unit *tu)
   : decl_base("", location()), scope_decl("", location()),
-    m_translation_unit(tu)
+    translation_unit_(tu)
   { }
 
 public:
@@ -364,7 +363,7 @@ public:
 
   translation_unit*
   get_translation_unit() const
-  { return m_translation_unit; }
+  {return translation_unit_;}
 
   virtual ~global_scope();
 };
@@ -372,8 +371,8 @@ public:
 /// An abstraction helper for type declarations
 class type_base
 {
-  size_t			m_size_in_bits;
-  size_t			m_alignment_in_bits;
+  size_t			size_in_bits_;
+  size_t			alignment_in_bits_;
 
   // Forbid this.
   type_base();
@@ -520,8 +519,8 @@ public:
 class qualified_type_def
 : public virtual type_base, public virtual decl_base
 {
-  char				m_cv_quals;
-  shared_ptr<type_base>		m_underlying_type;
+  char			cv_quals_;
+  shared_ptr<type_base> underlying_type_;
 
   // Forbidden.
   qualified_type_def();
@@ -586,7 +585,7 @@ operator|(qualified_type_def::CV, qualified_type_def::CV);
 class pointer_type_def
 : public virtual type_base, public virtual decl_base
 {
-  shared_ptr<type_base>			m_pointed_to_type;
+  shared_ptr<type_base>			pointed_to_type_;
 
   // Forbidden.
   pointer_type_def();
@@ -624,8 +623,8 @@ public:
 class reference_type_def
 : public virtual type_base, public virtual decl_base
 {
-  shared_ptr<type_base>		m_pointed_to_type;
-  bool				m_is_lvalue;
+  shared_ptr<type_base> pointed_to_type_;
+  bool			is_lvalue_;
 
   // Forbidden.
   reference_type_def();
@@ -670,8 +669,8 @@ public:
   /// Enumerator Datum.
   class enumerator
   {
-    string		m_name;
-    size_t		m_value;
+    string	name_;
+    size_t	value_;
 
     //Forbidden
     enumerator();
@@ -679,7 +678,7 @@ public:
   public:
 
     enumerator(const string& name, size_t value)
-    : m_name(name), m_value(value) { }
+    : name_(name), value_(value) { }
 
     bool
     operator==(const enumerator& other) const
@@ -689,28 +688,28 @@ public:
     }
     const string&
     get_name() const
-    { return m_name; }
+    {return name_;}
 
     void
     set_name(const string& n)
-    { m_name = n; }
+    {name_ = n;}
 
     size_t
     get_value() const
-    { return m_value; }
+    {return value_;}
 
     void
     set_value(size_t v)
-    { m_value=v; }
+    {value_=v;}
   };
 
-  typedef std::list<enumerator>		enumerators;
-  typedef shared_ptr<type_base>		type_sptr;
+  typedef std::list<enumerator> enumerators;
+  typedef shared_ptr<type_base> type_sptr;
 
 private:
 
-  type_sptr				m_underlying_type;
-  enumerators				m_enumerators;
+  type_sptr	underlying_type_;
+  enumerators	enumerators_;
 
   // Forbidden
   enum_type_decl();
@@ -733,8 +732,8 @@ public:
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
     decl_base(name, locus, mangled_name, vis),
-    m_underlying_type(underlying_type),
-    m_enumerators(enms)
+    underlying_type_(underlying_type),
+    enumerators_(enms)
   { }
 
   /// Return the underlying type of the enum.
@@ -768,7 +767,7 @@ public:
 class typedef_decl
 : public virtual type_base, public virtual decl_base
 {
-  shared_ptr<type_base>		m_underlying_type;
+  shared_ptr<type_base> underlying_type_;
 
   // Forbidden
   typedef_decl();
@@ -786,7 +785,7 @@ public:
   ///
   /// @param locus the source location of the typedef declaration.
   typedef_decl(const string& name, const shared_ptr<type_base> underlying_type,
-	       location	locus, const std::string& mangled_name = "",
+	       location locus, const std::string& mangled_name = "",
 	       visibility vis = VISIBILITY_DEFAULT);
 
   /// Equality operator
@@ -814,8 +813,8 @@ public:
 /// Abstracts a variable declaration.
 class var_decl : public virtual decl_base
 {
-  shared_ptr<type_base>	m_type;
-  binding			m_binding;
+  shared_ptr<type_base>	type_;
+  binding			binding_;
 
   // Forbidden
   var_decl();
@@ -837,15 +836,15 @@ public:
 
   shared_ptr<type_base>
   get_type() const
-  { return m_type; }
+  {return type_;}
 
   binding
   get_binding() const
-  { return m_binding; }
+  {return binding_;}
 
   void
   set_binding(binding b)
-  {m_binding = b; }
+  {binding_ = b;}
 
 
   /// This implements the traversable_base::traverse pure virtual
@@ -862,11 +861,11 @@ public:
 class function_decl : public virtual decl_base
 {
 protected:
-  shared_ptr<function_type>	m_type;
+  shared_ptr<function_type>	type_;
 
 private:
-  bool			m_declared_inline;
-  decl_base::binding	m_binding;
+  bool			declared_inline_;
+  decl_base::binding	binding_;
 
 public:
   /// Hasher for function_decl
@@ -875,10 +874,10 @@ public:
   /// Abtraction for the parameter of a function.
   class parameter
   {
-    shared_ptr<type_base>	m_type;
-    std::string			m_name;
-    location			m_location;
-    bool			m_variadic_marker;
+    shared_ptr<type_base>	type_;
+    std::string		name_;
+    location			location_;
+    bool			variadic_marker_;
 
   public:
 
@@ -887,38 +886,38 @@ public:
 
     parameter(const shared_ptr<type_base> type, const std::string& name,
 	      location loc, bool variadic_marker = false)
-    : m_type(type), m_name(name), m_location(loc),
-      m_variadic_marker (variadic_marker)
+    : type_(type), name_(name), location_(loc),
+      variadic_marker_ (variadic_marker)
     { }
 
     parameter(const shared_ptr<type_base> type, bool variadic_marker = false)
-    : m_type(type),
-      m_variadic_marker (variadic_marker)
+    : type_(type),
+      variadic_marker_ (variadic_marker)
     { }
 
     const shared_ptr<type_base>
     get_type()const
-    { return m_type; }
+    {return type_;}
 
     const shared_ptr<type_base>
     get_type()
-    { return m_type; }
+    {return type_;}
 
     const std::string&
     get_name() const
-    { return m_name; }
+    {return name_;}
 
     location
     get_location() const
-    { return m_location; }
+    {return location_;}
 
     bool
     operator==(const parameter& o) const
-    { return *get_type() == *o.get_type(); }
+    {return *get_type() == *o.get_type();}
 
     bool
     get_variadic_marker() const
-    { return m_variadic_marker; }
+    {return variadic_marker_;}
   };
 
   /// Constructor for function_decl.
@@ -970,9 +969,9 @@ public:
 		visibility vis = VISIBILITY_DEFAULT,
 		binding bind = BINDING_GLOBAL)
   : decl_base(name, locus, mangled_name, vis),
-    m_type(function_type),
-    m_declared_inline(declared_inline),
-    m_binding(bind)
+    type_(function_type),
+    declared_inline_(declared_inline),
+    binding_(bind)
   { }
 
   /// Constructor of the function_decl type.
@@ -1035,15 +1034,15 @@ public:
 
   void
   set_type(shared_ptr<function_type> fn_type)
-  {m_type = fn_type; }
+  {type_ = fn_type; }
 
   bool
   is_declared_inline() const
-  { return m_declared_inline; }
+  {return declared_inline_;}
 
   binding
   get_binding() const
-  { return m_binding; }
+  {return binding_;}
 
   virtual bool
   operator==(const function_decl& o) const;
@@ -1055,8 +1054,10 @@ public:
   /// of parameters.
   bool
   is_variadic() const
-  { return (!get_parameters().empty()
-	   && get_parameters().back()->get_variadic_marker()); }
+  {
+    return (!get_parameters().empty()
+	    && get_parameters().back()->get_variadic_marker());
+  }
 
   /// This implements the traversable_base::traverse pure virtual
   /// function.
@@ -1081,10 +1082,10 @@ public:
 private:
   function_type();
 
-  shared_ptr<type_base>			m_return_type;
+  shared_ptr<type_base> return_type_;
 
 protected:
-  parameters m_parms;
+  parameters parms_;
 
 public:
 
@@ -1108,8 +1109,8 @@ public:
   /// @param size_in_bits the size of this type.
   function_type(shared_ptr<type_base> return_type, const parameters& parms,
 		size_t size_in_bits, size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits), m_return_type(return_type),
-    m_parms(parms)
+  : type_base(size_in_bits, alignment_in_bits), return_type_(return_type),
+    parms_(parms)
   { }
 
   /// A constructor for a function_type that takes no parameters.
@@ -1121,7 +1122,8 @@ public:
   /// @param alignment_in_bits the alignment of this type, in bits.
   function_type(shared_ptr<type_base> return_type,
 		size_t size_in_bits, size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits), m_return_type (return_type)
+  : type_base(size_in_bits, alignment_in_bits),
+    return_type_(return_type)
   { }
 
   /// A constructor for a function_type that takes no parameter and
@@ -1137,31 +1139,31 @@ public:
 
   const shared_ptr<type_base>
   get_return_type() const
-  { return m_return_type; }
+  {return return_type_;}
 
   void
   set_return_type(shared_ptr<type_base> t)
-  { m_return_type = t; }
+  {return_type_ = t;}
 
   const parameters&
   get_parameters() const
-  { return m_parms; }
+  {return parms_;}
 
  parameters&
   get_parameters()
-  { return m_parms; }
+  {return parms_;}
 
   void
   set_parameters(const parameters &p)
-  { m_parms = p; }
+  {parms_ = p;}
 
   void
   append_parameter(parameter_sptr parm)
-  { m_parms.push_back(parm); }
+  {parms_.push_back(parm);}
 
   bool
   is_variadic() const
-  { return !m_parms.empty() && m_parms.back()->get_variadic_marker(); }
+  {return !parms_.empty() && parms_.back()->get_variadic_marker();}
 
   bool
   operator==(const function_type&) const;
@@ -1173,7 +1175,7 @@ public:
 class method_type : public function_type
 {
 
-  shared_ptr<class_decl> m_class_type;
+  shared_ptr<class_decl> class_type_;
 
   method_type();
 
@@ -1262,7 +1264,7 @@ public:
 
   shared_ptr<class_decl>
   get_class_type() const
-  { return m_class_type; }
+  {return class_type_;}
 
   /// Sets the class type of the current instance of method_type.
   ///
@@ -1279,7 +1281,7 @@ public:
 class template_decl
 {
   // XXX
-  std::list<shared_ptr<template_parameter> > m_parms;
+  std::list<shared_ptr<template_parameter> > parms_;
 
 public:
 
@@ -1287,15 +1289,15 @@ public:
   struct hash;
 
   template_decl()
-  { }
+  {}
 
   void
   add_template_parameter(shared_ptr<template_parameter> p)
-  { m_parms.push_back(p); }
+  {parms_.push_back(p);}
 
   const std::list<shared_ptr<template_parameter> >&
   get_template_parameters() const
-  { return m_parms; }
+  {return parms_;}
 
   virtual bool
   operator==(const template_decl& o) const;
@@ -1309,7 +1311,7 @@ public:
 /// non_type_template_parameter and template_template_parameter below.
 class template_parameter
 {
-  unsigned m_index;
+  unsigned index_;
 
   // Forbidden
   template_parameter();
@@ -1321,15 +1323,15 @@ class template_parameter
   struct dynamic_hash;
   struct shared_ptr_hash;
 
-  template_parameter(unsigned index) : m_index(index)
-  { }
+  template_parameter(unsigned index) : index_(index)
+  {}
 
   virtual bool
   operator==(const template_parameter&) const;
 
   unsigned
   get_index() const
-  { return m_index; }
+  {return index_;}
 
   virtual ~template_parameter();
 };
@@ -1352,7 +1354,7 @@ public:
       type_base(0, 0),
       type_decl(name, 0, 0, locus),
       template_parameter(index)
-  { }
+  {}
 
   virtual bool
   operator==(const type_tparameter&) const;
@@ -1364,7 +1366,7 @@ public:
 class non_type_tparameter
 : public template_parameter, public virtual decl_base
 {
-  shared_ptr<type_base> m_type;
+  shared_ptr<type_base> type_;
 
   // Forbidden
   non_type_tparameter();
@@ -1377,8 +1379,8 @@ public:
 			      shared_ptr<type_base> type, location locus)
     : decl_base(name, locus, ""),
       template_parameter(index),
-      m_type(type)
-  { }
+      type_(type)
+  {}
 
   virtual bool
   operator==(const non_type_tparameter&) const;
@@ -1386,7 +1388,7 @@ public:
 
   shared_ptr<type_base>
   get_type() const
-  { return m_type; }
+  {return type_;}
 
   virtual ~non_type_tparameter();
 };
@@ -1410,7 +1412,7 @@ public:
       type_base(0, 0),
       type_decl(name, 0, 0, locus, name, VISIBILITY_DEFAULT),
       type_tparameter(index, name, locus)
-  { }
+  {}
 
   virtual bool
   operator==(const template_tparameter& o) const;
@@ -1426,7 +1428,7 @@ public:
 class type_composition
 : public template_parameter, public virtual decl_base
 {
-  shared_ptr<type_base> m_type;
+  shared_ptr<type_base> type_;
 
   type_composition();
 
@@ -1436,11 +1438,11 @@ public:
 
   shared_ptr<type_base>
   get_composed_type() const
-  { return m_type; }
+  {return type_;}
 
   void
   set_composed_type(shared_ptr<type_base> t)
-  {m_type = t; }
+  {type_ = t;}
 
 
   virtual ~type_composition();
@@ -1450,8 +1452,8 @@ public:
 class function_tdecl
 : public template_decl, public scope_decl
 {
-  shared_ptr<function_decl> m_pattern;
-  binding m_binding;
+  shared_ptr<function_decl> pattern_;
+  binding binding_;
 
   // Forbidden
   function_tdecl();
@@ -1466,8 +1468,8 @@ public:
 			 visibility vis = VISIBILITY_DEFAULT,
 			 binding bind = BINDING_NONE)
   : decl_base("", locus, "", vis), scope_decl("", locus),
-    m_binding(bind)
-  { }
+    binding_(bind)
+  {}
 
   function_tdecl(shared_ptr<function_decl> pattern,
 			 location locus,
@@ -1476,8 +1478,8 @@ public:
   : decl_base(pattern->get_name(), locus,
 	      pattern->get_name(), vis),
     scope_decl(pattern->get_name(), locus),
-    m_binding(bind)
-  { set_pattern(pattern); }
+    binding_(bind)
+  {set_pattern(pattern);}
 
   virtual bool
   operator==(const function_tdecl&) const;
@@ -1485,18 +1487,18 @@ public:
   void
   set_pattern(shared_ptr<function_decl> p)
   {
-    m_pattern = p;
+    pattern_ = p;
     add_decl_to_scope(p, this);
     set_name(p->get_name());
   }
 
   shared_ptr<function_decl>
   get_pattern() const
-  { return m_pattern; }
+  {return pattern_;}
 
   binding
   get_binding() const
-  { return m_binding; }
+  {return binding_;}
 
   /// This implements the traversable_base::traverse pure virtual
   /// function.
@@ -1513,7 +1515,7 @@ public:
 /// Abstract a class template.
 class class_tdecl : public template_decl, public scope_decl
 {
-  shared_ptr<class_decl> m_pattern;
+  shared_ptr<class_decl> pattern_;
 
   // Forbidden
   class_tdecl();
@@ -1526,7 +1528,7 @@ public:
 
   class_tdecl(location locus, visibility vis = VISIBILITY_DEFAULT)
   : decl_base("", locus, "", vis), scope_decl("", locus)
-  { }
+  {}
 
   /// Constructor for the class_tdecl type.
   ///
@@ -1550,7 +1552,7 @@ public:
 
   shared_ptr<class_decl>
   get_pattern() const
-  { return m_pattern; }
+  {return pattern_;}
 
   /// This implements the traversable_base::traverse pure virtual
   /// function.
@@ -1594,23 +1596,29 @@ public:
   class member_class_template;
 
   /// Typedefs.
-  typedef std::list<shared_ptr<base_spec> >		base_specs;
-  typedef std::list<shared_ptr<member_type> >		member_types;
-  typedef std::list<shared_ptr<data_member> >		data_members;
-  typedef std::list<shared_ptr<member_function> >	member_functions;
-  typedef std::list<shared_ptr<member_function_template> >  member_function_templates;
-  typedef std::list<shared_ptr<member_class_template> > member_class_templates;
+  typedef shared_ptr<base_spec>			base_spec_sptr;
+  typedef std::list<base_spec_sptr>			base_specs;
+  typedef shared_ptr<member_type>			member_type_sptr;
+  typedef std::list<member_type_sptr>			member_types;
+  typedef shared_ptr<data_member>			data_member_sptr;
+  typedef std::list<data_member_sptr>			data_members;
+  typedef shared_ptr<member_function>			member_function_sptr;
+  typedef std::list<member_function_sptr>		member_functions;
+  typedef shared_ptr<member_function_template>		member_function_template_sptr;
+  typedef std::list<member_function_template_sptr>	member_function_templates;
+  typedef shared_ptr<member_class_template>		member_class_template_sptr;
+  typedef std::list<member_class_template_sptr>	member_class_templates;
 
 private:
-  mutable bool				m_hashing_started;
-  shared_ptr<class_decl>		m_declaration;
-  bool					m_is_declaration_only;
-  base_specs				m_bases;
-  member_types				m_member_types;
-  data_members				m_data_members;
-  member_functions			m_member_functions;
-  member_function_templates		m_member_function_templates;
-  member_class_templates		m_member_class_templates;
+  mutable bool			hashing_started_;
+  shared_ptr<class_decl>	declaration_;
+  bool				is_declaration_only_;
+  base_specs			bases_;
+  member_types			member_types_;
+  data_members			data_members_;
+  member_functions		member_functions_;
+  member_function_templates	member_function_templates_;
+  member_class_templates	member_class_templates_;
 
 public:
 
@@ -1671,15 +1679,15 @@ public:
 
   bool
   hashing_started() const
-  { return m_hashing_started; }
+  {return hashing_started_;}
 
   void
   hashing_started(bool b) const
-  { m_hashing_started = b; }
+  {hashing_started_ = b;}
 
   bool
   is_declaration_only() const
-  { return m_is_declaration_only; }
+  {return is_declaration_only_;}
 
   /// Set the earlier declaration of this class definition.
   ///
@@ -1698,15 +1706,15 @@ public:
 
   shared_ptr<class_decl>
   get_earlier_declaration() const
-  { return m_declaration; }
+  {return declaration_;}
 
   void
   add_base_specifier(shared_ptr<base_spec> b)
-  { m_bases.push_back(b); }
+  {bases_.push_back(b);}
 
   const base_specs&
   get_base_specifiers() const
-  { return m_bases; }
+  {return bases_;}
 
   /// Add a member type to the current instance of class_decl
   ///
@@ -1716,7 +1724,7 @@ public:
 
   const member_types&
   get_member_types() const
-  { return m_member_types; }
+  {return member_types_;}
 
   /// Add a data member to the current instance of class_decl.
   ///
@@ -1726,7 +1734,7 @@ public:
 
   const data_members&
   get_data_members() const
-  { return m_data_members; }
+  {return data_members_;}
 
   /// Add a member function to the current instance of class_decl.
   ///
@@ -1736,7 +1744,7 @@ public:
 
   const member_functions&
   get_member_functions() const
-  { return m_member_functions; }
+  {return member_functions_;}
 
   /// Append a member function template to the class.
   ///
@@ -1746,7 +1754,7 @@ public:
 
   const member_function_templates&
   get_member_function_templates() const
-  { return m_member_function_templates; }
+  {return member_function_templates_;}
 
   /// Append a member class template to the class.
   ///
@@ -1757,7 +1765,7 @@ public:
   const member_class_templates&
   get_member_class_templates() const
 
-  { return m_member_class_templates; }
+  {return member_class_templates_;}
 
   /// Return true iff the class has no entity in its scope.
   bool
@@ -1775,7 +1783,7 @@ public:
 
   virtual ~class_decl();
 };
-
+typedef shared_ptr<class_decl> class_decl_sptr;
 
 /// The base class for member types, data members and member
 /// functions.  Its purpose is to mainly to carry the access
@@ -1783,8 +1791,8 @@ public:
 /// all class members) for the member.
 class class_decl::member_base
 {
-  enum access_specifier	m_access;
-  bool			m_is_static;
+  enum access_specifier access_;
+  bool			is_static_;
 
   // Forbidden
   member_base();
@@ -1794,16 +1802,16 @@ public:
   struct hash;
 
   member_base(access_specifier a, bool is_static = false)
-    : m_access(a), m_is_static(is_static)
+    : access_(a), is_static_(is_static)
   { }
 
   access_specifier
   get_access_specifier() const
-  { return m_access; }
+  {return access_;}
 
   bool
   is_static() const
-  { return m_is_static; }
+  {return is_static_;}
 
   bool
   operator==(const member_base& o) const
@@ -1816,7 +1824,7 @@ public:
 /// Abstracts a member type declaration.
 class class_decl::member_type : public member_base, public virtual decl_base
 {
-  shared_ptr<type_base> m_type;
+  shared_ptr<type_base> type_;
 
   //Forbidden
   member_type();
@@ -1826,7 +1834,7 @@ public:
   struct hash;
 
   member_type(shared_ptr<type_base> t, access_specifier access)
-    : decl_base("", location()), member_base(access), m_type(t)
+    : decl_base("", location()), member_base(access), type_(t)
   { }
 
   bool
@@ -1836,20 +1844,20 @@ public:
   }
 
   operator shared_ptr<type_base>() const
-  { return m_type; }
+  {return type_;}
 
   shared_ptr<type_base>
   as_type() const
-  { return m_type; }
+  {return type_;}
 };
 
 /// Abstraction of a base specifier in a class declaration.
 class class_decl::base_spec : public member_base
 {
 
-  shared_ptr<class_decl> m_base_class;
-  long m_offset_in_bits;
-  bool m_is_virtual;
+  shared_ptr<class_decl>	base_class_;
+  long				offset_in_bits_;
+  bool				is_virtual_;
 
   // Forbidden
   base_spec();
@@ -1896,15 +1904,15 @@ public:
 
   const shared_ptr<class_decl>
   get_base_class() const
-  { return m_base_class; }
+  {return base_class_;}
 
   bool
   get_is_virtual() const
-  { return m_is_virtual; }
+  {return is_virtual_;}
 
   long
   get_offset_in_bits() const
-  { return m_offset_in_bits; }
+  {return offset_in_bits_;}
 
   bool
   operator==(const base_spec& other) const
@@ -1919,8 +1927,8 @@ public:
 class class_decl::data_member
 : public var_decl, public member_base
 {
-  bool			m_is_laid_out;
-  size_t		m_offset_in_bits;
+  bool		is_laid_out_;
+  size_t	offset_in_bits_;
 
   // Forbidden
   data_member();
@@ -1954,8 +1962,8 @@ public:
 	       data_member->get_visibility(),
 	       data_member->get_binding()),
       member_base(access, is_static),
-    m_is_laid_out(is_laid_out),
-    m_offset_in_bits(offset_in_bits)
+    is_laid_out_(is_laid_out),
+    offset_in_bits_(offset_in_bits)
   { }
 
 
@@ -1994,17 +2002,17 @@ public:
     : decl_base(name, locus, mangled_name, vis),
       var_decl(name, type, locus, mangled_name, vis, bind),
       member_base(access, is_static),
-      m_is_laid_out(is_laid_out),
-      m_offset_in_bits(offset_in_bits)
+      is_laid_out_(is_laid_out),
+      offset_in_bits_(offset_in_bits)
   { }
 
   bool
   is_laid_out() const
-  { return m_is_laid_out; }
+  {return is_laid_out_;}
 
   size_t
   get_offset_in_bits() const
-  { return m_offset_in_bits; }
+  {return offset_in_bits_;}
 
   bool
   operator==(const data_member& other) const
@@ -2159,10 +2167,10 @@ public:
 class class_decl::member_function
   : public method_decl, public member_base
 {
-  size_t m_vtable_offset_in_bits;
-  bool m_is_constructor;
-  bool m_is_destructor;
-  bool m_is_const;
+  size_t vtable_offset_in_bits_;
+  bool is_constructor_;
+  bool is_destructor_;
+  bool is_const_;
 
   // Forbidden
   member_function();
@@ -2195,10 +2203,10 @@ public:
 		declared_inline, locus,
 		mangled_name, vis, bind),
     member_base(access, is_static),
-    m_vtable_offset_in_bits(vtable_offset_in_bits),
-    m_is_constructor(is_constructor),
-    m_is_destructor(is_destructor),
-    m_is_const(is_const)
+    vtable_offset_in_bits_(vtable_offset_in_bits),
+    is_constructor_(is_constructor),
+    is_destructor_(is_destructor),
+    is_const_(is_const)
   { }
 
   member_function(shared_ptr<method_decl>	fn,
@@ -2218,10 +2226,10 @@ public:
 		  fn->get_visibility(),
 		  fn->get_binding()),
       member_base(access, is_static),
-    m_vtable_offset_in_bits(vtable_offset_in_bits),
-    m_is_constructor(is_constructor),
-    m_is_destructor(is_destructor),
-    m_is_const(is_const)
+    vtable_offset_in_bits_(vtable_offset_in_bits),
+    is_constructor_(is_constructor),
+    is_destructor_(is_destructor),
+    is_const_(is_const)
   { }
 
   /// Constructor for instances of class_decl::member_function.
@@ -2253,19 +2261,19 @@ public:
 
   size_t
   get_vtable_offset_in_bits() const
-  { return m_vtable_offset_in_bits; }
+  {return vtable_offset_in_bits_;}
 
   bool
   is_constructor() const
-  { return m_is_constructor; }
+  {return is_constructor_;}
 
   bool
   is_destructor() const
-  { return m_is_destructor; }
+  {return is_destructor_;}
 
   bool
   is_const() const
-  { return m_is_const; }
+  {return is_const_;}
 
   bool
   operator==(const member_function& o) const
@@ -2291,9 +2299,9 @@ public:
 class class_decl::member_function_template
 : public member_base, public virtual traversable_base
 {
-  bool m_is_constructor;
-  bool m_is_const;
-  shared_ptr<function_tdecl> m_fn_tmpl;
+  bool is_constructor_;
+  bool is_const_;
+  shared_ptr<function_tdecl> fn_tmpl_;
 
   // Forbiden
   member_function_template();
@@ -2305,24 +2313,24 @@ public:
   member_function_template(shared_ptr<function_tdecl> f,
 			   access_specifier access, bool is_static,
 			   bool	is_constructor, bool is_const)
-  : member_base(access, is_static), m_is_constructor(is_constructor),
-    m_is_const(is_const), m_fn_tmpl(f)
+  : member_base(access, is_static), is_constructor_(is_constructor),
+    is_const_(is_const), fn_tmpl_(f)
   { }
 
   bool
   is_constructor() const
-  { return m_is_constructor; }
+  {return is_constructor_;}
 
   bool
   is_const() const
-  { return m_is_const; }
+  {return is_const_;}
 
   operator const function_tdecl& () const
-  { return *m_fn_tmpl; }
+  { return *fn_tmpl_; }
 
   shared_ptr<function_tdecl>
   as_function_tdecl() const
-  { return m_fn_tmpl; }
+  {return fn_tmpl_;}
 
   bool
   operator==(const member_function_template& o) const;
@@ -2341,7 +2349,7 @@ public:
 class class_decl::member_class_template
 : public member_base, public virtual traversable_base
 {
-  shared_ptr<class_tdecl> m_class_tmpl;
+  shared_ptr<class_tdecl> class_tmpl_;
 
   // Forbidden
   member_class_template();
@@ -2353,15 +2361,15 @@ public:
 
   member_class_template(shared_ptr<class_tdecl> c,
 			access_specifier access, bool is_static)
-  : member_base(access, is_static), m_class_tmpl(c)
+  : member_base(access, is_static), class_tmpl_(c)
   { }
 
   operator const class_tdecl& () const
-  { return *m_class_tmpl; }
+  { return *class_tmpl_; }
 
   shared_ptr<class_tdecl>
   as_class_tdecl() const
-  { return m_class_tmpl; }
+  {return class_tmpl_;}
 
   bool
   operator==(const member_class_template& o) const;

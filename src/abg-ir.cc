@@ -43,9 +43,9 @@ using std::tr1::static_pointer_cast;
 /// type must have proper relational operators.
 class expanded_location
 {
-  string	m_path;
-  unsigned	m_line;
-  unsigned	m_column;
+  string	path_;
+  unsigned	line_;
+  unsigned	column_;
 
   expanded_location();
 
@@ -54,31 +54,31 @@ public:
   friend class location_manager;
 
   expanded_location(const string& path, unsigned line, unsigned column)
-  : m_path(path), m_line(line), m_column(column)
+  : path_(path), line_(line), column_(column)
   { }
 
   bool
   operator==(const expanded_location& l) const
   {
-    return (m_path == l.m_path
-	    && m_line == l.m_line
-	    && m_column && l.m_column);
+    return (path_ == l.path_
+	    && line_ == l.line_
+	    && column_ && l.column_);
   }
 
   bool
   operator<(const expanded_location& l) const
   {
-    if (m_path < l.m_path)
+    if (path_ < l.path_)
       return true;
-    else if (m_path > l.m_path)
+    else if (path_ > l.path_)
       return false;
 
-    if (m_line < l.m_line)
+    if (line_ < l.line_)
       return true;
-    else if (m_line > l.m_line)
+    else if (line_ > l.line_)
       return false;
 
-    return m_column < l.m_column;
+    return column_ < l.column_;
   }
 };
 
@@ -93,7 +93,7 @@ struct location_manager::_Impl
 
 location_manager::location_manager()
 {
-  m_priv = shared_ptr<location_manager::_Impl>(new location_manager::_Impl);
+  priv_ = shared_ptr<location_manager::_Impl>(new location_manager::_Impl);
 }
 
 location
@@ -105,8 +105,8 @@ location_manager::create_new_location(const std::string&	file_path,
 
   // Just append the new expanded location to the end of the vector
   // and return its index.  Note that indexes start at 1.
-  m_priv->locs.push_back(l);
-  return location(m_priv->locs.size());
+  priv_->locs.push_back(l);
+  return location(priv_->locs.size());
 }
 
 void
@@ -115,19 +115,19 @@ location_manager::expand_location(const location	location,
 				  unsigned&		line,
 				  unsigned&		column) const
 {
-  if (location.m_value == 0)
+  if (location.value_ == 0)
     return;
-  expanded_location &l = m_priv->locs[location.m_value - 1];
-  path = l.m_path;
-  line = l.m_line;
-  column = l.m_column;
+  expanded_location &l = priv_->locs[location.value_ - 1];
+  path = l.path_;
+  line = l.line_;
+  column = l.column_;
 }
 
 /// Constructor of translation_unit.
 ///
 /// @param path the location of the translation unit.
 translation_unit::translation_unit(const std::string& path)
-  : m_path (path)
+  : path_ (path)
 {
 }
 
@@ -139,9 +139,9 @@ translation_unit::translation_unit(const std::string& path)
 const shared_ptr<global_scope>
 translation_unit::get_global_scope() const
 {
-  if (!m_global_scope)
-    m_global_scope.reset(new global_scope(const_cast<translation_unit*>(this)));
-  return m_global_scope;
+  if (!global_scope_)
+    global_scope_.reset(new global_scope(const_cast<translation_unit*>(this)));
+  return global_scope_;
 }
 
 /// @return the path of the compilation unit associated to the current
@@ -149,7 +149,7 @@ translation_unit::get_global_scope() const
 const std::string&
 translation_unit::get_path() const
 {
-  return m_path;
+  return path_;
 }
 
 /// Set the path associated to the current instance of
@@ -159,7 +159,7 @@ translation_unit::get_path() const
 void
 translation_unit::set_path(const string& a_path)
 {
-  m_path = a_path;
+  path_ = a_path;
 }
 
 /// Getter of the location manager for the current translation unit.
@@ -168,7 +168,7 @@ translation_unit::set_path(const string& a_path)
 /// translation unit.
 location_manager&
 translation_unit::get_loc_mgr()
-{ return m_loc_mgr; }
+{return loc_mgr_;}
 
 /// const Getter of the location manager.
 ///
@@ -176,7 +176,7 @@ translation_unit::get_loc_mgr()
 /// translation unit.
 const location_manager&
 translation_unit::get_loc_mgr() const
-{ return m_loc_mgr; }
+{return loc_mgr_;}
 
 /// Tests whether if the current translation unit contains ABI
 /// artifacts or not.
@@ -202,26 +202,26 @@ translation_unit::~translation_unit()
 
 decl_base::decl_base(const std::string&	name, location locus,
 		     const std::string&	mangled_name, visibility vis)
-: m_location(locus),
-  m_name(name),
-  m_mangled_name(mangled_name),
-  m_context(0),
-  m_visibility(vis)
+: location_(locus),
+  name_(name),
+  mangled_name_(mangled_name),
+  context_(0),
+  visibility_(vis)
 { }
 
 decl_base::decl_base(location l)
-: m_location(l),
-  m_context(0),
-  m_visibility(VISIBILITY_DEFAULT)
+: location_(l),
+  context_(0),
+  visibility_(VISIBILITY_DEFAULT)
 { }
 
 decl_base::decl_base(const decl_base& d)
 {
-  m_location = d.m_location;
-  m_name = d.m_name;
-  m_mangled_name = d.m_mangled_name;
-  m_context = d.m_context;
-  m_visibility = m_visibility;
+  location_ = d.location_;
+  name_ = d.name_;
+  mangled_name_ = d.mangled_name_;
+  context_ = d.context_;
+  visibility_ = visibility_;
 }
 
 bool
@@ -246,16 +246,16 @@ decl_base::traverse(ir_node_visitor&)
 
 void
 decl_base::set_scope(scope_decl* scope)
-{ m_context = scope; }
+{ context_ = scope; }
 // </Decl definition>
 
 void
 scope_decl::add_member_decl(const shared_ptr<decl_base> member)
 {
-  m_members.push_back(member);
+  members_.push_back(member);
 
   if (shared_ptr<scope_decl> m = dynamic_pointer_cast<scope_decl>(member))
-    m_member_scopes.push_back(m);
+    member_scopes_.push_back(m);
 }
 
 bool
@@ -414,8 +414,8 @@ global_scope::~global_scope()
 
 // <type_base definitions>
 type_base::type_base(size_t s, size_t a)
-  : m_size_in_bits(s),
-    m_alignment_in_bits(a)
+  : size_in_bits_(s),
+    alignment_in_bits_(a)
 {
 }
 
@@ -432,19 +432,19 @@ type_base::operator==(const type_base& other) const
 
 void
 type_base::set_size_in_bits(size_t s)
-{ m_size_in_bits = s; }
+{ size_in_bits_ = s; }
 
 size_t
 type_base::get_size_in_bits() const
-{ return m_size_in_bits; }
+{return size_in_bits_;}
 
 void
 type_base::set_alignment_in_bits(size_t a)
-{ m_alignment_in_bits = a; }
+{ alignment_in_bits_ = a; }
 
 size_t
 type_base::get_alignment_in_bits() const
-{ return m_alignment_in_bits; }
+{return alignment_in_bits_;}
 
 type_base::~type_base()
 { }
@@ -568,8 +568,8 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
 	      type->get_alignment_in_bits()),
     decl_base("", locus, "",
 	      dynamic_pointer_cast<decl_base>(type)->get_visibility()),
-    m_cv_quals(quals),
-    m_underlying_type(type)
+    cv_quals_(quals),
+    underlying_type_(type)
 {
   if (quals & qualified_type_def::CV_CONST)
     set_name(get_name() + "const ");
@@ -603,20 +603,20 @@ qualified_type_def::~qualified_type_def()
 char
 qualified_type_def::get_cv_quals() const
 {
-  return m_cv_quals;
+  return cv_quals_;
 }
 
 void
 qualified_type_def::set_cv_quals(char cv_quals)
 {
-  m_cv_quals = cv_quals;
+  cv_quals_ = cv_quals;
 }
 
 
 const shared_ptr<type_base>
 qualified_type_def::get_underlying_type() const
 {
-  return m_underlying_type;
+  return underlying_type_;
 }
 
 
@@ -638,7 +638,7 @@ pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, "",
 	      dynamic_pointer_cast<decl_base>(pointed_to)->get_visibility()),
-    m_pointed_to_type(pointed_to)
+    pointed_to_type_(pointed_to)
 {
 }
 
@@ -655,7 +655,7 @@ pointer_type_def::operator==(const pointer_type_def& other) const
 shared_ptr<type_base>
 pointer_type_def::get_pointed_to_type() const
 {
-  return m_pointed_to_type;
+  return pointed_to_type_;
 }
 
 void
@@ -679,8 +679,8 @@ reference_type_def::reference_type_def(shared_ptr<type_base>&	pointed_to,
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, "",
 	      dynamic_pointer_cast<decl_base>(pointed_to)->get_visibility()),
-    m_pointed_to_type(pointed_to),
-    m_is_lvalue(lvalue)
+    pointed_to_type_(pointed_to),
+    is_lvalue_(lvalue)
 {
 }
 
@@ -697,13 +697,13 @@ reference_type_def::operator==(const reference_type_def& other) const
 shared_ptr<type_base>
 reference_type_def::get_pointed_to_type() const
 {
-  return m_pointed_to_type;
+  return pointed_to_type_;
 }
 
 bool
 reference_type_def::is_lvalue() const
 {
-  return m_is_lvalue;
+  return is_lvalue_;
 }
 
 void
@@ -718,11 +718,11 @@ reference_type_def::~reference_type_def()
 
 shared_ptr<type_base>
 enum_type_decl::get_underlying_type() const
-{ return m_underlying_type; }
+{return underlying_type_;}
 
 const std::list<enum_type_decl::enumerator>&
 enum_type_decl::get_enumerators() const
-{ return m_enumerators; }
+{return enumerators_;}
 
 void
 enum_type_decl::traverse(ir_node_visitor &v)
@@ -763,7 +763,7 @@ typedef_decl::typedef_decl(const string&		name,
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
     decl_base(name, locus, mangled_name, vis),
-    m_underlying_type(underlying_type)
+    underlying_type_(underlying_type)
 { }
 
 bool
@@ -777,7 +777,7 @@ typedef_decl::operator==(const typedef_decl& other) const
 shared_ptr<type_base>
 typedef_decl::get_underlying_type() const
 {
-  return m_underlying_type;
+  return underlying_type_;
 }
 
 void
@@ -799,8 +799,8 @@ var_decl::var_decl(const std::string&		name,
 		   visibility			vis,
 		   binding			bind)
   : decl_base(name, locus, mangled_name, vis),
-    m_type(type),
-    m_binding(bind)
+    type_(type),
+    binding_(bind)
 {
 }
 
@@ -828,7 +828,7 @@ var_decl::~var_decl()
 bool
 function_type::operator==(const function_type& other) const
 {
-  if (!!m_return_type != !!other.m_return_type)
+  if (!!return_type_ != !!other.return_type_)
     return false;
 
   vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
@@ -861,7 +861,7 @@ method_type::method_type
  size_t alignment_in_bits)
   : type_base(size_in_bits, alignment_in_bits),
     function_type(return_type, parms, size_in_bits, alignment_in_bits)
-{ set_class_type(class_type); }
+{set_class_type(class_type);}
 
 method_type::method_type(shared_ptr<type_base> return_type,
 			 shared_ptr<type_base> class_type,
@@ -886,7 +886,7 @@ method_type::method_type(shared_ptr<class_decl> class_type,
 			 size_t alignment_in_bits)
   : type_base(size_in_bits, alignment_in_bits),
     function_type(size_in_bits, alignment_in_bits)
-{ set_class_type(class_type); }
+{set_class_type(class_type);}
 
 void
 method_type::set_class_type(shared_ptr<class_decl> t)
@@ -895,13 +895,13 @@ method_type::set_class_type(shared_ptr<class_decl> t)
     return;
 
   function_decl::parameter p(t, "");
-  if (m_class_type)
+  if (class_type_)
     {
-      assert(!m_parms.empty());
-      m_parms.erase(m_parms.begin());
+      assert(!parms_.empty());
+      parms_.erase(parms_.begin());
     }
-    m_class_type = t;
-    m_parms.insert(m_parms.begin(),
+    class_type_ = t;
+    parms_.insert(parms_.begin(),
 		   shared_ptr<function_decl::parameter>
 		   (new function_decl::parameter(t)));
 }
@@ -924,9 +924,9 @@ function_decl::function_decl(const std::string&  name,
 			     visibility vis,
 			     binding bind)
   : decl_base(name, locus, mangled_name, vis),
-    m_type(new function_type(return_type, parms, fptr_size_in_bits,
+    type_(new function_type(return_type, parms, fptr_size_in_bits,
 			     fptr_align_in_bits)),
-    m_declared_inline(declared_inline), m_binding(bind)
+    declared_inline_(declared_inline), binding_(bind)
   { }
 
 function_decl::function_decl(const std::string& name,
@@ -937,27 +937,27 @@ function_decl::function_decl(const std::string& name,
 		visibility vis,
 		binding bind)
   : decl_base(name, locus, mangled_name, vis),
-    m_type(dynamic_pointer_cast<function_type>(fn_type)),
-    m_declared_inline(declared_inline),
-    m_binding(bind)
+    type_(dynamic_pointer_cast<function_type>(fn_type)),
+    declared_inline_(declared_inline),
+    binding_(bind)
   { }
 
 const shared_ptr<function_type>
 function_decl::get_type() const
-{ return m_type; }
+{return type_;}
 
 const shared_ptr<type_base>
 function_decl::get_return_type() const
-{ return m_type->get_return_type();}
+{ return type_->get_return_type();}
 
 
 const std::vector<shared_ptr<function_decl::parameter> >&
 function_decl::get_parameters() const
-{ return m_type->get_parameters(); }
+{ return type_->get_parameters(); }
 
 void
 function_decl::append_parameter(shared_ptr<parameter> parm)
-{ m_type->append_parameter(parm); }
+{ type_->append_parameter(parm); }
 
 void
 function_decl::append_parameters(std::vector<shared_ptr<parameter> >& parms)
@@ -965,7 +965,7 @@ function_decl::append_parameters(std::vector<shared_ptr<parameter> >& parms)
   for (std::vector<shared_ptr<parameter> >::const_iterator i = parms.begin();
        i != parms.end();
        ++i)
-    m_type->get_parameters().push_back(*i);
+    type_->get_parameters().push_back(*i);
 }
 
 bool
@@ -1013,12 +1013,12 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
   scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
-  m_hashing_started(false),
-  m_is_declaration_only(false),
-  m_bases(bases),
-  m_member_types(mbrs),
-  m_data_members(data_mbrs),
-  m_member_functions(mbr_fns)
+  hashing_started_(false),
+  is_declaration_only_(false),
+  bases_(bases),
+  member_types_(mbrs),
+  data_members_(data_mbrs),
+  member_functions_(mbr_fns)
 {
   for (member_types::iterator i = mbrs.begin(); i != mbrs.end(); ++i)
     if (!(*i)->get_scope())
@@ -1041,23 +1041,23 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
-    m_hashing_started(false),
-    m_is_declaration_only(false)
+    hashing_started_(false),
+    is_declaration_only_(false)
 { }
 
 class_decl::class_decl(const std::string& name, bool is_declaration_only)
   : decl_base(name, location(), name),
     type_base(0, 0),
     scope_type_decl(name, 0, 0, location()),
-    m_hashing_started(false),
-    m_is_declaration_only(is_declaration_only)
+    hashing_started_(false),
+    is_declaration_only_(is_declaration_only)
 { }
 
 void
 class_decl::set_earlier_declaration(shared_ptr<class_decl> declaration)
 {
   if (declaration && declaration->is_declaration_only())
-    m_declaration = declaration;
+    declaration_ = declaration;
 }
 
 
@@ -1078,7 +1078,7 @@ class_decl::add_member_type(shared_ptr<member_type>t)
   if (!c)
     add_decl_to_scope(t, this);
 
-  m_member_types.push_back(t);
+  member_types_.push_back(t);
 }
 
 
@@ -1087,9 +1087,9 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 				 long offset_in_bits,
 				 bool is_virtual)
   : member_base(a),
-    m_base_class(base),
-    m_offset_in_bits(offset_in_bits),
-    m_is_virtual(is_virtual)
+    base_class_(base),
+    offset_in_bits_(offset_in_bits),
+    is_virtual_(is_virtual)
 { }
 
 
@@ -1098,9 +1098,9 @@ class_decl::base_spec::base_spec(shared_ptr<type_base> base,
 				 long offset_in_bits,
 				 bool is_virtual)
   : member_base(a),
-    m_base_class(dynamic_pointer_cast<class_decl>(base)),
-    m_offset_in_bits(offset_in_bits),
-    m_is_virtual(is_virtual)
+    base_class_(dynamic_pointer_cast<class_decl>(base)),
+    offset_in_bits_(offset_in_bits),
+    is_virtual_(is_virtual)
 { }
 
 
@@ -1114,7 +1114,7 @@ class_decl::add_data_member(shared_ptr<data_member> m)
   if (!c)
     add_decl_to_scope(m, this);
 
-  m_data_members.push_back(m);
+  data_members_.push_back(m);
 }
 
 
@@ -1187,7 +1187,7 @@ class_decl::method_decl::~method_decl()
 const shared_ptr<method_type>
 class_decl::method_decl::get_type() const
 {
-  return dynamic_pointer_cast<method_type>(m_type);
+  return dynamic_pointer_cast<method_type>(type_);
 }
 
 
@@ -1209,10 +1209,10 @@ class_decl::member_function::member_function
 		fn->get_visibility(),
 		fn->get_binding()),
     member_base(access, is_static),
-  m_vtable_offset_in_bits(vtable_offset_in_bits),
-  m_is_constructor(is_constructor),
-  m_is_destructor(is_destructor),
-  m_is_const(is_const)
+  vtable_offset_in_bits_(vtable_offset_in_bits),
+  is_constructor_(is_constructor),
+  is_destructor_(is_destructor),
+  is_const_(is_const)
 { }
 
 void
@@ -1231,7 +1231,7 @@ class_decl::add_member_function(shared_ptr<member_function> m)
   if (!c)
     add_decl_to_scope(m, this);
 
-  m_member_functions.push_back(m);
+  member_functions_.push_back(m);
 }
 
 void
@@ -1245,7 +1245,7 @@ class_decl::add_member_function_template
   if (!c)
     add_decl_to_scope(m->as_function_tdecl(), this);
 
-  m_member_function_templates.push_back(m);
+  member_function_templates_.push_back(m);
 }
 
 void
@@ -1258,18 +1258,18 @@ class_decl::add_member_class_template(shared_ptr<member_class_template> m)
   if (!c)
     add_decl_to_scope(m->as_class_tdecl(), this);
 
-  m_member_class_templates.push_back(m);
+  member_class_templates_.push_back(m);
 }
 
 bool
 class_decl::has_no_base_nor_member() const
 {
-  return (m_bases.empty()
-	  && m_member_types.empty()
-	  && m_data_members.empty()
-	  && m_member_functions.empty()
-	  && m_member_function_templates.empty()
-	  && m_member_class_templates.empty());
+  return (bases_.empty()
+	  && member_types_.empty()
+	  && data_members_.empty()
+	  && member_functions_.empty()
+	  && member_function_templates_.empty()
+	  && member_class_templates_.empty());
 }
 
 bool
@@ -1531,7 +1531,7 @@ template_tparameter::~template_tparameter()
 
 type_composition::type_composition(unsigned index, shared_ptr<type_base> t)
 : decl_base("", location()), template_parameter(index),
-  m_type(std::tr1::dynamic_pointer_cast<type_base>(t))
+  type_(std::tr1::dynamic_pointer_cast<type_base>(t))
 { }
 
 type_composition::~type_composition()
@@ -1577,7 +1577,7 @@ class_tdecl::class_tdecl(shared_ptr<class_decl> pattern,
 void
 class_tdecl::set_pattern(shared_ptr<class_decl> p)
 {
-  m_pattern = p;
+  pattern_ = p;
   add_decl_to_scope(p, this);
   set_name(p->get_name());
 }
