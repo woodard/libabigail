@@ -79,7 +79,7 @@ namespace abigail
   class function_tdecl;
   class function_type;
   class global_scope;
-  class ir_node_visitor;
+  class node_visitor;
   class location;
   class location_manager;
   class method_type;

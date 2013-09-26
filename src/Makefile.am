@@ -3,6 +3,7 @@ lib_LTLIBRARIES=libabigail.la
 libabigaildir=$(libdir)
 
 libabigail_la_SOURCES = $(headers)	\
+$(h)/abg-traverse.cc			\
 $(h)/abg-ir.cc				\
 $(h)/abg-corpus.cc			\
 $(h)/abg-reader.cc			\

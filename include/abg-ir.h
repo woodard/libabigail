@@ -106,6 +106,8 @@ public:
 		  unsigned& line, unsigned& column) const;
 };
 
+struct ir_node_visitor;
+
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
@@ -2432,7 +2434,7 @@ struct class_tdecl::shared_ptr_hash
 /// new visitor class would then be passed to e.g,
 /// translation_unit::traverse or to the traverse method of any type
 /// where the traversal is supposed to start from.
-struct ir_node_visitor
+struct ir_node_visitor : public node_visitor_base
 {
   virtual void visit(scope_decl&);
   virtual void visit(type_decl&);
