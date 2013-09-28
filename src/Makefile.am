@@ -6,6 +6,8 @@ libabigail_la_SOURCES = $(headers)	\
 $(h)/abg-traverse.cc			\
 $(h)/abg-ir.cc				\
 $(h)/abg-corpus.cc			\
+$(h)/abg-diff-utils.cc			\
+$(h)/abg-comparison.cc			\
 $(h)/abg-reader.cc			\
 $(h)/abg-libxml-utils.cc		\
 $(h)/abg-libzip-utils.cc		\
