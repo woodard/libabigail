@@ -6,7 +6,7 @@ runtestwritereadarchive		 \
 runtestsvg			 \
 runtestdot 
 
-noinst_PROGRAMS= $(TESTS) testwalker
+noinst_PROGRAMS= $(TESTS) testwalker testdiff2
 
 noinst_LTLIBRARIES = libtestutils.la
 
@@ -37,6 +37,9 @@ runtestdot_LDADD=$(top_builddir)/src/libabigail.la
 
 testwalker_SOURCES=$(h)/test-walker.cc
 testwalker_LDADD=$(top_builddir)/src/libabigail.la
+
+testdiff2_SOURCES=$(h)/test-diff2.cc
+testdiff2_LDADD=$(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools
