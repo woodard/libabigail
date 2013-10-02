@@ -59,18 +59,22 @@ using std::ostringstream;
 /// (abscissa and ordinate).
 class point
 {
-  bool empty_;
   int x_;
   int y_;
+  bool empty_;
 
 public:
 
   point()
-    : empty_(true), x_(-1), y_(-1)
+    : x_(-1), y_(-1),empty_(true)
   {}
 
   point(int x, int y)
-    : empty_(false), x_(x), y_(y)
+    : x_(x), y_(y), empty_(false)
+  {}
+
+  point(const point& p)
+    : x_(p.x()), y_(p.y()), empty_(p.is_empty())
   {}
 
   int
@@ -114,31 +118,49 @@ public:
   point&
   operator+= (int val)
   {
-    x(x() + val);
-    y(y() + val);
-
+    set(x_ + val, y_ + val);
     return *this;
   }
 
   point&
   operator-= (int val)
+  {return (*this) += (-val);}
+
+  point&
+  operator--()
+  {return (*this) -= 1;}
+
+  point&
+  operator++()
+  {return (*this) += 1;}
+
+  point
+  operator--(int)
   {
-    return (*this) += (-val);
+    point tmp(*this);
+    (*this)--;
+    return tmp;
+  }
+
+  point
+  operator++(int)
+  {
+    point tmp(*this);
+    (*this)++;
+    return tmp;
   }
 
   point&
   operator=(int val)
   {
-    x(val);
-    y(val);
+    set(val, val);
     return *this;
   }
 
   point&
   operator=(const point& p)
   {
-    x(p.x());
-    y(p.y());
+    set(p.x(), p.y());
     return *this;
   }
 
@@ -170,7 +192,8 @@ class d_path_vec : public std::vector<int>
 {
 private:
 
-  unsigned max_d_;
+  unsigned a_size_;
+  unsigned b_size_;
 
   /// Forbid vector size modifications
   void
@@ -206,43 +229,51 @@ public:
   /// in.
   d_path_vec(unsigned size1, unsigned size2)
     : vector<int>(2 * (size1 + 1 + size2 + 1) - 1, 0),
-      max_d_(size1 + size2)
+      a_size_(size1), b_size_(size2)
   {
   }
 
   typename std::vector<int>::const_reference
   operator[](int index) const
   {
-    int i = max_d_ + index;
+    int i = max_d() + index;
     return (*static_cast<const vector<int>* >(this))[i];
   }
 
   typename std::vector<int>::reference
   operator[](int index)
   {
-    int i = max_d_ + index;
+    int i = max_d() + index;
     return (*static_cast<vector<int>* >(this))[i];
   }
 
   typename std::vector<int>::reference
   at(int index)
   {
-    check_index_against_bound(index, max_d_);
-    int i = max_d_ + index;
+    check_index_against_bound(index, max_d());
+    int i = max_d() + index;
     return static_cast<vector<int>* >(this)->at(i);
   }
 
   typename std::vector<int>::const_reference
   at(int index) const
   {
-    check_index_against_bound(index, max_d_);
-    int i = max_d_ + index;
+    check_index_against_bound(index, max_d());
+    int i = max_d() + index;
     return static_cast<const vector<int>* >(this)->at(i);
   }
 
-  int
+  unsigned
+  a_size() const
+  {return a_size_;}
+
+  unsigned
+  b_size() const
+  {return b_size_;}
+
+  unsigned
   max_d() const
-  {return max_d_;}
+  {return a_size() + b_size();}
 }; // end class d_path_vec
 
 /// The abstration of an insertion of elements of a sequence B into a
@@ -401,6 +432,11 @@ public:
 };//end class edit_script
 
 bool
+point_is_valid_in_graph(point& p,
+			unsigned a_size,
+			unsigned b_size);
+
+bool
 ends_of_furthest_d_paths_overlap(point& forward_d_path_end,
 				 point& reverse_d_path_end);
 
@@ -437,8 +473,12 @@ ends_of_furthest_d_paths_overlap(point& forward_d_path_end,
 ///
 /// @param end abscissa and ordinate of the computed abscissa of the
 /// end of the furthest reaching (d-1) paths.
+///
+/// @return true if the end of the furthest reaching path that was
+/// found was inside the boundaries of the edit graph, false
+/// otherwise.
 template<typename RandomAccessOutputIterator>
-void
+bool
 end_of_fr_d_path_in_k(int k, int d,
 		      RandomAccessOutputIterator a_begin,
 		      RandomAccessOutputIterator a_end,
@@ -490,10 +530,22 @@ end_of_fr_d_path_in_k(int k, int d,
     else
       break;
 
+  // Note the point that we store in v here might be outside the
+  // bounds of the edit graph.  But we store it at this step (for a
+  // given D) anyway, because out of bound or not, we need this value
+  // at this step to be able to compute the value of the point on the
+  // "next" diagonal for the next D.
   v[k] = x;
+
+  if (x >= (int) v.a_size()
+      || y >= (int) v.b_size()
+      || x < 0 || y < 0)
+    return false;
 
   end.x(x);
   end.y(y);
+
+  return true;
 }
 
 /// Find the end of the furthest reaching reverse d-path on diagonal k
@@ -532,8 +584,12 @@ end_of_fr_d_path_in_k(int k, int d,
 ///
 /// @param point the computed abscissa and ordinate of the end point
 /// of the furthest reaching d-path on line k - delta.
+///
+/// @return true iff the end of the furthest reaching path that was
+/// found was inside the boundaries of the edit graph, false
+/// otherwise.
 template<typename RandomAccessOutputIterator>
-void
+bool
 end_of_frr_d_path_in_k_plus_delta (int k, int d,
 				   RandomAccessOutputIterator a_begin,
 				   RandomAccessOutputIterator a_end,
@@ -543,7 +599,7 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
 {
   int a_size = a_end - a_begin;
   int b_size = b_end - b_begin;
-  int delta = abs(a_size - b_size);
+  int delta = a_size - b_size;
   int k_plus_delta = k + delta;
   int x = -1, y = -1;
 
@@ -577,8 +633,8 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
     }
 
   // Now, follow the snake.  Note that we stay on the k_plus_delta
-  // diagonal we do this.
-  while (x > -1 && y > -1)
+  // diagonal when we do this.
+  while (x > 0 && y > 0)
     if (a_begin[x] == b_begin[y])
       {
 	x = x - 1;
@@ -587,10 +643,116 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
     else
       break;
 
+  // Note the point that we store in v here might be outside the
+  // bounds of the edit graph.  But we store it at this step (for a
+  // given D) anyway, because out of bound or not, we need this value
+  // at this step to be able to compute the value of the point on the
+  // "next" diagonal for the next D.
   v[k_plus_delta] = x;
+
+  if (x == -1 && y == -1)
+    ;
+  else if (x <= -1 || y <= -1)
+    return false;
 
   end.x(x);
   end.y(y);
+
+  return true;
+}
+
+/// Find the last (starting from the beginning of the d_path_vec)
+/// snake recorded in a d_path_vec that contains ends of furthest
+/// reaching path of successive values of 'k'.
+///
+/// This is a subroutine of compute_middle_snake().
+///
+/// @param a_begin an iterator to the beginning of the first input of
+/// the diffing algorithm.
+///
+/// @param a_end an iterator to the end of the first input of the
+/// diffing algorithm.
+///
+/// @param b_begin an iterator to the beginning of the second input of
+/// the diffing algorithm.
+///
+/// @param b_end an iterator to the end of the second input of the
+/// diffing algorithm.
+///
+/// @param path the d_path_vec to consider.
+///
+/// @param from_k the value of 'k' to start looking from.
+///
+/// @param forward setting this to true tells this routine that the
+/// d_path_vec is constructed in a forward manner, as defined in the
+/// paper in 4b.
+///
+/// @param middle_begin the out parameter that is set to the starting
+/// point of the snake found.  This is set if and only if the snake
+/// was found.
+///
+/// @param middle_end the out parameter that is set to the end point
+/// of the snake found.  This is set if and only if the snake was
+/// found.
+///
+/// @return true if a snake was found in the d_path_vec.
+template<typename RandomAccessOutputIterator>
+bool
+find_last_snake_in_path(RandomAccessOutputIterator a_begin,
+			RandomAccessOutputIterator a_end,
+			RandomAccessOutputIterator b_begin,
+			RandomAccessOutputIterator b_end,
+			const d_path_vec& path,
+			int from_k,
+			bool forward,
+			point& middle_begin,
+			point& middle_end)
+{
+  int a_size = a_end - a_begin;
+  int b_size = b_end - b_begin;
+  int incr = (from_k >= 0) ? -1 : 1;
+  int num_iters = abs(from_k) + 1;
+
+  for (int i = from_k, n = num_iters; n > 0; i += incr, --n)
+    {
+      int x = path[i];
+      int y = x - i;
+
+      assert(x > -1 && x < a_size);
+      assert(y > -1 && y < b_size);
+
+      if (forward)
+	{
+	  if (a_begin[x] == b_begin[y])
+	    {
+	      middle_end.set(x,y);
+	      for (point tmp = middle_end;
+		   (point_is_valid_in_graph(tmp, a_size, b_size)
+		    && a_begin[tmp.x()] == b_begin[tmp.y()]);
+		   --tmp)
+		middle_begin = tmp;
+	      return true;
+	    }
+	}
+      else
+	{
+	  point p(x+1, y+1);
+	  if (!point_is_valid_in_graph(p, a_size, b_size))
+	    return false;
+
+	  if (a_begin[p.x()] == b_begin[p.y()])
+	    {
+	      middle_begin = p;
+	      for (point tmp = middle_begin;
+		   (point_is_valid_in_graph(tmp, a_size, b_size)
+		    && a_begin[tmp.x()] == b_begin[tmp.y()]);
+		   ++tmp)
+		middle_end = tmp;
+	      return true;
+	    }
+	}
+    }
+  return false;
 }
 
 /// Returns the middle snake of two sequences A and B, as well as the
@@ -638,11 +800,28 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
   int N = a_size;
   int b_size = b_end - b_begin;
   int M = b_size;
-  int delta = abs(N - M);
-  d_path_vec forward_d_paths(a_size / 2 + 1, b_size / 2 + 1);
-  d_path_vec reverse_d_paths(a_size / 2 + 1, b_size / 2 + 1);
+  int delta = N - M;
+  d_path_vec forward_d_paths(a_size, b_size);
+  d_path_vec reverse_d_paths(a_size, b_size);
 
+  // We want the initial step (D = 0, k = 0 in the paper) to find a
+  // furthest reaching point on diagonal k == 0; For that, we need the
+  // value of x for k == 1; So let's set that value to -1; that is for
+  // k == 1 (diagonal 1), the point in the edit graph is (-1,-2).
+  // That way, to get the furthest reaching point on diagonal 0 (k ==
+  // 0), we go down from (-1,-2) on diagonal 1 and we hit diagonal 0
+  // on (-1,-1); that is the starting value that the algorithm expects
+  // for k == 0.
   forward_d_paths[1] = -1;
+
+  // Similarly for the reverse paths, for diagonal delta + 1 (note
+  // that diagonals are centered on delta, unlike for forward paths
+  // where they are centered on zero), we set the initial point to
+  // (a_size, b_size - 1).  That way, at step D == 0 and k == delta,
+  // to reach diagonal delta from the point (a_size, b_size - 1) on
+  // diagonal delta + 1, we just have to move left, and we hit
+  // diagonal delta on (a_size - 1, b_size -1); that is the starting
+  // point value the algorithm expects for k == 0 in the reverse case.
   reverse_d_paths[delta + 1] = a_size;
 
   for (int d = 0; d <= (M + N) / 2; ++d)
@@ -650,31 +829,49 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
       for (int k = -d; k <=  d; k += 2)
 	{
 	  point forward_end, reverse_end;
-	  end_of_fr_d_path_in_k(k, d,
-				   a_begin, a_end,
-				   b_begin, b_end,
-				   forward_d_paths,
-				   forward_end);
+	  bool found = end_of_fr_d_path_in_k(k, d,
+					     a_begin, a_end,
+					     b_begin, b_end,
+					     forward_d_paths,
+					     forward_end);
+	  if (!found)
+	    continue;
+
 	  // As the paper says criptically in 4b while explaining the
 	  // middle snake algorithm:
 	  //
 	  // "Thus when delta is odd, check for overlap only while
 	  //  extending forward paths ..."
 	  if ((delta % 2)
-	      && (k >= (delta - (d - 1))) && (k <= (delta + (d - 1)))
-	      // This last test below is implicit in the paper.  We
-	      // are making sure that we are at the end of a non-empty
-	      // snake at the point on the diagonal.
-	      && a_begin[forward_end.x()] == b_begin[forward_end.y()])
+	      && (k >= (delta - (d - 1))) && (k <= (delta + (d - 1))))
 	    {
 	      reverse_end.x(reverse_d_paths[k]);
 	      reverse_end.y(reverse_end.x() - k);
-	      if (ends_of_furthest_d_paths_overlap(forward_end, reverse_end))
+	      if (point_is_valid_in_graph(reverse_end, a_size, b_size)
+		  && ends_of_furthest_d_paths_overlap(forward_end, reverse_end))
 		{
 		  ses_len = 2 * d - 1;
-		  snake_begin = reverse_end + 1;
-		  snake_end = forward_end;
-		  return true;
+		  bool found =
+		    find_last_snake_in_path(a_begin, a_end, b_begin, b_end,
+					    forward_d_paths, k,
+					    /*forward=*/true,
+					    snake_begin, snake_end);
+		  if (!found)
+		    // ???
+		    // It can happen that the snake is *not* on
+		    // the portion of the path (in forward_d_paths)
+		    // that we have already accumulated in
+		    // forward_d_paths; rather, it's in the second
+		    // half of forward_d_paths that we haven't
+		    // computed yet.  Let's get the snake from the
+		    // reverse path then.
+		    found =
+		      find_last_snake_in_path(a_begin, a_end, b_begin, b_end,
+					      reverse_d_paths, k,
+					      /*forward=*/false,
+					      snake_begin, snake_end);
+		  if (found)
+		    return true;
 		}
 	    }
 	}
@@ -682,32 +879,50 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
       for (int k = -d; k <= d; k += 2)
 	{
 	  point forward_end, reverse_end;
-	  end_of_frr_d_path_in_k_plus_delta(k, d,
-					    a_begin, a_end,
-					    b_begin, b_end,
-					    reverse_d_paths,
-					    reverse_end);
+	  bool found = end_of_frr_d_path_in_k_plus_delta(k, d,
+							 a_begin, a_end,
+							 b_begin, b_end,
+							 reverse_d_paths,
+							 reverse_end);
+
+	  if (!found)
+	    continue;
+
 	  // And the paper continues by saying:
 	  //
 	  // "... and when delta is even, check for overlap only while
 	  // extending reverse paths."
 	  int k_plus_delta = k + delta;
 	  if (!(delta % 2)
-	      && (k_plus_delta >= -d) && (k_plus_delta <= d)
-	      // Likewise, we are making sure that we are at the end
-	      // of a non-empty snake on this diagonal, in a reverse
-	      // manner.  This is implicit in the LCS algorigthm
-	      // outlined in 4b.
-	      && a_begin[reverse_end.x() + 1] == b_begin[reverse_end.y() + 1])
+	      && (k_plus_delta >= -d) && (k_plus_delta <= d))
 	    {
 	      forward_end.x(forward_d_paths[k_plus_delta]);
 	      forward_end.y(forward_end.x() - k_plus_delta);
-	      if (ends_of_furthest_d_paths_overlap(forward_end, reverse_end))
+	      if (point_is_valid_in_graph(forward_end, a_size, b_size)
+		  && ends_of_furthest_d_paths_overlap(forward_end, reverse_end))
 		{
 		  ses_len = 2 * d;
-		  snake_begin = reverse_end + 1;
-		  snake_end = forward_end;
-		  return true;
+		  bool found =
+		    find_last_snake_in_path(a_begin, a_end, b_begin, b_end,
+					    reverse_d_paths, k_plus_delta,
+					    /*forward=*/false,
+					    snake_begin, snake_end);
+		  if (!found)
+		    // ???
+		    // It can happen that the snake is *not* on
+		    // the portion of the path (in forward_d_paths)
+		    // that we have already accumulated in
+		    // forward_d_paths; rather, it's in the second
+		    // half of forward_d_paths that we haven't
+		    // computed yet.  Let's get the snake from the
+		    // reverse path then.
+		    found =
+		      find_last_snake_in_path(a_begin, a_end, b_begin, b_end,
+					      forward_d_paths, k_plus_delta,
+					      /*forward=*/true,
+					      snake_begin, snake_end);
+		  if (found)
+		    return true;
 		}
 	    }
 	}
@@ -784,12 +999,12 @@ ses_len(RandomAccessOutputIterator a_begin,
 	RandomAccessOutputIterator b_end,
 	d_path_vec& v, bool reverse)
 {
-  int a_size = a_end - a_begin;
-  int b_size = b_end - b_begin;
+  unsigned a_size = a_end - a_begin;
+  unsigned b_size = b_end - b_begin;
 
   assert(v.max_d() == a_size + b_size);
 
-  int delta = abs(a_size - b_size);
+  int delta = a_size - b_size;
 
   if (reverse)
     // Set a fictitious (M, N-1) into v[1], to find the furthest
@@ -800,9 +1015,9 @@ ses_len(RandomAccessOutputIterator a_begin,
     // reaching forward 0-path (i.e, when we are at d == 0 and k == 0).
     v[1] = -1;
 
-  for (int d = 0; d <= v.max_d(); ++d)
+  for (unsigned d = 0; d <= v.max_d(); ++d)
     {
-      for (int k = -d; k <= d; k += 2)
+      for (int k = -d; k <= (int) d; k += 2)
 	{
 	  point end;
 	  if (reverse)
@@ -824,8 +1039,8 @@ ses_len(RandomAccessOutputIterator a_begin,
 				    v, end);
 	      // If we reached the lower right corner of the edit
 	      // graph then we are done.
-	      if ((end.x() ==  a_size - 1)
-		  && (end.y() == b_size - 1))
+	      if ((end.x() == (int) a_size - 1)
+		  && (end.y() == (int) b_size - 1))
 		return d;
 	    }
 	}
@@ -1091,6 +1306,58 @@ compute_diff(RandomAccessOutputIterator a_base,
 	       lcs, ses, ses_len);
 }
 
+/// Compute the longest common subsequence of two (sub-regions of)
+/// sequences as well as the shortest edit script from transforming
+/// the first (sub-region of) sequence into the second (sub-region of)
+/// sequence.
+///
+/// A sequence is determined by a base, a beginning offset and an end
+/// offset.  The base always points to the container that contains the
+/// sequence to consider.  The beginning offset is an iterator that
+/// points the beginning of the sub-region of the sequence that we
+/// actually want to consider.  The end offset is an iterator that
+/// points to the end of the sub-region of the sequence that we
+/// actually want to consider.
+///
+/// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @param a_base the iterator to the base of the first sequence.
+///
+/// @param a_start an iterator to the beginning of the sub-region
+/// of the first sequence to actually consider.
+///
+/// @param a_end an iterator to the end of the sub-region of the first
+/// sequence to consider.
+///
+///@param b_base an iterator to the base of the second sequence to
+///consider.
+///
+/// @param b_start an iterator to the beginning of the sub-region
+/// of the second sequence to actually consider.
+///
+/// @param b_end an iterator to the end of the sub-region of the
+/// second sequence to actually consider.
+///
+/// @param ses the resulting shortest editing script.
+///
+/// @return true upon successful completion, false otherwise.
+template<typename RandomAccessOutputIterator>
+void
+compute_diff(RandomAccessOutputIterator a_base,
+	     RandomAccessOutputIterator a_begin,
+	     RandomAccessOutputIterator a_end,
+	     RandomAccessOutputIterator b_base,
+	     RandomAccessOutputIterator b_begin,
+	     RandomAccessOutputIterator b_end,
+	     edit_script& ses)
+{
+  vector<point> lcs;
+
+  compute_diff(a_base, a_begin, a_end,
+	       b_base, b_begin, b_end,
+	       lcs, ses);
+}
+
 void
 compute_lcs(const char* str1, const char* str2, int &ses_len, string& lcs);
 
@@ -1118,7 +1385,7 @@ display_edit_script(const edit_script& es,
   else
     {
       out << es.num_deletions() << " deletions:\n"
-	   << "\t happened at following indexes: ";
+	   << "\t happened at indexes: ";
     }
 
   for (vector<deletion>::const_iterator i = es.deletions().begin();

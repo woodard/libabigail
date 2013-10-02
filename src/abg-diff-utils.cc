@@ -42,6 +42,28 @@ ends_of_furthest_d_paths_overlap(point& forward_d_path_end,
 	  == (reverse_d_path_end.x() - reverse_d_path_end.y())
 	  && forward_d_path_end.x() >= reverse_d_path_end.x());
 }
+//// Test if a point is within the boundaries of the edit graph.
+///
+/// @param p the point to test.
+///
+/// @param a_size the size of abscissas.  That is, the size of the
+/// first input to consider.
+///
+/// @param b_size the of ordinates.  That is, the size of the second
+/// input to consider.
+///
+/// @return true iff a point is within the boundaries of the edit
+/// graph.
+bool
+point_is_valid_in_graph(point& p,
+			unsigned a_size,
+			unsigned b_size)
+{
+  return (p.x() > -1
+	  && p.x() < (int) a_size
+	  && p.y() > -1
+	  && p.y() < (int) b_size);
+}
 
 /// Returns the middle snake of two strings, as well as the length of
 /// their shortest editing script.
