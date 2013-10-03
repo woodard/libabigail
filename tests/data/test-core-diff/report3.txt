@@ -1,0 +1,11 @@
+no deletion:
+1 deletion:
+
+
+5 insertions:
+	 after index of first sequence: 1 (b)
+		 inserted indexes from second sequence: 2 (d), 3 (e)
+	 after index of first sequence: 2 (c)
+		 inserted indexes from second sequence: 5 (f), 6 (g), 7 (c)
+
+
