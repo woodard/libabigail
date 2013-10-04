@@ -240,9 +240,8 @@ decl_base::~decl_base()
 void
 decl_base::traverse(ir_node_visitor&)
 {
-  // Do nothing in the base class. 
+  // Do nothing in the base class.
 }
-
 
 void
 decl_base::set_scope(scope_decl* scope)

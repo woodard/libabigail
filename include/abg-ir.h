@@ -304,11 +304,11 @@ public:
   scope_decl(const std::string& name, location locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
   : decl_base(name, locus, /*mangled_name=*/name, vis)
-  { }
+  {}
 
 
   scope_decl(location l) : decl_base("", l)
-  { }
+  {}
 
   /// Return true iff both scopes have the same names and have the same
   /// member decls.
@@ -328,7 +328,7 @@ public:
 
   bool
   is_empty() const
-  { return get_member_decls().empty(); }
+  {return get_member_decls().empty();}
 
   /// This implements the traversable_base::traverse pure virtual
   /// function.
@@ -1669,7 +1669,6 @@ public:
   class_decl(const std::string& name, size_t size_in_bits,
 	     size_t align_in_bits, location locus, visibility vis);
 
-
   /// A constuctor for instances of class_decl that represent a
   /// declaration without definition.
   ///
@@ -1784,13 +1783,14 @@ public:
   traverse(ir_node_visitor& v);
 
   virtual ~class_decl();
-};
+};// end class class_decl
+
 typedef shared_ptr<class_decl> class_decl_sptr;
 
 /// The base class for member types, data members and member
-/// functions.  Its purpose is to mainly to carry the access
-/// specifier (and possibly other properties that might be shared by
-/// all class members) for the member.
+/// functions.  Its purpose is mainly to carry the access specifier
+/// (and possibly other properties that might be shared by all class
+/// members) for the member.
 class class_decl::member_base
 {
   enum access_specifier access_;
@@ -1821,7 +1821,7 @@ public:
     return (get_access_specifier() == o.get_access_specifier()
 	    && is_static() == o.is_static());
   }
-};
+};// end class class_decl::member_base
 
 /// Abstracts a member type declaration.
 class class_decl::member_type : public member_base, public virtual decl_base
@@ -1851,7 +1851,7 @@ public:
   shared_ptr<type_base>
   as_type() const
   {return type_;}
-};
+};// end class member_type
 
 /// Abstraction of a base specifier in a class declaration.
 class class_decl::base_spec : public member_base
@@ -1922,12 +1922,11 @@ public:
     return (static_cast<member_base>(*this) == other
 	    && *get_base_class() == *other.get_base_class());
   }
-};
+};// end class base_spec
 
 
 /// Abstract a data member declaration in a class declaration.
-class class_decl::data_member
-: public var_decl, public member_base
+class class_decl::data_member : public var_decl, public member_base
 {
   bool		is_laid_out_;
   size_t	offset_in_bits_;
@@ -2033,7 +2032,7 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~data_member();
-};
+};// end class class_decl::data_member
 
 
 /// Abstraction of the declaration of a method. This is an
@@ -2162,12 +2161,10 @@ public:
   { function_decl::set_type(fn_type); }
 
   virtual ~method_decl();
-};
-
+};// end class class_decl::method_decl
 
 /// Abstracts a member function declaration in a class declaration.
-class class_decl::member_function
-  : public method_decl, public member_base
+class class_decl::member_function : public method_decl, public member_base
 {
   size_t vtable_offset_in_bits_;
   bool is_constructor_;
@@ -2294,7 +2291,7 @@ public:
   /// @param v the visitor used on the current instance.
   void
   traverse(ir_node_visitor& v);
-};
+};// class_decl::member_function
 
 
 /// Abstract a member function template.
@@ -2344,7 +2341,7 @@ public:
   /// underlying function template.
   void
   traverse(ir_node_visitor&);
-};
+};// end class class_decl::member_function_template
 
 
 /// Abstracts a member class template template
@@ -2383,7 +2380,7 @@ public:
   /// pattern of the template.
   void
   traverse(ir_node_visitor& v);
-};
+};// end class class_decl::member_class_template
 
 
 // Forward declarations for select nested hashers.

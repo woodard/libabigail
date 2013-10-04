@@ -67,7 +67,7 @@ struct type_base::hash
   {
     std::tr1::hash<size_t> size_t_hash;
     std::tr1::hash<string> str_hash;
-    
+
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, size_t_hash(t.get_size_in_bits()));
     v = hashing::combine_hashes(v, size_t_hash(t.get_alignment_in_bits()));
@@ -83,12 +83,12 @@ struct decl_base::hash
   {
     std::tr1::hash<string> str_hash;
     std::tr1::hash<unsigned> unsigned_hash;
-    
+
     size_t v = str_hash(typeid(d).name());
     if (!d.get_name().empty())
       v = hashing::combine_hashes(v, str_hash(d.get_name()));
     if (d.get_location())
-      v = hashing::combine_hashes(v, unsigned_hash(d.get_location()));    
+      v = hashing::combine_hashes(v, unsigned_hash(d.get_location()));
 
     return v;
   }
@@ -102,10 +102,10 @@ struct type_decl::hash
     decl_base::hash decl_hash;
     type_base::hash type_hash;
     std::tr1::hash<string> str_hash;
-    
+
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, decl_hash(t));
-    v = hashing::combine_hashes(v, type_hash(t));    
+    v = hashing::combine_hashes(v, type_hash(t));
 
     return v;
   }
@@ -119,10 +119,10 @@ struct scope_type_decl::hash
     decl_base::hash decl_hash;
     type_base::hash type_hash;
     std::tr1::hash<string> str_hash;
-    
+
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, decl_hash(t));
-    v = hashing::combine_hashes(v, type_hash(t));    
+    v = hashing::combine_hashes(v, type_hash(t));
 
     return v;
   }
@@ -136,12 +136,12 @@ struct qualified_type_def::hash
     type_base::hash type_hash;
     decl_base::hash decl_hash;
     std::tr1::hash<string> str_hash;
-    
+
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, type_hash(t));
     v = hashing::combine_hashes(v, decl_hash(t));
     v = hashing::combine_hashes(v, t.get_cv_quals());
-    
+
     return v;
   }
 };
@@ -155,12 +155,12 @@ struct pointer_type_def::hash
     type_base::hash type_base_hash;
     decl_base::hash decl_hash;
     type_base::shared_ptr_hash hash_type_ptr;
-    
+
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, decl_hash(t));
     v = hashing::combine_hashes(v, type_base_hash(t));
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_pointed_to_type()));
-  
+
     return v;
   }
 };
@@ -174,7 +174,7 @@ struct reference_type_def::hash
     type_base::hash hash_type_base;
     decl_base::hash hash_decl;
     type_base::shared_ptr_hash hash_type_ptr;
-    
+
     size_t v = hash_str(typeid(t).name());
     v = hashing::combine_hashes(v, hash_str(t.is_lvalue()
 					    ? "lvalue"
@@ -182,7 +182,7 @@ struct reference_type_def::hash
     v = hashing::combine_hashes(v, hash_type_base(t));
     v = hashing::combine_hashes(v, hash_decl(t));
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_pointed_to_type()));
-    
+
     return v;
   }
 };
@@ -195,7 +195,7 @@ struct enum_type_decl::hash
     std::tr1::hash<string> str_hash;
     type_base::shared_ptr_hash type_ptr_hash;
     std::tr1::hash<size_t> size_t_hash;
-    
+
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, type_ptr_hash(t.get_underlying_type()));
     for (std::list<enum_type_decl::enumerator>::const_iterator i =
@@ -219,12 +219,12 @@ struct typedef_decl::hash
     type_base::hash hash_type;
     decl_base::hash decl_hash;
     type_base::shared_ptr_hash type_ptr_hash;
-    
+
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, hash_type(t));
     v = hashing::combine_hashes(v, decl_hash(t));
     v = hashing::combine_hashes(v, type_ptr_hash(t.get_underlying_type()));
-    
+
     return v;
   }
 };
@@ -237,7 +237,7 @@ struct var_decl::hash
     std::tr1::hash<string> hash_string;
     decl_base::hash hash_decl;
     type_base::shared_ptr_hash hash_type_ptr;
-    
+
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_decl(t));
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
@@ -255,13 +255,13 @@ struct function_decl::hash
     std::tr1::hash<string> hash_string;
     decl_base::hash hash_decl_base;
     type_base::shared_ptr_hash hash_type_ptr;
-    
+
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_decl_base(t));
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
     v = hashing::combine_hashes(v, hash_bool(t.is_declared_inline()));
     v = hashing::combine_hashes(v, hash_int(t.get_binding()));
-    
+
     return v;
   }
 };
@@ -287,7 +287,7 @@ struct function_type::hash
     std::tr1::hash<string> hash_string;
     type_base::shared_ptr_hash hash_type_ptr;
     function_decl::parameter::hash hash_parameter;
-    
+
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
     for (vector<shared_ptr<function_decl::parameter> >::const_iterator i =
@@ -307,17 +307,17 @@ struct method_type::hash
     std::tr1::hash<string> hash_string;
     type_base::shared_ptr_hash hash_type_ptr;
     function_decl::parameter::hash hash_parameter;
-    
+
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
     vector<shared_ptr<function_decl::parameter> >::const_iterator i =
       t.get_parameters ().begin();
-    
+
     for (vector<shared_ptr<function_decl::parameter> >::const_iterator i =
 	   t.get_parameters ().begin();
 	 i != t.get_parameters().end(); ++i)
       v = hashing::combine_hashes(v, hash_parameter(**i));
-    
+
     return v;
   }
 };
@@ -339,7 +339,7 @@ struct class_decl::member_type::hash
   {
     member_base::hash hash_member;
     type_base::shared_ptr_hash hash_type;
-    
+
     size_t v = hash_member(t);
     v = hashing::combine_hashes(v, hash_type(t.as_type()));
     return v;
@@ -353,7 +353,7 @@ struct class_decl::base_spec::hash
   {
     member_base::hash hash_member;
     type_base::shared_ptr_hash hash_type_ptr;
-    
+
     size_t v = hash_member(t);
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_base_class()));
     return v;
@@ -368,12 +368,12 @@ struct class_decl::data_member::hash
     std::tr1::hash<size_t> hash_size_t;
     var_decl::hash hash_var_decl;
     member_base::hash hash_member;
-    
+
     size_t v = hash_member(t);
     v = hashing::combine_hashes(v, hash_var_decl(t));
     if (t.is_laid_out())
       v = hashing::combine_hashes(v, hash_size_t(t.get_offset_in_bits()));
-    
+
     return v;
   }
 };
@@ -387,16 +387,16 @@ struct class_decl::member_function::hash
     std::tr1::hash<size_t> hash_size_t;
     member_base::hash hash_member;
     function_decl::hash hash_fn;
-    
+
     size_t v = hash_member(t);
     v = hashing::combine_hashes(v, hash_fn(t));
     v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
     v = hashing::combine_hashes(v, hash_bool(t.is_const()));
-    
+
     if (!t.is_static() && !t.is_constructor())
       v = hashing::combine_hashes(v,
 				  hash_size_t(t.get_vtable_offset_in_bits()));
-    
+
     return v;
   }
 };
@@ -409,12 +409,12 @@ struct class_decl::member_function_template::hash
     std::tr1::hash<bool> hash_bool;
     function_tdecl::hash hash_function_tdecl;
     member_base::hash hash_member;
-    
+
     size_t v = hash_member(t);
     v = hashing::combine_hashes(v, hash_function_tdecl(t));
     v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
     v = hashing::combine_hashes(v, hash_bool(t.is_const()));
-    
+
     return v;
   }
 };
@@ -426,7 +426,7 @@ struct class_decl::member_class_template::hash
   {
     member_base::hash hash_member;
     class_tdecl::hash hash_class_tdecl;
-    
+
     size_t v = hash_member(t);
     v = hashing::combine_hashes(v, hash_class_tdecl(t));
     return v;
@@ -440,9 +440,9 @@ struct class_decl::hash
   {
     if (t.hashing_started())
       return 0;
-    
+
     t.hashing_started(true);
-    
+
     std::tr1::hash<string> hash_string;
     scope_type_decl::hash hash_scope_type;
     class_decl::base_spec::hash hash_base;
@@ -451,54 +451,54 @@ struct class_decl::hash
     class_decl::member_function::hash hash_member_fn;
     class_decl::member_function_template::hash hash_member_fn_tmpl;
     class_decl::member_class_template::hash hash_member_class_tmpl;
-    
+
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_scope_type(t));
-    
+
     // Hash bases.
-    for (std::list<shared_ptr<class_decl::base_spec> >::const_iterator b =
+    for (class_decl::base_specs::const_iterator b =
 	   t.get_base_specifiers().begin();
 	 b != t.get_base_specifiers().end();
 	 ++b)
       v = hashing::combine_hashes(v, hash_base(**b));
-    
+
     // Hash member types.
-    for (std::list<shared_ptr<class_decl::member_type> >::const_iterator ti =
+    for (class_decl::member_types::const_iterator ti =
 	   t.get_member_types().begin();
 	 ti != t.get_member_types().end();
 	 ++ti)
       v = hashing::combine_hashes(v, hash_member_type(**ti));
-    
+
     // Hash data members.
-    for (std::list<shared_ptr<class_decl::data_member> >::const_iterator d =
+    for (class_decl::data_members::const_iterator d =
 	   t.get_data_members().begin();
 	 d != t.get_data_members().end();
 	 ++d)
       v = hashing::combine_hashes(v, hash_data_member(**d));
-    
+
     // Hash member_function
-    for (std::list<shared_ptr<class_decl::member_function> > ::const_iterator f =
+    for (class_decl::member_functions::const_iterator f =
 	   t.get_member_functions().begin();
 	 f != t.get_member_functions().end();
 	 ++f)
       v = hashing::combine_hashes(v, hash_member_fn(**f));
-    
+
     // Hash member function templates
     for (class_decl::member_function_templates::const_iterator f =
 	   t.get_member_function_templates().begin();
 	 f != t.get_member_function_templates().end();
 	 ++f)
       v = hashing::combine_hashes(v, hash_member_fn_tmpl(**f));
-    
+
     // Hash member class templates
     for (class_decl::member_class_templates::const_iterator c =
 	   t.get_member_class_templates().begin();
 	 c != t.get_member_class_templates().end();
 	 ++c)
       v = hashing::combine_hashes(v, hash_member_class_tmpl(**c));
-    
+
     t.hashing_started(false);
-    
+
     return v;
   }
 };
@@ -510,10 +510,10 @@ struct template_parameter::hash
   {
     std::tr1::hash<unsigned> hash_unsigned;
     std::tr1::hash<std::string> hash_string;
-    
+
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_unsigned(t.get_index()));
-    
+
     return v;
   }
 };
@@ -538,9 +538,9 @@ struct template_decl::hash
   {
     std::tr1::hash<string> hash_string;
     template_parameter::shared_ptr_hash hash_template_parameter;
-    
+
     size_t v = hash_string(typeid(t).name());
-    
+
     for (list<shared_ptr<template_parameter> >::const_iterator p =
 	   t.get_template_parameters().begin();
 	 p != t.get_template_parameters().end();
@@ -560,11 +560,11 @@ struct type_tparameter::hash
     std::tr1::hash<string> hash_string;
     template_parameter::hash hash_template_parameter;
     type_decl::hash hash_type;
-    
+
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_template_parameter(t));
     v = hashing::combine_hashes(v, hash_type(t));
-    
+
     return v;
   }
 };
@@ -577,19 +577,19 @@ struct non_type_tparameter::hash
     template_parameter::hash hash_template_parameter;
     std::tr1::hash<string> hash_string;
     type_base::shared_ptr_hash hash_type;
-    
+
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_template_parameter(t));
     v = hashing::combine_hashes(v, hash_string(t.get_name()));
     v = hashing::combine_hashes(v, hash_type(t.get_type()));
-    
+
     return v;
   }
 };
 
 struct template_tparameter::hash
 {
-  size_t 
+  size_t
   operator()(const template_tparameter& t) const
   {
     std::tr1::hash<string> hash_string;
@@ -599,7 +599,7 @@ struct template_tparameter::hash
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_template_type_parm(t));
     v = hashing::combine_hashes(v, hash_template_decl(t));
-    
+
     return v;
   }
 };
@@ -617,7 +617,7 @@ operator()(const template_parameter* t) const
   if (const non_type_tparameter* p =
       dynamic_cast<const non_type_tparameter*>(t))
     return non_type_tparameter::hash()(*p);
-  
+
   // Poor man's fallback.
   return template_parameter::hash()(*t);
 }
@@ -630,14 +630,14 @@ operator()(const function_tdecl& t) const
   decl_base::hash hash_decl_base;
   template_decl::hash hash_template_decl;
   function_decl::hash hash_function_decl;
-  
+
   size_t v = hash_string(typeid(t).name());
-  
+
   v = hashing::combine_hashes(v, hash_decl_base(t));
   v = hashing::combine_hashes(v, hash_template_decl(t));
   if (t.get_pattern())
     v = hashing::combine_hashes(v, hash_function_decl(*t.get_pattern()));
-  
+
   return v;
 }
 
@@ -659,13 +659,13 @@ operator()(const class_tdecl& t) const
   decl_base::hash hash_decl_base;
   template_decl::hash hash_template_decl;
   class_decl::hash hash_class_decl;
-  
+
   size_t v = hash_string(typeid(t).name());
   v = hashing::combine_hashes(v, hash_decl_base(t));
   v = hashing::combine_hashes(v, hash_template_decl(t));
   if (t.get_pattern())
     v = hashing::combine_hashes(v, hash_class_decl(*t.get_pattern()));
-  
+
   return v;
 }
 
@@ -674,7 +674,7 @@ class_tdecl::shared_ptr_hash::
 operator()(const shared_ptr<class_tdecl> t) const
 {
   class_tdecl::hash hash_class_tmpl_decl;
-  
+
   if (t)
     return hash_class_tmpl_decl(*t);
   return 0;
