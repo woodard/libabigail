@@ -31,12 +31,12 @@ namespace comparison
 {
 struct class_decl_diff::priv
 {
-  changes_type base_changes_;
-  changes_type member_types_changes_;
-  changes_type data_member_changes_;
-  changes_type member_fns_changes_;
-  changes_type member_fn_tmpl_changes_;
-  changes_type member_class_tmpl_changes_;
+  edit_script base_changes_;
+  edit_script member_types_changes_;
+  edit_script data_members_changes_;
+  edit_script member_fns_changes_;
+  edit_script member_fn_tmpls_changes_;
+  edit_script member_class_tmpls_changes_;
 };//end struct class_decl_diff::priv
 
 /// Constructor of class_decl_diff
@@ -47,53 +47,53 @@ class_decl_diff::class_decl_diff(shared_ptr<scope_decl> scope)
     priv_(new priv)
 {}
 
-const diff::changes_type&
+const edit_script&
 class_decl_diff::base_changes() const
 {return priv_->base_changes_;}
 
-diff::changes_type&
+edit_script&
 class_decl_diff::base_changes()
 {return priv_->base_changes_;}
 
-const diff::changes_type&
+const edit_script&
 class_decl_diff::member_types_changes() const
 {return priv_->member_types_changes_;}
 
-diff::changes_type&
+edit_script&
 class_decl_diff::member_types_changes()
 {return priv_->member_types_changes_;}
 
-const diff::changes_type&
-class_decl_diff::data_member_changes() const
-{return priv_->data_member_changes_;}
+const edit_script&
+class_decl_diff::data_members_changes() const
+{return priv_->data_members_changes_;}
 
-diff::changes_type&
-class_decl_diff::data_member_changes()
-{return priv_->data_member_changes_;}
+edit_script&
+class_decl_diff::data_members_changes()
+{return priv_->data_members_changes_;}
 
-const diff::changes_type&
+const edit_script&
 class_decl_diff::member_fns_changes() const
 {return priv_->member_fns_changes_;}
 
-diff::changes_type&
+edit_script&
 class_decl_diff::member_fns_changes()
 {return priv_->member_fns_changes_;}
 
-const diff::changes_type&
-class_decl_diff::member_fn_tmpl_changes() const
-{return priv_->member_fn_tmpl_changes_;}
+const edit_script&
+class_decl_diff::member_fn_tmpls_changes() const
+{return priv_->member_fn_tmpls_changes_;}
 
-diff::changes_type&
-class_decl_diff::member_fn_tmpl_changes()
-{return priv_->member_fn_tmpl_changes_;}
+edit_script&
+class_decl_diff::member_fn_tmpls_changes()
+{return priv_->member_fn_tmpls_changes_;}
 
-const diff::changes_type&
-class_decl_diff::member_class_tmpl_changes() const
-{return priv_->member_class_tmpl_changes_;}
+const edit_script&
+class_decl_diff::member_class_tmpls_changes() const
+{return priv_->member_class_tmpls_changes_;}
 
-diff::changes_type&
-class_decl_diff::member_class_tmpl_changes()
-{return priv_->member_class_tmpl_changes_;}
+edit_script&
+class_decl_diff::member_class_tmpls_changes()
+{return priv_->member_class_tmpls_changes_;}
 
 void
 compute_diff(class_decl_sptr	 /*first*/,

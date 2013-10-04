@@ -44,7 +44,6 @@ class diff
   shared_ptr<scope_decl> scope_;
 
 public:
-  typedef edit_script changes_type;
 
   diff(shared_ptr<scope_decl> scope)
     : scope_(scope)
@@ -65,41 +64,42 @@ public:
 
   class_decl_diff(shared_ptr<scope_decl> scope);
 
-  const changes_type&
+  const edit_script&
   base_changes() const;
 
-  changes_type&
+  edit_script&
   base_changes();
 
-  const changes_type&
+  const edit_script&
   member_types_changes() const;
 
-  changes_type&
+  edit_script&
   member_types_changes();
 
-  const changes_type&
-  data_member_changes() const;
+  const edit_script&
+  data_members_changes() const;
 
-  changes_type&
-  data_member_changes();
+  edit_script&
+  data_members_changes();
 
-  const changes_type&
+  const edit_script&
   member_fns_changes() const;
 
-  changes_type&
+  edit_script&
   member_fns_changes();
 
-  const changes_type&
-  member_fn_tmpl_changes() const;
+  const edit_script&
+  member_fn_tmpls_changes() const;
 
-  changes_type&
-  member_fn_tmpl_changes();
+  edit_script&
+  member_fn_tmpls_changes();
 
-  const changes_type&
-  member_class_tmpl_changes() const;
+  const edit_script&
+  member_class_tmpls_changes() const;
 
-  changes_type&
-  member_class_tmpl_changes();
+  edit_script&
+  member_class_tmpls_changes();
+
 };// end class_decl_edit_script
 
 void
