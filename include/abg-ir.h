@@ -253,6 +253,13 @@ public:
   {return name_;}
 
   void
+  get_qualified_name(string& qualified_name,
+		     const string& separator = "::") const;
+
+  string
+  get_qualified_name(const string& separator = "::") const;
+
+  void
   set_name(const string& n)
   { name_ = n; }
 
@@ -1599,17 +1606,17 @@ public:
 
   /// Typedefs.
   typedef shared_ptr<base_spec>			base_spec_sptr;
-  typedef std::list<base_spec_sptr>			base_specs;
+  typedef std::vector<base_spec_sptr>			base_specs;
   typedef shared_ptr<member_type>			member_type_sptr;
-  typedef std::list<member_type_sptr>			member_types;
+  typedef std::vector<member_type_sptr>		member_types;
   typedef shared_ptr<data_member>			data_member_sptr;
-  typedef std::list<data_member_sptr>			data_members;
+  typedef std::vector<data_member_sptr>		data_members;
   typedef shared_ptr<member_function>			member_function_sptr;
-  typedef std::list<member_function_sptr>		member_functions;
+  typedef std::vector<member_function_sptr>		member_functions;
   typedef shared_ptr<member_function_template>		member_function_template_sptr;
-  typedef std::list<member_function_template_sptr>	member_function_templates;
+  typedef std::vector<member_function_template_sptr>	member_function_templates;
   typedef shared_ptr<member_class_template>		member_class_template_sptr;
-  typedef std::list<member_class_template_sptr>	member_class_templates;
+  typedef std::vector<member_class_template_sptr>	member_class_templates;
 
 private:
   mutable bool			hashing_started_;
@@ -1787,6 +1794,9 @@ public:
 
 typedef shared_ptr<class_decl> class_decl_sptr;
 
+bool
+operator==(class_decl_sptr l, class_decl_sptr r);
+
 /// The base class for member types, data members and member
 /// functions.  Its purpose is mainly to carry the access specifier
 /// (and possibly other properties that might be shared by all class
@@ -1852,6 +1862,9 @@ public:
   as_type() const
   {return type_;}
 };// end class member_type
+
+bool
+operator==(class_decl::member_type_sptr l, class_decl::member_type_sptr r);
 
 /// Abstraction of a base specifier in a class declaration.
 class class_decl::base_spec : public member_base
@@ -1924,6 +1937,8 @@ public:
   }
 };// end class base_spec
 
+bool
+operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r);
 
 /// Abstract a data member declaration in a class declaration.
 class class_decl::data_member : public var_decl, public member_base
@@ -2034,6 +2049,8 @@ public:
   virtual ~data_member();
 };// end class class_decl::data_member
 
+bool
+operator==(class_decl::data_member_sptr l, class_decl::data_member_sptr r);
 
 /// Abstraction of the declaration of a method. This is an
 /// implementation detail for class_decl::member_function.
@@ -2293,6 +2310,9 @@ public:
   traverse(ir_node_visitor& v);
 };// class_decl::member_function
 
+bool
+operator==(class_decl::member_function_sptr l,
+	   class_decl::member_function_sptr r);
 
 /// Abstract a member function template.
 class class_decl::member_function_template
@@ -2343,6 +2363,9 @@ public:
   traverse(ir_node_visitor&);
 };// end class class_decl::member_function_template
 
+bool
+operator==(class_decl::member_function_template_sptr l,
+	   class_decl::member_function_template_sptr r);
 
 /// Abstracts a member class template template
 class class_decl::member_class_template
@@ -2382,6 +2405,9 @@ public:
   traverse(ir_node_visitor& v);
 };// end class class_decl::member_class_template
 
+bool
+operator==(class_decl::member_class_template_sptr l,
+	   class_decl::member_class_template_sptr r);
 
 // Forward declarations for select nested hashers.
 struct type_base::shared_ptr_hash

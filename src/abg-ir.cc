@@ -224,6 +224,46 @@ decl_base::decl_base(const decl_base& d)
   visibility_ = visibility_;
 }
 
+/// Compute the qualified name of the decl.
+///
+/// @param qn the resulting qualified name.
+///
+/// @param sep the separator used to separate the components of the
+/// qualified name.
+void
+decl_base::get_qualified_name(string& qn,
+			      const string& sep) const
+{
+  list<string> qn_components;
+
+  qn_components.push_front(get_name());
+  for (scope_decl* s = get_scope(); !is_global_scope(s); s = s->get_scope())
+    qn_components.push_front(s->get_name());
+
+  qn.clear();
+  for (list<string>::const_iterator i = qn_components.begin();
+       i != qn_components.end();
+       ++i)
+    if (i == qn_components.begin())
+      qn += *i;
+    else
+      qn += sep + *i;
+}
+
+/// Compute the qualified name of the decl.
+///
+/// @param sep the separator used to separate the components of the
+/// qualified name.
+///
+/// @return qn the resulting qualified name.
+string
+decl_base::get_qualified_name(const string& separator) const
+{
+  string result;
+  get_qualified_name(result, separator);
+  return result;
+}
+
 bool
 decl_base::operator==(const decl_base& other) const
 {
@@ -1003,12 +1043,10 @@ function_decl::~function_decl()
 // <class_decl definitions>
 
 class_decl::class_decl(const std::string& name, size_t size_in_bits,
-		       size_t align_in_bits, location	locus,
-		       visibility vis,
-		       std::list<shared_ptr<base_spec> >& bases,
-		       std::list<shared_ptr<member_type> >& mbrs,
-		       std::list<shared_ptr<data_member> >& data_mbrs,
-		       std::list<shared_ptr<member_function> >&	mbr_fns)
+		       size_t align_in_bits, location locus,
+		       visibility vis, base_specs& bases,
+		       member_types& mbrs, data_members& data_mbrs,
+		       member_functions& mbr_fns)
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
   scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
@@ -1275,7 +1313,7 @@ bool
 class_decl::operator==(const class_decl& o) const
 {
   // Compare bases.
-  list<shared_ptr<class_decl::base_spec> >::const_iterator b0, b1;
+  base_specs::const_iterator b0, b1;
   for(b0 = get_base_specifiers().begin(), b1 = o.get_base_specifiers().begin();
       b0 != get_base_specifiers().end() && b1 != o.get_base_specifiers().end();
       ++b0, ++b1)
@@ -1285,7 +1323,7 @@ class_decl::operator==(const class_decl& o) const
     return false;
 
   //Compare member types
-  list<shared_ptr<class_decl::member_type> >::const_iterator t0, t1;
+  member_types::const_iterator t0, t1;
   for (t0 = get_member_types().begin(), t1 = o.get_member_types().begin();
        t0 != get_member_types().end() && t1 != o.get_member_types().end();
        ++t0, ++t1)
@@ -1295,7 +1333,7 @@ class_decl::operator==(const class_decl& o) const
     return false;
 
   //compare data_members
-  list<shared_ptr<class_decl::data_member> >::const_iterator d0, d1;
+  data_members::const_iterator d0, d1;
   for (d0 = get_data_members().begin(), d1 = o.get_data_members().begin();
        d0 != get_data_members().end() && d1 != o.get_data_members().end();
        ++d0, ++d1)
@@ -1305,7 +1343,7 @@ class_decl::operator==(const class_decl& o) const
     return false;
 
   //compare member functions
-  list<shared_ptr<class_decl::member_function> >::const_iterator f0, f1;
+  member_functions::const_iterator f0, f1;
   for (f0 = get_member_functions().begin(),
 	 f1 = o.get_member_functions().begin();
        f0 != get_member_functions().end()
@@ -1344,6 +1382,27 @@ class_decl::operator==(const class_decl& o) const
     return false;
 
   return true;
+}
+
+/// Turn equality of shared_ptr of class_decl be a deep equality.
+///
+/// @param l the shared_ptr of class_decl on left-hand-side of the
+/// equality.
+///
+/// @param r the shared_ptr of class_decl on right-hand-side of the
+/// equality.
+///
+/// @return true if the class_decl pointed to by the shared_ptrs are
+/// equal, false otherwise.
+bool
+operator==(class_decl_sptr l, class_decl_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
 }
 
 void
@@ -1400,7 +1459,40 @@ class_decl::traverse(ir_node_visitor& v)
 }
 
 class_decl::~class_decl()
-{ }
+{}
+
+bool
+operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
+
+bool
+operator==(class_decl::member_type_sptr l, class_decl::member_type_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
+
+bool
+operator==(class_decl::data_member_sptr l, class_decl::data_member_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
 
 void
 class_decl::data_member::traverse(ir_node_visitor& v)
@@ -1409,7 +1501,19 @@ class_decl::data_member::traverse(ir_node_visitor& v)
 }
 
 class_decl::data_member::~data_member()
-{ }
+{}
+
+bool
+operator==(class_decl::member_function_sptr l,
+	   class_decl::member_function_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
 
 bool
 class_decl::member_function_template::operator==
@@ -1424,6 +1528,18 @@ class_decl::member_function_template::operator==
     return static_cast<function_tdecl>(*this) == o;
 
   return true;
+}
+
+bool
+operator==(class_decl::member_function_template_sptr l,
+	   class_decl::member_function_template_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
 }
 
 void
@@ -1444,6 +1560,18 @@ class_decl::member_class_template::operator==
     return static_cast<class_tdecl>(*this) == o;
 
   return true;
+}
+
+bool
+operator==(class_decl::member_class_template_sptr l,
+	   class_decl::member_class_template_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
 }
 
 void

@@ -31,7 +31,8 @@ namespace abigail
 namespace comparison
 {
 
-// Injecting lower-level types from diff_utils into this namespace.
+// Inject types we need into this namespace.
+using std::ostream;
 using diff_utils::insertion;
 using diff_utils::deletion;
 using diff_utils::edit_script;
@@ -41,17 +42,24 @@ using diff_utils::edit_script;
 /// changes that appertain to a certain kind of construct.
 class diff
 {
-  shared_ptr<scope_decl> scope_;
+  shared_ptr<scope_decl> first_scope_;
+  shared_ptr<scope_decl> second_scope_;
 
 public:
 
-  diff(shared_ptr<scope_decl> scope)
-    : scope_(scope)
+  diff(shared_ptr<scope_decl> first_scope,
+       shared_ptr<scope_decl> second_scope)
+    : first_scope_(first_scope),
+      second_scope_(second_scope)
   {}
 
   shared_ptr<scope_decl>
-  scope() const
-  {return scope_;}
+  first_scope() const
+  {return first_scope_;}
+
+  shared_ptr<scope_decl>
+  second_scope() const
+  {return second_scope_;}
 };// end class diff
 
 /// This type abstracts changes for a class_decl.
@@ -62,7 +70,19 @@ class class_decl_diff : public diff
 
 public:
 
-  class_decl_diff(shared_ptr<scope_decl> scope);
+  class_decl_diff(shared_ptr<class_decl> first_scope,
+		  shared_ptr<class_decl> second_scope);
+
+  unsigned
+  length() const;
+
+  //TODO: add change of the name of the type.
+
+  shared_ptr<class_decl>
+  first_class_decl() const;
+
+  shared_ptr<class_decl>
+  second_class_decl() const;
 
   const edit_script&
   base_changes() const;
@@ -107,6 +127,9 @@ compute_diff(class_decl_sptr	 first,
 	     class_decl_sptr	 second,
 	     class_decl_diff	&changes);
 
+void
+report_changes(class_decl_diff &changes,
+	       ostream& out);
 }// end namespace comparison
 
 }// end namespace abigail
