@@ -1,5 +1,5 @@
 1 deletion:
-1 (a)
+	 happened at index: 1 (a)
 
 no insertion
 
