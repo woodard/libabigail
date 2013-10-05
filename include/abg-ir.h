@@ -285,7 +285,7 @@ public:
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
-};
+};// end class decl_base
 
 /// A declaration that introduces a scope.
 class scope_decl : public virtual decl_base
@@ -295,8 +295,8 @@ public:
   typedef std::list<shared_ptr<scope_decl> >	scopes;
 
 private:
-  declarations			members_;
-  scopes			member_scopes_;
+  declarations	members_;
+  scopes	member_scopes_;
 
   scope_decl();
 
@@ -349,7 +349,7 @@ public:
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
-};
+};//end class scope_decl
 
 
 /// This abstracts the global scope of a given translation unit.
@@ -377,11 +377,13 @@ public:
   virtual ~global_scope();
 };
 
+typedef shared_ptr<type_base> type_base_sptr;
+
 /// An abstraction helper for type declarations
 class type_base
 {
-  size_t			size_in_bits_;
-  size_t			alignment_in_bits_;
+  size_t	size_in_bits_;
+  size_t	alignment_in_bits_;
 
   // Forbid this.
   type_base();
@@ -422,7 +424,7 @@ public:
 
   size_t
   get_alignment_in_bits() const;
-};
+};//end class type_base
 
 
 /// A predicate for deep equality of instances of shared_ptr<type_base>

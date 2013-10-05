@@ -1384,7 +1384,8 @@ class_decl::operator==(const class_decl& o) const
   return true;
 }
 
-/// Turn equality of shared_ptr of class_decl be a deep equality.
+/// Turn equality of shared_ptr of class_decl into a deep equality;
+/// that is, make it compare the pointed to objects too.
 ///
 /// @param l the shared_ptr of class_decl on left-hand-side of the
 /// equality.
