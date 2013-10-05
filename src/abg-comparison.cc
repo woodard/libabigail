@@ -139,54 +139,42 @@ compute_diff(class_decl_sptr	 first,
 
   // Compare base specs
   compute_diff(first->get_base_specifiers().begin(),
-	       first->get_base_specifiers().begin(),
 	       first->get_base_specifiers().end(),
-	       second->get_base_specifiers().begin(),
 	       second->get_base_specifiers().begin(),
 	       second->get_base_specifiers().end(),
 	       changes.base_changes());
 
   // Compare member types
   compute_diff(first->get_member_types().begin(),
-	       first->get_member_types().begin(),
 	       first->get_member_types().end(),
-	       second->get_member_types().begin(),
 	       second->get_member_types().begin(),
 	       second->get_member_types().end(),
 	       changes.member_types_changes());
 
   // Compare data member
   compute_diff(first->get_data_members().begin(),
-	       first->get_data_members().begin(),
 	       first->get_data_members().end(),
-	       second->get_data_members().begin(),
 	       second->get_data_members().begin(),
 	       second->get_data_members().end(),
 	       changes.data_members_changes());
 
   // Compare member functions
   compute_diff(first->get_member_functions().begin(),
-	       first->get_member_functions().begin(),
 	       first->get_member_functions().end(),
-	       second->get_member_functions().begin(),
 	       second->get_member_functions().begin(),
 	       second->get_member_functions().end(),
 	       changes.member_fns_changes());
 
   // Compare member function templates
   compute_diff(first->get_member_function_templates().begin(),
-	       first->get_member_function_templates().begin(),
 	       first->get_member_function_templates().end(),
-	       second->get_member_function_templates().begin(),
 	       second->get_member_function_templates().begin(),
 	       second->get_member_function_templates().end(),
 	       changes.member_fn_tmpls_changes());
 
   // Compare member class templates
   compute_diff(first->get_member_class_templates().begin(),
-	       first->get_member_class_templates().begin(),
 	       first->get_member_class_templates().end(),
-	       second->get_member_class_templates().begin(),
 	       second->get_member_class_templates().begin(),
 	       second->get_member_class_templates().end(),
 	       changes.member_class_tmpls_changes());
@@ -255,7 +243,8 @@ report_changes(class_decl_diff &changes,
 	   ++i)
 	{
 	  shared_ptr<class_decl> base_class;
-	  for (vector<int>::const_iterator j = i->inserted_indexes().begin();
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
 	       j != i->inserted_indexes().end();
 	       ++j)
 	    {
@@ -270,6 +259,7 @@ report_changes(class_decl_diff &changes,
 	}
     }
 }
+//</class_decl_diff stuff>
 
 }// end namespace comparison
 } // end namespace abigail

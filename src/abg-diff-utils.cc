@@ -140,8 +140,8 @@ compute_lcs(const char* str1, const char* str2, int &ses_len, string& lcs)
   vector<point> result;
   edit_script ses;
 
-  compute_diff(str1, str1, str1 + strlen(str1),
-	       str2, str2, str2 + strlen(str2),
+  compute_diff(str1, str1 + strlen(str1),
+	       str2, str2 + strlen(str2),
 	       result, ses);
 
   ses_len = ses.length();
@@ -168,8 +168,8 @@ void
 compute_ses(const char* str1, const char* str2, edit_script& ses)
 {
   vector<point> lcs;
-  compute_diff(str1, str1, str1 + strlen(str1),
-	       str2, str2, str2 + strlen(str2),
+  compute_diff(str1, str1 + strlen(str1),
+	       str2, str2 + strlen(str2),
 	       lcs, ses);
 }
 

@@ -298,13 +298,13 @@ public:
 ///     after the insertion point.
 class insertion
 {
-  int		insertion_point_;
-  vector<int>	inserted_;
+  int			insertion_point_;
+  vector<unsigned>	inserted_;
 
 public:
 
   insertion(int insertion_point,
-	    const vector<int>& inserted_indexes)
+	    const vector<unsigned>& inserted_indexes)
     : insertion_point_(insertion_point),
       inserted_(inserted_indexes)
   {}
@@ -321,11 +321,11 @@ public:
   insertion_point_index(int i)
   {insertion_point_ = i;}
 
-  const vector<int>&
+  const vector<unsigned>&
   inserted_indexes() const
   {return inserted_;}
 
-  vector<int>&
+  vector<unsigned>&
   inserted_indexes()
   {return inserted_;}
 };// end class insertion
@@ -1436,6 +1436,52 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// the first (sub-region of) sequence into the second (sub-region of)
 /// sequence.
 ///
+/// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @param a_start an iterator to the beginning of the first sequence
+/// to consider.
+///
+/// @param a_end an iterator to the end of the first sequence to
+/// consider.
+///
+/// @param b_start an iterator to the beginning of the second sequence
+/// to consider.
+///
+/// @param b_end an iterator to the end of the second sequence to
+/// consider.
+///
+/// @param lcs the resulting lcs.  This is set iff the function
+/// returns true.
+///
+/// @param ses the resulting shortest editing script.
+///
+/// @param ses_len the length of the ses above.  Normally this can be
+/// retrived from ses.length(), but this parameter is here for sanity
+/// check purposes.  The function computes the length of the ses in two
+/// redundant redundant ways and ensures that both methods lead to the
+/// same result.
+///
+/// @return true upon successful completion, false otherwise.
+template<typename RandomAccessOutputIterator>
+void
+compute_diff(RandomAccessOutputIterator a_begin,
+	     RandomAccessOutputIterator a_end,
+	     RandomAccessOutputIterator b_begin,
+	     RandomAccessOutputIterator b_end,
+	     vector<point>& lcs,
+	     edit_script& ses,
+	     int& ses_len)
+{
+  compute_diff(a_begin, a_begin, a_end,
+	       b_begin, b_begin, b_end,
+	       lcs, ses, ses_len);
+}
+
+/// Compute the longest common subsequence of two (sub-regions of)
+/// sequences as well as the shortest edit script from transforming
+/// the first (sub-region of) sequence into the second (sub-region of)
+/// sequence.
+///
 /// A sequence is determined by a base, a beginning offset and an end
 /// offset.  The base always points to the container that contains the
 /// sequence to consider.  The beginning offset is an iterator that
@@ -1492,6 +1538,45 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// the first (sub-region of) sequence into the second (sub-region of)
 /// sequence.
 ///
+/// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @param a_start an iterator to the beginning of the first sequence
+/// to consider.
+///
+/// @param a_end an iterator to the end of the first sequence to
+/// consider.
+///
+/// @param b_start an iterator to the beginning of the sequence to
+/// actually consider.
+///
+/// @param b_end an iterator to the end of second sequence to
+/// consider.
+///
+/// @param lcs the resulting lcs.  This is set iff the function
+/// returns true.
+///
+/// @param ses the resulting shortest editing script.
+///
+/// @return true upon successful completion, false otherwise.
+template<typename RandomAccessOutputIterator>
+void
+compute_diff(RandomAccessOutputIterator a_begin,
+	     RandomAccessOutputIterator a_end,
+	     RandomAccessOutputIterator b_begin,
+	     RandomAccessOutputIterator b_end,
+	     vector<point>& lcs,
+	     edit_script& ses)
+{
+  compute_diff(a_begin, a_begin, a_end,
+	       b_begin, b_begin, b_end,
+	       lcs, ses);
+}
+
+/// Compute the longest common subsequence of two (sub-regions of)
+/// sequences as well as the shortest edit script from transforming
+/// the first (sub-region of) sequence into the second (sub-region of)
+/// sequence.
+///
 /// A sequence is determined by a base, a beginning offset and an end
 /// offset.  The base always points to the container that contains the
 /// sequence to consider.  The beginning offset is an iterator that
@@ -1537,6 +1622,41 @@ compute_diff(RandomAccessOutputIterator a_base,
   compute_diff(a_base, a_begin, a_end,
 	       b_base, b_begin, b_end,
 	       lcs, ses);
+}
+
+/// Compute the longest common subsequence of two (sub-regions of)
+/// sequences as well as the shortest edit script from transforming
+/// the first (sub-region of) sequence into the second (sub-region of)
+/// sequence.
+///
+/// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @param a_start an iterator to the beginning of the first sequence
+/// to consider.
+///
+/// @param a_end an iterator to the end of the first sequence to
+/// consider.
+///
+/// @param b_start an iterator to the beginning of the second sequence
+/// to consider.
+///
+/// @param b_end an iterator to the end of the second sequence to
+/// consider.
+///
+/// @param ses the resulting shortest editing script.
+///
+/// @return true upon successful completion, false otherwise.
+template<typename RandomAccessOutputIterator>
+void
+compute_diff(RandomAccessOutputIterator a_begin,
+	     RandomAccessOutputIterator a_end,
+	     RandomAccessOutputIterator b_begin,
+	     RandomAccessOutputIterator b_end,
+	     edit_script& ses)
+{
+  compute_diff(a_begin, a_begin, a_end,
+	       b_begin, b_begin, b_end,
+	       ses);
 }
 
 void
@@ -1598,7 +1718,7 @@ display_edit_script(const edit_script& es,
       if (!i->inserted_indexes().empty())
 	out << "\t\t inserted indexes from second sequence: ";
 
-      for (vector<int>::const_iterator j = i->inserted_indexes().begin();
+      for (vector<unsigned>::const_iterator j = i->inserted_indexes().begin();
 	   j != i->inserted_indexes().end();
 	   ++j)
 	{
