@@ -33,17 +33,21 @@ namespace comparison
 
 // Inject types we need into this namespace.
 using std::ostream;
+using std::vector;
+using std::tr1::unordered_map;
 using diff_utils::insertion;
 using diff_utils::deletion;
 using diff_utils::edit_script;
+
+typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
 
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for a given scope.  It's the base class to represents
 /// changes that appertain to a certain kind of construct.
 class diff
 {
-  shared_ptr<scope_decl> first_scope_;
-  shared_ptr<scope_decl> second_scope_;
+  scope_decl_sptr first_scope_;
+  scope_decl_sptr second_scope_;
 
 public:
 
@@ -60,7 +64,69 @@ public:
   shared_ptr<scope_decl>
   second_scope() const
   {return second_scope_;}
+
 };// end class diff
+
+/// An abstractions of the changes between two scopes.
+class scope_diff : public diff
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+  bool
+  lookup_tables_empty() const;
+
+  void
+  clear_lookup_tables();
+
+  void
+  ensure_lookup_tables_populated();
+
+public:
+
+  typedef std::pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
+
+  friend void
+  compute_diff(scope_decl_sptr first,
+	       scope_decl_sptr second,
+	       scope_diff& d);
+
+  scope_diff(scope_decl_sptr first_scope,
+	     scope_decl_sptr second_scope);
+
+  const edit_script&
+  member_changes() const;
+
+  edit_script&
+  member_changes();
+
+  const decl_base_sptr
+  deleted_member_at(unsigned index) const;
+
+  const decl_base_sptr
+  deleted_member_at(vector<deletion>::const_iterator) const;
+
+  const decl_base_sptr
+  inserted_member_at(unsigned i);
+
+  const decl_base_sptr
+  inserted_member_at(vector<unsigned>::const_iterator i);
+
+  const unordered_map<string, changed_type_or_decl>&
+  changed_types() const;
+
+  const unordered_map<string, changed_type_or_decl>&
+  changed_decls() const;
+};// end class scope_diff
+
+void
+compute_diff(scope_decl_sptr first_scope,
+	     scope_decl_sptr second_scope,
+	     scope_diff& d);
+
+void
+report_changes(const scope_diff& changes,
+	       ostream& out);
 
 /// This type abstracts changes for a class_decl.
 class class_decl_diff : public diff
@@ -70,8 +136,8 @@ class class_decl_diff : public diff
 
 public:
 
-  class_decl_diff(shared_ptr<class_decl> first_scope,
-		  shared_ptr<class_decl> second_scope);
+  class_decl_diff(class_decl_sptr first_scope,
+		  class_decl_sptr second_scope);
 
   unsigned
   length() const;

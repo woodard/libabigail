@@ -169,6 +169,8 @@ public:
 typedef shared_ptr<translation_unit> translation_unit_sptr;
 typedef std::vector<translation_unit_sptr> translation_units;
 
+typedef shared_ptr<decl_base> decl_base_sptr;
+
 /// The base type of all declarations.
 class decl_base : public traversable_base
 {
@@ -287,12 +289,17 @@ public:
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
 };// end class decl_base
 
+bool
+operator==(decl_base_sptr, decl_base_sptr);
+
+typedef shared_ptr<scope_decl> scope_decl_sptr;
+
 /// A declaration that introduces a scope.
 class scope_decl : public virtual decl_base
 {
 public:
-  typedef std::list<shared_ptr<decl_base> >	declarations;
-  typedef std::list<shared_ptr<scope_decl> >	scopes;
+  typedef std::vector<shared_ptr<decl_base> >	declarations;
+  typedef std::vector<shared_ptr<scope_decl> >	scopes;
 
 private:
   declarations	members_;
@@ -431,7 +438,7 @@ public:
 struct type_shared_ptr_equal
 {
   bool
-  operator()(const shared_ptr<type_base> l, const shared_ptr<type_base> r) const
+  operator()(const type_base_sptr l, const type_base_sptr r) const
   {
     if (l != r)
       return false;

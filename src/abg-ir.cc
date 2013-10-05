@@ -286,7 +286,30 @@ decl_base::traverse(ir_node_visitor&)
 void
 decl_base::set_scope(scope_decl* scope)
 { context_ = scope; }
-// </Decl definition>
+
+/// Turn equality of shared_ptr of decl_base into a deep equality;
+/// that is, make it compare the pointed to objects too.
+///
+/// @param l the shared_ptr of decl_base on left-hand-side of the
+/// equality.
+///
+/// @param r the shared_ptr of decl_base on right-hand-side of the
+/// equality.
+///
+/// @return true if the decl_base pointed to by the shared_ptrs are
+/// equal, false otherwise.
+bool
+operator==(decl_base_sptr l, decl_base_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
+
+// </decl_base definition>
 
 void
 scope_decl::add_member_decl(const shared_ptr<decl_base> member)
@@ -307,7 +330,7 @@ scope_decl::operator==(const scope_decl& other) const
   if (static_cast<decl_base>(*this) != static_cast<decl_base>(other))
     return false;
 
-  std::list<shared_ptr<decl_base> >::const_iterator i, j;
+  scope_decl::declarations::const_iterator i, j;
   for (i = get_member_decls().begin(), j = other.get_member_decls().begin();
        i != get_member_decls().end() && j != other.get_member_decls().end();
        ++i, ++j)
@@ -325,7 +348,7 @@ scope_decl::traverse(ir_node_visitor &v)
 {
   v.visit(*this);
 
-  std::list<shared_ptr<decl_base> >::const_iterator i;
+  scope_decl::declarations::const_iterator i;
   for (i = get_member_decls().begin();
        i != get_member_decls ().end();
        ++i)
@@ -581,12 +604,13 @@ namespace_decl::traverse(ir_node_visitor& v)
 {
   v.visit(*this);
 
-  std::list<shared_ptr<decl_base> >::const_iterator i;
+  scope_decl::declarations::const_iterator i;
   for (i = get_member_decls().begin();
        i != get_member_decls ().end();
        ++i)
     {
-      shared_ptr<traversable_base> t = dynamic_pointer_cast<traversable_base>(*i);
+      shared_ptr<traversable_base> t =
+	dynamic_pointer_cast<traversable_base>(*i);
       if (t)
 	t->traverse (v);
     }
