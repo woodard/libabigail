@@ -863,8 +863,8 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
   // point value the algorithm expects for k == 0 in the reverse case.
   reverse_d_paths[delta + 1] = a_size;
 
-  int d_max = (M + N) / 2;
-  for (int d = 0; d <= d_max; ++d)
+  int d_max = (M + N) / 2 + 1;
+  for (int d = 0; d < d_max; ++d)
     {
       // First build forward paths.
       for (int k = -d; k <= d; k += 2)
@@ -949,7 +949,7 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
 			    break;
 			}
 		      for (int remaining_of_d = d + 1;
-			   remaining_of_d <= d_max;
+			   remaining_of_d < d_max;
 			   ++remaining_of_d)
 			{
 			  for (k_prime = -remaining_of_d;
@@ -1042,7 +1042,7 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
 			    break;
 			}
 		      for (int remaining_of_d = d + 1;
-			   remaining_of_d <= d_max;
+			   remaining_of_d < d_max;
 			   ++remaining_of_d)
 			{
 			  for (k_prime = -remaining_of_d;
@@ -1264,6 +1264,7 @@ compute_diff(RandomAccessOutputIterator a_base,
 {
   int a_size = a_end - a_begin;
   int b_size = b_end - b_begin;
+  unsigned a_offset = a_begin - a_base, b_offset = b_begin - b_base;
 
   if (a_size == 0 || b_size == 0)
     {
@@ -1300,7 +1301,6 @@ compute_diff(RandomAccessOutputIterator a_base,
     {
       // So middle_{begin,end} are expressed wrt a_begin and b_begin.
       // Let's express them wrt a_base and b_base.
-      unsigned a_offset = a_begin - a_base, b_offset = b_begin - b_base;
       middle_begin.x(middle_begin.x() + a_offset);
       middle_begin.y(middle_begin.y() + b_offset);
       middle_end.x(middle_end.x() + a_offset);
@@ -1374,7 +1374,7 @@ compute_diff(RandomAccessOutputIterator a_base,
       // Also, we need to find the non-diagonal edge (that comes
       // *after* the first (possibly empty) snake that starts at point
       // (0,0) and add it to the list of insertions/deletions.
-      int x = 0, y = 0;
+      int x = a_begin - a_base, y = b_begin - b_base;
       while (x < middle_begin.x() && y < middle_begin.y())
 	{
 	  if (a_base[x] == b_base[y])
@@ -1386,11 +1386,13 @@ compute_diff(RandomAccessOutputIterator a_base,
 	    break;
 	}
 
+      int a_full_size = a_size + a_offset;
+      int b_full_size = b_size + b_offset;
       // Now if there is an element of the first sequence which index
       // is not an abscissa of a point in the non-empty snake, that
       // means that element is deleted; i.e, we found the non-diagonal
       // edge we are looking for.
-      for (; x < a_size; ++x)
+      for (; x < a_full_size; ++x)
 	{
 	  if (x < middle_begin.x() || x > middle_end.x())
 	    {
@@ -1403,7 +1405,7 @@ compute_diff(RandomAccessOutputIterator a_base,
       // is not an ordinate of a point in the non-empty snake, that
       // means that element got inserted; i.e, we found the
       // non-diagonal edge we are looking for.
-      for (; y < b_size; ++y)
+      for (; y < b_full_size; ++y)
 	{
 	  if (y > middle_end.y() || y < middle_begin.y())
 	    {
