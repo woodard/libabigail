@@ -92,6 +92,9 @@ public:
 
 struct ir_node_visitor;
 
+typedef shared_ptr<translation_unit> translation_unit_sptr;
+typedef std::vector<translation_unit_sptr> translation_units;
+
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
@@ -148,9 +151,6 @@ public:
   void
   traverse(ir_node_visitor& v);
 };//end class translation_unit
-
-typedef shared_ptr<translation_unit> translation_unit_sptr;
-typedef std::vector<translation_unit_sptr> translation_units;
 
 typedef shared_ptr<decl_base> decl_base_sptr;
 
@@ -291,7 +291,7 @@ public:
   {}
 
   virtual bool
-  operator==(const scope_decl&) const;
+  operator==(const decl_base&) const;
 
   const declarations&
   get_member_decls() const
@@ -421,7 +421,10 @@ public:
 	    visibility vis = VISIBILITY_DEFAULT);
 
   virtual bool
-  operator==(const type_decl&) const;
+  operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const decl_base&) const;
 
   void
   traverse(ir_node_visitor&);
@@ -444,7 +447,10 @@ public:
 		  visibility vis = VISIBILITY_DEFAULT);
 
   virtual bool
-  operator==(const scope_type_decl&) const;
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
 
   virtual ~scope_type_decl();
 };
@@ -458,7 +464,7 @@ public:
 		 visibility vis = VISIBILITY_DEFAULT);
 
   virtual bool
-  operator==(const namespace_decl&) const;
+  operator==(const decl_base&) const;
 
   void
   traverse(ir_node_visitor&);
@@ -493,7 +499,10 @@ public:
   qualified_type_def(shared_ptr<type_base> type, CV quals, location locus);
 
   virtual bool
-  operator==(const qualified_type_def&) const;
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
 
   char
   get_cv_quals() const;
@@ -530,7 +539,10 @@ public:
 		   size_t alignment_in_bits, location locus);
 
   virtual bool
-  operator==(const pointer_type_def&) const;
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
 
   shared_ptr<type_base>
   get_pointed_to_type() const;
@@ -555,12 +567,15 @@ public:
   /// Hasher for intances of reference_type_def.
   struct hash;
 
-  reference_type_def(shared_ptr<type_base>& pointed_to_type,
+  reference_type_def(const type_base_sptr pointed_to_type,
 		     bool lvalue, size_t size_in_bits,
 		     size_t alignment_in_bits, location locus);
 
   virtual bool
-  operator==(const reference_type_def&) const;
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
 
   shared_ptr<type_base>
   get_pointed_to_type() const;
@@ -659,7 +674,10 @@ public:
   get_enumerators() const;
 
   virtual bool
-  operator==(const enum_type_decl&) const;
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
 
   void
   traverse(ir_node_visitor& v);
@@ -685,7 +703,10 @@ public:
 	       visibility vis = VISIBILITY_DEFAULT);
 
   virtual bool
-  operator==(const typedef_decl&) const;
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
 
   shared_ptr<type_base>
   get_underlying_type() const;
@@ -718,7 +739,7 @@ public:
 	   binding			bind = BINDING_NONE);
 
   virtual bool
-  operator==(const var_decl&) const;
+  operator==(const decl_base&) const;
 
   shared_ptr<type_base>
   get_type() const
@@ -859,7 +880,7 @@ public:
   {return binding_;}
 
   virtual bool
-  operator==(const function_decl& o) const;
+  operator==(const decl_base& o) const;
 
   /// Return true iff the function takes a variable number of
   /// parameters.
@@ -975,8 +996,8 @@ public:
   is_variadic() const
   {return !parms_.empty() && parms_.back()->get_variadic_marker();}
 
-  bool
-  operator==(const function_type&) const;
+  virtual bool
+  operator==(const type_base&) const;
 
   virtual ~function_type();
 };//end class function_type
@@ -1092,13 +1113,20 @@ public:
   /// Hasher.
   struct hash;
 
-  type_tparameter(unsigned index, const std::string& name,
-			  location locus)
+  type_tparameter(unsigned index,
+		  const std::string& name,
+		  location locus)
     : decl_base(name, locus),
       type_base(0, 0),
       type_decl(name, 0, 0, locus),
       template_parameter(index)
   {}
+
+  virtual bool
+  operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const template_parameter&) const;
 
   virtual bool
   operator==(const type_tparameter&) const;
@@ -1126,8 +1154,10 @@ public:
   {}
 
   virtual bool
-  operator==(const non_type_tparameter&) const;
+  operator==(const decl_base&) const;
 
+  virtual bool
+  operator==(const template_parameter&) const;
 
   shared_ptr<type_base>
   get_type() const
@@ -1157,7 +1187,13 @@ public:
   {}
 
   virtual bool
-  operator==(const template_tparameter& o) const;
+  operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const template_parameter&) const;
+
+  virtual bool
+  operator==(const template_decl&) const;
 
   virtual ~template_tparameter();
 };
@@ -1188,6 +1224,8 @@ public:
 
   virtual ~type_composition();
 };
+
+typedef shared_ptr<function_tdecl> function_tdecl_sptr;
 
 /// Abstract a function template declaration.
 class function_tdecl : public template_decl, public scope_decl
@@ -1222,7 +1260,10 @@ public:
   {set_pattern(pattern);}
 
   virtual bool
-  operator==(const function_tdecl&) const;
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const template_decl&) const;
 
   void
   set_pattern(shared_ptr<function_decl> p)
@@ -1247,6 +1288,7 @@ public:
 }; // end class function_tdecl.
 
 
+typedef shared_ptr<class_tdecl> class_tdecl_sptr;
 
 /// Abstract a class template.
 class class_tdecl : public template_decl, public scope_decl
@@ -1269,6 +1311,11 @@ public:
   class_tdecl(shared_ptr<class_decl> pattern,
 	      location locus, visibility vis = VISIBILITY_DEFAULT);
 
+  virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const template_decl&) const;
 
   virtual bool
   operator==(const class_tdecl&) const;
@@ -1423,6 +1470,12 @@ public:
   has_no_base_nor_member() const;
 
   virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
+
+  bool
   operator==(const class_decl&) const;
 
   void
@@ -1464,12 +1517,8 @@ public:
   is_static() const
   {return is_static_;}
 
-  bool
-  operator==(const member_base& o) const
-  {
-    return (get_access_specifier() == o.get_access_specifier()
-	    && is_static() == o.is_static());
-  }
+  virtual bool
+  operator==(const member_base& o) const;
 };// end class class_decl::member_base
 
 /// Abstracts a member type declaration.
@@ -1488,11 +1537,14 @@ public:
     : decl_base("", location()), member_base(access), type_(t)
   { }
 
+  virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const member_base&) const;
+
   bool
-  operator==(const member_type& o) const
-  {
-    return (*as_type() == *o.as_type() && static_cast<member_base>(*this) == o);
-  }
+  operator==(const member_type&) const;
 
   operator shared_ptr<type_base>() const
   {return type_;}
@@ -1539,13 +1591,9 @@ public:
   get_offset_in_bits() const
   {return offset_in_bits_;}
 
-  bool
-  operator==(const base_spec& other) const
-  {
-    return (static_cast<member_base>(*this) == other
-	    && *get_base_class() == *other.get_base_class());
-  }
-};// end class base_spec
+  virtual bool
+  operator==(const member_base&) const;
+};// end class class_decl::base_spec
 
 bool
 operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r);
@@ -1640,14 +1688,8 @@ public:
   get_offset_in_bits() const
   {return offset_in_bits_;}
 
-  bool
-  operator==(const data_member& other) const
-  {
-    return (is_laid_out() == other.is_laid_out()
-	    && get_offset_in_bits() == other.get_offset_in_bits()
-	    && static_cast<var_decl>(*this) ==other
-	    && static_cast<member_base>(*this) == other);
-  }
+  virtual bool
+  operator==(const decl_base& other) const;
 
   /// This implements the traversable_base::traverse pure virtual
   /// function.
@@ -1806,16 +1848,14 @@ public:
   is_const() const
   {return is_const_;}
 
+  virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const member_base&) const;
+
   bool
-  operator==(const member_function& o) const
-  {
-    return (get_vtable_offset_in_bits() == o.get_vtable_offset_in_bits()
-	    && is_constructor() == o.is_constructor()
-	    && is_destructor() == o.is_destructor()
-	    && is_const() == o.is_const()
-	    && static_cast<member_base>(*this) == o
-	    && static_cast<function_decl>(*this) == o);
-  }
+  operator==(const member_function&) const;
 
   void
   traverse(ir_node_visitor& v);
@@ -1840,7 +1880,7 @@ public:
   /// Hasher.
   struct hash;
 
-  member_function_template(shared_ptr<function_tdecl> f,
+  member_function_template(function_tdecl_sptr f,
 			   access_specifier access, bool is_static,
 			   bool	is_constructor, bool is_const)
   : member_base(access, is_static), is_constructor_(is_constructor),
@@ -1858,12 +1898,12 @@ public:
   operator const function_tdecl& () const
   {return *fn_tmpl_;}
 
-  shared_ptr<function_tdecl>
+  function_tdecl_sptr
   as_function_tdecl() const
   {return fn_tmpl_;}
 
-  bool
-  operator==(const member_function_template& o) const;
+  virtual bool
+  operator==(const member_base& o) const;
 
   void
   traverse(ir_node_visitor&);
@@ -1899,8 +1939,11 @@ public:
   as_class_tdecl() const
   {return class_tmpl_;}
 
-  bool
-  operator==(const member_class_template& o) const;
+  virtual bool
+  operator==(const member_base& o) const;
+
+  virtual bool
+  operator==(const member_class_template&) const;
 
   void
   traverse(ir_node_visitor& v);
