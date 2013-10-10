@@ -17,6 +17,8 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program; see the file COPYING-LGPLV3.  If
 // not, see <http://www.gnu.org/licenses/>.
+//
+//Author: Dodji Seketeli
 
 /// @file
 
@@ -96,6 +98,14 @@ location_manager::location_manager()
   priv_ = shared_ptr<location_manager::_Impl>(new location_manager::_Impl);
 }
 
+/// Insert the triplet representing a source locus into our internal
+/// vector of location triplet.  Return an instance of location type,
+/// built from an integral type that represents the index of the
+/// source locus triplet into our source locus table.
+///
+/// @param fle the file path of the source locus
+/// @param lne the line number of the source location
+/// @param col the column number of the source location
 location
 location_manager::create_new_location(const std::string&	file_path,
 				      size_t			line,
@@ -109,6 +119,16 @@ location_manager::create_new_location(const std::string&	file_path,
   return location(priv_->locs.size());
 }
 
+/// Given an instance of location type, return the triplet
+/// {path,line,column} that represents the source locus.  Note that
+/// the location must have been previously created from the function
+/// location_manager::expand_location otherwise this function yields
+/// unexpected results, including possibly a crash.
+///
+/// @param location the instance of location type to expand
+/// @param path the resulting path of the source locus
+/// @param line the resulting line of the source locus
+/// @param column the resulting colum of the source locus
 void
 location_manager::expand_location(const location	location,
 				  std::string&		path,
@@ -264,6 +284,13 @@ decl_base::get_qualified_name(const string& separator) const
   return result;
 }
 
+/// Return true iff the two decls have the same name.
+///
+/// This function doesn't test if the scopes of the the two decls are
+/// equal.
+///
+/// Note that this virtual function is to be implemented by classes
+/// that extend the \a decl_base class.
 bool
 decl_base::operator==(const decl_base& other) const
 {
@@ -275,17 +302,26 @@ decl_base::operator==(const decl_base& other) const
 }
 
 decl_base::~decl_base()
-{ }
+{}
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the member nodes of the translation
+/// unit during the traversal.
 void
 decl_base::traverse(ir_node_visitor&)
 {
   // Do nothing in the base class.
 }
 
+/// Setter of the scope of the current decl.
+///
+/// Note that the decl won't hold a reference on the scope.  It's
+/// rather the scope that holds a reference on its members.
 void
 decl_base::set_scope(scope_decl* scope)
-{ context_ = scope; }
+{context_ = scope;}
 
 /// Turn equality of shared_ptr of decl_base into a deep equality;
 /// that is, make it compare the pointed to objects too.
@@ -311,6 +347,10 @@ operator==(decl_base_sptr l, decl_base_sptr r)
 
 // </decl_base definition>
 
+/// Add a member decl to this scope.  Note that user code should not
+/// use this, but rather use add_decl_to_scope.
+///
+/// @param member the new member decl to add to this scope.
 void
 scope_decl::add_member_decl(const shared_ptr<decl_base> member)
 {
@@ -320,6 +360,11 @@ scope_decl::add_member_decl(const shared_ptr<decl_base> member)
     member_scopes_.push_back(m);
 }
 
+/// Return true iff both scopes have the same names and have the same
+/// member decls.
+///
+/// This function doesn't check for equality of the scopes of its
+/// arguments.
 bool
 scope_decl::operator==(const scope_decl& other) const
 {
@@ -343,6 +388,11 @@ scope_decl::operator==(const scope_decl& other) const
   return true;
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance of scope_decl
+/// and on its member nodes.
 void
 scope_decl::traverse(ir_node_visitor &v)
 {
@@ -361,8 +411,14 @@ scope_decl::traverse(ir_node_visitor &v)
 }
 
 scope_decl::~scope_decl()
-{ }
+{}
 
+/// Appends a declaration to a given scope, if the declaration
+/// doesn't already belong to one.
+///
+/// @param decl the declaration to add to the scope
+///
+/// @param scope the scope to append the declaration to
 void
 add_decl_to_scope(shared_ptr<decl_base> decl, scope_decl* scope)
 {
@@ -373,10 +429,22 @@ add_decl_to_scope(shared_ptr<decl_base> decl, scope_decl* scope)
     }
 }
 
+/// Appends a declaration to a given scope, if the declaration doesn't
+/// already belong to a scope.
+///
+/// @param decl the declaration to add append to the scope
+///
+/// @param scope the scope to append the decl to
 void
 add_decl_to_scope(shared_ptr<decl_base> decl, shared_ptr<scope_decl> scope)
-{ add_decl_to_scope(decl, scope.get()); }
+{add_decl_to_scope(decl, scope.get());}
 
+/// Return the global scope as seen by a given declaration.
+///
+/// @param decl the declaration to consider.
+///
+/// @return the global scope of the decl, or a null pointer if the
+/// decl is not yet added to a translation_unit.
 global_scope*
 get_global_scope(const shared_ptr<decl_base> decl)
 {
@@ -390,6 +458,12 @@ get_global_scope(const shared_ptr<decl_base> decl)
   return scope ? dynamic_cast<global_scope*> (scope) : 0;
 }
 
+/// Return the translation unit a declaration belongs to.
+///
+/// @param decl the declaration to consider.
+///
+/// @return the resulting translation unit, or null if the decl is not
+/// yet added to a translation unit.
 translation_unit*
 get_translation_unit(const shared_ptr<decl_base> decl)
 {
@@ -401,36 +475,54 @@ get_translation_unit(const shared_ptr<decl_base> decl)
   return 0;
 }
 
+/// Tests whether if a given scope is the global scope.
+///
+/// @param scope the scope to consider.
+///
+/// @return true iff the current scope is the global one.
 bool
 is_global_scope(const shared_ptr<scope_decl>scope)
-{
-  return !!dynamic_pointer_cast<global_scope>(scope);
-}
+{return !!dynamic_pointer_cast<global_scope>(scope);}
 
 bool
 is_global_scope(const scope_decl* scope)
-{
-  return !!dynamic_cast<const global_scope*>(scope);
-}
+{return !!dynamic_cast<const global_scope*>(scope);}
 
+/// Tests whether a given declaration is at global scope.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is at global scope.
 bool
 is_at_global_scope(const shared_ptr<decl_base> decl)
-{
-  return (decl && is_global_scope(decl->get_scope()));
-}
+{return (decl && is_global_scope(decl->get_scope()));}
 
+/// Tests whether a given decl is at class scope.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is at class scope.
 bool
 is_at_class_scope(const shared_ptr<decl_base> decl)
-{
-  return (decl && dynamic_cast<class_decl*>(decl->get_scope()));
-}
+{return (decl && dynamic_cast<class_decl*>(decl->get_scope()));}
 
+/// Tests whether a given decl is at template scope.
+///
+/// Note that only template parameters , types that are compositions,
+/// and template patterns (function or class) can be at template scope.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff the decl is at template scope.
 bool
 is_at_template_scope(const shared_ptr<decl_base> decl)
-{
-  return (decl && dynamic_cast<template_decl*>(decl->get_scope()));
-}
+{return (decl && dynamic_cast<template_decl*>(decl->get_scope()));}
 
+/// Tests whether a decl is a template parameter.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is a template parameter.
 bool
 is_template_parameter(const shared_ptr<decl_base> decl)
 {
@@ -439,12 +531,20 @@ is_template_parameter(const shared_ptr<decl_base> decl)
 		   || dynamic_pointer_cast<template_tparameter>(decl)));
 }
 
+/// Tests whether a declaration is a type.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is a type.
 bool
 is_type(const shared_ptr<decl_base> decl)
-{
-  return decl && dynamic_pointer_cast<type_base>(decl);
-}
+{return decl && dynamic_pointer_cast<type_base>(decl);}
 
+/// Tests whether a decl is a template parameter composition type.
+///
+/// @param decl the declaration to consider.
+///
+/// @return true iff decl is a template parameter composition type.
 bool
 is_template_parm_composition_type(const shared_ptr<decl_base> decl)
 {
@@ -454,6 +554,11 @@ is_template_parm_composition_type(const shared_ptr<decl_base> decl)
 	  && !is_template_parameter(decl));
 }
 
+/// Test whether a decl is the pattern of a function template.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is the pattern of a function template.
 bool
 is_function_template_pattern(const shared_ptr<decl_base> decl)
 {
@@ -462,11 +567,15 @@ is_function_template_pattern(const shared_ptr<decl_base> decl)
 	  && dynamic_cast<template_decl*>(decl->get_scope()));
 }
 
+/// Tests whether a decl is a template.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is a function template, class template, or
+/// template template parameter.
 bool
 is_template_decl(const shared_ptr<decl_base> decl)
-{
-  return decl && dynamic_pointer_cast<template_decl>(decl);
-}
+{return decl && dynamic_pointer_cast<template_decl>(decl);}
 
 // </scope_decl definition>
 
@@ -481,6 +590,9 @@ type_base::type_base(size_t s, size_t a)
 {
 }
 
+/// Return true iff both type declarations are equal.
+///
+/// Note that this doesn't test if the scopes of both types are equal.
 bool
 type_base::operator==(const type_base& other) const
 {
@@ -494,7 +606,7 @@ type_base::operator==(const type_base& other) const
 
 void
 type_base::set_size_in_bits(size_t s)
-{ size_in_bits_ = s; }
+{size_in_bits_ = s;}
 
 size_t
 type_base::get_size_in_bits() const
@@ -502,14 +614,14 @@ type_base::get_size_in_bits() const
 
 void
 type_base::set_alignment_in_bits(size_t a)
-{ alignment_in_bits_ = a; }
+{alignment_in_bits_ = a;}
 
 size_t
 type_base::get_alignment_in_bits() const
 {return alignment_in_bits_;}
 
 type_base::~type_base()
-{ }
+{}
 // </type_base definitions>
 
 //<type_decl definitions>
@@ -526,6 +638,9 @@ type_decl::type_decl(const std::string&	name,
 {
 }
 
+/// Return true if both types equals.
+///
+/// Note that this does not check the scopes of any of the types.
 bool
 type_decl::operator==(const type_decl& other) const
 {
@@ -537,12 +652,16 @@ type_decl::operator==(const type_decl& other) const
 	  && static_cast<type_base>(*this) == other);
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 type_decl::traverse(ir_node_visitor& v)
 {
   v.visit(*this);
 }
- 
+
 type_decl::~type_decl()
 { }
 //</type_decl definitions>
@@ -560,24 +679,45 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 {
 }
 
+/// Return true iff both scope types are equal.
+///
+/// Note that this function does not consider the scope of the scope
+/// types themselves.
 bool
-scope_type_decl::operator==(const scope_type_decl& other) const
+scope_type_decl::operator==(const decl_base& o) const
 {
-  // Runtime types must be equal.
-  if (typeid(*this) != typeid(other))
-    return false;
+  try
+    {
+      const scope_type_decl& other = dynamic_cast<const scope_type_decl&>(o);
 
-  return (static_cast<scope_decl>(*this) == other
-	  && static_cast<type_base>(*this) == other);
+      return (scope_decl::operator==(other)
+	      && type_base::operator==(other));
+    }
+  catch (...)
+    {return false;}
+}
+
+bool
+scope_type_decl::operator==(const type_base& o) const
+{
+  try
+    {
+      const scope_type_decl& other = dynamic_cast<const scope_type_decl&>(o);
+      return (scope_decl::operator==(other)
+	      && type_base::operator==(other));
+    }
+  catch(...)
+    {return false;}
 }
 
 scope_type_decl::~scope_type_decl()
-{ }
+{}
 // </scope_type_decl definitions>
 
 // <namespace_decl>
-namespace_decl::namespace_decl(const std::string& name, location locus, 
-			       visibility vis)
+namespace_decl::namespace_decl(const std::string& name,
+			       location	  locus,
+			       visibility	  vis)
   : // We need to call the constructor of decl_base directly here
     // because it is virtually inherited by scope_decl.  Note that we
     // just implicitely call the default constructor for scope_decl
@@ -589,6 +729,10 @@ namespace_decl::namespace_decl(const std::string& name, location locus,
 {
 }
 
+/// Return true iff both namespaces and their members are equal.
+///
+/// Note that this function does not check if the scope of these
+/// namespaces are equal.
 bool
 namespace_decl::operator==(const namespace_decl& other) const
 {
@@ -599,6 +743,11 @@ namespace_decl::operator==(const namespace_decl& other) const
   return (static_cast<scope_decl>(*this) == other);
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance and on its
+/// member nodes.
 void
 namespace_decl::traverse(ir_node_visitor& v)
 {
@@ -624,6 +773,13 @@ namespace_decl::~namespace_decl()
 
 // <qualified_type_def>
 
+/// Constructor of the qualified_type_def
+///
+/// @param type the underlying type
+///
+/// @param quals a bitfield representing the const/volatile qualifiers
+///
+/// @param locus the location of the qualified type definition
 qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
 				       CV			quals,
 				       location		locus)
@@ -641,6 +797,9 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
   set_name(get_name() + dynamic_pointer_cast<decl_base>(type)->get_name());
 }
 
+/// Return true iff both qualified types are equal.
+///
+/// Note that this function does not check for equality of the scopes.
 bool
 qualified_type_def::operator==(const qualified_type_def& other) const
 {
@@ -652,37 +811,34 @@ qualified_type_def::operator==(const qualified_type_def& other) const
   return *get_underlying_type() == *other.get_underlying_type();
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 qualified_type_def::traverse(ir_node_visitor& v)
-{
-  v.visit(*this);
-}
+{v.visit(*this);}
 
 qualified_type_def::~qualified_type_def()
 {
 }
 
-
+/// Getter of the const/volatile qualifier bit field
 char
 qualified_type_def::get_cv_quals() const
-{
-  return cv_quals_;
-}
+{return cv_quals_;}
 
+/// Setter of the const/value qualifiers bit field
 void
 qualified_type_def::set_cv_quals(char cv_quals)
-{
-  cv_quals_ = cv_quals;
-}
+{cv_quals_ = cv_quals;}
 
-
+/// Getter of the underlying type
 const shared_ptr<type_base>
 qualified_type_def::get_underlying_type() const
-{
-  return underlying_type_;
-}
+{return underlying_type_;}
 
-
+/// Overloaded bitwise OR operator for cv qualifiers.
 qualified_type_def::CV
 operator| (qualified_type_def::CV lhs,
 	   qualified_type_def::CV rhs)
@@ -705,6 +861,10 @@ pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
 {
 }
 
+/// Return true iff both instances of pointer_type_def are equal.
+///
+/// Note that this function does not check for the scopes of the this
+/// types.
 bool
 pointer_type_def::operator==(const pointer_type_def& other) const
 {
@@ -721,14 +881,16 @@ pointer_type_def::get_pointed_to_type() const
   return pointed_to_type_;
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 pointer_type_def::traverse(ir_node_visitor& v)
-{
-  v.visit(*this);
-}
+{v.visit(*this);}
 
 pointer_type_def::~pointer_type_def()
-{ }
+{}
 
 // </pointer_type_def definitions>
 
@@ -759,42 +921,53 @@ reference_type_def::operator==(const reference_type_def& other) const
 
 shared_ptr<type_base>
 reference_type_def::get_pointed_to_type() const
-{
-  return pointed_to_type_;
-}
+{return pointed_to_type_;}
 
 bool
 reference_type_def::is_lvalue() const
-{
-  return is_lvalue_;
-}
+{return is_lvalue_;}
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 reference_type_def::traverse(ir_node_visitor& v)
-{
-  v.visit(*this);
-}
+{v.visit(*this);}
 
 reference_type_def::~reference_type_def()
-{ }
+{}
+
 // </reference_type_def definitions>
 
+/// Return the underlying type of the enum.
 shared_ptr<type_base>
 enum_type_decl::get_underlying_type() const
 {return underlying_type_;}
 
+/// Return the list of enumerators of the enum.
 const std::list<enum_type_decl::enumerator>&
 enum_type_decl::get_enumerators() const
 {return enumerators_;}
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 enum_type_decl::traverse(ir_node_visitor &v)
-{ v.visit(*this); }
+{v.visit(*this);}
 
 /// Destructor for the enum type declaration.
 enum_type_decl::~enum_type_decl()
-{ }
+{}
 
+/// Equality operator.
+///
+/// @param other the other enum to test against.
+///
+/// @return true iff other is equals the current instance of enum type
+/// decl.
 bool
 enum_type_decl::operator==(const enum_type_decl& other) const
 {
@@ -818,6 +991,13 @@ enum_type_decl::operator==(const enum_type_decl& other) const
 
 // <typedef_decl definitions>
 
+/// Constructor of the typedef_decl type.
+///
+/// @param name the name of the typedef.
+///
+/// @param underlying_type the underlying type of the typedef.
+///
+/// @param locus the source location of the typedef declaration.
 typedef_decl::typedef_decl(const string&		name,
 			   const shared_ptr<type_base>	underlying_type,
 			   location			locus,
@@ -827,8 +1007,11 @@ typedef_decl::typedef_decl(const string&		name,
 	      underlying_type->get_alignment_in_bits()),
     decl_base(name, locus, mangled_name, vis),
     underlying_type_(underlying_type)
-{ }
+{}
 
+/// Equality operator
+///
+/// @param other the other typedef_decl to test against.
 bool
 typedef_decl::operator==(const typedef_decl& other) const
 {
@@ -843,14 +1026,16 @@ typedef_decl::get_underlying_type() const
   return underlying_type_;
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 typedef_decl::traverse(ir_node_visitor& v)
-{
-  v.visit(*this);
-}
+{v.visit(*this);}
 
 typedef_decl::~typedef_decl()
-{ }
+{}
 // </typedef_decl definitions>
 
 // <var_decl definitions>
@@ -864,8 +1049,7 @@ var_decl::var_decl(const std::string&		name,
   : decl_base(name, locus, mangled_name, vis),
     type_(type),
     binding_(bind)
-{
-}
+{}
 
 bool
 var_decl::operator==(const var_decl& other) const
@@ -875,14 +1059,16 @@ var_decl::operator==(const var_decl& other) const
 	  && *get_type() == *other.get_type());
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 var_decl::traverse(ir_node_visitor& v)
-{
-  v.visit(*this);
-}
+{v.visit(*this);}
 
 var_decl::~var_decl()
-{ }
+{}
 
 // </var_decl definitions>
 
@@ -916,6 +1102,22 @@ function_type::~function_type()
 
 // <method_type>
 
+/// Constructor for instances of method_type.
+///
+/// Instances of method_decl must be of type method_type.
+///
+/// @param return_type the type of the return value of the method.
+///
+/// @param class_type the base type of the method type.  That is, the
+/// type of the class the method belongs to.
+///
+/// @param parms the vector of the parameters of the method.
+///
+/// @param size_in_bits the size of an instance of method_type,
+/// expressed in bits.
+///
+/// @param alignment_in_bits the alignment of an instance of
+/// method_type, expressed in bits.
 method_type::method_type
 (shared_ptr<type_base> return_type,
  shared_ptr<class_decl> class_type,
@@ -926,6 +1128,26 @@ method_type::method_type
     function_type(return_type, parms, size_in_bits, alignment_in_bits)
 {set_class_type(class_type);}
 
+/// Constructor of instances of method_type.
+///
+///Instances of method_decl must be of type method_type.
+///
+/// @param return_type the type of the return value of the method.
+///
+/// @param class_type the type of the class the method belongs to.
+/// The actual (dynamic) type of class_type must be a pointer
+/// class_type.  We are setting it to pointer to type_base here to
+/// help client code that is compiled without rtti and thus cannot
+/// perform dynamic casts.
+///
+/// @param parms the vector of the parameters of the method type.
+///
+/// @param size_in_bits the size of an instance of method_type,
+/// expressed in bits.
+///
+/// @param alignment_in_bits the alignment of an instance of
+/// method_type, expressed in bits.
+
 method_type::method_type(shared_ptr<type_base> return_type,
 			 shared_ptr<type_base> class_type,
 			 const std::vector<shared_ptr<function_decl::parameter> >& parms,
@@ -933,17 +1155,34 @@ method_type::method_type(shared_ptr<type_base> return_type,
 			 size_t alignment_in_bits)
   : type_base(size_in_bits, alignment_in_bits),
     function_type(return_type, parms, size_in_bits, alignment_in_bits)
-{
-  set_class_type(dynamic_pointer_cast<class_decl>(class_type));
-}
+{set_class_type(dynamic_pointer_cast<class_decl>(class_type));}
 
+/// Constructor of the qualified_type_def
+///
+/// @param type the underlying type
+///
+/// @param quals a bitfield representing the const/volatile qualifiers
+///
+/// @param locus the location of the qualified type definition
 method_type::method_type(size_t size_in_bits,
 			 size_t alignment_in_bits)
   : type_base(size_in_bits, alignment_in_bits),
     function_type(size_in_bits, alignment_in_bits)
-{ }
+{}
 
-
+/// Constructor of instances of method_type.
+///
+/// When constructed with this constructor, and instane of method_type
+/// must set a return type using method_type::set_return_type
+///
+/// @param class_type the base type of the method type.  That is, the
+/// type of the class the method belongs to.
+///
+/// @param size_in_bits the size of an instance of method_type,
+/// expressed in bits.
+///
+/// @param alignment_in_bits the alignment of an instance of
+/// method_type, expressed in bits.
 method_type::method_type(shared_ptr<class_decl> class_type,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
@@ -951,6 +1190,11 @@ method_type::method_type(shared_ptr<class_decl> class_type,
     function_type(size_in_bits, alignment_in_bits)
 {set_class_type(class_type);}
 
+/// Sets the class type of the current instance of method_type.
+///
+/// The class type is the type of the class the method belongs to.
+///
+/// @param t the new class type to set.
 void
 method_type::set_class_type(shared_ptr<class_decl> t)
 {
@@ -971,11 +1215,44 @@ method_type::set_class_type(shared_ptr<class_decl> t)
 
 /// The destructor of method_type
 method_type::~method_type()
-{ }
+{}
 
 // </method_type>
+
 // <function_decl definitions>
 
+  /// Constructor for function_decl.
+  ///
+  /// This constructor builds the necessary function_type on behalf of
+  /// the client, so it takes parameters -- like the return types, the
+  /// function parameters and the size/alignment of the pointer to the
+  /// type of the function --  necessary to build the function_type
+  /// under the hood.
+  ///
+  /// If the client code already has the function_type at hand, it
+  /// should instead the other constructor that takes the function_decl.
+  ///
+  /// @param name the name of the function declaration.
+  ///
+  /// @param parms a vector of parameters of the function.
+  ///
+  /// @param return_type the return type of the function.
+  ///
+  /// @param fptr_size_in_bits the size of the type of this function, in
+  /// bits.
+  ///
+  /// @param fptr_align_in_bits the alignment of the type of this
+  /// function.
+  ///
+  /// @param declared_inline whether this function was declared inline.
+  ///
+  /// @param locus the source location of this function declaration.
+  ///
+  /// @param mangled_name the mangled name of the function declaration.
+  ///
+  /// @param vis the visibility of the function declaration.
+  ///
+  /// @param bind the type of binding of the function.
 function_decl::function_decl(const std::string&  name,
 			     const std::vector<shared_ptr<parameter> >& parms,
 			     shared_ptr<type_base> return_type,
@@ -990,8 +1267,31 @@ function_decl::function_decl(const std::string&  name,
     type_(new function_type(return_type, parms, fptr_size_in_bits,
 			     fptr_align_in_bits)),
     declared_inline_(declared_inline), binding_(bind)
-  { }
+  {}
 
+  /// Constructor of the function_decl type.
+  ///
+  /// This flavour of constructor is for when the pointer to the
+  /// instance of function_type that the client code has is presented as
+  /// a pointer to type_base.  In that case, this constructor saves the
+  /// client code from doing a dynamic_cast to get the function_type
+  /// pointer.
+  ///
+  /// @param name the name of the function declaration.
+  ///
+  /// @param fn_type the type of the function declaration.  The dynamic
+  /// type of this parameter should be 'pointer to function_type'
+  ///
+  /// @param declared_inline whether this function was declared inline
+  ///
+  /// @param locus the source location of the function declaration.
+  ///
+  /// @param mangled_name the mangled name of the function declaration.
+  ///
+  /// @param vis the visibility of the function declaration.
+  ///
+  /// @param binding  the kind of the binding of the function
+  /// declaration.
 function_decl::function_decl(const std::string& name,
 		shared_ptr<type_base> fn_type,
 		bool	declared_inline,
@@ -1003,25 +1303,36 @@ function_decl::function_decl(const std::string& name,
     type_(dynamic_pointer_cast<function_type>(fn_type)),
     declared_inline_(declared_inline),
     binding_(bind)
-  { }
+  {}
 
+/// Return the type of the current instance of #function_decl.
+///
+/// It's either a function_type or method_type.
+/// @return the type of the current instance of #function_decl.
 const shared_ptr<function_type>
 function_decl::get_type() const
 {return type_;}
 
+/// @return the return type of the current instance of function_decl.
 const shared_ptr<type_base>
 function_decl::get_return_type() const
-{ return type_->get_return_type();}
+{return type_->get_return_type();}
 
-
+/// @return the parameters of the function.
 const std::vector<shared_ptr<function_decl::parameter> >&
 function_decl::get_parameters() const
-{ return type_->get_parameters(); }
+{return type_->get_parameters();}
 
+/// Append a parameter to the type of this function.
+///
+/// @param parm the parameter to append.
 void
 function_decl::append_parameter(shared_ptr<parameter> parm)
-{ type_->append_parameter(parm); }
+{type_->append_parameter(parm);}
 
+/// Append a vector of parameters to the type of this function.
+///
+/// @param parms the vector of parameters to append.
 void
 function_decl::append_parameters(std::vector<shared_ptr<parameter> >& parms)
 {
@@ -1052,20 +1363,45 @@ function_decl::operator==(const function_decl& o) const
   return true;
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 function_decl::traverse(ir_node_visitor& v)
-{
-  v.visit(*this);
-}
+{v.visit(*this);}
 
 function_decl::~function_decl()
-{
-}
+{}
 
 // <function_decl definitions>
 
 // <class_decl definitions>
 
+/// A Constructor for instances of class_decl
+///
+/// @param name the identifier of the class.
+///
+/// @param size_in_bits the size of an instance of class_decl, expressed
+/// in bits
+///
+/// @param align_in_bits the alignment of an instance of class_decl,
+/// expressed in bits.
+///
+/// @param locus the source location of declaration point this class.
+///
+/// @param vis the visibility of instances of class_decl.
+///
+/// @param bases the vector of base classes for this instance of class_decl.
+///
+/// @param mbrs the vector of member types of this instance of
+/// class_decl.
+///
+/// @param data_mbrs the vector of data members of this instance of
+/// class_decl.
+///
+/// @param member_fns the vector of member functions of this instance of
+/// class_decl.
 class_decl::class_decl(const std::string& name, size_t size_in_bits,
 		       size_t align_in_bits, location locus,
 		       visibility vis, base_specs& bases,
@@ -1097,23 +1433,47 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
 
 }
 
-class_decl::class_decl(const std::string& name, size_t size_in_bits, 
+/// A constructor for instances of class_decl.
+///
+/// @param name the name of the class.
+///
+/// @param size_in_bits the size of an instance of class_decl, expressed
+/// in bits
+///
+/// @param align_in_bits the alignment of an instance of class_decl,
+/// expressed in bits.
+///
+/// @param locus the source location of declaration point this class.
+///
+/// @param vis the visibility of instances of class_decl.
+class_decl::class_decl(const std::string& name, size_t size_in_bits,
 		       size_t align_in_bits, location locus, visibility vis)
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
     hashing_started_(false),
     is_declaration_only_(false)
-{ }
+{}
 
+/// A constuctor for instances of class_decl that represent a
+/// declaration without definition.
+///
+/// @param name the name of the class.
+///
+/// @param is_declaration_only a boolean saying whether the instance
+/// represents a declaration only, or not.
 class_decl::class_decl(const std::string& name, bool is_declaration_only)
   : decl_base(name, location(), name),
     type_base(0, 0),
     scope_type_decl(name, 0, 0, location()),
     hashing_started_(false),
     is_declaration_only_(is_declaration_only)
-{ }
+{}
 
+/// Set the earlier declaration of this class definition.
+///
+/// @param declaration the earlier declaration to set.  Note that it's
+/// set only if it's a pure declaration.
 void
 class_decl::set_earlier_declaration(shared_ptr<class_decl> declaration)
 {
@@ -1121,7 +1481,11 @@ class_decl::set_earlier_declaration(shared_ptr<class_decl> declaration)
     declaration_ = declaration;
 }
 
-
+/// Set the earlier declaration of this class definition.
+///
+/// @param declaration the earlier declaration to set.  Note that it's
+/// set only if it's a pure declaration.  It's dynamic type must be
+/// pointer to class_decl.
 void
 class_decl::set_earlier_declaration(shared_ptr<type_base> declaration)
 {
@@ -1129,6 +1493,9 @@ class_decl::set_earlier_declaration(shared_ptr<type_base> declaration)
   set_earlier_declaration(d);
 }
 
+/// Add a member type to the current instance of class_decl
+///
+/// @param t the member type to add.
 void
 class_decl::add_member_type(shared_ptr<member_type>t)
 {
@@ -1142,7 +1509,18 @@ class_decl::add_member_type(shared_ptr<member_type>t)
   member_types_.push_back(t);
 }
 
-
+/// Constructor for base_spec instances.
+///
+/// @param base the base class to consider
+///
+/// @param a the access specifier of the base class.
+///
+/// @param offset_in_bits if positive or null, represents the offset
+/// of the base in the layout of its containing type..  If negative,
+/// means that the current base is not laid out in its containing type.
+///
+/// @param is_virtual if true, means that the current base class is
+/// virtual in it's containing type.
 class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 				 access_specifier a,
 				 long offset_in_bits,
@@ -1151,9 +1529,25 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
     base_class_(base),
     offset_in_bits_(offset_in_bits),
     is_virtual_(is_virtual)
-{ }
+{}
 
-
+/// Constructor for base_spec instances.
+///
+/// Note that this constructor is for clients that don't support RTTI
+/// and that have a base class of type_base, but of dynamic type
+/// class_decl.
+///
+/// @param base the base class to consider.  Must be a pointer to an
+/// instance of class_decl
+///
+/// @param a the access specifier of the base class.
+///
+/// @param offset_in_bits if positive or null, represents the offset
+/// of the base in the layout of its containing type..  If negative,
+/// means that the current base is not laid out in its containing type.
+///
+/// @param is_virtual if true, means that the current base class is
+/// virtual in it's containing type.
 class_decl::base_spec::base_spec(shared_ptr<type_base> base,
 				 access_specifier a,
 				 long offset_in_bits,
@@ -1162,9 +1556,12 @@ class_decl::base_spec::base_spec(shared_ptr<type_base> base,
     base_class_(dynamic_pointer_cast<class_decl>(base)),
     offset_in_bits_(offset_in_bits),
     is_virtual_(is_virtual)
-{ }
+{}
 
 
+/// Add a data member to the current instance of class_decl.
+///
+/// @param m the data member to add.
 void
 class_decl::add_data_member(shared_ptr<data_member> m)
 {
@@ -1179,7 +1576,34 @@ class_decl::add_data_member(shared_ptr<data_member> m)
 }
 
 
-class_decl::method_decl::method_decl(const std::string&			name,
+/// A constructor for instances of class_decl::method_decl.
+///
+/// @param name the name of the method.
+///
+/// @param parms the parameters of the method
+///
+/// @param return_type the return type of the method.
+///
+/// @param class_type the type of the class the method belongs to.
+///
+/// @param ftype_size_in_bits the size of instances of
+/// class_decl::method_decl, expressed in bits.
+///
+/// @param ftype_align_in_bits the alignment of instance of
+/// class_decl::method_decl, expressed in bits.
+///
+/// @param declared_inline whether the method was declared inline or
+/// not.
+///
+/// @param locus the source location of the method.
+///
+/// @param mangled_name the mangled name of the method.
+///
+/// @param vis the visibility of the method.
+///
+/// @param bind the binding of the method.
+class_decl::method_decl::method_decl
+(const std::string& name,
  const std::vector<shared_ptr<parameter> >& parms,
  shared_ptr<type_base>		return_type,
  shared_ptr<class_decl>		class_type,
@@ -1200,7 +1624,22 @@ class_decl::method_decl::method_decl(const std::string&			name,
 {
 }
 
-
+/// A constructor for instances of class_decl::method_decl.
+///
+/// @param name the name of the method.
+///
+/// @param type the type of the method.
+///
+/// @param declared_inline whether the method was
+/// declared inline or not.
+///
+/// @param locus the source location of the method.
+///
+/// @param mangled_name the mangled name of the method.
+///
+/// @param vis the visibility of the method.
+///
+/// @param bind the binding of the method.
 class_decl::method_decl::method_decl
 (const std::string&			name,
  shared_ptr<method_type>		type,
@@ -1213,9 +1652,25 @@ class_decl::method_decl::method_decl
     function_decl(name, static_pointer_cast<function_type>(type),
 		  declared_inline, locus,
 		  mangled_name, vis, bind)
-{ }
+{}
 
-
+/// A constructor for instances of class_decl::method_decl.
+///
+/// @param name the name of the method.
+///
+/// @param type the type of the method.  Must be an instance of
+/// method_type.
+///
+/// @param declared_inline whether the method was
+/// declared inline or not.
+///
+/// @param locus the source location of the method.
+///
+/// @param mangled_name the mangled name of the method.
+///
+/// @param vis the visibility of the method.
+///
+/// @param bind the binding of the method.
 class_decl::method_decl::method_decl(const std::string&	name,
 				     shared_ptr<function_type>	type,
 				     bool			declared_inline,
@@ -1227,8 +1682,25 @@ class_decl::method_decl::method_decl(const std::string&	name,
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, mangled_name, vis, bind)
-{ }
+{}
 
+/// A constructor for instances of class_decl::method_decl.
+///
+/// @param name the name of the method.
+///
+/// @param type the type of the method.  Must be an instance of
+/// method_type.
+///
+/// @param declared_inline whether the method was
+/// declared inline or not.
+///
+/// @param locus the source location of the method.
+///
+/// @param mangled_name the mangled name of the method.
+///
+/// @param vis the visibility of the method.
+///
+/// @param bind the binding of the method.
 class_decl::method_decl::method_decl(const std::string&	name,
 				     shared_ptr<type_base>	type,
 				     bool			declared_inline,
@@ -1240,10 +1712,10 @@ class_decl::method_decl::method_decl(const std::string&	name,
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, mangled_name, vis, bind)
-{ }
+{}
 
 class_decl::method_decl::~method_decl()
-{ }
+{}
 
 const shared_ptr<method_type>
 class_decl::method_decl::get_type() const
@@ -1251,7 +1723,25 @@ class_decl::method_decl::get_type() const
   return dynamic_pointer_cast<method_type>(type_);
 }
 
-
+  /// Constructor for instances of class_decl::member_function.
+  ///
+  /// @param fn the function decl to be used as a member function.
+  /// This must be an intance of class_decl::method_decl.
+  ///
+  /// @param access the access specifier for the member function.
+  ///
+  /// @param vtable_offset_in_bits the offset of the this member
+  /// function in the vtable, or zero.
+  ///
+  /// @param is_static set to true if this member function is static.
+  ///
+  /// @param is_constructor set to true if this member function is a
+  /// constructor.
+  ///
+  /// @param is_destructor set to true if this member function is a
+  /// destructor.
+  ///
+  /// @param is_const set to true if this member function is const.
 class_decl::member_function::member_function
 (shared_ptr<function_decl>	fn,
  access_specifier		access,
@@ -1274,14 +1764,21 @@ class_decl::member_function::member_function
   is_constructor_(is_constructor),
   is_destructor_(is_destructor),
   is_const_(is_const)
-{ }
+{}
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
 void
 class_decl::member_function::traverse(ir_node_visitor& v)
 {
   v.visit(*this);
 }
 
+/// Add a member function to the current instance of class_decl.
+///
+/// @param m the member function to add.
 void
 class_decl::add_member_function(shared_ptr<member_function> m)
 {
@@ -1295,6 +1792,9 @@ class_decl::add_member_function(shared_ptr<member_function> m)
   member_functions_.push_back(m);
 }
 
+/// Append a member function template to the class.
+///
+/// @param m the member function template to append.
 void
 class_decl::add_member_function_template
 (shared_ptr<member_function_template> m)
@@ -1309,6 +1809,9 @@ class_decl::add_member_function_template
   member_function_templates_.push_back(m);
 }
 
+/// Append a member class template to the class.
+///
+/// @param m the member function template to append.
 void
 class_decl::add_member_class_template(shared_ptr<member_class_template> m)
 {
@@ -1322,6 +1825,7 @@ class_decl::add_member_class_template(shared_ptr<member_class_template> m)
   member_class_templates_.push_back(m);
 }
 
+/// Return true iff the class has no entity in its scope.
 bool
 class_decl::has_no_base_nor_member() const
 {
@@ -1430,6 +1934,11 @@ operator==(class_decl_sptr l, class_decl_sptr r)
   return *l == *r;
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance and on its
+/// members.
 void
 class_decl::traverse(ir_node_visitor& v)
 {
@@ -1521,9 +2030,7 @@ operator==(class_decl::data_member_sptr l, class_decl::data_member_sptr r)
 
 void
 class_decl::data_member::traverse(ir_node_visitor& v)
-{
-  v.visit(*this);
-}
+{v.visit(*this);}
 
 class_decl::data_member::~data_member()
 {}
@@ -1567,6 +2074,11 @@ operator==(class_decl::member_function_template_sptr l,
   return *l == *r;
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance and on its
+/// underlying function template.
 void
 class_decl::member_function_template::traverse(ir_node_visitor& v)
 {
@@ -1599,6 +2111,11 @@ operator==(class_decl::member_class_template_sptr l,
   return *l == *r;
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance and on the class
+/// pattern of the template.
 void
 class_decl::member_class_template::traverse(ir_node_visitor& v)
 {
@@ -1648,7 +2165,7 @@ template_parameter::operator==(const template_parameter& o) const
 }
 
 template_parameter::~template_parameter()
-{ }
+{}
 
 bool
 type_tparameter::operator==(const type_tparameter& o) const
@@ -1657,7 +2174,7 @@ type_tparameter::operator==(const type_tparameter& o) const
 }
 
 type_tparameter::~type_tparameter()
-{ }
+{}
 
 bool
 non_type_tparameter::operator==
@@ -1668,7 +2185,7 @@ non_type_tparameter::operator==
 }
 
 non_type_tparameter::~non_type_tparameter()
-{ }
+{}
 
 bool
 template_tparameter::operator==
@@ -1679,15 +2196,15 @@ template_tparameter::operator==
 }
 
 template_tparameter::~template_tparameter()
-{ }
+{}
 
 type_composition::type_composition(unsigned index, shared_ptr<type_base> t)
 : decl_base("", location()), template_parameter(index),
   type_(std::tr1::dynamic_pointer_cast<type_base>(t))
-{ }
+{}
 
 type_composition::~type_composition()
-{ }
+{}
 
 //</template_parameter>
 
@@ -1707,6 +2224,11 @@ function_tdecl::operator==(const function_tdecl& o) const
   return true;
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance and on the
+/// function pattern of the template.
 void
 function_tdecl::traverse(ir_node_visitor&v)
 {
@@ -1715,16 +2237,28 @@ function_tdecl::traverse(ir_node_visitor&v)
 }
 
 function_tdecl::~function_tdecl()
-{ }
+{}
+
 // </function_template>
 
 // <class template>
+
+/// Constructor for the class_tdecl type.
+///
+/// @param pattern The details of the class template. This must NOT be a
+/// null pointer.  If you really this to be null, please use the
+/// constructor above instead.
+///
+/// @param locus the source location of the declaration of the type.
+///
+/// @param vis the visibility of the instances of class instantiated
+/// from this template.
 class_tdecl::class_tdecl(shared_ptr<class_decl> pattern,
-					 location locus, visibility vis)
+			 location locus, visibility vis)
 : decl_base(pattern->get_name(), locus,
 	    pattern->get_name(), vis),
   scope_decl(pattern->get_name(), locus)
-{ set_pattern(pattern);}
+{set_pattern(pattern);}
 
 void
 class_tdecl::set_pattern(shared_ptr<class_decl> p)
@@ -1745,6 +2279,11 @@ class_tdecl::operator==(const class_tdecl& o) const
   return (*get_pattern() == *o.get_pattern());
 }
 
+/// This implements the traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance and on the class
+/// pattern of the template.
 void
 class_tdecl::traverse(ir_node_visitor&v)
 {
@@ -1756,75 +2295,75 @@ class_tdecl::traverse(ir_node_visitor&v)
 }
 
 class_tdecl::~class_tdecl()
-{ }
+{}
 
 void
 ir_node_visitor::visit(scope_decl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(type_decl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(namespace_decl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(qualified_type_def&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(pointer_type_def&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(reference_type_def&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(enum_type_decl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(typedef_decl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(var_decl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(function_decl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(function_tdecl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(class_tdecl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(class_decl&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(class_decl::data_member&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(class_decl::member_function&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(class_decl::member_function_template&)
-{ }
+{}
 
 void
 ir_node_visitor::visit(class_decl::member_class_template&)
-{ }
+{}
 
 // </class template>
 }//end namespace abigail

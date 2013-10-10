@@ -610,7 +610,7 @@ write_translation_unit(const translation_unit& tu,
   else
     o << ">";
 
-  typedef scope_decl::declarations 		declarations;
+  typedef scope_decl::declarations		declarations;
   typedef typename declarations::const_iterator const_iterator;
   const declarations& d = tu.get_global_scope()->get_member_decls();
 
@@ -640,7 +640,7 @@ write_translation_unit(const translation_unit& tu,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_type_decl(const shared_ptr<type_decl> d, write_context& ctxt, 
+write_type_decl(const shared_ptr<type_decl> d, write_context& ctxt,
 		unsigned indent)
 {
   if (!d)
@@ -686,7 +686,7 @@ write_namespace_decl(const shared_ptr<namespace_decl> decl,
 
   o << "<namespace-decl name='" << decl->get_name() << "'>";
 
-  typedef scope_decl::declarations 		declarations;
+  typedef scope_decl::declarations		declarations;
   typedef typename declarations::const_iterator const_iterator;
   const declarations& d = decl->get_member_decls();
 
@@ -1193,7 +1193,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 /// @param indent the initial indentation to use.
 ///
 /// @return true upon successful completion, false otherwise.
-static bool 
+static bool
 write_type_tparameter(const shared_ptr<type_tparameter>	decl,
 			      write_context&  ctxt, unsigned indent)
 {
