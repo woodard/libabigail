@@ -1534,4 +1534,24 @@ translation_unit::write(const string& path) const
   return result;
 }
 
+// Debugging routines.
+
+/// Serialize a pointer to decl_base to stderr.
+void
+dump(const decl_base_sptr d)
+{
+  writer::write_context ctxt(cerr);
+  write_decl(d, ctxt, /*indent=*/0);
+  cerr << "\n";
+}
+
+/// Serialize an instance of translation_unit to stderr.
+void
+dump(const translation_unit& t)
+{
+  writer::write_context ctxt(cerr);
+  write_translation_unit(t, ctxt, /*indent=*/0);
+  cerr << "\n";
+}
+
 } //end namespace abigail
