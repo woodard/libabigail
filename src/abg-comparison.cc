@@ -22,7 +22,7 @@
 
 /// @file
 
-#include <tr1/unordered_map>
+
 #include "abg-comparison.h"
 
 namespace abigail
@@ -34,6 +34,253 @@ namespace comparison
 // Inject types from outside in here.
 using std::vector;
 using std::tr1::dynamic_pointer_cast;
+
+//<class_decl_diff stuff>
+struct class_decl_diff::priv
+{
+  edit_script base_changes_;
+  edit_script member_types_changes_;
+  edit_script data_members_changes_;
+  edit_script member_fns_changes_;
+  edit_script member_fn_tmpls_changes_;
+  edit_script member_class_tmpls_changes_;
+};//end struct class_decl_diff::priv
+
+/// Constructor of class_decl_diff
+///
+/// @param scope the scope of the class_diff.
+class_decl_diff::class_decl_diff(shared_ptr<class_decl> first_scope,
+				 shared_ptr<class_decl> second_scope)
+  : diff(first_scope, second_scope),
+    priv_(new priv)
+{}
+
+unsigned
+class_decl_diff::length() const
+{
+  return (base_changes().length()
+	  + member_types_changes()
+	  + data_members_changes()
+	  + member_fns_changes()
+	  + member_fn_tmpls_changes()
+	  + member_class_tmpls_changes());
+}
+
+/// @return the first class invoveld in the diff.
+shared_ptr<class_decl>
+class_decl_diff::first_class_decl() const
+{return dynamic_pointer_cast<class_decl>(first_scope());}
+
+/// Getter of the second class involved in the diff.
+///
+/// @return the second class invoveld in the diff
+shared_ptr<class_decl>
+class_decl_diff::second_class_decl() const
+{return dynamic_pointer_cast<class_decl>(second_scope());}
+
+/// @return the edit script of the bases of the two classes.
+const edit_script&
+class_decl_diff::base_changes() const
+{return priv_->base_changes_;}
+
+/// @return the edit script of the bases of the two classes.
+edit_script&
+class_decl_diff::base_changes()
+{return priv_->base_changes_;}
+
+/// @return the edit script of the member types of the two classes.
+const edit_script&
+class_decl_diff::member_types_changes() const
+{return priv_->member_types_changes_;}
+
+/// @return the edit script of the member types of the two classes.
+edit_script&
+class_decl_diff::member_types_changes()
+{return priv_->member_types_changes_;}
+
+/// @return the edit script of the data members of the two classes.
+const edit_script&
+class_decl_diff::data_members_changes() const
+{return priv_->data_members_changes_;}
+
+/// @return the edit script of the data members of the two classes.
+edit_script&
+class_decl_diff::data_members_changes()
+{return priv_->data_members_changes_;}
+
+/// @return the edit script of the member functions of the two
+/// classes.
+const edit_script&
+class_decl_diff::member_fns_changes() const
+{return priv_->member_fns_changes_;}
+
+/// @return the edit script of the member functions of the two
+/// classes.
+edit_script&
+class_decl_diff::member_fns_changes()
+{return priv_->member_fns_changes_;}
+
+///@return the edit script of the member function templates of the two
+///classes.
+const edit_script&
+class_decl_diff::member_fn_tmpls_changes() const
+{return priv_->member_fn_tmpls_changes_;}
+
+/// @return the edit script of the member function templates of the
+/// two classes.
+edit_script&
+class_decl_diff::member_fn_tmpls_changes()
+{return priv_->member_fn_tmpls_changes_;}
+
+/// @return the edit script of the member class templates of the two
+/// classes.
+const edit_script&
+class_decl_diff::member_class_tmpls_changes() const
+{return priv_->member_class_tmpls_changes_;}
+
+/// @return the edit script of the member class templates of the two
+/// classes.
+edit_script&
+class_decl_diff::member_class_tmpls_changes()
+{return priv_->member_class_tmpls_changes_;}
+
+/// Compute the set of changes between two instances of class_decl.
+///
+/// @param first the first class_decl to consider.
+///
+/// @param second the second class_decl to consider.
+///
+/// @param changes the resulting changes.
+void
+compute_diff(const class_decl&	first,
+	     const class_decl&	second,
+	     class_decl_diff&	changes)
+{
+  assert(changes.first_scope() && changes.second_scope());
+
+  // Compare base specs
+  compute_diff(first.get_base_specifiers().begin(),
+	       first.get_base_specifiers().end(),
+	       second.get_base_specifiers().begin(),
+	       second.get_base_specifiers().end(),
+	       changes.base_changes());
+
+  // Compare member types
+  compute_diff(first.get_member_types().begin(),
+	       first.get_member_types().end(),
+	       second.get_member_types().begin(),
+	       second.get_member_types().end(),
+	       changes.member_types_changes());
+
+  // Compare data member
+  compute_diff(first.get_data_members().begin(),
+	       first.get_data_members().end(),
+	       second.get_data_members().begin(),
+	       second.get_data_members().end(),
+	       changes.data_members_changes());
+
+  // Compare member functions
+  compute_diff(first.get_member_functions().begin(),
+	       first.get_member_functions().end(),
+	       second.get_member_functions().begin(),
+	       second.get_member_functions().end(),
+	       changes.member_fns_changes());
+
+  // Compare member function templates
+  compute_diff(first.get_member_function_templates().begin(),
+	       first.get_member_function_templates().end(),
+	       second.get_member_function_templates().begin(),
+	       second.get_member_function_templates().end(),
+	       changes.member_fn_tmpls_changes());
+
+  // Compare member class templates
+  compute_diff(first.get_member_class_templates().begin(),
+	       first.get_member_class_templates().end(),
+	       second.get_member_class_templates().begin(),
+	       second.get_member_class_templates().end(),
+	       changes.member_class_tmpls_changes());
+}
+
+/// Produce a basic report about the changes on class_decl.
+///
+/// @param changes the changes to report against.
+///
+/// @param the output stream to report the changes to.
+void
+report_changes(class_decl_diff &changes,
+	       ostream& out)
+{
+  string name;
+  changes.first_scope()->get_qualified_name(name);
+
+  int changes_length = changes.length();
+  if (changes_length == 0)
+    {
+      out << "the two versions of type " << name << "are identical\n";
+      return;
+    }
+
+  // Now report the changes about the differents parts of the type.
+
+  // First the bases.
+  if (!changes.base_changes().is_empty())
+    {
+      edit_script& e = changes.base_changes();
+
+      // Report deletions.
+      int num_deletions = e.num_deletions();
+      if (num_deletions == 0)
+	out << "No base class deletion\n";
+      else if (num_deletions == 1)
+	out << "1 base class deletion:\n\t";
+      else
+	out << num_deletions << " base class deletions:\n\t";
+
+      class_decl_sptr first_class = changes.first_class_decl();
+      for (vector<deletion>::const_iterator i = e.deletions().begin();
+	   i != e.deletions().end();
+	   ++i)
+	{
+	  shared_ptr<class_decl> base_class =
+	    first_class->get_base_specifiers()[i->index()]->get_base_class();
+
+	  if (i != e.deletions().begin())
+	    out << ", ";
+	  out << base_class->get_qualified_name();
+	}
+
+      //Report insertions.
+      int num_insertions = e.num_insertions();
+      if (num_insertions == 0)
+	out << "no base class insertion\n";
+      else if (num_insertions == 1)
+	out << "1 base class insertion:\n\t";
+      else
+	out << num_insertions << " base class insertions:\n\t";
+
+      class_decl_sptr second_class = changes.second_class_decl();
+      for (vector<insertion>::const_iterator i = e.insertions().begin();
+	   i != e.insertions().end();
+	   ++i)
+	{
+	  shared_ptr<class_decl> base_class;
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
+	       j != i->inserted_indexes().end();
+	       ++j)
+	    {
+	      base_class =
+		second_class->get_base_specifiers()[*j] ->get_base_class();
+
+	      if (i != e.insertions().begin()
+		  || j != i->inserted_indexes().begin())
+		out << ", ";
+	      out << base_class->get_qualified_name();
+	    }
+	}
+    }
+}
+//</class_decl_diff stuff>
 
 //<scope_diff stuff>
 struct scope_diff::priv
@@ -66,8 +313,8 @@ struct scope_diff::priv
   //
   // A changed type/decl is one that has been deleted from the first
   // scope and that has been inserted into the second scope.
-  unordered_map<string, changed_type_or_decl> changed_types_;
-  unordered_map<string, changed_type_or_decl> changed_decls_;
+  string_changed_type_or_decl_map changed_types_;
+  string_changed_type_or_decl_map changed_decls_;
 
   // The removed types/decls lookup tables.
   //
@@ -200,7 +447,7 @@ scope_diff::ensure_lookup_tables_populated()
       string_decl_base_sptr_map::const_iterator r =
 	priv_->inserted_decls_.find(i->first);
       if (r != priv_->inserted_decls_.end())
-	priv_->changed_types_[i->first] = std::make_pair(i->second, r->second);
+	priv_->changed_decls_[i->first] = std::make_pair(i->second, r->second);
     }
 
   // Populate removed types/decls lookup tables
@@ -355,13 +602,13 @@ scope_diff::inserted_member_at(vector<unsigned>::const_iterator i)
 
 /// @return a map containing the types which content has changed from
 /// the first scope to the other.
-const unordered_map<string, scope_diff::changed_type_or_decl>&
+const string_changed_type_or_decl_map&
 scope_diff::changed_types() const
 {return priv_->changed_types_;}
 
 /// @return a map containing the decls which content has changed from
 /// the first scope to the other.
-const unordered_map<string, scope_diff::changed_type_or_decl>&
+const string_changed_type_or_decl_map&
 scope_diff::changed_decls() const
 {return priv_->changed_decls_;}
 
@@ -375,251 +622,102 @@ scope_diff::changed_decls() const
 /// @param d an out parameter that is populated with the result of the
 /// computed diff.
 void
-compute_diff(scope_decl_sptr first,
-	     scope_decl_sptr second,
-	     scope_diff& d)
+compute_diff(const scope_decl&	first,
+	     const scope_decl&	second,
+	     scope_diff&	d)
 {
-  assert(first && second);
-
-  compute_diff(first->get_member_decls().begin(),
-	       first->get_member_decls().end(),
-	       second->get_member_decls().begin(),
-	       second->get_member_decls().end(),
+  compute_diff(first.get_member_decls().begin(),
+	       first.get_member_decls().end(),
+	       second.get_member_decls().begin(),
+	       second.get_member_decls().end(),
 	       d.member_changes());
 
   d.ensure_lookup_tables_populated();
 }
 
-//</scope_diff stuff>
-
-
-//<class_decl_diff stuff>
-struct class_decl_diff::priv
-{
-  edit_script base_changes_;
-  edit_script member_types_changes_;
-  edit_script data_members_changes_;
-  edit_script member_fns_changes_;
-  edit_script member_fn_tmpls_changes_;
-  edit_script member_class_tmpls_changes_;
-};//end struct class_decl_diff::priv
-
-/// Constructor of class_decl_diff
+/// Report the changes of one scope against another.
 ///
-/// @param scope the scope of the class_diff.
-class_decl_diff::class_decl_diff(shared_ptr<class_decl> first_scope,
-				 shared_ptr<class_decl> second_scope)
-  : diff(first_scope, second_scope),
-    priv_(new priv)
-{}
-
-unsigned
-class_decl_diff::length() const
-{
-  return (base_changes().length()
-	  + member_types_changes()
-	  + data_members_changes()
-	  + member_fns_changes()
-	  + member_fn_tmpls_changes()
-	  + member_class_tmpls_changes());
-}
-
-shared_ptr<class_decl>
-class_decl_diff::first_class_decl() const
-{return dynamic_pointer_cast<class_decl>(first_scope());}
-
-
-shared_ptr<class_decl>
-class_decl_diff::second_class_decl() const
-{return dynamic_pointer_cast<class_decl>(second_scope());}
-
-const edit_script&
-class_decl_diff::base_changes() const
-{return priv_->base_changes_;}
-
-edit_script&
-class_decl_diff::base_changes()
-{return priv_->base_changes_;}
-
-const edit_script&
-class_decl_diff::member_types_changes() const
-{return priv_->member_types_changes_;}
-
-edit_script&
-class_decl_diff::member_types_changes()
-{return priv_->member_types_changes_;}
-
-const edit_script&
-class_decl_diff::data_members_changes() const
-{return priv_->data_members_changes_;}
-
-edit_script&
-class_decl_diff::data_members_changes()
-{return priv_->data_members_changes_;}
-
-const edit_script&
-class_decl_diff::member_fns_changes() const
-{return priv_->member_fns_changes_;}
-
-edit_script&
-class_decl_diff::member_fns_changes()
-{return priv_->member_fns_changes_;}
-
-const edit_script&
-class_decl_diff::member_fn_tmpls_changes() const
-{return priv_->member_fn_tmpls_changes_;}
-
-edit_script&
-class_decl_diff::member_fn_tmpls_changes()
-{return priv_->member_fn_tmpls_changes_;}
-
-const edit_script&
-class_decl_diff::member_class_tmpls_changes() const
-{return priv_->member_class_tmpls_changes_;}
-
-edit_script&
-class_decl_diff::member_class_tmpls_changes()
-{return priv_->member_class_tmpls_changes_;}
-
-/// Compute the set of changes between two instances of class_decl.
+/// @param changes the changes to report about.
 ///
-/// @param first the first class_decl to consider.
-///
-/// @param second the second class_decl to consider.
-///
-/// @param changes the resulting changes.
+/// @param out the out stream to report the changes to.
 void
-compute_diff(class_decl_sptr	 first,
-	     class_decl_sptr	 second,
-	     class_decl_diff	&changes)
-{
-  assert(first && second
-	 && changes.first_scope()
-	 && changes.second_scope());
-
-  // Compare base specs
-  compute_diff(first->get_base_specifiers().begin(),
-	       first->get_base_specifiers().end(),
-	       second->get_base_specifiers().begin(),
-	       second->get_base_specifiers().end(),
-	       changes.base_changes());
-
-  // Compare member types
-  compute_diff(first->get_member_types().begin(),
-	       first->get_member_types().end(),
-	       second->get_member_types().begin(),
-	       second->get_member_types().end(),
-	       changes.member_types_changes());
-
-  // Compare data member
-  compute_diff(first->get_data_members().begin(),
-	       first->get_data_members().end(),
-	       second->get_data_members().begin(),
-	       second->get_data_members().end(),
-	       changes.data_members_changes());
-
-  // Compare member functions
-  compute_diff(first->get_member_functions().begin(),
-	       first->get_member_functions().end(),
-	       second->get_member_functions().begin(),
-	       second->get_member_functions().end(),
-	       changes.member_fns_changes());
-
-  // Compare member function templates
-  compute_diff(first->get_member_function_templates().begin(),
-	       first->get_member_function_templates().end(),
-	       second->get_member_function_templates().begin(),
-	       second->get_member_function_templates().end(),
-	       changes.member_fn_tmpls_changes());
-
-  // Compare member class templates
-  compute_diff(first->get_member_class_templates().begin(),
-	       first->get_member_class_templates().end(),
-	       second->get_member_class_templates().begin(),
-	       second->get_member_class_templates().end(),
-	       changes.member_class_tmpls_changes());
-}
-
-/// Produce a basic report about the changes on class_decl.
-///
-/// @param changes the changes to report against.
-///
-/// @param the output stream to report the changes to.
-void
-report_changes(class_decl_diff &changes,
+report_changes(const scope_diff& changes,
 	       ostream& out)
 {
-  string name;
-  changes.first_scope()->get_qualified_name(name);
+  // Report changed types.
+  unsigned num_changed_types = changes.changed_types().size();
+  if (num_changed_types == 0)
+    out << "no changed types\n";
+  else if (num_changed_types == 1)
+    out << "1 changed type:\n\t";
+  else
+    out << num_changed_types << " changed types:\n\t";
 
-  int changes_length = changes.length();
-  if (changes_length == 0)
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 changes.changed_types().begin();
+       i != changes.changed_types().end();
+       ++i)
     {
-      out << "the two versions of type " << name << "are identical\n";
-      return;
+      if (i != changes.changed_types().begin())
+	out << ", ";
+      out << i->second.first->get_qualified_name();
     }
+  out << "\n";
 
-  // Now report the changes about the differents parts of the type.
+  // Report changed decls
+  unsigned num_changed_decls = changes.changed_decls().size();
+  if (num_changed_decls == 0)
+    out << "no changed declaration\n";
+  else if (num_changed_decls == 1)
+    out << "1 changed declaration\n\t";
+  else
+    out << num_changed_decls << " changed declarations:\n\t";
 
-  // First the bases.
-  if (!changes.base_changes().is_empty())
+  for (string_changed_type_or_decl_map::const_iterator i=
+	 changes.changed_decls().begin();
+       i != changes.changed_decls().end ();
+       ++i)
     {
-      edit_script& e = changes.base_changes();
-
-      // Report deletions.
-      int num_deletions = e.num_deletions();
-      if (num_deletions == 0)
-	out << "No base class deletion\n";
-      else if (num_deletions == 1)
-	out << "1 base class deletion:\n\t";
-      else
-	out << num_deletions << " base class deletions:\n\t";
-
-      class_decl_sptr first_class = changes.first_class_decl();
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
-	   ++i)
-	{
-	  shared_ptr<class_decl> base_class =
-	    first_class->get_base_specifiers()[i->index()]->get_base_class();
-
-	  if (i != e.deletions().begin())
-	    out << ", ";
-	  out << base_class->get_qualified_name();
-	}
-
-      //Report insertions.
-      int num_insertions = e.num_insertions();
-      if (num_insertions == 0)
-	out << "no base class insertion\n";
-      else if (num_insertions == 1)
-	out << "1 base class insertion:\n\t";
-      else
-	out << num_insertions << " base class insertions:\n\t";
-
-      class_decl_sptr second_class = changes.second_class_decl();
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
-	   ++i)
-	{
-	  shared_ptr<class_decl> base_class;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
-	    {
-	      base_class =
-		second_class->get_base_specifiers()[*j] ->get_base_class();
-
-	      if (i != e.insertions().begin()
-		  || j != i->inserted_indexes().begin())
-		out << ", ";
-	      out << base_class->get_qualified_name();
-	    }
-	}
+      if (i != changes.changed_decls().begin())
+	out << ", ";
+      out << i->second.first->get_qualified_name();
     }
+  out << "\n";
 }
-//</class_decl_diff stuff>
 
+//</scope_diff stuff>
+
+// <translation_unit_diff stuff>
+
+translation_unit_diff::translation_unit_diff(translation_unit_sptr first,
+					     translation_unit_sptr second)
+  : scope_diff(first->get_global_scope(), second->get_global_scope())
+{
+}
+
+/// Compute the diff between two translation_units.
+///
+/// @param first the first translation_unit to consider.
+///
+/// @param second the second translation_unit to consider.
+void
+compute_diff(const translation_unit&	first,
+	     const translation_unit&	second,
+	     translation_unit_diff&	changes)
+{
+  // TODO: handle first or second having empty contents.
+  compute_diff(*first.get_global_scope(),
+	       *second.get_global_scope(),
+	       changes);
+}
+
+void
+report_changes(const translation_unit_diff&	changes,
+	       ostream&			out)
+{
+  report_changes(static_cast<scope_diff>(changes), out);
+}
+
+// </translation_unit_diff stuff>
 }// end namespace comparison
 } // end namespace abigail

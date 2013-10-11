@@ -21,6 +21,7 @@
 ///@file
 
 #include <string>
+#include <ostream>
 
 namespace abigail
 {
@@ -28,6 +29,8 @@ namespace abigail
 namespace tools
 {
 
+bool file_exists(const std::string&);
+bool is_regular_file(const std::string&);
 bool is_dir(const std::string&);
 bool dirname(std::string const& path,
 	     std::string& dir_name);
@@ -35,6 +38,7 @@ bool base_name(std::string const& path,
 	       std::string& file_name);
 bool ensure_dir_path_created(const std::string&);
 bool ensure_parent_dir_created(const std::string&);
+bool check_file(const std::string& path, std::ostream& out);
 
 }// end namespace tools
 }//end namespace abigail

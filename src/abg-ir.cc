@@ -540,6 +540,15 @@ bool
 is_type(const shared_ptr<decl_base> decl)
 {return decl && dynamic_pointer_cast<type_base>(decl);}
 
+/// Tests wheter a declaration is a variable declaration.
+///
+/// @param decl the decl to test.
+///
+/// @return true iff decl is a variable declaration.
+bool
+is_var_decl(const shared_ptr<decl_base> decl)
+{return decl && dynamic_pointer_cast<var_decl>(decl);}
+
 /// Tests whether a decl is a template parameter composition type.
 ///
 /// @param decl the declaration to consider.

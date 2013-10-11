@@ -22,6 +22,7 @@
 
 /// @file
 
+#include <tr1/unordered_map>
 #include "abg-ir.h"
 #include "abg-diff-utils.h"
 
@@ -35,11 +36,14 @@ namespace comparison
 using std::ostream;
 using std::vector;
 using std::tr1::unordered_map;
+
 using diff_utils::insertion;
 using diff_utils::deletion;
 using diff_utils::edit_script;
 
 typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
+typedef std::pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
+typedef unordered_map<string, changed_type_or_decl> string_changed_type_or_decl_map;
 
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for a given scope.  It's the base class to represents
@@ -66,67 +70,6 @@ public:
   {return second_scope_;}
 
 };// end class diff
-
-/// An abstractions of the changes between two scopes.
-class scope_diff : public diff
-{
-  struct priv;
-  shared_ptr<priv> priv_;
-
-  bool
-  lookup_tables_empty() const;
-
-  void
-  clear_lookup_tables();
-
-  void
-  ensure_lookup_tables_populated();
-
-public:
-
-  typedef std::pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
-
-  friend void
-  compute_diff(scope_decl_sptr first,
-	       scope_decl_sptr second,
-	       scope_diff& d);
-
-  scope_diff(scope_decl_sptr first_scope,
-	     scope_decl_sptr second_scope);
-
-  const edit_script&
-  member_changes() const;
-
-  edit_script&
-  member_changes();
-
-  const decl_base_sptr
-  deleted_member_at(unsigned index) const;
-
-  const decl_base_sptr
-  deleted_member_at(vector<deletion>::const_iterator) const;
-
-  const decl_base_sptr
-  inserted_member_at(unsigned i);
-
-  const decl_base_sptr
-  inserted_member_at(vector<unsigned>::const_iterator i);
-
-  const unordered_map<string, changed_type_or_decl>&
-  changed_types() const;
-
-  const unordered_map<string, changed_type_or_decl>&
-  changed_decls() const;
-};// end class scope_diff
-
-void
-compute_diff(scope_decl_sptr first_scope,
-	     scope_decl_sptr second_scope,
-	     scope_diff& d);
-
-void
-report_changes(const scope_diff& changes,
-	       ostream& out);
 
 /// This type abstracts changes for a class_decl.
 class class_decl_diff : public diff
@@ -189,13 +132,89 @@ public:
 };// end class_decl_edit_script
 
 void
-compute_diff(class_decl_sptr	 first,
-	     class_decl_sptr	 second,
+compute_diff(const class_decl&	 first,
+	     const class_decl&	 second,
 	     class_decl_diff	&changes);
 
 void
 report_changes(class_decl_diff &changes,
 	       ostream& out);
+
+/// An abstractions of the changes between two scopes.
+class scope_diff : public diff
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+  bool
+  lookup_tables_empty() const;
+
+  void
+  clear_lookup_tables();
+
+  void
+  ensure_lookup_tables_populated();
+
+public:
+
+  friend void
+  compute_diff(const scope_decl&	first,
+	       const scope_decl&	second,
+	       scope_diff&		d);
+
+  scope_diff(scope_decl_sptr first_scope,
+	     scope_decl_sptr second_scope);
+
+  const edit_script&
+  member_changes() const;
+
+  edit_script&
+  member_changes();
+
+  const decl_base_sptr
+  deleted_member_at(unsigned index) const;
+
+  const decl_base_sptr
+  deleted_member_at(vector<deletion>::const_iterator) const;
+
+  const decl_base_sptr
+  inserted_member_at(unsigned i);
+
+  const decl_base_sptr
+  inserted_member_at(vector<unsigned>::const_iterator i);
+
+  const string_changed_type_or_decl_map&
+  changed_types() const;
+
+  const string_changed_type_or_decl_map&
+  changed_decls() const;
+};// end class scope_diff
+
+void
+compute_diff(const scope_decl&	first_scope,
+	     const scope_decl&	second_scope,
+	     scope_diff&	d);
+
+void
+report_changes(const scope_diff& changes,
+	       ostream& out);
+
+class translation_unit_diff : public scope_diff
+{
+public:
+  translation_unit_diff(translation_unit_sptr first,
+			translation_unit_sptr second);
+};//end clss translation_unit_diff
+
+void
+compute_diff(const translation_unit&	first,
+	     const translation_unit&	second,
+	     translation_unit_diff&	changes);
+
+void
+report_change(const translation_unit_diff&	changes,
+	      ostream&				out);
+
 }// end namespace comparison
 
 }// end namespace abigail

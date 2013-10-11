@@ -33,16 +33,53 @@ namespace abigail
 {
 namespace tools
 {
+
+using std::ostream;
+using std::string;
+
+#define DECLARE_STAT(st) \
+  struct stat st; \
+  memset(&st, 0, sizeof(st))
+
+static bool
+get_stat(const string& path,
+	 struct stat* s)
+{return (stat(path.c_str(), s) == 0);}
+
+/// Tests whether \a path exists;
+bool
+file_exists(const string& path)
+{
+  DECLARE_STAT(st);
+
+  return get_stat(path, &st);
+}
+
+/// Test if path is a path to a regular file.
+///
+/// @param path the path to consider.
+///
+/// @return true iff path is a regular path.
+bool
+is_regular_file(const string& path)
+{
+  DECLARE_STAT(st);
+
+  if (!get_stat(path, &st))
+    return false;
+
+  return !!S_ISREG(st.st_mode);
+}
+
 /// Tests whether #path is a directory.
 ///
 /// \return true iff #path is a directory.
 bool
 is_dir(const string& path)
 {
-  struct stat st;
-  memset(&st, 0, sizeof (st));
+  DECLARE_STAT(st);
 
-  if (stat(path.c_str(), &st) != 0)
+  if (!get_stat(path, &st))
     return false;
 
   return !!S_ISDIR(st.st_mode);
@@ -59,8 +96,8 @@ is_dir(const string& path)
 /// @return true upon successful completion, false otherwise (okay,
 /// for now it always return true, but that might change in the future).
 bool
-dir_name(std::string const& path,
-	std::string& dirnam)
+dir_name(string const& path,
+	 string& dirnam)
 {
   if (path.empty())
     {
@@ -148,6 +185,32 @@ ensure_parent_dir_created(const string& path)
     is_ok = ensure_dir_path_created(parent);
 
   return is_ok;
+}
+
+/// Check if a given path exists and is readable.
+///
+/// @param path the path to consider.
+///
+/// @param out the out stream to report errors to.
+///
+/// @return true iff path exists and is readable.
+bool
+check_file(const string& path,
+	   ostream& out)
+{
+  if (!file_exists(path))
+    {
+      out << "file " << path << " does not exist\n";
+      return false;
+    }
+
+  if (!is_regular_file(path))
+    {
+      out << path << " is not a regular file\n";
+      return false;
+    }
+
+  return true;
 }
 
 }//end namespace tools
