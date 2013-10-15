@@ -41,49 +41,137 @@ using diff_utils::insertion;
 using diff_utils::deletion;
 using diff_utils::edit_script;
 
+class diff;
+typedef shared_ptr<diff> diff_sptr;
 typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
 typedef std::pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
 typedef unordered_map<string, changed_type_or_decl> string_changed_type_or_decl_map;
 
 /// This type encapsulates an edit script (a set of insertions and
-/// deletions) for a given scope.  It's the base class to represents
-/// changes that appertain to a certain kind of construct.
+/// deletions) for two constructs that are to be diff'ed.  The two
+/// constructs are called the "subjects" of the diff.
 class diff
 {
-  scope_decl_sptr first_scope_;
-  scope_decl_sptr second_scope_;
+  decl_base_sptr first_subject_;
+  decl_base_sptr second_subject_;
 
 public:
 
-  diff(shared_ptr<scope_decl> first_scope,
-       shared_ptr<scope_decl> second_scope)
-    : first_scope_(first_scope),
-      second_scope_(second_scope)
+  diff(decl_base_sptr first_subject,
+       decl_base_sptr second_subject)
+    : first_subject_(first_subject),
+      second_subject_(second_subject)
   {}
 
-  shared_ptr<scope_decl>
-  first_scope() const
-  {return first_scope_;}
+  /// Getter of the first subject of the diff.
+  ///
+  /// @return the first subject of the diff.
+  decl_base_sptr
+  first_subject() const
+  {return first_subject_;}
 
-  shared_ptr<scope_decl>
-  second_scope() const
-  {return second_scope_;}
+  /// Getter of the second subject of the diff.
+  ///
+  /// @return the second subject of the diff.
+  decl_base_sptr
+  second_subject() const
+  {return second_subject_;}
 
+  /// Pure interface to get the length of the changes
+  /// encapsulated by this diff.  This is to be implemented by all
+  /// descendants of this class.
+  virtual unsigned
+  length() const = 0;
+
+  /// Pure interface to report the diff in a serialized form.
+  virtual void
+  report(ostream& out, const string& indent = "") const = 0;
 };// end class diff
 
+class pointer_diff;
+typedef shared_ptr<pointer_diff> pointer_diff_sptr;
+
+/// The abstraction of a diff between two pointers.
+class pointer_diff : public diff
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+public:
+  pointer_diff(pointer_type_def_sptr first,
+	       pointer_type_def_sptr second);
+  pointer_type_def_sptr
+  first_pointer() const;
+
+  pointer_type_def_sptr
+  second_pointer() const;
+
+  diff_sptr
+  underlying_type_diff() const;
+
+  void
+  underlying_type_diff(const diff_sptr);
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+};// end class pointer_diff
+
+pointer_diff_sptr
+compute_diff(pointer_type_def_sptr first,
+	     pointer_type_def_sptr second);
+
+class reference_diff;
+typedef shared_ptr<reference_diff> reference_diff_sptr;
+
+/// The abstraction of a diff between two references.
+class reference_diff : public diff
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+public:
+  reference_diff(const reference_type_def_sptr first,
+		 const reference_type_def_sptr second);
+
+  reference_type_def_sptr
+  first_reference() const;
+
+  reference_type_def_sptr
+  second_reference() const;
+
+  const diff_sptr&
+  underlying_type_diff() const;
+
+  diff_sptr&
+  underlying_type_diff(diff_sptr);
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+};// end class reference_diff
+
+reference_diff_sptr
+compute_diff(reference_type_def_sptr first,
+	     reference_type_def_sptr second);
+
+class class_diff;
+typedef shared_ptr<class_diff> class_diff_sptr;
+
 /// This type abstracts changes for a class_decl.
-class class_decl_diff : public diff
+class class_diff : public diff
 {
   struct priv;
   shared_ptr<priv> priv_;
 
 public:
 
-  class_decl_diff(class_decl_sptr first_scope,
-		  class_decl_sptr second_scope);
-
-  unsigned
-  length() const;
+  class_diff(class_decl_sptr first_subject,
+		  class_decl_sptr second_subject);
 
   //TODO: add change of the name of the type.
 
@@ -129,16 +217,19 @@ public:
   edit_script&
   member_class_tmpls_changes();
 
-};// end class_decl_edit_script
+  virtual unsigned
+  length() const;
 
-void
-compute_diff(const class_decl&	 first,
-	     const class_decl&	 second,
-	     class_decl_diff	&changes);
+  virtual void
+  report(ostream&, const string& indent = "") const;
+};// end class_diff
 
-void
-report_changes(class_decl_diff &changes,
-	       ostream& out);
+class_diff_sptr
+compute_diff(const class_decl_sptr first,
+	     const class_decl_sptr  second);
+
+class scope_diff;
+typedef shared_ptr<scope_diff> scope_diff_sptr;
 
 /// An abstractions of the changes between two scopes.
 class scope_diff : public diff
@@ -157,13 +248,17 @@ class scope_diff : public diff
 
 public:
 
-  friend void
-  compute_diff(const scope_decl&	first,
-	       const scope_decl&	second,
-	       scope_diff&		d);
+  friend scope_diff_sptr
+  compute_diff(const scope_decl_sptr, const scope_decl_sptr, scope_diff_sptr);
 
   scope_diff(scope_decl_sptr first_scope,
 	     scope_decl_sptr second_scope);
+
+  const scope_decl_sptr
+  first_scope() const;
+
+  const scope_decl_sptr
+  second_scope() const;
 
   const edit_script&
   member_changes() const;
@@ -188,32 +283,42 @@ public:
 
   const string_changed_type_or_decl_map&
   changed_decls() const;
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
 };// end class scope_diff
 
-void
-compute_diff(const scope_decl&	first_scope,
-	     const scope_decl&	second_scope,
-	     scope_diff&	d);
+scope_diff_sptr
+compute_diff(const scope_decl_sptr first_scope,
+	     const scope_decl_sptr second_scope,
+	     scope_diff_sptr d);
 
-void
-report_changes(const scope_diff& changes,
-	       ostream& out);
+scope_diff_sptr
+compute_diff(const scope_decl_sptr first_scope,
+	     const scope_decl_sptr second_scope);
+
+class translation_unit_diff;
+typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
 
 class translation_unit_diff : public scope_diff
 {
 public:
   translation_unit_diff(translation_unit_sptr first,
 			translation_unit_sptr second);
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream& out, const string& indent = "") const;
 };//end clss translation_unit_diff
 
-void
-compute_diff(const translation_unit&	first,
-	     const translation_unit&	second,
-	     translation_unit_diff&	changes);
-
-void
-report_change(const translation_unit_diff&	changes,
-	      ostream&				out);
+translation_unit_diff_sptr
+compute_diff(const translation_unit_sptr first,
+	     const translation_unit_sptr second);
 
 }// end namespace comparison
 

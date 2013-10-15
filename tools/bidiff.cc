@@ -34,9 +34,8 @@ using std::cout;
 using std::cerr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
-using abigail::comparison::translation_unit_diff;
+using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::compute_diff;
-using abigail::comparison::report_changes;
 using abigail::tools::check_file;
 
 struct options
@@ -123,9 +122,8 @@ main(int argc, char* argv[])
 	  return true;
 	}
 
-      translation_unit_diff changes(t1, t2);
-      compute_diff(*t1, *t2, changes);
-      report_changes(changes, cout);
+      translation_unit_diff_sptr changes = compute_diff(t1, t2);
+      changes->report(cout);
 
       return false;
     }

@@ -34,9 +34,254 @@ namespace comparison
 // Inject types from outside in here.
 using std::vector;
 using std::tr1::dynamic_pointer_cast;
+using std::tr1::static_pointer_cast;
 
-//<class_decl_diff stuff>
-struct class_decl_diff::priv
+/// Compute the difference between two types.
+///
+/// The function considers every possible types known to libabigail
+/// and runs the appropriate diff function on them.
+///
+/// @param first the first construct to consider for the diff
+///
+/// @param second the second construct to consider for the diff.
+///
+/// @return the resulting diff.  It's a pointer to a descendent of
+/// abigail::comparison::diff.
+static diff_sptr
+compute_diff_for_types(const decl_base_sptr first, decl_base_sptr second)
+{
+  if (class_decl_sptr f = dynamic_pointer_cast<class_decl>(first))
+    {
+      class_decl_sptr s = dynamic_pointer_cast<class_decl>(second);
+      class_diff_sptr d(new class_diff(f, s));
+      return compute_diff(f, s);
+    }
+  else if (pointer_type_def_sptr f =
+	   dynamic_pointer_cast<pointer_type_def>(first))
+    {
+      pointer_type_def_sptr s = dynamic_pointer_cast<pointer_type_def>(second);
+      return compute_diff(f, s);
+    }
+  else if (reference_type_def_sptr f =
+	   dynamic_pointer_cast<reference_type_def>(first))
+    {
+      reference_type_def_sptr s =
+	dynamic_pointer_cast<reference_type_def>(second);
+      return compute_diff(f, s);
+    }
+
+  return diff_sptr();
+}
+
+/// Compute the difference between two types.
+///
+/// The function considers every possible types known to libabigail
+/// and runs the appropriate diff function on them.
+///
+/// @param first the first construct to consider for the diff
+///
+/// @param second the second construct to consider for the diff.
+///
+/// @return the resulting diff.  It's a pointer to a descendent of
+/// abigail::comparison::diff.
+static diff_sptr
+compute_diff_for_types(const type_base_sptr first, type_base_sptr second)
+{
+  decl_base_sptr f = dynamic_pointer_cast<decl_base>(first);
+  decl_base_sptr s = dynamic_pointer_cast<decl_base>(second);
+  return compute_diff_for_types(f, s);
+}
+
+// <pointer_type_def stuff>
+struct pointer_diff::priv
+{
+  diff_sptr underlying_type_diff_;
+};//end struct pointer_diff::priv
+
+/// Constructor for a pointer_diff.
+///
+/// @param first the first pointer to consider for the diff.
+///
+/// @param second the secon pointer to consider for the diff.
+pointer_diff::pointer_diff(pointer_type_def_sptr first,
+			   pointer_type_def_sptr second)
+  : diff(first, second),
+    priv_(new priv)
+{}
+
+/// Getter for the first subject of a pointer diff
+///
+/// @return the first pointer considered in this pointer diff.
+pointer_type_def_sptr
+pointer_diff::first_pointer() const
+{return dynamic_pointer_cast<pointer_type_def>(first_subject());}
+
+/// Getter for the second subject of a pointer diff
+///
+/// @return the second pointer considered in this pointer diff.
+pointer_type_def_sptr
+pointer_diff::second_pointer() const
+{return dynamic_pointer_cast<pointer_type_def>(second_subject());}
+
+/// Getter for the length of this diff.
+///
+/// @return the length of this diff.
+unsigned
+pointer_diff::length() const
+{return underlying_type_diff()->length();}
+
+/// Getter for the diff between the pointed-to types of the pointers
+/// of this diff.
+///
+/// @return the diff between the pointed-to types.
+diff_sptr
+pointer_diff::underlying_type_diff() const
+{return priv_->underlying_type_diff_;}
+
+/// Setter for the diff between the pointed-to types of the pointers
+/// of this diff.
+///
+/// @param d the new diff between the pointed-to types of the pointers
+/// of this diff.
+void
+pointer_diff::underlying_type_diff(const diff_sptr d)
+{priv_->underlying_type_diff_ = d;}
+
+/// Report the diff in a serialized form.
+///
+/// @param out the stream to serialize the diff to.
+///
+/// @param the prefix to use for the indentation of this
+/// serialization.
+void
+pointer_diff::report(ostream& out, const string& indent) const
+{
+  if (length() == 0)
+    return;
+
+  if (diff_sptr d = underlying_type_diff())
+    {
+      out << indent << "differences in pointed to type:\n";
+      out << indent << "\t";
+      d->report(out, indent);
+      out << "\n";
+    }
+}
+
+/// Compute the diff between between two pointers.
+///
+/// @param first the pointer to consider for the diff.
+///
+/// @param second the pointer to consider for the diff.
+///
+/// @return the resulting diff between the two pointers.
+pointer_diff_sptr
+compute_diff(pointer_type_def_sptr first,
+	     pointer_type_def_sptr second)
+{
+  diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
+				       second->get_pointed_to_type());
+  pointer_diff_sptr result(new pointer_diff(first, second));
+  result->underlying_type_diff(d);
+  return result;
+}
+
+// </pointer_type_def>
+
+// <reference_type_def>
+struct reference_diff::priv
+{
+  diff_sptr underlying_type_diff_;
+};//end struct reference_diff::priv
+
+/// Constructor for reference_diff
+///
+/// @param first the first reference_type of the diff.
+///
+/// @param second the second reference_type of the diff.
+reference_diff::reference_diff(const reference_type_def_sptr first,
+			       const reference_type_def_sptr second)
+  : diff(first, second),
+    priv_(new priv)
+
+{}
+
+/// Getter for the first reference of the diff.
+///
+/// @return the first reference of the diff.
+reference_type_def_sptr
+reference_diff::first_reference() const
+{return dynamic_pointer_cast<reference_type_def>(first_subject());}
+
+
+/// Getter for the second reference of the diff.
+///
+/// @return for the second reference of the diff.
+reference_type_def_sptr
+reference_diff::second_reference() const
+{return dynamic_pointer_cast<reference_type_def>(second_subject());}
+
+
+/// Getter for the diff between the two referred-to types.
+///
+/// @return the diff between the two referred-to types.
+const diff_sptr&
+reference_diff::underlying_type_diff() const
+{return priv_->underlying_type_diff_;}
+
+/// Setter for the diff between the two referred-to types.
+///
+/// @param d the new diff betweend the two referred-to types.
+diff_sptr&
+reference_diff::underlying_type_diff(diff_sptr d)
+{return priv_->underlying_type_diff_ = d;}
+
+/// Getter of the length of the diff.
+///
+/// @return the length of the diff.
+unsigned
+reference_diff::length() const
+{return underlying_type_diff()->length();}
+
+/// Report the diff in a serialized form.
+///
+/// @param out the output stream to serialize the dif to.
+///
+/// @param the string to use for indenting the report.
+void
+reference_diff::report(ostream& out, const string& indent) const
+{
+  if (length() == 0)
+    return;
+
+  if (diff_sptr d = underlying_type_diff())
+    {
+      out << indent << "differences in referenced type:\n";
+      d->report(out, indent + "\t");
+      out << "\n";
+    }
+}
+
+/// Compute the diff between two references.
+///
+/// @param first the first reference to consider for the diff.
+///
+/// @param second the second reference to consider for the diff.
+reference_diff_sptr
+compute_diff(reference_type_def_sptr first,
+	     reference_type_def_sptr second)
+{
+  diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
+				       second->get_pointed_to_type());
+  reference_diff_sptr result(new reference_diff(first, second));
+  result->underlying_type_diff(d);
+  return result;
+
+}
+// </reference_type_def>
+
+//<class_diff stuff>
+struct class_diff::priv
 {
   edit_script base_changes_;
   edit_script member_types_changes_;
@@ -44,19 +289,22 @@ struct class_decl_diff::priv
   edit_script member_fns_changes_;
   edit_script member_fn_tmpls_changes_;
   edit_script member_class_tmpls_changes_;
-};//end struct class_decl_diff::priv
+};//end struct class_diff::priv
 
-/// Constructor of class_decl_diff
+/// Constructor of class_diff
 ///
 /// @param scope the scope of the class_diff.
-class_decl_diff::class_decl_diff(shared_ptr<class_decl> first_scope,
+class_diff::class_diff(shared_ptr<class_decl> first_scope,
 				 shared_ptr<class_decl> second_scope)
   : diff(first_scope, second_scope),
     priv_(new priv)
 {}
 
+/// Getter for the length of the diff.
+///
+/// @return the length of the diff.
 unsigned
-class_decl_diff::length() const
+class_diff::length() const
 {
   return (base_changes().length()
 	  + member_types_changes()
@@ -68,138 +316,81 @@ class_decl_diff::length() const
 
 /// @return the first class invoveld in the diff.
 shared_ptr<class_decl>
-class_decl_diff::first_class_decl() const
-{return dynamic_pointer_cast<class_decl>(first_scope());}
+class_diff::first_class_decl() const
+{return dynamic_pointer_cast<class_decl>(first_subject());}
 
 /// Getter of the second class involved in the diff.
 ///
 /// @return the second class invoveld in the diff
 shared_ptr<class_decl>
-class_decl_diff::second_class_decl() const
-{return dynamic_pointer_cast<class_decl>(second_scope());}
+class_diff::second_class_decl() const
+{return dynamic_pointer_cast<class_decl>(second_subject());}
 
 /// @return the edit script of the bases of the two classes.
 const edit_script&
-class_decl_diff::base_changes() const
+class_diff::base_changes() const
 {return priv_->base_changes_;}
 
 /// @return the edit script of the bases of the two classes.
 edit_script&
-class_decl_diff::base_changes()
+class_diff::base_changes()
 {return priv_->base_changes_;}
 
 /// @return the edit script of the member types of the two classes.
 const edit_script&
-class_decl_diff::member_types_changes() const
+class_diff::member_types_changes() const
 {return priv_->member_types_changes_;}
 
 /// @return the edit script of the member types of the two classes.
 edit_script&
-class_decl_diff::member_types_changes()
+class_diff::member_types_changes()
 {return priv_->member_types_changes_;}
 
 /// @return the edit script of the data members of the two classes.
 const edit_script&
-class_decl_diff::data_members_changes() const
+class_diff::data_members_changes() const
 {return priv_->data_members_changes_;}
 
 /// @return the edit script of the data members of the two classes.
 edit_script&
-class_decl_diff::data_members_changes()
+class_diff::data_members_changes()
 {return priv_->data_members_changes_;}
 
 /// @return the edit script of the member functions of the two
 /// classes.
 const edit_script&
-class_decl_diff::member_fns_changes() const
+class_diff::member_fns_changes() const
 {return priv_->member_fns_changes_;}
 
 /// @return the edit script of the member functions of the two
 /// classes.
 edit_script&
-class_decl_diff::member_fns_changes()
+class_diff::member_fns_changes()
 {return priv_->member_fns_changes_;}
 
 ///@return the edit script of the member function templates of the two
 ///classes.
 const edit_script&
-class_decl_diff::member_fn_tmpls_changes() const
+class_diff::member_fn_tmpls_changes() const
 {return priv_->member_fn_tmpls_changes_;}
 
 /// @return the edit script of the member function templates of the
 /// two classes.
 edit_script&
-class_decl_diff::member_fn_tmpls_changes()
+class_diff::member_fn_tmpls_changes()
 {return priv_->member_fn_tmpls_changes_;}
 
 /// @return the edit script of the member class templates of the two
 /// classes.
 const edit_script&
-class_decl_diff::member_class_tmpls_changes() const
+class_diff::member_class_tmpls_changes() const
 {return priv_->member_class_tmpls_changes_;}
 
 /// @return the edit script of the member class templates of the two
 /// classes.
 edit_script&
-class_decl_diff::member_class_tmpls_changes()
+class_diff::member_class_tmpls_changes()
 {return priv_->member_class_tmpls_changes_;}
-
-/// Compute the set of changes between two instances of class_decl.
-///
-/// @param first the first class_decl to consider.
-///
-/// @param second the second class_decl to consider.
-///
-/// @param changes the resulting changes.
-void
-compute_diff(const class_decl&	first,
-	     const class_decl&	second,
-	     class_decl_diff&	changes)
-{
-  assert(changes.first_scope() && changes.second_scope());
-
-  // Compare base specs
-  compute_diff(first.get_base_specifiers().begin(),
-	       first.get_base_specifiers().end(),
-	       second.get_base_specifiers().begin(),
-	       second.get_base_specifiers().end(),
-	       changes.base_changes());
-
-  // Compare member types
-  compute_diff(first.get_member_types().begin(),
-	       first.get_member_types().end(),
-	       second.get_member_types().begin(),
-	       second.get_member_types().end(),
-	       changes.member_types_changes());
-
-  // Compare data member
-  compute_diff(first.get_data_members().begin(),
-	       first.get_data_members().end(),
-	       second.get_data_members().begin(),
-	       second.get_data_members().end(),
-	       changes.data_members_changes());
-
-  // Compare member functions
-  compute_diff(first.get_member_functions().begin(),
-	       first.get_member_functions().end(),
-	       second.get_member_functions().begin(),
-	       second.get_member_functions().end(),
-	       changes.member_fns_changes());
-
-  // Compare member function templates
-  compute_diff(first.get_member_function_templates().begin(),
-	       first.get_member_function_templates().end(),
-	       second.get_member_function_templates().begin(),
-	       second.get_member_function_templates().end(),
-	       changes.member_fn_tmpls_changes());
-
-  // Compare member class templates
-  compute_diff(first.get_member_class_templates().begin(),
-	       first.get_member_class_templates().end(),
-	       second.get_member_class_templates().begin(),
-	       second.get_member_class_templates().end(),
-	       changes.member_class_tmpls_changes());
-}
 
 /// Produce a basic report about the changes on class_decl.
 ///
@@ -207,58 +398,55 @@ compute_diff(const class_decl&	first,
 ///
 /// @param the output stream to report the changes to.
 void
-report_changes(class_decl_diff &changes,
-	       ostream& out)
+class_diff::report(ostream& out, const string& indent) const
 {
   string name;
-  changes.first_scope()->get_qualified_name(name);
+  first_subject()->get_qualified_name(name);
 
-  int changes_length = changes.length();
+  int changes_length = length();
   if (changes_length == 0)
     {
-      out << "the two versions of type " << name << "are identical\n";
+      out << indent << "the two versions of type " << name << "are identical\n";
       return;
     }
 
   // Now report the changes about the differents parts of the type.
+  class_decl_sptr first_class = first_class_decl(),
+    second_class = second_class_decl();
 
-  // First the bases.
-  if (!changes.base_changes().is_empty())
+  // bases classes
+  if (!base_changes().is_empty())
     {
-      edit_script& e = changes.base_changes();
+      const edit_script& e = base_changes();
 
       // Report deletions.
-      int num_deletions = e.num_deletions();
-      if (num_deletions == 0)
-	out << "No base class deletion\n";
-      else if (num_deletions == 1)
-	out << "1 base class deletion:\n\t";
+      int numdels = e.num_deletions();
+      if (numdels == 0)
+	out << indent << "no base class deletion\n";
+      else if (numdels == 1)
+	out << indent << "1 base class deletion:\n";
       else
-	out << num_deletions << " base class deletions:\n\t";
+	out << indent << numdels << " base class deletions:\n";
 
-      class_decl_sptr first_class = changes.first_class_decl();
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
 	{
-	  shared_ptr<class_decl> base_class =
+	  class_decl_sptr base_class =
 	    first_class->get_base_specifiers()[i->index()]->get_base_class();
-
-	  if (i != e.deletions().begin())
-	    out << ", ";
-	  out << base_class->get_qualified_name();
+	  out << indent << "\t" << base_class->get_qualified_name() << "\n";
 	}
+      out << "\n";
 
       //Report insertions.
-      int num_insertions = e.num_insertions();
-      if (num_insertions == 0)
-	out << "no base class insertion\n";
-      else if (num_insertions == 1)
-	out << "1 base class insertion:\n\t";
+      int numins = e.num_insertions();
+      if (numins == 0)
+	out << indent << "no base class insertion\n";
+      else if (numins == 1)
+	out << indent << "1 base class insertion:\n";
       else
-	out << num_insertions << " base class insertions:\n\t";
+	out << indent << numins << " base class insertions:\n";
 
-      class_decl_sptr second_class = changes.second_class_decl();
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -271,16 +459,173 @@ report_changes(class_decl_diff &changes,
 	    {
 	      base_class =
 		second_class->get_base_specifiers()[*j] ->get_base_class();
-
-	      if (i != e.insertions().begin()
-		  || j != i->inserted_indexes().begin())
-		out << ", ";
-	      out << base_class->get_qualified_name();
+	      out << indent << base_class->get_qualified_name() << "\n";
 	    }
 	}
     }
+
+  // member types
+  if (!member_types_changes().is_empty())
+    {
+      const edit_script& e = member_types_changes();
+
+      // report deletions
+      int numdels = e.num_deletions();
+      if (numdels == 0)
+	out << indent << "no member type deletion\n";
+      else if (numdels == 1)
+	out << indent << "1 member type deletion:\n";
+      else
+	out << indent << numdels << " member type deletions:\n";
+
+      for (vector<deletion>::const_iterator i = e.deletions().begin();
+	   i != e.deletions().end();
+	   ++i)
+	{
+	  class_decl::member_type_sptr mem_type =
+	    first_class->get_member_types()[i->index()];
+	  out << indent << "\t" << mem_type->get_qualified_name() << "\n";
+	}
+      out << "\n";
+
+      // report insertions
+      int numins = e.num_insertions();
+      if (numins == 0)
+	out << indent << "no member type insertion\n";
+      else if (numins == 2)
+	out << indent << "1 member type insertion:\n";
+      else
+	out << indent << numins << " member type insertions:\n";
+
+      for (vector<insertion>::const_iterator i = e.insertions().begin();
+	   i != e.insertions().end();
+	   ++i)
+	{
+	  class_decl::member_type_sptr mem_type;
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
+	       j != i->inserted_indexes().end();
+	       ++j)
+	    {
+	      mem_type = second_class->get_member_types()[*j];
+	      out << indent << "\t" << mem_type->get_qualified_name() << "\n";
+	    }
+	}
+      out << "\n";
+    }
+
+  // data members
+  if (!data_members_changes().is_empty())
+    {
+      const edit_script& e = data_members_changes();
+
+      // report deletions
+      int numdels = e.num_deletions();
+      if (numdels == 0)
+	out << indent << "no data member deletion\n";
+      else if (numdels == 1)
+	out << indent << "1 data member deletion:\n";
+      else
+	out << indent << numdels << " data member deletions:\n";
+
+      for (vector<deletion>::const_iterator i = e.deletions().begin();
+	   i != e.deletions().end();
+	   ++i)
+	{
+	  class_decl::data_member_sptr data_mem =
+	    first_class->get_data_members()[i->index()];
+	  out << indent << "\t" << data_mem->get_qualified_name() << "\n";
+	}
+      out << "\n";
+
+      //report insertions
+      int numins = e.num_insertions();
+      if (numins == 0)
+	out << indent << "no data member insertion\n";
+      else if (numins == 1)
+	out << indent << "1 data member insertion:\n";
+      else
+	out << indent << numins << " member type insertions:\n";
+
+      for (vector<insertion>::const_iterator i = e.insertions().begin();
+	   i != e.insertions().end();
+	   ++i)
+	{
+	  class_decl::data_member_sptr data_mem;
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
+	       j != i->inserted_indexes().end();
+	       ++j)
+	    {
+	      data_mem = second_class->get_data_members()[*j];
+	      out << indent << "\t" << data_mem->get_qualified_name() << "\n";
+	    }
+	}
+      out << "\n";
+    }
+
+  // TODO: member_fns, member_fn_tmpls, member class_tmpls
 }
-//</class_decl_diff stuff>
+
+/// Compute the set of changes between two instances of class_decl.
+///
+/// @param first the first class_decl to consider.
+///
+/// @param second the second class_decl to consider.
+///
+/// @return changes the resulting changes.
+class_diff_sptr
+compute_diff(const class_decl_sptr	first,
+	     const class_decl_sptr	second)
+{
+  class_diff_sptr changes(new class_diff(first, second));
+
+  // Compare base specs
+  compute_diff(first->get_base_specifiers().begin(),
+	       first->get_base_specifiers().end(),
+	       second->get_base_specifiers().begin(),
+	       second->get_base_specifiers().end(),
+	       changes->base_changes());
+
+  // Compare member types
+  compute_diff(first->get_member_types().begin(),
+	       first->get_member_types().end(),
+	       second->get_member_types().begin(),
+	       second->get_member_types().end(),
+	       changes->member_types_changes());
+
+  // Compare data member
+  compute_diff(first->get_data_members().begin(),
+	       first->get_data_members().end(),
+	       second->get_data_members().begin(),
+	       second->get_data_members().end(),
+	       changes->data_members_changes());
+
+  // Compare member functions
+  compute_diff(first->get_member_functions().begin(),
+	       first->get_member_functions().end(),
+	       second->get_member_functions().begin(),
+	       second->get_member_functions().end(),
+	       changes->member_fns_changes());
+
+  // Compare member function templates
+  compute_diff(first->get_member_function_templates().begin(),
+	       first->get_member_function_templates().end(),
+	       second->get_member_function_templates().begin(),
+	       second->get_member_function_templates().end(),
+	       changes->member_fn_tmpls_changes());
+
+  // Compare member class templates
+  compute_diff(first->get_member_class_templates().begin(),
+	       first->get_member_class_templates().end(),
+	       second->get_member_class_templates().begin(),
+	       second->get_member_class_templates().end(),
+	       changes->member_class_tmpls_changes());
+
+  return changes;
+}
+
+//</class_diff stuff>
 
 //<scope_diff stuff>
 struct scope_diff::priv
@@ -495,11 +840,30 @@ scope_diff::ensure_lookup_tables_populated()
     }
 }
 
+/// Constructor for scope_diff
+///
+/// @param first_scope the first scope to consider for the diff.
+///
+/// @param second_scope the second scope to consider for the diff.
 scope_diff::scope_diff(scope_decl_sptr first_scope,
 		       scope_decl_sptr second_scope)
   : diff(first_scope, second_scope),
     priv_(new priv)
 {}
+
+/// Getter for the first scope of the diff.
+///
+/// @return the first scope of the diff.
+const scope_decl_sptr
+scope_diff::first_scope() const
+{return dynamic_pointer_cast<scope_decl>(first_subject());}
+
+/// Getter for the second scope of the diff.
+///
+/// @return the second scope of the diff.
+const scope_decl_sptr
+scope_diff::second_scope() const
+{return dynamic_pointer_cast<scope_decl>(second_subject());}
 
 /// Accessor of the edit script of the members of a scope.
 ///
@@ -556,7 +920,10 @@ scope_diff::member_changes()
 /// as being deleted at index i.
 const decl_base_sptr
 scope_diff::deleted_member_at(unsigned i) const
-{return first_scope()->get_member_decls()[i];}
+{
+  scope_decl_sptr scope = dynamic_pointer_cast<scope_decl>(first_subject());
+ return scope->get_member_decls()[i];
+}
 
 /// Accessor that eases the manipulation of the edit script associated
 /// to this instance.  It returns the scope member (of the first scope
@@ -584,7 +951,10 @@ scope_diff::deleted_member_at(vector<deletion>::const_iterator i) const
 /// been reported as being inserted from index i.
 const decl_base_sptr
 scope_diff::inserted_member_at(unsigned i)
-{return second_scope()->get_member_decls()[i];}
+{
+  scope_decl_sptr scope = dynamic_pointer_cast<scope_decl>(second_subject());
+  return scope->get_member_decls()[i];
+}
 
 /// Accessor that eases the manipulation of the edit script associated
 /// to this instance.  It returns the scope member (of the second
@@ -612,27 +982,12 @@ const string_changed_type_or_decl_map&
 scope_diff::changed_decls() const
 {return priv_->changed_decls_;}
 
-/// Compute the diff between two scopes.
-///
-/// @param first the first scope to consider in computing the diff.
-///
-/// @param second the second scope to consider in the diff
-/// computation.  The second scope is diffed against the first scope.
-///
-/// @param d an out parameter that is populated with the result of the
-/// computed diff.
-void
-compute_diff(const scope_decl&	first,
-	     const scope_decl&	second,
-	     scope_diff&	d)
+/// @return the length of the diff.
+unsigned
+scope_diff::length() const
 {
-  compute_diff(first.get_member_decls().begin(),
-	       first.get_member_decls().end(),
-	       second.get_member_decls().begin(),
-	       second.get_member_decls().end(),
-	       d.member_changes());
-
-  d.ensure_lookup_tables_populated();
+  // TODO: add the number of really removed/added stuff.
+  return changed_types().size() + changed_decls().size();
 }
 
 /// Report the changes of one scope against another.
@@ -641,81 +996,142 @@ compute_diff(const scope_decl&	first,
 ///
 /// @param out the out stream to report the changes to.
 void
-report_changes(const scope_diff& changes,
-	       ostream& out)
+scope_diff::report(ostream& out, const string& indent) const
 {
   // Report changed types.
-  unsigned num_changed_types = changes.changed_types().size();
+  unsigned num_changed_types = changed_types().size();
   if (num_changed_types == 0)
-    out << "no changed types\n";
+    out << indent << "no changed types\n";
   else if (num_changed_types == 1)
-    out << "1 changed type:\n\t";
+    out << indent << "1 changed type:\n" << indent << "\t";
   else
-    out << num_changed_types << " changed types:\n\t";
+    out << indent << num_changed_types << " changed types:\n";
 
   for (string_changed_type_or_decl_map::const_iterator i =
-	 changes.changed_types().begin();
-       i != changes.changed_types().end();
+	 changed_types().begin();
+       i != changed_types().end();
        ++i)
     {
-      if (i != changes.changed_types().begin())
-	out << ", ";
-      out << i->second.first->get_qualified_name();
+      out << indent << "\t" << i->second.first->get_qualified_name() << "\n";
+      diff_sptr detail = compute_diff_for_types(i->second.first,
+						i->second.second);
+      detail->report(out, indent + "\t\t");
     }
   out << "\n";
 
   // Report changed decls
-  unsigned num_changed_decls = changes.changed_decls().size();
+  unsigned num_changed_decls = changed_decls().size();
   if (num_changed_decls == 0)
     out << "no changed declaration\n";
   else if (num_changed_decls == 1)
     out << "1 changed declaration\n\t";
   else
-    out << num_changed_decls << " changed declarations:\n\t";
+    out << num_changed_decls << " changed declarations:\n";
 
   for (string_changed_type_or_decl_map::const_iterator i=
-	 changes.changed_decls().begin();
-       i != changes.changed_decls().end ();
+	 changed_decls().begin();
+       i != changed_decls().end ();
        ++i)
     {
-      if (i != changes.changed_decls().begin())
-	out << ", ";
-      out << i->second.first->get_qualified_name();
+      out << indent << "\t" << i->second.first->get_qualified_name() << "\n";
+      // TODO: compute the detailed diff for decls and report it.
     }
   out << "\n";
+}
+
+/// Compute the diff between two scopes.
+///
+/// @param first the first scope to consider in computing the diff.
+///
+/// @param second the second scope to consider in the diff
+/// computation.  The second scope is diffed against the first scope.
+///
+/// @param d a pointer to the diff object to populate with the
+/// computed diff.
+///
+/// @return return the populated \a d parameter passed to this
+/// function.
+scope_diff_sptr
+compute_diff(const scope_decl_sptr first,
+	     const scope_decl_sptr second,
+	     scope_diff_sptr d)
+{
+  assert(d->first_scope() == first && d->second_scope() == second);
+
+  compute_diff(first->get_member_decls().begin(),
+	       first->get_member_decls().end(),
+	       second->get_member_decls().begin(),
+	       second->get_member_decls().end(),
+	       d->member_changes());
+
+  d->ensure_lookup_tables_populated();
+
+  return d;
+}
+
+/// Compute the diff between two scopes.
+///
+/// @param first the first scope to consider in computing the diff.
+///
+/// @param second the second scope to consider in the diff
+/// computation.  The second scope is diffed against the first scope.
+///
+/// @return return the resulting diff
+scope_diff_sptr
+compute_diff(const scope_decl_sptr first_scope,
+	     const scope_decl_sptr second_scope)
+{
+    scope_diff_sptr d(new scope_diff(first_scope, second_scope));
+    return compute_diff(first_scope, second_scope, d);
 }
 
 //</scope_diff stuff>
 
 // <translation_unit_diff stuff>
 
+/// Constructor for translation_unit_diff.
+///
+/// @param first the first translation unit to consider for this diff.
+///
+/// @param second the second translation unit to consider for this diff.
 translation_unit_diff::translation_unit_diff(translation_unit_sptr first,
 					     translation_unit_sptr second)
   : scope_diff(first->get_global_scope(), second->get_global_scope())
 {
 }
 
+/// @return the length of this diff.
+unsigned
+translation_unit_diff::length() const
+{return scope_diff::length();}
+
+/// Report the diff in a serialized form.
+///
+/// @param out the output stream to serialize the report to.
+///
+/// @param indent the prefix to use as indentation for the report.
+void
+translation_unit_diff::report(ostream& out, const string& indent) const
+{scope_diff::report(out, indent);}
+
 /// Compute the diff between two translation_units.
 ///
 /// @param first the first translation_unit to consider.
 ///
 /// @param second the second translation_unit to consider.
-void
-compute_diff(const translation_unit&	first,
-	     const translation_unit&	second,
-	     translation_unit_diff&	changes)
+translation_unit_diff_sptr
+compute_diff(const translation_unit_sptr first,
+	     const translation_unit_sptr second)
 {
   // TODO: handle first or second having empty contents.
-  compute_diff(*first.get_global_scope(),
-	       *second.get_global_scope(),
-	       changes);
-}
+  translation_unit_diff_sptr tu_diff(new translation_unit_diff(first, second));
+  scope_diff_sptr sc_diff = dynamic_pointer_cast<scope_diff>(tu_diff);
 
-void
-report_changes(const translation_unit_diff&	changes,
-	       ostream&			out)
-{
-  report_changes(static_cast<scope_diff>(changes), out);
+  compute_diff(static_pointer_cast<scope_decl>(first->get_global_scope()),
+	       static_pointer_cast<scope_decl>(second->get_global_scope()),
+	       sc_diff);
+
+  return tu_diff;
 }
 
 // </translation_unit_diff stuff>
