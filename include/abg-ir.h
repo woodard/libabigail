@@ -522,6 +522,8 @@ public:
 qualified_type_def::CV
 operator|(qualified_type_def::CV, qualified_type_def::CV);
 
+typedef shared_ptr<pointer_type_def> pointer_type_def_sptr;
+
 /// The abstraction of a pointer type.
 class pointer_type_def : public virtual type_base, public virtual decl_base
 {
@@ -552,6 +554,8 @@ public:
 
   virtual ~pointer_type_def();
 }; // end class pointer_type_def
+
+typedef shared_ptr<reference_type_def> reference_type_def_sptr;
 
 /// Abstracts a reference type.
 class reference_type_def : public virtual type_base, public virtual decl_base
