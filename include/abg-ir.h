@@ -1537,9 +1537,7 @@ public:
   // Hasher.
   struct hash;
 
-  member_type(shared_ptr<type_base> t, access_specifier access)
-    : decl_base("", location()), member_base(access), type_(t)
-  { }
+  member_type(shared_ptr<type_base> t, access_specifier access);
 
   virtual bool
   operator==(const decl_base&) const;

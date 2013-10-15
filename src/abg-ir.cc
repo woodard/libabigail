@@ -2193,6 +2193,17 @@ class_decl::member_base::operator==(const member_base& o) const
 	  && is_static() == o.is_static());
 }
 
+/// Constructor of a class_decl::member_type
+///
+/// @param t the type to be member of the class
+///
+/// @param access the access specifier for the member type.
+class_decl::member_type::member_type(shared_ptr<type_base> t,
+				     access_specifier access)
+  : decl_base(*dynamic_pointer_cast<decl_base>(t)),
+    member_base(access), type_(t)
+{}
+
 bool
 class_decl::member_type::operator==(const decl_base& other) const
 {
