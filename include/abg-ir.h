@@ -1884,10 +1884,10 @@ public:
 
   member_function_template(function_tdecl_sptr f,
 			   access_specifier access, bool is_static,
-			   bool	is_constructor, bool is_const)
+			   bool is_constructor, bool is_const)
   : member_base(access, is_static), is_constructor_(is_constructor),
     is_const_(is_const), fn_tmpl_(f)
-  { }
+  {}
 
   bool
   is_constructor() const
