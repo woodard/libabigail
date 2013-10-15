@@ -392,11 +392,50 @@ edit_script&
 class_diff::member_class_tmpls_changes()
 {return priv_->member_class_tmpls_changes_;}
 
-/// Produce a basic report about the changes on class_decl.
+/// Output the header preceding the the report for insertion/deletion
+/// of a part of a class.  This is a subroutine of class_diff::report.
 ///
-/// @param changes the changes to report against.
+/// @param out the output stream to output the report to.
 ///
-/// @param the output stream to report the changes to.
+/// @param number the number of insertion/deletion to refer to in the
+/// header.
+///
+/// @param deletions set this to true if we are reporting about
+/// deletions, set it false if we are reporting about insertions.
+///
+/// @param section_name the name of the sub-part of the class to
+/// report about.
+///
+/// @param indent the string to use as indentation prefix in the
+/// header.
+static void
+report_num_dels_or_ins(ostream& out,
+		       int number,
+		       bool deletions,
+		       const string& section_name,
+		       const string& indent)
+{
+  string del_or_ins;
+  if (number > 1)
+    del_or_ins = (deletions) ? "deletions" : "insertions";
+  else
+    del_or_ins = (deletions) ? "deletion" : "insertion";
+
+  if (number == 0)
+    out << indent << "no " << section_name << " " << del_or_ins << "\n";
+  else if (number == 1)
+    out << indent << "1 " << section_name << " " << del_or_ins << ":\n";
+  else
+    out << indent << number << " " << section_name
+	<< " " << del_or_ins << ":\n";
+}
+
+/// Produce a basic report about the changes between two class_decl.
+///
+/// @param out the output stream to report the changes to.
+///
+/// @param indent the string to use as an indentation prefix in the
+/// report.
 void
 class_diff::report(ostream& out, const string& indent) const
 {
@@ -415,18 +454,13 @@ class_diff::report(ostream& out, const string& indent) const
     second_class = second_class_decl();
 
   // bases classes
-  if (!base_changes().is_empty())
+  if (const edit_script& e = base_changes())
     {
-      const edit_script& e = base_changes();
-
       // Report deletions.
       int numdels = e.num_deletions();
-      if (numdels == 0)
-	out << indent << "no base class deletion\n";
-      else if (numdels == 1)
-	out << indent << "1 base class deletion:\n";
-      else
-	out << indent << numdels << " base class deletions:\n";
+      report_num_dels_or_ins(out, numdels,
+			     /*deletions=*/true,
+			     "base class", indent);
 
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
@@ -436,16 +470,14 @@ class_diff::report(ostream& out, const string& indent) const
 	    first_class->get_base_specifiers()[i->index()]->get_base_class();
 	  out << indent << "\t" << base_class->get_qualified_name() << "\n";
 	}
-      out << "\n";
+      if (numdels)
+	out << "\n";
 
       //Report insertions.
       int numins = e.num_insertions();
-      if (numins == 0)
-	out << indent << "no base class insertion\n";
-      else if (numins == 1)
-	out << indent << "1 base class insertion:\n";
-      else
-	out << indent << numins << " base class insertions:\n";
+      report_num_dels_or_ins(out, numins,
+			     /*deletions=*/false,
+			     "base class", indent);
 
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
@@ -462,21 +494,18 @@ class_diff::report(ostream& out, const string& indent) const
 	      out << indent << base_class->get_qualified_name() << "\n";
 	    }
 	}
+      if (numins)
+	out << "\n";
     }
 
   // member types
-  if (!member_types_changes().is_empty())
+  if (const edit_script& e = member_types_changes())
     {
-      const edit_script& e = member_types_changes();
-
       // report deletions
-      int numdels = e.num_deletions();
-      if (numdels == 0)
-	out << indent << "no member type deletion\n";
-      else if (numdels == 1)
-	out << indent << "1 member type deletion:\n";
-      else
-	out << indent << numdels << " member type deletions:\n";
+      report_num_dels_or_ins(out, e.num_deletions(),
+			     /*deletion=*/true,
+			     "member type",
+			     indent);
 
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
@@ -489,13 +518,10 @@ class_diff::report(ostream& out, const string& indent) const
       out << "\n";
 
       // report insertions
-      int numins = e.num_insertions();
-      if (numins == 0)
-	out << indent << "no member type insertion\n";
-      else if (numins == 2)
-	out << indent << "1 member type insertion:\n";
-      else
-	out << indent << numins << " member type insertions:\n";
+      report_num_dels_or_ins(out, e.num_insertions(),
+			     /*deletion=*/false,
+			     "member type",
+			     indent);
 
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
@@ -515,19 +541,14 @@ class_diff::report(ostream& out, const string& indent) const
     }
 
   // data members
-  if (!data_members_changes().is_empty())
+  if (const edit_script& e = data_members_changes())
     {
-      const edit_script& e = data_members_changes();
-
       // report deletions
       int numdels = e.num_deletions();
-      if (numdels == 0)
-	out << indent << "no data member deletion\n";
-      else if (numdels == 1)
-	out << indent << "1 data member deletion:\n";
-      else
-	out << indent << numdels << " data member deletions:\n";
-
+      report_num_dels_or_ins(out, numdels,
+			     /*deletions=*/true,
+			     "data member",
+			     indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
@@ -536,17 +557,15 @@ class_diff::report(ostream& out, const string& indent) const
 	    first_class->get_data_members()[i->index()];
 	  out << indent << "\t" << data_mem->get_qualified_name() << "\n";
 	}
-      out << "\n";
+      if (numdels)
+	out << "\n";
 
       //report insertions
       int numins = e.num_insertions();
-      if (numins == 0)
-	out << indent << "no data member insertion\n";
-      else if (numins == 1)
-	out << indent << "1 data member insertion:\n";
-      else
-	out << indent << numins << " member type insertions:\n";
-
+      report_num_dels_or_ins(out, numins,
+			     /*deletions=*/false,
+			     "data member",
+			     indent);
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -561,10 +580,143 @@ class_diff::report(ostream& out, const string& indent) const
 	      out << indent << "\t" << data_mem->get_qualified_name() << "\n";
 	    }
 	}
+      if (numins)
+	out << "\n";
+    }
+
+  // member_fns
+  if (const edit_script& e = member_fns_changes())
+    {
+      // report deletions
+      report_num_dels_or_ins(out, e.num_deletions(),
+			     /*deletions=*/true,
+			     "member function",
+			     indent);
+      for (vector<deletion>::const_iterator i = e.deletions().begin();
+	   i != e.deletions().end();
+	   ++i)
+	{
+	  class_decl::member_function_sptr mem_fun =
+	    first_class->get_member_functions()[i->index()];
+	  out << indent << "\t" << mem_fun->get_qualified_name() << "\n";
+	}
+      out << "\n";
+
+      // report insertions;
+      report_num_dels_or_ins(out, e.num_deletions(),
+			     /*deletions=*/false,
+			     "member function",
+			     indent);
+      for (vector<insertion>::const_iterator i = e.insertions().begin();
+	   i != e.insertions().end();
+	   ++i)
+	{
+	  class_decl::member_function_sptr mem_fun;
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
+	       j != i->inserted_indexes().end();
+	       ++j)
+	    {
+	      mem_fun = second_class->get_member_functions()[*j];
+	      out << indent << "\t" << mem_fun->get_qualified_name() << "\n";
+	    }
+	}
       out << "\n";
     }
 
-  // TODO: member_fns, member_fn_tmpls, member class_tmpls
+  // member function templates
+  if (const edit_script& e = member_fn_tmpls_changes())
+    {
+      // report deletions
+      int numdels = e.num_deletions();
+      report_num_dels_or_ins(out, numdels,
+			     /*deletions=*/true,
+			     "member function template",
+			     indent);
+      for (vector<deletion>::const_iterator i = e.deletions().begin();
+	   i != e.deletions().end();
+	   ++i)
+	{
+	  class_decl::member_function_template_sptr mem_fn_tmpl =
+	    first_class->get_member_function_templates()[i->index()];
+	  out << indent << "\t"
+	      << mem_fn_tmpl->as_function_tdecl()->get_qualified_name()
+	      << "\n";
+	}
+      if (numdels)
+	out << "\n";
+
+      // report insertions
+      int numins = e.num_insertions();
+      report_num_dels_or_ins(out, numins,
+			     /*deletions=*/false,
+			     "member function template",
+			     indent);
+      for (vector<insertion>::const_iterator i = e.insertions().begin();
+	   i != e.insertions().end();
+	   ++i)
+	{
+	  class_decl::member_function_template_sptr mem_fn_tmpl;
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
+	       j != i->inserted_indexes().end();
+	       ++j)
+	    {
+	      mem_fn_tmpl = second_class->get_member_function_templates()[*j];
+	      out << indent << "\t"
+		  << mem_fn_tmpl->as_function_tdecl()->get_qualified_name()
+		  << "\n";
+	    }
+	}
+    }
+
+  // member class templates.
+  if (const edit_script& e = member_class_tmpls_changes())
+    {
+      // report deletions
+      int numdels = e.num_deletions();
+      report_num_dels_or_ins(out, numdels,
+			     /*deletions=*/true,
+			     "member class template",
+			     indent);
+      for (vector<deletion>::const_iterator i = e.deletions().begin();
+	   i != e.deletions().end();
+	   ++i)
+	{
+	  class_decl::member_class_template_sptr mem_cls_tmpl =
+	    first_class->get_member_class_templates()[i->index()];
+	  out << indent << "\t"
+	      << mem_cls_tmpl->as_class_tdecl()->get_qualified_name()
+	      << "\n";
+	}
+      if (numdels)
+	out << "\n";
+
+      // report insertions
+      int numins = e.num_insertions();
+      report_num_dels_or_ins(out, numins,
+			     /*deletions=*/false,
+			     "member class template",
+			     indent);
+      for (vector<insertion>::const_iterator i = e.insertions().begin();
+	   i != e.insertions().end();
+	   ++i)
+	{
+	  class_decl::member_class_template_sptr mem_cls_tmpl;
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
+	       j != i->inserted_indexes().end();
+	       ++j)
+	    {
+	      mem_cls_tmpl = second_class->get_member_class_templates()[*j];
+	      out << indent << "\t"
+		  << mem_cls_tmpl->as_class_tdecl()->get_qualified_name()
+		  << "\n";
+	    }
+	}
+      if (numins)
+	out << "\n";
+    }
 }
 
 /// Compute the set of changes between two instances of class_decl.
