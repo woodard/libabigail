@@ -130,7 +130,7 @@ public:
 	m_type_id_map[t] = id;
 	return id;
       }
-    return m_type_id_map[t];
+    return it->second;
   }
 
   string
