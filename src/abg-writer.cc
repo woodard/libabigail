@@ -1534,9 +1534,11 @@ translation_unit::write(const string& path) const
   return result;
 }
 
-// Debugging routines.
+// <Debugging routines>
 
 /// Serialize a pointer to decl_base to stderr.
+///
+/// @param d the pointer to decl_base to serialize.
 void
 dump(const decl_base_sptr d)
 {
@@ -1545,7 +1547,27 @@ dump(const decl_base_sptr d)
   cerr << "\n";
 }
 
+/// Serialize a pointer to type_base to stderr.
+///
+/// @param t the pointer to type_base to serialize.
+void
+dump(const type_base_sptr t)
+{return dump(dynamic_pointer_cast<decl_base>(t));}
+
+/// Serialize a pointer to var_decl to stderr.
+///
+/// @param v the pointer to var_decl to serialize.
+void
+dump(const var_decl_sptr v)
+{
+  writer::write_context ctxt(cerr);
+  write_var_decl(v, ctxt, /*mangled_name*/true, /*indent=*/0);
+  cerr << "\n";
+}
+
 /// Serialize an instance of translation_unit to stderr.
+///
+/// @param t the translation_unit to serialize.
 void
 dump(const translation_unit& t)
 {
@@ -1554,4 +1576,5 @@ dump(const translation_unit& t)
   cerr << "\n";
 }
 
+// </Debugging routines>
 } //end namespace abigail

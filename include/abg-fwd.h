@@ -162,5 +162,17 @@ get_global_scope(const shared_ptr<decl_base> dcl);
 translation_unit*
 get_translation_unit(const shared_ptr<decl_base> dcl);
 
+void
+dump(const shared_ptr<decl_base>);
+
+void
+dump(const shared_ptr<type_base>);
+
+void
+dump(const shared_ptr<var_decl> v);
+
+void
+dump(const translation_unit&);
+
 } // end namespace abigail
 #endif // __ABG_IRFWD_H__

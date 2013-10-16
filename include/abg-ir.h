@@ -721,6 +721,8 @@ public:
   virtual ~typedef_decl();
 };
 
+typedef shared_ptr<var_decl> var_decl_sptr;
+
 /// Abstracts a variable declaration.
 class var_decl : public virtual decl_base
 {
