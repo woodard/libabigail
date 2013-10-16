@@ -393,7 +393,7 @@ struct type_shared_ptr_equal
   bool
   operator()(const type_base_sptr l, const type_base_sptr r) const
   {
-    if (l != r)
+    if (!!l != !!r)
       return false;
 
     if (l)

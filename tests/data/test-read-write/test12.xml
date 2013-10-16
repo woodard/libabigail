@@ -17,9 +17,9 @@
     <namespace-decl name='ns3'>
       <namespace-decl name='ns4'>
         <function-template-decl id='fn-tmpl-id-5'>
-          <template-type-parameter id='type-id-6' name='T'/>
+          <template-type-parameter type-id='type-id-3' name='T'/>
           <function-decl name='bar' binding='global'>
-            <parameter type-id='type-id-6' name='first'/>
+            <parameter type-id='type-id-3' name='first'/>
             <return type-id='type-id-1'/>
           </function-decl>
         </function-template-decl>

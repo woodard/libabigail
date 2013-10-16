@@ -643,21 +643,36 @@ type_decl::type_decl(const std::string&	name,
 
 /// Return true if both types equals.
 ///
+/// This operator re-uses the overload that takes a decl_base.
+///
 /// Note that this does not check the scopes of any of the types.
+///
+/// @param o the other type_decl to check agains.
 bool
 type_decl::operator==(const type_base& o) const
-{return type_base::operator==(o);}
+{
+  try
+    {
+      const decl_base& other = dynamic_cast<const decl_base&>(o);
+      return *this == other;
+    }
+  catch (...)
+    {return false;}
+}
 
 /// Return true if both types equals.
 ///
 /// Note that this does not check the scopes of any of the types.
+///
+/// @param o the other type_decl to check against.
 bool
 type_decl::operator==(const decl_base& o) const
 {
   try
     {
       const type_decl& other = dynamic_cast<const type_decl&>(o);
-      return type_base::operator==(other);
+      return (type_base::operator==(other)
+	      &&  decl_base::operator==(other));
     }
   catch(...)
     {return false;}
@@ -690,10 +705,12 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 {
 }
 
-/// Return true iff both scope types are equal.
+/// Equality operator between two scope_type_decl.
 ///
 /// Note that this function does not consider the scope of the scope
 /// types themselves.
+///
+/// @return true iff both scope types are equal.
 bool
 scope_type_decl::operator==(const decl_base& o) const
 {
@@ -707,14 +724,20 @@ scope_type_decl::operator==(const decl_base& o) const
     {return false;}
 }
 
+/// Equality operator between two scope_type_decl.
+///
+/// This re-uses the equality operator that takes a decl_base.
+///
+/// @param o the other scope_type_decl to compare against.
+///
+/// @return true iff both scope types are equal.
 bool
 scope_type_decl::operator==(const type_base& o) const
 {
   try
     {
-      const scope_type_decl& other = dynamic_cast<const scope_type_decl&>(o);
-      return (scope_decl::operator==(other)
-	      && type_base::operator==(other));
+      const decl_base& other = dynamic_cast<const decl_base&>(o);
+      return *this == other;
     }
   catch(...)
     {return false;}
@@ -809,9 +832,13 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
   set_name(get_name() + dynamic_pointer_cast<decl_base>(type)->get_name());
 }
 
-/// Return true iff both qualified types are equal.
+/// Equality operator for qualified types.
 ///
 /// Note that this function does not check for equality of the scopes.
+///
+///@param o the other qualified type to compare against.
+///
+/// @return true iff both qualified types are equal.
 bool
 qualified_type_def::operator==(const decl_base& o) const
 {
@@ -829,22 +856,25 @@ qualified_type_def::operator==(const decl_base& o) const
     {return false;}
 }
 
+/// Equality operator for qualified types.
+///
+/// Note that this function does not check for equality of the scopes.
+/// Also, this re-uses the equality operator above that takes a
+/// decl_base.
+///
+///@param o the other qualified type to compare against.
+///
+/// @return true iff both qualified types are equal.
 bool
 qualified_type_def::operator==(const type_base& o) const
 {
   try
     {
-      const qualified_type_def& other =
-	dynamic_cast<const qualified_type_def&>(o);
-
-      if (get_cv_quals() != other.get_cv_quals())
-	return false;
-
-      return *get_underlying_type() == *other.get_underlying_type();
+      const decl_base& other = dynamic_cast<const decl_base&>(o);
+      return *this == other;
     }
   catch(...)
     {return false;}
-
 }
 
 /// This implements the traversable_base::traverse pure virtual
@@ -1201,36 +1231,93 @@ var_decl::~var_decl()
 
 // <function_type>
 
-bool
-function_type::operator==(const type_base& o) const
+/// Compare two function types.
+///
+/// In case these function types are actually method types, this
+/// function avoids comparing two parameters (of the function types)
+/// if the types of the parameters are actually the types of the
+/// classes of the method types.  This prevents infinite recursion
+/// during the comparison of two classes that are structurally
+/// identical.
+///
+/// This is a subroutine of the equality operator of function_type.
+///
+/// @param lhs the first function type to consider
+///
+/// @param rhs the second function type to consider
+///
+///@return true if lhs == rhs, false otherwise.
+static bool
+compare_function_types(const function_type& lhs,
+		       const function_type&rhs)
 {
-  if (!type_base::operator==(o))
+  if (!lhs.type_base::operator==(rhs))
     return false;
+
+  if (!!lhs.get_return_type() != !!rhs.get_return_type())
+    return false;
+
+  class_decl_sptr lhs_class, rhs_class;
+  try
+    {
+      const method_type& m = dynamic_cast<const method_type&>(lhs);
+      lhs_class = m.get_class_type();
+    }
+  catch (...)
+    {}
 
   try
     {
-      const function_type& other = dynamic_cast<const function_type&>(o);
-
-      if (!!return_type_ != !!other.return_type_)
-	return false;
-
-      vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
-      for (i = get_parameters().begin(),
-	     j = other.get_parameters().begin();
-	   (i != get_parameters().end()
-	    && j != other.get_parameters().end());
-	   ++i, ++j)
-	if (**i != **j)
-	  return false;
-
-      if ((i != get_parameters().end()
-	   || j != other.get_parameters().end()))
-	return false;
-
-      return true;
+      const method_type& m = dynamic_cast<const method_type&>(rhs);
+      rhs_class = m.get_class_type();
     }
-  catch(...)
-    {return false;}
+  catch (...)
+    {}
+
+  class_decl_sptr lcl, rcl;
+  vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
+  for (i = lhs.get_parameters().begin(),
+	 j = rhs.get_parameters().begin();
+       (i != lhs.get_parameters().end()
+	&& j != rhs.get_parameters().end());
+       ++i, ++j)
+    {
+      if (lhs_class)
+	lcl = dynamic_pointer_cast<class_decl>((*i)->get_type());
+      if (rhs_class)
+	rcl = dynamic_pointer_cast<class_decl>((*j)->get_type());
+      if (lcl && rcl
+	  && lcl.get() == lhs_class.get()
+	  && rcl.get() == rhs_class.get())
+	// Do not compare the class types of two methods that we are
+	// probably comparing atm; otherwise we can recurse indefinitely.
+	continue;
+      if (**i != **j)
+	return false;
+    }
+
+  if ((i != lhs.get_parameters().end()
+       || j != rhs.get_parameters().end()))
+    return false;
+
+  return true;
+}
+
+/// Equality operator for function_type.
+///
+/// @param o the other function_type to compare against.
+///
+/// @return true iff the two function_type are equal.
+bool
+function_type::operator==(const type_base& o) const
+{
+ try
+   {
+     const function_type& other = dynamic_cast<const function_type&>(o);
+     return compare_function_types(*this, other);
+   }
+ catch (...)
+   {return false;}
 }
 
 function_type::~function_type()
@@ -2003,93 +2090,132 @@ class_decl::operator==(const decl_base& other) const
 
       // No need to go further if the classes have different names or
       // different size / alignment.
-      if (!(decl_base::operator==(o) || type_base::operator==(o)))
+      if (!(decl_base::operator==(o) && type_base::operator==(o)))
 	return false;
 
       // Compare bases.
-      base_specs::const_iterator b0, b1;
-      for(b0 = get_base_specifiers().begin(),
-	    b1 = o.get_base_specifiers().begin();
-	  (b0 != get_base_specifiers().end()
-	   && b1 != o.get_base_specifiers().end());
-	  ++b0, ++b1)
-	if (**b0 != **b1)
+      {
+	if (get_base_specifiers().size() != o.get_base_specifiers().size())
 	  return false;
-      if (b0 != get_base_specifiers().end()
-	  || b1 != o.get_base_specifiers().end())
-	return false;
+
+	base_specs::const_iterator b0, b1;
+	for(b0 = get_base_specifiers().begin(),
+	      b1 = o.get_base_specifiers().begin();
+	    (b0 != get_base_specifiers().end()
+	     && b1 != o.get_base_specifiers().end());
+	    ++b0, ++b1)
+	  if (**b0 != **b1)
+	    return false;
+	if (b0 != get_base_specifiers().end()
+	    || b1 != o.get_base_specifiers().end())
+	  return false;
+      }
 
       //Compare member types
-      member_types::const_iterator t0, t1;
-      for (t0 = get_member_types().begin(), t1 = o.get_member_types().begin();
-	   t0 != get_member_types().end() && t1 != o.get_member_types().end();
-	   ++t0, ++t1)
-	if (!(**t0 == static_cast<decl_base>(**t1)))
+      {
+	if (get_member_types().size() != o.get_member_types().size())
 	  return false;
-      if (t0 != get_member_types().end() || t1 != o.get_member_types().end())
-	return false;
+
+	member_types::const_iterator t0, t1;
+	for (t0 = get_member_types().begin(), t1 = o.get_member_types().begin();
+	     t0 != get_member_types().end() && t1 != o.get_member_types().end();
+	     ++t0, ++t1)
+	  if (!(**t0 == **t1))
+	    return false;
+	if (t0 != get_member_types().end() || t1 != o.get_member_types().end())
+	  return false;
+      }
 
       //compare data_members
-      data_members::const_iterator d0, d1;
-      for (d0 = get_data_members().begin(), d1 = o.get_data_members().begin();
-	   d0 != get_data_members().end() && d1 != o.get_data_members().end();
-	   ++d0, ++d1)
-	if (**d0 != **d1)
+      {
+	if (get_data_members().size() != o.get_data_members().size())
 	  return false;
-      if (d0 != get_data_members().end() || d1 != o.get_data_members().end())
-	return false;
+
+	data_members::const_iterator d0, d1;
+	for (d0 = get_data_members().begin(), d1 = o.get_data_members().begin();
+	     d0 != get_data_members().end() && d1 != o.get_data_members().end();
+	     ++d0, ++d1)
+	  if (**d0 != **d1)
+	    return false;
+	if (d0 != get_data_members().end() || d1 != o.get_data_members().end())
+	  return false;
+      }
 
       //compare member functions
-      member_functions::const_iterator f0, f1;
-      for (f0 = get_member_functions().begin(),
-	     f1 = o.get_member_functions().begin();
-	   f0 != get_member_functions().end()
-	     && f1 != o.get_member_functions().end();
-	   ++f0, ++f1)
-	if (**d0 != **d1)
+      {
+	if (get_member_functions().size() != o.get_member_functions().size())
 	  return false;
-      if (f0 != get_member_functions().end()
-	  || f1 != o.get_member_functions().end())
-	return false;
+
+	member_functions::const_iterator f0, f1;
+	for (f0 = get_member_functions().begin(),
+	       f1 = o.get_member_functions().begin();
+	     f0 != get_member_functions().end()
+	       && f1 != o.get_member_functions().end();
+	     ++f0, ++f1)
+	  if (**f0 != **f1)
+	    return false;
+	if (f0 != get_member_functions().end()
+	    || f1 != o.get_member_functions().end())
+	  return false;
+      }
 
       // compare member function templates
-      member_function_templates::const_iterator fn_tmpl_it0, fn_tmpl_it1;
-      for (fn_tmpl_it0 = get_member_function_templates().begin(),
-	     fn_tmpl_it1 = o.get_member_function_templates().begin();
-	   fn_tmpl_it0 != get_member_function_templates().end()
-	     &&  fn_tmpl_it1 != o.get_member_function_templates().end();
-	   ++fn_tmpl_it0, ++fn_tmpl_it1)
-	if (**fn_tmpl_it0 != **fn_tmpl_it1)
+      {
+	if (get_member_function_templates().size()
+	    != o.get_member_function_templates().size())
 	  return false;
-      if (fn_tmpl_it0 != get_member_function_templates().end()
-	  || fn_tmpl_it1 != o.get_member_function_templates().end())
-	return false;
+
+	member_function_templates::const_iterator fn_tmpl_it0, fn_tmpl_it1;
+	for (fn_tmpl_it0 = get_member_function_templates().begin(),
+	       fn_tmpl_it1 = o.get_member_function_templates().begin();
+	     fn_tmpl_it0 != get_member_function_templates().end()
+	       &&  fn_tmpl_it1 != o.get_member_function_templates().end();
+	     ++fn_tmpl_it0, ++fn_tmpl_it1)
+	  if (**fn_tmpl_it0 != **fn_tmpl_it1)
+	    return false;
+	if (fn_tmpl_it0 != get_member_function_templates().end()
+	    || fn_tmpl_it1 != o.get_member_function_templates().end())
+	  return false;
+      }
 
       // compare member class templates
-      member_class_templates::const_iterator cl_tmpl_it0, cl_tmpl_it1;
-      for (cl_tmpl_it0 = get_member_class_templates().begin(),
-	     cl_tmpl_it1 = o.get_member_class_templates().begin();
-	   cl_tmpl_it0 != get_member_class_templates().end()
-	     &&  cl_tmpl_it1 != o.get_member_class_templates().end();
-	   ++cl_tmpl_it0, ++cl_tmpl_it1)
-	if (**cl_tmpl_it0 != **cl_tmpl_it1)
+      {
+	if (get_member_class_templates().size()
+	    != o.get_member_class_templates().size())
 	  return false;
-      if (cl_tmpl_it0 != get_member_class_templates().end()
-	  || cl_tmpl_it1 != o.get_member_class_templates().end())
-	return false;
+
+	member_class_templates::const_iterator cl_tmpl_it0, cl_tmpl_it1;
+	for (cl_tmpl_it0 = get_member_class_templates().begin(),
+	       cl_tmpl_it1 = o.get_member_class_templates().begin();
+	     cl_tmpl_it0 != get_member_class_templates().end()
+	       &&  cl_tmpl_it1 != o.get_member_class_templates().end();
+	     ++cl_tmpl_it0, ++cl_tmpl_it1)
+	  if (**cl_tmpl_it0 != **cl_tmpl_it1)
+	    return false;
+	if (cl_tmpl_it0 != get_member_class_templates().end()
+	    || cl_tmpl_it1 != o.get_member_class_templates().end())
+	  return false;
+      }
     }
   catch (...)
     {return false;}
   return true;
 }
 
+/// Equality operator for class_decl.
+///
+/// Re-uses the equality operator that takes a decl_base.
+///
+/// @param other the other class_decl to compare against.
+///
+/// @return true iff the current instance equals the other one.
 bool
 class_decl::operator==(const type_base& other) const
 {
   try
     {
-      const class_decl& o = dynamic_cast<const class_decl&>(other);
-      return *this == static_cast<decl_base>(o);
+      const decl_base& o = dynamic_cast<const decl_base&>(other);
+      return *this == o;
     }
   catch(...)
     {return false;}
@@ -2097,7 +2223,7 @@ class_decl::operator==(const type_base& other) const
 
 bool
 class_decl::operator==(const class_decl& other) const
-{return *this == static_cast<decl_base>(other);}
+{return *this == static_cast<const decl_base&>(other);}
 
 /// Turn equality of shared_ptr of class_decl into a deep equality;
 /// that is, make it compare the pointed to objects too.
@@ -2314,7 +2440,7 @@ class_decl::member_function::operator==(const member_function& other) const
     {
       const class_decl::member_function& o =
 	dynamic_cast<const class_decl::member_function&>(other);
-      return *this == static_cast<const decl_base>(o);
+      return *this == static_cast<const decl_base&>(o);
     }
   catch(...)
     {return false;}
@@ -2359,7 +2485,7 @@ class_decl::member_function_template::operator==(const member_base& other) const
 	return false;
 
       if (function_tdecl_sptr ftdecl = as_function_tdecl())
-	return ftdecl->function_tdecl::operator==(static_cast<decl_base>(o));
+	return ftdecl->function_tdecl::operator==(static_cast<const decl_base&>(o));
     }
   catch(...)
     {}
@@ -2410,7 +2536,7 @@ class_decl::member_class_template::operator==(const member_base& other) const
 bool
 class_decl::member_class_template::operator==
 (const member_class_template& other) const
-{return *this == static_cast<const member_base>(other);}
+{return *this == static_cast<const member_base&>(other);}
 
 bool
 operator==(class_decl::member_class_template_sptr l,
@@ -2511,7 +2637,7 @@ type_tparameter::operator==(const template_parameter& other) const
 
 bool
 type_tparameter::operator==(const type_tparameter& other) const
-{return *this == static_cast<const type_base>(other);}
+{return *this == static_cast<const type_base&>(other);}
 
 type_tparameter::~type_tparameter()
 {}
@@ -2569,7 +2695,7 @@ template_tparameter::operator==(const template_parameter& o) const
     {
       const template_tparameter& other =
 	dynamic_cast<const template_tparameter&>(o);
-      return *this == static_cast<const type_base>(other);
+      return *this == static_cast<const type_base&>(other);
     }
   catch(...)
     {return false;}
@@ -2630,7 +2756,7 @@ function_tdecl::operator==(const template_decl& other) const
   try
     {
       const function_tdecl& o = dynamic_cast<const function_tdecl&>(other);
-      return *this == static_cast<const decl_base>(o);
+      return *this == static_cast<const decl_base&>(o);
     }
   catch(...)
     {return false;}
@@ -2704,7 +2830,7 @@ class_tdecl::operator==(const template_decl& other) const
   try
     {
       const class_tdecl& o = dynamic_cast<const class_tdecl&>(other);
-      return *this == static_cast<const decl_base>(o);
+      return *this == static_cast<const decl_base&>(o);
     }
   catch(...)
     {return false;}
@@ -2712,7 +2838,7 @@ class_tdecl::operator==(const template_decl& other) const
 
 bool
 class_tdecl::operator==(const class_tdecl& o) const
-{return *this == static_cast<const decl_base>(o);}
+{return *this == static_cast<const decl_base&>(o);}
 
 /// This implements the traversable_base::traverse pure virtual
 /// function.
