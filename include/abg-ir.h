@@ -767,7 +767,7 @@ public:
 class function_decl : public virtual decl_base
 {
 protected:
-  shared_ptr<function_type>	type_;
+  shared_ptr<function_type> type_;
 
 private:
   bool			declared_inline_;

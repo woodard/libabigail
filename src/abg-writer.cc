@@ -97,24 +97,24 @@ class write_context
 public:
 
   write_context(ostream& os) : m_ostream(os)
-  { }
+  {}
 
   const config&
   get_config() const
-  { return m_config; }
+  {return m_config;}
 
   ostream&
   get_ostream()
-  { return m_ostream; }
+  {return m_ostream;}
 
   id_manager&
   get_id_manager()
-  { return m_id_manager; }
+  {return m_id_manager;}
 
   /// @return true iff type has already beend assigned an ID.
   bool
   type_has_existing_id(shared_ptr<type_base> type) const
-  { return (m_type_id_map.find(type) != m_type_id_map.end());}
+  {return (m_type_id_map.find(type) != m_type_id_map.end());}
 
   /// Associate a unique id to a given type.  For that, put the type
   /// in a hash table, hashing the type.  So if the type has no id
@@ -124,7 +124,7 @@ public:
   get_id_for_type(shared_ptr<type_base> t)
   {
     type_shared_ptr_map::const_iterator it = m_type_id_map.find(t);
-    if ( it == m_type_id_map.end())
+    if (it == m_type_id_map.end())
       {
 	string id = get_id_manager().get_id_with_prefix("type-id-");
 	m_type_id_map[t] = id;

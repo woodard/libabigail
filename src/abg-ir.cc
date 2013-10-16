@@ -293,9 +293,7 @@ decl_base::get_qualified_name(const string& separator) const
 /// that extend the \a decl_base class.
 bool
 decl_base::operator==(const decl_base& other) const
-{
-  return get_name() == other.get_name();
-}
+{return get_name() == other.get_name();}
 
 decl_base::~decl_base()
 {}
@@ -702,7 +700,6 @@ scope_type_decl::operator==(const decl_base& o) const
   try
     {
       const scope_type_decl& other = dynamic_cast<const scope_type_decl&>(o);
-
       return (scope_decl::operator==(other)
 	      && type_base::operator==(other));
     }
@@ -1237,7 +1234,7 @@ function_type::operator==(const type_base& o) const
 }
 
 function_type::~function_type()
-{ }
+{}
 // </function_type>
 
 // <method_type>
