@@ -218,7 +218,7 @@ public:
 
   void
   set_location(const location& l)
-  { location_ = l; }
+  {location_ = l;}
 
   const string&
   get_name() const
@@ -386,8 +386,8 @@ public:
   get_alignment_in_bits() const;
 };//end class type_base
 
-
-/// A predicate for deep equality of instances of shared_ptr<type_base>
+/// A predicate for deep equality of instances of
+/// shared_ptr<type_base>
 struct type_shared_ptr_equal
 {
   bool

@@ -118,49 +118,49 @@ translation_unit*
 get_translation_unit(const shared_ptr<decl_base>);
 
 bool
-is_global_scope(const scope_decl* scpe);
+is_global_scope(const scope_decl*);
 
 bool
-is_global_scope(const shared_ptr<scope_decl> scpe);
+is_global_scope(const shared_ptr<scope_decl>);
 
 bool
-is_at_global_scope(const shared_ptr<decl_base> dcl);
+is_at_global_scope(const shared_ptr<decl_base>);
 
 bool
-is_at_class_scope(const shared_ptr<decl_base> dcl);
+is_at_class_scope(const shared_ptr<decl_base>);
 
 bool
-is_at_template_scope(const shared_ptr<decl_base> dcl);
+is_at_template_scope(const shared_ptr<decl_base>);
 
 bool
-is_template_parameter(const shared_ptr<decl_base> dcl);
+is_template_parameter(const shared_ptr<decl_base>);
 
 bool
-is_type(const shared_ptr<decl_base> decl);
+is_type(const shared_ptr<decl_base>);
 
 bool
-is_var_decl(const shared_ptr<decl_base> decl);
+is_var_decl(const shared_ptr<decl_base>);
 
 bool
-is_template_parm_composition_type(const shared_ptr<decl_base> dcl);
+is_template_parm_composition_type(const shared_ptr<decl_base>);
 
 bool
-is_template_decl(const shared_ptr<decl_base> dcl);
+is_template_decl(const shared_ptr<decl_base>);
 
 bool
-is_function_template_pattern(const shared_ptr<decl_base> dcl);
+is_function_template_pattern(const shared_ptr<decl_base>);
 
 void
-add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
+add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
 
 void
-add_decl_to_scope(shared_ptr<decl_base> dcl, shared_ptr<scope_decl> scpe);
+add_decl_to_scope(shared_ptr<decl_base>, shared_ptr<scope_decl>);
 
 global_scope*
-get_global_scope(const shared_ptr<decl_base> dcl);
+get_global_scope(const shared_ptr<decl_base>);
 
 translation_unit*
-get_translation_unit(const shared_ptr<decl_base> dcl);
+get_translation_unit(const shared_ptr<decl_base>);
 
 void
 dump(const shared_ptr<decl_base>);
@@ -169,7 +169,7 @@ void
 dump(const shared_ptr<type_base>);
 
 void
-dump(const shared_ptr<var_decl> v);
+dump(const shared_ptr<var_decl>);
 
 void
 dump(const translation_unit&);
