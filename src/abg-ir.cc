@@ -270,6 +270,12 @@ decl_base::get_qualified_name(string& qn,
       qn += sep + *i;
 }
 
+/// @return the default pretty representation for a decl.  This is
+/// basically the fully qualified name of the decl.
+string
+decl_base::get_pretty_representation() const
+{return get_qualified_name();}
+
 /// Compute the qualified name of the decl.
 ///
 /// @param sep the separator used to separate the components of the
@@ -454,6 +460,17 @@ get_global_scope(const shared_ptr<decl_base> decl)
     scope = scope->get_scope();
 
   return scope ? dynamic_cast<global_scope*> (scope) : 0;
+}
+
+/// Get the name of a given type and return a copy of it.
+///
+/// @return a copy of the type name if the type has a name, or the
+/// empty string if it does not.
+string
+get_type_name(const type_base_sptr t)
+{
+  decl_base_sptr d = dynamic_pointer_cast<decl_base>(t);
+  return d->get_name();
 }
 
 /// Return the translation unit a declaration belongs to.
@@ -1425,7 +1442,7 @@ method_type::set_class_type(shared_ptr<class_decl> t)
   if (!t)
     return;
 
-  function_decl::parameter p(t, "");
+  function_decl::parameter p(t, 0, "");
   if (class_type_)
     {
       assert(!parms_.empty());
@@ -1529,6 +1546,37 @@ function_decl::function_decl(const std::string& name,
     binding_(bind)
   {}
 
+/// @return the pretty representation for a function.
+string
+function_decl::get_pretty_representation() const
+{
+  string result = "function ";
+  decl_base_sptr type = dynamic_pointer_cast<decl_base>(get_return_type());
+
+  result += type->get_pretty_representation() + " ";
+  result += get_qualified_name() + "(";
+
+  parameter_sptr parm;
+  for (parameters::const_iterator i = get_parameters().begin();
+       i != get_parameters().end();
+       ++i)
+    {
+      parm = *i;
+      if (i != get_parameters().begin())
+	result += ", ";
+      if (parm->get_variadic_marker())
+	result += "...";
+      else
+	{
+	  type = dynamic_pointer_cast<decl_base>(parm->get_type());
+	  result += type->get_pretty_representation();
+	}
+    }
+  result += ")";
+
+  return result;
+}
+
 /// Return the type of the current instance of #function_decl.
 ///
 /// It's either a function_type or method_type.
@@ -1563,7 +1611,7 @@ function_decl::append_parameters(std::vector<shared_ptr<parameter> >& parms)
   for (std::vector<shared_ptr<parameter> >::const_iterator i = parms.begin();
        i != parms.end();
        ++i)
-    type_->get_parameters().push_back(*i);
+    type_->append_parameter(*i);
 }
 
 bool
@@ -1699,6 +1747,11 @@ class_decl::class_decl(const std::string& name, bool is_declaration_only)
     hashing_started_(false),
     is_declaration_only_(is_declaration_only)
 {}
+
+/// @return the pretty representaion for a class_decl.
+string
+class_decl::get_pretty_representation() const
+{return "class " + get_qualified_name();}
 
 /// Set the earlier declaration of this class definition.
 ///

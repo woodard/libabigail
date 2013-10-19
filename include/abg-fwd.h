@@ -162,6 +162,9 @@ get_global_scope(const shared_ptr<decl_base>);
 translation_unit*
 get_translation_unit(const shared_ptr<decl_base>);
 
+string
+get_type_name(const shared_ptr<type_base>);
+
 void
 dump(const shared_ptr<decl_base>);
 

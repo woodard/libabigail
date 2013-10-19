@@ -41,6 +41,10 @@ using std::tr1::static_pointer_cast;
 /// The function considers every possible types known to libabigail
 /// and runs the appropriate diff function on them.
 ///
+/// Whenever a new kind of type is supported by abigail, if we want to
+/// be able to diff two instances of it, we need to update this
+/// function to support it.
+///
 /// @param first the first construct to consider for the diff
 ///
 /// @param second the second construct to consider for the diff.
@@ -85,11 +89,32 @@ compute_diff_for_types(const decl_base_sptr first, decl_base_sptr second)
 /// @return the resulting diff.  It's a pointer to a descendent of
 /// abigail::comparison::diff.
 static diff_sptr
-compute_diff_for_types(const type_base_sptr first, type_base_sptr second)
+compute_diff_for_types(const type_base_sptr first, const type_base_sptr second)
 {
   decl_base_sptr f = dynamic_pointer_cast<decl_base>(first);
   decl_base_sptr s = dynamic_pointer_cast<decl_base>(second);
   return compute_diff_for_types(f, s);
+}
+
+/// Compute the difference between two decls.
+///
+/// The function consider every possible decls known to libabigail and
+/// runs the appropriate diff function on them.
+///
+/// Whenever a new kind of decl is supported by abigail, if we want to
+/// be able to diff two instances of it, we need to update this
+/// function to support it.
+///
+/// @param first the first decl to consider for the diff
+///
+/// @param second the second decl to consider for the diff.
+static diff_sptr
+compute_diff_for_decls(const decl_base_sptr first, const decl_base_sptr second)
+{
+  if (function_decl_sptr f = dynamic_pointer_cast<function_decl>(first))
+    return compute_diff(f, dynamic_pointer_cast<function_decl>(second));
+
+  return diff_sptr();
 }
 
 // <pointer_type_def stuff>
@@ -161,7 +186,8 @@ pointer_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      out << indent << "differences in pointed to type:\n";
+      out << indent << "differences in pointed to type ("
+	  << d->first_subject()->get_pretty_representation() << "):\n";
       out << indent << "\t";
       d->report(out, indent);
       out << "\n";
@@ -256,7 +282,8 @@ reference_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      out << indent << "differences in referenced type:\n";
+      out << indent << "differences in referenced type ("
+	  << d->first_subject()->get_pretty_representation() << "):\n";
       d->report(out, indent + "\t");
       out << "\n";
     }
@@ -439,8 +466,7 @@ report_num_dels_or_ins(ostream& out,
 void
 class_diff::report(ostream& out, const string& indent) const
 {
-  string name;
-  first_subject()->get_qualified_name(name);
+  string name = first_subject()->get_pretty_representation();
 
   int changes_length = length();
   if (changes_length == 0)
@@ -513,7 +539,8 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl::member_type_sptr mem_type =
 	    first_class->get_member_types()[i->index()];
-	  out << indent << "\t" << mem_type->get_qualified_name() << "\n";
+	  out << indent << "\t"
+	      << mem_type->get_pretty_representation() << "\n";
 	}
       out << "\n";
 
@@ -534,7 +561,8 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++j)
 	    {
 	      mem_type = second_class->get_member_types()[*j];
-	      out << indent << "\t" << mem_type->get_qualified_name() << "\n";
+	      out << indent << "\t"
+		  << mem_type->get_pretty_representation() << "\n";
 	    }
 	}
       out << "\n";
@@ -598,7 +626,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl::member_function_sptr mem_fun =
 	    first_class->get_member_functions()[i->index()];
-	  out << indent << "\t" << mem_fun->get_qualified_name() << "\n";
+	  out << indent << "\t" << mem_fun->get_pretty_representation() << "\n";
 	}
       out << "\n";
 
@@ -618,7 +646,8 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++j)
 	    {
 	      mem_fun = second_class->get_member_functions()[*j];
-	      out << indent << "\t" << mem_fun->get_qualified_name() << "\n";
+	      out << indent << "\t"
+		  << mem_fun->get_pretty_representation() << "\n";
 	    }
 	}
       out << "\n";
@@ -640,7 +669,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  class_decl::member_function_template_sptr mem_fn_tmpl =
 	    first_class->get_member_function_templates()[i->index()];
 	  out << indent << "\t"
-	      << mem_fn_tmpl->as_function_tdecl()->get_qualified_name()
+	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
 	      << "\n";
 	}
       if (numdels)
@@ -664,7 +693,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    {
 	      mem_fn_tmpl = second_class->get_member_function_templates()[*j];
 	      out << indent << "\t"
-		  << mem_fn_tmpl->as_function_tdecl()->get_qualified_name()
+		  << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
 		  << "\n";
 	    }
 	}
@@ -686,7 +715,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  class_decl::member_class_template_sptr mem_cls_tmpl =
 	    first_class->get_member_class_templates()[i->index()];
 	  out << indent << "\t"
-	      << mem_cls_tmpl->as_class_tdecl()->get_qualified_name()
+	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
 	      << "\n";
 	}
       if (numdels)
@@ -710,7 +739,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    {
 	      mem_cls_tmpl = second_class->get_member_class_templates()[*j];
 	      out << indent << "\t"
-		  << mem_cls_tmpl->as_class_tdecl()->get_qualified_name()
+		  << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
 		  << "\n";
 	    }
 	}
@@ -1164,10 +1193,16 @@ scope_diff::report(ostream& out, const string& indent) const
        i != changed_types().end();
        ++i)
     {
-      out << indent << "\t" << i->second.first->get_qualified_name() << "\n";
-      diff_sptr detail = compute_diff_for_types(i->second.first,
-						i->second.second);
-      detail->report(out, indent + "\t\t");
+      out << indent << "\t'"
+	  << i->second.first->get_pretty_representation()
+	  << "' was changed to '"
+	  << i->second.second->get_pretty_representation()
+	  <<"':\n";
+
+      diff_sptr diff = compute_diff_for_types(i->second.first,
+					      i->second.second);
+      if (diff)
+	diff->report(out, indent + "\t\t");
     }
   out << "\n";
 
@@ -1176,7 +1211,7 @@ scope_diff::report(ostream& out, const string& indent) const
   if (num_changed_decls == 0)
     out << "no changed declaration\n";
   else if (num_changed_decls == 1)
-    out << "1 changed declaration\n\t";
+    out << "1 changed declaration:\n\t";
   else
     out << num_changed_decls << " changed declarations:\n";
 
@@ -1185,8 +1220,15 @@ scope_diff::report(ostream& out, const string& indent) const
        i != changed_decls().end ();
        ++i)
     {
-      out << indent << "\t" << i->second.first->get_qualified_name() << "\n";
-      // TODO: compute the detailed diff for decls and report it.
+      out << indent << "\t'"
+	  << i->second.first->get_pretty_representation()
+	  << "' was changed to '"
+	  << i->second.second->get_pretty_representation()
+	  << "':\n";
+      diff_sptr diff = compute_diff_for_decls(i->second.first,
+					      i->second.second);
+      if (diff)
+	diff->report(out, indent + "\t\t");
     }
   out << "\n";
 }
@@ -1238,6 +1280,297 @@ compute_diff(const scope_decl_sptr first_scope,
 }
 
 //</scope_diff stuff>
+
+// <function_decl_diff stuff>
+struct function_decl_diff::priv
+{
+  enum Flags
+  {
+    NO_FLAG = 0,
+    IS_DECLARED_INLINE_FLAG = 1,
+    IS_NOT_DECLARED_INLINE_FLAG = 1 << 1,
+    BINDING_NONE_FLAG = 1 << 2,
+    BINDING_LOCAL_FLAG = 1 << 3,
+    BINDING_GLOBAL_FLAG = 1 << 4,
+    BINDING_WEAK_FLAG = 1 << 5
+  };// end enum Flags
+
+
+  diff_sptr return_type_diff_;
+  edit_script parm_changes_;
+  vector<char> first_fn_flags_;
+  vector<char> second_fn_flags_;
+  edit_script fn_flags_changes_;
+
+  // useful lookup tables.
+  string_parm_map deleted_parms_;
+  string_parm_map inserted_parms_;
+
+  string_changed_parm_map changed_parms_;
+  string_parm_map removed_parms_;
+  string_parm_map added_parms_;
+
+  Flags
+  fn_is_declared_inline_to_flag(function_decl_sptr f) const
+  {
+    return (f->is_declared_inline()
+	    ? IS_DECLARED_INLINE_FLAG
+	    : IS_NOT_DECLARED_INLINE_FLAG);
+  }
+
+  Flags
+  fn_binding_to_flag(function_decl_sptr f) const
+  {
+    decl_base::binding b = f->get_binding();
+    Flags result = NO_FLAG;
+    switch (b)
+      {
+      case decl_base::BINDING_NONE:
+	result = BINDING_NONE_FLAG;
+	break;
+      case decl_base::BINDING_LOCAL:
+	  result = BINDING_LOCAL_FLAG;
+	  break;
+      case decl_base::BINDING_GLOBAL:
+	  result = BINDING_GLOBAL_FLAG;
+	  break;
+      case decl_base::BINDING_WEAK:
+	result = BINDING_WEAK_FLAG;
+	break;
+      }
+    return result;
+  }
+
+};// end struct function_decl_diff::priv
+
+/// Getter for a parameter at a given index (in the sequence of
+/// parameters of the first function of the diff) marked deleted in
+/// the edit script.
+///
+/// @param i the index of the parameter in the sequence of parameters
+/// of the first function considered by the current function_decl_diff
+/// object.
+///
+/// @return the parameter at index
+const function_decl::parameter_sptr
+function_decl_diff::deleted_parameter_at(int i) const
+{return first_function_decl()->get_parameters()[i];}
+
+/// Getter for a parameter at a given index (in the sequence of
+/// parameters of the second function of the diff) marked inserted in
+/// the edit script.
+///
+/// @param i the index of the parameter in the sequence of parameters
+/// of the second function considered by the current
+/// function_decl_diff object.
+const function_decl::parameter_sptr
+function_decl_diff::inserted_parameter_at(int i) const
+{return second_function_decl()->get_parameters()[i];}
+
+
+/// Build the lookup tables of the diff, if necessary.
+void
+function_decl_diff::ensure_lookup_tables_populated()
+{
+  string parm_type_name;
+  function_decl::parameter_sptr parm;
+  for (vector<deletion>::const_iterator i =
+	 priv_->parm_changes_.deletions().begin();
+       i != priv_->parm_changes_.deletions().end();
+       ++i)
+    {
+      parm = deleted_parameter_at(i->index());
+      parm_type_name = get_type_name(parm->get_type());
+      // If for a reason the type name is empty we want to know and
+      // fix that.
+      assert(!parm_type_name.empty());
+      priv_->deleted_parms_[parm_type_name] = parm;
+    }
+
+  for (vector<insertion>::const_iterator i =
+	 priv_->parm_changes_.insertions().begin();
+       i != priv_->parm_changes_.insertions().end();
+       ++i)
+    {
+      for (vector<unsigned>::const_iterator j =
+	     i->inserted_indexes().begin();
+	   j != i->inserted_indexes().end();
+	   ++j)
+	{
+	  parm = inserted_parameter_at(*j);
+	  parm_type_name = get_type_name(parm->get_type());
+	  // If for a reason the type name is empty we want to know and
+	  // fix that.
+	  assert(!parm_type_name.empty());
+	  priv_->inserted_parms_[parm_type_name] = parm;
+	}
+    }
+
+  for (string_parm_map::const_iterator i = priv_->deleted_parms_.begin();
+       i != priv_->deleted_parms_.end();
+       ++i)
+    {
+      string_parm_map::const_iterator j;
+      if ((j = priv_->inserted_parms_.find(i->first))
+	  == priv_->inserted_parms_.end())
+	priv_->removed_parms_[i->first] = i->second;
+      else
+	priv_->changed_parms_[i->first] = changed_parm(i->second,
+						       j->second);
+    }
+
+  for (string_parm_map::const_iterator i = priv_->inserted_parms_.begin();
+       i != priv_->inserted_parms_.end();
+       ++i)
+    {
+      string_parm_map::const_iterator j;
+      if ((j = priv_->deleted_parms_.find(i->first)) ==
+	  priv_->deleted_parms_.end())
+	priv_->added_parms_[i->first] = i->second;
+    }
+}
+
+/// Constructor for function_decl_diff
+///
+/// @param first the first function considered by the diff.
+///
+/// @param second the second function considered by the diff.
+function_decl_diff::function_decl_diff(const function_decl_sptr first,
+				       const function_decl_sptr second)
+  : diff(first, second),
+    priv_(new priv)
+{
+  priv_->first_fn_flags_.push_back
+    (priv_->fn_is_declared_inline_to_flag(first_function_decl()));
+  priv_->first_fn_flags_.push_back
+    (priv_->fn_binding_to_flag(first_function_decl()));
+
+  priv_->second_fn_flags_.push_back
+    (priv_->fn_is_declared_inline_to_flag(second_function_decl()));
+  priv_->second_fn_flags_.push_back
+    (priv_->fn_binding_to_flag(second_function_decl()));
+}
+
+/// @Return the first function considered by the diff.
+const function_decl_sptr
+function_decl_diff::first_function_decl() const
+{return dynamic_pointer_cast<function_decl>(first_subject());}
+
+/// @return the second function considered by the diff.
+const function_decl_sptr
+function_decl_diff::second_function_decl() const
+{return dynamic_pointer_cast<function_decl>(second_subject());}
+
+/// @return a map of the parameters whose type got changed.  The key
+/// of the map is the name of the type.
+const string_changed_parm_map&
+function_decl_diff::changed_parms() const
+{return priv_->changed_parms_;}
+
+/// @return a map of parameters that got removed.
+const string_parm_map&
+function_decl_diff::removed_parms() const
+{return priv_->removed_parms_;}
+
+/// @return a map of parameters that got added.
+const string_parm_map&
+function_decl_diff::added_parms() const
+{return priv_->added_parms_;}
+
+/// @return the length of the changes of the function.
+unsigned
+function_decl_diff::length() const
+{return changed_parms().size() + removed_parms().size() + added_parms().size();}
+
+/// Serialize a report of the changes encapsulated in the current
+/// instance of function_decl_diff over to an output stream.
+///
+/// @param out the output stream to serialize the report to.
+///
+/// @param indent the string to use an an indentation prefix.
+void
+function_decl_diff::report(ostream& out, const string& indent) const
+{
+  // Report about return type differences.
+  if (priv_->return_type_diff_)
+    priv_->return_type_diff_->report(out, indent);
+
+  // Hmmh, the above was quick.  Now report about function
+  // parameters; this shouldn't as straightforward.
+  //
+  // Report about the parameter types that have changed.
+  for (string_changed_parm_map::const_iterator i =
+	 priv_->changed_parms_.begin();
+       i != priv_->changed_parms_.end();
+       ++i)
+    {
+      out << indent
+	  << "parameter " << i->second.first->get_index()
+	  << " of type '" << get_type_name(i->second.first->get_type())
+	  << "' changed:\n";
+      diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
+					   i->second.second->get_type());
+      if (d)
+	d->report(out, indent + "\t");
+    }
+
+  // Report about the parameters that got removed.
+  for (string_parm_map::const_iterator i = priv_->removed_parms_.begin();
+       i != priv_->removed_parms_.end();
+       ++i)
+    out << indent << "parameter " << i->second->get_index()
+	<< " of type '" << get_type_name(i->second->get_type())
+	<< "' was removed\n";
+
+  // Report about the parameters that got added
+  for (string_parm_map::const_iterator i = priv_->added_parms_.begin();
+       i != priv_->added_parms_.end();
+       ++i)
+    out << indent << "parameter " << i->second->get_index()
+	<< " of type '" << get_type_name(i->second->get_type())
+	<< "' was added\n";
+}
+
+/// Compute the diff between two function_decl.
+///
+/// @param first the first function_decl to consider for the diff
+///
+/// @param second the second function_decl to consider for the diff
+///
+/// @return the computed diff
+function_decl_diff_sptr
+compute_diff(const function_decl_sptr first,
+	     const function_decl_sptr second)
+{
+  if (first && second)
+    {
+      function_decl_diff_sptr result(new function_decl_diff(first, second));
+
+      result->priv_->return_type_diff_ =
+	compute_diff_for_types(first->get_return_type(),
+			       second->get_return_type());
+
+      diff_utils::compute_diff(first->get_parameters().begin(),
+			       first->get_parameters().end(),
+			       second->get_parameters().begin(),
+			       second->get_parameters().end(),
+			       result->priv_->parm_changes_);
+
+      diff_utils::compute_diff(result->priv_->first_fn_flags_.begin(),
+			       result->priv_->first_fn_flags_.end(),
+			       result->priv_->second_fn_flags_.begin(),
+			       result->priv_->second_fn_flags_.end(),
+			       result->priv_->fn_flags_changes_);
+
+      result->ensure_lookup_tables_populated();
+
+      return result;
+    }
+  // TODO: implement this for either first or second being NULL.
+  return function_decl_diff_sptr();
+}
+
+// </function_decl_diff stuff>
 
 // <translation_unit_diff stuff>
 

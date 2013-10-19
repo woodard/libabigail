@@ -273,7 +273,9 @@ struct function_decl::parameter::hash
   {
     type_base::shared_ptr_hash hash_type_ptr;
     std::tr1::hash<bool> hash_bool;
+    std::tr1::hash<unsigned> hash_unsigned;
     size_t v = hash_type_ptr(p.get_type());
+    v = hashing::combine_hashes(v, hash_unsigned(p.get_index()));
     v = hashing::combine_hashes(v, hash_bool(p.get_variadic_marker()));
     return v;
   }

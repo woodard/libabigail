@@ -224,6 +224,9 @@ public:
   get_name() const
   {return name_;}
 
+  virtual string
+  get_pretty_representation() const;
+
   void
   get_qualified_name(string& qualified_name,
 		     const string& separator = "::") const;
@@ -765,6 +768,8 @@ public:
   virtual ~var_decl();
 }; // end class var_decl
 
+typedef shared_ptr<function_decl> function_decl_sptr;
+
 /// Abstraction for a function declaration.
 class function_decl : public virtual decl_base
 {
@@ -779,27 +784,44 @@ public:
   /// Hasher for function_decl
   struct hash;
 
+  class parameter;
+  typedef shared_ptr<parameter> parameter_sptr;
+  typedef std::vector<parameter_sptr> parameters;
+
   /// Abtraction for the parameter of a function.
   class parameter
   {
     shared_ptr<type_base>	type_;
+    unsigned			index_;
+    bool			variadic_marker_;
     std::string		name_;
     location			location_;
-    bool			variadic_marker_;
 
   public:
 
     /// Hasher for an instance of function::parameter
     struct hash;
 
-    parameter(const shared_ptr<type_base> type, const std::string& name,
+    parameter(const shared_ptr<type_base> type,
+	      unsigned index,
+	      const std::string& name,
 	      location loc, bool variadic_marker = false)
-    : type_(type), name_(name), location_(loc),
-      variadic_marker_ (variadic_marker)
+      : type_(type), index_(index), variadic_marker_ (variadic_marker),
+	name_(name), location_(loc)
     {}
 
-    parameter(const shared_ptr<type_base> type, bool variadic_marker = false)
+    parameter(const shared_ptr<type_base> type,
+	      const std::string& name,
+	      location loc, bool variadic_marker = false)
+      : type_(type), index_(0), variadic_marker_ (variadic_marker),
+	name_(name), location_(loc)
+    {}
+
+    parameter(const shared_ptr<type_base> type,
+	      unsigned index = 0,
+	      bool variadic_marker = false)
     : type_(type),
+      index_(index),
       variadic_marker_ (variadic_marker)
     {}
 
@@ -811,6 +833,14 @@ public:
     get_type()
     {return type_;}
 
+    unsigned
+    get_index() const
+    {return index_;}
+
+    void
+    set_index(unsigned i)
+    {index_ = i;}
+
     const std::string&
     get_name() const
     {return name_;}
@@ -821,7 +851,11 @@ public:
 
     bool
     operator==(const parameter& o) const
-    {return *get_type() == *o.get_type();}
+    {
+      return (*get_type() == *o.get_type()
+	      && get_variadic_marker() == o.get_variadic_marker()
+	      && get_index() == o.get_index());
+    }
 
     bool
     get_variadic_marker() const
@@ -829,7 +863,7 @@ public:
   };
 
   function_decl(const std::string&  name,
-		const std::vector<shared_ptr<parameter> >& parms,
+		const std::vector<parameter_sptr >& parms,
 		shared_ptr<type_base> return_type,
 		size_t fptr_size_in_bits,
 		size_t fptr_align_in_bits,
@@ -858,14 +892,17 @@ public:
 		visibility vis = VISIBILITY_DEFAULT,
 		binding bind = BINDING_GLOBAL);
 
-  const std::vector<shared_ptr<parameter> >&
+  virtual string
+  get_pretty_representation() const;
+
+  const std::vector<parameter_sptr >&
   get_parameters() const;
 
   void
-  append_parameter(shared_ptr<parameter> parm);
+  append_parameter(parameter_sptr parm);
 
   void
-  append_parameters(std::vector<shared_ptr<parameter> >& parms);
+  append_parameters(std::vector<parameter_sptr >& parms);
 
   const shared_ptr<function_type>
   get_type() const;
@@ -905,6 +942,8 @@ public:
 
   virtual ~function_decl();
 };
+
+typedef shared_ptr<function_type> function_type_sptr;
 
 /// Abstraction of a function type.
 class function_type : public virtual type_base
@@ -996,7 +1035,10 @@ public:
 
   void
   append_parameter(parameter_sptr parm)
-  {parms_.push_back(parm);}
+  {
+    parm->set_index(parms_.size());
+    parms_.push_back(parm);
+  }
 
   bool
   is_variadic() const
@@ -1414,6 +1456,9 @@ public:
   hashing_started(bool b) const
   {hashing_started_ = b;}
 
+  virtual string
+  get_pretty_representation() const;
+
   bool
   is_declaration_only() const
   {return is_declaration_only_;}
@@ -1717,7 +1762,7 @@ class class_decl::method_decl : public function_decl
 public:
 
   method_decl(const std::string&  name,
-	      const std::vector<shared_ptr<parameter> >& parms,
+	      const std::vector<parameter_sptr >& parms,
 	      shared_ptr<type_base> return_type,
 	      shared_ptr<class_decl> class_type,
 	      size_t	ftype_size_in_bits,
@@ -1777,7 +1822,7 @@ public:
   struct hash;
 
   member_function(const std::string&	name,
-		  std::vector<shared_ptr<parameter> > parms,
+		  std::vector<parameter_sptr > parms,
 		  shared_ptr<type_base>	return_type,
 		  shared_ptr<class_decl>	class_type,
 		  size_t			ftype_size_in_bits,

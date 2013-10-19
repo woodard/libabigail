@@ -36,6 +36,7 @@ namespace comparison
 using std::ostream;
 using std::vector;
 using std::tr1::unordered_map;
+using std::pair;
 
 using diff_utils::insertion;
 using diff_utils::deletion;
@@ -44,8 +45,13 @@ using diff_utils::edit_script;
 class diff;
 typedef shared_ptr<diff> diff_sptr;
 typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
-typedef std::pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
-typedef unordered_map<string, changed_type_or_decl> string_changed_type_or_decl_map;
+typedef pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
+typedef pair<function_decl::parameter_sptr,
+	     function_decl::parameter_sptr> changed_parm;
+typedef unordered_map<string, changed_parm> string_changed_parm_map;
+typedef unordered_map<string,
+		      changed_type_or_decl> string_changed_type_or_decl_map;
+typedef unordered_map<string, function_decl::parameter_sptr> string_parm_map;
 
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for two constructs that are to be diff'ed.  The two
@@ -299,6 +305,62 @@ compute_diff(const scope_decl_sptr first_scope,
 scope_diff_sptr
 compute_diff(const scope_decl_sptr first_scope,
 	     const scope_decl_sptr second_scope);
+
+class function_decl_diff;
+typedef shared_ptr<function_decl_diff> function_decl_diff_sptr;
+
+/// Abstraction of a diff between two function_decl.
+class function_decl_diff : public diff
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+  void
+  ensure_lookup_tables_populated();
+
+  const function_decl::parameter_sptr
+  deleted_parameter_at(int i) const;
+
+  const function_decl::parameter_sptr
+  inserted_parameter_at(int i) const;
+
+public:
+
+friend function_decl_diff_sptr
+compute_diff(const function_decl_sptr first,
+	     const function_decl_sptr second);
+
+  function_decl_diff(const function_decl_sptr first,
+		     const function_decl_sptr second);
+
+  const function_decl_sptr
+  first_function_decl() const;
+
+  const function_decl_sptr
+  second_function_decl() const;
+
+  const diff_sptr
+  return_diff() const;
+
+  const string_changed_parm_map&
+  changed_parms() const;
+
+  const string_parm_map&
+  removed_parms() const;
+
+  const string_parm_map&
+  added_parms() const;
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+}; // end class function_decl_diff
+
+function_decl_diff_sptr
+compute_diff(const function_decl_sptr first,
+	     const function_decl_sptr second);
 
 class translation_unit_diff;
 typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
