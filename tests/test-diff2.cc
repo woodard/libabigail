@@ -39,6 +39,7 @@ using std::string;
 
 using abigail::diff_utils::ses_len;
 using abigail::diff_utils::point;
+using abigail::diff_utils::snake;
 using abigail::diff_utils::compute_middle_snake;
 using abigail::diff_utils::print_snake;
 using abigail::diff_utils::compute_lcs;
@@ -141,14 +142,11 @@ main(int argc, char*argv[])
   if (opts.middle_snake)
     {
       int ses_len = 0;
-      point snake_begin, snake_end;
+      snake s;
       if (compute_middle_snake(opts.str1, opts.str2,
-				      snake_begin, snake_end,
-				      ses_len))
+			       s, ses_len))
 	{
-	  print_snake(opts.str1, opts.str2,
-			     snake_begin, snake_end,
-			     cout);
+	  print_snake(opts.str1, opts.str2, s, cout);
 	  cout << "ses len: " << ses_len << "\n";
 	}
       return 0;

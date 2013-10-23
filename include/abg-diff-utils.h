@@ -107,13 +107,41 @@ public:
     empty_ = false;
   }
 
+  void
+  set(int x, int y, bool empty)
+  {
+    x_ = x;
+    y_ = y;
+    empty_ = empty;
+  }
+
+  void
+  add(int ax, int ay)
+  {set (x() + ax, y() + ay);}
+
   bool
-  operator!=(const point& o)
+  operator!=(const point& o) const
   {return (x() != o.x() || y() != o.y() || is_empty() != o.is_empty());}
 
   bool
-  operator==(const point& o)
-  {return !(*this != o);}
+  operator==(const point& o) const
+  {return !(operator!=(o));}
+
+  bool
+  operator<(const point& o) const
+  {return (x() < o.x() && y() < o.y());}
+
+  bool
+  operator>(const point& o) const
+  {return (x() > o.x() && y() > o.y());}
+
+  bool
+  operator<=(const point& o) const
+  {return (x() <= o.x() && y() <= o.y());}
+
+  bool
+  operator>=(const point& o) const
+  {return (x() >= o.x() && y() >= o.y());}
 
   point
   operator+(int val) const
@@ -168,7 +196,7 @@ public:
   point&
   operator=(const point& p)
   {
-    set(p.x(), p.y());
+    set(p.x(), p.y(), p.is_empty());
     return *this;
   }
 
@@ -192,6 +220,236 @@ public:
   }
 };// end point
 
+/// The abstraction of the Snake concept, from the paper.
+///
+/// In a given path from the edit graph, a snake is a non-diagonal
+/// edge followed by zero or more diagonal edges.
+///
+/// The starting poing of the non-diagonal edge is the beginning of
+/// the snake.  This is given by the snake::begin() method.  This point
+/// is not explicitely referenced in the paper, but we need it for
+/// some grunt implementation details of the algorithm.
+///
+/// The end point of the non-diagonal edge is the intermediate point
+/// of the snake; it's given by the snake::intermediate() method.
+/// This point is what is referred to as "the begining of the snake"
+/// in the paper.
+///
+/// The end point of the first diagonal edge is given by the
+/// snake::diagonal_start() method.
+///
+/// The end point of the last diagonal edge is given by the
+/// snake::end() method.  Note that when the snake contains no
+/// diagonal edge, snake::intermediate(), and snake::end() return the
+/// same point; snake::diagonal_start() contains an empty point (i.e,
+/// a point for which point::is_empty() returns true).
+class snake
+{
+  point begin_, intermediate_, diagonal_start_, end_;
+  bool forward_;
+
+public:
+
+  /// Default constructor for snake.
+  snake()
+    : forward_(false)
+  {}
+
+  /// Constructor from the beginning, intermediate and end points.
+  ///
+  /// @param b the beginning point of the snake.  That is, the
+  /// starting point of the non-diagonal edge.
+  ///
+  /// @param i the intermediate point of the snake.  That is, the end
+  /// point of the non-diagonal edge.
+  ///
+  /// @param e the end point of the snake.  That is the end point of
+  /// the last diagonal edge.
+  snake(const point& b,
+	const point& i,
+	const point& e)
+    : begin_(b), intermediate_(i),
+      end_(e), forward_(false)
+  {}
+
+  /// Constructor from the beginning, intermediate and end points.
+  ///
+  /// @param b the beginning point of the snake.  That is, the
+  /// starting point of the non-diagonal edge.
+  ///
+  /// @param i the intermediate point of the snake.  That is, the end
+  /// point of the non-diagonal edge.
+  ///
+  /// @param d the beginning of the diagonal edge.  That is the end of
+  /// the first diagonal edge of the snake.
+  ///
+  /// @param e the end point of the snake.  That is the end point of
+  /// the last diagonal edge.
+  snake(const point& b,
+	const point& i,
+	const point& d,
+	const point& e)
+    : begin_(b), intermediate_(i),
+      diagonal_start_(d), end_(e),
+      forward_(false)
+  {}
+
+  /// Getter for the starting point of the non-diagonal edge of the
+  /// snake.
+  ///
+  /// @return the starting point of the non-diagonal edge of the snake
+  const point&
+  begin() const
+  {return begin_;}
+
+  /// Getter for the starting point of the non-diagonal edge of the
+  /// snake, aka begin point.
+  ///
+  ///@param p the new begin point.
+  void
+  begin(const point& p)
+  {begin_ = p;}
+
+  /// Getter for the end point of the non-diagonal edge of the snake.
+  ///
+  /// @return the end point of the non-diagonal edge of the snake
+  const point&
+  intermediate() const
+  {return intermediate_;}
+
+  /// Setter for the end point of the non-diagonal edge of the snake,
+  /// aka intermediate point.
+  ///
+  /// @param p the new intermediate point.
+  void
+  intermediate(const point& p)
+  {intermediate_ = p;}
+
+  /// Getter for the end point of the first diagonal edge, aka
+  /// diagonal start point.  Note that if the snake has no diagonal
+  /// edge, this point is empty.
+  ///
+  /// @return the end point of the first diagonal edge.
+  const point&
+  diagonal_start() const
+  {return diagonal_start_;}
+
+  /// Setter for the end point of the first diagonal edge, aka
+  /// diagonal start point.
+  ///
+  /// @param p the new diagonal start.d
+  void
+  diagonal_start(const point& p)
+  {diagonal_start_ = p;}
+
+  /// Getter for the end point of the last diagonal edge, aka snake
+  /// end point.  Note that if the snake has no diagonal edge, this
+  /// point is equal to the intermediate point.
+  ///
+  /// @return the end point of the last diagonal edge
+  const point&
+  end() const
+  {return end_;}
+
+  /// Setter for the end point of the last diagonal edge, aka snake
+  /// end point.  Note that if the snake has no diagonal edge, this
+  /// point is equal to the intermediate point.
+  void
+  end(const point& p)
+  {end_ = p;}
+
+  /// Setter for the begin, intermediate and end points of the snake.
+  ///
+  /// @param b the new snake begin point
+  ///
+  /// @param i the new snake intermediate point
+  ///
+  /// @param e the new snake end point
+  void
+  set(const point& b, const point&i, const point&e)
+  {
+    begin(b);
+    intermediate(i);
+    end(e);
+  }
+
+  /// Setter for the begin, intermediate, diagonal start and end points
+  /// of the snake.
+  ///
+  /// @param b the new snake begin point
+  ///
+  /// @param i the new snake intermediate point
+  ///
+  /// @param d the new diagonal start point
+  ///
+  /// @param e the new snake end point
+  void
+  set(const point& b, const point&i, const point& d, const point&e)
+  {
+    begin(b);
+    intermediate(i);
+    diagonal_start(d);
+    end(e);
+  }
+
+  /// @return true iff the snake is a forward snake.  That is, if it
+  /// was built while walking the edit graph going forward (from the
+  /// top left corner to the right bottom corner.
+  bool
+  is_forward() const
+  {return forward_;}
+
+  /// Set to true if the snake is a forward snake; that is, if it was
+  /// built while walking the edit graph going forward (from the top
+  /// left corner to the right bottom corner.  Set to false otherwise.
+  ///
+  /// @param f whether the snake is a forward snake or not.
+  void
+  set_forward(bool f)
+  {forward_ = f;}
+
+  /// Add an offset to the abscissas of the points of the snake, and
+  /// add another offset to the ordinates of these same points.
+  ///
+  /// @param x_offset the offset to add to the abscissas of all the
+  /// points of the snake.
+  ///
+  /// @param y_offset the offset to add to the ordinates of all the
+  /// points of the snake.
+  void
+  add(int x_offset, int y_offset)
+  {
+    if (is_empty())
+      return;
+
+    begin_.add(x_offset, y_offset);
+    intermediate_.add(x_offset, y_offset);
+    if (diagonal_start_)
+      diagonal_start_.add(x_offset, y_offset);
+    end_.add(x_offset, y_offset);
+  }
+
+  /// @return true iff the snake has at least one diagonal edge.
+  bool
+  has_diagonal_edge() const
+  {return !diagonal_start().is_empty();}
+
+  /// @return true iff the non-diagonal edge is horizontal.
+  bool
+  has_horizontal_edge() const
+  {return (begin().y() == intermediate().y());}
+
+  /// @return true iff the non-diagonal edge is vertical.
+  bool
+  has_vertical_edge() const
+  {return (begin().x() == intermediate().x());}
+
+  /// @return true iff the snake is empty, that is, if all the points
+  /// it contains are empty.
+  bool is_empty() const
+  {return begin().is_empty() && intermediate().is_empty() && end().is_empty();}
+};// end class snake
+
 /// The array containing the furthest D-path end-points, for each value
 /// of K.  MAX_D is the maximum value of the D-Path.  That is, M+N if
 /// M is the size of the first input string, and N is the size of the
@@ -210,14 +468,18 @@ private:
   /// Forbid default constructor.
   d_path_vec();
 
+  bool
+  over_bounds(long long index) const
+  {return  (index + offset()) >= (long long) size();}
+
   void
-  check_index_against_bound(int index, int bound) const
+  check_index_against_bound(int index) const
   {
-    if (std::abs(index) > bound)
+    if (over_bounds(index))
       {
 	ostringstream o;
 	o << "index '" << index
-	  << "' out of range [-" << bound << ", " << bound << "]";
+	  << "' out of range [-" << max_d() << ", " << max_d() << "]";
 	throw std::out_of_range(o.str());
       }
   }
@@ -226,9 +488,17 @@ public:
 
   /// Constructor of the d_path_vec.
   ///
-  /// The underlying vector allocates 2 * MAX_D - 1 space, so that one
-  /// can address elements in the index range [-MAX_D, MAX_D].
-  /// And MAX_D is the sum of the (1 + size_of_the_sequence).
+  /// For forward vectors, the underlying vector allocates 2 *
+  /// [MAX_D+1].
+  /// space, so that one can address elements in the index range
+  /// [-MAX_D, MAX_D].  And MAX_D is the sum of the two sequence
+  /// sizes. delta is the difference.
+  ///
+  /// For reverse vectors, note that we need to be able to address
+  /// [-MAX_D - delta, MAX_D + delta], with delta being the (signed)
+  /// difference between the size of the two sequences.  We consider
+  /// delta being bounded by MAX_D itself; so we say we need to be
+  /// able to address [-2MAX_D, 2MAX_D].
   ///
   /// @params size1 the size of the first sequence we are interested
   /// in.
@@ -236,38 +506,32 @@ public:
   /// @param size2 the size of the second sequence we are interested
   /// in.
   d_path_vec(unsigned size1, unsigned size2)
-    : vector<int>(2 * (size1 + 1 + size2 + 1) - 1, 0),
+    : vector<int>(2 * (size1 + size2 + 1) + (size1 + size2) + 1, 0),
       a_size_(size1), b_size_(size2)
   {
   }
 
   typename std::vector<int>::const_reference
   operator[](int index) const
-  {
-    int i = max_d() + index;
-    return (*static_cast<const vector<int>* >(this))[i];
-  }
+  {return at(index);}
 
   typename std::vector<int>::reference
   operator[](int index)
-  {
-    int i = max_d() + index;
-    return (*static_cast<vector<int>* >(this))[i];
-  }
+  {return at(index);}
 
   typename std::vector<int>::reference
-  at(int index)
+  at(long long index)
   {
-    check_index_against_bound(index, max_d());
-    int i = max_d() + index;
+    check_index_against_bound(index);
+    long long i = index + offset();
     return static_cast<vector<int>* >(this)->at(i);
   }
 
   typename std::vector<int>::const_reference
-  at(int index) const
+  at(long long index) const
   {
-    check_index_against_bound(index, max_d());
-    int i = max_d() + index;
+    check_index_against_bound(index);
+    long long i = offset() + index;
     return static_cast<const vector<int>* >(this)->at(i);
   }
 
@@ -282,6 +546,10 @@ public:
   unsigned
   max_d() const
   {return a_size() + b_size();}
+
+  unsigned
+  offset() const
+  {return max_d() + abs((long long) a_size() - (long long) b_size());}
 }; // end class d_path_vec
 
 /// The abstration of an insertion of elements of a sequence B into a
@@ -445,8 +713,8 @@ point_is_valid_in_graph(point& p,
 			unsigned b_size);
 
 bool
-ends_of_furthest_d_paths_overlap(point& forward_d_path_end,
-				 point& reverse_d_path_end);
+ends_of_furthest_d_paths_overlap(const point& forward_d_path_end,
+				 const point& reverse_d_path_end);
 
 /// Find the end of the furthest reaching d-path on diagonal k, for
 /// two sequences.  In the paper This is referred to as "the basic
@@ -479,8 +747,8 @@ ends_of_furthest_d_paths_overlap(point& forward_d_path_end,
 /// ..., D - 1], v[k] is the abscissa of the end of the furthest
 /// reaching (D-1)-path on diagonal k.
 ///
-/// @param end abscissa and ordinate of the computed abscissa of the
-/// end of the furthest reaching (d-1) paths.
+/// @param snak the last snake of the furthest path found.  The end
+/// point of the snake is the end point of the furthest path.
 ///
 /// @return true if the end of the furthest reaching path that was
 /// found was inside the boundaries of the edit graph, false
@@ -492,9 +760,11 @@ end_of_fr_d_path_in_k(int k, int d,
 		      RandomAccessOutputIterator a_end,
 		      RandomAccessOutputIterator b_start,
 		      RandomAccessOutputIterator b_end,
-		      d_path_vec& v, point& end)
+		      d_path_vec& v, snake& snak)
 {
   int x = -1, y = -1;
+  point begin, intermediate, diag_start, end;
+  snake s;
 
   // Let's pick the end point of the furthest reaching
   // (D-1)-path.  It's either v[k-1] or v[k+1]; the word
@@ -510,19 +780,29 @@ end_of_fr_d_path_in_k(int k, int d,
     // = x - k (a bit below); as k has changed from k - 1 (it
     // has increased), y is going to be the new y that is
     // 'down' from the previous y in k - 1.
-    x = v[k+1];
+    {
+      x = v[k+1];
+      begin.set(x, x - (k + 1));
+    }
   else
-    // So the abscissa of the end point of the furthest
-    // (D-1)-path is v[k-1].  That is on the left of the
-    // current k diagonal.  To move to the current k diagonal,
-    // one has to move "right" from diagonal k - 1.  That is,
-    // the y stays constant and x is incremented.
-    x = v[k-1] + 1;
+    {
+      // So the abscissa of the end point of the furthest
+      // (D-1)-path is v[k-1].  That is on the left of the
+      // current k diagonal.  To move to the current k diagonal,
+      // one has to move "right" from diagonal k - 1.  That is,
+      // the y stays constant and x is incremented.
+      x = v[k-1];
+      begin.set(x, x - (k - 1));
+      ++x;
+    }
 
   // Now get the value of y from the equation k = x -y.
   // This is the point where we first touch K, when we move
   // from the end of the furthest reaching (D-1)-path.
   y = x - k;
+
+  intermediate.x(x);
+  intermediate.y(y);
 
   int last_x_index = a_end - a_begin - 1;
   int last_y_index = b_end - b_start - 1;
@@ -534,9 +814,14 @@ end_of_fr_d_path_in_k(int k, int d,
       {
 	x = x + 1;
 	y = y + 1;
+	if (!diag_start)
+	  diag_start.set(x, y);
       }
     else
       break;
+
+  end.x(x);
+  end.y(y);
 
   // Note the point that we store in v here might be outside the
   // bounds of the edit graph.  But we store it at this step (for a
@@ -550,8 +835,9 @@ end_of_fr_d_path_in_k(int k, int d,
       || x < -1 || y < -1)
     return false;
 
-  end.x(x);
-  end.y(y);
+  s.set(begin, intermediate, diag_start, end);
+  s.set_forward(true);
+  snak = s;
 
   return true;
 }
@@ -590,8 +876,8 @@ end_of_fr_d_path_in_k(int k, int d,
 /// -D + 5, ..., D - 1], v[k - delta] is the abscissa of the end of the
 /// furthest reaching (D-1)-path on diagonal k - delta.
 ///
-/// @param point the computed abscissa and ordinate of the end point
-/// of the furthest reaching d-path on line k - delta.
+/// @param snak the last snake of the furthest path found.  The end
+/// point of the snake is the end point of the furthest path.
 ///
 /// @return true iff the end of the furthest reaching path that was
 /// found was inside the boundaries of the edit graph, false
@@ -603,13 +889,15 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
 				   RandomAccessOutputIterator a_end,
 				   RandomAccessOutputIterator b_begin,
 				   RandomAccessOutputIterator b_end,
-				   d_path_vec& v, point& end)
+				   d_path_vec& v, snake& snak)
 {
   int a_size = a_end - a_begin;
   int b_size = b_end - b_begin;
   int delta = a_size - b_size;
   int k_plus_delta = k + delta;
   int x = -1, y = -1;
+  point begin, intermediate, diag_start, end;
+  snake s;
 
   // Let's pick the end point of the furthest reaching (D-1)-path and
   // move from there to reach the current k_plus_delta-line.  That end
@@ -624,6 +912,7 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
       // We move left, that means ordinate won't change ...
       x = v[k_plus_delta + 1];
       y = x - (k_plus_delta + 1);
+      begin.set(x, y);
       // ... and abscissa decreases.
       x = x - 1;
     }
@@ -636,20 +925,27 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
 
       // So moving up means abscissa won't change ...
       x = v[k_plus_delta - 1];
+      begin.set(x, x - (k_plus_delta - 1));
       // ... and that ordinate decreases.
       y = x - (k_plus_delta - 1) - 1;
     }
+
+  intermediate.set(x, y);
 
   // Now, follow the snake.  Note that we stay on the k_plus_delta
   // diagonal when we do this.
   while (x >= 0 && y >= 0)
     if (a_begin[x] == b_begin[y])
       {
+	if (!diag_start)
+	  diag_start.set(x, y);
 	x = x - 1;
 	y = y - 1;
       }
     else
       break;
+
+  end.set(x, y);
 
   // Note the point that we store in v here might be outside the
   // bounds of the edit graph.  But we store it at this step (for a
@@ -663,8 +959,9 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
   else if (x < -1 || y < -1)
     return false;
 
-  end.x(x);
-  end.y(y);
+  s.set(begin, intermediate, diag_start, end);
+  s.set_forward(false);
+  snak = s;
 
   return true;
 }
@@ -707,87 +1004,6 @@ is_match_point(RandomAccessOutputIterator a_begin,
   return (a_begin[point.x()] == b_begin[point.y()]);
 }
 
-/// Given two points A and B, if A is a match point, assign A to B (B
-/// = A).
-///
-/// @param a_begin the begin iterator of the first input sequence of
-/// the edit graph.
-///
-/// @param a_end the end iterator of the first input sequence of the
-/// edit graph.  This points to one element after the last element of
-/// the sequence.
-///
-/// @param b_begin the begin iterator of the second input sequence of
-/// the edit graph.
-///
-/// @param b_end the end iterator of the second input sequence of the
-/// edit graph.  This points the one element after the last element of
-/// the sequence.
-///
-/// @param p the first point to consider.  This is the one to test for
-/// being a match point.
-///
-/// @param snake_end_point the second point to consider.  This the one
-/// to be assigned to, if \a p is a match point.
-template<typename RandomAccessOutputIterator>
-void
-maybe_record_match_point(const RandomAccessOutputIterator a_begin,
-			 const RandomAccessOutputIterator a_end,
-			 const RandomAccessOutputIterator b_begin,
-			 const RandomAccessOutputIterator b_end,
-			 const point& p,
-			 point& snake_end_point)
-{
-  if (is_match_point(a_begin, a_end,
-		     b_begin, b_end,
-		     p))
-    snake_end_point = p;
-}
-
-/// Given the end point of a snake, find its starting point.
-///
-/// @param a_begin the begin iterator of the first input sequence of
-/// the edit graph.
-///
-/// @param a_end the end iterator of the first input sequence of the
-/// edit graph.  This points to one element after the last element of
-/// the sequence.
-///
-/// @param b_begin the begin iterator of the second input sequence of
-/// the edit graph.
-///
-/// @param b_end the end iterator of the second input sequence of the
-/// edit graph.  This points to one element after the last element of
-/// the sequence.
-///
-/// @param snake_end_point the end point of the snake.
-///
-/// @param snake_start_point this out parameter is set to the starting
-/// point of the snake.
-template<typename RandomAccessOutputIterator>
-void
-find_snake_start_point(const RandomAccessOutputIterator a_begin,
-		       const RandomAccessOutputIterator a_end,
-		       const RandomAccessOutputIterator b_begin,
-		       const RandomAccessOutputIterator b_end,
-		       const point& snake_end_point,
-		       bool forward,
-		       point& snake_start_point)
-{
-  assert(is_match_point(a_begin, a_end,
-			b_begin, b_end,
-			snake_end_point));
-
-  int incr = forward ? -1 : 1;
-
-  for (point p  = snake_end_point;
-       is_match_point(a_begin, a_end,
-		      b_begin, b_end,
-		      p);
-       p += incr)
-      snake_start_point = p;
-}
-
 /// Returns the middle snake of two sequences A and B, as well as the
 /// length of their shortest editing script.
 ///
@@ -807,16 +1023,9 @@ find_snake_start_point(const RandomAccessOutputIterator a_begin,
 /// @param b_end an iterator pointing to the end of sequence B.  Note
 /// that this points right /after/ the end of vector B
 ///
-/// @param snake_start this is set by the function iff it returns
-/// true.  It's the coordinates (starting from 1) of the beginning of
-/// the snake using @a a_begin as the base for the abscissa and
-/// b_begin as the base for the ordinate.
-///
-/// @param snake_end this is set by the function iff it returns true.
-/// It's the coordinates (starting from 1) of the end of the snake
-/// using @a a_begin as the base for the abscissa and @a b_begin as
-/// the base for the ordinate.  It points to the last point of the
-/// snake.
+/// @param snak out parameter.  This is the snake current when the two
+/// paths overlapped.  This is set iff the function returns true;
+/// otherwise, this is not touched.
 ///
 /// @return true is the snake was found, false otherwise.
 template<typename RandomAccessOutputIterator>
@@ -825,9 +1034,7 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
 		     RandomAccessOutputIterator a_end,
 		     RandomAccessOutputIterator b_begin,
 		     RandomAccessOutputIterator b_end,
-		     point& snake_begin,
-		     point& snake_end,
-		     int& ses_len)
+		     snake& snak, int& ses_len)
 {
   int a_size = a_end - a_begin;
   int N = a_size;
@@ -836,12 +1043,9 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
   int delta = N - M;
   d_path_vec forward_d_paths(a_size, b_size);
   d_path_vec reverse_d_paths(a_size, b_size);
-  // These two points below record the end point of the last non-empty
-  // snake that we've seen while building the path.
-  point last_forward_snake_point, last_reverse_snake_point;
   // These points below are the top leftmost point and bottom
   // right-most points of the edit graph.
-  point first_point(-1, -1), last_point(a_size -1, b_size -1);
+  point first_point(-1, -1), last_point(a_size -1, b_size -1), point_zero(0, 0);
 
   // We want the initial step (D = 0, k = 0 in the paper) to find a
   // furthest reaching point on diagonal k == 0; For that, we need the
@@ -864,127 +1068,35 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
   reverse_d_paths[delta + 1] = a_size;
 
   int d_max = (M + N) / 2 + 1;
-  for (int d = 0; d < d_max; ++d)
+  for (int d = 0; d <= d_max; ++d)
     {
       // First build forward paths.
       for (int k = -d; k <= d; k += 2)
 	{
-	  point forward_end, reverse_end;
+	  snake s;
 	  bool found = end_of_fr_d_path_in_k(k, d,
 					     a_begin, a_end,
 					     b_begin, b_end,
-					     forward_d_paths,
-					     forward_end);
+					     forward_d_paths, s);
 	  if (!found)
 	    continue;
 
-	  maybe_record_match_point(a_begin, a_end,
-				   b_begin, b_end,
-				   forward_end,
-				   last_forward_snake_point);
-
-	  // As the paper says criptically in 4b while explaining the
-	  // middle snake algorithm:
+	  // As the paper says in 4b while explaining the middle snake
+	  // algorithm:
 	  //
 	  // "Thus when delta is odd, check for overlap only while
 	  //  extending forward paths ..."
 	  if ((delta % 2)
 	      && (k >= (delta - (d - 1))) && (k <= (delta + (d - 1))))
 	    {
+	      point reverse_end;
 	      reverse_end.x(reverse_d_paths[k]);
 	      reverse_end.y(reverse_end.x() - k);
-	      if (ends_of_furthest_d_paths_overlap(forward_end, reverse_end))
+	      if (ends_of_furthest_d_paths_overlap(s.end(), reverse_end))
 		{
-		  // So the forward path overlaps the reverse path.
-		  // The paper says in the linear space refinement in
-		  // 4b that:
-		  //
-		  //	As soon as a pair of opposing and furthest
-		  //	reaching paths overlap, stop and report the
-		  //	overlapping snake as the middle snake of an
-		  //	optimal path.
-		  //
-		  // I guess now the crux of the mater is to find that
-		  // pesky "overlapping snake".  And unfortunately the
-		  // paper is not extremely precise about how to find
-		  // it.
-		  //
-		  // In the algorithm one can read:
-		  //
-		  //	The last snake of the forward path is the
-		  //	middle snake
-		  //
-		  //	So here is how I think we can pull this off:
-		  //
-		  //	Once we detected the overlap, if there is
-		  //	already a non-empty snake encountered in the
-		  //	current path, stop and report it as the middle
-		  //	snake.  Otherwise if there is no non-empty
-		  //	snake seen yet, keep building the forward path
-		  //	until the end of the path.  If we found a
-		  //	non-empty snake, report it.  Otherwise, there
-		  //	is no non-empty middle snake and the two
-		  //	sequences have no longest common sub-sequence.
-		  if (!last_forward_snake_point
-		      && forward_end != last_point)
-		    {
-		      // So we didn't see any non-empty snake before
-		      // the paths overlap.  Let's keep building the
-		      // path and record the non-empty snakes we see
-		      // on the way.
-		      int k_prime = k + 2;
-		      for (; k_prime <= d; k_prime += 2)
-			{
-			  forward_end.clear();
-			  end_of_fr_d_path_in_k(k_prime, d,
-						a_begin, a_end,
-						b_begin, b_end,
-						forward_d_paths,
-						forward_end);
-			  maybe_record_match_point(a_begin, a_end,
-						   b_begin, b_end,
-						   forward_end,
-						   last_forward_snake_point);
-			  if (forward_end == last_point)
-			    break;
-			}
-		      for (int remaining_of_d = d + 1;
-			   remaining_of_d < d_max;
-			   ++remaining_of_d)
-			{
-			  for (k_prime = -remaining_of_d;
-			       k_prime <= remaining_of_d;
-			       k_prime += 2)
-			    {
-			      forward_end.clear();
-			      end_of_fr_d_path_in_k(k_prime, remaining_of_d,
-						    a_begin, a_end,
-						    b_begin, b_end,
-						    forward_d_paths,
-						    forward_end);
-			      maybe_record_match_point(a_begin, a_end,
-						       b_begin, b_end,
-						       forward_end,
-						       last_forward_snake_point);
-			      if (forward_end == last_point)
-				break;
-			    }
-			}
-		    }
-
-		  // Now report the "last snake" of this path that
-		  // overlaped.
-		  if (last_forward_snake_point)
-		    {
-		      ses_len = 2 * d - 1;
-		      snake_end = last_forward_snake_point;
-		      find_snake_start_point(a_begin, a_end,
-					     b_begin, b_end,
-					     last_forward_snake_point,
-					     /*forward=*/true,
-					     snake_begin);
-		      return true;
-		    }
+		  ses_len = 2 * d - 1;
+		  snak = s;
+		  return true;
 		}
 	    }
 	}
@@ -992,20 +1104,14 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
       // Now build reverse paths.
       for (int k = -d; k <= d; k += 2)
 	{
-	  point forward_end, reverse_end;
+	  snake s;
 	  bool found = end_of_frr_d_path_in_k_plus_delta(k, d,
 							 a_begin, a_end,
 							 b_begin, b_end,
-							 reverse_d_paths,
-							 reverse_end);
+							 reverse_d_paths, s);
 
 	  if (!found)
 	    continue;
-
-	  maybe_record_match_point(a_begin, a_end,
-				   b_begin, b_end,
-				   reverse_end + 1,
-				   last_reverse_snake_point);
 
 	  // And the paper continues by saying:
 	  //
@@ -1015,67 +1121,14 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
 	  if (!(delta % 2)
 	      && (k_plus_delta >= -d) && (k_plus_delta <= d))
 	    {
+	      point forward_end;
 	      forward_end.x(forward_d_paths[k_plus_delta]);
 	      forward_end.y(forward_end.x() - k_plus_delta);
-	      // To detect the overlapping paths and report the middle
-	      // snake, we do things similar to the foward path
-	      // version above.  Please go read the comments there to
-	      // understand what we are doing here.
-	      if (ends_of_furthest_d_paths_overlap(forward_end, reverse_end))
+	      if (ends_of_furthest_d_paths_overlap(forward_end, s.end()))
 		{
-		  if (!last_reverse_snake_point
-		      && reverse_end != first_point)
-		    {
-		      int k_prime = k + 2;
-		      for (; k_prime <= d; k_prime += 2)
-			{
-			  end_of_frr_d_path_in_k_plus_delta(k_prime, d,
-							    a_begin, a_end,
-							    b_begin, b_end,
-							    reverse_d_paths,
-							    reverse_end);
-			  maybe_record_match_point(a_begin, a_end,
-						   b_begin, b_end,
-						   reverse_end + 1,
-						   last_reverse_snake_point);
-			  if (reverse_end == first_point)
-			    break;
-			}
-		      for (int remaining_of_d = d + 1;
-			   remaining_of_d < d_max;
-			   ++remaining_of_d)
-			{
-			  for (k_prime = -remaining_of_d;
-			       k_prime <= remaining_of_d;
-			       k_prime += 2)
-			    {
-			      end_of_frr_d_path_in_k_plus_delta(k_prime,
-								remaining_of_d,
-								a_begin, a_end,
-								b_begin, b_end,
-								reverse_d_paths,
-								reverse_end);
-			      maybe_record_match_point(a_begin, a_end,
-						       b_begin, b_end,
-						       reverse_end + 1,
-						       last_reverse_snake_point);
-			      if (reverse_end == first_point)
-				break;
-			    }
-			}
-		    }
-
-		  if (last_reverse_snake_point)
-		    {
-		      ses_len = 2 * d;
-		      snake_end = last_reverse_snake_point;
-		      find_snake_start_point(a_begin, a_end,
-					     b_begin, b_end,
-					     last_reverse_snake_point,
-					     /*forward=*/false,
-					     snake_begin);
-		      return true;
-		    }
+		    ses_len = 2 * d;
+		    snak = s;
+		    return true;
 		}
 	    }
 	}
@@ -1085,8 +1138,7 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
 
 bool
 compute_middle_snake(const char* str1, const char* str2,
-		     point& snake_begin, point& snake_end,
-		     int& ses_len);
+		     snake& s, int& ses_len);
 
 /// This prints the middle snake of two strings.
 ///
@@ -1094,38 +1146,37 @@ compute_middle_snake(const char* str1, const char* str2,
 ///
 /// @param b_begin the beginning of the second string.
 ///
-/// @param snake_begin the beginning point of the snake.
+/// @param s the snake to print.
 ///
-/// @param snake_end the end point of the snake.  Note that this point
-/// is one offset past the end of the snake.
+/// @param out the output stream to print the snake to.
 template<typename RandomAccessOutputIterator>
 void
 print_snake(RandomAccessOutputIterator a_begin,
 	    RandomAccessOutputIterator b_begin,
-	    const point& snake_begin,
-	    const point& snake_end,
-	    ostream& out)
+	    const snake s, ostream& out)
 {
-   if (!(snake_begin && snake_end))
+  if (s.is_empty())
     return;
 
-  out << "middle snake points: ";
-  for (int x = snake_begin.x(), y = snake_begin.y();
-       x <= snake_end.x() && y <= snake_end.y();
-       ++x, ++y)
-    {
-      assert(a_begin[x] == b_begin[y]);
-      out << "(" << x << "," << y << ") ";
-    }
-  out << "\n";
+   out << "snake start: ";
+   out << "(" << s.begin().x() << ", " << s.end().y() << ")\n";
 
-  out << "middle snake string: ";
-  for (int x = snake_begin.x(), y = snake_begin.y();
-       x <= snake_end.x() && y <= snake_end.y();
-       ++x, ++y)
-    out << a_begin[x];
+   out << "snake intermediate: ";
+   out << "(" << s.intermediate().x() << ", " << s.intermediate().y() << ")\n";
 
-  out << "\n";
+   out << "diagonal point(s): ";
+   if (s.has_diagonal_edge())
+     for (int x = s.intermediate().x(), y = s.intermediate().y();
+	  x <= s.end().x() && y <= s.end().y();
+	  ++x, ++y)
+       {
+	 assert(a_begin[x] == b_begin[y]);
+	 out << "(" << x << "," << y << ") ";
+       }
+   out << "\n";
+
+   out << "snake end: ";
+   out << "(" << s.end().x() << ", " << s.end().y() << ")\n";
 }
 
 /// Compute the length of the shortest edit script for two sequences a
@@ -1154,6 +1205,7 @@ ses_len(RandomAccessOutputIterator a_begin,
 {
   unsigned a_size = a_end - a_begin;
   unsigned b_size = b_end - b_begin;
+  snake snak;
 
   assert(v.max_d() == a_size + b_size);
 
@@ -1175,13 +1227,13 @@ ses_len(RandomAccessOutputIterator a_begin,
 	  point end;
 	  if (reverse)
 	    {
-	      end_of_frr_d_path_in_k_plus_delta(k, d,
-						a_begin, a_end,
-						b_begin, b_end,
-						v, end);
+	      bool found = end_of_frr_d_path_in_k_plus_delta(k, d,
+							     a_begin, a_end,
+							     b_begin, b_end,
+							     v, snak);
 	      // If we reached the upper left corner of the edit graph then
 	      // we are done.
-	      if (end.x() == -1 && end.y() == -1)
+	      if (found && snak.end().x() == -1 && snak.end().y() == -1)
 		return d;
 	    }
 	  else
@@ -1189,11 +1241,11 @@ ses_len(RandomAccessOutputIterator a_begin,
 	      end_of_fr_d_path_in_k(k, d,
 				    a_begin, a_end,
 				    b_begin, b_end,
-				    v, end);
+				    v, snak);
 	      // If we reached the lower right corner of the edit
 	      // graph then we are done.
-	      if ((end.x() == (int) a_size - 1)
-		  && (end.y() == (int) b_size - 1))
+	      if ((snak.end().x() == (int) a_size - 1)
+		  && (snak.end().y() == (int) b_size - 1))
 		return d;
 	    }
 	}
@@ -1205,6 +1257,9 @@ int
 ses_len(const char* str1,
 	const char* str2,
 	bool reverse = false);
+
+bool
+snake_end_points(const snake& s, point&, point&);
 
 /// Compute the longest common subsequence of two (sub-regions of)
 /// sequences as well as the shortest edit script from transforming
@@ -1280,38 +1335,45 @@ compute_diff(RandomAccessOutputIterator a_base,
 	  // an insertion into the first sequence at a_end.  So add
 	  // that insertion to the edit script.
 	  int a_full_size = a_end - a_base;
-	  int insertion_index = a_full_size ? a_full_size - 1 : 0;
+	  int insertion_index = a_full_size ? a_full_size - 1 : -1;
 	  insertion ins(insertion_index);
 	  for (RandomAccessOutputIterator i = b_begin; i < b_end; ++i)
 	    ins.inserted_indexes().push_back(i - b_base);
 
 	  ses.insertions().push_back(ins);
 	}
+      else
+	return;
+
+      ses_len =  a_size + b_size;
       return;
     }
 
   int d = 0;
-  point middle_begin, middle_end; // end points of the middle snake.
-  vector<point> middle; // the  middle snake itself.
+  snake snak;
+  vector<point> trace; // the trace of the edit graph.  Read the paper
+		       // to understand what a trace is.
   bool has_snake = compute_middle_snake(a_begin, a_end,
 					b_begin, b_end,
-					middle_begin,
-					middle_end, d);
+					snak, d);
   if (has_snake)
     {
       // So middle_{begin,end} are expressed wrt a_begin and b_begin.
       // Let's express them wrt a_base and b_base.
-      middle_begin.x(middle_begin.x() + a_offset);
-      middle_begin.y(middle_begin.y() + b_offset);
-      middle_end.x(middle_end.x() + a_offset);
-      middle_end.y(middle_end.y() + b_offset);
-
-      for (int x = middle_begin.x(), y = middle_begin.y();
-	   x <= middle_end.x() && y <= middle_end.y();
-	   ++x, ++y)
-	middle.push_back(point(x, y));
-
+      snak.add(a_offset, b_offset);
       ses_len = d;
+    }
+
+  if (has_snake)
+    {
+      if ( snak.has_diagonal_edge())
+	for (int x = snak.diagonal_start().x(), y = snak.diagonal_start().y();
+	     x <= snak.end().x() && y <= snak.end().y();
+	     ++x, ++y)
+	  {
+	    point p(x, y);
+	    trace.push_back(p);
+	  }
     }
   else
     {
@@ -1319,7 +1381,7 @@ compute_diff(RandomAccessOutputIterator a_base,
       // the two sequences are different.
 
       // In other words, all the elements of the first sequence have
-      // been delete ...
+      // been deleted ...
       for (RandomAccessOutputIterator i = a_begin; i < a_end; ++i)
 	ses.deletions().push_back(deletion(i - a_base));
 
@@ -1338,95 +1400,61 @@ compute_diff(RandomAccessOutputIterator a_base,
   if (d > 1)
     {
       int tmp_ses_len = 0;
-      compute_diff(a_base, a_begin, a_base + middle_begin.x(),
-		   b_base, b_begin, b_base + middle_begin.y(),
+      point px, pu;
+      snake_end_points(snak, px, pu);
+      compute_diff(a_base, a_begin, a_base + px.x() + 1,
+		   b_base, b_begin, b_base + px.y() + 1,
 		   lcs, ses, tmp_ses_len);
 
-      lcs.insert(lcs.end(), middle.begin(), middle.end());
+      lcs.insert(lcs.end(), trace.begin(), trace.end());
 
       tmp_ses_len = 0;
       edit_script tmp_ses;
-      compute_diff(a_base, a_base + middle_end.x() + 1, a_end,
-		   b_base, b_base + middle_end.y() + 1, b_end,
+      compute_diff(a_base, a_base + pu.x() + 1, a_end,
+		   b_base, b_base + pu.y() + 1, b_end,
 		   lcs, tmp_ses, tmp_ses_len);
       ses.append(tmp_ses);
     }
   else if (d == 1)
     {
-      // So we found a non-empty middle snake in an optimal path that
-      // is 1-length.  That means there is exactly one insertion or
-      // deletion.
-      //
-      // The general pattern of the optimal path is this one: A
-      // possibly empty snake, followed by a non-diagonal edge,
-      // followed by a possibly empty snake.  Note that only one of
-      // the snakes can be empty; in general the two snakes can be
-      // non-empty.
-      //
-      // As d == 1, the path ends either on k equals to either -1 or
-      // 1.  That is, delta is odd.  So we found the middle_snake
-      // while building a forward path.
-      //
-      // If the (non-empty) middle snake reported comes *after* the
-      // non-diagonal edge, we should not forget to add the first
-      // snake (that starts at point (0,0)) to the LCS.
-      //
-      // Also, we need to find the non-diagonal edge (that comes
-      // *after* the first (possibly empty) snake that starts at point
-      // (0,0) and add it to the list of insertions/deletions.
-      int x = a_begin - a_base, y = b_begin - b_base;
-      while (x < middle_begin.x() && y < middle_begin.y())
+      if (snak.has_diagonal_edge())
 	{
-	  if (a_base[x] == b_base[y])
+	  for (int x = snak.diagonal_start().x(), y = snak.diagonal_start().y();
+	       x <= snak.end().x() && y <= snak.end().y();
+	       ++x, ++y)
 	    {
-	      lcs.push_back(point(x, y));
-	      ++x, ++y;
+	      point p(x, y);
+	      trace.push_back(p);
+	    }
+	}
+
+      if (snak.has_vertical_edge())
+	{
+	  point p = snak.intermediate();
+	  insertion ins(p.x());
+	  ins.inserted_indexes().push_back(p.y());
+	  ses.insertions().push_back(ins);
+	}
+      else if (snak.has_horizontal_edge())
+	{
+	  if (snak.is_forward())
+	    {
+	      deletion del(snak.intermediate().x());
+	      ses.deletions().push_back(del);
 	    }
 	  else
-	    break;
-	}
-
-      int a_full_size = a_size + a_offset;
-      int b_full_size = b_size + b_offset;
-      // Now if there is an element of the first sequence which index
-      // is not an abscissa of a point in the non-empty snake, that
-      // means that element is deleted; i.e, we found the non-diagonal
-      // edge we are looking for.
-      for (; x < a_full_size; ++x)
-	{
-	  if (x < middle_begin.x() || x > middle_end.x())
 	    {
-	      deletion del(x);
-	      ses.deletions().push_back(deletion(x));
-	      break;
+	      deletion del(snak.begin().x());
+	      ses.deletions().push_back(del);
 	    }
 	}
-      // Now if there is an element of the second sequence which index
-      // is not an ordinate of a point in the non-empty snake, that
-      // means that element got inserted; i.e, we found the
-      // non-diagonal edge we are looking for.
-      for (; y < b_full_size; ++y)
-	{
-	  if (y > middle_end.y() || y < middle_begin.y())
-	    {
-	      insertion ins(middle_end.x());
-	      ins.inserted_indexes().push_back(y);
-	      ses.insertions().push_back(ins);
-	      break;
-	    }
-	}
-
-      // ... and append the middle snake to the longest common
-      // subsequence.
-      lcs.insert(lcs.end(), middle.begin(), middle.end());
-      ses_len = 1;
     }
   else if (d == 0)
     {
       // Obviously on the middle snake is part of the solution, as
       // there is no edit script; iow, the two sequences are
       // identical.
-      lcs.insert(lcs.end(), middle.begin(), middle.end());
+      lcs.insert(lcs.end(), trace.begin(), trace.end());
       ses_len = 0;
     }
 
@@ -1714,8 +1742,13 @@ display_edit_script(const edit_script& es,
        i != es.insertions().end();
        ++i)
     {
-      out << "\t after index of first sequence: " << i->insertion_point_index()
-	   << " (" << str1_base[i->insertion_point_index()] << ")\n";
+      int idx = i->insertion_point_index();
+      if (idx < 0)
+	out << "\t before index of first sequence: " << idx + 1
+	    << " (" << str1_base[idx + 1] << ")\n";
+      else
+	out << "\t after index of first sequence: " << idx
+	    << " (" << str1_base[idx] << ")\n";
 
       if (!i->inserted_indexes().empty())
 	out << "\t\t inserted indexes from second sequence: ";

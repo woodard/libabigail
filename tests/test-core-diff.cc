@@ -99,6 +99,36 @@ SESInOutSpec in_out_specs[] =
     "sqkdjfjdsql",
     "sqdmlkjfmljdsqf"
   },
+  {
+    "data/test-core-diff/report8.txt",
+    "output/test-core-diff/report8.txt",
+    "abcdef",
+    "bcghai"
+  },
+  {
+    "data/test-core-diff/report9.txt",
+    "output/test-core-diff/report9.txt",
+    "abcdef",
+    "bjcghai"
+  },
+  {
+    "data/test-core-diff/report10.txt",
+    "output/test-core-diff/report10.txt",
+    "a",
+    "ab"
+  },
+  {
+    "data/test-core-diff/report11.txt",
+    "output/test-core-diff/report11.txt",
+    "a",
+    "abd"
+  },
+  {
+    "data/test-core-diff/report12.txt",
+    "output/test-core-diff/report12.txt",
+    "a",
+    "cba"
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };

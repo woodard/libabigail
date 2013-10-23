@@ -35,8 +35,8 @@ namespace diff_utils
 ///
 /// @param forward_d_path_end
 bool
-ends_of_furthest_d_paths_overlap(point& forward_d_path_end,
-				  point& reverse_d_path_end)
+ends_of_furthest_d_paths_overlap(const point& forward_d_path_end,
+				  const point& reverse_d_path_end)
 {
   return ((forward_d_path_end.x() - forward_d_path_end.y())
 	  == (reverse_d_path_end.x() - reverse_d_path_end.y())
@@ -65,6 +65,32 @@ point_is_valid_in_graph(point& p,
 	  && p.y() < (int) b_size);
 }
 
+/// Get the end points of the snake, as intended by the paper.
+///
+/// @param s the snake to consider.
+///
+/// @param x the starting point of the snake.
+///
+/// @param u the end point of the snake.
+bool
+snake_end_points(const snake& s, point& x, point& u)
+{
+  if (s.is_empty())
+    return false;
+
+  if (s.is_forward())
+    {
+      x = s.intermediate();
+      u = s.end();
+    }
+  else
+    {
+      x = s.end();
+      u = s.intermediate();
+    }
+  return true;
+}
+
 /// Returns the middle snake of two strings, as well as the length of
 /// their shortest editing script.
 ///
@@ -75,16 +101,14 @@ point_is_valid_in_graph(point& p,
 /// @param snake_begin the point representing the beginning
 bool
 compute_middle_snake(const char* str1, const char* str2,
-		     point& snake_begin, point& snake_end,
-		     int& ses_len)
+		     snake& s, int& ses_len)
 {
   bool has_snake = false;
   int str1_size = strlen(str1), str2_size = strlen(str2);
 
   if (compute_middle_snake(str1, str1 + str1_size,
 			   str2 , str2 + str2_size,
-			   snake_begin, snake_end,
-			   ses_len))
+			   s, ses_len))
     has_snake = true;
 
   return has_snake;
