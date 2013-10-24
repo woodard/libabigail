@@ -762,6 +762,9 @@ public:
   set_binding(binding b)
   {binding_ = b;}
 
+  virtual string
+  get_pretty_representation() const;
+
   void
   traverse(ir_node_visitor& v);
 

@@ -274,7 +274,14 @@ decl_base::get_qualified_name(string& qn,
 /// basically the fully qualified name of the decl.
 string
 decl_base::get_pretty_representation() const
-{return get_qualified_name();}
+{
+  string result;
+
+  if (dynamic_cast<const type_base*>(this))
+    result += "type ";
+  result += get_qualified_name();
+  return result;
+}
 
 /// Compute the qualified name of the decl.
 ///
@@ -1231,6 +1238,20 @@ var_decl::operator==(const decl_base& o) const
     }
   catch(...)
     {return false;}
+}
+
+/// Build and return the pretty representation of this variable.
+///
+/// @return a copy of the pretty representation of this variable.
+string
+var_decl::get_pretty_representation() const
+{
+  string result;
+
+  result =
+    dynamic_pointer_cast<decl_base>(get_type())->get_pretty_representation();
+  result += " " + get_qualified_name();
+  return result;
 }
 
 /// This implements the traversable_base::traverse pure virtual
