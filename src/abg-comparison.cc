@@ -966,7 +966,8 @@ scope_diff::ensure_lookup_tables_populated()
     {
       string_decl_base_sptr_map::const_iterator r =
 	priv_->inserted_types_.find(i->first);
-      if (r != priv_->inserted_types_.end())
+      if (r != priv_->inserted_types_.end()
+	  && i->second != r->second)
 	priv_->changed_types_[i->first] = std::make_pair(i->second, r->second);
     }
   for (string_decl_base_sptr_map::const_iterator i =
@@ -976,7 +977,8 @@ scope_diff::ensure_lookup_tables_populated()
     {
       string_decl_base_sptr_map::const_iterator r =
 	priv_->inserted_decls_.find(i->first);
-      if (r != priv_->inserted_decls_.end())
+      if (r != priv_->inserted_decls_.end()
+	  && i->second != r->second)
 	priv_->changed_decls_[i->first] = std::make_pair(i->second, r->second);
     }
 
