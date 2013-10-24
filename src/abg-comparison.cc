@@ -188,7 +188,7 @@ pointer_diff::report(ostream& out, const string& indent) const
     {
       out << indent << "differences in pointed to type ("
 	  << d->first_subject()->get_pretty_representation() << "):\n";
-      out << indent << "\t";
+      out << indent << "  ";
       d->report(out, indent);
       out << "\n";
     }
@@ -284,7 +284,7 @@ reference_diff::report(ostream& out, const string& indent) const
     {
       out << indent << "differences in referenced type ("
 	  << d->first_subject()->get_pretty_representation() << "):\n";
-      d->report(out, indent + "\t");
+      d->report(out, indent + "  ");
       out << "\n";
     }
 }
@@ -308,6 +308,45 @@ compute_diff(reference_type_def_sptr first,
 // </reference_type_def>
 
 //<class_diff stuff>
+
+/// Stream a string representation for a member function.
+///
+/// @param mem_fn the member function to stream
+///
+/// @param out the output stream to send the representation to
+static void
+represent(class_decl::member_function_sptr mem_fn,
+	  ostream& out)
+{
+  if (!mem_fn)
+    return;
+
+  out << mem_fn->get_pretty_representation();
+  if (mem_fn->get_vtable_offset())
+    out << ", virtual at voffset "
+	<< mem_fn->get_vtable_offset()
+	<< "/"
+	<< mem_fn->get_type()->get_class_type()->get_num_virtual_functions();
+}
+
+/// Stream a string representation for a data member.
+///
+/// @param data_mem the data member to stream
+///
+/// @param out the output stream to send the representation to
+static void
+represent(class_decl::data_member_sptr data_mem,
+	  ostream& out)
+{
+  if (!data_mem || !data_mem->is_laid_out())
+    return;
+
+  out << data_mem->get_pretty_representation()
+      << ", at offset "
+      << data_mem->get_offset_in_bits()
+      << " (in bits)";
+}
+
 struct class_diff::priv
 {
   edit_script base_changes_;
@@ -494,7 +533,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl_sptr base_class =
 	    first_class->get_base_specifiers()[i->index()]->get_base_class();
-	  out << indent << "\t" << base_class->get_qualified_name() << "\n";
+	  out << indent << "  " << base_class->get_qualified_name() << "\n";
 	}
       if (numdels)
 	out << "\n";
@@ -539,7 +578,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl::member_type_sptr mem_type =
 	    first_class->get_member_types()[i->index()];
-	  out << indent << "\t"
+	  out << indent << "  "
 	      << mem_type->get_pretty_representation() << "\n";
 	}
       out << "\n";
@@ -561,7 +600,7 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++j)
 	    {
 	      mem_type = second_class->get_member_types()[*j];
-	      out << indent << "\t"
+	      out << indent << "  "
 		  << mem_type->get_pretty_representation() << "\n";
 	    }
 	}
@@ -583,9 +622,9 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl::data_member_sptr data_mem =
 	    first_class->get_data_members()[i->index()];
-	  out << indent << "\t'"
-	      << data_mem->get_pretty_representation()
-	      << "'\n";
+	  out << indent << "  ";
+	  represent(data_mem, out);
+	  out << "\n";
 	}
       if (numdels)
 	out << "\n";
@@ -607,9 +646,9 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++j)
 	    {
 	      data_mem = second_class->get_data_members()[*j];
-	      out << indent << "\t'"
-		  << data_mem->get_pretty_representation()
-		  << "'\n";
+	      out << indent << "  ";
+	      represent(data_mem, out);
+	      out << "\n";
 	    }
 	}
       if (numins)
@@ -630,7 +669,9 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl::member_function_sptr mem_fun =
 	    first_class->get_member_functions()[i->index()];
-	  out << indent << "\t" << mem_fun->get_pretty_representation() << "\n";
+	  out << indent << "  ";
+	  represent(mem_fun, out);
+	  out << "\n";
 	}
       out << "\n";
 
@@ -650,8 +691,9 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++j)
 	    {
 	      mem_fun = second_class->get_member_functions()[*j];
-	      out << indent << "\t"
-		  << mem_fun->get_pretty_representation() << "\n";
+	      out << indent << "  ";
+	      represent(mem_fun, out);
+	      out << "\n";
 	    }
 	}
       out << "\n";
@@ -672,7 +714,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl::member_function_template_sptr mem_fn_tmpl =
 	    first_class->get_member_function_templates()[i->index()];
-	  out << indent << "\t"
+	  out << indent << "  "
 	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
 	      << "\n";
 	}
@@ -696,7 +738,7 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++j)
 	    {
 	      mem_fn_tmpl = second_class->get_member_function_templates()[*j];
-	      out << indent << "\t"
+	      out << indent << "  "
 		  << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
 		  << "\n";
 	    }
@@ -718,7 +760,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl::member_class_template_sptr mem_cls_tmpl =
 	    first_class->get_member_class_templates()[i->index()];
-	  out << indent << "\t"
+	  out << indent << "  "
 	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
 	      << "\n";
 	}
@@ -742,7 +784,7 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++j)
 	    {
 	      mem_cls_tmpl = second_class->get_member_class_templates()[*j];
-	      out << indent << "\t"
+	      out << indent << "  "
 		  << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
 		  << "\n";
 	    }
@@ -1206,7 +1248,7 @@ scope_diff::report(ostream& out, const string& indent) const
   if (num_changed_types == 0)
     out << indent << "no changed types\n";
   else if (num_changed_types == 1)
-    out << indent << "1 changed type:\n" << indent << "\t";
+    out << indent << "1 changed type:\n" << indent << "  ";
   else
     out << indent << num_changed_types << " changed types:\n";
 
@@ -1215,14 +1257,14 @@ scope_diff::report(ostream& out, const string& indent) const
        i != changed_types().end();
        ++i)
     {
-      out << indent << "\t'"
+      out << indent << "  '"
 	  << i->second.first->get_pretty_representation()
 	  << "' changed:\n";
 
       diff_sptr diff = compute_diff_for_types(i->second.first,
 					      i->second.second);
       if (diff)
-	diff->report(out, indent + "\t\t");
+	diff->report(out, indent + "    ");
     }
   if (changed_types().size())
     out << "\n";
@@ -1232,7 +1274,7 @@ scope_diff::report(ostream& out, const string& indent) const
   if (num_changed_decls == 0)
     out << "no changed declaration\n";
   else if (num_changed_decls == 1)
-    out << "1 changed declaration:\n\t";
+    out << "1 changed declaration:\n  ";
   else
     out << num_changed_decls << " changed declarations:\n";
 
@@ -1241,7 +1283,7 @@ scope_diff::report(ostream& out, const string& indent) const
        i != changed_decls().end ();
        ++i)
     {
-      out << indent << "\t'"
+      out << indent << "  '"
 	  << i->second.first->get_pretty_representation()
 	  << "' was changed to '"
 	  << i->second.second->get_pretty_representation()
@@ -1249,7 +1291,7 @@ scope_diff::report(ostream& out, const string& indent) const
       diff_sptr diff = compute_diff_for_decls(i->second.first,
 					      i->second.second);
       if (diff)
-	diff->report(out, indent + "\t\t");
+	diff->report(out, indent + "    ");
     }
   if (changed_decls().size())
     out << "\n";
@@ -1588,7 +1630,7 @@ function_decl_diff::report(ostream& out, const string& indent) const
       diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
 					   i->second.second->get_type());
       if (d)
-	d->report(out, indent + "\t");
+	d->report(out, indent + "  ");
     }
 
   // Report about the parameters that got removed.

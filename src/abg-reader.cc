@@ -963,7 +963,7 @@ read_cdtor_const(xmlNodePtr	node,
       return true;
     }
 
-  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is_const"))
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "const"))
     {
       string b = CHAR_STR(s);
       if (b == "yes")

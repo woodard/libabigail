@@ -1563,18 +1563,25 @@ function_decl::function_decl(const std::string& name,
 string
 function_decl::get_pretty_representation() const
 {
-  bool is_method = dynamic_cast<const class_decl::method_decl*>(this);
-  string result = is_method ? "method ": "function ";
+  const class_decl::member_function* mem_fn =
+    dynamic_cast<const class_decl::member_function*>(this);
+
+  string result = mem_fn ? "method ": "function ";
   decl_base_sptr type = dynamic_pointer_cast<decl_base>(get_return_type());
 
-  result += type->get_qualified_name() + " ";
+  if (type)
+    result += type->get_qualified_name() + " ";
+
+  if (mem_fn && mem_fn->is_destructor())
+    result += "~";
+
   result += get_qualified_name() + "(";
 
   parameters::const_iterator i = get_parameters().begin(),
     end = get_parameters().end();
 
   // Skip the first parameter if this is a method.
-  if (is_method)
+  if (mem_fn)
     ++i;
   parameter_sptr parm;
   parameter_sptr first_parm;
@@ -1594,6 +1601,9 @@ function_decl::get_pretty_representation() const
 	}
     }
   result += ")";
+
+  if (mem_fn && mem_fn->is_const())
+    result += " const";
 
   return result;
 }
@@ -2090,8 +2100,22 @@ class_decl::member_function::member_function
 /// @param v the visitor used on the current instance.
 void
 class_decl::member_function::traverse(ir_node_visitor& v)
+{v.visit(*this);}
+
+/// Return the number of virtual functions of this class_decl.
+///
+/// @return the number of virtual functions of this class_decl
+size_t
+class_decl::get_num_virtual_functions() const
 {
-  v.visit(*this);
+  size_t result = 0;
+  for (class_decl::member_functions::const_iterator i =
+	 get_member_functions().begin();
+       i != get_member_functions().end();
+       ++i)
+    if ((*i)->get_vtable_offset())
+      ++result;
+  return result;
 }
 
 /// Add a member function to the current instance of class_decl.

@@ -1505,6 +1505,9 @@ public:
   get_member_functions() const
   {return member_functions_;}
 
+  size_t
+  get_num_virtual_functions() const;
+
   void
   add_member_function_template(shared_ptr<member_function_template>);
 

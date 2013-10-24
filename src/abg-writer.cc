@@ -179,7 +179,7 @@ static void write_access(class_decl::access_specifier, ostream&);
 static void write_access(shared_ptr<class_decl::member_base>, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::data_member>, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
-static void write_cdtor_const_static(bool, bool, bool, ostream&);
+static void write_cdtor_const_static(bool, bool, bool, bool, ostream&);
 static void write_voffset(class_decl::member_function_sptr, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
@@ -522,7 +522,11 @@ write_voffset(class_decl::member_function_sptr fn, ostream&o)
 ///
 /// @param o the output stream to use for the serialization.
 static void
-write_cdtor_const_static(bool is_ctor, bool is_dtor, bool is_static, ostream& o)
+write_cdtor_const_static(bool is_ctor,
+			 bool is_dtor,
+			 bool is_const,
+			 bool is_static,
+			 ostream& o)
 {
   if (is_static)
     o << " static='yes'";
@@ -530,6 +534,8 @@ write_cdtor_const_static(bool is_ctor, bool is_dtor, bool is_static, ostream& o)
     o << " constructor='yes'";
   else if (is_dtor)
     o << " destructor='yes'";
+  if (is_const)
+    o << " const='yes'";
 }
 
 /// Serialize the attribute "is-declaration-only", if the class has
@@ -1125,6 +1131,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  bool is_static = (*data)->is_static();
 	  write_cdtor_const_static(/*is_ctor=*/false,
 				   /*is_dtor=*/false,
+				   /*is_const=*/false,
 				   /*is_static=*/is_static,
 				   o);
 	  write_layout_offset(*data, o);
@@ -1147,6 +1154,11 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  do_indent(o, nb_ws);
 	  o << "<member-function";
 	  write_access(fn, o);
+	  write_cdtor_const_static( fn->is_constructor(),
+				    fn->is_destructor(),
+				    fn->is_const(),
+				    fn->is_static(),
+				    o);
 	  write_voffset(fn, o);
 	  o << ">\n";
 
@@ -1167,7 +1179,9 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  do_indent(o, nb_ws);
 	  o << "<member-template";
 	  write_access(*fn, o);
-	  write_cdtor_const_static((*fn)->is_constructor(), false,
+	  write_cdtor_const_static((*fn)->is_constructor(),
+				   /*is_dtor=*/false,
+				   (*fn)->is_const(),
 				   (*fn)->is_static(), o);
 	  o << ">\n";
 	  write_function_tdecl((*fn)->as_function_tdecl(), ctxt,
@@ -1185,7 +1199,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  do_indent(o, nb_ws);
 	  o << "<member-template";
 	  write_access(*cl, o);
-	  write_cdtor_const_static(false, false, (*cl)->is_static(), o);
+	  write_cdtor_const_static(false, false, false, (*cl)->is_static(), o);
 	  o << ">\n";
 	  write_class_tdecl((*cl)->as_class_tdecl(), ctxt,
 				    get_indent_to_level(ctxt, indent, 2));
