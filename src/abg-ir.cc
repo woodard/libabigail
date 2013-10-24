@@ -2496,7 +2496,7 @@ class_decl::member_function::operator==(const decl_base& other) const
       const class_decl::member_function& o =
 	dynamic_cast<const class_decl::member_function&>(other);
 
-      return (get_vtable_offset_in_bits() == o.get_vtable_offset_in_bits()
+      return (get_vtable_offset() == o.get_vtable_offset()
 	      && is_constructor() == o.is_constructor()
 	      && is_destructor() == o.is_destructor()
 	      && is_const() == o.is_const()

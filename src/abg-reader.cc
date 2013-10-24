@@ -1720,7 +1720,7 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 
 	  size_t vtable_offset = 0;
 	  if (xml_char_sptr s =
-	      XML_NODE_GET_ATTRIBUTE(n, "vtable-offset-in-bits"))
+	      XML_NODE_GET_ATTRIBUTE(n, "vtable-offset"))
 	    vtable_offset = atoi(CHAR_STR(s));
 
 	  bool is_static = false;

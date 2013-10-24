@@ -1885,7 +1885,7 @@ public:
 		  bool				is_const);
 
   size_t
-  get_vtable_offset_in_bits() const
+  get_vtable_offset() const
   {return vtable_offset_in_bits_;}
 
   bool

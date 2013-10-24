@@ -180,6 +180,7 @@ static void write_access(shared_ptr<class_decl::member_base>, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::data_member>, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, ostream&);
+static void write_voffset(class_decl::member_function_sptr, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
 static bool write_decl(const shared_ptr<decl_base>,
@@ -490,6 +491,21 @@ static void
 write_access(shared_ptr<class_decl::member_base> member, ostream& o)
 {
   write_access(member->get_access_specifier(), o);
+}
+
+/// Write the voffset of a member function if it's non-zero
+///
+/// @param fn the member function to consider
+///
+/// @param o the output stream to write to
+static void
+write_voffset(class_decl::member_function_sptr fn, ostream&o)
+{
+  if (!fn)
+    return;
+
+  if (size_t voffset = fn->get_vtable_offset())
+    o << " vtable-offset='" << voffset << "'";
 }
 
 /// Serialize the attributes "constructor", "destructor" or "static"
@@ -1122,17 +1138,19 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  o << "</data-member>\n";
 	}
 
-      for (class_decl::member_functions::const_iterator fn =
+      for (class_decl::member_functions::const_iterator f =
 	     decl->get_member_functions().begin();
-	   fn != decl->get_member_functions().end();
-	   ++fn)
+	   f != decl->get_member_functions().end();
+	   ++f)
 	{
+	  class_decl::member_function_sptr fn = *f;
 	  do_indent(o, nb_ws);
 	  o << "<member-function";
-	  write_access(*fn, o);
+	  write_access(fn, o);
+	  write_voffset(fn, o);
 	  o << ">\n";
 
-	  write_function_decl(*fn, ctxt,
+	  write_function_decl(fn, ctxt,
 			      /*skip_first_parameter=*/false,
 			      get_indent_to_level(ctxt, indent, 2));
 	  o << "\n";

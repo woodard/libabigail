@@ -397,7 +397,7 @@ struct class_decl::member_function::hash
 
     if (!t.is_static() && !t.is_constructor())
       v = hashing::combine_hashes(v,
-				  hash_size_t(t.get_vtable_offset_in_bits()));
+				  hash_size_t(t.get_vtable_offset()));
 
     return v;
   }
