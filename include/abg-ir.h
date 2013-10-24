@@ -1856,10 +1856,10 @@ public:
   member_function(shared_ptr<method_decl>	fn,
 		  access_specifier		access,
 		  size_t			vtable_offset_in_bits,
-		  bool			is_static,
-		  bool			is_constructor,
-		  bool			is_destructor,
-		  bool			is_const)
+		  bool				is_static,
+		  bool				is_constructor,
+		  bool				is_destructor,
+		  bool				is_const)
     : decl_base(fn->get_name(), fn->get_location(),
 		fn->get_mangled_name(), fn->get_visibility()),
       method_decl(fn->get_name(),
@@ -1879,10 +1879,10 @@ public:
   member_function(shared_ptr<function_decl>	fn,
 		  access_specifier		access,
 		  size_t			vtable_offset_in_bits,
-		  bool			is_static,
-		  bool			is_constructor,
-		  bool			is_destructor,
-		  bool			is_const);
+		  bool				is_static,
+		  bool				is_constructor,
+		  bool				is_destructor,
+		  bool				is_const);
 
   size_t
   get_vtable_offset_in_bits() const

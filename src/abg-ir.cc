@@ -708,9 +708,7 @@ type_decl::operator==(const decl_base& o) const
 /// @param v the visitor used on the current instance.
 void
 type_decl::traverse(ir_node_visitor& v)
-{
-  v.visit(*this);
-}
+{v.visit(*this);}
 
 type_decl::~type_decl()
 { }
