@@ -635,7 +635,7 @@ class_diff::report(ostream& out, const string& indent) const
       out << "\n";
 
       // report insertions;
-      report_num_dels_or_ins(out, e.num_deletions(),
+      report_num_dels_or_ins(out, e.num_insertions(),
 			     /*deletions=*/false,
 			     "member function",
 			     indent);
