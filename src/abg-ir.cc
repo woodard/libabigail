@@ -1249,7 +1249,7 @@ var_decl::get_pretty_representation() const
   string result;
 
   result =
-    dynamic_pointer_cast<decl_base>(get_type())->get_pretty_representation();
+    dynamic_pointer_cast<decl_base>(get_type())->get_qualified_name();
   result += " " + get_qualified_name();
   return result;
 }
@@ -1465,14 +1465,8 @@ method_type::set_class_type(shared_ptr<class_decl> t)
 
   function_decl::parameter p(t, 0, "");
   if (class_type_)
-    {
-      assert(!parms_.empty());
-      parms_.erase(parms_.begin());
-    }
+    assert(!parms_.empty());
     class_type_ = t;
-    parms_.insert(parms_.begin(),
-		   shared_ptr<function_decl::parameter>
-		   (new function_decl::parameter(t)));
 }
 
 /// The destructor of method_type
@@ -1571,26 +1565,34 @@ function_decl::function_decl(const std::string& name,
 string
 function_decl::get_pretty_representation() const
 {
-  string result = "function ";
+  bool is_method = dynamic_cast<const class_decl::method_decl*>(this);
+  string result = is_method ? "method ": "function ";
   decl_base_sptr type = dynamic_pointer_cast<decl_base>(get_return_type());
 
-  result += type->get_pretty_representation() + " ";
+  result += type->get_qualified_name() + " ";
   result += get_qualified_name() + "(";
 
+  parameters::const_iterator i = get_parameters().begin(),
+    end = get_parameters().end();
+
+  // Skip the first parameter if this is a method.
+  if (is_method)
+    ++i;
   parameter_sptr parm;
-  for (parameters::const_iterator i = get_parameters().begin();
-       i != get_parameters().end();
-       ++i)
+  parameter_sptr first_parm;
+  if (i != end)
+    first_parm = *i;
+  for (; i != end; ++i)
     {
       parm = *i;
-      if (i != get_parameters().begin())
+      if (parm.get() != first_parm.get())
 	result += ", ";
       if (parm->get_variadic_marker())
 	result += "...";
       else
 	{
 	  type = dynamic_pointer_cast<decl_base>(parm->get_type());
-	  result += type->get_pretty_representation();
+	  result += type->get_qualified_name();
 	}
     }
   result += ")";

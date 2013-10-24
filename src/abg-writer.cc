@@ -1133,7 +1133,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	  o << ">\n";
 
 	  write_function_decl(*fn, ctxt,
-			      /*skip_first_parameter=*/true,
+			      /*skip_first_parameter=*/false,
 			      get_indent_to_level(ctxt, indent, 2));
 	  o << "\n";
 
