@@ -1279,20 +1279,32 @@ scope_diff::report(ostream& out, const string& indent) const
   for (string_decl_base_sptr_map::const_iterator i = added_types().begin();
        i != added_types().end();
        ++i)
-    out << indent
-	<< "'"
-	<< i->second->get_pretty_representation()
-	<< "' was added\n";
+    {
+      // Do not report about type_decl as these are usually built-in
+      // types.
+      if (dynamic_pointer_cast<type_decl>(i->second))
+	continue;
+      out << indent
+	  << "'"
+	  << i->second->get_pretty_representation()
+	  << "' was added\n";
+    }
   if (added_types().size())
     out << "\n";
 
   for (string_decl_base_sptr_map::const_iterator i = added_decls().begin();
        i != added_decls().end();
        ++i)
-    out << indent
-	<< "'"
-	<< i->second->get_pretty_representation()
-	<< "' was added\n";
+    {
+      // Do not report about type_decl as these are usually built-in
+      // types.
+      if (dynamic_pointer_cast<type_decl>(i->second))
+	continue;
+      out << indent
+	  << "'"
+	  << i->second->get_pretty_representation()
+	  << "' was added\n";
+    }
   if (added_decls().size())
     out << "\n";
 
