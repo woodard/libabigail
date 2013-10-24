@@ -290,6 +290,18 @@ public:
   const string_changed_type_or_decl_map&
   changed_decls() const;
 
+  const string_decl_base_sptr_map&
+  removed_types() const;
+
+  const string_decl_base_sptr_map&
+  removed_decls() const;
+
+  const string_decl_base_sptr_map&
+  added_types() const;
+
+  const string_decl_base_sptr_map&
+  added_decls() const;
+
   virtual unsigned
   length() const;
 

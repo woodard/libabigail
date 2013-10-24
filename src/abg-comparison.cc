@@ -1169,6 +1169,22 @@ const string_changed_type_or_decl_map&
 scope_diff::changed_decls() const
 {return priv_->changed_decls_;}
 
+const string_decl_base_sptr_map&
+scope_diff::removed_types() const
+{return priv_->removed_types_;}
+
+const string_decl_base_sptr_map&
+scope_diff::removed_decls() const
+{return priv_->removed_decls_;}
+
+const string_decl_base_sptr_map&
+scope_diff::added_types() const
+{return priv_->added_types_;}
+
+const string_decl_base_sptr_map&
+scope_diff::added_decls() const
+{return priv_->added_decls_;}
+
 /// @return the length of the diff.
 unsigned
 scope_diff::length() const
@@ -1235,7 +1251,51 @@ scope_diff::report(ostream& out, const string& indent) const
       if (diff)
 	diff->report(out, indent + "\t\t");
     }
-  out << "\n";
+  if (changed_decls().size())
+    out << "\n";
+
+  // Report removed types/decls
+  for (string_decl_base_sptr_map::const_iterator i = removed_types().begin();
+       i != removed_types().end();
+       ++i)
+    out << indent
+	<< "'"
+	<< i->second->get_pretty_representation()
+	<< "' was removed\n";
+  if (removed_types().size())
+    out << "\n";
+
+  for (string_decl_base_sptr_map::const_iterator i = removed_decls().begin();
+       i != removed_decls().end();
+       ++i)
+    out << indent
+	<< "'"
+	<< i->second->get_pretty_representation()
+	<< "' was removed\n";
+  if (removed_decls().size())
+    out << "\n";
+
+  // Report added types/decls
+  for (string_decl_base_sptr_map::const_iterator i = added_types().begin();
+       i != added_types().end();
+       ++i)
+    out << indent
+	<< "'"
+	<< i->second->get_pretty_representation()
+	<< "' was added\n";
+  if (added_types().size())
+    out << "\n";
+
+  for (string_decl_base_sptr_map::const_iterator i = added_decls().begin();
+       i != added_decls().end();
+       ++i)
+    out << indent
+	<< "'"
+	<< i->second->get_pretty_representation()
+	<< "' was added\n";
+  if (added_decls().size())
+    out << "\n";
+
 }
 
 /// Compute the diff between two scopes.
