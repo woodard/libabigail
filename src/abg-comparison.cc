@@ -583,7 +583,9 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  class_decl::data_member_sptr data_mem =
 	    first_class->get_data_members()[i->index()];
-	  out << indent << "\t" << data_mem->get_qualified_name() << "\n";
+	  out << indent << "\t'"
+	      << data_mem->get_pretty_representation()
+	      << "'\n";
 	}
       if (numdels)
 	out << "\n";
@@ -605,7 +607,9 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++j)
 	    {
 	      data_mem = second_class->get_data_members()[*j];
-	      out << indent << "\t" << data_mem->get_qualified_name() << "\n";
+	      out << indent << "\t'"
+		  << data_mem->get_pretty_representation()
+		  << "'\n";
 	    }
 	}
       if (numins)
@@ -1195,16 +1199,15 @@ scope_diff::report(ostream& out, const string& indent) const
     {
       out << indent << "\t'"
 	  << i->second.first->get_pretty_representation()
-	  << "' was changed to '"
-	  << i->second.second->get_pretty_representation()
-	  <<"':\n";
+	  << "' changed:\n";
 
       diff_sptr diff = compute_diff_for_types(i->second.first,
 					      i->second.second);
       if (diff)
 	diff->report(out, indent + "\t\t");
     }
-  out << "\n";
+  if (changed_types().size())
+    out << "\n";
 
   // Report changed decls
   unsigned num_changed_decls = changed_decls().size();
