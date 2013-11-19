@@ -260,6 +260,8 @@ public:
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
+
+  friend class class_decl;
 };// end class decl_base
 
 bool
@@ -280,7 +282,8 @@ private:
 
   scope_decl();
 
-  void
+protected:
+  virtual void
   add_member_decl(const shared_ptr<decl_base> member);
 
 public:
@@ -406,9 +409,10 @@ struct type_shared_ptr_equal
   }
 };
 
+typedef shared_ptr<type_decl> type_decl_sptr;
+
 /// A basic type declaration that introduces no scope.
-class type_decl
-: public virtual decl_base, public virtual type_base
+class type_decl : public virtual decl_base, public virtual type_base
 {
   // Forbidden.
   type_decl();
@@ -692,6 +696,8 @@ public:
   virtual ~enum_type_decl();
 }; // end class enum_type_decl
 
+typedef shared_ptr<typedef_decl> typedef_decl_sptr;
+
 /// The abstraction of a typedef declaration.
 class typedef_decl : public virtual type_base, public virtual decl_base
 {
@@ -722,7 +728,7 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~typedef_decl();
-};
+};// end class typedef_decl
 
 typedef shared_ptr<var_decl> var_decl_sptr;
 
@@ -1484,22 +1490,40 @@ public:
   get_base_specifiers() const
   {return bases_;}
 
+  virtual void
+  add_member_decl(decl_base_sptr);
+
   void
-  add_member_type(shared_ptr<member_type> t);
+  add_member_type(member_type_sptr t);
+
+  void
+  add_member_type(type_base_sptr t, access_specifier a);
 
   const member_types&
   get_member_types() const
   {return member_types_;}
 
   void
-  add_data_member(shared_ptr<data_member> m);
+  add_data_member(data_member_sptr m);
+
+  void
+  add_data_member(var_decl_sptr v, access_specifier a,
+		  bool is_laid_out, bool is_static,
+		  size_t offset_in_bits);
 
   const data_members&
   get_data_members() const
   {return data_members_;}
 
   void
-  add_member_function(shared_ptr<member_function> m);
+  add_member_function(member_function_sptr m);
+
+  void
+  add_member_function(function_decl_sptr f,
+		      access_specifier a,
+		      size_t vtable_offset,
+		      bool is_static, bool is_ctor,
+		      bool is_dtor, bool is_const);
 
   const member_functions&
   get_member_functions() const

@@ -302,11 +302,13 @@ public:
   ///
   /// @param decl the newly created declaration.
   void
-  push_decl_to_current_scope(shared_ptr<decl_base> decl)
+  push_decl_to_current_scope(shared_ptr<decl_base> decl,
+			     bool add_to_current_scope)
   {
     assert(decl);
 
-    add_decl_to_scope(decl, get_cur_scope());
+    if (add_to_current_scope)
+      add_decl_to_scope(decl, get_cur_scope());
     push_decl(decl);
   }
 
@@ -321,19 +323,20 @@ public:
   /// @param update_depth_info should be set to true if the function
   /// should update the depth information maintained in the parsing
   /// context.  If the xml element node has been 'hit' by the
-  /// advence_cursor then this should be set to false, because that
+  /// advance_cursor then this should be set to false, because that
   /// function updates the depth information maintained in the parsing
   /// context already.
  void
  push_decl_to_current_scope(shared_ptr<decl_base> decl,
-			    xmlNodePtr node, bool update_depth_info)
+			    xmlNodePtr node, bool update_depth_info,
+			    bool add_to_current_scope)
   {
     assert(decl);
 
     if (update_depth_info)
       update_read_context(*this, node);
 
-    push_decl_to_current_scope(decl);
+    push_decl_to_current_scope(decl, add_to_current_scope);
   }
 
   /// This function must be called on each type decl that is created
@@ -347,13 +350,14 @@ public:
   /// @return true upon successful completion.
   ///
   bool
-  push_and_key_type_decl(shared_ptr<type_base> t, const string& id)
+  push_and_key_type_decl(shared_ptr<type_base> t, const string& id,
+			 bool add_to_current_scope)
   {
     shared_ptr<decl_base> decl = dynamic_pointer_cast<decl_base>(t);
     if (!decl)
       return false;
 
-    push_decl_to_current_scope(decl);
+    push_decl_to_current_scope(decl, add_to_current_scope);
     key_type_decl(t, id);
     return true;
   }
@@ -375,12 +379,13 @@ public:
   /// @return true upon successful completion, false otherwise.
   bool
   push_and_key_type_decl(shared_ptr<type_base>	t, const string& id,
-			 xmlNodePtr node, bool update_depth_info)
+			 xmlNodePtr node, bool update_depth_info,
+			 bool add_to_current_scope)
   {
     if (update_depth_info)
       update_read_context(*this, node);
 
-    return push_and_key_type_decl(t, id);
+    return push_and_key_type_decl(t, id, add_to_current_scope);
   }
 
 private:
@@ -417,37 +422,37 @@ build_function_parameter (read_context&, const xmlNodePtr);
 
 static shared_ptr<function_decl>
 build_function_decl(read_context&, const xmlNodePtr,
-		    shared_ptr<class_decl>, bool);
+		    shared_ptr<class_decl>, bool, bool);
 
 static shared_ptr<var_decl>
-build_var_decl(read_context&, const xmlNodePtr, bool);
+build_var_decl(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<type_decl>
-build_type_decl(read_context&, const xmlNodePtr, bool);
+build_type_decl(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<qualified_type_def>
-build_qualified_type_decl(read_context&, const xmlNodePtr, bool);
+build_qualified_type_decl(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<pointer_type_def>
-build_pointer_type_def(read_context&, const xmlNodePtr, bool);
+build_pointer_type_def(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<reference_type_def>
-build_reference_type_def(read_context&, const xmlNodePtr, bool);
+build_reference_type_def(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<enum_type_decl>
-build_enum_type_decl(read_context&, const xmlNodePtr, bool);
+build_enum_type_decl(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<typedef_decl>
-build_typedef_decl(read_context&, const xmlNodePtr, bool);
+build_typedef_decl(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<class_decl>
-build_class_decl(read_context&, const xmlNodePtr, bool);
+build_class_decl(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<function_tdecl>
-build_function_tdecl(read_context&, const xmlNodePtr, bool);
+build_function_tdecl(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<class_tdecl>
-build_class_tdecl(read_context&, const xmlNodePtr, bool);
+build_class_tdecl(read_context&, const xmlNodePtr, bool, bool);
 
 static shared_ptr<type_tparameter>
 build_type_tparameter(read_context&, const xmlNodePtr, unsigned, bool);
@@ -469,7 +474,7 @@ build_template_parameter(read_context&, const xmlNodePtr, unsigned, bool);
 // please make sure to update it accordingly, whenever a new
 // type-building function is added here.
 static shared_ptr<type_base>
-build_type(read_context&, const xmlNodePtr, bool);
+build_type(read_context&, const xmlNodePtr, bool, bool);
 // </build a c++ class  from an instance of xmlNodePtr>
 
 static bool	handle_element(read_context&);
@@ -1083,7 +1088,8 @@ static shared_ptr<function_decl>
 build_function_decl(read_context&	ctxt,
 		    const xmlNodePtr	node,
 		    shared_ptr<class_decl> as_method_decl,
-		    bool update_depth_info)
+		    bool update_depth_info,
+		    bool add_to_current_scope)
 {
   shared_ptr<function_decl> nil;
 
@@ -1131,7 +1137,8 @@ build_function_decl(read_context&	ctxt,
 							mangled_name, vis,
 							bind));
 
-  ctxt.push_decl_to_current_scope(fn_decl, node, update_depth_info);
+  ctxt.push_decl_to_current_scope(fn_decl, node, update_depth_info,
+				  add_to_current_scope);
 
   for (xmlNodePtr n = node->children; n ; n = n->next)
     {
@@ -1168,7 +1175,7 @@ build_function_decl(read_context&	ctxt,
 /// completion, a null pointer otherwise.
 static shared_ptr<var_decl>
 build_var_decl(read_context& ctxt, const xmlNodePtr node,
-	       bool update_depth_info)
+	       bool update_depth_info, bool add_to_current_scope)
 {
   shared_ptr<var_decl> nil;
 
@@ -1203,7 +1210,8 @@ build_var_decl(read_context& ctxt, const xmlNodePtr node,
 					 locus, mangled_name,
 					 vis, bind));
 
-  ctxt.push_decl_to_current_scope(decl, node, update_depth_info);
+  ctxt.push_decl_to_current_scope(decl, node, update_depth_info,
+				  add_to_current_scope);
 
   return decl;
 }
@@ -1219,7 +1227,8 @@ build_var_decl(read_context& ctxt, const xmlNodePtr node,
 static shared_ptr<type_decl>
 build_type_decl(read_context&		ctxt,
 		const xmlNodePtr	node,
-		bool update_depth_info)
+		bool update_depth_info,
+		bool add_to_current_scope)
 {
   shared_ptr<type_decl> nil;
 
@@ -1253,7 +1262,8 @@ build_type_decl(read_context&		ctxt,
   shared_ptr<type_decl> decl(new type_decl(name, size_in_bits,
 					   alignment_in_bits,
 					   loc));
-  if (ctxt.push_and_key_type_decl(decl, id, node, update_depth_info))
+  if (ctxt.push_and_key_type_decl(decl, id, node, update_depth_info,
+				  add_to_current_scope))
     return decl;
 
   return nil;
@@ -1270,7 +1280,8 @@ build_type_decl(read_context&		ctxt,
 static shared_ptr<qualified_type_def>
 build_qualified_type_decl(read_context& ctxt,
 			  const xmlNodePtr node,
-			  bool update_depth_info)
+			  bool update_depth_info,
+			  bool add_to_current_scope)
 {
   if (!xmlStrEqual(node->name, BAD_CAST("qualified-type-def")))
     return shared_ptr<qualified_type_def>((qualified_type_def*)0);
@@ -1313,7 +1324,8 @@ build_qualified_type_decl(read_context& ctxt,
 
   shared_ptr<qualified_type_def> decl(new qualified_type_def(underlying_type,
 							     cv, loc));
-  if (ctxt.push_and_key_type_decl(decl, id, node, update_depth_info))
+  if (ctxt.push_and_key_type_decl(decl, id, node, update_depth_info,
+				  add_to_current_scope))
     return decl;
 
   return shared_ptr<qualified_type_def>((qualified_type_def*)0);
@@ -1330,7 +1342,8 @@ build_qualified_type_decl(read_context& ctxt,
 static shared_ptr<pointer_type_def>
 build_pointer_type_def(read_context&	ctxt,
 		       const xmlNodePtr node,
-		       bool update_depth_info)
+		       bool update_depth_info,
+		       bool add_to_current_scope)
 {
 
   shared_ptr<pointer_type_def> nil;
@@ -1365,7 +1378,8 @@ build_pointer_type_def(read_context&	ctxt,
 						      size_in_bits,
 						      alignment_in_bits,
 						      loc));
-  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info))
+  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
+				  add_to_current_scope))
     return t;
 
   return nil;
@@ -1382,7 +1396,8 @@ build_pointer_type_def(read_context&	ctxt,
 /// successful completio, a null pointer otherwise.
 static shared_ptr<reference_type_def>
 build_reference_type_def(read_context&	ctxt,
-			 const xmlNodePtr node, bool update_depth_info)
+			 const xmlNodePtr node, bool update_depth_info,
+			 bool add_to_current_scope)
 {
   shared_ptr<reference_type_def> nil;
 
@@ -1422,7 +1437,8 @@ build_reference_type_def(read_context&	ctxt,
 							  size_in_bits,
 							  alignment_in_bits,
 							  loc));
-  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info))
+  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
+				  add_to_current_scope))
     return t;
 
   return nil;
@@ -1438,7 +1454,7 @@ build_reference_type_def(read_context&	ctxt,
 /// completion, a null pointer otherwise.
 static shared_ptr<enum_type_decl>
 build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
-		     bool update_depth_info)
+		     bool update_depth_info, bool add_to_current_scope)
 {
   shared_ptr<enum_type_decl> nil;
 
@@ -1498,7 +1514,8 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
   shared_ptr<enum_type_decl> t(new enum_type_decl(name, loc,
 						  underlying_type,
 						  enumerators));
-  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info))
+  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
+				  add_to_current_scope))
     return t;
 
   return nil;
@@ -1515,7 +1532,8 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
 static shared_ptr<typedef_decl>
 build_typedef_decl(read_context&	ctxt,
 		   const xmlNodePtr	node,
-		   bool update_depth_info)
+		   bool update_depth_info,
+		   bool add_to_current_scope)
 {
   shared_ptr<typedef_decl> nil;
 
@@ -1544,7 +1562,8 @@ build_typedef_decl(read_context&	ctxt,
 
   shared_ptr<typedef_decl> t(new typedef_decl(name, underlying_type, loc));
 
-  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info))
+  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
+				  add_to_current_scope))
     return t;
 
   return nil;
@@ -1563,7 +1582,7 @@ build_typedef_decl(read_context&	ctxt,
 /// pointer otherwise.
 static shared_ptr<class_decl>
 build_class_decl(read_context& ctxt, const xmlNodePtr node,
-		 bool update_depth_info)
+		 bool update_depth_info, bool add_to_current_scope)
 {
   shared_ptr<class_decl> nil;
 
@@ -1628,7 +1647,8 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
   if (is_decl_only)
     decl.reset(new class_decl(name));
 
-  ctxt.push_decl_to_current_scope(decl, node, update_depth_info);
+  ctxt.push_decl_to_current_scope(decl, node, update_depth_info,
+				  add_to_current_scope);
 
   for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
     {
@@ -1673,13 +1693,9 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 		continue;
 
 	      if (shared_ptr<type_base> t =
-		  build_type(ctxt, p, /*update_depth_info=*/true))
-		{
-		  shared_ptr<class_decl::member_type> m
-		    (new class_decl::member_type(t, access));
-
-		  decl->add_member_type(m);
-		}
+		  build_type(ctxt, p, /*update_depth_info=*/true,
+			     /*add_to_current_scope=*/false))
+		decl->add_member_type(t, access);
 	    }
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("data-member")))
@@ -1701,16 +1717,10 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 		continue;
 
 	      if (shared_ptr<var_decl> v =
-		  build_var_decl(ctxt, p, /*update_depth_info=*/true))
-		{
-		  shared_ptr<class_decl::data_member> m
-		    (new class_decl::data_member(v, access,
-						 is_laid_out,
-						 is_static,
-						 offset_in_bits));
-
-		  decl->add_data_member(m);
-		}
+		  build_var_decl(ctxt, p, /*update_depth_info=*/true,
+				 /*add_to_current_scope=*/false))
+		decl->add_data_member(v, access, is_laid_out,
+				      is_static, offset_in_bits);
 	    }
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("member-function")))
@@ -1736,17 +1746,13 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 
 	      if (shared_ptr<function_decl> f =
 		  build_function_decl(ctxt, p, decl,
-				      /*update_depth_info=*/true))
-		{
-		  shared_ptr<class_decl::member_function> m
-		    (new class_decl::member_function(f, access,
-						     vtable_offset,
-						     is_static,
-						     is_ctor, is_dtor,
-						     is_const));
-
-		  decl->add_member_function(m);
-		}
+				      /*update_depth_info=*/true,
+				      /*add_to_current_scope=*/false))
+		decl->add_member_function(f, access,
+					  vtable_offset,
+					  is_static,
+					  is_ctor, is_dtor,
+					  is_const);
 	    }
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("member-template")))
@@ -1767,22 +1773,26 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 
 	      if (shared_ptr<function_tdecl> f =
 		  build_function_tdecl(ctxt, p,
-					       /*update_depth_info=*/true))
+				       /*update_depth_info=*/true,
+				       /*add_to_current_scope=*/false))
 		{
 		  shared_ptr<class_decl::member_function_template> m
 		    (new class_decl::member_function_template(f, access,
 							      is_static,
 							      is_ctor,
 							      is_const));
+		  assert(!f->get_scope());
 		  decl->add_member_function_template(m);
 		}
 	      else if (shared_ptr<class_tdecl> c =
 		       build_class_tdecl(ctxt, p,
-						 /*update_depth_info=*/true))
+					 /*update_depth_info=*/true,
+					 /*add_to_current_scope=*/false))
 		{
 		  shared_ptr<class_decl::member_class_template> m
 		    (new class_decl::member_class_template(c, access,
 							   is_static));
+		  assert(!c->get_scope());
 		  decl->add_member_class_template(m);
 		}
 	    }
@@ -1816,8 +1826,9 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 /// completion, a null pointer otherwise.
 static shared_ptr<function_tdecl>
 build_function_tdecl(read_context& ctxt,
-			     const xmlNodePtr node,
-			     bool update_depth_info)
+		     const xmlNodePtr node,
+		     bool update_depth_info,
+		     bool add_to_current_scope)
 {
   shared_ptr<function_tdecl> nil, result;
 
@@ -1842,7 +1853,9 @@ build_function_tdecl(read_context& ctxt,
   shared_ptr<function_tdecl> fn_tmpl_decl
     (new function_tdecl(loc, vis, bind));
 
-  ctxt.push_decl_to_current_scope(fn_tmpl_decl, node, update_depth_info);
+  ctxt.push_decl_to_current_scope(fn_tmpl_decl, node,
+				  update_depth_info,
+				  add_to_current_scope);
 
   unsigned parm_index = 0;
   for (xmlNodePtr n = node->children; n; n = n->next)
@@ -1859,7 +1872,8 @@ build_function_tdecl(read_context& ctxt,
 	}
       else if (shared_ptr<function_decl> f =
 	       build_function_decl(ctxt, n, shared_ptr<class_decl>(),
-				   /*update_depth_info=*/true))
+				   /*update_depth_info=*/true,
+				   /*add_to_current_scope=*/true))
 	fn_tmpl_decl->set_pattern(f);
     }
 
@@ -1889,7 +1903,7 @@ build_function_tdecl(read_context& ctxt,
 /// completion, a null pointer otherwise.
 static shared_ptr<class_tdecl>
 build_class_tdecl(read_context&	ctxt, const xmlNodePtr node,
-		  bool update_depth_info)
+		  bool update_depth_info, bool add_to_current_scope)
 {
   shared_ptr<class_tdecl> nil, result;
 
@@ -1911,7 +1925,8 @@ build_class_tdecl(read_context&	ctxt, const xmlNodePtr node,
   shared_ptr<class_tdecl> class_tmpl
     (new class_tdecl(loc, vis));
 
-  ctxt.push_decl_to_current_scope(class_tmpl, node, update_depth_info);
+  ctxt.push_decl_to_current_scope(class_tmpl, node, update_depth_info,
+				  add_to_current_scope);
 
   unsigned parm_index = 0;
   for (xmlNodePtr n = node->children; n; n = n->next)
@@ -1927,7 +1942,8 @@ build_class_tdecl(read_context&	ctxt, const xmlNodePtr node,
 	  ++parm_index;
 	}
       else if (shared_ptr<class_decl> c =
-	       build_class_decl(ctxt, n, /*update_depth_info=*/true))
+	       build_class_decl(ctxt, n, /*update_depth_info=*/true,
+				add_to_current_scope))
 	class_tmpl->set_pattern(c);
     }
 
@@ -1982,9 +1998,11 @@ build_type_tparameter(read_context& ctxt, const xmlNodePtr node,
 
   if (id.empty())
     ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result),
-				    node, update_depth_info);
+				    node, update_depth_info,
+				    /*add_to_current_scope=*/true);
   else
-    ctxt.push_and_key_type_decl(result, id, node, update_depth_info);
+    ctxt.push_and_key_type_decl(result, id, node, update_depth_info,
+				/*add_to_current_scope=*/true);
 
   return result;
 }
@@ -2016,7 +2034,8 @@ build_type_composition(read_context& ctxt, const xmlNodePtr node,
   shared_ptr<type_base> composed_type;
   result.reset(new type_composition(index, composed_type));
   ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result),
-				  node, update_depth_info);
+				  node, update_depth_info,
+				  /*add_to_current_scope=*/true);
 
   for (xmlNodePtr n = node->children; n; n = n->next)
     {
@@ -2025,13 +2044,16 @@ build_type_composition(read_context& ctxt, const xmlNodePtr node,
 
       if ((composed_type =
 	   build_pointer_type_def(ctxt, n,
-				  /*update_depth_info=*/true))
+				  /*update_depth_info=*/true,
+				  /*add_to_current_scope=*/true))
 	  ||(composed_type =
 	     build_reference_type_def(ctxt, n,
-				      /*update_depth_info=*/true))
+				      /*update_depth_info=*/true,
+				      /*add_to_current_scope=*/true))
 	  || (composed_type =
 	      build_qualified_type_decl(ctxt, n,
-					/**update_depth_info=*/true)))
+					/**update_depth_info=*/true,
+					/*add_to_current_scope=*/true)))
 	{
 	  result->set_composed_type(composed_type);
 	  break;
@@ -2081,7 +2103,8 @@ build_non_type_tparameter(read_context&	ctxt,
 
   r.reset(new non_type_tparameter(index, name, type, loc));
   ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(r),
-				  node, update_depth_info);
+				  node, update_depth_info,
+				  /*add_to_current_scope=*/true);
 
   return r;
 }
@@ -2099,9 +2122,9 @@ build_non_type_tparameter(read_context&	ctxt,
 /// upon successful completion, a null pointer otherwise.
 static shared_ptr<template_tparameter>
 build_template_tparameter(read_context& ctxt,
-				  const xmlNodePtr node,
-				  unsigned index,
-				  bool update_depth_info)
+			  const xmlNodePtr node,
+			  unsigned index,
+			  bool update_depth_info)
 {
   shared_ptr<template_tparameter> nil;
 
@@ -2134,7 +2157,8 @@ build_template_tparameter(read_context& ctxt,
   shared_ptr<template_tparameter> result
     (new template_tparameter(index, name, loc));
 
-  ctxt.push_decl_to_current_scope(result, node, update_depth_info);
+  ctxt.push_decl_to_current_scope(result, node, update_depth_info,
+				  /*add_to_current_scope=*/true);
 
   // Go parse template parameters that are children nodes
   int parm_index = 0;
@@ -2194,17 +2218,25 @@ build_template_parameter(read_context&		ctxt,
 /// @return a pointer to the newly built type_base upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<type_base>
-build_type(read_context& ctxt, const xmlNodePtr node, bool update_depth_info)
+build_type(read_context& ctxt, const xmlNodePtr node,
+	   bool update_depth_info, bool add_to_current_scope)
 {
   shared_ptr<type_base> t;
 
-  ((t = build_type_decl(ctxt, node, update_depth_info))
-   || (t = build_qualified_type_decl(ctxt, node, update_depth_info))
-   || (t = build_pointer_type_def(ctxt, node, update_depth_info))
-   || (t = build_reference_type_def(ctxt, node,update_depth_info))
-   || (t = build_enum_type_decl(ctxt, node,update_depth_info))
-   || (t = build_typedef_decl(ctxt, node, update_depth_info))
-   || (t = build_class_decl(ctxt, node, update_depth_info)));
+  ((t = build_type_decl(ctxt, node, update_depth_info,
+			add_to_current_scope))
+   || (t = build_qualified_type_decl(ctxt, node, update_depth_info,
+				     add_to_current_scope))
+   || (t = build_pointer_type_def(ctxt, node, update_depth_info,
+				  add_to_current_scope))
+   || (t = build_reference_type_def(ctxt, node ,update_depth_info,
+				    add_to_current_scope))
+   || (t = build_enum_type_decl(ctxt, node,update_depth_info,
+				add_to_current_scope))
+   || (t = build_typedef_decl(ctxt, node, update_depth_info,
+			      add_to_current_scope))
+   || (t = build_class_decl(ctxt, node, update_depth_info,
+			    add_to_current_scope)));
 
   return t;
 }
@@ -2217,37 +2249,20 @@ build_type(read_context& ctxt, const xmlNodePtr node, bool update_depth_info)
 static bool
 handle_type_decl(read_context& ctxt)
 {
-  xml::reader_sptr reader = ctxt.get_reader();
-  if (!reader)
+  xml::reader_sptr r = ctxt.get_reader();
+  if (!r)
     return false;
 
-  string name;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "name"))
-    name = CHAR_STR(s);
-  string id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "id"))
-    id = CHAR_STR(s);
-
-  size_t size_in_bits= 0;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "size-in-bits"))
-    size_in_bits = atoi(CHAR_STR(s));
-
-  size_t alignment_in_bits = 0;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(reader, "alignment-in-bits"))
-    alignment_in_bits = atoi(CHAR_STR(s));
-
-  location loc;
-  read_location(ctxt, loc);
-
-  if (ctxt.get_type_decl(id))
-    // Hugh?  How come a type which ID is supposed to be unique exist
-    // already?  Bail out!
+  xmlNodePtr node = xmlTextReaderExpand(r.get());
+  if (!node)
     return false;
 
-  shared_ptr<type_base> decl(new type_decl(name, size_in_bits,
-					   alignment_in_bits,
-					   loc));
-  return ctxt.push_and_key_type_decl(decl, id);
+  type_decl_sptr decl = build_type_decl(ctxt, node, /*update_depth_info=*/false,
+					/*add_to_current_scope=*/true);
+
+  xmlTextReaderNext(r.get());
+
+  return decl;
 }
 
 /// Parses 'namespace-decl' xml element.
@@ -2276,7 +2291,7 @@ handle_namespace_decl(read_context& ctxt)
   read_location(ctxt, loc);
 
   shared_ptr<decl_base> decl(new namespace_decl(name, loc));
-  ctxt.push_decl_to_current_scope(decl);
+  ctxt.push_decl_to_current_scope(decl, /*add_to_current_scope=*/true);
   return true;
 }
 
@@ -2332,7 +2347,7 @@ handle_qualified_type_decl(read_context& ctxt)
 
   shared_ptr<type_base> decl(new qualified_type_def(underlying_type,
 						    cv, loc));
-  return ctxt.push_and_key_type_decl(decl, id);
+  return ctxt.push_and_key_type_decl(decl, id, /*add_to_current_scope=*/true);
 }
 
 /// Parse a pointer-type-decl element.
@@ -2374,7 +2389,7 @@ handle_pointer_type_def(read_context& ctxt)
 					       size_in_bits,
 					       alignment_in_bits,
 					       loc));
-  return ctxt.push_and_key_type_decl(t, id);
+  return ctxt.push_and_key_type_decl(t, id, /*add_to_current_scope=*/true);
 }
 
 /// Parse a reference-type-def element.
@@ -2422,7 +2437,7 @@ handle_reference_type_def(read_context& ctxt)
 						 size_in_bits,
 						 alignment_in_bits,
 						 loc));
-  return ctxt.push_and_key_type_decl(t, id);
+  return ctxt.push_and_key_type_decl(t, id, /*add_to_current_scope=*/true);
 }
 
 /// Parse an enum-decl element.
@@ -2441,7 +2456,8 @@ handle_enum_type_decl(read_context& ctxt)
 
   shared_ptr<enum_type_decl> decl =
     build_enum_type_decl(ctxt, node,
-			 /*update_depth_info=*/false);
+			 /*update_depth_info=*/false,
+			 /*add_to_current_scope=*/true);
 
   xmlTextReaderNext(r.get());
 
@@ -2480,7 +2496,7 @@ handle_typedef_decl(read_context& ctxt)
 
   shared_ptr<type_base> t(new typedef_decl(name, underlying_type, loc));
 
-  return ctxt.push_and_key_type_decl(t, id);
+  return ctxt.push_and_key_type_decl(t, id, /*add_to_current_scope=*/true);
 }
 
 /// Parse a var-decl element.
@@ -2498,7 +2514,8 @@ handle_var_decl(read_context& ctxt)
     return false;
 
   shared_ptr<decl_base> decl = build_var_decl(ctxt, node,
-					      /*update_depth_info=*/false);
+					      /*update_depth_info=*/false,
+					      /*add_to_current_scope=*/true);
   xmlTextReaderNext(r.get());
 
   return decl;
@@ -2523,7 +2540,8 @@ handle_function_decl(read_context& ctxt)
 
   shared_ptr<function_decl> fn =
     build_function_decl(ctxt, node, shared_ptr<class_decl>(),
-			/*update_depth_info=*/false);
+			/*update_depth_info=*/false,
+			/*add_to_current_scope=*/true);
 
   // now advance the xml reader cursor to the xml node after this
   // expanded 'enum-decl' node.
@@ -2550,7 +2568,8 @@ handle_class_decl(read_context& ctxt)
     return false;
 
   shared_ptr<class_decl> decl = build_class_decl(ctxt, node,
-						 /*update_depth_info=*/false);
+						 /*update_depth_info=*/false,
+						 /*add_to_current_scope=*/true);
 
   xmlTextReaderNext(r.get());
 
@@ -2575,7 +2594,8 @@ handle_function_tdecl(read_context& ctxt)
     return false;
 
   bool is_ok = build_function_tdecl(ctxt, node,
-					    /*update_depth_info=*/false);
+				    /*update_depth_info=*/false,
+				    /*add_to_current_scope=*/true);
 
   xmlTextReaderNext(r.get());
 
@@ -2599,7 +2619,8 @@ handle_class_tdecl(read_context& ctxt)
     return false;
 
   bool is_ok = build_class_tdecl(ctxt, node,
-				 /*update_depth_info=*/false);
+				 /*update_depth_info=*/false,
+				 /*add_to_current_scope=*/true);
   xmlTextReaderNext(r.get());
 
   return is_ok;

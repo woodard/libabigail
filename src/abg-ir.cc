@@ -435,7 +435,7 @@ add_decl_to_scope(shared_ptr<decl_base> decl, scope_decl* scope)
 {
   if (scope && decl && !decl->get_scope())
     {
-      scope->add_member_decl (decl);
+      scope->add_member_decl(decl);
       decl->set_scope(scope);
     }
 }
@@ -479,6 +479,15 @@ get_type_name(const type_base_sptr t)
   decl_base_sptr d = dynamic_pointer_cast<decl_base>(t);
   return d->get_name();
 }
+
+/// Get the declaration for a given type.
+///
+/// @param the type to consider.
+///
+/// @return the declaration for the type to return.
+decl_base_sptr
+get_type_declaration(const type_base_sptr t)
+{return dynamic_pointer_cast<decl_base>(t);}
 
 /// Return the translation unit a declaration belongs to.
 ///
@@ -1807,20 +1816,61 @@ class_decl::set_earlier_declaration(shared_ptr<type_base> declaration)
   set_earlier_declaration(d);
 }
 
-/// Add a member type to the current instance of class_decl
+/// Add a member declaration to the current instance of class_decl.
+/// The member declaration can be either a member type, data member,
+/// member function, or member template.
 ///
-/// @param t the member type to add.
+/// @param d the member declaration to add.
+void
+class_decl::add_member_decl(decl_base_sptr d)
+{
+  if (member_type_sptr t = dynamic_pointer_cast<member_type>(d))
+    add_member_type(t);
+  else if (data_member_sptr m = dynamic_pointer_cast<data_member>(d))
+    add_data_member(m);
+  else if (member_function_sptr f = dynamic_pointer_cast<member_function>(d))
+    add_member_function(f);
+  else if (member_function_template_sptr f =
+	   dynamic_pointer_cast<member_function_template>(d))
+    add_member_function_template(f);
+  else if (member_class_template_sptr c =
+	   dynamic_pointer_cast<member_class_template>(d))
+    add_member_class_template(c);
+  else
+    scope_decl::add_member_decl(d);
+}
+
+/// Add a member type to the current instance of class_decl.
+///
+/// @param t the member type to add.  It must not have been added to a
+/// scope, otherwise this will violate an assertion.
 void
 class_decl::add_member_type(shared_ptr<member_type>t)
 {
   decl_base* c = dynamic_pointer_cast<decl_base>(t->as_type())->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
-  assert(!c || c == this);
-  if (!c)
-    add_decl_to_scope(t, this);
-
+  //assert(!c || c == this);
+  assert(!c);
+  t->set_scope(this);
   member_types_.push_back(t);
+}
+
+/// Add a member type to the current instance of class_decl.
+///
+/// @param t the type to be added as a member type to the current
+/// instance of class_decl.  An instance of class_decl::member_type
+/// will be created out of @a t and and added to the the class.
+///
+/// @param the access specifier for the member type to be created.
+void
+class_decl::add_member_type(type_base_sptr t, access_specifier a)
+{
+  decl_base_sptr d = get_type_declaration(t);
+  assert(!d->get_scope());
+  shared_ptr<class_decl::member_type> m(new class_decl::member_type(t, a));
+  add_member_type(m);
+  add_decl_to_scope(d, this);
 }
 
 /// Constructor for base_spec instances.
@@ -1889,22 +1939,52 @@ class_decl::base_spec::operator==(const member_base& o) const
 
 /// Add a data member to the current instance of class_decl.
 ///
-/// @param m the data member to add.
+/// @param m the data member to add.  This data member should not have
+/// been already added to a scope.
 void
 class_decl::add_data_member(shared_ptr<data_member> m)
 {
   decl_base* c = m->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
-  assert(!c || c == this);
-  if (!c)
-    add_decl_to_scope(m, this);
-
+  assert(!c);
   data_members_.push_back(m);
+  m->set_scope(this);
 }
 
+/// Add a data member to the current instance of class_decl.
+///
+/// @param v a var_decl to add as a data member.  A proper
+/// class_decl::data_member is created from @a v and added to the
+/// class_decl.  This var_decl should not have been already added to a
+/// scope.
+///
+/// @param access the access specifier for the data member.
+///
+/// @param is_laid_out whether the data member was laid out.  That is,
+/// if its offset has been computed.  In the pattern of a class
+/// template for instance, this would be set to false.
+///
+/// @param is_static whether the data memer is static.
+///
+/// @param offset_in_bits if @a is_laid_out is true, this is the
+/// offset of the data member, expressed (oh, surprise) in bits.
+void
+class_decl::add_data_member(var_decl_sptr v, access_specifier access,
+			    bool is_laid_out, bool is_static,
+			    size_t offset_in_bits)
+{
+  assert(!v->get_scope());
 
-/// A constructor for instances of class_decl::method_decl.
+  data_member_sptr m(new class_decl::data_member(v, access,
+						 is_laid_out,
+						 is_static,
+						 offset_in_bits));
+  add_data_member(m);
+  add_decl_to_scope(v, this);
+}
+
+/// a constructor for instances of class_decl::method_decl.
 ///
 /// @param name the name of the method.
 ///
@@ -2120,18 +2200,54 @@ class_decl::get_num_virtual_functions() const
 
 /// Add a member function to the current instance of class_decl.
 ///
-/// @param m the member function to add.
+/// @param m the member function to add.  This member function should
+/// not have been already added to a scope.
 void
 class_decl::add_member_function(shared_ptr<member_function> m)
 {
   decl_base* c = m->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
-  assert(!c || c == this);
-  if (!c)
-    add_decl_to_scope(m, this);
-
+  assert(!c);
   member_functions_.push_back(m);
+  m->set_scope(this);
+}
+
+/// Add a member function to the current instance of class_decl.
+///
+/// @param f a function to add to the current class as a member
+/// function.  A proper class_decl::member_function is created for
+/// this function and added to the class.  This function should not
+/// have been already added to a scope.
+///
+/// @param access the access specifier for the member function to add.
+///
+/// @param vtable_offset the offset of the member function in the
+/// virtual table.  If the member function is not virtual, this offset
+/// must be 0 (zero).
+///
+/// @param is_static whether the member function is static.
+///
+/// @param is_ctor whether the member function is a constructor.
+///
+/// @param is_dtor whether the member function is a destructor.
+///
+/// @param is_const whether the member function is const.
+void
+class_decl::add_member_function(function_decl_sptr f,
+				access_specifier access,
+				size_t vtable_offset,
+				bool is_static, bool is_ctor,
+				bool is_dtor, bool is_const)
+{
+  assert(!f->get_scope());
+  member_function_sptr m(new class_decl::member_function(f, access,
+							 vtable_offset,
+							 is_static,
+							 is_ctor, is_dtor,
+							 is_const));
+  add_member_function(m);
+  add_decl_to_scope(f, this);
 }
 
 /// Append a member function template to the class.
@@ -2144,10 +2260,8 @@ class_decl::add_member_function_template
   decl_base* c = m->as_function_tdecl()->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
-  assert(!c || c == this);
-  if (!c)
-    add_decl_to_scope(m->as_function_tdecl(), this);
-
+  assert(!c);
+  m->as_function_tdecl()->set_scope(this);
   member_function_templates_.push_back(m);
 }
 
@@ -2157,14 +2271,12 @@ class_decl::add_member_function_template
 void
 class_decl::add_member_class_template(shared_ptr<member_class_template> m)
 {
-    decl_base* c = m->as_class_tdecl()->get_scope();
+  decl_base* c = m->as_class_tdecl()->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
-  assert(!c || c == this);
-  if (!c)
-    add_decl_to_scope(m->as_class_tdecl(), this);
-
+  assert(!c);
   member_class_templates_.push_back(m);
+  m->as_class_tdecl()->set_scope(this);
 }
 
 /// Return true iff the class has no entity in its scope.
