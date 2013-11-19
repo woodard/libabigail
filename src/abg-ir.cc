@@ -330,6 +330,38 @@ void
 decl_base::set_scope(scope_decl* scope)
 {context_ = scope;}
 
+/// Streaming operator for the decl_base::visibility.
+///
+/// @param o the output stream to serialize the visibility to.
+///
+/// @param v the visibility to serialize.
+///
+/// @return the output stream.
+std::ostream&
+operator<<(std::ostream& o, decl_base::visibility v)
+{
+  string r;
+  switch (v)
+    {
+    case decl_base::VISIBILITY_NONE:
+      r = "none";
+      break;
+    case decl_base::VISIBILITY_DEFAULT:
+      r = "default";
+      break;
+    case decl_base::VISIBILITY_PROTECTED:
+      r = "protected";
+      break;
+    case decl_base::VISIBILITY_HIDDEN:
+      r = "hidden";
+      break;
+    case decl_base::VISIBILITY_INTERNAL:
+      r = "internal";
+      break;
+    }
+  return o;
+}
+
 /// Turn equality of shared_ptr of decl_base into a deep equality;
 /// that is, make it compare the pointed to objects too.
 ///
@@ -709,6 +741,18 @@ type_decl::operator==(const decl_base& o) const
     }
   catch(...)
     {return false;}
+}
+
+/// Return true if both types equals.
+///
+/// Note that this does not check the scopes of any of the types.
+///
+/// @param o the other type_decl to check against.
+bool
+type_decl::operator==(const type_decl& o) const
+{
+  const decl_base& other = o;
+  return *this == other;
 }
 
 /// This implements the traversable_base::traverse pure virtual
@@ -1200,6 +1244,17 @@ typedef_decl::operator==(const type_base& o) const
     }
   catch(...)
     {return false;}
+}
+
+/// Build a pretty representation for a typedef_decl.
+///
+/// @return a copy of the pretty representation of the current
+/// instance of typedef_decl.
+string
+typedef_decl::get_pretty_representation() const
+{
+  string result = "typedef " + get_qualified_name();
+  return result;
 }
 
 /// Getter of the underlying type of the typedef.

@@ -36,6 +36,34 @@ using std::vector;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 
+/// Try to compute a diff on two instances of type representation.
+///
+/// The function template performs the diff if and only if the type
+/// representations are of a certain type.
+///
+/// @param first the first representation of type to consider in the
+/// diff computation.
+///
+/// @param second the second representation oftype to consider in the
+/// diff computation.
+///
+///@return the diff of the two types @a first and @a second if and
+///only if they represent the parametrized type DiffType.  Otherwise,
+///returns a NULL pointer value.
+template<typename DiffType>
+diff_sptr
+try_to_diff_types(const decl_base_sptr first, const decl_base_sptr second)
+{
+  if (shared_ptr<DiffType> f =
+      dynamic_pointer_cast<DiffType>(first))
+    {
+      shared_ptr<DiffType> s =
+	dynamic_pointer_cast<DiffType>(second);
+      return compute_diff(f, s);
+    }
+  return diff_sptr();
+}
+
 /// Compute the difference between two types.
 ///
 /// The function considers every possible types known to libabigail
@@ -52,29 +80,17 @@ using std::tr1::static_pointer_cast;
 /// @return the resulting diff.  It's a pointer to a descendent of
 /// abigail::comparison::diff.
 static diff_sptr
-compute_diff_for_types(const decl_base_sptr first, decl_base_sptr second)
+compute_diff_for_types(const decl_base_sptr first, const decl_base_sptr second)
 {
-  if (class_decl_sptr f = dynamic_pointer_cast<class_decl>(first))
-    {
-      class_decl_sptr s = dynamic_pointer_cast<class_decl>(second);
-      class_diff_sptr d(new class_diff(f, s));
-      return compute_diff(f, s);
-    }
-  else if (pointer_type_def_sptr f =
-	   dynamic_pointer_cast<pointer_type_def>(first))
-    {
-      pointer_type_def_sptr s = dynamic_pointer_cast<pointer_type_def>(second);
-      return compute_diff(f, s);
-    }
-  else if (reference_type_def_sptr f =
-	   dynamic_pointer_cast<reference_type_def>(first))
-    {
-      reference_type_def_sptr s =
-	dynamic_pointer_cast<reference_type_def>(second);
-      return compute_diff(f, s);
-    }
+  diff_sptr d;
 
-  return diff_sptr();
+  ((d = try_to_diff_types<type_decl>(first, second))
+   ||(d = try_to_diff_types<class_decl>(first, second))
+   ||(d = try_to_diff_types<pointer_type_def>(first, second))
+   ||(d = try_to_diff_types<reference_type_def>(first, second))
+   ||(d = try_to_diff_types<typedef_decl>(first, second)));
+
+  return d;
 }
 
 /// Compute the difference between two types.
@@ -188,8 +204,7 @@ pointer_diff::report(ostream& out, const string& indent) const
     {
       out << indent << "differences in pointed to type ("
 	  << d->first_subject()->get_pretty_representation() << "):\n";
-      out << indent << "  ";
-      d->report(out, indent);
+      d->report(out, indent + "  ");
       out << "\n";
     }
 }
@@ -1690,6 +1705,214 @@ compute_diff(const function_decl_sptr first,
 }
 
 // </function_decl_diff stuff>
+
+// <type_decl_diff stuff>
+
+/// Constructor for type_decl_diff.
+type_decl_diff::type_decl_diff(const type_decl_sptr first,
+			       const type_decl_sptr second)
+  : diff(first, second)
+{}
+
+/// Getter for the first subject of the type_decl_diff.
+///
+/// @return the first type_decl involved in the diff.
+const type_decl_sptr
+type_decl_diff::first_type_decl() const
+{return dynamic_pointer_cast<type_decl>(first_subject());}
+
+/// Getter for the second subject of the type_decl_diff.
+///
+/// @return the second type_decl involved in the diff.
+const type_decl_sptr
+type_decl_diff::second_type_decl() const
+{return dynamic_pointer_cast<type_decl>(second_subject());}
+
+/// Getter for the length of the diff.
+///
+/// @return 0 if the two type_decl are equal, 1 otherwise.
+unsigned
+type_decl_diff::length() const
+{return *first_type_decl() == *second_type_decl() ? 0 : 1;}
+
+/// Ouputs a report of the differences between of the two type_decl
+/// involved in the type_decl_diff.
+///
+/// @param out the output stream to emit the report to.
+///
+/// @param the string to use for indentatino indent.
+void
+type_decl_diff::report(ostream& out, const string& indent) const
+{
+  if (length() == 0)
+    return;
+
+  type_decl_sptr f = first_type_decl(), s = second_type_decl();
+  if (f->get_name() == s->get_name())
+    out << indent << f->get_pretty_representation() << " changed:\n";
+  else
+    out << indent
+	<< f->get_pretty_representation() << " was replaced by "
+	<< s->get_pretty_representation() << ":\n";
+
+  if (f->get_visibility() != s->get_visibility())
+    out << indent
+	<< "visibility changed from '"
+	<< f->get_visibility() << "' to '" << s->get_visibility() << "'\n";
+
+  if (f->get_size_in_bits() != s->get_size_in_bits())
+    out << indent
+	<< "size changed from "
+	<< f->get_size_in_bits() << " to "
+	<< s->get_size_in_bits() << " bits\n";
+
+  if (f->get_alignment_in_bits() != s->get_alignment_in_bits())
+    out << indent
+	<< "alignment changed from "
+	<< f->get_alignment_in_bits() << " to "
+	<< s->get_alignment_in_bits() << " bits\n";
+
+  if (f->get_mangled_name() != s->get_mangled_name())
+    out << indent
+	<< "mangled name changed from '"
+	<< f->get_mangled_name() << "' to "
+	<< s->get_mangled_name() << "'\n";
+}
+
+/// Compute a diff between two type_decl.
+///
+/// This function doesn't actually compute a diff.  As a type_decl is
+/// very simple (unlike compound constructs like function_decl or
+/// class_decl) it's easy to just compare the components of the
+/// type_decl to know what has changed.  Thus this function just
+/// builds and return a type_decl_diff object.  The
+/// type_decl_diff::report function will just compare the components
+/// of the the two type_decl and display where and how they differ.
+///
+/// @param first a pointer to the first type_decl to
+/// consider.
+///
+/// @param second a pointer to the second type_decl to consider.
+///
+/// @return a pointer to the resulting type_decl_diff.
+type_decl_diff_sptr
+compute_diff(const type_decl_sptr first, const type_decl_sptr second)
+{
+  type_decl_diff_sptr result(new type_decl_diff(first, second));
+
+  // We don't need to actually compute a diff here as a type_decl
+  // doesn't have complicated sub-components.  type_decl_diff::report
+  // just walks the members of the type_decls and display information
+  // about the ones that have changed.  On a similar note,
+  // type_decl_diff::length returns 0 if the two type_decls are equal,
+  // and 1 otherwise.
+
+  return result;
+}
+
+// </type_decl_diff stuff>
+
+// <typedef_diff stuff>
+
+struct typedef_diff::priv
+{
+  diff_sptr underlying_type_diff_;
+};//end struct typedef_diff::priv
+
+/// Constructor for typedef_diff.
+typedef_diff::typedef_diff(const typedef_decl_sptr first,
+			   const typedef_decl_sptr second)
+  : diff(first, second),
+    priv_(new priv)
+{}
+
+/// Getter for the firt typedef_decl involved in the diff.
+///
+/// @return the first subject of the diff.
+const typedef_decl_sptr
+typedef_diff::first_typedef_decl() const
+{return dynamic_pointer_cast<typedef_decl>(first_subject());}
+
+/// Getter for the second typedef_decl involved in the diff.
+///
+/// @return the second subject of the diff.
+const typedef_decl_sptr
+typedef_diff::second_typedef_decl() const
+{return dynamic_pointer_cast<typedef_decl>(second_subject());}
+
+/// Getter for the diff between the two underlying types of the
+/// typedefs.
+///
+/// @return the diff object reprensenting the difference between the
+/// two underlying types of the typedefs.
+const diff_sptr
+typedef_diff::underlying_type_diff() const
+{return priv_->underlying_type_diff_;}
+
+/// Setter for the diff between the two underlying types of the
+/// typedefs.
+///
+/// @param d the new diff object reprensenting the difference between
+/// the two underlying types of the typedefs.
+void
+typedef_diff::underlying_type_diff(const diff_sptr d)
+{priv_->underlying_type_diff_ = d;}
+
+/// Getter of the length of the diff between the two typedefs.
+///
+/// @return 0 if the two typedefs are equal, or an integer
+/// representing the length of the difference.
+unsigned
+typedef_diff::length() const
+{
+  if (!underlying_type_diff())
+    return 0;
+  return underlying_type_diff()->length();
+}
+
+/// Reports the difference between the two subjects of the diff in a
+/// serialized form.
+///
+/// @param out the output stream to emit the repot to.
+///
+/// @param indent the indentation string to use.
+void
+typedef_diff::report(ostream& out, const string& indent) const
+{
+  if (length() == 0)
+    return;
+
+  typedef_decl_sptr f = first_typedef_decl(), s = second_typedef_decl();
+  if (f->get_name() != s->get_name())
+    out << indent << "typedef name changed from "
+	<< f->get_name() << " to " << s->get_name();
+
+  if (diff_sptr d = underlying_type_diff())
+    {
+      out << indent << "underlying type changed:\n";
+      d->report(out, indent + "  ");
+      out << "\n";
+    }
+}
+
+/// Compute a diff between two typedef_decl.
+///
+/// @param first a pointer to the first typedef_decl to consider.
+///
+/// @param second a pointer to the second typedef_decl to consider.
+///
+/// @return a pointer to the the resulting typedef_diff.
+typedef_diff_sptr
+compute_diff(const typedef_decl_sptr first, const typedef_decl_sptr second)
+{
+  diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
+				       second->get_underlying_type());
+  typedef_diff_sptr result(new typedef_diff(first, second));
+  result->underlying_type_diff(d);
+  return result;
+}
+
+// </typedef_diff stuff>
 
 // <translation_unit_diff stuff>
 

@@ -267,6 +267,9 @@ public:
 bool
 operator==(decl_base_sptr, decl_base_sptr);
 
+std::ostream&
+operator<<(std::ostream&, decl_base::visibility);
+
 typedef shared_ptr<scope_decl> scope_decl_sptr;
 
 /// A declaration that introduces a scope.
@@ -432,6 +435,9 @@ public:
 
   virtual bool
   operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_decl&) const;
 
   void
   traverse(ir_node_visitor&);
@@ -720,6 +726,9 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual string
+  get_pretty_representation() const;
 
   shared_ptr<type_base>
   get_underlying_type() const;

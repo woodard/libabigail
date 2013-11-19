@@ -80,7 +80,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  else
 	    return false;
 	}
-      else if (!strcmp (argv[i], "--help"))
+      else if (!strcmp(argv[i], "--help"))
 	return false;
       else
 	return false;

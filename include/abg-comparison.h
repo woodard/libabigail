@@ -374,6 +374,78 @@ function_decl_diff_sptr
 compute_diff(const function_decl_sptr first,
 	     const function_decl_sptr second);
 
+class type_decl_diff;
+typedef shared_ptr<type_decl_diff> type_decl_diff_sptr;
+
+/// Abstraction of a diff between two basic type declarations.
+class type_decl_diff : public diff
+{
+  type_decl_diff();
+
+public:
+
+  friend type_decl_diff_sptr
+  compute_diff(const type_decl_sptr, const type_decl_sptr);
+
+  type_decl_diff(const type_decl_sptr, const type_decl_sptr);
+
+  const type_decl_sptr
+  first_type_decl() const;
+
+  const type_decl_sptr
+  second_type_decl() const;
+
+  unsigned
+  length() const;
+
+  void
+  report(ostream& out, const string& indent = "") const;
+};// end type_decl_diff
+
+type_decl_diff_sptr
+compute_diff(const type_decl_sptr, const type_decl_sptr);
+
+class typedef_diff;
+typedef shared_ptr<typedef_diff> typedef_diff_sptr;
+
+/// Abstraction of a diff between two typedef_decl.
+class typedef_diff : public diff
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+  typedef_diff();
+
+public:
+
+  friend typedef_diff_sptr
+  compute_diff(const typedef_decl_sptr, const typedef_decl_sptr);
+
+  typedef_diff(const typedef_decl_sptr first,
+	       const typedef_decl_sptr second);
+
+  const typedef_decl_sptr
+  first_typedef_decl() const;
+
+  const typedef_decl_sptr
+  second_typedef_decl() const;
+
+  const diff_sptr
+  underlying_type_diff() const;
+
+  void
+  underlying_type_diff(const diff_sptr);
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+};// end class typedef_diff
+
+typedef_diff_sptr
+compute_diff(const typedef_decl_sptr, const typedef_decl_sptr);
+
 class translation_unit_diff;
 typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
 
