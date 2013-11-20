@@ -271,7 +271,8 @@ decl_base::get_qualified_name(string& qn,
 }
 
 /// @return the default pretty representation for a decl.  This is
-/// basically the fully qualified name of the decl.
+/// basically the fully qualified name of the decl optionally prefixed
+/// with a meaningful string to add context for the user.
 string
 decl_base::get_pretty_representation() const
 {
@@ -1915,7 +1916,7 @@ class_decl::add_member_type(shared_ptr<member_type>t)
 ///
 /// @param t the type to be added as a member type to the current
 /// instance of class_decl.  An instance of class_decl::member_type
-/// will be created out of @a t and and added to the the class.
+/// will be created out of @ref t and and added to the the class.
 ///
 /// @param the access specifier for the member type to be created.
 void
@@ -2010,7 +2011,7 @@ class_decl::add_data_member(shared_ptr<data_member> m)
 /// Add a data member to the current instance of class_decl.
 ///
 /// @param v a var_decl to add as a data member.  A proper
-/// class_decl::data_member is created from @a v and added to the
+/// class_decl::data_member is created from @ref v and added to the
 /// class_decl.  This var_decl should not have been already added to a
 /// scope.
 ///
@@ -2022,7 +2023,7 @@ class_decl::add_data_member(shared_ptr<data_member> m)
 ///
 /// @param is_static whether the data memer is static.
 ///
-/// @param offset_in_bits if @a is_laid_out is true, this is the
+/// @param offset_in_bits if @ref is_laid_out is true, this is the
 /// offset of the data member, expressed (oh, surprise) in bits.
 void
 class_decl::add_data_member(var_decl_sptr v, access_specifier access,

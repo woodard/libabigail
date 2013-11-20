@@ -47,7 +47,7 @@ using std::tr1::static_pointer_cast;
 /// @param second the second representation oftype to consider in the
 /// diff computation.
 ///
-///@return the diff of the two types @a first and @a second if and
+///@return the diff of the two types @ref first and @ref second if and
 ///only if they represent the parametrized type DiffType.  Otherwise,
 ///returns a NULL pointer value.
 template<typename DiffType>

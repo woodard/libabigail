@@ -92,7 +92,11 @@ public:
 
 struct ir_node_visitor;
 
+/// Convenience typedef for a shared pointer on a @ref
+/// translation_unit type.
 typedef shared_ptr<translation_unit> translation_unit_sptr;
+
+/// Convenience typedef for a vector of @ref translation_unit_sptr.
 typedef std::vector<translation_unit_sptr> translation_units;
 
 /// This is the abstraction of the set of relevant artefacts (types,
@@ -102,7 +106,8 @@ class translation_unit : public traversable_base
 {
 public:
 
-  typedef shared_ptr<global_scope>		global_scope_sptr;
+  /// Convenience typedef for a shared pointer on a @ref global_scope.
+  typedef shared_ptr<global_scope> global_scope_sptr;
 
 private:
   std::string				path_;
@@ -152,6 +157,7 @@ public:
   traverse(ir_node_visitor& v);
 };//end class translation_unit
 
+/// Convenience typedef for a smart pointer on @ref decl_base.
 typedef shared_ptr<decl_base> decl_base_sptr;
 
 /// The base type of all declarations.
@@ -270,14 +276,18 @@ operator==(decl_base_sptr, decl_base_sptr);
 std::ostream&
 operator<<(std::ostream&, decl_base::visibility);
 
+/// Convenience typedef for a shared pointer on a @ref scope_decl.
 typedef shared_ptr<scope_decl> scope_decl_sptr;
 
 /// A declaration that introduces a scope.
 class scope_decl : public virtual decl_base
 {
 public:
-  typedef std::vector<shared_ptr<decl_base> >	declarations;
-  typedef std::vector<shared_ptr<scope_decl> >	scopes;
+
+  /// Convenience typedef for a vector of @ref decl_base_sptr.
+  typedef std::vector<decl_base_sptr >	declarations;
+  /// Convenience typedef for a vector of @ref scope_decl_sptr.
+  typedef std::vector<scope_decl_sptr>	scopes;
 
 private:
   declarations	members_;
@@ -349,6 +359,7 @@ public:
   virtual ~global_scope();
 };
 
+/// Convenience typedef for a shared pointer on a @ref type_base
 typedef shared_ptr<type_base> type_base_sptr;
 
 /// An abstraction helper for type declarations
@@ -412,6 +423,7 @@ struct type_shared_ptr_equal
   }
 };
 
+/// Convenience typedef for a shared pointer on a @ref type_decl.
 typedef shared_ptr<type_decl> type_decl_sptr;
 
 /// A basic type declaration that introduces no scope.
@@ -535,6 +547,7 @@ public:
 qualified_type_def::CV
 operator|(qualified_type_def::CV, qualified_type_def::CV);
 
+/// Convenience typedef for a shared pointer on a @ref pointer_type_def
 typedef shared_ptr<pointer_type_def> pointer_type_def_sptr;
 
 /// The abstraction of a pointer type.
@@ -568,6 +581,7 @@ public:
   virtual ~pointer_type_def();
 }; // end class pointer_type_def
 
+/// Convenience typedef for a shared pointer on a @ref reference_type_def
 typedef shared_ptr<reference_type_def> reference_type_def_sptr;
 
 /// Abstracts a reference type.
@@ -651,13 +665,12 @@ public:
     {value_=v;}
   };
 
+  /// Convenience typedef for a list of @ref enumerator.
   typedef std::list<enumerator> enumerators;
-  typedef shared_ptr<type_base> type_sptr;
-
 private:
 
-  type_sptr	underlying_type_;
-  enumerators	enumerators_;
+  type_base_sptr	underlying_type_;
+  enumerators		enumerators_;
 
   // Forbidden
   enum_type_decl();
@@ -674,7 +687,8 @@ public:
   /// @param underlying_type the underlying type of the enum
   ///
   /// @param enumerators a list of enumerators for this enum.
-  enum_type_decl(const string& name, location locus, type_sptr underlying_type,
+  enum_type_decl(const string& name, location locus,
+		 type_base_sptr underlying_type,
 		 enumerators& enms, const std::string& mangled_name = "",
 		 visibility vis = VISIBILITY_DEFAULT)
   : type_base(underlying_type->get_size_in_bits(),
@@ -684,7 +698,7 @@ public:
     enumerators_(enms)
   {}
 
-  type_sptr
+  type_base_sptr
   get_underlying_type() const;
 
   const enumerators&
@@ -702,6 +716,7 @@ public:
   virtual ~enum_type_decl();
 }; // end class enum_type_decl
 
+/// Convenience typedef for a shared pointer on a @ref typedef_decl.
 typedef shared_ptr<typedef_decl> typedef_decl_sptr;
 
 /// The abstraction of a typedef declaration.
@@ -739,6 +754,7 @@ public:
   virtual ~typedef_decl();
 };// end class typedef_decl
 
+/// Convenience typedef for a shared pointer on a @ref var_decl
 typedef shared_ptr<var_decl> var_decl_sptr;
 
 /// Abstracts a variable declaration.
@@ -786,6 +802,7 @@ public:
   virtual ~var_decl();
 }; // end class var_decl
 
+/// Convenience typedef for a shared pointer on a @ref function_decl
 typedef shared_ptr<function_decl> function_decl_sptr;
 
 /// Abstraction for a function declaration.
@@ -803,7 +820,12 @@ public:
   struct hash;
 
   class parameter;
+
+  /// Convenience typedef for a shared pointer on a @ref
+  /// function_decl::parameter
   typedef shared_ptr<parameter> parameter_sptr;
+
+  /// Convenience typedef for a vector of @ref parameter_sptr
   typedef std::vector<parameter_sptr> parameters;
 
   /// Abtraction for the parameter of a function.
@@ -961,6 +983,7 @@ public:
   virtual ~function_decl();
 };
 
+/// Convenience typedef for a shared pointer on a @ref function_type
 typedef shared_ptr<function_type> function_type_sptr;
 
 /// Abstraction of a function type.
@@ -970,7 +993,10 @@ public:
   /// Hasher for an instance of function_type
   struct hash;
 
+  /// Convenience typedef for a shared pointer on a @ref
+  /// function_decl::parameter
   typedef shared_ptr<function_decl::parameter>	parameter_sptr;
+  /// Convenience typedef for a vector of @ref parameter_sptr
   typedef std::vector<parameter_sptr>		parameters;
 
 private:
@@ -1291,6 +1317,7 @@ public:
   virtual ~type_composition();
 };
 
+/// Convenience typedef for a shared pointer on a @ref function_tdecl
 typedef shared_ptr<function_tdecl> function_tdecl_sptr;
 
 /// Abstract a function template declaration.
@@ -1353,7 +1380,7 @@ public:
   virtual ~function_tdecl();
 }; // end class function_tdecl.
 
-
+/// Convenience typedef for a shared pointer on a @ref class_tdecl
 typedef shared_ptr<class_tdecl> class_tdecl_sptr;
 
 /// Abstract a class template.
@@ -1429,7 +1456,8 @@ public:
   class member_function_template;
   class member_class_template;
 
-  /// Typedefs.
+  /// Convenience typedef
+  /// @{
   typedef shared_ptr<base_spec>			base_spec_sptr;
   typedef std::vector<base_spec_sptr>			base_specs;
   typedef shared_ptr<member_type>			member_type_sptr;
@@ -1442,6 +1470,7 @@ public:
   typedef std::vector<member_function_template_sptr>	member_function_templates;
   typedef shared_ptr<member_class_template>		member_class_template_sptr;
   typedef std::vector<member_class_template_sptr>	member_class_templates;
+  /// @}
 
 private:
   mutable bool			hashing_started_;
@@ -1574,6 +1603,7 @@ public:
   virtual ~class_decl();
 };// end class class_decl
 
+/// Convenience typedef for a shared pointer on a @ref class_decl
 typedef shared_ptr<class_decl> class_decl_sptr;
 
 bool

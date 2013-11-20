@@ -29,6 +29,10 @@
 namespace abigail
 {
 
+/// @brief utilities to compare abi artifacts
+///
+/// The main entry points of the namespace are the compute_diff()
+/// overloads used to compute the difference between two abi artifacts.
 namespace comparison
 {
 
@@ -43,14 +47,35 @@ using diff_utils::deletion;
 using diff_utils::edit_script;
 
 class diff;
+
+/// Convenience typedef for a shared_ptr for the @ref diff class
 typedef shared_ptr<diff> diff_sptr;
+
+/// Convenience typedef for a map which key is a string and which
+/// value is a @ref decl_base_sptr.
 typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
+
+/// Convenience typedef for a changed type or decl.  The first element
+/// of the pair is the old type/decl and the second is the new one.
 typedef pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
+
+/// Convenience typedef for a changed function parameter.  The first element of
+/// the pair is the old function parm and the second element is the
+/// new function parm.
 typedef pair<function_decl::parameter_sptr,
 	     function_decl::parameter_sptr> changed_parm;
+
+/// Convenience typedef for a map which value is a changed function
+/// parameter and which key is the name of the function parameter.
 typedef unordered_map<string, changed_parm> string_changed_parm_map;
+
+/// Convenience typedef for a map which value is changed type of decl.
+/// The key of the map is the qualified name of the type/decl.
 typedef unordered_map<string,
 		      changed_type_or_decl> string_changed_type_or_decl_map;
+
+/// Convenience typedef for a map which value is a function
+/// parameter.  The key is the name of the function parm.
 typedef unordered_map<string, function_decl::parameter_sptr> string_parm_map;
 
 /// This type encapsulates an edit script (a set of insertions and
@@ -95,6 +120,8 @@ public:
 };// end class diff
 
 class pointer_diff;
+/// Convenience typedef for a shared pointer on a @ref
+/// pointer_diff type.
 typedef shared_ptr<pointer_diff> pointer_diff_sptr;
 
 /// The abstraction of a diff between two pointers.
@@ -130,6 +157,9 @@ compute_diff(pointer_type_def_sptr first,
 	     pointer_type_def_sptr second);
 
 class reference_diff;
+
+/// Convenience typedef for a shared pointer on a @ref
+/// reference_diff type.
 typedef shared_ptr<reference_diff> reference_diff_sptr;
 
 /// The abstraction of a diff between two references.
@@ -166,6 +196,8 @@ compute_diff(reference_type_def_sptr first,
 	     reference_type_def_sptr second);
 
 class class_diff;
+
+/// Convenience typedef for a shared pointer on a @ref class_diff type.
 typedef shared_ptr<class_diff> class_diff_sptr;
 
 /// This type abstracts changes for a class_decl.
@@ -248,6 +280,8 @@ compute_diff(const class_decl_sptr first,
 	     const class_decl_sptr  second);
 
 class scope_diff;
+
+/// Convenience typedef for a shared pointer on a @ref scope_diff.
 typedef shared_ptr<scope_diff> scope_diff_sptr;
 
 /// An abstractions of the changes between two scopes.
@@ -332,6 +366,8 @@ compute_diff(const scope_decl_sptr first_scope,
 	     const scope_decl_sptr second_scope);
 
 class function_decl_diff;
+
+/// Convenience typedef for a shared pointer on a @ref function_decl type.
 typedef shared_ptr<function_decl_diff> function_decl_diff_sptr;
 
 /// Abstraction of a diff between two function_decl.
@@ -388,6 +424,8 @@ compute_diff(const function_decl_sptr first,
 	     const function_decl_sptr second);
 
 class type_decl_diff;
+
+/// Convenience typedef for a shared pointer on a @ref type_decl_diff type.
 typedef shared_ptr<type_decl_diff> type_decl_diff_sptr;
 
 /// Abstraction of a diff between two basic type declarations.
@@ -419,6 +457,8 @@ type_decl_diff_sptr
 compute_diff(const type_decl_sptr, const type_decl_sptr);
 
 class typedef_diff;
+
+/// Convenience typedef for a shared pointer on a typedef_diff type.
 typedef shared_ptr<typedef_diff> typedef_diff_sptr;
 
 /// Abstraction of a diff between two typedef_decl.
@@ -460,6 +500,9 @@ typedef_diff_sptr
 compute_diff(const typedef_decl_sptr, const typedef_decl_sptr);
 
 class translation_unit_diff;
+
+/// Convenience typedef for a shared pointer on a
+/// @ref translation_unit_diff type.
 typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
 
 class translation_unit_diff : public scope_diff
