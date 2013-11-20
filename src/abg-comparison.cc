@@ -339,7 +339,8 @@ represent(class_decl::member_function_sptr mem_fn,
     out << ", virtual at voffset "
 	<< mem_fn->get_vtable_offset()
 	<< "/"
-	<< mem_fn->get_type()->get_class_type()->get_num_virtual_functions();
+	<< mem_fn->get_type()->get_class_type()->get_num_virtual_functions()
+	<< "\n";
 }
 
 /// Stream a string representation for a data member.
@@ -357,7 +358,105 @@ represent(class_decl::data_member_sptr data_mem,
   out << data_mem->get_pretty_representation()
       << ", at offset "
       << data_mem->get_offset_in_bits()
-      << " (in bits)";
+      << " (in bits)\n";
+}
+
+/// Represent the changes that happened on two versions of a given
+/// class data member.
+///
+/// @param o the older version of the data member.
+///
+/// @param n the newer version of the data member.
+///
+/// @param out the output stream to send the representation to.
+static void
+represent(class_decl::data_member_sptr o,
+	  class_decl::data_member_sptr n,
+	  ostream& out,
+	  const string indent = "")
+{
+  bool emitted = false;
+  string name = o->get_qualified_name();
+  string name2 = n->get_qualified_name();
+  assert(name == name2);
+
+  if (o->is_laid_out() != n->is_laid_out())
+    {
+      if (!emitted)
+	out << indent << name << " ";
+      else
+	out << ", ";
+      if (o->is_laid_out())
+	out << "is no more laid out";
+      else
+	out << "now becomes laid out";
+      emitted = true;
+    }
+  if (o->get_offset_in_bits() != n->get_offset_in_bits())
+    {
+      if (!emitted)
+	out << indent << name << " ";
+      else
+	out << ", ";
+      out << "offset changed from " << o->get_offset_in_bits()
+	  << " to " << n->get_offset_in_bits();
+      emitted = true;
+    }
+  if (o->get_binding() != n->get_binding())
+    {
+      if (!emitted)
+	out << indent << name << " ";
+      else
+	out << ", ";
+      out << "elf binding changed from " << o->get_binding()
+	  << " to " << n->get_binding();
+      emitted = true;
+    }
+  if (o->get_visibility() != n->get_visibility())
+    {
+      if (!emitted)
+	out << indent << name << " ";
+      else
+	out << ", ";
+      out << "visibility changed from " << o->get_visibility()
+	  << " to " << n->get_visibility();
+    }
+  if (o->get_access_specifier() != n->get_access_specifier())
+    {
+      if (!emitted)
+	out << indent << name << " ";
+      else
+	out << ", ";
+
+      out << "access changed from " << o->get_access_specifier()
+	  << n->get_access_specifier();
+      emitted = true;
+    }
+  if (o->is_static() != n->is_static())
+    {
+      if (!emitted)
+	out << indent << name << " ";
+      else
+	out << ", ";
+
+      if (o->is_static())
+	out << "is no more static";
+      else
+	out << "now becomes static";
+      emitted = true;
+    }
+  if (*o->get_type() != *n->get_type())
+    {
+      if (!emitted)
+	out << indent << name << " type changed:\n";
+      else
+	out << "\n" << indent << "type changed:\n";
+      diff_sptr d = compute_diff_for_types(o->get_type(), n->get_type());
+      d->report(out, indent + "  ");
+      emitted = false;
+    }
+  if (emitted)
+    out << "\n";
 }
 
 struct class_diff::priv
@@ -820,16 +919,26 @@ edit_script&
 class_diff::member_class_tmpls_changes()
 {return priv_->member_class_tmpls_changes_;}
 
-/// Output the header preceding the the report for insertion/deletion
-/// of a part of a class.  This is a subroutine of class_diff::report.
+/// Represent the kind of difference we want report_mem_header() to
+/// report.
+enum diff_kind
+{
+  del_kind,
+  ins_kind,
+  change_kind
+};
+
+/// Output the header preceding the the report for
+/// insertion/deletion/change of a part of a class.  This is a
+/// subroutine of class_diff::report.
 ///
 /// @param out the output stream to output the report to.
 ///
 /// @param number the number of insertion/deletion to refer to in the
 /// header.
 ///
-/// @param deletions set this to true if we are reporting about
-/// deletions, set it false if we are reporting about insertions.
+/// @param k the kind of diff (insertion/deletion/change) we want the
+/// head to introduce.
 ///
 /// @param section_name the name of the sub-part of the class to
 /// report about.
@@ -837,25 +946,32 @@ class_diff::member_class_tmpls_changes()
 /// @param indent the string to use as indentation prefix in the
 /// header.
 static void
-report_num_dels_or_ins(ostream& out,
-		       int number,
-		       bool deletions,
-		       const string& section_name,
-		       const string& indent)
+report_mem_header(ostream& out,
+		  int number,
+		  diff_kind k,
+		  const string& section_name,
+		  const string& indent)
 {
-  string del_or_ins;
-  if (number > 1)
-    del_or_ins = (deletions) ? "deletions" : "insertions";
-  else
-    del_or_ins = (deletions) ? "deletion" : "insertion";
+  string change;
+  switch (k)
+    {
+    case del_kind:
+      change = (number > 1) ? "deletions" : "deletion";
+      break;
+    case ins_kind:
+      change = (number > 1) ? "insertions" : "insertion";
+      break;
+    case change_kind:
+      change = (number > 1) ? "changes" : "change";
+    }
 
   if (number == 0)
-    out << indent << "no " << section_name << " " << del_or_ins << "\n";
+    out << indent << "no " << section_name << " " << change << "\n";
   else if (number == 1)
-    out << indent << "1 " << section_name << " " << del_or_ins << ":\n";
+    out << indent << "1 " << section_name << " " << change << ":\n";
   else
     out << indent << number << " " << section_name
-	<< " " << del_or_ins << ":\n";
+	<< " " << change << ":\n";
 }
 
 /// Produce a basic report about the changes between two class_decl.
@@ -890,12 +1006,10 @@ class_diff::report(ostream& out, const string& indent) const
       assert(numchanges <= numdels);
       numdels -= numchanges;
 
-      if (numdels || numchanges)
+      if (numdels)
 	{
-	  if (numdels)
-	    report_num_dels_or_ins(out, numdels,
-				   /*deletions=*/true,
-				   "base class", indent);
+	  report_mem_header(out, numdels, del_kind,
+			    "base class", indent);
 
 	  for (vector<deletion>::const_iterator i = e.deletions().begin();
 	       i != e.deletions().end();
@@ -908,19 +1022,31 @@ class_diff::report(ostream& out, const string& indent) const
 		first_class->get_base_specifiers()[i->index()]->
 		get_base_class();
 
-	      if (decl_base_sptr n = priv_->base_has_changed(base_class))
-		{
-		  class_decl_sptr new_base =
-		    dynamic_pointer_cast<class_decl>(n);
-		  out << indent << "  "
-		      << base_class->get_pretty_representation()
-		      << " changed:\n";
-		  diff_sptr dif = compute_diff(base_class, new_base);
-		  dif->report(out, indent + "    ");
-		}
-	      else
-		out << indent << "  "
-		    << base_class->get_qualified_name();
+	      if ( priv_->base_has_changed(base_class))
+		continue;
+	      out << indent << "  " << base_class->get_qualified_name();
+	    }
+	  out << "\n\n";
+	}
+      // Report changes.
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, change_kind,
+			    "base class", indent);
+	  for (string_changed_type_or_decl_map::const_iterator it =
+		 priv_->changed_bases_.begin();
+	       it != priv_->changed_bases_.end();
+	       ++it)
+	    {
+	      class_decl_sptr o =
+		dynamic_pointer_cast<class_decl>(it->second.first);
+	      class_decl_sptr n =
+		dynamic_pointer_cast<class_decl>(it->second.second);
+	      out << indent << "  "
+		  << o->get_pretty_representation()
+		  << " changed:\n";
+	      diff_sptr dif = compute_diff(o, n);
+	      dif->report(out, indent + "    ");
 	    }
 	  out << "\n";
 	}
@@ -929,39 +1055,35 @@ class_diff::report(ostream& out, const string& indent) const
       int numins = e.num_insertions();
       assert(numchanges <= numins);
       numins -= numchanges;
-      if (numins || numchanges)
+      if (numins)
 	{
-	  if (numins)
+	  report_mem_header(out, numins, ins_kind,
+			    "base class", indent);
+
+	  bool emitted = false;
+	  for (vector<insertion>::const_iterator i = e.insertions().begin();
+	       i != e.insertions().end();
+	       ++i)
 	    {
-	      report_num_dels_or_ins(out, numins,
-				     /*deletions=*/false,
-				     "base class", indent);
-
-	      bool emitted = false;
-	      for (vector<insertion>::const_iterator i = e.insertions().begin();
-		   i != e.insertions().end();
-		   ++i)
+	      shared_ptr<class_decl> b;
+	      for (vector<unsigned>::const_iterator j =
+		     i->inserted_indexes().begin();
+		   j != i->inserted_indexes().end();
+		   ++j)
 		{
-		  shared_ptr<class_decl> b;
-		  for (vector<unsigned>::const_iterator j =
-			 i->inserted_indexes().begin();
-		       j != i->inserted_indexes().end();
-		       ++j)
-		    {
-		      if (emitted)
-			out << "\n";
+		  if (emitted)
+		    out << "\n";
 
-		      b= second_class->get_base_specifiers()[*j] ->
-			get_base_class();
-		      if (!priv_->base_has_changed(b))
-			{
-			  out << indent << b->get_qualified_name();
-			  emitted = true;
-			}
+		  b= second_class->get_base_specifiers()[*j] ->
+		    get_base_class();
+		  if (!priv_->base_has_changed(b))
+		    {
+		      out << indent << b->get_qualified_name();
+		      emitted = true;
 		    }
 		}
-	      out << "\n";
 	    }
+	  out << "\n";
 	}
     }
 
@@ -975,34 +1097,46 @@ class_diff::report(ostream& out, const string& indent) const
 
       // report deletions
       if (numdels)
-	report_num_dels_or_ins(out, numdels,
-			       /*deletion=*/true,
-			       "member type",
-			       indent);
-
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
-	   ++i)
 	{
-	  if (i != e.deletions().begin())
-	    out << "\n";
-	  decl_base_sptr mem_type =
-	    get_type_declaration
-	    (first_class->get_member_types()[i->index()]->as_type());
+	  report_mem_header(out, numdels, del_kind,
+			    "member type", indent);
 
-	  if (decl_base_sptr n = priv_->member_type_has_changed(mem_type))
+	  for (vector<deletion>::const_iterator i = e.deletions().begin();
+	       i != e.deletions().end();
+	       ++i)
 	    {
-	      out << indent << "  " << mem_type->get_pretty_representation()
+	      if (i != e.deletions().begin())
+		out << "\n";
+	      decl_base_sptr mem_type =
+		get_type_declaration
+		(first_class->get_member_types()[i->index()]->as_type());
+
+	      if (decl_base_sptr n = priv_->member_type_has_changed(mem_type))
+		continue;
+	      out << indent << "  " << mem_type->get_pretty_representation();
+	    }
+	  out << "\n\n";
+	}
+      // report changes
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, change_kind,
+			    "member type", indent);
+
+	  for (string_changed_type_or_decl_map::const_iterator it =
+		 priv_->changed_member_types_.begin();
+	       it != priv_->changed_member_types_.end();
+	       ++it)
+	    {
+	      decl_base_sptr o = it->second.first;
+	      decl_base_sptr n = it->second.second;
+	      out << indent << "  " << o->get_pretty_representation()
 		  << " changed:\n";
-	      diff_sptr dif = compute_diff_for_types(mem_type, n);
+	      diff_sptr dif = compute_diff_for_types(o, n);
 	      dif->report(out, indent + "    ");
 	    }
-	  else
-	    out << indent << "  "
-		<< mem_type->get_pretty_representation();
+	  out << "\n";
 	}
-      if (numdels || numchanges)
-	out << "\n";
 
       // report insertions
       int numins = e.num_insertions();
@@ -1011,10 +1145,8 @@ class_diff::report(ostream& out, const string& indent) const
 
       if (numins)
 	{
-	  report_num_dels_or_ins(out, numins,
-				 /*deletion=*/false,
-				 "member type",
-				 indent);
+	  report_mem_header(out, numins, ins_kind,
+			    "member type", indent);
 
 	  bool emitted = false;
 	  for (vector<insertion>::const_iterator i = e.insertions().begin();
@@ -1038,7 +1170,7 @@ class_diff::report(ostream& out, const string& indent) const
 		    }
 		}
 	    }
-	  out << "\n";
+	  out << "\n\n";
 	}
     }
 
@@ -1047,53 +1179,87 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // report deletions
       int numdels = e.num_deletions();
-      if (numdels)
-	report_num_dels_or_ins(out, numdels,
-			       /*deletions=*/true,
-			       "data member",
-			       indent);
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
-	   ++i)
-	{
-	  if (i != e.deletions().begin())
-	    out << "\n";
-	  class_decl::data_member_sptr data_mem =
-	    first_class->get_data_members()[i->index()];
-	  out << indent << "  ";
-	  represent(data_mem, out);
-	}
-      if (numdels)
-	out << "\n\n";
+      int numchanges = priv_->changed_data_members_.size();
+      assert(numchanges <= numdels);
+      numdels -= numchanges;
 
-      //report insertions
-      int numins = e.num_insertions();
-      if (numins)
-	report_num_dels_or_ins(out, numins,
-			       /*deletions=*/false,
-			       "data member",
-			       indent);
-      bool emitted = false;
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
-	   ++i)
+      if (numdels)
 	{
-	  class_decl::data_member_sptr data_mem;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
+	  report_mem_header(out, numdels, del_kind,
+			    "data member", indent);
+	  bool emitted = false;
+	  for (vector<deletion>::const_iterator i = e.deletions().begin();
+	       i != e.deletions().end();
+	       ++i)
 	    {
+	      class_decl::data_member_sptr data_mem =
+		first_class->get_data_members()[i->index()];
+
+	      if (priv_->data_member_has_changed(data_mem))
+		continue;
+
 	      if (emitted)
 		out << "\n";
-	      data_mem = second_class->get_data_members()[*j];
+
 	      out << indent << "  ";
 	      represent(data_mem, out);
 	      emitted = true;
 	    }
+	  out << "\n";
 	}
+
+      // report change
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, change_kind,
+			    "data member", indent);
+
+	  for (string_changed_type_or_decl_map::const_iterator it =
+		 priv_->changed_data_members_.begin();
+	       it != priv_->changed_data_members_.end();
+	       ++it)
+	    {
+	      class_decl::data_member_sptr o =
+		dynamic_pointer_cast<class_decl::data_member>(it->second.first);
+	      class_decl::data_member_sptr n =
+		dynamic_pointer_cast<class_decl::data_member>(it->second.second);
+	      represent(o, n, out, indent + " ");
+	    }
+	  out << "\n";
+	}
+
+      //report insertions
+      int numins = e.num_insertions();
+      assert(numchanges <= numins);
+      numins -= numchanges;
       if (numins)
-	out << "\n\n";
+	{
+	  report_mem_header(out, numins, ins_kind,
+			    "data member", indent);
+	  bool emitted = false;
+	  for (vector<insertion>::const_iterator i = e.insertions().begin();
+	       i != e.insertions().end();
+	       ++i)
+	    {
+	      class_decl::data_member_sptr data_mem;
+	      for (vector<unsigned>::const_iterator j =
+		     i->inserted_indexes().begin();
+		   j != i->inserted_indexes().end();
+		   ++j)
+		{
+		  data_mem = second_class->get_data_members()[*j];
+		  if (priv_->data_member_has_changed(data_mem))
+		    continue;
+		  if (emitted)
+		    out << "\n";
+		  out << indent << "  ";
+		  represent(data_mem, out);
+		  emitted = true;
+		}
+	    }
+	  if (emitted)
+	    out << "\n";
+	}
     }
 
   // member_fns
@@ -1102,10 +1268,8 @@ class_diff::report(ostream& out, const string& indent) const
       // report deletions
       int numdels = e.num_deletions();
       if (numdels)
-	report_num_dels_or_ins(out, numdels,
-			       /*deletions=*/true,
-			       "member function",
-			       indent);
+	report_mem_header(out, numdels, del_kind,
+			  "member function", indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
@@ -1118,15 +1282,13 @@ class_diff::report(ostream& out, const string& indent) const
 	  represent(mem_fun, out);
 	}
       if (numdels)
-	out << "\n\n";
+	out << "\n";
 
       // report insertions;
       int numins = e.num_insertions();
       if (numins)
-	report_num_dels_or_ins(out, numins,
-			       /*deletions=*/false,
-			       "member function",
-			       indent);
+	report_mem_header(out, numins, ins_kind,
+			  "member function", indent);
       bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
@@ -1146,8 +1308,8 @@ class_diff::report(ostream& out, const string& indent) const
 	      emitted = true;
 	    }
 	}
-      if (numins)
-	out << "\n\n";
+      if (emitted)
+	out << "\n";
     }
 
   // member function templates
@@ -1156,10 +1318,8 @@ class_diff::report(ostream& out, const string& indent) const
       // report deletions
       int numdels = e.num_deletions();
       if (numdels)
-	report_num_dels_or_ins(out, numdels,
-			       /*deletions=*/true,
-			       "member function template",
-			       indent);
+	report_mem_header(out, numdels, del_kind,
+			  "member function template", indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
@@ -1177,10 +1337,8 @@ class_diff::report(ostream& out, const string& indent) const
       // report insertions
       int numins = e.num_insertions();
       if (numins)
-	report_num_dels_or_ins(out, numins,
-			       /*deletions=*/false,
-			       "member function template",
-			       indent);
+	report_mem_header(out, numins, ins_kind,
+			  "member function template", indent);
       bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
@@ -1211,10 +1369,8 @@ class_diff::report(ostream& out, const string& indent) const
       // report deletions
       int numdels = e.num_deletions();
       if (numdels)
-	report_num_dels_or_ins(out, numdels,
-			       /*deletions=*/true,
-			       "member class template",
-			       indent);
+	report_mem_header(out, numdels, del_kind,
+			  "member class template", indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
@@ -1232,10 +1388,8 @@ class_diff::report(ostream& out, const string& indent) const
       // report insertions
       int numins = e.num_insertions();
       if (numins)
-	report_num_dels_or_ins(out, numins,
-			       /*deletions=*/false,
-			       "member class template",
-			       indent);
+	report_mem_header(out, numins, ins_kind,
+			  "member class template", indent);
       bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
@@ -2228,7 +2382,6 @@ type_decl_diff::report(ostream& out, const string& indent) const
     {
       if (n)
 	out << "\n";
-
       out << indent
 	  << "visibility changed from '"
 	  << f->get_visibility() << "' to '" << s->get_visibility();
@@ -2239,7 +2392,6 @@ type_decl_diff::report(ostream& out, const string& indent) const
     {
       if (n)
 	out << "\n";
-
       out << indent
 	  << "size changed from "
 	  << f->get_size_in_bits() << " to "
@@ -2251,7 +2403,6 @@ type_decl_diff::report(ostream& out, const string& indent) const
     {
       if (n)
 	out << "\n";
-
       out << indent
 	  << "alignment changed from "
 	  << f->get_alignment_in_bits() << " to "
@@ -2263,7 +2414,6 @@ type_decl_diff::report(ostream& out, const string& indent) const
     {
       if (n)
 	out << "\n";
-
       out << indent
 	  << "mangled name changed from '"
 	  << f->get_mangled_name() << "' to "
@@ -2272,7 +2422,7 @@ type_decl_diff::report(ostream& out, const string& indent) const
     }
 
   if (n)
-    out << "\n\n";
+    out << "\n";
 }
 
 /// Compute a diff between two type_decl.

@@ -363,6 +363,36 @@ operator<<(std::ostream& o, decl_base::visibility v)
   return o;
 }
 
+/// Streaming operator for decl_base::binding.
+///
+/// @param o the output stream to serialize the visibility to.
+///
+/// @param b the binding to serialize.
+///
+/// @return the output stream.
+std::ostream&
+operator<<(std::ostream& o, decl_base::binding b)
+{
+  string r;
+  switch (b)
+    {
+    case decl_base::BINDING_NONE:
+      r = "non";
+      break;
+    case decl_base::BINDING_LOCAL:
+      r = "local";
+      break;
+    case decl_base::BINDING_GLOBAL:
+      r = "global";
+      break;
+    case decl_base::BINDING_WEAK:
+      r = "weak";
+      break;
+    }
+  o << r;
+  return o;
+}
+
 /// Turn equality of shared_ptr of decl_base into a deep equality;
 /// that is, make it compare the pointed to objects too.
 ///
@@ -2673,6 +2703,10 @@ class_decl::data_member::operator==(const decl_base& o) const
     {return false;}
 }
 
+string
+class_decl::member_type::get_pretty_representation() const
+{return get_type_declaration(as_type())->get_pretty_representation();}
+
 void
 class_decl::data_member::traverse(ir_node_visitor& v)
 {v.visit(*this);}
@@ -2827,6 +2861,38 @@ class_decl::member_class_template::traverse(ir_node_visitor& v)
   v.visit(*this);
   as_class_tdecl()->get_pattern()->traverse(v);
 }
+
+/// Streaming operator for class_decl::access_specifier.
+///
+/// @param o the output stream to serialize the access specifier to.
+///
+/// @param a the access specifier to serialize.
+///
+/// @return the output stream.
+std::ostream&
+operator<<(std::ostream& o, class_decl::access_specifier a)
+{
+  string r;
+
+  switch (a)
+  {
+  case class_decl::no_access:
+    r = "none";
+    break;
+  case class_decl::private_access:
+    r = "private";
+    break;
+  case class_decl::protected_access:
+    r = "protected";
+    break;
+  case class_decl::public_access:
+    r= "public";
+    break;
+  };
+  o << r;
+  return o;
+}
+
 // </class_decl>
 
 // <template_decl stuff>

@@ -276,6 +276,9 @@ operator==(decl_base_sptr, decl_base_sptr);
 std::ostream&
 operator<<(std::ostream&, decl_base::visibility);
 
+std::ostream&
+operator<<(std::ostream&, decl_base::binding);
+
 /// Convenience typedef for a shared pointer on a @ref scope_decl.
 typedef shared_ptr<scope_decl> scope_decl_sptr;
 
@@ -1603,6 +1606,9 @@ public:
   virtual ~class_decl();
 };// end class class_decl
 
+std::ostream&
+operator<<(std::ostream&, class_decl::access_specifier);
+
 /// Convenience typedef for a shared pointer on a @ref class_decl
 typedef shared_ptr<class_decl> class_decl_sptr;
 
@@ -1660,6 +1666,9 @@ public:
 
   virtual bool
   operator==(const member_base&) const;
+
+  virtual string
+  get_pretty_representation() const;
 
   bool
   operator==(const member_type&) const;
