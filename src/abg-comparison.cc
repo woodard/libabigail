@@ -205,7 +205,6 @@ pointer_diff::report(ostream& out, const string& indent) const
       out << indent << "differences in pointed to type ("
 	  << d->first_subject()->get_pretty_representation() << "):\n";
       d->report(out, indent + "  ");
-      out << "\n";
     }
 }
 
@@ -300,7 +299,6 @@ reference_diff::report(ostream& out, const string& indent) const
       out << indent << "differences in referenced type ("
 	  << d->first_subject()->get_pretty_representation() << "):\n";
       d->report(out, indent + "  ");
-      out << "\n";
     }
 }
 
@@ -874,7 +872,8 @@ class_diff::report(ostream& out, const string& indent) const
   int changes_length = length();
   if (changes_length == 0)
     {
-      out << indent << "the two versions of type " << name << "are identical\n";
+      out << indent << "the two versions of type "
+	  << name << "are identical\n\n";
       return;
     }
 
@@ -902,6 +901,9 @@ class_diff::report(ostream& out, const string& indent) const
 	       i != e.deletions().end();
 	       ++i)
 	    {
+	      if (i != e.deletions().begin())
+		out << "\n";
+
 	      class_decl_sptr base_class =
 		first_class->get_base_specifiers()[i->index()]->
 		get_base_class();
@@ -918,7 +920,7 @@ class_diff::report(ostream& out, const string& indent) const
 		}
 	      else
 		out << indent << "  "
-		    << base_class->get_qualified_name() << "\n";
+		    << base_class->get_qualified_name();
 	    }
 	  out << "\n";
 	}
@@ -935,6 +937,7 @@ class_diff::report(ostream& out, const string& indent) const
 				     /*deletions=*/false,
 				     "base class", indent);
 
+	      bool emitted = false;
 	      for (vector<insertion>::const_iterator i = e.insertions().begin();
 		   i != e.insertions().end();
 		   ++i)
@@ -945,10 +948,16 @@ class_diff::report(ostream& out, const string& indent) const
 		       j != i->inserted_indexes().end();
 		       ++j)
 		    {
+		      if (emitted)
+			out << "\n";
+
 		      b= second_class->get_base_specifiers()[*j] ->
 			get_base_class();
 		      if (!priv_->base_has_changed(b))
-			out << indent << b->get_qualified_name() << "\n";
+			{
+			  out << indent << b->get_qualified_name();
+			  emitted = true;
+			}
 		    }
 		}
 	      out << "\n";
@@ -975,6 +984,8 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != e.deletions().end();
 	   ++i)
 	{
+	  if (i != e.deletions().begin())
+	    out << "\n";
 	  decl_base_sptr mem_type =
 	    get_type_declaration
 	    (first_class->get_member_types()[i->index()]->as_type());
@@ -988,7 +999,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    }
 	  else
 	    out << indent << "  "
-		<< mem_type->get_pretty_representation() << "\n";
+		<< mem_type->get_pretty_representation();
 	}
       if (numdels || numchanges)
 	out << "\n";
@@ -1005,6 +1016,7 @@ class_diff::report(ostream& out, const string& indent) const
 				 "member type",
 				 indent);
 
+	  bool emitted = false;
 	  for (vector<insertion>::const_iterator i = e.insertions().begin();
 	       i != e.insertions().end();
 	       ++i)
@@ -1015,10 +1027,15 @@ class_diff::report(ostream& out, const string& indent) const
 		   j != i->inserted_indexes().end();
 		   ++j)
 		{
+		  if (emitted)
+		    out << "\n";
 		  mem_type = second_class->get_member_types()[*j];
 		  if (!priv_->member_type_has_changed(mem_type))
-		    out << indent << "  "
-			<< mem_type->get_pretty_representation() << "\n";
+		    {
+		      out << indent << "  "
+			  << mem_type->get_pretty_representation();
+		      emitted = true;
+		    }
 		}
 	    }
 	  out << "\n";
@@ -1039,14 +1056,15 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != e.deletions().end();
 	   ++i)
 	{
+	  if (i != e.deletions().begin())
+	    out << "\n";
 	  class_decl::data_member_sptr data_mem =
 	    first_class->get_data_members()[i->index()];
 	  out << indent << "  ";
 	  represent(data_mem, out);
-	  out << "\n";
 	}
       if (numdels)
-	out << "\n";
+	out << "\n\n";
 
       //report insertions
       int numins = e.num_insertions();
@@ -1055,6 +1073,7 @@ class_diff::report(ostream& out, const string& indent) const
 			       /*deletions=*/false,
 			       "data member",
 			       indent);
+      bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -1065,14 +1084,16 @@ class_diff::report(ostream& out, const string& indent) const
 	       j != i->inserted_indexes().end();
 	       ++j)
 	    {
+	      if (emitted)
+		out << "\n";
 	      data_mem = second_class->get_data_members()[*j];
 	      out << indent << "  ";
 	      represent(data_mem, out);
-	      out << "\n";
+	      emitted = true;
 	    }
 	}
       if (numins)
-	out << "\n";
+	out << "\n\n";
     }
 
   // member_fns
@@ -1089,14 +1110,15 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != e.deletions().end();
 	   ++i)
 	{
+	  if (i != e.deletions().begin())
+	    out << "\n";
 	  class_decl::member_function_sptr mem_fun =
 	    first_class->get_member_functions()[i->index()];
 	  out << indent << "  ";
 	  represent(mem_fun, out);
-	  out << "\n";
 	}
       if (numdels)
-	out << "\n";
+	out << "\n\n";
 
       // report insertions;
       int numins = e.num_insertions();
@@ -1105,6 +1127,7 @@ class_diff::report(ostream& out, const string& indent) const
 			       /*deletions=*/false,
 			       "member function",
 			       indent);
+      bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -1115,14 +1138,16 @@ class_diff::report(ostream& out, const string& indent) const
 	       j != i->inserted_indexes().end();
 	       ++j)
 	    {
+	      if (emitted)
+		out << "\n";
 	      mem_fun = second_class->get_member_functions()[*j];
 	      out << indent << "  ";
 	      represent(mem_fun, out);
-	      out << "\n";
+	      emitted = true;
 	    }
 	}
       if (numins)
-	out << "\n";
+	out << "\n\n";
     }
 
   // member function templates
@@ -1139,14 +1164,15 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != e.deletions().end();
 	   ++i)
 	{
+	  if (i != e.deletions().begin())
+	    out << "\n";
 	  class_decl::member_function_template_sptr mem_fn_tmpl =
 	    first_class->get_member_function_templates()[i->index()];
 	  out << indent << "  "
-	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
-	      << "\n";
+	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation();
 	}
       if (numdels)
-	out << "\n";
+	out << "\n\n";
 
       // report insertions
       int numins = e.num_insertions();
@@ -1155,6 +1181,7 @@ class_diff::report(ostream& out, const string& indent) const
 			       /*deletions=*/false,
 			       "member function template",
 			       indent);
+      bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -1165,14 +1192,17 @@ class_diff::report(ostream& out, const string& indent) const
 	       j != i->inserted_indexes().end();
 	       ++j)
 	    {
+	      if (emitted)
+		out << "\n";
 	      mem_fn_tmpl = second_class->get_member_function_templates()[*j];
 	      out << indent << "  "
-		  << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
-		  << "\n";
+		  << mem_fn_tmpl->as_function_tdecl()->
+		get_pretty_representation();
+	      emitted = true;
 	    }
 	}
       if (numins)
-	out << "\n";
+	out << "\n\n";
     }
 
   // member class templates.
@@ -1189,14 +1219,15 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != e.deletions().end();
 	   ++i)
 	{
+	  if (i != e.deletions().begin())
+	    out << "\n";
 	  class_decl::member_class_template_sptr mem_cls_tmpl =
 	    first_class->get_member_class_templates()[i->index()];
 	  out << indent << "  "
-	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
-	      << "\n";
+	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation();
 	}
       if (numdels)
-	out << "\n";
+	out << "\n\n";
 
       // report insertions
       int numins = e.num_insertions();
@@ -1205,6 +1236,7 @@ class_diff::report(ostream& out, const string& indent) const
 			       /*deletions=*/false,
 			       "member class template",
 			       indent);
+      bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -1215,14 +1247,17 @@ class_diff::report(ostream& out, const string& indent) const
 	       j != i->inserted_indexes().end();
 	       ++j)
 	    {
+	      if (emitted)
+		out << "\n";
 	      mem_cls_tmpl = second_class->get_member_class_templates()[*j];
 	      out << indent << "  "
-		  << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
-		  << "\n";
+		  << mem_cls_tmpl->as_class_tdecl()
+		->get_pretty_representation();
+	      emitted = true;
 	    }
 	}
       if (numins)
-	out << "\n";
+	out << "\n\n";
     }
 }
 
@@ -1748,6 +1783,7 @@ scope_diff::report(ostream& out, const string& indent) const
     out << "\n";
 
   // Report added types/decls
+  bool emitted = false;
   for (string_decl_base_sptr_map::const_iterator i = added_types().begin();
        i != added_types().end();
        ++i)
@@ -1760,10 +1796,12 @@ scope_diff::report(ostream& out, const string& indent) const
 	  << "'"
 	  << i->second->get_pretty_representation()
 	  << "' was added\n";
+      emitted = true;
     }
-  if (added_types().size())
+  if (emitted)
     out << "\n";
 
+  emitted = false;
   for (string_decl_base_sptr_map::const_iterator i = added_decls().begin();
        i != added_decls().end();
        ++i)
@@ -1776,8 +1814,9 @@ scope_diff::report(ostream& out, const string& indent) const
 	  << "'"
 	  << i->second->get_pretty_representation()
 	  << "' was added\n";
+      emitted = true;
     }
-  if (added_decls().size())
+  if (emitted)
     out << "\n";
 
 }
@@ -2064,20 +2103,32 @@ function_decl_diff::report(ostream& out, const string& indent) const
     }
 
   // Report about the parameters that got removed.
+  bool emitted = false;
   for (string_parm_map::const_iterator i = priv_->removed_parms_.begin();
        i != priv_->removed_parms_.end();
        ++i)
-    out << indent << "parameter " << i->second->get_index()
-	<< " of type '" << get_type_name(i->second->get_type())
-	<< "' was removed\n";
+    {
+      out << indent << "parameter " << i->second->get_index()
+	  << " of type '" << get_type_name(i->second->get_type())
+	  << "' was removed\n";
+      emitted = true;
+    }
+  if (emitted)
+    out << "\n";
 
   // Report about the parameters that got added
+  emitted = false;
   for (string_parm_map::const_iterator i = priv_->added_parms_.begin();
        i != priv_->added_parms_.end();
        ++i)
-    out << indent << "parameter " << i->second->get_index()
-	<< " of type '" << get_type_name(i->second->get_type())
-	<< "' was added\n";
+    {
+      out << indent << "parameter " << i->second->get_index()
+	  << " of type '" << get_type_name(i->second->get_type())
+	  << "' was added\n";
+      emitted = true;
+    }
+  if (emitted)
+    out << "\n";
 }
 
 /// Compute the diff between two function_decl.
@@ -2219,6 +2270,9 @@ type_decl_diff::report(ostream& out, const string& indent) const
 	  << s->get_mangled_name();
       n = true;
     }
+
+  if (n)
+    out << "\n\n";
 }
 
 /// Compute a diff between two type_decl.
@@ -2324,17 +2378,24 @@ typedef_diff::report(ostream& out, const string& indent) const
   if (length() == 0)
     return;
 
+  bool emit_nl = false;
   typedef_decl_sptr f = first_typedef_decl(), s = second_typedef_decl();
   if (f->get_name() != s->get_name())
-    out << indent << "typedef name changed from "
-	<< f->get_name() << " to " << s->get_name();
+    {
+      out << indent << "typedef name changed from "
+	  << f->get_name() << " to " << s->get_name() << "\n";
+      emit_nl = true;
+    }
 
   if (diff_sptr d = underlying_type_diff())
     {
       out << indent << "underlying type changed:\n";
       d->report(out, indent + "  ");
-      out << "\n";
+      emit_nl = false;
     }
+
+  if (emit_nl)
+    out << "\n";
 }
 
 /// Compute a diff between two typedef_decl.

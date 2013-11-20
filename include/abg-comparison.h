@@ -114,7 +114,15 @@ public:
   virtual unsigned
   length() const = 0;
 
-  /// Pure interface to report the diff in a serialized form.
+  /// Pure interface to report the diff in a serialized form that is
+  /// legible for the user.
+  ///
+  /// Note that the serializd report has to leave one empty line at
+  /// the end of its content.
+  ///
+  /// @param the output stream to serialize the report to.
+  ///
+  /// @param indent the indentation string to use.
   virtual void
   report(ostream& out, const string& indent = "") const = 0;
 };// end class diff
