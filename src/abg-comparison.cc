@@ -370,7 +370,356 @@ struct class_diff::priv
   edit_script member_fns_changes_;
   edit_script member_fn_tmpls_changes_;
   edit_script member_class_tmpls_changes_;
+
+  string_decl_base_sptr_map deleted_bases_;
+  string_decl_base_sptr_map inserted_bases_;
+  string_changed_type_or_decl_map changed_bases_;
+  string_decl_base_sptr_map deleted_member_types_;
+  string_decl_base_sptr_map inserted_member_types_;
+  string_changed_type_or_decl_map changed_member_types_;
+  string_decl_base_sptr_map deleted_data_members_;
+  string_decl_base_sptr_map inserted_data_members_;
+  string_changed_type_or_decl_map changed_data_members_;
+  string_decl_base_sptr_map deleted_member_class_tmpls_;
+  string_decl_base_sptr_map inserted_member_class_tmpls_;
+  string_changed_type_or_decl_map changed_member_class_tmpls_;
+
+  decl_base_sptr
+  base_has_changed(decl_base_sptr) const;
+
+  decl_base_sptr
+  member_type_has_changed(decl_base_sptr) const;
+
+  decl_base_sptr
+  data_member_has_changed(decl_base_sptr) const;
+
+  decl_base_sptr
+  member_class_tmpl_has_changed(decl_base_sptr) const;
 };//end struct class_diff::priv
+
+/// Clear the lookup tables useful for reporting.
+///
+/// This function must be updated each time a lookup table is added or
+/// removed from the class_diff::priv.
+void
+class_diff::clear_lookup_tables(void)
+{
+  priv_->deleted_bases_.clear();
+  priv_->inserted_bases_.clear();
+  priv_->changed_bases_.clear();
+  priv_->deleted_member_types_.clear();
+  priv_->inserted_member_types_.clear();
+  priv_->changed_member_types_.clear();
+  priv_->deleted_data_members_.clear();
+  priv_->inserted_data_members_.clear();
+  priv_->changed_data_members_.clear();
+  priv_->deleted_member_class_tmpls_.clear();
+  priv_->inserted_member_class_tmpls_.clear();
+  priv_->changed_member_class_tmpls_.clear();
+}
+
+/// Tests if the lookup tables are empty.
+///
+/// @return true if the lookup tables are empty, false otherwise.
+bool
+class_diff::lookup_tables_empty(void) const
+{
+  return (priv_->deleted_bases_.empty()
+	  && priv_->inserted_bases_.empty()
+	  && priv_->changed_bases_.empty()
+	  && priv_->deleted_member_types_.empty()
+	  && priv_->inserted_member_types_.empty()
+	  && priv_->changed_member_types_.empty()
+	  && priv_->deleted_data_members_.empty()
+	  && priv_->inserted_data_members_.empty()
+	  && priv_->changed_data_members_.empty()
+	  && priv_->deleted_member_class_tmpls_.empty()
+	  && priv_->inserted_member_class_tmpls_.empty()
+	  && priv_->changed_member_class_tmpls_.empty());
+}
+
+/// If the lookup tables are not yet built, walk the differences and
+/// fill the lookup tables.
+void
+class_diff::ensure_lookup_tables_populated(void) const
+{
+  if (!lookup_tables_empty())
+    return;
+
+  {
+    edit_script& e = priv_->base_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	decl_base_sptr b =
+	  first_class_decl()->get_base_specifiers()[i]->get_base_class();
+	string qname = b->get_qualified_name();
+	assert(priv_->deleted_bases_.find(qname)
+	       == priv_->deleted_bases_.end());
+	priv_->deleted_bases_[qname] = b;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    decl_base_sptr b =
+	      second_class_decl()->get_base_specifiers()[i]->get_base_class();
+	    string qname = b->get_qualified_name();
+	    assert(priv_->inserted_bases_.find(qname)
+		   == priv_->inserted_bases_.end());
+	    priv_->inserted_bases_[qname] = b;
+	  }
+      }
+
+    for (string_decl_base_sptr_map::const_iterator i =
+	   priv_->deleted_bases_.begin();
+	 i != priv_->deleted_bases_.end();
+	 ++i)
+      {
+	string_decl_base_sptr_map::const_iterator r =
+	  priv_->inserted_bases_.find(i->first);
+
+	if (r != priv_->inserted_bases_.end()
+	    && i->second != r->second)
+	  priv_->changed_bases_[i->first]
+	    = std::make_pair(i->second, r->second);
+      }
+  }
+
+  {
+    edit_script& e = priv_->member_types_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	decl_base_sptr d =
+	  get_type_declaration
+	  (first_class_decl()->get_member_types()[i]->as_type());
+	string qname = d->get_qualified_name();
+	assert(priv_->deleted_member_types_.find(qname)
+	       == priv_->deleted_member_types_.end());
+	priv_->deleted_member_types_[qname] = d;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    decl_base_sptr d =
+	      get_type_declaration
+	      (second_class_decl()->get_member_types()[i]->as_type());
+	    string qname = d->get_qualified_name();
+	    assert(priv_->inserted_member_types_.find(qname)
+		   == priv_->inserted_member_types_.end());
+	    priv_->inserted_member_types_[qname] = d;
+	  }
+      }
+
+    for (string_decl_base_sptr_map::const_iterator i =
+	   priv_->deleted_member_types_.begin();
+	 i != priv_->deleted_member_types_.end();
+	 ++i)
+      {
+	string_decl_base_sptr_map::const_iterator r =
+	  priv_->inserted_member_types_.find(i->first);
+
+	if (r != priv_->inserted_member_types_.end()
+	    && i->second != r->second)
+	  priv_->changed_member_types_[i->first]
+	    = std::make_pair(i->second, r->second);
+      }
+  }
+
+  {
+    edit_script& e = priv_->data_members_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	decl_base_sptr d = first_class_decl()->get_data_members()[i];
+	string qname = d->get_qualified_name();
+	assert(priv_->deleted_data_members_.find(qname)
+	       == priv_->deleted_data_members_.end());
+	priv_->deleted_data_members_[qname] = d;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    decl_base_sptr d = second_class_decl()->get_data_members()[i];
+	    string qname = d->get_qualified_name();
+	    assert(priv_->inserted_data_members_.find(qname)
+		   == priv_->inserted_data_members_.end());
+	    priv_->inserted_data_members_[qname] = d;
+	  }
+      }
+
+    for (string_decl_base_sptr_map::const_iterator i =
+	   priv_->deleted_data_members_.begin();
+	 i != priv_->deleted_data_members_.end();
+	 ++i)
+      {
+	string_decl_base_sptr_map::const_iterator r =
+	  priv_->inserted_data_members_.find(i->first);
+
+	if (r != priv_->inserted_data_members_.end()
+	    && i->second != r->second)
+	  priv_->changed_data_members_[i->first]
+	    = std::make_pair(i->second, r->second);
+      }
+  }
+
+  {
+    edit_script& e = priv_->member_class_tmpls_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	decl_base_sptr d =
+	  first_class_decl()->get_member_class_templates()[i]->
+	  as_class_tdecl();
+	string qname = d->get_qualified_name();
+	assert(priv_->deleted_member_class_tmpls_.find(qname)
+	       == priv_->deleted_member_class_tmpls_.end());
+	priv_->deleted_member_class_tmpls_[qname] = d;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    decl_base_sptr d =
+	      second_class_decl()->get_member_class_templates()[i]->
+	      as_class_tdecl();
+	    string qname = d->get_qualified_name();
+	    assert(priv_->inserted_member_class_tmpls_.find(qname)
+		   == priv_->inserted_member_class_tmpls_.end());
+	    priv_->inserted_member_class_tmpls_[qname] = d;
+	  }
+      }
+
+    for (string_decl_base_sptr_map::const_iterator i =
+	   priv_->deleted_member_class_tmpls_.begin();
+	 i != priv_->deleted_member_class_tmpls_.end();
+	 ++i)
+      {
+	string_decl_base_sptr_map::const_iterator r =
+	  priv_->inserted_member_class_tmpls_.find(i->first);
+
+	if (r != priv_->inserted_member_class_tmpls_.end()
+	    && i->second != r->second)
+	  priv_->changed_member_class_tmpls_[i->first]
+	    = std::make_pair(i->second, r->second);
+      }
+  }
+}
+
+/// Test whether a given base class has changed.  A base class has
+/// changed if it's in both in deleted *and* inserted bases.
+///
+///@param d the declaration for the base class to consider.
+///
+/// @return the new base class if the given base class has changed, or
+/// NULL if it hasn't.
+decl_base_sptr
+class_diff::priv::base_has_changed(decl_base_sptr d) const
+{
+  string qname = d->get_qualified_name();
+  string_changed_type_or_decl_map::const_iterator it =
+    changed_bases_.find(qname);
+
+  return (it == changed_bases_.end()) ? decl_base_sptr() : it->second.second;
+
+}
+
+/// Test whether a given member type has changed.
+///
+/// @param d the declaration for the member type to consider.
+///
+/// @return the new member type if the given member type has changed,
+/// or NULL if it hasn't.
+decl_base_sptr
+class_diff::priv::member_type_has_changed(decl_base_sptr d) const
+{
+  string qname = d->get_qualified_name();
+  string_changed_type_or_decl_map::const_iterator it =
+    changed_member_types_.find(qname);
+
+  return ((it == changed_member_types_.end())
+	  ? decl_base_sptr()
+	  : it->second.second);
+}
+
+/// Test whether a given data member has changed.
+///
+/// @param d the declaration for the data member to consider.
+///
+/// @return the new data member if the given data member has changed,
+/// or NULL if if hasn't.
+decl_base_sptr
+class_diff::priv::data_member_has_changed(decl_base_sptr d) const
+{
+  string qname = d->get_qualified_name();
+  string_changed_type_or_decl_map::const_iterator it =
+    changed_data_members_.find(qname);
+
+  return ((it == changed_data_members_.end())
+	  ? decl_base_sptr()
+	  : it->second.second);
+}
+
+/// Test whether a given member class template has changed.
+///
+/// @param d the declaration for the given member class template to consider.
+///
+/// @return the new member class template if the given one has
+/// changed, or NULL if it hasn't.
+decl_base_sptr
+class_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
+{
+  string qname = d->get_qualified_name();
+  string_changed_type_or_decl_map::const_iterator it =
+    changed_member_class_tmpls_.find(qname);
+
+  return ((it == changed_member_class_tmpls_.end())
+	  ? decl_base_sptr()
+	  : it->second.second);
+}
 
 /// Constructor of class_diff
 ///
@@ -538,88 +887,142 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // Report deletions.
       int numdels = e.num_deletions();
-      report_num_dels_or_ins(out, numdels,
-			     /*deletions=*/true,
-			     "base class", indent);
+      int numchanges = priv_->changed_bases_.size();
+      assert(numchanges <= numdels);
+      numdels -= numchanges;
 
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
-	   ++i)
+      if (numdels || numchanges)
 	{
-	  class_decl_sptr base_class =
-	    first_class->get_base_specifiers()[i->index()]->get_base_class();
-	  out << indent << "  " << base_class->get_qualified_name() << "\n";
+	  if (numdels)
+	    report_num_dels_or_ins(out, numdels,
+				   /*deletions=*/true,
+				   "base class", indent);
+
+	  for (vector<deletion>::const_iterator i = e.deletions().begin();
+	       i != e.deletions().end();
+	       ++i)
+	    {
+	      class_decl_sptr base_class =
+		first_class->get_base_specifiers()[i->index()]->
+		get_base_class();
+
+	      if (decl_base_sptr n = priv_->base_has_changed(base_class))
+		{
+		  class_decl_sptr new_base =
+		    dynamic_pointer_cast<class_decl>(n);
+		  out << indent << "  "
+		      << base_class->get_pretty_representation()
+		      << " changed:\n";
+		  diff_sptr dif = compute_diff(base_class, new_base);
+		  dif->report(out, indent + "    ");
+		}
+	      else
+		out << indent << "  "
+		    << base_class->get_qualified_name() << "\n";
+	    }
+	  out << "\n";
 	}
-      if (numdels)
-	out << "\n";
 
       //Report insertions.
       int numins = e.num_insertions();
-      report_num_dels_or_ins(out, numins,
-			     /*deletions=*/false,
-			     "base class", indent);
-
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
-	   ++i)
+      assert(numchanges <= numins);
+      numins -= numchanges;
+      if (numins || numchanges)
 	{
-	  shared_ptr<class_decl> base_class;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
+	  if (numins)
 	    {
-	      base_class =
-		second_class->get_base_specifiers()[*j] ->get_base_class();
-	      out << indent << base_class->get_qualified_name() << "\n";
+	      report_num_dels_or_ins(out, numins,
+				     /*deletions=*/false,
+				     "base class", indent);
+
+	      for (vector<insertion>::const_iterator i = e.insertions().begin();
+		   i != e.insertions().end();
+		   ++i)
+		{
+		  shared_ptr<class_decl> b;
+		  for (vector<unsigned>::const_iterator j =
+			 i->inserted_indexes().begin();
+		       j != i->inserted_indexes().end();
+		       ++j)
+		    {
+		      b= second_class->get_base_specifiers()[*j] ->
+			get_base_class();
+		      if (!priv_->base_has_changed(b))
+			out << indent << b->get_qualified_name() << "\n";
+		    }
+		}
+	      out << "\n";
 	    }
 	}
-      if (numins)
-	out << "\n";
     }
 
   // member types
   if (const edit_script& e = member_types_changes())
     {
+      int numchanges = priv_->changed_member_types_.size();
+      int numdels = e.num_deletions();
+      assert(numchanges <= numdels);
+      numdels -= numchanges;
+
       // report deletions
-      report_num_dels_or_ins(out, e.num_deletions(),
-			     /*deletion=*/true,
-			     "member type",
-			     indent);
+      if (numdels)
+	report_num_dels_or_ins(out, numdels,
+			       /*deletion=*/true,
+			       "member type",
+			       indent);
 
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
 	{
-	  class_decl::member_type_sptr mem_type =
-	    first_class->get_member_types()[i->index()];
-	  out << indent << "  "
-	      << mem_type->get_pretty_representation() << "\n";
+	  decl_base_sptr mem_type =
+	    get_type_declaration
+	    (first_class->get_member_types()[i->index()]->as_type());
+
+	  if (decl_base_sptr n = priv_->member_type_has_changed(mem_type))
+	    {
+	      out << indent << "  " << mem_type->get_pretty_representation()
+		  << " changed:\n";
+	      diff_sptr dif = compute_diff_for_types(mem_type, n);
+	      dif->report(out, indent + "    ");
+	    }
+	  else
+	    out << indent << "  "
+		<< mem_type->get_pretty_representation() << "\n";
 	}
-      out << "\n";
+      if (numdels || numchanges)
+	out << "\n";
 
       // report insertions
-      report_num_dels_or_ins(out, e.num_insertions(),
-			     /*deletion=*/false,
-			     "member type",
-			     indent);
+      int numins = e.num_insertions();
+      assert(numchanges <= numins);
+      numins -= numchanges;
 
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
-	   ++i)
+      if (numins)
 	{
-	  class_decl::member_type_sptr mem_type;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
+	  report_num_dels_or_ins(out, numins,
+				 /*deletion=*/false,
+				 "member type",
+				 indent);
+
+	  for (vector<insertion>::const_iterator i = e.insertions().begin();
+	       i != e.insertions().end();
+	       ++i)
 	    {
-	      mem_type = second_class->get_member_types()[*j];
-	      out << indent << "  "
-		  << mem_type->get_pretty_representation() << "\n";
+	      class_decl::member_type_sptr mem_type;
+	      for (vector<unsigned>::const_iterator j =
+		     i->inserted_indexes().begin();
+		   j != i->inserted_indexes().end();
+		   ++j)
+		{
+		  mem_type = second_class->get_member_types()[*j];
+		  if (!priv_->member_type_has_changed(mem_type))
+		    out << indent << "  "
+			<< mem_type->get_pretty_representation() << "\n";
+		}
 	    }
+	  out << "\n";
 	}
-      out << "\n";
     }
 
   // data members
@@ -627,10 +1030,11 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // report deletions
       int numdels = e.num_deletions();
-      report_num_dels_or_ins(out, numdels,
-			     /*deletions=*/true,
-			     "data member",
-			     indent);
+      if (numdels)
+	report_num_dels_or_ins(out, numdels,
+			       /*deletions=*/true,
+			       "data member",
+			       indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
@@ -646,10 +1050,11 @@ class_diff::report(ostream& out, const string& indent) const
 
       //report insertions
       int numins = e.num_insertions();
-      report_num_dels_or_ins(out, numins,
-			     /*deletions=*/false,
-			     "data member",
-			     indent);
+      if (numins)
+	report_num_dels_or_ins(out, numins,
+			       /*deletions=*/false,
+			       "data member",
+			       indent);
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -674,10 +1079,12 @@ class_diff::report(ostream& out, const string& indent) const
   if (const edit_script& e = member_fns_changes())
     {
       // report deletions
-      report_num_dels_or_ins(out, e.num_deletions(),
-			     /*deletions=*/true,
-			     "member function",
-			     indent);
+      int numdels = e.num_deletions();
+      if (numdels)
+	report_num_dels_or_ins(out, numdels,
+			       /*deletions=*/true,
+			       "member function",
+			       indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
@@ -688,13 +1095,16 @@ class_diff::report(ostream& out, const string& indent) const
 	  represent(mem_fun, out);
 	  out << "\n";
 	}
-      out << "\n";
+      if (numdels)
+	out << "\n";
 
       // report insertions;
-      report_num_dels_or_ins(out, e.num_insertions(),
-			     /*deletions=*/false,
-			     "member function",
-			     indent);
+      int numins = e.num_insertions();
+      if (numins)
+	report_num_dels_or_ins(out, numins,
+			       /*deletions=*/false,
+			       "member function",
+			       indent);
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -711,7 +1121,8 @@ class_diff::report(ostream& out, const string& indent) const
 	      out << "\n";
 	    }
 	}
-      out << "\n";
+      if (numins)
+	out << "\n";
     }
 
   // member function templates
@@ -719,10 +1130,11 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // report deletions
       int numdels = e.num_deletions();
-      report_num_dels_or_ins(out, numdels,
-			     /*deletions=*/true,
-			     "member function template",
-			     indent);
+      if (numdels)
+	report_num_dels_or_ins(out, numdels,
+			       /*deletions=*/true,
+			       "member function template",
+			       indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
@@ -738,10 +1150,11 @@ class_diff::report(ostream& out, const string& indent) const
 
       // report insertions
       int numins = e.num_insertions();
-      report_num_dels_or_ins(out, numins,
-			     /*deletions=*/false,
-			     "member function template",
-			     indent);
+      if (numins)
+	report_num_dels_or_ins(out, numins,
+			       /*deletions=*/false,
+			       "member function template",
+			       indent);
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -758,6 +1171,8 @@ class_diff::report(ostream& out, const string& indent) const
 		  << "\n";
 	    }
 	}
+      if (numins)
+	out << "\n";
     }
 
   // member class templates.
@@ -765,10 +1180,11 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // report deletions
       int numdels = e.num_deletions();
-      report_num_dels_or_ins(out, numdels,
-			     /*deletions=*/true,
-			     "member class template",
-			     indent);
+      if (numdels)
+	report_num_dels_or_ins(out, numdels,
+			       /*deletions=*/true,
+			       "member class template",
+			       indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
 	   ++i)
@@ -784,10 +1200,11 @@ class_diff::report(ostream& out, const string& indent) const
 
       // report insertions
       int numins = e.num_insertions();
-      report_num_dels_or_ins(out, numins,
-			     /*deletions=*/false,
-			     "member class template",
-			     indent);
+      if (numins)
+	report_num_dels_or_ins(out, numins,
+			       /*deletions=*/false,
+			       "member class template",
+			       indent);
       for (vector<insertion>::const_iterator i = e.insertions().begin();
 	   i != e.insertions().end();
 	   ++i)
@@ -863,6 +1280,8 @@ compute_diff(const class_decl_sptr	first,
 	       second->get_member_class_templates().begin(),
 	       second->get_member_class_templates().end(),
 	       changes->member_class_tmpls_changes());
+
+  changes->ensure_lookup_tables_populated();
 
   return changes;
 }
@@ -1261,7 +1680,7 @@ scope_diff::report(ostream& out, const string& indent) const
   // Report changed types.
   unsigned num_changed_types = changed_types().size();
   if (num_changed_types == 0)
-    out << indent << "no changed types\n";
+    ;
   else if (num_changed_types == 1)
     out << indent << "1 changed type:\n" << indent << "  ";
   else
@@ -1281,13 +1700,11 @@ scope_diff::report(ostream& out, const string& indent) const
       if (diff)
 	diff->report(out, indent + "    ");
     }
-  if (changed_types().size())
-    out << "\n";
 
   // Report changed decls
   unsigned num_changed_decls = changed_decls().size();
   if (num_changed_decls == 0)
-    out << "no changed declaration\n";
+    ;
   else if (num_changed_decls == 1)
     out << "1 changed declaration:\n  ";
   else
@@ -1308,8 +1725,6 @@ scope_diff::report(ostream& out, const string& indent) const
       if (diff)
 	diff->report(out, indent + "    ");
     }
-  if (changed_decls().size())
-    out << "\n";
 
   // Report removed types/decls
   for (string_decl_base_sptr_map::const_iterator i = removed_types().begin();
@@ -1747,36 +2162,63 @@ type_decl_diff::report(ostream& out, const string& indent) const
   if (length() == 0)
     return;
 
+  bool n = false;
   type_decl_sptr f = first_type_decl(), s = second_type_decl();
+
   if (f->get_name() == s->get_name())
-    out << indent << f->get_pretty_representation() << " changed:\n";
+    out << indent << f->get_pretty_representation() << " changed:";
   else
     out << indent
 	<< f->get_pretty_representation() << " was replaced by "
-	<< s->get_pretty_representation() << ":\n";
+	<< s->get_pretty_representation();
+  n = true;
 
   if (f->get_visibility() != s->get_visibility())
-    out << indent
-	<< "visibility changed from '"
-	<< f->get_visibility() << "' to '" << s->get_visibility() << "'\n";
+    {
+      if (n)
+	out << "\n";
+
+      out << indent
+	  << "visibility changed from '"
+	  << f->get_visibility() << "' to '" << s->get_visibility();
+      n = true;
+    }
 
   if (f->get_size_in_bits() != s->get_size_in_bits())
-    out << indent
-	<< "size changed from "
-	<< f->get_size_in_bits() << " to "
-	<< s->get_size_in_bits() << " bits\n";
+    {
+      if (n)
+	out << "\n";
+
+      out << indent
+	  << "size changed from "
+	  << f->get_size_in_bits() << " to "
+	  << s->get_size_in_bits() << " bits";
+      n = true;
+    }
 
   if (f->get_alignment_in_bits() != s->get_alignment_in_bits())
-    out << indent
-	<< "alignment changed from "
-	<< f->get_alignment_in_bits() << " to "
-	<< s->get_alignment_in_bits() << " bits\n";
+    {
+      if (n)
+	out << "\n";
+
+      out << indent
+	  << "alignment changed from "
+	  << f->get_alignment_in_bits() << " to "
+	  << s->get_alignment_in_bits();
+      n = true;
+    }
 
   if (f->get_mangled_name() != s->get_mangled_name())
-    out << indent
-	<< "mangled name changed from '"
-	<< f->get_mangled_name() << "' to "
-	<< s->get_mangled_name() << "'\n";
+    {
+      if (n)
+	out << "\n";
+
+      out << indent
+	  << "mangled name changed from '"
+	  << f->get_mangled_name() << "' to "
+	  << s->get_mangled_name();
+      n = true;
+    }
 }
 
 /// Compute a diff between two type_decl.

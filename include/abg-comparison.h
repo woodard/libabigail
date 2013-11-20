@@ -174,6 +174,15 @@ class class_diff : public diff
   struct priv;
   shared_ptr<priv> priv_;
 
+  void
+  clear_lookup_tables(void);
+
+  bool
+  lookup_tables_empty(void) const;
+
+  void
+  ensure_lookup_tables_populated(void) const;
+
 public:
 
   class_diff(class_decl_sptr first_subject,
@@ -228,6 +237,10 @@ public:
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  friend class_diff_sptr
+  compute_diff(const class_decl_sptr	first,
+	       const class_decl_sptr	second);
 };// end class_diff
 
 class_diff_sptr
