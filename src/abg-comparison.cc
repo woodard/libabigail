@@ -994,8 +994,9 @@ class_diff::report(ostream& out, const string& indent) const
     }
 
   // Now report the changes about the differents parts of the type.
-  class_decl_sptr first_class = first_class_decl(),
-    second_class = second_class_decl();
+  class_decl_sptr first = first_class_decl(),
+    second = second_class_decl();
+
 
   // bases classes
   if (const edit_script& e = base_changes())
@@ -1019,7 +1020,7 @@ class_diff::report(ostream& out, const string& indent) const
 		out << "\n";
 
 	      class_decl_sptr base_class =
-		first_class->get_base_specifiers()[i->index()]->
+		first->get_base_specifiers()[i->index()]->
 		get_base_class();
 
 	      if ( priv_->base_has_changed(base_class))
@@ -1074,7 +1075,7 @@ class_diff::report(ostream& out, const string& indent) const
 		  if (emitted)
 		    out << "\n";
 
-		  b= second_class->get_base_specifiers()[*j] ->
+		  b= second->get_base_specifiers()[*j] ->
 		    get_base_class();
 		  if (!priv_->base_has_changed(b))
 		    {
@@ -1109,7 +1110,7 @@ class_diff::report(ostream& out, const string& indent) const
 		out << "\n";
 	      decl_base_sptr mem_type =
 		get_type_declaration
-		(first_class->get_member_types()[i->index()]->as_type());
+		(first->get_member_types()[i->index()]->as_type());
 
 	      if (decl_base_sptr n = priv_->member_type_has_changed(mem_type))
 		continue;
@@ -1164,7 +1165,7 @@ class_diff::report(ostream& out, const string& indent) const
 		{
 		  if (emitted)
 		    out << "\n";
-		  mem_type = second_class->get_member_types()[*j];
+		  mem_type = second->get_member_types()[*j];
 		  if (!priv_->member_type_has_changed(mem_type))
 		    {
 		      out << indent << "  '"
@@ -1197,7 +1198,7 @@ class_diff::report(ostream& out, const string& indent) const
 	       ++i)
 	    {
 	      class_decl::data_member_sptr data_mem =
-		first_class->get_data_members()[i->index()];
+		first->get_data_members()[i->index()];
 
 	      if (priv_->data_member_has_changed(data_mem))
 		continue;
@@ -1251,7 +1252,7 @@ class_diff::report(ostream& out, const string& indent) const
 		   j != i->inserted_indexes().end();
 		   ++j)
 		{
-		  data_mem = second_class->get_data_members()[*j];
+		  data_mem = second->get_data_members()[*j];
 		  if (priv_->data_member_has_changed(data_mem))
 		    continue;
 		  if (emitted)
@@ -1281,7 +1282,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  if (i != e.deletions().begin())
 	    out << "\n";
 	  class_decl::member_function_sptr mem_fun =
-	    first_class->get_member_functions()[i->index()];
+	    first->get_member_functions()[i->index()];
 	  out << indent << "  ";
 	  represent(mem_fun, out);
 	}
@@ -1306,7 +1307,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    {
 	      if (emitted)
 		out << "\n";
-	      mem_fun = second_class->get_member_functions()[*j];
+	      mem_fun = second->get_member_functions()[*j];
 	      out << indent << "  ";
 	      represent(mem_fun, out);
 	      emitted = true;
@@ -1331,7 +1332,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  if (i != e.deletions().begin())
 	    out << "\n";
 	  class_decl::member_function_template_sptr mem_fn_tmpl =
-	    first_class->get_member_function_templates()[i->index()];
+	    first->get_member_function_templates()[i->index()];
 	  out << indent << "  '"
 	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
 	      << "'";
@@ -1357,7 +1358,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    {
 	      if (emitted)
 		out << "\n";
-	      mem_fn_tmpl = second_class->get_member_function_templates()[*j];
+	      mem_fn_tmpl = second->get_member_function_templates()[*j];
 	      out << indent << "  '"
 		  << mem_fn_tmpl->as_function_tdecl()->
 		get_pretty_representation()
@@ -1384,7 +1385,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  if (i != e.deletions().begin())
 	    out << "\n";
 	  class_decl::member_class_template_sptr mem_cls_tmpl =
-	    first_class->get_member_class_templates()[i->index()];
+	    first->get_member_class_templates()[i->index()];
 	  out << indent << "  '"
 	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
 	      << "'";
@@ -1410,7 +1411,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    {
 	      if (emitted)
 		out << "\n";
-	      mem_cls_tmpl = second_class->get_member_class_templates()[*j];
+	      mem_cls_tmpl = second->get_member_class_templates()[*j];
 	      out << indent << "  '"
 		  << mem_cls_tmpl->as_class_tdecl()
 		->get_pretty_representation()
