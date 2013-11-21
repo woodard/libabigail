@@ -133,6 +133,194 @@ compute_diff_for_decls(const decl_base_sptr first, const decl_base_sptr second)
   return diff_sptr();
 }
 
+/// Stream a string representation for a member function.
+///
+/// @param mem_fn the member function to stream
+///
+/// @param out the output stream to send the representation to
+static void
+represent(class_decl::member_function_sptr mem_fn,
+	  ostream& out)
+{
+  if (!mem_fn)
+    return;
+
+  out << "'" << mem_fn->get_pretty_representation() << "'";
+  if (mem_fn->get_vtable_offset())
+    out << ", virtual at voffset "
+	<< mem_fn->get_vtable_offset()
+	<< "/"
+	<< mem_fn->get_type()->get_class_type()->get_num_virtual_functions()
+	<< "\n";
+}
+
+/// Stream a string representation for a data member.
+///
+/// @param data_mem the data member to stream
+///
+/// @param out the output stream to send the representation to
+static void
+represent(class_decl::data_member_sptr data_mem,
+	  ostream& out)
+{
+  if (!data_mem || !data_mem->is_laid_out())
+    return;
+
+  out << "'" << data_mem->get_pretty_representation() << "'"
+      << ", at offset "
+      << data_mem->get_offset_in_bits()
+      << " (in bits)\n";
+}
+
+/// Represent the changes that happened on two versions of a given
+/// class data member.
+///
+/// @param o the older version of the data member.
+///
+/// @param n the newer version of the data member.
+///
+/// @param out the output stream to send the representation to.
+static void
+represent(class_decl::data_member_sptr o,
+	  class_decl::data_member_sptr n,
+	  ostream& out,
+	  const string indent = "")
+{
+  bool emitted = false;
+  string name = o->get_qualified_name();
+  string name2 = n->get_qualified_name();
+  assert(name == name2);
+
+  if (o->is_laid_out() != n->is_laid_out())
+    {
+      if (!emitted)
+	out << indent << "'" << name << "' ";
+      else
+	out << ", ";
+      if (o->is_laid_out())
+	out << "is no more laid out";
+      else
+	out << "now becomes laid out";
+      emitted = true;
+    }
+  if (o->get_offset_in_bits() != n->get_offset_in_bits())
+    {
+      if (!emitted)
+	out << indent << "'" << name << "' ";
+      else
+	out << ", ";
+      out << "offset changed from " << o->get_offset_in_bits()
+	  << " to " << n->get_offset_in_bits();
+      emitted = true;
+    }
+  if (o->get_binding() != n->get_binding())
+    {
+      if (!emitted)
+	out << indent << "'" << name << "' ";
+      else
+	out << ", ";
+      out << "elf binding changed from " << o->get_binding()
+	  << " to " << n->get_binding();
+      emitted = true;
+    }
+  if (o->get_visibility() != n->get_visibility())
+    {
+      if (!emitted)
+	out << indent << "'" << name << "' ";
+      else
+	out << ", ";
+      out << "visibility changed from " << o->get_visibility()
+	  << " to " << n->get_visibility();
+    }
+  if (o->get_access_specifier() != n->get_access_specifier())
+    {
+      if (!emitted)
+	out << indent << "'" << name << "' ";
+      else
+	out << ", ";
+
+      out << "access changed from " << o->get_access_specifier()
+	  << n->get_access_specifier();
+      emitted = true;
+    }
+  if (o->is_static() != n->is_static())
+    {
+      if (!emitted)
+	out << indent << "'" << name << "' ";
+      else
+	out << ", ";
+
+      if (o->is_static())
+	out << "is no more static";
+      else
+	out << "now becomes static";
+      emitted = true;
+    }
+  if (*o->get_type() != *n->get_type())
+    {
+      if (!emitted)
+	out << indent << "'" << name << "' type changed:\n";
+      else
+	out << "\n" << indent << "type changed:\n";
+      diff_sptr d = compute_diff_for_types(o->get_type(), n->get_type());
+      d->report(out, indent + "  ");
+      emitted = false;
+    }
+  if (emitted)
+    out << "\n";
+}
+
+/// Report the size and alignement chanages of a type.
+///
+/// @param first the first type to consider.
+///
+/// @param second the second type to consider.
+///
+/// @param the output stream to report the change to.
+///
+/// @param indent the string to use for indentation.
+///
+/// @param nl whether to start the first report line with a new line.
+///
+/// @return true iff something was reported.
+static bool
+report_size_and_alignment_changes(decl_base_sptr first,
+				  decl_base_sptr second,
+				  ostream& out,
+				  const string& indent,
+				  bool nl)
+{
+  type_base_sptr f = dynamic_pointer_cast<type_base>(first),
+    s = dynamic_pointer_cast<type_base>(second);
+
+  if (!s || !f)
+    return false;
+
+  unsigned fs = f->get_size_in_bits(), ss = s->get_size_in_bits(),
+    fa = f->get_alignment_in_bits(), sa = s->get_alignment_in_bits();
+
+  bool n = false;
+  if (fs != ss)
+    {
+      if (nl)
+	out << "\n";
+      out << indent << "size changed from " << fs << " to " << ss << " bits";
+      n = true;
+    }
+  if (fa != sa)
+    {
+      if (n)
+	out << "\n";
+      out << indent
+	  << "alignment changed from " << fa << " to " << sa << " bits";
+      n = true;
+    }
+
+  if (n)
+    return true;
+  return false;
+}
+
 // <pointer_type_def stuff>
 struct pointer_diff::priv
 {
@@ -321,143 +509,6 @@ compute_diff(reference_type_def_sptr first,
 // </reference_type_def>
 
 //<class_diff stuff>
-
-/// Stream a string representation for a member function.
-///
-/// @param mem_fn the member function to stream
-///
-/// @param out the output stream to send the representation to
-static void
-represent(class_decl::member_function_sptr mem_fn,
-	  ostream& out)
-{
-  if (!mem_fn)
-    return;
-
-  out << "'" << mem_fn->get_pretty_representation() << "'";
-  if (mem_fn->get_vtable_offset())
-    out << ", virtual at voffset "
-	<< mem_fn->get_vtable_offset()
-	<< "/"
-	<< mem_fn->get_type()->get_class_type()->get_num_virtual_functions()
-	<< "\n";
-}
-
-/// Stream a string representation for a data member.
-///
-/// @param data_mem the data member to stream
-///
-/// @param out the output stream to send the representation to
-static void
-represent(class_decl::data_member_sptr data_mem,
-	  ostream& out)
-{
-  if (!data_mem || !data_mem->is_laid_out())
-    return;
-
-  out << "'" << data_mem->get_pretty_representation() << "'"
-      << ", at offset "
-      << data_mem->get_offset_in_bits()
-      << " (in bits)\n";
-}
-
-/// Represent the changes that happened on two versions of a given
-/// class data member.
-///
-/// @param o the older version of the data member.
-///
-/// @param n the newer version of the data member.
-///
-/// @param out the output stream to send the representation to.
-static void
-represent(class_decl::data_member_sptr o,
-	  class_decl::data_member_sptr n,
-	  ostream& out,
-	  const string indent = "")
-{
-  bool emitted = false;
-  string name = o->get_qualified_name();
-  string name2 = n->get_qualified_name();
-  assert(name == name2);
-
-  if (o->is_laid_out() != n->is_laid_out())
-    {
-      if (!emitted)
-	out << indent << "'" << name << "' ";
-      else
-	out << ", ";
-      if (o->is_laid_out())
-	out << "is no more laid out";
-      else
-	out << "now becomes laid out";
-      emitted = true;
-    }
-  if (o->get_offset_in_bits() != n->get_offset_in_bits())
-    {
-      if (!emitted)
-	out << indent << "'" << name << "' ";
-      else
-	out << ", ";
-      out << "offset changed from " << o->get_offset_in_bits()
-	  << " to " << n->get_offset_in_bits();
-      emitted = true;
-    }
-  if (o->get_binding() != n->get_binding())
-    {
-      if (!emitted)
-	out << indent << "'" << name << "' ";
-      else
-	out << ", ";
-      out << "elf binding changed from " << o->get_binding()
-	  << " to " << n->get_binding();
-      emitted = true;
-    }
-  if (o->get_visibility() != n->get_visibility())
-    {
-      if (!emitted)
-	out << indent << "'" << name << "' ";
-      else
-	out << ", ";
-      out << "visibility changed from " << o->get_visibility()
-	  << " to " << n->get_visibility();
-    }
-  if (o->get_access_specifier() != n->get_access_specifier())
-    {
-      if (!emitted)
-	out << indent << "'" << name << "' ";
-      else
-	out << ", ";
-
-      out << "access changed from " << o->get_access_specifier()
-	  << n->get_access_specifier();
-      emitted = true;
-    }
-  if (o->is_static() != n->is_static())
-    {
-      if (!emitted)
-	out << indent << "'" << name << "' ";
-      else
-	out << ", ";
-
-      if (o->is_static())
-	out << "is no more static";
-      else
-	out << "now becomes static";
-      emitted = true;
-    }
-  if (*o->get_type() != *n->get_type())
-    {
-      if (!emitted)
-	out << indent << "'" << name << "' type changed:\n";
-      else
-	out << "\n" << indent << "type changed:\n";
-      diff_sptr d = compute_diff_for_types(o->get_type(), n->get_type());
-      d->report(out, indent + "  ");
-      emitted = false;
-    }
-  if (emitted)
-    out << "\n";
-}
 
 struct class_diff::priv
 {
@@ -997,6 +1048,9 @@ class_diff::report(ostream& out, const string& indent) const
   class_decl_sptr first = first_class_decl(),
     second = second_class_decl();
 
+  if (report_size_and_alignment_changes(first, second, out, indent,
+					/*start_with_new_line=*/false))
+    out << "\n";
 
   // bases classes
   if (const edit_script& e = base_changes())
@@ -2376,7 +2430,6 @@ type_decl_diff::report(ostream& out, const string& indent) const
   if (length() == 0)
     return;
 
-  bool n = false;
   type_decl_sptr f = first_type_decl(), s = second_type_decl();
 
   if (f->get_name() == s->get_name())
@@ -2388,7 +2441,9 @@ type_decl_diff::report(ostream& out, const string& indent) const
 	<< "' to '"
 	<< s->get_pretty_representation()
 	<< "'";
-  n = true;
+  bool n = true;
+
+  report_size_and_alignment_changes(f, s, out, indent, n);
 
   if (f->get_visibility() != s->get_visibility())
     {
@@ -2397,28 +2452,6 @@ type_decl_diff::report(ostream& out, const string& indent) const
       out << indent
 	  << "visibility changed from '"
 	  << f->get_visibility() << "' to '" << s->get_visibility();
-      n = true;
-    }
-
-  if (f->get_size_in_bits() != s->get_size_in_bits())
-    {
-      if (n)
-	out << "\n";
-      out << indent
-	  << "size changed from "
-	  << f->get_size_in_bits() << " to "
-	  << s->get_size_in_bits() << " bits";
-      n = true;
-    }
-
-  if (f->get_alignment_in_bits() != s->get_alignment_in_bits())
-    {
-      if (n)
-	out << "\n";
-      out << indent
-	  << "alignment changed from "
-	  << f->get_alignment_in_bits() << " to "
-	  << s->get_alignment_in_bits();
       n = true;
     }
 
