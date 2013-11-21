@@ -454,6 +454,9 @@ public:
   virtual bool
   operator==(const type_decl&) const;
 
+  virtual string
+  get_pretty_representation() const;
+
   void
   traverse(ir_node_visitor&);
 

@@ -786,6 +786,10 @@ type_decl::operator==(const type_decl& o) const
   return *this == other;
 }
 
+string
+type_decl::get_pretty_representation() const
+{return get_qualified_name();}
+
 /// This implements the traversable_base::traverse pure virtual
 /// function.
 ///

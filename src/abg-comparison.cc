@@ -334,7 +334,7 @@ represent(class_decl::member_function_sptr mem_fn,
   if (!mem_fn)
     return;
 
-  out << mem_fn->get_pretty_representation();
+  out << "'" << mem_fn->get_pretty_representation() << "'";
   if (mem_fn->get_vtable_offset())
     out << ", virtual at voffset "
 	<< mem_fn->get_vtable_offset()
@@ -355,7 +355,7 @@ represent(class_decl::data_member_sptr data_mem,
   if (!data_mem || !data_mem->is_laid_out())
     return;
 
-  out << data_mem->get_pretty_representation()
+  out << "'" << data_mem->get_pretty_representation() << "'"
       << ", at offset "
       << data_mem->get_offset_in_bits()
       << " (in bits)\n";
@@ -383,7 +383,7 @@ represent(class_decl::data_member_sptr o,
   if (o->is_laid_out() != n->is_laid_out())
     {
       if (!emitted)
-	out << indent << name << " ";
+	out << indent << "'" << name << "' ";
       else
 	out << ", ";
       if (o->is_laid_out())
@@ -395,7 +395,7 @@ represent(class_decl::data_member_sptr o,
   if (o->get_offset_in_bits() != n->get_offset_in_bits())
     {
       if (!emitted)
-	out << indent << name << " ";
+	out << indent << "'" << name << "' ";
       else
 	out << ", ";
       out << "offset changed from " << o->get_offset_in_bits()
@@ -405,7 +405,7 @@ represent(class_decl::data_member_sptr o,
   if (o->get_binding() != n->get_binding())
     {
       if (!emitted)
-	out << indent << name << " ";
+	out << indent << "'" << name << "' ";
       else
 	out << ", ";
       out << "elf binding changed from " << o->get_binding()
@@ -415,7 +415,7 @@ represent(class_decl::data_member_sptr o,
   if (o->get_visibility() != n->get_visibility())
     {
       if (!emitted)
-	out << indent << name << " ";
+	out << indent << "'" << name << "' ";
       else
 	out << ", ";
       out << "visibility changed from " << o->get_visibility()
@@ -424,7 +424,7 @@ represent(class_decl::data_member_sptr o,
   if (o->get_access_specifier() != n->get_access_specifier())
     {
       if (!emitted)
-	out << indent << name << " ";
+	out << indent << "'" << name << "' ";
       else
 	out << ", ";
 
@@ -435,7 +435,7 @@ represent(class_decl::data_member_sptr o,
   if (o->is_static() != n->is_static())
     {
       if (!emitted)
-	out << indent << name << " ";
+	out << indent << "'" << name << "' ";
       else
 	out << ", ";
 
@@ -448,7 +448,7 @@ represent(class_decl::data_member_sptr o,
   if (*o->get_type() != *n->get_type())
     {
       if (!emitted)
-	out << indent << name << " type changed:\n";
+	out << indent << "'" << name << "' type changed:\n";
       else
 	out << "\n" << indent << "type changed:\n";
       diff_sptr d = compute_diff_for_types(o->get_type(), n->get_type());
@@ -988,8 +988,8 @@ class_diff::report(ostream& out, const string& indent) const
   int changes_length = length();
   if (changes_length == 0)
     {
-      out << indent << "the two versions of type "
-	  << name << "are identical\n\n";
+      out << indent << "the two versions '"
+	  << name << "' are identical\n\n";
       return;
     }
 
@@ -1042,9 +1042,9 @@ class_diff::report(ostream& out, const string& indent) const
 		dynamic_pointer_cast<class_decl>(it->second.first);
 	      class_decl_sptr n =
 		dynamic_pointer_cast<class_decl>(it->second.second);
-	      out << indent << "  "
+	      out << indent << "  '"
 		  << o->get_pretty_representation()
-		  << " changed:\n";
+		  << "' changed:\n";
 	      diff_sptr dif = compute_diff(o, n);
 	      dif->report(out, indent + "    ");
 	    }
@@ -1113,7 +1113,9 @@ class_diff::report(ostream& out, const string& indent) const
 
 	      if (decl_base_sptr n = priv_->member_type_has_changed(mem_type))
 		continue;
-	      out << indent << "  " << mem_type->get_pretty_representation();
+	      out << indent << "  '"
+		  << mem_type->get_pretty_representation()
+		  << "'";
 	    }
 	  out << "\n\n";
 	}
@@ -1130,8 +1132,9 @@ class_diff::report(ostream& out, const string& indent) const
 	    {
 	      decl_base_sptr o = it->second.first;
 	      decl_base_sptr n = it->second.second;
-	      out << indent << "  " << o->get_pretty_representation()
-		  << " changed:\n";
+	      out << indent << "  '"
+		  << o->get_pretty_representation()
+		  << "' changed:\n";
 	      diff_sptr dif = compute_diff_for_types(o, n);
 	      dif->report(out, indent + "    ");
 	    }
@@ -1164,8 +1167,9 @@ class_diff::report(ostream& out, const string& indent) const
 		  mem_type = second_class->get_member_types()[*j];
 		  if (!priv_->member_type_has_changed(mem_type))
 		    {
-		      out << indent << "  "
-			  << mem_type->get_pretty_representation();
+		      out << indent << "  '"
+			  << mem_type->get_pretty_representation()
+			  << "'";
 		      emitted = true;
 		    }
 		}
@@ -1328,8 +1332,9 @@ class_diff::report(ostream& out, const string& indent) const
 	    out << "\n";
 	  class_decl::member_function_template_sptr mem_fn_tmpl =
 	    first_class->get_member_function_templates()[i->index()];
-	  out << indent << "  "
-	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation();
+	  out << indent << "  '"
+	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
+	      << "'";
 	}
       if (numdels)
 	out << "\n\n";
@@ -1353,9 +1358,10 @@ class_diff::report(ostream& out, const string& indent) const
 	      if (emitted)
 		out << "\n";
 	      mem_fn_tmpl = second_class->get_member_function_templates()[*j];
-	      out << indent << "  "
+	      out << indent << "  '"
 		  << mem_fn_tmpl->as_function_tdecl()->
-		get_pretty_representation();
+		get_pretty_representation()
+		  << "'";
 	      emitted = true;
 	    }
 	}
@@ -1379,8 +1385,9 @@ class_diff::report(ostream& out, const string& indent) const
 	    out << "\n";
 	  class_decl::member_class_template_sptr mem_cls_tmpl =
 	    first_class->get_member_class_templates()[i->index()];
-	  out << indent << "  "
-	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation();
+	  out << indent << "  '"
+	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
+	      << "'";
 	}
       if (numdels)
 	out << "\n\n";
@@ -1404,9 +1411,10 @@ class_diff::report(ostream& out, const string& indent) const
 	      if (emitted)
 		out << "\n";
 	      mem_cls_tmpl = second_class->get_member_class_templates()[*j];
-	      out << indent << "  "
+	      out << indent << "  '"
 		  << mem_cls_tmpl->as_class_tdecl()
-		->get_pretty_representation();
+		->get_pretty_representation()
+		  << "'";
 	      emitted = true;
 	    }
 	}
@@ -2371,11 +2379,14 @@ type_decl_diff::report(ostream& out, const string& indent) const
   type_decl_sptr f = first_type_decl(), s = second_type_decl();
 
   if (f->get_name() == s->get_name())
-    out << indent << f->get_pretty_representation() << " changed:";
+    out << indent << "'" << f->get_pretty_representation() << "' changed:";
   else
     out << indent
-	<< f->get_pretty_representation() << " was replaced by "
-	<< s->get_pretty_representation();
+	<< "type changed from '"
+	<< f->get_pretty_representation()
+	<< "' to '"
+	<< s->get_pretty_representation()
+	<< "'";
   n = true;
 
   if (f->get_visibility() != s->get_visibility())
