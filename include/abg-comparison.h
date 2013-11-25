@@ -215,6 +215,48 @@ reference_diff_sptr
 compute_diff(reference_type_def_sptr first,
 	     reference_type_def_sptr second);
 
+class qualified_type_diff;
+typedef class shared_ptr<qualified_type_diff> qualified_type_diff_sptr;
+
+/// Abstraction of a diff between two qualified types.
+class qualified_type_diff : public diff
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+protected:
+  qualified_type_diff(qualified_type_def_sptr first,
+		      qualified_type_def_sptr second);
+
+public:
+  const qualified_type_def_sptr
+  first_qualified_type() const;
+
+  const qualified_type_def_sptr
+  second_qualified_type() const;
+
+  diff_sptr
+  underlying_type_diff() const;
+
+  void
+  underlying_type_diff(const diff_sptr);
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  friend qualified_type_diff_sptr
+  compute_diff(const qualified_type_def_sptr,
+	       const qualified_type_def_sptr);
+};// end class qualified_type_diff.
+
+qualified_type_diff_sptr
+compute_diff(const qualified_type_def_sptr,
+	     const qualified_type_def_sptr);
+
 class class_diff;
 
 /// Convenience typedef for a shared pointer on a @ref class_diff type.

@@ -503,6 +503,8 @@ public:
   virtual ~namespace_decl();
 };// end class namespace_decl
 
+typedef shared_ptr<qualified_type_def> qualified_type_def_sptr;
+
 /// The abstraction of a qualified type.
 class qualified_type_def : public virtual type_base, public virtual decl_base
 {
@@ -548,10 +550,13 @@ public:
   traverse(ir_node_visitor& v);
 
   virtual ~qualified_type_def();
-};
+}; // end class qualified_type_def.
 
 qualified_type_def::CV
 operator|(qualified_type_def::CV, qualified_type_def::CV);
+
+std::ostream&
+operator<<(std::ostream&, qualified_type_def::CV);
 
 /// Convenience typedef for a shared pointer on a @ref pointer_type_def
 typedef shared_ptr<pointer_type_def> pointer_type_def_sptr;

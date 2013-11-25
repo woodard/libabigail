@@ -88,6 +88,7 @@ compute_diff_for_types(const decl_base_sptr first, const decl_base_sptr second)
    ||(d = try_to_diff_types<class_decl>(first, second))
    ||(d = try_to_diff_types<pointer_type_def>(first, second))
    ||(d = try_to_diff_types<reference_type_def>(first, second))
+   ||(d = try_to_diff_types<qualified_type_def>(first, second))
    ||(d = try_to_diff_types<typedef_decl>(first, second)));
 
   return d;
@@ -508,6 +509,151 @@ compute_diff(reference_type_def_sptr first,
 }
 // </reference_type_def>
 
+// <qualified_type_diff stuff>
+
+struct qualified_type_diff::priv
+{
+  diff_sptr underlying_type_diff;
+};// end struct qualified_type_diff::priv
+
+
+/// Constructor for qualified_type_diff.
+///
+/// @param first the first qualified type of the diff.
+///
+/// @param second the second qualified type of the diff.
+qualified_type_diff::qualified_type_diff(qualified_type_def_sptr first,
+					 qualified_type_def_sptr second)
+  : diff(first, second),
+    priv_(new priv)
+{
+}
+
+/// Getter for the first qualified type of the diff.
+///
+/// @return the first qualified type of the diff.
+const qualified_type_def_sptr
+qualified_type_diff::first_qualified_type() const
+{return dynamic_pointer_cast<qualified_type_def>(first_subject());}
+
+/// Getter for the second qualified type of the diff.
+///
+/// @return the second qualified type of the diff.
+const qualified_type_def_sptr
+qualified_type_diff::second_qualified_type() const
+{return dynamic_pointer_cast<qualified_type_def>(second_subject());}
+
+/// Getter for the diff between the underlying types of the two
+/// qualified types.
+///
+/// @return the diff between the underlying types of the two qualified
+/// types.
+diff_sptr
+qualified_type_diff::underlying_type_diff() const
+{return priv_->underlying_type_diff;}
+
+/// Setter for the diff between the underlying types of the two
+/// qualified types.
+///
+/// @return the diff between the underlying types of the two qualified
+/// types.
+void
+qualified_type_diff::underlying_type_diff(const diff_sptr d)
+{priv_->underlying_type_diff = d;}
+
+/// Return the length of the diff, or zero if the two qualified types
+/// are equal.
+///
+/// @return the length of the diff, or zero if the two qualified types
+/// are equal.
+unsigned
+qualified_type_diff::length() const
+{
+  unsigned l = 0;
+  char fcv = first_qualified_type()->get_cv_quals(),
+    scv = second_qualified_type()->get_cv_quals();
+
+  if (fcv != scv)
+    {
+      if ((fcv | qualified_type_def::CV_CONST)
+	  != (scv | qualified_type_def::CV_CONST))
+	++l;
+      if ((fcv | qualified_type_def::CV_VOLATILE)
+	  != (scv | qualified_type_def::CV_RESTRICT))
+	++l;
+      if ((fcv | qualified_type_def::CV_RESTRICT)
+	  != (scv | qualified_type_def::CV_RESTRICT))
+	++l;
+    }
+
+  return (underlying_type_diff()
+	  ? underlying_type_diff()->length() + l
+	  : l);
+}
+
+/// Return the first underlying type that is not a qualified type.
+/// @param t the qualified type to consider.
+///
+/// @return the first underlying type that is not a qualified type, or
+/// NULL if t is NULL.
+static type_base_sptr
+get_leaf_type(qualified_type_def_sptr t)
+{
+  if (!t)
+    return type_base_sptr();
+
+  type_base_sptr ut = t->get_underlying_type();
+  qualified_type_def_sptr qut = dynamic_pointer_cast<qualified_type_def>(ut);
+
+  if (!qut)
+    return ut;
+  return get_leaf_type(qut);
+}
+
+/// Report the diff in a serialized form.
+///
+/// @param out the output stream to serialize to.
+///
+/// @param the string to use to indent the lines of the report.
+void
+qualified_type_diff::report(ostream& out, const string& indent) const
+{
+  string fname = first_qualified_type()->get_pretty_representation(),
+    sname = second_qualified_type()->get_pretty_representation();
+
+  if (fname != sname)
+    {
+      out << indent << "'" << fname << "' changed to '" << sname << "'\n";
+      return;
+    }
+
+  type_base_sptr flt = get_leaf_type(first_qualified_type()),
+    slt = get_leaf_type(second_qualified_type());
+  string fltname = get_type_declaration(flt)->get_pretty_representation(),
+    sltname = get_type_declaration(slt)->get_pretty_representation();
+
+  diff_sptr d = compute_diff_for_types(flt, slt);
+  out << indent << "in unqualified underlying type '" << fltname << "':\n";
+  d->report(out, indent + "  ");
+}
+
+/// Compute the diff between two qualified types.
+///
+/// @param first the first qualified type to consider for the diff.
+///
+/// @param second the second qualified type to consider for the diff.
+qualified_type_diff_sptr
+compute_diff(const qualified_type_def_sptr first,
+	     const qualified_type_def_sptr second)
+{
+  diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
+				       second->get_underlying_type());
+  qualified_type_diff_sptr result(new qualified_type_diff(first, second));
+  result->underlying_type_diff(d);
+  return result;
+}
+
+// </qualified_type_diff>
 //<class_diff stuff>
 
 struct class_diff::priv

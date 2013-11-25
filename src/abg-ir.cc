@@ -1015,6 +1015,39 @@ operator| (qualified_type_def::CV lhs,
   return static_cast<qualified_type_def::CV>
     (static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs));
 }
+
+/// Streaming operator for qualified_type_decl::CV
+///
+/// @param o the output stream to serialize the cv qualifier to.
+///
+/// @param cv the cv qualifier to serialize.
+///
+/// @return the output stream used.
+std::ostream&
+operator<<(std::ostream& o, qualified_type_def::CV cv)
+{
+  string str;
+
+  switch (cv)
+    {
+    case qualified_type_def::CV_NONE:
+      str = "none";
+      break;
+    case qualified_type_def::CV_CONST:
+      str = "const";
+      break;
+    case qualified_type_def::CV_VOLATILE:
+      str = "volatile";
+      break;
+    case qualified_type_def::CV_RESTRICT:
+      str = "restrict";
+      break;
+    }
+
+  o << str;
+  return o;
+}
+
 // </qualified_type_def>
 
 //<pointer_type_def definitions>
