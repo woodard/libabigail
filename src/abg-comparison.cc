@@ -341,14 +341,14 @@ pointer_diff::pointer_diff(pointer_type_def_sptr first,
 /// Getter for the first subject of a pointer diff
 ///
 /// @return the first pointer considered in this pointer diff.
-pointer_type_def_sptr
+const pointer_type_def_sptr
 pointer_diff::first_pointer() const
 {return dynamic_pointer_cast<pointer_type_def>(first_subject());}
 
 /// Getter for the second subject of a pointer diff
 ///
 /// @return the second pointer considered in this pointer diff.
-pointer_type_def_sptr
+const pointer_type_def_sptr
 pointer_diff::second_pointer() const
 {return dynamic_pointer_cast<pointer_type_def>(second_subject());}
 

@@ -86,13 +86,14 @@ class diff
   decl_base_sptr first_subject_;
   decl_base_sptr second_subject_;
 
-public:
-
+protected:
   diff(decl_base_sptr first_subject,
        decl_base_sptr second_subject)
     : first_subject_(first_subject),
       second_subject_(second_subject)
   {}
+
+public:
 
   /// Getter of the first subject of the diff.
   ///
@@ -138,13 +139,15 @@ class pointer_diff : public diff
   struct priv;
   shared_ptr<priv> priv_;
 
-public:
+protected:
   pointer_diff(pointer_type_def_sptr first,
 	       pointer_type_def_sptr second);
-  pointer_type_def_sptr
+
+public:
+  const pointer_type_def_sptr
   first_pointer() const;
 
-  pointer_type_def_sptr
+  const pointer_type_def_sptr
   second_pointer() const;
 
   diff_sptr
@@ -158,6 +161,10 @@ public:
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  friend pointer_diff_sptr
+  compute_diff(pointer_type_def_sptr first,
+	       pointer_type_def_sptr second);
 };// end class pointer_diff
 
 pointer_diff_sptr
@@ -176,10 +183,11 @@ class reference_diff : public diff
   struct priv;
   shared_ptr<priv> priv_;
 
-public:
+protected:
   reference_diff(const reference_type_def_sptr first,
 		 const reference_type_def_sptr second);
 
+public:
   reference_type_def_sptr
   first_reference() const;
 
@@ -197,6 +205,10 @@ public:
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  friend reference_diff_sptr
+  compute_diff(reference_type_def_sptr first,
+	       reference_type_def_sptr second);
 };// end class reference_diff
 
 reference_diff_sptr
@@ -223,11 +235,11 @@ class class_diff : public diff
   void
   ensure_lookup_tables_populated(void) const;
 
-public:
-
+protected:
   class_diff(class_decl_sptr first_subject,
 		  class_decl_sptr second_subject);
 
+public:
   //TODO: add change of the name of the type.
 
   shared_ptr<class_decl>
@@ -307,13 +319,20 @@ class scope_diff : public diff
   void
   ensure_lookup_tables_populated();
 
+protected:
+  scope_diff(scope_decl_sptr first_scope,
+	     scope_decl_sptr second_scope);
+
 public:
 
   friend scope_diff_sptr
-  compute_diff(const scope_decl_sptr, const scope_decl_sptr, scope_diff_sptr);
+  compute_diff(const scope_decl_sptr,
+	       const scope_decl_sptr,
+	       scope_diff_sptr);
 
-  scope_diff(scope_decl_sptr first_scope,
-	     scope_decl_sptr second_scope);
+  friend scope_diff_sptr
+  compute_diff(const scope_decl_sptr first_scope,
+	       const scope_decl_sptr second_scope);
 
   const scope_decl_sptr
   first_scope() const;
@@ -393,14 +412,14 @@ class function_decl_diff : public diff
   const function_decl::parameter_sptr
   inserted_parameter_at(int i) const;
 
-public:
+protected:
+  function_decl_diff(const function_decl_sptr first,
+		     const function_decl_sptr second);
 
+public:
 friend function_decl_diff_sptr
 compute_diff(const function_decl_sptr first,
 	     const function_decl_sptr second);
-
-  function_decl_diff(const function_decl_sptr first,
-		     const function_decl_sptr second);
 
   const function_decl_sptr
   first_function_decl() const;
@@ -441,12 +460,12 @@ class type_decl_diff : public diff
 {
   type_decl_diff();
 
-public:
+protected:
+  type_decl_diff(const type_decl_sptr, const type_decl_sptr);
 
+public:
   friend type_decl_diff_sptr
   compute_diff(const type_decl_sptr, const type_decl_sptr);
-
-  type_decl_diff(const type_decl_sptr, const type_decl_sptr);
 
   const type_decl_sptr
   first_type_decl() const;
@@ -477,13 +496,14 @@ class typedef_diff : public diff
 
   typedef_diff();
 
-public:
-
-  friend typedef_diff_sptr
-  compute_diff(const typedef_decl_sptr, const typedef_decl_sptr);
-
+protected:
   typedef_diff(const typedef_decl_sptr first,
 	       const typedef_decl_sptr second);
+
+
+public:
+  friend typedef_diff_sptr
+  compute_diff(const typedef_decl_sptr, const typedef_decl_sptr);
 
   const typedef_decl_sptr
   first_typedef_decl() const;
@@ -515,9 +535,14 @@ typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
 
 class translation_unit_diff : public scope_diff
 {
-public:
+protected:
   translation_unit_diff(translation_unit_sptr first,
 			translation_unit_sptr second);
+
+public:
+  friend translation_unit_diff_sptr
+  compute_diff(const translation_unit_sptr first,
+	       const translation_unit_sptr second);
 
   virtual unsigned
   length() const;
