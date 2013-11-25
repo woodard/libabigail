@@ -575,14 +575,14 @@ qualified_type_diff::length() const
 
   if (fcv != scv)
     {
-      if ((fcv | qualified_type_def::CV_CONST)
-	  != (scv | qualified_type_def::CV_CONST))
+      if ((fcv & qualified_type_def::CV_CONST)
+	  != (scv & qualified_type_def::CV_CONST))
 	++l;
-      if ((fcv | qualified_type_def::CV_VOLATILE)
-	  != (scv | qualified_type_def::CV_RESTRICT))
+      if ((fcv & qualified_type_def::CV_VOLATILE)
+	  != (scv & qualified_type_def::CV_RESTRICT))
 	++l;
-      if ((fcv | qualified_type_def::CV_RESTRICT)
-	  != (scv | qualified_type_def::CV_RESTRICT))
+      if ((fcv & qualified_type_def::CV_RESTRICT)
+	  != (scv & qualified_type_def::CV_RESTRICT))
 	++l;
     }
 
