@@ -275,14 +275,7 @@ decl_base::get_qualified_name(string& qn,
 /// with a meaningful string to add context for the user.
 string
 decl_base::get_pretty_representation() const
-{
-  string result;
-
-  if (dynamic_cast<const type_base*>(this))
-    result += "type ";
-  result += get_qualified_name();
-  return result;
-}
+{return get_qualified_name();}
 
 /// Compute the qualified name of the decl.
 ///

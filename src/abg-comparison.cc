@@ -390,8 +390,8 @@ pointer_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      out << indent << "differences in pointed to type ("
-	  << d->first_subject()->get_pretty_representation() << "):\n";
+      out << indent << "in pointed to type '"
+	  << d->first_subject()->get_pretty_representation() << "':\n";
       d->report(out, indent + "  ");
     }
 }
@@ -484,8 +484,8 @@ reference_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      out << indent << "differences in referenced type ("
-	  << d->first_subject()->get_pretty_representation() << "):\n";
+      out << indent << "in referenced type '"
+	  << d->first_subject()->get_pretty_representation() << "':\n";
       d->report(out, indent + "  ");
     }
 }
