@@ -1197,7 +1197,7 @@ enum_type_decl::get_underlying_type() const
 {return underlying_type_;}
 
 /// Return the list of enumerators of the enum.
-const std::list<enum_type_decl::enumerator>&
+const enum_type_decl::enumerators&
 enum_type_decl::get_enumerators() const
 {return enumerators_;}
 
@@ -1229,7 +1229,7 @@ enum_type_decl::operator==(const decl_base& o) const
       if (*get_underlying_type() != *other.get_underlying_type())
 	return false;
 
-      std::list<enumerator>::const_iterator i, j;
+      enumerators::const_iterator i, j;
       for (i = get_enumerators().begin(), j = other.get_enumerators().begin();
 	   i != get_enumerators().end() && j != other.get_enumerators().end();
 	   ++i, ++j)

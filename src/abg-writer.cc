@@ -869,7 +869,7 @@ write_enum_type_decl(const shared_ptr<enum_type_decl> decl,
     << ctxt.get_id_for_type(decl->get_underlying_type())
     << "'/>\n";
 
-  for (list<enum_type_decl::enumerator>::const_iterator i =
+  for (enum_type_decl::enumerators::const_iterator i =
 	 decl->get_enumerators().begin();
        i != decl->get_enumerators().end();
        ++i)

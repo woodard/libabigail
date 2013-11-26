@@ -1476,7 +1476,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
     return nil;
 
   string base_type_id;
-  std::list<enum_type_decl::enumerator> enumerators;
+  enum_type_decl::enumerators enums;
   for (xmlNodePtr n = node->children; n; n = n->next)
     {
       if (n->type != XML_ELEMENT_NODE)
@@ -1503,7 +1503,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
 	  if (a)
 	    value = atoi(CHAR_STR(a));
 
-	  enumerators.push_back(enum_type_decl::enumerator(name, value));
+	  enums.push_back(enum_type_decl::enumerator(name, value));
 	}
     }
 
@@ -1513,7 +1513,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
 
   shared_ptr<enum_type_decl> t(new enum_type_decl(name, loc,
 						  underlying_type,
-						  enumerators));
+						  enums));
   if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
 				  add_to_current_scope))
     return t;

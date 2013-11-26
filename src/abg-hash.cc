@@ -198,7 +198,7 @@ struct enum_type_decl::hash
 
     size_t v = str_hash(typeid(t).name());
     v = hashing::combine_hashes(v, type_ptr_hash(t.get_underlying_type()));
-    for (std::list<enum_type_decl::enumerator>::const_iterator i =
+    for (enum_type_decl::enumerators::const_iterator i =
 	   t.get_enumerators().begin();
 	 i != t.get_enumerators().end();
 	 ++i)

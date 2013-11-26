@@ -677,7 +677,7 @@ public:
   };
 
   /// Convenience typedef for a list of @ref enumerator.
-  typedef std::list<enumerator> enumerators;
+  typedef std::vector<enumerator> enumerators;
 private:
 
   type_base_sptr	underlying_type_;
