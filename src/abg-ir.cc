@@ -1250,8 +1250,8 @@ enum_type_decl::operator==(const type_base& o) const
 {
   try
     {
-      const enum_type_decl& other= dynamic_cast<const enum_type_decl&>(o);
-      return decl_base::operator==(other) && type_base::operator==(other);
+      const decl_base& other= dynamic_cast<const decl_base&>(o);
+      return *this == other;
     }
   catch(...)
     {return false;}
