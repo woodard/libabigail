@@ -631,6 +631,9 @@ public:
   virtual ~reference_type_def();
 }; // end class reference_type_def
 
+/// Convenience typedef for shared pointer on enum_type_decl.
+typedef shared_ptr<enum_type_decl> enum_type_decl_sptr;
+
 /// Abstracts a declaration for an enum type.
 class enum_type_decl : public virtual type_base, public virtual decl_base
 {
@@ -645,10 +648,11 @@ public:
     string	name_;
     size_t	value_;
 
-    //Forbidden
-    enumerator();
-
   public:
+
+    enumerator()
+      : value_(0)
+    {}
 
     enumerator(const string& name, size_t value)
     : name_(name), value_(value) { }
@@ -662,6 +666,10 @@ public:
     const string&
     get_name() const
     {return name_;}
+
+    const string
+    get_qualified_name(const enum_type_decl_sptr enum_type) const
+    {return enum_type->get_qualified_name() + "::" + get_name();}
 
     void
     set_name(const string& n)

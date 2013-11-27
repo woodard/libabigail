@@ -78,6 +78,19 @@ typedef unordered_map<string,
 /// parameter.  The key is the name of the function parm.
 typedef unordered_map<string, function_decl::parameter_sptr> string_parm_map;
 
+/// Convenience typedef for a map which value is an enumerator.  The
+/// key is the name of the enumerator.
+typedef unordered_map<string, enum_type_decl::enumerator> string_enumerator_map;
+
+/// Convenience typedef for a changed enumerator.  The first element
+/// of the pair is the old enumerator and the second one is the new enumerator.
+typedef std::pair<enum_type_decl::enumerator,
+		  enum_type_decl::enumerator> changed_enumerator;
+
+/// Convenience typedef for a map which value is a changed enumerator.
+/// The key is the name of the changed enumerator.
+typedef unordered_map<string, changed_enumerator> string_changed_enumerator_map;
+
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for two constructs that are to be diff'ed.  The two
 /// constructs are called the "subjects" of the diff.
@@ -256,6 +269,64 @@ public:
 qualified_type_diff_sptr
 compute_diff(const qualified_type_def_sptr,
 	     const qualified_type_def_sptr);
+
+class enum_diff;
+typedef shared_ptr<enum_diff> enum_diff_sptr;
+
+/// Abstraction of a diff between two enums.
+class enum_diff : public diff
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+  void
+  clear_lookup_tables();
+
+  bool
+  lookup_tables_empty() const;
+
+  void
+  ensure_lookup_tables_populated();
+
+protected:
+  enum_diff(const enum_type_decl_sptr,
+	    const enum_type_decl_sptr,
+	    const diff_sptr);
+
+public:
+  const enum_type_decl_sptr
+  first_enum() const;
+
+  const enum_type_decl_sptr
+  second_enum() const;
+
+  diff_sptr
+  underlying_type_diff() const;
+
+  const string_enumerator_map&
+  deleted_enumerators() const;
+
+  const string_enumerator_map&
+  inserted_enumerators() const;
+
+  const string_changed_enumerator_map&
+  changed_enumerators() const;
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  friend enum_diff_sptr
+  compute_diff(const enum_type_decl_sptr,
+	       const enum_type_decl_sptr);
+};//end class enum_diff;
+
+enum_diff_sptr
+compute_diff(const enum_type_decl_sptr,
+	     const enum_type_decl_sptr);
 
 class class_diff;
 

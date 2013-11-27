@@ -85,6 +85,7 @@ compute_diff_for_types(const decl_base_sptr first, const decl_base_sptr second)
   diff_sptr d;
 
   ((d = try_to_diff_types<type_decl>(first, second))
+   ||(d = try_to_diff_types<enum_type_decl>(first, second))
    ||(d = try_to_diff_types<class_decl>(first, second))
    ||(d = try_to_diff_types<pointer_type_def>(first, second))
    ||(d = try_to_diff_types<reference_type_def>(first, second))
@@ -320,6 +321,61 @@ report_size_and_alignment_changes(decl_base_sptr first,
   if (n)
     return true;
   return false;
+}
+
+/// Represent the kind of difference we want report_mem_header() to
+/// report.
+enum diff_kind
+{
+  del_kind,
+  ins_kind,
+  change_kind
+};
+
+/// Output the header preceding the the report for
+/// insertion/deletion/change of a part of a class.  This is a
+/// subroutine of class_diff::report.
+///
+/// @param out the output stream to output the report to.
+///
+/// @param number the number of insertion/deletion to refer to in the
+/// header.
+///
+/// @param k the kind of diff (insertion/deletion/change) we want the
+/// head to introduce.
+///
+/// @param section_name the name of the sub-part of the class to
+/// report about.
+///
+/// @param indent the string to use as indentation prefix in the
+/// header.
+static void
+report_mem_header(ostream& out,
+		  int number,
+		  diff_kind k,
+		  const string& section_name,
+		  const string& indent)
+{
+  string change;
+  switch (k)
+    {
+    case del_kind:
+      change = (number > 1) ? "deletions" : "deletion";
+      break;
+    case ins_kind:
+      change = (number > 1) ? "insertions" : "insertion";
+      break;
+    case change_kind:
+      change = (number > 1) ? "changes" : "change";
+    }
+
+  if (number == 0)
+    out << indent << "no " << section_name << " " << change << "\n";
+  else if (number == 1)
+    out << indent << "1 " << section_name << " " << change << ":\n";
+  else
+    out << indent << number << " " << section_name
+	<< " " << change << ":\n";
 }
 
 // <pointer_type_def stuff>
@@ -653,7 +709,285 @@ compute_diff(const qualified_type_def_sptr first,
   return result;
 }
 
-// </qualified_type_diff>
+// </qualified_type_diff stuff>
+
+// <enum_diff stuff>
+struct enum_diff::priv
+{
+  diff_sptr underlying_type_diff_;
+  edit_script enumerators_changes_;
+  string_enumerator_map deleted_enumerators_;
+  string_enumerator_map inserted_enumerators_;
+  string_changed_enumerator_map changed_enumerators_;
+};//end struct enum_diff::priv
+
+/// Clear the lookup tables useful for reporting an enum_diff.
+///
+/// This function must be updated each time a lookup table is added or
+/// removed from the class_diff::priv.
+void
+enum_diff::clear_lookup_tables()
+{
+  priv_->deleted_enumerators_.clear();
+  priv_->inserted_enumerators_.clear();
+  priv_->changed_enumerators_.clear();
+}
+
+/// Tests if the lookup tables are empty.
+///
+/// @return true if the lookup tables are empty, false otherwise.
+bool
+enum_diff::lookup_tables_empty() const
+{
+  return (priv_->deleted_enumerators_.empty()
+	  && priv_->inserted_enumerators_.empty()
+	  && priv_->changed_enumerators_.empty());
+}
+
+/// If the lookup tables are not yet built, walk the differences and
+/// fill the lookup tables.
+void
+enum_diff::ensure_lookup_tables_populated()
+{
+  if (!lookup_tables_empty())
+    return;
+
+  {
+    edit_script e = priv_->enumerators_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	const enum_type_decl::enumerator& n =
+	  first_enum()->get_enumerators()[i];
+	const string& name = n.get_name();
+	assert(priv_->deleted_enumerators_.find(n.get_name())
+	       == priv_->deleted_enumerators_.end());
+	priv_->deleted_enumerators_[name] = n;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    const enum_type_decl::enumerator& n =
+	      second_enum()->get_enumerators()[i];
+	    const string& name = n.get_name();
+	    assert(priv_->inserted_enumerators_.find(n.get_name())
+		   == priv_->inserted_enumerators_.end());
+	    priv_->inserted_enumerators_[name] = n;
+	  }
+      }
+
+    for (string_enumerator_map::const_iterator i =
+	   priv_->deleted_enumerators_.begin();
+	 i != priv_->deleted_enumerators_.end();
+	 ++i)
+      {
+	string_enumerator_map::const_iterator r =
+	  priv_->inserted_enumerators_.find(i->first);
+	if (r != priv_->inserted_enumerators_.end())
+	  priv_->changed_enumerators_[i->first] =
+	    std::make_pair(i->second, r->second);
+      }
+  }
+}
+
+/// Constructor for enum_diff.
+///
+/// @param first the first enum type of the diff.
+///
+/// @param second the second enum type of the diff.
+///
+/// @param underlying_type_diff the diff of the two underlying types
+/// of the two enum types.
+enum_diff::enum_diff(const enum_type_decl_sptr first,
+		     const enum_type_decl_sptr second,
+		     const diff_sptr underlying_type_diff)
+  : diff(first, second),
+    priv_(new priv)
+{priv_->underlying_type_diff_ = underlying_type_diff;}
+
+/// @return the first enum of the diff.
+const enum_type_decl_sptr
+enum_diff::first_enum() const
+{return dynamic_pointer_cast<enum_type_decl>(first_subject());}
+
+/// @return the second enum of the diff.
+const enum_type_decl_sptr
+enum_diff::second_enum() const
+{return dynamic_pointer_cast<enum_type_decl>(second_subject());}
+
+/// @return the diff of the two underlying enum types.
+diff_sptr
+enum_diff::underlying_type_diff() const
+{return priv_->underlying_type_diff_;}
+
+/// @return a map of the enumerators that were deleted.
+const string_enumerator_map&
+enum_diff::deleted_enumerators() const
+{return priv_->deleted_enumerators_;}
+
+/// @return a map of the enumerators that were inserted
+const string_enumerator_map&
+enum_diff::inserted_enumerators() const
+{return priv_->inserted_enumerators_;}
+
+/// @return a map the enumerators that were changed
+const string_changed_enumerator_map&
+enum_diff::changed_enumerators() const
+{return priv_->changed_enumerators_;}
+
+/// @return the length of the diff.
+unsigned
+enum_diff::length() const
+{
+  return (underlying_type_diff()->length()
+	  + priv_->enumerators_changes_.length());
+}
+
+/// Report the differences between the two enums.
+///
+/// @param out the output stream to send the report to.
+///
+/// @param the string to use for indentation.
+void
+enum_diff::report(ostream& out, const string& indent) const
+{
+  string name = first_enum()->get_pretty_representation();
+
+  if (length() == 0)
+    {
+      out << indent << "the two versions of '" << name << "are identical\n\n";
+      return;
+    }
+
+  enum_type_decl_sptr first = first_enum(), second = second_enum();
+
+  if (report_size_and_alignment_changes(first, second, out, indent,
+					/*start_with_num_line=*/false))
+    out << "\n";
+
+  // name
+  if (first->get_name() != second->get_name())
+    out << indent << "enum name changed from '"
+	<< first->get_qualified_name() << "' to '"
+	<< second->get_qualified_name() << "'\n";
+
+  //underlying type
+  underlying_type_diff()->report(out, indent);
+
+  //report deletions/insertions/change of enumerators
+  unsigned numdels = deleted_enumerators().size();
+  unsigned numins = inserted_enumerators().size();
+  unsigned numchanges = changed_enumerators().size();
+  assert(numchanges <= numdels
+	 && numchanges <= numins);
+  numdels -= numchanges;
+  numins -= numchanges;
+
+  if (numdels)
+    {
+      report_mem_header(out, numdels, del_kind, "enumerator", indent);
+      for (string_enumerator_map::const_iterator i =
+	     deleted_enumerators().begin();
+	   i != deleted_enumerators().end();
+	   ++i)
+	{
+	  if (changed_enumerators().find(i->first)
+	      != changed_enumerators().end())
+	    continue;
+	  if (i != deleted_enumerators().begin())
+	    out << "\n";
+	  out << indent
+	      << "  '"
+	      << i->second.get_qualified_name(first)
+	      << "' value '"
+	      << i->second.get_value()
+	      << "'";
+	}
+      out << "\n\n";
+    }
+  if (numins)
+    {
+      report_mem_header(out, numins, ins_kind, "enumerator", indent);
+      for (string_enumerator_map::const_iterator i =
+	     inserted_enumerators().begin();
+	   i != inserted_enumerators().end();
+	   ++i)
+	{
+	  if (changed_enumerators().find(i->first)
+	      != changed_enumerators().end())
+	    continue;
+	  if (i != inserted_enumerators().begin())
+	    out << "\n";
+	  out << indent
+	      << "  '"
+	      << i->second.get_qualified_name(second)
+	      << "' value '"
+	      << i->second.get_value()
+	      << "'";
+	}
+      out << "\n\n";
+    }
+  if (numchanges)
+    {
+      report_mem_header(out, numchanges, change_kind, "enumerator", indent);
+      for (string_changed_enumerator_map::const_iterator i =
+	     changed_enumerators().begin();
+	   i != changed_enumerators().end();
+	   ++i)
+	{
+	  if (i != changed_enumerators().begin())
+	    out << "\n";
+	  out << indent
+	      << "  '"
+	      << i->second.first.get_qualified_name(first)
+	      << "' from value '"
+	      << i->second.first.get_value() << "' to '"
+	      << i->second.second.get_value() << "'";
+	}
+      out << "\n\n";
+    }
+}
+
+/// Compute the set of changes between two instances of @ref
+/// enum_type_decl.
+///
+/// @param first a pointer to the first enum_type_decl to consider.
+///
+/// @param second a pointer to the second enum_type_decl to consider.
+///
+/// @return the resulting diff of the two enums @ref first and @ref
+/// second.
+enum_diff_sptr
+compute_diff(const enum_type_decl_sptr first,
+	     const enum_type_decl_sptr second)
+{
+  diff_sptr ud = compute_diff_for_types(first->get_underlying_type(),
+					second->get_underlying_type());
+  enum_diff_sptr d(new enum_diff(first, second, ud));
+
+  compute_diff(first->get_enumerators().begin(),
+	       first->get_enumerators().end(),
+	       second->get_enumerators().begin(),
+	       second->get_enumerators().end(),
+	       d->priv_->enumerators_changes_);
+
+  d->ensure_lookup_tables_populated();
+
+  return d;
+}
+// </enum_diff stuff>
+
 //<class_diff stuff>
 
 struct class_diff::priv
@@ -1115,61 +1449,6 @@ class_diff::member_class_tmpls_changes() const
 edit_script&
 class_diff::member_class_tmpls_changes()
 {return priv_->member_class_tmpls_changes_;}
-
-/// Represent the kind of difference we want report_mem_header() to
-/// report.
-enum diff_kind
-{
-  del_kind,
-  ins_kind,
-  change_kind
-};
-
-/// Output the header preceding the the report for
-/// insertion/deletion/change of a part of a class.  This is a
-/// subroutine of class_diff::report.
-///
-/// @param out the output stream to output the report to.
-///
-/// @param number the number of insertion/deletion to refer to in the
-/// header.
-///
-/// @param k the kind of diff (insertion/deletion/change) we want the
-/// head to introduce.
-///
-/// @param section_name the name of the sub-part of the class to
-/// report about.
-///
-/// @param indent the string to use as indentation prefix in the
-/// header.
-static void
-report_mem_header(ostream& out,
-		  int number,
-		  diff_kind k,
-		  const string& section_name,
-		  const string& indent)
-{
-  string change;
-  switch (k)
-    {
-    case del_kind:
-      change = (number > 1) ? "deletions" : "deletion";
-      break;
-    case ins_kind:
-      change = (number > 1) ? "insertions" : "insertion";
-      break;
-    case change_kind:
-      change = (number > 1) ? "changes" : "change";
-    }
-
-  if (number == 0)
-    out << indent << "no " << section_name << " " << change << "\n";
-  else if (number == 1)
-    out << indent << "1 " << section_name << " " << change << ":\n";
-  else
-    out << indent << number << " " << section_name
-	<< " " << change << ":\n";
-}
 
 /// Produce a basic report about the changes between two class_decl.
 ///
