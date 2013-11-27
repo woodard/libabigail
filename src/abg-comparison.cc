@@ -1185,7 +1185,7 @@ class_diff::report(ostream& out, const string& indent) const
   int changes_length = length();
   if (changes_length == 0)
     {
-      out << indent << "the two versions '"
+      out << indent << "the two versions of '"
 	  << name << "' are identical\n\n";
       return;
     }
@@ -1247,7 +1247,7 @@ class_diff::report(ostream& out, const string& indent) const
 		  << o->get_pretty_representation()
 		  << "' changed:\n";
 	      diff_sptr dif = compute_diff(o, n);
-	      dif->report(out, indent + "    ");
+	      dif->report(out, indent + "  ");
 	    }
 	  out << "\n";
 	}
@@ -1337,7 +1337,7 @@ class_diff::report(ostream& out, const string& indent) const
 		  << o->get_pretty_representation()
 		  << "' changed:\n";
 	      diff_sptr dif = compute_diff_for_types(o, n);
-	      dif->report(out, indent + "    ");
+	      dif->report(out, indent + "  ");
 	    }
 	  out << "\n";
 	}
@@ -2080,7 +2080,7 @@ scope_diff::report(ostream& out, const string& indent) const
   if (num_changed_types == 0)
     ;
   else if (num_changed_types == 1)
-    out << indent << "1 changed type:\n" << indent << "  ";
+    out << indent << "1 changed type:\n";
   else
     out << indent << num_changed_types << " changed types:\n";
 
@@ -2104,9 +2104,9 @@ scope_diff::report(ostream& out, const string& indent) const
   if (num_changed_decls == 0)
     ;
   else if (num_changed_decls == 1)
-    out << "1 changed declaration:\n  ";
+    out << indent << "1 changed declaration:\n";
   else
-    out << num_changed_decls << " changed declarations:\n";
+    out << indent << num_changed_decls << " changed declarations:\n";
 
   for (string_changed_type_or_decl_map::const_iterator i=
 	 changed_decls().begin();
@@ -2129,7 +2129,7 @@ scope_diff::report(ostream& out, const string& indent) const
        i != removed_types().end();
        ++i)
     out << indent
-	<< "'"
+	<< "  '"
 	<< i->second->get_pretty_representation()
 	<< "' was removed\n";
   if (removed_types().size())
@@ -2139,7 +2139,7 @@ scope_diff::report(ostream& out, const string& indent) const
        i != removed_decls().end();
        ++i)
     out << indent
-	<< "'"
+	<< "  '"
 	<< i->second->get_pretty_representation()
 	<< "' was removed\n";
   if (removed_decls().size())
@@ -2156,7 +2156,7 @@ scope_diff::report(ostream& out, const string& indent) const
       if (dynamic_pointer_cast<type_decl>(i->second))
 	continue;
       out << indent
-	  << "'"
+	  << "  '"
 	  << i->second->get_pretty_representation()
 	  << "' was added\n";
       emitted = true;
@@ -2174,7 +2174,7 @@ scope_diff::report(ostream& out, const string& indent) const
       if (dynamic_pointer_cast<type_decl>(i->second))
 	continue;
       out << indent
-	  << "'"
+	  << "  '"
 	  << i->second->get_pretty_representation()
 	  << "' was added\n";
       emitted = true;
