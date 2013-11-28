@@ -36,15 +36,15 @@ using std::vector;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 
-/// Try to compute a diff on two instances of type representation.
+/// Try to compute a diff on two instances of DiffType representation.
 ///
-/// The function template performs the diff if and only if the type
-/// representations are of a certain type.
+/// The function template performs the diff if and only if the decl
+/// representations are of a DiffType.
 ///
-/// @param first the first representation of type to consider in the
+/// @param first the first representation of decl to consider in the
 /// diff computation.
 ///
-/// @param second the second representation oftype to consider in the
+/// @param second the second representation of decl to consider in the
 /// diff computation.
 ///
 ///@return the diff of the two types @ref first and @ref second if and
@@ -52,7 +52,7 @@ using std::tr1::static_pointer_cast;
 ///returns a NULL pointer value.
 template<typename DiffType>
 diff_sptr
-try_to_diff_types(const decl_base_sptr first, const decl_base_sptr second)
+try_to_diff(const decl_base_sptr first, const decl_base_sptr second)
 {
   if (shared_ptr<DiffType> f =
       dynamic_pointer_cast<DiffType>(first))
@@ -69,13 +69,13 @@ try_to_diff_types(const decl_base_sptr first, const decl_base_sptr second)
 /// The function considers every possible types known to libabigail
 /// and runs the appropriate diff function on them.
 ///
-/// Whenever a new kind of type is supported by abigail, if we want to
-/// be able to diff two instances of it, we need to update this
-/// function to support it.
+/// Whenever a new kind of type decl is supported by abigail, if we
+/// want to be able to diff two instances of it, we need to update
+/// this function to support it.
 ///
-/// @param first the first construct to consider for the diff
+/// @param first the first type decl to consider for the diff
 ///
-/// @param second the second construct to consider for the diff.
+/// @param second the second type decl to consider for the diff.
 ///
 /// @return the resulting diff.  It's a pointer to a descendent of
 /// abigail::comparison::diff.
@@ -84,13 +84,13 @@ compute_diff_for_types(const decl_base_sptr first, const decl_base_sptr second)
 {
   diff_sptr d;
 
-  ((d = try_to_diff_types<type_decl>(first, second))
-   ||(d = try_to_diff_types<enum_type_decl>(first, second))
-   ||(d = try_to_diff_types<class_decl>(first, second))
-   ||(d = try_to_diff_types<pointer_type_def>(first, second))
-   ||(d = try_to_diff_types<reference_type_def>(first, second))
-   ||(d = try_to_diff_types<qualified_type_def>(first, second))
-   ||(d = try_to_diff_types<typedef_decl>(first, second)));
+  ((d = try_to_diff<type_decl>(first, second))
+   ||(d = try_to_diff<enum_type_decl>(first, second))
+   ||(d = try_to_diff<class_decl>(first, second))
+   ||(d = try_to_diff<pointer_type_def>(first, second))
+   ||(d = try_to_diff<reference_type_def>(first, second))
+   ||(d = try_to_diff<qualified_type_def>(first, second))
+   ||(d = try_to_diff<typedef_decl>(first, second)));
 
   return d;
 }
@@ -119,9 +119,9 @@ compute_diff_for_types(const type_base_sptr first, const type_base_sptr second)
 /// The function consider every possible decls known to libabigail and
 /// runs the appropriate diff function on them.
 ///
-/// Whenever a new kind of decl is supported by abigail, if we want to
-/// be able to diff two instances of it, we need to update this
-/// function to support it.
+/// Whenever a new kind of non-type decl is supported by abigail, if
+/// we want to be able to diff two instances of it, we need to update
+/// this function to support it.
 ///
 /// @param first the first decl to consider for the diff
 ///
@@ -129,10 +129,94 @@ compute_diff_for_types(const type_base_sptr first, const type_base_sptr second)
 static diff_sptr
 compute_diff_for_decls(const decl_base_sptr first, const decl_base_sptr second)
 {
-  if (function_decl_sptr f = dynamic_pointer_cast<function_decl>(first))
-    return compute_diff(f, dynamic_pointer_cast<function_decl>(second));
 
-  return diff_sptr();
+  diff_sptr d;
+
+  ((d = try_to_diff<function_decl>(first, second))
+   || (d = try_to_diff<var_decl>(first, second)));
+
+  return d;
+}
+
+/// Compute the difference between two decls.  The decls can represent
+/// either type declarations, or non-type declaration.
+///
+/// @param first the first decl to consider.
+///
+/// @param second the second decl to consider.
+///
+/// @return the resulting diff, or NULL if the diff could not be
+/// computed.
+diff_sptr
+compute_diff(decl_base_sptr first, decl_base_sptr second)
+{
+  if (!first || !second)
+    return diff_sptr();
+
+  diff_sptr d;
+  if (is_type(first) && is_type(second))
+    d = compute_diff_for_decls(first, second);
+
+  return d;
+}
+
+/// Compute the difference between two types.
+///
+/// @param first the first type to consider.
+///
+/// @param second the second type to consider.
+///
+/// @return the resulting diff, or NULL if the diff couldn't be comupted.
+diff_sptr
+compute_diff(type_base_sptr first, type_base_sptr second)
+{
+    if (!first || !second)
+      return diff_sptr();
+
+  decl_base_sptr f = get_type_declaration(first),
+    s = get_type_declaration(second);
+  diff_sptr d = compute_diff_for_types(f,s);
+
+  return d;
+}
+
+/// Return the length of the diff between two instances of @ref decl_base
+///
+/// @param first the first instance of @ref decl_base to consider.
+///
+/// @param second the second instance of @ref decl_base to consider.
+///
+/// @return the length of the differences between @ref first and @ref second.
+static unsigned
+diff_length_of_decl_bases(decl_base_sptr first, decl_base_sptr second)
+{
+  unsigned l = 0;
+
+  if (first->get_name() != second->get_name())
+    ++l;
+  if (first->get_visibility() != second->get_visibility())
+    ++l;
+  return l;
+}
+
+/// Return the length of the diff between two instances of @ref type_base
+///
+/// @param first the first instance of @ref type_base to consider.
+///
+/// @param second the second instance of @ref type_base to consider.
+///
+/// @return the length of the differences between @ref first and @ref second.
+static unsigned
+diff_length_of_type_bases(type_base_sptr first, type_base_sptr second)
+{
+  unsigned l = 0;
+
+  if (first->get_size_in_bits() != second->get_alignment_in_bits())
+    ++l;
+  if (first->get_alignment_in_bits() != second->get_alignment_in_bits())
+    ++l;
+
+  return l;
 }
 
 /// Stream a string representation for a member function.
@@ -286,11 +370,11 @@ represent(class_decl::data_member_sptr o,
 ///
 /// @return true iff something was reported.
 static bool
-report_size_and_alignment_changes(decl_base_sptr first,
-				  decl_base_sptr second,
-				  ostream& out,
-				  const string& indent,
-				  bool nl)
+report_name_size_and_alignment_changes(decl_base_sptr first,
+				       decl_base_sptr second,
+				       ostream& out,
+				       const string& indent,
+				       bool nl)
 {
   type_base_sptr f = dynamic_pointer_cast<type_base>(first),
     s = dynamic_pointer_cast<type_base>(second);
@@ -298,13 +382,24 @@ report_size_and_alignment_changes(decl_base_sptr first,
   if (!s || !f)
     return false;
 
+  bool n = false;
+  string fn = first->get_pretty_representation(),
+    sn = second->get_pretty_representation();
+  if (fn != sn)
+    {
+      if (nl)
+	out << "\n";
+      out << indent << "name changed from '"
+	  << fn << "' to '" << sn << "'";
+      n = true;
+    }
+
   unsigned fs = f->get_size_in_bits(), ss = s->get_size_in_bits(),
     fa = f->get_alignment_in_bits(), sa = s->get_alignment_in_bits();
 
-  bool n = false;
   if (fs != ss)
     {
-      if (nl)
+      if (n)
 	out << "\n";
       out << indent << "size changed from " << fs << " to " << ss << " bits";
       n = true;
@@ -383,6 +478,119 @@ struct pointer_diff::priv
 {
   diff_sptr underlying_type_diff_;
 };//end struct pointer_diff::priv
+
+// <var_diff stuff>
+
+/// The internal type for the impl idiom implementation of @ref
+/// var_diff.
+struct var_diff::priv
+{
+  diff_sptr type_diff_;
+};//end struct var_diff
+
+/// Constructor for @ref var_diff.
+///
+/// @param first the first instance of @ref var_decl to consider in
+/// the diff.
+///
+/// @param second the second instance of @ref var_decl to consider in
+/// the diff.
+///
+/// @param type_diff the diff between types of the instances of
+/// var_decl.
+var_diff::var_diff(var_decl_sptr first,
+		   var_decl_sptr second,
+		   diff_sptr type_diff)
+  : diff(first, second),
+    priv_(new priv)
+{priv_->type_diff_ = type_diff;}
+
+/// Getter for the first @ref var_decl of the diff.
+///
+/// @return the first @ref var_decl of the diff.
+var_decl_sptr
+var_diff::first_var() const
+{return dynamic_pointer_cast<var_decl>(first_subject());}
+
+/// Getter for the second @ref var_decl of the diff.
+///
+/// @return the second @ref var_decl of the diff.
+var_decl_sptr
+var_diff::second_var() const
+{return dynamic_pointer_cast<var_decl>(second_subject());}
+
+/// Getter for the diff of the types of the instances of @ref
+/// var_decl.
+///
+/// @return the diff of the types of the instances of @ref var_decl.
+diff_sptr
+var_diff::type_diff() const
+{return priv_->type_diff_;}
+
+/// Compute and return the length of the current diff.
+///
+/// @return the length of the current diff.
+unsigned
+var_diff::length() const
+{
+  unsigned l = 0;
+
+  var_decl_sptr f = first_var(), s = second_var();
+  if (f->get_binding() != s->get_binding())
+    ++l;
+  l += diff_length_of_decl_bases(f, s);
+
+  diff_sptr d = compute_diff(f->get_type(), s->get_type());
+  l += d->length();
+
+  return l;
+}
+
+/// Report the diff in a serialized form.
+///
+/// @param out the stream to serialize the diff to.
+///
+/// @param the prefix to use for the indentation of this
+/// serialization.
+void
+var_diff::report(ostream& out, const string& indent) const
+{
+  if (length() == 0)
+    return;
+
+  decl_base_sptr first = first_var(), second = second_var();
+  string n = first->get_pretty_representation();
+
+  if (report_name_size_and_alignment_changes(first, second, out, indent,
+					     /*start_with_new_line=*/false))
+    out << "\n";
+
+  if (diff_sptr d = type_diff())
+    {
+      if (d->length())
+	{
+	  out << indent << "type of variable changed:\n";
+	  d->report(out, indent + " ");
+	}
+    }
+}
+
+/// Compute the diff between two instances of @ref var_decl.
+///
+/// @param first the first @ref var_decl to consider for the diff.
+///
+/// @param second the second @ref var_decl to consider for the diff.
+///
+/// @return the resulting diff between the two @ref var_decl.
+var_diff_sptr
+compute_diff(const var_decl_sptr first, const var_decl_sptr second)
+{
+  diff_sptr type_diff = compute_diff(first->get_type(), second->get_type());
+  var_diff_sptr d(new var_diff(first, second, type_diff));
+  return d;
+}
+
+// </var_diff stuff>
 
 /// Constructor for a pointer_diff.
 ///
@@ -674,6 +882,9 @@ get_leaf_type(qualified_type_def_sptr t)
 void
 qualified_type_diff::report(ostream& out, const string& indent) const
 {
+  if (length() == 0)
+    return;
+
   string fname = first_qualified_type()->get_pretty_representation(),
     sname = second_qualified_type()->get_pretty_representation();
 
@@ -862,18 +1073,15 @@ enum_diff::length() const
 void
 enum_diff::report(ostream& out, const string& indent) const
 {
-  string name = first_enum()->get_pretty_representation();
-
   if (length() == 0)
-    {
-      out << indent << "the two versions of '" << name << "are identical\n\n";
-      return;
-    }
+    return;
+
+  string name = first_enum()->get_pretty_representation();
 
   enum_type_decl_sptr first = first_enum(), second = second_enum();
 
-  if (report_size_and_alignment_changes(first, second, out, indent,
-					/*start_with_num_line=*/false))
+  if (report_name_size_and_alignment_changes(first, second, out, indent,
+					     /*start_with_num_line=*/false))
     out << "\n";
 
   // name
@@ -1459,22 +1667,19 @@ class_diff::member_class_tmpls_changes()
 void
 class_diff::report(ostream& out, const string& indent) const
 {
-  string name = first_subject()->get_pretty_representation();
-
   int changes_length = length();
-  if (changes_length == 0)
-    {
-      out << indent << "the two versions of '"
-	  << name << "' are identical\n\n";
-      return;
-    }
+
+  if (changes_length== 0)
+    return;
+
+  string name = first_subject()->get_pretty_representation();
 
   // Now report the changes about the differents parts of the type.
   class_decl_sptr first = first_class_decl(),
     second = second_class_decl();
 
-  if (report_size_and_alignment_changes(first, second, out, indent,
-					/*start_with_new_line=*/false))
+  if (report_name_size_and_alignment_changes(first, second, out, indent,
+					     /*start_with_new_line=*/false))
     out << "\n";
 
   // bases classes
@@ -2354,6 +2559,9 @@ scope_diff::length() const
 void
 scope_diff::report(ostream& out, const string& indent) const
 {
+  if (length() == 0)
+    return;
+
   // Report changed types.
   unsigned num_changed_types = changed_types().size();
   if (num_changed_types == 0)
@@ -2721,6 +2929,9 @@ function_decl_diff::length() const
 void
 function_decl_diff::report(ostream& out, const string& indent) const
 {
+  if (length() == 0)
+    return;
+
   // Report about return type differences.
   if (priv_->return_type_diff_)
     priv_->return_type_diff_->report(out, indent);
@@ -2841,7 +3052,15 @@ type_decl_diff::second_type_decl() const
 /// @return 0 if the two type_decl are equal, 1 otherwise.
 unsigned
 type_decl_diff::length() const
-{return *first_type_decl() == *second_type_decl() ? 0 : 1;}
+{
+  type_base_sptr f = is_type(first_type_decl()),
+    s = is_type(second_type_decl());
+  assert(f && s);
+
+  return (diff_length_of_decl_bases(first_type_decl(),
+				    second_type_decl())
+	  + diff_length_of_type_bases(f, s));
+}
 
 /// Ouputs a report of the differences between of the two type_decl
 /// involved in the type_decl_diff.
@@ -2857,18 +3076,10 @@ type_decl_diff::report(ostream& out, const string& indent) const
 
   type_decl_sptr f = first_type_decl(), s = second_type_decl();
 
-  if (f->get_name() == s->get_name())
-    out << indent << "'" << f->get_pretty_representation() << "' changed:";
-  else
-    out << indent
-	<< "type changed from '"
-	<< f->get_pretty_representation()
-	<< "' to '"
-	<< s->get_pretty_representation()
-	<< "'";
-  bool n = true;
+  string name = f->get_pretty_representation();
 
-  report_size_and_alignment_changes(f, s, out, indent, n);
+  bool n = report_name_size_and_alignment_changes(f, s, out, indent,
+						  /*new line=*/false);
 
   if (f->get_visibility() != s->get_visibility())
     {

@@ -141,6 +141,50 @@ public:
   report(ostream& out, const string& indent = "") const = 0;
 };// end class diff
 
+diff_sptr
+compute_diff(decl_base_sptr, decl_base_sptr);
+
+diff_sptr
+compute_diff(type_base_sptr, type_base_sptr);
+
+class var_diff;
+
+/// Convenience typedef for a shared pointer to var_diff.
+typedef shared_ptr<var_diff> var_diff_sptr;
+
+/// Abstracts a diff between two instances of @ref var_decls
+class var_diff : public diff
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+protected:
+  var_diff(var_decl_sptr, var_decl_sptr, diff_sptr);
+
+public:
+  var_decl_sptr
+  first_var() const;
+
+  var_decl_sptr
+  second_var() const;
+
+  diff_sptr
+  type_diff() const;
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream& out, const string& indent = "") const;
+
+  friend var_diff_sptr
+  compute_diff(const var_decl_sptr, const var_decl_sptr);
+}; // end class var_diff
+
+var_diff_sptr
+compute_diff(const var_decl_sptr, const var_decl_sptr);
+
 class pointer_diff;
 /// Convenience typedef for a shared pointer on a @ref
 /// pointer_diff type.
