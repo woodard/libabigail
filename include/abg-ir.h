@@ -723,6 +723,9 @@ public:
   const enumerators&
   get_enumerators() const;
 
+  virtual string
+  get_pretty_representation() const;
+
   virtual bool
   operator==(const decl_base&) const;
 

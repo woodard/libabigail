@@ -1203,6 +1203,14 @@ const enum_type_decl::enumerators&
 enum_type_decl::get_enumerators() const
 {return enumerators_;}
 
+/// @return the pretty representation of the enum type.
+string
+enum_type_decl::get_pretty_representation() const
+{
+  string r = "enum " + decl_base::get_pretty_representation();
+  return r;
+}
+
 /// This implements the traversable_base::traverse pure virtual
 /// function.
 ///
