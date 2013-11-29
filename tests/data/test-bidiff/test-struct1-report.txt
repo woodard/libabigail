@@ -1,0 +1,64 @@
+2 changed types:
+  'class s0' changed:
+    size changed from 192 to 256 bits
+    1 member type change:
+      'typedef s0::number_type' changed:
+      underlying type changed:
+        name changed from 'int' to 'char'
+        size changed from 32 to 8 bits
+        alignment changed from 32 to 8 bits
+
+    1 member type insertion:
+      'typedef s0::grrr'
+
+    1 data member deletion:
+      'char s0::m1', at offset 96 (in bits)
+
+    2 data member changes:
+     's0::m2' offset changed from 128 to 192
+     's0::m0' type changed:
+       name changed from 'int' to 'char'
+       size changed from 32 to 8 bits
+       alignment changed from 32 to 8 bits
+
+    1 data member insertion:
+      'double s0::m01', at offset 128 (in bits)
+
+    2 member function insertions:
+      'method int s0::foo()'
+      'method int s0::foo(int, char) const', virtual at voffset 2/2
+
+  's0&' changed:
+    in referenced type 'class s0':
+      size changed from 192 to 256 bits
+      1 member type change:
+        'typedef s0::number_type' changed:
+        underlying type changed:
+          name changed from 'int' to 'char'
+          size changed from 32 to 8 bits
+          alignment changed from 32 to 8 bits
+
+      1 member type insertion:
+        'typedef s0::grrr'
+
+      1 data member deletion:
+        'char s0::m1', at offset 96 (in bits)
+
+      2 data member changes:
+       's0::m2' offset changed from 128 to 192
+       's0::m0' type changed:
+         name changed from 'int' to 'char'
+         size changed from 32 to 8 bits
+         alignment changed from 32 to 8 bits
+
+      1 data member insertion:
+        'double s0::m01', at offset 128 (in bits)
+
+      2 member function insertions:
+        'method int s0::foo()'
+        'method int s0::foo(int, char) const', virtual at voffset 2/2
+
+  'function int bar(s0&)' was removed
+
+  'function int baz(s0&)' was added
+

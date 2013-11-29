@@ -1,0 +1,17 @@
+1 changed type:
+  'enum E' changed:
+    1 enumerator insertion:
+      'E::e1' value '1'
+
+    1 enumerator change:
+      'E::e2' from value '1' to '2'
+
+1 changed declaration:
+  'function void foo(E)' was changed to 'function void foo(E)':
+    parameter 0 of type 'E' changed:
+      1 enumerator insertion:
+        'E::e1' value '1'
+
+      1 enumerator change:
+        'E::e2' from value '1' to '2'
+

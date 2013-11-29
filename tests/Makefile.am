@@ -4,6 +4,7 @@ TESTS=				\
 runtestreadwrite		\
 runtestwritereadarchive		\
 runtestcorediff			\
+runtestbidiff			\
 runtestsvg			\
 runtestdot 
 
@@ -33,6 +34,10 @@ runtestwritereadarchive_DEPENDENCIES = libtestutils.la
 runtestcorediff_SOURCES=$(h)/test-core-diff.cc
 runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 runtestcorediff_DEPENDENCIES=libtestutils.la
+
+runtestbidiff_SOURCES = $(h)/test-bidiff.cc
+runtestbidiff_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+runtestbidiff_DEPENDENCIES = libtestutils.la
 
 runtestsvg_SOURCES=$(h)/test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
@@ -78,7 +83,26 @@ data/test-write-read-archive/test0.xml \
 data/test-write-read-archive/test1.xml \
 data/test-write-read-archive/test2.xml \
 data/test-write-read-archive/test3.xml \
-data/test-write-read-archive/test4.xml
+data/test-write-read-archive/test4.xml \
+\
+data/test-bidiff/test-enum0-v0.cc.bi		\
+data/test-bidiff/test-enum0-v1.cc.bi		\
+data/test-bidiff/test-enum0-report.txt		\
+data/test-bidiff/test-enum1-v0.cc.bi		\
+data/test-bidiff/test-enum1-v1.cc.bi		\
+data/test-bidiff/test-enum1-report.txt		\
+data/test-bidiff/test-qual-type0-v0.cc.bi	\
+data/test-bidiff/test-qual-type0-v1.cc.bi	\
+data/test-bidiff/test-qual-type0-report.txt	\
+data/test-bidiff/test-struct0-v0.cc.bi		\
+data/test-bidiff/test-struct0-v1.cc.bi		\
+data/test-bidiff/test-struct0-report.txt	\
+data/test-bidiff/test-struct1-v0.cc.bi	 	\
+data/test-bidiff/test-struct1-v1.cc.bi		\
+data/test-bidiff/test-struct1-report.txt	\
+data/test-bidiff/test-var0-v0.cc.bi		\
+data/test-bidiff/test-var0-v1.cc.bi		\
+data/test-bidiff/test-var0-report.txt
 
 clean-local: clean-local-check
 .PHONY: clean-local-check
