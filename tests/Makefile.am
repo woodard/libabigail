@@ -68,6 +68,11 @@ data/test-read-write/test13.xml	\
 data/test-read-write/test14.xml	\
 data/test-read-write/test15.xml	\
 data/test-read-write/test16.xml \
+data/test-read-write/test17.xml \
+data/test-read-write/test18.xml \
+data/test-read-write/test19.xml \
+data/test-read-write/test20.xml \
+data/test-read-write/test21.xml \
 \
 data/test-write-read-archive/test0.xml \
 data/test-write-read-archive/test1.xml \
