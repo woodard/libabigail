@@ -1,6 +1,8 @@
 headers =		\
 abg-ir.h		\
 abg-corpus.h		\
+abg-reader.h		\
+abg-writer.h		\
 abg-comparison.h	\
 abg-diff-utils.h	\
 abg-libxml-utils.h	\

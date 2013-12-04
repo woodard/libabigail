@@ -23,6 +23,8 @@
 #include <iostream>
 #include <cstdlib>
 #include "abg-ir.h"
+#include "abg-reader.h"
+#include "abg-writer.h"
 #include "abg-tools-utils.h"
 #include "test-utils.h"
 
@@ -147,7 +149,7 @@ main()
       string input_suffix(s->in_path);
       in_path = abigail::tests::get_src_dir() + "/tests/" + input_suffix;
       abigail::translation_unit tu(in_path);
-      if (!tu.read())
+      if (!abigail::xml_reader::read_translation_unit_from_file(tu))
 	{
 	  cerr << "failed to read " << in_path << "\n";
 	  is_ok = false;
@@ -171,7 +173,8 @@ main()
 	  continue;
 	}
 
-      bool r = tu.write(of);
+      bool r = abigail::xml_writer::write_translation_unit(tu, /*indent=*/0,
+							     of);
       is_ok = (is_ok && r);
       of.close();
       string cmd = "diff -u " + in_path + " " + out_path;

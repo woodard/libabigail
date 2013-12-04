@@ -25,6 +25,8 @@
 #include "abg-ir.h"
 #include "abg-corpus.h"
 #include "abg-tools-utils.h"
+#include "abg-reader.h"
+#include "abg-writer.h"
 
 struct InOutSpec
 {
@@ -78,7 +80,10 @@ using std::cerr;
 using std::ofstream;
 using std::tr1::shared_ptr;
 using abigail::corpus;
+using abigail::corpus_sptr;
 using abigail::translation_unit;
+using abigail::xml_reader::read_corpus_from_file;
+using abigail::xml_writer::write_corpus_to_archive;
 
 int
 main()
@@ -96,13 +101,15 @@ main()
       cerr << "Could not create parent director for " << out_path;
       return 1;
     }
+
   corpus abi_corpus(out_path);
 
   for (InOutSpec *s = archive_elements; s->in_path; ++s)
     {
       in_path = abigail::tests::get_src_dir() + "/tests/" + s->in_path;
-      shared_ptr<abigail::translation_unit> tu(new translation_unit(in_path));
-      if (!tu->read())
+      abigail::translation_unit_sptr tu =
+	abigail::xml_reader::read_translation_unit_from_file(in_path);
+      if (!tu)
 	{
 	  cerr << "failed to read " << in_path << "\n";
 	  is_ok = false;
@@ -115,7 +122,7 @@ main()
       abi_corpus.add(tu);
     }
 
-  if (!abi_corpus.write())
+  if (!write_corpus_to_archive(abi_corpus))
     {
       cerr  << "failed to write archive file: " << abi_corpus.get_path();
       return 1;
@@ -137,7 +144,7 @@ main()
       return false;
     }
 
-  if (!abi_corpus.read())
+  if (read_corpus_from_file(abi_corpus) != NUM_ARCHIVES_ELEMENTS)
     {
       cerr << "Failed to load the abi corpus from path '"
 	   << abi_corpus.get_path()
@@ -151,7 +158,8 @@ main()
 	   << " elements from the abi corpus at "
 	   << abi_corpus.get_path()
 	   << " instead of "
-	   << NUM_ARCHIVES_ELEMENTS;
+	   << NUM_ARCHIVES_ELEMENTS
+	   << "\n";
       return 1;
     }
 
@@ -160,8 +168,11 @@ main()
       InOutSpec& spec = archive_elements[i];
       out_path =
 	abigail::tests::get_build_dir() + "/tests/" + spec.out_path;
-
-      if (!abi_corpus.get_translation_units()[i]->write(out_path))
+      using abigail::xml_writer::write_translation_unit;
+      bool wrote =
+	write_translation_unit(*abi_corpus.get_translation_units()[i],
+			       /*indent=*/0, out_path);
+      if (!wrote)
 	{
 	  cerr << "Failed to serialize translation_unit to '"
 	       << out_path

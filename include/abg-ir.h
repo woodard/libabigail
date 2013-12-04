@@ -141,18 +141,6 @@ public:
   bool
   is_empty() const;
 
-  bool
-  read();
-
-  bool
-  read(const string& buffer);
-
-  bool
-  write(std::ostream& out) const;
-
-  bool
-  write(const string& path) const;
-
   void
   traverse(ir_node_visitor& v);
 };//end class translation_unit

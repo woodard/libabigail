@@ -26,6 +26,8 @@
 #include <fstream>
 #include <list>
 #include "abg-corpus.h"
+#include "abg-reader.h"
+#include "abg-writer.h"
 #include "abg-tools-utils.h"
 
 using std::cerr;
@@ -149,9 +151,12 @@ parse_args(int argc, char* argv[], options& opts)
 }
 
 using abigail::corpus;
+using abigail::corpus_sptr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
 using abigail::translation_units;
+using abigail::xml_reader::read_corpus_from_file;
+using abigail::xml_writer::write_corpus_to_archive;
 
 /// List the content of a given archive.  The names of the files of
 /// the archive are then displayed on stdout.
@@ -169,16 +174,16 @@ list_content(const string& archive_path)
       return false;
     }
 
-  corpus archive(archive_path);
-  if (!archive.read())
+  corpus_sptr archive = read_corpus_from_file(archive_path);
+  if (!archive)
     {
       cerr << "Could not read archive at '" << archive_path << "'\n";
       return false;
     }
 
   for (translation_units::const_iterator i =
-	 archive.get_translation_units().begin();
-       i != archive.get_translation_units().end();
+	 archive->get_translation_units().begin();
+       i != archive->get_translation_units().end();
        ++i)
     cout << (*i)->get_path() << "\n";
 
@@ -201,31 +206,32 @@ add_tus_to_archive(const list<string>& tu_paths,
 		   const string& archive_path)
 {
   translation_units tus;
-  corpus archive(archive_path);
+  corpus corp(archive_path);
 
   bool added_some_tus = false;
   for (list<string>::const_iterator i = tu_paths.begin();
        i != tu_paths.end();
        ++i)
     {
-      translation_unit_sptr tu (new translation_unit(*i));
-      if (!tu->read())
+      translation_unit_sptr tu =
+	abigail::xml_reader::read_translation_unit_from_file(*i);
+      if (!tu)
 	{
 	  cerr << "could not read binary instrumentation file '"
 	       << *i
 	       << "'\n";
 	  continue;
 	}
-      archive.add(tu);
+      corp.add(tu);
       added_some_tus = true;
     }
 
   if (added_some_tus)
     {
-      if (!archive.write())
+      if (!write_corpus_to_archive(corp))
 	{
 	  cerr << "could not write archive file '"
-	       << archive.get_path()
+	       << corp.get_path()
 	       << "'\n";
 	  return false;
 	}
@@ -255,7 +261,7 @@ extract_tus_from_archive(const string& dest_path,
 
   corpus archive(archive_path);
 
-  if (!archive.read())
+  if (read_corpus_from_file(archive) < 1)
     {
       cerr << "could not read archive at '"
 	   << archive_path
@@ -284,7 +290,7 @@ extract_tus_from_archive(const string& dest_path,
 	  return false;
 	}
 
-      if (!(*i)->write(dest))
+      if (!abigail::xml_writer::write_translation_unit(**i, /*indent=*/0, dest))
 	{
 	  cerr << "could not write binary instrumentation file to '"
 	       << dest

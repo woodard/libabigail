@@ -19,13 +19,21 @@
 // not, see <http://www.gnu.org/licenses/>.
 
 /// @file
+///
+/// This file contains the definitions of the entry points to
+/// de-serialize an instance of @ref translation_unit to an ABI
+/// Instrumentation file in libabigail native XML format.
 
+#include <assert.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 #include <tr1/unordered_map>
 #include "abg-config.h"
-#include "abg-ir.h"
+#include "abg-corpus.h"
+#include "abg-libzip-utils.h"
+#include "abg-writer.h"
 
 namespace abigail
 {
@@ -37,10 +45,16 @@ using std::ofstream;
 using std::ostream;
 using std::ostringstream;
 using std::list;
+using std::vector;
 using std::tr1::unordered_map;
 
+using zip_utils::zip_sptr;
+using zip_utils::zip_file_sptr;
+using zip_utils::open_archive;
+using zip_utils::open_file_in_archive;
+
 /// Internal namespace for writer.
-namespace writer
+namespace xml_writer
 {
 
 class id_manager
@@ -598,7 +612,7 @@ write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
   return false;
 }
 
-/// Serialize a translation unit into an output stream.
+/// Serialize a translation unit to an output stream.
 ///
 /// @param tu the translation unit to serialize.
 ///
@@ -609,7 +623,7 @@ write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
 /// serialization.
 ///
 /// @return true upon successful completion, false otherwise.
-bool
+static bool
 write_translation_unit(const translation_unit& tu,
 		       write_context& ctxt,
 		       unsigned	indent)
@@ -648,6 +662,69 @@ write_translation_unit(const translation_unit& tu,
 
   return true;
 }
+
+/// Serialize a translation unit to an output stream.
+///
+/// @param tu the translation unit to serialize.
+///
+/// @param indent how many indentation spaces to use during the
+/// serialization.
+///
+/// @param out the output stream to serialize the translation unit to.
+///
+/// @return true upon successful completion, false otherwise.
+bool
+write_translation_unit(const translation_unit&	tu,
+		       unsigned		indent,
+		       std::ostream&		out)
+{
+    write_context ctxt(out);
+    return write_translation_unit(tu, ctxt, indent);
+}
+
+/// Serialize a translation unit to a file.
+///
+/// @param tu the translation unit to serialize.
+///
+/// @param indent how many indentation spaces to use during the
+/// serialization.
+///
+/// @param out the file to serialize the translation unit to.
+///
+/// @return true upon successful completion, false otherwise.
+bool
+write_translation_unit(const translation_unit&	tu,
+		       unsigned		indent,
+		       const string&		path)
+{
+  bool result = true;
+
+  try
+    {
+      ofstream of(path, std::ios_base::trunc);
+      if (!of.is_open())
+	{
+	  cerr << "failed to access " << path << "\n";
+	  return false;
+	}
+
+      if (!write_translation_unit(tu, indent, of))
+	{
+	  cerr << "failed to access " << path << "\n";
+	  result = false;
+	}
+
+      of.close();
+    }
+  catch(...)
+    {
+      cerr << "failed to write to " << path << "\n";
+      result = false;
+    }
+
+  return result;
+}
+
 
 /// Serialize a pointer to an instance of basic type declaration, into
 /// an output stream.
@@ -1006,7 +1083,7 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 
   o << ">\n";
 
-  std::vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
+  vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
     decl->get_parameters().begin();
   for ((skip_first_parm && pi != decl->get_parameters().end()) ? ++pi: pi;
        pi != decl->get_parameters().end();
@@ -1518,53 +1595,188 @@ write_class_tdecl(const shared_ptr<class_tdecl> decl,
 
   return true;
 }
-
-} //end namespace writer
-
-/// Serialize the contents of this translation unit object into an
-/// output stream.
+/// A context used by functions that write a corpus out to disk in a
+/// ZIP archive of ABI Instrumentation XML files.
 ///
-/// @param out the output stream.
-bool
-translation_unit::write(std::ostream &out) const
+/// The aim of this context file is to hold the buffers of data that
+/// are to be written into a given zip object, until the zip object is
+/// closed.  It's at that point that the buffers data is really
+/// flushed into the zip archive.
+///
+/// When an instance of this context type is created for a given zip
+/// object, is created, its life time should be longer than the @ref
+/// zip_sptr object it holds.
+///
+/// The definition of this type is private and should remain hidden
+/// from client code.
+struct archive_write_ctxt
 {
-  writer::write_context ctxt(out);
-  return writer::write_translation_unit(*this, ctxt, /*indent=*/0);
+  vector<string> serialized_tus;
+  zip_sptr archive;
+
+  archive_write_ctxt(zip_sptr ar)
+    : archive(ar)
+  {}
+};
+typedef shared_ptr<archive_write_ctxt> archive_write_ctxt_sptr;
+
+/// Create a write context to a given archive.  The result of this
+/// function is to be passed to the functions that are to write a
+/// corpus to an archive, e.g, write_corpus_to_archive().
+///
+/// @param archive_path the path to the archive to create this write
+/// context for.
+///
+/// @return the resulting write context to pass to the functions that
+/// are to write a corpus to @ref archive_path.
+static archive_write_ctxt_sptr
+create_archive_write_context(const string& archive_path)
+{
+  if (archive_path.empty())
+    return archive_write_ctxt_sptr();
+
+  int error_code = 0;
+  zip_sptr archive = open_archive(archive_path,
+				  ZIP_CREATE|ZIP_CHECKCONS, &error_code);
+  if (error_code)
+    return archive_write_ctxt_sptr();
+
+  archive_write_ctxt_sptr r(new archive_write_ctxt(archive));
+  return r;
 }
 
-/// Serialize the contents of this translation unit object into an
-/// external file.
+/// Write a translation unit to an on-disk archive.  The archive is a
+/// zip archive of ABI Instrumentation files in XML format.
 ///
-/// @param out the path to the external file.
-bool
-translation_unit::write(const string& path) const
+/// @param tu the translation unit to serialize.
+///
+/// @param ctxt the context of the serialization.  Contains
+/// information about where the archive is on disk, the zip archive,
+/// and the buffers holding the temporary data to be flushed into the archive.
+///
+/// @return true upon succesful serialization occured, false
+/// otherwise.
+static bool
+write_translation_unit_to_archive(const translation_unit& tu,
+				  archive_write_ctxt& ctxt)
 {
-  bool result = true;
+  if (!ctxt.archive)
+    return false;
 
-  try
+  ostringstream os;
+  if (!write_translation_unit(tu, /*indent=*/0, os))
+    return false;
+  ctxt.serialized_tus.push_back(os.str());
+
+  zip_source *source;
+  if ((source = zip_source_buffer(ctxt.archive.get(),
+				  ctxt.serialized_tus.back().c_str(),
+				  ctxt.serialized_tus.back().size(),
+				  false)) == 0)
+    return false;
+
+  int index = zip_name_locate(ctxt.archive.get(), tu.get_path().c_str(), 0);
+  if ( index == -1)
     {
-      ofstream of(path, std::ios_base::trunc);
-      if (!of.is_open())
+      if (zip_add(ctxt.archive.get(), tu.get_path().c_str(), source) < 0)
 	{
-	  cerr << "failed to access " << path << "\n";
+	  zip_source_free(source);
 	  return false;
 	}
-
-      if (!write(of))
-	{
-	  cerr << "failed to access " << path << "\n";
-	  result = false;
-	}
-
-      of.close();
     }
-  catch(...)
+  else
     {
-      cerr << "failed to write to " << path << "\n";
-      result = false;
+      if (zip_replace(ctxt.archive.get(), index, source) != 0)
+	{
+	  zip_source_free(source);
+	  return false;
+	}
     }
-  return result;
+
+  return true;
 }
+
+ /// Serialize a given corpus to disk in a file at a given path.
+ ///
+ /// @param tu the translation unit to serialize.
+ ///
+ /// @param ctxt the context of the serialization.  Contains
+ /// information about where the archive is on disk, the zip archive
+ /// object, and the buffers holding the temporary data to be flushed
+ /// into the archive.
+ ///
+ /// @return true upon successful completion, false otherwise.
+static bool
+write_corpus_to_archive(const corpus& corp,
+			archive_write_ctxt& ctxt)
+{
+  for (translation_units::const_iterator i =
+	 corp.get_translation_units().begin();
+       i != corp.get_translation_units().end();
+       ++i)
+    {
+      if (! write_translation_unit_to_archive(**i, ctxt))
+	return false;
+    }
+
+  // TODO: ensure abi-info descriptor is added to the archive.
+  return true;
+}
+
+/// Serialize a given corpus to disk in an archive file at a given
+/// path.
+///
+/// @param corp the ABI corpus to serialize.
+///
+ /// @param ctxt the context of the serialization.  Contains
+ /// information about where the archive is on disk, the zip archive
+ /// object, and the buffers holding the temporary data to be flushed
+ /// into the archive.
+ ///
+ /// @return upon successful completion, false otherwise.
+static bool
+write_corpus_to_archive(const corpus& corp,
+			archive_write_ctxt_sptr ctxt)
+{return write_corpus_to_archive(corp, *ctxt);}
+
+ /// Serialize the current corpus to disk in a file at a given path.
+ ///
+ /// @param tu the translation unit to serialize.
+ ///
+ /// @param path the path of the file to serialize the
+ /// translation_unit to.
+ ///
+ /// @return true upon successful completion, false otherwise.
+bool
+write_corpus_to_archive(const corpus& corp,
+			const string& path)
+{
+  archive_write_ctxt_sptr ctxt = create_archive_write_context(path);
+  assert(ctxt);
+  return write_corpus_to_archive(corp, ctxt);
+}
+
+ /// Serialize the current corpus to disk in a file.  The file path is
+ /// given by translation_unit::get_path().
+ ///
+ /// @param tu the translation unit to serialize.
+ ///
+ /// @return true upon successful completion, false otherwise.
+bool
+write_corpus_to_archive(const corpus& corp)
+{return write_corpus_to_archive(corp, corp.get_path());}
+
+ /// Serialize the current corpus to disk in a file.  The file path is
+ /// given by translation_unit::get_path().
+ ///
+ /// @param tu the translation unit to serialize.
+ ///
+ /// @return true upon successful completion, false otherwise.
+bool
+write_corpus_to_archive(const corpus_sptr corp)
+{return write_corpus_to_archive(*corp);}
+
+} //end namespace xml_writer
 
 // <Debugging routines>
 
@@ -1574,7 +1786,7 @@ translation_unit::write(const string& path) const
 void
 dump(const decl_base_sptr d)
 {
-  writer::write_context ctxt(cerr);
+  xml_writer::write_context ctxt(cerr);
   write_decl(d, ctxt, /*indent=*/0);
   cerr << "\n";
 }
@@ -1592,7 +1804,7 @@ dump(const type_base_sptr t)
 void
 dump(const var_decl_sptr v)
 {
-  writer::write_context ctxt(cerr);
+  xml_writer::write_context ctxt(cerr);
   write_var_decl(v, ctxt, /*mangled_name*/true, /*indent=*/0);
   cerr << "\n";
 }
@@ -1603,7 +1815,7 @@ dump(const var_decl_sptr v)
 void
 dump(const translation_unit& t)
 {
-  writer::write_context ctxt(cerr);
+  xml_writer::write_context ctxt(cerr);
   write_translation_unit(t, ctxt, /*indent=*/0);
   cerr << "\n";
 }

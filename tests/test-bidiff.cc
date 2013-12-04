@@ -34,6 +34,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "abg-tools-utils.h"
+#include "abg-reader.h"
 #include "test-utils.h"
 #include "abg-comparison.h"
 
@@ -133,16 +134,18 @@ main(int, char*[])
 	  continue;
 	}
 
-      translation_unit_sptr tu1(new translation_unit(first_in_path));
-      if (!tu1->read())
+      translation_unit_sptr tu1 =
+	abigail::xml_reader::read_translation_unit_from_file(first_in_path);
+      if (!tu1)
 	{
 	  cerr << "failed to read " << tu1->get_path() << "\n";
 	  is_ok = false;
 	  continue;
 	}
 
-      translation_unit_sptr tu2(new translation_unit(second_in_path));
-      if (!tu2->read())
+      translation_unit_sptr tu2 =
+	abigail::xml_reader::read_translation_unit_from_file(second_in_path);
+      if (!tu2)
 	{
 	  cerr << "failed to read " << tu1->get_path() << "\n";
 	  is_ok = false;

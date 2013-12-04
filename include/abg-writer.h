@@ -17,46 +17,43 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program; see the file COPYING-LGPLV3.  If
 // not, see <http://www.gnu.org/licenses/>.
+//
+// Author: Dodji Seketeli
 
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <cstdlib>
-#include "abg-ir.h"
-#include "abg-reader.h"
-#include "test-utils.h"
+/// @file
+///
+/// This file contains the declarations of the entry points to
+/// de-serialize an instance of @ref translation_unit to an ABI
+/// Instrumentation file in libabigail native XML format.
 
-using std::string;
-using std::ofstream;
-using std::cerr;
-using std::cout;
+#ifndef __ABG_WRITER_H__
+#define __ABG_WRITER_H__
 
-struct name_printing_visitor : public abigail::ir_node_visitor
+namespace abigail
 {
-  void
-  visit(abigail::class_decl& klass)
-  {cout << "class name: " << klass.get_name() << "\n";}
-
-  void
-  visit(abigail::namespace_decl& ns)
-  {cout << "namespace name: " << ns.get_name() << "\n";}
-};
-
-int
-main(int argc, char **argv)
+namespace xml_writer
 {
-  if (argc < 2)
-    return 0;
+bool
+write_translation_unit(const translation_unit&	tu,
+			 unsigned		indent,
+			 std::ostream&		out);
 
-  string file_name = argv[1];
+bool
+write_translation_unit(const translation_unit&	tu,
+			 unsigned		indent,
+			 const string&		path);
 
-  abigail::translation_unit tu(file_name);
-  if (!abigail::xml_reader::read_translation_unit_from_file(tu))
-    {
-      cerr << "failed to read " << file_name << "\n";
-      return 1;
-    }
+bool
+write_corpus_to_archive(const corpus& corp,
+			const string& path);
 
-  name_printing_visitor v;
-  tu.traverse(v);
-}
+bool
+write_corpus_to_archive(const corpus& corp);
+
+bool
+write_corpus_to_archive(const corpus_sptr corp);
+
+}// end namespace xml_writer
+}// end namespace abigail
+
+#endif //  __ABG_WRITER_H__

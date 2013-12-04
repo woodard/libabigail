@@ -36,12 +36,15 @@
 #include <fstream>
 #include "abg-tools-utils.h"
 #include "abg-ir.h"
+#include "abg-reader.h"
+#include "abg-writer.h"
 
 using std::string;
 using std::cerr;
 using std::ostream;
 using std::ofstream;
 using abigail::tools::check_file;
+using abigail::xml_reader::read_translation_unit_from_file;
 
 struct options
 {
@@ -97,8 +100,10 @@ main(int argc, char* argv[])
   if (!check_file(opts.file_path, cerr))
     return true;
 
-  abigail::translation_unit tu(opts.file_path);
-  if (!tu.read())
+  abigail::translation_unit_sptr tu =
+    read_translation_unit_from_file(opts.file_path);
+
+  if (!tu)
     {
       cerr << "failed to read " << opts.file_path << "\n";
       return true;
@@ -116,7 +121,7 @@ main(int argc, char* argv[])
       return true;
     }
 
-  bool r = tu.write(of);
+  bool r = abigail::xml_writer::write_translation_unit(*tu, /*indent=*/0, of);
   bool is_ok = r;
   of.close();
 

@@ -27,6 +27,7 @@
 #include <iostream>
 #include "abg-comparison.h"
 #include "abg-tools-utils.h"
+#include "abg-reader.h"
 
 using std::string;
 using std::ostream;
@@ -107,18 +108,21 @@ main(int argc, char* argv[])
       if (!check_file(opts.file2, cerr))
 	return true;
 
-      translation_unit_sptr t1(new translation_unit(opts.file1));
-      translation_unit_sptr t2(new translation_unit(opts.file2));
+      translation_unit_sptr t1 =
+	abigail::xml_reader::read_translation_unit_from_file(opts.file1);
 
-      if (!t1->read())
+      translation_unit_sptr t2 =
+	abigail::xml_reader::read_translation_unit_from_file(opts.file2);
+
+      if (!t1)
 	{
-	  cerr << "failed to read input file " << t1->get_path() << "\n";
+	  cerr << "failed to read input file " << opts.file1 << "\n";
 	  return true;
 	}
 
-      if (!t2->read())
+      if (!t2)
 	{
-	  cerr << "failed to read input file" << t2->get_path() << "\n";
+	  cerr << "failed to read input file" << opts.file2 << "\n";
 	  return true;
 	}
 
