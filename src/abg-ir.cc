@@ -94,9 +94,7 @@ struct location_manager::_Impl
 };
 
 location_manager::location_manager()
-{
-  priv_ = shared_ptr<location_manager::_Impl>(new location_manager::_Impl);
-}
+{priv_ = shared_ptr<location_manager::_Impl>(new location_manager::_Impl);}
 
 /// Insert the triplet representing a source locus into our internal
 /// vector of location triplet.  Return an instance of location type,
@@ -204,7 +202,7 @@ translation_unit::get_loc_mgr() const
 /// @return true iff the current translation unit is empty.
 bool
 translation_unit::is_empty() const
-{ return get_global_scope()->is_empty(); }
+{return get_global_scope()->is_empty();}
 
 /// This implements the traversable_base::traverse pure virtual
 /// function.
@@ -213,10 +211,10 @@ translation_unit::is_empty() const
 /// unit during the traversal.
 void
 translation_unit::traverse(ir_node_visitor& v)
-{ get_global_scope()->traverse(v); }
+{get_global_scope()->traverse(v);}
 
 translation_unit::~translation_unit()
-{ }
+{}
 
 // <Decl definition>
 

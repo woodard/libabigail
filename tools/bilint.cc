@@ -66,19 +66,19 @@ parse_command_line(int argc, char* argv[], options& opts)
     return false;
 
     for (int i = 1; i < argc; ++i)
-    {
-      if (argv[i][0] != '-')
-	{
-	  if (opts.file_path.empty())
-	    opts.file_path = argv[i];
-	  else
-	    return false;
-	}
-      else if (!strcmp(argv[i], "--help"))
-	return false;
-      else
-	return false;
-    }
+      {
+	if (argv[i][0] != '-')
+	  {
+	    if (opts.file_path.empty())
+	      opts.file_path = argv[i];
+	    else
+	      return false;
+	  }
+	else if (!strcmp(argv[i], "--help"))
+	  return false;
+	else
+	  return false;
+      }
 
     if (opts.file_path.empty())
       return false;
