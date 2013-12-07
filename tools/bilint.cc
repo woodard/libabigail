@@ -52,7 +52,7 @@ struct options
 };//end struct options;
 
 void
-display_usage(const string prog_name, ostream& out)
+display_usage(const string& prog_name, ostream& out)
 {
   out << "usage: " << prog_name << "[options] [<bi-file1>\n"
       << " where options can be:\n"
