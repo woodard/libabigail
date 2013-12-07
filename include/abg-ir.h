@@ -104,21 +104,18 @@ typedef std::vector<translation_unit_sptr> translation_units;
 /// into a translation unit.
 class translation_unit : public traversable_base
 {
-public:
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
 
-  /// Convenience typedef for a shared pointer on a @ref global_scope.
-  typedef shared_ptr<global_scope> global_scope_sptr;
-
-private:
-  std::string				path_;
-  location_manager			loc_mgr_;
-  mutable global_scope_sptr		global_scope_;
+  priv_sptr priv_;
 
   // Forbidden
   translation_unit();
+public:
+  /// Convenience typedef for a shared pointer on a @ref global_scope.
+  typedef shared_ptr<global_scope> global_scope_sptr;
 
 public:
-
   translation_unit(const std::string& path);
 
   virtual ~translation_unit();
@@ -140,6 +137,12 @@ public:
 
   bool
   is_empty() const;
+
+  shared_ptr<type_base>
+  canonicalize_type(shared_ptr<type_base>) const;
+
+  shared_ptr<decl_base>
+  canonicalize_type(shared_ptr<decl_base>) const;
 
   void
   traverse(ir_node_visitor& v);

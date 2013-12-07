@@ -40,6 +40,19 @@ LT_INIT
 AC_LANG([C++])
 AC_LANG_COMPILER_REQUIRE
 
+dnl Check for dependency: libdw (elfutils)
+DW_LIBS=
+AC_CHECK_LIB(dw, dwfl_begin, [DW_LIBS=-ldw])
+AC_CHECK_HEADER(elfutils/libdwfl.h,
+		[],
+		[AC_MSG_ERROR([could not find elfutils/libdwfl.h installed])])
+
+if test x$DW_LIBS = x; then
+   AC_MSG_ERROR([could not find elfutils dwarf library installed])
+fi
+
+AC_SUBST(DW_LIBS)
+
 dnl Check for dependency: libxml
 LIBXML2_VERSION=2.6.22
 PKG_CHECK_MODULES(XML, libxml-2.0 >= $LIBXML2_VERSION)
@@ -59,7 +72,7 @@ AC_SUBST(LIBZIP_CFLAGS)
 DEPS_CPPFLAGS="$XML_CFLAGS $LIBZIP_CFLAGS"
 AC_SUBST(DEPS_CPPFLAGS)
 
-DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS"
+DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $DW_LIBS"
 AC_SUBST(DEPS_LIBS)
 
 if test x$ABIGAIL_DEVEL != x; then

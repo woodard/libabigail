@@ -29,6 +29,7 @@
 #include <iterator>
 #include <typeinfo>
 #include <tr1/memory>
+#include <tr1/unordered_map>
 #include "abg-ir.h"
 
 namespace abigail
@@ -37,6 +38,7 @@ namespace abigail
 using std::string;
 using std::list;
 using std::vector;
+using std::tr1::unordered_map;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 
@@ -141,13 +143,28 @@ location_manager::expand_location(const location	location,
   column = l.column_;
 }
 
+typedef unordered_map<shared_ptr<type_base>,
+		      bool,
+		      type_base::shared_ptr_hash,
+		      type_shared_ptr_equal> type_ptr_map;
+
+/// Private type to hold private members of @ref translation_unit
+struct translation_unit::priv
+{
+  std::string			path_;
+  location_manager		loc_mgr_;
+  mutable global_scope_sptr	global_scope_;
+  type_ptr_map			canonical_types_;
+}; // end translation_unit::priv
+
+// <translation_unit stuff>
+
 /// Constructor of translation_unit.
 ///
 /// @param path the location of the translation unit.
 translation_unit::translation_unit(const std::string& path)
-  : path_ (path)
-{
-}
+  : priv_(new priv)
+{priv_->path_ = path;}
 
 /// Getter of the the global scope of the translation unit.
 ///
@@ -157,18 +174,17 @@ translation_unit::translation_unit(const std::string& path)
 const shared_ptr<global_scope>
 translation_unit::get_global_scope() const
 {
-  if (!global_scope_)
-    global_scope_.reset(new global_scope(const_cast<translation_unit*>(this)));
-  return global_scope_;
+  if (!priv_->global_scope_)
+    priv_->global_scope_.reset
+      (new global_scope(const_cast<translation_unit*>(this)));
+  return priv_->global_scope_;
 }
 
 /// @return the path of the compilation unit associated to the current
 /// instance of translation_unit.
 const std::string&
 translation_unit::get_path() const
-{
-  return path_;
-}
+{return priv_->path_;}
 
 /// Set the path associated to the current instance of
 /// translation_unit.
@@ -176,9 +192,7 @@ translation_unit::get_path() const
 /// @param a_path the new path to set.
 void
 translation_unit::set_path(const string& a_path)
-{
-  path_ = a_path;
-}
+{priv_->path_ = a_path;}
 
 /// Getter of the location manager for the current translation unit.
 ///
@@ -186,7 +200,7 @@ translation_unit::set_path(const string& a_path)
 /// translation unit.
 location_manager&
 translation_unit::get_loc_mgr()
-{return loc_mgr_;}
+{return priv_->loc_mgr_;}
 
 /// const Getter of the location manager.
 ///
@@ -194,7 +208,7 @@ translation_unit::get_loc_mgr()
 /// translation unit.
 const location_manager&
 translation_unit::get_loc_mgr() const
-{return loc_mgr_;}
+{return priv_->loc_mgr_;}
 
 /// Tests whether if the current translation unit contains ABI
 /// artifacts or not.
@@ -204,6 +218,59 @@ bool
 translation_unit::is_empty() const
 {return get_global_scope()->is_empty();}
 
+/// If the current translation_unit "knows" about a type T' that is
+/// equivalent to a given T, then this method returns T' when passed
+/// T.  Otherwise, the function stores T, so that next time it sees a
+/// T'', it can say that it is equivalent to T and then return that T.
+///
+/// In other words, this methods can be used to help enforce that if
+/// we build two types that are equivalent at the same scope then we
+/// can decide to just keep one.
+///
+/// @param t the type to canonicalize.
+///
+/// @return the canonical type for @ref t.
+type_base_sptr
+translation_unit::canonicalize_type(type_base_sptr t) const
+{
+  if (!t)
+    return t;
+
+  type_ptr_map::iterator e =
+    priv_->canonical_types_.find(t);
+
+  if (e == priv_->canonical_types_.end())
+    {
+      priv_->canonical_types_[t] = true;
+      return t;
+    }
+  return e->first;
+}
+
+/// Canonicalize the type of a given type declaration.
+///
+/// To understand more about type canonicalization, please read the
+/// API doc of the overload of this function that takes a @ref
+/// type_base_sptr.
+///
+/// @param t the type declaration to return a canonical type
+/// declaration for.
+///
+/// @return the declaration for the canonical type of the type for
+/// @ref t.
+decl_base_sptr
+translation_unit::canonicalize_type(decl_base_sptr t) const
+{
+  type_base_sptr type = is_type(t);
+
+  if (!type)
+    return t;
+
+  type = canonicalize_type(type);
+  assert(type);
+
+  return get_type_declaration(type);
+}
 /// This implements the traversable_base::traverse pure virtual
 /// function.
 ///
@@ -215,6 +282,8 @@ translation_unit::traverse(ir_node_visitor& v)
 
 translation_unit::~translation_unit()
 {}
+
+// </translation_unit stuff>
 
 // <Decl definition>
 

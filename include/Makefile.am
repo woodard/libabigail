@@ -2,6 +2,7 @@ headers =		\
 abg-ir.h		\
 abg-corpus.h		\
 abg-reader.h		\
+abg-dwarf-reader.h	\
 abg-writer.h		\
 abg-comparison.h	\
 abg-diff-utils.h	\

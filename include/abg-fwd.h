@@ -31,6 +31,7 @@
 #include <tr1/functional>
 #include <typeinfo>
 #include <utility> // for std::rel_ops, at least.
+#include <ostream>
 #include "abg-hash.h"
 
 /// Toplevel namespace for libabigail.
@@ -169,16 +170,34 @@ shared_ptr<decl_base>
 get_type_declaration(const shared_ptr<type_base>);
 
 void
+dump(const shared_ptr<decl_base>, std::ostream&);
+
+void
 dump(const shared_ptr<decl_base>);
+
+void
+dump(const shared_ptr<type_base>, std::ostream&);
 
 void
 dump(const shared_ptr<type_base>);
 
 void
+dump(const shared_ptr<var_decl>, std::ostream&);
+
+void
 dump(const shared_ptr<var_decl>);
 
 void
+dump(const translation_unit&, std::ostream&);
+
+void
 dump(const translation_unit&);
+
+void
+dump(const shared_ptr<translation_unit>, std::ostream&);
+
+void
+dump(const shared_ptr<translation_unit>);
 
 } // end namespace abigail
 #endif // __ABG_IRFWD_H__

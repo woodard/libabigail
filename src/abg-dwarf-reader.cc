@@ -1,0 +1,742 @@
+// -*- Mode: C++ -*-
+//
+// Copyright (C) 2013 Red Hat, Inc.
+//
+// This file is part of the GNU Application Binary Interface Generic
+// Analysis and Instrumentation Library (libabigail).  This library is
+// free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the
+// Free Software Foundation; either version 3, or (at your option) any
+// later version.
+
+// This library is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// General Lesser Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program; see the file COPYING-LGPLV3.  If
+// not, see <http://www.gnu.org/licenses/>.
+//
+// Author: Dodji Seketeli
+
+/// @file
+///
+/// This file contains the definitions of the entry points to
+/// de-serialize an instance of @ref corpus from a file in elf format,
+/// containing dwarf information.
+
+#include <libgen.h>
+#include <assert.h>
+#include <cstring>
+#include <elfutils/libdwfl.h>
+#include <dwarf.h>
+#include <tr1/unordered_map>
+#include <stack>
+#include "abg-dwarf-reader.h"
+
+using std::string;
+
+namespace abigail
+{
+
+namespace dwarf_reader
+{
+
+using std::tr1::dynamic_pointer_cast;
+using std::tr1::unordered_map;
+using std::stack;
+
+/// A functor used by @ref dwfl_sptr.
+struct dwfl_deleter
+{
+  void
+  operator()(Dwfl* dwfl)
+  {dwfl_end(dwfl);}
+};//end struct dwfl_deleter
+
+/// A convenience typedef for a shared pointer to a Dwfl.
+typedef shared_ptr<Dwfl> dwfl_sptr;
+
+/// A map hashing functor for Dwarf_Die*.
+struct die_hash
+{
+  size_t
+  operator()(Dwarf_Die* die) const
+  {return std::hash<void*>()(die->addr);}
+};
+
+/// Convenience typedef for a map which key is a dwarf die, and which
+/// value is the corresponding decl_base.
+typedef unordered_map<Dwarf_Die*, decl_base_sptr, die_hash> die_decl_map_type;
+
+/// Convenience typedef for a stack containing the scopes up to the
+/// current point in the abigail Internal Representation (aka IR) tree
+/// that is being built.
+typedef stack<scope_decl_sptr> scope_stack_type;
+
+/// Convenience typedef for a map that contains the decls of the types
+/// that have been built so far.  This is used to canonicalize the
+/// types we create so that only one copy of a given type remains in
+/// the system per translation unit, when that makes sense.
+typedef unordered_map<decl_base_sptr, bool> type_decl_map;
+
+/// The context accumulated during the reading of dwarf debug info and
+/// building of the resulting ABI Corpus as a result.
+///
+/// This context is to be created by the top-most function that wants
+/// to read debug info and build an ABI corpus from it.  It's then
+/// passed to all the routines that read specific dwarf bits as they
+/// get some important data from it.
+class read_context
+{
+  dwfl_sptr handle_;
+  const string elf_path_;
+  die_decl_map_type die_decl_map_;
+  corpus_sptr cur_corpus_;
+  translation_unit_sptr cur_tu_;
+  scope_stack_type scope_stack_;
+
+  read_context();
+
+public:
+  read_context(dwfl_sptr handle,
+	       const string& elf_path)
+    : handle_(handle),
+      elf_path_(elf_path)
+  {}
+
+  dwfl_sptr
+  dwfl_handle()
+  {return handle_;}
+
+  const string&
+  elf_path() const
+  {return elf_path_;}
+
+  const die_decl_map_type&
+  die_decl_map() const
+  {return die_decl_map_;}
+
+  die_decl_map_type&
+  die_decl_map()
+  {return die_decl_map_;}
+
+  const corpus_sptr
+  current_corpus() const
+  {return cur_corpus_;}
+
+  corpus_sptr
+  current_corpus()
+  {return cur_corpus_;}
+
+  void
+  current_corpus(corpus_sptr c)
+  {
+    if (c)
+      cur_corpus_ = c;
+  }
+
+  void
+  reset_current_corpus()
+  {cur_corpus_.reset();}
+
+  const translation_unit_sptr
+  current_translation_unit() const
+  {return cur_tu_;}
+
+  translation_unit_sptr
+  current_translation_unit()
+  {return cur_tu_;}
+
+  void
+  current_translation_unit(translation_unit_sptr tu)
+  {
+    if (tu)
+      cur_tu_ = tu;
+  }
+
+  const scope_stack_type&
+  scope_stack() const
+  {return scope_stack_;}
+
+  scope_stack_type&
+  scope_stack()
+  {return scope_stack_;}
+
+  scope_decl_sptr
+  current_scope()
+  {
+    if (scope_stack().empty())
+      {
+	if (current_translation_unit())
+	  scope_stack().push(current_translation_unit()->get_global_scope());
+      }
+    return scope_stack().top();
+  }
+};// end class read_context.
+
+static decl_base_sptr
+build_ir_node_from_die(read_context&	ctxt,
+		       Dwarf_Die*	die);
+
+/// Constructor for a default Dwfl handle that knows how to load debug
+/// info from a library or executable elf file.
+///
+/// @return the constructed Dwfl handle.
+static Dwfl*
+create_default_dwfl()
+{
+  static const Dwfl_Callbacks offline_callbacks =
+    {
+      0,
+      .find_debuginfo =  dwfl_standard_find_debuginfo,
+      .section_address = dwfl_offline_section_address,
+      0
+    };
+
+  return dwfl_begin(&offline_callbacks);
+}
+
+
+/// Create a shared pointer for a pointer to Dwfl.
+///
+/// @param dwlf the pointer to Dwfl to create the shared pointer for.
+///
+/// @return the newly created shared pointer.
+static dwfl_sptr
+create_dwfl_sptr(Dwfl* dwfl)
+{
+  dwfl_sptr result(dwfl, dwfl_deleter());
+  return result;
+}
+
+/// Create a shared pointer to a default Dwfl handle.  This uses the
+/// create_default_dwfl() function.
+///
+/// @return the created shared pointer.
+static dwfl_sptr
+create_default_dwfl_sptr()
+{return create_dwfl_sptr(create_default_dwfl());}
+
+/// Load the debug info associated with an elf file that is at a given
+/// path.  To do so, we need a handle to the DWARF Front End Library
+/// as it's that library that is going to do the heavy work.
+///
+/// @param handle a smart pointer to the DWARF Front End Library
+/// handle.  This can be created by the function
+/// create_default_dwfl_sptr().
+///
+/// @param elf_path the path to the elf file to load the debug info
+/// from.
+///
+/// @return true upon successful debug info loading, false otherwise.
+static bool
+load_debug_info_from_elf(dwfl_sptr handle,
+			 const string& elf_path)
+{
+  if (!handle)
+    return false;
+
+  Dwfl_Module* module =
+    dwfl_report_offline(handle.get(),
+			basename(const_cast<char*>(elf_path.c_str())),
+			elf_path.c_str(),
+			-1);
+  dwfl_report_end(handle.get(), 0, 0);
+
+  Dwarf_Addr bias = 0;
+  if (dwfl_module_getdwarf(module, &bias) == 0)
+    return false;
+
+  return true;
+}
+
+/// Get the value of an attribute that is supposed to be a string, or
+/// an empty string if the attribute could not be found.
+///
+/// @param die the DIE to get the attribute value from.
+///
+/// @param attr_name the attribute name.  Must come from dwarf.h and
+/// be an enumerator representing an attribute like, e.g, DW_AT_name.
+///
+/// @return a the string representing the value of the attribute, or
+/// an empty string if no string attribute could be found.
+static string
+die_string_attribute(Dwarf_Die* die, unsigned attr_name)
+{
+  if (!die)
+    return "";
+
+  Dwarf_Attribute attr;
+  if (!dwarf_attr(die, attr_name, &attr))
+    return "";
+
+  const char* str = dwarf_formstring(&attr);
+  return str ? str : "";
+}
+
+/// Get the value of an attribute that is supposed to be an unsigned
+/// constant.
+///
+/// @param attr_name the DW_AT_* name of the attribute.  Must come
+/// from dwarf.h and be an enumerator representing an attribute like,
+/// e.g, DW_AT_decl_line.
+static bool
+die_unsigned_constant_attribute(Dwarf_Die* die,
+				unsigned attr_name,
+				size_t& cst)
+{
+  if (!die)
+    return false;
+
+  Dwarf_Attribute attr;
+  Dwarf_Word result = 0;
+  if (!dwarf_attr(die, attr_name, &attr)
+      || dwarf_formudata(&attr, &result))
+    return false;
+
+  cst = result;
+  return true;
+}
+
+#if 0
+static bool
+die_signed_constant_attribute(Dwarf_Die* die,
+			      unsigned attr_name,
+			      ssize_t& cst)
+{
+    if (!die)
+    return false;
+
+  Dwarf_Attribute attr;
+  Dwarf_Sword result = 0;
+  if (!dwarf_attr(die, attr_name, &attr)
+      || dwarf_formsdata(&attr, &result))
+    return false;
+
+  cst = result;
+  return true;
+}
+#endif
+
+/// Get the mangled name from a given DIE.
+///
+/// @param die the DIE to read the mangled name from.
+///
+/// @return the mangled name if it's present in the DIE, or just an
+/// empty string if it's not.
+static string
+die_mangled_name(Dwarf_Die* die)
+{
+  if (!die)
+    return "";
+
+  string mangled_name = die_string_attribute(die, DW_AT_linkage_name);
+  if (mangled_name.empty())
+    mangled_name = die_string_attribute(die, DW_AT_MIPS_linkage_name);
+  return mangled_name;
+}
+
+/// Get the file path that is the value of the DW_AT_decl_file
+/// attribute on a given DIE, if the DIE is a decl DIE having that
+/// attribute.
+///
+/// @param die the DIE to consider.
+///
+/// @return a string containing the file path that is the logical
+/// value of the DW_AT_decl_file attribute.  If the DIE @ref die
+/// doesn't have a DW_AT_decl_file attribute, then the return value is
+/// just an empty string.
+static string
+die_decl_file_attribute(Dwarf_Die* die)
+{
+  if (!die)
+    return "";
+
+  const char* str = dwarf_decl_file(die);
+
+  return str ? str : "";
+}
+
+/// Get the value of an attribute which value is supposed to be a
+/// reference to a DIE.
+///
+/// @param die the DIE to read the value from.
+///
+/// @param the DW_AT_* attribute name to read.
+///
+/// @param result the DIE resulting from reading the attribute value.
+/// This is set iff the function returns true.
+///
+/// @return true if the DIE @ref die contains an attribute named @ref
+/// attr_name that is a DIE reference, false otherwise.
+static bool
+die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result)
+{
+  Dwarf_Attribute attr;
+  if (!dwarf_attr(die, attr_name, &attr))
+    return false;
+  return dwarf_formref_die(&attr, &result);
+}
+
+/// Returns the source location associated with a decl DIE.
+///
+/// @param ctxt the @ref read_context to use.
+///
+/// @param die the DIE the read the source location from.
+static location
+die_location(read_context& ctxt, Dwarf_Die* die)
+{
+  if (!die)
+    return location();
+
+  string file = die_decl_file_attribute(die);
+  size_t line = 0;
+  die_unsigned_constant_attribute(die, DW_AT_decl_line, line);
+
+  translation_unit_sptr tu = ctxt.current_translation_unit();
+  location l = tu->get_loc_mgr().create_new_location(file, line, 1);
+  return l;
+}
+
+/// Given a DW_TAG_compile_unit, build and return the corresponding
+/// abigail::translation_unit ir node.
+///
+/// @param ctxt the read_context to use.
+///
+/// @param die the DW_TAG_compile_unit DIE to consider.
+///
+/// @param recurse if set to yes, this function recursively reads the
+/// children dies of @ref die and populate the resulting translation
+/// unit.
+///
+/// @return a pointer to the resulting translation_unit.
+static translation_unit_sptr
+build_translation_unit(read_context&	ctxt,
+		       Dwarf_Die*	die,
+		       bool		recurse = false)
+{
+  translation_unit_sptr result;
+
+  if (!die)
+    return result;
+  assert(dwarf_tag(die) == DW_TAG_compile_unit);
+
+  string path = die_string_attribute(die, DW_AT_name);
+  result.reset(new translation_unit(path));
+
+  ctxt.current_corpus()->add(result);
+  ctxt.current_translation_unit(result);
+
+  Dwarf_Die child;
+  if (!recurse
+      || (dwarf_child(die, &child) != 0))
+    return result;
+
+  do
+    build_ir_node_from_die(ctxt, &child);
+  while (dwarf_siblingof(&child, &child) == 0);
+
+  return result;
+}
+
+/// Build a @ref type_decl out of a DW_TAG_base_type DIE.
+///
+/// @param die the DW_TAG_base_type to consider.
+///
+/// @return the resulting decl_base_sptr.
+static type_decl_sptr
+build_type_decl(read_context&	/*ctxt*/,
+		Dwarf_Die*	die)
+{
+  type_decl_sptr result;
+
+  if (!die)
+    return result;
+  assert(dwarf_tag(die) == DW_TAG_base_type);
+
+  string type_name = die_string_attribute(die, DW_AT_name);
+  size_t byte_size = 0, bit_size = 0;
+  if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, byte_size))
+    if (!die_unsigned_constant_attribute(die, DW_AT_bit_size, bit_size))
+      return result;
+
+  if (byte_size == 0 && bit_size == 0)
+    return result;
+
+  if (bit_size == 0)
+    bit_size = byte_size * 8;
+
+  size_t alignment = bit_size < 8 ? 8 : bit_size;
+  string mangled_name = die_mangled_name(die);
+
+  result.reset(new type_decl(type_name, bit_size, alignment,
+			     location(), mangled_name));
+  return result;
+}
+
+/// Build a @ref var_decl out of a DW_TAG_variable DIE.
+///
+/// @param ctxt the read context to use.
+///
+/// @param die the DIE to read from to build the @ref var_decl.
+///
+/// @return a pointer to the newly created var_decl.  If the var_decl
+/// could not be built, this function returns NULL.
+static var_decl_sptr
+build_var_decl(read_context& ctxt,
+	       Dwarf_Die *die)
+{
+  var_decl_sptr result;
+
+  if (!die)
+    return result;
+  assert(dwarf_tag(die) == DW_TAG_variable);
+
+  type_base_sptr type;
+  Dwarf_Die type_die;
+  if (die_die_attribute(die, DW_AT_type, type_die))
+    {
+      decl_base_sptr ty = build_ir_node_from_die(ctxt, &type_die);
+      if (!ty)
+	return result;
+      type = is_type(ty);
+      assert(type);
+    }
+
+    string name = die_string_attribute(die, DW_AT_name);
+    string mangled_name = die_mangled_name(die);
+    location loc = die_location(ctxt, die);
+
+    result.reset(new var_decl(name, type, loc, mangled_name));
+
+    return result;
+}
+
+/// Read all @ref translation_unit possible from the debug info
+/// accessible through a DWARF Front End Library handle, and stuff
+/// them into a libabigail ABI Corpus.
+///
+/// @param ctxt the read context.
+///
+/// @return a pointer to the resulting corpus, or NULL if the corpus
+/// could not be constructed.
+static corpus_sptr
+build_corpus(read_context& ctxt)
+{
+  Dwarf_Die *cu = 0;
+
+  Dwarf_Addr bias = 0;
+
+  while ((cu = dwfl_nextcu(ctxt.dwfl_handle().get(), cu, &bias)))
+    {
+      if (!ctxt.current_corpus())
+	{
+	  corpus_sptr corp (new corpus(ctxt.elf_path()));
+	  ctxt.current_corpus(corp);
+	}
+
+      // Build a translation_unit IR node from cu; note that cu must
+      // be a DW_TAG_compile_unit die.
+      translation_unit_sptr ir_node = build_translation_unit(ctxt, cu,
+							     /*recurse=*/true);
+      assert(ir_node);
+    }
+  return ctxt.current_corpus();
+}
+/// Build an IR node from a given DIE and add the node to the current
+/// IR being build and held in the read_context.
+///
+/// @param ctxt the read context.
+///
+/// @parm die the DIE to consider.
+///
+/// @return the resulting IR node.
+static decl_base_sptr
+build_ir_node_from_die(read_context&	ctxt,
+		       Dwarf_Die*	die)
+{
+  decl_base_sptr result;
+
+  if (!die)
+    return result;
+
+  die_decl_map_type::const_iterator it = ctxt.die_decl_map().find(die);
+  if (it != ctxt.die_decl_map().end())
+    return it->second;
+
+  int tag = dwarf_tag(die);
+  switch (tag)
+    {
+      // Type DIEs we intent to support someday, maybe.
+    case DW_TAG_base_type:
+      if((result = build_type_decl(ctxt, die)))
+	{
+	  result = ctxt.current_translation_unit()->canonicalize_type(result);
+	  assert(result);
+
+	  if (result->get_scope())
+	    // This base type is the same as a type that was already added
+	    // to the IR tree.  Do not add a new one.  Just re-use the
+	    // previous one.
+	    ;
+	  else
+	    add_decl_to_scope(result, ctxt.current_scope());
+	}
+      break;
+    case DW_TAG_typedef:
+      break;
+    case DW_TAG_pointer_type:
+      break;
+    case DW_TAG_reference_type:
+      break;
+    case DW_TAG_rvalue_reference_type:
+      break;
+    case DW_TAG_const_type:
+      break;
+    case DW_TAG_volatile_type:
+      break;
+    case DW_TAG_enumeration_type:
+      break;
+    case DW_TAG_class_type:
+      break;
+    case DW_TAG_string_type:
+      break;
+    case DW_TAG_structure_type:
+      break;
+    case DW_TAG_subroutine_type:
+      break;
+    case DW_TAG_union_type:
+      break;
+    case DW_TAG_array_type:
+      break;
+    case DW_TAG_packed_type:
+      break;
+    case DW_TAG_set_type:
+      break;
+    case DW_TAG_file_type:
+      break;
+    case DW_TAG_ptr_to_member_type:
+      break;
+    case DW_TAG_subrange_type:
+      break;
+    case DW_TAG_thrown_type:
+      break;
+    case DW_TAG_restrict_type:
+      break;
+    case DW_TAG_interface_type:
+      break;
+    case DW_TAG_unspecified_type:
+      break;
+    case DW_TAG_mutable_type:
+      break;
+    case DW_TAG_shared_type:
+      break;
+
+      // Other declarations we intend to support someday, maybe.
+
+    case DW_TAG_compile_unit:
+      // We shouldn't reach this point b/c this should be handled by
+      // build_translation_unit.
+      abort();
+      break;
+
+    case DW_TAG_namespace:
+      break;
+    case DW_TAG_variable:
+      if ((result = build_var_decl(ctxt, die)))
+	add_decl_to_scope(result, ctxt.current_scope());
+      break;
+    case DW_TAG_subprogram:
+      break;
+    case DW_TAG_formal_parameter:
+      break;
+    case DW_TAG_constant:
+      break;
+    case DW_TAG_enumerator:
+      break;
+
+      // Other declaration we don't really intend to support.
+    case DW_TAG_dwarf_procedure:
+    case DW_TAG_imported_declaration:
+    case DW_TAG_entry_point:
+    case DW_TAG_label:
+    case DW_TAG_lexical_block:
+    case DW_TAG_member:
+    case DW_TAG_unspecified_parameters:
+    case DW_TAG_variant:
+    case DW_TAG_common_block:
+    case DW_TAG_common_inclusion:
+    case DW_TAG_inheritance:
+    case DW_TAG_inlined_subroutine:
+    case DW_TAG_module:
+    case DW_TAG_with_stmt:
+    case DW_TAG_access_declaration:
+    case DW_TAG_catch_block:
+    case DW_TAG_friend:
+    case DW_TAG_namelist:
+    case DW_TAG_namelist_item:
+    case DW_TAG_template_type_parameter:
+    case DW_TAG_template_value_parameter:
+    case DW_TAG_try_block:
+    case DW_TAG_variant_part:
+    case DW_TAG_imported_module:
+    case DW_TAG_partial_unit:
+    case DW_TAG_imported_unit:
+    case DW_TAG_condition:
+    case DW_TAG_type_unit:
+    case DW_TAG_template_alias:
+    case DW_TAG_lo_user:
+    case DW_TAG_MIPS_loop:
+    case DW_TAG_format_label:
+    case DW_TAG_function_template:
+    case DW_TAG_class_template:
+    case DW_TAG_GNU_BINCL:
+    case DW_TAG_GNU_EINCL:
+    case DW_TAG_GNU_template_template_param:
+    case DW_TAG_GNU_template_parameter_pack:
+    case DW_TAG_GNU_formal_parameter_pack:
+    case DW_TAG_GNU_call_site:
+    case DW_TAG_GNU_call_site_parameter:
+    case DW_TAG_hi_user:
+    default:
+      break;
+    }
+
+  if (result)
+    ctxt.die_decl_map()[die] = result;
+
+  return result;
+}
+
+/// Read all @ref translation_unit possible from the debug info
+/// accessible from an elf file, stuff them into a libabigail ABI
+/// Corpus and return it.
+///
+/// @param elf_path the path to the elf file.
+///
+/// @return a pointer to the resulting @ref corpus.
+corpus_sptr
+read_corpus_from_elf(const std::string& elf_path)
+{
+  // Create a DWARF Front End Library handle to be used by functions
+  // of that library.
+  dwfl_sptr handle = create_default_dwfl_sptr();
+
+  // Load debug info from the elf path.
+  if (!load_debug_info_from_elf(handle, elf_path))
+    return corpus_sptr();
+
+  read_context ctxt(handle, elf_path);
+
+  // Now, read an ABI corpus proper from the debug info we have
+  // through the dwfl handle.
+  corpus_sptr corp = build_corpus(ctxt);
+
+  return corp;
+}
+
+}// end namespace dwarf_reader
+
+}// end namespace abigail

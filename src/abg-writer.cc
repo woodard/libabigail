@@ -1780,45 +1780,102 @@ write_corpus_to_archive(const corpus_sptr corp)
 
 // <Debugging routines>
 
+/// Serialize a pointer to decl_base to an output stream.
+///
+/// @param d the pointer to decl_base to serialize.
+///
+/// @param o the output stream to consider.
+void
+dump(const decl_base_sptr d, std::ostream& o)
+{
+  xml_writer::write_context ctxt(o);
+  write_decl(d, ctxt, /*indent=*/0);
+  cerr << "\n";
+}
+
 /// Serialize a pointer to decl_base to stderr.
 ///
 /// @param d the pointer to decl_base to serialize.
 void
 dump(const decl_base_sptr d)
-{
-  xml_writer::write_context ctxt(cerr);
-  write_decl(d, ctxt, /*indent=*/0);
-  cerr << "\n";
-}
+{dump(d, cerr);}
+
+/// Serialize a pointer to type_base to an output stream.
+///
+/// @param t the pointer to type_base to serialize.
+///
+/// @param o the output stream to serialize the @ref type_base to.
+void
+dump(const type_base_sptr t, std::ostream& o)
+{dump(get_type_declaration(t), o);}
 
 /// Serialize a pointer to type_base to stderr.
 ///
 /// @param t the pointer to type_base to serialize.
 void
 dump(const type_base_sptr t)
-{return dump(dynamic_pointer_cast<decl_base>(t));}
+{dump(t, cerr);}
+
+/// Serialize a pointer to var_decl to an output stream.
+///
+/// @param v the pointer to var_decl to serialize.
+///
+/// @param o the output stream to serialize the @ref var_decl to.
+void
+dump(const var_decl_sptr v, std::ostream& o)
+{
+  xml_writer::write_context ctxt(o);
+  write_var_decl(v, ctxt, /*mangled_name*/true, /*indent=*/0);
+  cerr << "\n";
+}
 
 /// Serialize a pointer to var_decl to stderr.
 ///
 /// @param v the pointer to var_decl to serialize.
 void
 dump(const var_decl_sptr v)
-{
-  xml_writer::write_context ctxt(cerr);
-  write_var_decl(v, ctxt, /*mangled_name*/true, /*indent=*/0);
-  cerr << "\n";
-}
+{dump(v, cerr);}
 
-/// Serialize an instance of translation_unit to stderr.
+/// Serialize a @ref translation_unit to an output stream.
 ///
 /// @param t the translation_unit to serialize.
+///
+/// @param o the outpout stream to serialize the translation_unit to.
 void
-dump(const translation_unit& t)
+dump(const translation_unit& t, std::ostream& o)
 {
-  xml_writer::write_context ctxt(cerr);
+  xml_writer::write_context ctxt(o);
   write_translation_unit(t, ctxt, /*indent=*/0);
   cerr << "\n";
 }
 
+/// Serialize an instance of @ref translation_unit to stderr.
+///
+/// @param t the translation_unit to serialize.
+void
+dump(const translation_unit& t)
+{dump(t, cerr);}
+
+/// Serialize a pointer to @ref translation_unit to an output stream.
+///
+/// @param t the @ref translation_unit_sptr to serialize.
+///
+/// @param o the output stream to serialize the translation unit to.
+void
+dump(const translation_unit_sptr t, std::ostream& o)
+{
+  if (t)
+    dump(*t, o);
+}
+
+/// Serialize a pointer to @ref translation_unit to stderr.
+///
+/// @param t the translation_unit_sptr to serialize.
+void
+dump(const translation_unit_sptr t)
+{
+  if (t)
+    dump(*t);
+}
 // </Debugging routines>
 } //end namespace abigail
