@@ -255,8 +255,8 @@ create_default_dwfl_sptr()
 /// @param attr_name the attribute name.  Must come from dwarf.h and
 /// be an enumerator representing an attribute like, e.g, DW_AT_name.
 ///
-/// @return a the string representing the value of the attribute, or
-/// an empty string if no string attribute could be found.
+/// @return the string representing the value of the attribute, or an
+/// empty string if no string attribute could be found.
 static string
 die_string_attribute(Dwarf_Die* die, unsigned attr_name)
 {
@@ -277,10 +277,17 @@ die_string_attribute(Dwarf_Die* die, unsigned attr_name)
 /// @param attr_name the DW_AT_* name of the attribute.  Must come
 /// from dwarf.h and be an enumerator representing an attribute like,
 /// e.g, DW_AT_decl_line.
+///
+///@param cst the output parameter that is set to the value of the
+/// attribute @ref attr_name.  This parameter is set iff the function
+/// return true.
+///
+/// @return true if there was an attribute of the name @ref attr_name
+/// and with a value that is a constant, false otherwise.
 static bool
-die_unsigned_constant_attribute(Dwarf_Die* die,
-				unsigned attr_name,
-				size_t& cst)
+die_unsigned_constant_attribute(Dwarf_Die*	die,
+				unsigned	attr_name,
+				size_t&	cst)
 {
   if (!die)
     return false;
@@ -297,9 +304,9 @@ die_unsigned_constant_attribute(Dwarf_Die* die,
 
 #if 0
 static bool
-die_signed_constant_attribute(Dwarf_Die* die,
-			      unsigned attr_name,
-			      ssize_t& cst)
+die_signed_constant_attribute(Dwarf_Die*	die,
+			      unsigned		attr_name,
+			      ssize_t&		cst)
 {
     if (!die)
     return false;
@@ -438,11 +445,11 @@ die_location(read_context& ctxt, Dwarf_Die* die)
 ///
 /// @param mangled_name the mangled_name output parameter to set.
 static void
-die_loc_and_name(read_context& ctxt,
-		 Dwarf_Die* die,
-		 location& loc,
-		 string& name,
-		 string& mangled_name)
+die_loc_and_name(read_context&	ctxt,
+		 Dwarf_Die*	die,
+		 location&	loc,
+		 string&	name,
+		 string&	mangled_name)
 {
   loc = die_location(ctxt, die);
   name = die_string_attribute(die, DW_AT_name);
@@ -451,8 +458,6 @@ die_loc_and_name(read_context& ctxt,
 
 /// Test whether a given DIE represents a decl that is public.  That
 /// is, one with the DW_AT_external attribute set.
-///
-/// @param ctxt the read context to use.
 ///
 /// @param die the DIE to consider for testing.
 ///
@@ -472,6 +477,9 @@ is_public_decl(Dwarf_Die* die)
 /// @param ctxt the read_context to use.
 ///
 /// @param die the DW_TAG_compile_unit DIE to consider.
+///
+/// @param address_size the size of the addresses expressed in this
+/// translation unit in general.
 ///
 /// @param recurse if set to yes, this function recursively reads the
 /// children dies of @ref die and populate the resulting translation
@@ -1077,7 +1085,7 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_enumerator:
       break;
 
-      // Other declaration we don't really intend to support.
+      // Other declaration we don't really intend to support yet.
     case DW_TAG_dwarf_procedure:
     case DW_TAG_imported_declaration:
     case DW_TAG_entry_point:
