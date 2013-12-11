@@ -593,6 +593,47 @@ build_qualified_type(read_context&	ctxt,
   return result;
 }
 
+/// Build a pointer type from a DW_TAG_pointer_type DIE.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE to read information from.
+///
+/// @return the resulting pointer to pointer_type_def.
+static pointer_type_def_sptr
+build_pointer_type_def(read_context&	ctxt,
+		       Dwarf_Die*	die)
+{
+  pointer_type_def_sptr result;
+
+  if (!die)
+    return result;
+
+  unsigned tag = dwarf_tag(die);
+  if (tag != DW_TAG_pointer_type)
+    return result;
+
+  Dwarf_Die underlying_type_die;
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+    return result;
+
+  decl_base_sptr utype_decl =
+    build_ir_node_from_die(ctxt, &underlying_type_die);
+  if (!utype_decl)
+    return result;
+
+  type_base_sptr utype = is_type(utype_decl);
+  assert(utype);
+
+  translation_unit* tu = get_translation_unit(utype_decl);
+
+  result.reset(new pointer_type_def(utype, tu->get_address_size(),
+				    tu->get_address_size(),
+				    location()));
+
+  return result;
+}
+
 /// Build a @ref var_decl out of a DW_TAG_variable DIE.
 ///
 /// @param ctxt the read context to use.
@@ -765,7 +806,7 @@ build_corpus(read_context& ctxt)
 /// @return the resulting canonicalized type.
 decl_base_sptr
 canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
-				scope_decl_sptr type_scope)
+				scope_decl* type_scope)
 {
   translation_unit* tu = get_translation_unit(type_scope);
   assert(tu);
@@ -819,13 +860,21 @@ build_ir_node_from_die(read_context&	ctxt,
       if((result = build_type_decl(ctxt, die)))
 	{
 	  translation_unit_sptr tu = ctxt.current_translation_unit();
-	  result = canonicalize_and_add_type_to_ir(result,
-						   tu->get_global_scope());
+	  result =
+	    canonicalize_and_add_type_to_ir(result,
+					    tu->get_global_scope().get());
 	}
       break;
     case DW_TAG_typedef:
       break;
     case DW_TAG_pointer_type:
+      {
+	pointer_type_def_sptr p = build_pointer_type_def(ctxt, die);
+	decl_base_sptr underlying_type =
+	  get_type_declaration(p->get_pointed_to_type());
+	result =
+	  canonicalize_and_add_type_to_ir(p, underlying_type->get_scope());
+      }
       break;
     case DW_TAG_reference_type:
       break;
@@ -833,8 +882,16 @@ build_ir_node_from_die(read_context&	ctxt,
       break;
     case DW_TAG_const_type:
     case DW_TAG_volatile_type:
-      if ((result = build_qualified_type(ctxt, die)))
-	canonicalize_and_add_type_to_ir(result, ctxt.current_scope());
+      {
+	qualified_type_def_sptr q = build_qualified_type(ctxt, die);
+	if (q)
+	  {
+	    decl_base_sptr underlying_type =
+	      get_type_declaration(q->get_underlying_type());
+	    result =
+	      canonicalize_and_add_type_to_ir(q, underlying_type->get_scope());
+	  }
+      }
       break;
     case DW_TAG_enumeration_type:
       break;

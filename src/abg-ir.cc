@@ -607,6 +607,25 @@ add_decl_to_scope(shared_ptr<decl_base> decl, shared_ptr<scope_decl> scope)
 /// @return the global scope of the decl, or a null pointer if the
 /// decl is not yet added to a translation_unit.
 global_scope*
+get_global_scope(decl_base* decl)
+{
+  if (global_scope* s = dynamic_cast<global_scope*>(decl))
+    return s;
+
+  scope_decl* scope = decl->get_scope();
+  while (scope && !dynamic_cast<global_scope*>(scope))
+    scope = scope->get_scope();
+
+  return scope ? dynamic_cast<global_scope*> (scope) : 0;
+}
+
+/// Return the global scope as seen by a given declaration.
+///
+/// @param decl the declaration to consider.
+///
+/// @return the global scope of the decl, or a null pointer if the
+/// decl is not yet added to a translation_unit.
+global_scope*
 get_global_scope(const shared_ptr<decl_base> decl)
 {
   if (shared_ptr<global_scope> s = dynamic_pointer_cast<global_scope>(decl))
@@ -646,7 +665,7 @@ get_type_declaration(const type_base_sptr t)
 /// @return the resulting translation unit, or null if the decl is not
 /// yet added to a translation unit.
 translation_unit*
-get_translation_unit(const shared_ptr<decl_base> decl)
+get_translation_unit(decl_base* decl)
 {
   global_scope* global = get_global_scope(decl);
 
@@ -655,6 +674,16 @@ get_translation_unit(const shared_ptr<decl_base> decl)
 
   return 0;
 }
+
+/// Return the translation unit a declaration belongs to.
+///
+/// @param decl the declaration to consider.
+///
+/// @return the resulting translation unit, or null if the decl is not
+/// yet added to a translation unit.
+translation_unit*
+get_translation_unit(const shared_ptr<decl_base> decl)
+{return get_translation_unit(decl.get());}
 
 /// Tests whether if a given scope is the global scope.
 ///

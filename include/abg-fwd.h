@@ -118,6 +118,9 @@ get_global_scope(const shared_ptr<decl_base>);
 translation_unit*
 get_translation_unit(const shared_ptr<decl_base>);
 
+translation_unit*
+get_translation_unit(decl_base*);
+
 bool
 is_global_scope(const scope_decl*);
 
@@ -158,7 +161,13 @@ void
 add_decl_to_scope(shared_ptr<decl_base>, shared_ptr<scope_decl>);
 
 global_scope*
+get_global_scope(decl_base* decl);
+
+global_scope*
 get_global_scope(const shared_ptr<decl_base>);
+
+translation_unit*
+get_translation_unit(decl_base* decl);
 
 translation_unit*
 get_translation_unit(const shared_ptr<decl_base>);
