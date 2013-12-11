@@ -1095,12 +1095,21 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
   if (!xmlStrEqual(node->name, BAD_CAST("parameter")))
     return nil;
 
+  bool is_variadic = false;
+  string is_variadic_str;
+  if (xml_char_sptr s =
+      xml::build_sptr(xmlGetProp(node, BAD_CAST("is-variadic"))))
+    {
+      is_variadic_str = CHAR_STR(s) ? CHAR_STR(s) : "";
+      is_variadic = (is_variadic_str == "yes") ? true : false;
+    }
+
   string type_id;
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("type-id"))))
     type_id = CHAR_STR(a);
 
   shared_ptr<type_base> type = ctxt.get_type_decl(type_id);
-  if (!type)
+  if (!type && !is_variadic)
     return nil;
 
   string name;
@@ -1111,7 +1120,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
   read_location(ctxt, node, loc);
 
   shared_ptr<function_decl::parameter> p
-    (new function_decl::parameter(type, name, loc));
+    (new function_decl::parameter(type, name, loc, is_variadic));
 
   return p;
 }

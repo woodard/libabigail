@@ -1090,15 +1090,18 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
        ++pi)
     {
       do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
-      o << "<parameter type-id='"
-	<< ctxt.get_id_for_type((*pi)->get_type())
-	<< "'";
+      if ((*pi)->get_variadic_marker())
+	o << "<parameter is-variadic='yes'";
+      else
+	{
+	  o << "<parameter type-id='"
+	    << ctxt.get_id_for_type((*pi)->get_type())
+	    << "'";
 
-      if (!(*pi)->get_name().empty())
-	o << " name='" << (*pi)->get_name() << "'";
-
+	  if (!(*pi)->get_name().empty())
+	    o << " name='" << (*pi)->get_name() << "'";
+	}
       write_location((*pi)->get_location(), *get_translation_unit(decl), o);
-
       o << "/>\n";
     }
 
