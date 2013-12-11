@@ -547,6 +547,52 @@ build_type_decl(read_context&	ctxt,
   return result;
 }
 
+/// Build a qualified type from a DW_TAG_const_type or
+/// DW_TAG_volatile_type DIE.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the input DIE to read from.
+///
+/// @return the resulting qualified_type_def.
+static qualified_type_def_sptr
+build_qualified_type(read_context&	ctxt,
+		     Dwarf_Die*	die)
+{
+  qualified_type_def_sptr result;
+  if (!die)
+    return result;
+
+  unsigned tag = dwarf_tag(die);
+
+  if (tag != DW_TAG_const_type
+      && tag != DW_TAG_volatile_type)
+    return result;
+
+  Dwarf_Die underlying_type_die;
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+    return result;
+
+  decl_base_sptr utype_decl = build_ir_node_from_die(ctxt,
+						     &underlying_type_die);
+  if (!utype_decl)
+    return result;
+
+  type_base_sptr utype = is_type(utype_decl);
+  assert(utype);
+
+  if (tag == DW_TAG_const_type)
+    result.reset(new qualified_type_def(utype,
+					qualified_type_def::CV_CONST,
+					location()));
+  else if (tag == DW_TAG_volatile_type)
+    result.reset(new qualified_type_def(utype,
+					qualified_type_def::CV_VOLATILE,
+					location()));
+
+  return result;
+}
+
 /// Build a @ref var_decl out of a DW_TAG_variable DIE.
 ///
 /// @param ctxt the read context to use.
@@ -706,6 +752,44 @@ build_corpus(read_context& ctxt)
     }
   return ctxt.current_corpus();
 }
+
+/// Canonicalize a type and add it to the current IR being built, if
+/// necessary.
+///
+/// @param type_declaration the declaration of the type to
+/// canonicalize.
+///
+/// @param type_scope the scope into which the canonicalized type
+/// needs to be added to.
+///
+/// @return the resulting canonicalized type.
+decl_base_sptr
+canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
+				scope_decl_sptr type_scope)
+{
+  translation_unit* tu = get_translation_unit(type_scope);
+  assert(tu);
+
+  /// TODO: maybe change the interfance of
+  /// translation_unit::canonicalize_type to include the final
+  /// qualified name of the type (i.e, one that includes the qualified
+  /// name of type_scope), to handle two user defined types that might
+  /// be same, but at different scopes.  In that case, the two types
+  /// should be considered different by
+  /// translation_unit::canonicalize_type.
+  decl_base_sptr result = tu->canonicalize_type(type_declaration);
+  assert(result);
+
+  if (result->get_scope())
+    // This type is the same as a type that was already added to the
+    // IR tree.  Do not add a new one.  Just re-use the previous one.
+    ;
+  else
+    add_decl_to_scope(result, type_scope);
+
+  return result;
+}
+
 /// Build an IR node from a given DIE and add the node to the current
 /// IR being build and held in the read_context.
 ///
@@ -735,16 +819,8 @@ build_ir_node_from_die(read_context&	ctxt,
       if((result = build_type_decl(ctxt, die)))
 	{
 	  translation_unit_sptr tu = ctxt.current_translation_unit();
-	  result = tu->canonicalize_type(result);
-	  assert(result);
-
-	  if (result->get_scope())
-	    // This base type is the same as a type that was already added
-	    // to the IR tree.  Do not add a new one.  Just re-use the
-	    // previous one.
-	    ;
-	  else
-	    add_decl_to_scope(result, tu->get_global_scope());
+	  result = canonicalize_and_add_type_to_ir(result,
+						   tu->get_global_scope());
 	}
       break;
     case DW_TAG_typedef:
@@ -756,8 +832,9 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_rvalue_reference_type:
       break;
     case DW_TAG_const_type:
-      break;
     case DW_TAG_volatile_type:
+      if ((result = build_qualified_type(ctxt, die)))
+	canonicalize_and_add_type_to_ir(result, ctxt.current_scope());
       break;
     case DW_TAG_enumeration_type:
       break;
