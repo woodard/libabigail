@@ -91,6 +91,7 @@ typedef unordered_map<decl_base_sptr, bool> type_decl_map;
 class read_context
 {
   dwfl_sptr handle_;
+  Dwarf* dwarf_;
   const string elf_path_;
   die_decl_map_type die_decl_map_;
   corpus_sptr cur_corpus_;
@@ -103,12 +104,39 @@ public:
   read_context(dwfl_sptr handle,
 	       const string& elf_path)
     : handle_(handle),
+      dwarf_(0),
       elf_path_(elf_path)
   {}
 
   dwfl_sptr
-  dwfl_handle()
+  dwfl_handle() const
   {return handle_;}
+
+  /// Load the debug info associated with an elf file that is at a
+  /// given path.
+  ///
+  /// @return a pointer to the DWARF debug info pointer upon
+  /// successful debug info loading, NULL otherwise.
+  Dwarf*
+  load_debug_info()
+  {
+    if (!dwfl_handle())
+      return 0;
+
+    Dwfl_Module* module =
+      dwfl_report_offline(dwfl_handle().get(),
+			  basename(const_cast<char*>(elf_path().c_str())),
+			  elf_path().c_str(),
+			  -1);
+    dwfl_report_end(dwfl_handle().get(), 0, 0);
+
+    Dwarf_Addr bias = 0;
+    return (dwarf_ = dwfl_module_getdwarf(module, &bias));
+  }
+
+  Dwarf*
+  dwarf() const
+  {return dwarf_;}
 
   const string&
   elf_path() const
@@ -219,39 +247,6 @@ static dwfl_sptr
 create_default_dwfl_sptr()
 {return create_dwfl_sptr(create_default_dwfl());}
 
-/// Load the debug info associated with an elf file that is at a given
-/// path.  To do so, we need a handle to the DWARF Front End Library
-/// as it's that library that is going to do the heavy work.
-///
-/// @param handle a smart pointer to the DWARF Front End Library
-/// handle.  This can be created by the function
-/// create_default_dwfl_sptr().
-///
-/// @param elf_path the path to the elf file to load the debug info
-/// from.
-///
-/// @return true upon successful debug info loading, false otherwise.
-static bool
-load_debug_info_from_elf(dwfl_sptr handle,
-			 const string& elf_path)
-{
-  if (!handle)
-    return false;
-
-  Dwfl_Module* module =
-    dwfl_report_offline(handle.get(),
-			basename(const_cast<char*>(elf_path.c_str())),
-			elf_path.c_str(),
-			-1);
-  dwfl_report_end(handle.get(), 0, 0);
-
-  Dwarf_Addr bias = 0;
-  if (dwfl_module_getdwarf(module, &bias) == 0)
-    return false;
-
-  return true;
-}
-
 /// Get the value of an attribute that is supposed to be a string, or
 /// an empty string if the attribute could not be found.
 ///
@@ -320,6 +315,33 @@ die_signed_constant_attribute(Dwarf_Die* die,
 }
 #endif
 
+/// Get the value of a DIE attribute; that value is meant to be a
+/// flag.
+///
+/// @param die the DIE to get the attribute from.
+///
+/// @param attr_name the DW_AT_* name of the attribute.  Must come
+/// from dwarf.h and be an enumerator representing an attribute like,
+/// e.g, DW_AT_external.
+///
+/// @param flag the output parameter to store the flag value into.
+/// This is set iff the function returns true.
+///
+/// @return true if the DIE has a flag attribute named @ref attr_name,
+/// false otherwise.
+static bool
+die_flag_attribute(Dwarf_Die* die, unsigned attr_name, bool& flag)
+{
+  Dwarf_Attribute attr;
+  bool f = false;
+  if (!dwarf_attr(die, attr_name, &attr)
+      || dwarf_formflag(&attr, &f))
+    return false;
+
+  flag = f;
+  return true;
+}
+
 /// Get the mangled name from a given DIE.
 ///
 /// @param die the DIE to read the mangled name from.
@@ -364,7 +386,7 @@ die_decl_file_attribute(Dwarf_Die* die)
 ///
 /// @param die the DIE to read the value from.
 ///
-/// @param the DW_AT_* attribute name to read.
+/// @param attr_name the DW_AT_* attribute name to read.
 ///
 /// @param result the DIE resulting from reading the attribute value.
 /// This is set iff the function returns true.
@@ -395,9 +417,53 @@ die_location(read_context& ctxt, Dwarf_Die* die)
   size_t line = 0;
   die_unsigned_constant_attribute(die, DW_AT_decl_line, line);
 
-  translation_unit_sptr tu = ctxt.current_translation_unit();
-  location l = tu->get_loc_mgr().create_new_location(file, line, 1);
-  return l;
+  if (!file.empty() && line != 0)
+    {
+      translation_unit_sptr tu = ctxt.current_translation_unit();
+      location l = tu->get_loc_mgr().create_new_location(file, line, 1);
+      return l;
+    }
+  return location();
+}
+
+/// Return the location, the name and the mangled name of a given DIE.
+///
+/// @param cxt the read context to use.
+///
+/// @param die the DIE to read location and names from.
+///
+/// @param loc the location output parameter to set.
+///
+/// @param name the name output parameter to set.
+///
+/// @param mangled_name the mangled_name output parameter to set.
+static void
+die_loc_and_name(read_context& ctxt,
+		 Dwarf_Die* die,
+		 location& loc,
+		 string& name,
+		 string& mangled_name)
+{
+  loc = die_location(ctxt, die);
+  name = die_string_attribute(die, DW_AT_name);
+  mangled_name = die_mangled_name(die);
+}
+
+/// Test whether a given DIE represents a decl that is public.  That
+/// is, one with the DW_AT_external attribute set.
+///
+/// @param ctxt the read context to use.
+///
+/// @param die the DIE to consider for testing.
+///
+/// @return true if a DW_AT_external attribute is present and its
+/// value is set to the true; return false otherwise.
+static bool
+is_public_decl(Dwarf_Die* die)
+{
+  bool is_public = 0;
+  die_flag_attribute(die, DW_AT_external, is_public);
+  return is_public;
 }
 
 /// Given a DW_TAG_compile_unit, build and return the corresponding
@@ -415,6 +481,7 @@ die_location(read_context& ctxt, Dwarf_Die* die)
 static translation_unit_sptr
 build_translation_unit(read_context&	ctxt,
 		       Dwarf_Die*	die,
+		       char		address_size,
 		       bool		recurse = false)
 {
   translation_unit_sptr result;
@@ -424,7 +491,7 @@ build_translation_unit(read_context&	ctxt,
   assert(dwarf_tag(die) == DW_TAG_compile_unit);
 
   string path = die_string_attribute(die, DW_AT_name);
-  result.reset(new translation_unit(path));
+  result.reset(new translation_unit(path, address_size));
 
   ctxt.current_corpus()->add(result);
   ctxt.current_translation_unit(result);
@@ -443,11 +510,13 @@ build_translation_unit(read_context&	ctxt,
 
 /// Build a @ref type_decl out of a DW_TAG_base_type DIE.
 ///
+/// @param ctxt the read context to use.
+///
 /// @param die the DW_TAG_base_type to consider.
 ///
 /// @return the resulting decl_base_sptr.
 static type_decl_sptr
-build_type_decl(read_context&	/*ctxt*/,
+build_type_decl(read_context&	ctxt,
 		Dwarf_Die*	die)
 {
   type_decl_sptr result;
@@ -456,7 +525,6 @@ build_type_decl(read_context&	/*ctxt*/,
     return result;
   assert(dwarf_tag(die) == DW_TAG_base_type);
 
-  string type_name = die_string_attribute(die, DW_AT_name);
   size_t byte_size = 0, bit_size = 0;
   if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, byte_size))
     if (!die_unsigned_constant_attribute(die, DW_AT_bit_size, bit_size))
@@ -469,10 +537,13 @@ build_type_decl(read_context&	/*ctxt*/,
     bit_size = byte_size * 8;
 
   size_t alignment = bit_size < 8 ? 8 : bit_size;
-  string mangled_name = die_mangled_name(die);
+  string type_name, mangled_name;
+  location loc;
+  die_loc_and_name(ctxt, die, loc, type_name, mangled_name);
 
-  result.reset(new type_decl(type_name, bit_size, alignment,
-			     location(), mangled_name));
+  result.reset(new type_decl(type_name, bit_size,
+			     alignment, loc,
+			     mangled_name));
   return result;
 }
 
@@ -494,6 +565,9 @@ build_var_decl(read_context& ctxt,
     return result;
   assert(dwarf_tag(die) == DW_TAG_variable);
 
+  if (!is_public_decl(die))
+    return result;
+
   type_base_sptr type;
   Dwarf_Die type_die;
   if (die_die_attribute(die, DW_AT_type, type_die))
@@ -505,13 +579,91 @@ build_var_decl(read_context& ctxt,
       assert(type);
     }
 
-    string name = die_string_attribute(die, DW_AT_name);
-    string mangled_name = die_mangled_name(die);
-    location loc = die_location(ctxt, die);
+  string name, mangled_name;
+  location loc;
+  die_loc_and_name(ctxt, die, loc, name, mangled_name);
 
-    result.reset(new var_decl(name, type, loc, mangled_name));
+  result.reset(new var_decl(name, type, loc, mangled_name));
 
+  return result;
+}
+
+/// Build a @ref function_decl our of a DW_TAG_subprogram DIE.
+///
+/// @param ctxt the read context to use
+///
+/// @param die the DW_TAG_subprogram DIE to read from.
+static function_decl_sptr
+build_function_decl(read_context& ctxt,
+		    Dwarf_Die* die)
+{
+  function_decl_sptr result;
+  if (!die)
     return result;
+  assert(dwarf_tag(die) == DW_TAG_subprogram);
+
+  if (!is_public_decl(die))
+    return result;
+
+  translation_unit_sptr tu = ctxt.current_translation_unit();
+  assert(tu);
+
+  string fname, fmangled_name;
+  location floc;
+  die_loc_and_name(ctxt, die, floc, fname, fmangled_name);
+
+  size_t is_inline = false;
+  die_unsigned_constant_attribute(die, DW_AT_inline, is_inline);
+
+  Dwarf_Die ret_type_die;
+  die_die_attribute(die, DW_AT_type, ret_type_die);
+
+  decl_base_sptr return_type_decl = build_ir_node_from_die(ctxt, &ret_type_die);
+
+  Dwarf_Die child;
+  function_decl::parameters function_parms;
+
+  if (dwarf_child(die, &child) == 0)
+    do
+      {
+	int child_tag = dwarf_tag(&child);
+	if (child_tag == DW_TAG_formal_parameter)
+	  {
+	    string name, mangled_name;
+	    location loc;
+	    die_loc_and_name(ctxt, &child, loc, name, mangled_name);
+	    Dwarf_Die parm_type_die;
+	    die_die_attribute(&child, DW_AT_type, parm_type_die);
+	    decl_base_sptr parm_type_decl =
+	      build_ir_node_from_die(ctxt, &parm_type_die);
+	    if (!parm_type_decl)
+	      continue;
+	    function_decl::parameter_sptr p
+	      (new function_decl::parameter(is_type(parm_type_decl),
+					    name, loc));
+	    function_parms.push_back(p);
+	  }
+	else if (child_tag == DW_TAG_unspecified_parameters)
+	  {
+	    function_decl::parameter_sptr p
+	      (new function_decl::parameter(type_base_sptr(),
+					    /*name=*/"",
+					    location(),
+					    /*variadic_marker=*/true));
+	    function_parms.push_back(p);
+	  }
+      }
+  while (dwarf_siblingof(&child, &child) == 0);
+
+
+  result.reset(new function_decl(fname, function_parms,
+				 is_type(return_type_decl),
+				 tu->get_address_size(),
+				 tu->get_address_size(),
+				 is_inline, floc,
+				 fmangled_name));
+
+  return result;
 }
 
 /// Read all @ref translation_unit possible from the debug info
@@ -525,22 +677,31 @@ build_var_decl(read_context& ctxt,
 static corpus_sptr
 build_corpus(read_context& ctxt)
 {
-  Dwarf_Die *cu = 0;
+  uint8_t address_size = 0;
+  size_t header_size = 0;
 
-  Dwarf_Addr bias = 0;
-
-  while ((cu = dwfl_nextcu(ctxt.dwfl_handle().get(), cu, &bias)))
+  for (Dwarf_Off offset = 0, next_offset = 0;
+       (dwarf_nextcu(ctxt.dwarf(), offset, &next_offset, &header_size,
+		     NULL, &address_size, NULL) == 0);
+       offset = next_offset)
     {
+      Dwarf_Off die_offset = offset + header_size;
+      Dwarf_Die cu;
+      if (!dwarf_offdie(ctxt.dwarf(), die_offset, &cu))
+	continue;
+
       if (!ctxt.current_corpus())
 	{
 	  corpus_sptr corp (new corpus(ctxt.elf_path()));
 	  ctxt.current_corpus(corp);
 	}
 
+      address_size *= 8;
+
       // Build a translation_unit IR node from cu; note that cu must
       // be a DW_TAG_compile_unit die.
-      translation_unit_sptr ir_node = build_translation_unit(ctxt, cu,
-							     /*recurse=*/true);
+      translation_unit_sptr ir_node =
+	build_translation_unit(ctxt, &cu, address_size, /*recurse=*/true);
       assert(ir_node);
     }
   return ctxt.current_corpus();
@@ -573,7 +734,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_base_type:
       if((result = build_type_decl(ctxt, die)))
 	{
-	  result = ctxt.current_translation_unit()->canonicalize_type(result);
+	  translation_unit_sptr tu = ctxt.current_translation_unit();
+	  result = tu->canonicalize_type(result);
 	  assert(result);
 
 	  if (result->get_scope())
@@ -582,7 +744,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    // previous one.
 	    ;
 	  else
-	    add_decl_to_scope(result, ctxt.current_scope());
+	    add_decl_to_scope(result, tu->get_global_scope());
 	}
       break;
     case DW_TAG_typedef:
@@ -649,6 +811,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	add_decl_to_scope(result, ctxt.current_scope());
       break;
     case DW_TAG_subprogram:
+      if ((result = build_function_decl(ctxt, die)))
+	add_decl_to_scope(result, ctxt.current_scope());
       break;
     case DW_TAG_formal_parameter:
       break;
@@ -724,11 +888,11 @@ read_corpus_from_elf(const std::string& elf_path)
   // of that library.
   dwfl_sptr handle = create_default_dwfl_sptr();
 
-  // Load debug info from the elf path.
-  if (!load_debug_info_from_elf(handle, elf_path))
-    return corpus_sptr();
-
   read_context ctxt(handle, elf_path);
+
+  // Load debug info from the elf path.
+  if (!ctxt.load_debug_info())
+    return corpus_sptr();
 
   // Now, read an ABI corpus proper from the debug info we have
   // through the dwfl handle.
