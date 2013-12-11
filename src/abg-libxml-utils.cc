@@ -21,12 +21,15 @@
 /// @file
 
 #include <string>
+#include <iostream>
 #include "abg-libxml-utils.h"
 
 namespace abigail
 {
 namespace xml
 {
+using std::istream;
+
 /// Instantiate an xmlTextReader that parses the content of an on-disk
 /// file, wrap it into a smart pointer and return it.
 ///
@@ -53,6 +56,58 @@ new_reader_from_buffer(const std::string& buffer)
     build_sptr(xmlReaderForMemory(buffer.c_str(),
 				  buffer.length(),
 				  "", 0, 0));
+  return p;
+}
+
+/// This is an xmlInputReadCallback, meant to be passed to
+/// xmlNewTextReaderForIO.  It reads a number of bytes from an istream.
+///
+/// @param context an std::istream* cast into a void*.  This is the
+/// istream that the xmlTextReader is too read data from.
+///
+/// @param buffer the buffer where to copy the data read from the
+/// input stream.
+///
+/// @param len the number of byte to read from the input stream and to
+/// copy into @ref buffer.
+///
+/// @return the number of bytes read or -1 in case of error.
+static int
+xml_istream_input_read(void*	context,
+		       char*	buffer,
+		       int	len)
+{
+  istream* in = reinterpret_cast<istream*>(context);
+  in->read(buffer, len);
+  if (in->fail())
+    return -1;
+  return in->gcount();
+}
+
+/// This is an xmlInputCloseCallback, meant to be passed to
+/// xmlNewTextReaderForIO.  It's supposed to close the input stream
+/// that the xmlTextReader is reading from.  This particular
+/// implementation is noop; it does nothing.
+///
+/// @return 0.
+static int
+xml_istream_input_close(void*)
+{return 0;}
+
+/// Instanciate an xmlTextReader that parses a content coming from an
+/// input stream.
+///
+/// @param in the input stream to consider.
+///
+/// @return reader_sptr a pointer to the newly instantiated xml
+/// reader.
+reader_sptr
+new_reader_from_istream(std::istream* in)
+{
+  reader_sptr p =
+    build_sptr(xmlReaderForIO(&xml_istream_input_read,
+			      &xml_istream_input_close,
+			      in, "", 0, 0));
   return p;
 }
 

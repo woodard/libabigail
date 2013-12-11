@@ -41,14 +41,25 @@
 
 using std::string;
 using std::cerr;
+using std::cin;
+using std::cout;
 using std::ostream;
 using std::ofstream;
 using abigail::tools::check_file;
 using abigail::xml_reader::read_translation_unit_from_file;
+using abigail::xml_reader::read_translation_unit_from_istream;
+using abigail::xml_writer::write_translation_unit;
 
 struct options
 {
   string file_path;
+  bool read_from_stdin;
+  bool noout;
+
+  options()
+    : read_from_stdin(false),
+      noout(false)
+  {}
 };//end struct options;
 
 void
@@ -56,14 +67,19 @@ display_usage(const string& prog_name, ostream& out)
 {
   out << "usage: " << prog_name << "[options] [<bi-file1>\n"
       << " where options can be:\n"
-      << "  --help display this message\n";
+      << "  --help display this message\n"
+      << "  --noout do not display anything on stdout\n"
+      << "  --stdin|-- read bi-file content from stdin\n";
 }
 
 bool
 parse_command_line(int argc, char* argv[], options& opts)
 {
   if (argc < 2)
-    return false;
+    {
+      opts.read_from_stdin = true;
+      return true;
+    }
 
     for (int i = 1; i < argc; ++i)
       {
@@ -76,13 +92,16 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  }
 	else if (!strcmp(argv[i], "--help"))
 	  return false;
+	else if (!strcmp(argv[i], "--stdin"))
+	  opts.read_from_stdin = true;
+	else if (!strcmp(argv[i], "--noout"))
+	  opts.noout = true;
 	else
 	  return false;
       }
 
     if (opts.file_path.empty())
-      return false;
-
+      opts.read_from_stdin = true;
     return true;
 }
 
@@ -97,45 +116,68 @@ main(int argc, char* argv[])
       display_usage(argv[0], cerr);
       return true;
     }
-  if (!check_file(opts.file_path, cerr))
-    return true;
 
-  abigail::translation_unit_sptr tu =
-    read_translation_unit_from_file(opts.file_path);
-
-  if (!tu)
+  if (opts.read_from_stdin)
     {
-      cerr << "failed to read " << opts.file_path << "\n";
-      return true;
+      if (!cin.good())
+	return true;
+
+      abigail::translation_unit_sptr tu =
+	read_translation_unit_from_istream(&cin);
+
+      if (!tu)
+	{
+	  cerr << "failed to read the ABI instrumentation from stdin\n";
+	  return true;
+	}
+
+      if (!opts.noout)
+	write_translation_unit(*tu, 0, cout);
+      return false;
+    }
+  else if (!opts.file_path.empty())
+    {
+      if (!check_file(opts.file_path, cerr))
+	return true;
+
+      abigail::translation_unit_sptr tu =
+	read_translation_unit_from_file(opts.file_path);
+
+      if (!tu)
+	{
+	  cerr << "failed to read " << opts.file_path << "\n";
+	  return true;
+	}
+
+      char tmpn[L_tmpnam];
+      tmpnam(tmpn);
+
+      string ofile_name = tmpn;
+
+      ofstream of(ofile_name.c_str(), std::ios_base::trunc);
+      if (!of.is_open())
+	{
+	  cerr << "open temporary output file " << ofile_name << "\n";
+	  return true;
+	}
+
+      bool r = write_translation_unit(*tu, /*indent=*/0, of);
+      bool is_ok = r;
+      of.close();
+
+      if (!is_ok)
+	cerr << "failed to write the translation unit "
+	     << opts.file_path << " back\n";
+
+      if (is_ok)
+	{
+	  string cmd = "diff -u " + opts.file_path + " " + ofile_name;
+	  if (system(cmd.c_str()))
+	    is_ok = false;
+	}
+      remove(ofile_name.c_str());
+      return !is_ok;
     }
 
-  char tmpn[L_tmpnam];
-  tmpnam(tmpn);
-
-  string ofile_name = tmpn;
-
-  ofstream of(ofile_name.c_str(), std::ios_base::trunc);
-  if (!of.is_open())
-    {
-      cerr << "open temporary output file " << ofile_name << "\n";
-      return true;
-    }
-
-  bool r = abigail::xml_writer::write_translation_unit(*tu, /*indent=*/0, of);
-  bool is_ok = r;
-  of.close();
-
-  if (!is_ok)
-    cerr << "failed to write the translation unit "
-	 << opts.file_path << " back\n";
-
-  if (is_ok)
-    {
-      string cmd = "diff -u " + opts.file_path + " " + ofile_name;
-      if (system(cmd.c_str()))
-	is_ok = false;
-    }
-  remove(ofile_name.c_str());
-
-  return !is_ok;
+  return true;
 }

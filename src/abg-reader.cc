@@ -48,6 +48,7 @@ using std::stack;
 using std::tr1::unordered_map;
 using std::tr1::dynamic_pointer_cast;
 using std::vector;
+using std::istream;
 using zip_utils::zip_sptr;
 using zip_utils::zip_file_sptr;
 using zip_utils::open_archive;
@@ -2695,6 +2696,38 @@ handle_class_tdecl(read_context& ctxt)
   xmlTextReaderNext(r.get());
 
   return is_ok;
+}
+
+/// De-serialize a translation unit from an ABI Instrumentation xml
+/// file coming from an input stream.
+///
+/// @param in a pointer to the input stream.
+///
+/// @param tu the translation unit resulting from the parsing.  This
+/// is populated iff the function returns true.
+///
+/// @return true upon successful parsing, false otherwise.
+bool
+read_translation_unit_from_istream(istream* in,
+				   translation_unit& tu)
+{
+  read_context read_ctxt(xml::new_reader_from_istream(in));
+  return read_input(read_ctxt, tu);
+}
+
+/// De-serialize a translation unit from an ABI Instrumentation xml
+/// file coming from an input stream.
+///
+/// @param in a pointer to the input stream.
+///
+/// @return a pointer to the resulting translation unit.
+translation_unit_sptr
+read_translation_unit_from_istream(istream* in)
+{
+  translation_unit_sptr result(new translation_unit(""));
+  if (!read_translation_unit_from_istream(in, *result))
+    return translation_unit_sptr();
+  return result;
 }
 
 /// De-serialize a translation unit from an ABI Instrumentation XML

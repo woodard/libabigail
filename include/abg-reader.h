@@ -29,6 +29,7 @@
 #ifndef __ABG_READER_H__
 #define __ABG_READER_H__
 
+#include <istream>
 #include "abg-corpus.h"
 
 namespace abigail
@@ -54,6 +55,13 @@ read_translation_unit_from_buffer(const std::string& file_path);
 bool
 read_translation_unit_from_buffer(const string&	buffer,
 				  translation_unit&	tu);
+
+bool
+read_translation_unit_from_istream(std::istream*	in,
+				   translation_unit&	tu);
+
+translation_unit_sptr
+read_translation_unit_from_istream(std::istream* in);
 
 abigail::corpus_sptr
 read_corpus_from_file(const string& path);
