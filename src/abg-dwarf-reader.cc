@@ -625,11 +625,59 @@ build_pointer_type_def(read_context&	ctxt,
   type_base_sptr utype = is_type(utype_decl);
   assert(utype);
 
-  translation_unit* tu = get_translation_unit(utype_decl);
+  size_t size;
+  if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
+    return result;
+  size *= 8;
 
-  result.reset(new pointer_type_def(utype, tu->get_address_size(),
-				    tu->get_address_size(),
-				    location()));
+  result.reset(new pointer_type_def(utype, size, size, location()));
+
+  return result;
+}
+
+/// Build a reference type from either a DW_TAG_reference_type or
+/// DW_TAG_rvalue_reference_type DIE.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE to read from.
+///
+/// @return a pointer to the resulting reference_type_def.
+static reference_type_def_sptr
+build_reference_type(read_context& ctxt,
+		     Dwarf_Die* die)
+{
+  reference_type_def_sptr result;
+
+  if (!die)
+    return result;
+
+  unsigned tag = dwarf_tag(die);
+  if (tag != DW_TAG_reference_type
+      && tag != DW_TAG_rvalue_reference_type)
+    return result;
+
+  Dwarf_Die underlying_type_die;
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+    return result;
+
+  decl_base_sptr utype_decl =
+    build_ir_node_from_die(ctxt, &underlying_type_die);
+  if (!utype_decl)
+    return result;
+
+  type_base_sptr utype = is_type(utype_decl);
+  assert(utype);
+
+  size_t size;
+  if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
+    return result;
+  size *= 8;
+
+  bool is_lvalue = (tag == DW_TAG_reference_type) ? true : false;
+
+  result.reset(new reference_type_def(utype, is_lvalue, size, size,
+				      location()));
 
   return result;
 }
@@ -877,8 +925,14 @@ build_ir_node_from_die(read_context&	ctxt,
       }
       break;
     case DW_TAG_reference_type:
-      break;
     case DW_TAG_rvalue_reference_type:
+      {
+	reference_type_def_sptr r = build_reference_type(ctxt, die);
+	decl_base_sptr underlying_type =
+	  get_type_declaration(r->get_pointed_to_type());
+	result =
+	  canonicalize_and_add_type_to_ir(r, underlying_type->get_scope());
+      }
       break;
     case DW_TAG_const_type:
     case DW_TAG_volatile_type:
