@@ -617,6 +617,14 @@ read_input(read_context&	ctxt,
 				   BAD_CAST("abi-instr")))
     return false;
 
+  xml::xml_char_sptr addrsize_str = XML_READER_GET_ATTRIBUTE(reader,
+							     "address-size");
+  if (addrsize_str)
+    {
+      char address_size = atoi(reinterpret_cast<char*>(addrsize_str.get()));
+      tu.set_address_size(address_size);
+    }
+
   // We are at global scope, as we've just seen the top-most
   // "abi-instr" element.
   ctxt.push_decl(tu.get_global_scope());

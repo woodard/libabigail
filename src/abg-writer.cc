@@ -638,6 +638,9 @@ write_translation_unit(const translation_unit& tu,
     << "." << static_cast<int>(c.get_format_minor_version_number())
     << "'";
 
+  if (tu.get_address_size() != 0)
+    o << " address-size='" << static_cast<int>(tu.get_address_size()) << "'";
+
   if (tu.is_empty())
     {
       o << "/>";

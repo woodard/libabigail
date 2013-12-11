@@ -151,10 +151,15 @@ typedef unordered_map<shared_ptr<type_base>,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
+  char				address_size_;
   std::string			path_;
   location_manager		loc_mgr_;
   mutable global_scope_sptr	global_scope_;
   type_ptr_map			canonical_types_;
+
+  priv()
+    : address_size_(0)
+  {}
 }; // end translation_unit::priv
 
 // <translation_unit stuff>
@@ -162,9 +167,16 @@ struct translation_unit::priv
 /// Constructor of translation_unit.
 ///
 /// @param path the location of the translation unit.
-translation_unit::translation_unit(const std::string& path)
+///
+/// @param address_size the size of addresses in the translation unit,
+/// in bits.
+translation_unit::translation_unit(const std::string& path,
+				   char address_size)
   : priv_(new priv)
-{priv_->path_ = path;}
+{
+  priv_->path_ = path;
+  priv_->address_size_ = address_size;
+}
 
 /// Getter of the the global scope of the translation unit.
 ///
@@ -271,6 +283,21 @@ translation_unit::canonicalize_type(decl_base_sptr t) const
 
   return get_type_declaration(type);
 }
+
+/// Getter of the address size in this translation unit.
+///
+/// @return the address size, in bits.
+char
+translation_unit::get_address_size() const
+{return priv_->address_size_;}
+
+/// Setter of the address size in this translation unit.
+///
+/// @param the new address size in bits.
+void
+translation_unit::set_address_size(char a)
+{priv_->address_size_= a;}
+
 /// This implements the traversable_base::traverse pure virtual
 /// function.
 ///

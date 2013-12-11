@@ -116,7 +116,8 @@ public:
   typedef shared_ptr<global_scope> global_scope_sptr;
 
 public:
-  translation_unit(const std::string& path);
+  translation_unit(const std::string& path,
+		   char address_size = 0);
 
   virtual ~translation_unit();
 
@@ -143,6 +144,12 @@ public:
 
   shared_ptr<decl_base>
   canonicalize_type(shared_ptr<decl_base>) const;
+
+  char
+  get_address_size() const;
+
+  void
+  set_address_size(char);
 
   void
   traverse(ir_node_visitor& v);
