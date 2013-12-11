@@ -682,6 +682,47 @@ build_reference_type(read_context& ctxt,
   return result;
 }
 
+/// Create a typedef_decl from a DW_TAG_typedef DIE.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE to read from.
+///
+/// @return the newly created typedef_decl.
+static typedef_decl_sptr
+build_typedef_type(read_context& ctxt,
+		   Dwarf_Die* die)
+{
+  typedef_decl_sptr result;
+
+  if (!die)
+    return result;
+
+  unsigned tag = dwarf_tag(die);
+  if (tag != DW_TAG_typedef)
+    return result;
+
+  Dwarf_Die underlying_type_die;
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+    return result;
+
+  decl_base_sptr utype_decl =
+    build_ir_node_from_die(ctxt, &underlying_type_die);
+  if (!utype_decl)
+    return result;
+
+  type_base_sptr utype = is_type(utype_decl);
+  assert(utype);
+
+  string name, mangled_name;
+  location loc;
+  die_loc_and_name(ctxt, die, loc, name, mangled_name);
+
+  result.reset(new typedef_decl(name, utype, loc, mangled_name));
+
+  return result;
+}
+
 /// Build a @ref var_decl out of a DW_TAG_variable DIE.
 ///
 /// @param ctxt the read context to use.
@@ -856,6 +897,9 @@ decl_base_sptr
 canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
 				scope_decl* type_scope)
 {
+  if (!type_declaration)
+    return type_declaration;
+
   translation_unit* tu = get_translation_unit(type_scope);
   assert(tu);
 
@@ -878,6 +922,21 @@ canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
 
   return result;
 }
+
+/// Canonicalize a type and add it to the current IR being built, if
+/// necessary.
+///
+/// @param type_declaration the declaration of the type to
+/// canonicalize.
+///
+/// @param type_scope the scope into which the canonicalized type
+/// needs to be added to.
+///
+/// @return the resulting canonicalized type.
+decl_base_sptr
+canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
+				scope_decl_sptr type_scope)
+{return canonicalize_and_add_type_to_ir(type_declaration, type_scope.get());}
 
 /// Build an IR node from a given DIE and add the node to the current
 /// IR being build and held in the read_context.
@@ -910,11 +969,17 @@ build_ir_node_from_die(read_context&	ctxt,
 	  translation_unit_sptr tu = ctxt.current_translation_unit();
 	  result =
 	    canonicalize_and_add_type_to_ir(result,
-					    tu->get_global_scope().get());
+					    tu->get_global_scope());
 	}
       break;
+
     case DW_TAG_typedef:
+      {
+	typedef_decl_sptr t = build_typedef_type(ctxt, die);
+	result = canonicalize_and_add_type_to_ir(t, ctxt.current_scope());
+      }
       break;
+
     case DW_TAG_pointer_type:
       {
 	pointer_type_def_sptr p = build_pointer_type_def(ctxt, die);
@@ -924,6 +989,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  canonicalize_and_add_type_to_ir(p, underlying_type->get_scope());
       }
       break;
+
     case DW_TAG_reference_type:
     case DW_TAG_rvalue_reference_type:
       {
@@ -934,6 +1000,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  canonicalize_and_add_type_to_ir(r, underlying_type->get_scope());
       }
       break;
+
     case DW_TAG_const_type:
     case DW_TAG_volatile_type:
       {
@@ -947,6 +1014,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  }
       }
       break;
+
     case DW_TAG_enumeration_type:
       break;
     case DW_TAG_class_type:
