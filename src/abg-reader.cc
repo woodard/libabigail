@@ -187,7 +187,7 @@ public:
   translation_unit*
   get_translation_unit()
   {
-    global_scope* global = 0;
+    const global_scope* global = 0;
     if (shared_ptr<decl_base> d = get_cur_decl ())
       global = get_global_scope(d);
 

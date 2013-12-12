@@ -265,6 +265,12 @@ public:
   friend void
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
 
+  friend void
+  insert_decl_into_scope(shared_ptr<decl_base>,
+			 vector<shared_ptr<decl_base> >::iterator,
+			 scope_decl*);
+
+
   friend class class_decl;
 };// end class decl_base
 
@@ -300,6 +306,10 @@ protected:
   virtual void
   add_member_decl(const decl_base_sptr member);
 
+  virtual void
+  insert_member_decl(const decl_base_sptr member,
+		     declarations::iterator before);
+
 public:
   scope_decl(const std::string& name, location locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
@@ -316,13 +326,23 @@ public:
   get_member_decls() const
   {return members_;}
 
-  const scopes&
-  get_member_scopes() const
+  declarations&
+  get_member_decls()
+  {return members_;}
+
+  scopes&
+  get_member_scopes()
   {return member_scopes_;}
 
   bool
   is_empty() const
   {return get_member_decls().empty();}
+
+  bool
+  find_iterator_for_member(const decl_base*, declarations::iterator&);
+
+  bool
+  find_iterator_for_member(const decl_base_sptr, declarations::iterator&);
 
   void
   traverse(ir_node_visitor&);
@@ -331,6 +351,11 @@ public:
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
+
+  friend void
+  insert_decl_into_scope(decl_base_sptr decl,
+			 scope_decl::declarations::iterator before,
+			 scope_decl* scope);
 };//end class scope_decl
 
 /// Convenience typedef for shared pointer on @ref global_scope.

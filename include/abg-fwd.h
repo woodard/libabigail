@@ -60,6 +60,7 @@ namespace abigail
 // Inject some types.
 using std::tr1::shared_ptr;
 using std::string;
+using std::vector;
 
 // Pull in relational operators.
 using namespace std::rel_ops;
@@ -112,7 +113,7 @@ add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
 void
 add_decl_to_scope (shared_ptr<decl_base>, shared_ptr<scope_decl>);
 
-global_scope*
+const global_scope*
 get_global_scope(const shared_ptr<decl_base>);
 
 translation_unit*
@@ -160,11 +161,18 @@ add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
 void
 add_decl_to_scope(shared_ptr<decl_base>, shared_ptr<scope_decl>);
 
-global_scope*
-get_global_scope(decl_base* decl);
+void
+insert_decl_into_scope(shared_ptr<decl_base>,
+		       vector<shared_ptr<decl_base> >::iterator,
+		       scope_decl*);
 
-global_scope*
-get_global_scope(const shared_ptr<decl_base>);
+void
+insert_decl_into_scope(shared_ptr<decl_base>,
+		       vector<shared_ptr<decl_base> >::iterator,
+		       shared_ptr<scope_decl>);
+
+const global_scope*
+get_global_scope(const decl_base* decl);
 
 translation_unit*
 get_translation_unit(decl_base* decl);
@@ -177,6 +185,18 @@ get_type_name(const shared_ptr<type_base>);
 
 shared_ptr<decl_base>
 get_type_declaration(const shared_ptr<type_base>);
+
+const scope_decl*
+get_top_most_scope_under(const decl_base*,
+			 const scope_decl*);
+
+const scope_decl*
+get_top_most_scope_under(const shared_ptr<decl_base>,
+			 const scope_decl*);
+
+const scope_decl*
+get_top_most_scope_under(const shared_ptr<decl_base>,
+			 const shared_ptr<scope_decl>);
 
 void
 dump(const shared_ptr<decl_base>, std::ostream&);

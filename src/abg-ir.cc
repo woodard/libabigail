@@ -513,7 +513,25 @@ scope_decl::add_member_decl(const shared_ptr<decl_base> member)
 {
   members_.push_back(member);
 
-  if (shared_ptr<scope_decl> m = dynamic_pointer_cast<scope_decl>(member))
+  if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
+    member_scopes_.push_back(m);
+}
+
+/// Insert a member decl to this scope, right before an element
+/// pointed to by a given iterator.  Note that user code should not
+/// use this, but rather use insert_decl_into_scope.
+///
+/// @param member the new member decl to add to this scope.
+///
+/// @param before an interator pointing to the element before which
+/// the new member should be inserted.
+void
+scope_decl::insert_member_decl(const decl_base_sptr member,
+			       declarations::iterator before)
+{
+  members_.insert(before, member);
+
+  if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     member_scopes_.push_back(m);
 }
 
@@ -548,6 +566,46 @@ scope_decl::operator==(const decl_base& o) const
 
   return true;
 }
+
+/// Find a member of the current scope and return an iterator on it.
+///
+/// @param decl the scope member to find.
+///
+/// @param i the iterator to set to the member @ref decl.  This is set
+/// iff the function returns true.
+///
+/// @return true if the member decl was found, false otherwise.
+bool
+scope_decl::find_iterator_for_member(const decl_base* decl,
+				     declarations::iterator& i)
+{
+  if (!decl)
+    return false;
+
+  for (declarations::iterator it = get_member_decls().begin();
+       it != get_member_decls().end();
+       ++it)
+    if (**it == *decl)
+      {
+	i = it;
+	return true;
+      }
+
+  return false;
+}
+
+/// Find a member of the current scope and return an iterator on it.
+///
+/// @param decl the scope member to find.
+///
+/// @param i the iterator to set to the member @ref decl.  This is set
+/// iff the function returns true.
+///
+/// @return true if the member decl was found, false otherwise.
+bool
+scope_decl::find_iterator_for_member(const decl_base_sptr decl,
+				     declarations::iterator& i)
+{return find_iterator_for_member(decl.get(), i);}
 
 /// This implements the traversable_base::traverse pure virtual
 /// function.
@@ -600,16 +658,52 @@ void
 add_decl_to_scope(shared_ptr<decl_base> decl, shared_ptr<scope_decl> scope)
 {add_decl_to_scope(decl, scope.get());}
 
-/// Return the global scope as seen by a given declaration.
+/// Inserts a declaration into a given scope, before a given IR child
+/// node of the scope.
+///
+/// @param decl the declaration to insert into the scope.
+///
+/// @param before an iterator pointing to the child IR node before
+/// which to insert the declaration.
+///
+/// @param scope the scope into which to insert the declaration.
+void
+insert_decl_into_scope(decl_base_sptr decl,
+		       scope_decl::declarations::iterator before,
+		       scope_decl* scope)
+{
+  if (scope && decl && !decl->get_scope())
+    {
+      scope->insert_member_decl(decl, before);
+      decl->set_scope(scope);
+    }
+}
+
+/// Inserts a declaration into a given scope, before a given IR child
+/// node of the scope.
+///
+/// @param decl the declaration to insert into the scope.
+///
+/// @param before an iterator pointing to the child IR node before
+/// which to insert the declaration.
+///
+/// @param scope the scope into which to insert the declaration.
+void
+insert_decl_into_scope(decl_base_sptr decl,
+		       scope_decl::declarations::iterator before,
+		       scope_decl_sptr scope)
+{insert_decl_into_scope(decl, before, scope.get());}
+
+/// return the global scope as seen by a given declaration.
 ///
 /// @param decl the declaration to consider.
 ///
 /// @return the global scope of the decl, or a null pointer if the
 /// decl is not yet added to a translation_unit.
-global_scope*
-get_global_scope(decl_base* decl)
+const global_scope*
+get_global_scope(const decl_base* decl)
 {
-  if (global_scope* s = dynamic_cast<global_scope*>(decl))
+  if (const global_scope* s = dynamic_cast<const global_scope*>(decl))
     return s;
 
   scope_decl* scope = decl->get_scope();
@@ -625,18 +719,67 @@ get_global_scope(decl_base* decl)
 ///
 /// @return the global scope of the decl, or a null pointer if the
 /// decl is not yet added to a translation_unit.
-global_scope*
+const global_scope*
 get_global_scope(const shared_ptr<decl_base> decl)
+{return get_global_scope(decl.get());}
+
+/// Return the a scope S containing a given declaration and that is
+/// right under a given scope P.
+///
+/// @param decl the decl for which to find a scope.
+///
+/// @param scope the scope under which the resulting scope must be.
+///
+/// @return the resulting scope.
+const scope_decl*
+get_top_most_scope_under(const decl_base* decl,
+			 const scope_decl* scope)
 {
-  if (shared_ptr<global_scope> s = dynamic_pointer_cast<global_scope>(decl))
-    return s.get();
+  if (!decl)
+    return 0;
 
-  scope_decl* scope = decl->get_scope();
-  while (scope && !dynamic_cast<global_scope*>(scope))
-    scope = scope->get_scope();
+  if (scope == 0)
+    return get_global_scope(decl);
 
-  return scope ? dynamic_cast<global_scope*> (scope) : 0;
+  const scope_decl* s = dynamic_cast<const scope_decl*>(decl);
+  if (!s)
+    s = decl->get_scope();
+
+  while (!is_global_scope(s) && s->get_scope() != scope)
+    s = s->get_scope();
+
+  if (is_global_scope(s))
+    assert(is_global_scope(scope));
+  assert(s);
+
+  return s;
 }
+
+/// Return the a scope S containing a given declaration and that is
+/// right under a given scope P.
+///
+/// @param decl the decl for which to find a scope.
+///
+/// @param scope the scope under which the resulting scope must be.
+///
+/// @return the resulting scope.
+const scope_decl*
+get_top_most_scope_under(const decl_base_sptr decl,
+			 const scope_decl* scope)
+{return get_top_most_scope_under(decl.get(), scope);}
+
+/// Return the a scope S containing a given declaration and that is
+/// right under a given scope P.
+///
+/// @param decl the decl for which to find a scope.
+///
+/// @param scope the scope under which the resulting scope must be.
+///
+/// @return the resulting scope.
+const scope_decl*
+get_top_most_scope_under(const decl_base_sptr decl,
+			 const scope_decl_sptr scope)
+{return get_top_most_scope_under(decl, scope.get());}
 
 /// Get the name of a given type and return a copy of it.
 ///
@@ -667,7 +810,7 @@ get_type_declaration(const type_base_sptr t)
 translation_unit*
 get_translation_unit(decl_base* decl)
 {
-  global_scope* global = get_global_scope(decl);
+  const global_scope* global = get_global_scope(decl);
 
   if (global)
     return global->get_translation_unit();
