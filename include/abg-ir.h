@@ -260,7 +260,7 @@ public:
 
   void
   set_visibility(visibility v)
-  { visibility_ = v; }
+  {visibility_ = v;}
 
   friend void
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
@@ -298,14 +298,13 @@ private:
 
 protected:
   virtual void
-  add_member_decl(const shared_ptr<decl_base> member);
+  add_member_decl(const decl_base_sptr member);
 
 public:
   scope_decl(const std::string& name, location locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
   : decl_base(name, locus, /*mangled_name=*/name, vis)
   {}
-
 
   scope_decl(location l) : decl_base("", l)
   {}
@@ -334,6 +333,8 @@ public:
   add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
 };//end class scope_decl
 
+/// Convenience typedef for shared pointer on @ref global_scope.
+typedef shared_ptr<global_scope> global_scope_sptr;
 
 /// This abstracts the global scope of a given translation unit.
 ///
@@ -342,7 +343,7 @@ public:
 /// time translatin_unit::get_global_scope is invoked.
 class global_scope : public scope_decl
 {
-  translation_unit*		translation_unit_;
+  translation_unit* translation_unit_;
 
   global_scope(translation_unit *tu)
   : decl_base("", location()), scope_decl("", location()),
@@ -483,6 +484,9 @@ public:
 
   virtual ~scope_type_decl();
 };
+
+/// Convenience typedef for a shared pointer on namespace_decl.
+typedef shared_ptr<namespace_decl> namespace_decl_sptr;
 
 /// The abstraction of a namespace declaration
 class namespace_decl : public scope_decl
