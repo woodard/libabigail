@@ -916,9 +916,12 @@ public:
     bool
     operator==(const parameter& o) const
     {
-      return (*get_type() == *o.get_type()
-	      && get_variadic_marker() == o.get_variadic_marker()
-	      && get_index() == o.get_index());
+      if ((get_variadic_marker() != o.get_variadic_marker())
+	  || (get_index() != o.get_index())
+	  || (!!get_type() != !!o.get_type())
+	  || (get_type() && (*get_type() != *o.get_type())))
+	return false;
+      return true;
     }
 
     bool
