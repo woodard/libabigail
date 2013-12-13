@@ -156,6 +156,9 @@ struct translation_unit::priv
   location_manager		loc_mgr_;
   mutable global_scope_sptr	global_scope_;
   type_ptr_map			canonical_types_;
+  // The map below contains the types referenced from public functions
+  // or variables.
+  type_ptr_map used_types_;
 
   priv()
     : address_size_(0)
@@ -282,6 +285,41 @@ translation_unit::canonicalize_type(decl_base_sptr t) const
   assert(type);
 
   return get_type_declaration(type);
+}
+
+/// Mark a given type (that must be a canonical type) as being used.
+/// This is later used by the translation_uniçt::prune_unused_types to
+/// remove the types that are not marked used from the translation
+/// unit.
+///
+/// @param t the type to mark as being used.
+void
+translation_unit::mark_type_as_used(type_base_sptr t) const
+{
+  if (!t)
+    return;
+
+  type_ptr_map::iterator it =  priv_->canonical_types_.find(t);
+  assert(it != priv_->canonical_types_.end());
+
+  /// TODO: we should walk t to also mark of its sub-types as being
+  /// used as well.
+  priv_->used_types_[t]= true;
+}
+
+/// Walk the types seen by translation_unit::canonical_types() and
+/// remove the ones that have not been marked as being used by
+/// translation_unit::mark_type_as_used.  Removing the type means
+/// removing the type node from the its scope.  The type is still
+/// kepts in the internal map of canonical types, though.
+void
+translation_unit::prune_unused_types()
+{
+  for (type_ptr_map::iterator it = priv_->canonical_types_.begin();
+       it != priv_->canonical_types_.end();
+       ++it)
+    if (priv_->used_types_.find(it->first) == priv_->used_types_.end())
+      remove_decl_from_scope(get_type_declaration(it->first));
 }
 
 /// Getter of the address size in this translation unit.
@@ -535,6 +573,41 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
     member_scopes_.push_back(m);
 }
 
+/// Remove a declaration from the current scope.
+///
+/// @param member the declaration to remove from the scope.
+void
+scope_decl::remove_member_decl(const decl_base_sptr member)
+{
+  for (declarations::iterator i = members_.begin();
+       i != members_.end();
+       ++i)
+    {
+      if (**i == *member)
+	{
+	  members_.erase(i);
+	  // Do not access i after this point as it's invalided by the
+	  // erase call.
+	  break;
+	}
+    }
+
+  scope_decl_sptr scope = dynamic_pointer_cast<scope_decl>(member);
+  if (scope)
+    {
+      for (scopes::iterator i = member_scopes_.begin();
+	   i != member_scopes_.end();
+	   ++i)
+	{
+	  if (**i == *member)
+	    {
+	      member_scopes_.erase(i);
+	      break;
+	    }
+	}
+    }
+}
+
 /// Return true iff both scopes have the same names and have the same
 /// member decls.
 ///
@@ -657,6 +730,19 @@ add_decl_to_scope(shared_ptr<decl_base> decl, scope_decl* scope)
 void
 add_decl_to_scope(shared_ptr<decl_base> decl, shared_ptr<scope_decl> scope)
 {add_decl_to_scope(decl, scope.get());}
+
+/// Remove a given decl from its scope
+///
+/// @param decl the decl to remove from its scope.
+void
+remove_decl_from_scope(decl_base_sptr decl)
+{
+  if (!decl)
+    return;
+
+  scope_decl* scope = decl->get_scope();
+  scope->remove_member_decl(decl);
+}
 
 /// Inserts a declaration into a given scope, before a given IR child
 /// node of the scope.
@@ -2232,6 +2318,25 @@ class_decl::add_member_decl(decl_base_sptr d)
     scope_decl::add_member_decl(d);
 }
 
+/// Remove a given decl from the current class scope.
+///
+/// Note that only type declarations are supported by this method for
+/// now.  Support for the other kinds of declaration is left as an
+/// exercise for the interested reader of the code.
+///
+/// @param decl the declaration to remove from this class scope.
+void
+class_decl::remove_member_decl(decl_base_sptr decl)
+{
+  type_base_sptr t = is_type(decl);
+
+  // For now we want to support just removing types from classes.  For
+  // other kinds of IR node, we need more work.
+  assert(t);
+
+  remove_member_type(t);
+}
+
 /// Add a member type to the current instance of class_decl.
 ///
 /// @param t the member type to add.  It must not have been added to a
@@ -2263,6 +2368,24 @@ class_decl::add_member_type(type_base_sptr t, access_specifier a)
   shared_ptr<class_decl::member_type> m(new class_decl::member_type(t, a));
   add_member_type(m);
   add_decl_to_scope(d, this);
+}
+
+/// Remove a member type from the current class scope.
+///
+/// @param t the type to remove.
+void
+class_decl::remove_member_type(type_base_sptr t)
+{
+  for (member_types::iterator i = member_types_.begin();
+       i != member_types_.end();
+       ++i)
+    {
+      if (*((*i)->as_type()) == *t)
+	{
+	  member_types_.erase(i);
+	  return;
+	}
+    }
 }
 
 /// Constructor for base_spec instances.

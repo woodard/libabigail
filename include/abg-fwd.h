@@ -171,6 +171,9 @@ insert_decl_into_scope(shared_ptr<decl_base>,
 		       vector<shared_ptr<decl_base> >::iterator,
 		       shared_ptr<scope_decl>);
 
+void
+remove_decl_from_scope(shared_ptr<decl_base>);
+
 const global_scope*
 get_global_scope(const decl_base* decl);
 

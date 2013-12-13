@@ -99,6 +99,12 @@ typedef shared_ptr<translation_unit> translation_unit_sptr;
 /// Convenience typedef for a vector of @ref translation_unit_sptr.
 typedef std::vector<translation_unit_sptr> translation_units;
 
+/// Convenience typedef for a shared pointer on a @ref type_base
+typedef shared_ptr<type_base> type_base_sptr;
+
+/// Convenience typedef for a smart pointer on @ref decl_base.
+typedef shared_ptr<decl_base> decl_base_sptr;
+
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
@@ -139,11 +145,17 @@ public:
   bool
   is_empty() const;
 
-  shared_ptr<type_base>
-  canonicalize_type(shared_ptr<type_base>) const;
+  type_base_sptr
+  canonicalize_type(type_base_sptr) const;
 
-  shared_ptr<decl_base>
-  canonicalize_type(shared_ptr<decl_base>) const;
+  decl_base_sptr
+  canonicalize_type(decl_base_sptr) const;
+
+  void
+  mark_type_as_used(type_base_sptr) const;
+
+  void
+  prune_unused_types();
 
   char
   get_address_size() const;
@@ -154,9 +166,6 @@ public:
   void
   traverse(ir_node_visitor& v);
 };//end class translation_unit
-
-/// Convenience typedef for a smart pointer on @ref decl_base.
-typedef shared_ptr<decl_base> decl_base_sptr;
 
 /// The base type of all declarations.
 class decl_base : public traversable_base
@@ -310,6 +319,9 @@ protected:
   insert_member_decl(const decl_base_sptr member,
 		     declarations::iterator before);
 
+  virtual void
+  remove_member_decl(const decl_base_sptr member);
+
 public:
   scope_decl(const std::string& name, location locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
@@ -356,6 +368,9 @@ public:
   insert_decl_into_scope(decl_base_sptr decl,
 			 scope_decl::declarations::iterator before,
 			 scope_decl* scope);
+
+  friend void
+  remove_decl_from_scope(decl_base_sptr decl);
 };//end class scope_decl
 
 /// Convenience typedef for shared pointer on @ref global_scope.
@@ -385,9 +400,6 @@ public:
 
   virtual ~global_scope();
 };
-
-/// Convenience typedef for a shared pointer on a @ref type_base
-typedef shared_ptr<type_base> type_base_sptr;
 
 /// An abstraction helper for type declarations
 class type_base
@@ -1535,6 +1547,14 @@ private:
   member_function_templates	member_function_templates_;
   member_class_templates	member_class_templates_;
 
+protected:
+
+  virtual void
+  add_member_decl(decl_base_sptr);
+
+  virtual void
+  remove_member_decl(decl_base_sptr);
+
 public:
 
   class_decl(const std::string& name, size_t size_in_bits,
@@ -1580,14 +1600,14 @@ public:
   get_base_specifiers() const
   {return bases_;}
 
-  virtual void
-  add_member_decl(decl_base_sptr);
-
   void
   add_member_type(member_type_sptr t);
 
   void
   add_member_type(type_base_sptr t, access_specifier a);
+
+  void
+  remove_member_type(type_base_sptr t);
 
   const member_types&
   get_member_types() const

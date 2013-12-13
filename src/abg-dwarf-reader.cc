@@ -58,28 +58,22 @@ struct dwfl_deleter
 /// A convenience typedef for a shared pointer to a Dwfl.
 typedef shared_ptr<Dwfl> dwfl_sptr;
 
-/// A map hashing functor for Dwarf_Die*.
-struct die_hash
-{
-  size_t
-  operator()(Dwarf_Die* die) const
-  {return std::hash<void*>()(die->addr);}
-};
-
-/// Convenience typedef for a map which key is a dwarf die, and which
-/// value is the corresponding decl_base.
-typedef unordered_map<Dwarf_Die*, decl_base_sptr, die_hash> die_decl_map_type;
+/// Convenience typedef for a map which key is the offset of a dwarf
+/// die, (given by dwarf_dieoffset()) and which value is the
+/// corresponding decl_base.
+typedef unordered_map<Dwarf_Off, decl_base_sptr> die_decl_map_type;
 
 /// Convenience typedef for a stack containing the scopes up to the
 /// current point in the abigail Internal Representation (aka IR) tree
 /// that is being built.
 typedef stack<scope_decl_sptr> scope_stack_type;
 
-/// Convenience typedef for a map that contains the decls of the types
-/// that have been built so far.  This is used to canonicalize the
-/// types we create so that only one copy of a given type remains in
-/// the system per translation unit, when that makes sense.
-typedef unordered_map<decl_base_sptr, bool> type_decl_map;
+/// Convenience typedef for a map that contains the types that have
+/// been built so far.
+typedef unordered_map<shared_ptr<type_base>,
+		      bool,
+		      type_base::shared_ptr_hash,
+		      type_shared_ptr_equal> type_ptr_map;
 
 /// The context accumulated during the reading of dwarf debug info and
 /// building of the resulting ABI Corpus as a result.
@@ -207,7 +201,7 @@ public:
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool only_public_decl = false);
+		       bool called_from_public_decl = false);
 
 /// Constructor for a default Dwfl handle that knows how to load debug
 /// info from a library or executable elf file.
@@ -511,8 +505,12 @@ build_translation_unit(read_context&	ctxt,
     return result;
 
   do
-    build_ir_node_from_die(ctxt, &child, /*only_public_decl=*/true);
+    build_ir_node_from_die(ctxt, &child);
   while (dwarf_siblingof(&child, &child) == 0);
+
+  /// Prune types that are not referenced from any public decl, out of
+  /// the translation unit.
+  result->prune_unused_types();
 
   return result;
 }
@@ -558,7 +556,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 
   ctxt.scope_stack().push(result);
   do
-    build_ir_node_from_die(ctxt, &child, /*only_public_decl=*/true);
+    build_ir_node_from_die(ctxt, &child);
   while (dwarf_siblingof(&child, &child) == 0);
   ctxt.scope_stack().pop();
 
@@ -611,10 +609,15 @@ build_type_decl(read_context&	ctxt,
 ///
 /// @param die the input DIE to read from.
 ///
+/// @param called_from_public_decl true if this function was called
+/// from a context where either a public function or a public variable
+/// is being built.
+///
 /// @return the resulting qualified_type_def.
 static qualified_type_def_sptr
 build_qualified_type(read_context&	ctxt,
-		     Dwarf_Die*	die)
+		     Dwarf_Die*	die,
+		     bool called_from_public_decl)
 {
   qualified_type_def_sptr result;
   if (!die)
@@ -631,7 +634,8 @@ build_qualified_type(read_context&	ctxt,
     return result;
 
   decl_base_sptr utype_decl = build_ir_node_from_die(ctxt,
-						     &underlying_type_die);
+						     &underlying_type_die,
+						     called_from_public_decl);
   if (!utype_decl)
     return result;
 
@@ -656,10 +660,15 @@ build_qualified_type(read_context&	ctxt,
 ///
 /// @param die the DIE to read information from.
 ///
+/// @param called_from_public_decl true if this function was called
+/// from a context where either a public function or a public variable
+/// is being built.
+///
 /// @return the resulting pointer to pointer_type_def.
 static pointer_type_def_sptr
 build_pointer_type_def(read_context&	ctxt,
-		       Dwarf_Die*	die)
+		       Dwarf_Die*	die,
+		       bool called_from_public_decl)
 {
   pointer_type_def_sptr result;
 
@@ -675,7 +684,7 @@ build_pointer_type_def(read_context&	ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die);
+    build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
   if (!utype_decl)
     return result;
 
@@ -699,10 +708,15 @@ build_pointer_type_def(read_context&	ctxt,
 ///
 /// @param die the DIE to read from.
 ///
+/// @param called_from_public_decl true if this function was called
+/// from a context where either a public function or a public variable
+/// is being built.
+///
 /// @return a pointer to the resulting reference_type_def.
 static reference_type_def_sptr
 build_reference_type(read_context& ctxt,
-		     Dwarf_Die* die)
+		     Dwarf_Die* die,
+		     bool called_from_public_decl)
 {
   reference_type_def_sptr result;
 
@@ -719,7 +733,7 @@ build_reference_type(read_context& ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die);
+    build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
   if (!utype_decl)
     return result;
 
@@ -745,10 +759,15 @@ build_reference_type(read_context& ctxt,
 ///
 /// @param die the DIE to read from.
 ///
+/// @param called_from_public_decl true if this function was called
+/// from a context where either a public function or a public variable
+/// is being built.
+///
 /// @return the newly created typedef_decl.
 static typedef_decl_sptr
 build_typedef_type(read_context& ctxt,
-		   Dwarf_Die* die)
+		   Dwarf_Die* die,
+		   bool called_from_public_decl)
 {
   typedef_decl_sptr result;
 
@@ -764,7 +783,7 @@ build_typedef_type(read_context& ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die);
+    build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
   if (!utype_decl)
     return result;
 
@@ -805,7 +824,9 @@ build_var_decl(read_context& ctxt,
   Dwarf_Die type_die;
   if (die_die_attribute(die, DW_AT_type, type_die))
     {
-      decl_base_sptr ty = build_ir_node_from_die(ctxt, &type_die);
+      decl_base_sptr ty =
+	build_ir_node_from_die(ctxt, &type_die,
+			       /*called_from_public_decl=*/true);
       if (!ty)
 	return result;
       type = is_type(ty);
@@ -826,16 +847,35 @@ build_var_decl(read_context& ctxt,
 /// @param ctxt the read context to use
 ///
 /// @param die the DW_TAG_subprogram DIE to read from.
+///
+/// @param called_from_public_decl this is set to true if the function
+/// was called for a public (function) decl.
 static function_decl_sptr
 build_function_decl(read_context& ctxt,
-		    Dwarf_Die* die)
+		    Dwarf_Die* die,
+		    bool called_for_public_decl)
 {
   function_decl_sptr result;
   if (!die)
     return result;
   assert(dwarf_tag(die) == DW_TAG_subprogram);
 
-  if (!is_public_decl(die))
+  Dwarf_Die spec_die;
+  if (die_die_attribute(die, DW_AT_specification, spec_die))
+    {
+      // So this means that the current DW_TAG_subprogram DIE is for
+      // (refers to) a function declaration that was done earlier.
+      // Let's emit a function_decl representing that declaration.  We
+      // typically hit this case for DIEs representing concrete
+      // functions implementations; in those cases, what we want
+      // really is the declaration, as that is what has the meta-data
+      // we are looking after.
+      decl_base_sptr r =
+	build_ir_node_from_die(ctxt, &spec_die, called_for_public_decl);
+      return dynamic_pointer_cast<function_decl>(r);
+    }
+
+ if (!is_public_decl(die))
     return result;
 
   translation_unit_sptr tu = ctxt.current_translation_unit();
@@ -851,7 +891,9 @@ build_function_decl(read_context& ctxt,
   Dwarf_Die ret_type_die;
   die_die_attribute(die, DW_AT_type, ret_type_die);
 
-  decl_base_sptr return_type_decl = build_ir_node_from_die(ctxt, &ret_type_die);
+  decl_base_sptr return_type_decl =
+    build_ir_node_from_die(ctxt, &ret_type_die,
+			   /*called_from_public_decl=*/true);
 
   Dwarf_Die child;
   function_decl::parameters function_parms;
@@ -868,7 +910,8 @@ build_function_decl(read_context& ctxt,
 	    Dwarf_Die parm_type_die;
 	    die_die_attribute(&child, DW_AT_type, parm_type_die);
 	    decl_base_sptr parm_type_decl =
-	      build_ir_node_from_die(ctxt, &parm_type_die);
+	      build_ir_node_from_die(ctxt, &parm_type_die,
+				     /*called_from_public_decl=*/true);
 	    if (!parm_type_decl)
 	      continue;
 	    function_decl::parameter_sptr p
@@ -1104,36 +1147,37 @@ canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
 ///
 /// @parm die the DIE to consider.
 ///
-/// @param only_public_decl if yes, only namespace-level declarations
-/// that are public are emitted.  The types needed to emit these
-/// public declaration are emitted too, and added to the IR at a point
-/// that is before the point of emitting the decl.
+/// @param called_from_public_decl if yes flag the types that are
+/// possibly going to be created by the invocation to this function as
+/// being used by a public decl.  This is later going to be useful to
+/// prune all the types that are *not* used by any public public decl.
 ///
 /// @return the resulting IR node.
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool only_public_decl)
+		       bool called_from_public_decl)
 {
   decl_base_sptr result;
 
   if (!die)
     return result;
 
-  die_decl_map_type::const_iterator it = ctxt.die_decl_map().find(die);
+  die_decl_map_type::const_iterator it =
+    ctxt.die_decl_map().find(dwarf_dieoffset(die));
   if (it != ctxt.die_decl_map().end())
-    return it->second;
+    {
+      result = it->second;
+      if (called_from_public_decl)
+	{
+	  type_base_sptr t = is_type(result);
+	  if (t)
+	    ctxt.current_translation_unit()->mark_type_as_used(t);
+	}
+      return result;
+    }
 
   int tag = dwarf_tag(die);
-
-  if (only_public_decl == true)
-    {
-      if (!(tag == DW_TAG_namespace
-	    || tag == DW_TAG_module
-	    || tag == DW_TAG_subprogram
-	    || tag == DW_TAG_variable))
-	return result;
-    }
 
   switch (tag)
     {
@@ -1151,14 +1195,16 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_typedef:
       {
-	typedef_decl_sptr t = build_typedef_type(ctxt, die);
+	typedef_decl_sptr t = build_typedef_type(ctxt, die,
+						 called_from_public_decl);
 	result = canonicalize_and_add_type_to_ir(t, ctxt.current_scope());
       }
       break;
 
     case DW_TAG_pointer_type:
       {
-	pointer_type_def_sptr p = build_pointer_type_def(ctxt, die);
+	pointer_type_def_sptr p =
+	  build_pointer_type_def(ctxt, die, called_from_public_decl);
 	decl_base_sptr utype =
 	  get_type_declaration(p->get_pointed_to_type());
 	result =
@@ -1170,7 +1216,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_reference_type:
     case DW_TAG_rvalue_reference_type:
       {
-	reference_type_def_sptr r = build_reference_type(ctxt, die);
+	reference_type_def_sptr r =
+	  build_reference_type(ctxt, die, called_from_public_decl);
 	decl_base_sptr utype =
 	  get_type_declaration(r->get_pointed_to_type());
 	result =
@@ -1182,7 +1229,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_const_type:
     case DW_TAG_volatile_type:
       {
-	qualified_type_def_sptr q = build_qualified_type(ctxt, die);
+	qualified_type_def_sptr q =
+	  build_qualified_type(ctxt, die, called_from_public_decl);
 	if (q)
 	  {
 	    decl_base_sptr t =
@@ -1250,8 +1298,8 @@ build_ir_node_from_die(read_context&	ctxt,
       break;
 
     case DW_TAG_subprogram:
-      if ((result = build_function_decl(ctxt, die)))
-	add_decl_to_scope(result, ctxt.current_scope());
+      if ((result = build_function_decl(ctxt, die, called_from_public_decl)))
+	  add_decl_to_scope(result, ctxt.current_scope());
       break;
 
     case DW_TAG_formal_parameter:
@@ -1312,7 +1360,15 @@ build_ir_node_from_die(read_context&	ctxt,
     }
 
   if (result)
-    ctxt.die_decl_map()[die] = result;
+    {
+      if (called_from_public_decl)
+	{
+	  type_base_sptr t = is_type(result);
+	  if (t)
+	    ctxt.current_translation_unit()->mark_type_as_used(t);
+	}
+      ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
+    }
 
   return result;
 }
