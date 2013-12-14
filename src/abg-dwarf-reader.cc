@@ -63,6 +63,11 @@ typedef shared_ptr<Dwfl> dwfl_sptr;
 /// corresponding decl_base.
 typedef unordered_map<Dwarf_Off, decl_base_sptr> die_decl_map_type;
 
+/// Convenience typedef for a map which key is the offset of a
+/// DW_TAG_compile_unit and the key is the corresponding @ref
+/// translation_unit_sptr.
+typedef unordered_map<Dwarf_Off, translation_unit_sptr> die_tu_map_type;
+
 /// Convenience typedef for a stack containing the scopes up to the
 /// current point in the abigail Internal Representation (aka IR) tree
 /// that is being built.
@@ -74,6 +79,10 @@ typedef unordered_map<shared_ptr<type_base>,
 		      bool,
 		      type_base::shared_ptr_hash,
 		      type_shared_ptr_equal> type_ptr_map;
+
+/// Convenience typedef for a map which key is a dwarf offset.  The
+/// value is also a dwarf offset.
+typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 
 /// The context accumulated during the reading of dwarf debug info and
 /// building of the resulting ABI Corpus as a result.
@@ -88,9 +97,11 @@ class read_context
   Dwarf* dwarf_;
   const string elf_path_;
   die_decl_map_type die_decl_map_;
+  die_tu_map_type die_tu_map_;
   corpus_sptr cur_corpus_;
   translation_unit_sptr cur_tu_;
   scope_stack_type scope_stack_;
+  offset_offset_map die_parent_map_;
 
   read_context();
 
@@ -144,6 +155,14 @@ public:
   die_decl_map()
   {return die_decl_map_;}
 
+  const die_tu_map_type&
+  die_tu_map() const
+  {return die_tu_map_;}
+
+  die_tu_map_type&
+  die_tu_map()
+  {return die_tu_map_;}
+
   const corpus_sptr
   current_corpus() const
   {return cur_corpus_;}
@@ -162,6 +181,14 @@ public:
   void
   reset_current_corpus()
   {cur_corpus_.reset();}
+
+  const offset_offset_map&
+  die_parent_map() const
+  {return die_parent_map_;}
+
+  offset_offset_map&
+  die_parent_map()
+  {return die_parent_map_;}
 
   const translation_unit_sptr
   current_translation_unit() const
@@ -201,7 +228,13 @@ public:
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool called_from_public_decl = false);
+		       scope_decl*	scope,
+		       bool		called_from_public_decl = false);
+
+static decl_base_sptr
+build_ir_node_from_die(read_context&	ctxt,
+		       Dwarf_Die*	die,
+		       bool		called_from_public_decl = false);
 
 /// Constructor for a default Dwfl handle that knows how to load debug
 /// info from a library or executable elf file.
@@ -297,7 +330,19 @@ die_unsigned_constant_attribute(Dwarf_Die*	die,
   return true;
 }
 
-#if 0
+/// Get the value of an attribute that is supposed to be a signed
+/// constant.
+///
+/// @param attr_name the DW_AT_* name of the attribute.  Must come
+/// from dwarf.h and be an enumerator representing an attribute like,
+/// e.g, DW_AT_decl_line.
+///
+///@param cst the output parameter that is set to the value of the
+/// attribute @ref attr_name.  This parameter is set iff the function
+/// return true.
+///
+/// @return true if there was an attribute of the name @ref attr_name
+/// and with a value that is a constant, false otherwise.
 static bool
 die_signed_constant_attribute(Dwarf_Die*	die,
 			      unsigned		attr_name,
@@ -315,7 +360,6 @@ die_signed_constant_attribute(Dwarf_Die*	die,
   cst = result;
   return true;
 }
-#endif
 
 /// Get the value of a DIE attribute; that value is meant to be a
 /// flag.
@@ -466,6 +510,111 @@ is_public_decl(Dwarf_Die* die)
   return is_public;
 }
 
+/// Walk the DIEs under a given die and for each child, populate the
+/// read_context::die_parent_map() to record the child -> parent
+/// relationship that exists between the child and the given die.
+///
+/// This is done recursively as for each child DIE, this function
+/// walks its children as well.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE whose children to walk recursively.
+static void
+build_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die)
+{
+  if (!die)
+    return;
+
+  Dwarf_Die child;
+  if (dwarf_child(die, &child) != 0)
+    return;
+
+  do
+    {
+      ctxt.die_parent_map()[dwarf_dieoffset(&child)] = dwarf_dieoffset(die);
+      build_die_parent_relations_under(ctxt, &child);
+    }
+  while (dwarf_siblingof(&child, &child) == 0);
+}
+
+/// Walk all the DIEs accessible in the debug info and build a map
+/// representing the relationship DIE -> parent.  That is, make it so
+/// that we can get the parent for a given DIE.
+///
+/// @param ctxt the read context from which to get the needed
+/// information.
+static void
+build_die_parent_map(read_context& ctxt)
+{
+  uint8_t address_size = 0;
+  size_t header_size = 0;
+
+  for (Dwarf_Off offset = 0, next_offset = 0;
+       (dwarf_nextcu(ctxt.dwarf(), offset, &next_offset, &header_size,
+		     NULL, &address_size, NULL) == 0);
+       offset = next_offset)
+    {
+      Dwarf_Off die_offset = offset + header_size;
+      Dwarf_Die cu;
+      if (!dwarf_offdie(ctxt.dwarf(), die_offset, &cu))
+	continue;
+      build_die_parent_relations_under(ctxt, &cu);
+    }
+}
+
+/// Return the parent DIE for a given DIE.
+///
+/// Note that the function build_die_parent_map() must have been
+/// called before this one can work.  This function either succeeds or
+/// aborts the current process.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE for which we want the parent.
+///
+/// @param parent_die the output parameter set to the parent die of
+/// @ref die.  Its memory must be allocated and handled by the caller.
+static void
+get_parent_die(read_context&	ctxt,
+	       Dwarf_Die*	die,
+	       Dwarf_Die*	parent_die)
+{
+  assert(ctxt.dwarf());
+
+  offset_offset_map::const_iterator i =
+    ctxt.die_parent_map().find(dwarf_dieoffset(die));
+  assert(i != ctxt.die_parent_map().end());
+
+  assert(dwarf_offdie(ctxt.dwarf(), i->second, parent_die) != 0);
+}
+
+/// Return the abigail IR node representing the scope of a given DIE.
+/// If that
+static scope_decl_sptr
+get_scope_for_die(read_context& ctxt,
+		  Dwarf_Die* die)
+{
+  Dwarf_Die parent_die;
+  get_parent_die(ctxt, die, &parent_die);
+
+  if (dwarf_tag(&parent_die) == DW_TAG_compile_unit)
+    {
+      // For top level DIEs like DW_TAG_compile_unit, we just want to
+      // return the global scope for the corresponding translation
+      // unit.  This must have been set by
+      // build_translation_unit_and_add_to_ir.
+      die_tu_map_type::const_iterator i =
+	ctxt.die_tu_map().find(dwarf_dieoffset(&parent_die));
+      assert(i != ctxt.die_tu_map().end());
+      return i->second->get_global_scope();
+    }
+
+  decl_base_sptr d = build_ir_node_from_die(ctxt, &parent_die);
+  scope_decl_sptr s = dynamic_pointer_cast<scope_decl>(d);
+  return s;
+}
+
 /// Given a DW_TAG_compile_unit, build and return the corresponding
 /// abigail::translation_unit ir node.  Note that this function
 /// recursively reads the children dies of the current DIE and
@@ -478,15 +627,11 @@ is_public_decl(Dwarf_Die* die)
 /// @param address_size the size of the addresses expressed in this
 /// translation unit in general.
 ///
-/// @param recurse if set to yes, this function recursively reads the
-/// children dies of @ref die and populate the resulting translation
-/// unit.
-///
 /// @return a pointer to the resulting translation_unit.
 static translation_unit_sptr
-build_translation_unit(read_context&	ctxt,
-		       Dwarf_Die*	die,
-		       char		address_size)
+build_translation_unit_and_add_to_ir(read_context&	ctxt,
+				     Dwarf_Die*	die,
+				     char		address_size)
 {
   translation_unit_sptr result;
 
@@ -499,6 +644,7 @@ build_translation_unit(read_context&	ctxt,
 
   ctxt.current_corpus()->add(result);
   ctxt.current_translation_unit(result);
+  ctxt.die_tu_map()[dwarf_dieoffset(die)] = result;
 
   Dwarf_Die child;
   if (dwarf_child(die, &child) != 0)
@@ -508,12 +654,164 @@ build_translation_unit(read_context&	ctxt,
     build_ir_node_from_die(ctxt, &child);
   while (dwarf_siblingof(&child, &child) == 0);
 
-  /// Prune types that are not referenced from any public decl, out of
-  /// the translation unit.
-  result->prune_unused_types();
+  return result;
+}
+
+/// Canonicalize a type and add it to the current IR being built, if
+/// necessary. The canonicalized type is appended to the children IR
+/// nodes of a given scope.
+///
+/// @param type_declaration the declaration of the type to
+/// canonicalize.
+///
+/// @param type_scope the scope into which the canonicalized type is
+/// to be added.
+///
+/// @return the resulting canonicalized type.
+static decl_base_sptr
+canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
+				scope_decl* type_scope)
+{
+  if (!type_declaration)
+    return type_declaration;
+
+  translation_unit* tu = get_translation_unit(type_scope);
+  assert(tu);
+
+  /// TODO: maybe change the interfance of
+  /// translation_unit::canonicalize_type to include the final
+  /// qualified name of the type (i.e, one that includes the qualified
+  /// name of type_scope), to handle two user defined types that might
+  /// be same, but at different scopes.  In that case, the two types
+  /// should be considered different by
+  /// translation_unit::canonicalize_type.
+  decl_base_sptr result = tu->canonicalize_type(type_declaration);
+  assert(result);
+
+  if (result->get_scope())
+    // This type is the same as a type that was already added to the
+    // IR tree.  Do not add a new one.  Just re-use the previous one.
+    ;
+  else
+    add_decl_to_scope(result, type_scope);
 
   return result;
 }
+
+/// Canonicalize a type and add it to the current IR being built, if
+/// necessary.
+///
+/// @param type_declaration the declaration of the type to
+/// canonicalize.
+///
+/// @param type_scope the scope into which the canonicalized type
+/// needs to be added.
+///
+/// @return the resulting canonicalized type.
+decl_base_sptr
+canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
+				scope_decl_sptr type_scope)
+{return canonicalize_and_add_type_to_ir(type_declaration, type_scope.get());}
+
+/// Canonicalize a given type and insert it into the children of a
+/// given scope right before a given child.
+///
+/// @param type_declaration the declaration of the type to canonicalize.
+///
+/// @param before an iterator pointing to an IR node that is a child
+/// of the scope under wich the canonicalized type is to be inserted.
+/// The canonicalized type is to be inserted right before that
+/// iterator.
+static decl_base_sptr
+canonicalize_and_insert_type_into_ir(decl_base_sptr type_declaration,
+				     scope_decl::declarations::iterator before,
+				     scope_decl* type_scope)
+{
+  if (!type_declaration)
+    return type_declaration;
+
+  translation_unit* tu = get_translation_unit(type_scope);
+  assert(tu);
+
+  /// TODO: maybe change the interfance of
+  /// translation_unit::canonicalize_type to include the final
+  /// qualified name of the type (i.e, one that includes the qualified
+  /// name of type_scope), to handle two user defined types that might
+  /// be same, but at different scopes.  In that case, the two types
+  /// should be considered different by
+  /// translation_unit::canonicalize_type.
+  decl_base_sptr result = tu->canonicalize_type(type_declaration);
+  assert(result);
+
+  if (result->get_scope())
+    // This type is the same as a type that was already added to the
+    // IR tree.  Do not add a new one.  Just re-use the previous one.
+    ;
+  else
+    insert_decl_into_scope(result, before, type_scope);
+
+  return result;
+}
+
+/// Canonicalize a type and insert it into the current IR.  The
+/// canonicalized type is to be inserted before the current scope C
+/// and under a given scope S.  If C and S are equal the the
+/// canonicalized type is just appended to the current scope.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param type_decl the declaration of the type to canonicalize.
+///
+/// @param scope the scope under which the canonicalized type is to be
+/// added.  This must be a scope that is higher or equal to the
+/// current scope.
+///
+/// @return the declaration of the canonicalized type.
+static decl_base_sptr
+canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
+						 decl_base_sptr type_decl,
+						 scope_decl* scope)
+{
+  decl_base_sptr result;
+
+  const scope_decl* ns_under_scope =
+    get_top_most_scope_under(ctxt.current_scope(), scope);
+
+  if (ns_under_scope == scope)
+    result =
+      canonicalize_and_add_type_to_ir(type_decl, scope);
+  else
+    {
+      scope_decl::declarations::iterator it;
+      assert(scope->find_iterator_for_member(ns_under_scope,
+					     it));
+      result =
+	canonicalize_and_insert_type_into_ir(type_decl, it, scope);
+    }
+
+  return result;
+}
+
+/// Canonicalize a type and insert it into the current IR.  The
+/// canonicalized type is to be inserted before the current scope C
+/// and under a given scope S.  If C and S are equal the the
+/// canonicalized type is just appended to the current scope.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param type_decl the declaration of the type to canonicalize.
+///
+/// @param scope the scope under which the canonicalized type is to be
+/// added.  This must be a scope that is higher or equal to the
+/// current scope.
+///
+/// @return the declaration of the canonicalized type.
+static decl_base_sptr
+canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
+						 decl_base_sptr type_decl,
+						 scope_decl_sptr scope)
+{return canonicalize_and_insert_type_into_ir_under_scope(ctxt, type_decl,
+							 scope.get());}
 
 /// Build a @ref namespace_decl out of a DW_TAG_namespace or
 /// DW_TAG_module (for fortran) DIE.
@@ -542,15 +840,17 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   if (tag != DW_TAG_namespace && tag != DW_TAG_module)
     return result;
 
+  scope_decl_sptr scope = get_scope_for_die(ctxt, die);
+
   string name, mangled_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, mangled_name);
 
   result.reset(new namespace_decl(name, loc));
-  add_decl_to_scope(result, ctxt.current_scope());
+  add_decl_to_scope(result, scope);
+  ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
 
   Dwarf_Die child;
-
   if (dwarf_child(die, &child) != 0)
     return result;
 
@@ -888,12 +1188,12 @@ build_function_decl(read_context& ctxt,
   size_t is_inline = false;
   die_unsigned_constant_attribute(die, DW_AT_inline, is_inline);
 
+  decl_base_sptr return_type_decl;
   Dwarf_Die ret_type_die;
-  die_die_attribute(die, DW_AT_type, ret_type_die);
-
-  decl_base_sptr return_type_decl =
-    build_ir_node_from_die(ctxt, &ret_type_die,
-			   /*called_from_public_decl=*/true);
+  if (die_die_attribute(die, DW_AT_type, ret_type_die))
+    return_type_decl =
+      build_ir_node_from_die(ctxt, &ret_type_die,
+			     /*called_from_public_decl=*/true);
 
   Dwarf_Die child;
   function_decl::parameters function_parms;
@@ -907,11 +1207,12 @@ build_function_decl(read_context& ctxt,
 	    string name, mangled_name;
 	    location loc;
 	    die_loc_and_name(ctxt, &child, loc, name, mangled_name);
+	    decl_base_sptr parm_type_decl;
 	    Dwarf_Die parm_type_die;
-	    die_die_attribute(&child, DW_AT_type, parm_type_die);
-	    decl_base_sptr parm_type_decl =
-	      build_ir_node_from_die(ctxt, &parm_type_die,
-				     /*called_from_public_decl=*/true);
+	    if (die_die_attribute(&child, DW_AT_type, parm_type_die))
+	      parm_type_decl =
+		build_ir_node_from_die(ctxt, &parm_type_die,
+				       /*called_from_public_decl=*/true);
 	    if (!parm_type_decl)
 	      continue;
 	    function_decl::parameter_sptr p
@@ -956,6 +1257,11 @@ build_corpus(read_context& ctxt)
   uint8_t address_size = 0;
   size_t header_size = 0;
 
+  // Walk all the DIEs of the debug info to build a DIE -> parent map
+  // useful for get_die_parent() to work.
+  build_die_parent_map(ctxt);
+
+  // And now walk all the DIEs again to build the libabigail IR.
   for (Dwarf_Off offset = 0, next_offset = 0;
        (dwarf_nextcu(ctxt.dwarf(), offset, &next_offset, &header_size,
 		     NULL, &address_size, NULL) == 0);
@@ -977,167 +1283,11 @@ build_corpus(read_context& ctxt)
       // Build a translation_unit IR node from cu; note that cu must
       // be a DW_TAG_compile_unit die.
       translation_unit_sptr ir_node =
-	build_translation_unit(ctxt, &cu, address_size);
+	build_translation_unit_and_add_to_ir(ctxt, &cu, address_size);
       assert(ir_node);
     }
   return ctxt.current_corpus();
 }
-
-/// Canonicalize a type and add it to the current IR being built, if
-/// necessary. The canonicalized type is appended to the children IR
-/// nodes of a given scope.
-///
-/// @param type_declaration the declaration of the type to
-/// canonicalize.
-///
-/// @param type_scope the scope into which the canonicalized type is
-/// to be added.
-///
-/// @return the resulting canonicalized type.
-static decl_base_sptr
-canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
-				scope_decl* type_scope)
-{
-  if (!type_declaration)
-    return type_declaration;
-
-  translation_unit* tu = get_translation_unit(type_scope);
-  assert(tu);
-
-  /// TODO: maybe change the interfance of
-  /// translation_unit::canonicalize_type to include the final
-  /// qualified name of the type (i.e, one that includes the qualified
-  /// name of type_scope), to handle two user defined types that might
-  /// be same, but at different scopes.  In that case, the two types
-  /// should be considered different by
-  /// translation_unit::canonicalize_type.
-  decl_base_sptr result = tu->canonicalize_type(type_declaration);
-  assert(result);
-
-  if (result->get_scope())
-    // This type is the same as a type that was already added to the
-    // IR tree.  Do not add a new one.  Just re-use the previous one.
-    ;
-  else
-    add_decl_to_scope(result, type_scope);
-
-  return result;
-}
-
-/// Canonicalize a type and add it to the current IR being built, if
-/// necessary.
-///
-/// @param type_declaration the declaration of the type to
-/// canonicalize.
-///
-/// @param type_scope the scope into which the canonicalized type
-/// needs to be added.
-///
-/// @return the resulting canonicalized type.
-decl_base_sptr
-canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
-				scope_decl_sptr type_scope)
-{return canonicalize_and_add_type_to_ir(type_declaration, type_scope.get());}
-
-/// Canonicalize a given type and insert it into the children of a
-/// given scope right before a given child.
-///
-/// @param type_declaration the declaration of the type to canonicalize.
-///
-/// @param before an iterator pointing to an IR node that is a child
-/// of the scope under wich the canonicalized type is to be inserted.
-/// The canonicalized type is to be inserted right before that
-/// iterator.
-static decl_base_sptr
-canonicalize_and_insert_type_into_ir(decl_base_sptr type_declaration,
-				     scope_decl::declarations::iterator before,
-				     scope_decl* type_scope)
-{
-  if (!type_declaration)
-    return type_declaration;
-
-  translation_unit* tu = get_translation_unit(type_scope);
-  assert(tu);
-
-  /// TODO: maybe change the interfance of
-  /// translation_unit::canonicalize_type to include the final
-  /// qualified name of the type (i.e, one that includes the qualified
-  /// name of type_scope), to handle two user defined types that might
-  /// be same, but at different scopes.  In that case, the two types
-  /// should be considered different by
-  /// translation_unit::canonicalize_type.
-  decl_base_sptr result = tu->canonicalize_type(type_declaration);
-  assert(result);
-
-  if (result->get_scope())
-    // This type is the same as a type that was already added to the
-    // IR tree.  Do not add a new one.  Just re-use the previous one.
-    ;
-  else
-    insert_decl_into_scope(result, before, type_scope);
-
-  return result;
-}
-
-/// Canonicalize a type and insert it into the current IR.  The
-/// canonicalized type is to be inserted before the current scope C
-/// and under a given scope S.  If C and S are equal the the
-/// canonicalized type is just appended to the current scope.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param type_decl the declaration of the type to canonicalize.
-///
-/// @param scope the scope under which the canonicalized type is to be
-/// added.  This must be a scope that is higher or equal to the
-/// current scope.
-///
-/// @return the declaration of the canonicalized type.
-static decl_base_sptr
-canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
-						 decl_base_sptr type_decl,
-						 scope_decl* scope)
-{
-  decl_base_sptr result;
-
-  const scope_decl* ns_under_scope =
-    get_top_most_scope_under(ctxt.current_scope(), scope);
-
-  if (ns_under_scope == scope)
-    result =
-      canonicalize_and_add_type_to_ir(type_decl, scope);
-  else
-    {
-      scope_decl::declarations::iterator it;
-      assert(scope->find_iterator_for_member(ns_under_scope,
-					     it));
-      result =
-	canonicalize_and_insert_type_into_ir(type_decl, it, scope);
-    }
-
-  return result;
-}
-
-/// Canonicalize a type and insert it into the current IR.  The
-/// canonicalized type is to be inserted before the current scope C
-/// and under a given scope S.  If C and S are equal the the
-/// canonicalized type is just appended to the current scope.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param type_decl the declaration of the type to canonicalize.
-///
-/// @param scope the scope under which the canonicalized type is to be
-/// added.  This must be a scope that is higher or equal to the
-/// current scope.
-///
-/// @return the declaration of the canonicalized type.
-static decl_base_sptr
-canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
-						 decl_base_sptr type_decl,
-						 scope_decl_sptr scope)
-{return canonicalize_and_insert_type_into_ir_under_scope(ctxt, type_decl,
-							 scope.get());}
 
 /// Build an IR node from a given DIE and add the node to the current
 /// IR being build and held in the read_context.  Doing that is called
@@ -1147,57 +1297,61 @@ canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
 ///
 /// @parm die the DIE to consider.
 ///
-/// @param called_from_public_decl if yes flag the types that are
-/// possibly going to be created by the invocation to this function as
-/// being used by a public decl.  This is later going to be useful to
-/// prune all the types that are *not* used by any public public decl.
+/// @param scope the scope under which the resulting IR node has to be
+/// added.
+///
+/// @param called_from_public_decl set to yes if this function is
+/// called from the functions used to build a public decl (functions
+/// and variables).  In that case, this function accepts building IR
+/// nodes representing types.  Otherwise, this function only creates
+/// IR nodes representing public decls (functions and variables).
+/// This is done to avoid emitting IR nodes for types that are not
+/// referenced by public functions or variables.
 ///
 /// @return the resulting IR node.
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool called_from_public_decl)
+		       scope_decl*	scope,
+		       bool		called_from_public_decl)
 {
   decl_base_sptr result;
 
   if (!die)
     return result;
 
+  int tag = dwarf_tag(die);
+
+  if (!called_from_public_decl)
+    {
+      if (tag != DW_TAG_subprogram
+	  && tag != DW_TAG_variable
+	  && tag != DW_TAG_namespace)
+	return result;
+    }
+
   die_decl_map_type::const_iterator it =
     ctxt.die_decl_map().find(dwarf_dieoffset(die));
   if (it != ctxt.die_decl_map().end())
     {
       result = it->second;
-      if (called_from_public_decl)
-	{
-	  type_base_sptr t = is_type(result);
-	  if (t)
-	    ctxt.current_translation_unit()->mark_type_as_used(t);
-	}
       return result;
     }
-
-  int tag = dwarf_tag(die);
 
   switch (tag)
     {
       // Type DIEs we intent to support someday, maybe.
     case DW_TAG_base_type:
       if((result = build_type_decl(ctxt, die)))
-	{
-	  translation_unit_sptr tu = ctxt.current_translation_unit();
-	  global_scope_sptr gscope = tu->get_global_scope();
-	  result = canonicalize_and_insert_type_into_ir_under_scope(ctxt,
-								    result,
-								    gscope);
-	}
+	result =
+	  canonicalize_and_insert_type_into_ir_under_scope(ctxt, result, scope);
       break;
 
     case DW_TAG_typedef:
       {
 	typedef_decl_sptr t = build_typedef_type(ctxt, die,
 						 called_from_public_decl);
-	result = canonicalize_and_add_type_to_ir(t, ctxt.current_scope());
+	result = canonicalize_and_add_type_to_ir(t, scope);
       }
       break;
 
@@ -1294,12 +1448,12 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_variable:
       if ((result = build_var_decl(ctxt, die)))
-	add_decl_to_scope(result, ctxt.current_scope());
+	add_decl_to_scope(result, scope);
       break;
 
     case DW_TAG_subprogram:
       if ((result = build_function_decl(ctxt, die, called_from_public_decl)))
-	  add_decl_to_scope(result, ctxt.current_scope());
+	  add_decl_to_scope(result, scope);
       break;
 
     case DW_TAG_formal_parameter:
@@ -1360,17 +1514,36 @@ build_ir_node_from_die(read_context&	ctxt,
     }
 
   if (result)
-    {
-      if (called_from_public_decl)
-	{
-	  type_base_sptr t = is_type(result);
-	  if (t)
-	    ctxt.current_translation_unit()->mark_type_as_used(t);
-	}
-      ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
-    }
+    ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
 
   return result;
+}
+
+/// Build an IR node from a given DIE and add the node to the current
+/// IR being build and held in the read_context.  Doing that is called
+/// "emitting an IR node for the DIE".
+///
+/// @param ctxt the read context.
+///
+/// @parm die the DIE to consider.
+///
+/// @param called_from_public_decl set to yes if this function is
+/// called from the functions used to build a public decl (functions
+/// and variables).  In that case, this function accepts building IR
+/// nodes representing types.  Otherwise, this function only creates
+/// IR nodes representing public decls (functions and variables).
+/// This is done to avoid emitting IR nodes for types that are not
+/// referenced by public functions or variables.
+///
+/// @return the resulting IR node.
+static decl_base_sptr
+build_ir_node_from_die(read_context&	ctxt,
+		       Dwarf_Die*	die,
+		       bool		called_from_public_decl)
+{
+  scope_decl_sptr scope = get_scope_for_die(ctxt, die);
+  return build_ir_node_from_die(ctxt, die, scope.get(),
+				called_from_public_decl);
 }
 
 /// Read all @ref translation_unit possible from the debug info

@@ -151,12 +151,6 @@ public:
   decl_base_sptr
   canonicalize_type(decl_base_sptr) const;
 
-  void
-  mark_type_as_used(type_base_sptr) const;
-
-  void
-  prune_unused_types();
-
   char
   get_address_size() const;
 

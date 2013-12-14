@@ -156,9 +156,6 @@ struct translation_unit::priv
   location_manager		loc_mgr_;
   mutable global_scope_sptr	global_scope_;
   type_ptr_map			canonical_types_;
-  // The map below contains the types referenced from public functions
-  // or variables.
-  type_ptr_map used_types_;
 
   priv()
     : address_size_(0)
@@ -285,113 +282,6 @@ translation_unit::canonicalize_type(decl_base_sptr t) const
   assert(type);
 
   return get_type_declaration(type);
-}
-
-/// This is a visitor used to mark the underlying types of composite
-/// types that are marked by translation_unit::mark_type_as_used().
-/// This is thus a helper type used by the
-/// translation_unit::mark_type_as_used() function.
-class subtype_marking_visitor : public ir_node_visitor
-{
-  type_ptr_map& m_;
-
-  subtype_marking_visitor();
-
-public:
-
-  /// Constructor of the visitor.
-  ///
-  /// @param m the type map used to mark the types.  This is privately
-  /// held by translation_unit and is passed by
-  /// translation_unit::mark_type_as_used.
-  subtype_marking_visitor(type_ptr_map& m)
-    : m_(m)
-  {}
-
-  /// Mark the underlying type of a qualified type.
-  ///
-  /// @param d the qualified type to consider.
-  void
-  visit(qualified_type_def& d)
-  {
-    type_base_sptr t = d.get_underlying_type();
-    assert(t);
-    m_[t]= true;
-  }
-
-  /// Mark the pointed to type of a pointer type.
-  ///
-  /// @param d the pointer type to consider.
-  void
-  visit(pointer_type_def& d)
-  {
-    type_base_sptr t = d.get_pointed_to_type();
-    assert(t);
-    m_[t]= true;
-  }
-
-  /// Mark the pointed to type of a reference type.
-  ///
-  /// @param d the reference type to consider.
-  void
-  visit(reference_type_def& d)
-  {
-    type_base_sptr t = d.get_pointed_to_type();
-    assert(t);
-    m_[t]= true;
-  }
-
-  /// Mark the underlying type of a typedef type.
-  ///
-  /// @param d the typedef type to consider.
-  void
-  visit(typedef_decl& d)
-  {
-    type_base_sptr t = d.get_underlying_type();
-    assert(t);
-    m_[t]= true;
-  }
-};// end struct type_marking_visitor
-
-/// Mark a given type (that must be a canonical type) as being used.
-/// This is later used by the translation_uniçt::prune_unused_types to
-/// remove the types that are not marked used from the translation
-/// unit.
-///
-/// @param t the type to mark as being used.
-void
-translation_unit::mark_type_as_used(type_base_sptr t) const
-{
-  if (!t)
-    return;
-
-  type_ptr_map::iterator it =  priv_->canonical_types_.find(t);
-  assert(it != priv_->canonical_types_.end());
-
-  priv_->used_types_[t]= true;
-
-  decl_base_sptr td = get_type_declaration(t);
-  assert(td);
-
-  // Walk the sub-types of t (which might be a composite type) and
-  // mark them as used as well.
-  subtype_marking_visitor v(priv_->used_types_);
-  td->traverse(v);
-}
-
-/// Walk the types seen by translation_unit::canonical_types() and
-/// remove the ones that have not been marked as being used by
-/// translation_unit::mark_type_as_used.  Removing the type means
-/// removing the type node from the its scope.  The type is still
-/// kepts in the internal map of canonical types, though.
-void
-translation_unit::prune_unused_types()
-{
-  for (type_ptr_map::iterator it = priv_->canonical_types_.begin();
-       it != priv_->canonical_types_.end();
-       ++it)
-    if (priv_->used_types_.find(it->first) == priv_->used_types_.end())
-      remove_decl_from_scope(get_type_declaration(it->first));
 }
 
 /// Getter of the address size in this translation unit.
@@ -884,6 +774,9 @@ get_global_scope(const shared_ptr<decl_base> decl)
 /// Return the a scope S containing a given declaration and that is
 /// right under a given scope P.
 ///
+/// Note that @ref scope must come before @ref decl in topological
+/// order.
+///
 /// @param decl the decl for which to find a scope.
 ///
 /// @param scope the scope under which the resulting scope must be.
@@ -899,14 +792,21 @@ get_top_most_scope_under(const decl_base* decl,
   if (scope == 0)
     return get_global_scope(decl);
 
+  // Handle the case where decl is a scope itself.
   const scope_decl* s = dynamic_cast<const scope_decl*>(decl);
   if (!s)
     s = decl->get_scope();
+
+  // Here, decl is in the scope 'scope', or decl and 'scope' are the
+  // same.  The caller needs to be prepared to deal with this case.
+  if (s == scope)
+    return s;
 
   while (!is_global_scope(s) && s->get_scope() != scope)
     s = s->get_scope();
 
   if (is_global_scope(s))
+    // SCOPE must come before decl in topological order.
     assert(is_global_scope(scope));
   assert(s);
 
