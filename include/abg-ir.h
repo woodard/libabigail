@@ -163,7 +163,7 @@ public:
   void
   set_address_size(char);
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 };//end class translation_unit
 
@@ -220,7 +220,7 @@ public:
   virtual bool
   operator==(const decl_base&) const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~decl_base();
@@ -356,7 +356,7 @@ public:
   bool
   find_iterator_for_member(const decl_base_sptr, declarations::iterator&);
 
-  void
+  virtual void
   traverse(ir_node_visitor&);
 
   virtual ~scope_decl();
@@ -493,11 +493,11 @@ public:
   virtual string
   get_pretty_representation() const;
 
-  void
+  virtual void
   traverse(ir_node_visitor&);
 
   virtual ~type_decl();
-};
+};// end class type_decl.
 
 /// A type that introduces a scope.
 class scope_type_decl : public scope_decl, public virtual type_base
@@ -536,7 +536,7 @@ public:
   virtual bool
   operator==(const decl_base&) const;
 
-  void
+  virtual void
   traverse(ir_node_visitor&);
 
   virtual ~namespace_decl();
@@ -585,7 +585,7 @@ public:
   const shared_ptr<type_base>
   get_underlying_type() const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~qualified_type_def();
@@ -625,7 +625,7 @@ public:
   shared_ptr<type_base>
   get_pointed_to_type() const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~pointer_type_def();
@@ -664,7 +664,7 @@ public:
   bool
   is_lvalue() const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~reference_type_def();
@@ -771,7 +771,7 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~enum_type_decl();
@@ -809,7 +809,7 @@ public:
   shared_ptr<type_base>
   get_underlying_type() const;
 
-  void
+  virtual void
   traverse(ir_node_visitor&);
 
   virtual ~typedef_decl();
@@ -857,7 +857,7 @@ public:
   virtual string
   get_pretty_representation() const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~var_decl();
@@ -1041,7 +1041,7 @@ public:
 	    && get_parameters().back()->get_variadic_marker());
   }
 
-  void
+  virtual void
   traverse(ir_node_visitor&);
 
   virtual ~function_decl();
@@ -1438,7 +1438,7 @@ public:
   get_binding() const
   {return binding_;}
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~function_tdecl();
@@ -1484,7 +1484,7 @@ public:
   get_pattern() const
   {return pattern_;}
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~class_tdecl();
@@ -1669,7 +1669,7 @@ public:
   bool
   operator==(const class_decl&) const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~class_decl();
@@ -1891,7 +1891,7 @@ public:
   /// function.
   ///
   /// @param v the visitor used on the current instance.
-  void
+  virtual void
   traverse(ir_node_visitor&);
 
   virtual ~data_member();
@@ -2053,7 +2053,7 @@ public:
   bool
   operator==(const member_function&) const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 };// class_decl::member_function
 
@@ -2101,7 +2101,7 @@ public:
   virtual bool
   operator==(const member_base& o) const;
 
-  void
+  virtual void
   traverse(ir_node_visitor&);
 };// end class class_decl::member_function_template
 
@@ -2141,7 +2141,7 @@ public:
   virtual bool
   operator==(const member_class_template&) const;
 
-  void
+  virtual void
   traverse(ir_node_visitor& v);
 };// end class class_decl::member_class_template
 
