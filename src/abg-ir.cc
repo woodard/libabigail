@@ -287,6 +287,72 @@ translation_unit::canonicalize_type(decl_base_sptr t) const
   return get_type_declaration(type);
 }
 
+/// This is a visitor used to mark the underlying types of composite
+/// types that are marked by translation_unit::mark_type_as_used().
+/// This is thus a helper type used by the
+/// translation_unit::mark_type_as_used() function.
+class subtype_marking_visitor : public ir_node_visitor
+{
+  type_ptr_map& m_;
+
+  subtype_marking_visitor();
+
+public:
+
+  /// Constructor of the visitor.
+  ///
+  /// @param m the type map used to mark the types.  This is privately
+  /// held by translation_unit and is passed by
+  /// translation_unit::mark_type_as_used.
+  subtype_marking_visitor(type_ptr_map& m)
+    : m_(m)
+  {}
+
+  /// Mark the underlying type of a qualified type.
+  ///
+  /// @param d the qualified type to consider.
+  void
+  visit(qualified_type_def& d)
+  {
+    type_base_sptr t = d.get_underlying_type();
+    assert(t);
+    m_[t]= true;
+  }
+
+  /// Mark the pointed to type of a pointer type.
+  ///
+  /// @param d the pointer type to consider.
+  void
+  visit(pointer_type_def& d)
+  {
+    type_base_sptr t = d.get_pointed_to_type();
+    assert(t);
+    m_[t]= true;
+  }
+
+  /// Mark the pointed to type of a reference type.
+  ///
+  /// @param d the reference type to consider.
+  void
+  visit(reference_type_def& d)
+  {
+    type_base_sptr t = d.get_pointed_to_type();
+    assert(t);
+    m_[t]= true;
+  }
+
+  /// Mark the underlying type of a typedef type.
+  ///
+  /// @param d the typedef type to consider.
+  void
+  visit(typedef_decl& d)
+  {
+    type_base_sptr t = d.get_underlying_type();
+    assert(t);
+    m_[t]= true;
+  }
+};// end struct type_marking_visitor
+
 /// Mark a given type (that must be a canonical type) as being used.
 /// This is later used by the translation_uniçt::prune_unused_types to
 /// remove the types that are not marked used from the translation
@@ -302,9 +368,15 @@ translation_unit::mark_type_as_used(type_base_sptr t) const
   type_ptr_map::iterator it =  priv_->canonical_types_.find(t);
   assert(it != priv_->canonical_types_.end());
 
-  /// TODO: we should walk t to also mark of its sub-types as being
-  /// used as well.
   priv_->used_types_[t]= true;
+
+  decl_base_sptr td = get_type_declaration(t);
+  assert(td);
+
+  // Walk the sub-types of t (which might be a composite type) and
+  // mark them as used as well.
+  subtype_marking_visitor v(priv_->used_types_);
+  td->traverse(v);
 }
 
 /// Walk the types seen by translation_unit::canonical_types() and
