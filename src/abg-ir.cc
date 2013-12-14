@@ -970,6 +970,19 @@ is_template_parameter(const shared_ptr<decl_base> decl)
 		   || dynamic_pointer_cast<template_tparameter>(decl)));
 }
 
+/// Test whether a declaration is a type.
+///
+/// @param d the declaration to test for.
+///
+/// @return true if the declaration is a type, false otherwise.
+bool
+is_type(const decl_base& d)
+{
+  try {dynamic_cast<const type_base&>(d);}
+  catch(...) {return false;}
+  return true;
+}
+
 /// Tests whether a declaration is a type, and return it properly
 /// converted into a type in that case.
 ///
