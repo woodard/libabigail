@@ -902,7 +902,76 @@ build_type_decl(read_context&	ctxt,
   return result;
 }
 
-/// Build a qualified type from a DW_TAG_const_type or
+/// Build an enum_type_decl from a DW_TAG_enumeration_type DIE.
+///
+/// @param ctxt the read context to use.
+///
+/// @param die the DIE to read from.
+///
+/// @return the built enum_type_decl or NULL if it could not be built.
+static enum_type_decl_sptr
+build_enum_type(read_context& ctxt, Dwarf_Die* die)
+{
+  enum_type_decl_sptr result;
+  if (!die)
+    return result;
+
+  unsigned tag = dwarf_tag(die);
+  if (tag != DW_TAG_enumeration_type)
+    return result;
+
+  string name, mangled_name;
+  location loc;
+  die_loc_and_name(ctxt, die, loc, name, mangled_name);
+
+  size_t size = 0;
+  if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
+    size *= 8;
+
+  string underlying_type_name;
+  if (name.empty())
+    underlying_type_name = "unnamed-enum";
+  else
+    underlying_type_name = string("enum-") + name;
+  underlying_type_name += "-underlying-type";
+
+  enum_type_decl::enumerators enms;
+  Dwarf_Die child;
+  if (dwarf_child(die, &child) == 0)
+    {
+      do
+	{
+	  if (dwarf_tag(&child) != DW_TAG_enumerator)
+	    continue;
+
+	  string n, m;
+	  location l;
+	  die_loc_and_name(ctxt, &child, loc, n, m);
+	  ssize_t val = 0;
+	  die_signed_constant_attribute(&child, DW_AT_const_value, val);
+	  enms.push_back(enum_type_decl::enumerator(n, val));
+	}
+      while (dwarf_siblingof(&child, &child) == 0);
+    }
+
+  // DWARF up to version 4 (at least) doesn't seem to carry the
+  // underlying type, so let's create an artificial one here, which
+  // sole purpose is to be passed to the constructor of the
+  // enum_type_decl type.
+  type_decl_sptr t(new type_decl(underlying_type_name,
+				 size, size, location()));
+  translation_unit_sptr tu = ctxt.current_translation_unit();
+  decl_base_sptr d =
+    canonicalize_and_insert_type_into_ir_under_scope(ctxt, t,
+						     tu->get_global_scope());
+  t = dynamic_pointer_cast<type_decl>(d);
+  assert(t);
+  result.reset(new enum_type_decl(name, loc, t, enms, mangled_name));
+
+  return result;
+}
+
+/// build a qualified type from a DW_TAG_const_type or
 /// DW_TAG_volatile_type DIE.
 ///
 /// @param ctxt the read context to consider.
@@ -1397,7 +1466,13 @@ build_ir_node_from_die(read_context&	ctxt,
       break;
 
     case DW_TAG_enumeration_type:
+      {
+	enum_type_decl_sptr e = build_enum_type(ctxt, die);
+	if (e)
+	  result = canonicalize_and_add_type_to_ir(e, scope);
+      }
       break;
+
     case DW_TAG_class_type:
       break;
     case DW_TAG_string_type:
