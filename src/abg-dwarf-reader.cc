@@ -292,7 +292,7 @@ die_string_attribute(Dwarf_Die* die, unsigned attr_name)
     return "";
 
   Dwarf_Attribute attr;
-  if (!dwarf_attr(die, attr_name, &attr))
+  if (!dwarf_attr_integrate(die, attr_name, &attr))
     return "";
 
   const char* str = dwarf_formstring(&attr);
@@ -322,7 +322,7 @@ die_unsigned_constant_attribute(Dwarf_Die*	die,
 
   Dwarf_Attribute attr;
   Dwarf_Word result = 0;
-  if (!dwarf_attr(die, attr_name, &attr)
+  if (!dwarf_attr_integrate(die, attr_name, &attr)
       || dwarf_formudata(&attr, &result))
     return false;
 
@@ -353,7 +353,7 @@ die_signed_constant_attribute(Dwarf_Die*	die,
 
   Dwarf_Attribute attr;
   Dwarf_Sword result = 0;
-  if (!dwarf_attr(die, attr_name, &attr)
+  if (!dwarf_attr_integrate(die, attr_name, &attr)
       || dwarf_formsdata(&attr, &result))
     return false;
 
@@ -380,7 +380,7 @@ die_flag_attribute(Dwarf_Die* die, unsigned attr_name, bool& flag)
 {
   Dwarf_Attribute attr;
   bool f = false;
-  if (!dwarf_attr(die, attr_name, &attr)
+  if (!dwarf_attr_integrate(die, attr_name, &attr)
       || dwarf_formflag(&attr, &f))
     return false;
 
@@ -443,7 +443,7 @@ static bool
 die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result)
 {
   Dwarf_Attribute attr;
-  if (!dwarf_attr(die, attr_name, &attr))
+  if (!dwarf_attr_integrate(die, attr_name, &attr))
     return false;
   return dwarf_formref_die(&attr, &result);
 }
