@@ -79,8 +79,6 @@ xml_istream_input_read(void*	context,
 {
   istream* in = reinterpret_cast<istream*>(context);
   in->read(buffer, len);
-  if (in->fail())
-    return -1;
   return in->gcount();
 }
 
