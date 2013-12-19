@@ -29,10 +29,12 @@
 #include <libgen.h>
 #include <assert.h>
 #include <cstring>
+#include <cmath>
 #include <elfutils/libdwfl.h>
 #include <dwarf.h>
 #include <tr1/unordered_map>
 #include <stack>
+#include <deque>
 #include "abg-dwarf-reader.h"
 
 using std::string;
@@ -46,6 +48,7 @@ namespace dwarf_reader
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::unordered_map;
 using std::stack;
+using std::deque;
 
 /// A functor used by @ref dwfl_sptr.
 struct dwfl_deleter
@@ -495,6 +498,79 @@ die_loc_and_name(read_context&	ctxt,
   mangled_name = die_mangled_name(die);
 }
 
+/// Get the size of a (type) DIE as the value for the parameter
+/// DW_AT_byte_size or DW_AT_bit_size.
+///
+/// @param the DIE to read the information from.
+///
+/// @param size the resulting size in bits.  This is set iff the
+/// function return true.
+///
+/// @return true if the size attribute was found.
+static bool
+die_size_in_bits(Dwarf_Die* die, size_t& size)
+{
+  if (!die)
+    return false;
+
+  size_t byte_size = 0, bit_size = 0;
+
+  if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, byte_size))
+    {
+      if (!die_unsigned_constant_attribute(die, DW_AT_bit_size, bit_size))
+	return false;
+    }
+  else
+    bit_size = byte_size * 8;
+
+  size = bit_size;
+
+  return true;
+}
+
+/// Get the access specifier (from the DW_AT_accessibility attribute
+/// value) of a given DIE.
+///
+/// @param die the DIE to consider.
+///
+/// @param access the resulting access.  This is set iff the function
+/// returns true.
+///
+/// @return bool if the DIE contains the DW_AT_accessibility die.
+static bool
+die_access_specifier(Dwarf_Die * die, class_decl::access_specifier& access)
+{
+  if (!die)
+    return false;
+
+  size_t a = 0;
+  if (!die_unsigned_constant_attribute(die, DW_AT_accessibility, a))
+    return false;
+
+  class_decl::access_specifier result = class_decl::private_access;
+
+  switch (a)
+    {
+    case class_decl::private_access:
+      result = class_decl::private_access;
+      break;
+
+    case class_decl::protected_access:
+      result = class_decl::protected_access;
+      break;
+
+    case class_decl::public_access:
+      result = class_decl::public_access;
+      break;
+
+    default:
+      break;
+    }
+
+  access = result;
+  return true;
+}
+
 /// Test whether a given DIE represents a decl that is public.  That
 /// is, one with the DW_AT_external attribute set.
 ///
@@ -508,6 +584,1074 @@ is_public_decl(Dwarf_Die* die)
   bool is_public = 0;
   die_flag_attribute(die, DW_AT_external, is_public);
   return is_public;
+}
+
+enum virtuality
+{
+  VIRTUALITY_NOT_VIRTUAL,
+  VIRTUALITY_VIRTUAL,
+  VIRTUALITY_PURE_VIRTUAL
+};
+
+/// Get the virtual-ness of a given DIE, that is, the value of the
+/// DW_AT_virtuality attribute.
+///
+/// @param die the DIE to read from.
+///
+/// @param virt the resulting virtuality attribute.  This is set iff
+/// the function returns true.
+///
+/// @return true if the virtual-ness could be determined.
+static bool
+die_virtuality(Dwarf_Die* die, virtuality& virt)
+{
+  if (!die)
+    return false;
+
+  size_t v = 0;
+  die_unsigned_constant_attribute(die, DW_AT_virtuality, v);
+
+  if (v == DW_VIRTUALITY_virtual)
+    virt = VIRTUALITY_VIRTUAL;
+  else if (v == DW_VIRTUALITY_pure_virtual)
+    virt = VIRTUALITY_PURE_VIRTUAL;
+  else
+    virt = VIRTUALITY_NOT_VIRTUAL;
+
+  return true;
+}
+
+/// Test whether the DIE represent either a virtual base or function.
+///
+/// @param die the DIE to consider.
+///
+/// @return bool if the DIE represents a virtual base or function,
+/// false othersise.
+static bool
+is_virtual(Dwarf_Die* die)
+{
+  virtuality v;
+  if (!die_virtuality(die, v))
+    return false;
+
+  return v == VIRTUALITY_PURE_VIRTUAL || v == VIRTUALITY_VIRTUAL;
+}
+
+/// Get the value of a given DIE attribute, knowing that it must be a
+/// location expression.
+///
+/// @param die the DIE to read the attribute from.
+///
+/// @param attr_name the name of the attribute to read the value for.
+///
+/// @param expr the pointer to allocate and fill with the resulting
+/// array of operators + operands forming a dwarf expression.  This is
+/// set iff the function returns true.
+///
+/// @param expr_len the length of the resulting dwarf expression.
+/// This is set iff the function returns true.
+///
+/// @return true if the attribute exists and has a dwarf expression as
+/// value.  In that case the expr and expr_len arguments are set to
+/// the resulting dwarf exprssion.
+static bool
+die_location_expr(Dwarf_Die* die,
+		  unsigned attr_name,
+		  Dwarf_Op** expr,
+		  size_t* expr_len)
+{
+  if (!die)
+    return false;
+
+  Dwarf_Attribute attr;
+  if (!dwarf_attr_integrate(die, attr_name, &attr))
+    return false;
+  return (dwarf_getlocation(&attr, expr, expr_len) == 0);
+}
+
+/// An abstraction of a value representing the result of the
+/// evalutation of a dwarf expression.  This is abstraction represents
+/// a partial view on the possible values because we are only
+/// interested in extracting the latest and longuest constant
+/// sub-expression of a given dwarf expression.
+class expr_result
+{
+  bool is_const_;
+  ssize_t const_value_;
+
+public:
+  expr_result()
+    : is_const_(true),
+      const_value_(0)
+  {}
+
+  expr_result(bool is_const)
+    : is_const_(is_const),
+      const_value_(0)
+  {}
+
+  explicit expr_result(ssize_t v)
+    :is_const_(true),
+     const_value_(v)
+  {}
+
+  /// @return true if the value is a constant.  Otherwise, return
+  /// false, meaning the value represents a quantity for which we need
+  /// inferior (a running program) state to determine the value.
+  bool
+  is_const() const
+  {return is_const_;}
+
+
+  /// @param f a flag saying if the value is set to a constant or not.
+  void
+  is_const(bool f)
+  {is_const_ = f;}
+
+  /// Get the current constant value iff this represents a
+  /// constant.
+  ///
+  /// @param value the out parameter.  Is set to the constant value of
+  /// the @ref expr_result.  This is set iff the function return true.
+  ///
+  ///@return true if this has a constant value, false otherwise.
+  bool
+  const_value(ssize_t& value)
+  {
+    if (is_const())
+      {
+	value = const_value_;
+	return true;
+      }
+    return false;
+  }
+
+  /// Getter of the constant value of the current @ref expr_result.
+  ///
+  /// Note that the current @ref expr_result must be constant,
+  /// otherwise the current process is aborted.
+  ///
+  /// @return the constant value of the current @ref expr_result.
+  ssize_t
+  const_value() const
+  {
+    assert(is_const());
+    return const_value_;
+  }
+
+  operator ssize_t() const
+  {return const_value();}
+
+  expr_result&
+  operator=(const ssize_t v)
+  {
+    const_value_ = v;
+    return *this;
+  }
+
+  bool
+  operator==(const expr_result& o) const
+  {return const_value_ == o.const_value_ && is_const_ == o.is_const_;}
+
+  bool
+  operator>=(const expr_result& o) const
+  {return const_value_ >= o.const_value_;}
+
+  bool
+  operator<=(const expr_result& o) const
+  {return const_value_ <= o.const_value_;}
+
+  bool
+  operator>(const expr_result& o) const
+  {return const_value_ > o.const_value_;}
+
+  bool
+  operator<(const expr_result& o) const
+  {return const_value_ < o.const_value_;}
+
+  expr_result
+  operator+(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ += v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result&
+  operator+=(ssize_t v)
+  {
+    const_value_ += v;
+    return *this;
+  }
+
+  expr_result
+  operator-(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ -= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator%(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ %= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const();
+    return r;
+  }
+
+  expr_result
+  operator*(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ *= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const();
+    return r;
+  }
+
+  expr_result
+  operator|(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ |= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator^(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ ^= v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator>>(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ = r.const_value_ >> v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator<<(const expr_result& v) const
+  {
+    expr_result r(*this);
+    r.const_value_ = r.const_value_ << v.const_value_;
+    r.is_const_ = r.is_const_ && v.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator~() const
+  {
+    expr_result r(*this);
+    r.const_value_ = ~r.const_value_;
+    return r;
+  }
+
+  expr_result
+  neg() const
+  {
+    expr_result r(*this);
+    r.const_value_ = -r.const_value_;
+    return r;
+  }
+
+  expr_result
+  abs() const
+  {
+    expr_result r = *this;
+    r.const_value_ = std::abs(r.const_value());
+    return r;
+  }
+
+  expr_result
+  operator&(const expr_result& o)
+  {
+    expr_result r(*this);
+    r.const_value_ = *this & o;
+    r.is_const_ = r.is_const_ && o.is_const_;
+    return r;
+  }
+
+  expr_result
+  operator/(const expr_result& o)
+  {
+    expr_result r(*this);
+    r.is_const_ = r.is_const_ && o.is_const_;
+    return r.const_value() / o.const_value();
+  }
+};// class end expr_result;
+
+
+/// Abstraction of the evaluation context of a dwarf expression.
+struct dwarf_expr_eval_context
+{
+  expr_result accum;
+  deque<expr_result> stack;
+
+  dwarf_expr_eval_context()
+    : accum(/*is_const=*/false)
+  {
+    stack.push_front(expr_result(true));
+  }
+
+  expr_result
+  pop()
+  {
+    expr_result r = stack.front();
+    stack.pop_front();
+    return r;
+  }
+
+  void
+  push(const expr_result& v)
+  {stack.push_front(v);}
+};//end class dwarf_expr_eval_context
+
+/// If the current operation in the dwarf expression represents a push
+/// of a constant value onto the dwarf expr virtual machine (aka
+/// DEVM), perform the operation and update the DEVM.
+///
+/// If the result of the operation is a constant, update the DEVM
+/// accumulator with its value.  Otherwise, the DEVM accumulator is
+/// left with its previous value.
+///
+/// @param ops the array of the dwarf expression operations to consider.
+///
+/// @param ops_len the lengths of @ref ops array above.
+///
+/// @param index the index of the operation to interpret, in @ref ops.
+///
+/// @param next_index the index of the operation to interpret at the
+/// next step, after this function completed and returned.  This is
+/// set an output parameter that is set iff the function returns true.
+///
+/// @param ctxt the DEVM evaluation context.
+///
+/// @return true if the current operation actually pushes a constant
+/// value onto the DEVM stack, false otherwise.
+static bool
+op_pushes_constant_value(Dwarf_Op*			ops,
+			 size_t			ops_len,
+			 size_t			index,
+			 size_t&			next_index,
+			 dwarf_expr_eval_context&	ctxt)
+{
+  Dwarf_Op& op = ops[index];
+  ssize_t value = 0;
+
+  switch (op.atom)
+    {
+    case DW_OP_addr:
+      if (index + 1 < ops_len)
+	{
+	  value = ops[index + 1].number;
+	  next_index = index + 2;
+	}
+      break;
+
+    case DW_OP_const1u:
+    case DW_OP_const1s:
+    case DW_OP_const2u:
+    case DW_OP_const2s:
+    case DW_OP_const4u:
+    case DW_OP_const4s:
+    case DW_OP_const8u:
+    case DW_OP_const8s:
+    case DW_OP_constu:
+    case DW_OP_consts:
+      value = ops[index].number;
+      break;
+
+    case DW_OP_lit0:
+      value = 0;
+      break;
+    case DW_OP_lit1:
+      value = 1;
+      break;
+    case DW_OP_lit2:
+      value = 2;
+      break;
+    case DW_OP_lit3:
+      value = 3;
+      break;
+    case DW_OP_lit4:
+      value = 4;
+      break;
+    case DW_OP_lit5:
+      value = 5;
+      break;
+    case DW_OP_lit6:
+      value = 6;
+      break;
+    case DW_OP_lit7:
+      value = 7;
+      break;
+    case DW_OP_lit8:
+      value = 8;
+      break;
+    case DW_OP_lit9:
+      value = 9;
+      break;
+    case DW_OP_lit10:
+      value = 10;
+      break;
+    case DW_OP_lit11:
+      value = 11;
+      break;
+    case DW_OP_lit12:
+      value = 12;
+      break;
+    case DW_OP_lit13:
+      value = 13;
+      break;
+    case DW_OP_lit14:
+      value = 14;
+      break;
+    case DW_OP_lit15:
+      value = 15;
+      break;
+    case DW_OP_lit16:
+      value = 16;
+      break;
+    case DW_OP_lit17:
+      value = 17;
+      break;
+    case DW_OP_lit18:
+      value = 18;
+      break;
+    case DW_OP_lit19:
+      value = 19;
+      break;
+    case DW_OP_lit20:
+      value = 20;
+      break;
+    case DW_OP_lit21:
+      value = 21;
+      break;
+    case DW_OP_lit22:
+      value = 22;
+      break;
+    case DW_OP_lit23:
+      value = 23;
+      break;
+    case DW_OP_lit24:
+      value = 24;
+      break;
+    case DW_OP_lit25:
+      value = 25;
+      break;
+    case DW_OP_lit26:
+      value = 26;
+      break;
+    case DW_OP_lit27:
+      value = 27;
+      break;
+    case DW_OP_lit28:
+      value = 28;
+      break;
+    case DW_OP_lit29:
+      value = 29;
+      break;
+    case DW_OP_lit30:
+      value = 30;
+      break;
+    case DW_OP_lit31:
+      value = 31;
+      break;
+
+    default:
+      return false;
+    }
+
+  expr_result r(value);
+  ctxt.stack.push_front(r);
+  ctxt.accum = r;
+  next_index = index + 1;
+
+  return true;
+}
+
+/// If the current operation in the dwarf expression represents a push
+/// of a non-constant value onto the dwarf expr virtual machine (aka
+/// DEVM), perform the operation and update the DEVM.  A non-constant
+/// is namely a quantity for which we need inferior (a running program
+/// image) state to know the exact value.
+///
+/// Upon successful completion, as the result of the operation is a
+/// non-constant the DEVM accumulator value is left to its state as of
+/// before the invocation of this function.
+///
+/// @param ops the array of the dwarf expression operations to consider.
+///
+/// @param ops_len the lengths of @ref ops array above.
+///
+/// @param index the index of the operation to interpret, in @ref ops.
+///
+/// @param next_index the index of the operation to interpret at the
+/// next step, after this function completed and returned.  This is
+/// set an output parameter that is set iff the function returns true.
+///
+/// @param ctxt the DEVM evaluation context.
+///
+/// @return true if the current operation actually pushes a
+/// non-constant value onto the DEVM stack, false otherwise.
+static bool
+op_pushes_non_constant_value(Dwarf_Op* ops,
+			     size_t ops_len,
+			     size_t index,
+			     size_t& next_index,
+			     dwarf_expr_eval_context& ctxt)
+{
+  assert(index < ops_len);
+  Dwarf_Op& op = ops[index];
+
+  switch (op.atom)
+    {
+    case DW_OP_reg0:
+    case DW_OP_reg1:
+    case DW_OP_reg2:
+    case DW_OP_reg3:
+    case DW_OP_reg4:
+    case DW_OP_reg5:
+    case DW_OP_reg6:
+    case DW_OP_reg7:
+    case DW_OP_reg8:
+    case DW_OP_reg9:
+    case DW_OP_reg10:
+    case DW_OP_reg11:
+    case DW_OP_reg12:
+    case DW_OP_reg13:
+    case DW_OP_reg14:
+    case DW_OP_reg15:
+    case DW_OP_reg16:
+    case DW_OP_reg17:
+    case DW_OP_reg18:
+    case DW_OP_reg19:
+    case DW_OP_reg20:
+    case DW_OP_reg21:
+    case DW_OP_reg22:
+    case DW_OP_reg23:
+    case DW_OP_reg24:
+    case DW_OP_reg25:
+    case DW_OP_reg26:
+    case DW_OP_reg27:
+    case DW_OP_reg28:
+    case DW_OP_reg29:
+    case DW_OP_reg30:
+    case DW_OP_reg31:
+      next_index = index + 1;
+      break;
+
+    case DW_OP_breg0:
+    case DW_OP_breg1:
+    case DW_OP_breg2:
+    case DW_OP_breg3:
+    case DW_OP_breg4:
+    case DW_OP_breg5:
+    case DW_OP_breg6:
+    case DW_OP_breg7:
+    case DW_OP_breg8:
+    case DW_OP_breg9:
+    case DW_OP_breg10:
+    case DW_OP_breg11:
+    case DW_OP_breg12:
+    case DW_OP_breg13:
+    case DW_OP_breg14:
+    case DW_OP_breg15:
+    case DW_OP_breg16:
+    case DW_OP_breg17:
+    case DW_OP_breg18:
+    case DW_OP_breg19:
+    case DW_OP_breg20:
+    case DW_OP_breg21:
+    case DW_OP_breg22:
+    case DW_OP_breg23:
+    case DW_OP_breg24:
+    case DW_OP_breg25:
+    case DW_OP_breg26:
+    case DW_OP_breg27:
+    case DW_OP_breg28:
+    case DW_OP_breg29:
+    case DW_OP_breg30:
+    case DW_OP_breg31:
+      next_index = index + 1;
+      break;
+
+    case DW_OP_regx:
+      next_index = index + 2;
+      break;
+
+    case DW_OP_fbreg:
+      next_index = index + 1;
+      break;
+
+    case DW_OP_bregx:
+      next_index = index + 1;
+      break;
+
+    default:
+      return false;
+    }
+
+  expr_result r(false);
+  ctxt.stack.push_front(r);
+
+  return true;
+}
+
+/// If the current operation in the dwarf expression represents a
+/// manipulation of the stack of the DWARF Expression Virtual Machine
+/// (aka DEVM), this function performs the operation and updates the
+/// state of the DEVM.  If the result of the operation represents a
+/// constant value, then the accumulator of the DEVM is set to that
+/// result's value, Otherwise, the DEVM accumulator is left with its
+/// previous value.
+///
+/// @param ops the array of the dwarf expression operations to consider.
+///
+/// @param ops_len the lengths of @ref ops array above.
+///
+/// @param index the index of the operation to interpret, in @ref ops.
+///
+/// @param next_index the index of the operation to interpret at the
+/// next step, after this function completed and returned.  This is
+/// set an output parameter that is set iff the function returns true.
+///
+/// @param ctxt the DEVM evaluation context.manipulation, push
+/// of aonto the dwarf expr virtual machine (aka DEVM), perform the
+/// operation and update the DEVM.
+///
+/// @return true if the current operation actually manipulates the
+/// DEVM stack, false otherwise.
+static bool
+op_manipulates_stack(Dwarf_Op* expr,
+		     size_t expr_len,
+		     size_t index,
+		     size_t& next_index,
+		     dwarf_expr_eval_context& ctxt)
+{
+  Dwarf_Op& op = expr[index];
+  expr_result v;
+
+  switch (op.atom)
+    {
+    case DW_OP_dup:
+      v = ctxt.stack.front();
+      ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_drop:
+      v = ctxt.stack.front();
+      ctxt.stack.pop_front();
+      break;
+
+    case DW_OP_over:
+	assert(ctxt.stack.size() > 1);
+	v = ctxt.stack[1];
+	ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_pick:
+	assert(index + 1 < expr_len);
+	v = op.number;
+	ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_swap:
+	assert(ctxt.stack.size() > 1);
+	v = ctxt.stack[1];
+	ctxt.stack.erase(ctxt.stack.begin() + 1);
+	ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_rot:
+	assert(ctxt.stack.size() > 2);
+	v = ctxt.stack[2];
+	ctxt.stack.erase(ctxt.stack.begin() + 2);
+	ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_deref:
+    case DW_OP_deref_size:
+      assert(ctxt.stack.size() > 0);
+      ctxt.stack.pop_front();
+      v.is_const(false);
+      ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_xderef:
+    case DW_OP_xderef_size:
+      assert(ctxt.stack.size() > 1);
+      ctxt.stack.pop_front();
+      ctxt.stack.pop_front();
+      v.is_const(false);
+      ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_push_object_address:
+      v.is_const(false);
+      ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_form_tls_address:
+      assert(ctxt.stack.size() > 0);
+      ctxt.stack.pop_front();
+      v.is_const(false);
+      ctxt.stack.push_front(v);
+      break;
+
+    case DW_OP_call_frame_cfa:
+      v.is_const(false);
+      ctxt.stack.push_front(v);
+      break;
+
+    default:
+      return false;
+    }
+
+  if (v.is_const())
+    ctxt.accum = v;
+  next_index = index + 1;
+
+  return true;
+}
+
+/// If the current operation in the dwarf expression represents a push
+/// of an arithmetic or logic operation onto the dwarf expr virtual
+/// machine (aka DEVM), perform the operation and update the DEVM.
+///
+/// If the result of the operation is a constant, update the DEVM
+/// accumulator with its value.  Otherwise, the DEVM accumulator is
+/// left with its previous value.
+///
+/// @param ops the array of the dwarf expression operations to consider.
+///
+/// @param ops_len the lengths of @ref ops array above.
+///
+/// @param index the index of the operation to interpret, in @ref ops.
+///
+/// @param next_index the index of the operation to interpret at the
+/// next step, after this function completed and returned.  This is
+/// set an output parameter that is set iff the function returns true.
+///
+/// @param ctxt the DEVM evaluation context.
+///
+/// @return true if the current operation actually represent an
+/// arithmetic or logic operation.
+static bool
+op_is_arith_logic(Dwarf_Op* expr,
+		  size_t expr_len,
+		  size_t index,
+		  size_t& next_index,
+		  dwarf_expr_eval_context& ctxt)
+{
+  assert(index < expr_len);
+
+  Dwarf_Op& op = expr[index];
+  expr_result val1, val2;
+
+  switch (op.atom)
+    {
+    case DW_OP_abs:
+      val1 = ctxt.pop();
+      val1 = val1.abs();
+      ctxt.push(val1);
+      break;
+
+    case DW_OP_and:
+      assert(ctxt.stack.size() > 1);
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val1 & val2);
+      break;
+
+    case DW_OP_div:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      if (!val1.is_const())
+	val1 = 1;
+      ctxt.push(val2 / val1);
+      break;
+
+    case DW_OP_minus:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val2 - val1);
+      break;
+
+    case DW_OP_mod:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val2 % val1);
+      break;
+
+    case DW_OP_mul:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val2 * val1);
+      break;
+
+    case DW_OP_neg:
+      val1 = ctxt.pop();
+      ctxt.push(-val1);
+      break;
+
+    case DW_OP_not:
+      val1 = ctxt.pop();
+      ctxt.push(~val1);
+      break;
+
+    case DW_OP_or:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val1 | val2);
+      break;
+
+    case DW_OP_plus:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val2 + val1);
+      break;
+
+    case DW_OP_plus_uconst:
+      val1 = ctxt.pop();
+      val1 += op.number;
+      ctxt.push(val1);
+      break;
+
+    case DW_OP_shl:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val2 << val1);
+      break;
+
+    case DW_OP_shr:
+    case DW_OP_shra:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val2 >> val1);
+      break;
+
+    case DW_OP_xor:
+      val1 = ctxt.pop();
+      val2 = ctxt.pop();
+      ctxt.push(val2 ^ val1);
+      break;
+
+    default:
+      return false;
+    }
+
+  if (ctxt.stack.front().is_const())
+    ctxt.accum = ctxt.stack.front();
+
+  next_index = index + 1;
+  return true;
+}
+
+/// If the current operation in the dwarf expression represents a push
+/// of a control flow operation onto the dwarf expr virtual machine
+/// (aka DEVM), perform the operation and update the DEVM.
+///
+/// If the result of the operation is a constant, update the DEVM
+/// accumulator with its value.  Otherwise, the DEVM accumulator is
+/// left with its previous value.
+///
+/// @param ops the array of the dwarf expression operations to consider.
+///
+/// @param ops_len the lengths of @ref ops array above.
+///
+/// @param index the index of the operation to interpret, in @ref ops.
+///
+/// @param next_index the index of the operation to interpret at the
+/// next step, after this function completed and returned.  This is
+/// set an output parameter that is set iff the function returns true.
+///
+/// @param ctxt the DEVM evaluation context.
+///
+/// @return true if the current operation actually represents a
+/// control flow operation, false otherwise.
+static bool
+op_is_control_flow(Dwarf_Op* expr,
+		   size_t expr_len,
+		   size_t index,
+		   size_t& next_index,
+		   dwarf_expr_eval_context& ctxt)
+{
+    assert(index < expr_len);
+
+  Dwarf_Op& op = expr[index];
+  expr_result val1, val2;
+
+  switch (op.atom)
+    {
+    case DW_OP_eq:
+    case DW_OP_ge:
+    case DW_OP_gt:
+    case DW_OP_le:
+    case DW_OP_lt:
+    case DW_OP_ne:
+      {
+	bool value = true;
+	val1 = ctxt.pop();
+	val2 = ctxt.pop();
+      if (op.atom == DW_OP_eq)
+	value = val2 == val1;
+      else if (op.atom == DW_OP_ge)
+	value = val2 >= val1;
+      else if (op.atom == DW_OP_gt)
+	value = val2 > val1;
+      else if (op.atom == DW_OP_le)
+	value = val2 <= val1;
+      else if (op.atom == DW_OP_lt)
+	value = val2 < val1;
+      else if (op.atom == DW_OP_ne)
+	value = val2 != val1;
+
+      val1 = value ? 1 : 0;
+      ctxt.push(val1);
+      }
+      break;
+
+    case DW_OP_skip:
+      if (op.number > 0)
+	index += op.number - 1;
+      break;
+
+    case DW_OP_bra:
+      val1 = ctxt.pop();
+      if (val1 != 0)
+	  index += val1.const_value() - 1;
+      break;
+
+    case DW_OP_call2:
+    case DW_OP_call4:
+    case DW_OP_call_ref:
+    case DW_OP_nop:
+      break;
+
+    default:
+      return false;
+    }
+
+  if (ctxt.stack.front().is_const())
+    ctxt.accum = ctxt.stack.front();
+
+  next_index = index + 1;
+  return true;
+}
+
+/// Evaluate the value of the last sub-expression that is a constant,
+/// inside a given DWARF expression.
+///
+/// @param expr the DWARF expression to consider.
+///
+/// @param expr_len the length of the expression to consider.
+///
+/// @param value the resulting value of the last constant
+/// sub-expression of the DWARF expression.  This is set iff the
+/// function returns true.
+///
+/// @return true if the function could find a constant sub-expression
+/// to evaluate, false otherwise.
+static bool
+eval_last_constant_dwarf_sub_expr(Dwarf_Op* expr,
+				  size_t expr_len,
+				  ssize_t& value)
+{
+  dwarf_expr_eval_context eval_ctxt;
+
+  size_t index = 0, next_index = 0;
+  do
+    {
+      if (op_is_arith_logic(expr, expr_len, index,
+			       next_index, eval_ctxt)
+	  || op_pushes_constant_value(expr, expr_len, index,
+				   next_index, eval_ctxt)
+	  || op_manipulates_stack(expr, expr_len, index,
+				  next_index, eval_ctxt)
+	  || op_pushes_non_constant_value(expr, expr_len, index,
+					  next_index, eval_ctxt)
+	  || op_is_control_flow(expr, expr_len, index,
+				next_index, eval_ctxt))
+	;
+      else
+	next_index = index + 1;
+
+      assert(next_index > index);
+      index = next_index;
+    } while (index < expr_len);
+
+  if (eval_ctxt.accum.is_const())
+    {
+      value = eval_ctxt.accum;
+      return true;
+    }
+  return false;
+}
+
+/// Get the offset of a struct/class member as represented by the
+/// value of the DW_AT_data_member_location attribute.
+///
+/// There is a huge gotcha in here.  The value of the
+/// DW_AT_data_member_location is not a constant that one would just
+/// read and be done with it.  Rather, it's a DWARF expression that
+/// one has to interpret.  There are three general cases to consider:
+///
+///     1/ The offset of a virtual base.  Given the address of a given
+///        object O, the offset of the a virtual base B is given by
+///        the (DWARF) expression:
+///
+///            address(O) + *(*address(0) - VIRTUAL_OFFSET)
+///
+///        where VIRTUAL_OFFSET is a constant value that relates to
+///        the index of the virtual base in the list of virtual bases
+///        for the class of O.  In this case, this function returns
+///        the constant VIRTUAL_OFFSET, as this is enough to detect
+///        changes in the place of a given virtual base, relative to
+///        the other virtual bases.
+///
+///     2/ The offset of a regular data member.  Given the address of
+///        a struct object, the memory location for a particular data
+///        member is given by the (DWARF) expression:
+///
+///            address(O) + OFFSET
+///
+///       where OFFSET is a constant.  In this case, this function
+///       returns the OFFSET constant.
+///
+///     3/ The offset of a virtual member function in the virtual
+///     pointer.  The DWARF expression is a constant that designates
+///     the offset of the function in the vtable.  In this case this
+///     function returns that constant.
+///
+///@param die the DIE to read the information from.
+///
+///@param the resulting constant.  This argument is set iff the
+///function returns true.
+static bool
+die_member_offset(Dwarf_Die* die,
+		  ssize_t& offset)
+{
+  Dwarf_Op* expr = NULL;
+  size_t expr_len = 0;
+
+  if (!die_location_expr(die, DW_AT_data_member_location, &expr, &expr_len))
+    return false;
+
+  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, offset))
+    return false;
+
+  return true;
 }
 
 /// Walk the DIEs under a given die and for each child, populate the
@@ -968,6 +2112,130 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, mangled_name));
 
+  return result;
+}
+
+/// Build a class type from a DW_TAG_structure_type or
+/// DW_TAG_class_type.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE to read information from.  Must be either a
+/// DW_TAG_structure_type or a DW_TAG_class_type.
+///
+/// @return the resulting class_type.
+static class_decl_sptr
+build_class_type(read_context&		ctxt,
+		 Dwarf_Die*		die,
+		 bool			is_struct,
+		 bool			called_from_public_decl)
+{
+  class_decl_sptr result;
+  if (!die)
+    return result;
+
+  unsigned tag = dwarf_tag(die);
+
+  if (tag != DW_TAG_class_type && tag != DW_TAG_structure_type)
+    return result;
+
+  string name, mangled_name;
+  location loc;
+  die_loc_and_name(ctxt, die, loc, name, mangled_name);
+
+  size_t size = 0;
+  die_size_in_bits(die, size);
+
+  result.reset(new class_decl(name, size, 0, loc,
+			      decl_base::VISIBILITY_DEFAULT));
+
+  Dwarf_Die child;
+  if (dwarf_child(die, &child) == 0)
+    {
+      do
+	{
+	  tag = dwarf_tag(&child);
+
+	  // Handle base classes.
+	  if (tag == DW_TAG_inheritance)
+	    {
+	      Dwarf_Die type_die;
+	      if (!die_die_attribute(&child, DW_AT_type, type_die))
+		continue;
+
+	      decl_base_sptr base_type =
+		build_ir_node_from_die(ctxt, &type_die,
+				       called_from_public_decl);
+	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
+	      if (!b)
+		continue;
+
+	      class_decl::access_specifier access =
+		is_struct
+		? class_decl::public_access
+		: class_decl::private_access;
+
+	      die_access_specifier(&child, access);
+
+	      bool is_virt= is_virtual(&child);
+	      ssize_t offset = 0;
+	      bool is_offset_present =
+		die_member_offset(&child, offset);
+
+	      class_decl::base_spec_sptr base(new class_decl::base_spec
+					      (b, access,
+					       is_offset_present
+					       ? offset
+					       : -1,
+					       is_virt));
+	      result->add_base_specifier(base);
+	    }
+	  // Handle member fields.
+	  else if (tag == DW_TAG_member
+		   || tag == DW_TAG_variable)
+	    {
+	      bool is_static = tag == DW_TAG_variable;
+
+	      Dwarf_Die type_die;
+	      if (!die_die_attribute(&child, DW_AT_type, type_die))
+		continue;
+
+	      decl_base_sptr ty =
+		build_ir_node_from_die(ctxt, &type_die,
+				       called_from_public_decl);
+	      type_base_sptr t = is_type(ty);
+	      if (!t)
+		continue;
+
+	      string n, m;
+	      location loc;
+	      die_loc_and_name(ctxt, die, loc, n, m);
+
+	      ssize_t offset_in_bits = 0;
+	      bool is_laid_out = false;
+	      if (!is_static)
+		is_laid_out = die_member_offset(&child, offset_in_bits);
+	      offset_in_bits *= 8;
+
+	      class_decl::access_specifier access =
+		is_struct
+		? class_decl::public_access
+		: class_decl::private_access;
+
+	      die_access_specifier(&child, access);
+
+	      var_decl_sptr v(new var_decl(n, t, loc, m));
+	      result->add_data_member(v, access, is_laid_out,
+				      is_static, offset_in_bits);
+	    }
+	  // Handle member functions;
+	  else if (tag == DW_TAG_subprogram)
+	    {
+	      //TODO finish this.
+	    }
+	}
+      while (dwarf_siblingof(&child, &child) == 0);
+    }
   return result;
 }
 
@@ -1480,10 +2748,16 @@ build_ir_node_from_die(read_context&	ctxt,
       break;
 
     case DW_TAG_class_type:
+    case DW_TAG_structure_type:
+      {
+	bool is_struct = (tag == DW_TAG_structure_type);
+	class_decl_sptr cls =
+	  build_class_type(ctxt, die, is_struct, called_from_public_decl);
+	if (cls)
+	  result = canonicalize_and_add_type_to_ir(cls, scope);
+      }
       break;
     case DW_TAG_string_type:
-      break;
-    case DW_TAG_structure_type:
       break;
     case DW_TAG_subroutine_type:
       break;
