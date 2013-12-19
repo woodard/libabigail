@@ -986,7 +986,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 static qualified_type_def_sptr
 build_qualified_type(read_context&	ctxt,
 		     Dwarf_Die*	die,
-		     bool called_from_public_decl)
+		     bool		called_from_public_decl)
 {
   qualified_type_def_sptr result;
   if (!die)
