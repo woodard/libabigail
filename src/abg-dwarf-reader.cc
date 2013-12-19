@@ -1428,11 +1428,14 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	pointer_type_def_sptr p =
 	  build_pointer_type_def(ctxt, die, called_from_public_decl);
-	decl_base_sptr utype =
-	  get_type_declaration(p->get_pointed_to_type());
-	result =
-	  canonicalize_and_insert_type_into_ir_under_scope(ctxt, p,
-							   utype->get_scope());
+	if(p)
+	  {
+	    decl_base_sptr t =
+	      get_type_declaration(p->get_pointed_to_type());
+	    result =
+	      canonicalize_and_insert_type_into_ir_under_scope(ctxt, p,
+							       t->get_scope());
+	  }
       }
       break;
 
@@ -1441,11 +1444,14 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	reference_type_def_sptr r =
 	  build_reference_type(ctxt, die, called_from_public_decl);
-	decl_base_sptr utype =
-	  get_type_declaration(r->get_pointed_to_type());
-	result =
-	  canonicalize_and_insert_type_into_ir_under_scope(ctxt, r,
-							   utype->get_scope());
+	if (r)
+	  {
+	    decl_base_sptr t =
+	      get_type_declaration(r->get_pointed_to_type());
+	    result =
+	      canonicalize_and_insert_type_into_ir_under_scope(ctxt, r,
+							       t->get_scope());
+	  }
       }
       break;
 
