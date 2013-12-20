@@ -2625,10 +2625,13 @@ class_decl::method_decl::method_decl(const std::string&	name,
 class_decl::method_decl::~method_decl()
 {}
 
-const shared_ptr<method_type>
+const method_type_sptr
 class_decl::method_decl::get_type() const
 {
-  return dynamic_pointer_cast<method_type>(type_);
+  method_type_sptr result;
+  if (type_)
+    result = dynamic_pointer_cast<method_type>(type_);
+  return result;
 }
 
   /// Constructor for instances of class_decl::member_function.

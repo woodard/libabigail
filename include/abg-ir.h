@@ -1178,6 +1178,8 @@ public:
   virtual ~function_type();
 };//end class function_type
 
+/// Convenience typedef for shared pointer to @ref method_type.
+typedef shared_ptr<method_type> method_type_sptr;
 /// Abstracts the type of a class member function.
 class method_type : public function_type
 {

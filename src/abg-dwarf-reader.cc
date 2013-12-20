@@ -66,6 +66,11 @@ typedef shared_ptr<Dwfl> dwfl_sptr;
 /// corresponding decl_base.
 typedef unordered_map<Dwarf_Off, decl_base_sptr> die_decl_map_type;
 
+/// Convenience typedef for a map which key is the offset of a dwarf
+/// die, (given by dwarf_dieoffset()) and which value is the
+/// corresponding class_decl.
+typedef unordered_map<Dwarf_Off, class_decl_sptr> die_class_map_type;
+
 /// Convenience typedef for a map which key is the offset of a
 /// DW_TAG_compile_unit and the key is the corresponding @ref
 /// translation_unit_sptr.
@@ -96,10 +101,12 @@ typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 /// get some important data from it.
 class read_context
 {
+  unsigned short dwarf_version_;
   dwfl_sptr handle_;
   Dwarf* dwarf_;
   const string elf_path_;
   die_decl_map_type die_decl_map_;
+  die_class_map_type die_wip_classes_map_;
   die_tu_map_type die_tu_map_;
   corpus_sptr cur_corpus_;
   translation_unit_sptr cur_tu_;
@@ -111,10 +118,19 @@ class read_context
 public:
   read_context(dwfl_sptr handle,
 	       const string& elf_path)
-    : handle_(handle),
+    : dwarf_version_(0),
+      handle_(handle),
       dwarf_(0),
       elf_path_(elf_path)
   {}
+
+  unsigned short
+  dwarf_version() const
+  {return dwarf_version_;}
+
+  void
+  dwarf_version(unsigned short v)
+  {dwarf_version_ = v;}
 
   dwfl_sptr
   dwfl_handle() const
@@ -157,6 +173,20 @@ public:
   die_decl_map_type&
   die_decl_map()
   {return die_decl_map_;}
+
+  /// Getter of a map that associates a die that represents a
+  /// class/struct with the declaration of the class, while the class
+  /// is being constructed.
+  const die_class_map_type&
+  die_wip_classes_map() const
+  {return die_wip_classes_map_;}
+
+  /// Getter of a map that associates a die that represents a
+  /// class/struct with the declaration of the class, while the class
+  /// is being constructed.
+  die_class_map_type&
+  die_wip_classes_map()
+  {return die_wip_classes_map_;}
 
   const die_tu_map_type&
   die_tu_map() const
@@ -238,6 +268,11 @@ static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		called_from_public_decl = false);
+
+static function_decl_sptr
+build_function_decl(read_context& ctxt,
+		    Dwarf_Die* die,
+		    bool called_for_public_decl);
 
 /// Constructor for a default Dwfl handle that knows how to load debug
 /// info from a library or executable elf file.
@@ -586,6 +621,65 @@ is_public_decl(Dwarf_Die* die)
   return is_public;
 }
 
+///@return true if a tag represents a type, false otherwise.
+///
+///@param tag the tag to consider.
+static bool
+is_type_tag(unsigned tag)
+{
+  bool result = false;
+
+  switch (tag)
+    {
+    case DW_TAG_array_type:
+    case DW_TAG_class_type:
+    case DW_TAG_enumeration_type:
+    case DW_TAG_pointer_type:
+    case DW_TAG_reference_type:
+    case DW_TAG_string_type:
+    case DW_TAG_structure_type:
+    case DW_TAG_subroutine_type:
+    case DW_TAG_typedef:
+    case DW_TAG_union_type:
+    case DW_TAG_ptr_to_member_type:
+    case DW_TAG_set_type:
+    case DW_TAG_subrange_type:
+    case DW_TAG_base_type:
+    case DW_TAG_const_type:
+    case DW_TAG_file_type:
+    case DW_TAG_packed_type:
+    case DW_TAG_thrown_type:
+    case DW_TAG_volatile_type:
+    case DW_TAG_restrict_type:
+    case DW_TAG_interface_type:
+    case DW_TAG_unspecified_type:
+    case DW_TAG_mutable_type:
+    case DW_TAG_shared_type:
+    case DW_TAG_rvalue_reference_type:
+      result = true;
+      break;
+
+    default:
+      result = false;
+      break;
+    }
+
+  return result;
+}
+
+/// Test if a DIE represents a type DIE.
+///
+/// @param die the DIE to consider.
+///
+/// @return true if @ref die represents a type, false otherwise.
+static bool
+is_type_die(Dwarf_Die* die)
+{
+  if (!die)
+    return false;
+  return is_type_tag(dwarf_tag(die));
+}
+
 enum virtuality
 {
   VIRTUALITY_NOT_VIRTUAL,
@@ -628,7 +722,7 @@ die_virtuality(Dwarf_Die* die, virtuality& virt)
 /// @return bool if the DIE represents a virtual base or function,
 /// false othersise.
 static bool
-is_virtual(Dwarf_Die* die)
+die_is_virtual(Dwarf_Die* die)
 {
   virtuality v;
   if (!die_virtuality(die, v))
@@ -1607,18 +1701,17 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op* expr,
 /// read and be done with it.  Rather, it's a DWARF expression that
 /// one has to interpret.  There are three general cases to consider:
 ///
-///     1/ The offset of a virtual base.  Given the address of a given
-///        object O, the offset of the a virtual base B is given by
-///        the (DWARF) expression:
+///     1/ The offset in the vtable where the offset of the of a
+///        virtual base can be found, aka vptr offset.  Given the
+///        address of a given object O, the vptr offset for B is given
+///        by the (DWARF) expression:
 ///
 ///            address(O) + *(*address(0) - VIRTUAL_OFFSET)
 ///
-///        where VIRTUAL_OFFSET is a constant value that relates to
-///        the index of the virtual base in the list of virtual bases
-///        for the class of O.  In this case, this function returns
-///        the constant VIRTUAL_OFFSET, as this is enough to detect
-///        changes in the place of a given virtual base, relative to
-///        the other virtual bases.
+///        where VIRTUAL_OFFSET is a constant value; In this case,
+///        this function returns the constant VIRTUAL_OFFSET, as this
+///        is enough to detect changes in the place of a given virtual
+///        base, relative to the other virtual bases.
 ///
 ///     2/ The offset of a regular data member.  Given the address of
 ///        a struct object, the memory location for a particular data
@@ -1651,6 +1744,37 @@ die_member_offset(Dwarf_Die* die,
   if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, offset))
     return false;
 
+  return true;
+}
+
+/// Return the index of a function in its virtual table.  That is,
+/// return the value of the DW_AT_vtable_elem_location attribute.
+///
+/// @param die the DIE of the function to consider.
+///
+/// @param vindex the resulting index.  This is set iff the function
+/// returns true.
+///
+/// @return true if the DIE has a DW_AT_vtable_elem_location
+/// attribute.
+static bool
+die_virtual_function_index(Dwarf_Die* die,
+			   size_t& vindex)
+{
+  if (!die)
+    return false;
+
+  Dwarf_Op* expr = NULL;
+  size_t expr_len = 0;
+  if (!die_location_expr(die, DW_AT_vtable_elem_location,
+			 &expr, &expr_len))
+    return false;
+
+  ssize_t i = 0;
+  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, i))
+    return false;
+
+  vindex = i;
   return true;
 }
 
@@ -1737,7 +1861,8 @@ get_parent_die(read_context&	ctxt,
 /// If that
 static scope_decl_sptr
 get_scope_for_die(read_context& ctxt,
-		  Dwarf_Die* die)
+		  Dwarf_Die* die,
+		  bool called_for_public_decl = true)
 {
   Dwarf_Die parent_die;
   get_parent_die(ctxt, die, &parent_die);
@@ -1754,7 +1879,8 @@ get_scope_for_die(read_context& ctxt,
       return i->second->get_global_scope();
     }
 
-  decl_base_sptr d = build_ir_node_from_die(ctxt, &parent_die);
+  decl_base_sptr d = build_ir_node_from_die(ctxt, &parent_die,
+					    called_for_public_decl);
   scope_decl_sptr s = dynamic_pointer_cast<scope_decl>(d);
   return s;
 }
@@ -1809,17 +1935,21 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 /// canonicalize.
 ///
 /// @param type_scope the scope into which the canonicalized type is
-/// to be added.
+/// to be added.  If NULL, the canonicalized result is not added to
+/// any scope.
 ///
 /// @return the resulting canonicalized type.
 static decl_base_sptr
-canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
+canonicalize_and_add_type_to_ir(read_context& ctxt,
+				decl_base_sptr type_declaration,
 				scope_decl* type_scope)
 {
   if (!type_declaration)
     return type_declaration;
 
-  translation_unit* tu = get_translation_unit(type_scope);
+  translation_unit* tu = get_translation_unit(type_scope);;
+  if (tu == 0)
+    tu = ctxt.current_translation_unit().get();
   assert(tu);
 
   /// TODO: maybe change the interfance of
@@ -1853,9 +1983,11 @@ canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
 ///
 /// @return the resulting canonicalized type.
 decl_base_sptr
-canonicalize_and_add_type_to_ir(decl_base_sptr type_declaration,
+canonicalize_and_add_type_to_ir(read_context& ctxt,
+				decl_base_sptr type_declaration,
 				scope_decl_sptr type_scope)
-{return canonicalize_and_add_type_to_ir(type_declaration, type_scope.get());}
+{return canonicalize_and_add_type_to_ir(ctxt, type_declaration,
+					type_scope.get());}
 
 /// Canonicalize a given type and insert it into the children of a
 /// given scope right before a given child.
@@ -1918,12 +2050,15 @@ canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
 {
   decl_base_sptr result;
 
+  if (scope == 0)
+    return canonicalize_and_add_type_to_ir(ctxt, type_decl, scope);
+
   const scope_decl* ns_under_scope =
     get_top_most_scope_under(ctxt.current_scope(), scope);
 
   if (ns_under_scope == scope)
     result =
-      canonicalize_and_add_type_to_ir(type_decl, scope);
+      canonicalize_and_add_type_to_ir(ctxt, type_decl, scope);
   else
     {
       scope_decl::declarations::iterator it;
@@ -2115,8 +2250,8 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   return result;
 }
 
-/// Build a class type from a DW_TAG_structure_type or
-/// DW_TAG_class_type.
+/// Build a an IR node for class type from a DW_TAG_structure_type or
+/// DW_TAG_class_type and
 ///
 /// @param ctxt the read context to consider.
 ///
@@ -2125,10 +2260,11 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 ///
 /// @return the resulting class_type.
 static class_decl_sptr
-build_class_type(read_context&		ctxt,
-		 Dwarf_Die*		die,
-		 bool			is_struct,
-		 bool			called_from_public_decl)
+build_class_type_and_add_to_ir(read_context&	ctxt,
+			       Dwarf_Die*	die,
+			       bool		is_struct,
+			       scope_decl*	scope,
+			       bool		called_from_public_decl)
 {
   class_decl_sptr result;
   if (!die)
@@ -2139,12 +2275,23 @@ build_class_type(read_context&		ctxt,
   if (tag != DW_TAG_class_type && tag != DW_TAG_structure_type)
     return result;
 
+  {
+    die_class_map_type::const_iterator i =
+      ctxt.die_wip_classes_map().find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_classes_map().end())
+      return i->second;
+  }
+
   string name, mangled_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, mangled_name);
 
   size_t size = 0;
   die_size_in_bits(die, size);
+
+  class_decl_sptr cur_class_decl (new class_decl(name));
+  ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class_decl;
+  add_decl_to_scope(cur_class_decl, scope);
 
   result.reset(new class_decl(name, size, 0, loc,
 			      decl_base::VISIBILITY_DEFAULT));
@@ -2177,7 +2324,7 @@ build_class_type(read_context&		ctxt,
 
 	      die_access_specifier(&child, access);
 
-	      bool is_virt= is_virtual(&child);
+	      bool is_virt= die_is_virtual(&child);
 	      ssize_t offset = 0;
 	      bool is_offset_present =
 		die_member_offset(&child, offset);
@@ -2190,7 +2337,7 @@ build_class_type(read_context&		ctxt,
 					       is_virt));
 	      result->add_base_specifier(base);
 	    }
-	  // Handle member fields.
+	  // Handle data members.
 	  else if (tag == DW_TAG_member
 		   || tag == DW_TAG_variable)
 	    {
@@ -2209,7 +2356,7 @@ build_class_type(read_context&		ctxt,
 
 	      string n, m;
 	      location loc;
-	      die_loc_and_name(ctxt, die, loc, n, m);
+	      die_loc_and_name(ctxt, &child, loc, n, m);
 
 	      ssize_t offset_in_bits = 0;
 	      bool is_laid_out = false;
@@ -2231,11 +2378,99 @@ build_class_type(read_context&		ctxt,
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
 	    {
-	      //TODO finish this.
+	      function_decl_sptr f =
+		build_function_decl(ctxt, &child, called_from_public_decl);
+	      if (!f)
+		continue;
+
+	      bool is_ctor = (f->get_name() == result->get_name());
+	      bool is_dtor = (f->get_name() == "~" + result->get_name());
+	      bool is_virtual = die_is_virtual(&child);
+	      size_t vindex = 0;
+	      if (is_virtual)
+		die_virtual_function_index(&child, vindex);
+	      class_decl::access_specifier access =
+		is_struct
+		? class_decl::public_access
+		: class_decl::private_access;
+	      die_access_specifier(&child, access);
+	      bool is_static = false;
+	      {
+		Dwarf_Die this_ptr_type;
+		if (ctxt.dwarf_version() > 2
+		    && !die_die_attribute(&child,
+					  DW_AT_object_pointer,
+					  this_ptr_type))
+		  is_static = true;
+		else if (ctxt.dwarf_version() < 3
+			 && !f->get_parameters().empty())
+		  {
+		    // For dwarf < 3, let's see if the first parameter
+		    // has class type and has a DW_AT_artificial
+		    // attribute flag set.
+		    function_decl::parameter_sptr first_parm =
+		      f->get_parameters()[0];
+		    bool is_artificial = first_parm->get_artificial();;
+		    pointer_type_def_sptr this_type;
+		    if (is_artificial)
+		      this_type =
+			dynamic_pointer_cast<pointer_type_def>
+			(first_parm->get_type());
+		    if (this_type)
+		      {
+			class_decl_sptr k =
+			  dynamic_pointer_cast<class_decl>
+			  (this_type->get_pointed_to_type());
+			if (k && *k == *cur_class_decl)
+			  is_static = true;
+		      }
+		  }
+	      }
+	      class_decl::member_function_sptr mem_fun
+		(new class_decl::member_function(f, access,
+						 vindex,
+						 is_static,
+						 is_ctor,
+						 is_dtor,
+						 /*is_const*/false));
+	      result->add_member_function(mem_fun);
 	    }
-	}
-      while (dwarf_siblingof(&child, &child) == 0);
+	  // Handle member types
+	  else if (is_type_die(&child))
+	    {
+	      decl_base_sptr td =
+		build_ir_node_from_die(ctxt, &child, 0,
+				       called_from_public_decl);
+	      type_base_sptr t = is_type(td);
+	      if (t)
+		{
+		  class_decl::access_specifier access =
+		    is_struct
+		    ? class_decl::public_access
+		    : class_decl::private_access;
+		  die_access_specifier(&child, access);
+
+		  class_decl::member_type_sptr m
+		    (new class_decl::member_type(t, access));
+		  result->add_member_type(m);
+		}
+	    }
+	} while (dwarf_siblingof(&child, &child) == 0);
     }
+
+  {
+    die_class_map_type::const_iterator i =
+      ctxt.die_wip_classes_map().find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_classes_map().end())
+      {
+	result->set_earlier_declaration(i->second);
+	ctxt.die_wip_classes_map().erase(i);
+      }
+  }
+
+  decl_base_sptr r = canonicalize_and_add_type_to_ir(ctxt, result, scope);
+  result = dynamic_pointer_cast<class_decl>(r);
+
   return result;
 }
 
@@ -2532,6 +2767,9 @@ build_function_decl(read_context& ctxt,
       build_ir_node_from_die(ctxt, &ret_type_die,
 			     /*called_from_public_decl=*/true);
 
+  class_decl_sptr is_method =
+    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die));
+
   Dwarf_Die child;
   function_decl::parameters function_parms;
 
@@ -2544,6 +2782,8 @@ build_function_decl(read_context& ctxt,
 	    string name, mangled_name;
 	    location loc;
 	    die_loc_and_name(ctxt, &child, loc, name, mangled_name);
+	    bool is_artificial = false;
+	    die_flag_attribute(&child, DW_AT_artificial, is_artificial);
 	    decl_base_sptr parm_type_decl;
 	    Dwarf_Die parm_type_die;
 	    if (die_die_attribute(&child, DW_AT_type, parm_type_die))
@@ -2553,30 +2793,44 @@ build_function_decl(read_context& ctxt,
 	    if (!parm_type_decl)
 	      continue;
 	    function_decl::parameter_sptr p
-	      (new function_decl::parameter(is_type(parm_type_decl),
-					    name, loc));
+	      (new function_decl::parameter(is_type(parm_type_decl), name, loc,
+					    /*variadic_marker=*/false,
+					    is_artificial));
 	    function_parms.push_back(p);
 	  }
 	else if (child_tag == DW_TAG_unspecified_parameters)
 	  {
+	    bool is_artificial = false;
+	    die_flag_attribute(&child, DW_AT_artificial, is_artificial);
 	    function_decl::parameter_sptr p
 	      (new function_decl::parameter(type_base_sptr(),
 					    /*name=*/"",
 					    location(),
-					    /*variadic_marker=*/true));
+					    /*variadic_marker=*/true,
+					    is_artificial));
 	    function_parms.push_back(p);
 	  }
       }
   while (dwarf_siblingof(&child, &child) == 0);
 
 
-  result.reset(new function_decl(fname, function_parms,
-				 is_type(return_type_decl),
-				 tu->get_address_size(),
-				 tu->get_address_size(),
-				 is_inline, floc,
-				 fmangled_name));
+  function_type_sptr fn_type(is_method
+			     ? new method_type(is_type(return_type_decl),
+					       is_method,
+					       function_parms,
+					       tu->get_address_size(),
+					       tu->get_address_size())
+			     : new function_type(is_type(return_type_decl),
+						 tu->get_address_size(),
+						 tu->get_address_size()));
 
+  result.reset(is_method
+	       ? new class_decl::method_decl(fname, fn_type,
+					     is_inline, floc,
+					     fmangled_name)
+	       : new function_decl(fname, fn_type,
+				   is_inline, floc,
+				   fmangled_name));
   return result;
 }
 
@@ -2599,15 +2853,19 @@ build_corpus(read_context& ctxt)
   build_die_parent_map(ctxt);
 
   // And now walk all the DIEs again to build the libabigail IR.
+  Dwarf_Half dwarf_version = 0;
   for (Dwarf_Off offset = 0, next_offset = 0;
-       (dwarf_nextcu(ctxt.dwarf(), offset, &next_offset, &header_size,
-		     NULL, &address_size, NULL) == 0);
+       (dwarf_next_unit(ctxt.dwarf(), offset, &next_offset, &header_size,
+			&dwarf_version, NULL, &address_size, NULL,
+			NULL, NULL) == 0);
        offset = next_offset)
     {
       Dwarf_Off die_offset = offset + header_size;
       Dwarf_Die cu;
       if (!dwarf_offdie(ctxt.dwarf(), die_offset, &cu))
 	continue;
+
+      ctxt.dwarf_version(dwarf_version);
 
       if (!ctxt.current_corpus())
 	{
@@ -2688,7 +2946,7 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	typedef_decl_sptr t = build_typedef_type(ctxt, die,
 						 called_from_public_decl);
-	result = canonicalize_and_add_type_to_ir(t, scope);
+	result = canonicalize_and_add_type_to_ir(ctxt, t, scope);
       }
       break;
 
@@ -2743,19 +3001,17 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	enum_type_decl_sptr e = build_enum_type(ctxt, die);
 	if (e)
-	  result = canonicalize_and_add_type_to_ir(e, scope);
+	  result = canonicalize_and_add_type_to_ir(ctxt, e, scope);
       }
       break;
 
     case DW_TAG_class_type:
     case DW_TAG_structure_type:
-      {
-	bool is_struct = (tag == DW_TAG_structure_type);
-	class_decl_sptr cls =
-	  build_class_type(ctxt, die, is_struct, called_from_public_decl);
-	if (cls)
-	  result = canonicalize_and_add_type_to_ir(cls, scope);
-      }
+      result =
+	  build_class_type_and_add_to_ir(ctxt, die,
+					 tag == DW_TAG_structure_type,
+					 scope,
+					 called_from_public_decl);
       break;
     case DW_TAG_string_type:
       break;
