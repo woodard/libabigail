@@ -1104,6 +1104,8 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 	  if (!(*pi)->get_name().empty())
 	    o << " name='" << (*pi)->get_name() << "'";
 	}
+      if ((*pi)->get_artificial())
+	  o << " is-artificial='yes'";
       write_location((*pi)->get_location(), *get_translation_unit(decl), o);
       o << "/>\n";
     }

@@ -1113,6 +1113,15 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
       is_variadic = (is_variadic_str == "yes") ? true : false;
     }
 
+  bool is_artificial = false;
+  string is_artificial_str;
+  if (xml_char_sptr s =
+      xml::build_sptr(xmlGetProp(node, BAD_CAST("is-artificial"))))
+    {
+      is_artificial_str = CHAR_STR(s) ? CHAR_STR(s) : "";
+      is_artificial = (is_artificial_str == "yes") ? true : false;
+    }
+
   string type_id;
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("type-id"))))
     type_id = CHAR_STR(a);
@@ -1129,7 +1138,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
   read_location(ctxt, node, loc);
 
   shared_ptr<function_decl::parameter> p
-    (new function_decl::parameter(type, name, loc, is_variadic));
+    (new function_decl::parameter(type, name, loc, is_variadic, is_artificial));
 
   return p;
 }

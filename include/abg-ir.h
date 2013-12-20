@@ -891,6 +891,7 @@ public:
     bool			variadic_marker_;
     std::string		name_;
     location			location_;
+    bool			artificial_;
 
   public:
 
@@ -902,14 +903,16 @@ public:
 	      const std::string& name,
 	      location loc, bool variadic_marker = false)
       : type_(type), index_(index), variadic_marker_ (variadic_marker),
-	name_(name), location_(loc)
+	name_(name), location_(loc),
+	artificial_(false)
     {}
 
     parameter(const shared_ptr<type_base> type,
 	      const std::string& name,
-	      location loc, bool variadic_marker = false)
+	      location loc, bool variadic_marker = false,
+	      bool is_artificial = false)
       : type_(type), index_(0), variadic_marker_ (variadic_marker),
-	name_(name), location_(loc)
+	name_(name), location_(loc), artificial_(is_artificial)
     {}
 
     parameter(const shared_ptr<type_base> type,
@@ -917,7 +920,8 @@ public:
 	      bool variadic_marker = false)
     : type_(type),
       index_(index),
-      variadic_marker_ (variadic_marker)
+      variadic_marker_ (variadic_marker),
+      artificial_(false)
     {}
 
     const shared_ptr<type_base>
@@ -943,6 +947,28 @@ public:
     location
     get_location() const
     {return location_;}
+
+    /// Test if the parameter is artificial.
+    ///
+    /// Being artificial means the parameter was not explicitely
+    /// mentionned in the source code, but was rather artificially
+    /// created by the compiler.
+    ///
+    /// @return true if the parameter is artificial, false otherwise.
+    bool
+    get_artificial() const
+    {return artificial_;}
+
+    /// Getter for the artificial-ness of the parameter.
+    ///
+    /// Being artificial means the parameter was not explicitely
+    /// mentionned in the source code, but was rather artificially
+    /// created by the compiler.
+    ///
+    /// @param f set to true if the parameter is artificial.
+    void
+    set_artificial(bool f)
+    {artificial_ = f;}
 
     bool
     operator==(const parameter& o) const
