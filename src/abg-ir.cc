@@ -754,7 +754,7 @@ get_global_scope(const decl_base* decl)
   if (const global_scope* s = dynamic_cast<const global_scope*>(decl))
     return s;
 
-  scope_decl* scope = decl->get_scope();
+  scope_decl* scope = decl ? decl->get_scope() : 0;
   while (scope && !dynamic_cast<global_scope*>(scope))
     scope = scope->get_scope();
 
