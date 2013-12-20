@@ -198,7 +198,7 @@ private:
   // Forbidden
   decl_base();
 
-  void
+  virtual void
   set_scope(scope_decl*);
 
 public:
@@ -1749,6 +1749,9 @@ public:
   struct hash;
 
   member_type(shared_ptr<type_base> t, access_specifier access);
+
+  virtual void
+  set_scope(scope_decl*);
 
   virtual bool
   operator==(const decl_base&) const;

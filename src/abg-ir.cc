@@ -3037,6 +3037,17 @@ class_decl::member_type::member_type(shared_ptr<type_base> t,
     member_base(access), type_(t)
 {}
 
+/// Set the scope of a member type.
+///
+/// @param scope the new scope to set.
+void
+class_decl::member_type::set_scope(scope_decl* scope)
+{
+  decl_base::context_ = scope;
+  decl_base_sptr td = get_type_declaration(as_type());
+  td->set_scope(scope);
+}
+
 bool
 class_decl::member_type::operator==(const decl_base& other) const
 {
