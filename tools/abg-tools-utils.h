@@ -22,6 +22,7 @@
 
 #include <string>
 #include <ostream>
+#include <istream>
 
 namespace abigail
 {
@@ -39,6 +40,21 @@ bool base_name(std::string const& path,
 bool ensure_dir_path_created(const std::string&);
 bool ensure_parent_dir_created(const std::string&);
 bool check_file(const std::string& path, std::ostream& out);
+
+/// The different types of files understood the bi* suite of tools.
+enum file_type
+{
+  /// A file type we don't know about.
+  FILE_TYPE_UNKNOWN,
+  /// The native xml file format representing a translation unit.
+  FILE_TYPE_NATIVE_BI,
+  /// An elf file.  Read this kind of file should yield an
+  /// abigail::corpus type.
+  FILE_TYPE_ELF,
+};
+
+file_type guess_file_type(std::istream& in);
+file_type guess_file_type(const std::string& file_path);
 
 }// end namespace tools
 }//end namespace abigail

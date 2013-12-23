@@ -28,6 +28,7 @@
 #include "abg-comparison.h"
 #include "abg-tools-utils.h"
 #include "abg-reader.h"
+#include "abg-dwarf-reader.h"
 
 using std::string;
 using std::ostream;
@@ -35,9 +36,12 @@ using std::cout;
 using std::cerr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
+using abigail::corpus_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
+using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
 using abigail::tools::check_file;
+using abigail::tools::guess_file_type;
 
 struct options
 {
@@ -108,26 +112,82 @@ main(int argc, char* argv[])
       if (!check_file(opts.file2, cerr))
 	return true;
 
-      translation_unit_sptr t1 =
-	abigail::xml_reader::read_translation_unit_from_file(opts.file1);
+      abigail::tools::file_type t1_type, t2_type;
 
-      translation_unit_sptr t2 =
-	abigail::xml_reader::read_translation_unit_from_file(opts.file2);
+      t1_type = guess_file_type(opts.file1);
+      if (t1_type == abigail::tools::FILE_TYPE_UNKNOWN)
+	{
+	  cerr << "Unknown content type for file " << opts.file1 << "\n";
+	  return true;
+	}
 
-      if (!t1)
+      t2_type = guess_file_type(opts.file2);
+      if (t2_type == abigail::tools::FILE_TYPE_UNKNOWN)
+	{
+	  cerr << "Unknown content type for file " << opts.file2 << "\n";
+	  return true;
+	}
+
+      translation_unit_sptr t1, t2;
+      corpus_sptr c1, c2;
+
+      switch (t1_type)
+	{
+	case abigail::tools::FILE_TYPE_UNKNOWN:
+	  cerr << "Unknown content type for file " << opts.file1 << "\n";
+	  return true;
+	  break;
+	case abigail::tools::FILE_TYPE_NATIVE_BI:
+	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1);
+	  break;
+	case abigail::tools::FILE_TYPE_ELF:
+	  c1 = abigail::dwarf_reader::read_corpus_from_elf(opts.file1);
+	  break;
+	}
+
+      switch (t2_type)
+	{
+	case abigail::tools::FILE_TYPE_UNKNOWN:
+	  cerr << "Unknown content type for file " << opts.file2 << "\n";
+	  return true;
+	  break;
+	case abigail::tools::FILE_TYPE_NATIVE_BI:
+	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2);
+	  break;
+	case abigail::tools::FILE_TYPE_ELF:
+	  c2 = abigail::dwarf_reader::read_corpus_from_elf(opts.file2);
+	  break;
+	}
+
+      if (!t1 && !c1)
 	{
 	  cerr << "failed to read input file " << opts.file1 << "\n";
 	  return true;
 	}
 
-      if (!t2)
+      if (!t2 && !c2)
 	{
 	  cerr << "failed to read input file" << opts.file2 << "\n";
 	  return true;
 	}
 
-      translation_unit_diff_sptr changes = compute_diff(t1, t2);
-      changes->report(cout);
+      if (!!c1 != !!c2
+	  || !!t1 != !!t2)
+	{
+	  cerr << "the two input should be of the same kind\n";
+	  return true;
+	}
+
+      if (t1)
+	{
+	  translation_unit_diff_sptr changes = compute_diff(t1, t2);
+	  changes->report(cout);
+	}
+      else if (c1)
+	{
+	  corpus_diff_sptr changes = compute_diff(c1, c2);
+	  changes->report(cout);
+	}
 
       return false;
     }

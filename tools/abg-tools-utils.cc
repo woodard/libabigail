@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <libgen.h>
+#include <fstream>
 #include "abg-tools-utils.h"
 
 using std::string;
@@ -35,6 +36,8 @@ namespace tools
 {
 
 using std::ostream;
+using std::istream;
+using std::ifstream;
 using std::string;
 
 #define DECLARE_STAT(st) \
@@ -211,6 +214,63 @@ check_file(const string& path,
     }
 
   return true;
+}
+
+/// Guess the type of the content of an input stream.
+///
+/// @param in the input stream to guess the content type for.
+///
+/// @return the type of content guessed.
+file_type
+guess_file_type(istream& in)
+{
+  const unsigned BUF_LEN = 12;
+  const unsigned NB_BYTES_TO_READ = 11;
+
+  char buf[BUF_LEN];
+  memset(buf, 0, BUF_LEN);
+
+  std::streampos initial_pos = in.tellg();
+  in.read(buf, NB_BYTES_TO_READ);
+  in.seekg(initial_pos);
+
+  if (in.gcount() < 4 || in.bad())
+    return FILE_TYPE_UNKNOWN;
+
+  if (buf[0] == 0x7f
+      && buf[1] == 'E'
+      && buf[2] == 'L'
+      && buf[3] == 'F')
+    return FILE_TYPE_ELF;
+
+  if (buf[0] == '<'
+      && buf[1] == 'a'
+      && buf[2] == 'b'
+      && buf[3] == 'i'
+      && buf[4] == '-'
+      && buf[5] == 'i'
+      && buf[6] == 'n'
+      && buf[7] == 's'
+      && buf[8] == 't'
+      && buf[9] == 'r'
+      && buf[10] == ' ')
+    return FILE_TYPE_NATIVE_BI;
+
+  return FILE_TYPE_UNKNOWN;
+}
+
+/// Guess the type of the content of an file.
+///
+/// @param file_path the path to the file to consider.
+///
+/// @return the type of content guessed.
+file_type
+guess_file_type(const std::string& file_path)
+{
+  ifstream in(file_path.c_str(), ifstream::binary);
+  file_type r = guess_file_type(in);
+  in.close();
+  return r;
 }
 
 }//end namespace tools

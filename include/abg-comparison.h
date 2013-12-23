@@ -23,7 +23,7 @@
 /// @file
 
 #include <tr1/unordered_map>
-#include "abg-ir.h"
+#include "abg-corpus.h"
 #include "abg-diff-utils.h"
 
 namespace abigail
@@ -90,6 +90,21 @@ typedef std::pair<enum_type_decl::enumerator,
 /// Convenience typedef for a map which value is a changed enumerator.
 /// The key is the name of the changed enumerator.
 typedef unordered_map<string, changed_enumerator> string_changed_enumerator_map;
+
+/// Convenience typedef for a map which key is a string and which
+/// value is a pointer to @ref decl_base.
+typedef unordered_map<string, function_decl*> string_function_ptr_map;
+
+/// Convenience typedef for a pair of pointer to @ref function_decl
+/// representing a change a @ref function_decl change.  The first
+/// member of the pair represent the initial function and the second
+/// member represents the the changed function.
+typedef std::pair<function_decl*, function_decl*> changed_function_ptr;
+
+/// Convenience typedef for a map which key is a string and which
+/// value is a @ref changed_function_ptr.
+typedef unordered_map<string,
+		      changed_function_ptr> string_changed_function_ptr_map;
 
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for two constructs that are to be diff'ed.  The two
@@ -690,6 +705,7 @@ class translation_unit_diff;
 /// @ref translation_unit_diff type.
 typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
 
+/// An abstraction of a diff between two translation units.
 class translation_unit_diff : public scope_diff
 {
 protected:
@@ -706,12 +722,54 @@ public:
 
   virtual void
   report(ostream& out, const string& indent = "") const;
-};//end clss translation_unit_diff
+};//end class translation_unit_diff
 
 translation_unit_diff_sptr
 compute_diff(const translation_unit_sptr first,
 	     const translation_unit_sptr second);
 
+class corpus_diff;
+
+/// A convenience typedef for a shared pointer to @ref corpus_diff.
+typedef shared_ptr<corpus_diff> corpus_diff_sptr;
+
+/// An abstraction of a diff between between two abi corpus.
+class corpus_diff
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+protected:
+  corpus_diff(corpus_sptr first,
+	      corpus_sptr second);
+
+public:
+
+  corpus_sptr
+  first_corpus() const;
+
+  corpus_sptr
+  second_corpus() const;
+
+  edit_script&
+  function_changes() const;
+
+  edit_script&
+  variable_changes() const;
+
+  unsigned
+  length() const;
+
+  void
+  report(ostream& out, const string& indent = "") const;
+
+  friend corpus_diff_sptr
+  compute_diff(const corpus_sptr, const corpus_sptr);
+}; // end class corpus_diff
+
+corpus_diff_sptr
+compute_diff(const corpus_sptr, const corpus_sptr);
 }// end namespace comparison
 
 }// end namespace abigail

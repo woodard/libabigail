@@ -733,6 +733,34 @@ struct default_eq_functor
   {return a == b;}
 };
 
+
+/// An equality functor to deeply compare pointers.
+struct deep_ptr_eq_functor
+{
+  /// This equality operator compares pointers by comparing the
+  /// pointed-to objects.
+  ///
+  /// @param first the first comparison argument.
+  ///
+  /// @param second the second comparison argument.
+  ///
+  /// @return true if the objects pointed to by the pointers are
+  /// equal, false otherwise.
+  template<typename T>
+  bool
+  operator()(const T* first,
+	     const T* second)
+  {
+    if (!!first != !!second)
+      return false;
+
+    if (!first)
+      return true;
+
+    return *first == *second;
+  }
+};
+
 /// Find the end of the furthest reaching d-path on diagonal k, for
 /// two sequences.  In the paper This is referred to as "the basic
 /// algorithm".

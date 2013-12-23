@@ -171,9 +171,15 @@ public:
   void
   set_address_size(char);
 
+  bool
+  operator==(const translation_unit&) const;
+
   virtual void
   traverse(ir_node_visitor& v);
 };//end class translation_unit
+
+bool
+operator==(translation_unit_sptr, translation_unit_sptr);
 
 /// The base type of all declarations.
 class decl_base : public ir_traversable_base

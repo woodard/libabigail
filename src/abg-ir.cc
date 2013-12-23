@@ -298,7 +298,22 @@ void
 translation_unit::set_address_size(char a)
 {priv_->address_size_= a;}
 
-/// This implements the traversable_base::traverse pure virtual
+/// Compare the current translation unit against another one.
+///
+/// @param other the other tu to compare against.
+///
+/// @return true if the two translation units are equal, false
+/// otherwise.
+bool
+translation_unit::operator==(const translation_unit& other)const
+{
+  if (get_address_size() != other.get_address_size())
+    return false;
+
+  return *get_global_scope() == *other.get_global_scope();
+}
+
+/// This implements the ir_traversable_base::traverse virtual
 /// function.
 ///
 /// @param v the visitor used on the member nodes of the translation
@@ -309,6 +324,25 @@ translation_unit::traverse(ir_node_visitor& v)
 
 translation_unit::~translation_unit()
 {}
+
+/// A deep comparison operator for pointers to translation units.
+///
+/// @param l the first translation unit to consider for the comparison.
+///
+/// @param r the second translation unit to consider for the comparison.
+///
+/// @return true if the two translation units are equal, false otherwise.
+bool
+operator==(translation_unit_sptr l, translation_unit_sptr r)
+{
+  if (l.get() == r.get())
+    return true;
+
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
 
 // </translation_unit stuff>
 

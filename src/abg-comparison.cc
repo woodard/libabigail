@@ -3296,5 +3296,262 @@ compute_diff(const translation_unit_sptr first,
 }
 
 // </translation_unit_diff stuff>
+
+// <corpus stuff>
+struct corpus_diff::priv
+{
+  corpus_sptr				first_;
+  corpus_sptr				second_;
+  edit_script				fns_edit_script_;
+  edit_script				vars_edit_script_;
+  string_function_ptr_map		deleted_fns_;
+  string_function_ptr_map		added_fns_;
+  string_changed_function_ptr_map	changed_fns_;
+
+  bool
+  lookup_tables_empty() const;
+
+  void
+  clear_lookup_tables();
+
+  void
+  ensure_lookup_tables_populated();
+}; // end corpus::priv
+
+/// Tests if the lookup tables are empty.
+///
+/// @return true if the lookup tables are empty, false otherwise.
+bool
+corpus_diff::priv::lookup_tables_empty() const
+{
+  return (deleted_fns_.empty()
+	  && added_fns_.empty()
+	  && changed_fns_.empty());
+}
+
+/// Clear the lookup tables useful for reporting an enum_diff.
+void
+corpus_diff::priv::clear_lookup_tables()
+{
+  deleted_fns_.clear();
+  added_fns_.clear();
+  changed_fns_.clear();
+}
+
+/// If the lookup tables are not yet built, walk the differences and
+/// fill the lookup tables.
+void
+corpus_diff::priv::ensure_lookup_tables_populated()
+{
+  if (!lookup_tables_empty())
+    return;
+
+  {
+    edit_script& e = fns_edit_script_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	assert(i < first_->get_functions().size());
+
+	function_decl* deleted_fn = first_->get_functions()[i];
+	string n = deleted_fn->get_mangled_name();
+	if (n.empty())
+	  n = deleted_fn->get_name();
+	assert(!n.empty());
+	assert(deleted_fns_.find(n) == deleted_fns_.end());
+	deleted_fns_[n] = deleted_fn;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    function_decl* added_fn = second_->get_functions()[i];
+	    string n = added_fn->get_mangled_name();
+	    if (n.empty())
+	      n = added_fn->get_name();
+	    assert(!n.empty());
+	    assert(added_fns_.find(n) == added_fns_.end());
+	    added_fns_[n] = added_fn;
+	  }
+      }
+
+    for (string_function_ptr_map::const_iterator it = deleted_fns_.begin();
+	 it != deleted_fns_.end();
+	 ++it)
+      {
+	string_function_ptr_map::const_iterator it2 =
+	  added_fns_.find(it->first);
+	if (it2 != added_fns_.end())
+	  changed_fns_[it->first] = std::make_pair(it->second,
+						   it2->second);
+      }
+  }
+}
+
+/// Constructor for @ref corpus_diff.
+///
+/// @param first the first corpus of the diff.
+///
+/// @param second the second corpus of the diff.
+corpus_diff::corpus_diff(corpus_sptr first,
+			 corpus_sptr second)
+  : priv_(new priv)
+{
+  priv_->first_ = first;
+  priv_->second_ = second;
+}
+
+/// @return the first corpus of the diff.
+corpus_sptr
+corpus_diff::first_corpus() const
+{return priv_->first_;}
+
+/// @return the second corpus of the diff.
+corpus_sptr
+corpus_diff::second_corpus() const
+{return priv_->second_;}
+
+/// @return the bare edit script of the functions changed as recorded
+/// by the diff.
+edit_script&
+corpus_diff::function_changes() const
+{return priv_->fns_edit_script_;}
+
+/// @return the bare edit script of the variables changed as recorded
+/// by the diff.
+edit_script&
+corpus_diff::variable_changes() const
+{return priv_->vars_edit_script_;}
+
+/// @return the length of the changes as recorded by the diff.
+unsigned
+corpus_diff::length() const
+{
+  return (priv_->deleted_fns_.size()
+	  + priv_->added_fns_.size()
+	  - priv_->changed_fns_.size());
+}
+
+/// A deleter for shared pointers that ... doesn't delete the object
+/// managed by the shared pointer.
+struct noop_deleter
+{
+  template<typename T>
+  void
+  operator()(T*)
+  {}
+};
+
+/// Report the diff in a serialieed form.
+///
+/// @param out the stream to serialize the diff to.
+///
+/// @param the prefix to use for the indentation of this
+/// serialization.
+void
+corpus_diff::report(ostream& out, const string& indent) const
+{
+  unsigned removed = 0, added = 0;
+  for (string_function_ptr_map::const_iterator i =
+	 priv_->deleted_fns_.begin();
+       i != priv_->deleted_fns_.end();
+       ++i)
+    {
+      if (priv_->added_fns_.find(i->first) == priv_->added_fns_.end())
+	{
+	  out << indent
+	      << "  '"
+	      << i->second->get_pretty_representation()
+	      << "' was removed\n";
+	  ++removed;
+	}
+    }
+  if (removed)
+    out << "\n";
+
+  for (string_function_ptr_map::const_iterator i =
+	 priv_->added_fns_.begin();
+       i != priv_->added_fns_.end();
+       ++i)
+    {
+      if (priv_->deleted_fns_.find(i->first) == priv_->deleted_fns_.end())
+	{
+	  out << indent
+	      << "  '"
+	      << i->second->get_pretty_representation()
+	      << "' was added\n";
+	  ++added;
+	}
+    }
+  if (added)
+    out << "\n";
+
+  for (string_changed_function_ptr_map::const_iterator i =
+	 priv_->changed_fns_.begin();
+       i != priv_->changed_fns_.end();
+       ++i)
+    {
+      out << indent << "  '"
+	  << i->second.first->get_pretty_representation()
+	  << "' was changed to '"
+	  << i->second.second->get_pretty_representation()
+	  << "':\n";
+      {
+	function_decl_sptr f(i->second.first, noop_deleter());
+	function_decl_sptr s(i->second.second, noop_deleter());
+
+	diff_sptr diff = compute_diff_for_decls(f, s);
+	if (diff)
+	  diff->report(out, indent + "    ");
+      }
+    }
+  if (priv_->changed_fns_.size())
+    out << "\n";
+}
+
+/// Compute the diff between two instances fo the @ref corpus
+///
+/// @param f the first @ref corpus to consider for the diff.
+///
+/// @param s the second @ref corpus to consider for the diff.
+///
+/// @return the resulting diff between the two @ref corpus.
+corpus_diff_sptr
+compute_diff(const corpus_sptr f, const corpus_sptr s)
+{
+  typedef corpus::functions::const_iterator fns_it_type;
+  typedef corpus::variables::const_iterator vars_it_type;
+  typedef diff_utils::deep_ptr_eq_functor eq_type;
+
+  corpus_diff_sptr r(new corpus_diff(f, s));
+
+  diff_utils::compute_diff<fns_it_type, eq_type>(f->get_functions().begin(),
+						 f->get_functions().end(),
+						 s->get_functions().begin(),
+						 s->get_functions().end(),
+						 r->priv_->fns_edit_script_);
+
+  diff_utils::compute_diff<vars_it_type, eq_type>(f->get_variables().begin(),
+						  f->get_variables().end(),
+						  s->get_variables().begin(),
+						  s->get_variables().end(),
+						  r->priv_->vars_edit_script_);
+
+  r->priv_->ensure_lookup_tables_populated();
+
+  return r;
+}
+// </corpus stuff>
+
 }// end namespace comparison
 } // end namespace abigail

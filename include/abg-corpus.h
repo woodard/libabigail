@@ -40,11 +40,14 @@ typedef shared_ptr<corpus> corpus_sptr;
 class corpus
 {
 public:
-  struct		impl;
-  typedef std::string	string;
+  struct				priv;
+  typedef shared_ptr<priv>		priv_sptr;
+  typedef std::string			string;
+  typedef vector<function_decl*>	functions;
+  typedef vector<var_decl*>		variables;
 
 private:
-  shared_ptr<impl> m_priv;
+  shared_ptr<priv> priv_;
 
   corpus();
 
@@ -69,6 +72,15 @@ public:
 
   bool
   is_empty() const;
+
+  bool
+  operator==(const corpus&) const;
+
+  const functions&
+  get_functions() const;
+
+  const variables&
+  get_variables() const;
 };// end class corpus.
 
 }//end namespace abigail
