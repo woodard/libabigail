@@ -36,7 +36,7 @@ namespace diff_utils
 /// @param forward_d_path_end
 bool
 ends_of_furthest_d_paths_overlap(const point& forward_d_path_end,
-				  const point& reverse_d_path_end)
+				 const point& reverse_d_path_end)
 {
   return ((forward_d_path_end.x() - forward_d_path_end.y())
 	  == (reverse_d_path_end.x() - reverse_d_path_end.y())
@@ -106,9 +106,10 @@ compute_middle_snake(const char* str1, const char* str2,
   bool has_snake = false;
   int str1_size = strlen(str1), str2_size = strlen(str2);
 
-  if (compute_middle_snake(str1, str1 + str1_size,
-			   str2 , str2 + str2_size,
-			   s, ses_len))
+  if (compute_middle_snake<const char*,
+      default_eq_functor>(str1, str1 + str1_size,
+			  str2 , str2 + str2_size,
+			  s, ses_len))
     has_snake = true;
 
   return has_snake;

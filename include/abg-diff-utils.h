@@ -716,6 +716,23 @@ bool
 ends_of_furthest_d_paths_overlap(const point& forward_d_path_end,
 				 const point& reverse_d_path_end);
 
+/// The default equality functor used by the core diffing algorithms.
+struct default_eq_functor
+{
+  /// This equality operator uses the default "==" to compare its
+  /// arguments.
+  ///
+  /// @param a the first comparison argument.
+  ///
+  /// @param b the second comparison argument.
+  ///
+  /// @return true if the two arguments are equal, false otherwise.
+  template<typename T>
+  bool
+  operator()(const T a, const T b) const
+  {return a == b;}
+};
+
 /// Find the end of the furthest reaching d-path on diagonal k, for
 /// two sequences.  In the paper This is referred to as "the basic
 /// algorithm".
@@ -723,6 +740,16 @@ ends_of_furthest_d_paths_overlap(const point& forward_d_path_end,
 /// Unlike in the paper, the coordinates of the edit graph start at
 /// (-1,-1), rather than (0,0), and they end at (M-1, N-1), rather
 /// than (M,N).
+///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
 ///
 /// @param k the number of the diagonal on which we want to find the
 /// end of the furthest reaching D-path.
@@ -753,7 +780,8 @@ ends_of_furthest_d_paths_overlap(const point& forward_d_path_end,
 /// @return true if the end of the furthest reaching path that was
 /// found was inside the boundaries of the edit graph, false
 /// otherwise.
-template<typename RandomAccessOutputIterator>
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
 bool
 end_of_fr_d_path_in_k(int k, int d,
 		      RandomAccessOutputIterator a_begin,
@@ -765,6 +793,7 @@ end_of_fr_d_path_in_k(int k, int d,
   int x = -1, y = -1;
   point begin, intermediate, diag_start, end;
   snake s;
+  EqualityFunctor eq;
 
   // Let's pick the end point of the furthest reaching
   // (D-1)-path.  It's either v[k-1] or v[k+1]; the word
@@ -810,7 +839,7 @@ end_of_fr_d_path_in_k(int k, int d,
   // diagonals).  Note that we stay on the k diagonal when we
   // do this.
   while ((x < last_x_index) && (y < last_y_index))
-    if (a_begin[x + 1] == b_start[y + 1])
+    if (eq(a_begin[x + 1], b_start[y + 1]))
       {
 	x = x + 1;
 	y = y + 1;
@@ -851,6 +880,16 @@ end_of_fr_d_path_in_k(int k, int d,
 /// (-1,-1), rather than (0,0), and they end at (M-1, N-1), rather
 /// than (M,N).
 ///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
+///
 /// @param k the number of the diagonal on which we want to find the
 /// end of the furthest reaching reverse D-path.  Actually, we want to
 /// find the end of the furthest reaching reverse D-path on diagonal (k
@@ -882,7 +921,8 @@ end_of_fr_d_path_in_k(int k, int d,
 /// @return true iff the end of the furthest reaching path that was
 /// found was inside the boundaries of the edit graph, false
 /// otherwise.
-template<typename RandomAccessOutputIterator>
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
 bool
 end_of_frr_d_path_in_k_plus_delta (int k, int d,
 				   RandomAccessOutputIterator a_begin,
@@ -898,6 +938,7 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
   int x = -1, y = -1;
   point begin, intermediate, diag_start, end;
   snake s;
+  EqualityFunctor eq;
 
   // Let's pick the end point of the furthest reaching (D-1)-path and
   // move from there to reach the current k_plus_delta-line.  That end
@@ -935,7 +976,7 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
   // Now, follow the snake.  Note that we stay on the k_plus_delta
   // diagonal when we do this.
   while (x >= 0 && y >= 0)
-    if (a_begin[x] == b_begin[y])
+    if (eq(a_begin[x], b_begin[y]))
       {
 	if (!diag_start)
 	  diag_start.set(x, y);
@@ -1013,6 +1054,16 @@ is_match_point(RandomAccessOutputIterator a_begin,
 /// forward and reverse directions until furthest reaching forward and
 /// reverse paths starting at opposing corners ‘‘overlap’’."
 ///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
+///
 /// @param a_begin an iterator pointing to the begining of sequence A.
 ///
 /// @param a_end an iterator pointing to the end of sequence A.  Note
@@ -1028,7 +1079,8 @@ is_match_point(RandomAccessOutputIterator a_begin,
 /// otherwise, this is not touched.
 ///
 /// @return true is the snake was found, false otherwise.
-template<typename RandomAccessOutputIterator>
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
 bool
 compute_middle_snake(RandomAccessOutputIterator a_begin,
 		     RandomAccessOutputIterator a_end,
@@ -1074,10 +1126,12 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
       for (int k = -d; k <= d; k += 2)
 	{
 	  snake s;
-	  bool found = end_of_fr_d_path_in_k(k, d,
-					     a_begin, a_end,
-					     b_begin, b_end,
-					     forward_d_paths, s);
+	  bool found =
+	    end_of_fr_d_path_in_k<RandomAccessOutputIterator,
+				  EqualityFunctor>(k, d,
+						   a_begin, a_end,
+						   b_begin, b_end,
+						   forward_d_paths, s);
 	  if (!found)
 	    continue;
 
@@ -1105,10 +1159,13 @@ compute_middle_snake(RandomAccessOutputIterator a_begin,
       for (int k = -d; k <= d; k += 2)
 	{
 	  snake s;
-	  bool found = end_of_frr_d_path_in_k_plus_delta(k, d,
-							 a_begin, a_end,
-							 b_begin, b_end,
-							 reverse_d_paths, s);
+	  bool found =
+	    end_of_frr_d_path_in_k_plus_delta<RandomAccessOutputIterator,
+					      EqualityFunctor>(k, d,
+							       a_begin, a_end,
+							       b_begin, b_end,
+							       reverse_d_paths,
+							       s);
 
 	  if (!found)
 	    continue;
@@ -1189,13 +1246,24 @@ print_snake(RandomAccessOutputIterator a_begin,
 /// algorithm in a straightforward manner.  So pleast make sure that
 /// at index 0, we just get some non-used value.
 ///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
+///
 /// @param a the first sequence we care about.
 ///
 /// @param b the second sequence we care about.
 ///
 /// @param v the vector that contains the end points of the furthest
 /// reaching d-path and (d-1)-path.
-template<typename RandomAccessOutputIterator>
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
 int
 ses_len(RandomAccessOutputIterator a_begin,
 	RandomAccessOutputIterator a_end,
@@ -1227,10 +1295,12 @@ ses_len(RandomAccessOutputIterator a_begin,
 	  point end;
 	  if (reverse)
 	    {
-	      bool found = end_of_frr_d_path_in_k_plus_delta(k, d,
-							     a_begin, a_end,
-							     b_begin, b_end,
-							     v, snak);
+	      bool found =
+		end_of_frr_d_path_in_k_plus_delta<RandomAccessOutputIterator,
+						  EqualityFunctor>(k, d,
+								   a_begin, a_end,
+								   b_begin, b_end,
+								   v, snak);
 	      // If we reached the upper left corner of the edit graph then
 	      // we are done.
 	      if (found && snak.end().x() == -1 && snak.end().y() == -1)
@@ -1238,10 +1308,11 @@ ses_len(RandomAccessOutputIterator a_begin,
 	    }
 	  else
 	    {
-	      end_of_fr_d_path_in_k(k, d,
-				    a_begin, a_end,
-				    b_begin, b_end,
-				    v, snak);
+	      end_of_fr_d_path_in_k<RandomAccessOutputIterator,
+				    EqualityFunctor>(k, d,
+						     a_begin, a_end,
+						     b_begin, b_end,
+						     v, snak);
 	      // If we reached the lower right corner of the edit
 	      // graph then we are done.
 	      if ((snak.end().x() == (int) a_size - 1)
@@ -1251,6 +1322,41 @@ ses_len(RandomAccessOutputIterator a_begin,
 	}
     }
   return 0;
+}
+
+/// Compute the length of the shortest edit script for two sequences a
+/// and b.  This is done using the "Greedy LCS/SES" of figure 2 in the
+/// paper.  It can walk the edit graph either foward (when reverse is
+/// false) or backward starting from the end (when reverse is true).
+///
+/// Here, note that the real content of a and b should start at index
+/// 1, for this implementatikon algorithm to match the paper's
+/// algorithm in a straightforward manner.  So pleast make sure that
+/// at index 0, we just get some non-used value.
+///
+/// Note that the equality operator used to compare the elements
+/// passed in argument to this function is the default "==" operator.
+///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @param a the first sequence we care about.
+///
+/// @param b the second sequence we care about.
+///
+/// @param v the vector that contains the end points of the furthest
+/// reaching d-path and (d-1)-path.
+template<typename RandomAccessOutputIterator>
+int
+ses_len(RandomAccessOutputIterator a_begin,
+	RandomAccessOutputIterator a_end,
+	RandomAccessOutputIterator b_begin,
+	RandomAccessOutputIterator b_end,
+	d_path_vec& v, bool reverse)
+{
+  return ses_len<RandomAccessOutputIterator, default_eq_functor>(a_begin, a_end,
+								 b_begin, b_end,
+								 v, reverse);
 }
 
 int
@@ -1275,6 +1381,16 @@ snake_end_points(const snake& s, point&, point&);
 /// actually want to consider.
 ///
 /// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
 ///
 /// @param a_base the iterator to the base of the first sequence.
 ///
@@ -1305,7 +1421,8 @@ snake_end_points(const snake& s, point&, point&);
 /// same result.
 ///
 /// @return true upon successful completion, false otherwise.
-template<typename RandomAccessOutputIterator>
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
 void
 compute_diff(RandomAccessOutputIterator a_base,
 	     RandomAccessOutputIterator a_begin,
@@ -1353,9 +1470,11 @@ compute_diff(RandomAccessOutputIterator a_base,
   snake snak;
   vector<point> trace; // the trace of the edit graph.  Read the paper
 		       // to understand what a trace is.
-  bool has_snake = compute_middle_snake(a_begin, a_end,
-					b_begin, b_end,
-					snak, d);
+  bool has_snake =
+    compute_middle_snake<RandomAccessOutputIterator,
+			 EqualityFunctor>(a_begin, a_end,
+					  b_begin, b_end,
+					  snak, d);
   if (has_snake)
     {
       // So middle_{begin,end} are expressed wrt a_begin and b_begin.
@@ -1402,17 +1521,19 @@ compute_diff(RandomAccessOutputIterator a_base,
       int tmp_ses_len = 0;
       point px, pu;
       snake_end_points(snak, px, pu);
-      compute_diff(a_base, a_begin, a_base + px.x() + 1,
-		   b_base, b_begin, b_base + px.y() + 1,
-		   lcs, ses, tmp_ses_len);
+      compute_diff<RandomAccessOutputIterator,
+		   EqualityFunctor>(a_base, a_begin, a_base + px.x() + 1,
+				    b_base, b_begin, b_base + px.y() + 1,
+				    lcs, ses, tmp_ses_len);
 
       lcs.insert(lcs.end(), trace.begin(), trace.end());
 
       tmp_ses_len = 0;
       edit_script tmp_ses;
-      compute_diff(a_base, a_base + pu.x() + 1, a_end,
-		   b_base, b_base + pu.y() + 1, b_end,
-		   lcs, tmp_ses, tmp_ses_len);
+      compute_diff<RandomAccessOutputIterator,
+		   EqualityFunctor>(a_base, a_base + pu.x() + 1, a_end,
+				    b_base, b_base + pu.y() + 1, b_end,
+				    lcs, tmp_ses, tmp_ses_len);
       ses.append(tmp_ses);
     }
   else if (d == 1)
@@ -1468,6 +1589,16 @@ compute_diff(RandomAccessOutputIterator a_base,
 ///
 /// This uses the LCS algorithm of the paper at section 4b.
 ///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
+///
 /// @param a_start an iterator to the beginning of the first sequence
 /// to consider.
 ///
@@ -1492,7 +1623,8 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// same result.
 ///
 /// @return true upon successful completion, false otherwise.
-template<typename RandomAccessOutputIterator>
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
 void
 compute_diff(RandomAccessOutputIterator a_begin,
 	     RandomAccessOutputIterator a_end,
@@ -1502,9 +1634,10 @@ compute_diff(RandomAccessOutputIterator a_begin,
 	     edit_script& ses,
 	     int& ses_len)
 {
-  compute_diff(a_begin, a_begin, a_end,
-	       b_begin, b_begin, b_end,
-	       lcs, ses, ses_len);
+  compute_diff<RandomAccessOutputIterator,
+	       EqualityFunctor>(a_begin, a_begin, a_end,
+				b_begin, b_begin, b_end,
+				lcs, ses, ses_len);
 }
 
 /// Compute the longest common subsequence of two (sub-regions of)
@@ -1521,6 +1654,16 @@ compute_diff(RandomAccessOutputIterator a_begin,
 /// actually want to consider.
 ///
 /// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
 ///
 /// @param a_base the iterator to the base of the first sequence.
 ///
@@ -1545,7 +1688,8 @@ compute_diff(RandomAccessOutputIterator a_begin,
 /// @param ses the resulting shortest editing script.
 ///
 /// @return true upon successful completion, false otherwise.
-template<typename RandomAccessOutputIterator>
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
 void
 compute_diff(RandomAccessOutputIterator a_base,
 	     RandomAccessOutputIterator a_begin,
@@ -1558,9 +1702,10 @@ compute_diff(RandomAccessOutputIterator a_base,
 {
   int ses_len = 0;
 
-  compute_diff(a_base, a_begin, a_end,
-	       b_base, b_begin, b_end,
-	       lcs, ses, ses_len);
+  compute_diff<RandomAccessOutputIterator,
+	       EqualityFunctor>(a_base, a_begin, a_end,
+				b_base, b_begin, b_end,
+				lcs, ses, ses_len);
 }
 
 /// Compute the longest common subsequence of two (sub-regions of)
@@ -1569,6 +1714,16 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// sequence.
 ///
 /// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
 ///
 /// @param a_start an iterator to the beginning of the first sequence
 /// to consider.
@@ -1588,6 +1743,22 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// @param ses the resulting shortest editing script.
 ///
 /// @return true upon successful completion, false otherwise.
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
+void
+compute_diff(RandomAccessOutputIterator a_begin,
+	     RandomAccessOutputIterator a_end,
+	     RandomAccessOutputIterator b_begin,
+	     RandomAccessOutputIterator b_end,
+	     vector<point>& lcs,
+	     edit_script& ses)
+{
+  compute_diff<RandomAccessOutputIterator,
+	       EqualityFunctor>(a_begin, a_begin, a_end,
+				b_begin, b_begin, b_end,
+				lcs, ses);
+}
+
 template<typename RandomAccessOutputIterator>
 void
 compute_diff(RandomAccessOutputIterator a_begin,
@@ -1597,9 +1768,8 @@ compute_diff(RandomAccessOutputIterator a_begin,
 	     vector<point>& lcs,
 	     edit_script& ses)
 {
-  compute_diff(a_begin, a_begin, a_end,
-	       b_begin, b_begin, b_end,
-	       lcs, ses);
+  compute_diff<RandomAccessOutputIterator,
+	       default_eq_functor>(a_begin, a_end, b_begin, b_end, lcs, ses);
 }
 
 /// Compute the longest common subsequence of two (sub-regions of)
@@ -1617,6 +1787,16 @@ compute_diff(RandomAccessOutputIterator a_begin,
 ///
 /// This uses the LCS algorithm of the paper at section 4b.
 ///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
+///
 /// @param a_base the iterator to the base of the first sequence.
 ///
 /// @param a_start an iterator to the beginning of the sub-region
@@ -1625,8 +1805,8 @@ compute_diff(RandomAccessOutputIterator a_begin,
 /// @param a_end an iterator to the end of the sub-region of the first
 /// sequence to consider.
 ///
-///@param b_base an iterator to the base of the second sequence to
-///consider.
+/// @param b_base an iterator to the base of the second sequence to
+/// consider.
 ///
 /// @param b_start an iterator to the beginning of the sub-region
 /// of the second sequence to actually consider.
@@ -1637,7 +1817,8 @@ compute_diff(RandomAccessOutputIterator a_begin,
 /// @param ses the resulting shortest editing script.
 ///
 /// @return true upon successful completion, false otherwise.
-template<typename RandomAccessOutputIterator>
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
 void
 compute_diff(RandomAccessOutputIterator a_base,
 	     RandomAccessOutputIterator a_begin,
@@ -1649,9 +1830,10 @@ compute_diff(RandomAccessOutputIterator a_base,
 {
   vector<point> lcs;
 
-  compute_diff(a_base, a_begin, a_end,
-	       b_base, b_begin, b_end,
-	       lcs, ses);
+  compute_diff<RandomAccessOutputIterator,
+	       EqualityFunctor>(a_base, a_begin, a_end,
+				b_base, b_begin, b_end,
+				lcs, ses);
 }
 
 /// Compute the longest common subsequence of two (sub-regions of)
@@ -1660,6 +1842,16 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// sequence.
 ///
 /// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @tparm EqualityFunctor this must be a class that declares a public
+/// call operator member returning a boolean and taking two arguments
+/// that must be of the same type as the one pointed to by the @ref
+/// RandomAccessOutputIterator template parameter. This functor is
+/// used to compare the elements referred to by the iterators pased in
+/// argument to this function.
 ///
 /// @param a_start an iterator to the beginning of the first sequence
 /// to consider.
@@ -1676,6 +1868,21 @@ compute_diff(RandomAccessOutputIterator a_base,
 /// @param ses the resulting shortest editing script.
 ///
 /// @return true upon successful completion, false otherwise.
+template<typename RandomAccessOutputIterator,
+	 typename EqualityFunctor>
+void
+compute_diff(RandomAccessOutputIterator a_begin,
+	     RandomAccessOutputIterator a_end,
+	     RandomAccessOutputIterator b_begin,
+	     RandomAccessOutputIterator b_end,
+	     edit_script& ses)
+{
+  compute_diff<RandomAccessOutputIterator,
+	       EqualityFunctor>(a_begin, a_begin, a_end,
+				b_begin, b_begin, b_end,
+				ses);
+}
+
 template<typename RandomAccessOutputIterator>
 void
 compute_diff(RandomAccessOutputIterator a_begin,
@@ -1684,9 +1891,9 @@ compute_diff(RandomAccessOutputIterator a_begin,
 	     RandomAccessOutputIterator b_end,
 	     edit_script& ses)
 {
-  compute_diff(a_begin, a_begin, a_end,
-	       b_begin, b_begin, b_end,
-	       ses);
+  compute_diff<RandomAccessOutputIterator, default_eq_functor>(a_begin, a_end,
+							       b_begin, b_end,
+							       ses);
 }
 
 void
