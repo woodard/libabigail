@@ -105,6 +105,20 @@ typedef shared_ptr<type_base> type_base_sptr;
 /// Convenience typedef for a smart pointer on @ref decl_base.
 typedef shared_ptr<decl_base> decl_base_sptr;
 
+struct ir_traversable_base;
+
+/// Convenience typedef for a shared pointer to @ref
+/// ir_traversable_base.
+typedef shared_ptr<ir_traversable_base> ir_traversable_base_sptr;
+
+/// The base of an entity of the intermediate representation that is
+/// to be traversed.
+struct ir_traversable_base : public traversable_base
+{
+  virtual void
+  traverse(ir_node_visitor&);
+}; // end class ir_traversable_base
+
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
@@ -162,7 +176,7 @@ public:
 };//end class translation_unit
 
 /// The base type of all declarations.
-class decl_base : public traversable_base
+class decl_base : public ir_traversable_base
 {
 public:
   /// Facility to hash instances of decl_base.
@@ -2223,23 +2237,23 @@ struct class_tdecl::shared_ptr_hash
 /// where the traversal is supposed to start from.
 struct ir_node_visitor : public node_visitor_base
 {
-  virtual void visit(scope_decl&);
-  virtual void visit(type_decl&);
-  virtual void visit(namespace_decl&);
-  virtual void visit(qualified_type_def&);
-  virtual void visit(pointer_type_def&);
-  virtual void visit(reference_type_def&);
-  virtual void visit(enum_type_decl&);
-  virtual void visit(typedef_decl&);
-  virtual void visit(var_decl&);
-  virtual void visit(function_decl&);
-  virtual void visit(function_tdecl&);
-  virtual void visit(class_tdecl&);
-  virtual void visit(class_decl&);
-  virtual void visit(class_decl::data_member&);
-  virtual void visit(class_decl::member_function&);
-  virtual void visit(class_decl::member_function_template&);
-  virtual void visit(class_decl::member_class_template&);
+  virtual void visit(scope_decl*);
+  virtual void visit(type_decl*);
+  virtual void visit(namespace_decl*);
+  virtual void visit(qualified_type_def*);
+  virtual void visit(pointer_type_def*);
+  virtual void visit(reference_type_def*);
+  virtual void visit(enum_type_decl*);
+  virtual void visit(typedef_decl*);
+  virtual void visit(var_decl*);
+  virtual void visit(function_decl*);
+  virtual void visit(function_tdecl*);
+  virtual void visit(class_tdecl*);
+  virtual void visit(class_decl*);
+  virtual void visit(class_decl::data_member*);
+  virtual void visit(class_decl::member_function*);
+  virtual void visit(class_decl::member_function_template*);
+  virtual void visit(class_decl::member_class_template*);
 };
 
 } // end namespace abigail

@@ -34,12 +34,12 @@ using std::cout;
 struct name_printing_visitor : public abigail::ir_node_visitor
 {
   void
-  visit(abigail::class_decl& klass)
-  {cout << "class name: " << klass.get_name() << "\n";}
+  visit(abigail::class_decl* klass)
+  {cout << "class name: " << klass->get_name() << "\n";}
 
   void
-  visit(abigail::namespace_decl& ns)
-  {cout << "namespace name: " << ns.get_name() << "\n";}
+  visit(abigail::namespace_decl* ns)
+  {cout << "namespace name: " << ns->get_name() << "\n";}
 };
 
 int
