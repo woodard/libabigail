@@ -2821,6 +2821,7 @@ build_function_decl(read_context& ctxt,
 					       tu->get_address_size(),
 					       tu->get_address_size())
 			     : new function_type(is_type(return_type_decl),
+						 function_parms,
 						 tu->get_address_size(),
 						 tu->get_address_size()));
 
