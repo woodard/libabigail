@@ -3414,7 +3414,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	 ++it)
       {
 	unsigned i = it->index();
-	assert(i < first_->get_functions().size());
+	assert(i < first_->get_variables().size());
 
 	var_decl* deleted_var = first_->get_variables()[i];
 	string n = deleted_var->get_mangled_name();
