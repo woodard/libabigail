@@ -3452,7 +3452,7 @@ struct noop_deleter
   {}
 };
 
-/// Report the diff in a serialieed form.
+/// Report the diff in a serialized form.
 ///
 /// @param out the stream to serialize the diff to.
 ///

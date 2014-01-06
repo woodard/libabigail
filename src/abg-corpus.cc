@@ -318,9 +318,9 @@ void
 corpus::set_path(const string& path)
 {priv_->path = path;}
 
- /// Tests if the corpus contains no translation unit.
- ///
- /// @return true if the corpus contains no translation unit.
+/// Tests if the corpus contains no translation unit.
+///
+/// @return true if the corpus contains no translation unit.
 bool
 corpus::is_empty() const
 {return priv_->members.empty();}

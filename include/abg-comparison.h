@@ -96,9 +96,9 @@ typedef unordered_map<string, changed_enumerator> string_changed_enumerator_map;
 typedef unordered_map<string, function_decl*> string_function_ptr_map;
 
 /// Convenience typedef for a pair of pointer to @ref function_decl
-/// representing a change a @ref function_decl change.  The first
-/// member of the pair represent the initial function and the second
-/// member represents the the changed function.
+/// representing a @ref function_decl change.  The first
+/// member of the pair represents the initial function and the second
+/// member represents the changed function.
 typedef std::pair<function_decl*, function_decl*> changed_function_ptr;
 
 /// Convenience typedef for a map which key is a string and which
