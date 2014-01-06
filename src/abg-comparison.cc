@@ -3307,6 +3307,9 @@ struct corpus_diff::priv
   string_function_ptr_map		deleted_fns_;
   string_function_ptr_map		added_fns_;
   string_changed_function_ptr_map	changed_fns_;
+  string_var_ptr_map			deleted_vars_;
+  string_var_ptr_map			added_vars_;
+  string_changed_var_ptr_map		changed_vars_;
 
   bool
   lookup_tables_empty() const;
@@ -3326,7 +3329,10 @@ corpus_diff::priv::lookup_tables_empty() const
 {
   return (deleted_fns_.empty()
 	  && added_fns_.empty()
-	  && changed_fns_.empty());
+	  && changed_fns_.empty()
+	  && deleted_vars_.empty()
+	  && added_vars_.empty()
+	  && changed_vars_.empty());
 }
 
 /// Clear the lookup tables useful for reporting an enum_diff.
@@ -3336,6 +3342,9 @@ corpus_diff::priv::clear_lookup_tables()
   deleted_fns_.clear();
   added_fns_.clear();
   changed_fns_.clear();
+  deleted_vars_.clear();
+  added_vars_.clear();
+  changed_vars_.clear();
 }
 
 /// If the lookup tables are not yet built, walk the differences and
@@ -3394,6 +3403,57 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	if (it2 != added_fns_.end())
 	  changed_fns_[it->first] = std::make_pair(it->second,
 						   it2->second);
+      }
+  }
+
+  {
+    edit_script& e = vars_edit_script_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	assert(i < first_->get_functions().size());
+
+	var_decl* deleted_var = first_->get_variables()[i];
+	string n = deleted_var->get_mangled_name();
+	if (n.empty())
+	  n = deleted_var->get_name();
+	assert(!n.empty());
+	assert(deleted_vars_.find(n) == deleted_vars_.end());
+	deleted_vars_[n] = deleted_var;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    var_decl* added_var = second_->get_variables()[i];
+	    string n = added_var->get_mangled_name();
+	    if (n.empty())
+	      n = added_var->get_name();
+	    assert(!n.empty());
+	    assert(added_vars_.find(n) == added_vars_.end());
+	    added_vars_[n] = added_var;
+	  }
+      }
+
+    for (string_var_ptr_map::const_iterator it = deleted_vars_.begin();
+	 it != deleted_vars_.end();
+	 ++it)
+      {
+	string_var_ptr_map::const_iterator it2 =
+	  added_vars_.find(it->first);
+	if (it2 != added_vars_.end())
+	  changed_vars_[it->first] = std::make_pair(it->second,
+						    it2->second);
       }
   }
 }
@@ -3462,6 +3522,8 @@ void
 corpus_diff::report(ostream& out, const string& indent) const
 {
   unsigned removed = 0, added = 0;
+
+  /// Report added/removed/changed functions.
   for (string_function_ptr_map::const_iterator i =
 	 priv_->deleted_fns_.begin();
        i != priv_->deleted_fns_.end();
@@ -3516,6 +3578,64 @@ corpus_diff::report(ostream& out, const string& indent) const
       }
     }
   if (priv_->changed_fns_.size())
+    out << "\n";
+
+
+  /// Report added/removed/changed variables.
+  for (string_var_ptr_map::const_iterator i =
+	 priv_->deleted_vars_.begin();
+       i != priv_->deleted_vars_.end();
+       ++i)
+    {
+      if (priv_->added_vars_.find(i->first) == priv_->added_vars_.end())
+	{
+	  out << indent
+	      << "  '"
+	      << i->second->get_pretty_representation()
+	      << "' was removed\n";
+	  ++removed;
+	}
+    }
+  if (removed)
+    out << "\n";
+
+  for (string_var_ptr_map::const_iterator i =
+	 priv_->added_vars_.begin();
+       i != priv_->added_vars_.end();
+       ++i)
+    {
+      if (priv_->deleted_vars_.find(i->first) == priv_->deleted_vars_.end())
+	{
+	  out << indent
+	      << "  '"
+	      << i->second->get_pretty_representation()
+	      << "' was added\n";
+	  ++added;
+	}
+    }
+  if (added)
+    out << "\n";
+
+  for (string_changed_var_ptr_map::const_iterator i =
+	 priv_->changed_vars_.begin();
+       i != priv_->changed_vars_.end();
+       ++i)
+    {
+      out << indent << "  '"
+	  << i->second.first->get_pretty_representation()
+	  << "' was changed to '"
+	  << i->second.second->get_pretty_representation()
+	  << "':\n";
+      {
+	var_decl_sptr f(i->second.first, noop_deleter());
+	var_decl_sptr s(i->second.second, noop_deleter());
+
+	diff_sptr diff = compute_diff_for_decls(f, s);
+	if (diff)
+	  diff->report(out, indent + "    ");
+      }
+    }
+  if (priv_->changed_vars_.size())
     out << "\n";
 }
 

@@ -106,6 +106,20 @@ typedef std::pair<function_decl*, function_decl*> changed_function_ptr;
 typedef unordered_map<string,
 		      changed_function_ptr> string_changed_function_ptr_map;
 
+/// Convenience typedef for a map which key is a string and which
+/// value is a point to @ref var_decl.
+typedef unordered_map<string, var_decl*> string_var_ptr_map;
+
+/// Convenience typedef for a pair of pointer to @ref var_decl
+/// representing a @ref var_decl change.  The first member of the pair
+/// represents the initial variable and the second member represents
+/// the changed variable.
+typedef std::pair<var_decl*, var_decl*> changed_var_ptr;
+
+/// Convenience typedef for a map which key is a stirng and which
+/// value is a @ref changed_var_ptr.
+typedef unordered_map<string, changed_var_ptr> string_changed_var_ptr_map;
+
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for two constructs that are to be diff'ed.  The two
 /// constructs are called the "subjects" of the diff.
