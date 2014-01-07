@@ -72,6 +72,20 @@ read_corpus_from_file(corpus& corp, const string& path);
 int
 read_corpus_from_file(corpus& corp);
 
+bool
+read_corpus_from_native_xml(std::istream* in,
+			    corpus& corp);
+
+corpus_sptr
+read_corpus_from_native_xml(std::istream* in);
+
+bool
+read_corpus_from_native_xml_file(corpus& corp,
+				 const string& path);
+
+corpus_sptr
+read_corpus_from_native_xml_file(const string& path);
+
 }//end xml_reader
 }//end namespace abigail
 

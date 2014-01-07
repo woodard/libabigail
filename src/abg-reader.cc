@@ -409,7 +409,8 @@ private:
 };
 
 static int	advance_cursor(read_context&);
-static bool	read_input(read_context&, translation_unit&);
+static bool	read_translation_unit_from_input(read_context&,
+						 translation_unit&);
 static bool	read_location(read_context&, location&);
 static bool	read_location(read_context&, xmlNodePtr, location&);
 static bool	read_visibility(xmlNodePtr, decl_base::visibility&);
@@ -597,7 +598,9 @@ advance_cursor(read_context& ctxt)
   return status;
 }
 
-/// Parse the input xml document associated to the current context.
+/// Parse the input XML document containing a translation_unit,
+/// represented by an 'abi-instr' element node, associated to the current
+/// context.
 ///
 /// @param ctxt the current input context
 ///
@@ -605,8 +608,8 @@ advance_cursor(read_context& ctxt)
 ///
 /// @return true upon successful parsing, false otherwise.
 static bool
-read_input(read_context&	ctxt,
-	   translation_unit&	tu)
+read_translation_unit_from_input(read_context&	ctxt,
+				 translation_unit&	tu)
 {
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
@@ -625,6 +628,10 @@ read_input(read_context&	ctxt,
       char address_size = atoi(reinterpret_cast<char*>(addrsize_str.get()));
       tu.set_address_size(address_size);
     }
+
+  xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
+  if (path_str)
+    tu.set_path(reinterpret_cast<char*>(path_str.get()));
 
   // We are at global scope, as we've just seen the top-most
   // "abi-instr" element.
@@ -655,6 +662,48 @@ read_input(read_context&	ctxt,
   return false;
 }
 
+/// Parse the input XML document containing an ABI corpus, represented
+/// by an 'abi-corpus' element node, associated to the current
+/// context.
+///
+/// @param ctxt the current input context.
+///
+/// @param corp the corpus resulting from the parsing.  This is set
+/// iff the function returns true.
+///
+/// @return true upon successful parsing, false otherwise.
+static bool
+read_corpus_from_input(read_context&	ctxt,
+		       corpus& corp)
+{
+  xml::reader_sptr reader = ctxt.get_reader();
+  if (!reader)
+    return false;
+
+  // The document must start with the abi-corpus node.
+  int status = advance_cursor (ctxt);
+  if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+				   BAD_CAST("abi-corpus")))
+    return false;
+
+    xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
+
+  if (path_str)
+    corp.set_path(reinterpret_cast<char*>(path_str.get()));
+
+  bool is_ok;
+  do
+    {
+      translation_unit_sptr tu(new translation_unit(""));
+      is_ok = read_translation_unit_from_input(ctxt, *tu);
+      if (is_ok)
+	corp.add(tu);
+    }
+  while (is_ok);
+
+  return true;
+}
+
 /// Parse an ABI instrumentation file (in XML format) at a given path.
 ///
 /// @param input_file a path to the file containing the xml document
@@ -668,7 +717,7 @@ read_translation_unit_from_file(const string&		input_file,
 				translation_unit&	tu)
 {
   read_context read_ctxt(xml::new_reader_from_file(input_file));
-  return read_input(read_ctxt, tu);
+  return read_translation_unit_from_input(read_ctxt, tu);
 }
 
 /// Parse an ABI instrumentation file (in XML format) at a given path.
@@ -697,13 +746,13 @@ read_translation_unit_from_buffer(const string&	buffer,
 				  translation_unit&	tu)
 {
   read_context read_ctxt(xml::new_reader_from_buffer(buffer));
-  return read_input(read_ctxt, tu);
+  return read_translation_unit_from_input(read_ctxt, tu);
 }
 
-/// This function is called by #read_input.  It handles the current
-/// xml element node of the reading context.  The result of the
-/// "handling" is to build the representation of the xml node and tied
-/// it to the current translation unit.
+/// This function is called by @ref read_translation_unit_from_input.
+/// It handles the current xml element node of the reading context.
+/// The result of the "handling" is to build the representation of the
+/// xml node and tied it to the current translation unit.
 ///
 /// @param ctxt the current parsing context.
 ///
@@ -2721,7 +2770,7 @@ read_translation_unit_from_istream(istream* in,
 				   translation_unit& tu)
 {
   read_context read_ctxt(xml::new_reader_from_istream(in));
-  return read_input(read_ctxt, tu);
+  return read_translation_unit_from_input(read_ctxt, tu);
 }
 
 /// De-serialize a translation unit from an ABI Instrumentation xml
@@ -2924,6 +2973,80 @@ read_corpus_from_file(const string& path)
 
   return corp;
 }
+
+/// De-serialize an ABI corpus from an input XML document which root
+/// node is 'abi-corpus'.
+///
+/// @param in the input stream to read the XML document from.
+///
+/// @param corp the corpus de-serialized from the parsing.  This is
+/// set iff the function returns true.
+///
+/// @return true upon successful parsing, false otherwise.
+bool
+read_corpus_from_native_xml(std::istream* in,
+			    corpus& corp)
+{
+  read_context read_ctxt(xml::new_reader_from_istream(in));
+  return read_corpus_from_input(read_ctxt, corp);
+}
+
+/// De-serialize an ABI corpus from an input XML document which root
+/// node is 'abi-corpus'.
+///
+/// @param in the input stream to read the XML document from.
+///
+/// @return the resulting corpus de-serialized from the parsing.  This
+/// is non-null iff the parsing resulted in a valid corpus.
+corpus_sptr
+read_corpus_from_native_xml(std::istream* in)
+{
+  corpus_sptr corp(new corpus(""));
+  if (read_corpus_from_native_xml(in, *corp))
+    return corp;
+
+  return corpus_sptr();
+}
+
+/// De-serialize an ABI corpus from an XML document file which root
+/// node is 'abi-corpus'.
+///
+/// @param path the path to the input file to read the XML document
+/// from.
+///
+/// @param corp the corpus de-serialized from the parsing.  This is
+/// set iff the function returns true.
+///
+/// @return true upon successful parsing, false otherwise.
+bool
+read_corpus_from_native_xml_file(corpus& corp,
+				 const string& path)
+{
+  read_context read_ctxt(xml::new_reader_from_file(path));
+  return read_corpus_from_input(read_ctxt, corp);
+}
+
+/// De-serialize an ABI corpus from an XML document file which root
+/// node is 'abi-corpus'.
+///
+/// @param path the path to the input file to read the XML document
+/// from.
+///
+/// @return the resulting corpus de-serialized from the parsing.  This
+/// is non-null if the parsing successfully resulted in a corpus.
+corpus_sptr
+read_corpus_from_native_xml_file(const string& path)
+{
+  corpus_sptr corp(new corpus(""));
+  if (read_corpus_from_native_xml_file(*corp, path))
+    {
+      if (corp->get_path().empty())
+	corp->set_path(path);
+      return corp;
+    }
+  return corpus_sptr();
+}
+
 }//end namespace xml_reader
 
 }//end namespace abigail

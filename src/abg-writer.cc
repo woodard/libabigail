@@ -641,13 +641,16 @@ write_translation_unit(const translation_unit&	tu,
   if (tu.get_address_size() != 0)
     o << " address-size='" << static_cast<int>(tu.get_address_size()) << "'";
 
+  if (!tu.get_path().empty())
+    o << " path='" << tu.get_path() << "'";
+
   if (tu.is_empty())
     {
       o << "/>";
       return true;
     }
-  else
-    o << ">";
+
+  o << ">";
 
   typedef scope_decl::declarations		declarations;
   typedef typename declarations::const_iterator const_iterator;
@@ -1783,6 +1786,90 @@ write_corpus_to_archive(const corpus& corp)
 bool
 write_corpus_to_archive(const corpus_sptr corp)
 {return write_corpus_to_archive(*corp);}
+
+/// Serialize an ABI corpus to a single native xml document.  The root
+/// note of the resulting XML document is 'abi-corpus'.
+///
+/// @param corpus the corpus to serialize.
+///
+/// @param indent the number of white space indentation to use.
+///
+/// @param out the output stream to serialize the ABI corpus to.
+bool
+write_corpus_to_native_xml(const corpus_sptr	corpus,
+			   unsigned		indent,
+			   std::ostream&	out)
+{
+  if (!corpus)
+    return false;
+
+  write_context ctxt(out);
+
+  do_indent_to_level(ctxt, indent, 0);
+  out << "<abi-corpus";
+  if (!corpus->get_path().empty())
+    out << " path='" << corpus->get_path() << "'";
+
+  if (corpus->is_empty())
+    {
+      out << "/>\n";
+      return true;
+    }
+
+  out << ">\n";
+
+  for (translation_units::const_iterator i =
+	 corpus->get_translation_units().begin();
+       i != corpus->get_translation_units().end();
+       ++i)
+    write_translation_unit(**i, ctxt, indent + 2);
+
+  do_indent_to_level(ctxt, indent, 0);
+  out << "</abi-corpus>\n";
+
+  return true;
+}
+
+/// Serialize an ABI corpus to a single native xml document.  The root
+/// note of the resulting XML document is 'abi-corpus'.
+///
+/// @param corpus the corpus to serialize.
+///
+/// @param indent the number of white space indentation to use.
+///
+/// @param out the output file to serialize the ABI corpus to.
+bool
+write_corpus_to_native_xml_file(const corpus_sptr	corpus,
+				unsigned		indent,
+				const string&		path)
+{
+    bool result = true;
+
+  try
+    {
+      ofstream of(path, std::ios_base::trunc);
+      if (!of.is_open())
+	{
+	  cerr << "failed to access " << path << "\n";
+	  return false;
+	}
+
+      if (!write_corpus_to_native_xml(corpus, indent, of))
+	{
+	  cerr << "failed to access " << path << "\n";
+	  result = false;
+	}
+
+      of.close();
+    }
+  catch(...)
+    {
+      cerr << "failed to write to " << path << "\n";
+      result = false;
+    }
+
+  return result;
+}
 
 } //end namespace xml_writer
 

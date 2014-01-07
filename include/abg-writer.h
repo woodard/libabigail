@@ -53,6 +53,16 @@ write_corpus_to_archive(const corpus& corp);
 bool
 write_corpus_to_archive(const corpus_sptr corp);
 
+bool
+write_corpus_to_native_xml(const corpus_sptr	corpus,
+			   unsigned		indent,
+			   std::ostream&	out);
+
+bool
+write_corpus_to_native_xml_file(const corpus_sptr	corpus,
+				unsigned		indent,
+				const string&		path);
+
 }// end namespace xml_writer
 }// end namespace abigail
 

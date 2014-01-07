@@ -256,6 +256,26 @@ guess_file_type(istream& in)
       && buf[10] == ' ')
     return FILE_TYPE_NATIVE_BI;
 
+  if (buf[0]     == '<'
+      && buf[1]  == 'a'
+      && buf[2]  == 'b'
+      && buf[3]  == 'i'
+      && buf[4]  == '-'
+      && buf[5]  == 'c'
+      && buf[6]  == 'o'
+      && buf[7]  == 'r'
+      && buf[8]  == 'p'
+      && buf[9]  == 'u'
+      && buf[10] == 's'
+      && buf[11] == ' ')
+    return FILE_TYPE_XML_CORPUS;
+
+  if (buf[0]    == 'P'
+      && buf[1] == 'K'
+      && buf[2] == 0x03
+      && buf[3] == 0x04)
+    return FILE_TYPE_ZIP_CORPUS;
+
   return FILE_TYPE_UNKNOWN;
 }
 

@@ -1,4 +1,4 @@
-<abi-instr version='1.0'>
+<abi-instr version='1.0' path='data/test-read-write/test14.xml'>
   <type-decl name='int' size-in-bits='32' id='type-id-1'/>
   <class-decl name='S' size-in-bits='8' alignment-in-bits='8' visibility='default' id='type-id-2'>
     <member-template access='public'>

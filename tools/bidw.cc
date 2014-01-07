@@ -36,13 +36,13 @@
 #include "abg-tools-utils.h"
 #include "abg-corpus.h"
 #include "abg-dwarf-reader.h"
+#include "abg-writer.h"
 
 using std::string;
 using std::cerr;
 using std::cout;
 using std::ostream;
 using std::ofstream;
-using abigail::tools::check_file;
 
 struct options
 {
@@ -105,8 +105,16 @@ main(int argc, char* argv[])
     }
 
   assert(!opts.in_file_path.empty());
-  if (!check_file(opts.in_file_path, cerr))
+  if (!abigail::tools::check_file(opts.in_file_path, cerr))
     return 1;
+
+  abigail::tools::file_type type =
+    abigail::tools::guess_file_type(opts.in_file_path);
+  if (type != abigail::tools::FILE_TYPE_ELF)
+    {
+      cerr << opts.in_file_path << " is not an ELF file\n";
+      return 1;
+    }
 
   using abigail::corpus;
   using abigail::corpus_sptr;
@@ -120,16 +128,7 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  cout << "for corpus " << corp->get_path() << ":\n";
-  for (translation_units::const_iterator it =
-	 corp->get_translation_units().begin();
-       it != corp->get_translation_units().end();
-       ++it)
-    {
-      cout << "translation unit: " << (*it)->get_path() << ":\n";
-      dump(*it, cout);
-      cout << "\n";
-    }
+  abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout);
 
   return 0;
 }

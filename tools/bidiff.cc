@@ -143,6 +143,13 @@ main(int argc, char* argv[])
 	case abigail::tools::FILE_TYPE_ELF:
 	  c1 = abigail::dwarf_reader::read_corpus_from_elf(opts.file1);
 	  break;
+	case abigail::tools::FILE_TYPE_XML_CORPUS:
+	  c1 =
+	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file1);
+	  break;
+	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+	  c1 = abigail::xml_reader::read_corpus_from_file(opts.file1);
+	  break;
 	}
 
       switch (t2_type)
@@ -156,6 +163,13 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
 	  c2 = abigail::dwarf_reader::read_corpus_from_elf(opts.file2);
+	  break;
+	case abigail::tools::FILE_TYPE_XML_CORPUS:
+	  c2 =
+	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file2);
+	  break;
+	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+	  c2 = abigail::xml_reader::read_corpus_from_file(opts.file2);
 	  break;
 	}
 

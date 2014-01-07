@@ -51,6 +51,12 @@ enum file_type
   /// An elf file.  Read this kind of file should yield an
   /// abigail::corpus type.
   FILE_TYPE_ELF,
+  // A native xml file format representing a corpus of one or several
+  // translation units.
+  FILE_TYPE_XML_CORPUS,
+  // A zip file, possibly containing a corpus of one of several
+  // translation units.
+  FILE_TYPE_ZIP_CORPUS,
 };
 
 file_type guess_file_type(std::istream& in);

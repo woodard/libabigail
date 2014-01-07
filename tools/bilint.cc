@@ -36,7 +36,9 @@
 #include <fstream>
 #include "abg-tools-utils.h"
 #include "abg-ir.h"
+#include "abg-corpus.h"
 #include "abg-reader.h"
+#include "abg-dwarf-reader.h"
 #include "abg-writer.h"
 
 using std::string;
@@ -46,18 +48,30 @@ using std::cout;
 using std::ostream;
 using std::ofstream;
 using abigail::tools::check_file;
+using abigail::tools::file_type;
+using abigail::tools::guess_file_type;
+using abigail::corpus;
+using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
 using abigail::xml_reader::read_translation_unit_from_istream;
+using abigail::xml_reader::read_corpus_from_file;
+using abigail::xml_reader::read_corpus_from_native_xml;
+using abigail::xml_reader::read_corpus_from_native_xml_file;
+using abigail::dwarf_reader::read_corpus_from_elf;
 using abigail::xml_writer::write_translation_unit;
+using abigail::xml_writer::write_corpus_to_native_xml;
+using abigail::xml_writer::write_corpus_to_archive;
 
 struct options
 {
   string file_path;
   bool read_from_stdin;
+  bool read_tu;
   bool noout;
 
   options()
     : read_from_stdin(false),
+      read_tu(false),
       noout(false)
   {}
 };//end struct options;
@@ -65,11 +79,12 @@ struct options
 void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << "[options] [<bi-file1>\n"
+  out << "usage: " << prog_name << "[options] [<abi-file1>\n"
       << " where options can be:\n"
-      << "  --help display this message\n"
-      << "  --noout do not display anything on stdout\n"
-      << "  --stdin|-- read bi-file content from stdin\n";
+      << "  --help  display this message\n"
+      << "  --noout  do not display anything on stdout\n"
+      << "  --stdin|--  read abi-file content from stdin\n"
+      << "  --tu  expect a single translation unit file\n";
 }
 
 bool
@@ -94,6 +109,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  return false;
 	else if (!strcmp(argv[i], "--stdin"))
 	  opts.read_from_stdin = true;
+	else if (!strcmp(argv[i], "--tu"))
+	  opts.read_tu = true;
 	else if (!strcmp(argv[i], "--noout"))
 	  opts.noout = true;
 	else
@@ -122,28 +139,58 @@ main(int argc, char* argv[])
       if (!cin.good())
 	return true;
 
-      abigail::translation_unit_sptr tu =
-	read_translation_unit_from_istream(&cin);
-
-      if (!tu)
+      if (opts.read_tu)
 	{
-	  cerr << "failed to read the ABI instrumentation from stdin\n";
-	  return true;
-	}
+	  abigail::translation_unit_sptr tu =
+	    read_translation_unit_from_istream(&cin);
 
-      if (!opts.noout)
-	write_translation_unit(*tu, 0, cout);
-      return false;
+	  if (!tu)
+	    {
+	      cerr << "failed to read the ABI instrumentation from stdin\n";
+	      return true;
+	    }
+
+	  if (!opts.noout)
+	    write_translation_unit(*tu, 0, cout);
+	  return false;
+	}
+      else
+	{
+	  corpus_sptr corp = read_corpus_from_native_xml(&cin);
+	  if (!opts.noout)
+	    write_corpus_to_native_xml(corp, /*indent=*/0, cout);
+	  return false;
+	}
     }
   else if (!opts.file_path.empty())
     {
       if (!check_file(opts.file_path, cerr))
 	return true;
 
-      abigail::translation_unit_sptr tu =
-	read_translation_unit_from_file(opts.file_path);
+      abigail::translation_unit_sptr tu;
+      abigail::corpus_sptr corp;
+      file_type type = guess_file_type(opts.file_path);
 
-      if (!tu)
+      switch (type)
+	{
+	case abigail::tools::FILE_TYPE_UNKNOWN:
+	  cerr << "Unknown file type given in input: " << opts.file_path;
+	  return true;
+	case abigail::tools::FILE_TYPE_NATIVE_BI:
+	  tu = read_translation_unit_from_file(opts.file_path);
+	  break;
+	case abigail::tools::FILE_TYPE_ELF:
+	  corp = read_corpus_from_elf(opts.file_path);
+	  break;
+	case abigail::tools::FILE_TYPE_XML_CORPUS:
+	  corp = read_corpus_from_native_xml_file(opts.file_path);
+	  break;
+	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+	  corp = read_corpus_from_file(opts.file_path);
+	  break;
+	}
+
+      if (!tu && !corp)
 	{
 	  cerr << "failed to read " << opts.file_path << "\n";
 	  return true;
@@ -161,15 +208,41 @@ main(int argc, char* argv[])
 	  return true;
 	}
 
-      bool r = write_translation_unit(*tu, /*indent=*/0, of);
+      bool r;
+
+      if (tu)
+	r = write_translation_unit(*tu, /*indent=*/0, of);
+      else
+	{
+	  if (type == abigail::tools::FILE_TYPE_XML_CORPUS)
+	    r = write_corpus_to_native_xml(corp, /*indent=*/0, of);
+	  else if (type == abigail::tools::FILE_TYPE_ZIP_CORPUS)
+	    {
+	      r = write_corpus_to_archive(*corp, ofile_name);
+	      of.close();
+	    }
+	  else if (type == abigail::tools::FILE_TYPE_ELF)
+	    r = write_corpus_to_native_xml(corp, /*indent=*/0,
+					   opts.noout ? of : cout);
+	}
+
       bool is_ok = r;
       of.close();
 
       if (!is_ok)
-	cerr << "failed to write the translation unit "
-	     << opts.file_path << " back\n";
+	{
+	  string output =
+	    (type == abigail::tools::FILE_TYPE_NATIVE_BI)
+	    ? "translation unit"
+	    : "ABI corpus";
+	  cerr << "failed to write the translation unit "
+	       << opts.file_path << " back\n";
+	}
 
-      if (is_ok)
+      if (is_ok
+	  && ((type == abigail::tools::FILE_TYPE_XML_CORPUS)
+	      || type == abigail::tools::FILE_TYPE_NATIVE_BI
+	      || type == abigail::tools::FILE_TYPE_ZIP_CORPUS))
 	{
 	  string cmd = "diff -u " + opts.file_path + " " + ofile_name;
 	  if (system(cmd.c_str()))
