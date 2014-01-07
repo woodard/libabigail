@@ -25,19 +25,15 @@ libtestutils_la_CXXFLAGS=		\
 
 runtestreadwrite_SOURCES=$(h)/test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
-runtestreadwrite_DEPENDENCIES = libtestutils.la
 
 runtestwritereadarchive_SOURCES=$(h)/test-write-read-archive.cc
 runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la $(top_builddir)/tools/libtoolsutils.la
-runtestwritereadarchive_DEPENDENCIES = libtestutils.la
 
 runtestcorediff_SOURCES=$(h)/test-core-diff.cc
 runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
-runtestcorediff_DEPENDENCIES=libtestutils.la
 
 runtestbidiff_SOURCES = $(h)/test-bidiff.cc
 runtestbidiff_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
-runtestbidiff_DEPENDENCIES = libtestutils.la
 
 runtestsvg_SOURCES=$(h)/test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
