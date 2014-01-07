@@ -624,9 +624,9 @@ write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_translation_unit(const translation_unit& tu,
-		       write_context& ctxt,
-		       unsigned	indent)
+write_translation_unit(const translation_unit&	tu,
+		       write_context&		ctxt,
+		       unsigned		indent)
 {
   ostream& o = ctxt.get_ostream();
   const config& c = ctxt.get_config();
@@ -1581,7 +1581,7 @@ write_class_tdecl(const shared_ptr<class_tdecl> decl,
 
   ostream& o = ctxt.get_ostream();
 
-  do_indent_to_level(ctxt,indent, 0);
+  do_indent_to_level(ctxt, indent, 0);
 
   o << "<class-template-decl id='" << ctxt.get_id_for_class_tmpl(decl) << "'";
 

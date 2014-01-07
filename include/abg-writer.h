@@ -35,13 +35,13 @@ namespace xml_writer
 {
 bool
 write_translation_unit(const translation_unit&	tu,
-			 unsigned		indent,
-			 std::ostream&		out);
+		       unsigned		indent,
+		       std::ostream&		out);
 
 bool
 write_translation_unit(const translation_unit&	tu,
-			 unsigned		indent,
-			 const string&		path);
+		       unsigned		indent,
+		       const string&		path);
 
 bool
 write_corpus_to_archive(const corpus& corp,

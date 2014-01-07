@@ -152,7 +152,7 @@ main()
 
   bool is_ok = true;
   string in_path, out_path;
-  for (InOutSpec *s = in_out_specs; s->in_path; ++s)
+  for (InOutSpec* s = in_out_specs; s->in_path; ++s)
     {
       string input_suffix(s->in_path);
       in_path = abigail::tests::get_src_dir() + "/tests/" + input_suffix;
@@ -181,8 +181,8 @@ main()
 	  continue;
 	}
 
-      bool r = abigail::xml_writer::write_translation_unit(tu, /*indent=*/0,
-							     of);
+      bool r =
+	abigail::xml_writer::write_translation_unit(tu, /*indent=*/0, of);
       is_ok = (is_ok && r);
       of.close();
       string cmd = "diff -u " + in_path + " " + out_path;
