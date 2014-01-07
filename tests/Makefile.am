@@ -3,6 +3,7 @@ h=$(abs_srcdir)
 TESTS=				\
 runtestreadwrite		\
 runtestwritereadarchive		\
+runtestreaddwarf		\
 runtestcorediff			\
 runtestbidiff			\
 runtestsvg			\
@@ -28,6 +29,9 @@ runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestwritereadarchive_SOURCES=$(h)/test-write-read-archive.cc
 runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la $(top_builddir)/tools/libtoolsutils.la
+
+runtestreaddwarf_SOURCES=$(h)/test-read-dwarf.cc
+runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestcorediff_SOURCES=$(h)/test-core-diff.cc
 runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
@@ -98,7 +102,14 @@ data/test-bidiff/test-struct1-v1.cc.bi		\
 data/test-bidiff/test-struct1-report.txt	\
 data/test-bidiff/test-var0-v0.cc.bi		\
 data/test-bidiff/test-var0-v1.cc.bi		\
-data/test-bidiff/test-var0-report.txt
+data/test-bidiff/test-var0-report.txt		\
+\
+data/test-read-dwarf/test0			\
+data/test-read-dwarf/test0.abi			\
+data/test-read-dwarf/test0.cc			\
+data/test-read-dwarf/test1			\
+data/test-read-dwarf/test1.abi			\
+data/test-read-dwarf/test1.cc
 
 clean-local: clean-local-check
 .PHONY: clean-local-check
