@@ -1672,7 +1672,7 @@ build_typedef_decl(read_context&	ctxt,
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
@@ -1824,8 +1824,13 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 
 	      if (shared_ptr<type_base> t =
 		  build_type(ctxt, p, /*update_depth_info=*/true,
-			     /*add_to_current_scope=*/false))
-		decl->add_member_type(t, access);
+			     /*add_to_current_scope=*/true))
+		{
+		  // No need to add the type to the class as
+		  //build_type() above has just done that.
+		  //decl->add_member_type(t, access)
+		  ;
+		}
 	    }
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("data-member")))

@@ -79,7 +79,7 @@ typedef unordered_map<Dwarf_Off, translation_unit_sptr> die_tu_map_type;
 /// Convenience typedef for a stack containing the scopes up to the
 /// current point in the abigail Internal Representation (aka IR) tree
 /// that is being built.
-typedef stack<scope_decl_sptr> scope_stack_type;
+typedef stack<scope_decl*> scope_stack_type;
 
 /// Convenience typedef for a map that contains the types that have
 /// been built so far.
@@ -246,13 +246,14 @@ public:
   scope_stack()
   {return scope_stack_;}
 
-  scope_decl_sptr
+  scope_decl*
   current_scope()
   {
     if (scope_stack().empty())
       {
 	if (current_translation_unit())
-	  scope_stack().push(current_translation_unit()->get_global_scope());
+	  scope_stack().push
+	    (current_translation_unit()->get_global_scope().get());
       }
     return scope_stack().top();
   }
@@ -1857,6 +1858,46 @@ get_parent_die(read_context&	ctxt,
   assert(dwarf_offdie(ctxt.dwarf(), i->second, parent_die) != 0);
 }
 
+/// Insert a decl into a scope.
+///
+/// If the current scope is a sub-scope of the scope under which to
+/// insert the decl, make sure to insert the decl before (in
+/// topological order) the current scope.
+///
+/// @param ctxt the current context.
+///
+/// @param type_decl the decl to insert into the scope.
+///
+/// @param scope under which to insert the decl.
+///
+/// @return the decl inserted into the scope.  Note that the inserted
+/// decl can be different from the decl to insert, for instance for
+/// member type decls.  In the case of member decls, the result of the
+/// insertion is a class_decl::member_type; to get the original decl
+/// to be inserted, you need to pass it to as_non_member_type.
+static decl_base_sptr
+insert_decl_into_ir_under_scope(read_context& ctxt,
+				decl_base_sptr type_decl,
+				scope_decl* scope)
+{
+  decl_base_sptr result;
+
+   const scope_decl* ns_under_scope =
+    get_top_most_scope_under(ctxt.current_scope(), scope);
+
+  if (ns_under_scope == scope)
+    result = add_decl_to_scope(type_decl, scope);
+  else
+    {
+      scope_decl::declarations::iterator it;
+      assert(scope->find_iterator_for_member(ns_under_scope,
+					     it));
+      result = insert_decl_into_scope(type_decl, it, scope);
+    }
+
+  return result;
+}
+
 /// Return the abigail IR node representing the scope of a given DIE.
 /// If that
 static scope_decl_sptr
@@ -1882,6 +1923,15 @@ get_scope_for_die(read_context& ctxt,
   decl_base_sptr d = build_ir_node_from_die(ctxt, &parent_die,
 					    called_for_public_decl);
   scope_decl_sptr s = dynamic_pointer_cast<scope_decl>(d);
+  {
+    class_decl_sptr cl = dynamic_pointer_cast<class_decl>(d);
+    if (cl && cl->is_declaration_only())
+      {
+	scope_decl_sptr scop (cl->get_definition_of_declaration());
+	assert(scop);
+	s = scop;
+      }
+  }
   return s;
 }
 
@@ -2126,14 +2176,14 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   die_loc_and_name(ctxt, die, loc, name, mangled_name);
 
   result.reset(new namespace_decl(name, loc));
-  add_decl_to_scope(result, scope);
+  insert_decl_into_ir_under_scope(ctxt, result, scope.get());
   ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
 
   Dwarf_Die child;
   if (dwarf_child(die, &child) != 0)
     return result;
 
-  ctxt.scope_stack().push(result);
+  ctxt.scope_stack().push(result.get());
   do
     build_ir_node_from_die(ctxt, &child);
   while (dwarf_siblingof(&child, &child) == 0);
@@ -2259,7 +2309,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 /// DW_TAG_structure_type or a DW_TAG_class_type.
 ///
 /// @return the resulting class_type.
-static class_decl_sptr
+static decl_base_sptr
 build_class_type_and_add_to_ir(read_context&	ctxt,
 			       Dwarf_Die*	die,
 			       bool		is_struct,
@@ -2290,11 +2340,22 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   die_size_in_bits(die, size);
 
   class_decl_sptr cur_class_decl (new class_decl(name));
+  insert_decl_into_ir_under_scope(ctxt, cur_class_decl, scope);
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class_decl;
-  add_decl_to_scope(cur_class_decl, scope);
 
   result.reset(new class_decl(name, size, 0, loc,
 			      decl_base::VISIBILITY_DEFAULT));
+  assert(!result->is_declaration_only());
+  decl_base_sptr res = insert_decl_into_ir_under_scope(ctxt, result, scope);
+  assert(cur_class_decl->is_declaration_only());
+  cur_class_decl->set_definition_of_declaration(result);
+  result = dynamic_pointer_cast<class_decl>(as_non_member_type(res));
+  assert(result);
+  scope_decl_sptr scop =
+    dynamic_pointer_cast<scope_decl>
+    (get_type_declaration(as_non_member_type(res)));
+  assert(scop);
+  ctxt.scope_stack().push(scop.get());
 
   Dwarf_Die child;
   if (dwarf_child(die, &child) == 0)
@@ -2313,6 +2374,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      decl_base_sptr base_type =
 		build_ir_node_from_die(ctxt, &type_die,
 				       called_from_public_decl);
+	      base_type = get_type_declaration(as_non_member_type(base_type));
 	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
 	      if (!b)
 		continue;
@@ -2350,7 +2412,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      decl_base_sptr ty =
 		build_ir_node_from_die(ctxt, &type_die,
 				       called_from_public_decl);
-	      type_base_sptr t = is_type(ty);
+	      type_base_sptr t = as_non_member_type(ty);
 	      if (!t)
 		continue;
 
@@ -2439,10 +2501,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  else if (is_type_die(&child))
 	    {
 	      decl_base_sptr td =
-		build_ir_node_from_die(ctxt, &child, 0,
+		build_ir_node_from_die(ctxt, &child, result.get(),
 				       called_from_public_decl);
-	      type_base_sptr t = is_type(td);
-	      if (t)
+	      if (td)
 		{
 		  class_decl::access_specifier access =
 		    is_struct
@@ -2450,13 +2511,15 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		    : class_decl::private_access;
 		  die_access_specifier(&child, access);
 
-		  class_decl::member_type_sptr m
-		    (new class_decl::member_type(t, access));
-		  result->add_member_type(m);
+		  class_decl::member_type_sptr m =
+		    dynamic_pointer_cast<class_decl::member_type>(td);
+		  m->set_access_specifier(access);
 		}
 	    }
 	} while (dwarf_siblingof(&child, &child) == 0);
     }
+
+  ctxt.scope_stack().pop();
 
   {
     die_class_map_type::const_iterator i =
@@ -2469,9 +2532,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   }
 
   decl_base_sptr r = canonicalize_and_add_type_to_ir(ctxt, result, scope);
-  result = dynamic_pointer_cast<class_decl>(r);
-
-  return result;
+  return r;
 }
 
 /// build a qualified type from a DW_TAG_const_type or
@@ -2508,6 +2569,7 @@ build_qualified_type(read_context&	ctxt,
   decl_base_sptr utype_decl = build_ir_node_from_die(ctxt,
 						     &underlying_type_die,
 						     called_from_public_decl);
+  utype_decl = get_type_declaration(as_non_member_type(utype_decl));
   if (!utype_decl)
     return result;
 
@@ -2557,6 +2619,7 @@ build_pointer_type_def(read_context&	ctxt,
 
   decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
+  utype_decl = get_type_declaration(as_non_member_type(utype_decl));
   if (!utype_decl)
     return result;
 
@@ -2606,6 +2669,7 @@ build_reference_type(read_context& ctxt,
 
   decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
+  utype_decl = get_type_declaration(as_non_member_type(utype_decl));
   if (!utype_decl)
     return result;
 
@@ -2656,6 +2720,7 @@ build_typedef_type(read_context& ctxt,
 
   decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
+  utype_decl = get_type_declaration(as_non_member_type(utype_decl));
   if (!utype_decl)
     return result;
 
@@ -2701,7 +2766,7 @@ build_var_decl(read_context& ctxt,
 			       /*called_from_public_decl=*/true);
       if (!ty)
 	return result;
-      type = is_type(ty);
+      type = as_non_member_type(ty);
       assert(type);
     }
 
@@ -2766,6 +2831,7 @@ build_function_decl(read_context& ctxt,
     return_type_decl =
       build_ir_node_from_die(ctxt, &ret_type_die,
 			     /*called_from_public_decl=*/true);
+  return_type_decl = get_type_declaration(as_non_member_type(return_type_decl));
 
   class_decl_sptr is_method =
     dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die));
@@ -2792,6 +2858,8 @@ build_function_decl(read_context& ctxt,
 				       /*called_from_public_decl=*/true);
 	    if (!parm_type_decl)
 	      continue;
+	    parm_type_decl =
+	      get_type_declaration(as_non_member_type(parm_type_decl));
 	    function_decl::parameter_sptr p
 	      (new function_decl::parameter(is_type(parm_type_decl), name, loc,
 					    /*variadic_marker=*/false,
@@ -3060,12 +3128,16 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_variable:
       if ((result = build_var_decl(ctxt, die)))
-	add_decl_to_scope(result, scope);
+	result = add_decl_to_scope(result, scope);
       break;
 
     case DW_TAG_subprogram:
-      if ((result = build_function_decl(ctxt, die, called_from_public_decl)))
-	  add_decl_to_scope(result, scope);
+      {
+	ctxt.scope_stack().push(scope);
+	if ((result = build_function_decl(ctxt, die, called_from_public_decl)))
+	  result = add_decl_to_scope(result, scope);
+	ctxt.scope_stack().pop();
+      }
       break;
 
     case DW_TAG_formal_parameter:
@@ -3153,6 +3225,9 @@ build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		called_from_public_decl)
 {
+  if (!die)
+    return decl_base_sptr();
+
   scope_decl_sptr scope = get_scope_for_die(ctxt, die);
   return build_ir_node_from_die(ctxt, die, scope.get(),
 				called_from_public_decl);

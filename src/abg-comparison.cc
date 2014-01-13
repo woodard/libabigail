@@ -1340,9 +1340,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	 ++it)
       {
 	unsigned i = it->index();
-	decl_base_sptr d =
-	  get_type_declaration
-	  (first_class_decl()->get_member_types()[i]->as_type());
+	decl_base_sptr d = first_class_decl()->get_member_types()[i];
 	string qname = d->get_qualified_name();
 	assert(priv_->deleted_member_types_.find(qname)
 	       == priv_->deleted_member_types_.end());
@@ -1359,9 +1357,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     ++iit)
 	  {
 	    unsigned i = *iit;
-	    decl_base_sptr d =
-	      get_type_declaration
-	      (second_class_decl()->get_member_types()[i]->as_type());
+	    decl_base_sptr d = second_class_decl()->get_member_types()[i];
 	    string qname = d->get_qualified_name();
 	    assert(priv_->inserted_member_types_.find(qname)
 		   == priv_->inserted_member_types_.end());
@@ -1792,9 +1788,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    {
 	      if (i != e.deletions().begin())
 		out << "\n";
-	      decl_base_sptr mem_type =
-		get_type_declaration
-		(first->get_member_types()[i->index()]->as_type());
+	      decl_base_sptr mem_type = first->get_member_types()[i->index()];
 
 	      if (decl_base_sptr n = priv_->member_type_has_changed(mem_type))
 		continue;
@@ -1815,8 +1809,10 @@ class_diff::report(ostream& out, const string& indent) const
 	       it != priv_->changed_member_types_.end();
 	       ++it)
 	    {
-	      decl_base_sptr o = it->second.first;
-	      decl_base_sptr n = it->second.second;
+	      decl_base_sptr o =
+		get_type_declaration(as_non_member_type(it->second.first));
+	      decl_base_sptr n =
+		get_type_declaration(as_non_member_type(it->second.second));
 	      out << indent << "  '"
 		  << o->get_pretty_representation()
 		  << "' changed:\n";

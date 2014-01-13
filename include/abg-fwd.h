@@ -107,10 +107,10 @@ class var_decl;
 struct type_shared_ptr_equal;
 struct traversable_base;
 
-void
+shared_ptr<decl_base>
 add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
 
-void
+shared_ptr<decl_base>
 add_decl_to_scope (shared_ptr<decl_base>, shared_ptr<scope_decl>);
 
 const global_scope*
@@ -146,6 +146,12 @@ is_type(const decl_base&);
 shared_ptr<type_base>
 is_type(const shared_ptr<decl_base>);
 
+shared_ptr<type_base>
+as_non_member_type(const shared_ptr<type_base>);
+
+shared_ptr<type_base>
+as_non_member_type(const shared_ptr<decl_base>);
+
 bool
 is_var_decl(const shared_ptr<decl_base>);
 
@@ -158,18 +164,18 @@ is_template_decl(const shared_ptr<decl_base>);
 bool
 is_function_template_pattern(const shared_ptr<decl_base>);
 
-void
+shared_ptr<decl_base>
 add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
 
-void
+shared_ptr<decl_base>
 add_decl_to_scope(shared_ptr<decl_base>, shared_ptr<scope_decl>);
 
-void
+shared_ptr<decl_base>
 insert_decl_into_scope(shared_ptr<decl_base>,
 		       vector<shared_ptr<decl_base> >::iterator,
 		       scope_decl*);
 
-void
+shared_ptr<decl_base>
 insert_decl_into_scope(shared_ptr<decl_base>,
 		       vector<shared_ptr<decl_base> >::iterator,
 		       shared_ptr<scope_decl>);
@@ -188,6 +194,12 @@ get_translation_unit(const shared_ptr<decl_base>);
 
 string
 get_type_name(const shared_ptr<type_base>);
+
+const decl_base*
+get_type_declaration(const type_base*);
+
+decl_base*
+get_type_declaration(type_base*);
 
 shared_ptr<decl_base>
 get_type_declaration(const shared_ptr<type_base>);

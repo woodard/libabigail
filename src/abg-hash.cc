@@ -340,10 +340,10 @@ struct class_decl::member_type::hash
   operator()(const member_type& t)const
   {
     member_base::hash hash_member;
-    type_base::shared_ptr_hash hash_type;
+    type_base::type_base::dynamic_hash hash_type;
 
     size_t v = hash_member(t);
-    v = hashing::combine_hashes(v, hash_type(t.as_type()));
+    v = hashing::combine_hashes(v, hash_type(&t));
     return v;
   }
 };

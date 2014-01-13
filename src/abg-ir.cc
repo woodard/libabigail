@@ -542,13 +542,14 @@ operator==(decl_base_sptr l, decl_base_sptr r)
 /// use this, but rather use add_decl_to_scope.
 ///
 /// @param member the new member decl to add to this scope.
-void
+decl_base_sptr
 scope_decl::add_member_decl(const shared_ptr<decl_base> member)
 {
   members_.push_back(member);
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     member_scopes_.push_back(m);
+  return member;
 }
 
 /// Insert a member decl to this scope, right before an element
@@ -559,7 +560,7 @@ scope_decl::add_member_decl(const shared_ptr<decl_base> member)
 ///
 /// @param before an interator pointing to the element before which
 /// the new member should be inserted.
-void
+decl_base_sptr
 scope_decl::insert_member_decl(const decl_base_sptr member,
 			       declarations::iterator before)
 {
@@ -567,6 +568,7 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     member_scopes_.push_back(m);
+  return member;
 }
 
 /// Remove a declaration from the current scope.
@@ -648,17 +650,42 @@ bool
 scope_decl::find_iterator_for_member(const decl_base* decl,
 				     declarations::iterator& i)
 {
+  if (class_decl* klass = dynamic_cast<class_decl*>(this))
+    assert(!klass->is_declaration_only());
+
   if (!decl)
     return false;
 
+  if (get_member_decls().empty())
+    {
+      i = get_member_decls().end();
+      return true;
+    }
+
+  const class_decl* is_class = dynamic_cast<const class_decl*>(decl);
+  if (is_class)
+    assert(!is_class->is_declaration_only());
+
+  string qual_name1 = decl->get_qualified_name();
   for (declarations::iterator it = get_member_decls().begin();
        it != get_member_decls().end();
        ++it)
-    if (**it == *decl)
-      {
-	i = it;
-	return true;
-      }
+    {
+      string qual_name2 = (*it)->get_qualified_name();
+      if (qual_name1 == qual_name2)
+	{
+	  if (is_class)
+	    {
+	      class_decl_sptr cur_class =
+		dynamic_pointer_cast<class_decl>(*it);
+	      assert(cur_class);
+	      if (cur_class->is_declaration_only())
+		continue;
+	    }
+	  i = it;
+	  return true;
+	}
+    }
 
   return false;
 }
@@ -707,14 +734,15 @@ scope_decl::~scope_decl()
 /// @param decl the declaration to add to the scope
 ///
 /// @param scope the scope to append the declaration to
-void
+decl_base_sptr
 add_decl_to_scope(shared_ptr<decl_base> decl, scope_decl* scope)
 {
   if (scope && decl && !decl->get_scope())
     {
-      scope->add_member_decl(decl);
+      decl = scope->add_member_decl(decl);
       decl->set_scope(scope);
     }
+  return decl;
 }
 
 /// Appends a declaration to a given scope, if the declaration doesn't
@@ -723,9 +751,9 @@ add_decl_to_scope(shared_ptr<decl_base> decl, scope_decl* scope)
 /// @param decl the declaration to add append to the scope
 ///
 /// @param scope the scope to append the decl to
-void
+decl_base_sptr
 add_decl_to_scope(shared_ptr<decl_base> decl, shared_ptr<scope_decl> scope)
-{add_decl_to_scope(decl, scope.get());}
+{return add_decl_to_scope(decl, scope.get());}
 
 /// Remove a given decl from its scope
 ///
@@ -749,16 +777,18 @@ remove_decl_from_scope(decl_base_sptr decl)
 /// which to insert the declaration.
 ///
 /// @param scope the scope into which to insert the declaration.
-void
+decl_base_sptr
 insert_decl_into_scope(decl_base_sptr decl,
 		       scope_decl::declarations::iterator before,
 		       scope_decl* scope)
 {
   if (scope && decl && !decl->get_scope())
     {
-      scope->insert_member_decl(decl, before);
+      decl_base_sptr d = scope->insert_member_decl(decl, before);
       decl->set_scope(scope);
+      decl = d;
     }
+  return decl;
 }
 
 /// Inserts a declaration into a given scope, before a given IR child
@@ -770,11 +800,11 @@ insert_decl_into_scope(decl_base_sptr decl,
 /// which to insert the declaration.
 ///
 /// @param scope the scope into which to insert the declaration.
-void
+decl_base_sptr
 insert_decl_into_scope(decl_base_sptr decl,
 		       scope_decl::declarations::iterator before,
 		       scope_decl_sptr scope)
-{insert_decl_into_scope(decl, before, scope.get());}
+{return insert_decl_into_scope(decl, before, scope.get());}
 
 /// return the global scope as seen by a given declaration.
 ///
@@ -831,17 +861,21 @@ get_top_most_scope_under(const decl_base* decl,
   if (!s)
     s = decl->get_scope();
 
+  if (is_global_scope(s))
+    return scope;
+
   // Here, decl is in the scope 'scope', or decl and 'scope' are the
   // same.  The caller needs to be prepared to deal with this case.
   if (s == scope)
     return s;
 
-  while (!is_global_scope(s) && s->get_scope() != scope)
+  while (s && !is_global_scope(s) && s->get_scope() != scope)
     s = s->get_scope();
 
-  if (is_global_scope(s))
-    // SCOPE must come before decl in topological order.
-    assert(is_global_scope(scope));
+  if (!s || is_global_scope(s))
+    // SCOPE must come before decl in topological order, but I don't
+    // know how to ensure that ...
+    return scope;
   assert(s);
 
   return s;
@@ -883,6 +917,24 @@ get_type_name(const type_base_sptr t)
   decl_base_sptr d = dynamic_pointer_cast<decl_base>(t);
   return d->get_name();
 }
+
+/// Get the declaration for a given type.
+///
+/// @param the type to consider.
+///
+/// @return the declaration for the type to return.
+const decl_base*
+get_type_declaration(const type_base* t)
+{return dynamic_cast<const decl_base*>(t);}
+
+/// Get the declaration for a given type.
+///
+/// @param the type to consider.
+///
+/// @return the declaration for the type to return.
+decl_base*
+get_type_declaration(type_base* t)
+{return dynamic_cast<decl_base*>(t);}
 
 /// Get the declaration for a given type.
 ///
@@ -999,6 +1051,40 @@ is_type(const decl_base& d)
 type_base_sptr
 is_type(const decl_base_sptr decl)
 {return dynamic_pointer_cast<type_base>(decl);}
+
+/// If a type is a member type, return its underying type.
+///
+///@param t the type to consider.
+///
+/// @return return the underlying type of a member type, or return the
+/// type itself.
+type_base_sptr
+as_non_member_type(const type_base_sptr t)
+{
+  class_decl::member_type_sptr m =
+    dynamic_pointer_cast<class_decl::member_type>(t);
+  if (m)
+    return m->get_underlying_type();
+  else
+    return t;
+}
+
+/// If a type is a member type, return its underying type.
+///
+///@param t the type to consider.
+///
+/// @return return the underlying type of a member type, or return the
+/// type itself.
+type_base_sptr
+as_non_member_type(const decl_base_sptr t)
+{
+  class_decl::member_type_sptr m =
+    dynamic_pointer_cast<class_decl::member_type>(t);
+  if (m)
+    return m->get_underlying_type();
+  else
+    return dynamic_pointer_cast<type_base>(t);
+}
 
 /// Tests wheter a declaration is a variable declaration.
 ///
@@ -2290,12 +2376,24 @@ string
 class_decl::get_pretty_representation() const
 {return "class " + get_qualified_name();}
 
-/// Set the earlier declaration of this class definition.
+void
+class_decl::set_definition_of_declaration(class_decl_sptr d)
+{
+  assert(is_declaration_only());
+  assert(!d->is_declaration_only());
+  definition_of_declaration_ = d;
+}
+
+class_decl_sptr
+class_decl::get_definition_of_declaration() const
+{return definition_of_declaration_;}
+
+/// set the earlier declaration of this class definition.
 ///
 /// @param declaration the earlier declaration to set.  Note that it's
 /// set only if it's a pure declaration.
 void
-class_decl::set_earlier_declaration(shared_ptr<class_decl> declaration)
+class_decl::set_earlier_declaration(class_decl_sptr declaration)
 {
   if (declaration && declaration->is_declaration_only())
     declaration_ = declaration;
@@ -2307,22 +2405,30 @@ class_decl::set_earlier_declaration(shared_ptr<class_decl> declaration)
 /// set only if it's a pure declaration.  It's dynamic type must be
 /// pointer to class_decl.
 void
-class_decl::set_earlier_declaration(shared_ptr<type_base> declaration)
+class_decl::set_earlier_declaration(type_base_sptr declaration)
 {
-  shared_ptr<class_decl> d = dynamic_pointer_cast<class_decl>(declaration);
-  set_earlier_declaration(d);
+  class_decl_sptr d = dynamic_pointer_cast<class_decl>(declaration);
+  if (d)
+    set_earlier_declaration(d);
 }
 
-/// Add a member declaration to the current instance of class_decl.
-/// The member declaration can be either a member type, data member,
-/// member function, or member template.
-///
-/// @param d the member declaration to add.
-void
-class_decl::add_member_decl(decl_base_sptr d)
+decl_base_sptr
+class_decl::insert_member_decl(decl_base_sptr d,
+			       declarations::iterator before)
 {
   if (member_type_sptr t = dynamic_pointer_cast<member_type>(d))
-    add_member_type(t);
+    {
+      insert_member_type(t, before);
+      d = t;
+    }
+  else if (type_base_sptr t = dynamic_pointer_cast<type_base>(d))
+    {
+      class_decl::member_type_sptr m
+	(new class_decl::member_type(t, class_decl::public_access));
+      add_member_type(m);
+      d = dynamic_pointer_cast<decl_base>(m);
+      assert(d);
+    }
   else if (data_member_sptr m = dynamic_pointer_cast<data_member>(d))
     add_data_member(m);
   else if (member_function_sptr f = dynamic_pointer_cast<member_function>(d))
@@ -2335,6 +2441,19 @@ class_decl::add_member_decl(decl_base_sptr d)
     add_member_class_template(c);
   else
     scope_decl::add_member_decl(d);
+
+  return d;
+}
+
+/// Add a member declaration to the current instance of class_decl.
+/// The member declaration can be either a member type, data member,
+/// member function, or member template.
+///
+/// @param d the member declaration to add.
+decl_base_sptr
+class_decl::add_member_decl(decl_base_sptr d)
+{
+  return insert_member_decl(d, get_member_decls().end());
 }
 
 /// Remove a given decl from the current class scope.
@@ -2356,21 +2475,39 @@ class_decl::remove_member_decl(decl_base_sptr decl)
   remove_member_type(t);
 }
 
+void
+class_decl::insert_member_type(member_type_sptr t,
+			       declarations::iterator before)
+{
+  scope_decl* c = t->get_scope();
+  /// TODO: use our own assertion facility that adds a meaningful
+  /// error message or something like a structured error.
+  //assert(!c || c == this);
+  assert(!c);
+
+  if (decl_base_sptr d = dynamic_pointer_cast<decl_base>(t))
+    {
+      scope_decl* s = d->get_scope();
+      if (s)
+	{
+	  scope_decl* o = static_cast<scope_decl*>(this);
+	  assert(*s == *o);
+	}
+    }
+  t->set_scope(this);
+  member_types_.push_back(t);
+  decl_base_sptr td = get_type_declaration(t->get_underlying_type());
+  td->set_scope(this);
+  scope_decl::insert_member_decl(td, before);
+}
+
 /// Add a member type to the current instance of class_decl.
 ///
 /// @param t the member type to add.  It must not have been added to a
 /// scope, otherwise this will violate an assertion.
 void
-class_decl::add_member_type(shared_ptr<member_type>t)
-{
-  decl_base* c = dynamic_pointer_cast<decl_base>(t->as_type())->get_scope();
-  /// TODO: use our own assertion facility that adds a meaningful
-  /// error message or something like a structured error.
-  //assert(!c || c == this);
-  assert(!c);
-  t->set_scope(this);
-  member_types_.push_back(t);
-}
+class_decl::add_member_type(shared_ptr<member_type> t)
+{insert_member_type(t, get_member_decls().end());}
 
 /// Add a member type to the current instance of class_decl.
 ///
@@ -2379,14 +2516,14 @@ class_decl::add_member_type(shared_ptr<member_type>t)
 /// will be created out of @ref t and and added to the the class.
 ///
 /// @param the access specifier for the member type to be created.
-void
+class_decl::member_type_sptr
 class_decl::add_member_type(type_base_sptr t, access_specifier a)
 {
   decl_base_sptr d = get_type_declaration(t);
   assert(!d->get_scope());
   shared_ptr<class_decl::member_type> m(new class_decl::member_type(t, a));
   add_member_type(m);
-  add_decl_to_scope(d, this);
+  return m;
 }
 
 /// Remove a member type from the current class scope.
@@ -2399,7 +2536,7 @@ class_decl::remove_member_type(type_base_sptr t)
        i != member_types_.end();
        ++i)
     {
-      if (*((*i)->as_type()) == *t)
+      if (*((*i)) == *t)
 	{
 	  member_types_.erase(i);
 	  return;
@@ -2484,6 +2621,7 @@ class_decl::add_data_member(shared_ptr<data_member> m)
   assert(!c);
   data_members_.push_back(m);
   m->set_scope(this);
+  scope_decl::add_member_decl(m);
 }
 
 /// Add a data member to the current instance of class_decl.
@@ -2748,6 +2886,7 @@ class_decl::add_member_function(shared_ptr<member_function> m)
   assert(!c);
   member_functions_.push_back(m);
   m->set_scope(this);
+  scope_decl::add_member_decl(m);
 }
 
 /// Add a member function to the current instance of class_decl.
@@ -2800,6 +2939,7 @@ class_decl::add_member_function_template
   assert(!c);
   m->as_function_tdecl()->set_scope(this);
   member_function_templates_.push_back(m);
+  scope_decl::add_member_decl(m->as_function_tdecl());
 }
 
 /// Append a member class template to the class.
@@ -2814,6 +2954,7 @@ class_decl::add_member_class_template(shared_ptr<member_class_template> m)
   assert(!c);
   member_class_templates_.push_back(m);
   m->as_class_tdecl()->set_scope(this);
+  scope_decl::add_member_decl(m->as_class_tdecl());
 }
 
 /// Return true iff the class has no entity in its scope.
@@ -3074,9 +3215,24 @@ class_decl::member_base::operator==(const member_base& o) const
 /// @param access the access specifier for the member type.
 class_decl::member_type::member_type(shared_ptr<type_base> t,
 				     access_specifier access)
-  : decl_base(*dynamic_pointer_cast<decl_base>(t)),
+  : decl_base(*dynamic_pointer_cast<decl_base>(t)), type_base(*t),
     member_base(access), type_(t)
-{}
+{set_scope(0);}
+
+/// Set the access specifiers of a member type.
+///
+/// @param a the new access specifier.
+void
+class_decl::member_type::set_access_specifier(access_specifier a)
+{access_ = a;}
+
+
+/// Get the underlying type of a member type.
+///
+/// @return the new underlying type.
+type_base_sptr
+class_decl::member_type::get_underlying_type() const
+{return type_;}
 
 /// Set the scope of a member type.
 ///
@@ -3085,7 +3241,7 @@ void
 class_decl::member_type::set_scope(scope_decl* scope)
 {
   decl_base::context_ = scope;
-  decl_base_sptr td = get_type_declaration(as_type());
+  decl_base_sptr td = get_type_declaration(get_underlying_type());
   td->set_scope(scope);
 }
 
@@ -3096,8 +3252,9 @@ class_decl::member_type::operator==(const decl_base& other) const
     {
       const class_decl::member_type& o =
 	dynamic_cast<const class_decl::member_type&>(other);
-      return (*as_type() == *o.as_type()
-	      && member_base::operator==(o));
+      return (member_base::operator==(o)
+	      && decl_base::operator==(o)
+	      && type_base::operator==(o));
     }
   catch(...)
     {return false;}
@@ -3114,6 +3271,16 @@ class_decl::member_type::operator==(const member_base& other) const
     }
   catch(...)
     {return false;}
+}
+
+bool
+class_decl::member_type::operator==(const type_base& other) const
+{
+  const class_decl::member_type* o =
+    dynamic_cast<const class_decl::member_type*>(&other);
+  if (!o)
+    return false;
+  return *this == static_cast<const decl_base&>(*o);
 }
 
 bool
@@ -3171,7 +3338,10 @@ class_decl::data_member::operator==(const decl_base& o) const
 
 string
 class_decl::member_type::get_pretty_representation() const
-{return get_type_declaration(as_type())->get_pretty_representation();}
+{
+  decl_base_sptr td = get_type_declaration(get_underlying_type());
+  return td->get_pretty_representation();
+}
 
 void
 class_decl::data_member::traverse(ir_node_visitor& v)

@@ -285,11 +285,11 @@ public:
   set_visibility(visibility v)
   {visibility_ = v;}
 
-  friend void
-  add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
+  friend decl_base_sptr
+  add_decl_to_scope(decl_base_sptr dcl, scope_decl* scpe);
 
-  friend void
-  insert_decl_into_scope(shared_ptr<decl_base>,
+  friend decl_base_sptr
+  insert_decl_into_scope(decl_base_sptr,
 			 vector<shared_ptr<decl_base> >::iterator,
 			 scope_decl*);
 
@@ -326,10 +326,10 @@ private:
   scope_decl();
 
 protected:
-  virtual void
+  virtual decl_base_sptr
   add_member_decl(const decl_base_sptr member);
 
-  virtual void
+  virtual decl_base_sptr
   insert_member_decl(const decl_base_sptr member,
 		     declarations::iterator before);
 
@@ -375,10 +375,10 @@ public:
 
   virtual ~scope_decl();
 
-  friend void
-  add_decl_to_scope(shared_ptr<decl_base> dcl, scope_decl* scpe);
+  friend decl_base_sptr
+  add_decl_to_scope(decl_base_sptr dcl, scope_decl* scpe);
 
-  friend void
+  friend decl_base_sptr
   insert_decl_into_scope(decl_base_sptr decl,
 			 scope_decl::declarations::iterator before,
 			 scope_decl* scope);
@@ -1532,6 +1532,8 @@ public:
   virtual ~class_tdecl();
 };// end class class_tdecl
 
+/// Convenience typedef for a shared pointer on a @ref class_decl
+typedef shared_ptr<class_decl> class_decl_sptr;
 
 /// Abstracts a class declaration.
 class class_decl : public scope_type_decl
@@ -1580,8 +1582,9 @@ public:
 
 private:
   mutable bool			hashing_started_;
-  shared_ptr<class_decl>	declaration_;
+  class_decl_sptr		declaration_;
   bool				is_declaration_only_;
+  class_decl_sptr		definition_of_declaration_;
   base_specs			bases_;
   member_types			member_types_;
   data_members			data_members_;
@@ -1591,8 +1594,11 @@ private:
 
 protected:
 
-  virtual void
+  virtual decl_base_sptr
   add_member_decl(decl_base_sptr);
+
+  virtual decl_base_sptr
+  insert_member_decl(decl_base_sptr member, declarations::iterator before);
 
   virtual void
   remove_member_decl(decl_base_sptr);
@@ -1625,12 +1631,18 @@ public:
   {return is_declaration_only_;}
 
   void
-  set_earlier_declaration(shared_ptr<class_decl> declaration);
+  set_definition_of_declaration(class_decl_sptr);
+
+  class_decl_sptr
+  get_definition_of_declaration() const;
 
   void
-  set_earlier_declaration(shared_ptr<type_base> declaration);
+  set_earlier_declaration(class_decl_sptr declaration);
 
-  shared_ptr<class_decl>
+  void
+  set_earlier_declaration(type_base_sptr declaration);
+
+  class_decl_sptr
   get_earlier_declaration() const
   {return declaration_;}
 
@@ -1643,9 +1655,13 @@ public:
   {return bases_;}
 
   void
-  add_member_type(member_type_sptr t);
+  insert_member_type(member_type_sptr t,
+		     declarations::iterator before);
 
   void
+  add_member_type(member_type_sptr t);
+
+  member_type_sptr
   add_member_type(type_base_sptr t, access_specifier a);
 
   void
@@ -1720,9 +1736,6 @@ public:
 std::ostream&
 operator<<(std::ostream&, class_decl::access_specifier);
 
-/// Convenience typedef for a shared pointer on a @ref class_decl
-typedef shared_ptr<class_decl> class_decl_sptr;
-
 bool
 operator==(class_decl_sptr l, class_decl_sptr r);
 
@@ -1732,9 +1745,11 @@ operator==(class_decl_sptr l, class_decl_sptr r);
 /// members) for the member.
 class class_decl::member_base
 {
+protected:
   enum access_specifier access_;
   bool			is_static_;
 
+private:
   // Forbidden
   member_base();
 
@@ -1759,9 +1774,11 @@ public:
 };// end class class_decl::member_base
 
 /// Abstracts a member type declaration.
-class class_decl::member_type : public member_base, public virtual decl_base
+class class_decl::member_type : public member_base,
+				public virtual decl_base,
+				public virtual type_base
 {
-  shared_ptr<type_base> type_;
+  type_base_sptr type_;
 
   //Forbidden
   member_type();
@@ -1781,18 +1798,20 @@ public:
   virtual bool
   operator==(const member_base&) const;
 
+  virtual bool
+  operator==(const type_base&) const;
+
   virtual string
   get_pretty_representation() const;
 
+  void
+  set_access_specifier(access_specifier);
+
+  type_base_sptr
+  get_underlying_type() const;
+
   bool
   operator==(const member_type&) const;
-
-  operator shared_ptr<type_base>() const
-  {return type_;}
-
-  shared_ptr<type_base>
-  as_type() const
-  {return type_;}
 };// end class member_type
 
 bool
