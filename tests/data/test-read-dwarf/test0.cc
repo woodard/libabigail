@@ -5,8 +5,8 @@ int global = 1;
 namespace ns0
 {
 long
-foo(char* c, const volatile long l)
-{return *c + l;}
+foo(char* c, const volatile long l);
+
 
 void
 bar(const int c, ...)
@@ -40,6 +40,10 @@ this_should_not_be_seen_by_bidw()
 }
 
 } // end namespace ns0
+
+long
+ns0::foo(char* c, const volatile long l)
+{return *c + l;}
 
 int
 main()
