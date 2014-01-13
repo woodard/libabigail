@@ -159,12 +159,6 @@ public:
   bool
   is_empty() const;
 
-  type_base_sptr
-  canonicalize_type(type_base_sptr) const;
-
-  decl_base_sptr
-  canonicalize_type(decl_base_sptr) const;
-
   char
   get_address_size() const;
 

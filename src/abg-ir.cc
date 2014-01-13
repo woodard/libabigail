@@ -230,60 +230,6 @@ bool
 translation_unit::is_empty() const
 {return get_global_scope()->is_empty();}
 
-/// If the current translation_unit "knows" about a type T' that is
-/// equivalent to a given T, then this method returns T' when passed
-/// T.  Otherwise, the function stores T, so that next time it sees a
-/// T'', it can say that it is equivalent to T and then return that T.
-///
-/// In other words, this methods can be used to help enforce that if
-/// we build two types that are equivalent at the same scope then we
-/// can decide to just keep one.
-///
-/// @param t the type to canonicalize.
-///
-/// @return the canonical type for @ref t.
-type_base_sptr
-translation_unit::canonicalize_type(type_base_sptr t) const
-{
-  if (!t)
-    return t;
-
-  type_ptr_map::iterator e =
-    priv_->canonical_types_.find(t);
-
-  if (e == priv_->canonical_types_.end())
-    {
-      priv_->canonical_types_[t] = true;
-      return t;
-    }
-  return e->first;
-}
-
-/// Canonicalize the type of a given type declaration.
-///
-/// To understand more about type canonicalization, please read the
-/// API doc of the overload of this function that takes a @ref
-/// type_base_sptr.
-///
-/// @param t the type declaration to return a canonical type
-/// declaration for.
-///
-/// @return the declaration for the canonical type of the type for
-/// @ref t.
-decl_base_sptr
-translation_unit::canonicalize_type(decl_base_sptr t) const
-{
-  type_base_sptr type = is_type(t);
-
-  if (!type)
-    return t;
-
-  type = canonicalize_type(type);
-  assert(type);
-
-  return get_type_declaration(type);
-}
-
 /// Getter of the address size in this translation unit.
 ///
 /// @return the address size, in bits.

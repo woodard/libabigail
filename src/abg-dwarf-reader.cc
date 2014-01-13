@@ -1977,171 +1977,6 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   return result;
 }
 
-/// Canonicalize a type and add it to the current IR being built, if
-/// necessary. The canonicalized type is appended to the children IR
-/// nodes of a given scope.
-///
-/// @param type_declaration the declaration of the type to
-/// canonicalize.
-///
-/// @param type_scope the scope into which the canonicalized type is
-/// to be added.  If NULL, the canonicalized result is not added to
-/// any scope.
-///
-/// @return the resulting canonicalized type.
-static decl_base_sptr
-canonicalize_and_add_type_to_ir(read_context& ctxt,
-				decl_base_sptr type_declaration,
-				scope_decl* type_scope)
-{
-  if (!type_declaration)
-    return type_declaration;
-
-  translation_unit* tu = get_translation_unit(type_scope);;
-  if (tu == 0)
-    tu = ctxt.current_translation_unit().get();
-  assert(tu);
-
-  /// TODO: maybe change the interfance of
-  /// translation_unit::canonicalize_type to include the final
-  /// qualified name of the type (i.e, one that includes the qualified
-  /// name of type_scope), to handle two user defined types that might
-  /// be same, but at different scopes.  In that case, the two types
-  /// should be considered different by
-  /// translation_unit::canonicalize_type.
-  decl_base_sptr result = tu->canonicalize_type(type_declaration);
-  assert(result);
-
-  if (result->get_scope())
-    // This type is the same as a type that was already added to the
-    // IR tree.  Do not add a new one.  Just re-use the previous one.
-    ;
-  else
-    add_decl_to_scope(result, type_scope);
-
-  return result;
-}
-
-/// Canonicalize a type and add it to the current IR being built, if
-/// necessary.
-///
-/// @param type_declaration the declaration of the type to
-/// canonicalize.
-///
-/// @param type_scope the scope into which the canonicalized type
-/// needs to be added.
-///
-/// @return the resulting canonicalized type.
-decl_base_sptr
-canonicalize_and_add_type_to_ir(read_context& ctxt,
-				decl_base_sptr type_declaration,
-				scope_decl_sptr type_scope)
-{return canonicalize_and_add_type_to_ir(ctxt, type_declaration,
-					type_scope.get());}
-
-/// Canonicalize a given type and insert it into the children of a
-/// given scope right before a given child.
-///
-/// @param type_declaration the declaration of the type to canonicalize.
-///
-/// @param before an iterator pointing to an IR node that is a child
-/// of the scope under wich the canonicalized type is to be inserted.
-/// The canonicalized type is to be inserted right before that
-/// iterator.
-static decl_base_sptr
-canonicalize_and_insert_type_into_ir(decl_base_sptr type_declaration,
-				     scope_decl::declarations::iterator before,
-				     scope_decl* type_scope)
-{
-  if (!type_declaration)
-    return type_declaration;
-
-  translation_unit* tu = get_translation_unit(type_scope);
-  assert(tu);
-
-  /// TODO: maybe change the interfance of
-  /// translation_unit::canonicalize_type to include the final
-  /// qualified name of the type (i.e, one that includes the qualified
-  /// name of type_scope), to handle two user defined types that might
-  /// be same, but at different scopes.  In that case, the two types
-  /// should be considered different by
-  /// translation_unit::canonicalize_type.
-  decl_base_sptr result = tu->canonicalize_type(type_declaration);
-  assert(result);
-
-  if (result->get_scope())
-    // This type is the same as a type that was already added to the
-    // IR tree.  Do not add a new one.  Just re-use the previous one.
-    ;
-  else
-    insert_decl_into_scope(result, before, type_scope);
-
-  return result;
-}
-
-/// Canonicalize a type and insert it into the current IR.  The
-/// canonicalized type is to be inserted before the current scope C
-/// and under a given scope S.  If C and S are equal the the
-/// canonicalized type is just appended to the current scope.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param type_decl the declaration of the type to canonicalize.
-///
-/// @param scope the scope under which the canonicalized type is to be
-/// added.  This must be a scope that is higher or equal to the
-/// current scope.
-///
-/// @return the declaration of the canonicalized type.
-static decl_base_sptr
-canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
-						 decl_base_sptr type_decl,
-						 scope_decl* scope)
-{
-  decl_base_sptr result;
-
-  if (scope == 0)
-    return canonicalize_and_add_type_to_ir(ctxt, type_decl, scope);
-
-  const scope_decl* ns_under_scope =
-    get_top_most_scope_under(ctxt.current_scope(), scope);
-
-  if (ns_under_scope == scope)
-    result =
-      canonicalize_and_add_type_to_ir(ctxt, type_decl, scope);
-  else
-    {
-      scope_decl::declarations::iterator it;
-      assert(scope->find_iterator_for_member(ns_under_scope,
-					     it));
-      result =
-	canonicalize_and_insert_type_into_ir(type_decl, it, scope);
-    }
-
-  return result;
-}
-
-/// Canonicalize a type and insert it into the current IR.  The
-/// canonicalized type is to be inserted before the current scope C
-/// and under a given scope S.  If C and S are equal the the
-/// canonicalized type is just appended to the current scope.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param type_decl the declaration of the type to canonicalize.
-///
-/// @param scope the scope under which the canonicalized type is to be
-/// added.  This must be a scope that is higher or equal to the
-/// current scope.
-///
-/// @return the declaration of the canonicalized type.
-static decl_base_sptr
-canonicalize_and_insert_type_into_ir_under_scope(read_context& ctxt,
-						 decl_base_sptr type_decl,
-						 scope_decl_sptr scope)
-{return canonicalize_and_insert_type_into_ir_under_scope(ctxt, type_decl,
-							 scope.get());}
-
 /// Build a @ref namespace_decl out of a DW_TAG_namespace or
 /// DW_TAG_module (for fortran) DIE.
 ///
@@ -2291,8 +2126,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 				 size, size, location()));
   translation_unit_sptr tu = ctxt.current_translation_unit();
   decl_base_sptr d =
-    canonicalize_and_insert_type_into_ir_under_scope(ctxt, t,
-						     tu->get_global_scope());
+    insert_decl_into_ir_under_scope(ctxt, t, tu->get_global_scope().get());
   t = dynamic_pointer_cast<type_decl>(d);
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, mangled_name));
@@ -2531,8 +2365,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       }
   }
 
-  decl_base_sptr r = canonicalize_and_add_type_to_ir(ctxt, result, scope);
-  return r;
+  return res;
 }
 
 /// build a qualified type from a DW_TAG_const_type or
@@ -3008,14 +2841,14 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_base_type:
       if((result = build_type_decl(ctxt, die)))
 	result =
-	  canonicalize_and_insert_type_into_ir_under_scope(ctxt, result, scope);
+	  insert_decl_into_ir_under_scope(ctxt, result, scope);
       break;
 
     case DW_TAG_typedef:
       {
 	typedef_decl_sptr t = build_typedef_type(ctxt, die,
 						 called_from_public_decl);
-	result = canonicalize_and_add_type_to_ir(ctxt, t, scope);
+	result = add_decl_to_scope(t, scope);
       }
       break;
 
@@ -3028,8 +2861,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    decl_base_sptr t =
 	      get_type_declaration(p->get_pointed_to_type());
 	    result =
-	      canonicalize_and_insert_type_into_ir_under_scope(ctxt, p,
-							       t->get_scope());
+	      insert_decl_into_ir_under_scope(ctxt, p, t->get_scope());
 	  }
       }
       break;
@@ -3044,8 +2876,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    decl_base_sptr t =
 	      get_type_declaration(r->get_pointed_to_type());
 	    result =
-	      canonicalize_and_insert_type_into_ir_under_scope(ctxt, r,
-							       t->get_scope());
+	      insert_decl_into_ir_under_scope(ctxt, r, t->get_scope());
 	  }
       }
       break;
@@ -3060,8 +2891,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    decl_base_sptr t =
 	      get_type_declaration(q->get_underlying_type());
 	    result =
-	      canonicalize_and_insert_type_into_ir_under_scope(ctxt, q,
-							       t->get_scope());
+	      insert_decl_into_ir_under_scope(ctxt, q, t->get_scope());
 	  }
       }
       break;
@@ -3070,7 +2900,7 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	enum_type_decl_sptr e = build_enum_type(ctxt, die);
 	if (e)
-	  result = canonicalize_and_add_type_to_ir(ctxt, e, scope);
+	  result = add_decl_to_scope(e, scope);
       }
       break;
 
