@@ -660,7 +660,8 @@ read_translation_unit_from_input(read_context&	ctxt,
 	{
 	case XML_READER_TYPE_ELEMENT:
 	  if (!handle_element(ctxt))
-	    return false;
+	    abort();
+	    //return false;
 	  break;
 	default:
 	  break;
@@ -1196,8 +1197,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
     type_id = CHAR_STR(a);
 
   shared_ptr<type_base> type = ctxt.get_type_decl(type_id);
-  if (!type && !is_variadic)
-    return nil;
+  assert(type || is_variadic);
 
   string name;
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("name"))))
@@ -1403,10 +1403,7 @@ build_type_decl(read_context&		ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  if (ctxt.get_type_decl(id))
-    // Hugh?  How come a type which ID is supposed to be unique exist
-    // already?  Bail out!
-    return shared_ptr<type_decl>((type_decl*)0);
+  assert (!ctxt.get_type_decl(id));
 
   shared_ptr<type_decl> decl(new type_decl(name, size_in_bits,
 					   alignment_in_bits,
@@ -1440,17 +1437,13 @@ build_qualified_type_decl(read_context& ctxt,
     type_id = CHAR_STR(s);
 
   shared_ptr<type_base> underlying_type = ctxt.get_type_decl(type_id);
-  if (!underlying_type)
-    // The type-id must point to a pre-existing type.
-    return shared_ptr<qualified_type_def>((qualified_type_def*)0);
+  assert(underlying_type);
 
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE (node, "id"))
     id = CHAR_STR(s);
 
-  if (id.empty() || ctxt.get_type_decl(id))
-    // We should have an id and it should be a new one.
-    return shared_ptr<qualified_type_def>((qualified_type_def*)0);
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   string const_str;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "const"))
@@ -1505,8 +1498,7 @@ build_pointer_type_def(read_context&	ctxt,
     type_id = CHAR_STR(s);
 
   shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
-  if (!pointed_to_type)
-    shared_ptr<pointer_type_def>((pointer_type_def*)0);
+  assert(pointed_to_type);
 
   size_t size_in_bits = 0, alignment_in_bits = 0;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
@@ -1517,8 +1509,7 @@ build_pointer_type_def(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  if (id.empty() || ctxt.get_type_decl(id))
-    return nil;
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   location loc;
   read_location(ctxt, node, loc);
@@ -1563,8 +1554,7 @@ build_reference_type_def(read_context&	ctxt,
     type_id = CHAR_STR(s);
 
   shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
-  if (!pointed_to_type)
-    return nil;
+  assert(pointed_to_type);
 
   size_t size_in_bits = 0, alignment_in_bits = 0;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
@@ -1575,8 +1565,7 @@ build_reference_type_def(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  if (id.empty() || ctxt.get_type_decl(id))
-    return nil;
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   location loc;
   read_location(ctxt, node, loc);
@@ -1621,8 +1610,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
 
-  if (id.empty() || ctxt.get_type_decl(id))
-    return nil;
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   string base_type_id;
   enum_type_decl::enumerators enums;
@@ -1657,8 +1645,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
     }
 
   shared_ptr<type_base> underlying_type = ctxt.get_type_decl(base_type_id);
-  if (!underlying_type)
-    return nil;
+  assert(underlying_type);
 
   shared_ptr<enum_type_decl> t(new enum_type_decl(name, loc,
 						  underlying_type,
@@ -1697,14 +1684,12 @@ build_typedef_decl(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
     type_id = CHAR_STR(s);
   shared_ptr<type_base> underlying_type(ctxt.get_type_decl(type_id));
-  if (!underlying_type)
-    return nil;
+  assert(underlying_type);
 
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  if (id.empty() || ctxt.get_type_decl(id))
-    return nil;
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   location loc;
   read_location(ctxt, node, loc);
@@ -1752,8 +1737,17 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
 
-  if (!id.empty() && ctxt.get_type_decl(id))
-    return nil;
+  // If the id is not empty, then we should be seeing this type for
+  // the first time, unless it's a declaration-only type class.
+  if (!id.empty())
+    {
+      type_base_sptr t = ctxt.get_type_decl(id);
+      if (t)
+	{
+	  class_decl_sptr c = dynamic_pointer_cast<class_decl>(t);
+	  assert(c && c->is_declaration_only());
+	}
+    }
 
   location loc;
   read_location(ctxt, node, loc);
@@ -1789,9 +1783,7 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 	}
     }
 
-  if ((is_decl_only && is_def_of_decl))
-    // FIXME: log this error somehow.
-    return nil;
+  assert(!is_decl_only || !is_def_of_decl);
 
   if (is_decl_only)
     decl.reset(new class_decl(name));
@@ -1814,8 +1806,7 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 	    type_id = CHAR_STR(s);
 	  shared_ptr<class_decl> b =
 	    dynamic_pointer_cast<class_decl>(ctxt.get_type_decl(type_id));
-	  if (!b)
-	    return nil;
+	  assert(b);
 
 	  size_t offset_in_bits = 0;
 	  bool offset_present = read_offset_in_bits (n, offset_in_bits);
@@ -2130,8 +2121,8 @@ build_type_tparameter(read_context& ctxt, const xmlNodePtr node,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  if (!id.empty() && ctxt.get_type_decl(id))
-    return nil;
+  if (!id.empty())
+    assert(!ctxt.get_type_decl(id));
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
@@ -2289,8 +2280,7 @@ build_template_tparameter(read_context& ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
   // Bail out if a type with the same ID already exists.
-  if (!id.empty() && ctxt.get_type_decl(id))
-    return nil;
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
@@ -2299,7 +2289,7 @@ build_template_tparameter(read_context& ctxt,
   if (!type_id.empty()
       && !(dynamic_pointer_cast<template_tparameter>
 	   (ctxt.get_type_decl(type_id))))
-    return nil;
+    abort();
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
@@ -2466,17 +2456,13 @@ handle_qualified_type_decl(read_context& ctxt)
     type_id = CHAR_STR(s);
 
   shared_ptr<type_base> underlying_type = ctxt.get_type_decl(type_id);
-  if (!underlying_type)
-    // The type-id must point to a pre-existing type.
-    return false;
+  assert(underlying_type);
 
   string id;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE (r, "id"))
     id = CHAR_STR(s);
 
-  if (id.empty() || ctxt.get_type_decl(id))
-    // We should have an id and it should be a new one.
-    return false;
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   string const_str;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "const"))
@@ -2521,8 +2507,7 @@ handle_pointer_type_def(read_context& ctxt)
     type_id = CHAR_STR(s);
 
   shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
-  if (!pointed_to_type)
-    return false;
+  assert(pointed_to_type);
 
   size_t size_in_bits = 0, alignment_in_bits = 0;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "size-in-bits"))
@@ -2533,8 +2518,7 @@ handle_pointer_type_def(read_context& ctxt)
   string id;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "id"))
     id = CHAR_STR(s);
-  if (id.empty() || ctxt.get_type_decl(id))
-    return false;
+  assert (!id.empty() && !ctxt.get_type_decl(id));
 
   location loc;
   read_location(ctxt, loc);
@@ -2568,8 +2552,7 @@ handle_reference_type_def(read_context& ctxt)
     type_id = CHAR_STR(s);
 
   shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
-  if (!pointed_to_type)
-    return false;
+  assert(pointed_to_type);
 
   size_t size_in_bits = 0, alignment_in_bits = 0;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "size-in-bits"))
@@ -2580,8 +2563,7 @@ handle_reference_type_def(read_context& ctxt)
   string id;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "id"))
     id = CHAR_STR(s);
-  if (id.empty() || ctxt.get_type_decl(id))
-    return false;
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   location loc;
   read_location(ctxt, loc);
@@ -2636,14 +2618,12 @@ handle_typedef_decl(read_context& ctxt)
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
     type_id = CHAR_STR(s);
   shared_ptr<type_base> underlying_type(ctxt.get_type_decl(type_id));
-  if (!underlying_type)
-    return false;
+  assert(underlying_type);
 
   string id;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "id"))
     id = CHAR_STR(s);
-  if (id.empty() || ctxt.get_type_decl(id))
-    return false;
+  assert(!id.empty() && !ctxt.get_type_decl(id));
 
   location loc;
   read_location(ctxt, loc);
