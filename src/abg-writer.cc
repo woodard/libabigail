@@ -34,6 +34,7 @@
 #include "abg-corpus.h"
 #include "abg-libzip-utils.h"
 #include "abg-writer.h"
+#include "abg-libxml-utils.h"
 
 namespace abigail
 {
@@ -768,7 +769,7 @@ write_type_decl(const shared_ptr<type_decl> d, write_context& ctxt,
 
   do_indent(o, indent);
 
-  o << "<type-decl name='" << d->get_name() << "'";
+  o << "<type-decl name='" << xml::escape_xml_string(d->get_name()) << "'";
 
   write_size_and_alignment(d, o);
 
@@ -1084,10 +1085,13 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 
   do_indent(o, indent);
 
-  o << "<function-decl name='" << decl->get_name() << "'";
+  o << "<function-decl name='"
+    << xml::escape_xml_string(decl->get_name())
+    << "'";
 
   if (!decl->get_mangled_name().empty())
-    o << " mangled-name='" << decl->get_mangled_name() << "'";
+    o << " mangled-name='"
+      << xml::escape_xml_string(decl->get_mangled_name()) << "'";
 
   write_location(decl, o);
 
@@ -1156,7 +1160,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 
   do_indent_to_level(ctxt, indent, 0);
 
-  o << "<class-decl name='" << decl->get_name() << "'";
+  o << "<class-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
 
   write_size_and_alignment(decl, o);
 
@@ -1346,7 +1350,7 @@ write_type_tparameter(const shared_ptr<type_tparameter>	decl,
   o << "<template-type-parameter "
     << id_attr_name << "='" <<  ctxt.get_id_for_type(decl) << "'";
 
-  std::string name = decl->get_name ();
+  std::string name = xml::escape_xml_string(decl->get_name ());
   if (!name.empty())
     o << " name='" << name << "'";
 
@@ -1381,7 +1385,7 @@ write_non_type_tparameter(
     << ctxt.get_id_for_type(decl->get_type())
     << "'";
 
-  string name = decl->get_name();
+  string name = xml::escape_xml_string(decl->get_name());
   if (!name.empty())
     o << " name='" << name << "'";
 
@@ -1420,7 +1424,7 @@ write_template_tparameter
   o << "<template-template-parameter " << id_attr_name << "='"
     << ctxt.get_id_for_type(decl) << "'";
 
-  string name = decl->get_name();
+  string name = xml::escape_xml_string(decl->get_name());
   if (!name.empty())
     o << " name='" << name << "'";
 

@@ -146,5 +146,155 @@ get_xml_node_depth(xmlNodePtr n)
   return 1 + get_xml_node_depth(n->parent);
 }
 
+/// Escape the 5 characters representing the predefined XML entities.
+///
+/// The resulting entities and their matching characters are:
+///
+///   &lt; for the character '<', &gt; for the character '>', &apos; for
+///   the character ''', &quot; for the character '"', and &amp; for the
+///   character '&'.
+///
+//// @param str the input string to read to search for the characters
+//// to escape.
+////
+//// @param the output string where to write the resulting string that
+//// contains the pre-defined characters escaped as predefined
+//// entitites.
+void
+escape_xml_string(const std::string& str,
+		  std::string& escaped)
+{
+  for (std::string::const_iterator i = str.begin(); i != str.end(); ++i)
+    switch (*i)
+      {
+      case '<':
+	escaped += "&lt;";
+	break;
+      case '>':
+	escaped += "&gt;";
+	break;
+      case '&':
+	escaped += "&amp;";
+	break;
+      case '\'':
+	escaped += "&apos;";
+	break;
+      case '"':
+	escaped += "&quot;";
+	break;
+      default:
+	escaped += *i;
+      }
+}
+
+/// Escape the 5 characters representing the predefined XML entities.
+///
+/// The resulting entities and their matching characters are:
+///
+///   &lt; for the character '<', &gt; for the character '>', &apos; for
+///   the character ''', &quot; for the character '"', and &amp; for the
+///   character '&'.
+///
+//// @param str the input string to read to search for the characters
+//// to escape.
+////
+//// @return the resulting string that contains the pre-defined
+//// characters escaped as predefined entitites.
+std::string
+escape_xml_string(const std::string& str)
+{
+  std::string result;
+  escape_xml_string(str, result);
+  return result;
+}
+
+/// Read a string, detect the 5 predefined XML entities it may contain
+/// and un-escape them, by writting their corresponding characters
+/// back in.  The pre-defined entities are:
+///
+///   &lt; for the character '<', &gt; for the character '>', &apos; for
+///   the character ''', &quot; for the character '"', and &amp; for the
+///   character '&'.
+///
+///   @param str the input XML string to consider.
+///
+///   @param escaped where to write the resulting un-escaped string.
+void
+unescape_xml_string(const std::string& str,
+		  std::string& escaped)
+{
+  std::string::size_type i = 0;
+  while (i < str.size())
+    {
+      if (str[i] == '&')
+	{
+	  if (str[i+1]    == 'l'
+	      && str[i+2] == 't'
+	      && str[i+3] == ';')
+	    {
+	      escaped += '<';
+	      i+= 4;
+	    }
+	  else if (str[i+1]    == 'g'
+		   && str[i+2] == 't'
+		   && str[i+3] == ';')
+	    {
+	      escaped += '>';
+	      i += 4;
+	    }
+	  else if (str[i+1]    == 'a'
+		   && str[i+2] == 'm'
+		   && str[i+3] == 'p'
+		   && str[i+4] == ';')
+	    {
+	      escaped += '&';
+	      i += 5;
+	    }
+	  else if (str[i+1]    == 'a'
+		   && str[i+2] == 'p'
+		   && str[i+3] == 'o'
+		   && str[i+4] == 's'
+		   && str[i+5] == ';')
+	    {
+	      escaped += '\'';
+	      i += 6;
+	    }
+	  else if (str[i+1]    == 'q'
+		   && str[i+2] == 'u'
+		   && str[i+3] == 'o'
+		   && str[i+4] == 't'
+		   && str[i+5] == ';')
+	    {
+	      escaped += '"';
+	      i += 6;
+	    }
+	}
+      else
+	{
+	  escaped += str[i];
+	  ++i;
+	}
+    }
+}
+
+/// Read a string, detect the 5 predefined XML entities it may contain
+/// and un-escape them, by writting their corresponding characters
+/// back in.  The pre-defined entities are:
+///
+///   &lt; for the character '<', &gt; for the character '>', &apos; for
+///   the character ''', &quot; for the character '"', and &amp; for the
+///   character '&'.
+///
+///   @param str the input XML string to consider.
+///
+///   @return escaped where to write the resulting un-escaped string.
+std::string
+unescape_xml_string(const std::string& str)
+{
+  std::string result;
+  unescape_xml_string(str, result);
+  return result;
+}
+
 }//end namespace xml
 }//end namespace abigail

@@ -1228,11 +1228,11 @@ build_function_decl(read_context&	ctxt,
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   string mangled_name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "mangled-name"))
-    mangled_name = CHAR_STR(s);
+    mangled_name = xml::unescape_xml_string(CHAR_STR(s));
 
   string inline_prop;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "declared-inline"))
@@ -1314,18 +1314,17 @@ build_var_decl(read_context& ctxt, const xmlNodePtr node,
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
     type_id = CHAR_STR(s);
   shared_ptr<type_base> underlying_type = ctxt.get_type_decl(type_id);
-  if (!underlying_type)
-    return nil;
+  assert(underlying_type);
 
   string mangled_name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "mangled-name"))
-    mangled_name = CHAR_STR(s);
+    mangled_name = xml::unescape_xml_string(CHAR_STR(s));
 
   decl_base::visibility vis = decl_base::VISIBILITY_NONE;
   read_visibility(node, vis);
@@ -1367,7 +1366,7 @@ build_type_decl(read_context&		ctxt,
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
@@ -1593,7 +1592,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   location loc;
   read_location(ctxt, node, loc);
@@ -1627,7 +1626,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
 
 	  xml_char_sptr a = xml::build_sptr(xmlGetProp(n, BAD_CAST("name")));
 	  if (a)
-	    name = CHAR_STR(a);
+	    name = xml::unescape_xml_string(CHAR_STR(a));
 
 	  a = xml::build_sptr(xmlGetProp(n, BAD_CAST("value")));
 	  if (a)
@@ -1721,7 +1720,7 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   size_t size_in_bits = 0, alignment_in_bits = 0;
   read_size_and_alignment(node, size_in_bits, alignment_in_bits);
@@ -2120,11 +2119,11 @@ build_type_tparameter(read_context& ctxt, const xmlNodePtr node,
   if (!type_id.empty()
       && !(result = dynamic_pointer_cast<type_tparameter>
 	   (ctxt.get_type_decl(type_id))))
-    return nil;
+    abort();
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   location loc;
   read_location(ctxt, node,loc);
@@ -2227,11 +2226,11 @@ build_non_type_tparameter(read_context&	ctxt,
   shared_ptr<type_base> type;
   if (type_id.empty()
       || !(type = ctxt.get_type_decl(type_id)))
-    return r;
+    abort();
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   location loc;
   read_location(ctxt, node,loc);
@@ -2284,7 +2283,7 @@ build_template_tparameter(read_context& ctxt,
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   location loc;
   read_location(ctxt, node, loc);
@@ -2420,7 +2419,7 @@ handle_namespace_decl(read_context& ctxt)
 
   string name;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   location loc;
   read_location(ctxt, loc);
@@ -2611,7 +2610,7 @@ handle_typedef_decl(read_context& ctxt)
 
   string name;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
-    name = CHAR_STR(s);
+    name = xml::unescape_xml_string(CHAR_STR(s));
 
   string type_id;
   if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))

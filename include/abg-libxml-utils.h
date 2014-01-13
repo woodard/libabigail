@@ -98,5 +98,20 @@ int get_xml_node_depth(xmlNodePtr);
 #define CHAR_STR(xml_char_str) \
   reinterpret_cast<char*>(xml_char_str.get())
 
+void
+escape_xml_string(const std::string& str,
+		  std::string& escaped);
+
+std::string
+escape_xml_string(const std::string& str);
+
+
+void
+unescape_xml_string(const std::string& str,
+		  std::string& escaped);
+
+std::string
+unescape_xml_string(const std::string& str);
+
 }//end namespace xml
 }//end namespace abigail
