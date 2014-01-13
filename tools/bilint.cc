@@ -222,8 +222,11 @@ main(int argc, char* argv[])
 	      of.close();
 	    }
 	  else if (type == abigail::tools::FILE_TYPE_ELF)
-	    r = write_corpus_to_native_xml(corp, /*indent=*/0,
-					   opts.noout ? of : cout);
+	    {
+	      r = true;
+	      if (!opts.noout)
+		r = write_corpus_to_native_xml(corp, /*indent=*/0, cout);
+	    }
 	}
 
       bool is_ok = r;

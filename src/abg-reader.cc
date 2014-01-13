@@ -214,6 +214,10 @@ public:
     return t;
   }
 
+  void
+  clear_type_map()
+  {m_types_map.clear();}
+
   /// Associate an ID with a type.
   ///
   /// @param type the type to associate witht he ID.
@@ -616,10 +620,16 @@ read_translation_unit_from_input(read_context&	ctxt,
     return false;
 
   // The document must start with the abi-instr node.
-  int status = advance_cursor (ctxt);
+  int status = 1;
+  while (status == 1
+	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+    status = advance_cursor (ctxt);
+
   if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 				   BAD_CAST("abi-instr")))
     return false;
+
+  ctxt.clear_type_map();
 
   xml::xml_char_sptr addrsize_str = XML_READER_GET_ATTRIBUTE(reader,
 							     "address-size");
@@ -657,7 +667,7 @@ read_translation_unit_from_input(read_context&	ctxt,
 	}
     }
 
-  if(status == 0)
+  if (status != -1)
     return true;
   return false;
 }
@@ -681,17 +691,27 @@ read_corpus_from_input(read_context&	ctxt,
     return false;
 
   // The document must start with the abi-corpus node.
-  int status = advance_cursor (ctxt);
+  int status = 1;
+  while (status == 1
+	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+    status = advance_cursor (ctxt);
+
   if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 				   BAD_CAST("abi-corpus")))
     return false;
 
-    xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
+  xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
 
   if (path_str)
     corp.set_path(reinterpret_cast<char*>(path_str.get()));
 
-  bool is_ok;
+  // Advance the cursor until the next 'abi-instr' element.
+  do
+    status = advance_cursor (ctxt);
+  while (status == 1
+	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT);
+
+  bool is_ok = false;
   do
     {
       translation_unit_sptr tu(new translation_unit(""));

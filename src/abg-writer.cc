@@ -187,6 +187,10 @@ public:
     return m_class_tmpl_id_map[c];
   }
 
+  void
+  clear_type_id_map()
+  {m_type_id_map.clear();}
+
 private:
   id_manager m_id_manager;
   config m_config;
@@ -644,6 +648,8 @@ write_translation_unit(const translation_unit&	tu,
 {
   ostream& o = ctxt.get_ostream();
   const config& c = ctxt.get_config();
+
+  ctxt.clear_type_id_map();
 
   do_indent(o, indent);
 

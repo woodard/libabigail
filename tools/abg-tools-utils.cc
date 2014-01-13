@@ -224,8 +224,8 @@ check_file(const string& path,
 file_type
 guess_file_type(istream& in)
 {
-  const unsigned BUF_LEN = 12;
-  const unsigned NB_BYTES_TO_READ = 11;
+  const unsigned BUF_LEN = 13;
+  const unsigned NB_BYTES_TO_READ = 12;
 
   char buf[BUF_LEN];
   memset(buf, 0, BUF_LEN);
