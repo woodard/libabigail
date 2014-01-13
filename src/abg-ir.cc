@@ -145,7 +145,7 @@ location_manager::expand_location(const location	location,
 
 typedef unordered_map<shared_ptr<type_base>,
 		      bool,
-		      type_base::shared_ptr_hash,
+		      type_base::cached_hash,
 		      type_shared_ptr_equal> type_ptr_map;
 
 /// Private type to hold private members of @ref translation_unit
@@ -296,27 +296,56 @@ operator==(translation_unit_sptr l, translation_unit_sptr r)
 
 decl_base::decl_base(const std::string&	name, location locus,
 		     const std::string&	mangled_name, visibility vis)
-: location_(locus),
-  name_(name),
-  mangled_name_(mangled_name),
-  context_(0),
-  visibility_(vis)
+  : hash_(0),
+    location_(locus),
+    name_(name),
+    mangled_name_(mangled_name),
+    context_(0),
+    visibility_(vis)
 { }
 
 decl_base::decl_base(location l)
-: location_(l),
-  context_(0),
-  visibility_(VISIBILITY_DEFAULT)
+  : hash_(0),
+    location_(l),
+    context_(0),
+    visibility_(VISIBILITY_DEFAULT)
 { }
 
 decl_base::decl_base(const decl_base& d)
 {
+  hash_ = d.hash_;
   location_ = d.location_;
   name_ = d.name_;
   mangled_name_ = d.mangled_name_;
   context_ = d.context_;
   visibility_ = visibility_;
 }
+
+/// Get the hash of a decl.  If the hash hasn't been computed yet,
+/// compute it ans store its value; otherwise, just return the hash.
+///
+/// @return the hash of the decl.
+size_t
+decl_base::get_hash() const
+{
+  if (hash_ == 0)
+    {
+      const type_base* t = dynamic_cast<const type_base*>(this);
+      if (t)
+	{
+	  type_base::dynamic_hash hash;
+	  set_hash(hash(t));
+	}
+    }
+  return hash_;
+}
+
+/// Set a new hash for the type.
+///
+/// @param h the new hash.
+void
+decl_base::set_hash(size_t h) const
+{hash_ = h;}
 
 /// Compute the qualified name of the decl.
 ///
@@ -374,7 +403,11 @@ decl_base::get_qualified_name(const string& separator) const
 /// that extend the \a decl_base class.
 bool
 decl_base::operator==(const decl_base& other) const
-{return get_name() == other.get_name();}
+{
+  if (hash_ != other.hash_)
+    return false;
+  return get_name() == other.get_name();
+}
 
 decl_base::~decl_base()
 {}
@@ -2925,6 +2958,9 @@ class_decl::operator==(const decl_base& other) const
       // No need to go further if the classes have different names or
       // different size / alignment.
       if (!(decl_base::operator==(o) && type_base::operator==(o)))
+	return false;
+
+      if (hash_ != other.hash_)
 	return false;
 
       // Compare bases.

@@ -91,10 +91,10 @@ public:
 };
 
 
-typedef unordered_map<shared_ptr<type_base>,
+typedef unordered_map<type_base*,
 		      string,
-		      type_base::shared_ptr_hash,
-		      type_shared_ptr_equal> type_shared_ptr_map;
+		      type_base::cached_hash,
+		      type_ptr_equal> type_ptr_map;
 
 typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
@@ -125,9 +125,14 @@ public:
   get_id_manager()
   {return m_id_manager;}
 
-  /// @return true iff type has already beend assigned an ID.
+  /// @return true iff type has already been assigned an ID.
   bool
   type_has_existing_id(shared_ptr<type_base> type) const
+  {return type_has_existing_id(type.get());}
+
+  /// @return true iff type has already been assigned an ID.
+  bool
+  type_has_existing_id(type_base* type) const
   {return (m_type_id_map.find(type) != m_type_id_map.end());}
 
   /// Associate a unique id to a given type.  For that, put the type
@@ -136,8 +141,16 @@ public:
   /// return the existing id for that type.
   string
   get_id_for_type(shared_ptr<type_base> t)
+  {return get_id_for_type(t.get());}
+
+  /// Associate a unique id to a given type.  For that, put the type
+  /// in a hash table, hashing the type.  So if the type has no id
+  /// associated to it, create a new one and return it.  Otherwise,
+  /// return the existing id for that type.
+  string
+  get_id_for_type(type_base* t)
   {
-    type_shared_ptr_map::const_iterator it = m_type_id_map.find(t);
+    type_ptr_map::const_iterator it = m_type_id_map.find(t);
     if (it == m_type_id_map.end())
       {
 	string id = get_id_manager().get_id_with_prefix("type-id-");
@@ -177,7 +190,7 @@ private:
   id_manager m_id_manager;
   config m_config;
   ostream& m_ostream;
-  type_shared_ptr_map m_type_id_map;
+  type_ptr_map m_type_id_map;
   fn_tmpl_shared_ptr_map m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map m_class_tmpl_id_map;
 }; //end write_context

@@ -201,13 +201,15 @@ public:
     BINDING_WEAK
   };
 
-private:
+protected:
+  mutable size_t	hash_;
 
-  location				location_;
-  std::string				name_;
-  std::string				mangled_name_;
-  scope_decl*				context_;
-  visibility				visibility_;
+private:
+  location		location_;
+  std::string		name_;
+  std::string		mangled_name_;
+  scope_decl*		context_;
+  visibility		visibility_;
 
   // Forbidden
   decl_base();
@@ -232,6 +234,12 @@ public:
   traverse(ir_node_visitor& v);
 
   virtual ~decl_base();
+
+  size_t
+  get_hash() const;
+
+  void
+  set_hash(size_t) const;
 
   location
   get_location() const
@@ -433,6 +441,8 @@ public:
   /// runtime type of the type pointed to.
   struct shared_ptr_hash;
 
+  struct cached_hash;
+
   type_base(size_t s, size_t a);
 
   virtual bool
@@ -454,6 +464,26 @@ public:
 };//end class type_base
 
 /// A predicate for deep equality of instances of
+/// type_base*
+struct type_ptr_equal
+{
+  bool
+  operator()(const type_base* l, const type_base* r) const
+  {
+    if (!!l != !!r)
+      return false;
+
+    if (l == r)
+      return true;
+
+    if (l)
+      return *l == *r;
+
+    return true;
+  }
+};
+
+/// A predicate for deep equality of instances of
 /// shared_ptr<type_base>
 struct type_shared_ptr_equal
 {
@@ -462,6 +492,9 @@ struct type_shared_ptr_equal
   {
     if (!!l != !!r)
       return false;
+
+    if (l.get() == r.get())
+      return true;
 
     if (l)
       return *l == *r;
@@ -2218,6 +2251,17 @@ struct type_base::dynamic_hash
 {
   size_t
   operator()(const type_base* t) const;
+};
+
+/// A hasher that manages the cache the computed hash and re-use it if
+/// it is available.
+struct type_base::cached_hash
+{
+  size_t
+  operator() (const type_base* t) const;
+
+  size_t
+  operator() (const type_base_sptr t) const;
 };
 
 struct function_tdecl::hash
