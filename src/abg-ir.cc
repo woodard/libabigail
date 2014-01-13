@@ -597,22 +597,20 @@ scope_decl::operator==(const decl_base& o) const
   if (!decl_base::operator==(o))
     return false;
 
-  try
-    {
-      const scope_decl& other = dynamic_cast<const scope_decl&>(o);
+  const scope_decl* othr = dynamic_cast<const scope_decl*>(&o);
 
-      scope_decl::declarations::const_iterator i, j;
-      for (i = get_member_decls().begin(), j = other.get_member_decls().begin();
-	   i != get_member_decls().end() && j != other.get_member_decls().end();
-	   ++i, ++j)
-	if (**i != **j)
-	  return false;
+  if (!othr)
+    return false;
 
-      if (i != get_member_decls().end() || j != other.get_member_decls().end())
-	return false;
-    }
-  catch(...)
-    {return false;}
+  scope_decl::declarations::const_iterator i, j;
+  for (i = get_member_decls().begin(), j = othr->get_member_decls().begin();
+       i != get_member_decls().end() && j != othr->get_member_decls().end();
+       ++i, ++j)
+    if (**i != **j)
+      return false;
+
+  if (i != get_member_decls().end() || j != othr->get_member_decls().end())
+    return false;
 
   return true;
 }
@@ -1178,13 +1176,10 @@ type_decl::type_decl(const std::string&	name,
 bool
 type_decl::operator==(const type_base& o) const
 {
-  try
-    {
-      const decl_base& other = dynamic_cast<const decl_base&>(o);
-      return *this == other;
-    }
-  catch (...)
-    {return false;}
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
 }
 
 /// Return true if both types equals.
@@ -1195,14 +1190,10 @@ type_decl::operator==(const type_base& o) const
 bool
 type_decl::operator==(const decl_base& o) const
 {
-  try
-    {
-      const type_decl& other = dynamic_cast<const type_decl&>(o);
-      return (type_base::operator==(other)
-	      &&  decl_base::operator==(other));
-    }
-  catch(...)
-    {return false;}
+  const type_decl* other = dynamic_cast<const type_decl*>(&o);
+  if (!other)
+    return false;
+  return (type_base::operator==(*other) &&  decl_base::operator==(*other));
 }
 
 /// Return true if both types equals.
@@ -1255,14 +1246,10 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 bool
 scope_type_decl::operator==(const decl_base& o) const
 {
-  try
-    {
-      const scope_type_decl& other = dynamic_cast<const scope_type_decl&>(o);
-      return (scope_decl::operator==(other)
-	      && type_base::operator==(other));
-    }
-  catch (...)
-    {return false;}
+  const scope_type_decl* other = dynamic_cast<const scope_type_decl*>(&o);
+  if (!other)
+    return false;
+  return (scope_decl::operator==(*other) && type_base::operator==(*other));
 }
 
 /// Equality operator between two scope_type_decl.
@@ -1275,13 +1262,11 @@ scope_type_decl::operator==(const decl_base& o) const
 bool
 scope_type_decl::operator==(const type_base& o) const
 {
-  try
-    {
-      const decl_base& other = dynamic_cast<const decl_base&>(o);
-      return *this == other;
-    }
-  catch(...)
-    {return false;}
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+
+  return *this == *other;
 }
 
 scope_type_decl::~scope_type_decl()
@@ -1310,13 +1295,10 @@ namespace_decl::namespace_decl(const std::string& name,
 bool
 namespace_decl::operator==(const decl_base& o) const
 {
-  try
-    {
-      const namespace_decl& other = dynamic_cast<const namespace_decl&>(o);
-      return scope_decl::operator==(other);
-    }
-  catch(...)
-    {return false;}
+  const namespace_decl* other = dynamic_cast<const namespace_decl*>(&o);
+  if (!other)
+    return false;
+  return scope_decl::operator==(*other);
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -1383,18 +1365,15 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
 bool
 qualified_type_def::operator==(const decl_base& o) const
 {
-  try
-    {
-      const qualified_type_def& other =
-	dynamic_cast<const qualified_type_def&>(o);
+  const qualified_type_def* other =
+    dynamic_cast<const qualified_type_def*>(&o);
+  if (!other)
+    return false;
 
-      if (get_cv_quals() != other.get_cv_quals())
-	return false;
+  if (get_cv_quals() != other->get_cv_quals())
+    return false;
 
-      return *get_underlying_type() == *other.get_underlying_type();
-    }
-  catch(...)
-    {return false;}
+  return *get_underlying_type() == *other->get_underlying_type();
 }
 
 /// Equality operator for qualified types.
@@ -1409,13 +1388,10 @@ qualified_type_def::operator==(const decl_base& o) const
 bool
 qualified_type_def::operator==(const type_base& o) const
 {
-  try
-    {
-      const decl_base& other = dynamic_cast<const decl_base&>(o);
-      return *this == other;
-    }
-  catch(...)
-    {return false;}
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -1441,7 +1417,7 @@ qualified_type_def::set_cv_quals(char cv_quals)
 {cv_quals_ = cv_quals;}
 
 /// Getter of the underlying type
-const shared_ptr<type_base>
+const shared_ptr<type_base>&
 qualified_type_def::get_underlying_type() const
 {return underlying_type_;}
 
@@ -1516,14 +1492,10 @@ pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
 bool
 pointer_type_def::operator==(const decl_base& o) const
 {
-  try
-    {
-      const pointer_type_def& other = dynamic_cast<const pointer_type_def&>(o);
-
-      return *get_pointed_to_type() == *other.get_pointed_to_type();
-    }
-  catch(...)
-    {return false;}
+  const pointer_type_def* other = dynamic_cast<const pointer_type_def*>(&o);
+  if (!other)
+    return false;
+  return *get_pointed_to_type() == *other->get_pointed_to_type();
 }
 
 /// Return true iff both instances of pointer_type_def are equal.
@@ -1533,17 +1505,13 @@ pointer_type_def::operator==(const decl_base& o) const
 bool
 pointer_type_def::operator==(const type_base& o) const
 {
-  try
-    {
-      const pointer_type_def& other = dynamic_cast<const pointer_type_def&>(o);
-
-      return *get_pointed_to_type() == *other.get_pointed_to_type();
-    }
-  catch(...)
-    {return false;}
+  const pointer_type_def* other = dynamic_cast<const pointer_type_def*>(&o);
+  if (!other)
+    return false;
+  return *get_pointed_to_type() == *other->get_pointed_to_type();
 }
 
-shared_ptr<type_base>
+const shared_ptr<type_base>&
 pointer_type_def::get_pointed_to_type() const
 {return pointed_to_type_;}
 
@@ -1586,29 +1554,23 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 bool
 reference_type_def::operator==(const decl_base& o) const
 {
-  try
-    {
-      const reference_type_def& other =
-	dynamic_cast<const reference_type_def&>(o);
-      return *get_pointed_to_type() == *other.get_pointed_to_type();
-    }
-  catch(...)
-    {return false;}
+  const reference_type_def* other =
+    dynamic_cast<const reference_type_def*>(&o);
+  if (!other)
+    return false;
+  return *get_pointed_to_type() == *other->get_pointed_to_type();
 }
 
 bool
 reference_type_def::operator==(const type_base& o) const
 {
-  try
-    {
-      const decl_base& other = dynamic_cast<const decl_base&>(o);
-      return *this == other;
-    }
-  catch(...)
-    {return false;}
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
 }
 
-shared_ptr<type_base>
+const shared_ptr<type_base>&
 reference_type_def::get_pointed_to_type() const
 {return pointed_to_type_;}
 
@@ -1668,39 +1630,35 @@ enum_type_decl::~enum_type_decl()
 bool
 enum_type_decl::operator==(const decl_base& o) const
 {
-  try
-    {
-      const enum_type_decl& other= dynamic_cast<const enum_type_decl&>(o);
 
-      if (*get_underlying_type() != *other.get_underlying_type())
-	return false;
+  const enum_type_decl* op= dynamic_cast<const enum_type_decl*>(&o);
+  if (!op)
+    return false;
+  const enum_type_decl& other = *op;
 
-      enumerators::const_iterator i, j;
-      for (i = get_enumerators().begin(), j = other.get_enumerators().begin();
-	   i != get_enumerators().end() && j != other.get_enumerators().end();
-	   ++i, ++j)
-	if (*i != *j)
-	  return false;
+  if (*get_underlying_type() != *other.get_underlying_type())
+    return false;
 
-      if (i != get_enumerators().end() || j != other.get_enumerators().end())
-	return false;
+  enumerators::const_iterator i, j;
+  for (i = get_enumerators().begin(), j = other.get_enumerators().begin();
+       i != get_enumerators().end() && j != other.get_enumerators().end();
+       ++i, ++j)
+    if (*i != *j)
+      return false;
 
-      return decl_base::operator==(other) && type_base::operator==(other);
-    }
-  catch(...)
-    {return false;}
+  if (i != get_enumerators().end() || j != other.get_enumerators().end())
+    return false;
+
+  return decl_base::operator==(other) && type_base::operator==(other);
 }
 
 bool
 enum_type_decl::operator==(const type_base& o) const
 {
-  try
-    {
-      const decl_base& other= dynamic_cast<const decl_base&>(o);
-      return *this == other;
-    }
-  catch(...)
-    {return false;}
+  const decl_base* other= dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
 }
 
 // <typedef_decl definitions>
@@ -1729,13 +1687,10 @@ typedef_decl::typedef_decl(const string&		name,
 bool
 typedef_decl::operator==(const decl_base& o) const
 {
-  try
-    {
-      const typedef_decl& other = dynamic_cast<const typedef_decl&>(o);
-      return (*get_underlying_type() == *other.get_underlying_type());
-    }
-  catch(...)
-    {return false;}
+  const typedef_decl* other = dynamic_cast<const typedef_decl*>(&o);
+  if (other)
+    return (*get_underlying_type() == *other->get_underlying_type());
+  return false;
 }
 
 /// Equality operator
@@ -1744,13 +1699,10 @@ typedef_decl::operator==(const decl_base& o) const
 bool
 typedef_decl::operator==(const type_base& o) const
 {
-  try
-    {
-      const decl_base& other = dynamic_cast<const decl_base&>(o);
-      return *this == other;
-    }
-  catch(...)
-    {return false;}
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
 }
 
 /// Build a pretty representation for a typedef_decl.
@@ -1767,7 +1719,7 @@ typedef_decl::get_pretty_representation() const
 /// Getter of the underlying type of the typedef.
 ///
 /// @return the underlying_type.
-shared_ptr<type_base>
+const shared_ptr<type_base>&
 typedef_decl::get_underlying_type() const
 {return underlying_type_;}
 
@@ -1799,14 +1751,11 @@ var_decl::var_decl(const std::string&		name,
 bool
 var_decl::operator==(const decl_base& o) const
 {
-  try
-    {
-      const var_decl& other = dynamic_cast<const var_decl&>(o);
-      return (decl_base::operator==(other)
-	      && *get_type() == *other.get_type());
-    }
-  catch(...)
-    {return false;}
+  const var_decl* other = dynamic_cast<const var_decl*>(&o);
+  if (!other)
+    return false;
+  return (decl_base::operator==(*other)
+	  && *get_type() == *other->get_type());
 }
 
 /// Build and return the pretty representation of this variable.
@@ -2953,7 +2902,10 @@ class_decl::operator==(const decl_base& other) const
 {
   try
     {
-      const class_decl& o = dynamic_cast<const class_decl&>(other);
+      const class_decl* op = dynamic_cast<const class_decl*>(&other);
+      if (!op)
+	return false;
+      const class_decl& o = *op;
 
       // No need to go further if the classes have different names or
       // different size / alignment.

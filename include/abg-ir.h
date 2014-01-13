@@ -623,7 +623,7 @@ public:
   void
   set_cv_quals(char cv_quals);
 
-  const shared_ptr<type_base>
+  const shared_ptr<type_base>&
   get_underlying_type() const;
 
   virtual void
@@ -663,7 +663,7 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
-  shared_ptr<type_base>
+  const shared_ptr<type_base>&
   get_pointed_to_type() const;
 
   virtual void
@@ -699,7 +699,7 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
-  shared_ptr<type_base>
+  const shared_ptr<type_base>&
   get_pointed_to_type() const;
 
   bool
@@ -847,7 +847,7 @@ public:
   virtual string
   get_pretty_representation() const;
 
-  shared_ptr<type_base>
+  const shared_ptr<type_base>&
   get_underlying_type() const;
 
   virtual void
