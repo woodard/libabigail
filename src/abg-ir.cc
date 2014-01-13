@@ -2238,13 +2238,13 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
 		       member_functions& mbr_fns)
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
-  scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
-  hashing_started_(false),
-  is_declaration_only_(false),
-  bases_(bases),
-  member_types_(mbrs),
-  data_members_(data_mbrs),
-  member_functions_(mbr_fns)
+    scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
+    hashing_started_(false),
+    is_declaration_only_(false),
+    bases_(bases),
+    member_types_(mbrs),
+    data_members_(data_mbrs),
+    member_functions_(mbr_fns)
 {
   for (member_types::iterator i = mbrs.begin(); i != mbrs.end(); ++i)
     if (!(*i)->get_scope())

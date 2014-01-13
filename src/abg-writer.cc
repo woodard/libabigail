@@ -99,11 +99,11 @@ typedef unordered_map<type_base*,
 
 typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
-	       function_tdecl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
+		      function_tdecl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
 
 typedef unordered_map<shared_ptr<class_tdecl>,
 		      string,
-	       class_tdecl::shared_ptr_hash> class_tmpl_shared_ptr_map;
+		      class_tdecl::shared_ptr_hash> class_tmpl_shared_ptr_map;
 
 class write_context
 {

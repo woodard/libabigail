@@ -458,7 +458,6 @@ struct class_decl::member_function_template::hash
     v = hashing::combine_hashes(v, hash_function_tdecl(t));
     v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
     v = hashing::combine_hashes(v, hash_bool(t.is_const()));
-
     return v;
   }
 };
