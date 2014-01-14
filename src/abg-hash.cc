@@ -742,8 +742,7 @@ operator()(const shared_ptr<class_tdecl> t) const
 ///
 /// @return the resulting hash
 size_t
-type_base::dynamic_hash::
-operator()(const type_base* t) const
+type_base::dynamic_hash::operator()(const type_base* t) const
 {
   if (t == 0)
     return 0;

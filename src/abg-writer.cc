@@ -765,7 +765,8 @@ write_translation_unit(const translation_unit&	tu,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_type_decl(const shared_ptr<type_decl> d, write_context& ctxt,
+write_type_decl(const type_decl_sptr d,
+		write_context& ctxt,
 		unsigned indent)
 {
   if (!d)

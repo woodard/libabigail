@@ -175,7 +175,7 @@ public:
       return 0;
   }
 
-  shared_ptr<decl_base>
+  decl_base_sptr
   get_cur_decl() const
   {
     if (m_decls_stack.empty())
@@ -198,16 +198,16 @@ public:
   }
 
   void
-  push_decl(shared_ptr<decl_base> d)
+  push_decl(decl_base_sptr d)
   {
     m_decls_stack.push(d);
   }
 
-  shared_ptr<decl_base>
+  decl_base_sptr
   pop_decl()
   {
     if (m_decls_stack.empty())
-      return shared_ptr<decl_base>(static_cast<decl_base*>(0));
+      return decl_base_sptr();
 
     shared_ptr<decl_base> t = get_cur_decl();
     m_decls_stack.pop();
