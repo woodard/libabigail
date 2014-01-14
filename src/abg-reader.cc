@@ -56,10 +56,6 @@ using zip_utils::open_file_in_archive;
 
 class read_context;
 
-static void update_read_context(read_context&);
-static void update_read_context(read_context&, xmlNodePtr);
-static void update_depth_info_of_read_context(read_context&, int);
-
 /// This abstracts the context in which the current ABI
 /// instrumentation dump is being de-serialized.  It carries useful
 /// information needed during the de-serialization, but that does not
@@ -214,6 +210,40 @@ public:
     return t;
   }
 
+  /// Pop all decls until a give scope is popped.
+  ///
+  /// @param scope the scope to pop.
+  ///
+  /// @return true if the scope was popped, false otherwise.  Note
+  /// that if the scope wasn't found, it might mean that many other
+  /// decls were popped.
+  bool
+  pop_scope(scope_decl_sptr scope)
+  {
+    decl_base_sptr d;
+    do
+      {
+	d = pop_decl();
+	scope_decl_sptr s = dynamic_pointer_cast<scope_decl>(d);
+	if (s == scope)
+	  break;
+      }
+    while (d);
+
+    if (!d)
+      return false;
+
+    return dynamic_pointer_cast<scope_decl>(d) == scope;
+  }
+
+  /// like @ref pop_scope, but if the scope couldn't be popped, the
+  /// function aborts the execution of the process.
+  ///
+  /// @param scope the scope to pop.
+  void
+  pop_scope_or_abort(scope_decl_sptr scope)
+  {assert(pop_scope(scope));}
+
   void
   clear_type_map()
   {m_types_map.clear();}
@@ -326,33 +356,6 @@ public:
     push_decl(decl);
   }
 
-  /// This function must be called on each decl that is created during
-  /// the parsing.  It adds the decl to the current scope, and updates
-  /// the state of the parsing context accordingly.
-  ///
-  /// @param decl the newly created decl.
-  ///
-  /// @param node the xml node from which the decl has been created if any.
-  ///
-  /// @param update_depth_info should be set to true if the function
-  /// should update the depth information maintained in the parsing
-  /// context.  If the xml element node has been 'hit' by the
-  /// advance_cursor then this should be set to false, because that
-  /// function updates the depth information maintained in the parsing
-  /// context already.
- void
- push_decl_to_current_scope(shared_ptr<decl_base> decl,
-			    xmlNodePtr node, bool update_depth_info,
-			    bool add_to_current_scope)
-  {
-    assert(decl);
-
-    if (update_depth_info)
-      update_read_context(*this, node);
-
-    push_decl_to_current_scope(decl, add_to_current_scope);
-  }
-
   /// This function must be called on each type decl that is created
   /// during the parsing.  It adds the type decl to the current scope
   /// and associates a unique ID to it.
@@ -376,32 +379,6 @@ public:
     return true;
   }
 
-  /// This function must be called on each type decl that is created
-  /// during the parsing.  It adds the type decl to the current scope
-  /// and associates a unique ID to it.
-  ///
-  /// @param t the type decl to consider.
-  ///
-  /// @param id the ID to associate to it.
-  ///
-  /// @param node the xml elment node that t was constructed from.
-  ///
-  /// @param update_depth_info should be set to true if this
-  /// function should update the depth information maintained in the
-  /// parsing context.
-  ///
-  /// @return true upon successful completion, false otherwise.
-  bool
-  push_and_key_type_decl(shared_ptr<type_base>	t, const string& id,
-			 xmlNodePtr node, bool update_depth_info,
-			 bool add_to_current_scope)
-  {
-    if (update_depth_info)
-      update_read_context(*this, node);
-
-    return push_and_key_type_decl(t, id, add_to_current_scope);
-  }
-
 private:
   // The depth of the current node in the xml tree.
   int m_depth;
@@ -415,7 +392,6 @@ private:
 static int	advance_cursor(read_context&);
 static bool	read_translation_unit_from_input(read_context&,
 						 translation_unit&);
-static bool	read_location(read_context&, location&);
 static bool	read_location(read_context&, xmlNodePtr, location&);
 static bool	read_visibility(xmlNodePtr, decl_base::visibility&);
 static bool	read_binding(xmlNodePtr, decl_base::binding&);
@@ -427,6 +403,9 @@ static bool	read_cdtor_const(xmlNodePtr, bool&, bool&, bool&);
 static bool	read_is_declaration_only(xmlNodePtr, bool&);
 static bool	read_is_virtual(xmlNodePtr, bool&);
 
+static namespace_decl_sptr
+build_namespace_decl(read_context&, const xmlNodePtr, bool);
+
 // <build a c++ class  from an instance of xmlNodePtr>
 //
 // Note that whenever a new function to build a type is added here,
@@ -437,153 +416,75 @@ build_function_parameter (read_context&, const xmlNodePtr);
 
 static shared_ptr<function_decl>
 build_function_decl(read_context&, const xmlNodePtr,
-		    shared_ptr<class_decl>, bool, bool);
+		    shared_ptr<class_decl>, bool);
 
 static shared_ptr<var_decl>
-build_var_decl(read_context&, const xmlNodePtr, bool, bool);
+build_var_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<type_decl>
-build_type_decl(read_context&, const xmlNodePtr, bool, bool);
+  build_type_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<qualified_type_def>
-build_qualified_type_decl(read_context&, const xmlNodePtr, bool, bool);
+build_qualified_type_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<pointer_type_def>
-build_pointer_type_def(read_context&, const xmlNodePtr, bool, bool);
+build_pointer_type_def(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<reference_type_def>
-build_reference_type_def(read_context&, const xmlNodePtr, bool, bool);
+build_reference_type_def(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<enum_type_decl>
-build_enum_type_decl(read_context&, const xmlNodePtr, bool, bool);
+build_enum_type_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<typedef_decl>
-build_typedef_decl(read_context&, const xmlNodePtr, bool, bool);
+build_typedef_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<class_decl>
-build_class_decl(read_context&, const xmlNodePtr, bool, bool);
+build_class_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<function_tdecl>
-build_function_tdecl(read_context&, const xmlNodePtr, bool, bool);
+build_function_tdecl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<class_tdecl>
-build_class_tdecl(read_context&, const xmlNodePtr, bool, bool);
+build_class_tdecl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<type_tparameter>
-build_type_tparameter(read_context&, const xmlNodePtr, unsigned, bool);
+build_type_tparameter(read_context&, const xmlNodePtr, unsigned);
 
 static shared_ptr<type_composition>
-build_type_composition(read_context&, const xmlNodePtr, unsigned, bool);
+build_type_composition(read_context&, const xmlNodePtr, unsigned);
 
 static shared_ptr<non_type_tparameter>
-build_non_type_tparameter(read_context&, const xmlNodePtr, unsigned, bool);
+build_non_type_tparameter(read_context&, const xmlNodePtr, unsigned);
 
 static shared_ptr<template_tparameter>
-build_template_tparameter(read_context&, const xmlNodePtr, unsigned, bool);
+build_template_tparameter(read_context&, const xmlNodePtr, unsigned);
 
 static shared_ptr<template_parameter>
-build_template_parameter(read_context&, const xmlNodePtr, unsigned, bool);
+build_template_parameter(read_context&, const xmlNodePtr, unsigned);
 
 // Please make this build_type function be the last one of the list.
 // Note that it should call each type-building function above.  So
 // please make sure to update it accordingly, whenever a new
 // type-building function is added here.
 static shared_ptr<type_base>
-build_type(read_context&, const xmlNodePtr, bool, bool);
+build_type(read_context&, const xmlNodePtr, bool);
 // </build a c++ class  from an instance of xmlNodePtr>
 
-static bool	handle_element(read_context&);
-static bool	handle_type_decl(read_context&);
-static bool	handle_namespace_decl(read_context&);
-static bool	handle_qualified_type_decl(read_context&);
-static bool	handle_pointer_type_def(read_context&);
-static bool	handle_reference_type_def(read_context&);
-static bool	handle_enum_type_decl(read_context&);
-static bool	handle_typedef_decl(read_context&);
-static bool	handle_var_decl(read_context&);
-static bool	handle_function_decl(read_context&);
-static bool	handle_class_decl(read_context&);
-static bool	handle_function_tdecl(read_context&);
-static bool	handle_class_tdecl(read_context&);
+static bool	handle_element_node(read_context&, xmlNodePtr, bool);
+static bool	handle_type_decl(read_context&, xmlNodePtr, bool);
+static bool	handle_namespace_decl(read_context&, xmlNodePtr, bool);
+static bool	handle_qualified_type_decl(read_context&, xmlNodePtr, bool);
+static bool	handle_pointer_type_def(read_context&, xmlNodePtr, bool);
+static bool	handle_reference_type_def(read_context&, xmlNodePtr, bool);
+static bool	handle_enum_type_decl(read_context&, xmlNodePtr, bool);
+static bool	handle_typedef_decl(read_context&, xmlNodePtr, bool);
+static bool	handle_var_decl(read_context&, xmlNodePtr, bool);
+static bool	handle_function_decl(read_context&, xmlNodePtr, bool);
+static bool	handle_class_decl(read_context&, xmlNodePtr, bool);
+static bool	handle_function_tdecl(read_context&, xmlNodePtr, bool);
+static bool	handle_class_tdecl(read_context&, xmlNodePtr, bool);
 
-/// Updates the instance of read_context.  Basically update thee path
-/// of elements from the root to the current element, that we maintain
-/// to know the current scope.  This function needs to be called after
-/// each call to xmlTextReaderRead.
-///
-/// @param ctxt the context to update.
-static void
-update_read_context(read_context& ctxt)
-{
-  xml::reader_sptr reader = ctxt.get_reader();
-
-  if (XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
-    return;
-
-  // Update the depth of the current reader cursor in the reader
-  // context.
-  int depth = xmlTextReaderDepth(reader.get());
-  update_depth_info_of_read_context(ctxt, depth);
-}
-
-/// Updates the instance of read_context, from an instance of xmlNode.
-/// Basically update thee path of elements from the root to the
-/// current element, that we maintain to know the current scope.  This
-/// function needs to be called each time a build_xxx builds an C++
-/// from an xmlNodePtr.
-static void
-update_read_context(read_context& ctxt, xmlNodePtr node)
-{
-  if (node->type != XML_ELEMENT_NODE)
-    return;
-
-  int depth = xml::get_xml_node_depth(node);
-
-  if (depth >= 0)
-    update_depth_info_of_read_context(ctxt, depth);
-}
-
-/// Helper function used by update_read_context.
-///
-/// Updates the depth information maintained in the read_context.
-/// Updates the stack of IR node we maintain to know our current
-/// context.
-static void
-update_depth_info_of_read_context(read_context& ctxt, int new_depth)
-{
-  int ctxt_depth = ctxt.get_depth();
-
-  if (new_depth > ctxt_depth)
-    // we went down the tree.  There is nothing to do until we
-    // actually parse the new element.
-    ;
-  else if (new_depth <= ctxt_depth)
-    {
-      // we went up the tree or went to a sibbling
-      for (int nb = ctxt_depth - new_depth + 1; nb; --nb)
-	{
-	  shared_ptr<decl_base> d = ctxt.pop_decl();
-
-	  /// OK, this is a hack needed because the libxml reader
-	  /// interface doesn't provide us with a reliable way to know
-	  /// when we read the end of an XML element.
-	  if (is_at_class_scope(d) && nb > 2)
-	    // This means we logically poped out at least a member of
-	    // a class (i.e, during the xml parsing, we went up so
-	    // that we got out of an e.g, member-type, data-member or
-	    // member-function xml element.  The issue is that there
-	    // are two nested XML elment in that case (e.g,
-	    // data-member -> var-decl) to represent just one concrete
-	    // c++ type (e.g, the var_decl that is in the class_decl
-	    // scope).  So libxml reports that we should pop two *XML*
-	    // elements, but we should only pop one *C++* instance
-	    // from our stack.
-	    nb--;
-	}
-    }
-
-  ctxt.set_depth(new_depth);
-}
 
 /// Moves the xmlTextReader cursor to the next xml node in the input
 /// document.  Return 1 of the parsing was successful, 0 if no input
@@ -595,11 +496,7 @@ static int
 advance_cursor(read_context& ctxt)
 {
   xml::reader_sptr reader = ctxt.get_reader();
-  int status = xmlTextReaderRead(reader.get());
-  if (status == 1)
-    update_read_context(ctxt);
-
-  return status;
+  return xmlTextReaderRead(reader.get());
 }
 
 /// Parse the input XML document containing a translation_unit,
@@ -629,23 +526,35 @@ read_translation_unit_from_input(read_context&	ctxt,
 				   BAD_CAST("abi-instr")))
     return false;
 
+  xmlNodePtr node = xmlTextReaderExpand(reader.get());
+  if (!node)
+    return false;
+
   ctxt.clear_type_map();
 
-  xml::xml_char_sptr addrsize_str = XML_READER_GET_ATTRIBUTE(reader,
-							     "address-size");
+  xml::xml_char_sptr addrsize_str =
+    XML_NODE_GET_ATTRIBUTE(node, "address-size");
   if (addrsize_str)
     {
       char address_size = atoi(reinterpret_cast<char*>(addrsize_str.get()));
       tu.set_address_size(address_size);
     }
 
-  xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
+  xml::xml_char_sptr path_str = XML_NODE_GET_ATTRIBUTE(node, "path");
   if (path_str)
     tu.set_path(reinterpret_cast<char*>(path_str.get()));
 
   // We are at global scope, as we've just seen the top-most
   // "abi-instr" element.
   ctxt.push_decl(tu.get_global_scope());
+
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+      handle_element_node(ctxt, n,
+			  /*add_decl_to_scope=*/true);
+    }
 
   for (status = advance_cursor(ctxt);
        (status == 1
@@ -655,17 +564,8 @@ read_translation_unit_from_input(read_context&	ctxt,
        status = advance_cursor(ctxt))
     {
       xmlReaderTypes node_type = XML_READER_GET_NODE_TYPE(reader);
-
-      switch (node_type)
-	{
-	case XML_READER_TYPE_ELEMENT:
-	  if (!handle_element(ctxt))
-	    abort();
-	    //return false;
-	  break;
-	default:
-	  break;
-	}
+      if (node_type == XML_READER_TYPE_ELEMENT)
+	break;
     }
 
   if (status != -1)
@@ -779,81 +679,37 @@ read_translation_unit_from_buffer(const string&	buffer,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-handle_element(read_context&	ctxt)
+handle_element_node(read_context& ctxt, xmlNodePtr node,
+		    bool add_to_current_scope)
 {
-  xml::reader_sptr reader = ctxt.get_reader();
-  if (!reader)
+  if (!node)
     return false;
 
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("namespace-decl")))
-    return handle_namespace_decl(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("type-decl")))
-    return handle_type_decl(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("qualified-type-def")))
-    return handle_qualified_type_decl(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("pointer-type-def")))
-    return handle_pointer_type_def(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("reference-type-def")))
-    return handle_reference_type_def(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("enum-decl")))
-    return handle_enum_type_decl(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("typedef-decl")))
-    return handle_typedef_decl(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("var-decl")))
-    return handle_var_decl(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("function-decl")))
-    return handle_function_decl(ctxt);
-  if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		   BAD_CAST("class-decl")))
-    return handle_class_decl(ctxt);
-  if (xmlStrEqual(XML_READER_GET_NODE_NAME(reader).get(),
-		  BAD_CAST("function-template-decl")))
-    return handle_function_tdecl(ctxt);
-  if (xmlStrEqual(XML_READER_GET_NODE_NAME(reader).get(),
-		  BAD_CAST("class-template-decl")))
-    return handle_class_tdecl(ctxt);
-
-  return false;
-}
-
-/// Parses location attributes on the current xml element node.
-///
-///@param ctxt the current parsing context
-///
-///@param loc the resulting location.
-///
-/// @return true upon sucessful parsing, false otherwise.
-static bool
-read_location(read_context& ctxt, location& loc)
-{
-  translation_unit& tu = *ctxt.get_translation_unit();
-
-  xml::reader_sptr r = ctxt.get_reader();
-  xml::xml_char_sptr f = XML_READER_GET_ATTRIBUTE(r, "filepath");
-  if (!f)
-    {
-      loc = location();
-      return true;
-    }
-
-  xml::xml_char_sptr l = XML_READER_GET_ATTRIBUTE(r, "line");
-  xml::xml_char_sptr c = XML_READER_GET_ATTRIBUTE(r, "column");
-  if (!l || !c)
+  if (!handle_namespace_decl(ctxt,
+			     node,
+			     add_to_current_scope)
+      && !handle_type_decl(ctxt, node, add_to_current_scope)
+      && !handle_qualified_type_decl(ctxt, node,
+				     add_to_current_scope)
+      && !handle_pointer_type_def(ctxt, node,
+				  add_to_current_scope)
+      && !handle_reference_type_def(ctxt, node, add_to_current_scope)
+      && !handle_enum_type_decl(ctxt, node,
+				add_to_current_scope)
+      && !handle_typedef_decl(ctxt, node,
+			      add_to_current_scope)
+      && !handle_var_decl(ctxt, node,
+			  add_to_current_scope)
+      && !handle_function_decl(ctxt, node,
+			       add_to_current_scope)
+      && !handle_class_decl(ctxt, node,
+			    add_to_current_scope)
+      && !handle_function_tdecl(ctxt, node,
+				add_to_current_scope)
+      && !handle_class_tdecl(ctxt, node,
+			     add_to_current_scope))
     return false;
 
-  loc = tu.get_loc_mgr().create_new_location
-    (reinterpret_cast<char*>(f.get()),
-     atoi(reinterpret_cast<char*>(l.get())),
-     atoi(reinterpret_cast<char*>(c.get())));
   return true;
 }
 
@@ -1161,6 +1017,52 @@ read_is_virtual(xmlNodePtr node, bool& is_virtual)
   return false;
 }
 
+/// Build a @ref namespace_decl from an XML element node which name is
+/// "namespace-decl".  Note that this function recursively reads the
+/// content of the namespace and builds the proper IR nodes
+/// accordingly.
+///
+/// @param ctxt the read context to use.
+///
+/// @param node the XML node to consider.  It must constain the
+/// content of the namespace, that is, children XML nodes representing
+/// what is inside the namespace, unless the namespace is empty.
+///
+/// @param add_to_current_scope if set to yes, the resulting
+/// namespace_decl is added to the IR being currently built.
+///
+/// @return a pointer to the the resulting @ref namespace_decl.
+static namespace_decl_sptr
+build_namespace_decl(read_context&	ctxt,
+		     const xmlNodePtr	node,
+		     bool		add_to_current_scope)
+{
+  namespace_decl_sptr nil;
+  if (!node || !xmlStrEqual(node->name, BAD_CAST("namespace-decl")))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = xml::unescape_xml_string(CHAR_STR(s));
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  shared_ptr<namespace_decl> decl(new namespace_decl(name, loc));
+  ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
+
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+      assert(handle_element_node(ctxt, n, /*add_to_current_scope=*/true));
+    }
+
+  ctxt.pop_scope_or_abort(decl);
+
+  return decl;
+}
+
 /// Build a function parameter from a 'parameter' xml element node.
 ///
 /// @param ctxt the contexte of the xml parsing.
@@ -1225,20 +1127,12 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 /// shared_ptr<function_decl> that is returned is then really a
 /// shared_ptr<class_decl::method_decl>.
 ///
-/// @param update_depth_info should be set to true if the function
-/// should update the depth information maintained in the parsing
-/// context.  If the xml element node has been 'hit' by the
-/// advence_cursor then this should be set to false, because that
-/// function updates the depth information maintained in the parsing
-/// context already.
-///
 /// @return a pointer to a newly created function_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<function_decl>
 build_function_decl(read_context&	ctxt,
 		    const xmlNodePtr	node,
 		    shared_ptr<class_decl> as_method_decl,
-		    bool update_depth_info,
 		    bool add_to_current_scope)
 {
   shared_ptr<function_decl> nil;
@@ -1287,8 +1181,7 @@ build_function_decl(read_context&	ctxt,
 							mangled_name, vis,
 							bind));
 
-  ctxt.push_decl_to_current_scope(fn_decl, node, update_depth_info,
-				  add_to_current_scope);
+  ctxt.push_decl_to_current_scope(fn_decl, add_to_current_scope);
 
   for (xmlNodePtr n = node->children; n ; n = n->next)
     {
@@ -1324,8 +1217,9 @@ build_function_decl(read_context&	ctxt,
 /// @return a pointer to a newly built var_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<var_decl>
-build_var_decl(read_context& ctxt, const xmlNodePtr node,
-	       bool update_depth_info, bool add_to_current_scope)
+build_var_decl(read_context&	ctxt,
+	       const xmlNodePtr node,
+	       bool		add_to_current_scope)
 {
   shared_ptr<var_decl> nil;
 
@@ -1359,8 +1253,7 @@ build_var_decl(read_context& ctxt, const xmlNodePtr node,
 					 locus, mangled_name,
 					 vis, bind));
 
-  ctxt.push_decl_to_current_scope(decl, node, update_depth_info,
-				  add_to_current_scope);
+  ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
   return decl;
 }
@@ -1376,13 +1269,12 @@ build_var_decl(read_context& ctxt, const xmlNodePtr node,
 static shared_ptr<type_decl>
 build_type_decl(read_context&		ctxt,
 		const xmlNodePtr	node,
-		bool update_depth_info,
-		bool add_to_current_scope)
+		bool			add_to_current_scope)
 {
   shared_ptr<type_decl> nil;
 
   if (!xmlStrEqual(node->name, BAD_CAST("type-decl")))
-    return shared_ptr<type_decl>((type_decl*)0);
+    return nil;
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
@@ -1408,8 +1300,7 @@ build_type_decl(read_context&		ctxt,
   shared_ptr<type_decl> decl(new type_decl(name, size_in_bits,
 					   alignment_in_bits,
 					   loc));
-  if (ctxt.push_and_key_type_decl(decl, id, node, update_depth_info,
-				  add_to_current_scope))
+  if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     return decl;
 
   return nil;
@@ -1424,13 +1315,13 @@ build_type_decl(read_context&		ctxt,
 /// @return a pointer to a newly built qualified_type_def upon
 /// successful completion, a null pointer otherwise.
 static shared_ptr<qualified_type_def>
-build_qualified_type_decl(read_context& ctxt,
-			  const xmlNodePtr node,
-			  bool update_depth_info,
-			  bool add_to_current_scope)
+build_qualified_type_decl(read_context&	ctxt,
+			  const xmlNodePtr	node,
+			  bool			add_to_current_scope)
 {
+  qualified_type_def_sptr nil;
   if (!xmlStrEqual(node->name, BAD_CAST("qualified-type-def")))
-    return shared_ptr<qualified_type_def>((qualified_type_def*)0);
+    return nil;
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
@@ -1466,8 +1357,7 @@ build_qualified_type_decl(read_context& ctxt,
 
   shared_ptr<qualified_type_def> decl(new qualified_type_def(underlying_type,
 							     cv, loc));
-  if (ctxt.push_and_key_type_decl(decl, id, node, update_depth_info,
-				  add_to_current_scope))
+  if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     return decl;
 
   return shared_ptr<qualified_type_def>((qualified_type_def*)0);
@@ -1484,8 +1374,7 @@ build_qualified_type_decl(read_context& ctxt,
 static shared_ptr<pointer_type_def>
 build_pointer_type_def(read_context&	ctxt,
 		       const xmlNodePtr node,
-		       bool update_depth_info,
-		       bool add_to_current_scope)
+		       bool		add_to_current_scope)
 {
 
   shared_ptr<pointer_type_def> nil;
@@ -1518,8 +1407,7 @@ build_pointer_type_def(read_context&	ctxt,
 						      size_in_bits,
 						      alignment_in_bits,
 						      loc));
-  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
-				  add_to_current_scope))
+  if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     return t;
 
   return nil;
@@ -1535,9 +1423,9 @@ build_pointer_type_def(read_context&	ctxt,
 /// @return a pointer to a newly built reference_type_def upon
 /// successful completio, a null pointer otherwise.
 static shared_ptr<reference_type_def>
-build_reference_type_def(read_context&	ctxt,
-			 const xmlNodePtr node, bool update_depth_info,
-			 bool add_to_current_scope)
+build_reference_type_def(read_context&		ctxt,
+			 const xmlNodePtr	node,
+			 bool			add_to_current_scope)
 {
   shared_ptr<reference_type_def> nil;
 
@@ -1575,8 +1463,7 @@ build_reference_type_def(read_context&	ctxt,
 							  size_in_bits,
 							  alignment_in_bits,
 							  loc));
-  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
-				  add_to_current_scope))
+  if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     return t;
 
   return nil;
@@ -1591,8 +1478,9 @@ build_reference_type_def(read_context&	ctxt,
 /// @return a pointer to a newly built enum_type_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<enum_type_decl>
-build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
-		     bool update_depth_info, bool add_to_current_scope)
+build_enum_type_decl(read_context&	ctxt,
+		     const xmlNodePtr	node,
+		     bool		add_to_current_scope)
 {
   shared_ptr<enum_type_decl> nil;
 
@@ -1650,8 +1538,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
   shared_ptr<enum_type_decl> t(new enum_type_decl(name, loc,
 						  underlying_type,
 						  enums));
-  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
-				  add_to_current_scope))
+  if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     return t;
 
   return nil;
@@ -1668,8 +1555,7 @@ build_enum_type_decl(read_context&  ctxt, const xmlNodePtr node,
 static shared_ptr<typedef_decl>
 build_typedef_decl(read_context&	ctxt,
 		   const xmlNodePtr	node,
-		   bool update_depth_info,
-		   bool add_to_current_scope)
+		   bool		add_to_current_scope)
 {
   shared_ptr<typedef_decl> nil;
 
@@ -1696,8 +1582,7 @@ build_typedef_decl(read_context&	ctxt,
 
   shared_ptr<typedef_decl> t(new typedef_decl(name, underlying_type, loc));
 
-  if (ctxt.push_and_key_type_decl(t, id, node, update_depth_info,
-				  add_to_current_scope))
+  if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     return t;
 
   return nil;
@@ -1709,14 +1594,12 @@ build_typedef_decl(read_context&	ctxt,
 ///
 /// @param node the xml node to build the class_decl from.
 ///
-/// @param update_depth_info whether to update the depth info carried
-/// by the parsing context.
-///
 /// @return a pointer to class_decl upon successful completion, a null
 /// pointer otherwise.
 static shared_ptr<class_decl>
-build_class_decl(read_context& ctxt, const xmlNodePtr node,
-		 bool update_depth_info, bool add_to_current_scope)
+build_class_decl(read_context&		ctxt,
+		 const xmlNodePtr	node,
+		 bool			add_to_current_scope)
 {
   shared_ptr<class_decl> nil;
 
@@ -1788,8 +1671,7 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
   if (is_decl_only)
     decl.reset(new class_decl(name));
 
-  ctxt.push_decl_to_current_scope(decl, node, update_depth_info,
-				  add_to_current_scope);
+  ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
   for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
     {
@@ -1833,8 +1715,7 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 		continue;
 
 	      if (shared_ptr<type_base> t =
-		  build_type(ctxt, p, /*update_depth_info=*/true,
-			     /*add_to_current_scope=*/true))
+		  build_type(ctxt, p, /*add_to_current_scope=*/true))
 		{
 		  // No need to add the type to the class as
 		  //build_type() above has just done that.
@@ -1862,8 +1743,7 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 		continue;
 
 	      if (shared_ptr<var_decl> v =
-		  build_var_decl(ctxt, p, /*update_depth_info=*/true,
-				 /*add_to_current_scope=*/false))
+		  build_var_decl(ctxt, p, /*add_to_current_scope=*/false))
 		decl->add_data_member(v, access, is_laid_out,
 				      is_static, offset_in_bits);
 	    }
@@ -1891,7 +1771,6 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 
 	      if (shared_ptr<function_decl> f =
 		  build_function_decl(ctxt, p, decl,
-				      /*update_depth_info=*/true,
 				      /*add_to_current_scope=*/false))
 		decl->add_member_function(f, access,
 					  vtable_offset,
@@ -1918,7 +1797,6 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 
 	      if (shared_ptr<function_tdecl> f =
 		  build_function_tdecl(ctxt, p,
-				       /*update_depth_info=*/true,
 				       /*add_to_current_scope=*/false))
 		{
 		  shared_ptr<class_decl::member_function_template> m
@@ -1931,7 +1809,6 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 		}
 	      else if (shared_ptr<class_tdecl> c =
 		       build_class_tdecl(ctxt, p,
-					 /*update_depth_info=*/true,
 					 /*add_to_current_scope=*/false))
 		{
 		  shared_ptr<class_decl::member_class_template> m
@@ -1943,6 +1820,8 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 	    }
 	}
     }
+
+  ctxt.pop_scope_or_abort(decl);
 
   if (decl)
     ctxt.key_type_decl(decl, id);
@@ -1957,22 +1836,11 @@ build_class_decl(read_context& ctxt, const xmlNodePtr node,
 ///
 /// @param node the xml node to parse from.
 ///
-/// @param update_depth_info this must be set to false, if we reached
-/// this xml node by calling the xmlTextReaderRead function.  In that
-/// case, build_function_decl doesn't have to update the depth
-/// information that is maintained in the context of the parsing.
-/// Otherwise if this node if just a child grand child of a node that
-/// we reached using xmlTextReaderRead, of if it wasn't reached via
-/// xmlTextReaderRead at all,then the argument to this parameter
-/// should be true.  In that case this function will update the depth
-/// information that is maintained by in the context of the parsing.
-///
 /// @return the newly built function_tdecl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<function_tdecl>
 build_function_tdecl(read_context& ctxt,
 		     const xmlNodePtr node,
-		     bool update_depth_info,
 		     bool add_to_current_scope)
 {
   shared_ptr<function_tdecl> nil, result;
@@ -1998,9 +1866,7 @@ build_function_tdecl(read_context& ctxt,
   shared_ptr<function_tdecl> fn_tmpl_decl
     (new function_tdecl(loc, vis, bind));
 
-  ctxt.push_decl_to_current_scope(fn_tmpl_decl, node,
-				  update_depth_info,
-				  add_to_current_scope);
+  ctxt.push_decl_to_current_scope(fn_tmpl_decl, add_to_current_scope);
 
   unsigned parm_index = 0;
   for (xmlNodePtr n = node->children; n; n = n->next)
@@ -2009,15 +1875,13 @@ build_function_tdecl(read_context& ctxt,
 	continue;
 
       if (shared_ptr<template_parameter> parm =
-	  build_template_parameter(ctxt, n, parm_index,
-				   /*update_depth_info=*/true))
+	  build_template_parameter(ctxt, n, parm_index))
 	{
 	  fn_tmpl_decl->add_template_parameter(parm);
 	  ++parm_index;
 	}
       else if (shared_ptr<function_decl> f =
 	       build_function_decl(ctxt, n, shared_ptr<class_decl>(),
-				   /*update_depth_info=*/true,
 				   /*add_to_current_scope=*/true))
 	fn_tmpl_decl->set_pattern(f);
     }
@@ -2034,21 +1898,12 @@ build_function_tdecl(read_context& ctxt,
 ///
 /// @param node the xml node to parse from.
 ///
-/// @param update_depth_info this must be set to false, if we reached
-/// this xml node by calling the xmlTextReaderRead function.  In that
-/// case, build_class_decl doesn't have to update the depth
-/// information that is maintained in the context of the parsing.
-/// Otherwise if this node if just a child grand child of a node that
-/// we reached using xmlTextReaderRead, of if it wasn't reached via
-/// xmlTextReaderRead at all,then the argument to this parameter
-/// should be true.  In that case this function will update the depth
-/// information that is maintained by in the context of the parsing.
-///
 /// @return the newly built function_tdecl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<class_tdecl>
-build_class_tdecl(read_context&	ctxt, const xmlNodePtr node,
-		  bool update_depth_info, bool add_to_current_scope)
+build_class_tdecl(read_context&	ctxt,
+		  const xmlNodePtr	node,
+		  bool			add_to_current_scope)
 {
   shared_ptr<class_tdecl> nil, result;
 
@@ -2070,8 +1925,7 @@ build_class_tdecl(read_context&	ctxt, const xmlNodePtr node,
   shared_ptr<class_tdecl> class_tmpl
     (new class_tdecl(loc, vis));
 
-  ctxt.push_decl_to_current_scope(class_tmpl, node, update_depth_info,
-				  add_to_current_scope);
+  ctxt.push_decl_to_current_scope(class_tmpl, add_to_current_scope);
 
   unsigned parm_index = 0;
   for (xmlNodePtr n = node->children; n; n = n->next)
@@ -2080,15 +1934,13 @@ build_class_tdecl(read_context&	ctxt, const xmlNodePtr node,
 	continue;
 
       if (shared_ptr<template_parameter> parm=
-	  build_template_parameter(ctxt, n, parm_index,
-				   /*update_depth_info=*/true))
+	  build_template_parameter(ctxt, n, parm_index))
 	{
 	  class_tmpl->add_template_parameter(parm);
 	  ++parm_index;
 	}
       else if (shared_ptr<class_decl> c =
-	       build_class_decl(ctxt, n, /*update_depth_info=*/true,
-				add_to_current_scope))
+	       build_class_decl(ctxt, n, add_to_current_scope))
 	class_tmpl->set_pattern(c);
     }
 
@@ -2110,8 +1962,9 @@ build_class_tdecl(read_context&	ctxt, const xmlNodePtr node,
 /// @return a pointer to a newly created instance of
 /// type_tparameter, a null pointer otherwise.
 static shared_ptr<type_tparameter>
-build_type_tparameter(read_context& ctxt, const xmlNodePtr node,
-		      unsigned index, bool update_depth_info)
+build_type_tparameter(read_context&	ctxt,
+		      const xmlNodePtr	node,
+		      unsigned		index)
 {
   shared_ptr<type_tparameter> nil, result;
 
@@ -2143,11 +1996,9 @@ build_type_tparameter(read_context& ctxt, const xmlNodePtr node,
 
   if (id.empty())
     ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result),
-				    node, update_depth_info,
 				    /*add_to_current_scope=*/true);
   else
-    ctxt.push_and_key_type_decl(result, id, node, update_depth_info,
-				/*add_to_current_scope=*/true);
+    ctxt.push_and_key_type_decl(result, id, /*add_to_current_scope=*/true);
 
   return result;
 }
@@ -2162,14 +2013,12 @@ build_type_tparameter(read_context& ctxt, const xmlNodePtr node,
 ///
 /// @param index the index of the previous normal template parameter.
 ///
-/// @param update_depth_info wheter to udpate the depth information
-/// maintained in the context of the parsing.
-///
 /// @return a pointer to a new instance of tmpl_parm_type_composition
 /// upon successful completion, a null pointer otherwise.
 static shared_ptr<type_composition>
-build_type_composition(read_context& ctxt, const xmlNodePtr node,
-		       unsigned index, bool update_depth_info)
+build_type_composition(read_context&	ctxt,
+		       const xmlNodePtr node,
+		       unsigned	index)
 {
   shared_ptr<type_composition> nil, result;
 
@@ -2179,7 +2028,6 @@ build_type_composition(read_context& ctxt, const xmlNodePtr node,
   shared_ptr<type_base> composed_type;
   result.reset(new type_composition(index, composed_type));
   ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result),
-				  node, update_depth_info,
 				  /*add_to_current_scope=*/true);
 
   for (xmlNodePtr n = node->children; n; n = n->next)
@@ -2189,15 +2037,12 @@ build_type_composition(read_context& ctxt, const xmlNodePtr node,
 
       if ((composed_type =
 	   build_pointer_type_def(ctxt, n,
-				  /*update_depth_info=*/true,
 				  /*add_to_current_scope=*/true))
 	  ||(composed_type =
 	     build_reference_type_def(ctxt, n,
-				      /*update_depth_info=*/true,
 				      /*add_to_current_scope=*/true))
 	  || (composed_type =
 	      build_qualified_type_decl(ctxt, n,
-					/**update_depth_info=*/true,
 					/*add_to_current_scope=*/true)))
 	{
 	  result->set_composed_type(composed_type);
@@ -2221,10 +2066,9 @@ build_type_composition(read_context& ctxt, const xmlNodePtr node,
 /// non_type_tparameter upon successful completion, a null
 /// pointer code otherwise.
 static shared_ptr<non_type_tparameter>
-build_non_type_tparameter(read_context&	ctxt,
+build_non_type_tparameter(read_context&		ctxt,
 				  const xmlNodePtr	node,
-				  unsigned		index,
-				  bool update_depth_info)
+				  unsigned		index)
 {
   shared_ptr<non_type_tparameter> r;
 
@@ -2248,7 +2092,6 @@ build_non_type_tparameter(read_context&	ctxt,
 
   r.reset(new non_type_tparameter(index, name, type, loc));
   ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(r),
-				  node, update_depth_info,
 				  /*add_to_current_scope=*/true);
 
   return r;
@@ -2268,8 +2111,7 @@ build_non_type_tparameter(read_context&	ctxt,
 static shared_ptr<template_tparameter>
 build_template_tparameter(read_context& ctxt,
 			  const xmlNodePtr node,
-			  unsigned index,
-			  bool update_depth_info)
+			  unsigned index)
 {
   shared_ptr<template_tparameter> nil;
 
@@ -2301,19 +2143,17 @@ build_template_tparameter(read_context& ctxt,
   shared_ptr<template_tparameter> result
     (new template_tparameter(index, name, loc));
 
-  ctxt.push_decl_to_current_scope(result, node, update_depth_info,
-				  /*add_to_current_scope=*/true);
+  ctxt.push_decl_to_current_scope(result, /*add_to_current_scope=*/true);
 
   // Go parse template parameters that are children nodes
   int parm_index = 0;
   for (xmlNodePtr n = node->children; n; n = n->next)
     {
-      if (node->type != XML_ELEMENT_NODE)
+      if (n->type != XML_ELEMENT_NODE)
 	continue;
 
       if (shared_ptr<template_parameter> p =
-	  build_template_parameter(ctxt, n, parm_index,
-				   /*update_depth_info=*/true))
+	  build_template_parameter(ctxt, n, parm_index))
 	{
 	  result->add_template_parameter(p);
 	  ++parm_index;
@@ -2341,14 +2181,13 @@ build_template_tparameter(read_context& ctxt,
 static shared_ptr<template_parameter>
 build_template_parameter(read_context&		ctxt,
 			 const xmlNodePtr	node,
-			 unsigned		index,
-			 bool update_depth_info)
+			 unsigned		index)
 {
   shared_ptr<template_parameter> r;
-  ((r = build_type_tparameter(ctxt, node, index, update_depth_info))
-   || (r = build_non_type_tparameter(ctxt, node, index, update_depth_info))
-   || (r = build_template_tparameter(ctxt, node, index, update_depth_info))
-   || (r = build_type_composition(ctxt, node, index, update_depth_info)));
+  ((r = build_type_tparameter(ctxt, node, index))
+   || (r = build_non_type_tparameter(ctxt, node, index))
+   || (r = build_template_tparameter(ctxt, node, index))
+   || (r = build_type_composition(ctxt, node, index)));
 
   return r;
 }
@@ -2362,25 +2201,19 @@ build_template_parameter(read_context&		ctxt,
 /// @return a pointer to the newly built type_base upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<type_base>
-build_type(read_context& ctxt, const xmlNodePtr node,
-	   bool update_depth_info, bool add_to_current_scope)
+build_type(read_context&	ctxt,
+	   const xmlNodePtr	node,
+	   bool		add_to_current_scope)
 {
   shared_ptr<type_base> t;
 
-  ((t = build_type_decl(ctxt, node, update_depth_info,
-			add_to_current_scope))
-   || (t = build_qualified_type_decl(ctxt, node, update_depth_info,
-				     add_to_current_scope))
-   || (t = build_pointer_type_def(ctxt, node, update_depth_info,
-				  add_to_current_scope))
-   || (t = build_reference_type_def(ctxt, node ,update_depth_info,
-				    add_to_current_scope))
-   || (t = build_enum_type_decl(ctxt, node,update_depth_info,
-				add_to_current_scope))
-   || (t = build_typedef_decl(ctxt, node, update_depth_info,
-			      add_to_current_scope))
-   || (t = build_class_decl(ctxt, node, update_depth_info,
-			    add_to_current_scope)));
+  ((t = build_type_decl(ctxt, node, add_to_current_scope))
+   || (t = build_qualified_type_decl(ctxt, node, add_to_current_scope))
+   || (t = build_pointer_type_def(ctxt, node, add_to_current_scope))
+   || (t = build_reference_type_def(ctxt, node , add_to_current_scope))
+   || (t = build_enum_type_decl(ctxt, node, add_to_current_scope))
+   || (t = build_typedef_decl(ctxt, node, add_to_current_scope))
+   || (t = build_class_decl(ctxt, node, add_to_current_scope)));
 
   return t;
 }
@@ -2391,21 +2224,11 @@ build_type(read_context& ctxt, const xmlNodePtr node,
 ///
 /// @return true upon successful parsing, false otherwise.
 static bool
-handle_type_decl(read_context& ctxt)
+handle_type_decl(read_context&	ctxt,
+		 xmlNodePtr	node,
+		 bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  xmlNodePtr node = xmlTextReaderExpand(r.get());
-  if (!node)
-    return false;
-
-  type_decl_sptr decl = build_type_decl(ctxt, node, /*update_depth_info=*/false,
-					/*add_to_current_scope=*/true);
-
-  xmlTextReaderNext(r.get());
-
+  type_decl_sptr decl = build_type_decl(ctxt, node, add_to_current_scope);
   return decl;
 }
 
@@ -2415,28 +2238,13 @@ handle_type_decl(read_context& ctxt)
 ///
 /// @return true upon successful parsing, false otherwise.
 static bool
-handle_namespace_decl(read_context& ctxt)
+handle_namespace_decl(read_context&	ctxt,
+		      xmlNodePtr	node,
+		      bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  /// If we are not at global scope, then the current scope must
-  /// itself be a namespace.
-  if (!is_global_scope(ctxt.get_cur_scope())
-      && !dynamic_cast<namespace_decl*>(ctxt.get_cur_scope()))
-    return false;
-
-  string name;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
-    name = xml::unescape_xml_string(CHAR_STR(s));
-
-  location loc;
-  read_location(ctxt, loc);
-
-  shared_ptr<decl_base> decl(new namespace_decl(name, loc));
-  ctxt.push_decl_to_current_scope(decl, /*add_to_current_scope=*/true);
-  return true;
+  namespace_decl_sptr d = build_namespace_decl(ctxt, node,
+					       add_to_current_scope);
+  return d;
 }
 
 /// Parse a qualified-type-def xml element.
@@ -2445,49 +2253,14 @@ handle_namespace_decl(read_context& ctxt)
 ///
 /// @return true upon successful parsing, false otherwise.
 static bool
-handle_qualified_type_decl(read_context& ctxt)
+handle_qualified_type_decl(read_context&	ctxt,
+			   xmlNodePtr		node,
+			   bool		add_to_current_scope)
 {
- xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  string type_id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
-    type_id = CHAR_STR(s);
-
-  shared_ptr<type_base> underlying_type = ctxt.get_type_decl(type_id);
-  assert(underlying_type);
-
-  string id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE (r, "id"))
-    id = CHAR_STR(s);
-
-  assert(!id.empty() && !ctxt.get_type_decl(id));
-
-  string const_str;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "const"))
-    const_str = CHAR_STR(s);
-  bool const_cv = const_str == "yes" ? true : false;
-
-  string volatile_str;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "volatile"))
-    volatile_str = CHAR_STR(s);
-  bool volatile_cv = volatile_str == "yes" ? true : false;
-
-  qualified_type_def::CV cv = qualified_type_def::CV_NONE;
-  if (const_cv)
-    cv =
-      static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_CONST);
-  if (volatile_cv)
-    cv =
-      static_cast<qualified_type_def::CV>(cv | qualified_type_def::CV_VOLATILE);
-
-  location loc;
-  read_location(ctxt, loc);
-
-  shared_ptr<type_base> decl(new qualified_type_def(underlying_type,
-						    cv, loc));
-  return ctxt.push_and_key_type_decl(decl, id, /*add_to_current_scope=*/true);
+  qualified_type_def_sptr decl =
+    build_qualified_type_decl(ctxt, node,
+			      add_to_current_scope);
+  return decl;
 }
 
 /// Parse a pointer-type-decl element.
@@ -2496,38 +2269,13 @@ handle_qualified_type_decl(read_context& ctxt)
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-handle_pointer_type_def(read_context& ctxt)
+handle_pointer_type_def(read_context&	ctxt,
+			xmlNodePtr	node,
+			bool		add_to_current_scope)
 {
-   xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  string type_id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
-    type_id = CHAR_STR(s);
-
-  shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
-  assert(pointed_to_type);
-
-  size_t size_in_bits = 0, alignment_in_bits = 0;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "size-in-bits"))
-    size_in_bits = atoi(CHAR_STR(s));
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "alignment-in-bits"))
-    alignment_in_bits = atoi(CHAR_STR(s));
-
-  string id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "id"))
-    id = CHAR_STR(s);
-  assert (!id.empty() && !ctxt.get_type_decl(id));
-
-  location loc;
-  read_location(ctxt, loc);
-
-  shared_ptr<type_base> t(new pointer_type_def(pointed_to_type,
-					       size_in_bits,
-					       alignment_in_bits,
-					       loc));
-  return ctxt.push_and_key_type_decl(t, id, /*add_to_current_scope=*/true);
+  pointer_type_def_sptr decl = build_pointer_type_def(ctxt, node,
+						      add_to_current_scope);
+  return decl;
 }
 
 /// Parse a reference-type-def element.
@@ -2536,67 +2284,25 @@ handle_pointer_type_def(read_context& ctxt)
 ///
 /// reference_type_def is added to.
 static bool
-handle_reference_type_def(read_context& ctxt)
+handle_reference_type_def(read_context& ctxt,
+			  xmlNodePtr	node,
+			  bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  string kind;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "kind"))
-    kind = CHAR_STR(s); // this should be either "lvalue" or "rvalue".
-  bool is_lvalue = kind == "lvalue" ? true : false;
-
-  string type_id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
-    type_id = CHAR_STR(s);
-
-  shared_ptr<type_base> pointed_to_type = ctxt.get_type_decl(type_id);
-  assert(pointed_to_type);
-
-  size_t size_in_bits = 0, alignment_in_bits = 0;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "size-in-bits"))
-    size_in_bits = atoi(CHAR_STR(s));
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "alignment-in-bits"))
-    alignment_in_bits = atoi(CHAR_STR(s));
-
-  string id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "id"))
-    id = CHAR_STR(s);
-  assert(!id.empty() && !ctxt.get_type_decl(id));
-
-  location loc;
-  read_location(ctxt, loc);
-
-  shared_ptr<type_base> t(new reference_type_def(pointed_to_type,
-						 is_lvalue,
-						 size_in_bits,
-						 alignment_in_bits,
-						 loc));
-  return ctxt.push_and_key_type_decl(t, id, /*add_to_current_scope=*/true);
+  reference_type_def_sptr decl = build_reference_type_def(ctxt, node,
+							  add_to_current_scope);
+  return decl;
 }
 
 /// Parse an enum-decl element.
 ///
 /// @param ctxt the context of the parsing.
 static bool
-handle_enum_type_decl(read_context& ctxt)
+handle_enum_type_decl(read_context&	ctxt,
+		      xmlNodePtr	node,
+		      bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  xmlNodePtr node = xmlTextReaderExpand(r.get());
-  if (!node)
-    return false;
-
-  shared_ptr<enum_type_decl> decl =
-    build_enum_type_decl(ctxt, node,
-			 /*update_depth_info=*/false,
-			 /*add_to_current_scope=*/true);
-
-  xmlTextReaderNext(r.get());
-
+  enum_type_decl_sptr decl = build_enum_type_decl(ctxt, node,
+						  add_to_current_scope);
   return decl;
 }
 
@@ -2604,54 +2310,25 @@ handle_enum_type_decl(read_context& ctxt)
 ///
 /// @param ctxt the context of the parsing.
 static bool
-handle_typedef_decl(read_context& ctxt)
+handle_typedef_decl(read_context&	ctxt,
+		    xmlNodePtr		node,
+		    bool		add_to_current_scope)
 {
-    xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  string name;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "name"))
-    name = xml::unescape_xml_string(CHAR_STR(s));
-
-  string type_id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "type-id"))
-    type_id = CHAR_STR(s);
-  shared_ptr<type_base> underlying_type(ctxt.get_type_decl(type_id));
-  assert(underlying_type);
-
-  string id;
-  if (xml_char_sptr s = XML_READER_GET_ATTRIBUTE(r, "id"))
-    id = CHAR_STR(s);
-  assert(!id.empty() && !ctxt.get_type_decl(id));
-
-  location loc;
-  read_location(ctxt, loc);
-
-  shared_ptr<type_base> t(new typedef_decl(name, underlying_type, loc));
-
-  return ctxt.push_and_key_type_decl(t, id, /*add_to_current_scope=*/true);
+  typedef_decl_sptr decl = build_typedef_decl(ctxt, node,
+					      add_to_current_scope);
+  return decl;
 }
 
 /// Parse a var-decl element.
 ///
 /// @param ctxt the context of the parsing.
 static bool
-handle_var_decl(read_context& ctxt)
+handle_var_decl(read_context&	ctxt,
+		xmlNodePtr	node,
+		bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  xmlNodePtr node = xmlTextReaderExpand(r.get());
-  if (!node)
-    return false;
-
-  shared_ptr<decl_base> decl = build_var_decl(ctxt, node,
-					      /*update_depth_info=*/false,
-					      /*add_to_current_scope=*/true);
-  xmlTextReaderNext(r.get());
-
+  decl_base_sptr decl = build_var_decl(ctxt, node,
+				       add_to_current_scope);
   return decl;
 }
 
@@ -2662,26 +2339,14 @@ handle_var_decl(read_context& ctxt)
 /// @return true upon successful completion of the parsing, false
 /// otherwise.
 static bool
-handle_function_decl(read_context& ctxt)
+handle_function_decl(read_context&	ctxt,
+		     xmlNodePtr	node,
+		     bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  xmlNodePtr node = xmlTextReaderExpand(r.get());
-  if (!node)
-    return false;
-
-  shared_ptr<function_decl> fn =
-    build_function_decl(ctxt, node, shared_ptr<class_decl>(),
-			/*update_depth_info=*/false,
-			/*add_to_current_scope=*/true);
-
-  // now advance the xml reader cursor to the xml node after this
-  // expanded 'enum-decl' node.
-  xmlTextReaderNext(r.get());
-
-  return true;
+  function_decl_sptr fn = build_function_decl(ctxt, node,
+					      class_decl_sptr(),
+					      add_to_current_scope);
+  return fn;
 }
 
 /// Parse a 'class-decl' xml element.
@@ -2691,22 +2356,12 @@ handle_function_decl(read_context& ctxt)
 /// @return true upon successful completion of the parsing, false
 /// otherwise.
 static bool
-handle_class_decl(read_context& ctxt)
+handle_class_decl(read_context& ctxt,
+		  xmlNodePtr	node,
+		  bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  xmlNodePtr node = xmlTextReaderExpand(r.get());
-  if (!node)
-    return false;
-
-  shared_ptr<class_decl> decl = build_class_decl(ctxt, node,
-						 /*update_depth_info=*/false,
-						 /*add_to_current_scope=*/true);
-
-  xmlTextReaderNext(r.get());
-
+  class_decl_sptr decl = build_class_decl(ctxt, node,
+					  add_to_current_scope);
   return decl;
 }
 
@@ -2717,23 +2372,13 @@ handle_class_decl(read_context& ctxt)
 /// @return true upon successful completion of the parsing, false
 /// otherwise.
 static bool
-handle_function_tdecl(read_context& ctxt)
+handle_function_tdecl(read_context&	ctxt,
+		      xmlNodePtr	node,
+		      bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  xmlNodePtr node = xmlTextReaderExpand(r.get());
-  if (!node)
-    return false;
-
-  bool is_ok = build_function_tdecl(ctxt, node,
-				    /*update_depth_info=*/false,
-				    /*add_to_current_scope=*/true);
-
-  xmlTextReaderNext(r.get());
-
-  return is_ok;
+  function_tdecl_sptr d = build_function_tdecl(ctxt, node,
+					       add_to_current_scope);
+  return d;
 }
 
 /// Parse a 'class-template-decl' xml element.
@@ -2742,22 +2387,13 @@ handle_function_tdecl(read_context& ctxt)
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-handle_class_tdecl(read_context& ctxt)
+handle_class_tdecl(read_context&	ctxt,
+		   xmlNodePtr		node,
+		   bool		add_to_current_scope)
 {
-  xml::reader_sptr r = ctxt.get_reader();
-  if (!r)
-    return false;
-
-  xmlNodePtr node = xmlTextReaderExpand(r.get());
-  if (!node)
-    return false;
-
-  bool is_ok = build_class_tdecl(ctxt, node,
-				 /*update_depth_info=*/false,
-				 /*add_to_current_scope=*/true);
-  xmlTextReaderNext(r.get());
-
-  return is_ok;
+  class_tdecl_sptr decl = build_class_tdecl(ctxt, node,
+					    add_to_current_scope);
+  return decl;
 }
 
 /// De-serialize a translation unit from an ABI Instrumentation xml
