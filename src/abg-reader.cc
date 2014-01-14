@@ -40,7 +40,7 @@ namespace abigail
 
 using xml::xml_char_sptr;
 
-/// Internal namespace for reader.
+/// The namespace for the native XML file format reader.
 namespace xml_reader
 {
 using std::string;

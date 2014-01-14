@@ -42,6 +42,7 @@ using std::string;
 namespace abigail
 {
 
+/// The namespace for the DWARF reader.
 namespace dwarf_reader
 {
 
