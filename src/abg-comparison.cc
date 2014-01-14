@@ -2885,7 +2885,7 @@ function_decl_diff::function_decl_diff(const function_decl_sptr first,
     (priv_->fn_binding_to_flag(second_function_decl()));
 }
 
-/// @Return the first function considered by the diff.
+/// @return the first function considered by the diff.
 const function_decl_sptr
 function_decl_diff::first_function_decl() const
 {return dynamic_pointer_cast<function_decl>(first_subject());}

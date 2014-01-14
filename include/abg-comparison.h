@@ -181,7 +181,7 @@ class var_diff;
 /// Convenience typedef for a shared pointer to var_diff.
 typedef shared_ptr<var_diff> var_diff_sptr;
 
-/// Abstracts a diff between two instances of @ref var_decls
+/// Abstracts a diff between two instances of @ref var_decl
 class var_diff : public diff
 {
   struct priv;
