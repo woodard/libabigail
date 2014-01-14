@@ -1,7 +1,7 @@
 The project homepage is at https://sourceware.org/libabigail
 
 The current libabigail source code can be checked out with:
-git clone git://git.sourceware.org/git/libabigail
+git clone git://sourceware.org/git/libabigail
 
 The mailing list to send messages and patches to is
 libabigail@sourceware.org.

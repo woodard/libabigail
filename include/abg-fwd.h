@@ -51,7 +51,7 @@ namespace abigail
    href="http://sourceware.org/libabigail"> here</a>.
 
    The current libabigail source code can be checked out with:
-   git clone git://git.sourceware.org/git/libabigail.git.
+   git clone git://sourceware.org/git/libabigail.git.
 
    The mailing list to send messages and patches to is
    libabigail@sourceware.org.
