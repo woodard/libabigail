@@ -73,10 +73,10 @@ public:
 /// given translation unit.
 class location_manager
 {
-  struct _Impl;
+  struct priv;
 
   /// Pimpl.
-  shared_ptr<_Impl>			priv_;
+  shared_ptr<priv> priv_;
 
 public:
 

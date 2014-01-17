@@ -422,9 +422,9 @@ static shared_ptr<var_decl>
 build_var_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<type_decl>
-  build_type_decl(read_context&, const xmlNodePtr, bool);
+build_type_decl(read_context&, const xmlNodePtr, bool);
 
-static shared_ptr<qualified_type_def>
+static qualified_type_def_sptr
 build_qualified_type_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<pointer_type_def>
@@ -433,13 +433,13 @@ build_pointer_type_def(read_context&, const xmlNodePtr, bool);
 static shared_ptr<reference_type_def>
 build_reference_type_def(read_context&, const xmlNodePtr, bool);
 
-static shared_ptr<enum_type_decl>
+static enum_type_decl_sptr
 build_enum_type_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<typedef_decl>
 build_typedef_decl(read_context&, const xmlNodePtr, bool);
 
-static shared_ptr<class_decl>
+static class_decl_sptr
 build_class_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<function_tdecl>

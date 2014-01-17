@@ -86,17 +86,17 @@ public:
   }
 };
 
-struct location_manager::_Impl
+struct location_manager::priv
 {
   /// This sorted vector contains the expanded locations of the tokens
   /// coming from a given ABI Corpus.  The index of a given expanded
   /// location in the table gives us an integer that is used to build
   /// instance of location types.
-  std::vector<expanded_location> 	locs;
+  std::vector<expanded_location> locs;
 };
 
 location_manager::location_manager()
-{priv_ = shared_ptr<location_manager::_Impl>(new location_manager::_Impl);}
+{priv_ = shared_ptr<location_manager::priv>(new location_manager::priv);}
 
 /// Insert the triplet representing a source locus into our internal
 /// vector of location triplet.  Return an instance of location type,
