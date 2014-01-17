@@ -1801,6 +1801,16 @@ public:
 };// end class class_decl::member_base
 
 /// Abstracts a member type declaration.
+///
+/// It's important to understand the interactions between this type
+/// and the other types.  When a type T appears in the scope of a
+/// class, it becomes a member type MT.  T is said to be the
+/// underlying type of MT.  MT and T are different types.  In
+/// practice, when the function class_decl::add_member_type is given a
+/// type T, it adds it to the class scope and returns MT, which is the
+/// resulting member type that is created.  T can be retrieved from MT
+/// by invoking either MT::get_underlying_type(), or by invoking
+/// as_non_member_type(MT).
 class class_decl::member_type : public member_base,
 				public virtual decl_base,
 				public virtual type_base

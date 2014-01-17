@@ -1924,15 +1924,14 @@ get_scope_for_die(read_context& ctxt,
   decl_base_sptr d = build_ir_node_from_die(ctxt, &parent_die,
 					    called_for_public_decl);
   scope_decl_sptr s = dynamic_pointer_cast<scope_decl>(d);
-  {
-    class_decl_sptr cl = dynamic_pointer_cast<class_decl>(d);
-    if (cl && cl->is_declaration_only())
-      {
-	scope_decl_sptr scop (cl->get_definition_of_declaration());
-	assert(scop);
-	s = scop;
-      }
-  }
+  class_decl_sptr cl = as_non_member_class_decl(d);
+
+  if (cl && cl->is_declaration_only())
+    {
+      scope_decl_sptr scop (cl->get_definition_of_declaration());
+      assert(scop);
+      s = scop;
+    }
   return s;
 }
 
