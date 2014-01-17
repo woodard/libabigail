@@ -47,7 +47,7 @@ using std::tr1::static_pointer_cast;
 /// @param second the second representation of decl to consider in the
 /// diff computation.
 ///
-///@return the diff of the two types @ref first and @ref second if and
+///@return the diff of the two types @p first and @p second if and
 ///only if they represent the parametrized type DiffType.  Otherwise,
 ///returns a NULL pointer value.
 template<typename DiffType>
@@ -186,7 +186,7 @@ compute_diff(type_base_sptr first, type_base_sptr second)
 ///
 /// @param second the second instance of @ref decl_base to consider.
 ///
-/// @return the length of the differences between @ref first and @ref second.
+/// @return the length of the differences between @p first and @p second.
 static unsigned
 diff_length_of_decl_bases(decl_base_sptr first, decl_base_sptr second)
 {
@@ -205,7 +205,7 @@ diff_length_of_decl_bases(decl_base_sptr first, decl_base_sptr second)
 ///
 /// @param second the second instance of @ref type_base to consider.
 ///
-/// @return the length of the differences between @ref first and @ref second.
+/// @return the length of the differences between @p first and @p second.
 static unsigned
 diff_length_of_type_bases(type_base_sptr first, type_base_sptr second)
 {
@@ -266,6 +266,8 @@ represent(class_decl::data_member_sptr data_mem,
 /// @param n the newer version of the data member.
 ///
 /// @param out the output stream to send the representation to.
+///
+/// @param indent the indentation string to use for the change report.
 static void
 represent(class_decl::data_member_sptr o,
 	  class_decl::data_member_sptr n,
@@ -362,7 +364,7 @@ represent(class_decl::data_member_sptr o,
 ///
 /// @param second the second type to consider.
 ///
-/// @param the output stream to report the change to.
+/// @param out the output stream to report the change to.
 ///
 /// @param indent the string to use for indentation.
 ///
@@ -550,7 +552,7 @@ var_diff::length() const
 ///
 /// @param out the stream to serialize the diff to.
 ///
-/// @param the prefix to use for the indentation of this
+/// @param indent the prefix to use for the indentation of this
 /// serialization.
 void
 var_diff::report(ostream& out, const string& indent) const
@@ -645,7 +647,7 @@ pointer_diff::underlying_type_diff(const diff_sptr d)
 ///
 /// @param out the stream to serialize the diff to.
 ///
-/// @param the prefix to use for the indentation of this
+/// @param indent the prefix to use for the indentation of this
 /// serialization.
 void
 pointer_diff::report(ostream& out, const string& indent) const
@@ -740,7 +742,7 @@ reference_diff::length() const
 ///
 /// @param out the output stream to serialize the dif to.
 ///
-/// @param the string to use for indenting the report.
+/// @param indent the string to use for indenting the report.
 void
 reference_diff::report(ostream& out, const string& indent) const
 {
@@ -878,7 +880,7 @@ get_leaf_type(qualified_type_def_sptr t)
 ///
 /// @param out the output stream to serialize to.
 ///
-/// @param the string to use to indent the lines of the report.
+/// @param indent the string to use to indent the lines of the report.
 void
 qualified_type_diff::report(ostream& out, const string& indent) const
 {
@@ -1069,7 +1071,7 @@ enum_diff::length() const
 ///
 /// @param out the output stream to send the report to.
 ///
-/// @param the string to use for indentation.
+/// @param indent the string to use for indentation.
 void
 enum_diff::report(ostream& out, const string& indent) const
 {
@@ -1174,7 +1176,7 @@ enum_diff::report(ostream& out, const string& indent) const
 ///
 /// @param second a pointer to the second enum_type_decl to consider.
 ///
-/// @return the resulting diff of the two enums @ref first and @ref
+/// @return the resulting diff of the two enums @p first and @p
 /// second.
 enum_diff_sptr
 compute_diff(const enum_type_decl_sptr first,
@@ -1555,9 +1557,11 @@ class_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
 
 /// Constructor of class_diff
 ///
-/// @param scope the scope of the class_diff.
+/// @param first_scope the first class of the diff.
+///
+/// @param second_scope the second class of the diff.
 class_diff::class_diff(shared_ptr<class_decl> first_scope,
-				 shared_ptr<class_decl> second_scope)
+		       shared_ptr<class_decl> second_scope)
   : diff(first_scope, second_scope),
     priv_(new priv)
 {}
@@ -2549,9 +2553,9 @@ scope_diff::length() const
 
 /// Report the changes of one scope against another.
 ///
-/// @param changes the changes to report about.
-///
 /// @param out the out stream to report the changes to.
+///
+/// @param indent the string to use for indentation.
 void
 scope_diff::report(ostream& out, const string& indent) const
 {
@@ -2699,9 +2703,9 @@ compute_diff(const scope_decl_sptr first,
 
 /// Compute the diff between two scopes.
 ///
-/// @param first the first scope to consider in computing the diff.
+/// @param first_scope the first scope to consider in computing the diff.
 ///
-/// @param second the second scope to consider in the diff
+/// @param second_scope the second scope to consider in the diff
 /// computation.  The second scope is diffed against the first scope.
 ///
 /// @return return the resulting diff
@@ -3063,7 +3067,7 @@ type_decl_diff::length() const
 ///
 /// @param out the output stream to emit the report to.
 ///
-/// @param the string to use for indentatino indent.
+/// @param indent the string to use for indentatino indent.
 void
 type_decl_diff::report(ostream& out, const string& indent) const
 {
@@ -3512,7 +3516,7 @@ struct noop_deleter
 ///
 /// @param out the stream to serialize the diff to.
 ///
-/// @param the prefix to use for the indentation of this
+/// @param indent the prefix to use for the indentation of this
 /// serialization.
 void
 corpus_diff::report(ostream& out, const string& indent) const

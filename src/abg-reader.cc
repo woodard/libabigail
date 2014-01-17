@@ -21,8 +21,8 @@
 /// @file
 ///
 /// This file contains the definitions of the entry points to
-/// de-serialize an instance of @ref translation_unit from an ABI
-/// Instrumentation file in libabigail native XML format.
+/// de-serialize an instance of @ref abigail::translation_unit from an
+/// ABI Instrumentation file in libabigail native XML format.
 
 #include <cstring>
 #include <cstdlib>
@@ -259,10 +259,7 @@ public:
     return i->second;
   }
 
-  /// Return the current lexical scope.  For this function to return a
-  /// sane result, the path to the current decl element (starting from the
-  /// root element) must be up to date.  It is updated by a call to
-  /// #update_read_context.
+  /// Return the current lexical scope.
   scope_decl*
   get_cur_scope()
   {
@@ -1347,6 +1344,9 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 /// shared_ptr<function_decl> that is returned is then really a
 /// shared_ptr<class_decl::method_decl>.
 ///
+/// @param add_to_current_scope if set to yes, the resulting of
+/// this function is added to its current scope.
+///
 /// @return a pointer to a newly created function_decl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<function_decl>
@@ -1486,6 +1486,9 @@ build_var_decl(read_context&	ctxt,
 ///
 /// @param node the XML node to build the type_decl from.
 ///
+/// @param add_to_current_scope if set to yes, the resulting of
+/// this function is added to its current scope.
+///
 /// @return a pointer to type_decl upon successful completion, a null
 /// pointer otherwise.
 static shared_ptr<type_decl>
@@ -1555,6 +1558,9 @@ build_type_decl(read_context&		ctxt,
 /// @param ctxt the context of the parsing.
 ///
 /// @param node the xml node to build the qualified_type_def from.
+///
+/// @param add_to_current_scope if set to yes, the resulting of this
+/// function is added to its current scope.
 ///
 /// @return a pointer to a newly built qualified_type_def upon
 /// successful completion, a null pointer otherwise.
@@ -1645,6 +1651,9 @@ build_qualified_type_decl(read_context&	ctxt,
 ///
 /// @param node the xml node to build the pointer_type_def from.
 ///
+/// @param add_to_current_scope if set to yes, the resulting of
+/// this function is added to its current scope.
+///
 /// @return a pointer to a newly built pointer_type_def upon
 /// successful completion, a null pointer otherwise.
 static shared_ptr<pointer_type_def>
@@ -1724,6 +1733,9 @@ build_pointer_type_def(read_context&	ctxt,
 /// @param ctxt the context of the parsing.
 ///
 /// @param node the xml node to build the reference_type_def from.
+///
+/// @param add_to_current_scope if set to yes, the resulting of
+/// this function is added to its current scope.
 ///
 /// @return a pointer to a newly built reference_type_def upon
 /// successful completio, a null pointer otherwise.
@@ -1809,6 +1821,9 @@ build_reference_type_def(read_context&		ctxt,
 /// @param ctxt the context of the parsing.
 ///
 /// @param node the xml node to build the enum_type_decl from.
+///
+/// param add_to_current_scope if set to yes, the resulting of this
+/// function is added to its current scope.
 ///
 /// @return a pointer to a newly built enum_type_decl upon successful
 /// completion, a null pointer otherwise.
@@ -1969,6 +1984,10 @@ build_typedef_decl(read_context&	ctxt,
 /// @param ctxt the context of the parsing.
 ///
 /// @param node the xml node to build the class_decl from.
+///
+/// @param add_to_current_scope if yes, the resulting class node
+/// hasn't triggered voluntarily the adding of the resulting
+/// class_decl_sptr to the current scope.
 ///
 /// @return a pointer to class_decl upon successful completion, a null
 /// pointer otherwise.
@@ -2238,6 +2257,9 @@ build_class_decl(read_context&		ctxt,
 ///
 /// @param node the xml node to parse from.
 ///
+/// @param add_to_current_scope if set to yes, the resulting of
+/// this function is added to its current scope.
+///
 /// @return the newly built function_tdecl upon successful
 /// completion, a null pointer otherwise.
 static shared_ptr<function_tdecl>
@@ -2299,6 +2321,9 @@ build_function_tdecl(read_context& ctxt,
 /// @param ctxt the context of the parsing.
 ///
 /// @param node the xml node to parse from.
+///
+/// @param add_to_current_scope if set to yes, the resulting of this
+/// function is added to its current scope.
 ///
 /// @return the newly built function_tdecl upon successful
 /// completion, a null pointer otherwise.
@@ -2724,6 +2749,11 @@ handle_typedef_decl(read_context&	ctxt,
 /// Parse a var-decl element.
 ///
 /// @param ctxt the context of the parsing.
+///
+/// @param node the node to read & parse from.
+///
+/// @param add_to_current_scope if set to yes, the resulting of this
+/// function is added to its current scope.
 static decl_base_sptr
 handle_var_decl(read_context&	ctxt,
 		xmlNodePtr	node,

@@ -69,7 +69,7 @@ new_reader_from_buffer(const std::string& buffer)
 /// input stream.
 ///
 /// @param len the number of byte to read from the input stream and to
-/// copy into @ref buffer.
+/// copy into @p buffer.
 ///
 /// @return the number of bytes read or -1 in case of error.
 static int
@@ -157,9 +157,9 @@ get_xml_node_depth(xmlNodePtr n)
 //// @param str the input string to read to search for the characters
 //// to escape.
 ////
-//// @param the output string where to write the resulting string that
-//// contains the pre-defined characters escaped as predefined
-//// entitites.
+//// @param escaped the output string where to write the resulting
+//// string that contains the pre-defined characters escaped as
+//// predefined entitites.
 void
 escape_xml_string(const std::string& str,
 		  std::string& escaped)

@@ -23,8 +23,8 @@
 /// @file
 ///
 /// This file contains the declarations of the entry points to
-/// de-serialize an instance of @ref corpus from a file in elf format,
-/// containing dwarf information.
+/// de-serialize an instance of @ref abigail::corpus from a file in
+/// elf format, containing dwarf information.
 
 #include "abg-corpus.h"
 

@@ -103,8 +103,8 @@ location_manager::location_manager()
 /// built from an integral type that represents the index of the
 /// source locus triplet into our source locus table.
 ///
-/// @param fle the file path of the source locus
-/// @param lne the line number of the source location
+/// @param file_path the file path of the source locus
+/// @param line the line number of the source location
 /// @param col the column number of the source location
 location
 location_manager::create_new_location(const std::string&	file_path,
@@ -239,7 +239,7 @@ translation_unit::get_address_size() const
 
 /// Setter of the address size in this translation unit.
 ///
-/// @param the new address size in bits.
+/// @param a the new address size in bits.
 void
 translation_unit::set_address_size(char a)
 {priv_->address_size_= a;}
@@ -384,10 +384,10 @@ decl_base::get_pretty_representation() const
 
 /// Compute the qualified name of the decl.
 ///
-/// @param sep the separator used to separate the components of the
-/// qualified name.
+/// @param separator the separator used to separate the components of
+/// the qualified name.
 ///
-/// @return qn the resulting qualified name.
+/// @return the resulting qualified name.
 string
 decl_base::get_qualified_name(const string& separator) const
 {
@@ -621,7 +621,7 @@ scope_decl::operator==(const decl_base& o) const
 ///
 /// @param decl the scope member to find.
 ///
-/// @param i the iterator to set to the member @ref decl.  This is set
+/// @param i the iterator to set to the member @p decl.  This is set
 /// iff the function returns true.
 ///
 /// @return true if the member decl was found, false otherwise.
@@ -673,7 +673,7 @@ scope_decl::find_iterator_for_member(const decl_base* decl,
 ///
 /// @param decl the scope member to find.
 ///
-/// @param i the iterator to set to the member @ref decl.  This is set
+/// @param i the iterator to set to the member @p decl.  This is set
 /// iff the function returns true.
 ///
 /// @return true if the member decl was found, false otherwise.
@@ -817,7 +817,7 @@ get_global_scope(const shared_ptr<decl_base> decl)
 /// Return the a scope S containing a given declaration and that is
 /// right under a given scope P.
 ///
-/// Note that @ref scope must come before @ref decl in topological
+/// Note that @p scope must come before @p decl in topological
 /// order.
 ///
 /// @param decl the decl for which to find a scope.
@@ -899,7 +899,7 @@ get_type_name(const type_base_sptr t)
 
 /// Get the declaration for a given type.
 ///
-/// @param the type to consider.
+/// @param t the type to consider.
 ///
 /// @return the declaration for the type to return.
 const decl_base*
@@ -908,7 +908,7 @@ get_type_declaration(const type_base* t)
 
 /// Get the declaration for a given type.
 ///
-/// @param the type to consider.
+/// @param t the type to consider.
 ///
 /// @return the declaration for the type to return.
 decl_base*
@@ -917,7 +917,7 @@ get_type_declaration(type_base* t)
 
 /// Get the declaration for a given type.
 ///
-/// @param the type to consider.
+/// @param t the type to consider.
 ///
 /// @return the declaration for the type to return.
 decl_base_sptr
@@ -1023,10 +1023,10 @@ is_type(const decl_base& d)
 /// Tests whether a declaration is a type, and return it properly
 /// converted into a type in that case.
 ///
-/// @param decl the decl to consider.
+/// @param decl the declaration to consider.
 ///
-/// @return the pointer to type_base representing @decl converted as a
-/// type, iff it's a type, or NULL otherwise.
+/// @return the pointer to type_base representing @p decl converted as
+/// a type, iff it's a type, or NULL otherwise.
 type_base_sptr
 is_type(const decl_base_sptr decl)
 {return dynamic_pointer_cast<type_base>(decl);}
@@ -1646,9 +1646,9 @@ enum_type_decl::~enum_type_decl()
 
 /// Equality operator.
 ///
-/// @param other the other enum to test against.
+/// @param o the other enum to test against.
 ///
-/// @return true iff other is equals the current instance of enum type
+/// @return true iff @p o is equals the current instance of enum type
 /// decl.
 bool
 enum_type_decl::operator==(const decl_base& o) const
@@ -1693,6 +1693,10 @@ enum_type_decl::operator==(const type_base& o) const
 /// @param underlying_type the underlying type of the typedef.
 ///
 /// @param locus the source location of the typedef declaration.
+///
+/// @param mangled_name the mangled name of the typedef.
+///
+/// @param vis the visibility of the typedef type.
 typedef_decl::typedef_decl(const string&		name,
 			   const shared_ptr<type_base>	underlying_type,
 			   location			locus,
@@ -1706,7 +1710,7 @@ typedef_decl::typedef_decl(const string&		name,
 
 /// Equality operator
 ///
-/// @param other the other typedef_decl to test against.
+/// @param o the other typedef_decl to test against.
 bool
 typedef_decl::operator==(const decl_base& o) const
 {
@@ -1718,7 +1722,7 @@ typedef_decl::operator==(const decl_base& o) const
 
 /// Equality operator
 ///
-/// @param other the other typedef_decl to test against.
+/// @param o the other typedef_decl to test against.
 bool
 typedef_decl::operator==(const type_base& o) const
 {
@@ -1962,11 +1966,9 @@ method_type::method_type(shared_ptr<type_base> return_type,
 
 /// Constructor of the qualified_type_def
 ///
-/// @param type the underlying type
+/// @param size_in_bits the size of the type, expressed in bits.
 ///
-/// @param quals a bitfield representing the const/volatile qualifiers
-///
-/// @param locus the location of the qualified type definition
+/// @param alignment_in_bits the alignment of the type, expressed in bits
 method_type::method_type(size_t size_in_bits,
 			 size_t alignment_in_bits)
   : type_base(size_in_bits, alignment_in_bits),
@@ -2018,40 +2020,40 @@ method_type::~method_type()
 
 // <function_decl definitions>
 
-  /// Constructor for function_decl.
-  ///
-  /// This constructor builds the necessary function_type on behalf of
-  /// the client, so it takes parameters -- like the return types, the
-  /// function parameters and the size/alignment of the pointer to the
-  /// type of the function --  necessary to build the function_type
-  /// under the hood.
-  ///
-  /// If the client code already has the function_type at hand, it
-  /// should instead the other constructor that takes the function_decl.
-  ///
-  /// @param name the name of the function declaration.
-  ///
-  /// @param parms a vector of parameters of the function.
-  ///
-  /// @param return_type the return type of the function.
-  ///
-  /// @param fptr_size_in_bits the size of the type of this function, in
-  /// bits.
-  ///
-  /// @param fptr_align_in_bits the alignment of the type of this
-  /// function.
-  ///
-  /// @param declared_inline whether this function was declared inline.
-  ///
-  /// @param locus the source location of this function declaration.
-  ///
-  /// @param mangled_name the mangled name of the function declaration.
-  ///
-  /// @param vis the visibility of the function declaration.
-  ///
-  /// @param bind the type of binding of the function.
+/// Constructor for function_decl.
+///
+/// This constructor builds the necessary function_type on behalf of
+/// the client, so it takes parameters -- like the return types, the
+/// function parameters and the size/alignment of the pointer to the
+/// type of the function --  necessary to build the function_type
+/// under the hood.
+///
+/// If the client code already has the function_type at hand, it
+/// should instead the other constructor that takes the function_decl.
+///
+/// @param name the name of the function declaration.
+///
+/// @param parms a vector of parameters of the function.
+///
+/// @param return_type the return type of the function.
+///
+/// @param fptr_size_in_bits the size of the type of this function, in
+/// bits.
+///
+/// @param fptr_align_in_bits the alignment of the type of this
+/// function.
+///
+/// @param declared_inline whether this function was declared inline.
+///
+/// @param locus the source location of this function declaration.
+///
+/// @param mangled_name the mangled name of the function declaration.
+///
+/// @param vis the visibility of the function declaration.
+///
+/// @param bind the type of binding of the function.
 function_decl::function_decl(const std::string&  name,
-			     const std::vector<shared_ptr<parameter> >& parms,
+			     const std::vector<parameter_sptr>& parms,
 			     shared_ptr<type_base> return_type,
 			     size_t fptr_size_in_bits,
 			     size_t fptr_align_in_bits,
@@ -2087,7 +2089,7 @@ function_decl::function_decl(const std::string&  name,
   ///
   /// @param vis the visibility of the function declaration.
   ///
-  /// @param binding  the kind of the binding of the function
+  /// @param bind  the kind of the binding of the function
   /// declaration.
 function_decl::function_decl(const std::string& name,
 		shared_ptr<type_base> fn_type,
@@ -2230,7 +2232,7 @@ function_decl::~function_decl()
 
 // <class_decl definitions>
 
-/// A Constructor for instances of class_decl
+/// A Constructor for instances of \ref class_decl
 ///
 /// @param name the identifier of the class.
 ///
@@ -2252,7 +2254,7 @@ function_decl::~function_decl()
 /// @param data_mbrs the vector of data members of this instance of
 /// class_decl.
 ///
-/// @param member_fns the vector of member functions of this instance of
+/// @param mbr_fns the vector of member functions of this instance of
 /// class_decl.
 class_decl::class_decl(const std::string& name, size_t size_in_bits,
 		       size_t align_in_bits, location locus,
@@ -2445,16 +2447,16 @@ class_decl::insert_member_type(member_type_sptr t,
 /// @param t the member type to add.  It must not have been added to a
 /// scope, otherwise this will violate an assertion.
 void
-class_decl::add_member_type(shared_ptr<member_type> t)
+class_decl::add_member_type(member_type_sptr t)
 {insert_member_type(t, get_member_decls().end());}
 
 /// Add a member type to the current instance of class_decl.
 ///
 /// @param t the type to be added as a member type to the current
 /// instance of class_decl.  An instance of class_decl::member_type
-/// will be created out of @ref t and and added to the the class.
+/// will be created out of @p t and and added to the the class.
 ///
-/// @param the access specifier for the member type to be created.
+/// @param a the access specifier for the member type to be created.
 class_decl::member_type_sptr
 class_decl::add_member_type(type_base_sptr t, access_specifier a)
 {
@@ -2552,7 +2554,7 @@ class_decl::base_spec::operator==(const member_base& o) const
 /// @param m the data member to add.  This data member should not have
 /// been already added to a scope.
 void
-class_decl::add_data_member(shared_ptr<data_member> m)
+class_decl::add_data_member(data_member_sptr m)
 {
   decl_base* c = m->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
@@ -2566,7 +2568,7 @@ class_decl::add_data_member(shared_ptr<data_member> m)
 /// Add a data member to the current instance of class_decl.
 ///
 /// @param v a var_decl to add as a data member.  A proper
-/// class_decl::data_member is created from @ref v and added to the
+/// class_decl::data_member is created from @p v and added to the
 /// class_decl.  This var_decl should not have been already added to a
 /// scope.
 ///
@@ -2578,7 +2580,7 @@ class_decl::add_data_member(shared_ptr<data_member> m)
 ///
 /// @param is_static whether the data memer is static.
 ///
-/// @param offset_in_bits if @ref is_laid_out is true, this is the
+/// @param offset_in_bits if @p is_laid_out is true, this is the
 /// offset of the data member, expressed (oh, surprise) in bits.
 void
 class_decl::add_data_member(var_decl_sptr v, access_specifier access,
@@ -2623,12 +2625,12 @@ class_decl::add_data_member(var_decl_sptr v, access_specifier access,
 /// @param bind the binding of the method.
 class_decl::method_decl::method_decl
 (const std::string& name,
- const std::vector<shared_ptr<parameter> >& parms,
- shared_ptr<type_base>		return_type,
+ const std::vector<parameter_sptr>&	parms,
+ shared_ptr<type_base>			return_type,
  shared_ptr<class_decl>		class_type,
  size_t				ftype_size_in_bits,
  size_t				ftype_align_in_bits,
- bool				declared_inline,
+ bool					declared_inline,
  location				locus,
   const std::string&			mangled_name,
  visibility				vis,
@@ -2817,7 +2819,7 @@ class_decl::get_num_virtual_functions() const
 /// @param m the member function to add.  This member function should
 /// not have been already added to a scope.
 void
-class_decl::add_member_function(shared_ptr<member_function> m)
+class_decl::add_member_function(member_function_sptr m)
 {
   decl_base* c = m->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful

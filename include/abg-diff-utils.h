@@ -500,7 +500,7 @@ public:
   /// delta being bounded by MAX_D itself; so we say we need to be
   /// able to address [-2MAX_D, 2MAX_D].
   ///
-  /// @params size1 the size of the first sequence we are interested
+  /// @param size1 the size of the first sequence we are interested
   /// in.
   ///
   /// @param size2 the size of the second sequence we are interested

@@ -785,7 +785,11 @@ public:
   ///
   /// @param underlying_type the underlying type of the enum
   ///
-  /// @param enumerators a list of enumerators for this enum.
+  /// @param enms a list of enumerators for this enum.
+  ///
+  /// @param mangled_name the mangled name of the enum type.
+  ///
+  /// @param vis the visibility of instances of this type.
   enum_type_decl(const string& name, location locus,
 		 type_base_sptr underlying_type,
 		 enumerators& enms, const std::string& mangled_name = "",
@@ -1034,7 +1038,7 @@ public:
   };
 
   function_decl(const std::string&  name,
-		const std::vector<parameter_sptr >& parms,
+		const std::vector<parameter_sptr>& parms,
 		shared_ptr<type_base> return_type,
 		size_t fptr_size_in_bits,
 		size_t fptr_align_in_bits,

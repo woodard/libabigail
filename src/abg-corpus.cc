@@ -313,7 +313,8 @@ corpus::get_path() const
 /// the abi file expected at this path; likewise, a call to
 /// corpus::write will serialize the translation units contained in
 /// the corpus object into the on-disk file at this path.
-/// @param the new file path to assciate to the current corpus.
+///
+/// @param path the new file path to assciate to the current corpus.
 void
 corpus::set_path(const string& path)
 {priv_->path = path;}

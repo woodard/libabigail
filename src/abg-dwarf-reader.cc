@@ -23,8 +23,8 @@
 /// @file
 ///
 /// This file contains the definitions of the entry points to
-/// de-serialize an instance of @ref corpus from a file in elf format,
-/// containing dwarf information.
+/// de-serialize an instance of @ref abigail::corpus from a file in
+/// elf format, containing dwarf information.
 
 #include <libgen.h>
 #include <assert.h>
@@ -297,7 +297,7 @@ create_default_dwfl()
 
 /// Create a shared pointer for a pointer to Dwfl.
 ///
-/// @param dwlf the pointer to Dwfl to create the shared pointer for.
+/// @param dwfl the pointer to Dwfl to create the shared pointer for.
 ///
 /// @return the newly created shared pointer.
 static dwfl_sptr
@@ -342,15 +342,17 @@ die_string_attribute(Dwarf_Die* die, unsigned attr_name)
 /// Get the value of an attribute that is supposed to be an unsigned
 /// constant.
 ///
+/// @param die the DIE to read the information from.
+///
 /// @param attr_name the DW_AT_* name of the attribute.  Must come
 /// from dwarf.h and be an enumerator representing an attribute like,
 /// e.g, DW_AT_decl_line.
 ///
 ///@param cst the output parameter that is set to the value of the
-/// attribute @ref attr_name.  This parameter is set iff the function
+/// attribute @p attr_name.  This parameter is set iff the function
 /// return true.
 ///
-/// @return true if there was an attribute of the name @ref attr_name
+/// @return true if there was an attribute of the name @p attr_name
 /// and with a value that is a constant, false otherwise.
 static bool
 die_unsigned_constant_attribute(Dwarf_Die*	die,
@@ -373,15 +375,17 @@ die_unsigned_constant_attribute(Dwarf_Die*	die,
 /// Get the value of an attribute that is supposed to be a signed
 /// constant.
 ///
+///@param die the DIE to read the information from.
+///
 /// @param attr_name the DW_AT_* name of the attribute.  Must come
 /// from dwarf.h and be an enumerator representing an attribute like,
 /// e.g, DW_AT_decl_line.
 ///
 ///@param cst the output parameter that is set to the value of the
-/// attribute @ref attr_name.  This parameter is set iff the function
+/// attribute @p attr_name.  This parameter is set iff the function
 /// return true.
 ///
-/// @return true if there was an attribute of the name @ref attr_name
+/// @return true if there was an attribute of the name @p attr_name
 /// and with a value that is a constant, false otherwise.
 static bool
 die_signed_constant_attribute(Dwarf_Die*	die,
@@ -413,7 +417,7 @@ die_signed_constant_attribute(Dwarf_Die*	die,
 /// @param flag the output parameter to store the flag value into.
 /// This is set iff the function returns true.
 ///
-/// @return true if the DIE has a flag attribute named @ref attr_name,
+/// @return true if the DIE has a flag attribute named @p attr_name,
 /// false otherwise.
 static bool
 die_flag_attribute(Dwarf_Die* die, unsigned attr_name, bool& flag)
@@ -453,7 +457,7 @@ die_mangled_name(Dwarf_Die* die)
 /// @param die the DIE to consider.
 ///
 /// @return a string containing the file path that is the logical
-/// value of the DW_AT_decl_file attribute.  If the DIE @ref die
+/// value of the DW_AT_decl_file attribute.  If the DIE @p die
 /// doesn't have a DW_AT_decl_file attribute, then the return value is
 /// just an empty string.
 static string
@@ -477,7 +481,7 @@ die_decl_file_attribute(Dwarf_Die* die)
 /// @param result the DIE resulting from reading the attribute value.
 /// This is set iff the function returns true.
 ///
-/// @return true if the DIE @ref die contains an attribute named @ref
+/// @return true if the DIE @p die contains an attribute named @p
 /// attr_name that is a DIE reference, false otherwise.
 static bool
 die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result)
@@ -514,7 +518,7 @@ die_location(read_context& ctxt, Dwarf_Die* die)
 
 /// Return the location, the name and the mangled name of a given DIE.
 ///
-/// @param cxt the read context to use.
+/// @param ctxt the read context to use.
 ///
 /// @param die the DIE to read location and names from.
 ///
@@ -538,7 +542,7 @@ die_loc_and_name(read_context&	ctxt,
 /// Get the size of a (type) DIE as the value for the parameter
 /// DW_AT_byte_size or DW_AT_bit_size.
 ///
-/// @param the DIE to read the information from.
+/// @param die the DIE to read the information from.
 ///
 /// @param size the resulting size in bits.  This is set iff the
 /// function return true.
@@ -673,7 +677,7 @@ is_type_tag(unsigned tag)
 ///
 /// @param die the DIE to consider.
 ///
-/// @return true if @ref die represents a type, false otherwise.
+/// @return true if @p die represents a type, false otherwise.
 static bool
 is_type_die(Dwarf_Die* die)
 {
@@ -1022,9 +1026,9 @@ struct dwarf_expr_eval_context
 ///
 /// @param ops the array of the dwarf expression operations to consider.
 ///
-/// @param ops_len the lengths of @ref ops array above.
+/// @param ops_len the lengths of @p ops array above.
 ///
-/// @param index the index of the operation to interpret, in @ref ops.
+/// @param index the index of the operation to interpret, in @p ops.
 ///
 /// @param next_index the index of the operation to interpret at the
 /// next step, after this function completed and returned.  This is
@@ -1188,9 +1192,9 @@ op_pushes_constant_value(Dwarf_Op*			ops,
 ///
 /// @param ops the array of the dwarf expression operations to consider.
 ///
-/// @param ops_len the lengths of @ref ops array above.
+/// @param ops_len the lengths of @p ops array above.
 ///
-/// @param index the index of the operation to interpret, in @ref ops.
+/// @param index the index of the operation to interpret, in @p ops.
 ///
 /// @param next_index the index of the operation to interpret at the
 /// next step, after this function completed and returned.  This is
@@ -1312,19 +1316,17 @@ op_pushes_non_constant_value(Dwarf_Op* ops,
 /// result's value, Otherwise, the DEVM accumulator is left with its
 /// previous value.
 ///
-/// @param ops the array of the dwarf expression operations to consider.
+/// @param expr the array of the dwarf expression operations to consider.
 ///
-/// @param ops_len the lengths of @ref ops array above.
+/// @param expr_len the lengths of @p ops array above.
 ///
-/// @param index the index of the operation to interpret, in @ref ops.
+/// @param index the index of the operation to interpret, in @p ops.
 ///
 /// @param next_index the index of the operation to interpret at the
 /// next step, after this function completed and returned.  This is
 /// set an output parameter that is set iff the function returns true.
 ///
-/// @param ctxt the DEVM evaluation context.manipulation, push
-/// of aonto the dwarf expr virtual machine (aka DEVM), perform the
-/// operation and update the DEVM.
+/// @param ctxt the DEVM evaluation context.
 ///
 /// @return true if the current operation actually manipulates the
 /// DEVM stack, false otherwise.
@@ -1429,11 +1431,11 @@ op_manipulates_stack(Dwarf_Op* expr,
 /// accumulator with its value.  Otherwise, the DEVM accumulator is
 /// left with its previous value.
 ///
-/// @param ops the array of the dwarf expression operations to consider.
+/// @param expr the array of the dwarf expression operations to consider.
 ///
-/// @param ops_len the lengths of @ref ops array above.
+/// @param expr_len the lengths of @p expr array above.
 ///
-/// @param index the index of the operation to interpret, in @ref ops.
+/// @param index the index of the operation to interpret, in @p expr.
 ///
 /// @param next_index the index of the operation to interpret at the
 /// next step, after this function completed and returned.  This is
@@ -1562,11 +1564,11 @@ op_is_arith_logic(Dwarf_Op* expr,
 /// accumulator with its value.  Otherwise, the DEVM accumulator is
 /// left with its previous value.
 ///
-/// @param ops the array of the dwarf expression operations to consider.
+/// @param expr the array of the dwarf expression operations to consider.
 ///
-/// @param ops_len the lengths of @ref ops array above.
+/// @param expr_len the lengths of @p expr array above.
 ///
-/// @param index the index of the operation to interpret, in @ref ops.
+/// @param index the index of the operation to interpret, in @p expr.
 ///
 /// @param next_index the index of the operation to interpret at the
 /// next step, after this function completed and returned.  This is
@@ -1731,7 +1733,7 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op* expr,
 ///
 ///@param die the DIE to read the information from.
 ///
-///@param the resulting constant.  This argument is set iff the
+///@param offset the resulting constant.  This argument is set iff the
 ///function returns true.
 static bool
 die_member_offset(Dwarf_Die* die,
@@ -1844,7 +1846,7 @@ build_die_parent_map(read_context& ctxt)
 /// @param die the DIE for which we want the parent.
 ///
 /// @param parent_die the output parameter set to the parent die of
-/// @ref die.  Its memory must be allocated and handled by the caller.
+/// @p die.  Its memory must be allocated and handled by the caller.
 static void
 get_parent_die(read_context&	ctxt,
 	       Dwarf_Die*	die,
@@ -1977,7 +1979,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   return result;
 }
 
-/// Build a @ref namespace_decl out of a DW_TAG_namespace or
+/// Build a abigail::namespace_decl out of a DW_TAG_namespace or
 /// DW_TAG_module (for fortran) DIE.
 ///
 /// Note that this function connects the DW_TAG_namespace to the IR
@@ -1989,8 +1991,8 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 /// @param die the DIE to read from.  Must be either DW_TAG_namespace
 /// or DW_TAG_module.
 ///
-/// @return the resulting @ref nampespace_decl or NULL if it couldn't
-/// be created.
+/// @return the resulting @ref abigail::namespace_decl or NULL if it
+/// couldn't be created.
 static namespace_decl_sptr
 build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 				   Dwarf_Die*	die)
@@ -2141,6 +2143,14 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 ///
 /// @param die the DIE to read information from.  Must be either a
 /// DW_TAG_structure_type or a DW_TAG_class_type.
+///
+/// @param is_struct wheter the class was declared as a struct.
+///
+/// @param scope a pointer to the scope_decl* under which this class
+/// is to be added to.
+///
+/// @param called_from_public_decl set to true if this class is being
+/// called from a "Pubblic declaration like vars or public symbols".
 ///
 /// @return the resulting class_type.
 static decl_base_sptr
@@ -2623,7 +2633,7 @@ build_var_decl(read_context& ctxt,
 ///
 /// @param die the DW_TAG_subprogram DIE to read from.
 ///
-/// @param called_from_public_decl this is set to true if the function
+/// @param called_for_public_decl this is set to true if the function
 /// was called for a public (function) decl.
 static function_decl_sptr
 build_function_decl(read_context& ctxt,
@@ -2738,7 +2748,7 @@ build_function_decl(read_context& ctxt,
   return result;
 }
 
-/// Read all @ref translation_unit possible from the debug info
+/// Read all @ref abigail::translation_unit possible from the debug info
 /// accessible through a DWARF Front End Library handle, and stuff
 /// them into a libabigail ABI Corpus.
 ///
@@ -2794,7 +2804,7 @@ build_corpus(read_context& ctxt)
 ///
 /// @param ctxt the read context.
 ///
-/// @parm die the DIE to consider.
+/// @param die the DIE to consider.
 ///
 /// @param scope the scope under which the resulting IR node has to be
 /// added.
@@ -3041,7 +3051,7 @@ build_ir_node_from_die(read_context&	ctxt,
 ///
 /// @param ctxt the read context.
 ///
-/// @parm die the DIE to consider.
+/// @param die the DIE to consider.
 ///
 /// @param called_from_public_decl set to yes if this function is
 /// called from the functions used to build a public decl (functions
@@ -3065,13 +3075,13 @@ build_ir_node_from_die(read_context&	ctxt,
 				called_from_public_decl);
 }
 
-/// Read all @ref translation_unit possible from the debug info
+/// Read all @ref abigail::translation_unit possible from the debug info
 /// accessible from an elf file, stuff them into a libabigail ABI
 /// Corpus and return it.
 ///
 /// @param elf_path the path to the elf file.
 ///
-/// @return a pointer to the resulting @ref corpus.
+/// @return a pointer to the resulting @ref abigail::corpus.
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path)
 {

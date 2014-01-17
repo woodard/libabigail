@@ -163,7 +163,7 @@ public:
   /// Note that the serializd report has to leave one empty line at
   /// the end of its content.
   ///
-  /// @param the output stream to serialize the report to.
+  /// @param out the output stream to serialize the report to.
   ///
   /// @param indent the indentation string to use.
   virtual void
@@ -208,7 +208,7 @@ public:
   report(ostream& out, const string& indent = "") const;
 
   friend var_diff_sptr
-  compute_diff(const var_decl_sptr, const var_decl_sptr);
+  compute_diff(const var_decl_sptr first, const var_decl_sptr second);
 }; // end class var_diff
 
 var_diff_sptr
@@ -335,13 +335,13 @@ public:
   report(ostream&, const string& indent = "") const;
 
   friend qualified_type_diff_sptr
-  compute_diff(const qualified_type_def_sptr,
-	       const qualified_type_def_sptr);
+  compute_diff(const qualified_type_def_sptr first,
+	       const qualified_type_def_sptr second);
 };// end class qualified_type_diff.
 
 qualified_type_diff_sptr
-compute_diff(const qualified_type_def_sptr,
-	     const qualified_type_def_sptr);
+compute_diff(const qualified_type_def_sptr first,
+	     const qualified_type_def_sptr second);
 
 class enum_diff;
 typedef shared_ptr<enum_diff> enum_diff_sptr;
@@ -393,8 +393,8 @@ public:
   report(ostream&, const string& indent = "") const;
 
   friend enum_diff_sptr
-  compute_diff(const enum_type_decl_sptr,
-	       const enum_type_decl_sptr);
+  compute_diff(const enum_type_decl_sptr first,
+	       const enum_type_decl_sptr second);
 };//end class enum_diff;
 
 enum_diff_sptr
@@ -422,8 +422,7 @@ class class_diff : public diff
   ensure_lookup_tables_populated(void) const;
 
 protected:
-  class_diff(class_decl_sptr first_subject,
-		  class_decl_sptr second_subject);
+  class_diff(class_decl_sptr first_scope, class_decl_sptr second_scope);
 
 public:
   //TODO: add change of the name of the type.
@@ -512,9 +511,9 @@ protected:
 public:
 
   friend scope_diff_sptr
-  compute_diff(const scope_decl_sptr,
-	       const scope_decl_sptr,
-	       scope_diff_sptr);
+  compute_diff(const scope_decl_sptr first,
+	       const scope_decl_sptr second,
+	       scope_diff_sptr d);
 
   friend scope_diff_sptr
   compute_diff(const scope_decl_sptr first_scope,
@@ -566,12 +565,12 @@ public:
   length() const;
 
   virtual void
-  report(ostream&, const string& indent = "") const;
+  report(ostream& out, const string& indent = "") const;
 };// end class scope_diff
 
 scope_diff_sptr
-compute_diff(const scope_decl_sptr first_scope,
-	     const scope_decl_sptr second_scope,
+compute_diff(const scope_decl_sptr first,
+	     const scope_decl_sptr second,
 	     scope_diff_sptr d);
 
 scope_diff_sptr
@@ -651,7 +650,7 @@ protected:
 
 public:
   friend type_decl_diff_sptr
-  compute_diff(const type_decl_sptr, const type_decl_sptr);
+  compute_diff(const type_decl_sptr first, const type_decl_sptr second);
 
   const type_decl_sptr
   first_type_decl() const;
@@ -689,7 +688,7 @@ protected:
 
 public:
   friend typedef_diff_sptr
-  compute_diff(const typedef_decl_sptr, const typedef_decl_sptr);
+  compute_diff(const typedef_decl_sptr first, const typedef_decl_sptr second);
 
   const typedef_decl_sptr
   first_typedef_decl() const;
@@ -779,7 +778,7 @@ public:
   report(ostream& out, const string& indent = "") const;
 
   friend corpus_diff_sptr
-  compute_diff(const corpus_sptr, const corpus_sptr);
+  compute_diff(const corpus_sptr f, const corpus_sptr s);
 }; // end class corpus_diff
 
 corpus_diff_sptr

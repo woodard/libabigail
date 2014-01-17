@@ -23,8 +23,8 @@
 /// @file
 ///
 /// This file contains the declarations of the entry points to
-/// de-serialize an instance of @ref translation_unit from an ABI
-/// Instrumentation file in libabigail native XML format.
+/// de-serialize an instance of @ref abigail::translation_unit from an
+/// ABI Instrumentation file in libabigail native XML format.
 
 #ifndef __ABG_READER_H__
 #define __ABG_READER_H__
