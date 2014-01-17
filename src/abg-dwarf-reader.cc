@@ -70,7 +70,7 @@ typedef unordered_map<Dwarf_Off, decl_base_sptr> die_decl_map_type;
 /// Convenience typedef for a map which key is the offset of a dwarf
 /// die, (given by dwarf_dieoffset()) and which value is the
 /// corresponding class_decl.
-typedef unordered_map<Dwarf_Off, class_decl_sptr> die_class_map_type;
+typedef unordered_map<Dwarf_Off, decl_base_sptr> die_class_map_type;
 
 /// Convenience typedef for a map which key is the offset of a
 /// DW_TAG_compile_unit and the key is the corresponding @ref
@@ -2174,8 +2174,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   die_size_in_bits(die, size);
 
   class_decl_sptr cur_class_decl (new class_decl(name));
-  insert_decl_into_ir_under_scope(ctxt, cur_class_decl, scope);
-  ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class_decl;
+  decl_base_sptr cur_class =
+    insert_decl_into_ir_under_scope(ctxt, cur_class_decl, scope);
+  ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
 
   result.reset(new class_decl(name, size, 0, loc,
 			      decl_base::VISIBILITY_DEFAULT));
@@ -2208,7 +2209,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      decl_base_sptr base_type =
 		build_ir_node_from_die(ctxt, &type_die,
 				       called_from_public_decl);
-	      base_type = get_type_declaration(as_non_member_type(base_type));
 	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
 	      if (!b)
 		continue;
@@ -2246,7 +2246,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      decl_base_sptr ty =
 		build_ir_node_from_die(ctxt, &type_die,
 				       called_from_public_decl);
-	      type_base_sptr t = as_non_member_type(ty);
+	      type_base_sptr t = is_type(ty);
 	      if (!t)
 		continue;
 
@@ -2361,6 +2361,15 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
     if (i != ctxt.die_wip_classes_map().end())
       {
 	result->set_earlier_declaration(i->second);
+	class_decl::member_type_sptr m =
+	  dynamic_pointer_cast<class_decl::member_type>(i->second);
+	if (m)
+	  {
+	    class_decl::member_type_sptr m2 =
+	      dynamic_pointer_cast<class_decl::member_type>(res);
+	    if (m2)
+	      m2->set_access_specifier(m->get_access_specifier());
+	  }
 	ctxt.die_wip_classes_map().erase(i);
       }
   }
@@ -2402,7 +2411,6 @@ build_qualified_type(read_context&	ctxt,
   decl_base_sptr utype_decl = build_ir_node_from_die(ctxt,
 						     &underlying_type_die,
 						     called_from_public_decl);
-  utype_decl = get_type_declaration(as_non_member_type(utype_decl));
   if (!utype_decl)
     return result;
 
@@ -2452,7 +2460,6 @@ build_pointer_type_def(read_context&	ctxt,
 
   decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
-  utype_decl = get_type_declaration(as_non_member_type(utype_decl));
   if (!utype_decl)
     return result;
 
@@ -2502,7 +2509,6 @@ build_reference_type(read_context& ctxt,
 
   decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
-  utype_decl = get_type_declaration(as_non_member_type(utype_decl));
   if (!utype_decl)
     return result;
 
@@ -2553,7 +2559,6 @@ build_typedef_type(read_context& ctxt,
 
   decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
-  utype_decl = get_type_declaration(as_non_member_type(utype_decl));
   if (!utype_decl)
     return result;
 
@@ -2599,7 +2604,7 @@ build_var_decl(read_context& ctxt,
 			       /*called_from_public_decl=*/true);
       if (!ty)
 	return result;
-      type = as_non_member_type(ty);
+      type = is_type(ty);
       assert(type);
     }
 
@@ -2664,7 +2669,6 @@ build_function_decl(read_context& ctxt,
     return_type_decl =
       build_ir_node_from_die(ctxt, &ret_type_die,
 			     /*called_from_public_decl=*/true);
-  return_type_decl = get_type_declaration(as_non_member_type(return_type_decl));
 
   class_decl_sptr is_method =
     dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die));
@@ -2691,8 +2695,6 @@ build_function_decl(read_context& ctxt,
 				       /*called_from_public_decl=*/true);
 	    if (!parm_type_decl)
 	      continue;
-	    parm_type_decl =
-	      get_type_declaration(as_non_member_type(parm_type_decl));
 	    function_decl::parameter_sptr p
 	      (new function_decl::parameter(is_type(parm_type_decl), name, loc,
 					    /*variadic_marker=*/false,

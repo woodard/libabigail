@@ -1609,7 +1609,7 @@ public:
 
 private:
   mutable bool			hashing_started_;
-  class_decl_sptr		declaration_;
+  decl_base_sptr		declaration_;
   bool				is_declaration_only_;
   class_decl_sptr		definition_of_declaration_;
   base_specs			bases_;
@@ -1664,12 +1664,9 @@ public:
   get_definition_of_declaration() const;
 
   void
-  set_earlier_declaration(class_decl_sptr declaration);
+  set_earlier_declaration(decl_base_sptr declaration);
 
-  void
-  set_earlier_declaration(type_base_sptr declaration);
-
-  class_decl_sptr
+  decl_base_sptr
   get_earlier_declaration() const
   {return declaration_;}
 

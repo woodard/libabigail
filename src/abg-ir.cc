@@ -2342,23 +2342,11 @@ class_decl::get_definition_of_declaration() const
 /// @param declaration the earlier declaration to set.  Note that it's
 /// set only if it's a pure declaration.
 void
-class_decl::set_earlier_declaration(class_decl_sptr declaration)
+class_decl::set_earlier_declaration(decl_base_sptr declaration)
 {
-  if (declaration && declaration->is_declaration_only())
+  class_decl_sptr cl = as_non_member_class_decl(declaration);
+  if (cl && cl->is_declaration_only())
     declaration_ = declaration;
-}
-
-/// Set the earlier declaration of this class definition.
-///
-/// @param declaration the earlier declaration to set.  Note that it's
-/// set only if it's a pure declaration.  It's dynamic type must be
-/// pointer to class_decl.
-void
-class_decl::set_earlier_declaration(type_base_sptr declaration)
-{
-  class_decl_sptr d = dynamic_pointer_cast<class_decl>(declaration);
-  if (d)
-    set_earlier_declaration(d);
 }
 
 decl_base_sptr
