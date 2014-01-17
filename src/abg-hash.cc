@@ -360,121 +360,117 @@ struct method_type::hash
   }
 };
 
-struct class_decl::member_base::hash
+size_t
+class_decl::member_base::hash::operator()(const member_base& m) const
 {
-  size_t
-  operator()(const member_base& m) const
-  {
-    std::tr1::hash<int> hash_int;
-    return hash_int(m.get_access_specifier());
-  }
-};
+  std::tr1::hash<int> hash_int;
+  return hash_int(m.get_access_specifier());
+}
 
-struct class_decl::member_type::hash
+size_t
+class_decl::member_type::hash::operator()(const member_type& t)const
 {
-  size_t
-  operator()(const member_type& t)const
-  {
-    member_base::hash hash_member;
-    type_base::type_base::dynamic_hash hash_type;
+  member_base::hash hash_member;
+  type_base::type_base::dynamic_hash hash_type;
+  std::tr1::hash<string> hash_string;
 
-    size_t v = hash_member(t);
-    v = hashing::combine_hashes(v, hash_type(&t));
-    return v;
-  }
-};
+  size_t v = hash_member(t);
+  string n = t.get_qualified_name();
+  v = hashing::combine_hashes(v, hash_string(n));
+  v = hashing::combine_hashes(v, hash_type(t.get_underlying_type().get()));
+  return v;
+}
 
-struct class_decl::base_spec::hash
+size_t
+class_decl::base_spec::hash::operator()(const base_spec& t) const
 {
-  size_t
-  operator()(const base_spec& t) const
-  {
-    member_base::hash hash_member;
-    type_base::shared_ptr_hash hash_type_ptr;
+  member_base::hash hash_member;
+  type_base::shared_ptr_hash hash_type_ptr;
 
-    size_t v = hash_member(t);
-    v = hashing::combine_hashes(v, hash_type_ptr(t.get_base_class()));
-    return v;
-  }
-};
+  size_t v = hash_member(t);
+  v = hashing::combine_hashes(v, hash_type_ptr(t.get_base_class()));
+  return v;
+}
 
-struct class_decl::data_member::hash
+size_t
+class_decl::data_member::hash::operator()(const data_member& t) const
 {
-  size_t
-  operator()(data_member& t)
-  {
-    if (t.hash_ == 0)
-      {
-	std::tr1::hash<size_t> hash_size_t;
-	var_decl::hash hash_var_decl;
-	member_base::hash hash_member;
+  if (t.hash_ == 0)
+    {
+      std::tr1::hash<size_t> hash_size_t;
+      var_decl::hash hash_var_decl;
+      member_base::hash hash_member;
+      std::tr1::hash<string> hash_string;
 
-	size_t v = hash_member(t);
-	v = hashing::combine_hashes(v, hash_var_decl(t));
-	if (t.is_laid_out())
-	  v = hashing::combine_hashes(v, hash_size_t(t.get_offset_in_bits()));
-	t.hash_ = v;
-      }
-    return t.hash_;
-  }
-};
+      size_t v = hash_member(t);
+      string n = t.get_qualified_name();
+      v = hashing::combine_hashes(v, hash_string(n));
+      v = hashing::combine_hashes(v, hash_var_decl(t));
+      if (t.is_laid_out())
+	v = hashing::combine_hashes(v, hash_size_t(t.get_offset_in_bits()));
+      t.hash_ = v;
+    }
+  return t.hash_;
+}
 
-struct class_decl::member_function::hash
+size_t
+class_decl::member_function::hash::operator()(const member_function& t) const
 {
-  size_t
-  operator()(const member_function& t) const
-  {
-    if (t.hash_ == 0)
-      {
-	std::tr1::hash<bool> hash_bool;
-	std::tr1::hash<size_t> hash_size_t;
-	member_base::hash hash_member;
-	function_decl::hash hash_fn;
+  if (t.hash_ == 0)
+    {
+      std::tr1::hash<bool> hash_bool;
+      std::tr1::hash<size_t> hash_size_t;
+      member_base::hash hash_member;
+      function_decl::hash hash_fn;
+      std::tr1::hash<string> hash_string;
 
-	size_t v = hash_member(t);
-	v = hashing::combine_hashes(v, hash_fn(t));
-	v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
-	v = hashing::combine_hashes(v, hash_bool(t.is_const()));
+      size_t v = hash_member(t);
+      string n = t.get_qualified_name();
+      v = hashing::combine_hashes(v, hash_string(n));
+      v = hashing::combine_hashes(v, hash_fn(t));
+      v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
+      v = hashing::combine_hashes(v, hash_bool(t.is_const()));
 
-	if (!t.is_static() && !t.is_constructor())
-	  v = hashing::combine_hashes(v,
-				      hash_size_t(t.get_vtable_offset()));
-	t.hash_ = v;
-      }
-    return t.hash_;
-  }
-};
+      if (!t.is_static() && !t.is_constructor())
+	v = hashing::combine_hashes(v,
+				    hash_size_t(t.get_vtable_offset()));
+      t.hash_ = v;
+    }
+  return t.hash_;
+}
 
-struct class_decl::member_function_template::hash
+size_t
+class_decl::member_function_template::hash::operator()
+  (const member_function_template& t) const
 {
-  size_t
-  operator()(const member_function_template& t) const
-  {
-    std::tr1::hash<bool> hash_bool;
-    function_tdecl::hash hash_function_tdecl;
-    member_base::hash hash_member;
+  std::tr1::hash<bool> hash_bool;
+  function_tdecl::hash hash_function_tdecl;
+  member_base::hash hash_member;
+  std::tr1::hash<string> hash_string;
 
-    size_t v = hash_member(t);
-    v = hashing::combine_hashes(v, hash_function_tdecl(t));
-    v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
-    v = hashing::combine_hashes(v, hash_bool(t.is_const()));
-    return v;
-  }
-};
+  size_t v = hash_member(t);
+  string n = t.get_qualified_name();
+  v = hashing::combine_hashes(v, hash_string(n));
+  v = hashing::combine_hashes(v, hash_function_tdecl(t));
+  v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
+  v = hashing::combine_hashes(v, hash_bool(t.is_const()));
+  return v;
+}
 
-struct class_decl::member_class_template::hash
+size_t
+class_decl::member_class_template::hash::operator()
+  (const member_class_template& t) const
 {
-  size_t
-  operator()(member_class_template& t) const
-  {
-    member_base::hash hash_member;
-    class_tdecl::hash hash_class_tdecl;
+  member_base::hash hash_member;
+  class_tdecl::hash hash_class_tdecl;
+  std::tr1::hash<string> hash_string;
 
-    size_t v = hash_member(t);
-    v = hashing::combine_hashes(v, hash_class_tdecl(t));
-    return v;
-  }
-};
+  size_t v = hash_member(t);
+  string n = t.get_qualified_name();
+  v = hashing::combine_hashes(v, hash_string(n));
+  v = hashing::combine_hashes(v, hash_class_tdecl(t));
+  return v;
+}
 
 struct class_decl::hash
 {
@@ -746,6 +742,21 @@ type_base::dynamic_hash::operator()(const type_base* t) const
 {
   if (t == 0)
     return 0;
+  if (const class_decl::member_type* d =
+      dynamic_cast<const class_decl::member_type*>(t))
+    return class_decl::member_type::hash()(*d);
+  if (const class_decl::data_member* d =
+      dynamic_cast<const class_decl::data_member*>(t))
+    return class_decl::data_member::hash()(*d);
+  if (const class_decl::member_function* d =
+      dynamic_cast<const class_decl::member_function*>(t))
+    return class_decl::member_function::hash()(*d);
+  if (const class_decl::member_function_template* d =
+      dynamic_cast<const class_decl::member_function_template*>(t))
+    return class_decl::member_function_template::hash()(*d);
+  if (const class_decl::member_class_template* d =
+      dynamic_cast<const class_decl::member_class_template*>(t))
+    return class_decl::member_class_template::hash()(*d);
   if (const template_tparameter* d =
       dynamic_cast<const template_tparameter*>(t))
     return template_tparameter::hash()(*d);

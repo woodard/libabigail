@@ -235,6 +235,8 @@ static bool write_var_decl(const shared_ptr<var_decl>,
 			   write_context&, bool, unsigned);
 static bool write_function_decl(const shared_ptr<function_decl>,
 				write_context&, bool, unsigned);
+static bool write_member_type(const class_decl::member_type_sptr,
+			      write_context&, unsigned);
 static bool write_class_decl(const shared_ptr<class_decl>,
 			     write_context&, unsigned);
 static bool write_type_tparameter
@@ -833,6 +835,14 @@ write_namespace_decl(const shared_ptr<namespace_decl> decl,
 ///
 /// @param decl the qualfied type declaration to write.
 ///
+/// @param id the type id identitifier to use in the serialized
+/// output.  If this is empty, the function will compute an
+/// appropriate one.  This is useful when this function is called to
+/// serialize the underlying type of a member type; in that case, the
+/// caller has already computed the id of the *member type*, and that
+/// id is the one to be written as the value of the 'id' attribute of
+/// the XML element of the underlying type.
+///
 /// @param ctxt the write context.
 ///
 /// @param indent the number of space to indent to during the
@@ -840,8 +850,10 @@ write_namespace_decl(const shared_ptr<namespace_decl> decl,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_qualified_type_def(const shared_ptr<qualified_type_def> decl,
-			 write_context&	ctxt, unsigned indent)
+write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
+			 const string&				id,
+			 write_context&			ctxt,
+			 unsigned				indent)
 {
   if (!decl)
     return false;
@@ -861,10 +873,74 @@ write_qualified_type_def(const shared_ptr<qualified_type_def> decl,
 
   write_location(static_pointer_cast<decl_base>(decl), o);
 
-  o<< " id='"
-    << ctxt.get_id_for_type(decl)
+  string i = id;
+  if (i.empty())
+    i = ctxt.get_id_for_type(decl);
+
+  o<< " id='" << i << "'/>";
+
+  return true;
+}
+
+/// Serialize a qualified type declaration to an output stream.
+///
+/// @param decl the qualfied type declaration to write.
+///
+/// @param ctxt the write context.
+///
+/// @param indent the number of space to indent to during the
+/// serialization.
+///
+/// @return true upon successful completion, false otherwise.
+static bool
+write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
+			 write_context&			ctxt,
+			 unsigned				indent)
+{return write_qualified_type_def(decl, "", ctxt, indent);}
+
+/// Serialize a pointer to an instance of pointer_type_def.
+///
+/// @param decl the pointer_type_def to serialize.
+///
+/// @param id the type id identitifier to use in the serialized
+/// output.  If this is empty, the function will compute an
+/// appropriate one.  This is useful when this function is called to
+/// serialize the underlying type of a member type; in that case, the
+/// caller has already computed the id of the *member type*, and that
+/// id is the one to be written as the value of the 'id' attribute of
+/// the XML element of the underlying type.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the number of indentation white spaces to use.
+///
+/// @return true upon succesful completion, false otherwise.
+static bool
+write_pointer_type_def(const shared_ptr<pointer_type_def> decl,
+		       const string& id,
+		       write_context& ctxt,
+		       unsigned indent)
+{
+  if (!decl)
+    return false;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<pointer-type-def type-id='"
+    << ctxt.get_id_for_type(decl->get_pointed_to_type())
     << "'";
 
+  write_size_and_alignment(decl, o);
+
+  string i = id;
+  if (i.empty())
+    i = ctxt.get_id_for_type(decl);
+
+  o << " id='" << i << "'";
+
+  write_location(static_pointer_cast<decl_base>(decl), o);
   o << "/>";
 
   return true;
@@ -881,32 +957,21 @@ write_qualified_type_def(const shared_ptr<qualified_type_def> decl,
 /// @return true upon succesful completion, false otherwise.
 static bool
 write_pointer_type_def(const shared_ptr<pointer_type_def> decl,
-		       write_context& ctxt, unsigned indent)
-{
-  if (!decl)
-    return false;
-
-  ostream& o = ctxt.get_ostream();
-
-  do_indent(o, indent);
-
-  o << "<pointer-type-def type-id='"
-    << ctxt.get_id_for_type(decl->get_pointed_to_type())
-    << "'";
-
-  write_size_and_alignment(decl, o);
-
-  o << " id='" << ctxt.get_id_for_type(decl) << "'";
-
-  write_location(static_pointer_cast<decl_base>(decl), o);
-  o << "/>";
-
-  return true;
-}
+		       write_context& ctxt,
+		       unsigned indent)
+{return write_pointer_type_def(decl, "", ctxt, indent);}
 
 /// Serialize a pointer to an instance of reference_type_def.
 ///
 /// @param decl the reference_type_def to serialize.
+///
+/// @param id the type id identitifier to use in the serialized
+/// output.  If this is empty, the function will compute an
+/// appropriate one.  This is useful when this function is called to
+/// serialize the underlying type of a member type; in that case, the
+/// caller has already computed the id of the *member type*, and that
+/// id is the one to be written as the value of the 'id' attribute of
+/// the XML element of the underlying type.
 ///
 /// @param ctxt the context of the serialization.
 ///
@@ -914,8 +979,10 @@ write_pointer_type_def(const shared_ptr<pointer_type_def> decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_reference_type_def(const shared_ptr<reference_type_def> decl,
-			 write_context&	ctxt, unsigned indent)
+write_reference_type_def(const shared_ptr<reference_type_def>	decl,
+			 const string&				id,
+			 write_context&			ctxt,
+			 unsigned				indent)
 {
   if (!decl)
     return false;
@@ -935,7 +1002,10 @@ write_reference_type_def(const shared_ptr<reference_type_def> decl,
 
   write_size_and_alignment(decl, o);
 
-  o << " id='" << ctxt.get_id_for_type(decl) << "'";
+  string i = id;
+  if (i.empty())
+    i = ctxt.get_id_for_type(decl);
+  o << " id='" << i << "'";
 
   write_location(static_pointer_cast<decl_base>(decl), o);
 
@@ -943,9 +1013,9 @@ write_reference_type_def(const shared_ptr<reference_type_def> decl,
   return true;
 }
 
-/// Serialize a pointer to an instance of enum_type_decl.
+/// Serialize a pointer to an instance of reference_type_def.
 ///
-/// @param decl the enum_type_decl to serialize.
+/// @param decl the reference_type_def to serialize.
 ///
 /// @param ctxt the context of the serialization.
 ///
@@ -953,8 +1023,33 @@ write_reference_type_def(const shared_ptr<reference_type_def> decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_enum_type_decl(const shared_ptr<enum_type_decl> decl,
-		     write_context& ctxt, unsigned indent)
+write_reference_type_def(const shared_ptr<reference_type_def>	decl,
+			 write_context&			ctxt,
+			 unsigned				indent)
+{return write_reference_type_def(decl, "", ctxt, indent);}
+
+/// Serialize a pointer to an instance of enum_type_decl.
+///
+/// @param decl the enum_type_decl to serialize.
+///
+/// @param id the type id identitifier to use in the serialized
+/// output.  If this is empty, the function will compute an
+/// appropriate one.  This is useful when this function is called to
+/// serialize the underlying type of a member type; in that case, the
+/// caller has already computed the id of the *member type*, and that
+/// id is the one to be written as the value of the 'id' attribute of
+/// the XML element of the underlying type.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the number of indentation white spaces to use.
+///
+/// @return true upon succesful completion, false otherwise.
+static bool
+write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
+		     const string&			id,
+		     write_context&			ctxt,
+		     unsigned				indent)
 {
     if (!decl)
     return false;
@@ -966,7 +1061,10 @@ write_enum_type_decl(const shared_ptr<enum_type_decl> decl,
 
   write_location(decl, o);
 
-  o << " id='" << ctxt.get_id_for_type(decl) << "'>\n";
+  string i = id;
+  if (i.empty())
+    i = ctxt.get_id_for_type(decl);
+  o << " id='" << i << "'>\n";
 
   do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
   o << "<underlying-type type-id='"
@@ -992,9 +1090,9 @@ write_enum_type_decl(const shared_ptr<enum_type_decl> decl,
   return true;
 }
 
-/// Serialize a pointer to an instance of typedef_decl.
+/// Serialize a pointer to an instance of enum_type_decl.
 ///
-/// @param decl the typedef_decl to serialize.
+/// @param decl the enum_type_decl to serialize.
 ///
 /// @param ctxt the context of the serialization.
 ///
@@ -1002,8 +1100,33 @@ write_enum_type_decl(const shared_ptr<enum_type_decl> decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_typedef_decl(const shared_ptr<typedef_decl> decl,
-		   write_context& ctxt, unsigned indent)
+write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
+		     write_context&			ctxt,
+		     unsigned				indent)
+{return write_enum_type_decl(decl, "", ctxt, indent);}
+
+/// Serialize a pointer to an instance of typedef_decl.
+///
+/// @param decl the typedef_decl to serialize.
+///
+/// @param id the type id identitifier to use in the serialized
+/// output.  If this is empty, the function will compute an
+/// appropriate one.  This is useful when this function is called to
+/// serialize the underlying type of a member type; in that case, the
+/// caller has already computed the id of the *member type*, and that
+/// id is the one to be written as the value of the 'id' attribute of
+/// the XML element of the underlying type.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the number of indentation white spaces to use.
+///
+/// @return true upon succesful completion, false otherwise.
+static bool
+write_typedef_decl(const shared_ptr<typedef_decl>	decl,
+		   const string&			id,
+		   write_context&			ctxt,
+		   unsigned				indent)
 {
   if (!decl)
     return false;
@@ -1018,12 +1141,29 @@ write_typedef_decl(const shared_ptr<typedef_decl> decl,
 
   write_location(decl, o);
 
-  o << " id='"
-    << ctxt.get_id_for_type(decl)
-    << "'/>";
+  string i = id;
+  if (i.empty())
+    i = ctxt.get_id_for_type(decl);
+
+  o << " id='" << i << "'/>";
 
   return true;
 }
+
+/// Serialize a pointer to an instance of typedef_decl.
+///
+/// @param decl the typedef_decl to serialize.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the number of indentation white spaces to use.
+///
+/// @return true upon succesful completion, false otherwise.
+static bool
+write_typedef_decl(const shared_ptr<typedef_decl>	decl,
+		   write_context&			ctxt,
+		   unsigned				indent)
+{return write_typedef_decl(decl, "", ctxt, indent);}
 
 /// Serialize a pointer to an instances of var_decl.
 ///
@@ -1153,17 +1293,27 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 ///
 /// @param decl the pointer to class_decl to serialize.
 ///
+/// @param id the type id identitifier to use in the serialized
+/// output.  If this is empty, the function will compute an
+/// appropriate one.  This is useful when this function is called to
+/// serialize the underlying type of a member type; in that case, the
+/// caller has already computed the id of the *member type*, and that
+/// id is the one to be written as the value of the 'id' attribute of
+/// the XML element of the underlying type.
+///
 /// @param ctxt the context of the serialization.
 ///
 /// @param indent the initial indentation to use.
 static bool
-write_class_decl(const shared_ptr<class_decl> decl,
-		 write_context& ctxt, unsigned indent)
+write_class_decl(const shared_ptr<class_decl>	decl,
+		 const string&			id,
+		 write_context&		ctxt,
+		 unsigned			indent)
 {
   if (!decl)
     return false;
 
-  ostream &o = ctxt.get_ostream();
+  ostream& o = ctxt.get_ostream();
 
   do_indent_to_level(ctxt, indent, 0);
 
@@ -1181,11 +1331,14 @@ write_class_decl(const shared_ptr<class_decl> decl,
     {
       // This instance is the definition of an earlier declaration.
       o << " def-of-decl-id='"
-	<< ctxt.get_id_for_type(decl->get_earlier_declaration())
+	<< ctxt.get_id_for_type(is_type(decl->get_earlier_declaration()))
 	<< "'";
     }
 
-  o << " id='" << ctxt.get_id_for_type(decl) << "'";
+  string i = id;
+  if (i.empty())
+    i = ctxt.get_id_for_type(decl);
+  o << " id='" << i << "'";
   if (decl->is_declaration_only() || decl->has_no_base_nor_member())
     o << "/>";
   else
@@ -1217,20 +1370,7 @@ write_class_decl(const shared_ptr<class_decl> decl,
 	     decl->get_member_types().begin();
 	   ti != decl->get_member_types().end();
 	   ++ti)
-	{
-	  do_indent(o, nb_ws);
-	  o << "<member-type";
-	  write_access(*ti, o);
-	  o << ">\n";
-
-	  write_decl(dynamic_pointer_cast<decl_base>
-		     ((*ti)->get_underlying_type()), ctxt,
-		     get_indent_to_level(ctxt, indent, 2));
-	  o << "\n";
-
-	  do_indent_to_level(ctxt, indent, 1);
-	  o << "</member-type>\n";
-	}
+	write_member_type(*ti, ctxt, nb_ws);
 
       for (class_decl::data_members::const_iterator data =
 	     decl->get_data_members().begin();
@@ -1325,6 +1465,72 @@ write_class_decl(const shared_ptr<class_decl> decl,
 
       o << "</class-decl>";
     }
+
+  return true;
+}
+
+/// Serialize a class_decl type.
+///
+/// @param decl the pointer to class_decl to serialize.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the initial indentation to use.
+static bool
+write_class_decl(const shared_ptr<class_decl>	decl,
+		 write_context&		ctxt,
+		 unsigned			indent)
+{return write_class_decl(decl, "", ctxt, indent);}
+
+/// Serialize a member type.
+///
+/// Note that the id written as the value of the 'id' attribute of the
+/// underlying type is actually the id of the member type, not the one
+/// for the underying type.  That id takes in account, the access
+/// specifier and the qualified name of the member type.
+///
+/// @param decl the declaration of the member type to serialize.
+///
+/// @param ctxt the write context to use.
+///
+/// @param indent the number of levels to use for indentation
+static bool
+write_member_type(const class_decl::member_type_sptr decl,
+		  write_context& ctxt, unsigned indent)
+{
+  if (!decl)
+    return false;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent_to_level(ctxt, indent, 0);
+
+  o << "<member-type";
+  write_access(decl, o);
+  o << ">\n";
+
+  string id = ctxt.get_id_for_type(decl);
+
+  type_base_sptr ut = decl->get_underlying_type();
+  assert(ut);
+
+  unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
+  assert(write_qualified_type_def(dynamic_pointer_cast<qualified_type_def>(ut),
+				  id, ctxt, nb_ws)
+	 || write_pointer_type_def(dynamic_pointer_cast<pointer_type_def>(ut),
+				   id, ctxt, nb_ws)
+	 || write_reference_type_def(dynamic_pointer_cast<reference_type_def>(ut),
+				     id, ctxt, nb_ws)
+	 || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(ut),
+				 id, ctxt, nb_ws)
+	 || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(ut),
+			    id, ctxt, nb_ws)
+	 || write_class_decl(dynamic_pointer_cast<class_decl>(ut),
+			     id, ctxt, nb_ws));
+  o << "\n";
+
+  do_indent_to_level(ctxt, indent, 0);
+  o << "</member-type>\n";
 
   return true;
 }

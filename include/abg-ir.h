@@ -2164,7 +2164,7 @@ operator==(class_decl::member_function_sptr l,
 
 /// Abstract a member function template.
 class class_decl::member_function_template
-: public member_base, public virtual traversable_base
+  : public member_base, public virtual decl_base
 {
   bool is_constructor_;
   bool is_const_;
@@ -2180,8 +2180,9 @@ public:
   member_function_template(function_tdecl_sptr f,
 			   access_specifier access, bool is_static,
 			   bool is_constructor, bool is_const)
-  : member_base(access, is_static), is_constructor_(is_constructor),
-    is_const_(is_const), fn_tmpl_(f)
+    : decl_base(f->get_name(), location()),
+      member_base(access, is_static), is_constructor_(is_constructor),
+      is_const_(is_const), fn_tmpl_(f)
   {}
 
   bool
@@ -2212,7 +2213,8 @@ operator==(class_decl::member_function_template_sptr l,
 
 /// Abstracts a member class template template
 class class_decl::member_class_template
-: public member_base, public virtual traversable_base
+  : public member_base,
+    public virtual decl_base
 {
   shared_ptr<class_tdecl> class_tmpl_;
 
@@ -2226,7 +2228,9 @@ public:
 
   member_class_template(shared_ptr<class_tdecl> c,
 			access_specifier access, bool is_static)
-  : member_base(access, is_static), class_tmpl_(c)
+    : decl_base(c->get_name(), location()),
+      member_base(access, is_static),
+      class_tmpl_(c)
   {}
 
   operator const class_tdecl& () const
@@ -2272,6 +2276,55 @@ struct type_base::cached_hash
 
   size_t
   operator() (const type_base_sptr t) const;
+};
+
+/// The hashing functor for class_decl::base_spec.
+struct class_decl::base_spec::hash
+{
+  size_t
+  operator()(const base_spec& t) const;
+};
+
+/// The hashing functor for class_decl::member_base.
+struct class_decl::member_base::hash
+{
+  size_t
+  operator()(const member_base& m) const;
+};
+
+/// The hashing functor for class_decl::member_type.
+struct class_decl::member_type::hash
+{
+  size_t
+  operator()(const member_type& t) const ;
+};
+
+/// The hashing functor for class_decl::data_member.
+struct class_decl::data_member::hash
+{
+  size_t
+  operator()(const data_member& t) const;
+};
+
+/// The hashing functor for class_decl::member_function.
+struct class_decl::member_function::hash
+{
+  size_t
+  operator()(const member_function& t) const;
+};
+
+/// The hashing functor for class_decl::member_function_template.
+struct class_decl::member_function_template::hash
+{
+  size_t
+  operator()(const member_function_template& t) const;
+};
+
+/// The hashing functor for class_decl::member_class_template
+struct class_decl::member_class_template::hash
+{
+  size_t
+  operator()(const member_class_template& t) const;
 };
 
 struct function_tdecl::hash
