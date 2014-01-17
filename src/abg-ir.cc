@@ -2892,6 +2892,7 @@ class_decl::add_member_class_template(shared_ptr<member_class_template> m)
   /// error message or something like a structured error.
   assert(!c);
   member_class_templates_.push_back(m);
+  m->set_scope(this);
   m->as_class_tdecl()->set_scope(this);
   scope_decl::add_member_decl(m->as_class_tdecl());
 }
