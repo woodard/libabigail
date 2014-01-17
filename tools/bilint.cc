@@ -67,11 +67,15 @@ struct options
   string file_path;
   bool read_from_stdin;
   bool read_tu;
+  bool diff;
+  bool bidiff;
   bool noout;
 
   options()
     : read_from_stdin(false),
       read_tu(false),
+      diff(false),
+      bidiff(false),
       noout(false)
   {}
 };//end struct options;
@@ -82,6 +86,10 @@ display_usage(const string& prog_name, ostream& out)
   out << "usage: " << prog_name << "[options] [<abi-file1>\n"
       << " where options can be:\n"
       << "  --help  display this message\n"
+      << "  --diff  for xml inputs, perform a text diff between "
+         "the input and the memory model saved back to disk\n"
+      << "  --bidiff perform an abi diff between the input "
+         "and the memory model(not yet implemented)\n"
       << "  --noout  do not display anything on stdout\n"
       << "  --stdin|--  read abi-file content from stdin\n"
       << "  --tu  expect a single translation unit file\n";
@@ -111,6 +119,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.read_from_stdin = true;
 	else if (!strcmp(argv[i], "--tu"))
 	  opts.read_tu = true;
+	else if (!strcmp(argv[i], "--diff"))
+	  opts.diff = true;
+	else if (!strcmp(argv[i], "--bidiff"))
+	  opts.bidiff = true;
 	else if (!strcmp(argv[i], "--noout"))
 	  opts.noout = true;
 	else
@@ -214,16 +226,25 @@ main(int argc, char* argv[])
 	r = write_translation_unit(*tu, /*indent=*/0, of);
       else
 	{
+	  r = true;
 	  if (type == abigail::tools::FILE_TYPE_XML_CORPUS)
-	    r = write_corpus_to_native_xml(corp, /*indent=*/0, of);
+	    {
+	      if (opts.noout)
+		{
+		  if (opts.diff)
+		    r = write_corpus_to_native_xml(corp, /*indent=*/0, of);
+		}
+	      else
+		r = write_corpus_to_native_xml(corp, /*indent=*/0, cout);
+	    }
 	  else if (type == abigail::tools::FILE_TYPE_ZIP_CORPUS)
 	    {
-	      r = write_corpus_to_archive(*corp, ofile_name);
+	      if (!opts.noout)
+		r = write_corpus_to_archive(*corp, ofile_name);
 	      of.close();
 	    }
 	  else if (type == abigail::tools::FILE_TYPE_ELF)
 	    {
-	      r = true;
 	      if (!opts.noout)
 		r = write_corpus_to_native_xml(corp, /*indent=*/0, cout);
 	    }
@@ -243,6 +264,7 @@ main(int argc, char* argv[])
 	}
 
       if (is_ok
+	  && opts.diff
 	  && ((type == abigail::tools::FILE_TYPE_XML_CORPUS)
 	      || type == abigail::tools::FILE_TYPE_NATIVE_BI
 	      || type == abigail::tools::FILE_TYPE_ZIP_CORPUS))
