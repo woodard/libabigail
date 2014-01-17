@@ -360,7 +360,9 @@ decl_base::get_qualified_name(string& qn,
   list<string> qn_components;
 
   qn_components.push_front(get_name());
-  for (scope_decl* s = get_scope(); !is_global_scope(s); s = s->get_scope())
+  for (scope_decl* s = get_scope();
+       s && !is_global_scope(s);
+       s = s->get_scope())
     qn_components.push_front(s->get_name());
 
   qn.clear();
