@@ -268,6 +268,11 @@ unescape_xml_string(const std::string& str,
 	      escaped += '"';
 	      i += 6;
 	    }
+	  else
+	    {
+	      escaped += str[i];
+	      ++i;
+	    }
 	}
       else
 	{
