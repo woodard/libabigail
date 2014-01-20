@@ -522,9 +522,9 @@ public:
   typename std::vector<int>::reference
   at(long long index)
   {
-    check_index_against_bound(index);
+    //check_index_against_bound(index);
     long long i = index + offset();
-    return static_cast<vector<int>* >(this)->at(i);
+    return vector<int>::operator[](i);
   }
 
   typename std::vector<int>::const_reference
