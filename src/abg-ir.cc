@@ -3301,20 +3301,18 @@ class_decl::data_member::~data_member()
 bool
 class_decl::member_function::operator==(const decl_base& other) const
 {
-  try
-    {
-      const class_decl::member_function& o =
-	dynamic_cast<const class_decl::member_function&>(other);
+  const class_decl::member_function* p =
+    dynamic_cast<const class_decl::member_function*>(&other);
+  if (!p)
+    return false;
 
-      return (get_vtable_offset() == o.get_vtable_offset()
-	      && is_constructor() == o.is_constructor()
-	      && is_destructor() == o.is_destructor()
-	      && is_const() == o.is_const()
-	      && member_base::operator==(o)
-	      && function_decl::operator==(o));
-    }
-  catch(...)
-    {return false;}
+  const class_decl::member_function& o = *p;
+  return (get_vtable_offset() == o.get_vtable_offset()
+	  && is_constructor() == o.is_constructor()
+	  && is_destructor() == o.is_destructor()
+	  && is_const() == o.is_const()
+	  && member_base::operator==(o)
+	  && function_decl::operator==(o));
 }
 
 bool
@@ -3333,14 +3331,11 @@ class_decl::member_function::operator==(const member_function& other) const
 bool
 class_decl::member_function::operator==(const member_base& other) const
 {
-  try
-    {
-      const class_decl::member_function& o =
-	dynamic_cast<const class_decl::member_function&>(other);
-      return decl_base::operator==(o);
-    }
-  catch(...)
-    {return false;}
+  const class_decl::member_function* o =
+    dynamic_cast<const class_decl::member_function*>(&other);
+  if (!o)
+    return false;
+  return decl_base::operator==(*o);
 }
 
 bool
