@@ -223,19 +223,22 @@ main(int argc, char* argv[])
       bool r;
 
       if (tu)
-	r = write_translation_unit(*tu, /*indent=*/0, of);
+	{
+	  if (opts.diff)
+	    r = write_translation_unit(*tu, /*indent=*/0, of);
+	  if (!opts.noout && !opts.diff)
+	    r &= write_translation_unit(*tu, /*indent=*/0, cout);
+	}
       else
 	{
 	  r = true;
 	  if (type == abigail::tools::FILE_TYPE_XML_CORPUS)
 	    {
-	      if (opts.noout)
-		{
-		  if (opts.diff)
-		    r = write_corpus_to_native_xml(corp, /*indent=*/0, of);
-		}
-	      else
-		r = write_corpus_to_native_xml(corp, /*indent=*/0, cout);
+	      if (opts.diff)
+		r = write_corpus_to_native_xml(corp, /*indent=*/0, of);
+
+	      if (!opts.noout && !opts.diff)
+		r &= write_corpus_to_native_xml(corp, /*indent=*/0, cout);
 	    }
 	  else if (type == abigail::tools::FILE_TYPE_ZIP_CORPUS)
 	    {
