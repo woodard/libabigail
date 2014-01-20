@@ -1861,46 +1861,6 @@ get_parent_die(read_context&	ctxt,
   assert(dwarf_offdie(ctxt.dwarf(), i->second, parent_die) != 0);
 }
 
-/// Insert a decl into a scope.
-///
-/// If the current scope is a sub-scope of the scope under which to
-/// insert the decl, make sure to insert the decl before (in
-/// topological order) the current scope.
-///
-/// @param ctxt the current context.
-///
-/// @param type_decl the decl to insert into the scope.
-///
-/// @param scope under which to insert the decl.
-///
-/// @return the decl inserted into the scope.  Note that the inserted
-/// decl can be different from the decl to insert, for instance for
-/// member type decls.  In the case of member decls, the result of the
-/// insertion is a class_decl::member_type; to get the original decl
-/// to be inserted, you need to pass it to as_non_member_type.
-static decl_base_sptr
-insert_decl_into_ir_under_scope(read_context& ctxt,
-				decl_base_sptr type_decl,
-				scope_decl* scope)
-{
-  decl_base_sptr result;
-
-   const scope_decl* ns_under_scope =
-    get_top_most_scope_under(ctxt.current_scope(), scope);
-
-  if (ns_under_scope == scope)
-    result = add_decl_to_scope(type_decl, scope);
-  else
-    {
-      scope_decl::declarations::iterator it;
-      assert(scope->find_iterator_for_member(ns_under_scope,
-					     it));
-      result = insert_decl_into_scope(type_decl, it, scope);
-    }
-
-  return result;
-}
-
 /// Return the abigail IR node representing the scope of a given DIE.
 /// If that
 static scope_decl_sptr
@@ -2013,7 +1973,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   die_loc_and_name(ctxt, die, loc, name, mangled_name);
 
   result.reset(new namespace_decl(name, loc));
-  insert_decl_into_ir_under_scope(ctxt, result, scope.get());
+  add_decl_to_scope(result, scope.get());
   ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
 
   Dwarf_Die child;
@@ -2128,7 +2088,8 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 				 size, size, location()));
   translation_unit_sptr tu = ctxt.current_translation_unit();
   decl_base_sptr d =
-    insert_decl_into_ir_under_scope(ctxt, t, tu->get_global_scope().get());
+    add_decl_to_scope(t, tu->get_global_scope().get());
+
   t = dynamic_pointer_cast<type_decl>(d);
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, mangled_name));
@@ -2185,13 +2146,13 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   class_decl_sptr cur_class_decl (new class_decl(name));
   decl_base_sptr cur_class =
-    insert_decl_into_ir_under_scope(ctxt, cur_class_decl, scope);
+    add_decl_to_scope(cur_class_decl, scope);
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
 
   result.reset(new class_decl(name, size, 0, loc,
 			      decl_base::VISIBILITY_DEFAULT));
   assert(!result->is_declaration_only());
-  decl_base_sptr res = insert_decl_into_ir_under_scope(ctxt, result, scope);
+  decl_base_sptr res = add_decl_to_scope(result, scope);
   assert(cur_class_decl->is_declaration_only());
   cur_class_decl->set_definition_of_declaration(result);
   result = dynamic_pointer_cast<class_decl>(as_non_member_type(res));
@@ -2853,7 +2814,7 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_base_type:
       if((result = build_type_decl(ctxt, die)))
 	result =
-	  insert_decl_into_ir_under_scope(ctxt, result, scope);
+	  add_decl_to_scope(result, scope);
       break;
 
     case DW_TAG_typedef:
@@ -2872,8 +2833,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    decl_base_sptr t =
 	      get_type_declaration(p->get_pointed_to_type());
-	    result =
-	      insert_decl_into_ir_under_scope(ctxt, p, t->get_scope());
+	    result = add_decl_to_scope(p, t->get_scope());
 	  }
       }
       break;
@@ -2887,8 +2847,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    decl_base_sptr t =
 	      get_type_declaration(r->get_pointed_to_type());
-	    result =
-	      insert_decl_into_ir_under_scope(ctxt, r, t->get_scope());
+	    result = add_decl_to_scope(r, t->get_scope());
 	  }
       }
       break;
@@ -2902,8 +2861,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    decl_base_sptr t =
 	      get_type_declaration(q->get_underlying_type());
-	    result =
-	      insert_decl_into_ir_under_scope(ctxt, q, t->get_scope());
+	    result = add_decl_to_scope(q, t->get_scope());
 	  }
       }
       break;
