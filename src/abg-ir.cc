@@ -402,7 +402,7 @@ decl_base::get_qualified_name(const string& separator) const
 /// equal.
 ///
 /// Note that this virtual function is to be implemented by classes
-/// that extend the \a decl_base class.
+/// that extend the \p decl_base class.
 bool
 decl_base::operator==(const decl_base& other) const
 {
