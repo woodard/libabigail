@@ -3202,8 +3202,7 @@ class_decl::member_type::operator==(const decl_base& other) const
       const class_decl::member_type& o =
 	dynamic_cast<const class_decl::member_type&>(other);
       return (member_base::operator==(o)
-	      && decl_base::operator==(o)
-	      && type_base::operator==(o));
+	      && (*get_underlying_type() == *o.get_underlying_type()));
     }
   catch(...)
     {return false;}
