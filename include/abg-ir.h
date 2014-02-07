@@ -2383,5 +2383,13 @@ struct ir_node_visitor : public node_visitor_base
   virtual void visit(class_decl::member_class_template*);
 };
 
+// Debugging facility
+void
+fns_to_str(vector<function_decl*>::const_iterator a_begin,
+	   vector<function_decl*>::const_iterator a_end,
+	   vector<function_decl*>::const_iterator b_begin,
+	   vector<function_decl*>::const_iterator b_end,
+	   std::ostream& o);
+
 } // end namespace abigail
 #endif // __ABG_IR_H__

@@ -26,6 +26,8 @@
 #include <cstring>
 #include <libgen.h>
 #include <fstream>
+#include <iostream>
+#include <abg-ir.h>
 #include "abg-tools-utils.h"
 
 using std::string;
@@ -294,4 +296,72 @@ guess_file_type(const std::string& file_path)
 }
 
 }//end namespace tools
+
+using abigail::function_decl;
+
+/// Dump (to the standard error stream) two sequences of strings where
+/// each string represent one of the functions in the two sequences of
+/// functions given in argument to this function.
+///
+/// @param a_begin the begin iterator for the first input sequence of
+/// functions.
+///
+/// @parm a_end the end iterator for the first input sequence of
+/// functions.
+///
+/// @param b_begin the begin iterator for the second input sequence of
+/// functions.
+///
+/// @param b_end the end iterator for the second input sequence of functions.
+void
+dump_functions_as_string(std::vector<function_decl*>::const_iterator a_begin,
+			 std::vector<function_decl*>::const_iterator a_end,
+			 std::vector<function_decl*>::const_iterator b_begin,
+			 std::vector<function_decl*>::const_iterator b_end)
+{abigail::fns_to_str(a_begin, a_end, b_begin, b_end, std::cerr);}
+
+/// Dump (to the standard error output stream) a pretty representation
+/// of the signatures of two sequences of functions.
+///
+/// @param a_begin the start iterator of the first input sequence of functions.
+///
+/// @param a_end the end iterator of the first input sequence of functions.
+///
+/// @param b_begin the start iterator of the second input sequence of functions.
+///
+/// @param b_end the end iterator of the second input sequence of functions.
+void
+dump_function_names(std::vector<function_decl*>::const_iterator a_begin,
+		    std::vector<function_decl*>::const_iterator a_end,
+		    std::vector<function_decl*>::const_iterator b_begin,
+		    std::vector<function_decl*>::const_iterator b_end)
+{
+  std::vector<function_decl*>::const_iterator i;
+  std::ostream& o = std::cerr;
+  for (i = a_begin; i != a_end; ++i)
+    o << (*i)->get_pretty_representation() << "\n";
+
+  o << "  ->|<-  \n";
+  for (i = b_begin; i != b_end; ++i)
+    o << (*i)->get_pretty_representation() << "\n";
+  o << "\n";
+}
+
+/// Compare two functions that are in a vector of functions.
+///
+/// @param an iterator to the beginning of the the sequence of functions.
+///
+/// @param f1_index the index of the first function to compare.
+///
+/// @param f2_inde the index of the second function to compare
+bool
+compare_functions(vector<function_decl*>::const_iterator base,
+		  unsigned f1_index, unsigned f2_index)
+{
+  function_decl* fn1 = base[f1_index];
+  function_decl* fn2 = base[f2_index];
+
+  return *fn1 == *fn2;
+}
+
 }//end namespace abigail

@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <iterator>
 #include <typeinfo>
+#include <sstream>
 #include <tr1/memory>
 #include <tr1/unordered_map>
 #include "abg-ir.h"
@@ -3840,6 +3841,149 @@ ir_node_visitor::visit(class_decl::member_function_template*)
 void
 ir_node_visitor::visit(class_decl::member_class_template*)
 {}
+
+// <debugging facilities>
+
+/// Generate a different string at each invocation.
+///
+/// @return the resulting string.
+static string
+get_next_string()
+{
+  static size_t counter;
+  ++counter;
+  std::ostringstream o;
+  o << counter;
+  return o.str();
+}
+
+/// Convenience typedef for a hash map of pointer to function_decl and
+/// string.
+typedef unordered_map<const function_decl*, string,
+		      function_decl::hash,
+		      function_decl::ptr_equal> fns_to_str_map_type;
+
+/// Return a string associated to a given function.  Two functions
+/// that compare equal would yield the same string, as far as this
+/// routine is concerned.  And two functions that are different would
+/// yield different strings.
+///
+/// This is used to debug core diffing issues on functions.  The
+/// sequence of strings can be given to the 'testdiff2' program that
+/// is in the tests/ directory of the source tree, to reproduce core
+/// diffing issues on string and thus ease the debugging.
+///
+/// @param fn the function to generate a string for.
+///
+/// @param m the function_decl* <-> string map to be used by this
+/// function to generate strings associated to a function.
+///
+/// @return the resulting string.
+static const string&
+fn_to_str(const function_decl* fn,
+	  fns_to_str_map_type& m)
+{
+  fns_to_str_map_type::const_iterator i = m.find(fn);
+  if (i != m.end())
+    return i->second;
+  string s = get_next_string();
+  return m[fn]= s;
+}
+
+/// Generate a sequence of string that matches a given sequence of
+/// function.  In the resulting sequence, each function is "uniquely
+/// representated" by a string.  For instance, if the same function "foo"
+/// appears at indexes 1 and 3, then the same string 'schmurf' (okay,
+/// we don't care about the actual string) would appear at index 1 and 3.
+///
+/// @param begin the beginning of the sequence of functions to consider.
+///
+/// @param end the end of the sequence of functions.  This points to
+/// one-passed-the-end of the actual sequence.
+///
+/// @param m the function_decl* <-> string map to be used by this
+/// function to generate strings associated to a function.
+///
+/// @param o the output stream where to emit the generated list of
+/// strings to.
+static void
+fns_to_str(vector<function_decl*>::const_iterator begin,
+	   vector<function_decl*>::const_iterator end,
+	   fns_to_str_map_type& m,
+	   std::ostream& o)
+{
+  vector<function_decl*>::const_iterator i;
+  for (i = begin; i != end; ++i)
+    o << "'" << fn_to_str(*i, m) << "' ";
+}
+
+/// For each sequence of functions given in argument, generate a
+/// sequence of string that matches a given sequence of function.  In
+/// the resulting sequence, each function is "uniquely representated"
+/// by a string.  For instance, if the same function "foo" appears at
+/// indexes 1 and 3, then the same string 'schmurf' (okay, we don't
+/// care about the actual string) would appear at index 1 and 3.
+///
+/// @param a_begin the beginning of the sequence of functions to consider.
+///
+/// @param a_end the end of the sequence of functions.  This points to
+/// one-passed-the-end of the actual sequence.
+///
+/// @param b_begin the beginning of the second sequence of functions
+/// to consider.
+///
+/// @param b_end the end of the second sequence of functions.
+///
+/// @param m the function_decl* <-> string map to be used by this
+/// function to generate strings associated to a function.
+///
+/// @param o the output stream where to emit the generated list of
+/// strings to.
+static void
+fns_to_str(vector<function_decl*>::const_iterator a_begin,
+	   vector<function_decl*>::const_iterator a_end,
+	   vector<function_decl*>::const_iterator b_begin,
+	   vector<function_decl*>::const_iterator b_end,
+	   fns_to_str_map_type& m,
+	   std::ostream& o)
+{
+  fns_to_str(a_begin, a_end, m, o);
+  o << "->|<- ";
+  fns_to_str(b_begin, b_end, m, o);
+  o << "\n";
+}
+
+/// For each sequence of functions given in argument, generate a
+/// sequence of string that matches a given sequence of function.  In
+/// the resulting sequence, each function is "uniquely representated"
+/// by a string.  For instance, if the same function "foo" appears at
+/// indexes 1 and 3, then the same string 'schmurf' (okay, we don't
+/// care about the actual string) would appear at index 1 and 3.
+///
+/// @param a_begin the beginning of the sequence of functions to consider.
+///
+/// @param a_end the end of the sequence of functions.  This points to
+/// one-passed-the-end of the actual sequence.
+///
+/// @param b_begin the beginning of the second sequence of functions
+/// to consider.
+///
+/// @param b_end the end of the second sequence of functions.
+///
+/// @param o the output stream where to emit the generated list of
+/// strings to.
+void
+fns_to_str(vector<function_decl*>::const_iterator a_begin,
+	   vector<function_decl*>::const_iterator a_end,
+	   vector<function_decl*>::const_iterator b_begin,
+	   vector<function_decl*>::const_iterator b_end,
+	   std::ostream& o)
+{
+  fns_to_str_map_type m;
+  fns_to_str(a_begin, a_end, b_begin, b_end, m, o);
+}
+
+// </debugging facilities>
 
 // </class template>
 }//end namespace abigail
