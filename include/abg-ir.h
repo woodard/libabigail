@@ -1122,7 +1122,7 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~function_decl();
-};
+}; // end class function_decl
 
 /// Convenience typedef for a shared pointer on a @ref function_type
 typedef shared_ptr<function_type> function_type_sptr;
@@ -2275,7 +2275,7 @@ struct type_base::dynamic_hash
   operator()(const type_base* t) const;
 };
 
-/// A hasher that manages the cache the computed hash and re-use it if
+/// A hasher that manages to cache the computed hash and re-use it if
 /// it is available.
 struct type_base::cached_hash
 {

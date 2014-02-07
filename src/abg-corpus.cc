@@ -479,5 +479,4 @@ corpus::get_variables() const
 
   return priv_->vars;
 }
-
 }// end namespace abigail

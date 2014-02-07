@@ -3083,7 +3083,6 @@ scope_diff::report(ostream& out, const string& indent) const
     }
   if (emitted)
     out << "\n";
-
 }
 
 /// Compute the diff between two scopes.

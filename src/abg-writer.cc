@@ -91,7 +91,6 @@ public:
   }
 };
 
-
 typedef unordered_map<type_base*,
 		      string,
 		      type_base::cached_hash,
