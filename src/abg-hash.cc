@@ -258,11 +258,19 @@ struct typedef_decl::hash
    }
  };
 
- struct var_decl::hash
- {
-   size_t
-   operator()(const var_decl& t) const
-   {
+/// Compute a hash for an instance @ref var_decl.
+///
+/// Note that this function caches the hashing value the
+/// decl_base::hash_ data member of the input instance and re-uses it
+/// when it is already calculated.
+///
+/// @param t the instance of @ref var_decl to compute the hash for.
+///
+/// @return the calculated hash value, or the one that was previously
+/// calculated.
+size_t
+var_decl::hash::operator()(const var_decl& t) const
+{
     if (t.hash_ == 0)
       {
 	std::tr1::hash<string> hash_string;
@@ -275,45 +283,67 @@ struct typedef_decl::hash
 	t.hash_ = v;
       }
     return t.hash_;
-  }
-};
+}
 
-struct function_decl::hash
+/// Compute a hash for a pointer to @ref var_decl.
+///
+/// @param t the pointer to @ref var_decl to compute the hash for.
+///
+/// @return the calculated hash value
+size_t
+var_decl::hash::operator()(const var_decl* t) const
+{return operator()(*t);}
+
+/// Compute a hash value for an instance of @ref function_decl.
+///
+/// Note that this function caches the resulting hash in the
+/// decl_base::hash_ data member of the instance of @ref
+/// function_decl, and just returns if it is already calculated.
+///
+/// @param t the function to calculate the hash for.
+///
+/// @return the hash value.
+size_t
+function_decl::hash::operator()(const function_decl& t) const
 {
-  size_t
-  operator()(const function_decl& t) const
-  {
-    if (t.hash_ == 0)
-      {
-	std::tr1::hash<int> hash_int;
-	std::tr1::hash<bool> hash_bool;
-	std::tr1::hash<string> hash_string;
-	decl_base::hash hash_decl_base;
-	type_base::shared_ptr_hash hash_type_ptr;
+  if (t.hash_ == 0)
+    {
+      std::tr1::hash<int> hash_int;
+      std::tr1::hash<bool> hash_bool;
+      std::tr1::hash<string> hash_string;
+      decl_base::hash hash_decl_base;
+      type_base::shared_ptr_hash hash_type_ptr;
 
-	size_t v = hash_string(typeid(t).name());
-	v = hashing::combine_hashes(v, hash_decl_base(t));
-	v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
-	v = hashing::combine_hashes(v, hash_bool(t.is_declared_inline()));
-	v = hashing::combine_hashes(v, hash_int(t.get_binding()));
-	t.hash_ = v;
-      }
-    return t.hash_;
-  }
-};
+      size_t v = hash_string(typeid(t).name());
+      v = hashing::combine_hashes(v, hash_decl_base(t));
+      v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
+      v = hashing::combine_hashes(v, hash_bool(t.is_declared_inline()));
+      v = hashing::combine_hashes(v, hash_int(t.get_binding()));
+      t.hash_ = v;
+    }
+  return t.hash_;
+}
+/// Compute a hash for a pointer to @ref function_decl.
+///
+/// @param t the pointer to @ref function_decl to compute the hash for.
+///
+/// @return the calculated hash value
+size_t
+function_decl::hash::operator()(const function_decl* t) const
+{return operator()(*t);}
 
 struct function_decl::parameter::hash
 {
   size_t
   operator()(const function_decl::parameter& p) const
   {
-	type_base::shared_ptr_hash hash_type_ptr;
-	std::tr1::hash<bool> hash_bool;
-	std::tr1::hash<unsigned> hash_unsigned;
-	size_t v = hash_type_ptr(p.get_type());
-	v = hashing::combine_hashes(v, hash_unsigned(p.get_index()));
-	v = hashing::combine_hashes(v, hash_bool(p.get_variadic_marker()));
-	return v;
+    type_base::shared_ptr_hash hash_type_ptr;
+    std::tr1::hash<bool> hash_bool;
+    std::tr1::hash<unsigned> hash_unsigned;
+    size_t v = hash_type_ptr(p.get_type());
+    v = hashing::combine_hashes(v, hash_unsigned(p.get_index()));
+    v = hashing::combine_hashes(v, hash_bool(p.get_variadic_marker()));
+    return v;
   }
 };
 

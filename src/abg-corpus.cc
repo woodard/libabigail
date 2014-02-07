@@ -24,9 +24,9 @@
 #include <cstring>
 #include <cassert>
 #include <ext/stdio_filebuf.h>
-#include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <tr1/unordered_map>
 #include "abg-ir.h"
 #include "abg-corpus.h"
 #include "abg-reader.h"
@@ -37,6 +37,7 @@ namespace abigail
 {
 
 using std::ostringstream;
+using std::tr1::unordered_map;
 using std::list;
 using std::vector;
 using zip_utils::zip_sptr;
@@ -75,6 +76,26 @@ public:
   build_symbol_table();
 };
 
+/// Convenience typedef for a hash map of pointer to function_decl and
+/// boolean.
+typedef unordered_map<const function_decl*,
+		      bool,
+		      function_decl::hash,
+		      function_decl::ptr_equal> fn_ptr_map_type;
+
+/// Convenience typedef for a hash map of string and pointer to
+/// function_decl.
+typedef unordered_map<string, const function_decl*> str_fn_ptr_map_type;
+
+/// Convenience typedef for a hash map of pointer to var_decl and boolean.
+typedef unordered_map<const var_decl*,
+		      bool,
+		      var_decl::hash,
+		      var_decl::ptr_equal> var_ptr_map_type;
+
+/// Convenience typedef for a hash map of string and pointer to var_decl.
+typedef unordered_map<string, const var_decl*> str_var_ptr_map_type;
+
 /// A visitor type to be used while traversing functions and variables
 /// of the translations units of the corpus.  The goal of this visitor
 /// is to build a symbol table containing all the public functions and
@@ -84,6 +105,8 @@ class symtab_build_visitor_type : public ir_node_visitor
 {
   vector<function_decl*>&	functions;
   vector<var_decl*>&		variables;
+  str_fn_ptr_map_type		functions_map;
+  str_var_ptr_map_type		variables_map;
   list<function_decl*>		wip_fns;
   int				wip_fns_size;
   list<var_decl*>		wip_vars;
@@ -101,6 +124,73 @@ public:
       wip_fns_size(0),
       wip_vars_size(0)
   {}
+
+  /// Getter for the map of string and function pointers.
+  ///
+  /// @return the map of string and function pointers.
+  const str_fn_ptr_map_type&
+  fns_map() const
+  {return functions_map;}
+
+  /// Getter for the map of string and function pointers.
+  ///
+  /// @return the map of string and function pointers.
+  str_fn_ptr_map_type&
+  fns_map()
+  {return functions_map;}
+
+  /// Test if a given function name is in the map of strings and
+  /// function pointer.
+  ///
+  /// @param fn_name the function name to test for.
+  ///
+  /// @return true if @p fn_name is in the map, false otherwise.
+  bool
+  fn_is_in_map(const string& fn_name) const
+  {return fns_map().find(fn_name) != fns_map().end();}
+
+  /// Add a pair function name / function_decl to the map of string
+  /// and function_decl.
+  ///
+  /// @param fn the name of the function to add.
+  ///
+  /// @param v the function to add.
+  void
+  add_fn_to_map(const string& fn, const function_decl* v)
+  {fns_map()[fn] = v;}
+
+  /// Getter for the map of string and poitner to var_decl.
+  ///
+  /// @return the map of string and poitner to var_decl.
+  const str_var_ptr_map_type&
+  vars_map() const
+  {return variables_map;}
+
+  /// Getter for the map of string and pointer to var_decl.
+  ///
+  /// @return the map of string and poitner to var_decl.
+  str_var_ptr_map_type&
+  vars_map()
+  {return variables_map;}
+
+  /// Tests if a variable name is in the map of string and pointer to var_decl.
+  ///
+  /// @param v the string to test.
+  ///
+  /// @return true if @v is in the map.
+  bool
+  var_is_in_map(const string& v) const
+  {return vars_map().find(v) != vars_map().end();}
+
+  /// Add a pair variable name / pointer var_decl to the map of string
+  /// and pointer to var_decl.
+  ///
+  /// @param vn the name of the variable to add.
+  ///
+  /// @param v the variable to add.
+  void
+  add_var_to_map(const string& vn, const var_decl* v)
+  {vars_map()[vn] = v;}
 
   /// This function is called while visiting a @ref function_decl IR
   /// node of a translation unit.
@@ -245,7 +335,17 @@ corpus::priv::build_symbol_table()
   for (list<function_decl*>::iterator i = v.wip_fns.begin();
        i != v.wip_fns.end();
        ++i)
-      fns.push_back(*i);
+    {
+      string n = (*i)->get_mangled_name();
+      if (n.empty())
+	n = (*i)->get_pretty_representation();
+      assert(!n.empty());
+      if (!v.fn_is_in_map(n))
+	{
+	  fns.push_back(*i);
+	  v.add_fn_to_map(n, *i);
+	}
+    }
   v.wip_fns.clear();
   v.wip_fns_size = 0;
 
@@ -253,7 +353,15 @@ corpus::priv::build_symbol_table()
   for (list<var_decl*>::iterator i = v.wip_vars.begin();
        i != v.wip_vars.end();
        ++i)
-      vars.push_back(*i);
+    {
+      string n = (*i)->get_pretty_representation();
+      assert(!n.empty());
+      if (!v.var_is_in_map(n))
+	{
+	  vars.push_back(*i);
+	  v.add_var_to_map(n, *i);
+	}
+    }
   v.wip_vars.clear();
   v.wip_vars_size = 0;
 

@@ -877,6 +877,9 @@ public:
   /// Hasher for a var_decl type.
   struct hash;
 
+  /// Equality functor to compare pointers to variable_decl.
+  struct ptr_equal;
+
   var_decl(const std::string&		name,
 	   shared_ptr<type_base>	type,
 	   location			locus,
@@ -924,6 +927,9 @@ private:
 public:
   /// Hasher for function_decl
   struct hash;
+
+  /// Equality functor to compare pointers to function_decl
+  struct ptr_equal;
 
   class parameter;
 
@@ -2278,6 +2284,71 @@ struct type_base::cached_hash
   size_t
   operator() (const type_base_sptr t) const;
 };
+
+/// A hashing functor for instances and pointers of @ref var_decl.
+struct var_decl::hash
+{
+  size_t
+  operator()(const var_decl& t) const;
+
+  size_t
+  operator()(const var_decl* t) const;
+}; //end struct var_decl::hash
+
+/// A comparison functor for pointers to @ref var_decl.
+struct var_decl::ptr_equal
+{
+  /// Return true if the two instances of @ref var_decl are equal.
+  ///
+  /// @param l the first variable to compare.
+  ///
+  /// @param r the second variable to compare.
+  ///
+  /// @return true if @p l equals @p r.
+  bool
+  operator()(const var_decl* l, const var_decl* r) const
+  {
+    if (l == r)
+      return true;
+    if (!!l != !!r)
+      return false;
+    return (*l == *r);
+  }
+};// end struct var_decl::ptr_equal
+
+/// A hashing functor fo instances and pointers of @ref function_decl.
+struct function_decl::hash
+{
+  size_t
+  operator()(const function_decl& t) const;
+
+  size_t
+  operator()(const function_decl* t) const;
+};//end struct function_decl::hash
+
+/// Equality functor for instances of @ref function_decl
+struct function_decl::ptr_equal
+{
+  /// Tests if two pointers to @ref function_decl are equal.
+  ///
+  /// @param l the first pointer to @ref function_decl to consider in
+  /// the comparison.
+  ///
+  /// @param r the second pointer to @ref function_decl to consider in
+  /// the comparison.
+  ///
+  /// @return true if the two functions @p l and @p r are equal, false
+  /// otherwise.
+  bool
+  operator()(const function_decl* l, const function_decl* r) const
+  {
+    if (l == r)
+      return true;
+    if (!!l != !!r)
+      return false;
+    return (*l == *r);
+  }
+};// function_decl::ptr_equal
 
 /// The hashing functor for class_decl::base_spec.
 struct class_decl::base_spec::hash
