@@ -976,7 +976,7 @@ end_of_frr_d_path_in_k_plus_delta (int k, int d,
   // furthest from abscissa M).
   if (k_plus_delta == -d + delta
       || ((k_plus_delta != d + delta)
-	  && (v[k_plus_delta + 1] < v[k_plus_delta - 1])))
+	  && (v[k_plus_delta + 1] <= v[k_plus_delta - 1])))
     {
       // We move left, that means ordinate won't change ...
       x = v[k_plus_delta + 1];
@@ -1487,8 +1487,6 @@ compute_diff(RandomAccessOutputIterator a_base,
 
 	  ses.insertions().push_back(ins);
 	}
-      else
-	return;
 
       ses_len =  a_size + b_size;
       return;

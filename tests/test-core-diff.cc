@@ -129,6 +129,12 @@ SESInOutSpec in_out_specs[] =
     "a",
     "cba"
   },
+  {
+    "data/test-core-diff/report13.txt",
+    "output/test-core-diff/report13.txt",
+    "abcdefghi",
+    "jklmnopqrstadubvfwxgh"
+  },
   // This should be the last entry.
   {NULL, NULL, NULL, NULL}
 };
