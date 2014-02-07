@@ -512,9 +512,8 @@ struct class_decl::hash
 
     if (t.hash_ == 0)
       {
-	t.hashing_started(true);
-
 	std::tr1::hash<string> hash_string;
+	std::tr1::hash<bool> hash_bool;
 	scope_type_decl::hash hash_scope_type;
 	class_decl::base_spec::hash hash_base;
 	class_decl::member_type::hash hash_member_type;
@@ -525,6 +524,9 @@ struct class_decl::hash
 
 	size_t v = hash_string(typeid(t).name());
 	v = hashing::combine_hashes(v, hash_scope_type(t));
+	v = hashing::combine_hashes(v, hash_bool(t.is_declaration_only()));
+
+	t.hashing_started(true);
 
 	// Hash bases.
 	for (class_decl::base_specs::const_iterator b =

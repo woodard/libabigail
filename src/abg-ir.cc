@@ -2266,6 +2266,7 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
     hashing_started_(false),
+    comparison_started_(false),
     is_declaration_only_(false),
     bases_(bases),
     member_types_(mbrs),
@@ -2307,6 +2308,7 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
     hashing_started_(false),
+    comparison_started_(false),
     is_declaration_only_(false)
 {}
 
@@ -2322,6 +2324,7 @@ class_decl::class_decl(const std::string& name, bool is_declaration_only)
     type_base(0, 0),
     scope_type_decl(name, 0, 0, location()),
     hashing_started_(false),
+    comparison_started_(false),
     is_declaration_only_(is_declaration_only)
 {}
 
@@ -2915,25 +2918,62 @@ class_decl::has_no_base_nor_member() const
 bool
 class_decl::operator==(const decl_base& other) const
 {
+  const class_decl* op = 0;
   try
     {
-      const class_decl* op = dynamic_cast<const class_decl*>(&other);
+      op = dynamic_cast<const class_decl*>(&other);
       if (!op)
 	return false;
       const class_decl& o = *op;
 
+      comparison_started_ = true;
+      o.comparison_started_ = true;
+
+#define RETURN(value)					\
+      {						\
+	comparison_started_ = false;			\
+	op->comparison_started_ = false;		\
+	return value;					\
+      }
+
+      // if one of the classes is declaration-only, look through it to
+      // get its definition.
+      if (is_declaration_only()
+	  || o.is_declaration_only())
+	{
+	  string q1 = get_qualified_name();
+	  string q2 = o.get_qualified_name();
+
+	  if (q1 != q2)
+	    RETURN(false);
+
+	  const class_decl* def1 = is_declaration_only()
+	    ? get_definition_of_declaration().get()
+	    : this;
+
+	  const class_decl* def2 = o.is_declaration_only()
+	    ? o.get_definition_of_declaration().get()
+	    : op;
+
+	  if (!def1 || !def2)
+	    RETURN(true);
+
+	  bool val = *def1 == *def2;
+	  RETURN(val);
+	}
+
       // No need to go further if the classes have different names or
       // different size / alignment.
       if (!(decl_base::operator==(o) && type_base::operator==(o)))
-	return false;
+	RETURN(false);
 
       if (hash_ != other.hash_)
-	return false;
+	RETURN(false);
 
       // Compare bases.
       {
 	if (get_base_specifiers().size() != o.get_base_specifiers().size())
-	  return false;
+	  RETURN(false);
 
 	base_specs::const_iterator b0, b1;
 	for(b0 = get_base_specifiers().begin(),
@@ -2942,101 +2982,116 @@ class_decl::operator==(const decl_base& other) const
 	     && b1 != o.get_base_specifiers().end());
 	    ++b0, ++b1)
 	  if (**b0 != **b1)
-	    return false;
+	    RETURN(false);
 	if (b0 != get_base_specifiers().end()
 	    || b1 != o.get_base_specifiers().end())
-	  return false;
+	  RETURN(false);
       }
 
       //Compare member types
       {
 	if (get_member_types().size() != o.get_member_types().size())
-	  return false;
+	  RETURN(false);
 
-	member_types::const_iterator t0, t1;
-	for (t0 = get_member_types().begin(), t1 = o.get_member_types().begin();
-	     t0 != get_member_types().end() && t1 != o.get_member_types().end();
-	     ++t0, ++t1)
-	  if (!(**t0 == **t1))
-	    return false;
-	if (t0 != get_member_types().end() || t1 != o.get_member_types().end())
-	  return false;
+	if (!comparison_started_  && !o.comparison_started_)
+	  {
+	    member_types::const_iterator t0, t1;
+	    for (t0 = get_member_types().begin(),
+		   t1 = o.get_member_types().begin();
+		 (t0 != get_member_types().end()
+		  && t1 != o.get_member_types().end());
+		 ++t0, ++t1)
+	      if (!(**t0 == **t1))
+		RETURN(false);
+	    if (t0 != get_member_types().end()
+		|| t1 != o.get_member_types().end())
+	      RETURN(false);
+	  }
       }
 
       //compare data_members
       {
 	if (get_data_members().size() != o.get_data_members().size())
-	  return false;
+	  RETURN(false);
 
 	data_members::const_iterator d0, d1;
 	for (d0 = get_data_members().begin(), d1 = o.get_data_members().begin();
 	     d0 != get_data_members().end() && d1 != o.get_data_members().end();
 	     ++d0, ++d1)
 	  if (**d0 != **d1)
-	    return false;
+	    RETURN(false);
 	if (d0 != get_data_members().end() || d1 != o.get_data_members().end())
-	  return false;
+	  RETURN(false);
       }
 
       //compare member functions
       {
 	if (get_member_functions().size() != o.get_member_functions().size())
-	  return false;
+	  RETURN(false);
 
-	member_functions::const_iterator f0, f1;
-	for (f0 = get_member_functions().begin(),
-	       f1 = o.get_member_functions().begin();
-	     f0 != get_member_functions().end()
-	       && f1 != o.get_member_functions().end();
-	     ++f0, ++f1)
-	  if (**f0 != **f1)
-	    return false;
-	if (f0 != get_member_functions().end()
-	    || f1 != o.get_member_functions().end())
-	  return false;
+	if (!comparison_started_  && !o.comparison_started_)
+	  {
+	    member_functions::const_iterator f0, f1;
+	    for (f0 = get_member_functions().begin(),
+		   f1 = o.get_member_functions().begin();
+		 f0 != get_member_functions().end()
+		   && f1 != o.get_member_functions().end();
+		 ++f0, ++f1)
+	      if (**f0 != **f1)
+		RETURN(false);
+	    if (f0 != get_member_functions().end()
+		|| f1 != o.get_member_functions().end())
+	      RETURN(false);
+	  }
       }
 
       // compare member function templates
       {
 	if (get_member_function_templates().size()
 	    != o.get_member_function_templates().size())
-	  return false;
+	  RETURN(false);
 
-	member_function_templates::const_iterator fn_tmpl_it0, fn_tmpl_it1;
-	for (fn_tmpl_it0 = get_member_function_templates().begin(),
-	       fn_tmpl_it1 = o.get_member_function_templates().begin();
-	     fn_tmpl_it0 != get_member_function_templates().end()
-	       &&  fn_tmpl_it1 != o.get_member_function_templates().end();
-	     ++fn_tmpl_it0, ++fn_tmpl_it1)
-	  if (**fn_tmpl_it0 != **fn_tmpl_it1)
-	    return false;
-	if (fn_tmpl_it0 != get_member_function_templates().end()
-	    || fn_tmpl_it1 != o.get_member_function_templates().end())
-	  return false;
+	if (!comparison_started_  && !o.comparison_started_)
+	  {
+	    member_function_templates::const_iterator fn_tmpl_it0, fn_tmpl_it1;
+	    for (fn_tmpl_it0 = get_member_function_templates().begin(),
+		   fn_tmpl_it1 = o.get_member_function_templates().begin();
+		 fn_tmpl_it0 != get_member_function_templates().end()
+		   &&  fn_tmpl_it1 != o.get_member_function_templates().end();
+		 ++fn_tmpl_it0, ++fn_tmpl_it1)
+	      if (**fn_tmpl_it0 != **fn_tmpl_it1)
+		RETURN(false);
+	    if (fn_tmpl_it0 != get_member_function_templates().end()
+		|| fn_tmpl_it1 != o.get_member_function_templates().end())
+	      RETURN(false);
+	  }
       }
 
       // compare member class templates
       {
 	if (get_member_class_templates().size()
 	    != o.get_member_class_templates().size())
-	  return false;
+	  RETURN(false);
 
-	member_class_templates::const_iterator cl_tmpl_it0, cl_tmpl_it1;
-	for (cl_tmpl_it0 = get_member_class_templates().begin(),
-	       cl_tmpl_it1 = o.get_member_class_templates().begin();
-	     cl_tmpl_it0 != get_member_class_templates().end()
-	       &&  cl_tmpl_it1 != o.get_member_class_templates().end();
-	     ++cl_tmpl_it0, ++cl_tmpl_it1)
-	  if (**cl_tmpl_it0 != **cl_tmpl_it1)
-	    return false;
-	if (cl_tmpl_it0 != get_member_class_templates().end()
-	    || cl_tmpl_it1 != o.get_member_class_templates().end())
-	  return false;
+	if (!comparison_started_  && !o.comparison_started_)
+	  {
+	    member_class_templates::const_iterator cl_tmpl_it0, cl_tmpl_it1;
+	    for (cl_tmpl_it0 = get_member_class_templates().begin(),
+		   cl_tmpl_it1 = o.get_member_class_templates().begin();
+		 cl_tmpl_it0 != get_member_class_templates().end()
+		   &&  cl_tmpl_it1 != o.get_member_class_templates().end();
+		 ++cl_tmpl_it0, ++cl_tmpl_it1)
+	      if (**cl_tmpl_it0 != **cl_tmpl_it1)
+		RETURN(false);
+	    if (cl_tmpl_it0 != get_member_class_templates().end()
+		|| cl_tmpl_it1 != o.get_member_class_templates().end())
+	      RETURN(false);
+	  }
       }
     }
   catch (...)
-    {return false;}
-  return true;
+    {RETURN(false);}
+  RETURN(true);
 }
 
 /// Equality operator for class_decl.

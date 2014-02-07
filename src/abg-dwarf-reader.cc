@@ -622,9 +622,24 @@ die_access_specifier(Dwarf_Die * die, class_decl::access_specifier& access)
 static bool
 is_public_decl(Dwarf_Die* die)
 {
-  bool is_public = 0;
+  bool is_public = false;
   die_flag_attribute(die, DW_AT_external, is_public);
   return is_public;
+}
+
+/// Test whether a given DIE represents a declaration-only DIE.
+///
+/// That is, if the DIE has the DW_AT_declaration flag set.
+///
+/// @param die the DIE to consider.
+///
+/// @return true if a DW_AT_declaration is present, false otherwise.
+static bool
+is_declaration_only(Dwarf_Die* die)
+{
+  bool is_declaration_only = false;
+  die_flag_attribute(die, DW_AT_declaration, is_declaration_only);
+  return is_declaration_only;
 }
 
 ///@return true if a tag represents a type, false otherwise.
@@ -2147,6 +2162,13 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   class_decl_sptr cur_class_decl (new class_decl(name));
   decl_base_sptr cur_class =
     add_decl_to_scope(cur_class_decl, scope);
+
+  Dwarf_Die child;
+  bool has_child = (dwarf_child(die, &child) == 0);
+
+  if (!has_child && is_declaration_only(die))
+    return cur_class;
+
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
 
   result.reset(new class_decl(name, size, 0, loc,
@@ -2163,8 +2185,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   assert(scop);
   ctxt.scope_stack().push(scop.get());
 
-  Dwarf_Die child;
-  if (dwarf_child(die, &child) == 0)
+  if (has_child)
     {
       do
 	{

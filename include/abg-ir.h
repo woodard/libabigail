@@ -1619,6 +1619,7 @@ public:
 
 private:
   mutable bool			hashing_started_;
+  mutable bool			comparison_started_;
   decl_base_sptr		declaration_;
   bool				is_declaration_only_;
   class_decl_sptr		definition_of_declaration_;

@@ -2069,6 +2069,7 @@ build_class_decl(read_context&		ctxt,
 	{
 	  is_def_of_decl = true;
 	  decl->set_earlier_declaration(d);
+	  d->set_definition_of_declaration(decl);
 	}
     }
 

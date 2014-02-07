@@ -24,6 +24,7 @@
 
 
 #include "abg-comparison.h"
+#include "abg-hash.h"
 
 namespace abigail
 {
@@ -36,10 +37,113 @@ using std::vector;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 
+/// Convenience typedef for a pair of decls.
+typedef std::pair<const decl_base_sptr, const decl_base_sptr> decls_type;
+
+/// A hashing functor for @ef decls_type.
+struct decls_hash
+{
+  size_t
+  operator()(const decls_type& d) const
+  {
+    size_t h1 = d.first ? d.first->get_hash() : 0;
+    size_t h2 = d.second ? d.second->get_hash() : 0;
+    return hashing::combine_hashes(h1, h2);
+  }
+};
+
+/// An equality functor for @ref decls_type.
+struct decls_equal
+{
+  bool
+  operator()(const decls_type d1, const decls_type d2) const
+  {
+    if (d1.first == d2.first && d1.second == d2.second)
+      return true;
+
+    return (*d1.first == *d2.first
+	    && *d1.second == *d2.second);
+  }
+};
+
+/// A convenience typedef for a map of @ref decls_type and diff_sptr.
+typedef unordered_map<decls_type, diff_sptr, decls_hash, decls_equal>
+decls_diff_map_type;
+
+/// The private member (pimpl) for @ref diff_context.
+struct diff_context::priv
+{
+  decls_diff_map_type decls_diff_map;
+};// end struct diff_context::priv
+
+diff_context::diff_context()
+  : priv_(new diff_context::priv)
+{
+}
+
+/// Tests if the current diff context already has a diff for two decls.
+///
+/// @param first the first decl to consider.
+///
+/// @param second the second decl to consider.
+///
+/// @return a pointer to the diff for @p first @p second if found,
+/// null otherwise.
+diff_sptr
+diff_context::has_diff_for(const decl_base_sptr first,
+			   const decl_base_sptr second) const
+{
+  decls_diff_map_type::const_iterator i =
+    priv_->decls_diff_map.find(std::make_pair(first, second));
+  if (i != priv_->decls_diff_map.end())
+    return i->second;
+  return diff_sptr();
+}
+
+/// Tests if the current diff context already has a diff for two types.
+///
+/// @param first the first type to consider.
+///
+/// @param second the second type to consider.
+///
+/// @return a pointer to the diff for @p first @p second if found,
+/// null otherwise.
+diff_sptr
+diff_context::has_diff_for_types(const type_base_sptr first,
+				 const type_base_sptr second) const
+{
+  return has_diff_for(get_type_declaration(first),
+		      get_type_declaration(second));
+}
+
+/// Tests if the current diff context already has a given diff.
+///
+///@param d the diff to consider.
+///
+/// @return a pointer to the diff found for @p d
+diff_sptr
+diff_context::has_diff_for(const diff_sptr d) const
+{return has_diff_for(d->first_subject(), d->second_subject());}
+
+/// Add a diff for two decls to the cache of the current diff_context
+///
+/// @param first the first decl to consider.
+///
+/// @param second the second decl to consider.
+///
+/// @param the diff to add.
+void
+diff_context::add_diff(decl_base_sptr first,
+		       decl_base_sptr second,
+		       diff_sptr d)
+{priv_->decls_diff_map[std::make_pair(first, second)] = d;}
+
 /// Try to compute a diff on two instances of DiffType representation.
 ///
 /// The function template performs the diff if and only if the decl
 /// representations are of a DiffType.
+///
+/// @tparm DiffType the type of instances to diff.
 ///
 /// @param first the first representation of decl to consider in the
 /// diff computation.
@@ -47,19 +151,61 @@ using std::tr1::static_pointer_cast;
 /// @param second the second representation of decl to consider in the
 /// diff computation.
 ///
+/// @param ctxt the diff context to use.
+///
 ///@return the diff of the two types @p first and @p second if and
 ///only if they represent the parametrized type DiffType.  Otherwise,
 ///returns a NULL pointer value.
 template<typename DiffType>
 diff_sptr
-try_to_diff(const decl_base_sptr first, const decl_base_sptr second)
+try_to_diff(const decl_base_sptr first,
+	    const decl_base_sptr second,
+	    diff_context_sptr ctxt)
 {
   if (shared_ptr<DiffType> f =
       dynamic_pointer_cast<DiffType>(first))
     {
       shared_ptr<DiffType> s =
 	dynamic_pointer_cast<DiffType>(second);
-      return compute_diff(f, s);
+      return compute_diff(f, s, ctxt);
+    }
+  return diff_sptr();
+}
+
+
+/// This is a specialization of @ref try_to_diff() template to diff
+/// instances of @ref class_decl.
+///
+/// @param first the first representation of decl to consider in the
+/// diff computation.
+///
+/// @param second the second representation of decl to consider in the
+/// diff computation.
+///
+/// @param ctxt the diff context to use.
+template<>
+diff_sptr
+try_to_diff<class_decl>(const decl_base_sptr first,
+			const decl_base_sptr second,
+			diff_context_sptr ctxt)
+{
+  if (class_decl_sptr f =
+      dynamic_pointer_cast<class_decl>(first))
+    {
+      class_decl_sptr s = dynamic_pointer_cast<class_decl>(second);
+      if (f->is_declaration_only())
+	{
+	  class_decl_sptr f2 = f->get_definition_of_declaration();
+	  if (f2)
+	    f = f2;
+	}
+      if (s->is_declaration_only())
+	{
+	  class_decl_sptr s2 = s->get_definition_of_declaration();
+	  if (s2)
+	    s = s2;
+	}
+      return compute_diff(f, s, ctxt);
     }
   return diff_sptr();
 }
@@ -77,20 +223,24 @@ try_to_diff(const decl_base_sptr first, const decl_base_sptr second)
 ///
 /// @param second the second type decl to consider for the diff.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return the resulting diff.  It's a pointer to a descendent of
 /// abigail::comparison::diff.
 static diff_sptr
-compute_diff_for_types(const decl_base_sptr first, const decl_base_sptr second)
+compute_diff_for_types(const decl_base_sptr first,
+		       const decl_base_sptr second,
+		       diff_context_sptr ctxt)
 {
   diff_sptr d;
 
-  ((d = try_to_diff<type_decl>(first, second))
-   ||(d = try_to_diff<enum_type_decl>(first, second))
-   ||(d = try_to_diff<class_decl>(first, second))
-   ||(d = try_to_diff<pointer_type_def>(first, second))
-   ||(d = try_to_diff<reference_type_def>(first, second))
-   ||(d = try_to_diff<qualified_type_def>(first, second))
-   ||(d = try_to_diff<typedef_decl>(first, second)));
+  ((d = try_to_diff<type_decl>(first, second, ctxt))
+   ||(d = try_to_diff<enum_type_decl>(first, second, ctxt))
+   ||(d = try_to_diff<class_decl>(first, second,ctxt))
+   ||(d = try_to_diff<pointer_type_def>(first, second, ctxt))
+   ||(d = try_to_diff<reference_type_def>(first, second, ctxt))
+   ||(d = try_to_diff<qualified_type_def>(first, second, ctxt))
+   ||(d = try_to_diff<typedef_decl>(first, second, ctxt)));
 
   return d;
 }
@@ -104,14 +254,29 @@ compute_diff_for_types(const decl_base_sptr first, const decl_base_sptr second)
 ///
 /// @param second the second construct to consider for the diff.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return the resulting diff.  It's a pointer to a descendent of
 /// abigail::comparison::diff.
 static diff_sptr
-compute_diff_for_types(const type_base_sptr first, const type_base_sptr second)
+compute_diff_for_types(const type_base_sptr first,
+		       const type_base_sptr second,
+		       diff_context_sptr ctxt)
 {
+  diff_sptr d;
+
   decl_base_sptr f = dynamic_pointer_cast<decl_base>(first);
   decl_base_sptr s = dynamic_pointer_cast<decl_base>(second);
-  return compute_diff_for_types(f, s);
+
+  if (d = ctxt->has_diff_for(f, s))
+    ;
+  else
+    {
+      d = compute_diff_for_types(f, s, ctxt);
+      ctxt->add_diff(f, s, d);
+    }
+
+  return d;
 }
 
 /// Compute the difference between two decls.
@@ -126,14 +291,20 @@ compute_diff_for_types(const type_base_sptr first, const type_base_sptr second)
 /// @param first the first decl to consider for the diff
 ///
 /// @param second the second decl to consider for the diff.
+///
+/// @param ctxt the diff context to use.
+///
+/// @return the resulting diff.
 static diff_sptr
-compute_diff_for_decls(const decl_base_sptr first, const decl_base_sptr second)
+compute_diff_for_decls(const decl_base_sptr first,
+		       const decl_base_sptr second,
+		       diff_context_sptr ctxt)
 {
 
   diff_sptr d;
 
-  ((d = try_to_diff<function_decl>(first, second))
-   || (d = try_to_diff<var_decl>(first, second)));
+  ((d = try_to_diff<function_decl>(first, second, ctxt))
+   || (d = try_to_diff<var_decl>(first, second, ctxt)));
 
   return d;
 }
@@ -145,17 +316,23 @@ compute_diff_for_decls(const decl_base_sptr first, const decl_base_sptr second)
 ///
 /// @param second the second decl to consider.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return the resulting diff, or NULL if the diff could not be
 /// computed.
 diff_sptr
-compute_diff(decl_base_sptr first, decl_base_sptr second)
+compute_diff(const decl_base_sptr first,
+	     const decl_base_sptr second,
+	     diff_context_sptr ctxt)
 {
   if (!first || !second)
     return diff_sptr();
 
   diff_sptr d;
   if (is_type(first) && is_type(second))
-    d = compute_diff_for_decls(first, second);
+    d = compute_diff_for_types(first, second, ctxt);
+  else
+    d = compute_diff_for_decls(first, second, ctxt);
 
   return d;
 }
@@ -166,16 +343,21 @@ compute_diff(decl_base_sptr first, decl_base_sptr second)
 ///
 /// @param second the second type to consider.
 ///
-/// @return the resulting diff, or NULL if the diff couldn't be comupted.
+/// @param ctxt the diff context to use.
+///
+/// @return the resulting diff, or NULL if the diff couldn't be
+/// computed.
 diff_sptr
-compute_diff(type_base_sptr first, type_base_sptr second)
+compute_diff(const type_base_sptr first,
+	     const type_base_sptr second,
+	     diff_context_sptr ctxt)
 {
     if (!first || !second)
       return diff_sptr();
 
   decl_base_sptr f = get_type_declaration(first),
     s = get_type_declaration(second);
-  diff_sptr d = compute_diff_for_types(f,s);
+  diff_sptr d = compute_diff_for_types(f,s, ctxt);
 
   return d;
 }
@@ -265,18 +447,22 @@ represent(class_decl::data_member_sptr data_mem,
 ///
 /// @param n the newer version of the data member.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @param out the output stream to send the representation to.
 ///
 /// @param indent the indentation string to use for the change report.
 static void
-represent(class_decl::data_member_sptr o,
-	  class_decl::data_member_sptr n,
-	  ostream& out,
-	  const string indent = "")
+represent(class_decl::data_member_sptr	o,
+	  class_decl::data_member_sptr	n,
+	  diff_context_sptr		ctxt,
+	  ostream&			out,
+	  const string&		indent = "")
 {
   bool emitted = false;
   string name = o->get_qualified_name();
   string name2 = n->get_qualified_name();
+  string pretty_representation = o->get_pretty_representation();
   assert(name == name2);
 
   if (o->is_laid_out() != n->is_laid_out())
@@ -347,11 +533,20 @@ represent(class_decl::data_member_sptr o,
   if (*o->get_type() != *n->get_type())
     {
       if (!emitted)
-	out << indent << "'" << name << "' type changed:\n";
+	out << indent << "'" << pretty_representation << "' type changed:\n";
       else
 	out << "\n" << indent << "type changed:\n";
-      diff_sptr d = compute_diff_for_types(o->get_type(), n->get_type());
-      d->report(out, indent + "  ");
+      diff_sptr d = compute_diff_for_types(o->get_type(),
+					   n->get_type(),
+					   ctxt);
+      if (d->currently_reporting())
+	out << indent << "details are being reported\n";
+      else if (d->reported_once())
+	out << indent << "details were reported earlier\n";
+      else
+	{
+	  d->report(out, indent + "  ");
+	}
       emitted = false;
     }
   if (emitted)
@@ -500,10 +695,13 @@ struct var_diff::priv
 ///
 /// @param type_diff the diff between types of the instances of
 /// var_decl.
-var_diff::var_diff(var_decl_sptr first,
-		   var_decl_sptr second,
-		   diff_sptr type_diff)
-  : diff(first, second),
+///
+/// @param ctxt the diff context to use.
+var_diff::var_diff(var_decl_sptr	first,
+		   var_decl_sptr	second,
+		   diff_sptr		type_diff,
+		   diff_context_sptr	ctxt)
+  : diff(first, second, ctxt),
     priv_(new priv)
 {priv_->type_diff_ = type_diff;}
 
@@ -542,7 +740,7 @@ var_diff::length() const
     ++l;
   l += diff_length_of_decl_bases(f, s);
 
-  diff_sptr d = compute_diff(f->get_type(), s->get_type());
+  diff_sptr d = compute_diff(f->get_type(), s->get_type(), context());
   l += d->length();
 
   return l;
@@ -583,12 +781,27 @@ var_diff::report(ostream& out, const string& indent) const
 ///
 /// @param second the second @ref var_decl to consider for the diff.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return the resulting diff between the two @ref var_decl.
 var_diff_sptr
-compute_diff(const var_decl_sptr first, const var_decl_sptr second)
+compute_diff(const var_decl_sptr first,
+	     const var_decl_sptr second,
+	     diff_context_sptr ctxt)
 {
-  diff_sptr type_diff = compute_diff(first->get_type(), second->get_type());
-  var_diff_sptr d(new var_diff(first, second, type_diff));
+  if (diff_sptr di = ctxt->has_diff_for(first, second))
+    {
+      var_diff_sptr d = dynamic_pointer_cast<var_diff>(di);
+      assert(d);
+      return d;
+    }
+
+  diff_sptr type_diff = compute_diff(first->get_type(),
+				     second->get_type(),
+				     ctxt);
+  var_diff_sptr d(new var_diff(first, second, type_diff, ctxt));
+  ctxt->add_diff(first, second, d);
+
   return d;
 }
 
@@ -599,9 +812,12 @@ compute_diff(const var_decl_sptr first, const var_decl_sptr second)
 /// @param first the first pointer to consider for the diff.
 ///
 /// @param second the secon pointer to consider for the diff.
-pointer_diff::pointer_diff(pointer_type_def_sptr first,
-			   pointer_type_def_sptr second)
-  : diff(first, second),
+///
+/// @param ctxt the diff context to use.
+pointer_diff::pointer_diff(pointer_type_def_sptr	first,
+			   pointer_type_def_sptr	second,
+			   diff_context_sptr		ctxt)
+  : diff(first, second, ctxt),
     priv_(new priv)
 {}
 
@@ -657,9 +873,34 @@ pointer_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      out << indent << "in pointed to type '"
-	  << d->first_subject()->get_pretty_representation() << "':\n";
-      d->report(out, indent + "  ");
+      string name = d->first_subject()->get_pretty_representation();
+      if (diff_sptr d2 = context()->has_diff_for(d))
+	{
+	  if (d2->currently_reporting())
+	    out << indent << "pointed to type '"
+		<< name
+		<< "' changed; details are being reported\n";
+	  else if (d2->reported_once())
+	    out << indent << "pointed to type '"
+		<< name
+		<< "' changed, as reported earlier\n";
+	  else
+	    {
+	      out << indent
+		  << "in pointed to type '"
+		  << name
+		  << "':\n";
+	      d->report(out, indent + "  ");
+	    }
+	}
+      else
+	{
+	  out << indent
+	      << "in pointed to type '"
+	      << name
+	      << "':\n";
+	      d->report(out, indent + "  ");
+	}
     }
 }
 
@@ -670,14 +911,27 @@ pointer_diff::report(ostream& out, const string& indent) const
 /// @param second the pointer to consider for the diff.
 ///
 /// @return the resulting diff between the two pointers.
+///
+/// @param ctxt the diff context to use.
 pointer_diff_sptr
 compute_diff(pointer_type_def_sptr first,
-	     pointer_type_def_sptr second)
+	     pointer_type_def_sptr second,
+	     diff_context_sptr ctxt)
 {
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      pointer_diff_sptr d = dynamic_pointer_cast<pointer_diff>(dif);
+      assert(d);
+      return d;
+    }
+
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
-				       second->get_pointed_to_type());
-  pointer_diff_sptr result(new pointer_diff(first, second));
+				       second->get_pointed_to_type(),
+				       ctxt);
+  pointer_diff_sptr result(new pointer_diff(first, second, ctxt));
   result->underlying_type_diff(d);
+  ctxt->add_diff(first, second, result);
+
   return result;
 }
 
@@ -694,9 +948,12 @@ struct reference_diff::priv
 /// @param first the first reference_type of the diff.
 ///
 /// @param second the second reference_type of the diff.
-reference_diff::reference_diff(const reference_type_def_sptr first,
-			       const reference_type_def_sptr second)
-  : diff(first, second),
+///
+/// @param ctxt the diff context to use.
+reference_diff::reference_diff(const reference_type_def_sptr	first,
+			       const reference_type_def_sptr	second,
+			       diff_context_sptr		ctxt)
+  : diff(first, second, ctxt),
     priv_(new priv)
 
 {}
@@ -751,9 +1008,34 @@ reference_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      out << indent << "in referenced type '"
-	  << d->first_subject()->get_pretty_representation() << "':\n";
-      d->report(out, indent + "  ");
+      string name = d->first_subject()->get_pretty_representation();
+      if (diff_sptr d2 = context()->has_diff_for(d))
+	{
+	  if (d2->currently_reporting())
+	    out << indent << "referenced type '"
+		<< name
+		<< "' changed; details are being reported\n";
+	  else if (d2->reported_once())
+	    out << indent << "referenced type '"
+		<< name
+		<< "' changed, as reported earlier\n";
+	  else
+	    {
+	      out << indent
+		  << "in refereneced type '"
+		  << name
+		  << "':\n";
+	      d->report(out, indent + "  ");
+	    }
+	}
+      else
+	{
+	  out << indent
+	      << "in referenced type '"
+	      << name
+	      << "':\n";
+	  d->report(out, indent + "  ");
+	}
     }
 }
 
@@ -762,14 +1044,26 @@ reference_diff::report(ostream& out, const string& indent) const
 /// @param first the first reference to consider for the diff.
 ///
 /// @param second the second reference to consider for the diff.
+///
+/// @param ctxt the diff context to use.
 reference_diff_sptr
-compute_diff(reference_type_def_sptr first,
-	     reference_type_def_sptr second)
+compute_diff(reference_type_def_sptr	first,
+	     reference_type_def_sptr	second,
+	     diff_context_sptr		ctxt)
 {
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      reference_diff_sptr d = dynamic_pointer_cast<reference_diff>(dif);
+      return d;
+    }
+
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
-				       second->get_pointed_to_type());
-  reference_diff_sptr result(new reference_diff(first, second));
+				       second->get_pointed_to_type(),
+				       ctxt);
+  reference_diff_sptr result(new reference_diff(first, second, ctxt));
   result->underlying_type_diff(d);
+  ctxt->add_diff(first, second, result);
+
   return result;
 
 }
@@ -788,9 +1082,12 @@ struct qualified_type_diff::priv
 /// @param first the first qualified type of the diff.
 ///
 /// @param second the second qualified type of the diff.
-qualified_type_diff::qualified_type_diff(qualified_type_def_sptr first,
-					 qualified_type_def_sptr second)
-  : diff(first, second),
+///
+/// @param ctxt the diff context to use.
+qualified_type_diff::qualified_type_diff(qualified_type_def_sptr	first,
+					 qualified_type_def_sptr	second,
+					 diff_context_sptr		ctxt)
+  : diff(first, second, ctxt),
     priv_(new priv)
 {
 }
@@ -890,6 +1187,22 @@ qualified_type_diff::report(ostream& out, const string& indent) const
   string fname = first_qualified_type()->get_pretty_representation(),
     sname = second_qualified_type()->get_pretty_representation();
 
+  if (diff_sptr d = context()->has_diff_for(first_qualified_type(),
+					    second_qualified_type()))
+    {
+      if (d->currently_reporting())
+	{
+	  out << indent << " details are being reported\n";
+	  return;
+	}
+      else if (d->reported_once())
+	{
+	  out << indent << " details were reported earlier\n";
+	  return;
+	}
+    }
+
+
   if (fname != sname)
     {
       out << indent << "'" << fname << "' changed to '" << sname << "'\n";
@@ -901,9 +1214,28 @@ qualified_type_diff::report(ostream& out, const string& indent) const
   string fltname = get_type_declaration(flt)->get_pretty_representation(),
     sltname = get_type_declaration(slt)->get_pretty_representation();
 
-  diff_sptr d = compute_diff_for_types(flt, slt);
-  out << indent << "in unqualified underlying type '" << fltname << "':\n";
-  d->report(out, indent + "  ");
+  diff_sptr d = compute_diff_for_types(flt, slt, context());
+  if (diff_sptr d = context()->has_diff_for_types(flt, slt))
+    {
+      if (d->currently_reporting())
+	out << indent << "unqualified underlying type "
+	    << fltname << " changed; details are being reported\n";
+      else if (d->reported_once())
+	out << indent << "unqualified underlying type "
+	    << fltname << " changed, as reported earlier\n";
+      else
+	{
+	  out << indent
+	      << "in unqualified underlying type '"
+	      << fltname << "':\n";
+	  d->report(out, indent + "  ");
+	}
+    }
+  else
+    {
+      out << indent << "in unqualified underlying type '" << fltname << "':\n";
+      d->report(out, indent + "  ");
+    }
 }
 
 /// Compute the diff between two qualified types.
@@ -911,14 +1243,28 @@ qualified_type_diff::report(ostream& out, const string& indent) const
 /// @param first the first qualified type to consider for the diff.
 ///
 /// @param second the second qualified type to consider for the diff.
+///
+/// @param ctxt the diff context to use.
 qualified_type_diff_sptr
 compute_diff(const qualified_type_def_sptr first,
-	     const qualified_type_def_sptr second)
+	     const qualified_type_def_sptr second,
+	     diff_context_sptr ctxt)
 {
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      qualified_type_diff_sptr d =
+	dynamic_pointer_cast<qualified_type_diff>(dif);
+      assert(d);
+      return d;
+    }
+
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
-				       second->get_underlying_type());
-  qualified_type_diff_sptr result(new qualified_type_diff(first, second));
+				       second->get_underlying_type(),
+				       ctxt);
+  qualified_type_diff_sptr result(new qualified_type_diff(first, second, ctxt));
   result->underlying_type_diff(d);
+  ctxt->add_diff(first, second, result);
+
   return result;
 }
 
@@ -996,20 +1342,18 @@ enum_diff::ensure_lookup_tables_populated()
 	    const string& name = n.get_name();
 	    assert(priv_->inserted_enumerators_.find(n.get_name())
 		   == priv_->inserted_enumerators_.end());
-	    priv_->inserted_enumerators_[name] = n;
+	    string_enumerator_map::const_iterator j =
+	      priv_->deleted_enumerators_.find(name);
+	    if (j == priv_->deleted_enumerators_.end())
+	      priv_->inserted_enumerators_[name] = n;
+	    else
+	      {
+		if (j->second != n)
+		  priv_->changed_enumerators_[j->first] =
+		    std::make_pair(j->second, n);
+		priv_->deleted_enumerators_.erase(j);
+	      }
 	  }
-      }
-
-    for (string_enumerator_map::const_iterator i =
-	   priv_->deleted_enumerators_.begin();
-	 i != priv_->deleted_enumerators_.end();
-	 ++i)
-      {
-	string_enumerator_map::const_iterator r =
-	  priv_->inserted_enumerators_.find(i->first);
-	if (r != priv_->inserted_enumerators_.end())
-	  priv_->changed_enumerators_[i->first] =
-	    std::make_pair(i->second, r->second);
       }
   }
 }
@@ -1022,10 +1366,13 @@ enum_diff::ensure_lookup_tables_populated()
 ///
 /// @param underlying_type_diff the diff of the two underlying types
 /// of the two enum types.
-enum_diff::enum_diff(const enum_type_decl_sptr first,
-		     const enum_type_decl_sptr second,
-		     const diff_sptr underlying_type_diff)
-  : diff(first, second),
+///
+/// @param ctxt the diff context to use.
+enum_diff::enum_diff(const enum_type_decl_sptr	first,
+		     const enum_type_decl_sptr	second,
+		     const diff_sptr		underlying_type_diff,
+		     const diff_context_sptr	ctxt)
+  : diff(first, second,ctxt),
     priv_(new priv)
 {priv_->underlying_type_diff_ = underlying_type_diff;}
 
@@ -1099,10 +1446,6 @@ enum_diff::report(ostream& out, const string& indent) const
   unsigned numdels = deleted_enumerators().size();
   unsigned numins = inserted_enumerators().size();
   unsigned numchanges = changed_enumerators().size();
-  assert(numchanges <= numdels
-	 && numchanges <= numins);
-  numdels -= numchanges;
-  numins -= numchanges;
 
   if (numdels)
     {
@@ -1178,13 +1521,24 @@ enum_diff::report(ostream& out, const string& indent) const
 ///
 /// @return the resulting diff of the two enums @p first and @p
 /// second.
+///
+/// @param ctxt the diff context to use.
 enum_diff_sptr
 compute_diff(const enum_type_decl_sptr first,
-	     const enum_type_decl_sptr second)
+	     const enum_type_decl_sptr second,
+	     diff_context_sptr ctxt)
 {
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      enum_diff_sptr d = dynamic_pointer_cast<enum_diff>(dif);
+      assert(d);
+      return d;
+    }
+
   diff_sptr ud = compute_diff_for_types(first->get_underlying_type(),
-					second->get_underlying_type());
-  enum_diff_sptr d(new enum_diff(first, second, ud));
+					second->get_underlying_type(),
+					ctxt);
+  enum_diff_sptr d(new enum_diff(first, second, ud, ctxt));
 
   compute_diff(first->get_enumerators().begin(),
 	       first->get_enumerators().end(),
@@ -1193,6 +1547,8 @@ compute_diff(const enum_type_decl_sptr first,
 	       d->priv_->enumerators_changes_);
 
   d->ensure_lookup_tables_populated();
+
+  ctxt->add_diff(first, second, d);
 
   return d;
 }
@@ -1218,6 +1574,9 @@ struct class_diff::priv
   string_decl_base_sptr_map deleted_data_members_;
   string_decl_base_sptr_map inserted_data_members_;
   string_changed_type_or_decl_map changed_data_members_;
+  string_member_function_sptr_map deleted_member_functions_;
+  string_member_function_sptr_map inserted_member_functions_;
+  string_changed_member_function_sptr_map changed_member_functions_;
   string_decl_base_sptr_map deleted_member_class_tmpls_;
   string_decl_base_sptr_map inserted_member_class_tmpls_;
   string_changed_type_or_decl_map changed_member_class_tmpls_;
@@ -1251,6 +1610,9 @@ class_diff::clear_lookup_tables(void)
   priv_->deleted_data_members_.clear();
   priv_->inserted_data_members_.clear();
   priv_->changed_data_members_.clear();
+  priv_->deleted_member_functions_.clear();
+  priv_->inserted_member_functions_.clear();
+  priv_->changed_member_functions_.clear();
   priv_->deleted_member_class_tmpls_.clear();
   priv_->inserted_member_class_tmpls_.clear();
   priv_->changed_member_class_tmpls_.clear();
@@ -1271,6 +1633,9 @@ class_diff::lookup_tables_empty(void) const
 	  && priv_->deleted_data_members_.empty()
 	  && priv_->inserted_data_members_.empty()
 	  && priv_->changed_data_members_.empty()
+	  && priv_->inserted_member_functions_.empty()
+	  && priv_->deleted_member_functions_.empty()
+	  && priv_->changed_member_functions_.empty()
 	  && priv_->deleted_member_class_tmpls_.empty()
 	  && priv_->inserted_member_class_tmpls_.empty()
 	  && priv_->changed_member_class_tmpls_.empty());
@@ -1315,22 +1680,18 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    string qname = b->get_qualified_name();
 	    assert(priv_->inserted_bases_.find(qname)
 		   == priv_->inserted_bases_.end());
-	    priv_->inserted_bases_[qname] = b;
+	    string_decl_base_sptr_map::const_iterator j =
+	      priv_->deleted_bases_.find(qname);
+	    if (j != priv_->deleted_bases_.end())
+	      {
+		if (*j->second != *b)
+		  priv_->changed_bases_[qname] =
+		    std::make_pair(j->second, b);
+		priv_->deleted_bases_.erase(j);
+	      }
+	    else
+	      priv_->inserted_bases_[qname] = b;
 	  }
-      }
-
-    for (string_decl_base_sptr_map::const_iterator i =
-	   priv_->deleted_bases_.begin();
-	 i != priv_->deleted_bases_.end();
-	 ++i)
-      {
-	string_decl_base_sptr_map::const_iterator r =
-	  priv_->inserted_bases_.find(i->first);
-
-	if (r != priv_->inserted_bases_.end()
-	    && i->second != r->second)
-	  priv_->changed_bases_[i->first]
-	    = std::make_pair(i->second, r->second);
       }
   }
 
@@ -1343,6 +1704,10 @@ class_diff::ensure_lookup_tables_populated(void) const
       {
 	unsigned i = it->index();
 	decl_base_sptr d = first_class_decl()->get_member_types()[i];
+	class_decl_sptr klass_decl =
+	  dynamic_pointer_cast<class_decl>(as_non_member_type(d));
+	if (klass_decl && klass_decl->is_declaration_only())
+	  continue;
 	string qname = d->get_qualified_name();
 	assert(priv_->deleted_member_types_.find(qname)
 	       == priv_->deleted_member_types_.end());
@@ -1360,25 +1725,25 @@ class_diff::ensure_lookup_tables_populated(void) const
 	  {
 	    unsigned i = *iit;
 	    decl_base_sptr d = second_class_decl()->get_member_types()[i];
+	    class_decl_sptr klass_decl =
+	      dynamic_pointer_cast<class_decl>(as_non_member_type(d));
+	    if (klass_decl && klass_decl->is_declaration_only())
+	      continue;
 	    string qname = d->get_qualified_name();
 	    assert(priv_->inserted_member_types_.find(qname)
 		   == priv_->inserted_member_types_.end());
-	    priv_->inserted_member_types_[qname] = d;
+	    string_decl_base_sptr_map::const_iterator j =
+	      priv_->deleted_member_types_.find(qname);
+	    if (j != priv_->deleted_member_types_.end())
+	      {
+		if (*j->second != *d)
+		  priv_->changed_member_types_[qname] =
+		    std::make_pair(j->second, d);
+		priv_->deleted_member_types_.erase(j);
+	      }
+	    else
+	      priv_->inserted_member_types_[qname] = d;
 	  }
-      }
-
-    for (string_decl_base_sptr_map::const_iterator i =
-	   priv_->deleted_member_types_.begin();
-	 i != priv_->deleted_member_types_.end();
-	 ++i)
-      {
-	string_decl_base_sptr_map::const_iterator r =
-	  priv_->inserted_member_types_.find(i->first);
-
-	if (r != priv_->inserted_member_types_.end()
-	    && i->second != r->second)
-	  priv_->changed_member_types_[i->first]
-	    = std::make_pair(i->second, r->second);
       }
   }
 
@@ -1411,22 +1776,69 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    string qname = d->get_qualified_name();
 	    assert(priv_->inserted_data_members_.find(qname)
 		   == priv_->inserted_data_members_.end());
-	    priv_->inserted_data_members_[qname] = d;
+	    string_decl_base_sptr_map::const_iterator j =
+	      priv_->deleted_data_members_.find(qname);
+	    if (j != priv_->deleted_data_members_.end())
+	      {
+		if (*j->second != *d)
+		  priv_->changed_data_members_[qname]=
+		    std::make_pair(j->second, d);
+		priv_->deleted_data_members_.erase(j);
+	      }
+	    else
+	      priv_->inserted_data_members_[qname] = d;
 	  }
       }
+  }
 
-    for (string_decl_base_sptr_map::const_iterator i =
-	   priv_->deleted_data_members_.begin();
-	 i != priv_->deleted_data_members_.end();
-	 ++i)
+  {
+    edit_script& e = priv_->member_fns_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
       {
-	string_decl_base_sptr_map::const_iterator r =
-	  priv_->inserted_data_members_.find(i->first);
+	unsigned i = it->index();
+	class_decl::member_function_sptr mem_fn =
+	  first_class_decl()->get_member_functions()[i];
+	string name = mem_fn->get_mangled_name();
+	assert(!name.empty());
+	assert(priv_->deleted_member_functions_.find(name)
+	       == priv_->deleted_member_functions_.end());
+	priv_->deleted_member_functions_[name] = mem_fn;
+      }
 
-	if (r != priv_->inserted_data_members_.end()
-	    && i->second != r->second)
-	  priv_->changed_data_members_[i->first]
-	    = std::make_pair(i->second, r->second);
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+
+	    class_decl::member_function_sptr mem_fn =
+	      second_class_decl()->get_member_functions()[i];
+	    string name = mem_fn->get_mangled_name();
+	    if (name.empty())
+	      name = mem_fn->get_pretty_representation();
+	    assert(!name.empty());
+	    assert (priv_->inserted_member_functions_.find(name)
+		    == priv_->inserted_member_functions_.end());
+	    string_member_function_sptr_map::const_iterator j =
+	      priv_->deleted_member_functions_.find(name);
+	    if (j != priv_->deleted_member_functions_.end())
+	      {
+		if (*j->second != *mem_fn)
+		  priv_->changed_member_functions_[name] =
+		    std::make_pair(j->second, mem_fn);
+		priv_->deleted_member_functions_.erase(j);
+	      }
+	    else
+	      priv_->inserted_member_functions_[name] = mem_fn;
+	  }
       }
   }
 
@@ -1463,22 +1875,18 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    string qname = d->get_qualified_name();
 	    assert(priv_->inserted_member_class_tmpls_.find(qname)
 		   == priv_->inserted_member_class_tmpls_.end());
-	    priv_->inserted_member_class_tmpls_[qname] = d;
+	    string_decl_base_sptr_map::const_iterator j =
+	      priv_->deleted_member_class_tmpls_.find(qname);
+	    if (j != priv_->deleted_member_class_tmpls_.end())
+	      {
+		if (*j->second != *d)
+		  priv_->changed_member_types_[qname]=
+		    std::make_pair(j->second, d);
+		priv_->deleted_member_class_tmpls_.erase(j);
+	      }
+	    else
+	      priv_->inserted_member_class_tmpls_[qname] = d;
 	  }
-      }
-
-    for (string_decl_base_sptr_map::const_iterator i =
-	   priv_->deleted_member_class_tmpls_.begin();
-	 i != priv_->deleted_member_class_tmpls_.end();
-	 ++i)
-      {
-	string_decl_base_sptr_map::const_iterator r =
-	  priv_->inserted_member_class_tmpls_.find(i->first);
-
-	if (r != priv_->inserted_member_class_tmpls_.end()
-	    && i->second != r->second)
-	  priv_->changed_member_class_tmpls_[i->first]
-	    = std::make_pair(i->second, r->second);
       }
   }
 }
@@ -1560,9 +1968,12 @@ class_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
 /// @param first_scope the first class of the diff.
 ///
 /// @param second_scope the second class of the diff.
-class_diff::class_diff(shared_ptr<class_decl> first_scope,
-		       shared_ptr<class_decl> second_scope)
-  : diff(first_scope, second_scope),
+///
+/// @param ctxt the diff context to use.
+class_diff::class_diff(shared_ptr<class_decl>	first_scope,
+		       shared_ptr<class_decl>	second_scope,
+		       diff_context_sptr	ctxt)
+  : diff(first_scope, second_scope, ctxt),
     priv_(new priv)
 {}
 
@@ -1573,11 +1984,11 @@ unsigned
 class_diff::length() const
 {
   return (base_changes().length()
-	  + member_types_changes()
-	  + data_members_changes()
-	  + member_fns_changes()
-	  + member_fn_tmpls_changes()
-	  + member_class_tmpls_changes());
+	  + member_types_changes().length()
+	  + data_members_changes().length()
+	  + member_fns_changes().length()
+	  + member_fn_tmpls_changes().length()
+	  + member_class_tmpls_changes().length());
 }
 
 /// @return the first class invoveld in the diff.
@@ -1674,6 +2085,23 @@ class_diff::report(ostream& out, const string& indent) const
 
   string name = first_subject()->get_pretty_representation();
 
+  if (diff_sptr d = context()->has_diff_for(first_subject(),
+					    second_subject()))
+    {
+      if (d->currently_reporting())
+	{
+	  out << indent << "details are being reported\n";
+	  return;
+	}
+      else if (d->reported_once())
+	{
+	  out << indent << "details were reported earlier\n";
+	  return;
+	}
+    }
+
+  currently_reporting(true);
+
   // Now report the changes about the differents parts of the type.
   class_decl_sptr first = first_class_decl(),
     second = second_class_decl();
@@ -1683,29 +2111,27 @@ class_diff::report(ostream& out, const string& indent) const
     out << "\n";
 
   // bases classes
-  if (const edit_script& e = base_changes())
+  if (base_changes())
     {
       // Report deletions.
-      int numdels = e.num_deletions();
+      int numdels = priv_->deleted_bases_.size();
       int numchanges = priv_->changed_bases_.size();
-      assert(numchanges <= numdels);
-      numdels -= numchanges;
 
       if (numdels)
 	{
 	  report_mem_header(out, numdels, del_kind,
 			    "base class", indent);
 
-	  for (vector<deletion>::const_iterator i = e.deletions().begin();
-	       i != e.deletions().end();
+	  for (string_decl_base_sptr_map::const_iterator i
+		 = priv_->deleted_bases_.begin();
+	       i != priv_->deleted_bases_.end();
 	       ++i)
 	    {
-	      if (i != e.deletions().begin())
+	      if (i != priv_->deleted_bases_.begin())
 		out << "\n";
 
 	      class_decl_sptr base_class =
-		first->get_base_specifiers()[i->index()]->
-		get_base_class();
+		dynamic_pointer_cast<class_decl>(i->second);
 
 	      if ( priv_->base_has_changed(base_class))
 		continue;
@@ -1730,43 +2156,30 @@ class_diff::report(ostream& out, const string& indent) const
 	      out << indent << "  '"
 		  << o->get_pretty_representation()
 		  << "' changed:\n";
-	      diff_sptr dif = compute_diff(o, n);
+	      diff_sptr dif = compute_diff(o, n, context());
 	      dif->report(out, indent + "  ");
 	    }
 	  out << "\n";
 	}
 
       //Report insertions.
-      int numins = e.num_insertions();
-      assert(numchanges <= numins);
-      numins -= numchanges;
+      int numins = priv_->inserted_bases_.size();
       if (numins)
 	{
 	  report_mem_header(out, numins, ins_kind,
 			    "base class", indent);
 
 	  bool emitted = false;
-	  for (vector<insertion>::const_iterator i = e.insertions().begin();
-	       i != e.insertions().end();
+	  for (string_decl_base_sptr_map::const_iterator i =
+		 priv_->inserted_bases_.begin();
+	       i != priv_->inserted_bases_.end();
 	       ++i)
 	    {
-	      shared_ptr<class_decl> b;
-	      for (vector<unsigned>::const_iterator j =
-		     i->inserted_indexes().begin();
-		   j != i->inserted_indexes().end();
-		   ++j)
-		{
-		  if (emitted)
-		    out << "\n";
-
-		  b= second->get_base_specifiers()[*j] ->
-		    get_base_class();
-		  if (!priv_->base_has_changed(b))
-		    {
-		      out << indent << b->get_qualified_name();
-		      emitted = true;
-		    }
-		}
+	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(i->second);
+	      if (emitted)
+		out << "\n";
+	      out << indent << b->get_qualified_name();
+	      emitted = true;
 	    }
 	  out << "\n";
 	}
@@ -1776,9 +2189,7 @@ class_diff::report(ostream& out, const string& indent) const
   if (const edit_script& e = member_types_changes())
     {
       int numchanges = priv_->changed_member_types_.size();
-      int numdels = e.num_deletions();
-      assert(numchanges <= numdels);
-      numdels -= numchanges;
+      int numdels = priv_->deleted_member_types_.size();
 
       // report deletions
       if (numdels)
@@ -1786,16 +2197,14 @@ class_diff::report(ostream& out, const string& indent) const
 	  report_mem_header(out, numdels, del_kind,
 			    "member type", indent);
 
-	  for (vector<deletion>::const_iterator i = e.deletions().begin();
-	       i != e.deletions().end();
+	  for (string_decl_base_sptr_map::const_iterator i =
+		 priv_->deleted_member_types_.begin();
+	       i != priv_->deleted_member_types_.end();
 	       ++i)
 	    {
-	      if (i != e.deletions().begin())
+	      if (i != priv_->deleted_member_types_.begin())
 		out << "\n";
-	      decl_base_sptr mem_type = first->get_member_types()[i->index()];
-
-	      if (decl_base_sptr n = priv_->member_type_has_changed(mem_type))
-		continue;
+	      decl_base_sptr mem_type = i->second;
 	      out << indent << "  '"
 		  << mem_type->get_pretty_representation()
 		  << "'";
@@ -1820,8 +2229,8 @@ class_diff::report(ostream& out, const string& indent) const
 	      out << indent << "  '"
 		  << o->get_pretty_representation()
 		  << "' changed:\n";
-	      diff_sptr dif = compute_diff_for_types(o, n);
-	      dif->report(out, indent + "  ");
+	      diff_sptr dif = compute_diff_for_types(o, n, context());
+	      dif->report(out, indent + "    ");
 	    }
 	  out << "\n";
 	}
@@ -1864,37 +2273,30 @@ class_diff::report(ostream& out, const string& indent) const
     }
 
   // data members
-  if (const edit_script& e = data_members_changes())
+  if (data_members_changes())
     {
       // report deletions
-      int numdels = e.num_deletions();
+      int numdels = priv_->deleted_data_members_.size();
       int numchanges = priv_->changed_data_members_.size();
-      assert(numchanges <= numdels);
-      numdels -= numchanges;
 
       if (numdels)
 	{
 	  report_mem_header(out, numdels, del_kind,
 			    "data member", indent);
 	  bool emitted = false;
-	  for (vector<deletion>::const_iterator i = e.deletions().begin();
-	       i != e.deletions().end();
+	  for (string_decl_base_sptr_map::const_iterator i =
+		 priv_->deleted_data_members_.begin();
+	       i != priv_->deleted_data_members_.end();
 	       ++i)
 	    {
 	      class_decl::data_member_sptr data_mem =
-		first->get_data_members()[i->index()];
-
-	      if (priv_->data_member_has_changed(data_mem))
-		continue;
-
-	      if (emitted)
-		out << "\n";
-
+		dynamic_pointer_cast<class_decl::data_member>(i->second);
 	      out << indent << "  ";
 	      represent(data_mem, out);
 	      emitted = true;
 	    }
-	  out << "\n";
+	  if (emitted)
+	    out << "\n";
 	}
 
       // report change
@@ -1912,61 +2314,53 @@ class_diff::report(ostream& out, const string& indent) const
 		dynamic_pointer_cast<class_decl::data_member>(it->second.first);
 	      class_decl::data_member_sptr n =
 		dynamic_pointer_cast<class_decl::data_member>(it->second.second);
-	      represent(o, n, out, indent + " ");
+	      represent(o, n, context(), out, indent + " ");
 	    }
 	  out << "\n";
 	}
 
       //report insertions
-      int numins = e.num_insertions();
-      assert(numchanges <= numins);
-      numins -= numchanges;
+      int numins = priv_->inserted_data_members_.size();
       if (numins)
 	{
 	  report_mem_header(out, numins, ins_kind,
 			    "data member", indent);
 	  bool emitted = false;
-	  for (vector<insertion>::const_iterator i = e.insertions().begin();
-	       i != e.insertions().end();
+	  for (string_decl_base_sptr_map::const_iterator i =
+		 priv_->inserted_data_members_.begin();
+	       i != priv_->inserted_data_members_.end();
 	       ++i)
 	    {
-	      class_decl::data_member_sptr data_mem;
-	      for (vector<unsigned>::const_iterator j =
-		     i->inserted_indexes().begin();
-		   j != i->inserted_indexes().end();
-		   ++j)
-		{
-		  data_mem = second->get_data_members()[*j];
-		  if (priv_->data_member_has_changed(data_mem))
-		    continue;
-		  if (emitted)
-		    out << "\n";
-		  out << indent << "  ";
-		  represent(data_mem, out);
-		  emitted = true;
-		}
+	      class_decl::data_member_sptr data_mem =
+		dynamic_pointer_cast<class_decl::data_member>(i->second);
+	      assert(data_mem);
+	      if (emitted)
+		out << "\n";
+	      out << indent << "  ";
+	      represent(data_mem, out);
+	      emitted = true;
 	    }
 	  if (emitted)
 	    out << "\n";
 	}
     }
 
-  // member_fns
-  if (const edit_script& e = member_fns_changes())
+  // member functions
+  if (member_fns_changes())
     {
       // report deletions
-      int numdels = e.num_deletions();
+      int numdels = priv_->deleted_member_functions_.size();
       if (numdels)
 	report_mem_header(out, numdels, del_kind,
 			  "member function", indent);
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
+      for (string_member_function_sptr_map::const_iterator i =
+	     priv_->deleted_member_functions_.begin();
+	   i != priv_->deleted_member_functions_.end();
 	   ++i)
 	{
-	  if (i != e.deletions().begin())
+	  if (i != priv_->deleted_member_functions_.begin())
 	    out << "\n";
-	  class_decl::member_function_sptr mem_fun =
-	    first->get_member_functions()[i->index()];
+	  class_decl::member_function_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(mem_fun, out);
 	}
@@ -1974,28 +2368,20 @@ class_diff::report(ostream& out, const string& indent) const
 	out << "\n";
 
       // report insertions;
-      int numins = e.num_insertions();
+      int numins = priv_->inserted_member_functions_.size();
       if (numins)
 	report_mem_header(out, numins, ins_kind,
 			  "member function", indent);
       bool emitted = false;
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
+      for (string_member_function_sptr_map::const_iterator i =
+	     priv_->inserted_member_functions_.begin();
+	   i != priv_->inserted_member_functions_.end();
 	   ++i)
 	{
-	  class_decl::member_function_sptr mem_fun;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
-	    {
-	      if (emitted)
-		out << "\n";
-	      mem_fun = second->get_member_functions()[*j];
-	      out << indent << "  ";
-	      represent(mem_fun, out);
-	      emitted = true;
-	    }
+	  class_decl::member_function_sptr mem_fun = i->second;
+	  out << indent << "  ";
+	  represent(mem_fun, out);
+	  emitted = true;
 	}
       if (emitted)
 	out << "\n";
@@ -2106,6 +2492,9 @@ class_diff::report(ostream& out, const string& indent) const
       if (numins)
 	out << "\n\n";
     }
+
+  currently_reporting(false);
+  reported_once(true);
 }
 
 /// Compute the set of changes between two instances of class_decl.
@@ -2115,11 +2504,21 @@ class_diff::report(ostream& out, const string& indent) const
 /// @param second the second class_decl to consider.
 ///
 /// @return changes the resulting changes.
+///
+/// @param ctxt the diff context to use.
 class_diff_sptr
 compute_diff(const class_decl_sptr	first,
-	     const class_decl_sptr	second)
+	     const class_decl_sptr	second,
+	     diff_context_sptr		ctxt)
 {
-  class_diff_sptr changes(new class_diff(first, second));
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      class_diff_sptr d = dynamic_pointer_cast<class_diff>(dif);
+      assert(d);
+      return d;
+    }
+
+  class_diff_sptr changes(new class_diff(first, second, ctxt));
 
   // Compare base specs
   compute_diff(first->get_base_specifiers().begin(),
@@ -2164,6 +2563,8 @@ compute_diff(const class_decl_sptr	first,
 	       changes->member_class_tmpls_changes());
 
   changes->ensure_lookup_tables_populated();
+
+  ctxt->add_diff(first, second, changes);
 
   return changes;
 }
@@ -2278,6 +2679,10 @@ scope_diff::ensure_lookup_tables_populated()
       string qname = decl->get_qualified_name();
       if (is_type(decl))
 	{
+	  class_decl_sptr klass_decl = dynamic_pointer_cast<class_decl>(decl);
+	  if (klass_decl && klass_decl->is_declaration_only())
+	    continue;
+
 	  assert(priv_->deleted_types_.find(qname)
 		 == priv_->deleted_types_.end());
 	  priv_->deleted_types_[qname] = decl;
@@ -2285,7 +2690,7 @@ scope_diff::ensure_lookup_tables_populated()
       else
 	{
 	  assert(priv_->deleted_decls_.find(qname)
-		 == priv_->deleted_types_.end());
+		 == priv_->deleted_decls_.end());
 	  priv_->deleted_decls_[qname] = decl;
 	}
     }
@@ -2303,41 +2708,42 @@ scope_diff::ensure_lookup_tables_populated()
 	  string qname = decl->get_qualified_name();
 	  if (is_type(decl))
 	    {
+	      class_decl_sptr klass_decl =
+		dynamic_pointer_cast<class_decl>(decl);
+	      if (klass_decl && klass_decl->is_declaration_only())
+		continue;
+
 	      assert(priv_->inserted_types_.find(qname)
 		     == priv_->inserted_types_.end());
-	      priv_->inserted_types_[qname] = decl;
+	      string_decl_base_sptr_map::const_iterator j =
+		priv_->deleted_types_.find(qname);
+	      if (j != priv_->deleted_types_.end())
+		{
+		  if (*j->second != *decl)
+		    priv_->changed_types_[qname] =
+		      std::make_pair(j->second, decl);
+		  priv_->deleted_types_.erase(j);
+		}
+	      else
+		priv_->inserted_types_[qname] = decl;
 	    }
 	  else
 	    {
 	      assert(priv_->inserted_decls_.find(qname)
 		     == priv_->inserted_decls_.end());
-	      priv_->inserted_decls_[qname] = decl;
+	      string_decl_base_sptr_map::const_iterator j =
+		priv_->deleted_decls_.find(qname);
+	      if (j != priv_->deleted_decls_.end())
+		{
+		  if (*j->second != *decl)
+		    priv_->changed_decls_[qname] =
+		      std::make_pair(j->second, decl);
+		  priv_->deleted_decls_.erase(j);
+		}
+	      else
+		priv_->inserted_decls_[qname] = decl;
 	    }
 	}
-    }
-
-  // Populate changed_types_/changed_decls_
-  for (string_decl_base_sptr_map::const_iterator i =
-	 priv_->deleted_types_.begin();
-       i != priv_->deleted_types_.end();
-       ++i)
-    {
-      string_decl_base_sptr_map::const_iterator r =
-	priv_->inserted_types_.find(i->first);
-      if (r != priv_->inserted_types_.end()
-	  && i->second != r->second)
-	priv_->changed_types_[i->first] = std::make_pair(i->second, r->second);
-    }
-  for (string_decl_base_sptr_map::const_iterator i =
-	 priv_->deleted_decls_.begin();
-       i != priv_->deleted_decls_.end();
-       ++i)
-    {
-      string_decl_base_sptr_map::const_iterator r =
-	priv_->inserted_decls_.find(i->first);
-      if (r != priv_->inserted_decls_.end()
-	  && i->second != r->second)
-	priv_->changed_decls_[i->first] = std::make_pair(i->second, r->second);
     }
 
   // Populate removed types/decls lookup tables
@@ -2390,9 +2796,12 @@ scope_diff::ensure_lookup_tables_populated()
 /// @param first_scope the first scope to consider for the diff.
 ///
 /// @param second_scope the second scope to consider for the diff.
+///
+/// @param ctxt the diff context to use.
 scope_diff::scope_diff(scope_decl_sptr first_scope,
-		       scope_decl_sptr second_scope)
-  : diff(first_scope, second_scope),
+		       scope_decl_sptr second_scope,
+		       diff_context_sptr ctxt)
+  : diff(first_scope, second_scope, ctxt),
     priv_(new priv)
 {}
 
@@ -2581,7 +2990,8 @@ scope_diff::report(ostream& out, const string& indent) const
 	  << "' changed:\n";
 
       diff_sptr diff = compute_diff_for_types(i->second.first,
-					      i->second.second);
+					      i->second.second,
+					      context());
       if (diff)
 	diff->report(out, indent + "    ");
     }
@@ -2606,36 +3016,40 @@ scope_diff::report(ostream& out, const string& indent) const
 	  << i->second.second->get_pretty_representation()
 	  << "':\n";
       diff_sptr diff = compute_diff_for_decls(i->second.first,
-					      i->second.second);
+					      i->second.second,
+					      context());
       if (diff)
 	diff->report(out, indent + "    ");
     }
 
   // Report removed types/decls
-  for (string_decl_base_sptr_map::const_iterator i = removed_types().begin();
-       i != removed_types().end();
+  for (string_decl_base_sptr_map::const_iterator i =
+	 priv_->deleted_types_.begin();
+       i != priv_->deleted_types_.end();
        ++i)
     out << indent
 	<< "  '"
 	<< i->second->get_pretty_representation()
 	<< "' was removed\n";
-  if (removed_types().size())
+  if (priv_->deleted_types_.size())
     out << "\n";
 
-  for (string_decl_base_sptr_map::const_iterator i = removed_decls().begin();
-       i != removed_decls().end();
+  for (string_decl_base_sptr_map::const_iterator i =
+	 priv_->deleted_decls_.begin();
+       i != priv_->deleted_decls_.end();
        ++i)
     out << indent
 	<< "  '"
 	<< i->second->get_pretty_representation()
 	<< "' was removed\n";
-  if (removed_decls().size())
+  if (priv_->deleted_decls_.size())
     out << "\n";
 
   // Report added types/decls
   bool emitted = false;
-  for (string_decl_base_sptr_map::const_iterator i = added_types().begin();
-       i != added_types().end();
+  for (string_decl_base_sptr_map::const_iterator i =
+	 priv_->inserted_types_.begin();
+       i != priv_->inserted_types_.end();
        ++i)
     {
       // Do not report about type_decl as these are usually built-in
@@ -2652,8 +3066,9 @@ scope_diff::report(ostream& out, const string& indent) const
     out << "\n";
 
   emitted = false;
-  for (string_decl_base_sptr_map::const_iterator i = added_decls().begin();
-       i != added_decls().end();
+  for (string_decl_base_sptr_map::const_iterator i =
+	 priv_->inserted_decls_.begin();
+       i != priv_->inserted_decls_.end();
        ++i)
     {
       // Do not report about type_decl as these are usually built-in
@@ -2683,10 +3098,13 @@ scope_diff::report(ostream& out, const string& indent) const
 ///
 /// @return return the populated \a d parameter passed to this
 /// function.
+///
+/// @param ctxt the diff context to use.
 scope_diff_sptr
-compute_diff(const scope_decl_sptr first,
-	     const scope_decl_sptr second,
-	     scope_diff_sptr d)
+compute_diff(const scope_decl_sptr	first,
+	     const scope_decl_sptr	second,
+	     scope_diff_sptr		d,
+	     diff_context_sptr		ctxt)
 {
   assert(d->first_scope() == first && d->second_scope() == second);
 
@@ -2697,6 +3115,9 @@ compute_diff(const scope_decl_sptr first,
 	       d->member_changes());
 
   d->ensure_lookup_tables_populated();
+  d->context(ctxt);
+
+  ctxt->add_diff(first, second, d);
 
   return d;
 }
@@ -2708,13 +3129,23 @@ compute_diff(const scope_decl_sptr first,
 /// @param second_scope the second scope to consider in the diff
 /// computation.  The second scope is diffed against the first scope.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return return the resulting diff
 scope_diff_sptr
-compute_diff(const scope_decl_sptr first_scope,
-	     const scope_decl_sptr second_scope)
+compute_diff(const scope_decl_sptr	first_scope,
+	     const scope_decl_sptr	second_scope,
+	     diff_context_sptr		ctxt)
 {
-    scope_diff_sptr d(new scope_diff(first_scope, second_scope));
-    return compute_diff(first_scope, second_scope, d);
+  if (diff_sptr dif = ctxt->has_diff_for(first_scope, second_scope))
+    {
+      scope_diff_sptr d = dynamic_pointer_cast<scope_diff>(dif);
+      assert(d);
+      return d;
+    }
+
+  scope_diff_sptr d(new scope_diff(first_scope, second_scope, ctxt));
+  return compute_diff(first_scope, second_scope, d, ctxt);
 }
 
 //</scope_diff stuff>
@@ -2840,21 +3271,18 @@ function_decl_diff::ensure_lookup_tables_populated()
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
 	  assert(!parm_type_name.empty());
-	  priv_->inserted_parms_[parm_type_name] = parm;
+	  string_parm_map::const_iterator k =
+	    priv_->deleted_parms_.find(parm_type_name);
+	  if (k != priv_->deleted_parms_.end())
+	    {
+	      if (*k->second != *parm)
+		priv_->changed_parms_[parm_type_name] =
+		  std::make_pair(k->second, parm);
+	      priv_->deleted_parms_.erase(k);
+	    }
+	  else
+	    priv_->inserted_parms_[parm_type_name] = parm;
 	}
-    }
-
-  for (string_parm_map::const_iterator i = priv_->deleted_parms_.begin();
-       i != priv_->deleted_parms_.end();
-       ++i)
-    {
-      string_parm_map::const_iterator j;
-      if ((j = priv_->inserted_parms_.find(i->first))
-	  == priv_->inserted_parms_.end())
-	priv_->removed_parms_[i->first] = i->second;
-      else
-	priv_->changed_parms_[i->first] = changed_parm(i->second,
-						       j->second);
     }
 
   for (string_parm_map::const_iterator i = priv_->inserted_parms_.begin();
@@ -2874,8 +3302,9 @@ function_decl_diff::ensure_lookup_tables_populated()
 ///
 /// @param second the second function considered by the diff.
 function_decl_diff::function_decl_diff(const function_decl_sptr first,
-				       const function_decl_sptr second)
-  : diff(first, second),
+				       const function_decl_sptr second,
+				       diff_context_sptr	ctxt)
+  : diff(first, second, ctxt),
     priv_(new priv)
 {
   priv_->first_fn_flags_.push_back
@@ -2950,7 +3379,8 @@ function_decl_diff::report(ostream& out, const string& indent) const
 	  << " of type '" << get_type_name(i->second.first->get_type())
 	  << "' changed:\n";
       diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
-					   i->second.second->get_type());
+					   i->second.second->get_type(),
+					   context());
       if (d)
 	d->report(out, indent + "  ");
     }
@@ -2990,37 +3420,51 @@ function_decl_diff::report(ostream& out, const string& indent) const
 ///
 /// @param second the second function_decl to consider for the diff
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return the computed diff
 function_decl_diff_sptr
 compute_diff(const function_decl_sptr first,
-	     const function_decl_sptr second)
+	     const function_decl_sptr second,
+	     diff_context_sptr ctxt)
 {
-  if (first && second)
+  if (!first || !second)
     {
-      function_decl_diff_sptr result(new function_decl_diff(first, second));
-
-      result->priv_->return_type_diff_ =
-	compute_diff_for_types(first->get_return_type(),
-			       second->get_return_type());
-
-      diff_utils::compute_diff(first->get_parameters().begin(),
-			       first->get_parameters().end(),
-			       second->get_parameters().begin(),
-			       second->get_parameters().end(),
-			       result->priv_->parm_changes_);
-
-      diff_utils::compute_diff(result->priv_->first_fn_flags_.begin(),
-			       result->priv_->first_fn_flags_.end(),
-			       result->priv_->second_fn_flags_.begin(),
-			       result->priv_->second_fn_flags_.end(),
-			       result->priv_->fn_flags_changes_);
-
-      result->ensure_lookup_tables_populated();
-
-      return result;
+      // TODO: implement this for either first or second being NULL.
+      return function_decl_diff_sptr();
     }
-  // TODO: implement this for either first or second being NULL.
-  return function_decl_diff_sptr();
+
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      function_decl_diff_sptr d = dynamic_pointer_cast<function_decl_diff>(dif);
+      assert(d);
+      return d;
+    }
+
+  function_decl_diff_sptr result(new function_decl_diff(first, second, ctxt));
+
+  result->priv_->return_type_diff_ =
+    compute_diff_for_types(first->get_return_type(),
+			   second->get_return_type(),
+			   ctxt);
+
+  diff_utils::compute_diff(first->get_parameters().begin(),
+			   first->get_parameters().end(),
+			   second->get_parameters().begin(),
+			   second->get_parameters().end(),
+			   result->priv_->parm_changes_);
+
+  diff_utils::compute_diff(result->priv_->first_fn_flags_.begin(),
+			   result->priv_->first_fn_flags_.end(),
+			   result->priv_->second_fn_flags_.begin(),
+			   result->priv_->second_fn_flags_.end(),
+			   result->priv_->fn_flags_changes_);
+
+  result->ensure_lookup_tables_populated();
+
+  ctxt->add_diff(first, second, result);
+
+  return result;
 }
 
 // </function_decl_diff stuff>
@@ -3029,8 +3473,9 @@ compute_diff(const function_decl_sptr first,
 
 /// Constructor for type_decl_diff.
 type_decl_diff::type_decl_diff(const type_decl_sptr first,
-			       const type_decl_sptr second)
-  : diff(first, second)
+			       const type_decl_sptr second,
+			       diff_context_sptr ctxt)
+  : diff(first, second, ctxt)
 {}
 
 /// Getter for the first subject of the type_decl_diff.
@@ -3121,11 +3566,22 @@ type_decl_diff::report(ostream& out, const string& indent) const
 ///
 /// @param second a pointer to the second type_decl to consider.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return a pointer to the resulting type_decl_diff.
 type_decl_diff_sptr
-compute_diff(const type_decl_sptr first, const type_decl_sptr second)
+compute_diff(const type_decl_sptr	first,
+	     const type_decl_sptr	second,
+	     diff_context_sptr		ctxt)
 {
-  type_decl_diff_sptr result(new type_decl_diff(first, second));
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      type_decl_diff_sptr d = dynamic_pointer_cast<type_decl_diff>(dif);
+      assert(d);
+      return d;
+    }
+
+  type_decl_diff_sptr result(new type_decl_diff(first, second, ctxt));
 
   // We don't need to actually compute a diff here as a type_decl
   // doesn't have complicated sub-components.  type_decl_diff::report
@@ -3133,6 +3589,8 @@ compute_diff(const type_decl_sptr first, const type_decl_sptr second)
   // about the ones that have changed.  On a similar note,
   // type_decl_diff::length returns 0 if the two type_decls are equal,
   // and 1 otherwise.
+
+  ctxt->add_diff(first, second, result);
 
   return result;
 }
@@ -3147,9 +3605,10 @@ struct typedef_diff::priv
 };//end struct typedef_diff::priv
 
 /// Constructor for typedef_diff.
-typedef_diff::typedef_diff(const typedef_decl_sptr first,
-			   const typedef_decl_sptr second)
-  : diff(first, second),
+typedef_diff::typedef_diff(const typedef_decl_sptr	first,
+			   const typedef_decl_sptr	second,
+			   diff_context_sptr		ctxt)
+  : diff(first, second, ctxt),
     priv_(new priv)
 {}
 
@@ -3211,6 +3670,21 @@ typedef_diff::report(ostream& out, const string& indent) const
 
   bool emit_nl = false;
   typedef_decl_sptr f = first_typedef_decl(), s = second_typedef_decl();
+
+  if (diff_sptr d = context()->has_diff_for(f, s))
+    {
+      if (d->currently_reporting())
+	{
+	  out << indent << " details are being reported\n";
+	  return;
+	}
+      else if (d->reported_once())
+	{
+	  out << indent << " details were reported earlier\n";
+	  return;
+	}
+    }
+
   if (f->get_name() != s->get_name())
     {
       out << indent << "typedef name changed from "
@@ -3220,8 +3694,27 @@ typedef_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      out << indent << "underlying type changed:\n";
-      d->report(out, indent + "  ");
+      if (diff_sptr d2 = context()->has_diff_for(d))
+	{
+	  if (d2->currently_reporting())
+	      out << indent << "underlying type "
+		  << d->first_subject()->get_pretty_representation()
+		  << " changed; details are being reported\n";
+	  else if (d2->reported_once())
+	    out << indent << "underlying type "
+		<< d->first_subject()->get_pretty_representation()
+		<< " changed, as reported earlier\n";
+	  else
+	    {
+	      out << indent << "underlying type changed:\n";
+	      d->report(out, indent + "  ");
+	    }
+	}
+      else
+	{
+	  out << indent << "underlying type changed:\n";
+	  d->report(out, indent + "  ");
+	}
       emit_nl = false;
     }
 
@@ -3235,14 +3728,29 @@ typedef_diff::report(ostream& out, const string& indent) const
 ///
 /// @param second a pointer to the second typedef_decl to consider.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return a pointer to the the resulting typedef_diff.
 typedef_diff_sptr
-compute_diff(const typedef_decl_sptr first, const typedef_decl_sptr second)
+compute_diff(const typedef_decl_sptr	first,
+	     const typedef_decl_sptr	second,
+	     diff_context_sptr		ctxt)
 {
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      typedef_diff_sptr d = dynamic_pointer_cast<typedef_diff>(dif);
+      assert(d);
+      return d;
+    }
+
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
-				       second->get_underlying_type());
-  typedef_diff_sptr result(new typedef_diff(first, second));
+				       second->get_underlying_type(),
+				       ctxt);
+  typedef_diff_sptr result(new typedef_diff(first, second, ctxt));
   result->underlying_type_diff(d);
+
+  ctxt->add_diff(first, second, result);
+
   return result;
 }
 
@@ -3256,8 +3764,9 @@ compute_diff(const typedef_decl_sptr first, const typedef_decl_sptr second)
 ///
 /// @param second the second translation unit to consider for this diff.
 translation_unit_diff::translation_unit_diff(translation_unit_sptr first,
-					     translation_unit_sptr second)
-  : scope_diff(first->get_global_scope(), second->get_global_scope())
+					     translation_unit_sptr second,
+					     diff_context_sptr ctxt)
+  : scope_diff(first->get_global_scope(), second->get_global_scope(), ctxt)
 {
 }
 
@@ -3280,17 +3789,28 @@ translation_unit_diff::report(ostream& out, const string& indent) const
 /// @param first the first translation_unit to consider.
 ///
 /// @param second the second translation_unit to consider.
+///
+/// @param ctxt the diff context to use.  If null, this function will
+/// create a new context and set to the diff object returned.
+///
+/// @return the newly created diff object.
 translation_unit_diff_sptr
-compute_diff(const translation_unit_sptr first,
-	     const translation_unit_sptr second)
+compute_diff(const translation_unit_sptr	first,
+	     const translation_unit_sptr	second,
+	     diff_context_sptr			ctxt)
 {
+  if (!ctxt)
+    ctxt.reset(new diff_context);
+
   // TODO: handle first or second having empty contents.
-  translation_unit_diff_sptr tu_diff(new translation_unit_diff(first, second));
+  translation_unit_diff_sptr tu_diff(new translation_unit_diff(first, second,
+							       ctxt));
   scope_diff_sptr sc_diff = dynamic_pointer_cast<scope_diff>(tu_diff);
 
   compute_diff(static_pointer_cast<scope_decl>(first->get_global_scope()),
 	       static_pointer_cast<scope_decl>(second->get_global_scope()),
-	       sc_diff);
+	       sc_diff,
+	       ctxt);
 
   return tu_diff;
 }
@@ -3300,6 +3820,7 @@ compute_diff(const translation_unit_sptr first,
 // <corpus stuff>
 struct corpus_diff::priv
 {
+  diff_context_sptr ctxt;
   corpus_sptr				first_;
   corpus_sptr				second_;
   edit_script				fns_edit_script_;
@@ -3368,7 +3889,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	function_decl* deleted_fn = first_->get_functions()[i];
 	string n = deleted_fn->get_mangled_name();
 	if (n.empty())
-	  n = deleted_fn->get_name();
+	  n = deleted_fn->get_pretty_representation();
 	assert(!n.empty());
 	assert(deleted_fns_.find(n) == deleted_fns_.end());
 	deleted_fns_[n] = deleted_fn;
@@ -3387,22 +3908,20 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    function_decl* added_fn = second_->get_functions()[i];
 	    string n = added_fn->get_mangled_name();
 	    if (n.empty())
-	      n = added_fn->get_name();
+	      n = added_fn->get_pretty_representation();
 	    assert(!n.empty());
 	    assert(added_fns_.find(n) == added_fns_.end());
-	    added_fns_[n] = added_fn;
+	    string_function_ptr_map::const_iterator j =
+	      deleted_fns_.find(n);
+	    if (j != deleted_fns_.end())
+	      {
+		if (*j->second != *added_fn)
+		  changed_fns_[j->first] = std::make_pair(added_fn,
+							  j->second);
+	      }
+	    else
+	      added_fns_[n] = added_fn;
 	  }
-      }
-
-    for (string_function_ptr_map::const_iterator it = deleted_fns_.begin();
-	 it != deleted_fns_.end();
-	 ++it)
-      {
-	string_function_ptr_map::const_iterator it2 =
-	  added_fns_.find(it->first);
-	if (it2 != added_fns_.end())
-	  changed_fns_[it->first] = std::make_pair(it->second,
-						   it2->second);
       }
   }
 
@@ -3419,7 +3938,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	var_decl* deleted_var = first_->get_variables()[i];
 	string n = deleted_var->get_mangled_name();
 	if (n.empty())
-	  n = deleted_var->get_name();
+	  n = deleted_var->get_pretty_representation();
 	assert(!n.empty());
 	assert(deleted_vars_.find(n) == deleted_vars_.end());
 	deleted_vars_[n] = deleted_var;
@@ -3441,19 +3960,17 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	      n = added_var->get_name();
 	    assert(!n.empty());
 	    assert(added_vars_.find(n) == added_vars_.end());
-	    added_vars_[n] = added_var;
+	    string_var_ptr_map::const_iterator j =
+	      deleted_vars_.find(n);
+	    if (j != deleted_vars_.end())
+	      {
+		if (*j->second != *added_var)
+		  changed_vars_[n] = std::make_pair(added_var, j->second);
+		deleted_vars_.erase(j);
+	      }
+	    else
+	      added_vars_[n] = added_var;
 	  }
-      }
-
-    for (string_var_ptr_map::const_iterator it = deleted_vars_.begin();
-	 it != deleted_vars_.end();
-	 ++it)
-      {
-	string_var_ptr_map::const_iterator it2 =
-	  added_vars_.find(it->first);
-	if (it2 != added_vars_.end())
-	  changed_vars_[it->first] = std::make_pair(it->second,
-						    it2->second);
       }
   }
 }
@@ -3463,12 +3980,16 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 /// @param first the first corpus of the diff.
 ///
 /// @param second the second corpus of the diff.
+///
+/// @param ctxt the diff context to use.
 corpus_diff::corpus_diff(corpus_sptr first,
-			 corpus_sptr second)
+			 corpus_sptr second,
+			 diff_context_sptr ctxt)
   : priv_(new priv)
 {
   priv_->first_ = first;
   priv_->second_ = second;
+  priv_->ctxt = ctxt;
 }
 
 /// @return the first corpus of the diff.
@@ -3524,6 +4045,10 @@ corpus_diff::report(ostream& out, const string& indent) const
   unsigned removed = 0, added = 0;
 
   /// Report added/removed/changed functions.
+  if (priv_->deleted_fns_.size() ==1)
+    out << indent << "  Removed function:\n";
+  else if (priv_->deleted_fns_.size() > 1)
+    out << indent << "  Removed functions:\n";
   for (string_function_ptr_map::const_iterator i =
 	 priv_->deleted_fns_.begin();
        i != priv_->deleted_fns_.end();
@@ -3532,15 +4057,19 @@ corpus_diff::report(ostream& out, const string& indent) const
       if (priv_->added_fns_.find(i->first) == priv_->added_fns_.end())
 	{
 	  out << indent
-	      << "  '"
+	      << "    '"
 	      << i->second->get_pretty_representation()
-	      << "' was removed\n";
+	      << "\n";
 	  ++removed;
 	}
     }
   if (removed)
     out << "\n";
 
+  if (priv_->added_fns_.size() == 1)
+    out << indent << "  Added function:\n";
+  else if (priv_->added_fns_.size() > 1)
+    out << indent << "  Added functions:\n";
   for (string_function_ptr_map::const_iterator i =
 	 priv_->added_fns_.begin();
        i != priv_->added_fns_.end();
@@ -3548,22 +4077,28 @@ corpus_diff::report(ostream& out, const string& indent) const
     {
       if (priv_->deleted_fns_.find(i->first) == priv_->deleted_fns_.end())
 	{
-	  out << indent
-	      << "  '"
-	      << i->second->get_pretty_representation()
-	      << "' was added\n";
+	  out
+	    << indent
+	    << "    '"
+	    << i->second->get_pretty_representation()
+	    << "\n";
 	  ++added;
 	}
     }
   if (added)
     out << "\n";
 
+  if (priv_->changed_fns_.size() == 1)
+    out << indent << "  Changed function:\n";
+  else if (priv_->changed_fns_.size() > 1)
+    out << indent << "  Changed functions:\n";
+
   for (string_changed_function_ptr_map::const_iterator i =
 	 priv_->changed_fns_.begin();
        i != priv_->changed_fns_.end();
        ++i)
     {
-      out << indent << "  '"
+      out << indent << "    '"
 	  << i->second.first->get_pretty_representation()
 	  << "' was changed to '"
 	  << i->second.second->get_pretty_representation()
@@ -3572,7 +4107,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	function_decl_sptr f(i->second.first, noop_deleter());
 	function_decl_sptr s(i->second.second, noop_deleter());
 
-	diff_sptr diff = compute_diff_for_decls(f, s);
+	diff_sptr diff = compute_diff_for_decls(f, s, priv_->ctxt);
 	if (diff)
 	  diff->report(out, indent + "    ");
       }
@@ -3580,8 +4115,11 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (priv_->changed_fns_.size())
     out << "\n";
 
-
   /// Report added/removed/changed variables.
+  if (priv_->deleted_vars_.size() == 1)
+    out << indent << "  Deleted variable:\n";
+  else if (priv_->deleted_vars_.size() > 1)
+    out << indent << "  Deleted variables:\n";
   for (string_var_ptr_map::const_iterator i =
 	 priv_->deleted_vars_.begin();
        i != priv_->deleted_vars_.end();
@@ -3590,15 +4128,19 @@ corpus_diff::report(ostream& out, const string& indent) const
       if (priv_->added_vars_.find(i->first) == priv_->added_vars_.end())
 	{
 	  out << indent
-	      << "  '"
+	      << "    '"
 	      << i->second->get_pretty_representation()
-	      << "' was removed\n";
+	      << "\n";
 	  ++removed;
 	}
     }
   if (removed)
     out << "\n";
 
+  if (priv_->deleted_vars_.size() == 1)
+    out << indent << "  Added variable:\n";
+  else if (priv_->deleted_vars_.size() > 1)
+    out << indent << "  Added variables:\n";
   for (string_var_ptr_map::const_iterator i =
 	 priv_->added_vars_.begin();
        i != priv_->added_vars_.end();
@@ -3607,21 +4149,25 @@ corpus_diff::report(ostream& out, const string& indent) const
       if (priv_->deleted_vars_.find(i->first) == priv_->deleted_vars_.end())
 	{
 	  out << indent
-	      << "  '"
+	      << "    '"
 	      << i->second->get_pretty_representation()
-	      << "' was added\n";
+	      << "\n";
 	  ++added;
 	}
     }
   if (added)
     out << "\n";
 
+  if (priv_->changed_vars_.size() == 1)
+    out << indent << "  Changed variable:\n";
+  else if (priv_->changed_vars_.size() > 1)
+    out << indent << "  Changed variables:\n";
   for (string_changed_var_ptr_map::const_iterator i =
 	 priv_->changed_vars_.begin();
        i != priv_->changed_vars_.end();
        ++i)
     {
-      out << indent << "  '"
+      out << indent << "    '"
 	  << i->second.first->get_pretty_representation()
 	  << "' was changed to '"
 	  << i->second.second->get_pretty_representation()
@@ -3630,7 +4176,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	var_decl_sptr f(i->second.first, noop_deleter());
 	var_decl_sptr s(i->second.second, noop_deleter());
 
-	diff_sptr diff = compute_diff_for_decls(f, s);
+	diff_sptr diff = compute_diff_for_decls(f, s, priv_->ctxt);
 	if (diff)
 	  diff->report(out, indent + "    ");
       }
@@ -3645,15 +4191,22 @@ corpus_diff::report(ostream& out, const string& indent) const
 ///
 /// @param s the second @ref corpus to consider for the diff.
 ///
+/// @param ctxt the diff context to use.
+///
 /// @return the resulting diff between the two @ref corpus.
 corpus_diff_sptr
-compute_diff(const corpus_sptr f, const corpus_sptr s)
+compute_diff(const corpus_sptr	f,
+	     const corpus_sptr	s,
+	     diff_context_sptr	ctxt)
 {
   typedef corpus::functions::const_iterator fns_it_type;
   typedef corpus::variables::const_iterator vars_it_type;
   typedef diff_utils::deep_ptr_eq_functor eq_type;
 
-  corpus_diff_sptr r(new corpus_diff(f, s));
+  if (!ctxt)
+    ctxt.reset(new diff_context);
+
+  corpus_diff_sptr r(new corpus_diff(f, s, ctxt));
 
   diff_utils::compute_diff<fns_it_type, eq_type>(f->get_functions().begin(),
 						 f->get_functions().end(),

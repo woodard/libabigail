@@ -106,6 +106,23 @@ typedef std::pair<function_decl*, function_decl*> changed_function_ptr;
 typedef unordered_map<string,
 		      changed_function_ptr> string_changed_function_ptr_map;
 
+/// Convenience typedef for a pair of class_decl::member_function_sptr
+/// representing a changed member function.  The first element of the
+/// pair is the initial member function and the second element is the
+/// changed one.
+typedef pair<class_decl::member_function_sptr,
+	     class_decl::member_function_sptr> changed_member_function_sptr;
+
+/// Convenience typedef for a hash map of strings and changed member functions.
+typedef unordered_map<string,
+		      changed_member_function_sptr>
+	string_changed_member_function_sptr_map;
+
+/// Convenience typedef for a hash map of strings  and member functions.
+typedef unordered_map<string,
+		      class_decl::member_function_sptr>
+string_member_function_sptr_map;
+
 /// Convenience typedef for a map which key is a string and which
 /// value is a point to @ref var_decl.
 typedef unordered_map<string, var_decl*> string_var_ptr_map;
@@ -120,6 +137,39 @@ typedef std::pair<var_decl*, var_decl*> changed_var_ptr;
 /// value is a @ref changed_var_ptr.
 typedef unordered_map<string, changed_var_ptr> string_changed_var_ptr_map;
 
+class diff_context;
+
+/// Convenience typedef for a shared pointer of @ref diff_context.
+typedef shared_ptr<diff_context> diff_context_sptr;
+
+/// The context of the diff.  This type holds various bits of
+/// information that is going to be used throughout the diffing of two
+/// entities and the reporting that follows.
+class diff_context
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+public:
+  diff_context();
+
+  diff_sptr
+  has_diff_for(const decl_base_sptr first,
+	       const decl_base_sptr second) const;
+
+  diff_sptr
+  has_diff_for_types(const type_base_sptr first,
+		     const type_base_sptr second) const;
+
+  diff_sptr
+  has_diff_for(const diff_sptr d) const;
+
+  void
+  add_diff(const decl_base_sptr first,
+	   const decl_base_sptr second,
+	   diff_sptr d);
+};//end struct diff_context.
+
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for two constructs that are to be diff'ed.  The two
 /// constructs are called the "subjects" of the diff.
@@ -127,12 +177,27 @@ class diff
 {
   decl_base_sptr first_subject_;
   decl_base_sptr second_subject_;
+  diff_context_sptr ctxt_;
+  mutable bool reported_once_;
+  mutable bool currently_reporting_;
 
 protected:
   diff(decl_base_sptr first_subject,
        decl_base_sptr second_subject)
     : first_subject_(first_subject),
-      second_subject_(second_subject)
+      second_subject_(second_subject),
+      reported_once_(false),
+      currently_reporting_(false)
+  {}
+
+diff(decl_base_sptr first_subject,
+     decl_base_sptr second_subject,
+     diff_context_sptr ctxt)
+    : first_subject_(first_subject),
+      second_subject_(second_subject),
+      ctxt_(ctxt),
+      reported_once_(false),
+      currently_reporting_(false)
   {}
 
 public:
@@ -150,6 +215,55 @@ public:
   decl_base_sptr
   second_subject() const
   {return second_subject_;}
+
+  /// Getter of the context of the current diff.
+  ///
+  /// @return the context of the current diff.
+  const diff_context_sptr
+  context() const
+  {return ctxt_;}
+
+  /// Setter of the context of the current diff.
+  ///
+  /// @param c the new context to set.
+  void
+  context(diff_context_sptr c)
+  {ctxt_ = c;}
+
+  /// Tests if we are currently in the middle of emitting a report for
+  /// this diff.
+  ///
+  /// @return true if we are currently emitting a report for the
+  /// current diff, false otherwise.
+  bool
+  currently_reporting() const
+  {return currently_reporting_;}
+
+  /// Sets a flag saying if we are currently in the middle of emitting
+  /// a report for this diff.
+  ///
+  /// @param f true if we are currently emitting a report for the
+  /// current diff, false otherwise.
+  void
+  currently_reporting(bool f) const
+  {currently_reporting_ = f;}
+
+  /// Tests if a report has already been emitted for the current diff.
+  ///
+  /// @return true if a report has already been emitted for the
+  /// current diff, false otherwise.
+  bool
+  reported_once() const
+  {return reported_once_;}
+
+  /// Sets a flag saying if a report has already been emitted for the
+  /// current diff.
+  ///
+  /// @param f true if a repot has already been emitted for the
+  /// current diff, false otherwise.
+  void
+  reported_once(bool f) const
+  {reported_once_ = f;}
 
   /// Pure interface to get the length of the changes
   /// encapsulated by this diff.  This is to be implemented by all
@@ -171,10 +285,14 @@ public:
 };// end class diff
 
 diff_sptr
-compute_diff(decl_base_sptr, decl_base_sptr);
+compute_diff(const decl_base_sptr,
+	     const decl_base_sptr,
+	     diff_context_sptr ctxt);
 
 diff_sptr
-compute_diff(type_base_sptr, type_base_sptr);
+compute_diff(const type_base_sptr,
+	     const type_base_sptr,
+	     diff_context_sptr ctxt);
 
 class var_diff;
 
@@ -189,7 +307,10 @@ class var_diff : public diff
   priv_sptr priv_;
 
 protected:
-  var_diff(var_decl_sptr, var_decl_sptr, diff_sptr);
+  var_diff(var_decl_sptr first,
+	   var_decl_sptr second,
+	   diff_sptr type_diff,
+	   diff_context_sptr ctxt = diff_context_sptr());
 
 public:
   var_decl_sptr
@@ -208,11 +329,13 @@ public:
   report(ostream& out, const string& indent = "") const;
 
   friend var_diff_sptr
-  compute_diff(const var_decl_sptr first, const var_decl_sptr second);
-}; // end class var_diff
+  compute_diff(const var_decl_sptr	first,
+	       const var_decl_sptr	second,
+	       diff_context_sptr	ctxt);
+};// end class var_diff
 
 var_diff_sptr
-compute_diff(const var_decl_sptr, const var_decl_sptr);
+compute_diff(const var_decl_sptr, const var_decl_sptr, diff_context_sptr);
 
 class pointer_diff;
 /// Convenience typedef for a shared pointer on a @ref
@@ -226,8 +349,9 @@ class pointer_diff : public diff
   shared_ptr<priv> priv_;
 
 protected:
-  pointer_diff(pointer_type_def_sptr first,
-	       pointer_type_def_sptr second);
+  pointer_diff(pointer_type_def_sptr	first,
+	       pointer_type_def_sptr	second,
+	       diff_context_sptr	ctxt = diff_context_sptr());
 
 public:
   const pointer_type_def_sptr
@@ -249,13 +373,15 @@ public:
   report(ostream&, const string& indent = "") const;
 
   friend pointer_diff_sptr
-  compute_diff(pointer_type_def_sptr first,
-	       pointer_type_def_sptr second);
+  compute_diff(pointer_type_def_sptr	first,
+	       pointer_type_def_sptr	second,
+	       diff_context_sptr	ctxt);
 };// end class pointer_diff
 
 pointer_diff_sptr
 compute_diff(pointer_type_def_sptr first,
-	     pointer_type_def_sptr second);
+	     pointer_type_def_sptr second,
+	     diff_context_sptr ctxt);
 
 class reference_diff;
 
@@ -270,8 +396,9 @@ class reference_diff : public diff
   shared_ptr<priv> priv_;
 
 protected:
-  reference_diff(const reference_type_def_sptr first,
-		 const reference_type_def_sptr second);
+  reference_diff(const reference_type_def_sptr	first,
+		 const reference_type_def_sptr	second,
+		 diff_context_sptr		ctxt = diff_context_sptr());
 
 public:
   reference_type_def_sptr
@@ -294,12 +421,14 @@ public:
 
   friend reference_diff_sptr
   compute_diff(reference_type_def_sptr first,
-	       reference_type_def_sptr second);
+	       reference_type_def_sptr second,
+	       diff_context_sptr ctxt);
 };// end class reference_diff
 
 reference_diff_sptr
 compute_diff(reference_type_def_sptr first,
-	     reference_type_def_sptr second);
+	     reference_type_def_sptr second,
+	     diff_context_sptr ctxt);
 
 class qualified_type_diff;
 typedef class shared_ptr<qualified_type_diff> qualified_type_diff_sptr;
@@ -312,8 +441,9 @@ class qualified_type_diff : public diff
   priv_sptr priv_;
 
 protected:
-  qualified_type_diff(qualified_type_def_sptr first,
-		      qualified_type_def_sptr second);
+  qualified_type_diff(qualified_type_def_sptr	first,
+		      qualified_type_def_sptr	second,
+		      diff_context_sptr	ctxt = diff_context_sptr());
 
 public:
   const qualified_type_def_sptr
@@ -336,12 +466,14 @@ public:
 
   friend qualified_type_diff_sptr
   compute_diff(const qualified_type_def_sptr first,
-	       const qualified_type_def_sptr second);
+	       const qualified_type_def_sptr second,
+	       diff_context_sptr ctxt);
 };// end class qualified_type_diff.
 
 qualified_type_diff_sptr
 compute_diff(const qualified_type_def_sptr first,
-	     const qualified_type_def_sptr second);
+	     const qualified_type_def_sptr second,
+	     diff_context_sptr ctxt);
 
 class enum_diff;
 typedef shared_ptr<enum_diff> enum_diff_sptr;
@@ -365,7 +497,8 @@ class enum_diff : public diff
 protected:
   enum_diff(const enum_type_decl_sptr,
 	    const enum_type_decl_sptr,
-	    const diff_sptr);
+	    const diff_sptr,
+	    diff_context_sptr ctxt = diff_context_sptr());
 
 public:
   const enum_type_decl_sptr
@@ -394,12 +527,14 @@ public:
 
   friend enum_diff_sptr
   compute_diff(const enum_type_decl_sptr first,
-	       const enum_type_decl_sptr second);
+	       const enum_type_decl_sptr second,
+	       diff_context_sptr ctxt);
 };//end class enum_diff;
 
 enum_diff_sptr
 compute_diff(const enum_type_decl_sptr,
-	     const enum_type_decl_sptr);
+	     const enum_type_decl_sptr,
+	     diff_context_sptr ctxt);
 
 class class_diff;
 
@@ -422,7 +557,9 @@ class class_diff : public diff
   ensure_lookup_tables_populated(void) const;
 
 protected:
-  class_diff(class_decl_sptr first_scope, class_decl_sptr second_scope);
+  class_diff(class_decl_sptr first_scope,
+	     class_decl_sptr second_scope,
+	     diff_context_sptr ctxt = diff_context_sptr());
 
 public:
   //TODO: add change of the name of the type.
@@ -477,12 +614,14 @@ public:
 
   friend class_diff_sptr
   compute_diff(const class_decl_sptr	first,
-	       const class_decl_sptr	second);
+	       const class_decl_sptr	second,
+	       diff_context_sptr	ctxt);
 };// end class_diff
 
 class_diff_sptr
-compute_diff(const class_decl_sptr first,
-	     const class_decl_sptr  second);
+compute_diff(const class_decl_sptr	first,
+	     const class_decl_sptr	second,
+	     diff_context_sptr		ctxt);
 
 class scope_diff;
 
@@ -506,18 +645,21 @@ class scope_diff : public diff
 
 protected:
   scope_diff(scope_decl_sptr first_scope,
-	     scope_decl_sptr second_scope);
+	     scope_decl_sptr second_scope,
+	     diff_context_sptr ctxt = diff_context_sptr());
 
 public:
 
   friend scope_diff_sptr
-  compute_diff(const scope_decl_sptr first,
-	       const scope_decl_sptr second,
-	       scope_diff_sptr d);
+  compute_diff(const scope_decl_sptr	first,
+	       const scope_decl_sptr	second,
+	       scope_diff_sptr		d,
+	       diff_context_sptr	ctxt);
 
   friend scope_diff_sptr
-  compute_diff(const scope_decl_sptr first_scope,
-	       const scope_decl_sptr second_scope);
+  compute_diff(const scope_decl_sptr	first_scope,
+	       const scope_decl_sptr	second_scope,
+	       diff_context_sptr	ctxt);
 
   const scope_decl_sptr
   first_scope() const;
@@ -571,11 +713,13 @@ public:
 scope_diff_sptr
 compute_diff(const scope_decl_sptr first,
 	     const scope_decl_sptr second,
-	     scope_diff_sptr d);
+	     scope_diff_sptr d,
+	     diff_context_sptr ctxt);
 
 scope_diff_sptr
 compute_diff(const scope_decl_sptr first_scope,
-	     const scope_decl_sptr second_scope);
+	     const scope_decl_sptr second_scope,
+	     diff_context_sptr ctxt);
 
 class function_decl_diff;
 
@@ -598,13 +742,15 @@ class function_decl_diff : public diff
   inserted_parameter_at(int i) const;
 
 protected:
-  function_decl_diff(const function_decl_sptr first,
-		     const function_decl_sptr second);
+  function_decl_diff(const function_decl_sptr	first,
+		     const function_decl_sptr	second,
+		     diff_context_sptr		ctxt);
 
 public:
 friend function_decl_diff_sptr
-compute_diff(const function_decl_sptr first,
-	     const function_decl_sptr second);
+compute_diff(const function_decl_sptr	first,
+	     const function_decl_sptr	second,
+	     diff_context_sptr		ctxt);
 
   const function_decl_sptr
   first_function_decl() const;
@@ -632,8 +778,9 @@ compute_diff(const function_decl_sptr first,
 }; // end class function_decl_diff
 
 function_decl_diff_sptr
-compute_diff(const function_decl_sptr first,
-	     const function_decl_sptr second);
+compute_diff(const function_decl_sptr	first,
+	     const function_decl_sptr	second,
+	     diff_context_sptr		ctxt);
 
 class type_decl_diff;
 
@@ -646,11 +793,15 @@ class type_decl_diff : public diff
   type_decl_diff();
 
 protected:
-  type_decl_diff(const type_decl_sptr, const type_decl_sptr);
+  type_decl_diff(const type_decl_sptr first,
+		 const type_decl_sptr second,
+		 diff_context_sptr ctxt = diff_context_sptr());
 
 public:
   friend type_decl_diff_sptr
-  compute_diff(const type_decl_sptr first, const type_decl_sptr second);
+  compute_diff(const type_decl_sptr	first,
+	       const type_decl_sptr	second,
+	       diff_context_sptr	ctxt);
 
   const type_decl_sptr
   first_type_decl() const;
@@ -666,7 +817,9 @@ public:
 };// end type_decl_diff
 
 type_decl_diff_sptr
-compute_diff(const type_decl_sptr, const type_decl_sptr);
+compute_diff(const type_decl_sptr,
+	     const type_decl_sptr,
+	     diff_context_sptr);
 
 class typedef_diff;
 
@@ -682,13 +835,15 @@ class typedef_diff : public diff
   typedef_diff();
 
 protected:
-  typedef_diff(const typedef_decl_sptr first,
-	       const typedef_decl_sptr second);
-
+  typedef_diff(const typedef_decl_sptr	first,
+	       const typedef_decl_sptr	second,
+	       diff_context_sptr	ctxt = diff_context_sptr());
 
 public:
   friend typedef_diff_sptr
-  compute_diff(const typedef_decl_sptr first, const typedef_decl_sptr second);
+  compute_diff(const typedef_decl_sptr	first,
+	       const typedef_decl_sptr	second,
+	       diff_context_sptr	ctxt);
 
   const typedef_decl_sptr
   first_typedef_decl() const;
@@ -710,7 +865,9 @@ public:
 };// end class typedef_diff
 
 typedef_diff_sptr
-compute_diff(const typedef_decl_sptr, const typedef_decl_sptr);
+compute_diff(const typedef_decl_sptr,
+	     const typedef_decl_sptr,
+	     diff_context_sptr ctxt);
 
 class translation_unit_diff;
 
@@ -722,13 +879,15 @@ typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
 class translation_unit_diff : public scope_diff
 {
 protected:
-  translation_unit_diff(translation_unit_sptr first,
-			translation_unit_sptr second);
+  translation_unit_diff(translation_unit_sptr	first,
+			translation_unit_sptr	second,
+			diff_context_sptr	ctxt = diff_context_sptr());
 
 public:
   friend translation_unit_diff_sptr
-  compute_diff(const translation_unit_sptr first,
-	       const translation_unit_sptr second);
+  compute_diff(const translation_unit_sptr	first,
+	       const translation_unit_sptr	second,
+	       diff_context_sptr		ctxt);
 
   virtual unsigned
   length() const;
@@ -739,7 +898,8 @@ public:
 
 translation_unit_diff_sptr
 compute_diff(const translation_unit_sptr first,
-	     const translation_unit_sptr second);
+	     const translation_unit_sptr second,
+	     diff_context_sptr ctxt = diff_context_sptr());
 
 class corpus_diff;
 
@@ -754,8 +914,9 @@ class corpus_diff
   priv_sptr priv_;
 
 protected:
-  corpus_diff(corpus_sptr first,
-	      corpus_sptr second);
+  corpus_diff(corpus_sptr	first,
+	      corpus_sptr	second,
+	      diff_context_sptr ctxt = diff_context_sptr());
 
 public:
 
@@ -778,11 +939,15 @@ public:
   report(ostream& out, const string& indent = "") const;
 
   friend corpus_diff_sptr
-  compute_diff(const corpus_sptr f, const corpus_sptr s);
+  compute_diff(const corpus_sptr f,
+	       const corpus_sptr s,
+	       diff_context_sptr ctxt = diff_context_sptr());
 }; // end class corpus_diff
 
 corpus_diff_sptr
-compute_diff(const corpus_sptr, const corpus_sptr);
+compute_diff(const corpus_sptr,
+	     const corpus_sptr,
+	     diff_context_sptr);
 }// end namespace comparison
 
 }// end namespace abigail
