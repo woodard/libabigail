@@ -1544,23 +1544,27 @@ compute_diff(RandomAccessOutputIterator a_base,
 
   if (d > 1)
     {
-      int tmp_ses_len = 0;
+      int tmp_ses_len0 = 0;
+      edit_script tmp_ses0;
       point px, pu;
       snake_end_points(snak, px, pu);
       compute_diff<RandomAccessOutputIterator,
 		   EqualityFunctor>(a_base, a_begin, a_base + px.x() + 1,
 				    b_base, b_begin, b_base + px.y() + 1,
-				    lcs, ses, tmp_ses_len);
+				    lcs, tmp_ses0, tmp_ses_len0);
 
       lcs.insert(lcs.end(), trace.begin(), trace.end());
 
-      tmp_ses_len = 0;
-      edit_script tmp_ses;
+      int tmp_ses_len1 = 0;
+      edit_script tmp_ses1;
       compute_diff<RandomAccessOutputIterator,
 		   EqualityFunctor>(a_base, a_base + pu.x() + 1, a_end,
 				    b_base, b_base + pu.y() + 1, b_end,
-				    lcs, tmp_ses, tmp_ses_len);
-      ses.append(tmp_ses);
+				    lcs, tmp_ses1, tmp_ses_len1);
+      assert(tmp_ses0.length() + tmp_ses1.length() == d);
+      assert(tmp_ses_len0 + tmp_ses_len1 == d);
+      ses.append(tmp_ses0);
+      ses.append(tmp_ses1);
     }
   else if (d == 1)
     {
