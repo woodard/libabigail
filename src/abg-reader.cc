@@ -166,6 +166,8 @@ public:
 	   || xmlStrEqual(node->name, BAD_CAST("reference-type-def")));
 	bool node_is_typedef =
 	  xmlStrEqual(node->name, BAD_CAST("typedef-decl"));
+	bool node_is_qualified_type =
+	  (xmlStrEqual(node->name, BAD_CAST("qualified-type-def")));
 	xml_char_sptr name_val = XML_NODE_GET_ATTRIBUTE(node, "name");
 	bool node_is_unnamed_enum_ut =
 	  xmlStrEqual(name_val.get(), BAD_CAST("unnamed-enum-underlying-type"));
@@ -176,6 +178,7 @@ public:
 		      || (p1 && xmlStrEqual(p1.get(), BAD_CAST("yes")))
 		      || node_is_pointer_or_reference
 		      || node_is_typedef
+		      || node_is_qualified_type
 		      || node_is_unnamed_enum_ut);
 	assert(is_ok);
 	if (is_ok)
