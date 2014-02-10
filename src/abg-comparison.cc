@@ -1807,6 +1807,8 @@ class_diff::ensure_lookup_tables_populated(void) const
 	class_decl::member_function_sptr mem_fn =
 	  first_class_decl()->get_member_functions()[i];
 	string name = mem_fn->get_mangled_name();
+	if (name.empty())
+	  name = mem_fn->get_pretty_representation();
 	assert(!name.empty());
 	assert(priv_->deleted_member_functions_.find(name)
 	       == priv_->deleted_member_functions_.end());
