@@ -422,8 +422,7 @@ represent(class_decl::member_function_sptr mem_fn,
     out << ", virtual at voffset "
 	<< mem_fn->get_vtable_offset()
 	<< "/"
-	<< mem_fn->get_type()->get_class_type()->get_num_virtual_functions()
-	<< "\n";
+	<< mem_fn->get_type()->get_class_type()->get_num_virtual_functions();
 }
 
 /// Stream a string representation for a data member.
@@ -2388,6 +2387,8 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != priv_->inserted_member_functions_.end();
 	   ++i)
 	{
+	  if (i != priv_->inserted_member_functions_.begin())
+	    out << "\n";
 	  class_decl::member_function_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(mem_fun, out);
