@@ -2929,27 +2929,29 @@ class_decl::operator==(const decl_base& other) const
 	return false;
       const class_decl& o = *op;
 
+      if (comparison_started_ && o.comparison_started_)
+	return true;
+
+      if (hash_ != 0
+	  && other.hash_ != 0
+	  && hash_ != other.hash_)
+	return false;
+
       comparison_started_ = true;
       o.comparison_started_ = true;
 
 #define RETURN(value)					\
-      {						\
+      do {						\
 	comparison_started_ = false;			\
 	op->comparison_started_ = false;		\
 	return value;					\
-      }
+      } while(0)
 
       // if one of the classes is declaration-only, look through it to
       // get its definition.
       if (is_declaration_only()
 	  || o.is_declaration_only())
 	{
-	  string q1 = get_qualified_name();
-	  string q2 = o.get_qualified_name();
-
-	  if (q1 != q2)
-	    RETURN(false);
-
 	  const class_decl* def1 = is_declaration_only()
 	    ? get_definition_of_declaration().get()
 	    : this;
@@ -2959,7 +2961,13 @@ class_decl::operator==(const decl_base& other) const
 	    : op;
 
 	  if (!def1 || !def2)
-	    RETURN(true);
+	    {
+	      string q1 = get_qualified_name();
+	      string q2 = o.get_qualified_name();
+	      if (q1 != q2)
+		RETURN(false);
+	      RETURN(true);
+	    }
 
 	  bool val = *def1 == *def2;
 	  RETURN(val);
