@@ -2134,7 +2134,7 @@ function_decl::get_pretty_representation() const
     end = get_parameters().end();
 
   // Skip the first parameter if this is a method.
-  if (mem_fn)
+  if (mem_fn && i != end)
     ++i;
   parameter_sptr parm;
   parameter_sptr first_parm;

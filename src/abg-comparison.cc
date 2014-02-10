@@ -61,6 +61,10 @@ struct decls_equal
     if (d1.first == d2.first && d1.second == d2.second)
       return true;
 
+    if (!!d1.first != !!d2.first
+	|| !!d1.second != !!d2.second)
+      return false;
+
     return (*d1.first == *d2.first
 	    && *d1.second == *d2.second);
   }
@@ -840,7 +844,9 @@ pointer_diff::second_pointer() const
 /// @return the length of this diff.
 unsigned
 pointer_diff::length() const
-{return underlying_type_diff()->length();}
+{return underlying_type_diff()
+    ? underlying_type_diff()->length()
+    : 0;}
 
 /// Getter for the diff between the pointed-to types of the pointers
 /// of this diff.
@@ -993,7 +999,9 @@ reference_diff::underlying_type_diff(diff_sptr d)
 /// @return the length of the diff.
 unsigned
 reference_diff::length() const
-{return underlying_type_diff()->length();}
+{return underlying_type_diff()
+    ? underlying_type_diff()->length()
+    : 0;}
 
 /// Report the diff in a serialized form.
 ///
@@ -1410,8 +1418,10 @@ enum_diff::changed_enumerators() const
 unsigned
 enum_diff::length() const
 {
-  return (underlying_type_diff()->length()
-	  + priv_->enumerators_changes_.length());
+  unsigned a, b;
+  a = underlying_type_diff() ? underlying_type_diff()->length() : 0;
+  b = priv_->enumerators_changes_.length();
+  return a + b;
 }
 
 /// Report the differences between the two enums.
