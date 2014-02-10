@@ -545,7 +545,7 @@ public:
 
   unsigned
   max_d() const
-  {return a_size() + b_size();}
+  {return a_size_ + b_size_;}
 
   unsigned
   offset() const
