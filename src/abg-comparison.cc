@@ -3925,8 +3925,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    if (j != deleted_fns_.end())
 	      {
 		if (*j->second != *added_fn)
-		  changed_fns_[j->first] = std::make_pair(added_fn,
-							  j->second);
+		  changed_fns_[j->first] = std::make_pair(j->second,
+							  added_fn);
 	      }
 	    else
 	      added_fns_[n] = added_fn;
@@ -3974,7 +3974,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    if (j != deleted_vars_.end())
 	      {
 		if (*j->second != *added_var)
-		  changed_vars_[n] = std::make_pair(added_var, j->second);
+		  changed_vars_[n] = std::make_pair(j->second, added_var);
 		deleted_vars_.erase(j);
 	      }
 	    else
