@@ -506,7 +506,7 @@ public:
   /// @param size2 the size of the second sequence we are interested
   /// in.
   d_path_vec(unsigned size1, unsigned size2)
-    : vector<int>(2 * (size1 + size2 + 1) + (size1 + size2) + 1, 0),
+    : vector<int>(2 * (size1 + size2 + 1 + (size1 + size2)) + 1, 0),
       a_size_(size1), b_size_(size2)
   {
   }
