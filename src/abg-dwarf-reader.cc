@@ -2275,6 +2275,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		build_function_decl(ctxt, &child, called_from_public_decl);
 	      if (!f)
 		continue;
+	      assert(dynamic_pointer_cast<class_decl::method_decl>(f));
 
 	      bool is_ctor = (f->get_name() == result->get_name());
 	      bool is_dtor = (f->get_name() == "~" + result->get_name());
