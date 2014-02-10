@@ -1900,7 +1900,12 @@ get_scope_for_die(read_context& ctxt,
 
   decl_base_sptr d = build_ir_node_from_die(ctxt, &parent_die,
 					    called_for_public_decl);
-  scope_decl_sptr s = dynamic_pointer_cast<scope_decl>(d);
+  scope_decl_sptr s =
+    as_non_member_class_decl(d)
+    ? dynamic_pointer_cast<scope_decl>(as_non_member_class_decl(d))
+    : dynamic_pointer_cast<scope_decl>(d);
+  assert(s);
+
   class_decl_sptr cl = as_non_member_class_decl(d);
 
   if (cl && cl->is_declaration_only())
@@ -2663,7 +2668,7 @@ build_function_decl(read_context& ctxt,
 			     /*called_from_public_decl=*/true);
 
   class_decl_sptr is_method =
-    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die));
+   as_non_member_class_decl(get_scope_for_die(ctxt, die));
 
   Dwarf_Die child;
   function_decl::parameters function_parms;
