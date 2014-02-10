@@ -1030,7 +1030,7 @@ reference_diff::report(ostream& out, const string& indent) const
 	  else
 	    {
 	      out << indent
-		  << "in refereneced type '"
+		  << "in referenced type '"
 		  << name
 		  << "':\n";
 	      d->report(out, indent + "  ");
