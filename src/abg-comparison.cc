@@ -1718,8 +1718,6 @@ class_diff::ensure_lookup_tables_populated(void) const
 	if (klass_decl && klass_decl->is_declaration_only())
 	  continue;
 	string qname = d->get_qualified_name();
-	assert(priv_->deleted_member_types_.find(qname)
-	       == priv_->deleted_member_types_.end());
 	priv_->deleted_member_types_[qname] = d;
       }
 
@@ -1739,8 +1737,6 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    if (klass_decl && klass_decl->is_declaration_only())
 	      continue;
 	    string qname = d->get_qualified_name();
-	    assert(priv_->inserted_member_types_.find(qname)
-		   == priv_->inserted_member_types_.end());
 	    string_decl_base_sptr_map::const_iterator j =
 	      priv_->deleted_member_types_.find(qname);
 	    if (j != priv_->deleted_member_types_.end())
