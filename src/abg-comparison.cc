@@ -142,6 +142,124 @@ diff_context::add_diff(decl_base_sptr first,
 		       diff_sptr d)
 {priv_->decls_diff_map[std::make_pair(first, second)] = d;}
 
+/// <distinct_diff stuff>
+
+/// The private data structure for @ref distinct_diff.
+struct distinct_diff::priv
+{
+};// end struct distinct_diff
+
+/// Constructor for @ref distinct_diff.
+///
+/// Note that the two entities considered for the diff (and passed in
+/// parameter) must be of different kinds.
+///
+/// @param first the first entity to consider for the diff.
+///
+/// @param second the second entity to consider for the diff.
+///
+/// @param ctxt the context of the diff.
+distinct_diff::distinct_diff(decl_base_sptr first,
+			     decl_base_sptr second,
+			     diff_context_sptr ctxt)
+  : diff(first, second, ctxt),
+    priv_(new priv)
+{assert(entities_are_of_distinct_kinds(first, second));}
+
+/// Getter for the first subject of the diff.
+///
+/// @return the first subject of the diff.
+const decl_base_sptr
+distinct_diff::first() const
+{return first_subject();}
+
+/// Getter for the second subject of the diff.
+///
+/// @return the second subject of the diff.
+const decl_base_sptr
+distinct_diff::second() const
+{return second_subject();}
+
+/// Test if the two arguments are of different kind.
+///
+/// @param first the first argument to test for similarity in kind.
+///
+/// @param second the second argument to test for similarity in kind.
+///
+/// @return true iff the two arguments are of different kind.
+bool
+distinct_diff::entities_are_of_distinct_kinds(decl_base_sptr first,
+					      decl_base_sptr second)
+{
+  if (!!first != !!second)
+    return true;
+  if (first == second)
+    return true;
+
+  return typeid(*first.get()) != typeid(*second.get());
+}
+
+/// @return 1 if the two subjects of the diff are different, 0
+/// otherwise.
+unsigned
+distinct_diff::length() const
+{
+  if (first() == second())
+    return 0;
+  return 1;
+}
+
+/// Emit a report about the current diff instance.
+///
+/// @param out the output stream to send the diff report to.
+///
+/// @param indent the indentation string to use in the report.
+void
+distinct_diff::report(ostream& out, const string& indent) const
+{
+  if (length() == 0)
+    return;
+
+  decl_base_sptr f = first(), s = second();
+
+  string f_repr = f ? f->get_pretty_representation() : "'void'";
+  string s_repr = s ? s->get_pretty_representation() : "'void'";
+
+  out << indent << "entity changed from " << f_repr << " to " << s_repr << "\n";
+}
+
+/// Try to diff entities that are of distinct kinds.
+///
+/// @param first the first entity to consider for the diff.
+///
+/// @param second the second entity to consider for the diff.
+///
+/// @param ctxt the context of the diff.
+///
+/// @return a non-null diff if a diff object could be built, null
+/// otherwise.
+distinct_diff_sptr
+compute_diff_for_distinct_kinds(const decl_base_sptr first,
+				const decl_base_sptr second,
+				diff_context_sptr ctxt)
+{
+  if (!distinct_diff::entities_are_of_distinct_kinds(first, second))
+    return distinct_diff_sptr();
+
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      distinct_diff_sptr d = dynamic_pointer_cast<distinct_diff>(dif);
+      assert(d);
+      return d;
+    }
+  distinct_diff_sptr result(new distinct_diff(first, second, ctxt));
+
+  ctxt->add_diff(first, second, result);
+  return result;
+}
+
+/// </distinct_diff stuff>
+
 /// Try to compute a diff on two instances of DiffType representation.
 ///
 /// The function template performs the diff if and only if the decl
@@ -214,6 +332,22 @@ try_to_diff<class_decl>(const decl_base_sptr first,
   return diff_sptr();
 }
 
+/// Try to diff entities that are of distinct kinds.
+///
+/// @param first the first entity to consider for the diff.
+///
+/// @param second the second entity to consider for the diff.
+///
+/// @param ctxt the context of the diff.
+///
+/// @return a non-null diff if a diff object could be built, null
+/// otherwise.
+static diff_sptr
+try_to_diff_distinct_kinds(const decl_base_sptr first,
+			   const decl_base_sptr second,
+			   diff_context_sptr ctxt)
+{return compute_diff_for_distinct_kinds(first, second, ctxt);}
+
 /// Compute the difference between two types.
 ///
 /// The function considers every possible types known to libabigail
@@ -238,13 +372,19 @@ compute_diff_for_types(const decl_base_sptr first,
 {
   diff_sptr d;
 
-  ((d = try_to_diff<type_decl>(first, second, ctxt))
-   ||(d = try_to_diff<enum_type_decl>(first, second, ctxt))
-   ||(d = try_to_diff<class_decl>(first, second,ctxt))
-   ||(d = try_to_diff<pointer_type_def>(first, second, ctxt))
-   ||(d = try_to_diff<reference_type_def>(first, second, ctxt))
-   ||(d = try_to_diff<qualified_type_def>(first, second, ctxt))
-   ||(d = try_to_diff<typedef_decl>(first, second, ctxt)));
+  const decl_base_sptr f = get_type_declaration(as_non_member_type(first));
+  const decl_base_sptr s = get_type_declaration(as_non_member_type(second));
+
+  ((d = try_to_diff_distinct_kinds(f, s, ctxt))
+   ||(d = try_to_diff<type_decl>(f, s, ctxt))
+   ||(d = try_to_diff<enum_type_decl>(f, s, ctxt))
+   ||(d = try_to_diff<class_decl>(f, s,ctxt))
+   ||(d = try_to_diff<pointer_type_def>(f, s, ctxt))
+   ||(d = try_to_diff<reference_type_def>(f, s, ctxt))
+   ||(d = try_to_diff<qualified_type_def>(f, s, ctxt))
+   ||(d = try_to_diff<typedef_decl>(f, s, ctxt)));
+
+  assert(d);
 
   return d;
 }
@@ -307,8 +447,11 @@ compute_diff_for_decls(const decl_base_sptr first,
 
   diff_sptr d;
 
-  ((d = try_to_diff<function_decl>(first, second, ctxt))
+  ((d = try_to_diff_distinct_kinds(first, second, ctxt))
+   || (d = try_to_diff<function_decl>(first, second, ctxt))
    || (d = try_to_diff<var_decl>(first, second, ctxt)));
+
+   assert(d);
 
   return d;
 }

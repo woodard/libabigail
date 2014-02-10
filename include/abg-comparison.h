@@ -294,6 +294,52 @@ compute_diff(const type_base_sptr,
 	     const type_base_sptr,
 	     diff_context_sptr ctxt);
 
+class distinct_diff;
+
+/// Convenience typedef for a shared pointer to distinct_types_diff
+typedef shared_ptr<distinct_diff> distinct_diff_sptr;
+
+/// An abstraction of a diff between entities that are of a different
+/// kind (disctinct).
+class distinct_diff : public diff
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+protected:
+  distinct_diff(decl_base_sptr first,
+		decl_base_sptr second,
+		diff_context_sptr ctxt = diff_context_sptr());
+public:
+
+  const decl_base_sptr
+  first() const;
+
+  const decl_base_sptr
+  second() const;
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream& out, const string& indent = "") const;
+
+  static bool
+  entities_are_of_distinct_kinds(decl_base_sptr first,
+				 decl_base_sptr second);
+
+  friend distinct_diff_sptr
+  compute_diff_for_distinct_kinds(const decl_base_sptr first,
+				  const decl_base_sptr second,
+				  diff_context_sptr ctxt);
+};// end class distinct_types_diff
+
+distinct_diff_sptr
+compute_diff_for_distinct_kinds(const decl_base_sptr,
+				const decl_base_sptr,
+				diff_context_sptr ctxt);
+
 class var_diff;
 
 /// Convenience typedef for a shared pointer to var_diff.
