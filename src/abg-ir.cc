@@ -357,6 +357,12 @@ void
 decl_base::get_qualified_name(string& qn,
 			      const string& sep) const
 {
+  if (!qualified_name_.empty())
+    {
+      qn = qualified_name_;
+      return;
+    }
+
   list<string> qn_components;
 
   qn_components.push_front(get_name());
@@ -373,6 +379,8 @@ decl_base::get_qualified_name(string& qn,
       qn += *i;
     else
       qn += sep + *i;
+
+  qualified_name_ = qn;
 }
 
 /// @return the default pretty representation for a decl.  This is
@@ -2340,10 +2348,6 @@ class_decl::set_definition_of_declaration(class_decl_sptr d)
   definition_of_declaration_ = d;
 }
 
-class_decl_sptr
-class_decl::get_definition_of_declaration() const
-{return definition_of_declaration_;}
-
 /// set the earlier declaration of this class definition.
 ///
 /// @param declaration the earlier declaration to set.  Note that it's
@@ -3233,7 +3237,7 @@ class_decl::member_type::set_access_specifier(access_specifier a)
 /// Get the underlying type of a member type.
 ///
 /// @return the new underlying type.
-type_base_sptr
+const type_base_sptr&
 class_decl::member_type::get_underlying_type() const
 {return type_;}
 

@@ -208,6 +208,7 @@ protected:
 private:
   location		location_;
   std::string		name_;
+  mutable std::string	qualified_name_;
   std::string		mangled_name_;
   scope_decl*		context_;
   visibility		visibility_;
@@ -891,7 +892,7 @@ public:
   virtual bool
   operator==(const decl_base&) const;
 
-  shared_ptr<type_base>
+  const shared_ptr<type_base>&
   get_type() const
   {return type_;}
 
@@ -982,7 +983,7 @@ public:
       artificial_(false)
     {}
 
-    const shared_ptr<type_base>
+    const type_base_sptr&
     get_type()const
     {return type_;}
 
@@ -1214,7 +1215,7 @@ public:
   : type_base(size_in_bits, alignment_in_bits)
   {}
 
-  const shared_ptr<type_base>
+  const shared_ptr<type_base>&
   get_return_type() const
   {return return_type_;}
 
@@ -1285,7 +1286,7 @@ public:
   method_type(size_t size_in_bits,
 	      size_t alignment_in_bits);
 
-  shared_ptr<class_decl>
+  const shared_ptr<class_decl>&
   get_class_type() const
   {return class_type_;}
 
@@ -1687,8 +1688,9 @@ public:
   void
   set_definition_of_declaration(class_decl_sptr);
 
-  class_decl_sptr
-  get_definition_of_declaration() const;
+  const class_decl_sptr&
+  get_definition_of_declaration() const
+  {return definition_of_declaration_;}
 
   void
   set_earlier_declaration(decl_base_sptr declaration);
@@ -1868,7 +1870,7 @@ public:
   void
   set_access_specifier(access_specifier);
 
-  type_base_sptr
+  const type_base_sptr&
   get_underlying_type() const;
 
   bool
@@ -1900,7 +1902,7 @@ public:
   base_spec(shared_ptr<type_base> base, access_specifier a,
 	    long offset_in_bits = -1, bool is_virtual = false);
 
-  const shared_ptr<class_decl>
+  const shared_ptr<class_decl>&
   get_base_class() const
   {return base_class_;}
 
