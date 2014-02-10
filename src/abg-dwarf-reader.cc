@@ -2960,6 +2960,22 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_subprogram:
       {
+	  Dwarf_Die spec_die;
+	  scope_decl_sptr scop;
+	  if (die_die_attribute(die, DW_AT_specification, spec_die))
+	    {
+	      scop = get_scope_for_die(ctxt, &spec_die);
+	      if (scop)
+		{
+		  decl_base_sptr d =
+		    build_ir_node_from_die(ctxt,
+					   &spec_die,
+					   scop.get(),
+					   called_from_public_decl);
+		  if (d)
+		    return d;
+		}
+	    }
 	ctxt.scope_stack().push(scope);
 	if ((result = build_function_decl(ctxt, die, called_from_public_decl)))
 	  result = add_decl_to_scope(result, scope);
