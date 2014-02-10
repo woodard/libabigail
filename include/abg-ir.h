@@ -987,6 +987,7 @@ public:
     get_type()const
     {return type_;}
 
+    /// @return a copy of the type name of the parameter.
     const string
     get_type_name() const
     {
@@ -998,6 +999,23 @@ public:
 	  type_base_sptr t = get_type();
 	  assert(t);
 	  str += abigail::get_type_name(t);
+	}
+      return str;
+    }
+
+    /// @return a copy of the pretty representation of the type of the
+    /// parameter.
+    const string
+    get_type_pretty_representation()
+    {
+      string str;
+      if (variadic_marker_)
+	str = "...";
+      else
+	{
+	  type_base_sptr t = get_type();
+	  assert(t);
+	  str += get_type_declaration(t)->get_pretty_representation();
 	}
       return str;
     }

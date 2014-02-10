@@ -614,7 +614,7 @@ represent(class_decl::data_member_sptr	o,
   if (o->is_laid_out() != n->is_laid_out())
     {
       if (!emitted)
-	out << indent << "'" << name << "' ";
+	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
       if (o->is_laid_out())
@@ -626,7 +626,7 @@ represent(class_decl::data_member_sptr	o,
   if (o->get_offset_in_bits() != n->get_offset_in_bits())
     {
       if (!emitted)
-	out << indent << "'" << name << "' ";
+	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
       out << "offset changed from " << o->get_offset_in_bits()
@@ -636,7 +636,7 @@ represent(class_decl::data_member_sptr	o,
   if (o->get_binding() != n->get_binding())
     {
       if (!emitted)
-	out << indent << "'" << name << "' ";
+	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
       out << "elf binding changed from " << o->get_binding()
@@ -646,7 +646,7 @@ represent(class_decl::data_member_sptr	o,
   if (o->get_visibility() != n->get_visibility())
     {
       if (!emitted)
-	out << indent << "'" << name << "' ";
+	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
       out << "visibility changed from " << o->get_visibility()
@@ -655,7 +655,7 @@ represent(class_decl::data_member_sptr	o,
   if (o->get_access_specifier() != n->get_access_specifier())
     {
       if (!emitted)
-	out << indent << "'" << name << "' ";
+	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
 
@@ -666,7 +666,7 @@ represent(class_decl::data_member_sptr	o,
   if (o->is_static() != n->is_static())
     {
       if (!emitted)
-	out << indent << "'" << name << "' ";
+	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
 
@@ -679,9 +679,11 @@ represent(class_decl::data_member_sptr	o,
   if (*o->get_type() != *n->get_type())
     {
       if (!emitted)
-	out << indent << "'" << pretty_representation << "' type changed:\n";
+	out << indent << "type of '" << pretty_representation << "' changed:\n";
       else
-	out << "\n" << indent << "type changed:\n";
+	out << "\n" << indent << "and its type '"
+	    << get_type_declaration(o->get_type())->get_pretty_representation()
+	    << "' changed:\n";
       diff_sptr d = compute_diff_for_types(o->get_type(),
 					   n->get_type(),
 					   ctxt);
@@ -3400,7 +3402,7 @@ function_decl_diff::ensure_lookup_tables_populated()
        ++i)
     {
       parm = deleted_parameter_at(i->index());
-      parm_type_name = parm->get_type_name();
+      parm_type_name = parm->get_type_pretty_representation();
       // If for a reason the type name is empty we want to know and
       // fix that.
       assert(!parm_type_name.empty());
@@ -3418,7 +3420,7 @@ function_decl_diff::ensure_lookup_tables_populated()
 	   ++j)
 	{
 	  parm = inserted_parameter_at(*j);
-	  parm_type_name = parm->get_type_name();
+	  parm_type_name = parm->get_type_pretty_representation();
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
 	  assert(!parm_type_name.empty());
@@ -3527,7 +3529,7 @@ function_decl_diff::report(ostream& out, const string& indent) const
     {
       out << indent
 	  << "parameter " << i->second.first->get_index()
-	  << " of type '" << get_type_name(i->second.first->get_type())
+	  << " of type '" << i->second.first->get_type_pretty_representation()
 	  << "' changed:\n";
       diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
 					   i->second.second->get_type(),
@@ -3543,7 +3545,7 @@ function_decl_diff::report(ostream& out, const string& indent) const
        ++i)
     {
       out << indent << "parameter " << i->second->get_index()
-	  << " of type '" << get_type_name(i->second->get_type())
+	  << " of type '" << i->second->get_type_pretty_representation()
 	  << "' was removed\n";
       emitted = true;
     }
@@ -3557,7 +3559,7 @@ function_decl_diff::report(ostream& out, const string& indent) const
        ++i)
     {
       out << indent << "parameter " << i->second->get_index()
-	  << " of type '" << get_type_name(i->second->get_type())
+	  << " of type '" << i->second->get_type_pretty_representation()
 	  << "' was added\n";
       emitted = true;
     }
@@ -3848,16 +3850,18 @@ typedef_diff::report(ostream& out, const string& indent) const
       if (diff_sptr d2 = context()->has_diff_for(d))
 	{
 	  if (d2->currently_reporting())
-	      out << indent << "underlying type "
+	      out << indent << "underlying type '"
 		  << d->first_subject()->get_pretty_representation()
-		  << " changed; details are being reported\n";
+		  << "' changed; details are being reported\n";
 	  else if (d2->reported_once())
-	    out << indent << "underlying type "
+	    out << indent << "underlying type '"
 		<< d->first_subject()->get_pretty_representation()
-		<< " changed, as reported earlier\n";
+		<< "' changed, as reported earlier\n";
 	  else
 	    {
-	      out << indent << "underlying type changed:\n";
+	      out << indent << "underlying type '"
+		  << d->first_subject()->get_pretty_representation()
+		  << "' changed:\n";
 	      d->report(out, indent + "  ");
 	    }
 	}
@@ -4228,7 +4232,7 @@ corpus_diff::report(ostream& out, const string& indent) const
     out << indent << "1 Added function:\n";
   else if (num_added > 1)
     out << indent << num_added
-	<< "Added functions:\n\n";
+	<< " Added functions:\n\n";
   for (string_function_ptr_map::const_iterator i =
 	 priv_->added_fns_.begin();
        i != priv_->added_fns_.end();
@@ -4305,7 +4309,7 @@ corpus_diff::report(ostream& out, const string& indent) const
     out << indent << "1 Added variable:\n";
   else if (num_added > 1)
     out << indent << num_added
-	<< "Added variables:\n";
+	<< " Added variables:\n";
   for (string_var_ptr_map::const_iterator i =
 	 priv_->added_vars_.begin();
        i != priv_->added_vars_.end();
