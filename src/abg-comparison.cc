@@ -4193,63 +4193,71 @@ struct noop_deleter
 void
 corpus_diff::report(ostream& out, const string& indent) const
 {
+  unsigned  total = 0, num_removed = 0, num_added = 0, num_changed = 0;
   unsigned removed = 0, added = 0;
 
   /// Report added/removed/changed functions.
-  if (priv_->deleted_fns_.size() ==1)
-    out << indent << "  Removed function:\n";
-  else if (priv_->deleted_fns_.size() > 1)
-    out << indent << "  Removed functions:\n";
+  num_removed = priv_->deleted_fns_.size();
+  num_added = priv_->added_fns_.size();
+  num_changed = priv_->changed_fns_.size();
+  total = num_removed + num_added + num_changed;
+  const unsigned large_num = 100;
+
+  if (num_removed == 1)
+    out << indent << "1 Removed function:\n\n";
+  else if (num_removed > 1)
+    out << indent << num_removed << " Removed functions:\n\n";
+
   for (string_function_ptr_map::const_iterator i =
 	 priv_->deleted_fns_.begin();
        i != priv_->deleted_fns_.end();
        ++i)
     {
-      if (priv_->added_fns_.find(i->first) == priv_->added_fns_.end())
-	{
-	  out << indent
-	      << "    '"
-	      << i->second->get_pretty_representation()
-	      << "\n";
-	  ++removed;
-	}
+      out << indent
+	  << "  '";
+      if (total > large_num)
+	out << "[D] ";
+      out << i->second->get_pretty_representation()
+	  << "\n";
+      ++removed;
     }
   if (removed)
     out << "\n";
 
-  if (priv_->added_fns_.size() == 1)
-    out << indent << "  Added function:\n";
-  else if (priv_->added_fns_.size() > 1)
-    out << indent << "  Added functions:\n";
+  if (num_added == 1)
+    out << indent << "1 Added function:\n";
+  else if (num_added > 1)
+    out << indent << num_added
+	<< "Added functions:\n\n";
   for (string_function_ptr_map::const_iterator i =
 	 priv_->added_fns_.begin();
        i != priv_->added_fns_.end();
        ++i)
     {
-      if (priv_->deleted_fns_.find(i->first) == priv_->deleted_fns_.end())
-	{
-	  out
-	    << indent
-	    << "    '"
-	    << i->second->get_pretty_representation()
-	    << "\n";
-	  ++added;
-	}
+      out
+	<< indent
+	<< "  '";
+      if (total > large_num)
+	out << "[A] ";
+      out << i->second->get_pretty_representation()
+	  << "\n";
+      ++added;
     }
   if (added)
     out << "\n";
 
-  if (priv_->changed_fns_.size() == 1)
-    out << indent << "  Changed function:\n";
-  else if (priv_->changed_fns_.size() > 1)
-    out << indent << "  Changed functions:\n";
+  if (num_changed == 1)
+    out << indent << "1 Changed function :\n\n";
+  else if (num_changed > 1)
+    out << indent << num_changed
+	<< " Changed functions:\n\n";
 
   for (string_changed_function_ptr_map::const_iterator i =
 	 priv_->changed_fns_.begin();
        i != priv_->changed_fns_.end();
        ++i)
     {
-      out << indent << "    '"
+      out << indent << "  '"
 	  << i->second.first->get_pretty_representation()
 	  << "' was changed to '"
 	  << i->second.second->get_pretty_representation()
@@ -4267,58 +4275,64 @@ corpus_diff::report(ostream& out, const string& indent) const
     out << "\n";
 
   /// Report added/removed/changed variables.
-  if (priv_->deleted_vars_.size() == 1)
-    out << indent << "  Deleted variable:\n";
-  else if (priv_->deleted_vars_.size() > 1)
-    out << indent << "  Deleted variables:\n";
+  num_removed = priv_->deleted_vars_.size();
+  num_added = priv_->added_vars_.size();
+  num_changed = priv_->changed_vars_.size();
+  total = num_removed + num_added + num_changed;
+
+  if (num_removed == 1)
+    out << indent << "1 Deleted variable:\n";
+  else if (num_removed > 1)
+    out << indent << num_removed
+	<< " Deleted variables:\n\n";
   for (string_var_ptr_map::const_iterator i =
 	 priv_->deleted_vars_.begin();
        i != priv_->deleted_vars_.end();
        ++i)
     {
-      if (priv_->added_vars_.find(i->first) == priv_->added_vars_.end())
-	{
-	  out << indent
-	      << "    '"
-	      << i->second->get_pretty_representation()
-	      << "\n";
-	  ++removed;
-	}
+      out << indent
+	  << "  '";
+      if (total > large_num)
+	out << "[D] ";
+      out << i->second->get_pretty_representation()
+	  << "\n";
+      ++removed;
     }
   if (removed)
     out << "\n";
 
-  if (priv_->deleted_vars_.size() == 1)
-    out << indent << "  Added variable:\n";
-  else if (priv_->deleted_vars_.size() > 1)
-    out << indent << "  Added variables:\n";
+  if (num_added == 1)
+    out << indent << "1 Added variable:\n";
+  else if (num_added > 1)
+    out << indent << num_added
+	<< "Added variables:\n";
   for (string_var_ptr_map::const_iterator i =
 	 priv_->added_vars_.begin();
        i != priv_->added_vars_.end();
        ++i)
     {
-      if (priv_->deleted_vars_.find(i->first) == priv_->deleted_vars_.end())
-	{
-	  out << indent
-	      << "    '"
-	      << i->second->get_pretty_representation()
-	      << "\n";
-	  ++added;
-	}
+      out << indent
+	  << "  '";
+      if (total > large_num)
+	out << "[A] ";
+      out << i->second->get_pretty_representation()
+	  << "\n";
+      ++added;
     }
   if (added)
     out << "\n";
 
-  if (priv_->changed_vars_.size() == 1)
-    out << indent << "  Changed variable:\n";
-  else if (priv_->changed_vars_.size() > 1)
-    out << indent << "  Changed variables:\n";
+  if (num_changed == 1)
+    out << indent << "1 Changed variable:\n";
+  else if (num_changed > 1)
+    out << indent << num_changed
+	<< " Changed variables:\n\n";
   for (string_changed_var_ptr_map::const_iterator i =
 	 priv_->changed_vars_.begin();
        i != priv_->changed_vars_.end();
        ++i)
     {
-      out << indent << "    '"
+      out << indent << "  '"
 	  << i->second.first->get_pretty_representation()
 	  << "' was changed to '"
 	  << i->second.second->get_pretty_representation()
