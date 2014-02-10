@@ -22,7 +22,6 @@
 
 /// @file
 
-#include <assert.h>
 #include <vector>
 #include <utility>
 #include <algorithm>

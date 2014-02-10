@@ -3248,7 +3248,7 @@ function_decl_diff::ensure_lookup_tables_populated()
        ++i)
     {
       parm = deleted_parameter_at(i->index());
-      parm_type_name = get_type_name(parm->get_type());
+      parm_type_name = parm->get_type_name();
       // If for a reason the type name is empty we want to know and
       // fix that.
       assert(!parm_type_name.empty());
@@ -3266,7 +3266,7 @@ function_decl_diff::ensure_lookup_tables_populated()
 	   ++j)
 	{
 	  parm = inserted_parameter_at(*j);
-	  parm_type_name = get_type_name(parm->get_type());
+	  parm_type_name = parm->get_type_name();
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
 	  assert(!parm_type_name.empty());

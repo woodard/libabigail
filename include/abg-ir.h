@@ -25,6 +25,7 @@
 #ifndef __ABG_IR_H__
 #define __ABG_IR_H__
 
+#include <assert.h>
 #include "abg-fwd.h"
 #include "abg-hash.h"
 #include "abg-traverse.h"
@@ -985,7 +986,22 @@ public:
     get_type()const
     {return type_;}
 
-    const shared_ptr<type_base>
+    const string
+    get_type_name() const
+    {
+      string str;
+      if (variadic_marker_)
+	str = "...";
+      else
+	{
+	  type_base_sptr t = get_type();
+	  assert(t);
+	  str += abigail::get_type_name(t);
+	}
+      return str;
+    }
+
+    const shared_ptr<type_base>&
     get_type()
     {return type_;}
 
