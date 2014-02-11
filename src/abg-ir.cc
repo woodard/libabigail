@@ -3198,8 +3198,8 @@ class_decl::traverse(ir_node_visitor& v)
     {
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
-      if (t)
-	t->traverse(v);
+      assert(t);
+      t->traverse(v);
     }
 
   for (member_function_templates::const_iterator i =
@@ -3209,8 +3209,8 @@ class_decl::traverse(ir_node_visitor& v)
     {
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
-      if (t)
-	t->traverse(v);
+      assert(t);
+      t->traverse(v);
     }
 
   for (member_class_templates::const_iterator i =
@@ -3220,8 +3220,8 @@ class_decl::traverse(ir_node_visitor& v)
     {
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
-      if (t)
-	t->traverse(v);
+      assert(t);
+      t->traverse(v);
     }
 
   for (data_members::const_iterator i = get_data_members().begin();
@@ -3230,8 +3230,8 @@ class_decl::traverse(ir_node_visitor& v)
     {
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
-      if (t)
-	t->traverse(v);
+      assert(t);
+      t->traverse(v);
     }
 
   for (member_functions::const_iterator i= get_member_functions().begin();
@@ -3240,8 +3240,8 @@ class_decl::traverse(ir_node_visitor& v)
     {
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
-      if (t)
-	t->traverse(v);
+      assert(t);
+      t->traverse(v);
     }
 }
 
