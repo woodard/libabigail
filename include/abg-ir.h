@@ -1621,9 +1621,9 @@ public:
   enum access_specifier
   {
     no_access,
-    private_access,
+    public_access,
     protected_access,
-    public_access
+    private_access,
   };
 
   /// Forward declarations.
