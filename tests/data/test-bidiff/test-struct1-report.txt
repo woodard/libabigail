@@ -4,9 +4,9 @@
       size changed from 192 to 256 bits
       2 member type changes:
         'typedef s0::s0' changed:
-          underlying type class s0 changed; details are being reported
+          underlying type 'class s0' changed; details are being reported
         'typedef s0::number_type' changed:
-          underlying type changed:
+          underlying type 'int' changed:
             name changed from 'int' to 'char'
             size changed from 32 to 8 bits
             alignment changed from 32 to 8 bits
@@ -18,8 +18,8 @@
         'char s0::m1', at offset 96 (in bits)
 
       2 data member changes:
-       's0::m2' offset changed from 128 to 192
-       'int s0::m0' type changed:
+       'unsigned int s0::m2' offset changed from 128 to 192
+       type of 'int s0::m0' changed:
          name changed from 'int' to 'char'
          size changed from 32 to 8 bits
          alignment changed from 32 to 8 bits

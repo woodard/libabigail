@@ -2141,15 +2141,26 @@ function_decl::get_pretty_representation() const
     dynamic_cast<const class_decl::member_function*>(this);
 
   string result = mem_fn ? "method ": "function ";
-  decl_base_sptr type = dynamic_pointer_cast<decl_base>(get_return_type());
+  decl_base_sptr type =
+    mem_fn
+    ? get_type_declaration(mem_fn->get_type()->get_return_type())
+    : get_type_declaration(get_type()->get_return_type());
 
   if (type)
     result += type->get_qualified_name() + " ";
+  else if (!(mem_fn && (mem_fn->is_destructor() || mem_fn->is_constructor())))
+    result += "void ";
 
   if (mem_fn && mem_fn->is_destructor())
     result += "~";
 
-  result += get_qualified_name() + "(";
+  if (mem_fn)
+    result += mem_fn->get_type()->get_class_type()->get_qualified_name()
+      + "::" + mem_fn->get_name();
+  else
+    result += get_qualified_name();
+
+  result += "(";
 
   parameters::const_iterator i = get_parameters().begin(),
     end = get_parameters().end();

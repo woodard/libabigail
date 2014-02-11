@@ -8,7 +8,7 @@
 
 1 changed declaration:
   'function void foo(E)' was changed to 'function void foo(E)':
-    parameter 0 of type 'E' changed:
+    parameter 0 of type 'enum E' changed:
       1 enumerator deletion:
         'E::e2' value '1'
 
