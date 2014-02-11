@@ -1885,6 +1885,9 @@ public:
   virtual string
   get_pretty_representation() const;
 
+  virtual void
+  traverse(ir_node_visitor& v);
+
   void
   set_access_specifier(access_specifier);
 
@@ -2486,6 +2489,7 @@ struct ir_node_visitor : public node_visitor_base
   virtual void visit(class_tdecl*);
   virtual void visit(class_decl*);
   virtual void visit(class_decl::data_member*);
+  virtual void visit(class_decl::member_type*);
   virtual void visit(class_decl::member_function*);
   virtual void visit(class_decl::member_function_template*);
   virtual void visit(class_decl::member_class_template*);

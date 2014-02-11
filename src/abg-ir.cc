@@ -3270,6 +3270,21 @@ const type_base_sptr&
 class_decl::member_type::get_underlying_type() const
 {return type_;}
 
+/// Traverse a class_decl::member_type IR Node all the way to its
+/// underlying type.
+///
+/// @param v the visitor to use to visit the current node and its
+/// underlying nodes.
+void
+class_decl::member_type::traverse(ir_node_visitor& v)
+{
+  v.visit(this);
+  type_base_sptr t = get_underlying_type();
+  decl_base_sptr decl = get_type_declaration(t);
+  assert(decl);
+  decl->traverse(v);
+}
+
 /// Set the scope of a member type.
 ///
 /// @param scope the new scope to set.
@@ -3914,6 +3929,10 @@ ir_node_visitor::visit(class_decl*)
 
 void
 ir_node_visitor::visit(class_decl::data_member*)
+{}
+
+void
+ir_node_visitor::visit(class_decl::member_type*)
 {}
 
 void
