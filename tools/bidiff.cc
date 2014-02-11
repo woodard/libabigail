@@ -47,6 +47,11 @@ struct options
 {
   string file1;
   string file2;
+  bool show_symtabs;
+
+  options()
+    : show_symtabs(false)
+  {}
 };//end struct options;
 
 void
@@ -54,7 +59,8 @@ display_usage(const string prog_name, ostream& out)
 {
   out << "usage: " << prog_name << "[options] [<bi-file1> <bi-file2>]\n"
       << " where options can be:\n"
-      << "  --help display this message\n";
+      << " --show-symtabs  only display the symbol tables of the corpora\n"
+      << "  --help  display this message\n";
 }
 
 /// Parse the command line and set the options accordingly.
@@ -85,6 +91,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  else
 	    return false;
 	}
+      else if (!strcmp(argv[i], "--show-symtabs"))
+	opts.show_symtabs = true;
       else if (!strcmp(argv[i], "--help"))
 	return false;
       else
@@ -92,6 +100,42 @@ parse_command_line(int argc, char* argv[], options& opts)
     }
 
   return true;
+}
+
+/// Display the function symbol tables for the two corpora.
+///
+/// @param c1 the first corpus to display the symbol table for.
+///
+/// @param c2 the second corpus to display the symbol table for.
+///
+/// @param o the output stream to emit the symbol tables to.
+static void
+display_symtabs(const corpus_sptr c1, const corpus_sptr c2, ostream& o)
+{
+  o << "size of the functions symtabs: "
+    << c1->get_functions().size()
+    << " and "
+    << c2->get_functions().size()
+    << "\n\n";
+
+  if (c1->get_functions().size())
+    o << "First functions symbol table\n\n";
+  for (abigail::corpus::functions::const_iterator i =
+	 c1->get_functions().begin();
+       i != c1->get_functions().end();
+       ++i)
+    o << (*i)->get_pretty_representation() << std::endl;
+
+  if (c1->get_functions().size() != 0)
+    o << "\n";
+
+  if (c2->get_functions().size())
+    o << "Second functions symbol table\n\n";
+  for (abigail::corpus::functions::const_iterator i =
+	 c2->get_functions().begin();
+       i != c2->get_functions().end();
+       ++i)
+    o << (*i)->get_pretty_representation() << std::endl;
 }
 
 int
@@ -199,6 +243,11 @@ main(int argc, char* argv[])
 	}
       else if (c1)
 	{
+	  if (opts.show_symtabs)
+	    {
+	      display_symtabs(c1, c2, cout);
+	      return false;
+	    }
 	  corpus_diff_sptr changes = compute_diff(c1, c2);
 	  changes->report(cout);
 	}
