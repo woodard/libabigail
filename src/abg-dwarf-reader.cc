@@ -2328,6 +2328,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 						 is_dtor,
 						 /*is_const*/false));
 	      result->add_member_function(mem_fun);
+	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = mem_fun;
 	    }
 	  // Handle member types
 	  else if (is_type_die(&child))
@@ -2976,9 +2977,21 @@ build_ir_node_from_die(read_context&	ctxt,
 		    return d;
 		}
 	    }
+
+	{
+	  const class_decl* cl = as_non_member_class_decl(scope);
+	  // we shouldn't be in this class b/c, if this DIE is for a
+	  // member function, get_scope_for_die on it (prior to
+	  // calling this function) should have built the member
+	  // function for this DIE, and thus, this function should
+	  // have found the DIE for the member function in its cache.
+	  assert(!cl);
+	}
 	ctxt.scope_stack().push(scope);
+
 	if ((result = build_function_decl(ctxt, die, called_from_public_decl)))
 	  result = add_decl_to_scope(result, scope);
+
 	ctxt.scope_stack().pop();
       }
       break;

@@ -1094,6 +1094,27 @@ as_non_member_class_decl(const decl_base_sptr t)
   return dynamic_pointer_cast<class_decl>(t);
 }
 
+/// Return the underlying class decl of a member class decl type.
+///
+/// If a given type is a member class decl, return its underlying
+/// class type.
+///
+/// @param t the member type to consider.
+///
+/// @return the underlying class decl of the member type given in
+/// parameter, if it's a member class decl.  If the parameter was a
+/// non-member class decl, just return that class decl.  Otherwise, it
+/// the parameter was not a class decl at all, return nil.
+const class_decl*
+as_non_member_class_decl(const decl_base* t)
+{
+  const class_decl::member_type* m =
+    dynamic_cast<const class_decl::member_type*>(t);
+  if (m)
+    return dynamic_cast<const class_decl*>(m->get_underlying_type().get());
+  return dynamic_cast<const class_decl*>(t);
+}
+
 /// Tests wheter a declaration is a variable declaration.
 ///
 /// @param decl the decl to test.

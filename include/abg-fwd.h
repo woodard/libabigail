@@ -155,6 +155,9 @@ as_non_member_type(const shared_ptr<decl_base>);
 shared_ptr<class_decl>
 as_non_member_class_decl(const shared_ptr<decl_base>);
 
+const class_decl*
+as_non_member_class_decl(const decl_base* t);
+
 bool
 is_var_decl(const shared_ptr<decl_base>);
 
