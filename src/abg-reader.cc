@@ -1631,7 +1631,8 @@ build_qualified_type_decl(read_context&	ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      qualified_type_def_sptr ty = dynamic_pointer_cast<qualified_type_def>(d);
+      qualified_type_def_sptr ty =
+	dynamic_pointer_cast<qualified_type_def>(as_non_member_type(d));
       assert(ty);
       assert(ty->get_underlying_type() == underlying_type);
       assert(ty->get_cv_quals() == cv);
@@ -1708,7 +1709,8 @@ build_pointer_type_def(read_context&	ctxt,
   assert(!id.empty());
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      pointer_type_def_sptr ty = dynamic_pointer_cast<pointer_type_def>(d);
+      pointer_type_def_sptr ty =
+	dynamic_pointer_cast<pointer_type_def>(as_non_member_type(d));
       assert(ty);
       assert(pointed_to_type == ty->get_pointed_to_type());
       return ty;
@@ -1796,7 +1798,8 @@ build_reference_type_def(read_context&		ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      reference_type_def_sptr ty = dynamic_pointer_cast<reference_type_def>(d);
+      reference_type_def_sptr ty =
+	dynamic_pointer_cast<reference_type_def>(as_non_member_type(d));
       assert(ty);
       assert(pointed_to_type == ty->get_pointed_to_type());
       return ty;
