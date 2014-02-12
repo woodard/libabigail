@@ -2963,6 +2963,9 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	  Dwarf_Die spec_die;
 	  scope_decl_sptr scop;
+	  if (!is_public_decl(die))
+	    break;
+
 	  if (die_die_attribute(die, DW_AT_specification, spec_die))
 	    {
 	      scop = get_scope_for_die(ctxt, &spec_die);
