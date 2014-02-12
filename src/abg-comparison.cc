@@ -78,6 +78,21 @@ decls_diff_map_type;
 struct diff_context::priv
 {
   decls_diff_map_type decls_diff_map;
+  bool show_deleted_fns_;
+  bool show_changed_fns_;
+  bool show_added_fns_;
+  bool show_deleted_vars_;
+  bool show_changed_vars_;
+  bool show_added_vars_;
+
+  priv()
+    : show_deleted_fns_(true),
+      show_changed_fns_(true),
+      show_added_fns_(true),
+      show_deleted_vars_(true),
+      show_changed_vars_(true),
+      show_added_vars_(true)
+  {}
 };// end struct diff_context::priv
 
 diff_context::diff_context()
@@ -142,7 +157,84 @@ diff_context::add_diff(decl_base_sptr first,
 		       diff_sptr d)
 {priv_->decls_diff_map[std::make_pair(first, second)] = d;}
 
-/// <distinct_diff stuff>
+/// Set a flag saying to show the deleted functions.
+///
+/// @param f true to show deleted functions.
+void
+diff_context::show_deleted_fns(bool f)
+{priv_->show_deleted_fns_ = f;}
+
+/// @return true if we want to show the deleted functions, false
+/// otherwise.
+bool
+diff_context::show_deleted_fns() const
+{return priv_->show_deleted_fns_;}
+
+/// Set a flag saying to show the changed functions.
+///
+/// @param f true to show the changed functions.
+void
+diff_context::show_changed_fns(bool f)
+{priv_->show_changed_fns_ = f;}
+
+/// @return true if we want to show the changed functions, false otherwise.
+bool
+diff_context::show_changed_fns() const
+{return priv_->show_changed_fns_;}
+
+/// Set a flag saying to show the added functions.
+///
+/// @param f true to show the added functions.
+void
+diff_context::show_added_fns(bool f)
+{priv_->show_added_fns_ = f;}
+
+/// @return true if we want to show the added functions, false
+/// otherwise.
+bool
+diff_context::show_added_fns() const
+{return priv_->show_added_fns_;}
+
+/// Set a flag saying to show the deleted variables.
+///
+/// @param f true to show the deleted variables.
+void
+diff_context::show_deleted_vars(bool f)
+{priv_->show_deleted_vars_ = f;}
+
+/// @return true if we want to show the deleted variables, false
+/// otherwise.
+bool
+diff_context::show_deleted_vars() const
+{return priv_->show_deleted_vars_;}
+
+/// Set a flag saying to show the changed variables.
+///
+/// @param f true to show the changed variables.
+void
+diff_context::show_changed_vars(bool f)
+{priv_->show_changed_vars_ = f;}
+
+/// @return true if we want to show the changed variables, false otherwise.
+bool
+diff_context::show_changed_vars() const
+{return priv_->show_changed_vars_;}
+
+/// Set a flag saying to show the added variables.
+///
+/// @param f true to show the added variables.
+void
+diff_context::show_added_vars(bool f)
+{priv_->show_added_vars_ = f;}
+
+/// @return true if we want to show the added variables, false
+/// otherwise.
+bool
+diff_context::show_added_vars() const
+{return priv_->show_added_vars_;}
+// </diff_context stuff>
+
+// <distinct_diff stuff>
 
 /// The private data structure for @ref distinct_diff.
 struct distinct_diff::priv
@@ -3975,7 +4067,7 @@ compute_diff(const translation_unit_sptr	first,
 // <corpus stuff>
 struct corpus_diff::priv
 {
-  diff_context_sptr ctxt;
+  diff_context_sptr ctxt_;
   corpus_sptr				first_;
   corpus_sptr				second_;
   edit_script				fns_edit_script_;
@@ -3995,6 +4087,9 @@ struct corpus_diff::priv
 
   void
   ensure_lookup_tables_populated();
+
+  void
+  emit_corpus_diff_stats(ostream& out, const string& indent);
 }; // end corpus::priv
 
 /// Tests if the lookup tables are empty.
@@ -4130,6 +4225,50 @@ corpus_diff::priv::ensure_lookup_tables_populated()
   }
 }
 
+/// Emit the summary of the functions & variables that got
+/// removed/changed/added.
+///
+/// @param out the output stream to emit the stats to.
+///
+/// @param indent the indentation string to use in the summary.
+void
+corpus_diff::priv::emit_corpus_diff_stats(ostream& out, const string& indent)
+{
+  unsigned  total = 0, num_removed = 0, num_added = 0, num_changed = 0;
+
+  /// Report added/removed/changed functions.
+  num_removed = deleted_fns_.size();
+  num_added = added_fns_.size();
+  num_changed = changed_fns_.size();
+  total = num_removed + num_added + num_changed;
+
+  // function changes summary
+  out << indent << "Functions changes summary: ";
+  out << num_removed << " Removed, ";
+  out << num_changed << " Changed, ";
+  out << num_added << " Added ";
+  if (total <= 1)
+    out << " function\n\n";
+  else
+    out << " functions\n\n";
+
+   // Report added/removed/changed variables.
+  num_removed = deleted_vars_.size();
+  num_added = added_vars_.size();
+  num_changed = changed_vars_.size();
+  total = num_removed + num_added + num_changed;
+
+  // variables changes summary
+  out << indent << "Variables changes summary: ";
+  out << num_removed << " Removed, ";
+  out << num_changed << " Changed, ";
+  out << num_added << " Added ";
+  if (total <= 1)
+    out << " variable\n\n";
+  else
+    out << " variables\n\n";
+}
+
 /// Constructor for @ref corpus_diff.
 ///
 /// @param first the first corpus of the diff.
@@ -4144,7 +4283,7 @@ corpus_diff::corpus_diff(corpus_sptr first,
 {
   priv_->first_ = first;
   priv_->second_ = second;
-  priv_->ctxt = ctxt;
+  priv_->ctxt_ = ctxt;
 }
 
 /// @return the first corpus of the diff.
@@ -4168,6 +4307,13 @@ corpus_diff::function_changes() const
 edit_script&
 corpus_diff::variable_changes() const
 {return priv_->vars_edit_script_;}
+
+/// Getter of the diff context of this diff
+///
+/// @return the diff context for this diff.
+const diff_context_sptr
+corpus_diff::context() const
+{return priv_->ctxt_;}
 
 /// @return the length of the changes as recorded by the diff.
 unsigned
@@ -4207,151 +4353,171 @@ corpus_diff::report(ostream& out, const string& indent) const
   total = num_removed + num_added + num_changed;
   const unsigned large_num = 100;
 
-  if (num_removed == 1)
-    out << indent << "1 Removed function:\n\n";
-  else if (num_removed > 1)
-    out << indent << num_removed << " Removed functions:\n\n";
+  priv_->emit_corpus_diff_stats(out, indent);
 
-  for (string_function_ptr_map::const_iterator i =
-	 priv_->deleted_fns_.begin();
-       i != priv_->deleted_fns_.end();
-       ++i)
+  if (context()->show_deleted_fns())
     {
-      out << indent
-	  << "  '";
-      if (total > large_num)
-	out << "[D] ";
-      out << i->second->get_pretty_representation()
-	  << "\n";
-      ++removed;
-    }
-  if (removed)
-    out << "\n";
+      if (num_removed == 1)
+	out << indent << "1 Removed function:\n\n";
+      else if (num_removed > 1)
+	out << indent << num_removed << " Removed functions:\n\n";
 
-  if (num_added == 1)
-    out << indent << "1 Added function:\n";
-  else if (num_added > 1)
-    out << indent << num_added
-	<< " Added functions:\n\n";
-  for (string_function_ptr_map::const_iterator i =
-	 priv_->added_fns_.begin();
-       i != priv_->added_fns_.end();
-       ++i)
+      for (string_function_ptr_map::const_iterator i =
+	     priv_->deleted_fns_.begin();
+	   i != priv_->deleted_fns_.end();
+	   ++i)
+	{
+	  out << indent
+	      << "  '";
+	  if (total > large_num)
+	    out << "[D] ";
+	  out << i->second->get_pretty_representation()
+	      << "\n";
+	  ++removed;
+	}
+      if (removed)
+	out << "\n";
+    }
+
+  if (context()->show_changed_fns())
     {
-      out
-	<< indent
-	<< "  '";
-      if (total > large_num)
-	out << "[A] ";
-      out << i->second->get_pretty_representation()
-	  << "\n";
-      ++added;
+      if (num_changed == 1)
+	out << indent << "1 Changed function :\n\n";
+      else if (num_changed > 1)
+	out << indent << num_changed
+	    << " Changed functions:\n\n";
+
+      for (string_changed_function_ptr_map::const_iterator i =
+	     priv_->changed_fns_.begin();
+	   i != priv_->changed_fns_.end();
+	   ++i)
+	{
+	  out << indent << "  '"
+	      << i->second.first->get_pretty_representation()
+	      << "' was changed to '"
+	      << i->second.second->get_pretty_representation()
+	      << "':\n";
+	  {
+	    function_decl_sptr f(i->second.first, noop_deleter());
+	    function_decl_sptr s(i->second.second, noop_deleter());
+
+	    diff_sptr diff = compute_diff_for_decls(f, s, context());
+	    if (diff)
+	      diff->report(out, indent + "    ");
+	  }
+	}
+      if (priv_->changed_fns_.size())
+	out << "\n";
     }
-  if (added)
-    out << "\n";
 
-  if (num_changed == 1)
-    out << indent << "1 Changed function :\n\n";
-  else if (num_changed > 1)
-    out << indent << num_changed
-	<< " Changed functions:\n\n";
-
-  for (string_changed_function_ptr_map::const_iterator i =
-	 priv_->changed_fns_.begin();
-       i != priv_->changed_fns_.end();
-       ++i)
+  if (context()->show_added_fns())
     {
-      out << indent << "  '"
-	  << i->second.first->get_pretty_representation()
-	  << "' was changed to '"
-	  << i->second.second->get_pretty_representation()
-	  << "':\n";
-      {
-	function_decl_sptr f(i->second.first, noop_deleter());
-	function_decl_sptr s(i->second.second, noop_deleter());
-
-	diff_sptr diff = compute_diff_for_decls(f, s, priv_->ctxt);
-	if (diff)
-	  diff->report(out, indent + "    ");
-      }
+      if (num_added == 1)
+	out << indent << "1 Added function:\n";
+      else if (num_added > 1)
+	out << indent << num_added
+	    << " Added functions:\n\n";
+      for (string_function_ptr_map::const_iterator i =
+	     priv_->added_fns_.begin();
+	   i != priv_->added_fns_.end();
+	   ++i)
+	{
+	  out
+	    << indent
+	    << "  '";
+	  if (total > large_num)
+	    out << "[A] ";
+	  out << i->second->get_pretty_representation()
+	      << "\n";
+	  ++added;
+	}
+      if (added)
+	out << "\n";
     }
-  if (priv_->changed_fns_.size())
-    out << "\n";
 
-  /// Report added/removed/changed variables.
+ // Report added/removed/changed variables.
   num_removed = priv_->deleted_vars_.size();
   num_added = priv_->added_vars_.size();
   num_changed = priv_->changed_vars_.size();
   total = num_removed + num_added + num_changed;
 
-  if (num_removed == 1)
-    out << indent << "1 Deleted variable:\n";
-  else if (num_removed > 1)
-    out << indent << num_removed
-	<< " Deleted variables:\n\n";
-  for (string_var_ptr_map::const_iterator i =
-	 priv_->deleted_vars_.begin();
-       i != priv_->deleted_vars_.end();
-       ++i)
+  if (context()->show_deleted_vars())
     {
-      out << indent
-	  << "  '";
-      if (total > large_num)
-	out << "[D] ";
-      out << i->second->get_pretty_representation()
-	  << "\n";
-      ++removed;
+      if (num_removed == 1)
+	out << indent << "1 Deleted variable:\n";
+      else if (num_removed > 1)
+	out << indent << num_removed
+	    << " Deleted variables:\n\n";
+      for (string_var_ptr_map::const_iterator i =
+	     priv_->deleted_vars_.begin();
+	   i != priv_->deleted_vars_.end();
+	   ++i)
+	{
+	  out << indent
+	      << "  '";
+	  if (total > large_num)
+	    out << "[D] ";
+	  out << i->second->get_pretty_representation()
+	      << "\n";
+	  ++removed;
+	}
+      if (removed)
+	out << "\n";
     }
-  if (removed)
-    out << "\n";
 
-  if (num_added == 1)
-    out << indent << "1 Added variable:\n";
-  else if (num_added > 1)
-    out << indent << num_added
-	<< " Added variables:\n";
-  for (string_var_ptr_map::const_iterator i =
-	 priv_->added_vars_.begin();
-       i != priv_->added_vars_.end();
-       ++i)
+  if (context()->show_changed_vars())
     {
-      out << indent
-	  << "  '";
-      if (total > large_num)
-	out << "[A] ";
-      out << i->second->get_pretty_representation()
-	  << "\n";
-      ++added;
-    }
-  if (added)
-    out << "\n";
+      if (num_changed == 1)
+	out << indent << "1 Changed variable:\n";
+      else if (num_changed > 1)
+	out << indent << num_changed
+	    << " Changed variables:\n\n";
+      for (string_changed_var_ptr_map::const_iterator i =
+	     priv_->changed_vars_.begin();
+	   i != priv_->changed_vars_.end();
+	   ++i)
+	{
+	  out << indent << "  '"
+	      << i->second.first->get_pretty_representation()
+	      << "' was changed to '"
+	      << i->second.second->get_pretty_representation()
+	      << "':\n";
+	  {
+	    var_decl_sptr f(i->second.first, noop_deleter());
+	    var_decl_sptr s(i->second.second, noop_deleter());
 
-  if (num_changed == 1)
-    out << indent << "1 Changed variable:\n";
-  else if (num_changed > 1)
-    out << indent << num_changed
-	<< " Changed variables:\n\n";
-  for (string_changed_var_ptr_map::const_iterator i =
-	 priv_->changed_vars_.begin();
-       i != priv_->changed_vars_.end();
-       ++i)
+	    diff_sptr diff = compute_diff_for_decls(f, s, context());
+	    if (diff)
+	      diff->report(out, indent + "    ");
+	  }
+	}
+      if (priv_->changed_vars_.size())
+	out << "\n";
+    }
+
+  if (context()->show_added_vars())
     {
-      out << indent << "  '"
-	  << i->second.first->get_pretty_representation()
-	  << "' was changed to '"
-	  << i->second.second->get_pretty_representation()
-	  << "':\n";
-      {
-	var_decl_sptr f(i->second.first, noop_deleter());
-	var_decl_sptr s(i->second.second, noop_deleter());
-
-	diff_sptr diff = compute_diff_for_decls(f, s, priv_->ctxt);
-	if (diff)
-	  diff->report(out, indent + "    ");
-      }
+      if (num_added == 1)
+	out << indent << "1 Added variable:\n";
+      else if (num_added > 1)
+	out << indent << num_added
+	    << " Added variables:\n";
+      for (string_var_ptr_map::const_iterator i =
+	     priv_->added_vars_.begin();
+	   i != priv_->added_vars_.end();
+	   ++i)
+	{
+	  out << indent
+	      << "  '";
+	  if (total > large_num)
+	    out << "[A] ";
+	  out << i->second->get_pretty_representation()
+	      << "\n";
+	  ++added;
+	}
+      if (added)
+	out << "\n";
     }
-  if (priv_->changed_vars_.size())
-    out << "\n";
 }
 
 /// Compute the diff between two instances fo the @ref corpus

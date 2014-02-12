@@ -48,9 +48,25 @@ struct options
   string file1;
   string file2;
   bool show_symtabs;
+  bool show_deleted_fns;
+  bool show_changed_fns;
+  bool show_added_fns;
+  bool show_all_fns;
+  bool show_deleted_vars;
+  bool show_changed_vars;
+  bool show_added_vars;
+  bool show_all_vars;
 
   options()
-    : show_symtabs(false)
+    : show_symtabs(false),
+      show_deleted_fns(false),
+      show_changed_fns(false),
+      show_added_fns(false),
+      show_all_fns(true),
+      show_deleted_vars(false),
+      show_changed_vars(false),
+      show_added_vars(false),
+      show_all_vars(true)
   {}
 };//end struct options;
 
@@ -59,8 +75,14 @@ display_usage(const string prog_name, ostream& out)
 {
   out << "usage: " << prog_name << "[options] [<bi-file1> <bi-file2>]\n"
       << " where options can be:\n"
-      << " --show-symtabs  only display the symbol tables of the corpora\n"
-      << "  --help  display this message\n";
+      << " --symtabs  only display the symbol tables of the corpora\n"
+      << " --deleted-fns  display deleted public functions\n"
+      << " --changed-fns  display changed public functions\n"
+      << " --added-fns  display added public functions\n"
+      << " --deleted-vars  display deleted global public variables\n"
+      << " --changed-vars  display changed global public variables\n"
+      << " --added-vars  display added global public variables\n"
+      << " --help  display this message\n";
 }
 
 /// Parse the command line and set the options accordingly.
@@ -91,10 +113,46 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  else
 	    return false;
 	}
-      else if (!strcmp(argv[i], "--show-symtabs"))
+      else if (!strcmp(argv[i], "--symtabs"))
 	opts.show_symtabs = true;
       else if (!strcmp(argv[i], "--help"))
 	return false;
+      else if (!strcmp(argv[i], "--deleted-fns"))
+	{
+	  opts.show_deleted_fns = true;
+	  opts.show_all_fns = false;
+	  opts.show_all_vars = false;
+	}
+      else if (!strcmp(argv[i], "--changed-fns"))
+	{
+	  opts.show_changed_fns = true;
+	  opts.show_all_fns = false;
+	  opts.show_all_vars = false;
+	}
+      else if (!strcmp(argv[i], "--added-fns"))
+	{
+	  opts.show_added_fns = true;
+	  opts.show_all_fns = false;
+	  opts.show_all_vars = false;
+	}
+      else if (!strcmp(argv[i], "--deleted-vars"))
+	{
+	  opts.show_deleted_vars = true;
+	  opts.show_all_fns = false;
+	  opts.show_all_vars = false;
+	}
+      else if (!strcmp(argv[i], "--changed-vars"))
+	{
+	  opts.show_changed_vars = true;
+	  opts.show_all_fns = false;
+	  opts.show_all_vars = false;
+	}
+      else if (!strcmp(argv[i], "--added-vars"))
+	{
+	  opts.show_added_vars = true;
+	  opts.show_all_fns = false;
+	  opts.show_all_vars = false;
+	}
       else
 	return false;
     }
@@ -136,6 +194,50 @@ display_symtabs(const corpus_sptr c1, const corpus_sptr c2, ostream& o)
        i != c2->get_functions().end();
        ++i)
     o << (*i)->get_pretty_representation() << std::endl;
+}
+
+using abigail::comparison::diff_context_sptr;
+using abigail::comparison::diff_context;
+
+/// Update the diff context from the @ref options data structure.
+///
+/// @param ctxt the diff context to update.
+///
+/// @param opts the instance of @ref options to consider.
+static void
+set_diff_context_from_opts(diff_context_sptr ctxt,
+			   options& opts)
+{
+
+  if (opts.show_all_fns || opts.show_deleted_fns)
+    ctxt->show_deleted_fns(true);
+  else
+    ctxt->show_deleted_fns(false);
+
+  if (opts.show_all_fns || opts.show_changed_fns)
+    ctxt->show_changed_fns(true);
+  else
+    ctxt->show_changed_fns(false);
+
+  if (opts.show_all_fns || opts.show_added_fns)
+    ctxt->show_added_fns(true);
+  else
+    ctxt->show_added_fns(false);
+
+  if (opts.show_all_vars || opts.show_deleted_vars)
+    ctxt->show_deleted_vars(true);
+  else
+    ctxt->show_deleted_vars(false);
+
+  if (opts.show_all_vars || opts.show_changed_vars)
+    ctxt->show_changed_vars(true);
+  else
+    ctxt->show_changed_vars(false);
+
+  if (opts.show_all_vars || opts.show_added_vars)
+    ctxt->show_added_vars(true);
+  else
+    ctxt->show_added_vars(false);
 }
 
 int
@@ -248,7 +350,10 @@ main(int argc, char* argv[])
 	      display_symtabs(c1, c2, cout);
 	      return false;
 	    }
-	  corpus_diff_sptr changes = compute_diff(c1, c2);
+
+	  diff_context_sptr ctxt(new diff_context);
+	  set_diff_context_from_opts(ctxt, opts);
+	  corpus_diff_sptr changes = compute_diff(c1, c2, ctxt);
 	  changes->report(cout);
 	}
 

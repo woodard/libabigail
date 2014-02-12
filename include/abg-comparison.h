@@ -168,6 +168,42 @@ public:
   add_diff(const decl_base_sptr first,
 	   const decl_base_sptr second,
 	   diff_sptr d);
+
+  void
+  show_deleted_fns(bool f);
+
+  bool
+  show_deleted_fns() const;
+
+  void
+  show_changed_fns(bool f);
+
+  bool
+  show_changed_fns() const;
+
+  void
+  show_added_fns(bool f);
+
+  bool
+  show_added_fns() const;
+
+  void
+  show_deleted_vars(bool f);
+
+  bool
+  show_deleted_vars() const;
+
+  void
+  show_changed_vars(bool f);
+
+  bool
+  show_changed_vars() const;
+
+  void
+  show_added_vars(bool f);
+
+  bool
+  show_added_vars() const;
 };//end struct diff_context.
 
 /// This type encapsulates an edit script (a set of insertions and
@@ -977,6 +1013,9 @@ public:
 
   edit_script&
   variable_changes() const;
+
+  const diff_context_sptr
+  context() const;
 
   unsigned
   length() const;
