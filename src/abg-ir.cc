@@ -1745,7 +1745,8 @@ typedef_decl::operator==(const decl_base& o) const
 {
   const typedef_decl* other = dynamic_cast<const typedef_decl*>(&o);
   if (other)
-    return (*get_underlying_type() == *other->get_underlying_type());
+    return (decl_base::operator==(o)
+	    && *get_underlying_type() == *other->get_underlying_type());
   return false;
 }
 
