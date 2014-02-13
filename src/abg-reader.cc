@@ -161,6 +161,10 @@ public:
 	xml_char_sptr p0 = XML_NODE_GET_ATTRIBUTE(node, "is-declaration-only");
 	bool node_is_declaration_only =
 	  (p0 && xmlStrEqual(p0.get(), BAD_CAST("yes")));
+	bool node_is_class =
+	  (xmlStrEqual(node->name, BAD_CAST("class-decl")));
+	bool node_is_type_decl =
+	  (xmlStrEqual(node->name, BAD_CAST("type-decl")));
 	bool node_is_pointer_or_reference =
 	  (xmlStrEqual(node->name, BAD_CAST("pointer-type-def"))
 	   || xmlStrEqual(node->name, BAD_CAST("reference-type-def")));
@@ -176,6 +180,8 @@ public:
 						  "is-declaration-only");
 	bool is_ok = (node_is_declaration_only
 		      || (p1 && xmlStrEqual(p1.get(), BAD_CAST("yes")))
+		      || node_is_class
+		      || node_is_type_decl
 		      || node_is_pointer_or_reference
 		      || node_is_typedef
 		      || node_is_qualified_type
@@ -1533,14 +1539,13 @@ build_type_decl(read_context&		ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
+      // I've seen instances of DSOs where a type_decl would appear
+      // several times.  Hugh.
       type_decl_sptr ty = dynamic_pointer_cast<type_decl>(d);
       assert(ty);
-      assert(ty->get_name() == "unnamed-enum-underlying-type");
       assert(name == ty->get_name());
       assert(ty->get_size_in_bits() == size_in_bits);
       assert(ty->get_alignment_in_bits() == alignment_in_bits);
-      // only unnamed-enum-underlying-type kind of type-decl can
-      // appear several times in a TU.
       return ty;
     }
 
@@ -1634,7 +1639,7 @@ build_qualified_type_decl(read_context&	ctxt,
       qualified_type_def_sptr ty =
 	dynamic_pointer_cast<qualified_type_def>(as_non_member_type(d));
       assert(ty);
-      assert(ty->get_underlying_type() == underlying_type);
+      assert(*ty->get_underlying_type() == *underlying_type);
       assert(ty->get_cv_quals() == cv);
       return ty;
     }
@@ -1712,7 +1717,7 @@ build_pointer_type_def(read_context&	ctxt,
       pointer_type_def_sptr ty =
 	dynamic_pointer_cast<pointer_type_def>(as_non_member_type(d));
       assert(ty);
-      assert(pointed_to_type == ty->get_pointed_to_type());
+      assert(*pointed_to_type == *ty->get_pointed_to_type());
       return ty;
     }
 
@@ -1801,7 +1806,7 @@ build_reference_type_def(read_context&		ctxt,
       reference_type_def_sptr ty =
 	dynamic_pointer_cast<reference_type_def>(as_non_member_type(d));
       assert(ty);
-      assert(pointed_to_type == ty->get_pointed_to_type());
+      assert(*pointed_to_type == *ty->get_pointed_to_type());
       return ty;
     }
 
@@ -2041,6 +2046,10 @@ build_class_decl(read_context&		ctxt,
   bool is_decl_only = false;
   read_is_declaration_only(node, is_decl_only);
 
+  // Keep in mind that there can be instances of DSOs that define a
+  // class twice!! Hugh.  So the test + assert() below doesn't work in
+  // these.  Oh well.
+#if 0
   // If the id is not empty, then we should be seeing this type for
   // the first time, unless it's a declaration-only type class.
   if (!id.empty())
@@ -2053,6 +2062,7 @@ build_class_decl(read_context&		ctxt,
 		 || is_decl_only);
 	}
     }
+#endif
 
   if (!is_decl_only)
     decl.reset(new class_decl(name, size_in_bits, alignment_in_bits,

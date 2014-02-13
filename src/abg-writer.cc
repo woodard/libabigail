@@ -1056,7 +1056,7 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
   ostream& o = ctxt.get_ostream();
 
   do_indent(o, indent);
-  o << "<enum-decl name='" << decl->get_name() << "'";
+  o << "<enum-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
 
   write_location(decl, o);
 
