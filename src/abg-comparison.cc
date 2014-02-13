@@ -4168,6 +4168,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 		if (*j->second != *added_fn)
 		  changed_fns_[j->first] = std::make_pair(j->second,
 							  added_fn);
+		deleted_fns_.erase(j);
 	      }
 	    else
 	      added_fns_[n] = added_fn;
