@@ -2047,8 +2047,9 @@ class_diff::ensure_lookup_tables_populated(void) const
 	if (name.empty())
 	  name = mem_fn->get_pretty_representation();
 	assert(!name.empty());
-	assert(priv_->deleted_member_functions_.find(name)
-	       == priv_->deleted_member_functions_.end());
+	if (priv_->deleted_member_functions_.find(name)
+	    != priv_->deleted_member_functions_.end())
+	  continue;
 	priv_->deleted_member_functions_[name] = mem_fn;
       }
 
@@ -2069,8 +2070,9 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    if (name.empty())
 	      name = mem_fn->get_pretty_representation();
 	    assert(!name.empty());
-	    assert (priv_->inserted_member_functions_.find(name)
-		    == priv_->inserted_member_functions_.end());
+	    if (priv_->inserted_member_functions_.find(name)
+		!= priv_->inserted_member_functions_.end())
+	      continue;
 	    string_member_function_sptr_map::const_iterator j =
 	      priv_->deleted_member_functions_.find(name);
 	    if (j != priv_->deleted_member_functions_.end())

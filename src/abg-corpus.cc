@@ -354,7 +354,9 @@ corpus::priv::build_symbol_table()
        i != v.wip_vars.end();
        ++i)
     {
-      string n = (*i)->get_pretty_representation();
+      string n = (*i)->get_mangled_name();
+      if (n.empty())
+	n = (*i)->get_pretty_representation();
       assert(!n.empty());
       if (!v.var_is_in_map(n))
 	{
