@@ -229,11 +229,11 @@ public:
   {return cur_tu_;}
 
   translation_unit_sptr
-  current_translation_unit()
+  cur_tu()
   {return cur_tu_;}
 
   void
-  current_translation_unit(translation_unit_sptr tu)
+  cur_tu(translation_unit_sptr tu)
   {
     if (tu)
       cur_tu_ = tu;
@@ -252,9 +252,9 @@ public:
   {
     if (scope_stack().empty())
       {
-	if (current_translation_unit())
+	if (cur_tu())
 	  scope_stack().push
-	    (current_translation_unit()->get_global_scope().get());
+	    (cur_tu()->get_global_scope().get());
       }
     return scope_stack().top();
   }
@@ -509,7 +509,7 @@ die_location(read_context& ctxt, Dwarf_Die* die)
 
   if (!file.empty() && line != 0)
     {
-      translation_unit_sptr tu = ctxt.current_translation_unit();
+      translation_unit_sptr tu = ctxt.cur_tu();
       location l = tu->get_loc_mgr().create_new_location(file, line, 1);
       return l;
     }
@@ -1945,7 +1945,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   result.reset(new translation_unit(path, address_size));
 
   ctxt.current_corpus()->add(result);
-  ctxt.current_translation_unit(result);
+  ctxt.cur_tu(result);
   ctxt.die_tu_map()[dwarf_dieoffset(die)] = result;
 
   Dwarf_Die child;
@@ -2106,7 +2106,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   // enum_type_decl type.
   type_decl_sptr t(new type_decl(underlying_type_name,
 				 size, size, location()));
-  translation_unit_sptr tu = ctxt.current_translation_unit();
+  translation_unit_sptr tu = ctxt.cur_tu();
   decl_base_sptr d =
     add_decl_to_scope(t, tu->get_global_scope().get());
 
@@ -2652,7 +2652,7 @@ build_function_decl(read_context& ctxt,
  if (!is_public_decl(die))
     return result;
 
-  translation_unit_sptr tu = ctxt.current_translation_unit();
+  translation_unit_sptr tu = ctxt.cur_tu();
   assert(tu);
 
   string fname, fmangled_name;
