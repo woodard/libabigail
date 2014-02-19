@@ -2380,6 +2380,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		  class_decl::member_type_sptr m =
 		    dynamic_pointer_cast<class_decl::member_type>(td);
 		  m->set_access_specifier(access);
+		  ctxt.die_decl_map()[dwarf_dieoffset(&child)] = m;
 		}
 	    }
 	} while (dwarf_siblingof(&child, &child) == 0);
@@ -3049,7 +3050,10 @@ build_ir_node_from_die(read_context&	ctxt,
 					   scop.get(),
 					   called_from_public_decl);
 		  if (d)
-		    return d;
+		    {
+		      ctxt.die_decl_map()[dwarf_dieoffset(die)] = d;
+		      return d;
+		    }
 		}
 	    }
 
