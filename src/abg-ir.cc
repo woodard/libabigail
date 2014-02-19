@@ -1401,10 +1401,12 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
     underlying_type_(type)
 {
   if (quals & qualified_type_def::CV_CONST)
-    set_name(get_name() + "const ");
+    set_name("const");
   if (quals & qualified_type_def::CV_VOLATILE)
-    set_name(get_name() + "volatile ");
-  set_name(get_name() + dynamic_pointer_cast<decl_base>(type)->get_name());
+    set_name(get_name() + " volatile ");
+  set_name(get_name()
+	   + " "
+	   + dynamic_pointer_cast<decl_base>(type)->get_name());
 }
 
 /// Equality operator for qualified types.
