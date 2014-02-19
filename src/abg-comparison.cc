@@ -3609,8 +3609,11 @@ function_decl_diff::report(ostream& out, const string& indent) const
     return;
 
   // Report about return type differences.
-  if (priv_->return_type_diff_)
-    priv_->return_type_diff_->report(out, indent);
+  if (priv_->return_type_diff_ && priv_->return_type_diff_->length())
+    {
+      out << indent << "return type changed:\n";
+      priv_->return_type_diff_->report(out, indent + "  ");
+    }
 
   // Hmmh, the above was quick.  Now report about function
   // parameters; this shouldn't as straightforward.
@@ -4385,21 +4388,19 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_changed_fns())
     {
       if (num_changed == 1)
-	out << indent << "1 Changed function :\n\n";
+	out << indent << "1 function with some indirect sub-type change:\n\n";
       else if (num_changed > 1)
 	out << indent << num_changed
-	    << " Changed functions:\n\n";
+	    << " functions with some indirect sub-type change:\n\n";
 
       for (string_changed_function_ptr_map::const_iterator i =
 	     priv_->changed_fns_.begin();
 	   i != priv_->changed_fns_.end();
 	   ++i)
 	{
-	  out << indent << "  '"
+	  out << indent << "  [C]'"
 	      << i->second.first->get_pretty_representation()
-	      << "' was changed to '"
-	      << i->second.second->get_pretty_representation()
-	      << "':\n";
+	      << "' has some indirect sub-type changes:\n";
 	  {
 	    function_decl_sptr f(i->second.first, noop_deleter());
 	    function_decl_sptr s(i->second.second, noop_deleter());
