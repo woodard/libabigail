@@ -292,6 +292,9 @@ public:
   friend decl_base_sptr
   add_decl_to_scope(decl_base_sptr dcl, scope_decl* scpe);
 
+  friend void
+  remove_decl_from_scope(decl_base_sptr);
+
   friend decl_base_sptr
   insert_decl_into_scope(decl_base_sptr,
 			 vector<shared_ptr<decl_base> >::iterator,

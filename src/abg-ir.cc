@@ -753,6 +753,7 @@ remove_decl_from_scope(decl_base_sptr decl)
 
   scope_decl* scope = decl->get_scope();
   scope->remove_member_decl(decl);
+  decl->set_scope(0);
 }
 
 /// Inserts a declaration into a given scope, before a given IR child
