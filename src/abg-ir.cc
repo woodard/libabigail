@@ -22,6 +22,7 @@
 
 /// @file
 
+#include <cxxabi.h>
 #include <vector>
 #include <utility>
 #include <algorithm>
@@ -1162,7 +1163,179 @@ bool
 is_template_decl(const shared_ptr<decl_base> decl)
 {return decl && dynamic_pointer_cast<template_decl>(decl);}
 
-// </scope_decl definition>
+/// This enum describe the kind of entity to lookup, while using the
+/// lookup API.
+enum lookup_entity_kind
+{
+  LOOKUP_ENTITY_TYPE,
+  LOOKUP_ENTITY_VAR,
+};
+
+/// Decompose a fully qualified name into the list of its components.
+///
+/// @param fqn the fully qualified name to decompose.
+///
+/// @param comps the resulting list of component to fill.
+void
+fqn_to_components(const string& fqn,
+		  list<string>& comps)
+{
+  string::size_type comp_begin = 0, comp_end = 0, fqn_size = fqn.size();
+  do
+    {
+      comp_end = fqn.find_first_of("::", comp_begin);
+      if (comp_end == fqn.npos)
+	comp_end = fqn_size;
+
+      string comp = fqn.substr(comp_begin, comp_end - comp_begin);
+      comps.push_back(comp);
+
+      comp_begin = comp_end + 2;
+      if (comp_begin >= fqn_size)
+	break;
+    } while (true);
+}
+
+/// This predicate returns true if a given container iterator points
+/// to the last element of the container, false otherwise.
+///
+/// @tparam T the type of the container of the iterator.
+///
+/// @param container the container the iterator points into.
+///
+/// @param i the iterator to consider.
+///
+/// @return true iff the iterator points to the last element of @p
+/// container.
+template<typename T>
+static bool
+iterator_is_last(T& container,
+		 typename T::const_iterator i)
+{
+  typename T::const_iterator next = i;
+  ++next;
+  return (next == container.end());
+}
+
+/// Lookup a type in a translation unit, starting from the global
+/// namespace.
+///
+/// @param fqn the fully qualified name of the type to lookup.
+///
+/// @param tu the translation unit to consider.
+///
+/// @return the declaration of the type if found, NULL otherwise.
+const decl_base_sptr
+lookup_type_in_translation_unit(const string& fqn,
+				const translation_unit& tu)
+{
+  list<string> comps;
+  fqn_to_components(fqn, comps);
+  return lookup_type_in_translation_unit(comps, tu);
+}
+
+/// Lookup an IR node from a translation unit.
+///
+/// @tparam NodeKind the type of the IR node to lookup from the
+/// translation unit.
+///
+/// @param fqn the components of the fully qualified name of the node
+/// to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the IR node found, NULL otherwise.
+template<typename NodeKind>
+static const decl_base_sptr
+lookup_node_in_translation_unit(const list<string>& fqn,
+				const translation_unit& tu)
+{
+  global_scope_sptr global_scope = tu.get_global_scope();
+  scope_decl_sptr cur_scope = global_scope, new_scope, scope;
+  decl_base_sptr resulting_type_decl;
+  type_base_sptr type;
+  bool it_is_last = false;
+
+  for (list<string>::const_iterator c = fqn.begin(); c != fqn.end(); ++c)
+    {
+      new_scope.reset();
+      it_is_last = iterator_is_last(fqn, c);
+      for (scope_decl::declarations::const_iterator m =
+	     cur_scope->get_member_decls().begin();
+	   m != cur_scope->get_member_decls().end();
+	   ++m)
+	{
+	  if (!it_is_last)
+	    {
+	      // looking for a scope
+	      scope = dynamic_pointer_cast<scope_decl>(*m);
+	      if (scope && scope->get_name() == *c)
+		{
+		  new_scope = scope;
+		  break;
+		}
+	    }
+	  else
+	    {
+	      //looking for a final type.
+	      type = dynamic_pointer_cast<type_base>(*m);
+	      if (type && get_type_declaration(type)->get_name() == *c)
+		{
+		  resulting_type_decl = get_type_declaration(type);
+		  break;
+		}
+	    }
+	}
+      if (!new_scope && !resulting_type_decl)
+	return decl_base_sptr();
+      cur_scope = new_scope;
+    }
+  assert(resulting_type_decl);
+  return resulting_type_decl;
+}
+
+/// Lookup a type from a translation unit.
+///
+/// @param fqn the components of the fully qualified name of the node
+/// to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the IR node found, NULL otherwise.
+const decl_base_sptr
+lookup_type_in_translation_unit(const list<string>& fqn,
+				const translation_unit& tu)
+{return lookup_node_in_translation_unit<type_base>(fqn, tu);}
+
+/// Demangle a C++ mangled name and return the resulting string
+///
+/// @param mangled_name the C++ mangled name to demangle.
+///
+/// @return the resulting mangled name.
+string
+demangle_cplus_mangled_name(const string& mangled_name)
+{
+  if (mangled_name.empty())
+    return "";
+
+  size_t l = 0;
+  int status = 0;
+  char * str = abi::__cxa_demangle(mangled_name.c_str(),
+				   NULL, &l, &status);
+  string demangled_name;
+  if (str)
+    {
+      demangled_name = str;
+      free(str);
+      str = 0;
+    }
+  if (status != 0)
+    demangled_name.clear();
+  else
+    assert(l != 0);
+
+  return demangled_name;
+}
 
 global_scope::~global_scope()
 {

@@ -223,6 +223,21 @@ get_top_most_scope_under(const shared_ptr<decl_base>,
 			 const shared_ptr<scope_decl>);
 
 void
+fqn_to_components(const std::string&,
+		  std::list<string>&);
+
+const shared_ptr<decl_base>
+lookup_type_in_translation_unit(const string&,
+				const translation_unit&);
+
+const shared_ptr<decl_base>
+lookup_type_in_translation_unit(const std::list<string>&,
+				const translation_unit&);
+
+string
+demangle_cplus_mangled_name(const string&);
+
+void
 dump(const shared_ptr<decl_base>, std::ostream&);
 
 void

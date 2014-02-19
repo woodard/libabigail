@@ -35,6 +35,7 @@
 #include <tr1/unordered_map>
 #include <stack>
 #include <deque>
+#include <list>
 #include "abg-dwarf-reader.h"
 
 using std::string;
@@ -50,6 +51,7 @@ using std::tr1::dynamic_pointer_cast;
 using std::tr1::unordered_map;
 using std::stack;
 using std::deque;
+using std::list;
 
 /// A functor used by @ref dwfl_sptr.
 struct dwfl_deleter
@@ -113,6 +115,7 @@ class read_context
   translation_unit_sptr cur_tu_;
   scope_stack_type scope_stack_;
   offset_offset_map die_parent_map_;
+  list<var_decl_sptr> var_decls_to_add;
 
   read_context();
 
@@ -258,6 +261,10 @@ public:
       }
     return scope_stack().top();
   }
+
+  list<var_decl_sptr>&
+  var_decls_to_re_add_to_tree()
+  {return var_decls_to_add;}
 };// end class read_context.
 
 static decl_base_sptr
@@ -625,21 +632,6 @@ is_public_decl(Dwarf_Die* die)
   bool is_public = false;
   die_flag_attribute(die, DW_AT_external, is_public);
   return is_public;
-}
-
-/// Test whether a given DIE represents a declaration-only DIE.
-///
-/// That is, if the DIE has the DW_AT_declaration flag set.
-///
-/// @param die the DIE to consider.
-///
-/// @return true if a DW_AT_declaration is present, false otherwise.
-static bool
-is_declaration_only(Dwarf_Die* die)
-{
-  bool is_declaration_only = false;
-  die_flag_attribute(die, DW_AT_declaration, is_declaration_only);
-  return is_declaration_only;
 }
 
 ///@return true if a tag represents a type, false otherwise.
@@ -1956,6 +1948,46 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
     build_ir_node_from_die(ctxt, &child);
   while (dwarf_siblingof(&child, &child) == 0);
 
+  if (!ctxt.var_decls_to_re_add_to_tree().empty())
+    for (list<var_decl_sptr>::const_iterator v =
+	   ctxt.var_decls_to_re_add_to_tree().begin();
+	 v != ctxt.var_decls_to_re_add_to_tree().end();
+	 ++v)
+      {
+	if (as_non_member_class_decl((*v)->get_scope()))
+	  continue;
+
+	assert((*v)->get_scope());
+	string demangled_name =
+	  demangle_cplus_mangled_name((*v)->get_mangled_name());
+	if (!demangled_name.empty())
+	  {
+	    std::list<string> fqn_comps;
+	    fqn_to_components(demangled_name, fqn_comps);
+	    fqn_comps.pop_back();
+	    decl_base_sptr ty_decl;
+	    if (!fqn_comps.empty())
+	      ty_decl = lookup_type_in_translation_unit(fqn_comps,
+							*ctxt.cur_tu());
+	    if (class_decl_sptr cl = as_non_member_class_decl(ty_decl))
+	      {
+		// so this is a static member variable then.
+		// So remove it from its current non-class scope and
+		// add it to this class.
+		remove_decl_from_scope(*v);
+		decl_base_sptr d = add_decl_to_scope(*v, cl);
+		assert(d->get_scope());
+		class_decl::data_member_sptr dm =
+		  dynamic_pointer_cast<class_decl::data_member>(d);
+		assert(dm);
+		dm->set_is_static(true);
+	      }
+	    if (ty_decl)
+	      assert(ty_decl->get_scope());
+	  }
+	assert((*v)->get_scope());
+      }
+  ctxt.var_decls_to_re_add_to_tree().clear();
   return result;
 }
 
@@ -2171,9 +2203,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   Dwarf_Die child;
   bool has_child = (dwarf_child(die, &child) == 0);
 
-  if (!has_child && is_declaration_only(die))
-    return cur_class;
-
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
 
   result.reset(new class_decl(name, size, 0, loc,
@@ -2234,8 +2263,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  else if (tag == DW_TAG_member
 		   || tag == DW_TAG_variable)
 	    {
-	      bool is_static = tag == DW_TAG_variable;
-
 	      Dwarf_Die type_die;
 	      if (!die_die_attribute(&child, DW_AT_type, type_die))
 		continue;
@@ -2253,8 +2280,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      ssize_t offset_in_bits = 0;
 	      bool is_laid_out = false;
-	      if (!is_static)
-		is_laid_out = die_member_offset(&child, offset_in_bits);
+	      is_laid_out = die_member_offset(&child, offset_in_bits);
 	      offset_in_bits *= 8;
 
 	      class_decl::access_specifier access =
@@ -2264,9 +2290,16 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      die_access_specifier(&child, access);
 
-	      var_decl_sptr v(new var_decl(n, t, loc, m));
-	      result->add_data_member(v, access, is_laid_out,
-				      is_static, offset_in_bits);
+	      class_decl::data_member_sptr dm
+		(new class_decl::data_member(n, t, access,loc, m,
+					     decl_base::VISIBILITY_DEFAULT,
+					     decl_base::BINDING_NONE,
+					     is_laid_out,
+					     /*is_static=*/false,
+					     offset_in_bits));
+	      result->add_data_member(dm);
+	      assert(dm->get_scope());
+	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = dm;
 	    }
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
@@ -2955,8 +2988,47 @@ build_ir_node_from_die(read_context&	ctxt,
       break;
 
     case DW_TAG_variable:
-      if ((result = build_var_decl(ctxt, die)))
-	result = add_decl_to_scope(result, scope);
+      {
+	Dwarf_Die spec_die;
+	if (die_die_attribute(die, DW_AT_specification, spec_die))
+	  {
+	    scope_decl_sptr scop = get_scope_for_die(ctxt, &spec_die);
+	    if (scop)
+	      {
+		decl_base_sptr d =
+		  build_ir_node_from_die(ctxt, &spec_die, scop.get(),
+					 called_from_public_decl);
+		if (d)
+		  {
+		    class_decl::data_member_sptr m =
+		      dynamic_pointer_cast<class_decl::data_member>(d);
+		    if (m)
+		      {
+			m->set_is_static(true);
+			ctxt.die_decl_map()[dwarf_dieoffset(die)] = d;
+		      }
+		    else
+		      {
+			var_decl_sptr v = dynamic_pointer_cast<var_decl>(d);
+			result = add_decl_to_scope(v, scope);
+			assert(v->get_scope());
+			ctxt.var_decls_to_re_add_to_tree().push_back(v);
+		      }
+		    assert(d->get_scope());
+		    return d;
+		  }
+	      }
+	  }
+	else if (var_decl_sptr v = build_var_decl(ctxt, die))
+	  {
+	    result = add_decl_to_scope(v, scope);
+	    assert(result->get_scope());
+	    v = dynamic_pointer_cast<var_decl>(result);
+	    assert(v);
+	    assert(v->get_scope());
+	    ctxt.var_decls_to_re_add_to_tree().push_back(v);
+	  }
+      }
       break;
 
     case DW_TAG_subprogram:

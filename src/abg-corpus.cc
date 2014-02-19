@@ -309,9 +309,24 @@ struct var_comp
     assert(first != 0 && second != 0);
 
     string first_name, second_name;
-    first_name = first->get_qualified_name();
+    first_name = first->get_mangled_name();
+    if (first_name.empty())
+      {
+	first_name = first->get_pretty_representation();
+	second_name = second->get_pretty_representation();
+	assert(!second_name.empty());
+      }
     assert(!first_name.empty());
-    second_name = second->get_qualified_name();
+
+    if (second_name.empty())
+      second_name = second->get_mangled_name();
+
+    if (second_name.empty())
+      {
+	second_name = second->get_pretty_representation();
+	first_name = first->get_pretty_representation();
+	assert(!first_name.empty());
+      }
     assert(!second_name.empty());
 
     return first_name < second_name;

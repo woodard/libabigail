@@ -4451,16 +4451,21 @@ corpus_diff::report(ostream& out, const string& indent) const
       else if (num_removed > 1)
 	out << indent << num_removed
 	    << " Deleted variables:\n\n";
+      string n;
       for (string_var_ptr_map::const_iterator i =
 	     priv_->deleted_vars_.begin();
 	   i != priv_->deleted_vars_.end();
 	   ++i)
 	{
+	  if (!i->second->get_mangled_name().empty())
+	    n = demangle_cplus_mangled_name(i->second->get_mangled_name());
+	  else
+	    n = i->second->get_pretty_representation();
 	  out << indent
 	      << "  '";
 	  if (total > large_num)
 	    out << "[D] ";
-	  out << i->second->get_pretty_representation()
+	  out << n
 	      << "\n";
 	  ++removed;
 	}
@@ -4475,15 +4480,28 @@ corpus_diff::report(ostream& out, const string& indent) const
       else if (num_changed > 1)
 	out << indent << num_changed
 	    << " Changed variables:\n\n";
+      string n1, n2;
       for (string_changed_var_ptr_map::const_iterator i =
 	     priv_->changed_vars_.begin();
 	   i != priv_->changed_vars_.end();
 	   ++i)
 	{
+	  if (!i->second.first->get_mangled_name().empty())
+	    n1 =
+	      demangle_cplus_mangled_name(i->second.first->get_mangled_name());
+	  else
+	    n1 = i->second.first->get_pretty_representation();
+
+	  if (!i->second.second->get_mangled_name().empty())
+	    n2 =
+	      demangle_cplus_mangled_name(i->second.second->get_mangled_name());
+	  else
+	    n2 = i->second.second->get_pretty_representation();
+
 	  out << indent << "  '"
-	      << i->second.first->get_pretty_representation()
+	      << n1
 	      << "' was changed to '"
-	      << i->second.second->get_pretty_representation()
+	      << n2
 	      << "':\n";
 	  {
 	    var_decl_sptr f(i->second.first, noop_deleter());
@@ -4505,16 +4523,21 @@ corpus_diff::report(ostream& out, const string& indent) const
       else if (num_added > 1)
 	out << indent << num_added
 	    << " Added variables:\n";
+      string n;
       for (string_var_ptr_map::const_iterator i =
 	     priv_->added_vars_.begin();
 	   i != priv_->added_vars_.end();
 	   ++i)
 	{
+	  if (!i->second->get_mangled_name().empty())
+	    n = demangle_cplus_mangled_name(i->second->get_mangled_name());
+	  else
+	    n = i->second->get_pretty_representation();
 	  out << indent
 	      << "  '";
 	  if (total > large_num)
 	    out << "[A] ";
-	  out << i->second->get_pretty_representation()
+	  out << n
 	      << "\n";
 	  ++added;
 	}
@@ -4552,12 +4575,47 @@ compute_diff(const corpus_sptr	f,
 						 s->get_functions().end(),
 						 r->priv_->fns_edit_script_);
 
-  diff_utils::compute_diff<vars_it_type, eq_type>(f->get_variables().begin(),
-						  f->get_variables().end(),
-						  s->get_variables().begin(),
-						  s->get_variables().end(),
-						  r->priv_->vars_edit_script_);
+  struct var_eq_type
+  {
+    bool
+    operator()(const var_decl* first,
+	       const var_decl* second)
+    {
+      string n1, n2;
+      if (!first->get_mangled_name().empty())
+	n1 = first->get_mangled_name();
+      if (n1.empty())
+	{
+	  n1 = first->get_pretty_representation();
+	  n2 = second->get_pretty_representation();
+	  assert(!n2.empty());
+	}
+      assert(!n1.empty());
 
+      if (n2.empty())
+	{
+	  n2 = second->get_mangled_name();
+	  if (n2.empty())
+	    {
+	      n2 = second->get_pretty_representation();
+	      n1 = second->get_pretty_representation();
+	      assert(!n1.empty());
+	    }
+	}
+      assert(!n2.empty());
+
+      if (n1 != n2)
+	return false;
+      if (*first->get_type() != *second->get_type())
+	return false;
+      return true;
+    }
+  };
+
+  diff_utils::compute_diff<vars_it_type, var_eq_type>
+    (f->get_variables().begin(), f->get_variables().end(),
+     s->get_variables().begin(), s->get_variables().end(),
+     r->priv_->vars_edit_script_);
   r->priv_->ensure_lookup_tables_populated();
 
   return r;
