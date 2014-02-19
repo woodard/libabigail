@@ -1836,9 +1836,17 @@ public:
   get_access_specifier() const
   {return access_;}
 
+  /// @return true if the member is static, false otherwise.
   bool
-  is_static() const
+  get_is_static() const
   {return is_static_;}
+
+  /// Set a flag saying if the parameter is static or not.
+  ///
+  /// @param f set to true if the member is static, false otherwise.
+  void
+  set_is_static(bool f)
+  {is_static_ = f;}
 
   virtual bool
   operator==(const member_base& o) const;

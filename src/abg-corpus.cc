@@ -244,7 +244,7 @@ public:
   void
   visit(class_decl::data_member* var)
   {
-    if (var->is_static())
+    if (var->get_is_static())
       {
 	wip_vars.push_back(var);
 	++wip_vars_size;

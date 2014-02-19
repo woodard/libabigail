@@ -755,14 +755,14 @@ represent(class_decl::data_member_sptr	o,
 	  << n->get_access_specifier();
       emitted = true;
     }
-  if (o->is_static() != n->is_static())
+  if (o->get_is_static() != n->get_is_static())
     {
       if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
 
-      if (o->is_static())
+      if (o->get_is_static())
 	out << "is no more static";
       else
 	out << "now becomes static";

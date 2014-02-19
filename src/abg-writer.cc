@@ -1380,7 +1380,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	  o << "<data-member";
 	  write_access(*data, o);
 
-	  bool is_static = (*data)->is_static();
+	  bool is_static = (*data)->get_is_static();
 	  write_cdtor_const_static(/*is_ctor=*/false,
 				   /*is_dtor=*/false,
 				   /*is_const=*/false,
@@ -1409,7 +1409,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	  write_cdtor_const_static( fn->is_constructor(),
 				    fn->is_destructor(),
 				    fn->is_const(),
-				    fn->is_static(),
+				    fn->get_is_static(),
 				    o);
 	  write_voffset(fn, o);
 	  o << ">\n";
@@ -1434,7 +1434,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	  write_cdtor_const_static((*fn)->is_constructor(),
 				   /*is_dtor=*/false,
 				   (*fn)->is_const(),
-				   (*fn)->is_static(), o);
+				   (*fn)->get_is_static(), o);
 	  o << ">\n";
 	  write_function_tdecl((*fn)->as_function_tdecl(), ctxt,
 				       get_indent_to_level(ctxt, indent, 2));
@@ -1451,7 +1451,8 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	  do_indent(o, nb_ws);
 	  o << "<member-template";
 	  write_access(*cl, o);
-	  write_cdtor_const_static(false, false, false, (*cl)->is_static(), o);
+	  write_cdtor_const_static(false, false, false,
+				   (*cl)->get_is_static(), o);
 	  o << ">\n";
 	  write_class_tdecl((*cl)->as_class_tdecl(), ctxt,
 				    get_indent_to_level(ctxt, indent, 2));

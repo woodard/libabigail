@@ -3253,7 +3253,7 @@ bool
 class_decl::member_base::operator==(const member_base& o) const
 {
   return (get_access_specifier() == o.get_access_specifier()
-	  && is_static() == o.is_static());
+	  && get_is_static() == o.get_is_static());
 }
 
 /// Constructor of a class_decl::member_type

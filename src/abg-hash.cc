@@ -461,7 +461,7 @@ class_decl::member_function::hash::operator()(const member_function& t) const
       v = hashing::combine_hashes(v, hash_bool(t.is_constructor()));
       v = hashing::combine_hashes(v, hash_bool(t.is_const()));
 
-      if (!t.is_static() && !t.is_constructor())
+      if (!t.get_is_static() && !t.is_constructor())
 	v = hashing::combine_hashes(v,
 				    hash_size_t(t.get_vtable_offset()));
       t.hash_ = v;
