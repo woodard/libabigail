@@ -2414,6 +2414,17 @@ class_decl::insert_member_decl(decl_base_sptr d,
     }
   else if (data_member_sptr m = dynamic_pointer_cast<data_member>(d))
     add_data_member(m);
+  else if (var_decl_sptr v = dynamic_pointer_cast<var_decl>(d))
+    {
+      class_decl::data_member_sptr dm
+	(new class_decl::data_member(v, class_decl::public_access,
+				     /*is_laid_out=*/false,
+				     /*is_static=*/false,
+				     /*offset_in_bits=*/0));
+      add_data_member(dm);
+      v->set_scope(this);
+      d = dm;
+    }
   else if (member_function_sptr f = dynamic_pointer_cast<member_function>(d))
     add_member_function(f);
   else if (member_function_template_sptr f =
@@ -2636,7 +2647,6 @@ class_decl::add_data_member(var_decl_sptr v, access_specifier access,
 						 is_static,
 						 offset_in_bits));
   add_data_member(m);
-  add_decl_to_scope(v, this);
 }
 
 /// a constructor for instances of class_decl::method_decl.
