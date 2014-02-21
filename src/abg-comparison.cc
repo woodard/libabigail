@@ -1951,8 +1951,7 @@ class_diff::ensure_lookup_tables_populated(void) const
       {
 	unsigned i = it->index();
 	decl_base_sptr d = first_class_decl()->get_member_types()[i];
-	class_decl_sptr klass_decl =
-	  dynamic_pointer_cast<class_decl>(as_non_member_type(d));
+	class_decl_sptr klass_decl = as_non_member_class_decl(d);
 	if (klass_decl && klass_decl->is_declaration_only())
 	  continue;
 	string qname = d->get_qualified_name();
@@ -1970,8 +1969,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	  {
 	    unsigned i = *iit;
 	    decl_base_sptr d = second_class_decl()->get_member_types()[i];
-	    class_decl_sptr klass_decl =
-	      dynamic_pointer_cast<class_decl>(as_non_member_type(d));
+	    class_decl_sptr klass_decl = as_non_member_class_decl(d);
 	    if (klass_decl && klass_decl->is_declaration_only())
 	      continue;
 	    string qname = d->get_qualified_name();

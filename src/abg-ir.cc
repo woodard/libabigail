@@ -2113,8 +2113,7 @@ var_decl::get_pretty_representation() const
 {
   string result;
 
-  result =
-    dynamic_pointer_cast<decl_base>(get_type())->get_qualified_name();
+  result = get_type_declaration(get_type())->get_qualified_name();
   result += " " + get_qualified_name();
   return result;
 }
