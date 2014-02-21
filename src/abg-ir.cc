@@ -348,40 +348,60 @@ void
 decl_base::set_hash(size_t h) const
 {hash_ = h;}
 
+/// Return a copy of the qualified name of the parent of the current
+/// decl.
+///
+/// @return the newly-built qualified name of the of the current decl.
+string
+decl_base::get_qualified_parent_name() const
+{
+  if (qualified_parent_name_.empty())
+    {
+      list<string> qn_components;
+      for (scope_decl* s = get_scope();
+	   s && !is_global_scope(s);
+	   s = s->get_scope())
+	qn_components.push_front(s->get_name());
+
+      string qn;
+      for (list<string>::const_iterator i = qn_components.begin();
+	   i != qn_components.end();
+	   ++i)
+	if (i == qn_components.begin())
+	  qn += *i;
+	else
+	  qn += "::" + *i;
+
+      qualified_parent_name_ = qn;
+    }
+
+  return qualified_parent_name_;
+}
+
+/// Getter for the name of the current decl.
+///
+/// @return the name of the current decl.
+const string&
+decl_base::get_name() const
+{return name_;}
+
 /// Compute the qualified name of the decl.
 ///
 /// @param qn the resulting qualified name.
-///
-/// @param sep the separator used to separate the components of the
-/// qualified name.
 void
-decl_base::get_qualified_name(string& qn,
-			      const string& sep) const
+decl_base::get_qualified_name(string& qn) const
 {
-  if (!qualified_name_.empty())
+  if (qualified_name_.empty())
     {
-      qn = qualified_name_;
-      return;
+      qualified_name_ = get_qualified_parent_name();
+      if (!get_name().empty())
+	{
+	  if (!qualified_name_.empty())
+	    qualified_name_ += "::";
+	  qualified_name_ += get_name();
+	}
     }
-
-  list<string> qn_components;
-
-  qn_components.push_front(get_name());
-  for (scope_decl* s = get_scope();
-       s && !is_global_scope(s);
-       s = s->get_scope())
-    qn_components.push_front(s->get_name());
-
-  qn.clear();
-  for (list<string>::const_iterator i = qn_components.begin();
-       i != qn_components.end();
-       ++i)
-    if (i == qn_components.begin())
-      qn += *i;
-    else
-      qn += sep + *i;
-
-  qualified_name_ = qn;
+  qn = qualified_name_;
 }
 
 /// @return the default pretty representation for a decl.  This is
@@ -393,15 +413,12 @@ decl_base::get_pretty_representation() const
 
 /// Compute the qualified name of the decl.
 ///
-/// @param separator the separator used to separate the components of
-/// the qualified name.
-///
 /// @return the resulting qualified name.
 string
-decl_base::get_qualified_name(const string& separator) const
+decl_base::get_qualified_name() const
 {
   string result;
-  get_qualified_name(result, separator);
+  get_qualified_name(result);
   return result;
 }
 
@@ -1557,6 +1574,32 @@ namespace_decl::~namespace_decl()
 
 // <qualified_type_def>
 
+/// Build the name of the current instance of qualified type.
+///
+/// @param fully_qualified if true, build a fully qualified name.
+///
+/// @return a copy of the newly-built name.
+string
+qualified_type_def::build_name(bool fully_qualified) const
+{
+  string quals = get_cv_quals_string_prefix();
+  decl_base_sptr td =
+    get_type_declaration(underlying_type_);
+  string name;
+  if (fully_qualified)
+    name = td->get_qualified_name();
+  else
+    name = td->get_name();
+  if (dynamic_pointer_cast<pointer_type_def>(underlying_type_))
+    {
+      name += " ";
+      name += quals;
+    }
+  else
+    name = quals + " " + name;
+  return name;
+}
+
 /// Constructor of the qualified_type_def
 ///
 /// @param type the underlying type
@@ -1574,13 +1617,8 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
     cv_quals_(quals),
     underlying_type_(type)
 {
-  if (quals & qualified_type_def::CV_CONST)
-    set_name("const");
-  if (quals & qualified_type_def::CV_VOLATILE)
-    set_name(get_name() + " volatile ");
-  set_name(get_name()
-	   + " "
-	   + dynamic_pointer_cast<decl_base>(type)->get_name());
+  string name = build_name(false);
+  set_name(name);
 }
 
 /// Equality operator for qualified types.
@@ -1622,6 +1660,18 @@ qualified_type_def::operator==(const type_base& o) const
   return *this == *other;
 }
 
+/// Implementation for the virtual qualified name builder for.
+///
+/// @param qualified_name the output parameter to hold the resulting
+/// qualified name.
+void
+qualified_type_def::get_qualified_name(string& qualified_name) const
+{
+  if (qualified_name_.empty())
+    qualified_name_ = build_name(true);
+  qualified_name = qualified_name_;
+}
+
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
 ///
@@ -1643,6 +1693,32 @@ qualified_type_def::get_cv_quals() const
 void
 qualified_type_def::set_cv_quals(char cv_quals)
 {cv_quals_ = cv_quals;}
+
+/// Compute and return the string prefix or suffix representing the
+/// qualifiers hold by the current instance of @ref
+/// qualified_type_def.
+///
+/// @return the newly-built cv string.
+string
+qualified_type_def::get_cv_quals_string_prefix() const
+{
+  string prefix;
+  if (cv_quals_ & qualified_type_def::CV_RESTRICT)
+    prefix = "restrict";
+  if (cv_quals_ & qualified_type_def::CV_CONST)
+    {
+      if (!prefix.empty())
+	prefix += ' ';
+      prefix += "const";
+    }
+  if (cv_quals_ & qualified_type_def::CV_VOLATILE)
+    {
+      if (!prefix.empty())
+	prefix += ' ';
+      prefix += "volatile";
+    }
+  return prefix;
+}
 
 /// Getter of the underlying type
 const shared_ptr<type_base>&
@@ -1743,6 +1819,24 @@ const shared_ptr<type_base>&
 pointer_type_def::get_pointed_to_type() const
 {return pointed_to_type_;}
 
+/// Build and return the qualified name of the current instance of
+/// @ref pointer_type_def.
+///
+/// @param qn output parameter.  The resulting qualified name.
+void
+pointer_type_def::get_qualified_name(string& qn) const
+{
+  if (qualified_name_.empty())
+    {
+      decl_base_sptr td =
+	get_type_declaration(pointed_to_type_);
+      string name;
+      td->get_qualified_name(name);
+      qualified_name_ = name + "*";
+    }
+  qn = qualified_name_;
+}
+
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
 ///
@@ -1805,6 +1899,26 @@ reference_type_def::get_pointed_to_type() const
 bool
 reference_type_def::is_lvalue() const
 {return is_lvalue_;}
+
+/// Build and return the qualified name of the current instance of the
+/// @ref reference_type_def.
+///
+/// @param qn output parameter.  Is set to the newly-built qualified
+/// name of the current instance of @ref reference_type_def.
+void
+reference_type_def::get_qualified_name(string& qn) const
+{
+  if (qualified_name_.empty())
+    {
+      decl_base_sptr td =
+	get_type_declaration(pointed_to_type_);
+      string name;
+      td->get_qualified_name(name);
+      qualified_name_ = name + "&";
+    }
+  qn = qualified_name_;
+}
+
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -3574,6 +3688,30 @@ class_decl::data_member::operator==(const decl_base& o) const
     }
   catch(...)
     {return false;}
+}
+
+/// Build the qualified name of the current instance of @ref
+/// class_decl::member_type.
+///
+/// @param qualified_name output parameter.  Is set to the qualified
+/// name name that is newly built.
+void
+class_decl::member_type::get_qualified_name(string& qualified_name) const
+{
+  decl_base_sptr td = get_type_declaration(get_underlying_type());
+  td->get_qualified_name(qualified_name);
+}
+
+/// Build the qualified name for the current instance of
+/// class_decl::member_type.
+///
+/// @return a copy of the newly-built qualified name.
+string
+class_decl::member_type::get_qualified_name() const
+{
+  string result;
+  get_qualified_name(result);
+  return result;
 }
 
 string

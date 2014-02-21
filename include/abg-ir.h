@@ -204,11 +204,12 @@ public:
 
 protected:
   mutable size_t	hash_;
+  location		location_;
+  mutable std::string	name_;
+  mutable std::string	qualified_parent_name_;
+  mutable std::string	qualified_name_;
 
 private:
-  location		location_;
-  std::string		name_;
-  mutable std::string	qualified_name_;
   std::string		mangled_name_;
   scope_decl*		context_;
   visibility		visibility_;
@@ -252,18 +253,19 @@ public:
   {location_ = l;}
 
   const string&
-  get_name() const
-  {return name_;}
+  get_name() const;
 
   virtual string
   get_pretty_representation() const;
 
-  void
-  get_qualified_name(string& qualified_name,
-		     const string& separator = "::") const;
+  string
+  get_qualified_parent_name() const;
+
+  virtual void
+  get_qualified_name(string& qualified_name) const;
 
   string
-  get_qualified_name(const string& separator = "::") const;
+  get_qualified_name() const;
 
   void
   set_name(const string& n)
@@ -599,6 +601,9 @@ class qualified_type_def : public virtual type_base, public virtual decl_base
   // Forbidden.
   qualified_type_def();
 
+protected:
+  string build_name(bool) const;
+
 public:
 
   /// A Hasher for instances of qualified_type_def
@@ -628,8 +633,14 @@ public:
   void
   set_cv_quals(char cv_quals);
 
+  string
+  get_cv_quals_string_prefix() const;
+
   const shared_ptr<type_base>&
   get_underlying_type() const;
+
+  virtual void
+  get_qualified_name(string& qualified_name) const;
 
   virtual void
   traverse(ir_node_visitor& v);
@@ -672,6 +683,9 @@ public:
   get_pointed_to_type() const;
 
   virtual void
+  get_qualified_name(string&) const;
+
+  virtual void
   traverse(ir_node_visitor& v);
 
   virtual ~pointer_type_def();
@@ -709,6 +723,9 @@ public:
 
   bool
   is_lvalue() const;
+
+  virtual void
+  get_qualified_name(string& qualified_name) const;
 
   virtual void
   traverse(ir_node_visitor& v);
@@ -1905,6 +1922,12 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual void
+  get_qualified_name(string& qualified_name) const;
+
+  string
+  get_qualified_name() const;
 
   virtual string
   get_pretty_representation() const;
