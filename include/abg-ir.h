@@ -1838,9 +1838,19 @@ public:
     : access_(a), is_static_(is_static)
   {}
 
+  /// Getter for the access specifier of this member.
+  ///
+  /// @return the access specifier for this member.
   access_specifier
   get_access_specifier() const
   {return access_;}
+
+  /// Setter for the access specifier of this member.
+  ///
+  /// @param a the new access specifier.
+  void
+  set_access_specifier(access_specifier a)
+  {access_ = a;}
 
   /// @return true if the member is static, false otherwise.
   bool
@@ -1901,9 +1911,6 @@ public:
 
   virtual void
   traverse(ir_node_visitor& v);
-
-  void
-  set_access_specifier(access_specifier);
 
   const type_base_sptr&
   get_underlying_type() const;

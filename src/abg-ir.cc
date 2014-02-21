@@ -3453,14 +3453,6 @@ class_decl::member_type::member_type(shared_ptr<type_base> t,
     member_base(access), type_(t)
 {set_scope(0);}
 
-/// Set the access specifiers of a member type.
-///
-/// @param a the new access specifier.
-void
-class_decl::member_type::set_access_specifier(access_specifier a)
-{access_ = a;}
-
-
 /// Get the underlying type of a member type.
 ///
 /// @return the new underlying type.
