@@ -1210,7 +1210,10 @@ public:
 		size_t size_in_bits, size_t alignment_in_bits)
   : type_base(size_in_bits, alignment_in_bits), return_type_(return_type),
     parms_(parms)
-  {}
+  {
+    for (parameters::size_type i = 0; i != parms_.size(); ++i)
+      parms_[i]->set_index(i);
+  }
 
   /// A constructor for a function_type that takes no parameters.
   ///
