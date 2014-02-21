@@ -464,10 +464,11 @@ compute_diff_for_types(const decl_base_sptr first,
 {
   diff_sptr d;
 
-  const decl_base_sptr f = get_type_declaration(as_non_member_type(first));
-  const decl_base_sptr s = get_type_declaration(as_non_member_type(second));
+  const decl_base_sptr f = first;
+  const decl_base_sptr s = second;
 
   ((d = try_to_diff_distinct_kinds(f, s, ctxt))
+   ||(d = try_to_diff<class_decl::member_type>(f, s, ctxt))
    ||(d = try_to_diff<type_decl>(f, s, ctxt))
    ||(d = try_to_diff<enum_type_decl>(f, s, ctxt))
    ||(d = try_to_diff<class_decl>(f, s,ctxt))
@@ -2466,10 +2467,8 @@ class_diff::report(ostream& out, const string& indent) const
 	       it != priv_->changed_member_types_.end();
 	       ++it)
 	    {
-	      decl_base_sptr o =
-		get_type_declaration(as_non_member_type(it->second.first));
-	      decl_base_sptr n =
-		get_type_declaration(as_non_member_type(it->second.second));
+	      decl_base_sptr o = it->second.first;
+	      decl_base_sptr n = it->second.second;
 	      out << indent << "  '"
 		  << o->get_pretty_representation()
 		  << "' changed:\n";
@@ -3399,6 +3398,147 @@ compute_diff(const scope_decl_sptr	first_scope,
 }
 
 //</scope_diff stuff>
+
+// <member_type_diff stuff>
+
+/// The type of the private data for @ref member_type_diff.
+struct member_type_diff::priv
+{
+  diff_sptr underlying_type_diff_;
+};//end struct member_type_diff
+
+/// Constructor for member_type_diff.
+///
+/// @param first the first subject of the diff.
+///
+/// @param second the second subject of the diff.
+///
+/// @param ctxt the context of the diff.
+member_type_diff::member_type_diff(class_decl::member_type_sptr first,
+				   class_decl::member_type_sptr second,
+				   diff_context_sptr ctxt)
+  : diff(first, second, ctxt),
+    priv_(new priv)
+{}
+
+/// Getter for the first subject of the diff.
+///
+/// @return the first member type of the diff.
+const class_decl::member_type_sptr
+member_type_diff::first_member_type() const
+{return dynamic_pointer_cast<class_decl::member_type>(first_subject());}
+
+/// Getter for the second subject of the diff.
+///
+/// @return the second member type of the diff.
+const class_decl::member_type_sptr
+member_type_diff::second_member_type() const
+{return dynamic_pointer_cast<class_decl::member_type>(second_subject());}
+
+/// Getter for the diff of the underlying types of the member types.
+///
+/// @return the diff of the underlying type of the member type.
+diff_sptr
+member_type_diff::underlying_type_diff() const
+{return priv_->underlying_type_diff_;}
+
+/// Setter for the diff of the underlying types of the member types
+///
+/// @param d the new diff for the underlying types of the member types
+/// to set.
+void
+member_type_diff::underlying_type_diff(const diff_sptr d)
+{priv_->underlying_type_diff_ = d;}
+
+/// Getter for the length of the diff.
+///
+/// @return return 1 if the two member types are different, 0
+/// otherwise.
+unsigned
+member_type_diff::length() const
+{return (*first_member_type() != *second_member_type());}
+
+/// Report the details of the differences abstracted by the current
+/// instance of @ref member_type_diff.
+///
+/// @param out the output stream to stick the report into.
+///
+/// @param indent the string to use as indentation.
+void
+member_type_diff::report(ostream& out, const string& indent) const
+{
+  if (!length())
+    return;
+
+  if (diff_sptr d = context()->has_diff_for(first_subject(),
+					    second_subject()))
+    {
+      if (d->currently_reporting())
+	{
+	  out << indent << "details are being reported\n";
+	  return;
+	}
+      else if (d->reported_once())
+	{
+	  out << indent << "details were reported earlier\n";
+	  return;
+	}
+    }
+
+  class_decl::member_type_sptr f = first_member_type(),
+    s = second_member_type();
+  string fn = f->get_pretty_representation(),
+    sn = s->get_pretty_representation();
+
+  if (f->get_is_static() != s->get_is_static())
+    {
+      bool lost = f->get_is_static();
+      out << indent << "'" << sn << "' ";
+      if (lost)
+	out << "became non-static";
+      else
+	out << "became static";
+      out << "\n";
+    }
+  if (f->get_access_specifier() != s->get_access_specifier())
+    {
+      out << indent << "'" << fn << "' access changed from '"
+	  << f->get_access_specifier()
+	  << "' to '"
+	  << s->get_access_specifier() << "'\n";
+    }
+
+  if (underlying_type_diff()->length())
+    underlying_type_diff()->report(out, indent);
+}
+
+/// Compute the diff of two member types.
+///
+/// @return the member type diff object
+member_type_diff_sptr
+compute_diff(const class_decl::member_type_sptr first,
+	     const class_decl::member_type_sptr second,
+	     diff_context_sptr ctxt)
+{
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      member_type_diff_sptr d = dynamic_pointer_cast<member_type_diff>(dif);
+      assert(d);
+      return d;
+    }
+
+
+  diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
+				       second->get_underlying_type(),
+				       ctxt);
+  member_type_diff_sptr result(new member_type_diff(first, second, ctxt));
+  result->underlying_type_diff(d);
+  ctxt->add_diff(first, second, result);
+
+  return result;
+}
+
+// </member_type_diff stuff>
 
 // <function_decl_diff stuff>
 struct function_decl_diff::priv

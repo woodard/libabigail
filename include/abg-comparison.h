@@ -803,6 +803,53 @@ compute_diff(const scope_decl_sptr first_scope,
 	     const scope_decl_sptr second_scope,
 	     diff_context_sptr ctxt);
 
+class member_type_diff;
+/// A convenience typedef for a shared pointer to a @ref member_type_diff
+typedef shared_ptr<member_type_diff> member_type_diff_sptr;
+
+/// An abstraction of a diff between two member types.
+class member_type_diff : public diff
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+
+protected:
+  member_type_diff(class_decl::member_type_sptr first,
+		   class_decl::member_type_sptr second,
+		   diff_context_sptr ctxt = diff_context_sptr());
+
+public:
+  const class_decl::member_type_sptr
+  first_member_type() const;
+
+  const class_decl::member_type_sptr
+  second_member_type() const;
+
+  diff_sptr
+  underlying_type_diff() const;
+
+  void
+  underlying_type_diff(const diff_sptr);
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  friend member_type_diff_sptr
+  compute_diff(const class_decl::member_type_sptr first,
+	       const class_decl::member_type_sptr second,
+	       diff_context_sptr ctxt);
+};// end class member_type_diff.
+
+member_type_diff_sptr
+compute_diff(const class_decl::member_type_sptr first,
+	     const class_decl::member_type_sptr second,
+	     diff_context_sptr ctxt);
+
 class function_decl_diff;
 
 /// Convenience typedef for a shared pointer on a @ref function_decl type.
