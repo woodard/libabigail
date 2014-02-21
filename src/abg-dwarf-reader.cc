@@ -2959,11 +2959,20 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_class_type:
     case DW_TAG_structure_type:
-      result =
+      {
+	Dwarf_Die spec_die;
+	scope_decl_sptr scop;
+	if (die_die_attribute(die, DW_AT_specification, spec_die))
+	  {
+	    scop = get_scope_for_die(ctxt, &spec_die);
+	    assert(scop);
+	  }
+	result =
 	  build_class_type_and_add_to_ir(ctxt, die,
 					 tag == DW_TAG_structure_type,
-					 scope,
+					 scop ? scop.get() : scope,
 					 called_from_public_decl);
+      }
       break;
     case DW_TAG_string_type:
       break;
