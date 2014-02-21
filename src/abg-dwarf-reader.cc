@@ -634,6 +634,22 @@ is_public_decl(Dwarf_Die* die)
   return is_public;
 }
 
+/// Test whether a given DIE represents a declaration-only DIE.
+///
+/// That is, if the DIE has the DW_AT_declaration flag set.
+///
+/// @param die the DIE to consider.
+//
+/// @return true if a DW_AT_declaration is present, false otherwise.
+static bool
+is_declaration_only(Dwarf_Die* die)
+{
+ bool is_declaration_only = false;
+  die_flag_attribute(die, DW_AT_declaration, is_declaration_only);
+  return is_declaration_only;
+}
+
+
 ///@return true if a tag represents a type, false otherwise.
 ///
 ///@param tag the tag to consider.
@@ -2202,6 +2218,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   Dwarf_Die child;
   bool has_child = (dwarf_child(die, &child) == 0);
+
+  if (!has_child && is_declaration_only(die))
+    // TODO: set the access specifier for the declaration-only class
+    // here.
+    return cur_class;
 
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
 
