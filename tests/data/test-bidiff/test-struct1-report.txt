@@ -2,18 +2,6 @@
   'const s0' changed:
     in unqualified underlying type 'class s0':
       size changed from 192 to 256 bits
-      2 member type changes:
-        'typedef s0::s0' changed:
-          underlying type 'class s0' changed; details are being reported
-        'typedef s0::number_type' changed:
-          underlying type 'int' changed:
-            name changed from 'int' to 'char'
-            size changed from 32 to 8 bits
-            alignment changed from 32 to 8 bits
-
-      1 member type insertion:
-        'typedef s0::grrr'
-
       1 data member deletion:
         'char s0::m1', at offset 96 (in bits)
 

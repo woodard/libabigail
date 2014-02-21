@@ -2775,12 +2775,15 @@ compute_diff(const class_decl_sptr	first,
 	       second->get_base_specifiers().end(),
 	       changes->base_changes());
 
-  // Compare member types
+  // Do *not* compare member types because that is generates lots of
+  // noise and I doubt it's really useful.
+#if 0
   compute_diff(first->get_member_types().begin(),
 	       first->get_member_types().end(),
 	       second->get_member_types().begin(),
 	       second->get_member_types().end(),
 	       changes->member_types_changes());
+#endif
 
   // Compare data member
   compute_diff(first->get_data_members().begin(),
@@ -2803,12 +2806,14 @@ compute_diff(const class_decl_sptr	first,
 	       second->get_member_function_templates().end(),
 	       changes->member_fn_tmpls_changes());
 
-  // Compare member class templates
+  // Likewise, do not compare member class templates
+#if 0
   compute_diff(first->get_member_class_templates().begin(),
 	       first->get_member_class_templates().end(),
 	       second->get_member_class_templates().begin(),
 	       second->get_member_class_templates().end(),
 	       changes->member_class_tmpls_changes());
+#endif
 
   changes->ensure_lookup_tables_populated();
 

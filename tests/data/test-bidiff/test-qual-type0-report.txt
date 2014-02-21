@@ -1,10 +1,6 @@
 3 changed types:
   'class S0' changed:
     size changed from 32 to 64 bits
-    1 member type change:
-      'typedef S0::S0' changed:
-        underlying type 'class S0' changed; details are being reported
-
     1 data member insertion:
       'char S0::m1', at offset 32 (in bits)
 

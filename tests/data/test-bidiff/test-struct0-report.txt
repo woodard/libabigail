@@ -1,10 +1,6 @@
 2 changed types:
   'class s0' changed:
     size changed from 64 to 96 bits
-    1 member type change:
-      'typedef s0::s0' changed:
-        underlying type 'class s0' changed; details are being reported
-
     1 data member change:
      type of 'char s0::m1' changed:
        name changed from 'char' to 'unsigned int'
