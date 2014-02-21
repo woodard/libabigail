@@ -3420,10 +3420,7 @@ struct function_decl_diff::priv
 
   // useful lookup tables.
   string_parm_map deleted_parms_;
-  string_parm_map inserted_parms_;
-
   string_changed_parm_map changed_parms_;
-  string_parm_map removed_parms_;
   string_parm_map added_parms_;
 
   Flags
@@ -3523,23 +3520,15 @@ function_decl_diff::ensure_lookup_tables_populated()
 	  if (k != priv_->deleted_parms_.end())
 	    {
 	      if (*k->second != *parm)
-		priv_->changed_parms_[parm_type_name] =
-		  std::make_pair(k->second, parm);
-	      priv_->deleted_parms_.erase(k);
+		{
+		  priv_->changed_parms_[parm_type_name] =
+		    std::make_pair(k->second, parm);
+		  priv_->deleted_parms_.erase(k);
+		}
 	    }
 	  else
-	    priv_->inserted_parms_[parm_type_name] = parm;
+	    priv_->added_parms_[parm_type_name] = parm;
 	}
-    }
-
-  for (string_parm_map::const_iterator i = priv_->inserted_parms_.begin();
-       i != priv_->inserted_parms_.end();
-       ++i)
-    {
-      string_parm_map::const_iterator j;
-      if ((j = priv_->deleted_parms_.find(i->first)) ==
-	  priv_->deleted_parms_.end())
-	priv_->added_parms_[i->first] = i->second;
     }
 }
 
@@ -3584,7 +3573,7 @@ function_decl_diff::changed_parms() const
 /// @return a map of parameters that got removed.
 const string_parm_map&
 function_decl_diff::removed_parms() const
-{return priv_->removed_parms_;}
+{return priv_->deleted_parms_;}
 
 /// @return a map of parameters that got added.
 const string_parm_map&
@@ -3637,8 +3626,8 @@ function_decl_diff::report(ostream& out, const string& indent) const
 
   // Report about the parameters that got removed.
   bool emitted = false;
-  for (string_parm_map::const_iterator i = priv_->removed_parms_.begin();
-       i != priv_->removed_parms_.end();
+  for (string_parm_map::const_iterator i = priv_->deleted_parms_.begin();
+       i != priv_->deleted_parms_.end();
        ++i)
     {
       out << indent << "parameter " << i->second->get_index()
