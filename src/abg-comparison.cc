@@ -784,9 +784,7 @@ represent(class_decl::data_member_sptr	o,
       else if (d->reported_once())
 	out << indent << "details were reported earlier\n";
       else
-	{
-	  d->report(out, indent + "  ");
-	}
+	d->report(out, indent + "  ");
       emitted = false;
     }
   if (emitted)
