@@ -752,7 +752,9 @@ represent(class_decl::data_member_sptr	o,
       else
 	out << ", ";
 
-      out << "access changed from " << o->get_access_specifier()
+      out << "access changed from '"
+	  << o->get_access_specifier()
+	  << "' to '"
 	  << n->get_access_specifier();
       emitted = true;
     }
