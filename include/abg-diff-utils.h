@@ -44,6 +44,11 @@
 namespace abigail
 {
 
+/// @brief Libabigail's core diffing algorithms
+///
+/// This is the namespace defining the core diffing algorithm used by
+/// libabigail @ref comparison tools.  This based on the diff
+/// algorithm from Eugene Myers.
 namespace diff_utils
 {
 
@@ -1789,6 +1794,34 @@ compute_diff(RandomAccessOutputIterator a_begin,
 				lcs, ses);
 }
 
+/// Compute the longest common subsequence of two (sub-regions of)
+/// sequences as well as the shortest edit script from transforming
+/// the first (sub-region of) sequence into the second (sub-region of)
+/// sequence.
+///
+/// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @param a_start an iterator to the beginning of the first sequence
+/// to consider.
+///
+/// @param a_end an iterator to the end of the first sequence to
+/// consider.
+///
+/// @param b_start an iterator to the beginning of the sequence to
+/// actually consider.
+///
+/// @param b_end an iterator to the end of second sequence to
+/// consider.
+///
+/// @param lcs the resulting lcs.  This is set iff the function
+/// returns true.
+///
+/// @param ses the resulting shortest editing script.
+///
+/// @return true upon successful completion, false otherwise.
 template<typename RandomAccessOutputIterator>
 void
 compute_diff(RandomAccessOutputIterator a_begin,
@@ -1913,6 +1946,31 @@ compute_diff(RandomAccessOutputIterator a_begin,
 				ses);
 }
 
+/// Compute the longest common subsequence of two (sub-regions of)
+/// sequences as well as the shortest edit script from transforming
+/// the first (sub-region of) sequence into the second (sub-region of)
+/// sequence.
+///
+/// This uses the LCS algorithm of the paper at section 4b.
+///
+/// @tparm RandomAccessOutputIterator the type of iterators passed to
+/// this function.  It must be a random access output iterator kind.
+///
+/// @param a_start an iterator to the beginning of the first sequence
+/// to consider.
+///
+/// @param a_end an iterator to the end of the first sequence to
+/// consider.
+///
+/// @param b_start an iterator to the beginning of the second sequence
+/// to consider.
+///
+/// @param b_end an iterator to the end of the second sequence to
+/// consider.
+///
+/// @param ses the resulting shortest editing script.
+///
+/// @return true upon successful completion, false otherwise.
 template<typename RandomAccessOutputIterator>
 void
 compute_diff(RandomAccessOutputIterator a_begin,
