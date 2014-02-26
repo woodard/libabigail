@@ -2696,8 +2696,7 @@ class_decl::insert_member_decl(decl_base_sptr d,
       class_decl::member_type_sptr m
 	(new class_decl::member_type(t, class_decl::public_access));
       add_member_type(m);
-      d = dynamic_pointer_cast<decl_base>(m);
-      assert(d);
+      d = m;
     }
   else if (data_member_sptr m = dynamic_pointer_cast<data_member>(d))
     add_data_member(m);
