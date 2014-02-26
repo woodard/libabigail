@@ -13,7 +13,6 @@
         <enumerator name='e0' value='0'/>
         <enumerator name='e1' value='1'/>
       </enum-decl>
-      <reference-type-def kind='lvalue' type-id='type-id-3' size-in-bits='64' alignment-in-bits='64' id='type-id-5'/>
       <function-decl name='bar2' mangled-name='_ZN3ns04bar2ERNS_1EE' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test0.cc' line='22' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64'>
         <parameter type-id='type-id-5'/>
       </function-decl>
@@ -31,6 +30,7 @@
     <type-decl name='int' size-in-bits='32' alignment-in-bits='32' id='type-id-1'/>
     <reference-type-def kind='lvalue' type-id='type-id-1' size-in-bits='64' alignment-in-bits='64' id='type-id-2'/>
     <type-decl name='enum-E-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-4'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3' size-in-bits='64' alignment-in-bits='64' id='type-id-5'/>
     <type-decl name='long long int' size-in-bits='64' alignment-in-bits='64' id='type-id-6'/>
     <type-decl name='long int' size-in-bits='64' alignment-in-bits='64' id='type-id-9'/>
     <type-decl name='char' size-in-bits='8' alignment-in-bits='8' id='type-id-10'/>
