@@ -47,6 +47,7 @@ struct options
 {
   string file1;
   string file2;
+  bool show_stats_only;
   bool show_symtabs;
   bool show_deleted_fns;
   bool show_changed_fns;
@@ -58,7 +59,8 @@ struct options
   bool show_all_vars;
 
   options()
-    : show_symtabs(false),
+    : show_stats_only(false),
+      show_symtabs(false),
       show_deleted_fns(false),
       show_changed_fns(false),
       show_added_fns(false),
@@ -75,6 +77,7 @@ display_usage(const string prog_name, ostream& out)
 {
   out << "usage: " << prog_name << "[options] [<bi-file1> <bi-file2>]\n"
       << " where options can be:\n"
+      << " --stat  only display the diff stats\n"
       << " --symtabs  only display the symbol tables of the corpora\n"
       << " --deleted-fns  display deleted public functions\n"
       << " --changed-fns  display changed public functions\n"
@@ -113,6 +116,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  else
 	    return false;
 	}
+      else if (!strcmp(argv[i], "--stat"))
+	opts.show_stats_only = true;
       else if (!strcmp(argv[i], "--symtabs"))
 	opts.show_symtabs = true;
       else if (!strcmp(argv[i], "--help"))
@@ -208,36 +213,15 @@ static void
 set_diff_context_from_opts(diff_context_sptr ctxt,
 			   options& opts)
 {
+  ctxt->show_stats_only(opts.show_stats_only);
+  ctxt->show_deleted_fns(opts.show_all_fns || opts.show_deleted_fns);
+  ctxt->show_changed_fns(opts.show_all_fns || opts.show_changed_fns);
+  ctxt->show_added_fns(opts.show_all_fns || opts.show_added_fns);
+  ctxt->show_deleted_vars(opts.show_all_vars || opts.show_deleted_vars);
+  ctxt->show_changed_vars(opts.show_all_vars || opts.show_changed_vars);
+  ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
+}
 
-  if (opts.show_all_fns || opts.show_deleted_fns)
-    ctxt->show_deleted_fns(true);
-  else
-    ctxt->show_deleted_fns(false);
-
-  if (opts.show_all_fns || opts.show_changed_fns)
-    ctxt->show_changed_fns(true);
-  else
-    ctxt->show_changed_fns(false);
-
-  if (opts.show_all_fns || opts.show_added_fns)
-    ctxt->show_added_fns(true);
-  else
-    ctxt->show_added_fns(false);
-
-  if (opts.show_all_vars || opts.show_deleted_vars)
-    ctxt->show_deleted_vars(true);
-  else
-    ctxt->show_deleted_vars(false);
-
-  if (opts.show_all_vars || opts.show_changed_vars)
-    ctxt->show_changed_vars(true);
-  else
-    ctxt->show_changed_vars(false);
-
-  if (opts.show_all_vars || opts.show_added_vars)
-    ctxt->show_added_vars(true);
-  else
-    ctxt->show_added_vars(false);
 }
 
 int

@@ -77,23 +77,25 @@ decls_diff_map_type;
 /// The private member (pimpl) for @ref diff_context.
 struct diff_context::priv
 {
-  decls_diff_map_type decls_diff_map;
-  bool show_deleted_fns_;
-  bool show_changed_fns_;
-  bool show_added_fns_;
-  bool show_deleted_vars_;
-  bool show_changed_vars_;
-  bool show_added_vars_;
+  decls_diff_map_type	decls_diff_map;
+  bool			show_stats_only_;
+  bool			show_deleted_fns_;
+  bool			show_changed_fns_;
+  bool			show_added_fns_;
+  bool			show_deleted_vars_;
+  bool			show_changed_vars_;
+  bool			show_added_vars_;
 
   priv()
-    : show_deleted_fns_(true),
+    : show_stats_only_(false),
+      show_deleted_fns_(true),
       show_changed_fns_(true),
       show_added_fns_(true),
       show_deleted_vars_(true),
       show_changed_vars_(true),
       show_added_vars_(true)
-  {}
-};// end struct diff_context::priv
+   {}
+ };// end struct diff_context::priv
 
 diff_context::diff_context()
   : priv_(new diff_context::priv)
@@ -129,10 +131,10 @@ diff_context::has_diff_for(const decl_base_sptr first,
 /// null otherwise.
 diff_sptr
 diff_context::has_diff_for_types(const type_base_sptr first,
-				 const type_base_sptr second) const
+				  const type_base_sptr second) const
 {
   return has_diff_for(get_type_declaration(first),
-		      get_type_declaration(second));
+		       get_type_declaration(second));
 }
 
 /// Tests if the current diff context already has a given diff.
@@ -153,9 +155,25 @@ diff_context::has_diff_for(const diff_sptr d) const
 /// @param the diff to add.
 void
 diff_context::add_diff(decl_base_sptr first,
-		       decl_base_sptr second,
-		       diff_sptr d)
+			decl_base_sptr second,
+			diff_sptr d)
 {priv_->decls_diff_map[std::make_pair(first, second)] = d;}
+
+/// Set a flag saying if the comparison module should only show the
+/// diff stats.
+///
+/// @param f the flag to set.
+void
+diff_context::show_stats_only(bool f)
+{priv_->show_stats_only_ = f;}
+
+/// Test if the comparison module should only show the diff stats.
+///
+/// @return true if the comparison module should only show the diff
+/// stats, false otherwise.
+bool
+diff_context::show_stats_only() const
+{return priv_->show_stats_only_;}
 
 /// Set a flag saying to show the deleted functions.
 ///
@@ -4511,6 +4529,10 @@ corpus_diff::report(ostream& out, const string& indent) const
   const unsigned large_num = 100;
 
   priv_->emit_corpus_diff_stats(out, indent);
+  if (context()->show_stats_only())
+    return;
+  out << "\n";
+
 
   if (context()->show_deleted_fns())
     {

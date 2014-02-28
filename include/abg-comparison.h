@@ -170,6 +170,12 @@ public:
 	   diff_sptr d);
 
   void
+  show_stats_only(bool f);
+
+  bool
+  show_stats_only() const;
+
+  void
   show_deleted_fns(bool f);
 
   bool
