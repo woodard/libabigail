@@ -640,7 +640,7 @@ diff_length_of_type_bases(type_base_sptr first, type_base_sptr second)
 {
   unsigned l = 0;
 
-  if (first->get_size_in_bits() != second->get_alignment_in_bits())
+  if (first->get_size_in_bits() != second->get_size_in_bits())
     ++l;
   if (first->get_alignment_in_bits() != second->get_alignment_in_bits())
     ++l;
