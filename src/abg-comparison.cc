@@ -78,6 +78,8 @@ decls_diff_map_type;
 struct diff_context::priv
 {
   decls_diff_map_type	decls_diff_map;
+  vector<string>	regexps_fns_to_suppress;
+  vector<string>	regexps_vars_to_suppress;
   bool			show_stats_only_;
   bool			show_deleted_fns_;
   bool			show_changed_fns_;

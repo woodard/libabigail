@@ -22,15 +22,19 @@
 
 #include <tr1/memory>
 #include <istream>
-#include <libxml/xmlreader.h>
+#include <abg-sptr-utils.h>
 
 namespace abigail
 {
-/// Internal namespace for xml.
+
+/// Internal namespace for xml manipulation utilities.
 namespace xml
 {
 
+using sptr_utils::build_sptr;
 using std::tr1::shared_ptr;
+using sptr_utils::reader_sptr;
+using sptr_utils::xml_char_sptr;
 
 /// This functor is used to instantiate a shared_ptr for the
 /// xmlTextReader.
@@ -38,11 +42,8 @@ struct textReaderDeleter
 {
   void
   operator()(xmlTextReaderPtr reader)
-  { xmlFreeTextReader(reader); }
+  {xmlFreeTextReader(reader);}
 };
-
-
-typedef shared_ptr<xmlTextReader> reader_sptr;
 
 /// This functor is used to instantiate a shared_ptr for xmlChar
 struct charDeleter
@@ -52,23 +53,11 @@ struct charDeleter
   { xmlFree(str); }
 };
 
-typedef shared_ptr<xmlChar> xml_char_sptr;
-
 reader_sptr new_reader_from_file(const std::string& path);
 reader_sptr new_reader_from_buffer(const std::string& buffer);
 reader_sptr new_reader_from_istream(std::istream*);
 xml_char_sptr build_xml_char_sptr(xmlChar*);
 
-template<class T>
-shared_ptr<T> build_sptr(T*);
-
-/// Specialization of build_sptr for xmlTextReader
-template<>
-shared_ptr<xmlTextReader> build_sptr<xmlTextReader>(xmlTextReader *p);
-
-/// Specialization of build_str for xmlChar.
-template<>
-shared_ptr<xmlChar> build_sptr<xmlChar>(xmlChar *p);
 
 int get_xml_node_depth(xmlNodePtr);
 

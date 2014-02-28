@@ -1,4 +1,5 @@
 headers =		\
+abg-sptr-utils.h	\
 abg-ir.h		\
 abg-corpus.h		\
 abg-reader.h		\

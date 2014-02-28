@@ -26,6 +26,27 @@
 
 namespace abigail
 {
+
+namespace sptr_utils
+{
+/// Build and return a shared_ptr for a pointer to xmlTextReader
+template<>
+shared_ptr<xmlTextReader>
+build_sptr<xmlTextReader>(::xmlTextReader *p)
+{
+  return shared_ptr<xmlTextReader>(p, abigail::xml::textReaderDeleter());
+}
+
+/// Build and return a shared_ptr for a pointer to xmlChar
+template<>
+shared_ptr<xmlChar>
+build_sptr<xmlChar>(xmlChar *p)
+{
+  return shared_ptr<xmlChar>(p, abigail::xml::charDeleter());
+}
+
+}//end namespace sptr_utils
+
 namespace xml
 {
 using std::istream;
@@ -107,22 +128,6 @@ new_reader_from_istream(std::istream* in)
 			      &xml_istream_input_close,
 			      in, "", 0, 0));
   return p;
-}
-
-/// Build and return a shared_ptr for a pointer to xmlTextReader
-template<>
-shared_ptr<xmlTextReader>
-build_sptr<xmlTextReader>(xmlTextReader *p)
-{
-  return shared_ptr<xmlTextReader>(p, textReaderDeleter());
-}
-
-/// Build and return a shared_ptr for a pointer to xmlChar
-template<>
-shared_ptr<xmlChar>
-build_sptr<xmlChar>(xmlChar *p)
-{
-  return shared_ptr<xmlChar>(p, charDeleter());
 }
 
 /// Return the depth of an xml element node.

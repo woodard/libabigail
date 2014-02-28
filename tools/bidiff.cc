@@ -23,6 +23,7 @@
 /// @file
 
 #include <cstring>
+#include <vector>
 #include <string>
 #include <iostream>
 #include "abg-comparison.h"
@@ -30,6 +31,7 @@
 #include "abg-reader.h"
 #include "abg-dwarf-reader.h"
 
+using std::vector;
 using std::string;
 using std::ostream;
 using std::cout;
@@ -47,6 +49,10 @@ struct options
 {
   string file1;
   string file2;
+  vector<string> drop_fn_regex_patterns;
+  vector<string> drop_var_regex_patterns;
+  vector<string> keep_fn_regex_patterns;
+  vector<string> keep_var_regex_patterns;
   bool show_stats_only;
   bool show_symtabs;
   bool show_deleted_fns;
@@ -85,6 +91,13 @@ display_usage(const string prog_name, ostream& out)
       << " --deleted-vars  display deleted global public variables\n"
       << " --changed-vars  display changed global public variables\n"
       << " --added-vars  display added global public variables\n"
+      << " --drop <regex>  drop functions and variables matching a regexp\n"
+      << " --drop-fn <regex> drop functions matching a regexp\n"
+      << " --drop-fn <regex> drop functions matching a regexp\n"
+      << " --drop-var <regex> drop variables matching a regexp\n"
+      << " --keep <regex>  keep only functions and variables matching a regex\n"
+      << " --keep-fn <regex>  keep only functions matching a regex\n"
+      << " --keep-var <regex>  keep only variables matching a regex\n"
       << " --help  display this message\n";
 }
 
@@ -158,6 +171,54 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.show_all_fns = false;
 	  opts.show_all_vars = false;
 	}
+      else if (!strcmp(argv[i], "--drop"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.drop_fn_regex_patterns.push_back(argv[j]);
+	  opts.drop_var_regex_patterns.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--drop-fn"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.drop_fn_regex_patterns.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--drop-var"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.drop_var_regex_patterns.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--keep"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.keep_fn_regex_patterns.push_back(argv[j]);
+	  opts.keep_var_regex_patterns.push_back(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--keep-fn"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.keep_fn_regex_patterns.push_back(argv[j]);
+	}
+      else if (!strcmp(argv[i], "--keep-var"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.keep_var_regex_patterns.push_back(argv[j]);
+	}
       else
 	return false;
     }
@@ -222,6 +283,42 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
 }
 
+/// Set the regex patterns describing the functions to drop from the
+/// symbol table of a given corpus.
+///
+/// @param opts the options to the regex patterns from.
+///
+/// @param c the corpus to set the regex patterns into.
+static void
+set_corpus_keep_drop_regex_patterns(options& opts, corpus_sptr c)
+{
+  if (!opts.drop_fn_regex_patterns.empty())
+    {
+      vector<string>& v = opts.drop_fn_regex_patterns;
+      vector<string>& p = c->get_regex_patterns_of_fns_to_suppress();
+      p.assign(v.begin(), v.end());
+    }
+
+  if (!opts.keep_fn_regex_patterns.empty())
+    {
+      vector<string>& v = opts.keep_fn_regex_patterns;
+      vector<string>& p = c->get_regex_patterns_of_fns_to_keep();
+      p.assign(v.begin(), v.end());
+    }
+
+  if (!opts.drop_var_regex_patterns.empty())
+    {
+      vector<string>& v = opts.drop_var_regex_patterns;
+      vector<string>& p = c->get_regex_patterns_of_vars_to_suppress();
+      p.assign(v.begin(), v.end());
+    }
+
+ if (!opts.keep_var_regex_patterns.empty())
+    {
+      vector<string>& v = opts.keep_var_regex_patterns;
+      vector<string>& p = c->get_regex_patterns_of_vars_to_keep();
+      p.assign(v.begin(), v.end());
+    }
 }
 
 int
@@ -334,6 +431,9 @@ main(int argc, char* argv[])
 	      display_symtabs(c1, c2, cout);
 	      return false;
 	    }
+
+	  set_corpus_keep_drop_regex_patterns(opts, c1);
+	  set_corpus_keep_drop_regex_patterns(opts, c2);
 
 	  diff_context_sptr ctxt(new diff_context);
 	  set_diff_context_from_opts(ctxt, opts);
