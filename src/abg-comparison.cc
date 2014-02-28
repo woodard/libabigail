@@ -272,7 +272,8 @@ const decl_base_sptr
 distinct_diff::second() const
 {return second_subject();}
 
-/// Test if the two arguments are of different kind.
+/// Test if the two arguments are of different kind, or that are both
+/// NULL.
 ///
 /// @param first the first argument to test for similarity in kind.
 ///
@@ -285,8 +286,12 @@ distinct_diff::entities_are_of_distinct_kinds(decl_base_sptr first,
 {
   if (!!first != !!second)
     return true;
-  if (first == second)
+  if (!first && !second)
+    // We do consider diffs of two empty decls as a diff of distinct
+    // kinds, for now.
     return true;
+  if (first == second)
+    return false;
 
   return typeid(*first.get()) != typeid(*second.get());
 }
