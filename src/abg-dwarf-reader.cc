@@ -649,6 +649,17 @@ is_declaration_only(Dwarf_Die* die)
   return is_declaration_only;
 }
 
+/// Tests whether a given DIE is artificial.
+///
+/// @param die the test to test for.
+///
+/// @return true if the DIE is artificial, false otherwise.
+static bool
+die_is_artificial(Dwarf_Die* die)
+{
+  bool is_artificial;
+  return die_flag_attribute(die, DW_AT_artificial, is_artificial);
+}
 
 ///@return true if a tag represents a type, false otherwise.
 ///
@@ -2325,6 +2336,14 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
 	    {
+	      if (die_is_artificial(&child))
+		// For now, let's not consider artificial functions.
+		// To consider them, we'd need to make the IR now
+		// about artificial functions and the
+		// (de)serialization and comparison machineries to
+		// know how to cope with these.
+		continue;
+
 	      function_decl_sptr f =
 		build_function_decl(ctxt, &child, called_from_public_decl);
 	      if (!f)
@@ -3054,7 +3073,8 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	  Dwarf_Die spec_die;
 	  scope_decl_sptr scop;
-	  if (!is_public_decl(die))
+	  if (!die_is_public_decl(die)
+	      || die_is_artificial(die))
 	    break;
 
 	  if (die_die_attribute(die, DW_AT_specification, spec_die))
