@@ -38,8 +38,10 @@ namespace abigail
 /// This represents the location of a token coming from a given
 /// translation unit.  This location is actually an abstraction of
 /// cursor in the table of all the locations of all the tokens of the
-/// translation unit.  That table is managed by the location_manager
-/// type.
+/// translation unit.  That table is managed by the @ref location_manager
+/// type.  To get the file path, line and column numbers associated to
+/// a given instance of @ref location, you need to use the
+/// location_manager::expand_location method.
 class location
 {
   unsigned		value_;
@@ -66,7 +68,7 @@ public:
   { return value_ < other.value_; }
 
   friend class location_manager;
-};
+}; // end class location
 
 /// @brief The entry point to manage locations.
 ///
@@ -244,10 +246,40 @@ public:
   void
   set_hash(size_t) const;
 
+  /// Get the location of a given declaration.
+  ///
+  /// The location is an abstraction for the tripplet {file path,
+  /// line, column} that defines where the declaration appeared in the
+  /// source code.
+  ///
+  /// To get the value of the tripplet {file path, line, column} from
+  /// the @ref location, you need to use the
+  /// location_manager::expand_location() method.
+  ///
+  /// The instance of @ref location_manager that you want is
+  /// accessible from the instance of @ref translation_unit that the
+  /// current instance of @ref decl_base belongs to, via a call to
+  /// translation_unit::get_loc_mgr().
+  ///
+  /// @return the location of the current instance of @ref decl_base.
   location
   get_location() const
   {return location_;}
 
+  /// Set the location for a given declaration.
+  ///
+  /// The location is an abstraction for the tripplet {file path,
+  /// line, column} that defines where the declaration appeared in the
+  /// source code.
+  ///
+  /// To create a location from a tripplet {file path, line, column},
+  /// you need to use the method @ref
+  /// location_manager::create_new_location().
+  ///
+  /// The instance of @ref location_manager that you want is
+  /// accessible from the instance of @ref translation_unit that the
+  /// current instance of @ref decl_base belongs to, via a call to
+  /// translation_unit::get_loc_mgr().
   void
   set_location(const location& l)
   {location_ = l;}
