@@ -301,7 +301,9 @@ distinct_diff::entities_are_of_distinct_kinds(decl_base_sptr first,
 unsigned
 distinct_diff::length() const
 {
-  if (first() == second())
+  if (first() == second()
+      || (first() && second()
+	  && *first() == *second()))
     return 0;
   return 1;
 }
