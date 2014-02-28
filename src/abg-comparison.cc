@@ -3747,6 +3747,19 @@ function_decl_diff::report(ostream& out, const string& indent) const
   if (length() == 0)
     return;
 
+  string qn1 = first_function_decl()->get_qualified_name(),
+    qn2 = second_function_decl()->get_qualified_name();
+
+  if (qn1 != qn2)
+    {
+      string frep1 = first_function_decl()->get_pretty_representation(),
+	frep2 = second_function_decl()->get_pretty_representation();
+      out << indent << "'" << frep1
+	  << "' is different from '"
+	  << frep2 << "'\n";
+      return;
+    }
+
   // Report about return type differences.
   if (priv_->return_type_diff_ && priv_->return_type_diff_->length())
     {
