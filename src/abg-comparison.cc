@@ -4391,9 +4391,9 @@ corpus_diff::priv::emit_corpus_diff_stats(ostream& out, const string& indent)
   out << num_changed << " Changed, ";
   out << num_added << " Added ";
   if (total <= 1)
-    out << " function\n\n";
+    out << "function\n";
   else
-    out << " functions\n\n";
+    out << "functions\n";
 
    // Report added/removed/changed variables.
   num_removed = deleted_vars_.size();
@@ -4407,9 +4407,9 @@ corpus_diff::priv::emit_corpus_diff_stats(ostream& out, const string& indent)
   out << num_changed << " Changed, ";
   out << num_added << " Added ";
   if (total <= 1)
-    out << " variable\n\n";
+    out << "variable\n";
   else
-    out << " variables\n\n";
+    out << "variables\n";
 }
 
 /// Constructor for @ref corpus_diff.
