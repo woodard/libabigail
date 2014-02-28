@@ -1058,7 +1058,7 @@ public:
     /// @return a copy of the pretty representation of the type of the
     /// parameter.
     const string
-    get_type_pretty_representation()
+    get_type_pretty_representation() const
     {
       string str;
       if (variadic_marker_)
