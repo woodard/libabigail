@@ -2339,6 +2339,17 @@ method_type::~method_type()
 
 // <function_decl definitions>
 
+/// Get a name uniquely identifying the parameter in the function.
+///
+///@return the unique parm name id. 
+const string
+function_decl::parameter::get_name_id() const
+{
+  std::ostringstream o;
+  o << get_type_name() << "-" << get_index();
+  return o.str();
+}
+
 /// Constructor for function_decl.
 ///
 /// This constructor builds the necessary function_type on behalf of

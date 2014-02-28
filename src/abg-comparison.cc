@@ -3653,7 +3653,7 @@ function_decl_diff::inserted_parameter_at(int i) const
 void
 function_decl_diff::ensure_lookup_tables_populated()
 {
-  string parm_type_name;
+  string parm_name;
   function_decl::parameter_sptr parm;
   for (vector<deletion>::const_iterator i =
 	 priv_->parm_changes_.deletions().begin();
@@ -3661,11 +3661,11 @@ function_decl_diff::ensure_lookup_tables_populated()
        ++i)
     {
       parm = deleted_parameter_at(i->index());
-      parm_type_name = parm->get_type_pretty_representation();
+      parm_name = parm->get_name_id();
       // If for a reason the type name is empty we want to know and
       // fix that.
-      assert(!parm_type_name.empty());
-      priv_->deleted_parms_[parm_type_name] = parm;
+      assert(!parm_name.empty());
+      priv_->deleted_parms_[parm_name] = parm;
     }
 
   for (vector<insertion>::const_iterator i =
@@ -3679,23 +3679,21 @@ function_decl_diff::ensure_lookup_tables_populated()
 	   ++j)
 	{
 	  parm = inserted_parameter_at(*j);
-	  parm_type_name = parm->get_type_pretty_representation();
+	  parm_name = parm->get_name_id();
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
-	  assert(!parm_type_name.empty());
+	  assert(!parm_name.empty());
 	  string_parm_map::const_iterator k =
-	    priv_->deleted_parms_.find(parm_type_name);
+	    priv_->deleted_parms_.find(parm_name);
 	  if (k != priv_->deleted_parms_.end())
 	    {
 	      if (*k->second != *parm)
-		{
-		  priv_->changed_parms_[parm_type_name] =
-		    std::make_pair(k->second, parm);
-		  priv_->deleted_parms_.erase(k);
-		}
+		priv_->changed_parms_[parm_name] =
+		  std::make_pair(k->second, parm);
+	      priv_->deleted_parms_.erase(k);
 	    }
 	  else
-	    priv_->added_parms_[parm_type_name] = parm;
+	    priv_->added_parms_[parm_name] = parm;
 	}
     }
 }

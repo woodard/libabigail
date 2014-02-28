@@ -1072,6 +1072,9 @@ public:
       return str;
     }
 
+    const string
+    get_name_id() const;
+
     const shared_ptr<type_base>&
     get_type()
     {return type_;}
