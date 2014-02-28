@@ -627,7 +627,7 @@ die_access_specifier(Dwarf_Die * die, class_decl::access_specifier& access)
 /// @return true if a DW_AT_external attribute is present and its
 /// value is set to the true; return false otherwise.
 static bool
-is_public_decl(Dwarf_Die* die)
+die_is_public_decl(Dwarf_Die* die)
 {
   bool is_public = false;
   die_flag_attribute(die, DW_AT_external, is_public);
@@ -642,11 +642,11 @@ is_public_decl(Dwarf_Die* die)
 //
 /// @return true if a DW_AT_declaration is present, false otherwise.
 static bool
-is_declaration_only(Dwarf_Die* die)
+die_is_declaration_only(Dwarf_Die* die)
 {
  bool is_declaration_only = false;
-  die_flag_attribute(die, DW_AT_declaration, is_declaration_only);
-  return is_declaration_only;
+ die_flag_attribute(die, DW_AT_declaration, is_declaration_only);
+ return is_declaration_only;
 }
 
 /// Tests whether a given DIE is artificial.
@@ -2230,7 +2230,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   Dwarf_Die child;
   bool has_child = (dwarf_child(die, &child) == 0);
 
-  if (!has_child && is_declaration_only(die))
+  if (!has_child && die_is_declaration_only(die))
     // TODO: set the access specifier for the declaration-only class
     // here.
     return cur_class;
@@ -2665,7 +2665,7 @@ build_var_decl(read_context& ctxt,
     return result;
   assert(dwarf_tag(die) == DW_TAG_variable);
 
-  if (!is_public_decl(die))
+  if (!die_is_public_decl(die))
     return result;
 
   type_base_sptr type;
@@ -2723,7 +2723,7 @@ build_function_decl(read_context& ctxt,
       return dynamic_pointer_cast<function_decl>(r);
     }
 
- if (!is_public_decl(die))
+ if (!die_is_public_decl(die))
     return result;
 
   translation_unit_sptr tu = ctxt.cur_tu();
@@ -2758,8 +2758,7 @@ build_function_decl(read_context& ctxt,
 	    string name, mangled_name;
 	    location loc;
 	    die_loc_and_name(ctxt, &child, loc, name, mangled_name);
-	    bool is_artificial = false;
-	    die_flag_attribute(&child, DW_AT_artificial, is_artificial);
+	    bool is_artificial = die_is_artificial(&child);
 	    decl_base_sptr parm_type_decl;
 	    Dwarf_Die parm_type_die;
 	    if (die_die_attribute(&child, DW_AT_type, parm_type_die))
@@ -2776,8 +2775,7 @@ build_function_decl(read_context& ctxt,
 	  }
 	else if (child_tag == DW_TAG_unspecified_parameters)
 	  {
-	    bool is_artificial = false;
-	    die_flag_attribute(&child, DW_AT_artificial, is_artificial);
+	    bool is_artificial = die_is_artificial(&child);
 	    function_decl::parameter_sptr p
 	      (new function_decl::parameter(type_base_sptr(),
 					    /*name=*/"",
