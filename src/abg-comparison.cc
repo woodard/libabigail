@@ -788,9 +788,9 @@ represent(class_decl::data_member_sptr	o,
 					   n->get_type(),
 					   ctxt);
       if (d->currently_reporting())
-	out << indent << "details are being reported\n";
+	out << indent << "  details are being reported\n";
       else if (d->reported_once())
-	out << indent << "details were reported earlier\n";
+	out << indent << "  details were reported earlier\n";
       else
 	d->report(out, indent + "  ");
       emitted = false;
@@ -2407,7 +2407,7 @@ class_diff::report(ostream& out, const string& indent) const
 		  << o->get_pretty_representation()
 		  << "' changed:\n";
 	      diff_sptr dif = compute_diff(o, n, context());
-	      dif->report(out, indent + "  ");
+	      dif->report(out, indent + "    ");
 	    }
 	  out << "\n";
 	}
