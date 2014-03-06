@@ -4071,8 +4071,8 @@ typedef_diff::underlying_type_diff(const diff_sptr d)
 unsigned
 typedef_diff::length() const
 {
-  return !(*first_typedef_decl() ==
-	   static_cast<decl_base>(*second_typedef_decl()));
+  decl_base_sptr second = second_typedef_decl();
+  return !(*first_typedef_decl() == *second);
 }
 
 /// Reports the difference between the two subjects of the diff in a
