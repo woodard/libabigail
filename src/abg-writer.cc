@@ -1354,7 +1354,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
   if (i.empty())
     i = ctxt.get_id_for_type(decl);
   o << " id='" << i << "'";
-  if (decl->is_declaration_only() || decl->has_no_base_nor_member())
+  if (decl->has_no_base_nor_member())
     o << "/>";
   else
     {

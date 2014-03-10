@@ -1135,6 +1135,28 @@ as_non_member_class_decl(const decl_base* t)
   return dynamic_cast<const class_decl*>(t);
 }
 
+/// If a class is a decl-only class, get its definition.  Otherwise,
+/// just return the initial class.
+///
+/// @param klass the class to consider.
+///
+/// @return either the definition of the class, or the class itself.
+class_decl_sptr
+look_through_decl_only_class(class_decl_sptr klass)
+{
+
+  if (!klass)
+    return klass;
+
+  while (klass
+	 && klass->is_declaration_only()
+	 && klass->get_definition_of_declaration())
+    klass = klass->get_definition_of_declaration();
+
+  assert(klass);
+  return klass;
+}
+
 /// Tests wheter a declaration is a variable declaration.
 ///
 /// @param decl the decl to test.
@@ -2687,7 +2709,6 @@ void
 class_decl::set_definition_of_declaration(class_decl_sptr d)
 {
   assert(is_declaration_only());
-  assert(!d->is_declaration_only());
   definition_of_declaration_ = d;
 }
 

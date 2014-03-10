@@ -2254,14 +2254,7 @@ class_diff::class_diff(shared_ptr<class_decl>	first_scope,
 /// @return the length of the diff.
 unsigned
 class_diff::length() const
-{
-  return (base_changes().length()
-	  + member_types_changes().length()
-	  + data_members_changes().length()
-	  + member_fns_changes().length()
-	  + member_fn_tmpls_changes().length()
-	  + member_class_tmpls_changes().length());
-}
+{return (*first_class_decl() != *second_class_decl());}
 
 /// @return the first class invoveld in the diff.
 shared_ptr<class_decl>
@@ -2783,65 +2776,69 @@ compute_diff(const class_decl_sptr	first,
 	     const class_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+  class_decl_sptr f = look_through_decl_only_class(first),
+    s = look_through_decl_only_class(second);
+
+   if (diff_sptr dif = ctxt->has_diff_for(first, second))
     {
       class_diff_sptr d = dynamic_pointer_cast<class_diff>(dif);
       assert(d);
       return d;
     }
 
-  class_diff_sptr changes(new class_diff(first, second, ctxt));
+  class_diff_sptr changes(new class_diff(f, s, ctxt));
 
   // Compare base specs
-  compute_diff(first->get_base_specifiers().begin(),
-	       first->get_base_specifiers().end(),
-	       second->get_base_specifiers().begin(),
-	       second->get_base_specifiers().end(),
+  compute_diff(f->get_base_specifiers().begin(),
+	       f->get_base_specifiers().end(),
+	       s->get_base_specifiers().begin(),
+	       s->get_base_specifiers().end(),
 	       changes->base_changes());
 
-  // Do *not* compare member types because that is generates lots of
-  // noise and I doubt it's really useful.
+  // Do *not* compare member types because it generates lots of noise
+  // and I doubt it's really useful.
 #if 0
-  compute_diff(first->get_member_types().begin(),
-	       first->get_member_types().end(),
-	       second->get_member_types().begin(),
-	       second->get_member_types().end(),
+  compute_diff(f->get_member_types().begin(),
+	       f->get_member_types().end(),
+	       s->get_member_types().begin(),
+	       s->get_member_types().end(),
 	       changes->member_types_changes());
 #endif
 
   // Compare data member
-  compute_diff(first->get_data_members().begin(),
-	       first->get_data_members().end(),
-	       second->get_data_members().begin(),
-	       second->get_data_members().end(),
+  compute_diff(f->get_data_members().begin(),
+	       f->get_data_members().end(),
+	       s->get_data_members().begin(),
+	       s->get_data_members().end(),
 	       changes->data_members_changes());
 
   // Compare member functions
-  compute_diff(first->get_member_functions().begin(),
-	       first->get_member_functions().end(),
-	       second->get_member_functions().begin(),
-	       second->get_member_functions().end(),
+  compute_diff(f->get_member_functions().begin(),
+	       f->get_member_functions().end(),
+	       s->get_member_functions().begin(),
+	       s->get_member_functions().end(),
 	       changes->member_fns_changes());
 
   // Compare member function templates
-  compute_diff(first->get_member_function_templates().begin(),
-	       first->get_member_function_templates().end(),
-	       second->get_member_function_templates().begin(),
-	       second->get_member_function_templates().end(),
+  compute_diff(f->get_member_function_templates().begin(),
+	       f->get_member_function_templates().end(),
+	       s->get_member_function_templates().begin(),
+	       s->get_member_function_templates().end(),
 	       changes->member_fn_tmpls_changes());
 
   // Likewise, do not compare member class templates
 #if 0
-  compute_diff(first->get_member_class_templates().begin(),
-	       first->get_member_class_templates().end(),
-	       second->get_member_class_templates().begin(),
-	       second->get_member_class_templates().end(),
+  compute_diff(f->get_member_class_templates().begin(),
+	       f->get_member_class_templates().end(),
+	       s->get_member_class_templates().begin(),
+	       s->get_member_class_templates().end(),
 	       changes->member_class_tmpls_changes());
 #endif
 
   changes->ensure_lookup_tables_populated();
 
   ctxt->add_diff(first, second, changes);
+  ctxt->add_diff(f, s, changes);
 
   return changes;
 }

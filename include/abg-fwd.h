@@ -158,6 +158,9 @@ as_non_member_class_decl(const shared_ptr<decl_base>);
 const class_decl*
 as_non_member_class_decl(const decl_base* t);
 
+shared_ptr<class_decl>
+look_through_decl_only_class(shared_ptr<class_decl>);
+
 bool
 is_var_decl(const shared_ptr<decl_base>);
 
