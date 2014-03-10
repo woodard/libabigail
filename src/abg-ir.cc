@@ -432,7 +432,8 @@ decl_base::get_qualified_name() const
 bool
 decl_base::operator==(const decl_base& other) const
 {
-  if (hash_ != other.hash_)
+  if (hash_ && other.hash_
+      && hash_ != other.hash_)
     return false;
   return get_name() == other.get_name();
 }
@@ -3283,11 +3284,6 @@ class_decl::operator==(const decl_base& other) const
       if (comparison_started_ && o.comparison_started_)
 	return true;
 
-      if (hash_ != 0
-	  && other.hash_ != 0
-	  && hash_ != other.hash_)
-	return false;
-
       comparison_started_ = true;
       o.comparison_started_ = true;
 
@@ -3311,7 +3307,9 @@ class_decl::operator==(const decl_base& other) const
 	    ? o.get_definition_of_declaration().get()
 	    : op;
 
-	  if (!def1 || !def2)
+	  if (!def1 || !def2
+	      || def1->is_declaration_only()
+	      || def2->is_declaration_only())
 	    {
 	      string q1 = get_qualified_name();
 	      string q2 = o.get_qualified_name();
@@ -3324,12 +3322,14 @@ class_decl::operator==(const decl_base& other) const
 	  RETURN(val);
 	}
 
+      if (hash_ != 0
+	  && other.hash_ != 0
+	  && hash_ != other.hash_)
+	RETURN(false);
+
       // No need to go further if the classes have different names or
       // different size / alignment.
       if (!(decl_base::operator==(o) && type_base::operator==(o)))
-	RETURN(false);
-
-      if (hash_ != other.hash_)
 	RETURN(false);
 
       // Compare bases.
@@ -3351,6 +3351,7 @@ class_decl::operator==(const decl_base& other) const
       }
 
       //Compare member types
+#if 0
       {
 	if (get_member_types().size() != o.get_member_types().size())
 	  RETURN(false);
@@ -3370,6 +3371,7 @@ class_decl::operator==(const decl_base& other) const
 	      RETURN(false);
 	  }
       }
+#endif
 
       //compare data_members
       {
