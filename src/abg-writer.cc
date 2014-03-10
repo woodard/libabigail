@@ -214,6 +214,7 @@ static void write_cdtor_const_static(bool, bool, bool, bool, ostream&);
 static void write_voffset(class_decl::member_function_sptr, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
+static void write_is_struct(const shared_ptr<class_decl>, ostream&);
 static bool write_decl(const shared_ptr<decl_base>,
 		       write_context&, unsigned);
 static bool write_type_decl(const shared_ptr<type_decl>,
@@ -582,6 +583,19 @@ write_class_is_declaration_only(const shared_ptr<class_decl> klass, ostream& o)
 {
   if (klass->is_declaration_only())
     o << " is-declaration-only='yes'";
+}
+
+/// Serialize the attribute "is-struct", if the current instance of
+/// class_decl is a struct.
+///
+/// @param klass a pointer to the instance of class_decl to consider.
+///
+/// @param o the output stream to serialize to.
+static void
+write_is_struct(const shared_ptr<class_decl> klass, ostream& o)
+{
+  if (klass->is_struct())
+    o << " is-struct='yes'";
 }
 
 /// Serialize a pointer to an of decl_base into an output stream.
@@ -1319,6 +1333,8 @@ write_class_decl(const shared_ptr<class_decl>	decl,
   o << "<class-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
 
   write_size_and_alignment(decl, o);
+
+  write_is_struct(decl, o);
 
   write_visibility(decl, o);
 

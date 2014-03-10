@@ -2223,7 +2223,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   size_t size = 0;
   die_size_in_bits(die, size);
 
-  class_decl_sptr cur_class_decl (new class_decl(name));
+  class_decl_sptr cur_class_decl (new class_decl(name, is_struct));
   decl_base_sptr cur_class =
     add_decl_to_scope(cur_class_decl, scope);
 
@@ -2237,7 +2237,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
 
-  result.reset(new class_decl(name, size, 0, loc,
+  result.reset(new class_decl(name, size, 0, is_struct, loc,
 			      decl_base::VISIBILITY_DEFAULT));
   assert(!result->is_declaration_only());
   decl_base_sptr res = add_decl_to_scope(result, scope);

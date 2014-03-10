@@ -512,6 +512,7 @@ static bool	read_offset_in_bits(xmlNodePtr, size_t&);
 static bool	read_cdtor_const(xmlNodePtr, bool&, bool&, bool&);
 static bool	read_is_declaration_only(xmlNodePtr, bool&);
 static bool	read_is_virtual(xmlNodePtr, bool&);
+static bool	read_is_struct(xmlNodePtr, bool&);
 
 static namespace_decl_sptr
 build_namespace_decl(read_context&, const xmlNodePtr, bool);
@@ -1225,6 +1226,29 @@ read_is_virtual(xmlNodePtr node, bool& is_virtual)
 	is_virtual = true;
       else
 	is_virtual = false;
+      return true;
+    }
+  return false;
+}
+
+/// Read the 'is-struct' attribute.
+///
+/// @param node the xml node to read the attribute from.
+///
+/// @param is_virtual is set to true iff the "is-struct" is present
+/// and set to "yes".
+///
+/// @return true iff the "is-struct" attribute is present.
+static bool
+read_is_struct(xmlNodePtr node, bool& is_struct)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-struct"))
+    {
+      string str = CHAR_STR(s);
+      if (str == "yes")
+	  is_struct = true;
+      else
+	is_struct = false;
       return true;
     }
   return false;
@@ -2046,6 +2070,9 @@ build_class_decl(read_context&		ctxt,
   bool is_decl_only = false;
   read_is_declaration_only(node, is_decl_only);
 
+  bool is_struct = false;
+  read_is_struct(node, is_struct);
+
   // Keep in mind that there can be instances of DSOs that define a
   // class twice!! Hugh.  So the test + assert() below doesn't work in
   // these.  Oh well.
@@ -2066,7 +2093,7 @@ build_class_decl(read_context&		ctxt,
 
   if (!is_decl_only)
     decl.reset(new class_decl(name, size_in_bits, alignment_in_bits,
-			      loc, vis, bases, mbrs, data_mbrs,
+			      is_struct, loc, vis, bases, mbrs, data_mbrs,
 			      mbr_functions));
 
   string def_id;
@@ -2089,7 +2116,7 @@ build_class_decl(read_context&		ctxt,
   assert(!is_decl_only || !is_def_of_decl);
 
   if (is_decl_only)
-    decl.reset(new class_decl(name));
+    decl.reset(new class_decl(name, is_struct));
 
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 

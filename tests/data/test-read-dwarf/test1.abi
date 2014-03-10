@@ -1,7 +1,7 @@
 <abi-corpus path='data/test-read-dwarf/test1'>
   <abi-instr version='1.0' address-size='64' path='test1.cc'>
-    <class-decl name='s0' visibility='default' is-declaration-only='yes' id='type-id-1'/>
-    <class-decl name='s0' size-in-bits='384' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='13' column='1' def-of-decl-id='type-id-1' id='type-id-2'>
+    <class-decl name='s0' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1'/>
+    <class-decl name='s0' size-in-bits='384' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='13' column='1' def-of-decl-id='type-id-1' id='type-id-2'>
       <base-class access='public' layout-offset-in-bits='24' is-virtual='yes' type-id='type-id-3'/>
       <base-class access='public' layout-offset-in-bits='32' is-virtual='yes' type-id='type-id-4'/>
       <member-type access='public'>
@@ -35,8 +35,8 @@
         </function-decl>
       </member-function>
     </class-decl>
-    <class-decl name='b0' visibility='default' is-declaration-only='yes' id='type-id-10'/>
-    <class-decl name='b0' size-in-bits='128' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='1' column='1' def-of-decl-id='type-id-10' id='type-id-3'>
+    <class-decl name='b0' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-10'/>
+    <class-decl name='b0' size-in-bits='128' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='1' column='1' def-of-decl-id='type-id-10' id='type-id-3'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='m0' type-id='type-id-11' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='3' column='1'/>
       </data-member>
@@ -46,8 +46,8 @@
     </class-decl>
     <type-decl name='long long int' size-in-bits='64' alignment-in-bits='64' id='type-id-11'/>
     <type-decl name='char' size-in-bits='8' alignment-in-bits='8' id='type-id-12'/>
-    <class-decl name='b1' visibility='default' is-declaration-only='yes' id='type-id-13'/>
-    <class-decl name='b1' size-in-bits='128' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='7' column='1' def-of-decl-id='type-id-13' id='type-id-4'>
+    <class-decl name='b1' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-13'/>
+    <class-decl name='b1' size-in-bits='128' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='7' column='1' def-of-decl-id='type-id-13' id='type-id-4'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='m0' type-id='type-id-14' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='9' column='1'/>
       </data-member>

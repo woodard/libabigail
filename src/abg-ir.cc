@@ -2598,9 +2598,10 @@ function_decl::~function_decl()
 /// @param mbr_fns the vector of member functions of this instance of
 /// class_decl.
 class_decl::class_decl(const std::string& name, size_t size_in_bits,
-		       size_t align_in_bits, location locus,
-		       visibility vis, base_specs& bases,
-		       member_types& mbrs, data_members& data_mbrs,
+		       size_t align_in_bits, bool is_struct,
+		       location locus, visibility vis,
+		       base_specs& bases, member_types& mbrs,
+		       data_members& data_mbrs,
 		       member_functions& mbr_fns)
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
@@ -2608,6 +2609,7 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
     hashing_started_(false),
     comparison_started_(false),
     is_declaration_only_(false),
+    is_struct_(is_struct),
     bases_(bases),
     member_types_(mbrs),
     data_members_(data_mbrs),
@@ -2643,13 +2645,15 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
 ///
 /// @param vis the visibility of instances of class_decl.
 class_decl::class_decl(const std::string& name, size_t size_in_bits,
-		       size_t align_in_bits, location locus, visibility vis)
+		       size_t align_in_bits, bool is_struct,
+		       location locus, visibility vis)
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
     hashing_started_(false),
     comparison_started_(false),
-    is_declaration_only_(false)
+    is_declaration_only_(false),
+    is_struct_(is_struct)
 {}
 
 /// A constuctor for instances of class_decl that represent a
@@ -2659,19 +2663,24 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
 ///
 /// @param is_declaration_only a boolean saying whether the instance
 /// represents a declaration only, or not.
-class_decl::class_decl(const std::string& name, bool is_declaration_only)
+class_decl::class_decl(const std::string& name,
+		       bool is_struct,
+		       bool is_declaration_only)
   : decl_base(name, location(), name),
     type_base(0, 0),
     scope_type_decl(name, 0, 0, location()),
     hashing_started_(false),
     comparison_started_(false),
-    is_declaration_only_(is_declaration_only)
+    is_declaration_only_(is_declaration_only),
+    is_struct_(is_struct)
 {}
 
 /// @return the pretty representaion for a class_decl.
 string
 class_decl::get_pretty_representation() const
-{return "class " + get_qualified_name();}
+{
+  string cl= is_struct() ? "struct " : "class ";
+  return cl + get_qualified_name();}
 
 void
 class_decl::set_definition_of_declaration(class_decl_sptr d)

@@ -1716,6 +1716,7 @@ private:
   decl_base_sptr		declaration_;
   bool				is_declaration_only_;
   class_decl_sptr		definition_of_declaration_;
+  bool				is_struct_;
   base_specs			bases_;
   member_types			member_types_;
   data_members			data_members_;
@@ -1737,14 +1738,16 @@ protected:
 public:
 
   class_decl(const std::string& name, size_t size_in_bits,
-	     size_t align_in_bits, location locus, visibility vis,
+	     size_t align_in_bits, bool is_struct,
+	     location locus, visibility vis,
 	     base_specs& bases, member_types& mbrs,
 	     data_members& data_mbrs, member_functions& member_fns);
 
   class_decl(const std::string& name, size_t size_in_bits,
-	     size_t align_in_bits, location locus, visibility vis);
-
-  class_decl(const std::string& name, bool is_declaration_only = true);
+	     size_t align_in_bits, bool is_struct,
+	     location locus, visibility vis);
+  class_decl(const std::string& name, bool is_struct,
+	     bool is_declaration_only = true);
 
   bool
   hashing_started() const
@@ -1760,6 +1763,10 @@ public:
   bool
   is_declaration_only() const
   {return is_declaration_only_;}
+
+  bool
+  is_struct() const
+  {return is_struct_;}
 
   void
   set_definition_of_declaration(class_decl_sptr);
