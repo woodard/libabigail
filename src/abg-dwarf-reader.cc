@@ -1926,12 +1926,13 @@ get_scope_for_die(read_context& ctxt,
   assert(s);
 
   class_decl_sptr cl = as_non_member_class_decl(d);
-
   if (cl && cl->is_declaration_only())
     {
       scope_decl_sptr scop (cl->get_definition_of_declaration());
-      assert(scop);
-      s = scop;
+      if (scop)
+	s = scop;
+      else
+	s = cl;
     }
   return s;
 }
@@ -2189,6 +2190,9 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 /// @param scope a pointer to the scope_decl* under which this class
 /// is to be added to.
 ///
+/// @param klass if non-null, this is a klass to append the members
+/// too.  Otherwise, this function just builds the class from scratch.
+///
 /// @param called_from_public_decl set to true if this class is being
 /// called from a "Pubblic declaration like vars or public symbols".
 ///
@@ -2196,8 +2200,9 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 static decl_base_sptr
 build_class_type_and_add_to_ir(read_context&	ctxt,
 			       Dwarf_Die*	die,
-			       bool		is_struct,
 			       scope_decl*	scope,
+			       bool		is_struct,
+			       class_decl_sptr  klass,
 			       bool		called_from_public_decl)
 {
   class_decl_sptr result;
@@ -2223,28 +2228,46 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   size_t size = 0;
   die_size_in_bits(die, size);
 
-  class_decl_sptr cur_class_decl (new class_decl(name, is_struct));
-  decl_base_sptr cur_class =
-    add_decl_to_scope(cur_class_decl, scope);
+  class_decl_sptr cur_class_decl;
+  decl_base_sptr cur_class, res;
+
+  if (klass)
+    {
+      cur_class_decl = klass;
+      cur_class = klass;
+      result = klass;
+    }
+  else
+    {
+      cur_class_decl.reset(new class_decl(name, is_struct));
+      cur_class = add_decl_to_scope(cur_class_decl, scope);
+    }
 
   Dwarf_Die child;
   bool has_child = (dwarf_child(die, &child) == 0);
+  bool is_declaration_only = die_is_declaration_only(die);
 
-  if (!has_child && die_is_declaration_only(die))
+  if (!has_child && is_declaration_only)
     // TODO: set the access specifier for the declaration-only class
     // here.
     return cur_class;
 
-  ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
+  if (!klass)
+    {
+      ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
 
-  result.reset(new class_decl(name, size, 0, is_struct, loc,
-			      decl_base::VISIBILITY_DEFAULT));
-  assert(!result->is_declaration_only());
-  decl_base_sptr res = add_decl_to_scope(result, scope);
-  assert(cur_class_decl->is_declaration_only());
-  cur_class_decl->set_definition_of_declaration(result);
-  result = dynamic_pointer_cast<class_decl>(as_non_member_type(res));
-  assert(result);
+      if (is_declaration_only)
+	result.reset(new class_decl(name, is_struct));
+      else
+	result.reset(new class_decl(name, size, 0, is_struct, loc,
+				    decl_base::VISIBILITY_DEFAULT));
+      res = add_decl_to_scope(result, scope);
+      assert(cur_class_decl->is_declaration_only());
+      cur_class_decl->set_definition_of_declaration(result);
+      result = dynamic_pointer_cast<class_decl>(as_non_member_type(res));
+      assert(result);
+    }
+
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>
     (get_type_declaration(as_non_member_type(res)));
@@ -2260,6 +2283,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle base classes.
 	  if (tag == DW_TAG_inheritance)
 	    {
+	      assert(!result->is_declaration_only());
+
 	      Dwarf_Die type_die;
 	      if (!die_die_attribute(&child, DW_AT_type, type_die))
 		continue;
@@ -2295,6 +2320,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  else if (tag == DW_TAG_member
 		   || tag == DW_TAG_variable)
 	    {
+	      assert(!result->is_declaration_only());
+
 	      Dwarf_Die type_die;
 	      if (!die_die_attribute(&child, DW_AT_type, type_die))
 		continue;
@@ -2969,14 +2996,29 @@ build_ir_node_from_die(read_context&	ctxt,
 	scope_decl_sptr scop;
 	if (die_die_attribute(die, DW_AT_specification, spec_die))
 	  {
-	    scop = get_scope_for_die(ctxt, &spec_die);
-	    assert(scop);
+	    scope_decl_sptr skope = get_scope_for_die(ctxt, &spec_die);
+	    assert(skope);
+	    decl_base_sptr cl = build_ir_node_from_die(ctxt, &spec_die,
+						       skope.get(),
+						       called_from_public_decl);
+	    assert(cl);
+	    class_decl_sptr klass = as_non_member_class_decl(cl);
+	    assert(klass);
+
+	    result =
+	      build_class_type_and_add_to_ir(ctxt, die,
+					     skope.get(),
+					     tag == DW_TAG_structure_type,
+					     klass,
+					     called_from_public_decl);
 	  }
-	result =
-	  build_class_type_and_add_to_ir(ctxt, die,
-					 tag == DW_TAG_structure_type,
-					 scop ? scop.get() : scope,
-					 called_from_public_decl);
+	else
+	  result =
+	    build_class_type_and_add_to_ir(ctxt, die,
+					   scope,
+					   tag == DW_TAG_structure_type,
+					   class_decl_sptr(),
+					   called_from_public_decl);
       }
       break;
     case DW_TAG_string_type:
