@@ -220,7 +220,7 @@ main(int argc, char* argv[])
 	  return true;
 	}
 
-      bool r;
+      bool r = true;
 
       if (tu)
 	{
