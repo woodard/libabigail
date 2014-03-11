@@ -2345,7 +2345,7 @@ class_diff::report(ostream& out, const string& indent) const
 {
   int changes_length = length();
 
-  if (changes_length== 0)
+  if (changes_length == 0)
     return;
 
   string name = first_subject()->get_pretty_representation();
