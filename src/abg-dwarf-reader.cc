@@ -2228,45 +2228,31 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   size_t size = 0;
   die_size_in_bits(die, size);
 
-  class_decl_sptr cur_class_decl;
-  decl_base_sptr cur_class, res;
-
-  if (klass)
-    {
-      cur_class_decl = klass;
-      cur_class = klass;
-      result = klass;
-    }
-  else
-    {
-      cur_class_decl.reset(new class_decl(name, is_struct));
-      cur_class = add_decl_to_scope(cur_class_decl, scope);
-    }
-
   Dwarf_Die child;
   bool has_child = (dwarf_child(die, &child) == 0);
   bool is_declaration_only = die_is_declaration_only(die);
 
-  if (!has_child && is_declaration_only)
-    // TODO: set the access specifier for the declaration-only class
-    // here.
-    return cur_class;
-
-  if (!klass)
+  decl_base_sptr res;
+  if (klass)
+    result = klass;
+  else
     {
-      ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = cur_class;
-
       if (is_declaration_only)
 	result.reset(new class_decl(name, is_struct));
       else
 	result.reset(new class_decl(name, size, 0, is_struct, loc,
 				    decl_base::VISIBILITY_DEFAULT));
       res = add_decl_to_scope(result, scope);
-      assert(cur_class_decl->is_declaration_only());
-      cur_class_decl->set_definition_of_declaration(result);
       result = dynamic_pointer_cast<class_decl>(as_non_member_type(res));
       assert(result);
     }
+
+  if (!has_child)
+    // TODO: set the access specifier for the declaration-only class
+    // here.
+    return res;
+
+  ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = res;
 
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>
@@ -2415,7 +2401,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 			class_decl_sptr k =
 			  dynamic_pointer_cast<class_decl>
 			  (this_type->get_pointed_to_type());
-			if (k && *k == *cur_class_decl)
+			if (k && *k == *result)
 			  is_static = true;
 		      }
 		  }
@@ -2460,7 +2446,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       ctxt.die_wip_classes_map().find(dwarf_dieoffset(die));
     if (i != ctxt.die_wip_classes_map().end())
       {
-	result->set_earlier_declaration(i->second);
 	class_decl::member_type_sptr m =
 	  dynamic_pointer_cast<class_decl::member_type>(i->second);
 	if (m)
