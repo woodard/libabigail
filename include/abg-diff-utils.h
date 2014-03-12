@@ -1448,10 +1448,10 @@ snake_end_points(const snake& s, point&, point&);
 /// @param ses the resulting shortest editing script.
 ///
 /// @param ses_len the length of the ses above.  Normally this can be
-/// retrived from ses.length(), but this parameter is here for sanity
-/// check purposes.  The function computes the length of the ses in two
-/// redundant redundant ways and ensures that both methods lead to the
-/// same result.
+/// retrieved from ses.length(), but this parameter is here for sanity
+/// check purposes.  The function computes the length of the ses in
+/// two redundant ways and ensures that both methods lead to the same
+/// result.
 ///
 /// @return true upon successful completion, false otherwise.
 template<typename RandomAccessOutputIterator,
