@@ -2965,7 +2965,7 @@ class_decl::insert_member_type(member_type_sptr t,
       scope_decl* s = d->get_scope();
       if (s)
 	{
-	  scope_decl* o = static_cast<scope_decl*>(this);
+	  scope_decl* o = this;
 	  assert(*s == *o);
 	}
     }
@@ -3653,7 +3653,10 @@ class_decl::operator==(const type_base& other) const
 
 bool
 class_decl::operator==(const class_decl& other) const
-{return *this == static_cast<const decl_base&>(other);}
+{
+  const decl_base& o = other;
+  return *this == o;
+}
 
 /// Turn equality of shared_ptr of class_decl into a deep equality;
 /// that is, make it compare the pointed to objects too.
@@ -3813,9 +3816,8 @@ class_decl::member_type::operator==(const member_base& other) const
 {
   try
     {
-      const class_decl::member_type& o =
-	dynamic_cast<const class_decl::member_type&>(other);
-      return *this == static_cast<const decl_base&>(o);
+      const decl_base& o = dynamic_cast<const decl_base&>(other);;
+      return *this == o;
     }
   catch(...)
     {return false;}
@@ -3824,16 +3826,18 @@ class_decl::member_type::operator==(const member_base& other) const
 bool
 class_decl::member_type::operator==(const type_base& other) const
 {
-  const class_decl::member_type* o =
-    dynamic_cast<const class_decl::member_type*>(&other);
+  const decl_base* o = dynamic_cast<const class_decl::member_type*>(&other);
   if (!o)
     return false;
-  return *this == static_cast<const decl_base&>(*o);
+  return *this == *o;
 }
 
 bool
 class_decl::member_type::operator==(const member_type& other) const
-{return *this == static_cast<const decl_base&>(other);}
+{
+  const decl_base& o = other;
+  return *this == o;
+}
 
 bool
 operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r)
@@ -3944,9 +3948,8 @@ class_decl::member_function::operator==(const member_function& other) const
 {
   try
     {
-      const class_decl::member_function& o =
-	dynamic_cast<const class_decl::member_function&>(other);
-      return *this == static_cast<const decl_base&>(o);
+      const decl_base& o = other;
+      return *this == o;
     }
   catch(...)
     {return false;}
@@ -4039,7 +4042,10 @@ class_decl::member_class_template::operator==(const member_base& other) const
 bool
 class_decl::member_class_template::operator==
 (const member_class_template& other) const
-{return *this == static_cast<const member_base&>(other);}
+{
+  const class_decl::member_class_template& o = other;
+  return *this == o;
+}
 
 bool
 operator==(class_decl::member_class_template_sptr l,
