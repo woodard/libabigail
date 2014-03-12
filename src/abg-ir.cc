@@ -657,7 +657,7 @@ scope_decl::find_iterator_for_member(const decl_base* decl,
 				     declarations::iterator& i)
 {
   if (class_decl* klass = dynamic_cast<class_decl*>(this))
-    assert(!klass->is_declaration_only());
+    assert(!klass->get_is_declaration_only());
 
   if (!decl)
     return false;
@@ -670,7 +670,7 @@ scope_decl::find_iterator_for_member(const decl_base* decl,
 
   const class_decl* is_class = dynamic_cast<const class_decl*>(decl);
   if (is_class)
-    assert(!is_class->is_declaration_only());
+    assert(!is_class->get_is_declaration_only());
 
   string qual_name1 = decl->get_qualified_name();
   for (declarations::iterator it = get_member_decls().begin();
@@ -685,7 +685,7 @@ scope_decl::find_iterator_for_member(const decl_base* decl,
 	      class_decl_sptr cur_class =
 		dynamic_pointer_cast<class_decl>(*it);
 	      assert(cur_class);
-	      if (cur_class->is_declaration_only())
+	      if (cur_class->get_is_declaration_only())
 		continue;
 	    }
 	  i = it;
@@ -1149,7 +1149,7 @@ look_through_decl_only_class(class_decl_sptr klass)
     return klass;
 
   while (klass
-	 && klass->is_declaration_only()
+	 && klass->get_is_declaration_only()
 	 && klass->get_definition_of_declaration())
     klass = klass->get_definition_of_declaration();
 
@@ -1274,27 +1274,142 @@ lookup_type_in_translation_unit(const string& fqn,
   return lookup_type_in_translation_unit(comps, tu);
 }
 
-/// Lookup an IR node from a translation unit.
+/// Lookup a type in a scope.
 ///
-/// @tparam NodeKind the type of the IR node to lookup from the
-/// translation unit.
+/// @param fqn the fully qualified name of the type to lookup.
 ///
-/// @param fqn the components of the fully qualified name of the node
-/// to look up.
+/// @param skope the scope to look into.
 ///
-/// @param tu the translation unit to perform lookup from.
+/// @return the declaration of the type if found, NULL otherwise.
+const decl_base_sptr
+lookup_type_in_scope(const string& fqn,
+		     const scope_decl_sptr skope)
+{
+  list<string> comps;
+  fqn_to_components(fqn, comps);
+  return lookup_type_in_scope(comps, skope);
+}
+
+/// Lookup a @ref var_decl in a scope.
 ///
-/// @return the declaration of the IR node found, NULL otherwise.
+/// @param fqn the fuly qualified name of the @var_decl to lookup.
+///
+/// @param skope the scope to look into.
+///
+/// @return the declaration of the @ref var_decl if found, NULL
+/// otherwise.
+const decl_base_sptr
+lookup_var_decl_in_scope(const string& fqn,
+			 const scope_decl_sptr skope)
+{
+  list<string> comps;
+  fqn_to_components(fqn, comps);
+  return lookup_var_decl_in_scope(comps, skope);
+}
+
+/// A generic function (template) to get the name of a node, whatever
+/// node it is.  This has to specialized for the kind of node we want
+///
+/// @tparam NodeKind the kind of node to consider.
+///
+/// @param node the node to get the name from.
+///
+/// @return the name of the node.
+template<typename NodeKind>
+static const string&
+get_node_name(shared_ptr<NodeKind> node);
+
+/// Gets the name of a decl_base node.
+///
+/// @param node the decl_base node to get the name from.
+///
+/// @return the name of the node.
+template<>
+const string&
+get_node_name(decl_base_sptr node)
+{return node->get_name();}
+
+/// Gets the name of a type_base node.
+///
+/// @param node the type_base node to get the name from.
+///
+/// @return the name of the node.
+template<>
+const string&
+get_node_name(type_base_sptr node)
+{return get_type_declaration(as_non_member_type(node))->get_name();}
+
+/// Gets the name of a var_decl node.
+///
+/// @param node the var_decl node to get the name from.
+///
+/// @return the name of the node.
+template<>
+const string&
+get_node_name(var_decl_sptr node)
+{return node->get_name();}
+
+/// Generic function to get the declaration of a given node, whatever
+/// it is.  There has to be specializations for the kind of the nodes
+/// we want to support.
+///
+/// @tparam NodeKind the type of the node we are looking at.
+///
+/// @return the declaration.
+template<typename NodeKind>
+static decl_base_sptr
+convert_node_to_decl(shared_ptr<NodeKind> node);
+
+/// Get the declaration of a given decl_base node
+///
+/// @param node the decl_base node to consider.
+///
+/// @return the declaration of the node.
+template<>
+decl_base_sptr
+convert_node_to_decl(decl_base_sptr node)
+{return node;}
+
+/// Get the declaration of a type_base node.
+///
+/// @param node the type node to consider.
+///
+/// @return the declaration of the type_base.
+template<>
+decl_base_sptr
+convert_node_to_decl(type_base_sptr node)
+{return get_type_declaration(node);}
+
+/// Get the declaration of a var_decl.
+///
+/// @param node the var_decl to consider.
+///
+/// @return the declaration of the var_decl.
+template<>
+decl_base_sptr
+convert_node_to_decl(var_decl_sptr node)
+{return node;}
+
+/// Lookup a node in a given scope.
+///
+/// @tparam the type of the node to lookup.
+///
+/// @param fqn the components of the fully qualified name of the the
+/// node to lookup.
+///
+/// @param skope the scope to look into.
+///
+/// @return the declaration of the lookuped node, or NULL if it wasn't
+/// found.
 template<typename NodeKind>
 static const decl_base_sptr
-lookup_node_in_translation_unit(const list<string>& fqn,
-				const translation_unit& tu)
+lookup_node_in_scope(const list<string>& fqn,
+		     const scope_decl_sptr skope)
 {
-  global_scope_sptr global_scope = tu.get_global_scope();
-  scope_decl_sptr cur_scope = global_scope, new_scope, scope;
-  decl_base_sptr resulting_type_decl;
-  type_base_sptr type;
+  decl_base_sptr resulting_decl;
+  shared_ptr<NodeKind> node;
   bool it_is_last = false;
+  scope_decl_sptr cur_scope = skope, new_scope, scope;
 
   for (list<string>::const_iterator c = fqn.begin(); c != fqn.end(); ++c)
     {
@@ -1318,21 +1433,59 @@ lookup_node_in_translation_unit(const list<string>& fqn,
 	  else
 	    {
 	      //looking for a final type.
-	      type = dynamic_pointer_cast<type_base>(*m);
-	      if (type && get_type_declaration(type)->get_name() == *c)
+	      if (node && get_node_name(node) == *c)
 		{
-		  resulting_type_decl = get_type_declaration(type);
+		  resulting_decl = convert_node_to_decl(node);
 		  break;
 		}
 	    }
 	}
-      if (!new_scope && !resulting_type_decl)
+      if (!new_scope && !resulting_decl)
 	return decl_base_sptr();
       cur_scope = new_scope;
     }
-  assert(resulting_type_decl);
-  return resulting_type_decl;
+  assert(resulting_decl);
+  return resulting_decl;
 }
+
+/// lookup a type in a scope.
+///
+/// @param comps the components of the fully qualified name of the
+/// type to lookup.
+///
+/// @param skope the scope to look into.
+const decl_base_sptr
+lookup_type_in_scope(const list<string>& comps,
+		     const scope_decl_sptr skope)
+{return lookup_node_in_scope<type_base>(comps, skope);}
+
+/// lookup a var_decl in a scope.
+///
+/// @param comps the components of the fully qualified name of the
+/// var_decl to lookup.
+///
+/// @param skope the scope to look into.
+const decl_base_sptr
+lookup_var_decl_in_scope(const std::list<string>& comps,
+			 const scope_decl_sptr skope)
+{return lookup_node_in_scope<var_decl>(comps, skope);}
+
+/// Lookup an IR node from a translation unit.
+///
+/// @tparam NodeKind the type of the IR node to lookup from the
+/// translation unit.
+///
+/// @param fqn the components of the fully qualified name of the node
+/// to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the IR node found, NULL otherwise.
+template<typename NodeKind>
+static const decl_base_sptr
+lookup_node_in_translation_unit(const list<string>& fqn,
+				const translation_unit& tu)
+{return lookup_node_in_scope<NodeKind>(fqn, tu.get_global_scope());}
 
 /// Lookup a type from a translation unit.
 ///
@@ -2708,7 +2861,7 @@ class_decl::get_pretty_representation() const
 void
 class_decl::set_definition_of_declaration(class_decl_sptr d)
 {
-  assert(is_declaration_only());
+  assert(get_is_declaration_only());
   definition_of_declaration_ = d;
 }
 
@@ -2720,7 +2873,7 @@ void
 class_decl::set_earlier_declaration(decl_base_sptr declaration)
 {
   class_decl_sptr cl = as_non_member_class_decl(declaration);
-  if (cl && cl->is_declaration_only())
+  if (cl && cl->get_is_declaration_only())
     declaration_ = declaration;
 }
 
@@ -3317,20 +3470,20 @@ class_decl::operator==(const decl_base& other) const
 
       // if one of the classes is declaration-only, look through it to
       // get its definition.
-      if (is_declaration_only()
-	  || o.is_declaration_only())
+      if (get_is_declaration_only()
+	  || o.get_is_declaration_only())
 	{
-	  const class_decl* def1 = is_declaration_only()
+	  const class_decl* def1 = get_is_declaration_only()
 	    ? get_definition_of_declaration().get()
 	    : this;
 
-	  const class_decl* def2 = o.is_declaration_only()
+	  const class_decl* def2 = o.get_is_declaration_only()
 	    ? o.get_definition_of_declaration().get()
 	    : op;
 
 	  if (!def1 || !def2
-	      || def1->is_declaration_only()
-	      || def2->is_declaration_only())
+	      || def1->get_is_declaration_only()
+	      || def2->get_is_declaration_only())
 	    {
 	      string q1 = get_qualified_name();
 	      string q2 = o.get_qualified_name();

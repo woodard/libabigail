@@ -524,7 +524,7 @@ struct class_decl::hash
 
 	size_t v = hash_string(typeid(t).name());
 	v = hashing::combine_hashes(v, hash_scope_type(t));
-	v = hashing::combine_hashes(v, hash_bool(t.is_declaration_only()));
+	v = hashing::combine_hashes(v, hash_bool(t.get_is_declaration_only()));
 
 	t.hashing_started(true);
 

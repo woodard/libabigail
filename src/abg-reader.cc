@@ -2105,7 +2105,7 @@ build_class_decl(read_context&		ctxt,
     {
       shared_ptr<class_decl> d =
 	dynamic_pointer_cast<class_decl>(ctxt.get_type_decl(def_id));
-      if (d && d->is_declaration_only())
+      if (d && d->get_is_declaration_only())
 	{
 	  is_def_of_decl = true;
 	  decl->set_earlier_declaration(d);

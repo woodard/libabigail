@@ -581,7 +581,7 @@ write_cdtor_const_static(bool is_ctor,
 static void
 write_class_is_declaration_only(const shared_ptr<class_decl> klass, ostream& o)
 {
-  if (klass->is_declaration_only())
+  if (klass->get_is_declaration_only())
     o << " is-declaration-only='yes'";
 }
 

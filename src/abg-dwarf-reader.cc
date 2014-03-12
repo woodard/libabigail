@@ -1926,7 +1926,7 @@ get_scope_for_die(read_context& ctxt,
   assert(s);
 
   class_decl_sptr cl = as_non_member_class_decl(d);
-  if (cl && cl->is_declaration_only())
+  if (cl && cl->get_is_declaration_only())
     {
       scope_decl_sptr scop (cl->get_definition_of_declaration());
       if (scop)
@@ -2234,14 +2234,15 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   decl_base_sptr res;
   if (klass)
-    result = klass;
+    res = result = klass;
   else
     {
+      result.reset(new class_decl(name, size, 0, is_struct, loc,
+				  decl_base::VISIBILITY_DEFAULT));
+
       if (is_declaration_only)
-	result.reset(new class_decl(name, is_struct));
-      else
-	result.reset(new class_decl(name, size, 0, is_struct, loc,
-				    decl_base::VISIBILITY_DEFAULT));
+	result->set_is_declaration_only(true);
+
       res = add_decl_to_scope(result, scope);
       result = dynamic_pointer_cast<class_decl>(as_non_member_type(res));
       assert(result);
@@ -2269,7 +2270,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle base classes.
 	  if (tag == DW_TAG_inheritance)
 	    {
-	      assert(!result->is_declaration_only());
+	      result->set_is_declaration_only(false);
 
 	      Dwarf_Die type_die;
 	      if (!die_die_attribute(&child, DW_AT_type, type_die))
@@ -2280,6 +2281,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 				       called_from_public_decl);
 	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
 	      if (!b)
+		continue;
+	      if (lookup_type_in_scope(base_type->get_name(), result))
 		continue;
 
 	      class_decl::access_specifier access =
@@ -2306,7 +2309,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  else if (tag == DW_TAG_member
 		   || tag == DW_TAG_variable)
 	    {
-	      assert(!result->is_declaration_only());
+	      result->set_is_declaration_only(false);
 
 	      Dwarf_Die type_die;
 	      if (!die_die_attribute(&child, DW_AT_type, type_die))
@@ -2322,6 +2325,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      string n, m;
 	      location loc;
 	      die_loc_and_name(ctxt, &child, loc, n, m);
+	      if (lookup_var_decl_in_scope(n, result))
+		continue;
 
 	      ssize_t offset_in_bits = 0;
 	      bool is_laid_out = false;

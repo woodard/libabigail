@@ -237,6 +237,22 @@ const shared_ptr<decl_base>
 lookup_type_in_translation_unit(const std::list<string>&,
 				const translation_unit&);
 
+const shared_ptr<decl_base>
+lookup_type_in_scope(const string&,
+		     const shared_ptr<scope_decl>);
+
+const shared_ptr<decl_base>
+lookup_type_in_scope(const std::list<string>&,
+		     const shared_ptr<scope_decl>);
+
+const shared_ptr<decl_base>
+lookup_var_decl_in_scope(const string&,
+			 const shared_ptr<scope_decl>);
+
+const shared_ptr<decl_base>
+lookup_var_decl_in_scope(const std::list<string>&,
+			 const shared_ptr<scope_decl>);
+
 string
 demangle_cplus_mangled_name(const string&);
 

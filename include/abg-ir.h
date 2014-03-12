@@ -1761,8 +1761,12 @@ public:
   get_pretty_representation() const;
 
   bool
-  is_declaration_only() const
+  get_is_declaration_only() const
   {return is_declaration_only_;}
+
+  void
+  set_is_declaration_only(bool f)
+  {is_declaration_only_ = f;}
 
   bool
   is_struct() const

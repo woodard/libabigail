@@ -434,13 +434,13 @@ try_to_diff<class_decl>(const decl_base_sptr first,
       dynamic_pointer_cast<class_decl>(first))
     {
       class_decl_sptr s = dynamic_pointer_cast<class_decl>(second);
-      if (f->is_declaration_only())
+      if (f->get_is_declaration_only())
 	{
 	  class_decl_sptr f2 = f->get_definition_of_declaration();
 	  if (f2)
 	    f = f2;
 	}
-      if (s->is_declaration_only())
+      if (s->get_is_declaration_only())
 	{
 	  class_decl_sptr s2 = s->get_definition_of_declaration();
 	  if (s2)
@@ -1979,7 +1979,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	unsigned i = it->index();
 	decl_base_sptr d = first_class_decl()->get_member_types()[i];
 	class_decl_sptr klass_decl = as_non_member_class_decl(d);
-	if (klass_decl && klass_decl->is_declaration_only())
+	if (klass_decl && klass_decl->get_is_declaration_only())
 	  continue;
 	string qname = d->get_qualified_name();
 	priv_->deleted_member_types_[qname] = d;
@@ -1997,7 +1997,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    unsigned i = *iit;
 	    decl_base_sptr d = second_class_decl()->get_member_types()[i];
 	    class_decl_sptr klass_decl = as_non_member_class_decl(d);
-	    if (klass_decl && klass_decl->is_declaration_only())
+	    if (klass_decl && klass_decl->get_is_declaration_only())
 	      continue;
 	    string qname = d->get_qualified_name();
 	    string_decl_base_sptr_map::const_iterator j =
@@ -2954,7 +2954,7 @@ scope_diff::ensure_lookup_tables_populated()
       if (is_type(decl))
 	{
 	  class_decl_sptr klass_decl = dynamic_pointer_cast<class_decl>(decl);
-	  if (klass_decl && klass_decl->is_declaration_only())
+	  if (klass_decl && klass_decl->get_is_declaration_only())
 	    continue;
 
 	  assert(priv_->deleted_types_.find(qname)
@@ -2984,7 +2984,7 @@ scope_diff::ensure_lookup_tables_populated()
 	    {
 	      class_decl_sptr klass_decl =
 		dynamic_pointer_cast<class_decl>(decl);
-	      if (klass_decl && klass_decl->is_declaration_only())
+	      if (klass_decl && klass_decl->get_is_declaration_only())
 		continue;
 
 	      assert(priv_->inserted_types_.find(qname)
