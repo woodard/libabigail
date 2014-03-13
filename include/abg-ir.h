@@ -178,12 +178,28 @@ public:
 bool
 operator==(translation_unit_sptr, translation_unit_sptr);
 
+/// Access specifier for class members.
+enum access_specifier
+{
+  no_access,
+  public_access,
+  protected_access,
+  private_access,
+};
+
+class context_rel;
+/// A convenience typedef for shared pointers to @ref context_rel
+typedef shared_ptr<context_rel> context_rel_sptr;
+
 /// The base type of all declarations.
 class decl_base : public ir_traversable_base
 {
 public:
   /// Facility to hash instances of decl_base.
   struct hash;
+
+  /// Facility to hash instances of decl_base as class members
+  struct hash_as_member;
 
   /// ELF visibility
   enum visibility
@@ -207,13 +223,13 @@ public:
 protected:
   mutable size_t	hash_;
   location		location_;
+  context_rel_sptr	context_;
   mutable std::string	name_;
   mutable std::string	qualified_parent_name_;
   mutable std::string	qualified_name_;
 
 private:
   std::string		mangled_name_;
-  scope_decl*		context_;
   visibility		visibility_;
 
   // Forbidden
@@ -221,6 +237,22 @@ private:
 
   virtual void
   set_scope(scope_decl*);
+
+protected:
+
+  ///Getter for the context relationship.
+  ///
+  ///@return the context relationship for the current decl_base.
+  const context_rel_sptr
+  get_context_rel() const
+  {return context_;}
+
+  ///Getter for the context relationship.
+  ///
+  ///@return the context relationship for the current decl_base.
+  context_rel_sptr
+  get_context_rel()
+  {return context_;}
 
 public:
 
@@ -309,11 +341,10 @@ public:
 
   void
   set_mangled_name(const std::string& m)
-  { mangled_name_ = m; }
+  {mangled_name_ = m;}
 
   scope_decl*
-  get_scope() const
-  {return context_;}
+  get_scope() const;
 
   visibility
   get_visibility() const
@@ -334,6 +365,24 @@ public:
 			 vector<shared_ptr<decl_base> >::iterator,
 			 scope_decl*);
 
+  friend enum access_specifier
+  get_member_access_specifier(const decl_base& d);
+
+  friend enum access_specifier
+  get_member_access_specifier(const decl_base_sptr d);
+
+  friend void
+  set_member_access_specifier(const decl_base_sptr d,
+			      access_specifier a);
+
+  friend bool
+  get_member_is_static(const decl_base& d);
+
+  friend bool
+  get_member_is_static(const decl_base_sptr d);
+
+  friend void
+  set_member_is_static(decl_base_sptr d, bool s);
 
   friend class class_decl;
 };// end class decl_base
@@ -1675,18 +1724,8 @@ public:
   /// Hasher.
   struct hash;
 
-  /// Language access specifier.
-  enum access_specifier
-  {
-    no_access,
-    public_access,
-    protected_access,
-    private_access,
-  };
-
   /// Forward declarations.
   class member_base;
-  class member_type;
   class base_spec;
   class data_member;
   class method_decl;
@@ -1698,8 +1737,7 @@ public:
   /// @{
   typedef shared_ptr<base_spec>			base_spec_sptr;
   typedef std::vector<base_spec_sptr>			base_specs;
-  typedef shared_ptr<member_type>			member_type_sptr;
-  typedef std::vector<member_type_sptr>		member_types;
+  typedef std::vector<type_base_sptr>			member_types;
   typedef shared_ptr<data_member>			data_member_sptr;
   typedef std::vector<data_member_sptr>		data_members;
   typedef shared_ptr<member_function>			member_function_sptr;
@@ -1795,13 +1833,13 @@ public:
   {return bases_;}
 
   void
-  insert_member_type(member_type_sptr t,
+  insert_member_type(type_base_sptr t,
 		     declarations::iterator before);
 
   void
-  add_member_type(member_type_sptr t);
+  add_member_type(type_base_sptr t);
 
-  member_type_sptr
+  type_base_sptr
   add_member_type(type_base_sptr t, access_specifier a);
 
   void
@@ -1873,8 +1911,85 @@ public:
   virtual ~class_decl();
 };// end class class_decl
 
+enum access_specifier
+get_member_access_specifier(const decl_base&);
+
+enum access_specifier
+get_member_access_specifier(const decl_base_sptr);
+
+void
+set_member_access_specifier(decl_base_sptr,
+			    access_specifier);
+
+/// The abstraction of the relationship between an entity and its
+/// containing scope (its context).  That relationship can carry
+/// properties like access rights (if the parent is a class_decl),
+/// etc.
+///
+/// But importantly, this relationship carries a pointer to the
+/// actualy parent.
+class context_rel
+{
+private:
+  scope_decl*		scope_;
+  enum access_specifier access_;
+  bool			is_static_;
+
+public:
+  context_rel()
+    : scope_(0),
+      access_(no_access),
+      is_static_(false)
+  {}
+
+  context_rel(scope_decl* s)
+    : scope_(s),
+      access_(no_access),
+      is_static_(false)
+  {}
+
+  context_rel(scope_decl* s,
+	      access_specifier a,
+	      bool f)
+    : scope_(s),
+      access_(a),
+      is_static_(f)
+  {}
+
+  scope_decl*
+  get_scope() const
+  {return scope_;}
+
+  access_specifier
+  get_access_specifier() const
+  {return access_;}
+
+  void
+  set_access_specifier(access_specifier a)
+  {access_ = a;}
+
+  bool
+  get_is_static() const
+  {return is_static_;}
+
+  void
+  set_is_static(bool s)
+  {is_static_ = s;}
+
+  void
+  set_scope(scope_decl* s)
+  {scope_ = s;}
+
+  bool
+  operator==(const context_rel& o)const
+  {
+    return (access_ == o.access_
+	    && is_static_ == o.is_static_);
+  }
+};// end class context_rel
+
 std::ostream&
-operator<<(std::ostream&, class_decl::access_specifier);
+operator<<(std::ostream&, access_specifier);
 
 bool
 operator==(class_decl_sptr l, class_decl_sptr r);
@@ -1931,65 +2046,6 @@ public:
   operator==(const member_base& o) const;
 };// end class class_decl::member_base
 
-/// Abstracts a member type declaration.
-///
-/// It's important to understand the interactions between this type
-/// and the other types.  When a type T appears in the scope of a
-/// class, it becomes a member type MT.  T is said to be the
-/// underlying type of MT.  MT and T are different types.  In
-/// practice, when the function class_decl::add_member_type is given a
-/// type T, it adds it to the class scope and returns MT, which is the
-/// resulting member type that is created.  T can be retrieved from MT
-/// by invoking either MT::get_underlying_type(), or by invoking
-/// as_non_member_type(MT).
-class class_decl::member_type : public member_base,
-				public virtual decl_base,
-				public virtual type_base
-{
-  type_base_sptr type_;
-
-  //Forbidden
-  member_type();
-
-public:
-  // Hasher.
-  struct hash;
-
-  member_type(shared_ptr<type_base> t, access_specifier access);
-
-  virtual void
-  set_scope(scope_decl*);
-
-  virtual bool
-  operator==(const decl_base&) const;
-
-  virtual bool
-  operator==(const member_base&) const;
-
-  virtual bool
-  operator==(const type_base&) const;
-
-  virtual void
-  get_qualified_name(string& qualified_name) const;
-
-  string
-  get_qualified_name() const;
-
-  virtual string
-  get_pretty_representation() const;
-
-  virtual void
-  traverse(ir_node_visitor& v);
-
-  const type_base_sptr&
-  get_underlying_type() const;
-
-  bool
-  operator==(const member_type&) const;
-};// end class member_type
-
-bool
-operator==(class_decl::member_type_sptr l, class_decl::member_type_sptr r);
 
 /// Abstraction of a base specifier in a class declaration.
 class class_decl::base_spec : public member_base
@@ -2494,13 +2550,6 @@ struct class_decl::member_base::hash
   operator()(const member_base& m) const;
 };
 
-/// The hashing functor for class_decl::member_type.
-struct class_decl::member_type::hash
-{
-  size_t
-  operator()(const member_type& t) const ;
-};
-
 /// The hashing functor for class_decl::data_member.
 struct class_decl::data_member::hash
 {
@@ -2579,7 +2628,6 @@ struct ir_node_visitor : public node_visitor_base
   virtual void visit(class_tdecl*);
   virtual void visit(class_decl*);
   virtual void visit(class_decl::data_member*);
-  virtual void visit(class_decl::member_type*);
   virtual void visit(class_decl::member_function*);
   virtual void visit(class_decl::member_function_template*);
   virtual void visit(class_decl::member_class_template*);

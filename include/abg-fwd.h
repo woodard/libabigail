@@ -135,6 +135,12 @@ bool
 is_at_class_scope(const shared_ptr<decl_base>);
 
 bool
+is_at_class_scope(const decl_base*);
+
+bool
+is_at_class_scope(const decl_base&);
+
+bool
 is_at_template_scope(const shared_ptr<decl_base>);
 
 bool
@@ -145,18 +151,6 @@ is_type(const decl_base&);
 
 shared_ptr<type_base>
 is_type(const shared_ptr<decl_base>);
-
-shared_ptr<type_base>
-as_non_member_type(const shared_ptr<type_base>);
-
-shared_ptr<type_base>
-as_non_member_type(const shared_ptr<decl_base>);
-
-shared_ptr<class_decl>
-as_non_member_class_decl(const shared_ptr<decl_base>);
-
-const class_decl*
-as_non_member_class_decl(const decl_base* t);
 
 shared_ptr<class_decl>
 look_through_decl_only_class(shared_ptr<class_decl>);
@@ -189,8 +183,49 @@ insert_decl_into_scope(shared_ptr<decl_base>,
 		       vector<shared_ptr<decl_base> >::iterator,
 		       shared_ptr<scope_decl>);
 
+bool
+has_scope(const decl_base&);
+
+bool
+has_scope(const shared_ptr<decl_base>);
+
+bool
+has_scope(const type_base&);
+
+bool
+has_scope(const shared_ptr<type_base>);
+
+bool
+is_member_decl(const shared_ptr<decl_base>);
+
+bool
+is_member_decl(const decl_base*);
+
+bool
+is_member_decl(const decl_base&);
+
+bool
+is_member_type(const shared_ptr<type_base>);
+
+bool
+is_member_type(const shared_ptr<decl_base>);
+
 void
 remove_decl_from_scope(shared_ptr<decl_base>);
+
+bool
+get_member_is_static(const decl_base&);
+
+bool
+get_member_is_static(const shared_ptr<decl_base>);
+
+void
+set_member_is_static(decl_base&,
+		     bool);
+
+void
+set_member_is_static(shared_ptr<decl_base>,
+		     bool);
 
 const global_scope*
 get_global_scope(const decl_base* decl);

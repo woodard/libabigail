@@ -206,8 +206,7 @@ static void write_location(const shared_ptr<decl_base>&, ostream&);
 static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
 static bool write_binding(const shared_ptr<decl_base>&, ostream&);
 static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
-static void write_access(class_decl::access_specifier, ostream&);
-static void write_access(shared_ptr<class_decl::member_base>, ostream&);
+static void write_access(access_specifier, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::data_member>, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, bool, ostream&);
@@ -235,7 +234,7 @@ static bool write_var_decl(const shared_ptr<var_decl>,
 			   write_context&, bool, unsigned);
 static bool write_function_decl(const shared_ptr<function_decl>,
 				write_context&, bool, unsigned);
-static bool write_member_type(const class_decl::member_type_sptr,
+static bool write_member_type(const type_base_sptr,
 			      write_context&, unsigned);
 static bool write_class_decl(const shared_ptr<class_decl>,
 			     write_context&, unsigned);
@@ -469,21 +468,21 @@ write_size_and_alignment(const shared_ptr<type_base> decl, ostream& o)
 ///
 /// @param o the output stream to serialize it to.
 static void
-write_access(class_decl::access_specifier a, ostream& o)
+write_access(access_specifier a, ostream& o)
 {
   string access_str = "private";
 
   switch (a)
     {
-    case class_decl::private_access:
+    case private_access:
       access_str = "private";
       break;
 
-    case class_decl::protected_access:
+    case protected_access:
       access_str = "protected";
       break;
 
-    case class_decl::public_access:
+    case public_access:
       access_str = "public";
       break;
 
@@ -522,10 +521,8 @@ write_layout_offset(shared_ptr<class_decl::base_spec> base, ostream& o)
 ///
 /// @param o the ostream to serialize the member to.
 static void
-write_access(shared_ptr<class_decl::member_base> member, ostream& o)
-{
-  write_access(member->get_access_specifier(), o);
-}
+write_access(decl_base_sptr member, ostream& o)
+{write_access(get_member_access_specifier(member), o);}
 
 /// Write the voffset of a member function if it's non-zero
 ///
@@ -1369,7 +1366,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	  do_indent(o, nb_ws);
 	  o << "<base-class";
 
-	  write_access(*base, o);
+	  write_access((*base)->get_access_specifier(), o);
 
 	  write_layout_offset (*base, o);
 
@@ -1394,7 +1391,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	{
 	  do_indent(o, nb_ws);
 	  o << "<data-member";
-	  write_access(*data, o);
+	  write_access((*data)->get_access_specifier(), o);
 
 	  bool is_static = (*data)->get_is_static();
 	  write_cdtor_const_static(/*is_ctor=*/false,
@@ -1421,7 +1418,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	  class_decl::member_function_sptr fn = *f;
 	  do_indent(o, nb_ws);
 	  o << "<member-function";
-	  write_access(fn, o);
+	  write_access(fn->get_access_specifier(), o);
 	  write_cdtor_const_static( fn->is_constructor(),
 				    fn->is_destructor(),
 				    fn->is_const(),
@@ -1446,7 +1443,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	{
 	  do_indent(o, nb_ws);
 	  o << "<member-template";
-	  write_access(*fn, o);
+	  write_access((*fn)->get_access_specifier(), o);
 	  write_cdtor_const_static((*fn)->is_constructor(),
 				   /*is_dtor=*/false,
 				   (*fn)->is_const(),
@@ -1466,7 +1463,7 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	{
 	  do_indent(o, nb_ws);
 	  o << "<member-template";
-	  write_access(*cl, o);
+	  write_access((*cl)->get_access_specifier(), o);
 	  write_cdtor_const_static(false, false, false,
 				   (*cl)->get_is_static(), o);
 	  o << ">\n";
@@ -1511,37 +1508,37 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 ///
 /// @param indent the number of levels to use for indentation
 static bool
-write_member_type(const class_decl::member_type_sptr decl,
+write_member_type(const type_base_sptr t,
 		  write_context& ctxt, unsigned indent)
 {
-  if (!decl)
+  if (!t)
     return false;
 
   ostream& o = ctxt.get_ostream();
 
   do_indent_to_level(ctxt, indent, 0);
 
+  decl_base_sptr decl = get_type_declaration(t);
+  assert(decl);
+
   o << "<member-type";
   write_access(decl, o);
   o << ">\n";
 
-  string id = ctxt.get_id_for_type(decl);
-
-  type_base_sptr ut = decl->get_underlying_type();
-  assert(ut);
+  string id = ctxt.get_id_for_type(t);
 
   unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
-  assert(write_qualified_type_def(dynamic_pointer_cast<qualified_type_def>(ut),
+  assert(write_qualified_type_def(dynamic_pointer_cast<qualified_type_def>(t),
 				  id, ctxt, nb_ws)
-	 || write_pointer_type_def(dynamic_pointer_cast<pointer_type_def>(ut),
+	 || write_pointer_type_def(dynamic_pointer_cast<pointer_type_def>(t),
 				   id, ctxt, nb_ws)
-	 || write_reference_type_def(dynamic_pointer_cast<reference_type_def>(ut),
+	 || write_reference_type_def(dynamic_pointer_cast<reference_type_def>(t),
 				     id, ctxt, nb_ws)
-	 || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(ut),
+	 || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(t),
 				 id, ctxt, nb_ws)
-	 || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(ut),
+	 || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(t),
 			    id, ctxt, nb_ws)
-	 || write_class_decl(dynamic_pointer_cast<class_decl>(ut),
+	 || write_class_decl(dynamic_pointer_cast<class_decl>(t),
 			     id, ctxt, nb_ws));
   o << "\n";
 

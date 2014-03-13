@@ -495,7 +495,6 @@ compute_diff_for_types(const decl_base_sptr first,
   const decl_base_sptr s = second;
 
   ((d = try_to_diff_distinct_kinds(f, s, ctxt))
-   ||(d = try_to_diff<class_decl::member_type>(f, s, ctxt))
    ||(d = try_to_diff<type_decl>(f, s, ctxt))
    ||(d = try_to_diff<enum_type_decl>(f, s, ctxt))
    ||(d = try_to_diff<class_decl>(f, s,ctxt))
@@ -667,6 +666,12 @@ diff_length_of_type_bases(type_base_sptr first, type_base_sptr second)
 
   return l;
 }
+
+static bool
+maybe_report_diff_for_class_members(decl_base_sptr	decl1,
+				    decl_base_sptr	decl2,
+				    ostream&		out,
+				    const string&	indent);
 
 /// Stream a string representation for a member function.
 ///
@@ -848,8 +853,8 @@ report_name_size_and_alignment_changes(decl_base_sptr first,
     return false;
 
   bool n = false;
-  string fn = first->get_pretty_representation(),
-    sn = second->get_pretty_representation();
+  string fn = first->get_qualified_name(),
+    sn = second->get_qualified_name();
   if (fn != sn)
     {
       if (nl)
@@ -1033,6 +1038,8 @@ var_diff::report(ostream& out, const string& indent) const
 					     /*start_with_new_line=*/false))
     out << "\n";
 
+  maybe_report_diff_for_class_members(first, second, out, indent);
+
   if (diff_sptr d = type_diff())
     {
       if (d->length())
@@ -1074,6 +1081,55 @@ compute_diff(const var_decl_sptr first,
 }
 
 // </var_diff stuff>
+
+/// Report the differences in access specifiers and static-ness for
+/// class members.
+///
+/// @param decl1 the first class member to consider.
+///
+/// @param decl2 the second class member to consider.
+///
+/// @param out the output stream to send the report to.
+///
+/// @param indent the indentation string to use for the report.
+///
+/// @return true if something was reported, false otherwise.
+static bool
+maybe_report_diff_for_class_members(decl_base_sptr	decl1,
+				    decl_base_sptr	decl2,
+				    ostream&		out,
+				    const string&	indent)
+
+{
+  bool reported = false;
+  if (!is_member_decl(decl1) || !is_member_decl(decl2))
+    return reported;
+
+  string decl1_repr = decl1->get_pretty_representation(),
+    decl2_repr = decl2->get_pretty_representation();
+
+  if (get_member_is_static(decl1) != get_member_is_static(decl2))
+    {
+      bool lost = get_member_is_static(decl1);
+      out << indent << "'" << decl1_repr << "' ";
+      if (lost)
+	out << "became non-static";
+      else
+	out << "became static";
+      out << "\n";
+      reported = true;
+    }
+  if (get_member_access_specifier(decl1) != get_member_access_specifier(decl2))
+    {
+      out << indent << "'" << decl1_repr << "' access changed from '"
+	  << get_member_access_specifier(decl1)
+	  << "' to '"
+	  << get_member_access_specifier(decl2)
+	  << "'\n";
+      reported = true;
+    }
+  return reported;
+}
 
 /// Constructor for a pointer_diff.
 ///
@@ -1706,6 +1762,7 @@ enum_diff::report(ostream& out, const string& indent) const
   if (report_name_size_and_alignment_changes(first, second, out, indent,
 					     /*start_with_num_line=*/false))
     out << "\n";
+  maybe_report_diff_for_class_members(first, second, out, indent);
 
   // name
   if (first->get_name() != second->get_name())
@@ -1977,8 +2034,9 @@ class_diff::ensure_lookup_tables_populated(void) const
 	 ++it)
       {
 	unsigned i = it->index();
-	decl_base_sptr d = first_class_decl()->get_member_types()[i];
-	class_decl_sptr klass_decl = as_non_member_class_decl(d);
+	decl_base_sptr d =
+	  get_type_declaration(first_class_decl()->get_member_types()[i]);
+	class_decl_sptr klass_decl = dynamic_pointer_cast<class_decl>(d);
 	if (klass_decl && klass_decl->get_is_declaration_only())
 	  continue;
 	string qname = d->get_qualified_name();
@@ -1995,8 +2053,9 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     ++iit)
 	  {
 	    unsigned i = *iit;
-	    decl_base_sptr d = second_class_decl()->get_member_types()[i];
-	    class_decl_sptr klass_decl = as_non_member_class_decl(d);
+	    decl_base_sptr d =
+	      get_type_declaration(second_class_decl()->get_member_types()[i]);
+	    class_decl_sptr klass_decl = dynamic_pointer_cast<class_decl>(d);
 	    if (klass_decl && klass_decl->get_is_declaration_only())
 	      continue;
 	    string qname = d->get_qualified_name();
@@ -2375,6 +2434,8 @@ class_diff::report(ostream& out, const string& indent) const
 					     /*start_with_new_line=*/false))
     out << "\n";
 
+  maybe_report_diff_for_class_members(first, second, out, indent);
+
   // bases classes
   if (base_changes())
     {
@@ -2513,7 +2574,7 @@ class_diff::report(ostream& out, const string& indent) const
 	       i != e.insertions().end();
 	       ++i)
 	    {
-	      class_decl::member_type_sptr mem_type;
+	      type_base_sptr mem_type;
 	      for (vector<unsigned>::const_iterator j =
 		     i->inserted_indexes().begin();
 		   j != i->inserted_indexes().end();
@@ -2522,10 +2583,12 @@ class_diff::report(ostream& out, const string& indent) const
 		  if (emitted)
 		    out << "\n";
 		  mem_type = second->get_member_types()[*j];
-		  if (!priv_->member_type_has_changed(mem_type))
+		  if (!priv_->
+		      member_type_has_changed(get_type_declaration(mem_type)))
 		    {
 		      out << indent << "  '"
-			  << mem_type->get_pretty_representation()
+			  << get_type_declaration(mem_type)->
+			get_pretty_representation()
 			  << "'";
 		      emitted = true;
 		    }
@@ -3423,147 +3486,6 @@ compute_diff(const scope_decl_sptr	first_scope,
 
 //</scope_diff stuff>
 
-// <member_type_diff stuff>
-
-/// The type of the private data for @ref member_type_diff.
-struct member_type_diff::priv
-{
-  diff_sptr underlying_type_diff_;
-};//end struct member_type_diff
-
-/// Constructor for member_type_diff.
-///
-/// @param first the first subject of the diff.
-///
-/// @param second the second subject of the diff.
-///
-/// @param ctxt the context of the diff.
-member_type_diff::member_type_diff(class_decl::member_type_sptr first,
-				   class_decl::member_type_sptr second,
-				   diff_context_sptr ctxt)
-  : diff(first, second, ctxt),
-    priv_(new priv)
-{}
-
-/// Getter for the first subject of the diff.
-///
-/// @return the first member type of the diff.
-const class_decl::member_type_sptr
-member_type_diff::first_member_type() const
-{return dynamic_pointer_cast<class_decl::member_type>(first_subject());}
-
-/// Getter for the second subject of the diff.
-///
-/// @return the second member type of the diff.
-const class_decl::member_type_sptr
-member_type_diff::second_member_type() const
-{return dynamic_pointer_cast<class_decl::member_type>(second_subject());}
-
-/// Getter for the diff of the underlying types of the member types.
-///
-/// @return the diff of the underlying type of the member type.
-diff_sptr
-member_type_diff::underlying_type_diff() const
-{return priv_->underlying_type_diff_;}
-
-/// Setter for the diff of the underlying types of the member types
-///
-/// @param d the new diff for the underlying types of the member types
-/// to set.
-void
-member_type_diff::underlying_type_diff(const diff_sptr d)
-{priv_->underlying_type_diff_ = d;}
-
-/// Getter for the length of the diff.
-///
-/// @return return 1 if the two member types are different, 0
-/// otherwise.
-unsigned
-member_type_diff::length() const
-{return (*first_member_type() != *second_member_type());}
-
-/// Report the details of the differences abstracted by the current
-/// instance of @ref member_type_diff.
-///
-/// @param out the output stream to stick the report into.
-///
-/// @param indent the string to use as indentation.
-void
-member_type_diff::report(ostream& out, const string& indent) const
-{
-  if (!length())
-    return;
-
-  if (diff_sptr d = context()->has_diff_for(first_subject(),
-					    second_subject()))
-    {
-      if (d->currently_reporting())
-	{
-	  out << indent << "details are being reported\n";
-	  return;
-	}
-      else if (d->reported_once())
-	{
-	  out << indent << "details were reported earlier\n";
-	  return;
-	}
-    }
-
-  class_decl::member_type_sptr f = first_member_type(),
-    s = second_member_type();
-  string fn = f->get_pretty_representation(),
-    sn = s->get_pretty_representation();
-
-  if (f->get_is_static() != s->get_is_static())
-    {
-      bool lost = f->get_is_static();
-      out << indent << "'" << sn << "' ";
-      if (lost)
-	out << "became non-static";
-      else
-	out << "became static";
-      out << "\n";
-    }
-  if (f->get_access_specifier() != s->get_access_specifier())
-    {
-      out << indent << "'" << fn << "' access changed from '"
-	  << f->get_access_specifier()
-	  << "' to '"
-	  << s->get_access_specifier() << "'\n";
-    }
-
-  if (underlying_type_diff()->length())
-    underlying_type_diff()->report(out, indent);
-}
-
-/// Compute the diff of two member types.
-///
-/// @return the member type diff object
-member_type_diff_sptr
-compute_diff(const class_decl::member_type_sptr first,
-	     const class_decl::member_type_sptr second,
-	     diff_context_sptr ctxt)
-{
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      member_type_diff_sptr d = dynamic_pointer_cast<member_type_diff>(dif);
-      assert(d);
-      return d;
-    }
-
-
-  diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
-				       second->get_underlying_type(),
-				       ctxt);
-  member_type_diff_sptr result(new member_type_diff(first, second, ctxt));
-  result->underlying_type_diff(d);
-  ctxt->add_diff(first, second, result);
-
-  return result;
-}
-
-// </member_type_diff stuff>
-
 // <function_decl_diff stuff>
 struct function_decl_diff::priv
 {
@@ -3761,6 +3683,10 @@ function_decl_diff::report(ostream& out, const string& indent) const
 {
   if (length() == 0)
     return;
+
+  maybe_report_diff_for_class_members(first_function_decl(),
+				      second_function_decl(),
+				      out, indent);
 
   string qn1 = first_function_decl()->get_qualified_name(),
     qn2 = second_function_decl()->get_qualified_name();
@@ -4100,6 +4026,8 @@ typedef_diff::report(ostream& out, const string& indent) const
 	  return;
 	}
     }
+
+  maybe_report_diff_for_class_members(f, s, out, indent);
 
   if (f->get_name() != s->get_name())
     {

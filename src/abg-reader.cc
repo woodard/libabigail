@@ -505,7 +505,7 @@ static bool	read_translation_unit_from_input(read_context&,
 static bool	read_location(read_context&, xmlNodePtr, location&);
 static bool	read_visibility(xmlNodePtr, decl_base::visibility&);
 static bool	read_binding(xmlNodePtr, decl_base::binding&);
-static bool	read_access(xmlNodePtr, class_decl::access_specifier&);
+static bool	read_access(xmlNodePtr, access_specifier&);
 static bool	read_size_and_alignment(xmlNodePtr, size_t&, size_t&);
 static bool	read_static(xmlNodePtr, bool&);
 static bool	read_offset_in_bits(xmlNodePtr, size_t&);
@@ -1026,20 +1026,20 @@ read_binding(xmlNodePtr node, decl_base::binding& bind)
 ///
 /// @return true upon sucessful completion, false otherwise.
 static bool
-read_access(xmlNodePtr node, class_decl::access_specifier& access)
+read_access(xmlNodePtr node, access_specifier& access)
 {
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "access"))
     {
       string a = CHAR_STR(s);
 
       if (a == "private")
-	access = class_decl::private_access;
+	access = private_access;
       else if (a == "protected")
-	access = class_decl::protected_access;
+	access = protected_access;
       else if (a == "public")
-	access = class_decl::public_access;
+	access = public_access;
       else
-	access = class_decl::private_access;
+	access = private_access;
 
       return true;
     }
@@ -1660,8 +1660,7 @@ build_qualified_type_decl(read_context&	ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      qualified_type_def_sptr ty =
-	dynamic_pointer_cast<qualified_type_def>(as_non_member_type(d));
+      qualified_type_def_sptr ty = dynamic_pointer_cast<qualified_type_def>(d);
       assert(ty);
       assert(*ty->get_underlying_type() == *underlying_type);
       assert(ty->get_cv_quals() == cv);
@@ -1738,8 +1737,7 @@ build_pointer_type_def(read_context&	ctxt,
   assert(!id.empty());
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      pointer_type_def_sptr ty =
-	dynamic_pointer_cast<pointer_type_def>(as_non_member_type(d));
+      pointer_type_def_sptr ty = dynamic_pointer_cast<pointer_type_def>(d);
       assert(ty);
       assert(*pointed_to_type == *ty->get_pointed_to_type());
       return ty;
@@ -1827,8 +1825,7 @@ build_reference_type_def(read_context&		ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      reference_type_def_sptr ty =
-	dynamic_pointer_cast<reference_type_def>(as_non_member_type(d));
+      reference_type_def_sptr ty = dynamic_pointer_cast<reference_type_def>(d);
       assert(ty);
       assert(*pointed_to_type == *ty->get_pointed_to_type());
       return ty;
@@ -1996,8 +1993,7 @@ build_typedef_decl(read_context&	ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      typedef_decl_sptr ty =
-	dynamic_pointer_cast<typedef_decl>(as_non_member_type((d)));
+      typedef_decl_sptr ty = dynamic_pointer_cast<typedef_decl>(d);
       assert(ty);
       assert(name == ty->get_name());
       assert(underlying_type == ty->get_underlying_type());
@@ -2038,7 +2034,7 @@ build_class_decl(read_context&		ctxt,
 
   if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
     {
-      class_decl_sptr result = as_non_member_class_decl(d);
+      class_decl_sptr result = dynamic_pointer_cast<class_decl>(d);
       assert(result);
       return result;
     }
@@ -2129,7 +2125,7 @@ build_class_decl(read_context&		ctxt,
 
       if (xmlStrEqual(n->name, BAD_CAST("base-class")))
 	{
-	  class_decl::access_specifier access = class_decl::private_access;
+	  access_specifier access = private_access;
 	  read_access(n, access);
 
 	  string type_id;
@@ -2156,7 +2152,7 @@ build_class_decl(read_context&		ctxt,
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("member-type")))
 	{
-	  class_decl::access_specifier access = class_decl::private_access;
+	  access_specifier access = private_access;
 	  read_access(n, access);
 
 	  ctxt.map_xml_node_to_decl(n, decl);
@@ -2171,14 +2167,14 @@ build_class_decl(read_context&		ctxt,
 		{
 		  if (!get_type_declaration(t)->get_scope())
 		    {
-		      class_decl::member_type_sptr m =
+		      type_base_sptr m =
 			decl->add_member_type(t, access);
 
 		      xml_char_sptr i= XML_NODE_GET_ATTRIBUTE(p, "id");
 		      string id = CHAR_STR(i);
 		      assert(!id.empty());
 		      ctxt.key_type_decl(m, id, /*force=*/true);
-		      ctxt.map_xml_node_to_decl(p, m);
+		      ctxt.map_xml_node_to_decl(p, get_type_declaration(m));
 		    }
 		}
 	    }
@@ -2187,7 +2183,7 @@ build_class_decl(read_context&		ctxt,
 	{
 	  ctxt.map_xml_node_to_decl(n, decl);
 
-	  class_decl::access_specifier access = class_decl::private_access;
+	  access_specifier access = private_access;
 	  read_access(n, access);
 
 	  bool is_laid_out = false;
@@ -2213,7 +2209,7 @@ build_class_decl(read_context&		ctxt,
 	{
 	  ctxt.map_xml_node_to_decl(n, decl);
 
-	  class_decl::access_specifier access = class_decl::private_access;
+	  access_specifier access = private_access;
 	  read_access(n, access);
 
 	  size_t vtable_offset = 0;
@@ -2246,7 +2242,7 @@ build_class_decl(read_context&		ctxt,
 	{
 	  ctxt.map_xml_node_to_decl(n, decl);
 
-	  class_decl::access_specifier access = class_decl::private_access;
+	  access_specifier access = private_access;
 	  read_access(n, access);
 
 	  bool is_static = false;

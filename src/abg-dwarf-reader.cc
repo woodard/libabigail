@@ -586,7 +586,7 @@ die_size_in_bits(Dwarf_Die* die, size_t& size)
 ///
 /// @return bool if the DIE contains the DW_AT_accessibility die.
 static bool
-die_access_specifier(Dwarf_Die * die, class_decl::access_specifier& access)
+die_access_specifier(Dwarf_Die * die, access_specifier& access)
 {
   if (!die)
     return false;
@@ -595,20 +595,20 @@ die_access_specifier(Dwarf_Die * die, class_decl::access_specifier& access)
   if (!die_unsigned_constant_attribute(die, DW_AT_accessibility, a))
     return false;
 
-  class_decl::access_specifier result = class_decl::private_access;
+  access_specifier result = private_access;
 
   switch (a)
     {
-    case class_decl::private_access:
-      result = class_decl::private_access;
+    case private_access:
+      result = private_access;
       break;
 
-    case class_decl::protected_access:
-      result = class_decl::protected_access;
+    case protected_access:
+      result = protected_access;
       break;
 
-    case class_decl::public_access:
-      result = class_decl::public_access;
+    case public_access:
+      result = public_access;
       break;
 
     default:
@@ -1919,13 +1919,10 @@ get_scope_for_die(read_context& ctxt,
 
   decl_base_sptr d = build_ir_node_from_die(ctxt, &parent_die,
 					    called_for_public_decl);
-  scope_decl_sptr s =
-    as_non_member_class_decl(d)
-    ? dynamic_pointer_cast<scope_decl>(as_non_member_class_decl(d))
-    : dynamic_pointer_cast<scope_decl>(d);
+  scope_decl_sptr s =  dynamic_pointer_cast<scope_decl>(d);
   assert(s);
 
-  class_decl_sptr cl = as_non_member_class_decl(d);
+  class_decl_sptr cl = dynamic_pointer_cast<class_decl>(d);
   if (cl && cl->get_is_declaration_only())
     {
       scope_decl_sptr scop (cl->get_definition_of_declaration());
@@ -1982,7 +1979,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	 v != ctxt.var_decls_to_re_add_to_tree().end();
 	 ++v)
       {
-	if (as_non_member_class_decl((*v)->get_scope()))
+	  if (is_member_decl(*v))
 	  continue;
 
 	assert((*v)->get_scope());
@@ -1997,7 +1994,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	    if (!fqn_comps.empty())
 	      ty_decl = lookup_type_in_translation_unit(fqn_comps,
 							*ctxt.cur_tu());
-	    if (class_decl_sptr cl = as_non_member_class_decl(ty_decl))
+	    if (class_decl_sptr cl = dynamic_pointer_cast<class_decl>(ty_decl))
 	      {
 		// so this is a static member variable then.
 		// So remove it from its current non-class scope and
@@ -2244,7 +2241,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	result->set_is_declaration_only(true);
 
       res = add_decl_to_scope(result, scope);
-      result = dynamic_pointer_cast<class_decl>(as_non_member_type(res));
+      result = dynamic_pointer_cast<class_decl>(res);
       assert(result);
     }
 
@@ -2256,8 +2253,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = res;
 
   scope_decl_sptr scop =
-    dynamic_pointer_cast<scope_decl>
-    (get_type_declaration(as_non_member_type(res)));
+    dynamic_pointer_cast<scope_decl>(res);
   assert(scop);
   ctxt.scope_stack().push(scop.get());
 
@@ -2285,10 +2281,10 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      if (lookup_type_in_scope(base_type->get_name(), result))
 		continue;
 
-	      class_decl::access_specifier access =
+	      access_specifier access =
 		is_struct
-		? class_decl::public_access
-		: class_decl::private_access;
+		? public_access
+		: private_access;
 
 	      die_access_specifier(&child, access);
 
@@ -2333,10 +2329,10 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      is_laid_out = die_member_offset(&child, offset_in_bits);
 	      offset_in_bits *= 8;
 
-	      class_decl::access_specifier access =
+	      access_specifier access =
 		is_struct
-		? class_decl::public_access
-		: class_decl::private_access;
+		? public_access
+		: private_access;
 
 	      die_access_specifier(&child, access);
 
@@ -2374,10 +2370,10 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      size_t vindex = 0;
 	      if (is_virtual)
 		die_virtual_function_index(&child, vindex);
-	      class_decl::access_specifier access =
+	      access_specifier access =
 		is_struct
-		? class_decl::public_access
-		: class_decl::private_access;
+		? public_access
+		: private_access;
 	      die_access_specifier(&child, access);
 	      bool is_static = false;
 	      {
@@ -2429,16 +2425,14 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 				       called_from_public_decl);
 	      if (td)
 		{
-		  class_decl::access_specifier access =
+		  access_specifier access =
 		    is_struct
-		    ? class_decl::public_access
-		    : class_decl::private_access;
+		    ? public_access
+		    : private_access;
 		  die_access_specifier(&child, access);
 
-		  class_decl::member_type_sptr m =
-		    dynamic_pointer_cast<class_decl::member_type>(td);
-		  m->set_access_specifier(access);
-		  ctxt.die_decl_map()[dwarf_dieoffset(&child)] = m;
+		  set_member_access_specifier(td, access);
+		  ctxt.die_decl_map()[dwarf_dieoffset(&child)] = td;
 		}
 	    }
 	} while (dwarf_siblingof(&child, &child) == 0);
@@ -2451,15 +2445,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       ctxt.die_wip_classes_map().find(dwarf_dieoffset(die));
     if (i != ctxt.die_wip_classes_map().end())
       {
-	class_decl::member_type_sptr m =
-	  dynamic_pointer_cast<class_decl::member_type>(i->second);
-	if (m)
-	  {
-	    class_decl::member_type_sptr m2 =
-	      dynamic_pointer_cast<class_decl::member_type>(res);
-	    if (m2)
-	      m2->set_access_specifier(m->get_access_specifier());
-	  }
+	if (is_member_type(i->second))
+	  set_member_access_specifier(res,
+				      get_member_access_specifier(i->second));
 	ctxt.die_wip_classes_map().erase(i);
       }
   }
@@ -2761,7 +2749,7 @@ build_function_decl(read_context& ctxt,
 			     /*called_from_public_decl=*/true);
 
   class_decl_sptr is_method =
-   as_non_member_class_decl(get_scope_for_die(ctxt, die));
+    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die));
 
   Dwarf_Die child;
   function_decl::parameters function_parms;
@@ -2992,7 +2980,7 @@ build_ir_node_from_die(read_context&	ctxt,
 						       skope.get(),
 						       called_from_public_decl);
 	    assert(cl);
-	    class_decl_sptr klass = as_non_member_class_decl(cl);
+	    class_decl_sptr klass = dynamic_pointer_cast<class_decl>(cl);
 	    assert(klass);
 
 	    result =
@@ -3126,7 +3114,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    }
 
 	{
-	  const class_decl* cl = as_non_member_class_decl(scope);
+	  const class_decl* cl = dynamic_cast<class_decl*>(scope);
 	  // we shouldn't be in this class b/c, if this DIE is for a
 	  // member function, get_scope_for_die on it (prior to
 	  // calling this function) should have built the member
