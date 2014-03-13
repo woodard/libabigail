@@ -519,7 +519,6 @@ struct class_decl::hash
 	std::tr1::hash<string> hash_string;
 	std::tr1::hash<bool> hash_bool;
 	type_base::dynamic_hash hash_type;
-	decl_base::hash_as_member hash_as_member;
 	scope_type_decl::hash hash_scope_type;
 	class_decl::base_spec::hash hash_base;
 	class_decl::data_member::hash hash_data_member;
@@ -545,11 +544,7 @@ struct class_decl::hash
 	       t.get_member_types().begin();
 	     ti != t.get_member_types().end();
 	     ++ti)
-	  {
-	    decl_base_sptr decl = get_type_declaration(*ti);
-	    v = hashing::combine_hashes(v, hash_as_member(*decl));
-	    v = hashing::combine_hashes(v, hash_type((*ti).get()));
-	  }
+	  v = hashing::combine_hashes(v, hash_type((*ti).get()));
 
 	// Hash data members.
 	for (class_decl::data_members::const_iterator d =
