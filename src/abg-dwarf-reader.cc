@@ -2231,7 +2231,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   decl_base_sptr res;
   if (klass)
-    res = result = klass;
+    {
+      res = result = klass;
+      result->set_size_in_bits(size);
+      result->set_location(loc);
+    }
   else
     {
       result.reset(new class_decl(name, size, 0, is_struct, loc,
