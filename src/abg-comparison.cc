@@ -4036,14 +4036,15 @@ typedef_diff::report(ostream& out, const string& indent) const
       emit_nl = true;
     }
 
-  if (diff_sptr d = underlying_type_diff())
+  diff_sptr d = underlying_type_diff();
+  if (d && d->length())
     {
       if (diff_sptr d2 = context()->has_diff_for(d))
 	{
 	  if (d2->currently_reporting())
-	      out << indent << "underlying type '"
-		  << d->first_subject()->get_pretty_representation()
-		  << "' changed; details are being reported\n";
+	    out << indent << "underlying type '"
+		<< d->first_subject()->get_pretty_representation()
+		<< "' changed; details are being reported\n";
 	  else if (d2->reported_once())
 	    out << indent << "underlying type '"
 		<< d->first_subject()->get_pretty_representation()
