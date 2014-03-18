@@ -377,7 +377,7 @@ struct function_type::hash
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
     for (vector<shared_ptr<function_decl::parameter> >::const_iterator i =
-	   t.get_parameters ().begin();
+	   t.get_first_non_implicit_parm();
 	 i != t.get_parameters().end();
 	 ++i)
       v = hashing::combine_hashes(v, hash_parameter(**i));
@@ -397,11 +397,9 @@ struct method_type::hash
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
     vector<shared_ptr<function_decl::parameter> >::const_iterator i =
-      t.get_parameters ().begin();
+      t.get_first_non_implicit_parm();
 
-    for (vector<shared_ptr<function_decl::parameter> >::const_iterator i =
-	   t.get_parameters ().begin();
-	 i != t.get_parameters().end(); ++i)
+    for (; i != t.get_parameters().end(); ++i)
       v = hashing::combine_hashes(v, hash_parameter(**i));
 
     return v;
@@ -518,7 +516,9 @@ struct class_decl::hash
       {
 	std::tr1::hash<string> hash_string;
 	std::tr1::hash<bool> hash_bool;
+#if 0
 	type_base::dynamic_hash hash_type;
+#endif
 	scope_type_decl::hash hash_scope_type;
 	class_decl::base_spec::hash hash_base;
 	class_decl::data_member::hash hash_data_member;
@@ -540,11 +540,13 @@ struct class_decl::hash
 	  v = hashing::combine_hashes(v, hash_base(**b));
 
 	// Hash member types.
+#if 0
 	for (class_decl::member_types::const_iterator ti =
 	       t.get_member_types().begin();
 	     ti != t.get_member_types().end();
 	     ++ti)
 	  v = hashing::combine_hashes(v, hash_type((*ti).get()));
+#endif
 
 	// Hash data members.
 	for (class_decl::data_members::const_iterator d =

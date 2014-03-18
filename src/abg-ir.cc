@@ -298,6 +298,7 @@ operator==(translation_unit_sptr l, translation_unit_sptr r)
 decl_base::decl_base(const std::string&	name, location locus,
 		     const std::string&	mangled_name, visibility vis)
   : hash_(0),
+    hashing_started_(0),
     location_(locus),
     name_(name),
     mangled_name_(mangled_name),
@@ -306,6 +307,7 @@ decl_base::decl_base(const std::string&	name, location locus,
 
 decl_base::decl_base(location l)
   : hash_(0),
+    hashing_started_(0),
     location_(l),
     visibility_(VISIBILITY_DEFAULT)
 { }
@@ -327,16 +329,21 @@ decl_base::decl_base(const decl_base& d)
 size_t
 decl_base::get_hash() const
 {
-  if (hash_ == 0)
+  size_t result = hash_;
+
+  if (hash_ == 0 || hashing_started_)
     {
       const type_base* t = dynamic_cast<const type_base*>(this);
       if (t)
 	{
 	  type_base::dynamic_hash hash;
-	  set_hash(hash(t));
+	  result = hash(t);
+
+	  if (!hashing_started_)
+	    set_hash(result);
 	}
     }
-  return hash_;
+  return result;
 }
 
 /// Set a new hash for the type.
@@ -442,10 +449,6 @@ decl_base::get_qualified_name() const
 bool
 decl_base::operator==(const decl_base& other) const
 {
-  if (hash_ && other.hash_
-      && hash_ != other.hash_)
-    return false;
-
   if (get_name() != other.get_name())
     return false;
 
@@ -2520,8 +2523,8 @@ compare_function_types(const function_type& lhs,
 
   class_decl_sptr lcl, rcl;
   vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
-  for (i = lhs.get_parameters().begin(),
-	 j = rhs.get_parameters().begin();
+  for (i = lhs.get_first_non_implicit_parm(),
+	 j = rhs.get_first_non_implicit_parm();
        (i != lhs.get_parameters().end()
 	&& j != rhs.get_parameters().end());
        ++i, ++j)
@@ -2545,6 +2548,28 @@ compare_function_types(const function_type& lhs,
     return false;
 
   return true;
+}
+
+/// Get the parameter of the function.
+///
+/// If the function is a non-static member function, the parameter
+/// returned is the first one following the implicit 'this' parameter.
+///
+/// @return the first non implicit parm.
+function_type::parameters::const_iterator
+function_type::get_first_non_implicit_parm() const
+{
+  if (get_parameters().empty())
+    return get_parameters().end();
+
+  bool is_method = dynamic_cast<const method_type*>(this);
+
+  parameters::const_iterator i = get_parameters().begin();
+
+  if (is_method)
+    ++i;
+
+  return i;
 }
 
 /// Equality operator for function_type.
@@ -2836,6 +2861,27 @@ function_decl::get_pretty_representation() const
   return result;
 }
 
+/// Getter for the first non-implicit parameter of a function decl.
+///
+/// If the function is a non-static member function, the parameter
+/// returned is the first one following the implicit 'this' parameter.
+///
+/// @return the first non implicit parm.
+function_decl::parameters::const_iterator
+function_decl::get_first_non_implicit_parm() const
+{
+  if (get_parameters().empty())
+    return get_parameters().end();
+
+  bool is_method = dynamic_cast<const class_decl::method_decl*>(this);
+
+  parameters::const_iterator i = get_parameters().begin();
+  if (is_method)
+    ++i;
+
+  return i;
+}
+
 /// Return the type of the current instance of #function_decl.
 ///
 /// It's either a function_type or method_type.
@@ -2948,7 +2994,6 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
-    hashing_started_(false),
     comparison_started_(false),
     is_declaration_only_(false),
     is_struct_(is_struct),
@@ -2992,7 +3037,6 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
-    hashing_started_(false),
     comparison_started_(false),
     is_declaration_only_(false),
     is_struct_(is_struct)
@@ -3011,7 +3055,6 @@ class_decl::class_decl(const std::string& name,
   : decl_base(name, location(), name),
     type_base(0, 0),
     scope_type_decl(name, 0, 0, location()),
-    hashing_started_(false),
     comparison_started_(false),
     is_declaration_only_(is_declaration_only),
     is_struct_(is_struct)
@@ -3177,7 +3220,9 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
-  : member_base(a),
+  : decl_base(base->get_name(), base->get_location(),
+	      base->get_mangled_name(), base->get_visibility()),
+    member_base(a),
     base_class_(base),
     offset_in_bits_(offset_in_bits),
     is_virtual_(is_virtual)
@@ -3204,10 +3249,14 @@ class_decl::base_spec::base_spec(shared_ptr<type_base> base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
-  : member_base(a),
-    base_class_(dynamic_pointer_cast<class_decl>(base)),
-    offset_in_bits_(offset_in_bits),
-    is_virtual_(is_virtual)
+  : decl_base(get_type_declaration(base)->get_name(),
+	      get_type_declaration(base)->get_location(),
+	      get_type_declaration(base)->get_mangled_name(),
+	      get_type_declaration(base)->get_visibility()),
+      member_base(a),
+      base_class_(dynamic_pointer_cast<class_decl>(base)),
+      offset_in_bits_(offset_in_bits),
+      is_virtual_(is_virtual)
 {}
 
 bool
@@ -3638,10 +3687,13 @@ class_decl::operator==(const decl_base& other) const
 	  RETURN(val);
 	}
 
+#if 0
       if (hash_ != 0
+	  && !hashing_started_
 	  && other.hash_ != 0
 	  && hash_ != other.hash_)
 	RETURN(false);
+#endif
 
       // No need to go further if the classes have different names or
       // different size / alignment.

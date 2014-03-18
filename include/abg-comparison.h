@@ -59,6 +59,16 @@ typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
 /// of the pair is the old type/decl and the second is the new one.
 typedef pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
 
+/// Convenience typedef for a map of string and class_decl::basse_spec_sptr.
+typedef unordered_map<string, class_decl::base_spec_sptr> string_base_sptr_map;
+
+/// Convenience typedef for a pair of class_decl::base_spec_sptr.
+typedef pair<class_decl::base_spec_sptr,
+	     class_decl::base_spec_sptr> changed_base;
+
+/// Convenience typedef for a map of string and changed_base.
+typedef unordered_map<string, changed_base> string_changed_base_map;
+
 /// Convenience typedef for a changed function parameter.  The first element of
 /// the pair is the old function parm and the second element is the
 /// new function parm.
@@ -709,6 +719,52 @@ public:
 class_diff_sptr
 compute_diff(const class_decl_sptr	first,
 	     const class_decl_sptr	second,
+	     diff_context_sptr		ctxt);
+
+class base_diff;
+
+/// Convenience typedef for a shared pointer to base_diff.
+typedef shared_ptr<base_diff> base_diff_sptr;
+
+/// An abstraction of a diff between two instances of base_diff.
+class base_diff : public diff
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+protected:
+  base_diff(class_decl::base_spec_sptr	first,
+	    class_decl::base_spec_sptr	second,
+	    diff_context_sptr		ctxt = diff_context_sptr());
+
+public:
+  class_decl::base_spec_sptr
+  first_base() const;
+
+  class_decl::base_spec_sptr
+  second_base() const;
+
+  const class_diff_sptr
+  get_underlying_class_diff() const;
+
+  void
+  set_underlying_class_diff(class_diff_sptr d);
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  friend base_diff_sptr
+  compute_diff(const class_decl::base_spec_sptr first,
+	       const class_decl::base_spec_sptr second,
+	       diff_context_sptr		ctxt);
+};// end class base_diff
+
+base_diff_sptr
+compute_diff(const class_decl::base_spec_sptr first,
+	     const class_decl::base_spec_sptr second,
 	     diff_context_sptr		ctxt);
 
 class scope_diff;

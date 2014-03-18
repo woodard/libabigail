@@ -222,6 +222,7 @@ public:
 
 protected:
   mutable size_t	hash_;
+  mutable bool		hashing_started_;
   location		location_;
   context_rel_sptr	context_;
   mutable std::string	name_;
@@ -1224,6 +1225,9 @@ public:
   void
   append_parameters(std::vector<parameter_sptr >& parms);
 
+  parameters::const_iterator
+  get_first_non_implicit_parm() const;
+
   const shared_ptr<function_type>
   get_type() const;
 
@@ -1370,6 +1374,9 @@ public:
   bool
   is_variadic() const
   {return !parms_.empty() && parms_.back()->get_variadic_marker();}
+
+  parameters::const_iterator
+  get_first_non_implicit_parm() const;
 
   virtual bool
   operator==(const type_base&) const;
@@ -1749,7 +1756,6 @@ public:
   /// @}
 
 private:
-  mutable bool			hashing_started_;
   mutable bool			comparison_started_;
   decl_base_sptr		declaration_;
   bool				is_declaration_only_;
@@ -2048,7 +2054,8 @@ public:
 
 
 /// Abstraction of a base specifier in a class declaration.
-class class_decl::base_spec : public member_base
+class class_decl::base_spec : public member_base,
+			      public virtual decl_base
 {
 
   shared_ptr<class_decl>	base_class_;

@@ -1896,9 +1896,9 @@ struct class_diff::priv
   edit_script member_fn_tmpls_changes_;
   edit_script member_class_tmpls_changes_;
 
-  string_decl_base_sptr_map deleted_bases_;
-  string_decl_base_sptr_map inserted_bases_;
-  string_changed_type_or_decl_map changed_bases_;
+  string_base_sptr_map deleted_bases_;
+  string_base_sptr_map inserted_bases_;
+  string_changed_base_map changed_bases_;
   string_decl_base_sptr_map deleted_member_types_;
   string_decl_base_sptr_map inserted_member_types_;
   string_changed_type_or_decl_map changed_member_types_;
@@ -1912,8 +1912,8 @@ struct class_diff::priv
   string_decl_base_sptr_map inserted_member_class_tmpls_;
   string_changed_type_or_decl_map changed_member_class_tmpls_;
 
-  decl_base_sptr
-  base_has_changed(decl_base_sptr) const;
+  class_decl::base_spec_sptr
+  base_has_changed(class_decl::base_spec_sptr) const;
 
   decl_base_sptr
   member_type_has_changed(decl_base_sptr) const;
@@ -1988,9 +1988,9 @@ class_diff::ensure_lookup_tables_populated(void) const
 	 ++it)
       {
 	unsigned i = it->index();
-	decl_base_sptr b =
-	  first_class_decl()->get_base_specifiers()[i]->get_base_class();
-	string qname = b->get_qualified_name();
+	class_decl::base_spec_sptr b =
+	  first_class_decl()->get_base_specifiers()[i];
+	string qname = b->get_base_class()->get_qualified_name();
 	assert(priv_->deleted_bases_.find(qname)
 	       == priv_->deleted_bases_.end());
 	priv_->deleted_bases_[qname] = b;
@@ -2006,12 +2006,12 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     ++iit)
 	  {
 	    unsigned i = *iit;
-	    decl_base_sptr b =
-	      second_class_decl()->get_base_specifiers()[i]->get_base_class();
-	    string qname = b->get_qualified_name();
+	    class_decl::base_spec_sptr b =
+	      second_class_decl()->get_base_specifiers()[i];
+	    string qname = b->get_base_class()->get_qualified_name();
 	    assert(priv_->inserted_bases_.find(qname)
 		   == priv_->inserted_bases_.end());
-	    string_decl_base_sptr_map::const_iterator j =
+	    string_base_sptr_map::const_iterator j =
 	      priv_->deleted_bases_.find(qname);
 	    if (j != priv_->deleted_bases_.end())
 	      {
@@ -2229,14 +2229,16 @@ class_diff::ensure_lookup_tables_populated(void) const
 ///
 /// @return the new base class if the given base class has changed, or
 /// NULL if it hasn't.
-decl_base_sptr
-class_diff::priv::base_has_changed(decl_base_sptr d) const
+class_decl::base_spec_sptr
+class_diff::priv::base_has_changed(class_decl::base_spec_sptr d) const
 {
-  string qname = d->get_qualified_name();
-  string_changed_type_or_decl_map::const_iterator it =
+  string qname = d->get_base_class()->get_qualified_name();
+  string_changed_base_map::const_iterator it =
     changed_bases_.find(qname);
 
-  return (it == changed_bases_.end()) ? decl_base_sptr() : it->second.second;
+  return (it == changed_bases_.end())
+    ? class_decl::base_spec_sptr()
+    : it->second.second;
 
 }
 
@@ -2448,7 +2450,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  report_mem_header(out, numdels, del_kind,
 			    "base class", indent);
 
-	  for (string_decl_base_sptr_map::const_iterator i
+	  for (string_base_sptr_map::const_iterator i
 		 = priv_->deleted_bases_.begin();
 	       i != priv_->deleted_bases_.end();
 	       ++i)
@@ -2456,12 +2458,12 @@ class_diff::report(ostream& out, const string& indent) const
 	      if (i != priv_->deleted_bases_.begin())
 		out << "\n";
 
-	      class_decl_sptr base_class =
-		dynamic_pointer_cast<class_decl>(i->second);
+	      class_decl::base_spec_sptr base = i->second;
 
-	      if ( priv_->base_has_changed(base_class))
+	      if ( priv_->base_has_changed(base))
 		continue;
-	      out << indent << "  " << base_class->get_qualified_name();
+	      out << indent << "  "
+		  << base->get_base_class()->get_qualified_name();
 	    }
 	  out << "\n\n";
 	}
@@ -2470,17 +2472,17 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  report_mem_header(out, numchanges, change_kind,
 			    "base class", indent);
-	  for (string_changed_type_or_decl_map::const_iterator it =
+	  for (string_changed_base_map::const_iterator it =
 		 priv_->changed_bases_.begin();
 	       it != priv_->changed_bases_.end();
 	       ++it)
 	    {
-	      class_decl_sptr o =
-		dynamic_pointer_cast<class_decl>(it->second.first);
-	      class_decl_sptr n =
-		dynamic_pointer_cast<class_decl>(it->second.second);
+	      class_decl::base_spec_sptr o =
+		dynamic_pointer_cast<class_decl::base_spec>(it->second.first);
+	      class_decl::base_spec_sptr n =
+		dynamic_pointer_cast<class_decl::base_spec>(it->second.second);
 	      out << indent << "  '"
-		  << o->get_pretty_representation()
+		  << o->get_base_class()->get_pretty_representation()
 		  << "' changed:\n";
 	      diff_sptr dif = compute_diff(o, n, context());
 	      dif->report(out, indent + "    ");
@@ -2496,12 +2498,12 @@ class_diff::report(ostream& out, const string& indent) const
 			    "base class", indent);
 
 	  bool emitted = false;
-	  for (string_decl_base_sptr_map::const_iterator i =
+	  for (string_base_sptr_map::const_iterator i =
 		 priv_->inserted_bases_.begin();
 	       i != priv_->inserted_bases_.end();
 	       ++i)
 	    {
-	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(i->second);
+	      class_decl_sptr b = i->second->get_base_class();
 	      if (emitted)
 		out << "\n";
 	      out << indent << b->get_qualified_name();
@@ -2713,6 +2715,34 @@ class_diff::report(ostream& out, const string& indent) const
 	}
       if (emitted)
 	out << "\n";
+
+      // report function sub-types changes
+      int numchanges = priv_->changed_member_functions_.size();
+      if (numchanges)
+	report_mem_header(out, numchanges, change_kind,
+			  "member function", indent);
+      for (string_changed_member_function_sptr_map::const_iterator i =
+	     priv_->changed_member_functions_.begin();
+	   i != priv_->changed_member_functions_.end();
+	   ++i)
+	{
+	  if (i !=priv_->changed_member_functions_.begin())
+	    out << "\n";
+	  function_decl_sptr f = i->second.first;
+	  function_decl_sptr s = i->second.second;
+	  string repr = f->get_pretty_representation();
+	  out << indent << repr << " has some indirect sub-type changes:\n";
+	  diff_sptr diff = compute_diff_for_decls(f, s, context());
+	  if (diff)
+	    {
+	      diff->report(out, indent + "    ");
+	      emitted = true;
+	    }
+	    if (emitted)
+	      out << "\n";
+	}
+      if (numchanges)
+	out << "\n";
     }
 
   // member function templates
@@ -2907,6 +2937,148 @@ compute_diff(const class_decl_sptr	first,
 }
 
 //</class_diff stuff>
+
+// <base_diff stuff>
+struct base_diff::priv
+{
+  class_diff_sptr underlying_class_diff_;
+}; // end struct base_diff::priv
+
+/// @param first the first base spec to consider.
+///
+/// @param second the second base spec to consider.
+///
+/// @param ctxt the context of the diff.
+base_diff::base_diff(class_decl::base_spec_sptr first,
+		     class_decl::base_spec_sptr second,
+		     diff_context_sptr		ctxt)
+  : diff(first, second, ctxt),
+    priv_(new priv)
+{
+}
+
+/// Getter for the first base spec of the diff object.
+///
+/// @return the first base specifier for the diff object.
+class_decl::base_spec_sptr
+base_diff::first_base() const
+{return dynamic_pointer_cast<class_decl::base_spec>(first_subject());}
+
+/// Getter for the second base spec of the diff object.
+///
+/// @return the second base specifier for the diff object.
+class_decl::base_spec_sptr
+base_diff::second_base() const
+{return dynamic_pointer_cast<class_decl::base_spec>(second_subject());}
+
+/// Getter for the diff object for the diff of the underlying base
+/// classes.
+///
+/// @return the diff object for the diff of the underlying base
+/// classes.
+const class_diff_sptr
+base_diff::get_underlying_class_diff() const
+{return priv_->underlying_class_diff_;}
+
+/// Setter for the diff object for the diff of the underlyng base
+/// classes.
+///
+/// @param d the new diff object for the diff of the underlying base
+/// classes.
+void
+base_diff::set_underlying_class_diff(class_diff_sptr d)
+{priv_->underlying_class_diff_ = d;}
+
+/// Getter for the length of the diff.
+///
+/// @return the length of the diff.
+unsigned
+base_diff::length() const
+{return *first_base() != *second_base();}
+
+/// Generates a report for the current instance of base_diff.
+///
+/// @param out the output stream to send the report to.
+///
+/// @param indent the string to use for indentation.
+void
+base_diff::report(ostream& out, const string& indent) const
+{
+  if (length() == 0)
+    return;
+
+  class_decl::base_spec_sptr f = first_base(), s = second_base();
+  string repr = f->get_base_class()->get_pretty_representation();
+  bool emitted = false;
+
+  if (f->get_is_static() != s->get_is_static())
+    {
+      if (f->get_is_static())
+	out << indent << "is no more static";
+      else
+	out << indent << "now becomes static";
+      emitted = true;
+    }
+
+  if (f->get_access_specifier() != s->get_access_specifier())
+    {
+      if (emitted)
+	out << ", ";
+
+      out << "has access changed from '"
+	  << f->get_access_specifier()
+	  << "' to '"
+	  << s->get_access_specifier()
+	  << "'";
+
+      emitted = true;
+    }
+
+  if (class_diff_sptr d = get_underlying_class_diff())
+    {
+      if (d->length())
+	{
+	  if (emitted)
+	    out << "\n";
+	  d->report(out, indent);
+	}
+    }
+}
+
+/// Constructs the diff object representing a diff between two base
+/// class specifications.
+///
+/// @param first the first base class specification.
+///
+/// @param second the second base class specification.
+///
+/// @param ctxt the content of the diff.
+///
+/// @return the resulting diff object.
+base_diff_sptr
+compute_diff(const class_decl::base_spec_sptr	first,
+	     const class_decl::base_spec_sptr	second,
+	     diff_context_sptr			ctxt)
+{
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      base_diff_sptr d = dynamic_pointer_cast<base_diff>(dif);
+      assert(d);
+      return d;
+    }
+
+  class_diff_sptr cl = compute_diff(first->get_base_class(),
+				    second->get_base_class(),
+				    ctxt);
+  base_diff_sptr changes(new base_diff(first, second, ctxt));
+  changes->set_underlying_class_diff(cl);
+
+  ctxt->add_diff(first, second, changes);
+
+  return changes;
+}
+
+// </base_diff stuff>
 
 //<scope_diff stuff>
 struct scope_diff::priv
@@ -3791,9 +3963,9 @@ compute_diff(const function_decl_sptr first,
 			   second->get_return_type(),
 			   ctxt);
 
-  diff_utils::compute_diff(first->get_parameters().begin(),
+  diff_utils::compute_diff(first->get_first_non_implicit_parm(),
 			   first->get_parameters().end(),
-			   second->get_parameters().begin(),
+			   second->get_first_non_implicit_parm(),
 			   second->get_parameters().end(),
 			   result->priv_->parm_changes_);
 
@@ -4506,7 +4678,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
 	    diff_sptr diff = compute_diff_for_decls(f, s, context());
 	    if (diff)
-	      diff->report(out, indent + "    ");
+	      diff->report(out, indent + "  ");
 	  }
 	}
       if (priv_->changed_fns_.size())
