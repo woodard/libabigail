@@ -118,8 +118,14 @@ typedef shared_ptr<ir_traversable_base> ir_traversable_base_sptr;
 /// to be traversed.
 struct ir_traversable_base : public traversable_base
 {
-  virtual void
-  traverse(ir_node_visitor&);
+  /// Traverse a given IR node and its children, calling an visitor on
+  /// each node.
+  ///
+  /// @param v the visitor to call on each traversed node.
+  ///
+  /// @return true if the all the IR node tree was traversed.
+  virtual bool
+  traverse(ir_node_visitor& v);
 }; // end class ir_traversable_base
 
 /// This is the abstraction of the set of relevant artefacts (types,
@@ -171,7 +177,7 @@ public:
   bool
   operator==(const translation_unit&) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 };//end class translation_unit
 
@@ -338,7 +344,7 @@ public:
   virtual bool
   operator==(const decl_base&) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~decl_base();
@@ -531,7 +537,7 @@ public:
   bool
   find_iterator_for_member(const decl_base_sptr, declarations::iterator&);
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor&);
 
   virtual ~scope_decl();
@@ -693,7 +699,7 @@ public:
   virtual string
   get_pretty_representation() const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor&);
 
   virtual ~type_decl();
@@ -736,7 +742,7 @@ public:
   virtual bool
   operator==(const decl_base&) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor&);
 
   virtual ~namespace_decl();
@@ -794,7 +800,7 @@ public:
   virtual void
   get_qualified_name(string& qualified_name) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~qualified_type_def();
@@ -837,7 +843,7 @@ public:
   virtual void
   get_qualified_name(string&) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~pointer_type_def();
@@ -879,7 +885,7 @@ public:
   virtual void
   get_qualified_name(string& qualified_name) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~reference_type_def();
@@ -990,7 +996,7 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~enum_type_decl();
@@ -1028,7 +1034,7 @@ public:
   const shared_ptr<type_base>&
   get_underlying_type() const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor&);
 
   virtual ~typedef_decl();
@@ -1150,7 +1156,7 @@ public:
   virtual string
   get_pretty_representation() const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~var_decl();
@@ -1420,7 +1426,7 @@ public:
 	    && get_parameters().back()->get_variadic_marker());
   }
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor&);
 
   virtual ~function_decl();
@@ -1825,7 +1831,7 @@ public:
   get_binding() const
   {return binding_;}
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~function_tdecl();
@@ -1871,7 +1877,7 @@ public:
   get_pattern() const
   {return pattern_;}
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~class_tdecl();
@@ -2061,7 +2067,7 @@ public:
   bool
   operator==(const class_decl&) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 
   virtual ~class_decl();
@@ -2380,7 +2386,7 @@ public:
   virtual bool
   operator==(const member_base& o) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor&);
 };// end class class_decl::member_function_template
 
@@ -2423,7 +2429,7 @@ public:
   virtual bool
   operator==(const member_class_template&) const;
 
-  virtual void
+  virtual bool
   traverse(ir_node_visitor& v);
 };// end class class_decl::member_class_template
 
@@ -2584,21 +2590,21 @@ struct class_tdecl::shared_ptr_hash
 /// where the traversal is supposed to start from.
 struct ir_node_visitor : public node_visitor_base
 {
-  virtual void visit(scope_decl*);
-  virtual void visit(type_decl*);
-  virtual void visit(namespace_decl*);
-  virtual void visit(qualified_type_def*);
-  virtual void visit(pointer_type_def*);
-  virtual void visit(reference_type_def*);
-  virtual void visit(enum_type_decl*);
-  virtual void visit(typedef_decl*);
-  virtual void visit(var_decl*);
-  virtual void visit(function_decl*);
-  virtual void visit(function_tdecl*);
-  virtual void visit(class_tdecl*);
-  virtual void visit(class_decl*);
-  virtual void visit(class_decl::member_function_template*);
-  virtual void visit(class_decl::member_class_template*);
+  virtual bool visit(scope_decl*);
+  virtual bool visit(type_decl*);
+  virtual bool visit(namespace_decl*);
+  virtual bool visit(qualified_type_def*);
+  virtual bool visit(pointer_type_def*);
+  virtual bool visit(reference_type_def*);
+  virtual bool visit(enum_type_decl*);
+  virtual bool visit(typedef_decl*);
+  virtual bool visit(var_decl*);
+  virtual bool visit(function_decl*);
+  virtual bool visit(function_tdecl*);
+  virtual bool visit(class_tdecl*);
+  virtual bool visit(class_decl*);
+  virtual bool visit(class_decl::member_function_template*);
+  virtual bool visit(class_decl::member_class_template*);
 };
 
 // Debugging facility

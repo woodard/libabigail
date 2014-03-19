@@ -265,9 +265,12 @@ translation_unit::operator==(const translation_unit& other)const
 ///
 /// @param v the visitor used on the member nodes of the translation
 /// unit during the traversal.
-void
+///
+/// @return true if the entire type IR tree got traversed, false
+/// otherwise.
+bool
 translation_unit::traverse(ir_node_visitor& v)
-{get_global_scope()->traverse(v);}
+{return get_global_scope()->traverse(v);}
 
 translation_unit::~translation_unit()
 {}
@@ -473,10 +476,14 @@ decl_base::~decl_base()
 ///
 /// @param v the visitor used on the member nodes of the translation
 /// unit during the traversal.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 decl_base::traverse(ir_node_visitor&)
 {
   // Do nothing in the base class.
+  return true;
 }
 
 /// Setter of the scope of the current decl.
@@ -1172,10 +1179,14 @@ scope_decl::find_iterator_for_member(const decl_base_sptr decl,
 ///
 /// @param v the visitor used on the current instance of scope_decl
 /// and on its member nodes.
-void
+///
+/// @return true if the traversal of the tree should continue, false
+/// otherwise.
+bool
 scope_decl::traverse(ir_node_visitor &v)
 {
-  v.visit(this);
+  if (!v.visit(this))
+    return false;
 
   scope_decl::declarations::const_iterator i;
   for (i = get_member_decls().begin();
@@ -1185,8 +1196,10 @@ scope_decl::traverse(ir_node_visitor &v)
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
       if (t)
-	t->traverse (v);
+	if (!t->traverse (v))
+	  return false;
     }
+  return true;
 }
 
 scope_decl::~scope_decl()
@@ -2035,12 +2048,15 @@ type_decl::get_pretty_representation() const
 /// function.
 ///
 /// @param v the visitor used on the current instance.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 type_decl::traverse(ir_node_visitor& v)
-{v.visit(this);}
+{return v.visit(this);}
 
 type_decl::~type_decl()
-{ }
+{}
 //</type_decl definitions>
 
 // <scope_type_decl definitions>
@@ -2125,10 +2141,14 @@ namespace_decl::operator==(const decl_base& o) const
 ///
 /// @param v the visitor used on the current instance and on its
 /// member nodes.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 namespace_decl::traverse(ir_node_visitor& v)
 {
-  v.visit(this);
+  if (!v.visit(this))
+    return false;
 
   scope_decl::declarations::const_iterator i;
   for (i = get_member_decls().begin();
@@ -2138,8 +2158,10 @@ namespace_decl::traverse(ir_node_visitor& v)
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
       if (t)
-	t->traverse (v);
+	if (!t->traverse (v))
+	  return false;
     }
+  return true;
 }
 
 namespace_decl::~namespace_decl()
@@ -2252,9 +2274,12 @@ qualified_type_def::get_qualified_name(string& qualified_name) const
 /// function.
 ///
 /// @param v the visitor used on the current instance.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 qualified_type_def::traverse(ir_node_visitor& v)
-{v.visit(this);}
+{return v.visit(this);}
 
 qualified_type_def::~qualified_type_def()
 {
@@ -2417,9 +2442,12 @@ pointer_type_def::get_qualified_name(string& qn) const
 /// function.
 ///
 /// @param v the visitor used on the current instance.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 pointer_type_def::traverse(ir_node_visitor& v)
-{v.visit(this);}
+{return v.visit(this);}
 
 pointer_type_def::~pointer_type_def()
 {}
@@ -2500,9 +2528,12 @@ reference_type_def::get_qualified_name(string& qn) const
 /// function.
 ///
 /// @param v the visitor used on the current instance.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 reference_type_def::traverse(ir_node_visitor& v)
-{v.visit(this);}
+{return v.visit(this);}
 
 reference_type_def::~reference_type_def()
 {}
@@ -2531,9 +2562,12 @@ enum_type_decl::get_pretty_representation() const
 /// function.
 ///
 /// @param v the visitor used on the current instance.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 enum_type_decl::traverse(ir_node_visitor &v)
-{v.visit(this);}
+{return v.visit(this);}
 
 /// Destructor for the enum type declaration.
 enum_type_decl::~enum_type_decl()
@@ -2650,9 +2684,12 @@ typedef_decl::get_underlying_type() const
 /// function.
 ///
 /// @param v the visitor used on the current instance.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 typedef_decl::traverse(ir_node_visitor& v)
-{v.visit(this);}
+{return v.visit(this);}
 
 typedef_decl::~typedef_decl()
 {}
@@ -2722,9 +2759,12 @@ var_decl::get_pretty_representation() const
 /// function.
 ///
 /// @param v the visitor used on the current instance.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 var_decl::traverse(ir_node_visitor& v)
-{v.visit(this);}
+{return v.visit(this);}
 
 var_decl::~var_decl()
 {}
@@ -3223,9 +3263,12 @@ function_decl::operator==(const decl_base& other) const
 /// function.
 ///
 /// @param v the visitor used on the current instance.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 function_decl::traverse(ir_node_visitor& v)
-{v.visit(this);}
+{return v.visit(this);}
 
 function_decl::~function_decl()
 {}
@@ -3759,7 +3802,6 @@ class_decl::method_decl::set_scope(scope_decl* scope)
     context_->set_scope(scope);
 }
 
-
 /// Return the number of virtual functions of this class_decl.
 ///
 /// @return the number of virtual functions of this class_decl
@@ -4102,10 +4144,14 @@ operator==(class_decl_sptr l, class_decl_sptr r)
 ///
 /// @param v the visitor used on the current instance and on its
 /// members.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 class_decl::traverse(ir_node_visitor& v)
 {
-  v.visit(this);
+  if (!v.visit(this))
+    return false;
 
   for (member_types::const_iterator i = get_member_types().begin();
        i != get_member_types().end();
@@ -4114,7 +4160,8 @@ class_decl::traverse(ir_node_visitor& v)
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
       assert(t);
-      t->traverse(v);
+      if (!t->traverse(v))
+	return false;
     }
 
   for (member_function_templates::const_iterator i =
@@ -4125,7 +4172,8 @@ class_decl::traverse(ir_node_visitor& v)
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
       assert(t);
-      t->traverse(v);
+      if (!t->traverse(v))
+	return false;
     }
 
   for (member_class_templates::const_iterator i =
@@ -4136,7 +4184,8 @@ class_decl::traverse(ir_node_visitor& v)
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
       assert(t);
-      t->traverse(v);
+      if (!t->traverse(v))
+	return false;
     }
 
   for (data_members::const_iterator i = get_data_members().begin();
@@ -4146,7 +4195,8 @@ class_decl::traverse(ir_node_visitor& v)
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
       assert(t);
-      t->traverse(v);
+      if (!t->traverse(v))
+	return false;
     }
 
   for (member_functions::const_iterator i= get_member_functions().begin();
@@ -4156,8 +4206,11 @@ class_decl::traverse(ir_node_visitor& v)
       ir_traversable_base_sptr t =
 	dynamic_pointer_cast<ir_traversable_base>(*i);
       assert(t);
-      t->traverse(v);
+      if (!t->traverse(v))
+	return false;
     }
+
+  return true;
 }
 
 class_decl::~class_decl()
@@ -4222,11 +4275,15 @@ operator==(class_decl::member_function_template_sptr l,
 ///
 /// @param v the visitor used on the current instance and on its
 /// underlying function template.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 class_decl::member_function_template::traverse(ir_node_visitor& v)
 {
-  v.visit(this);
-  as_function_tdecl()->traverse(v);
+  if (!v.visit(this))
+    return false;
+  return as_function_tdecl()->traverse(v);
 }
 
 bool
@@ -4271,11 +4328,16 @@ operator==(class_decl::member_class_template_sptr l,
 ///
 /// @param v the visitor used on the current instance and on the class
 /// pattern of the template.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 class_decl::member_class_template::traverse(ir_node_visitor& v)
 {
-  v.visit(this);
-  as_class_tdecl()->get_pattern()->traverse(v);
+  if (!v.visit(this))
+    return false;
+
+  return as_class_tdecl()->get_pattern()->traverse(v);
 }
 
 /// Streaming operator for class_decl::access_specifier.
@@ -4515,11 +4577,16 @@ function_tdecl::operator==(const template_decl& other) const
 ///
 /// @param v the visitor used on the current instance and on the
 /// function pattern of the template.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 function_tdecl::traverse(ir_node_visitor&v)
 {
-  v.visit(this);
-  get_pattern()->traverse(v);
+  if (!v.visit(this))
+    return false;
+
+  return get_pattern()->traverse(v);
 }
 
 function_tdecl::~function_tdecl()
@@ -4593,82 +4660,89 @@ class_tdecl::operator==(const class_tdecl& o) const
 ///
 /// @param v the visitor used on the current instance and on the class
 /// pattern of the template.
-void
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
 class_tdecl::traverse(ir_node_visitor&v)
 {
-  v.visit(this);
+  if (!v.visit(this))
+    return false;
 
   shared_ptr<class_decl> pattern = get_pattern();
   if (pattern)
-    pattern->traverse(v);
+    if (!pattern->traverse(v))
+      return false;
+
+  return true;
 }
 
 class_tdecl::~class_tdecl()
 {}
 
-void
+bool
 ir_traversable_base::traverse(ir_node_visitor&)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(scope_decl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(type_decl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(namespace_decl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(qualified_type_def*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(pointer_type_def*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(reference_type_def*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(enum_type_decl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(typedef_decl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(var_decl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(function_decl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(function_tdecl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(class_tdecl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(class_decl*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(class_decl::member_function_template*)
-{}
+{return true;}
 
-void
+bool
 ir_node_visitor::visit(class_decl::member_class_template*)
-{}
+{return true;}
 
 // <debugging facilities>
 

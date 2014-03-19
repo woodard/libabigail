@@ -25,9 +25,8 @@
 namespace abigail
 {
 
-void
+bool
 traversable_base::traverse(node_visitor_base&)
-{
-}
+{return true;}
 
 }// end namespace abigail

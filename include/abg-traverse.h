@@ -53,7 +53,10 @@ struct traversable_base
   /// argument.
   ///
   /// @param v the visitor used during the traverse.
-  virtual void traverse(node_visitor_base& v);
+  ///
+  /// @return true if traversed until the end of the type tree, false
+  /// otherwise.
+  virtual bool traverse(node_visitor_base& v);
 };
 }//end namespace abigail
 #endif //__ABG_TRAVERSE_H__

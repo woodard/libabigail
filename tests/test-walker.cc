@@ -33,13 +33,19 @@ using std::cout;
 
 struct name_printing_visitor : public abigail::ir_node_visitor
 {
-  void
+  bool
   visit(abigail::class_decl* klass)
-  {cout << "class name: " << klass->get_name() << "\n";}
+  {
+    cout << "class name: " << klass->get_name() << "\n";
+    return true;
+  }
 
-  void
+  bool
   visit(abigail::namespace_decl* ns)
-  {cout << "namespace name: " << ns->get_name() << "\n";}
+  {
+    cout << "namespace name: " << ns->get_name() << "\n";
+    return true;
+  }
 };
 
 int

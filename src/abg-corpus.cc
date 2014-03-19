@@ -425,9 +425,18 @@ public:
   /// meaning work in progress).
   ///
   /// @param fn the function being visited.
-  void
+  ///
+  /// @return true if the traversal of the tree should continue, false
+  /// otherwise.
+  ///
+  /// @return true if the traversal of the tree should continue, false
+  /// otherwise.
+  bool
   visit(function_decl* fn)
-  {add_fn_to_wip_fns(fn);}
+  {
+    add_fn_to_wip_fns(fn);
+    return true;
+  }
 
   /// This function is called while visiting a @ref var_decl IR node
   /// of a translation unit.
@@ -436,12 +445,16 @@ public:
   /// meaning work in progress).
   ///
   /// @param var the variable being visited.
-  void
+  ///
+  /// @return true if the traversal of the tree should continue, false
+  /// otherwise.
+  bool
   visit(var_decl* var)
   {
     if (!is_data_member(var)
 	|| get_member_is_static(var))
       add_var_to_wip_vars(var);
+    return true;
   }
 };// end struct symtab_build_visitor_type
 
