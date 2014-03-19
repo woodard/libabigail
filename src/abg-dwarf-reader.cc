@@ -2002,10 +2002,10 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 		remove_decl_from_scope(*v);
 		decl_base_sptr d = add_decl_to_scope(*v, cl);
 		assert(d->get_scope());
-		class_decl::data_member_sptr dm =
-		  dynamic_pointer_cast<class_decl::data_member>(d);
+		var_decl_sptr dm =
+		  dynamic_pointer_cast<var_decl>(d);
 		assert(dm);
-		dm->set_is_static(true);
+		set_member_is_static(d, true);
 	      }
 	    if (ty_decl)
 	      assert(ty_decl->get_scope());
@@ -2340,15 +2340,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      die_access_specifier(&child, access);
 
-	      class_decl::data_member_sptr dm
-		(new class_decl::data_member(n, t, access,loc, m,
-					     decl_base::VISIBILITY_DEFAULT,
-					     decl_base::BINDING_NONE,
-					     is_laid_out,
-					     /*is_static=*/false,
-					     offset_in_bits));
-	      result->add_data_member(dm);
-	      assert(dm->get_scope());
+	      var_decl_sptr dm(new var_decl(n, t, loc, m));
+	      result->add_data_member(dm, access, is_laid_out,
+				      /*is_static=*/false,
+				      offset_in_bits);
+	      assert(has_scope(dm));
 	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = dm;
 	    }
 	  // Handle member functions;
@@ -3060,19 +3056,18 @@ build_ir_node_from_die(read_context&	ctxt,
 					 called_from_public_decl);
 		if (d)
 		  {
-		    class_decl::data_member_sptr m =
-		      dynamic_pointer_cast<class_decl::data_member>(d);
-		    if (m)
+		    var_decl_sptr m =
+		      dynamic_pointer_cast<var_decl>(d);
+		    if (is_data_member(m))
 		      {
-			m->set_is_static(true);
+			set_member_is_static(m, true);
 			ctxt.die_decl_map()[dwarf_dieoffset(die)] = d;
 		      }
 		    else
 		      {
-			var_decl_sptr v = dynamic_pointer_cast<var_decl>(d);
-			result = add_decl_to_scope(v, scope);
-			assert(v->get_scope());
-			ctxt.var_decls_to_re_add_to_tree().push_back(v);
+			result = add_decl_to_scope(m, scope);
+			assert(has_scope(m));
+			ctxt.var_decls_to_re_add_to_tree().push_back(m);
 		      }
 		    assert(d->get_scope());
 		    return d;

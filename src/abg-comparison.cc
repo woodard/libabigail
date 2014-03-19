@@ -695,19 +695,18 @@ represent(class_decl::member_function_sptr mem_fn,
 
 /// Stream a string representation for a data member.
 ///
-/// @param data_mem the data member to stream
+/// @param d the data member to stream
 ///
 /// @param out the output stream to send the representation to
 static void
-represent(class_decl::data_member_sptr data_mem,
-	  ostream& out)
+represent_data_member(var_decl_sptr d, ostream& out)
 {
-  if (!data_mem || !data_mem->is_laid_out())
+  if (!is_data_member(d) || !get_data_member_is_laid_out(d))
     return;
 
-  out << "'" << data_mem->get_pretty_representation() << "'"
+  out << "'" << d->get_pretty_representation() << "'"
       << ", at offset "
-      << data_mem->get_offset_in_bits()
+      << get_data_member_offset(d)
       << " (in bits)\n";
 }
 
@@ -724,11 +723,11 @@ represent(class_decl::data_member_sptr data_mem,
 ///
 /// @param indent the indentation string to use for the change report.
 static void
-represent(class_decl::data_member_sptr	o,
-	  class_decl::data_member_sptr	n,
-	  diff_context_sptr		ctxt,
-	  ostream&			out,
-	  const string&		indent = "")
+represent(var_decl_sptr	o,
+	  var_decl_sptr	n,
+	  diff_context_sptr	ctxt,
+	  ostream&		out,
+	  const string&	indent = "")
 {
   bool emitted = false;
   string name = o->get_qualified_name();
@@ -736,26 +735,29 @@ represent(class_decl::data_member_sptr	o,
   string pretty_representation = o->get_pretty_representation();
   assert(name == name2);
 
-  if (o->is_laid_out() != n->is_laid_out())
+  if (get_data_member_is_laid_out(o)
+      != get_data_member_is_laid_out(n))
     {
       if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
-      if (o->is_laid_out())
+      if (get_data_member_is_laid_out(o))
 	out << "is no more laid out";
       else
 	out << "now becomes laid out";
       emitted = true;
     }
-  if (o->get_offset_in_bits() != n->get_offset_in_bits())
+  if (get_data_member_offset(o)
+      != get_data_member_offset(n))
     {
       if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
-      out << "offset changed from " << o->get_offset_in_bits()
-	  << " to " << n->get_offset_in_bits();
+      out << "offset changed from "
+	  << get_data_member_offset(o)
+	  << " to " << get_data_member_offset(n);
       emitted = true;
     }
   if (o->get_binding() != n->get_binding())
@@ -777,7 +779,8 @@ represent(class_decl::data_member_sptr	o,
       out << "visibility changed from " << o->get_visibility()
 	  << " to " << n->get_visibility();
     }
-  if (o->get_access_specifier() != n->get_access_specifier())
+  if (get_member_access_specifier(o)
+      != get_member_access_specifier(n))
     {
       if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
@@ -785,19 +788,20 @@ represent(class_decl::data_member_sptr	o,
 	out << ", ";
 
       out << "access changed from '"
-	  << o->get_access_specifier()
+	  << get_member_access_specifier(o)
 	  << "' to '"
-	  << n->get_access_specifier();
+	  << get_member_access_specifier(n);
       emitted = true;
     }
-  if (o->get_is_static() != n->get_is_static())
+  if (get_member_is_static(o)
+      != get_member_is_static(n))
     {
       if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
 
-      if (o->get_is_static())
+      if (get_member_is_static(o))
 	out << "is no more static";
       else
 	out << "now becomes static";
@@ -2617,10 +2621,11 @@ class_diff::report(ostream& out, const string& indent) const
 	       i != priv_->deleted_data_members_.end();
 	       ++i)
 	    {
-	      class_decl::data_member_sptr data_mem =
-		dynamic_pointer_cast<class_decl::data_member>(i->second);
+	      var_decl_sptr data_mem =
+		dynamic_pointer_cast<var_decl>(i->second);
+	      assert(data_mem);
 	      out << indent << "  ";
-	      represent(data_mem, out);
+	      represent_data_member(data_mem, out);
 	      emitted = true;
 	    }
 	  if (emitted)
@@ -2638,10 +2643,10 @@ class_diff::report(ostream& out, const string& indent) const
 	       it != priv_->changed_data_members_.end();
 	       ++it)
 	    {
-	      class_decl::data_member_sptr o =
-		dynamic_pointer_cast<class_decl::data_member>(it->second.first);
-	      class_decl::data_member_sptr n =
-		dynamic_pointer_cast<class_decl::data_member>(it->second.second);
+	      var_decl_sptr o =
+		dynamic_pointer_cast<var_decl>(it->second.first);
+	      var_decl_sptr n =
+		dynamic_pointer_cast<var_decl>(it->second.second);
 	      represent(o, n, context(), out, indent + " ");
 	    }
 	  out << "\n";
@@ -2659,13 +2664,13 @@ class_diff::report(ostream& out, const string& indent) const
 	       i != priv_->inserted_data_members_.end();
 	       ++i)
 	    {
-	      class_decl::data_member_sptr data_mem =
-		dynamic_pointer_cast<class_decl::data_member>(i->second);
+	      var_decl_sptr data_mem =
+		dynamic_pointer_cast<var_decl>(i->second);
 	      assert(data_mem);
 	      if (emitted)
 		out << "\n";
 	      out << indent << "  ";
-	      represent(data_mem, out);
+	      represent_data_member(data_mem, out);
 	      emitted = true;
 	    }
 	  if (emitted)

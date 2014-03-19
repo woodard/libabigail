@@ -449,22 +449,11 @@ public:
   /// @param var the variable being visited.
   void
   visit(var_decl* var)
-  {add_var_to_wip_vars(var);}
-
-  /// This function is called while visiting a @ref var_decl IR node
-  /// of a translation unit.
-  ///
-  /// Add the variable to the symbol table being constructed (WIP
-  /// meaning work in progress).
-  ///
-  /// @param var the variable being visited.
-  void
-  visit(class_decl::data_member* var)
   {
-    if (var->get_is_static())
+    if (!is_data_member(var)
+	|| get_member_is_static(var))
       add_var_to_wip_vars(var);
   }
-
 };// end struct symtab_build_visitor_type
 
 /// This is a comparison functor for comparing pointers to @ref

@@ -293,6 +293,9 @@ operator==(translation_unit_sptr l, translation_unit_sptr r)
 
 // </translation_unit stuff>
 
+dm_context_rel::~dm_context_rel()
+{}
+
 // <Decl definition>
 
 decl_base::decl_base(const std::string&	name, location locus,
@@ -591,38 +594,6 @@ bool
 has_scope(const decl_base_sptr d)
 {return has_scope(*d.get());}
 
-/// Tests if a type has got a scope.
-///
-/// @param t the type to consider.
-///
-/// @return true if the type has got a scope, false otherwise.
-bool
-has_scope(const type_base& t)
-{
-  try
-    {
-      const decl_base& d = dynamic_cast<const decl_base&>(t);
-      return has_scope(d);
-    }
-  catch(...)
-    {}
-  return false;
-}
-
-/// Tests if a type has got a scope.
-///
-/// @param t the type to consider.
-///
-/// @return true if the type has got a scope, false otherwise.
-bool
-has_scope(const type_base_sptr t)
-{
-  const decl_base_sptr d = dynamic_pointer_cast<decl_base>(t);
-  if (d)
-    return has_scope(d);
-  return false;
-}
-
 /// Tests if a declaration is a class member.
 ///
 /// @param d the declaration to consider.
@@ -743,6 +714,17 @@ get_member_is_static(const decl_base&d)
 
 /// Gets a flag saying if a class member is static or not.
 ///
+/// @param d the declaration for the class member to consider. Note
+/// that this must be a class member otherwise the function aborts the
+/// current process.
+///
+/// @return true if the class member @p d is static, false otherwise.
+bool
+get_member_is_static(const decl_base* d)
+{return get_member_is_static(*d);}
+
+/// Gets a flag saying if a class member is static or not.
+///
 /// @param d the declaration for the class member to consider.  Note
 /// that this must be a class member otherwise the function aborts the
 /// current process.
@@ -770,6 +752,112 @@ set_member_is_static(decl_base_sptr d, bool s)
 
   c->set_is_static(s);
 }
+
+/// Test if a var_decl is a data member.
+///
+/// @param v the var_decl to consider.
+///
+/// @return true if @p v is data member, false otherwise.
+bool
+is_data_member(const var_decl& v)
+{return is_at_class_scope(v);}
+
+/// Test if a var_decl is a data member.
+///
+/// @param v the var_decl to consider.
+///
+/// @return true if @p v is data member, false otherwise.
+bool
+is_data_member(const var_decl* v)
+{return is_data_member(*v);}
+
+/// Test if a var_decl is a data member.
+///
+/// @param v the var_decl to consider.
+///
+/// @return true if @p v is data member, false otherwise.
+bool
+is_data_member(const var_decl_sptr d)
+{return is_at_class_scope(d);}
+
+/// Set the offset of a data member into its containing class.
+///
+/// @param m the data member to consider.
+///
+/// @param o the offset, in bits.
+void
+set_data_member_offset(var_decl_sptr m, size_t o)
+{
+  assert(is_data_member(m));
+
+  dm_context_rel_sptr ctxt_rel =
+    dynamic_pointer_cast<dm_context_rel>(m->get_context_rel());
+  assert(ctxt_rel);
+
+  ctxt_rel->set_offset_in_bits(o);
+}
+
+/// Get the offset of a data member.
+///
+/// @param m the data member to consider.
+///
+/// @return the offset (in bits) of @p m in its containing class.
+size_t
+get_data_member_offset(const var_decl&  m)
+{
+  assert(is_data_member(m));
+  dm_context_rel_sptr ctxt_rel =
+    dynamic_pointer_cast<dm_context_rel>(m.get_context_rel());
+  assert(ctxt_rel);
+  return ctxt_rel->get_offset_in_bits();
+}
+
+/// Get the offset of a data member.
+///
+/// @param m the data member to consider.
+///
+/// @return the offset (in bits) of @p m in its containing class.
+size_t
+get_data_member_offset(const var_decl_sptr m)
+{return get_data_member_offset(*m);}
+
+/// Set a flag saying if a data member is laid out.
+///
+/// @param m the data member to consider.
+///
+/// @param l true if @p m is to be considered as laid out.
+void
+set_data_member_is_laid_out(var_decl_sptr m, bool l)
+{
+  assert(is_data_member(m));
+  dm_context_rel_sptr ctxt_rel =
+    dynamic_pointer_cast<dm_context_rel>(m->get_context_rel());
+  ctxt_rel->set_is_laid_out(l);
+}
+
+/// Test whether a data member is laid out.
+///
+/// @param m the data member to consider.
+///
+/// @return true if @p m is laid out, false otherwise.
+bool
+get_data_member_is_laid_out(const var_decl& m)
+{
+  assert(is_data_member(m));
+  dm_context_rel_sptr ctxt_rel =
+    dynamic_pointer_cast<dm_context_rel>(m.get_context_rel());
+
+  return ctxt_rel->get_is_laid_out();
+}
+
+/// Test whether a data member is laid out.
+///
+/// @param m the data member to consider.
+///
+/// @return true if @p m is laid out, false otherwise.
+bool
+get_data_member_is_laid_out(const var_decl_sptr m)
+{return get_data_member_is_laid_out(*m);}
 
 // </decl_base definition>
 
@@ -2440,14 +2528,38 @@ var_decl::var_decl(const std::string&		name,
     binding_(bind)
 {}
 
+/// Setter of the scope of the current var_decl.
+///
+/// Note that the decl won't hold a reference on the scope.  It's
+/// rather the scope that holds a reference on its members.
+///
+/// @param scope the new scope.
+void
+var_decl::set_scope(scope_decl* scope)
+{
+    if (!context_)
+    context_.reset(new dm_context_rel(scope));
+  else
+    context_->set_scope(scope);
+}
+
 bool
 var_decl::operator==(const decl_base& o) const
 {
   const var_decl* other = dynamic_cast<const var_decl*>(&o);
   if (!other)
     return false;
-  return (decl_base::operator==(*other)
-	  && *get_type() == *other->get_type());
+  if (!decl_base::operator==(*other)
+      || *get_type() != *other->get_type())
+    return false;
+
+  dm_context_rel_sptr c0 =
+    dynamic_pointer_cast<dm_context_rel>(get_context_rel());
+  dm_context_rel_sptr c1 =
+      dynamic_pointer_cast<dm_context_rel>(other->get_context_rel());
+  assert(c0 && c1);
+
+  return *c0 == *c1;
 }
 
 /// Build and return the pretty representation of this variable.
@@ -3003,12 +3115,12 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
     member_functions_(mbr_fns)
 {
   for (member_types::iterator i = mbrs.begin(); i != mbrs.end(); ++i)
-    if (!has_scope(*i))
+    if (!has_scope(get_type_declaration(*i)))
       add_decl_to_scope(get_type_declaration(*i), this);
 
   for (data_members::iterator i = data_mbrs.begin(); i != data_mbrs.end();
        ++i)
-    if (!has_scope(static_pointer_cast<decl_base>(*i)))
+    if (!has_scope(*i))
       add_decl_to_scope(*i, this);
 
   for (member_functions::iterator i = mbr_fns.begin(); i != mbr_fns.end();
@@ -3092,18 +3204,13 @@ class_decl::insert_member_decl(decl_base_sptr d,
 {
   if (type_base_sptr t = dynamic_pointer_cast<type_base>(d))
     insert_member_type(t, before);
-  else if (data_member_sptr m = dynamic_pointer_cast<data_member>(d))
-    add_data_member(m);
   else if (var_decl_sptr v = dynamic_pointer_cast<var_decl>(d))
     {
-      class_decl::data_member_sptr dm
-	(new class_decl::data_member(v, public_access,
-				     /*is_laid_out=*/false,
-				     /*is_static=*/false,
-				     /*offset_in_bits=*/0));
-      add_data_member(dm);
-      v->set_scope(this);
-      d = dm;
+      add_data_member(v, public_access,
+		      /*is_laid_out=*/false,
+		      /*is_static=*/false,
+		      /*offset_in_bits=*/0);
+      d = v;
     }
   else if (member_function_sptr f = dynamic_pointer_cast<member_function>(d))
     add_member_function(f);
@@ -3276,22 +3383,6 @@ class_decl::base_spec::operator==(const member_base& o) const
 
 /// Add a data member to the current instance of class_decl.
 ///
-/// @param m the data member to add.  This data member should not have
-/// been already added to a scope.
-void
-class_decl::add_data_member(data_member_sptr m)
-{
-  decl_base* c = m->get_scope();
-  /// TODO: use our own assertion facility that adds a meaningful
-  /// error message or something like a structured error.
-  assert(!c);
-  data_members_.push_back(m);
-  m->set_scope(this);
-  scope_decl::add_member_decl(m);
-}
-
-/// Add a data member to the current instance of class_decl.
-///
 /// @param v a var_decl to add as a data member.  A proper
 /// class_decl::data_member is created from @p v and added to the
 /// class_decl.  This var_decl should not have been already added to a
@@ -3312,13 +3403,14 @@ class_decl::add_data_member(var_decl_sptr v, access_specifier access,
 			    bool is_laid_out, bool is_static,
 			    size_t offset_in_bits)
 {
-  assert(!v->get_scope());
+  assert(!has_scope(v));
 
-  data_member_sptr m(new class_decl::data_member(v, access,
-						 is_laid_out,
-						 is_static,
-						 offset_in_bits));
-  add_data_member(m);
+  dm_context_rel_sptr ctxt(new dm_context_rel(this, is_laid_out,
+					      offset_in_bits,
+					      access, is_static));
+  v->set_context_rel(ctxt);
+  data_members_.push_back(v);
+  scope_decl::add_member_decl(v);
 }
 
 /// a constructor for instances of class_decl::method_decl.
@@ -3940,6 +4032,9 @@ class_decl::traverse(ir_node_visitor& v)
 class_decl::~class_decl()
 {}
 
+context_rel::~context_rel()
+{}
+
 bool
 class_decl::member_base::operator==(const member_base& o) const
 {
@@ -3957,40 +4052,6 @@ operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r)
 
   return *l == *r;
 }
-
-bool
-operator==(class_decl::data_member_sptr l, class_decl::data_member_sptr r)
-{
-  if (l.get() == r.get())
-    return true;
-  if (!!l != !!r)
-    return false;
-
-  return *l == *r;
-}
-
-bool
-class_decl::data_member::operator==(const decl_base& o) const
-{
-  try
-    {
-      const class_decl::data_member& other =
-	dynamic_cast<const class_decl::data_member&>(o);
-      return (is_laid_out() == other.is_laid_out()
-	      && get_offset_in_bits() == other.get_offset_in_bits()
-	      && var_decl::operator==(other)
-	      && member_base::operator==(other));
-    }
-  catch(...)
-    {return false;}
-}
-
-void
-class_decl::data_member::traverse(ir_node_visitor& v)
-{v.visit(this);}
-
-class_decl::data_member::~data_member()
-{}
 
 bool
 class_decl::member_function::operator==(const decl_base& other) const
@@ -4519,10 +4580,6 @@ ir_node_visitor::visit(class_tdecl*)
 
 void
 ir_node_visitor::visit(class_decl*)
-{}
-
-void
-ir_node_visitor::visit(class_decl::data_member*)
 {}
 
 void

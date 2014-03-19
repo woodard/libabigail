@@ -207,7 +207,7 @@ static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
 static bool write_binding(const shared_ptr<decl_base>&, ostream&);
 static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
 static void write_access(access_specifier, ostream&);
-static void write_layout_offset(shared_ptr<class_decl::data_member>, ostream&);
+static void write_layout_offset(var_decl_sptr, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, bool, ostream&);
 static void write_voffset(class_decl::member_function_sptr, ostream&);
@@ -495,13 +495,15 @@ write_access(access_specifier a, ostream& o)
 
 /// Serialize the layout offset of a data member.
 static void
-write_layout_offset(shared_ptr<class_decl::data_member> member, ostream& o)
+write_layout_offset(var_decl_sptr member, ostream& o)
 {
-  if (!member)
+  if (!is_data_member(member))
     return;
 
-  if (member->is_laid_out())
-    o << " layout-offset-in-bits='" << member->get_offset_in_bits() << "'";
+  if (get_data_member_is_laid_out(member))
+    o << " layout-offset-in-bits='"
+      << get_data_member_offset(member)
+      << "'";
 }
 
 /// Serialize the layout offset of a base class
@@ -1391,9 +1393,9 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	{
 	  do_indent(o, nb_ws);
 	  o << "<data-member";
-	  write_access((*data)->get_access_specifier(), o);
+	  write_access(get_member_access_specifier(*data), o);
 
-	  bool is_static = (*data)->get_is_static();
+	  bool is_static = get_member_is_static(*data);
 	  write_cdtor_const_static(/*is_ctor=*/false,
 				   /*is_dtor=*/false,
 				   /*is_const=*/false,

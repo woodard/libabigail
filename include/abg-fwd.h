@@ -190,12 +190,6 @@ bool
 has_scope(const shared_ptr<decl_base>);
 
 bool
-has_scope(const type_base&);
-
-bool
-has_scope(const shared_ptr<type_base>);
-
-bool
 is_member_decl(const shared_ptr<decl_base>);
 
 bool
@@ -217,6 +211,9 @@ bool
 get_member_is_static(const decl_base&);
 
 bool
+get_member_is_static(const decl_base*);
+
+bool
 get_member_is_static(const shared_ptr<decl_base>);
 
 void
@@ -226,6 +223,33 @@ set_member_is_static(decl_base&,
 void
 set_member_is_static(shared_ptr<decl_base>,
 		     bool);
+
+bool
+is_data_member(const var_decl&);
+
+bool
+is_data_member(const var_decl*);
+
+bool
+is_data_member(const shared_ptr<var_decl>);
+
+void
+set_data_member_offset(shared_ptr<var_decl>, size_t);
+
+size_t
+get_data_member_offset(const var_decl&);
+
+size_t
+get_data_member_offset(const shared_ptr<var_decl>);
+
+void
+set_data_member_is_laid_out(shared_ptr<var_decl>, bool);
+
+bool
+get_data_member_is_laid_out(const var_decl&);
+
+bool
+get_data_member_is_laid_out(const shared_ptr<var_decl>);
 
 const global_scope*
 get_global_scope(const decl_base* decl);

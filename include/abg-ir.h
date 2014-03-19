@@ -191,15 +191,81 @@ class context_rel;
 /// A convenience typedef for shared pointers to @ref context_rel
 typedef shared_ptr<context_rel> context_rel_sptr;
 
+/// The abstraction of the relationship between an entity and its
+/// containing scope (its context).  That relationship can carry
+/// properties like access rights (if the parent is a class_decl),
+/// etc.
+///
+/// But importantly, this relationship carries a pointer to the
+/// actualy parent.
+class context_rel
+{
+protected:
+  scope_decl*		scope_;
+  enum access_specifier access_;
+  bool			is_static_;
+
+public:
+  context_rel()
+    : scope_(0),
+      access_(no_access),
+      is_static_(false)
+  {}
+
+  context_rel(scope_decl* s)
+    : scope_(s),
+      access_(no_access),
+      is_static_(false)
+  {}
+
+  context_rel(scope_decl* s,
+	      access_specifier a,
+	      bool f)
+    : scope_(s),
+      access_(a),
+      is_static_(f)
+  {}
+
+  scope_decl*
+  get_scope() const
+  {return scope_;}
+
+  access_specifier
+  get_access_specifier() const
+  {return access_;}
+
+  void
+  set_access_specifier(access_specifier a)
+  {access_ = a;}
+
+  bool
+  get_is_static() const
+  {return is_static_;}
+
+  void
+  set_is_static(bool s)
+  {is_static_ = s;}
+
+  void
+  set_scope(scope_decl* s)
+  {scope_ = s;}
+
+  bool
+  operator==(const context_rel& o)const
+  {
+    return (access_ == o.access_
+	    && is_static_ == o.is_static_);
+  }
+
+  virtual ~context_rel();
+};// end class context_rel
+
 /// The base type of all declarations.
 class decl_base : public ir_traversable_base
 {
 public:
   /// Facility to hash instances of decl_base.
   struct hash;
-
-  /// Facility to hash instances of decl_base as class members
-  struct hash_as_member;
 
   /// ELF visibility
   enum visibility
@@ -254,6 +320,10 @@ protected:
   context_rel_sptr
   get_context_rel()
   {return context_;}
+
+  void
+  set_context_rel(context_rel_sptr c)
+  {context_ = c;}
 
 public:
 
@@ -964,6 +1034,75 @@ public:
   virtual ~typedef_decl();
 };// end class typedef_decl
 
+class dm_context_rel;
+
+/// A convenience typedef for a shared pointer to dm_context_rel.
+typedef shared_ptr<dm_context_rel> dm_context_rel_sptr;
+
+/// The abstraction for a data member context relationship.  This
+/// relates a data member to its parent class.
+///
+/// The relationship carries properties like the offset of the data
+/// member, if applicable.
+class dm_context_rel : public context_rel
+{
+protected:
+  bool is_laid_out_;
+  size_t offset_in_bits_;
+
+public:
+  dm_context_rel()
+    : context_rel(),
+      is_laid_out_(!is_static_),
+      offset_in_bits_(0)
+  {}
+
+  dm_context_rel(scope_decl* s,
+		 bool is_laid_out,
+		 size_t offset_in_bits,
+		 access_specifier a,
+		 bool is_static)
+    : context_rel(s, a, is_static),
+      is_laid_out_(is_laid_out),
+      offset_in_bits_(offset_in_bits)
+  {}
+
+  dm_context_rel(scope_decl* s)
+    : context_rel(s),
+      is_laid_out_(!is_static_),
+      offset_in_bits_(0)
+  {}
+
+  bool
+  get_is_laid_out() const
+  {return is_laid_out_;}
+
+  void
+  set_is_laid_out(bool f)
+  {is_laid_out_ = f;}
+
+  size_t
+  get_offset_in_bits() const
+  {return offset_in_bits_;}
+
+  void
+  set_offset_in_bits(size_t o)
+  {offset_in_bits_ = o;}
+
+  bool
+  operator==(const dm_context_rel& o)
+  {
+    if (!context_rel::operator==(o))
+      return false;
+
+    return (is_laid_out_ == o.is_laid_out_
+	    && offset_in_bits_ == o.offset_in_bits_);
+  }
+
+  virtual ~dm_context_rel();
+};// end class class_decl::dm_context_rel
+
+
 /// Convenience typedef for a shared pointer on a @ref var_decl
 typedef shared_ptr<var_decl> var_decl_sptr;
 
@@ -975,6 +1114,9 @@ class var_decl : public virtual decl_base
 
   // Forbidden
   var_decl();
+
+  virtual void
+  set_scope(scope_decl*);
 
 public:
 
@@ -1013,6 +1155,24 @@ public:
   traverse(ir_node_visitor& v);
 
   virtual ~var_decl();
+
+  friend void
+  set_data_member_offset(var_decl_sptr m, size_t o);
+
+  friend size_t
+  get_data_member_offset(const var_decl_sptr m);
+
+  friend size_t
+  get_data_member_offset(const var_decl& m);
+
+  friend void
+  set_data_member_is_laid_out(var_decl_sptr m, bool l);
+
+  friend bool
+  get_data_member_is_laid_out(const var_decl& m);
+
+  friend bool
+  get_data_member_is_laid_out(const var_decl_sptr m);
 }; // end class var_decl
 
 /// Convenience typedef for a shared pointer on a @ref function_decl
@@ -1734,7 +1894,6 @@ public:
   /// Forward declarations.
   class member_base;
   class base_spec;
-  class data_member;
   class method_decl;
   class member_function;
   class member_function_template;
@@ -1745,8 +1904,7 @@ public:
   typedef shared_ptr<base_spec>			base_spec_sptr;
   typedef std::vector<base_spec_sptr>			base_specs;
   typedef std::vector<type_base_sptr>			member_types;
-  typedef shared_ptr<data_member>			data_member_sptr;
-  typedef std::vector<data_member_sptr>		data_members;
+  typedef std::vector<var_decl_sptr>			data_members;
   typedef shared_ptr<member_function>			member_function_sptr;
   typedef std::vector<member_function_sptr>		member_functions;
   typedef shared_ptr<member_function_template>		member_function_template_sptr;
@@ -1856,9 +2014,6 @@ public:
   {return member_types_;}
 
   void
-  add_data_member(data_member_sptr m);
-
-  void
   add_data_member(var_decl_sptr v, access_specifier a,
 		  bool is_laid_out, bool is_static,
 		  size_t offset_in_bits);
@@ -1926,74 +2081,6 @@ get_member_access_specifier(const decl_base_sptr);
 void
 set_member_access_specifier(decl_base_sptr,
 			    access_specifier);
-
-/// The abstraction of the relationship between an entity and its
-/// containing scope (its context).  That relationship can carry
-/// properties like access rights (if the parent is a class_decl),
-/// etc.
-///
-/// But importantly, this relationship carries a pointer to the
-/// actualy parent.
-class context_rel
-{
-private:
-  scope_decl*		scope_;
-  enum access_specifier access_;
-  bool			is_static_;
-
-public:
-  context_rel()
-    : scope_(0),
-      access_(no_access),
-      is_static_(false)
-  {}
-
-  context_rel(scope_decl* s)
-    : scope_(s),
-      access_(no_access),
-      is_static_(false)
-  {}
-
-  context_rel(scope_decl* s,
-	      access_specifier a,
-	      bool f)
-    : scope_(s),
-      access_(a),
-      is_static_(f)
-  {}
-
-  scope_decl*
-  get_scope() const
-  {return scope_;}
-
-  access_specifier
-  get_access_specifier() const
-  {return access_;}
-
-  void
-  set_access_specifier(access_specifier a)
-  {access_ = a;}
-
-  bool
-  get_is_static() const
-  {return is_static_;}
-
-  void
-  set_is_static(bool s)
-  {is_static_ = s;}
-
-  void
-  set_scope(scope_decl* s)
-  {scope_ = s;}
-
-  bool
-  operator==(const context_rel& o)const
-  {
-    return (access_ == o.access_
-	    && is_static_ == o.is_static_);
-  }
-};// end class context_rel
-
 std::ostream&
 operator<<(std::ostream&, access_specifier);
 
@@ -2094,112 +2181,6 @@ public:
 
 bool
 operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r);
-
-/// Abstract a data member declaration in a class declaration.
-class class_decl::data_member : public var_decl, public member_base
-{
-  bool		is_laid_out_;
-  size_t	offset_in_bits_;
-
-  // Forbidden
-  data_member();
-
-public:
-
-  /// Hasher.
-  struct hash;
-
-  /// Constructor for instances of class_decl::data_member.
-  ///
-  /// @param data_member the variable to be used as data member.
-  ///
-  /// @param access the access specifier for the data member.
-  ///
-  /// @param is_laid_out set to true if the data member has been laid out.
-  ///
-  /// @param is_static set ot true if the data member is static.
-  ///
-  /// @param offset_in_bits the offset of the data member, expressed in bits.
-  data_member(shared_ptr<var_decl> data_member, access_specifier access,
-	      bool is_laid_out, bool is_static, size_t offset_in_bits)
-    : decl_base(data_member->get_name(),
-		data_member->get_location(),
-		data_member->get_mangled_name(),
-		data_member->get_visibility()),
-      var_decl(data_member->get_name(),
-	       data_member->get_type(),
-	       data_member->get_location(),
-	       data_member->get_mangled_name(),
-	       data_member->get_visibility(),
-	       data_member->get_binding()),
-      member_base(access, is_static),
-    is_laid_out_(is_laid_out),
-    offset_in_bits_(offset_in_bits)
-  {}
-
-
-  /// Constructor for instances of class_decl::data_member.
-  ///
-  /// @param name the name of the data member.
-  ///
-  /// @param type the type of the data member.
-  ///
-  /// @param access the access specifier for the data member.
-  ///
-  /// @param locus the source location of the data member.
-  ///
-  /// @param mangled_name the mangled name of the data member, or an
-  /// empty string if not applicable.
-  ///
-  /// @param vis the visibility of the data member.
-  ///
-  /// @param bind the binding of the data member.
-  ///
-  /// @param is_laid_out set to true if the data member has been laid out.
-  ///
-  /// @param is_static set ot true if the data member is static.
-  ///
-  /// @param offset_in_bits the offset of the data member, expressed in bits.
-  data_member(const std::string& name,
-	      shared_ptr<type_base>& type,
-	      access_specifier access,
-	      location locus,
-	      const std::string& mangled_name,
-	      visibility vis,
-	      binding	bind,
-	      bool is_laid_out,
-	      bool is_static,
-	      size_t offset_in_bits)
-    : decl_base(name, locus, mangled_name, vis),
-      var_decl(name, type, locus, mangled_name, vis, bind),
-      member_base(access, is_static),
-      is_laid_out_(is_laid_out),
-      offset_in_bits_(offset_in_bits)
-  {}
-
-  bool
-  is_laid_out() const
-  {return is_laid_out_;}
-
-  size_t
-  get_offset_in_bits() const
-  {return offset_in_bits_;}
-
-  virtual bool
-  operator==(const decl_base& other) const;
-
-  /// This implements the traversable_base::traverse pure virtual
-  /// function.
-  ///
-  /// @param v the visitor used on the current instance.
-  virtual void
-  traverse(ir_node_visitor&);
-
-  virtual ~data_member();
-};// end class class_decl::data_member
-
-bool
-operator==(class_decl::data_member_sptr l, class_decl::data_member_sptr r);
 
 /// Abstraction of the declaration of a method. This is an
 /// implementation detail for class_decl::member_function.
@@ -2557,13 +2538,6 @@ struct class_decl::member_base::hash
   operator()(const member_base& m) const;
 };
 
-/// The hashing functor for class_decl::data_member.
-struct class_decl::data_member::hash
-{
-  size_t
-  operator()(const data_member& t) const;
-};
-
 /// The hashing functor for class_decl::member_function.
 struct class_decl::member_function::hash
 {
@@ -2634,7 +2608,6 @@ struct ir_node_visitor : public node_visitor_base
   virtual void visit(function_tdecl*);
   virtual void visit(class_tdecl*);
   virtual void visit(class_decl*);
-  virtual void visit(class_decl::data_member*);
   virtual void visit(class_decl::member_function*);
   virtual void visit(class_decl::member_function_template*);
   virtual void visit(class_decl::member_class_template*);

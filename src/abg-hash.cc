@@ -91,28 +91,17 @@ struct decl_base::hash
 	  v = hashing::combine_hashes(v, str_hash(d.get_name()));
 	if (d.get_location())
 	  v = hashing::combine_hashes(v, unsigned_hash(d.get_location()));
+	if (is_member_decl(d))
+	  {
+	    v = hashing::combine_hashes(v, get_member_access_specifier(d));
+	    v = hashing::combine_hashes(v, get_member_is_static(d));
+	  }
 	d.hash_ = v;
       }
     return d.hash_;
   }
 }; // end struct decl_base::hash
 
-struct decl_base::hash_as_member
-{
-  size_t
-  operator()(const decl_base& d) const
-  {
-    decl_base::hash decl_base_hash;
-
-    size_t v = decl_base_hash(d);
-    if (is_member_decl(d))
-      {
-	v = hashing::combine_hashes(v, get_member_access_specifier(d));
-	v = hashing::combine_hashes(v, get_member_is_static(d));
-      }
-    return v;
-  }
-};// end struct decl_base::hash_as_member
 struct type_decl::hash
 {
   size_t
@@ -140,7 +129,7 @@ struct scope_type_decl::hash
   {
     if (t.hash_ == 0)
       {
-	decl_base::hash_as_member decl_hash;
+	decl_base::hash decl_hash;
 	type_base::hash type_hash;
 	std::tr1::hash<string> str_hash;
 
@@ -232,12 +221,12 @@ struct enum_type_decl::hash
     if (t.hash_ == 0)
       {
 	std::tr1::hash<string> str_hash;
-	decl_base::hash_as_member member_hash;
+	decl_base::hash decl_hash;
 	type_base::shared_ptr_hash type_ptr_hash;
 	std::tr1::hash<size_t> size_t_hash;
 
 	size_t v = str_hash(typeid(t).name());
-	v = hashing::combine_hashes(v, member_hash(t));
+	v = hashing::combine_hashes(v, decl_hash(t));
 	v = hashing::combine_hashes(v, type_ptr_hash(t.get_underlying_type()));
 	for (enum_type_decl::enumerators::const_iterator i =
 	       t.get_enumerators().begin();
@@ -262,7 +251,7 @@ struct typedef_decl::hash
       {
 	std::tr1::hash<string> str_hash;
 	type_base::hash hash_type;
-	decl_base::hash_as_member decl_hash;
+	decl_base::hash decl_hash;
 	type_base::shared_ptr_hash type_ptr_hash;
 
 	size_t v = str_hash(typeid(t).name());
@@ -294,10 +283,16 @@ var_decl::hash::operator()(const var_decl& t) const
 	std::tr1::hash<string> hash_string;
 	decl_base::hash hash_decl;
 	type_base::shared_ptr_hash hash_type_ptr;
+	std::tr1::hash<size_t> hash_size_t;
 
 	size_t v = hash_string(typeid(t).name());
 	v = hashing::combine_hashes(v, hash_decl(t));
 	v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
+
+	if (is_data_member(t) && get_data_member_is_laid_out(t))
+	  v = hashing::combine_hashes(v,
+				      hash_size_t(get_data_member_offset(t)));
+
 	t.hash_ = v;
       }
     return t.hash_;
@@ -425,27 +420,6 @@ class_decl::base_spec::hash::operator()(const base_spec& t) const
 }
 
 size_t
-class_decl::data_member::hash::operator()(const data_member& t) const
-{
-  if (t.hash_ == 0)
-    {
-      std::tr1::hash<size_t> hash_size_t;
-      var_decl::hash hash_var_decl;
-      member_base::hash hash_member;
-      std::tr1::hash<string> hash_string;
-
-      size_t v = hash_member(t);
-      string n = t.get_qualified_name();
-      v = hashing::combine_hashes(v, hash_string(n));
-      v = hashing::combine_hashes(v, hash_var_decl(t));
-      if (t.is_laid_out())
-	v = hashing::combine_hashes(v, hash_size_t(t.get_offset_in_bits()));
-      t.hash_ = v;
-    }
-  return t.hash_;
-}
-
-size_t
 class_decl::member_function::hash::operator()(const member_function& t) const
 {
   if (t.hash_ == 0)
@@ -521,7 +495,7 @@ struct class_decl::hash
 #endif
 	scope_type_decl::hash hash_scope_type;
 	class_decl::base_spec::hash hash_base;
-	class_decl::data_member::hash hash_data_member;
+	var_decl::hash hash_data_member;
 	class_decl::member_function::hash hash_member_fn;
 	class_decl::member_function_template::hash hash_member_fn_tmpl;
 	class_decl::member_class_template::hash hash_member_class_tmpl;
@@ -780,9 +754,6 @@ type_base::dynamic_hash::operator()(const type_base* t) const
 {
   if (t == 0)
     return 0;
-  if (const class_decl::data_member* d =
-      dynamic_cast<const class_decl::data_member*>(t))
-    return class_decl::data_member::hash()(*d);
   if (const class_decl::member_function* d =
       dynamic_cast<const class_decl::member_function*>(t))
     return class_decl::member_function::hash()(*d);
