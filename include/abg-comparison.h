@@ -120,8 +120,8 @@ typedef unordered_map<string,
 /// representing a changed member function.  The first element of the
 /// pair is the initial member function and the second element is the
 /// changed one.
-typedef pair<class_decl::member_function_sptr,
-	     class_decl::member_function_sptr> changed_member_function_sptr;
+typedef pair<class_decl::method_decl_sptr,
+	     class_decl::method_decl_sptr> changed_member_function_sptr;
 
 /// Convenience typedef for a hash map of strings and changed member functions.
 typedef unordered_map<string,
@@ -130,7 +130,7 @@ typedef unordered_map<string,
 
 /// Convenience typedef for a hash map of strings  and member functions.
 typedef unordered_map<string,
-		      class_decl::member_function_sptr>
+		      class_decl::method_decl_sptr>
 string_member_function_sptr_map;
 
 /// Convenience typedef for a map which key is a string and which

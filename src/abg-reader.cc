@@ -2228,14 +2228,20 @@ build_class_decl(read_context&		ctxt,
 	      if (p->type != XML_ELEMENT_NODE)
 		continue;
 
-	      if (shared_ptr<function_decl> f =
+	      if (function_decl_sptr f =
 		  build_function_decl(ctxt, p, decl,
 				      /*add_to_current_scope=*/false))
-		decl->add_member_function(f, access,
-					  vtable_offset,
-					  is_static,
-					  is_ctor, is_dtor,
-					  is_const);
+		{
+		  class_decl::method_decl_sptr m =
+		    dynamic_pointer_cast<class_decl::method_decl>(f);
+		  assert(m);
+		  decl->add_member_function(m, access,
+					    vtable_offset,
+					    is_static,
+					    is_ctor, is_dtor,
+					    is_const);
+		  break;
+		}
 	    }
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("member-template")))

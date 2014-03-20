@@ -210,7 +210,7 @@ static void write_access(access_specifier, ostream&);
 static void write_layout_offset(var_decl_sptr, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, bool, ostream&);
-static void write_voffset(class_decl::member_function_sptr, ostream&);
+static void write_voffset(function_decl_sptr, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
 static void write_is_struct(const shared_ptr<class_decl>, ostream&);
@@ -532,12 +532,12 @@ write_access(decl_base_sptr member, ostream& o)
 ///
 /// @param o the output stream to write to
 static void
-write_voffset(class_decl::member_function_sptr fn, ostream&o)
+write_voffset(function_decl_sptr fn, ostream&o)
 {
   if (!fn)
     return;
 
-  if (size_t voffset = fn->get_vtable_offset())
+  if (size_t voffset = get_member_function_vtable_offset(fn))
     o << " vtable-offset='" << voffset << "'";
 }
 
@@ -1417,14 +1417,14 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	   f != decl->get_member_functions().end();
 	   ++f)
 	{
-	  class_decl::member_function_sptr fn = *f;
+	  function_decl_sptr fn = *f;
 	  do_indent(o, nb_ws);
 	  o << "<member-function";
-	  write_access(fn->get_access_specifier(), o);
-	  write_cdtor_const_static( fn->is_constructor(),
-				    fn->is_destructor(),
-				    fn->is_const(),
-				    fn->get_is_static(),
+	  write_access(get_member_access_specifier(fn), o);
+	  write_cdtor_const_static( get_member_function_is_ctor(fn),
+				    get_member_function_is_dtor(fn),
+				    get_member_function_is_const(fn),
+				    get_member_is_static(fn),
 				    o);
 	  write_voffset(fn, o);
 	  o << ">\n";

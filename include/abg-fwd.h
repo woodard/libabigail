@@ -251,6 +251,39 @@ get_data_member_is_laid_out(const var_decl&);
 bool
 get_data_member_is_laid_out(const shared_ptr<var_decl>);
 
+bool
+is_member_function(const function_decl&);
+
+bool
+is_member_function(const function_decl*);
+
+bool
+is_member_function(const shared_ptr<function_decl>);
+
+bool
+get_member_function_is_ctor(const function_decl&);
+
+bool
+get_member_function_is_ctor(const shared_ptr<function_decl>);
+
+bool
+get_member_function_is_dtor(const function_decl&);
+
+bool
+get_member_function_is_dtor(const shared_ptr<function_decl>);
+
+bool
+get_member_function_is_const(const function_decl&);
+
+bool
+get_member_function_is_const(const shared_ptr<function_decl>);
+
+size_t
+get_member_function_vtable_offset(const function_decl&);
+
+size_t
+get_member_function_vtable_offset(const shared_ptr<function_decl>);
+
 const global_scope*
 get_global_scope(const decl_base* decl);
 

@@ -2362,7 +2362,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		build_function_decl(ctxt, &child, called_from_public_decl);
 	      if (!f)
 		continue;
-	      assert(dynamic_pointer_cast<class_decl::method_decl>(f));
+	      class_decl::method_decl_sptr m =
+		dynamic_pointer_cast<class_decl::method_decl>(f);
+	      assert(m);
 
 	      bool is_ctor = (f->get_name() == result->get_name());
 	      bool is_dtor = (f->get_name() == "~" + result->get_name());
@@ -2407,15 +2409,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		      }
 		  }
 	      }
-	      class_decl::member_function_sptr mem_fun
-		(new class_decl::member_function(f, access,
-						 vindex,
-						 is_static,
-						 is_ctor,
-						 is_dtor,
-						 /*is_const*/false));
-	      result->add_member_function(mem_fun);
-	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = mem_fun;
+	      result->add_member_function(m, access, vindex,
+					  is_static, is_ctor,
+					  is_dtor, /*is_const*/false);
+	      assert(is_member_function(m));
+	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = m;
 	    }
 	  // Handle member types
 	  else if (is_type_die(&child))

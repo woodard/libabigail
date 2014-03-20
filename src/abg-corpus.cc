@@ -429,17 +429,6 @@ public:
   visit(function_decl* fn)
   {add_fn_to_wip_fns(fn);}
 
-  /// This function is called while visiting a
-  /// class_decl::function_decl IR node of a translation unit.
-  ///
-  /// Add the member function to the symbol table being constructed
-  /// (WIP meaning work in progress).
-  ///
-  /// @param fn the member function being visited.
-  void
-  visit(class_decl::member_function* fn)
-  {add_fn_to_wip_fns(fn);}
-
   /// This function is called while visiting a @ref var_decl IR node
   /// of a translation unit.
   ///

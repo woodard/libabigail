@@ -859,6 +859,149 @@ bool
 get_data_member_is_laid_out(const var_decl_sptr m)
 {return get_data_member_is_laid_out(*m);}
 
+/// Test whether a function_decl is a member function.
+///
+/// @param f the function_decl to test.
+///
+/// @return true if @p f is a member function, false otherwise.
+bool
+is_member_function(const function_decl& f)
+{return is_at_class_scope(f);}
+
+/// Test whether a function_decl is a member function.
+///
+/// @param f the function_decl to test.
+///
+/// @return true if @p f is a member function, false otherwise.
+bool
+is_member_function(const function_decl* f)
+{return is_member_function(*f);}
+
+/// Test whether a function_decl is a member function.
+///
+/// @param f the function_decl to test.
+///
+/// @return true if @p f is a member function, false otherwise.
+bool
+is_member_function(const function_decl_sptr f)
+{return is_member_function(*f);}
+
+/// Test whether a member function is a constructor.
+///
+/// @param f the member function to test.
+///
+/// @return true if @p f is a constructor, false otherwise.
+bool
+get_member_function_is_ctor(const function_decl& f)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  return ctxt->is_constructor();
+}
+
+/// Test whether a member function is a constructor.
+///
+/// @param f the member function to test.
+///
+/// @return true if @p f is a constructor, false otherwise.
+bool
+get_member_function_is_ctor(const function_decl_sptr f)
+{return get_member_function_is_ctor(*f);}
+
+/// Test whether a member function is a destructor.
+///
+/// @param f the function to test.
+///
+/// @return true if @p f is a destructor, false otherwise.
+bool
+get_member_function_is_dtor(const function_decl& f)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  return ctxt->is_destructor();
+}
+
+/// Test whether a member function is a destructor.
+///
+/// @param f the function to test.
+///
+/// @return true if @p f is a destructor, false otherwise.
+bool
+get_member_function_is_dtor(const function_decl_sptr f)
+{return get_member_function_is_dtor(*f);}
+
+/// Test whether a member function is const.
+///
+/// @param f the function to test.
+///
+/// @return true if @p f is const, false otherwise.
+bool
+get_member_function_is_const(const function_decl& f)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  return ctxt->is_const();
+}
+
+/// Test whether a member function is const.
+///
+/// @param f the function to test.
+///
+/// @return true if @p f is const, false otherwise.
+bool
+get_member_function_is_const(const function_decl_sptr f)
+{return get_member_function_is_const(*f);}
+
+/// Get the vtable offset of a member function.
+///
+/// @param f the member function to consider.
+///
+/// @return the vtable offset of @p f.
+size_t
+get_member_function_vtable_offset(const function_decl& f)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  return ctxt->vtable_offset();
+}
+
+/// Get the vtable offset of a member function.
+///
+/// @param f the member function to consider.
+///
+/// @return the vtable offset of @p f.
+size_t
+get_member_function_vtable_offset(const function_decl_sptr f)
+{return get_member_function_vtable_offset(*f);}
+
 // </decl_base definition>
 
 /// Add a member decl to this scope.  Note that user code should not
@@ -2917,8 +3060,8 @@ function_decl::function_decl(const std::string& name,
 string
 function_decl::get_pretty_representation() const
 {
-  const class_decl::member_function* mem_fn =
-    dynamic_cast<const class_decl::member_function*>(this);
+  const class_decl::method_decl* mem_fn =
+    dynamic_cast<const class_decl::method_decl*>(this);
 
   string result = mem_fn ? "method ": "function ";
   decl_base_sptr type =
@@ -2928,10 +3071,11 @@ function_decl::get_pretty_representation() const
 
   if (type)
     result += type->get_qualified_name() + " ";
-  else if (!(mem_fn && (mem_fn->is_destructor() || mem_fn->is_constructor())))
+  else if (!(mem_fn && (get_member_function_is_dtor(*mem_fn)
+			|| get_member_function_is_ctor(*mem_fn))))
     result += "void ";
 
-  if (mem_fn && mem_fn->is_destructor())
+  if (mem_fn && get_member_function_is_dtor(*mem_fn))
     result += "~";
 
   if (mem_fn)
@@ -2967,7 +3111,7 @@ function_decl::get_pretty_representation() const
     }
   result += ")";
 
-  if (mem_fn && mem_fn->is_const())
+  if (mem_fn && get_member_function_is_const(*mem_fn))
     result += " const";
 
   return result;
@@ -3051,6 +3195,23 @@ function_decl::operator==(const decl_base& other) const
       if (is_declared_inline() != o.is_declared_inline()
 	  || get_binding() != o.get_binding())
 	return false;
+
+      if (is_member_function(*this) != is_member_function(o))
+	return false;
+      if (is_member_function(*this))
+	{
+	  if (!((get_member_function_is_ctor(*this)
+		 == get_member_function_is_ctor(o))
+		&& (get_member_function_is_dtor(*this)
+		    == get_member_function_is_dtor(o))
+		&& (get_member_is_static(*this)
+		    == get_member_is_static(o))
+		&& (get_member_function_is_const(*this)
+		    == get_member_function_is_const(o))
+		&& (get_member_function_vtable_offset(*this)
+		    == get_member_function_vtable_offset(o))))
+	    return false;
+	}
 
       return true;
     }
@@ -3212,8 +3373,13 @@ class_decl::insert_member_decl(decl_base_sptr d,
 		      /*offset_in_bits=*/0);
       d = v;
     }
-  else if (member_function_sptr f = dynamic_pointer_cast<member_function>(d))
-    add_member_function(f);
+  else if (method_decl_sptr f = dynamic_pointer_cast<method_decl>(d))
+    add_member_function(f, public_access,
+			/*vtable_offset=*/0,
+			/*is_static=*/false,
+			/*is_ctor=*/false,
+			/*is_dtor=*/false,
+			/*is_const=*/false);
   else if (member_function_template_sptr f =
 	   dynamic_pointer_cast<member_function_template>(d))
     add_member_function_template(f);
@@ -3413,6 +3579,10 @@ class_decl::add_data_member(var_decl_sptr v, access_specifier access,
   scope_decl::add_member_decl(v);
 }
 
+mem_fn_context_rel::~mem_fn_context_rel()
+{
+}
+
 /// a constructor for instances of class_decl::method_decl.
 ///
 /// @param name the name of the method.
@@ -3563,56 +3733,18 @@ class_decl::method_decl::get_type() const
   return result;
 }
 
-  /// Constructor for instances of class_decl::member_function.
-  ///
-  /// @param fn the function decl to be used as a member function.
-  /// This must be an intance of class_decl::method_decl.
-  ///
-  /// @param access the access specifier for the member function.
-  ///
-  /// @param vtable_offset_in_bits the offset of the this member
-  /// function in the vtable, or zero.
-  ///
-  /// @param is_static set to true if this member function is static.
-  ///
-  /// @param is_constructor set to true if this member function is a
-  /// constructor.
-  ///
-  /// @param is_destructor set to true if this member function is a
-  /// destructor.
-  ///
-  /// @param is_const set to true if this member function is const.
-class_decl::member_function::member_function
-(shared_ptr<function_decl>	fn,
- access_specifier		access,
- size_t			vtable_offset_in_bits,
- bool			is_static,
- bool			is_constructor,
- bool			is_destructor,
- bool			is_const)
-  : decl_base(fn->get_name(), fn->get_location(),
-		    fn->get_mangled_name(), fn->get_visibility()),
-    method_decl(fn->get_name(),
-		dynamic_pointer_cast<method_decl>(fn)->get_type(),
-		fn->is_declared_inline(),
-		fn->get_location(),
-		fn->get_mangled_name(),
-		fn->get_visibility(),
-		fn->get_binding()),
-    member_base(access, is_static),
-  vtable_offset_in_bits_(vtable_offset_in_bits),
-  is_constructor_(is_constructor),
-  is_destructor_(is_destructor),
-  is_const_(is_const)
-{}
-
-/// This implements the ir_traversable_base::traverse pure virtual
-/// function.
+/// Set the containing class of a method_decl.
 ///
-/// @param v the visitor used on the current instance.
+/// @param scope the new containing class_decl.
 void
-class_decl::member_function::traverse(ir_node_visitor& v)
-{v.visit(this);}
+class_decl::method_decl::set_scope(scope_decl* scope)
+{
+  if (!context_)
+    context_.reset(new mem_fn_context_rel(scope));
+  else
+    context_->set_scope(scope);
+}
+
 
 /// Return the number of virtual functions of this class_decl.
 ///
@@ -3625,33 +3757,15 @@ class_decl::get_num_virtual_functions() const
 	 get_member_functions().begin();
        i != get_member_functions().end();
        ++i)
-    if ((*i)->get_vtable_offset())
+    if (get_member_function_vtable_offset(*i))
       ++result;
   return result;
 }
 
 /// Add a member function to the current instance of class_decl.
 ///
-/// @param m the member function to add.  This member function should
-/// not have been already added to a scope.
-void
-class_decl::add_member_function(member_function_sptr m)
-{
-  decl_base* c = m->get_scope();
-  /// TODO: use our own assertion facility that adds a meaningful
-  /// error message or something like a structured error.
-  assert(!c);
-  member_functions_.push_back(m);
-  m->set_scope(this);
-  scope_decl::add_member_decl(m);
-}
-
-/// Add a member function to the current instance of class_decl.
-///
-/// @param f a function to add to the current class as a member
-/// function.  A proper class_decl::member_function is created for
-/// this function and added to the class.  This function should not
-/// have been already added to a scope.
+/// @param f a method_decl to add to the current class.  This function
+/// should not have been already added to a scope.
 ///
 /// @param access the access specifier for the member function to add.
 ///
@@ -3667,20 +3781,23 @@ class_decl::add_member_function(member_function_sptr m)
 ///
 /// @param is_const whether the member function is const.
 void
-class_decl::add_member_function(function_decl_sptr f,
-				access_specifier access,
+class_decl::add_member_function(method_decl_sptr f,
+				access_specifier a,
 				size_t vtable_offset,
 				bool is_static, bool is_ctor,
 				bool is_dtor, bool is_const)
 {
-  assert(!f->get_scope());
-  member_function_sptr m(new class_decl::member_function(f, access,
-							 vtable_offset,
-							 is_static,
-							 is_ctor, is_dtor,
-							 is_const));
-  add_member_function(m);
-  add_decl_to_scope(f, this);
+  assert(!has_scope(f));
+
+  mem_fn_context_rel_sptr ctxt(new mem_fn_context_rel(this, is_ctor,
+						      is_dtor, is_const,
+						      vtable_offset,
+						      a, is_static));
+
+  f->set_context_rel(ctxt);
+  member_functions_.push_back(f);
+  scope_decl::add_member_decl(f);
+  assert(is_member_decl(f));
 }
 
 /// Append a member function template to the class.
@@ -4044,57 +4161,6 @@ class_decl::member_base::operator==(const member_base& o) const
 
 bool
 operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r)
-{
-  if (l.get() == r.get())
-    return true;
-  if (!!l != !!r)
-    return false;
-
-  return *l == *r;
-}
-
-bool
-class_decl::member_function::operator==(const decl_base& other) const
-{
-  const class_decl::member_function* p =
-    dynamic_cast<const class_decl::member_function*>(&other);
-  if (!p)
-    return false;
-
-  const class_decl::member_function& o = *p;
-  return (get_vtable_offset() == o.get_vtable_offset()
-	  && is_constructor() == o.is_constructor()
-	  && is_destructor() == o.is_destructor()
-	  && is_const() == o.is_const()
-	  && member_base::operator==(o)
-	  && function_decl::operator==(o));
-}
-
-bool
-class_decl::member_function::operator==(const member_function& other) const
-{
-  try
-    {
-      const decl_base& o = other;
-      return *this == o;
-    }
-  catch(...)
-    {return false;}
-}
-
-bool
-class_decl::member_function::operator==(const member_base& other) const
-{
-  const class_decl::member_function* o =
-    dynamic_cast<const class_decl::member_function*>(&other);
-  if (!o)
-    return false;
-  return decl_base::operator==(*o);
-}
-
-bool
-operator==(class_decl::member_function_sptr l,
-	   class_decl::member_function_sptr r)
 {
   if (l.get() == r.get())
     return true;
@@ -4580,10 +4646,6 @@ ir_node_visitor::visit(class_tdecl*)
 
 void
 ir_node_visitor::visit(class_decl*)
-{}
-
-void
-ir_node_visitor::visit(class_decl::member_function*)
 {}
 
 void

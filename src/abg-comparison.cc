@@ -679,18 +679,21 @@ maybe_report_diff_for_class_members(decl_base_sptr	decl1,
 ///
 /// @param out the output stream to send the representation to
 static void
-represent(class_decl::member_function_sptr mem_fn,
-	  ostream& out)
+represent(class_decl::method_decl_sptr mem_fn, ostream& out)
 {
-  if (!mem_fn)
+  if (!mem_fn || !is_member_function(mem_fn))
     return;
 
+  class_decl::method_decl_sptr meth =
+    dynamic_pointer_cast<class_decl::method_decl>(mem_fn);
+  assert(meth);
+
   out << "'" << mem_fn->get_pretty_representation() << "'";
-  if (mem_fn->get_vtable_offset())
+  if (get_member_function_vtable_offset(mem_fn))
     out << ", virtual at voffset "
-	<< mem_fn->get_vtable_offset()
+	<< get_member_function_vtable_offset(mem_fn)
 	<< "/"
-	<< mem_fn->get_type()->get_class_type()->get_num_virtual_functions();
+	<< meth->get_type()->get_class_type()->get_num_virtual_functions();
 }
 
 /// Stream a string representation for a data member.
@@ -2130,7 +2133,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	 ++it)
       {
 	unsigned i = it->index();
-	class_decl::member_function_sptr mem_fn =
+	class_decl::method_decl_sptr mem_fn =
 	  first_class_decl()->get_member_functions()[i];
 	string name = mem_fn->get_mangled_name();
 	if (name.empty())
@@ -2153,7 +2156,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	  {
 	    unsigned i = *iit;
 
-	    class_decl::member_function_sptr mem_fn =
+	    class_decl::method_decl_sptr mem_fn =
 	      second_class_decl()->get_member_functions()[i];
 	    string name = mem_fn->get_mangled_name();
 	    if (name.empty())
@@ -2693,7 +2696,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  if (i != priv_->deleted_member_functions_.begin())
 	    out << "\n";
-	  class_decl::member_function_sptr mem_fun = i->second;
+	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(mem_fun, out);
 	}
@@ -2713,7 +2716,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  if (i != priv_->inserted_member_functions_.begin())
 	    out << "\n";
-	  class_decl::member_function_sptr mem_fun = i->second;
+	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(mem_fun, out);
 	  emitted = true;
@@ -2733,8 +2736,8 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  if (i !=priv_->changed_member_functions_.begin())
 	    out << "\n";
-	  function_decl_sptr f = i->second.first;
-	  function_decl_sptr s = i->second.second;
+	  class_decl::method_decl_sptr f = i->second.first;
+	  class_decl::method_decl_sptr s = i->second.second;
 	  string repr = f->get_pretty_representation();
 	  out << indent << repr << " has some indirect sub-type changes:\n";
 	  diff_sptr diff = compute_diff_for_decls(f, s, context());

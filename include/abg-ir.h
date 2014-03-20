@@ -1102,7 +1102,6 @@ public:
   virtual ~dm_context_rel();
 };// end class class_decl::dm_context_rel
 
-
 /// Convenience typedef for a shared pointer on a @ref var_decl
 typedef shared_ptr<var_decl> var_decl_sptr;
 
@@ -1895,7 +1894,6 @@ public:
   class member_base;
   class base_spec;
   class method_decl;
-  class member_function;
   class member_function_template;
   class member_class_template;
 
@@ -1905,8 +1903,8 @@ public:
   typedef std::vector<base_spec_sptr>			base_specs;
   typedef std::vector<type_base_sptr>			member_types;
   typedef std::vector<var_decl_sptr>			data_members;
-  typedef shared_ptr<member_function>			member_function_sptr;
-  typedef std::vector<member_function_sptr>		member_functions;
+  typedef shared_ptr<method_decl>			method_decl_sptr;
+  typedef std::vector<method_decl_sptr>		member_functions;
   typedef shared_ptr<member_function_template>		member_function_template_sptr;
   typedef std::vector<member_function_template_sptr>	member_function_templates;
   typedef shared_ptr<member_class_template>		member_class_template_sptr;
@@ -2023,10 +2021,7 @@ public:
   {return data_members_;}
 
   void
-  add_member_function(member_function_sptr m);
-
-  void
-  add_member_function(function_decl_sptr f,
+  add_member_function(method_decl_sptr f,
 		      access_specifier a,
 		      size_t vtable_offset,
 		      bool is_static, bool is_ctor,
@@ -2182,11 +2177,103 @@ public:
 bool
 operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r);
 
+class mem_fn_context_rel;
+
+/// A convenience typedef for a shared pointer to @ref
+/// mem_fn_context_rel.
+typedef shared_ptr<mem_fn_context_rel> mem_fn_context_rel_sptr;
+
+/// Abstraction of a member function context relationship.  This
+/// relates a member function to its parent class.
+class mem_fn_context_rel : public context_rel
+{
+protected:
+  size_t	vtable_offset_in_bits_;
+  bool		is_constructor_;
+  bool		is_destructor_;
+  bool		is_const_;
+
+public:
+  mem_fn_context_rel()
+    : context_rel(),
+      vtable_offset_in_bits_(0),
+      is_constructor_(false),
+      is_destructor_(false),
+      is_const_(false)
+  {}
+
+  mem_fn_context_rel(scope_decl* s)
+    : context_rel(s),
+      vtable_offset_in_bits_(0),
+      is_constructor_(false),
+      is_destructor_(false),
+      is_const_(false)
+  {}
+
+  mem_fn_context_rel(scope_decl* s,
+		     bool is_constructor,
+		     bool is_destructor,
+		     bool is_const,
+		     size_t vtable_offset_in_bits,
+		     access_specifier access,
+		     bool is_static)
+    : context_rel(s, access, is_static),
+      vtable_offset_in_bits_(vtable_offset_in_bits),
+      is_constructor_(is_constructor),
+      is_destructor_(is_destructor),
+      is_const_(is_const)
+  {}
+
+  /// Getter for the vtable offset property.
+  ///
+  /// This is the vtable offset of the member function of this
+  /// relation.
+  ///
+  /// @return the vtable offset property of the relation.
+  size_t
+  vtable_offset() const
+  {return vtable_offset_in_bits_;}
+
+  /// Getter for the 'is-constructor' property.
+  ///
+  /// This tells if the member function of this relation is a
+  /// constructor.
+  ///
+  /// @return the is-constructor property of the relation.
+  bool
+  is_constructor() const
+  {return is_constructor_;}
+
+  /// Getter for the 'is-destructor' property.
+  ///
+  /// Tells if the member function of this relation is a destructor.
+  ///
+  /// @return the is-destructor property of the relation;
+  bool
+  is_destructor() const
+  {return is_destructor_;}
+
+  /// Getter for the 'is-const' property.
+  ///
+  /// Tells if the member function of this relation is a const member
+  /// function.
+  ///
+  /// @return the 'is-const' property of the relation.
+  bool
+  is_const() const
+  {return is_const_;}
+
+  virtual ~mem_fn_context_rel();
+}; // end class mem_fn_context_rel
+
 /// Abstraction of the declaration of a method. This is an
 /// implementation detail for class_decl::member_function.
 class class_decl::method_decl : public function_decl
 {
   method_decl();
+
+  virtual void
+  set_scope(scope_decl*);
 
 public:
 
@@ -2229,119 +2316,25 @@ public:
 
   void
   set_type(shared_ptr<method_type> fn_type)
-  { function_decl::set_type(fn_type); }
+  {function_decl::set_type(fn_type);}
+
+  friend bool
+  get_member_function_is_ctor(const function_decl&);
+
+  friend bool
+  get_member_function_is_dtor(const function_decl&);
+
+  friend bool
+  get_member_function_is_static(const function_decl&);
+
+  friend bool
+  get_member_function_is_const(const function_decl&);
+
+  friend size_t
+  get_member_function_vtable_offset(const function_decl&);
 
   virtual ~method_decl();
 };// end class class_decl::method_decl
-
-/// Abstracts a member function declaration in a class declaration.
-class class_decl::member_function : public method_decl, public member_base
-{
-  size_t vtable_offset_in_bits_;
-  bool is_constructor_;
-  bool is_destructor_;
-  bool is_const_;
-
-  // Forbidden
-  member_function();
-
-public:
-
-  /// Hasher.
-  struct hash;
-
-  member_function(const std::string&	name,
-		  std::vector<parameter_sptr > parms,
-		  shared_ptr<type_base>	return_type,
-		  shared_ptr<class_decl>	class_type,
-		  size_t			ftype_size_in_bits,
-		  size_t			ftype_align_in_bits,
-		  access_specifier		access,
-		  bool			declared_inline,
-		  location		locus,
-		  const std::string&	mangled_name,
-		  visibility		vis,
-		  binding		bind,
-		  size_t		vtable_offset_in_bits,
-		  bool			is_static,
-		  bool			is_constructor,
-		  bool			is_destructor,
-		  bool			is_const)
-  : decl_base(name, locus, name, vis),
-    method_decl(name, parms, return_type, class_type,
-		ftype_size_in_bits, ftype_align_in_bits,
-		declared_inline, locus,
-		mangled_name, vis, bind),
-    member_base(access, is_static),
-    vtable_offset_in_bits_(vtable_offset_in_bits),
-    is_constructor_(is_constructor),
-    is_destructor_(is_destructor),
-    is_const_(is_const)
-  { }
-
-  member_function(shared_ptr<method_decl>	fn,
-		  access_specifier		access,
-		  size_t			vtable_offset_in_bits,
-		  bool				is_static,
-		  bool				is_constructor,
-		  bool				is_destructor,
-		  bool				is_const)
-    : decl_base(fn->get_name(), fn->get_location(),
-		fn->get_mangled_name(), fn->get_visibility()),
-      method_decl(fn->get_name(),
-		  fn->get_type(),
-		  fn->is_declared_inline(),
-		  fn->get_location(),
-		  fn->get_mangled_name(),
-		  fn->get_visibility(),
-		  fn->get_binding()),
-      member_base(access, is_static),
-    vtable_offset_in_bits_(vtable_offset_in_bits),
-    is_constructor_(is_constructor),
-    is_destructor_(is_destructor),
-    is_const_(is_const)
-  {}
-
-  member_function(shared_ptr<function_decl>	fn,
-		  access_specifier		access,
-		  size_t			vtable_offset_in_bits,
-		  bool				is_static,
-		  bool				is_constructor,
-		  bool				is_destructor,
-		  bool				is_const);
-
-  size_t
-  get_vtable_offset() const
-  {return vtable_offset_in_bits_;}
-
-  bool
-  is_constructor() const
-  {return is_constructor_;}
-
-  bool
-  is_destructor() const
-  {return is_destructor_;}
-
-  bool
-  is_const() const
-  {return is_const_;}
-
-  virtual bool
-  operator==(const decl_base&) const;
-
-  virtual bool
-  operator==(const member_base&) const;
-
-  bool
-  operator==(const member_function&) const;
-
-  virtual void
-  traverse(ir_node_visitor& v);
-};// class_decl::member_function
-
-bool
-operator==(class_decl::member_function_sptr l,
-	   class_decl::member_function_sptr r);
 
 /// Abstract a member function template.
 class class_decl::member_function_template
@@ -2538,13 +2531,6 @@ struct class_decl::member_base::hash
   operator()(const member_base& m) const;
 };
 
-/// The hashing functor for class_decl::member_function.
-struct class_decl::member_function::hash
-{
-  size_t
-  operator()(const member_function& t) const;
-};
-
 /// The hashing functor for class_decl::member_function_template.
 struct class_decl::member_function_template::hash
 {
@@ -2608,7 +2594,6 @@ struct ir_node_visitor : public node_visitor_base
   virtual void visit(function_tdecl*);
   virtual void visit(class_tdecl*);
   virtual void visit(class_decl*);
-  virtual void visit(class_decl::member_function*);
   virtual void visit(class_decl::member_function_template*);
   virtual void visit(class_decl::member_class_template*);
 };
