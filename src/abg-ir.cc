@@ -3075,12 +3075,12 @@ function_decl::get_pretty_representation() const
 			|| get_member_function_is_ctor(*mem_fn))))
     result += "void ";
 
-  if (mem_fn && get_member_function_is_dtor(*mem_fn))
-    result += "~";
 
   if (mem_fn)
-    result += mem_fn->get_type()->get_class_type()->get_qualified_name()
-      + "::" + mem_fn->get_name();
+    {
+      result += mem_fn->get_type()->get_class_type()->get_qualified_name()
+	+ "::" + mem_fn->get_name();
+    }
   else
     result += get_qualified_name();
 
