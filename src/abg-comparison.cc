@@ -2739,7 +2739,8 @@ class_diff::report(ostream& out, const string& indent) const
 	  class_decl::method_decl_sptr f = i->second.first;
 	  class_decl::method_decl_sptr s = i->second.second;
 	  string repr = f->get_pretty_representation();
-	  out << indent << repr << " has some indirect sub-type changes:\n";
+	  out << indent << "  '"
+	      << repr << "' has some indirect sub-type changes:\n";
 	  diff_sptr diff = compute_diff_for_decls(f, s, context());
 	  if (diff)
 	    {
