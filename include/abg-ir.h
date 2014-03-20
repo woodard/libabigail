@@ -343,7 +343,7 @@ public:
 
   virtual ~decl_base();
 
-  size_t
+  virtual size_t
   get_hash() const;
 
   void
@@ -2172,6 +2172,9 @@ public:
 
   virtual bool
   operator==(const member_base&) const;
+
+  virtual size_t
+  get_hash() const;
 };// end class class_decl::base_spec
 
 bool

@@ -3501,6 +3501,20 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
     is_virtual_(is_virtual)
 {}
 
+/// Calculate the hash value for a class_decl::base_spec.
+///
+/// @return the hash value.
+size_t
+class_decl::base_spec::get_hash() const
+{
+  if (hash_ == 0)
+    {
+      base_spec::hash h;
+      set_hash(h(*this));
+    }
+  return hash_;
+}
+
 /// Constructor for base_spec instances.
 ///
 /// Note that this constructor is for clients that don't support RTTI
