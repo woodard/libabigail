@@ -2388,6 +2388,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		else if (ctxt.dwarf_version() < 3
 			 && !f->get_parameters().empty())
 		  {
+		    is_static = true;
 		    // For dwarf < 3, let's see if the first parameter
 		    // has class type and has a DW_AT_artificial
 		    // attribute flag set.
@@ -2400,13 +2401,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 			dynamic_pointer_cast<pointer_type_def>
 			(first_parm->get_type());
 		    if (this_type)
-		      {
-			class_decl_sptr k =
-			  dynamic_pointer_cast<class_decl>
-			  (this_type->get_pointed_to_type());
-			if (k && *k == *result)
-			  is_static = true;
-		      }
+		      is_static = false;
 		  }
 	      }
 	      result->add_member_function(m, access, vindex,
