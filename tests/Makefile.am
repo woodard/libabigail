@@ -9,7 +9,7 @@ runtestbidiff			\
 runtestsvg			\
 runtestdot 
 
-noinst_PROGRAMS= $(TESTS) testwalker testdiff2
+noinst_PROGRAMS= $(TESTS) testirwalker testdiff2
 
 noinst_LTLIBRARIES = libtestutils.la
 
@@ -45,8 +45,8 @@ runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
 runtestdot_SOURCES=$(h)/test-dot.cc
 runtestdot_LDADD=$(top_builddir)/src/libabigail.la
 
-testwalker_SOURCES=$(h)/test-walker.cc
-testwalker_LDADD=$(top_builddir)/src/libabigail.la
+testirwalker_SOURCES=$(h)/test-ir-walker.cc
+testirwalker_LDADD=$(top_builddir)/src/libabigail.la
 
 testdiff2_SOURCES=$(h)/test-diff2.cc
 testdiff2_LDADD=$(top_builddir)/src/libabigail.la
