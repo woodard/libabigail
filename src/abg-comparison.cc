@@ -74,6 +74,13 @@ struct decls_equal
 typedef unordered_map<decls_type, diff_sptr, decls_hash, decls_equal>
 decls_diff_map_type;
 
+/// The default traverse function.
+///
+/// @return true.
+bool
+diff_traversable_base::traverse(diff_node_visitor&)
+{return true;}
+
 /// The private member (pimpl) for @ref diff_context.
 struct diff_context::priv
 {
@@ -346,6 +353,16 @@ distinct_diff::report(ostream& out, const string& indent) const
 
   out << indent << "entity changed from " << f_repr << " to " << s_repr << "\n";
 }
+
+/// Traverse an instance of distinct_diff.
+///
+/// @param v the visitor invoked on the instance of disting_diff.
+///
+/// @return true if the whole tree has to be traversed, false
+/// otherwise.
+bool
+distinct_diff::traverse(diff_node_visitor& v)
+{return v.visit(this);}
 
 /// Try to diff entities that are of distinct kinds.
 ///
@@ -668,10 +685,10 @@ diff_length_of_type_bases(type_base_sptr first, type_base_sptr second)
 }
 
 static bool
-maybe_report_diff_for_class_members(decl_base_sptr	decl1,
-				    decl_base_sptr	decl2,
-				    ostream&		out,
-				    const string&	indent);
+maybe_report_diff_for_member(decl_base_sptr	decl1,
+			     decl_base_sptr	decl2,
+			     ostream&		out,
+			     const string&	indent);
 
 /// Stream a string representation for a member function.
 ///
@@ -1045,7 +1062,7 @@ var_diff::report(ostream& out, const string& indent) const
 					     /*start_with_new_line=*/false))
     out << "\n";
 
-  maybe_report_diff_for_class_members(first, second, out, indent);
+  maybe_report_diff_for_member(first, second, out, indent);
 
   if (diff_sptr d = type_diff())
     {
@@ -1056,6 +1073,16 @@ var_diff::report(ostream& out, const string& indent) const
 	}
     }
 }
+
+/// Traverse the current instance of var_diff.
+///
+/// @param v the visitor invoked on the current instance of var_diff.
+///
+/// @return true if the whole tree is to be traversed, false
+/// otherwise.
+bool
+var_diff::traverse(diff_node_visitor& v)
+{return v.visit(this);}
 
 /// Compute the diff between two instances of @ref var_decl.
 ///
@@ -1102,10 +1129,10 @@ compute_diff(const var_decl_sptr first,
 ///
 /// @return true if something was reported, false otherwise.
 static bool
-maybe_report_diff_for_class_members(decl_base_sptr	decl1,
-				    decl_base_sptr	decl2,
-				    ostream&		out,
-				    const string&	indent)
+maybe_report_diff_for_member(decl_base_sptr	decl1,
+			     decl_base_sptr	decl2,
+			     ostream&		out,
+			     const string&	indent)
 
 {
   bool reported = false;
@@ -1235,6 +1262,24 @@ pointer_diff::report(ostream& out, const string& indent) const
 	      d->report(out, indent + "  ");
 	}
     }
+}
+
+/// Traverse the current instance of pointer_diff.
+///
+/// @param v the visitor to invoke on each node traversed.
+///
+/// @return true if the entire sub-tree was visisted, false otherwise.
+bool
+pointer_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  if (diff_sptr d = underlying_type_diff())
+    if (!d->traverse(v))
+      return false;
+
+  return true;
 }
 
 /// Compute the diff between between two pointers.
@@ -1372,6 +1417,24 @@ reference_diff::report(ostream& out, const string& indent) const
 	  d->report(out, indent + "  ");
 	}
     }
+}
+
+/// Traverse the diff sub-tree under the current instance of
+/// reference_diff.
+///
+/// @param v the visitor to invoke on each node diff node.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+reference_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  if (diff_sptr d = underlying_type_diff())
+    return d->traverse(v);
+
+  return true;
 }
 
 /// Compute the diff between two references.
@@ -1573,6 +1636,24 @@ qualified_type_diff::report(ostream& out, const string& indent) const
     }
 }
 
+/// Traverse the diff sub-tree under the current instance of
+/// qualified_type_diff.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true is the traversing has to keep going, false otherwise.
+bool
+qualified_type_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  if (diff_sptr d = underlying_type_diff())
+    return d->traverse(v);
+
+  return true;
+}
+
 /// Compute the diff between two qualified types.
 ///
 /// @param first the first qualified type to consider for the diff.
@@ -1769,7 +1850,7 @@ enum_diff::report(ostream& out, const string& indent) const
   if (report_name_size_and_alignment_changes(first, second, out, indent,
 					     /*start_with_num_line=*/false))
     out << "\n";
-  maybe_report_diff_for_class_members(first, second, out, indent);
+  maybe_report_diff_for_member(first, second, out, indent);
 
   // name
   if (first->get_name() != second->get_name())
@@ -1848,6 +1929,25 @@ enum_diff::report(ostream& out, const string& indent) const
 	}
       out << "\n\n";
     }
+}
+
+/// Traverse the diff sub-tree under the current instance of
+/// enum_diff.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+enum_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+  if (diff_sptr d = underlying_type_diff())
+    {
+      if (!d->traverse(v))
+	return false;
+    }
+  return true;
 }
 
 /// Compute the set of changes between two instances of @ref
@@ -2443,7 +2543,7 @@ class_diff::report(ostream& out, const string& indent) const
 					     /*start_with_new_line=*/false))
     out << "\n";
 
-  maybe_report_diff_for_class_members(first, second, out, indent);
+  maybe_report_diff_for_member(first, second, out, indent);
 
   // bases classes
   if (base_changes())
@@ -2864,6 +2964,68 @@ class_diff::report(ostream& out, const string& indent) const
   reported_once(true);
 }
 
+/// Traverse the diff sub-tree under the current instance of class_diff.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+class_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  // base class changes.
+  for (string_changed_base_map::const_iterator i =
+	 priv_->changed_bases_.begin();
+       i != priv_->changed_bases_.end();
+       ++i)
+    {
+      diff_sptr d = compute_diff(i->second.first,
+				 i->second.second,
+				 context());
+      if (d && !d->traverse(v))
+	return false;
+    }
+
+  // data member changes
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 priv_->changed_data_members_.begin();
+       i != priv_->changed_data_members_.end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					     i->second.second,
+					     context()))
+      if (!d->traverse(v))
+	return false;
+
+  // member types changes
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 priv_->changed_member_types_.begin();
+       i != priv_->changed_member_types_.end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_types(i->second.first,
+					     i->second.second,
+					     context()))
+      if (!d->traverse(v))
+	return false;
+
+  // member function changes
+  for (string_changed_member_function_sptr_map::const_iterator i =
+	 priv_->changed_member_functions_.begin();
+       i != priv_->changed_member_functions_.end();
+       ++i)
+    {
+      if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					       i->second.second,
+					       context()))
+	if (!d->traverse(v))
+	  return false;
+    }
+
+  return true;
+}
+
 /// Compute the set of changes between two instances of class_decl.
 ///
 /// @param first the first class_decl to consider.
@@ -3052,6 +3214,24 @@ base_diff::report(ostream& out, const string& indent) const
 	  d->report(out, indent);
 	}
     }
+}
+
+/// Traverse the diff sub-tree under the current instance of base_diff.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+base_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  if (class_diff_sptr d = get_underlying_class_diff())
+    if (!d->traverse(v))
+      return false;
+
+  return true;
 }
 
 /// Constructs the diff object representing a diff between two base
@@ -3603,6 +3783,40 @@ scope_diff::report(ostream& out, const string& indent) const
     out << "\n";
 }
 
+/// Traverse the diff sub-tree under the current instance of scope_diff.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+scope_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 changed_types().begin();
+       i != changed_types().end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_types(i->second.first,
+					     i->second.second,
+					     context()))
+      if (!d->traverse(v))
+	return false;
+
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 changed_decls().begin();
+       i != changed_decls().end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					     i->second.second,
+					     context()))
+      if (!d->traverse(v))
+	return false;
+
+  return true;
+}
+
 /// Compute the diff between two scopes.
 ///
 /// @param first the first scope to consider in computing the diff.
@@ -3832,6 +4046,13 @@ const function_decl_sptr
 function_decl_diff::second_function_decl() const
 {return dynamic_pointer_cast<function_decl>(second_subject());}
 
+/// Accessor for the diff of the return types of the two functions.
+///
+/// @return the diff of the return types.
+const diff_sptr
+function_decl_diff::return_type_diff() const
+{return priv_->return_type_diff_;}
+
 /// @return a map of the parameters whose type got changed.  The key
 /// of the map is the name of the type.
 const string_changed_parm_map&
@@ -3865,9 +4086,9 @@ function_decl_diff::report(ostream& out, const string& indent) const
   if (length() == 0)
     return;
 
-  maybe_report_diff_for_class_members(first_function_decl(),
-				      second_function_decl(),
-				      out, indent);
+  maybe_report_diff_for_member(first_function_decl(),
+			       second_function_decl(),
+			       out, indent);
 
   string qn1 = first_function_decl()->get_qualified_name(),
     qn2 = second_function_decl()->get_qualified_name();
@@ -3936,6 +4157,34 @@ function_decl_diff::report(ostream& out, const string& indent) const
     }
   if (emitted)
     out << "\n";
+}
+
+/// Traverse the diff sub-tree under the current instance of
+/// function_decl_diff.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+function_decl_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  if (diff_sptr d = return_type_diff())
+    if (!d->traverse(v))
+      return false;
+
+  for (string_changed_parm_map::const_iterator i = changed_parms().begin();
+       i != changed_parms().end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
+					     i->second.second->get_type(),
+					     context()))
+      if (!d->traverse(v))
+	return false;
+
+  return true;
 }
 
 /// Compute the diff between two function_decl.
@@ -4075,6 +4324,16 @@ type_decl_diff::report(ostream& out, const string& indent) const
     out << "\n";
 }
 
+/// Traverse (visit) the current instance of type_decl_diff node.
+///
+/// @param v the visitor to invoke on the node.
+///
+/// @return true if the current traversing has to keep going, false
+/// otherwise.
+bool
+type_decl_diff::traverse(diff_node_visitor& v)
+{return v.visit(this);}
+
 /// Compute a diff between two type_decl.
 ///
 /// This function doesn't actually compute a diff.  As a type_decl is
@@ -4208,7 +4467,7 @@ typedef_diff::report(ostream& out, const string& indent) const
 	}
     }
 
-  maybe_report_diff_for_class_members(f, s, out, indent);
+  maybe_report_diff_for_member(f, s, out, indent);
 
   if (f->get_name() != s->get_name())
     {
@@ -4250,6 +4509,24 @@ typedef_diff::report(ostream& out, const string& indent) const
     out << "\n";
 }
 
+/// Traverse the diff sub-tree under the current instance of typedef_diff.
+///
+/// @param v the visitor to invoke on the diff nodes of the sub-tree.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+typedef_diff::traverse(diff_node_visitor& v)
+{
+  if (v.visit(this))
+    return false;
+
+  if (diff_sptr d = underlying_type_diff())
+    if (!d->traverse(v))
+      return false;
+
+  return true;
+}
+
 /// Compute a diff between two typedef_decl.
 ///
 /// @param first a pointer to the first typedef_decl to consider.
@@ -4286,6 +4563,16 @@ compute_diff(const typedef_decl_sptr	first,
 
 // <translation_unit_diff stuff>
 
+struct translation_unit_diff::priv
+{
+  translation_unit_sptr first_;
+  translation_unit_sptr second_;
+
+  priv(translation_unit_sptr f, translation_unit_sptr s)
+    : first_(f), second_(s)
+  {}
+};//end struct translation_unit_diff::priv
+
 /// Constructor for translation_unit_diff.
 ///
 /// @param first the first translation unit to consider for this diff.
@@ -4294,9 +4581,24 @@ compute_diff(const typedef_decl_sptr	first,
 translation_unit_diff::translation_unit_diff(translation_unit_sptr first,
 					     translation_unit_sptr second,
 					     diff_context_sptr ctxt)
-  : scope_diff(first->get_global_scope(), second->get_global_scope(), ctxt)
+  : scope_diff(first->get_global_scope(), second->get_global_scope(), ctxt),
+    priv_(new priv(first, second))
 {
 }
+
+/// Getter for the first translation unit of this diff.
+///
+/// @return the first translation unit of this diff.
+const translation_unit_sptr
+translation_unit_diff::first_translation_unit() const
+{return priv_->first_;}
+
+/// Getter for the second translation unit of this diff.
+///
+/// @return the second translation unit of this diff.
+const translation_unit_sptr
+translation_unit_diff::second_translation_unit() const
+{return priv_->second_;}
 
 /// @return the length of this diff.
 unsigned
@@ -4311,6 +4613,27 @@ translation_unit_diff::length() const
 void
 translation_unit_diff::report(ostream& out, const string& indent) const
 {scope_diff::report(out, indent);}
+
+/// Traverse the diff sub-tree under the current instance of
+/// translation_unit_diff.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+translation_unit_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  if (diff_sptr d = compute_diff(first_translation_unit(),
+				 second_translation_unit(),
+				 context()))
+    if (!d->traverse(v))
+      return false;
+  return true;
+
+}
 
 /// Compute the diff between two translation_units.
 ///
@@ -4590,6 +4913,29 @@ edit_script&
 corpus_diff::variable_changes() const
 {return priv_->vars_edit_script_;}
 
+/// Getter for the deleted functions of the diff.
+///
+/// @return the the deleted functions of the diff.
+const string_function_ptr_map&
+corpus_diff::deleted_functions() const
+{return priv_->deleted_fns_;}
+
+/// Getter for the added functions of the diff.
+///
+/// @return the added functions of the diff.
+const string_function_ptr_map&
+corpus_diff::added_functions()
+{return priv_->added_fns_;}
+
+/// Getter for the functions which signature didn't change, but which
+/// do have some indirect changes in their parms.
+///
+/// @return functions which signature didn't change, but which
+/// do have some indirect changes in their parms.
+const string_changed_function_ptr_map&
+corpus_diff::changed_functions()
+{return priv_->changed_fns_;}
+
 /// Getter of the diff context of this diff
 ///
 /// @return the diff context for this diff.
@@ -4827,6 +5173,32 @@ corpus_diff::report(ostream& out, const string& indent) const
     }
 }
 
+/// Traverse the diff sub-tree under the current instance corpus_diff.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true if the traversing has to keep going on, false otherwise.
+bool
+corpus_diff::traverse(diff_node_visitor& v)
+{
+  if (!v.visit(this))
+    return false;
+
+  for (string_changed_function_ptr_map::const_iterator i =
+	 changed_functions().begin();
+       i != changed_functions().end();
+       ++i)
+    {
+      function_decl_sptr f(i->second.first, noop_deleter());
+      function_decl_sptr s(i->second.second, noop_deleter());
+
+      if (diff_sptr d = compute_diff_for_decls(f,s, context()))
+	if (!d->traverse(v))
+	  return false;
+    }
+
+  return true;
+}
 /// Compute the diff between two instances fo the @ref corpus
 ///
 /// @param f the first @ref corpus to consider for the diff.
@@ -4902,6 +5274,108 @@ compute_diff(const corpus_sptr	f,
   return r;
 }
 // </corpus stuff>
+
+// <diff_node_visitor stuff>
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(distinct_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(var_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(pointer_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(reference_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(qualified_type_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(enum_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(class_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(base_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(scope_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(function_decl_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(type_decl_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(typedef_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(translation_unit_diff*)
+{return true;}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(corpus_diff*)
+{return true;}
+
+// </diff_node_visitor stuff>
 
 }// end namespace comparison
 } // end namespace abigail

@@ -152,6 +152,20 @@ class diff_context;
 /// Convenience typedef for a shared pointer of @ref diff_context.
 typedef shared_ptr<diff_context> diff_context_sptr;
 
+struct diff_node_visitor;
+
+struct diff_traversable_base;
+
+/// Convenience typedef for shared_ptr on diff_traversable_base.
+typedef shared_ptr<diff_traversable_base> diff_traversable_base_sptr;
+
+///  The base class for the diff classes that are to be traversed.
+struct diff_traversable_base : public traversable_base
+{
+  virtual bool
+  traverse(diff_node_visitor& v);
+}; // end struct diff_traversable_base
+
 /// The context of the diff.  This type holds various bits of
 /// information that is going to be used throughout the diffing of two
 /// entities and the reporting that follows.
@@ -225,7 +239,7 @@ public:
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for two constructs that are to be diff'ed.  The two
 /// constructs are called the "subjects" of the diff.
-class diff
+class diff : public diff_traversable_base
 {
   decl_base_sptr first_subject_;
   decl_base_sptr second_subject_;
@@ -385,6 +399,9 @@ public:
   compute_diff_for_distinct_kinds(const decl_base_sptr first,
 				  const decl_base_sptr second,
 				  diff_context_sptr ctxt);
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 };// end class distinct_types_diff
 
 distinct_diff_sptr
@@ -425,6 +442,9 @@ public:
 
   virtual void
   report(ostream& out, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 
   friend var_diff_sptr
   compute_diff(const var_decl_sptr	first,
@@ -469,6 +489,9 @@ public:
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 
   friend pointer_diff_sptr
   compute_diff(pointer_type_def_sptr	first,
@@ -517,6 +540,9 @@ public:
   virtual void
   report(ostream&, const string& indent = "") const;
 
+  virtual bool
+  traverse(diff_node_visitor& v);
+
   friend reference_diff_sptr
   compute_diff(reference_type_def_sptr first,
 	       reference_type_def_sptr second,
@@ -561,6 +587,9 @@ public:
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 
   friend qualified_type_diff_sptr
   compute_diff(const qualified_type_def_sptr first,
@@ -622,6 +651,9 @@ public:
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 
   friend enum_diff_sptr
   compute_diff(const enum_type_decl_sptr first,
@@ -710,6 +742,9 @@ public:
   virtual void
   report(ostream&, const string& indent = "") const;
 
+  virtual bool
+  traverse(diff_node_visitor& v);
+
   friend class_diff_sptr
   compute_diff(const class_decl_sptr	first,
 	       const class_decl_sptr	second,
@@ -755,6 +790,9 @@ public:
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 
   friend base_diff_sptr
   compute_diff(const class_decl::base_spec_sptr first,
@@ -852,6 +890,9 @@ public:
 
   virtual void
   report(ostream& out, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 };// end class scope_diff
 
 scope_diff_sptr
@@ -903,7 +944,7 @@ compute_diff(const function_decl_sptr	first,
   second_function_decl() const;
 
   const diff_sptr
-  return_diff() const;
+  return_type_diff() const;
 
   const string_changed_parm_map&
   changed_parms() const;
@@ -919,6 +960,9 @@ compute_diff(const function_decl_sptr	first,
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 }; // end class function_decl_diff
 
 function_decl_diff_sptr
@@ -956,8 +1000,11 @@ public:
   unsigned
   length() const;
 
-  void
+  virtual void
   report(ostream& out, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 };// end type_decl_diff
 
 type_decl_diff_sptr
@@ -1006,6 +1053,9 @@ public:
 
   virtual void
   report(ostream&, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 };// end class typedef_diff
 
 typedef_diff_sptr
@@ -1022,12 +1072,23 @@ typedef shared_ptr<translation_unit_diff> translation_unit_diff_sptr;
 /// An abstraction of a diff between two translation units.
 class translation_unit_diff : public scope_diff
 {
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
 protected:
   translation_unit_diff(translation_unit_sptr	first,
 			translation_unit_sptr	second,
 			diff_context_sptr	ctxt = diff_context_sptr());
 
 public:
+
+  const translation_unit_sptr
+  first_translation_unit() const;
+
+  const translation_unit_sptr
+  second_translation_unit() const;
+
   friend translation_unit_diff_sptr
   compute_diff(const translation_unit_sptr	first,
 	       const translation_unit_sptr	second,
@@ -1038,6 +1099,9 @@ public:
 
   virtual void
   report(ostream& out, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 };//end class translation_unit_diff
 
 translation_unit_diff_sptr
@@ -1076,6 +1140,15 @@ public:
   edit_script&
   variable_changes() const;
 
+  const string_function_ptr_map&
+  deleted_functions() const;
+
+  const string_function_ptr_map&
+  added_functions();
+
+  const string_changed_function_ptr_map&
+  changed_functions();
+
   const diff_context_sptr
   context() const;
 
@@ -1084,6 +1157,9 @@ public:
 
   void
   report(ostream& out, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 
   friend corpus_diff_sptr
   compute_diff(const corpus_sptr f,
@@ -1095,6 +1171,53 @@ corpus_diff_sptr
 compute_diff(const corpus_sptr,
 	     const corpus_sptr,
 	     diff_context_sptr);
+
+/// The base class for the node visitors.  These are the types used to
+/// visit each node traversed by the diff_traversable_base::traverse() method.
+struct diff_node_visitor
+{
+  virtual bool
+  visit(distinct_diff*);
+
+  virtual bool
+  visit(var_diff*);
+
+  virtual bool
+  visit(pointer_diff*);
+
+  virtual bool
+  visit(reference_diff*);
+
+  virtual bool
+  visit(qualified_type_diff*);
+
+  virtual bool
+  visit(enum_diff*);
+
+  virtual bool
+  visit(class_diff*);
+
+  virtual bool
+  visit(base_diff*);
+
+  virtual bool
+  visit(scope_diff*);
+
+  virtual bool
+  visit(function_decl_diff*);
+
+  virtual bool
+  visit(type_decl_diff*);
+
+  virtual bool
+  visit(typedef_diff*);
+
+  virtual bool
+  visit(translation_unit_diff*);
+
+  virtual bool
+  visit(corpus_diff*);
+}; // end struct diff_node_visitor
 }// end namespace comparison
 
 }// end namespace abigail
