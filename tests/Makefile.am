@@ -6,6 +6,7 @@ runtestwritereadarchive		\
 runtestreaddwarf		\
 runtestcorediff			\
 runtestbidiff			\
+runtestdiffdwarf		\
 runtestsvg			\
 runtestdot 
 
@@ -38,6 +39,9 @@ runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestbidiff_SOURCES = $(h)/test-bidiff.cc
 runtestbidiff_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestdiffdwarf_SOURCES = $(h)/test-diff-dwarf.cc
+runtestdiffdwarf_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=$(h)/test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
@@ -103,6 +107,12 @@ data/test-bidiff/test-struct1-report.txt	\
 data/test-bidiff/test-var0-v0.cc.bi		\
 data/test-bidiff/test-var0-v1.cc.bi		\
 data/test-bidiff/test-var0-report.txt		\
+\
+data/test-diff-dwarf/test0-v0.cc		\
+data/test-diff-dwarf/test0-v0.o			\
+data/test-diff-dwarf/test0-v1.cc		\
+data/test-diff-dwarf/test0-v1.o			\
+data/test-diff-dwarf/test0-report.txt		\
 \
 data/test-read-dwarf/test0			\
 data/test-read-dwarf/test0.abi			\

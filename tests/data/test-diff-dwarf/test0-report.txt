@@ -1,0 +1,32 @@
+Functions changes summary: 0 Removed, 2 Changed, 1 Added functions
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+2 functions with some indirect sub-type change:
+
+  [C]'function void foo(const S0&, S1*)' has some indirect sub-type changes:
+  parameter 0 of type 'const S0&' changed:
+    in unqualified underlying type 'S0&':
+      in referenced type 'class S0':
+        size changed from 96 to 128 bits
+        1 base class change:
+          'class B0S0' changed:
+            size changed from 64 to 96 bits
+            1 data member insertion:
+              'unsigned int B0S0::m2', at offset 64 (in bits)
+
+
+        1 data member change:
+         'int S0::m0' offset changed from 64 to 96, access changed from 'private' to 'protected
+
+        1 member function insertion:
+          'method int S0::get_member0()'
+        1 member function change:
+          'method void S0::member0()' has some indirect sub-type changes:
+
+
+  [C]'method void S0::member0()' has some indirect sub-type changes:
+
+1 Added function:
+  'method int S0::get_member0()
+
+
