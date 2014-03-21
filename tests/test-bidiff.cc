@@ -130,7 +130,7 @@ main(int, char*[])
 
       if (!abigail::tools::ensure_parent_dir_created(out_path))
 	{
-	  cerr << "Could not create parent director for " << out_path;
+	  cerr << "Could not create parent directory for " << out_path;
 	  continue;
 	}
 
@@ -153,7 +153,7 @@ main(int, char*[])
 	}
 
       translation_unit_diff_sptr d = compute_diff(tu1, tu2);
-      ofstream of(s->out_path, std::ios_base::trunc);
+      ofstream of(out_path, std::ios_base::trunc);
       if (!of.is_open())
 	{
 	  cerr << "failed to read " << s->out_path << "\n";
