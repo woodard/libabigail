@@ -4072,7 +4072,7 @@ function_decl_diff::added_parms() const
 /// @return the length of the changes of the function.
 unsigned
 function_decl_diff::length() const
-{return changed_parms().size() + removed_parms().size() + added_parms().size();}
+{return *first_function_decl() != *second_function_decl();}
 
 /// Serialize a report of the changes encapsulated in the current
 /// instance of function_decl_diff over to an output stream.
