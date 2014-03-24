@@ -281,7 +281,7 @@ build_ir_node_from_die(read_context&	ctxt,
 static function_decl_sptr
 build_function_decl(read_context& ctxt,
 		    Dwarf_Die* die,
-		    bool called_for_public_decl);
+		    function_decl_sptr fn);
 
 /// Constructor for a default Dwfl handle that knows how to load debug
 /// info from a library or executable elf file.
@@ -2359,7 +2359,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		continue;
 
 	      function_decl_sptr f =
-		build_function_decl(ctxt, &child, called_from_public_decl);
+		build_function_decl(ctxt, &child,
+				    function_decl_sptr());
 	      if (!f)
 		continue;
 	      class_decl::method_decl_sptr m =
@@ -2699,30 +2700,15 @@ build_var_decl(read_context& ctxt,
 static function_decl_sptr
 build_function_decl(read_context& ctxt,
 		    Dwarf_Die* die,
-		    bool called_for_public_decl)
+		    function_decl_sptr fn)
 {
-  function_decl_sptr result;
+  function_decl_sptr result = fn;
   if (!die)
     return result;
   assert(dwarf_tag(die) == DW_TAG_subprogram);
 
-  Dwarf_Die spec_die;
-  if (die_die_attribute(die, DW_AT_specification, spec_die))
-    {
-      // So this means that the current DW_TAG_subprogram DIE is for
-      // (refers to) a function declaration that was done earlier.
-      // Let's emit a function_decl representing that declaration.  We
-      // typically hit this case for DIEs representing concrete
-      // functions implementations; in those cases, what we want
-      // really is the declaration, as that is what has the meta-data
-      // we are looking after.
-      decl_base_sptr r =
-	build_ir_node_from_die(ctxt, &spec_die, called_for_public_decl);
-      return dynamic_pointer_cast<function_decl>(r);
-    }
-
  if (!die_is_public_decl(die))
-    return result;
+   return result;
 
   translation_unit_sptr tu = ctxt.cur_tu();
   assert(tu);
@@ -2747,7 +2733,7 @@ build_function_decl(read_context& ctxt,
   Dwarf_Die child;
   function_decl::parameters function_parms;
 
-  if (dwarf_child(die, &child) == 0)
+  if (!result && dwarf_child(die, &child) == 0)
     do
       {
 	int child_tag = dwarf_tag(&child);
@@ -2783,27 +2769,37 @@ build_function_decl(read_context& ctxt,
 	    function_parms.push_back(p);
 	  }
       }
-  while (dwarf_siblingof(&child, &child) == 0);
+  while (!result && dwarf_siblingof(&child, &child) == 0);
 
+  if (result)
+    {
+      // Add the properties that might have been missing from the
+      // first declaration of the function.  For now, it usually is
+      // the mangled name that goes missing in the first declarations.
+      if (!fmangled_name.empty())
+	result->set_mangled_name(fmangled_name);
+    }
+  else
+    {
+      function_type_sptr fn_type(is_method
+				 ? new method_type(is_type(return_type_decl),
+						   is_method,
+						   function_parms,
+						   tu->get_address_size(),
+						   tu->get_address_size())
+				 : new function_type(is_type(return_type_decl),
+						     function_parms,
+						     tu->get_address_size(),
+						     tu->get_address_size()));
 
-  function_type_sptr fn_type(is_method
-			     ? new method_type(is_type(return_type_decl),
-					       is_method,
-					       function_parms,
-					       tu->get_address_size(),
-					       tu->get_address_size())
-			     : new function_type(is_type(return_type_decl),
-						 function_parms,
-						 tu->get_address_size(),
-						 tu->get_address_size()));
-
-  result.reset(is_method
-	       ? new class_decl::method_decl(fname, fn_type,
-					     is_inline, floc,
-					     fmangled_name)
-	       : new function_decl(fname, fn_type,
-				   is_inline, floc,
-				   fmangled_name));
+      result.reset(is_method
+		   ? new class_decl::method_decl(fname, fn_type,
+						 is_inline, floc,
+						 fmangled_name)
+		   : new function_decl(fname, fn_type,
+				       is_inline, floc,
+				       fmangled_name));
+    }
   return result;
 }
 
@@ -3087,7 +3083,9 @@ build_ir_node_from_die(read_context&	ctxt,
 	      || die_is_artificial(die))
 	    break;
 
-	  if (die_die_attribute(die, DW_AT_specification, spec_die))
+	  function_decl_sptr fn;
+	  if (die_die_attribute(die, DW_AT_specification, spec_die)
+	      || die_die_attribute(die, DW_AT_abstract_origin, spec_die))
 	    {
 	      scop = get_scope_for_die(ctxt, &spec_die);
 	      if (scop)
@@ -3099,12 +3097,11 @@ build_ir_node_from_die(read_context&	ctxt,
 					   called_from_public_decl);
 		  if (d)
 		    {
+		      fn = dynamic_pointer_cast<function_decl>(d);
 		      ctxt.die_decl_map()[dwarf_dieoffset(die)] = d;
-		      return d;
 		    }
 		}
 	    }
-
 	{
 	  const class_decl* cl = dynamic_cast<class_decl*>(scope);
 	  // we shouldn't be in this class b/c, if this DIE is for a
@@ -3116,7 +3113,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	}
 	ctxt.scope_stack().push(scope);
 
-	if ((result = build_function_decl(ctxt, die, called_from_public_decl)))
+	if ((result = build_function_decl(ctxt, die, fn)))
 	  result = add_decl_to_scope(result, scope);
 
 	ctxt.scope_stack().pop();
