@@ -16,14 +16,13 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 
         1 data member change:
-         'int S0::m0' offset changed from 64 to 96, access changed from 'private' to 'protected
+         'int S0::m0' offset changed from 64 to 96, access changed from 'private' to 'protected'
 
         1 member function insertion:
           'method int S0::get_member0()'
         1 member function change:
-          'method void S0::member0()' has some indirect sub-type changes:
+          'method void S0::member0()' has some sub-type changes:
             'method void S0::member0()' access changed from 'private' to 'public'
-
 
   [C]'method void S0::member0()' has some indirect sub-type changes:
   'method void S0::member0()' access changed from 'private' to 'public'

@@ -810,7 +810,7 @@ represent(var_decl_sptr	o,
       out << "access changed from '"
 	  << get_member_access_specifier(o)
 	  << "' to '"
-	  << get_member_access_specifier(n);
+	  << get_member_access_specifier(n) << "'";
       emitted = true;
     }
   if (get_member_is_static(o)
