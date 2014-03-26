@@ -20,6 +20,9 @@
 //
 // Author: Dodji Seketeli
 
+#ifndef __ABG_COMPARISON_H__
+#define __ABG_COMPARISON_H__
+
 /// @file
 
 #include <tr1/unordered_map>
@@ -1221,3 +1224,5 @@ struct diff_node_visitor
 }// end namespace comparison
 
 }// end namespace abigail
+
+#endif //__ABG_COMPARISON_H__

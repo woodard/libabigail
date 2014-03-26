@@ -33,6 +33,9 @@
 /// sequence into another.  The main entry point for that is the
 /// compute_diff() function.
 
+#ifndef __ABG_DIFF_UTILS_H__
+#define __ABG_DIFF_UTILS_H__
+
 #include <stdexcept>
 #include <cassert>
 #include <cstdlib>
@@ -2064,3 +2067,4 @@ display_edit_script(const edit_script& es,
 }//end namespace diff_utils
 
 }//end namespace abigail
+#endif // __ABG_DIFF_UTILS_H__
