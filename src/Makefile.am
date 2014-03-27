@@ -8,6 +8,7 @@ $(h)/abg-ir.cc				\
 $(h)/abg-corpus.cc			\
 $(h)/abg-diff-utils.cc			\
 $(h)/abg-comparison.cc			\
+$(h)/abg-comp-filter.cc			\
 $(h)/abg-reader.cc			\
 $(h)/abg-dwarf-reader.cc		\
 $(h)/abg-libxml-utils.cc		\

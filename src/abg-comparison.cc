@@ -22,9 +22,9 @@
 
 /// @file
 
-
-#include "abg-comparison.h"
 #include "abg-hash.h"
+#include "abg-comparison.h"
+#include "abg-comp-filter.h"
 
 namespace abigail
 {
@@ -74,6 +74,26 @@ struct decls_equal
 typedef unordered_map<decls_type, diff_sptr, decls_hash, decls_equal>
 decls_diff_map_type;
 
+/// The overloaded or operator for @ref visiting_kind.
+visiting_kind
+operator|(visiting_kind l, visiting_kind r)
+{return static_cast<visiting_kind>(static_cast<unsigned>(l)
+				   | static_cast<unsigned>(r));}
+
+#define TRY_PRE_VISIT(v)					\
+  do {								\
+    if (v.get_visiting_kind() & PRE_VISITING_KIND)		\
+      if (!v.visit(this, /*pre=*/true))			\
+	return false;						\
+  } while(false)
+
+#define TRY_POST_VISIT(v)					\
+  do {								\
+    if (v.get_visiting_kind() & POST_VISITING_KIND)		\
+      if (!v.visit(this, /*pre=*/false))			\
+	return false;						\
+  } while(false)
+
 /// The default traverse function.
 ///
 /// @return true.
@@ -84,19 +104,20 @@ diff_traversable_base::traverse(diff_node_visitor&)
 /// The private member (pimpl) for @ref diff_context.
 struct diff_context::priv
 {
-  decls_diff_map_type	decls_diff_map;
-  vector<string>	regexps_fns_to_suppress;
-  vector<string>	regexps_vars_to_suppress;
-  bool			show_stats_only_;
-  bool			show_deleted_fns_;
-  bool			show_changed_fns_;
-  bool			show_added_fns_;
-  bool			show_deleted_vars_;
-  bool			show_changed_vars_;
-  bool			show_added_vars_;
+  diff_category			allowed_category_;
+  decls_diff_map_type			decls_diff_map;
+  vector<filtering::filter_base_sptr>	filters_;
+  bool					show_stats_only_;
+  bool					show_deleted_fns_;
+  bool					show_changed_fns_;
+  bool					show_added_fns_;
+  bool					show_deleted_vars_;
+  bool					show_changed_vars_;
+  bool					show_added_vars_;
 
   priv()
-    : show_stats_only_(false),
+    : allowed_category_(EVERYTHING_CATEGORY),
+      show_stats_only_(false),
       show_deleted_fns_(true),
       show_changed_fns_(true),
       show_added_fns_(true),
@@ -109,6 +130,14 @@ struct diff_context::priv
 diff_context::diff_context()
   : priv_(new diff_context::priv)
 {
+  // Setup all the diff output filters we have.
+  filtering::filter_base_sptr f;
+
+  f.reset(new filtering::harmless_filter);
+  add_diff_filter(f);
+
+  f.reset(new filtering::harmful_filter);
+  add_diff_filter(f);
 }
 
 /// Tests if the current diff context already has a diff for two decls.
@@ -155,6 +184,48 @@ diff_sptr
 diff_context::has_diff_for(const diff_sptr d) const
 {return has_diff_for(d->first_subject(), d->second_subject());}
 
+/// Getter for the bitmap that represents the set of categories that
+/// the user wants to see reported.
+///
+/// @return a bitmap that represents the set of categories that the
+/// user wants to see reported.
+diff_category
+diff_context::get_allowed_category() const
+{return priv_->allowed_category_;}
+
+/// Setter for the bitmap that represents the set of categories that
+/// the user wants to see reported.
+///
+/// @param c a bitmap that represents the set of categories that the
+/// user wants to see represented.
+void
+diff_context::set_allowed_category(diff_category c)
+{priv_->allowed_category_ = c;}
+
+/// Setter for the bitmap that represents the set of categories that
+/// the user wants to see reported
+///
+/// This function perform a bitwise or between the new set of
+/// categories and the current ones, and then sets the current
+/// categories to the result of the or.
+///
+/// @param c a bitmap that represents the set of categories that the
+/// user wants to see represented.
+void
+diff_context::switch_categories_on(diff_category c)
+{priv_->allowed_category_ = priv_->allowed_category_ | c;}
+
+/// Setter for the bitmap that represents the set of categories that
+/// the user wants to see reported
+///
+/// This function actually unsets bits from the current categories.
+///
+/// @param c a bitmap that represents the set of categories to unset
+/// from the current categories.
+void
+diff_context::switch_categories_off(diff_category c)
+{priv_->allowed_category_ = priv_->allowed_category_ & ~c;}
+
 /// Add a diff for two decls to the cache of the current diff_context
 ///
 /// @param first the first decl to consider.
@@ -167,6 +238,40 @@ diff_context::add_diff(decl_base_sptr first,
 			decl_base_sptr second,
 			diff_sptr d)
 {priv_->decls_diff_map[std::make_pair(first, second)] = d;}
+
+/// Getter for the diff tree nodes filters to apply to diff sub-trees.
+///
+/// @return the vector of tree filters to apply to diff sub-trees.
+const filtering::filters&
+diff_context::diff_filters() const
+{return priv_->filters_;}
+
+/// Setter for the diff filters to apply to a given diff sub-tree.
+///
+/// @param f the new diff filter to add to the vector of diff filters
+/// to apply to diff sub-trees.
+void
+diff_context::add_diff_filter(filtering::filter_base_sptr f)
+{priv_->filters_.push_back(f);}
+
+/// Apply the diff filters to a given diff sub-tree.
+///
+/// If the current context is instructed to filter out some categories
+/// then this function walks the given sub-tree and categorizes its
+/// nodes by using the filters held by the context.
+///
+/// @param diff the diff sub-tree to apply the filters to.
+void
+diff_context::maybe_apply_filters(diff_sptr diff)
+{
+  if (get_allowed_category() == EVERYTHING_CATEGORY)
+    return;
+
+  for (filtering::filters::const_iterator i = diff_filters().begin();
+       i != diff_filters().end();
+       ++i)
+    filtering::apply_filter(*i, diff);
+}
 
 /// Set a flag saying if the comparison module should only show the
 /// diff stats.
@@ -261,6 +366,32 @@ diff_context::show_added_vars() const
 {return priv_->show_added_vars_;}
 // </diff_context stuff>
 
+// <diff stuff>
+
+/// Test if this diff tree node is to be filtered out for reporting
+/// purposes.
+///
+/// The function tests if the categories of the diff tree node are
+/// "forbidden" by the context or not.
+///
+/// @return true iff the current diff node should NOT be reported.
+bool
+diff::is_filtered_out() const
+{return (get_category() != NO_CHANGE_CATEGORY
+	 && !(get_category() & context()->get_allowed_category()));}
+
+/// Test if this diff tree node should be reported.
+///
+/// @return true iff the current node should be reported.
+bool
+diff::to_be_reported() const
+{
+  if (length() && !is_filtered_out())
+    return true;
+  return false;
+}
+// </diff stuff>
+
 // <distinct_diff stuff>
 
 /// The private data structure for @ref distinct_diff.
@@ -343,7 +474,7 @@ distinct_diff::length() const
 void
 distinct_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   decl_base_sptr f = first(), s = second();
@@ -362,7 +493,10 @@ distinct_diff::report(ostream& out, const string& indent) const
 /// otherwise.
 bool
 distinct_diff::traverse(diff_node_visitor& v)
-{return v.visit(this);}
+{
+  TRY_PRE_VISIT(v);
+  return true;
+}
 
 /// Try to diff entities that are of distinct kinds.
 ///
@@ -525,6 +659,25 @@ compute_diff_for_types(const decl_base_sptr first,
   return d;
 }
 
+diff_category
+operator|(diff_category c1, diff_category c2)
+{return static_cast<diff_category>(static_cast<unsigned>(c1)
+				   | static_cast<unsigned>(c2));}
+
+diff_category
+operator^(diff_category c1, diff_category c2)
+{return static_cast<diff_category>(static_cast<unsigned>(c1)
+				   ^ static_cast<unsigned>(c2));}
+
+diff_category
+operator&(diff_category c1, diff_category c2)
+{return static_cast<diff_category>(static_cast<unsigned>(c1)
+				   & static_cast<unsigned>(c2));}
+
+diff_category
+operator~(diff_category c)
+{return static_cast<diff_category>(~static_cast<unsigned>(c));}
+
 /// Compute the difference between two types.
 ///
 /// The function considers every possible types known to libabigail
@@ -604,9 +757,9 @@ compute_diff_for_decls(const decl_base_sptr first,
 /// @return the resulting diff, or NULL if the diff could not be
 /// computed.
 diff_sptr
-compute_diff(const decl_base_sptr first,
-	     const decl_base_sptr second,
-	     diff_context_sptr ctxt)
+compute_diff(const decl_base_sptr	first,
+	     const decl_base_sptr	second,
+	     diff_context_sptr		ctxt)
 {
   if (!first || !second)
     return diff_sptr();
@@ -631,9 +784,9 @@ compute_diff(const decl_base_sptr first,
 /// @return the resulting diff, or NULL if the diff couldn't be
 /// computed.
 diff_sptr
-compute_diff(const type_base_sptr first,
-	     const type_base_sptr second,
-	     diff_context_sptr ctxt)
+compute_diff(const type_base_sptr	first,
+	     const type_base_sptr	second,
+	     diff_context_sptr		ctxt)
 {
     if (!first || !second)
       return diff_sptr();
@@ -1000,7 +1153,10 @@ var_diff::var_diff(var_decl_sptr	first,
 		   diff_context_sptr	ctxt)
   : diff(first, second, ctxt),
     priv_(new priv)
-{priv_->type_diff_ = type_diff;}
+{
+  priv_->type_diff_ = type_diff;
+  type_diff->set_parent(this);
+}
 
 /// Getter for the first @ref var_decl of the diff.
 ///
@@ -1052,7 +1208,7 @@ var_diff::length() const
 void
 var_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   decl_base_sptr first = first_var(), second = second_var();
@@ -1066,7 +1222,7 @@ var_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = type_diff())
     {
-      if (d->length())
+      if (d->to_be_reported())
 	{
 	  out << indent << "type of variable changed:\n";
 	  d->report(out, indent + " ");
@@ -1082,7 +1238,17 @@ var_diff::report(ostream& out, const string& indent) const
 /// otherwise.
 bool
 var_diff::traverse(diff_node_visitor& v)
-{return v.visit(this);}
+{
+  TRY_PRE_VISIT(v);
+
+  if (diff_sptr d = type_diff())
+    if (!d->traverse(v))
+      return false;
+
+  TRY_POST_VISIT(v);
+
+  return true;
+}
 
 /// Compute the diff between two instances of @ref var_decl.
 ///
@@ -1094,9 +1260,9 @@ var_diff::traverse(diff_node_visitor& v)
 ///
 /// @return the resulting diff between the two @ref var_decl.
 var_diff_sptr
-compute_diff(const var_decl_sptr first,
-	     const var_decl_sptr second,
-	     diff_context_sptr ctxt)
+compute_diff(const var_decl_sptr	first,
+	     const var_decl_sptr	second,
+	     diff_context_sptr		ctxt)
 {
   if (diff_sptr di = ctxt->has_diff_for(first, second))
     {
@@ -1217,7 +1383,10 @@ pointer_diff::underlying_type_diff() const
 /// of this diff.
 void
 pointer_diff::underlying_type_diff(const diff_sptr d)
-{priv_->underlying_type_diff_ = d;}
+{
+  priv_->underlying_type_diff_ = d;
+  d->set_parent(this);
+}
 
 /// Report the diff in a serialized form.
 ///
@@ -1228,7 +1397,7 @@ pointer_diff::underlying_type_diff(const diff_sptr d)
 void
 pointer_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   if (diff_sptr d = underlying_type_diff())
@@ -1272,12 +1441,13 @@ pointer_diff::report(ostream& out, const string& indent) const
 bool
 pointer_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
     if (!d->traverse(v))
       return false;
+
+  TRY_POST_VISIT(v);
 
   return true;
 }
@@ -1292,9 +1462,9 @@ pointer_diff::traverse(diff_node_visitor& v)
 ///
 /// @param ctxt the diff context to use.
 pointer_diff_sptr
-compute_diff(pointer_type_def_sptr first,
-	     pointer_type_def_sptr second,
-	     diff_context_sptr ctxt)
+compute_diff(pointer_type_def_sptr	first,
+	     pointer_type_def_sptr	second,
+	     diff_context_sptr		ctxt)
 {
   if (diff_sptr dif = ctxt->has_diff_for(first, second))
     {
@@ -1364,7 +1534,11 @@ reference_diff::underlying_type_diff() const
 /// @param d the new diff betweend the two referred-to types.
 diff_sptr&
 reference_diff::underlying_type_diff(diff_sptr d)
-{return priv_->underlying_type_diff_ = d;}
+{
+  priv_->underlying_type_diff_ = d;
+  d->set_parent(this);
+  return priv_->underlying_type_diff_;
+}
 
 /// Getter of the length of the diff.
 ///
@@ -1383,7 +1557,7 @@ reference_diff::length() const
 void
 reference_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   if (diff_sptr d = underlying_type_diff())
@@ -1428,11 +1602,13 @@ reference_diff::report(ostream& out, const string& indent) const
 bool
 reference_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    return d->traverse(v);
+    if (!d->traverse(v))
+    return false;
+
+  TRY_POST_VISIT(v);
 
   return true;
 }
@@ -1520,7 +1696,10 @@ qualified_type_diff::underlying_type_diff() const
 /// types.
 void
 qualified_type_diff::underlying_type_diff(const diff_sptr d)
-{priv_->underlying_type_diff = d;}
+{
+  priv_->underlying_type_diff = d;
+  d->set_parent(this);
+}
 
 /// Return the length of the diff, or zero if the two qualified types
 /// are equal.
@@ -1579,7 +1758,7 @@ get_leaf_type(qualified_type_def_sptr t)
 void
 qualified_type_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   string fname = first_qualified_type()->get_pretty_representation(),
@@ -1645,11 +1824,13 @@ qualified_type_diff::report(ostream& out, const string& indent) const
 bool
 qualified_type_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    return d->traverse(v);
+    if (!d->traverse(v))
+      return false;
+
+  TRY_POST_VISIT(v);
 
   return true;
 }
@@ -1662,9 +1843,9 @@ qualified_type_diff::traverse(diff_node_visitor& v)
 ///
 /// @param ctxt the diff context to use.
 qualified_type_diff_sptr
-compute_diff(const qualified_type_def_sptr first,
-	     const qualified_type_def_sptr second,
-	     diff_context_sptr ctxt)
+compute_diff(const qualified_type_def_sptr	first,
+	     const qualified_type_def_sptr	second,
+	     diff_context_sptr			ctxt)
 {
   if (diff_sptr dif = ctxt->has_diff_for(first, second))
     {
@@ -1790,7 +1971,10 @@ enum_diff::enum_diff(const enum_type_decl_sptr	first,
 		     const diff_context_sptr	ctxt)
   : diff(first, second,ctxt),
     priv_(new priv)
-{priv_->underlying_type_diff_ = underlying_type_diff;}
+{
+  priv_->underlying_type_diff_ = underlying_type_diff;
+  underlying_type_diff->set_parent(this);
+}
 
 /// @return the first enum of the diff.
 const enum_type_decl_sptr
@@ -1840,7 +2024,7 @@ enum_diff::length() const
 void
 enum_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   string name = first_enum()->get_pretty_representation();
@@ -1940,13 +2124,14 @@ enum_diff::report(ostream& out, const string& indent) const
 bool
 enum_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
+
   if (diff_sptr d = underlying_type_diff())
-    {
-      if (!d->traverse(v))
-	return false;
-    }
+    if (!d->traverse(v))
+      return false;
+
+  TRY_POST_VISIT(v);
+
   return true;
 }
 
@@ -2511,9 +2696,7 @@ class_diff::member_class_tmpls_changes()
 void
 class_diff::report(ostream& out, const string& indent) const
 {
-  int changes_length = length();
-
-  if (changes_length == 0)
+  if (!to_be_reported())
     return;
 
   string name = first_subject()->get_pretty_representation();
@@ -2834,21 +3017,26 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != priv_->changed_member_functions_.end();
 	   ++i)
 	{
-	  if (i !=priv_->changed_member_functions_.begin())
-	    out << "\n";
 	  class_decl::method_decl_sptr f = i->second.first;
 	  class_decl::method_decl_sptr s = i->second.second;
-	  string repr = f->get_pretty_representation();
-	  out << indent << "  '"
-	      << repr << "' has some indirect sub-type changes:\n";
 	  diff_sptr diff = compute_diff_for_decls(f, s, context());
-	  if (diff)
+	  if (!diff)
+	    continue;
+
+	  string repr = f->get_pretty_representation();
+	  if (i !=priv_->changed_member_functions_.begin())
+	    out << "\n";
+	  if (!diff->to_be_reported())
 	    {
-	      diff->report(out, indent + "    ");
-	      emitted = true;
+	      out << indent << "  " << repr
+		  << " has some filtered out sub-type changes\n";
+	      continue;
 	    }
-	    if (emitted)
-	      out << "\n";
+
+	  out << indent << "  '"
+	      << repr << "' has some sub-type changes:\n";
+	  diff->report(out, indent + "    ");
+	  emitted = true;
 	}
       if (numchanges)
 	out << "\n";
@@ -2972,8 +3160,7 @@ class_diff::report(ostream& out, const string& indent) const
 bool
 class_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   // base class changes.
   for (string_changed_base_map::const_iterator i =
@@ -2984,6 +3171,7 @@ class_diff::traverse(diff_node_visitor& v)
       diff_sptr d = compute_diff(i->second.first,
 				 i->second.second,
 				 context());
+      d->set_parent(this);
       if (d && !d->traverse(v))
 	return false;
     }
@@ -2996,8 +3184,11 @@ class_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					     i->second.second,
 					     context()))
-      if (!d->traverse(v))
-	return false;
+      {
+	d->set_parent(this);
+	if (!d->traverse(v))
+	  return false;
+      }
 
   // member types changes
   for (string_changed_type_or_decl_map::const_iterator i =
@@ -3007,8 +3198,11 @@ class_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_types(i->second.first,
 					     i->second.second,
 					     context()))
-      if (!d->traverse(v))
-	return false;
+      {
+	d->set_parent(this);
+	if (!d->traverse(v))
+	  return false;
+      }
 
   // member function changes
   for (string_changed_member_function_sptr_map::const_iterator i =
@@ -3019,9 +3213,14 @@ class_diff::traverse(diff_node_visitor& v)
       if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					       i->second.second,
 					       context()))
-	if (!d->traverse(v))
-	  return false;
+	{
+	  d->set_parent(this);
+	  if (!d->traverse(v))
+	    return false;
+	}
     }
+
+  TRY_POST_VISIT(v);
 
   return true;
 }
@@ -3158,7 +3357,10 @@ base_diff::get_underlying_class_diff() const
 /// classes.
 void
 base_diff::set_underlying_class_diff(class_diff_sptr d)
-{priv_->underlying_class_diff_ = d;}
+{
+  priv_->underlying_class_diff_ = d;
+  d->set_parent(this);
+}
 
 /// Getter for the length of the diff.
 ///
@@ -3175,7 +3377,7 @@ base_diff::length() const
 void
 base_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   class_decl::base_spec_sptr f = first_base(), s = second_base();
@@ -3207,7 +3409,7 @@ base_diff::report(ostream& out, const string& indent) const
 
   if (class_diff_sptr d = get_underlying_class_diff())
     {
-      if (d->length())
+      if (d->to_be_reported())
 	{
 	  if (emitted)
 	    out << "\n";
@@ -3224,12 +3426,13 @@ base_diff::report(ostream& out, const string& indent) const
 bool
 base_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   if (class_diff_sptr d = get_underlying_class_diff())
     if (!d->traverse(v))
       return false;
+
+  TRY_POST_VISIT(v);
 
   return true;
 }
@@ -3666,7 +3869,7 @@ scope_diff::length() const
 void
 scope_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   // Report changed types.
@@ -3791,8 +3994,7 @@ scope_diff::report(ostream& out, const string& indent) const
 bool
 scope_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   for (string_changed_type_or_decl_map::const_iterator i =
 	 changed_types().begin();
@@ -3801,8 +4003,11 @@ scope_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_types(i->second.first,
 					     i->second.second,
 					     context()))
-      if (!d->traverse(v))
-	return false;
+      {
+	d->set_parent(this);
+	if (!d->traverse(v))
+	  return false;
+      }
 
   for (string_changed_type_or_decl_map::const_iterator i =
 	 changed_decls().begin();
@@ -3811,8 +4016,13 @@ scope_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					     i->second.second,
 					     context()))
-      if (!d->traverse(v))
-	return false;
+      {
+	d->set_parent(this);
+	if (!d->traverse(v))
+	  return false;
+      }
+
+  TRY_POST_VISIT(v);
 
   return true;
 }
@@ -4083,7 +4293,7 @@ function_decl_diff::length() const
 void
 function_decl_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   maybe_report_diff_for_member(first_function_decl(),
@@ -4104,7 +4314,7 @@ function_decl_diff::report(ostream& out, const string& indent) const
     }
 
   // Report about return type differences.
-  if (priv_->return_type_diff_ && priv_->return_type_diff_->length())
+  if (priv_->return_type_diff_ && priv_->return_type_diff_->to_be_reported())
     {
       out << indent << "return type changed:\n";
       priv_->return_type_diff_->report(out, indent + "  ");
@@ -4119,15 +4329,21 @@ function_decl_diff::report(ostream& out, const string& indent) const
        i != priv_->changed_parms_.end();
        ++i)
     {
-      out << indent
-	  << "parameter " << i->second.first->get_index()
-	  << " of type '" << i->second.first->get_type_pretty_representation()
-	  << "' changed:\n";
       diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
 					   i->second.second->get_type(),
 					   context());
       if (d)
-	d->report(out, indent + "  ");
+	{
+	  if (d->to_be_reported())
+	    {
+	      out << indent
+		  << "parameter " << i->second.first->get_index()
+		  << " of type '"
+		  << i->second.first->get_type_pretty_representation()
+		  << "' changed:\n";
+	      d->report(out, indent + "  ");
+	    }
+	}
     }
 
   // Report about the parameters that got removed.
@@ -4168,12 +4384,14 @@ function_decl_diff::report(ostream& out, const string& indent) const
 bool
 function_decl_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   if (diff_sptr d = return_type_diff())
-    if (!d->traverse(v))
-      return false;
+    {
+      d->set_parent(this);
+      if (!d->traverse(v))
+	return false;
+    }
 
   for (string_changed_parm_map::const_iterator i = changed_parms().begin();
        i != changed_parms().end();
@@ -4181,8 +4399,13 @@ function_decl_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
 					     i->second.second->get_type(),
 					     context()))
-      if (!d->traverse(v))
-	return false;
+      {
+	d->set_parent(this);
+	if (!d->traverse(v))
+	  return false;
+      }
+
+  TRY_POST_VISIT(v);
 
   return true;
 }
@@ -4289,7 +4512,7 @@ type_decl_diff::length() const
 void
 type_decl_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   type_decl_sptr f = first_type_decl(), s = second_type_decl();
@@ -4332,8 +4555,10 @@ type_decl_diff::report(ostream& out, const string& indent) const
 /// otherwise.
 bool
 type_decl_diff::traverse(diff_node_visitor& v)
-{return v.visit(this);}
-
+{
+  TRY_PRE_VISIT(v);
+  return true;
+}
 /// Compute a diff between two type_decl.
 ///
 /// This function doesn't actually compute a diff.  As a type_decl is
@@ -4425,7 +4650,10 @@ typedef_diff::underlying_type_diff() const
 /// the two underlying types of the typedefs.
 void
 typedef_diff::underlying_type_diff(const diff_sptr d)
-{priv_->underlying_type_diff_ = d;}
+{
+  priv_->underlying_type_diff_ = d;
+  d->set_parent(this);
+}
 
 /// Getter of the length of the diff between the two typedefs.
 ///
@@ -4447,7 +4675,7 @@ typedef_diff::length() const
 void
 typedef_diff::report(ostream& out, const string& indent) const
 {
-  if (length() == 0)
+  if (!to_be_reported())
     return;
 
   bool emit_nl = false;
@@ -4477,7 +4705,7 @@ typedef_diff::report(ostream& out, const string& indent) const
     }
 
   diff_sptr d = underlying_type_diff();
-  if (d && d->length())
+  if (d && d->to_be_reported())
     {
       if (diff_sptr d2 = context()->has_diff_for(d))
 	{
@@ -4517,12 +4745,13 @@ typedef_diff::report(ostream& out, const string& indent) const
 bool
 typedef_diff::traverse(diff_node_visitor& v)
 {
-  if (v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
     if (!d->traverse(v))
       return false;
+
+  TRY_POST_VISIT(v);
 
   return true;
 }
@@ -4623,14 +4852,16 @@ translation_unit_diff::report(ostream& out, const string& indent) const
 bool
 translation_unit_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  TRY_PRE_VISIT(v);
 
   if (diff_sptr d = compute_diff(first_translation_unit(),
 				 second_translation_unit(),
 				 context()))
     if (!d->traverse(v))
       return false;
+
+  TRY_POST_VISIT(v);
+
   return true;
 
 }
@@ -5024,18 +5255,28 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != priv_->changed_fns_.end();
 	   ++i)
 	{
-	  out << indent << "  [C]'"
-	      << i->second.first->get_pretty_representation()
-	      << "' has some indirect sub-type changes:\n";
-	  {
-	    function_decl_sptr f(i->second.first, noop_deleter());
-	    function_decl_sptr s(i->second.second, noop_deleter());
+	  function_decl_sptr f(i->second.first, noop_deleter());
+	  function_decl_sptr s(i->second.second, noop_deleter());
 
-	    diff_sptr diff = compute_diff_for_decls(f, s, context());
-	    if (diff)
+	  diff_sptr diff = compute_diff_for_decls(f, s, context());
+	  if (!diff)
+	    continue;
+
+	  context()->maybe_apply_filters(diff);
+	  if (diff->to_be_reported())
+	    {
+	      out << indent << "  [C]'"
+		  << i->second.first->get_pretty_representation()
+		  << "' has some indirect sub-type changes:\n";
 	      diff->report(out, indent + "  ");
+	    }
+	  else if (diff->is_filtered_out())
+	    {
+	       out << indent << "  [C]{F}'"
+		   << i->second.first->get_pretty_representation()
+		  << "' has some filtered out sub-type changes\n";
+	    }
 	  }
-	}
       if (priv_->changed_fns_.size())
 	out << "\n";
     }
@@ -5181,7 +5422,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 bool
 corpus_diff::traverse(diff_node_visitor& v)
 {
-  if (!v.visit(this))
+  if (!v.visit(this, true))
     return false;
 
   for (string_changed_function_ptr_map::const_iterator i =
@@ -5277,102 +5518,174 @@ compute_diff(const corpus_sptr	f,
 
 // <diff_node_visitor stuff>
 
-/// Default visitor implementation.
+/// Default visitor implementation
 ///
 /// @return true
 bool
-diff_node_visitor::visit(distinct_diff*)
+diff_node_visitor::visit(diff*, bool)
 {return true;}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(var_diff*)
-{return true;}
+diff_node_visitor::visit(distinct_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(pointer_diff*)
-{return true;}
+diff_node_visitor::visit(var_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(reference_diff*)
-{return true;}
+diff_node_visitor::visit(pointer_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(qualified_type_diff*)
-{return true;}
+diff_node_visitor::visit(reference_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(enum_diff*)
-{return true;}
+diff_node_visitor::visit(qualified_type_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(class_diff*)
-{return true;}
+diff_node_visitor::visit(enum_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(base_diff*)
-{return true;}
+diff_node_visitor::visit(class_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(scope_diff*)
-{return true;}
+diff_node_visitor::visit(base_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(function_decl_diff*)
-{return true;}
+diff_node_visitor::visit(scope_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(type_decl_diff*)
-{return true;}
+diff_node_visitor::visit(function_decl_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(typedef_diff*)
-{return true;}
+diff_node_visitor::visit(type_decl_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(translation_unit_diff*)
-{return true;}
+diff_node_visitor::visit(typedef_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
 
 /// Default visitor implementation.
 ///
 /// @return true
 bool
-diff_node_visitor::visit(corpus_diff*)
+diff_node_visitor::visit(translation_unit_diff* dif, bool pre)
+{
+  diff* d = dif;
+  visit(d, pre);
+
+  return true;
+}
+
+/// Default visitor implementation.
+///
+/// @return true
+bool
+diff_node_visitor::visit(corpus_diff*, bool)
 {return true;}
 
 // </diff_node_visitor stuff>

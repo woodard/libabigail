@@ -26,7 +26,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "abg-comparison.h"
+#include "abg-comp-filter.h"
 #include "abg-tools-utils.h"
 #include "abg-reader.h"
 #include "abg-dwarf-reader.h"
@@ -63,6 +63,8 @@ struct options
   bool show_changed_vars;
   bool show_added_vars;
   bool show_all_vars;
+  bool show_harmful_changes;
+  bool show_harmless_changes;
 
   options()
     : show_stats_only(false),
@@ -74,7 +76,9 @@ struct options
       show_deleted_vars(false),
       show_changed_vars(false),
       show_added_vars(false),
-      show_all_vars(true)
+      show_all_vars(true),
+      show_harmful_changes(true),
+      show_harmless_changes(true)
   {}
 };//end struct options;
 
@@ -98,6 +102,8 @@ display_usage(const string prog_name, ostream& out)
       << " --keep <regex>  keep only functions and variables matching a regex\n"
       << " --keep-fn <regex>  keep only functions matching a regex\n"
       << " --keep-var <regex>  keep only variables matching a regex\n"
+      << " --no-harmless  do not display the harmless changes\n"
+      << " --no-harmful  do not display the harmful changes\n"
       << " --help  display this message\n";
 }
 
@@ -219,6 +225,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    return false;
 	  opts.keep_var_regex_patterns.push_back(argv[j]);
 	}
+      else if (!strcmp(argv[i], "--no-harmless"))
+	opts.show_harmless_changes = false;
+      else if (!strcmp(argv[i], "--no-harmful"))
+	opts.show_harmful_changes = false;
       else
 	return false;
     }
@@ -281,6 +291,11 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_deleted_vars(opts.show_all_vars || opts.show_deleted_vars);
   ctxt->show_changed_vars(opts.show_all_vars || opts.show_changed_vars);
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
+
+  if (!opts.show_harmless_changes)
+    ctxt->switch_categories_off(abigail::comparison::ACCESS_CHANGED_CATEGORY);
+  if (!opts.show_harmful_changes)
+    ctxt->switch_categories_off(abigail::comparison::SIZE_CHANGED_CATEGORY);
 }
 
 /// Set the regex patterns describing the functions to drop from the

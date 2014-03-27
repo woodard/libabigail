@@ -39,6 +39,13 @@ namespace abigail
 namespace comparison
 {
 
+namespace filtering
+{
+class filter_base;
+typedef shared_ptr<filter_base> filter_base_sptr;
+typedef std::vector<filter_base_sptr> filters;
+}
+
 // Inject types we need into this namespace.
 using std::ostream;
 using std::vector;
@@ -155,19 +162,77 @@ class diff_context;
 /// Convenience typedef for a shared pointer of @ref diff_context.
 typedef shared_ptr<diff_context> diff_context_sptr;
 
-struct diff_node_visitor;
+class diff_node_visitor;
 
 struct diff_traversable_base;
 
 /// Convenience typedef for shared_ptr on diff_traversable_base.
 typedef shared_ptr<diff_traversable_base> diff_traversable_base_sptr;
 
-///  The base class for the diff classes that are to be traversed.
-struct diff_traversable_base : public traversable_base
+/// An enum for the different ways to visit a diff tree node.
+///
+/// This is used by the node traversing code to know when to invoke a
+/// visitor on a diff tree node.
+enum visiting_kind
 {
+  /// The default enumerator value of this enum.  It doesn't have any
+  /// particular meaning yet.
+  NO_VISITING_KIND = 0,
+  /// This says that a visitor should be invoked on a tree node
+  /// *before* visiting the node's children.
+  PRE_VISITING_KIND = 1,
+  /// This says that a visotor should be invoked on a tree node
+  /// *after* visiting the node's children.
+  POST_VISITING_KIND =  1 << 1
+};
+
+visiting_kind
+operator|(visiting_kind l, visiting_kind r);
+
+///  The base class for the diff classes that are to be traversed.
+class diff_traversable_base : public traversable_base
+{
+public:
+
   virtual bool
   traverse(diff_node_visitor& v);
 }; // end struct diff_traversable_base
+
+/// An enum for the different categories that a diff tree node falls
+/// into, regarding the kind of changes it represents.
+enum diff_category
+{
+  /// This means the diff node does not carry any (meaningful) change.
+  NO_CHANGE_CATEGORY = 0,
+  /// This means the diff node (or at least one of its descendant
+  /// nodes) carries access related changes, e.g, a private member
+  /// that becomes public.
+  ACCESS_CHANGED_CATEGORY = 1,
+  /// This means the diff node (or at least one of its descendant
+  /// nodes) carries a change that modifies the size of a type.
+  SIZE_CHANGED_CATEGORY = 1 << 1,
+
+  /// A special enumerator that is the logical 'or' all the
+  /// enumerators above.
+  ///
+  /// This one must stay the last enumerator.  Please update it each
+  /// time you add a new enumerator above.
+  EVERYTHING_CATEGORY =
+  ACCESS_CHANGED_CATEGORY
+  | SIZE_CHANGED_CATEGORY
+};
+
+diff_category
+operator|(diff_category c1, diff_category c2);
+
+diff_category
+operator^(diff_category c1, diff_category c2);
+
+diff_category
+operator&(diff_category c1, diff_category c2);
+
+diff_category
+operator~(diff_category c);
 
 /// The context of the diff.  This type holds various bits of
 /// information that is going to be used throughout the diffing of two
@@ -195,6 +260,27 @@ public:
   add_diff(const decl_base_sptr first,
 	   const decl_base_sptr second,
 	   diff_sptr d);
+
+  diff_category
+  get_allowed_category() const;
+
+  void
+  set_allowed_category(diff_category c);
+
+  void
+  switch_categories_on(diff_category c);
+
+  void
+  switch_categories_off(diff_category c);
+
+  const filtering::filters&
+  diff_filters() const;
+
+  void
+  add_diff_filter(filtering::filter_base_sptr);
+
+  void
+  maybe_apply_filters(diff_sptr dif);
 
   void
   show_stats_only(bool f);
@@ -244,32 +330,68 @@ public:
 /// constructs are called the "subjects" of the diff.
 class diff : public diff_traversable_base
 {
-  decl_base_sptr first_subject_;
-  decl_base_sptr second_subject_;
-  diff_context_sptr ctxt_;
-  mutable bool reported_once_;
-  mutable bool currently_reporting_;
+  diff*		parent_;
+  decl_base_sptr	first_subject_;
+  decl_base_sptr	second_subject_;
+  diff_context_sptr	ctxt_;
+  diff_category	category_;
+  mutable bool		reported_once_;
+  mutable bool		currently_reporting_;
+
+  // Forbidden
+  diff();
 
 protected:
   diff(decl_base_sptr first_subject,
        decl_base_sptr second_subject)
-    : first_subject_(first_subject),
+    : parent_(0),
+      first_subject_(first_subject),
       second_subject_(second_subject),
+      category_(NO_CHANGE_CATEGORY),
       reported_once_(false),
       currently_reporting_(false)
   {}
 
-diff(decl_base_sptr first_subject,
-     decl_base_sptr second_subject,
-     diff_context_sptr ctxt)
-    : first_subject_(first_subject),
+diff(decl_base_sptr	first_subject,
+     decl_base_sptr	second_subject,
+     diff_context_sptr	ctxt)
+    : parent_(0),
+      first_subject_(first_subject),
       second_subject_(second_subject),
       ctxt_(ctxt),
+      category_(NO_CHANGE_CATEGORY),
+      reported_once_(false),
+      currently_reporting_(false)
+  {}
+
+  diff(diff*			parent,
+       decl_base_sptr		first_subject,
+       decl_base_sptr		second_subject,
+       diff_context_sptr	ctxt)
+    : parent_(parent),
+      first_subject_(first_subject),
+      second_subject_(second_subject),
+      ctxt_(ctxt),
+      category_(NO_CHANGE_CATEGORY),
       reported_once_(false),
       currently_reporting_(false)
   {}
 
 public:
+
+  /// Getter of the parent diff node of this one.
+  ///
+  /// Return the parent diff node if any, null otherwise.
+  diff*
+  get_parent() const
+  {return parent_;}
+
+  /// Setter for the parent diff node of this one.
+  ///
+  /// @param parent the parent diff node.
+  void
+  set_parent(diff* parent)
+  {parent_ = parent;}
 
   /// Getter of the first subject of the diff.
   ///
@@ -333,6 +455,34 @@ public:
   void
   reported_once(bool f) const
   {reported_once_ = f;}
+
+  /// Getter for the category of the current diff tree node.
+  ///
+  /// @return the category of the current diff tree node.
+  diff_category
+  get_category() const
+  {return category_;}
+
+  /// Adds the current diff tree node to an additional set of
+  /// categories.
+  ///
+  /// @param c a bit-map representing the set of categories to add the
+  /// current diff tree node to.
+  ///
+  /// @return the resulting bit-map representing the categories this
+  /// current diff tree node belongs to.
+  diff_category
+  add_to_category(diff_category c)
+  {
+    category_ = category_ | c;
+    return category_;
+  }
+
+  bool
+  is_filtered_out() const;
+
+  bool
+  to_be_reported() const;
 
   /// Pure interface to get the length of the changes
   /// encapsulated by this diff.  This is to be implemented by all
@@ -1177,49 +1327,90 @@ compute_diff(const corpus_sptr,
 
 /// The base class for the node visitors.  These are the types used to
 /// visit each node traversed by the diff_traversable_base::traverse() method.
-struct diff_node_visitor
+class diff_node_visitor : public node_visitor_base
 {
-  virtual bool
-  visit(distinct_diff*);
+protected:
+  visiting_kind visiting_kind_;
+
+public:
+
+  diff_node_visitor()
+    : visiting_kind_(PRE_VISITING_KIND)
+  {}
+
+  /// Getter for the visiting policy of the traversing code while
+  /// invoking this visitor.
+  ///
+  /// @return the visiting policy used by the traversing code when
+  /// invoking this visitor.
+  visiting_kind
+  get_visiting_kind() const
+  {return visiting_kind_;}
+
+  /// Setter for the visiting policy of the traversing code while
+  /// invoking this visitor.
+  ///
+  /// @param v a bit map representing the new visiting policy used by
+  /// the traversing code when invoking this visitor.
+  void
+  set_visiting_kind(visiting_kind v)
+  {visiting_kind_ = v;}
+
+  /// Setter for the visiting policy of the traversing code while
+  /// invoking this visitor.  This one makes a logical or between the
+  /// current policy and the bitmap given in argument and assigns the
+  /// current policy to the result.
+  ///
+  /// @param v a bitmap representing the visiting policy to or with
+  /// the current policy.
+  void
+  or_visiting_kind(visiting_kind v)
+  {visiting_kind_ = visiting_kind_ | v;}
 
   virtual bool
-  visit(var_diff*);
+  visit(diff*, bool);
 
   virtual bool
-  visit(pointer_diff*);
+  visit(distinct_diff*, bool);
 
   virtual bool
-  visit(reference_diff*);
+  visit(var_diff*, bool);
 
   virtual bool
-  visit(qualified_type_diff*);
+  visit(pointer_diff*, bool);
 
   virtual bool
-  visit(enum_diff*);
+  visit(reference_diff*, bool);
 
   virtual bool
-  visit(class_diff*);
+  visit(qualified_type_diff*, bool);
 
   virtual bool
-  visit(base_diff*);
+  visit(enum_diff*, bool);
 
   virtual bool
-  visit(scope_diff*);
+  visit(class_diff*, bool);
 
   virtual bool
-  visit(function_decl_diff*);
+  visit(base_diff*, bool);
 
   virtual bool
-  visit(type_decl_diff*);
+  visit(scope_diff*, bool);
 
   virtual bool
-  visit(typedef_diff*);
+  visit(function_decl_diff*, bool);
 
   virtual bool
-  visit(translation_unit_diff*);
+  visit(type_decl_diff*, bool);
 
   virtual bool
-  visit(corpus_diff*);
+  visit(typedef_diff*, bool);
+
+  virtual bool
+  visit(translation_unit_diff*, bool);
+
+  virtual bool
+  visit(corpus_diff*, bool);
 }; // end struct diff_node_visitor
 }// end namespace comparison
 
