@@ -34,6 +34,8 @@ namespace comparison
 namespace filtering
 {
 
+using std::tr1::dynamic_pointer_cast;
+
 /// Walk and categorize the nodes of a diff sub-tree.
 ///
 /// @param filter the filter invoked on each node of the walked
@@ -57,6 +59,80 @@ void
 apply_filter(filter_base_sptr filter, diff_sptr d)
 {apply_filter(*filter, d);}
 
+/// Tests if the size of a given type changed.
+///
+/// @param f the declaration of the first version of the type to
+/// consider.
+///
+/// @param s the declaration of the second version of the type to
+/// consider.
+///
+/// @return true if the type size changed, false otherwise.
+static bool
+type_size_changed(decl_base_sptr f, decl_base_sptr s)
+{
+  type_base_sptr t0 = is_type(f), t1 = is_type(s);
+  if (!t0 || !t1)
+    return false;
+
+  if (t0->get_size_in_bits() != t1->get_size_in_bits())
+    return true;
+
+  return false;
+}
+
+/// Tests if the access specifiers for a member declaration changed.
+///
+/// @param f the declaration for the first version of the member
+/// declaration to consider.
+///
+/// @param s the declaration for the second version of the member
+/// delcaration to consider.
+///
+/// @return true iff the access specifier changed.
+static bool
+access_changed(decl_base_sptr f, decl_base_sptr s)
+{
+  if (!is_member_decl(f)
+      && !is_member_decl(s))
+    return false;
+
+  access_specifier fa = get_member_access_specifier(f),
+    sa = get_member_access_specifier(s);
+
+  if (sa != fa)
+    return true;
+
+  return false;
+}
+
+/// Tests if the offset of a given data member changed.
+///
+/// @param f the declaration for the first version of the data member to
+/// consider.
+///
+/// @param s the declaration for the second version of the data member
+/// to consider.
+///
+/// @return true iff the offset of the data member changed.
+static bool
+data_member_offset_changed(decl_base_sptr f, decl_base_sptr s)
+{
+  if (!is_member_decl(f)
+      && !is_member_decl(s))
+    return false;
+
+  var_decl_sptr v0 = dynamic_pointer_cast<var_decl>(f),
+    v1 = dynamic_pointer_cast<var_decl>(s);
+  if (!v0 || !v1)
+    return false;
+
+  if (get_data_member_offset(v0) != get_data_member_offset(v1))
+    return true;
+
+  return false;
+}
+
 /// The visiting code of the harmless_filter.
 ///
 /// @param d the diff node being visited.
@@ -74,15 +150,8 @@ harmless_filter::visit(diff* d, bool pre)
       decl_base_sptr f = d->first_subject(),
 	s = d->second_subject();
 
-      if (!is_member_decl(f)
-	  && !is_member_decl(s))
-	return true;
-
-      access_specifier fa = get_member_access_specifier(f),
-	sa = get_member_access_specifier(s);
-
-      if (sa != fa)
-	d->add_to_category(ACCESS_CHANGED_CATEGORY);
+      if (access_changed(f, s))
+	d->add_to_category(ACCESS_CHANGE_CATEGORY);
       // Add non-virtual member function deletions and changes due to
       // details that are being reported or got reported earlier.
     }
@@ -90,7 +159,7 @@ harmless_filter::visit(diff* d, bool pre)
   // Propagate the categorization to the parent nodes.
   if (d->get_parent())
     d->get_parent()->add_to_category(d->get_category()
-				     & ACCESS_CHANGED_CATEGORY);
+				     & ACCESS_CHANGE_CATEGORY);
 
   return true;
 }
@@ -111,23 +180,16 @@ harmful_filter::visit(diff* d, bool pre)
     {
       decl_base_sptr f = d->first_subject(),
 	s = d->second_subject();
-      bool size_changed = false;
-      type_base_sptr tf, ts;
 
-      if (is_type(f) && is_type(s))
-	{
-	  tf= is_type(f), ts = is_type(s);
-	  if (tf->get_size_in_bits() != ts->get_size_in_bits())
-	    size_changed = true;
-	}
-
-      if (size_changed)
-	d->add_to_category(SIZE_CHANGED_CATEGORY);
+      if (type_size_changed(f, s)
+	  || data_member_offset_changed(f, s))
+	d->add_to_category(SIZE_OR_OFFSET_CHANGE_CATEGORY);
     }
 
   // Propagate the categorization to the parent nodes.
   if (d->get_parent())
-    d->get_parent()->add_to_category(d->get_category() & SIZE_CHANGED_CATEGORY);
+    d->get_parent()->add_to_category(d->get_category()
+				     & SIZE_OR_OFFSET_CHANGE_CATEGORY);
 
   return true;
 }

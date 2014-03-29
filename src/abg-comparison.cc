@@ -37,6 +37,16 @@ using std::vector;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 
+/// A deleter for shared pointers that ... doesn't delete the object
+/// managed by the shared pointer.
+struct noop_deleter
+{
+  template<typename T>
+  void
+  operator()(T*)
+  {}
+};
+
 /// Convenience typedef for a pair of decls.
 typedef std::pair<const decl_base_sptr, const decl_base_sptr> decls_type;
 
@@ -902,6 +912,10 @@ represent(var_decl_sptr	o,
 	  ostream&		out,
 	  const string&	indent = "")
 {
+  diff_sptr diff = compute_diff_for_decls(o, n, ctxt);
+  if (!diff->to_be_reported())
+    return;
+
   bool emitted = false;
   string name = o->get_qualified_name();
   string name2 = n->get_qualified_name();
@@ -1093,11 +1107,16 @@ enum diff_kind
 /// header.
 static void
 report_mem_header(ostream& out,
-		  int number,
+		  size_t number,
+		  size_t num_filtered,
 		  diff_kind k,
 		  const string& section_name,
 		  const string& indent)
 {
+  size_t net_number = number;
+  if (k == change_kind)
+    net_number = number - num_filtered;
+
   string change;
   switch (k)
     {
@@ -1111,13 +1130,18 @@ report_mem_header(ostream& out,
       change = (number > 1) ? "changes" : "change";
     }
 
-  if (number == 0)
-    out << indent << "no " << section_name << " " << change << "\n";
-  else if (number == 1)
-    out << indent << "1 " << section_name << " " << change << ":\n";
+  if (net_number == 0)
+    out << indent << "no " << section_name << " " << change;
+  else if (net_number == 1)
+    out << indent << "1 " << section_name << " " << change;
   else
-    out << indent << number << " " << section_name
-	<< " " << change << ":\n";
+    out << indent << net_number << " " << section_name
+	<< " " << change;
+
+  if (k == change_kind
+      && num_filtered)
+    out << ", (" << num_filtered << " filtered)";
+  out << ":\n";
 }
 
 // <pointer_type_def stuff>
@@ -2040,7 +2064,7 @@ enum_diff::report(ostream& out, const string& indent) const
 
   if (numdels)
     {
-      report_mem_header(out, numdels, del_kind, "enumerator", indent);
+      report_mem_header(out, numdels, 0, del_kind, "enumerator", indent);
       for (string_enumerator_map::const_iterator i =
 	     deleted_enumerators().begin();
 	   i != deleted_enumerators().end();
@@ -2062,7 +2086,7 @@ enum_diff::report(ostream& out, const string& indent) const
     }
   if (numins)
     {
-      report_mem_header(out, numins, ins_kind, "enumerator", indent);
+      report_mem_header(out, numins, 0, ins_kind, "enumerator", indent);
       for (string_enumerator_map::const_iterator i =
 	     inserted_enumerators().begin();
 	   i != inserted_enumerators().end();
@@ -2084,7 +2108,7 @@ enum_diff::report(ostream& out, const string& indent) const
     }
   if (numchanges)
     {
-      report_mem_header(out, numchanges, change_kind, "enumerator", indent);
+      report_mem_header(out, numchanges, 0, change_kind, "enumerator", indent);
       for (string_changed_enumerator_map::const_iterator i =
 	     changed_enumerators().begin();
 	   i != changed_enumerators().end();
@@ -2203,6 +2227,16 @@ struct class_diff::priv
 
   decl_base_sptr
   member_class_tmpl_has_changed(decl_base_sptr) const;
+
+  size_t
+  count_filtered_bases(const diff_context_sptr&);
+
+  size_t
+  count_filtered_data_members(const diff_context_sptr&);
+
+  size_t
+  count_filtered_member_functions(const diff_context_sptr&);
+
 };//end struct class_diff::priv
 
 /// Clear the lookup tables useful for reporting.
@@ -2576,6 +2610,87 @@ class_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
 	  : it->second.second);
 }
 
+/// Count the number of bases classes whose changes got filtered out.
+///
+/// @param ctxt the context to use to determine the filtering settings
+/// from the user.
+///
+/// @return the number of bases classes whose changes got filtered
+/// out.
+size_t
+class_diff::priv::count_filtered_bases(const diff_context_sptr& ctxt)
+{
+  size_t num_filtered = 0;
+  for (string_changed_base_map::const_iterator i = changed_bases_.begin();
+       i != changed_bases_.end();
+       ++i)
+    {
+      class_decl::base_spec_sptr o =
+	dynamic_pointer_cast<class_decl::base_spec>(i->second.first);
+      class_decl::base_spec_sptr n =
+	dynamic_pointer_cast<class_decl::base_spec>(i->second.second);
+      diff_sptr diff = compute_diff(o, n, ctxt);
+      ctxt->maybe_apply_filters(diff);
+      if (diff->is_filtered_out())
+	++num_filtered;
+    }
+  return num_filtered;
+}
+
+/// Count the number of data members whose changes got filtered out.
+///
+/// @param ctxt the diff context to use to get the filtering settings
+/// from the user.
+///
+/// @return the number of data members whose changes got filtered out.
+size_t
+class_diff::priv::count_filtered_data_members(const diff_context_sptr& ctxt)
+{
+  size_t num_filtered= 0;
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 changed_data_members_.begin();
+       i != changed_data_members_.end();
+       ++i)
+    {
+      var_decl_sptr o =
+	dynamic_pointer_cast<var_decl>(i->second.first);
+      var_decl_sptr n =
+	dynamic_pointer_cast<var_decl>(i->second.second);
+      diff_sptr diff = compute_diff_for_decls(o, n, ctxt);
+      ctxt->maybe_apply_filters(diff);
+      if (diff->is_filtered_out())
+	++num_filtered;
+    }
+  return num_filtered;
+}
+
+/// Count the number of member functions whose changes got filtered
+/// out.
+///
+/// @param ctxt the diff context to use to get the filtering settings
+/// from the user.
+///
+/// @return the number of member functions whose changes got filtered
+/// out.
+size_t
+class_diff::priv::count_filtered_member_functions(const diff_context_sptr& ctxt)
+{
+  size_t num_filtered = 0;
+  for (string_changed_member_function_sptr_map::const_iterator i =
+	 changed_member_functions_.begin();
+       i != changed_member_functions_.end();
+       ++i)
+    {
+      class_decl::method_decl_sptr f = i->second.first;
+      class_decl::method_decl_sptr s = i->second.second;
+      diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
+      ctxt->maybe_apply_filters(diff);
+      if (diff->is_filtered_out())
+	++num_filtered;
+    }
+  return num_filtered;
+}
+
 /// Constructor of class_diff
 ///
 /// @param first_scope the first class of the diff.
@@ -2721,11 +2836,11 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // Report deletions.
       int numdels = priv_->deleted_bases_.size();
-      int numchanges = priv_->changed_bases_.size();
+      size_t numchanges = priv_->changed_bases_.size();
 
       if (numdels)
 	{
-	  report_mem_header(out, numdels, del_kind,
+	  report_mem_header(out, numdels, 0, del_kind,
 			    "base class", indent);
 
 	  for (string_base_sptr_map::const_iterator i
@@ -2745,10 +2860,12 @@ class_diff::report(ostream& out, const string& indent) const
 	    }
 	  out << "\n\n";
 	}
+
       // Report changes.
+      size_t num_filtered = priv_->count_filtered_bases(context());
       if (numchanges)
 	{
-	  report_mem_header(out, numchanges, change_kind,
+	  report_mem_header(out, numchanges, num_filtered, change_kind,
 			    "base class", indent);
 	  for (string_changed_base_map::const_iterator it =
 		 priv_->changed_bases_.begin();
@@ -2772,7 +2889,7 @@ class_diff::report(ostream& out, const string& indent) const
       int numins = priv_->inserted_bases_.size();
       if (numins)
 	{
-	  report_mem_header(out, numins, ins_kind,
+	  report_mem_header(out, numins, 0, ins_kind,
 			    "base class", indent);
 
 	  bool emitted = false;
@@ -2800,7 +2917,7 @@ class_diff::report(ostream& out, const string& indent) const
       // report deletions
       if (numdels)
 	{
-	  report_mem_header(out, numdels, del_kind,
+	  report_mem_header(out, numdels, 0, del_kind,
 			    "member type", indent);
 
 	  for (string_decl_base_sptr_map::const_iterator i =
@@ -2820,7 +2937,7 @@ class_diff::report(ostream& out, const string& indent) const
       // report changes
       if (numchanges)
 	{
-	  report_mem_header(out, numchanges, change_kind,
+	  report_mem_header(out, numchanges, 0, change_kind,
 			    "member type", indent);
 
 	  for (string_changed_type_or_decl_map::const_iterator it =
@@ -2846,7 +2963,7 @@ class_diff::report(ostream& out, const string& indent) const
 
       if (numins)
 	{
-	  report_mem_header(out, numins, ins_kind,
+	  report_mem_header(out, numins, 0, ins_kind,
 			    "member type", indent);
 
 	  bool emitted = false;
@@ -2883,11 +3000,9 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // report deletions
       int numdels = priv_->deleted_data_members_.size();
-      int numchanges = priv_->changed_data_members_.size();
-
       if (numdels)
 	{
-	  report_mem_header(out, numdels, del_kind,
+	  report_mem_header(out, numdels, 0, del_kind,
 			    "data member", indent);
 	  bool emitted = false;
 	  for (string_decl_base_sptr_map::const_iterator i =
@@ -2907,10 +3022,12 @@ class_diff::report(ostream& out, const string& indent) const
 	}
 
       // report change
+      size_t numchanges = priv_->changed_data_members_.size();
+      size_t num_filtered = priv_->count_filtered_data_members(context());
       if (numchanges)
 	{
-	  report_mem_header(out, numchanges, change_kind,
-			    "data member", indent);
+	  report_mem_header(out, numchanges, num_filtered,
+			    change_kind, "data member", indent);
 
 	  for (string_changed_type_or_decl_map::const_iterator it =
 		 priv_->changed_data_members_.begin();
@@ -2930,7 +3047,7 @@ class_diff::report(ostream& out, const string& indent) const
       int numins = priv_->inserted_data_members_.size();
       if (numins)
 	{
-	  report_mem_header(out, numins, ins_kind,
+	  report_mem_header(out, numins, 0, ins_kind,
 			    "data member", indent);
 	  bool emitted = false;
 	  for (string_decl_base_sptr_map::const_iterator i =
@@ -2958,7 +3075,7 @@ class_diff::report(ostream& out, const string& indent) const
       // report deletions
       int numdels = priv_->deleted_member_functions_.size();
       if (numdels)
-	report_mem_header(out, numdels, del_kind,
+	report_mem_header(out, numdels, 0, del_kind,
 			  "member function", indent);
       for (string_member_function_sptr_map::const_iterator i =
 	     priv_->deleted_member_functions_.begin();
@@ -2977,7 +3094,7 @@ class_diff::report(ostream& out, const string& indent) const
       // report insertions;
       int numins = priv_->inserted_member_functions_.size();
       if (numins)
-	report_mem_header(out, numins, ins_kind,
+	report_mem_header(out, numins, 0, ins_kind,
 			  "member function", indent);
       bool emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
@@ -2997,8 +3114,9 @@ class_diff::report(ostream& out, const string& indent) const
 
       // report function sub-types changes
       int numchanges = priv_->changed_member_functions_.size();
+      size_t num_filtered = priv_->count_filtered_member_functions(context());
       if (numchanges)
-	report_mem_header(out, numchanges, change_kind,
+	report_mem_header(out, numchanges, num_filtered, change_kind,
 			  "member function", indent);
       for (string_changed_member_function_sptr_map::const_iterator i =
 	     priv_->changed_member_functions_.begin();
@@ -3008,21 +3126,13 @@ class_diff::report(ostream& out, const string& indent) const
 	  class_decl::method_decl_sptr f = i->second.first;
 	  class_decl::method_decl_sptr s = i->second.second;
 	  diff_sptr diff = compute_diff_for_decls(f, s, context());
-	  if (!diff)
+	  if (!diff || !diff->to_be_reported())
 	    continue;
 
 	  string repr = f->get_pretty_representation();
 	  if (i !=priv_->changed_member_functions_.begin())
 	    out << "\n";
-	  if (!diff->to_be_reported())
-	    {
-	      out << indent << "  " << repr
-		  << " has some filtered out sub-type changes\n";
-	      continue;
-	    }
-
-	  out << indent << "  '"
-	      << repr << "' has some sub-type changes:\n";
+	  out << indent << "  '" << repr << "' has some sub-type changes:\n";
 	  diff->report(out, indent + "    ");
 	  emitted = true;
 	}
@@ -3036,7 +3146,7 @@ class_diff::report(ostream& out, const string& indent) const
       // report deletions
       int numdels = e.num_deletions();
       if (numdels)
-	report_mem_header(out, numdels, del_kind,
+	report_mem_header(out, numdels, 0, del_kind,
 			  "member function template", indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
@@ -3056,7 +3166,7 @@ class_diff::report(ostream& out, const string& indent) const
       // report insertions
       int numins = e.num_insertions();
       if (numins)
-	report_mem_header(out, numins, ins_kind,
+	report_mem_header(out, numins, 0, ins_kind,
 			  "member function template", indent);
       bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
@@ -3089,7 +3199,7 @@ class_diff::report(ostream& out, const string& indent) const
       // report deletions
       int numdels = e.num_deletions();
       if (numdels)
-	report_mem_header(out, numdels, del_kind,
+	report_mem_header(out, numdels, 0, del_kind,
 			  "member class template", indent);
       for (vector<deletion>::const_iterator i = e.deletions().begin();
 	   i != e.deletions().end();
@@ -3109,7 +3219,7 @@ class_diff::report(ostream& out, const string& indent) const
       // report insertions
       int numins = e.num_insertions();
       if (numins)
-	report_mem_header(out, numins, ins_kind,
+	report_mem_header(out, numins, 0, ins_kind,
 			  "member class template", indent);
       bool emitted = false;
       for (vector<insertion>::const_iterator i = e.insertions().begin();
@@ -4890,7 +5000,7 @@ compute_diff(const translation_unit_sptr	first,
 // <corpus stuff>
 struct corpus_diff::priv
 {
-  diff_context_sptr ctxt_;
+  diff_context_sptr			ctxt_;
   corpus_sptr				first_;
   corpus_sptr				second_;
   edit_script				fns_edit_script_;
@@ -4911,8 +5021,36 @@ struct corpus_diff::priv
   void
   ensure_lookup_tables_populated();
 
+  struct diff_stats
+  {
+    size_t num_func_removed;
+    size_t num_func_added;
+    size_t num_func_changed;
+    size_t num_func_filtered_out;
+    size_t num_vars_removed;
+    size_t num_vars_added;
+    size_t num_vars_changed;
+    size_t num_vars_filtered_out;
+
+    diff_stats()
+      : num_func_removed(0),
+	num_func_added(0),
+	num_func_changed(0),
+	num_func_filtered_out(0),
+	num_vars_removed(0),
+	num_vars_added(0),
+	num_vars_changed(0),
+	num_vars_filtered_out(0)
+    {}
+  };
+
   void
-  emit_corpus_diff_stats(ostream& out, const string& indent);
+  apply_filters_and_compute_diff_stats(diff_stats&);
+
+  void
+  emit_diff_stats(diff_stats&	stats,
+		  ostream&	out,
+		  const string& indent);
 }; // end corpus::priv
 
 /// Tests if the lookup tables are empty.
@@ -5049,6 +5187,60 @@ corpus_diff::priv::ensure_lookup_tables_populated()
   }
 }
 
+/// Compute the diff stats.
+///
+/// To know the number of functions that got filtered out, this
+/// function applies the categorizing filters to the diff sub-trees of
+/// each function changes diff, prior to calculating the stats.
+///
+/// @param num_removed the number of removed functions.
+///
+/// @param num_added the number of added functions.
+///
+/// @param num_changed the number of changed functions.
+///
+/// @param num_filtered_out the number of changed functions that are
+/// got filtered out from the report
+void
+corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
+
+{
+  stat.num_func_removed = deleted_fns_.size();
+  stat.num_func_added = added_fns_.size();
+  stat.num_func_changed = changed_fns_.size();
+
+  stat.num_vars_removed = deleted_vars_.size();
+  stat.num_vars_added = added_vars_.size();
+  stat.num_vars_changed = changed_vars_.size();
+
+  // Calculate number of filtered functions & variables.
+  diff_sptr diff;
+  for (string_changed_function_ptr_map::const_iterator i =
+	 changed_fns_.begin();
+       i != changed_fns_.end();
+       ++i)
+    {
+      function_decl_sptr f(i->second.first, noop_deleter());
+      function_decl_sptr s(i->second.second, noop_deleter());
+      diff = compute_diff_for_decls(f, s, ctxt_);
+      ctxt_->maybe_apply_filters(diff);
+      if (diff->is_filtered_out())
+	++stat.num_func_filtered_out;
+    }
+
+  for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
+       i != changed_vars_.end();
+       ++i)
+    {
+      var_decl_sptr f(i->second.first, noop_deleter());
+      var_decl_sptr s(i->second.second, noop_deleter());
+      diff = compute_diff_for_decls(f, s, ctxt_);
+      ctxt_->maybe_apply_filters(diff);
+      if (diff->is_filtered_out())
+	++stat.num_vars_filtered_out;
+    }
+}
+
 /// Emit the summary of the functions & variables that got
 /// removed/changed/added.
 ///
@@ -5056,37 +5248,38 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 ///
 /// @param indent the indentation string to use in the summary.
 void
-corpus_diff::priv::emit_corpus_diff_stats(ostream& out, const string& indent)
+corpus_diff::priv::emit_diff_stats(diff_stats&		s,
+				   ostream&		out,
+				   const string&	indent)
 {
-  unsigned  total = 0, num_removed = 0, num_added = 0, num_changed = 0;
-
   /// Report added/removed/changed functions.
-  num_removed = deleted_fns_.size();
-  num_added = added_fns_.size();
-  num_changed = changed_fns_.size();
-  total = num_removed + num_added + num_changed;
+  size_t total = s.num_func_removed + s.num_func_added +
+    s.num_func_changed - s.num_func_filtered_out;
 
   // function changes summary
   out << indent << "Functions changes summary: ";
-  out << num_removed << " Removed, ";
-  out << num_changed << " Changed, ";
-  out << num_added << " Added ";
+  out << s.num_func_removed << " Removed, ";
+  out << s.num_func_changed - s.num_func_filtered_out << " Changed";
+  if (s.num_func_filtered_out)
+    out << " (" << s.num_func_filtered_out << " filtered out)";
+  out << ", ";
+  out << s.num_func_added << " Added ";
   if (total <= 1)
     out << "function\n";
   else
     out << "functions\n";
 
-   // Report added/removed/changed variables.
-  num_removed = deleted_vars_.size();
-  num_added = added_vars_.size();
-  num_changed = changed_vars_.size();
-  total = num_removed + num_added + num_changed;
+  total = s.num_vars_removed + s.num_vars_added +
+    s.num_vars_changed - s.num_vars_filtered_out;
 
   // variables changes summary
   out << indent << "Variables changes summary: ";
-  out << num_removed << " Removed, ";
-  out << num_changed << " Changed, ";
-  out << num_added << " Added ";
+  out << s.num_vars_removed << " Removed, ";
+  out << s.num_vars_changed - s.num_vars_filtered_out<< " Changed";
+  if (s.num_vars_filtered_out)
+    out << " (" << s.num_vars_filtered_out << " filtered out)";
+  out << ", ";
+  out << s.num_vars_added << " Added ";
   if (total <= 1)
     out << "variable\n";
   else
@@ -5171,16 +5364,6 @@ corpus_diff::length() const
 	  - priv_->changed_fns_.size());
 }
 
-/// A deleter for shared pointers that ... doesn't delete the object
-/// managed by the shared pointer.
-struct noop_deleter
-{
-  template<typename T>
-  void
-  operator()(T*)
-  {}
-};
-
 /// Report the diff in a serialized form.
 ///
 /// @param out the stream to serialize the diff to.
@@ -5190,28 +5373,26 @@ struct noop_deleter
 void
 corpus_diff::report(ostream& out, const string& indent) const
 {
-  unsigned  total = 0, num_removed = 0, num_added = 0, num_changed = 0;
-  unsigned removed = 0, added = 0;
+  size_t total = 0, removed = 0, added = 0;
+  priv::diff_stats s;
 
   /// Report added/removed/changed functions.
-  num_removed = priv_->deleted_fns_.size();
-  num_added = priv_->added_fns_.size();
-  num_changed = priv_->changed_fns_.size();
-  total = num_removed + num_added + num_changed;
+  priv_->apply_filters_and_compute_diff_stats(s);
+  total = s.num_func_removed + s.num_func_added +
+    s.num_func_changed - s.num_func_filtered_out;
   const unsigned large_num = 100;
 
-  priv_->emit_corpus_diff_stats(out, indent);
+  priv_->emit_diff_stats(s, out, indent);
   if (context()->show_stats_only())
     return;
   out << "\n";
 
-
   if (context()->show_deleted_fns())
     {
-      if (num_removed == 1)
+      if (s.num_func_removed == 1)
 	out << indent << "1 Removed function:\n\n";
-      else if (num_removed > 1)
-	out << indent << num_removed << " Removed functions:\n\n";
+      else if (s.num_func_removed > 1)
+	out << indent << s.num_func_removed << " Removed functions:\n\n";
 
       for (string_function_ptr_map::const_iterator i =
 	     priv_->deleted_fns_.begin();
@@ -5232,6 +5413,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_changed_fns())
     {
+      size_t num_changed = s.num_func_changed - s.num_func_filtered_out;
       if (num_changed == 1)
 	out << indent << "1 function with some indirect sub-type change:\n\n";
       else if (num_changed > 1)
@@ -5250,7 +5432,6 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (!diff)
 	    continue;
 
-	  context()->maybe_apply_filters(diff);
 	  if (diff->to_be_reported())
 	    {
 	      out << indent << "  [C]'"
@@ -5258,23 +5439,16 @@ corpus_diff::report(ostream& out, const string& indent) const
 		  << "' has some indirect sub-type changes:\n";
 	      diff->report(out, indent + "  ");
 	    }
-	  else if (diff->is_filtered_out())
-	    {
-	       out << indent << "  [C]{F}'"
-		   << i->second.first->get_pretty_representation()
-		  << "' has some filtered out sub-type changes\n";
-	    }
 	  }
-      if (priv_->changed_fns_.size())
-	out << "\n";
+      out << "\n";
     }
 
   if (context()->show_added_fns())
     {
-      if (num_added == 1)
+      if (s.num_func_added == 1)
 	out << indent << "1 Added function:\n";
-      else if (num_added > 1)
-	out << indent << num_added
+      else if (s.num_func_added > 1)
+	out << indent << s.num_func_added
 	    << " Added functions:\n\n";
       for (string_function_ptr_map::const_iterator i =
 	     priv_->added_fns_.begin();
@@ -5295,17 +5469,15 @@ corpus_diff::report(ostream& out, const string& indent) const
     }
 
  // Report added/removed/changed variables.
-  num_removed = priv_->deleted_vars_.size();
-  num_added = priv_->added_vars_.size();
-  num_changed = priv_->changed_vars_.size();
-  total = num_removed + num_added + num_changed;
+  total = s.num_vars_removed + s.num_vars_added +
+    s.num_vars_changed - s.num_vars_filtered_out;
 
   if (context()->show_deleted_vars())
     {
-      if (num_removed == 1)
+      if (s.num_vars_removed == 1)
 	out << indent << "1 Deleted variable:\n";
-      else if (num_removed > 1)
-	out << indent << num_removed
+      else if (s.num_vars_removed > 1)
+	out << indent << s.num_vars_removed
 	    << " Deleted variables:\n\n";
       string n;
       for (string_var_ptr_map::const_iterator i =
@@ -5331,6 +5503,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_changed_vars())
     {
+      size_t num_changed = s.num_vars_changed - s.num_vars_filtered_out;
       if (num_changed == 1)
 	out << indent << "1 Changed variable:\n";
       else if (num_changed > 1)
@@ -5342,42 +5515,39 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != priv_->changed_vars_.end();
 	   ++i)
 	{
-	  if (!i->second.first->get_mangled_name().empty())
-	    n1 =
-	      demangle_cplus_mangled_name(i->second.first->get_mangled_name());
-	  else
-	    n1 = i->second.first->get_pretty_representation();
+	  var_decl_sptr f(i->second.first, noop_deleter());
+	  var_decl_sptr s(i->second.second, noop_deleter());
+	  diff_sptr diff = compute_diff_for_decls(f, s, context());
+	  if (!diff || !diff->to_be_reported())
+	    continue;
 
-	  if (!i->second.second->get_mangled_name().empty())
-	    n2 =
-	      demangle_cplus_mangled_name(i->second.second->get_mangled_name());
+	  if (!f->get_mangled_name().empty())
+	    n1 = demangle_cplus_mangled_name(f->get_mangled_name());
 	  else
-	    n2 = i->second.second->get_pretty_representation();
+	    n1 = f->get_pretty_representation();
+
+	  if (!s->get_mangled_name().empty())
+	    n2 = demangle_cplus_mangled_name(s->get_mangled_name());
+	  else
+	    n2 = s->get_pretty_representation();
 
 	  out << indent << "  '"
 	      << n1
 	      << "' was changed to '"
 	      << n2
 	      << "':\n";
-	  {
-	    var_decl_sptr f(i->second.first, noop_deleter());
-	    var_decl_sptr s(i->second.second, noop_deleter());
-
-	    diff_sptr diff = compute_diff_for_decls(f, s, context());
-	    if (diff)
-	      diff->report(out, indent + "    ");
-	  }
+	  diff->report(out, indent + "    ");
 	}
-      if (priv_->changed_vars_.size())
+      if (num_changed)
 	out << "\n";
     }
 
   if (context()->show_added_vars())
     {
-      if (num_added == 1)
+      if (s.num_vars_added == 1)
 	out << indent << "1 Added variable:\n";
-      else if (num_added > 1)
-	out << indent << num_added
+      else if (s.num_vars_added > 1)
+	out << indent << s.num_vars_added
 	    << " Added variables:\n";
       string n;
       for (string_var_ptr_map::const_iterator i =

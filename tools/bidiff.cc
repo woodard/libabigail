@@ -293,9 +293,9 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
 
   if (!opts.show_harmless_changes)
-    ctxt->switch_categories_off(abigail::comparison::ACCESS_CHANGED_CATEGORY);
+    ctxt->switch_categories_off(abigail::comparison::ACCESS_CHANGE_CATEGORY);
   if (!opts.show_harmful_changes)
-    ctxt->switch_categories_off(abigail::comparison::SIZE_CHANGED_CATEGORY);
+    ctxt->switch_categories_off(abigail::comparison::SIZE_OR_OFFSET_CHANGE_CATEGORY);
 }
 
 /// Set the regex patterns describing the functions to drop from the

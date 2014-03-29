@@ -207,10 +207,11 @@ enum diff_category
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries access related changes, e.g, a private member
   /// that becomes public.
-  ACCESS_CHANGED_CATEGORY = 1,
+  ACCESS_CHANGE_CATEGORY = 1,
   /// This means the diff node (or at least one of its descendant
-  /// nodes) carries a change that modifies the size of a type.
-  SIZE_CHANGED_CATEGORY = 1 << 1,
+  /// nodes) carries a change that modifies the size of a type or an
+  /// offset of a type member.
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 1,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -218,8 +219,8 @@ enum diff_category
   /// This one must stay the last enumerator.  Please update it each
   /// time you add a new enumerator above.
   EVERYTHING_CATEGORY =
-  ACCESS_CHANGED_CATEGORY
-  | SIZE_CHANGED_CATEGORY
+  ACCESS_CHANGE_CATEGORY
+  | SIZE_OR_OFFSET_CHANGE_CATEGORY
 };
 
 diff_category
@@ -817,7 +818,7 @@ public:
 enum_diff_sptr
 compute_diff(const enum_type_decl_sptr,
 	     const enum_type_decl_sptr,
-	     diff_context_sptr ctxt);
+	     diff_context_sptr);
 
 class class_diff;
 
