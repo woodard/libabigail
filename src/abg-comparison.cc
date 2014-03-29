@@ -1185,19 +1185,7 @@ var_diff::type_diff() const
 /// @return the length of the current diff.
 unsigned
 var_diff::length() const
-{
-  unsigned l = 0;
-
-  var_decl_sptr f = first_var(), s = second_var();
-  if (f->get_binding() != s->get_binding())
-    ++l;
-  l += diff_length_of_decl_bases(f, s);
-
-  diff_sptr d = compute_diff(f->get_type(), s->get_type(), context());
-  l += d->length();
-
-  return l;
-}
+{return *first_var() != *second_var();}
 
 /// Report the diff in a serialized form.
 ///

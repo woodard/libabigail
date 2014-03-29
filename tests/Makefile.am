@@ -113,6 +113,11 @@ data/test-diff-dwarf/test0-v0.o			\
 data/test-diff-dwarf/test0-v1.cc		\
 data/test-diff-dwarf/test0-v1.o			\
 data/test-diff-dwarf/test0-report.txt		\
+data/test-diff-dwarf/test1-v0.cc		\
+data/test-diff-dwarf/test1-v0.o			\
+data/test-diff-dwarf/test1-v1.cc		\
+data/test-diff-dwarf/test1-v1.o			\
+data/test-diff-dwarf/test1-report.txt		\
 \
 data/test-read-dwarf/test0			\
 data/test-read-dwarf/test0.abi			\
