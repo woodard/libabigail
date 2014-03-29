@@ -25,7 +25,8 @@
 /// This program runs a diff between input dwarf files and compares
 /// the resulting report with a reference report.  If the resulting
 /// report is different from the reference report, the test has
-/// failed.  Note that the
+/// failed.  Note that the comparison is done using the libabigail
+/// library directly.
 ///
 /// The set of input files and reference reports to consider should be
 /// present in the source distribution.
@@ -44,7 +45,7 @@ using std::ofstream;
 using std::cerr;
 
 /// This is an aggregate that specifies where a test shall get its
-/// input from, and where it shall write its ouput to.
+/// input from and where it shall write its ouput to.
 struct InOutSpec
 {
   const char* in_elfv0_path;
@@ -88,7 +89,7 @@ main()
 
       if (!ensure_parent_dir_created(out_diff_report_path))
 	{
-	  cerr << "could not create paernt directory for "
+	  cerr << "could not create parent directory for "
 	       << out_diff_report_path;
 	  is_ok = false;
 	  continue;
