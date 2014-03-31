@@ -5479,7 +5479,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	      out << indent << "  [C]'"
 		  << i->second.first->get_pretty_representation()
 		  << "' has some indirect sub-type changes:\n";
-	      diff->report(out, indent + "  ");
+	      diff->report(out, indent + "    ");
 	    }
 	  }
       out << "\n";
