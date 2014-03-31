@@ -94,7 +94,7 @@ static bool
 access_changed(decl_base_sptr f, decl_base_sptr s)
 {
   if (!is_member_decl(f)
-      && !is_member_decl(s))
+      || !is_member_decl(s))
     return false;
 
   access_specifier fa = get_member_access_specifier(f),
@@ -119,7 +119,7 @@ static bool
 data_member_offset_changed(decl_base_sptr f, decl_base_sptr s)
 {
   if (!is_member_decl(f)
-      && !is_member_decl(s))
+      || !is_member_decl(s))
     return false;
 
   var_decl_sptr v0 = dynamic_pointer_cast<var_decl>(f),
