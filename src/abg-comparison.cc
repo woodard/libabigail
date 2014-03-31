@@ -97,11 +97,32 @@ operator|(visiting_kind l, visiting_kind r)
 	return false;						\
   } while(false)
 
+#define TRY_PRE_VISIT_CLASS_DIFF(v)				\
+  do {								\
+    if (v.get_visiting_kind() & PRE_VISITING_KIND)		\
+      if (!v.visit(this, /*pre=*/true))			\
+	{							\
+	  priv_->traversing_ = false;				\
+	  return false;					\
+	}							\
+  } while(false)
+
+
 #define TRY_POST_VISIT(v)					\
   do {								\
     if (v.get_visiting_kind() & POST_VISITING_KIND)		\
       if (!v.visit(this, /*pre=*/false))			\
 	return false;						\
+  } while(false)
+
+#define TRY_POST_VISIT_CLASS_DIFF(v)				\
+  do {								\
+    if (v.get_visiting_kind() & POST_VISITING_KIND)		\
+      if (!v.visit(this, /*pre=*/false))			\
+	{							\
+	  priv_->traversing_ = false;				\
+	  return false;					\
+	}							\
   } while(false)
 
 /// The default traverse function.
@@ -2193,6 +2214,7 @@ compute_diff(const enum_type_decl_sptr first,
 
 struct class_diff::priv
 {
+  bool traversing_;
   edit_script base_changes_;
   edit_script member_types_changes_;
   edit_script data_members_changes_;
@@ -2237,6 +2259,9 @@ struct class_diff::priv
   size_t
   count_filtered_member_functions(const diff_context_sptr&);
 
+  priv()
+    : traversing_(false)
+  {}
 };//end struct class_diff::priv
 
 /// Clear the lookup tables useful for reporting.
@@ -3258,7 +3283,12 @@ class_diff::report(ostream& out, const string& indent) const
 bool
 class_diff::traverse(diff_node_visitor& v)
 {
-  TRY_PRE_VISIT(v);
+  priv_->traversing_ = true;
+
+  TRY_PRE_VISIT_CLASS_DIFF(v);
+
+  if (priv_->traversing_)
+    return true;
 
   // base class changes.
   for (string_changed_base_map::const_iterator i =
@@ -3271,7 +3301,10 @@ class_diff::traverse(diff_node_visitor& v)
 				 context());
       d->set_parent(this);
       if (d && !d->traverse(v))
-	return false;
+	{
+	  priv_->traversing_ = false;
+	  return false;
+	}
     }
 
   // data member changes
@@ -3285,7 +3318,10 @@ class_diff::traverse(diff_node_visitor& v)
       {
 	d->set_parent(this);
 	if (!d->traverse(v))
-	  return false;
+	  {
+	    priv_->traversing_ = false;
+	    return false;
+	  }
       }
 
   // member types changes
@@ -3299,7 +3335,10 @@ class_diff::traverse(diff_node_visitor& v)
       {
 	d->set_parent(this);
 	if (!d->traverse(v))
-	  return false;
+	  {
+	    priv_->traversing_ = false;
+	    return false;
+	  }
       }
 
   // member function changes
@@ -3314,11 +3353,14 @@ class_diff::traverse(diff_node_visitor& v)
 	{
 	  d->set_parent(this);
 	  if (!d->traverse(v))
-	    return false;
+	    {
+	      priv_->traversing_ = false;
+	      return false;
+	    }
 	}
     }
 
-  TRY_POST_VISIT(v);
+  TRY_POST_VISIT_CLASS_DIFF(v);
 
   return true;
 }
