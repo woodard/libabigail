@@ -3283,12 +3283,12 @@ class_diff::report(ostream& out, const string& indent) const
 bool
 class_diff::traverse(diff_node_visitor& v)
 {
-  priv_->traversing_ = true;
-
   TRY_PRE_VISIT_CLASS_DIFF(v);
 
   if (priv_->traversing_)
     return true;
+
+  priv_->traversing_ = true;
 
   // base class changes.
   for (string_changed_base_map::const_iterator i =

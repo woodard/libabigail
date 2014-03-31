@@ -134,7 +134,13 @@ data/test-diff-filter/test0-v0.cc		\
 data/test-diff-filter/test0-v1.cc		\
 data/test-diff-filter/test0-v0.o		\
 data/test-diff-filter/test0-v1.o		\
-data/test-diff-filter/test0-report.txt
+data/test-diff-filter/test0-report.txt		\
+\
+data/test-diff-filter/test1-v0.cc		\
+data/test-diff-filter/test1-v1.cc		\
+data/test-diff-filter/test1-v0.o		\
+data/test-diff-filter/test1-v1.o		\
+data/test-diff-filter/test1-report.txt
 
 
 clean-local: clean-local-check
