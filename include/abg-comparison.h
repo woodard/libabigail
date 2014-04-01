@@ -89,6 +89,15 @@ typedef pair<function_decl::parameter_sptr,
 /// parameter and which key is the name of the function parameter.
 typedef unordered_map<string, changed_parm> string_changed_parm_map;
 
+/// Convenience typedef for a map which key is an integer and which
+/// value is a changed parameter.
+typedef unordered_map<unsigned, changed_parm> unsigned_changed_parm_map;
+
+/// Convenience typedef for a map which key is an integer and which
+/// value is a parameter.
+typedef unordered_map<unsigned,
+		      function_decl::parameter_sptr> unsigned_parm_map;
+
 /// Convenience typedef for a map which value is changed type of decl.
 /// The key of the map is the qualified name of the type/decl.
 typedef unordered_map<string,
@@ -1101,7 +1110,7 @@ compute_diff(const function_decl_sptr	first,
   return_type_diff() const;
 
   const string_changed_parm_map&
-  changed_parms() const;
+  subtype_changed_parms() const;
 
   const string_parm_map&
   removed_parms() const;

@@ -4246,16 +4246,19 @@ struct function_decl_diff::priv
   };// end enum Flags
 
 
-  diff_sptr return_type_diff_;
-  edit_script parm_changes_;
-  vector<char> first_fn_flags_;
-  vector<char> second_fn_flags_;
-  edit_script fn_flags_changes_;
+  diff_sptr	return_type_diff_;
+  edit_script	parm_changes_;
+  vector<char>	first_fn_flags_;
+  vector<char>	second_fn_flags_;
+  edit_script	fn_flags_changes_;
 
   // useful lookup tables.
-  string_parm_map deleted_parms_;
-  string_changed_parm_map changed_parms_;
-  string_parm_map added_parms_;
+  string_parm_map		deleted_parms_;
+  string_parm_map		added_parms_;
+  string_changed_parm_map	subtype_changed_parms_;
+  unsigned_parm_map		deleted_parms_by_id_;
+  unsigned_parm_map		added_parms_by_id_;
+  unsigned_changed_parm_map	changed_parms_by_id_;
 
   Flags
   fn_is_declared_inline_to_flag(function_decl_sptr f) const
@@ -4332,6 +4335,7 @@ function_decl_diff::ensure_lookup_tables_populated()
       // fix that.
       assert(!parm_name.empty());
       priv_->deleted_parms_[parm_name] = parm;
+      priv_->deleted_parms_by_id_[parm->get_index()] = parm;
     }
 
   for (vector<insertion>::const_iterator i =
@@ -4349,17 +4353,34 @@ function_decl_diff::ensure_lookup_tables_populated()
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
 	  assert(!parm_name.empty());
-	  string_parm_map::const_iterator k =
-	    priv_->deleted_parms_.find(parm_name);
-	  if (k != priv_->deleted_parms_.end())
-	    {
-	      if (*k->second != *parm)
-		priv_->changed_parms_[parm_name] =
+	  {
+	    string_parm_map::const_iterator k =
+	      priv_->deleted_parms_.find(parm_name);
+	    if (k != priv_->deleted_parms_.end())
+	      {
+		if (*k->second != *parm)
+		  priv_->subtype_changed_parms_[parm_name] =
+		    std::make_pair(k->second, parm);
+		priv_->deleted_parms_.erase(parm_name);
+	      }
+	    else
+	      priv_->added_parms_[parm_name] = parm;
+	  }
+	  {
+	    unsigned_parm_map::const_iterator k =
+	      priv_->deleted_parms_by_id_.find(parm->get_index());
+	    if (k != priv_->deleted_parms_by_id_.end())
+	      {
+		priv_->changed_parms_by_id_[parm->get_index()] =
 		  std::make_pair(k->second, parm);
-	      priv_->deleted_parms_.erase(k);
-	    }
-	  else
-	    priv_->added_parms_[parm_name] = parm;
+		priv_->subtype_changed_parms_.erase(parm_name);
+		priv_->added_parms_.erase(parm_name);
+		priv_->deleted_parms_.erase(k->second->get_name_id());
+		priv_->deleted_parms_by_id_.erase(parm->get_index());
+	      }
+	    else
+	      priv_->added_parms_by_id_[parm->get_index()] = parm;
+	  }
 	}
     }
 }
@@ -4406,8 +4427,8 @@ function_decl_diff::return_type_diff() const
 /// @return a map of the parameters whose type got changed.  The key
 /// of the map is the name of the type.
 const string_changed_parm_map&
-function_decl_diff::changed_parms() const
-{return priv_->changed_parms_;}
+function_decl_diff::subtype_changed_parms() const
+{return priv_->subtype_changed_parms_;}
 
 /// @return a map of parameters that got removed.
 const string_parm_map&
@@ -4463,10 +4484,35 @@ function_decl_diff::report(ostream& out, const string& indent) const
   // Hmmh, the above was quick.  Now report about function
   // parameters; this shouldn't as straightforward.
   //
-  // Report about the parameter types that have changed.
+  // Report about the parameter types that have changed sub-types.
   for (string_changed_parm_map::const_iterator i =
-	 priv_->changed_parms_.begin();
-       i != priv_->changed_parms_.end();
+	 priv_->subtype_changed_parms_.begin();
+       i != priv_->subtype_changed_parms_.end();
+       ++i)
+    {
+      diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
+					   i->second.second->get_type(),
+					   context());
+      if (d)
+	{
+	  if (d->to_be_reported())
+	    {
+	      out << indent
+		  << "parameter " << i->second.first->get_index()
+		  << " of type '"
+		  << i->second.first->get_type_pretty_representation()
+		  << "' has sub-type changes:\n";
+	      d->report(out, indent + "  ");
+	    }
+	}
+    }
+  // Report about parameters that have changed, while staying
+  // compatible -- otherwise they would have changed the mangled name
+  // of the function and the function would have been reported as
+  // removed.
+  for (unsigned_changed_parm_map::const_iterator i =
+	 priv_->changed_parms_by_id_.begin();
+       i != priv_->changed_parms_by_id_.end();
        ++i)
     {
       diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
@@ -4533,8 +4579,22 @@ function_decl_diff::traverse(diff_node_visitor& v)
 	return false;
     }
 
-  for (string_changed_parm_map::const_iterator i = changed_parms().begin();
-       i != changed_parms().end();
+  for (string_changed_parm_map::const_iterator i =
+	 subtype_changed_parms().begin();
+       i != subtype_changed_parms().end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
+					     i->second.second->get_type(),
+					     context()))
+      {
+	d->set_parent(this);
+	if (!d->traverse(v))
+	  return false;
+      }
+
+  for (unsigned_changed_parm_map::const_iterator i =
+	 priv_->changed_parms_by_id_.begin();
+       i != priv_->changed_parms_by_id_.end();
        ++i)
     if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
 					     i->second.second->get_type(),
