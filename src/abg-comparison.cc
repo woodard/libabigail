@@ -956,8 +956,9 @@ represent(var_decl_sptr	o,
 	out << "now becomes laid out";
       emitted = true;
     }
-  if (get_data_member_offset(o)
-      != get_data_member_offset(n))
+  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
+      && (get_data_member_offset(o)
+	  != get_data_member_offset(n)))
     {
       if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
@@ -987,8 +988,9 @@ represent(var_decl_sptr	o,
       out << "visibility changed from " << o->get_visibility()
 	  << " to " << n->get_visibility();
     }
-  if (get_member_access_specifier(o)
-      != get_member_access_specifier(n))
+  if ((ctxt->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
+      && (get_member_access_specifier(o)
+	  != get_member_access_specifier(n)))
     {
       if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
@@ -1017,22 +1019,25 @@ represent(var_decl_sptr	o,
     }
   if (*o->get_type() != *n->get_type())
     {
-      if (!emitted)
-	out << indent << "type of '" << pretty_representation << "' changed:\n";
-      else
-	out << "\n" << indent << "and its type '"
-	    << get_type_declaration(o->get_type())->get_pretty_representation()
-	    << "' changed:\n";
       diff_sptr d = compute_diff_for_types(o->get_type(),
 					   n->get_type(),
 					   ctxt);
-      if (d->currently_reporting())
-	out << indent << "  details are being reported\n";
-      else if (d->reported_once())
-	out << indent << "  details were reported earlier\n";
-      else
-	d->report(out, indent + "  ");
-      emitted = false;
+      if (d->to_be_reported())
+	{
+	  if (!emitted)
+	    out << indent << "type of '" << pretty_representation << "' changed:\n";
+	  else
+	    out << "\n" << indent << "and its type '"
+		<< get_type_declaration(o->get_type())->get_pretty_representation()
+		<< "' changed:\n";
+	  if (d->currently_reporting())
+	    out << indent << "  details are being reported\n";
+	  else if (d->reported_once())
+	    out << indent << "  details were reported earlier\n";
+	  else
+	    d->report(out, indent + "  ");
+	  emitted = false;
+	}
     }
   if (emitted)
     out << "\n";
@@ -1054,6 +1059,7 @@ represent(var_decl_sptr	o,
 static bool
 report_name_size_and_alignment_changes(decl_base_sptr first,
 				       decl_base_sptr second,
+				       diff_context_sptr ctxt,
 				       ostream& out,
 				       const string& indent,
 				       bool nl)
@@ -1079,14 +1085,16 @@ report_name_size_and_alignment_changes(decl_base_sptr first,
   unsigned fs = f->get_size_in_bits(), ss = s->get_size_in_bits(),
     fa = f->get_alignment_in_bits(), sa = s->get_alignment_in_bits();
 
-  if (fs != ss)
+  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
+      && (fs != ss))
     {
       if (n)
 	out << "\n";
       out << indent << "size changed from " << fs << " to " << ss << " bits";
       n = true;
     }
-  if (fa != sa)
+  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
+      && (fa != sa))
     {
       if (n)
 	out << "\n";
@@ -1247,7 +1255,9 @@ var_diff::report(ostream& out, const string& indent) const
   decl_base_sptr first = first_var(), second = second_var();
   string n = first->get_pretty_representation();
 
-  if (report_name_size_and_alignment_changes(first, second, out, indent,
+  if (report_name_size_and_alignment_changes(first, second,
+					     context(),
+					     out, indent,
 					     /*start_with_new_line=*/false))
     out << "\n";
 
@@ -2064,7 +2074,8 @@ enum_diff::report(ostream& out, const string& indent) const
 
   enum_type_decl_sptr first = first_enum(), second = second_enum();
 
-  if (report_name_size_and_alignment_changes(first, second, out, indent,
+  if (report_name_size_and_alignment_changes(first, second, context(),
+					     out, indent,
 					     /*start_with_num_line=*/false))
     out << "\n";
   maybe_report_diff_for_member(first, second, out, indent);
@@ -2850,7 +2861,8 @@ class_diff::report(ostream& out, const string& indent) const
   class_decl_sptr first = first_class_decl(),
     second = second_class_decl();
 
-  if (report_name_size_and_alignment_changes(first, second, out, indent,
+  if (report_name_size_and_alignment_changes(first, second, context(),
+					     out, indent,
 					     /*start_with_new_line=*/false))
     out << "\n";
 
@@ -4719,7 +4731,8 @@ type_decl_diff::report(ostream& out, const string& indent) const
 
   string name = f->get_pretty_representation();
 
-  bool n = report_name_size_and_alignment_changes(f, s, out, indent,
+  bool n = report_name_size_and_alignment_changes(f, s, context(),
+						  out, indent,
 						  /*new line=*/false);
 
   if (f->get_visibility() != s->get_visibility())
