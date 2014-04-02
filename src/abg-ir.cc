@@ -455,8 +455,14 @@ decl_base::get_qualified_name() const
 bool
 decl_base::operator==(const decl_base& other) const
 {
-  if (get_name() != other.get_name())
-    return false;
+  if (!get_mangled_name().empty())
+    {
+      if (get_mangled_name() != other.get_mangled_name())
+	return false;
+    }
+  else
+    if (get_name() != other.get_name())
+      return false;
 
   if (is_member_decl(this) && is_member_decl(other))
     {

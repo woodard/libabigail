@@ -84,13 +84,12 @@ struct decl_base::hash
     if (d.hash_ == 0)
       {
 	std::tr1::hash<string> str_hash;
-	std::tr1::hash<unsigned> unsigned_hash;
 
 	size_t v = str_hash(typeid(d).name());
-	if (!d.get_name().empty())
+	if (!d.get_mangled_name().empty())
+	  v = hashing::combine_hashes(v, str_hash(d.get_mangled_name()));
+	else if (!d.get_name().empty())
 	  v = hashing::combine_hashes(v, str_hash(d.get_qualified_name()));
-	if (d.get_location())
-	  v = hashing::combine_hashes(v, unsigned_hash(d.get_location()));
 	if (is_member_decl(d))
 	  {
 	    v = hashing::combine_hashes(v, get_member_access_specifier(d));
