@@ -2386,16 +2386,18 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 					  DW_AT_object_pointer,
 					  this_ptr_type))
 		  is_static = true;
-		else if (ctxt.dwarf_version() < 3
-			 && !f->get_parameters().empty())
+		else if (ctxt.dwarf_version() < 3)
 		  {
 		    is_static = true;
 		    // For dwarf < 3, let's see if the first parameter
 		    // has class type and has a DW_AT_artificial
 		    // attribute flag set.
-		    function_decl::parameter_sptr first_parm =
-		      f->get_parameters()[0];
-		    bool is_artificial = first_parm->get_artificial();;
+		    function_decl::parameter_sptr first_parm;
+		    if (!f->get_parameters().empty())
+		      first_parm = f->get_parameters()[0];
+
+		    bool is_artificial =
+		      first_parm && first_parm->get_artificial();;
 		    pointer_type_def_sptr this_type;
 		    if (is_artificial)
 		      this_type =
