@@ -152,6 +152,12 @@ is_type(const decl_base&);
 shared_ptr<type_base>
 is_type(const shared_ptr<decl_base>);
 
+shared_ptr<typedef_decl>
+is_typedef(const shared_ptr<type_base>);
+
+shared_ptr<typedef_decl>
+is_typedef(const shared_ptr<decl_base>);
+
 shared_ptr<class_decl>
 look_through_decl_only_class(shared_ptr<class_decl>);
 
@@ -284,6 +290,9 @@ get_member_function_vtable_offset(const function_decl&);
 size_t
 get_member_function_vtable_offset(const shared_ptr<function_decl>);
 
+shared_ptr<type_base>
+strip_typedef(const shared_ptr<type_base>);
+
 const global_scope*
 get_global_scope(const decl_base* decl);
 
@@ -304,6 +313,14 @@ get_type_declaration(type_base*);
 
 shared_ptr<decl_base>
 get_type_declaration(const shared_ptr<type_base>);
+
+bool
+types_are_compatible(const shared_ptr<type_base>,
+		     const shared_ptr<type_base>);
+
+bool
+types_are_compatible(const shared_ptr<decl_base>,
+		     const shared_ptr<decl_base>);
 
 const scope_decl*
 get_top_most_scope_under(const decl_base*,

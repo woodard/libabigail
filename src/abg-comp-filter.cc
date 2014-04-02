@@ -133,6 +133,23 @@ data_member_offset_changed(decl_base_sptr f, decl_base_sptr s)
   return false;
 }
 
+/// Test if two types are different but compatible.
+///
+/// @param d1 the declaration of the first type to consider.
+///
+/// @param d2 the declaration of the second type to consider.
+///
+/// @return true if d1 and d2 are different but compatible.
+static bool
+is_compatible_change(decl_base_sptr d1, decl_base_sptr d2)
+{
+  if (is_typedef(d1) || is_typedef(d2))
+    if ((d1 != d2) && types_are_compatible(d1, d2))
+      return true;
+
+  return false;
+}
+
 /// The visiting code of the harmless_filter.
 ///
 /// @param d the diff node being visited.
@@ -145,21 +162,26 @@ data_member_offset_changed(decl_base_sptr f, decl_base_sptr s)
 bool
 harmless_filter::visit(diff* d, bool pre)
 {
+  diff_category category = NO_CHANGE_CATEGORY;
+
   if (pre)
     {
       decl_base_sptr f = d->first_subject(),
 	s = d->second_subject();
 
       if (access_changed(f, s))
-	d->add_to_category(ACCESS_CHANGE_CATEGORY);
-      // Add non-virtual member function deletions and changes due to
-      // details that are being reported or got reported earlier.
+	category |= ACCESS_CHANGE_CATEGORY;
+
+      if (is_compatible_change(f, s))
+	category |= COMPATIBLE_TYPE_CHANGE_CATEGORY;
+
+      if (category)
+	d->add_to_category(category);
     }
 
   // Propagate the categorization to the parent nodes.
   if (d->get_parent())
-    d->get_parent()->add_to_category(d->get_category()
-				     & ACCESS_CHANGE_CATEGORY);
+    d->get_parent()->add_to_category(d->get_category());
 
   return true;
 }

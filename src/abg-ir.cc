@@ -499,6 +499,8 @@ decl_base::set_scope(scope_decl* scope)
     context_->set_scope(scope);
 }
 
+// </decl_base definition>
+
 /// Streaming operator for the decl_base::visibility.
 ///
 /// @param o the output stream to serialize the visibility to.
@@ -573,9 +575,31 @@ operator<<(std::ostream& o, decl_base::binding b)
 /// @return true if the decl_base pointed to by the shared_ptrs are
 /// equal, false otherwise.
 bool
-operator==(decl_base_sptr l, decl_base_sptr r)
+operator==(const decl_base_sptr l, const decl_base_sptr r)
 {
   if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
+
+/// Turn equality of shared_ptr of type_base into a deep equality;
+/// that is, make it compare the pointed to objects too.
+///
+/// @param l the shared_ptr of type_base on left-hand-side of the
+/// equality.
+///
+/// @param r the shared_ptr of type_base on right-hand-side of the
+/// equality.
+///
+/// @return true if the type_base pointed to by the shared_ptrs are
+/// equal, false otherwise.
+bool
+operator==(const type_base_sptr l, const type_base_sptr r)
+{
+    if (l.get() == r.get())
     return true;
   if (!!l != !!r)
     return false;
@@ -1009,8 +1033,19 @@ size_t
 get_member_function_vtable_offset(const function_decl_sptr f)
 {return get_member_function_vtable_offset(*f);}
 
-// </decl_base definition>
+/// Recursively returns the the underlying type of a typedef.  The
+/// return type should not be a typedef of anything anymore.
+///
+/// @param type the type to strip the typedefs from.
+type_base_sptr
+strip_typedef(const type_base_sptr type)
+{
+  type_base_sptr t = type;
+  while (const typedef_decl_sptr ty = is_typedef(t))
+    t = ty->get_underlying_type();
 
+  return t;
+}
 /// Add a member decl to this scope.  Note that user code should not
 /// use this, but rather use add_decl_to_scope.
 ///
@@ -1423,6 +1458,45 @@ decl_base_sptr
 get_type_declaration(const type_base_sptr t)
 {return dynamic_pointer_cast<decl_base>(t);}
 
+/// Test if two types are equal modulo a typedef.
+///
+/// Type A and B are compatible if
+///
+///	- A and B are equal
+///	- or if one type is a typedef of the other one.
+///
+/// @param type1 the first type to consider.
+///
+/// @param type2 the second type to consider.
+///
+/// @return true iff @p type1 and @p type2 are compatible.
+bool
+types_are_compatible(const type_base_sptr type1,
+		     const type_base_sptr type2)
+{
+  type_base_sptr t1 = strip_typedef(type1);
+  type_base_sptr t2 = strip_typedef(type2);
+
+  return t1 == t2;
+}
+
+/// Test if two types are equal modulo a typedef.
+///
+/// Type A and B are compatible if
+///
+///	- A and B are equal
+///	- or if one type is a typedef of the other one.
+///
+/// @param type1 the declaration of the first type to consider.
+///
+/// @param type2 the declaration of the second type to consider.
+///
+/// @return true iff @p type1 and @p type2 are compatible.
+bool
+types_are_compatible(const decl_base_sptr d1,
+		     const decl_base_sptr d2)
+{return types_are_compatible(is_type(d1), is_type(d2));}
+
 /// Return the translation unit a declaration belongs to.
 ///
 /// @param decl the declaration to consider.
@@ -1547,6 +1621,26 @@ is_type(const decl_base& d)
 type_base_sptr
 is_type(const decl_base_sptr decl)
 {return dynamic_pointer_cast<type_base>(decl);}
+
+/// Test whether a type is a typedef.
+///
+/// @param t the type to test for.
+///
+/// @return the typedef declaration of the @p t, or NULL if it's not a
+/// typedef.
+typedef_decl_sptr
+is_typedef(const type_base_sptr t)
+{return dynamic_pointer_cast<typedef_decl>(t);}
+
+/// Test whether a type is a typedef.
+///
+/// @param t the declaration of the type to test for.
+///
+/// @return the typedef declaration of the @p t, or NULL if it's not a
+/// typedef.
+typedef_decl_sptr
+is_typedef(const decl_base_sptr d)
+{return is_typedef(is_type(d));}
 
 /// If a class is a decl-only class, get its definition.  Otherwise,
 /// just return the initial class.

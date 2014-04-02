@@ -213,14 +213,21 @@ enum diff_category
 {
   /// This means the diff node does not carry any (meaningful) change.
   NO_CHANGE_CATEGORY = 0,
+
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries access related changes, e.g, a private member
   /// that becomes public.
   ACCESS_CHANGE_CATEGORY = 1,
+
+  /// This means the diff node (or at least one of its descendant
+  /// nodes) carries a change involving two compatible types.  For
+  /// instance a type and its typedefs.
+  COMPATIBLE_TYPE_CHANGE_CATEGORY = 1 << 1,
+
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 1,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 2,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -229,11 +236,15 @@ enum diff_category
   /// time you add a new enumerator above.
   EVERYTHING_CATEGORY =
   ACCESS_CHANGE_CATEGORY
+  | COMPATIBLE_TYPE_CHANGE_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
 };
 
 diff_category
 operator|(diff_category c1, diff_category c2);
+
+diff_category&
+operator|=(diff_category& c1, diff_category c2);
 
 diff_category
 operator^(diff_category c1, diff_category c2);

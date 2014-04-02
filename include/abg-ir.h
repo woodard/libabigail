@@ -465,7 +465,10 @@ public:
 };// end class decl_base
 
 bool
-operator==(decl_base_sptr, decl_base_sptr);
+operator==(const decl_base_sptr, const decl_base_sptr);
+
+bool
+operator==(const type_base_sptr, const type_base_sptr);
 
 std::ostream&
 operator<<(std::ostream&, decl_base::visibility);

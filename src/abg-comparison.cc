@@ -695,6 +695,13 @@ operator|(diff_category c1, diff_category c2)
 {return static_cast<diff_category>(static_cast<unsigned>(c1)
 				   | static_cast<unsigned>(c2));}
 
+diff_category&
+operator|=(diff_category& c1, diff_category c2)
+{
+  c1 = c1 | c2;
+  return c1;
+}
+
 diff_category
 operator^(diff_category c1, diff_category c2)
 {return static_cast<diff_category>(static_cast<unsigned>(c1)
