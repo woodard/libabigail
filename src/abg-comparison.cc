@@ -878,6 +878,7 @@ diff_length_of_type_bases(type_base_sptr first, type_base_sptr second)
 static bool
 maybe_report_diff_for_member(decl_base_sptr	decl1,
 			     decl_base_sptr	decl2,
+			     diff_context_sptr	ctxt,
 			     ostream&		out,
 			     const string&	indent);
 
@@ -1268,7 +1269,7 @@ var_diff::report(ostream& out, const string& indent) const
 					     /*start_with_new_line=*/false))
     out << "\n";
 
-  maybe_report_diff_for_member(first, second, out, indent);
+  maybe_report_diff_for_member(first, second, context(), out, indent);
 
   if (diff_sptr d = type_diff())
     {
@@ -1347,6 +1348,7 @@ compute_diff(const var_decl_sptr	first,
 static bool
 maybe_report_diff_for_member(decl_base_sptr	decl1,
 			     decl_base_sptr	decl2,
+			     diff_context_sptr	ctxt,
 			     ostream&		out,
 			     const string&	indent)
 
@@ -1369,7 +1371,9 @@ maybe_report_diff_for_member(decl_base_sptr	decl1,
       out << "\n";
       reported = true;
     }
-  if (get_member_access_specifier(decl1) != get_member_access_specifier(decl2))
+  if ((ctxt->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
+      && (get_member_access_specifier(decl1)
+	  != get_member_access_specifier(decl2)))
     {
       out << indent << "'" << decl1_repr << "' access changed from '"
 	  << get_member_access_specifier(decl1)
@@ -2085,7 +2089,7 @@ enum_diff::report(ostream& out, const string& indent) const
 					     out, indent,
 					     /*start_with_num_line=*/false))
     out << "\n";
-  maybe_report_diff_for_member(first, second, out, indent);
+  maybe_report_diff_for_member(first, second, context(), out, indent);
 
   // name
   if (first->get_name() != second->get_name())
@@ -2873,7 +2877,7 @@ class_diff::report(ostream& out, const string& indent) const
 					     /*start_with_new_line=*/false))
     out << "\n";
 
-  maybe_report_diff_for_member(first, second, out, indent);
+  maybe_report_diff_for_member(first, second, context(), out, indent);
 
   // bases classes
   if (base_changes())
@@ -3552,7 +3556,8 @@ base_diff::report(ostream& out, const string& indent) const
       emitted = true;
     }
 
-  if (f->get_access_specifier() != s->get_access_specifier())
+  if ((context()->get_allowed_category() & ACCESS_CHANGE_CATEGORY)
+      && (f->get_access_specifier() != s->get_access_specifier()))
     {
       if (emitted)
 	out << ", ";
@@ -4478,7 +4483,7 @@ function_decl_diff::report(ostream& out, const string& indent) const
 
   maybe_report_diff_for_member(first_function_decl(),
 			       second_function_decl(),
-			       out, indent);
+			       context(), out, indent);
 
   string qn1 = first_function_decl()->get_qualified_name(),
     qn2 = second_function_decl()->get_qualified_name();
@@ -4915,7 +4920,7 @@ typedef_diff::report(ostream& out, const string& indent) const
 	}
     }
 
-  maybe_report_diff_for_member(f, s, out, indent);
+  maybe_report_diff_for_member(f, s, context(), out, indent);
 
   if (f->get_name() != s->get_name())
     {
