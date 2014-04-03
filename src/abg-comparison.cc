@@ -4395,9 +4395,10 @@ function_decl_diff::ensure_lookup_tables_populated()
 	      priv_->deleted_parms_by_id_.find(parm->get_index());
 	    if (k != priv_->deleted_parms_by_id_.end())
 	      {
-		priv_->changed_parms_by_id_[parm->get_index()] =
-		  std::make_pair(k->second, parm);
-		priv_->subtype_changed_parms_.erase(parm_name);
+		if (*k->second != *parm
+		    && (k->second->get_name_id() != parm_name))
+		  priv_->changed_parms_by_id_[parm->get_index()] =
+		    std::make_pair(k->second, parm);
 		priv_->added_parms_.erase(parm_name);
 		priv_->deleted_parms_.erase(k->second->get_name_id());
 		priv_->deleted_parms_by_id_.erase(parm->get_index());

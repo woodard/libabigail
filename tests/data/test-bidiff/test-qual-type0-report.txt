@@ -11,6 +11,6 @@
       unqualified underlying type class S0 changed, as reported earlier
 1 changed declaration:
   'function void foo(const S0&)' was changed to 'function void foo(const S0&)':
-    parameter 0 of type 'const S0&' changed:
+    parameter 0 of type 'const S0&' has sub-type changes:
       in referenced type 'const S0':
         unqualified underlying type class S0 changed, as reported earlier

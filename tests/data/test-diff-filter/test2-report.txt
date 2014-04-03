@@ -4,7 +4,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 2 functions with some indirect sub-type change:
 
   [C]'function void foo(const C0&)' has some indirect sub-type changes:
-    parameter 0 of type 'const C0&' changed:
+    parameter 0 of type 'const C0&' has sub-type changes:
       in unqualified underlying type 'C0&':
         in referenced type 'struct C0':
           size changed from 16 to 24 bits
@@ -18,7 +18,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           1 member function insertion:
             'method C0::C0()'
   [C]'function void bar(const C1&)' has some indirect sub-type changes:
-    parameter 0 of type 'const C1&' changed:
+    parameter 0 of type 'const C1&' has sub-type changes:
       in unqualified underlying type 'C1&':
         in referenced type 'class C1':
           size changed from 8 to 64 bits
