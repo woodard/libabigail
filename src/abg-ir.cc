@@ -1657,7 +1657,6 @@ is_typedef(const decl_base_sptr d)
 class_decl_sptr
 look_through_decl_only_class(class_decl_sptr klass)
 {
-
   if (!klass)
     return klass;
 
