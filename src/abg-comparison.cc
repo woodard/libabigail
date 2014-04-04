@@ -5366,7 +5366,7 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
     {
       function_decl_sptr f(i->second.first, noop_deleter());
       function_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff_for_decls(f, s, ctxt_);
+      diff = compute_diff(f, s, ctxt_);
       ctxt_->maybe_apply_filters(diff);
       if (diff->is_filtered_out())
 	++stat.num_func_filtered_out;
@@ -5572,7 +5572,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  function_decl_sptr f(i->second.first, noop_deleter());
 	  function_decl_sptr s(i->second.second, noop_deleter());
 
-	  diff_sptr diff = compute_diff_for_decls(f, s, context());
+	  diff_sptr diff = compute_diff(f, s, context());
 	  if (!diff)
 	    continue;
 
