@@ -1214,10 +1214,7 @@ var_diff::var_diff(var_decl_sptr	first,
 		   diff_context_sptr	ctxt)
   : diff(first, second, ctxt),
     priv_(new priv)
-{
-  priv_->type_diff_ = type_diff;
-  type_diff->set_parent(this);
-}
+{priv_->type_diff_ = type_diff;}
 
 /// Getter for the first @ref var_decl of the diff.
 ///
@@ -1293,8 +1290,12 @@ var_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = type_diff())
-    if (!d->traverse(v))
-      return false;
+    {
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
+	return false;
+    }
 
   TRY_POST_VISIT(v);
 
@@ -1437,10 +1438,7 @@ pointer_diff::underlying_type_diff() const
 /// of this diff.
 void
 pointer_diff::underlying_type_diff(const diff_sptr d)
-{
-  priv_->underlying_type_diff_ = d;
-  d->set_parent(this);
-}
+{priv_->underlying_type_diff_ = d;}
 
 /// Report the diff in a serialized form.
 ///
@@ -1498,8 +1496,12 @@ pointer_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    if (!d->traverse(v))
-      return false;
+    {
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
+	return false;
+    }
 
   TRY_POST_VISIT(v);
 
@@ -1590,7 +1592,6 @@ diff_sptr&
 reference_diff::underlying_type_diff(diff_sptr d)
 {
   priv_->underlying_type_diff_ = d;
-  d->set_parent(this);
   return priv_->underlying_type_diff_;
 }
 
@@ -1659,8 +1660,12 @@ reference_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    if (!d->traverse(v))
-    return false;
+    {
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
+	return false;
+    }
 
   TRY_POST_VISIT(v);
 
@@ -1750,10 +1755,7 @@ qualified_type_diff::underlying_type_diff() const
 /// types.
 void
 qualified_type_diff::underlying_type_diff(const diff_sptr d)
-{
-  priv_->underlying_type_diff = d;
-  d->set_parent(this);
-}
+{priv_->underlying_type_diff = d;}
 
 /// Return the length of the diff, or zero if the two qualified types
 /// are equal.
@@ -1881,8 +1883,12 @@ qualified_type_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    if (!d->traverse(v))
-      return false;
+    {
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
+	return false;
+    }
 
   TRY_POST_VISIT(v);
 
@@ -2025,10 +2031,7 @@ enum_diff::enum_diff(const enum_type_decl_sptr	first,
 		     const diff_context_sptr	ctxt)
   : diff(first, second,ctxt),
     priv_(new priv)
-{
-  priv_->underlying_type_diff_ = underlying_type_diff;
-  underlying_type_diff->set_parent(this);
-}
+{priv_->underlying_type_diff_ = underlying_type_diff;}
 
 /// @return the first enum of the diff.
 const enum_type_decl_sptr
@@ -2182,8 +2185,12 @@ enum_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    if (!d->traverse(v))
-      return false;
+    {
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
+	return false;
+    }
 
   TRY_POST_VISIT(v);
 
@@ -3356,8 +3363,9 @@ class_diff::traverse(diff_node_visitor& v)
 					     i->second.second,
 					     context()))
       {
-	d->set_parent(this);
-	if (!d->traverse(v))
+	bool r = d->traverse(v);
+	add_to_category(d->get_category());
+	if (!r)
 	  {
 	    priv_->traversing_ = false;
 	    return false;
@@ -3520,10 +3528,7 @@ base_diff::get_underlying_class_diff() const
 /// classes.
 void
 base_diff::set_underlying_class_diff(class_diff_sptr d)
-{
-  priv_->underlying_class_diff_ = d;
-  d->set_parent(this);
-}
+{priv_->underlying_class_diff_ = d;}
 
 /// Getter for the length of the diff.
 ///
@@ -3593,8 +3598,12 @@ base_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (class_diff_sptr d = get_underlying_class_diff())
-    if (!d->traverse(v))
-      return false;
+    {
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
+	return false;
+    }
 
   TRY_POST_VISIT(v);
 
@@ -4602,8 +4611,9 @@ function_decl_diff::traverse(diff_node_visitor& v)
 
   if (diff_sptr d = return_type_diff())
     {
-      d->set_parent(this);
-      if (!d->traverse(v))
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
 	return false;
     }
 
@@ -4615,8 +4625,9 @@ function_decl_diff::traverse(diff_node_visitor& v)
 					     i->second.second->get_type(),
 					     context()))
       {
-	d->set_parent(this);
-	if (!d->traverse(v))
+	bool r = d->traverse(v);
+	add_to_category(d->get_category());
+	if (!r)
 	  return false;
       }
 
@@ -4628,8 +4639,9 @@ function_decl_diff::traverse(diff_node_visitor& v)
 					     i->second.second->get_type(),
 					     context()))
       {
-	d->set_parent(this);
-	if (!d->traverse(v))
+	bool r = d->traverse(v);
+	add_to_category(d->get_category());
+	if (!r)
 	  return false;
       }
 
@@ -4879,10 +4891,7 @@ typedef_diff::underlying_type_diff() const
 /// the two underlying types of the typedefs.
 void
 typedef_diff::underlying_type_diff(const diff_sptr d)
-{
-  priv_->underlying_type_diff_ = d;
-  d->set_parent(this);
-}
+{priv_->underlying_type_diff_ = d;}
 
 /// Getter of the length of the diff between the two typedefs.
 ///
@@ -4977,8 +4986,12 @@ typedef_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    if (!d->traverse(v))
-      return false;
+    {
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
+	return false;
+    }
 
   TRY_POST_VISIT(v);
 
