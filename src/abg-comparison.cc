@@ -4353,7 +4353,8 @@ function_decl_diff::ensure_lookup_tables_populated()
        i != priv_->parm_changes_.deletions().end();
        ++i)
     {
-      parm = deleted_parameter_at(i->index());
+      parm = *(first_function_decl()->get_first_non_implicit_parm()
+	       + i->index());
       parm_name = parm->get_name_id();
       // If for a reason the type name is empty we want to know and
       // fix that.
@@ -4372,7 +4373,7 @@ function_decl_diff::ensure_lookup_tables_populated()
 	   j != i->inserted_indexes().end();
 	   ++j)
 	{
-	  parm = inserted_parameter_at(*j);
+	  parm = *(second_function_decl()->get_first_non_implicit_parm() + *j);
 	  parm_name = parm->get_name_id();
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
