@@ -5014,7 +5014,10 @@ typedef_diff::report(ostream& out, const string& indent) const
   if (f->get_name() != s->get_name())
     {
       out << indent << "typedef name changed from "
-	  << f->get_name() << " to " << s->get_name() << "\n";
+	  << f->get_qualified_name()
+	  << " to "
+	  << s->get_qualified_name()
+	  << "\n";
       emit_nl = true;
     }
 
