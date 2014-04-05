@@ -540,6 +540,8 @@ distinct_diff::report(ostream& out, const string& indent) const
 else
   if (!report_size_and_alignment_changes(f, s, context(), out, indent, true))
     out << indent << "but no size changed\n";
+  else
+    out << "\n";
 }
 
 /// Traverse an instance of distinct_diff.
@@ -1185,8 +1187,9 @@ report_name_size_and_alignment_changes(decl_base_sptr		first,
       nl = true;
     }
 
-  return report_size_and_alignment_changes(first, second, ctxt,
-					   out, indent, nl);
+  nl |= report_size_and_alignment_changes(first, second, ctxt,
+					  out, indent, nl);
+  return nl;
 }
 
 /// Represent the kind of difference we want report_mem_header() to
