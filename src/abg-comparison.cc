@@ -423,6 +423,14 @@ diff::to_be_reported() const
 }
 // </diff stuff>
 
+static bool
+report_size_and_alignment_changes(decl_base_sptr	first,
+				  decl_base_sptr	second,
+				  diff_context_sptr	ctxt,
+				  ostream&		out,
+				  const string&	indent,
+				  bool			nl);
+
 // <distinct_diff stuff>
 
 /// The private data structure for @ref distinct_diff.
@@ -514,6 +522,24 @@ distinct_diff::report(ostream& out, const string& indent) const
   string s_repr = s ? s->get_pretty_representation() : "'void'";
 
   out << indent << "entity changed from " << f_repr << " to " << s_repr << "\n";
+
+  type_base_sptr fs = strip_typedef(is_type(f)),
+    ss = strip_typedef(is_type(s));
+
+  if (fs && ss
+      && !entities_are_of_distinct_kinds(get_type_declaration(fs),
+					 get_type_declaration(ss)))
+    {
+      diff_sptr diff = compute_diff(get_type_declaration(fs),
+				    get_type_declaration(ss),
+				    context());
+      if (diff->length())
+	assert(diff->to_be_reported());
+      diff->report(out, indent + "  ");
+    }
+else
+  if (!report_size_and_alignment_changes(f, s, context(), out, indent, true))
+    out << indent << "but no size changed\n";
 }
 
 /// Traverse an instance of distinct_diff.
@@ -526,6 +552,23 @@ bool
 distinct_diff::traverse(diff_node_visitor& v)
 {
   TRY_PRE_VISIT(v);
+
+  type_base_sptr fs = strip_typedef(is_type(first())),
+    ss = strip_typedef(is_type(second()));
+
+  decl_base_sptr f = get_type_declaration(fs), s = get_type_declaration(ss);
+
+  if (f && s && !entities_are_of_distinct_kinds(f, s))
+    {
+      diff_sptr d = compute_diff(f, s, context());
+      bool r = d->traverse(v);
+      add_to_category(d->get_category());
+      if (!r)
+	return false;
+
+      TRY_POST_VISIT(v);
+    }
+
   return true;
 }
 
@@ -1051,11 +1094,13 @@ represent(var_decl_sptr	o,
     out << "\n";
 }
 
-/// Report the size and alignement chanages of a type.
+/// Report the size and alignment changes of a type.
 ///
 /// @param first the first type to consider.
 ///
 /// @param second the second type to consider.
+///
+/// @param ctxt the content of the current diff.
 ///
 /// @param out the output stream to report the change to.
 ///
@@ -1065,12 +1110,12 @@ represent(var_decl_sptr	o,
 ///
 /// @return true iff something was reported.
 static bool
-report_name_size_and_alignment_changes(decl_base_sptr first,
-				       decl_base_sptr second,
-				       diff_context_sptr ctxt,
-				       ostream& out,
-				       const string& indent,
-				       bool nl)
+report_size_and_alignment_changes(decl_base_sptr	first,
+				  decl_base_sptr	second,
+				  diff_context_sptr	ctxt,
+				  ostream&		out,
+				  const string&	indent,
+				  bool			nl)
 {
   type_base_sptr f = dynamic_pointer_cast<type_base>(first),
     s = dynamic_pointer_cast<type_base>(second);
@@ -1079,24 +1124,13 @@ report_name_size_and_alignment_changes(decl_base_sptr first,
     return false;
 
   bool n = false;
-  string fn = first->get_qualified_name(),
-    sn = second->get_qualified_name();
-  if (fn != sn)
-    {
-      if (nl)
-	out << "\n";
-      out << indent << "name changed from '"
-	  << fn << "' to '" << sn << "'";
-      n = true;
-    }
-
   unsigned fs = f->get_size_in_bits(), ss = s->get_size_in_bits(),
     fa = f->get_alignment_in_bits(), sa = s->get_alignment_in_bits();
 
   if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
       && (fs != ss))
     {
-      if (n)
+      if (nl)
 	out << "\n";
       out << indent << "size changed from " << fs << " to " << ss << " bits";
       n = true;
@@ -1114,6 +1148,45 @@ report_name_size_and_alignment_changes(decl_base_sptr first,
   if (n)
     return true;
   return false;
+}
+
+/// Report the name, size and alignment changes of a type.
+///
+/// @param first the first type to consider.
+///
+/// @param second the second type to consider.
+///
+/// @param ctxt the content of the current diff.
+///
+/// @param out the output stream to report the change to.
+///
+/// @param indent the string to use for indentation.
+///
+/// @param nl whether to start the first report line with a new line.
+///
+/// @return true iff something was reported.
+static bool
+report_name_size_and_alignment_changes(decl_base_sptr		first,
+				       decl_base_sptr		second,
+				       diff_context_sptr	ctxt,
+				       ostream&		out,
+				       const string&		indent,
+				       bool			nl)
+{
+  string fn = first->get_qualified_name(),
+    sn = second->get_qualified_name();
+
+  if (fn != sn)
+    {
+      if (nl)
+	out << "\n";
+      out << indent << "name changed from '"
+	  << fn << "' to '" << sn << "'";
+      nl = true;
+    }
+
+  return report_size_and_alignment_changes(first, second, ctxt,
+					   out, indent, nl);
 }
 
 /// Represent the kind of difference we want report_mem_header() to
