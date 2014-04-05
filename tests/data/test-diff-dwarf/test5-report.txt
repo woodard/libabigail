@@ -1,0 +1,12 @@
+Functions changes summary: 0 Removed, 1 Changed, 0 Added function
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+1 function with some indirect sub-type change:
+
+  [C]'function C0 foo()' has some indirect sub-type changes:
+    return type changed:
+      entity changed from class C0 to typedef c0_type
+        1 data member change:
+         'int C0::m0' access changed from 'private' to 'public'
+
+

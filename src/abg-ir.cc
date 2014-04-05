@@ -2895,9 +2895,6 @@ compare_function_types(const function_type& lhs,
   if (!lhs.type_base::operator==(rhs))
     return false;
 
-  if (!!lhs.get_return_type() != !!rhs.get_return_type())
-    return false;
-
   class_decl_sptr lhs_class, rhs_class;
   try
     {
@@ -2914,6 +2911,32 @@ compare_function_types(const function_type& lhs,
     }
   catch (...)
     {}
+
+  decl_base_sptr lhs_return_type_decl =
+    get_type_declaration(lhs.get_return_type());
+  decl_base_sptr rhs_return_type_decl =
+    get_type_declaration(rhs.get_return_type());
+  bool compare_result_types = true;
+  string lhs_rt_name = lhs_return_type_decl
+    ? lhs_return_type_decl->get_qualified_name()
+    : "";
+  string rhs_rt_name = rhs_return_type_decl
+    ? rhs_return_type_decl->get_qualified_name()
+    : "";
+
+  if ((lhs_class && (lhs_class->get_qualified_name() == lhs_rt_name))
+      ||
+      (rhs_class && (rhs_class->get_qualified_name() == rhs_rt_name)))
+    compare_result_types = false;
+
+  if (compare_result_types)
+    {
+      if (lhs.get_return_type() != rhs.get_return_type())
+	return false;
+    }
+  else
+    if (lhs_rt_name != rhs_rt_name)
+      return false;
 
   class_decl_sptr lcl, rcl;
   vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
