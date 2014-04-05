@@ -6,4 +6,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void foo(C0)' has some indirect sub-type changes:
     parameter 0 of type 'class C0' changed:
       entity changed from class C0 to typedef c0_type
+        1 data member change:
+         'int C0::m0' access changed from 'private' to 'public'
+
 
