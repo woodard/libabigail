@@ -224,10 +224,14 @@ enum diff_category
   /// instance a type and its typedefs.
   COMPATIBLE_TYPE_CHANGE_CATEGORY = 1 << 1,
 
+  /// This means that a diff node in the sub-tree carries a
+  /// declaration name change.
+  DECL_NAME_CHANGE_CATEGORY = 1 << 2,
+
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 2,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 3,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -237,6 +241,7 @@ enum diff_category
   EVERYTHING_CATEGORY =
   ACCESS_CHANGE_CATEGORY
   | COMPATIBLE_TYPE_CHANGE_CATEGORY
+  | DECL_NAME_CHANGE_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
 };
 

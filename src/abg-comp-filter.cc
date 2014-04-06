@@ -150,6 +150,26 @@ is_compatible_change(decl_base_sptr d1, decl_base_sptr d2)
   return false;
 }
 
+/// Test if two decls have different names.
+///
+/// @param d1 the first declaration to consider.
+///
+/// @param d2 the second declaration to consider.
+///
+/// @return true if d1 and d2 have different names.
+static bool
+decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
+{
+  string d1_name, d2_name;
+
+  if (d1)
+    d1_name = d1->get_name();
+  if (d2)
+    d2_name = d2->get_name();
+
+  return d1_name != d2_name;
+}
+
 /// The visiting code of the harmless_filter.
 ///
 /// @param d the diff node being visited.
@@ -174,6 +194,9 @@ harmless_filter::visit(diff* d, bool pre)
 
       if (is_compatible_change(f, s))
 	category |= COMPATIBLE_TYPE_CHANGE_CATEGORY;
+
+      if (decl_name_changed(f, s))
+	category |= DECL_NAME_CHANGE_CATEGORY;
 
       if (category)
 	d->add_to_category(category);

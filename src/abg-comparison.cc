@@ -1178,7 +1178,8 @@ report_name_size_and_alignment_changes(decl_base_sptr		first,
   string fn = first->get_qualified_name(),
     sn = second->get_qualified_name();
 
-  if (fn != sn)
+  if (fn != sn
+      && ctxt->get_allowed_category() & DECL_NAME_CHANGE_CATEGORY)
     {
       if (nl)
 	out << "\n";
@@ -2171,7 +2172,8 @@ enum_diff::report(ostream& out, const string& indent) const
   maybe_report_diff_for_member(first, second, context(), out, indent);
 
   // name
-  if (first->get_name() != second->get_name())
+  if (first->get_name() != second->get_name()
+      && context()->get_allowed_category() & DECL_NAME_CHANGE_CATEGORY)
     out << indent << "enum name changed from '"
 	<< first->get_qualified_name() << "' to '"
 	<< second->get_qualified_name() << "'\n";
@@ -5011,7 +5013,8 @@ typedef_diff::report(ostream& out, const string& indent) const
 
   maybe_report_diff_for_member(f, s, context(), out, indent);
 
-  if (f->get_name() != s->get_name())
+  if (f->get_name() != s->get_name()
+      && context()->get_allowed_category() & DECL_NAME_CHANGE_CATEGORY)
     {
       out << indent << "typedef name changed from "
 	  << f->get_qualified_name()

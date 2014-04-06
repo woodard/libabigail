@@ -174,7 +174,17 @@ data/test-diff-filter/test5-v0.cc		\
 data/test-diff-filter/test5-v1.cc		\
 data/test-diff-filter/test5-v0.o		\
 data/test-diff-filter/test5-v1.o		\
-data/test-diff-filter/test5-report.txt
+data/test-diff-filter/test5-report.txt		\
+data/test-diff-filter/test6-v0.cc		\
+data/test-diff-filter/test6-v1.cc		\
+data/test-diff-filter/test6-v0.o		\
+data/test-diff-filter/test6-v1.o		\
+data/test-diff-filter/test6-report.txt		\
+data/test-diff-filter/test7-v0.cc		\
+data/test-diff-filter/test7-v1.cc		\
+data/test-diff-filter/test7-v0.o		\
+data/test-diff-filter/test7-v1.o		\
+data/test-diff-filter/test7-report.txt
 
 clean-local: clean-local-check
 .PHONY: clean-local-check

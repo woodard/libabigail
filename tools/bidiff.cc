@@ -294,7 +294,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 
   if (!opts.show_harmless_changes)
       ctxt->switch_categories_off(abigail::comparison::ACCESS_CHANGE_CATEGORY
-				  | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY);
+				  | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
+				  | abigail::comparison::DECL_NAME_CHANGE_CATEGORY);
   if (!opts.show_harmful_changes)
     ctxt->switch_categories_off(abigail::comparison::SIZE_OR_OFFSET_CHANGE_CATEGORY);
 }
