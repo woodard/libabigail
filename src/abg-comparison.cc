@@ -5350,6 +5350,18 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    assert(added_fns_.find(n) == added_fns_.end());
 	    string_function_ptr_map::const_iterator j =
 	      deleted_fns_.find(n);
+	    if (j == deleted_fns_.end())
+	      {
+		// It can happen that an old dwarf producer might not
+		// have emitted the mangled name of the first diff
+		// subject.  Int hat case, we need to try to use the
+		// function synthetic signature here.
+		// TODO: also query the underlying elf file's .dynsym
+		// symbol table to see if the symbol is present in the
+		// first diff subject before for real.
+		if (!added_fn->get_mangled_name().empty())
+		  j = deleted_fns_.find(added_fn->get_pretty_representation());
+	      }
 	    if (j != deleted_fns_.end())
 	      {
 		if (*j->second != *added_fn)
