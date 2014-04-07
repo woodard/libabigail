@@ -621,13 +621,13 @@ public:
   void
   set_size_in_bits(size_t);
 
-  size_t
+  virtual size_t
   get_size_in_bits() const;
 
   void
   set_alignment_in_bits(size_t);
 
-  size_t
+  virtual size_t
   get_alignment_in_bits() const;
 };//end class type_base
 
@@ -1024,6 +1024,12 @@ public:
   typedef_decl(const string& name, const shared_ptr<type_base> underlying_type,
 	       location locus, const std::string& mangled_name = "",
 	       visibility vis = VISIBILITY_DEFAULT);
+
+  virtual size_t
+  get_size_in_bits() const;
+
+  virtual size_t
+  get_alignment_in_bits() const;
 
   virtual bool
   operator==(const decl_base&) const;

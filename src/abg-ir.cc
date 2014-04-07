@@ -2763,6 +2763,36 @@ typedef_decl::typedef_decl(const string&		name,
     underlying_type_(underlying_type)
 {}
 
+/// Return the size of the typedef.
+///
+/// This function looks at the size of the underlying type and ensures
+/// that it's the same as the size of the typedef.
+///
+/// @return the size of the typedef.
+size_t
+typedef_decl::get_size_in_bits() const
+{
+  size_t s = get_underlying_type()->get_size_in_bits();
+  if (s != type_base::get_size_in_bits())
+    const_cast<typedef_decl*>(this)->set_size_in_bits(s);
+  return type_base::get_size_in_bits();
+}
+
+/// Return the alignment of the typedef.
+///
+/// This function looks at the alignment of the underlying type and
+/// ensures that it's the same as the alignment of the typedef.
+///
+/// @return the size of the typedef.
+size_t
+typedef_decl::get_alignment_in_bits() const
+{
+    size_t s = get_underlying_type()->get_alignment_in_bits();
+  if (s != type_base::get_alignment_in_bits())
+    const_cast<typedef_decl*>(this)->set_alignment_in_bits(s);
+  return type_base::get_alignment_in_bits();
+}
+
 /// Equality operator
 ///
 /// @param o the other typedef_decl to test against.
