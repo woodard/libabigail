@@ -159,6 +159,12 @@ shared_ptr<typedef_decl>
 is_typedef(const shared_ptr<decl_base>);
 
 shared_ptr<class_decl>
+is_class_type(const shared_ptr<type_base>);
+
+shared_ptr<class_decl>
+is_class_type(const shared_ptr<decl_base>);
+
+shared_ptr<class_decl>
 look_through_decl_only_class(shared_ptr<class_decl>);
 
 bool

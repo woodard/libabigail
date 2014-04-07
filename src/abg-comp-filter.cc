@@ -233,8 +233,8 @@ harmful_filter::visit(diff* d, bool pre)
       if (type_size_changed(f, s)
 	  || data_member_offset_changed(f, s))
 	{
-	  class_decl_sptr cl1 = dynamic_pointer_cast<class_decl>(f),
-	    cl2 = dynamic_pointer_cast<class_decl>(s);
+	  class_decl_sptr cl1 = is_class_type(f),
+	    cl2 = is_class_type(s);
 	  if ((cl1 && cl1->get_is_declaration_only())
 	      || (cl2 && cl2->get_is_declaration_only()))
 	    // But do not compare a declaration-only class to another

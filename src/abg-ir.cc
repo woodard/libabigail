@@ -1648,6 +1648,33 @@ typedef_decl_sptr
 is_typedef(const decl_base_sptr d)
 {return is_typedef(is_type(d));}
 
+/// Test whether a type is a class.
+///
+/// This function looks through typedefs.
+///
+/// @parm t the type to consider.
+///
+/// @return the class_decl if @p t is a class_decl or null otherwise.
+class_decl_sptr
+is_class_type(const type_base_sptr t)
+{
+  if (!t)
+    return class_decl_sptr();
+  type_base_sptr ty = strip_typedef(t);
+  return dynamic_pointer_cast<class_decl>(ty);
+}
+
+/// Test whether a type is a class.
+///
+/// This function looks through typedefs.
+///
+/// @parm d the declaration of the type to consider.
+///
+/// @return the class_decl if @p d is a class_decl or null otherwise.
+class_decl_sptr
+is_class_type(const decl_base_sptr d)
+{return is_class_type(is_type(d));}
+
 /// If a class is a decl-only class, get its definition.  Otherwise,
 /// just return the initial class.
 ///
