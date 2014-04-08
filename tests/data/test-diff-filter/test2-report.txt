@@ -27,6 +27,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 
 1 Added function:
-  'method C0::C0()
+  'method C0::C0()'
 
 

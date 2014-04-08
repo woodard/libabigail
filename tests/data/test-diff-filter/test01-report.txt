@@ -33,6 +33,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     'method void S0::member0()' access changed from 'private' to 'public'
 
 1 Added function:
-  'method int S0::get_member0()
+  'method int S0::get_member0()'
 
 

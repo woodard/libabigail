@@ -5695,11 +5695,12 @@ corpus_diff::report(ostream& out, const string& indent) const
 	{
 	  out
 	    << indent
-	    << "  '";
+	    << "  ";
 	  if (total > large_num)
 	    out << "[A] ";
-	  out << i->second->get_pretty_representation()
-	      << "\n";
+	  out << "'"
+	      << i->second->get_pretty_representation()
+	      << "'\n";
 	  ++added;
 	}
       if (added)
@@ -5728,11 +5729,12 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  else
 	    n = i->second->get_pretty_representation();
 	  out << indent
-	      << "  '";
+	      << "  ";
 	  if (total > large_num)
 	    out << "[D] ";
-	  out << n
-	      << "\n";
+	  out << "'"
+	      << n
+	      << "'\n";
 	  ++removed;
 	}
       if (removed)
