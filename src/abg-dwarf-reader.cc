@@ -1917,10 +1917,19 @@ get_scope_for_die(read_context& ctxt,
       return i->second->get_global_scope();
     }
 
-  decl_base_sptr d = build_ir_node_from_die(ctxt, &parent_die,
-					    called_for_public_decl);
-  scope_decl_sptr s =  dynamic_pointer_cast<scope_decl>(d);
-  assert(s);
+  scope_decl_sptr s;
+  decl_base_sptr d;
+  if (dwarf_tag(&parent_die) == DW_TAG_subprogram)
+    ;
+  else
+    d = build_ir_node_from_die(ctxt, &parent_die,
+			       called_for_public_decl);
+  s =  dynamic_pointer_cast<scope_decl>(d);
+  if (!s)
+    // this is an entity defined in a scope that is e.g, a
+    // function.  It cannot be public from an ABI standpoint, so
+    // let's just drop it.
+    return scope_decl_sptr();
 
   class_decl_sptr cl = dynamic_pointer_cast<class_decl>(d);
   if (cl && cl->get_is_declaration_only())
@@ -2894,7 +2903,7 @@ build_ir_node_from_die(read_context&	ctxt,
 {
   decl_base_sptr result;
 
-  if (!die)
+  if (!die || !scope)
     return result;
 
   int tag = dwarf_tag(die);
