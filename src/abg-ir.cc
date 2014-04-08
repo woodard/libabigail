@@ -348,6 +348,10 @@ decl_base::get_hash() const
 	  if (!hashing_started_)
 	    set_hash(result);
 	}
+      else
+	// If we reach this point, it mean we are missing a virtual
+	// overload for decl_base::get_hash.  Add it!
+	abort();
     }
   return result;
 }
@@ -3437,6 +3441,18 @@ function_decl::operator==(const decl_base& other) const
     }
   catch(...)
     {return false;}
+}
+
+/// The virtual implementation of 'get_hash' for a function_decl.
+///
+/// This allows decl_base::get_hash to work for function_decls.
+///
+/// @return the hash value for function decl.
+size_t
+function_decl::get_hash() const
+{
+  function_decl::hash hash_fn;
+  return hash_fn(*this);
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual

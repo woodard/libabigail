@@ -1435,6 +1435,9 @@ public:
 	    && get_parameters().back()->get_variadic_marker());
   }
 
+  virtual size_t
+  get_hash() const;
+
   virtual bool
   traverse(ir_node_visitor&);
 

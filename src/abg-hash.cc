@@ -430,8 +430,14 @@ class_decl::base_spec::hash::operator()(const base_spec& t) const
 {
   member_base::hash hash_member;
   type_base::shared_ptr_hash hash_type_ptr;
+  std::hash<size_t> hash_size;
+  std::hash<bool> hash_bool;
+  std::hash<string> hash_string;
 
-  size_t v = hash_member(t);
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_member(t));
+  v = hashing::combine_hashes(v, hash_size(t.get_offset_in_bits()));
+  v = hashing::combine_hashes(v, hash_bool(t.get_is_virtual()));
   v = hashing::combine_hashes(v, hash_type_ptr(t.get_base_class()));
   return v;
 }
