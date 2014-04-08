@@ -1989,6 +1989,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	  {
 	    std::list<string> fqn_comps;
 	    fqn_to_components(demangled_name, fqn_comps);
+	    string mem_name = fqn_comps.back();
 	    fqn_comps.pop_back();
 	    decl_base_sptr ty_decl;
 	    if (!fqn_comps.empty())
@@ -1996,21 +1997,31 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 							*ctxt.cur_tu());
 	    if (class_decl_sptr cl = dynamic_pointer_cast<class_decl>(ty_decl))
 	      {
-		// so this is a static member variable then.
-		// So remove it from its current non-class scope and
-		// add it to this class.
+		// So we are seeing a member variable for which there
+		// is a global variable definition DIE not having a
+		// reference attribute pointing back to the member
+		// variable declaration DIE.  Thus remove the global
+		// variable definition from its current non-class
+		// scope ...
 		remove_decl_from_scope(*v);
-		decl_base_sptr d = add_decl_to_scope(*v, cl);
-		assert(d->get_scope());
-		var_decl_sptr dm =
-		  dynamic_pointer_cast<var_decl>(d);
-		assert(dm);
+		decl_base_sptr d;
+		if (d = lookup_var_decl_in_scope(mem_name,cl))
+		  // This is the data member with the same name in cl.
+		  // We need to flag it as static.
+		  ;
+		else
+		  // In this case there is no data member with the
+		  // same name in cl already.  Let's add it there then
+		  // ...
+		  d = add_decl_to_scope(*v, cl);
+
+		assert(dynamic_pointer_cast<var_decl>(d));
+		// Let's flag the data member as static.
 		set_member_is_static(d, true);
 	      }
 	    if (ty_decl)
 	      assert(ty_decl->get_scope());
 	  }
-	assert((*v)->get_scope());
       }
   ctxt.var_decls_to_re_add_to_tree().clear();
   return result;
