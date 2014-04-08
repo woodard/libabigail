@@ -3124,15 +3124,15 @@ build_ir_node_from_die(read_context&	ctxt,
 		    }
 		}
 	    }
-	{
-	  const class_decl* cl = dynamic_cast<class_decl*>(scope);
-	  // we shouldn't be in this class b/c, if this DIE is for a
-	  // member function, get_scope_for_die on it (prior to
-	  // calling this function) should have built the member
-	  // function for this DIE, and thus, this function should
-	  // have found the DIE for the member function in its cache.
-	  assert(!cl);
-	}
+	  {
+	    const class_decl* cl = dynamic_cast<class_decl*>(scope);
+	    // we shouldn't be in this class b/c, if this DIE is for a
+	    // member function, get_scope_for_die on it (prior to
+	    // calling this function) should have built the member
+	    // function for this DIE, and thus, this function should
+	    // have found the DIE for the member function in its cache.
+	    assert(!cl);
+	  }
 	ctxt.scope_stack().push(scope);
 
 	if ((result = build_function_decl(ctxt, die, fn)))
