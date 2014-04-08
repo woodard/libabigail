@@ -1972,6 +1972,7 @@ lookup_node_in_scope(const list<string>& fqn,
 	  else
 	    {
 	      //looking for a final type.
+	      node = dynamic_pointer_cast<NodeKind>(*m);
 	      if (node && get_node_name(node) == *c)
 		{
 		  resulting_decl = convert_node_to_decl(node);
