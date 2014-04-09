@@ -106,7 +106,7 @@ struct type_decl::hash
   size_t
   operator()(const type_decl& t) const
   {
-    if (t.hash_ == 0)
+    if (t.hash_ == 0 || t.hashing_started_)
       {
 	decl_base::hash decl_hash;
 	type_base::hash type_hash;
@@ -121,12 +121,43 @@ struct type_decl::hash
   }
 };
 
+/// Hashing operator for the @ref scope_decl type.
+///
+/// @param d the scope_decl to hash.
+///
+/// @return the hash value.
+size_t
+scope_decl::hash::operator()(const scope_decl& d) const
+{
+  if (d.hash_ == 0 || d.hashing_started_)
+    {
+      std::hash<string> hash_string;
+      size_t v = hash_string(typeid(d).name());
+      for (scope_decl::declarations::const_iterator i =
+	     d.get_member_decls().begin();
+	   i != d.get_member_decls().end();
+	   ++i)
+	v = hashing::combine_hashes(v, (*i)->get_hash());
+      d.hash_ = v;
+    }
+  return d.hash_;
+}
+
+/// Hashing operator for the @ref scope_decl type.
+///
+/// @param d the scope_decl to hash.
+///
+/// @return the hash value.
+size_t
+scope_decl::hash::operator()(const scope_decl* d) const
+{return d? operator()(*d) : 0;}
+
 struct scope_type_decl::hash
 {
   size_t
   operator()(const scope_type_decl& t) const
   {
-    if (t.hash_ == 0)
+    if (t.hash_ == 0 || t.hashing_started_)
       {
 	decl_base::hash decl_hash;
 	type_base::hash type_hash;
@@ -147,7 +178,7 @@ struct qualified_type_def::hash
   size_t
   operator()(const qualified_type_def& t) const
   {
-    if (t.hash_ == 0)
+    if (t.hash_ == 0 || t.hashing_started_)
       {
 	type_base::hash type_hash;
 	decl_base::hash decl_hash;
@@ -168,7 +199,7 @@ struct pointer_type_def::hash
   size_t
   operator()(const pointer_type_def& t) const
   {
-    if (t.hash_ == 0)
+    if (t.hash_ == 0 || t.hashing_started_)
       {
 	std::tr1::hash<string> str_hash;
 	type_base::hash type_base_hash;
@@ -191,7 +222,7 @@ struct reference_type_def::hash
   size_t
   operator()(const reference_type_def& t)
   {
-    if (t.hash_ == 0)
+    if (t.hash_ == 0 || t.hashing_started_)
       {
 	std::tr1::hash<string> hash_str;
 	type_base::hash hash_type_base;
@@ -217,7 +248,7 @@ struct enum_type_decl::hash
   size_t
   operator()(const enum_type_decl& t) const
   {
-    if (t.hash_ == 0)
+    if (t.hash_ == 0 || t.hashing_started_)
       {
 	std::tr1::hash<string> str_hash;
 	decl_base::hash decl_hash;
@@ -246,7 +277,7 @@ struct typedef_decl::hash
   size_t
   operator()(const typedef_decl& t) const
   {
-    if (t.hash_ == 0)
+    if (t.hash_ == 0 || t.hashing_started_)
       {
 	std::tr1::hash<string> str_hash;
 	type_base::hash hash_type;
@@ -277,7 +308,7 @@ struct typedef_decl::hash
 size_t
 var_decl::hash::operator()(const var_decl& t) const
 {
-    if (t.hash_ == 0)
+    if (t.hash_ == 0 || t.hashing_started_)
       {
 	std::tr1::hash<string> hash_string;
 	decl_base::hash hash_decl;
@@ -318,7 +349,7 @@ var_decl::hash::operator()(const var_decl* t) const
 size_t
 function_decl::hash::operator()(const function_decl& t) const
 {
-  if (t.hash_ == 0)
+  if (t.hash_ == 0 || t.hashing_started_)
     {
       std::tr1::hash<int> hash_int;
       std::tr1::hash<size_t> hash_size_t;
@@ -475,11 +506,14 @@ class_decl::member_class_template::hash::operator()
   return v;
 }
 
-struct class_decl::hash
+/// Compute a hash for a @ref class_decl
+///
+/// @param t the class_decl for which to compute the hash value.
+///
+/// @return the computed hash value.
+size_t
+class_decl::hash::operator()(const class_decl& t) const
 {
-  size_t
-  operator()(const class_decl& t) const
-  {
     if (t.hashing_started())
       return 0;
 
@@ -551,10 +585,17 @@ struct class_decl::hash
 
 	t.hash_ = v;
       }
-
     return t.hash_;
-  }
-};
+}
+
+/// Compute a hash for a @ref class_decl
+///
+/// @param t the class_decl for which to compute the hash value.
+///
+/// @return the computed hash value.
+size_t
+class_decl::hash::operator()(const class_decl* t) const
+{return t ? operator()(*t) : 0;}
 
 struct template_parameter::hash
 {
@@ -622,23 +663,34 @@ struct type_tparameter::hash
   }
 };
 
-struct non_type_tparameter::hash
+/// Compute a hash value for a @ref non_type_tparameter
+///
+/// @param t the non_type_tparameter for which to compute the value.
+///
+/// @return the computed hash value.
+size_t
+non_type_tparameter::hash::operator()(const non_type_tparameter& t) const
 {
-  size_t
-  operator()(const non_type_tparameter& t) const
-  {
-    template_parameter::hash hash_template_parameter;
-    std::tr1::hash<string> hash_string;
-    type_base::shared_ptr_hash hash_type;
+  template_parameter::hash hash_template_parameter;
+  std::tr1::hash<string> hash_string;
+  type_base::shared_ptr_hash hash_type;
 
-    size_t v = hash_string(typeid(t).name());
-    v = hashing::combine_hashes(v, hash_template_parameter(t));
-    v = hashing::combine_hashes(v, hash_string(t.get_name()));
-    v = hashing::combine_hashes(v, hash_type(t.get_type()));
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_template_parameter(t));
+  v = hashing::combine_hashes(v, hash_string(t.get_name()));
+  v = hashing::combine_hashes(v, hash_type(t.get_type()));
 
-    return v;
-  }
-};
+  return v;
+}
+
+/// Compute a hash value for a @ref non_type_tparameter
+///
+/// @param t the non_type_tparameter to compute the hash value for.
+///
+/// @return the computed hash value.
+size_t
+non_type_tparameter::hash::operator()(const non_type_tparameter* t) const
+{return t ? operator()(*t) : 0;}
 
 struct template_tparameter::hash
 {
@@ -674,6 +726,31 @@ operator()(const template_parameter* t) const
   // Poor man's fallback.
   return template_parameter::hash()(*t);
 }
+
+/// Compute a hash value for a @ref type_composition type.
+///
+/// @param t the type_composition to compute the hash value for.
+///
+/// @return the computed hash value.
+size_t
+type_composition::hash::operator()(const type_composition& t) const
+{
+  std::hash<string> hash_string;
+  type_base::dynamic_hash hash_type;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_type(t.get_composed_type().get()));
+  return v;
+}
+
+/// Compute a hash value for a @ref type_composition type.
+///
+/// @param t the type_composition to compute the hash value for.
+///
+/// @return the computed hash value.
+size_t
+type_composition::hash::operator()(const type_composition* t) const
+{return t ? operator()(*t): 0;}
 
 size_t
 function_tdecl::hash::

@@ -1124,6 +1124,18 @@ scope_decl::remove_member_decl(const decl_base_sptr member)
     }
 }
 
+/// Return the hash value for the current instance of scope_decl.
+///
+/// This method can trigger the computing of the hash value, if need be.
+///
+/// @return the hash value.
+size_t
+scope_decl::get_hash() const
+{
+  scope_decl::hash hash_scope;
+  return hash_scope(this);
+}
+
 /// Return true iff both scopes have the same names and have the same
 /// member decls.
 ///
@@ -2903,6 +2915,16 @@ var_decl::operator==(const decl_base& o) const
   return *c0 == *c1;
 }
 
+/// Return the hash value for the current instance.
+///
+/// @return the hash value.
+size_t
+var_decl::get_hash() const
+{
+  var_decl::hash hash_var;
+  return hash_var(this);
+}
+
 /// Build and return the pretty representation of this variable.
 ///
 /// @return a copy of the pretty representation of this variable.
@@ -4096,6 +4118,16 @@ class_decl::has_no_base_nor_member() const
 	  && member_class_templates_.empty());
 }
 
+/// Return the hash value for the current instance.
+///
+/// @return the hash value.
+size_t
+class_decl::get_hash() const
+{
+  class_decl::hash hash_class;
+  return hash_class(this);
+}
+
 bool
 class_decl::operator==(const decl_base& other) const
 {
@@ -4648,6 +4680,13 @@ type_tparameter::operator==(const type_tparameter& other) const
 type_tparameter::~type_tparameter()
 {}
 
+size_t
+non_type_tparameter::get_hash() const
+{
+  non_type_tparameter::hash hash_tparm;
+  return hash_tparm(this);
+}
+
 bool
 non_type_tparameter::operator==(const decl_base& other) const
 {
@@ -4727,6 +4766,16 @@ type_composition::type_composition(unsigned index, shared_ptr<type_base> t)
 : decl_base("", location()), template_parameter(index),
   type_(std::tr1::dynamic_pointer_cast<type_base>(t))
 {}
+
+/// Get the hash value for the current instance.
+///
+/// @return the hash value.
+size_t
+type_composition::get_hash() const
+{
+  type_composition::hash hash_type_composition;
+  return hash_type_composition(this);
+}
 
 type_composition::~type_composition()
 {}

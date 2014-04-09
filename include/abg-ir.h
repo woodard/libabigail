@@ -507,6 +507,8 @@ protected:
   remove_member_decl(const decl_base_sptr member);
 
 public:
+  struct hash;
+
   scope_decl(const std::string& name, location locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
   : decl_base(name, locus, /*mangled_name=*/name, vis)
@@ -514,6 +516,9 @@ public:
 
   scope_decl(location l) : decl_base("", l)
   {}
+
+  virtual size_t
+  get_hash() const;
 
   virtual bool
   operator==(const decl_base&) const;
@@ -556,6 +561,16 @@ public:
   friend void
   remove_decl_from_scope(decl_base_sptr decl);
 };//end class scope_decl
+
+/// Hasher for the @ref scope_decl type.
+struct scope_decl::hash
+{
+  size_t
+  operator()(const scope_decl& d) const;
+
+  size_t
+  operator()(const scope_decl* d) const;
+};
 
 /// Convenience typedef for shared pointer on @ref global_scope.
 typedef shared_ptr<global_scope> global_scope_sptr;
@@ -1162,6 +1177,9 @@ public:
   set_binding(binding b)
   {binding_ = b;}
 
+  virtual size_t
+  get_hash() const;
+
   virtual string
   get_pretty_representation() const;
 
@@ -1714,6 +1732,9 @@ public:
       type_(type)
   {}
 
+  virtual size_t
+  get_hash() const;
+
   virtual bool
   operator==(const decl_base&) const;
 
@@ -1726,6 +1747,16 @@ public:
 
   virtual ~non_type_tparameter();
 };// end class non_type_tparameter
+
+/// Hasher for the @ref non_type_tparameter type.
+struct non_type_tparameter::hash
+{
+  size_t
+  operator()(const non_type_tparameter& t) const;
+
+  size_t
+  operator()(const non_type_tparameter* t) const;
+};
 
 /// Abstracts a template template parameter.
 class template_tparameter : public type_tparameter, public template_decl
@@ -1771,6 +1802,8 @@ class type_composition : public template_parameter, public virtual decl_base
   type_composition();
 
 public:
+  struct hash;
+
   type_composition(unsigned			index,
 		   shared_ptr<type_base>	composed_type);
 
@@ -1782,9 +1815,22 @@ public:
   set_composed_type(shared_ptr<type_base> t)
   {type_ = t;}
 
+  virtual size_t
+  get_hash() const;
 
   virtual ~type_composition();
 };
+
+/// Hasher for the @ref type_composition type.
+struct type_composition::hash
+{
+  size_t
+  operator()(const type_composition& t) const;
+
+  size_t
+  operator()(const type_composition* t) const;
+
+}; //struct type_composition::hash
 
 /// Convenience typedef for a shared pointer on a @ref function_tdecl
 typedef shared_ptr<function_tdecl> function_tdecl_sptr;
@@ -2070,6 +2116,9 @@ public:
   bool
   has_no_base_nor_member() const;
 
+  virtual size_t
+  get_hash() const;
+
   virtual bool
   operator==(const decl_base&) const;
 
@@ -2084,6 +2133,16 @@ public:
 
   virtual ~class_decl();
 };// end class class_decl
+
+/// Hasher for the @ref class_decl type
+struct class_decl::hash
+{
+  size_t
+  operator()(const class_decl& t) const;
+
+  size_t
+  operator()(const class_decl* t) const;
+}; // end struct class_decl::hash
 
 enum access_specifier
 get_member_access_specifier(const decl_base&);
