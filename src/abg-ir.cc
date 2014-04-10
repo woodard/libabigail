@@ -4680,6 +4680,9 @@ type_tparameter::operator==(const type_tparameter& other) const
 type_tparameter::~type_tparameter()
 {}
 
+/// Get the hash value of the current instance.
+///
+/// @return the hash value.
 size_t
 non_type_tparameter::get_hash() const
 {
