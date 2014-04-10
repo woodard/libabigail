@@ -170,6 +170,15 @@ decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
   return d1_name != d2_name;
 }
 
+static bool
+data_member_added_or_removed(const class_diff* diff)
+{return (diff && (diff->inserted_data_members().size()
+		  || diff->deleted_data_members().size()));}
+
+static bool
+data_member_added_or_removed(const diff* diff)
+{return data_member_added_or_removed(dynamic_cast<const class_diff*>(diff));}
+
 /// The visiting code of the harmless_filter.
 ///
 /// @param d the diff node being visited.
@@ -221,6 +230,8 @@ harmless_filter::visit(diff* d, bool pre)
 bool
 harmful_filter::visit(diff* d, bool pre)
 {
+  diff_category category = NO_CHANGE_CATEGORY;
+
   if (pre)
     {
       decl_base_sptr f = d->first_subject(),
@@ -241,14 +252,21 @@ harmful_filter::visit(diff* d, bool pre)
 	    // one for size changes.
 	    ;
 	  else
-	    d->add_to_category(SIZE_OR_OFFSET_CHANGE_CATEGORY);
+	    category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 	}
+
+      /// If a data member got added or remove, consider it as a "size
+      /// of offset change" as well.
+      if (data_member_added_or_removed(d))
+	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
+
+      if (category)
+	d->add_to_category(category);
     }
 
   // Propagate the categorization to the parent nodes.
   if (d->get_parent())
-    d->get_parent()->add_to_category(d->get_category()
-				     & SIZE_OR_OFFSET_CHANGE_CATEGORY);
+    d->get_parent()->add_to_category(d->get_category());
 
   return true;
 }

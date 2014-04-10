@@ -897,6 +897,12 @@ public:
   edit_script&
   data_members_changes();
 
+  const string_decl_base_sptr_map&
+  inserted_data_members() const;
+
+  const string_decl_base_sptr_map&
+  deleted_data_members() const;
+
   const edit_script&
   member_fns_changes() const;
 

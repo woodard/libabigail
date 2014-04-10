@@ -2886,6 +2886,14 @@ edit_script&
 class_diff::data_members_changes()
 {return priv_->data_members_changes_;}
 
+const string_decl_base_sptr_map&
+class_diff::inserted_data_members() const
+{return priv_->inserted_data_members_;}
+
+const string_decl_base_sptr_map&
+class_diff::deleted_data_members() const
+{return priv_->deleted_data_members_;}
+
 /// @return the edit script of the member functions of the two
 /// classes.
 const edit_script&
