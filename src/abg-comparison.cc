@@ -991,10 +991,20 @@ represent(var_decl_sptr	o,
     return;
 
   bool emitted = false;
-  string name = o->get_qualified_name();
+  string name1 = o->get_qualified_name();
   string name2 = n->get_qualified_name();
   string pretty_representation = o->get_pretty_representation();
-  assert(name == name2);
+
+  if (ctxt->get_allowed_category() & DECL_NAME_CHANGE_CATEGORY
+      && name1 !=  name2)
+    {
+      if (!emitted)
+	out << indent << "'" << pretty_representation << "' ";
+      else
+	out << ", ";
+      out << "name changed to '" << name2 << "'";
+      emitted = true;
+    }
 
   if (get_data_member_is_laid_out(o)
       != get_data_member_is_laid_out(n))
