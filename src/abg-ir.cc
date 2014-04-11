@@ -321,8 +321,11 @@ decl_base::decl_base(location l)
 decl_base::decl_base(const decl_base& d)
 {
   hash_ = d.hash_;
+  hashing_started_ = d.hashing_started_;
   location_ = d.location_;
   name_ = d.name_;
+  qualified_parent_name_ = d.qualified_parent_name_;
+  qualified_name_ = d.qualified_name_;
   mangled_name_ = d.mangled_name_;
   context_ = d.context_;
   visibility_ = visibility_;
