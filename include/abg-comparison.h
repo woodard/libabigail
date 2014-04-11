@@ -381,7 +381,6 @@ public:
 /// constructs are called the "subjects" of the diff.
 class diff : public diff_traversable_base
 {
-  diff*		parent_;
   decl_base_sptr	first_subject_;
   decl_base_sptr	second_subject_;
   diff_context_sptr	ctxt_;
@@ -395,8 +394,7 @@ class diff : public diff_traversable_base
 protected:
   diff(decl_base_sptr first_subject,
        decl_base_sptr second_subject)
-    : parent_(0),
-      first_subject_(first_subject),
+    : first_subject_(first_subject),
       second_subject_(second_subject),
       category_(NO_CHANGE_CATEGORY),
       reported_once_(false),
@@ -406,43 +404,15 @@ protected:
 diff(decl_base_sptr	first_subject,
      decl_base_sptr	second_subject,
      diff_context_sptr	ctxt)
-    : parent_(0),
-      first_subject_(first_subject),
-      second_subject_(second_subject),
-      ctxt_(ctxt),
-      category_(NO_CHANGE_CATEGORY),
-      reported_once_(false),
-      currently_reporting_(false)
-  {}
-
-  diff(diff*			parent,
-       decl_base_sptr		first_subject,
-       decl_base_sptr		second_subject,
-       diff_context_sptr	ctxt)
-    : parent_(parent),
-      first_subject_(first_subject),
-      second_subject_(second_subject),
-      ctxt_(ctxt),
-      category_(NO_CHANGE_CATEGORY),
-      reported_once_(false),
-      currently_reporting_(false)
+  : first_subject_(first_subject),
+    second_subject_(second_subject),
+    ctxt_(ctxt),
+    category_(NO_CHANGE_CATEGORY),
+    reported_once_(false),
+    currently_reporting_(false)
   {}
 
 public:
-
-  /// Getter of the parent diff node of this one.
-  ///
-  /// Return the parent diff node if any, null otherwise.
-  diff*
-  get_parent() const
-  {return parent_;}
-
-  /// Setter for the parent diff node of this one.
-  ///
-  /// @param parent the parent diff node.
-  void
-  set_parent(diff* parent)
-  {parent_ = parent;}
 
   /// Getter of the first subject of the diff.
   ///

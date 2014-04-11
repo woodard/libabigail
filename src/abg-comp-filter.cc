@@ -238,10 +238,6 @@ harmless_filter::visit(diff* d, bool pre)
 	d->add_to_category(category);
     }
 
-  // Propagate the categorization to the parent nodes.
-  if (d->get_parent())
-    d->get_parent()->add_to_category(d->get_category());
-
   return true;
 }
 
@@ -293,10 +289,6 @@ harmful_filter::visit(diff* d, bool pre)
       if (category)
 	d->add_to_category(category);
     }
-
-  // Propagate the categorization to the parent nodes.
-  if (d->get_parent())
-    d->get_parent()->add_to_category(d->get_category());
 
   return true;
 }
