@@ -125,6 +125,42 @@ operator|(visiting_kind l, visiting_kind r)
 	}							\
   } while (false)
 
+/// Inside the code of a given diff node, traverse a sub-tree of the
+/// diff nove and propagate the category of the sub-tree up to the
+/// current diff node.
+///
+/// @param node the sub-tree node of the current diff node to consider.
+///
+/// @param visitor the visitor used to visit the traversed sub tree
+/// nodes.
+#define TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
+  do {									\
+    bool r = node->traverse(visitor);					\
+    add_to_category(node->get_category());				\
+    if (!r)								\
+      return false;							\
+  } while (false)
+
+/// Inside the code of a given diff node that is a member of a
+/// class_diff node, traverse a sub-tree of the diff nove and
+/// propagate the category of the sub-tree up to the current diff
+/// node.
+///
+/// @param node the sub-tree node of the current diff node to consider.
+///
+/// @param visitor the visitor used to visit the traversed sub tree
+/// nodes.
+#define TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
+  do {									\
+    bool r = node->traverse(visitor);					\
+    add_to_category(node->get_category());				\
+    if (!r)								\
+      {								\
+	priv_->traversing_ = false;					\
+	return false;							\
+      }								\
+  } while (false)
+
 /// The default traverse function.
 ///
 /// @return true.
@@ -563,10 +599,7 @@ distinct_diff::traverse(diff_node_visitor& v)
   if (f && s && !entities_are_of_distinct_kinds(f, s))
     {
       diff_sptr d = compute_diff(f, s, context());
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
+      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
       TRY_POST_VISIT(v);
     }
@@ -1377,12 +1410,7 @@ var_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = type_diff())
-    {
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
-    }
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
@@ -1583,12 +1611,7 @@ pointer_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    {
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
-    }
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
@@ -1747,12 +1770,7 @@ reference_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    {
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
-    }
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
@@ -1970,12 +1988,7 @@ qualified_type_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    {
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
-    }
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
@@ -2273,12 +2286,7 @@ enum_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    {
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
-    }
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
@@ -3458,15 +3466,7 @@ class_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_types(i->second.first,
 					     i->second.second,
 					     context()))
-      {
-	bool r = d->traverse(v);
-	add_to_category(d->get_category());
-	if (!r)
-	  {
-	    priv_->traversing_ = false;
-	    return false;
-	  }
-      }
+      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   // member function changes
   for (string_changed_member_function_sptr_map::const_iterator i =
@@ -3694,12 +3694,7 @@ base_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (class_diff_sptr d = get_underlying_class_diff())
-    {
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
-    }
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
@@ -4706,12 +4701,7 @@ function_decl_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = return_type_diff())
-    {
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
-    }
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   for (string_changed_parm_map::const_iterator i =
 	 subtype_changed_parms().begin();
@@ -4720,12 +4710,7 @@ function_decl_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
 					     i->second.second->get_type(),
 					     context()))
-      {
-	bool r = d->traverse(v);
-	add_to_category(d->get_category());
-	if (!r)
-	  return false;
-      }
+      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   for (unsigned_changed_parm_map::const_iterator i =
 	 priv_->changed_parms_by_id_.begin();
@@ -4734,12 +4719,7 @@ function_decl_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
 					     i->second.second->get_type(),
 					     context()))
-      {
-	bool r = d->traverse(v);
-	add_to_category(d->get_category());
-	if (!r)
-	  return false;
-      }
+      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
@@ -5086,12 +5066,7 @@ typedef_diff::traverse(diff_node_visitor& v)
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
-    {
-      bool r = d->traverse(v);
-      add_to_category(d->get_category());
-      if (!r)
-	return false;
-    }
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
@@ -5199,8 +5174,7 @@ translation_unit_diff::traverse(diff_node_visitor& v)
   if (diff_sptr d = compute_diff(first_translation_unit(),
 				 second_translation_unit(),
 				 context()))
-    if (!d->traverse(v))
-      return false;
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
