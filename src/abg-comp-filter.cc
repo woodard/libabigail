@@ -282,8 +282,8 @@ harmful_filter::visit(diff* d, bool pre)
 	    category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 	}
 
-      /// If a data member got added or remove, consider it as a "size
-      /// of offset change" as well.
+      /// If a data member got added or removed, consider it as a "size
+      /// or offset change" as well.
       if (data_member_added_or_removed(d))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
