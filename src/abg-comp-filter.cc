@@ -61,6 +61,22 @@ apply_filter(filter_base_sptr filter, diff_sptr d)
 
 /// Tests if the size of a given type changed.
 ///
+/// @param f the first version of the type to consider.
+///
+/// @param s the second version of the type to consider.
+///
+/// @return true if the type size changed, false otherwise.
+static bool
+type_size_changed(type_base_sptr f, type_base_sptr s)
+{
+  if (!f || !s)
+    return false;
+
+  return f->get_size_in_bits() != s->get_size_in_bits();
+}
+
+/// Tests if the size of a given type changed.
+///
 /// @param f the declaration of the first version of the type to
 /// consider.
 ///
@@ -70,16 +86,7 @@ apply_filter(filter_base_sptr filter, diff_sptr d)
 /// @return true if the type size changed, false otherwise.
 static bool
 type_size_changed(decl_base_sptr f, decl_base_sptr s)
-{
-  type_base_sptr t0 = is_type(f), t1 = is_type(s);
-  if (!t0 || !t1)
-    return false;
-
-  if (t0->get_size_in_bits() != t1->get_size_in_bits())
-    return true;
-
-  return false;
-}
+{return type_size_changed(is_type(f), is_type(s));}
 
 /// Tests if the access specifiers for a member declaration changed.
 ///
@@ -131,6 +138,26 @@ data_member_offset_changed(decl_base_sptr f, decl_base_sptr s)
     return true;
 
   return false;
+}
+
+/// Test if the size of a data member changed accross two versions.
+///
+/// @param f the first version of the data member.
+///
+/// @param s the second version of the data member.
+static bool
+data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
+{
+  if (!is_member_decl(f)
+      || !is_member_decl(s))
+    return false;
+
+  var_decl_sptr fv = dynamic_pointer_cast<var_decl>(f),
+    sv = dynamic_pointer_cast<var_decl>(s);
+  if (!fv || !sv)
+    return false;
+
+  return type_size_changed(fv->get_type(), sv->get_type());
 }
 
 /// Test if two types are different but compatible.
@@ -258,6 +285,9 @@ harmful_filter::visit(diff* d, bool pre)
       /// If a data member got added or remove, consider it as a "size
       /// of offset change" as well.
       if (data_member_added_or_removed(d))
+	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
+
+      if (data_member_type_size_changed(f, s))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
       if (category)
