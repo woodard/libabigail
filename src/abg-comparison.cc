@@ -161,6 +161,30 @@ operator|(visiting_kind l, visiting_kind r)
       }								\
   } while (false)
 
+/// Inside the traveral code of a diff node, if the node has been
+/// traversed already, return immediately.  Otherwise, mark the
+/// current node as a 'traversed' node.
+#define ENSURE_DIFF_NODE_TRAVERSED_ONCE		\
+  do {							\
+    if (context()->diff_has_been_traversed(this))	\
+      return true;					\
+    context()->mark_diff_as_traversed(this);		\
+  } while (false)
+
+/// Inside the traveral code of a diff node that is member node of a
+/// class_diff node, if the node has been traversed already, return
+/// immediately.  Otherwise, mark the current node as a 'traversed'
+/// node.
+#define ENSURE_MEM_DIFF_NODE_TRAVERSED_ONCE		\
+  do {							\
+    if (context()->diff_has_been_traversed(node))	\
+      {						\
+	priv_->traversing_ = false;			\
+	return true;					\
+      }						\
+    context()->mark_diff_as_traversed(node);		\
+  } while (false)
+
 /// The default traverse function.
 ///
 /// @return true.
@@ -174,6 +198,7 @@ struct diff_context::priv
   diff_category			allowed_category_;
   decls_diff_map_type			decls_diff_map;
   vector<filtering::filter_base_sptr>	filters_;
+  pointer_map				traversed_diff_nodes_;
   bool					show_stats_only_;
   bool					show_deleted_fns_;
   bool					show_changed_fns_;
@@ -247,6 +272,15 @@ diff_context::has_diff_for_types(const type_base_sptr first,
 ///@param d the diff to consider.
 ///
 /// @return a pointer to the diff found for @p d
+const diff*
+diff_context::has_diff_for(const diff* d) const
+{return has_diff_for(d->first_subject(), d->second_subject()).get();}
+
+/// Tests if the current diff context already has a given diff.
+///
+///@param d the diff to consider.
+///
+/// @return a pointer to the diff found for @p d
 diff_sptr
 diff_context::has_diff_for(const diff_sptr d) const
 {return has_diff_for(d->first_subject(), d->second_subject());}
@@ -306,6 +340,41 @@ diff_context::add_diff(decl_base_sptr first,
 			diff_sptr d)
 {priv_->decls_diff_map[std::make_pair(first, second)] = d;}
 
+/// Test if a diff node has been traversed.
+///
+/// @param d the diff node to consider.
+bool
+diff_context::diff_has_been_traversed(const diff* d) const
+{
+  const diff* canonical = has_diff_for(d);
+  if (!canonical)
+    canonical = d;
+
+  size_t ptr_value = reinterpret_cast<uintptr_t>(canonical);
+  return (priv_->traversed_diff_nodes_.find(ptr_value)
+	  != priv_->traversed_diff_nodes_.end());
+}
+
+/// Mark a diff node as traversed by a traversing algorithm.
+///
+/// Subsequent invocations of diff_has_been_traversed() on the diff
+/// node will yield true.
+void
+diff_context::mark_diff_as_traversed(const diff* d)
+{
+   const diff* canonical = has_diff_for(d);
+   if (!canonical)
+    canonical = d;
+
+   size_t ptr_value = reinterpret_cast<uintptr_t>(canonical);
+   priv_->traversed_diff_nodes_[ptr_value] = true;
+}
+
+/// Unmark all the diff nodes that were marked as being traversed.
+void
+diff_context::forget_traversed_diffs()
+{priv_->traversed_diff_nodes_.clear();}
+
 /// Getter for the diff tree nodes filters to apply to diff sub-trees.
 ///
 /// @return the vector of tree filters to apply to diff sub-trees.
@@ -337,7 +406,10 @@ diff_context::maybe_apply_filters(diff_sptr diff)
   for (filtering::filters::const_iterator i = diff_filters().begin();
        i != diff_filters().end();
        ++i)
-    filtering::apply_filter(*i, diff);
+    {
+      diff->context()->forget_traversed_diffs();
+      filtering::apply_filter(*i, diff);
+    }
 }
 
 /// Set a flag saying if the comparison module should only show the
@@ -589,6 +661,7 @@ else
 bool
 distinct_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   type_base_sptr fs = strip_typedef(is_type(first())),
@@ -1407,6 +1480,7 @@ var_diff::report(ostream& out, const string& indent) const
 bool
 var_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = type_diff())
@@ -1608,6 +1682,8 @@ pointer_diff::report(ostream& out, const string& indent) const
 bool
 pointer_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
+
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
@@ -1767,6 +1843,8 @@ reference_diff::report(ostream& out, const string& indent) const
 bool
 reference_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
+
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
@@ -1985,6 +2063,7 @@ qualified_type_diff::report(ostream& out, const string& indent) const
 bool
 qualified_type_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
@@ -2283,6 +2362,7 @@ enum_diff::report(ostream& out, const string& indent) const
 bool
 enum_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
@@ -3417,6 +3497,7 @@ class_diff::report(ostream& out, const string& indent) const
 bool
 class_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT_CLASS_DIFF(v);
 
   if (priv_->traversing_)
@@ -3691,6 +3772,7 @@ base_diff::report(ostream& out, const string& indent) const
 bool
 base_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   if (class_diff_sptr d = get_underlying_class_diff())
@@ -4258,6 +4340,7 @@ scope_diff::report(ostream& out, const string& indent) const
 bool
 scope_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   for (string_changed_type_or_decl_map::const_iterator i =
@@ -4698,6 +4781,7 @@ function_decl_diff::report(ostream& out, const string& indent) const
 bool
 function_decl_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = return_type_diff())
@@ -4873,6 +4957,7 @@ type_decl_diff::report(ostream& out, const string& indent) const
 bool
 type_decl_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
   return true;
 }
@@ -5063,6 +5148,7 @@ typedef_diff::report(ostream& out, const string& indent) const
 bool
 typedef_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = underlying_type_diff())
@@ -5169,6 +5255,7 @@ translation_unit_diff::report(ostream& out, const string& indent) const
 bool
 translation_unit_diff::traverse(diff_node_visitor& v)
 {
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
   TRY_PRE_VISIT(v);
 
   if (diff_sptr d = compute_diff(first_translation_unit(),

@@ -61,6 +61,10 @@ class diff;
 /// Convenience typedef for a shared_ptr for the @ref diff class
 typedef shared_ptr<diff> diff_sptr;
 
+/// Convenience typedef for a map of pointer values.  The Key is a
+/// pointer value and the value is a boolean.
+typedef unordered_map<size_t, bool> pointer_map;
+
 /// Convenience typedef for a map which key is a string and which
 /// value is a @ref decl_base_sptr.
 typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
@@ -279,6 +283,9 @@ public:
   has_diff_for_types(const type_base_sptr first,
 		     const type_base_sptr second) const;
 
+  const diff*
+  has_diff_for(const diff* d) const;
+
   diff_sptr
   has_diff_for(const diff_sptr d) const;
 
@@ -286,6 +293,15 @@ public:
   add_diff(const decl_base_sptr first,
 	   const decl_base_sptr second,
 	   diff_sptr d);
+
+  bool
+  diff_has_been_traversed(const diff*) const;
+
+  void
+  mark_diff_as_traversed(const diff*);
+
+  void
+  forget_traversed_diffs();
 
   diff_category
   get_allowed_category() const;
