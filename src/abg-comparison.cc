@@ -95,7 +95,7 @@ operator|(visiting_kind l, visiting_kind r)
     if (v.get_visiting_kind() & PRE_VISITING_KIND)		\
       if (!v.visit(this, /*pre=*/true))			\
 	return false;						\
-  } while(false)
+  } while (false)
 
 #define TRY_PRE_VISIT_CLASS_DIFF(v)				\
   do {								\
@@ -105,7 +105,7 @@ operator|(visiting_kind l, visiting_kind r)
 	  priv_->traversing_ = false;				\
 	  return false;					\
 	}							\
-  } while(false)
+  } while (false)
 
 
 #define TRY_POST_VISIT(v)					\
@@ -113,7 +113,7 @@ operator|(visiting_kind l, visiting_kind r)
     if (v.get_visiting_kind() & POST_VISITING_KIND)		\
       if (!v.visit(this, /*pre=*/false))			\
 	return false;						\
-  } while(false)
+  } while (false)
 
 #define TRY_POST_VISIT_CLASS_DIFF(v)				\
   do {								\
@@ -123,7 +123,7 @@ operator|(visiting_kind l, visiting_kind r)
 	  priv_->traversing_ = false;				\
 	  return false;					\
 	}							\
-  } while(false)
+  } while (false)
 
 /// The default traverse function.
 ///
