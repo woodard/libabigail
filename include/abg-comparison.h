@@ -69,6 +69,10 @@ typedef unordered_map<size_t, bool> pointer_map;
 /// value is a @ref decl_base_sptr.
 typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
 
+/// Convenience typedef for a map which key is an unsigned integer and
+/// which value is a @ref decl_base_sptr
+typedef unordered_map<unsigned, decl_base_sptr> unsigned_decl_base_sptr_map;
+
 /// Convenience typedef for a changed type or decl.  The first element
 /// of the pair is the old type/decl and the second is the new one.
 typedef pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
@@ -102,10 +106,15 @@ typedef unordered_map<unsigned, changed_parm> unsigned_changed_parm_map;
 typedef unordered_map<unsigned,
 		      function_decl::parameter_sptr> unsigned_parm_map;
 
-/// Convenience typedef for a map which value is changed type of decl.
+/// Convenience typedef for a map which value is changed type or decl.
 /// The key of the map is the qualified name of the type/decl.
 typedef unordered_map<string,
 		      changed_type_or_decl> string_changed_type_or_decl_map;
+
+/// Convience typedef for a map which value is a changed type or decl.
+/// The key of the map is an unsigned integer.
+typedef unordered_map<unsigned,
+		      changed_type_or_decl> unsigned_changed_type_or_decl_map;
 
 /// Convenience typedef for a map which value is a function
 /// parameter.  The key is the name of the function parm.

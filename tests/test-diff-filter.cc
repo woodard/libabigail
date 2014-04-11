@@ -117,6 +117,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test7-report.txt",
     "output/test-diff-filter/test7-report.txt",
   },
+  {
+    "data/test-diff-filter/test8-v0.o",
+    "data/test-diff-filter/test8-v1.o",
+    "--no-harmless",
+    "data/test-diff-filter/test8-report.txt",
+    "output/test-diff-filter/test8-report.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

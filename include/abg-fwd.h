@@ -254,6 +254,9 @@ get_data_member_offset(const var_decl&);
 size_t
 get_data_member_offset(const shared_ptr<var_decl>);
 
+size_t
+get_data_member_offset(const shared_ptr<decl_base>);
+
 void
 set_data_member_is_laid_out(shared_ptr<var_decl>, bool);
 

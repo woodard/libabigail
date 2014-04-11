@@ -862,6 +862,15 @@ size_t
 get_data_member_offset(const var_decl_sptr m)
 {return get_data_member_offset(*m);}
 
+/// Get the offset of a data member.
+///
+/// @param m the data member to consider.
+///
+/// @return the offset (in bits) of @p m in its containing class.
+size_t
+get_data_member_offset(const decl_base_sptr d)
+{return get_data_member_offset(dynamic_pointer_cast<var_decl>(d));}
+
 /// Set a flag saying if a data member is laid out.
 ///
 /// @param m the data member to consider.

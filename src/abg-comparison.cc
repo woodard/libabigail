@@ -1315,6 +1315,7 @@ enum diff_kind
 {
   del_kind,
   ins_kind,
+  subtype_change_kind,
   change_kind
 };
 
@@ -1344,7 +1345,7 @@ report_mem_header(ostream& out,
 		  const string& indent)
 {
   size_t net_number = number;
-  if (k == change_kind)
+  if (k == change_kind || subtype_change_kind)
     net_number = number - num_filtered;
 
   string change;
@@ -1356,8 +1357,10 @@ report_mem_header(ostream& out,
     case ins_kind:
       change = (number > 1) ? "insertions" : "insertion";
       break;
+    case subtype_change_kind:
     case change_kind:
       change = (number > 1) ? "changes" : "change";
+      break;
     }
 
   if (net_number == 0)
@@ -2434,8 +2437,11 @@ struct class_diff::priv
   string_decl_base_sptr_map inserted_member_types_;
   string_changed_type_or_decl_map changed_member_types_;
   string_decl_base_sptr_map deleted_data_members_;
+  unsigned_decl_base_sptr_map deleted_dm_by_offset_;
   string_decl_base_sptr_map inserted_data_members_;
-  string_changed_type_or_decl_map changed_data_members_;
+  unsigned_decl_base_sptr_map inserted_dm_by_offset_;
+  string_changed_type_or_decl_map subtype_changed_dm_;
+  unsigned_changed_type_or_decl_map changed_dm_;
   string_member_function_sptr_map deleted_member_functions_;
   string_member_function_sptr_map inserted_member_functions_;
   string_changed_member_function_sptr_map changed_member_functions_;
@@ -2450,7 +2456,7 @@ struct class_diff::priv
   member_type_has_changed(decl_base_sptr) const;
 
   decl_base_sptr
-  data_member_has_changed(decl_base_sptr) const;
+  subtype_changed_dm(decl_base_sptr) const;
 
   decl_base_sptr
   member_class_tmpl_has_changed(decl_base_sptr) const;
@@ -2459,7 +2465,10 @@ struct class_diff::priv
   count_filtered_bases(const diff_context_sptr&);
 
   size_t
-  count_filtered_data_members(const diff_context_sptr&);
+  count_filtered_subtype_changed_dm(const diff_context_sptr&);
+
+  size_t
+  count_filtered_changed_dm(const diff_context_sptr&);
 
   size_t
   count_filtered_member_functions(const diff_context_sptr&);
@@ -2484,7 +2493,7 @@ class_diff::clear_lookup_tables(void)
   priv_->changed_member_types_.clear();
   priv_->deleted_data_members_.clear();
   priv_->inserted_data_members_.clear();
-  priv_->changed_data_members_.clear();
+  priv_->subtype_changed_dm_.clear();
   priv_->deleted_member_functions_.clear();
   priv_->inserted_member_functions_.clear();
   priv_->changed_member_functions_.clear();
@@ -2507,7 +2516,7 @@ class_diff::lookup_tables_empty(void) const
 	  && priv_->changed_member_types_.empty()
 	  && priv_->deleted_data_members_.empty()
 	  && priv_->inserted_data_members_.empty()
-	  && priv_->changed_data_members_.empty()
+	  && priv_->subtype_changed_dm_.empty()
 	  && priv_->inserted_member_functions_.empty()
 	  && priv_->deleted_member_functions_.empty()
 	  && priv_->changed_member_functions_.empty()
@@ -2652,13 +2661,58 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    if (j != priv_->deleted_data_members_.end())
 	      {
 		if (*j->second != *d)
-		  priv_->changed_data_members_[qname]=
+		  priv_->subtype_changed_dm_[qname]=
 		    std::make_pair(j->second, d);
 		priv_->deleted_data_members_.erase(j);
 	      }
 	    else
 	      priv_->inserted_data_members_[qname] = d;
 	  }
+      }
+
+    // Now detect when a data member is deleted from offset N and
+    // another one is added to offset N.  In that case, we want to be
+    // able to say that the data member at offset N changed.
+    for (string_decl_base_sptr_map::const_iterator i =
+	   priv_->deleted_data_members_.begin();
+	 i != priv_->deleted_data_members_.end();
+	 ++i)
+      {
+	unsigned offset = get_data_member_offset(i->second);
+	priv_->deleted_dm_by_offset_[offset] = i->second;
+      }
+
+    for (string_decl_base_sptr_map::const_iterator i =
+	   priv_->inserted_data_members_.begin();
+	 i != priv_->inserted_data_members_.end();
+	 ++i)
+      {
+	unsigned offset = get_data_member_offset(i->second);
+	priv_->inserted_dm_by_offset_[offset] = i->second;
+      }
+
+    for (unsigned_decl_base_sptr_map::const_iterator i =
+	   priv_->inserted_dm_by_offset_.begin();
+	 i != priv_->inserted_dm_by_offset_.end();
+	 ++i)
+      {
+	unsigned_decl_base_sptr_map::const_iterator j =
+	  priv_->deleted_dm_by_offset_.find(i->first);
+	if (j != priv_->deleted_dm_by_offset_.end())
+	  priv_->changed_dm_[i->first] = std::make_pair(j->second, i->second);
+      }
+
+    for (unsigned_changed_type_or_decl_map::const_iterator i =
+	   priv_->changed_dm_.begin();
+	 i != priv_->changed_dm_.end();
+	 ++i)
+      {
+	priv_->deleted_dm_by_offset_.erase(i->first);
+	priv_->inserted_dm_by_offset_.erase(i->first);
+	priv_->deleted_data_members_.erase
+	  (i->second.first->get_qualified_name());
+	priv_->inserted_data_members_.erase
+	  (i->second.second->get_qualified_name());
       }
   }
 
@@ -2811,13 +2865,13 @@ class_diff::priv::member_type_has_changed(decl_base_sptr d) const
 /// @return the new data member if the given data member has changed,
 /// or NULL if if hasn't.
 decl_base_sptr
-class_diff::priv::data_member_has_changed(decl_base_sptr d) const
+class_diff::priv::subtype_changed_dm(decl_base_sptr d) const
 {
   string qname = d->get_qualified_name();
   string_changed_type_or_decl_map::const_iterator it =
-    changed_data_members_.find(qname);
+    subtype_changed_dm_.find(qname);
 
-  return ((it == changed_data_members_.end())
+  return ((it == subtype_changed_dm_.end())
 	  ? decl_base_sptr()
 	  : it->second.second);
 }
@@ -2874,12 +2928,12 @@ class_diff::priv::count_filtered_bases(const diff_context_sptr& ctxt)
 ///
 /// @return the number of data members whose changes got filtered out.
 size_t
-class_diff::priv::count_filtered_data_members(const diff_context_sptr& ctxt)
+class_diff::priv::count_filtered_subtype_changed_dm(const diff_context_sptr& ctxt)
 {
   size_t num_filtered= 0;
   for (string_changed_type_or_decl_map::const_iterator i =
-	 changed_data_members_.begin();
-       i != changed_data_members_.end();
+	 subtype_changed_dm_.begin();
+       i != subtype_changed_dm_.end();
        ++i)
     {
       var_decl_sptr o =
@@ -2919,6 +2973,31 @@ class_diff::priv::count_filtered_member_functions(const diff_context_sptr& ctxt)
 	++num_filtered;
     }
   return num_filtered;
+}
+
+/// Count the number of data member offsets that have changed.
+///
+/// @param ctxt the diff context to use.
+size_t
+class_diff::priv::count_filtered_changed_dm(const diff_context_sptr& ctxt)
+{
+  size_t num_filtered= 0;
+  for (unsigned_changed_type_or_decl_map::const_iterator i =
+	 changed_dm_.begin();
+       i != changed_dm_.end();
+       ++i)
+    {
+      var_decl_sptr o =
+	dynamic_pointer_cast<var_decl>(i->second.first);
+      var_decl_sptr n =
+	dynamic_pointer_cast<var_decl>(i->second.second);
+      diff_sptr diff = compute_diff(o, n, ctxt);
+      ctxt->maybe_apply_filters(diff);
+      if (diff->is_filtered_out())
+	++num_filtered;
+    }
+  return num_filtered;
+
 }
 
 /// Constructor of class_diff
@@ -3261,16 +3340,36 @@ class_diff::report(ostream& out, const string& indent) const
 	}
 
       // report change
-      size_t numchanges = priv_->changed_data_members_.size();
-      size_t num_filtered = priv_->count_filtered_data_members(context());
+      size_t numchanges = priv_->subtype_changed_dm_.size();
+      size_t num_filtered = priv_->count_filtered_subtype_changed_dm(context());
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, num_filtered,
+			    subtype_change_kind, "data member", indent);
+
+	  for (string_changed_type_or_decl_map::const_iterator it =
+		 priv_->subtype_changed_dm_.begin();
+	       it != priv_->subtype_changed_dm_.end();
+	       ++it)
+	    {
+	      var_decl_sptr o =
+		dynamic_pointer_cast<var_decl>(it->second.first);
+	      var_decl_sptr n =
+		dynamic_pointer_cast<var_decl>(it->second.second);
+	      represent(o, n, context(), out, indent + " ");
+	    }
+	  out << "\n";
+	}
+
+      numchanges = priv_->changed_dm_.size();
+      num_filtered = priv_->count_filtered_changed_dm(context());
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    change_kind, "data member", indent);
-
-	  for (string_changed_type_or_decl_map::const_iterator it =
-		 priv_->changed_data_members_.begin();
-	       it != priv_->changed_data_members_.end();
+	  for (unsigned_changed_type_or_decl_map::const_iterator it =
+		 priv_->changed_dm_.begin();
+	       it != priv_->changed_dm_.end();
 	       ++it)
 	    {
 	      var_decl_sptr o =
@@ -3517,8 +3616,17 @@ class_diff::traverse(diff_node_visitor& v)
 
   // data member changes
   for (string_changed_type_or_decl_map::const_iterator i =
-	 priv_->changed_data_members_.begin();
-       i != priv_->changed_data_members_.end();
+	 priv_->subtype_changed_dm_.begin();
+       i != priv_->subtype_changed_dm_.end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					     i->second.second,
+					     context()))
+      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
+
+  for (unsigned_changed_type_or_decl_map::const_iterator i =
+	 priv_->changed_dm_.begin();
+       i != priv_->changed_dm_.end();
        ++i)
     if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					     i->second.second,
