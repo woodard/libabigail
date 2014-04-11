@@ -3547,6 +3547,7 @@ class_diff::traverse(diff_node_visitor& v)
 
   TRY_POST_VISIT_CLASS_DIFF(v);
 
+  priv_->traversing_ = false;
   return true;
 }
 
