@@ -3510,17 +3510,10 @@ class_diff::traverse(diff_node_visitor& v)
 	 priv_->changed_bases_.begin();
        i != priv_->changed_bases_.end();
        ++i)
-    {
-      diff_sptr d = compute_diff(i->second.first,
-				 i->second.second,
-				 context());
-      d->set_parent(this);
-      if (d && !d->traverse(v))
-	{
-	  priv_->traversing_ = false;
-	  return false;
-	}
-    }
+    if (diff_sptr d = compute_diff(i->second.first,
+				   i->second.second,
+				   context()))
+      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   // data member changes
   for (string_changed_type_or_decl_map::const_iterator i =
@@ -3530,14 +3523,7 @@ class_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					     i->second.second,
 					     context()))
-      {
-	d->set_parent(this);
-	if (!d->traverse(v))
-	  {
-	    priv_->traversing_ = false;
-	    return false;
-	  }
-      }
+      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   // member types changes
   for (string_changed_type_or_decl_map::const_iterator i =
@@ -3554,19 +3540,10 @@ class_diff::traverse(diff_node_visitor& v)
 	 priv_->changed_member_functions_.begin();
        i != priv_->changed_member_functions_.end();
        ++i)
-    {
-      if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					       i->second.second,
-					       context()))
-	{
-	  d->set_parent(this);
-	  if (!d->traverse(v))
-	    {
-	      priv_->traversing_ = false;
-	      return false;
-	    }
-	}
-    }
+    if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					     i->second.second,
+					     context()))
+      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT_CLASS_DIFF(v);
 
@@ -4350,11 +4327,7 @@ scope_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_types(i->second.first,
 					     i->second.second,
 					     context()))
-      {
-	d->set_parent(this);
-	if (!d->traverse(v))
-	  return false;
-      }
+      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   for (string_changed_type_or_decl_map::const_iterator i =
 	 changed_decls().begin();
@@ -4363,11 +4336,7 @@ scope_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					     i->second.second,
 					     context()))
-      {
-	d->set_parent(this);
-	if (!d->traverse(v))
-	  return false;
-      }
+      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT(v);
 
