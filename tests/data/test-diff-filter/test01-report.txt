@@ -1,11 +1,21 @@
-Functions changes summary: 0 Removed, 3 Changed, 1 Added functions
+Functions changes summary: 0 Removed, 4 Changed, 1 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
-3 functions with some indirect sub-type change:
+4 functions with some indirect sub-type change:
+
+  [C]'function void bar(const S1&)' has some indirect sub-type changes:
+    parameter 0 of type 'const S1&' has sub-type changes:
+      in unqualified underlying type 'S1&':
+        in referenced type 'class S1':
+          1 member function change:
+            'method void S1::member0()' has some sub-type changes:
+              'method void S1::member0()' access changed from 'private' to 'public'
 
   [C]'method void S1::member0()' has some indirect sub-type changes:
     'method void S1::member0()' access changed from 'private' to 'public'
   [C]'function void foo(const S0&, S1*)' has some indirect sub-type changes:
+    parameter 1 of type 'S1*' has sub-type changes:
+      pointed to type 'class S1' changed, as reported earlier
     parameter 0 of type 'const S0&' has sub-type changes:
       in unqualified underlying type 'S0&':
         in referenced type 'class S0':

@@ -3507,6 +3507,144 @@ function_decl::~function_decl()
 
 // <class_decl definitions>
 
+/// The private data for the class_decl type.
+struct class_decl::priv
+{
+  static unordered_map<string, bool> classes_being_compared_;
+  bool				is_declaration_only_;
+  bool				is_struct_;
+  decl_base_sptr		declaration_;
+  class_decl_sptr		definition_of_declaration_;
+  base_specs			bases_;
+  member_types			member_types_;
+  data_members			data_members_;
+  member_functions		member_functions_;
+  member_function_templates	member_function_templates_;
+  member_class_templates	member_class_templates_;
+
+  priv()
+    : is_declaration_only_(false),
+      is_struct_(false)
+  {}
+
+  priv(bool is_struct, class_decl::base_specs& bases,
+       class_decl::member_types& mbr_types,
+       class_decl::data_members& data_mbrs,
+       class_decl::member_functions& mbr_fns)
+    : is_declaration_only_(false),
+      is_struct_(is_struct),
+      bases_(bases),
+      member_types_(mbr_types),
+      data_members_(data_mbrs),
+      member_functions_(mbr_fns)
+  {}
+
+  priv(bool is_struct)
+    : is_declaration_only_(false),
+      is_struct_(is_struct)
+  {}
+
+  priv(bool is_declaration_only, bool is_struct)
+    : is_declaration_only_(is_declaration_only),
+      is_struct_(is_struct)
+  {}
+
+  /// Mark a class as being currently compared using the class_decl==
+  /// operator.
+  ///
+  /// This method is not thread safe because it uses the static data
+  /// member classes_being_compared_.  If you wish to use it in a
+  /// multi-threaded environment you should probably protect the
+  /// access to that static data member with a mutex or somesuch.
+  ///
+  /// Note that is marking business is to avoid infinite loop when
+  /// comparing a class. If via the comparison of a data member or a
+  /// member function a recursive re-comparison of the class is
+  /// attempted, the marking business help to detect that infinite
+  /// loop possibility and avoid it.
+  ///
+  /// @param klass the class to mark as being currently compared.
+  void
+  mark_as_being_compared(const class_decl& klass) const
+  {classes_being_compared_[klass.get_qualified_name()] = true;}
+
+  /// Mark a class as being currently compared using the class_decl==
+  /// operator.
+  ///
+  /// Note that is marking business is to avoid infinite loop when
+  /// comparing a class. If via the comparison of a data member or a
+  /// member function a recursive re-comparison of the class is
+  /// attempted, the marking business help to detect that infinite
+  /// loop possibility and avoid it.
+  ///
+  /// @param klass the class to mark as being currently compared.
+  void
+  mark_as_being_compared(const class_decl* klass) const
+  {mark_as_being_compared(*klass);}
+
+  /// Mark a class as being currently compared using the class_decl==
+  /// operator.
+  ///
+  /// Note that is marking business is to avoid infinite loop when
+  /// comparing a class. If via the comparison of a data member or a
+  /// member function a recursive re-comparison of the class is
+  /// attempted, the marking business help to detect that infinite
+  /// loop possibility and avoid it.
+  ///
+  /// @param klass the class to mark as being currently compared.
+  void
+  mark_as_being_compared(const class_decl_sptr& klass) const
+  {mark_as_being_compared(*klass);}
+
+  /// If the instance of class_decl has been previously marked as
+  /// being compared -- via an invocation of mark_as_being_compared()
+  /// this method unmarks it.  Otherwise is has no effect.
+  ///
+  /// This method is not thread safe because it uses the static data
+  /// member classes_being_compared_.  If you wish to use it in a
+  /// multi-threaded environment you should probably protect the
+  /// access to that static data member with a mutex or somesuch.
+  ///
+  /// @param klass the instance of class_decl to unmark.
+  void
+  unmark_as_being_compared(const class_decl& klass) const
+  {classes_being_compared_.erase(klass.get_qualified_name());}
+
+  /// If the instance of class_decl has been previously marked as
+  /// being compared -- via an invocation of mark_as_being_compared()
+  /// this method unmarks it.  Otherwise is has no effect.
+  ///
+  /// @param klass the instance of class_decl to unmark.
+  void
+  unmark_as_being_compared(const class_decl* klass) const
+  {classes_being_compared_.erase(klass->get_qualified_name());}
+
+  /// Test if a given instance of class_decl is being currently
+  /// compared.
+  ///
+  ///@param klass the class to test.
+  ///
+  /// @return true if @p klass is being compared, false otherwise.
+  bool
+  comparison_started(const class_decl& klass) const
+  {
+    return (classes_being_compared_.find(klass.get_qualified_name())
+	    != classes_being_compared_.end());
+  }
+
+  /// Test if a given instance of class_decl is being currently
+  /// compared.
+  ///
+  ///@param klass the class to test.
+  ///
+  /// @return true if @p klass is being compared, false otherwise.
+  bool
+  comparison_started(const class_decl* klass) const
+  {return comparison_started(*klass);}
+};// end struct class_decl::priv
+
+unordered_map<string, bool> class_decl::priv::classes_being_compared_;
+
 /// A Constructor for instances of \ref class_decl
 ///
 /// @param name the identifier of the class.
@@ -3534,21 +3672,15 @@ function_decl::~function_decl()
 class_decl::class_decl(const std::string& name, size_t size_in_bits,
 		       size_t align_in_bits, bool is_struct,
 		       location locus, visibility vis,
-		       base_specs& bases, member_types& mbrs,
+		       base_specs& bases, member_types& mbr_types,
 		       data_members& data_mbrs,
 		       member_functions& mbr_fns)
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
-    comparison_started_(false),
-    is_declaration_only_(false),
-    is_struct_(is_struct),
-    bases_(bases),
-    member_types_(mbrs),
-    data_members_(data_mbrs),
-    member_functions_(mbr_fns)
+    priv_(new priv(is_struct, bases, mbr_types, data_mbrs, mbr_fns))
 {
-  for (member_types::iterator i = mbrs.begin(); i != mbrs.end(); ++i)
+  for (member_types::iterator i = mbr_types.begin(); i != mbr_types.end(); ++i)
     if (!has_scope(get_type_declaration(*i)))
       add_decl_to_scope(get_type_declaration(*i), this);
 
@@ -3583,9 +3715,7 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
-    comparison_started_(false),
-    is_declaration_only_(false),
-    is_struct_(is_struct)
+    priv_(new priv(is_struct))
 {}
 
 /// A constuctor for instances of class_decl that represent a
@@ -3601,10 +3731,92 @@ class_decl::class_decl(const std::string& name,
   : decl_base(name, location(), name),
     type_base(0, 0),
     scope_type_decl(name, 0, 0, location()),
-    comparison_started_(false),
-    is_declaration_only_(is_declaration_only),
-    is_struct_(is_struct)
+    priv_(new priv(is_declaration_only, is_struct))
 {}
+
+/// Test if a class is a declaration-only class.
+///
+/// @return true iff the current class is a declaration-only class.
+bool
+class_decl::get_is_declaration_only() const
+{return priv_->is_declaration_only_;}
+
+/// Set a flag saying if the class is a declaration-only class.
+///
+/// @param f true if the class is a decalaration-only class.
+void
+class_decl::set_is_declaration_only(bool f)
+{priv_->is_declaration_only_ = f;}
+
+/// Test if the class is a struct.
+///
+/// @return true iff the class is a struct.
+bool
+class_decl::is_struct() const
+{return priv_->is_struct_;}
+
+/// If this class is declaration-only, get its definition, if any.
+///
+/// @return the definition of this decl-only class.
+const class_decl_sptr&
+class_decl::get_definition_of_declaration() const
+{return priv_->definition_of_declaration_;}
+
+/// If this class is a definitin, get its earlier declaration.
+///
+/// @return the earlier declaration of the class, if any.
+decl_base_sptr
+class_decl::get_earlier_declaration() const
+{return priv_->declaration_;}
+
+/// Add a base specifier to this class.
+///
+/// @param b the new base specifier.
+void
+class_decl::add_base_specifier(shared_ptr<base_spec> b)
+{priv_->bases_.push_back(b);}
+
+/// Get the base specifiers for this class.
+///
+/// @return a vector of the base specifiers.
+const class_decl::base_specs&
+class_decl::get_base_specifiers() const
+{return priv_->bases_;}
+
+/// Get the member types of this class.
+///
+/// @return a vector of the member types of this class.
+const class_decl::member_types&
+class_decl::get_member_types() const
+{return priv_->member_types_;}
+
+/// Get the data members of this class.
+///
+/// @return a vector of the data members of this class.
+const class_decl::data_members&
+class_decl::get_data_members() const
+{return priv_->data_members_;}
+
+/// Get the member functions of this class.
+///
+/// @return a vector of the member functions of this class.
+const class_decl::member_functions&
+class_decl::get_member_functions() const
+{return priv_->member_functions_;}
+
+/// Get the member function templates of this class.
+///
+/// @return a vector of the member function templates of this class.
+const class_decl::member_function_templates&
+class_decl::get_member_function_templates() const
+{return priv_->member_function_templates_;}
+
+/// Get the member class templates of this class.
+///
+/// @return a vector of the member class templates of this class.
+const class_decl::member_class_templates&
+class_decl::get_member_class_templates() const
+{return priv_->member_class_templates_;}
 
 /// @return the pretty representaion for a class_decl.
 string
@@ -3613,11 +3825,14 @@ class_decl::get_pretty_representation() const
   string cl= is_struct() ? "struct " : "class ";
   return cl + get_qualified_name();}
 
+/// Set the definition of this declaration-only class.
+///
+/// @param d the new definition to set.
 void
 class_decl::set_definition_of_declaration(class_decl_sptr d)
 {
   assert(get_is_declaration_only());
-  definition_of_declaration_ = d;
+  priv_->definition_of_declaration_ = d;
 }
 
 /// set the earlier declaration of this class definition.
@@ -3629,7 +3844,7 @@ class_decl::set_earlier_declaration(decl_base_sptr declaration)
 {
   class_decl_sptr cl = dynamic_pointer_cast<class_decl>(declaration);
   if (cl && cl->get_is_declaration_only())
-    declaration_ = declaration;
+    priv_->declaration_ = declaration;
 }
 
 decl_base_sptr
@@ -3702,7 +3917,7 @@ class_decl::insert_member_type(type_base_sptr t,
   assert(!has_scope(d));
 
   d->set_scope(this);
-  member_types_.push_back(t);
+  priv_->member_types_.push_back(t);
   scope_decl::insert_member_decl(d, before);
 }
 
@@ -3738,13 +3953,13 @@ class_decl::add_member_type(type_base_sptr t, access_specifier a)
 void
 class_decl::remove_member_type(type_base_sptr t)
 {
-  for (member_types::iterator i = member_types_.begin();
-       i != member_types_.end();
+  for (member_types::iterator i = priv_->member_types_.begin();
+       i != priv_->member_types_.end();
        ++i)
     {
       if (*((*i)) == *t)
 	{
-	  member_types_.erase(i);
+	  priv_->member_types_.erase(i);
 	  return;
 	}
     }
@@ -3862,7 +4077,7 @@ class_decl::add_data_member(var_decl_sptr v, access_specifier access,
 					      offset_in_bits,
 					      access, is_static));
   v->set_context_rel(ctxt);
-  data_members_.push_back(v);
+  priv_->data_members_.push_back(v);
   scope_decl::add_member_decl(v);
 }
 
@@ -4081,7 +4296,7 @@ class_decl::add_member_function(method_decl_sptr f,
 						      a, is_static));
 
   f->set_context_rel(ctxt);
-  member_functions_.push_back(f);
+  priv_->member_functions_.push_back(f);
   scope_decl::add_member_decl(f);
   assert(is_member_decl(f));
 }
@@ -4098,7 +4313,7 @@ class_decl::add_member_function_template
   /// error message or something like a structured error.
   assert(!c);
   m->as_function_tdecl()->set_scope(this);
-  member_function_templates_.push_back(m);
+  priv_->member_function_templates_.push_back(m);
   scope_decl::add_member_decl(m->as_function_tdecl());
 }
 
@@ -4112,7 +4327,7 @@ class_decl::add_member_class_template(shared_ptr<member_class_template> m)
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
   assert(!c);
-  member_class_templates_.push_back(m);
+  priv_->member_class_templates_.push_back(m);
   m->set_scope(this);
   m->as_class_tdecl()->set_scope(this);
   scope_decl::add_member_decl(m->as_class_tdecl());
@@ -4122,12 +4337,12 @@ class_decl::add_member_class_template(shared_ptr<member_class_template> m)
 bool
 class_decl::has_no_base_nor_member() const
 {
-  return (bases_.empty()
-	  && member_types_.empty()
-	  && data_members_.empty()
-	  && member_functions_.empty()
-	  && member_function_templates_.empty()
-	  && member_class_templates_.empty());
+  return (priv_->bases_.empty()
+	  && priv_->member_types_.empty()
+	  && priv_->data_members_.empty()
+	  && priv_->member_functions_.empty()
+	  && priv_->member_function_templates_.empty()
+	  && priv_->member_class_templates_.empty());
 }
 
 /// Return the hash value for the current instance.
@@ -4151,16 +4366,10 @@ class_decl::operator==(const decl_base& other) const
 	return false;
       const class_decl& o = *op;
 
-      if (comparison_started_ && o.comparison_started_)
-	return true;
-
-      comparison_started_ = true;
-      o.comparison_started_ = true;
-
 #define RETURN(value)					\
       do {						\
-	comparison_started_ = false;			\
-	op->comparison_started_ = false;		\
+	priv_->unmark_as_being_compared(this);		\
+	op->priv_->unmark_as_being_compared(op);	\
 	return value;					\
       } while(0)
 
@@ -4188,6 +4397,13 @@ class_decl::operator==(const decl_base& other) const
 	      RETURN(true);
 	    }
 
+	  if (priv_->comparison_started(this)
+	      || priv_->comparison_started(o))
+	    return true;
+
+	  priv_->mark_as_being_compared(this);
+	  priv_->mark_as_being_compared(o);
+
 	  bool val = *def1 == *def2;
 	  RETURN(val);
 	}
@@ -4204,6 +4420,13 @@ class_decl::operator==(const decl_base& other) const
       // different size / alignment.
       if (!(decl_base::operator==(o) && type_base::operator==(o)))
 	RETURN(false);
+
+      if (priv_->comparison_started(this)
+	  || priv_->comparison_started(o))
+	return true;
+
+      priv_->mark_as_being_compared(this);
+      priv_->mark_as_being_compared(o);
 
       // Compare bases.
       {
@@ -4229,20 +4452,17 @@ class_decl::operator==(const decl_base& other) const
 	if (get_member_types().size() != o.get_member_types().size())
 	  RETURN(false);
 
-	if (!comparison_started_  && !o.comparison_started_)
-	  {
-	    member_types::const_iterator t0, t1;
-	    for (t0 = get_member_types().begin(),
-		   t1 = o.get_member_types().begin();
-		 (t0 != get_member_types().end()
-		  && t1 != o.get_member_types().end());
-		 ++t0, ++t1)
-	      if (!(**t0 == **t1))
-		RETURN(false);
-	    if (t0 != get_member_types().end()
-		|| t1 != o.get_member_types().end())
-	      RETURN(false);
-	  }
+	member_types::const_iterator t0, t1;
+	for (t0 = get_member_types().begin(),
+	       t1 = o.get_member_types().begin();
+	     (t0 != get_member_types().end()
+	      && t1 != o.get_member_types().end());
+	     ++t0, ++t1)
+	  if (!(**t0 == **t1))
+	    RETURN(false);
+	if (t0 != get_member_types().end()
+	    || t1 != o.get_member_types().end())
+	  RETURN(false);
       }
 #endif
 
@@ -4266,20 +4486,17 @@ class_decl::operator==(const decl_base& other) const
 	if (get_member_functions().size() != o.get_member_functions().size())
 	  RETURN(false);
 
-	if (!comparison_started_  && !o.comparison_started_)
-	  {
-	    member_functions::const_iterator f0, f1;
-	    for (f0 = get_member_functions().begin(),
-		   f1 = o.get_member_functions().begin();
-		 f0 != get_member_functions().end()
-		   && f1 != o.get_member_functions().end();
-		 ++f0, ++f1)
-	      if (**f0 != **f1)
-		RETURN(false);
-	    if (f0 != get_member_functions().end()
-		|| f1 != o.get_member_functions().end())
-	      RETURN(false);
-	  }
+	member_functions::const_iterator f0, f1;
+	for (f0 = get_member_functions().begin(),
+	       f1 = o.get_member_functions().begin();
+	     f0 != get_member_functions().end()
+	       && f1 != o.get_member_functions().end();
+	     ++f0, ++f1)
+	  if (**f0 != **f1)
+	    RETURN(false);
+	if (f0 != get_member_functions().end()
+	    || f1 != o.get_member_functions().end())
+	  RETURN(false);
       }
 
       // compare member function templates
@@ -4288,20 +4505,17 @@ class_decl::operator==(const decl_base& other) const
 	    != o.get_member_function_templates().size())
 	  RETURN(false);
 
-	if (!comparison_started_  && !o.comparison_started_)
-	  {
-	    member_function_templates::const_iterator fn_tmpl_it0, fn_tmpl_it1;
-	    for (fn_tmpl_it0 = get_member_function_templates().begin(),
-		   fn_tmpl_it1 = o.get_member_function_templates().begin();
-		 fn_tmpl_it0 != get_member_function_templates().end()
-		   &&  fn_tmpl_it1 != o.get_member_function_templates().end();
-		 ++fn_tmpl_it0, ++fn_tmpl_it1)
-	      if (**fn_tmpl_it0 != **fn_tmpl_it1)
-		RETURN(false);
-	    if (fn_tmpl_it0 != get_member_function_templates().end()
-		|| fn_tmpl_it1 != o.get_member_function_templates().end())
-	      RETURN(false);
-	  }
+	member_function_templates::const_iterator fn_tmpl_it0, fn_tmpl_it1;
+	for (fn_tmpl_it0 = get_member_function_templates().begin(),
+	       fn_tmpl_it1 = o.get_member_function_templates().begin();
+	     fn_tmpl_it0 != get_member_function_templates().end()
+	       &&  fn_tmpl_it1 != o.get_member_function_templates().end();
+	     ++fn_tmpl_it0, ++fn_tmpl_it1)
+	  if (**fn_tmpl_it0 != **fn_tmpl_it1)
+	    RETURN(false);
+	if (fn_tmpl_it0 != get_member_function_templates().end()
+	    || fn_tmpl_it1 != o.get_member_function_templates().end())
+	  RETURN(false);
       }
 
       // compare member class templates
@@ -4310,20 +4524,17 @@ class_decl::operator==(const decl_base& other) const
 	    != o.get_member_class_templates().size())
 	  RETURN(false);
 
-	if (!comparison_started_  && !o.comparison_started_)
-	  {
-	    member_class_templates::const_iterator cl_tmpl_it0, cl_tmpl_it1;
-	    for (cl_tmpl_it0 = get_member_class_templates().begin(),
-		   cl_tmpl_it1 = o.get_member_class_templates().begin();
-		 cl_tmpl_it0 != get_member_class_templates().end()
-		   &&  cl_tmpl_it1 != o.get_member_class_templates().end();
-		 ++cl_tmpl_it0, ++cl_tmpl_it1)
-	      if (**cl_tmpl_it0 != **cl_tmpl_it1)
-		RETURN(false);
-	    if (cl_tmpl_it0 != get_member_class_templates().end()
-		|| cl_tmpl_it1 != o.get_member_class_templates().end())
-	      RETURN(false);
-	  }
+	member_class_templates::const_iterator cl_tmpl_it0, cl_tmpl_it1;
+	for (cl_tmpl_it0 = get_member_class_templates().begin(),
+	       cl_tmpl_it1 = o.get_member_class_templates().begin();
+	     cl_tmpl_it0 != get_member_class_templates().end()
+	       &&  cl_tmpl_it1 != o.get_member_class_templates().end();
+	     ++cl_tmpl_it0, ++cl_tmpl_it1)
+	  if (**cl_tmpl_it0 != **cl_tmpl_it1)
+	    RETURN(false);
+	if (cl_tmpl_it0 != get_member_class_templates().end()
+	    || cl_tmpl_it1 != o.get_member_class_templates().end())
+	  RETURN(false);
       }
     }
   catch (...)

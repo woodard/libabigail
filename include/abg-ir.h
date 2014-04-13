@@ -1976,18 +1976,9 @@ public:
   /// @}
 
 private:
-  mutable bool			comparison_started_;
-  decl_base_sptr		declaration_;
-  bool				is_declaration_only_;
-  class_decl_sptr		definition_of_declaration_;
-  bool				is_struct_;
-  base_specs			bases_;
-  member_types			member_types_;
-  data_members			data_members_;
-  member_functions		member_functions_;
-  member_function_templates	member_function_templates_;
-  member_class_templates	member_class_templates_;
-
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
 protected:
 
   virtual decl_base_sptr
@@ -2025,38 +2016,31 @@ public:
   get_pretty_representation() const;
 
   bool
-  get_is_declaration_only() const
-  {return is_declaration_only_;}
+  get_is_declaration_only() const;
 
   void
-  set_is_declaration_only(bool f)
-  {is_declaration_only_ = f;}
+  set_is_declaration_only(bool f);
 
   bool
-  is_struct() const
-  {return is_struct_;}
+  is_struct() const;
 
   void
   set_definition_of_declaration(class_decl_sptr);
 
   const class_decl_sptr&
-  get_definition_of_declaration() const
-  {return definition_of_declaration_;}
+  get_definition_of_declaration() const;
 
   void
   set_earlier_declaration(decl_base_sptr declaration);
 
   decl_base_sptr
-  get_earlier_declaration() const
-  {return declaration_;}
+  get_earlier_declaration() const;
 
   void
-  add_base_specifier(shared_ptr<base_spec> b)
-  {bases_.push_back(b);}
+  add_base_specifier(shared_ptr<base_spec> b);
 
   const base_specs&
-  get_base_specifiers() const
-  {return bases_;}
+  get_base_specifiers() const;
 
   void
   insert_member_type(type_base_sptr t,
@@ -2072,8 +2056,7 @@ public:
   remove_member_type(type_base_sptr t);
 
   const member_types&
-  get_member_types() const
-  {return member_types_;}
+  get_member_types() const;
 
   void
   add_data_member(var_decl_sptr v, access_specifier a,
@@ -2081,8 +2064,7 @@ public:
 		  size_t offset_in_bits);
 
   const data_members&
-  get_data_members() const
-  {return data_members_;}
+  get_data_members() const;
 
   void
   add_member_function(method_decl_sptr f,
@@ -2092,8 +2074,7 @@ public:
 		      bool is_dtor, bool is_const);
 
   const member_functions&
-  get_member_functions() const
-  {return member_functions_;}
+  get_member_functions() const;
 
   size_t
   get_num_virtual_functions() const;
@@ -2102,16 +2083,13 @@ public:
   add_member_function_template(shared_ptr<member_function_template>);
 
   const member_function_templates&
-  get_member_function_templates() const
-  {return member_function_templates_;}
+  get_member_function_templates() const;
 
   void
   add_member_class_template(shared_ptr<member_class_template> m);
 
   const member_class_templates&
-  get_member_class_templates() const
-
-  {return member_class_templates_;}
+  get_member_class_templates() const;
 
   bool
   has_no_base_nor_member() const;
