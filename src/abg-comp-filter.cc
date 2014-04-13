@@ -197,14 +197,73 @@ decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
   return d1_name != d2_name;
 }
 
+/// Test if the class_diff node has members added or removed.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true iff the class_diff node has members added or removed.
 static bool
 data_member_added_or_removed(const class_diff* diff)
 {return (diff && (diff->inserted_data_members().size()
 		  || diff->deleted_data_members().size()));}
 
+/// Test if the class_diff node has members added or removed.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true iff the class_diff node has members added or removed.
 static bool
 data_member_added_or_removed(const diff* diff)
 {return data_member_added_or_removed(dynamic_cast<const class_diff*>(diff));}
+
+/// Test if the class_diff has changes to non virtual member
+/// functions.
+///
+///@param diff the class_diff nod e to consider.
+///
+/// @retrurn iff the class_diff node has changes to non virtual member
+/// functions.
+static bool
+has_non_virtual_mem_fn_change(const class_diff* diff)
+{
+  if (!diff)
+    return false;
+
+  for (string_member_function_sptr_map::const_iterator i =
+	 diff->deleted_member_fns().begin();
+       i != diff->deleted_member_fns().end();
+       ++i)
+    if (!member_function_is_virtual(i->second))
+      return true;
+
+  for (string_member_function_sptr_map::const_iterator i =
+	 diff->inserted_member_fns().begin();
+       i != diff->inserted_member_fns().end();
+       ++i)
+    if (!member_function_is_virtual(i->second))
+      return true;
+
+  for (string_changed_member_function_sptr_map::const_iterator i =
+	 diff->changed_member_fns().begin();
+       i != diff->changed_member_fns().end();
+       ++i)
+    if(!member_function_is_virtual(i->second.first)
+       && !member_function_is_virtual(i->second.second))
+      return true;
+
+  return false;
+}
+
+/// Test if the class_diff has changes to non virtual member
+/// functions.
+///
+///@param diff the class_diff nod e to consider.
+///
+/// @retrurn iff the class_diff node has changes to non virtual member
+/// functions.
+static bool
+has_non_virtual_mem_fn_change(const diff* diff)
+{return has_non_virtual_mem_fn_change(dynamic_cast<const class_diff*>(diff));}
 
 /// The visiting code of the harmless_filter.
 ///
@@ -233,6 +292,9 @@ harmless_filter::visit(diff* d, bool pre)
 
       if (decl_name_changed(f, s))
 	category |= DECL_NAME_CHANGE_CATEGORY;
+
+      if (has_non_virtual_mem_fn_change(d))
+	category |= NON_VIRT_MEM_FUN_CHANGE_CATEGORY;
 
       if (category)
 	d->add_to_category(category);

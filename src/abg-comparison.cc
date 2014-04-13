@@ -161,6 +161,31 @@ operator|(visiting_kind l, visiting_kind r)
       }								\
   } while (false)
 
+/// Inside the code of a given diff node that is for member functions
+/// of a class_diff node, traverse a sub-tree of the diff nove and
+/// propagate the category of the sub-tree up to the current diff
+/// node.
+///
+/// Note that for a diff for member functions, the only categories we
+/// want to see propagated to the diff of the enclosing class are
+/// categories about changes to vtables.
+/// 
+/// @param node the sub-tree node of the current diff node to consider.
+///
+/// @param visitor the visitor used to visit the traversed sub tree
+/// nodes.
+#define TRAVERSE_MEM_FN_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
+  do {									\
+    bool r = node->traverse(visitor);					\
+    add_to_category(node->get_category()				\
+		    & VIRTUAL_MEMBER_CHANGE_CATEGORY);			\
+    if (!r)								\
+      {								\
+	priv_->traversing_ = false;					\
+	return false;							\
+      }								\
+  } while (false)
+
 /// Inside the traveral code of a diff node, if the node has been
 /// traversed already, return immediately.  Otherwise, mark the
 /// current node as a 'traversed' node.
@@ -1344,11 +1369,10 @@ report_mem_header(ostream& out,
 		  const string& section_name,
 		  const string& indent)
 {
-  size_t net_number = number;
-  if (k == change_kind || subtype_change_kind)
-    net_number = number - num_filtered;
-
+  size_t net_number = number - num_filtered;
   string change;
+  char colon_or_semi_colon = ':';
+
   switch (k)
     {
     case del_kind:
@@ -1364,17 +1388,19 @@ report_mem_header(ostream& out,
     }
 
   if (net_number == 0)
-    out << indent << "no " << section_name << " " << change;
+    {
+      out << indent << "no " << section_name << " " << change;
+      colon_or_semi_colon = ';';
+    }
   else if (net_number == 1)
     out << indent << "1 " << section_name << " " << change;
   else
     out << indent << net_number << " " << section_name
 	<< " " << change;
 
-  if (k == change_kind
-      && num_filtered)
-    out << ", (" << num_filtered << " filtered)";
-  out << ":\n";
+  if (num_filtered)
+    out << " (" << num_filtered << " filtered)";
+  out << colon_or_semi_colon << '\n';
 }
 
 // <pointer_type_def stuff>
@@ -2471,7 +2497,13 @@ struct class_diff::priv
   count_filtered_changed_dm(const diff_context_sptr&);
 
   size_t
-  count_filtered_member_functions(const diff_context_sptr&);
+  count_filtered_changed_mem_fns(const diff_context_sptr&);
+
+  size_t
+  count_filtered_inserted_mem_fns(const diff_context_sptr&);
+
+  size_t
+  count_filtered_deleted_mem_fns(const diff_context_sptr&);
 
   priv()
     : traversing_(false)
@@ -2957,22 +2989,99 @@ class_diff::priv::count_filtered_subtype_changed_dm(const diff_context_sptr& ctx
 /// @return the number of member functions whose changes got filtered
 /// out.
 size_t
-class_diff::priv::count_filtered_member_functions(const diff_context_sptr& ctxt)
+class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
 {
-  size_t num_filtered = 0;
+  if (ctxt->get_allowed_category() & NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+    return 0;
+
+  size_t count = 0;
   for (string_changed_member_function_sptr_map::const_iterator i =
 	 changed_member_functions_.begin();
        i != changed_member_functions_.end();
        ++i)
     {
-      class_decl::method_decl_sptr f = i->second.first;
-      class_decl::method_decl_sptr s = i->second.second;
+      class_decl::method_decl_sptr f = i->second.first,
+	s = i->second.second;
+
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
       ctxt->maybe_apply_filters(diff);
-      if (diff->is_filtered_out())
-	++num_filtered;
+
+      if (diff->is_filtered_out()
+	  || (!member_function_is_virtual(i->second.first)
+	      && !member_function_is_virtual(i->second.second)))
+	++count;
     }
-  return num_filtered;
+
+  return count;
+}
+
+/// Count the number of inserted member functions whose got filtered
+/// out.
+///
+/// @param ctxt the diff context to use to get the filtering settings
+/// from the user.
+///
+/// @return the number of inserted member functions whose got filtered
+/// out.
+size_t
+class_diff::priv::count_filtered_inserted_mem_fns(const diff_context_sptr& ctxt)
+{
+  if (ctxt->get_allowed_category() & NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+    return 0;
+
+  size_t count = 0;
+  for (string_member_function_sptr_map::const_iterator i =
+	 inserted_member_functions_.begin();
+       i != inserted_member_functions_.end();
+       ++i)
+    {
+      class_decl::method_decl_sptr f = i->second,
+	s = i->second;
+
+      diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
+      ctxt->maybe_apply_filters(diff);
+
+      if (diff->is_filtered_out()
+	  || !member_function_is_virtual(i->second))
+	++count;
+    }
+
+  return count;
+}
+
+/// Count the number of deleted member functions whose got filtered
+/// out.
+///
+/// @param ctxt the diff context to use to get the filtering settings
+/// from the user.
+///
+/// @return the number of deleted member functions whose got filtered
+/// out.
+size_t
+class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
+{
+    if (ctxt->get_allowed_category()
+      & NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+    return 0;
+
+    size_t count = 0;
+  for (string_member_function_sptr_map::const_iterator i =
+	 deleted_member_functions_.begin();
+       i != deleted_member_functions_.end();
+       ++i)
+    {
+      class_decl::method_decl_sptr f = i->second,
+	s = i->second;
+
+      diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
+      ctxt->maybe_apply_filters(diff);
+
+      if (diff->is_filtered_out()
+	  || !member_function_is_virtual(i->second))
+	++count;
+    }
+
+  return count;
 }
 
 /// Count the number of data member offsets that have changed.
@@ -3077,11 +3186,25 @@ const edit_script&
 class_diff::member_fns_changes() const
 {return priv_->member_fns_changes_;}
 
+const string_changed_member_function_sptr_map&
+class_diff::changed_member_fns() const
+{return priv_->changed_member_functions_;}
+
 /// @return the edit script of the member functions of the two
 /// classes.
 edit_script&
 class_diff::member_fns_changes()
 {return priv_->member_fns_changes_;}
+
+/// @return a map of member functions that got deleted.
+const string_member_function_sptr_map&
+class_diff::deleted_member_fns() const
+{return priv_->deleted_member_functions_;}
+
+/// @return a map of member functions that got inserted.
+const string_member_function_sptr_map&
+class_diff::inserted_member_fns() const
+{return priv_->inserted_member_functions_;}
 
 ///@return the edit script of the member function templates of the two
 ///classes.
@@ -3412,27 +3535,35 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // report deletions
       int numdels = priv_->deleted_member_functions_.size();
+      size_t num_filtered = priv_->count_filtered_deleted_mem_fns(context());
+      size_t net_num_dels = numdels - num_filtered;
       if (numdels)
-	report_mem_header(out, numdels, 0, del_kind,
+	report_mem_header(out, numdels, num_filtered, del_kind,
 			  "member function", indent);
       for (string_member_function_sptr_map::const_iterator i =
 	     priv_->deleted_member_functions_.begin();
 	   i != priv_->deleted_member_functions_.end();
 	   ++i)
 	{
+	  if (!(context()->get_allowed_category()
+		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+	      && !member_function_is_virtual(i->second))
+	    continue;
+
 	  if (i != priv_->deleted_member_functions_.begin())
 	    out << "\n";
 	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(mem_fun, out);
 	}
-      if (numdels)
+      if (net_num_dels)
 	out << "\n";
 
       // report insertions;
       int numins = priv_->inserted_member_functions_.size();
+      num_filtered = priv_->count_filtered_inserted_mem_fns(context());
       if (numins)
-	report_mem_header(out, numins, 0, ins_kind,
+	report_mem_header(out, numins, num_filtered, ins_kind,
 			  "member function", indent);
       bool emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
@@ -3440,6 +3571,11 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != priv_->inserted_member_functions_.end();
 	   ++i)
 	{
+	  if (!(context()->get_allowed_category()
+		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+	      && !member_function_is_virtual(i->second))
+	    continue;
+
 	  if (i != priv_->inserted_member_functions_.begin())
 	    out << "\n";
 	  class_decl::method_decl_sptr mem_fun = i->second;
@@ -3450,9 +3586,9 @@ class_diff::report(ostream& out, const string& indent) const
       if (emitted)
 	out << "\n";
 
-      // report function sub-types changes
+      // report member function with sub-types changes
       int numchanges = priv_->changed_member_functions_.size();
-      size_t num_filtered = priv_->count_filtered_member_functions(context());
+      num_filtered = priv_->count_filtered_changed_mem_fns(context());
       if (numchanges)
 	report_mem_header(out, numchanges, num_filtered, change_kind,
 			  "member function", indent);
@@ -3461,6 +3597,12 @@ class_diff::report(ostream& out, const string& indent) const
 	   i != priv_->changed_member_functions_.end();
 	   ++i)
 	{
+	  if (!(context()->get_allowed_category()
+		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+	      && !member_function_is_virtual(i->second.first)
+	      && !member_function_is_virtual(i->second.second))
+	    continue;
+
 	  class_decl::method_decl_sptr f = i->second.first;
 	  class_decl::method_decl_sptr s = i->second.second;
 	  diff_sptr diff = compute_diff_for_decls(f, s, context());
@@ -3651,7 +3793,7 @@ class_diff::traverse(diff_node_visitor& v)
     if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					     i->second.second,
 					     context()))
-      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
+      TRAVERSE_MEM_FN_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
 
   TRY_POST_VISIT_CLASS_DIFF(v);
 

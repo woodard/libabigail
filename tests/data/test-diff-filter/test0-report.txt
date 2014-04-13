@@ -21,9 +21,8 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           1 data member change:
            'int S0::m0' offset changed from 64 to 96
 
-          1 member function insertion:
-            'method int S0::get_member0()'
-          no member function change, (1 filtered):
+          no member function insertion (1 filtered);
+          no member function change (1 filtered);
 
 
 1 Added function:

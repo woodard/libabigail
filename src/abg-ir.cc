@@ -1055,6 +1055,24 @@ size_t
 get_member_function_vtable_offset(const function_decl_sptr f)
 {return get_member_function_vtable_offset(*f);}
 
+/// Test if a given member function is virtual.
+///
+/// @param mem_fn the member function to consider.
+///
+/// @return true iff a @p mem_fn is virtual.
+bool
+member_function_is_virtual(const function_decl& mem_fn)
+{return get_member_function_vtable_offset(mem_fn) != 0;}
+
+/// Test if a given member function is virtual.
+///
+/// @param mem_fn the member function to consider.
+///
+/// @return true iff a @p mem_fn is virtual.
+bool
+member_function_is_virtual(const function_decl_sptr mem_fn)
+{return mem_fn ? member_function_is_virtual(*mem_fn) : false;}
+
 /// Recursively returns the the underlying type of a typedef.  The
 /// return type should not be a typedef of anything anymore.
 ///
