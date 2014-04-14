@@ -1074,11 +1074,11 @@ represent(class_decl::method_decl_sptr mem_fn, ostream& out)
   assert(meth);
 
   out << "'" << mem_fn->get_pretty_representation() << "'";
-  if (get_member_function_vtable_offset(mem_fn))
+  if (member_function_is_virtual(mem_fn))
     out << ", virtual at voffset "
 	<< get_member_function_vtable_offset(mem_fn)
 	<< "/"
-	<< meth->get_type()->get_class_type()->get_num_virtual_functions();
+	<< meth->get_type()->get_class_type()->get_virtual_mem_fns().size();
 }
 
 /// Stream a string representation for a data member.

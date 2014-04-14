@@ -2427,8 +2427,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		      is_static = false;
 		  }
 	      }
-	      result->add_member_function(m, access, vindex,
-					  is_static, is_ctor,
+	      result->add_member_function(m, access, is_virtual,
+					  vindex, is_static, is_ctor,
 					  is_dtor, /*is_const*/false);
 	      assert(is_member_function(m));
 	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = m;

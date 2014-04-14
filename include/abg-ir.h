@@ -461,6 +461,12 @@ public:
   friend void
   set_member_is_static(decl_base_sptr d, bool s);
 
+  friend bool
+  member_function_is_virtual(const function_decl& f);
+
+  friend void
+  set_member_function_is_virtual(const function_decl&, bool);
+
   friend class class_decl;
 };// end class decl_base
 
@@ -2069,6 +2075,7 @@ public:
   void
   add_member_function(method_decl_sptr f,
 		      access_specifier a,
+		      bool is_virtual,
 		      size_t vtable_offset,
 		      bool is_static, bool is_ctor,
 		      bool is_dtor, bool is_const);
@@ -2076,8 +2083,8 @@ public:
   const member_functions&
   get_member_functions() const;
 
-  size_t
-  get_num_virtual_functions() const;
+  const member_functions&
+  get_virtual_mem_fns() const;
 
   void
   add_member_function_template(shared_ptr<member_function_template>);
@@ -2246,6 +2253,7 @@ typedef shared_ptr<mem_fn_context_rel> mem_fn_context_rel_sptr;
 class mem_fn_context_rel : public context_rel
 {
 protected:
+  bool		is_virtual_;
   size_t	vtable_offset_in_bits_;
   bool		is_constructor_;
   bool		is_destructor_;
@@ -2254,6 +2262,7 @@ protected:
 public:
   mem_fn_context_rel()
     : context_rel(),
+      is_virtual_(false),
       vtable_offset_in_bits_(0),
       is_constructor_(false),
       is_destructor_(false),
@@ -2262,6 +2271,7 @@ public:
 
   mem_fn_context_rel(scope_decl* s)
     : context_rel(s),
+      is_virtual_(false),
       vtable_offset_in_bits_(0),
       is_constructor_(false),
       is_destructor_(false),
@@ -2272,15 +2282,25 @@ public:
 		     bool is_constructor,
 		     bool is_destructor,
 		     bool is_const,
+		     bool is_virtual,
 		     size_t vtable_offset_in_bits,
 		     access_specifier access,
 		     bool is_static)
     : context_rel(s, access, is_static),
+      is_virtual_(is_virtual),
       vtable_offset_in_bits_(vtable_offset_in_bits),
       is_constructor_(is_constructor),
       is_destructor_(is_destructor),
       is_const_(is_const)
   {}
+
+  bool
+  is_virtual() const
+  {return is_virtual_;}
+
+  void
+  is_virtual(bool is_virtual)
+  {is_virtual_ = is_virtual;}
 
   /// Getter for the vtable offset property.
   ///

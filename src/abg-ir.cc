@@ -1061,8 +1061,19 @@ get_member_function_vtable_offset(const function_decl_sptr f)
 ///
 /// @return true iff a @p mem_fn is virtual.
 bool
-member_function_is_virtual(const function_decl& mem_fn)
-{return get_member_function_vtable_offset(mem_fn) != 0;}
+member_function_is_virtual(const function_decl& f)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  return ctxt->is_virtual();
+}
 
 /// Test if a given member function is virtual.
 ///
@@ -1072,6 +1083,38 @@ member_function_is_virtual(const function_decl& mem_fn)
 bool
 member_function_is_virtual(const function_decl_sptr mem_fn)
 {return mem_fn ? member_function_is_virtual(*mem_fn) : false;}
+
+/// Set the virtual-ness of a member function.
+///
+/// @param f the member function to consider.
+///
+/// @param is_virtual set to true if the function is virtual.
+void
+set_member_function_is_virtual(const function_decl& f, bool is_virtual)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  ctxt->is_virtual(is_virtual);
+}
+
+/// Set the virtual-ness of a member function.
+///
+/// @param f the member function to consider.
+///
+/// @param is_virtual set to true if the function is virtual.
+void
+set_member_function_is_virtual(const function_decl_sptr& fn, bool is_virtual)
+{
+  if (fn)
+    set_member_function_is_virtual(*fn, is_virtual);
+}
 
 /// Recursively returns the the underlying type of a typedef.  The
 /// return type should not be a typedef of anything anymore.
@@ -3537,6 +3580,7 @@ struct class_decl::priv
   member_types			member_types_;
   data_members			data_members_;
   member_functions		member_functions_;
+  member_functions		virtual_mem_fns_;
   member_function_templates	member_function_templates_;
   member_class_templates	member_class_templates_;
 
@@ -3822,6 +3866,14 @@ const class_decl::member_functions&
 class_decl::get_member_functions() const
 {return priv_->member_functions_;}
 
+/// Get the virtual member functions of this class.
+///
+/// @param return a vector of the virtual member functions of this
+/// class.
+const class_decl::member_functions&
+class_decl::get_virtual_mem_fns() const
+{return priv_->virtual_mem_fns_;}
+
 /// Get the member function templates of this class.
 ///
 /// @return a vector of the member function templates of this class.
@@ -3881,6 +3933,7 @@ class_decl::insert_member_decl(decl_base_sptr d,
     }
   else if (method_decl_sptr f = dynamic_pointer_cast<method_decl>(d))
     add_member_function(f, public_access,
+			/*is_virtual=*/false,
 			/*vtable_offset=*/0,
 			/*is_static=*/false,
 			/*is_ctor=*/false,
@@ -4265,22 +4318,6 @@ class_decl::method_decl::set_scope(scope_decl* scope)
     context_->set_scope(scope);
 }
 
-/// Return the number of virtual functions of this class_decl.
-///
-/// @return the number of virtual functions of this class_decl
-size_t
-class_decl::get_num_virtual_functions() const
-{
-  size_t result = 0;
-  for (class_decl::member_functions::const_iterator i =
-	 get_member_functions().begin();
-       i != get_member_functions().end();
-       ++i)
-    if (get_member_function_vtable_offset(*i))
-      ++result;
-  return result;
-}
-
 /// Add a member function to the current instance of class_decl.
 ///
 /// @param f a method_decl to add to the current class.  This function
@@ -4302,6 +4339,7 @@ class_decl::get_num_virtual_functions() const
 void
 class_decl::add_member_function(method_decl_sptr f,
 				access_specifier a,
+				bool is_virtual,
 				size_t vtable_offset,
 				bool is_static, bool is_ctor,
 				bool is_dtor, bool is_const)
@@ -4310,13 +4348,15 @@ class_decl::add_member_function(method_decl_sptr f,
 
   mem_fn_context_rel_sptr ctxt(new mem_fn_context_rel(this, is_ctor,
 						      is_dtor, is_const,
+						      is_virtual,
 						      vtable_offset,
 						      a, is_static));
 
   f->set_context_rel(ctxt);
   priv_->member_functions_.push_back(f);
   scope_decl::add_member_decl(f);
-  assert(is_member_decl(f));
+  if (member_function_is_virtual(f))
+    priv_->virtual_mem_fns_.push_back(f);
 }
 
 /// Append a member function template to the class.

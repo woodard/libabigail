@@ -2212,10 +2212,14 @@ build_class_decl(read_context&		ctxt,
 	  access_specifier access = private_access;
 	  read_access(n, access);
 
+	  bool is_virtual = false;
 	  size_t vtable_offset = 0;
 	  if (xml_char_sptr s =
 	      XML_NODE_GET_ATTRIBUTE(n, "vtable-offset"))
-	    vtable_offset = atoi(CHAR_STR(s));
+	    {
+	      is_virtual = true;
+	      vtable_offset = atoi(CHAR_STR(s));
+	    }
 
 	  bool is_static = false;
 	  read_static(n, is_static);
@@ -2236,6 +2240,7 @@ build_class_decl(read_context&		ctxt,
 		    dynamic_pointer_cast<class_decl::method_decl>(f);
 		  assert(m);
 		  decl->add_member_function(m, access,
+					    is_virtual,
 					    vtable_offset,
 					    is_static,
 					    is_ctor, is_dtor,
