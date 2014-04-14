@@ -545,6 +545,9 @@ compute_diff(const type_base_sptr,
 	     const type_base_sptr,
 	     diff_context_sptr ctxt);
 
+string
+get_pretty_representation(diff*);
+
 class distinct_diff;
 
 /// Convenience typedef for a shared pointer to distinct_types_diff

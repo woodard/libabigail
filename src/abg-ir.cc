@@ -1526,6 +1526,49 @@ get_type_name(const type_base_sptr t)
   return d->get_name();
 }
 
+/// Get a copy of the pretty representation of a decl.
+///
+/// @param d the decl to consider.
+///
+/// @return the pretty representation of the decl.
+string
+get_pretty_representation(const decl_base* d)
+{
+  if (!d)
+    return "";
+  return d->get_pretty_representation();
+}
+
+/// Get a copy of the pretty representation of a type.
+///
+/// @param d the type to consider.
+///
+/// @return the pretty representation of the type.
+string
+get_pretty_representation(const type_base* t)
+{
+  const decl_base* d = get_type_declaration(t);
+  return get_pretty_representation(d);
+}
+
+/// Get a copy of the pretty representation of a decl.
+///
+/// @param d the decl to consider.
+///
+/// @return the pretty representation of the decl.
+string
+get_pretty_representation(const decl_base_sptr& d)
+{return get_pretty_representation(d.get());}
+
+/// Get a copy of the pretty representation of a type.
+///
+/// @param d the type to consider.
+///
+/// @return the pretty representation of the type.
+string
+get_pretty_representation(const type_base_sptr& t)
+{return get_pretty_representation(t.get());}
+
 /// Get the declaration for a given type.
 ///
 /// @param t the type to consider.

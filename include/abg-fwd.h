@@ -326,6 +326,18 @@ get_translation_unit(const shared_ptr<decl_base>);
 string
 get_type_name(const shared_ptr<type_base>);
 
+string
+get_pretty_representation(const decl_base*);
+
+string
+get_pretty_representation(const type_base*);
+
+string
+get_pretty_representation(const shared_ptr<decl_base>&);
+
+string
+get_pretty_representation(const shared_ptr<type_base>&);
+
 const decl_base*
 get_type_declaration(const type_base*);
 

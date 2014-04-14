@@ -1012,6 +1012,19 @@ compute_diff(const type_base_sptr	first,
   return d;
 }
 
+/// Get a copy of the pretty representation of a diff node.
+///
+/// @param d the diff node to consider.
+///
+/// @return the pretty representation string.
+string
+get_pretty_representation(diff* d)
+{
+  if (!d)
+    return "";
+  string prefix= "diff of ";
+  return prefix + get_pretty_representation(d->first_subject());
+}
 /// Return the length of the diff between two instances of @ref decl_base
 ///
 /// @param first the first instance of @ref decl_base to consider.
