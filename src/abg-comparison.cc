@@ -2757,7 +2757,7 @@ class_diff::ensure_lookup_tables_populated(void) const
       {
 	unsigned i = it->index();
 	class_decl::method_decl_sptr mem_fn =
-	  first_class_decl()->get_member_functions()[i];
+	  first_class_decl()->get_virtual_mem_fns()[i];
 	string name = mem_fn->get_mangled_name();
 	if (name.empty())
 	  name = mem_fn->get_pretty_representation();
@@ -2780,7 +2780,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    unsigned i = *iit;
 
 	    class_decl::method_decl_sptr mem_fn =
-	      second_class_decl()->get_member_functions()[i];
+	      second_class_decl()->get_virtual_mem_fns()[i];
 	    string name = mem_fn->get_mangled_name();
 	    if (name.empty())
 	      name = mem_fn->get_pretty_representation();
@@ -3851,11 +3851,11 @@ compute_diff(const class_decl_sptr	first,
 	       s->get_data_members().end(),
 	       changes->data_members_changes());
 
-  // Compare member functions
-  compute_diff(f->get_member_functions().begin(),
-	       f->get_member_functions().end(),
-	       s->get_member_functions().begin(),
-	       s->get_member_functions().end(),
+  // Compare virtual member functions
+  compute_diff(f->get_virtual_mem_fns().begin(),
+	       f->get_virtual_mem_fns().end(),
+	       s->get_virtual_mem_fns().begin(),
+	       s->get_virtual_mem_fns().end(),
 	       changes->member_fns_changes());
 
   // Compare member function templates

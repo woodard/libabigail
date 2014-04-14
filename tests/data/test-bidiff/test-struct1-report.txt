@@ -15,9 +15,8 @@
       1 data member insertion:
         'double s0::m01', at offset 128 (in bits)
 
-      2 member function insertions:
+      1 member function insertion:
         'method int s0::foo(int, char) const', virtual at voffset 2/2
-        'method int s0::foo()'
   's0*' changed:
     pointed to type 'class s0' changed, as reported earlier
   'class s0' changed:

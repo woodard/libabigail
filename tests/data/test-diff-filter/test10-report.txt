@@ -16,6 +16,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           1 data member deletion:
             'unsigned int S::m', at offset 0 (in bits)
 
-          no member function deletions (2 filtered);
 
 

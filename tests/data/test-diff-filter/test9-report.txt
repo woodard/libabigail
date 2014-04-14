@@ -11,7 +11,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
           1 data member insertion:
             'int S::m0', at offset 0 (in bits)
 
-          no member function insertions (2 filtered);
 
 2 Added functions:
 

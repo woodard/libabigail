@@ -4539,21 +4539,23 @@ class_decl::operator==(const decl_base& other) const
 	  RETURN(false);
       }
 
-      //compare member functions
+      // compare virtual member functions.  We do not compare
+      // non-virtual member functions here because we don't consider
+      // them as being meaningful in the *equality* of two classes.
       {
-	if (get_member_functions().size() != o.get_member_functions().size())
+	if (get_virtual_mem_fns().size() != o.get_virtual_mem_fns().size())
 	  RETURN(false);
 
 	member_functions::const_iterator f0, f1;
-	for (f0 = get_member_functions().begin(),
-	       f1 = o.get_member_functions().begin();
-	     f0 != get_member_functions().end()
-	       && f1 != o.get_member_functions().end();
+	for (f0 = get_virtual_mem_fns().begin(),
+	       f1 = o.get_virtual_mem_fns().begin();
+	     f0 != get_virtual_mem_fns().end()
+	       && f1 != o.get_virtual_mem_fns().end();
 	     ++f0, ++f1)
 	  if (**f0 != **f1)
 	    RETURN(false);
-	if (f0 != get_member_functions().end()
-	    || f1 != o.get_member_functions().end())
+	if (f0 != get_virtual_mem_fns().end()
+	    || f1 != o.get_virtual_mem_fns().end())
 	  RETURN(false);
       }
 
