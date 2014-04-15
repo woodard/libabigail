@@ -216,6 +216,61 @@ static bool
 data_member_added_or_removed(const diff* diff)
 {return data_member_added_or_removed(dynamic_cast<const class_diff*>(diff));}
 
+/// Test if the class_diff node has a change involving virtual member
+/// functions.
+///
+/// That means whether there is an added, removed or changed virtual
+/// member function.
+///
+/// @param diff the class_diff node to consider.
+///
+/// @return true iff the class_diff node contains changes involving
+/// virtual member functions.
+static bool
+has_virtual_mem_fn_change(const class_diff* diff)
+{
+  if (!diff)
+    return false;
+
+  for (string_member_function_sptr_map::const_iterator i =
+	 diff->deleted_member_fns().begin();
+       i != diff->deleted_member_fns().end();
+       ++i)
+    if (member_function_is_virtual(i->second))
+      return true;
+
+  for (string_member_function_sptr_map::const_iterator i =
+	 diff->inserted_member_fns().begin();
+       i != diff->inserted_member_fns().end();
+       ++i)
+    if (member_function_is_virtual(i->second))
+      return true;
+
+  for (string_changed_member_function_sptr_map::const_iterator i =
+	 diff->changed_member_fns().begin();
+       i != diff->changed_member_fns().end();
+       ++i)
+    if(member_function_is_virtual(i->second.first)
+       || !member_function_is_virtual(i->second.second))
+      return true;
+
+  return false;
+}
+
+/// Test if the class_diff node has a change involving virtual member
+/// functions.
+///
+/// That means whether there is an added, removed or changed virtual
+/// member function.
+///
+/// @param diff the class_diff node to consider.
+///
+/// @return true iff the class_diff node contains changes involving
+/// virtual member functions.
+static bool
+has_virtual_mem_fn_change(const diff* diff)
+{return has_virtual_mem_fn_change(dynamic_cast<const class_diff*>(diff));}
+
 /// Test if the class_diff has changes to non virtual member
 /// functions.
 ///
@@ -347,6 +402,9 @@ harmful_filter::visit(diff* d, bool pre)
 
       if (data_member_type_size_changed(f, s))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
+
+      if (has_virtual_mem_fn_change(d))
+	category |= VIRTUAL_MEMBER_CHANGE_CATEGORY;
 
       if (category)
 	d->add_to_category(category);

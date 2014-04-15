@@ -2994,6 +2994,53 @@ class_diff::priv::count_filtered_subtype_changed_dm(const diff_context_sptr& ctx
   return num_filtered;
 }
 
+/// Count the number of data member offsets that have changed.
+///
+/// @param ctxt the diff context to use.
+size_t
+class_diff::priv::count_filtered_changed_dm(const diff_context_sptr& ctxt)
+{
+  size_t num_filtered= 0;
+
+  for (unsigned_changed_type_or_decl_map::const_iterator i =
+	 changed_dm_.begin();
+       i != changed_dm_.end();
+       ++i)
+    {
+      var_decl_sptr o =
+	dynamic_pointer_cast<var_decl>(i->second.first);
+      var_decl_sptr n =
+	dynamic_pointer_cast<var_decl>(i->second.second);
+      diff_sptr diff = compute_diff(o, n, ctxt);
+      ctxt->maybe_apply_filters(diff);
+      if (diff->is_filtered_out())
+	++num_filtered;
+    }
+  return num_filtered;
+
+}
+
+/// Skip the processing of the current member function if its
+/// virtual-ness is disallowed by the user.
+///
+/// This is to be used in the member functions below that are used to
+/// count the number of filtered inserted, deleted and changed member
+/// functions.
+#define SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED				\
+  do {									\
+    if (member_function_is_virtual(f)					\
+	|| member_function_is_virtual(s))				\
+      {								\
+	if (!(allowed_category | VIRTUAL_MEMBER_CHANGE_CATEGORY))	\
+	  continue;							\
+      }								\
+    else								\
+      {								\
+	if (!(allowed_category | NON_VIRT_MEM_FUN_CHANGE_CATEGORY))	\
+	  continue;							\
+      }								\
+  } while (false)
+
 /// Count the number of member functions whose changes got filtered
 /// out.
 ///
@@ -3005,10 +3052,9 @@ class_diff::priv::count_filtered_subtype_changed_dm(const diff_context_sptr& ctx
 size_t
 class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
 {
-  if (ctxt->get_allowed_category() & NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-    return 0;
-
   size_t count = 0;
+  diff_category allowed_category = ctxt->get_allowed_category();
+
   for (string_changed_member_function_sptr_map::const_iterator i =
 	 changed_member_functions_.begin();
        i != changed_member_functions_.end();
@@ -3017,12 +3063,12 @@ class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
       class_decl::method_decl_sptr f = i->second.first,
 	s = i->second.second;
 
+      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
+
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
       ctxt->maybe_apply_filters(diff);
 
-      if (diff->is_filtered_out()
-	  || (!member_function_is_virtual(i->second.first)
-	      && !member_function_is_virtual(i->second.second)))
+      if (diff->is_filtered_out())
 	++count;
     }
 
@@ -3040,10 +3086,9 @@ class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
 size_t
 class_diff::priv::count_filtered_inserted_mem_fns(const diff_context_sptr& ctxt)
 {
-  if (ctxt->get_allowed_category() & NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-    return 0;
-
   size_t count = 0;
+  diff_category allowed_category = ctxt->get_allowed_category();
+
   for (string_member_function_sptr_map::const_iterator i =
 	 inserted_member_functions_.begin();
        i != inserted_member_functions_.end();
@@ -3052,11 +3097,13 @@ class_diff::priv::count_filtered_inserted_mem_fns(const diff_context_sptr& ctxt)
       class_decl::method_decl_sptr f = i->second,
 	s = i->second;
 
+      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
+
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
       ctxt->maybe_apply_filters(diff);
 
-      if (diff->is_filtered_out()
-	  || !member_function_is_virtual(i->second))
+      if (diff->get_category() != NO_CHANGE_CATEGORY
+	  && diff->is_filtered_out())
 	++count;
     }
 
@@ -3074,11 +3121,9 @@ class_diff::priv::count_filtered_inserted_mem_fns(const diff_context_sptr& ctxt)
 size_t
 class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
 {
-    if (ctxt->get_allowed_category()
-      & NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-    return 0;
+  size_t count = 0;
+  diff_category allowed_category = ctxt->get_allowed_category();
 
-    size_t count = 0;
   for (string_member_function_sptr_map::const_iterator i =
 	 deleted_member_functions_.begin();
        i != deleted_member_functions_.end();
@@ -3087,40 +3132,17 @@ class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
       class_decl::method_decl_sptr f = i->second,
 	s = i->second;
 
+      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
+
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
       ctxt->maybe_apply_filters(diff);
 
-      if (diff->is_filtered_out()
-	  || !member_function_is_virtual(i->second))
+      if (diff->get_category() != NO_CHANGE_CATEGORY
+	  && diff->is_filtered_out())
 	++count;
     }
 
   return count;
-}
-
-/// Count the number of data member offsets that have changed.
-///
-/// @param ctxt the diff context to use.
-size_t
-class_diff::priv::count_filtered_changed_dm(const diff_context_sptr& ctxt)
-{
-  size_t num_filtered= 0;
-  for (unsigned_changed_type_or_decl_map::const_iterator i =
-	 changed_dm_.begin();
-       i != changed_dm_.end();
-       ++i)
-    {
-      var_decl_sptr o =
-	dynamic_pointer_cast<var_decl>(i->second.first);
-      var_decl_sptr n =
-	dynamic_pointer_cast<var_decl>(i->second.second);
-      diff_sptr diff = compute_diff(o, n, ctxt);
-      ctxt->maybe_apply_filters(diff);
-      if (diff->is_filtered_out())
-	++num_filtered;
-    }
-  return num_filtered;
-
 }
 
 /// Constructor of class_diff
