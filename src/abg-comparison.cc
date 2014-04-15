@@ -1091,7 +1091,8 @@ represent(class_decl::method_decl_sptr mem_fn, ostream& out)
     out << ", virtual at voffset "
 	<< get_member_function_vtable_offset(mem_fn)
 	<< "/"
-	<< meth->get_type()->get_class_type()->get_virtual_mem_fns().size();
+	<< meth->get_type()->get_class_type()->get_virtual_mem_fns().size()
+	<< "\n";
 }
 
 /// Stream a string representation for a data member.

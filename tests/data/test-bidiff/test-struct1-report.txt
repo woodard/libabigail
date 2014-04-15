@@ -17,6 +17,7 @@
 
       1 member function insertion:
         'method int s0::foo(int, char) const', virtual at voffset 2/2
+
   's0*' changed:
     pointed to type 'class s0' changed, as reported earlier
   'class s0' changed:
