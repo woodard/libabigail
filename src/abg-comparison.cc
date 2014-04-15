@@ -541,8 +541,11 @@ diff_context::show_added_vars() const
 /// @return true iff the current diff node should NOT be reported.
 bool
 diff::is_filtered_out() const
-{return (get_category() != NO_CHANGE_CATEGORY
-	 && !(get_category() & context()->get_allowed_category()));}
+{
+  if (context()->get_allowed_category() == EVERYTHING_CATEGORY)
+    return false;
+  return !(get_category() & context()->get_allowed_category());
+}
 
 /// Test if this diff tree node should be reported.
 ///
