@@ -59,6 +59,39 @@ void
 apply_filter(filter_base_sptr filter, diff_sptr d)
 {apply_filter(*filter, d);}
 
+/// Test if there is a class that is declaration-only among the two
+/// classes in parameter.
+///
+/// @param class1 the first class to consider.
+///
+/// @param class2 the second class to consider.
+///
+/// @return true if either classes are declaration-only, false
+/// otherwise.
+static bool
+there_is_a_decl_only_class(const class_decl_sptr& class1,
+			   const class_decl_sptr& class2)
+{
+  if ((class1 && class1->get_is_declaration_only())
+      || (class2 && class2->get_is_declaration_only()))
+    return true;
+  return false;
+}
+
+/// Test if the diff involves a declaration-only class.
+///
+/// @param diff the class diff to consider.
+///
+/// @return true iff the diff involves a declaration-only class.
+static bool
+diff_involves_decl_only_class(const class_diff* diff)
+{
+  if (diff && there_is_a_decl_only_class(diff->first_class_decl(),
+					 diff->second_class_decl()))
+    return true;
+  return false;
+}
+
 /// Tests if the size of a given type changed.
 ///
 /// @param f the first version of the type to consider.
@@ -69,7 +102,10 @@ apply_filter(filter_base_sptr filter, diff_sptr d)
 static bool
 type_size_changed(type_base_sptr f, type_base_sptr s)
 {
-  if (!f || !s)
+  if (!f || !s
+      || f->get_size_in_bits() == 0
+      || s->get_size_in_bits() == 0
+      || there_is_a_decl_only_class(is_class_type(f), is_class_type(s)))
     return false;
 
   return f->get_size_in_bits() != s->get_size_in_bits();
@@ -204,8 +240,13 @@ decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
 /// @return true iff the class_diff node has members added or removed.
 static bool
 data_member_added_or_removed(const class_diff* diff)
-{return (diff && (diff->inserted_data_members().size()
-		  || diff->deleted_data_members().size()));}
+{
+  if (diff_involves_decl_only_class(diff))
+    return false;
+
+  return (diff && (diff->inserted_data_members().size()
+		   || diff->deleted_data_members().size()));
+}
 
 /// Test if the class_diff node has members added or removed.
 ///
@@ -229,7 +270,7 @@ data_member_added_or_removed(const diff* diff)
 static bool
 has_virtual_mem_fn_change(const class_diff* diff)
 {
-  if (!diff)
+  if (!diff || diff_involves_decl_only_class(diff))
     return false;
 
   for (string_member_function_sptr_map::const_iterator i =
@@ -281,7 +322,7 @@ has_virtual_mem_fn_change(const diff* diff)
 static bool
 has_non_virtual_mem_fn_change(const class_diff* diff)
 {
-  if (!diff)
+  if (!diff || diff_involves_decl_only_class(diff))
     return false;
 
   for (string_member_function_sptr_map::const_iterator i =
