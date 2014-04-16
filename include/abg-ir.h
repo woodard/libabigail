@@ -803,6 +803,9 @@ public:
 
   qualified_type_def(shared_ptr<type_base> type, CV quals, location locus);
 
+  virtual size_t
+  get_size_in_bits() const;
+
   virtual bool
   operator==(const decl_base&) const;
 

@@ -2478,6 +2478,20 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
   set_name(name);
 }
 
+/// Get the size of the qualified type def.
+///
+/// This is an overload for type_base::get_size_in_bits().
+///
+/// @return the size of the qualified type.
+size_t
+qualified_type_def::get_size_in_bits() const
+{
+  size_t s = get_underlying_type()->get_size_in_bits();
+  if (s != type_base::get_size_in_bits())
+    const_cast<qualified_type_def*>(this)->set_size_in_bits(s);
+  return type_base::get_size_in_bits();
+}
+
 /// Equality operator for qualified types.
 ///
 /// Note that this function does not check for equality of the scopes.
