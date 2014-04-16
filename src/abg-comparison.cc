@@ -1110,10 +1110,11 @@ represent_data_member(var_decl_sptr d, ostream& out)
       || (!get_member_is_static(d) && !get_data_member_is_laid_out(d)))
     return;
 
-  out << "'" << d->get_pretty_representation() << "'"
-      << ", at offset "
-      << get_data_member_offset(d)
-      << " (in bits)\n";
+  out << "'" << d->get_pretty_representation() << "'";
+  if (!get_member_is_static(d))
+    out << ", at offset "
+	<< get_data_member_offset(d)
+	<< " (in bits)\n";
 }
 
 /// Represent the changes that happened on two versions of a given
