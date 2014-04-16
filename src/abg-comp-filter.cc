@@ -277,15 +277,43 @@ has_virtual_mem_fn_change(const class_diff* diff)
 	 diff->deleted_member_fns().begin();
        i != diff->deleted_member_fns().end();
        ++i)
-    if (member_function_is_virtual(i->second))
-      return true;
+    {
+      if (member_function_is_virtual(i->second))
+	{
+	  // Do not consider a virtual function that got deleted from
+	  // an offset and re-inserted at the same offset as a
+	  // "virtual member function change".
+	  string_member_function_sptr_map::const_iterator j =
+	    diff->inserted_member_fns().find(i->first);
+	  if (j != diff->inserted_member_fns().end()
+	      && (get_member_function_vtable_offset(i->second)
+		  == get_member_function_vtable_offset(j->second)))
+	    continue;
+
+	  return true;
+	}
+    }
 
   for (string_member_function_sptr_map::const_iterator i =
 	 diff->inserted_member_fns().begin();
        i != diff->inserted_member_fns().end();
        ++i)
-    if (member_function_is_virtual(i->second))
-      return true;
+    {
+      if (member_function_is_virtual(i->second))
+	{
+	  // Do not consider a virtual function that got deleted from
+	  // an offset and re-inserted at the same offset as a
+	  // "virtual member function change".
+	  string_member_function_sptr_map::const_iterator j =
+	    diff->deleted_member_fns().find(i->first);
+	  if (j != diff->deleted_member_fns().end()
+	      && (get_member_function_vtable_offset(i->second)
+		  == get_member_function_vtable_offset(j->second)))
+	    continue;
+
+	  return true;
+	}
+    }
 
   for (string_changed_member_function_sptr_map::const_iterator i =
 	 diff->changed_member_fns().begin();
@@ -293,7 +321,13 @@ has_virtual_mem_fn_change(const class_diff* diff)
        ++i)
     if(member_function_is_virtual(i->second.first)
        || !member_function_is_virtual(i->second.second))
-      return true;
+      {
+	if (get_member_function_vtable_offset(i->second.first)
+	    == get_member_function_vtable_offset(i->second.second))
+	  continue;
+
+	return true;
+      }
 
   return false;
 }
