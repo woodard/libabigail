@@ -1648,7 +1648,6 @@ get_translation_unit(decl_base* decl)
 
   if (global)
     return global->get_translation_unit();
-
   return 0;
 }
 
@@ -1671,6 +1670,11 @@ bool
 is_global_scope(const shared_ptr<scope_decl>scope)
 {return !!dynamic_pointer_cast<global_scope>(scope);}
 
+/// Tests whether if a given scope is the global scope.
+///
+/// @param scope the scope to consider.
+///
+/// @return true iff the current scope is the global one.
 bool
 is_global_scope(const scope_decl* scope)
 {return !!dynamic_cast<const global_scope*>(scope);}
