@@ -1692,6 +1692,7 @@ pointer_diff::report(ostream& out, const string& indent) const
       string name = d->first_subject()->get_pretty_representation();
       if (diff_sptr d2 = context()->has_diff_for(d))
 	{
+	  assert(d2->to_be_reported());
 	  if (d2->currently_reporting())
 	    out << indent << "pointed to type '"
 		<< name
