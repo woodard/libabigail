@@ -2362,7 +2362,12 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      var_decl_sptr dm(new var_decl(n, t, loc, m));
 	      result->add_data_member(dm, access, is_laid_out,
-				      /*is_static=*/false,
+				      // For now, is_static ==
+				      // !is_laid_out.  When we have
+				      // templates, we'll try to be
+				      // more specific.  For now, this
+				      // approximation should do OK.
+				      /*is_static=*/!is_laid_out,
 				      offset_in_bits);
 	      assert(has_scope(dm));
 	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = dm;

@@ -5765,7 +5765,15 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    if (n.empty())
 	      n = added_var->get_name();
 	    assert(!n.empty());
-	    assert(added_vars_.find(n) == added_vars_.end());
+	    {
+	      string_var_ptr_map::const_iterator k = added_vars_.find(n);
+	      if ( k != added_vars_.end())
+		{
+		  assert(is_member_decl(k->second)
+			 && get_member_is_static(k->second));
+		  continue;
+		}
+	    }
 	    string_var_ptr_map::const_iterator j =
 	      deleted_vars_.find(n);
 	    if (j != deleted_vars_.end())
