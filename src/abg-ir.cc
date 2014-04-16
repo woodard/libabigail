@@ -3063,7 +3063,9 @@ var_decl::get_pretty_representation() const
 {
   string result;
 
-  result = get_type_declaration(get_type())->get_qualified_name();
+  if (is_member_decl(this) && get_member_is_static(this))
+    result = "static ";
+  result += get_type_declaration(get_type())->get_qualified_name();
   result += " " + get_qualified_name();
   return result;
 }
