@@ -1106,7 +1106,8 @@ represent(class_decl::method_decl_sptr mem_fn, ostream& out)
 static void
 represent_data_member(var_decl_sptr d, ostream& out)
 {
-  if (!is_data_member(d) || !get_data_member_is_laid_out(d))
+  if (!is_data_member(d)
+      || (!get_member_is_static(d) && !get_data_member_is_laid_out(d)))
     return;
 
   out << "'" << d->get_pretty_representation() << "'"
