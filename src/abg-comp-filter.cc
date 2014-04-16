@@ -397,10 +397,8 @@ harmful_filter::visit(diff* d, bool pre)
 
       /// If a data member got added or removed, consider it as a "size
       /// or offset change" as well.
-      if (data_member_added_or_removed(d))
-	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
-
-      if (data_member_type_size_changed(f, s))
+      if (data_member_added_or_removed(d)
+	  || data_member_type_size_changed(f, s))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
       if (has_virtual_mem_fn_change(d))
