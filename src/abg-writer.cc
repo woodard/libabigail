@@ -2131,7 +2131,7 @@ dump(const decl_base_sptr d, std::ostream& o)
 {
   xml_writer::write_context ctxt(o);
   write_decl(d, ctxt, /*indent=*/0);
-  cerr << "\n";
+  o << "\n";
 }
 
 /// Serialize a pointer to decl_base to stderr.
@@ -2187,7 +2187,7 @@ dump(const translation_unit& t, std::ostream& o)
 {
   xml_writer::write_context ctxt(o);
   write_translation_unit(t, ctxt, /*indent=*/0);
-  cerr << "\n";
+  o << "\n";
 }
 
 /// Serialize an instance of @ref translation_unit to stderr.
