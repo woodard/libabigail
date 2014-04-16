@@ -114,13 +114,22 @@ shared_ptr<decl_base>
 add_decl_to_scope (shared_ptr<decl_base>, shared_ptr<scope_decl>);
 
 const global_scope*
+get_global_scope(const decl_base&);
+
+const global_scope*
+get_global_scope(const decl_base*);
+
+const global_scope*
 get_global_scope(const shared_ptr<decl_base>);
 
 translation_unit*
-get_translation_unit(const shared_ptr<decl_base>);
+get_translation_unit(const decl_base&);
 
 translation_unit*
-get_translation_unit(decl_base*);
+get_translation_unit(const decl_base*);
+
+translation_unit*
+get_translation_unit(const shared_ptr<decl_base>);
 
 bool
 is_global_scope(const scope_decl*);
@@ -314,15 +323,6 @@ set_member_function_is_virtual(const shared_ptr<function_decl>&, bool);
 shared_ptr<type_base>
 strip_typedef(const shared_ptr<type_base>);
 
-const global_scope*
-get_global_scope(const decl_base* decl);
-
-translation_unit*
-get_translation_unit(decl_base* decl);
-
-translation_unit*
-get_translation_unit(const shared_ptr<decl_base>);
-
 string
 get_type_name(const shared_ptr<type_base>);
 
@@ -427,6 +427,15 @@ dump(const shared_ptr<translation_unit>, std::ostream&);
 
 void
 dump(const shared_ptr<translation_unit>);
+
+void
+dump_decl_location(const decl_base&);
+
+void
+dump_decl_location(const decl_base*);
+
+void
+dump_decl_location(const shared_ptr<decl_base>&);
 
 } // end namespace abigail
 #endif // __ABG_IRFWD_H__

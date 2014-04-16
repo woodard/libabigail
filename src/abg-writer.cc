@@ -2218,5 +2218,50 @@ dump(const translation_unit_sptr t)
   if (t)
     dump(*t);
 }
+
+/// Serialize the source location of a decl to an output stream for
+/// debugging purposes.
+///
+/// @param d the declaration to consider.
+///
+/// @param o the output stream to serizalize the location to.
+void
+dump_decl_location(const decl_base& d, ostream& o)
+{
+  string path;
+  unsigned line = 0, col = 0;
+  translation_unit* tu = get_translation_unit(d);
+
+  tu->get_loc_mgr().expand_location(d.get_location(), path, line, col);
+  o << path << ":" << line << "," << col << "\n";
+}
+
+/// Serialize the source location of a decl to stderr for debugging
+/// purposes.
+///
+/// @param d the declaration to consider.
+void
+dump_decl_location(const decl_base& d)
+{dump_decl_location(d, cerr);}
+
+/// Serialize the source location of a dcl to stderr for debugging
+/// purposes.
+///
+/// @param d the declaration to consider.
+void
+dump_decl_location(const decl_base* d)
+{
+  if (d)
+    dump_decl_location(*d);
+}
+
+/// Serialize the source location of a dcl to stderr for debugging
+/// purposes.
+///
+/// @param d the declaration to consider.
+void
+dump_decl_location(const decl_base_sptr d)
+{dump_decl_location(d.get());}
+
 // </Debugging routines>
 } //end namespace abigail

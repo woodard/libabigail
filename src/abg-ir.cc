@@ -1421,17 +1421,27 @@ insert_decl_into_scope(decl_base_sptr decl,
 /// @return the global scope of the decl, or a null pointer if the
 /// decl is not yet added to a translation_unit.
 const global_scope*
-get_global_scope(const decl_base* decl)
+get_global_scope(const decl_base& decl)
 {
-  if (const global_scope* s = dynamic_cast<const global_scope*>(decl))
+  if (const global_scope* s = dynamic_cast<const global_scope*>(&decl))
     return s;
 
-  scope_decl* scope = decl ? decl->get_scope() : 0;
+  scope_decl* scope = decl.get_scope();
   while (scope && !dynamic_cast<global_scope*>(scope))
     scope = scope->get_scope();
 
   return scope ? dynamic_cast<global_scope*> (scope) : 0;
 }
+
+/// return the global scope as seen by a given declaration.
+///
+/// @param decl the declaration to consider.
+///
+/// @return the global scope of the decl, or a null pointer if the
+/// decl is not yet added to a translation_unit.
+const global_scope*
+get_global_scope(const decl_base* decl)
+{return get_global_scope(*decl);}
 
 /// Return the global scope as seen by a given declaration.
 ///
@@ -1642,7 +1652,7 @@ types_are_compatible(const decl_base_sptr d1,
 /// @return the resulting translation unit, or null if the decl is not
 /// yet added to a translation unit.
 translation_unit*
-get_translation_unit(decl_base* decl)
+get_translation_unit(const decl_base& decl)
 {
   const global_scope* global = get_global_scope(decl);
 
@@ -1650,6 +1660,16 @@ get_translation_unit(decl_base* decl)
     return global->get_translation_unit();
   return 0;
 }
+
+/// Return the translation unit a declaration belongs to.
+///
+/// @param decl the declaration to consider.
+///
+/// @return the resulting translation unit, or null if the decl is not
+/// yet added to a translation unit.
+translation_unit*
+get_translation_unit(const decl_base* decl)
+{return decl ? get_translation_unit(*decl) : 0;}
 
 /// Return the translation unit a declaration belongs to.
 ///
