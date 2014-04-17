@@ -200,12 +200,12 @@ non_static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
   return type_size_changed(fv->get_type(), sv->get_type());
 }
 
-/// Test if the size of a non-static data member changed accross two
+/// Test if the size of a static data member changed accross two
 /// versions.
 ///
-/// @param f the first version of the non-static data member.
+/// @param f the first version of the static data member.
 ///
-/// @param s the second version of the non-static data member.
+/// @param s the second version of the static data member.
 static bool
 static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
 {
