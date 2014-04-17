@@ -484,6 +484,28 @@ static bool
 has_non_virtual_mem_fn_change(const diff* diff)
 {return has_non_virtual_mem_fn_change(dynamic_cast<const class_diff*>(diff));}
 
+/// Test if a class_diff carries base classes adding or removals.
+///
+/// @param diff the class_diff to consider.
+///
+/// @return true iff @p diff carries base classes adding or removals.
+static bool
+base_classes_added_or_removed(const class_diff* diff)
+{
+  if (!diff)
+    return false;
+  return diff->deleted_bases().size() || diff->inserted_bases().size();
+}
+
+/// Test if a class_diff carries base classes adding or removals.
+///
+/// @param diff the class_diff to consider.
+///
+/// @return true iff @p diff carries base classes adding or removals.
+static bool
+base_classes_added_or_removed(const diff* diff)
+{return base_classes_added_or_removed(dynamic_cast<const class_diff*>(diff));}
+
 /// The visiting code of the harmless_filter.
 ///
 /// @param d the diff node being visited.
@@ -552,7 +574,8 @@ harmful_filter::visit(diff* d, bool pre)
       if (type_size_changed(f, s)
 	  || data_member_offset_changed(f, s)
 	  || non_static_data_member_type_size_changed(f, s)
-	  || non_static_data_member_added_or_removed(d))
+	  || non_static_data_member_added_or_removed(d)
+	  || base_classes_added_or_removed(d))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
       if (has_virtual_mem_fn_change(d))

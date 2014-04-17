@@ -108,7 +108,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test7-v0.o",
     "data/test-diff-dwarf/test7-v1.o",
     "data/test-diff-dwarf/test7-report.txt",
-    "output/test-diff-dwarf/test6-report.txt"
+    "output/test-diff-dwarf/test7-report.txt"
+  },
+  {
+    "data/test-diff-dwarf/test8-v0.o",
+    "data/test-diff-dwarf/test8-v1.o",
+    "data/test-diff-dwarf/test8-report.txt",
+    "output/test-diff-dwarf/test8-report.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}

@@ -152,6 +152,11 @@ data/test-diff-dwarf/test7-v0.o			\
 data/test-diff-dwarf/test7-v1.cc		\
 data/test-diff-dwarf/test7-v1.o			\
 data/test-diff-dwarf/test7-report.txt		\
+data/test-diff-dwarf/test8-v0.cc		\
+data/test-diff-dwarf/test8-v0.o			\
+data/test-diff-dwarf/test8-v1.cc		\
+data/test-diff-dwarf/test8-v1.o			\
+data/test-diff-dwarf/test8-report.txt		\
 \
 data/test-read-dwarf/test0			\
 data/test-read-dwarf/test0.abi			\
@@ -224,7 +229,12 @@ data/test-diff-filter/test12-v0.cc		\
 data/test-diff-filter/test12-v1.cc		\
 data/test-diff-filter/test12-v0.o		\
 data/test-diff-filter/test12-v1.o		\
-data/test-diff-filter/test12-report.txt
+data/test-diff-filter/test12-report.txt		\
+data/test-diff-filter/test13-v0.cc		\
+data/test-diff-filter/test13-v1.cc		\
+data/test-diff-filter/test13-v0.o		\
+data/test-diff-filter/test13-v1.o		\
+data/test-diff-filter/test13-report.txt
 
 clean-local: clean-local-check
 .PHONY: clean-local-check

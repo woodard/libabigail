@@ -3194,6 +3194,30 @@ const edit_script&
 class_diff::base_changes() const
 {return priv_->base_changes_;}
 
+/// Getter for the deleted base classes of the diff.
+///
+/// @return a map containing the deleted base classes, keyed with
+/// their pretty representation.
+const string_base_sptr_map&
+class_diff::deleted_bases() const
+{return priv_->deleted_bases_;}
+
+/// Getter for the inserted base classes of the diff.
+///
+/// @return a map containing the inserted base classes, keyed with
+/// their pretty representation.
+const string_base_sptr_map&
+class_diff::inserted_bases() const
+{return priv_->inserted_bases_;}
+
+/// Getter for the changed base classes of the diff.
+///
+/// @return a map containing the changed base classes, keyed with
+/// their pretty representation.
+const string_changed_base_map&
+class_diff::changed_bases()
+{return priv_->changed_bases_;}
+
 /// @return the edit script of the bases of the two classes.
 edit_script&
 class_diff::base_changes()

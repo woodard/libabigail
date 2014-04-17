@@ -898,6 +898,15 @@ public:
   edit_script&
   base_changes();
 
+  const string_base_sptr_map&
+  deleted_bases() const;
+
+  const string_base_sptr_map&
+  inserted_bases() const;
+
+  const string_changed_base_map&
+  changed_bases();
+
   const edit_script&
   member_types_changes() const;
 
