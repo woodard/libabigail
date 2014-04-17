@@ -242,7 +242,7 @@ enum diff_category
   DECL_NAME_CHANGE_CATEGORY = 1 << 2,
 
   /// This means that a diff node in the sub-tree carries an addition
-  /// or removal of a member non-virtual member function.
+  /// or removal of a non-virtual member function.
   NON_VIRT_MEM_FUN_CHANGE_CATEGORY = 1 << 3,
 
 
