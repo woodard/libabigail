@@ -3344,12 +3344,13 @@ class_diff::report(ostream& out, const string& indent) const
 	      if ( priv_->base_has_changed(base))
 		continue;
 	      out << indent << "  "
-		  << base->get_base_class()->get_qualified_name();
+		  << base->get_base_class()->get_pretty_representation();
 	    }
-	  out << "\n\n";
+	  out << "\n";
 	}
 
       // Report changes.
+      bool emitted = false;
       size_t num_filtered = priv_->count_filtered_bases(context());
       if (numchanges)
 	{
@@ -3364,13 +3365,17 @@ class_diff::report(ostream& out, const string& indent) const
 		dynamic_pointer_cast<class_decl::base_spec>(it->second.first);
 	      class_decl::base_spec_sptr n =
 		dynamic_pointer_cast<class_decl::base_spec>(it->second.second);
+	      diff_sptr diff = compute_diff(o, n, context());
+	      if (!diff->to_be_reported())
+		continue;
 	      out << indent << "  '"
 		  << o->get_base_class()->get_pretty_representation()
 		  << "' changed:\n";
-	      diff_sptr dif = compute_diff(o, n, context());
-	      dif->report(out, indent + "    ");
+	      diff->report(out, indent + "    ");
+	      emitted = true;
 	    }
-	  out << "\n";
+	  if (emitted)
+	    out << "\n";
 	}
 
       //Report insertions.
@@ -3389,7 +3394,7 @@ class_diff::report(ostream& out, const string& indent) const
 	      class_decl_sptr b = i->second->get_base_class();
 	      if (emitted)
 		out << "\n";
-	      out << indent << b->get_qualified_name();
+	      out << indent << "  " << b->get_pretty_representation();
 	      emitted = true;
 	    }
 	  out << "\n";
