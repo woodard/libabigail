@@ -1920,15 +1920,21 @@ get_scope_for_die(read_context& ctxt,
   scope_decl_sptr s;
   decl_base_sptr d;
   if (dwarf_tag(&parent_die) == DW_TAG_subprogram)
-    ;
+    // this is an entity defined in a scope that is a function.
+    // Normally, I would say that this should be dropped.  But I have
+    // seen a case where a typedef DIE needed by a function parameter
+    // was defined right before the parameter, under the scope of the
+    // function.  Yeah, weird.  So if I drop the typedef DIE, I'd drop
+    // the function parm too.  So for that case, let's say that the
+    // scope is the scope of the function itself.
+    return get_scope_for_die(ctxt, &parent_die, called_for_public_decl);
   else
     d = build_ir_node_from_die(ctxt, &parent_die,
 			       called_for_public_decl);
   s =  dynamic_pointer_cast<scope_decl>(d);
   if (!s)
-    // this is an entity defined in a scope that is e.g, a
-    // function.  It cannot be public from an ABI standpoint, so
-    // let's just drop it.
+    // this is an entity defined in someting that is not a scope.
+    // Let's drop it.
     return scope_decl_sptr();
 
   class_decl_sptr cl = dynamic_pointer_cast<class_decl>(d);
