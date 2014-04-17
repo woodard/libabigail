@@ -545,28 +545,14 @@ harmful_filter::visit(diff* d, bool pre)
       decl_base_sptr f = d->first_subject(),
 	s = d->second_subject();
 
-      // Detect size or offset changes.  For now, all of them are
-      // considered harmful.
+      // Detect size or offset changes as well as data member addition
+      // or removal.
       //
       // TODO: be more specific -- not all size changes are harmful.
       if (type_size_changed(f, s)
-	  || data_member_offset_changed(f, s))
-	{
-	  class_decl_sptr cl1 = is_class_type(f),
-	    cl2 = is_class_type(s);
-	  if ((cl1 && cl1->get_is_declaration_only())
-	      || (cl2 && cl2->get_is_declaration_only()))
-	    // But do not compare a declaration-only class to another
-	    // one for size changes.
-	    ;
-	  else
-	    category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
-	}
-
-      /// If a data member got added or removed, consider it as a "size
-      /// or offset change" as well.
-      if (non_static_data_member_added_or_removed(d)
-	  || non_static_data_member_type_size_changed(f, s))
+	  || data_member_offset_changed(f, s)
+	  || non_static_data_member_type_size_changed(f, s)
+	  || non_static_data_member_added_or_removed(d))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
       if (has_virtual_mem_fn_change(d))
