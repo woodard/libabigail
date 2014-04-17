@@ -67,17 +67,7 @@ struct decls_equal
 {
   bool
   operator()(const decls_type d1, const decls_type d2) const
-  {
-    if (d1.first == d2.first && d1.second == d2.second)
-      return true;
-
-    if (!!d1.first != !!d2.first
-	|| !!d1.second != !!d2.second)
-      return false;
-
-    return (*d1.first == *d2.first
-	    && *d1.second == *d2.second);
-  }
+  {return d1.first == d2.first && d1.second == d2.second;}
 };
 
 /// A convenience typedef for a map of @ref decls_type and diff_sptr.
