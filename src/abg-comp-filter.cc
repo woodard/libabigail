@@ -176,13 +176,14 @@ data_member_offset_changed(decl_base_sptr f, decl_base_sptr s)
   return false;
 }
 
-/// Test if the size of a data member changed accross two versions.
+/// Test if the size of a non-static data member changed accross two
+/// versions.
 ///
-/// @param f the first version of the data member.
+/// @param f the first version of the non-static data member.
 ///
-/// @param s the second version of the data member.
+/// @param s the second version of the non-static data member.
 static bool
-data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
+non_static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
 {
   if (!is_member_decl(f)
       || !is_member_decl(s))
@@ -190,7 +191,10 @@ data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
 
   var_decl_sptr fv = dynamic_pointer_cast<var_decl>(f),
     sv = dynamic_pointer_cast<var_decl>(s);
-  if (!fv || !sv)
+  if (!fv
+      || !sv
+      || get_member_is_static(fv)
+      || get_member_is_static(sv))
     return false;
 
   return type_size_changed(fv->get_type(), sv->get_type());
@@ -241,13 +245,26 @@ decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
 /// @return true iff the class_diff node has non-static members added
 /// or removed.
 static bool
-data_member_added_or_removed(const class_diff* diff)
+non_static_data_member_added_or_removed(const class_diff* diff)
 {
-  if (diff_involves_decl_only_class(diff))
-    return false;
+  if (diff && !diff_involves_decl_only_class(diff))
+    {
+      for (string_decl_base_sptr_map::const_iterator i =
+	     diff->inserted_data_members().begin();
+	   i != diff->inserted_data_members().end();
+	   ++i)
+	if (!get_member_is_static(i->second))
+	  return true;
 
-  return (diff && (diff->inserted_data_members().size()
-		   || diff->deleted_data_members().size()));
+      for (string_decl_base_sptr_map::const_iterator i =
+	     diff->deleted_data_members().begin();
+	   i != diff->deleted_data_members().end();
+	   ++i)
+	if (!get_member_is_static(i->second))
+	  return true;
+    }
+
+  return false;
 }
 
 /// Test if a class_diff node has members added or removed.
@@ -256,8 +273,11 @@ data_member_added_or_removed(const class_diff* diff)
 ///
 /// @return true iff the class_diff node has members added or removed.
 static bool
-data_member_added_or_removed(const diff* diff)
-{return data_member_added_or_removed(dynamic_cast<const class_diff*>(diff));}
+non_static_data_member_added_or_removed(const diff* diff)
+{
+  return non_static_data_member_added_or_removed
+    (dynamic_cast<const class_diff*>(diff));
+}
 
 /// Test if the class_diff node has a change involving virtual member
 /// functions.
@@ -474,8 +494,8 @@ harmful_filter::visit(diff* d, bool pre)
 
       /// If a data member got added or removed, consider it as a "size
       /// or offset change" as well.
-      if (data_member_added_or_removed(d)
-	  || data_member_type_size_changed(f, s))
+      if (non_static_data_member_added_or_removed(d)
+	  || non_static_data_member_type_size_changed(f, s))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
       if (has_virtual_mem_fn_change(d))
