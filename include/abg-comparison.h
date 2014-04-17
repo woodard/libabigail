@@ -245,15 +245,18 @@ enum diff_category
   /// or removal of a non-virtual member function.
   NON_VIRT_MEM_FUN_CHANGE_CATEGORY = 1 << 3,
 
+  /// This means that a diff node in the sub-tree carries an addition
+  /// or removal of a static data member.
+  STATIC_DATA_MEMBER_CHANGE_CATEGORY = 1 << 4,
 
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 4,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 5,
 
   /// This means that a diff node in the sub-tree carries a change to
   /// a vtable.
-  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 5,
+  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 6,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -265,6 +268,7 @@ enum diff_category
   | COMPATIBLE_TYPE_CHANGE_CATEGORY
   | DECL_NAME_CHANGE_CATEGORY
   | NON_VIRT_MEM_FUN_CHANGE_CATEGORY
+  | STATIC_DATA_MEMBER_CHANGE_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
 };

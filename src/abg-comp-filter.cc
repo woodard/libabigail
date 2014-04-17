@@ -200,6 +200,30 @@ non_static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
   return type_size_changed(fv->get_type(), sv->get_type());
 }
 
+/// Test if the size of a non-static data member changed accross two
+/// versions.
+///
+/// @param f the first version of the non-static data member.
+///
+/// @param s the second version of the non-static data member.
+static bool
+static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
+{
+  if (!is_member_decl(f)
+      || !is_member_decl(s))
+    return false;
+
+  var_decl_sptr fv = dynamic_pointer_cast<var_decl>(f),
+    sv = dynamic_pointer_cast<var_decl>(s);
+  if (!fv
+      || !sv
+      || !get_member_is_static(fv)
+      || !get_member_is_static(sv))
+    return false;
+
+  return type_size_changed(fv->get_type(), sv->get_type());
+}
+
 /// Test if two types are different but compatible.
 ///
 /// @param d1 the declaration of the first type to consider.
@@ -276,6 +300,49 @@ static bool
 non_static_data_member_added_or_removed(const diff* diff)
 {
   return non_static_data_member_added_or_removed
+    (dynamic_cast<const class_diff*>(diff));
+}
+
+/// Test if a class_diff node has static members added or removed.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true iff the class_diff node has static members added
+/// or removed.
+static bool
+static_data_member_added_or_removed(const class_diff* diff)
+{
+  if (diff && !diff_involves_decl_only_class(diff))
+    {
+      for (string_decl_base_sptr_map::const_iterator i =
+	     diff->inserted_data_members().begin();
+	   i != diff->inserted_data_members().end();
+	   ++i)
+	if (get_member_is_static(i->second))
+	  return true;
+
+      for (string_decl_base_sptr_map::const_iterator i =
+	     diff->deleted_data_members().begin();
+	   i != diff->deleted_data_members().end();
+	   ++i)
+	if (get_member_is_static(i->second))
+	  return true;
+    }
+
+  return false;
+}
+
+/// Test if a class_diff node has static members added or
+/// removed.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true iff the class_diff node has static members added
+/// or removed.
+static bool
+static_data_member_added_or_removed(const diff* diff)
+{
+  return static_data_member_added_or_removed
     (dynamic_cast<const class_diff*>(diff));
 }
 
@@ -447,6 +514,10 @@ harmless_filter::visit(diff* d, bool pre)
 
       if (has_non_virtual_mem_fn_change(d))
 	category |= NON_VIRT_MEM_FUN_CHANGE_CATEGORY;
+
+      if (static_data_member_added_or_removed(d)
+	  || static_data_member_type_size_changed(f, s))
+	category |= STATIC_DATA_MEMBER_CHANGE_CATEGORY;
 
       if (category)
 	d->add_to_category(category);

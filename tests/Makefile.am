@@ -219,7 +219,12 @@ data/test-diff-filter/test11-v0.cc		\
 data/test-diff-filter/test11-v1.cc		\
 data/test-diff-filter/test11-v0.o		\
 data/test-diff-filter/test11-v1.o		\
-data/test-diff-filter/test11-report.txt
+data/test-diff-filter/test11-report.txt		\
+data/test-diff-filter/test12-v0.cc		\
+data/test-diff-filter/test12-v1.cc		\
+data/test-diff-filter/test12-v0.o		\
+data/test-diff-filter/test12-v1.o		\
+data/test-diff-filter/test12-report.txt
 
 clean-local: clean-local-check
 .PHONY: clean-local-check
