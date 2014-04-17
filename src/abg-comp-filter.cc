@@ -233,11 +233,13 @@ decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
   return d1_name != d2_name;
 }
 
-/// Test if the class_diff node has members added or removed.
+/// Test if a class_diff node has non-static members added or
+/// removed.
 ///
 /// @param diff the diff node to consider.
 ///
-/// @return true iff the class_diff node has members added or removed.
+/// @return true iff the class_diff node has non-static members added
+/// or removed.
 static bool
 data_member_added_or_removed(const class_diff* diff)
 {
@@ -248,7 +250,7 @@ data_member_added_or_removed(const class_diff* diff)
 		   || diff->deleted_data_members().size()));
 }
 
-/// Test if the class_diff node has members added or removed.
+/// Test if a class_diff node has members added or removed.
 ///
 /// @param diff the diff node to consider.
 ///
