@@ -1,0 +1,1 @@
+ found symbol 'main' which is an instance of function symbol type of global binding

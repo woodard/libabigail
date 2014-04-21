@@ -4,6 +4,7 @@ TESTS=				\
 runtestreadwrite		\
 runtestwritereadarchive		\
 runtestreaddwarf		\
+runtestlookupsyms		\
 runtestcorediff			\
 runtestbidiff			\
 runtestdiffdwarf		\
@@ -34,6 +35,9 @@ runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestreaddwarf_SOURCES=$(h)/test-read-dwarf.cc
 runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestlookupsyms_SOURCES=$(h)/test-lookup-syms.cc
+runtestlookupsyms_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestcorediff_SOURCES=$(h)/test-core-diff.cc
 runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
@@ -234,7 +238,13 @@ data/test-diff-filter/test13-v0.cc		\
 data/test-diff-filter/test13-v1.cc		\
 data/test-diff-filter/test13-v0.o		\
 data/test-diff-filter/test13-v1.o		\
-data/test-diff-filter/test13-report.txt
+data/test-diff-filter/test13-report.txt		\
+\
+data/test-lookup-syms/test0.cc			\
+data/test-lookup-syms/test0.o			\
+data/test-lookup-syms/test0-report.txt		\
+data/test-lookup-syms/test01-report.txt		\
+data/test-lookup-syms/test02-report.txt
 
 clean-local: clean-local-check
 .PHONY: clean-local-check

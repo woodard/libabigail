@@ -101,6 +101,131 @@ typedef unordered_map<shared_ptr<type_base>,
 /// value is also a dwarf offset.
 typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 
+/// Look into the symbol tables of the underlying elf file and see
+/// if we find a given symbol.
+///
+/// @param symbol_name the name of the symbol to look for.
+///
+/// @param demangle if true, try to demangle the symbol name found in
+/// the symbol table.
+///
+/// @param symbol_name_found if the function returns true, this is set
+/// to the symbol name as found in the symbol table.
+///
+/// @param sym_type this is set to the type of the symbol found.  This
+/// shall b a standard elf.h value for symbol types, that is SHT_OBJECT,
+/// STT_FUNC, STT_IFUNC, etc ...
+///
+/// Note that this parameter is set iff the function returns true.
+///
+/// @param sym_binding this is set to the binding of the symbol found.
+/// This is a standard elf.h value of the symbol binding kind, that
+/// is, STB_LOCAL, STB_GLOBAL, or STB_WEAK.
+static bool
+lookup_symbol_from_elf(Elf*		elf_handle,
+		       const string&	symbol_name,
+		       bool		demangle,
+		       string&		symbol_name_found,
+		       symbol_type&	sym_type,
+		       symbol_binding&	sym_binding)
+{
+  Elf_Scn*	section = 0;
+  GElf_Shdr	section_header;
+  Elf_Data*	symbol_table = 0;
+
+  while ((section = elf_nextscn(elf_handle, section)) != 0)
+    {
+      gelf_getshdr(section, &section_header);
+      if (section_header.sh_type != SHT_SYMTAB)
+	continue;
+
+      // Get the symbol table.
+      symbol_table = elf_getdata(section, symbol_table);
+
+      // Now walk the symbol table looking for the symbol we were
+      // asked.
+      size_t nb_syms = section_header.sh_size / section_header.sh_entsize;
+      GElf_Sym symbol;
+      for (size_t i = 0; i < nb_syms; ++i)
+	{
+	  assert (gelf_getsym(symbol_table, i, &symbol) != 0);
+	  const char* name = elf_strptr(elf_handle,
+					section_header.sh_link,
+					symbol.st_name);
+	  if (name == 0)
+	    continue;
+
+	  string symname = name;
+	  if (demangle)
+	    symname = demangle_cplus_mangled_name(symname);
+	  if (symname == symbol_name)
+	    {
+	      symbol_name_found = name;
+	      sym_type =
+		static_cast<symbol_type>(GELF_ST_TYPE(symbol.st_info));
+	      sym_binding =
+		static_cast<symbol_binding>(GELF_ST_BIND(symbol.st_info));
+	      return true;
+	    }
+	}
+    }
+  return false;
+}
+
+/// Look into the symbol tables of the underlying elf file and see if
+/// we find a given public (global or weak) symbol of function type.
+///
+/// @param elf_handle the elf handle to use for the query.
+///
+/// @param symbol_name the function symbol to look for.
+static bool
+lookup_public_function_symbol_from_elf(Elf*		elf_handle,
+				       const string&	symbol_name)
+{
+  symbol_type type = NOTYPE_TYPE;
+  symbol_binding binding = LOCAL_BINDING;
+
+  string symbol_found;
+  if (lookup_symbol_from_elf(elf_handle,
+			     symbol_name,
+			     /*demangle=*/false,
+			     symbol_found,
+			     type, binding))
+    if ((type == FUNC_TYPE
+	 || type == GNU_IFUNC_TYPE
+	 || type == COMMON_TYPE)
+	&& (binding == STB_GLOBAL || binding == STB_WEAK))
+      return true;
+
+  return false;
+}
+
+/// Look into the symbol tables of the underlying elf file and see if
+/// we find a given public (global or weak) symbol of variable type.
+///
+/// @param elf_handle the elf handle to use for the query.
+///
+/// @param symbol_name the variable symbol to look for.
+static bool
+lookup_public_variable_symbol_from_elf(Elf*		elf_handle,
+				       const string&	symbol_name)
+{
+  symbol_type type = NOTYPE_TYPE;
+  symbol_binding binding = LOCAL_BINDING;
+
+  string symbol_found;
+  if (lookup_symbol_from_elf(elf_handle,
+			     symbol_name,
+			     /*demangle=*/false,
+			     symbol_found,
+			     type, binding))
+    if (type == OBJECT_TYPE
+	&& (binding == STB_GLOBAL || binding == STB_WEAK))
+      return true;
+
+  return false;
+}
+
 /// The context accumulated during the reading of dwarf debug info and
 /// building of the resulting ABI Corpus as a result.
 ///
@@ -113,6 +238,9 @@ class read_context
   unsigned short dwarf_version_;
   dwfl_sptr handle_;
   Dwarf* dwarf_;
+  // The address range of the offline elf file we are looking at.
+  Dwfl_Module* elf_module_;
+  mutable Elf* elf_handle_;
   const string elf_path_;
   die_decl_map_type die_decl_map_;
   die_class_map_type die_wip_classes_map_;
@@ -131,6 +259,8 @@ public:
     : dwarf_version_(0),
       handle_(handle),
       dwarf_(0),
+      elf_module_(0),
+      elf_handle_(0),
       elf_path_(elf_path)
   {}
 
@@ -146,6 +276,24 @@ public:
   dwfl_handle() const
   {return handle_;}
 
+  Dwfl_Module*
+  elf_module() const
+  {return elf_module_;}
+
+  Elf*
+  elf_handle() const
+  {
+    if (elf_handle_ == 0)
+      {
+	if (elf_module())
+	  {
+	    GElf_Addr bias = 0;
+	    elf_handle_ = dwfl_module_getelf(elf_module(), &bias);
+	  }
+      }
+    return elf_handle_;
+  }
+
   /// Load the debug info associated with an elf file that is at a
   /// given path.
   ///
@@ -157,7 +305,7 @@ public:
     if (!dwfl_handle())
       return 0;
 
-    Dwfl_Module* module =
+    elf_module_ =
       dwfl_report_offline(dwfl_handle().get(),
 			  basename(const_cast<char*>(elf_path().c_str())),
 			  elf_path().c_str(),
@@ -165,7 +313,7 @@ public:
     dwfl_report_end(dwfl_handle().get(), 0, 0);
 
     Dwarf_Addr bias = 0;
-    return (dwarf_ = dwfl_module_getdwarf(module, &bias));
+    return (dwarf_ = dwfl_module_getdwarf(elf_module_, &bias));
   }
 
   Dwarf*
@@ -271,6 +419,57 @@ public:
   list<var_decl_sptr>&
   var_decls_to_re_add_to_tree()
   {return var_decls_to_add;}
+
+  /// Look into the symbol tables of the underlying elf file and see
+  /// if we find a given symbol.
+  ///
+  /// @param symbol_name the name of the symbol to look for.
+  ///
+  /// @param demangle if true, demangle the symbols found in the symbol
+  /// tables.
+  ///
+  /// @param symbol_name_found the symbol name found in the symbol table.
+  ///
+  /// @param sym_type this is set to the type of the symbol found.  This
+  /// shall b a standard elf.h value for symbol types, that is SHT_OBJECT,
+  /// STT_FUNC, STT_IFUNC, etc ...
+  ///
+  /// Note that this parameter is set iff the function returns true.
+  ///
+  /// @param sym_binding this is set to the binding of the symbol found.
+  /// This is a standard elf.h value of the symbol binding kind, that
+  /// is, STB_LOCAL, STB_GLOBAL, or STB_WEAK.
+  bool
+  lookup_symbol_from_elf(const string&	symbol_name,
+			 bool		demangle,
+			 string&	symbol_name_found,
+			 symbol_type&	sym_type,
+			 symbol_binding& sym_binding) const
+  {return dwarf_reader::lookup_symbol_from_elf(elf_handle(),symbol_name,
+					       demangle, symbol_name_found,
+					       sym_type, sym_binding);}
+
+  /// Look in the symbol tables of the underying elf file and see if
+  /// we find a symbol of a given name of function type.
+  ///
+  /// @param symbol_name the name of the symbol to look for.
+  ///
+  /// @return true iff the symbol was found.
+  bool
+  lookup_public_function_symbol_from_elf(const string& symbol_name)
+  {return dwarf_reader::lookup_public_function_symbol_from_elf(elf_handle(),
+							       symbol_name);}
+
+  /// Look in the symbol tables of the underying elf file and see if
+  /// we find a symbol of a given name of variable type.
+  ///
+  /// @param symbol_name the name of the symbol to look for.
+  ///
+  /// @return true iff the symbol was found.
+  bool
+  lookup_public_variable_symbol_from_elf(const string& symbol_name)
+  {return dwarf_reader::lookup_public_variable_symbol_from_elf(elf_handle(),
+							       symbol_name);}
 };// end class read_context.
 
 static decl_base_sptr
@@ -3279,6 +3478,185 @@ read_corpus_from_elf(const std::string& elf_path)
   corp->set_origin(corpus::DWARF_ORIGIN);
 
   return corp;
+}
+
+/// Look into the symbol tables of a given elf file and see if we find
+/// a given symbol.
+///
+/// @param elf_path the path to the elf file to consider.
+///
+/// @param symbol_name the name of the symbol to look for.
+///
+/// @param demangle if true, try to demangle the symbol name found in
+/// the symbol table.
+///
+/// @param symbol_name_found if the function returns true, this is set
+/// to the symbol name as found in the symbol table.
+///
+/// @param symbol_type this is set to the type of the symbol found.
+/// This shall b a standard elf.h value for symbol types, that is
+/// SHT_OBJECT, STT_FUNC, STT_IFUNC, etc ...
+///
+/// Note that this parameter is set iff the function returns true.
+///
+/// @param symbol_binding this is set to the binding of the symbol
+/// found.  This is a standard elf.h value of the symbol binding kind,
+/// that is, STB_LOCAL, STB_GLOBAL, or STB_WEAK.
+bool
+lookup_symbol_from_elf(const string&	elf_path,
+		       const string&	symbol_name,
+		       bool		demangle,
+		       string&		symbol_name_found,
+		       symbol_type&	symbol_type,
+		       symbol_binding&	symbol_binding)
+{
+  if(elf_version(EV_CURRENT) == EV_NONE)
+    return false;
+
+  int fd = open(elf_path.c_str(), O_RDONLY);
+  if (fd < 0)
+    return false;
+
+  struct stat s;
+  if (fstat(fd, &s))
+    return false;
+
+  Elf* elf = elf_begin(fd, ELF_C_READ, 0);
+  if (elf == 0)
+    return false;
+
+  bool value = lookup_symbol_from_elf(elf, symbol_name,
+				      demangle,
+				      symbol_name_found,
+				      symbol_type,
+				      symbol_binding);
+  elf_end(elf);
+  close(fd);
+
+  return value;
+}
+
+/// Look into the symbol tables of an elf file to see if a public
+/// function of a given name is found.
+///
+/// @param elf_path the path to the elf file to consider.
+///
+/// @param symbol_name the name of the function to look for.
+///
+/// @return true iff a function with symbol name @p symbol_name is
+/// found.
+bool
+lookup_public_function_symbol_from_elf(const string&	elf_path,
+				       const string&	symbol_name)
+{
+  if(elf_version(EV_CURRENT) == EV_NONE)
+    return false;
+
+  int fd = open(elf_path.c_str(), O_RDONLY);
+  if (fd < 0)
+    return false;
+
+  struct stat s;
+  if (fstat(fd, &s))
+      return false;
+
+  Elf* elf = elf_begin(fd, ELF_C_READ, 0);
+  if (elf == 0)
+    return false;
+
+  bool value = lookup_public_function_symbol_from_elf(elf, symbol_name);
+  elf_end(elf);
+  close(fd);
+
+  return value;
+}
+
+/// Serialize an instance of @ref symbol_type and stream it to a given
+/// output stream.
+///
+/// @param o the output stream to serialize the symbole type to.
+///
+/// @param t the symbol type to serialize.
+std::ostream&
+operator<<(std::ostream& o, symbol_type t)
+{
+  string repr;
+
+  switch (t)
+    {
+    case NOTYPE_TYPE:
+      repr = "unspecified symbol type";
+      break;
+    case OBJECT_TYPE:
+      repr = "variable symbol type";
+      break;
+    case FUNC_TYPE:
+      repr = "function symbol type";
+      break;
+    case SECTION_TYPE:
+      repr = "section symbol type";
+      break;
+    case FILE_TYPE:
+      repr = "file symbol type";
+      break;
+    case COMMON_TYPE:
+      repr = "common data object symbol type";
+      break;
+    case TLS_TYPE:
+      repr = "thread local data object symbol type";
+      break;
+    case GNU_IFUNC_TYPE:
+      repr = "indirect function symbol type";
+      break;
+    default:
+      {
+	std::ostringstream s;
+	s << "unknown symbol type (" << (char)t << ')';
+	repr = s.str();
+      }
+      break;
+    }
+
+  o << repr;
+  return o;
+}
+
+/// Serialize an instance of @ref symbol_binding and stream it to a
+/// given output stream.
+///
+/// @param o the output stream to serialize the symbole type to.
+///
+/// @param t the symbol binding to serialize.
+std::ostream&
+operator<<(std::ostream& o, symbol_binding b)
+{
+  string repr;
+
+  switch (b)
+    {
+    case LOCAL_BINDING:
+      repr = "local binding";
+      break;
+    case GLOBAL_BINDING:
+      repr = "global binding";
+      break;
+    case WEAK_BINDING:
+      repr = "weak binding";
+      break;
+    case GNU_UNIQUE_BINDING:
+      repr = "GNU unique binding";
+      break;
+    default:
+      {
+	std::ostringstream s;
+	s << "unknown binding (" << (unsigned char) b << ")";
+	repr = s.str();
+      }
+      break;
+    }
+
+  o << repr;
+  return o;
 }
 
 }// end namespace dwarf_reader

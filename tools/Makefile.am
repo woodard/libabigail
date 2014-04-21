@@ -7,7 +7,8 @@ libtoolsutils_la_SOURCES=	\
 $(h)/abg-tools-utils.h		\
 $(h)/abg-tools-utils.cc
 
-bin_PROGRAMS = biar bidiff bilint bidw
+bin_PROGRAMS = biar bidiff bilint bidw bisym
+
 biar_SOURCES = $(h)/biar.cc
 biardir = $(bindir)
 biar_LDFLAGS = $(abs_top_builddir)/src/libabigail.la $(abs_top_builddir)/tools/libtoolsutils.la
@@ -27,5 +28,9 @@ bidw_SOURCES = $(h)/bidw.cc
 bidwdir = $(bindir)
 bidw_LDFLAGS = $(abs_top_builddir)/src/libabigail.la $(abs_top_builddir)/tools/libtoolsutils.la
 bidw_DEPENDENCIES = libtoolsutils.la
+
+bisym_SOURCES = $(h)/bisym.cc
+bisymdir = $(bindir)
+bisym_LDFLAGS = $(abs_top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I$(abs_top_srcdir)/include -I$(abs_top_srcdir)/tools
