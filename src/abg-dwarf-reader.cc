@@ -2924,6 +2924,12 @@ build_var_decl(read_context& ctxt,
 
   result.reset(new var_decl(name, type, loc, mangled_name));
 
+  // Check if a symbol with this name is exported by the elf binary.
+  string linkage_name = get_linkage_name(result);
+  if (!linkage_name.empty())
+    if (ctxt.lookup_public_variable_symbol_from_elf(linkage_name))
+      result->set_is_in_public_symbol_table(true);
+
   return result;
 }
 
@@ -3038,6 +3044,12 @@ build_function_decl(read_context& ctxt,
 				       is_inline, floc,
 				       fmangled_name));
     }
+  // Check if a symbol with this name is exported by the elf binary.
+  string linkage_name = get_linkage_name(result);
+  if (!linkage_name.empty())
+    if (ctxt.lookup_public_function_symbol_from_elf(linkage_name))
+      result->set_is_in_public_symbol_table(true);
+
   return result;
 }
 
