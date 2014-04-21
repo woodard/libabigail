@@ -301,35 +301,128 @@ dm_context_rel::~dm_context_rel()
 
 // <Decl definition>
 
-decl_base::decl_base(const std::string&	name, location locus,
-		     const std::string&	mangled_name, visibility vis)
-  : hash_(0),
-    hashing_started_(0),
-    location_(locus),
-    name_(name),
-    mangled_name_(mangled_name),
-    visibility_(vis)
-{ }
+struct decl_base::priv
+{
+  size_t		hash_;
+  bool			hashing_started_;
+  bool			in_pub_sym_tab_;
+  location		location_;
+  context_rel_sptr	context_;
+  std::string		name_;
+  std::string		qualified_parent_name_;
+  std::string		qualified_name_;
+  std::string		mangled_name_;
+  visibility		visibility_;
+
+  priv()
+    : hash_(0),
+      hashing_started_(false),
+      in_pub_sym_tab_(false),
+      visibility_(VISIBILITY_DEFAULT)
+  {}
+
+  priv(const std::string& name, location locus,
+       const std::string& mangled_name, visibility vis)
+    : hash_(0),
+      hashing_started_(false),
+      in_pub_sym_tab_(false),
+      location_(locus),
+      name_(name),
+      mangled_name_(mangled_name),
+      visibility_(vis)
+  {}
+
+  priv(location l)
+    : hash_(0),
+      hashing_started_(0),
+      in_pub_sym_tab_(false),
+      location_(l),
+      visibility_(VISIBILITY_DEFAULT)
+  {}
+};// end struct decl_base::priv
+
+decl_base::decl_base(const std::string& name,
+		     location		locus,
+		     const std::string& mangled_name,
+		     visibility	vis)
+  : priv_(new priv(name, locus, mangled_name, vis))
+{}
 
 decl_base::decl_base(location l)
-  : hash_(0),
-    hashing_started_(0),
-    location_(l),
-    visibility_(VISIBILITY_DEFAULT)
-{ }
+  : priv_(new priv(l))
+{}
 
 decl_base::decl_base(const decl_base& d)
 {
-  hash_ = d.hash_;
-  hashing_started_ = d.hashing_started_;
-  location_ = d.location_;
-  name_ = d.name_;
-  qualified_parent_name_ = d.qualified_parent_name_;
-  qualified_name_ = d.qualified_name_;
-  mangled_name_ = d.mangled_name_;
-  context_ = d.context_;
-  visibility_ = visibility_;
+  priv_->hash_ = d.priv_->hash_;
+  priv_->hashing_started_ = d.priv_->hashing_started_;
+  priv_->location_ = d.priv_->location_;
+  priv_->name_ = d.priv_->name_;
+  priv_->qualified_parent_name_ = d.priv_->qualified_parent_name_;
+  priv_->qualified_name_ = d.priv_->qualified_name_;
+  priv_->mangled_name_ = d.priv_->mangled_name_;
+  priv_->context_ = d.priv_->context_;
+  priv_->visibility_ = d.priv_->visibility_;
 }
+
+/// Getter for the 'hashing_started' property.
+///
+/// @return the 'hashing_started' property.
+bool
+decl_base::hashing_started() const
+{return priv_->hashing_started_;}
+
+/// Setter for the 'hashing_started' property.
+///
+/// @param b the value to set the 'hashing_property' to.
+void
+decl_base::hashing_started(bool b) const
+{priv_->hashing_started_ = b;}
+
+/// Getter for the hash value.
+///
+/// unlike decl_base::get_hash() this does not try to update the hash
+/// value.
+///
+/// @return the hash value.
+size_t
+decl_base::peek_hash_value() const
+{return priv_->hash_;}
+
+/// Getter for the qualified name.
+///
+/// Unlike decl_base::get_qualified_name() this doesn't try to update
+/// the qualified name.
+///
+/// @return the qualified name.
+const string&
+decl_base::peek_qualified_name() const
+{return priv_->qualified_name_;}
+
+/// Setter for the qualified name.
+///
+/// @param n the new qualified name.
+void
+decl_base::set_qualified_name(const string& n) const
+{priv_->qualified_name_ = n;}
+
+///Getter for the context relationship.
+///
+///@return the context relationship for the current decl_base.
+const context_rel_sptr
+decl_base::get_context_rel() const
+{return priv_->context_;}
+
+///Getter for the context relationship.
+///
+///@return the context relationship for the current decl_base.
+context_rel_sptr
+decl_base::get_context_rel()
+{return priv_->context_;}
+
+void
+decl_base::set_context_rel(context_rel_sptr c)
+{priv_->context_ = c;}
 
 /// Get the hash of a decl.  If the hash hasn't been computed yet,
 /// compute it ans store its value; otherwise, just return the hash.
@@ -338,9 +431,9 @@ decl_base::decl_base(const decl_base& d)
 size_t
 decl_base::get_hash() const
 {
-  size_t result = hash_;
+  size_t result = priv_->hash_;
 
-  if (hash_ == 0 || hashing_started_)
+  if (priv_->hash_ == 0 || priv_->hashing_started_)
     {
       const type_base* t = dynamic_cast<const type_base*>(this);
       if (t)
@@ -348,7 +441,7 @@ decl_base::get_hash() const
 	  type_base::dynamic_hash hash;
 	  result = hash(t);
 
-	  if (!hashing_started_)
+	  if (!priv_->hashing_started_)
 	    set_hash(result);
 	}
       else
@@ -364,7 +457,97 @@ decl_base::get_hash() const
 /// @param h the new hash.
 void
 decl_base::set_hash(size_t h) const
-{hash_ = h;}
+{priv_->hash_ = h;}
+
+/// Test if the decl is defined in a ELF symbol table as a public
+/// symbol.
+///
+/// @return true iff the decl is defined in a ELF symbol table as a
+/// public symbol.
+bool
+decl_base::get_is_in_public_symbol_table() const
+{return priv_->in_pub_sym_tab_;}
+
+/// Set the flag saying if this decl is from a symbol that is in
+/// a public symbols table, defined as public (global or weak).
+///
+/// @param f the new flag value.
+void
+decl_base::set_is_in_public_symbol_table(bool f)
+{priv_->in_pub_sym_tab_ = f;}
+
+/// Get the location of a given declaration.
+///
+/// The location is an abstraction for the tripplet {file path,
+/// line, column} that defines where the declaration appeared in the
+/// source code.
+///
+/// To get the value of the tripplet {file path, line, column} from
+/// the @ref location, you need to use the
+/// location_manager::expand_location() method.
+///
+/// The instance of @ref location_manager that you want is
+/// accessible from the instance of @ref translation_unit that the
+/// current instance of @ref decl_base belongs to, via a call to
+/// translation_unit::get_loc_mgr().
+///
+/// @return the location of the current instance of @ref decl_base.
+location
+decl_base::get_location() const
+{return priv_->location_;}
+
+/// Set the location for a given declaration.
+///
+/// The location is an abstraction for the tripplet {file path,
+/// line, column} that defines where the declaration appeared in the
+/// source code.
+///
+/// To create a location from a tripplet {file path, line, column},
+/// you need to use the method @ref
+/// location_manager::create_new_location().
+///
+/// The instance of @ref location_manager that you want is
+/// accessible from the instance of @ref translation_unit that the
+/// current instance of @ref decl_base belongs to, via a call to
+/// translation_unit::get_loc_mgr().
+void
+decl_base::set_location(const location& l)
+{priv_->location_ = l;}
+
+/// Setter for the name of the decl.
+///
+/// @param n the new name to set.
+void
+decl_base::set_name(const string& n)
+{priv_->name_ = n;}
+
+/// Getter for the mangled name.
+///
+/// @return the new mangled name.
+const string&
+decl_base::get_mangled_name() const
+{return priv_->mangled_name_;}
+
+/// Setter for the mangled name.
+///
+/// @param m the new mangled name.
+void
+decl_base::set_mangled_name(const std::string& m)
+{priv_->mangled_name_ = m;}
+
+/// Getter for the visibility of the decl.
+///
+/// @return the new visibility.
+decl_base::visibility
+decl_base::get_visibility() const
+{return priv_->visibility_;}
+
+/// Setter for the visibility of the decl.
+///
+/// @param v the new visibility.
+void
+decl_base::set_visibility(visibility v)
+{priv_->visibility_ = v;}
 
 /// Return the type containing the current decl, if any.
 ///
@@ -373,8 +556,8 @@ decl_base::set_hash(size_t h) const
 scope_decl*
 decl_base::get_scope() const
 {
-  if (context_)
-    return context_->get_scope();
+  if (priv_->context_)
+    return priv_->context_->get_scope();
   return 0;
 }
 
@@ -385,7 +568,7 @@ decl_base::get_scope() const
 string
 decl_base::get_qualified_parent_name() const
 {
-  if (qualified_parent_name_.empty())
+  if (priv_->qualified_parent_name_.empty())
     {
       list<string> qn_components;
       for (scope_decl* s = get_scope();
@@ -402,10 +585,10 @@ decl_base::get_qualified_parent_name() const
 	else
 	  qn += "::" + *i;
 
-      qualified_parent_name_ = qn;
+      priv_->qualified_parent_name_ = qn;
     }
 
-  return qualified_parent_name_;
+  return priv_->qualified_parent_name_;
 }
 
 /// Getter for the name of the current decl.
@@ -413,7 +596,7 @@ decl_base::get_qualified_parent_name() const
 /// @return the name of the current decl.
 const string&
 decl_base::get_name() const
-{return name_;}
+{return priv_->name_;}
 
 /// Compute the qualified name of the decl.
 ///
@@ -421,17 +604,17 @@ decl_base::get_name() const
 void
 decl_base::get_qualified_name(string& qn) const
 {
-  if (qualified_name_.empty())
+  if (priv_->qualified_name_.empty())
     {
-      qualified_name_ = get_qualified_parent_name();
+      priv_->qualified_name_ = get_qualified_parent_name();
       if (!get_name().empty())
 	{
-	  if (!qualified_name_.empty())
-	    qualified_name_ += "::";
-	  qualified_name_ += get_name();
+	  if (!priv_->qualified_name_.empty())
+	    priv_->qualified_name_ += "::";
+	  priv_->qualified_name_ += get_name();
 	}
     }
-  qn = qualified_name_;
+  qn = priv_->qualified_name_;
 }
 
 /// @return the default pretty representation for a decl.  This is
@@ -462,7 +645,8 @@ decl_base::get_qualified_name() const
 bool
 decl_base::operator==(const decl_base& other) const
 {
-  if (!get_mangled_name().empty())
+  if (!get_mangled_name().empty()
+      && !other.get_mangled_name().empty())
     {
       if (get_mangled_name() != other.get_mangled_name())
 	return false;
@@ -506,10 +690,10 @@ decl_base::traverse(ir_node_visitor&)
 void
 decl_base::set_scope(scope_decl* scope)
 {
-  if (!context_)
-    context_.reset(new context_rel(scope));
+  if (!priv_->context_)
+    priv_->context_.reset(new context_rel(scope));
   else
-    context_->set_scope(scope);
+    priv_->context_->set_scope(scope);
 }
 
 // </decl_base definition>
@@ -2562,9 +2746,9 @@ qualified_type_def::operator==(const type_base& o) const
 void
 qualified_type_def::get_qualified_name(string& qualified_name) const
 {
-  if (qualified_name_.empty())
-    qualified_name_ = build_name(true);
-  qualified_name = qualified_name_;
+  if (peek_qualified_name().empty())
+    set_qualified_name(build_name(true));
+  qualified_name = peek_qualified_name();
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -2724,15 +2908,15 @@ pointer_type_def::get_pointed_to_type() const
 void
 pointer_type_def::get_qualified_name(string& qn) const
 {
-  if (qualified_name_.empty())
+  if (peek_qualified_name().empty())
     {
       decl_base_sptr td =
 	get_type_declaration(pointed_to_type_);
       string name;
       td->get_qualified_name(name);
-      qualified_name_ = name + "*";
+      set_qualified_name(name + "*");
     }
-  qn = qualified_name_;
+  qn = peek_qualified_name();
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -2809,15 +2993,15 @@ reference_type_def::is_lvalue() const
 void
 reference_type_def::get_qualified_name(string& qn) const
 {
-  if (qualified_name_.empty())
+  if (peek_qualified_name().empty())
     {
       decl_base_sptr td =
 	get_type_declaration(pointed_to_type_);
       string name;
       td->get_qualified_name(name);
-      qualified_name_ = name + "&";
+      set_qualified_name(name + "&");
     }
-  qn = qualified_name_;
+  qn = peek_qualified_name();
 }
 
 
@@ -3044,10 +3228,13 @@ var_decl::var_decl(const std::string&		name,
 void
 var_decl::set_scope(scope_decl* scope)
 {
-    if (!context_)
-    context_.reset(new dm_context_rel(scope));
+  if (!get_context_rel())
+    {
+      context_rel_sptr c(new dm_context_rel(scope));
+      set_context_rel(c);
+    }
   else
-    context_->set_scope(scope);
+    get_context_rel()->set_scope(scope);
 }
 
 bool
@@ -4149,12 +4336,12 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 size_t
 class_decl::base_spec::get_hash() const
 {
-  if (hash_ == 0)
+  if (peek_hash_value() == 0)
     {
       base_spec::hash h;
       set_hash(h(*this));
     }
-  return hash_;
+  return peek_hash_value();
 }
 
 /// Constructor for base_spec instances.
@@ -4395,10 +4582,13 @@ class_decl::method_decl::get_type() const
 void
 class_decl::method_decl::set_scope(scope_decl* scope)
 {
-  if (!context_)
-    context_.reset(new mem_fn_context_rel(scope));
+  if (!get_context_rel())
+    {
+      context_rel_sptr c(new mem_fn_context_rel(scope));
+      set_context_rel(c);
+    }
   else
-    context_->set_scope(scope);
+    get_context_rel()->set_scope(scope);
 }
 
 /// Add a member function to the current instance of class_decl.

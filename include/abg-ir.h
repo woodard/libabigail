@@ -269,6 +269,27 @@ public:
 /// The base type of all declarations.
 class decl_base : public ir_traversable_base
 {
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+protected:
+  mutable priv_sptr priv_;
+
+  bool
+  hashing_started() const;
+
+  void
+  hashing_started(bool b) const;
+
+  size_t
+  peek_hash_value() const;
+
+  const string&
+  peek_qualified_name() const;
+
+  void
+  set_qualified_name(const string&) const;
+
 public:
   /// Facility to hash instances of decl_base.
   struct hash;
@@ -292,19 +313,6 @@ public:
     BINDING_WEAK
   };
 
-protected:
-  mutable size_t	hash_;
-  mutable bool		hashing_started_;
-  location		location_;
-  context_rel_sptr	context_;
-  mutable std::string	name_;
-  mutable std::string	qualified_parent_name_;
-  mutable std::string	qualified_name_;
-
-private:
-  std::string		mangled_name_;
-  visibility		visibility_;
-
   // Forbidden
   decl_base();
 
@@ -312,27 +320,16 @@ private:
   set_scope(scope_decl*);
 
 protected:
-
-  ///Getter for the context relationship.
-  ///
-  ///@return the context relationship for the current decl_base.
   const context_rel_sptr
-  get_context_rel() const
-  {return context_;}
+  get_context_rel() const;
 
-  ///Getter for the context relationship.
-  ///
-  ///@return the context relationship for the current decl_base.
   context_rel_sptr
-  get_context_rel()
-  {return context_;}
+  get_context_rel();
 
   void
-  set_context_rel(context_rel_sptr c)
-  {context_ = c;}
+  set_context_rel(context_rel_sptr c);
 
 public:
-
   decl_base(const std::string&	name, location locus,
 	    const std::string&	mangled_name = "",
 	    visibility vis = VISIBILITY_DEFAULT);
@@ -355,43 +352,17 @@ public:
   void
   set_hash(size_t) const;
 
-  /// Get the location of a given declaration.
-  ///
-  /// The location is an abstraction for the tripplet {file path,
-  /// line, column} that defines where the declaration appeared in the
-  /// source code.
-  ///
-  /// To get the value of the tripplet {file path, line, column} from
-  /// the @ref location, you need to use the
-  /// location_manager::expand_location() method.
-  ///
-  /// The instance of @ref location_manager that you want is
-  /// accessible from the instance of @ref translation_unit that the
-  /// current instance of @ref decl_base belongs to, via a call to
-  /// translation_unit::get_loc_mgr().
-  ///
-  /// @return the location of the current instance of @ref decl_base.
-  location
-  get_location() const
-  {return location_;}
+  bool
+  get_is_in_public_symbol_table() const;
 
-  /// Set the location for a given declaration.
-  ///
-  /// The location is an abstraction for the tripplet {file path,
-  /// line, column} that defines where the declaration appeared in the
-  /// source code.
-  ///
-  /// To create a location from a tripplet {file path, line, column},
-  /// you need to use the method @ref
-  /// location_manager::create_new_location().
-  ///
-  /// The instance of @ref location_manager that you want is
-  /// accessible from the instance of @ref translation_unit that the
-  /// current instance of @ref decl_base belongs to, via a call to
-  /// translation_unit::get_loc_mgr().
   void
-  set_location(const location& l)
-  {location_ = l;}
+  set_is_in_public_symbol_table(bool);
+
+  location
+  get_location() const;
+
+  void
+  set_location(const location& l);
 
   const string&
   get_name() const;
@@ -409,27 +380,22 @@ public:
   get_qualified_name() const;
 
   void
-  set_name(const string& n)
-  { name_ = n; }
+  set_name(const string& n);
 
   const string&
-  get_mangled_name() const
-  {return mangled_name_;}
+  get_mangled_name() const;
 
   void
-  set_mangled_name(const std::string& m)
-  {mangled_name_ = m;}
+  set_mangled_name(const std::string& m);
 
   scope_decl*
   get_scope() const;
 
   visibility
-  get_visibility() const
-  {return visibility_;}
+  get_visibility() const;
 
   void
-  set_visibility(visibility v)
-  {visibility_ = v;}
+  set_visibility(visibility v);
 
   friend decl_base_sptr
   add_decl_to_scope(decl_base_sptr dcl, scope_decl* scpe);
@@ -2012,14 +1978,6 @@ public:
 	     location locus, visibility vis);
   class_decl(const std::string& name, bool is_struct,
 	     bool is_declaration_only = true);
-
-  bool
-  hashing_started() const
-  {return hashing_started_;}
-
-  void
-  hashing_started(bool b) const
-  {hashing_started_ = b;}
 
   virtual string
   get_pretty_representation() const;
