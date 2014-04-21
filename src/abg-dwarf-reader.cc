@@ -2890,14 +2890,18 @@ build_typedef_type(read_context& ctxt,
 ///
 /// @param die the DIE to read from to build the @ref var_decl.
 ///
+/// @param result if this is set to an existing var_decl, this means
+/// that the function will append the new properties it sees on @p die
+/// to that exising var_decl.  Otherwise, if this parameter is NULL, a
+/// new var_decl is going to be allocated and returned.
+///
 /// @return a pointer to the newly created var_decl.  If the var_decl
 /// could not be built, this function returns NULL.
 static var_decl_sptr
 build_var_decl(read_context& ctxt,
-	       Dwarf_Die *die)
+	       Dwarf_Die *die,
+	       var_decl_sptr result = var_decl_sptr())
 {
-  var_decl_sptr result;
-
   if (!die)
     return result;
   assert(dwarf_tag(die) == DW_TAG_variable);
@@ -2922,7 +2926,16 @@ build_var_decl(read_context& ctxt,
   location loc;
   die_loc_and_name(ctxt, die, loc, name, mangled_name);
 
-  result.reset(new var_decl(name, type, loc, mangled_name));
+  if (!result)
+    result.reset(new var_decl(name, type, loc, mangled_name));
+  else
+    {
+      // We were called to append properties that might have been
+      // missing from the first version of the variable.  And usually
+      // that missing property is the mangled name.
+      if (!mangled_name.empty())
+	result->set_mangled_name(mangled_name);
+    }
 
   // Check if a symbol with this name is exported by the elf binary.
   string linkage_name = get_linkage_name(result);
@@ -3140,6 +3153,7 @@ build_ir_node_from_die(read_context&	ctxt,
     {
       if (tag != DW_TAG_subprogram
 	  && tag != DW_TAG_variable
+	  && tag != DW_TAG_member
 	  && tag != DW_TAG_namespace)
 	return result;
     }
@@ -3297,6 +3311,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		  {
 		    var_decl_sptr m =
 		      dynamic_pointer_cast<var_decl>(d);
+		    m = build_var_decl(ctxt, die, m);
 		    if (is_data_member(m))
 		      {
 			set_member_is_static(m, true);
