@@ -6178,10 +6178,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != priv_->added_vars_.end();
 	   ++i)
 	{
-	  if (!i->second->get_mangled_name().empty())
-	    n = demangle_cplus_mangled_name(i->second->get_mangled_name());
-	  else
-	    n = i->second->get_pretty_representation();
+	  n = i->second->get_pretty_representation();
 	  out << indent
 	      << "  '";
 	  if (total > large_num)
