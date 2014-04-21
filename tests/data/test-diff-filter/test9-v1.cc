@@ -2,9 +2,7 @@ struct S
 {
   int m0;
 
-  S()
-  : m0(0)
-  {}
+  S();
 
   int
   mem_fn0();
@@ -12,6 +10,10 @@ struct S
   int
   mem_fn1();
 };
+
+S::S()
+  : m0(0)
+{}
 
 int
 S::mem_fn0()

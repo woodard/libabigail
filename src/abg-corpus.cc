@@ -566,6 +566,12 @@ corpus::priv::build_symbol_table()
       if (n.empty())
 	n = (*i)->get_pretty_representation();
       assert(!n.empty());
+
+      if (origin_ == DWARF_ORIGIN
+	  && !(*i)->get_is_in_public_symbol_table())
+	// The symbol for this function is not exported so let's drop it.
+	continue;
+
       if (!v.fn_is_in_map(n))
 	{
 	  fns.push_back(*i);
@@ -584,6 +590,12 @@ corpus::priv::build_symbol_table()
       if (n.empty())
 	n = (*i)->get_pretty_representation();
       assert(!n.empty());
+
+      if (origin_ == DWARF_ORIGIN
+	  && !(*i)->get_is_in_public_symbol_table())
+	// The symbol for this variable is not exported so let's drop it.
+	continue;
+
       if (!v.var_is_in_map(n))
 	{
 	  vars.push_back(*i);
