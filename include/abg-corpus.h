@@ -46,6 +46,16 @@ public:
   typedef vector<function_decl*>	functions;
   typedef vector<var_decl*>		variables;
 
+  /// This abstracts where the corpus comes from.  That is, either it
+  /// has been read from the native xml format, from DWARF or built
+  /// artificially using the library's API.
+  enum origin
+  {
+    ARTIFICIAL_ORIGIN = 0,
+    NATIVE_XML_ORIGIN,
+    DWARF_ORIGIN
+  };
+
 private:
   shared_ptr<priv> priv_;
 
@@ -63,6 +73,12 @@ public:
 
   void
   drop_translation_units();
+
+  origin
+  get_origin() const;
+
+  void
+  set_origin(origin);
 
   string&
   get_path() const;

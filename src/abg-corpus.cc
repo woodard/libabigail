@@ -82,6 +82,8 @@ using sptr_utils::regex_t_sptr;
 
 struct corpus::priv
 {
+  origin			origin_;
+  bool				is_symbol_table_built;
   vector<string>		regex_patterns_fns_to_suppress;
   vector<string>		regex_patterns_vars_to_suppress;
   vector<string>		regex_patterns_fns_to_keep;
@@ -90,15 +92,15 @@ struct corpus::priv
   translation_units		members;
   vector<function_decl*>	fns;
   vector<var_decl*>		vars;
-  bool				is_symbol_table_built;
 
 private:
   priv();
 
 public:
   priv(const string &p)
-    : path(p),
-      is_symbol_table_built(false)
+    : origin_(ARTIFICIAL_ORIGIN),
+      is_symbol_table_built(false),
+      path(p)
   {}
 
   void
@@ -628,6 +630,20 @@ corpus::get_translation_units() const
 void
 corpus::drop_translation_units()
 {priv_->members.clear();}
+
+/// Getter for the origin of the corpus.
+///
+/// @return the origin of the corpus.
+corpus::origin
+corpus::get_origin() const
+{return priv_->origin_;}
+
+/// Setter for the origin of the corpus.
+///
+/// @param o the new origin for the corpus.
+void
+corpus::set_origin(origin o)
+{priv_->origin_ = o;}
 
 /// Get the file path associated to the corpus file.
 ///

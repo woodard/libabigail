@@ -839,6 +839,7 @@ read_corpus_from_input(read_context&	ctxt,
     }
   while (is_ok);
 
+  corp.set_origin(corpus::NATIVE_XML_ORIGIN);
   return true;
 }
 
@@ -3036,6 +3037,8 @@ read_corpus_from_archive(zip_sptr ar,
 	  ++nb_of_tu_read;
 	}
     }
+  if (nb_of_tu_read)
+    corp.set_origin(corpus::NATIVE_XML_ORIGIN);
   return nb_of_tu_read;
 }
 

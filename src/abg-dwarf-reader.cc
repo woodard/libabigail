@@ -26,6 +26,10 @@
 /// de-serialize an instance of @ref abigail::corpus from a file in
 /// elf format, containing dwarf information.
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <libgen.h>
 #include <assert.h>
 #include <cstring>
@@ -36,6 +40,8 @@
 #include <stack>
 #include <deque>
 #include <list>
+#include <ostream>
+#include <sstream>
 #include "abg-dwarf-reader.h"
 
 using std::string;
@@ -3269,6 +3275,8 @@ read_corpus_from_elf(const std::string& elf_path)
   // Now, read an ABI corpus proper from the debug info we have
   // through the dwfl handle.
   corpus_sptr corp = build_corpus(ctxt);
+  corp->set_path(elf_path);
+  corp->set_origin(corpus::DWARF_ORIGIN);
 
   return corp;
 }
