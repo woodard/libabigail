@@ -1720,6 +1720,50 @@ get_type_name(const type_base_sptr t)
   return d->get_name();
 }
 
+/// Get the linkage name for a given declaration.
+///
+/// Note that due to some DWARF bugs, the linkage name might be empty,
+/// even for functions.
+///
+/// @param d the declaration to consider.
+///
+/// @return the linkage name.
+string
+get_linkage_name(const decl_base& d)
+{
+  if (!d.get_mangled_name().empty())
+    return d.get_mangled_name();
+
+  if (!is_at_global_scope(d))
+    return d.get_name();
+
+  return "";
+}
+
+/// Get the linkage name for a given declaration.
+///
+/// Note that due to some DWARF bugs, the linkage name might be empty,
+/// even for functions.
+///
+/// @param d the declaration to consider.
+///
+/// @return the linkage name.
+string
+get_linkage_name(const decl_base* d)
+{return d ? get_linkage_name(*d) : string();}
+
+/// Get the linkage name for a given declaration.
+///
+/// Note that due to some DWARF bugs, the linkage name might be empty,
+/// even for functions.
+///
+/// @param d the declaration to consider.
+///
+/// @return the linkage name.
+string
+get_linkage_name(const decl_base_sptr d)
+{return get_linkage_name(d.get());}
+
 /// Get a copy of the pretty representation of a decl.
 ///
 /// @param d the decl to consider.
@@ -1871,8 +1915,8 @@ get_translation_unit(const shared_ptr<decl_base> decl)
 ///
 /// @return true iff the current scope is the global one.
 bool
-is_global_scope(const shared_ptr<scope_decl>scope)
-{return !!dynamic_pointer_cast<global_scope>(scope);}
+is_global_scope(const scope_decl& scope)
+{return !!dynamic_cast<const global_scope*>(&scope);}
 
 /// Tests whether if a given scope is the global scope.
 ///
@@ -1881,7 +1925,25 @@ is_global_scope(const shared_ptr<scope_decl>scope)
 /// @return true iff the current scope is the global one.
 bool
 is_global_scope(const scope_decl* scope)
-{return !!dynamic_cast<const global_scope*>(scope);}
+{return scope ? is_global_scope(*scope) : false;}
+
+/// Tests whether if a given scope is the global scope.
+///
+/// @param scope the scope to consider.
+///
+/// @return true iff the current scope is the global one.
+bool
+is_global_scope(const shared_ptr<scope_decl>scope)
+{return is_global_scope(scope.get());}
+
+/// Tests whether a given declaration is at global scope.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is at global scope.
+bool
+is_at_global_scope(const decl_base& decl)
+{return (is_global_scope(decl.get_scope()));}
 
 /// Tests whether a given declaration is at global scope.
 ///

@@ -132,10 +132,16 @@ translation_unit*
 get_translation_unit(const shared_ptr<decl_base>);
 
 bool
+is_global_scope(const scope_decl&);
+
+bool
 is_global_scope(const scope_decl*);
 
 bool
 is_global_scope(const shared_ptr<scope_decl>);
+
+bool
+is_at_global_scope(const decl_base&);
 
 bool
 is_at_global_scope(const shared_ptr<decl_base>);
@@ -325,6 +331,15 @@ strip_typedef(const shared_ptr<type_base>);
 
 string
 get_type_name(const shared_ptr<type_base>);
+
+string
+get_linkage_name(const decl_base&);
+
+string
+get_linkage_name(const decl_base*);
+
+string
+get_linkage_name(const shared_ptr<decl_base>);
 
 string
 get_pretty_representation(const decl_base*);
