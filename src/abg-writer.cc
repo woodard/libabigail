@@ -628,7 +628,7 @@ write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
       || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(decl),
 			    ctxt, indent)
       || write_var_decl(dynamic_pointer_cast<var_decl>(decl), ctxt,
-			/*write_mangled_name=*/true, indent)
+			/*write_linkage_name=*/true, indent)
       || write_function_decl(dynamic_pointer_cast<class_decl::method_decl>
 			     (decl), ctxt, /*skip_first_parameter=*/true,
 			     indent)
@@ -1183,7 +1183,7 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 ///
 /// @param ctxt the context of the serialization.
 ///
-/// @param write_mangled_name if true, serialize the mangled name of
+/// @param write_linkage_name if true, serialize the mangled name of
 /// this variable.
 ///
 /// @param indent the number of indentation white spaces to use.
@@ -1191,7 +1191,7 @@ write_typedef_decl(const shared_ptr<typedef_decl>	decl,
 /// @return true upon succesful completion, false otherwise.
 static bool
 write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
-	       bool write_mangled_name, unsigned indent)
+	       bool write_linkage_name, unsigned indent)
 {
   if (!decl)
     return false;
@@ -1203,11 +1203,11 @@ write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
   o << "<var-decl name='" << decl->get_name() << "'";
   o << " type-id='" << ctxt.get_id_for_type(decl->get_type()) << "'";
 
-  if (write_mangled_name)
+  if (write_linkage_name)
     {
-      const string& mangled_name = decl->get_mangled_name();
-      if (!mangled_name.empty())
-	o << " mangled-name='" << mangled_name << "'";
+      const string& linkage_name = decl->get_linkage_name();
+      if (!linkage_name.empty())
+	o << " mangled-name='" << linkage_name << "'";
     }
 
   write_visibility(decl, o);
@@ -1248,9 +1248,9 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
     << xml::escape_xml_string(decl->get_name())
     << "'";
 
-  if (!decl->get_mangled_name().empty())
+  if (!decl->get_linkage_name().empty())
     o << " mangled-name='"
-      << xml::escape_xml_string(decl->get_mangled_name()) << "'";
+      << xml::escape_xml_string(decl->get_linkage_name()) << "'";
 
   write_location(decl, o);
 
@@ -2166,7 +2166,7 @@ void
 dump(const var_decl_sptr v, std::ostream& o)
 {
   xml_writer::write_context ctxt(o);
-  write_var_decl(v, ctxt, /*mangled_name*/true, /*indent=*/0);
+  write_var_decl(v, ctxt, /*linkage_name*/true, /*indent=*/0);
   cerr << "\n";
 }
 

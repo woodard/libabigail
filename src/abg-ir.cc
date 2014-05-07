@@ -311,7 +311,7 @@ struct decl_base::priv
   std::string		name_;
   std::string		qualified_parent_name_;
   std::string		qualified_name_;
-  std::string		mangled_name_;
+  std::string		linkage_name_;
   visibility		visibility_;
 
   priv()
@@ -322,13 +322,13 @@ struct decl_base::priv
   {}
 
   priv(const std::string& name, location locus,
-       const std::string& mangled_name, visibility vis)
+       const std::string& linkage_name, visibility vis)
     : hash_(0),
       hashing_started_(false),
       in_pub_sym_tab_(false),
       location_(locus),
       name_(name),
-      mangled_name_(mangled_name),
+      linkage_name_(linkage_name),
       visibility_(vis)
   {}
 
@@ -343,9 +343,9 @@ struct decl_base::priv
 
 decl_base::decl_base(const std::string& name,
 		     location		locus,
-		     const std::string& mangled_name,
+		     const std::string& linkage_name,
 		     visibility	vis)
-  : priv_(new priv(name, locus, mangled_name, vis))
+  : priv_(new priv(name, locus, linkage_name, vis))
 {}
 
 decl_base::decl_base(location l)
@@ -360,7 +360,7 @@ decl_base::decl_base(const decl_base& d)
   priv_->name_ = d.priv_->name_;
   priv_->qualified_parent_name_ = d.priv_->qualified_parent_name_;
   priv_->qualified_name_ = d.priv_->qualified_name_;
-  priv_->mangled_name_ = d.priv_->mangled_name_;
+  priv_->linkage_name_ = d.priv_->linkage_name_;
   priv_->context_ = d.priv_->context_;
   priv_->visibility_ = d.priv_->visibility_;
 }
@@ -525,15 +525,15 @@ decl_base::set_name(const string& n)
 ///
 /// @return the new mangled name.
 const string&
-decl_base::get_mangled_name() const
-{return priv_->mangled_name_;}
+decl_base::get_linkage_name() const
+{return priv_->linkage_name_;}
 
-/// Setter for the mangled name.
+/// Setter for the linkage name.
 ///
-/// @param m the new mangled name.
+/// @param m the new linkage name.
 void
-decl_base::set_mangled_name(const std::string& m)
-{priv_->mangled_name_ = m;}
+decl_base::set_linkage_name(const std::string& m)
+{priv_->linkage_name_ = m;}
 
 /// Getter for the visibility of the decl.
 ///
@@ -645,10 +645,10 @@ decl_base::get_qualified_name() const
 bool
 decl_base::operator==(const decl_base& other) const
 {
-  if (!get_mangled_name().empty()
-      && !other.get_mangled_name().empty())
+  if (!get_linkage_name().empty()
+      && !other.get_linkage_name().empty())
     {
-      if (get_mangled_name() != other.get_mangled_name())
+      if (get_linkage_name() != other.get_linkage_name())
 	return false;
     }
   else
@@ -1731,8 +1731,8 @@ get_type_name(const type_base_sptr t)
 string
 get_linkage_name(const decl_base& d)
 {
-  if (!d.get_mangled_name().empty())
-    return d.get_mangled_name();
+  if (!d.get_linkage_name().empty())
+    return d.get_linkage_name();
 
   if (!is_at_global_scope(d))
     return d.get_name();
@@ -2519,10 +2519,10 @@ type_decl::type_decl(const std::string&	name,
 		     size_t			size_in_bits,
 		     size_t			alignment_in_bits,
 		     location			locus,
-		     const std::string&	mangled_name,
+		     const std::string&	linkage_name,
 		     visibility		vis)
 
-  : decl_base(name, locus, mangled_name, vis),
+  : decl_base(name, locus, linkage_name, vis),
     type_base(size_in_bits, alignment_in_bits)
 {
 }
@@ -3166,17 +3166,17 @@ enum_type_decl::operator==(const type_base& o) const
 ///
 /// @param locus the source location of the typedef declaration.
 ///
-/// @param mangled_name the mangled name of the typedef.
+/// @param linkage_name the mangled name of the typedef.
 ///
 /// @param vis the visibility of the typedef type.
 typedef_decl::typedef_decl(const string&		name,
 			   const shared_ptr<type_base>	underlying_type,
 			   location			locus,
-			   const std::string&		mangled_name,
+			   const std::string&		linkage_name,
 			   visibility vis)
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
-    decl_base(name, locus, mangled_name, vis),
+    decl_base(name, locus, linkage_name, vis),
     underlying_type_(underlying_type)
 {}
 
@@ -3273,10 +3273,10 @@ typedef_decl::~typedef_decl()
 var_decl::var_decl(const std::string&		name,
 		   shared_ptr<type_base>	type,
 		   location			locus,
-		   const std::string&		mangled_name,
+		   const std::string&		linkage_name,
 		   visibility			vis,
 		   binding			bind)
-  : decl_base(name, locus, mangled_name, vis),
+  : decl_base(name, locus, linkage_name, vis),
     type_(type),
     binding_(bind)
 {}
@@ -3650,7 +3650,7 @@ function_decl::parameter::get_name_id() const
 ///
 /// @param locus the source location of this function declaration.
 ///
-/// @param mangled_name the mangled name of the function declaration.
+/// @param linkage_name the mangled name of the function declaration.
 ///
 /// @param vis the visibility of the function declaration.
 ///
@@ -3662,10 +3662,10 @@ function_decl::function_decl(const std::string&  name,
 			     size_t fptr_align_in_bits,
 			     bool declared_inline,
 			     location locus,
-			     const std::string& mangled_name,
+			     const std::string& linkage_name,
 			     visibility vis,
 			     binding bind)
-  : decl_base(name, locus, mangled_name, vis),
+  : decl_base(name, locus, linkage_name, vis),
     type_(new function_type(return_type, parms, fptr_size_in_bits,
 			     fptr_align_in_bits)),
     declared_inline_(declared_inline), binding_(bind)
@@ -3688,7 +3688,7 @@ function_decl::function_decl(const std::string&  name,
   ///
   /// @param locus the source location of the function declaration.
   ///
-  /// @param mangled_name the mangled name of the function declaration.
+  /// @param linkage_name the mangled name of the function declaration.
   ///
   /// @param vis the visibility of the function declaration.
   ///
@@ -3698,10 +3698,10 @@ function_decl::function_decl(const std::string& name,
 		shared_ptr<type_base> fn_type,
 		bool	declared_inline,
 		location locus,
-		const std::string& mangled_name,
+		const std::string& linkage_name,
 		visibility vis,
 		binding bind)
-  : decl_base(name, locus, mangled_name, vis),
+  : decl_base(name, locus, linkage_name, vis),
     type_(dynamic_pointer_cast<function_type>(fn_type)),
     declared_inline_(declared_inline),
     binding_(bind)
@@ -4385,7 +4385,7 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 				 long offset_in_bits,
 				 bool is_virtual)
   : decl_base(base->get_name(), base->get_location(),
-	      base->get_mangled_name(), base->get_visibility()),
+	      base->get_linkage_name(), base->get_visibility()),
     member_base(a),
     base_class_(base),
     offset_in_bits_(offset_in_bits),
@@ -4429,7 +4429,7 @@ class_decl::base_spec::base_spec(shared_ptr<type_base> base,
 				 bool is_virtual)
   : decl_base(get_type_declaration(base)->get_name(),
 	      get_type_declaration(base)->get_location(),
-	      get_type_declaration(base)->get_mangled_name(),
+	      get_type_declaration(base)->get_linkage_name(),
 	      get_type_declaration(base)->get_visibility()),
       member_base(a),
       base_class_(dynamic_pointer_cast<class_decl>(base)),
@@ -4509,7 +4509,7 @@ mem_fn_context_rel::~mem_fn_context_rel()
 ///
 /// @param locus the source location of the method.
 ///
-/// @param mangled_name the mangled name of the method.
+/// @param linkage_name the mangled name of the method.
 ///
 /// @param vis the visibility of the method.
 ///
@@ -4523,16 +4523,16 @@ class_decl::method_decl::method_decl
  size_t				ftype_align_in_bits,
  bool					declared_inline,
  location				locus,
-  const std::string&			mangled_name,
+  const std::string&			linkage_name,
  visibility				vis,
  binding				bind)
-  : decl_base(name, locus, mangled_name, vis),
+  : decl_base(name, locus, linkage_name, vis),
 	function_decl(name,
 		      shared_ptr<function_type>
 		      (new method_type(return_type, class_type, parms,
 				       ftype_size_in_bits,
 				       ftype_align_in_bits)),
-		      declared_inline, locus, mangled_name, vis, bind)
+		      declared_inline, locus, linkage_name, vis, bind)
 {
 }
 
@@ -4547,7 +4547,7 @@ class_decl::method_decl::method_decl
 ///
 /// @param locus the source location of the method.
 ///
-/// @param mangled_name the mangled name of the method.
+/// @param linkage_name the mangled name of the method.
 ///
 /// @param vis the visibility of the method.
 ///
@@ -4557,13 +4557,13 @@ class_decl::method_decl::method_decl
  shared_ptr<method_type>		type,
  bool					declared_inline,
  location				locus,
- const std::string&			mangled_name,
+ const std::string&			linkage_name,
  visibility				vis,
  binding				bind)
-  : decl_base(name, locus, mangled_name, vis),
+  : decl_base(name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>(type),
 		  declared_inline, locus,
-		  mangled_name, vis, bind)
+		  linkage_name, vis, bind)
 {}
 
 /// A constructor for instances of class_decl::method_decl.
@@ -4578,7 +4578,7 @@ class_decl::method_decl::method_decl
 ///
 /// @param locus the source location of the method.
 ///
-/// @param mangled_name the mangled name of the method.
+/// @param linkage_name the mangled name of the method.
 ///
 /// @param vis the visibility of the method.
 ///
@@ -4587,13 +4587,13 @@ class_decl::method_decl::method_decl(const std::string&	name,
 				     shared_ptr<function_type>	type,
 				     bool			declared_inline,
 				     location			locus,
-			const std::string&			mangled_name,
+			const std::string&			linkage_name,
 			visibility				vis,
 			binding				bind)
-  : decl_base(name, locus, mangled_name, vis),
+  : decl_base(name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
-		  declared_inline, locus, mangled_name, vis, bind)
+		  declared_inline, locus, linkage_name, vis, bind)
 {}
 
 /// A constructor for instances of class_decl::method_decl.
@@ -4608,7 +4608,7 @@ class_decl::method_decl::method_decl(const std::string&	name,
 ///
 /// @param locus the source location of the method.
 ///
-/// @param mangled_name the mangled name of the method.
+/// @param linkage_name the mangled name of the method.
 ///
 /// @param vis the visibility of the method.
 ///
@@ -4617,13 +4617,13 @@ class_decl::method_decl::method_decl(const std::string&	name,
 				     shared_ptr<type_base>	type,
 				     bool			declared_inline,
 				     location			locus,
-				     const std::string&	mangled_name,
+				     const std::string&	linkage_name,
 				     visibility		vis,
 				     binding			bind)
-  : decl_base(name, locus, mangled_name, vis),
+  : decl_base(name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
-		  declared_inline, locus, mangled_name, vis, bind)
+		  declared_inline, locus, linkage_name, vis, bind)
 {}
 
 class_decl::method_decl::~method_decl()

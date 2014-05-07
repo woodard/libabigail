@@ -86,8 +86,8 @@ struct decl_base::hash
 	std::tr1::hash<string> str_hash;
 
 	size_t v = str_hash(typeid(d).name());
-	if (!d.get_mangled_name().empty())
-	  v = hashing::combine_hashes(v, str_hash(d.get_mangled_name()));
+	if (!d.get_linkage_name().empty())
+	  v = hashing::combine_hashes(v, str_hash(d.get_linkage_name()));
 	else if (!d.get_name().empty())
 	  v = hashing::combine_hashes(v, str_hash(d.get_qualified_name()));
 	if (is_member_decl(d))

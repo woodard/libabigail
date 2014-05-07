@@ -651,15 +651,15 @@ die_flag_attribute(Dwarf_Die* die, unsigned attr_name, bool& flag)
 /// @return the mangled name if it's present in the DIE, or just an
 /// empty string if it's not.
 static string
-die_mangled_name(Dwarf_Die* die)
+die_linkage_name(Dwarf_Die* die)
 {
   if (!die)
     return "";
 
-  string mangled_name = die_string_attribute(die, DW_AT_linkage_name);
-  if (mangled_name.empty())
-    mangled_name = die_string_attribute(die, DW_AT_MIPS_linkage_name);
-  return mangled_name;
+  string linkage_name = die_string_attribute(die, DW_AT_linkage_name);
+  if (linkage_name.empty())
+    linkage_name = die_string_attribute(die, DW_AT_MIPS_linkage_name);
+  return linkage_name;
 }
 
 /// Get the file path that is the value of the DW_AT_decl_file
@@ -738,17 +738,17 @@ die_location(read_context& ctxt, Dwarf_Die* die)
 ///
 /// @param name the name output parameter to set.
 ///
-/// @param mangled_name the mangled_name output parameter to set.
+/// @param linkage_name the linkage_name output parameter to set.
 static void
 die_loc_and_name(read_context&	ctxt,
 		 Dwarf_Die*	die,
 		 location&	loc,
 		 string&	name,
-		 string&	mangled_name)
+		 string&	linkage_name)
 {
   loc = die_location(ctxt, die);
   name = die_string_attribute(die, DW_AT_name);
-  mangled_name = die_mangled_name(die);
+  linkage_name = die_linkage_name(die);
 }
 
 /// Get the size of a (type) DIE as the value for the parameter
@@ -2204,7 +2204,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 
 	assert((*v)->get_scope());
 	string demangled_name =
-	  demangle_cplus_mangled_name((*v)->get_mangled_name());
+	  demangle_cplus_mangled_name((*v)->get_linkage_name());
 	if (!demangled_name.empty())
 	  {
 	    std::list<string> fqn_comps;
@@ -2276,9 +2276,9 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 
   scope_decl_sptr scope = get_scope_for_die(ctxt, die);
 
-  string name, mangled_name;
+  string name, linkage_name;
   location loc;
-  die_loc_and_name(ctxt, die, loc, name, mangled_name);
+  die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   result.reset(new namespace_decl(name, loc));
   add_decl_to_scope(result, scope.get());
@@ -2326,13 +2326,13 @@ build_type_decl(read_context&	ctxt,
     bit_size = byte_size * 8;
 
   size_t alignment = bit_size < 8 ? 8 : bit_size;
-  string type_name, mangled_name;
+  string type_name, linkage_name;
   location loc;
-  die_loc_and_name(ctxt, die, loc, type_name, mangled_name);
+  die_loc_and_name(ctxt, die, loc, type_name, linkage_name);
 
   result.reset(new type_decl(type_name, bit_size,
 			     alignment, loc,
-			     mangled_name));
+			     linkage_name));
   return result;
 }
 
@@ -2354,9 +2354,9 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   if (tag != DW_TAG_enumeration_type)
     return result;
 
-  string name, mangled_name;
+  string name, linkage_name;
   location loc;
-  die_loc_and_name(ctxt, die, loc, name, mangled_name);
+  die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   size_t size = 0;
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
@@ -2400,7 +2400,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 
   t = dynamic_pointer_cast<type_decl>(d);
   assert(t);
-  result.reset(new enum_type_decl(name, loc, t, enms, mangled_name));
+  result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
 
   return result;
 }
@@ -2449,9 +2449,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       return i->second;
   }
 
-  string name, mangled_name;
+  string name, linkage_name;
   location loc;
-  die_loc_and_name(ctxt, die, loc, name, mangled_name);
+  die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   size_t size = 0;
   die_size_in_bits(die, size);
@@ -2875,11 +2875,11 @@ build_typedef_type(read_context& ctxt,
   type_base_sptr utype = is_type(utype_decl);
   assert(utype);
 
-  string name, mangled_name;
+  string name, linkage_name;
   location loc;
-  die_loc_and_name(ctxt, die, loc, name, mangled_name);
+  die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
-  result.reset(new typedef_decl(name, utype, loc, mangled_name));
+  result.reset(new typedef_decl(name, utype, loc, linkage_name));
 
   return result;
 }
@@ -2922,25 +2922,25 @@ build_var_decl(read_context& ctxt,
       assert(type);
     }
 
-  string name, mangled_name;
+  string name, linkage_name;
   location loc;
-  die_loc_and_name(ctxt, die, loc, name, mangled_name);
+  die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   if (!result)
-    result.reset(new var_decl(name, type, loc, mangled_name));
+    result.reset(new var_decl(name, type, loc, linkage_name));
   else
     {
       // We were called to append properties that might have been
       // missing from the first version of the variable.  And usually
       // that missing property is the mangled name.
-      if (!mangled_name.empty())
-	result->set_mangled_name(mangled_name);
+      if (!linkage_name.empty())
+	result->set_linkage_name(linkage_name);
     }
 
   // Check if a symbol with this name is exported by the elf binary.
-  string linkage_name = get_linkage_name(result);
-  if (!linkage_name.empty())
-    if (ctxt.lookup_public_variable_symbol_from_elf(linkage_name))
+  string lname = get_linkage_name(result);
+  if (!lname.empty())
+    if (ctxt.lookup_public_variable_symbol_from_elf(lname))
       result->set_is_in_public_symbol_table(true);
 
   return result;
@@ -2970,9 +2970,9 @@ build_function_decl(read_context& ctxt,
   translation_unit_sptr tu = ctxt.cur_tu();
   assert(tu);
 
-  string fname, fmangled_name;
+  string fname, flinkage_name;
   location floc;
-  die_loc_and_name(ctxt, die, floc, fname, fmangled_name);
+  die_loc_and_name(ctxt, die, floc, fname, flinkage_name);
 
   size_t is_inline = false;
   die_unsigned_constant_attribute(die, DW_AT_inline, is_inline);
@@ -2996,9 +2996,9 @@ build_function_decl(read_context& ctxt,
 	int child_tag = dwarf_tag(&child);
 	if (child_tag == DW_TAG_formal_parameter)
 	  {
-	    string name, mangled_name;
+	    string name, linkage_name;
 	    location loc;
-	    die_loc_and_name(ctxt, &child, loc, name, mangled_name);
+	    die_loc_and_name(ctxt, &child, loc, name, linkage_name);
 	    bool is_artificial = die_is_artificial(&child);
 	    decl_base_sptr parm_type_decl;
 	    Dwarf_Die parm_type_die;
@@ -3033,8 +3033,8 @@ build_function_decl(read_context& ctxt,
       // Add the properties that might have been missing from the
       // first declaration of the function.  For now, it usually is
       // the mangled name that goes missing in the first declarations.
-      if (!fmangled_name.empty())
-	result->set_mangled_name(fmangled_name);
+      if (!flinkage_name.empty())
+	result->set_linkage_name(flinkage_name);
     }
   else
     {
@@ -3052,10 +3052,10 @@ build_function_decl(read_context& ctxt,
       result.reset(is_method
 		   ? new class_decl::method_decl(fname, fn_type,
 						 is_inline, floc,
-						 fmangled_name)
+						 flinkage_name)
 		   : new function_decl(fname, fn_type,
 				       is_inline, floc,
-				       fmangled_name));
+				       flinkage_name));
     }
   // Check if a symbol with this name is exported by the elf binary.
   string linkage_name = get_linkage_name(result);

@@ -383,10 +383,10 @@ public:
   set_name(const string& n);
 
   const string&
-  get_mangled_name() const;
+  get_linkage_name() const;
 
   void
-  set_mangled_name(const std::string& m);
+  set_linkage_name(const std::string& m);
 
   scope_decl*
   get_scope() const;

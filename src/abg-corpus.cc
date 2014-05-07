@@ -482,12 +482,12 @@ struct func_comp
     assert(first != 0 && second != 0);
 
     string first_name, second_name;
-    first_name = first->get_mangled_name();
+    first_name = first->get_linkage_name();
     if (first_name.empty())
       first_name = first->get_name();
     assert(!first_name.empty());
 
-    second_name = second->get_mangled_name();
+    second_name = second->get_linkage_name();
     if (second_name.empty())
       second_name = second->get_name();
     assert(!second_name.empty());
@@ -516,7 +516,7 @@ struct var_comp
     assert(first != 0 && second != 0);
 
     string first_name, second_name;
-    first_name = first->get_mangled_name();
+    first_name = first->get_linkage_name();
     if (first_name.empty())
       {
 	first_name = first->get_pretty_representation();
@@ -526,7 +526,7 @@ struct var_comp
     assert(!first_name.empty());
 
     if (second_name.empty())
-      second_name = second->get_mangled_name();
+      second_name = second->get_linkage_name();
 
     if (second_name.empty())
       {
@@ -562,7 +562,7 @@ corpus::priv::build_symbol_table()
        i != v.wip_fns.end();
        ++i)
     {
-      string n = (*i)->get_mangled_name();
+      string n = (*i)->get_linkage_name();
       if (n.empty())
 	n = (*i)->get_pretty_representation();
       assert(!n.empty());
@@ -586,7 +586,7 @@ corpus::priv::build_symbol_table()
        i != v.wip_vars.end();
        ++i)
     {
-      string n = (*i)->get_mangled_name();
+      string n = (*i)->get_linkage_name();
       if (n.empty())
 	n = (*i)->get_pretty_representation();
       assert(!n.empty());

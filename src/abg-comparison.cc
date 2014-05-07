@@ -2768,7 +2768,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	unsigned i = it->index();
 	class_decl::method_decl_sptr mem_fn =
 	  first_class_decl()->get_virtual_mem_fns()[i];
-	string name = mem_fn->get_mangled_name();
+	string name = mem_fn->get_linkage_name();
 	if (name.empty())
 	  name = mem_fn->get_pretty_representation();
 	assert(!name.empty());
@@ -2791,7 +2791,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 
 	    class_decl::method_decl_sptr mem_fn =
 	      second_class_decl()->get_virtual_mem_fns()[i];
-	    string name = mem_fn->get_mangled_name();
+	    string name = mem_fn->get_linkage_name();
 	    if (name.empty())
 	      name = mem_fn->get_pretty_representation();
 	    assert(!name.empty());
@@ -2801,7 +2801,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    string_member_function_sptr_map::const_iterator j =
 	      priv_->deleted_member_functions_.find(name);
 	    if (j == priv_->deleted_member_functions_.end()
-		&& name == mem_fn->get_mangled_name())
+		&& name == mem_fn->get_linkage_name())
 	      {
 		// So we didn't find a function with the same mangled
 		// named that got previously deleted.  Keep in mind
@@ -4968,8 +4968,8 @@ function_decl_diff::report(ostream& out, const string& indent) const
 
   string qn1 = first_function_decl()->get_qualified_name(),
     qn2 = second_function_decl()->get_qualified_name(),
-    mn1 = first_function_decl()->get_mangled_name(),
-    mn2 = second_function_decl()->get_mangled_name();
+    mn1 = first_function_decl()->get_linkage_name(),
+    mn2 = second_function_decl()->get_linkage_name();
 
   if (qn1 != qn2 && mn1 != mn2)
     {
@@ -5229,14 +5229,14 @@ type_decl_diff::report(ostream& out, const string& indent) const
       n = true;
     }
 
-  if (f->get_mangled_name() != s->get_mangled_name())
+  if (f->get_linkage_name() != s->get_linkage_name())
     {
       if (n)
 	out << "\n";
       out << indent
 	  << "mangled name changed from '"
-	  << f->get_mangled_name() << "' to "
-	  << s->get_mangled_name();
+	  << f->get_linkage_name() << "' to "
+	  << s->get_linkage_name();
       n = true;
     }
 
@@ -5699,7 +5699,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	assert(i < first_->get_functions().size());
 
 	function_decl* deleted_fn = first_->get_functions()[i];
-	string n = deleted_fn->get_mangled_name();
+	string n = deleted_fn->get_linkage_name();
 	if (n.empty())
 	  n = deleted_fn->get_pretty_representation();
 	assert(!n.empty());
@@ -5718,7 +5718,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	  {
 	    unsigned i = *iit;
 	    function_decl* added_fn = second_->get_functions()[i];
-	    string n = added_fn->get_mangled_name();
+	    string n = added_fn->get_linkage_name();
 	    if (n.empty())
 	      n = added_fn->get_pretty_representation();
 	    assert(!n.empty());
@@ -5734,7 +5734,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 		// TODO: also query the underlying elf file's .dynsym
 		// symbol table to see if the symbol is present in the
 		// first diff subject before for real.
-		if (!added_fn->get_mangled_name().empty())
+		if (!added_fn->get_linkage_name().empty())
 		  j = deleted_fns_.find(added_fn->get_pretty_representation());
 	      }
 	    if (j != deleted_fns_.end())
@@ -5761,7 +5761,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	assert(i < first_->get_variables().size());
 
 	var_decl* deleted_var = first_->get_variables()[i];
-	string n = deleted_var->get_mangled_name();
+	string n = deleted_var->get_linkage_name();
 	if (n.empty())
 	  n = deleted_var->get_pretty_representation();
 	assert(!n.empty());
@@ -5780,7 +5780,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	  {
 	    unsigned i = *iit;
 	    var_decl* added_var = second_->get_variables()[i];
-	    string n = added_var->get_mangled_name();
+	    string n = added_var->get_linkage_name();
 	    if (n.empty())
 	      n = added_var->get_name();
 	    assert(!n.empty());
@@ -6107,8 +6107,8 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != priv_->deleted_vars_.end();
 	   ++i)
 	{
-	  if (!i->second->get_mangled_name().empty())
-	    n = demangle_cplus_mangled_name(i->second->get_mangled_name());
+	  if (!i->second->get_linkage_name().empty())
+	    n = demangle_cplus_mangled_name(i->second->get_linkage_name());
 	  else
 	    n = i->second->get_pretty_representation();
 	  out << indent
@@ -6144,13 +6144,13 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (!diff || !diff->to_be_reported())
 	    continue;
 
-	  if (!f->get_mangled_name().empty())
-	    n1 = demangle_cplus_mangled_name(f->get_mangled_name());
+	  if (!f->get_linkage_name().empty())
+	    n1 = demangle_cplus_mangled_name(f->get_linkage_name());
 	  else
 	    n1 = f->get_pretty_representation();
 
-	  if (!s->get_mangled_name().empty())
-	    n2 = demangle_cplus_mangled_name(s->get_mangled_name());
+	  if (!s->get_linkage_name().empty())
+	    n2 = demangle_cplus_mangled_name(s->get_linkage_name());
 	  else
 	    n2 = s->get_pretty_representation();
 
@@ -6254,8 +6254,8 @@ compute_diff(const corpus_sptr	f,
 	       const var_decl* second)
     {
       string n1, n2;
-      if (!first->get_mangled_name().empty())
-	n1 = first->get_mangled_name();
+      if (!first->get_linkage_name().empty())
+	n1 = first->get_linkage_name();
       if (n1.empty())
 	{
 	  n1 = first->get_pretty_representation();
@@ -6266,7 +6266,7 @@ compute_diff(const corpus_sptr	f,
 
       if (n2.empty())
 	{
-	  n2 = second->get_mangled_name();
+	  n2 = second->get_linkage_name();
 	  if (n2.empty())
 	    {
 	      n2 = second->get_pretty_representation();
