@@ -221,6 +221,7 @@ struct diff_context::priv
   bool					show_deleted_vars_;
   bool					show_changed_vars_;
   bool					show_added_vars_;
+  bool					show_linkage_names_;
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
@@ -230,7 +231,8 @@ struct diff_context::priv
       show_added_fns_(true),
       show_deleted_vars_(true),
       show_changed_vars_(true),
-      show_added_vars_(true)
+      show_added_vars_(true),
+      show_linkage_names_(false)
    {}
  };// end struct diff_context::priv
 
@@ -518,6 +520,15 @@ diff_context::show_added_vars(bool f)
 bool
 diff_context::show_added_vars() const
 {return priv_->show_added_vars_;}
+
+bool
+diff_context::show_linkage_names() const
+{return priv_->show_linkage_names_;}
+
+void
+diff_context::show_linkage_names(bool f)
+{priv_->show_linkage_names_= f;}
+
 // </diff_context stuff>
 
 // <diff stuff>
@@ -6021,11 +6032,13 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   ++i)
 	{
 	  out << indent
-	      << "  '";
+	      << "  ";
 	  if (total > large_num)
 	    out << "[D] ";
-	  out << i->second->get_pretty_representation()
-	      << "\n";
+	  out << "'" << i->second->get_pretty_representation() << "'";
+	  if (context()->show_linkage_names())
+	    out << "    {" << i->second->get_linkage_name() << "}";
+	  out << "\n";
 	  ++removed;
 	}
       if (removed)
@@ -6083,7 +6096,10 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    out << "[A] ";
 	  out << "'"
 	      << i->second->get_pretty_representation()
-	      << "'\n";
+	      << "'";
+	  if (context()->show_linkage_names())
+	    out << "    {" << i->second->get_linkage_name() << "}";
+	  out << "\n";
 	  ++added;
 	}
       if (added)
@@ -6117,7 +6133,10 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    out << "[D] ";
 	  out << "'"
 	      << n
-	      << "'\n";
+	      << "'";
+	  if (context()->show_linkage_names())
+	    out << "    {" << i->second->get_linkage_name() << "}";
+	  out << "'\n";
 	  ++removed;
 	}
       if (removed)
@@ -6180,11 +6199,13 @@ corpus_diff::report(ostream& out, const string& indent) const
 	{
 	  n = i->second->get_pretty_representation();
 	  out << indent
-	      << "  '";
+	      << "  ";
 	  if (total > large_num)
 	    out << "[A] ";
-	  out << n
-	      << "\n";
+	  out << "'" << n << "'";
+	  if (context()->show_linkage_names())
+	    out << "    {" << i->second->get_linkage_name() << "}";
+	  out << "\n";
 	  ++added;
 	}
       if (added)

@@ -85,6 +85,10 @@ typedef unordered_map<Dwarf_Off, decl_base_sptr> die_class_map_type;
 /// translation_unit_sptr.
 typedef unordered_map<Dwarf_Off, translation_unit_sptr> die_tu_map_type;
 
+/// Convenience typedef for a map which key is an elf address, and
+/// which value is a size_t.
+typedef unordered_map<GElf_Addr, size_t> addr_size_map_type;
+
 /// Convenience typedef for a stack containing the scopes up to the
 /// current point in the abigail Internal Representation (aka IR) tree
 /// that is being built.
@@ -101,16 +105,909 @@ typedef unordered_map<shared_ptr<type_base>,
 /// value is also a dwarf offset.
 typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 
+static bool
+eval_last_constant_dwarf_sub_expr(Dwarf_Op* expr,
+				  size_t expr_len,
+				  ssize_t& value);
+static bool
+die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result);
+
+static bool
+die_location_address(Dwarf_Die* die,
+		     Dwarf_Addr& address);
+
+/// Convert an elf symbol type (given by the ELF{32,64}_ST_TYPE
+/// macros) into an elf_symbol::type value.
+///
+/// Note that this function aborts when given an unexpected value.
+///
+/// @param the symbol type value to convert.
+///
+/// @return the converted value.
+static elf_symbol::type
+stt_to_elf_symbol_type(unsigned char stt)
+{
+  elf_symbol::type t = elf_symbol::NOTYPE_TYPE;
+
+  switch (stt)
+    {
+    case STT_NOTYPE:
+      t = elf_symbol::NOTYPE_TYPE;
+      break;
+    case STT_OBJECT:
+      t = elf_symbol::OBJECT_TYPE;
+      break;
+    case STT_FUNC:
+      t = elf_symbol::FUNC_TYPE;
+      break;
+    case STT_SECTION:
+      t = elf_symbol::SECTION_TYPE;
+      break;
+    case STT_FILE:
+      t = elf_symbol::FILE_TYPE;
+      break;
+    case STT_COMMON:
+      t = elf_symbol::COMMON_TYPE;
+      break;
+    case STT_TLS:
+      t = elf_symbol::TLS_TYPE;
+      break;
+    case STT_GNU_IFUNC:
+      t = elf_symbol::GNU_IFUNC_TYPE;
+      break;
+    default:
+      // An unknown value that probably ought to be supported?  Let's
+      // abort right here rather than yielding garbage.
+      abort();
+    }
+
+  return t;
+}
+
+/// Convert an elf symbol binding (given by the ELF{32,64}_ST_BIND
+/// macros) into an elf_symbol::binding value.
+///
+/// Note that this function aborts when given an unexpected value.
+///
+/// @param the symbol binding value to convert.
+///
+/// @return the converted value.
+static elf_symbol::binding
+stb_to_elf_symbol_binding(unsigned char stb)
+{
+  elf_symbol::binding b = elf_symbol::GLOBAL_BINDING;
+
+  switch (stb)
+    {
+    case STB_LOCAL:
+      b = elf_symbol::LOCAL_BINDING;
+      break;
+    case STB_GLOBAL:
+      b = elf_symbol::GLOBAL_BINDING;
+      break;
+    case STB_WEAK:
+      b = elf_symbol::WEAK_BINDING;
+      break;
+    case STB_GNU_UNIQUE:
+      b = elf_symbol::GNU_UNIQUE_BINDING;
+      break;
+    default:
+      abort();
+    }
+
+  return b;
+
+}
+
+/// The kind of ELF hash table found by the function
+/// find_hash_table_section_index.
+enum hash_table_kind
+{
+  NO_HASH_TABLE_KIND = 0,
+  SYSV_HASH_TABLE_KIND,
+  GNU_HASH_TABLE_KIND
+};
+
+/// Get the offset offset of the hash table section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param ht_section_offset this is set to the the resulting offset
+/// of the hash table section.  This is set iff the function returns true.
+///
+/// @param symtab_section_offset the offset of the section of the
+/// symbol table the hash table refers to.
+static hash_table_kind
+find_hash_table_section_index(Elf*	elf_handle,
+			      size_t&	ht_section_index,
+			      size_t&	symtab_section_index)
+{
+  if (!elf_handle)
+    return NO_HASH_TABLE_KIND;
+
+  GElf_Shdr header_mem, *section_header;
+  bool found_sysv_ht = false, found_gnu_ht = false;
+  for (Elf_Scn* section = elf_nextscn(elf_handle, 0);
+       section != 0;
+       section = elf_nextscn(elf_handle, section))
+    {
+      section_header= gelf_getshdr(section, &header_mem);
+      if (section_header->sh_type != SHT_HASH
+	  && section_header->sh_type != SHT_GNU_HASH)
+	continue;
+
+      ht_section_index = elf_ndxscn(section);
+      symtab_section_index = section_header->sh_link;
+
+      if (section_header->sh_type == SHT_HASH)
+	found_sysv_ht = true;
+      else if (section_header->sh_type == SHT_GNU_HASH)
+	found_gnu_ht = true;
+    }
+
+  if (found_gnu_ht)
+    return GNU_HASH_TABLE_KIND;
+  else if (found_sysv_ht)
+    return SYSV_HASH_TABLE_KIND;
+  else
+    return NO_HASH_TABLE_KIND;
+}
+
+/// Find the symbol table.
+///
+/// @param elf_handle the elf handle to consider.
+///
+/// @param symtab the symbol table found.
+///
+/// @return true iff the symbol table is found.
+static bool
+find_symbol_table_section(Elf* elf_handle, Elf_Scn*& symtab)
+{
+  Elf_Scn* section = 0;
+  while ((section = elf_nextscn(elf_handle, section)) != 0)
+    {
+      GElf_Shdr header_mem, *header;
+      header = gelf_getshdr(section, &header_mem);
+      if (header->sh_type == SHT_SYMTAB)
+	{
+	  symtab = section;
+	  return true;
+	}
+    }
+  return false;
+}
+
+/// Find the index (in the section headers table) of the symbol table
+/// section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param symtab_index the index of the symbol_table, that was found.
+///
+/// @return true iff the symbol table section index was found.
+static bool
+find_symbol_table_section_index(Elf* elf_handle,
+				size_t& symtab_index)
+{
+  Elf_Scn* section = 0;
+  while ((section = elf_nextscn(elf_handle, section)) != 0)
+    {
+      GElf_Shdr header_mem, *header;
+      header = gelf_getshdr(section, &header_mem);
+      if (header->sh_type == SHT_SYMTAB)
+	{
+	  symtab_index = elf_ndxscn(section);
+	  return true;
+	}
+    }
+  return false;
+}
+
+/// Find and return the .text section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @return the .text section found.
+static Elf_Scn*
+find_text_section(Elf* elf_handle)
+{
+  GElf_Ehdr ehmem, *elf_header;
+  elf_header = gelf_getehdr(elf_handle, &ehmem);
+
+  Elf_Scn* section = 0;
+  while ((section = elf_nextscn(elf_handle, section)) != 0)
+    {
+      GElf_Shdr header_mem, *header;
+      header = gelf_getshdr(section, &header_mem);
+      if (header->sh_type != SHT_PROGBITS)
+	continue;
+
+      const char* section_name =
+	elf_strptr(elf_handle, elf_header->e_shstrndx, header->sh_name);
+      if (section_name && !strcmp(section_name, ".text"))
+	return section;
+    }
+
+  return 0;
+}
+
+/// Find and return the .bss section.
+///
+/// @param elf_handle.
+///
+/// @return the .bss section found.
+static Elf_Scn*
+find_bss_section(Elf* elf_handle)
+{
+  GElf_Ehdr ehmem, *elf_header;
+  elf_header = gelf_getehdr(elf_handle, &ehmem);
+
+  Elf_Scn* section = 0;
+  while ((section = elf_nextscn(elf_handle, section)) != 0)
+    {
+      GElf_Shdr header_mem, *header;
+      header = gelf_getshdr(section, &header_mem);
+      if (header->sh_type != SHT_NOBITS)
+	continue;
+
+      const char* section_name =
+	elf_strptr(elf_handle, elf_header->e_shstrndx, header->sh_name);
+      if (section_name && !strcmp(section_name, ".bss"))
+	return section;
+    }
+
+  return 0;
+}
+
+/// Compare a symbol name against another name, possibly demangling
+/// the symbol_name before performing the comparison.
+///
+/// @param symbol_name the symbol_name to take in account.
+///
+/// @param name the second name to take in account.
+///
+/// @param demangle if true, demangle @p symbol_name and compare the
+/// result of the demangling with @p name.
+///
+/// @return true iff symbol_name equals name.
+static bool
+compare_symbol_name(const string& symbol_name,
+		    const string& name,
+		    bool demangle)
+{
+  if (demangle)
+    {
+      string m = demangle_cplus_mangled_name(symbol_name);
+      return m == name;
+    }
+  return symbol_name == name;
+}
+
+/// Return the SHT_GNU_versym and SHT_GNU_verdef sections that are
+/// involved in symbol versionning.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param versym_section the SHT_GNU_versym section found.
+///
+/// @param verdef_section the SHT_GNU_verdef section found.
+///
+/// @return true iff the sections where found.
+static bool
+get_symbol_versionning_sections(Elf* elf_handle,
+				Elf_Scn*& versym_section,
+				Elf_Scn*& verdef_section)
+{
+  Elf_Scn* section = NULL;
+  GElf_Shdr mem;
+  Elf_Scn* versym = NULL, *verdef = NULL;
+
+  while ((section = elf_nextscn(elf_handle, section)) != NULL)
+    {
+      GElf_Shdr* h = gelf_getshdr(section, &mem);
+      if (h->sh_type == SHT_GNU_versym)
+	versym = section;
+      else if (h->sh_type == SHT_GNU_verdef)
+	verdef = section;
+
+      if (versym && verdef)
+	{
+	  versym_section = versym;
+	  verdef_section = verdef;
+	  return true;
+	}
+    }
+
+  return false;
+}
+
+/// Return the version for a symbol that is at a given index in its
+/// SHT_SYMTAB section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param symbol_index the index of the symbol to consider.
+///
+/// @param version the version found for symbol at @p symbol_index.
+///
+/// @return true iff a version was found for symbol at index @p symbol_index.
+static bool
+get_version_for_symbol(Elf* elf_handle,
+		       size_t symbol_index,
+		       elf_symbol::version& version)
+{
+  Elf_Scn *versym_section = NULL, *verdef_section = NULL;
+
+  if (!get_symbol_versionning_sections(elf_handle,
+				       versym_section,
+				       verdef_section))
+    return false;
+
+  Elf_Data* versym_data = elf_getdata(versym_section, NULL);
+  GElf_Versym versym_mem;
+  GElf_Versym* versym = gelf_getversym(versym_data, symbol_index, &versym_mem);
+  if (versym == 0)
+    return false;
+
+  Elf_Data* verdef_data = elf_getdata(verdef_section, NULL);
+  GElf_Verdef verdef_mem;
+  GElf_Verdef* verdef = gelf_getverdef(verdef_data, 0, &verdef_mem);
+  size_t vd_offset = 0;
+
+  if (*versym == 0x8001)
+    // I got this value from the code of readelf.c in elfutils.
+    // Apparently, if the symbol version entry has this value, the
+    // symbol must be discarded.  This is not documented in the
+    // official specification. Hugh?
+    return false;
+
+  for (;; vd_offset += verdef->vd_next)
+    {
+      for (;verdef != 0;)
+	{
+	  if (verdef->vd_ndx == (*versym & 0x7fff))
+	    // Found the version of the symbol.
+	    break;
+	  vd_offset += verdef->vd_next;
+	  verdef = (verdef->vd_next == 0
+		    ? 0
+		    : gelf_getverdef(verdef_data, vd_offset, &verdef_mem));
+	}
+
+      if (verdef != 0)
+	{
+	  GElf_Verdaux verdaux_mem;
+	  GElf_Verdaux *verdaux = gelf_getverdaux(verdef_data,
+						  vd_offset + verdef->vd_aux,
+						  &verdaux_mem);
+	  GElf_Shdr header_mem;
+	  GElf_Shdr* verdef_section_header = gelf_getshdr(verdef_section,
+							  &header_mem);
+	  size_t verdef_stridx = verdef_section_header->sh_link;
+	  version.str(elf_strptr(elf_handle, verdef_stridx, verdaux->vda_name));
+	  if (*versym & 0x8000)
+	    version.is_default(false);
+	  else
+	    version.is_default(true);
+	  return true;
+	}
+
+      if (!verdef || verdef->vd_next == 0)
+	break;
+    }
+
+  return false;
+}
+
+/// Lookup a symbol using the SysV ELF hash table.
+///
+/// Note that this function hasn't been tested.  So it hasn't been
+/// debugged yet.  IOW, it is not known to work.  Or rather, it's
+/// almost like it's surely doesn't work ;-)
+///
+/// Use it at your own risks.  :-)
+///
+/// @param elf_handle the elf_handle to use.
+///
+/// @param sym_name the symbol name to look for.
+///
+/// @param ht_index the index (in the section headers table) of the
+/// hash table section to use.
+///
+/// @param sym_tab_index the index (in the section headers table) of
+/// the symbol table to use.
+///
+/// @param demangle if true, demangle @p sym_name before comparing it
+/// to names from the symbol table.
+///
+/// @param syms_found a vector of symbols found with the name @p
+/// sym_name.  table.
+static bool
+lookup_symbol_from_sysv_hash_tab(Elf*			elf_handle,
+				 const string&		sym_name,
+				 size_t		ht_index,
+				 size_t		sym_tab_index,
+				 bool			demangle,
+				 vector<elf_symbol>&	syms_found)
+{
+  Elf_Scn* sym_tab_section = elf_getscn(elf_handle, sym_tab_index);
+  assert(sym_tab_section);
+
+  Elf_Data* sym_tab_data = elf_getdata(sym_tab_section, 0);
+  assert(sym_tab_data);
+
+  GElf_Shdr sheader_mem;
+  GElf_Shdr* sym_tab_section_header = gelf_getshdr(sym_tab_section,
+						   &sheader_mem);
+  Elf_Scn* hash_section = elf_getscn(elf_handle, ht_index);
+  assert(hash_section);
+
+  // Poke at the different parts of the hash table and get them ready
+  // to be used.
+  unsigned long hash = elf_hash(sym_name.c_str());
+  Elf_Data* ht_section_data = elf_getdata(hash_section, 0);
+  Elf32_Word* ht_data = reinterpret_cast<Elf32_Word*>(ht_section_data->d_buf);
+  size_t nb_buckets = ht_data[0];
+  size_t nb_chains = ht_data[1];
+
+  if (nb_buckets == 0)
+    // An empty hash table.  Not sure if that is possible, but it
+    // would mean an empty table of exported symbols.
+    return false;
+
+  //size_t nb_chains = ht_data[1];
+  Elf32_Word* ht_buckets = &ht_data[2];
+  Elf32_Word* ht_chains = &ht_buckets[nb_buckets];
+
+  // Now do the real work.
+  size_t bucket = hash % nb_buckets;
+  size_t symbol_index = ht_buckets[bucket];
+
+  GElf_Sym symbol;
+  const char* sym_name_str;
+  elf_symbol::type sym_type;
+  elf_symbol::binding sym_binding;
+  bool found = false;
+
+  do
+    {
+      assert(gelf_getsym(sym_tab_data, symbol_index, &symbol));
+      sym_name_str = elf_strptr(elf_handle,
+				sym_tab_section_header->sh_link,
+				symbol.st_name);
+      if (sym_name_str
+	  && compare_symbol_name(sym_name_str, sym_name, demangle))
+	{
+	  sym_type = stt_to_elf_symbol_type(GELF_ST_TYPE(symbol.st_info));
+	  sym_binding = stb_to_elf_symbol_binding(GELF_ST_BIND(symbol.st_info));
+	  elf_symbol::version ver;
+	  if (get_version_for_symbol(elf_handle, symbol_index, ver))
+	    assert(!ver.str().empty());
+	  elf_symbol symbol_found(symbol_index,
+				  sym_name_str,
+				  sym_type,
+				  sym_binding,
+				  symbol.st_shndx != SHN_UNDEF,
+				  ver);
+	  syms_found.push_back(symbol_found);
+	  found = true;
+	}
+      symbol_index = ht_chains[symbol_index];
+    } while (symbol_index != STN_UNDEF || symbol_index >= nb_chains);
+
+  return found;
+}
+
+/// Get the size of the elf class, in bytes.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @return the size computed.
+static char
+get_elf_class_size_in_bytes(Elf* elf_handle)
+{
+  char result = 0;
+  GElf_Ehdr hdr;
+
+  assert(gelf_getehdr(elf_handle, &hdr));
+  int c = hdr.e_ident[EI_CLASS];
+
+  switch (c)
+    {
+    case ELFCLASS32:
+      result = 4;
+      break;
+    case ELFCLASS64:
+      result = 8;
+      break;
+    default:
+      abort();
+    }
+
+  return result;
+}
+
+/// Get a given word of a bloom filter, referred to by the index of
+/// the word.  The word size depends on the current elf class and this
+/// function abstracts that nicely.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param bloom_filter the bloom filter to consider.
+///
+/// @param index the index of the bloom filter to return.
+static GElf_Word
+bloom_word_at(Elf*		elf_handle,
+	      Elf32_Word*	bloom_filter,
+	      size_t		index)
+{
+  GElf_Word result = 0;
+  GElf_Ehdr h;
+  assert(gelf_getehdr(elf_handle, &h));
+  int c;
+  c = h.e_ident[EI_CLASS];
+
+  switch(c)
+    {
+    case ELFCLASS32:
+      result = bloom_filter[index];
+      break ;
+    case ELFCLASS64:
+      {
+	GElf_Word* f= reinterpret_cast<GElf_Word*>(bloom_filter);
+	result = f[index];
+      }
+      break;
+    default:
+      abort();
+    }
+
+  return result;
+}
+
+/// The abstraction of the gnu elf hash table.
+///
+/// The members of this struct are explained at
+///   - https://sourceware.org/ml/binutils/2006-10/msg00377.html
+///   - https://blogs.oracle.com/ali/entry/gnu_hash_elf_sections.
+struct gnu_ht
+{
+  size_t nb_buckets;
+  Elf32_Word* buckets;
+  Elf32_Word* chain;
+  size_t first_sym_index;
+  size_t bf_nwords;
+  size_t bf_size;
+  Elf32_Word* bloom_filter;
+  size_t shift;
+  size_t sym_count;
+  Elf_Scn* sym_tab_section;
+  GElf_Shdr sym_tab_section_header;
+
+  gnu_ht()
+    : nb_buckets(0),
+      buckets(0),
+      chain(0),
+      first_sym_index(0),
+      bf_nwords(0),
+      bf_size(0),
+      bloom_filter(0),
+      shift(0),
+      sym_count(0),
+      sym_tab_section(0)
+  {}
+}; // end struct gnu_ht
+
+/// Setup the members of the gnu hash table.
+///
+/// @param elf_handle a handle on the elf file to use.
+///
+/// @param ht_index the index  (into the elf section headers table) of
+/// the hash table section to use.
+///
+/// @param sym_tab_index the index (into the elf section headers
+/// table) of the symbol table the gnu hash table is about.
+///
+/// @param ht the resulting hash table.
+///
+/// @return true iff the hash table @ ht could be setup.
+static bool
+setup_gnu_ht(Elf* elf_handle,
+	     size_t ht_index,
+	     size_t sym_tab_index,
+	     gnu_ht& ht)
+{
+  ht.sym_tab_section = elf_getscn(elf_handle, sym_tab_index);
+  assert(ht.sym_tab_section);
+  assert(gelf_getshdr(ht.sym_tab_section, &ht.sym_tab_section_header));
+  ht.sym_count =
+    ht.sym_tab_section_header.sh_size / ht.sym_tab_section_header.sh_entsize;
+  Elf_Scn* hash_section = elf_getscn(elf_handle, ht_index);
+  assert(hash_section);
+
+  // Poke at the different parts of the hash table and get them ready
+  // to be used.
+  Elf_Data* ht_section_data = elf_getdata(hash_section, 0);
+  Elf32_Word* ht_data = reinterpret_cast<Elf32_Word*>(ht_section_data->d_buf);
+
+  ht.nb_buckets = ht_data[0];
+  if (ht.nb_buckets == 0)
+    // An empty hash table.  Not sure if that is possible, but it
+    // would mean an empty table of exported symbols.
+    return false;
+  ht.first_sym_index = ht_data[1];
+  // The number of words used by the bloom filter.  A size of a word
+  // is ELFCLASS.
+  ht.bf_nwords = ht_data[2];
+  // The shift used by the bloom filter code.
+  ht.shift = ht_data[3];
+  // The data of the bloom filter proper.
+  ht.bloom_filter = &ht_data[4];
+  // The size of the bloom filter in 4 bytes word.  This is going to
+  // be used to index the 'bloom_filter' above, which is of type
+  // Elf32_Word*; thus we need that bf_size be expressed in 4 bytes
+  // words.
+  ht.bf_size = (get_elf_class_size_in_bytes(elf_handle) / 4) * ht.bf_nwords;
+  // The buckets of the hash table.
+  ht.buckets = ht.bloom_filter + ht.bf_size;
+  // The chain of the hash table.
+  ht.chain = ht.buckets + ht.nb_buckets;
+
+  return true;
+}
+
+/// Look into the symbol tables of the underlying elf file and find
+/// the symbol we are being asked.
+///
+/// This function uses the GNU hash table for the symbol lookup.
+///
+/// The reference of for the implementation of this function can be
+/// found at:
+///   - https://sourceware.org/ml/binutils/2006-10/msg00377.html
+///   - https://blogs.oracle.com/ali/entry/gnu_hash_elf_sections.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param sym_name the name of the symbol to look for.
+///
+/// @param ht_index the index of the hash table header to use.
+///
+/// @param sym_tab_index the index of the symbol table header to use
+/// with this hash table.
+///
+/// @param demangle if true, demangle @p sym_name.
+///
+/// @param syms_found the vector of symbols found with the name @p
+/// sym_name.
+///
+/// @return true if a symbol was actually found.
+static bool
+lookup_symbol_from_gnu_hash_tab(Elf*			elf_handle,
+				const string&		sym_name,
+				size_t			ht_index,
+				size_t			sym_tab_index,
+				bool			demangle,
+				vector<elf_symbol>&	syms_found)
+{
+  gnu_ht ht;
+  if (!setup_gnu_ht(elf_handle, ht_index, sym_tab_index, ht))
+    return false;
+
+  // Now do the real work.
+
+  // Compute bloom hashes (GNU hash and second bloom specific hashes).
+  size_t h1 = elf_gnu_hash(sym_name.c_str());
+  size_t h2 = h1 >> ht.shift;
+  // The size of one of the words used in the bloom
+  // filter, in bits.
+  int c = get_elf_class_size_in_bytes(elf_handle) * 8;
+  int n =  (h1 / c) % ht.bf_nwords;
+  unsigned char bitmask = (1 << (h1 % c)) | (1 << (h2 % c));
+
+  // Test if the symbol is *NOT* present in this ELF file.
+  if ((bloom_word_at(elf_handle, ht.bloom_filter, n) & bitmask) != bitmask)
+    return false;
+
+  size_t i = ht.buckets[h1 % ht.nb_buckets];
+  if (i == STN_UNDEF)
+    return false;
+
+  Elf32_Word stop_word, *stop_wordp;
+  elf_symbol::version ver;
+  GElf_Sym symbol;
+  const char* sym_name_str;
+  bool found = false;
+
+  elf_symbol::type sym_type;
+  elf_symbol::binding sym_binding;
+
+  // Let's walk the hash table and record the versions of all the
+  // symbols which name equal sym_name.
+  for (i = ht.buckets[h1 % ht.nb_buckets],
+	 stop_wordp = &ht.chain[i - ht.first_sym_index],
+	 stop_word = *stop_wordp;
+       i != STN_UNDEF
+	 && (stop_wordp
+	     < ht.chain + (ht.sym_count - ht.first_sym_index));
+       ++i, stop_word = *++stop_wordp)
+    {
+      if ((stop_word & ~ 1)!= (h1 & ~1))
+	// A given bucket can reference several hashes.  Here we
+	// stumbled accross a hash value different from the one we are
+	// looking for.  Let's keep walking.
+	continue;
+
+      assert(gelf_getsym(elf_getdata(ht.sym_tab_section, 0),
+			 i, &symbol));
+      sym_name_str = elf_strptr(elf_handle,
+				ht.sym_tab_section_header.sh_link,
+				symbol.st_name);
+      if (sym_name_str
+	  && compare_symbol_name(sym_name_str, sym_name, demangle))
+	{
+	  // So we found a symbol (in the symbol table) that equals
+	  // sym_name.  Now lets try to get its version and record it.
+	  sym_type = stt_to_elf_symbol_type(GELF_ST_TYPE(symbol.st_info));
+	  sym_binding = stb_to_elf_symbol_binding(GELF_ST_BIND(symbol.st_info));
+
+	  if (get_version_for_symbol(elf_handle, i, ver))
+	    assert(!ver.str().empty());
+
+	  elf_symbol symbol_found(i, sym_name_str, sym_type, sym_binding,
+				  symbol.st_shndx != SHN_UNDEF, ver);
+	  syms_found.push_back(symbol_found);
+	  found = true;
+	}
+
+      if (stop_word & 1)
+	// The last bit of the stop_word is 1.  That means we need to
+	// stop here.  We reached the end of the chain of values
+	// referenced by the hask bucket.
+	break;
+    }
+  return found;
+}
+
+/// Look into the symbol tables of the underlying elf file and find
+/// the symbol we are being asked.
+///
+/// This function uses the elf hash table (be it the GNU hash table or
+/// the sysv hash table) for the symbol lookup.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param ht_kind the kind of hash table to use.  This is returned by
+/// the function function find_hash_table_section_index.
+///
+/// @param ht_index the index (in the section headers table) of the
+/// hash table section to use.
+///
+/// @param sym_tab_index the index (in section headers table) of the
+/// symbol table index to use with this hash table.
+///
+/// @param symbol_name the name of the symbol to look for.
+///
+/// @param demangle if true, demangle @p sym_name.
+///
+/// @param syms_found the symbols that were actually found with the
+/// name @p symbol_name.
+///
+/// @return true iff the function found the symbol from the elf hash
+/// table.
+static bool
+lookup_symbol_from_elf_hash_tab(Elf*			elf_handle,
+				hash_table_kind	ht_kind,
+				size_t			ht_index,
+				size_t			symtab_index,
+				const string&		symbol_name,
+				bool			demangle,
+				vector<elf_symbol>&	syms_found)
+{
+  if (elf_handle == 0 || symbol_name.empty())
+    return false;
+
+  if (ht_kind == NO_HASH_TABLE_KIND)
+    return false;
+
+  if (ht_kind == SYSV_HASH_TABLE_KIND)
+    return lookup_symbol_from_sysv_hash_tab(elf_handle, symbol_name,
+					    ht_index,
+					    symtab_index,
+					    demangle,
+					    syms_found);
+  else if (ht_kind == GNU_HASH_TABLE_KIND)
+    return lookup_symbol_from_gnu_hash_tab(elf_handle, symbol_name,
+					   ht_index,
+					   symtab_index,
+					   demangle,
+					   syms_found);
+  return false;
+}
+
+/// Lookup a symbol from the symbol table directly.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param sym_name the name of the symbol to look up.
+///
+/// @param sym_tab_index the index (in the section headers table) of
+/// the symbol table section.
+///
+/// @param demangle if true, demangle the names found in the symbol
+/// table before comparing them with @p sym_name.
+///
+/// @param sym_name_found the actual name of the symbol found.
+///
+/// @param sym_type the type of the symbol found.
+///
+/// @param sym_binding the binding of the symbol found.
+///
+/// @param sym_versions the versions of the symbol found.
+///
+/// @return true iff the symbol was found.
+static bool
+lookup_symbol_from_symtab(Elf*			elf_handle,
+			  const string&	sym_name,
+			  size_t		sym_tab_index,
+			  bool			demangle,
+			  vector<elf_symbol>&	syms_found)
+{
+  // TODO: read all of the symbol table, store it in memory in a data
+  // structure that associates each symbol with its versions and in
+  // which lookups of a given symbol is fast.
+  Elf_Scn* sym_tab_section = elf_getscn(elf_handle, sym_tab_index);
+  assert(sym_tab_section);
+
+  GElf_Shdr header_mem;
+  GElf_Shdr * sym_tab_header = gelf_getshdr(sym_tab_section,
+					    &header_mem);
+
+  size_t symcount = sym_tab_header->sh_size / sym_tab_header->sh_entsize;
+  Elf_Data* symtab = elf_getdata(sym_tab_section, NULL);
+  GElf_Sym* sym;
+  char* name_str = 0;
+  elf_symbol::version ver;
+  bool found = false;
+
+  for (size_t i = 0; i < symcount; ++i)
+    {
+      GElf_Sym sym_mem;
+      sym = gelf_getsym(symtab, i, &sym_mem);
+      name_str = elf_strptr(elf_handle,
+			    sym_tab_header->sh_link,
+			    sym->st_name);
+
+      if (name_str && compare_symbol_name(name_str, sym_name, demangle))
+	{
+	  elf_symbol::type sym_type =
+	    stt_to_elf_symbol_type(GELF_ST_TYPE(sym->st_info));
+	  elf_symbol::binding sym_binding =
+	    stb_to_elf_symbol_binding(GELF_ST_BIND(sym->st_info));
+	  if (get_version_for_symbol(elf_handle, i, ver))
+	    assert(!ver.str().empty());
+	  elf_symbol symbol_found(i, name_str, sym_type, sym_binding,
+				  sym->st_shndx != SHN_UNDEF, ver);
+	  syms_found.push_back(symbol_found);
+	  found = true;
+	}
+    }
+
+  if (found)
+    return true;
+
+  return false;
+}
+
 /// Look into the symbol tables of the underlying elf file and see
 /// if we find a given symbol.
 ///
 /// @param symbol_name the name of the symbol to look for.
 ///
 /// @param demangle if true, try to demangle the symbol name found in
-/// the symbol table.
+/// the symbol table before comparing it to @p symbol_name.
 ///
-/// @param symbol_name_found if the function returns true, this is set
-/// to the symbol name as found in the symbol table.
+/// @param syms_found the list of symbols found, with the name @p
+/// symbol_name.
 ///
 /// @param sym_type this is set to the type of the symbol found.  This
 /// shall b a standard elf.h value for symbol types, that is SHT_OBJECT,
@@ -121,55 +1018,40 @@ typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 /// @param sym_binding this is set to the binding of the symbol found.
 /// This is a standard elf.h value of the symbol binding kind, that
 /// is, STB_LOCAL, STB_GLOBAL, or STB_WEAK.
+///
+/// @param symbol_versions the versions of the symbol @p symbol_name,
+/// if it was found.
+///
+/// @return true iff a symbol with the name @p symbol_name was found.
 static bool
-lookup_symbol_from_elf(Elf*		elf_handle,
-		       const string&	symbol_name,
-		       bool		demangle,
-		       string&		symbol_name_found,
-		       symbol_type&	sym_type,
-		       symbol_binding&	sym_binding)
+lookup_symbol_from_elf(Elf*			elf_handle,
+		       const string&		symbol_name,
+		       bool			demangle,
+		       vector<elf_symbol>&	syms_found)
 {
-  Elf_Scn*	section = 0;
-  GElf_Shdr	section_header;
-  Elf_Data*	symbol_table = 0;
-
-  while ((section = elf_nextscn(elf_handle, section)) != 0)
+  size_t hash_table_index = 0, symbol_table_index = 0;
+  hash_table_kind ht_kind = find_hash_table_section_index(elf_handle,
+							  hash_table_index,
+							  symbol_table_index);
+  if (ht_kind == NO_HASH_TABLE_KIND)
     {
-      gelf_getshdr(section, &section_header);
-      if (section_header.sh_type != SHT_SYMTAB)
-	continue;
+      if (!find_symbol_table_section_index(elf_handle, symbol_table_index))
+	return false;
 
-      // Get the symbol table.
-      symbol_table = elf_getdata(section, symbol_table);
-
-      // Now walk the symbol table looking for the symbol we were
-      // asked.
-      size_t nb_syms = section_header.sh_size / section_header.sh_entsize;
-      GElf_Sym symbol;
-      for (size_t i = 0; i < nb_syms; ++i)
-	{
-	  assert (gelf_getsym(symbol_table, i, &symbol) != 0);
-	  const char* name = elf_strptr(elf_handle,
-					section_header.sh_link,
-					symbol.st_name);
-	  if (name == 0)
-	    continue;
-
-	  string symname = name;
-	  if (demangle)
-	    symname = demangle_cplus_mangled_name(symname);
-	  if (symname == symbol_name)
-	    {
-	      symbol_name_found = name;
-	      sym_type =
-		static_cast<symbol_type>(GELF_ST_TYPE(symbol.st_info));
-	      sym_binding =
-		static_cast<symbol_binding>(GELF_ST_BIND(symbol.st_info));
-	      return true;
-	    }
-	}
+      return lookup_symbol_from_symtab(elf_handle,
+				       symbol_name,
+				       symbol_table_index,
+				       demangle,
+				       syms_found);
     }
-  return false;
+
+  return lookup_symbol_from_elf_hash_tab(elf_handle,
+					 ht_kind,
+					 hash_table_index,
+					 symbol_table_index,
+					 symbol_name,
+					 demangle,
+					 syms_found);
 }
 
 /// Look into the symbol tables of the underlying elf file and see if
@@ -178,53 +1060,159 @@ lookup_symbol_from_elf(Elf*		elf_handle,
 /// @param elf_handle the elf handle to use for the query.
 ///
 /// @param symbol_name the function symbol to look for.
+///
+/// @param func_syms the vector of public functions symbols found, if
+/// any.
+///
+/// @return true iff the symbol was found.
 static bool
-lookup_public_function_symbol_from_elf(Elf*		elf_handle,
-				       const string&	symbol_name)
+lookup_public_function_symbol_from_elf(Elf*			elf_handle,
+				       const string&		symbol_name,
+				       vector<elf_symbol>&	func_syms)
 {
-  symbol_type type = NOTYPE_TYPE;
-  symbol_binding binding = LOCAL_BINDING;
+  vector<elf_symbol> syms_found;
+  bool found = false;
 
-  string symbol_found;
   if (lookup_symbol_from_elf(elf_handle,
 			     symbol_name,
 			     /*demangle=*/false,
-			     symbol_found,
-			     type, binding))
-    if ((type == FUNC_TYPE
-	 || type == GNU_IFUNC_TYPE
-	 || type == COMMON_TYPE)
-	&& (binding == STB_GLOBAL || binding == STB_WEAK))
-      return true;
+			     syms_found))
+    {
+      for (vector<elf_symbol>::const_iterator i = syms_found.begin();
+	   i != syms_found.end();
+	   ++i)
+	{
+	  elf_symbol::type type = i->get_type();
+	  elf_symbol::binding binding = i->get_binding();
 
-  return false;
+	  if ((type == elf_symbol::FUNC_TYPE
+	       || type == elf_symbol::GNU_IFUNC_TYPE
+	       || type == elf_symbol::COMMON_TYPE)
+	      && (binding == elf_symbol::GLOBAL_BINDING
+		  || binding == elf_symbol::WEAK_BINDING))
+	    {
+	      func_syms.push_back(*i);
+	      found = true;
+	    }
+      }
+    }
+
+  return found;
 }
 
 /// Look into the symbol tables of the underlying elf file and see if
 /// we find a given public (global or weak) symbol of variable type.
 ///
-/// @param elf_handle the elf handle to use for the query.
+/// @param elf the elf handle to use for the query.
 ///
-/// @param symbol_name the variable symbol to look for.
+/// @param symname the variable symbol to look for.
+///
+/// @param var_syms the vector of public variable symbols found, if any.
+///
+/// @return true iff symbol @p symname was found.
 static bool
-lookup_public_variable_symbol_from_elf(Elf*		elf_handle,
-				       const string&	symbol_name)
+lookup_public_variable_symbol_from_elf(Elf*			elf,
+				       const string&		symname,
+				       vector<elf_symbol>&	var_syms)
 {
-  symbol_type type = NOTYPE_TYPE;
-  symbol_binding binding = LOCAL_BINDING;
+  vector<elf_symbol> syms_found;
+  bool found = false;
 
-  string symbol_found;
-  if (lookup_symbol_from_elf(elf_handle,
-			     symbol_name,
+  if (lookup_symbol_from_elf(elf,
+			     symname,
 			     /*demangle=*/false,
-			     symbol_found,
-			     type, binding))
-    if (type == OBJECT_TYPE
-	&& (binding == STB_GLOBAL || binding == STB_WEAK))
-      return true;
+			     syms_found))
+    {
+      for (vector<elf_symbol>::const_iterator i = syms_found.begin();
+	   i != syms_found.end();
+	   ++i)
+	{
+	  elf_symbol::type type = i->get_type();
+	  elf_symbol::binding binding = i->get_binding();
+	  if (type == elf_symbol::OBJECT_TYPE
+	      && (binding == elf_symbol::GLOBAL_BINDING
+		  || binding == elf_symbol::WEAK_BINDING))
+	    {
+	      var_syms.push_back(*i);
+	      found = true;
+	    }
+	}
+    }
 
-  return false;
+  return found;
 }
+
+/// In relocatable (*.o) elf files, the st_value field of a function
+/// symbol is the absolute address of the symbol.  As the symbol is in
+/// the .text section, this function substracts the address of the
+/// .text section from at symbol.st_value to yield the offset of the
+/// symbol in the .text section.  Note that this is done only if the
+/// current elf file is a relocatable one.
+///
+/// @param the elf module yield by the DWFL.
+///
+/// @param addr the st_value field of the function symbol to consider.
+///
+/// @return the (possibly) adjusted address, or just @p addr if no
+/// adjustment took place.
+static Dwarf_Addr
+maybe_adjust_fn_sym_address(Dwfl_Module* module, Dwarf_Addr addr)
+{
+  if (module == 0)
+    return addr;
+
+  GElf_Addr bias = 0;
+  Elf* elf = dwfl_module_getelf(module, &bias);
+  GElf_Ehdr eh_mem;
+  GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
+  if (elf_header->e_type != ET_REL)
+    return addr;
+
+  Elf_Scn* text_section = find_text_section(elf);
+  assert(text_section);
+
+  GElf_Shdr sheader_mem;
+  GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
+  assert(text_sheader);
+
+  return addr - text_sheader->sh_addr;
+}
+
+/// In relocatable (*.o) elf files, the st_value field of a global
+/// variable symbol is the absolute address of the symbol.  As the
+/// symbol is in the .bss section, this function substracts the
+/// address of the .bss section from at symbol.st_value to yield the
+/// relative offset of the symbol in the .bss section.  Note that this
+/// is done only if the current elf file is a relocatable one.
+///
+/// @param the elf module yield by the DWFL.
+///
+/// @param addr the st_value field of the variable symbol to consider.
+///
+/// @return the (possibly) adjusted address, or just @p addr if no
+/// adjustment took place.
+static Dwarf_Addr
+maybe_adjust_var_sym_address(Dwfl_Module* module, Dwarf_Addr addr)
+{
+  if (module == 0)
+    return addr;
+
+  GElf_Addr bias = 0;
+  Elf* elf = dwfl_module_getelf(module, &bias);
+  GElf_Ehdr eh_mem;
+  GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
+  if (elf_header->e_type != ET_REL)
+    return addr;
+
+  Elf_Scn* data_section = find_bss_section(elf);
+  assert(data_section);
+
+  GElf_Shdr sheader_mem;
+  GElf_Shdr* data_sheader = gelf_getshdr(data_section, &sheader_mem);
+  assert(data_sheader);
+
+  return addr - data_sheader->sh_addr;
+ }
 
 /// The context accumulated during the reading of dwarf debug info and
 /// building of the resulting ABI Corpus as a result.
@@ -249,7 +1237,9 @@ class read_context
   translation_unit_sptr cur_tu_;
   scope_stack_type scope_stack_;
   offset_offset_map die_parent_map_;
-  list<var_decl_sptr> var_decls_to_add;
+  list<var_decl_sptr> var_decls_to_add_;
+  addr_size_map_type fun_sym_addr_sym_index_map_;
+  addr_size_map_type var_sym_addr_sym_index_map_;
 
   read_context();
 
@@ -418,7 +1408,7 @@ public:
 
   list<var_decl_sptr>&
   var_decls_to_re_add_to_tree()
-  {return var_decls_to_add;}
+  {return var_decls_to_add_;}
 
   /// Look into the symbol tables of the underlying elf file and see
   /// if we find a given symbol.
@@ -428,48 +1418,332 @@ public:
   /// @param demangle if true, demangle the symbols found in the symbol
   /// tables.
   ///
-  /// @param symbol_name_found the symbol name found in the symbol table.
+  /// @param syms the vector of symbols with the name @p symbol_name
+  /// that were found.
   ///
-  /// @param sym_type this is set to the type of the symbol found.  This
-  /// shall b a standard elf.h value for symbol types, that is SHT_OBJECT,
-  /// STT_FUNC, STT_IFUNC, etc ...
-  ///
-  /// Note that this parameter is set iff the function returns true.
-  ///
-  /// @param sym_binding this is set to the binding of the symbol found.
-  /// This is a standard elf.h value of the symbol binding kind, that
-  /// is, STB_LOCAL, STB_GLOBAL, or STB_WEAK.
+  /// @return true iff the symbol was found.
   bool
-  lookup_symbol_from_elf(const string&	symbol_name,
-			 bool		demangle,
-			 string&	symbol_name_found,
-			 symbol_type&	sym_type,
-			 symbol_binding& sym_binding) const
-  {return dwarf_reader::lookup_symbol_from_elf(elf_handle(),symbol_name,
-					       demangle, symbol_name_found,
-					       sym_type, sym_binding);}
+  lookup_symbol_from_elf(const string&		symbol_name,
+			 bool			demangle,
+			 vector<elf_symbol>&	syms) const
+  {
+    return dwarf_reader::lookup_symbol_from_elf(elf_handle(),
+						symbol_name,
+						demangle,
+						syms);
+  }
+
+  /// Given the index of a symbol into the symbol table of an ELF
+  /// file, look the symbol up, build an instace of @ref elf_symbol
+  /// and return it.
+  ///
+  /// @param symbol_index the index of the symbol into the symbol
+  /// table of the current elf file.
+  ///
+  /// @param symbol the resulting instance of @ref elf_symbol, iff the
+  /// function returns true.
+  ///
+  /// @return true iff the symbol was found.
+  bool
+  lookup_elf_symbol_from_index(size_t symbol_index,
+			       elf_symbol& symbol)
+  {
+    Elf_Scn* symtab_section = NULL;
+    if (!find_symbol_table_section(elf_handle(), symtab_section))
+      return false;
+    assert(symtab_section);
+
+    GElf_Shdr header_mem;
+    GElf_Shdr* symtab_sheader = gelf_getshdr(symtab_section,
+					     &header_mem);
+
+    Elf_Data* symtab = elf_getdata(symtab_section, 0);
+    assert(symtab);
+
+    GElf_Sym* s, smem;
+    s = gelf_getsym(symtab, symbol_index, &smem);
+
+    const char* name_str = elf_strptr(elf_handle(),
+				      symtab_sheader->sh_link,
+				      s->st_name);
+    if (name_str == 0)
+      name_str = "";
+
+    elf_symbol::version v;
+    get_version_for_symbol(elf_handle(), symbol_index, v);
+
+    elf_symbol sym(symbol_index, name_str,
+		   stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
+		   stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
+		   s->st_shndx != SHN_UNDEF,
+		   v);
+    symbol = sym;
+    return true;
+  }
+
+  /// Given the address of the beginning of a function, lookup the
+  /// symbol of the function, build an instance of @ref elf_symbol out
+  /// of it and return it.
+  ///
+  /// @param symbol_start_addr the address of the beginning of the
+  /// function to consider.
+  ///
+  /// @param symbol the resulting symbol, iff the function returns
+  /// true.
+  ///
+  /// @return true iff a function symbol is found for this address.
+  bool
+  lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr,
+				     elf_symbol& symbol)
+  {
+    addr_size_map_type::const_iterator i,
+      nil = fun_sym_addr_sym_index_map().end();
+
+    if ((i = fun_sym_addr_sym_index_map().find(symbol_start_addr)) == nil)
+      return false;
+
+    return lookup_elf_symbol_from_index(i->second, symbol);
+  }
+
+  /// Given the address of the beginning of a function, lookup the
+  /// symbol of the function, build an instance of @ref elf_symbol out
+  /// of it and return it.
+  ///
+  /// @param symbol_start_addr the address of the beginning of the
+  /// function to consider.
+  ///
+  /// @return the symbol found, if any.  NULL otherwise.
+  elf_symbol_sptr
+  lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr)
+  {
+    elf_symbol_sptr sym(new elf_symbol);
+    if (lookup_elf_fn_symbol_from_address(symbol_start_addr, *sym))
+      return sym;
+    return elf_symbol_sptr();
+  }
+  /// Given the address of a global variable, lookup the symbol of the
+  /// variable, build an instance of @ref elf_symbol out of it and
+  /// return it.
+  ///
+  /// @param symbol_start_addr the address of the beginning of the
+  /// variable to consider.
+  ///
+  /// @param the symbol found, iff the function returns true.
+  ///
+  /// @return true iff the variable was found.
+  bool
+  lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr,
+				     elf_symbol& symbol)
+  {
+    addr_size_map_type::const_iterator i,
+      nil = var_sym_addr_sym_index_map().end();
+
+    if ((i = var_sym_addr_sym_index_map().find(symbol_start_addr)) == nil)
+      return false;
+
+    return lookup_elf_symbol_from_index(i->second, symbol);
+  }
+
+  /// Given the address of a global variable, lookup the symbol of the
+  /// variable, build an instance of @ref elf_symbol out of it and
+  /// return it.
+  ///
+  /// @param symbol_start_addr the address of the beginning of the
+  /// variable to consider.
+  ///
+  /// @return the symbol found, if any.  NULL otherwise.
+  elf_symbol_sptr
+  lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr)
+  {
+    elf_symbol_sptr sym(new elf_symbol);
+    if (lookup_elf_var_symbol_from_address(symbol_start_addr, *sym))
+      return sym;
+    return elf_symbol_sptr();
+  }
 
   /// Look in the symbol tables of the underying elf file and see if
   /// we find a symbol of a given name of function type.
   ///
-  /// @param symbol_name the name of the symbol to look for.
+  /// @param sym_name the name of the symbol to look for.
+  ///
+  /// @param syms the public function symbols that were found, with
+  /// the name @p sym_name.
   ///
   /// @return true iff the symbol was found.
   bool
-  lookup_public_function_symbol_from_elf(const string& symbol_name)
-  {return dwarf_reader::lookup_public_function_symbol_from_elf(elf_handle(),
-							       symbol_name);}
+  lookup_public_function_symbol_from_elf(const string&		sym_name,
+					 vector<elf_symbol>&	syms)
+  {
+    return dwarf_reader::lookup_public_function_symbol_from_elf(elf_handle(),
+								sym_name,
+								syms);
+  }
 
   /// Look in the symbol tables of the underying elf file and see if
   /// we find a symbol of a given name of variable type.
   ///
-  /// @param symbol_name the name of the symbol to look for.
+  /// @param sym_name the name of the symbol to look for.
+  ///
+  /// @param syms the variable symbols that were found, with the name
+  /// @p sym_name.
   ///
   /// @return true iff the symbol was found.
   bool
-  lookup_public_variable_symbol_from_elf(const string& symbol_name)
-  {return dwarf_reader::lookup_public_variable_symbol_from_elf(elf_handle(),
-							       symbol_name);}
+  lookup_public_variable_symbol_from_elf(const string& sym_name,
+					 vector<elf_symbol>& syms)
+  {
+    return dwarf_reader::lookup_public_variable_symbol_from_elf(elf_handle(),
+								sym_name,
+								syms);
+  }
+
+  /// Getter for the map of function symbol address -> function symbol
+  /// index.
+  ///
+  /// @return the map.  Note that this initializes the map once when
+  /// its nedded.
+  const addr_size_map_type&
+  fun_sym_addr_sym_index_map() const
+  {
+    if (fun_sym_addr_sym_index_map_.empty()
+	|| var_sym_addr_sym_index_map_.empty())
+      const_cast<read_context*>(this)->load_symbol_addr_to_index_maps();
+    return fun_sym_addr_sym_index_map_;
+  }
+
+  /// Getter for the map of function symbol address -> function symbol
+  /// index.
+  ///
+  /// @return the map.  Note that this initializes the map once when
+  /// its nedded.
+  addr_size_map_type&
+  fun_sym_addr_sym_index_map()
+  {
+    if (fun_sym_addr_sym_index_map_.empty()
+	|| var_sym_addr_sym_index_map_.empty())
+      load_symbol_addr_to_index_maps();
+    return fun_sym_addr_sym_index_map_;
+  }
+
+  /// Getter for the map of global variables symbol address -> global
+  /// variable symbol index.
+  ///
+  /// @return the map.  Note that this initializes the map once when
+  /// its nedded.
+  const addr_size_map_type&
+  var_sym_addr_sym_index_map() const
+  {
+    if (fun_sym_addr_sym_index_map_.empty()
+	|| var_sym_addr_sym_index_map_.empty())
+      const_cast<read_context*>(this)->load_symbol_addr_to_index_maps();
+    return var_sym_addr_sym_index_map_;
+  }
+
+  /// Getter for the map of global variables symbol address -> global
+  /// variable symbol index.
+  ///
+  /// @return the map.  Note that this initializes the map once when
+  /// its nedded.
+  addr_size_map_type&
+  var_sym_addr_sym_index_map()
+  {
+    if (fun_sym_addr_sym_index_map_.empty()
+	|| var_sym_addr_sym_index_map_.empty())
+      load_symbol_addr_to_index_maps();
+    return var_sym_addr_sym_index_map_;
+  }
+
+  /// Load the maps of function symbol address -> function symbol and
+  /// global variable symbol address -> variable symbol.
+  ///
+  /// @return true iff everything went fine.
+  bool
+  load_symbol_addr_to_index_maps()
+  {
+    bool load_fun_map = fun_sym_addr_sym_index_map_.empty();
+    bool load_var_map = var_sym_addr_sym_index_map_.empty();
+
+    Elf_Scn* symtab_section = NULL;
+    if (!find_symbol_table_section(elf_handle(), symtab_section))
+      return false;
+    assert(symtab_section);
+
+    GElf_Shdr header_mem;
+    GElf_Shdr* symtab_sheader = gelf_getshdr(symtab_section,
+					     &header_mem);
+    size_t nb_syms = symtab_sheader->sh_size / symtab_sheader->sh_entsize;
+
+    Elf_Data* symtab = elf_getdata(symtab_section, 0);
+    assert(symtab);
+
+    for (size_t i = 0; i < nb_syms; ++i)
+      {
+	GElf_Sym* sym, sym_mem;
+	sym = gelf_getsym(symtab, i, &sym_mem);
+	assert(sym);
+
+	if (load_fun_map
+	    && (GELF_ST_TYPE(sym->st_info) == STT_FUNC
+		|| GELF_ST_TYPE(sym->st_info) == STT_GNU_IFUNC))
+	  fun_sym_addr_sym_index_map_[sym->st_value] = i;
+	else if (load_var_map
+		 && (GELF_ST_TYPE(sym->st_info) == STT_OBJECT))
+	  var_sym_addr_sym_index_map_[sym->st_value] = i;
+      }
+
+    return true;
+  }
+
+  /// Get the address of the function.
+  ///
+  /// The address of the function is considered to be the value of the
+  /// DW_AT_low_pc attribute, possibly adjusted (in relocatable files
+  /// only) to not point to an absolute address anymore, but rather to
+  /// the address of the function inside the .text segment.
+  ///
+  /// @param function_die the die of the function to consider.
+  ///
+  /// @param address the resulting address iff the function returns
+  /// true.
+  ///
+  /// @return true if the function address was found.
+  bool
+  get_function_address(Dwarf_Die* function_die,
+		       Dwarf_Addr& address)
+  {
+    Dwarf_Addr low_pc = 0;
+    if (!die_address_attribute(function_die, DW_AT_low_pc, low_pc))
+      return false;
+
+    low_pc = maybe_adjust_fn_sym_address(elf_module(), low_pc);
+    address = low_pc;
+    return true;
+  }
+
+  /// Get the address of the global variable.
+  ///
+  /// The address of the global variable is considered to be the value
+  /// of the DW_AT_location attribute, possibly adjusted (in
+  /// relocatable files only) to not point to an absolute address
+  /// anymore, but rather to the address of the global variable inside the
+  /// .bss segment.
+  ///
+  /// @param variable_die the die of the function to consider.
+  ///
+  /// @param address the resulting address iff this function returns
+  /// true.
+  ///
+  /// @return true if the variable address was found.
+  bool
+  get_variable_address(Dwarf_Die* variable_die,
+		       Dwarf_Addr& address)
+  {
+    if (!die_location_address(variable_die, address))
+      return false;
+    address = maybe_adjust_var_sym_address(elf_module(), address);
+    return true;
+  }
+
 };// end class read_context.
 
 static decl_base_sptr
@@ -505,7 +1779,6 @@ create_default_dwfl()
 
   return dwfl_begin(&offline_callbacks);
 }
-
 
 /// Create a shared pointer for a pointer to Dwfl.
 ///
@@ -702,6 +1975,26 @@ die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result)
   if (!dwarf_attr_integrate(die, attr_name, &attr))
     return false;
   return dwarf_formref_die(&attr, &result);
+}
+
+/// Read and return a DW_FORM_addr attribute from a given DIE.
+///
+/// @param die the DIE to consider.
+///
+/// @param attr_name the name of the DW_FORM_addr attribute to read
+/// the value from.
+///
+/// @param the resulting address.
+///
+/// @return true iff the attribute could be read, was of the expected
+/// DW_FORM_addr and could thus be translated into the @p result.
+static bool
+die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result)
+{
+  Dwarf_Attribute attr;
+  if (!dwarf_attr_integrate(die, attr_name, &attr))
+    return false;
+  return dwarf_formaddr(&attr, &result) == 0;
 }
 
 /// Returns the source location associated with a decl DIE.
@@ -1284,17 +2577,15 @@ op_pushes_constant_value(Dwarf_Op*			ops,
 			 size_t&			next_index,
 			 dwarf_expr_eval_context&	ctxt)
 {
+  assert(index < ops_len);
+
   Dwarf_Op& op = ops[index];
   ssize_t value = 0;
 
   switch (op.atom)
     {
     case DW_OP_addr:
-      if (index + 1 < ops_len)
-	{
-	  value = ops[index + 1].number;
-	  next_index = index + 2;
-	}
+      value = ops[index].number;
       break;
 
     case DW_OP_const1u:
@@ -1989,6 +3280,36 @@ die_member_offset(Dwarf_Die* die,
 
   return true;
 }
+
+/// Read the value of the DW_AT_location attribute from a DIE,
+/// evaluate the resulting DWARF expression and, if it's a constant
+/// expression, return it.
+///
+/// @param die the DIE to consider.
+///
+/// @param address the resulting constant address.  This is set iff
+/// the function returns true.
+///
+/// @return true iff the whole sequence of action described above
+/// could be completed normally.
+static bool
+die_location_address(Dwarf_Die* die,
+		     Dwarf_Addr& address)
+{
+  Dwarf_Op* expr = NULL;
+  size_t expr_len = 0;
+
+  if (!die_location_expr(die, DW_AT_location, &expr, &expr_len))
+    return false;
+
+  ssize_t addr = 0;
+  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, addr))
+    return false;
+
+  address = addr;
+  return true;
+}
+
 
 /// Return the index of a function in its virtual table.  That is,
 /// return the value of the DW_AT_vtable_elem_location attribute.
@@ -2937,11 +4258,24 @@ build_var_decl(read_context& ctxt,
 	result->set_linkage_name(linkage_name);
     }
 
-  // Check if a symbol with this name is exported by the elf binary.
-  string lname = get_linkage_name(result);
-  if (!lname.empty())
-    if (ctxt.lookup_public_variable_symbol_from_elf(lname))
-      result->set_is_in_public_symbol_table(true);
+  // Check if a variable symbol with this name is exported by the elf
+  // binary.
+  if (!result->get_symbol())
+    {
+      Dwarf_Addr var_addr;
+      if (ctxt.get_variable_address(die, var_addr))
+	{
+	  elf_symbol_sptr sym;
+	  if ((sym = ctxt.lookup_elf_var_symbol_from_address(var_addr)))
+	    if (sym->is_variable() && sym->is_public())
+	      {
+		result->set_symbol(sym);
+		if (result->get_linkage_name().empty())
+		  result->set_linkage_name(sym->get_name());
+		result->set_is_in_public_symbol_table(true);
+	      }
+	}
+    }
 
   return result;
 }
@@ -3057,11 +4391,25 @@ build_function_decl(read_context& ctxt,
 				       is_inline, floc,
 				       flinkage_name));
     }
-  // Check if a symbol with this name is exported by the elf binary.
-  string linkage_name = get_linkage_name(result);
-  if (!linkage_name.empty())
-    if (ctxt.lookup_public_function_symbol_from_elf(linkage_name))
-      result->set_is_in_public_symbol_table(true);
+
+  // Check if a function symbol with this name is exported by the elf
+  // binary.
+  if (!result->get_symbol())
+    {
+      Dwarf_Addr fn_addr;
+      if (ctxt.get_function_address(die, fn_addr))
+	{
+	  elf_symbol_sptr sym;
+	    if ((sym = ctxt.lookup_elf_fn_symbol_from_address(fn_addr)))
+	      if (sym->is_function() && sym->is_public())
+		{
+		  result->set_symbol(sym);
+		  if (result->get_linkage_name().empty())
+		    result->set_linkage_name(sym->get_name());
+		  result->set_is_in_public_symbol_table(true);
+		}
+	}
+    }
 
   return result;
 }
@@ -3517,25 +4865,16 @@ read_corpus_from_elf(const std::string& elf_path)
 /// @param demangle if true, try to demangle the symbol name found in
 /// the symbol table.
 ///
-/// @param symbol_name_found if the function returns true, this is set
-/// to the symbol name as found in the symbol table.
+/// @param syms the vector of symbols found with the name @p symbol_name.
 ///
-/// @param symbol_type this is set to the type of the symbol found.
-/// This shall b a standard elf.h value for symbol types, that is
-/// SHT_OBJECT, STT_FUNC, STT_IFUNC, etc ...
-///
-/// Note that this parameter is set iff the function returns true.
-///
-/// @param symbol_binding this is set to the binding of the symbol
-/// found.  This is a standard elf.h value of the symbol binding kind,
-/// that is, STB_LOCAL, STB_GLOBAL, or STB_WEAK.
+/// @return true iff the symbol was found among the publicly exported
+/// symbols of the ELF file.
 bool
-lookup_symbol_from_elf(const string&	elf_path,
-		       const string&	symbol_name,
-		       bool		demangle,
-		       string&		symbol_name_found,
-		       symbol_type&	symbol_type,
-		       symbol_binding&	symbol_binding)
+lookup_symbol_from_elf(const string&		elf_path,
+		       const string&		symbol_name,
+		       bool			demangle,
+		       vector<elf_symbol>&	syms)
+
 {
   if(elf_version(EV_CURRENT) == EV_NONE)
     return false;
@@ -3553,10 +4892,7 @@ lookup_symbol_from_elf(const string&	elf_path,
     return false;
 
   bool value = lookup_symbol_from_elf(elf, symbol_name,
-				      demangle,
-				      symbol_name_found,
-				      symbol_type,
-				      symbol_binding);
+				      demangle, syms);
   elf_end(elf);
   close(fd);
 
@@ -3570,16 +4906,20 @@ lookup_symbol_from_elf(const string&	elf_path,
 ///
 /// @param symbol_name the name of the function to look for.
 ///
+/// @param syms the vector of public function symbols found with the
+/// name @p symname.
+///
 /// @return true iff a function with symbol name @p symbol_name is
 /// found.
 bool
-lookup_public_function_symbol_from_elf(const string&	elf_path,
-				       const string&	symbol_name)
+lookup_public_function_symbol_from_elf(const string&		path,
+				       const string&		symname,
+				       vector<elf_symbol>&	syms)
 {
   if(elf_version(EV_CURRENT) == EV_NONE)
     return false;
 
-  int fd = open(elf_path.c_str(), O_RDONLY);
+  int fd = open(path.c_str(), O_RDONLY);
   if (fd < 0)
     return false;
 
@@ -3591,99 +4931,11 @@ lookup_public_function_symbol_from_elf(const string&	elf_path,
   if (elf == 0)
     return false;
 
-  bool value = lookup_public_function_symbol_from_elf(elf, symbol_name);
+  bool value = lookup_public_function_symbol_from_elf(elf, symname, syms);
   elf_end(elf);
   close(fd);
 
   return value;
-}
-
-/// Serialize an instance of @ref symbol_type and stream it to a given
-/// output stream.
-///
-/// @param o the output stream to serialize the symbole type to.
-///
-/// @param t the symbol type to serialize.
-std::ostream&
-operator<<(std::ostream& o, symbol_type t)
-{
-  string repr;
-
-  switch (t)
-    {
-    case NOTYPE_TYPE:
-      repr = "unspecified symbol type";
-      break;
-    case OBJECT_TYPE:
-      repr = "variable symbol type";
-      break;
-    case FUNC_TYPE:
-      repr = "function symbol type";
-      break;
-    case SECTION_TYPE:
-      repr = "section symbol type";
-      break;
-    case FILE_TYPE:
-      repr = "file symbol type";
-      break;
-    case COMMON_TYPE:
-      repr = "common data object symbol type";
-      break;
-    case TLS_TYPE:
-      repr = "thread local data object symbol type";
-      break;
-    case GNU_IFUNC_TYPE:
-      repr = "indirect function symbol type";
-      break;
-    default:
-      {
-	std::ostringstream s;
-	s << "unknown symbol type (" << (char)t << ')';
-	repr = s.str();
-      }
-      break;
-    }
-
-  o << repr;
-  return o;
-}
-
-/// Serialize an instance of @ref symbol_binding and stream it to a
-/// given output stream.
-///
-/// @param o the output stream to serialize the symbole type to.
-///
-/// @param t the symbol binding to serialize.
-std::ostream&
-operator<<(std::ostream& o, symbol_binding b)
-{
-  string repr;
-
-  switch (b)
-    {
-    case LOCAL_BINDING:
-      repr = "local binding";
-      break;
-    case GLOBAL_BINDING:
-      repr = "global binding";
-      break;
-    case WEAK_BINDING:
-      repr = "weak binding";
-      break;
-    case GNU_UNIQUE_BINDING:
-      repr = "GNU unique binding";
-      break;
-    default:
-      {
-	std::ostringstream s;
-	s << "unknown binding (" << (unsigned char) b << ")";
-	repr = s.str();
-      }
-      break;
-    }
-
-  o << repr;
-  return o;
 }
 
 }// end namespace dwarf_reader

@@ -333,15 +333,6 @@ string
 get_type_name(const shared_ptr<type_base>);
 
 string
-get_linkage_name(const decl_base&);
-
-string
-get_linkage_name(const decl_base*);
-
-string
-get_linkage_name(const shared_ptr<decl_base>);
-
-string
 get_pretty_representation(const decl_base*);
 
 string

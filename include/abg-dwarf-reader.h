@@ -26,7 +26,6 @@
 /// de-serialize an instance of @ref abigail::corpus from a file in
 /// elf format, containing dwarf information.
 
-#include <elf.h>
 #include <ostream>
 #include "abg-corpus.h"
 
@@ -42,45 +41,16 @@ namespace dwarf_reader
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path);
 
-/// The type of a symbol as returned by lookup_symbol_from_elf().
-enum symbol_type
-{
-  NOTYPE_TYPE = STT_NOTYPE,
-  OBJECT_TYPE = STT_OBJECT,
-  FUNC_TYPE = STT_FUNC,
-  SECTION_TYPE = STT_SECTION,
-  FILE_TYPE = STT_FILE,
-  COMMON_TYPE = STT_COMMON,
-  TLS_TYPE = STT_TLS,
-  GNU_IFUNC_TYPE = STT_GNU_IFUNC
-};
-
-/// The binding of a symbol as returned by lookup_symbol_from_elf.
-enum symbol_binding
-{
-  LOCAL_BINDING = STB_LOCAL,
-  GLOBAL_BINDING = STB_GLOBAL,
-  WEAK_BINDING = STB_WEAK,
-  GNU_UNIQUE_BINDING = STB_GNU_UNIQUE
-};
-
-std::ostream&
-operator<<(std::ostream& o, symbol_type t);
-
-std::ostream&
-operator<<(std::ostream& o, symbol_binding t);
+bool
+lookup_symbol_from_elf(const string&		elf_path,
+		       const string&		symbol_name,
+		       bool			demangle,
+		       vector<elf_symbol>&	symbols);
 
 bool
-lookup_symbol_from_elf(const string&	elf_path,
-		       const string&	symbol_name,
-		       bool		demangle,
-		       string&		symbol_name_found,
-		       symbol_type&	sym_type,
-		       symbol_binding&	symb_binding);
-
-bool
-lookup_public_function_symbol_from_elf(const string&	elf_path,
-				       const string&	symbol_name);
+lookup_public_function_symbol_from_elf(const string&		path,
+				       const string&		symname,
+				       vector<elf_symbol>&	func_syms);
 
 }// end namespace dwarf_reader
 

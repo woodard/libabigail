@@ -30,15 +30,16 @@
 #include <iostream>
 #include <sstream>
 #include "abg-dwarf-reader.h"
+#include "abg-ir.h"
 
 using std::cout;
 using std::string;
 using std::ostream;
 using std::ostringstream;
+using std::vector;
 
 using abigail::dwarf_reader::lookup_symbol_from_elf;
-using abigail::dwarf_reader::symbol_type;
-using abigail::dwarf_reader::symbol_binding;
+using abigail::elf_symbol;
 
 struct options
 {
@@ -46,12 +47,14 @@ struct options
   char* elf_path;
   char* symbol_name;
   bool	demangle;
+  bool absolute_path;
 
   options()
     : show_help(false),
       elf_path(0),
       symbol_name(0),
-      demangle(false)
+      demangle(false),
+      absolute_path(true)
   {}
 };
 
@@ -61,7 +64,8 @@ show_help(const string& progname)
   cout << "usage: " << progname << "[options ]<elf file> <symbol-name>\n"
        << "where [options] can be:\n"
        << "  --help  display this help string\n"
-       << "  --demangle demangle the symbols from the symbol table";
+       << "  --demangle demangle the symbols from the symbol table\n"
+       << "  --no-absolute-path\n";
 }
 
 static void
@@ -95,6 +99,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--demangle"))
 	opts.demangle = true;
+      else if (!strcmp(argv[i], "--no-absolute-path"))
+	opts.absolute_path = false;
       else
 	opts.show_help = true;
     }
@@ -114,26 +120,43 @@ main(int argc, char* argv[])
   assert(opts.elf_path != 0
 	 && opts.symbol_name != 0);
 
-  symbol_type sym_type;
-  symbol_binding sym_binding;
-  string p = opts.elf_path, n = opts.symbol_name, nf;
-  if (!lookup_symbol_from_elf(p, n, opts.demangle, nf,
-			      sym_type, sym_binding))
+  string p = opts.elf_path, n = opts.symbol_name;
+  vector<elf_symbol> syms;
+  if (!lookup_symbol_from_elf(p, n, opts.demangle, syms))
     {
       cout << "could not find symbol '"
 	   << opts.symbol_name
-	   << "' in file '"
-	   << opts.elf_path << "'\n";
-      return 1;
+	   << "' in file '";
+      if (opts.absolute_path)
+	cout << opts.elf_path << "'\n";
+      else
+	cout << basename(opts.elf_path);
+      return 0;
     }
 
+  elf_symbol sym = syms[0];
   cout << " found symbol '" << n << "'";
-    if (n != nf)
-      cout << " (" << nf << ")";
-    cout << " which is an instance of "
-	 << (symbol_type)sym_type
-	 << " of " << sym_binding
-	 << '\n';
+  if (n != sym.get_name())
+    cout << " (" << sym.get_name() << ")";
+    cout << ", an instance of "
+	 << (elf_symbol::type) sym.get_type()
+	 << " of " << sym.get_binding();
+    if (syms.size() > 1 || !sym.get_version().is_empty())
+      {
+	cout << ", of version";
+	if (syms.size () > 1)
+	  cout << "s";
+	cout << " ";
+	for (vector<elf_symbol>::const_iterator i = syms.begin();
+	     i != syms.end();
+	     ++i)
+	  {
+	    if (i != syms.begin())
+	      cout << ", ";
+	    cout << "'" << i->get_version().str() << "'";
+	  }
+      }
+    cout << '\n';
 
   return 0;
 }

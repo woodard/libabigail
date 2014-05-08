@@ -193,6 +193,157 @@ enum access_specifier
   private_access,
 };
 
+class elf_symbol;
+/// A convenience typedef for a shared pointer to elf_symbol.
+typedef shared_ptr<elf_symbol> elf_symbol_sptr;
+
+/// Abstraction of an elf symbol.
+///
+/// This is useful when a given corpus has been read from an ELF file.
+/// In that case, a given decl might be associated to its underlying
+/// ELF symbol, if that decl is publicly exported in the ELF file.  In
+/// that case, comparing decls might involve comparing their
+/// underlying symbols as well.
+class elf_symbol
+{
+public:
+  /// The type of a symbol.
+  enum type
+  {
+    NOTYPE_TYPE = 0,
+    OBJECT_TYPE,
+    FUNC_TYPE,
+    SECTION_TYPE,
+    FILE_TYPE,
+    COMMON_TYPE,
+    TLS_TYPE,
+    GNU_IFUNC_TYPE
+  };
+
+  /// The binding of a symbol.
+  enum binding
+  {
+    LOCAL_BINDING = 0,
+    GLOBAL_BINDING,
+    WEAK_BINDING,
+    GNU_UNIQUE_BINDING
+  };
+
+  /// Inject the elf_symbol::version here.
+  class version;
+
+private:
+  struct priv;
+  shared_ptr<priv> priv_;
+
+public:
+  elf_symbol();
+
+  elf_symbol(size_t		i,
+	     const string&	n,
+	     type		t,
+	     binding		b,
+	     bool		d,
+	     const version&	v);
+
+  elf_symbol(const elf_symbol&);
+
+  size_t
+  get_index() const;
+
+  void
+  set_index(size_t);
+
+  const string&
+  get_name() const;
+
+  void
+  set_name(const string& n);
+
+  type
+  get_type() const;
+
+  void
+  set_type(type t);
+
+  binding
+  get_binding() const;
+
+  void
+  set_binding(binding b);
+
+  version&
+  get_version() const;
+
+  void
+  set_version(const version& v);
+
+  bool
+  get_is_defined() const;
+
+  void
+  set_is_defined(bool d);
+
+  bool
+  is_public() const;
+
+  bool
+  is_function() const;
+
+  bool
+  is_variable() const;
+
+  bool
+  operator==(const elf_symbol&);
+}; // end class elf_symbol.
+
+std::ostream&
+operator<<(std::ostream& o, elf_symbol::type t);
+
+std::ostream&
+operator<<(std::ostream& o, elf_symbol::binding t);
+
+bool
+operator==(const elf_symbol_sptr lhs, const elf_symbol_sptr rhs);
+
+/// The abstraction of the version of an ELF symbol.
+class elf_symbol::version
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+public:
+  version();
+
+  version(const string& v,
+	       bool is_default);
+
+  version(const version& v);
+
+  operator const string&() const;
+
+  const string&
+  str() const;
+
+  void
+  str(const string& s);
+
+  bool
+  is_default() const;
+
+  void
+  is_default(bool f);
+
+  bool
+  is_empty() const;
+
+  bool
+  operator==(const version& o) const;
+
+  version&
+  operator=(const version& o);
+};// end class elf_symbol::version
+
 class context_rel;
 /// A convenience typedef for shared pointers to @ref context_rel
 typedef shared_ptr<context_rel> context_rel_sptr;
@@ -1113,8 +1264,8 @@ typedef shared_ptr<var_decl> var_decl_sptr;
 /// Abstracts a variable declaration.
 class var_decl : public virtual decl_base
 {
-  shared_ptr<type_base>	type_;
-  binding			binding_;
+  struct priv;
+  shared_ptr<priv> priv_;
 
   // Forbidden
   var_decl();
@@ -1141,16 +1292,19 @@ public:
   operator==(const decl_base&) const;
 
   const shared_ptr<type_base>&
-  get_type() const
-  {return type_;}
+  get_type() const;
 
   binding
-  get_binding() const
-  {return binding_;}
+  get_binding() const;
 
   void
-  set_binding(binding b)
-  {binding_ = b;}
+  set_binding(binding b);
+
+  void
+  set_symbol(elf_symbol_sptr sym);
+
+  elf_symbol_sptr
+  get_symbol() const;
 
   virtual size_t
   get_hash() const;
@@ -1182,18 +1336,17 @@ public:
   get_data_member_is_laid_out(const var_decl_sptr m);
 }; // end class var_decl
 
+/// Convenience typedef for a shared pointer on a @ref function_type
+typedef shared_ptr<function_type> function_type_sptr;
+
 /// Convenience typedef for a shared pointer on a @ref function_decl
 typedef shared_ptr<function_decl> function_decl_sptr;
 
 /// Abstraction for a function declaration.
 class function_decl : public virtual decl_base
 {
-protected:
-  shared_ptr<function_type> type_;
-
-private:
-  bool			declared_inline_;
-  decl_base::binding	binding_;
+  struct priv;
+  shared_ptr<priv> priv_;
 
 public:
   /// Hasher for function_decl
@@ -1350,7 +1503,7 @@ public:
     {return variadic_marker_;}
   };
 
-  function_decl(const std::string&  name,
+  function_decl(const std::string& name,
 		const std::vector<parameter_sptr>& parms,
 		shared_ptr<type_base> return_type,
 		size_t fptr_size_in_bits,
@@ -1362,15 +1515,12 @@ public:
 		binding bind = BINDING_GLOBAL);
 
   function_decl(const std::string& name,
-		shared_ptr<function_type> function_type, bool declared_inline,
-		location locus, const std::string& mangled_name = "",
-		visibility vis = VISIBILITY_DEFAULT,
-		binding bind = BINDING_GLOBAL)
-  : decl_base(name, locus, mangled_name, vis),
-    type_(function_type),
-    declared_inline_(declared_inline),
-    binding_(bind)
-  {}
+		function_type_sptr function_type,
+		bool declared_inline,
+		location locus,
+		const std::string& mangled_name,
+		visibility vis,
+		binding bind);
 
   function_decl(const std::string& name,
 		shared_ptr<type_base> fn_type,
@@ -1402,16 +1552,19 @@ public:
   get_return_type() const;
 
   void
-  set_type(shared_ptr<function_type> fn_type)
-  {type_ = fn_type; }
+  set_type(shared_ptr<function_type> fn_type);
+
+  void
+  set_symbol(elf_symbol_sptr sym);
+
+  elf_symbol_sptr
+  get_symbol() const;
 
   bool
-  is_declared_inline() const
-  {return declared_inline_;}
+  is_declared_inline() const;
 
   binding
-  get_binding() const
-  {return binding_;}
+  get_binding() const;
 
   virtual bool
   operator==(const decl_base& o) const;
@@ -1422,11 +1575,7 @@ public:
   /// @return true if the function taks a variable number
   /// of parameters.
   bool
-  is_variadic() const
-  {
-    return (!get_parameters().empty()
-	    && get_parameters().back()->get_variadic_marker());
-  }
+  is_variadic() const;
 
   virtual size_t
   get_hash() const;
@@ -1436,9 +1585,6 @@ public:
 
   virtual ~function_decl();
 }; // end class function_decl
-
-/// Convenience typedef for a shared pointer on a @ref function_type
-typedef shared_ptr<function_type> function_type_sptr;
 
 /// Abstraction of a function type.
 class function_type : public virtual type_base

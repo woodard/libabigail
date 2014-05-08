@@ -63,6 +63,7 @@ struct options
   bool show_changed_vars;
   bool show_added_vars;
   bool show_all_vars;
+  bool show_linkage_names;
   bool show_harmful_changes;
   bool show_harmless_changes;
 
@@ -77,6 +78,7 @@ struct options
       show_changed_vars(false),
       show_added_vars(false),
       show_all_vars(true),
+      show_linkage_names(false),
       show_harmful_changes(true),
       show_harmless_changes(true)
   {}
@@ -95,6 +97,7 @@ display_usage(const string prog_name, ostream& out)
       << " --deleted-vars  display deleted global public variables\n"
       << " --changed-vars  display changed global public variables\n"
       << " --added-vars  display added global public variables\n"
+      << " --linkage-names  display linkage names of added/removed/changed\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
@@ -177,6 +180,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.show_all_fns = false;
 	  opts.show_all_vars = false;
 	}
+      else if (!strcmp(argv[i], "--linkage-names"))
+	opts.show_linkage_names = true;
       else if (!strcmp(argv[i], "--drop"))
 	{
 	  int j = i + 1;
@@ -291,6 +296,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_deleted_vars(opts.show_all_vars || opts.show_deleted_vars);
   ctxt->show_changed_vars(opts.show_all_vars || opts.show_changed_vars);
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
+  ctxt->show_linkage_names(opts.show_linkage_names);
 
   if (!opts.show_harmless_changes)
       ctxt->switch_categories_off

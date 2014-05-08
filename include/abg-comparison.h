@@ -389,6 +389,12 @@ public:
 
   bool
   show_added_vars() const;
+
+  bool
+  show_linkage_names() const;
+
+  void
+  show_linkage_names(bool f);
 };//end struct diff_context.
 
 /// This type encapsulates an edit script (a set of insertions and

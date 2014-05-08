@@ -244,7 +244,13 @@ data/test-lookup-syms/test0.cc			\
 data/test-lookup-syms/test0.o			\
 data/test-lookup-syms/test0-report.txt		\
 data/test-lookup-syms/test01-report.txt		\
-data/test-lookup-syms/test02-report.txt
+data/test-lookup-syms/test02-report.txt		\
+data/test-lookup-syms/test1.c			\
+data/test-lookup-syms/test1.version-script	\
+data/test-lookup-syms/test1.so			\
+data/test-lookup-syms/test1-1-report.txt	\
+data/test-lookup-syms/test1-2-report.txt	\
+data/test-lookup-syms/test1-3-report.txt
 
 clean-local: clean-local-check
 .PHONY: clean-local-check

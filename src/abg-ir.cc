@@ -296,6 +296,343 @@ operator==(translation_unit_sptr l, translation_unit_sptr r)
 
 // </translation_unit stuff>
 
+// <elf_symbol stuff>
+struct elf_symbol::priv
+{
+  size_t		index_;
+  string		name_;
+  elf_symbol::type	type_;
+  elf_symbol::binding	binding_;
+  elf_symbol::version	version_;
+  bool			is_defined_;
+
+  priv()
+    : index_(0),
+      type_(elf_symbol::NOTYPE_TYPE),
+      binding_(elf_symbol::GLOBAL_BINDING),
+      is_defined_(false)
+  {}
+
+  priv(size_t				i,
+       const string&			n,
+       elf_symbol::type		t,
+       elf_symbol::binding		b,
+       bool				d,
+       const elf_symbol::version&	v)
+    : index_(i),
+      name_(n),
+      type_(t),
+      binding_(b),
+      version_(v),
+      is_defined_(d)
+  {}
+}; // end struct elf_symbol::priv
+
+elf_symbol::elf_symbol()
+  : priv_(new priv)
+{
+}
+
+elf_symbol::elf_symbol(size_t		i,
+		       const string&	n,
+		       type		t,
+		       binding		b,
+		       bool		d,
+		       const version&	v)
+  : priv_(new priv(i, n, t, b, d, v))
+{
+}
+
+elf_symbol::elf_symbol(const elf_symbol& s)
+  : priv_(new priv(s.get_index(),
+		   s.get_name(),
+		   s.get_type(),
+		   s.get_binding(),
+		   s.get_is_defined(),
+		   s.get_version()))
+{
+}
+
+/// Getter for the index
+///
+/// @return the index of the symbol.
+size_t
+elf_symbol::get_index() const
+{return priv_->index_;}
+
+/// Setter for the index.
+///
+/// @param s the new index.
+void
+elf_symbol::set_index(size_t s)
+{priv_->index_ = s;}
+
+const string&
+elf_symbol::get_name() const
+{return priv_->name_;}
+
+void
+elf_symbol::set_name(const string& n)
+{priv_->name_ = n;}
+
+elf_symbol::type
+elf_symbol::get_type() const
+{return priv_->type_;}
+
+void
+elf_symbol::set_type(type t)
+{priv_->type_ = t;}
+
+elf_symbol::binding
+elf_symbol::get_binding() const
+{return priv_->binding_;}
+
+void
+elf_symbol::set_binding(binding b)
+{priv_->binding_ = b;}
+
+elf_symbol::version&
+elf_symbol::get_version() const
+{return priv_->version_;}
+
+void
+elf_symbol::set_version(const version& v)
+{priv_->version_ = v;}
+
+bool
+elf_symbol::get_is_defined() const
+{return priv_->is_defined_;}
+
+
+void
+elf_symbol::set_is_defined(bool d)
+{priv_->is_defined_ = d;}
+
+bool
+elf_symbol::is_public() const
+{
+  return (get_is_defined()
+	  && (get_binding() == GLOBAL_BINDING
+	      || get_binding() == WEAK_BINDING));
+}
+
+bool
+elf_symbol::is_function() const
+{return get_type() == FUNC_TYPE || get_type() == GNU_IFUNC_TYPE;}
+
+bool
+elf_symbol::is_variable() const
+{return get_type() == OBJECT_TYPE;}
+
+bool
+elf_symbol::operator==(const elf_symbol& other)
+{
+  return (get_name() == other.get_name()
+	  && get_type() == other.get_type()
+	  && get_binding() == other.get_binding()
+	  && get_is_defined() == other.get_is_defined()
+	  && get_version() == other.get_version());
+}
+
+bool
+operator==(const elf_symbol_sptr lhs, const elf_symbol_sptr rhs)
+{
+  if (!!lhs != !!rhs)
+    return false;
+
+  if (!lhs)
+    return true;
+
+  return *lhs == *rhs;
+}
+
+/// Serialize an instance of @ref symbol_type and stream it to a given
+/// output stream.
+///
+/// @param o the output stream to serialize the symbole type to.
+///
+/// @param t the symbol type to serialize.
+std::ostream&
+operator<<(std::ostream& o, elf_symbol::type t)
+{
+  string repr;
+
+  switch (t)
+    {
+    case elf_symbol::NOTYPE_TYPE:
+      repr = "unspecified symbol type";
+      break;
+    case elf_symbol::OBJECT_TYPE:
+      repr = "variable symbol type";
+      break;
+    case elf_symbol::FUNC_TYPE:
+      repr = "function symbol type";
+      break;
+    case elf_symbol::SECTION_TYPE:
+      repr = "section symbol type";
+      break;
+    case elf_symbol::FILE_TYPE:
+      repr = "file symbol type";
+      break;
+    case elf_symbol::COMMON_TYPE:
+      repr = "common data object symbol type";
+      break;
+    case elf_symbol::TLS_TYPE:
+      repr = "thread local data object symbol type";
+      break;
+    case elf_symbol::GNU_IFUNC_TYPE:
+      repr = "indirect function symbol type";
+      break;
+    default:
+      {
+	std::ostringstream s;
+	s << "unknown symbol type (" << (char)t << ')';
+	repr = s.str();
+      }
+      break;
+    }
+
+  o << repr;
+  return o;
+}
+
+/// Serialize an instance of @ref symbol_binding and stream it to a
+/// given output stream.
+///
+/// @param o the output stream to serialize the symbole type to.
+///
+/// @param t the symbol binding to serialize.
+std::ostream&
+operator<<(std::ostream& o, elf_symbol::binding b)
+{
+  string repr;
+
+  switch (b)
+    {
+    case elf_symbol::LOCAL_BINDING:
+      repr = "local binding";
+      break;
+    case elf_symbol::GLOBAL_BINDING:
+      repr = "global binding";
+      break;
+    case elf_symbol::WEAK_BINDING:
+      repr = "weak binding";
+      break;
+    case elf_symbol::GNU_UNIQUE_BINDING:
+      repr = "GNU unique binding";
+      break;
+    default:
+      {
+	std::ostringstream s;
+	s << "unknown binding (" << (unsigned char) b << ")";
+	repr = s.str();
+      }
+      break;
+    }
+
+  o << repr;
+  return o;
+}
+
+// <elf_symbol::version stuff>
+
+struct elf_symbol::version::priv
+{
+  string	version_;
+  bool		is_default_;
+
+  priv()
+    : is_default_(false)
+  {}
+
+  priv(const string& v,
+       bool d)
+    : version_(v),
+      is_default_(d)
+  {}
+}; // end struct elf_symbol::version::priv
+
+elf_symbol::version::version()
+  : priv_(new priv)
+{}
+
+/// @param v the name of the version.
+///
+/// @param is_default true if this is a default version.
+elf_symbol::version::version(const string& v,
+			     bool is_default)
+  : priv_(new priv(v, is_default))
+{}
+
+elf_symbol::version::version(const elf_symbol::version& v)
+  : priv_(new priv(v.str(), v.is_default()))
+{
+}
+
+/// Cast the version_type into a string that is its name.
+///
+/// @return the name of the version.
+elf_symbol::version::operator const string&() const
+{return priv_->version_;}
+
+/// Getter for the version name.
+///
+/// @return the version name.
+const string&
+elf_symbol::version::str() const
+{return priv_->version_;}
+
+/// Setter for the version name.
+///
+/// @param s the version name.
+void
+elf_symbol::version::str(const string& s)
+{priv_->version_ = s;}
+
+/// Getter for the 'is_default' property of the version.
+///
+/// @return true iff this is a default version.
+bool
+elf_symbol::version::is_default() const
+{return priv_->is_default_;}
+
+/// Setter for the 'is_default' property of the version.
+///
+/// @param f true if this is the default version.
+void
+elf_symbol::version::is_default(bool f)
+{priv_->is_default_ = f;}
+
+bool
+elf_symbol::version::is_empty() const
+{return str().empty();}
+
+/// Compares the current version against another one.
+///
+/// @param o the other version to compare the current one to.
+///
+/// @return true iff the current version equals @p o.
+bool
+elf_symbol::version::operator==(const elf_symbol::version& o) const
+{return is_default() == o.is_default() && str() == o.str();}
+
+/// Assign a version to the current one.
+///
+/// @param o the other version to assign to this one.
+///
+/// @return a reference to the assigned version.
+elf_symbol::version&
+elf_symbol::version::operator=(const elf_symbol::version& o)
+{
+  str(o.str());
+  is_default(o.is_default());
+  return *this;
+}
+
+// </elf_symbol::version stuff>
+
+// </elf_symbol stuff>
+
 dm_context_rel::~dm_context_rel()
 {}
 
@@ -1719,50 +2056,6 @@ get_type_name(const type_base_sptr t)
   decl_base_sptr d = dynamic_pointer_cast<decl_base>(t);
   return d->get_name();
 }
-
-/// Get the linkage name for a given declaration.
-///
-/// Note that due to some DWARF bugs, the linkage name might be empty,
-/// even for functions.
-///
-/// @param d the declaration to consider.
-///
-/// @return the linkage name.
-string
-get_linkage_name(const decl_base& d)
-{
-  if (!d.get_linkage_name().empty())
-    return d.get_linkage_name();
-
-  if (!is_at_global_scope(d))
-    return d.get_name();
-
-  return "";
-}
-
-/// Get the linkage name for a given declaration.
-///
-/// Note that due to some DWARF bugs, the linkage name might be empty,
-/// even for functions.
-///
-/// @param d the declaration to consider.
-///
-/// @return the linkage name.
-string
-get_linkage_name(const decl_base* d)
-{return d ? get_linkage_name(*d) : string();}
-
-/// Get the linkage name for a given declaration.
-///
-/// Note that due to some DWARF bugs, the linkage name might be empty,
-/// even for functions.
-///
-/// @param d the declaration to consider.
-///
-/// @return the linkage name.
-string
-get_linkage_name(const decl_base_sptr d)
-{return get_linkage_name(d.get());}
 
 /// Get a copy of the pretty representation of a decl.
 ///
@@ -3270,6 +3563,23 @@ typedef_decl::~typedef_decl()
 
 // <var_decl definitions>
 
+struct var_decl::priv
+{
+  type_base_sptr	type_;
+  decl_base::binding	binding_;
+  elf_symbol_sptr	symbol_;
+
+  priv()
+    : binding_(decl_base::BINDING_GLOBAL)
+  {}
+
+  priv(type_base_sptr t,
+       decl_base::binding b)
+    : type_(t),
+      binding_(b)
+  {}
+}; // end struct var_decl::priv
+
 var_decl::var_decl(const std::string&		name,
 		   shared_ptr<type_base>	type,
 		   location			locus,
@@ -3277,9 +3587,46 @@ var_decl::var_decl(const std::string&		name,
 		   visibility			vis,
 		   binding			bind)
   : decl_base(name, locus, linkage_name, vis),
-    type_(type),
-    binding_(bind)
+    priv_(new priv(type, bind))
 {}
+
+const shared_ptr<type_base>&
+var_decl::get_type() const
+{return priv_->type_;}
+
+decl_base::binding
+var_decl::get_binding() const
+{return priv_->binding_;}
+
+void
+var_decl::set_binding(decl_base::binding b)
+{priv_->binding_ = b;}
+
+/// Sets the underlying ELF symbol for the current variable.
+///
+/// And underlyin$g ELF symbol for the current variable might exist
+/// only if the corpus that this variable originates from was
+/// constructed from an ELF binary file.
+///
+/// Note that comparing two variables that have underlying ELF symbols
+/// involves comparing their underlying elf symbols.  The decl name
+/// for the variable thus becomes irrelevant in the comparison.
+///
+/// @param sym the new ELF symbol for this variable decl.
+void
+var_decl::set_symbol(elf_symbol_sptr sym)
+{priv_->symbol_ = sym;}
+
+/// Gets the the underlying ELF symbol for the current variable,
+/// that was set using var_decl::set_symbol().  Please read the
+/// documentation for that member function for more information about
+/// "underlying ELF symbols".
+///
+/// @return sym the underlying ELF symbol for this variable decl, if
+/// one exists.
+elf_symbol_sptr
+var_decl::get_symbol() const
+{return priv_->symbol_;}
 
 /// Setter of the scope of the current var_decl.
 ///
@@ -3305,8 +3652,36 @@ var_decl::operator==(const decl_base& o) const
   const var_decl* other = dynamic_cast<const var_decl*>(&o);
   if (!other)
     return false;
-  if (!decl_base::operator==(*other)
-      || *get_type() != *other->get_type())
+
+  // If there are underlying elf symbols for these variables,
+  // compare them.  And then compare the other parts.
+  elf_symbol_sptr s0 = get_symbol(), s1 = other->get_symbol();
+  if (!!s0 != !!s1)
+    return false;
+
+  if (s0 && s0 != s1)
+    return false;
+
+  if (s0)
+    {
+      // The variables have underlying elf symbols that are equal, so
+      // now, let's compare the decl_base part of the variables w/o
+      // considering their decl names.
+      string n1 = get_name(), n2 = o.get_name();
+      const_cast<var_decl*>(this)->set_name("");
+      const_cast<decl_base&>(o).set_name("");
+      bool decl_bases_different = !decl_base::operator==(o);
+      const_cast<var_decl*>(this)->set_name(n1);
+      const_cast<decl_base&>(o).set_name(n2);
+
+      if (decl_bases_different)
+	return false;
+    }
+  else
+    if (!decl_base::operator==(o))
+      return false;
+
+  if (*get_type() != *other->get_type())
     return false;
 
   dm_context_rel_sptr c0 =
@@ -3612,6 +3987,45 @@ method_type::~method_type()
 
 // <function_decl definitions>
 
+struct function_decl::priv
+{
+  bool			declared_inline_;
+  decl_base::binding	binding_;
+  function_type_sptr	type_;
+  elf_symbol_sptr	symbol_;
+
+  priv()
+    : declared_inline_(false),
+      binding_(decl_base::BINDING_GLOBAL)
+  {}
+
+  priv(function_type* t,
+       bool declared_inline,
+       decl_base::binding binding)
+    : declared_inline_(declared_inline),
+      binding_(binding),
+      type_(t)
+  {}
+
+  priv(function_type_sptr t,
+       bool declared_inline,
+       decl_base::binding binding)
+    : declared_inline_(declared_inline),
+      binding_(binding),
+      type_(t)
+  {}
+
+  priv(function_type_sptr t,
+       bool declared_inline,
+       decl_base::binding binding,
+       elf_symbol_sptr s)
+    : declared_inline_(declared_inline),
+      binding_(binding),
+      type_(t),
+      symbol_(s)
+  {}
+}; // end sruct function_decl::priv
+
 /// Get a name uniquely identifying the parameter in the function.
 ///
 ///@return the unique parm name id. 
@@ -3666,46 +4080,60 @@ function_decl::function_decl(const std::string&  name,
 			     visibility vis,
 			     binding bind)
   : decl_base(name, locus, linkage_name, vis),
-    type_(new function_type(return_type, parms, fptr_size_in_bits,
-			     fptr_align_in_bits)),
-    declared_inline_(declared_inline), binding_(bind)
-  {}
+    priv_(new priv(new function_type(return_type, parms,
+				     fptr_size_in_bits,
+				     fptr_align_in_bits),
+		   declared_inline,
+		   bind))
+{}
 
-  /// Constructor of the function_decl type.
-  ///
-  /// This flavour of constructor is for when the pointer to the
-  /// instance of function_type that the client code has is presented as
-  /// a pointer to type_base.  In that case, this constructor saves the
-  /// client code from doing a dynamic_cast to get the function_type
-  /// pointer.
-  ///
-  /// @param name the name of the function declaration.
-  ///
-  /// @param fn_type the type of the function declaration.  The dynamic
-  /// type of this parameter should be 'pointer to function_type'
-  ///
-  /// @param declared_inline whether this function was declared inline
-  ///
-  /// @param locus the source location of the function declaration.
-  ///
-  /// @param linkage_name the mangled name of the function declaration.
-  ///
-  /// @param vis the visibility of the function declaration.
-  ///
-  /// @param bind  the kind of the binding of the function
-  /// declaration.
 function_decl::function_decl(const std::string& name,
-		shared_ptr<type_base> fn_type,
-		bool	declared_inline,
-		location locus,
-		const std::string& linkage_name,
-		visibility vis,
-		binding bind)
+			     function_type_sptr function_type,
+			     bool declared_inline,
+			     location locus,
+			     const std::string& mangled_name,
+			     visibility vis,
+			     binding bind)
+  : decl_base(name, locus, mangled_name, vis),
+    priv_(new priv(function_type, declared_inline, bind))
+{}
+
+
+/// Constructor of the function_decl type.
+///
+/// This flavour of constructor is for when the pointer to the
+/// instance of function_type that the client code has is presented as
+/// a pointer to type_base.  In that case, this constructor saves the
+/// client code from doing a dynamic_cast to get the function_type
+/// pointer.
+///
+/// @param name the name of the function declaration.
+///
+/// @param fn_type the type of the function declaration.  The dynamic
+/// type of this parameter should be 'pointer to function_type'
+///
+/// @param declared_inline whether this function was declared inline
+///
+/// @param locus the source location of the function declaration.
+///
+/// @param linkage_name the mangled name of the function declaration.
+///
+/// @param vis the visibility of the function declaration.
+///
+/// @param bind  the kind of the binding of the function
+/// declaration.
+function_decl::function_decl(const std::string& name,
+			     shared_ptr<type_base> fn_type,
+			     bool	declared_inline,
+			     location locus,
+			     const std::string& linkage_name,
+			     visibility vis,
+			     binding bind)
   : decl_base(name, locus, linkage_name, vis),
-    type_(dynamic_pointer_cast<function_type>(fn_type)),
-    declared_inline_(declared_inline),
-    binding_(bind)
-  {}
+    priv_(new priv(dynamic_pointer_cast<function_type>(fn_type),
+		   declared_inline,
+		   bind))
+{}
 
 /// @return the pretty representation for a function.
 string
@@ -3795,24 +4223,62 @@ function_decl::get_first_non_implicit_parm() const
 /// @return the type of the current instance of #function_decl.
 const shared_ptr<function_type>
 function_decl::get_type() const
-{return type_;}
+{return priv_->type_;}
+
+void
+function_decl::set_type(shared_ptr<function_type> fn_type)
+{priv_->type_ = fn_type;}
+
+/// This sets the underlying ELF symbol for the current function decl.
+///
+/// And underlyin$g ELF symbol for the current function decl might
+/// exist only if the corpus that this function decl originates from
+/// was constructed from an ELF binary file.
+///
+/// Note that comparing two function decls that have underlying ELF
+/// symbols involves comparing their underlying elf symbols.  The decl
+/// name for the function thus becomes irrelevant in the comparison.
+///
+/// @param sym the new ELF symbol for this function decl.
+void
+function_decl::set_symbol(elf_symbol_sptr sym)
+{priv_->symbol_ = sym;}
+
+/// Gets the the underlying ELF symbol for the current variable,
+/// that was set using function_decl::set_symbol().  Please read the
+/// documentation for that member function for more information about
+/// "underlying ELF symbols".
+///
+/// @return sym the underlying ELF symbol for this function decl, if
+/// one exists.
+elf_symbol_sptr
+function_decl::get_symbol() const
+{return priv_->symbol_;}
+
+bool
+function_decl::is_declared_inline() const
+{return priv_->declared_inline_;}
+
+decl_base::binding
+function_decl::get_binding() const
+{return priv_->binding_;}
 
 /// @return the return type of the current instance of function_decl.
 const shared_ptr<type_base>
 function_decl::get_return_type() const
-{return type_->get_return_type();}
+{return get_type()->get_return_type();}
 
 /// @return the parameters of the function.
 const std::vector<shared_ptr<function_decl::parameter> >&
 function_decl::get_parameters() const
-{return type_->get_parameters();}
+{return get_type()->get_parameters();}
 
 /// Append a parameter to the type of this function.
 ///
 /// @param parm the parameter to append.
 void
 function_decl::append_parameter(shared_ptr<parameter> parm)
-{type_->append_parameter(parm);}
+{get_type()->append_parameter(parm);}
 
 /// Append a vector of parameters to the type of this function.
 ///
@@ -3823,18 +4289,44 @@ function_decl::append_parameters(std::vector<shared_ptr<parameter> >& parms)
   for (std::vector<shared_ptr<parameter> >::const_iterator i = parms.begin();
        i != parms.end();
        ++i)
-    type_->append_parameter(*i);
+    get_type()->append_parameter(*i);
 }
 
 bool
 function_decl::operator==(const decl_base& other) const
 {
-  if (!decl_base::operator==(other))
-    return false;
 
   try
     {
       const function_decl& o = dynamic_cast<const function_decl&>(other);
+
+      // If there are underlying elf symbols for these functions,
+      // compare them.  And then compare the other parts.
+      elf_symbol_sptr s0 = get_symbol(), s1 = o.get_symbol();
+      if (!!s0 != !!s1)
+	return false;
+
+      if (s0 && s0 != s1)
+	return false;
+
+      if (s0)
+	{
+	  // The functions have underlying elf symbols at are equal,
+	  // so now, let's compare the decl_base part of the functions
+	  // w/o considering their decl names.
+	  string n1 = get_name(), n2 = other.get_name();
+	  const_cast<function_decl*>(this)->set_name("");
+	  const_cast<decl_base&>(other).set_name("");
+	  bool decl_bases_different = !decl_base::operator==(other);
+	  const_cast<function_decl*>(this)->set_name(n1);
+	  const_cast<decl_base&>(other).set_name(n2);
+
+	  if (decl_bases_different)
+	    return false;
+	}
+      else
+	if (!decl_base::operator==(other))
+	  return false;
 
       // Compare function types
       shared_ptr<function_type> t0 = get_type(), t1 = o.get_type();
@@ -3868,6 +4360,18 @@ function_decl::operator==(const decl_base& other) const
     }
   catch(...)
     {return false;}
+}
+
+/// Return true iff the function takes a variable number of
+/// parameters.
+///
+/// @return true if the function taks a variable number
+/// of parameters.
+bool
+function_decl::is_variadic() const
+{
+  return (!get_parameters().empty()
+	  && get_parameters().back()->get_variadic_marker());
 }
 
 /// The virtual implementation of 'get_hash' for a function_decl.
@@ -4633,8 +5137,8 @@ const method_type_sptr
 class_decl::method_decl::get_type() const
 {
   method_type_sptr result;
-  if (type_)
-    result = dynamic_pointer_cast<method_type>(type_);
+  if (function_decl::get_type())
+    result = dynamic_pointer_cast<method_type>(function_decl::get_type());
   return result;
 }
 

@@ -66,6 +66,27 @@ InOutSpec in_out_specs[] =
     "data/test-lookup-syms/test02-report.txt",
     "output/test-lookup-syms/test02-report.txt"
   },
+  {
+    "data/test-lookup-syms/test1.so",
+    "foo",
+    "",
+    "data/test-lookup-syms/test1-1-report.txt",
+    "output/test-lookup-syms/test1-1-report.txt"
+  },
+  {
+    "data/test-lookup-syms/test1.so",
+    "_foo1",
+    "--no-absolute-path",
+    "data/test-lookup-syms/test1-2-report.txt",
+    "output/test-lookup-syms/test-2-report.txt"
+  },
+  {
+    "data/test-lookup-syms/test1.so",
+    "_foo2",
+    "--no-absolute-path",
+    "data/test-lookup-syms/test1-3-report.txt",
+    "output/test-lookup-syms/test-3-report.txt"
+  },
   // This should always  be the last entry.
   {NULL, NULL, NULL, NULL, NULL}
 };
