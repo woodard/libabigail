@@ -1045,9 +1045,13 @@ lookup_symbol_from_elf(Elf*			elf_handle,
 		       vector<elf_symbol>&	syms_found)
 {
   size_t hash_table_index = 0, symbol_table_index = 0;
-  hash_table_kind ht_kind = find_hash_table_section_index(elf_handle,
-							  hash_table_index,
-							  symbol_table_index);
+  hash_table_kind ht_kind = NO_HASH_TABLE_KIND;
+
+  if (!demangle)
+    ht_kind = find_hash_table_section_index(elf_handle,
+					    hash_table_index,
+					    symbol_table_index);
+
   if (ht_kind == NO_HASH_TABLE_KIND)
     {
       if (!find_symbol_table_section_index(elf_handle, symbol_table_index))
