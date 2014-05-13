@@ -255,6 +255,11 @@ find_hash_table_section_index(Elf*	elf_handle,
 
 /// Find the symbol table.
 ///
+/// If we are looking at a relocatable or executable file, this
+/// function will return the .symtab symbol table (of type
+/// SHT_SYMTAB).  But if we are looking at a DSO it returns the
+/// .dynsym symbol table (of type SHT_DYNSYM).
+///
 /// @param elf_handle the elf handle to consider.
 ///
 /// @param symtab the symbol table found.
@@ -263,22 +268,38 @@ find_hash_table_section_index(Elf*	elf_handle,
 static bool
 find_symbol_table_section(Elf* elf_handle, Elf_Scn*& symtab)
 {
-  Elf_Scn* section = 0;
+  Elf_Scn* section = 0, *dynsym = 0, *sym_tab = 0;
   while ((section = elf_nextscn(elf_handle, section)) != 0)
     {
       GElf_Shdr header_mem, *header;
       header = gelf_getshdr(section, &header_mem);
-      if (header->sh_type == SHT_SYMTAB)
-	{
-	  symtab = section;
-	  return true;
-	}
+      if (header->sh_type == SHT_DYNSYM)
+	dynsym = section;
+      else if (header->sh_type == SHT_SYMTAB)
+	sym_tab = section;
+    }
+
+  if (dynsym || sym_tab)
+    {
+      GElf_Ehdr eh_mem;
+      GElf_Ehdr* elf_header = gelf_getehdr(elf_handle, &eh_mem);
+      if (elf_header->e_type == ET_REL
+	  || elf_header->e_type == ET_EXEC)
+	symtab = sym_tab ? sym_tab : dynsym;
+      else
+	symtab = dynsym ? dynsym : sym_tab;
+      return true;
     }
   return false;
 }
 
 /// Find the index (in the section headers table) of the symbol table
 /// section.
+///
+/// If we are looking at a relocatable or executable file, this
+/// function will return the index for the .symtab symbol table (of
+/// type SHT_SYMTAB).  But if we are looking at a DSO it returns the
+/// index for the .dynsym symbol table (of type SHT_DYNSYM).
 ///
 /// @param elf_handle the elf handle to use.
 ///
@@ -290,17 +311,11 @@ find_symbol_table_section_index(Elf* elf_handle,
 				size_t& symtab_index)
 {
   Elf_Scn* section = 0;
-  while ((section = elf_nextscn(elf_handle, section)) != 0)
-    {
-      GElf_Shdr header_mem, *header;
-      header = gelf_getshdr(section, &header_mem);
-      if (header->sh_type == SHT_SYMTAB)
-	{
-	  symtab_index = elf_ndxscn(section);
-	  return true;
-	}
-    }
-  return false;
+  if (!find_symbol_table_section(elf_handle, section))
+    return false;
+
+  symtab_index = elf_ndxscn(section);
+  return true;
 }
 
 /// Find and return the .text section.
@@ -4270,8 +4285,7 @@ build_var_decl(read_context& ctxt,
 	    if (sym->is_variable() && sym->is_public())
 	      {
 		result->set_symbol(sym);
-		if (result->get_linkage_name().empty())
-		  result->set_linkage_name(sym->get_name());
+		result->set_linkage_name(sym->get_name());
 		result->set_is_in_public_symbol_table(true);
 	      }
 	}
@@ -4404,8 +4418,7 @@ build_function_decl(read_context& ctxt,
 	      if (sym->is_function() && sym->is_public())
 		{
 		  result->set_symbol(sym);
-		  if (result->get_linkage_name().empty())
-		    result->set_linkage_name(sym->get_name());
+		  result->set_linkage_name(sym->get_name());
 		  result->set_is_in_public_symbol_table(true);
 		}
 	}
