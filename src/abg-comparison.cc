@@ -6136,7 +6136,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	      << "'";
 	  if (context()->show_linkage_names())
 	    out << "    {" << i->second->get_linkage_name() << "}";
-	  out << "'\n";
+	  out << "\n";
 	  ++removed;
 	}
       if (removed)
