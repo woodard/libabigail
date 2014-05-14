@@ -1319,7 +1319,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 {
   shared_ptr<function_decl::parameter> nil;
 
-  if (!xmlStrEqual(node->name, BAD_CAST("parameter")))
+  if (!node || !xmlStrEqual(node->name, BAD_CAST("parameter")))
     return nil;
 
   bool is_variadic = false;
