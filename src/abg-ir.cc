@@ -1081,7 +1081,7 @@ operator<<(std::ostream& o, decl_base::binding b)
   switch (b)
     {
     case decl_base::BINDING_NONE:
-      r = "non";
+      r = "none";
       break;
     case decl_base::BINDING_LOCAL:
       r = "local";
