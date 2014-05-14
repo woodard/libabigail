@@ -211,6 +211,8 @@ static void write_layout_offset(var_decl_sptr, ostream&);
 static void write_layout_offset(shared_ptr<class_decl::base_spec>, ostream&);
 static void write_cdtor_const_static(bool, bool, bool, bool, ostream&);
 static void write_voffset(function_decl_sptr, ostream&);
+static void write_elf_symbol_type(elf_symbol::type, ostream&);
+static void write_elf_symbol_binding(elf_symbol::binding, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
 static void write_is_struct(const shared_ptr<class_decl>, ostream&);
@@ -230,6 +232,8 @@ static bool write_enum_type_decl(const shared_ptr<enum_type_decl>,
 				 write_context&, unsigned);
 static bool write_typedef_decl(const shared_ptr<typedef_decl>,
 			       write_context&, unsigned);
+static bool write_elf_symbol(const shared_ptr<elf_symbol>,
+			     write_context&, unsigned);
 static bool write_var_decl(const shared_ptr<var_decl>,
 			   write_context&, bool, unsigned);
 static bool write_function_decl(const shared_ptr<function_decl>,
@@ -539,6 +543,84 @@ write_voffset(function_decl_sptr fn, ostream&o)
 
   if (size_t voffset = get_member_function_vtable_offset(fn))
     o << " vtable-offset='" << voffset << "'";
+}
+
+/// Serialize an elf_symbol::type into an XML node attribute named
+/// 'type'.
+///
+/// @param t the elf_symbol::type to serialize.
+///
+/// @param o the output stream to serialize it to.
+static void
+write_elf_symbol_type(elf_symbol::type t, ostream& o)
+{
+  string repr;
+
+  switch (t)
+    {
+    case elf_symbol::NOTYPE_TYPE:
+      repr = "no-type";
+      break;
+    case elf_symbol::OBJECT_TYPE:
+      repr = "object-type";
+      break;
+    case elf_symbol::FUNC_TYPE:
+      repr = "func-type";
+      break;
+    case elf_symbol::SECTION_TYPE:
+      repr = "section-type";
+      break;
+    case elf_symbol::FILE_TYPE:
+      repr = "file-type";
+      break;
+    case elf_symbol::COMMON_TYPE:
+      repr = "common-type";
+      break;
+    case elf_symbol::TLS_TYPE:
+      repr = "tls-type";
+      break;
+    case elf_symbol::GNU_IFUNC_TYPE:
+      repr = "gnu-ifunc-type";
+      break;
+    default:
+      repr = "no-type";
+      break;
+    }
+
+  o << "type='" << repr << "'";
+}
+
+/// Serialize an elf_symbol::binding into an XML element attribute of
+/// name 'binding'.
+///
+/// @param b the elf_symbol::binding to serialize.
+///
+/// @param o the output stream to serialize the binding to.
+static void
+write_elf_symbol_binding(elf_symbol::binding b, ostream& o)
+{
+  string repr;
+
+  switch (b)
+    {
+    case elf_symbol::LOCAL_BINDING:
+      repr = "local-binding";
+      break;
+    case elf_symbol::GLOBAL_BINDING:
+      repr = "global-binding";
+      break;
+    case elf_symbol::WEAK_BINDING:
+      repr = "weak-binding";
+      break;
+    case elf_symbol::GNU_UNIQUE_BINDING:
+      repr = "gnu-unique-binding";
+      break;
+    default:
+      repr = "no-binding";
+      break;
+    }
+
+  o << "binding='" << repr << "'";
 }
 
 /// Serialize the attributes "constructor", "destructor" or "static"
@@ -1117,6 +1199,57 @@ write_enum_type_decl(const shared_ptr<enum_type_decl>	decl,
 		     unsigned				indent)
 {return write_enum_type_decl(decl, "", ctxt, indent);}
 
+/// Serialize an @ref elf_symbol to an XML element of name
+/// 'elf-symbol'.
+///
+/// @param sym the elf symbol to serialize.
+///
+/// @param ctxt the read context to use.
+///
+/// @param indent the number of white spaces to use as indentation.
+///
+/// @return true iff the function completed successfully.
+static bool
+write_elf_symbol(const shared_ptr<elf_symbol>	sym,
+		 write_context&		ctxt,
+		 unsigned			indent)
+{
+  if (!sym)
+    return false;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+  o << "<elf-symbol name='" << sym->get_name() << "'";
+  if (!sym->get_version().is_empty())
+    {
+      o << " version='" << sym->get_version().str() << "'";
+      o << " is-default-version='";
+      if (sym->get_version().is_default())
+	o <<  "yes";
+      else
+	o << "no";
+      o << "'";
+    }
+
+  o << " ";
+  write_elf_symbol_type(sym->get_type(), o);
+
+  o << " ";
+  write_elf_symbol_binding(sym->get_binding(), o);
+
+  o << " is-defined='";
+  if (sym->get_is_defined())
+    o << "yes";
+  else
+    o << "no";
+  o << "'";
+
+  o << "/>";
+
+  return true;
+}
+
 /// Serialize a pointer to an instance of typedef_decl.
 ///
 /// @param decl the typedef_decl to serialize.
@@ -1200,6 +1333,8 @@ write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
 
   do_indent(o, indent);
 
+  bool has_children = false;
+
   o << "<var-decl name='" << decl->get_name() << "'";
   o << " type-id='" << ctxt.get_id_for_type(decl->get_type()) << "'";
 
@@ -1216,7 +1351,23 @@ write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
 
   write_location(decl, o);
 
-  o << "/>";
+  elf_symbol_sptr sym = decl->get_symbol();
+  if (sym)
+    {
+      o << ">\n";
+      write_elf_symbol(sym, ctxt,
+		       indent + ctxt.get_config().get_xml_element_indent());
+      o << "\n";
+      has_children = true;
+    }
+
+  if (has_children)
+    {
+      do_indent(o, indent);
+      o << "</var-decl>";
+    }
+  else
+    o << "/>";
 
   return true;
 }
@@ -1264,6 +1415,14 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
   write_size_and_alignment(decl->get_type(), o);
 
   o << ">\n";
+
+  elf_symbol_sptr sym = decl->get_symbol();
+  if (sym)
+    {
+      write_elf_symbol(sym, ctxt,
+		       indent + ctxt.get_config().get_xml_element_indent());
+      o << "\n";
+    }
 
   vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
     decl->get_parameters().begin();

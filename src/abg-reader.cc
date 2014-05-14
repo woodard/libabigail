@@ -513,15 +513,22 @@ static bool	read_cdtor_const(xmlNodePtr, bool&, bool&, bool&);
 static bool	read_is_declaration_only(xmlNodePtr, bool&);
 static bool	read_is_virtual(xmlNodePtr, bool&);
 static bool	read_is_struct(xmlNodePtr, bool&);
+static bool	read_elf_symbol_type(xmlNodePtr, elf_symbol::type&);
+static bool	read_elf_symbol_binding(xmlNodePtr, elf_symbol::binding&);
 
 static namespace_decl_sptr
 build_namespace_decl(read_context&, const xmlNodePtr, bool);
 
-// <build a c++ class  from an instance of xmlNodePtr>
+// <build a c++ class from an instance of xmlNodePtr>
 //
 // Note that whenever a new function to build a type is added here,
 // you should make sure to call it from the build_type function, which
-// should be the last function of the list of declarated function below.
+// should be the last function of the list of declarated function
+// below.
+
+static elf_symbol_sptr
+build_elf_symbol(read_context&, const xmlNodePtr);
+
 static shared_ptr<function_decl::parameter>
 build_function_parameter (read_context&, const xmlNodePtr);
 
@@ -721,6 +728,7 @@ walk_xml_node_to_map_type_ids(read_context& ctxt,
       walk_xml_node_to_map_type_ids(ctxt, n->children);
     }
 }
+
 /// Parse the input XML document containing a translation_unit,
 /// represented by an 'abi-instr' element node, associated to the current
 /// context.
@@ -1255,6 +1263,48 @@ read_is_struct(xmlNodePtr node, bool& is_struct)
   return false;
 }
 
+/// Read the 'type' attribute of the 'elf-symbol' element.
+///
+/// @param node the XML node to read the attribute from.
+///
+/// @param t the resulting elf_symbol::type.
+///
+/// @return true iff the function completed successfully.
+static bool
+read_elf_symbol_type(xmlNodePtr node, elf_symbol::type& t)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type"))
+    {
+      string str;
+      xml::xml_char_sptr_to_string(s, str);
+      if (!string_to_elf_symbol_type(str, t))
+	return false;
+      return true;
+    }
+  return false;
+}
+
+/// Read the 'binding' attribute of the of the 'elf-symbol' element.
+///
+/// @param node the XML node to read the attribute from.
+///
+/// @param b the XML the resulting elf_symbol::binding.
+///
+/// @return true iff the function completed successfully.
+static bool
+read_elf_symbol_binding(xmlNodePtr node, elf_symbol::binding& b)
+{
+    if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "binding"))
+    {
+      string str;
+      xml::xml_char_sptr_to_string(s, str);
+      if (!string_to_elf_symbol_binding(str, b))
+	return false;
+      return true;
+    }
+  return false;
+}
+
 /// Build a @ref namespace_decl from an XML element node which name is
 /// "namespace-decl".  Note that this function recursively reads the
 /// content of the namespace and builds the proper IR nodes
@@ -1307,6 +1357,62 @@ build_namespace_decl(read_context&	ctxt,
   ctxt.pop_scope_or_abort(decl);
 
   return decl;
+}
+
+/// Build an instance of @ref elf_symbol from an XML element node
+/// which name is 'elf-symbol'.
+///
+/// @param node the XML node to read.
+///
+/// @return the @ref elf_symbol built, or nil if it couldn't be built.
+static elf_symbol_sptr
+build_elf_symbol(read_context&, const xmlNodePtr node)
+{
+  elf_symbol_sptr nil;
+
+  if (!node || !xmlStrEqual(node->name, BAD_CAST("elf-symbol")))
+    return nil;
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    xml::xml_char_sptr_to_string(s, name);
+
+  bool is_defined = true;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-defined"))
+    {
+      string value;
+      xml::xml_char_sptr_to_string(s, value);
+      if (value == "true" || value == "yes")
+	is_defined = true;
+      else
+	is_defined = false;
+    }
+
+  string version_string;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "version"))
+    xml::xml_char_sptr_to_string(s, version_string);
+
+  bool is_default_version = false;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-default-version"))
+    {
+      string value;
+      xml::xml_char_sptr_to_string(s, value);
+      if (value == "true" || value == "yes")
+	is_default_version = true;
+    }
+
+  elf_symbol::type type = elf_symbol::NOTYPE_TYPE;
+  read_elf_symbol_type(node, type);
+
+  elf_symbol::binding binding;
+  read_elf_symbol_binding(node, binding);
+
+  elf_symbol::version version(version_string, is_default_version);
+
+  elf_symbol_sptr e(new elf_symbol(/*index=*/0, name,
+				   type, binding,
+				   is_defined, version));
+  return e;
 }
 
 /// Build a function parameter from a 'parameter' xml element node.
@@ -1442,7 +1548,12 @@ build_function_decl(read_context&	ctxt,
       if (n->type != XML_ELEMENT_NODE)
 	continue;
 
-      if (xmlStrEqual(n->name, BAD_CAST("parameter")))
+      if (xmlStrEqual(n->name, BAD_CAST("elf-symbol")))
+	{
+	  if (elf_symbol_sptr sym = build_elf_symbol(ctxt, n))
+	    fn_decl->set_symbol(sym);
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("parameter")))
 	{
 	  if (shared_ptr<function_decl::parameter> p =
 	      build_function_parameter(ctxt, n))
@@ -1459,6 +1570,9 @@ build_function_decl(read_context&	ctxt,
 								 true));
 	}
     }
+
+  if (fn_decl->get_symbol() && fn_decl->get_symbol()->is_public())
+    fn_decl->set_is_in_public_symbol_table(true);
 
   return fn_decl;
 }
@@ -1509,7 +1623,20 @@ build_var_decl(read_context&	ctxt,
 					 locus, mangled_name,
 					 vis, bind));
 
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+      if (xmlStrEqual(n->name, BAD_CAST("elf-symbol")))
+	{
+	  if (elf_symbol_sptr sym = build_elf_symbol(ctxt, n))
+	    decl->set_symbol(sym);
+	}
+    }
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
+
+  if (decl->get_symbol() && decl->get_symbol()->is_public())
+    decl->set_is_in_public_symbol_table(true);
 
   return decl;
 }

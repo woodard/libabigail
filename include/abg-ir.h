@@ -304,6 +304,12 @@ std::ostream&
 operator<<(std::ostream& o, elf_symbol::binding t);
 
 bool
+string_to_elf_symbol_type(const string&, elf_symbol::type&);
+
+bool
+string_to_elf_symbol_binding(const string&, elf_symbol::binding&);
+
+bool
 operator==(const elf_symbol_sptr lhs, const elf_symbol_sptr rhs);
 
 /// The abstraction of the version of an ELF symbol.

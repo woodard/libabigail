@@ -534,6 +534,64 @@ operator<<(std::ostream& o, elf_symbol::binding b)
   return o;
 }
 
+/// Convert a string representing a symbol type into an
+/// elf_symbol::type.
+///
+///@param s the string to convert.
+///
+///@param t the resulting elf_symbol::type.
+///
+/// @return true iff the conversion completed successfully.
+bool
+string_to_elf_symbol_type(const string& s, elf_symbol::type& t)
+{
+  if (s == "no-type")
+    t = elf_symbol::NOTYPE_TYPE;
+  else if (s == "object-type")
+    t = elf_symbol::OBJECT_TYPE;
+  else if (s == "func-type")
+    t = elf_symbol::FUNC_TYPE;
+  else if (s == "section-type")
+    t = elf_symbol::SECTION_TYPE;
+  else if (s == "file-type")
+    t = elf_symbol::FILE_TYPE;
+  else if (s == "common-type")
+    t = elf_symbol::COMMON_TYPE;
+  else if (s == "tls-type")
+    t = elf_symbol::TLS_TYPE;
+  else if (s == "gnu-ifunc-type")
+    t = elf_symbol::GNU_IFUNC_TYPE;
+  else
+    return false;
+
+  return true;
+}
+
+/// Convert a string representing a an elf symbol binding into an
+/// elf_symbol::binding.
+///
+/// @param s the string to convert.
+///
+/// @param b the resulting elf_symbol::binding.
+///
+/// @return true iff the conversion completed successfully.
+bool
+string_to_elf_symbol_binding(const string& s, elf_symbol::binding& b)
+{
+    if (s == "local-binding")
+      b = elf_symbol::LOCAL_BINDING;
+    else if (s == "global-binding")
+      b = elf_symbol::GLOBAL_BINDING;
+    else if (s == "weak-binding")
+      b = elf_symbol::WEAK_BINDING;
+    else if (s == "gnu-unique-binding")
+      b = elf_symbol::GNU_UNIQUE_BINDING;
+    else
+      return false;
+
+    return true;
+}
+
 // <elf_symbol::version stuff>
 
 struct elf_symbol::version::priv

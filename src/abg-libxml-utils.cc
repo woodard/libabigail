@@ -130,6 +130,34 @@ new_reader_from_istream(std::istream* in)
   return p;
 }
 
+/// Convert a shared pointer to xmlChar into an std::string.
+///
+/// If the xmlChar is NULL, set "" to the string.
+///
+/// @param ssptr the shared point to xmlChar to convert.
+///
+/// @param s the output string.
+///
+/// @return true if the shared pointer to xmlChar contained a non NULL
+/// string, false otherwise.
+bool
+xml_char_sptr_to_string(xml_char_sptr ssptr, std::string& s)
+{
+  bool non_nil = false;
+  if (CHAR_STR(ssptr))
+    {
+      s = CHAR_STR(ssptr);
+      non_nil = true;
+    }
+  else
+    {
+      s = "";
+      non_nil = false;
+    }
+
+  return non_nil;
+}
+
 /// Return the depth of an xml element node.
 ///
 /// Note that the node must be attached to an XML document.
