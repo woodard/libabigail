@@ -65,7 +65,7 @@ show_help(const string& progname)
        << "where [options] can be:\n"
        << "  --help  display this help string\n"
        << "  --demangle demangle the symbols from the symbol table\n"
-       << "  --no-absolute-path\n";
+       << "  --no-absolute-path do not show absolute paths in messages\n";
 }
 
 static void
