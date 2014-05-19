@@ -3692,6 +3692,13 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
     return result;
   assert(dwarf_tag(die) == DW_TAG_compile_unit);
 
+  // Clear the part of the context that is depends on the translation
+  // unit we are reading.
+  ctxt.die_decl_map().clear();
+  while (!ctxt.scope_stack().empty())
+    ctxt.scope_stack().pop();
+  ctxt.var_decls_to_re_add_to_tree().clear();
+
   ctxt.cur_tu_die(die);
 
   string path = die_string_attribute(die, DW_AT_name);
@@ -5026,6 +5033,13 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_enumerator:
       break;
 
+    case DW_TAG_partial_unit:
+    case DW_TAG_imported_unit:
+      // For now, the DIEs under these are read lazily when they are
+      // referenced by a public decl DIE that is under a
+      // DW_TAG_compile_unit, so we shouldn't get here.
+      abort();
+
       // Other declaration we don't really intend to support yet.
     case DW_TAG_dwarf_procedure:
     case DW_TAG_imported_declaration:
@@ -5050,8 +5064,6 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_try_block:
     case DW_TAG_variant_part:
     case DW_TAG_imported_module:
-    case DW_TAG_partial_unit:
-    case DW_TAG_imported_unit:
     case DW_TAG_condition:
     case DW_TAG_type_unit:
     case DW_TAG_template_alias:

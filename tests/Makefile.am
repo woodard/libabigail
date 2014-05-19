@@ -168,6 +168,11 @@ data/test-read-dwarf/test0.cc			\
 data/test-read-dwarf/test1			\
 data/test-read-dwarf/test1.abi			\
 data/test-read-dwarf/test1.cc			\
+tests/data/test-read-dwarf/test2.h		\
+tests/data/test-read-dwarf/test2-0.cc		\
+tests/data/test-read-dwarf/test2-1.cc		\
+tests/data/test-read-dwarf/test2.so		\
+tests/data/test-read-dwarf/test2.so.abi		\
 \
 data/test-diff-filter/test0-v0.cc		\
 data/test-diff-filter/test0-v1.cc		\
