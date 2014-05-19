@@ -1249,6 +1249,7 @@ class read_context
   Dwfl_Module* elf_module_;
   mutable Elf* elf_handle_;
   const string elf_path_;
+  Dwarf_Die* cur_tu_die_;
   die_decl_map_type die_decl_map_;
   die_class_map_type die_wip_classes_map_;
   die_tu_map_type die_tu_map_;
@@ -1270,7 +1271,8 @@ public:
       dwarf_(0),
       elf_module_(0),
       elf_handle_(0),
-      elf_path_(elf_path)
+      elf_path_(elf_path),
+      cur_tu_die_(0)
   {}
 
   unsigned short
@@ -1332,6 +1334,14 @@ public:
   const string&
   elf_path() const
   {return elf_path_;}
+
+  const Dwarf_Die*
+  cur_tu_die() const
+  {return cur_tu_die_;}
+
+  void
+  cur_tu_die(Dwarf_Die* cur_tu_die)
+  {cur_tu_die_ = cur_tu_die;}
 
   const die_decl_map_type&
   die_decl_map() const
@@ -1769,17 +1779,20 @@ static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       scope_decl*	scope,
-		       bool		called_from_public_decl = false);
+		       bool		called_from_public_decl,
+		       size_t		where_offset);
 
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool		called_from_public_decl = false);
+		       bool		called_from_public_decl,
+		       size_t		where_offset);
 
 static function_decl_sptr
-build_function_decl(read_context& ctxt,
-		    Dwarf_Die* die,
-		    function_decl_sptr fn);
+build_function_decl(read_context&	ctxt,
+		    Dwarf_Die*		die,
+		    size_t		where_offset,
+		    function_decl_sptr	fn);
 
 /// Constructor for a default Dwfl handle that knows how to load debug
 /// info from a library or executable elf file.
@@ -3402,8 +3415,8 @@ build_die_parent_map(read_context& ctxt)
   size_t header_size = 0;
 
   for (Dwarf_Off offset = 0, next_offset = 0;
-       (dwarf_nextcu(ctxt.dwarf(), offset, &next_offset, &header_size,
-		     NULL, &address_size, NULL) == 0);
+       (dwarf_next_unit(ctxt.dwarf(), offset, &next_offset, &header_size,
+			NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
        offset = next_offset)
     {
       Dwarf_Off die_offset = offset + header_size;
@@ -3412,6 +3425,129 @@ build_die_parent_map(read_context& ctxt)
 	continue;
       build_die_parent_relations_under(ctxt, &cu);
     }
+}
+
+/// Get the last point where a DW_AT_import DIE is used to import a
+/// given (unit) DIE, before a given DIE is found.  That given DIE is
+/// called the limit DIE.
+///
+/// Said otherwise, this function returns the last import point of a
+/// unit, before a limit.
+///
+/// @param ctxt the dwarf reading context to consider.
+///
+/// @param partial_unit_offset the imported unit for which we want to
+/// know the insertion point of.  This is usually a partial unit (with
+/// tag DW_TAG_partial_unit) but it does not necessarily have to be
+/// so.
+///
+/// @param parent_die the DIE under which the lookup is to be
+/// performed.  The children of this DIE are visited in a depth-first
+/// manner, looking for the die which is at offset @p
+/// partial_unit_offset.
+///
+/// @param die_offset the offset of the limit DIE.
+///
+/// @param imported_point_offset.  The resulting imported_point_offset.
+/// Note that if the imported DIE @p partial_unit_offset is not found
+/// before @p die_offset, this is set to the last @p
+/// partial_unit_offset found under @p parent_die.
+///
+/// @return true iff an imported unit is found before @p die_offset.
+/// Note that if an imported unit is found after @p die_offset then @p
+/// imported_point_offset is set and the function return false.
+static bool
+find_last_import_unit_point_before_die(read_context&	ctxt,
+				       size_t		partial_unit_offset,
+				       const Dwarf_Die* parent_die,
+				       size_t		die_offset,
+				       size_t&		imported_point_offset)
+{
+  if (!parent_die)
+    return false;
+
+  Dwarf_Die child;
+  if (dwarf_child(const_cast<Dwarf_Die*>(parent_die), &child) != 0)
+    return false;
+
+  bool found = false;
+  do
+    {
+      if (dwarf_tag(&child) == DW_TAG_imported_unit)
+	{
+	  Dwarf_Die imported_unit;
+	  if (die_die_attribute(&child, DW_AT_import, imported_unit))
+	    {
+	      if (partial_unit_offset == dwarf_dieoffset(&imported_unit))
+		imported_point_offset = dwarf_dieoffset(&child);
+	      else
+		found =
+		  find_last_import_unit_point_before_die(ctxt,
+							 partial_unit_offset,
+							 &imported_unit,
+							 die_offset,
+							 imported_point_offset);
+	    }
+	}
+      else if (dwarf_dieoffset(&child) == die_offset
+	       && imported_point_offset)
+	found = true;
+      else
+	found = find_last_import_unit_point_before_die(ctxt,
+						       partial_unit_offset,
+						       &child, die_offset,
+						       imported_point_offset);
+    } while (dwarf_siblingof(&child, &child) == 0 && !found);
+
+  return found;
+}
+
+/// In the current translation unit, get the last point where a
+/// DW_AT_import DIE is used to import a given (unit) DIE, before a
+/// given DIE is found.  That given DIE is called the limit DIE.
+///
+/// Said otherwise, this function returns the last import point of a
+/// unit, before a limit.
+///
+/// @param ctxt the dwarf reading context to consider.
+///
+/// @param partial_unit_offset the imported unit for which we want to
+/// know the insertion point of.  This is usually a partial unit (with
+/// tag DW_TAG_partial_unit) but it does not necessarily have to be
+/// so.
+///
+/// @param where_offset the offset of the limit DIE.
+///
+/// @param imported_point_offset.  The resulting imported_point_offset.
+/// Note that if the imported DIE @p partial_unit_offset is not found
+/// before @p die_offset, this is set to the last @p
+/// partial_unit_offset found under @p parent_die.
+///
+/// @return true iff an imported unit is found before @p die_offset.
+/// Note that if an imported unit is found after @p die_offset then @p
+/// imported_point_offset is set and the function return false.
+static bool
+find_last_import_unit_point_before_die(read_context&	ctxt,
+				       size_t		partial_unit_offset,
+				       size_t		where_offset,
+				       size_t&		imported_point_offset)
+{
+  size_t import_point_offset = 0;
+  if (find_last_import_unit_point_before_die(ctxt, partial_unit_offset,
+					     ctxt.cur_tu_die(), where_offset,
+					     import_point_offset))
+    {
+      imported_point_offset = import_point_offset;
+      return true;
+    }
+
+  if (import_point_offset)
+    {
+      imported_point_offset = import_point_offset;
+      return true;
+    }
+
+  return false;
 }
 
 /// Return the parent DIE for a given DIE.
@@ -3426,10 +3562,16 @@ build_die_parent_map(read_context& ctxt)
 ///
 /// @param parent_die the output parameter set to the parent die of
 /// @p die.  Its memory must be allocated and handled by the caller.
+///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
 static void
 get_parent_die(read_context&	ctxt,
 	       Dwarf_Die*	die,
-	       Dwarf_Die*	parent_die)
+	       Dwarf_Die&	parent_die,
+	       size_t		where_offset)
 {
   assert(ctxt.dwarf());
 
@@ -3437,18 +3579,48 @@ get_parent_die(read_context&	ctxt,
     ctxt.die_parent_map().find(dwarf_dieoffset(die));
   assert(i != ctxt.die_parent_map().end());
 
-  assert(dwarf_offdie(ctxt.dwarf(), i->second, parent_die) != 0);
+  assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
+
+  if (dwarf_tag(&parent_die) == DW_TAG_partial_unit)
+    {
+      assert(where_offset);
+      size_t import_point_offset = 0;
+      bool found =
+	find_last_import_unit_point_before_die(ctxt,
+					       dwarf_dieoffset(&parent_die),
+					       where_offset,
+					       import_point_offset);
+      assert(found);
+      assert(import_point_offset);
+      Dwarf_Die import_point_die;
+      assert(dwarf_offdie(ctxt.dwarf(),
+			  import_point_offset,
+			  &import_point_die));
+      get_parent_die(ctxt, &import_point_die, parent_die, where_offset);
+    }
 }
 
 /// Return the abigail IR node representing the scope of a given DIE.
 /// If that
+/// @param ctxt the dwarf reading context to use.
+///
+/// @param die the DIE to get the scope for.
+///
+/// @param called_from_public_decl is true if this function has been
+/// initially called within the context of a public decl.
+///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
 static scope_decl_sptr
 get_scope_for_die(read_context& ctxt,
-		  Dwarf_Die* die,
-		  bool called_for_public_decl = true)
+		  Dwarf_Die*	die,
+		  bool		called_for_public_decl,
+		  size_t	where_offset)
 {
   Dwarf_Die parent_die;
-  get_parent_die(ctxt, die, &parent_die);
+  get_parent_die(ctxt, die, parent_die, where_offset);
 
   if (dwarf_tag(&parent_die) == DW_TAG_compile_unit)
     {
@@ -3472,10 +3644,12 @@ get_scope_for_die(read_context& ctxt,
     // function.  Yeah, weird.  So if I drop the typedef DIE, I'd drop
     // the function parm too.  So for that case, let's say that the
     // scope is the scope of the function itself.
-    return get_scope_for_die(ctxt, &parent_die, called_for_public_decl);
+    return get_scope_for_die(ctxt, &parent_die, called_for_public_decl,
+			     where_offset);
   else
     d = build_ir_node_from_die(ctxt, &parent_die,
-			       called_for_public_decl);
+			       called_for_public_decl,
+			       where_offset);
   s =  dynamic_pointer_cast<scope_decl>(d);
   if (!s)
     // this is an entity defined in someting that is not a scope.
@@ -3518,6 +3692,8 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
     return result;
   assert(dwarf_tag(die) == DW_TAG_compile_unit);
 
+  ctxt.cur_tu_die(die);
+
   string path = die_string_attribute(die, DW_AT_name);
   result.reset(new translation_unit(path, address_size));
 
@@ -3530,7 +3706,9 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
     return result;
 
   do
-    build_ir_node_from_die(ctxt, &child);
+    build_ir_node_from_die(ctxt, &child,
+			   die_is_public_decl(&child),
+			   dwarf_dieoffset(&child));
   while (dwarf_siblingof(&child, &child) == 0);
 
   if (!ctxt.var_decls_to_re_add_to_tree().empty())
@@ -3599,11 +3777,17 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 /// @param die the DIE to read from.  Must be either DW_TAG_namespace
 /// or DW_TAG_module.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return the resulting @ref abigail::namespace_decl or NULL if it
 /// couldn't be created.
 static namespace_decl_sptr
 build_namespace_decl_and_add_to_ir(read_context&	ctxt,
-				   Dwarf_Die*	die)
+				   Dwarf_Die*		die,
+				   size_t		where_offset)
 {
   namespace_decl_sptr result;
 
@@ -3614,7 +3798,9 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   if (tag != DW_TAG_namespace && tag != DW_TAG_module)
     return result;
 
-  scope_decl_sptr scope = get_scope_for_die(ctxt, die);
+  scope_decl_sptr scope = get_scope_for_die(ctxt, die,
+					    /*called_for_public_decl=*/false,
+					    where_offset);
 
   string name, linkage_name;
   location loc;
@@ -3630,7 +3816,9 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 
   ctxt.scope_stack().push(result.get());
   do
-    build_ir_node_from_die(ctxt, &child);
+    build_ir_node_from_die(ctxt, &child,
+			   /*called_from_public_decl=*/false,
+			   where_offset);
   while (dwarf_siblingof(&child, &child) == 0);
   ctxt.scope_stack().pop();
 
@@ -3764,6 +3952,11 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 /// @param called_from_public_decl set to true if this class is being
 /// called from a "Pubblic declaration like vars or public symbols".
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return the resulting class_type.
 static decl_base_sptr
 build_class_type_and_add_to_ir(read_context&	ctxt,
@@ -3771,7 +3964,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 			       scope_decl*	scope,
 			       bool		is_struct,
 			       class_decl_sptr  klass,
-			       bool		called_from_public_decl)
+			       bool		called_from_public_decl,
+			       size_t		where_offset)
 {
   class_decl_sptr result;
   if (!die)
@@ -3849,7 +4043,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      decl_base_sptr base_type =
 		build_ir_node_from_die(ctxt, &type_die,
-				       called_from_public_decl);
+				       called_from_public_decl,
+				       where_offset);
 	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
 	      if (!b)
 		continue;
@@ -3888,7 +4083,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      decl_base_sptr ty =
 		build_ir_node_from_die(ctxt, &type_die,
-				       called_from_public_decl);
+				       called_from_public_decl,
+				       where_offset);
 	      type_base_sptr t = is_type(ty);
 	      if (!t)
 		continue;
@@ -3935,7 +4131,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		continue;
 
 	      function_decl_sptr f =
-		build_function_decl(ctxt, &child,
+		build_function_decl(ctxt, &child, where_offset,
 				    function_decl_sptr());
 	      if (!f)
 		continue;
@@ -3994,7 +4190,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	    {
 	      decl_base_sptr td =
 		build_ir_node_from_die(ctxt, &child, result.get(),
-				       called_from_public_decl);
+				       called_from_public_decl,
+				       where_offset);
 	      if (td)
 		{
 		  access_specifier access =
@@ -4038,11 +4235,17 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 /// from a context where either a public function or a public variable
 /// is being built.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return the resulting qualified_type_def.
 static qualified_type_def_sptr
 build_qualified_type(read_context&	ctxt,
 		     Dwarf_Die*	die,
-		     bool		called_from_public_decl)
+		     bool		called_from_public_decl,
+		     size_t		where_offset)
 {
   qualified_type_def_sptr result;
   if (!die)
@@ -4060,7 +4263,8 @@ build_qualified_type(read_context&	ctxt,
 
   decl_base_sptr utype_decl = build_ir_node_from_die(ctxt,
 						     &underlying_type_die,
-						     called_from_public_decl);
+						     called_from_public_decl,
+						     where_offset);
   if (!utype_decl)
     return result;
 
@@ -4089,11 +4293,17 @@ build_qualified_type(read_context&	ctxt,
 /// from a context where either a public function or a public variable
 /// is being built.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return the resulting pointer to pointer_type_def.
 static pointer_type_def_sptr
 build_pointer_type_def(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool called_from_public_decl)
+		       bool		called_from_public_decl,
+		       size_t		where_offset)
 {
   pointer_type_def_sptr result;
 
@@ -4109,7 +4319,9 @@ build_pointer_type_def(read_context&	ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
+    build_ir_node_from_die(ctxt, &underlying_type_die,
+			   called_from_public_decl,
+			   where_offset);
   if (!utype_decl)
     return result;
 
@@ -4137,11 +4349,17 @@ build_pointer_type_def(read_context&	ctxt,
 /// from a context where either a public function or a public variable
 /// is being built.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return a pointer to the resulting reference_type_def.
 static reference_type_def_sptr
-build_reference_type(read_context& ctxt,
-		     Dwarf_Die* die,
-		     bool called_from_public_decl)
+build_reference_type(read_context&	ctxt,
+		     Dwarf_Die*	die,
+		     bool		called_from_public_decl,
+		     size_t		where_offset)
 {
   reference_type_def_sptr result;
 
@@ -4158,7 +4376,8 @@ build_reference_type(read_context& ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
+    build_ir_node_from_die(ctxt, &underlying_type_die,
+			   called_from_public_decl, where_offset);
   if (!utype_decl)
     return result;
 
@@ -4188,11 +4407,17 @@ build_reference_type(read_context& ctxt,
 /// from a context where either a public function or a public variable
 /// is being built.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return the newly created typedef_decl.
 static typedef_decl_sptr
-build_typedef_type(read_context& ctxt,
-		   Dwarf_Die* die,
-		   bool called_from_public_decl)
+build_typedef_type(read_context&	ctxt,
+		   Dwarf_Die*		die,
+		   bool		called_from_public_decl,
+		   size_t		where_offset)
 {
   typedef_decl_sptr result;
 
@@ -4208,7 +4433,9 @@ build_typedef_type(read_context& ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die, called_from_public_decl);
+    build_ir_node_from_die(ctxt, &underlying_type_die,
+			   called_from_public_decl,
+			   where_offset);
   if (!utype_decl)
     return result;
 
@@ -4230,6 +4457,11 @@ build_typedef_type(read_context& ctxt,
 ///
 /// @param die the DIE to read from to build the @ref var_decl.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @param result if this is set to an existing var_decl, this means
 /// that the function will append the new properties it sees on @p die
 /// to that exising var_decl.  Otherwise, if this parameter is NULL, a
@@ -4238,9 +4470,10 @@ build_typedef_type(read_context& ctxt,
 /// @return a pointer to the newly created var_decl.  If the var_decl
 /// could not be built, this function returns NULL.
 static var_decl_sptr
-build_var_decl(read_context& ctxt,
-	       Dwarf_Die *die,
-	       var_decl_sptr result = var_decl_sptr())
+build_var_decl(read_context&	ctxt,
+	       Dwarf_Die	*die,
+	       size_t		where_offset,
+	       var_decl_sptr	result = var_decl_sptr())
 {
   if (!die)
     return result;
@@ -4255,7 +4488,8 @@ build_var_decl(read_context& ctxt,
     {
       decl_base_sptr ty =
 	build_ir_node_from_die(ctxt, &type_die,
-			       /*called_from_public_decl=*/true);
+			       /*called_from_public_decl=*/true,
+			       where_offset);
       if (!ty)
 	return result;
       type = is_type(ty);
@@ -4304,12 +4538,18 @@ build_var_decl(read_context& ctxt,
 ///
 /// @param die the DW_TAG_subprogram DIE to read from.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @param called_for_public_decl this is set to true if the function
 /// was called for a public (function) decl.
 static function_decl_sptr
-build_function_decl(read_context& ctxt,
-		    Dwarf_Die* die,
-		    function_decl_sptr fn)
+build_function_decl(read_context&	ctxt,
+		    Dwarf_Die*		die,
+		    size_t		where_offset,
+		    function_decl_sptr	fn)
 {
   function_decl_sptr result = fn;
   if (!die)
@@ -4319,7 +4559,7 @@ build_function_decl(read_context& ctxt,
  if (!die_is_public_decl(die))
    return result;
 
-  translation_unit_sptr tu = ctxt.cur_tu();
+ translation_unit_sptr tu = ctxt.cur_tu();
   assert(tu);
 
   string fname, flinkage_name;
@@ -4334,10 +4574,12 @@ build_function_decl(read_context& ctxt,
   if (die_die_attribute(die, DW_AT_type, ret_type_die))
     return_type_decl =
       build_ir_node_from_die(ctxt, &ret_type_die,
-			     /*called_from_public_decl=*/true);
+			     /*called_from_public_decl=*/true,
+			     where_offset);
 
   class_decl_sptr is_method =
-    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die));
+    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die, true,
+						       where_offset));
 
   Dwarf_Die child;
   function_decl::parameters function_parms;
@@ -4357,7 +4599,8 @@ build_function_decl(read_context& ctxt,
 	    if (die_die_attribute(&child, DW_AT_type, parm_type_die))
 	      parm_type_decl =
 		build_ir_node_from_die(ctxt, &parm_type_die,
-				       /*called_from_public_decl=*/true);
+				       /*called_from_public_decl=*/true,
+				       where_offset);
 	    if (!parm_type_decl)
 	      continue;
 	    function_decl::parameter_sptr p
@@ -4458,8 +4701,9 @@ build_corpus(read_context& ctxt)
        offset = next_offset)
     {
       Dwarf_Off die_offset = offset + header_size;
-      Dwarf_Die cu;
-      if (!dwarf_offdie(ctxt.dwarf(), die_offset, &cu))
+      Dwarf_Die unit;
+      if (!dwarf_offdie(ctxt.dwarf(), die_offset, &unit)
+	  || dwarf_tag(&unit) != DW_TAG_compile_unit)
 	continue;
 
       ctxt.dwarf_version(dwarf_version);
@@ -4475,7 +4719,7 @@ build_corpus(read_context& ctxt)
       // Build a translation_unit IR node from cu; note that cu must
       // be a DW_TAG_compile_unit die.
       translation_unit_sptr ir_node =
-	build_translation_unit_and_add_to_ir(ctxt, &cu, address_size);
+	build_translation_unit_and_add_to_ir(ctxt, &unit, address_size);
       assert(ir_node);
     }
   return ctxt.current_corpus();
@@ -4500,12 +4744,18 @@ build_corpus(read_context& ctxt)
 /// This is done to avoid emitting IR nodes for types that are not
 /// referenced by public functions or variables.
 ///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return the resulting IR node.
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       scope_decl*	scope,
-		       bool		called_from_public_decl)
+		       bool		called_from_public_decl,
+		       size_t		where_offset)
 {
   decl_base_sptr result;
 
@@ -4543,7 +4793,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_typedef:
       {
 	typedef_decl_sptr t = build_typedef_type(ctxt, die,
-						 called_from_public_decl);
+						 called_from_public_decl,
+						 where_offset);
 	result = add_decl_to_scope(t, scope);
       }
       break;
@@ -4551,7 +4802,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_pointer_type:
       {
 	pointer_type_def_sptr p =
-	  build_pointer_type_def(ctxt, die, called_from_public_decl);
+	  build_pointer_type_def(ctxt, die, called_from_public_decl,
+				 where_offset);
 	if(p)
 	  result = add_decl_to_scope(p, scope);
       }
@@ -4561,7 +4813,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_rvalue_reference_type:
       {
 	reference_type_def_sptr r =
-	  build_reference_type(ctxt, die, called_from_public_decl);
+	  build_reference_type(ctxt, die, called_from_public_decl,
+			       where_offset);
 	if (r)
 	    result = add_decl_to_scope(r, scope);
       }
@@ -4571,7 +4824,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_volatile_type:
       {
 	qualified_type_def_sptr q =
-	  build_qualified_type(ctxt, die, called_from_public_decl);
+	  build_qualified_type(ctxt, die, called_from_public_decl,
+			       where_offset);
 	if (q)
 	  result = add_decl_to_scope(q, scope);
       }
@@ -4592,11 +4846,14 @@ build_ir_node_from_die(read_context&	ctxt,
 	scope_decl_sptr scop;
 	if (die_die_attribute(die, DW_AT_specification, spec_die))
 	  {
-	    scope_decl_sptr skope = get_scope_for_die(ctxt, &spec_die);
+	    scope_decl_sptr skope = get_scope_for_die(ctxt, &spec_die,
+						      called_from_public_decl,
+						      where_offset);
 	    assert(skope);
 	    decl_base_sptr cl = build_ir_node_from_die(ctxt, &spec_die,
 						       skope.get(),
-						       called_from_public_decl);
+						       called_from_public_decl,
+						       where_offset);
 	    assert(cl);
 	    class_decl_sptr klass = dynamic_pointer_cast<class_decl>(cl);
 	    assert(klass);
@@ -4606,7 +4863,8 @@ build_ir_node_from_die(read_context&	ctxt,
 					     skope.get(),
 					     tag == DW_TAG_structure_type,
 					     klass,
-					     called_from_public_decl);
+					     called_from_public_decl,
+					     where_offset);
 	  }
 	else
 	  result =
@@ -4614,7 +4872,8 @@ build_ir_node_from_die(read_context&	ctxt,
 					   scope,
 					   tag == DW_TAG_structure_type,
 					   class_decl_sptr(),
-					   called_from_public_decl);
+					   called_from_public_decl,
+					   where_offset);
       }
       break;
     case DW_TAG_string_type:
@@ -4658,7 +4917,7 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_namespace:
     case DW_TAG_module:
-      result = build_namespace_decl_and_add_to_ir(ctxt, die);
+      result = build_namespace_decl_and_add_to_ir(ctxt, die, where_offset);
       break;
 
     case DW_TAG_variable:
@@ -4666,17 +4925,20 @@ build_ir_node_from_die(read_context&	ctxt,
 	Dwarf_Die spec_die;
 	if (die_die_attribute(die, DW_AT_specification, spec_die))
 	  {
-	    scope_decl_sptr scop = get_scope_for_die(ctxt, &spec_die);
+	    scope_decl_sptr scop = get_scope_for_die(ctxt, &spec_die,
+						     called_from_public_decl,
+						     where_offset);
 	    if (scop)
 	      {
 		decl_base_sptr d =
 		  build_ir_node_from_die(ctxt, &spec_die, scop.get(),
-					 called_from_public_decl);
+					 called_from_public_decl,
+					 where_offset);
 		if (d)
 		  {
 		    var_decl_sptr m =
 		      dynamic_pointer_cast<var_decl>(d);
-		    m = build_var_decl(ctxt, die, m);
+		    m = build_var_decl(ctxt, die, where_offset, m);
 		    if (is_data_member(m))
 		      {
 			set_member_is_static(m, true);
@@ -4693,7 +4955,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		  }
 	      }
 	  }
-	else if (var_decl_sptr v = build_var_decl(ctxt, die))
+	else if (var_decl_sptr v = build_var_decl(ctxt, die, where_offset))
 	  {
 	    result = add_decl_to_scope(v, scope);
 	    assert(result->get_scope());
@@ -4717,14 +4979,17 @@ build_ir_node_from_die(read_context&	ctxt,
 	  if (die_die_attribute(die, DW_AT_specification, spec_die)
 	      || die_die_attribute(die, DW_AT_abstract_origin, spec_die))
 	    {
-	      scop = get_scope_for_die(ctxt, &spec_die);
+	      scop = get_scope_for_die(ctxt, &spec_die,
+				       called_from_public_decl,
+				       where_offset);
 	      if (scop)
 		{
 		  decl_base_sptr d =
 		    build_ir_node_from_die(ctxt,
 					   &spec_die,
 					   scop.get(),
-					   called_from_public_decl);
+					   called_from_public_decl,
+					   where_offset);
 		  if (d)
 		    {
 		      fn = dynamic_pointer_cast<function_decl>(d);
@@ -4743,7 +5008,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  }
 	ctxt.scope_stack().push(scope);
 
-	if ((result = build_function_decl(ctxt, die, fn)))
+	if ((result = build_function_decl(ctxt, die, where_offset, fn)))
 	  result = add_decl_to_scope(result, scope);
 
 	ctxt.scope_stack().pop();
@@ -4833,14 +5098,18 @@ build_ir_node_from_die(read_context&	ctxt,
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool		called_from_public_decl)
+		       bool		called_from_public_decl,
+		       size_t		where_offset)
 {
   if (!die)
     return decl_base_sptr();
 
-  scope_decl_sptr scope = get_scope_for_die(ctxt, die);
+  scope_decl_sptr scope = get_scope_for_die(ctxt, die,
+					    called_from_public_decl,
+					    where_offset);
   return build_ir_node_from_die(ctxt, die, scope.get(),
-				called_from_public_decl);
+				called_from_public_decl,
+				where_offset);
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info
