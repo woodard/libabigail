@@ -1998,14 +1998,28 @@ die_decl_file_attribute(Dwarf_Die* die)
 /// @param result the DIE resulting from reading the attribute value.
 /// This is set iff the function returns true.
 ///
+/// @param look_through_abstract_origin if yes, the function looks
+/// through the possible DW_AT_abstract_origin attribute all the way
+/// down to the initial DIE that is cloned and look on that DIE to see
+/// if it has the @p attr_name attribute.
+///
 /// @return true if the DIE @p die contains an attribute named @p
 /// attr_name that is a DIE reference, false otherwise.
 static bool
-die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result)
+die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result,
+		  bool look_through_abstract_origin = true)
 {
   Dwarf_Attribute attr;
-  if (!dwarf_attr_integrate(die, attr_name, &attr))
-    return false;
+  if (look_through_abstract_origin)
+    {
+      if (!dwarf_attr_integrate(die, attr_name, &attr))
+	return false;
+    }
+  else
+    {
+      if (!dwarf_attr(die, attr_name, &attr))
+	return false;
+    }
   return dwarf_formref_die(&attr, &result);
 }
 
@@ -4635,7 +4649,7 @@ build_function_decl(read_context&	ctxt,
       // Add the properties that might have been missing from the
       // first declaration of the function.  For now, it usually is
       // the mangled name that goes missing in the first declarations.
-      if (!flinkage_name.empty())
+      if (!flinkage_name.empty() && result->get_linkage_name().empty())
 	result->set_linkage_name(flinkage_name);
     }
   else
@@ -4930,7 +4944,10 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_variable:
       {
 	Dwarf_Die spec_die;
-	if (die_die_attribute(die, DW_AT_specification, spec_die))
+	bool var_is_cloned = false;
+	if (die_die_attribute(die, DW_AT_specification, spec_die, false)
+	    || (var_is_cloned = die_die_attribute(die, DW_AT_abstract_origin,
+						  spec_die, false)))
 	  {
 	    scope_decl_sptr scop = get_scope_for_die(ctxt, &spec_die,
 						     called_from_public_decl,
@@ -4945,11 +4962,13 @@ build_ir_node_from_die(read_context&	ctxt,
 		  {
 		    var_decl_sptr m =
 		      dynamic_pointer_cast<var_decl>(d);
+		    if (var_is_cloned)
+		      m = m->clone();
 		    m = build_var_decl(ctxt, die, where_offset, m);
 		    if (is_data_member(m))
 		      {
 			set_member_is_static(m, true);
-			ctxt.die_decl_map()[dwarf_dieoffset(die)] = d;
+			ctxt.die_decl_map()[dwarf_dieoffset(die)] = m;
 		      }
 		    else
 		      {
@@ -4957,8 +4976,8 @@ build_ir_node_from_die(read_context&	ctxt,
 			assert(has_scope(m));
 			ctxt.var_decls_to_re_add_to_tree().push_back(m);
 		      }
-		    assert(d->get_scope());
-		    return d;
+		    assert(m->get_scope());
+		    return m;
 		  }
 	      }
 	  }
@@ -4978,13 +4997,16 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	  Dwarf_Die spec_die;
 	  scope_decl_sptr scop;
-	  if (!die_is_public_decl(die)
-	      || die_is_artificial(die))
+	  if (die_is_artificial(die))
 	    break;
 
 	  function_decl_sptr fn;
-	  if (die_die_attribute(die, DW_AT_specification, spec_die)
-	      || die_die_attribute(die, DW_AT_abstract_origin, spec_die))
+	  bool fn_is_clone = false;
+	  if (die_die_attribute(die, DW_AT_specification,
+				spec_die, false)
+	      || (fn_is_clone =
+		  die_die_attribute(die, DW_AT_abstract_origin,
+				    spec_die, false)))
 	    {
 	      scop = get_scope_for_die(ctxt, &spec_die,
 				       called_from_public_decl,
@@ -5000,7 +5022,9 @@ build_ir_node_from_die(read_context&	ctxt,
 		  if (d)
 		    {
 		      fn = dynamic_pointer_cast<function_decl>(d);
-		      ctxt.die_decl_map()[dwarf_dieoffset(die)] = d;
+		      if (fn_is_clone)
+			fn = fn->clone();
+		      ctxt.die_decl_map()[dwarf_dieoffset(die)] = fn;
 		    }
 		}
 	    }

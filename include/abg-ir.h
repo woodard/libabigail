@@ -1312,6 +1312,9 @@ public:
   elf_symbol_sptr
   get_symbol() const;
 
+  var_decl_sptr
+  clone() const;
+
   virtual size_t
   get_hash() const;
 
@@ -1571,6 +1574,9 @@ public:
 
   binding
   get_binding() const;
+
+  function_decl_sptr
+  clone() const;
 
   virtual bool
   operator==(const decl_base& o) const;

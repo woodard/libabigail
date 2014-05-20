@@ -3686,6 +3686,22 @@ elf_symbol_sptr
 var_decl::get_symbol() const
 {return priv_->symbol_;}
 
+/// Create a new var_decl that is a clone of the current one.
+///
+/// @return the cloned var_decl.
+var_decl_sptr
+var_decl::clone() const
+{
+  var_decl_sptr v(new var_decl(get_name(),
+			       get_type(),
+			       get_location(),
+			       get_linkage_name(),
+			       get_visibility(),
+			       get_binding()));
+
+  v->set_symbol(get_symbol());
+  return v;
+}
 /// Setter of the scope of the current var_decl.
 ///
 /// Note that the decl won't hold a reference on the scope.  It's
@@ -4348,6 +4364,24 @@ function_decl::append_parameters(std::vector<shared_ptr<parameter> >& parms)
        i != parms.end();
        ++i)
     get_type()->append_parameter(*i);
+}
+
+/// Create a new instance of function_decl that is a clone of the
+/// current one.
+///
+/// @return the new clone.
+function_decl_sptr
+function_decl::clone() const
+{
+  function_decl_sptr f(new function_decl(get_name(),
+					 get_type(),
+					 is_declared_inline(),
+					 get_location(),
+					 get_linkage_name(),
+					 get_visibility(),
+					 get_binding()));
+  f->set_symbol(get_symbol());
+  return f;
 }
 
 bool
