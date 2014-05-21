@@ -4972,7 +4972,8 @@ build_ir_node_from_die(read_context&	ctxt,
 		      }
 		    else
 		      {
-			result = add_decl_to_scope(m, scope);
+			if (!var_is_cloned)
+			  result = add_decl_to_scope(m, scope);
 			assert(has_scope(m));
 			ctxt.var_decls_to_re_add_to_tree().push_back(m);
 		      }
@@ -5039,7 +5040,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	  }
 	ctxt.scope_stack().push(scope);
 
-	if ((result = build_function_decl(ctxt, die, where_offset, fn)))
+	if ((result = build_function_decl(ctxt, die, where_offset, fn))
+	    && !fn_is_clone)
 	  result = add_decl_to_scope(result, scope);
 
 	ctxt.scope_stack().pop();

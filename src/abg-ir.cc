@@ -3700,6 +3700,18 @@ var_decl::clone() const
 			       get_binding()));
 
   v->set_symbol(get_symbol());
+
+  if (is_member_decl(*this))
+    {
+      class_decl* scope = dynamic_cast<class_decl*>(get_scope());
+      scope->add_data_member(v, get_member_access_specifier(*this),
+			     get_data_member_is_laid_out(*this),
+			     get_member_is_static(*this),
+			     get_data_member_offset(*this));
+    }
+  else
+    add_decl_to_scope(v, get_scope());
+
   return v;
 }
 /// Setter of the scope of the current var_decl.
@@ -4373,14 +4385,41 @@ function_decl::append_parameters(std::vector<shared_ptr<parameter> >& parms)
 function_decl_sptr
 function_decl::clone() const
 {
-  function_decl_sptr f(new function_decl(get_name(),
-					 get_type(),
-					 is_declared_inline(),
-					 get_location(),
-					 get_linkage_name(),
-					 get_visibility(),
-					 get_binding()));
+  function_decl_sptr f;
+  if (is_member_function(*this))
+    {
+      class_decl::method_decl_sptr
+	m(new class_decl::method_decl(get_name(),
+				      get_type(),
+				      is_declared_inline(),
+				      get_location(),
+				      get_linkage_name(),
+				      get_visibility(),
+				      get_binding()));
+      class_decl* scope = dynamic_cast<class_decl*>(get_scope());
+      assert(scope);
+      scope->add_member_function(m, get_member_access_specifier(*this),
+				 member_function_is_virtual(*this),
+				 get_member_function_vtable_offset(*this),
+				 get_member_is_static(*this),
+				 get_member_function_is_ctor(*this),
+				 get_member_function_is_dtor(*this),
+				 get_member_function_is_const(*this));
+      f = m;
+    }
+  else
+    {
+      f.reset(new function_decl(get_name(),
+				get_type(),
+				is_declared_inline(),
+				get_location(),
+				get_linkage_name(),
+				get_visibility(),
+				get_binding()));
+      add_decl_to_scope(f, get_scope());
+    }
   f->set_symbol(get_symbol());
+
   return f;
 }
 
