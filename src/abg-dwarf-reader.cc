@@ -4161,7 +4161,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      assert(m);
 
 	      bool is_ctor = (f->get_name() == result->get_name());
-	      bool is_dtor = (f->get_name() == "~" + result->get_name());
+	      bool is_dtor = (!f->get_name().empty()
+			      && f->get_name()[0] == '~');
 	      bool is_virtual = die_is_virtual(&child);
 	      size_t vindex = 0;
 	      if (is_virtual)
