@@ -83,7 +83,7 @@ using sptr_utils::regex_t_sptr;
 struct corpus::priv
 {
   origin			origin_;
-  bool				is_symbol_table_built;
+  bool				is_public_decl_table_built;
   vector<string>		regex_patterns_fns_to_suppress;
   vector<string>		regex_patterns_vars_to_suppress;
   vector<string>		regex_patterns_fns_to_keep;
@@ -99,12 +99,12 @@ private:
 public:
   priv(const string &p)
     : origin_(ARTIFICIAL_ORIGIN),
-      is_symbol_table_built(false),
+      is_public_decl_table_built(false),
       path(p)
   {}
 
   void
-  build_symbol_table();
+  build_public_decl_table();
 };
 
 /// Convenience typedef for a hash map of pointer to function_decl and
@@ -129,7 +129,7 @@ typedef unordered_map<string, const var_decl*> str_var_ptr_map_type;
 
 /// A visitor type to be used while traversing functions and variables
 /// of the translations units of the corpus.  The goal of this visitor
-/// is to build a symbol table containing all the public functions and
+/// is to build a public decl table containing all the public functions and
 /// global variables of the all the translation units of the the
 /// corpus.
 class symtab_build_visitor_type : public ir_node_visitor
@@ -230,7 +230,7 @@ public:
   {return vars_map().find(v) != vars_map().end();}
 
   /// @return the vector of regex_t* describing the set of functions
-  /// to suppress from the function symbol table.
+  /// to suppress from the function public decl table.
   vector<regex_t_sptr>&
   regex_fns_suppress()
   {
@@ -251,7 +251,7 @@ public:
   }
 
   /// @return the vector of regex_t* describing the set of variables
-  /// to suppress from the variable symbol table.
+  /// to suppress from the variable public decl table.
   vector<regex_t_sptr>&
   regex_vars_suppress()
   {
@@ -271,9 +271,9 @@ public:
   }
 
   /// @return the vector of regex_t* describing the set of functions
-  /// to keep into the function symbol table.  All the other functions
+  /// to keep into the function public decl table.  All the other functions
   /// not described by these regular expressions are not dropped from
-  /// the symbol table.
+  /// the public decl table.
   vector<regex_t_sptr>&
   regex_fns_keep()
   {
@@ -293,9 +293,9 @@ public:
   }
 
   /// @return the vector of regex_t* describing the set of variables
-  /// to keep into the variable symbol table.  All the other variabled
+  /// to keep into the variable public decl table.  All the other variabled
   /// not described by these regular expressions are not dropped from
-  /// the symbol table.
+  /// the public decl table.
   vector<regex_t_sptr>&
   regex_vars_keep()
   {
@@ -325,16 +325,16 @@ public:
   {vars_map()[vn] = v;}
 
   /// Add a given function to the list of functions that are supposed
-  /// to end up in the function symbol table.
+  /// to end up in the function public decl table.
   ///
   /// Note that this function applies regular expressions supposed to
-  /// describe the set of functions to be dropped from the symbol
+  /// describe the set of functions to be dropped from the public decl
   /// table and then drop the functions matched.  It then applies
   /// regular expressions supposed to describe the set of functions to
-  /// be kept into the symbol table and then keeps the functions that
+  /// be kept into the public decl table and then keeps the functions that
   /// match and drops the functions that don't.
   ///
-  /// @param fn the function to add to the symbol table, if it
+  /// @param fn the function to add to the public decl table, if it
   /// complies with the regular expressions that might have been
   /// specified by the client code.
   void
@@ -373,16 +373,16 @@ public:
   }
 
   /// Add a given variable to the list of variables that are supposed
-  /// to end up in the variable symbol table.
+  /// to end up in the variable public decl table.
   ///
   /// Note that this variable applies regular expressions supposed to
-  /// describe the set of variables to be dropped from the symbol
+  /// describe the set of variables to be dropped from the public decl
   /// table and then drop the variables matched.  It then applies
   /// regular expressions supposed to describe the set of variables to
-  /// be kept into the symbol table and then keeps the variables that
+  /// be kept into the public decl table and then keeps the variables that
   /// match and drops the variables that don't.
   ///
-  /// @param var the var to add to the symbol table, if it complies
+  /// @param var the var to add to the public decl table, if it complies
   /// with the regular expressions that might have been specified by
   /// the client code.
   void
@@ -423,7 +423,7 @@ public:
   /// This function is called while visiting a @ref function_decl IR
   /// node of a translation unit.
   ///
-  /// Add the function to the symbol table being constructed (WIP
+  /// Add the function to the public decl table being constructed (WIP
   /// meaning work in progress).
   ///
   /// @param fn the function being visited.
@@ -443,7 +443,7 @@ public:
   /// This function is called while visiting a @ref var_decl IR node
   /// of a translation unit.
   ///
-  /// Add the variable to the symbol table being constructed (WIP
+  /// Add the variable to the public decl table being constructed (WIP
   /// meaning work in progress).
   ///
   /// @param var the variable being visited.
@@ -540,11 +540,11 @@ struct var_comp
   }
 };
 
-/// Build the symbol tables for the corpus.  That is, walk all the
+/// Build the public decl tables for the corpus.  That is, walk all the
 /// functions of all translation units of the corpus, stuff them in a
 /// vector and sort the vector.  Likewise for the variables.
 void
-corpus::priv::build_symbol_table()
+corpus::priv::build_public_decl_table()
 {
   symtab_build_visitor_type v(fns, vars,
 			      regex_patterns_fns_to_suppress,
@@ -611,7 +611,7 @@ corpus::priv::build_symbol_table()
   var_comp vc;
   std::sort(vars.begin(), vars.end(), vc);
 
-  is_symbol_table_built = true;
+  is_public_decl_table_built = true;
 }
 
 /// @param path the path to the file containing the ABI corpus.
@@ -709,128 +709,128 @@ corpus::operator==(const corpus& other) const
 	  && j == other.get_translation_units().end());
 }
 
-/// Build and return the functions symbol table of the current corpus.
+/// Build and return the functions public decl table of the current corpus.
 ///
-/// The function symbol tables is a vector of all the functions and
+/// The function public decl tables is a vector of all the functions and
 /// member functions found in the current corpus.  This vector is
 /// built the first time this function is called.
 ///
 /// Note that the caller can suppress some functions from the vector
 /// supplying regular expressions describing the set of functions she
-/// want to see removed from the symbol table by populating the vector
+/// want to see removed from the public decl table by populating the vector
 /// of regular expressions returned by
 /// corpus::get_regex_patterns_of_fns_to_suppress().
 ///
-/// @return the vector of functions of the symbol table.  The
+/// @return the vector of functions of the public decl table.  The
 /// functions are sorted using their mangled name or name if they
 /// don't have mangle names.
 const corpus::functions&
 corpus::get_functions() const
 {
-  if (!priv_->is_symbol_table_built)
-    priv_->build_symbol_table();
-  assert(priv_->is_symbol_table_built);
+  if (!priv_->is_public_decl_table_built)
+    priv_->build_public_decl_table();
+  assert(priv_->is_public_decl_table_built);
 
   return priv_->fns;
 }
 
-/// Build and return the symbol table of the global variables of the
+/// Build and return the public decl table of the global variables of the
 /// current corpus.
 ///
-/// The variable symbols table is a vector of all the public global
+/// The variable public decls table is a vector of all the public global
 /// variables and static member variables found in the current corpus.
 /// This vector is built the first time this function is called.
 ///
 /// Note that the caller can suppress some variables from the vector
 /// supplying regular expressions describing the set of variables she
-/// wants to see removed from the symbol table by populating the vector
+/// wants to see removed from the public decl table by populating the vector
 /// of regular expressions returned by
 /// corpus::get_regex_patterns_of_fns_to_suppress().
 ///
-/// @return the vector of variables of the symbol table.  The
+/// @return the vector of variables of the public decl table.  The
 /// variables are sorted using their name.
 const corpus::variables&
 corpus::get_variables() const
 {
-  if (!priv_->is_symbol_table_built)
-    priv_->build_symbol_table();
-  assert(priv_->is_symbol_table_built);
+  if (!priv_->is_public_decl_table_built)
+    priv_->build_public_decl_table();
+  assert(priv_->is_public_decl_table_built);
 
   return priv_->vars;
 }
 
 /// Accessor for the regex patterns describing the functions to drop
-/// from the symbol table.
+/// from the public decl table.
 ///
 /// @return the regex patterns describing the functions to drop from
-/// the symbol table.
+/// the public decl table.
 vector<string>&
 corpus::get_regex_patterns_of_fns_to_suppress()
 {return priv_->regex_patterns_fns_to_suppress;}
 
 /// Accessor for the regex patterns describing the functions to drop
-/// from the symbol table.
+/// from the public decl table.
 ///
 /// @return the regex patterns describing the functions to drop from
-/// the symbol table.
+/// the public decl table.
 const vector<string>&
 corpus::get_regex_patterns_of_fns_to_suppress() const
 {return priv_->regex_patterns_fns_to_suppress;}
 
 /// Accessor for the regex patterns describing the variables to drop
-/// from the symbol table.
+/// from the public decl table.
 ///
 /// @return the regex patterns describing the variables to drop from
-/// the symbol table.
+/// the public decl table.
 vector<string>&
 corpus::get_regex_patterns_of_vars_to_suppress()
 {return priv_->regex_patterns_vars_to_suppress;}
 
 /// Accessor for the regex patterns describing the variables to drop
-/// from the symbol table.
+/// from the public decl table.
 ///
 /// @return the regex patterns describing the variables to drop from
-/// the symbol table.
+/// the public decl table.
 const vector<string>&
 corpus::get_regex_patterns_of_vars_to_suppress() const
 {return priv_->regex_patterns_vars_to_suppress;}
 
 /// Accessor for the regex patterns describing the functions to keep
-/// into the symbol table.  The other functions not matches by these
-/// regexes are dropped from the symbol table.
+/// into the public decl table.  The other functions not matches by these
+/// regexes are dropped from the public decl table.
 ///
 /// @return the regex patterns describing the functions to keep into
-/// the symbol table.
+/// the public decl table.
 vector<string>&
 corpus::get_regex_patterns_of_fns_to_keep()
 {return priv_->regex_patterns_fns_to_keep;}
 
 /// Accessor for the regex patterns describing the functions to keep
-/// into the symbol table.  The other functions not matches by these
-/// regexes are dropped from the symbol table.
+/// into the public decl table.  The other functions not matches by these
+/// regexes are dropped from the public decl table.
 ///
 /// @return the regex patterns describing the functions to keep into
-/// the symbol table.
+/// the public decl table.
 const vector<string>&
 corpus::get_regex_patterns_of_fns_to_keep() const
 {return priv_->regex_patterns_fns_to_keep;}
 
 /// Accessor for the regex patterns describing the variables to keep
-/// into the symbol table.  The other variables not matches by these
-/// regexes are dropped from the symbol table.
+/// into the public decl table.  The other variables not matches by these
+/// regexes are dropped from the public decl table.
 ///
 /// @return the regex patterns describing the variables to keep into
-/// the symbol table.
+/// the public decl table.
 vector<string>&
 corpus::get_regex_patterns_of_vars_to_keep()
 {return priv_->regex_patterns_vars_to_keep;}
 
 /// Accessor for the regex patterns describing the variables to keep
-/// into the symbol table.  The other variables not matches by these
-/// regexes are dropped from the symbol table.
+/// into the public decl table.  The other variables not matches by these
+/// regexes are dropped from the public decl table.
 ///
 /// @return the regex patterns describing the variables to keep into
-/// the symbol table.
+/// the public decl table.
 const vector<string>&
 corpus::get_regex_patterns_of_vars_to_keep() const
 {return priv_->regex_patterns_vars_to_keep;}
