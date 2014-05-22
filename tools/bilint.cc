@@ -64,19 +64,21 @@ using abigail::xml_writer::write_corpus_to_archive;
 
 struct options
 {
-  string file_path;
-  bool read_from_stdin;
-  bool read_tu;
-  bool diff;
-  bool bidiff;
-  bool noout;
+  string	file_path;
+  bool		read_from_stdin;
+  bool		read_tu;
+  bool		diff;
+  bool		bidiff;
+  bool		noout;
+  char**	di_root_path;
 
   options()
     : read_from_stdin(false),
       read_tu(false),
       diff(false),
       bidiff(false),
-      noout(false)
+      noout(false),
+      di_root_path(0)
   {}
 };//end struct options;
 
@@ -86,6 +88,8 @@ display_usage(const string& prog_name, ostream& out)
   out << "usage: " << prog_name << "[options] [<abi-file1>\n"
       << " where options can be:\n"
       << "  --help  display this message\n"
+      << "  --debug-info-dir <path> the path under which to look for "
+           "debug info for the elf <abi-file>\n"
       << "  --diff  for xml inputs, perform a text diff between "
          "the input and the memory model saved back to disk\n"
       << "  --bidiff perform an abi diff between the input "
@@ -115,6 +119,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  }
 	else if (!strcmp(argv[i], "--help"))
 	  return false;
+	else if (!strcmp(argv[i], "--debug-info-dir"))
+	  {
+	    if (argc <= i + 1
+		|| argv[i + 1][0] == '-')
+	      return false;
+
+	    opts.di_root_path = &argv[i + 1];
+	    ++i;
+	  }
 	else if (!strcmp(argv[i], "--stdin"))
 	  opts.read_from_stdin = true;
 	else if (!strcmp(argv[i], "--tu"))
@@ -192,7 +205,8 @@ main(int argc, char* argv[])
 	  tu = read_translation_unit_from_file(opts.file_path);
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
-	  corp = read_corpus_from_elf(opts.file_path);
+	  corp = read_corpus_from_elf(opts.file_path,
+				      opts.di_root_path);
 	  break;
 	case abigail::tools::FILE_TYPE_XML_CORPUS:
 	  corp = read_corpus_from_native_xml_file(opts.file_path);

@@ -1797,11 +1797,20 @@ build_function_decl(read_context&	ctxt,
 /// Constructor for a default Dwfl handle that knows how to load debug
 /// info from a library or executable elf file.
 ///
+/// @param debug_info_root_path a pointer to the root path under which
+/// to look for the debug info of the elf files that are later handled
+/// by the Dwfl.  This for cases where the debug info is split into a
+/// different file from the binary we want to inspect.  On Red Hat
+/// compatible systems, this root path is usually /usr/lib/debug by
+/// default.  If this argument is set to NULL, then "./debug" and
+/// /usr/lib/debug will be searched for sub-directories containing the
+/// debug info file.
+///
 /// @return the constructed Dwfl handle.
 static Dwfl*
-create_default_dwfl()
+create_default_dwfl(char** debug_info_root_path)
 {
-  static const Dwfl_Callbacks offline_callbacks =
+  static Dwfl_Callbacks offline_callbacks =
     {
       0,
       .find_debuginfo =  dwfl_standard_find_debuginfo,
@@ -1809,6 +1818,7 @@ create_default_dwfl()
       0
     };
 
+  offline_callbacks.debuginfo_path = debug_info_root_path;
   return dwfl_begin(&offline_callbacks);
 }
 
@@ -1827,10 +1837,19 @@ create_dwfl_sptr(Dwfl* dwfl)
 /// Create a shared pointer to a default Dwfl handle.  This uses the
 /// create_default_dwfl() function.
 ///
+/// @param di_path a pointer to the root path under which to look for
+/// the debug info of the elf files that are later handled by the
+/// Dwfl.  This for cases where the debug info is split into a
+/// different file from the binary we want to inspect.  On Red Hat
+/// compatible systems, this root path is usually /usr/lib/debug by
+/// default.  If this argument is set to NULL, then "./debug" and
+/// /usr/lib/debug will be searched for sub-directories containing the
+/// debug info file.
+///
 /// @return the created shared pointer.
 static dwfl_sptr
-create_default_dwfl_sptr()
-{return create_dwfl_sptr(create_default_dwfl());}
+create_default_dwfl_sptr(char** di_path)
+{return create_dwfl_sptr(create_default_dwfl(di_path));}
 
 /// Get the value of an attribute that is supposed to be a string, or
 /// an empty string if the attribute could not be found.
@@ -5157,13 +5176,23 @@ build_ir_node_from_die(read_context&	ctxt,
 ///
 /// @param elf_path the path to the elf file.
 ///
+/// @param debug_info_root_path a pointer to the root path under which
+/// to look for the debug info of the elf files that are later handled
+/// by the Dwfl.  This for cases where the debug info is split into a
+/// different file from the binary we want to inspect.  On Red Hat
+/// compatible systems, this root path is usually /usr/lib/debug by
+/// default.  If this argument is set to NULL, then "./debug" and
+/// /usr/lib/debug will be searched for sub-directories containing the
+/// debug info file.
+///
 /// @return a pointer to the resulting @ref abigail::corpus.
 corpus_sptr
-read_corpus_from_elf(const std::string& elf_path)
+read_corpus_from_elf(const std::string& elf_path,
+		     char** debug_info_root_path)
 {
   // Create a DWARF Front End Library handle to be used by functions
   // of that library.
-  dwfl_sptr handle = create_default_dwfl_sptr();
+  dwfl_sptr handle = create_default_dwfl_sptr(debug_info_root_path);
 
   read_context ctxt(handle, elf_path);
 

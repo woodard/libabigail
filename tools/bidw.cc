@@ -48,6 +48,11 @@ struct options
 {
   string in_file_path;
   string out_file_path;
+  char** di_root_path;
+
+  options()
+    : di_root_path(0)
+  {}
 };
 
 static void
@@ -56,6 +61,7 @@ display_usage(const string& prog_name, ostream& out)
   out << "usage: " << prog_name << "[options] [<path-to-elf-file>]\n"
       << " where options can be: \n"
       << "  --help display this message\n"
+      << "  --debug-info-dir <dir-path> look for debug info under 'dir-path'\n"
       << "  --out-file <file-path> write the output to 'file-path'\n";
 }
 
@@ -73,6 +79,16 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    opts.in_file_path = argv[i];
 	  else
 	    return false;
+	}
+      else if (!strcmp(argv[i], "--debug-info-dir"))
+	{
+	  if (argc <= i + 1
+	      || argv[i + 1][0] == '-'
+	      || !opts.out_file_path.empty())
+	    return false;
+
+	  opts.di_root_path = &argv[i + 1];
+	  ++i;
 	}
       else if (!strcmp(argv[i], "--out-file"))
 	{
@@ -121,10 +137,26 @@ main(int argc, char* argv[])
   using abigail::translation_units;
   using abigail::dwarf_reader::read_corpus_from_elf;
 
-  corpus_sptr corp = read_corpus_from_elf(opts.in_file_path);
+  corpus_sptr corp = read_corpus_from_elf(opts.in_file_path,
+					  opts.di_root_path);
   if (!corp)
     {
-      cerr << "Could not read debug info from " << opts.in_file_path << "\n";
+      if (opts.di_root_path == 0)
+	{
+	  cerr <<
+	    "Could not read debug info from "
+	       << opts.in_file_path << "\n";
+
+	  cerr << "You might want to supply the root directory where "
+	    "to search debug info from, using the "
+	    "--debug-info-dir option\n";
+	}
+      else
+	{
+	  cerr << "Could not read debug info for " << opts.in_file_path
+	       << " from debug info root directory " << *opts.di_root_path
+	       << "\n";
+	}
       return 1;
     }
 

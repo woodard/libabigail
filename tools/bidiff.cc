@@ -47,25 +47,27 @@ using abigail::tools::guess_file_type;
 
 struct options
 {
-  string file1;
-  string file2;
-  vector<string> drop_fn_regex_patterns;
-  vector<string> drop_var_regex_patterns;
-  vector<string> keep_fn_regex_patterns;
-  vector<string> keep_var_regex_patterns;
-  bool show_stats_only;
-  bool show_symtabs;
-  bool show_deleted_fns;
-  bool show_changed_fns;
-  bool show_added_fns;
-  bool show_all_fns;
-  bool show_deleted_vars;
-  bool show_changed_vars;
-  bool show_added_vars;
-  bool show_all_vars;
-  bool show_linkage_names;
-  bool show_harmful_changes;
-  bool show_harmless_changes;
+  string		file1;
+  string		file2;
+  vector<string>	drop_fn_regex_patterns;
+  vector<string>	drop_var_regex_patterns;
+  vector<string>	keep_fn_regex_patterns;
+  vector<string>	keep_var_regex_patterns;
+  bool			show_stats_only;
+  bool			show_symtabs;
+  bool			show_deleted_fns;
+  bool			show_changed_fns;
+  bool			show_added_fns;
+  bool			show_all_fns;
+  bool			show_deleted_vars;
+  bool			show_changed_vars;
+  bool			show_added_vars;
+  bool			show_all_vars;
+  bool			show_linkage_names;
+  bool			show_harmful_changes;
+  bool			show_harmless_changes;
+  char**		di_root_path1;
+  char**		di_root_path2;
 
   options()
     : show_stats_only(false),
@@ -80,7 +82,9 @@ struct options
       show_all_vars(true),
       show_linkage_names(false),
       show_harmful_changes(true),
-      show_harmless_changes(true)
+      show_harmless_changes(true),
+      di_root_path1(0),
+      di_root_path2(0)
   {}
 };//end struct options;
 
@@ -89,6 +93,8 @@ display_usage(const string prog_name, ostream& out)
 {
   out << "usage: " << prog_name << "[options] [<bi-file1> <bi-file2>]\n"
       << " where options can be:\n"
+      << " --debug-info-dir1 <path> the root for the debug info of bi-file1\n"
+      << " --debug-info-dir2 <path> the root for the debug info of bi-file2\n"
       << " --stat  only display the diff stats\n"
       << " --symtabs  only display the symbol tables of the corpora\n"
       << " --deleted-fns  display deleted public functions\n"
@@ -137,6 +143,22 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    opts.file2 = argv[i];
 	  else
 	    return false;
+	}
+      else if (!strcmp(argv[i], "--debug-info-dir1"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.di_root_path1 = &argv[j];
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--debug-info-dir2"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.di_root_path2 = &argv[j];
+	  ++i;
 	}
       else if (!strcmp(argv[i], "--stat"))
 	opts.show_stats_only = true;
@@ -396,7 +418,8 @@ main(int argc, char* argv[])
 	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1);
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
-	  c1 = abigail::dwarf_reader::read_corpus_from_elf(opts.file1);
+	  c1 = abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
+							   opts.di_root_path1);
 	  break;
 	case abigail::tools::FILE_TYPE_XML_CORPUS:
 	  c1 =
@@ -417,7 +440,8 @@ main(int argc, char* argv[])
 	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2);
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
-	  c2 = abigail::dwarf_reader::read_corpus_from_elf(opts.file2);
+	  c2 = abigail::dwarf_reader::read_corpus_from_elf(opts.file2,
+							   opts.di_root_path2);
 	  break;
 	case abigail::tools::FILE_TYPE_XML_CORPUS:
 	  c2 =

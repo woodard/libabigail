@@ -39,7 +39,8 @@ namespace dwarf_reader
 {
 
 corpus_sptr
-read_corpus_from_elf(const std::string& elf_path);
+read_corpus_from_elf(const std::string& elf_path,
+		     char** debug_info_root_path);
 
 bool
 lookup_symbol_from_elf(const string&		elf_path,
