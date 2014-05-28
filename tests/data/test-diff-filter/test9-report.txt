@@ -14,7 +14,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 2 Added functions:
 
-  'method S::S()'
   'method int S::mem_fn1()'
+  'method S::S()'
 
 

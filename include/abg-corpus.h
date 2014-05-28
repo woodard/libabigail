@@ -92,6 +92,30 @@ public:
   bool
   operator==(const corpus&) const;
 
+  void
+  set_fun_symbol_map(string_elf_symbols_map_sptr);
+
+  void
+  set_var_symbol_map(string_elf_symbols_map_sptr);
+
+  const string_elf_symbols_map_sptr
+  get_fun_symbol_map_sptr() const;
+
+  const string_elf_symbols_map_type&
+  get_fun_symbol_map() const;
+
+  const string_elf_symbols_map_sptr
+  get_var_symbol_map_sptr() const;
+
+  const string_elf_symbols_map_type&
+  get_var_symbol_map() const;
+
+  const elf_symbol_sptr
+  lookup_function_symbol(const string&) const;
+
+  const elf_symbol_sptr
+  lookup_variable_symbol(const string&) const;
+
   const functions&
   get_functions() const;
 

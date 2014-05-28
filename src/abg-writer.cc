@@ -190,6 +190,14 @@ public:
   clear_type_id_map()
   {m_type_id_map.clear();}
 
+  const string_elf_symbol_sptr_map_type&
+  get_fun_symbol_map() const
+  {return m_fun_symbol_map;}
+
+  string_elf_symbol_sptr_map_type&
+  get_fun_symbol_map()
+  {return m_fun_symbol_map;}
+
 private:
   id_manager m_id_manager;
   config m_config;
@@ -197,6 +205,8 @@ private:
   type_ptr_map m_type_id_map;
   fn_tmpl_shared_ptr_map m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map m_class_tmpl_id_map;
+  string_elf_symbol_sptr_map_type m_fun_symbol_map;
+  string_elf_symbol_sptr_map_type m_var_symbol_map;
 }; //end write_context
 
 static bool write_translation_unit(const translation_unit&,
@@ -213,6 +223,9 @@ static void write_cdtor_const_static(bool, bool, bool, bool, ostream&);
 static void write_voffset(function_decl_sptr, ostream&);
 static void write_elf_symbol_type(elf_symbol::type, ostream&);
 static void write_elf_symbol_binding(elf_symbol::binding, ostream&);
+static bool write_elf_symbol_aliases(const elf_symbol&, ostream&);
+static bool write_elf_symbol_reference(const elf_symbol&, ostream&);
+static bool write_elf_symbol_reference(const elf_symbol_sptr, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
 static void write_is_struct(const shared_ptr<class_decl>, ostream&);
@@ -234,6 +247,8 @@ static bool write_typedef_decl(const shared_ptr<typedef_decl>,
 			       write_context&, unsigned);
 static bool write_elf_symbol(const shared_ptr<elf_symbol>,
 			     write_context&, unsigned);
+static bool write_elf_symbols_table(const string_elf_symbols_map_type&,
+				    write_context&, unsigned);
 static bool write_var_decl(const shared_ptr<var_decl>,
 			   write_context&, bool, unsigned);
 static bool write_function_decl(const shared_ptr<function_decl>,
@@ -587,7 +602,7 @@ write_elf_symbol_type(elf_symbol::type t, ostream& o)
       break;
     }
 
-  o << "type='" << repr << "'";
+  o << " type='" << repr << "'";
 }
 
 /// Serialize an elf_symbol::binding into an XML element attribute of
@@ -620,7 +635,64 @@ write_elf_symbol_binding(elf_symbol::binding b, ostream& o)
       break;
     }
 
-  o << "binding='" << repr << "'";
+  o << " binding='" << repr << "'";
+}
+
+/// Write alias attributes for the aliases of a given symbol.
+///
+/// @param sym the symbol to write the attributes for.
+///
+/// @param o the output stream to write the attributes to.
+///
+/// @return true upon successful completion.
+static bool
+write_elf_symbol_aliases(const elf_symbol& sym, ostream& o)
+{
+  if (!sym.is_main_symbol() || !sym.has_aliases())
+    return false;
+
+  bool emitted = false;
+  for (elf_symbol* s = sym.get_next_alias();
+       !s->is_main_symbol();
+       s = s->get_next_alias())
+    {
+      o << " alias='" << s->get_id_string() << "'";
+      emitted = true;
+    }
+
+  return emitted;
+}
+
+/// Write an XML attribute for the reference to a symbol for the
+/// current decl.
+///
+/// @param sym the symbol to consider.
+///
+/// @param o the output stream to write the attribute to.
+///
+/// @return true upon successful completion.
+static bool
+write_elf_symbol_reference(const elf_symbol& sym, ostream& o)
+{
+  o << " elf-symbol-id='" << sym.get_id_string() << "'";
+  return true;
+}
+
+/// Write an XML attribute for the reference to a symbol for the
+/// current decl.
+///
+/// @param sym the symbol to consider.
+///
+/// @param o the output stream to write the attribute to.
+///
+/// @return true upon successful completion.
+static bool
+write_elf_symbol_reference(const elf_symbol_sptr sym, ostream& o)
+{
+  if (!sym)
+    return false;
+
+  return write_elf_symbol_reference(*sym, o);
 }
 
 /// Serialize the attributes "constructor", "destructor" or "static"
@@ -1232,11 +1304,11 @@ write_elf_symbol(const shared_ptr<elf_symbol>	sym,
       o << "'";
     }
 
-  o << " ";
   write_elf_symbol_type(sym->get_type(), o);
 
-  o << " ";
   write_elf_symbol_binding(sym->get_binding(), o);
+
+  write_elf_symbol_aliases(*sym, o);
 
   o << " is-defined='";
   if (sym->get_is_defined())
@@ -1246,6 +1318,40 @@ write_elf_symbol(const shared_ptr<elf_symbol>	sym,
   o << "'";
 
   o << "/>";
+
+  return true;
+}
+
+/// Write the elf symbol database to the output associated to the
+/// current context.
+///
+/// @param syms the elf symbol data to write out.
+///
+/// @param ctxt the context to consider.
+///
+/// @param indent the number of white spaces to use as indentation.
+///
+/// @return true upon successful completion.
+static bool
+write_elf_symbols_table(const string_elf_symbols_map_type& syms,
+			write_context& ctxt, unsigned indent)
+{
+  if (syms.empty())
+    return false;
+
+  ostream& o = ctxt.get_ostream();
+
+  unordered_map<string, bool> emitted_syms;
+  for (string_elf_symbols_map_type::const_iterator it = syms.begin();
+       it != syms.end();
+       ++it)
+    {
+      for (elf_symbols::const_iterator e = it->second.begin();
+	   e != it->second.end();
+	   ++e)
+	write_elf_symbol(*e, ctxt, indent);
+      o << "\n";
+    }
 
   return true;
 }
@@ -1333,8 +1439,6 @@ write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
 
   do_indent(o, indent);
 
-  bool has_children = false;
-
   o << "<var-decl name='" << decl->get_name() << "'";
   o << " type-id='" << ctxt.get_id_for_type(decl->get_type()) << "'";
 
@@ -1351,23 +1455,9 @@ write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
 
   write_location(decl, o);
 
-  elf_symbol_sptr sym = decl->get_symbol();
-  if (sym)
-    {
-      o << ">\n";
-      write_elf_symbol(sym, ctxt,
-		       indent + ctxt.get_config().get_xml_element_indent());
-      o << "\n";
-      has_children = true;
-    }
+  write_elf_symbol_reference(decl->get_symbol(), o);
 
-  if (has_children)
-    {
-      do_indent(o, indent);
-      o << "</var-decl>";
-    }
-  else
-    o << "/>";
+  o << "/>";
 
   return true;
 }
@@ -1414,15 +1504,9 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 
   write_size_and_alignment(decl->get_type(), o);
 
-  o << ">\n";
+  write_elf_symbol_reference(decl->get_symbol(), o);
 
-  elf_symbol_sptr sym = decl->get_symbol();
-  if (sym)
-    {
-      write_elf_symbol(sym, ctxt,
-		       indent + ctxt.get_config().get_xml_element_indent());
-      o << "\n";
-    }
+  o << ">\n";
 
   vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
     decl->get_parameters().begin();
@@ -2223,13 +2307,39 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
 
   out << ">\n";
 
+  // Write the function symbols data base.
+  if (!corpus->get_fun_symbol_map().empty())
+    {
+      do_indent_to_level(ctxt, indent, 1);
+      out << "<elf-function-symbols>\n";
+
+      write_elf_symbols_table(corpus->get_fun_symbol_map(), ctxt,
+			      get_indent_to_level(ctxt, indent, 2));
+
+      do_indent_to_level(ctxt, indent, 1);
+      out << "</elf-function-symbols>\n";
+    }
+
+  // Write the variable symbols data base.
+  if (!corpus->get_var_symbol_map().empty())
+    {
+      do_indent_to_level(ctxt, indent, 1);
+      out << "<elf-variable-symbols>\n";
+
+      write_elf_symbols_table(corpus->get_var_symbol_map(), ctxt,
+			      get_indent_to_level(ctxt, indent, 2));
+
+      do_indent_to_level(ctxt, indent, 1);
+      out << "</elf-variable-symbols>\n";
+    }
+
+  // Now write the translation units.
   for (translation_units::const_iterator i =
 	 corpus->get_translation_units().begin();
        i != corpus->get_translation_units().end();
        ++i)
-    write_translation_unit(**i, ctxt, indent + 2);
+    write_translation_unit(**i, ctxt, get_indent_to_level(ctxt, indent, 1));
 
-  do_indent_to_level(ctxt, indent, 0);
   out << "</abi-corpus>\n";
 
   return true;

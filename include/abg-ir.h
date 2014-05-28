@@ -26,6 +26,7 @@
 #define __ABG_IR_H__
 
 #include <assert.h>
+#include <tr1/unordered_map>
 #include "abg-fwd.h"
 #include "abg-hash.h"
 #include "abg-traverse.h"
@@ -197,6 +198,28 @@ class elf_symbol;
 /// A convenience typedef for a shared pointer to elf_symbol.
 typedef shared_ptr<elf_symbol> elf_symbol_sptr;
 
+/// Convenience typedef for a map which key is a string and which
+/// value if the elf symbol of the same name.
+typedef std::tr1::unordered_map<string, elf_symbol_sptr>
+string_elf_symbol_sptr_map_type;
+
+/// Convenience typedef for a shared pointer to an
+/// string_elf_symbol_sptr_map_type.
+typedef shared_ptr<string_elf_symbol_sptr_map_type>
+string_elf_symbol_sptr_map_sptr;
+
+/// Convenience typedef for a vector of elf_symbol
+typedef std::vector<elf_symbol_sptr> elf_symbols;
+
+/// Convenience typedef for a map which key is a string and which
+/// value is a vector of elf_symbol.
+typedef std::tr1::unordered_map<string, elf_symbols>
+string_elf_symbols_map_type;
+
+/// Convenience typedef for a shared pointer to
+/// string_elf_symbols_map_type.
+typedef shared_ptr<string_elf_symbols_map_type> string_elf_symbols_map_sptr;
+
 /// Abstraction of an elf symbol.
 ///
 /// This is useful when a given corpus has been read from an ELF file.
@@ -292,6 +315,35 @@ public:
 
   bool
   is_variable() const;
+
+  const elf_symbol*
+  get_main_symbol() const;
+
+  elf_symbol*
+  get_main_symbol();
+
+  bool
+  is_main_symbol() const;
+
+  elf_symbol*
+  get_next_alias() const;
+
+  bool
+  has_aliases() const;
+
+  void
+  add_alias(elf_symbol*);
+
+  const string&
+  get_id_string() const;
+
+  static bool
+  get_name_and_version_from_id(const string& id,
+			       string& name,
+			       string& ver);
+
+  elf_symbol&
+  operator=(const elf_symbol& s);
 
   bool
   operator==(const elf_symbol&);

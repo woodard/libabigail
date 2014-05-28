@@ -259,7 +259,7 @@ extract_tus_from_archive(const string& dest_path,
       return false;
     }
 
-  corpus archive(archive_path);
+  corpus_sptr archive(new corpus(archive_path));
 
   if (read_corpus_from_file(archive) < 1)
     {
@@ -279,8 +279,8 @@ extract_tus_from_archive(const string& dest_path,
     }
 
   for (translation_units::const_iterator i =
-	 archive.get_translation_units().begin();
-       i != archive.get_translation_units().end();
+	 archive->get_translation_units().begin();
+       i != archive->get_translation_units().end();
        ++i)
     {
       string dest = dest_path + "/" + (*i)->get_path();

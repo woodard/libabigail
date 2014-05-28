@@ -85,9 +85,13 @@ typedef unordered_map<Dwarf_Off, decl_base_sptr> die_class_map_type;
 /// translation_unit_sptr.
 typedef unordered_map<Dwarf_Off, translation_unit_sptr> die_tu_map_type;
 
-/// Convenience typedef for a map which key is an elf address, and
-/// which value is a size_t.
-typedef unordered_map<GElf_Addr, size_t> addr_size_map_type;
+/// Convenience typedef for a map which key is an elf address and
+/// which value is an elf_symbol_sptr.
+typedef unordered_map<GElf_Addr, elf_symbol_sptr> addr_elf_symbol_sptr_map_type;
+
+/// Convenience typedef for a shared pointer to an
+/// addr_elf_symbol_sptr_map_type.
+typedef shared_ptr<addr_elf_symbol_sptr_map_type> addr_elf_symbol_sptr_map_sptr;
 
 /// Convenience typedef for a stack containing the scopes up to the
 /// current point in the abigail Internal Representation (aka IR) tree
@@ -1242,24 +1246,26 @@ maybe_adjust_var_sym_address(Dwfl_Module* module, Dwarf_Addr addr)
 /// get some important data from it.
 class read_context
 {
-  unsigned short dwarf_version_;
-  dwfl_sptr handle_;
-  Dwarf* dwarf_;
+  unsigned short		dwarf_version_;
+  dwfl_sptr			handle_;
+  Dwarf*			dwarf_;
   // The address range of the offline elf file we are looking at.
-  Dwfl_Module* elf_module_;
-  mutable Elf* elf_handle_;
-  const string elf_path_;
-  Dwarf_Die* cur_tu_die_;
-  die_decl_map_type die_decl_map_;
-  die_class_map_type die_wip_classes_map_;
-  die_tu_map_type die_tu_map_;
-  corpus_sptr cur_corpus_;
-  translation_unit_sptr cur_tu_;
-  scope_stack_type scope_stack_;
-  offset_offset_map die_parent_map_;
-  list<var_decl_sptr> var_decls_to_add_;
-  addr_size_map_type fun_sym_addr_sym_index_map_;
-  addr_size_map_type var_sym_addr_sym_index_map_;
+  Dwfl_Module*			elf_module_;
+  mutable Elf*			elf_handle_;
+  const string			elf_path_;
+  Dwarf_Die*			cur_tu_die_;
+  die_decl_map_type		die_decl_map_;
+  die_class_map_type		die_wip_classes_map_;
+  die_tu_map_type		die_tu_map_;
+  corpus_sptr			cur_corpus_;
+  translation_unit_sptr	cur_tu_;
+  scope_stack_type		scope_stack_;
+  offset_offset_map		die_parent_map_;
+  list<var_decl_sptr>		var_decls_to_add_;
+  addr_elf_symbol_sptr_map_sptr fun_addr_sym_map_;
+  string_elf_symbols_map_sptr	fun_syms_;
+  addr_elf_symbol_sptr_map_sptr var_addr_sym_map_;
+  string_elf_symbols_map_sptr	var_syms_;
 
   read_context();
 
@@ -1517,21 +1523,23 @@ public:
   /// @param symbol_start_addr the address of the beginning of the
   /// function to consider.
   ///
-  /// @param symbol the resulting symbol, iff the function returns
-  /// true.
+  /// @param sym the resulting symbol.  This is set iff the function
+  /// returns true.
   ///
-  /// @return true iff a function symbol is found for this address.
+  /// @return true iff a function symbol is found for the address @p
+  /// symbol_start_addr.
   bool
   lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr,
-				     elf_symbol& symbol)
+				    elf_symbol& sym)
   {
-    addr_size_map_type::const_iterator i,
-      nil = fun_sym_addr_sym_index_map().end();
+    addr_elf_symbol_sptr_map_type::const_iterator i,
+      nil = fun_addr_sym_map().end();
 
-    if ((i = fun_sym_addr_sym_index_map().find(symbol_start_addr)) == nil)
+    if ((i = fun_addr_sym_map().find(symbol_start_addr)) == nil)
       return false;
 
-    return lookup_elf_symbol_from_index(i->second, symbol);
+    sym = *i->second;
+    return true;
   }
 
   /// Given the address of the beginning of a function, lookup the
@@ -1564,13 +1572,14 @@ public:
   lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr,
 				     elf_symbol& symbol)
   {
-    addr_size_map_type::const_iterator i,
-      nil = var_sym_addr_sym_index_map().end();
+    addr_elf_symbol_sptr_map_type::const_iterator i,
+      nil = var_addr_sym_map().end();
 
-    if ((i = var_sym_addr_sym_index_map().find(symbol_start_addr)) == nil)
+    if ((i = var_addr_sym_map().find(symbol_start_addr)) == nil)
       return false;
 
-    return lookup_elf_symbol_from_index(i->second, symbol);
+    symbol = *i->second;
+    return true;
   }
 
   /// Given the address of a global variable, lookup the symbol of the
@@ -1626,18 +1635,24 @@ public:
 								syms);
   }
 
-  /// Getter for the map of function symbol address -> function symbol
-  /// index.
+  /// Getter for the map of function address -> symbol.
   ///
-  /// @return the map.  Note that this initializes the map once when
-  /// its nedded.
-  const addr_size_map_type&
-  fun_sym_addr_sym_index_map() const
+  /// @return the function address -> symbol map.
+  const addr_elf_symbol_sptr_map_sptr
+  fun_addr_sym_map_sptr() const
   {
-    if (fun_sym_addr_sym_index_map_.empty()
-	|| var_sym_addr_sym_index_map_.empty())
-      const_cast<read_context*>(this)->load_symbol_addr_to_index_maps();
-    return fun_sym_addr_sym_index_map_;
+    maybe_load_symbol_maps();
+    return fun_addr_sym_map_;
+  }
+
+  /// Getter for the map of function address -> symbol.
+  ///
+  /// @return the function address -> symbol map.
+  addr_elf_symbol_sptr_map_sptr
+  fun_addr_sym_map_sptr()
+  {
+    maybe_load_symbol_maps();
+    return fun_addr_sym_map_;
   }
 
   /// Getter for the map of function symbol address -> function symbol
@@ -1645,13 +1660,103 @@ public:
   ///
   /// @return the map.  Note that this initializes the map once when
   /// its nedded.
-  addr_size_map_type&
-  fun_sym_addr_sym_index_map()
+  const addr_elf_symbol_sptr_map_type&
+  fun_addr_sym_map() const
   {
-    if (fun_sym_addr_sym_index_map_.empty()
-	|| var_sym_addr_sym_index_map_.empty())
-      load_symbol_addr_to_index_maps();
-    return fun_sym_addr_sym_index_map_;
+    maybe_load_symbol_maps();
+    return *fun_addr_sym_map_;
+  }
+
+  /// Getter for the map of function symbol address -> function symbol
+  /// index.
+  ///
+  /// @return the map.  Note that this initializes the map once when
+  /// its nedded.
+  addr_elf_symbol_sptr_map_type&
+  fun_addr_sym_map()
+  {
+    maybe_load_symbol_maps();
+    return *fun_addr_sym_map_;
+  }
+
+  /// Getter for the map of function symbols (name -> sym).
+  ///
+  /// @return a shared pointer to the map of function symbols.
+  const string_elf_symbols_map_sptr&
+  fun_syms_sptr() const
+  {
+    maybe_load_symbol_maps();
+    return fun_syms_;
+  }
+
+  /// Getter for the map of function symbols (name -> sym).
+  ///
+  /// @return a shared pointer to the map of function symbols.
+  string_elf_symbols_map_sptr&
+  fun_syms_sptr()
+  {
+    maybe_load_symbol_maps();
+    return fun_syms_;
+  }
+
+  /// Getter for the map of function symbols (name -> sym).
+  ///
+  /// @return a reference to the map of function symbols.
+  const string_elf_symbols_map_type&
+  fun_syms() const
+  {
+    maybe_load_symbol_maps();
+    return *fun_syms_;
+  }
+
+  /// Getter for the map of function symbols (name -> sym).
+  ///
+  /// @return a reference to the map of function symbols.
+  string_elf_symbols_map_type&
+  fun_syms()
+  {
+    maybe_load_symbol_maps();
+    return *fun_syms_;
+  }
+
+  /// Getter for the map of variable symbols (name -> sym)
+  ///
+  /// @return a shared pointer to the map of variable symbols.
+  const string_elf_symbols_map_sptr
+  var_syms_sptr() const
+  {
+    maybe_load_symbol_maps();
+    return var_syms_;
+  }
+
+  /// Getter for the map of variable symbols (name -> sym)
+  ///
+  /// @return a shared pointer to the map of variable symbols.
+  string_elf_symbols_map_sptr
+  var_syms_sptr()
+  {
+    maybe_load_symbol_maps();
+    return var_syms_;
+  }
+
+  /// Getter for the map of variable symbols (name -> sym)
+  ///
+  /// @return a reference to the map of variable symbols.
+  const string_elf_symbols_map_type&
+  var_syms() const
+  {
+    maybe_load_symbol_maps();
+    return *var_syms_;
+  }
+
+  /// Getter for the map of variable symbols (name -> sym)
+  ///
+  /// @return a reference to the map of variable symbols.
+  string_elf_symbols_map_type&
+  var_syms()
+  {
+    maybe_load_symbol_maps();
+    return *var_syms_;
   }
 
   /// Getter for the map of global variables symbol address -> global
@@ -1659,13 +1764,11 @@ public:
   ///
   /// @return the map.  Note that this initializes the map once when
   /// its nedded.
-  const addr_size_map_type&
-  var_sym_addr_sym_index_map() const
+  const addr_elf_symbol_sptr_map_type&
+  var_addr_sym_map() const
   {
-    if (fun_sym_addr_sym_index_map_.empty()
-	|| var_sym_addr_sym_index_map_.empty())
-      const_cast<read_context*>(this)->load_symbol_addr_to_index_maps();
-    return var_sym_addr_sym_index_map_;
+    maybe_load_symbol_maps();
+    return *var_addr_sym_map_;
   }
 
   /// Getter for the map of global variables symbol address -> global
@@ -1673,13 +1776,11 @@ public:
   ///
   /// @return the map.  Note that this initializes the map once when
   /// its nedded.
-  addr_size_map_type&
-  var_sym_addr_sym_index_map()
+  addr_elf_symbol_sptr_map_type&
+  var_addr_sym_map()
   {
-    if (fun_sym_addr_sym_index_map_.empty()
-	|| var_sym_addr_sym_index_map_.empty())
-      load_symbol_addr_to_index_maps();
-    return var_sym_addr_sym_index_map_;
+    maybe_load_symbol_maps();
+    return *var_addr_sym_map_;
   }
 
   /// Load the maps of function symbol address -> function symbol and
@@ -1687,10 +1788,22 @@ public:
   ///
   /// @return true iff everything went fine.
   bool
-  load_symbol_addr_to_index_maps()
+  load_symbol_maps()
   {
-    bool load_fun_map = fun_sym_addr_sym_index_map_.empty();
-    bool load_var_map = var_sym_addr_sym_index_map_.empty();
+    bool load_fun_map = !fun_addr_sym_map_ || fun_addr_sym_map_->empty();
+    bool load_var_map = !var_addr_sym_map_ || var_addr_sym_map_->empty();
+
+    if (!fun_syms_)
+      fun_syms_.reset(new string_elf_symbols_map_type);
+
+    if (!fun_addr_sym_map_)
+      fun_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
+
+    if (!var_syms_)
+      var_syms_.reset(new string_elf_symbols_map_type);
+
+    if (!var_addr_sym_map_)
+      var_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
 
     Elf_Scn* symtab_section = NULL;
     if (!find_symbol_table_section(elf_handle(), symtab_section))
@@ -1714,14 +1827,83 @@ public:
 	if (load_fun_map
 	    && (GELF_ST_TYPE(sym->st_info) == STT_FUNC
 		|| GELF_ST_TYPE(sym->st_info) == STT_GNU_IFUNC))
-	  fun_sym_addr_sym_index_map_[sym->st_value] = i;
+	  {
+	    elf_symbol_sptr symbol(new elf_symbol);
+	    assert(lookup_elf_symbol_from_index(i, *symbol));
+	    assert(symbol->is_function());
+	    if (!symbol->is_public())
+	      continue;
+
+	    {
+	      string_elf_symbols_map_type::iterator it =
+		fun_syms_->find(symbol->get_name());
+	      if (it == fun_syms_->end())
+		{
+		  (*fun_syms_)[symbol->get_name()] = elf_symbols();
+		  it = fun_syms_->find(symbol->get_name());
+		}
+
+	      it->second.push_back(symbol);
+	    }
+
+	    {
+	      addr_elf_symbol_sptr_map_type::const_iterator it =
+		fun_addr_sym_map_->find(sym->st_value);
+	      if (it == fun_addr_sym_map_->end())
+		(*fun_addr_sym_map_)[sym->st_value] = symbol;
+	      else
+		it->second->get_main_symbol()->add_alias(symbol.get());
+	    }
+	  }
 	else if (load_var_map
 		 && (GELF_ST_TYPE(sym->st_info) == STT_OBJECT))
-	  var_sym_addr_sym_index_map_[sym->st_value] = i;
+	  {
+	    elf_symbol_sptr symbol(new elf_symbol);
+	    assert(lookup_elf_symbol_from_index(i, *symbol));
+	    assert(symbol->is_variable());
+	    if (!symbol->is_public())
+	      continue;
+
+	    {
+	      string_elf_symbols_map_type::iterator it =
+		var_syms_->find(symbol->get_name());
+	      if (it == var_syms_->end())
+		{
+		  (*var_syms_)[symbol->get_name()] = elf_symbols();
+		  it = var_syms_->find(symbol->get_name());
+		}
+	      it->second.push_back(symbol);
+	    }
+
+	    {
+	      addr_elf_symbol_sptr_map_type::const_iterator it =
+		var_addr_sym_map_->find(sym->st_value);
+	      if (it == var_addr_sym_map_->end())
+		(*var_addr_sym_map_)[sym->st_value] = symbol;
+	      else
+		it->second->get_main_symbol()->add_alias(symbol.get());
+	    }
+	  }
       }
 
     return true;
   }
+
+  /// Load the symbol maps if necessary.
+  ///
+  /// @return true iff the symbol maps has been loaded by this
+  /// invocation.
+  bool
+  maybe_load_symbol_maps() const
+  {
+    if (!fun_addr_sym_map_ || fun_addr_sym_map_->empty()
+	|| !var_addr_sym_map_ || var_addr_sym_map_->empty()
+	|| !fun_syms_ || fun_syms_->empty()
+	|| !var_syms_ || var_syms_->empty())
+      return const_cast<read_context*>(this)->load_symbol_maps();
+    return false;
+  }
+
 
   /// Get the address of the function.
   ///
@@ -4724,7 +4906,7 @@ build_function_decl(read_context&	ctxt,
 /// @return a pointer to the resulting corpus, or NULL if the corpus
 /// could not be constructed.
 static corpus_sptr
-build_corpus(read_context& ctxt)
+read_debug_info_into_corpus(read_context& ctxt)
 {
   uint8_t address_size = 0;
   size_t header_size = 0;
@@ -5200,11 +5382,18 @@ read_corpus_from_elf(const std::string& elf_path,
   if (!ctxt.load_debug_info())
     return corpus_sptr();
 
+  // First read the symbols for publicly defined decls
+  if (!ctxt.load_symbol_maps())
+    return corpus_sptr();
+
   // Now, read an ABI corpus proper from the debug info we have
   // through the dwfl handle.
-  corpus_sptr corp = build_corpus(ctxt);
+  corpus_sptr corp = read_debug_info_into_corpus(ctxt);
   corp->set_path(elf_path);
   corp->set_origin(corpus::DWARF_ORIGIN);
+
+  corp->set_fun_symbol_map(ctxt.fun_syms_sptr());
+  corp->set_var_symbol_map(ctxt.var_syms_sptr());
 
   return corp;
 }

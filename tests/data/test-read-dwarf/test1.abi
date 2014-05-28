@@ -1,4 +1,35 @@
 <abi-corpus path='data/test-read-dwarf/test1'>
+  <elf-function-symbols>
+    <elf-symbol name='_ZN2b0C2Ev' type='func-type' binding='weak-binding' alias='_ZN2b0C1Ev' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN2s0C1Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_Z3fooR2s0' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN2s07mem_funEv' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_start' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__libc_csu_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__libc_csu_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN2b1C2Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN2s0D1Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN2b0C1Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN2b1C1Ev' type='func-type' binding='weak-binding' alias='_ZN2b1C2Ev' is-defined='yes'/>
+    <elf-symbol name='main' type='func-type' binding='global-binding' is-defined='yes'/>
+  </elf-function-symbols>
+  <elf-variable-symbols>
+    <elf-symbol name='_ZTT2s0' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV2s0' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS2b0' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN10__cxxabiv117__class_type_infoE@@CXXABI_1.3' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS2s0' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI2b1' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_IO_stdin_used' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI2s0' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS2b1' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='__dso_handle' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI2b0' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN10__cxxabiv121__vmi_class_type_infoE@@CXXABI_1.3' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='__TMC_END__' type='object-type' binding='global-binding' is-defined='yes'/>
+  </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='test1.cc'>
     <class-decl name='s0' size-in-bits='384' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='13' column='1' id='type-id-1'>
       <base-class access='public' layout-offset-in-bits='24' is-virtual='yes' type-id='type-id-2'/>
@@ -28,22 +59,19 @@
         </function-decl>
       </member-function>
       <member-function access='public'>
-        <function-decl name='mem_fun' mangled-name='_ZN2s07mem_funEv' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='36' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64'>
-          <elf-symbol name='_ZN2s07mem_funEv' type='func-type' binding='global-binding' is-defined='yes'/>
+        <function-decl name='mem_fun' mangled-name='_ZN2s07mem_funEv' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='36' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64' elf-symbol-id='_ZN2s07mem_funEv'>
           <parameter type-id='type-id-8' is-artificial='yes'/>
           <return type-id='type-id-4'/>
         </function-decl>
       </member-function>
       <member-function access='public' constructor='yes'>
-        <function-decl name='s0' mangled-name='_ZN2s0C1Ev' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='21' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64'>
-          <elf-symbol name='_ZN2s0C1Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
+        <function-decl name='s0' mangled-name='_ZN2s0C1Ev' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='21' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64' elf-symbol-id='_ZN2s0C1Ev'>
           <parameter type-id='type-id-8' is-artificial='yes'/>
           <parameter type-id='type-id-5' is-artificial='yes'/>
         </function-decl>
       </member-function>
       <member-function access='public' destructor='yes'>
-        <function-decl name='~s0' mangled-name='_ZN2s0D1Ev' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='27' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64'>
-          <elf-symbol name='_ZN2s0D1Ev' type='func-type' binding='weak-binding' is-defined='yes'/>
+        <function-decl name='~s0' mangled-name='_ZN2s0D1Ev' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='27' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64' elf-symbol-id='_ZN2s0D1Ev'>
           <parameter type-id='type-id-8' is-artificial='yes'/>
           <parameter type-id='type-id-5' is-artificial='yes'/>
         </function-decl>
@@ -73,12 +101,10 @@
     <pointer-type-def type-id='type-id-1' size-in-bits='64' alignment-in-bits='64' id='type-id-8'/>
     <reference-type-def kind='lvalue' type-id='type-id-1' size-in-bits='64' alignment-in-bits='64' id='type-id-12'/>
     <qualified-type-def type-id='type-id-12' const='yes' id='type-id-13'/>
-    <function-decl name='foo' mangled-name='_Z3fooR2s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64'>
-      <elf-symbol name='_Z3fooR2s0' type='func-type' binding='global-binding' is-defined='yes'/>
+    <function-decl name='foo' mangled-name='_Z3fooR2s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64' elf-symbol-id='_Z3fooR2s0'>
       <parameter type-id='type-id-13' name='s' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1'/>
     </function-decl>
-    <function-decl name='main' mangled-name='main' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='48' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64'>
-      <elf-symbol name='main' type='func-type' binding='global-binding' is-defined='yes'/>
+    <function-decl name='main' mangled-name='main' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='48' column='1' visibility='default' binding='global' size-in-bits='64' alignment-in-bits='64' elf-symbol-id='main'>
       <return type-id='type-id-5'/>
     </function-decl>
   </abi-instr>

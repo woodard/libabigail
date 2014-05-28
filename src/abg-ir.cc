@@ -305,12 +305,17 @@ struct elf_symbol::priv
   elf_symbol::binding	binding_;
   elf_symbol::version	version_;
   bool			is_defined_;
+  elf_symbol*		main_symbol_;
+  elf_symbol*		next_alias_;
+  string		id_string_;
 
   priv()
     : index_(0),
       type_(elf_symbol::NOTYPE_TYPE),
       binding_(elf_symbol::GLOBAL_BINDING),
-      is_defined_(false)
+      is_defined_(false),
+      main_symbol_(0),
+      next_alias_(0)
   {}
 
   priv(size_t				i,
@@ -324,13 +329,16 @@ struct elf_symbol::priv
       type_(t),
       binding_(b),
       version_(v),
-      is_defined_(d)
+      is_defined_(d),
+      main_symbol_(0),
+      next_alias_(0)
   {}
 }; // end struct elf_symbol::priv
 
 elf_symbol::elf_symbol()
   : priv_(new priv)
 {
+  priv_->main_symbol_ = this;
 }
 
 elf_symbol::elf_symbol(size_t		i,
@@ -341,6 +349,7 @@ elf_symbol::elf_symbol(size_t		i,
 		       const version&	v)
   : priv_(new priv(i, n, t, b, d, v))
 {
+  priv_->main_symbol_ = this;
 }
 
 elf_symbol::elf_symbol(const elf_symbol& s)
@@ -351,6 +360,17 @@ elf_symbol::elf_symbol(const elf_symbol& s)
 		   s.get_is_defined(),
 		   s.get_version()))
 {
+  priv_->main_symbol_ = this;
+}
+
+elf_symbol&
+elf_symbol::operator=(const elf_symbol& s)
+{
+  *priv_ = *s.priv_;
+  priv_->main_symbol_ = this;
+  priv_->next_alias_ = 0;
+
+  return *this;
 }
 
 /// Getter for the index
@@ -373,7 +393,10 @@ elf_symbol::get_name() const
 
 void
 elf_symbol::set_name(const string& n)
-{priv_->name_ = n;}
+{
+  priv_->name_ = n;
+  priv_->id_string_.clear();
+}
 
 elf_symbol::type
 elf_symbol::get_type() const
@@ -397,7 +420,10 @@ elf_symbol::get_version() const
 
 void
 elf_symbol::set_version(const version& v)
-{priv_->version_ = v;}
+{
+  priv_->version_ = v;
+  priv_->id_string_.clear();
+}
 
 bool
 elf_symbol::get_is_defined() const
@@ -423,6 +449,171 @@ elf_symbol::is_function() const
 bool
 elf_symbol::is_variable() const
 {return get_type() == OBJECT_TYPE;}
+
+/// @name Elf symbol aliases
+///
+/// An alias A for an elf symbol S is a symbol that is defined at the
+/// same address as S.  S is chained to A through the
+/// elf_symbol::get_next_alias() method.
+///
+/// When there are several aliases to a symbol, the main symbol is the
+/// the first symbol found in the symbol table for a given address.
+
+/// The alias chain is circular.  That means if S is the main symbol
+/// and A is the alias, S is chained to A and A
+/// is chained back to the main symbol S.  The last alias in an alias
+///chain is always chained to the main symbol.
+///
+/// Thus, when looping over the aliases of an elf_symbol A, detecting
+/// an alias that is equal to the main symbol should logically be a
+/// loop exit condition.
+///
+/// Accessing and adding aliases for instances of elf_symbol is done
+/// through the member functions below.
+
+/// @{
+
+/// Get the main symbol of an alias chain.
+///
+///@return the main symbol.
+const elf_symbol*
+elf_symbol::get_main_symbol() const
+{return priv_->main_symbol_;}
+
+/// Get the main symbol of an alias chain.
+///
+///@return the main symbol.
+elf_symbol*
+elf_symbol::get_main_symbol()
+{return priv_->main_symbol_;}
+
+/// Tests whether this symbol is the main symbol.
+///
+/// @return true iff this symbol is the main symbol.
+bool
+elf_symbol::is_main_symbol() const
+{return get_main_symbol() == this;}
+
+/// Get the next alias of the current symbol.
+///
+///@return the alias, or NULL if there is no alias.
+elf_symbol*
+elf_symbol::get_next_alias() const
+{return priv_->next_alias_;}
+
+
+/// Check if the current elf_symbol has an alias.
+///
+///@return true iff the current elf_symbol has an alias.
+bool
+elf_symbol::has_aliases() const
+{return get_next_alias();}
+
+/// Add an alias to the current elf symbol.
+///
+/// @param alias the new alias.  Note that this elf_symbol should *NOT*
+/// have aliases prior to the invocation of this function.
+void
+elf_symbol::add_alias(elf_symbol* alias)
+{
+  if (!alias)
+    return;
+
+  assert(!alias->has_aliases());
+  assert(is_main_symbol());
+
+  if (has_aliases())
+    {
+      elf_symbol* last_alias = 0;
+      for (elf_symbol* a = get_next_alias();
+	   a != get_main_symbol();
+	   a = a->get_next_alias())
+	{
+	  if (a->get_next_alias() == get_main_symbol())
+	    {
+	      assert(last_alias == 0);
+	      last_alias = a;
+	    }
+	}
+      assert(last_alias);
+
+      last_alias->priv_->next_alias_ = alias;
+    }
+  else
+    priv_->next_alias_ = alias;
+
+  alias->priv_->next_alias_ = get_main_symbol();
+  alias->priv_->main_symbol_ = get_main_symbol();
+}
+
+/// Get a string that is representative of a given elf_symbol.
+///
+/// @return a the ID string.
+const string&
+elf_symbol::get_id_string() const
+{
+  if (priv_->id_string_.empty())
+    {
+      string s = get_name ();
+
+      if (!get_version().is_empty())
+	{
+	  if (get_version().is_default())
+	    s += "@@";
+	  else
+	    s += "@";
+	  s += get_version().str();
+	}
+      priv_->id_string_ = s;
+    }
+
+  return priv_->id_string_;
+}
+
+/// Given the ID of a symbol, get the name and the version of said
+/// symbol.
+///
+/// @param id the symbol ID to consider.
+///
+/// @param name the symbol name extracted from the ID.  This is set
+/// only if the function returned true.
+///
+/// @param ver the symbol version extracted from the ID.
+bool
+elf_symbol::get_name_and_version_from_id(const string&	id,
+					 string&	name,
+					 string&	ver)
+{
+  string::size_type i = id.find("@");
+  if (i == string::npos)
+    {
+      name = id;
+      return true;
+    }
+
+  name = id.substr(0, i);
+  ++i;
+
+  if (i >= id.size())
+    return true;
+
+  string::size_type j = id.find("@", i);
+  if (j == string::npos)
+    j = i;
+  else
+    ++j;
+
+  if (j >= id.size())
+    {
+      ver = "";
+      return true;
+    }
+
+  ver = id.substr(j);
+  return true;
+}
+
+///@}
 
 bool
 elf_symbol::operator==(const elf_symbol& other)

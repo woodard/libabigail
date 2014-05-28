@@ -92,6 +92,8 @@ struct corpus::priv
   translation_units		members;
   vector<function_decl*>	fns;
   vector<var_decl*>		vars;
+  string_elf_symbols_map_sptr	var_symbol_map;
+  string_elf_symbols_map_sptr	fun_symbol_map;
 
 private:
   priv();
@@ -707,6 +709,84 @@ corpus::operator==(const corpus& other) const
 
   return (i == get_translation_units().end()
 	  && j == other.get_translation_units().end());
+}
+
+/// Setter of the function symbols map.
+///
+/// @param map a shared pointer to the new function symbols map.
+void
+corpus::set_fun_symbol_map(string_elf_symbols_map_sptr map)
+{priv_->fun_symbol_map = map;}
+
+/// Setter of the variable symbols map.
+///
+/// @param map a shared pointer to the new variable symbols map.
+void
+corpus::set_var_symbol_map(string_elf_symbols_map_sptr map)
+{priv_->var_symbol_map = map;}
+
+/// Getter for the function symbols map.
+///
+/// @return a shared pointer to the function symbols map.
+const string_elf_symbols_map_sptr
+corpus::get_fun_symbol_map_sptr() const
+{return priv_->fun_symbol_map;}
+
+/// Getter for the function symbols map.
+///
+/// @return a reference to the function symbols map.
+const string_elf_symbols_map_type&
+corpus::get_fun_symbol_map() const
+{return *get_fun_symbol_map_sptr();}
+
+/// Getter for the variable symbols map.
+///
+/// @return a shared pointer to the variable symbols map.
+const string_elf_symbols_map_sptr
+corpus::get_var_symbol_map_sptr() const
+{return priv_->var_symbol_map;}
+
+/// Getter for the variable symbols map.
+///
+/// @return a reference to the variabl symbols map.
+const string_elf_symbols_map_type&
+corpus::get_var_symbol_map() const
+{return *get_var_symbol_map_sptr();}
+
+/// Look in the function symbols map for a symbol with a given name.
+///
+/// @param n the name of the symbol to look for.
+///
+/// return the first symbol with the name @p n.
+const elf_symbol_sptr
+corpus::lookup_function_symbol(const string& n) const
+{
+  if (!get_fun_symbol_map_sptr())
+    return elf_symbol_sptr();
+
+  string_elf_symbols_map_type::const_iterator it =
+    get_fun_symbol_map_sptr()->find(n);
+  if ( it == get_fun_symbol_map_sptr()->end())
+    return elf_symbol_sptr();
+  return it->second[0];
+}
+
+/// Look in the variable symbols map for a symbol with a given name.
+///
+/// @param n the name of the symbol to look for.
+///
+/// return the first symbol with the name @p n.
+const elf_symbol_sptr
+corpus::lookup_variable_symbol(const string& n) const
+{
+    if (!get_var_symbol_map_sptr())
+    return elf_symbol_sptr();
+
+  string_elf_symbols_map_type::const_iterator it =
+    get_var_symbol_map_sptr()->find(n);
+  if ( it == get_var_symbol_map_sptr()->end())
+    return elf_symbol_sptr();
+  return it->second[0];
 }
 
 /// Build and return the functions public decl table of the current corpus.

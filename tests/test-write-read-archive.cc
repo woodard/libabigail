@@ -102,7 +102,7 @@ main()
       return 1;
     }
 
-  corpus abi_corpus(out_path);
+  corpus_sptr abi_corpus(new corpus(out_path));
 
   for (InOutSpec *s = archive_elements; s->in_path; ++s)
     {
@@ -119,12 +119,12 @@ main()
       string file_name;
       abigail::tools::base_name(tu->get_path(), file_name);
       tu->set_path(file_name);
-      abi_corpus.add(tu);
+      abi_corpus->add(tu);
     }
 
   if (!write_corpus_to_archive(abi_corpus))
     {
-      cerr  << "failed to write archive file: " << abi_corpus.get_path();
+      cerr  << "failed to write archive file: " << abi_corpus->get_path();
       return 1;
     }
 
@@ -134,11 +134,11 @@ main()
   // translation units, write them back and diff them against their
   // reference.
 
-  abi_corpus.drop_translation_units();
-  if (abi_corpus.get_translation_units().size())
+  abi_corpus->drop_translation_units();
+  if (abi_corpus->get_translation_units().size())
     {
       cerr << "In-memory object of abi corpus at '"
-	   << abi_corpus.get_path()
+	   << abi_corpus->get_path()
 	   << "' still has translation units after call to "
 	      "corpus::drop_translation_units!";
       return false;
@@ -147,16 +147,16 @@ main()
   if (read_corpus_from_file(abi_corpus) != NUM_ARCHIVES_ELEMENTS)
     {
       cerr << "Failed to load the abi corpus from path '"
-	   << abi_corpus.get_path()
+	   << abi_corpus->get_path()
 	   << "'";
       return 1;
     }
 
-  if (abi_corpus.get_translation_units().size() != NUM_ARCHIVES_ELEMENTS)
+  if (abi_corpus->get_translation_units().size() != NUM_ARCHIVES_ELEMENTS)
     {
-      cerr << "Read " << abi_corpus.get_translation_units().size()
+      cerr << "Read " << abi_corpus->get_translation_units().size()
 	   << " elements from the abi corpus at "
-	   << abi_corpus.get_path()
+	   << abi_corpus->get_path()
 	   << " instead of "
 	   << NUM_ARCHIVES_ELEMENTS
 	   << "\n";
@@ -170,7 +170,7 @@ main()
 	abigail::tests::get_build_dir() + "/tests/" + spec.out_path;
       using abigail::xml_writer::write_translation_unit;
       bool wrote =
-	write_translation_unit(*abi_corpus.get_translation_units()[i],
+	write_translation_unit(*abi_corpus->get_translation_units()[i],
 			       /*indent=*/0, out_path);
       if (!wrote)
 	{

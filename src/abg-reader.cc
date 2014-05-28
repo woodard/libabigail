@@ -87,10 +87,11 @@ private:
   unordered_map<string, shared_ptr<type_base> > m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> > m_fn_tmpl_map;
   unordered_map<string, shared_ptr<class_tdecl> > m_class_tmpl_map;
-  string_xml_node_map m_id_xml_node_map;
-  xml_node_decl_base_sptr_map m_xml_node_decl_map;
-  xml::reader_sptr m_reader;
+  string_xml_node_map		m_id_xml_node_map;
+  xml_node_decl_base_sptr_map	m_xml_node_decl_map;
+  xml::reader_sptr		m_reader;
   deque<shared_ptr<decl_base> > m_decls_stack;
+  corpus_sptr			m_corpus;
 
 public:
   read_context(xml::reader_sptr reader) : m_reader(reader)
@@ -497,11 +498,26 @@ public:
     key_type_decl(t, id);
     return true;
   }
+
+  const corpus_sptr
+  get_corpus() const
+  {return m_corpus;}
+
+  corpus_sptr
+  get_corpus()
+  {return m_corpus;}
+
+  void
+  set_corpus(corpus_sptr c)
+  {m_corpus = c;}
+
 };// end class read_context
 
 static int	advance_cursor(read_context&);
 static bool	read_translation_unit_from_input(read_context&,
 						 translation_unit&);
+static bool	read_symbol_db_from_input(read_context&, bool,
+					  string_elf_symbols_map_sptr&);
 static bool	read_location(read_context&, xmlNodePtr, location&);
 static bool	read_visibility(xmlNodePtr, decl_base::visibility&);
 static bool	read_binding(xmlNodePtr, decl_base::binding&);
@@ -528,6 +544,13 @@ build_namespace_decl(read_context&, const xmlNodePtr, bool);
 
 static elf_symbol_sptr
 build_elf_symbol(read_context&, const xmlNodePtr);
+
+static elf_symbol_sptr
+build_elf_symbol_from_reference(read_context&, const xmlNodePtr,
+				bool);
+
+static string_elf_symbols_map_sptr
+build_elf_symbol_db(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<function_decl::parameter>
 build_function_parameter (read_context&, const xmlNodePtr);
@@ -798,23 +821,78 @@ read_translation_unit_from_input(read_context&	ctxt,
    return true;
 }
 
+/// Parse the input XML document containing a function symbols
+/// or a variable symbol database.
+///
+/// A function symbols database is an XML element named
+/// "elf-function-symbols" and a variable symbols database is an XML
+/// element named "elf-variable-symbols."  They contains "elf-symbol"
+/// XML elements.
+///
+/// @param ctxt the read_context to use for the parsing.
+///
+/// @param function_symbols is true if this function should look for a
+/// function symbols database, false if it should look for a variable
+/// symbols database.
+///
+/// @param symdb the resulting symbol database object.  This is set
+/// iff the function return true.
+///
+/// @return true upon successful parsing, false otherwise.
+static bool
+read_symbol_db_from_input(read_context& ctxt,
+			  bool function_symbols,
+			  string_elf_symbols_map_sptr& symdb)
+{
+    xml::reader_sptr reader = ctxt.get_reader();
+  if (!reader)
+    return false;
+
+  // The symbol db node must start with the abi-instr node.
+  int status = 1;
+  while (status == 1
+	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+    status = advance_cursor (ctxt);
+
+  if (status != 1)
+    return false;
+
+  if (function_symbols
+      && !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		       BAD_CAST("elf-function-symbols")))
+    return false;
+
+  if (!function_symbols
+      && !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		       BAD_CAST("elf-variable-symbols")))
+    return false;
+
+  xmlNodePtr node = xmlTextReaderExpand(reader.get());
+  if (!node)
+    return false;
+
+  symdb = build_elf_symbol_db(ctxt, node, function_symbols);
+
+  xmlTextReaderNext(reader.get());
+
+  return symdb;
+}
+
 /// Parse the input XML document containing an ABI corpus, represented
 /// by an 'abi-corpus' element node, associated to the current
 /// context.
 ///
 /// @param ctxt the current input context.
 ///
-/// @param corp the corpus resulting from the parsing.  This is set
-/// iff the function returns true.
-///
-/// @return true upon successful parsing, false otherwise.
-static bool
-read_corpus_from_input(read_context&	ctxt,
-		       corpus& corp)
+/// @return the corpus resulting from the parsing
+static corpus_sptr
+read_corpus_from_input(read_context& ctxt)
 {
+  corpus_sptr nil;
+
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
-    return false;
+    return nil;
 
   // The document must start with the abi-corpus node.
   int status = 1;
@@ -824,8 +902,15 @@ read_corpus_from_input(read_context&	ctxt,
 
   if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 				   BAD_CAST("abi-corpus")))
-    return false;
+    return nil;
 
+  if (!ctxt.get_corpus())
+    {
+      corpus_sptr c(new corpus(""));
+      ctxt.set_corpus(c);
+    }
+
+  corpus& corp = *ctxt.get_corpus();
   xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
 
   if (path_str)
@@ -837,7 +922,32 @@ read_corpus_from_input(read_context&	ctxt,
   while (status == 1
 	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT);
 
+  string_elf_symbols_map_sptr fn_sym_db, var_sym_db;
   bool is_ok = false;
+
+  // Read the symbol databases.
+  do
+    {
+      is_ok = (read_symbol_db_from_input(ctxt, true, fn_sym_db)
+	       || read_symbol_db_from_input(ctxt, false, var_sym_db));
+      if (is_ok)
+	{
+	  assert(fn_sym_db || var_sym_db);
+	  if (fn_sym_db)
+	    {
+	      corp.set_fun_symbol_map(fn_sym_db);
+	      fn_sym_db.reset();
+	    }
+	  else if (var_sym_db)
+	    {
+	      corp.set_var_symbol_map(var_sym_db);
+	      var_sym_db.reset();
+	    }
+	}
+    }
+  while (is_ok);
+
+  // Read the translation units.
   do
     {
       translation_unit_sptr tu(new translation_unit(""));
@@ -848,7 +958,7 @@ read_corpus_from_input(read_context&	ctxt,
   while (is_ok);
 
   corp.set_origin(corpus::NATIVE_XML_ORIGIN);
-  return true;
+  return ctxt.get_corpus();;
 }
 
 /// Parse an ABI instrumentation file (in XML format) at a given path.
@@ -1294,7 +1404,7 @@ read_elf_symbol_type(xmlNodePtr node, elf_symbol::type& t)
 static bool
 read_elf_symbol_binding(xmlNodePtr node, elf_symbol::binding& b)
 {
-    if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "binding"))
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "binding"))
     {
       string str;
       xml::xml_char_sptr_to_string(s, str);
@@ -1370,7 +1480,9 @@ build_elf_symbol(read_context&, const xmlNodePtr node)
 {
   elf_symbol_sptr nil;
 
-  if (!node || !xmlStrEqual(node->name, BAD_CAST("elf-symbol")))
+  if (!node
+      || node->type != XML_ELEMENT_NODE
+      || !xmlStrEqual(node->name, BAD_CAST("elf-symbol")))
     return nil;
 
   string name;
@@ -1413,6 +1525,142 @@ build_elf_symbol(read_context&, const xmlNodePtr node)
 				   type, binding,
 				   is_defined, version));
   return e;
+}
+
+/// Build and instance of elf_symbol from an XML attribute named
+/// 'elf-symbol-id' which value is the ID of a symbol that should
+/// present in the symbol db of the corpus associated to the current
+/// context.
+///
+/// @param ctxt the current context to consider.
+///
+/// @param node the xml element node to consider.
+///
+/// @param function_symbol is true if we should look for a function
+/// symbol, is false if we should look for a variable symbol.
+///
+/// @return a shared pointer the resutling elf_symbol.
+static elf_symbol_sptr
+build_elf_symbol_from_reference(read_context& ctxt, const xmlNodePtr node,
+				bool function_symbol)
+{
+  elf_symbol_sptr nil;
+
+  if (!node)
+    return nil;
+
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "elf-symbol-id"))
+    {
+      string sym_id;
+      xml::xml_char_sptr_to_string(s, sym_id);
+      if (sym_id.empty())
+	return nil;
+
+      string name, ver;
+      elf_symbol::get_name_and_version_from_id(sym_id, name, ver);
+      if (name.empty())
+	return nil;
+
+      string_elf_symbols_map_sptr sym_db =
+	(function_symbol)
+	? ctxt.get_corpus()->get_fun_symbol_map_sptr()
+	: ctxt.get_corpus()->get_var_symbol_map_sptr();
+
+      string_elf_symbols_map_type::const_iterator i = sym_db->find(name);
+      if (i != sym_db->end())
+	{
+	  for (elf_symbols::const_iterator s = i->second.begin();
+	       s != i->second.end();
+	       ++s)
+	    if ((*s)->get_id_string() == sym_id)
+	      return *s;
+	}
+    }
+
+  return nil;
+}
+
+/// Build an instance of string_elf_symbols_map_type from an XML
+/// element representing either a function symbols data base, or a
+/// variable symbols database.
+///
+/// @param ctxt the context to take in account.
+///
+/// @param node the XML node to consider.
+///
+/// @param function_syms true if we should look for a function symbols
+/// data base, false if we should look for a variable symbols data
+/// base.
+static string_elf_symbols_map_sptr
+build_elf_symbol_db(read_context& ctxt,
+		    const xmlNodePtr node,
+		    bool function_syms)
+{
+  string_elf_symbols_map_sptr map, nil;
+  string_elf_symbol_sptr_map_type id_sym_map;
+
+  if (!node)
+    return nil;
+
+  if (function_syms
+      && !xmlStrEqual(node->name, BAD_CAST("elf-function-symbols")))
+    return nil;
+
+  if (!function_syms
+      && !xmlStrEqual(node->name, BAD_CAST("elf-variable-symbols")))
+    return nil;
+
+  typedef std::tr1::unordered_map<xmlNodePtr, elf_symbol_sptr>
+    xml_node_ptr_elf_symbol_sptr_map_type;
+  xml_node_ptr_elf_symbol_sptr_map_type xml_node_ptr_elf_symbol_map;
+
+  elf_symbol_sptr sym;
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if ((sym = build_elf_symbol(ctxt, n)))
+	{
+	  id_sym_map[sym->get_id_string()] = sym;
+	  xml_node_ptr_elf_symbol_map[n] = sym;
+	}
+    }
+
+  if (id_sym_map.empty())
+    return nil;
+
+  map.reset(new string_elf_symbols_map_type);
+  string_elf_symbols_map_type::iterator it;
+  for (string_elf_symbol_sptr_map_type::const_iterator i = id_sym_map.begin();
+       i != id_sym_map.end();
+       ++i)
+    {
+      it = map->find(i->second->get_name());
+      if (it == map->end())
+	{
+	  (*map)[i->second->get_name()] = elf_symbols();
+	  it = map->find(i->second->get_name());
+	}
+      it->second.push_back(i->second);
+    }
+
+  // Now build the alias relations
+  for (xml_node_ptr_elf_symbol_sptr_map_type::const_iterator x =
+	 xml_node_ptr_elf_symbol_map.begin();
+       x != xml_node_ptr_elf_symbol_map.end();
+       ++x)
+    {
+      if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(x->first, "alias"))
+	{
+	  string alias_id = CHAR_STR(s);
+	  string_elf_symbol_sptr_map_type::const_iterator i =
+	    id_sym_map.find(alias_id);
+	  assert(i != id_sym_map.end());
+	  assert(i->second->is_main_symbol());
+
+	  x->second->get_main_symbol()->add_alias(i->second.get());
+	}
+    }
+
+  return map;
 }
 
 /// Build a function parameter from a 'parameter' xml element node.
@@ -1543,16 +1791,16 @@ build_function_decl(read_context&	ctxt,
 
   ctxt.push_decl_to_current_scope(fn_decl, add_to_current_scope);
 
+  elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node,
+							/*function_sym=*/true);
+  if (sym)
+    fn_decl->set_symbol(sym);
+
   for (xmlNodePtr n = node->children; n ; n = n->next)
     {
       if (n->type != XML_ELEMENT_NODE)
 	continue;
 
-      if (xmlStrEqual(n->name, BAD_CAST("elf-symbol")))
-	{
-	  if (elf_symbol_sptr sym = build_elf_symbol(ctxt, n))
-	    fn_decl->set_symbol(sym);
-	}
       else if (xmlStrEqual(n->name, BAD_CAST("parameter")))
 	{
 	  if (shared_ptr<function_decl::parameter> p =
@@ -1623,16 +1871,11 @@ build_var_decl(read_context&	ctxt,
 					 locus, mangled_name,
 					 vis, bind));
 
-  for (xmlNodePtr n = node->children; n; n = n->next)
-    {
-      if (n->type != XML_ELEMENT_NODE)
-	continue;
-      if (xmlStrEqual(n->name, BAD_CAST("elf-symbol")))
-	{
-	  if (elf_symbol_sptr sym = build_elf_symbol(ctxt, n))
-	    decl->set_symbol(sym);
-	}
-    }
+  elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node,
+							/*function_sym=*/false);
+  if (sym)
+    decl->set_symbol(sym);
+
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
   if (decl->get_symbol() && decl->get_symbol()->is_public())
@@ -3142,7 +3385,7 @@ read_to_translation_unit(translation_unit& tu,
 /// archive.
 static int
 read_corpus_from_archive(zip_sptr ar,
-			 corpus& corp)
+			 corpus_sptr& corp)
 {
   if (!ar)
     return -1;
@@ -3160,12 +3403,14 @@ read_corpus_from_archive(zip_sptr ar,
 	tu(new translation_unit(zip_get_name(ar.get(), i, 0)));
       if (read_to_translation_unit(*tu, ar, i))
 	{
-	  corp.add(tu);
+	  if (!corp)
+	    corp.reset(new corpus(""));
+	  corp->add(tu);
 	  ++nb_of_tu_read;
 	}
     }
   if (nb_of_tu_read)
-    corp.set_origin(corpus::NATIVE_XML_ORIGIN);
+    corp->set_origin(corpus::NATIVE_XML_ORIGIN);
   return nb_of_tu_read;
 }
 
@@ -3180,7 +3425,7 @@ read_corpus_from_archive(zip_sptr ar,
 /// @return the number of ABI Instrument XML file read from the
 /// archive, or -1 if the file could not read.
 int
-read_corpus_from_file(corpus& corp,
+read_corpus_from_file(corpus_sptr& corp,
 		      const string& path)
 {
   if (path.empty())
@@ -3204,8 +3449,8 @@ read_corpus_from_file(corpus& corp,
 /// @return the number of ABI Instrument XML file read from the
 /// archive.
 int
-read_corpus_from_file(corpus& corp)
-{return read_corpus_from_file(corp, corp.get_path());}
+read_corpus_from_file(corpus_sptr& corp)
+{return read_corpus_from_file(corp, corp->get_path());}
 
 /// Read an ABI corpus from an archive file which is a ZIP archive of
 /// several ABI Instrumentation XML files.
@@ -3221,7 +3466,7 @@ read_corpus_from_file(const string& path)
     return corpus_sptr();
 
   corpus_sptr corp(new corpus(path));
-  if (read_corpus_from_file(*corp, path) < 0)
+  if (read_corpus_from_file(corp, path) < 0)
     return corpus_sptr();
 
   return corp;
@@ -3235,30 +3480,15 @@ read_corpus_from_file(const string& path)
 /// @param corp the corpus de-serialized from the parsing.  This is
 /// set iff the function returns true.
 ///
-/// @return true upon successful parsing, false otherwise.
-bool
-read_corpus_from_native_xml(std::istream* in,
-			    corpus& corp)
-{
-  read_context read_ctxt(xml::new_reader_from_istream(in));
-  return read_corpus_from_input(read_ctxt, corp);
-}
-
-/// De-serialize an ABI corpus from an input XML document which root
-/// node is 'abi-corpus'.
-///
-/// @param in the input stream to read the XML document from.
-///
 /// @return the resulting corpus de-serialized from the parsing.  This
 /// is non-null iff the parsing resulted in a valid corpus.
 corpus_sptr
 read_corpus_from_native_xml(std::istream* in)
 {
+  read_context read_ctxt(xml::new_reader_from_istream(in));
   corpus_sptr corp(new corpus(""));
-  if (read_corpus_from_native_xml(in, *corp))
-    return corp;
-
-  return corpus_sptr();
+  read_ctxt.set_corpus(corp);
+  return read_corpus_from_input(read_ctxt);
 }
 
 /// De-serialize an ABI corpus from an XML document file which root
@@ -3270,34 +3500,19 @@ read_corpus_from_native_xml(std::istream* in)
 /// @param corp the corpus de-serialized from the parsing.  This is
 /// set iff the function returns true.
 ///
-/// @return true upon successful parsing, false otherwise.
-bool
-read_corpus_from_native_xml_file(corpus& corp,
-				 const string& path)
-{
-  read_context read_ctxt(xml::new_reader_from_file(path));
-  return read_corpus_from_input(read_ctxt, corp);
-}
-
-/// De-serialize an ABI corpus from an XML document file which root
-/// node is 'abi-corpus'.
-///
-/// @param path the path to the input file to read the XML document
-/// from.
-///
 /// @return the resulting corpus de-serialized from the parsing.  This
 /// is non-null if the parsing successfully resulted in a corpus.
 corpus_sptr
 read_corpus_from_native_xml_file(const string& path)
 {
-  corpus_sptr corp(new corpus(""));
-  if (read_corpus_from_native_xml_file(*corp, path))
+  read_context read_ctxt(xml::new_reader_from_file(path));
+  corpus_sptr corp = read_corpus_from_input(read_ctxt);
+  if (corp)
     {
       if (corp->get_path().empty())
 	corp->set_path(path);
-      return corp;
     }
-  return corpus_sptr();
+  return corp;
 }
 
 }//end namespace xml_reader

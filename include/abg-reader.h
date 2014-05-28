@@ -67,21 +67,13 @@ abigail::corpus_sptr
 read_corpus_from_file(const string& path);
 
 int
-read_corpus_from_file(corpus& corp, const string& path);
+read_corpus_from_file(corpus_sptr& corp, const string& path);
 
 int
-read_corpus_from_file(corpus& corp);
-
-bool
-read_corpus_from_native_xml(std::istream* in,
-			    corpus& corp);
+read_corpus_from_file(corpus_sptr& corp);
 
 corpus_sptr
 read_corpus_from_native_xml(std::istream* in);
-
-bool
-read_corpus_from_native_xml_file(corpus& corp,
-				 const string& path);
 
 corpus_sptr
 read_corpus_from_native_xml_file(const string& path);
