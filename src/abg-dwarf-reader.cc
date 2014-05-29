@@ -3816,7 +3816,12 @@ get_parent_die(read_context&	ctxt,
 }
 
 /// Return the abigail IR node representing the scope of a given DIE.
-/// If that
+///
+/// Note that it is the logical scope that is returned.  That is, if
+/// the DIE has a DW_AT_specification or DW_AT_abstract_origin
+/// attribute, it's the scope of the referred-to DIE (via these
+/// attributes) that is returned.
+///
 /// @param ctxt the dwarf reading context to use.
 ///
 /// @param die the DIE to get the scope for.
@@ -3834,6 +3839,15 @@ get_scope_for_die(read_context& ctxt,
 		  bool		called_for_public_decl,
 		  size_t	where_offset)
 {
+  Dwarf_Die cloned_die;
+  if (die_die_attribute(die, DW_AT_specification,
+			cloned_die, false)
+      || die_die_attribute(die, DW_AT_abstract_origin,
+			   cloned_die, false))
+    return get_scope_for_die(ctxt, &cloned_die,
+			     called_for_public_decl,
+			     where_offset);
+
   Dwarf_Die parent_die;
   get_parent_die(ctxt, die, parent_die, where_offset);
 
@@ -5174,8 +5188,6 @@ build_ir_node_from_die(read_context&	ctxt,
 		      }
 		    else
 		      {
-			if (!var_is_cloned)
-			  result = add_decl_to_scope(m, scope);
 			assert(has_scope(m));
 			ctxt.var_decls_to_re_add_to_tree().push_back(m);
 		      }
@@ -5231,19 +5243,10 @@ build_ir_node_from_die(read_context&	ctxt,
 		    }
 		}
 	    }
-	  {
-	    const class_decl* cl = dynamic_cast<class_decl*>(scope);
-	    // we shouldn't be in this class b/c, if this DIE is for a
-	    // member function, get_scope_for_die on it (prior to
-	    // calling this function) should have built the member
-	    // function for this DIE, and thus, this function should
-	    // have found the DIE for the member function in its cache.
-	    assert(!cl);
-	  }
 	ctxt.scope_stack().push(scope);
 
 	if ((result = build_function_decl(ctxt, die, where_offset, fn))
-	    && !fn_is_clone)
+	    && !fn)
 	  result = add_decl_to_scope(result, scope);
 
 	ctxt.scope_stack().pop();
