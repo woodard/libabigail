@@ -299,6 +299,16 @@ class diff_context
 public:
   diff_context();
 
+  void
+  set_corpora(const corpus_sptr corp1,
+	      const corpus_sptr corp2);
+
+  const corpus_sptr
+  get_first_corpus() const;
+
+  const corpus_sptr
+  get_second_corpus() const;
+
   diff_sptr
   has_diff_for(const decl_base_sptr first,
 	       const decl_base_sptr second) const;

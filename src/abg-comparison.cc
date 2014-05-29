@@ -214,6 +214,8 @@ struct diff_context::priv
   decls_diff_map_type			decls_diff_map;
   vector<filtering::filter_base_sptr>	filters_;
   pointer_map				traversed_diff_nodes_;
+  corpus_sptr				first_corpus_;
+  corpus_sptr				second_corpus_;
   bool					show_stats_only_;
   bool					show_deleted_fns_;
   bool					show_changed_fns_;
@@ -248,6 +250,36 @@ diff_context::diff_context()
   f.reset(new filtering::harmful_filter);
   add_diff_filter(f);
 }
+
+/// Set the corpora that are being compared into the context, so that
+/// some lower-level routines can have a chance to have access to
+/// them.
+///
+/// @param corp1 the first corpus involved in the comparison.
+///
+/// @param corp2 the second corpus involved in the comparison.
+void
+diff_context::set_corpora(const corpus_sptr corp1,
+			  const corpus_sptr corp2)
+{
+  priv_->first_corpus_ = corp1;
+  priv_->second_corpus_ = corp2;
+}
+
+/// Get the first corpus of the comparison, from the current context.
+///
+/// @return the first corpus of the comparison.
+const corpus_sptr
+diff_context::get_first_corpus() const
+{return priv_->first_corpus_;}
+
+/// Get the second corpus of the comparison, from the current context.
+///
+/// @return the second corpus of the comparison, from the current
+/// context.
+const corpus_sptr
+diff_context::get_second_corpus() const
+{return priv_->second_corpus_;}
 
 /// Tests if the current diff context already has a diff for two decls.
 ///
@@ -2837,6 +2869,41 @@ class_diff::ensure_lookup_tables_populated(void) const
 	      priv_->inserted_member_functions_[name] = mem_fn;
 	  }
       }
+
+    // Now walk the allegedly deleted member functions; check if their
+    // underlying symbols are deleted as well; otherwise, consider
+    // that the member function in question hasn't been deleted.
+
+    vector<string> to_delete;
+    corpus_sptr f = context()->get_first_corpus(),
+      s = context()->get_second_corpus();;
+    if (s)
+      for (string_member_function_sptr_map::const_iterator i =
+	     deleted_member_fns().begin();
+	   i != deleted_member_fns().end();
+	   ++i)
+	if (s->lookup_function_symbol(i->first))
+	  to_delete.push_back(i->first);
+
+    for (vector<string>::const_iterator i = to_delete.begin();
+	 i != to_delete.end();
+	 ++i)
+      priv_->deleted_member_functions_.erase(*i);
+
+    // Do something similar for added functions.
+    to_delete.clear();
+    if (f)
+      for (string_member_function_sptr_map::const_iterator i =
+	     inserted_member_fns().begin();
+	   i != inserted_member_fns().end();
+	   ++i)
+	if (f->lookup_function_symbol(i->first))
+	  to_delete.push_back(i->first);
+
+    for (vector<string>::const_iterator i = to_delete.begin();
+	 i != to_delete.end();
+	 ++i)
+      priv_->inserted_member_functions_.erase(*i);
   }
 
   {
@@ -6319,6 +6386,8 @@ compute_diff(const corpus_sptr	f,
 
   if (!ctxt)
     ctxt.reset(new diff_context);
+
+  ctxt->set_corpora(f, s);
 
   corpus_diff_sptr r(new corpus_diff(f, s, ctxt));
 
