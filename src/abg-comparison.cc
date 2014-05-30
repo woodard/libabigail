@@ -1109,11 +1109,15 @@ maybe_report_diff_for_member(decl_base_sptr	decl1,
 
 /// Stream a string representation for a member function.
 ///
+/// @param ctxt the current diff context.
+///
 /// @param mem_fn the member function to stream
 ///
 /// @param out the output stream to send the representation to
 static void
-represent(class_decl::method_decl_sptr mem_fn, ostream& out)
+represent(diff_context& ctxt,
+	  class_decl::method_decl_sptr mem_fn,
+	  ostream& out)
 {
   if (!mem_fn || !is_member_function(mem_fn))
     return;
@@ -1127,8 +1131,12 @@ represent(class_decl::method_decl_sptr mem_fn, ostream& out)
     out << ", virtual at voffset "
 	<< get_member_function_vtable_offset(mem_fn)
 	<< "/"
-	<< meth->get_type()->get_class_type()->get_virtual_mem_fns().size()
-	<< "\n";
+	<< meth->get_type()->get_class_type()->get_virtual_mem_fns().size();
+
+  if (ctxt.show_linkage_names())
+    out << "    {" << mem_fn->get_linkage_name() << "}";
+
+  out << "\n";
 }
 
 /// Stream a string representation for a data member.
@@ -3708,7 +3716,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    out << "\n";
 	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
-	  represent(mem_fun, out);
+	  represent(*context(), mem_fun, out);
 	}
       if (net_num_dels)
 	out << "\n";
@@ -3734,7 +3742,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    out << "\n";
 	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
-	  represent(mem_fun, out);
+	  represent(*context(), mem_fun, out);
 	  emitted = true;
 	}
       if (emitted)
