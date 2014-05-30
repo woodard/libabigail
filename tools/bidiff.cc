@@ -80,9 +80,9 @@ struct options
       show_changed_vars(false),
       show_added_vars(false),
       show_all_vars(true),
-      show_linkage_names(false),
+      show_linkage_names(true),
       show_harmful_changes(true),
-      show_harmless_changes(true),
+      show_harmless_changes(false),
       di_root_path1(0),
       di_root_path2(0)
   {}
@@ -103,7 +103,8 @@ display_usage(const string prog_name, ostream& out)
       << " --deleted-vars  display deleted global public variables\n"
       << " --changed-vars  display changed global public variables\n"
       << " --added-vars  display added global public variables\n"
-      << " --linkage-names  display linkage names of added/removed/changed\n"
+      << " --no-linkage-names  do not display linkage names of "
+             "added/removed/changed\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
@@ -112,7 +113,7 @@ display_usage(const string prog_name, ostream& out)
       << " --keep-fn <regex>  keep only functions matching a regex\n"
       << " --keep-var <regex>  keep only variables matching a regex\n"
       << " --no-harmless  do not display the harmless changes\n"
-      << " --no-harmful  do not display the harmful changes\n"
+      << " --harmful  display the harmful changes\n"
       << " --help  display this message\n";
 }
 
@@ -202,8 +203,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.show_all_fns = false;
 	  opts.show_all_vars = false;
 	}
-      else if (!strcmp(argv[i], "--linkage-names"))
-	opts.show_linkage_names = true;
+      else if (!strcmp(argv[i], "--no-linkage-names"))
+	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--drop"))
 	{
 	  int j = i + 1;
@@ -252,8 +253,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    return false;
 	  opts.keep_var_regex_patterns.push_back(argv[j]);
 	}
-      else if (!strcmp(argv[i], "--no-harmless"))
-	opts.show_harmless_changes = false;
+      else if (!strcmp(argv[i], "--harmless"))
+	opts.show_harmless_changes = true;
       else if (!strcmp(argv[i], "--no-harmful"))
 	opts.show_harmful_changes = false;
       else
