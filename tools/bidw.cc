@@ -126,7 +126,8 @@ main(int argc, char* argv[])
 
   abigail::tools::file_type type =
     abigail::tools::guess_file_type(opts.in_file_path);
-  if (type != abigail::tools::FILE_TYPE_ELF)
+  if (type != abigail::tools::FILE_TYPE_ELF
+      && type != abigail::tools::FILE_TYPE_AR)
     {
       cerr << opts.in_file_path << " is not an ELF file\n";
       return 1;

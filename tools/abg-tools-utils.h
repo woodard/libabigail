@@ -51,6 +51,8 @@ enum file_type
   /// An elf file.  Read this kind of file should yield an
   /// abigail::corpus type.
   FILE_TYPE_ELF,
+  /// An archive (AR) file.
+  FILE_TYPE_AR,
   // A native xml file format representing a corpus of one or several
   // translation units.
   FILE_TYPE_XML_CORPUS,

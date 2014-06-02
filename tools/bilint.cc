@@ -205,6 +205,7 @@ main(int argc, char* argv[])
 	  tu = read_translation_unit_from_file(opts.file_path);
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
+	case abigail::tools::FILE_TYPE_AR:
 	  corp = read_corpus_from_elf(opts.file_path,
 				      opts.di_root_path);
 	  break;

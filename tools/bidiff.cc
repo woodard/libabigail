@@ -419,6 +419,7 @@ main(int argc, char* argv[])
 	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1);
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
+	case abigail::tools::FILE_TYPE_AR:
 	  c1 = abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
 							   opts.di_root_path1);
 	  break;
@@ -441,6 +442,7 @@ main(int argc, char* argv[])
 	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2);
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
+	case abigail::tools::FILE_TYPE_AR:
 	  c2 = abigail::dwarf_reader::read_corpus_from_elf(opts.file2,
 							   opts.di_root_path2);
 	  break;

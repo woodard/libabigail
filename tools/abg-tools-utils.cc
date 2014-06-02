@@ -245,6 +245,15 @@ guess_file_type(istream& in)
       && buf[3] == 'F')
     return FILE_TYPE_ELF;
 
+  if (buf[0] == '!'
+      && buf[1] == '<'
+      && buf[2] == 'a'
+      && buf[3] == 'r'
+      && buf[4] == 'c'
+      && buf[5] == 'h'
+      && buf[6] == '>')
+    return FILE_TYPE_AR;
+
   if (buf[0] == '<'
       && buf[1] == 'a'
       && buf[2] == 'b'
