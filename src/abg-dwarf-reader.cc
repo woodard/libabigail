@@ -1986,7 +1986,9 @@ build_function_decl(read_context&	ctxt,
 /// compatible systems, this root path is usually /usr/lib/debug by
 /// default.  If this argument is set to NULL, then "./debug" and
 /// /usr/lib/debug will be searched for sub-directories containing the
-/// debug info file.
+/// debug info file.  Note that for now, elfutils wants this path to
+/// be absolute otherwise things just don't work and the debug info is
+/// not found.
 ///
 /// @return the constructed Dwfl handle.
 static Dwfl*
@@ -5370,10 +5372,13 @@ build_ir_node_from_die(read_context&	ctxt,
 /// /usr/lib/debug will be searched for sub-directories containing the
 /// debug info file.
 ///
-/// @return a pointer to the resulting @ref abigail::corpus.
-corpus_sptr
+/// @param resulting_corp a pointer to the resulting abigail::corpus.
+///
+/// @return the resulting status.
+status
 read_corpus_from_elf(const std::string& elf_path,
-		     char** debug_info_root_path)
+		     char** debug_info_root_path,
+		     corpus_sptr& resulting_corp)
 {
   // Create a DWARF Front End Library handle to be used by functions
   // of that library.
@@ -5383,11 +5388,11 @@ read_corpus_from_elf(const std::string& elf_path,
 
   // Load debug info from the elf path.
   if (!ctxt.load_debug_info())
-    return corpus_sptr();
+    return STATUS_DEBUG_INFO_NOT_FOUND;
 
   // First read the symbols for publicly defined decls
   if (!ctxt.load_symbol_maps())
-    return corpus_sptr();
+    return STATUS_NO_SYMBOLS_FOUND;
 
   // Now, read an ABI corpus proper from the debug info we have
   // through the dwfl handle.
@@ -5398,7 +5403,9 @@ read_corpus_from_elf(const std::string& elf_path,
   corp->set_fun_symbol_map(ctxt.fun_syms_sptr());
   corp->set_var_symbol_map(ctxt.var_syms_sptr());
 
-  return corp;
+  resulting_corp = corp;
+
+  return STATUS_OK;
 }
 
 /// Look into the symbol tables of a given elf file and see if we find

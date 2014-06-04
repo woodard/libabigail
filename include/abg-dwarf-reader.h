@@ -38,9 +38,24 @@ namespace abigail
 namespace dwarf_reader
 {
 
-corpus_sptr
+/// The status of the @ref read_corpus_from_elf() call.
+enum status
+{
+  /// This status is for when the call went OK.
+  STATUS_OK,
+
+  /// This satus is for when the debug info could not be read.
+  STATUS_DEBUG_INFO_NOT_FOUND,
+
+  /// This status is for when the symbols of the ELF binaries could
+  /// not be read.
+  STATUS_NO_SYMBOLS_FOUND,
+};
+
+status
 read_corpus_from_elf(const std::string& elf_path,
-		     char** debug_info_root_path);
+		     char** debug_info_root_path,
+		     corpus_sptr& resulting_corp);
 
 bool
 lookup_symbol_from_elf(const string&		elf_path,

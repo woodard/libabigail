@@ -20,6 +20,7 @@
 
 ///@file
 
+#include <tr1/memory>
 #include <string>
 #include <ostream>
 #include <istream>
@@ -63,6 +64,9 @@ enum file_type
 
 file_type guess_file_type(std::istream& in);
 file_type guess_file_type(const std::string& file_path);
+
+std::tr1::shared_ptr<char>
+make_path_absolute(const char*p);
 
 }// end namespace tools
 }//end namespace abigail

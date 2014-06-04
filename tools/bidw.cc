@@ -26,6 +26,7 @@
 /// DWARF format) and emit it back in a set of "text sections" in native
 /// libabigail XML format.
 
+#include <unistd.h>
 #include <cassert>
 #include <cstring>
 #include <cstdio>
@@ -33,6 +34,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <tr1/memory>
 #include "abg-tools-utils.h"
 #include "abg-corpus.h"
 #include "abg-dwarf-reader.h"
@@ -43,15 +45,15 @@ using std::cerr;
 using std::cout;
 using std::ostream;
 using std::ofstream;
+using std::tr1::shared_ptr;
 
 struct options
 {
-  string in_file_path;
-  string out_file_path;
-  char** di_root_path;
+  string		in_file_path;
+  string		out_file_path;
+  shared_ptr<char>	di_root_path;
 
   options()
-    : di_root_path(0)
   {}
 };
 
@@ -86,8 +88,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      || argv[i + 1][0] == '-'
 	      || !opts.out_file_path.empty())
 	    return false;
-
-	  opts.di_root_path = &argv[i + 1];
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.di_root_path = abigail::tools::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--out-file"))
@@ -137,27 +140,38 @@ main(int argc, char* argv[])
   using abigail::corpus_sptr;
   using abigail::translation_units;
   using abigail::dwarf_reader::read_corpus_from_elf;
+  using namespace abigail;
 
-  corpus_sptr corp = read_corpus_from_elf(opts.in_file_path,
-					  opts.di_root_path);
+  char* p = opts.di_root_path.get();
+  corpus_sptr corp;
+  dwarf_reader::status s = read_corpus_from_elf(opts.in_file_path, &p, corp);
+
   if (!corp)
     {
-      if (opts.di_root_path == 0)
+      if (s == dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	{
-	  cerr <<
-	    "Could not read debug info from "
-	       << opts.in_file_path << "\n";
+	  if (p == 0)
+	    {
+	      cerr <<
+		"Could not read debug info from "
+		   << opts.in_file_path << "\n";
 
-	  cerr << "You might want to supply the root directory where "
-	    "to search debug info from, using the "
-	    "--debug-info-dir option\n";
+	      cerr << "You might want to supply the root directory where "
+		"to search debug info from, using the "
+		"--debug-info-dir option "
+		"(e.g --debug-info-dir /usr/lib/debug)\n";
+	    }
+	  else
+	    {
+	      cerr << "Could not read debug info for '" << opts.in_file_path
+		   << "' from debug info root directory '" << p
+		   << "'\n";
+	    }
 	}
-      else
-	{
-	  cerr << "Could not read debug info for " << opts.in_file_path
-	       << " from debug info root directory " << *opts.di_root_path
-	       << "\n";
-	}
+      else if (s == dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+	cerr << "Could not read ELF symbol information from "
+	     << opts.in_file_path << "\n";
+
       return 1;
     }
 

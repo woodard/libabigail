@@ -149,10 +149,12 @@ main()
 	  continue;
 	}
 
-      corp0 = read_corpus_from_elf(in_elfv0_path,
-				   /*debug_info_root_path=*/0);
-      corp1 = read_corpus_from_elf(in_elfv1_path,
-				   /*debug_info_root_path=*/0);
+      read_corpus_from_elf(in_elfv0_path,
+			   /*debug_info_root_path=*/0,
+			   corp0);
+      read_corpus_from_elf(in_elfv1_path,
+			   /*debug_info_root_path=*/0,
+			   corp1);
 
       if (!corp0)
 	{

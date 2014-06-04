@@ -20,6 +20,7 @@
 
 ///@file
 
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <cstdlib>
@@ -302,6 +303,44 @@ guess_file_type(const std::string& file_path)
   file_type r = guess_file_type(in);
   in.close();
   return r;
+}
+
+struct malloced_char_star_deleter
+{
+  void
+  operator()(char* ptr)
+  {free(ptr);}
+};
+
+/// Return a copy of the path given in argument, turning it into an
+/// absolute path by prefixing it with the concatenation of the result
+/// of get_current_dir_name() and the '/' character.
+///
+/// The result being an shared_ptr to char*, it should manage its
+/// memory by itself and the user shouldn't need to wory too much for
+/// that.
+///
+/// @param p the path to turn into an absolute path.
+///
+/// @return a shared pointer to the resulting absolute path.
+std::tr1::shared_ptr<char>
+make_path_absolute(const char*p)
+{
+  using std::tr1::shared_ptr;
+
+  shared_ptr<char> result;
+
+  if (p && p[0] != '/')
+    {
+      shared_ptr<char> pwd(get_current_dir_name(),
+			   malloced_char_star_deleter());
+      string s = string(pwd.get()) + "/" + p;
+      result.reset(strdup(s.c_str()), malloced_char_star_deleter());
+    }
+  else
+    result.reset(strdup(p), malloced_char_star_deleter());
+
+  return result;
 }
 
 }//end namespace tools

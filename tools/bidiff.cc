@@ -36,12 +36,14 @@ using std::string;
 using std::ostream;
 using std::cout;
 using std::cerr;
+using std::tr1::shared_ptr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
 using abigail::corpus_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
+using namespace abigail::dwarf_reader;
 using abigail::tools::check_file;
 using abigail::tools::guess_file_type;
 
@@ -66,8 +68,8 @@ struct options
   bool			show_linkage_names;
   bool			show_harmful_changes;
   bool			show_harmless_changes;
-  char**		di_root_path1;
-  char**		di_root_path2;
+  shared_ptr<char>	di_root_path1;
+  shared_ptr<char>	di_root_path2;
 
   options()
     : show_stats_only(false),
@@ -82,9 +84,7 @@ struct options
       show_all_vars(true),
       show_linkage_names(true),
       show_harmful_changes(true),
-      show_harmless_changes(false),
-      di_root_path1(0),
-      di_root_path2(0)
+      show_harmless_changes(false)
   {}
 };//end struct options;
 
@@ -150,7 +150,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  int j = i + 1;
 	  if (j >= argc)
 	    return false;
-	  opts.di_root_path1 = &argv[j];
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.di_root_path1 = abigail::tools::make_path_absolute(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--debug-info-dir2"))
@@ -158,7 +160,9 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  int j = i + 1;
 	  if (j >= argc)
 	    return false;
-	  opts.di_root_path2 = &argv[j];
+	  // elfutils wants the root path to the debug info to be
+	  // absolute.
+	  opts.di_root_path2 = abigail::tools::make_path_absolute(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--stat"))
@@ -407,7 +411,11 @@ main(int argc, char* argv[])
 	}
 
       translation_unit_sptr t1, t2;
+      abigail::dwarf_reader::status c1_status =
+	abigail::dwarf_reader::STATUS_OK,
+	c2_status = abigail::dwarf_reader::STATUS_OK;
       corpus_sptr c1, c2;
+      char *di_dir1 = 0, *di_dir2 = 0;
 
       switch (t1_type)
 	{
@@ -420,8 +428,9 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
 	case abigail::tools::FILE_TYPE_AR:
-	  c1 = abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
-							   opts.di_root_path1);
+	  di_dir1 = opts.di_root_path1.get();
+	  c1_status = abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
+							   &di_dir1, c1);
 	  break;
 	case abigail::tools::FILE_TYPE_XML_CORPUS:
 	  c1 =
@@ -443,8 +452,9 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools::FILE_TYPE_ELF:
 	case abigail::tools::FILE_TYPE_AR:
-	  c2 = abigail::dwarf_reader::read_corpus_from_elf(opts.file2,
-							   opts.di_root_path2);
+	  di_dir2 = opts.di_root_path2.get();
+	  c2_status = abigail::dwarf_reader::read_corpus_from_elf(opts.file2,
+								  &di_dir2, c2);
 	  break;
 	case abigail::tools::FILE_TYPE_XML_CORPUS:
 	  c2 =
@@ -458,13 +468,64 @@ main(int argc, char* argv[])
       if (!t1 && !c1)
 	{
 	  cerr << "failed to read input file " << opts.file1 << "\n";
-	  return true;
+	  if (c1_status != abigail::dwarf_reader::STATUS_OK)
+	    {
+	      switch (c1_status)
+		{
+		case abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND:
+		  cerr << "could not find the debug info";
+		  if(di_dir1 == 0)
+		    cerr << " Maybe you should consider using the "
+		      "--debug-info-dir1 option to tell me about the "
+		      "root directory of the debuginfo? "
+		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
+		  else
+		    cerr << "Maybe the root path to the debug information '"
+			 << di_dir1 << "' is wrong?\n";
+		  break;
+		case abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND:
+		  cerr << "could not find the ELF symbols in the file '"
+		       << opts.file1
+		       << "'\n";
+		  break;
+		case abigail::dwarf_reader::STATUS_OK:
+		  // This cannot be!
+		  abort();
+		}
+	      return true;
+	    }
 	}
 
       if (!t2 && !c2)
 	{
 	  cerr << "failed to read input file" << opts.file2 << "\n";
-	  return true;
+	  if (c2_status != abigail::dwarf_reader::STATUS_OK)
+	    {
+	      switch (c2_status)
+		{
+		case abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND:
+		  cerr << "could not find the debug info";
+		  if(di_dir2 == 0)
+		    cerr << " Maybe you should consider using the "
+		      "--debug-info-dir1 option to tell me about the "
+		      "root directory of the debuginfo? "
+		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
+		  else
+		    cerr << "Maybe the root path to the debug information '"
+			 << di_dir2
+			 << "' is wrong?\n";
+		  break;
+		case abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND:
+		  cerr << "could not find the ELF symbols in the file '"
+		       << opts.file2
+		       << "'\n";
+		  break;
+		case abigail::dwarf_reader::STATUS_OK:
+		  // This cannot be!
+		  abort();
+		}
+	      return true;
+	    }
 	}
 
       if (!!c1 != !!c2

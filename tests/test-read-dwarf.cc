@@ -81,9 +81,9 @@ main()
   for (InOutSpec* s = in_out_specs; s->in_elf_path; ++s)
     {
       in_elf_path = abigail::tests::get_src_dir() + "/tests/" + s->in_elf_path;
-      corp =
-	abigail::dwarf_reader::read_corpus_from_elf(in_elf_path,
-						    /*debug_info_root_path=*/0);
+      abigail::dwarf_reader::read_corpus_from_elf(in_elf_path,
+						  /*debug_info_root_path=*/0,
+						  corp);
       if (!corp)
 	{
 	  cerr << "failed to read " << in_elf_path << "\n";
