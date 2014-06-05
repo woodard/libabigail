@@ -4391,32 +4391,29 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      die_access_specifier(&child, access);
 	      bool is_static = false;
 	      {
-		Dwarf_Die this_ptr_type;
-		if (ctxt.dwarf_version() > 2
-		    && !die_die_attribute(&child,
-					  DW_AT_object_pointer,
-					  this_ptr_type))
-		  is_static = true;
-		else if (ctxt.dwarf_version() < 3)
-		  {
-		    is_static = true;
-		    // For dwarf < 3, let's see if the first parameter
-		    // has class type and has a DW_AT_artificial
-		    // attribute flag set.
-		    function_decl::parameter_sptr first_parm;
-		    if (!f->get_parameters().empty())
-		      first_parm = f->get_parameters()[0];
+		// Let's see if the first parameter has the same class
+		// type as the current class has a DW_AT_artificial
+		// attribute flag set.  We are not looking at
+		// DW_AT_object_pointer (for DWARF 3) because it
+		// wasn't being emitted in GCC 4_4, which was already
+		// DWARF 3.
+		function_decl::parameter_sptr first_parm;
+		if (!f->get_parameters().empty())
+		  first_parm = f->get_parameters()[0];
 
-		    bool is_artificial =
-		      first_parm && first_parm->get_artificial();;
-		    pointer_type_def_sptr this_type;
-		    if (is_artificial)
-		      this_type =
-			dynamic_pointer_cast<pointer_type_def>
-			(first_parm->get_type());
-		    if (this_type)
-		      is_static = false;
-		  }
+		bool is_artificial =
+		  first_parm && first_parm->get_artificial();;
+		pointer_type_def_sptr this_ptr_type;
+		if (is_artificial)
+		  this_ptr_type =
+		    dynamic_pointer_cast<pointer_type_def>
+		    (first_parm->get_type());
+		if (this_ptr_type && (get_pretty_representation
+				      (this_ptr_type->get_pointed_to_type())
+				      == result->get_pretty_representation()))
+		  ;
+		else
+		  is_static = true;
 	      }
 	      result->add_member_function(m, access, is_virtual,
 					  vindex, is_static, is_ctor,
