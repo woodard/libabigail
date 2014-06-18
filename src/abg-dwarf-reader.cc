@@ -2440,7 +2440,6 @@ is_type_tag(unsigned tag)
     case DW_TAG_restrict_type:
     case DW_TAG_interface_type:
     case DW_TAG_unspecified_type:
-    case DW_TAG_mutable_type:
     case DW_TAG_shared_type:
     case DW_TAG_rvalue_reference_type:
       result = true;
@@ -5137,8 +5136,6 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_interface_type:
       break;
     case DW_TAG_unspecified_type:
-      break;
-    case DW_TAG_mutable_type:
       break;
     case DW_TAG_shared_type:
       break;
