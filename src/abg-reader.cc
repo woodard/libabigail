@@ -29,6 +29,7 @@
 #include <tr1/unordered_map>
 #include <deque>
 #include <assert.h>
+#include <sstream>
 #include <libxml/xmlstring.h>
 #include <libxml/xmlreader.h>
 #include "abg-libxml-utils.h"
@@ -1650,13 +1651,24 @@ build_elf_symbol_db(read_context& ctxt,
     {
       if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(x->first, "alias"))
 	{
-	  string alias_id = CHAR_STR(s);
-	  string_elf_symbol_sptr_map_type::const_iterator i =
-	    id_sym_map.find(alias_id);
-	  assert(i != id_sym_map.end());
-	  assert(i->second->is_main_symbol());
+      string alias_id = CHAR_STR(s);
 
-	  x->second->get_main_symbol()->add_alias(i->second.get());
+      // Symbol aliases can be multiple separated by comma(,), split them
+      std::vector<std::string> elems;
+      std::stringstream aliases(alias_id);
+      std::string item;
+      while (std::getline(aliases, item, ','))
+        elems.push_back(item);
+      for (std::vector<string>::iterator alias = elems.begin();
+           alias != elems.end(); alias++)
+        {
+          string_elf_symbol_sptr_map_type::const_iterator i =
+          id_sym_map.find(*alias);
+          assert(i != id_sym_map.end());
+          assert(i->second->is_main_symbol());
+
+          x->second->get_main_symbol()->add_alias(i->second.get());
+        }
 	}
     }
 

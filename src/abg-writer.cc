@@ -652,11 +652,16 @@ write_elf_symbol_aliases(const elf_symbol& sym, ostream& o)
     return false;
 
   bool emitted = false;
+  o << " alias='";
   for (elf_symbol* s = sym.get_next_alias();
        !s->is_main_symbol();
        s = s->get_next_alias())
     {
-      o << " alias='" << s->get_id_string() << "'";
+      if (s->get_next_alias() == s->get_main_symbol())
+          o << s->get_id_string() << "'";
+      else
+          o << s->get_id_string() << ",";
+
       emitted = true;
     }
 

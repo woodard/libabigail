@@ -173,6 +173,8 @@ tests/data/test-read-dwarf/test2-0.cc		\
 tests/data/test-read-dwarf/test2-1.cc		\
 tests/data/test-read-dwarf/test2.so		\
 tests/data/test-read-dwarf/test2.so.abi		\
+tests/data/test-read-dwarf/test3.c		\
+tests/data/test-read-dwarf/test3.so		\
 \
 data/test-diff-filter/test0-v0.cc		\
 data/test-diff-filter/test0-v1.cc		\
