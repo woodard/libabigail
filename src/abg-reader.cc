@@ -2028,11 +2028,18 @@ build_qualified_type_decl(read_context&	ctxt,
     volatile_str = CHAR_STR(s);
   bool volatile_cv = volatile_str == "yes" ? true : false;
 
+  string restrict_str;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "restrict"))
+    restrict_str = CHAR_STR(s);
+  bool restrict_cv = restrict_str == "yes" ? true : false;
+
   qualified_type_def::CV cv = qualified_type_def::CV_NONE;
   if (const_cv)
     cv = cv | qualified_type_def::CV_CONST;
   if (volatile_cv)
     cv = cv | qualified_type_def::CV_VOLATILE;
+  if (restrict_cv)
+    cv = cv | qualified_type_def::CV_RESTRICT;
 
   location loc;
   read_location(ctxt, node, loc);

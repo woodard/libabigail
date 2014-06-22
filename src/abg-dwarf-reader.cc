@@ -4459,8 +4459,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   return res;
 }
 
-/// build a qualified type from a DW_TAG_const_type or
-/// DW_TAG_volatile_type DIE.
+/// build a qualified type from a DW_TAG_const_type,
+/// DW_TAG_volatile_type or DW_TAG_restrict_type DIE.
 ///
 /// @param ctxt the read context to consider.
 ///
@@ -4489,7 +4489,8 @@ build_qualified_type(read_context&	ctxt,
   unsigned tag = dwarf_tag(die);
 
   if (tag != DW_TAG_const_type
-      && tag != DW_TAG_volatile_type)
+      && tag != DW_TAG_volatile_type
+      && tag != DW_TAG_restrict_type)
     return result;
 
   Dwarf_Die underlying_type_die;
@@ -4513,6 +4514,10 @@ build_qualified_type(read_context&	ctxt,
   else if (tag == DW_TAG_volatile_type)
     result.reset(new qualified_type_def(utype,
 					qualified_type_def::CV_VOLATILE,
+					location()));
+  else if (tag == DW_TAG_restrict_type)
+    result.reset(new qualified_type_def(utype,
+					qualified_type_def::CV_RESTRICT,
 					location()));
 
   return result;
@@ -5057,6 +5062,7 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_const_type:
     case DW_TAG_volatile_type:
+    case DW_TAG_restrict_type:
       {
 	qualified_type_def_sptr q =
 	  build_qualified_type(ctxt, die, called_from_public_decl,
@@ -5130,8 +5136,6 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_subrange_type:
       break;
     case DW_TAG_thrown_type:
-      break;
-    case DW_TAG_restrict_type:
       break;
     case DW_TAG_interface_type:
       break;

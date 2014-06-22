@@ -1041,6 +1041,8 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
     o << " const='yes'";
   if (decl->get_cv_quals() & qualified_type_def::CV_VOLATILE)
     o << " volatile='yes'";
+  if (decl->get_cv_quals() & qualified_type_def::CV_RESTRICT)
+    o << " restrict='yes'";
 
   write_location(static_pointer_cast<decl_base>(decl), o);
 
