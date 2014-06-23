@@ -1,24 +1,26 @@
+AUTOMAKE_OPTIONS=subdir-objects
+
 h=$(abs_srcdir)
 lib_LTLIBRARIES=libabigail.la
 libabigaildir=$(libdir)
 
 libabigail_la_SOURCES = $(headers)	\
-$(h)/abg-traverse.cc			\
-$(h)/abg-ir.cc				\
-$(h)/abg-corpus.cc			\
-$(h)/abg-diff-utils.cc			\
-$(h)/abg-comparison.cc			\
-$(h)/abg-comp-filter.cc			\
-$(h)/abg-reader.cc			\
-$(h)/abg-dwarf-reader.cc		\
-$(h)/abg-libxml-utils.cc		\
-$(h)/abg-libzip-utils.cc		\
-$(h)/abg-hash.cc			\
-$(h)/abg-writer.cc			\
-$(h)/abg-config.cc			\
-$(h)/abg-viz-common.cc			\
-$(h)/abg-viz-dot.cc			\
-$(h)/abg-viz-svg.cc
+abg-traverse.cc				\
+abg-ir.cc				\
+abg-corpus.cc				\
+abg-diff-utils.cc			\
+abg-comparison.cc			\
+abg-comp-filter.cc			\
+abg-reader.cc				\
+abg-dwarf-reader.cc			\
+abg-libxml-utils.cc			\
+abg-libzip-utils.cc			\
+abg-hash.cc				\
+abg-writer.cc				\
+abg-config.cc				\
+abg-viz-common.cc			\
+abg-viz-dot.cc				\
+abg-viz-svg.cc
 
 libabigail_la_LDFLAGS=@DEPS_LIBS@ -Wl,--as-needed
 

@@ -1,3 +1,5 @@
+AUTOMAKE_OPTIONS=subdir-objects
+
 h=$(abs_srcdir)
 
 TESTS=				\
@@ -27,40 +29,40 @@ libtestutils_la_CXXFLAGS=		\
 -DABIGAIL_SRC_DIR=\"${abs_top_srcdir}\"  	\
 -DABIGAIL_BUILD_DIR=\"${abs_top_builddir}\"
 
-runtestreadwrite_SOURCES=$(h)/test-read-write.cc
+runtestreadwrite_SOURCES=test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestwritereadarchive_SOURCES=$(h)/test-write-read-archive.cc
+runtestwritereadarchive_SOURCES=test-write-read-archive.cc
 runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la $(top_builddir)/tools/libtoolsutils.la
 
-runtestreaddwarf_SOURCES=$(h)/test-read-dwarf.cc
+runtestreaddwarf_SOURCES=test-read-dwarf.cc
 runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestlookupsyms_SOURCES=$(h)/test-lookup-syms.cc
+runtestlookupsyms_SOURCES=test-lookup-syms.cc
 runtestlookupsyms_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestcorediff_SOURCES=$(h)/test-core-diff.cc
+runtestcorediff_SOURCES=test-core-diff.cc
 runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestbidiff_SOURCES = $(h)/test-bidiff.cc
+runtestbidiff_SOURCES = test-bidiff.cc
 runtestbidiff_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestdiffdwarf_SOURCES = $(h)/test-diff-dwarf.cc
+runtestdiffdwarf_SOURCES = test-diff-dwarf.cc
 runtestdiffdwarf_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestdifffilter_SOURCES = $(h)/test-diff-filter.cc
+runtestdifffilter_SOURCES = test-diff-filter.cc
 runtestdifffilter_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestsvg_SOURCES=$(h)/test-svg.cc
+runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
 
-runtestdot_SOURCES=$(h)/test-dot.cc
+runtestdot_SOURCES=test-dot.cc
 runtestdot_LDADD=$(top_builddir)/src/libabigail.la
 
-testirwalker_SOURCES=$(h)/test-ir-walker.cc
+testirwalker_SOURCES=test-ir-walker.cc
 testirwalker_LDADD=$(top_builddir)/src/libabigail.la
 
-testdiff2_SOURCES=$(h)/test-diff2.cc
+testdiff2_SOURCES=test-diff2.cc
 testdiff2_LDADD=$(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
