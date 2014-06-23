@@ -2999,18 +2999,15 @@ demangle_cplus_mangled_name(const string& mangled_name)
   int status = 0;
   char * str = abi::__cxa_demangle(mangled_name.c_str(),
 				   NULL, &l, &status);
-  string demangled_name;
+  string demangled_name = mangled_name;
   if (str)
     {
+      assert(status == 0);
+      assert(l != 0);
       demangled_name = str;
       free(str);
       str = 0;
     }
-  if (status != 0)
-    demangled_name.clear();
-  else
-    assert(l != 0);
-
   return demangled_name;
 }
 
