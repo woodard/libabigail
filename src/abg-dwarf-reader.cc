@@ -1970,6 +1970,9 @@ build_ir_node_from_die(read_context&	ctxt,
 		       bool		called_from_public_decl,
 		       size_t		where_offset);
 
+static decl_base_sptr
+build_ir_node_for_void_type(read_context& ctxt);
+
 static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    Dwarf_Die*		die,
@@ -4554,14 +4557,17 @@ build_pointer_type_def(read_context&	ctxt,
   if (tag != DW_TAG_pointer_type)
     return result;
 
+  decl_base_sptr utype_decl;
   Dwarf_Die underlying_type_die;
   if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
-    return result;
+    // If the DW_AT_type attribute is missing, that means we are
+    // looking at a pointer to "void".
+    utype_decl = build_ir_node_for_void_type(ctxt);
 
-  decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die,
-			   called_from_public_decl,
-			   where_offset);
+  if (!utype_decl)
+    utype_decl = build_ir_node_from_die(ctxt, &underlying_type_die,
+					called_from_public_decl,
+					where_offset);
   if (!utype_decl)
     return result;
 
@@ -5319,6 +5325,20 @@ build_ir_node_from_die(read_context&	ctxt,
     ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
 
   return result;
+}
+
+///  Build the IR node for a void type.
+///
+///  @param ctxt the read context to use.
+///
+///  @return the void type node.
+static decl_base_sptr
+build_ir_node_for_void_type(read_context& ctxt)
+{
+  decl_base_sptr t = type_decl::get_void_type_decl();
+  if (!has_scope(t))
+    add_decl_to_scope(t, ctxt.cur_tu()->get_global_scope());
+  return t;
 }
 
 /// Build an IR node from a given DIE and add the node to the current

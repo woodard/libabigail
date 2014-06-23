@@ -3066,6 +3066,18 @@ type_decl::type_decl(const std::string&	name,
 {
 }
 
+/// Get a singleton representing a void type node.
+///
+/// @return the void type node.
+type_decl_sptr
+type_decl::get_void_type_decl()
+{
+  static type_decl_sptr void_type_decl;
+  if (!void_type_decl)
+    void_type_decl.reset(new type_decl("void", 0, 0, location()));
+  return void_type_decl;
+}
+
 /// Return true if both types equals.
 ///
 /// This operator re-uses the overload that takes a decl_base.

@@ -177,6 +177,10 @@ tests/data/test-read-dwarf/test2.so		\
 tests/data/test-read-dwarf/test2.so.abi		\
 tests/data/test-read-dwarf/test3.c		\
 tests/data/test-read-dwarf/test3.so		\
+tests/data/test-read-dwarf/test4.c		\
+tests/data/test-read-dwarf/test4.so		\
+tests/data/test-read-dwarf/test5.cc		\
+tests/data/test-read-dwarf/test5.so		\
 \
 data/test-diff-filter/test0-v0.cc		\
 data/test-diff-filter/test0-v1.cc		\
