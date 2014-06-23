@@ -5023,7 +5023,7 @@ build_ir_node_from_die(read_context&	ctxt,
 
   switch (tag)
     {
-      // Type DIEs we intent to support someday, maybe.
+      // Type DIEs we support.
     case DW_TAG_base_type:
       if((result = build_type_decl(ctxt, die)))
 	result =
