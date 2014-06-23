@@ -159,6 +159,34 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test13-report.txt",
     "output/test-diff-filter/test13-report.txt",
   },
+  {
+    "data/test-diff-filter/test14-v0.o",
+    "data/test-diff-filter/test14-v1.o",
+    "",
+    "data/test-diff-filter/test14-0-report.txt",
+    "output/test-diff-filter/test14-0-report.txt",
+  },
+  {
+    "data/test-diff-filter/test14-v0.o",
+    "data/test-diff-filter/test14-v1.o",
+    "--redundant",
+    "data/test-diff-filter/test14-1-report.txt",
+    "output/test-diff-filter/test14-1-report.txt",
+  },
+  {
+    "data/test-diff-filter/test15-v0.o",
+    "data/test-diff-filter/test15-v1.o",
+    "",
+    "data/test-diff-filter/test15-0-report.txt",
+    "output/test-diff-filter/test15-0-report.txt",
+  },
+  {
+    "data/test-diff-filter/test15-v0.o",
+    "data/test-diff-filter/test15-v1.o",
+    "--redundant",
+    "data/test-diff-filter/test15-1-report.txt",
+    "output/test-diff-filter/test15-1-report.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

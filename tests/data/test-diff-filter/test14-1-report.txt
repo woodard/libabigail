@@ -1,0 +1,18 @@
+Functions changes summary: 0 Removed, 2 Changed, 0 Added functions
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+2 functions with some indirect sub-type change:
+
+  [C]'function void bar(const S&)' has some indirect sub-type changes:
+    parameter 0 of type 'const S&' has sub-type changes:
+      in unqualified underlying type 'S&':
+        in referenced type 'struct S':
+          size changed from 64 to 96 bits
+          1 data member insertion:
+            'unsigned int S::m2', at offset 64 (in bits)
+
+  [C]'function void foo(const S&)' has some indirect sub-type changes:
+    parameter 0 of type 'const S&' has sub-type changes:
+      in unqualified underlying type 'S&':
+        referenced type 'struct S' changed, as reported earlier
+

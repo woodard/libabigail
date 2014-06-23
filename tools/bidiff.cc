@@ -68,6 +68,7 @@ struct options
   bool			show_linkage_names;
   bool			show_harmful_changes;
   bool			show_harmless_changes;
+  bool			show_redundant_changes;
   shared_ptr<char>	di_root_path1;
   shared_ptr<char>	di_root_path2;
 
@@ -84,7 +85,8 @@ struct options
       show_all_vars(true),
       show_linkage_names(true),
       show_harmful_changes(true),
-      show_harmless_changes(false)
+      show_harmless_changes(false),
+      show_redundant_changes(false)
   {}
 };//end struct options;
 
@@ -114,6 +116,7 @@ display_usage(const string prog_name, ostream& out)
       << " --keep-var <regex>  keep only variables matching a regex\n"
       << " --no-harmless  do not display the harmless changes\n"
       << " --harmful  display the harmful changes\n"
+      << " --redundant  display redundant changes\n"
       << " --help  display this message\n";
 }
 
@@ -261,6 +264,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_harmless_changes = true;
       else if (!strcmp(argv[i], "--no-harmful"))
 	opts.show_harmful_changes = false;
+      else if (!strcmp(argv[i], "--redundant"))
+	opts.show_redundant_changes = true;
       else
 	return false;
     }
@@ -324,6 +329,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_changed_vars(opts.show_all_vars || opts.show_changed_vars);
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
   ctxt->show_linkage_names(opts.show_linkage_names);
+  ctxt->show_redundant_changes(opts.show_redundant_changes);
 
   if (!opts.show_harmless_changes)
       ctxt->switch_categories_off

@@ -227,36 +227,42 @@ enum diff_category
   /// This means the diff node does not carry any (meaningful) change.
   NO_CHANGE_CATEGORY = 0,
 
+  /// This means the diff node is *NOT* redundant.  The reason why we
+  /// do not define a REDUNDANT_CATEGORY instead is that we tagging a
+  /// node as NOT_REDUNDANT_CATEGORY is easier: you just have to find
+  /// a child node that is itself not redundant.
+  NOT_REDUNDANT_CATEGORY = 1,
+
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries access related changes, e.g, a private member
   /// that becomes public.
-  ACCESS_CHANGE_CATEGORY = 1,
+  ACCESS_CHANGE_CATEGORY = 1 << 1,
 
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change involving two compatible types.  For
   /// instance a type and its typedefs.
-  COMPATIBLE_TYPE_CHANGE_CATEGORY = 1 << 1,
+  COMPATIBLE_TYPE_CHANGE_CATEGORY = 1 << 2,
 
   /// This means that a diff node in the sub-tree carries a
   /// declaration name change.
-  DECL_NAME_CHANGE_CATEGORY = 1 << 2,
+  DECL_NAME_CHANGE_CATEGORY = 1 << 3,
 
   /// This means that a diff node in the sub-tree carries an addition
   /// or removal of a non-virtual member function.
-  NON_VIRT_MEM_FUN_CHANGE_CATEGORY = 1 << 3,
+  NON_VIRT_MEM_FUN_CHANGE_CATEGORY = 1 << 4,
 
   /// This means that a diff node in the sub-tree carries an addition
   /// or removal of a static data member.
-  STATIC_DATA_MEMBER_CHANGE_CATEGORY = 1 << 4,
+  STATIC_DATA_MEMBER_CHANGE_CATEGORY = 1 << 5,
 
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 5,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 6,
 
   /// This means that a diff node in the sub-tree carries a change to
   /// a vtable.
-  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 6,
+  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 7,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -264,7 +270,8 @@ enum diff_category
   /// This one must stay the last enumerator.  Please update it each
   /// time you add a new enumerator above.
   EVERYTHING_CATEGORY =
-  ACCESS_CHANGE_CATEGORY
+  NOT_REDUNDANT_CATEGORY
+  | ACCESS_CHANGE_CATEGORY
   | COMPATIBLE_TYPE_CHANGE_CATEGORY
   | DECL_NAME_CHANGE_CATEGORY
   | NON_VIRT_MEM_FUN_CHANGE_CATEGORY
@@ -326,10 +333,19 @@ public:
   void
   add_diff(const decl_base_sptr first,
 	   const decl_base_sptr second,
-	   diff_sptr d);
+	   const diff_sptr d);
+
+  void
+  add_diff(const diff_sptr d);
+
+  void
+  add_diff(const diff* d);
 
   bool
   diff_has_been_traversed(const diff*) const;
+
+  bool
+  diff_has_been_traversed(const diff_sptr) const;
 
   void
   mark_diff_as_traversed(const diff*);
@@ -357,6 +373,12 @@ public:
 
   void
   maybe_apply_filters(diff_sptr dif);
+
+  bool
+  categorizing_redundancy() const;
+
+  void
+  categorizing_redundancy(bool);
 
   void
   show_stats_only(bool f);
@@ -405,6 +427,12 @@ public:
 
   void
   show_linkage_names(bool f);
+
+  bool
+  show_redundant_changes() const;
+
+  void
+  show_redundant_changes(bool f);
 };//end struct diff_context.
 
 /// This type encapsulates an edit script (a set of insertions and
@@ -527,6 +555,21 @@ public:
   add_to_category(diff_category c)
   {
     category_ = category_ | c;
+    return category_;
+  }
+
+  /// Remove the current diff tree node from an a existing sef of
+  /// categories.
+  ///
+  /// @param c a bit-map representing the set of categories to add the
+  /// current diff tree node to.
+  ///
+  /// @return the resulting bit-map representing the categories this
+  /// current diff tree onde belongs to.
+  diff_category
+  remove_from_category(diff_category c)
+  {
+    category_ = category_ & ~c;
     return category_;
   }
 

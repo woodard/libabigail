@@ -43,7 +43,7 @@ struct noop_deleter
 {
   template<typename T>
   void
-  operator()(T*)
+  operator()(const T*)
   {}
 };
 
@@ -115,6 +115,44 @@ operator|(visiting_kind l, visiting_kind r)
 	}							\
   } while (false)
 
+/// If context()->categorizing_redundancy() is true, look at a child
+/// node of the current diff node and depending on whether its in the
+/// 'NOT_REDUNDANT_CATEGORY' category or not, propagate its
+/// non-redudancy-ness to the current node.  Note that this macro must
+/// be called before the node is traversed.
+///
+/// This is a subroutine-macro of the
+/// TRAVERSE_*_DIFF_NODE_AND_PROPAGATE_CATEGORY family of macros
+/// below.
+///
+/// @param node the child node of the current diff node to consider.
+#define CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE(node)			\
+  bool maybe_not_redundant = false;					\
+  if (context()->categorizing_redundancy())				\
+    {									\
+      if (context()->diff_has_been_traversed(node))			\
+	{								\
+	  node->remove_from_category(NOT_REDUNDANT_CATEGORY);		\
+	  remove_from_category(NOT_REDUNDANT_CATEGORY);		\
+	}								\
+      else								\
+	maybe_not_redundant = true;					\
+    }
+
+/// Look at a child node (that has just been traversed) of the current
+/// diff node and update the non-redundancy-ness of the current diff
+/// node accordingly.  Note the child node must have been traversed.
+/// So this macro must be called *after* the
+/// CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE() macro above.
+///
+/// This is a subroutine-macro of the
+/// TRAVERSE_*_DIFF_NODE_AND_PROPAGATE_CATEGORY family of macros
+/// below.
+#define UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE(node)	\
+  if (maybe_not_redundant						\
+      && (node->get_category() & NOT_REDUNDANT_CATEGORY))		\
+    add_to_category(NOT_REDUNDANT_CATEGORY)
+
 /// Inside the code of a given diff node, traverse a sub-tree of the
 /// diff nove and propagate the category of the sub-tree up to the
 /// current diff node.
@@ -124,12 +162,15 @@ operator|(visiting_kind l, visiting_kind r)
 /// @param visitor the visitor used to visit the traversed sub tree
 /// nodes.
 #define TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
-  do {									\
-    bool r = node->traverse(visitor);					\
-    add_to_category(node->get_category());				\
-    if (!r)								\
-      return false;							\
-  } while (false)
+  do									\
+    {									\
+      CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE(node);			\
+      bool r = node->traverse(visitor);				\
+      add_to_category(node->get_category() & ~NOT_REDUNDANT_CATEGORY);	\
+      UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE(node);	\
+      if (!r)								\
+	return false;							\
+    } while (false)
 
 /// Inside the code of a given diff node that is a member of a
 /// class_diff node, traverse a sub-tree of the diff nove and
@@ -141,15 +182,18 @@ operator|(visiting_kind l, visiting_kind r)
 /// @param visitor the visitor used to visit the traversed sub tree
 /// nodes.
 #define TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
-  do {									\
-    bool r = node->traverse(visitor);					\
-    add_to_category(node->get_category());				\
-    if (!r)								\
-      {								\
-	priv_->traversing_ = false;					\
-	return false;							\
-      }								\
-  } while (false)
+  do									\
+    {									\
+      CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE(node);			\
+      bool r = node->traverse(visitor);				\
+      add_to_category(node->get_category() & ~NOT_REDUNDANT_CATEGORY);	\
+      UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE(node);	\
+      if (!r)								\
+	{								\
+	  priv_->traversing_ = false;					\
+	  return false;						\
+	}								\
+    } while (false)
 
 /// Inside the code of a given diff node that is for member functions
 /// of a class_diff node, traverse a sub-tree of the diff nove and
@@ -158,47 +202,69 @@ operator|(visiting_kind l, visiting_kind r)
 ///
 /// Note that for a diff for member functions, the only categories we
 /// want to see propagated to the diff of the enclosing class are
-/// categories about changes to vtables.
-/// 
+/// categories about changes to vtables and redundancy-ness.
+///
 /// @param node the sub-tree node of the current diff node to consider.
 ///
 /// @param visitor the visitor used to visit the traversed sub tree
 /// nodes.
 #define TRAVERSE_MEM_FN_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
-  do {									\
-    bool r = node->traverse(visitor);					\
-    add_to_category(node->get_category()				\
-		    & VIRTUAL_MEMBER_CHANGE_CATEGORY);			\
-    if (!r)								\
+    do									\
       {								\
-	priv_->traversing_ = false;					\
-	return false;							\
-      }								\
-  } while (false)
+	CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE(node);			\
+	bool r = node->traverse(visitor);				\
+	add_to_category(node->get_category()				\
+			& VIRTUAL_MEMBER_CHANGE_CATEGORY);		\
+	UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE(node);	\
+	if (!r)							\
+	  {								\
+	    priv_->traversing_ = false;				\
+	    return false;						\
+	  }								\
+      } while (false)
 
 /// Inside the traveral code of a diff node, if the node has been
 /// traversed already, return immediately.  Otherwise, mark the
 /// current node as a 'traversed' node.
-#define ENSURE_DIFF_NODE_TRAVERSED_ONCE		\
-  do {							\
-    if (context()->diff_has_been_traversed(this))	\
-      return true;					\
-    context()->mark_diff_as_traversed(this);		\
-  } while (false)
+///
+/// For class_diff and type_decl_diffs this macro sets the current
+/// node into the NOT_REDUNDANT_CATEGORY if it's been traversed for
+/// the first time.
+///
+/// Note that other types of diff nodes that have sub-trees are
+/// categorized when their children nodes are traversed.  As
+/// class_diff and type_decl
+///
+#define ENSURE_DIFF_NODE_TRAVERSED_ONCE				\
+    do									\
+      {								\
+	if (context()->diff_has_been_traversed(this))			\
+	  return true;							\
+	else if (context()->categorizing_redundancy()			\
+		 && (dynamic_cast<const class_diff*>(this)		\
+		     || dynamic_cast<const type_decl_diff*>(this)))	\
+	  add_to_category(NOT_REDUNDANT_CATEGORY);			\
+	context()->mark_diff_as_traversed(this);			\
+      } while (false)
 
 /// Inside the traveral code of a diff node that is member node of a
 /// class_diff node, if the node has been traversed already, return
 /// immediately.  Otherwise, mark the current node as a 'traversed'
 /// node.
-#define ENSURE_MEM_DIFF_NODE_TRAVERSED_ONCE		\
-  do {							\
-    if (context()->diff_has_been_traversed(node))	\
-      {						\
-	priv_->traversing_ = false;			\
-	return true;					\
-      }						\
-    context()->mark_diff_as_traversed(node);		\
-  } while (false)
+#define ENSURE_MEM_DIFF_NODE_TRAVERSED_ONCE				\
+  do									\
+    {									\
+      if (context()->diff_has_been_traversed(node))			\
+	{								\
+	  priv_->traversing_ = false;					\
+	  return true;							\
+	}								\
+      else if (context()->categorizing_redundancy()			\
+	       && (dynamic_cast<const class_diff*>(this)		\
+		   || dynamic_cast<const type_decl_diff*>(this)))	\
+	add_to_category(NOT_REDUNDANT_CATEGORY);			\
+      context()->mark_diff_as_traversed(node);				\
+    } while (false)
 
 /// The default traverse function.
 ///
@@ -216,6 +282,7 @@ struct diff_context::priv
   pointer_map				traversed_diff_nodes_;
   corpus_sptr				first_corpus_;
   corpus_sptr				second_corpus_;
+  bool					categorizing_redundancy_;
   bool					show_stats_only_;
   bool					show_deleted_fns_;
   bool					show_changed_fns_;
@@ -224,9 +291,11 @@ struct diff_context::priv
   bool					show_changed_vars_;
   bool					show_added_vars_;
   bool					show_linkage_names_;
+  bool					show_redundant_changes_;
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
+      categorizing_redundancy_(false),
       show_stats_only_(false),
       show_deleted_fns_(true),
       show_changed_fns_(true),
@@ -234,7 +303,8 @@ struct diff_context::priv
       show_deleted_vars_(true),
       show_changed_vars_(true),
       show_added_vars_(true),
-      show_linkage_names_(false)
+      show_linkage_names_(false),
+      show_redundant_changes_(false)
    {}
  };// end struct diff_context::priv
 
@@ -385,9 +455,32 @@ diff_context::switch_categories_off(diff_category c)
 /// @param the diff to add.
 void
 diff_context::add_diff(decl_base_sptr first,
-			decl_base_sptr second,
-			diff_sptr d)
+		       decl_base_sptr second,
+		       const diff_sptr d)
 {priv_->decls_diff_map[std::make_pair(first, second)] = d;}
+
+/// Add a diff tree node to the cache of the current diff_context
+///
+/// @param d the diff tree node to add.
+void
+diff_context::add_diff(const diff* d)
+{
+  if (d)
+    {
+      diff_sptr dif(const_cast<diff*>(d), noop_deleter());
+      add_diff(d->first_subject(), d->second_subject(), dif);
+    }
+}
+
+/// Add a diff tree node to the cache of the current diff_context
+///
+/// @param d the diff tree node to add.
+void
+diff_context::add_diff(const diff_sptr d)
+{
+  if (d)
+      add_diff(d->first_subject(), d->second_subject(), d);
+}
 
 /// Test if a diff node has been traversed.
 ///
@@ -404,6 +497,13 @@ diff_context::diff_has_been_traversed(const diff* d) const
 	  != priv_->traversed_diff_nodes_.end());
 }
 
+/// Test if a diff node has been traversed.
+///
+/// @param d the diff node to consider.
+bool
+diff_context::diff_has_been_traversed(const diff_sptr d) const
+{return diff_has_been_traversed(d.get());}
+
 /// Mark a diff node as traversed by a traversing algorithm.
 ///
 /// Subsequent invocations of diff_has_been_traversed() on the diff
@@ -413,7 +513,10 @@ diff_context::mark_diff_as_traversed(const diff* d)
 {
    const diff* canonical = has_diff_for(d);
    if (!canonical)
-    canonical = d;
+     {
+       add_diff(d);
+       canonical = d;
+     }
 
    size_t ptr_value = reinterpret_cast<uintptr_t>(canonical);
    priv_->traversed_diff_nodes_[ptr_value] = true;
@@ -460,6 +563,24 @@ diff_context::maybe_apply_filters(diff_sptr diff)
       filtering::apply_filter(*i, diff);
     }
 }
+
+/// A getter to know if we are currently categorizing diff tree nodes
+/// for the NOT_REDUNDANT_CATEGORY.
+///
+/// @return true if we are currently categorizing diff tree nodes for
+/// the NOT_REDUNDANT_CATEGORY, false otherwise.
+bool
+diff_context::categorizing_redundancy() const
+{return priv_->categorizing_redundancy_;}
+
+/// A setter to know if we are currently categorizing diff tree nodes
+/// for the NOT_REDUNDANT_CATEGORY.
+///
+/// @parm f the flag to say if we are currently categorizing diff tree
+/// nodes for the NOT_REDUNDANT_CATEGORY.
+void
+diff_context::categorizing_redundancy(bool f)
+{priv_->categorizing_redundancy_ = f;}
 
 /// Set a flag saying if the comparison module should only show the
 /// diff stats.
@@ -561,6 +682,24 @@ void
 diff_context::show_linkage_names(bool f)
 {priv_->show_linkage_names_= f;}
 
+/// A getter for the flag that says if we should report about
+/// functions or variables diff nodes that have *exclusively*
+/// redundant diff tree children nodes.
+///
+/// @return the flag.
+bool
+diff_context::show_redundant_changes() const
+{return priv_->show_redundant_changes_;}
+
+/// A setter for the flag that says if we should report about
+/// functions or variables diff nodes that have *exclusively*
+/// redundant diff tree children nodes.
+///
+/// @param f the flag to set.
+void
+diff_context::show_redundant_changes(bool f)
+{priv_->show_redundant_changes_ = f;}
+
 // </diff_context stuff>
 
 // <diff stuff>
@@ -577,7 +716,23 @@ diff::is_filtered_out() const
 {
   if (context()->get_allowed_category() == EVERYTHING_CATEGORY)
     return false;
-  return !(get_category() & context()->get_allowed_category());
+
+  // We don't want to display redundant function or variable diff
+  // nodes.
+  if ((dynamic_cast<const function_decl_diff*>(this)
+       || (dynamic_cast<const var_diff*>(this)
+	   // We are talking about top-level variables diff nodes, not
+	   // member variables diff nodes.
+	   && !is_member_decl(first_subject())))
+      && !context()->show_redundant_changes())
+    if (!(get_category() & NOT_REDUNDANT_CATEGORY))
+      return true;
+
+  // Ignore the NOT_REDUNDANT_CATEGORY bit when comparing allowed
+  // categories and the current set of categories.
+  return !((get_category() & ~NOT_REDUNDANT_CATEGORY)
+	   & (context()->get_allowed_category()
+	      & ~NOT_REDUNDANT_CATEGORY));
 }
 
 /// Test if this diff tree node should be reported.
@@ -5738,6 +5893,9 @@ struct corpus_diff::priv
   emit_diff_stats(diff_stats&	stats,
 		  ostream&	out,
 		  const string& indent);
+
+  void
+  categorize_redundant_changed_sub_nodes();
 }; // end corpus::priv
 
 /// Tests if the lookup tables are empty.
@@ -5980,7 +6138,8 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
   stat.num_vars_added = added_vars_.size();
   stat.num_vars_changed = changed_vars_.size();
 
-  // Calculate number of filtered functions & variables.
+  // Walk the changed function diff nodes to apply the categorization
+  // filters.
   diff_sptr diff;
   for (string_changed_function_ptr_map::const_iterator i =
 	 changed_fns_.begin();
@@ -5991,10 +6150,10 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       function_decl_sptr s(i->second.second, noop_deleter());
       diff = compute_diff(f, s, ctxt_);
       ctxt_->maybe_apply_filters(diff);
-      if (diff->is_filtered_out())
-	++stat.num_func_filtered_out;
     }
 
+  // Walk the changed variable diff nodes to apply the categorization
+  // filters.
   for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
        i != changed_vars_.end();
        ++i)
@@ -6003,6 +6162,34 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       var_decl_sptr s(i->second.second, noop_deleter());
       diff = compute_diff_for_decls(f, s, ctxt_);
       ctxt_->maybe_apply_filters(diff);
+    }
+
+  // Categorize redundant function diff nodes.
+  categorize_redundant_changed_sub_nodes();
+
+  // Walk the changed function diff nodes to count the number of
+  // filtered-out functions.
+  for (string_changed_function_ptr_map::const_iterator i =
+	 changed_fns_.begin();
+       i != changed_fns_.end();
+       ++i)
+    {
+      function_decl_sptr f(i->second.first, noop_deleter());
+      function_decl_sptr s(i->second.second, noop_deleter());
+      diff = compute_diff(f, s, ctxt_);
+      if (diff->is_filtered_out())
+	++stat.num_func_filtered_out;
+    }
+
+  // Walk the changed variables diff nodes to count the number of
+  // filtered-out variables.
+  for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
+       i != changed_vars_.end();
+       ++i)
+    {
+      var_decl_sptr f(i->second.first, noop_deleter());
+      var_decl_sptr s(i->second.second, noop_deleter());
+      diff = compute_diff_for_decls(f, s, ctxt_);
       if (diff->is_filtered_out())
 	++stat.num_vars_filtered_out;
     }
@@ -6051,6 +6238,39 @@ corpus_diff::priv::emit_diff_stats(diff_stats&		s,
     out << "variable\n";
   else
     out << "variables\n";
+}
+
+/// Walk the changed functions and variables diff nodes to categorize
+/// redundant nodes.
+void
+corpus_diff::priv::categorize_redundant_changed_sub_nodes()
+{
+  ctxt_->categorizing_redundancy(true);
+  ctxt_->forget_traversed_diffs();
+  filtering::filter_base_sptr rfilter(new filtering::redundant_filter);
+  diff_sptr diff;
+
+  for (string_changed_function_ptr_map::const_iterator i = changed_fns_.begin();
+       i!= changed_fns_.end();
+       ++i)
+    {
+      function_decl_sptr f(i->second.first, noop_deleter());
+      function_decl_sptr s(i->second.second, noop_deleter());
+      diff = compute_diff(f, s, ctxt_);
+      filtering::apply_filter(rfilter, diff);
+    }
+
+  for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
+       i!= changed_vars_.end();
+       ++i)
+    {
+      var_decl_sptr f(i->second.first, noop_deleter());
+      var_decl_sptr s(i->second.second, noop_deleter());
+      diff = compute_diff(f, s, ctxt_);
+      filtering::apply_filter(rfilter, diff);
+    }
+
+  ctxt_->categorizing_redundancy(false);
 }
 
 /// Constructor for @ref corpus_diff.
@@ -6625,6 +6845,26 @@ diff_node_visitor::visit(corpus_diff*, bool)
 {return true;}
 
 // </diff_node_visitor stuff>
+
+// <redundant diff node marking>
+
+/// Visitor implementation for the filtering::redundant_filter
+/// visitor.
+///
+/// @return true if the caller of the vistor has to keep traversing
+/// the graph.
+bool
+filtering::redundant_filter::visit(diff*, bool /*pre=*/)
+{
+  // At this point, the diff node has already been marked
+  // redundant/non-redundant by the code of
+  // TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY so we have nothing to
+  // do.  We just have to make sure this filter is applied to nodes in
+  // a depth-first manner.
+  return true;
+}
+
+// </redundant diff node marking>
 
 }// end namespace comparison
 } // end namespace abigail
