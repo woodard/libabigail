@@ -439,7 +439,8 @@ elf_symbol::is_public() const
 {
   return (get_is_defined()
 	  && (get_binding() == GLOBAL_BINDING
-	      || get_binding() == WEAK_BINDING));
+	      || get_binding() == WEAK_BINDING
+	      || get_binding() == GNU_UNIQUE_BINDING));
 }
 
 bool
