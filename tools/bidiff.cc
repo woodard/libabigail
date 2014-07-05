@@ -94,10 +94,10 @@ struct options
   {}
 };//end struct options;
 
-void
-display_usage(const string prog_name, ostream& out)
+static void
+display_usage(const string &prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << "[options] [<bi-file1> <bi-file2>]\n"
+  out << "usage: " << prog_name << " [options] [<bi-file1> <bi-file2>]\n"
       << " where options can be:\n"
       << " --debug-info-dir1 <path> the root for the debug info of bi-file1\n"
       << " --debug-info-dir2 <path> the root for the debug info of bi-file2\n"

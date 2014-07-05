@@ -32,6 +32,7 @@
 
 using std::cerr;
 using std::cout;
+using std::ostream;
 using std::string;
 using std::list;
 
@@ -52,9 +53,9 @@ struct options
 
 /// Display a message explaining the usage of the program on stdout.
 static void
-display_usage()
+display_usage(const string &prog_name, ostream& out)
 {
-  cout << "usage:	biar [options] [archive-file-path]\n"
+  out << "usage: " << prog_name << " [options] [archive-file-path]\n"
        << " where options are: \n"
        << "--help|-h				display this usage message\n"
        << "--list|l <archive>			list the archive content\n"
@@ -313,7 +314,7 @@ main(int argc, char* argv[])
   if (!parse_args(argc, argv, opts)
       || opts.archive.empty())
     {
-      display_usage();
+      display_usage(argv[0], cout);
       return -1;
     }
 
@@ -325,7 +326,7 @@ main(int argc, char* argv[])
     return !extract_tus_from_archive(opts.extract_dest, opts.archive);
   else
     {
-      display_usage();
+      display_usage(argv[0], cout);
       return -1;
     }
 

@@ -33,6 +33,7 @@
 #include "abg-ir.h"
 
 using std::cout;
+using std::cerr;
 using std::string;
 using std::ostream;
 using std::ostringstream;
@@ -59,9 +60,9 @@ struct options
 };
 
 static void
-show_help(const string& progname)
+display_usage(const string& prog_name, ostream &out)
 {
-  cout << "usage: " << progname << "[options ]<elf file> <symbol-name>\n"
+  out << "usage: " << prog_name << " [options] <elf file> <symbol-name>\n"
        << "where [options] can be:\n"
        << "  --help  display this help string\n"
        << "  --demangle demangle the symbols from the symbol table\n"
@@ -114,7 +115,7 @@ main(int argc, char* argv[])
 
   if (opts.show_help)
     {
-      show_help(argv[0]);
+      display_usage(argv[0], cout);
       return 1;
     }
   assert(opts.elf_path != 0

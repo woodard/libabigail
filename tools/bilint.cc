@@ -81,10 +81,10 @@ struct options
   {}
 };//end struct options;
 
-void
+static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << "[options] [<abi-file1>\n"
+  out << "usage: " << prog_name << " [options] [<abi-file1>]\n"
       << " where options can be:\n"
       << "  --help  display this message\n"
       << "  --debug-info-dir <path> the path under which to look for "

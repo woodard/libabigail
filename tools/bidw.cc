@@ -64,7 +64,7 @@ struct options
 static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << "[options] [<path-to-elf-file>]\n"
+  out << "usage: " << prog_name << " [options] [<path-to-elf-file>]\n"
       << " where options can be: \n"
       << "  --help display this message\n"
       << "  --debug-info-dir <dir-path> look for debug info under 'dir-path'\n"
@@ -141,7 +141,7 @@ main(int argc, char* argv[])
 
   if (!parse_command_line(argc, argv, opts))
     {
-      display_usage(argv[0], cerr);
+      display_usage(argv[0], cout);
       return 1;
     }
 
