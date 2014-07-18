@@ -3,13 +3,12 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 function with some indirect sub-type change:
 
-  [C]'function void foo(const S&)' has some indirect sub-type changes:
-    parameter 0 of type 'const S&' has sub-type changes:
-      in unqualified underlying type 'S&':
-        in referenced type 'struct S':
-          size changed from 8 to 32 bits
-          1 data member insertion:
-            'int S::m0', at offset 0 (in bits)
+  [C]'function void foo(S&)' has some indirect sub-type changes:
+    parameter 0 of type 'S&' has sub-type changes:
+      in referenced type 'struct S':
+        size changed from 8 to 32 bits
+        1 data member insertion:
+          'int S::m0', at offset 0 (in bits)
 
 
 2 Added functions:

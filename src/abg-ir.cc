@@ -3269,7 +3269,8 @@ qualified_type_def::build_name(bool fully_qualified) const
     name = td->get_qualified_name();
   else
     name = td->get_name();
-  if (dynamic_pointer_cast<pointer_type_def>(underlying_type_))
+  if (dynamic_pointer_cast<pointer_type_def>(underlying_type_)
+      || dynamic_pointer_cast<reference_type_def>(underlying_type_))
     {
       name += " ";
       name += quals;

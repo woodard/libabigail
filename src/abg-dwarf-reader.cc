@@ -4526,6 +4526,30 @@ build_qualified_type(read_context&	ctxt,
   return result;
 }
 
+/// Strip qualification from a qualified type, when it makes sense.
+///
+/// DWARF constructs "const reference".  This is redundant because a
+/// reference is always const.  The issue is these redundant type then
+/// leaks into the IR and makes for bad diagnostics.
+///
+/// This function thus strips qualified type in that case.  It might
+/// contain code to strip other cases like this in the future.
+///
+/// @param t the type to strip qualification from.
+///
+/// @return the stripped type or just return @p t.
+static decl_base_sptr
+maybe_strip_qualification(const qualified_type_def_sptr t)
+{
+  if (!t)
+    return t;
+
+  if (dynamic_pointer_cast<reference_type_def>(t->get_underlying_type()))
+    return get_type_declaration(t->get_underlying_type());
+
+  return t;
+}
+
 /// Build a pointer type from a DW_TAG_pointer_type DIE.
 ///
 /// @param ctxt the read context to consider.
@@ -5074,7 +5098,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  build_qualified_type(ctxt, die, called_from_public_decl,
 			       where_offset);
 	if (q)
-	  result = add_decl_to_scope(q, scope);
+	  result = add_decl_to_scope(maybe_strip_qualification(q), scope);
       }
       break;
 
