@@ -3931,6 +3931,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   while (!ctxt.scope_stack().empty())
     ctxt.scope_stack().pop();
   ctxt.var_decls_to_re_add_to_tree().clear();
+  type_decl::get_void_type_decl()->set_scope(0);
 
   ctxt.cur_tu_die(die);
 
