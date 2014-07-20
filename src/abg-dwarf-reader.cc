@@ -378,6 +378,40 @@ find_bss_section(Elf* elf_handle)
   return 0;
 }
 
+/// Get the address at which a given binary is loaded in memory⋅
+///
+/// @param elf_handle the elf handle for the binary to consider.
+///
+/// @param load_address the address where the binary is loaded.  This
+/// is set by the function iff it returns true.
+///
+/// @return true if the function could get the binary load address
+/// and assign @p load_address to it.
+bool
+get_binary_load_address(Elf *elf_handle,
+			GElf_Addr &load_address)
+{
+  GElf_Ehdr eh_mem;
+  GElf_Ehdr *elf_header = gelf_getehdr(elf_handle, &eh_mem);
+  size_t num_segments = elf_header->e_phnum;
+
+  for (unsigned i = 0; i < num_segments; ++i)
+    {
+      GElf_Phdr ph_mem;
+      GElf_Phdr *program_header =gelf_getphdr(elf_handle, i, &ph_mem);
+      if (program_header->p_type == PT_LOAD
+	  && program_header->p_offset == 0)
+	{
+	  // This program header represent the segment containing the
+	  // first byte of this binary.  We want to return the address
+	  // at which the segment is loaded in memory.
+	  load_address = program_header->p_vaddr;
+	  return true;
+	}
+    }
+  return false;
+}
+
 /// Compare a symbol name against another name, possibly demangling
 /// the symbol_name before performing the comparison.
 ///
@@ -1165,78 +1199,6 @@ lookup_public_variable_symbol_from_elf(Elf*			elf,
   return found;
 }
 
-/// In relocatable (*.o) elf files, the st_value field of a function
-/// symbol is the absolute address of the symbol.  As the symbol is in
-/// the .text section, this function substracts the address of the
-/// .text section from at symbol.st_value to yield the offset of the
-/// symbol in the .text section.  Note that this is done only if the
-/// current elf file is a relocatable one.
-///
-/// @param the elf module yield by the DWFL.
-///
-/// @param addr the st_value field of the function symbol to consider.
-///
-/// @return the (possibly) adjusted address, or just @p addr if no
-/// adjustment took place.
-static Dwarf_Addr
-maybe_adjust_fn_sym_address(Dwfl_Module* module, Dwarf_Addr addr)
-{
-  if (module == 0)
-    return addr;
-
-  GElf_Addr bias = 0;
-  Elf* elf = dwfl_module_getelf(module, &bias);
-  GElf_Ehdr eh_mem;
-  GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
-  if (elf_header->e_type != ET_REL)
-    return addr;
-
-  Elf_Scn* text_section = find_text_section(elf);
-  assert(text_section);
-
-  GElf_Shdr sheader_mem;
-  GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
-  assert(text_sheader);
-
-  return addr - text_sheader->sh_addr;
-}
-
-/// In relocatable (*.o) elf files, the st_value field of a global
-/// variable symbol is the absolute address of the symbol.  As the
-/// symbol is in the .bss section, this function substracts the
-/// address of the .bss section from at symbol.st_value to yield the
-/// relative offset of the symbol in the .bss section.  Note that this
-/// is done only if the current elf file is a relocatable one.
-///
-/// @param the elf module yield by the DWFL.
-///
-/// @param addr the st_value field of the variable symbol to consider.
-///
-/// @return the (possibly) adjusted address, or just @p addr if no
-/// adjustment took place.
-static Dwarf_Addr
-maybe_adjust_var_sym_address(Dwfl_Module* module, Dwarf_Addr addr)
-{
-  if (module == 0)
-    return addr;
-
-  GElf_Addr bias = 0;
-  Elf* elf = dwfl_module_getelf(module, &bias);
-  GElf_Ehdr eh_mem;
-  GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
-  if (elf_header->e_type != ET_REL)
-    return addr;
-
-  Elf_Scn* data_section = find_bss_section(elf);
-  assert(data_section);
-
-  GElf_Shdr sheader_mem;
-  GElf_Shdr* data_sheader = gelf_getshdr(data_section, &sheader_mem);
-  assert(data_sheader);
-
-  return addr - data_sheader->sh_addr;
- }
-
 /// The context accumulated during the reading of dwarf debug info and
 /// building of the resulting ABI Corpus as a result.
 ///
@@ -1297,6 +1259,10 @@ public:
   elf_module() const
   {return elf_module_;}
 
+  /// Return the ELF descriptor for the binary we are analizing.
+  ///
+  /// @return a pointer to the Elf descriptor representing the binary
+  /// we are analizing.
   Elf*
   elf_handle() const
   {
@@ -1310,6 +1276,30 @@ public:
       }
     return elf_handle_;
   }
+
+  /// Return the ELF descriptor used for DWARF access.
+  ///
+  /// This can be the same as read_context::elf_handle() above, if the
+  /// DWARF info is in the same ELF file as the one of the binary we
+  /// are analizing.  It is different if e.g, the debug info is split
+  /// from the ELF file we are analizing.
+  ///
+  /// @return a pointer to the ELF descriptor used to access debug
+  /// info.
+  Elf*
+  dwarf_elf_handle() const
+  {return dwarf_getelf(dwarf());}
+
+  /// Test if the debug information is in a separate ELF file wrt the
+  /// main ELF file of the program (application or shared library) we
+  /// are analizing.
+  ///
+  /// @return true if the debug information is in a separate ELF file
+  /// compared to the main ELF file of the program (application or
+  /// shared library) that we are looking at.
+  bool
+  dwarf_is_splitted() const
+  {return dwarf_elf_handle() != elf_handle();}
 
   /// Load the debug info associated with an elf file that is at a
   /// given path.
@@ -1904,6 +1894,135 @@ public:
     return false;
   }
 
+  /// This is a sub-routine of maybe_adjust_fn_sym_address and
+  /// maybe_adjust_var_sym_address.
+  ///
+  /// Given an address that we got by looking at some debug
+  /// information (e.g, a symbol's address referred to by a DWARF
+  /// TAG), If the ELF file we are interested in is a shared library
+  /// or an executable, then adjust the address to be coherent with
+  /// where the executable (or shared library) is loaded.  That way,
+  /// the address can be used to look for symbols in the executable or
+  /// shared library.
+  ///
+  /// @return the adjusted address, or the same address as @p addr if
+  /// it didn't need any adjustment.
+  Dwarf_Addr
+  maybe_adjust_address_for_exec_or_dyn(Dwarf_Addr addr) const
+  {
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr *elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+
+    if (elf_header->e_type == ET_DYN || elf_header->e_type == ET_EXEC)
+      {
+	Dwarf_Addr dwarf_elf_load_address = 0, elf_load_address = 0;
+	assert(get_binary_load_address(dwarf_elf_handle(),
+				       dwarf_elf_load_address));
+	assert(get_binary_load_address(elf_handle(),
+				       elf_load_address));
+	if (dwarf_is_splitted()
+	    && (dwarf_elf_load_address != elf_load_address))
+	  // This means that in theory the DWARF an the executable are
+	  // not loaded at the same address.  And addr is meaningful
+	  // only in the context of the DWARF.
+	  //
+	  // So let's transform addr into an offset relative to where
+	  // the DWARF is loaded, and let's add that relative offset
+	  // to the load address of the executable.  That way, addr
+	  // becomes meaningful in the context of the executable and
+	  // can thus be used to compare against the address of
+	  // symbols of the executable, for instance.
+	  addr = addr - dwarf_elf_load_address + elf_load_address;
+      }
+
+    return addr;
+  }
+
+  /// For a relocatable (*.o) elf file, this function expects an
+  /// absolute address, representing a function symbol.  It then
+  /// extracts the address of the .text section from the symbol
+  /// absolute address to get the relative address of the function
+  /// from the beginning of the .text section.
+  ///
+  /// For executable or shared library, this function expects an
+  /// address of a function symbol that was retrieved by looking at a
+  /// DWARF "file".  The function thus adjusts the address to make it
+  /// be meaningful in the context of the ELF file.
+  ///
+  /// In both cases, the address can then be compared against the
+  /// st_value field of a function symbol from the ELF file.
+  ///
+  /// @param addr an adress for a function symbol that was retrieved
+  /// from a DWARF file.
+  ///
+  /// @return the (possibly) adjusted address, or just @p addr if no
+  /// adjustment took place.
+  Dwarf_Addr
+  maybe_adjust_fn_sym_address(Dwarf_Addr addr) const
+  {
+    Elf* elf = elf_handle();
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
+
+    if (elf_header->e_type == ET_REL)
+      {
+	Elf_Scn* text_section = find_text_section(elf);
+	assert(text_section);
+
+	GElf_Shdr sheader_mem;
+	GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
+	assert(text_sheader);
+	addr = addr - text_sheader->sh_addr;
+      }
+    else
+      addr = maybe_adjust_address_for_exec_or_dyn(addr);
+
+    return addr;
+  }
+
+  /// For a relocatable (*.o) elf file, this function expects an
+  /// absolute address, representing a global variable symbol.  It
+  /// then extracts the address of the .data section from the symbol
+  /// absolute address to get the relative address of the variable
+  /// from the beginning of the .data section.
+  ///
+  /// For executable or shared library, this function expects an
+  /// address of a variable symbol that was retrieved by looking at a
+  /// DWARF "file".  The function thus adjusts the address to make it
+  /// be meaningful in the context of the ELF file.
+  ///
+  /// In both cases, the address can then be compared against the
+  /// st_value field of a function symbol from the ELF file.
+  ///
+  /// @param addr an address for a global variable symbol that was
+  /// retrieved from a DWARF file.
+  ///
+  /// @return the (possibly) adjusted address, or just @p addr if no
+  /// adjustment took place.
+  Dwarf_Addr
+  maybe_adjust_var_sym_address(Dwarf_Addr addr) const
+  {
+    Elf* elf = elf_handle();
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
+
+    if (elf_header->e_type == ET_REL)
+      {
+	Elf_Scn* data_section = find_bss_section(elf);
+	assert(data_section);
+
+	GElf_Shdr sheader_mem;
+	GElf_Shdr* data_sheader = gelf_getshdr(data_section, &sheader_mem);
+	assert(data_sheader);
+
+	return addr - data_sheader->sh_addr;
+      }
+    else
+      addr = maybe_adjust_address_for_exec_or_dyn(addr);
+
+    return addr;
+  }
+
 
   /// Get the address of the function.
   ///
@@ -1926,7 +2045,7 @@ public:
     if (!die_address_attribute(function_die, DW_AT_low_pc, low_pc))
       return false;
 
-    low_pc = maybe_adjust_fn_sym_address(elf_module(), low_pc);
+    low_pc = maybe_adjust_fn_sym_address(low_pc);
     address = low_pc;
     return true;
   }
@@ -1951,7 +2070,7 @@ public:
   {
     if (!die_location_address(variable_die, address))
       return false;
-    address = maybe_adjust_var_sym_address(elf_module(), address);
+    address = maybe_adjust_var_sym_address(address);
     return true;
   }
 
@@ -3925,7 +4044,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
     return result;
   assert(dwarf_tag(die) == DW_TAG_compile_unit);
 
-  // Clear the part of the context that is depends on the translation
+  // Clear the part of the context that is dependent on the translation
   // unit we are reading.
   ctxt.die_decl_map().clear();
   while (!ctxt.scope_stack().empty())
