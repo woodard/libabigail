@@ -4703,12 +4703,15 @@ build_pointer_type_def(read_context&	ctxt,
 
   decl_base_sptr utype_decl;
   Dwarf_Die underlying_type_die;
+  bool has_underlying_type_die = false;
   if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
     // If the DW_AT_type attribute is missing, that means we are
     // looking at a pointer to "void".
     utype_decl = build_ir_node_for_void_type(ctxt);
+  else
+    has_underlying_type_die = true;
 
-  if (!utype_decl)
+  if (!utype_decl && has_underlying_type_die)
     utype_decl = build_ir_node_from_die(ctxt, &underlying_type_die,
 					called_from_public_decl,
 					where_offset);
