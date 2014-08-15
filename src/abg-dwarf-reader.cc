@@ -412,6 +412,92 @@ get_binary_load_address(Elf *elf_handle,
   return false;
 }
 
+/// Return the alternate debug info associated to a given main debug
+/// info file.
+///
+/// @param elf_module the elf module to consider.
+///
+/// @param alt_file_name output parameter.  This is set to the file
+/// path of the alternate debug info file associated to @p elf_module.
+/// This is set iff the function returns a non-null result.
+///
+/// Note that the alternate debug info file is a DWARF extension as of
+/// DWARF 4 ans is decribed at
+/// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+///
+/// @return the alternate debuginfo, or null
+///
+static Dwarf*
+find_alt_debug_info(Dwfl_Module *elf_module,
+		    string& alt_file_name)
+{
+  if (elf_module == 0)
+    return 0;
+
+  GElf_Addr bias = 0;
+  Elf *elf = dwarf_getelf(dwfl_module_getdwarf(elf_module, &bias));
+  GElf_Ehdr ehmem, *elf_header;
+  elf_header = gelf_getehdr(elf, &ehmem);
+
+  Elf_Scn* section = 0;
+  while ((section = elf_nextscn(elf, section)) != 0)
+    {
+      GElf_Shdr header_mem, *header;
+      header = gelf_getshdr(section, &header_mem);
+      if (header->sh_type != SHT_PROGBITS)
+	continue;
+
+      const char *section_name = elf_strptr(elf,
+					    elf_header->e_shstrndx,
+					    header->sh_name);
+
+      char *alt_name = 0;
+      char *build_id = 0;
+      size_t build_id_len = 0;
+      if (section_name != 0
+	  && strcmp(section_name, ".gnu_debugaltlink") == 0)
+	{
+	  Elf_Data *data = elf_getdata(section, 0);
+	  if (data != 0 && data->d_size != 0)
+	    {
+	      alt_name = (char*) data->d_buf;
+	      char *end_of_alt_name =
+		(char *) memchr(alt_name, '\0', data->d_size);
+	      build_id_len = data->d_size - (end_of_alt_name - alt_name + 1);
+	      if (build_id_len == 0)
+		return 0;
+	      build_id = end_of_alt_name + 1;
+	    }
+	}
+      else
+	continue;
+
+      if (build_id == 0 || alt_name == 0)
+	return 0;
+
+      const char *file_name = 0;
+      void **user_data = 0;
+      Dwarf_Addr low_addr = 0;
+      char *alt_file = 0;
+
+      file_name = dwfl_module_info(elf_module, &user_data,
+				   &low_addr, 0, 0, 0, 0, 0);
+
+      int alt_fd = dwfl_standard_find_debuginfo(elf_module, user_data,
+						file_name, low_addr,
+						alt_name, file_name,
+						0, &alt_file);
+
+      Dwarf *result = dwarf_begin(alt_fd, DWARF_C_READ);
+      if (alt_file)
+	alt_file_name = alt_file;
+
+      return result;
+    }
+
+  return 0;
+}
+
 /// Compare a symbol name against another name, possibly demangling
 /// the symbol_name before performing the comparison.
 ///
@@ -1199,11 +1285,10 @@ lookup_public_variable_symbol_from_elf(Elf*			elf,
   return found;
 }
 
-/// The context accumulated during the reading of dwarf debug info and
-/// building of the resulting ABI Corpus as a result.
+/// The context used to build ABI corpus from debug info in DWARF
+/// format.
 ///
-/// This context is to be created by the top-most function that wants
-/// to read debug info and build an ABI corpus from it.  It's then
+/// This context is to be created by create_read_context().  It's then
 /// passed to all the routines that read specific dwarf bits as they
 /// get some important data from it.
 class read_context
@@ -1211,18 +1296,34 @@ class read_context
   unsigned short		dwarf_version_;
   dwfl_sptr			handle_;
   Dwarf*			dwarf_;
+  // The alternate debug info.  Alternate debug info sections are a
+  // DWARF extension as of DWARF4 and are described at
+  // http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+  Dwarf*			alt_dwarf_;
+  string			alt_debug_info_path_;
   // The address range of the offline elf file we are looking at.
   Dwfl_Module*			elf_module_;
   mutable Elf*			elf_handle_;
   const string			elf_path_;
   Dwarf_Die*			cur_tu_die_;
+  // This is a map that associates a decl to the DIE that represents
+  // it.  This is for DIEs that come from the main debug info file we
+  // are looking at.
   die_decl_map_type		die_decl_map_;
+  // This is a similar map as die_decl_map_, but it's for DIEs that
+  // com from the alternate debug info file.  Alternate debug info is
+  // described by the DWARF extension (as of DWARF4) described at
+  // http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+  die_decl_map_type		alternate_die_decl_map_;
   die_class_map_type		die_wip_classes_map_;
   die_tu_map_type		die_tu_map_;
   corpus_sptr			cur_corpus_;
   translation_unit_sptr	cur_tu_;
   scope_stack_type		scope_stack_;
   offset_offset_map		die_parent_map_;
+  // A DIE -> parent map for DIEs coming from the alternate debug info
+  // file.
+  offset_offset_map		alternate_die_parent_map_;
   list<var_decl_sptr>		var_decls_to_add_;
   addr_elf_symbol_sptr_map_sptr fun_addr_sym_map_;
   string_elf_symbols_map_sptr	fun_syms_;
@@ -1237,6 +1338,7 @@ public:
     : dwarf_version_(0),
       handle_(handle),
       dwarf_(0),
+      alt_dwarf_(0),
       elf_module_(0),
       elf_handle_(0),
       elf_path_(elf_path),
@@ -1312,6 +1414,9 @@ public:
     if (!dwfl_handle())
       return 0;
 
+    if (dwarf_)
+      return dwarf_;
+
     elf_module_ =
       dwfl_report_offline(dwfl_handle().get(),
 			  basename(const_cast<char*>(elf_path().c_str())),
@@ -1320,12 +1425,43 @@ public:
     dwfl_report_end(dwfl_handle().get(), 0, 0);
 
     Dwarf_Addr bias = 0;
-    return (dwarf_ = dwfl_module_getdwarf(elf_module_, &bias));
+
+    dwarf_ = dwfl_module_getdwarf(elf_module_, &bias);
+    alt_dwarf_ = find_alt_debug_info(elf_module_, alt_debug_info_path_);
+
+    return dwarf_;
   }
 
+  /// Return the main debug info we are looking at.
+  ///
+  /// @return the main debug info.
   Dwarf*
   dwarf() const
   {return dwarf_;}
+
+  /// Return the alternate debug info we are looking at.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @return the alternate debug info.
+  Dwarf*
+  alt_dwarf() const
+  {return alt_dwarf_;}
+
+  /// Return the path to the alternate debug info as contained in the
+  /// .gnu_debugaltlink section of the main elf file.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @return the path to the alternate debug info file, or an empty
+  /// path if no alternate debug info file is associated.
+  const string&
+  alt_debug_info_path() const
+  {return alt_debug_info_path_;}
 
   const string&
   elf_path() const
@@ -1339,13 +1475,163 @@ public:
   cur_tu_die(Dwarf_Die* cur_tu_die)
   {cur_tu_die_ = cur_tu_die;}
 
+  /// Return the map that associates a decl to the DIE that represents
+  /// it.  This if for DIEs that come from the main debug info file we
+  /// are looking at.
+  ///
+  /// @return the die -> decl map of the main debug info file.
   const die_decl_map_type&
   die_decl_map() const
   {return die_decl_map_;}
 
+  /// Return the map that associates a decl to the DIE that represents
+  /// it.  This if for DIEs that come from the main debug info file we
+  /// are looking at.
+  ///
+  /// @return the die -> decl map of the main debug info file.
   die_decl_map_type&
   die_decl_map()
   {return die_decl_map_;}
+
+  /// Return the map that associates a decl to the DIE that represents
+  /// it.  This if for DIEs that come from the alternate debug info file.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @return the die -> decl map of the alternate debug info file.
+  const die_decl_map_type&
+  alternate_die_decl_map() const
+  {return die_decl_map_;}
+
+  /// Return the map that associates a decl to the DIE that represents
+  /// it.  This if for DIEs that come from the alternate debug info file.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @return the die -> decl map of the alternate debug info file.
+  die_decl_map_type&
+  alternate_die_decl_map()
+  {return die_decl_map_;}
+
+private:
+  /// Add an entry to the die->decl map for DIEs coming from the main
+  /// (or primary) debug info file.
+  ///
+  /// @param die_offset the DIE offset of the DIE we are interested in.
+  ///
+  /// @param decl the decl we are interested in.
+  void
+  associate_die_to_decl_primary(size_t die_offset,
+				decl_base_sptr decl)
+  {die_decl_map()[die_offset] = decl;}
+
+  /// Add an entry to the die->decl map for DIEs coming from the
+  /// alternate debug info file.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @param die_offset the DIE offset of the DIE we are interested in.
+  ///
+  /// @param decl the decl we are interested in.
+  void
+  associate_die_to_decl_alternate(size_t die_offset,
+				  decl_base_sptr decl)
+  {alternate_die_decl_map()[die_offset] = decl;}
+
+public:
+
+  /// Add an entry to the relevant die->decl map.
+  ///
+  /// @param die_offset the offset of the DIE to add the the map.
+  ///
+  /// @param die_is_from_alternate_debug_info true if the DIE comes
+  /// from the alternate debug info file, false if it comes from the
+  /// main debug info file.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @param decl the decl to consider.
+  void
+  associate_die_to_decl(size_t die_offset,
+			bool die_is_from_alternate_debug_info,
+			decl_base_sptr decl)
+  {
+    if (die_is_from_alternate_debug_info)
+      associate_die_to_decl_alternate(die_offset, decl);
+    else
+      associate_die_to_decl_primary(die_offset, decl);
+  }
+
+private:
+  /// Lookup the decl for a given DIE.  This works on DIEs that come
+  /// from the main debug info sections.
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @return the resulting decl, or null if no decl is associated to
+  /// the DIE represented by @p die_offset.
+  decl_base_sptr
+  lookup_decl_from_die_offset_primary(size_t die_offset)
+  {
+    die_decl_map_type::const_iterator it =
+      die_decl_map().find(die_offset);
+    if (it == die_decl_map().end())
+      return decl_base_sptr();
+    return it->second;
+  }
+
+  /// Lookup the decl for a given DIE.  This works on DIEs that come
+  /// from the alternate debug info sections.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @return the resulting decl, or null if no decl is associated to
+  /// the DIE represented by @p die_offset.
+  decl_base_sptr
+  lookup_decl_from_die_offset_alternate(size_t die_offset)
+  {
+    die_decl_map_type::const_iterator it =
+      alternate_die_decl_map().find(die_offset);
+    if (it == alternate_die_decl_map().end())
+      return decl_base_sptr();
+    return it->second;
+  }
+
+public:
+  /// Lookup the decl for a given DIE.
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @param is_from_alternate_debug_info true if the DIE represented
+  /// by @p die_offset comes from the alternate debug info section,
+  /// false if it comes from the main debug info sections.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @return the resulting decl, or null if no decl is associated to
+  /// the DIE represented by @p die_offset.
+  decl_base_sptr
+  lookup_decl_from_die_offset(size_t die_offset,
+			      bool is_from_alternate_debug_info)
+  {
+    return is_from_alternate_debug_info
+      ? lookup_decl_from_die_offset_alternate(die_offset)
+      : lookup_decl_from_die_offset_primary(die_offset);
+  }
 
   /// Getter of a map that associates a die that represents a
   /// class/struct with the declaration of the class, while the class
@@ -1388,13 +1674,45 @@ public:
   reset_current_corpus()
   {cur_corpus_.reset();}
 
+  /// Get the map that associates each DIE to its parent DIE.  This is
+  /// for DIEs coming from the main debug info sections.
+  ///
+  /// @return the DIE -> parent map.
   const offset_offset_map&
   die_parent_map() const
   {return die_parent_map_;}
 
+  /// Get the map that associates each DIE to its parent DIE.  This is
+  /// for DIEs coming from the main debug info sections.
+  ///
+  /// @return the die -> parent map.
   offset_offset_map&
   die_parent_map()
   {return die_parent_map_;}
+
+  /// Get the map that associates each DIE coming from the alternate
+  /// debug info sections to its parent DIE.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @return the DIE -> parent map.
+  const offset_offset_map&
+  alternate_die_parent_map() const
+  {return alternate_die_parent_map_;}
+
+  /// Get the map that associates each DIE coming from the alternate
+  /// debug info sections to its parent DIE.
+  ///
+  /// Note that "alternate debug info sections" is a GNU extension as
+  /// of DWARF4 and is described at
+  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  ///
+  /// @return the DIE -> parent map.
+  offset_offset_map&
+  alternate_die_parent_map()
+  {return alternate_die_parent_map_;}
 
   const translation_unit_sptr
   current_translation_unit() const
@@ -2079,6 +2397,7 @@ public:
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
+		       bool		die_is_from_alt_di,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
 		       size_t		where_offset);
@@ -2086,6 +2405,7 @@ build_ir_node_from_die(read_context&	ctxt,
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
+		       bool		die_is_from_alt_di,
 		       bool		called_from_public_decl,
 		       size_t		where_offset);
 
@@ -2095,6 +2415,7 @@ build_ir_node_for_void_type(read_context& ctxt);
 static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    Dwarf_Die*		die,
+		    bool		is_in_alt_di,
 		    size_t		where_offset,
 		    function_decl_sptr	fn);
 
@@ -2313,29 +2634,34 @@ die_decl_file_attribute(Dwarf_Die* die)
   return str ? str : "";
 }
 
-/// Get the value of an attribute which value is supposed to be a
-/// reference to a DIE.
+/// Tests if a given attribute that resolves to a DIE, resolves to a
+/// DIE that is in the alternate debug info section.  That is, tests
+/// if the resolution is done through a DW_FORM_GNU_ref_alt kind of
+/// attribute.
 ///
-/// @param die the DIE to read the value from.
+/// Note that this function works even if there is a
+/// DW_AT_abstract_origin or DW_AT_specification between @p die and
+/// the finally resolved DIE.
 ///
-/// @param attr_name the DW_AT_* attribute name to read.
+/// Note also that this function is a subroutine of
+/// die_die_attribute().
 ///
-/// @param result the DIE resulting from reading the attribute value.
-/// This is set iff the function returns true.
+/// @param die the DIE to consider.
 ///
-/// @param look_through_abstract_origin if yes, the function looks
-/// through the possible DW_AT_abstract_origin attribute all the way
-/// down to the initial DIE that is cloned and look on that DIE to see
-/// if it has the @p attr_name attribute.
+/// @param attr_name the attribute name to consider.
 ///
-/// @return true if the DIE @p die contains an attribute named @p
-/// attr_name that is a DIE reference, false otherwise.
+/// @param thru_abstract_origin true if this function should follow a
+/// DW_AT_specification or DW_AT_abstract_origin and perform the test
+/// on the resulting target.
+///
+/// @return true if the test succeeds, false otherwise.
 static bool
-die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result,
-		  bool look_through_abstract_origin = true)
+is_die_attribute_resolved_through_gnu_ref_alt(Dwarf_Die* die,
+					      unsigned attr_name,
+					      bool thru_abstract_origin = true)
 {
   Dwarf_Attribute attr;
-  if (look_through_abstract_origin)
+  if (thru_abstract_origin)
     {
       if (!dwarf_attr_integrate(die, attr_name, &attr))
 	return false;
@@ -2345,7 +2671,76 @@ die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result,
       if (!dwarf_attr(die, attr_name, &attr))
 	return false;
     }
-  return dwarf_formref_die(&attr, &result);
+
+  bool is_in_alternate_debug_info = false;
+  Dwarf_Die result;
+  bool r = dwarf_formref_die(&attr, &result);
+  if (r)
+    is_in_alternate_debug_info = (attr.form == DW_FORM_GNU_ref_alt);
+
+  if (r && !is_in_alternate_debug_info && thru_abstract_origin)
+    {
+      Dwarf_Attribute mem;
+      Dwarf_Attribute* a = dwarf_attr(die, DW_AT_abstract_origin, &mem);
+      if (a == NULL)
+	a = dwarf_attr(die, DW_AT_specification, &mem);
+      if (a && a->form == DW_FORM_GNU_ref_alt)
+	is_in_alternate_debug_info = true;
+    }
+
+  return is_in_alternate_debug_info;
+}
+
+/// Get the value of an attribute which value is supposed to be a
+/// reference to a DIE.
+///
+/// @param die the DIE to read the value from.
+///
+/// @param die_is_in_alt_di true if @p die comes from alternate debug
+/// info sections.
+///
+/// @param attr_name the DW_AT_* attribute name to read.
+///
+/// @param result the DIE resulting from reading the attribute value.
+/// This is set iff the function returns true.
+///
+/// @param result_die_is_in_alt_di out parameter.  This is set to true
+/// if the resulting DIE is in the alternate debug info section, false
+/// otherwise.
+///
+/// @param look_thru_abstract_origin if yes, the function looks
+/// through the possible DW_AT_abstract_origin attribute all the way
+/// down to the initial DIE that is cloned and look on that DIE to see
+/// if it has the @p attr_name attribute.
+///
+/// @return true if the DIE @p die contains an attribute named @p
+/// attr_name that is a DIE reference, false otherwise.
+static bool
+die_die_attribute(Dwarf_Die* die, bool die_is_in_alt_di,
+		  unsigned attr_name, Dwarf_Die& result,
+		  bool& result_die_is_in_alt_di,
+		  bool look_thru_abstract_origin = true)
+{
+  Dwarf_Attribute attr;
+  if (look_thru_abstract_origin)
+    {
+      if (!dwarf_attr_integrate(die, attr_name, &attr))
+	return false;
+    }
+  else
+    {
+      if (!dwarf_attr(die, attr_name, &attr))
+	return false;
+    }
+
+  bool r = dwarf_formref_die(&attr, &result);
+  if (r)
+    result_die_is_in_alt_di =
+      is_die_attribute_resolved_through_gnu_ref_alt(die, attr_name,
+						    look_thru_abstract_origin);
+
+  result_die_is_in_alt_di |= die_is_in_alt_di;
+  return r;
 }
 
 /// Read and return a DW_FORM_addr attribute from a given DIE.
@@ -3713,17 +4108,18 @@ die_virtual_function_index(Dwarf_Die* die,
 }
 
 /// Walk the DIEs under a given die and for each child, populate the
-/// read_context::die_parent_map() to record the child -> parent
-/// relationship that exists between the child and the given die.
+/// die -> parent map to record the child -> parent relationship that
+/// exists between the child and the given die.
 ///
 /// This is done recursively as for each child DIE, this function
 /// walks its children as well.
 ///
-/// @param ctxt the read context to consider.
-///
 /// @param die the DIE whose children to walk recursively.
+///
+/// @param die_parent_map the die -> parent map to populate.
 static void
-build_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die)
+build_die_parent_relations_under(Dwarf_Die*		die,
+				 offset_offset_map&	die_parent_map)
 {
   if (!die)
     return;
@@ -3734,24 +4130,89 @@ build_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die)
 
   do
     {
-      ctxt.die_parent_map()[dwarf_dieoffset(&child)] = dwarf_dieoffset(die);
-      build_die_parent_relations_under(ctxt, &child);
+      die_parent_map[dwarf_dieoffset(&child)] = dwarf_dieoffset(die);
+      build_die_parent_relations_under(&child, die_parent_map);
     }
   while (dwarf_siblingof(&child, &child) == 0);
 }
 
-/// Walk all the DIEs accessible in the debug info and build a map
-/// representing the relationship DIE -> parent.  That is, make it so
-/// that we can get the parent for a given DIE.
+/// Walk the DIEs under a given die and for each child, populate the
+/// read_context::die_parent_map() to record the child -> parent
+/// relationship that exists between the child and the given die.
+///
+/// This is done recursively as for each child DIE, this function
+/// walks its children as well.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE whose children to walk recursively.
+static void
+build_primary_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die)
+{build_die_parent_relations_under(die, ctxt.die_parent_map());}
+
+/// Walk the DIEs under a given die and for each child, populate the
+/// read_context::alternate_die_parent_map() to record the child ->
+/// parent relationship that exists between the child and the given
+/// die.
+///
+/// This is done recursively as for each child DIE, this function
+/// walks its children as well.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE whose children to walk recursively.
+static void
+build_alternate_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die)
+{build_die_parent_relations_under(die, ctxt.alternate_die_parent_map());}
+
+/// Walk the DIEs under a given die and for each childde, populate the
+/// appropriate die -> parent map to record the child -> parent
+/// relationship that exists between the child and the given DIE.
+///
+/// @param ctxt the read context to use.
+///
+/// @param die the DIEs whose children to walk recursively.
+///
+/// @param die_is_from_alt_debug_info true if @p die is from the
+/// alternate debug info section, false otherwise.
+static void
+build_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die,
+				 bool die_is_from_alt_debug_info)
+{
+  if (die_is_from_alt_debug_info)
+    build_alternate_die_parent_relations_under(ctxt, die);
+  else
+    build_primary_die_parent_relations_under(ctxt, die);
+}
+
+/// Walk all the DIEs accessible in the debug info (and in the
+/// alternate debug info as well) and build maps representing the
+/// relationship DIE -> parent.  That is, make it so that we can get
+/// the parent for a given DIE.
 ///
 /// @param ctxt the read context from which to get the needed
 /// information.
 static void
-build_die_parent_map(read_context& ctxt)
+build_die_parent_maps(read_context& ctxt)
 {
   uint8_t address_size = 0;
   size_t header_size = 0;
 
+  for (Dwarf_Off offset = 0, next_offset = 0;
+       (dwarf_next_unit(ctxt.alt_dwarf(), offset, &next_offset, &header_size,
+			NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
+       offset = next_offset)
+    {
+      Dwarf_Off die_offset = offset + header_size;
+      Dwarf_Die cu;
+      if (!dwarf_offdie(ctxt.alt_dwarf(), die_offset, &cu))
+	continue;
+      build_die_parent_relations_under(ctxt, &cu,
+				       /*die_is_from_alt_debug_info=*/true);
+    }
+
+  address_size = 0;
+  header_size = 0;
   for (Dwarf_Off offset = 0, next_offset = 0;
        (dwarf_next_unit(ctxt.dwarf(), offset, &next_offset, &header_size,
 			NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
@@ -3761,7 +4222,8 @@ build_die_parent_map(read_context& ctxt)
       Dwarf_Die cu;
       if (!dwarf_offdie(ctxt.dwarf(), die_offset, &cu))
 	continue;
-      build_die_parent_relations_under(ctxt, &cu);
+      build_die_parent_relations_under(ctxt, &cu,
+				       /*die_is_from_alt_debug_info=*/false);
     }
 }
 
@@ -3814,7 +4276,9 @@ find_last_import_unit_point_before_die(read_context&	ctxt,
       if (dwarf_tag(&child) == DW_TAG_imported_unit)
 	{
 	  Dwarf_Die imported_unit;
-	  if (die_die_attribute(&child, DW_AT_import, imported_unit))
+	  bool is_in_alt_di = false;
+	  if (die_die_attribute(&child, /*die_is_in_alt_di=*/false,
+				DW_AT_import, imported_unit, is_in_alt_di))
 	    {
 	      if (partial_unit_offset == dwarf_dieoffset(&imported_unit))
 		imported_point_offset = dwarf_dieoffset(&child);
@@ -3898,6 +4362,9 @@ find_last_import_unit_point_before_die(read_context&	ctxt,
 ///
 /// @param die the DIE for which we want the parent.
 ///
+/// @param die_is_from_alt_di true if @p die represent a DIE that
+/// comes from alternate debug info, false otherwise.
+///
 /// @param parent_die the output parameter set to the parent die of
 /// @p die.  Its memory must be allocated and handled by the caller.
 ///
@@ -3908,16 +4375,27 @@ find_last_import_unit_point_before_die(read_context&	ctxt,
 static void
 get_parent_die(read_context&	ctxt,
 	       Dwarf_Die*	die,
+	       bool		die_is_from_alt_di,
 	       Dwarf_Die&	parent_die,
 	       size_t		where_offset)
 {
   assert(ctxt.dwarf());
 
   offset_offset_map::const_iterator i =
-    ctxt.die_parent_map().find(dwarf_dieoffset(die));
-  assert(i != ctxt.die_parent_map().end());
+    (die_is_from_alt_di)
+    ? ctxt.alternate_die_parent_map().find(dwarf_dieoffset(die))
+    : ctxt.die_parent_map().find(dwarf_dieoffset(die));
 
-  assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
+  if (die_is_from_alt_di)
+    {
+      assert(i != ctxt.alternate_die_parent_map().end());
+      assert(dwarf_offdie(ctxt.alt_dwarf(), i->second, &parent_die));
+    }
+  else
+    {
+      assert(i != ctxt.die_parent_map().end());
+      assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
+    }
 
   if (dwarf_tag(&parent_die) == DW_TAG_partial_unit)
     {
@@ -3928,13 +4406,20 @@ get_parent_die(read_context&	ctxt,
 					       dwarf_dieoffset(&parent_die),
 					       where_offset,
 					       import_point_offset);
-      assert(found);
-      assert(import_point_offset);
-      Dwarf_Die import_point_die;
-      assert(dwarf_offdie(ctxt.dwarf(),
-			  import_point_offset,
-			  &import_point_die));
-      get_parent_die(ctxt, &import_point_die, parent_die, where_offset);
+      if (!found && die_is_from_alt_di)
+	;
+      else
+	{
+	  assert(found);
+	  assert(import_point_offset);
+	  Dwarf_Die import_point_die;
+	  assert(dwarf_offdie(ctxt.dwarf(),
+			      import_point_offset,
+			      &import_point_die));
+	  get_parent_die(ctxt, &import_point_die,
+			 /*die_is_from_alt_di=*/false,
+			 parent_die, where_offset);
+	}
     }
 }
 
@@ -3949,6 +4434,9 @@ get_parent_die(read_context&	ctxt,
 ///
 /// @param die the DIE to get the scope for.
 ///
+/// @param die_is_from_alt_di true if @p comes from alternate debug
+/// info sections, false otherwise.
+///
 /// @param called_from_public_decl is true if this function has been
 /// initially called within the context of a public decl.
 ///
@@ -3959,23 +4447,36 @@ get_parent_die(read_context&	ctxt,
 static scope_decl_sptr
 get_scope_for_die(read_context& ctxt,
 		  Dwarf_Die*	die,
+		  bool		die_is_from_alt_di,
 		  bool		called_for_public_decl,
 		  size_t	where_offset)
 {
   Dwarf_Die cloned_die;
-  if (die_die_attribute(die, DW_AT_specification,
-			cloned_die, false)
-      || die_die_attribute(die, DW_AT_abstract_origin,
-			   cloned_die, false))
+  bool cloned_die_is_from_alternate_debug_info = false;
+  if (die_die_attribute(die, die_is_from_alt_di,
+			DW_AT_specification, cloned_die,
+			cloned_die_is_from_alternate_debug_info, false)
+      || die_die_attribute(die, die_is_from_alt_di,
+			   DW_AT_abstract_origin, cloned_die,
+			   cloned_die_is_from_alternate_debug_info, false))
     return get_scope_for_die(ctxt, &cloned_die,
+			     cloned_die_is_from_alternate_debug_info,
 			     called_for_public_decl,
 			     where_offset);
 
   Dwarf_Die parent_die;
-  get_parent_die(ctxt, die, parent_die, where_offset);
+  get_parent_die(ctxt, die, die_is_from_alt_di,
+		 parent_die, where_offset);
 
-  if (dwarf_tag(&parent_die) == DW_TAG_compile_unit)
+  if (dwarf_tag(&parent_die) == DW_TAG_compile_unit
+      || dwarf_tag(&parent_die) == DW_TAG_partial_unit)
     {
+      if (dwarf_tag(&parent_die) == DW_TAG_partial_unit)
+	{
+	  assert(die_is_from_alt_di);
+	  return ctxt.cur_tu()->get_global_scope();
+	}
+
       // For top level DIEs like DW_TAG_compile_unit, we just want to
       // return the global scope for the corresponding translation
       // unit.  This must have been set by
@@ -3996,10 +4497,11 @@ get_scope_for_die(read_context& ctxt,
     // function.  Yeah, weird.  So if I drop the typedef DIE, I'd drop
     // the function parm too.  So for that case, let's say that the
     // scope is the scope of the function itself.
-    return get_scope_for_die(ctxt, &parent_die, called_for_public_decl,
-			     where_offset);
+    return get_scope_for_die(ctxt, &parent_die, die_is_from_alt_di,
+			     called_for_public_decl, where_offset);
   else
     d = build_ir_node_from_die(ctxt, &parent_die,
+			       die_is_from_alt_di,
 			       called_for_public_decl,
 			       where_offset);
   s =  dynamic_pointer_cast<scope_decl>(d);
@@ -4047,6 +4549,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   // Clear the part of the context that is dependent on the translation
   // unit we are reading.
   ctxt.die_decl_map().clear();
+  ctxt.alternate_die_decl_map().clear();
   while (!ctxt.scope_stack().empty())
     ctxt.scope_stack().pop();
   ctxt.var_decls_to_re_add_to_tree().clear();
@@ -4067,6 +4570,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 
   do
     build_ir_node_from_die(ctxt, &child,
+			   /*die_is_from_alt_di=*/false,
 			   die_is_public_decl(&child),
 			   dwarf_dieoffset(&child));
   while (dwarf_siblingof(&child, &child) == 0);
@@ -4137,6 +4641,9 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 /// @param die the DIE to read from.  Must be either DW_TAG_namespace
 /// or DW_TAG_module.
 ///
+/// @param die_is_from_alt_di true if @p die comes from alternate
+/// debug info sections, false otherwise.
+///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
 /// e.g, DW_TAG_partial_unit that can be included in several places in
@@ -4147,6 +4654,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 static namespace_decl_sptr
 build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 				   Dwarf_Die*		die,
+				   bool		die_is_from_alt_di,
 				   size_t		where_offset)
 {
   namespace_decl_sptr result;
@@ -4158,7 +4666,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   if (tag != DW_TAG_namespace && tag != DW_TAG_module)
     return result;
 
-  scope_decl_sptr scope = get_scope_for_die(ctxt, die,
+  scope_decl_sptr scope = get_scope_for_die(ctxt, die, die_is_from_alt_di,
 					    /*called_for_public_decl=*/false,
 					    where_offset);
 
@@ -4168,7 +4676,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 
   result.reset(new namespace_decl(name, loc));
   add_decl_to_scope(result, scope.get());
-  ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
+  ctxt.associate_die_to_decl(dwarf_dieoffset(die), die_is_from_alt_di, result);
 
   Dwarf_Die child;
   if (dwarf_child(die, &child) != 0)
@@ -4177,6 +4685,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   ctxt.scope_stack().push(result.get());
   do
     build_ir_node_from_die(ctxt, &child,
+			   die_is_from_alt_di,
 			   /*called_from_public_decl=*/false,
 			   where_offset);
   while (dwarf_siblingof(&child, &child) == 0);
@@ -4301,6 +4810,9 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 /// @param die the DIE to read information from.  Must be either a
 /// DW_TAG_structure_type or a DW_TAG_class_type.
 ///
+/// @param is_in_alt_di true if @p die is in the alternate debug
+/// sections, false otherwise.
+///
 /// @param is_struct wheter the class was declared as a struct.
 ///
 /// @param scope a pointer to the scope_decl* under which this class
@@ -4321,6 +4833,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 static decl_base_sptr
 build_class_type_and_add_to_ir(read_context&	ctxt,
 			       Dwarf_Die*	die,
+			       bool		is_in_alt_di,
 			       scope_decl*	scope,
 			       bool		is_struct,
 			       class_decl_sptr  klass,
@@ -4398,11 +4911,15 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      result->set_is_declaration_only(false);
 
 	      Dwarf_Die type_die;
-	      if (!die_die_attribute(&child, DW_AT_type, type_die))
+	      bool type_die_is_in_alternate_debug_info = false;
+	      if (!die_die_attribute(&child, is_in_alt_di,
+				     DW_AT_type, type_die,
+				     type_die_is_in_alternate_debug_info))
 		continue;
 
 	      decl_base_sptr base_type =
 		build_ir_node_from_die(ctxt, &type_die,
+				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
 				       where_offset);
 	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
@@ -4438,11 +4955,15 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      result->set_is_declaration_only(false);
 
 	      Dwarf_Die type_die;
-	      if (!die_die_attribute(&child, DW_AT_type, type_die))
+	      bool type_die_is_in_alternate_debug_info = false;
+	      if (!die_die_attribute(&child, is_in_alt_di,
+				     DW_AT_type, type_die,
+				     type_die_is_in_alternate_debug_info))
 		continue;
 
 	      decl_base_sptr ty =
 		build_ir_node_from_die(ctxt, &type_die,
+				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
 				       where_offset);
 	      type_base_sptr t = is_type(ty);
@@ -4477,7 +4998,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 				      /*is_static=*/!is_laid_out,
 				      offset_in_bits);
 	      assert(has_scope(dm));
-	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = dm;
+	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
+					 is_in_alt_di,
+					 dm);
 	    }
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
@@ -4491,8 +5014,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		continue;
 
 	      function_decl_sptr f =
-		build_function_decl(ctxt, &child, where_offset,
-				    function_decl_sptr());
+		build_function_decl(ctxt, &child, is_in_alt_di,
+				    where_offset, function_decl_sptr());
 	      if (!f)
 		continue;
 	      class_decl::method_decl_sptr m =
@@ -4541,13 +5064,16 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 					  vindex, is_static, is_ctor,
 					  is_dtor, /*is_const*/false);
 	      assert(is_member_function(m));
-	      ctxt.die_decl_map()[dwarf_dieoffset(&child)] = m;
+	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
+					 is_in_alt_di,
+					 m);
 	    }
 	  // Handle member types
 	  else if (is_type_die(&child))
 	    {
 	      decl_base_sptr td =
-		build_ir_node_from_die(ctxt, &child, result.get(),
+		build_ir_node_from_die(ctxt, &child, is_in_alt_di,
+				       result.get(),
 				       called_from_public_decl,
 				       where_offset);
 	      if (td)
@@ -4559,7 +5085,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		  die_access_specifier(&child, access);
 
 		  set_member_access_specifier(td, access);
-		  ctxt.die_decl_map()[dwarf_dieoffset(&child)] = td;
+		  ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
+					     is_in_alt_di,
+					     td);
 		}
 	    }
 	} while (dwarf_siblingof(&child, &child) == 0);
@@ -4589,6 +5117,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 ///
 /// @param die the input DIE to read from.
 ///
+/// @param die_is_in_alt_di true if @p is in alternate debug info
+/// sections.
+///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
 /// is being built.
@@ -4602,6 +5133,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 static qualified_type_def_sptr
 build_qualified_type(read_context&	ctxt,
 		     Dwarf_Die*	die,
+		     bool		die_is_in_alt_di,
 		     bool		called_from_public_decl,
 		     size_t		where_offset)
 {
@@ -4617,13 +5149,18 @@ build_qualified_type(read_context&	ctxt,
     return result;
 
   Dwarf_Die underlying_type_die;
-  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+  bool utype_is_in_alt_di = false;
+  if (!die_die_attribute(die, die_is_in_alt_di, DW_AT_type,
+			 underlying_type_die,
+			 utype_is_in_alt_di))
     return result;
 
-  decl_base_sptr utype_decl = build_ir_node_from_die(ctxt,
-						     &underlying_type_die,
-						     called_from_public_decl,
-						     where_offset);
+  decl_base_sptr utype_decl =
+    build_ir_node_from_die(ctxt,
+			   &underlying_type_die,
+			   utype_is_in_alt_di,
+			   called_from_public_decl,
+			   where_offset);
   if (!utype_decl)
     return result;
 
@@ -4676,6 +5213,9 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
 ///
 /// @param die the DIE to read information from.
 ///
+/// @param die_is_in_alt_di true if @p is in alternate debug info
+/// sections, false otherwise.
+///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
 /// is being built.
@@ -4689,6 +5229,7 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
 static pointer_type_def_sptr
 build_pointer_type_def(read_context&	ctxt,
 		       Dwarf_Die*	die,
+		       bool		die_is_in_alt_di,
 		       bool		called_from_public_decl,
 		       size_t		where_offset)
 {
@@ -4704,7 +5245,10 @@ build_pointer_type_def(read_context&	ctxt,
   decl_base_sptr utype_decl;
   Dwarf_Die underlying_type_die;
   bool has_underlying_type_die = false;
-  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+  bool utype_die_is_in_alt_di = false;
+  if (!die_die_attribute(die, die_is_in_alt_di, DW_AT_type,
+			 underlying_type_die,
+			 utype_die_is_in_alt_di))
     // If the DW_AT_type attribute is missing, that means we are
     // looking at a pointer to "void".
     utype_decl = build_ir_node_for_void_type(ctxt);
@@ -4713,6 +5257,7 @@ build_pointer_type_def(read_context&	ctxt,
 
   if (!utype_decl && has_underlying_type_die)
     utype_decl = build_ir_node_from_die(ctxt, &underlying_type_die,
+					utype_die_is_in_alt_di,
 					called_from_public_decl,
 					where_offset);
   if (!utype_decl)
@@ -4738,6 +5283,9 @@ build_pointer_type_def(read_context&	ctxt,
 ///
 /// @param die the DIE to read from.
 ///
+/// @param die_is_in_alt_di true if @p die is from alternate debug
+/// info section, false otherwise.
+///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
 /// is being built.
@@ -4751,6 +5299,7 @@ build_pointer_type_def(read_context&	ctxt,
 static reference_type_def_sptr
 build_reference_type(read_context&	ctxt,
 		     Dwarf_Die*	die,
+		     bool		die_is_from_alt_di,
 		     bool		called_from_public_decl,
 		     size_t		where_offset)
 {
@@ -4765,12 +5314,17 @@ build_reference_type(read_context&	ctxt,
     return result;
 
   Dwarf_Die underlying_type_die;
-  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+  bool utype_is_in_alt_di = false;
+  if (!die_die_attribute(die, die_is_from_alt_di,
+			 DW_AT_type, underlying_type_die,
+			 utype_is_in_alt_di))
     return result;
 
   decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die,
-			   called_from_public_decl, where_offset);
+			   utype_is_in_alt_di,
+			   called_from_public_decl,
+			   where_offset);
   if (!utype_decl)
     return result;
 
@@ -4796,6 +5350,9 @@ build_reference_type(read_context&	ctxt,
 ///
 /// @param die the DIE to read from.
 ///
+/// @param die_is_from_alt_di true if @p die is from alternate debug
+/// info sections, false otherwise.
+///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
 /// is being built.
@@ -4809,6 +5366,7 @@ build_reference_type(read_context&	ctxt,
 static typedef_decl_sptr
 build_typedef_type(read_context&	ctxt,
 		   Dwarf_Die*		die,
+		   bool		die_is_from_alt_di,
 		   bool		called_from_public_decl,
 		   size_t		where_offset)
 {
@@ -4822,11 +5380,15 @@ build_typedef_type(read_context&	ctxt,
     return result;
 
   Dwarf_Die underlying_type_die;
-  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
+  bool utype_is_in_alternate_di = false;
+  if (!die_die_attribute(die, die_is_from_alt_di,
+			 DW_AT_type, underlying_type_die,
+			 utype_is_in_alternate_di))
     return result;
 
   decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die,
+			   utype_is_in_alternate_di,
 			   called_from_public_decl,
 			   where_offset);
   if (!utype_decl)
@@ -4850,6 +5412,9 @@ build_typedef_type(read_context&	ctxt,
 ///
 /// @param die the DIE to read from to build the @ref var_decl.
 ///
+/// @param die_is_from_alt_di true if @p die is from alternate debug
+/// ifo sections, false otherwise.
+///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
 /// e.g, DW_TAG_partial_unit that can be included in several places in
@@ -4865,6 +5430,7 @@ build_typedef_type(read_context&	ctxt,
 static var_decl_sptr
 build_var_decl(read_context&	ctxt,
 	       Dwarf_Die	*die,
+	       bool		die_is_from_alt_di,
 	       size_t		where_offset,
 	       var_decl_sptr	result = var_decl_sptr())
 {
@@ -4877,10 +5443,13 @@ build_var_decl(read_context&	ctxt,
 
   type_base_sptr type;
   Dwarf_Die type_die;
-  if (die_die_attribute(die, DW_AT_type, type_die))
+  bool utype_is_in_alt_di = false;
+  if (die_die_attribute(die, die_is_from_alt_di,
+			DW_AT_type, type_die, utype_is_in_alt_di))
     {
       decl_base_sptr ty =
 	build_ir_node_from_die(ctxt, &type_die,
+			       utype_is_in_alt_di,
 			       /*called_from_public_decl=*/true,
 			       where_offset);
       if (!ty)
@@ -4931,6 +5500,9 @@ build_var_decl(read_context&	ctxt,
 ///
 /// @param die the DW_TAG_subprogram DIE to read from.
 ///
+/// @param is_in_alt_di true if @p die is a DIE from the alternate
+/// debug info sections.
+///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
 /// e.g, DW_TAG_partial_unit that can be included in several places in
@@ -4941,6 +5513,7 @@ build_var_decl(read_context&	ctxt,
 static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    Dwarf_Die*		die,
+		    bool		is_in_alt_di,
 		    size_t		where_offset,
 		    function_decl_sptr	fn)
 {
@@ -4964,15 +5537,18 @@ build_function_decl(read_context&	ctxt,
 
   decl_base_sptr return_type_decl;
   Dwarf_Die ret_type_die;
-  if (die_die_attribute(die, DW_AT_type, ret_type_die))
+  bool ret_type_die_is_in_alternate_debug_info = false;
+  if (die_die_attribute(die, is_in_alt_di, DW_AT_type, ret_type_die,
+			ret_type_die_is_in_alternate_debug_info))
     return_type_decl =
       build_ir_node_from_die(ctxt, &ret_type_die,
+			     ret_type_die_is_in_alternate_debug_info,
 			     /*called_from_public_decl=*/true,
 			     where_offset);
 
   class_decl_sptr is_method =
-    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die, true,
-						       where_offset));
+    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die, is_in_alt_di,
+						       true, where_offset));
 
   Dwarf_Die child;
   function_decl::parameters function_parms;
@@ -4989,9 +5565,13 @@ build_function_decl(read_context&	ctxt,
 	    bool is_artificial = die_is_artificial(&child);
 	    decl_base_sptr parm_type_decl;
 	    Dwarf_Die parm_type_die;
-	    if (die_die_attribute(&child, DW_AT_type, parm_type_die))
+	    bool parm_type_die_is_in_alt_di = false;
+	    if (die_die_attribute(&child, is_in_alt_di,
+				  DW_AT_type, parm_type_die,
+				  parm_type_die_is_in_alt_di))
 	      parm_type_decl =
 		build_ir_node_from_die(ctxt, &parm_type_die,
+				       parm_type_die_is_in_alt_di,
 				       /*called_from_public_decl=*/true,
 				       where_offset);
 	    if (!parm_type_decl)
@@ -5083,7 +5663,7 @@ read_debug_info_into_corpus(read_context& ctxt)
 
   // Walk all the DIEs of the debug info to build a DIE -> parent map
   // useful for get_die_parent() to work.
-  build_die_parent_map(ctxt);
+  build_die_parent_maps(ctxt);
 
   // And now walk all the DIEs again to build the libabigail IR.
   Dwarf_Half dwarf_version = 0;
@@ -5126,6 +5706,9 @@ read_debug_info_into_corpus(read_context& ctxt)
 ///
 /// @param die the DIE to consider.
 ///
+/// @param die_is_from_alt_di true if @p die is a DIE coming from the
+/// alternate debug info sections, false otherwise.
+///
 /// @param scope the scope under which the resulting IR node has to be
 /// added.
 ///
@@ -5146,6 +5729,7 @@ read_debug_info_into_corpus(read_context& ctxt)
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
+		       bool		die_is_from_alt_di,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
 		       size_t		where_offset)
@@ -5166,13 +5750,9 @@ build_ir_node_from_die(read_context&	ctxt,
 	return result;
     }
 
-  die_decl_map_type::const_iterator it =
-    ctxt.die_decl_map().find(dwarf_dieoffset(die));
-  if (it != ctxt.die_decl_map().end())
-    {
-      result = it->second;
-      return result;
-    }
+  if (result = ctxt.lookup_decl_from_die_offset(dwarf_dieoffset(die),
+						die_is_from_alt_di))
+    return result;
 
   switch (tag)
     {
@@ -5185,7 +5765,7 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_typedef:
       {
-	typedef_decl_sptr t = build_typedef_type(ctxt, die,
+	typedef_decl_sptr t = build_typedef_type(ctxt, die, die_is_from_alt_di,
 						 called_from_public_decl,
 						 where_offset);
 	result = add_decl_to_scope(t, scope);
@@ -5195,7 +5775,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_pointer_type:
       {
 	pointer_type_def_sptr p =
-	  build_pointer_type_def(ctxt, die, called_from_public_decl,
+	  build_pointer_type_def(ctxt, die, die_is_from_alt_di,
+				 called_from_public_decl,
 				 where_offset);
 	if(p)
 	  result = add_decl_to_scope(p, scope);
@@ -5206,7 +5787,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_rvalue_reference_type:
       {
 	reference_type_def_sptr r =
-	  build_reference_type(ctxt, die, called_from_public_decl,
+	  build_reference_type(ctxt, die, die_is_from_alt_di,
+			       called_from_public_decl,
 			       where_offset);
 	if (r)
 	    result = add_decl_to_scope(r, scope);
@@ -5218,7 +5800,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_restrict_type:
       {
 	qualified_type_def_sptr q =
-	  build_qualified_type(ctxt, die, called_from_public_decl,
+	  build_qualified_type(ctxt, die, die_is_from_alt_di,
+			       called_from_public_decl,
 			       where_offset);
 	if (q)
 	  result = add_decl_to_scope(maybe_strip_qualification(q), scope);
@@ -5238,13 +5821,18 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	Dwarf_Die spec_die;
 	scope_decl_sptr scop;
-	if (die_die_attribute(die, DW_AT_specification, spec_die))
+	bool spec_die_is_in_alt_di = false;
+	if (die_die_attribute(die, die_is_from_alt_di,
+			      DW_AT_specification, spec_die,
+			      spec_die_is_in_alt_di))
 	  {
 	    scope_decl_sptr skope = get_scope_for_die(ctxt, &spec_die,
+						      spec_die_is_in_alt_di,
 						      called_from_public_decl,
 						      where_offset);
 	    assert(skope);
 	    decl_base_sptr cl = build_ir_node_from_die(ctxt, &spec_die,
+						       spec_die_is_in_alt_di,
 						       skope.get(),
 						       called_from_public_decl,
 						       where_offset);
@@ -5254,6 +5842,7 @@ build_ir_node_from_die(read_context&	ctxt,
 
 	    result =
 	      build_class_type_and_add_to_ir(ctxt, die,
+					     die_is_from_alt_di,
 					     skope.get(),
 					     tag == DW_TAG_structure_type,
 					     klass,
@@ -5262,9 +5851,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	  }
 	else
 	  result =
-	    build_class_type_and_add_to_ir(ctxt, die,
-					   scope,
-					   tag == DW_TAG_structure_type,
+	    build_class_type_and_add_to_ir(ctxt, die, die_is_from_alt_di,
+					   scope, tag == DW_TAG_structure_type,
 					   class_decl_sptr(),
 					   called_from_public_decl,
 					   where_offset);
@@ -5307,24 +5895,35 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_namespace:
     case DW_TAG_module:
-      result = build_namespace_decl_and_add_to_ir(ctxt, die, where_offset);
+      result = build_namespace_decl_and_add_to_ir(ctxt, die, die_is_from_alt_di,
+						  where_offset);
       break;
 
     case DW_TAG_variable:
       {
 	Dwarf_Die spec_die;
 	bool var_is_cloned = false;
-	if (die_die_attribute(die, DW_AT_specification, spec_die, false)
-	    || (var_is_cloned = die_die_attribute(die, DW_AT_abstract_origin,
-						  spec_die, false)))
+	bool spec_die_is_in_alt_di = false;
+	if (die_die_attribute(die, die_is_from_alt_di,
+			      DW_AT_specification, spec_die,
+			      spec_die_is_in_alt_di,
+			      false)
+	    || (var_is_cloned = die_die_attribute(die, die_is_from_alt_di,
+						  DW_AT_abstract_origin,
+						  spec_die,
+						  spec_die_is_in_alt_di,
+						  false)))
 	  {
 	    scope_decl_sptr scop = get_scope_for_die(ctxt, &spec_die,
+						     spec_die_is_in_alt_di,
 						     called_from_public_decl,
 						     where_offset);
 	    if (scop)
 	      {
 		decl_base_sptr d =
-		  build_ir_node_from_die(ctxt, &spec_die, scop.get(),
+		  build_ir_node_from_die(ctxt, &spec_die,
+					 spec_die_is_in_alt_di,
+					 scop.get(),
 					 called_from_public_decl,
 					 where_offset);
 		if (d)
@@ -5333,11 +5932,13 @@ build_ir_node_from_die(read_context&	ctxt,
 		      dynamic_pointer_cast<var_decl>(d);
 		    if (var_is_cloned)
 		      m = m->clone();
-		    m = build_var_decl(ctxt, die, where_offset, m);
+		    m = build_var_decl(ctxt, die, spec_die_is_in_alt_di,
+				       where_offset, m);
 		    if (is_data_member(m))
 		      {
 			set_member_is_static(m, true);
-			ctxt.die_decl_map()[dwarf_dieoffset(die)] = m;
+			ctxt.associate_die_to_decl(dwarf_dieoffset(die),
+						   spec_die_is_in_alt_di, m);
 		      }
 		    else
 		      {
@@ -5349,7 +5950,9 @@ build_ir_node_from_die(read_context&	ctxt,
 		  }
 	      }
 	  }
-	else if (var_decl_sptr v = build_var_decl(ctxt, die, where_offset))
+	else if (var_decl_sptr v = build_var_decl(ctxt, die,
+						  die_is_from_alt_di,
+						  where_offset))
 	  {
 	    result = add_decl_to_scope(v, scope);
 	    assert(result->get_scope());
@@ -5370,13 +5973,19 @@ build_ir_node_from_die(read_context&	ctxt,
 
 	  function_decl_sptr fn;
 	  bool fn_is_clone = false;
-	  if (die_die_attribute(die, DW_AT_specification,
-				spec_die, false)
+	  bool is_in_alternate_debug_info = false;
+	  if (die_die_attribute(die, die_is_from_alt_di,
+				DW_AT_specification,
+				spec_die, is_in_alternate_debug_info,
+				true)
 	      || (fn_is_clone =
-		  die_die_attribute(die, DW_AT_abstract_origin,
-				    spec_die, false)))
+		  die_die_attribute(die, die_is_from_alt_di,
+				    DW_AT_abstract_origin,
+				    spec_die, is_in_alternate_debug_info,
+				    true)))
 	    {
 	      scop = get_scope_for_die(ctxt, &spec_die,
+				       is_in_alternate_debug_info,
 				       called_from_public_decl,
 				       where_offset);
 	      if (scop)
@@ -5384,6 +5993,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		  decl_base_sptr d =
 		    build_ir_node_from_die(ctxt,
 					   &spec_die,
+					   is_in_alternate_debug_info,
 					   scop.get(),
 					   called_from_public_decl,
 					   where_offset);
@@ -5392,13 +6002,16 @@ build_ir_node_from_die(read_context&	ctxt,
 		      fn = dynamic_pointer_cast<function_decl>(d);
 		      if (fn_is_clone)
 			fn = fn->clone();
-		      ctxt.die_decl_map()[dwarf_dieoffset(die)] = fn;
+		      ctxt.associate_die_to_decl(dwarf_dieoffset(die),
+						 is_in_alternate_debug_info,
+						 fn);
 		    }
 		}
 	    }
 	ctxt.scope_stack().push(scope);
 
-	if ((result = build_function_decl(ctxt, die, where_offset, fn))
+	if ((result = build_function_decl(ctxt, die, die_is_from_alt_di,
+					  where_offset, fn))
 	    && !fn)
 	  result = add_decl_to_scope(result, scope);
 
@@ -5469,7 +6082,9 @@ build_ir_node_from_die(read_context&	ctxt,
     }
 
   if (result)
-    ctxt.die_decl_map()[dwarf_dieoffset(die)] = result;
+    ctxt.associate_die_to_decl(dwarf_dieoffset(die),
+			       die_is_from_alt_di,
+			       result);
 
   return result;
 }
@@ -5496,6 +6111,9 @@ build_ir_node_for_void_type(read_context& ctxt)
 ///
 /// @param die the DIE to consider.
 ///
+/// @param die_is_from_alt_di true if @p die is a DIE from the
+/// alternate debug info sections, false otherwise.
+///
 /// @param called_from_public_decl set to yes if this function is
 /// called from the functions used to build a public decl (functions
 /// and variables).  In that case, this function accepts building IR
@@ -5508,18 +6126,75 @@ build_ir_node_for_void_type(read_context& ctxt)
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
+		       bool		die_is_from_alt_di,
 		       bool		called_from_public_decl,
 		       size_t		where_offset)
 {
   if (!die)
     return decl_base_sptr();
 
-  scope_decl_sptr scope = get_scope_for_die(ctxt, die,
+  scope_decl_sptr scope = get_scope_for_die(ctxt, die, die_is_from_alt_di,
 					    called_from_public_decl,
 					    where_offset);
-  return build_ir_node_from_die(ctxt, die, scope.get(),
+  return build_ir_node_from_die(ctxt, die,
+				die_is_from_alt_di,
+				scope.get(),
 				called_from_public_decl,
 				where_offset);
+}
+
+/// Create a dwarf_reader::read_context.
+///
+/// @param elf_path the path to the elf file the context is to be used for.
+///
+/// @param a pointer to the path to the root directory under which the
+/// debug info is to be found for @p elf_path.  Leave this to NULL if
+/// the debug info is not in a split file.
+///
+/// @return a smart pointer to the resulting dwarf_reader::read_context.
+read_context_sptr
+create_read_context(const std::string&	elf_path,
+		    char**		debug_info_root_path)
+{
+  // Create a DWARF Front End Library handle to be used by functions
+  // of that library.
+  dwfl_sptr handle = create_default_dwfl_sptr(debug_info_root_path);
+  read_context_sptr result(new read_context(handle, elf_path));
+  return result;
+}
+
+/// Read all @ref abigail::translation_unit possible from the debug info
+/// accessible from an elf file, stuff them into a libabigail ABI
+/// Corpus and return it.
+///
+/// @param ctxt the context to use for reading the elf file.
+///
+/// @param resulting_corp a pointer to the resulting abigail::corpus.
+///
+/// @return the resulting status.
+status
+read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
+{
+  // Load debug info from the elf path.
+  if (!ctxt.load_debug_info())
+    return STATUS_DEBUG_INFO_NOT_FOUND;
+
+  // First read the symbols for publicly defined decls
+  if (!ctxt.load_symbol_maps())
+    return STATUS_NO_SYMBOLS_FOUND;
+
+  // Now, read an ABI corpus proper from the debug info we have
+  // through the dwfl handle.
+  corpus_sptr corp = read_debug_info_into_corpus(ctxt);
+  corp->set_path(ctxt.elf_path());
+  corp->set_origin(corpus::DWARF_ORIGIN);
+
+  corp->set_fun_symbol_map(ctxt.fun_syms_sptr());
+  corp->set_var_symbol_map(ctxt.var_syms_sptr());
+
+  resulting_corp = corp;
+
+  return STATUS_OK;
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info
@@ -5549,28 +6224,10 @@ read_corpus_from_elf(const std::string& elf_path,
   // of that library.
   dwfl_sptr handle = create_default_dwfl_sptr(debug_info_root_path);
 
-  read_context ctxt(handle, elf_path);
+  read_context_sptr c = create_read_context(elf_path, debug_info_root_path);
+  read_context& ctxt = *c;
 
-  // Load debug info from the elf path.
-  if (!ctxt.load_debug_info())
-    return STATUS_DEBUG_INFO_NOT_FOUND;
-
-  // First read the symbols for publicly defined decls
-  if (!ctxt.load_symbol_maps())
-    return STATUS_NO_SYMBOLS_FOUND;
-
-  // Now, read an ABI corpus proper from the debug info we have
-  // through the dwfl handle.
-  corpus_sptr corp = read_debug_info_into_corpus(ctxt);
-  corp->set_path(elf_path);
-  corp->set_origin(corpus::DWARF_ORIGIN);
-
-  corp->set_fun_symbol_map(ctxt.fun_syms_sptr());
-  corp->set_var_symbol_map(ctxt.var_syms_sptr());
-
-  resulting_corp = corp;
-
-  return STATUS_OK;
+  return read_corpus_from_elf(ctxt, resulting_corp);
 }
 
 /// Look into the symbol tables of a given elf file and see if we find
@@ -5654,6 +6311,92 @@ lookup_public_function_symbol_from_elf(const string&		path,
   close(fd);
 
   return value;
+}
+
+/// Check if the underlying elf file has an alternate debug info file
+/// associated to it.
+///
+/// Note that "alternate debug info sections" is a GNU extension as
+/// of DWARF4 and is described at
+/// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+///
+/// @param ctxt the read_context to use to handle the underlying elf file.
+///
+/// @param has_alt_di out parameter.  This is set to true upon
+/// succesful completion of the function iff an alternate debug info
+/// file was found, false otherwise.  Note thas this parameter is set
+/// only if the function returns STATUS_OK.
+///
+/// @param alt_debug_info_path if the function returned STATUS_OK and
+/// if @p has been set to true, then this parameter contains the path
+/// to the alternate debug info file found.
+///
+/// return STATUS_OK upon successful completion, false otherwise.
+status
+has_alt_debug_info(read_context&	ctxt,
+		   bool&		has_alt_di,
+		   string&		alt_debug_info_path)
+{
+  // Load debug info from the elf path.
+  if (!ctxt.load_debug_info())
+    return STATUS_DEBUG_INFO_NOT_FOUND;
+
+  if (ctxt.alt_dwarf())
+    {
+      has_alt_di = true;
+      alt_debug_info_path = ctxt.alt_debug_info_path();
+    }
+  else
+    has_alt_di = false;
+
+  return STATUS_OK;
+}
+
+/// Check if a given elf file has an alternate debug info file
+/// associated to it.
+///
+/// Note that "alternate debug info sections" is a GNU extension as
+/// of DWARF4 and is described at
+/// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+///
+/// @param elf_path the path to the elf file to consider.
+///
+/// @param a pointer to the root directory under which the split debug info
+/// file associated to elf_path is to be found.  This has to be NULL
+/// if the debug info file is not in a split file.
+///
+/// @param has_alt_di out parameter.  This is set to true upon
+/// succesful completion of the function iff an alternate debug info
+/// file was found, false otherwise.  Note thas this parameter is set
+/// only if the function returns STATUS_OK.
+///
+/// @param alt_debug_info_path if the function returned STATUS_OK and
+/// if @p has been set to true, then this parameter contains the path
+/// to the alternate debug info file found.
+///
+/// return STATUS_OK upon successful completion, false otherwise.
+status
+has_alt_debug_info(const string&	elf_path,
+		   char**		debug_info_root_path,
+		   bool&		has_alt_di,
+		   string&		alt_debug_info_path)
+{
+  read_context_sptr c = create_read_context(elf_path, debug_info_root_path);
+  read_context& ctxt = *c;
+
+  // Load debug info from the elf path.
+  if (!ctxt.load_debug_info())
+    return STATUS_DEBUG_INFO_NOT_FOUND;
+
+  if (ctxt.alt_dwarf())
+    {
+      has_alt_di = true;
+      alt_debug_info_path = ctxt.alt_debug_info_path();
+    }
+  else
+    has_alt_di = false;
+
+  return STATUS_OK;
 }
 
 }// end namespace dwarf_reader

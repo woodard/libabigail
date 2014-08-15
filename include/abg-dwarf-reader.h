@@ -52,10 +52,23 @@ enum status
   STATUS_NO_SYMBOLS_FOUND,
 };
 
+class read_context;
+
+/// A convenience typedef for a smart pointer to a
+/// dwarf_reader::read_context.
+typedef shared_ptr<read_context> read_context_sptr;
+
+read_context_sptr
+create_read_context(const std::string&	elf_path,
+		    char**		debug_info_root_path);
+
+status
+read_corpus_from_elf(read_context&	ctxt,
+		     corpus_sptr&	resulting_corp);
 status
 read_corpus_from_elf(const std::string& elf_path,
-		     char** debug_info_root_path,
-		     corpus_sptr& resulting_corp);
+		     char**		debug_info_root_path,
+		     corpus_sptr&	resulting_corp);
 
 bool
 lookup_symbol_from_elf(const string&		elf_path,
@@ -67,6 +80,17 @@ bool
 lookup_public_function_symbol_from_elf(const string&		path,
 				       const string&		symname,
 				       vector<elf_symbol>&	func_syms);
+
+status
+has_alt_debug_info(read_context&	elf_path,
+		   bool&		has_alt_di,
+		   string&		alt_debug_info_path);
+
+status
+has_alt_debug_info(const string&	elf_path,
+		   char**		debug_info_root_path,
+		   bool&		has_alt_di,
+		   string&		alt_debug_info_path);
 
 }// end namespace dwarf_reader
 

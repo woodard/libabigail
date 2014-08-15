@@ -7,6 +7,7 @@ runtestreadwrite		\
 runtestwritereadarchive		\
 runtestreaddwarf		\
 runtestlookupsyms		\
+runtestaltdwarf			\
 runtestcorediff			\
 runtestbidiff			\
 runtestdiffdwarf		\
@@ -40,6 +41,9 @@ runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestlookupsyms_SOURCES=test-lookup-syms.cc
 runtestlookupsyms_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestaltdwarf_SOURCES=test-alt-dwarf-file.cc
+runtestaltdwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestcorediff_SOURCES=test-core-diff.cc
 runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
@@ -277,7 +281,16 @@ data/test-lookup-syms/test1.version-script	\
 data/test-lookup-syms/test1.so			\
 data/test-lookup-syms/test1-1-report.txt	\
 data/test-lookup-syms/test1-2-report.txt	\
-data/test-lookup-syms/test1-3-report.txt
+data/test-lookup-syms/test1-3-report.txt	\
+\
+data/test-alt-dwarf-file/test0.cc		\
+data/test-alt-dwarf-file/libtest0.so		\
+data/test-alt-dwarf-file/test0-common.cc	\
+data/test-alt-dwarf-file/libtest0-common.so	\
+data/test-alt-dwarf-file/test0-report.txt	\
+data/test-alt-dwarf-file/test0-debug-dir/test0-common-dwz.debug \
+data/test-alt-dwarf-file/test0-debug-dir/.build-id/16/7088580c513b439c9ed95fe6a8b29496495f26.debug
+
 
 clean-local: clean-local-check
 .PHONY: clean-local-check

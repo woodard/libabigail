@@ -52,8 +52,12 @@ struct options
   string		in_file_path;
   string		out_file_path;
   shared_ptr<char>	di_root_path;
+  bool			check_alt_debug_info_path;
+  bool			show_base_name_alt_debug_info_path;
 
   options()
+    : check_alt_debug_info_path(false),
+      show_base_name_alt_debug_info_path(false)
   {}
 };
 
@@ -64,7 +68,12 @@ display_usage(const string& prog_name, ostream& out)
       << " where options can be: \n"
       << "  --help display this message\n"
       << "  --debug-info-dir <dir-path> look for debug info under 'dir-path'\n"
-      << "  --out-file <file-path> write the output to 'file-path'\n";
+      << "  --out-file <file-path> write the output to 'file-path'\n"
+      << "  --check-alternate-debug-info <elf-path> check alternate debug info "
+		"of <elf-path>\n"
+      << "  --check-alternate-debug-info-base-name <elf-path> check alternate "
+    "debug info of <elf-path>, and show its base name\n"
+    ;
 }
 
 static bool
@@ -103,6 +112,19 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.out_file_path = argv[i + 1];
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--check-alternate-debug-info")
+	       || !strcmp(argv[i], "--check-alternate-debug-info-base-name"))
+	{
+	  if (argc <= i + 1
+	      || argv[i + 1][0] == '-'
+	      || !opts.in_file_path.empty())
+	    return false;
+	  if (!strcmp(argv[i], "--check-alternate-debug-info-base-name"))
+	    opts.show_base_name_alt_debug_info_path = true;
+	  opts.check_alt_debug_info_path = true;
+	  opts.in_file_path = argv[i + 1];
+	  ++i;
+	}
       else if (!strcmp(argv[i], "--help"))
 	return false;
       else
@@ -139,13 +161,47 @@ main(int argc, char* argv[])
   using abigail::corpus;
   using abigail::corpus_sptr;
   using abigail::translation_units;
+  using abigail::dwarf_reader::read_context_sptr;
+  using abigail::dwarf_reader::read_context;
   using abigail::dwarf_reader::read_corpus_from_elf;
+  using abigail::dwarf_reader::create_read_context;
   using namespace abigail;
 
   char* p = opts.di_root_path.get();
   corpus_sptr corp;
-  dwarf_reader::status s = read_corpus_from_elf(opts.in_file_path, &p, corp);
+  read_context_sptr c = create_read_context(opts.in_file_path, &p);
+  read_context& ctxt = *c;
 
+  if (opts.check_alt_debug_info_path)
+    {
+      bool has_alt_di = false;
+      string alt_di_path;
+      abigail::dwarf_reader::status status =
+	abigail::dwarf_reader::has_alt_debug_info(ctxt,
+						  has_alt_di, alt_di_path);
+      if (status == abigail::dwarf_reader::STATUS_OK)
+	{
+	  if (alt_di_path.empty())
+	    ;
+	  else
+	    {
+	      if (opts.show_base_name_alt_debug_info_path)
+		tools::base_name(alt_di_path, alt_di_path);
+
+	      cout << "found the alternate debug info file '"
+		   << alt_di_path
+		   << "'\n";
+	    }
+	  return 0;
+	}
+      else
+	{
+	  cerr << "could not find alternate debug info file\n";
+	  return 1;
+	}
+    }
+
+  dwarf_reader::status s = read_corpus_from_elf(ctxt, corp);
   if (!corp)
     {
       if (s == dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
@@ -174,8 +230,8 @@ main(int argc, char* argv[])
 
       return 1;
     }
-
-  abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout);
+  else
+    abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout);
 
   return 0;
 }
