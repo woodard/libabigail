@@ -87,7 +87,7 @@ InOutSpec in_out_specs[] =
     "data/test-lookup-syms/test1-3-report.txt",
     "output/test-lookup-syms/test-3-report.txt"
   },
-  // This should always  be the last entry.
+  // This should always be the last entry.
   {NULL, NULL, NULL, NULL, NULL}
 };
 
