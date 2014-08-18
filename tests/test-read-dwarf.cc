@@ -85,6 +85,11 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test6.so.abi",
     "output/test-read-dwarf/test6.so.abi"
   },
+  {
+    "data/test-read-dwarf/test7.so",
+    "data/test-read-dwarf/test7.so.abi",
+    "output/test-read-dwarf/test7.so.abi"
+  },
   // This should be the last entry.
   {NULL, NULL, NULL}
 };

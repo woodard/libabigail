@@ -1096,6 +1096,129 @@ public:
   virtual ~reference_type_def();
 }; // end class reference_type_def
 
+/// Convenience typedef for a shared pointer on a @ref array_type_def
+typedef shared_ptr<array_type_def> array_type_def_sptr;
+
+
+/// The abstraction of an array type.
+class array_type_def : public virtual type_base, public virtual decl_base
+{
+private:
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+  // Forbidden.
+  array_type_def();
+
+public:
+
+  /// Hasher for intances of array_type_def.
+  struct hash;
+
+  class subrange_type;
+
+  /// Convenience typedef for a shared pointer on a @ref
+  /// function_decl::subrange
+  typedef shared_ptr<subrange_type> subrange_sptr;
+
+  /// Convenience typedef for a vector of @ref subrange_sptr
+  typedef std::vector<subrange_sptr> subranges_type;
+
+  /// Abtraction for an array dimension
+  class subrange_type
+  {
+    struct priv;
+    typedef shared_ptr<priv> priv_sptr;
+    priv_sptr priv_;
+
+    // Forbidden.
+    subrange_type();
+  public:
+
+    /// Hasher for an instance of array::subrange
+    struct hash;
+
+    subrange_type(size_t lower_bound, size_t upper_bound,
+		  location loc);
+
+    subrange_type(size_t upper_bound, location loc);
+
+    size_t
+    get_upper_bound() const;
+
+    size_t
+    get_lower_bound() const;
+
+    void
+    set_upper_bound(size_t ub);
+
+    void
+    set_lower_bound(size_t lb);
+
+    size_t
+    get_length() const;
+
+    bool
+    is_infinite() const;
+
+    bool
+    operator==(const subrange_type& o) const;
+
+    location
+    get_location() const;
+  };
+
+  array_type_def(const type_base_sptr type,
+		 const std::vector<subrange_sptr>& subs,
+		 location locus);
+
+  virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
+
+  virtual void
+  get_qualified_name(string& qualified_name) const;
+
+  virtual string
+  get_qualified_name() const;
+
+  const shared_ptr<type_base>&
+  get_element_type() const;
+
+  virtual void
+  append_subrange(subrange_sptr sub);
+
+  virtual void
+  append_subranges(const std::vector<subrange_sptr>& subs);
+
+  virtual int
+  get_dimension_count() const;
+
+   virtual bool
+  is_infinite() const;
+
+  virtual string
+  get_pretty_representation() const;
+
+  virtual string
+  get_subrange_representation() const;
+
+  virtual bool
+  traverse(ir_node_visitor& v);
+
+  location
+  get_location() const;
+
+  const std::vector<subrange_sptr>&
+  get_subranges() const;
+
+  virtual ~array_type_def();
+
+}; // end class array_type_def
+
 /// Convenience typedef for shared pointer on enum_type_decl.
 typedef shared_ptr<enum_type_decl> enum_type_decl_sptr;
 
@@ -2839,6 +2962,7 @@ struct ir_node_visitor : public node_visitor_base
   virtual bool visit(qualified_type_def*);
   virtual bool visit(pointer_type_def*);
   virtual bool visit(reference_type_def*);
+  virtual bool visit(array_type_def*);
   virtual bool visit(enum_type_decl*);
   virtual bool visit(typedef_decl*);
   virtual bool visit(var_decl*);

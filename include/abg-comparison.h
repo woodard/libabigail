@@ -805,6 +805,57 @@ compute_diff(reference_type_def_sptr first,
 	     reference_type_def_sptr second,
 	     diff_context_sptr ctxt);
 
+class array_diff;
+
+/// Convenience typedef for a shared pointer on a @ref
+/// array_diff type.
+typedef shared_ptr<array_diff> array_diff_sptr;
+
+/// The abstraction of a diff between two arrays.
+class array_diff : public diff
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+protected:
+  array_diff(const array_type_def_sptr	first,
+	     const array_type_def_sptr	second,
+	     diff_sptr			element_type_diff,
+	     diff_context_sptr		ctxt = diff_context_sptr());
+
+public:
+  const array_type_def_sptr
+  first_array() const;
+
+  const array_type_def_sptr
+  second_array() const;
+
+  const diff_sptr&
+  element_type_diff() const;
+
+  void
+  element_type_diff(diff_sptr);
+
+  virtual unsigned
+  length() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
+
+  friend array_diff_sptr
+  compute_diff(array_type_def_sptr first,
+	       array_type_def_sptr second,
+	       diff_context_sptr ctxt);
+};// end class array_diff
+
+array_diff_sptr
+compute_diff(array_type_def_sptr first,
+	     array_type_def_sptr second,
+	     diff_context_sptr ctxt);
+
 class qualified_type_diff;
 typedef class shared_ptr<qualified_type_diff> qualified_type_diff_sptr;
 

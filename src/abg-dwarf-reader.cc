@@ -5388,6 +5388,99 @@ build_reference_type(read_context&	ctxt,
   return result;
 }
 
+/// Build a array type from a DW_TAG_array_type DIE.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE to read from.
+///
+/// @param die_is_from_alt_di true if @p is from alternate debug
+/// info.
+///
+/// @param called_from_public_decl true if this function was called
+/// from a context where either a public function or a public variable
+/// is being built.
+///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positioned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
+/// @return a pointer to the resulting array_type_def.
+static array_type_def_sptr
+build_array_type(read_context&	ctxt,
+		 Dwarf_Die*	die,
+		 bool		die_is_from_alt_di,
+		 bool		called_from_public_decl,
+		 size_t	where_offset)
+{
+  array_type_def_sptr result;
+
+  if (!die)
+    return result;
+
+  unsigned tag = dwarf_tag(die);
+  if (tag != DW_TAG_array_type)
+    return result;
+
+  decl_base_sptr type_decl;
+  Dwarf_Die type_die;
+
+  bool utype_is_in_alt_di = false;
+  if (die_die_attribute(die, die_is_from_alt_di, DW_AT_type,
+			type_die, utype_is_in_alt_di))
+    type_decl =
+      build_ir_node_from_die(ctxt, &type_die,
+			     utype_is_in_alt_di,
+			     called_from_public_decl,
+			     where_offset);
+  if (!type_decl)
+    return result;
+
+  size_t type_size;
+  if (!die_unsigned_constant_attribute(&type_die,
+				       DW_AT_byte_size,
+				       type_size))
+    return result;
+
+  type_base_sptr type = is_type(type_decl);
+  assert(type);
+
+  Dwarf_Die child;
+  array_type_def::subranges_type subranges;
+  size_t upper_bound, lower_bound = 0;
+
+  if (dwarf_child(die, &child) == 0)
+    {
+      do
+	{
+	  int child_tag = dwarf_tag(&child);
+	  if (child_tag == DW_TAG_subrange_type)
+	    {
+	      // usually not specified for C/C++
+	      die_unsigned_constant_attribute(&child,
+					      DW_AT_lower_bound,
+					      lower_bound);
+
+	      if (!die_unsigned_constant_attribute(&child,
+						   DW_AT_upper_bound,
+						   upper_bound))
+		return result;
+
+	      array_type_def::subrange_sptr s
+		(new array_type_def::subrange_type(lower_bound,
+						   upper_bound,
+						   location()));
+	      subranges.push_back(s);
+	    }
+	}
+      while (dwarf_siblingof(&child, &child) == 0);
+    }
+
+  result.reset(new array_type_def(type, subranges, location()));
+
+  return result;
+}
 /// Create a typedef_decl from a DW_TAG_typedef DIE.
 ///
 /// @param ctxt the read context to consider.
@@ -5912,6 +6005,15 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_union_type:
       break;
     case DW_TAG_array_type:
+      {
+	array_type_def_sptr a = build_array_type(ctxt,
+						 die,
+						 die_is_from_alt_di,
+						 called_from_public_decl,
+						 where_offset);
+	if (a)
+	  result = add_decl_to_scope(a, scope);
+      }
       break;
     case DW_TAG_packed_type:
       break;
@@ -5922,6 +6024,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_ptr_to_member_type:
       break;
     case DW_TAG_subrange_type:
+      /* we shouldn't get here as this part is handled by build_array_type */
+      abort();
       break;
     case DW_TAG_thrown_type:
       break;

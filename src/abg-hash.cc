@@ -243,6 +243,49 @@ struct reference_type_def::hash
   }
 };
 
+struct array_type_def::subrange_type::hash
+{
+  size_t
+  operator()(const array_type_def::subrange_type& s) const
+  {
+    std::tr1::hash<int> hash_size_t;
+    size_t v = hash_size_t(hash_size_t(s.get_lower_bound()));
+    v = hashing::combine_hashes(v, hash_size_t(s.get_upper_bound()));
+    return v;
+  }
+};
+
+struct array_type_def::hash
+{
+  size_t
+  operator()(const array_type_def& t)
+  {
+    if (t.peek_hash_value() == 0 || t.hashing_started())
+      {
+	std::tr1::hash<string> hash_str;
+	type_base::hash hash_type_base;
+	decl_base::hash hash_decl;
+	type_base::shared_ptr_hash hash_type_ptr;
+	array_type_def::subrange_type::hash hash_subrange;
+
+	size_t v = hash_str(typeid(t).name());
+
+	v = hashing::combine_hashes(v, hash_type_base(t));
+	v = hashing::combine_hashes(v, hash_decl(t));
+	v = hashing::combine_hashes(v, hash_type_ptr(t.get_element_type()));
+
+	for (vector<array_type_def::subrange_sptr >::const_iterator i =
+	     t.get_subranges().begin();
+	     i != t.get_subranges().end();
+	     ++i)
+	  v = hashing::combine_hashes(v, hash_subrange(**i));
+
+	t.set_hash(v);
+      }
+    return t.peek_hash_value();
+  }
+};
+
 struct enum_type_decl::hash
 {
   size_t
@@ -849,6 +892,8 @@ type_base::dynamic_hash::operator()(const type_base* t) const
     return pointer_type_def::hash()(*d);
   if (const reference_type_def* d = dynamic_cast<const reference_type_def*>(t))
     return reference_type_def::hash()(*d);
+  if (const array_type_def* d = dynamic_cast<const array_type_def*>(t))
+    return array_type_def::hash()(*d);
   if (const enum_type_decl* d = dynamic_cast<const enum_type_decl*>(t))
     return enum_type_decl::hash()(*d);
   if (const typedef_decl* d = dynamic_cast<const typedef_decl*>(t))

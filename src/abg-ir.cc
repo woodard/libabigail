@@ -2677,6 +2677,15 @@ is_function_template_pattern(const shared_ptr<decl_base> decl)
 	  && dynamic_cast<template_decl*>(decl->get_scope()));
 }
 
+/// Test if a decl is an array_type_def.
+///
+/// @param decl the decl to consider.
+///
+/// @return true iff decl is an array_type_def.
+array_type_def_sptr
+is_array_def(const type_base_sptr decl)
+{return dynamic_pointer_cast<array_type_def>(decl);}
+
 /// Tests whether a decl is a template.
 ///
 /// @param decl the decl to consider.
@@ -3636,6 +3645,256 @@ reference_type_def::~reference_type_def()
 
 // </reference_type_def definitions>
 
+// <array_type_def definitions>
+
+// <array_type_def::subrange_type>
+struct array_type_def::subrange_type::priv
+{
+  size_t	lower_bound_;
+  size_t	upper_bound_;
+  location	location_;
+  priv(size_t ub, location loc)
+    : lower_bound_(0), upper_bound_(ub), location_(loc) {}
+  priv(size_t lb, size_t ub, location loc)
+    : lower_bound_(lb), upper_bound_(ub), location_(loc) {}
+};
+
+array_type_def::subrange_type::subrange_type(size_t	lower_bound,
+					     size_t	upper_bound,
+					     location	loc)
+  : priv_(new priv(lower_bound, upper_bound, loc))
+{}
+
+array_type_def::subrange_type::subrange_type(size_t upper_bound, location loc)
+  : priv_(new priv(upper_bound, loc))
+{}
+
+size_t
+array_type_def::subrange_type::get_upper_bound() const
+{return priv_->upper_bound_;}
+
+size_t
+array_type_def::subrange_type::get_lower_bound() const
+{return priv_->lower_bound_;}
+
+void
+array_type_def::subrange_type::set_upper_bound(size_t ub)
+{priv_->upper_bound_ = ub;}
+
+void
+array_type_def::subrange_type::set_lower_bound(size_t lb)
+{priv_->lower_bound_ = lb;}
+
+size_t
+array_type_def::subrange_type::get_length() const
+{return get_upper_bound() - get_lower_bound() + 1;}
+
+bool
+array_type_def::subrange_type::is_infinite() const
+{return get_length() == 0;}
+
+bool
+array_type_def::subrange_type::operator==(const subrange_type& o) const
+{
+  return (get_lower_bound() == o.get_lower_bound()
+	  && get_upper_bound() == o.get_upper_bound());
+}
+
+location
+array_type_def::subrange_type::get_location() const
+{return priv_->location_;}
+
+// </array_type_def::subrange_type>
+struct array_type_def::priv
+{
+  const type_base_sptr	element_type_;
+  subranges_type	subranges_;
+
+  priv(type_base_sptr t)
+    : element_type_(t) {}
+  priv(type_base_sptr t, subranges_type subs)
+    : element_type_(t), subranges_(subs) {}
+};
+
+/// Constructor for the type array_type_def
+///
+/// Note how the constructor expects a vector of subrange
+/// objects. Parsing of the array information always entails
+/// parsing the subrange info as well, thus the class subrange_type
+/// is defined inside class array_type_def and also parsed
+/// simultaneously.
+///
+/// @param e_type the type of the elements contained in the array
+///
+/// @param subs a vector of the array's subranges(dimensions)
+///
+/// @param locus the source location of the array type definition.
+array_type_def::array_type_def(const type_base_sptr			e_type,
+			       const std::vector<subrange_sptr>&	subs,
+			       location				locus)
+  : type_base(0, e_type->get_alignment_in_bits()),
+    decl_base(locus),
+    priv_(new priv(e_type))
+{append_subranges(subs);}
+
+string
+array_type_def::get_subrange_representation() const
+{
+  string r;
+  for (std::vector<subrange_sptr >::const_iterator i = get_subranges().begin();
+       i != get_subranges().end(); ++i)
+    {
+      r += "[";
+      std::ostringstream o;
+      o << (*i)->get_length();
+      r += o.str();
+      r += "]";
+    }
+  return r;
+}
+
+string
+get_type_representation(const array_type_def& a)
+{
+  type_base_sptr e_type = a.get_element_type();
+  decl_base_sptr d = get_type_declaration(e_type);
+  string r = d->get_name() + a.get_subrange_representation();
+  return r;
+}
+
+string
+array_type_def::get_pretty_representation() const
+{return get_type_representation(*this);}
+
+bool
+array_type_def::operator==(const decl_base& o) const
+{
+  const array_type_def* other =
+    dynamic_cast<const array_type_def*>(&o);
+  if (!other)
+    return false;
+  if (*get_element_type() == *other->get_element_type())
+    {
+      std::vector<subrange_sptr > this_subs = get_subranges();
+      std::vector<subrange_sptr > other_subs = other->get_subranges();
+
+      if (this_subs.size() != other_subs.size())
+        return false;
+
+      std::vector<subrange_sptr >::const_iterator i,j;
+
+      for (i = this_subs.begin(), j = other_subs.begin();
+           i != this_subs.end();
+	   ++i, ++j)
+	if (**i != **j)
+	  return false;
+      return true;
+    }
+  return false;
+}
+
+bool
+array_type_def::operator==(const type_base& o) const
+{
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
+}
+
+/// Getter of the type of an array element.
+///
+/// @return the type of an array element.
+const shared_ptr<type_base>&
+array_type_def::get_element_type() const
+{return priv_->element_type_;}
+
+// Append a single subrange @param sub.
+void
+array_type_def::append_subrange(subrange_sptr sub)
+{
+  priv_->subranges_.push_back(sub);
+  size_t s = get_size_in_bits();
+  s += sub->get_length() * get_element_type()->get_size_in_bits();
+  set_size_in_bits(s);
+  string r = get_pretty_representation();
+  set_name(r);
+}
+
+/// Append subranges from the vector @param subs to the current
+/// vector of subranges.
+void
+array_type_def::append_subranges(const std::vector<subrange_sptr>& subs)
+{
+  for (std::vector<shared_ptr<subrange_type> >::const_iterator i = subs.begin();
+       i != subs.end();
+       ++i)
+    append_subrange(*i);
+}
+
+bool
+array_type_def::is_infinite() const
+{
+
+  for (std::vector<shared_ptr<subrange_type> >::const_iterator i = priv_->subranges_.begin();
+       i != priv_->subranges_.end();
+       ++i)
+    {
+      if ((*i)->is_infinite())
+        return true;
+    }
+  return false;
+}
+
+int
+array_type_def::get_dimension_count() const
+{return priv_->subranges_.size();}
+
+/// Build and return the qualified name of the current instance of the
+/// @ref array_type_def.
+///
+/// @param qn output parameter.  Is set to the newly-built qualified
+/// name of the current instance of @ref array_type_def.
+void
+array_type_def::get_qualified_name(string& qn) const
+{qn = get_type_representation(*this);}
+
+/// Compute the qualified name of the array.
+///
+/// @return the resulting qualified name.
+string
+array_type_def::get_qualified_name() const
+{
+  string result;
+  get_qualified_name(result);
+  return result;
+}
+
+/// This implements the ir_traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance.
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
+array_type_def::traverse(ir_node_visitor& v)
+{return v.visit(this);}
+
+location
+array_type_def::get_location() const
+{return decl_base::get_location();}
+
+/// Get the array's subranges
+const std::vector<array_type_def::subrange_sptr>&
+array_type_def::get_subranges() const
+{return priv_->subranges_;}
+
+array_type_def::~array_type_def()
+{}
+
+// </array_type_def definitions>
+
 /// Return the underlying type of the enum.
 shared_ptr<type_base>
 enum_type_decl::get_underlying_type() const
@@ -4001,8 +4260,12 @@ var_decl::get_pretty_representation() const
 
   if (is_member_decl(this) && get_member_is_static(this))
     result = "static ";
-  result += get_type_declaration(get_type())->get_qualified_name();
-  result += " " + get_qualified_name();
+  if(array_type_def_sptr t = is_array_def(get_type()))
+    result += get_type_declaration(t->get_element_type())->get_qualified_name()
+      + " " + get_qualified_name() + t->get_subrange_representation();
+  else
+    result += get_type_declaration(get_type())->get_qualified_name()
+      + " " + get_qualified_name();
   return result;
 }
 
@@ -6409,6 +6672,10 @@ ir_node_visitor::visit(pointer_type_def*)
 
 bool
 ir_node_visitor::visit(reference_type_def*)
+{return true;}
+
+bool
+ir_node_visitor::visit(array_type_def*)
 {return true;}
 
 bool

@@ -96,6 +96,10 @@ data/test-read-write/test18.xml \
 data/test-read-write/test19.xml \
 data/test-read-write/test20.xml \
 data/test-read-write/test21.xml \
+data/test-read-write/test22.xml \
+data/test-read-write/test23.xml \
+data/test-read-write/test24.xml \
+data/test-read-write/test25.xml \
 \
 data/test-write-read-archive/test0.xml \
 data/test-write-read-archive/test1.xml \
@@ -172,6 +176,16 @@ data/test-diff-dwarf/libtest9-v0.so		\
 data/test-diff-dwarf/test9-v1.cc		\
 data/test-diff-dwarf/libtest9-v1.so		\
 data/test-diff-dwarf/test9-report.txt		\
+data/test-diff-dwarf/test10-v0.cc		\
+data/test-diff-dwarf/test10-v0.o		\
+data/test-diff-dwarf/test10-v1.cc		\
+data/test-diff-dwarf/test10-v1.o		\
+data/test-diff-dwarf/test10-report.txt		\
+data/test-diff-dwarf/test11-v0.cc		\
+data/test-diff-dwarf/test11-v0.o		\
+data/test-diff-dwarf/test11-v1.cc		\
+data/test-diff-dwarf/test11-v1.o		\
+data/test-diff-dwarf/test11-report.txt		\
 \
 data/test-read-dwarf/test0			\
 data/test-read-dwarf/test0.abi			\

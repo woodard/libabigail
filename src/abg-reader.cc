@@ -170,6 +170,8 @@ public:
 	bool node_is_pointer_or_reference =
 	  (xmlStrEqual(node->name, BAD_CAST("pointer-type-def"))
 	   || xmlStrEqual(node->name, BAD_CAST("reference-type-def")));
+	bool node_is_array =
+	  xmlStrEqual(node->name, BAD_CAST("array-type-def"));
 	bool node_is_typedef =
 	  xmlStrEqual(node->name, BAD_CAST("typedef-decl"));
 	bool node_is_qualified_type =
@@ -185,6 +187,7 @@ public:
 		      || node_is_class
 		      || node_is_type_decl
 		      || node_is_pointer_or_reference
+		      || node_is_array
 		      || node_is_typedef
 		      || node_is_qualified_type
 		      || node_is_unnamed_enum_ut);
@@ -575,6 +578,12 @@ build_pointer_type_def(read_context&, const xmlNodePtr, bool);
 static shared_ptr<reference_type_def>
 build_reference_type_def(read_context&, const xmlNodePtr, bool);
 
+static array_type_def::subrange_sptr
+build_subrange_type(read_context&, const xmlNodePtr);
+
+static array_type_def_sptr
+build_array_type_def(read_context&, const xmlNodePtr, bool);
+
 static enum_type_decl_sptr
 build_enum_type_decl(read_context&, const xmlNodePtr, bool);
 
@@ -622,6 +631,8 @@ static decl_base_sptr	handle_pointer_type_def(read_context&,
 						xmlNodePtr, bool);
 static decl_base_sptr	handle_reference_type_def(read_context&,
 						  xmlNodePtr, bool);
+static decl_base_sptr	handle_array_type_def(read_context&,
+					      xmlNodePtr, bool);
 static decl_base_sptr	handle_enum_type_decl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_typedef_decl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_var_decl(read_context&, xmlNodePtr, bool);
@@ -1030,6 +1041,7 @@ handle_element_node(read_context& ctxt, xmlNodePtr node,
    ||(decl = handle_pointer_type_def(ctxt, node,
 				     add_to_current_scope))
    || (decl = handle_reference_type_def(ctxt, node, add_to_current_scope))
+   || (decl = handle_array_type_def(ctxt, node, add_to_current_scope))
    || (decl = handle_enum_type_decl(ctxt, node,
 				    add_to_current_scope))
    || (decl = handle_typedef_decl(ctxt, node,
@@ -2238,6 +2250,175 @@ build_reference_type_def(read_context&		ctxt,
   return nil;
 }
 
+/// Build a array_type_def from a 'array-type-def' xml node.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param node the xml node to build the array_type_def from.
+///
+/// @param add_to_current_scope if set to yes, the resulting of
+/// this function is added to its current scope.
+///
+/// @return a pointer to a newly built array_type_def upon
+/// successful completion, a null pointer otherwise.
+static array_type_def::subrange_sptr
+build_subrange_type(read_context&	ctxt,
+		    const xmlNodePtr	node)
+{
+  array_type_def::subrange_sptr nil;
+
+  if (!node || !xmlStrEqual(node->name, BAD_CAST("subrange")))
+    return nil;
+
+  size_t length = 0;
+  string length_str;
+  if (xml_char_sptr s =
+      xml::build_sptr(xmlGetProp(node, BAD_CAST("length"))))
+    length = atoi(CHAR_STR(s));
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  // Note that DWARF would actually have a lower_bound of -1 for an
+  // array of length 0
+  array_type_def::subrange_sptr p
+    (new array_type_def::subrange_type(0,
+				       length - 1,
+				       loc));
+
+  return p;
+}
+/// Build a array_type_def from a 'array-type-def' xml node.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param node the xml node to build the array_type_def from.
+///
+/// @param add_to_current_scope if set to yes, the resulting of
+/// this function is added to its current scope.
+///
+/// @return a pointer to a newly built array_type_def upon
+/// successful completion, a null pointer otherwise.
+static array_type_def_sptr
+build_array_type_def(read_context&	ctxt,
+		     const		xmlNodePtr node,
+		     bool		add_to_current_scope)
+{
+
+  array_type_def_sptr nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("array-type-def")))
+    return nil;
+
+  if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
+    {
+      array_type_def_sptr result =
+	dynamic_pointer_cast<array_type_def>(d);
+      assert(result);
+      return result;
+    }
+
+  int dimensions = 0;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "dimensions"))
+    dimensions = atoi(CHAR_STR(s));
+
+  string type_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
+    type_id = CHAR_STR(s);
+
+  // The type of array elements.
+  shared_ptr<type_base> type =
+    ctxt.build_or_get_type_decl(type_id, true);
+  assert(type);
+
+  // maybe building the type of array elements triggered building this
+  // one in the mean time ...
+  if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
+    {
+      array_type_def_sptr result =
+	dynamic_pointer_cast<array_type_def>(d);
+      assert(result);
+      return result;
+    }
+
+  size_t size_in_bits = 0, alignment_in_bits = 0;
+  char *endptr;
+
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
+    {
+      size_in_bits = strtoull(CHAR_STR(s), &endptr, 0);
+      if (*endptr != '\0')
+        {
+          if (!strcmp(CHAR_STR(s), "infinite"))
+            size_in_bits = (size_t) -1;
+          else
+            return nil;
+        }
+    }
+
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
+    {
+      alignment_in_bits = strtoull(CHAR_STR(s), &endptr, 0);
+      if (*endptr != '\0')
+        return nil;
+    }
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  assert(!id.empty());
+
+  if (type_base_sptr d = ctxt.get_type_decl(id))
+    {
+      array_type_def_sptr ty = dynamic_pointer_cast<array_type_def>(d);
+      assert(ty);
+      assert(*type == *ty->get_element_type());
+      assert(type->get_alignment_in_bits() == alignment_in_bits);
+      return ty;
+    }
+
+  location loc;
+  read_location(ctxt, node, loc);
+  array_type_def::subranges_type subranges;
+
+  for (xmlNodePtr n = node->children; n ; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      else if (xmlStrEqual(n->name, BAD_CAST("subrange")))
+	{
+	  if (array_type_def::subrange_sptr s =
+	      build_subrange_type(ctxt, n))
+	    subranges.push_back(s);
+	}
+    }
+
+  array_type_def_sptr ar_type(new array_type_def(type,
+						 subranges,
+						 loc));
+
+  if (dimensions != ar_type->get_dimension_count()
+      || (alignment_in_bits
+	  != ar_type->get_element_type()->get_alignment_in_bits()))
+    return nil;
+
+  if (size_in_bits != ar_type->get_size_in_bits())
+    {
+      assert(size_in_bits == (size_t) -1
+	     || ar_type->get_element_type()->get_size_in_bits() == (size_t)-1
+	     || ar_type->get_element_type()->get_size_in_bits() == 0);
+    }
+
+  if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
+    {
+      ctxt.map_xml_node_to_decl(node, ar_type);
+      return ar_type;
+    }
+
+  return nil;
+}
+
 /// Build an enum_type_decl from an 'enum-type-decl' xml node.
 ///
 /// @param ctxt the context of the parsing.
@@ -2909,6 +3090,9 @@ build_type_composition(read_context&	ctxt,
 	  ||(composed_type =
 	     build_reference_type_def(ctxt, n,
 				      /*add_to_current_scope=*/true))
+	  ||(composed_type =
+	     build_array_type_def(ctxt, n,
+				  /*add_to_current_scope=*/true))
 	  || (composed_type =
 	      build_qualified_type_decl(ctxt, n,
 					/*add_to_current_scope=*/true)))
@@ -3079,6 +3263,7 @@ build_type(read_context&	ctxt,
    || (t = build_qualified_type_decl(ctxt, node, add_to_current_scope))
    || (t = build_pointer_type_def(ctxt, node, add_to_current_scope))
    || (t = build_reference_type_def(ctxt, node , add_to_current_scope))
+   || (t = build_array_type_def(ctxt, node, add_to_current_scope))
    || (t = build_enum_type_decl(ctxt, node, add_to_current_scope))
    || (t = build_typedef_decl(ctxt, node, add_to_current_scope))
    || (t = build_class_decl(ctxt, node, add_to_current_scope)));
@@ -3158,6 +3343,21 @@ handle_reference_type_def(read_context& ctxt,
 {
   reference_type_def_sptr decl = build_reference_type_def(ctxt, node,
 							  add_to_current_scope);
+  return decl;
+}
+
+/// Parse a array-type-def element.
+///
+/// @param ctxt the context of the parsing.
+///
+/// array_type_def is added to.
+static decl_base_sptr
+handle_array_type_def(read_context&	ctxt,
+		      xmlNodePtr	node,
+		      bool		add_to_current_scope)
+{
+  array_type_def_sptr decl = build_array_type_def(ctxt, node,
+						  add_to_current_scope);
   return decl;
 }
 

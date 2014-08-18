@@ -1049,6 +1049,7 @@ compute_diff_for_types(const decl_base_sptr first,
    ||(d = try_to_diff<class_decl>(f, s,ctxt))
    ||(d = try_to_diff<pointer_type_def>(f, s, ctxt))
    ||(d = try_to_diff<reference_type_def>(f, s, ctxt))
+   ||(d = try_to_diff<array_type_def>(f, s, ctxt))
    ||(d = try_to_diff<qualified_type_def>(f, s, ctxt))
    ||(d = try_to_diff<typedef_decl>(f, s, ctxt)));
 
@@ -1971,6 +1972,256 @@ compute_diff(pointer_type_def_sptr	first,
 }
 
 // </pointer_type_def>
+
+// <array_type_def>
+struct array_diff::priv
+{
+  /// The diff between the two array element types.
+  diff_sptr element_type_diff_;
+
+  priv(diff_sptr element_type_diff)
+    : element_type_diff_(element_type_diff)
+  {}
+};//end struct array_diff::priv
+
+/// Constructor for array_diff
+///
+/// @param first the first array_type of the diff.
+///
+/// @param second the second array_type of the diff.
+///
+/// @param element_type_diff the diff between the two array element
+/// types.
+///
+/// @param ctxt the diff context to use.
+array_diff::array_diff(const array_type_def_sptr	first,
+		       const array_type_def_sptr	second,
+		       diff_sptr			element_type_diff,
+		       diff_context_sptr		ctxt)
+  : diff(first, second, ctxt),
+    priv_(new priv(element_type_diff))
+{}
+
+/// Getter for the first array of the diff.
+///
+/// @return the first array of the diff.
+const array_type_def_sptr
+array_diff::first_array() const
+{return dynamic_pointer_cast<array_type_def>(first_subject());}
+
+
+/// Getter for the second array of the diff.
+///
+/// @return for the second array of the diff.
+const array_type_def_sptr
+array_diff::second_array() const
+{return dynamic_pointer_cast<array_type_def>(second_subject());}
+
+/// Getter for the diff between the two types of array elements.
+///
+/// @return the diff between the two types of array elements.
+const diff_sptr&
+array_diff::element_type_diff() const
+{return priv_->element_type_diff_;}
+
+/// Setter for the diff between the two array element types.
+///
+/// @param d the new diff betweend the two array element types.
+void
+array_diff::element_type_diff(diff_sptr d)
+{priv_->element_type_diff_ = d;}
+
+/// Getter of the length of the diff.
+///
+/// @return the length of the diff.
+unsigned
+array_diff::length() const
+{
+  unsigned l = 0;
+
+  l = element_type_diff() ?
+  element_type_diff()->length() : 0;
+
+  //  the array element types match check for differing dimensions
+  //  etc...
+  if (!l)
+    {
+      array_type_def_sptr
+        f = dynamic_pointer_cast<array_type_def>(first_subject()),
+        s = dynamic_pointer_cast<array_type_def>(second_subject());
+
+      if (f->get_name() != s->get_name())
+	++l;
+      if (f->get_size_in_bits() != s->get_size_in_bits())
+	++l;
+      if (f->get_alignment_in_bits() != s->get_alignment_in_bits())
+	++l;
+    }
+  return l;
+}
+
+/// Report the diff in a serialized form.
+///
+/// @param out the output stream to serialize the dif to.
+///
+/// @param indent the string to use for indenting the report.
+void
+array_diff::report(ostream& out, const string& indent) const
+{
+  if (!to_be_reported())
+    return;
+
+  string name = first_array()->get_pretty_representation();
+  if (diff_sptr d = context()->has_diff_for(first_array(),
+					    second_array()))
+    {
+      if (d->currently_reporting())
+	{
+	  out << indent << "array type '"
+	      << name
+	      << "' changed;  details are being reported\n";
+	  return;
+	}
+      else if (d->reported_once())
+	{
+	  out << indent << "arry type '"
+	      << name << "' changed, as reported earlier\n";
+	  return;
+	}
+    }
+
+  diff_sptr d = element_type_diff();
+  if (d->to_be_reported())
+    {
+      // report array element type changes
+      out << indent << "array element type '"
+	  << d->first_subject()->get_name()
+	  << "' changed:\n";
+      d->report(out, indent + "  ");
+    }
+
+  const array_type_def_sptr x = first_array(), y = second_array();
+
+  if ((x->get_size_in_bits() != y->get_size_in_bits())
+      || (x->get_dimension_count() != y->get_dimension_count()))
+    {
+      out << indent
+	  << "in array type '"
+	  << name
+	  << "':\n";
+      if (x->get_size_in_bits() != y->get_size_in_bits())
+	{
+	  out << indent + "  "
+	      << "size changed from ";
+
+	  if (x->is_infinite())
+	    out << "infinity";
+	  else
+	    out << x->get_size_in_bits();
+
+	  out << " to ";
+
+	  if (y->is_infinite())
+	    out << "infinity";
+	  else
+	    out << y->get_size_in_bits();
+
+	  out << "\n";
+	}
+
+      size_t a, b;
+      if ((a = x->get_dimension_count())
+	  != (b = y->get_dimension_count()))
+	{
+	  out << indent + "  "
+	      << "number of dimensions changed from "
+	      << a
+	      << " to "
+	      << b
+	      << "\n";
+	}
+      else
+	{
+	  array_type_def::subranges_type::const_iterator i, j;
+	  for (i = x->get_subranges().begin(),
+		 j = y->get_subranges().begin();
+	       i != x->get_subranges().end();
+	       ++i, ++j)
+	    {
+	      if ((*i)->get_length() != (*j)->get_length())
+		{
+		  out << indent + "  "
+		      << "subrange "
+		      << i - x->get_subranges().begin() + 1
+		      << " changed length from ";
+
+		  if ((*i)->is_infinite())
+		    out << "infinity";
+		  else
+		    out << (*i)->get_length();
+
+		  out << " to ";
+
+		  if ((*j)->is_infinite())
+		    out << "infinity";
+		  else
+		    out << (*j)->get_length();
+
+		  out << "\n";
+		}
+	    }
+	}
+    }
+}
+
+/// Traverse the diff sub-tree under the current instance of
+/// array_diff.
+///
+/// @param v the visitor to invoke on each node diff node.
+///
+/// @return true if the traversing has to keep going, false otherwise.
+bool
+array_diff::traverse(diff_node_visitor& v)
+{
+  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
+
+  TRY_PRE_VISIT(v);
+
+  if (diff_sptr d = element_type_diff())
+    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
+
+  TRY_POST_VISIT(v);
+
+  return true;
+}
+
+/// Compute the diff between two arrays.
+///
+/// @param first the first array to consider for the diff.
+///
+/// @param second the second array to consider for the diff.
+///
+/// @param ctxt the diff context to use.
+array_diff_sptr
+compute_diff(array_type_def_sptr	first,
+	     array_type_def_sptr	second,
+	     diff_context_sptr		ctxt)
+{
+  if (diff_sptr dif = ctxt->has_diff_for(first, second))
+    {
+      array_diff_sptr d = dynamic_pointer_cast<array_diff>(dif);
+      return d;
+    }
+
+  diff_sptr d = compute_diff_for_types(first->get_element_type(),
+				       second->get_element_type(),
+				       ctxt);
+  array_diff_sptr result(new array_diff(first, second, d, ctxt));
+  ctxt->add_diff(first, second, result);
+
+  return result;
+}
+// </array_type_def>
 
 // <reference_type_def>
 struct reference_diff::priv

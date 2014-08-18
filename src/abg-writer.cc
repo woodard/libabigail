@@ -215,6 +215,7 @@ static void write_location(location, translation_unit&, ostream&);
 static void write_location(const shared_ptr<decl_base>&, ostream&);
 static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
 static bool write_binding(const shared_ptr<decl_base>&, ostream&);
+static void write_array_size_and_alignment(const shared_ptr<array_type_def>, ostream&);
 static void write_size_and_alignment(const shared_ptr<type_base>, ostream&);
 static void write_access(access_specifier, ostream&);
 static void write_layout_offset(var_decl_sptr, ostream&);
@@ -241,6 +242,8 @@ static bool write_pointer_type_def(const shared_ptr<pointer_type_def>,
 				   write_context&, unsigned);
 static bool write_reference_type_def(const shared_ptr<reference_type_def>,
 				     write_context&, unsigned);
+static bool write_array_type_def(const shared_ptr<array_type_def>,
+			         write_context&, unsigned);
 static bool write_enum_type_decl(const shared_ptr<enum_type_decl>,
 				 write_context&, unsigned);
 static bool write_typedef_decl(const shared_ptr<typedef_decl>,
@@ -481,6 +484,25 @@ write_size_and_alignment(const shared_ptr<type_base> decl, ostream& o)
     o << " alignment-in-bits='" << alignment_in_bits << "'";
 }
 
+/// Serialize the size and alignment attributes of a given type.
+/// @param decl the type to consider.
+///
+/// @param o the output stream to serialize to.
+static void
+write_array_size_and_alignment(const shared_ptr<array_type_def> decl, ostream& o)
+{
+  if (decl->is_infinite())
+    o << " size-in-bits='" << "infinite" << "'";
+  else {
+    size_t size_in_bits = decl->get_size_in_bits();
+    if (size_in_bits)
+      o << " size-in-bits='" << size_in_bits << "'";
+  }
+
+  size_t alignment_in_bits = decl->get_alignment_in_bits();
+  if (alignment_in_bits)
+    o << " alignment-in-bits='" << alignment_in_bits << "'";
+}
 /// Serialize the access specifier.
 ///
 /// @param a the access specifier to serialize.
@@ -782,6 +804,8 @@ write_decl(const shared_ptr<decl_base>	decl, write_context& ctxt,
 				ctxt, indent)
       || write_reference_type_def(dynamic_pointer_cast
 				  <reference_type_def>(decl), ctxt, indent)
+      || write_array_type_def(dynamic_pointer_cast
+			      <array_type_def>(decl), ctxt, indent)
       || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(decl),
 			      ctxt, indent)
       || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(decl),
@@ -1200,6 +1224,99 @@ write_reference_type_def(const shared_ptr<reference_type_def>	decl,
 			 write_context&			ctxt,
 			 unsigned				indent)
 {return write_reference_type_def(decl, "", ctxt, indent);}
+
+/// Serialize a pointer to an instance of array_type_def.
+///
+/// @param decl the array_type_def to serialize.
+///
+/// @param id the type id identitifier to use in the serialized
+/// output.  If this is empty, the function will compute an
+/// appropriate one.  This is useful when this function is called to
+/// serialize the underlying type of a member type; in that case, the
+/// caller has already computed the id of the *member type*, and that
+/// id is the one to be written as the value of the 'id' attribute of
+/// the XML element of the underlying type.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the number of indentation white spaces to use.
+///
+/// @return true upon succesful completion, false otherwise.
+static bool
+write_array_type_def(const shared_ptr<array_type_def>	decl,
+		     const string&			id,
+		     write_context&			ctxt,
+		     unsigned				indent)
+{
+  if (!decl)
+    return false;
+
+  ostream& o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+  o << "<array-type-def";
+
+  o << " dimensions='" << decl->get_dimension_count() << "'";
+
+  o << " type-id='" << ctxt.get_id_for_type(decl->get_element_type()) << "'";
+
+  write_array_size_and_alignment(decl, o);
+
+  string i = id;
+  if (i.empty())
+    i = ctxt.get_id_for_type(decl);
+  o << " id='" << i << "'";
+
+  write_location(static_pointer_cast<decl_base>(decl), o);
+
+  if (!decl->get_dimension_count())
+    o << "/>";
+  else
+    {
+      o << ">\n";
+
+      vector<array_type_def::subrange_sptr>::const_iterator si;
+
+      for (si = decl->get_subranges().begin();
+           si != decl->get_subranges().end(); ++si)
+        {
+          do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+
+          o << "<subrange length='";
+          if ((*si)->is_infinite())
+          o << "infinite";
+          else
+            {
+              o << (*si)->get_length();
+            }
+          o << "'";
+
+          write_location((*si)->get_location(), *get_translation_unit(decl), o);
+
+          o << "/>\n";
+        }
+
+      do_indent(o, indent);
+      o << "</array-type-def>";
+    }
+
+  return true;
+}
+
+/// Serialize a pointer to an instance of array_type_def.
+///
+/// @param decl the array_type_def to serialize.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the number of indentation white spaces to use.
+///
+/// @return true upon succesful completion, false otherwise.
+static bool
+write_array_type_def(const shared_ptr<array_type_def>	decl,
+		     write_context&			ctxt,
+		     unsigned				indent)
+{return write_array_type_def(decl, "", ctxt, indent);}
 
 /// Serialize a pointer to an instance of enum_type_decl.
 ///
@@ -1786,6 +1903,8 @@ write_member_type(const type_base_sptr t,
 				   id, ctxt, nb_ws)
 	 || write_reference_type_def(dynamic_pointer_cast<reference_type_def>(t),
 				     id, ctxt, nb_ws)
+	 || write_array_type_def(dynamic_pointer_cast<array_type_def>(t),
+			         id, ctxt, nb_ws)
 	 || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(t),
 				 id, ctxt, nb_ws)
 	 || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(t),
@@ -1953,6 +2072,9 @@ write_type_composition
 			  ctxt, nb_spaces)
    || write_reference_type_def
    (dynamic_pointer_cast<reference_type_def>(decl->get_composed_type()),
+    ctxt, nb_spaces)
+   || write_array_type_def
+   (dynamic_pointer_cast<array_type_def>(decl->get_composed_type()),
     ctxt, nb_spaces)
    || write_qualified_type_def
    (dynamic_pointer_cast<qualified_type_def>(decl->get_composed_type()),

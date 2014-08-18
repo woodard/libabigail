@@ -103,6 +103,8 @@ class type_base;
 class type_decl;
 class typedef_decl;
 class var_decl;
+class array_type_def;
+class subrange_type;
 
 struct type_shared_ptr_equal;
 struct traversable_base;
@@ -259,6 +261,9 @@ is_data_member(const var_decl*);
 
 bool
 is_data_member(const shared_ptr<var_decl>);
+
+shared_ptr<array_type_def>
+is_array_def(const shared_ptr<type_base> decl);
 
 void
 set_data_member_offset(shared_ptr<var_decl>, size_t);
