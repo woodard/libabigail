@@ -167,6 +167,11 @@ data/test-diff-dwarf/test8-v0.o			\
 data/test-diff-dwarf/test8-v1.cc		\
 data/test-diff-dwarf/test8-v1.o			\
 data/test-diff-dwarf/test8-report.txt		\
+data/test-diff-dwarf/test9-v0.cc		\
+data/test-diff-dwarf/libtest9-v0.so		\
+data/test-diff-dwarf/test9-v1.cc		\
+data/test-diff-dwarf/libtest9-v1.so		\
+data/test-diff-dwarf/test9-report.txt		\
 \
 data/test-read-dwarf/test0			\
 data/test-read-dwarf/test0.abi			\

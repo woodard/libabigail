@@ -110,15 +110,17 @@ typedef unordered_map<shared_ptr<type_base>,
 typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 
 static bool
-eval_last_constant_dwarf_sub_expr(Dwarf_Op* expr,
-				  size_t expr_len,
-				  ssize_t& value);
+eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
+				  size_t	expr_len,
+				  ssize_t&	value,
+				  bool&	is_tls_address);
 static bool
 die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result);
 
 static bool
-die_location_address(Dwarf_Die* die,
-		     Dwarf_Addr& address);
+die_location_address(Dwarf_Die*	die,
+		     Dwarf_Addr&	address,
+		     bool&		is_tls_address);
 
 /// Convert an elf symbol type (given by the ELF{32,64}_ST_TYPE
 /// macros) into an elf_symbol::type value.
@@ -1269,17 +1271,13 @@ lookup_public_variable_symbol_from_elf(Elf*			elf,
       for (vector<elf_symbol>::const_iterator i = syms_found.begin();
 	   i != syms_found.end();
 	   ++i)
-	{
-	  elf_symbol::type type = i->get_type();
-	  elf_symbol::binding binding = i->get_binding();
-	  if (type == elf_symbol::OBJECT_TYPE
-	      && (binding == elf_symbol::GLOBAL_BINDING
-		  || binding == elf_symbol::WEAK_BINDING))
+	if (i->is_variable()
+	    && (i->get_binding() == elf_symbol::GLOBAL_BINDING
+		|| i->get_binding() == elf_symbol::WEAK_BINDING))
 	    {
 	      var_syms.push_back(*i);
 	      found = true;
 	    }
-	}
     }
 
   return found;
@@ -2164,7 +2162,13 @@ public:
 	    }
 	  }
 	else if (load_var_map
-		 && (GELF_ST_TYPE(sym->st_info) == STT_OBJECT))
+		 && (GELF_ST_TYPE(sym->st_info) == STT_OBJECT
+		     || GELF_ST_TYPE(sym->st_info) == STT_TLS)
+		 // If the symbol is for an OBJECT, the index of the
+		 // section it refers to cannot be absolute.
+		 // Otherwise that OBJECT is not a variable.
+		 && (sym->st_shndx != SHN_ABS
+		     || GELF_ST_TYPE(sym->st_info) != STT_OBJECT ))
 	  {
 	    elf_symbol_sptr symbol(new elf_symbol);
 	    assert(lookup_elf_symbol_from_index(i, *symbol));
@@ -2383,12 +2387,14 @@ public:
   ///
   /// @return true if the variable address was found.
   bool
-  get_variable_address(Dwarf_Die* variable_die,
-		       Dwarf_Addr& address)
+  get_variable_address(Dwarf_Die*	variable_die,
+		       Dwarf_Addr&	address)
   {
-    if (!die_location_address(variable_die, address))
+    bool is_tls_address = false;
+    if (!die_location_address(variable_die, address, is_tls_address))
       return false;
-    address = maybe_adjust_var_sym_address(address);
+    if (!is_tls_address)
+      address = maybe_adjust_var_sym_address(address);
     return true;
   }
 
@@ -3293,12 +3299,34 @@ struct dwarf_expr_eval_context
 {
   expr_result accum;
   deque<expr_result> stack;
+  // Is set to true if the result of the expression that got evaluated
+  // is a TLS address.
+  bool set_tls_addr;
 
   dwarf_expr_eval_context()
-    : accum(/*is_const=*/false)
+    : accum(/*is_const=*/false),
+      set_tls_addr(false)
   {
     stack.push_front(expr_result(true));
   }
+
+  /// Set a flag to to tell that the result of the expression that got
+  /// evaluated is a TLS address.
+  ///
+  /// @param f true iff the result of the expression that got
+  /// evaluated is a TLS address, false otherwise.
+  void
+  set_tls_address(bool f)
+  {set_tls_addr = f;}
+
+  /// Getter for the flag that tells if the result of the expression
+  /// that got evaluated is a TLS address.
+  ///
+  /// @return true iff the result of the expression that got evaluated
+  /// is a TLS address.
+  bool
+  set_tls_address() const
+  {return set_tls_addr;}
 
   expr_result
   pop()
@@ -3696,9 +3724,11 @@ op_manipulates_stack(Dwarf_Op* expr,
       break;
 
     case DW_OP_form_tls_address:
+    case DW_OP_GNU_push_tls_address:
       assert(ctxt.stack.size() > 0);
-      ctxt.stack.pop_front();
-      v.is_const(false);
+      v = ctxt.pop();
+      if (op.atom == DW_OP_form_tls_address)
+	v.is_const(false);
       ctxt.stack.push_front(v);
       break;
 
@@ -3713,6 +3743,13 @@ op_manipulates_stack(Dwarf_Op* expr,
 
   if (v.is_const())
     ctxt.accum = v;
+
+  if (op.atom == DW_OP_form_tls_address
+      || op.atom == DW_OP_GNU_push_tls_address)
+    ctxt.set_tls_address(true);
+  else
+    ctxt.set_tls_address(false);
+
   next_index = index + 1;
 
   return true;
@@ -3957,9 +3994,10 @@ op_is_control_flow(Dwarf_Op* expr,
 /// @return true if the function could find a constant sub-expression
 /// to evaluate, false otherwise.
 static bool
-eval_last_constant_dwarf_sub_expr(Dwarf_Op* expr,
-				  size_t expr_len,
-				  ssize_t& value)
+eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
+				  size_t	expr_len,
+				  ssize_t&	value,
+				  bool&	is_tls_address)
 {
   dwarf_expr_eval_context eval_ctxt;
 
@@ -3984,6 +4022,7 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op* expr,
       index = next_index;
     } while (index < expr_len);
 
+  is_tls_address = eval_ctxt.set_tls_address();
   if (eval_ctxt.accum.is_const())
     {
       value = eval_ctxt.accum;
@@ -4040,7 +4079,9 @@ die_member_offset(Dwarf_Die* die,
   if (!die_location_expr(die, DW_AT_data_member_location, &expr, &expr_len))
     return false;
 
-  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, offset))
+  bool is_tls_address = false;
+  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len,
+					 offset, is_tls_address))
     return false;
 
   return true;
@@ -4058,17 +4099,19 @@ die_member_offset(Dwarf_Die* die,
 /// @return true iff the whole sequence of action described above
 /// could be completed normally.
 static bool
-die_location_address(Dwarf_Die* die,
-		     Dwarf_Addr& address)
+die_location_address(Dwarf_Die*	die,
+		     Dwarf_Addr&	address,
+		     bool&		is_tls_address)
 {
   Dwarf_Op* expr = NULL;
   size_t expr_len = 0;
 
+  is_tls_address = false;
   if (!die_location_expr(die, DW_AT_location, &expr, &expr_len))
     return false;
 
   ssize_t addr = 0;
-  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, addr))
+  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, addr, is_tls_address))
     return false;
 
   address = addr;
@@ -4100,7 +4143,8 @@ die_virtual_function_index(Dwarf_Die* die,
     return false;
 
   ssize_t i = 0;
-  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, i))
+  bool is_tls_addr = false;
+  if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, i, is_tls_addr))
     return false;
 
   vindex = i;

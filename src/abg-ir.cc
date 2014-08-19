@@ -449,7 +449,7 @@ elf_symbol::is_function() const
 
 bool
 elf_symbol::is_variable() const
-{return get_type() == OBJECT_TYPE;}
+{return get_type() == OBJECT_TYPE || get_type() == TLS_TYPE;}
 
 /// @name Elf symbol aliases
 ///
