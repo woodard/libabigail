@@ -5502,6 +5502,9 @@ build_var_decl(read_context&	ctxt,
       assert(type);
     }
 
+  if (!type)
+    return result;
+
   string name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
