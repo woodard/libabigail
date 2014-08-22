@@ -335,7 +335,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
       ctxt->switch_categories_off
 	(abigail::comparison::ACCESS_CHANGE_CATEGORY
 	 | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
-	 | abigail::comparison::DECL_NAME_CHANGE_CATEGORY
+	 | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
 	 | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
 	 | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY);
   if (!opts.show_harmful_changes)

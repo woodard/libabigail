@@ -243,9 +243,10 @@ enum diff_category
   /// instance a type and its typedefs.
   COMPATIBLE_TYPE_CHANGE_CATEGORY = 1 << 2,
 
-  /// This means that a diff node in the sub-tree carries a
-  /// declaration name change.
-  DECL_NAME_CHANGE_CATEGORY = 1 << 3,
+  /// This means that a diff node in the sub-tree carries a harmless
+  /// declaration name change.  This is set only for name changes for
+  /// data members and typedefs.
+  HARMLESS_DECL_NAME_CHANGE_CATEGORY = 1 << 3,
 
   /// This means that a diff node in the sub-tree carries an addition
   /// or removal of a non-virtual member function.
@@ -273,7 +274,7 @@ enum diff_category
   NOT_REDUNDANT_CATEGORY
   | ACCESS_CHANGE_CATEGORY
   | COMPATIBLE_TYPE_CHANGE_CATEGORY
-  | DECL_NAME_CHANGE_CATEGORY
+  | HARMLESS_DECL_NAME_CHANGE_CATEGORY
   | NON_VIRT_MEM_FUN_CHANGE_CATEGORY
   | STATIC_DATA_MEMBER_CHANGE_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY

@@ -6,6 +6,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function return_type foo()' has some indirect sub-type changes:
     return type changed:
       underlying type 'unsigned char' changed:
+        name changed from 'unsigned char' to 'unsigned int'
         size changed from 8 to 32 bits
         alignment changed from 8 to 32 bits
 

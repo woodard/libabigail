@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013 Red Hat, Inc.
+// Copyright (C) 2013-2014 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -254,11 +254,30 @@ decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
   string d1_name, d2_name;
 
   if (d1)
-    d1_name = d1->get_name();
+    d1_name = d1->get_qualified_name();
   if (d2)
-    d2_name = d2->get_name();
+    d2_name = d2->get_qualified_name();
 
   return d1_name != d2_name;
+}
+
+/// Test if two decls represents a harmless name change.
+///
+/// For now, a harmless name change is a name change for a typedef,
+/// enum or data member.
+///
+/// @param f the first decl to consider in the comparison.
+///
+/// @param s the second decl to consider in the comparison.
+///
+/// @return true iff decl @p s represents a harmless change over @p f.
+bool
+has_harmless_name_change(decl_base_sptr f, decl_base_sptr s)
+{
+  return (decl_name_changed(f, s)
+	  && ((is_typedef(f) && is_typedef(s))
+	      || (is_data_member(f) && is_data_member(s))
+	      || (is_enum(f) && is_enum(s))));
 }
 
 /// Test if a class_diff node has non-static members added or
@@ -531,8 +550,8 @@ harmless_filter::visit(diff* d, bool pre)
       if (is_compatible_change(f, s))
 	category |= COMPATIBLE_TYPE_CHANGE_CATEGORY;
 
-      if (decl_name_changed(f, s))
-	category |= DECL_NAME_CHANGE_CATEGORY;
+      if (has_harmless_name_change(f, s))
+	category |= HARMLESS_DECL_NAME_CHANGE_CATEGORY;
 
       if (has_non_virtual_mem_fn_change(d))
 	category |= NON_VIRT_MEM_FUN_CHANGE_CATEGORY;

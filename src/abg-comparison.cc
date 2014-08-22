@@ -1342,15 +1342,21 @@ represent(var_decl_sptr	o,
   string name2 = n->get_qualified_name();
   string pretty_representation = o->get_pretty_representation();
 
-  if (ctxt->get_allowed_category() & DECL_NAME_CHANGE_CATEGORY
-      && name1 !=  name2)
+  if (name1 !=  name2)
     {
-      if (!emitted)
-	out << indent << "'" << pretty_representation << "' ";
+      if (filtering::has_harmless_name_change(o, n)
+	  && !(ctxt->get_allowed_category()
+	       & HARMLESS_DECL_NAME_CHANGE_CATEGORY))
+	;
       else
-	out << ", ";
-      out << "name changed to '" << name2 << "'";
-      emitted = true;
+	{
+	  if (!emitted)
+	    out << indent << "'" << pretty_representation << "' ";
+	  else
+	    out << ", ";
+	  out << "name changed to '" << name2 << "'";
+	  emitted = true;
+	}
     }
 
   if (get_data_member_is_laid_out(o)
@@ -1535,14 +1541,21 @@ report_name_size_and_alignment_changes(decl_base_sptr		first,
   string fn = first->get_qualified_name(),
     sn = second->get_qualified_name();
 
-  if (fn != sn
-      && ctxt->get_allowed_category() & DECL_NAME_CHANGE_CATEGORY)
+  if (fn != sn)
     {
-      if (nl)
-	out << "\n";
-      out << indent << "name changed from '"
-	  << fn << "' to '" << sn << "'";
-      nl = true;
+      if (!(ctxt->get_allowed_category() & HARMLESS_DECL_NAME_CHANGE_CATEGORY)
+	  && filtering::has_harmless_name_change(first, second))
+	// This is a harmless name change.  but then
+	// HARMLESS_DECL_NAME_CHANGE_CATEGORY doesn't seem allowed.
+	;
+      else
+	{
+	  if (nl)
+	    out << "\n";
+	  out << indent << "name changed from '"
+	      << fn << "' to '" << sn << "'";
+	  nl = true;
+	}
     }
 
   nl |= report_size_and_alignment_changes(first, second, ctxt,
@@ -2768,13 +2781,6 @@ enum_diff::report(ostream& out, const string& indent) const
 					     /*start_with_num_line=*/false))
     out << "\n";
   maybe_report_diff_for_member(first, second, context(), out, indent);
-
-  // name
-  if (first->get_name() != second->get_name()
-      && context()->get_allowed_category() & DECL_NAME_CHANGE_CATEGORY)
-    out << indent << "enum name changed from '"
-	<< first->get_qualified_name() << "' to '"
-	<< second->get_qualified_name() << "'\n";
 
   //underlying type
   underlying_type_diff()->report(out, indent);
@@ -5884,8 +5890,8 @@ typedef_diff::report(ostream& out, const string& indent) const
 
   maybe_report_diff_for_member(f, s, context(), out, indent);
 
-  if (f->get_name() != s->get_name()
-      && context()->get_allowed_category() & DECL_NAME_CHANGE_CATEGORY)
+  if (filtering::has_harmless_name_change(f, s)
+      && context()->get_allowed_category() & HARMLESS_DECL_NAME_CHANGE_CATEGORY)
     {
       out << indent << "typedef name changed from "
 	  << f->get_qualified_name()

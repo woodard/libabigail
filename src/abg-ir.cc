@@ -1595,6 +1595,19 @@ bool
 is_data_member(const var_decl_sptr d)
 {return is_at_class_scope(d);}
 
+/// Test if a decl is a data member.
+///
+/// @param d the decl to consider.
+///
+/// @return true iff @p d is a data member.
+bool
+is_data_member(const decl_base_sptr& d)
+{
+  if (var_decl_sptr v = is_var_decl(d))
+    return is_data_member(v);
+  return false;
+}
+
 /// Set the offset of a data member into its containing class.
 ///
 /// @param m the data member to consider.
@@ -2593,6 +2606,24 @@ typedef_decl_sptr
 is_typedef(const decl_base_sptr d)
 {return is_typedef(is_type(d));}
 
+/// Test if a decl is an enum_type_decl
+///
+/// @param d the decl to test for.
+///
+/// @return the enum_type_decl_sptr if @p d is an enum, nil otherwise.
+enum_type_decl_sptr
+is_enum(const decl_base_sptr& d)
+{return dynamic_pointer_cast<enum_type_decl>(d);}
+
+/// Test if a type is an enum_type_decl
+///
+/// @param t the type to test for.
+///
+/// @return the enum_type_decl_sptr if @p t is an enum, nil otherwise.
+enum_type_decl_sptr
+is_enum(const type_base_sptr& t)
+{return dynamic_pointer_cast<enum_type_decl>(t);}
+
 /// Test whether a type is a class.
 ///
 /// This function looks through typedefs.
@@ -2645,10 +2676,11 @@ look_through_decl_only_class(class_decl_sptr klass)
 ///
 /// @param decl the decl to test.
 ///
-/// @return true iff decl is a variable declaration.
-bool
+/// @return the var_decl_sptr iff decl is a variable declaration; nil
+/// otherwise.
+var_decl_sptr
 is_var_decl(const shared_ptr<decl_base> decl)
-{return decl && dynamic_pointer_cast<var_decl>(decl);}
+{return dynamic_pointer_cast<var_decl>(decl);}
 
 /// Tests whether a decl is a template parameter composition type.
 ///

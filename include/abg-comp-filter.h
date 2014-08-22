@@ -39,6 +39,9 @@ namespace comparison
 namespace filtering
 {
 
+bool
+has_harmless_name_change(decl_base_sptr f, decl_base_sptr s);
+
 class filter_base;
 /// Convenience typedef for a shared pointer to filter_base
 typedef shared_ptr<filter_base> filter_base_sptr;

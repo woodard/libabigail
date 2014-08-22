@@ -175,6 +175,9 @@ is_typedef(const shared_ptr<type_base>);
 shared_ptr<typedef_decl>
 is_typedef(const shared_ptr<decl_base>);
 
+shared_ptr<enum_type_decl>
+is_enum(const shared_ptr<decl_base>&);
+
 shared_ptr<class_decl>
 is_class_type(const shared_ptr<type_base>);
 
@@ -184,7 +187,8 @@ is_class_type(const shared_ptr<decl_base>);
 shared_ptr<class_decl>
 look_through_decl_only_class(shared_ptr<class_decl>);
 
-bool
+
+shared_ptr<var_decl>
 is_var_decl(const shared_ptr<decl_base>);
 
 bool
@@ -246,12 +250,10 @@ bool
 get_member_is_static(const shared_ptr<decl_base>);
 
 void
-set_member_is_static(decl_base&,
-		     bool);
+set_member_is_static(decl_base&, bool);
 
 void
-set_member_is_static(shared_ptr<decl_base>,
-		     bool);
+set_member_is_static(shared_ptr<decl_base>, bool);
 
 bool
 is_data_member(const var_decl&);
@@ -261,6 +263,9 @@ is_data_member(const var_decl*);
 
 bool
 is_data_member(const shared_ptr<var_decl>);
+
+bool
+is_data_member(const shared_ptr<decl_base>&);
 
 shared_ptr<array_type_def>
 is_array_def(const shared_ptr<type_base> decl);

@@ -13,6 +13,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member change:
          'int S::m0' offset changed from 32 to 64
          and its type 'int' changed:
+           name changed from 'int' to 'char'
            size changed from 32 to 8 bits
            alignment changed from 32 to 8 bits
 
