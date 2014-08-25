@@ -6258,7 +6258,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_function_ptr_map::const_iterator i = deleted_fns_.begin();
 	 i != deleted_fns_.end();
 	 ++i)
-      if (second_->lookup_function_symbol(i->first))
+      if (second_->lookup_function_symbol(i->first,
+					  i->second->get_symbol()->get_version().str()))
 	to_delete.push_back(i->first);
 
     for (vector<string>::const_iterator i = to_delete.begin();
@@ -6272,7 +6273,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_function_ptr_map::const_iterator i = added_fns_.begin();
 	 i != added_fns_.end();
 	 ++i)
-      if (first_->lookup_function_symbol(i->first))
+      if (first_->lookup_function_symbol(i->first,
+					 i->second->get_symbol()->get_version().str()))
 	to_delete.push_back(i->first);
 
     for (vector<string>::const_iterator i = to_delete.begin();
@@ -6345,7 +6347,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_var_ptr_map::const_iterator i = deleted_vars_.begin();
 	 i != deleted_vars_.end();
 	 ++i)
-      if (second_->lookup_variable_symbol(i->first))
+      if (second_->lookup_variable_symbol(i->first,
+					  i->second->get_symbol()->get_version().str()))
 	to_delete.push_back(i->first);
 
     for (vector<string>::const_iterator i = to_delete.begin();
@@ -6359,7 +6362,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_var_ptr_map::const_iterator i = added_vars_.begin();
 	 i != added_vars_.end();
 	 ++i)
-      if (first_->lookup_variable_symbol(i->first))
+      if (first_->lookup_variable_symbol(i->first,
+					 i->second->get_symbol()->get_version().str()))
 	to_delete.push_back(i->first);
 
     for (vector<string>::const_iterator i = to_delete.begin();

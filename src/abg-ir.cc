@@ -864,7 +864,7 @@ elf_symbol::version::is_empty() const
 /// @return true iff the current version equals @p o.
 bool
 elf_symbol::version::operator==(const elf_symbol::version& o) const
-{return is_default() == o.is_default() && str() == o.str();}
+{return str() == o.str();}
 
 /// Assign a version to the current one.
 ///

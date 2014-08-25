@@ -188,6 +188,78 @@ public:
   fns_map()
   {return functions_map;}
 
+  /// Build a string that uniquely identifies a function_decl inside
+  /// one corpus.
+  ///
+  /// That ID is either the name of the symbol of the function,
+  /// concatenated with its version name, if the symbol exists.
+  /// Otherwise, it's the linkage name of the function, if it exists.
+  /// Otherwise it's the pretty representation ofthe function.
+  ///
+  /// @param fn the function to build the id for.
+  ///
+  /// @return the unique ID.
+  string
+  build_id(const function_decl& fn)
+  {
+    if (elf_symbol_sptr s = fn.get_symbol())
+      return s->get_id_string();
+    else if (!fn.get_linkage_name().empty())
+      return fn.get_linkage_name();
+    return fn.get_pretty_representation();
+  }
+
+  /// Build a string that uniquely identifies a var_decl inside
+  /// one corpus.
+  ///
+  /// That ID is either the name of the symbol of the variable,
+  /// concatenated with its version name, if the symbol exists.
+  /// Otherwise, it's the linkage name of the varible, if it exists.
+  /// Otherwise it's the pretty representation ofthe variable.
+  ///
+  /// @param var the function to build the id for.
+  ///
+  /// @return the unique ID.
+  string
+  build_id(const var_decl& var)
+  {
+    if (elf_symbol_sptr s = var.get_symbol())
+      return s->get_id_string();
+    else if (!var.get_linkage_name().empty())
+      return var.get_linkage_name();
+    return var.get_pretty_representation();
+  }
+
+  /// Build a string that uniquely identifies a function_decl inside
+  /// one corpus.
+  ///
+  /// That ID is either the name of the symbol of the function,
+  /// concatenated with its version name, if the symbol exists.
+  /// Otherwise, it's the linkage name of the function, if it exists.
+  /// Otherwise it's the pretty representation ofthe function.
+  ///
+  /// @param fn the function to build the id for.
+  ///
+  /// @return the unique ID.
+  string
+  build_id(const function_decl* fn)
+  {return build_id(*fn);}
+
+  /// Build a string that uniquely identifies a var_decl inside
+  /// one corpus.
+  ///
+  /// That ID is either the name of the symbol of the variable,
+  /// concatenated with its version name, if the symbol exists.
+  /// Otherwise, it's the linkage name of the varible, if it exists.
+  /// Otherwise it's the pretty representation ofthe variable.
+  ///
+  /// @param var the function to build the id for.
+  ///
+  /// @return the unique ID.
+  string
+  build_id(const var_decl* fn)
+  {return build_id(*fn);}
+
   /// Test if a given function name is in the map of strings and
   /// function pointer.
   ///
@@ -564,9 +636,7 @@ corpus::priv::build_public_decl_table()
        i != v.wip_fns.end();
        ++i)
     {
-      string n = (*i)->get_linkage_name();
-      if (n.empty())
-	n = (*i)->get_pretty_representation();
+      string n = v.build_id(*i);
       assert(!n.empty());
 
       if (origin_ == DWARF_ORIGIN
@@ -588,9 +658,7 @@ corpus::priv::build_public_decl_table()
        i != v.wip_vars.end();
        ++i)
     {
-      string n = (*i)->get_linkage_name();
-      if (n.empty())
-	n = (*i)->get_pretty_representation();
+      string n = v.build_id(*i);
       assert(!n.empty());
 
       if (origin_ == DWARF_ORIGIN
@@ -771,6 +839,35 @@ corpus::lookup_function_symbol(const string& n) const
   return it->second[0];
 }
 
+/// Look in the function symbols map for a symbol with a given name.
+///
+/// @param symbol_name the name of the symbol to look for.
+///
+/// @param symbol_version the version of the symbol to look for.
+///
+/// return the symbol with the name @p symbol_name and with the name
+/// @p symbol_version, or nil if no symbol has been found with that
+/// name and version.
+const elf_symbol_sptr
+corpus::lookup_function_symbol(const string& symbol_name,
+			       const string& symbol_version) const
+{
+  if (!get_fun_symbol_map_sptr())
+    return elf_symbol_sptr();
+
+  string_elf_symbols_map_type::const_iterator it =
+    get_fun_symbol_map_sptr()->find(symbol_name);
+  if ( it == get_fun_symbol_map_sptr()->end())
+    return elf_symbol_sptr();
+
+  for (elf_symbols::const_iterator s = it->second.begin();
+       s != it->second.end();
+       ++s)
+    if ((*s)->get_version().str() == symbol_version)
+      return *s;
+  return elf_symbol_sptr();
+}
+
 /// Look in the variable symbols map for a symbol with a given name.
 ///
 /// @param n the name of the symbol to look for.
@@ -787,6 +884,33 @@ corpus::lookup_variable_symbol(const string& n) const
   if ( it == get_var_symbol_map_sptr()->end())
     return elf_symbol_sptr();
   return it->second[0];
+}
+
+/// Look in the variable symbols map for a symbol with a given name.
+///
+/// @param symbol_name the name of the symbol to look for.
+///
+/// @param symbol_version the version of the symbol to look for.
+///
+/// return the first symbol with the name @p n.
+const elf_symbol_sptr
+corpus::lookup_variable_symbol(const string& symbol_name,
+			       const string& symbol_version) const
+{
+    if (!get_var_symbol_map_sptr())
+    return elf_symbol_sptr();
+
+  string_elf_symbols_map_type::const_iterator it =
+    get_var_symbol_map_sptr()->find(symbol_name);
+  if ( it == get_var_symbol_map_sptr()->end())
+    return elf_symbol_sptr();
+
+  for (elf_symbols::const_iterator s = it->second.begin();
+       s != it->second.end();
+       ++s)
+    if ((*s)->get_version().str() == symbol_version)
+      return *s;
+  return elf_symbol_sptr();
 }
 
 /// Build and return the functions public decl table of the current corpus.
