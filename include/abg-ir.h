@@ -374,7 +374,7 @@ public:
   version();
 
   version(const string& v,
-	       bool is_default);
+	  bool is_default);
 
   version(const version& v);
 

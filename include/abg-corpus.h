@@ -111,10 +111,10 @@ public:
   get_var_symbol_map() const;
 
   const elf_symbol_sptr
-  lookup_function_symbol(const string&) const;
+  lookup_function_symbol(const string& n) const;
 
   const elf_symbol_sptr
-  lookup_variable_symbol(const string&) const;
+  lookup_variable_symbol(const string& n) const;
 
   const functions&
   get_functions() const;

@@ -4939,7 +4939,7 @@ function_decl::operator==(const decl_base& other) const
 
       if (s0)
 	{
-	  // The functions have underlying elf symbols at are equal,
+	  // The functions have underlying elf symbols that are equal,
 	  // so now, let's compare the decl_base part of the functions
 	  // w/o considering their decl names.
 	  string n1 = get_name(), n2 = other.get_name();

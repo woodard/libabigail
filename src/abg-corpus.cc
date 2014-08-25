@@ -158,12 +158,12 @@ class symtab_build_visitor_type : public ir_node_visitor
   friend class corpus::priv;
 
 public:
-  symtab_build_visitor_type(vector<function_decl*>& fns,
-			    vector<var_decl*>& vars,
-			    vector<string>& fns_suppress_regexps,
-			    vector<string>& vars_suppress_regexps,
-			    vector<string>& fns_keep_regexps,
-			    vector<string>& vars_keep_regexps)
+  symtab_build_visitor_type(vector<function_decl*>&	fns,
+			    vector<var_decl*>&		vars,
+			    vector<string>&		fns_suppress_regexps,
+			    vector<string>&		vars_suppress_regexps,
+			    vector<string>&		fns_keep_regexps,
+			    vector<string>&		vars_keep_regexps)
     : functions(fns),
       variables(vars),
       regex_patterns_fns_to_suppress(fns_suppress_regexps),
