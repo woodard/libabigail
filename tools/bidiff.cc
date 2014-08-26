@@ -114,7 +114,6 @@ display_usage(const string prog_name, ostream& out)
       << " --keep <regex>  keep only functions and variables matching a regex\n"
       << " --keep-fn <regex>  keep only functions matching a regex\n"
       << " --keep-var <regex>  keep only variables matching a regex\n"
-      << " --no-harmless  do not display the harmless changes\n"
       << " --redundant  display redundant changes\n"
       << " --help  display this message\n";
 }
