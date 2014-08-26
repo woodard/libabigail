@@ -6200,9 +6200,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	assert(i < first_->get_functions().size());
 
 	function_decl* deleted_fn = first_->get_functions()[i];
-	string n = deleted_fn->get_linkage_name();
-	if (n.empty())
-	  n = deleted_fn->get_pretty_representation();
+	string n = deleted_fn->get_id();
 	assert(!n.empty());
 	assert(deleted_fns_.find(n) == deleted_fns_.end());
 	deleted_fns_[n] = deleted_fn;
@@ -6219,25 +6217,11 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	  {
 	    unsigned i = *iit;
 	    function_decl* added_fn = second_->get_functions()[i];
-	    string n = added_fn->get_linkage_name();
-	    if (n.empty())
-	      n = added_fn->get_pretty_representation();
+	    string n = added_fn->get_id();
 	    assert(!n.empty());
 	    assert(added_fns_.find(n) == added_fns_.end());
 	    string_function_ptr_map::const_iterator j =
 	      deleted_fns_.find(n);
-	    if (j == deleted_fns_.end())
-	      {
-		// It can happen that an old dwarf producer might not
-		// have emitted the mangled name of the first diff
-		// subject.  Int hat case, we need to try to use the
-		// function synthetic signature here.
-		// TODO: also query the underlying elf file's .dynsym
-		// symbol table to see if the symbol is present in the
-		// first diff subject before for real.
-		if (!added_fn->get_linkage_name().empty())
-		  j = deleted_fns_.find(added_fn->get_pretty_representation());
-	      }
 	    if (j != deleted_fns_.end())
 	      {
 		if (*j->second != *added_fn)
@@ -6294,9 +6278,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	assert(i < first_->get_variables().size());
 
 	var_decl* deleted_var = first_->get_variables()[i];
-	string n = deleted_var->get_linkage_name();
-	if (n.empty())
-	  n = deleted_var->get_pretty_representation();
+	string n = deleted_var->get_id();
 	assert(!n.empty());
 	assert(deleted_vars_.find(n) == deleted_vars_.end());
 	deleted_vars_[n] = deleted_var;
@@ -6313,9 +6295,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	  {
 	    unsigned i = *iit;
 	    var_decl* added_var = second_->get_variables()[i];
-	    string n = added_var->get_linkage_name();
-	    if (n.empty())
-	      n = added_var->get_name();
+	    string n = added_var->get_id();
 	    assert(!n.empty());
 	    {
 	      string_var_ptr_map::const_iterator k = added_vars_.find(n);

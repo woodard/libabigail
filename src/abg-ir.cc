@@ -4272,6 +4272,25 @@ var_decl::operator==(const decl_base& o) const
   return *c0 == *c1;
 }
 
+/// Return an ID that tries to uniquely identify the variable inside a
+/// program or a library.
+///
+/// So if the variable has an underlying elf symbol, the ID is the
+/// concatenation of the symbol name and its version.  Otherwise, the
+/// ID is the linkage name if its non-null.  Otherwise, it's the
+/// pretty representation of the variable.
+///
+/// @return the ID.
+string
+var_decl::get_id() const
+{
+  if (elf_symbol_sptr s = get_symbol())
+    return s->get_id_string();
+  else if (!get_linkage_name().empty())
+    return get_linkage_name();
+  return get_pretty_representation();
+}
+
 /// Return the hash value for the current instance.
 ///
 /// @return the hash value.
@@ -5012,6 +5031,25 @@ function_decl::get_hash() const
 {
   function_decl::hash hash_fn;
   return hash_fn(*this);
+}
+
+/// Return an ID that tries to uniquely identify the function inside a
+/// program or a library.
+///
+/// So if the function has an underlying elf symbol, the ID is the
+/// concatenation of the symbol name and its version.  Otherwise, the
+/// ID is the linkage name if its non-null.  Otherwise, it's the
+/// pretty representation of the function.
+///
+/// @return the ID.
+string
+function_decl::get_id() const
+{
+  if (elf_symbol_sptr s = get_symbol())
+    return s->get_id_string();
+  else if (!get_linkage_name().empty())
+    return get_linkage_name();
+  return get_pretty_representation();
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual

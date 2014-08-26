@@ -1493,6 +1493,9 @@ public:
   var_decl_sptr
   clone() const;
 
+  string
+  get_id() const;
+
   virtual size_t
   get_hash() const;
 
@@ -1769,6 +1772,9 @@ public:
 
   virtual size_t
   get_hash() const;
+
+  string
+  get_id() const;
 
   virtual bool
   traverse(ir_node_visitor&);

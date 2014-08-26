@@ -201,13 +201,7 @@ public:
   /// @return the unique ID.
   string
   build_id(const function_decl& fn)
-  {
-    if (elf_symbol_sptr s = fn.get_symbol())
-      return s->get_id_string();
-    else if (!fn.get_linkage_name().empty())
-      return fn.get_linkage_name();
-    return fn.get_pretty_representation();
-  }
+  {return fn.get_id();}
 
   /// Build a string that uniquely identifies a var_decl inside
   /// one corpus.
@@ -222,13 +216,7 @@ public:
   /// @return the unique ID.
   string
   build_id(const var_decl& var)
-  {
-    if (elf_symbol_sptr s = var.get_symbol())
-      return s->get_id_string();
-    else if (!var.get_linkage_name().empty())
-      return var.get_linkage_name();
-    return var.get_pretty_representation();
-  }
+  {return var.get_id();}
 
   /// Build a string that uniquely identifies a function_decl inside
   /// one corpus.
