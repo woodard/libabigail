@@ -1501,7 +1501,7 @@ public:
   /// @return the die -> decl map of the alternate debug info file.
   const die_decl_map_type&
   alternate_die_decl_map() const
-  {return die_decl_map_;}
+  {return alternate_die_decl_map_;}
 
   /// Return the map that associates a decl to the DIE that represents
   /// it.  This if for DIEs that come from the alternate debug info file.
@@ -1513,7 +1513,7 @@ public:
   /// @return the die -> decl map of the alternate debug info file.
   die_decl_map_type&
   alternate_die_decl_map()
-  {return die_decl_map_;}
+  {return alternate_die_decl_map_;}
 
 private:
   /// Add an entry to the die->decl map for DIEs coming from the main
