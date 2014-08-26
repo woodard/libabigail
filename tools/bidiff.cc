@@ -113,7 +113,9 @@ display_usage(const string prog_name, ostream& out)
       << " --drop-var <regex> drop variables matching a regexp\n"
       << " --keep <regex>  keep only functions and variables matching a regex\n"
       << " --keep-fn <regex>  keep only functions matching a regex\n"
-      << " --keep-var <regex>  keep only variables matching a regex\n"
+      << " --keep-var  <regex>  keep only variables matching a regex\n"
+      << " --harmless  display the harmless changes\n"
+      << " --no-harmful  do not display the harmful changes\n"
       << " --redundant  display redundant changes\n"
       << " --help  display this message\n";
 }
@@ -386,7 +388,7 @@ main(int argc, char* argv[])
   options opts;
   if (!parse_command_line(argc, argv, opts))
     {
-      display_usage(argv[0], cerr);
+      display_usage(argv[0], cout);
       return true;
     }
 
