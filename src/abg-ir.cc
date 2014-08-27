@@ -621,7 +621,7 @@ elf_symbol::operator==(const elf_symbol& other)
 {
   return (get_name() == other.get_name()
 	  && get_type() == other.get_type()
-	  && get_binding() == other.get_binding()
+	  && is_public() == other.is_public()
 	  && get_is_defined() == other.get_is_defined()
 	  && get_version() == other.get_version());
 }
