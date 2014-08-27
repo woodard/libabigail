@@ -3302,8 +3302,12 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     deleted_member_fns().begin();
 	   i != deleted_member_fns().end();
 	   ++i)
-	if (s->lookup_function_symbol(i->first))
+	// We assume that all the functions we look at here have ELF
+	// symbols.
+	if (s->lookup_function_symbol(i->second->get_symbol()->get_name(),
+				      i->second->get_symbol()->get_version().str()))
 	  to_delete.push_back(i->first);
+
 
     for (vector<string>::const_iterator i = to_delete.begin();
 	 i != to_delete.end();
@@ -3317,7 +3321,8 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     inserted_member_fns().begin();
 	   i != inserted_member_fns().end();
 	   ++i)
-	if (f->lookup_function_symbol(i->first))
+	if (f->lookup_function_symbol(i->second->get_symbol()->get_name(),
+				      i->second->get_symbol()->get_version().str()))
 	  to_delete.push_back(i->first);
 
     for (vector<string>::const_iterator i = to_delete.begin();
@@ -6242,7 +6247,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_function_ptr_map::const_iterator i = deleted_fns_.begin();
 	 i != deleted_fns_.end();
 	 ++i)
-      if (second_->lookup_function_symbol(i->first,
+      if (second_->lookup_function_symbol(i->second->get_symbol()->get_name(),
 					  i->second->get_symbol()->get_version().str()))
 	to_delete.push_back(i->first);
 
@@ -6257,7 +6262,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_function_ptr_map::const_iterator i = added_fns_.begin();
 	 i != added_fns_.end();
 	 ++i)
-      if (first_->lookup_function_symbol(i->first,
+      if (first_->lookup_function_symbol(i->second->get_symbol()->get_name(),
 					 i->second->get_symbol()->get_version().str()))
 	to_delete.push_back(i->first);
 
@@ -6327,7 +6332,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_var_ptr_map::const_iterator i = deleted_vars_.begin();
 	 i != deleted_vars_.end();
 	 ++i)
-      if (second_->lookup_variable_symbol(i->first,
+      if (second_->lookup_variable_symbol(i->second->get_symbol()->get_name(),
 					  i->second->get_symbol()->get_version().str()))
 	to_delete.push_back(i->first);
 
@@ -6342,7 +6347,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_var_ptr_map::const_iterator i = added_vars_.begin();
 	 i != added_vars_.end();
 	 ++i)
-      if (first_->lookup_variable_symbol(i->first,
+      if (first_->lookup_variable_symbol(i->second->get_symbol()->get_name(),
 					 i->second->get_symbol()->get_version().str()))
 	to_delete.push_back(i->first);
 
