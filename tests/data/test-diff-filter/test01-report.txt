@@ -1,6 +1,9 @@
 Functions changes summary: 0 Removed, 3 Changed, 1 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
+1 Added function:
+  'method int S0::get_member0()'
+
 3 functions with some indirect sub-type change:
 
   [C]'method void S1::member0()' has some indirect sub-type changes:
@@ -12,11 +15,11 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 base class change:
           'class B0S0' changed:
             size changed from 64 to 96 bits
-            1 data member change:
-             'char B0S0::m1' offset changed from 32 to 64
-
             1 data member insertion:
               'unsigned int B0S0::m2', at offset 32 (in bits)
+
+            1 data member change:
+             'char B0S0::m1' offset changed from 32 to 64
 
 
         1 data member change:
@@ -24,8 +27,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   [C]'method void S0::member0()' has some indirect sub-type changes:
     'method void S0::member0()' access changed from 'private' to 'public'
-
-1 Added function:
-  'method int S0::get_member0()'
 
 

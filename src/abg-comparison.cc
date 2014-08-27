@@ -3928,187 +3928,6 @@ class_diff::report(ostream& out, const string& indent) const
 	}
     }
 
-  // member types
-  if (const edit_script& e = member_types_changes())
-    {
-      int numchanges = priv_->changed_member_types_.size();
-      int numdels = priv_->deleted_member_types_.size();
-
-      // report deletions
-      if (numdels)
-	{
-	  report_mem_header(out, numdels, 0, del_kind,
-			    "member type", indent);
-
-	  for (string_decl_base_sptr_map::const_iterator i =
-		 priv_->deleted_member_types_.begin();
-	       i != priv_->deleted_member_types_.end();
-	       ++i)
-	    {
-	      if (i != priv_->deleted_member_types_.begin())
-		out << "\n";
-	      decl_base_sptr mem_type = i->second;
-	      out << indent << "  '"
-		  << mem_type->get_pretty_representation()
-		  << "'";
-	    }
-	  out << "\n\n";
-	}
-      // report changes
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, 0, change_kind,
-			    "member type", indent);
-
-	  for (string_changed_type_or_decl_map::const_iterator it =
-		 priv_->changed_member_types_.begin();
-	       it != priv_->changed_member_types_.end();
-	       ++it)
-	    {
-	      decl_base_sptr o = it->second.first;
-	      decl_base_sptr n = it->second.second;
-	      out << indent << "  '"
-		  << o->get_pretty_representation()
-		  << "' changed:\n";
-	      diff_sptr dif = compute_diff_for_types(o, n, context());
-	      dif->report(out, indent + "    ");
-	    }
-	  out << "\n";
-	}
-
-      // report insertions
-      int numins = e.num_insertions();
-      assert(numchanges <= numins);
-      numins -= numchanges;
-
-      if (numins)
-	{
-	  report_mem_header(out, numins, 0, ins_kind,
-			    "member type", indent);
-
-	  bool emitted = false;
-	  for (vector<insertion>::const_iterator i = e.insertions().begin();
-	       i != e.insertions().end();
-	       ++i)
-	    {
-	      type_base_sptr mem_type;
-	      for (vector<unsigned>::const_iterator j =
-		     i->inserted_indexes().begin();
-		   j != i->inserted_indexes().end();
-		   ++j)
-		{
-		  if (emitted)
-		    out << "\n";
-		  mem_type = second->get_member_types()[*j];
-		  if (!priv_->
-		      member_type_has_changed(get_type_declaration(mem_type)))
-		    {
-		      out << indent << "  '"
-			  << get_type_declaration(mem_type)->
-			get_pretty_representation()
-			  << "'";
-		      emitted = true;
-		    }
-		}
-	    }
-	  out << "\n\n";
-	}
-    }
-
-  // data members
-  if (data_members_changes())
-    {
-      // report deletions
-      int numdels = priv_->deleted_data_members_.size();
-      if (numdels)
-	{
-	  report_mem_header(out, numdels, 0, del_kind,
-			    "data member", indent);
-	  bool emitted = false;
-	  for (string_decl_base_sptr_map::const_iterator i =
-		 priv_->deleted_data_members_.begin();
-	       i != priv_->deleted_data_members_.end();
-	       ++i)
-	    {
-	      var_decl_sptr data_mem =
-		dynamic_pointer_cast<var_decl>(i->second);
-	      assert(data_mem);
-	      out << indent << "  ";
-	      represent_data_member(data_mem, out);
-	      emitted = true;
-	    }
-	  if (emitted)
-	    out << "\n";
-	}
-
-      // report change
-      size_t numchanges = priv_->subtype_changed_dm_.size();
-      size_t num_filtered = priv_->count_filtered_subtype_changed_dm(context());
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, num_filtered,
-			    subtype_change_kind, "data member", indent);
-
-	  for (string_changed_type_or_decl_map::const_iterator it =
-		 priv_->subtype_changed_dm_.begin();
-	       it != priv_->subtype_changed_dm_.end();
-	       ++it)
-	    {
-	      var_decl_sptr o =
-		dynamic_pointer_cast<var_decl>(it->second.first);
-	      var_decl_sptr n =
-		dynamic_pointer_cast<var_decl>(it->second.second);
-	      represent(o, n, context(), out, indent + " ");
-	    }
-	  out << "\n";
-	}
-
-      numchanges = priv_->changed_dm_.size();
-      num_filtered = priv_->count_filtered_changed_dm(context());
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, num_filtered,
-			    change_kind, "data member", indent);
-	  for (unsigned_changed_type_or_decl_map::const_iterator it =
-		 priv_->changed_dm_.begin();
-	       it != priv_->changed_dm_.end();
-	       ++it)
-	    {
-	      var_decl_sptr o =
-		dynamic_pointer_cast<var_decl>(it->second.first);
-	      var_decl_sptr n =
-		dynamic_pointer_cast<var_decl>(it->second.second);
-	      represent(o, n, context(), out, indent + " ");
-	    }
-	  out << "\n";
-	}
-
-      //report insertions
-      int numins = priv_->inserted_data_members_.size();
-      if (numins)
-	{
-	  report_mem_header(out, numins, 0, ins_kind,
-			    "data member", indent);
-	  bool emitted = false;
-	  for (string_decl_base_sptr_map::const_iterator i =
-		 priv_->inserted_data_members_.begin();
-	       i != priv_->inserted_data_members_.end();
-	       ++i)
-	    {
-	      var_decl_sptr data_mem =
-		dynamic_pointer_cast<var_decl>(i->second);
-	      assert(data_mem);
-	      if (emitted)
-		out << "\n";
-	      out << indent << "  ";
-	      represent_data_member(data_mem, out);
-	      emitted = true;
-	    }
-	  if (emitted)
-	    out << "\n";
-	}
-    }
-
   // member functions
   if (member_fns_changes())
     {
@@ -4197,6 +4016,187 @@ class_diff::report(ostream& out, const string& indent) const
 	}
       if (numchanges)
 	out << "\n";
+    }
+
+  // data members
+  if (data_members_changes())
+    {
+      // report deletions
+      int numdels = priv_->deleted_data_members_.size();
+      if (numdels)
+	{
+	  report_mem_header(out, numdels, 0, del_kind,
+			    "data member", indent);
+	  bool emitted = false;
+	  for (string_decl_base_sptr_map::const_iterator i =
+		 priv_->deleted_data_members_.begin();
+	       i != priv_->deleted_data_members_.end();
+	       ++i)
+	    {
+	      var_decl_sptr data_mem =
+		dynamic_pointer_cast<var_decl>(i->second);
+	      assert(data_mem);
+	      out << indent << "  ";
+	      represent_data_member(data_mem, out);
+	      emitted = true;
+	    }
+	  if (emitted)
+	    out << "\n";
+	}
+
+      //report insertions
+      int numins = priv_->inserted_data_members_.size();
+      if (numins)
+	{
+	  report_mem_header(out, numins, 0, ins_kind,
+			    "data member", indent);
+	  bool emitted = false;
+	  for (string_decl_base_sptr_map::const_iterator i =
+		 priv_->inserted_data_members_.begin();
+	       i != priv_->inserted_data_members_.end();
+	       ++i)
+	    {
+	      var_decl_sptr data_mem =
+		dynamic_pointer_cast<var_decl>(i->second);
+	      assert(data_mem);
+	      if (emitted)
+		out << "\n";
+	      out << indent << "  ";
+	      represent_data_member(data_mem, out);
+	      emitted = true;
+	    }
+	  if (emitted)
+	    out << "\n";
+	}
+
+      // report change
+      size_t numchanges = priv_->subtype_changed_dm_.size();
+      size_t num_filtered = priv_->count_filtered_subtype_changed_dm(context());
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, num_filtered,
+			    subtype_change_kind, "data member", indent);
+
+	  for (string_changed_type_or_decl_map::const_iterator it =
+		 priv_->subtype_changed_dm_.begin();
+	       it != priv_->subtype_changed_dm_.end();
+	       ++it)
+	    {
+	      var_decl_sptr o =
+		dynamic_pointer_cast<var_decl>(it->second.first);
+	      var_decl_sptr n =
+		dynamic_pointer_cast<var_decl>(it->second.second);
+	      represent(o, n, context(), out, indent + " ");
+	    }
+	  out << "\n";
+	}
+
+      numchanges = priv_->changed_dm_.size();
+      num_filtered = priv_->count_filtered_changed_dm(context());
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, num_filtered,
+			    change_kind, "data member", indent);
+	  for (unsigned_changed_type_or_decl_map::const_iterator it =
+		 priv_->changed_dm_.begin();
+	       it != priv_->changed_dm_.end();
+	       ++it)
+	    {
+	      var_decl_sptr o =
+		dynamic_pointer_cast<var_decl>(it->second.first);
+	      var_decl_sptr n =
+		dynamic_pointer_cast<var_decl>(it->second.second);
+	      represent(o, n, context(), out, indent + " ");
+	    }
+	  out << "\n";
+	}
+    }
+
+  // member types
+  if (const edit_script& e = member_types_changes())
+    {
+      int numchanges = priv_->changed_member_types_.size();
+      int numdels = priv_->deleted_member_types_.size();
+
+      // report deletions
+      if (numdels)
+	{
+	  report_mem_header(out, numdels, 0, del_kind,
+			    "member type", indent);
+
+	  for (string_decl_base_sptr_map::const_iterator i =
+		 priv_->deleted_member_types_.begin();
+	       i != priv_->deleted_member_types_.end();
+	       ++i)
+	    {
+	      if (i != priv_->deleted_member_types_.begin())
+		out << "\n";
+	      decl_base_sptr mem_type = i->second;
+	      out << indent << "  '"
+		  << mem_type->get_pretty_representation()
+		  << "'";
+	    }
+	  out << "\n\n";
+	}
+      // report changes
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, 0, change_kind,
+			    "member type", indent);
+
+	  for (string_changed_type_or_decl_map::const_iterator it =
+		 priv_->changed_member_types_.begin();
+	       it != priv_->changed_member_types_.end();
+	       ++it)
+	    {
+	      decl_base_sptr o = it->second.first;
+	      decl_base_sptr n = it->second.second;
+	      out << indent << "  '"
+		  << o->get_pretty_representation()
+		  << "' changed:\n";
+	      diff_sptr dif = compute_diff_for_types(o, n, context());
+	      dif->report(out, indent + "    ");
+	    }
+	  out << "\n";
+	}
+
+      // report insertions
+      int numins = e.num_insertions();
+      assert(numchanges <= numins);
+      numins -= numchanges;
+
+      if (numins)
+	{
+	  report_mem_header(out, numins, 0, ins_kind,
+			    "member type", indent);
+
+	  bool emitted = false;
+	  for (vector<insertion>::const_iterator i = e.insertions().begin();
+	       i != e.insertions().end();
+	       ++i)
+	    {
+	      type_base_sptr mem_type;
+	      for (vector<unsigned>::const_iterator j =
+		     i->inserted_indexes().begin();
+		   j != i->inserted_indexes().end();
+		   ++j)
+		{
+		  if (emitted)
+		    out << "\n";
+		  mem_type = second->get_member_types()[*j];
+		  if (!priv_->
+		      member_type_has_changed(get_type_declaration(mem_type)))
+		    {
+		      out << indent << "  '"
+			  << get_type_declaration(mem_type)->
+			get_pretty_representation()
+			  << "'";
+		      emitted = true;
+		    }
+		}
+	    }
+	  out << "\n\n";
+	}
     }
 
   // member function templates
@@ -6609,7 +6609,7 @@ corpus_diff::report(ostream& out, const string& indent) const
   size_t total = 0, removed = 0, added = 0;
   priv::diff_stats s;
 
-  /// Report added/removed/changed functions.
+  /// Report removed/added/changed functions.
   priv_->apply_filters_and_compute_diff_stats(s);
   total = s.num_func_removed + s.num_func_added +
     s.num_func_changed - s.num_func_filtered_out;
@@ -6646,6 +6646,35 @@ corpus_diff::report(ostream& out, const string& indent) const
 	out << "\n";
     }
 
+  if (context()->show_added_fns())
+    {
+      if (s.num_func_added == 1)
+	out << indent << "1 Added function:\n";
+      else if (s.num_func_added > 1)
+	out << indent << s.num_func_added
+	    << " Added functions:\n\n";
+      for (string_function_ptr_map::const_iterator i =
+	     priv_->added_fns_.begin();
+	   i != priv_->added_fns_.end();
+	   ++i)
+	{
+	  out
+	    << indent
+	    << "  ";
+	  if (total > large_num)
+	    out << "[A] ";
+	  out << "'"
+	      << i->second->get_pretty_representation()
+	      << "'";
+	  if (context()->show_linkage_names())
+	    out << "    {" << i->second->get_symbol()->get_id_string() << "}";
+	  out << "\n";
+	  ++added;
+	}
+      if (added)
+	out << "\n";
+    }
+
   if (context()->show_changed_fns())
     {
       size_t num_changed = s.num_func_changed - s.num_func_filtered_out;
@@ -6676,35 +6705,6 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    }
 	  }
       out << "\n";
-    }
-
-  if (context()->show_added_fns())
-    {
-      if (s.num_func_added == 1)
-	out << indent << "1 Added function:\n";
-      else if (s.num_func_added > 1)
-	out << indent << s.num_func_added
-	    << " Added functions:\n\n";
-      for (string_function_ptr_map::const_iterator i =
-	     priv_->added_fns_.begin();
-	   i != priv_->added_fns_.end();
-	   ++i)
-	{
-	  out
-	    << indent
-	    << "  ";
-	  if (total > large_num)
-	    out << "[A] ";
-	  out << "'"
-	      << i->second->get_pretty_representation()
-	      << "'";
-	  if (context()->show_linkage_names())
-	    out << "    {" << i->second->get_linkage_name() << "}";
-	  out << "\n";
-	  ++added;
-	}
-      if (added)
-	out << "\n";
     }
 
  // Report added/removed/changed variables.
@@ -6741,6 +6741,34 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  ++removed;
 	}
       if (removed)
+	out << "\n";
+    }
+
+  if (context()->show_added_vars())
+    {
+      if (s.num_vars_added == 1)
+	out << indent << "1 Added variable:\n";
+      else if (s.num_vars_added > 1)
+	out << indent << s.num_vars_added
+	    << " Added variables:\n";
+      string n;
+      for (string_var_ptr_map::const_iterator i =
+	     priv_->added_vars_.begin();
+	   i != priv_->added_vars_.end();
+	   ++i)
+	{
+	  n = i->second->get_pretty_representation();
+	  out << indent
+	      << "  ";
+	  if (total > large_num)
+	    out << "[A] ";
+	  out << "'" << n << "'";
+	  if (context()->show_linkage_names())
+	    out << "    {" << i->second->get_symbol()->get_id_string() << "}";
+	  out << "\n";
+	  ++added;
+	}
+      if (added)
 	out << "\n";
     }
 
@@ -6785,33 +6813,6 @@ corpus_diff::report(ostream& out, const string& indent) const
 	out << "\n";
     }
 
-  if (context()->show_added_vars())
-    {
-      if (s.num_vars_added == 1)
-	out << indent << "1 Added variable:\n";
-      else if (s.num_vars_added > 1)
-	out << indent << s.num_vars_added
-	    << " Added variables:\n";
-      string n;
-      for (string_var_ptr_map::const_iterator i =
-	     priv_->added_vars_.begin();
-	   i != priv_->added_vars_.end();
-	   ++i)
-	{
-	  n = i->second->get_pretty_representation();
-	  out << indent
-	      << "  ";
-	  if (total > large_num)
-	    out << "[A] ";
-	  out << "'" << n << "'";
-	  if (context()->show_linkage_names())
-	    out << "    {" << i->second->get_linkage_name() << "}";
-	  out << "\n";
-	  ++added;
-	}
-      if (added)
-	out << "\n";
-    }
 }
 
 /// Traverse the diff sub-tree under the current instance corpus_diff.

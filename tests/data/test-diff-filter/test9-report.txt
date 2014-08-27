@@ -1,6 +1,11 @@
 Functions changes summary: 0 Removed, 1 Changed, 2 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
+2 Added functions:
+
+  'method int S::mem_fn1()'
+  'method S::S()'
+
 1 function with some indirect sub-type change:
 
   [C]'function void foo(S&)' has some indirect sub-type changes:
@@ -10,10 +15,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member insertion:
           'int S::m0', at offset 0 (in bits)
 
-
-2 Added functions:
-
-  'method int S::mem_fn1()'
-  'method S::S()'
 
 

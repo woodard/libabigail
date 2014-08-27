@@ -1,14 +1,14 @@
 2 changed types:
   'class s0' changed:
     size changed from 64 to 96 bits
+    1 data member insertion:
+      'char s0::m2', at offset 64 (in bits)
+
     1 data member change:
      type of 'char s0::m1' changed:
        name changed from 'char' to 'unsigned int'
        size changed from 8 to 32 bits
        alignment changed from 8 to 32 bits
-
-    1 data member insertion:
-      'char s0::m2', at offset 64 (in bits)
 
   's0&' changed:
     referenced type 'class s0' changed, as reported earlier

@@ -1,6 +1,9 @@
 Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 1 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
+1 Added function:
+  'method int S0::get_member0()'
+
 1 function with some indirect sub-type change:
 
   [C]'function void foo(S0&, S1*)' has some indirect sub-type changes:
@@ -10,18 +13,15 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 base class change:
           'class B0S0' changed:
             size changed from 64 to 96 bits
-            1 data member change:
-             'char B0S0::m1' offset changed from 32 to 64
-
             1 data member insertion:
               'unsigned int B0S0::m2', at offset 32 (in bits)
+
+            1 data member change:
+             'char B0S0::m1' offset changed from 32 to 64
 
 
         1 data member change:
          'int S0::m0' offset changed from 64 to 96
 
-
-1 Added function:
-  'method int S0::get_member0()'
 
 
