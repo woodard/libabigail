@@ -1290,7 +1290,7 @@ represent(diff_context& ctxt,
 	<< meth->get_type()->get_class_type()->get_virtual_mem_fns().size();
 
   if (ctxt.show_linkage_names())
-    out << "    {" << mem_fn->get_linkage_name() << "}";
+    out << "    {" << mem_fn->get_symbol()->get_id_string() << "}";
 
   out << "\n";
 }
@@ -6638,7 +6638,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    out << "[D] ";
 	  out << "'" << i->second->get_pretty_representation() << "'";
 	  if (context()->show_linkage_names())
-	    out << "    {" << i->second->get_linkage_name() << "}";
+	    out << "    {" << i->second->get_symbol()->get_id_string() << "}";
 	  out << "\n";
 	  ++removed;
 	}
@@ -6736,7 +6736,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	      << n
 	      << "'";
 	  if (context()->show_linkage_names())
-	    out << "    {" << i->second->get_linkage_name() << "}";
+	    out << "    {" << i->second->get_symbol()->get_id_string() << "}";
 	  out << "\n";
 	  ++removed;
 	}
