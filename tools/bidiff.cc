@@ -105,7 +105,7 @@ display_usage(const string prog_name, ostream& out)
       << " --deleted-vars  display deleted global public variables\n"
       << " --changed-vars  display changed global public variables\n"
       << " --added-vars  display added global public variables\n"
-      << " --no-linkage-names  do not display linkage names of "
+      << " --no-linkage-name  do not display linkage names of "
              "added/removed/changed\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
@@ -210,7 +210,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.show_all_fns = false;
 	  opts.show_all_vars = false;
 	}
-      else if (!strcmp(argv[i], "--no-linkage-names"))
+      else if (!strcmp(argv[i], "--no-linkage-name"))
 	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--drop"))
 	{
