@@ -1342,7 +1342,7 @@ represent(var_decl_sptr	o,
   string name2 = n->get_qualified_name();
   string pretty_representation = o->get_pretty_representation();
 
-  if (name1 !=  name2)
+  if (name1 != name2)
     {
       if (filtering::has_harmless_name_change(o, n)
 	  && !(ctxt->get_allowed_category()
