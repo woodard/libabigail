@@ -544,7 +544,8 @@ main(int argc, char* argv[])
       if (t1)
 	{
 	  translation_unit_diff_sptr changes = compute_diff(t1, t2);
-	  changes->report(cout);
+	  if (changes->length() > 0)
+	    changes->report(cout);
 	}
       else if (c1)
 	{
@@ -560,7 +561,8 @@ main(int argc, char* argv[])
 	  diff_context_sptr ctxt(new diff_context);
 	  set_diff_context_from_opts(ctxt, opts);
 	  corpus_diff_sptr changes = compute_diff(c1, c2, ctxt);
-	  changes->report(cout);
+	  if (changes->length() > 0)
+	    changes->report(cout);
 	}
 
       return false;
