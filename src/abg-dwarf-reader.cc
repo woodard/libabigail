@@ -4904,6 +4904,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
+  if (name.empty())
+    // So we are looking at an anonymous struct.  Let's
+    // give it a name.
+    name = "__anonymous_struct__";
+
   size_t size = 0;
   die_size_in_bits(die, size);
 
