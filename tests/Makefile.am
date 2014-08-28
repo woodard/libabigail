@@ -295,6 +295,17 @@ data/test-diff-filter/test15-v0.o		\
 data/test-diff-filter/test15-v1.o		\
 data/test-diff-filter/test15-0-report.txt	\
 data/test-diff-filter/test15-1-report.txt	\
+data/test-diff-filter/test16-v0.cc		\
+data/test-diff-filter/test16-v1.cc		\
+data/test-diff-filter/test16-v0.o		\
+data/test-diff-filter/test16-v1.o		\
+data/test-diff-filter/test16-report.txt		\
+data/test-diff-filter/test17-v0.cc		\
+data/test-diff-filter/test17-v1.cc		\
+data/test-diff-filter/test17-v0.o		\
+data/test-diff-filter/test17-v1.o		\
+data/test-diff-filter/test17-0-report.txt	\
+data/test-diff-filter/test17-1-report.txt	\
 \
 data/test-lookup-syms/test0.cc			\
 data/test-lookup-syms/test0.o			\

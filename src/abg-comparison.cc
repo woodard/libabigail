@@ -227,22 +227,20 @@ operator|(visiting_kind l, visiting_kind r)
 /// traversed already, return immediately.  Otherwise, mark the
 /// current node as a 'traversed' node.
 ///
-/// For class_diff and type_decl_diffs this macro sets the current
-/// node into the NOT_REDUNDANT_CATEGORY if it's been traversed for
-/// the first time.
+/// Note that this macro sets the current node into the
+/// NOT_REDUNDANT_CATEGORY if it's being traversed for the first
+/// time.  So this macro must be called right at the beginning of the
+/// traversing function for a given kind of diff node.
 ///
-/// Note that other types of diff nodes that have sub-trees are
-/// categorized when their children nodes are traversed.  As
-/// class_diff and type_decl
-///
+/// diff nodes that have sub-trees are categorized again (their
+/// categorization is updated) when their children nodes are
+/// traversed.
 #define ENSURE_DIFF_NODE_TRAVERSED_ONCE				\
     do									\
       {								\
 	if (context()->diff_has_been_traversed(this))			\
 	  return true;							\
-	else if (context()->categorizing_redundancy()			\
-		 && (dynamic_cast<const class_diff*>(this)		\
-		     || dynamic_cast<const type_decl_diff*>(this)))	\
+	else if (context()->categorizing_redundancy())			\
 	  add_to_category(NOT_REDUNDANT_CATEGORY);			\
 	context()->mark_diff_as_traversed(this);			\
       } while (false)
