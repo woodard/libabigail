@@ -49,6 +49,8 @@ using abigail::tools::guess_file_type;
 
 struct options
 {
+  bool display_usage;
+  bool missing_operand;
   string		file1;
   string		file2;
   vector<string>	drop_fn_regex_patterns;
@@ -73,7 +75,9 @@ struct options
   shared_ptr<char>	di_root_path2;
 
   options()
-    : show_stats_only(false),
+    : display_usage(false),
+      missing_operand(false),
+      show_stats_only(false),
       show_symtabs(false),
       show_deleted_fns(false),
       show_changed_fns(false),
@@ -152,7 +156,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      return true;
+	    }
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
 	  opts.di_root_path1 = abigail::tools::make_path_absolute(argv[j]);
@@ -162,7 +169,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      return true;
+	    }
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
 	  opts.di_root_path2 = abigail::tools::make_path_absolute(argv[j]);
@@ -173,7 +183,10 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--symtabs"))
 	opts.show_symtabs = true;
       else if (!strcmp(argv[i], "--help"))
-	return false;
+	{
+	  opts.display_usage = true;
+	  return true;
+	}
       else if (!strcmp(argv[i], "--deleted-fns"))
 	{
 	  opts.show_deleted_fns = true;
@@ -225,7 +238,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      return true;
+	    }
 	  opts.drop_fn_regex_patterns.push_back(argv[j]);
 	  ++i;
 	}
@@ -233,7 +249,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      return true;
+	    }
 	  opts.drop_var_regex_patterns.push_back(argv[j]);
 	  ++i;
 	}
@@ -241,7 +260,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      return true;
+	    }
 	  opts.keep_fn_regex_patterns.push_back(argv[j]);
 	  opts.keep_var_regex_patterns.push_back(argv[j]);
 	  ++i;
@@ -250,14 +272,20 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      return true;
+	    }
 	  opts.keep_fn_regex_patterns.push_back(argv[j]);
 	}
       else if (!strcmp(argv[i], "--keep-var"))
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      return true;
+	    }
 	  opts.keep_var_regex_patterns.push_back(argv[j]);
 	}
       else if (!strcmp(argv[i], "--harmless"))
@@ -387,6 +415,20 @@ main(int argc, char* argv[])
 {
   options opts;
   if (!parse_command_line(argc, argv, opts))
+    {
+      cerr << "unrecognized option\n"
+	"try the --help option for more information\n";
+      return false;
+    }
+
+  if (opts.missing_operand)
+    {
+      cerr << "missing operand\n"
+	"try the --help option for more information\n";
+      return false;
+    }
+
+  if (opts.display_usage)
     {
       display_usage(argv[0], cout);
       return true;
