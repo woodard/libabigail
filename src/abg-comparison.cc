@@ -6592,7 +6592,10 @@ corpus_diff::length() const
 {
   return (priv_->deleted_fns_.size()
 	  + priv_->added_fns_.size()
-	  - priv_->changed_fns_.size());
+	  + priv_->changed_fns_.size()
+	  + priv_->deleted_vars_.size()
+	  + priv_->added_vars_.size()
+	  + priv_->changed_vars_.size());
 }
 
 /// Report the diff in a serialized form.
