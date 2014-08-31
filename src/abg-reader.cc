@@ -24,6 +24,7 @@
 /// de-serialize an instance of @ref abigail::translation_unit from an
 /// ABI Instrumentation file in libabigail native XML format.
 
+#include "config.h"
 #include <cstring>
 #include <cstdlib>
 #include <tr1/unordered_map>
@@ -34,7 +35,10 @@
 #include <libxml/xmlreader.h>
 #include "abg-libxml-utils.h"
 #include "abg-corpus.h"
+
+#ifdef WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
+#endif
 
 namespace abigail
 {
@@ -50,11 +54,12 @@ using std::tr1::unordered_map;
 using std::tr1::dynamic_pointer_cast;
 using std::vector;
 using std::istream;
+#ifdef WITH_ZIP_ARCHIVE
 using zip_utils::zip_sptr;
 using zip_utils::zip_file_sptr;
 using zip_utils::open_archive;
 using zip_utils::open_file_in_archive;
-
+#endif //WITH_ZIP_ARCHIVE
 class read_context;
 
 /// This abstracts the context in which the current ABI
@@ -3546,6 +3551,7 @@ struct array_deleter
   }
 };//end array_deleter
 
+#ifdef WITH_ZIP_ARCHIVE
 /// Deserialize an ABI Instrumentation XML file at a given index in a
 /// zip archive, and populate a given @ref translation_unit object
 /// with the result of that de-serialization.
@@ -3690,6 +3696,8 @@ read_corpus_from_file(const string& path)
 
   return corp;
 }
+
+#endif //WITH_ZIP_ARCHIVE
 
 /// De-serialize an ABI corpus from an input XML document which root
 /// node is 'abi-corpus'.

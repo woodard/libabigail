@@ -20,6 +20,9 @@
 
 /// @file
 
+#include "config.h"
+#ifdef WITH_ZIP_ARCHIVE
+
 #include <string>
 #include "abg-libzip-utils.h"
 
@@ -71,3 +74,5 @@ open_file_in_archive(zip_sptr archive,
 
 }// end namespace zip
 }// end namespace abigail
+
+#endif //WITH_ZIP_ARCHIVE

@@ -20,6 +20,7 @@
 
 /// @file
 
+#include "config.h"
 #include <cstdio>
 #include <cstring>
 #include <cassert>
@@ -32,7 +33,10 @@
 #include "abg-corpus.h"
 #include "abg-reader.h"
 #include "abg-writer.h"
+
+#if WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
+#endif
 
 namespace abigail
 {
@@ -74,10 +78,14 @@ using std::ostringstream;
 using std::tr1::unordered_map;
 using std::list;
 using std::vector;
+
+#if WITH_ZIP_ARCHIVE
 using zip_utils::zip_sptr;
 using zip_utils::zip_file_sptr;
 using zip_utils::open_archive;
 using zip_utils::open_file_in_archive;
+#endif // WITH_ZIP_ARCHIVE
+
 using sptr_utils::regex_t_sptr;
 
 struct corpus::priv

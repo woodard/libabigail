@@ -217,7 +217,9 @@ main(int argc, char* argv[])
 	  corp = read_corpus_from_native_xml_file(opts.file_path);
 	  break;
 	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+#if WITH_ZIP_ARCHIVE
 	  corp = read_corpus_from_file(opts.file_path);
+#endif
 	  break;
 	}
 
@@ -286,8 +288,10 @@ main(int argc, char* argv[])
 	    }
 	  else if (type == abigail::tools::FILE_TYPE_ZIP_CORPUS)
 	    {
+#ifdef WITH_ZIP_ARCHIVE
 	      if (!opts.noout)
 		r = write_corpus_to_archive(*corp, ofile_name);
+#endif //WITH_ZIP_ARCHIVE
 	      of.close();
 	    }
 	  else if (type == abigail::tools::FILE_TYPE_ELF)

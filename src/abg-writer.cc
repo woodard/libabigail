@@ -24,6 +24,7 @@
 /// de-serialize an instance of @ref abigail::translation_unit to an
 /// ABI Instrumentation file in libabigail native XML format.
 
+#include "config.h"
 #include <assert.h>
 #include <iostream>
 #include <fstream>
@@ -32,7 +33,11 @@
 #include <tr1/unordered_map>
 #include "abg-config.h"
 #include "abg-corpus.h"
+
+#if WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
+#endif
+
 #include "abg-writer.h"
 #include "abg-libxml-utils.h"
 
@@ -49,10 +54,12 @@ using std::list;
 using std::vector;
 using std::tr1::unordered_map;
 
+#if WITH_ZIP_ARCHIVE
 using zip_utils::zip_sptr;
 using zip_utils::zip_file_sptr;
 using zip_utils::open_archive;
 using zip_utils::open_file_in_archive;
+#endif // WITH_ZIP_ARCHIVE
 
 /// Internal namespace for writer.
 namespace xml_writer
@@ -2224,6 +2231,9 @@ write_class_tdecl(const shared_ptr<class_tdecl> decl,
 
   return true;
 }
+
+#ifdef WITH_ZIP_ARCHIVE
+
 /// A context used by functions that write a corpus out to disk in a
 /// ZIP archive of ABI Instrumentation XML files.
 ///
@@ -2404,6 +2414,8 @@ write_corpus_to_archive(const corpus& corp)
 bool
 write_corpus_to_archive(const corpus_sptr corp)
 {return write_corpus_to_archive(*corp);}
+
+#endif //WITH_ZIP_ARCHIVE
 
 /// Serialize an ABI corpus to a single native xml document.  The root
 /// note of the resulting XML document is 'abi-corpus'.

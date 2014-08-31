@@ -2,9 +2,15 @@ AUTOMAKE_OPTIONS=subdir-objects
 
 h=$(abs_srcdir)
 
+if ENABLE_ZIP_ARCHIVE
+ZIP_ARCHIVE_TESTS = runtestwritereadarchive runtestdot
+else
+ZIP_ARCHIVE_TESTS =
+endif
+
 TESTS=				\
 runtestreadwrite		\
-runtestwritereadarchive		\
+${ZIP_ARCHIVE_TESTS}		\
 runtestreaddwarf		\
 runtestlookupsyms		\
 runtestaltdwarf			\
@@ -12,8 +18,8 @@ runtestcorediff			\
 runtestbidiff			\
 runtestdiffdwarf		\
 runtestdifffilter		\
-runtestsvg			\
-runtestdot 
+runtestsvg
+
 
 noinst_PROGRAMS= $(TESTS) testirwalker testdiff2
 

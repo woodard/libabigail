@@ -26,6 +26,14 @@ AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 
+ENABLE_ZIP_ARCHIVE=auto
+AC_ARG_ENABLE(zip-archive,
+	      AS_HELP_STRING([--enable-zip-archive=yes|no|auto],
+			     [enable bundling of TUs in zip archives (default is auto)]),
+	      ENABLE_ZIP_ARCHIVE=$enableval,
+	      ENABLE_ZIP_ARCHIVE=auto)
+
+
 dnl *************************************************
 dnl Here is the list of versions of the dependencies
 dnl *************************************************
@@ -63,12 +71,46 @@ AC_SUBST(XML_CFLAGS)
 
 dnl Check for dependency: libzip
 LIBZIP_VERSION=0.10
-PKG_CHECK_MODULES(LIBZIP, libzip >= $LIBZIP_VERSION)
 
-AC_SUBST(LIBZIP_VERSION)
-AC_SUBST(LIBZIP_LIBS)
-AC_SUBST(LIBZIP_CFLAGS)
+HAS_LIBZIP=no
+# The below doesn't seem to work on my box for a reason.  Let's write
+# the damn thing by hand:
+# PKG_CHECK_EXISTS([libzip >= $LIBZIP_VERSION], [HAS_LIBZIP=yes], [HAS_LIBZIP=no])
 
+if $PKG_CONFIG --exists --print-errors "libzip >= $LIBZIP_VERSION"; then
+   AC_MSG_NOTICE(found libzip version $LIBZIP_VERSION)
+   HAS_LIBZIP=yes
+else
+   AC_MSG_NOTICE(no libzip >= $LIBZIP_VERSION has been found)
+   HAS_LIBZIP=no
+fi
+
+if test x$ENABLE_ZIP_ARCHIVE = xauto; then
+   if test x$HAS_LIBZIP = xyes; then
+      ENABLE_ZIP_ARCHIVE=yes;
+   else
+      ENABLE_ZIP_ARCHIVE=no
+   fi
+fi
+
+if test x$ENABLE_ZIP_ARCHIVE = xyes; then
+   AC_MSG_NOTICE(the zip-archive feature is enabled)
+else
+   AC_MSG_NOTICE(the zip-archive feature is disabled)
+fi
+
+FOUND_LIBZIP=no
+if test x$ENABLE_ZIP_ARCHIVE = xyes; then
+   PKG_CHECK_MODULES(LIBZIP, libzip >= $LIBZIP_VERSION)
+   FOUND_LIBZIP=yes
+   AC_SUBST(LIBZIP_VERSION)
+   AC_SUBST(LIBZIP_LIBS)
+   AC_SUBST(LIBZIP_CFLAGS)
+   AC_DEFINE([WITH_ZIP_ARCHIVE], 1, [compile the zip archive support])
+   AC_DEFINE([HAVE_LIBZIP], 1, [Defined to 1 if the libzip library is available])
+fi
+
+AM_CONDITIONAL(ENABLE_ZIP_ARCHIVE, test x$ENABLE_ZIP_ARCHIVE = xyes)
 DEPS_CPPFLAGS="$XML_CFLAGS $LIBZIP_CFLAGS"
 AC_SUBST(DEPS_CPPFLAGS)
 

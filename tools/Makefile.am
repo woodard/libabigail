@@ -7,12 +7,19 @@ libtoolsutils_la_SOURCES=	\
 abg-tools-utils.h		\
 abg-tools-utils.cc
 
-bin_PROGRAMS = biar bidiff bilint bidw bisym
+if ENABLE_ZIP_ARCHIVE
+  bin_PROGRAMS = biar bidiff bilint bidw bisym
+else
+  bin_PROGRAMS = bidiff bilint bidw bisym
+endif
 
+
+if ENABLE_ZIP_ARCHIVE
 biar_SOURCES = biar.cc
 biardir = $(bindir)
 biar_LDFLAGS = $(abs_top_builddir)/src/libabigail.la $(abs_top_builddir)/tools/libtoolsutils.la
 biar_DEPENDENCIES = libtoolsutils.la
+endif
 
 bidiff_SOURCES = bidiff.cc
 bidiffdir = $(bindir)

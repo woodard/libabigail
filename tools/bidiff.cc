@@ -485,7 +485,9 @@ main(int argc, char* argv[])
 	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file1);
 	  break;
 	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+#ifdef WITH_ZIP_ARCHIVE
 	  c1 = abigail::xml_reader::read_corpus_from_file(opts.file1);
+#endif //WITH_ZIP_ARCHIVE
 	  break;
 	}
 
@@ -509,7 +511,9 @@ main(int argc, char* argv[])
 	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file2);
 	  break;
 	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+#ifdef WITH_ZIP_ARCHIVE
 	  c2 = abigail::xml_reader::read_corpus_from_file(opts.file2);
+#endif //WITH_ZIP_ARCHIVE
 	  break;
 	}
 
