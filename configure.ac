@@ -134,3 +134,20 @@ tools/Makefile
 tests/Makefile])
 
 AC_OUTPUT
+
+AC_MSG_NOTICE([
+=====================================================================
+	Libabigail: $VERSION_MAJOR.$VERSION_MINOR.$VERSION_REVISION
+=====================================================================
+
+		Here is the configuration of the package:
+
+    Prefix                             : ${prefix}
+    Source code location               : ${srcdir}
+    C Compiler                         : ${CC}
+    C++ Compiler		       : ${CXX}
+
+ OPTIONAL FEATURES:
+    Enable zip archives                : ${ENABLE_ZIP_ARCHIVE}
+    
+])
