@@ -1,6 +1,6 @@
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013 Red Hat, Inc.
+// Copyright (C) 2013-2014 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
