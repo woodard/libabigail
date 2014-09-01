@@ -139,6 +139,81 @@ operator|(visiting_kind l, visiting_kind r)
 	maybe_not_redundant = true;					\
     }
 
+/// This is a subroutine of a *::report() function.
+///
+/// If the diff about two subjects S1 and S2 was reported earlier or
+/// is being reported, emit a diagnostic message about this and return
+/// from the current diff reporting function.
+///
+/// @param S1 the first diff subject to take in account.
+///
+/// @param S2 the second diff subject to take in account.
+#define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(S1, S2) \
+  do {									\
+    if (diff_sptr _diff_ = context()->has_diff_for(S1, S2))		\
+      if (_diff_->currently_reporting() || _diff_->reported_once())	\
+	{								\
+	  if (_diff_->currently_reporting())				\
+	    out << indent << "details are being reported\n";		\
+	  else								\
+	    out << indent << "details were reported earlier\n";	\
+	  return ;							\
+	}								\
+  } while (false)
+
+/// This is a subroutine of a *::report() function.
+///
+/// If a given diff was reported earlier or is being reported, emit a
+/// diagnostic message about this and return from the current diff
+/// reporting function.
+///
+/// @param S1 the first diff subject to take in account.
+///
+/// @param S2 the second diff subject to take in account.
+///
+/// @param INTRO_TEXT the introductory text that precedes the
+/// diagnostic.
+#define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(D, INTRO_TEXT) \
+  do {									\
+    if (diff_sptr _diff_ = context()->has_diff_for(D))			\
+      if (_diff_->currently_reporting() || _diff_->reported_once())	\
+	{								\
+	  string _name_ = _diff_->first_subject()->get_pretty_representation(); \
+	  if (_diff_->currently_reporting())				\
+	    out << indent << INTRO_TEXT << " '" << _name_ << "' changed; " \
+	      "details are being reported\n";				\
+	  else								\
+	    out << indent << INTRO_TEXT << " '" << _name_ << "' changed, " \
+	      "as reported earlier\n";					\
+	  return ;							\
+	}								\
+} while (false)
+
+/// This is a subroutine of a *::report() function.
+///
+/// If the diff about two subjects S1 and S2 was reported earlier or
+/// is being reported, emit a diagnostic message about this and return
+/// from the current diff reporting function.
+///
+///
+/// @param INTRO_TEXT the introductory text that precedes the
+/// diagnostic.
+#define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(S1, S2, INTRO_TEXT) \
+    do {								\
+      if (diff_sptr _diff_ = context()->has_diff_for(S1, S2))		\
+	if (_diff_->currently_reporting() || _diff_->reported_once())	\
+	  {								\
+	    string _name_ = _diff_->first_subject()->get_pretty_representation(); \
+	    if (_diff_->currently_reporting())				\
+	      out << indent << INTRO_TEXT << " '" << _name_ << "' changed; " \
+		"details are being reported\n";				\
+	    else							\
+	      out << indent << INTRO_TEXT << " '" << _name_ << "' changed, " \
+		"as reported earlier\n";				\
+	    return ;							\
+	  } \
+    } while (false)
+
 /// Look at a child node (that has just been traversed) of the current
 /// diff node and update the non-redundancy-ness of the current diff
 /// node accordingly.  Note the child node must have been traversed.
@@ -1899,35 +1974,12 @@ pointer_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      string name = d->first_subject()->get_pretty_representation();
-      if (diff_sptr d2 = context()->has_diff_for(d))
-	{
-	  assert(d2->to_be_reported());
-	  if (d2->currently_reporting())
-	    out << indent << "pointed to type '"
-		<< name
-		<< "' changed; details are being reported\n";
-	  else if (d2->reported_once())
-	    out << indent << "pointed to type '"
-		<< name
-		<< "' changed, as reported earlier\n";
-	  else
-	    {
-	      out << indent
-		  << "in pointed to type '"
-		  << name
-		  << "':\n";
-	      d->report(out, indent + "  ");
-	    }
-	}
-      else
-	{
-	  out << indent
-	      << "in pointed to type '"
-	      << name
-	      << "':\n";
-	      d->report(out, indent + "  ");
-	}
+      RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "pointed to type");
+      out << indent
+	  << "in pointed to type '"
+	  <<  d->first_subject()->get_pretty_representation()
+	  << "':\n";
+      d->report(out, indent + "  ");
     }
 }
 
@@ -2083,23 +2135,9 @@ array_diff::report(ostream& out, const string& indent) const
     return;
 
   string name = first_array()->get_pretty_representation();
-  if (diff_sptr d = context()->has_diff_for(first_array(),
-					    second_array()))
-    {
-      if (d->currently_reporting())
-	{
-	  out << indent << "array type '"
-	      << name
-	      << "' changed;  details are being reported\n";
-	  return;
-	}
-      else if (d->reported_once())
-	{
-	  out << indent << "arry type '"
-	      << name << "' changed, as reported earlier\n";
-	  return;
-	}
-    }
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(first_array(),
+						    second_array(),
+						    "array type");
 
   diff_sptr d = element_type_diff();
   if (d->to_be_reported())
@@ -2310,34 +2348,12 @@ reference_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr d = underlying_type_diff())
     {
-      string name = d->first_subject()->get_pretty_representation();
-      if (diff_sptr d2 = context()->has_diff_for(d))
-	{
-	  if (d2->currently_reporting())
-	    out << indent << "referenced type '"
-		<< name
-		<< "' changed; details are being reported\n";
-	  else if (d2->reported_once())
-	    out << indent << "referenced type '"
-		<< name
-		<< "' changed, as reported earlier\n";
-	  else
-	    {
-	      out << indent
-		  << "in referenced type '"
-		  << name
-		  << "':\n";
-	      d->report(out, indent + "  ");
-	    }
-	}
-      else
-	{
-	  out << indent
-	      << "in referenced type '"
-	      << name
-	      << "':\n";
-	  d->report(out, indent + "  ");
-	}
+      RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "referenced type");
+      out << indent
+	  << "in referenced type '"
+	  << d->first_subject()->get_pretty_representation()
+	  << "':\n";
+      d->report(out, indent + "  ");
     }
 }
 
@@ -2510,21 +2526,8 @@ qualified_type_diff::report(ostream& out, const string& indent) const
   string fname = first_qualified_type()->get_pretty_representation(),
     sname = second_qualified_type()->get_pretty_representation();
 
-  if (diff_sptr d = context()->has_diff_for(first_qualified_type(),
-					    second_qualified_type()))
-    {
-      if (d->currently_reporting())
-	{
-	  out << indent << " details are being reported\n";
-	  return;
-	}
-      else if (d->reported_once())
-	{
-	  out << indent << " details were reported earlier\n";
-	  return;
-	}
-    }
-
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(first_qualified_type(),
+						   second_qualified_type());
 
   if (fname != sname)
     {
@@ -2538,27 +2541,12 @@ qualified_type_diff::report(ostream& out, const string& indent) const
     sltname = get_type_declaration(slt)->get_pretty_representation();
 
   diff_sptr d = compute_diff_for_types(flt, slt, context());
-  if (diff_sptr d = context()->has_diff_for_types(flt, slt))
-    {
-      if (d->currently_reporting())
-	out << indent << "unqualified underlying type "
-	    << fltname << " changed; details are being reported\n";
-      else if (d->reported_once())
-	out << indent << "unqualified underlying type "
-	    << fltname << " changed, as reported earlier\n";
-      else
-	{
-	  out << indent
-	      << "in unqualified underlying type '"
-	      << fltname << "':\n";
-	  d->report(out, indent + "  ");
-	}
-    }
-  else
-    {
-      out << indent << "in unqualified underlying type '" << fltname << "':\n";
-      d->report(out, indent + "  ");
-    }
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d,
+						    "unqualified "
+						    "underlying type");
+
+  out << indent << "in unqualified underlying type '" << fltname << "':\n";
+  d->report(out, indent + "  ");
 }
 
 /// Traverse the diff sub-tree under the current instance of
@@ -3816,20 +3804,8 @@ class_diff::report(ostream& out, const string& indent) const
 
   string name = first_subject()->get_pretty_representation();
 
-  if (diff_sptr d = context()->has_diff_for(first_subject(),
-					    second_subject()))
-    {
-      if (d->currently_reporting())
-	{
-	  out << indent << "details are being reported\n";
-	  return;
-	}
-      else if (d->reported_once())
-	{
-	  out << indent << "details were reported earlier\n";
-	  return;
-	}
-    }
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(first_subject(),
+						   second_subject());
 
   currently_reporting(true);
 
@@ -5877,19 +5853,7 @@ typedef_diff::report(ostream& out, const string& indent) const
   bool emit_nl = false;
   typedef_decl_sptr f = first_typedef_decl(), s = second_typedef_decl();
 
-  if (diff_sptr d = context()->has_diff_for(f, s))
-    {
-      if (d->currently_reporting())
-	{
-	  out << indent << " details are being reported\n";
-	  return;
-	}
-      else if (d->reported_once())
-	{
-	  out << indent << " details were reported earlier\n";
-	  return;
-	}
-    }
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(f, s);
 
   maybe_report_diff_for_member(f, s, context(), out, indent);
 
@@ -5907,29 +5871,12 @@ typedef_diff::report(ostream& out, const string& indent) const
   diff_sptr d = underlying_type_diff();
   if (d && d->to_be_reported())
     {
-      if (diff_sptr d2 = context()->has_diff_for(d))
-	{
-	  if (d2->currently_reporting())
-	    out << indent << "underlying type '"
-		<< d->first_subject()->get_pretty_representation()
-		<< "' changed; details are being reported\n";
-	  else if (d2->reported_once())
-	    out << indent << "underlying type '"
-		<< d->first_subject()->get_pretty_representation()
-		<< "' changed, as reported earlier\n";
-	  else
-	    {
-	      out << indent << "underlying type '"
-		  << d->first_subject()->get_pretty_representation()
-		  << "' changed:\n";
-	      d->report(out, indent + "  ");
-	    }
-	}
-      else
-	{
-	  out << indent << "underlying type changed:\n";
-	  d->report(out, indent + "  ");
-	}
+      RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "underlying type");
+      out << indent
+	  << "underlying type '"
+	  << d->first_subject()->get_pretty_representation()
+	  << "' changed:\n";
+      d->report(out, indent + "  ");
       emit_nl = false;
     }
 

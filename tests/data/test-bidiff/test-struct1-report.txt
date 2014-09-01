@@ -26,7 +26,7 @@
     referenced type 'class s0' changed, as reported earlier
   'const s0*' changed:
     in pointed to type 'const s0':
-      unqualified underlying type class s0 changed, as reported earlier
+      unqualified underlying type 'class s0' changed, as reported earlier
   'function int bar(s0&)' was removed
 
   'function int baz(s0&)' was added
