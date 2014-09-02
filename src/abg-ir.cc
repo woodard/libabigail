@@ -1631,7 +1631,7 @@ set_data_member_offset(var_decl_sptr m, size_t o)
 ///
 /// @return the offset (in bits) of @p m in its containing class.
 size_t
-get_data_member_offset(const var_decl&  m)
+get_data_member_offset(const var_decl& m)
 {
   assert(is_data_member(m));
   dm_context_rel_sptr ctxt_rel =
