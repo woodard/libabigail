@@ -3,7 +3,6 @@
     size changed from 32 to 64 bits
     1 data member insertion:
       'char S0::m1', at offset 32 (in bits)
-
   'const S0' changed:
     unqualified underlying type 'class S0' changed, as reported earlier
   'const S0&' changed:

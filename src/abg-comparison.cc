@@ -4024,7 +4024,6 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  report_mem_header(out, numins, 0, ins_kind,
 			    "data member", indent);
-	  bool emitted = false;
 	  for (string_decl_base_sptr_map::const_iterator i =
 		 priv_->inserted_data_members_.begin();
 	       i != priv_->inserted_data_members_.end();
@@ -4033,14 +4032,9 @@ class_diff::report(ostream& out, const string& indent) const
 	      var_decl_sptr data_mem =
 		dynamic_pointer_cast<var_decl>(i->second);
 	      assert(data_mem);
-	      if (emitted)
-		out << "\n";
 	      out << indent << "  ";
 	      represent_data_member(data_mem, out);
-	      emitted = true;
 	    }
-	  if (emitted)
-	    out << "\n";
 	}
 
       // report change

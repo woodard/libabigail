@@ -10,7 +10,6 @@
 
       1 data member insertion:
         'double s0::m01', at offset 128 (in bits)
-
       2 data member changes:
        'unsigned int s0::m2' offset changed from 128 to 192
        type of 'int s0::m0' changed:

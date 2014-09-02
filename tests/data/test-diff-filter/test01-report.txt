@@ -17,7 +17,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             size changed from 64 to 96 bits
             1 data member insertion:
               'unsigned int B0S0::m2', at offset 32 (in bits)
-
             1 data member change:
              'char B0S0::m1' offset changed from 32 to 64
 
