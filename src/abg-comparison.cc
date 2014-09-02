@@ -793,6 +793,13 @@ diff::is_filtered_out() const
   if (context()->get_allowed_category() == EVERYTHING_CATEGORY)
     return false;
 
+  // If the diff node is only in the NOT_REDUNDANT_CATEGORY, that
+  // means it represents a change that is not yet categorized and that
+  // the diff not is not redundant.  We definitely want to see that
+  // diff node be reported.
+  if (get_category() == NOT_REDUNDANT_CATEGORY)
+    return false;
+
   // We don't want to display redundant function or variable diff
   // nodes.
   if ((dynamic_cast<const function_decl_diff*>(this)
