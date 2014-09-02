@@ -21,6 +21,9 @@
 // Author: Dodji Seketeli
 
 /// @file
+///
+/// This contains the implementation of the comparison engine of
+/// libabigail.
 
 #include "abg-hash.h"
 #include "abg-comparison.h"
@@ -2925,7 +2928,13 @@ struct class_diff::priv
   unsigned_decl_base_sptr_map deleted_dm_by_offset_;
   string_decl_base_sptr_map inserted_data_members_;
   unsigned_decl_base_sptr_map inserted_dm_by_offset_;
+  // This map contains the data member which sub-type changed.
   string_changed_type_or_decl_map subtype_changed_dm_;
+  // This one contains the list of data members changes that can be
+  // represented as a data member foo that got removed from offset N,
+  // and a data member bar that got inserted at offset N; IOW, this
+  // can be translated as data member foo that got changed into data
+  // member bar at offset N.
   unsigned_changed_type_or_decl_map changed_dm_;
   string_member_function_sptr_map deleted_member_functions_;
   string_member_function_sptr_map inserted_member_functions_;
