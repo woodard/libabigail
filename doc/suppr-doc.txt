@@ -1,0 +1,20 @@
+; So this suppresses all the reports about types	
+[suppress_type]
+  name = Dwarf
+
+[suppress_function]
+  name= .*
+
+[suppress_symbol]
+  name= _init
+
+[suppress_symbol_version]
+  name = GLIBC_PRIVATE
+
+[suppress_data_member]
+  name=foo::bar
+
+[suppress_member_function]
+  name = foo<int>::bar
+  parameter_type-1 = int
+  parameter_type-2 = char
