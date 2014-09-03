@@ -25,6 +25,7 @@
 /// This contains the implementation of the comparison engine of
 /// libabigail.
 
+#include <algorithm>
 #include "abg-hash.h"
 #include "abg-comparison.h"
 #include "abg-comp-filter.h"
@@ -3806,6 +3807,111 @@ edit_script&
 class_diff::member_class_tmpls_changes()
 {return priv_->member_class_tmpls_changes_;}
 
+/// A comparison functor to compare two changed data members based on
+/// the offset of their initial value.
+struct ChangedDataMemberComp
+{
+  /// @param f the first changed data member to take into account
+  ///
+  /// @param s the second changed data member to take into account.
+  ///
+  /// @return true iff f is before s.
+  bool
+  operator()(const changed_type_or_decl& f,
+	     const changed_type_or_decl& s) const
+  {
+    var_decl_sptr first_dm = is_data_member(f.first);
+    var_decl_sptr second_dm = is_data_member(s.first);
+
+    assert(first_dm);
+    assert(second_dm);
+
+    return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
+  }
+}; // end struct ChangedDataMemberComp
+
+/// Sort two changed data members by the offset of their initial
+/// value.
+///
+/// @param data_members the map of changed data members to sort.
+///
+/// @param sorted the resulting vector of sorted changed data members.
+static void
+sort_changed_data_members(const unsigned_changed_type_or_decl_map data_members,
+			  changed_type_or_decl_vector& sorted)
+{
+  sorted.reserve(data_members.size());
+  for (unsigned_changed_type_or_decl_map::const_iterator i =
+	 data_members.begin();
+       i != data_members.end();
+       ++i)
+    sorted.push_back(i->second);
+  ChangedDataMemberComp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of changed data members by the offset of their initial
+/// value.
+///
+/// @param data_members the map of changed data members to sort.
+///
+/// @param sorted the resulting vector of sorted changed data members.
+static void
+sort_changed_data_members(const string_changed_type_or_decl_map& data_members,
+			  changed_type_or_decl_vector& sorted)
+{
+  sorted.reserve(data_members.size());
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 data_members.begin();
+       i != data_members.end();
+       ++i)
+    sorted.push_back(i->second);
+  ChangedDataMemberComp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// A comparison functor to compare two data members based on their
+/// offset.
+struct DataMemberComp
+{
+  /// @param f the first data member to take into account.
+  ///
+  /// @param s the second data member to take into account.
+  ///
+  /// @return true iff f is before s.
+  bool
+  operator()(const decl_base_sptr& f,
+	     const decl_base_sptr& s) const
+  {
+    var_decl_sptr first_dm = is_data_member(f);
+    var_decl_sptr second_dm = is_data_member(s);
+
+    assert(first_dm);
+    assert(second_dm);
+
+    return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
+  }
+};//end struct DataMemberComp
+
+/// Sort a map of data members by the offset of their initial value.
+///
+/// @param data_members the map of changed data members to sort.
+///
+/// @param sorted the resulting vector of sorted changed data members.
+static void
+sort_data_members(const string_decl_base_sptr_map &data_members,
+		  vector<decl_base_sptr>& sorted)
+{
+  sorted.reserve(data_members.size());
+  for (string_decl_base_sptr_map::const_iterator i = data_members.begin();
+       i != data_members.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  DataMemberComp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Produce a basic report about the changes between two class_decl.
 ///
 /// @param out the output stream to report the changes to.
@@ -4017,14 +4123,15 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  report_mem_header(out, numdels, 0, del_kind,
 			    "data member", indent);
+	  vector<decl_base_sptr> sorted_dms;
+	  sort_data_members(priv_->deleted_data_members_, sorted_dms);
 	  bool emitted = false;
-	  for (string_decl_base_sptr_map::const_iterator i =
-		 priv_->deleted_data_members_.begin();
-	       i != priv_->deleted_data_members_.end();
+	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
+	       i != sorted_dms.end();
 	       ++i)
 	    {
 	      var_decl_sptr data_mem =
-		dynamic_pointer_cast<var_decl>(i->second);
+		dynamic_pointer_cast<var_decl>(*i);
 	      assert(data_mem);
 	      out << indent << "  ";
 	      represent_data_member(data_mem, out);
@@ -4040,13 +4147,14 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  report_mem_header(out, numins, 0, ins_kind,
 			    "data member", indent);
-	  for (string_decl_base_sptr_map::const_iterator i =
-		 priv_->inserted_data_members_.begin();
-	       i != priv_->inserted_data_members_.end();
+	  vector<decl_base_sptr> sorted_dms;
+	  sort_data_members(priv_->inserted_data_members_, sorted_dms);
+	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
+	       i != sorted_dms.end();
 	       ++i)
 	    {
 	      var_decl_sptr data_mem =
-		dynamic_pointer_cast<var_decl>(i->second);
+		dynamic_pointer_cast<var_decl>(*i);
 	      assert(data_mem);
 	      out << indent << "  ";
 	      represent_data_member(data_mem, out);
@@ -4060,16 +4168,17 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    subtype_change_kind, "data member", indent);
-
-	  for (string_changed_type_or_decl_map::const_iterator it =
-		 priv_->subtype_changed_dm_.begin();
-	       it != priv_->subtype_changed_dm_.end();
+	  changed_type_or_decl_vector sorted_dms;
+	  sort_changed_data_members(priv_->subtype_changed_dm_, sorted_dms);
+	  for (changed_type_or_decl_vector::const_iterator it
+		 = sorted_dms.begin();
+	       it != sorted_dms.end();
 	       ++it)
 	    {
 	      var_decl_sptr o =
-		dynamic_pointer_cast<var_decl>(it->second.first);
+		dynamic_pointer_cast<var_decl>(it->first);
 	      var_decl_sptr n =
-		dynamic_pointer_cast<var_decl>(it->second.second);
+		dynamic_pointer_cast<var_decl>(it->second);
 	      represent(o, n, context(), out, indent + " ");
 	    }
 	  out << "\n";
@@ -4081,15 +4190,18 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    change_kind, "data member", indent);
-	  for (unsigned_changed_type_or_decl_map::const_iterator it =
-		 priv_->changed_dm_.begin();
-	       it != priv_->changed_dm_.end();
+	  changed_type_or_decl_vector sorted_changed_dms;
+	  sort_changed_data_members(priv_->changed_dm_,
+				    sorted_changed_dms);
+	  for (changed_type_or_decl_vector::const_iterator it =
+		 sorted_changed_dms.begin();
+	       it != sorted_changed_dms.end();
 	       ++it)
 	    {
 	      var_decl_sptr o =
-		dynamic_pointer_cast<var_decl>(it->second.first);
+		dynamic_pointer_cast<var_decl>(it->first);
 	      var_decl_sptr n =
-		dynamic_pointer_cast<var_decl>(it->second.second);
+		dynamic_pointer_cast<var_decl>(it->second);
 	      represent(o, n, context(), out, indent + " ");
 	    }
 	  out << "\n";

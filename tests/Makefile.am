@@ -198,6 +198,11 @@ data/test-diff-dwarf/test12-v1.c		\
 data/test-diff-dwarf/libtest12-v1.so		\
 data/test-diff-dwarf/test12-version-script	\
 data/test-diff-dwarf/test12-report.txt		\
+data/test-diff-dwarf/test13-v0.cc		\
+data/test-diff-dwarf/test13-v0.o		\
+data/test-diff-dwarf/test13-v1.cc		\
+data/test-diff-dwarf/test13-v1.o		\
+data/test-diff-dwarf/test13-report.txt		\
 \
 data/test-read-dwarf/test0			\
 data/test-read-dwarf/test0.abi			\

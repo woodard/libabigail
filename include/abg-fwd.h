@@ -264,7 +264,7 @@ is_data_member(const var_decl*);
 bool
 is_data_member(const shared_ptr<var_decl>);
 
-bool
+shared_ptr<var_decl>
 is_data_member(const shared_ptr<decl_base>&);
 
 shared_ptr<array_type_def>

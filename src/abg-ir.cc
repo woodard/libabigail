@@ -1599,13 +1599,17 @@ is_data_member(const var_decl_sptr d)
 ///
 /// @param d the decl to consider.
 ///
-/// @return true iff @p d is a data member.
-bool
+/// @return a pointer to the data member iff @p d is a data member, or
+/// a null pointer.
+var_decl_sptr
 is_data_member(const decl_base_sptr& d)
 {
   if (var_decl_sptr v = is_var_decl(d))
-    return is_data_member(v);
-  return false;
+    {
+      if (is_data_member(v))
+	return v;
+    }
+  return var_decl_sptr();
 }
 
 /// Set the offset of a data member into its containing class.

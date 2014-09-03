@@ -116,6 +116,9 @@ typedef unordered_map<string,
 typedef unordered_map<unsigned,
 		      changed_type_or_decl> unsigned_changed_type_or_decl_map;
 
+/// Convenience tyepdef for a vector of changed type or decl.
+typedef vector<changed_type_or_decl> changed_type_or_decl_vector;
+
 /// Convenience typedef for a map which value is a function
 /// parameter.  The key is the name of the function parm.
 typedef unordered_map<string, function_decl::parameter_sptr> string_parm_map;

@@ -140,6 +140,12 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test12-report.txt",
     "output/test-diff-dwarf/test12-report.txt"
   },
+  {
+    "data/test-diff-dwarf/test13-v0.o",
+    "data/test-diff-dwarf/test13-v1.o",
+    "data/test-diff-dwarf/test13-report.txt",
+    "output/test-diff-dwarf/test13-report.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };
