@@ -1,0 +1,135 @@
+// -*- Mode: C++ -*-
+//
+// Copyright (C) 2013-2014 Red Hat, Inc.
+//
+// This file is part of the GNU Application Binary Interface Generic
+// Analysis and Instrumentation Library (libabigail).  This library is
+// free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the
+// Free Software Foundation; either version 3, or (at your option) any
+// later version.
+
+// This library is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// General Lesser Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program; see the file COPYING-LGPLV3.  If
+// not, see <http://www.gnu.org/licenses/>.
+
+// Author: Dodji Seketeli
+
+/// @file
+///
+/// This is a tool that reads an ini file and, if it could read it OK,
+/// prints it on its standard output.  It's mainly meant to test the
+/// abigail::ini::* functions, but one could also use it to make sure
+/// that an ini file can be handled by the abigail::ini::* facilities
+
+#include <cstring>
+#include <iostream>
+#include "abg-ini.h"
+
+using std::cout;
+using std::cerr;
+using std::cin;
+using std::string;
+using std::ostream;
+using abigail::ini::config;
+using abigail::ini::read_config;
+using abigail::ini::write_config;
+
+struct options
+{
+  bool display_usage;
+  bool read_from_stdin;
+  bool no_out;
+  bool wrong_command_line_usage;
+  string path;
+
+  options ()
+    : display_usage(false),
+      read_from_stdin(false),
+      no_out(false),
+      wrong_command_line_usage(false)
+  {}
+};
+
+static void
+display_usage(const string& prog_name, ostream& out)
+{
+  out << "usage: " << prog_name << " [options] <ini file>\n"
+      << "where options can be:\n"
+      << "--help  display this help\n"
+      << "--from-stdin  read the input ini file from stdin\n"
+      << "--noout  do not output anything on stdout\n"
+    ;
+}
+
+static bool
+parse_command_line(int argc, char* argv[], options& opts)
+{
+  if (argc == 1)
+    return false;
+
+  for (int i = 1; i < argc; ++i)
+    {
+      if (argv[i][0] != '-')
+	{
+	  if (opts.path.empty())
+	    opts.path = argv[i];
+	  else
+	    opts.wrong_command_line_usage = true;
+	}
+      else if (!strcmp(argv[i], "--help"))
+	opts.display_usage = true;
+      else if (!strcmp(argv[i], "--from-stdin"))
+	opts.read_from_stdin = true;
+      else if (!strcmp(argv[i], "--noout"))
+	opts.no_out = true;
+      else
+	return false;
+    }
+  return true;
+}
+
+int
+main(int argc, char* argv[])
+{
+  // First, parse the command line.
+
+  options opts;
+
+  if (argc == 1 || !parse_command_line(argc, argv, opts))
+    {
+      cerr << argv[0] << ": bad command usage\n"
+	   << "Try " << argv[0] << " --help for more information\n";
+      return 1;
+    }
+
+  // Then if we need to display the help, display it and get out.
+
+  if (opts.display_usage)
+    {
+      display_usage(argv[0], cout);
+      return 0;
+    }
+
+  // Otherwise, do the real work we are supposed to do after all.
+  // That real work is driven by the options the user set; these
+  // options are recorded in the opts variable.
+
+  bool is_ok = false;
+  config::section_vector sections;
+
+  if (opts.read_from_stdin)
+    is_ok = read_config(cin, sections);
+  else if (!opts.path.empty())
+    is_ok = read_config(opts.path, sections);
+
+  if (is_ok && !opts.no_out)
+    is_ok = write_config(sections, std::cout);
+
+  return !is_ok;
+}

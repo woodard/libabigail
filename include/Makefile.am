@@ -13,6 +13,7 @@ abg-libzip-utils.h	\
 abg-fwd.h		\
 abg-hash.h		\
 abg-config.h		\
+abg-ini.h		\
 abg-traverse.h		\
 abg-version.h		\
 abg-viz-common.h	\
