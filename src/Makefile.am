@@ -1,8 +1,7 @@
-h=$(abs_srcdir)
 lib_LTLIBRARIES=libabigail.la
 libabigaildir=$(libdir)
 
-libabigail_la_SOURCES = $(headers)	\
+libabigail_la_SOURCES =			\
 abg-traverse.cc				\
 abg-ir.cc				\
 abg-corpus.cc				\
