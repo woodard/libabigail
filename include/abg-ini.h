@@ -45,12 +45,17 @@ using std::string;
 using std::vector;
 using std:: pair;
 
+class config;
+
+/// A convenience typedef for a shared pointer to @ref config
+typedef shared_ptr<config> config_sptr;
+
 /// The abstraction of the structured content of an .ini file.  This
 /// roughly follows what is explained at
 /// http://en.wikipedia.org/wiki/INI_file.
 class config
 {
-  struct priv;
+  class priv;
   typedef shared_ptr<priv> priv_sptr;
 
 public:
@@ -76,8 +81,19 @@ private:
   priv_sptr priv_;
 
 public:
+
   config();
+
+  config(const string& path,
+	 section_vector& sections);
+
   virtual ~config();
+
+  const string&
+  get_path() const;
+
+  void
+  set_path(const string& path);
 
   const section_vector&
   get_sections() const;
@@ -117,19 +133,41 @@ public:
 }; //end class config::property
 
 bool
+read_sections(std::istream& input,
+	      config::section_vector& sections);
+
+bool
+read_sections(const string& path,
+	      config::section_vector& sections);
+
+bool
 read_config(std::istream& input,
-	    config::section_vector& sections);
+	    config& conf);
+
+config_sptr
+read_config(std::istream& input);
 
 bool
 read_config(const string& path,
-	    config::section_vector& sections);
+	    config& conf);
+
+config_sptr
+read_config(const string& path);
 
 bool
-write_config(const config::section_vector& sections,
+write_sections(const config::section_vector& sections,
+	       std::ostream& output);
+
+bool
+write_sections(const config::section_vector& sections,
+	       const string& path);
+
+bool
+write_config(const config& conf,
 	     std::ostream& output);
 
 bool
-write_config(const config::section_vector& sections,
+write_config(const config& conf,
 	     const string& path);
 
 }// end namespace ini

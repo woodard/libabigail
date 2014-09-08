@@ -519,10 +519,71 @@ public:
 
 // </read_context stuff>
 
+// <config stuff>
+
+class config::priv
+{
+  string path_;
+  section_vector sections_;
+
+public:
+  friend class config;
+
+  priv()
+  {}
+
+  priv(const string& path,
+       section_vector& sections)
+    : path_(path),
+      sections_(sections)
+  {}
+
+};
+
+/// @param path the path to the config file.
+///
+/// @param sections the sections of the config file.
+config::config(const string& path,
+	       section_vector& sections)
+  : priv_(new priv(path, sections))
+{}
+
+config::config()
+  : priv_(new priv)
+{}
+
+config::~config()
+{}
+
+/// @return the path to the config file.
+const string&
+config::get_path() const
+{return priv_->path_;}
+
+/// Set the path to the config file.
+///
+/// @param the new path to the config file.
+void
+config::set_path(const string& path)
+{priv_->path_ = path;}
+
+/// @return the sections of the config file.
+const config::section_vector&
+config::get_sections() const
+{return priv_->sections_;}
+
+/// Set new sections to the ini config
+///
+/// @param sections the new sections to set.
+void
+config::set_sections(const section_vector& sections)
+{priv_->sections_ = sections;}
+
+// </config stuff>
+
 // <config reader stuff>
 
-/// Parse an *.ini file and return the resulting vector of sections
-/// representing its content.
+/// Parse the sections of an *.ini file.
 ///
 /// @param input the input stream to parse the ini file from.
 ///
@@ -532,8 +593,8 @@ public:
 /// @return true upon successful completion and if if the stream is
 /// left in a non-erratic state.
 bool
-read_config(std::istream& input,
-	    config::section_vector& sections)
+read_sections(std::istream& input,
+	      config::section_vector& sections)
 {
   read_context ctxt(input);
 
@@ -549,8 +610,7 @@ read_config(std::istream& input,
   return input.good() || input.eof();
 }
 
-/// Parse an *.ini file and return the resulting vector of sections
-/// representing its content.
+/// Parse the sections of an *.ini file.
 ///
 /// @param path the path of the ini file to parse.
 ///
@@ -560,17 +620,80 @@ read_config(std::istream& input,
 /// @return true upon successful completion and if if the stream is
 /// left in a non-erratic state.
 bool
-read_config(const string& path,
-	    config::section_vector& sections)
+read_sections(const string& path,
+	      config::section_vector& sections)
 {
   std::ifstream in(path, std::ifstream::binary);
   if (!in.good())
     return false;
 
-  bool is_ok = read_config(in, sections);
+  bool is_ok = read_sections(in, sections);
   in.close();
 
   return is_ok;
+}
+
+/// Parse an ini config file from an input stream.
+///
+/// @param input the input stream to parse the ini config file from.
+///
+/// @return true upon successful parsing.
+bool
+read_config(istream& input,
+	    config& conf)
+{
+  config::section_vector sections;
+  if (!read_sections(input, sections))
+    return false;
+  conf.set_sections(sections);
+  return true;
+}
+
+/// Parse an ini config file from a file on disk.
+///
+/// @param path the path to the ini file to parse.
+///
+/// @param conf the resulting config file to populate as a result of
+/// the parsing.  This is populated iff the function returns true.
+///
+/// @return true upon succcessful completion.
+bool
+read_config(const string& path,
+	    config& conf)
+{
+  config::section_vector sections;
+  if (!read_sections(path, sections))
+    return false;
+  conf.set_path(path);
+  conf.set_sections(sections);
+  return true;
+}
+
+/// Parse an ini config file from an input stream.
+///
+/// @return a shared pointer to the resulting config, or nil if it
+/// couldn't be parsed.
+config_sptr
+read_config(std::istream& input)
+{
+  config_sptr c(new config);
+  if (!read_config(input, *c))
+    return config_sptr();
+  return c;
+}
+
+
+/// Parse an ini config file from an on-disk file.
+///
+/// @return a shared pointer to the resulting config, or nil if it
+/// couldn't be parsed.
+config_sptr
+read_config(const string& path)
+{
+  config_sptr c(new config);
+  if (!read_config(path, *c))
+    return config_sptr();
+  return c;
 }
 // <config reader stuff>
 
@@ -613,7 +736,8 @@ write_section(const config::section& section,
   return out.good();
 }
 
-/// Serialize an ini config to an output stream.
+/// Serialize a vector of sections that make up an ini config file to
+/// an output stream.
 ///
 /// Note that an ini config is just a collection of sections.
 ///
@@ -623,8 +747,8 @@ write_section(const config::section& section,
 ///
 /// @return true if the output stream is left in a non-erratic state.
 bool
-write_config(const config::section_vector& sections,
-	     std::ostream& out)
+write_sections(const config::section_vector& sections,
+	       std::ostream& out)
 {
   for (config::section_vector::const_iterator i = sections.begin();
        i != sections.end();
@@ -636,9 +760,8 @@ write_config(const config::section_vector& sections,
   return out.good();
 }
 
-/// Serialize an ini config to a file.
-///
-/// Note that an ini config is just a collection of sections.
+/// Serialize a vector of sections that make up an ini config to a
+/// file.
 ///
 /// @param sections the vector of sections to serialize.
 ///
@@ -646,21 +769,52 @@ write_config(const config::section_vector& sections,
 ///
 /// @return true if the output stream is left in a non-erratic state.
 bool
-write_config(const config::section_vector& sections,
-	     const string& path)
+write_sections(const config::section_vector& sections,
+	       const string& path)
 {
   std::ofstream f(path, std::ofstream::binary);
 
   if (!f.good())
     return false;
 
-  bool is_ok = write_config(sections, f);
+  bool is_ok = write_sections(sections, f);
 
   f.close();
 
   return is_ok;
 }
 
+/// Serialize an instance of @ref config to an output stream.
+///
+/// @param conf the instance of @ref config to serialize.
+///
+/// @param output the output stream to serialize @p conf to.
+///
+/// @return true upon successful completion.
+bool
+write_config(const config& conf,
+	     std::ostream& output)
+{
+  if (!write_sections(conf.get_sections(), output))
+    return false;
+  return true;
+}
+
+/// Serialize an instance of @ref conf to an on-disk file.
+///
+/// @param conf the instance of @ref config to serialize.
+///
+/// @param path the path to the on-disk file to serialize to.
+///
+/// @return true upon successful completion.
+bool
+write_config(const config& conf,
+	     const string& path)
+{
+  if (!write_sections(conf.get_sections(), path))
+    return false;
+  return true;
+}
 // </confg writer stuff>
 
 }// end namespace ini

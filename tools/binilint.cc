@@ -37,6 +37,7 @@ using std::cin;
 using std::string;
 using std::ostream;
 using abigail::ini::config;
+using abigail::ini::config_sptr;
 using abigail::ini::read_config;
 using abigail::ini::write_config;
 
@@ -120,16 +121,15 @@ main(int argc, char* argv[])
   // That real work is driven by the options the user set; these
   // options are recorded in the opts variable.
 
-  bool is_ok = false;
-  config::section_vector sections;
+  config_sptr conf;
 
   if (opts.read_from_stdin)
-    is_ok = read_config(cin, sections);
+    conf = read_config(cin);
   else if (!opts.path.empty())
-    is_ok = read_config(opts.path, sections);
+    conf = read_config(opts.path);
 
-  if (is_ok && !opts.no_out)
-    is_ok = write_config(sections, std::cout);
+  if (conf && !opts.no_out)
+    write_config(*conf, std::cout);
 
-  return !is_ok;
+  return !conf;
 }
