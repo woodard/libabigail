@@ -119,10 +119,8 @@ DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $DW_LIBS"
 AC_SUBST(DEPS_LIBS)
 
 if test x$ABIGAIL_DEVEL != x; then
-   DEVEL_CFLAGS="-g -Wall -Wextra -Werror"
-   DEVEL_CXXFLAGS="-g -Wall -Wextra -Werror"
-   CFLAGS=$DEVEL_CFLAGS
-   CXXFLAGS=$DEVEL_CXXFLAGS
+   CFLAGS="-g -Wall -Wextra -Werror"
+   CXXFLAGS="-g -Wall -Wextra -Werror"
 fi
 
 AC_CONFIG_FILES([Makefile
