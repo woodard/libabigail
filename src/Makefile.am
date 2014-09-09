@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS=subdir-objects
-
 h=$(abs_srcdir)
 lib_LTLIBRARIES=libabigail.la
 libabigaildir=$(libdir)

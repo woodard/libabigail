@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS=subdir-objects
-
 h=$(abs_srcdir)
 
 if ENABLE_ZIP_ARCHIVE

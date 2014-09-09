@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS=subdir-objects
-
 h=$(abs_srcdir)
 
 noinst_LTLIBRARIES = libtoolsutils.la
