@@ -55,12 +55,17 @@ AC_CHECK_LIB(dw, dwfl_begin, [DW_LIBS=-ldw])
 AC_CHECK_HEADER(elfutils/libdwfl.h,
 		[],
 		[AC_MSG_ERROR([could not find elfutils/libdwfl.h installed])])
+AC_CHECK_LIB([elf], [elf_end], [ELF_LIBS="-lelf"])
+AC_CHECK_HEADER([libelf.h],
+		[],
+		[AC_MSG_ERROR([could not find libelf.h])])
 
 if test x$DW_LIBS = x; then
    AC_MSG_ERROR([could not find elfutils dwarf library installed])
 fi
 
 AC_SUBST(DW_LIBS)
+AC_SUBST([ELF_LIBS])
 
 dnl Check for dependency: libxml
 LIBXML2_VERSION=2.6.22
@@ -115,7 +120,7 @@ AM_CONDITIONAL(ENABLE_ZIP_ARCHIVE, test x$ENABLE_ZIP_ARCHIVE = xyes)
 DEPS_CPPFLAGS="$XML_CFLAGS $LIBZIP_CFLAGS"
 AC_SUBST(DEPS_CPPFLAGS)
 
-DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $DW_LIBS"
+DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $DW_LIBS $ELF_LIBS"
 AC_SUBST(DEPS_LIBS)
 
 if test x$ABIGAIL_DEVEL != x; then
