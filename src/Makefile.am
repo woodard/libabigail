@@ -20,7 +20,7 @@ abg-viz-common.cc			\
 abg-viz-dot.cc				\
 abg-viz-svg.cc
 
-libabigail_la_LDFLAGS=@DEPS_LIBS@ -Wl,--as-needed
+libabigail_la_LDFLAGS=$(DEPS_LIBS) -Wl,--as-needed
 
-AM_CPPFLAGS=@DEPS_CPPFLAGS@ -Wall -I$(abs_top_srcdir)/include -I$(abs_top_builddir)/include -I$(abs_top_builddir)
+AM_CPPFLAGS=$(DEPS_CPPFLAGS) -Wall -I$(abs_top_srcdir)/include -I$(abs_top_builddir)/include -I$(abs_top_builddir)
 AM_CXXFLAGS="-std=gnu++11"

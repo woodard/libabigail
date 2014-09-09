@@ -41,12 +41,12 @@ website-html-doxygen: doxygen-website-cfg
 	doxygen $(DOXY_WEBSITE_BLD_CFG)
 
 doc-install-html-doxygen: doc-html-doxygen
-	test -z "$(DESTDIR)@docdir@" || $(mkinstalldirs) "$(DESTDIR)@docdir@"
-	cp -r ${DOXY_API_BLD_DIR} "$(DESTDIR)@docdir@"
+	test -z "$(DESTDIR)$(docdir)" || $(mkinstalldirs) "$(DESTDIR)$(docdir)"
+	cp -r ${DOXY_API_BLD_DIR} "$(DESTDIR)$(docdir)"
 
 website-install-html-doxygen: doxygen-website-cfg
-	test -z "$(DESTDIR)@docdir@/website" || $(mkinstalldirs) "$(DESTDIR)@docdir@/website"
-	cp -r $(DOXY_WEBSITE_BLD_DIR) "$(DESTDIR)@docdir@/website"
+	test -z "$(DESTDIR)$(docdir)/website" || $(mkinstalldirs) "$(DESTDIR)$(docdir)/website"
+	cp -r $(DOXY_WEBSITE_BLD_DIR) "$(DESTDIR)$(docdir)/website"
 
 # By adding these files here, automake will remove them for 'make clean'
 CLEANFILES = $(DOXY_API_BLD_CFG) $(DOXY_WEBSITE_BLD_CFG)
