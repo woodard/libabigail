@@ -4382,6 +4382,19 @@ compare_function_types(const function_type& lhs,
   catch (...)
     {}
 
+  // Compare the names of the class of the method
+
+  if (!!lhs_class != !!rhs_class)
+    return false;
+
+  if (lhs_class
+      && (lhs_class->get_qualified_name() != rhs_class->get_qualified_name()))
+    return false;
+
+  // Then compare the return type; Beware if it's t's a class type
+  // that is the same as the method class name; we can recurse for
+  // ever in that case.
+
   decl_base_sptr lhs_return_type_decl =
     get_type_declaration(lhs.get_return_type());
   decl_base_sptr rhs_return_type_decl =
