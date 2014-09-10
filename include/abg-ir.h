@@ -31,6 +31,59 @@
 #include "abg-hash.h"
 #include "abg-traverse.h"
 
+/// @file
+///
+/// This file contains the declarations of the Internal Representation
+/// of libabigail.
+
+/*!
+
+@defgroup Memory Memory management considerations
+@{
+
+For memory management and garbage collection of libabigail's IR
+artifacts, we use std::tr1::shared_ptr and std::tr1::weak_ptr.
+
+When manipulating these IR artifacts, there are a few rules to keep in
+mind.
+
+<b>The declaration for a type is owned by only one scope </b>
+
+This means that for each instance of abigail::type_base (a type) there
+is an instance of abigail::scope_decl that owns a @ref
+abigail::decl_base_sptr (a shared pointer to an abigail::decl_base)
+that points to the declaration of that type.  The
+abigail::type_base_sptr is added to the scope using the function
+abigail::add_decl_to_scope().
+
+There is a kind of type that is usually not syntactically owned by a
+scope: it's function type.  In libabigail function types are
+represented by abigail::function_type and abigail::method_type.  These
+types must be owned by the translation unit they originate from.
+Adding them to the translation unit must be done by a call to the
+method function abigail::translation::get_canonical_function_type().
+The type returned by that function is the one to use.
+
+<b> A declaration that has a type does NOT own the type </b>
+
+This means that, for instance, in an abigail::var_decl (a variable
+declaration), the type of the declaration is not owned by the
+declaration.  In other (concrete) words, the variable declaration
+doesn't have a shared pointer to the type.  Rather, it has a *weak*
+pointer to its type.  That means that it has a data member of type
+abigail::type_base_wptr that contains the type of the declaration.
+
+But then abigail::var_decl::get_type() returns a shared pointer that
+is constructed from the internal weak pointer to the type.  That way,
+users of the type of the var can own a temporary reference on it and
+be assured that the type's life time is long enough for their need.
+
+Likewise, data members, function and template parameters similarly
+have weak pointers on their type.
+
+@}
+
+*/
 namespace abigail
 {
 
@@ -106,8 +159,21 @@ typedef std::vector<translation_unit_sptr> translation_units;
 /// Convenience typedef for a shared pointer on a @ref type_base
 typedef shared_ptr<type_base> type_base_sptr;
 
+/// Convenience typedef for a weak pointer on a @ref type_base
+typedef weak_ptr<type_base> type_base_wptr;
+
 /// Convenience typedef for a smart pointer on @ref decl_base.
 typedef shared_ptr<decl_base> decl_base_sptr;
+
+class function_type;
+
+class function_decl;
+
+/// Convenience typedef for a shared pointer on a @ref function_type
+typedef shared_ptr<function_type> function_type_sptr;
+
+/// Convenience typedef for a weak pointer on a @ref function_type
+typedef weak_ptr<function_type> function_type_wptr;
 
 struct ir_traversable_base;
 
@@ -141,6 +207,7 @@ class translation_unit : public traversable_base
 
   // Forbidden
   translation_unit();
+
 public:
   /// Convenience typedef for a shared pointer on a @ref global_scope.
   typedef shared_ptr<global_scope> global_scope_sptr;
@@ -177,6 +244,9 @@ public:
 
   bool
   operator==(const translation_unit&) const;
+
+  function_type_sptr
+  get_canonical_function_type(function_type_sptr ftype) const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -474,6 +544,14 @@ public:
 
   virtual ~context_rel();
 };// end class context_rel
+
+class class_decl;
+
+/// Convenience typedef for a shared pointer on a @ref class_decl
+typedef shared_ptr<class_decl> class_decl_sptr;
+
+/// Convenience typedef for a weak pointer on a @ref class_decl.
+typedef weak_ptr<class_decl> class_decl_wptr;
 
 /// The base type of all declarations.
 class decl_base : public ir_traversable_base
@@ -956,7 +1034,7 @@ typedef shared_ptr<qualified_type_def> qualified_type_def_sptr;
 class qualified_type_def : public virtual type_base, public virtual decl_base
 {
   char			cv_quals_;
-  shared_ptr<type_base> underlying_type_;
+  weak_ptr<type_base> underlying_type_;
 
   // Forbidden.
   qualified_type_def();
@@ -999,7 +1077,7 @@ public:
   string
   get_cv_quals_string_prefix() const;
 
-  const shared_ptr<type_base>&
+  shared_ptr<type_base>
   get_underlying_type() const;
 
   virtual void
@@ -1023,7 +1101,7 @@ typedef shared_ptr<pointer_type_def> pointer_type_def_sptr;
 /// The abstraction of a pointer type.
 class pointer_type_def : public virtual type_base, public virtual decl_base
 {
-  shared_ptr<type_base>	pointed_to_type_;
+  type_base_wptr pointed_to_type_;
 
   // Forbidden.
   pointer_type_def();
@@ -1042,7 +1120,7 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
-  const shared_ptr<type_base>&
+  const type_base_sptr
   get_pointed_to_type() const;
 
   virtual void
@@ -1060,7 +1138,7 @@ typedef shared_ptr<reference_type_def> reference_type_def_sptr;
 /// Abstracts a reference type.
 class reference_type_def : public virtual type_base, public virtual decl_base
 {
-  shared_ptr<type_base> pointed_to_type_;
+  type_base_wptr	pointed_to_type_;
   bool			is_lvalue_;
 
   // Forbidden.
@@ -1081,7 +1159,7 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
-  const shared_ptr<type_base>&
+  shared_ptr<type_base>
   get_pointed_to_type() const;
 
   bool
@@ -1185,7 +1263,7 @@ public:
   virtual string
   get_qualified_name() const;
 
-  const shared_ptr<type_base>&
+  const type_base_sptr
   get_element_type() const;
 
   virtual void
@@ -1336,7 +1414,7 @@ typedef shared_ptr<typedef_decl> typedef_decl_sptr;
 /// The abstraction of a typedef declaration.
 class typedef_decl : public virtual type_base, public virtual decl_base
 {
-  shared_ptr<type_base> underlying_type_;
+  type_base_wptr underlying_type_;
 
   // Forbidden
   typedef_decl();
@@ -1365,7 +1443,7 @@ public:
   virtual string
   get_pretty_representation() const;
 
-  const shared_ptr<type_base>&
+  shared_ptr<type_base>
   get_underlying_type() const;
 
   virtual bool
@@ -1475,7 +1553,7 @@ public:
   virtual bool
   operator==(const decl_base&) const;
 
-  const shared_ptr<type_base>&
+  const type_base_sptr
   get_type() const;
 
   binding
@@ -1526,9 +1604,6 @@ public:
   get_data_member_is_laid_out(const var_decl_sptr m);
 }; // end class var_decl
 
-/// Convenience typedef for a shared pointer on a @ref function_type
-typedef shared_ptr<function_type> function_type_sptr;
-
 /// Convenience typedef for a shared pointer on a @ref function_decl
 typedef shared_ptr<function_decl> function_decl_sptr;
 
@@ -1557,12 +1632,12 @@ public:
   /// Abtraction for the parameter of a function.
   class parameter
   {
-    shared_ptr<type_base>	type_;
-    unsigned			index_;
-    bool			variadic_marker_;
-    std::string		name_;
-    location			location_;
-    bool			artificial_;
+    type_base_wptr	type_;
+    unsigned		index_;
+    bool		variadic_marker_;
+    std::string	name_;
+    location		location_;
+    bool		artificial_;
 
   public:
 
@@ -1595,9 +1670,13 @@ public:
       artificial_(false)
     {}
 
-    const type_base_sptr&
+    const type_base_sptr
     get_type()const
-    {return type_;}
+    {
+      if (type_.expired())
+	return type_base_sptr();
+      return type_base_sptr(type_);
+    }
 
     /// @return a copy of the type name of the parameter.
     const string
@@ -1634,10 +1713,6 @@ public:
 
     const string
     get_name_id() const;
-
-    const shared_ptr<type_base>&
-    get_type()
-    {return type_;}
 
     unsigned
     get_index() const
@@ -1692,17 +1767,6 @@ public:
     get_variadic_marker() const
     {return variadic_marker_;}
   };
-
-  function_decl(const std::string& name,
-		const std::vector<parameter_sptr>& parms,
-		shared_ptr<type_base> return_type,
-		size_t fptr_size_in_bits,
-		size_t fptr_align_in_bits,
-		bool declared_inline,
-		location locus,
-		const std::string& mangled_name = "",
-		visibility vis = VISIBILITY_DEFAULT,
-		binding bind = BINDING_GLOBAL);
 
   function_decl(const std::string& name,
 		function_type_sptr function_type,
@@ -1798,7 +1862,7 @@ public:
 private:
   function_type();
 
-  shared_ptr<type_base> return_type_;
+  type_base_wptr return_type_;
 
 protected:
   parameters parms_;
@@ -1856,12 +1920,16 @@ public:
   : type_base(size_in_bits, alignment_in_bits)
   {}
 
-  const shared_ptr<type_base>&
+  type_base_sptr
   get_return_type() const
-  {return return_type_;}
+  {
+    if (return_type_.expired())
+      return type_base_sptr();
+    return type_base_sptr(return_type_);
+  }
 
   void
-  set_return_type(shared_ptr<type_base> t)
+  set_return_type(type_base_sptr t)
   {return_type_ = t;}
 
   const parameters&
@@ -1896,13 +1964,25 @@ public:
   virtual ~function_type();
 };//end class function_type
 
+/// The hashing functor for @ref function_type.
+struct function_type::hash
+{
+  size_t
+  operator()(const function_type& t) const;
+
+  size_t
+  operator()(const function_type* t) const;
+
+  size_t
+  operator()(const function_type_sptr t) const;
+};// end struct function_type::hash
+
 /// Convenience typedef for shared pointer to @ref method_type.
 typedef shared_ptr<method_type> method_type_sptr;
 /// Abstracts the type of a class member function.
 class method_type : public function_type
 {
-
-  shared_ptr<class_decl> class_type_;
+  class_decl_wptr class_type_;
 
   method_type();
 
@@ -1930,9 +2010,9 @@ public:
   method_type(size_t size_in_bits,
 	      size_t alignment_in_bits);
 
-  const shared_ptr<class_decl>&
+  class_decl_sptr
   get_class_type() const
-  {return class_type_;}
+  {return class_decl_sptr(class_type_);}
 
   void
   set_class_type(shared_ptr<class_decl> t);
@@ -2033,7 +2113,7 @@ public:
 /// Abstracts non type template parameters.
 class non_type_tparameter : public template_parameter, public virtual decl_base
 {
-  shared_ptr<type_base> type_;
+  type_base_wptr type_;
 
   // Forbidden
   non_type_tparameter();
@@ -2058,9 +2138,13 @@ public:
   virtual bool
   operator==(const template_parameter&) const;
 
-  shared_ptr<type_base>
+  type_base_sptr
   get_type() const
-  {return type_;}
+  {
+    if (type_.expired())
+      return type_base_sptr();
+    return type_base_sptr(type_);
+  }
 
   virtual ~non_type_tparameter();
 };// end class non_type_tparameter
@@ -2114,7 +2198,7 @@ public:
 /// scope of a template_decl.
 class type_composition : public template_parameter, public virtual decl_base
 {
-  shared_ptr<type_base> type_;
+  type_base_wptr type_;
 
   type_composition();
 
@@ -2124,12 +2208,16 @@ public:
   type_composition(unsigned			index,
 		   shared_ptr<type_base>	composed_type);
 
-  shared_ptr<type_base>
+  type_base_sptr
   get_composed_type() const
-  {return type_;}
+  {
+    if (type_.expired())
+      return type_base_sptr();
+    return type_base_sptr(type_);
+  }
 
   void
-  set_composed_type(shared_ptr<type_base> t)
+  set_composed_type(type_base_sptr t)
   {type_ = t;}
 
   virtual size_t
@@ -2257,9 +2345,6 @@ public:
 
   virtual ~class_tdecl();
 };// end class class_tdecl
-
-/// Convenience typedef for a shared pointer on a @ref class_decl
-typedef shared_ptr<class_decl> class_decl_sptr;
 
 /// Abstracts a class declaration.
 class class_decl : public scope_type_decl
@@ -2657,18 +2742,6 @@ class class_decl::method_decl : public function_decl
   set_scope(scope_decl*);
 
 public:
-
-  method_decl(const std::string&  name,
-	      const std::vector<parameter_sptr >& parms,
-	      shared_ptr<type_base> return_type,
-	      shared_ptr<class_decl> class_type,
-	      size_t	ftype_size_in_bits,
-	      size_t ftype_align_in_bits,
-	      bool declared_inline,
-	      location locus,
-	      const std::string& mangled_name = "",
-	      visibility vis = VISIBILITY_DEFAULT,
-	      binding bind = BINDING_GLOBAL);
 
   method_decl(const std::string& name, shared_ptr<method_type> type,
 	      bool declared_inline, location locus,

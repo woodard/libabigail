@@ -21,6 +21,8 @@
 //Author: Dodji Seketeli
 
 /// @file
+///
+/// Definitions for the Internal Representation artifacts of libabigail.
 
 #include <cxxabi.h>
 #include <vector>
@@ -144,10 +146,10 @@ location_manager::expand_location(const location	location,
   column = l.column_;
 }
 
-typedef unordered_map<shared_ptr<type_base>,
+typedef unordered_map<function_type_sptr,
 		      bool,
-		      type_base::cached_hash,
-		      type_shared_ptr_equal> type_ptr_map;
+		      function_type::hash,
+		      type_shared_ptr_equal> fn_type_ptr_map;
 
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
@@ -156,7 +158,7 @@ struct translation_unit::priv
   std::string			path_;
   location_manager		loc_mgr_;
   mutable global_scope_sptr	global_scope_;
-  type_ptr_map			canonical_types_;
+  mutable fn_type_ptr_map	canonical_function_types_;
 
   priv()
     : address_size_(0)
@@ -258,6 +260,33 @@ translation_unit::operator==(const translation_unit& other)const
     return false;
 
   return *get_global_scope() == *other.get_global_scope();
+}
+
+/// Return the canonical version of a given instance of @ref function_type.
+///
+/// A given translation units keeps only one copy of each function
+/// type that is used in the unit.  So each function type that is
+/// built somewhere needs to be passed to this function to
+/// canonicalize it and/or return the canonical version.
+///
+/// Note that it really is the translation unit that 'owns' the
+/// function types that are live in the translation unit.  This is
+/// unlike the other kinds of types that are owned by the scope where
+/// they are defined.
+///
+/// @param ftype the function type to canonicalize.
+///
+/// @return the resulting canonical type.
+function_type_sptr
+translation_unit::get_canonical_function_type(function_type_sptr ftype) const
+{
+  fn_type_ptr_map::iterator i = priv_->canonical_function_types_.find(ftype);
+  if (i == priv_->canonical_function_types_.end())
+    {
+      priv_->canonical_function_types_[ftype] = true;
+      return ftype;
+    }
+  return dynamic_pointer_cast<function_type>(i->first);
 }
 
 /// This implements the ir_traversable_base::traverse virtual
@@ -3308,14 +3337,16 @@ qualified_type_def::build_name(bool fully_qualified) const
 {
   string quals = get_cv_quals_string_prefix();
   decl_base_sptr td =
-    get_type_declaration(underlying_type_);
+    get_type_declaration(get_underlying_type());
   string name;
   if (fully_qualified)
     name = td->get_qualified_name();
   else
     name = td->get_name();
-  if (dynamic_pointer_cast<pointer_type_def>(underlying_type_)
-      || dynamic_pointer_cast<reference_type_def>(underlying_type_))
+  if (dynamic_pointer_cast<pointer_type_def>(get_underlying_type())
+      || (!underlying_type_.expired()
+	  && dynamic_pointer_cast<reference_type_def>
+	  (type_base_sptr(underlying_type_))))
     {
       name += " ";
       name += quals;
@@ -3463,9 +3494,13 @@ qualified_type_def::get_cv_quals_string_prefix() const
 }
 
 /// Getter of the underlying type
-const shared_ptr<type_base>&
+shared_ptr<type_base>
 qualified_type_def::get_underlying_type() const
-{return underlying_type_;}
+{
+  if (underlying_type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(underlying_type_);
+}
 
 /// Overloaded bitwise OR operator for cv qualifiers.
 qualified_type_def::CV
@@ -3557,9 +3592,13 @@ pointer_type_def::operator==(const type_base& o) const
   return *get_pointed_to_type() == *other->get_pointed_to_type();
 }
 
-const shared_ptr<type_base>&
+const type_base_sptr
 pointer_type_def::get_pointed_to_type() const
-{return pointed_to_type_;}
+{
+  if (pointed_to_type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(pointed_to_type_);
+}
 
 /// Build and return the qualified name of the current instance of
 /// @ref pointer_type_def.
@@ -3571,7 +3610,7 @@ pointer_type_def::get_qualified_name(string& qn) const
   if (peek_qualified_name().empty())
     {
       decl_base_sptr td =
-	get_type_declaration(pointed_to_type_);
+	get_type_declaration(get_pointed_to_type());
       string name;
       td->get_qualified_name(name);
       set_qualified_name(name + "*");
@@ -3637,9 +3676,13 @@ reference_type_def::operator==(const type_base& o) const
   return *this == *other;
 }
 
-const shared_ptr<type_base>&
+shared_ptr<type_base>
 reference_type_def::get_pointed_to_type() const
-{return pointed_to_type_;}
+{
+  if (pointed_to_type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(pointed_to_type_);
+}
 
 bool
 reference_type_def::is_lvalue() const
@@ -3656,7 +3699,7 @@ reference_type_def::get_qualified_name(string& qn) const
   if (peek_qualified_name().empty())
     {
       decl_base_sptr td =
-	get_type_declaration(pointed_to_type_);
+	get_type_declaration(get_pointed_to_type());
       string name;
       td->get_qualified_name(name);
       set_qualified_name(name + "&");
@@ -3743,7 +3786,7 @@ array_type_def::subrange_type::get_location() const
 // </array_type_def::subrange_type>
 struct array_type_def::priv
 {
-  const type_base_sptr	element_type_;
+  type_base_wptr	element_type_;
   subranges_type	subranges_;
 
   priv(type_base_sptr t)
@@ -3841,9 +3884,13 @@ array_type_def::operator==(const type_base& o) const
 /// Getter of the type of an array element.
 ///
 /// @return the type of an array element.
-const shared_ptr<type_base>&
+const type_base_sptr
 array_type_def::get_element_type() const
-{return priv_->element_type_;}
+{
+  if (priv_->element_type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(priv_->element_type_);
+}
 
 // Append a single subrange @param sub.
 void
@@ -4097,9 +4144,13 @@ typedef_decl::get_pretty_representation() const
 /// Getter of the underlying type of the typedef.
 ///
 /// @return the underlying_type.
-const shared_ptr<type_base>&
+type_base_sptr
 typedef_decl::get_underlying_type() const
-{return underlying_type_;}
+{
+  if (underlying_type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(underlying_type_);
+}
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -4120,7 +4171,7 @@ typedef_decl::~typedef_decl()
 
 struct var_decl::priv
 {
-  type_base_sptr	type_;
+  type_base_wptr	type_;
   decl_base::binding	binding_;
   elf_symbol_sptr	symbol_;
 
@@ -4145,9 +4196,13 @@ var_decl::var_decl(const std::string&		name,
     priv_(new priv(type, bind))
 {}
 
-const shared_ptr<type_base>&
+const type_base_sptr
 var_decl::get_type() const
-{return priv_->type_;}
+{
+  if (priv_->type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(priv_->type_);
+}
 
 decl_base::binding
 var_decl::get_binding() const
@@ -4592,10 +4647,7 @@ method_type::set_class_type(shared_ptr<class_decl> t)
   if (!t)
     return;
 
-  function_decl::parameter p(t, 0, "");
-  if (class_type_)
-    assert(!parms_.empty());
-    class_type_ = t;
+  class_type_ = t;
 }
 
 /// The destructor of method_type
@@ -4610,20 +4662,12 @@ struct function_decl::priv
 {
   bool			declared_inline_;
   decl_base::binding	binding_;
-  function_type_sptr	type_;
+  function_type_wptr	type_;
   elf_symbol_sptr	symbol_;
 
   priv()
     : declared_inline_(false),
       binding_(decl_base::BINDING_GLOBAL)
-  {}
-
-  priv(function_type* t,
-       bool declared_inline,
-       decl_base::binding binding)
-    : declared_inline_(declared_inline),
-      binding_(binding),
-      type_(t)
   {}
 
   priv(function_type_sptr t,
@@ -4655,56 +4699,6 @@ function_decl::parameter::get_name_id() const
   o << get_type_name() << "-" << get_index();
   return o.str();
 }
-
-/// Constructor for function_decl.
-///
-/// This constructor builds the necessary function_type on behalf of
-/// the client, so it takes parameters -- like the return types, the
-/// function parameters and the size/alignment of the pointer to the
-/// type of the function --  necessary to build the function_type
-/// under the hood.
-///
-/// If the client code already has the function_type at hand, it
-/// should instead the other constructor that takes the function_decl.
-///
-/// @param name the name of the function declaration.
-///
-/// @param parms a vector of parameters of the function.
-///
-/// @param return_type the return type of the function.
-///
-/// @param fptr_size_in_bits the size of the type of this function, in
-/// bits.
-///
-/// @param fptr_align_in_bits the alignment of the type of this
-/// function.
-///
-/// @param declared_inline whether this function was declared inline.
-///
-/// @param locus the source location of this function declaration.
-///
-/// @param linkage_name the mangled name of the function declaration.
-///
-/// @param vis the visibility of the function declaration.
-///
-/// @param bind the type of binding of the function.
-function_decl::function_decl(const std::string&  name,
-			     const std::vector<parameter_sptr>& parms,
-			     shared_ptr<type_base> return_type,
-			     size_t fptr_size_in_bits,
-			     size_t fptr_align_in_bits,
-			     bool declared_inline,
-			     location locus,
-			     const std::string& linkage_name,
-			     visibility vis,
-			     binding bind)
-  : decl_base(name, locus, linkage_name, vis),
-    priv_(new priv(new function_type(return_type, parms,
-				     fptr_size_in_bits,
-				     fptr_align_in_bits),
-		   declared_inline,
-		   bind))
-{}
 
 function_decl::function_decl(const std::string& name,
 			     function_type_sptr function_type,
@@ -4842,7 +4836,11 @@ function_decl::get_first_non_implicit_parm() const
 /// @return the type of the current instance of #function_decl.
 const shared_ptr<function_type>
 function_decl::get_type() const
-{return priv_->type_;}
+{
+  if (priv_->type_.expired())
+    return function_type_sptr();
+  return function_type_sptr(priv_->type_);
+}
 
 void
 function_decl::set_type(shared_ptr<function_type> fn_type)
@@ -5672,54 +5670,6 @@ class_decl::add_data_member(var_decl_sptr v, access_specifier access,
 }
 
 mem_fn_context_rel::~mem_fn_context_rel()
-{
-}
-
-/// a constructor for instances of class_decl::method_decl.
-///
-/// @param name the name of the method.
-///
-/// @param parms the parameters of the method
-///
-/// @param return_type the return type of the method.
-///
-/// @param class_type the type of the class the method belongs to.
-///
-/// @param ftype_size_in_bits the size of instances of
-/// class_decl::method_decl, expressed in bits.
-///
-/// @param ftype_align_in_bits the alignment of instance of
-/// class_decl::method_decl, expressed in bits.
-///
-/// @param declared_inline whether the method was declared inline or
-/// not.
-///
-/// @param locus the source location of the method.
-///
-/// @param linkage_name the mangled name of the method.
-///
-/// @param vis the visibility of the method.
-///
-/// @param bind the binding of the method.
-class_decl::method_decl::method_decl
-(const std::string& name,
- const std::vector<parameter_sptr>&	parms,
- shared_ptr<type_base>			return_type,
- shared_ptr<class_decl>		class_type,
- size_t				ftype_size_in_bits,
- size_t				ftype_align_in_bits,
- bool					declared_inline,
- location				locus,
-  const std::string&			linkage_name,
- visibility				vis,
- binding				bind)
-  : decl_base(name, locus, linkage_name, vis),
-	function_decl(name,
-		      shared_ptr<function_type>
-		      (new method_type(return_type, class_type, parms,
-				       ftype_size_in_bits,
-				       ftype_align_in_bits)),
-		      declared_inline, locus, linkage_name, vis, bind)
 {
 }
 

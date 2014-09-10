@@ -59,6 +59,7 @@ namespace abigail
 
 // Inject some types.
 using std::tr1::shared_ptr;
+using std::tr1::weak_ptr;
 using std::string;
 using std::vector;
 

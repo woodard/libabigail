@@ -5762,6 +5762,8 @@ build_function_decl(read_context&	ctxt,
 						     tu->get_address_size(),
 						     tu->get_address_size()));
 
+      fn_type = tu->get_canonical_function_type(fn_type);
+
       result.reset(is_method
 		   ? new class_decl::method_decl(fname, fn_type,
 						 is_inline, floc,

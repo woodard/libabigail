@@ -1808,6 +1808,8 @@ build_function_decl(read_context&	ctxt,
 						      size, align)
 				    : new function_type(size, align));
 
+  fn_type = ctxt.get_translation_unit()->get_canonical_function_type(fn_type);
+
   shared_ptr<function_decl> fn_decl(as_method_decl
 				    ? new class_decl::method_decl
 				    (name, fn_type,

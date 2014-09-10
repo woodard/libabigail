@@ -449,26 +449,7 @@ struct function_decl::parameter::hash
   }
 };
 
-struct function_type::hash
-{
-  size_t
-  operator()(const function_type& t) const
-  {
-    std::tr1::hash<string> hash_string;
-    type_base::shared_ptr_hash hash_type_ptr;
-    function_decl::parameter::hash hash_parameter;
-
-    size_t v = hash_string(typeid(t).name());
-    v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
-    for (vector<shared_ptr<function_decl::parameter> >::const_iterator i =
-	   t.get_first_non_implicit_parm();
-	 i != t.get_parameters().end();
-	 ++i)
-      v = hashing::combine_hashes(v, hash_parameter(**i));
-    return v;
-  }
-};
-
+/// Hashing functor for the @ref method_type type.
 struct method_type::hash
 {
   size_t
@@ -490,7 +471,66 @@ struct method_type::hash
 
     return v;
   }
-};
+
+  size_t
+  operator()(const method_type* t)
+  {return operator()(*t);}
+
+  size_t
+  operator()(const method_type_sptr t)
+  {return operator()(t.get());}
+}; // end struct method_type::hash
+
+// <struct function_type::hash stuff>
+
+/// Hashing function for @ref function_type.
+///
+/// @param t the function type to hash.
+///
+/// @return the resulting hash value.
+size_t
+function_type::hash::operator()(const function_type& t) const
+{
+  std::tr1::hash<string> hash_string;
+  type_base::shared_ptr_hash hash_type_ptr;
+  function_decl::parameter::hash hash_parameter;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
+  for (vector<shared_ptr<function_decl::parameter> >::const_iterator i =
+	 t.get_first_non_implicit_parm();
+       i != t.get_parameters().end();
+       ++i)
+    v = hashing::combine_hashes(v, hash_parameter(**i));
+  return v;
+}
+
+/// Hashing function for a pointer to @ref function_type.
+///
+/// @param t the pointer to @ref function_type to hash.
+///
+/// @return the resulting hash value.
+size_t
+function_type::hash::operator()(const function_type* t) const
+{
+  if (const method_type* m = dynamic_cast<const method_type*>(t))
+    {
+      method_type::hash h;
+      return h(m);
+    }
+  return operator()(*t);
+}
+
+/// Hashing function for a shared pointer to @ref function_type.
+///
+/// @param t the pointer to @ref function_type to hash.
+///
+/// @return the resulting hash value.
+size_t
+function_type::hash::operator()(const function_type_sptr t) const
+{return operator()(t.get());}
+
+// </struct function_type::hash stuff>
 
 size_t
 class_decl::member_base::hash::operator()(const member_base& m) const
