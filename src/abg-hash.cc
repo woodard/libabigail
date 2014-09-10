@@ -479,7 +479,7 @@ struct method_type::hash
     function_decl::parameter::hash hash_parameter;
 
     size_t v = hash_string(typeid(t).name());
-    string class_name= t.get_class_type()->get_qualified_name();
+    string class_name = t.get_class_type()->get_qualified_name();
     v = hashing::combine_hashes(v, hash_string(class_name));
     v = hashing::combine_hashes(v, hash_type_ptr(t.get_return_type()));
     vector<shared_ptr<function_decl::parameter> >::const_iterator i =
