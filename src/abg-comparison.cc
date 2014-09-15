@@ -3809,7 +3809,7 @@ class_diff::member_class_tmpls_changes()
 
 /// A comparison functor to compare two changed data members based on
 /// the offset of their initial value.
-struct ChangedDataMemberComp
+struct changed_data_member_comp
 {
   /// @param f the first changed data member to take into account
   ///
@@ -3828,7 +3828,7 @@ struct ChangedDataMemberComp
 
     return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
   }
-}; // end struct ChangedDataMemberComp
+}; // end struct changed_data_member_comp
 
 /// Sort two changed data members by the offset of their initial
 /// value.
@@ -3846,7 +3846,7 @@ sort_changed_data_members(const unsigned_changed_type_or_decl_map data_members,
        i != data_members.end();
        ++i)
     sorted.push_back(i->second);
-  ChangedDataMemberComp comp;
+  changed_data_member_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
@@ -3866,13 +3866,13 @@ sort_changed_data_members(const string_changed_type_or_decl_map& data_members,
        i != data_members.end();
        ++i)
     sorted.push_back(i->second);
-  ChangedDataMemberComp comp;
+  changed_data_member_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
 /// A comparison functor to compare two data members based on their
 /// offset.
-struct DataMemberComp
+struct data_member_comp
 {
   /// @param f the first data member to take into account.
   ///
@@ -3891,7 +3891,7 @@ struct DataMemberComp
 
     return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
   }
-};//end struct DataMemberComp
+};//end struct data_member_comp
 
 /// Sort a map of data members by the offset of their initial value.
 ///
@@ -3908,7 +3908,7 @@ sort_data_members(const string_decl_base_sptr_map &data_members,
        ++i)
     sorted.push_back(i->second);
 
-  DataMemberComp comp;
+  data_member_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
