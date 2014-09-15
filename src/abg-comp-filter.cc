@@ -100,7 +100,7 @@ diff_involves_decl_only_class(const class_diff* diff)
 ///
 /// @return true if the type size changed, false otherwise.
 static bool
-type_size_changed(type_base_sptr f, type_base_sptr s)
+type_size_changed(const type_base_sptr f, const type_base_sptr s)
 {
   if (!f || !s
       || f->get_size_in_bits() == 0
@@ -121,7 +121,7 @@ type_size_changed(type_base_sptr f, type_base_sptr s)
 ///
 /// @return true if the type size changed, false otherwise.
 static bool
-type_size_changed(decl_base_sptr f, decl_base_sptr s)
+type_size_changed(const decl_base_sptr f, const decl_base_sptr s)
 {return type_size_changed(is_type(f), is_type(s));}
 
 /// Tests if the access specifiers for a member declaration changed.
