@@ -812,6 +812,9 @@ diff::is_filtered_out() const
     if (!(get_category() & NOT_REDUNDANT_CATEGORY))
       return true;
 
+  if (get_category() == NO_CHANGE_CATEGORY)
+    return false;
+
   // Ignore the NOT_REDUNDANT_CATEGORY bit when comparing allowed
   // categories and the current set of categories.
   return !((get_category() & ~NOT_REDUNDANT_CATEGORY)
@@ -945,11 +948,8 @@ distinct_diff::report(ostream& out, const string& indent) const
 	assert(diff->to_be_reported());
       diff->report(out, indent + "  ");
     }
-else
-  if (!report_size_and_alignment_changes(f, s, context(), out, indent, true))
-    out << indent << "but no size changed\n";
   else
-    out << "\n";
+    report_size_and_alignment_changes(f, s, context(), out, indent, true);
 }
 
 /// Traverse an instance of distinct_diff.

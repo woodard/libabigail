@@ -230,7 +230,8 @@ public:
 /// into, regarding the kind of changes it represents.
 enum diff_category
 {
-  /// This means the diff node does not carry any (meaningful) change.
+  /// This means the diff node does not carry any (meaningful) change,
+  /// or that it carries changes that have not yet been categorized.
   NO_CHANGE_CATEGORY = 0,
 
   /// This means the diff node is *NOT* redundant.  The reason why we
