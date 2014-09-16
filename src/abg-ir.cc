@@ -646,7 +646,7 @@ elf_symbol::get_name_and_version_from_id(const string&	id,
 ///@}
 
 bool
-elf_symbol::operator==(const elf_symbol& other)
+elf_symbol::operator==(const elf_symbol& other) const
 {
   return (get_name() == other.get_name()
 	  && get_type() == other.get_type()

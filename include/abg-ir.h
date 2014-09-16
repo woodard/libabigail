@@ -416,7 +416,7 @@ public:
   operator=(const elf_symbol& s);
 
   bool
-  operator==(const elf_symbol&);
+  operator==(const elf_symbol&) const;
 }; // end class elf_symbol.
 
 std::ostream&
