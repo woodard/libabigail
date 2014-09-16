@@ -266,6 +266,10 @@ enum diff_category
   /// of enumerator to an enum type.
   HARMLESS_ENUM_CHANGE_CATEGORY = 1 << 6,
 
+  /// This means that a diff node in the sub-tree carries an a symbol
+  /// alias change that is harmless.
+  HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY = 1 << 7,
+
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.  Removal or changes of enumerators in a
@@ -289,6 +293,7 @@ enum diff_category
   | NON_VIRT_MEM_FUN_CHANGE_CATEGORY
   | STATIC_DATA_MEMBER_CHANGE_CATEGORY
   | HARMLESS_ENUM_CHANGE_CATEGORY
+  | HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
 };

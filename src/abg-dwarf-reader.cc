@@ -3040,6 +3040,21 @@ die_is_virtual(Dwarf_Die* die)
   return v == VIRTUALITY_PURE_VIRTUAL || v == VIRTUALITY_VIRTUAL;
 }
 
+/// Test if the DIE represents an entity that was declared inlined.
+///
+/// @param die the DIE to test for.
+///
+/// @return true if the DIE represents an entity that was declared
+/// inlined.
+static bool
+die_is_declared_inline(Dwarf_Die* die)
+{
+  size_t inline_value = 0;
+  if (!die_unsigned_constant_attribute(die, DW_AT_inline, inline_value))
+    return false;
+  return inline_value == DW_INL_declared_inlined;
+}
+
 /// Get the value of a given DIE attribute, knowing that it must be a
 /// location expression.
 ///
@@ -5681,8 +5696,7 @@ build_function_decl(read_context&	ctxt,
   location floc;
   die_loc_and_name(ctxt, die, floc, fname, flinkage_name);
 
-  size_t is_inline = false;
-  die_unsigned_constant_attribute(die, DW_AT_inline, is_inline);
+  size_t is_inline = die_is_declared_inline(die);
 
   decl_base_sptr return_type_decl;
   Dwarf_Die ret_type_die;

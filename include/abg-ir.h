@@ -407,6 +407,9 @@ public:
   const string&
   get_id_string() const;
 
+  string
+  get_aliases_id_string(const string_elf_symbols_map_type& symtab) const;
+
   static bool
   get_name_and_version_from_id(const string& id,
 			       string& name,
@@ -417,6 +420,9 @@ public:
 
   bool
   operator==(const elf_symbol&) const;
+
+  bool
+  does_alias(const elf_symbol&) const;
 }; // end class elf_symbol.
 
 std::ostream&
@@ -433,6 +439,14 @@ string_to_elf_symbol_binding(const string&, elf_symbol::binding&);
 
 bool
 operator==(const elf_symbol_sptr lhs, const elf_symbol_sptr rhs);
+
+bool
+elf_symbols_alias(const elf_symbol& s1, const elf_symbol& s2);
+
+void
+compute_aliases_for_elf_symbol(const elf_symbol& symbol,
+			       const string_elf_symbols_map_type& symtab,
+			       vector<elf_symbol*>& alias_set);
 
 /// The abstraction of the version of an ELF symbol.
 class elf_symbol::version

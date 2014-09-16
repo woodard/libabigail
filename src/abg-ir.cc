@@ -600,6 +600,27 @@ elf_symbol::get_id_string() const
   return priv_->id_string_;
 }
 
+/// Return a comma separated list of the id of the current symbol as
+/// well as the id string of its aliases.
+///
+/// @return the string.
+string
+elf_symbol::get_aliases_id_string(const string_elf_symbols_map_type& syms) const
+{
+  string result = get_id_string();
+  vector<elf_symbol*> aliases;
+  compute_aliases_for_elf_symbol(*this, syms, aliases);
+
+  for (vector<elf_symbol*>::const_iterator i = aliases.begin();
+       i != aliases.end();
+       ++i)
+    {
+      result += ", ";
+      result += (*i)->get_id_string();
+    }
+  return result;
+}
+
 /// Given the ID of a symbol, get the name and the version of said
 /// symbol.
 ///
@@ -655,6 +676,27 @@ elf_symbol::operator==(const elf_symbol& other) const
 	  && get_version() == other.get_version());
 }
 
+/// Test if the current symbol aliases another one.
+///
+/// @param o the other symbol to test against.
+///
+/// @return true iff the current symbol aliases @p o.
+bool
+elf_symbol::does_alias(const elf_symbol& o) const
+{
+  if (*this == o)
+    return true;
+
+  for (const elf_symbol* a = get_next_alias();
+       a && a != get_main_symbol();
+       a = a->get_next_alias())
+    {
+      if (o == *a)
+	return true;
+    }
+  return false;
+}
+
 bool
 operator==(const elf_symbol_sptr lhs, const elf_symbol_sptr rhs)
 {
@@ -666,6 +708,76 @@ operator==(const elf_symbol_sptr lhs, const elf_symbol_sptr rhs)
 
   return *lhs == *rhs;
 }
+
+/// Test if two symbols alias.
+///
+/// @param s1 the first symbol to consider.
+///
+/// @param s2 the second symbol to consider.
+///
+/// @return true if @p s1 aliases @p s2.
+bool
+elf_symbols_alias(const elf_symbol& s1, const elf_symbol& s2)
+{return s1.does_alias(s2) || s2.does_alias(s1);}
+
+void
+compute_aliases_for_elf_symbol(const elf_symbol& sym,
+			       const string_elf_symbols_map_type& symtab,
+			       vector<elf_symbol*>& aliases)
+{
+
+  if (elf_symbol* a = sym.get_next_alias())
+    for (; a != sym.get_main_symbol(); a = a->get_next_alias())
+      aliases.push_back(a);
+  else
+    for (string_elf_symbols_map_type::const_iterator i = symtab.begin();
+	 i != symtab.end();
+	 ++i)
+      for (elf_symbols::const_iterator j = i->second.begin();
+	   j != i->second.end();
+	   ++j)
+	{
+	  if (**j == sym)
+	    for (elf_symbol* s = (*j)->get_next_alias();
+		 s && s != (*j)->get_main_symbol();
+		 s = s->get_next_alias())
+	      aliases.push_back(s);
+	  else
+	    for (const elf_symbol* s = (*j)->get_next_alias();
+		 s && s != (*j)->get_main_symbol();
+		 s = s->get_next_alias())
+	      if (*s == sym)
+		aliases.push_back(j->get());
+	}
+}
+
+/// Test if two symbols alias.
+///
+/// @param s1 the first symbol to consider.
+///
+/// @param s2 the second symbol to consider.
+///
+/// @return true if @p s1 aliases @p s2.
+bool
+elf_symbols_alias(const elf_symbol* s1, const elf_symbol* s2)
+{
+  if (!!s1 != !!s2)
+    return false;
+  if (s1 == s2)
+    return true;
+  return elf_symbols_alias(*s1, *s2);
+}
+
+/// Test if two symbols alias.
+///
+/// @param s1 the first symbol to consider.
+///
+/// @param s2 the second symbol to consider.
+///
+/// @return true if @p s1 aliases @p s2.
+bool
+elf_symbols_alias(const elf_symbol_sptr s1, const elf_symbol_sptr s2)
+{return elf_symbols_alias(s1.get(), s2.get());}
 
 /// Serialize an instance of @ref symbol_type and stream it to a given
 /// output stream.
@@ -4969,7 +5081,10 @@ function_decl::operator==(const decl_base& other) const
 	return false;
 
       if (s0 && s0 != s1)
-	return false;
+	{
+	  if (!elf_symbols_alias(s0, s1))
+	    return false;
+	}
 
       if (s0)
 	{

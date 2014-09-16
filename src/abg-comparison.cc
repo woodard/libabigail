@@ -5622,19 +5622,51 @@ function_decl_diff::report(ostream& out, const string& indent) const
 			       second_function_decl(),
 			       context(), out, indent);
 
-  string qn1 = first_function_decl()->get_qualified_name(),
-    qn2 = second_function_decl()->get_qualified_name(),
-    mn1 = first_function_decl()->get_linkage_name(),
-    mn2 = second_function_decl()->get_linkage_name();
+  function_decl_sptr ff = first_function_decl();
+  function_decl_sptr sf = second_function_decl();
 
-  if (qn1 != qn2 && mn1 != mn2)
+  diff_context_sptr ctxt = context();
+  corpus_sptr fc = ctxt->get_first_corpus();
+  corpus_sptr sc = ctxt->get_second_corpus();
+
+  string qn1 = ff->get_qualified_name(), qn2 = sf->get_qualified_name(),
+    linkage_names1, linkage_names2;
+  elf_symbol_sptr s1 = ff->get_symbol(), s2 = sf->get_symbol();
+
+  if (s1)
+    linkage_names1 = s1->get_id_string();
+  if (s2)
+    linkage_names2 = s2->get_id_string();
+
+  // If the symbols for ff and sf have aliases, get all the names of
+  // the aliases;
+  if (fc)
+    linkage_names1 =
+      ff->get_symbol()->get_aliases_id_string(fc->get_fun_symbol_map());
+  if (sc)
+    linkage_names2 =
+      sf->get_symbol()->get_aliases_id_string(sc->get_fun_symbol_map());
+
+  if (qn1 != qn2)
     {
       string frep1 = first_function_decl()->get_pretty_representation(),
 	frep2 = second_function_decl()->get_pretty_representation();
-      out << indent << "'" << frep1
-	  << "' is different from '"
-	  << frep2 << "'\n";
+      out << indent << "'" << frep1 << " {" << linkage_names1<< "}"
+	  << "' now becomes '"
+	  << frep2 << " {" << linkage_names2 << "}" << "'\n";
       return;
+    }
+
+  // Now report about inline-ness changes
+  if (ff->is_declared_inline() != sf->is_declared_inline())
+    {
+      out << indent;
+      if (ff->is_declared_inline())
+	out << sf->get_pretty_representation()
+	    << " is not declared inline anymore\n";
+      else
+	out << sf->get_pretty_representation()
+	    << " is now declared inline\n";
     }
 
   // Report about return type differences.

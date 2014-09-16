@@ -168,6 +168,59 @@ access_changed(decl_base_sptr f, decl_base_sptr s)
   return false;
 }
 
+/// Test if there was a function name change, but there there was no
+/// change in name of the underlying symbol.  IOW, if the name of a
+/// function changed, but the symbol of the new function is equal to
+/// the symbol of the old one, or is equal to an alians of the symbol
+/// of the old function.
+///
+/// @param f the first function to consider.
+///
+/// @param s the second function to consider.
+///
+/// @return true if the test is positive, false otherwise.
+static bool
+function_name_changed_but_not_symbol(const function_decl_sptr f,
+				     const function_decl_sptr s)
+{
+  if (!f || !s)
+    return false;
+  string fn = f->get_pretty_representation(),
+    sn = s->get_pretty_representation();
+
+  if (fn != sn)
+    {
+      elf_symbol_sptr fs = f->get_symbol(), ss = s->get_symbol();
+      if (fs == ss)
+	return true;
+      for (elf_symbol* s = fs->get_next_alias();
+	   s && s != fs->get_main_symbol();
+	   s = s->get_next_alias())
+	if (*s == *ss)
+	  return true;
+    }
+  return false;
+}
+
+/// Test if the current diff tree node carries a function name change,
+/// in which there there was no change in the name of the underlying
+/// symbol.  IOW, if the name of a function changed, but the symbol of
+/// the new function is equal to the symbol of the old one, or is
+/// equal to an alians of the symbol of the old function.
+///
+/// @param diff the diff tree node to consider.
+///
+/// @return true if the test is positive, false otherwise.
+static bool
+function_name_changed_but_not_symbol(const diff* diff)
+{
+  if (const function_decl_diff* d =
+      dynamic_cast<const function_decl_diff*>(diff))
+    return function_name_changed_but_not_symbol(d->first_function_decl(),
+						d->second_function_decl());
+  return false;
+}
+
 /// Tests if the offset of a given data member changed.
 ///
 /// @param f the declaration for the first version of the data member to
@@ -623,6 +676,9 @@ harmless_filter::visit(diff* d, bool pre)
       if (has_enumerator_insertion(d)
 	  && !has_harmful_enum_change(d))
 	category |= HARMLESS_ENUM_CHANGE_CATEGORY;
+
+      if (function_name_changed_but_not_symbol(d))
+	category |= HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY;
 
       if (category)
 	d->add_to_category(category);

@@ -147,6 +147,12 @@ InOutSpec in_out_specs[] =
     "output/test-diff-dwarf/test13-report.txt"
   },
   {
+    "data/test-diff-dwarf/test14-inline-v0.o",
+    "data/test-diff-dwarf/test14-inline-v1.o",
+    "data/test-diff-dwarf/test14-inline-report.txt",
+    "output/test-diff-dwarf/test14-inline-report.txt"
+  },
+  {
     "data/test-diff-dwarf/test15-enum-v0.o",
     "data/test-diff-dwarf/test15-enum-v1.o",
     "data/test-diff-dwarf/test15-enum-report.txt",

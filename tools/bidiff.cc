@@ -366,7 +366,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 	 | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
 	 | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
 	 | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
-	 | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY);
+	 | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
+	 | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
   if (!opts.show_harmful_changes)
     ctxt->switch_categories_off
       (abigail::comparison::SIZE_OR_OFFSET_CHANGE_CATEGORY
