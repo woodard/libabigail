@@ -215,6 +215,20 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test18-report.txt",
     "output/test-diff-filter/test18-report.txt",
   },
+  {
+    "data/test-diff-filter/test19-enum-v0.o",
+    "data/test-diff-filter/test19-enum-v1.o",
+    "",
+    "data/test-diff-filter/test19-enum-report-0.txt",
+    "output/test-diff-filter/test19-enum-report-0.txt",
+  },
+  {
+    "data/test-diff-filter/test19-enum-v0.o",
+    "data/test-diff-filter/test19-enum-v1.o",
+    "--harmless",
+    "data/test-diff-filter/test19-enum-report-1.txt",
+    "output/test-diff-filter/test19-enum-report-1.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

@@ -201,6 +201,11 @@ data/test-diff-dwarf/test13-v0.o		\
 data/test-diff-dwarf/test13-v1.cc		\
 data/test-diff-dwarf/test13-v1.o		\
 data/test-diff-dwarf/test13-report.txt		\
+data/test-diff-dwarf/test15-enum-v0.cc		\
+data/test-diff-dwarf/test15-enum-v0.o		\
+data/test-diff-dwarf/test15-enum-v1.cc		\
+data/test-diff-dwarf/test15-enum-v1.o		\
+data/test-diff-dwarf/test15-enum-report.txt	\
 \
 data/test-read-dwarf/test0			\
 data/test-read-dwarf/test0.abi			\
@@ -320,6 +325,12 @@ data/test-diff-filter/test18-v1.cc		\
 data/test-diff-filter/test18-v0.o		\
 data/test-diff-filter/test18-v1.o		\
 data/test-diff-filter/test18-report.txt		\
+data/test-diff-filter/test19-v0.cc		\
+data/test-diff-filter/test19-v1.cc		\
+data/test-diff-filter/test19-v0.o		\
+data/test-diff-filter/test19-v1.o		\
+data/test-diff-filter/test19-report-0.txt	\
+data/test-diff-filter/test19-report-1.txt	\
 \
 data/test-lookup-syms/test0.cc			\
 data/test-lookup-syms/test0.o			\

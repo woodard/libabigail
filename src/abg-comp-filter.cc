@@ -124,6 +124,25 @@ static bool
 type_size_changed(const decl_base_sptr f, const decl_base_sptr s)
 {return type_size_changed(is_type(f), is_type(s));}
 
+/// Test if a given type diff node carries a type size change.
+///
+/// @param diff the diff tree node to test.
+///
+/// @return true if @p diff carries a type size change.
+static bool
+has_type_size_change(const diff* diff)
+{
+  if (!diff)
+    return false;
+
+  type_base_sptr f = is_type(diff->first_subject()),
+    s = is_type(diff->second_subject());
+
+  if (!f || !s)
+    return false;
+
+  return type_size_changed(f, s);
+}
 /// Tests if the access specifiers for a member declaration changed.
 ///
 /// @param f the declaration for the first version of the member
@@ -525,6 +544,47 @@ static bool
 base_classes_added_or_removed(const diff* diff)
 {return base_classes_added_or_removed(dynamic_cast<const class_diff*>(diff));}
 
+/// Test if an enum_diff carries an enumerator insertion.
+///
+/// @param diff the enum_diff to consider.
+///
+/// @return true iff @p diff carries an enumerator insertion.
+static bool
+has_enumerator_insertion(const diff* diff)
+{
+  if (const enum_diff* d = dynamic_cast<const enum_diff*>(diff))
+    return !d->inserted_enumerators().empty();
+  return false;
+}
+
+/// Test if an enum_diff carries an enumerator removal.
+///
+/// @param diff the enum_diff to consider.
+///
+/// @return true iff @p diff carries an enumerator removal or change.
+static bool
+has_enumerator_removal_or_change(const diff* diff)
+{
+  if (const enum_diff* d = dynamic_cast<const enum_diff*>(diff))
+    return (!d->deleted_enumerators().empty()
+	    || !d->changed_enumerators().empty());
+  return false;
+}
+
+/// Test if an enum_diff carries a harmful change.
+///
+/// @param diff the enum_diff to consider.
+///
+/// @return true iff @p diff carries a harmful change.
+static bool
+has_harmful_enum_change(const diff* diff)
+{
+  if (const enum_diff* d = dynamic_cast<const enum_diff*>(diff))
+    return (has_enumerator_removal_or_change(d)
+	    || has_type_size_change(d));
+  return false;
+}
+
 /// The visiting code of the harmless_filter.
 ///
 /// @param d the diff node being visited.
@@ -560,6 +620,10 @@ harmless_filter::visit(diff* d, bool pre)
 	  || static_data_member_type_size_changed(f, s))
 	category |= STATIC_DATA_MEMBER_CHANGE_CATEGORY;
 
+      if (has_enumerator_insertion(d)
+	  && !has_harmful_enum_change(d))
+	category |= HARMLESS_ENUM_CHANGE_CATEGORY;
+
       if (category)
 	d->add_to_category(category);
     }
@@ -594,7 +658,8 @@ harmful_filter::visit(diff* d, bool pre)
 	  || data_member_offset_changed(f, s)
 	  || non_static_data_member_type_size_changed(f, s)
 	  || non_static_data_member_added_or_removed(d)
-	  || base_classes_added_or_removed(d))
+	  || base_classes_added_or_removed(d)
+	  || has_harmful_enum_change(d))
 	category |= SIZE_OR_OFFSET_CHANGE_CATEGORY;
 
       if (has_virtual_mem_fn_change(d))

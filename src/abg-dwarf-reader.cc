@@ -4799,6 +4799,10 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
+  // If the enum is anonymous, let's give it a name.
+  if (name.empty())
+    name = "__anonymous_enum__";
+
   size_t size = 0;
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     size *= 8;

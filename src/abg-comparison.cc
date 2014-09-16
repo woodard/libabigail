@@ -2758,6 +2758,62 @@ enum_diff::length() const
   return a + b;
 }
 
+/// A functor to compare two enumerators based on their value.  This
+/// implements the "less than" operator.
+struct enumerator_value_comp
+{
+  bool
+  operator()(const enum_type_decl::enumerator& f,
+	     const enum_type_decl::enumerator& s) const
+  {return f.get_value() < s.get_value();}
+};//end struct enumerator_value_comp
+
+/// Sort a map of enumerators by their value.
+///
+/// @param enumerators_map the map to sort.
+///
+/// @param sorted the resulting vector of sorted enumerators.
+static void
+sort_enumerators(const string_enumerator_map& enumerators_map,
+		 enum_type_decl::enumerators& sorted)
+{
+  for (string_enumerator_map::const_iterator i = enumerators_map.begin();
+       i != enumerators_map.end();
+       ++i)
+    sorted.push_back(i->second);
+  enumerator_value_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// A functor to compare two changed enumerators, based on their
+/// initial value.
+struct changed_enumerator_comp
+{
+  bool
+  operator()(const changed_enumerator& f,
+	     const changed_enumerator& s) const
+  {return f.first.get_value() < s.first.get_value();}
+};// end struct changed_enumerator_comp.
+
+/// Sort a map of changed enumerators.
+///
+/// @param enumerators_map the map to sort.
+///
+///@param output parameter.  The resulting sorted enumerators.
+void
+sort_changed_enumerators(const string_changed_enumerator_map& enumerators_map,
+			 changed_enumerators_type& sorted)
+{
+  for (string_changed_enumerator_map::const_iterator i =
+	 enumerators_map.begin();
+       i != enumerators_map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  changed_enumerator_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Report the differences between the two enums.
 ///
 /// @param out the output stream to send the report to.
@@ -2790,21 +2846,20 @@ enum_diff::report(ostream& out, const string& indent) const
   if (numdels)
     {
       report_mem_header(out, numdels, 0, del_kind, "enumerator", indent);
-      for (string_enumerator_map::const_iterator i =
-	     deleted_enumerators().begin();
-	   i != deleted_enumerators().end();
+      enum_type_decl::enumerators sorted_deleted_enumerators;
+      sort_enumerators(deleted_enumerators(), sorted_deleted_enumerators);
+      for (enum_type_decl::enumerators::const_iterator i =
+	     sorted_deleted_enumerators.begin();
+	   i != sorted_deleted_enumerators.end();
 	   ++i)
 	{
-	  if (changed_enumerators().find(i->first)
-	      != changed_enumerators().end())
-	    continue;
-	  if (i != deleted_enumerators().begin())
+	  if (i != sorted_deleted_enumerators.begin())
 	    out << "\n";
 	  out << indent
 	      << "  '"
-	      << i->second.get_qualified_name(first)
+	      << i->get_qualified_name(first)
 	      << "' value '"
-	      << i->second.get_value()
+	      << i->get_value()
 	      << "'";
 	}
       out << "\n\n";
@@ -2812,21 +2867,20 @@ enum_diff::report(ostream& out, const string& indent) const
   if (numins)
     {
       report_mem_header(out, numins, 0, ins_kind, "enumerator", indent);
-      for (string_enumerator_map::const_iterator i =
-	     inserted_enumerators().begin();
-	   i != inserted_enumerators().end();
+      enum_type_decl::enumerators sorted_inserted_enumerators;
+      sort_enumerators(inserted_enumerators(), sorted_inserted_enumerators);
+      for (enum_type_decl::enumerators::const_iterator i =
+	     sorted_inserted_enumerators.begin();
+	   i != sorted_inserted_enumerators.end();
 	   ++i)
 	{
-	  if (changed_enumerators().find(i->first)
-	      != changed_enumerators().end())
-	    continue;
-	  if (i != inserted_enumerators().begin())
+	  if (i != sorted_inserted_enumerators.begin())
 	    out << "\n";
 	  out << indent
 	      << "  '"
-	      << i->second.get_qualified_name(second)
+	      << i->get_qualified_name(second)
 	      << "' value '"
-	      << i->second.get_value()
+	      << i->get_value()
 	      << "'";
 	}
       out << "\n\n";
@@ -2834,19 +2888,22 @@ enum_diff::report(ostream& out, const string& indent) const
   if (numchanges)
     {
       report_mem_header(out, numchanges, 0, change_kind, "enumerator", indent);
-      for (string_changed_enumerator_map::const_iterator i =
-	     changed_enumerators().begin();
-	   i != changed_enumerators().end();
+      changed_enumerators_type sorted_changed_enumerators;
+      sort_changed_enumerators(changed_enumerators(),
+			       sorted_changed_enumerators);
+      for (changed_enumerators_type::const_iterator i =
+	     sorted_changed_enumerators.begin();
+	   i != sorted_changed_enumerators.end();
 	   ++i)
 	{
-	  if (i != changed_enumerators().begin())
+	  if (i != sorted_changed_enumerators.begin())
 	    out << "\n";
 	  out << indent
 	      << "  '"
-	      << i->second.first.get_qualified_name(first)
+	      << i->first.get_qualified_name(first)
 	      << "' from value '"
-	      << i->second.first.get_value() << "' to '"
-	      << i->second.second.get_value() << "'";
+	      << i->first.get_value() << "' to '"
+	      << i->second.get_value() << "'";
 	}
       out << "\n\n";
     }

@@ -132,6 +132,9 @@ typedef unordered_map<string, enum_type_decl::enumerator> string_enumerator_map;
 typedef std::pair<enum_type_decl::enumerator,
 		  enum_type_decl::enumerator> changed_enumerator;
 
+/// Convenience typedef for a vector of changed enumerators.
+typedef vector<changed_enumerator> changed_enumerators_type;
+
 /// Convenience typedef for a map which value is a changed enumerator.
 /// The key is the name of the changed enumerator.
 typedef unordered_map<string, changed_enumerator> string_changed_enumerator_map;
@@ -259,14 +262,19 @@ enum diff_category
   /// or removal of a static data member.
   STATIC_DATA_MEMBER_CHANGE_CATEGORY = 1 << 5,
 
+  /// This means that a diff node in the sub-tree carries an addition
+  /// of enumerator to an enum type.
+  HARMLESS_ENUM_CHANGE_CATEGORY = 1 << 6,
+
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
-  /// offset of a type member.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 6,
+  /// offset of a type member.  Removal or changes of enumerators in a
+  /// enum fall in this category too.
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 8,
 
   /// This means that a diff node in the sub-tree carries a change to
   /// a vtable.
-  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 7,
+  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 9,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -280,6 +288,7 @@ enum diff_category
   | HARMLESS_DECL_NAME_CHANGE_CATEGORY
   | NON_VIRT_MEM_FUN_CHANGE_CATEGORY
   | STATIC_DATA_MEMBER_CHANGE_CATEGORY
+  | HARMLESS_ENUM_CHANGE_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
 };
