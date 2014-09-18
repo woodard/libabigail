@@ -524,7 +524,7 @@ public:
 class config::priv
 {
   string path_;
-  section_vector sections_;
+  sections_type sections_;
 
 public:
   friend class config;
@@ -533,7 +533,7 @@ public:
   {}
 
   priv(const string& path,
-       section_vector& sections)
+       sections_type& sections)
     : path_(path),
       sections_(sections)
   {}
@@ -544,7 +544,7 @@ public:
 ///
 /// @param sections the sections of the config file.
 config::config(const string& path,
-	       section_vector& sections)
+	       sections_type& sections)
   : priv_(new priv(path, sections))
 {}
 
@@ -568,7 +568,7 @@ config::set_path(const string& path)
 {priv_->path_ = path;}
 
 /// @return the sections of the config file.
-const config::section_vector&
+const config::sections_type&
 config::get_sections() const
 {return priv_->sections_;}
 
@@ -576,7 +576,7 @@ config::get_sections() const
 ///
 /// @param sections the new sections to set.
 void
-config::set_sections(const section_vector& sections)
+config::set_sections(const sections_type& sections)
 {priv_->sections_ = sections;}
 
 // </config stuff>
@@ -594,7 +594,7 @@ config::set_sections(const section_vector& sections)
 /// left in a non-erratic state.
 bool
 read_sections(std::istream& input,
-	      config::section_vector& sections)
+	      config::sections_type& sections)
 {
   read_context ctxt(input);
 
@@ -621,7 +621,7 @@ read_sections(std::istream& input,
 /// left in a non-erratic state.
 bool
 read_sections(const string& path,
-	      config::section_vector& sections)
+	      config::sections_type& sections)
 {
   std::ifstream in(path, std::ifstream::binary);
   if (!in.good())
@@ -642,7 +642,7 @@ bool
 read_config(istream& input,
 	    config& conf)
 {
-  config::section_vector sections;
+  config::sections_type sections;
   if (!read_sections(input, sections))
     return false;
   conf.set_sections(sections);
@@ -661,7 +661,7 @@ bool
 read_config(const string& path,
 	    config& conf)
 {
-  config::section_vector sections;
+  config::sections_type sections;
   if (!read_sections(path, sections))
     return false;
   conf.set_path(path);
@@ -747,10 +747,10 @@ write_section(const config::section& section,
 ///
 /// @return true if the output stream is left in a non-erratic state.
 bool
-write_sections(const config::section_vector& sections,
+write_sections(const config::sections_type& sections,
 	       std::ostream& out)
 {
-  for (config::section_vector::const_iterator i = sections.begin();
+  for (config::sections_type::const_iterator i = sections.begin();
        i != sections.end();
        ++i)
     {
@@ -769,7 +769,7 @@ write_sections(const config::section_vector& sections,
 ///
 /// @return true if the output stream is left in a non-erratic state.
 bool
-write_sections(const config::section_vector& sections,
+write_sections(const config::sections_type& sections,
 	       const string& path)
 {
   std::ofstream f(path, std::ofstream::binary);

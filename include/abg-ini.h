@@ -64,7 +64,7 @@ public:
   typedef shared_ptr<section> section_sptr;
 
   /// A convenience typedef for a vector of config::section_sptr.
-  typedef vector<section_sptr> section_vector;
+  typedef vector<section_sptr> sections_type;
 
   /// A convenience typedef for a pair of strings representing a
   /// property that lies inside a section.  The first element of the
@@ -85,7 +85,7 @@ public:
   config();
 
   config(const string& path,
-	 section_vector& sections);
+	 sections_type& sections);
 
   virtual ~config();
 
@@ -95,11 +95,11 @@ public:
   void
   set_path(const string& path);
 
-  const section_vector&
+  const sections_type&
   get_sections() const;
 
   void
-  set_sections(const section_vector& sections);
+  set_sections(const sections_type& sections);
 }; // end class config
 
 /// The abstraction of one section of the .ini config.
@@ -134,11 +134,11 @@ public:
 
 bool
 read_sections(std::istream& input,
-	      config::section_vector& sections);
+	      config::sections_type& sections);
 
 bool
 read_sections(const string& path,
-	      config::section_vector& sections);
+	      config::sections_type& sections);
 
 bool
 read_config(std::istream& input,
@@ -155,11 +155,11 @@ config_sptr
 read_config(const string& path);
 
 bool
-write_sections(const config::section_vector& sections,
+write_sections(const config::sections_type& sections,
 	       std::ostream& output);
 
 bool
-write_sections(const config::section_vector& sections,
+write_sections(const config::sections_type& sections,
 	       const string& path);
 
 bool
