@@ -459,138 +459,54 @@ public:
 /// constructs are called the "subjects" of the diff.
 class diff : public diff_traversable_base
 {
-  decl_base_sptr	first_subject_;
-  decl_base_sptr	second_subject_;
-  diff_context_sptr	ctxt_;
-  diff_category	category_;
-  mutable bool		reported_once_;
-  mutable bool		currently_reporting_;
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
 
   // Forbidden
   diff();
 
 protected:
   diff(decl_base_sptr first_subject,
-       decl_base_sptr second_subject)
-    : first_subject_(first_subject),
-      second_subject_(second_subject),
-      category_(NO_CHANGE_CATEGORY),
-      reported_once_(false),
-      currently_reporting_(false)
-  {}
+       decl_base_sptr second_subject);
 
-diff(decl_base_sptr	first_subject,
-     decl_base_sptr	second_subject,
-     diff_context_sptr	ctxt)
-  : first_subject_(first_subject),
-    second_subject_(second_subject),
-    ctxt_(ctxt),
-    category_(NO_CHANGE_CATEGORY),
-    reported_once_(false),
-    currently_reporting_(false)
-  {}
+  diff(decl_base_sptr	first_subject,
+       decl_base_sptr	second_subject,
+       diff_context_sptr	ctxt);
 
 public:
-
-  /// Getter of the first subject of the diff.
-  ///
-  /// @return the first subject of the diff.
   decl_base_sptr
-  first_subject() const
-  {return first_subject_;}
+  first_subject() const;
 
-  /// Getter of the second subject of the diff.
-  ///
-  /// @return the second subject of the diff.
   decl_base_sptr
-  second_subject() const
-  {return second_subject_;}
+  second_subject() const;
 
-  /// Getter of the context of the current diff.
-  ///
-  /// @return the context of the current diff.
   const diff_context_sptr
-  context() const
-  {return ctxt_;}
+  context() const;
 
-  /// Setter of the context of the current diff.
-  ///
-  /// @param c the new context to set.
   void
-  context(diff_context_sptr c)
-  {ctxt_ = c;}
+  context(diff_context_sptr c);
 
-  /// Tests if we are currently in the middle of emitting a report for
-  /// this diff.
-  ///
-  /// @return true if we are currently emitting a report for the
-  /// current diff, false otherwise.
   bool
-  currently_reporting() const
-  {return currently_reporting_;}
+  currently_reporting() const;
 
-  /// Sets a flag saying if we are currently in the middle of emitting
-  /// a report for this diff.
-  ///
-  /// @param f true if we are currently emitting a report for the
-  /// current diff, false otherwise.
   void
-  currently_reporting(bool f) const
-  {currently_reporting_ = f;}
+  currently_reporting(bool f) const;
 
-  /// Tests if a report has already been emitted for the current diff.
-  ///
-  /// @return true if a report has already been emitted for the
-  /// current diff, false otherwise.
   bool
-  reported_once() const
-  {return reported_once_;}
+  reported_once() const;
 
-  /// Sets a flag saying if a report has already been emitted for the
-  /// current diff.
-  ///
-  /// @param f true if a repot has already been emitted for the
-  /// current diff, false otherwise.
   void
-  reported_once(bool f) const
-  {reported_once_ = f;}
+  reported_once(bool f) const;
 
-  /// Getter for the category of the current diff tree node.
-  ///
-  /// @return the category of the current diff tree node.
   diff_category
-  get_category() const
-  {return category_;}
+  get_category() const;
 
-  /// Adds the current diff tree node to an additional set of
-  /// categories.
-  ///
-  /// @param c a bit-map representing the set of categories to add the
-  /// current diff tree node to.
-  ///
-  /// @return the resulting bit-map representing the categories this
-  /// current diff tree node belongs to.
   diff_category
-  add_to_category(diff_category c)
-  {
-    category_ = category_ | c;
-    return category_;
-  }
+  add_to_category(diff_category c);
 
-  /// Remove the current diff tree node from an a existing sef of
-  /// categories.
-  ///
-  /// @param c a bit-map representing the set of categories to add the
-  /// current diff tree node to.
-  ///
-  /// @return the resulting bit-map representing the categories this
-  /// current diff tree onde belongs to.
   diff_category
-  remove_from_category(diff_category c)
-  {
-    category_ = category_ & ~c;
-    return category_;
-  }
+  remove_from_category(diff_category c);
 
   bool
   is_filtered_out() const;

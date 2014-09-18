@@ -781,6 +781,173 @@ diff_context::show_redundant_changes(bool f)
 
 // <diff stuff>
 
+/// Private data for the @ref diff type.
+class diff::priv
+{
+  decl_base_sptr	first_subject_;
+  decl_base_sptr	second_subject_;
+  diff_context_sptr	ctxt_;
+  diff_category	category_;
+  mutable bool		reported_once_;
+  mutable bool		currently_reporting_;
+
+  priv();
+
+public:
+
+  priv(decl_base_sptr first_subject,
+       decl_base_sptr second_subject,
+       diff_context_sptr ctxt,
+       diff_category category,
+       bool reported_once,
+       bool currently_reporting)
+    : first_subject_(first_subject),
+      second_subject_(second_subject),
+      ctxt_(ctxt),
+      category_(category),
+      reported_once_(reported_once),
+      currently_reporting_(currently_reporting)
+  {}
+
+  friend class diff;
+};// end class diff::priv
+
+/// Constructor for the @ref diff type.
+///
+/// This constructs a diff between two subjects that are actually
+/// declarations; the first and the second one.
+///
+/// @param first_subject the first decl (subject) of the diff.
+///
+/// @param second_subject the second decl (subject) of the diff.
+diff::diff(decl_base_sptr first_subject,
+	   decl_base_sptr second_subject)
+  : priv_(new priv(first_subject, second_subject,
+		   diff_context_sptr(),
+		   NO_CHANGE_CATEGORY,
+		   /*reported_once=*/false,
+		   /*currently_reporting=*/false))
+{}
+
+/// Constructor for the @ref diff type.
+///
+/// This constructs a diff between two subjects that are actually
+/// declarations; the first and the second one.
+///
+/// @param first_subject the first decl (subject) of the diff.
+///
+/// @param second_subject the second decl (subject) of the diff.
+///
+/// @param ctxt the context of the diff.
+diff::diff(decl_base_sptr	first_subject,
+	   decl_base_sptr	second_subject,
+	   diff_context_sptr	ctxt)
+  : priv_(new priv(first_subject, second_subject,
+		   ctxt, NO_CHANGE_CATEGORY,
+		   /*reported_once=*/false,
+		   /*currently_reporting=*/false))
+{}
+
+/// Getter of the first subject of the diff.
+///
+/// @return the first subject of the diff.
+decl_base_sptr
+diff::first_subject() const
+{return priv_->first_subject_;}
+
+/// Getter of the second subject of the diff.
+///
+/// @return the second subject of the diff.
+decl_base_sptr
+diff::second_subject() const
+{return priv_->second_subject_;}
+
+/// Getter of the context of the current diff.
+///
+/// @return the context of the current diff.
+const diff_context_sptr
+diff::context() const
+{return priv_->ctxt_;}
+
+/// Setter of the context of the current diff.
+///
+/// @param c the new context to set.
+void
+diff::context(diff_context_sptr c)
+{priv_->ctxt_ = c;}
+
+/// Tests if we are currently in the middle of emitting a report for
+/// this diff.
+///
+/// @return true if we are currently emitting a report for the
+/// current diff, false otherwise.
+bool
+diff::currently_reporting() const
+{return priv_->currently_reporting_;}
+
+/// Sets a flag saying if we are currently in the middle of emitting
+/// a report for this diff.
+///
+/// @param f true if we are currently emitting a report for the
+/// current diff, false otherwise.
+void
+diff::currently_reporting(bool f) const
+{priv_->currently_reporting_ = f;}
+
+/// Tests if a report has already been emitted for the current diff.
+///
+/// @return true if a report has already been emitted for the
+/// current diff, false otherwise.
+bool
+diff::reported_once() const
+{return priv_->reported_once_;}
+
+/// Sets a flag saying if a report has already been emitted for the
+/// current diff.
+///
+/// @param f true if a repot has already been emitted for the
+/// current diff, false otherwise.
+void
+diff::reported_once(bool f) const
+{priv_->reported_once_ = f;}
+
+/// Getter for the category of the current diff tree node.
+///
+/// @return the category of the current diff tree node.
+diff_category
+diff::get_category() const
+{return priv_->category_;}
+
+/// Adds the current diff tree node to an additional set of
+/// categories.
+///
+/// @param c a bit-map representing the set of categories to add the
+/// current diff tree node to.
+///
+/// @return the resulting bit-map representing the categories this
+/// current diff tree node belongs to.
+diff_category
+diff::add_to_category(diff_category c)
+{
+  priv_->category_ = priv_->category_ | c;
+  return priv_->category_;
+}
+
+/// Remove the current diff tree node from an a existing sef of
+/// categories.
+///
+/// @param c a bit-map representing the set of categories to add the
+/// current diff tree node to.
+///
+/// @return the resulting bit-map representing the categories this
+/// current diff tree onde belongs to.
+diff_category
+diff::remove_from_category(diff_category c)
+{
+  priv_->category_ = priv_->category_ & ~c;
+  return priv_->category_;
+}
+
 /// Test if this diff tree node is to be filtered out for reporting
 /// purposes.
 ///
