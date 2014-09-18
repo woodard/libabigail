@@ -70,7 +70,7 @@ typedef shared_ptr<regex_t> regex_t_sptr;
 
 /// Specialization of sptr_utils::build_sptr for regex_t.
 template<>
-shared_ptr<regex_t>
+regex_t_sptr
 build_sptr<regex_t>(regex_t *p);
 
 }// end namespace sptr_utils
