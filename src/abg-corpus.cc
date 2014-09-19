@@ -311,7 +311,7 @@ public:
 	     i != regex_patterns_fns_to_suppress.end();
 	     ++i)
 	  {
-	    regex_t_sptr r(new regex_t, sptr_utils::regex_t_deleter());
+	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
 	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
 	      r_fns_suppress.push_back(r);
 	  }
