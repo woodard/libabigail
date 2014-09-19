@@ -1022,6 +1022,42 @@ report_size_and_alignment_changes(decl_base_sptr	first,
 				  const string&	indent,
 				  bool			nl);
 
+// <type_diff_base stuff>
+class type_diff_base::priv
+{
+public:
+  friend class type_diff_base;
+}; // end class type_diff_base
+
+type_diff_base::type_diff_base(decl_base_sptr	first_subject,
+			       decl_base_sptr	second_subject,
+			       diff_context_sptr	ctxt)
+  : diff(first_subject, second_subject, ctxt),
+    priv_(new priv)
+{}
+
+type_diff_base::~type_diff_base()
+{}
+// </type_diff_base stuff>
+
+// <decl_diff_base stuff>
+class decl_diff_base::priv
+{
+public:
+  friend class decl_diff_base;
+};//end class priv
+
+decl_diff_base::decl_diff_base(decl_base_sptr	first_subject,
+			       decl_base_sptr	second_subject,
+			       diff_context_sptr	ctxt)
+  : diff(first_subject, second_subject, ctxt),
+    priv_(new priv)
+{}
+
+decl_diff_base::~decl_diff_base()
+{}
+
+// </decl_diff_base stuff>
 // <distinct_diff stuff>
 
 /// The private data structure for @ref distinct_diff.
@@ -2272,7 +2308,7 @@ pointer_diff::pointer_diff(pointer_type_def_sptr	first,
 			   pointer_type_def_sptr	second,
 			   diff_sptr			underlying,
 			   diff_context_sptr		ctxt)
-  : diff(first, second, ctxt),
+  : type_diff_base(first, second, ctxt),
     priv_(new priv(underlying))
 {}
 
@@ -2435,7 +2471,7 @@ array_diff::array_diff(const array_type_def_sptr	first,
 		       const array_type_def_sptr	second,
 		       diff_sptr			element_type_diff,
 		       diff_context_sptr		ctxt)
-  : diff(first, second, ctxt),
+  : type_diff_base(first, second, ctxt),
     priv_(new priv(element_type_diff))
 {}
 
@@ -2681,8 +2717,8 @@ reference_diff::reference_diff(const reference_type_def_sptr	first,
 			       const reference_type_def_sptr	second,
 			       diff_sptr			underlying,
 			       diff_context_sptr		ctxt)
-  : diff(first, second, ctxt),
-    priv_(new priv(underlying))
+  : type_diff_base(first, second, ctxt),
+	priv_(new priv(underlying))
 {}
 
 /// Finish building the current instance of @ref reference_diff.
@@ -2837,7 +2873,7 @@ qualified_type_diff::qualified_type_diff(qualified_type_def_sptr	first,
 					 qualified_type_def_sptr	second,
 					 diff_sptr			under,
 					 diff_context_sptr		ctxt)
-  : diff(first, second, ctxt),
+  : type_diff_base(first, second, ctxt),
     priv_(new priv(under))
 {}
 
@@ -3134,7 +3170,7 @@ enum_diff::enum_diff(const enum_type_decl_sptr	first,
 		     const enum_type_decl_sptr	second,
 		     const diff_sptr		underlying_type_diff,
 		     const diff_context_sptr	ctxt)
-  : diff(first, second,ctxt),
+  : type_diff_base(first, second,ctxt),
     priv_(new priv(underlying_type_diff))
 {}
 
@@ -4215,7 +4251,7 @@ class_diff::chain_into_hierarchy()
 class_diff::class_diff(shared_ptr<class_decl>	first_scope,
 		       shared_ptr<class_decl>	second_scope,
 		       diff_context_sptr	ctxt)
-  : diff(first_scope, second_scope, ctxt),
+  : type_diff_base(first_scope, second_scope, ctxt),
     priv_(new priv)
 {}
 
@@ -6427,7 +6463,7 @@ compute_diff(const function_decl_sptr first,
 type_decl_diff::type_decl_diff(const type_decl_sptr first,
 			       const type_decl_sptr second,
 			       diff_context_sptr ctxt)
-  : diff(first, second, ctxt)
+  : type_diff_base(first, second, ctxt)
 {}
 
 /// Finish building the current instance of @ref type_decl_diff.
@@ -6601,7 +6637,7 @@ typedef_diff::typedef_diff(const typedef_decl_sptr	first,
 			   const typedef_decl_sptr	second,
 			   const diff_sptr		underlying,
 			   diff_context_sptr		ctxt)
-  : diff(first, second, ctxt),
+  : type_diff_base(first, second, ctxt),
     priv_(new priv(underlying))
 {}
 

@@ -35,8 +35,8 @@ abisym_SOURCES = abisym.cc
 abisymdir = $(bindir)
 abisym_LDADD = ../src/libabigail.la
 
-binilint_SOURCES = binilint.cc
-binilint = $(bindir)
-binilint_LDFLAGS = $(abs_top_builddir)/src/libabigail.la
+abinilint_SOURCES = binilint.cc
+abinilint = $(bindir)
+abinilint_LDFLAGS = $(abs_top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I$(abs_top_srcdir)/include -I$(abs_top_srcdir)/tools

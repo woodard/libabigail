@@ -593,6 +593,46 @@ compute_diff(const type_base_sptr,
 	     const type_base_sptr,
 	     diff_context_sptr ctxt);
 
+class type_diff_base;
+/// Convenience pointer for a shared pointer to a type_diff_base
+typedef shared_ptr<type_diff_base> type_diff_base_sptr;
+
+/// The base class of diff between types.
+class type_diff_base : public diff
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  type_diff_base();
+
+protected:
+  type_diff_base(decl_base_sptr	first_subject,
+		 decl_base_sptr	second_subject,
+		 diff_context_sptr	ctxt);
+
+public:
+  virtual ~type_diff_base();
+};// end class type_diff_base
+
+/// The base class of diff between decls.
+class decl_diff_base : public diff
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+protected:
+  decl_diff_base(decl_base_sptr	first_subject,
+		 decl_base_sptr	second_subject,
+		 diff_context_sptr	ctxt);
+
+public:
+  virtual ~decl_diff_base();
+};// end class decl_diff_base
+
 string
 get_pretty_representation(diff*);
 
@@ -710,7 +750,7 @@ class pointer_diff;
 typedef shared_ptr<pointer_diff> pointer_diff_sptr;
 
 /// The abstraction of a diff between two pointers.
-class pointer_diff : public diff
+class pointer_diff : public type_diff_base
 {
   struct priv;
   shared_ptr<priv> priv_;
@@ -767,7 +807,7 @@ class reference_diff;
 typedef shared_ptr<reference_diff> reference_diff_sptr;
 
 /// The abstraction of a diff between two references.
-class reference_diff : public diff
+class reference_diff : public type_diff_base
 {
   struct priv;
   shared_ptr<priv> priv_;
@@ -824,7 +864,7 @@ class array_diff;
 typedef shared_ptr<array_diff> array_diff_sptr;
 
 /// The abstraction of a diff between two arrays.
-class array_diff : public diff
+class array_diff : public type_diff_base
 {
   struct priv;
   shared_ptr<priv> priv_;
@@ -878,7 +918,7 @@ class qualified_type_diff;
 typedef class shared_ptr<qualified_type_diff> qualified_type_diff_sptr;
 
 /// Abstraction of a diff between two qualified types.
-class qualified_type_diff : public diff
+class qualified_type_diff : public type_diff_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
@@ -933,7 +973,7 @@ class enum_diff;
 typedef shared_ptr<enum_diff> enum_diff_sptr;
 
 /// Abstraction of a diff between two enums.
-class enum_diff : public diff
+class enum_diff : public type_diff_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
@@ -1006,7 +1046,7 @@ typedef shared_ptr<class_diff> class_diff_sptr;
 
 
 /// This type abstracts changes for a class_decl.
-class class_diff : public diff
+class class_diff : public type_diff_base
 {
   struct priv;
   shared_ptr<priv> priv_;
@@ -1360,7 +1400,7 @@ class type_decl_diff;
 typedef shared_ptr<type_decl_diff> type_decl_diff_sptr;
 
 /// Abstraction of a diff between two basic type declarations.
-class type_decl_diff : public diff
+class type_decl_diff : public type_diff_base
 {
   type_decl_diff();
 
@@ -1405,7 +1445,7 @@ class typedef_diff;
 typedef shared_ptr<typedef_diff> typedef_diff_sptr;
 
 /// Abstraction of a diff between two typedef_decl.
-class typedef_diff : public diff
+class typedef_diff : public type_diff_base
 {
   struct priv;
   shared_ptr<priv> priv_;
