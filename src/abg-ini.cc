@@ -102,6 +102,25 @@ void
 config::section::add_property(const property_sptr prop)
 {priv_->properties_.push_back(prop);}
 
+/// Find a property that has a given name.
+///
+/// Note that this only returns the first property with that name.
+///
+/// @param prop_name the name of the property to find.
+///
+/// @return the found property, or nil if no property with the name @p
+/// prop_name was found.
+config::property_sptr
+config::section::find_property(const string& prop_name) const
+{
+  for (property_vector::const_iterator i = get_properties().begin();
+       i != get_properties().end();
+       ++i)
+    if ((*i)->first == prop_name)
+      return *i;
+  return property_sptr();
+}
+
 /// Destructor of config::section.
 config::section::~section()
 {}

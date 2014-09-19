@@ -16,6 +16,7 @@ runtestcorediff			\
 runtestabidiff			\
 runtestdiffdwarf		\
 runtestdifffilter		\
+runtestdiffsuppr		\
 runtestsvg
 
 
@@ -60,6 +61,9 @@ runtestdiffdwarf_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestdifffilter_SOURCES = test-diff-filter.cc
 runtestdifffilter_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestdiffsuppr_SOURCES = test-diff-suppr.cc
+runtestdiffsuppr_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
@@ -345,6 +349,45 @@ data/test-diff-filter/test20-inline-v0.o	\
 data/test-diff-filter/test20-inline-v1.o	\
 data/test-diff-filter/test20-inline-report-0.txt \
 data/test-diff-filter/test20-inline-report-1.txt \
+\
+tests/data/test-diff-suppr/test0-type-suppr-v0.cc	\
+tests/data/test-diff-suppr/test0-type-suppr-v1.cc	\
+tests/data/test-diff-suppr/test0-type-suppr-v0.o	\
+tests/data/test-diff-suppr/test0-type-suppr-v1.o	\
+tests/data/test-diff-suppr/test0-type-suppr-0.suppr	\
+tests/data/test-diff-suppr/test0-type-suppr-1.suppr	\
+tests/data/test-diff-suppr/test0-type-suppr-2.suppr	\
+tests/data/test-diff-suppr/test0-type-suppr-report-0.txt \
+tests/data/test-diff-suppr/test0-type-suppr-report-1.txt \
+tests/data/test-diff-suppr/test0-type-suppr-report-2.txt \
+tests/data/test-diff-suppr/test0-type-suppr-report-3.txt \
+tests/data/test-diff-suppr/test1-typedef-suppr.h	 \
+tests/data/test-diff-suppr/test1-typedef-suppr-v0.c	 \
+tests/data/test-diff-suppr/test1-typedef-suppr-v1.c	 \
+tests/data/test-diff-suppr/test1-typedef-suppr-v0.o	 \
+tests/data/test-diff-suppr/test1-typedef-suppr-v1.o	 \
+tests/data/test-diff-suppr/test1-typedef-suppr-0.suppr	 \
+tests/data/test-diff-suppr/test1-typedef-suppr-1.suppr 	 \
+tests/data/test-diff-suppr/test1-typedef-suppr-report-0.txt \
+tests/data/test-diff-suppr/test1-typedef-suppr-report-1.txt \
+tests/data/test-diff-suppr/test1-typedef-suppr-report-2.txt \
+tests/data/test-diff-suppr/test2-struct-suppr-0.suppr \
+tests/data/test-diff-suppr/test2-struct-suppr-1.suppr \
+tests/data/test-diff-suppr/test2-struct-suppr-report-0.txt \
+tests/data/test-diff-suppr/test2-struct-suppr-report-1.txt \
+tests/data/test-diff-suppr/test2-struct-suppr-v0.cc \
+tests/data/test-diff-suppr/test2-struct-suppr-v1.cc \
+tests/data/test-diff-suppr/test2-struct-suppr-v0.o \
+tests/data/test-diff-suppr/test2-struct-suppr-v0.o \
+tests/data/test-diff-suppr/test3-struct-suppr-0.suppr \
+tests/data/test-diff-suppr/test3-struct-suppr-1.suppr \
+tests/data/test-diff-suppr/test3-struct-suppr-report-0.txt \
+tests/data/test-diff-suppr/test3-struct-suppr-report-1.txt \
+tests/data/test-diff-suppr/test3-struct-suppr-report-2.txt \
+tests/data/test-diff-suppr/test3-struct-suppr-v0.cc \
+tests/data/test-diff-suppr/test3-struct-suppr-v0.o \
+tests/data/test-diff-suppr/test3-struct-suppr-v1.cc \
+tests/data/test-diff-suppr/test3-struct-suppr-v1.o \
 \
 data/test-lookup-syms/test0.cc			\
 data/test-lookup-syms/test0.o			\

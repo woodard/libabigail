@@ -43,6 +43,9 @@ using abigail::corpus_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
+using abigail::comparison::suppression_sptr;
+using abigail::comparison::suppressions_type;
+using abigail::comparison::read_suppressions;
 using namespace abigail::dwarf_reader;
 using abigail::tools::check_file;
 using abigail::tools::guess_file_type;
@@ -53,6 +56,7 @@ struct options
   bool missing_operand;
   string		file1;
   string		file2;
+  vector<string>	suppression_paths;
   vector<string>	drop_fn_regex_patterns;
   vector<string>	drop_var_regex_patterns;
   vector<string>	keep_fn_regex_patterns;
@@ -111,6 +115,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --added-vars  display added global public variables\n"
       << " --no-linkage-name  do not display linkage names of "
              "added/removed/changed\n"
+      << " --suppressions <path> specify a suppression file\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
@@ -225,6 +230,14 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--no-linkage-name"))
 	opts.show_linkage_names = false;
+      else if (!strcmp(argv[i], "--suppressions"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.suppression_paths.push_back(argv[j]);
+	  ++i;
+	}
       else if (!strcmp(argv[i], "--drop"))
 	{
 	  int j = i + 1;
@@ -372,6 +385,13 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
     ctxt->switch_categories_off
       (abigail::comparison::SIZE_OR_OFFSET_CHANGE_CATEGORY
        | abigail::comparison::VIRTUAL_MEMBER_CHANGE_CATEGORY);
+
+  suppressions_type supprs;
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    read_suppressions(*i, supprs);
+  ctxt->add_suppressions(supprs);
 }
 
 /// Set the regex patterns describing the functions to drop from the

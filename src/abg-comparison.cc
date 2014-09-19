@@ -31,6 +31,7 @@
 #include "abg-comparison.h"
 #include "abg-comp-filter.h"
 #include "abg-sptr-utils.h"
+#include "abg-ini.h"
 
 namespace abigail
 {
@@ -152,6 +153,15 @@ operator|(visiting_kind l, visiting_kind r)
 	  } \
     } while (false)
 
+/// Test if a diff node is about differences between types.
+///
+/// @param diff the diff node to test.
+///
+/// @return true if the @p diff is about differences between types.
+static const type_diff_base*
+is_type_diff(const diff* diff)
+{return dynamic_cast<const type_diff_base*>(diff);}
+
 /// The default traverse function.
 ///
 /// @return true.
@@ -159,6 +169,404 @@ bool
 diff_traversable_base::traverse(diff_node_visitor&)
 {return true;}
 
+// <suppression_base stuff>
+
+/// The private data of @ref suppression_base.
+class suppression_base::priv
+{
+  string label_;
+
+public:
+  priv()
+  {}
+
+  priv(const string& label)
+    : label_(label)
+  {}
+
+  friend class suppression_base;
+}; // end clas suppression_base::priv
+
+/// Constructor for @ref suppression_base
+///
+/// @param a label for the suppression.  This represents just a
+/// comment.
+suppression_base::suppression_base(const string& label)
+  : priv_(new priv(label))
+{}
+
+/// Getter for the label associated to this suppression specification.
+///
+/// @return the label.
+const string
+suppression_base::get_label() const
+{return priv_->label_;}
+
+/// Setter for the label associated to this suppression specification.
+///
+/// @param label the new label.
+void
+suppression_base::set_label(const string& label)
+{priv_->label_ = label;}
+
+suppression_base::~suppression_base()
+{}
+// </suppression_base stuff>
+
+// <type_suppression stuff>
+
+/// The private data for @ref type_suppression.
+class type_suppression::priv
+{
+  string				type_name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	type_name_regex_;
+  string				type_name_;
+  bool					consider_typedefness_;
+  bool					is_typedef_;
+
+  priv();
+
+public:
+  priv(const string&	type_name_regexp,
+       const string&	type_name,
+       bool		consider_typedefness,
+       bool		is_typedef)
+    : type_name_regex_str_(type_name_regexp),
+      type_name_(type_name),
+      consider_typedefness_(consider_typedefness),
+      is_typedef_(is_typedef)
+  {}
+
+  /// Get the regular expression object associated to the 'type_name_regex'
+  /// property of @ref type_suppression.
+  ///
+  /// If the regular expression object is not created, this method
+  /// creates it and returns it.
+  ///
+  /// If the 'type_name_regex' property of @ref type_suppression is
+  /// empty then this method returns nil.
+  const sptr_utils::regex_t_sptr
+  get_type_name_regex() const
+  {
+    if (!type_name_regex_)
+      {
+	if (!type_name_regex_str_.empty())
+	  {
+	    sptr_utils::regex_t_sptr r(new regex_t);
+	    if (regcomp(r.get(),
+			type_name_regex_str_.c_str(),
+			REG_EXTENDED) == 0)
+	      type_name_regex_ = r;
+	  }
+      }
+    return type_name_regex_;
+  }
+
+  /// Setter for the type_name_regex object.
+  ///
+  /// @param r the new type_name_regex object.
+  void
+  set_type_name_regex(sptr_utils::regex_t_sptr r)
+  {type_name_regex_ = r;}
+
+  friend class type_suppression;
+}; // class type_suppression::priv
+
+/// Constructor for @ref type_suppression.
+///
+/// @param label the label of the suppression.  This is just a free
+/// form comment explaining what the suppression is about.
+///
+/// @param type_name_regexp the regular expression describing the
+/// types about which diff reports should be suppressed.  If it's an
+/// empty string, the parameter is ignored.
+///
+/// @param type_name the name of the type about which diff reports
+/// should be suppressed.  If it's an empty string, the parameter is
+/// ignored.
+///
+/// Note that parameter @p type_name_regexp and @p type_name_regexp
+/// should not necessarily be populated.  It usually is either one or
+/// the other that the user wants.
+type_suppression::type_suppression(const string& label,
+				   const string& type_name_regexp,
+				   const string& type_name)
+  : suppression_base(label),
+    priv_(new priv(type_name_regexp,
+		   type_name,
+		   /*consider_typedefness=*/false,
+		   /*is_typedef=fale*/false))
+{}
+
+/// Setter for the "type_name_regex" property of the type suppression
+/// specification.
+///
+/// This sets a regular expression that specifies the family of types
+/// about which diff reports should be suppressed.
+///
+/// @param name_regex_str the new regular expression to set.
+void
+type_suppression::set_type_name_regex_str(const string& name_regex_str)
+{priv_->type_name_regex_str_ = name_regex_str;}
+
+/// Getter for the "type_name_regex" property of the type suppression
+/// specification.
+///
+/// This returns a regular expression that specifies the family of
+/// types about which diff reports should be suppressed.
+///
+/// @return the regular expression.
+const string&
+type_suppression::get_type_name_regex_str() const
+{return priv_->type_name_regex_str_;}
+
+/// Setter for the name of the type about which diff reports should be
+/// suppressed.
+///
+/// @param name the new type name.
+void
+type_suppression::set_type_name(const string& name)
+{priv_->type_name_ = name;}
+
+/// Getter for the name of the type about which diff reports should be
+/// suppressed.
+///
+/// @param return the type name.
+const string&
+type_suppression::get_type_name() const
+{return priv_->type_name_;}
+
+/// Set whether to consider the typedefness of the type diffs when
+/// evaluating the type suppression.
+///
+/// @param f set to true if we want to consider the typedef-ness of
+/// the type to suppress.
+void
+type_suppression::set_consider_typedefness(bool f)
+{priv_->consider_typedefness_ = f;}
+
+/// Get whether to consider the typedefness of the type diffs when
+/// evaluating the type suppression.
+///
+/// @return true if we want to consider the typedef-ness of the type
+/// to suppress.
+bool
+type_suppression::get_consider_typedefness() const
+{return priv_->consider_typedefness_;}
+
+/// @param f If set to true, this means that if
+/// type_suppression::get_consider_typedefness() returns true,
+/// suppress this type if it's a typedef.  If set to false, likewise,
+/// suppress this type if it's *NOT* a typedef.
+///
+/// Note that this clause is "and'ed" with the other clauses of this
+/// suppression.
+void
+type_suppression::set_is_typedef(bool f)
+{priv_->is_typedef_ = f;}
+
+/// @return the value that was set with type_suppression::set_is_typedef.
+bool
+type_suppression::get_is_typedef() const
+{return priv_->is_typedef_;}
+
+
+/// Evaluate this suppression specification on a given diff node and
+/// say if the diff node should be suppressed or not.
+///
+/// @param diff the diff node to evaluate this suppression
+/// specification against.
+///
+/// @return true if @p diff should be suppressed.
+bool
+type_suppression::suppresses_diff(const diff* diff) const
+{
+  const type_diff_base* d = is_type_diff(diff);
+  if (!d)
+    return false;
+
+  type_base_sptr ft, st;
+  ft = is_type(d->first_subject());
+  st = is_type(d->second_subject());
+  assert(ft && st);
+
+  // If the suppression should consider typedefness, then well, check
+  // for that.
+  if (get_consider_typedefness())
+    {
+      bool diff_is_about_typedefs = is_typedef(ft) || is_typedef(st);
+      if (diff_is_about_typedefs != get_is_typedef())
+	return false;
+    }
+
+  string fn, sn;
+  fn = get_type_declaration(ft)->get_qualified_name();
+  sn = get_type_declaration(st)->get_qualified_name();
+
+  // Check if there is an exact type name match.
+  if (!get_type_name().empty())
+    {
+      if (get_type_name() != fn && get_type_name() != sn)
+	return false;
+    }
+
+  // So now check if there is a regular expression match.
+  //
+  // If none of the qualified name of the types that are being
+  // compared match the regular expression of the of the type name,
+  // then this suppression doesn't apply.
+  const sptr_utils::regex_t_sptr type_name_regex = priv_->get_type_name_regex();
+  if (type_name_regex
+      && (regexec(type_name_regex.get(), fn.c_str(),
+		  0, NULL, 0) != 0
+	  && regexec(type_name_regex.get(), sn.c_str(),
+		     0, NULL, 0) != 0))
+    return false;
+
+  return true;
+}
+
+// </type_suppression stuff>
+
+/// Read a type suppression from an instance of ini::config::section
+/// and build a @ref type_suppression as a result.
+///
+/// @param section the section of the ini config to read.
+///
+/// @return the resulting @ref type_suppression upon successful
+/// parsing, or nil.
+static type_suppression_sptr
+read_type_suppression(const ini::config::section& section)
+{
+  type_suppression_sptr nil;
+
+  if (section.get_name() != "suppress_type")
+    return nil;
+
+  ini::config::property_sptr label = section.find_property("label");
+  string label_str = label && !label->second.empty() ? label->second : "";
+
+  ini::config::property_sptr name_regex_prop =
+    section.find_property("name_regexp");
+  string name_regex_str =
+    name_regex_prop && !name_regex_prop->second.empty()
+    ? name_regex_prop->second
+    : "";
+
+  ini::config::property_sptr name_prop = section.find_property("name");
+  string name_str = name_prop && !name_prop->second.empty()
+    ? name_prop->second
+    : "";
+
+  bool consider_typedefness = false;
+  bool is_typedef = false;
+  if (ini::config::property_sptr is_typedef_prop =
+      section.find_property("is_typedef"))
+    {
+      consider_typedefness = true;
+      if (is_typedef_prop->second == "true"
+	  || is_typedef_prop->second == "yes")
+	is_typedef = true;
+      else
+	is_typedef = false;
+    }
+
+  if ((!name_regex_prop || name_regex_prop->second.empty())
+      && (!name_prop || name_prop->second.empty())
+      && !consider_typedefness)
+    return nil;
+
+  type_suppression_sptr suppr(new type_suppression(label_str,
+						   name_regex_str,
+						   name_str));
+  if (consider_typedefness)
+    {
+      suppr->set_consider_typedefness(true);
+      suppr->set_is_typedef(is_typedef);
+    }
+
+  return suppr;
+}
+
+/// Read a vector of type suppression specifications from the sections
+/// of an ini::config.
+///
+/// @param config the config to read from.
+///
+/// @param suppressions out parameter.  The vector of type
+/// suppressions to append the newly read type suppressions to.
+static void
+read_type_suppressions(const ini::config& config,
+		       type_suppressions_type& suppressions)
+{
+  for (ini::config::sections_type::const_iterator i =
+	 config.get_sections().begin();
+       i != config.get_sections().end();
+       ++i)
+    if (type_suppression_sptr s = read_type_suppression(**i))
+      suppressions.push_back(s);
+}
+
+/// Read a vector of suppression specifications from the sections of
+/// an ini::config.
+///
+/// @param config the config to read from.
+///
+/// @param suppressions out parameter.  The vector of suppressions to
+/// append the newly read suppressions to.
+static void
+read_suppressions(const ini::config& config,
+		  suppressions_type& suppressions)
+{
+  for (ini::config::sections_type::const_iterator i =
+	 config.get_sections().begin();
+       i != config.get_sections().end();
+       ++i)
+    if (suppression_sptr s = read_type_suppression(**i))
+      suppressions.push_back(s);
+}
+
+/// Read type suppressions specifications from an input stream.
+///
+/// @param input the input stream to read from.
+///
+/// @param suppressions the vector of type suppressions to append the
+/// newly read suppressions to.
+void
+read_type_suppressions(std::istream& input,
+		      type_suppressions_type& suppressions)
+{
+  if (ini::config_sptr config = ini::read_config(input))
+    read_type_suppressions(*config, suppressions);
+}
+
+/// Read suppressions specifications from an input stream.
+///
+/// @param input the input stream to read from.
+///
+/// @param suppressions the vector of suppressions to append the newly
+/// read suppressions to.
+void
+read_suppressions(std::istream& input,
+		  suppressions_type& suppressions)
+{
+    if (ini::config_sptr config = ini::read_config(input))
+    read_suppressions(*config, suppressions);
+}
+
+/// Read suppressions specifications from an input file on disk.
+///
+/// @param input the path to the input file to read from.
+///
+/// @param suppressions the vector of suppressions to append the newly
+/// read suppressions to.
+void
+read_suppressions(const string& file_path,
+		  suppressions_type& suppressions)
+{
+  if (ini::config_sptr config = ini::read_config(file_path))
+    read_suppressions(*config, suppressions);
+}
 
 /// The private member (pimpl) for @ref diff_context.
 struct diff_context::priv
@@ -166,6 +574,7 @@ struct diff_context::priv
   diff_category			allowed_category_;
   decls_diff_map_type			decls_diff_map;
   vector<filtering::filter_base_sptr>	filters_;
+  suppressions_type			suppressions_;
   pointer_map				traversed_diff_nodes_;
   corpus_sptr				first_corpus_;
   corpus_sptr				second_corpus_;
@@ -502,6 +911,35 @@ diff_context::maybe_apply_filters(corpus_diff_sptr diff,
 
   if (!traverse_nodes_once)
     forbid_traversing_a_node_twice(s);
+}
+
+/// Getter for the vector of suppressions that specify which diff node
+/// reports should be dropped on the floor.
+///
+/// @return the set of suppressions.
+suppressions_type&
+diff_context::suppressions() const
+{return priv_->suppressions_;}
+
+/// Add a new suppression specification that specifies which diff node
+/// reports should be dropped on the floor.
+///
+/// @param suppr the new suppression specification to add to the
+/// existing set of suppressions specifications of the diff context.
+void
+diff_context::add_suppression(const suppression_sptr suppr)
+{priv_->suppressions_.push_back(suppr);}
+
+/// Add new suppression specifications that specify which diff node
+/// reports should be dropped on the floor.
+///
+/// @param supprs the new suppression specifications to add to the
+/// existing set of suppression specifications of the diff context.
+void
+diff_context::add_suppressions(const suppressions_type& supprs)
+{
+  priv_->suppressions_.insert(priv_->suppressions_.end(),
+			      supprs.begin(), supprs.end());
 }
 
 /// Set a flag saying if the comparison module should only show the
@@ -945,6 +1383,10 @@ diff::is_filtered_out() const
   if (context()->get_allowed_category() == EVERYTHING_CATEGORY)
     return false;
 
+  /// We don't want to display nodes suppressed by a user-provided
+  /// suppression specification.
+  if (get_category() & SUPPRESSED_CATEGORY)
+    return true;
 
   // We don't want to display redundant function or variable diff
   // nodes.
@@ -965,6 +1407,23 @@ diff::is_filtered_out() const
   return !((get_category() & ~REDUNDANT_CATEGORY)
 	   & (context()->get_allowed_category()
 	      & ~REDUNDANT_CATEGORY));
+}
+
+/// Test if the current diff node has been suppressed by a
+/// user-provided suppression specification.
+///
+/// @return true if the current diff node has been suppressed by a
+/// user-provided suppression list.
+bool
+diff::is_suppressed() const
+{
+  const suppressions_type& suppressions = context()->suppressions();
+    for (suppressions_type::const_iterator i = suppressions.begin();
+       i != suppressions.end();
+       ++i)
+    if ((*i)->suppresses_diff(this))
+      return true;
+  return false;
 }
 
 /// Test if this diff tree node should be reported.
@@ -1508,6 +1967,14 @@ operator<<(ostream& o, diff_category c)
       if (emitted_a_category)
 	o << "|";
       o << "REDUNDANT_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & SUPPRESSED_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "SUPPRESSED_CATEGORY";
       emitted_a_category |= true;
     }
 
@@ -7639,6 +8106,8 @@ corpus_diff::report(ostream& out, const string& indent) const
   size_t total = 0, removed = 0, added = 0;
   priv::diff_stats s;
 
+  apply_suppressions(this);
+
   /// Report removed/added/changed functions.
   priv_->apply_filters_and_compute_diff_stats(s);
   total = s.num_func_removed + s.num_func_added +
@@ -8222,7 +8691,7 @@ struct category_propagation_visitor : public diff_node_visitor
 	 ++i)
       {
 	diff_category c = (*i)->get_category();
-	c &= ~REDUNDANT_CATEGORY;
+	c &= ~(REDUNDANT_CATEGORY|SUPPRESSED_CATEGORY);
 	d->add_to_category(c);
       }
   }
@@ -8279,6 +8748,122 @@ propagate_categories(corpus_diff* diff_tree)
 void
 propagate_categories(corpus_diff_sptr diff_tree)
 {propagate_categories(diff_tree.get());}
+
+/// A tree node visitor that knows how to categorizes a given in the
+/// SUPPRESSED_CATEGORY category and how to propagate that
+/// categorization.
+struct suppression_categorization_visitor : public diff_node_visitor
+{
+
+  /// Before visiting the children of the diff node, check if the node
+  /// is suppressed by a suppression specification.  If it is, mark
+  /// the node as belonging to the SUPPRESSED_CATEGORY category.
+  ///
+  /// @param p the diff node to visit.
+  virtual void
+  visit_begin(diff* d)
+  {
+    if (d->is_suppressed())
+      d->add_to_category(SUPPRESSED_CATEGORY);
+  }
+
+  /// After visiting the children nodes of a given diff node,
+  /// propagate the SUPPRESSED_CATEGORY from the children nodes to the
+  /// diff node, if need be.
+  ///
+  /// That is, if all children nodes carry a suppressed change the
+  /// current node should be marked as suppressed as well.
+  ///
+  /// In practice, this might be too strong of a condition.  If the
+  /// current node carries a local change (i.e, a change not carried
+  /// by any of its children node) and if that change is not
+  /// suppressed, then the current node should *NOT* be suppressed.
+  ///
+  /// But right now, the IR doesn't let us know about local vs
+  /// children-carried changes.  So we cannot be that precise yet.
+  virtual void
+  visit_end(diff* d)
+  {
+    bool has_non_suppressed_child = false;
+    bool has_non_empty_child = false;
+    bool has_suppressed_child = false;
+
+    if (!(d->get_category() & SUPPRESSED_CATEGORY))
+      {
+	for (vector<diff*>::const_iterator i = d->children_nodes().begin();
+	     i != d->children_nodes().end();
+	     ++i)
+	  {
+	    diff* child = *i;
+	    if (child->length())
+	      {
+		has_non_empty_child = true;
+		if (child->get_category() & SUPPRESSED_CATEGORY)
+		  has_suppressed_child = true;
+		else
+		  has_non_suppressed_child = true;
+	      }
+	  }
+
+	if (has_non_empty_child
+	    && has_suppressed_child
+	    && !has_non_suppressed_child)
+	  d->add_to_category(SUPPRESSED_CATEGORY);
+      }
+  }
+}; //end struct suppression_categorization_visitor
+
+/// Walk a given diff-sub tree and appply the suppressions carried by
+/// the context.  If the suppression applies to a given node than
+/// categorize the node into the SUPPRESSED_CATEGORY category and
+/// propagate that categorization.
+///
+/// @param diff_tree the diff-sub tree to apply the suppressions to.
+void
+apply_suppressions(diff* diff_tree)
+{
+  suppression_categorization_visitor v;
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(v);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Walk a given diff-sub tree and appply the suppressions carried by
+/// the context.  If the suppression applies to a given node than
+/// categorize the node into the SUPPRESSED_CATEGORY category and
+/// propagate that categorization.
+///
+/// @param diff_tree the diff-sub tree to apply the suppressions to.
+void
+apply_suppressions(diff_sptr diff_tree)
+{apply_suppressions(diff_tree.get());}
+
+/// Walk a diff tree and appply the suppressions carried by the
+/// context.  If the suppression applies to a given node than
+/// categorize the node into the SUPPRESSED_CATEGORY category and
+/// propagate that categorization.
+///
+/// @param diff_tree the diff tree to apply the suppressions to.
+void
+apply_suppressions(const corpus_diff*  diff_tree)
+{
+  suppression_categorization_visitor v;
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  const_cast<corpus_diff*>(diff_tree)->traverse(v);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Walk a diff tree and appply the suppressions carried by the
+/// context.  If the suppression applies to a given node than
+/// categorize the node into the SUPPRESSED_CATEGORY category and
+/// propagate that categorization.
+///
+/// @param diff_tree the diff tree to apply the suppressions to.
+void
+apply_suppressions(corpus_diff_sptr  diff_tree)
+{apply_suppressions(diff_tree.get());}
 
 // </diff tree category propagation>
 

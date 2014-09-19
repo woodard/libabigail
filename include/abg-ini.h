@@ -129,8 +129,12 @@ public:
 
   void
   add_property(const property_sptr prop);
+
+  property_sptr
+  find_property(const string& prop_name) const;
+
   virtual ~section();
-}; //end class config::property
+}; //end class config::section
 
 bool
 read_sections(std::istream& input,

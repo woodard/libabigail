@@ -268,19 +268,23 @@ enum diff_category
   /// alias change that is harmless.
   HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY = 1 << 6,
 
+  /// This means that a diff node was marked as suppressed by a
+  /// user-provided suppression specification.
+  SUPPRESSED_CATEGORY = 1 << 7,
+
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.  Removal or changes of enumerators in a
   /// enum fall in this category too.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 7,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 8,
 
   /// This means that a diff node in the sub-tree carries a change to
   /// a vtable.
-  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 8,
+  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 9,
 
   /// A diff node in this category is redundant.  That means it's
   /// present as a child of a other nodes in the diff tree.
-  REDUNDANT_CATEGORY = 1 << 9,
+  REDUNDANT_CATEGORY = 1 << 10,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -295,6 +299,7 @@ enum diff_category
   | STATIC_DATA_MEMBER_CHANGE_CATEGORY
   | HARMLESS_ENUM_CHANGE_CATEGORY
   | HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
+  | SUPPRESSED_CATEGORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
   | REDUNDANT_CATEGORY
@@ -325,6 +330,110 @@ class corpus_diff;
 
 /// A convenience typedef for a shared pointer to @ref corpus_diff.
 typedef shared_ptr<corpus_diff> corpus_diff_sptr;
+class suppression_base;
+
+/// Convenience typedef for a shared pointer to a @ref suppression.
+typedef shared_ptr<suppression_base> suppression_sptr;
+
+/// Convenience typedef for a vector of @ref suppression_sptr
+typedef vector<suppression_sptr> suppressions_type;
+
+/// Base type of the suppression specifications types.
+///
+/// This abstracts a suppression specification.  It's a way to specify
+/// how to drop reports about a particular diff node on the floor, if
+/// it matches the supppression specification.
+class suppression_base
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  // Forbid default constructor
+  suppression_base();
+
+public:
+  suppression_base(const string& label);
+
+  const string
+  get_label() const;
+
+  void
+  set_label(const string&);
+
+  virtual bool
+  suppresses_diff(const diff*) const = 0;
+
+  virtual ~suppression_base();
+}; // end class suppression_base
+
+class type_suppression;
+
+/// Convenience typedef for a shared pointer to type_suppression.
+typedef shared_ptr<type_suppression> type_suppression_sptr;
+
+/// Convenience typedef for vector of @ref type_suppression_sptr.
+typedef vector<type_suppression_sptr> type_suppressions_type;
+
+/// Abstraction of a type suppression specification.
+///
+/// Specifies under which condition reports about a type diff node
+/// should be dropped on the floor.
+class type_suppression : public suppression_base
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  // Forbid this;
+  type_suppression();
+
+public:
+  type_suppression(const string& label,
+		   const string& type_name_regexp,
+		   const string& type_name);
+
+  void
+  set_type_name_regex_str(const string& name_regex_str);
+
+  const string&
+  get_type_name_regex_str() const;
+
+  void
+  set_type_name(const string& name);
+
+  const string&
+  get_type_name() const;
+
+  void
+  set_consider_typedefness(bool f);
+
+  bool
+  get_consider_typedefness() const;
+
+  void
+  set_is_typedef(bool f);
+
+  bool
+  get_is_typedef() const;
+
+  virtual bool
+  suppresses_diff(const diff* diff) const;
+}; // end type_suppression
+
+void
+read_type_suppressions(std::istream& input,
+		      type_suppressions_type& suppressions);
+
+void
+read_suppressions(std::istream& input,
+		  suppressions_type& suppressions);
+
+void
+read_suppressions(const string& file_path,
+		  suppressions_type& suppressions);
 
 /// The context of the diff.  This type holds various bits of
 /// information that is going to be used throughout the diffing of two
@@ -415,6 +524,15 @@ public:
   void
   maybe_apply_filters(corpus_diff_sptr diff,
 		      bool traverse_nodes_once = true);
+
+  suppressions_type&
+  suppressions() const;
+
+  void
+  add_suppression(const suppression_sptr suppr);
+
+  void
+  add_suppressions(const suppressions_type& supprs);
 
   void
   show_stats_only(bool f);
@@ -551,6 +669,9 @@ public:
 
   bool
   is_filtered_out() const;
+
+  bool
+  is_suppressed() const;
 
   bool
   to_be_reported() const;
@@ -1727,6 +1848,18 @@ propagate_categories(corpus_diff* diff_tree);
 
 void
 propagate_categories(corpus_diff_sptr diff_tree);
+
+void
+apply_suppressions(diff* diff_tree);
+
+void
+apply_suppressions(const corpus_diff* diff_tree);
+
+void
+apply_suppressions(diff_sptr diff_tree);
+
+void
+apply_suppressions(corpus_diff_sptr diff_tree);
 
 void
 print_diff_tree(diff* diff_tree, std::ostream&);
