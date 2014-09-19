@@ -1106,7 +1106,7 @@ class base_diff;
 /// Convenience typedef for a shared pointer to base_diff.
 typedef shared_ptr<base_diff> base_diff_sptr;
 
-/// An abstraction of a diff between two instances of base_diff.
+/// An abstraction of a diff between two instances of class_decl::base_spec.
 class base_diff : public diff
 {
   struct priv;
