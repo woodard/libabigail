@@ -409,7 +409,8 @@ type_suppression::suppresses_diff(const diff* diff) const
 	case type_suppression::STRUCT_TYPE_KIND:
 	  {
 	    class_decl_sptr fc = is_class_type(ft), sc = is_class_type(st);
-	    if (!fc->is_struct() && !sc->is_struct())
+	    if ((!fc && !sc)
+		|| (fc && !fc->is_struct() && sc && !sc->is_struct()))
 	      return false;
 	  }
 	  break;
