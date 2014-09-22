@@ -391,6 +391,21 @@ class type_suppression : public suppression_base
   type_suppression();
 
 public:
+
+  /// The kind of the type the current type suppression is supposed to
+  /// be about.
+  enum type_kind
+  {
+    UNKNOWN_TYPE_KIND,
+    CLASS_TYPE_KIND,
+    STRUCT_TYPE_KIND,
+    UNION_TYPE_KIND,
+    ENUM_TYPE_KIND,
+    ARRAY_TYPE_KIND,
+    TYPEDEF_TYPE_KIND,
+    BUILTIN_TYPE_KIND
+  }; // end enum type_kind
+
   type_suppression(const string& label,
 		   const string& type_name_regexp,
 		   const string& type_name);
@@ -407,17 +422,17 @@ public:
   const string&
   get_type_name() const;
 
-  void
-  set_consider_typedefness(bool f);
-
   bool
-  get_consider_typedefness() const;
+  get_consider_type_kind() const;
 
   void
-  set_is_typedef(bool f);
+  set_consider_type_kind(bool f);
 
-  bool
-  get_is_typedef() const;
+  void
+  set_type_kind(type_kind k);
+
+  type_kind
+  get_type_kind() const;
 
   virtual bool
   suppresses_diff(const diff* diff) const;

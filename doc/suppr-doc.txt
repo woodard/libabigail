@@ -1,6 +1,8 @@
-; So this suppresses all the reports about types	
+; So this suppresses all the reports about types
 [suppress_type]
   name = Dwarf
+  type_kind = enum
+# type_kind = typedef|enum|struct|class|union|array|builtin
 
 [suppress_function]
   name= .*

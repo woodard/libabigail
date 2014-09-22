@@ -221,20 +221,20 @@ class type_suppression::priv
   string				type_name_regex_str_;
   mutable sptr_utils::regex_t_sptr	type_name_regex_;
   string				type_name_;
-  bool					consider_typedefness_;
-  bool					is_typedef_;
+  bool					consider_type_kind_;
+  type_suppression::type_kind		type_kind_;
 
   priv();
 
 public:
-  priv(const string&	type_name_regexp,
-       const string&	type_name,
-       bool		consider_typedefness,
-       bool		is_typedef)
+  priv(const string&			type_name_regexp,
+       const string&			type_name,
+       bool				consider_type_kind,
+       type_suppression::type_kind	type_kind)
     : type_name_regex_str_(type_name_regexp),
       type_name_(type_name),
-      consider_typedefness_(consider_typedefness),
-      is_typedef_(is_typedef)
+      consider_type_kind_(consider_type_kind),
+      type_kind_(type_kind)
   {}
 
   /// Get the regular expression object associated to the 'type_name_regex'
@@ -294,8 +294,8 @@ type_suppression::type_suppression(const string& label,
   : suppression_base(label),
     priv_(new priv(type_name_regexp,
 		   type_name,
-		   /*consider_typedefness=*/false,
-		   /*is_typedef=fale*/false))
+		   /*consider_type_kings=*/false,
+		   /*type_kind=*/CLASS_TYPE_KIND))
 {}
 
 /// Setter for the "type_name_regex" property of the type suppression
@@ -336,40 +336,44 @@ const string&
 type_suppression::get_type_name() const
 {return priv_->type_name_;}
 
-/// Set whether to consider the typedefness of the type diffs when
-/// evaluating the type suppression.
+/// Getter of the property that says whether to consider the kind of
+/// type this suppression is about.
 ///
-/// @param f set to true if we want to consider the typedef-ness of
-/// the type to suppress.
-void
-type_suppression::set_consider_typedefness(bool f)
-{priv_->consider_typedefness_ = f;}
-
-/// Get whether to consider the typedefness of the type diffs when
-/// evaluating the type suppression.
-///
-/// @return true if we want to consider the typedef-ness of the type
-/// to suppress.
+/// @return the boolean value of the property.
 bool
-type_suppression::get_consider_typedefness() const
-{return priv_->consider_typedefness_;}
+type_suppression::get_consider_type_kind() const
+{return priv_->consider_type_kind_;}
 
-/// @param f If set to true, this means that if
-/// type_suppression::get_consider_typedefness() returns true,
-/// suppress this type if it's a typedef.  If set to false, likewise,
-/// suppress this type if it's *NOT* a typedef.
+/// Setter of the property that says whether to consider the kind of
+/// type this suppression is about.
 ///
-/// Note that this clause is "and'ed" with the other clauses of this
-/// suppression.
+/// @param f the new boolean value of the property.
 void
-type_suppression::set_is_typedef(bool f)
-{priv_->is_typedef_ = f;}
+type_suppression::set_consider_type_kind(bool f)
+{priv_->consider_type_kind_ = f;}
 
-/// @return the value that was set with type_suppression::set_is_typedef.
-bool
-type_suppression::get_is_typedef() const
-{return priv_->is_typedef_;}
 
+/// Setter of the kind of type this suppression is about.
+///
+/// Note that this will be considered during evaluation of the
+/// suppression only if type_suppression::get_consider_type_kind()
+/// returns true.
+///
+/// @param k the new kind of type this suppression is about.
+void
+type_suppression::set_type_kind(type_kind k)
+{priv_->type_kind_ = k;}
+
+/// Getter of the kind of type this suppression is about.
+///
+/// Note that this will be considered during evaluation of the
+/// suppression only if type_suppression::get_consider_type_kind()
+/// returns true.
+///
+/// @return the kind of type this suppression is about.
+type_suppression::type_kind
+type_suppression::get_type_kind() const
+{return priv_->type_kind_;}
 
 /// Evaluate this suppression specification on a given diff node and
 /// say if the diff node should be suppressed or not.
@@ -390,13 +394,46 @@ type_suppression::suppresses_diff(const diff* diff) const
   st = is_type(d->second_subject());
   assert(ft && st);
 
-  // If the suppression should consider typedefness, then well, check
+  // If the suppression should consider type kind, then well, check
   // for that.
-  if (get_consider_typedefness())
+  if (get_consider_type_kind())
     {
-      bool diff_is_about_typedefs = is_typedef(ft) || is_typedef(st);
-      if (diff_is_about_typedefs != get_is_typedef())
-	return false;
+      type_kind k = get_type_kind();
+      switch (k)
+	{
+	case type_suppression::UNKNOWN_TYPE_KIND:
+	case type_suppression::CLASS_TYPE_KIND:
+	  if (!is_class_type(ft) && !is_class_type(st))
+	    return false;
+	  break;
+	case type_suppression::STRUCT_TYPE_KIND:
+	  {
+	    class_decl_sptr fc = is_class_type(ft), sc = is_class_type(st);
+	    if (!fc->is_struct() && !sc->is_struct())
+	      return false;
+	  }
+	  break;
+	case type_suppression::UNION_TYPE_KIND:
+	  // We do not support unions yet.  When we do, we should
+	  // replace the abort here by a "break;" statement.
+	  abort();
+	case type_suppression::ENUM_TYPE_KIND:
+	  if (!is_enum(ft) && !is_enum(st))
+	    return false;
+	  break;
+	case type_suppression::ARRAY_TYPE_KIND:
+	  if (!is_array_def(ft) && !is_array_def(st))
+	    return false;
+	  break;
+	case type_suppression::TYPEDEF_TYPE_KIND:
+	  if (!is_typedef(ft) && !is_typedef(st))
+	    return false;
+	  break;
+	case type_suppression::BUILTIN_TYPE_KIND:
+	  if (!is_type_decl(ft) && !is_type_decl(st))
+	    return false;
+	  break;
+	}
     }
 
   string fn, sn;
@@ -428,6 +465,34 @@ type_suppression::suppresses_diff(const diff* diff) const
 
 // </type_suppression stuff>
 
+/// Parse the value of the "type_kind" property in the "suppress_type"
+/// section.
+///
+/// @param input the input string representing the value of the
+/// "type_kind" property.
+///
+/// @return the @ref type_kind enumerator parsed.
+static type_suppression::type_kind
+read_type_kind_string(const string& input)
+{
+  if (input == "class")
+    return type_suppression::CLASS_TYPE_KIND;
+  else if (input == "struct")
+    return type_suppression::STRUCT_TYPE_KIND;
+  else if (input == "union")
+    return type_suppression::UNION_TYPE_KIND;
+  else if (input == "enum")
+    return type_suppression::ENUM_TYPE_KIND;
+  else if (input == "array")
+    return type_suppression::ARRAY_TYPE_KIND;
+  else if (input == "typedef")
+    return type_suppression::TYPEDEF_TYPE_KIND;
+  else if (input == "builtin")
+    return type_suppression::BUILTIN_TYPE_KIND;
+  else
+    return type_suppression::UNKNOWN_TYPE_KIND;
+}
+
 /// Read a type suppression from an instance of ini::config::section
 /// and build a @ref type_suppression as a result.
 ///
@@ -458,31 +523,27 @@ read_type_suppression(const ini::config::section& section)
     ? name_prop->second
     : "";
 
-  bool consider_typedefness = false;
-  bool is_typedef = false;
-  if (ini::config::property_sptr is_typedef_prop =
-      section.find_property("is_typedef"))
+  bool consider_type_kind = false;
+  type_suppression::type_kind type_kind = type_suppression::UNKNOWN_TYPE_KIND;
+  if (ini::config::property_sptr type_kind_prop =
+      section.find_property("type_kind"))
     {
-      consider_typedefness = true;
-      if (is_typedef_prop->second == "true"
-	  || is_typedef_prop->second == "yes")
-	is_typedef = true;
-      else
-	is_typedef = false;
+      consider_type_kind = true;
+      type_kind = read_type_kind_string(type_kind_prop->second);
     }
 
   if ((!name_regex_prop || name_regex_prop->second.empty())
       && (!name_prop || name_prop->second.empty())
-      && !consider_typedefness)
+      && !consider_type_kind)
     return nil;
 
   type_suppression_sptr suppr(new type_suppression(label_str,
 						   name_regex_str,
 						   name_str));
-  if (consider_typedefness)
+  if (consider_type_kind)
     {
-      suppr->set_consider_typedefness(true);
-      suppr->set_is_typedef(is_typedef);
+      suppr->set_consider_type_kind(true);
+      suppr->set_type_kind(type_kind);
     }
 
   return suppr;

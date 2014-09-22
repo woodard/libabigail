@@ -1,9 +1,9 @@
 [suppress_type]
   name = a_type
-  is_typedef = yes
+  type_kind = typedef
 
 [suppress_type]
   name = b_type
-  is_typedef = yes
+  type_kind = typedef
 
 

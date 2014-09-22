@@ -2867,6 +2867,14 @@ type_base_sptr
 is_type(const decl_base_sptr decl)
 {return dynamic_pointer_cast<type_base>(decl);}
 
+/// Test whether a type is a type_decl (a builtin type).
+///
+/// @return the type_decl_sptr for @t if it's type_decl, otherwise,
+/// return nil.
+type_decl_sptr
+is_type_decl(const type_base_sptr t)
+{return dynamic_pointer_cast<type_decl>(t);}
+
 /// Test whether a type is a typedef.
 ///
 /// @param t the type to test for.
