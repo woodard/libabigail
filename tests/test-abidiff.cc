@@ -53,40 +53,40 @@ struct InOutSpec
 static InOutSpec specs[] =
 {
   {
-    "data/test-bidiff/test-enum0-v0.cc.bi",
-    "data/test-bidiff/test-enum0-v1.cc.bi",
-    "data/test-bidiff/test-enum0-report.txt",
-    "output/test-bidiff/test-enum0-report.txt"
+    "data/test-abidiff/test-enum0-v0.cc.bi",
+    "data/test-abidiff/test-enum0-v1.cc.bi",
+    "data/test-abidiff/test-enum0-report.txt",
+    "output/test-abidiff/test-enum0-report.txt"
   },
   {
-    "data/test-bidiff/test-enum1-v0.cc.bi",
-    "data/test-bidiff/test-enum1-v1.cc.bi",
-    "data/test-bidiff/test-enum1-report.txt",
-    "output/test-bidiff/test-enum1-report.txt"
+    "data/test-abidiff/test-enum1-v0.cc.bi",
+    "data/test-abidiff/test-enum1-v1.cc.bi",
+    "data/test-abidiff/test-enum1-report.txt",
+    "output/test-abidiff/test-enum1-report.txt"
   },
   {
-    "data/test-bidiff/test-qual-type0-v0.cc.bi",
-    "data/test-bidiff/test-qual-type0-v1.cc.bi",
-    "data/test-bidiff/test-qual-type0-report.txt",
-    "output/test-bidiff/test-qual-type0-report.txt"
+    "data/test-abidiff/test-qual-type0-v0.cc.bi",
+    "data/test-abidiff/test-qual-type0-v1.cc.bi",
+    "data/test-abidiff/test-qual-type0-report.txt",
+    "output/test-abidiff/test-qual-type0-report.txt"
   },
   {
-    "data/test-bidiff/test-struct0-v0.cc.bi",
-    "data/test-bidiff/test-struct0-v1.cc.bi",
-    "data/test-bidiff/test-struct0-report.txt",
-    "output/test-bidiff/test-struct0-report.txt"
+    "data/test-abidiff/test-struct0-v0.cc.bi",
+    "data/test-abidiff/test-struct0-v1.cc.bi",
+    "data/test-abidiff/test-struct0-report.txt",
+    "output/test-abidiff/test-struct0-report.txt"
   },
   {
-    "data/test-bidiff/test-struct1-v0.cc.bi",
-    "data/test-bidiff/test-struct1-v1.cc.bi",
-    "data/test-bidiff/test-struct1-report.txt",
-    "output/test-bidiff/test-struct1-report.txt"
+    "data/test-abidiff/test-struct1-v0.cc.bi",
+    "data/test-abidiff/test-struct1-v1.cc.bi",
+    "data/test-abidiff/test-struct1-report.txt",
+    "output/test-abidiff/test-struct1-report.txt"
   },
   {
-    "data/test-bidiff/test-var0-v0.cc.bi",
-    "data/test-bidiff/test-var0-v1.cc.bi",
-    "data/test-bidiff/test-var0-report.txt",
-    "output/test-bidiff/test-var0-report.txt"
+    "data/test-abidiff/test-var0-v0.cc.bi",
+    "data/test-abidiff/test-var0-v1.cc.bi",
+    "data/test-abidiff/test-var0-report.txt",
+    "output/test-abidiff/test-var0-report.txt"
   },
   // This should be the last entry.
   {0, 0, 0, 0}

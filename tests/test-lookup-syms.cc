@@ -38,7 +38,7 @@ struct InOutSpec
 {
   const char* in_elf_path;
   const char* symbol;
-  const char* bisym_options;
+  const char* abisym_options;
   const char* in_report_path;
   const char* out_report_path;
 }; // end struct InOutSpec
@@ -99,14 +99,14 @@ main()
   using abigail::tools::ensure_parent_dir_created;
 
   bool is_ok = true;
-  string in_elf_path, symbol, bisym, bisym_options,
+  string in_elf_path, symbol, abisym, abisym_options,
     ref_report_path, out_report_path;
 
   for (InOutSpec* s = in_out_specs; s->in_elf_path; ++s)
     {
       in_elf_path = get_src_dir() + "/tests/" + s->in_elf_path;
       symbol = s->symbol;
-      bisym_options = s->bisym_options;
+      abisym_options = s->abisym_options;
       ref_report_path = get_src_dir() + "/tests/" + s->in_report_path;
       out_report_path = get_build_dir() + "/tests/" + s->out_report_path;
 
@@ -118,17 +118,17 @@ main()
 	  continue;
 	}
 
-      bisym = get_build_dir() + "/tools/bisym";
-      bisym += " " + bisym_options;
+      abisym = get_build_dir() + "/tools/abisym";
+      abisym += " " + abisym_options;
 
-      string cmd = bisym + " " + in_elf_path + " " + symbol;
+      string cmd = abisym + " " + in_elf_path + " " + symbol;
       cmd += " > " + out_report_path;
 
-      bool bisym_ok = true;
+      bool abisym_ok = true;
       if (system(cmd.c_str()))
-	bisym_ok = false;
+	abisym_ok = false;
 
-      if (bisym_ok)
+      if (abisym_ok)
 	{
 	  cmd = "diff -u " + ref_report_path + " "+  out_report_path;
 	  if (system(cmd.c_str()))

@@ -26,7 +26,7 @@
 /// debugging information and compares the resulting report with a
 /// reference report.  If the resulting report is different from the
 /// reference report, the test has failed.  Note that the comparison
-/// is done using the bidiff command line comparison tool.
+/// is done using the abidiff command line comparison tool.
 ///
 /// The set of input files and reference reports to consider should be
 /// present in the source distribution.
@@ -47,7 +47,7 @@ struct InOutSpec
 {
   const char* in_elfv0_path;
   const char* in_elfv1_path;
-  const char* bidiff_options;
+  const char* abidiff_options;
   const char* in_report_path;
   const char* out_report_path;
 }; // end struct InOutSpec;
@@ -256,14 +256,14 @@ main()
 
   bool is_ok = true;
   string in_elfv0_path, in_elfv1_path,
-    bidiff_options, bidiff, cmd,
+    abidiff_options, abidiff, cmd,
     ref_diff_report_path, out_diff_report_path;
 
     for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
       {
 	in_elfv0_path = get_src_dir() + "/tests/" + s->in_elfv0_path;
 	in_elfv1_path = get_src_dir() + "/tests/" + s->in_elfv1_path;
-	bidiff_options = s->bidiff_options;
+	abidiff_options = s->abidiff_options;
 	ref_diff_report_path = get_src_dir() + "/tests/" + s->in_report_path;
 	out_diff_report_path = get_build_dir() + "/tests/" + s->out_report_path;
 
@@ -275,17 +275,17 @@ main()
 	    continue;
 	  }
 
-	bidiff = get_build_dir() + "/tools/bidiff";
-	bidiff += " " + bidiff_options;
+	abidiff = get_build_dir() + "/tools/abidiff";
+	abidiff += " " + abidiff_options;
 
-	cmd = bidiff + " " + in_elfv0_path + " " + in_elfv1_path;
+	cmd = abidiff + " " + in_elfv0_path + " " + in_elfv1_path;
 	cmd += " > " + out_diff_report_path;
 
-	bool bidiff_ok = true;
+	bool abidiff_ok = true;
 	if (system(cmd.c_str()))
-	  bidiff_ok = false;
+	  abidiff_ok = false;
 
-	if (bidiff_ok)
+	if (abidiff_ok)
 	  {
 	    cmd = "diff -u " + ref_diff_report_path
 	      + " " + out_diff_report_path;

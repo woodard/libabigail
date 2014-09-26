@@ -37,7 +37,7 @@ struct InOutSpec
 {
   const char* in_elf_path;
   const char* debug_info_dir_path;
-  const char* bidw_options;
+  const char* abidw_options;
   const char* in_report_path;
   const char* out_report_path;
 };
@@ -73,12 +73,12 @@ main()
 
   bool is_ok = true;
   string in_elf_path, ref_report_path, out_report_path, debug_info_dir;
-  string bidw, bidw_options;
+  string abidw, abidw_options;
 
-  bidw = get_build_dir() + "/tools/bidw";
+  abidw = get_build_dir() + "/tools/abidw";
   for (InOutSpec* s = in_out_specs; s->in_elf_path; ++s)
     {
-      bidw_options = s->bidw_options;
+      abidw_options = s->abidw_options;
       in_elf_path = get_src_dir() + "/tests/" + s->in_elf_path;
       debug_info_dir = get_src_dir() + "/tests/" + s->debug_info_dir_path;
       ref_report_path = get_src_dir() + "/tests/" + s->in_report_path;
@@ -91,14 +91,14 @@ main()
 	  continue;
 	}
 
-      string cmd = bidw + " --debug-info-dir " + debug_info_dir
-	+ " " + bidw_options + " " + in_elf_path + " > " + out_report_path;
+      string cmd = abidw + " --debug-info-dir " + debug_info_dir
+	+ " " + abidw_options + " " + in_elf_path + " > " + out_report_path;
 
-      bool bidw_ok = true;
+      bool abidw_ok = true;
       if (system(cmd.c_str()))
-	bidw_ok = false;
+	abidw_ok = false;
 
-      if (bidw_ok)
+      if (abidw_ok)
 	{
 	  cmd = "diff -u " + ref_report_path + " " + out_report_path;
 	  if (system(cmd.c_str()))

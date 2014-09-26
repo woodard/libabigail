@@ -6,32 +6,32 @@ abg-tools-utils.h		\
 abg-tools-utils.cc
 
 if ENABLE_ZIP_ARCHIVE
-  bin_PROGRAMS = biar bidiff bilint bidw bisym
+  bin_PROGRAMS = abiar abidiff abilint abidw abisym
 else
-  bin_PROGRAMS = bidiff bilint bidw bisym
+  bin_PROGRAMS = abidiff abilint abidw abisym
 endif
 
 
 if ENABLE_ZIP_ARCHIVE
-biar_SOURCES = biar.cc
-biardir = $(bindir)
-biar_LDADD = ../src/libabigail.la libtoolsutils.la
+abiar_SOURCES = abiar.cc
+abiardir = $(bindir)
+abiar_LDADD = ../src/libabigail.la libtoolsutils.la
 endif
 
-bidiff_SOURCES = bidiff.cc
-bidiffdir = $(bindir)
-bidiff_LDADD = ../src/libabigail.la libtoolsutils.la
+abidiff_SOURCES = abidiff.cc
+abidiffdir = $(bindir)
+abidiff_LDADD = ../src/libabigail.la libtoolsutils.la
 
-bilint_SOURCES = bilint.cc
-bilintdir = $(bindir)
-bilint_LDADD = ../src/libabigail.la libtoolsutils.la
+abilint_SOURCES = abilint.cc
+abilintdir = $(bindir)
+abilint_LDADD = ../src/libabigail.la libtoolsutils.la
 
-bidw_SOURCES = bidw.cc
-bidwdir = $(bindir)
-bidw_LDADD = ../src/libabigail.la libtoolsutils.la
+abidw_SOURCES = abidw.cc
+abidwdir = $(bindir)
+abidw_LDADD = ../src/libabigail.la libtoolsutils.la
 
-bisym_SOURCES = bisym.cc
-bisymdir = $(bindir)
-bisym_LDADD = ../src/libabigail.la
+abisym_SOURCES = abisym.cc
+abisymdir = $(bindir)
+abisym_LDADD = ../src/libabigail.la
 
 AM_CPPFLAGS=-I$(abs_top_srcdir)/include -I$(abs_top_srcdir)/tools

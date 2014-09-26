@@ -13,7 +13,7 @@ runtestreaddwarf		\
 runtestlookupsyms		\
 runtestaltdwarf			\
 runtestcorediff			\
-runtestbidiff			\
+runtestabidiff			\
 runtestdiffdwarf		\
 runtestdifffilter		\
 runtestsvg
@@ -52,8 +52,8 @@ runtestaltdwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 runtestcorediff_SOURCES=test-core-diff.cc
 runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
-runtestbidiff_SOURCES = test-bidiff.cc
-runtestbidiff_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+runtestabidiff_SOURCES = test-abidiff.cc
+runtestabidiff_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestdiffdwarf_SOURCES = test-diff-dwarf.cc
 runtestdiffdwarf_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
@@ -111,24 +111,24 @@ data/test-write-read-archive/test2.xml \
 data/test-write-read-archive/test3.xml \
 data/test-write-read-archive/test4.xml \
 \
-data/test-bidiff/test-enum0-v0.cc.bi		\
-data/test-bidiff/test-enum0-v1.cc.bi		\
-data/test-bidiff/test-enum0-report.txt		\
-data/test-bidiff/test-enum1-v0.cc.bi		\
-data/test-bidiff/test-enum1-v1.cc.bi		\
-data/test-bidiff/test-enum1-report.txt		\
-data/test-bidiff/test-qual-type0-v0.cc.bi	\
-data/test-bidiff/test-qual-type0-v1.cc.bi	\
-data/test-bidiff/test-qual-type0-report.txt	\
-data/test-bidiff/test-struct0-v0.cc.bi		\
-data/test-bidiff/test-struct0-v1.cc.bi		\
-data/test-bidiff/test-struct0-report.txt	\
-data/test-bidiff/test-struct1-v0.cc.bi	 	\
-data/test-bidiff/test-struct1-v1.cc.bi		\
-data/test-bidiff/test-struct1-report.txt	\
-data/test-bidiff/test-var0-v0.cc.bi		\
-data/test-bidiff/test-var0-v1.cc.bi		\
-data/test-bidiff/test-var0-report.txt		\
+data/test-abidiff/test-enum0-v0.cc.bi		\
+data/test-abidiff/test-enum0-v1.cc.bi		\
+data/test-abidiff/test-enum0-report.txt		\
+data/test-abidiff/test-enum1-v0.cc.bi		\
+data/test-abidiff/test-enum1-v1.cc.bi		\
+data/test-abidiff/test-enum1-report.txt		\
+data/test-abidiff/test-qual-type0-v0.cc.bi	\
+data/test-abidiff/test-qual-type0-v1.cc.bi	\
+data/test-abidiff/test-qual-type0-report.txt	\
+data/test-abidiff/test-struct0-v0.cc.bi		\
+data/test-abidiff/test-struct0-v1.cc.bi		\
+data/test-abidiff/test-struct0-report.txt	\
+data/test-abidiff/test-struct1-v0.cc.bi	 	\
+data/test-abidiff/test-struct1-v1.cc.bi		\
+data/test-abidiff/test-struct1-report.txt	\
+data/test-abidiff/test-var0-v0.cc.bi		\
+data/test-abidiff/test-var0-v1.cc.bi		\
+data/test-abidiff/test-var0-report.txt		\
 \
 data/test-diff-dwarf/test0-v0.cc		\
 data/test-diff-dwarf/test0-v0.o			\
