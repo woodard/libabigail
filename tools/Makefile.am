@@ -6,11 +6,12 @@ abg-tools-utils.h		\
 abg-tools-utils.cc
 
 if ENABLE_ZIP_ARCHIVE
-  bin_PROGRAMS = abiar abidiff abilint abidw abisym
+  bin_PROGRAMS = abiar abidiff abilint abidw
 else
-  bin_PROGRAMS = abidiff abilint abidw abisym
+  bin_PROGRAMS = abidiff abilint abidw
 endif
 
+noinst_PROGRAMS = abisym
 
 if ENABLE_ZIP_ARCHIVE
 abiar_SOURCES = abiar.cc
