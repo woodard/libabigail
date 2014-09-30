@@ -73,6 +73,15 @@ template<>
 regex_t_sptr
 build_sptr<regex_t>(regex_t *p);
 
+/// A deleter for shared pointers that ... doesn't delete the object
+/// managed by the shared pointer.
+struct noop_deleter
+{
+  template<typename T>
+  void
+  operator()(const T*)
+  {}
+};
 }// end namespace sptr_utils
 }// end namespace abigail
 

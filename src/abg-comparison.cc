@@ -29,6 +29,7 @@
 #include "abg-hash.h"
 #include "abg-comparison.h"
 #include "abg-comp-filter.h"
+#include "abg-sptr-utils.h"
 
 namespace abigail
 {
@@ -40,16 +41,7 @@ namespace comparison
 using std::vector;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
-
-/// A deleter for shared pointers that ... doesn't delete the object
-/// managed by the shared pointer.
-struct noop_deleter
-{
-  template<typename T>
-  void
-  operator()(const T*)
-  {}
-};
+using abigail::sptr_utils::noop_deleter;
 
 /// Convenience typedef for a pair of decls.
 typedef std::pair<const decl_base_sptr, const decl_base_sptr> decls_type;
