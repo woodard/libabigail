@@ -458,7 +458,7 @@ has_virtual_mem_fn_change(const class_diff* diff)
        i != diff->deleted_member_fns().end();
        ++i)
     {
-      if (member_function_is_virtual(i->second))
+      if (get_member_function_is_virtual(i->second))
 	{
 	  // Do not consider a virtual function that got deleted from
 	  // an offset and re-inserted at the same offset as a
@@ -479,7 +479,7 @@ has_virtual_mem_fn_change(const class_diff* diff)
        i != diff->inserted_member_fns().end();
        ++i)
     {
-      if (member_function_is_virtual(i->second))
+      if (get_member_function_is_virtual(i->second))
 	{
 	  // Do not consider a virtual function that got deleted from
 	  // an offset and re-inserted at the same offset as a
@@ -499,8 +499,8 @@ has_virtual_mem_fn_change(const class_diff* diff)
 	 diff->changed_member_fns().begin();
        i != diff->changed_member_fns().end();
        ++i)
-    if(member_function_is_virtual(i->second.first)
-       || !member_function_is_virtual(i->second.second))
+    if(get_member_function_is_virtual(i->second.first)
+       || !get_member_function_is_virtual(i->second.second))
       {
 	if (get_member_function_vtable_offset(i->second.first)
 	    == get_member_function_vtable_offset(i->second.second))
@@ -543,22 +543,22 @@ has_non_virtual_mem_fn_change(const class_diff* diff)
 	 diff->deleted_member_fns().begin();
        i != diff->deleted_member_fns().end();
        ++i)
-    if (!member_function_is_virtual(i->second))
+    if (!get_member_function_is_virtual(i->second))
       return true;
 
   for (string_member_function_sptr_map::const_iterator i =
 	 diff->inserted_member_fns().begin();
        i != diff->inserted_member_fns().end();
        ++i)
-    if (!member_function_is_virtual(i->second))
+    if (!get_member_function_is_virtual(i->second))
       return true;
 
   for (string_changed_member_function_sptr_map::const_iterator i =
 	 diff->changed_member_fns().begin();
        i != diff->changed_member_fns().end();
        ++i)
-    if(!member_function_is_virtual(i->second.first)
-       && !member_function_is_virtual(i->second.second))
+    if(!get_member_function_is_virtual(i->second.first)
+       && !get_member_function_is_virtual(i->second.second))
       return true;
 
   return false;

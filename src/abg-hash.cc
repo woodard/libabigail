@@ -648,7 +648,7 @@ class_decl::hash::operator()(const class_decl& t) const
 	       t.get_member_functions().begin();
 	     f != t.get_member_functions().end();
 	     ++f)
-	  if (member_function_is_virtual(*f))
+	  if (get_member_function_is_virtual(*f))
 	    v = hashing::combine_hashes(v, hash_member_fn(**f));
 
 	// Hash member function templates

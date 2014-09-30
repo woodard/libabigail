@@ -1526,7 +1526,7 @@ represent(diff_context& ctxt,
   assert(meth);
 
   out << "'" << mem_fn->get_pretty_representation() << "'";
-  if (member_function_is_virtual(mem_fn))
+  if (get_member_function_is_virtual(mem_fn))
     out << ", virtual at voffset "
 	<< get_member_function_vtable_offset(mem_fn)
 	<< "/"
@@ -3761,8 +3761,8 @@ class_diff::priv::count_filtered_changed_dm(const diff_context_sptr& ctxt)
 /// functions.
 #define SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED				\
   do {									\
-    if (member_function_is_virtual(f)					\
-	|| member_function_is_virtual(s))				\
+    if (get_member_function_is_virtual(f)					\
+	|| get_member_function_is_virtual(s))				\
       {								\
 	if (!(allowed_category | VIRTUAL_MEMBER_CHANGE_CATEGORY))	\
 	  continue;							\
@@ -4257,7 +4257,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  if (!(context()->get_allowed_category()
 		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !member_function_is_virtual(i->second))
+	      && !get_member_function_is_virtual(i->second))
 	    continue;
 
 	  if (i != priv_->deleted_member_functions_.begin())
@@ -4283,7 +4283,7 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  if (!(context()->get_allowed_category()
 		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !member_function_is_virtual(i->second))
+	      && !get_member_function_is_virtual(i->second))
 	    continue;
 
 	  if (i != priv_->inserted_member_functions_.begin())
@@ -4309,8 +4309,8 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  if (!(context()->get_allowed_category()
 		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !member_function_is_virtual(i->second.first)
-	      && !member_function_is_virtual(i->second.second))
+	      && !get_member_function_is_virtual(i->second.first)
+	      && !get_member_function_is_virtual(i->second.second))
 	    continue;
 
 	  class_decl::method_decl_sptr f = i->second.first;

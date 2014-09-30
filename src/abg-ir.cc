@@ -1990,7 +1990,7 @@ get_member_function_vtable_offset(const function_decl_sptr f)
 ///
 /// @return true iff a @p mem_fn is virtual.
 bool
-member_function_is_virtual(const function_decl& f)
+get_member_function_is_virtual(const function_decl& f)
 {
   assert(is_member_function(f));
 
@@ -2010,8 +2010,8 @@ member_function_is_virtual(const function_decl& f)
 ///
 /// @return true iff a @p mem_fn is virtual.
 bool
-member_function_is_virtual(const function_decl_sptr mem_fn)
-{return mem_fn ? member_function_is_virtual(*mem_fn) : false;}
+get_member_function_is_virtual(const function_decl_sptr mem_fn)
+{return mem_fn ? get_member_function_is_virtual(*mem_fn) : false;}
 
 /// Set the virtual-ness of a member function.
 ///
@@ -5042,7 +5042,7 @@ function_decl::clone() const
       class_decl* scope = dynamic_cast<class_decl*>(get_scope());
       assert(scope);
       scope->add_member_function(m, get_member_access_specifier(*this),
-				 member_function_is_virtual(*this),
+				 get_member_function_is_virtual(*this),
 				 get_member_function_vtable_offset(*this),
 				 get_member_is_static(*this),
 				 get_member_function_is_ctor(*this),
@@ -5942,7 +5942,7 @@ class_decl::add_member_function(method_decl_sptr f,
   f->set_context_rel(ctxt);
   priv_->member_functions_.push_back(f);
   scope_decl::add_member_decl(f);
-  if (member_function_is_virtual(f))
+  if (get_member_function_is_virtual(f))
     priv_->virtual_mem_fns_.push_back(f);
 }
 

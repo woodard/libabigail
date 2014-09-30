@@ -326,10 +326,10 @@ size_t
 get_member_function_vtable_offset(const shared_ptr<function_decl>);
 
 bool
-member_function_is_virtual(const function_decl&);
+get_member_function_is_virtual(const function_decl&);
 
 bool
-member_function_is_virtual(const shared_ptr<function_decl>);
+get_member_function_is_virtual(const shared_ptr<function_decl>);
 
 void
 set_member_function_is_virtual(const function_decl&, bool);

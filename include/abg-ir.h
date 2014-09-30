@@ -729,7 +729,7 @@ public:
   set_member_is_static(decl_base_sptr d, bool s);
 
   friend bool
-  member_function_is_virtual(const function_decl& f);
+  get_member_function_is_virtual(const function_decl& f);
 
   friend void
   set_member_function_is_virtual(const function_decl&, bool);
