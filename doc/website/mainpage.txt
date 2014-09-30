@@ -18,7 +18,11 @@ about these differences.
 
 \par Documentation
 
-The html documentation of the library is available online <a
+The source code repository of the project contains various tools
+written using the library.  Their documentation is available online <a
+href="http://sourceware.org/libabigail/manual">here</a>.
+
+The html documentation of the library itself is available online <a
 href="http://sourceware.org/libabigail/apidoc">here</a>.
 
 \par Getting the source code
