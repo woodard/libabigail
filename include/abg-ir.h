@@ -2489,6 +2489,9 @@ public:
   get_virtual_mem_fns() const;
 
   void
+  sort_virtual_mem_fns();
+
+  void
   add_member_function_template(shared_ptr<member_function_template>);
 
   const member_function_templates&
@@ -2714,6 +2717,16 @@ public:
   vtable_offset() const
   {return vtable_offset_in_bits_;}
 
+  /// Setter for the vtable offset property.
+  ///
+  /// This is the vtable offset of the member function of this
+  /// relation.
+  ///
+  /// @partam s the new vtable offset.
+  void
+  vtable_offset(size_t s)
+  {vtable_offset_in_bits_ = s;}
+
   /// Getter for the 'is-constructor' property.
   ///
   /// This tells if the member function of this relation is a
@@ -2724,6 +2737,14 @@ public:
   is_constructor() const
   {return is_constructor_;}
 
+  /// Setter for the 'is-constructor' property.
+  ///
+  /// @param f the new value of the the property.  Is true if this is
+  /// for a constructor, false otherwise.
+  void
+  is_constructor(bool f)
+  {is_constructor_ = f;}
+
   /// Getter for the 'is-destructor' property.
   ///
   /// Tells if the member function of this relation is a destructor.
@@ -2732,6 +2753,14 @@ public:
   bool
   is_destructor() const
   {return is_destructor_;}
+
+  /// Setter for the 'is-destructor' property.
+  ///
+  /// @param f the new value of the property.  Is true if this is for
+  /// a destructor, false otherwise.
+  void
+  is_destructor(bool f)
+  {is_destructor_ = f;}
 
   /// Getter for the 'is-const' property.
   ///
@@ -2742,6 +2771,14 @@ public:
   bool
   is_const() const
   {return is_const_;}
+
+  /// Setter for the 'is-const' property.
+  ///
+  /// @param f the new value of the property.  Is true if this is for
+  /// a const entity, false otherwise.
+  void
+  is_const(bool f)
+  {is_const_ = f;}
 
   virtual ~mem_fn_context_rel();
 }; // end class mem_fn_context_rel
@@ -2789,17 +2826,38 @@ public:
   friend bool
   get_member_function_is_ctor(const function_decl&);
 
+  friend void
+  set_member_function_is_ctor(const function_decl&, bool);
+
   friend bool
   get_member_function_is_dtor(const function_decl&);
+
+  friend void
+  set_member_function_is_dtor(const function_decl&, bool);
 
   friend bool
   get_member_function_is_static(const function_decl&);
 
+  friend void
+  set_member_function_is_static(const function_decl&, bool);
+
   friend bool
   get_member_function_is_const(const function_decl&);
 
+  friend void
+  set_member_function_is_const(const function_decl&, bool);
+
   friend size_t
   get_member_function_vtable_offset(const function_decl&);
+
+  friend void
+  set_member_function_vtable_offset(const function_decl&, size_t);
+
+  friend bool
+  get_member_function_is_virtual(const function_decl&);
+
+  friend void
+  set_member_function_is_virtual(const function_decl&, bool);
 
   virtual ~method_decl();
 };// end class class_decl::method_decl

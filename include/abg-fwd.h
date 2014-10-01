@@ -307,11 +307,23 @@ get_member_function_is_ctor(const function_decl&);
 bool
 get_member_function_is_ctor(const shared_ptr<function_decl>);
 
+void
+set_member_function_is_ctor(const function_decl&, bool);
+
+void
+set_member_function_is_ctor(const shared_ptr<function_decl>, bool);
+
 bool
 get_member_function_is_dtor(const function_decl&);
 
 bool
 get_member_function_is_dtor(const shared_ptr<function_decl>);
+
+void
+set_member_function_is_dtor(const function_decl&, bool);
+
+void
+set_member_function_is_dtor(const shared_ptr<function_decl>, bool);
 
 bool
 get_member_function_is_const(const function_decl&);
@@ -319,11 +331,25 @@ get_member_function_is_const(const function_decl&);
 bool
 get_member_function_is_const(const shared_ptr<function_decl>);
 
+void
+set_member_function_is_const(const function_decl&, bool);
+
+void
+set_member_function_is_const(const shared_ptr<function_decl>, bool);
+
 size_t
 get_member_function_vtable_offset(const function_decl&);
 
 size_t
 get_member_function_vtable_offset(const shared_ptr<function_decl>);
+
+void
+set_member_function_vtable_offset(const function_decl& f,
+				  size_t s);
+
+void
+set_member_function_vtable_offset(const shared_ptr<function_decl> f,
+				  size_t s);
 
 bool
 get_member_function_is_virtual(const function_decl&);

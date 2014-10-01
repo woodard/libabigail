@@ -1897,6 +1897,38 @@ bool
 get_member_function_is_ctor(const function_decl_sptr f)
 {return get_member_function_is_ctor(*f);}
 
+
+/// Setter for the is_ctor property of the member function.
+///
+/// @param f the member function to set.
+///
+/// @param f the new boolean value of the is_ctor property.  Is true
+/// if @p f is a constructor, false otherwise.
+void
+set_member_function_is_ctor(const function_decl& f, bool c)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  ctxt->is_constructor(c);
+}
+
+/// Setter for the is_ctor property of the member function.
+///
+/// @param f the member function to set.
+///
+/// @param f the new boolean value of the is_ctor property.  Is true
+/// if @p f is a constructor, false otherwise.
+void
+set_member_function_is_ctor(const function_decl_sptr f, bool c)
+{set_member_function_is_ctor(*f, c);}
+
 /// Test whether a member function is a destructor.
 ///
 /// @param f the function to test.
@@ -1925,6 +1957,35 @@ get_member_function_is_dtor(const function_decl& f)
 bool
 get_member_function_is_dtor(const function_decl_sptr f)
 {return get_member_function_is_dtor(*f);}
+
+/// Set the destructor-ness property of a member function.
+///
+/// @param f the function to set.
+///
+/// @param d true if @p f is a destructor, false otherwise.
+void
+set_member_function_is_dtor(const function_decl& f, bool d)
+{
+    assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  ctxt->is_destructor(d);
+}
+
+/// Set the destructor-ness property of a member function.
+///
+/// @param f the function to set.
+///
+/// @param d true if @p f is a destructor, false otherwise.
+void
+set_member_function_is_dtor(const function_decl_sptr f, bool d)
+{set_member_function_is_dtor(*f, d);}
 
 /// Test whether a member function is const.
 ///
@@ -1955,6 +2016,35 @@ bool
 get_member_function_is_const(const function_decl_sptr f)
 {return get_member_function_is_const(*f);}
 
+/// set the const-ness property of a member function.
+///
+/// @param f the function to set.
+///
+/// @param is_const the new value of the const-ness property of @p f
+void
+set_member_function_is_const(const function_decl& f, bool is_const)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  ctxt->is_const(is_const);
+}
+
+/// set the const-ness property of a member function.
+///
+/// @param f the function to set.
+///
+/// @param is_const the new value of the const-ness property of @p f
+void
+set_member_function_is_const(const function_decl_sptr f, bool is_const)
+{set_member_function_is_const(*f, is_const);}
+
 /// Get the vtable offset of a member function.
 ///
 /// @param f the member function to consider.
@@ -1983,6 +2073,34 @@ get_member_function_vtable_offset(const function_decl& f)
 size_t
 get_member_function_vtable_offset(const function_decl_sptr f)
 {return get_member_function_vtable_offset(*f);}
+
+/// Set the vtable offset of a member function.
+///
+/// @param f the member function to consider.
+///
+/// @param s the new vtable offset.
+void
+set_member_function_vtable_offset(const function_decl& f, size_t s)
+{
+  assert(is_member_function(f));
+
+  const class_decl::method_decl* m =
+    dynamic_cast<const class_decl::method_decl*>(&f);
+  assert(m);
+
+  mem_fn_context_rel_sptr ctxt =
+    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+
+  ctxt->vtable_offset(s);
+}
+/// Get the vtable offset of a member function.
+///
+/// @param f the member function to consider.
+///
+/// @param s the new vtable offset.
+void
+set_member_function_vtable_offset(const function_decl_sptr f, size_t s)
+{return set_member_function_vtable_offset(*f, s);}
 
 /// Test if a given member function is virtual.
 ///
@@ -5200,6 +5318,9 @@ function_decl::~function_decl()
 
 // <class_decl definitions>
 
+static void
+sort_virtual_member_functions(class_decl::member_functions& mem_fns);
+
 /// The private data for the class_decl type.
 struct class_decl::priv
 {
@@ -5505,6 +5626,10 @@ class_decl::get_member_functions() const
 const class_decl::member_functions&
 class_decl::get_virtual_mem_fns() const
 {return priv_->virtual_mem_fns_;}
+
+void
+class_decl::sort_virtual_mem_fns()
+{sort_virtual_member_functions(priv_->virtual_mem_fns_);}
 
 /// Get the member function templates of this class.
 ///
@@ -5905,6 +6030,82 @@ class_decl::method_decl::set_scope(scope_decl* scope)
     get_context_rel()->set_scope(scope);
 }
 
+/// A "less than" functor to sort a vector of instances of
+/// class_decl::method_decl that are virtual.
+struct virtual_member_function_less_than
+{
+  /// The less than operator.  First, it sorts the methods by their
+  /// vtable index.  If they have the same vtable index, it sorts them
+  /// by the name of their ELF symbol.  If they don't have elf
+  /// symbols, it sorts them by considering their pretty
+  /// representation.
+  ///
+  ///  Note that this method expects virtual methods.
+  ///
+  /// @param f the first method to consider.
+  ///
+  /// @param s the second method to consider.
+  bool
+  operator()(const class_decl::method_decl& f,
+	     const class_decl::method_decl& s)
+  {
+    assert(get_member_function_is_virtual(f));
+    assert(get_member_function_is_virtual(s));
+
+    if (get_member_function_vtable_offset(f)
+	== get_member_function_vtable_offset(s))
+      {
+	string fn, sn;
+
+	if (f.get_symbol())
+	  fn = f.get_symbol()->get_id_string();
+	else
+	  fn = f.get_linkage_name();
+
+	if (s.get_symbol())
+	  sn = s.get_symbol()->get_id_string();
+	else
+	  sn = s.get_linkage_name();
+
+	if (fn.empty())
+	  fn = f.get_pretty_representation();
+	if (sn.empty())
+	  sn = s.get_pretty_representation();
+
+	return fn < sn;
+      }
+
+    return (get_member_function_vtable_offset(f)
+	    < get_member_function_vtable_offset(s));
+  }
+
+  /// The less than operator.  First, it sorts the methods by their
+  /// vtable index.  If they have the same vtable index, it sorts them
+  /// by the name of their ELF symbol.  If they don't have elf
+  /// symbols, it sorts them by considering their pretty
+  /// representation.
+  ///
+  ///  Note that this method expects to take virtual methods.
+  ///
+  /// @param f the first method to consider.
+  ///
+  /// @param s the second method to consider.
+  bool
+  operator()(const class_decl::method_decl_sptr f,
+	     const class_decl::method_decl_sptr s)
+  {return operator()(*f, *s);}
+}; // end struct virtual_member_function_less_than
+
+/// Sort a vector of instances of virtual member functions.
+///
+/// @param mem_fns the vector of member functions to sort.
+static void
+sort_virtual_member_functions(class_decl::member_functions& mem_fns)
+{
+  virtual_member_function_less_than lt;
+  std::sort(mem_fns.begin(), mem_fns.end(), lt);
+}
+
 /// Add a member function to the current instance of class_decl.
 ///
 /// @param f a method_decl to add to the current class.  This function
@@ -5943,7 +6144,10 @@ class_decl::add_member_function(method_decl_sptr f,
   priv_->member_functions_.push_back(f);
   scope_decl::add_member_decl(f);
   if (get_member_function_is_virtual(f))
-    priv_->virtual_mem_fns_.push_back(f);
+    {
+      priv_->virtual_mem_fns_.push_back(f);
+      sort_virtual_member_functions(priv_->virtual_mem_fns_);
+    }
 }
 
 /// Append a member function template to the class.

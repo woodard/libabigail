@@ -43,6 +43,7 @@
 #include <ostream>
 #include <sstream>
 #include "abg-dwarf-reader.h"
+#include "abg-sptr-utils.h"
 
 using std::string;
 
@@ -54,6 +55,7 @@ namespace dwarf_reader
 {
 
 using std::tr1::dynamic_pointer_cast;
+using std::tr1::static_pointer_cast;
 using std::tr1::unordered_map;
 using std::stack;
 using std::deque;
@@ -2424,6 +2426,11 @@ build_function_decl(read_context&	ctxt,
 		    bool		is_in_alt_di,
 		    size_t		where_offset,
 		    function_decl_sptr	fn);
+
+static void
+finish_member_function_reading(Dwarf_Die*		die,
+			       function_decl_sptr	f,
+			       class_decl_sptr		klass);
 
 /// Constructor for a default Dwfl handle that knows how to load debug
 /// info from a library or executable elf file.
@@ -4865,6 +4872,80 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   return result;
 }
 
+/// Once a function_decl has been built and added to a class as a
+/// member function, this function updates the informatikon of the
+/// function_decl concerning the properties of its relationship with
+/// the member class.  That is, it updates properties like
+/// virtualness, access, constness, cdtorness, etc ...
+///
+/// @param die the DIE of the function_decl that has been just built.
+///
+/// @param f the function_decl that has just been built from @p die.
+///
+/// @param klass the class_decl that @p f belongs to.
+static void
+finish_member_function_reading(Dwarf_Die*		die,
+			       function_decl_sptr	f,
+			       class_decl_sptr		klass)
+{
+  assert(klass);
+
+  class_decl::method_decl_sptr m =
+    dynamic_pointer_cast<class_decl::method_decl>(f);
+  assert(m);
+
+  bool is_ctor = (f->get_name() == klass->get_name());
+  bool is_dtor = (!f->get_name().empty()
+		  && f->get_name()[0] == '~');
+  bool is_virtual = die_is_virtual(die);
+  size_t vindex = 0;
+  if (is_virtual)
+    die_virtual_function_index(die, vindex);
+  access_specifier access =
+    klass->is_struct()
+    ? public_access
+    : private_access;
+  die_access_specifier(die, access);
+  bool is_static = false;
+  {
+    // Let's see if the first parameter has the same class
+    // type as the current class has a DW_AT_artificial
+    // attribute flag set.  We are not looking at
+    // DW_AT_object_pointer (for DWARF 3) because it
+    // wasn't being emitted in GCC 4_4, which was already
+    // DWARF 3.
+    function_decl::parameter_sptr first_parm;
+    if (!f->get_parameters().empty())
+      first_parm = f->get_parameters()[0];
+
+    bool is_artificial =
+      first_parm && first_parm->get_artificial();;
+    pointer_type_def_sptr this_ptr_type;
+    if (is_artificial)
+      this_ptr_type =
+	dynamic_pointer_cast<pointer_type_def>
+	(first_parm->get_type());
+    if (this_ptr_type && (get_pretty_representation
+			  (this_ptr_type->get_pointed_to_type())
+			  == klass->get_pretty_representation()))
+      ;
+    else
+      is_static = true;
+  }
+  set_member_access_specifier(m, access);
+  set_member_function_is_virtual(m, is_virtual);
+  set_member_function_vtable_offset(m, vindex);
+  set_member_is_static(m, is_static);
+  set_member_function_is_ctor(m, is_ctor);
+  set_member_function_is_dtor(m, is_dtor);
+  set_member_function_is_const(m, false);
+
+  assert(is_member_function(m));
+
+  if (is_virtual)
+    klass->sort_virtual_mem_fns();
+}
+
 /// Build a an IR node for class type from a DW_TAG_structure_type or
 /// DW_TAG_class_type and
 ///
@@ -5073,68 +5154,21 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
 	    {
-	      if (die_is_artificial(&child))
-		// For now, let's not consider artificial functions.
-		// To consider them, we'd need to make the IR now
-		// about artificial functions and the
-		// (de)serialization and comparison machineries to
-		// know how to cope with these.
+	      decl_base_sptr r = build_ir_node_from_die(ctxt, &child,
+							is_in_alt_di,
+							result.get(),
+							called_from_public_decl,
+							where_offset);
+	      if (!r)
 		continue;
 
-	      function_decl_sptr f =
-		build_function_decl(ctxt, &child, is_in_alt_di,
-				    where_offset, function_decl_sptr());
-	      if (!f)
-		continue;
-	      class_decl::method_decl_sptr m =
-		dynamic_pointer_cast<class_decl::method_decl>(f);
-	      assert(m);
+	      function_decl_sptr f = dynamic_pointer_cast<function_decl>(r);
+	      assert(f);
 
-	      bool is_ctor = (f->get_name() == result->get_name());
-	      bool is_dtor = (!f->get_name().empty()
-			      && f->get_name()[0] == '~');
-	      bool is_virtual = die_is_virtual(&child);
-	      size_t vindex = 0;
-	      if (is_virtual)
-		die_virtual_function_index(&child, vindex);
-	      access_specifier access =
-		is_struct
-		? public_access
-		: private_access;
-	      die_access_specifier(&child, access);
-	      bool is_static = false;
-	      {
-		// Let's see if the first parameter has the same class
-		// type as the current class has a DW_AT_artificial
-		// attribute flag set.  We are not looking at
-		// DW_AT_object_pointer (for DWARF 3) because it
-		// wasn't being emitted in GCC 4_4, which was already
-		// DWARF 3.
-		function_decl::parameter_sptr first_parm;
-		if (!f->get_parameters().empty())
-		  first_parm = f->get_parameters()[0];
+	      finish_member_function_reading(&child, f, result);
 
-		bool is_artificial =
-		  first_parm && first_parm->get_artificial();;
-		pointer_type_def_sptr this_ptr_type;
-		if (is_artificial)
-		  this_ptr_type =
-		    dynamic_pointer_cast<pointer_type_def>
-		    (first_parm->get_type());
-		if (this_ptr_type && (get_pretty_representation
-				      (this_ptr_type->get_pointed_to_type())
-				      == result->get_pretty_representation()))
-		  ;
-		else
-		  is_static = true;
-	      }
-	      result->add_member_function(m, access, is_virtual,
-					  vindex, is_static, is_ctor,
-					  is_dtor, /*is_const*/false);
-	      assert(is_member_function(m));
 	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
-					 is_in_alt_di,
-					 m);
+					 is_in_alt_di, f);
 	    }
 	  // Handle member types
 	  else if (is_type_die(&child))
@@ -5793,20 +5827,17 @@ build_function_decl(read_context&	ctxt,
 
   // Check if a function symbol with this name is exported by the elf
   // binary.
-  if (!result->get_symbol())
+  Dwarf_Addr fn_addr;
+  if (ctxt.get_function_address(die, fn_addr))
     {
-      Dwarf_Addr fn_addr;
-      if (ctxt.get_function_address(die, fn_addr))
-	{
-	  elf_symbol_sptr sym;
-	    if ((sym = ctxt.lookup_elf_fn_symbol_from_address(fn_addr)))
-	      if (sym->is_function() && sym->is_public())
-		{
-		  result->set_symbol(sym);
-		  result->set_linkage_name(sym->get_name());
-		  result->set_is_in_public_symbol_table(true);
-		}
-	}
+      elf_symbol_sptr sym;
+      if ((sym = ctxt.lookup_elf_fn_symbol_from_address(fn_addr)))
+	if (sym->is_function() && sym->is_public())
+	  {
+	    result->set_symbol(sym);
+	    result->set_linkage_name(sym->get_name());
+	    result->set_is_in_public_symbol_table(true);
+	  }
     }
 
   return result;
@@ -6148,17 +6179,17 @@ build_ir_node_from_die(read_context&	ctxt,
 	    break;
 
 	  function_decl_sptr fn;
-	  bool fn_is_clone = false;
 	  bool is_in_alternate_debug_info = false;
-	  if (die_die_attribute(die, die_is_from_alt_di,
-				DW_AT_specification,
-				spec_die, is_in_alternate_debug_info,
-				true)
-	      || (fn_is_clone =
-		  die_die_attribute(die, die_is_from_alt_di,
-				    DW_AT_abstract_origin,
-				    spec_die, is_in_alternate_debug_info,
-				    true)))
+	  bool has_spec = die_die_attribute(die, die_is_from_alt_di,
+				       DW_AT_specification,
+				       spec_die, is_in_alternate_debug_info,
+				       true);
+	  bool fn_is_clone = die_die_attribute(die, die_is_from_alt_di,
+					       DW_AT_abstract_origin,
+					       spec_die,
+					       is_in_alternate_debug_info,
+					       true);
+	  if (has_spec || fn_is_clone)
 	    {
 	      scop = get_scope_for_die(ctxt, &spec_die,
 				       is_in_alternate_debug_info,
@@ -6186,10 +6217,19 @@ build_ir_node_from_die(read_context&	ctxt,
 	    }
 	ctxt.scope_stack().push(scope);
 
-	if ((result = build_function_decl(ctxt, die, die_is_from_alt_di,
-					  where_offset, fn))
-	    && !fn)
+	result = build_function_decl(ctxt, die, die_is_from_alt_di,
+				     where_offset, fn);
+	if (result && !fn)
 	  result = add_decl_to_scope(result, scope);
+
+	fn = dynamic_pointer_cast<function_decl>(result);
+	if (fn && is_member_function(fn))
+	  {
+	    class_decl_sptr klass(static_cast<class_decl*>(scope),
+				  sptr_utils::noop_deleter());
+	    assert(klass);
+	    finish_member_function_reading(die, fn, klass);
+	  }
 
 	ctxt.scope_stack().pop();
       }
