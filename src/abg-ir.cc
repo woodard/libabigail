@@ -1084,6 +1084,7 @@ decl_base::decl_base(const decl_base& d)
 {
   priv_->hash_ = d.priv_->hash_;
   priv_->hashing_started_ = d.priv_->hashing_started_;
+  priv_->in_pub_sym_tab_ = d.priv_->in_pub_sym_tab_;
   priv_->location_ = d.priv_->location_;
   priv_->name_ = d.priv_->name_;
   priv_->qualified_parent_name_ = d.priv_->qualified_parent_name_;
