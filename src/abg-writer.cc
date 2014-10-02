@@ -1795,6 +1795,39 @@ write_class_decl(const shared_ptr<class_decl>	decl,
 	   ++f)
 	{
 	  function_decl_sptr fn = *f;
+	  if (get_member_function_is_virtual(fn))
+	    continue;
+
+	  assert(!get_member_function_is_virtual(fn));
+
+	  do_indent(o, nb_ws);
+	  o << "<member-function";
+	  write_access(get_member_access_specifier(fn), o);
+	  write_cdtor_const_static( get_member_function_is_ctor(fn),
+				    get_member_function_is_dtor(fn),
+				    get_member_function_is_const(fn),
+				    get_member_is_static(fn),
+				    o);
+	  o << ">\n";
+
+	  write_function_decl(fn, ctxt,
+			      /*skip_first_parameter=*/false,
+			      get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+
+	  do_indent_to_level(ctxt, indent, 1);
+	  o << "</member-function>\n";
+	}
+
+      for (class_decl::member_functions::const_iterator f =
+	     decl->get_virtual_mem_fns().begin();
+	   f != decl->get_virtual_mem_fns().end();
+	   ++f)
+	{
+	  function_decl_sptr fn = *f;
+
+	  assert(get_member_function_is_virtual(fn));
+
 	  do_indent(o, nb_ws);
 	  o << "<member-function";
 	  write_access(get_member_access_specifier(fn), o);
