@@ -642,6 +642,9 @@ corpus::priv::build_public_decl_table()
 
       if (!v.fn_is_in_map(n))
 	{
+	  assert((origin_ == DWARF_ORIGIN
+		  && (*i)->get_is_in_public_symbol_table())
+		 || origin_ != DWARF_ORIGIN);
 	  fns.push_back(*i);
 	  v.add_fn_to_map(n, *i);
 	}
@@ -664,6 +667,9 @@ corpus::priv::build_public_decl_table()
 
       if (!v.var_is_in_map(n))
 	{
+	  assert((origin_ == DWARF_ORIGIN
+		  && (*i)->get_is_in_public_symbol_table())
+		 || origin_ != DWARF_ORIGIN);
 	  vars.push_back(*i);
 	  v.add_var_to_map(n, *i);
 	}
