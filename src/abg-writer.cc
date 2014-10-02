@@ -585,8 +585,11 @@ write_voffset(function_decl_sptr fn, ostream&o)
   if (!fn)
     return;
 
-  if (size_t voffset = get_member_function_vtable_offset(fn))
-    o << " vtable-offset='" << voffset << "'";
+  if (get_member_function_is_virtual(fn))
+    {
+      size_t voffset = get_member_function_vtable_offset(fn);
+      o << " vtable-offset='" << voffset << "'";
+    }
 }
 
 /// Serialize an elf_symbol::type into an XML node attribute named
