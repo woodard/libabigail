@@ -6923,6 +6923,153 @@ corpus_diff::length() const
 	  + priv_->changed_vars_.size());
 }
 
+/// "Less than" functor to compare instances of @ref function_decl.
+struct function_comp
+{
+  /// The actual "less than" operator for instances of @ref
+  /// function_decl.  It returns true if the first @ref function_decl
+  /// is lest than the second one.
+  ///
+  /// @param f the first @ref function_decl to take in account.
+  ///
+  /// @param s the second @ref function_decl to take in account.
+  ///
+  /// @return true iff @p f is less than @p s.
+  bool
+  operator()(const function_decl& f, const function_decl& s)
+  {
+    string fr = f.get_qualified_name(),
+      sr = s.get_qualified_name();
+
+    if (fr == sr)
+      {
+	if (f.get_symbol())
+	  fr = f.get_symbol()->get_id_string();
+	else if (!f.get_linkage_name().empty())
+	  fr = f.get_linkage_name();
+	else
+	  fr = f.get_pretty_representation();
+
+	if (s.get_symbol())
+	  fr = s.get_symbol()->get_id_string();
+	else if (!s.get_linkage_name().empty())
+	  fr = s.get_linkage_name();
+	else
+	  fr = s.get_pretty_representation();
+      }
+    return fr < sr;
+  }
+
+  /// The actual "less than" operator for instances of @ref
+  /// function_decl.  It returns true if the first @ref function_decl
+  /// is lest than the second one.
+  ///
+  /// @param f the first @ref function_decl to take in account.
+  ///
+  /// @param s the second @ref function_decl to take in account.
+  ///
+  /// @return true iff @p f is less than @p s.
+  bool
+  operator()(const function_decl* f, const function_decl* s)
+  {return operator()(*f, *s);}
+
+  /// The actual "less than" operator for instances of @ref
+  /// function_decl.  It returns true if the first @ref function_decl
+  /// is lest than the second one.
+  ///
+  /// @param f the first @ref function_decl to take in account.
+  ///
+  /// @param s the second @ref function_decl to take in account.
+  ///
+  /// @return true iff @p f is less than @p s.
+  bool
+  operator()(const function_decl_sptr f, const function_decl_sptr s)
+  {return operator()(f.get(), s.get());}
+}; // end function_comp
+
+/// Sort a an instance of @ref string_function_ptr_map map and stuff
+/// a resulting sorted vector of pointers to function_decl.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector.
+static void
+sort_string_function_ptr_map(const string_function_ptr_map& map,
+			     vector<function_decl*>& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_function_ptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  function_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// A "Less Than"functor to compare instances of @ref
+/// changed_function_ptr.
+struct changed_function_ptr_comp
+{
+  /// The actual less than operator.
+  ///
+  /// It returns true if the first @ref changed_function_ptr is less
+  /// than the second one.
+  ///
+  /// param first the first @ref changed_function_ptr to consider.
+  ///
+  /// @param second the second @ref changed_function_ptr to consider.
+  ///
+  /// @return true iff @p first is less than @p second.
+  bool
+  operator()(const changed_function_ptr& first,
+	     const changed_function_ptr& second)
+  {
+    function_decl *f = first.first, *s = second.first;
+
+    string fr = f->get_qualified_name(),
+      sr = s->get_qualified_name();
+
+    if (fr == sr)
+      {
+	if (f->get_symbol())
+	  fr = f->get_symbol()->get_id_string();
+	else if (!f->get_linkage_name().empty())
+	  fr = f->get_linkage_name();
+	else
+	  f->get_pretty_representation();
+
+	if (s->get_symbol())
+	  sr = s->get_symbol()->get_id_string();
+	else if (!s->get_linkage_name().empty())
+	  sr = s->get_linkage_name();
+	else
+	  sr = s->get_pretty_representation();
+      }
+
+    return fr < sr;
+  }
+}; // end struct changed_function_comp
+
+/// Sort a instance of @ref string_changed_function_ptr_map map and
+/// stuff a sorted vector of @ref changed_function_ptr as a result.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector.
+static void
+sort_string_changed_function_ptr_map(const string_changed_function_ptr_map& map,
+				     vector<changed_function_ptr>& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_changed_function_ptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+  changed_function_ptr_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Report the diff in a serialized form.
 ///
 /// @param out the stream to serialize the diff to.
@@ -6953,18 +7100,20 @@ corpus_diff::report(ostream& out, const string& indent) const
       else if (s.num_func_removed > 1)
 	out << indent << s.num_func_removed << " Removed functions:\n\n";
 
-      for (string_function_ptr_map::const_iterator i =
-	     priv_->deleted_fns_.begin();
-	   i != priv_->deleted_fns_.end();
+      vector<function_decl*>sorted_deleted_fns;
+      sort_string_function_ptr_map(priv_->deleted_fns_, sorted_deleted_fns);
+      for (vector<function_decl*>::const_iterator i =
+	     sorted_deleted_fns.begin();
+	   i != sorted_deleted_fns.end();
 	   ++i)
 	{
 	  out << indent
 	      << "  ";
 	  if (total > large_num)
 	    out << "[D] ";
-	  out << "'" << i->second->get_pretty_representation() << "'";
+	  out << "'" << (*i)->get_pretty_representation() << "'";
 	  if (context()->show_linkage_names())
-	    out << "    {" << i->second->get_symbol()->get_id_string() << "}";
+	    out << "    {" << (*i)->get_symbol()->get_id_string() << "}";
 	  out << "\n";
 	  ++removed;
 	}
@@ -6979,9 +7128,10 @@ corpus_diff::report(ostream& out, const string& indent) const
       else if (s.num_func_added > 1)
 	out << indent << s.num_func_added
 	    << " Added functions:\n\n";
-      for (string_function_ptr_map::const_iterator i =
-	     priv_->added_fns_.begin();
-	   i != priv_->added_fns_.end();
+      vector<function_decl*> sorted_added_fns;
+      sort_string_function_ptr_map(priv_->added_fns_, sorted_added_fns);
+      for (vector<function_decl*>::const_iterator i = sorted_added_fns.begin();
+	   i != sorted_added_fns.end();
 	   ++i)
 	{
 	  out
@@ -6990,10 +7140,10 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (total > large_num)
 	    out << "[A] ";
 	  out << "'"
-	      << i->second->get_pretty_representation()
+	      << (*i)->get_pretty_representation()
 	      << "'";
 	  if (context()->show_linkage_names())
-	    out << "    {" << i->second->get_symbol()->get_id_string() << "}";
+	    out << "    {" << (*i)->get_symbol()->get_id_string() << "}";
 	  out << "\n";
 	  ++added;
 	}
@@ -7010,13 +7160,16 @@ corpus_diff::report(ostream& out, const string& indent) const
 	out << indent << num_changed
 	    << " functions with some indirect sub-type change:\n\n";
 
-      for (string_changed_function_ptr_map::const_iterator i =
-	     priv_->changed_fns_.begin();
-	   i != priv_->changed_fns_.end();
+      vector<changed_function_ptr> sorted_changed_fns;
+      sort_string_changed_function_ptr_map(priv_->changed_fns_,
+					   sorted_changed_fns);
+      for (vector<changed_function_ptr>::const_iterator i =
+	     sorted_changed_fns.begin();
+	   i != sorted_changed_fns.end();
 	   ++i)
 	{
-	  function_decl_sptr f(i->second.first, noop_deleter());
-	  function_decl_sptr s(i->second.second, noop_deleter());
+	  function_decl_sptr f(i->first, noop_deleter());
+	  function_decl_sptr s(i->second, noop_deleter());
 
 	  diff_sptr diff = compute_diff(f, s, context());
 	  if (!diff)
@@ -7025,7 +7178,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (diff->to_be_reported())
 	    {
 	      out << indent << "  [C]'"
-		  << i->second.first->get_pretty_representation()
+		  << i->first->get_pretty_representation()
 		  << "' has some indirect sub-type changes:\n";
 	      diff->report(out, indent + "    ");
 	    }
