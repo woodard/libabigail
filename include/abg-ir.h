@@ -2522,7 +2522,13 @@ public:
   traverse(ir_node_visitor& v);
 
   virtual ~class_decl();
+
+  friend void
+  fixup_virtual_member_function(method_decl_sptr method);
 };// end class class_decl
+
+void
+fixup_virtual_member_function(class_decl::method_decl_sptr method);
 
 /// Hasher for the @ref class_decl type
 struct class_decl::hash

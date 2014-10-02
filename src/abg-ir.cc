@@ -2161,7 +2161,11 @@ void
 set_member_function_is_virtual(const function_decl_sptr& fn, bool is_virtual)
 {
   if (fn)
-    set_member_function_is_virtual(*fn, is_virtual);
+    {
+      set_member_function_is_virtual(*fn, is_virtual);
+      fixup_virtual_member_function
+	(dynamic_pointer_cast<class_decl::method_decl>(fn));
+    }
 }
 
 /// Recursively returns the the underlying type of a typedef.  The
@@ -6148,6 +6152,32 @@ class_decl::add_member_function(method_decl_sptr f,
     {
       priv_->virtual_mem_fns_.push_back(f);
       sort_virtual_member_functions(priv_->virtual_mem_fns_);
+    }
+}
+
+/// When a virtual member function has seen its virtualness set by
+/// set_member_function_is_virtual(), this function ensures that the
+/// member function is added to the specific vectors of virtual member
+/// function of its class.
+///
+/// @param method the method to fixup.
+void
+fixup_virtual_member_function(class_decl::method_decl_sptr method)
+{
+  if (!method || !get_member_function_is_virtual(method))
+    return;
+
+  class_decl_sptr klass = method->get_type()->get_class_type();
+  class_decl::member_functions::iterator m;
+  for (m = klass->priv_->virtual_mem_fns_.begin();
+       m != klass->priv_->virtual_mem_fns_.end();
+       ++m)
+    if (m->get() == method.get())
+      break;
+  if (m == klass->priv_->virtual_mem_fns_.end())
+    {
+      klass->priv_->virtual_mem_fns_.push_back(method);
+      klass->sort_virtual_mem_fns();
     }
 }
 
