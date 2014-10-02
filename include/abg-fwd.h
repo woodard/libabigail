@@ -357,6 +357,9 @@ get_member_function_is_virtual(const function_decl&);
 bool
 get_member_function_is_virtual(const shared_ptr<function_decl>);
 
+bool
+get_member_function_is_virtual(const function_decl*);
+
 void
 set_member_function_is_virtual(const function_decl&, bool);
 

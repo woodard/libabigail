@@ -2132,6 +2132,15 @@ bool
 get_member_function_is_virtual(const function_decl_sptr mem_fn)
 {return mem_fn ? get_member_function_is_virtual(*mem_fn) : false;}
 
+/// Test if a given member function is virtual.
+///
+/// @param mem_fn the member function to consider.
+///
+/// @return true iff a @p mem_fn is virtual.
+bool
+get_member_function_is_virtual(const function_decl* mem_fn)
+{return mem_fn ? get_member_function_is_virtual(*mem_fn) : false;}
+
 /// Set the virtual-ness of a member function.
 ///
 /// @param f the member function to consider.
@@ -4991,6 +5000,10 @@ function_decl::get_pretty_representation() const
     dynamic_cast<const class_decl::method_decl*>(this);
 
   string result = mem_fn ? "method ": "function ";
+
+  if (get_member_function_is_virtual(mem_fn))
+    result += "virtual ";
+
   decl_base_sptr type =
     mem_fn
     ? get_type_declaration(mem_fn->get_type()->get_return_type())
