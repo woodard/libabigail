@@ -5805,12 +5805,12 @@ function_decl_diff::report(ostream& out, const string& indent) const
 
   // If the symbols for ff and sf have aliases, get all the names of
   // the aliases;
-  if (fc)
+  if (fc && s1)
     linkage_names1 =
-      ff->get_symbol()->get_aliases_id_string(fc->get_fun_symbol_map());
-  if (sc)
+      s1->get_aliases_id_string(fc->get_fun_symbol_map());
+  if (sc && s2)
     linkage_names2 =
-      sf->get_symbol()->get_aliases_id_string(sc->get_fun_symbol_map());
+      s2->get_aliases_id_string(sc->get_fun_symbol_map());
 
   if (qn1 != qn2)
     {
