@@ -1533,14 +1533,12 @@ represent(diff_context& ctxt,
 	<< meth->get_type()->get_class_type()->get_virtual_mem_fns().size();
 
   if (ctxt.show_linkage_names()
-      && (mem_fn->get_symbol() ||! mem_fn->get_linkage_name().empty()))
-    out << "    {";
-  if (mem_fn->get_symbol())
-    out << mem_fn->get_symbol()->get_id_string();
-  else if (!mem_fn->get_linkage_name().empty())
-    out << mem_fn->get_linkage_name();
-  out  << "}";
-
+      && (mem_fn->get_symbol()))
+    {
+      out << "    {"
+	  << mem_fn->get_symbol()->get_id_string()
+	  << "}";
+    }
   out << "\n";
 }
 
