@@ -6158,6 +6158,63 @@ unsigned
 function_decl_diff::length() const
 {return *first_function_decl() != *second_function_decl();}
 
+/// A comparison functor to compare two changed function parameters
+/// based on their indexes.
+struct changed_parm_comp
+{
+  /// @param f the first changed function parameter.
+  ///
+  /// @param s the second changed function parameter.
+  ///
+  /// @return true if the index of @p f is less than the index of @p
+  /// s.
+  bool
+  operator()(const changed_parm& f, const changed_parm& s)
+  {return f.first->get_index() < s.first->get_index();}
+}; // end struct changed_parm_comp;
+
+/// Sort a map of changed function parameters by the indexes of the
+/// function parameters.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector of changed function
+/// parms.
+static void
+sort_changed_parm_map(const unsigned_changed_parm_map& map,
+		      changed_parms_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (unsigned_changed_parm_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  changed_parm_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Sort a map of changed function parameters by the indexes of the
+/// function parameters.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector of changed function
+/// parms.
+static void
+sort_changed_parm_map(const string_changed_parm_map& map,
+		      changed_parms_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_changed_parm_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  changed_parm_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Serialize a report of the changes encapsulated in the current
 /// instance of function_decl_diff over to an output stream.
 ///
@@ -6232,22 +6289,24 @@ function_decl_diff::report(ostream& out, const string& indent) const
   // parameters; this shouldn't as straightforward.
   //
   // Report about the parameter types that have changed sub-types.
-  for (string_changed_parm_map::const_iterator i =
-	 priv_->subtype_changed_parms_.begin();
-       i != priv_->subtype_changed_parms_.end();
+  changed_parms_type sorted_fn_parms;
+  sort_changed_parm_map(priv_->subtype_changed_parms_, sorted_fn_parms);
+  for (changed_parms_type::const_iterator i =
+	 sorted_fn_parms.begin();
+       i != sorted_fn_parms.end();
        ++i)
     {
-      diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
-					   i->second.second->get_type(),
+      diff_sptr d = compute_diff_for_types(i->first->get_type(),
+					   i->second->get_type(),
 					   context());
       if (d)
 	{
 	  if (d->to_be_reported())
 	    {
 	      out << indent
-		  << "parameter " << i->second.first->get_index()
+		  << "parameter " << i->first->get_index()
 		  << " of type '"
-		  << i->second.first->get_type_pretty_representation()
+		  << i->first->get_type_pretty_representation()
 		  << "' has sub-type changes:\n";
 	      d->report(out, indent + "  ");
 	    }
@@ -6257,22 +6316,23 @@ function_decl_diff::report(ostream& out, const string& indent) const
   // compatible -- otherwise they would have changed the mangled name
   // of the function and the function would have been reported as
   // removed.
-  for (unsigned_changed_parm_map::const_iterator i =
-	 priv_->changed_parms_by_id_.begin();
-       i != priv_->changed_parms_by_id_.end();
+  sorted_fn_parms.clear();
+  sort_changed_parm_map(priv_->changed_parms_by_id_, sorted_fn_parms);
+  for (changed_parms_type::const_iterator i = sorted_fn_parms.begin();
+       i != sorted_fn_parms.end();
        ++i)
     {
-      diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
-					   i->second.second->get_type(),
+      diff_sptr d = compute_diff_for_types(i->first->get_type(),
+					   i->second->get_type(),
 					   context());
       if (d)
 	{
 	  if (d->to_be_reported())
 	    {
 	      out << indent
-		  << "parameter " << i->second.first->get_index()
+		  << "parameter " << i->first->get_index()
 		  << " of type '"
-		  << i->second.first->get_type_pretty_representation()
+		  << i->first->get_type_pretty_representation()
 		  << "' changed:\n";
 	      d->report(out, indent + "  ");
 	    }

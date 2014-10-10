@@ -102,6 +102,9 @@ typedef unordered_map<string, changed_parm> string_changed_parm_map;
 /// value is a changed parameter.
 typedef unordered_map<unsigned, changed_parm> unsigned_changed_parm_map;
 
+/// Convenience typedef for a vector of changed_parm.
+typedef vector<changed_parm> changed_parms_type;
+
 /// Convenience typedef for a map which key is an integer and which
 /// value is a parameter.
 typedef unordered_map<unsigned,
