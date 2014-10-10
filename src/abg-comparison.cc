@@ -1248,6 +1248,8 @@ try_to_diff(const decl_base_sptr first,
     {
       shared_ptr<DiffType> s =
 	dynamic_pointer_cast<DiffType>(second);
+      if (!s)
+	return diff_sptr();
       return compute_diff(f, s, ctxt);
     }
   return diff_sptr();
@@ -1274,6 +1276,9 @@ try_to_diff<class_decl>(const decl_base_sptr first,
       dynamic_pointer_cast<class_decl>(first))
     {
       class_decl_sptr s = dynamic_pointer_cast<class_decl>(second);
+      if (!s)
+	return diff_sptr();
+
       if (f->get_is_declaration_only())
 	{
 	  class_decl_sptr f2 = f->get_definition_of_declaration();
@@ -1334,15 +1339,15 @@ compute_diff_for_types(const decl_base_sptr first,
   const decl_base_sptr f = first;
   const decl_base_sptr s = second;
 
-  ((d = try_to_diff_distinct_kinds(f, s, ctxt))
-   ||(d = try_to_diff<type_decl>(f, s, ctxt))
+  ((d = try_to_diff<type_decl>(f, s, ctxt))
    ||(d = try_to_diff<enum_type_decl>(f, s, ctxt))
    ||(d = try_to_diff<class_decl>(f, s,ctxt))
    ||(d = try_to_diff<pointer_type_def>(f, s, ctxt))
    ||(d = try_to_diff<reference_type_def>(f, s, ctxt))
    ||(d = try_to_diff<array_type_def>(f, s, ctxt))
    ||(d = try_to_diff<qualified_type_def>(f, s, ctxt))
-   ||(d = try_to_diff<typedef_decl>(f, s, ctxt)));
+   ||(d = try_to_diff<typedef_decl>(f, s, ctxt))
+   ||(d = try_to_diff_distinct_kinds(f, s, ctxt)));
 
   assert(d);
 
@@ -1540,9 +1545,9 @@ compute_diff_for_decls(const decl_base_sptr first,
 
   diff_sptr d;
 
-  ((d = try_to_diff_distinct_kinds(first, second, ctxt))
-   || (d = try_to_diff<function_decl>(first, second, ctxt))
-   || (d = try_to_diff<var_decl>(first, second, ctxt)));
+  ((d = try_to_diff<function_decl>(first, second, ctxt))
+   || (d = try_to_diff<var_decl>(first, second, ctxt))
+   || (d = try_to_diff_distinct_kinds(first, second, ctxt)));
 
    assert(d);
 
