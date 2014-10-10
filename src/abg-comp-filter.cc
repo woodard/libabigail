@@ -36,25 +36,47 @@ namespace filtering
 
 using std::tr1::dynamic_pointer_cast;
 
-/// Walk and categorize the nodes of a diff sub-tree.
+/// Walk the diff sub-trees of a a @ref corpus_diff and apply a filter
+/// to the nodes visted.  The filter categorizes each node, assigning
+/// it into one or several categories.
 ///
-/// @param filter the filter invoked on each node of the walked
-/// sub-tree.
+/// @param filter the filter to apply to the diff nodes
 ///
-/// @param d the diff sub-tree node to start the walk from.
+/// @param d the corpus diff to apply the filter to.
+void
+apply_filter(filter_base& filter, corpus_diff_sptr d)
+{
+  filter.set_visiting_kind(PRE_VISITING_KIND | POST_VISITING_KIND);
+  bool s = d->context()->traversing_a_node_twice_is_forbidden();
+  d->context()->forbid_traversing_a_node_twice(false);
+  d->traverse(filter);
+  d->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Walk a diff sub-tree and apply a filter to the nodes visted.  The
+/// filter categorizes each node, assigning it into one or several
+/// categories.
+///
+/// @param filter the filter to apply to the nodes of the sub-tree.
+///
+/// @param d the diff sub-tree to walk and apply the filter to.
 void
 apply_filter(filter_base& filter, diff_sptr d)
 {
   filter.set_visiting_kind(PRE_VISITING_KIND | POST_VISITING_KIND);
+  bool s = d->context()->traversing_a_node_twice_is_forbidden();
+  d->context()->forbid_traversing_a_node_twice(false);
   d->traverse(filter);
+  d->context()->forbid_traversing_a_node_twice(s);
 }
 
-/// Walk and categorize the nodes of a diff sub-tree.
+/// Walk a diff sub-tree and apply a filter to the nodes visted.  The
+/// filter categorizes each node, assigning it into one or several
+/// categories.
 ///
-/// @param filter the filter invoked on each node of the walked
-/// sub-tree.
+/// @param filter the filter to apply to the nodes of the sub-tree.
 ///
-/// @param d the diff sub-tree node to start the walk from.
+/// @param d the diff sub-tree to walk and apply the filter to.
 void
 apply_filter(filter_base_sptr filter, diff_sptr d)
 {apply_filter(*filter, d);}

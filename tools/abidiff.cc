@@ -480,7 +480,7 @@ main(int argc, char* argv[])
 	case abigail::tools::FILE_TYPE_AR:
 	  di_dir1 = opts.di_root_path1.get();
 	  c1_status = abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
-							   &di_dir1, c1);
+								  &di_dir1, c1);
 	  break;
 	case abigail::tools::FILE_TYPE_XML_CORPUS:
 	  c1 =
@@ -618,3 +618,58 @@ main(int argc, char* argv[])
 
   return true;
 }
+
+#ifdef __ABIGAIL_IN_THE_DEBUGGER__
+
+/// Emit a textual representation of a given @ref corpus_diff tree to
+/// stdout.
+///
+/// This is useful when debugging this program.
+///
+/// @param diff_tree the diff tree to emit a textual representation
+/// for.
+void
+print_diff_tree(abigail::comparison::corpus_diff* diff_tree)
+{
+  print_diff_tree(diff_tree, std::cout);
+}
+
+/// Emit a textual representation of a given @ref corpus_diff tree to
+/// stdout.
+///
+/// This is useful when debugging this program.
+///
+/// @param diff_tree the diff tree to emit a textual representation
+/// for.
+void
+print_diff_tree(abigail::comparison::corpus_diff_sptr diff_tree)
+{
+  print_diff_tree(diff_tree, std::cout);
+}
+
+/// Emit a textual representation of a given @ref corpus_diff tree to
+/// stdout.
+///
+/// This is useful when debugging this program.
+///
+/// @param diff_tree the diff tree to emit a textual representation
+/// for.
+void
+print_diff_tree(abigail::comparison::diff_sptr diff_tree)
+{
+  print_diff_tree(diff_tree.get(), std::cout);
+}
+
+/// Emit a textual representation of a given @ref diff tree to
+/// stdout.
+///
+/// This is useful when debugging this program.
+///
+/// @param diff_tree the diff tree to emit a textual representation
+/// for.
+void
+print_diff_tree(abigail::comparison::diff* diff_tree)
+{
+  print_diff_tree(diff_tree, std::cout);
+}
+#endif // __ABIGAIL_IN_THE_DEBUGGER__

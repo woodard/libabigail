@@ -63,6 +63,9 @@ void
 apply_filter(filter_base& filter, diff_sptr d);
 
 void
+apply_filter(filter_base& filter, corpus_diff_sptr d);
+
+void
 apply_filter(filter_base_sptr filter, diff_sptr d);
 
 class harmless_filter;

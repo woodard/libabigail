@@ -26,6 +26,7 @@
 /// @file
 
 #include <tr1/unordered_map>
+#include <ostream>
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
 
@@ -221,7 +222,6 @@ operator|(visiting_kind l, visiting_kind r);
 class diff_traversable_base : public traversable_base
 {
 public:
-
   virtual bool
   traverse(diff_node_visitor& v);
 }; // end struct diff_traversable_base
@@ -234,52 +234,50 @@ enum diff_category
   /// or that it carries changes that have not yet been categorized.
   NO_CHANGE_CATEGORY = 0,
 
-  /// This means the diff node is *NOT* redundant.  The reason why we
-  /// do not define a REDUNDANT_CATEGORY instead is that we tagging a
-  /// node as NOT_REDUNDANT_CATEGORY is easier: you just have to find
-  /// a child node that is itself not redundant.
-  NOT_REDUNDANT_CATEGORY = 1,
-
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries access related changes, e.g, a private member
   /// that becomes public.
-  ACCESS_CHANGE_CATEGORY = 1 << 1,
+  ACCESS_CHANGE_CATEGORY = 1,
 
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change involving two compatible types.  For
   /// instance a type and its typedefs.
-  COMPATIBLE_TYPE_CHANGE_CATEGORY = 1 << 2,
+  COMPATIBLE_TYPE_CHANGE_CATEGORY = 1 << 1,
 
   /// This means that a diff node in the sub-tree carries a harmless
   /// declaration name change.  This is set only for name changes for
   /// data members and typedefs.
-  HARMLESS_DECL_NAME_CHANGE_CATEGORY = 1 << 3,
+  HARMLESS_DECL_NAME_CHANGE_CATEGORY = 1 << 2,
 
   /// This means that a diff node in the sub-tree carries an addition
   /// or removal of a non-virtual member function.
-  NON_VIRT_MEM_FUN_CHANGE_CATEGORY = 1 << 4,
+  NON_VIRT_MEM_FUN_CHANGE_CATEGORY = 1 << 3,
 
   /// This means that a diff node in the sub-tree carries an addition
   /// or removal of a static data member.
-  STATIC_DATA_MEMBER_CHANGE_CATEGORY = 1 << 5,
+  STATIC_DATA_MEMBER_CHANGE_CATEGORY = 1 << 4,
 
   /// This means that a diff node in the sub-tree carries an addition
   /// of enumerator to an enum type.
-  HARMLESS_ENUM_CHANGE_CATEGORY = 1 << 6,
+  HARMLESS_ENUM_CHANGE_CATEGORY = 1 << 5,
 
   /// This means that a diff node in the sub-tree carries an a symbol
   /// alias change that is harmless.
-  HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY = 1 << 7,
+  HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY = 1 << 6,
 
   /// This means the diff node (or at least one of its descendant
   /// nodes) carries a change that modifies the size of a type or an
   /// offset of a type member.  Removal or changes of enumerators in a
   /// enum fall in this category too.
-  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 8,
+  SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 7,
 
   /// This means that a diff node in the sub-tree carries a change to
   /// a vtable.
-  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 9,
+  VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 8,
+
+  /// A diff node in this category is redundant.  That means it's
+  /// present as a child of a other nodes in the diff tree.
+  REDUNDANT_CATEGORY = 1 << 9,
 
   /// A special enumerator that is the logical 'or' all the
   /// enumerators above.
@@ -287,8 +285,7 @@ enum diff_category
   /// This one must stay the last enumerator.  Please update it each
   /// time you add a new enumerator above.
   EVERYTHING_CATEGORY =
-  NOT_REDUNDANT_CATEGORY
-  | ACCESS_CHANGE_CATEGORY
+  ACCESS_CHANGE_CATEGORY
   | COMPATIBLE_TYPE_CHANGE_CATEGORY
   | HARMLESS_DECL_NAME_CHANGE_CATEGORY
   | NON_VIRT_MEM_FUN_CHANGE_CATEGORY
@@ -297,6 +294,7 @@ enum diff_category
   | HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY
   | SIZE_OR_OFFSET_CHANGE_CATEGORY
   | VIRTUAL_MEMBER_CHANGE_CATEGORY
+  | REDUNDANT_CATEGORY
 };
 
 diff_category
@@ -304,6 +302,9 @@ operator|(diff_category c1, diff_category c2);
 
 diff_category&
 operator|=(diff_category& c1, diff_category c2);
+
+diff_category&
+operator&=(diff_category& c1, diff_category c2);
 
 diff_category
 operator^(diff_category c1, diff_category c2);
@@ -313,6 +314,14 @@ operator&(diff_category c1, diff_category c2);
 
 diff_category
 operator~(diff_category c);
+
+ostream&
+operator<<(ostream& o, diff_category);
+
+class corpus_diff;
+
+/// A convenience typedef for a shared pointer to @ref corpus_diff.
+typedef shared_ptr<corpus_diff> corpus_diff_sptr;
 
 /// The context of the diff.  This type holds various bits of
 /// information that is going to be used throughout the diffing of two
@@ -372,6 +381,12 @@ public:
   void
   forget_traversed_diffs();
 
+  void
+  forbid_traversing_a_node_twice(bool f);
+
+  bool
+  traversing_a_node_twice_is_forbidden() const;
+
   diff_category
   get_allowed_category() const;
 
@@ -391,13 +406,12 @@ public:
   add_diff_filter(filtering::filter_base_sptr);
 
   void
-  maybe_apply_filters(diff_sptr dif);
-
-  bool
-  categorizing_redundancy() const;
+  maybe_apply_filters(diff_sptr diff,
+		      bool traverse_nodes_once = true);
 
   void
-  categorizing_redundancy(bool);
+  maybe_apply_filters(corpus_diff_sptr diff,
+		      bool traverse_nodes_once = true);
 
   void
   show_stats_only(bool f);
@@ -459,14 +473,15 @@ public:
 /// constructs are called the "subjects" of the diff.
 class diff : public diff_traversable_base
 {
-  class priv;
+  struct priv;
   typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
 
   // Forbidden
   diff();
 
 protected:
+  priv_sptr priv_;
+
   diff(decl_base_sptr first_subject,
        decl_base_sptr second_subject);
 
@@ -474,12 +489,32 @@ protected:
        decl_base_sptr	second_subject,
        diff_context_sptr	ctxt);
 
+  void
+  begin_traversing();
+
+  bool
+  is_traversing() const;
+
+  void
+  end_traversing();
+
+protected:
+
+  virtual void
+  finish_diff_type();
+
 public:
   decl_base_sptr
   first_subject() const;
 
   decl_base_sptr
   second_subject() const;
+
+  const vector<diff*>&
+  children_nodes() const;
+
+  void
+  append_child_node(diff*);
 
   const diff_context_sptr
   context() const;
@@ -508,11 +543,20 @@ public:
   diff_category
   remove_from_category(diff_category c);
 
+  void
+  set_category(diff_category c);
+
   bool
   is_filtered_out() const;
 
   bool
   to_be_reported() const;
+
+  virtual const string&
+  get_pretty_representation() const;
+
+  virtual void
+  chain_into_hierarchy();
 
   /// Pure interface to get the length of the changes
   /// encapsulated by this diff.  This is to be implemented by all
@@ -531,6 +575,9 @@ public:
   /// @param indent the indentation string to use.
   virtual void
   report(ostream& out, const string& indent = "") const = 0;
+
+  virtual bool
+  traverse(diff_node_visitor& v);
 };// end class diff
 
 diff_sptr
@@ -563,6 +610,10 @@ protected:
   distinct_diff(decl_base_sptr first,
 		decl_base_sptr second,
 		diff_context_sptr ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
+
 public:
 
   const decl_base_sptr
@@ -571,11 +622,17 @@ public:
   const decl_base_sptr
   second() const;
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream& out, const string& indent = "") const;
+
+  virtual void
+  chain_into_hierarchy();
 
   static bool
   entities_are_of_distinct_kinds(decl_base_sptr first,
@@ -585,9 +642,6 @@ public:
   compute_diff_for_distinct_kinds(const decl_base_sptr first,
 				  const decl_base_sptr second,
 				  diff_context_sptr ctxt);
-
-  virtual bool
-  traverse(diff_node_visitor& v);
 };// end class distinct_types_diff
 
 distinct_diff_sptr
@@ -613,6 +667,9 @@ protected:
 	   diff_sptr type_diff,
 	   diff_context_sptr ctxt = diff_context_sptr());
 
+  virtual void
+  finish_diff_type();
+
 public:
   var_decl_sptr
   first_var() const;
@@ -623,14 +680,17 @@ public:
   diff_sptr
   type_diff() const;
 
+  virtual void
+  chain_into_hierarchy();
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream& out, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual const string&
+  get_pretty_representation() const;
 
   friend var_diff_sptr
   compute_diff(const var_decl_sptr	first,
@@ -655,7 +715,11 @@ class pointer_diff : public diff
 protected:
   pointer_diff(pointer_type_def_sptr	first,
 	       pointer_type_def_sptr	second,
+	       diff_sptr		underlying_type_diff,
 	       diff_context_sptr	ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
 
 public:
   const pointer_type_def_sptr
@@ -670,14 +734,17 @@ public:
   void
   underlying_type_diff(const diff_sptr);
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 
   friend pointer_diff_sptr
   compute_diff(pointer_type_def_sptr	first,
@@ -705,7 +772,11 @@ class reference_diff : public diff
 protected:
   reference_diff(const reference_type_def_sptr	first,
 		 const reference_type_def_sptr	second,
+		 diff_sptr			underlying,
 		 diff_context_sptr		ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
 
 public:
   reference_type_def_sptr
@@ -720,14 +791,17 @@ public:
   diff_sptr&
   underlying_type_diff(diff_sptr);
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 
   friend reference_diff_sptr
   compute_diff(reference_type_def_sptr first,
@@ -758,6 +832,9 @@ protected:
 	     diff_sptr			element_type_diff,
 	     diff_context_sptr		ctxt = diff_context_sptr());
 
+  virtual void
+  finish_diff_type();
+
 public:
   const array_type_def_sptr
   first_array() const;
@@ -771,14 +848,17 @@ public:
   void
   element_type_diff(diff_sptr);
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 
   friend array_diff_sptr
   compute_diff(array_type_def_sptr first,
@@ -804,7 +884,11 @@ class qualified_type_diff : public diff
 protected:
   qualified_type_diff(qualified_type_def_sptr	first,
 		      qualified_type_def_sptr	second,
+		      diff_sptr		underling,
 		      diff_context_sptr	ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
 
 public:
   const qualified_type_def_sptr
@@ -819,14 +903,17 @@ public:
   void
   underlying_type_diff(const diff_sptr);
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 
   friend qualified_type_diff_sptr
   compute_diff(const qualified_type_def_sptr first,
@@ -864,6 +951,9 @@ protected:
 	    const diff_sptr,
 	    diff_context_sptr ctxt = diff_context_sptr());
 
+  virtual void
+  finish_diff_type();
+
 public:
   const enum_type_decl_sptr
   first_enum() const;
@@ -883,14 +973,17 @@ public:
   const string_changed_enumerator_map&
   changed_enumerators() const;
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 
   friend enum_diff_sptr
   compute_diff(const enum_type_decl_sptr first,
@@ -907,6 +1000,7 @@ class class_diff;
 
 /// Convenience typedef for a shared pointer on a @ref class_diff type.
 typedef shared_ptr<class_diff> class_diff_sptr;
+
 
 /// This type abstracts changes for a class_decl.
 class class_diff : public diff
@@ -927,6 +1021,9 @@ protected:
   class_diff(class_decl_sptr first_scope,
 	     class_decl_sptr second_scope,
 	     diff_context_sptr ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
 
 public:
   //TODO: add change of the name of the type.
@@ -997,14 +1094,17 @@ public:
   edit_script&
   member_class_tmpls_changes();
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 
   friend class_diff_sptr
   compute_diff(const class_decl_sptr	first,
@@ -1031,7 +1131,11 @@ class base_diff : public diff
 protected:
   base_diff(class_decl::base_spec_sptr	first,
 	    class_decl::base_spec_sptr	second,
+	    class_diff_sptr		underlying,
 	    diff_context_sptr		ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
 
 public:
   class_decl::base_spec_sptr
@@ -1046,14 +1150,17 @@ public:
   void
   set_underlying_class_diff(class_diff_sptr d);
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 
   friend base_diff_sptr
   compute_diff(const class_decl::base_spec_sptr first,
@@ -1090,6 +1197,9 @@ protected:
   scope_diff(scope_decl_sptr first_scope,
 	     scope_decl_sptr second_scope,
 	     diff_context_sptr ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
 
 public:
 
@@ -1146,14 +1256,17 @@ public:
   const string_decl_base_sptr_map&
   added_decls() const;
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream& out, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 };// end class scope_diff
 
 scope_diff_sptr
@@ -1190,7 +1303,11 @@ class function_decl_diff : public diff
 protected:
   function_decl_diff(const function_decl_sptr	first,
 		     const function_decl_sptr	second,
+		     diff_sptr			ret_type_diff,
 		     diff_context_sptr		ctxt);
+
+  virtual void
+  finish_diff_type();
 
 public:
 friend function_decl_diff_sptr
@@ -1216,14 +1333,17 @@ compute_diff(const function_decl_sptr	first,
   const string_parm_map&
   added_parms() const;
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 }; // end class function_decl_diff
 
 function_decl_diff_sptr
@@ -1246,6 +1366,9 @@ protected:
 		 const type_decl_sptr second,
 		 diff_context_sptr ctxt = diff_context_sptr());
 
+  virtual void
+  finish_diff_type();
+
 public:
   friend type_decl_diff_sptr
   compute_diff(const type_decl_sptr	first,
@@ -1258,14 +1381,14 @@ public:
   const type_decl_sptr
   second_type_decl() const;
 
-  unsigned
+  virtual const string&
+  get_pretty_representation() const;
+
+  virtual unsigned
   length() const;
 
   virtual void
   report(ostream& out, const string& indent = "") const;
-
-  virtual bool
-  traverse(diff_node_visitor& v);
 };// end type_decl_diff
 
 type_decl_diff_sptr
@@ -1289,7 +1412,11 @@ class typedef_diff : public diff
 protected:
   typedef_diff(const typedef_decl_sptr	first,
 	       const typedef_decl_sptr	second,
+	       const diff_sptr		underlying_type_diff,
 	       diff_context_sptr	ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
 
 public:
   friend typedef_diff_sptr
@@ -1309,14 +1436,17 @@ public:
   void
   underlying_type_diff(const diff_sptr);
 
+  virtual const string&
+  get_pretty_representation() const;
+
   virtual unsigned
   length() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
 
-  virtual bool
-  traverse(diff_node_visitor& v);
+  virtual void
+  chain_into_hierarchy();
 };// end class typedef_diff
 
 typedef_diff_sptr
@@ -1360,20 +1490,12 @@ public:
 
   virtual void
   report(ostream& out, const string& indent = "") const;
-
-  virtual bool
-  traverse(diff_node_visitor& v);
 };//end class translation_unit_diff
 
 translation_unit_diff_sptr
 compute_diff(const translation_unit_sptr first,
 	     const translation_unit_sptr second,
 	     diff_context_sptr ctxt = diff_context_sptr());
-
-class corpus_diff;
-
-/// A convenience typedef for a shared pointer to @ref corpus_diff.
-typedef shared_ptr<corpus_diff> corpus_diff_sptr;
 
 /// An abstraction of a diff between between two abi corpus.
 class corpus_diff
@@ -1387,6 +1509,9 @@ protected:
 	      corpus_sptr	second,
 	      diff_context_sptr ctxt = diff_context_sptr());
 
+  void
+  finish_diff_type();
+
 public:
 
   corpus_sptr
@@ -1394,6 +1519,12 @@ public:
 
   corpus_sptr
   second_corpus() const;
+
+  const vector<diff*>&
+  chidren_nodes() const;
+
+  void
+  append_child_node(diff*);
 
   edit_script&
   function_changes() const;
@@ -1410,8 +1541,14 @@ public:
   const string_changed_function_ptr_map&
   changed_functions();
 
+  const string_changed_var_ptr_map&
+  changed_variables();
+
   const diff_context_sptr
   context() const;
+
+  const string&
+  get_pretty_representation() const;
 
   unsigned
   length() const;
@@ -1421,6 +1558,9 @@ public:
 
   virtual bool
   traverse(diff_node_visitor& v);
+
+  virtual void
+  chain_into_hierarchy();
 
   friend corpus_diff_sptr
   compute_diff(const corpus_sptr f,
@@ -1475,6 +1615,18 @@ public:
   or_visiting_kind(visiting_kind v)
   {visiting_kind_ = visiting_kind_ | v;}
 
+  virtual void
+  visit_begin(diff*);
+
+  virtual void
+  visit_begin(corpus_diff*);
+
+  virtual void
+  visit_end(diff*);
+
+  virtual void
+  visit_end(corpus_diff*);
+
   virtual bool
   visit(diff*, bool);
 
@@ -1520,6 +1672,57 @@ public:
   virtual bool
   visit(corpus_diff*, bool);
 }; // end struct diff_node_visitor
+
+void
+propagate_categories(diff* diff_tree);
+
+void
+propagate_categories(diff_sptr diff_tree);
+
+void
+propagate_categories(corpus_diff* diff_tree);
+
+void
+propagate_categories(corpus_diff_sptr diff_tree);
+
+void
+print_diff_tree(diff* diff_tree, std::ostream&);
+
+void
+print_diff_tree(corpus_diff* diff_tree,
+		std::ostream&);
+
+void
+print_diff_tree(corpus_diff_sptr diff_tree,
+		std::ostream&);
+
+void
+categorize_redundancy(diff* diff_tree);
+
+void
+categorize_redundancy(diff_sptr diff_tree);
+
+void
+categorize_redundancy(corpus_diff* diff_tree);
+
+void
+categorize_redundancy(corpus_diff_sptr diff_tree);
+
+void
+clear_redundancy_categorization(diff* diff_tree);
+
+void
+clear_redundancy_categorization(diff_sptr diff_tree);
+
+void
+clear_redundancy_categorization(corpus_diff* diff_tree);
+
+void
+clear_redundancy_categorization(corpus_diff_sptr diff_tree);
+
+void
+apply_filters(corpus_diff_sptr diff_tree);
+
 }// end namespace comparison
 
 }// end namespace abigail

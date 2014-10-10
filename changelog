@@ -1,0 +1,156 @@
+Implement generic diff tree walking and port categorization over it
+
+	* include/abg-comp-filter.h (apply_filter): Declare new overload
+	that takes a corpus_diff_sptr ...
+	* src/abg-comp-filter.cc (apply_filter): ... and define it.  On
+	the existing overload for diff_sptr, make sure to traverse all
+	diff nodes, even those that have already been traversed.
+	* include/abg-comparison.h (enum diff_category): Remove
+	NOT_REDUNDANT_CATEGORY, add REDUNDANT_CATEGORY.
+	(operator&=, +operator<<): Declare new operators for enum diff_category.
+	(diff_context::{forbid_traversing_a_node_twice,
+	traversing_a_node_twice_is_forbidden):
+	(diff_context::categorizing_redundancy): Remove this declaration.
+	(diff_context::maybe_apply_filters): Declare a new overload that
+	takes a corpus_diff_sptr.  And a take a new flag that says if it
+	should visit all nodes including those that have already been
+	visited.
+	(diff::priv_): Make this data member protected.
+	(diff::{begin_traversing, is_traversing, end_traversing,
+	finish_diff_type, children_nodes, append_child_node,
+	get_pretty_representation, chain_into_hierarchy, traverse}):
+	Declare new member functions.
+	(distinct_diff::{finish_diff_type, get_pretty_representation,
+	chain_into_hierarchy}): Likewise.
+	(distinct_diff::traverse): Remove.
+	(pointer_diff::pointer_diff): Take the underlying type diff in
+	parameter.
+	(pointer_diff::{finish_diff_type, get_pretty_representation,
+	chain_into_hierarchy}): Declare new member functions.
+	(pointer_diff::traverse): Remove.
+	(reference_type_def::reference_type_def): Take the underlying type
+	diff in parameter.
+	({array_type_def, reference_type_def}::{finish_diff_type,
+	get_pretty_representation, chain_into_hierarchy}): Declare new
+	member functions.
+	({array_type_diff, reference_type_def}::traverse): Remove.
+	(qualified_type_diff::qualified_type_diff): Take the underlying
+	type diff in parameter.
+	({enum_diff, qualified_type_diff, class_diff}::{finish_diff_type,
+	get_pretty_representation, chain_into_hierarchy}): Declare new
+	member functions.
+	({enum_diff, qualified_type_diff, class_diff}::traverse): Remove.
+	(is_class_diff): Declare new function.
+	(base_diff::base_diff): Take the underlying type diff in
+	parameter.
+	({scope_diff, base_diff}::{finish_diff_type, get_pretty_representation,
+	chain_into_hierarchy}): Declare new member functions.
+	({scope_diff, base_diff}::traverse): Remove.
+	(function_decl_diff::function_decl_diff): Take the return type
+	diff as parameter.
+	({function_decl_diff, type_decl_diff}::{finish_diff_type,
+	get_pretty_representation, chain_into_hierarchy}): Declare new
+	member functions.
+	({function_decl_diff, type_decl_diff}::traverse): Remove.
+	(typedef_diff::typedef_diff): Take the underlying type diff as
+	parameter.
+	(typedef::{finish_diff_type, get_pretty_representation,
+	chain_into_hierarchy}): Declare new member functions.
+	({typedef, translation_unit_diff}::traverse): Remove member
+	function.
+	(corpus_diff::{finish_diff_type, children_nodes,
+	append_child_node, changed_variables, get_pretty_representation,
+	chain_into_hierarchy}): Declare new member functions.
+	(class diff_node_visitor::{visit_begin, visit_end}): Declare new
+	member functions.
+	(propagate_categories, print_diff_tree, categorizing_redundancy)
+	(clear_redundancy_categorization, apply_filters): New functions
+	and function overloads.
+	* src/abg-comparison.cc (TRY_PRE_VISIT, TRY_PRE_VISIT_CLASS_DIFF)
+	(TRY_POST_VISIT, TRY_POST_VISIT_CLASS_DIFF)
+	(CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE)
+	(UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE)
+	(TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY)
+	(TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY)
+	(TRAVERSE_MEM_FN_DIFF_NODE_AND_PROPAGATE_CATEGORY)
+	(ENSURE_DIFF_NODE_TRAVERSED_ONCE)
+	(ENSURE_MEM_DIFF_NODE_TRAVERSED_ONCE): Remove these macros.
+	Hurrah.
+	(diff_context::priv::categorizing_redundancy_): Remove.
+	(diff_context::priv::forbid_traversing_a_node_twice_): Add new
+	data member.
+	(diff_context::priv::priv): Adjust.
+	(diff_context::{forbid_traversing_a_node_twice,
+	traversing_a_node_twice_is_forbidden}): Define new member
+	functions.
+	(diff_context::maybe_apply_filters): Once filters are applied (and
+	categories are set to the relevant diff tree nodes, run a pass
+	over the diff tree to propagate the categories to the relevant
+	diff tree parent nodes.  Add an overload for corpus_diff_sptr.
+	(diff_context::categorizing_redundancy): Remove member function.
+	(diff_context::maybe_apply_filters): Define a new overload for
+	corpus_diff_sptr
+	(struct diff::priv::{finished_, traversing_, children_,
+	pretty_representation_}):  New data members.
+	(diff::priv::priv): Adjust.
+	(diff::{begin_traversing, is_traversing, end_traversing,
+	finish_diff_type, children_nodes, append_child_node, traverse,
+	set_category, get_pretty_representation, chain_into_hierarchy}):
+	Define new member functions.
+	(diff::is_filtered_out): Do not refer to NOT_REDUNDANT_CATEGORY
+	anymore.  Rather, use the new REDUNDANT_CATEGORY.
+	({distinct_diff, var_diff, pointer_diff, array_diff,
+	reference_diff, qualified_type_diff, enum_diff, class_diff,
+	base_diff, scope_diff, function_decl_diff, type_decl_diff,
+	typedef_diff}::{get_pretty_representation, chain_into_hierarchy,
+	finish_diff_type}): Define new member functions.
+	({distinct_diff, var_diff, pointer_diff, array_diff,
+	reference_diff, qualified_type_diff, enum_diff, class_diff,
+	base_diff, scope_diff, function_decl_diff, type_decl_diff,
+	typedef_diff, translation_unit_diff}::traverse): Remove member
+	functions.
+	(operator&=, operator<<): Define new operators for diff_category.
+	({function_decl_diff, typedef_diff}::priv::priv): Add a new
+	constructor.
+	(pointer_diff::{priv::priv, pointer_diff})
+	(reference_diff::{priv::priv, reference_diff})
+	(qualified_type_diff::{priv::priv, qualified_type_diff})
+	(enum_diff::{priv::priv, enum_diff}, base_diff::{priv::priv,
+	base_diff}, function_decl_diff::function_decl_diff): Take the
+	underlying type diff in parameter.
+	(compute_diff): Adjust the pointer_diff, reference_diff,
+	qualified_type_diff, base_diff, function_decl_diff overloads.
+	(class_diff::priv::{count_filtered_bases,
+	count_filtered_subtype_changed_dm, count_filtered_changed_dm,
+	count_filtered_changed_mem_fns, count_filtered_inserted_mem_fns,
+	count_filtered_deleted_mem_fns}): Adjust for the call to
+	diff_context::maybe_apply_filters.
+	(corpus_diff::priv::{finished_, pretty_representation_}): New data
+	member.
+	(corpus_diff::priv::priv): New constructor.
+	(corpus_diff::priv::clear_redundancy_categorization): Define new
+	member function.
+	(corpus_diff::priv::apply_filters_and_compute_diff_stats):
+	Adjust for call to diff_context::maybe_apply_filters.  Also, call
+	clear_redundancy_categorization at the end.
+	(corpus_diff::priv::categorize_redundant_changed_sub_nodes):
+	Revisit logic.
+	(corpus_diff::{chain_into_hierarchy, finish_diff_type,
+	children_nodes, append_child_node, changed_variables,
+	get_pretty_representation}): Define new member functions.
+	(corpus_diff::report): Categorize redundancy for every top level
+	function/variable diff.
+	(corpus_diff::traverse): Adjust to the new traversing interface.
+	(diff_node_visitor::{visit_begin, visit_end}): Define new member
+	functions.
+	(struct category_propagation_visitor, struct diff_node_printer)
+	(struct redundancy_marking_visitor, struct
+	redundancy_clearing_visitor): New diff tree node visitors.
+	(propagate_categories, print_diff_tree, categorize_redundancy)
+	(clear_redundancy_categorization, apply_filters): Define new
+	functions.
+	* tests/Makefile.am: Add the new tests/print-diff-tree.cc to the
+	source distribution.  Build it into a tests/printdifftree binary.
+	* tools/abidiff.cc (print_diff_tree): Add debugging functions to
+	call from within the debugger.  By default, this function and its
+	overloads are not compiled.

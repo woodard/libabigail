@@ -26,6 +26,7 @@
 /// libabigail.
 
 #include <algorithm>
+#include <sstream>
 #include "abg-hash.h"
 #include "abg-comparison.h"
 #include "abg-comp-filter.h"
@@ -75,65 +76,6 @@ visiting_kind
 operator|(visiting_kind l, visiting_kind r)
 {return static_cast<visiting_kind>(static_cast<unsigned>(l)
 				   | static_cast<unsigned>(r));}
-
-#define TRY_PRE_VISIT(v)					\
-  do {								\
-    if (v.get_visiting_kind() & PRE_VISITING_KIND)		\
-      if (!v.visit(this, /*pre=*/true))			\
-	return false;						\
-  } while (false)
-
-#define TRY_PRE_VISIT_CLASS_DIFF(v)				\
-  do {								\
-    if (v.get_visiting_kind() & PRE_VISITING_KIND)		\
-      if (!v.visit(this, /*pre=*/true))			\
-	{							\
-	  priv_->traversing_ = false;				\
-	  return false;					\
-	}							\
-  } while (false)
-
-
-#define TRY_POST_VISIT(v)					\
-  do {								\
-    if (v.get_visiting_kind() & POST_VISITING_KIND)		\
-      if (!v.visit(this, /*pre=*/false))			\
-	return false;						\
-  } while (false)
-
-#define TRY_POST_VISIT_CLASS_DIFF(v)				\
-  do {								\
-    if (v.get_visiting_kind() & POST_VISITING_KIND)		\
-      if (!v.visit(this, /*pre=*/false))			\
-	{							\
-	  priv_->traversing_ = false;				\
-	  return false;					\
-	}							\
-  } while (false)
-
-/// If context()->categorizing_redundancy() is true, look at a child
-/// node of the current diff node and depending on whether its in the
-/// 'NOT_REDUNDANT_CATEGORY' category or not, propagate its
-/// non-redudancy-ness to the current node.  Note that this macro must
-/// be called before the node is traversed.
-///
-/// This is a subroutine-macro of the
-/// TRAVERSE_*_DIFF_NODE_AND_PROPAGATE_CATEGORY family of macros
-/// below.
-///
-/// @param node the child node of the current diff node to consider.
-#define CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE(node)			\
-  bool maybe_not_redundant = false;					\
-  if (context()->categorizing_redundancy())				\
-    {									\
-      if (context()->diff_has_been_traversed(node))			\
-	{								\
-	  node->remove_from_category(NOT_REDUNDANT_CATEGORY);		\
-	  remove_from_category(NOT_REDUNDANT_CATEGORY);		\
-	}								\
-      else								\
-	maybe_not_redundant = true;					\
-    }
 
 /// This is a subroutine of a *::report() function.
 ///
@@ -210,137 +152,13 @@ operator|(visiting_kind l, visiting_kind r)
 	  } \
     } while (false)
 
-/// Look at a child node (that has just been traversed) of the current
-/// diff node and update the non-redundancy-ness of the current diff
-/// node accordingly.  Note the child node must have been traversed.
-/// So this macro must be called *after* the
-/// CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE() macro above.
-///
-/// This is a subroutine-macro of the
-/// TRAVERSE_*_DIFF_NODE_AND_PROPAGATE_CATEGORY family of macros
-/// below.
-#define UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE(node)	\
-  if (maybe_not_redundant						\
-      && (node->get_category() & NOT_REDUNDANT_CATEGORY))		\
-    add_to_category(NOT_REDUNDANT_CATEGORY)
-
-/// Inside the code of a given diff node, traverse a sub-tree of the
-/// diff nove and propagate the category of the sub-tree up to the
-/// current diff node.
-///
-/// @param node the sub-tree node of the current diff node to consider.
-///
-/// @param visitor the visitor used to visit the traversed sub tree
-/// nodes.
-#define TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
-  do									\
-    {									\
-      CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE(node);			\
-      bool r = node->traverse(visitor);				\
-      add_to_category(node->get_category() & ~NOT_REDUNDANT_CATEGORY);	\
-      UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE(node);	\
-      if (!r)								\
-	return false;							\
-    } while (false)
-
-/// Inside the code of a given diff node that is a member of a
-/// class_diff node, traverse a sub-tree of the diff nove and
-/// propagate the category of the sub-tree up to the current diff
-/// node.
-///
-/// @param node the sub-tree node of the current diff node to consider.
-///
-/// @param visitor the visitor used to visit the traversed sub tree
-/// nodes.
-#define TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
-  do									\
-    {									\
-      CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE(node);			\
-      bool r = node->traverse(visitor);				\
-      add_to_category(node->get_category() & ~NOT_REDUNDANT_CATEGORY);	\
-      UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE(node);	\
-      if (!r)								\
-	{								\
-	  priv_->traversing_ = false;					\
-	  return false;						\
-	}								\
-    } while (false)
-
-/// Inside the code of a given diff node that is for member functions
-/// of a class_diff node, traverse a sub-tree of the diff nove and
-/// propagate the category of the sub-tree up to the current diff
-/// node.
-///
-/// Note that for a diff for member functions, the only categories we
-/// want to see propagated to the diff of the enclosing class are
-/// categories about changes to vtables and redundancy-ness.
-///
-/// @param node the sub-tree node of the current diff node to consider.
-///
-/// @param visitor the visitor used to visit the traversed sub tree
-/// nodes.
-#define TRAVERSE_MEM_FN_DIFF_NODE_AND_PROPAGATE_CATEGORY(node, visitor)	\
-    do									\
-      {								\
-	CATEGORIZE_REDUNDANCY_FROM_CHILD_NODE(node);			\
-	bool r = node->traverse(visitor);				\
-	add_to_category(node->get_category()				\
-			& VIRTUAL_MEMBER_CHANGE_CATEGORY);		\
-	UPDATE_REDUNDANCY_CATEGORIZATION_FROM_NODE_SUBTREE(node);	\
-	if (!r)							\
-	  {								\
-	    priv_->traversing_ = false;				\
-	    return false;						\
-	  }								\
-      } while (false)
-
-/// Inside the traveral code of a diff node, if the node has been
-/// traversed already, return immediately.  Otherwise, mark the
-/// current node as a 'traversed' node.
-///
-/// Note that this macro sets the current node into the
-/// NOT_REDUNDANT_CATEGORY if it's being traversed for the first
-/// time.  So this macro must be called right at the beginning of the
-/// traversing function for a given kind of diff node.
-///
-/// diff nodes that have sub-trees are categorized again (their
-/// categorization is updated) when their children nodes are
-/// traversed.
-#define ENSURE_DIFF_NODE_TRAVERSED_ONCE				\
-    do									\
-      {								\
-	if (context()->diff_has_been_traversed(this))			\
-	  return true;							\
-	else if (context()->categorizing_redundancy())			\
-	  add_to_category(NOT_REDUNDANT_CATEGORY);			\
-	context()->mark_diff_as_traversed(this);			\
-      } while (false)
-
-/// Inside the traveral code of a diff node that is member node of a
-/// class_diff node, if the node has been traversed already, return
-/// immediately.  Otherwise, mark the current node as a 'traversed'
-/// node.
-#define ENSURE_MEM_DIFF_NODE_TRAVERSED_ONCE				\
-  do									\
-    {									\
-      if (context()->diff_has_been_traversed(node))			\
-	{								\
-	  priv_->traversing_ = false;					\
-	  return true;							\
-	}								\
-      else if (context()->categorizing_redundancy()			\
-	       && (dynamic_cast<const class_diff*>(this)		\
-		   || dynamic_cast<const type_decl_diff*>(this)))	\
-	add_to_category(NOT_REDUNDANT_CATEGORY);			\
-      context()->mark_diff_as_traversed(node);				\
-    } while (false)
-
 /// The default traverse function.
 ///
 /// @return true.
 bool
 diff_traversable_base::traverse(diff_node_visitor&)
 {return true;}
+
 
 /// The private member (pimpl) for @ref diff_context.
 struct diff_context::priv
@@ -351,7 +169,7 @@ struct diff_context::priv
   pointer_map				traversed_diff_nodes_;
   corpus_sptr				first_corpus_;
   corpus_sptr				second_corpus_;
-  bool					categorizing_redundancy_;
+  bool					forbid_traversing_a_node_twice_;
   bool					show_stats_only_;
   bool					show_deleted_fns_;
   bool					show_changed_fns_;
@@ -364,7 +182,7 @@ struct diff_context::priv
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
-      categorizing_redundancy_(false),
+      forbid_traversing_a_node_twice_(true),
       show_stats_only_(false),
       show_deleted_fns_(true),
       show_changed_fns_(true),
@@ -596,6 +414,23 @@ void
 diff_context::forget_traversed_diffs()
 {priv_->traversed_diff_nodes_.clear();}
 
+/// This sets a flag that, if it's true, then during the traversing of
+/// a diff nodes tree each node is traversed at most once.
+///
+/// @param f if true then during the traversing of a diff nodes tree
+/// each node is traversed at most once.
+void
+diff_context::forbid_traversing_a_node_twice(bool f)
+{priv_->forbid_traversing_a_node_twice_ = f;}
+
+/// Return a flag that, if true, then during the traversing of a diff
+/// nodes tree each node is traversed at most once.
+///
+/// @return the boolean flag.
+bool
+diff_context::traversing_a_node_twice_is_forbidden() const
+{return priv_->forbid_traversing_a_node_twice_;}
+
 /// Getter for the diff tree nodes filters to apply to diff sub-trees.
 ///
 /// @return the vector of tree filters to apply to diff sub-trees.
@@ -619,37 +454,55 @@ diff_context::add_diff_filter(filtering::filter_base_sptr f)
 ///
 /// @param diff the diff sub-tree to apply the filters to.
 void
-diff_context::maybe_apply_filters(diff_sptr diff)
+diff_context::maybe_apply_filters(diff_sptr diff,
+				  bool traverse_nodes_once)
 {
   if (get_allowed_category() == EVERYTHING_CATEGORY)
     return;
+
+  bool s = traversing_a_node_twice_is_forbidden();
+  if (!traverse_nodes_once)
+    forbid_traversing_a_node_twice(false);
 
   for (filtering::filters::const_iterator i = diff_filters().begin();
        i != diff_filters().end();
        ++i)
     {
-      diff->context()->forget_traversed_diffs();
       filtering::apply_filter(*i, diff);
+      propagate_categories(diff);
     }
-}
 
-/// A getter to know if we are currently categorizing diff tree nodes
-/// for the NOT_REDUNDANT_CATEGORY.
-///
-/// @return true if we are currently categorizing diff tree nodes for
-/// the NOT_REDUNDANT_CATEGORY, false otherwise.
-bool
-diff_context::categorizing_redundancy() const
-{return priv_->categorizing_redundancy_;}
+    if (!traverse_nodes_once)
+      forbid_traversing_a_node_twice(s);
+ }
 
-/// A setter to know if we are currently categorizing diff tree nodes
-/// for the NOT_REDUNDANT_CATEGORY.
+/// Apply the diff filters to the diff nodes of a @ref corpus_diff
+/// instance.
 ///
-/// @parm f the flag to say if we are currently categorizing diff tree
-/// nodes for the NOT_REDUNDANT_CATEGORY.
+/// If the current context is instructed to filter out some categories
+/// then this function walks the diff tree and categorizes its nodes
+/// by using the filters held by the context.
+///
+/// @param diff the corpus diff to apply the filters to.
 void
-diff_context::categorizing_redundancy(bool f)
-{priv_->categorizing_redundancy_ = f;}
+diff_context::maybe_apply_filters(corpus_diff_sptr diff,
+				  bool traverse_nodes_once)
+{
+  bool s = traversing_a_node_twice_is_forbidden();
+  if (!traverse_nodes_once)
+    forbid_traversing_a_node_twice(false);
+
+  for (filtering::filters::const_iterator i = diff_filters().begin();
+       i != diff_filters().end();
+       ++i)
+    {
+      filtering::apply_filter(**i, diff);
+      propagate_categories(diff);
+    }
+
+  if (!traverse_nodes_once)
+    forbid_traversing_a_node_twice(s);
+}
 
 /// Set a flag saying if the comparison module should only show the
 /// diff stats.
@@ -774,14 +627,18 @@ diff_context::show_redundant_changes(bool f)
 // <diff stuff>
 
 /// Private data for the @ref diff type.
-class diff::priv
+struct diff::priv
 {
+  bool			finished_;
+  bool			traversing_;
   decl_base_sptr	first_subject_;
   decl_base_sptr	second_subject_;
+  vector<diff*>	children_;
   diff_context_sptr	ctxt_;
   diff_category	category_;
   mutable bool		reported_once_;
   mutable bool		currently_reporting_;
+  mutable string	pretty_representation_;
 
   priv();
 
@@ -793,7 +650,9 @@ public:
        diff_category category,
        bool reported_once,
        bool currently_reporting)
-    : first_subject_(first_subject),
+    : finished_(false),
+      traversing_(false),
+      first_subject_(first_subject),
       second_subject_(second_subject),
       ctxt_(ctxt),
       category_(category),
@@ -840,6 +699,55 @@ diff::diff(decl_base_sptr	first_subject,
 		   /*currently_reporting=*/false))
 {}
 
+/// Flag a given diff node as being traversed.
+///
+/// For certain diff nodes like @ref class_diff, it's important to
+/// avoid traversing the node again while it's already being
+/// traversed; otherwise this leads to infinite loops.  So the
+/// diff::begin_traversing() and diff::end_traversing() methods flag a
+/// given node as being traversed (or not), so that
+/// diff::is_traversing() can tell if the node is being traversed.
+///
+/// These functions are called by the traversing code.
+void
+diff::begin_traversing()
+{
+  assert(!is_traversing());
+  priv_->traversing_ = true;
+}
+
+/// Tell if a given node is being traversed or not.
+///
+/// Please read the comments for the diff::begin_traversing() for mode
+/// context.
+///
+/// @return true if the current instance of @diff is being traversed.
+bool
+diff::is_traversing() const
+{return priv_->traversing_;}
+
+/// Flag a given diff node as not being traversed.
+///
+/// Please read the comments of the function diff::begin_traversing()
+/// for mode context;
+void
+diff::end_traversing()
+{
+  assert(is_traversing());
+  priv_->traversing_ = false;
+}
+
+/// Finish the building of a given kind of a diff tree node.
+///
+/// For instance, certain kinds of diff tree node have specific
+/// children nodes that are populated after the constructor of the
+/// diff tree node has been called.  In that case, calling overloads
+/// of this method ensures that these children nodes are properly
+/// gathered and setup.
+void
+diff::finish_diff_type()
+{
+}
 /// Getter of the first subject of the diff.
 ///
 /// @return the first subject of the diff.
@@ -853,6 +761,24 @@ diff::first_subject() const
 decl_base_sptr
 diff::second_subject() const
 {return priv_->second_subject_;}
+
+/// Getter fo the children nodes of the the current @ref diff node.
+///
+/// @return a vector of the children nodes.
+const vector<diff*>&
+diff::children_nodes() const
+{return priv_->children_;}
+
+/// Add a new child node to the vector of children nodes for the
+/// current @ref diff node.
+///
+/// @param d the new child node to add to the children nodes.
+void
+diff::append_child_node(diff* d)
+{
+  assert(d);
+  priv_->children_.push_back(d);
+}
 
 /// Getter of the context of the current diff.
 ///
@@ -894,6 +820,65 @@ bool
 diff::reported_once() const
 {return priv_->reported_once_;}
 
+/// The generic traversing code that walks a given diff sub-tree.
+///
+/// @param v the entity that visits each node of the diff sub-tree.
+///
+/// @return true to tell the caller that all of the sub-tree could be
+/// walked.  This instructs the caller to keep walking the rest of the
+/// tree.  Return false otherwise.
+bool
+diff::traverse(diff_node_visitor& v)
+{
+  finish_diff_type();
+
+  if (context()->traversing_a_node_twice_is_forbidden()
+      && context()->diff_has_been_traversed(this))
+    return true;
+
+  if (is_traversing())
+    return true;
+
+  begin_traversing();
+  v.visit_begin(this);
+
+  if (v.get_visiting_kind() & PRE_VISITING_KIND)
+    if (!v.visit(this, /*pre=*/true))
+      {
+	v.visit_end(this);
+	end_traversing();
+	context()->mark_diff_as_traversed(this);
+	return false;
+      }
+
+  for (vector<diff*>::const_iterator i = children_nodes().begin();
+       i != children_nodes().end();
+       ++i)
+    {
+      if (!(*i)->traverse(v))
+	{
+	  v.visit_end(this);
+	  end_traversing();
+	  context()->mark_diff_as_traversed(this);
+	  return false;
+	}
+    }
+
+  if (v.get_visiting_kind() & POST_VISITING_KIND)
+    if (!v.visit(this, /*pref=*/false))
+      {
+	v.visit_end(this);
+	end_traversing();
+	context()->mark_diff_as_traversed(this);
+	return false;
+      }
+
+  v.visit_end(this);
+  end_traversing();
+  context()->mark_diff_as_traversed(this);
+
+  return true;
+}
 /// Sets a flag saying if a report has already been emitted for the
 /// current diff.
 ///
@@ -940,6 +925,13 @@ diff::remove_from_category(diff_category c)
   return priv_->category_;
 }
 
+/// Set the category of the current @ref diff node.
+///
+/// @param c the new category for the current diff node.
+void
+diff::set_category(diff_category c)
+{priv_->category_ = c;}
+
 /// Test if this diff tree node is to be filtered out for reporting
 /// purposes.
 ///
@@ -953,12 +945,6 @@ diff::is_filtered_out() const
   if (context()->get_allowed_category() == EVERYTHING_CATEGORY)
     return false;
 
-  // If the diff node is only in the NOT_REDUNDANT_CATEGORY, that
-  // means it represents a change that is not yet categorized and that
-  // the diff not is not redundant.  We definitely want to see that
-  // diff node be reported.
-  if (get_category() == NOT_REDUNDANT_CATEGORY)
-    return false;
 
   // We don't want to display redundant function or variable diff
   // nodes.
@@ -968,17 +954,17 @@ diff::is_filtered_out() const
 	   // member variables diff nodes.
 	   && !is_member_decl(first_subject())))
       && !context()->show_redundant_changes())
-    if (!(get_category() & NOT_REDUNDANT_CATEGORY))
+    if (get_category() & REDUNDANT_CATEGORY)
       return true;
 
   if (get_category() == NO_CHANGE_CATEGORY)
     return false;
 
-  // Ignore the NOT_REDUNDANT_CATEGORY bit when comparing allowed
+  // Ignore the REDUNDANT_CATEGORY bit when comparing allowed
   // categories and the current set of categories.
-  return !((get_category() & ~NOT_REDUNDANT_CATEGORY)
+  return !((get_category() & ~REDUNDANT_CATEGORY)
 	   & (context()->get_allowed_category()
-	      & ~NOT_REDUNDANT_CATEGORY));
+	      & ~REDUNDANT_CATEGORY));
 }
 
 /// Test if this diff tree node should be reported.
@@ -991,6 +977,41 @@ diff::to_be_reported() const
     return true;
   return false;
 }
+
+/// Get a pretty representation of the current @ref diff node.
+///
+/// This is suitable for e.g. emitting debugging traces for the diff
+/// tree nodes.
+///
+/// @return the pretty representation of the diff node.
+const string&
+diff::get_pretty_representation() const
+{
+  if (priv_->pretty_representation_.empty())
+    priv_->pretty_representation_ = "empty_diff";
+  return priv_->pretty_representation_;
+}
+
+/// Default implementation of the hierachy chaining virtual function.
+///
+/// There are several types of diff nodes that have logical children
+/// nodes; for instance, a typedef_diff has the diff of the underlying
+/// type as a child node.  A var_diff has the diff of the types of the
+/// variables as a child node, etc.
+///
+/// But because the @ref diff base has a generic representation for
+/// children nodes of the all the types of @ref diff nodes (regardless
+/// of the specific most-derived type of diff node) that one can get
+/// using the method diff::children_nodes(), one need to populate that
+/// vector of children node.
+///
+/// Populating that vector of children node is done by this function;
+/// it must be overloaded by each most-derived type of diff node that
+/// extends the @ref diff type.
+void
+diff::chain_into_hierarchy()
+{}
+
 // </diff stuff>
 
 static bool
@@ -1008,6 +1029,50 @@ struct distinct_diff::priv
 {
 };// end struct distinct_diff
 
+/// @return a pretty representation for the @ref distinct_diff node.
+const string&
+distinct_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "distinct_diff[";
+      if (first_subject())
+	o << first_subject()->get_pretty_representation();
+      else
+	o << "null";
+      o << ", ";
+      if (second_subject())
+	o << second_subject()->get_pretty_representation() ;
+      else
+	o << "null";
+      o << "]" ;
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @distinct_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+distinct_diff::chain_into_hierarchy()
+{
+  type_base_sptr fs = strip_typedef(is_type(first())),
+    ss = strip_typedef(is_type(second()));
+
+  decl_base_sptr f = get_type_declaration(fs), s = get_type_declaration(ss);
+
+  if (f && s && !entities_are_of_distinct_kinds(f, s))
+    {
+      diff_sptr d = compute_diff(f, s, context());
+      if (d.get() != this)
+	append_child_node(d.get());
+    }
+}
+
 /// Constructor for @ref distinct_diff.
 ///
 /// Note that the two entities considered for the diff (and passed in
@@ -1024,6 +1089,17 @@ distinct_diff::distinct_diff(decl_base_sptr first,
   : diff(first, second, ctxt),
     priv_(new priv)
 {assert(entities_are_of_distinct_kinds(first, second));}
+
+/// Finish building the current instance of @ref distinct_diff.
+void
+distinct_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
 
 /// Getter for the first subject of the diff.
 ///
@@ -1109,34 +1185,6 @@ distinct_diff::report(ostream& out, const string& indent) const
     }
   else
     report_size_and_alignment_changes(f, s, context(), out, indent, true);
-}
-
-/// Traverse an instance of distinct_diff.
-///
-/// @param v the visitor invoked on the instance of disting_diff.
-///
-/// @return true if the whole tree has to be traversed, false
-/// otherwise.
-bool
-distinct_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  type_base_sptr fs = strip_typedef(is_type(first())),
-    ss = strip_typedef(is_type(second()));
-
-  decl_base_sptr f = get_type_declaration(fs), s = get_type_declaration(ss);
-
-  if (f && s && !entities_are_of_distinct_kinds(f, s))
-    {
-      diff_sptr d = compute_diff(f, s, context());
-      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-      TRY_POST_VISIT(v);
-    }
-
-  return true;
 }
 
 /// Try to diff entities that are of distinct kinds.
@@ -1313,6 +1361,13 @@ operator|=(diff_category& c1, diff_category c2)
   return c1;
 }
 
+diff_category&
+operator&=(diff_category& c1, diff_category c2)
+{
+  c1 = c1 & c2;
+  return c1;
+}
+
 diff_category
 operator^(diff_category c1, diff_category c2)
 {return static_cast<diff_category>(static_cast<unsigned>(c1)
@@ -1326,6 +1381,106 @@ operator&(diff_category c1, diff_category c2)
 diff_category
 operator~(diff_category c)
 {return static_cast<diff_category>(~static_cast<unsigned>(c));}
+
+/// Serialize an instance of @ref diff_category to an output stream.
+///
+/// @param o the output stream to serialize @p c to.
+///
+/// @param c the instance of diff_category to serialize.
+///
+/// @return the output stream to serialize @p c to.
+ostream&
+operator<<(ostream& o, diff_category c)
+{
+  bool emitted_a_category = false;
+
+  if (c == NO_CHANGE_CATEGORY)
+    {
+      o << "NO_CHANGE_CATEGORY";
+      emitted_a_category = true;
+    }
+
+  if (c & ACCESS_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "ACCESS_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & COMPATIBLE_TYPE_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "COMPATIBLE_TYPE_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & HARMLESS_DECL_NAME_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "HARMLESS_DECL_NAME_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "NON_VIRT_MEM_FUN_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & STATIC_DATA_MEMBER_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "STATIC_DATA_MEMBER_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+  else if (c & HARMLESS_ENUM_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "HARMLESS_ENUM_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & SIZE_OR_OFFSET_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "SIZE_OR_OFFSET_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & VIRTUAL_MEMBER_CHANGE_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "VIRTUAL_MEMBER_CHANGE_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  if (c & REDUNDANT_CATEGORY)
+    {
+      if (emitted_a_category)
+	o << "|";
+      o << "REDUNDANT_CATEGORY";
+      emitted_a_category |= true;
+    }
+
+  return o;
+}
 
 /// Compute the difference between two types.
 ///
@@ -1879,12 +2034,6 @@ report_mem_header(ostream& out,
   out << colon_or_semi_colon << '\n';
 }
 
-// <pointer_type_def stuff>
-struct pointer_diff::priv
-{
-  diff_sptr underlying_type_diff_;
-};//end struct pointer_diff::priv
-
 // <var_diff stuff>
 
 /// The internal type for the impl idiom implementation of @ref
@@ -1894,6 +2043,32 @@ struct var_diff::priv
   diff_sptr type_diff_;
 };//end struct var_diff
 
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @var_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+var_diff::chain_into_hierarchy()
+{append_child_node(type_diff().get());}
+
+/// @return the pretty representation for this current instance of
+/// @ref var_diff.
+const string&
+var_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "var_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 /// Constructor for @ref var_diff.
 ///
 /// @param first the first instance of @ref var_decl to consider in
@@ -1913,6 +2088,16 @@ var_diff::var_diff(var_decl_sptr	first,
   : diff(first, second, ctxt),
     priv_(new priv)
 {priv_->type_diff_ = type_diff;}
+
+/// Finish building the current instance of @ref var_diff.
+void
+var_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
 
 /// Getter for the first @ref var_decl of the diff.
 ///
@@ -1974,26 +2159,6 @@ var_diff::report(ostream& out, const string& indent) const
 	  d->report(out, indent + " ");
 	}
     }
-}
-
-/// Traverse the current instance of var_diff.
-///
-/// @param v the visitor invoked on the current instance of var_diff.
-///
-/// @return true if the whole tree is to be traversed, false
-/// otherwise.
-bool
-var_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = type_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
 }
 
 /// Compute the diff between two instances of @ref var_decl.
@@ -2080,6 +2245,26 @@ maybe_report_diff_for_member(decl_base_sptr	decl1,
   return reported;
 }
 
+// <pointer_type_def stuff>
+struct pointer_diff::priv
+{
+  diff_sptr underlying_type_diff_;
+
+  priv(diff_sptr ud)
+    : underlying_type_diff_(ud)
+  {}
+};//end struct pointer_diff::priv
+
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref pointer_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+pointer_diff::chain_into_hierarchy()
+{append_child_node(underlying_type_diff().get());}
+
 /// Constructor for a pointer_diff.
 ///
 /// @param first the first pointer to consider for the diff.
@@ -2089,10 +2274,21 @@ maybe_report_diff_for_member(decl_base_sptr	decl1,
 /// @param ctxt the diff context to use.
 pointer_diff::pointer_diff(pointer_type_def_sptr	first,
 			   pointer_type_def_sptr	second,
+			   diff_sptr			underlying,
 			   diff_context_sptr		ctxt)
   : diff(first, second, ctxt),
-    priv_(new priv)
+    priv_(new priv(underlying))
 {}
+
+/// Finish building the current instance of @ref pointer_diff.
+void
+pointer_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
 
 /// Getter for the first subject of a pointer diff
 ///
@@ -2107,6 +2303,24 @@ pointer_diff::first_pointer() const
 const pointer_type_def_sptr
 pointer_diff::second_pointer() const
 {return dynamic_pointer_cast<pointer_type_def>(second_subject());}
+
+/// @return the pretty represenation for the current instance of @ref
+/// pointer_diff.
+const string&
+pointer_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "pointer_diff"
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 
 /// Getter for the length of this diff.
 ///
@@ -2157,26 +2371,6 @@ pointer_diff::report(ostream& out, const string& indent) const
     }
 }
 
-/// Traverse the current instance of pointer_diff.
-///
-/// @param v the visitor to invoke on each node traversed.
-///
-/// @return true if the entire sub-tree was visisted, false otherwise.
-bool
-pointer_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = underlying_type_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Compute the diff between between two pointers.
 ///
 /// @param first the pointer to consider for the diff.
@@ -2201,8 +2395,7 @@ compute_diff(pointer_type_def_sptr	first,
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
-  pointer_diff_sptr result(new pointer_diff(first, second, ctxt));
-  result->underlying_type_diff(d);
+  pointer_diff_sptr result(new pointer_diff(first, second, d, ctxt));
   ctxt->add_diff(first, second, result);
 
   return result;
@@ -2220,6 +2413,15 @@ struct array_diff::priv
     : element_type_diff_(element_type_diff)
   {}
 };//end struct array_diff::priv
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref array_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+array_diff::chain_into_hierarchy()
+{append_child_node(element_type_diff().get());}
 
 /// Constructor for array_diff
 ///
@@ -2239,13 +2441,22 @@ array_diff::array_diff(const array_type_def_sptr	first,
     priv_(new priv(element_type_diff))
 {}
 
+/// Finish building the current instance of @ref array_diff.
+void
+array_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
+
 /// Getter for the first array of the diff.
 ///
 /// @return the first array of the diff.
 const array_type_def_sptr
 array_diff::first_array() const
 {return dynamic_pointer_cast<array_type_def>(first_subject());}
-
 
 /// Getter for the second array of the diff.
 ///
@@ -2267,6 +2478,24 @@ array_diff::element_type_diff() const
 void
 array_diff::element_type_diff(diff_sptr d)
 {priv_->element_type_diff_ = d;}
+
+/// @return the pretty representation for the current instance of @ref
+/// array_diff.
+const string&
+array_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "array_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 
 /// Getter of the length of the diff.
 ///
@@ -2397,27 +2626,6 @@ array_diff::report(ostream& out, const string& indent) const
     }
 }
 
-/// Traverse the diff sub-tree under the current instance of
-/// array_diff.
-///
-/// @param v the visitor to invoke on each node diff node.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-array_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = element_type_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Compute the diff between two arrays.
 ///
 /// @param first the first array to consider for the diff.
@@ -2450,7 +2658,19 @@ compute_diff(array_type_def_sptr	first,
 struct reference_diff::priv
 {
   diff_sptr underlying_type_diff_;
+  priv(diff_sptr underlying)
+    : underlying_type_diff_(underlying)
+  {}
 };//end struct reference_diff::priv
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref reference_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+reference_diff::chain_into_hierarchy()
+{append_child_node(underlying_type_diff().get());}
 
 /// Constructor for reference_diff
 ///
@@ -2461,11 +2681,21 @@ struct reference_diff::priv
 /// @param ctxt the diff context to use.
 reference_diff::reference_diff(const reference_type_def_sptr	first,
 			       const reference_type_def_sptr	second,
+			       diff_sptr			underlying,
 			       diff_context_sptr		ctxt)
   : diff(first, second, ctxt),
-    priv_(new priv)
-
+    priv_(new priv(underlying))
 {}
+
+/// Finish building the current instance of @ref reference_diff.
+void
+reference_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
 
 /// Getter for the first reference of the diff.
 ///
@@ -2473,7 +2703,6 @@ reference_diff::reference_diff(const reference_type_def_sptr	first,
 reference_type_def_sptr
 reference_diff::first_reference() const
 {return dynamic_pointer_cast<reference_type_def>(first_subject());}
-
 
 /// Getter for the second reference of the diff.
 ///
@@ -2498,6 +2727,24 @@ reference_diff::underlying_type_diff(diff_sptr d)
 {
   priv_->underlying_type_diff_ = d;
   return priv_->underlying_type_diff_;
+}
+
+/// @return the pretty representation for the current instance of @ref
+/// reference_diff.
+const string&
+reference_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "reference_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
 }
 
 /// Getter of the length of the diff.
@@ -2531,27 +2778,6 @@ reference_diff::report(ostream& out, const string& indent) const
     }
 }
 
-/// Traverse the diff sub-tree under the current instance of
-/// reference_diff.
-///
-/// @param v the visitor to invoke on each node diff node.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-reference_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = underlying_type_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Compute the diff between two references.
 ///
 /// @param first the first reference to consider for the diff.
@@ -2573,8 +2799,7 @@ compute_diff(reference_type_def_sptr	first,
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
-  reference_diff_sptr result(new reference_diff(first, second, ctxt));
-  result->underlying_type_diff(d);
+  reference_diff_sptr result(new reference_diff(first, second, d, ctxt));
   ctxt->add_diff(first, second, result);
 
   return result;
@@ -2587,8 +2812,19 @@ compute_diff(reference_type_def_sptr	first,
 struct qualified_type_diff::priv
 {
   diff_sptr underlying_type_diff;
+  priv(diff_sptr underlying)
+    : underlying_type_diff(underlying)
+  {}
 };// end struct qualified_type_diff::priv
 
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref qualified_type_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+qualified_type_diff::chain_into_hierarchy()
+{append_child_node(underlying_type_diff().get());}
 
 /// Constructor for qualified_type_diff.
 ///
@@ -2599,10 +2835,20 @@ struct qualified_type_diff::priv
 /// @param ctxt the diff context to use.
 qualified_type_diff::qualified_type_diff(qualified_type_def_sptr	first,
 					 qualified_type_def_sptr	second,
+					 diff_sptr			under,
 					 diff_context_sptr		ctxt)
   : diff(first, second, ctxt),
-    priv_(new priv)
+    priv_(new priv(under))
+{}
+
+/// Finish building the current instance of @ref qualified_type_diff.
+void
+qualified_type_diff::finish_diff_type()
 {
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
 }
 
 /// Getter for the first qualified type of the diff.
@@ -2636,6 +2882,24 @@ qualified_type_diff::underlying_type_diff() const
 void
 qualified_type_diff::underlying_type_diff(const diff_sptr d)
 {priv_->underlying_type_diff = d;}
+
+/// @return the pretty representation of the current instance of @ref
+/// qualified_type_diff.
+const string&
+qualified_type_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "qualified_type_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 
 /// Return the length of the diff, or zero if the two qualified types
 /// are equal.
@@ -2723,26 +2987,6 @@ qualified_type_diff::report(ostream& out, const string& indent) const
   d->report(out, indent + "  ");
 }
 
-/// Traverse the diff sub-tree under the current instance of
-/// qualified_type_diff.
-///
-/// @param v the visitor to invoke on each diff node of the sub-tree.
-///
-/// @return true is the traversing has to keep going, false otherwise.
-bool
-qualified_type_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = underlying_type_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Compute the diff between two qualified types.
 ///
 /// @param first the first qualified type to consider for the diff.
@@ -2766,8 +3010,8 @@ compute_diff(const qualified_type_def_sptr	first,
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
 				       ctxt);
-  qualified_type_diff_sptr result(new qualified_type_diff(first, second, ctxt));
-  result->underlying_type_diff(d);
+  qualified_type_diff_sptr result(new qualified_type_diff(first, second,
+							  d, ctxt));
   ctxt->add_diff(first, second, result);
 
   return result;
@@ -2783,6 +3027,10 @@ struct enum_diff::priv
   string_enumerator_map deleted_enumerators_;
   string_enumerator_map inserted_enumerators_;
   string_changed_enumerator_map changed_enumerators_;
+
+  priv(diff_sptr underlying)
+    : underlying_type_diff_(underlying)
+  {}
 };//end struct enum_diff::priv
 
 /// Clear the lookup tables useful for reporting an enum_diff.
@@ -2863,6 +3111,15 @@ enum_diff::ensure_lookup_tables_populated()
   }
 }
 
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref enum_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+enum_diff::chain_into_hierarchy()
+{append_child_node(underlying_type_diff().get());}
+
 /// Constructor for enum_diff.
 ///
 /// @param first the first enum type of the diff.
@@ -2878,8 +3135,18 @@ enum_diff::enum_diff(const enum_type_decl_sptr	first,
 		     const diff_sptr		underlying_type_diff,
 		     const diff_context_sptr	ctxt)
   : diff(first, second,ctxt),
-    priv_(new priv)
-{priv_->underlying_type_diff_ = underlying_type_diff;}
+    priv_(new priv(underlying_type_diff))
+{}
+
+/// Finish building the current instance of @ref enum_diff.
+void
+enum_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
 
 /// @return the first enum of the diff.
 const enum_type_decl_sptr
@@ -2910,6 +3177,24 @@ enum_diff::inserted_enumerators() const
 const string_changed_enumerator_map&
 enum_diff::changed_enumerators() const
 {return priv_->changed_enumerators_;}
+
+/// @return the pretty representation of the current instance of @ref
+/// enum_diff.
+const string&
+enum_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "enum_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 
 /// @return the length of the diff.
 unsigned
@@ -3072,26 +3357,6 @@ enum_diff::report(ostream& out, const string& indent) const
     }
 }
 
-/// Traverse the diff sub-tree under the current instance of
-/// enum_diff.
-///
-/// @param v the visitor to invoke on each diff node of the sub-tree.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-enum_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = underlying_type_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Compute the set of changes between two instances of @ref
 /// enum_type_decl.
 ///
@@ -3138,7 +3403,6 @@ compute_diff(const enum_type_decl_sptr first,
 
 struct class_diff::priv
 {
-  bool traversing_;
   edit_script base_changes_;
   edit_script member_types_changes_;
   edit_script data_members_changes_;
@@ -3202,7 +3466,6 @@ struct class_diff::priv
   count_filtered_deleted_mem_fns(const diff_context_sptr&);
 
   priv()
-    : traversing_(false)
   {}
 };//end struct class_diff::priv
 
@@ -3699,7 +3962,7 @@ class_diff::priv::count_filtered_bases(const diff_context_sptr& ctxt)
       class_decl::base_spec_sptr n =
 	dynamic_pointer_cast<class_decl::base_spec>(i->second.second);
       diff_sptr diff = compute_diff(o, n, ctxt);
-      ctxt->maybe_apply_filters(diff);
+      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
       if (diff->is_filtered_out())
 	++num_filtered;
     }
@@ -3726,7 +3989,7 @@ class_diff::priv::count_filtered_subtype_changed_dm(const diff_context_sptr& ctx
       var_decl_sptr n =
 	dynamic_pointer_cast<var_decl>(i->second.second);
       diff_sptr diff = compute_diff_for_decls(o, n, ctxt);
-      ctxt->maybe_apply_filters(diff);
+      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
       if (diff->is_filtered_out())
 	++num_filtered;
     }
@@ -3751,7 +4014,7 @@ class_diff::priv::count_filtered_changed_dm(const diff_context_sptr& ctxt)
       var_decl_sptr n =
 	dynamic_pointer_cast<var_decl>(i->second.second);
       diff_sptr diff = compute_diff(o, n, ctxt);
-      ctxt->maybe_apply_filters(diff);
+      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
       if (diff->is_filtered_out())
 	++num_filtered;
     }
@@ -3805,7 +4068,7 @@ class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
 
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
-      ctxt->maybe_apply_filters(diff);
+      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
 
       if (diff->is_filtered_out())
 	++count;
@@ -3839,7 +4102,7 @@ class_diff::priv::count_filtered_inserted_mem_fns(const diff_context_sptr& ctxt)
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
 
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
-      ctxt->maybe_apply_filters(diff);
+      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
 
       if (diff->get_category() != NO_CHANGE_CATEGORY
 	  && diff->is_filtered_out())
@@ -3874,7 +4137,7 @@ class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
 
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
-      ctxt->maybe_apply_filters(diff);
+      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
 
       if (diff->get_category() != NO_CHANGE_CATEGORY
 	  && diff->is_filtered_out())
@@ -3882,6 +4145,64 @@ class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
     }
 
   return count;
+}
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref class_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+class_diff::chain_into_hierarchy()
+{
+  // base class changes.
+  for (string_changed_base_map::const_iterator i =
+	 priv_->changed_bases_.begin();
+       i != priv_->changed_bases_.end();
+       ++i)
+    if (diff_sptr d = compute_diff(i->second.first,
+				   i->second.second,
+				   context()))
+      append_child_node(d.get());
+
+  // data member changes
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 priv_->subtype_changed_dm_.begin();
+       i != priv_->subtype_changed_dm_.end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					     i->second.second,
+					     context()))
+      append_child_node(d.get());
+
+  for (unsigned_changed_type_or_decl_map::const_iterator i =
+	 priv_->changed_dm_.begin();
+       i != priv_->changed_dm_.end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					     i->second.second,
+					     context()))
+      append_child_node(d.get());
+
+  // member types changes
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 priv_->changed_member_types_.begin();
+       i != priv_->changed_member_types_.end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_types(i->second.first,
+					     i->second.second,
+					     context()))
+      append_child_node(d.get());
+
+  // member function changes
+  for (string_changed_member_function_sptr_map::const_iterator i =
+	 priv_->changed_member_functions_.begin();
+       i != priv_->changed_member_functions_.end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					     i->second.second,
+					     context()))
+      append_child_node(d.get());
 }
 
 /// Constructor of class_diff
@@ -3897,6 +4218,34 @@ class_diff::class_diff(shared_ptr<class_decl>	first_scope,
   : diff(first_scope, second_scope, ctxt),
     priv_(new priv)
 {}
+
+/// Finish building the current instance of @ref class_diff.
+void
+class_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
+
+/// @return the pretty representation of the current instance of @ref
+/// class_diff.
+const string&
+class_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "class_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 
 /// Getter for the length of the diff.
 ///
@@ -4627,77 +4976,6 @@ class_diff::report(ostream& out, const string& indent) const
   reported_once(true);
 }
 
-/// Traverse the diff sub-tree under the current instance of class_diff.
-///
-/// @param v the visitor to invoke on each diff node of the sub-tree.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-class_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT_CLASS_DIFF(v);
-
-  if (priv_->traversing_)
-    return true;
-
-  priv_->traversing_ = true;
-
-  // base class changes.
-  for (string_changed_base_map::const_iterator i =
-	 priv_->changed_bases_.begin();
-       i != priv_->changed_bases_.end();
-       ++i)
-    if (diff_sptr d = compute_diff(i->second.first,
-				   i->second.second,
-				   context()))
-      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  // data member changes
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 priv_->subtype_changed_dm_.begin();
-       i != priv_->subtype_changed_dm_.end();
-       ++i)
-    if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					     i->second.second,
-					     context()))
-      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  for (unsigned_changed_type_or_decl_map::const_iterator i =
-	 priv_->changed_dm_.begin();
-       i != priv_->changed_dm_.end();
-       ++i)
-    if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					     i->second.second,
-					     context()))
-      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  // member types changes
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 priv_->changed_member_types_.begin();
-       i != priv_->changed_member_types_.end();
-       ++i)
-    if (diff_sptr d = compute_diff_for_types(i->second.first,
-					     i->second.second,
-					     context()))
-      TRAVERSE_MEM_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  // member function changes
-  for (string_changed_member_function_sptr_map::const_iterator i =
-	 priv_->changed_member_functions_.begin();
-       i != priv_->changed_member_functions_.end();
-       ++i)
-    if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					     i->second.second,
-					     context()))
-      TRAVERSE_MEM_FN_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT_CLASS_DIFF(v);
-
-  priv_->traversing_ = false;
-  return true;
-}
-
 /// Compute the set of changes between two instances of class_decl.
 ///
 /// @param first the first class_decl to consider.
@@ -4785,7 +5063,20 @@ compute_diff(const class_decl_sptr	first,
 struct base_diff::priv
 {
   class_diff_sptr underlying_class_diff_;
+
+  priv(class_diff_sptr underlying)
+    : underlying_class_diff_(underlying)
+  {}
 }; // end struct base_diff::priv
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref base_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+base_diff::chain_into_hierarchy()
+{append_child_node(get_underlying_class_diff().get());}
 
 /// @param first the first base spec to consider.
 ///
@@ -4794,10 +5085,21 @@ struct base_diff::priv
 /// @param ctxt the context of the diff.
 base_diff::base_diff(class_decl::base_spec_sptr first,
 		     class_decl::base_spec_sptr second,
+		     class_diff_sptr		underlying,
 		     diff_context_sptr		ctxt)
   : diff(first, second, ctxt),
-    priv_(new priv)
+    priv_(new priv(underlying))
+{}
+
+/// Finish building the current instance of @ref base_diff.
+void
+base_diff::finish_diff_type()
 {
+  if (diff::priv_->finished_)
+    return;
+
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
 }
 
 /// Getter for the first base spec of the diff object.
@@ -4831,6 +5133,24 @@ base_diff::get_underlying_class_diff() const
 void
 base_diff::set_underlying_class_diff(class_diff_sptr d)
 {priv_->underlying_class_diff_ = d;}
+
+/// @return the pretty representation for the current instance of @ref
+/// base_diff.
+const string&
+base_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "base_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 
 /// Getter for the length of the diff.
 ///
@@ -4889,25 +5209,6 @@ base_diff::report(ostream& out, const string& indent) const
     }
 }
 
-/// Traverse the diff sub-tree under the current instance of base_diff.
-///
-/// @param v the visitor to invoke on each diff node of the sub-tree.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-base_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  if (class_diff_sptr d = get_underlying_class_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Constructs the diff object representing a diff between two base
 /// class specifications.
 ///
@@ -4933,8 +5234,7 @@ compute_diff(const class_decl::base_spec_sptr	first,
   class_diff_sptr cl = compute_diff(first->get_base_class(),
 				    second->get_base_class(),
 				    ctxt);
-  base_diff_sptr changes(new base_diff(first, second, ctxt));
-  changes->set_underlying_class_diff(cl);
+  base_diff_sptr changes(new base_diff(first, second, cl, ctxt));
 
   ctxt->add_diff(first, second, changes);
 
@@ -5163,6 +5463,33 @@ scope_diff::ensure_lookup_tables_populated()
     }
 }
 
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref scope_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+scope_diff::chain_into_hierarchy()
+{
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 changed_types().begin();
+       i != changed_types().end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_types(i->second.first,
+					     i->second.second,
+					     context()))
+      append_child_node(d.get());
+
+  for (string_changed_type_or_decl_map::const_iterator i =
+	 changed_decls().begin();
+       i != changed_decls().end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_decls(i->second.first,
+					     i->second.second,
+					     context()))
+      append_child_node(d.get());
+}
+
 /// Constructor for scope_diff
 ///
 /// @param first_scope the first scope to consider for the diff.
@@ -5176,6 +5503,16 @@ scope_diff::scope_diff(scope_decl_sptr first_scope,
   : diff(first_scope, second_scope, ctxt),
     priv_(new priv)
 {}
+
+/// Finish building the current instance of @ref scope_diff.
+void
+scope_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
 
 /// Getter for the first scope of the diff.
 ///
@@ -5324,6 +5661,24 @@ const string_decl_base_sptr_map&
 scope_diff::added_decls() const
 {return priv_->added_decls_;}
 
+/// @return the pretty representation for the current instance of @ref
+/// scope_diff.
+const string&
+scope_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "scope_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
+
 /// @return the length of the diff.
 unsigned
 scope_diff::length() const
@@ -5457,40 +5812,6 @@ scope_diff::report(ostream& out, const string& indent) const
     out << "\n";
 }
 
-/// Traverse the diff sub-tree under the current instance of scope_diff.
-///
-/// @param v the visitor to invoke on each diff node of the sub-tree.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-scope_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 changed_types().begin();
-       i != changed_types().end();
-       ++i)
-    if (diff_sptr d = compute_diff_for_types(i->second.first,
-					     i->second.second,
-					     context()))
-      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 changed_decls().begin();
-       i != changed_decls().end();
-       ++i)
-    if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					     i->second.second,
-					     context()))
-      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Compute the diff between two scopes.
 ///
 /// @param first the first scope to consider in computing the diff.
@@ -5569,7 +5890,6 @@ struct function_decl_diff::priv
     BINDING_WEAK_FLAG = 1 << 5
   };// end enum Flags
 
-
   diff_sptr	return_type_diff_;
   edit_script	parm_changes_;
   vector<char>	first_fn_flags_;
@@ -5583,6 +5903,10 @@ struct function_decl_diff::priv
   unsigned_parm_map		deleted_parms_by_id_;
   unsigned_parm_map		added_parms_by_id_;
   unsigned_changed_parm_map	changed_parms_by_id_;
+
+  priv(diff_sptr return_type_diff)
+    : return_type_diff_(return_type_diff)
+  {}
 
   Flags
   fn_is_declared_inline_to_flag(function_decl_sptr f) const
@@ -5640,7 +5964,6 @@ function_decl_diff::deleted_parameter_at(int i) const
 const function_decl::parameter_sptr
 function_decl_diff::inserted_parameter_at(int i) const
 {return second_function_decl()->get_parameters()[i];}
-
 
 /// Build the lookup tables of the diff, if necessary.
 void
@@ -5711,6 +6034,36 @@ function_decl_diff::ensure_lookup_tables_populated()
     }
 }
 
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref function_decl_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+function_decl_diff::chain_into_hierarchy()
+{
+  if (diff_sptr d = return_type_diff())
+    append_child_node(d.get());
+
+  for (string_changed_parm_map::const_iterator i =
+	 subtype_changed_parms().begin();
+       i != subtype_changed_parms().end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
+					     i->second.second->get_type(),
+					     context()))
+      append_child_node(d.get());
+
+  for (unsigned_changed_parm_map::const_iterator i =
+	 priv_->changed_parms_by_id_.begin();
+       i != priv_->changed_parms_by_id_.end();
+       ++i)
+    if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
+					     i->second.second->get_type(),
+					     context()))
+      append_child_node(d.get());
+}
+
 /// Constructor for function_decl_diff
 ///
 /// @param first the first function considered by the diff.
@@ -5718,9 +6071,10 @@ function_decl_diff::ensure_lookup_tables_populated()
 /// @param second the second function considered by the diff.
 function_decl_diff::function_decl_diff(const function_decl_sptr first,
 				       const function_decl_sptr second,
+				       const diff_sptr		ret_type_diff,
 				       diff_context_sptr	ctxt)
   : diff(first, second, ctxt),
-    priv_(new priv)
+    priv_(new priv(ret_type_diff))
 {
   priv_->first_fn_flags_.push_back
     (priv_->fn_is_declared_inline_to_flag(first_function_decl()));
@@ -5731,6 +6085,16 @@ function_decl_diff::function_decl_diff(const function_decl_sptr first,
     (priv_->fn_is_declared_inline_to_flag(second_function_decl()));
   priv_->second_fn_flags_.push_back
     (priv_->fn_binding_to_flag(second_function_decl()));
+}
+
+/// Finish building the current instance of @ref function_decl_diff.
+void
+function_decl_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
 }
 
 /// @return the first function considered by the diff.
@@ -5765,6 +6129,24 @@ function_decl_diff::removed_parms() const
 const string_parm_map&
 function_decl_diff::added_parms() const
 {return priv_->added_parms_;}
+
+/// @return the pretty representation for the current instance of @ref
+/// function_decl_diff.
+const string&
+function_decl_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "function_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 
 /// @return the length of the changes of the function.
 unsigned
@@ -5921,44 +6303,6 @@ function_decl_diff::report(ostream& out, const string& indent) const
     out << "\n";
 }
 
-/// Traverse the diff sub-tree under the current instance of
-/// function_decl_diff.
-///
-/// @param v the visitor to invoke on each diff node of the sub-tree.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-function_decl_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = return_type_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  for (string_changed_parm_map::const_iterator i =
-	 subtype_changed_parms().begin();
-       i != subtype_changed_parms().end();
-       ++i)
-    if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
-					     i->second.second->get_type(),
-					     context()))
-      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  for (unsigned_changed_parm_map::const_iterator i =
-	 priv_->changed_parms_by_id_.begin();
-       i != priv_->changed_parms_by_id_.end();
-       ++i)
-    if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
-					     i->second.second->get_type(),
-					     context()))
-      TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Compute the diff between two function_decl.
 ///
 /// @param first the first function_decl to consider for the diff
@@ -5986,12 +6330,15 @@ compute_diff(const function_decl_sptr first,
       return d;
     }
 
-  function_decl_diff_sptr result(new function_decl_diff(first, second, ctxt));
-
-  result->priv_->return_type_diff_ =
+  diff_sptr return_type_diff =
     compute_diff_for_types(first->get_return_type(),
 			   second->get_return_type(),
 			   ctxt);
+
+  function_decl_diff_sptr result(new function_decl_diff(first, second,
+							return_type_diff,
+							ctxt));
+
 
   diff_utils::compute_diff(first->get_first_non_implicit_parm(),
 			   first->get_parameters().end(),
@@ -6023,6 +6370,15 @@ type_decl_diff::type_decl_diff(const type_decl_sptr first,
   : diff(first, second, ctxt)
 {}
 
+/// Finish building the current instance of @ref type_decl_diff.
+void
+type_decl_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  diff::priv_->finished_ = true;
+}
+
 /// Getter for the first subject of the type_decl_diff.
 ///
 /// @return the first type_decl involved in the diff.
@@ -6037,6 +6393,23 @@ const type_decl_sptr
 type_decl_diff::second_type_decl() const
 {return dynamic_pointer_cast<type_decl>(second_subject());}
 
+/// @return the pretty representation for the current instance of @ref
+/// type_decl_diff.
+const string&
+type_decl_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "type_decl_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 /// Getter for the length of the diff.
 ///
 /// @return 0 if the two type_decl are equal, 1 otherwise.
@@ -6097,19 +6470,6 @@ type_decl_diff::report(ostream& out, const string& indent) const
     out << "\n";
 }
 
-/// Traverse (visit) the current instance of type_decl_diff node.
-///
-/// @param v the visitor to invoke on the node.
-///
-/// @return true if the current traversing has to keep going, false
-/// otherwise.
-bool
-type_decl_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-  return true;
-}
 /// Compute a diff between two type_decl.
 ///
 /// This function doesn't actually compute a diff.  As a type_decl is
@@ -6161,15 +6521,39 @@ compute_diff(const type_decl_sptr	first,
 struct typedef_diff::priv
 {
   diff_sptr underlying_type_diff_;
+
+  priv(const diff_sptr underlying_type_diff)
+    : underlying_type_diff_(underlying_type_diff)
+  {}
 };//end struct typedef_diff::priv
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref typedef_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+typedef_diff::chain_into_hierarchy()
+{append_child_node(underlying_type_diff().get());}
 
 /// Constructor for typedef_diff.
 typedef_diff::typedef_diff(const typedef_decl_sptr	first,
 			   const typedef_decl_sptr	second,
+			   const diff_sptr		underlying,
 			   diff_context_sptr		ctxt)
   : diff(first, second, ctxt),
-    priv_(new priv)
+    priv_(new priv(underlying))
 {}
+
+/// Finish building the current instance of @ref typedef_diff.
+void
+typedef_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
 
 /// Getter for the firt typedef_decl involved in the diff.
 ///
@@ -6202,6 +6586,24 @@ typedef_diff::underlying_type_diff() const
 void
 typedef_diff::underlying_type_diff(const diff_sptr d)
 {priv_->underlying_type_diff_ = d;}
+
+/// @return the pretty representation for the current instance of @ref
+/// typedef_diff.
+const string&
+typedef_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "typedef_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
 
 /// Getter of the length of the diff between the two typedefs.
 ///
@@ -6260,25 +6662,6 @@ typedef_diff::report(ostream& out, const string& indent) const
     out << "\n";
 }
 
-/// Traverse the diff sub-tree under the current instance of typedef_diff.
-///
-/// @param v the visitor to invoke on the diff nodes of the sub-tree.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-typedef_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = underlying_type_diff())
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-}
-
 /// Compute a diff between two typedef_decl.
 ///
 /// @param first a pointer to the first typedef_decl to consider.
@@ -6303,8 +6686,7 @@ compute_diff(const typedef_decl_sptr	first,
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
 				       ctxt);
-  typedef_diff_sptr result(new typedef_diff(first, second, ctxt));
-  result->underlying_type_diff(d);
+  typedef_diff_sptr result(new typedef_diff(first, second, d, ctxt));
 
   ctxt->add_diff(first, second, result);
 
@@ -6366,29 +6748,6 @@ void
 translation_unit_diff::report(ostream& out, const string& indent) const
 {scope_diff::report(out, indent);}
 
-/// Traverse the diff sub-tree under the current instance of
-/// translation_unit_diff.
-///
-/// @param v the visitor to invoke on each diff node of the sub-tree.
-///
-/// @return true if the traversing has to keep going, false otherwise.
-bool
-translation_unit_diff::traverse(diff_node_visitor& v)
-{
-  ENSURE_DIFF_NODE_TRAVERSED_ONCE;
-  TRY_PRE_VISIT(v);
-
-  if (diff_sptr d = compute_diff(first_translation_unit(),
-				 second_translation_unit(),
-				 context()))
-    TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY(d, v);
-
-  TRY_POST_VISIT(v);
-
-  return true;
-
-}
-
 /// Compute the diff between two translation_units.
 ///
 /// @param first the first translation_unit to consider.
@@ -6425,6 +6784,9 @@ compute_diff(const translation_unit_sptr	first,
 // <corpus stuff>
 struct corpus_diff::priv
 {
+  bool					finished_;
+  string				pretty_representation_;
+  vector<diff*>			children_;
   diff_context_sptr			ctxt_;
   corpus_sptr				first_;
   corpus_sptr				second_;
@@ -6436,6 +6798,10 @@ struct corpus_diff::priv
   string_var_ptr_map			deleted_vars_;
   string_var_ptr_map			added_vars_;
   string_changed_var_ptr_map		changed_vars_;
+
+  priv()
+    : finished_(false)
+  {}
 
   bool
   lookup_tables_empty() const;
@@ -6479,6 +6845,10 @@ struct corpus_diff::priv
 
   void
   categorize_redundant_changed_sub_nodes();
+
+  void
+  clear_redundancy_categorization();
+
 }; // end corpus::priv
 
 /// Tests if the lookup tables are empty.
@@ -6716,7 +7086,7 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       function_decl_sptr f(i->second.first, noop_deleter());
       function_decl_sptr s(i->second.second, noop_deleter());
       diff = compute_diff(f, s, ctxt_);
-      ctxt_->maybe_apply_filters(diff);
+      ctxt_->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
     }
 
   // Walk the changed variable diff nodes to apply the categorization
@@ -6728,10 +7098,9 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       var_decl_sptr f(i->second.first, noop_deleter());
       var_decl_sptr s(i->second.second, noop_deleter());
       diff = compute_diff_for_decls(f, s, ctxt_);
-      ctxt_->maybe_apply_filters(diff);
+      ctxt_->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
     }
 
-  // Categorize redundant function diff nodes.
   categorize_redundant_changed_sub_nodes();
 
   // Walk the changed function diff nodes to count the number of
@@ -6760,6 +7129,8 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       if (diff->is_filtered_out())
 	++stat.num_vars_filtered_out;
     }
+
+  clear_redundancy_categorization();
 }
 
 /// Emit the summary of the functions & variables that got
@@ -6812,11 +7183,9 @@ corpus_diff::priv::emit_diff_stats(diff_stats&		s,
 void
 corpus_diff::priv::categorize_redundant_changed_sub_nodes()
 {
-  ctxt_->categorizing_redundancy(true);
-  ctxt_->forget_traversed_diffs();
-  filtering::filter_base_sptr rfilter(new filtering::redundant_filter);
   diff_sptr diff;
 
+  ctxt_->forget_traversed_diffs();
   for (string_changed_function_ptr_map::const_iterator i = changed_fns_.begin();
        i!= changed_fns_.end();
        ++i)
@@ -6824,7 +7193,7 @@ corpus_diff::priv::categorize_redundant_changed_sub_nodes()
       function_decl_sptr f(i->second.first, noop_deleter());
       function_decl_sptr s(i->second.second, noop_deleter());
       diff = compute_diff(f, s, ctxt_);
-      filtering::apply_filter(rfilter, diff);
+      categorize_redundancy(diff);
     }
 
   for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
@@ -6834,10 +7203,55 @@ corpus_diff::priv::categorize_redundant_changed_sub_nodes()
       var_decl_sptr f(i->second.first, noop_deleter());
       var_decl_sptr s(i->second.second, noop_deleter());
       diff = compute_diff(f, s, ctxt_);
-      filtering::apply_filter(rfilter, diff);
+      categorize_redundancy(diff);
+    }
+}
+
+/// Walk the changed functions and variables diff nodes and clear the
+/// redundancy categorization they might carry.
+void
+corpus_diff::priv::clear_redundancy_categorization()
+{
+  diff_sptr diff;
+  for (string_changed_function_ptr_map::const_iterator i = changed_fns_.begin();
+       i!= changed_fns_.end();
+       ++i)
+    {
+      function_decl_sptr f(i->second.first, noop_deleter());
+      function_decl_sptr s(i->second.second, noop_deleter());
+      diff = compute_diff(f, s, ctxt_);
+      abigail::comparison::clear_redundancy_categorization(diff);
     }
 
-  ctxt_->categorizing_redundancy(false);
+  for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
+       i!= changed_vars_.end();
+       ++i)
+    {
+      var_decl_sptr f(i->second.first, noop_deleter());
+      var_decl_sptr s(i->second.second, noop_deleter());
+      diff = compute_diff(f, s, ctxt_);
+      abigail::comparison::clear_redundancy_categorization(diff);
+    }
+}
+
+/// Populate the vector of children node of the @ref corpus_diff type.
+///
+/// The children node can then later be retrieved using
+/// corpus_diff::children_node().
+void
+corpus_diff::chain_into_hierarchy()
+{
+  for (string_changed_function_ptr_map::const_iterator i =
+	 changed_functions().begin();
+       i != changed_functions().end();
+       ++i)
+    {
+      function_decl_sptr f(i->second.first, noop_deleter());
+      function_decl_sptr s(i->second.second, noop_deleter());
+
+      if (diff_sptr d = compute_diff_for_decls(f,s, context()))
+	append_child_node(d.get());
+    }
 }
 
 /// Constructor for @ref corpus_diff.
@@ -6857,6 +7271,16 @@ corpus_diff::corpus_diff(corpus_sptr first,
   priv_->ctxt_ = ctxt;
 }
 
+/// Finish building the current instance of @ref corpus_diff.
+void
+corpus_diff::finish_diff_type()
+{
+  if (priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  priv_->finished_ = true;
+}
+
 /// @return the first corpus of the diff.
 corpus_sptr
 corpus_diff::first_corpus() const
@@ -6866,6 +7290,20 @@ corpus_diff::first_corpus() const
 corpus_sptr
 corpus_diff::second_corpus() const
 {return priv_->second_;}
+
+/// @return the children nodes of the current instance of corpus_diff.
+const vector<diff*>&
+corpus_diff::chidren_nodes() const
+{return priv_->children_;}
+
+/// Append a new child node to the vector of childre nodes for the
+/// current instance of @ref corpus_diff node.
+void
+corpus_diff::append_child_node(diff* d)
+{
+  assert(d);
+  priv_->children_.push_back(d);
+}
 
 /// @return the bare edit script of the functions changed as recorded
 /// by the diff.
@@ -6902,6 +7340,14 @@ const string_changed_function_ptr_map&
 corpus_diff::changed_functions()
 {return priv_->changed_fns_;}
 
+/// Getter for the variables which signature didn't change but which
+/// do have some indirect changes in some sub-types.
+///
+/// @return the changed variables.
+const string_changed_var_ptr_map&
+corpus_diff::changed_variables()
+{return priv_->changed_vars_;}
+
 /// Getter of the diff context of this diff
 ///
 /// @return the diff context for this diff.
@@ -6909,6 +7355,23 @@ const diff_context_sptr
 corpus_diff::context() const
 {return priv_->ctxt_;}
 
+/// @return the pretty representation for the current instance of @ref
+/// corpus_diff
+const string&
+corpus_diff::get_pretty_representation() const
+{
+  if (priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "corpus_diff["
+	<< first_corpus()->get_path()
+	<< ", "
+	<< second_corpus()->get_path()
+	<< "]";
+      priv_->pretty_representation_ = o.str();
+    }
+  return priv_->pretty_representation_;
+}
 /// @return the length of the changes as recorded by the diff.
 unsigned
 corpus_diff::length() const
@@ -7173,6 +7636,8 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (!diff)
 	    continue;
 
+	  categorize_redundancy(diff);
+
 	  if (diff->to_be_reported())
 	    {
 	      out << indent << "  [C]'"
@@ -7266,7 +7731,13 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  var_decl_sptr f(i->second.first, noop_deleter());
 	  var_decl_sptr s(i->second.second, noop_deleter());
 	  diff_sptr diff = compute_diff_for_decls(f, s, context());
-	  if (!diff || !diff->to_be_reported())
+
+	  if (!diff)
+	    continue;
+
+	  categorize_redundancy(diff);
+
+	  if (!diff->to_be_reported())
 	    continue;
 
 	  if (!f->get_linkage_name().empty())
@@ -7300,8 +7771,15 @@ corpus_diff::report(ostream& out, const string& indent) const
 bool
 corpus_diff::traverse(diff_node_visitor& v)
 {
+  finish_diff_type();
+
+  v.visit_begin(this);
+
   if (!v.visit(this, true))
-    return false;
+    {
+      v.visit_end(this);
+      return false;
+    }
 
   for (string_changed_function_ptr_map::const_iterator i =
 	 changed_functions().begin();
@@ -7310,12 +7788,34 @@ corpus_diff::traverse(diff_node_visitor& v)
     {
       function_decl_sptr f(i->second.first, noop_deleter());
       function_decl_sptr s(i->second.second, noop_deleter());
-
       if (diff_sptr d = compute_diff_for_decls(f,s, context()))
-	if (!d->traverse(v))
-	  return false;
+	{
+	  if (!d->traverse(v))
+	    {
+	      v.visit_end(this);
+	      return false;
+	    }
+	}
     }
 
+  for (string_changed_var_ptr_map::const_iterator i =
+	 changed_variables().begin();
+       i != changed_variables().end();
+       ++i)
+    {
+      var_decl_sptr f(i->second.first, noop_deleter());
+      var_decl_sptr s(i->second.second, noop_deleter());
+      if (diff_sptr d = compute_diff_for_decls(f,s, context()))
+	{
+	  if (!d->traverse(v))
+	    {
+	      v.visit_end(this);
+	      return false;
+	    }
+	}
+    }
+
+  v.visit_end(this);
   return true;
 }
 /// Compute the diff between two instances fo the @ref corpus
@@ -7397,6 +7897,43 @@ compute_diff(const corpus_sptr	f,
 // </corpus stuff>
 
 // <diff_node_visitor stuff>
+
+/// This is called by the traversing code on a @ref diff node just
+/// before visiting it.  That is, before visiting it and its children
+/// node.
+///
+/// @param d the diff node to visit.
+void
+diff_node_visitor::visit_begin(diff* /*p*/)
+{}
+
+/// This is called by the traversing code on a @ref diff node just
+/// after visiting it.  That is after visiting it and its children
+/// nodes.
+///
+/// @param d the diff node that got visited.
+void
+diff_node_visitor::visit_end(diff* /*p*/)
+{}
+
+/// This is called by the traversing code on a @ref corpus_diff node
+/// just before visiting it.  That is, before visiting it and its
+/// children node.
+///
+/// @param p the corpus_diff node to visit.
+///
+void
+diff_node_visitor::visit_begin(corpus_diff* /*p*/)
+{}
+
+/// This is called by the traversing code on a @ref corpus_diff node
+/// just after visiting it.  That is after visiting it and its children
+/// nodes.
+///
+/// @param d the diff node that got visited.
+void
+diff_node_visitor::visit_end(corpus_diff* /*d*/)
+{}
 
 /// Default visitor implementation
 ///
@@ -7589,6 +8126,397 @@ filtering::redundant_filter::visit(diff*, bool /*pre=*/)
 }
 
 // </redundant diff node marking>
+
+// <diff tree category propagation>
+
+/// A visitor to propagate the category of a node up to its parent
+/// nodes.  This visitor doesn't touch the REDUNDANT_CATEGORY because
+/// that one is propagated using another specific visitor.
+struct category_propagation_visitor : public diff_node_visitor
+{
+  virtual void
+  visit_end(diff* d)
+  {
+    for (vector<diff*>::const_iterator i = d->children_nodes().begin();
+	 i != d->children_nodes().end();
+	 ++i)
+      {
+	diff_category c = (*i)->get_category();
+	c &= ~REDUNDANT_CATEGORY;
+	d->add_to_category(c);
+      }
+  }
+};// end struct category_propagation_visitor
+
+/// Visit all the nodes of a given sub-tree.  For each node that has a
+/// particular category set, propagate that category set up to its
+/// parent nodes.
+///
+/// @param diff_tree the diff sub-tree to walk for categorization
+/// purpose;
+void
+propagate_categories(diff* diff_tree)
+{
+  category_propagation_visitor v;
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(v);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Visit all the nodes of a given sub-tree.  For each node that has a
+/// particular category set, propagate that category set up to its
+/// parent nodes.
+///
+/// @param diff_tree the diff sub-tree to walk for categorization
+/// purpose;
+void
+propagate_categories(diff_sptr diff_tree)
+{propagate_categories(diff_tree.get());}
+
+/// Visit all the nodes of a given corpus tree.  For each node that
+/// has a particular category set, propagate that category set up to
+/// its parent nodes.
+///
+/// @param diff_tree the corpus_diff tree to walk for categorization
+/// purpose;
+void
+propagate_categories(corpus_diff* diff_tree)
+{
+  category_propagation_visitor v;
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(v);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Visit all the nodes of a given corpus tree.  For each node that
+/// has a particular category set, propagate that category set up to
+/// its parent nodes.
+///
+/// @param diff_tree the corpus_diff tree to walk for categorization
+/// purpose;
+void
+propagate_categories(corpus_diff_sptr diff_tree)
+{propagate_categories(diff_tree.get());}
+
+// </diff tree category propagation>
+
+// <diff tree printing stuff>
+
+/// A visitor to print (to an output stream) a pretty representation
+/// of a @ref diff sub-tree or of a complete @ref corpus_diff tree.
+struct diff_node_printer : public diff_node_visitor
+{
+  ostream& out_;
+  unsigned level_;
+
+  diff_node_printer(ostream& out)
+    : out_(out),
+      level_(0)
+  {}
+
+  virtual void
+  visit_begin(diff*)
+  {
+    ++level_;
+  }
+
+  virtual void
+  visit_end(diff*)
+  {
+    --level_;
+  }
+
+  virtual void
+  visit_begin(corpus_diff*)
+  {
+    ++level_;
+  }
+
+  virtual void
+  visit_end(corpus_diff*)
+  {
+    --level_;
+  }
+
+  virtual bool
+  visit(diff* d, bool)
+  {
+    // indent
+    for (unsigned i = 0; i < level_; ++i)
+      out_ << ' ';
+    out_ << d->get_pretty_representation();
+    out_ << " {"
+	 << "category: "<< d->get_category()
+	 << "}";
+    out_ << '\n';
+    return true;
+  }
+
+  virtual bool
+  visit(corpus_diff* d, bool)
+  {
+    // indent
+    for (unsigned i = 0; i < level_; ++i)
+      out_ << ' ';
+    out_ << d->get_pretty_representation();
+    out_ << '\n';
+    return true;
+  }
+}; // end struct diff_printer_visitor
+
+// </ diff tree printing stuff>
+
+/// Emit a textual representation of a @ref diff sub-tree to an
+/// output stream.
+///
+/// @param diff_tree the sub-tree to emit the textual representation
+/// for.
+///
+/// @param out the output stream to emit the textual representation
+/// for @p diff_tree to.
+void
+print_diff_tree(diff* diff_tree, ostream& out)
+{
+  diff_node_printer p(out);
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(p);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Emit a textual representation of a @ref corpus_diff tree to an
+/// output stream.
+///
+/// @param diff_tree the @ref corpus_diff tree to emit the textual
+/// representation for.
+///
+/// @param out the output stream to emit the textual representation
+/// for @p diff_tree to.
+void
+print_diff_tree(corpus_diff* diff_tree, std::ostream& out)
+{
+  diff_node_printer p(out);
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(p);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Emit a textual representation of a @ref corpus_diff tree to an
+/// output stream.
+///
+/// @param diff_tree the @ref corpus_diff tree to emit the textual
+/// representation for.
+///
+/// @param out the output stream to emit the textual representation
+/// for @p diff_tree to.
+void
+print_diff_tree(corpus_diff_sptr diff_tree,
+		std::ostream& o)
+{print_diff_tree(diff_tree.get(), o);}
+
+// <redundancy_marking_visitor>
+
+/// A tree visitor to categorize nodes with respect to the
+/// REDUNDANT_CATEGORY.  That is, detect if a node is redundant (is
+/// present on several spots of the tree) and mark such nodes
+/// appropriatly.  This visitor also takes care of propagating the
+/// REDUNDANT_CATEGORY of a given node to its parent nodes as
+/// appropriate.
+struct redundancy_marking_visitor : public diff_node_visitor
+{
+  virtual void
+  visit_begin(diff* d)
+  {
+    // A diff node that carries a change and that has been already
+    // traversed elsewhere is considered redundant.
+     if (d->context()->diff_has_been_traversed(d)
+	 && d->length())
+      d->add_to_category(REDUNDANT_CATEGORY);
+  }
+
+  virtual void
+  visit_begin(corpus_diff*)
+  {
+  }
+
+  virtual void
+  visit_end(diff* d)
+  {
+    bool has_non_redundant_child = false;
+    bool has_non_empty_child = false;
+    for (vector<diff*>::const_iterator i = d->children_nodes().begin();
+	 i != d->children_nodes().end();
+	 ++i)
+      {
+	if ((*i)->length())
+	  {
+	    has_non_empty_child = true;
+	    if (((*i)->get_category() & REDUNDANT_CATEGORY) == 0)
+	      has_non_redundant_child = true;
+	  }
+	if (has_non_redundant_child)
+	  break;
+      }
+
+    // A diff node for which at least child node carries a change, and
+    // for which all the children are redundant is deemed redundant too.
+    //
+    // TODO: xxx when, for a given node, we can tell the difference
+    // between local changes and changes coming from children nodes,
+    // we'll have to alter the condition above: if the current node
+    // has local changes, even if all its children are redundant,
+    // won't inherit redundancy from its children.
+    if (has_non_empty_child && !has_non_redundant_child)
+      d->add_to_category(REDUNDANT_CATEGORY);
+  }
+
+  virtual void
+  visit_end(corpus_diff*)
+  {
+  }
+
+  virtual bool
+  visit(diff*, bool)
+  {
+    return true;
+  }
+
+  virtual bool
+  visit(corpus_diff*, bool)
+  {
+    return true;
+  }
+};// end struct redundancy_marking_visitor
+
+/// A visitor of @ref diff nodes that clears the REDUNDANT_CATEGORY
+/// category out of the nodes.
+struct redundancy_clearing_visitor : public diff_node_visitor
+{
+  bool
+  visit(corpus_diff*, bool)
+  {return true;}
+
+  bool
+  visit(diff* d, bool)
+  {
+    // clear the REDUNDANT_CATEGORY out of the current node.
+    diff_category c = d->get_category();
+    c &= ~REDUNDANT_CATEGORY;
+    d->set_category(c);
+    return true;
+  }
+}; // end struct redundancy_clearing_visitor
+
+/// Walk a given @ref diff sub-tree to categorize each of the nodes
+/// with respect to the REDUNDANT_CATEGORY.
+///
+/// @param diff_tree the @ref diff sub-tree to walk.
+void
+categorize_redundancy(diff* diff_tree)
+{
+  redundancy_marking_visitor v;
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(v);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Walk a given @ref diff sub-tree to categorize each of the nodes
+/// with respect to the REDUNDANT_CATEGORY.
+///
+/// @param diff_tree the @ref diff sub-tree to walk.
+void
+categorize_redundancy(diff_sptr diff_tree)
+{categorize_redundancy(diff_tree.get());}
+
+/// Walk a given @ref corpus_diff tree to categorize each of the nodes
+/// with respect to the REDUNDANT_CATEGORY.
+///
+/// @param diff_tree the @ref corpus_diff tree to walk.
+void
+categorize_redundancy(corpus_diff* diff_tree)
+{
+  redundancy_marking_visitor v;
+  diff_tree->context()->forget_traversed_diffs();
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(v);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+}
+
+/// Walk a given @ref corpus_diff tree to categorize each of the nodes
+/// with respect to the REDUNDANT_CATEGORY.
+///
+/// @param diff_tree the @ref corpus_diff tree to walk.
+void
+categorize_redundancy(corpus_diff_sptr diff_tree)
+{categorize_redundancy(diff_tree.get());}
+
+// </redundancy_marking_visitor>
+
+/// Walk a given @ref diff sub-tree to clear the REDUNDANT_CATEGORY
+/// out of the category of the nodes.
+///
+/// @param diff_tree the @ref diff sub-tree to walk.
+void
+clear_redundancy_categorization(diff* diff_tree)
+{
+  redundancy_clearing_visitor v;
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(v);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+  diff_tree->context()->forget_traversed_diffs();
+}
+
+/// Walk a given @ref diff sub-tree to clear the REDUNDANT_CATEGORY
+/// out of the category of the nodes.
+///
+/// @param diff_tree the @ref diff sub-tree to walk.
+void
+clear_redundancy_categorization(diff_sptr diff_tree)
+{clear_redundancy_categorization(diff_tree.get());}
+
+/// Walk a given @ref corpus_diff tree to clear the REDUNDANT_CATEGORY
+/// out of the category of the nodes.
+///
+/// @param diff_tree the @ref corpus_diff tree to walk.
+void
+clear_redundancy_categorization(corpus_diff* diff_tree)
+{
+  redundancy_clearing_visitor v;
+  bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
+  diff_tree->context()->forbid_traversing_a_node_twice(false);
+  diff_tree->traverse(v);
+  diff_tree->context()->forbid_traversing_a_node_twice(s);
+  diff_tree->context()->forget_traversed_diffs();
+}
+
+/// Walk a given @ref corpus_diff tree to clear the REDUNDANT_CATEGORY
+/// out of the category of the nodes.
+///
+/// @param diff_tree the @ref corpus_diff tree to walk.
+void
+clear_redundancy_categorization(corpus_diff_sptr diff_tree)
+{clear_redundancy_categorization(diff_tree.get());}
+
+/// Apply the @ref diff tree filters that have been associated to the
+/// context of the a given @ref corpus_diff tree.  As a result, the
+/// nodes of the @diff tree are going to be categorized into one of
+/// several of the categories of @ref diff_category.
+///
+/// @param diff_tree the @ref corpus_diff instance which @ref diff are
+/// to be categorized.
+void
+apply_filters(corpus_diff_sptr diff_tree)
+{
+  diff_tree->context()->maybe_apply_filters(diff_tree,
+					    /*traverse_nodes_once=*/false);
+  propagate_categories(diff_tree);
+}
 
 }// end namespace comparison
 } // end namespace abigail

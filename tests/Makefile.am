@@ -19,7 +19,7 @@ runtestdifffilter		\
 runtestsvg
 
 
-noinst_PROGRAMS= $(TESTS) testirwalker testdiff2
+noinst_PROGRAMS= $(TESTS) testirwalker testdiff2 printdifftree
 
 noinst_LTLIBRARIES = libtestutils.la
 
@@ -72,6 +72,9 @@ testirwalker_LDADD=$(top_builddir)/src/libabigail.la
 
 testdiff2_SOURCES=test-diff2.cc
 testdiff2_LDADD=$(top_builddir)/src/libabigail.la
+
+printdifftree_SOURCES = print-diff-tree.cc
+printdifftree_LDADD = $(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools
