@@ -28,6 +28,9 @@
 namespace abigail
 {
 
+namespace ir
+{
+
 class corpus;
 /// A convenience typedef for shared pointer to @ref corpus.
 typedef shared_ptr<corpus> corpus_sptr;
@@ -156,5 +159,6 @@ public:
 
 };// end class corpus.
 
+}// end namespace ir
 }//end namespace abigail
 #endif //__ABG_CORPUS_H__

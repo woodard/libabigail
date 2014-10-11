@@ -66,6 +66,9 @@ using std::vector;
 // Pull in relational operators.
 using namespace std::rel_ops;
 
+namespace ir
+{
+
 // Forward declarations for corpus.
 
 class corpus;
@@ -443,6 +446,10 @@ lookup_var_decl_in_scope(const std::list<string>&,
 
 string
 demangle_cplus_mangled_name(const string&);
+
+} // end namespace ir
+
+using namespace abigail::ir;
 
 void
 dump(const shared_ptr<decl_base>, std::ostream&);

@@ -2567,6 +2567,8 @@ write_corpus_to_native_xml_file(const corpus_sptr	corpus,
 
 // <Debugging routines>
 
+using namespace abigail::ir;
+
 /// Serialize a pointer to decl_base to an output stream.
 ///
 /// @param d the pointer to decl_base to serialize.

@@ -345,7 +345,7 @@ make_path_absolute(const char*p)
 
 }//end namespace tools
 
-using abigail::function_decl;
+using abigail::ir::function_decl;
 
 /// Dump (to the standard error stream) two sequences of strings where
 /// each string represent one of the functions in the two sequences of

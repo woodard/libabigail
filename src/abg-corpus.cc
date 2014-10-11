@@ -74,6 +74,9 @@ build_sptr<regex_t>(regex_t *p)
 
 }// end namespace sptr_utils
 
+namespace ir
+{
+
 using std::ostringstream;
 using std::tr1::unordered_map;
 using std::list;
@@ -1041,4 +1044,5 @@ const vector<string>&
 corpus::get_regex_patterns_of_vars_to_keep() const
 {return priv_->regex_patterns_vars_to_keep;}
 
+} // end namespace ir
 }// end namespace abigail

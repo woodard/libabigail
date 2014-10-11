@@ -50,6 +50,7 @@ namespace xml_reader
 {
 using std::string;
 using std::deque;
+using std::tr1::shared_ptr;
 using std::tr1::unordered_map;
 using std::tr1::dynamic_pointer_cast;
 using std::vector;
@@ -60,6 +61,7 @@ using zip_utils::zip_file_sptr;
 using zip_utils::open_archive;
 using zip_utils::open_file_in_archive;
 #endif //WITH_ZIP_ARCHIVE
+
 class read_context;
 
 /// This abstracts the context in which the current ABI

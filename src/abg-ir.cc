@@ -37,6 +37,10 @@
 
 namespace abigail
 {
+
+namespace ir
+{
+
 // Inject.
 using std::string;
 using std::list;
@@ -7258,4 +7262,6 @@ fns_to_str(vector<function_decl*>::const_iterator a_begin,
 // </debugging facilities>
 
 // </class template>
+
+}// end namespace ir
 }//end namespace abigail

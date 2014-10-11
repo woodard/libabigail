@@ -57,6 +57,8 @@ combine_hashes(size_t val1, size_t val2)
 using std::list;
 using std::vector;
 
+using namespace abigail::ir;
+
 // See forward declarations in abg-ir.h.
 
 // Definitions.

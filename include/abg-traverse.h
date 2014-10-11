@@ -28,6 +28,9 @@
 namespace abigail
 {
 
+namespace ir
+{
+
 /// The base class for the visitor type hierarchy used for traversing
 /// a hierarchy of nodes.
 ///
@@ -58,5 +61,7 @@ struct traversable_base
   /// otherwise.
   virtual bool traverse(node_visitor_base& v);
 };
+
+}// end namespace ir.
 }//end namespace abigail
 #endif //__ABG_TRAVERSE_H__

@@ -38,6 +38,8 @@ namespace abigail
 namespace dwarf_reader
 {
 
+using namespace abigail::ir;
+
 /// The status of the @ref read_corpus_from_elf() call.
 enum status
 {

@@ -34,10 +34,11 @@
 
 namespace abigail
 {
-class translation_unit;
 
 namespace xml_reader
 {
+
+using namespace abigail::ir;
 
 translation_unit_sptr
 read_translation_unit_from_file(const std::string& file_path);

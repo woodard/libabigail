@@ -25,8 +25,12 @@
 namespace abigail
 {
 
+namespace ir
+{
+
 bool
 traversable_base::traverse(node_visitor_base&)
 {return true;}
 
+}// end namaspace ir
 }// end namespace abigail

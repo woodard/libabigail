@@ -33,6 +33,9 @@ namespace abigail
 {
 namespace xml_writer
 {
+
+using namespace abigail::ir;
+
 bool
 write_translation_unit(const translation_unit&	tu,
 		       unsigned		indent,

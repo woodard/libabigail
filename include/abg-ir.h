@@ -87,6 +87,11 @@ have weak pointers on their type.
 namespace abigail
 {
 
+/// The namespace of the internal representation of ABI artifacts like
+/// types and decls.
+namespace ir
+{
+
 /// @brief The source location of a token.
 ///
 /// This represents the location of a token coming from a given
@@ -1703,7 +1708,7 @@ public:
 	{
 	  type_base_sptr t = get_type();
 	  assert(t);
-	  str += abigail::get_type_name(t);
+	  str += abigail::ir::get_type_name(t);
 	}
       return str;
     }
@@ -3139,5 +3144,6 @@ fns_to_str(vector<function_decl*>::const_iterator a_begin,
 	   vector<function_decl*>::const_iterator b_end,
 	   std::ostream& o);
 
+}// end namespace ir
 } // end namespace abigail
 #endif // __ABG_IR_H__
