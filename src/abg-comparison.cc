@@ -8174,22 +8174,6 @@ diff_node_visitor::visit(corpus_diff*, bool)
 
 // <redundant diff node marking>
 
-/// Visitor implementation for the filtering::redundant_filter
-/// visitor.
-///
-/// @return true if the caller of the vistor has to keep traversing
-/// the graph.
-bool
-filtering::redundant_filter::visit(diff*, bool /*pre=*/)
-{
-  // At this point, the diff node has already been marked
-  // redundant/non-redundant by the code of
-  // TRAVERSE_DIFF_NODE_AND_PROPAGATE_CATEGORY so we have nothing to
-  // do.  We just have to make sure this filter is applied to nodes in
-  // a depth-first manner.
-  return true;
-}
-
 // </redundant diff node marking>
 
 // <diff tree category propagation>

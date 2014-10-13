@@ -93,13 +93,6 @@ class harmful_filter : public filter_base
   visit(diff*, bool);
 }; // end class harmful_filter
 
-/// A filter which walks diff nodes to categorize them wrt their
-/// redundancy.
-class redundant_filter: public filter_base
-{
-  virtual bool
-  visit(diff*, bool);
-}; // end class redundant_filter.
 } // end namespace filtering
 } // end namespace comparison
 } // end namespace abigail
