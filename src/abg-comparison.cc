@@ -1060,17 +1060,8 @@ distinct_diff::get_pretty_representation() const
 void
 distinct_diff::chain_into_hierarchy()
 {
-  type_base_sptr fs = strip_typedef(is_type(first())),
-    ss = strip_typedef(is_type(second()));
-
-  decl_base_sptr f = get_type_declaration(fs), s = get_type_declaration(ss);
-
-  if (f && s && !entities_are_of_distinct_kinds(f, s))
-    {
-      diff_sptr d = compute_diff(f, s, context());
-      if (d.get() != this)
-	append_child_node(d.get());
-    }
+  assert(entities_are_of_distinct_kinds(first(), second()));
+  // This kind of diff tree node has no children node.
 }
 
 /// Constructor for @ref distinct_diff.
