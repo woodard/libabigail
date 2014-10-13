@@ -388,6 +388,15 @@ tests/data/test-diff-suppr/test3-struct-suppr-v0.cc \
 tests/data/test-diff-suppr/test3-struct-suppr-v0.o \
 tests/data/test-diff-suppr/test3-struct-suppr-v1.cc \
 tests/data/test-diff-suppr/test3-struct-suppr-v1.o \
+tests/data/test-diff-suppr/libtest4-local-suppr-v0.so \
+tests/data/test-diff-suppr/libtest4-local-suppr-v1.so \
+tests/data/test-diff-suppr/test4-local-suppr-0.suppr \
+tests/data/test-diff-suppr/test4-local-suppr-report-0.txt \
+tests/data/test-diff-suppr/test4-local-suppr-report-1.txt \
+tests/data/test-diff-suppr/test4-local-suppr-v0.c \
+tests/data/test-diff-suppr/test4-local-suppr-v0.h \
+tests/data/test-diff-suppr/test4-local-suppr-v1.c \
+tests/data/test-diff-suppr/test4-local-suppr-v1.h \
 \
 data/test-lookup-syms/test0.cc			\
 data/test-lookup-syms/test0.o			\

@@ -8983,7 +8983,8 @@ struct suppression_categorization_visitor : public diff_node_visitor
     bool has_non_empty_child = false;
     bool has_suppressed_child = false;
 
-    if (!(d->get_category() & SUPPRESSED_CATEGORY))
+    if (!(d->get_category() & SUPPRESSED_CATEGORY)
+	&& !d->has_local_changes())
       {
 	for (vector<diff*>::const_iterator i = d->children_nodes().begin();
 	     i != d->children_nodes().end();
@@ -9205,32 +9206,35 @@ struct redundancy_marking_visitor : public diff_node_visitor
   virtual void
   visit_end(diff* d)
   {
-    bool has_non_redundant_child = false;
-    bool has_non_empty_child = false;
-    for (vector<diff*>::const_iterator i = d->children_nodes().begin();
-	 i != d->children_nodes().end();
-	 ++i)
+    // Propagate the redundancy categorization of the children nodes
+    // to this node.  But if this node has local changes, then it
+    // doesn't inherit redundancy from its children nodes.
+    if (!(d->get_category() & REDUNDANT_CATEGORY)
+	&& !d->has_local_changes())
       {
-	if ((*i)->length())
+	bool has_non_redundant_child = false;
+	bool has_non_empty_child = false;
+	for (vector<diff*>::const_iterator i = d->children_nodes().begin();
+	     i != d->children_nodes().end();
+	     ++i)
 	  {
-	    has_non_empty_child = true;
-	    if (((*i)->get_category() & REDUNDANT_CATEGORY) == 0)
-	      has_non_redundant_child = true;
+	    if ((*i)->length())
+	      {
+		has_non_empty_child = true;
+		if (((*i)->get_category() & REDUNDANT_CATEGORY) == 0)
+		  has_non_redundant_child = true;
+	      }
+	    if (has_non_redundant_child)
+	      break;
 	  }
-	if (has_non_redundant_child)
-	  break;
-      }
 
-    // A diff node for which at least child node carries a change, and
-    // for which all the children are redundant is deemed redundant too.
-    //
-    // TODO: xxx when, for a given node, we can tell the difference
-    // between local changes and changes coming from children nodes,
-    // we'll have to alter the condition above: if the current node
-    // has local changes, even if all its children are redundant,
-    // won't inherit redundancy from its children.
-    if (has_non_empty_child && !has_non_redundant_child)
-      d->add_to_category(REDUNDANT_CATEGORY);
+	// A diff node for which at least a child node carries a
+	// change, and for which all the children are redundant is
+	// deemed redundant too, unless it has local changes.
+	if (has_non_empty_child
+	    && !has_non_redundant_child)
+	  d->add_to_category(REDUNDANT_CATEGORY);
+      }
   }
 
   virtual void

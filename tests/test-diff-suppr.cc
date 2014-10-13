@@ -151,6 +151,22 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test3-struct-suppr-report-2.txt",
     "output/test-diff-suppr/test3-struct-suppr-report-2.txt",
   },
+  {
+    "data/test-diff-suppr/libtest4-local-suppr-v0.so",
+    "data/test-diff-suppr/libtest4-local-suppr-v1.so",
+    "data/test-diff-suppr/test4-local-suppr-0.suppr",
+    "",
+    "data/test-diff-suppr/test4-local-suppr-report-1.txt",
+    "output/test-diff-suppr/test4-local-suppr-report-1.txt",
+  },
+  {
+    "data/test-diff-suppr/libtest4-local-suppr-v0.so",
+    "data/test-diff-suppr/libtest4-local-suppr-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test4-local-suppr-report-0.txt",
+    "output/test-diff-suppr/test4-local-suppr-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
 };
