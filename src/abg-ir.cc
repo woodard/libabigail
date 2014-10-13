@@ -1368,6 +1368,81 @@ decl_base::get_qualified_name() const
   return result;
 }
 
+change_kind
+operator|(change_kind l, change_kind r)
+{
+  return static_cast<change_kind>(static_cast<unsigned>(l)
+				  | static_cast<unsigned>(r));
+}
+
+change_kind
+operator&(change_kind l, change_kind r)
+{
+  return static_cast<change_kind>(static_cast<unsigned>(l)
+				  & static_cast<unsigned>(r));
+}
+
+change_kind&
+operator|=(change_kind& l, change_kind r)
+{
+  l = l | r;
+  return l;
+}
+
+change_kind&
+operator&=(change_kind& l, change_kind r)
+{
+  l = l & r;
+  return l;
+}
+
+/// Compares two instances of @ref decl_base.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const decl_base& l, const decl_base& r, change_kind& k)
+{
+  bool result = true;
+  if (!l.get_linkage_name().empty()
+      && !r.get_linkage_name().empty())
+    {
+      if (l.get_linkage_name() != r.get_linkage_name())
+	{
+	  k |= LOCAL_CHANGE_KIND;
+	  result = false;;
+	}
+    }
+
+  if (l.get_name() != r.get_name())
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  if (is_member_decl(l) && is_member_decl(r))
+    {
+      context_rel_sptr r1 = l.get_context_rel(), r2 = r.get_context_rel();
+      if (*r1 != *r2)
+	{
+	  k |= LOCAL_CHANGE_KIND;
+	  result = false;
+	}
+    }
+
+  return result;
+}
+
 /// Return true iff the two decls have the same name.
 ///
 /// This function doesn't test if the scopes of the the two decls are
@@ -1378,24 +1453,8 @@ decl_base::get_qualified_name() const
 bool
 decl_base::operator==(const decl_base& other) const
 {
-  if (!get_linkage_name().empty()
-      && !other.get_linkage_name().empty())
-    {
-      if (get_linkage_name() != other.get_linkage_name())
-	return false;
-    }
-  else
-    if (get_name() != other.get_name())
-      return false;
-
-  if (is_member_decl(this) && is_member_decl(other))
-    {
-      context_rel_sptr r1 = get_context_rel(), r2 = other.get_context_rel();
-      if (*r1 != *r2)
-	return false;
-    }
-
-  return true;
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, other, k);
 }
 
 decl_base::~decl_base()
@@ -2274,6 +2333,53 @@ scope_decl::get_hash() const
   return hash_scope(this);
 }
 
+/// Compares two instances of @ref scope_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const scope_decl& l, const scope_decl& r, change_kind& k)
+{
+  bool result = true;
+
+  if (!l.decl_base::operator==(r))
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  scope_decl::declarations::const_iterator i, j;
+  for (i = l.get_member_decls().begin(), j = r.get_member_decls().begin();
+       i != l.get_member_decls().end() && j != r.get_member_decls().end();
+       ++i, ++j)
+    {
+      if (**i != **j)
+	{
+	  k |= SUBTYPE_CHANGE_KIND;
+	  result = false;
+	  break;
+	}
+    }
+
+  if (i != l.get_member_decls().end() || j != r.get_member_decls().end())
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  return result;
+}
+
 /// Return true iff both scopes have the same names and have the same
 /// member decls.
 ///
@@ -2282,26 +2388,13 @@ scope_decl::get_hash() const
 bool
 scope_decl::operator==(const decl_base& o) const
 {
-
-  if (!decl_base::operator==(o))
+  const scope_decl* other = dynamic_cast<const scope_decl*>(&o);
+  if (!other)
     return false;
 
-  const scope_decl* othr = dynamic_cast<const scope_decl*>(&o);
 
-  if (!othr)
-    return false;
-
-  scope_decl::declarations::const_iterator i, j;
-  for (i = get_member_decls().begin(), j = othr->get_member_decls().begin();
-       i != get_member_decls().end() && j != othr->get_member_decls().end();
-       ++i, ++j)
-    if (**i != **j)
-      return false;
-
-  if (i != get_member_decls().end() || j != othr->get_member_decls().end())
-    return false;
-
-  return true;
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 /// Find a member of the current scope and return an iterator on it.
@@ -3353,14 +3446,38 @@ type_base::type_base(size_t s, size_t a)
 {
 }
 
+/// Compares two instances of @ref type_base.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const type_base& l, const type_base& r, change_kind& k)
+{
+  bool result = (l.get_size_in_bits() == r.get_size_in_bits()
+		 && l.get_alignment_in_bits() == r.get_alignment_in_bits());
+  if (!result)
+    k |= LOCAL_CHANGE_KIND;
+  return result;
+}
+
 /// Return true iff both type declarations are equal.
 ///
 /// Note that this doesn't test if the scopes of both types are equal.
 bool
 type_base::operator==(const type_base& other) const
 {
-  return (get_size_in_bits() == other.get_size_in_bits()
-	  && get_alignment_in_bits() == other.get_alignment_in_bits());
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, other, k);
 }
 
 void
@@ -3409,6 +3526,32 @@ type_decl::get_void_type_decl()
   return void_type_decl;
 }
 
+/// Compares two instances of @ref type_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const type_decl& l, const type_decl& r, change_kind& k)
+{
+  bool result = equals(static_cast<const decl_base&>(l),
+		       static_cast<const decl_base&>(r),
+		       k);
+  result &= equals(static_cast<const type_base&>(l),
+		   static_cast<const type_base&>(r),
+		   k);
+  return result;
+}
+
 /// Return true if both types equals.
 ///
 /// This operator re-uses the overload that takes a decl_base.
@@ -3436,7 +3579,8 @@ type_decl::operator==(const decl_base& o) const
   const type_decl* other = dynamic_cast<const type_decl*>(&o);
   if (!other)
     return false;
-  return (type_base::operator==(*other) &&  decl_base::operator==(*other));
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 /// Return true if both types equals.
@@ -3483,6 +3627,36 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 {
 }
 
+/// Compares two instances of @ref scope_type_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const scope_type_decl& l, const scope_type_decl& r, change_kind& k)
+{
+  bool result = true;
+
+  result = equals(static_cast<const scope_decl&>(l),
+		  static_cast<const scope_decl&>(r),
+		  k);
+
+  result &= equals (static_cast<const type_base&>(l),
+		    static_cast<const type_base&>(r),
+		    k);
+
+  return result;
+}
+
 /// Equality operator between two scope_type_decl.
 ///
 /// Note that this function does not consider the scope of the scope
@@ -3495,7 +3669,8 @@ scope_type_decl::operator==(const decl_base& o) const
   const scope_type_decl* other = dynamic_cast<const scope_type_decl*>(&o);
   if (!other)
     return false;
-  return (scope_decl::operator==(*other) && type_base::operator==(*other));
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 /// Equality operator between two scope_type_decl.
@@ -3647,6 +3822,39 @@ qualified_type_def::get_size_in_bits() const
   return type_base::get_size_in_bits();
 }
 
+/// Compares two instances of @ref qualified_type_def.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const qualified_type_def& l, const qualified_type_def& r, change_kind& k)
+{
+  bool result = true;
+  if (l.get_cv_quals() != r.get_cv_quals())
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  if (*l.get_underlying_type() != *r.get_underlying_type())
+    {
+      k |= SUBTYPE_CHANGE_KIND;
+      result = false;
+    }
+
+  return result;
+}
+
 /// Equality operator for qualified types.
 ///
 /// Note that this function does not check for equality of the scopes.
@@ -3662,10 +3870,8 @@ qualified_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  if (get_cv_quals() != other->get_cv_quals())
-    return false;
-
-  return *get_underlying_type() == *other->get_underlying_type();
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 /// Equality operator for qualified types.
@@ -3822,6 +4028,30 @@ pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
     {}
 }
 
+/// Compares two instances of @ref pointer_type_def.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const pointer_type_def& l, const pointer_type_def& r, change_kind& k)
+{
+  bool result = (*l.get_pointed_to_type() == *r.get_pointed_to_type());
+  if (!result)
+    k |= SUBTYPE_CHANGE_KIND;
+
+  return result;
+}
+
 /// Return true iff both instances of pointer_type_def are equal.
 ///
 /// Note that this function does not check for the scopes of the this
@@ -3832,7 +4062,9 @@ pointer_type_def::operator==(const decl_base& o) const
   const pointer_type_def* other = dynamic_cast<const pointer_type_def*>(&o);
   if (!other)
     return false;
-  return *get_pointed_to_type() == *other->get_pointed_to_type();
+
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 /// Return true iff both instances of pointer_type_def are equal.
@@ -3913,6 +4145,29 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
     {}
 }
 
+/// Compares two instances of @ref reference_type_def.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const reference_type_def& l, const reference_type_def& r, change_kind& k)
+{
+  bool result = (*l.get_pointed_to_type() == *r.get_pointed_to_type());
+  if (!result)
+    k |= SUBTYPE_CHANGE_KIND;
+  return result;
+}
+
 bool
 reference_type_def::operator==(const decl_base& o) const
 {
@@ -3920,7 +4175,8 @@ reference_type_def::operator==(const decl_base& o) const
     dynamic_cast<const reference_type_def*>(&o);
   if (!other)
     return false;
-  return *get_pointed_to_type() == *other->get_pointed_to_type();
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 bool
@@ -4101,6 +4357,53 @@ string
 array_type_def::get_pretty_representation() const
 {return get_type_representation(*this);}
 
+/// Compares two instances of @ref array_type_def.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const array_type_def& l, const array_type_def& r, change_kind& k)
+{
+  std::vector<array_type_def::subrange_sptr > this_subs = l.get_subranges();
+  std::vector<array_type_def::subrange_sptr > other_subs = r.get_subranges();
+
+  bool result = true;
+  if (this_subs.size() != other_subs.size())
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  std::vector<array_type_def::subrange_sptr >::const_iterator i,j;
+  for (i = this_subs.begin(), j = other_subs.begin();
+       i != this_subs.end();
+       ++i, ++j)
+    if (**i != **j)
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+	break;
+      }
+
+  if (*l.get_element_type() != *r.get_element_type())
+    {
+      k |= SUBTYPE_CHANGE_KIND;
+      result = false;
+    }
+
+  return result;
+}
+
 bool
 array_type_def::operator==(const decl_base& o) const
 {
@@ -4108,24 +4411,8 @@ array_type_def::operator==(const decl_base& o) const
     dynamic_cast<const array_type_def*>(&o);
   if (!other)
     return false;
-  if (*get_element_type() == *other->get_element_type())
-    {
-      std::vector<subrange_sptr > this_subs = get_subranges();
-      std::vector<subrange_sptr > other_subs = other->get_subranges();
-
-      if (this_subs.size() != other_subs.size())
-        return false;
-
-      std::vector<subrange_sptr >::const_iterator i,j;
-
-      for (i = this_subs.begin(), j = other_subs.begin();
-           i != this_subs.end();
-	   ++i, ++j)
-	if (**i != **j)
-	  return false;
-      return true;
-    }
-  return false;
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 bool
@@ -4267,6 +4554,56 @@ enum_type_decl::traverse(ir_node_visitor &v)
 enum_type_decl::~enum_type_decl()
 {}
 
+/// Compares two instances of @ref enum_type_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const enum_type_decl& l, const enum_type_decl& r, change_kind& k)
+{
+  bool result = true;
+  if (*l.get_underlying_type() != *r.get_underlying_type())
+    {
+      k |= SUBTYPE_CHANGE_KIND;
+      result = false;
+    }
+
+  enum_type_decl::enumerators::const_iterator i, j;
+  for (i = l.get_enumerators().begin(), j = r.get_enumerators().begin();
+       i != l.get_enumerators().end() && j != r.get_enumerators().end();
+       ++i, ++j)
+    if (*i != *j)
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+	break;
+      }
+
+  if (i != l.get_enumerators().end() || j != r.get_enumerators().end())
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  return result;
+}
+
 /// Equality operator.
 ///
 /// @param o the other enum to test against.
@@ -4276,32 +4613,24 @@ enum_type_decl::~enum_type_decl()
 bool
 enum_type_decl::operator==(const decl_base& o) const
 {
-
-  const enum_type_decl* op= dynamic_cast<const enum_type_decl*>(&o);
+  const enum_type_decl* op = dynamic_cast<const enum_type_decl*>(&o);
   if (!op)
     return false;
-  const enum_type_decl& other = *op;
 
-  if (*get_underlying_type() != *other.get_underlying_type())
-    return false;
-
-  enumerators::const_iterator i, j;
-  for (i = get_enumerators().begin(), j = other.get_enumerators().begin();
-       i != get_enumerators().end() && j != other.get_enumerators().end();
-       ++i, ++j)
-    if (*i != *j)
-      return false;
-
-  if (i != get_enumerators().end() || j != other.get_enumerators().end())
-    return false;
-
-  return decl_base::operator==(other) && type_base::operator==(other);
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *op, k);
 }
 
+/// Equality operator.
+///
+/// @param o the other enum to test against.
+///
+/// @return true iff @p o is equals the current instance of enum type
+/// decl.
 bool
 enum_type_decl::operator==(const type_base& o) const
 {
-  const decl_base* other= dynamic_cast<const decl_base*>(&o);
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
   if (!other)
     return false;
   return *this == *other;
@@ -4361,6 +4690,39 @@ typedef_decl::get_alignment_in_bits() const
   return type_base::get_alignment_in_bits();
 }
 
+/// Compares two instances of @ref typedef_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const typedef_decl& l, const typedef_decl& r, change_kind& k)
+{
+  bool result = true;
+  if (!l.decl_base::operator==(r))
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  if (*l.get_underlying_type() != *r.get_underlying_type())
+    {
+      k |= SUBTYPE_CHANGE_KIND;
+      result = false;
+    }
+
+  return result;
+}
+
 /// Equality operator
 ///
 /// @param o the other typedef_decl to test against.
@@ -4368,15 +4730,18 @@ bool
 typedef_decl::operator==(const decl_base& o) const
 {
   const typedef_decl* other = dynamic_cast<const typedef_decl*>(&o);
-  if (other)
-    return (decl_base::operator==(o)
-	    && *get_underlying_type() == *other->get_underlying_type());
-  return false;
+  if (!other)
+    return false;
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 /// Equality operator
 ///
 /// @param o the other typedef_decl to test against.
+///
+/// @return true if the current instance of @ref typedef_decl equals
+/// @p o.
 bool
 typedef_decl::operator==(const type_base& o) const
 {
@@ -4540,6 +4905,90 @@ var_decl::set_scope(scope_decl* scope)
     get_context_rel()->set_scope(scope);
 }
 
+/// Compares two instances of @ref var_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const var_decl& l, const var_decl& r, change_kind& k)
+{
+  bool result = true;
+  // If there are underlying elf symbols for these variables,
+  // compare them.  And then compare the other parts.
+  elf_symbol_sptr s0 = l.get_symbol(), s1 = r.get_symbol();
+  if (!!s0 != !!s1)
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+  else if (s0 && s0 != s1)
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+  bool symbols_are_equal = (s0 && s1 && result);
+
+  if (symbols_are_equal)
+    {
+      // The variables have underlying elf symbols that are equal, so
+      // now, let's compare the decl_base part of the variables w/o
+      // considering their decl names.
+      string n1 = l.get_name(), n2 = r.get_name();
+      const_cast<var_decl&>(l).set_name("");
+      const_cast<var_decl&>(r).set_name("");
+      bool decl_bases_different = !l.decl_base::operator==(r);
+      const_cast<var_decl&>(l).set_name(n1);
+      const_cast<var_decl&>(r).set_name(n2);
+
+      if (decl_bases_different)
+	{
+	  k |= LOCAL_CHANGE_KIND;
+	  result = false;
+	}
+    }
+  else
+    if (!l.decl_base::operator==(r))
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+      }
+
+  if (*l.get_type() != *r.get_type())
+    {
+      k |= SUBTYPE_CHANGE_KIND;
+      result = false;
+    }
+
+  dm_context_rel_sptr c0 =
+    dynamic_pointer_cast<dm_context_rel>(l.get_context_rel());
+  dm_context_rel_sptr c1 =
+    dynamic_pointer_cast<dm_context_rel>(r.get_context_rel());
+  assert(c0 && c1);
+
+  if (*c0 != *c1)
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  return result;
+}
+
+/// Comparison operator of @ref var_decl.
+///
+/// @param o the instance of @ref var_decl to compare against.
+///
+/// @return true iff the current instance of @ref var_decl equals @p o.
 bool
 var_decl::operator==(const decl_base& o) const
 {
@@ -4547,44 +4996,8 @@ var_decl::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  // If there are underlying elf symbols for these variables,
-  // compare them.  And then compare the other parts.
-  elf_symbol_sptr s0 = get_symbol(), s1 = other->get_symbol();
-  if (!!s0 != !!s1)
-    return false;
-
-  if (s0 && s0 != s1)
-    return false;
-
-  if (s0)
-    {
-      // The variables have underlying elf symbols that are equal, so
-      // now, let's compare the decl_base part of the variables w/o
-      // considering their decl names.
-      string n1 = get_name(), n2 = o.get_name();
-      const_cast<var_decl*>(this)->set_name("");
-      const_cast<decl_base&>(o).set_name("");
-      bool decl_bases_different = !decl_base::operator==(o);
-      const_cast<var_decl*>(this)->set_name(n1);
-      const_cast<decl_base&>(o).set_name(n2);
-
-      if (decl_bases_different)
-	return false;
-    }
-  else
-    if (!decl_base::operator==(o))
-      return false;
-
-  if (*get_type() != *other->get_type())
-    return false;
-
-  dm_context_rel_sptr c0 =
-    dynamic_pointer_cast<dm_context_rel>(get_context_rel());
-  dm_context_rel_sptr c1 =
-      dynamic_pointer_cast<dm_context_rel>(other->get_context_rel());
-  assert(c0 && c1);
-
-  return *c0 == *c1;
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *other, k);
 }
 
 /// Return an ID that tries to uniquely identify the variable inside a
@@ -4668,13 +5081,23 @@ var_decl::~var_decl()
 ///
 /// @param rhs the second function type to consider
 ///
+/// @param k this bitfield is set by the function to give information
+/// about the kind of changes carried by @p lhs and @p rhs.  It is set
+/// iff the function returns false.
+///
 ///@return true if lhs == rhs, false otherwise.
-static bool
-compare_function_types(const function_type& lhs,
-		       const function_type&rhs)
+bool
+equals(const function_type& lhs,
+       const function_type& rhs,
+       change_kind& k)
 {
+  bool result = true;
+
   if (!lhs.type_base::operator==(rhs))
-    return false;
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
 
   class_decl_sptr lhs_class, rhs_class;
   try
@@ -4696,11 +5119,16 @@ compare_function_types(const function_type& lhs,
   // Compare the names of the class of the method
 
   if (!!lhs_class != !!rhs_class)
-    return false;
-
-  if (lhs_class
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+  else if (lhs_class
       && (lhs_class->get_qualified_name() != rhs_class->get_qualified_name()))
-    return false;
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
 
   // Then compare the return type; Beware if it's t's a class type
   // that is the same as the method class name; we can recurse for
@@ -4726,11 +5154,17 @@ compare_function_types(const function_type& lhs,
   if (compare_result_types)
     {
       if (lhs.get_return_type() != rhs.get_return_type())
-	return false;
+	{
+	  k |= SUBTYPE_CHANGE_KIND;
+	  result = false;
+	}
     }
   else
     if (lhs_rt_name != rhs_rt_name)
-      return false;
+      {
+	k |= SUBTYPE_CHANGE_KIND;
+	result = false;
+      }
 
   class_decl_sptr lcl, rcl;
   vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
@@ -4751,14 +5185,20 @@ compare_function_types(const function_type& lhs,
 	// probably comparing atm; otherwise we can recurse indefinitely.
 	continue;
       if (**i != **j)
-	return false;
+	{
+	  k |= SUBTYPE_CHANGE_KIND;
+	  result = false;
+	}
     }
 
   if ((i != lhs.get_parameters().end()
        || j != rhs.get_parameters().end()))
-    return false;
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
 
-  return true;
+  return result;
 }
 
 /// Get the parameter of the function.
@@ -4789,15 +5229,13 @@ function_type::get_first_non_implicit_parm() const
 ///
 /// @return true iff the two function_type are equal.
 bool
-function_type::operator==(const type_base& o) const
+function_type::operator==(const type_base& other) const
 {
- try
-   {
-     const function_type& other = dynamic_cast<const function_type&>(o);
-     return compare_function_types(*this, other);
-   }
- catch (...)
-   {return false;}
+  const function_type* o = dynamic_cast<const function_type*>(&other);
+  if (!o)
+    return false;
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *o, k);
 }
 
 function_type::~function_type()
@@ -5214,77 +5652,125 @@ function_decl::clone() const
   return f;
 }
 
+/// Compares two instances of @ref function_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const function_decl& l, const function_decl& r, change_kind& k)
+{
+  bool result = true;
+
+  elf_symbol_sptr s0 = l.get_symbol(), s1 = r.get_symbol();
+  if (!!s0 != !!s1)
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+  else if (s0 && s0 != s1)
+    {
+      if (!elf_symbols_alias(s0, s1))
+	{
+	  k |= LOCAL_CHANGE_KIND;
+	  result = false;
+	}
+    }
+  bool symbols_are_equal = (s0 && s1 && result);
+
+  if (symbols_are_equal)
+    {
+      // The functions have underlying elf symbols that are equal,
+      // so now, let's compare the decl_base part of the functions
+      // w/o considering their decl names.
+      string n1 = l.get_name(), n2 = r.get_name();
+      const_cast<function_decl&>(l).set_name("");
+      const_cast<function_decl&>(r).set_name("");
+      bool decl_bases_different = !l.decl_base::operator==(r);
+      const_cast<function_decl&>(l).set_name(n1);
+      const_cast<function_decl&>(r).set_name(n2);
+
+      if (decl_bases_different)
+	{
+	  k |= LOCAL_CHANGE_KIND;
+	  result = false;
+	}
+    }
+  else
+    if (!l.decl_base::operator==(r))
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+      }
+
+  // Compare function types
+  shared_ptr<function_type> t0 = l.get_type(), t1 = r.get_type();
+  if ((t0 && t1 && *t0 != *t1)
+      || !!t0 != !!t1)
+    {
+      k |= SUBTYPE_CHANGE_KIND;
+      result = false;
+    }
+
+  // Compare the remaining properties
+  if (l.is_declared_inline() != r.is_declared_inline()
+      || l.get_binding() != r.get_binding())
+    {
+      k |= SUBTYPE_CHANGE_KIND;
+      result = false;
+    }
+
+  if (is_member_function(l) != is_member_function(r))
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result = false;
+    }
+
+  if (is_member_function(l) && is_member_function(r))
+    {
+      if (!((get_member_function_is_ctor(l)
+	     == get_member_function_is_ctor(r))
+	    && (get_member_function_is_dtor(l)
+		== get_member_function_is_dtor(r))
+	    && (get_member_is_static(l)
+		== get_member_is_static(r))
+	    && (get_member_function_is_const(l)
+		== get_member_function_is_const(r))
+	    && (get_member_function_vtable_offset(l)
+		== get_member_function_vtable_offset(r))))
+	{
+	  k |= LOCAL_CHANGE_KIND;
+	  result = false;
+	}
+    }
+
+  return result;
+}
+
+/// Comparison operator for @ref function_decl.
+///
+/// @param other the other instance of @ref function_decl to compare
+/// against.
+///
+/// @return true iff the current instance of @ref function_decl equals
+/// @p other.
 bool
 function_decl::operator==(const decl_base& other) const
 {
-
-  try
-    {
-      const function_decl& o = dynamic_cast<const function_decl&>(other);
-
-      // If there are underlying elf symbols for these functions,
-      // compare them.  And then compare the other parts.
-      elf_symbol_sptr s0 = get_symbol(), s1 = o.get_symbol();
-      if (!!s0 != !!s1)
-	return false;
-
-      if (s0 && s0 != s1)
-	{
-	  if (!elf_symbols_alias(s0, s1))
-	    return false;
-	}
-
-      if (s0)
-	{
-	  // The functions have underlying elf symbols that are equal,
-	  // so now, let's compare the decl_base part of the functions
-	  // w/o considering their decl names.
-	  string n1 = get_name(), n2 = other.get_name();
-	  const_cast<function_decl*>(this)->set_name("");
-	  const_cast<decl_base&>(other).set_name("");
-	  bool decl_bases_different = !decl_base::operator==(other);
-	  const_cast<function_decl*>(this)->set_name(n1);
-	  const_cast<decl_base&>(other).set_name(n2);
-
-	  if (decl_bases_different)
-	    return false;
-	}
-      else
-	if (!decl_base::operator==(other))
-	  return false;
-
-      // Compare function types
-      shared_ptr<function_type> t0 = get_type(), t1 = o.get_type();
-      if ((t0 && t1 && *t0 != *t1)
-	  || !!t0 != !!t1)
-	return false;
-
-      // Compare the remaining properties
-      if (is_declared_inline() != o.is_declared_inline()
-	  || get_binding() != o.get_binding())
-	return false;
-
-      if (is_member_function(*this) != is_member_function(o))
-	return false;
-      if (is_member_function(*this))
-	{
-	  if (!((get_member_function_is_ctor(*this)
-		 == get_member_function_is_ctor(o))
-		&& (get_member_function_is_dtor(*this)
-		    == get_member_function_is_dtor(o))
-		&& (get_member_is_static(*this)
-		    == get_member_is_static(o))
-		&& (get_member_function_is_const(*this)
-		    == get_member_function_is_const(o))
-		&& (get_member_function_vtable_offset(*this)
-		    == get_member_function_vtable_offset(o))))
-	    return false;
-	}
-
-      return true;
-    }
-  catch(...)
-    {return false;}
+  const function_decl* o = dynamic_cast<const function_decl*>(&other);
+  if (!o)
+    return false;
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *o, k);
 }
 
 /// Return true iff the function takes a variable number of
@@ -5892,19 +6378,72 @@ class_decl::base_spec::base_spec(shared_ptr<type_base> base,
       is_virtual_(is_virtual)
 {}
 
+/// Compares two instances of @ref class_decl::base_spec.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
 bool
-class_decl::base_spec::operator==(const member_base& o) const
+equals(const class_decl::base_spec& l,
+       const class_decl::base_spec& r,
+       change_kind& k)
 {
-  try
-    {
-      const class_decl::base_spec& other =
-	dynamic_cast<const class_decl::base_spec&>(o);
+  bool result = true;
 
-      return (member_base::operator==(other)
-	      && *get_base_class() == *other.get_base_class());
+  if (!l.member_base::operator==(r)
+      || (*l.get_base_class() != *r.get_base_class()))
+    {
+      k |= LOCAL_CHANGE_KIND;
+      result =false;
     }
-  catch(...)
-    {return false;}
+  return result;
+}
+
+/// Comparison operator for @ref class_decl::base_spec.
+///
+/// @param other the instance of @ref class_decl::base_spec to compare
+/// against.
+///
+/// @return true if the current instance of @ref class_decl::base_spec
+/// equals @p other.
+bool
+class_decl::base_spec::operator==(const decl_base& other) const
+{
+  const class_decl::base_spec* o =
+    dynamic_cast<const class_decl::base_spec*>(&other);
+
+  if (!o)
+    return false;
+
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, *o, k);
+}
+
+/// Comparison operator for @ref class_decl::base_spec.
+///
+/// @param other the instance of @ref class_decl::base_spec to compare
+/// against.
+///
+/// @return true if the current instance of @ref class_decl::base_spec
+/// equals @p other.
+bool
+class_decl::base_spec::operator==(const member_base& other) const
+{
+  const class_decl::base_spec* o =
+    dynamic_cast<const class_decl::base_spec*>(&other);
+  if (!o)
+    return false;
+
+  return operator==(static_cast<const decl_base&>(*o));
 }
 
 /// Add a data member to the current instance of class_decl.
@@ -6260,193 +6799,217 @@ class_decl::get_hash() const
   return hash_class(this);
 }
 
+/// Compares two instances of @ref class_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a bitfield that gives information about the kind of
+/// changes there are between @p l and @p r.  This one is set iff the
+/// function returns false.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const class_decl& l, const class_decl& r, change_kind& k)
+{
+#define RETURN(value)				\
+  do {						\
+    l.priv_->unmark_as_being_compared(&l);	\
+    l.priv_->unmark_as_being_compared(&r);	\
+    return value;				\
+  } while(0)
+
+  // if one of the classes is declaration-only, look through it to
+  // get its definition.
+  if (l.get_is_declaration_only()
+      || r.get_is_declaration_only())
+    {
+      const class_decl* def1 = l.get_is_declaration_only()
+	? l.get_definition_of_declaration().get()
+	: &l;
+
+      const class_decl* def2 = r.get_is_declaration_only()
+	? r.get_definition_of_declaration().get()
+	: &r;
+
+      if (!def1 || !def2
+	  || def1->get_is_declaration_only()
+	  || def2->get_is_declaration_only())
+	{
+	  string q1 = l.get_qualified_name();
+	  string q2 = r.get_qualified_name();
+	  if (q1 != q2)
+	    {
+	      k |= LOCAL_CHANGE_KIND;
+	      RETURN(false);
+	    }
+	  RETURN(true);
+	}
+
+      if (l.priv_->comparison_started(&l)
+	  || l.priv_->comparison_started(&r))
+	RETURN(true);
+
+      l.priv_->mark_as_being_compared(l);
+      l.priv_->mark_as_being_compared(r);
+
+      bool val = *def1 == *def2;
+      if (!val)
+	k |= LOCAL_CHANGE_KIND;
+      RETURN(val);
+    }
+
+  // No need to go further if the classes have different names or
+  // different size / alignment.
+  if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
+    {
+      k |= LOCAL_CHANGE_KIND;
+      RETURN(false);
+    }
+
+  if (l.priv_->comparison_started(&l)
+      || l.priv_->comparison_started(&r))
+    RETURN(true);
+
+  l.priv_->mark_as_being_compared(&l);
+  l.priv_->mark_as_being_compared(&r);
+
+  bool result = true;
+
+  // Compare bases.
+  {
+    if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+      }
+
+    for(class_decl::base_specs::const_iterator
+	  b0 = l.get_base_specifiers().begin(),
+	  b1 = r.get_base_specifiers().begin();
+	(b0 != l.get_base_specifiers().end()
+	 && b1 != r.get_base_specifiers().end());
+	++b0, ++b1)
+      if (*b0 != *b1)
+	{
+	  k |= SUBTYPE_CHANGE_KIND;
+	  result = false;
+	  break;
+	}
+  }
+
+  //compare data_members
+  {
+    if (l.get_data_members().size() != r.get_data_members().size())
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+      }
+
+    for (class_decl::data_members::const_iterator
+	   d0 = l.get_data_members().begin(),
+	   d1 = r.get_data_members().begin();
+	 d0 != l.get_data_members().end() && d1 != r.get_data_members().end();
+	 ++d0, ++d1)
+      if (**d0 != **d1)
+	{
+	  k |= SUBTYPE_CHANGE_KIND;
+	  result = false;
+	  break;
+	}
+  }
+
+  // compare virtual member functions.  We do not compare
+  // non-virtual member functions here because we don't consider
+  // them as being meaningful in the *equality* of two classes.
+  {
+    if (l.get_virtual_mem_fns().size() != r.get_virtual_mem_fns().size())
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+      }
+
+    for (class_decl::member_functions::const_iterator
+	   f0 = l.get_virtual_mem_fns().begin(),
+	   f1 = r.get_virtual_mem_fns().begin();
+	 f0 != l.get_virtual_mem_fns().end()
+	   && f1 != r.get_virtual_mem_fns().end();
+	 ++f0, ++f1)
+      if (**f0 != **f1)
+	{
+	  k |= SUBTYPE_CHANGE_KIND;
+	  result = false;
+	}
+  }
+
+  // compare member function templates
+  {
+    if (l.get_member_function_templates().size()
+	!= r.get_member_function_templates().size())
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+      }
+
+    for (class_decl::member_function_templates::const_iterator
+	   fn_tmpl_it0 = l.get_member_function_templates().begin(),
+	   fn_tmpl_it1 = r.get_member_function_templates().begin();
+	 fn_tmpl_it0 != l.get_member_function_templates().end()
+	   &&  fn_tmpl_it1 != r.get_member_function_templates().end();
+	 ++fn_tmpl_it0, ++fn_tmpl_it1)
+      if (**fn_tmpl_it0 != **fn_tmpl_it1)
+	{
+	  k |= LOCAL_CHANGE_KIND;
+	  result = false;
+	  break;
+	}
+  }
+
+  // compare member class templates
+  {
+    if (l.get_member_class_templates().size()
+	!= r.get_member_class_templates().size())
+      {
+	k |= LOCAL_CHANGE_KIND;
+	result = false;
+      }
+
+    for (class_decl::member_class_templates::const_iterator
+	   cl_tmpl_it0 = l.get_member_class_templates().begin(),
+	   cl_tmpl_it1 = r.get_member_class_templates().begin();
+	 cl_tmpl_it0 != l.get_member_class_templates().end()
+	   &&  cl_tmpl_it1 != r.get_member_class_templates().end();
+	 ++cl_tmpl_it0, ++cl_tmpl_it1)
+      if (**cl_tmpl_it0 != **cl_tmpl_it1)
+	{
+	  k |= LOCAL_CHANGE_KIND;
+	  result = false;
+	  break;
+	}
+  }
+
+  RETURN(result);
+}
+
+/// Comparison operator for @ref class_decl.
+///
+/// @param other the instance of @ref class_decl to compare against.
+///
+/// @return true iff the current instance of @ref class_decl equals @p
+/// other.
 bool
 class_decl::operator==(const decl_base& other) const
 {
-  const class_decl* op = 0;
-  try
-    {
-      op = dynamic_cast<const class_decl*>(&other);
-      if (!op)
-	return false;
-      const class_decl& o = *op;
-
-#define RETURN(value)					\
-      do {						\
-	priv_->unmark_as_being_compared(this);		\
-	op->priv_->unmark_as_being_compared(op);	\
-	return value;					\
-      } while(0)
-
-      // if one of the classes is declaration-only, look through it to
-      // get its definition.
-      if (get_is_declaration_only()
-	  || o.get_is_declaration_only())
-	{
-	  const class_decl* def1 = get_is_declaration_only()
-	    ? get_definition_of_declaration().get()
-	    : this;
-
-	  const class_decl* def2 = o.get_is_declaration_only()
-	    ? o.get_definition_of_declaration().get()
-	    : op;
-
-	  if (!def1 || !def2
-	      || def1->get_is_declaration_only()
-	      || def2->get_is_declaration_only())
-	    {
-	      string q1 = get_qualified_name();
-	      string q2 = o.get_qualified_name();
-	      if (q1 != q2)
-		RETURN(false);
-	      RETURN(true);
-	    }
-
-	  if (priv_->comparison_started(this)
-	      || priv_->comparison_started(o))
-	    return true;
-
-	  priv_->mark_as_being_compared(this);
-	  priv_->mark_as_being_compared(o);
-
-	  bool val = *def1 == *def2;
-	  RETURN(val);
-	}
-
-#if 0
-      if (hash_ != 0
-	  && !hashing_started_
-	  && other.hash_ != 0
-	  && hash_ != other.hash_)
-	RETURN(false);
-#endif
-
-      // No need to go further if the classes have different names or
-      // different size / alignment.
-      if (!(decl_base::operator==(o) && type_base::operator==(o)))
-	RETURN(false);
-
-      if (priv_->comparison_started(this)
-	  || priv_->comparison_started(o))
-	return true;
-
-      priv_->mark_as_being_compared(this);
-      priv_->mark_as_being_compared(o);
-
-      // Compare bases.
-      {
-	if (get_base_specifiers().size() != o.get_base_specifiers().size())
-	  RETURN(false);
-
-	base_specs::const_iterator b0, b1;
-	for(b0 = get_base_specifiers().begin(),
-	      b1 = o.get_base_specifiers().begin();
-	    (b0 != get_base_specifiers().end()
-	     && b1 != o.get_base_specifiers().end());
-	    ++b0, ++b1)
-	  if (**b0 != **b1)
-	    RETURN(false);
-	if (b0 != get_base_specifiers().end()
-	    || b1 != o.get_base_specifiers().end())
-	  RETURN(false);
-      }
-
-      //Compare member types
-#if 0
-      {
-	if (get_member_types().size() != o.get_member_types().size())
-	  RETURN(false);
-
-	member_types::const_iterator t0, t1;
-	for (t0 = get_member_types().begin(),
-	       t1 = o.get_member_types().begin();
-	     (t0 != get_member_types().end()
-	      && t1 != o.get_member_types().end());
-	     ++t0, ++t1)
-	  if (!(**t0 == **t1))
-	    RETURN(false);
-	if (t0 != get_member_types().end()
-	    || t1 != o.get_member_types().end())
-	  RETURN(false);
-      }
-#endif
-
-      //compare data_members
-      {
-	if (get_data_members().size() != o.get_data_members().size())
-	  RETURN(false);
-
-	data_members::const_iterator d0, d1;
-	for (d0 = get_data_members().begin(), d1 = o.get_data_members().begin();
-	     d0 != get_data_members().end() && d1 != o.get_data_members().end();
-	     ++d0, ++d1)
-	  if (**d0 != **d1)
-	    RETURN(false);
-	if (d0 != get_data_members().end() || d1 != o.get_data_members().end())
-	  RETURN(false);
-      }
-
-      // compare virtual member functions.  We do not compare
-      // non-virtual member functions here because we don't consider
-      // them as being meaningful in the *equality* of two classes.
-      {
-	if (get_virtual_mem_fns().size() != o.get_virtual_mem_fns().size())
-	  RETURN(false);
-
-	member_functions::const_iterator f0, f1;
-	for (f0 = get_virtual_mem_fns().begin(),
-	       f1 = o.get_virtual_mem_fns().begin();
-	     f0 != get_virtual_mem_fns().end()
-	       && f1 != o.get_virtual_mem_fns().end();
-	     ++f0, ++f1)
-	  if (**f0 != **f1)
-	    RETURN(false);
-	if (f0 != get_virtual_mem_fns().end()
-	    || f1 != o.get_virtual_mem_fns().end())
-	  RETURN(false);
-      }
-
-      // compare member function templates
-      {
-	if (get_member_function_templates().size()
-	    != o.get_member_function_templates().size())
-	  RETURN(false);
-
-	member_function_templates::const_iterator fn_tmpl_it0, fn_tmpl_it1;
-	for (fn_tmpl_it0 = get_member_function_templates().begin(),
-	       fn_tmpl_it1 = o.get_member_function_templates().begin();
-	     fn_tmpl_it0 != get_member_function_templates().end()
-	       &&  fn_tmpl_it1 != o.get_member_function_templates().end();
-	     ++fn_tmpl_it0, ++fn_tmpl_it1)
-	  if (**fn_tmpl_it0 != **fn_tmpl_it1)
-	    RETURN(false);
-	if (fn_tmpl_it0 != get_member_function_templates().end()
-	    || fn_tmpl_it1 != o.get_member_function_templates().end())
-	  RETURN(false);
-      }
-
-      // compare member class templates
-      {
-	if (get_member_class_templates().size()
-	    != o.get_member_class_templates().size())
-	  RETURN(false);
-
-	member_class_templates::const_iterator cl_tmpl_it0, cl_tmpl_it1;
-	for (cl_tmpl_it0 = get_member_class_templates().begin(),
-	       cl_tmpl_it1 = o.get_member_class_templates().begin();
-	     cl_tmpl_it0 != get_member_class_templates().end()
-	       &&  cl_tmpl_it1 != o.get_member_class_templates().end();
-	     ++cl_tmpl_it0, ++cl_tmpl_it1)
-	  if (**cl_tmpl_it0 != **cl_tmpl_it1)
-	    RETURN(false);
-	if (cl_tmpl_it0 != get_member_class_templates().end()
-	    || cl_tmpl_it1 != o.get_member_class_templates().end())
-	  RETURN(false);
-      }
-    }
-  catch (...)
-    {RETURN(false);}
-  RETURN(true);
+  const class_decl* op = dynamic_cast<const class_decl*>(&other);
+  if (!op)
+    return false;
+  const class_decl& o = *op;
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, o, k);
 }
 
 /// Equality operator for class_decl.
@@ -6459,15 +7022,18 @@ class_decl::operator==(const decl_base& other) const
 bool
 class_decl::operator==(const type_base& other) const
 {
-  try
-    {
-      const decl_base& o = dynamic_cast<const decl_base&>(other);
-      return *this == o;
-    }
-  catch(...)
-    {return false;}
+  const decl_base* o = dynamic_cast<const decl_base*>(&other);
+  if (!o)
+    return false;
+  return *this == *o;
 }
 
+/// Comparison operator for @ref class_decl.
+///
+/// @param other the instance of @ref class_decl to compare against.
+///
+/// @return true iff the current instance of @ref class_decl equals @p
+/// other.
 bool
 class_decl::operator==(const class_decl& other) const
 {
@@ -6585,14 +7151,15 @@ class_decl::member_base::operator==(const member_base& o) const
 }
 
 bool
-operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r)
+operator==(const class_decl::base_spec_sptr l,
+	   const class_decl::base_spec_sptr r)
 {
   if (l.get() == r.get())
     return true;
   if (!!l != !!r)
     return false;
 
-  return *l == *r;
+  return *l == static_cast<const decl_base&>(*r);
 }
 
 bool

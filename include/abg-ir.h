@@ -572,6 +572,40 @@ typedef shared_ptr<class_decl> class_decl_sptr;
 /// Convenience typedef for a weak pointer on a @ref class_decl.
 typedef weak_ptr<class_decl> class_decl_wptr;
 
+/// A bitfield that gives callers of abigail::ir::equals() some
+/// insight about how different two internal representation artifacts
+/// are.
+enum change_kind
+{
+  NO_CHANGE_KIND = 0,
+
+  /// This means that a given IR artifact has local differences, with
+  /// respect to the other artifact it was compared against.  A local
+  /// change is a change that is carried by the artifact itself,
+  /// rather than by one off its sub-types.
+  LOCAL_CHANGE_KIND = 1,
+
+  /// This means that a given IR artifact has changes in some of its
+  /// sub-types, with respect to the other artifact it was compared
+  /// against.
+  SUBTYPE_CHANGE_KIND = 1 << 1
+};// end enum change_kink
+
+change_kind
+operator|(change_kind, change_kind);
+
+change_kind
+operator&(change_kind, change_kind);
+
+change_kind&
+operator|=(change_kind&, change_kind);
+
+change_kind&
+operator&=(change_kind&, change_kind);
+
+bool
+equals(const decl_base&, const decl_base&, change_kind&);
+
 /// The base type of all declarations.
 class decl_base : public ir_traversable_base
 {
@@ -703,6 +737,12 @@ public:
   void
   set_visibility(visibility v);
 
+  friend bool
+  equals(const decl_base&, const decl_base&, change_kind&);
+
+  friend bool
+  equals(const var_decl&, const var_decl&, change_kind&);
+
   friend decl_base_sptr
   add_decl_to_scope(decl_base_sptr dcl, scope_decl* scpe);
 
@@ -753,6 +793,9 @@ operator<<(std::ostream&, decl_base::visibility);
 
 std::ostream&
 operator<<(std::ostream&, decl_base::binding);
+
+bool
+equals(const scope_decl&, const scope_decl&, change_kind&);
 
 /// Convenience typedef for a shared pointer on a @ref scope_decl.
 typedef shared_ptr<scope_decl> scope_decl_sptr;
@@ -878,6 +921,9 @@ public:
   virtual ~global_scope();
 };
 
+bool
+equals(const type_base&, const type_base&, change_kind&);
+
 /// An abstraction helper for type declarations
 class type_base
 {
@@ -964,6 +1010,9 @@ struct type_shared_ptr_equal
   }
 };
 
+bool
+equals(const type_decl&, const type_decl&, change_kind&);
+
 /// Convenience typedef for a shared pointer on a @ref type_decl.
 typedef shared_ptr<type_decl> type_decl_sptr;
 
@@ -1003,6 +1052,9 @@ public:
 
   virtual ~type_decl();
 };// end class type_decl.
+
+bool
+equals(const scope_type_decl&, const scope_type_decl&, change_kind&);
 
 /// A type that introduces a scope.
 class scope_type_decl : public scope_decl, public virtual type_base
@@ -1046,6 +1098,9 @@ public:
 
   virtual ~namespace_decl();
 };// end class namespace_decl
+
+bool
+equals(const qualified_type_def&, const qualified_type_def&, change_kind&);
 
 typedef shared_ptr<qualified_type_def> qualified_type_def_sptr;
 
@@ -1114,6 +1169,9 @@ operator|(qualified_type_def::CV, qualified_type_def::CV);
 std::ostream&
 operator<<(std::ostream&, qualified_type_def::CV);
 
+bool
+equals(const pointer_type_def&, const pointer_type_def&, change_kind&);
+
 /// Convenience typedef for a shared pointer on a @ref pointer_type_def
 typedef shared_ptr<pointer_type_def> pointer_type_def_sptr;
 
@@ -1150,6 +1208,9 @@ public:
 
   virtual ~pointer_type_def();
 }; // end class pointer_type_def
+
+bool
+equals(const reference_type_def&, const reference_type_def&, change_kind&);
 
 /// Convenience typedef for a shared pointer on a @ref reference_type_def
 typedef shared_ptr<reference_type_def> reference_type_def_sptr;
@@ -1193,9 +1254,11 @@ public:
   virtual ~reference_type_def();
 }; // end class reference_type_def
 
+bool
+equals(const array_type_def&, const array_type_def&, change_kind&);
+
 /// Convenience typedef for a shared pointer on a @ref array_type_def
 typedef shared_ptr<array_type_def> array_type_def_sptr;
-
 
 /// The abstraction of an array type.
 class array_type_def : public virtual type_base, public virtual decl_base
@@ -1316,6 +1379,9 @@ public:
 
 }; // end class array_type_def
 
+bool
+equals(const enum_type_decl&, const enum_type_decl&, change_kind&);
+
 /// Convenience typedef for shared pointer on enum_type_decl.
 typedef shared_ptr<enum_type_decl> enum_type_decl_sptr;
 
@@ -1426,6 +1492,9 @@ public:
 
   virtual ~enum_type_decl();
 }; // end class enum_type_decl
+
+bool
+equals(const typedef_decl&, const typedef_decl&, change_kind&);
 
 /// Convenience typedef for a shared pointer on a @ref typedef_decl.
 typedef shared_ptr<typedef_decl> typedef_decl_sptr;
@@ -1539,6 +1608,9 @@ public:
   virtual ~dm_context_rel();
 };// end class class_decl::dm_context_rel
 
+bool
+equals(const var_decl&, const var_decl&, change_kind&);
+
 /// Convenience typedef for a shared pointer on a @ref var_decl
 typedef shared_ptr<var_decl> var_decl_sptr;
 
@@ -1622,6 +1694,9 @@ public:
   friend bool
   get_data_member_is_laid_out(const var_decl_sptr m);
 }; // end class var_decl
+
+bool
+equals(const function_decl&, const function_decl&, change_kind&);
 
 /// Convenience typedef for a shared pointer on a @ref function_decl
 typedef shared_ptr<function_decl> function_decl_sptr;
@@ -1864,6 +1939,9 @@ public:
 
   virtual ~function_decl();
 }; // end class function_decl
+
+bool
+equals(const function_type&, const function_type&, change_kind&);
 
 /// Abstraction of a function type.
 class function_type : public virtual type_base
@@ -2365,6 +2443,9 @@ public:
   virtual ~class_tdecl();
 };// end class class_tdecl
 
+bool
+equals(const class_decl&, const class_decl&, change_kind&);
+
 /// Abstracts a class declaration.
 class class_decl : public scope_type_decl
 {
@@ -2530,6 +2611,9 @@ public:
 
   friend void
   fixup_virtual_member_function(method_decl_sptr method);
+
+  friend bool
+  equals(const class_decl&, const class_decl&, change_kind&);
 };// end class class_decl
 
 void
@@ -2612,6 +2696,10 @@ public:
   operator==(const member_base& o) const;
 };// end class class_decl::member_base
 
+bool
+equals(const class_decl::base_spec&,
+       const class_decl::base_spec&,
+       change_kind&);
 
 /// Abstraction of a base specifier in a class declaration.
 class class_decl::base_spec : public member_base,
@@ -2649,6 +2737,9 @@ public:
   {return offset_in_bits_;}
 
   virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
   operator==(const member_base&) const;
 
   virtual size_t
@@ -2656,7 +2747,8 @@ public:
 };// end class class_decl::base_spec
 
 bool
-operator==(class_decl::base_spec_sptr l, class_decl::base_spec_sptr r);
+operator==(const class_decl::base_spec_sptr l,
+	   const class_decl::base_spec_sptr r);
 
 class mem_fn_context_rel;
 
