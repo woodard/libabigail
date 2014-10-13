@@ -1699,6 +1699,16 @@ distinct_diff::length() const
   return 1;
 }
 
+/// @return true iff the current diff node carries local changes.
+bool
+distinct_diff::has_local_changes() const
+{
+  // The changes on a distinct_diff are all local.
+  if (length())
+    return true;
+  return false;
+}
+
 /// Emit a report about the current diff instance.
 ///
 /// @param out the output stream to send the diff report to.
@@ -2689,6 +2699,16 @@ unsigned
 var_diff::length() const
 {return *first_var() != *second_var();}
 
+/// @return true iff the current diff node carries local changes.
+bool
+var_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_var(), *second_var(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
+
 /// Report the diff in a serialized form.
 ///
 /// @param out the stream to serialize the diff to.
@@ -2894,6 +2914,16 @@ pointer_diff::length() const
     : 0;
 }
 
+/// @return true iff the current diff node carries local changes.
+bool
+pointer_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_pointer(), *second_pointer(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
+
 /// Getter for the diff between the pointed-to types of the pointers
 /// of this diff.
 ///
@@ -3087,6 +3117,16 @@ array_diff::length() const
 	++l;
     }
   return l;
+}
+
+/// @return true iff the current diff node carries local changes.
+bool
+array_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_array(), *second_array(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
 }
 
 /// Report the diff in a serialized form.
@@ -3321,6 +3361,16 @@ reference_diff::length() const
     : 0;
 }
 
+/// @return true iff the current diff node carries local changes.
+bool
+reference_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_reference(), *second_reference(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
+
 /// Report the diff in a serialized form.
 ///
 /// @param out the output stream to serialize the dif to.
@@ -3494,6 +3544,16 @@ qualified_type_diff::length() const
   return (underlying_type_diff()
 	  ? underlying_type_diff()->length() + l
 	  : l);
+}
+
+/// @return true iff the current diff node carries local changes.
+bool
+qualified_type_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_qualified_type(), *second_qualified_type(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
 }
 
 /// Return the first underlying type that is not a qualified type.
@@ -3769,6 +3829,16 @@ enum_diff::length() const
   a = underlying_type_diff() ? underlying_type_diff()->length() : 0;
   b = priv_->enumerators_changes_.length();
   return a + b;
+}
+
+/// @return true iff the current diff node carries local changes.
+bool
+enum_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_enum(), *second_enum(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
 }
 
 /// A functor to compare two enumerators based on their value.  This
@@ -4124,7 +4194,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	      priv_->deleted_bases_.find(qname);
 	    if (j != priv_->deleted_bases_.end())
 	      {
-		if (*j->second != *b)
+		if (j->second != b)
 		  priv_->changed_bases_[qname] =
 		    std::make_pair(j->second, b);
 		priv_->deleted_bases_.erase(j);
@@ -4818,6 +4888,16 @@ class_diff::get_pretty_representation() const
 unsigned
 class_diff::length() const
 {return (*first_class_decl() != *second_class_decl());}
+
+/// @return true iff the current diff node carries local changes.
+bool
+class_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_class_decl(), *second_class_decl(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
 
 /// @return the first class invoveld in the diff.
 shared_ptr<class_decl>
@@ -5722,7 +5802,17 @@ base_diff::get_pretty_representation() const
 /// @return the length of the diff.
 unsigned
 base_diff::length() const
-{return *first_base() != *second_base();}
+{return first_base() != second_base();}
+
+/// @return true iff the current diff node carries local changes.
+bool
+base_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_base(), *second_base(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
 
 /// Generates a report for the current instance of base_diff.
 ///
@@ -6252,6 +6342,16 @@ scope_diff::length() const
   return changed_types().size() + changed_decls().size();
 }
 
+/// @return true iff the current diff node carries local changes.
+bool
+scope_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_scope(), *second_scope(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
+
 /// Report the changes of one scope against another.
 ///
 /// @param out the out stream to report the changes to.
@@ -6718,6 +6818,15 @@ unsigned
 function_decl_diff::length() const
 {return *first_function_decl() != *second_function_decl();}
 
+/// @return true iff the current diff node carries local changes.
+bool
+function_decl_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_function_decl(), *second_function_decl(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
 /// A comparison functor to compare two changed function parameters
 /// based on their indexes.
 struct changed_parm_comp
@@ -7050,6 +7159,15 @@ type_decl_diff::length() const
 	  + diff_length_of_type_bases(f, s));
 }
 
+/// @return true iff the current diff node carries local changes.
+bool
+type_decl_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_type_decl(), *second_type_decl(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
 /// Ouputs a report of the differences between of the two type_decl
 /// involved in the type_decl_diff.
 ///
@@ -7241,6 +7359,16 @@ typedef_diff::length() const
   return !(*first_typedef_decl() == *second);
 }
 
+/// @return true iff the current diff node carries local changes.
+bool
+typedef_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_typedef_decl(), *second_typedef_decl(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
+
 /// Reports the difference between the two subjects of the diff in a
 /// serialized form.
 ///
@@ -7363,6 +7491,11 @@ translation_unit_diff::second_translation_unit() const
 unsigned
 translation_unit_diff::length() const
 {return scope_diff::length();}
+
+/// @return true iff the current diff node carries local changes.
+bool
+translation_unit_diff::has_local_changes() const
+{return false;}
 
 /// Report the diff in a serialized form.
 ///

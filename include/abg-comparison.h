@@ -697,11 +697,22 @@ public:
   virtual void
   chain_into_hierarchy();
 
-  /// Pure interface to get the length of the changes
-  /// encapsulated by this diff.  This is to be implemented by all
-  /// descendants of this class.
+  /// Pure interface to get the length of the changes encapsulated by
+  /// this diff.  A length of zero means that the current instance of
+  /// @ref diff doesn't carry any change.
+  ///
+  /// This is to be implemented by all descendants of this type.
   virtual unsigned
   length() const = 0;
+
+  /// Pure interface to know if the current instance of @diff carries
+  /// a local change.  A local change is a change that is on the @ref
+  /// diff object itself, as opposed to a change that is carried by
+  /// some of its children nodes.
+  ///
+  /// This is to be implemented by all descendants of this type.
+  virtual bool
+  has_local_changes() const = 0;
 
   /// Pure interface to report the diff in a serialized form that is
   /// legible for the user.
@@ -749,6 +760,10 @@ protected:
 		 diff_context_sptr	ctxt);
 
 public:
+
+  virtual bool
+  has_local_changes() const = 0;
+
   virtual ~type_diff_base();
 };// end class type_diff_base
 
@@ -766,6 +781,10 @@ protected:
 		 diff_context_sptr	ctxt);
 
 public:
+
+  virtual bool
+  has_local_changes() const = 0;
+
   virtual ~decl_diff_base();
 };// end class decl_diff_base
 
@@ -806,6 +825,9 @@ public:
 
   virtual unsigned
   length() const;
+
+  virtual bool
+  has_local_changes() const;
 
   virtual void
   report(ostream& out, const string& indent = "") const;
@@ -865,6 +887,9 @@ public:
   virtual unsigned
   length() const;
 
+  virtual bool
+  has_local_changes() const;
+
   virtual void
   report(ostream& out, const string& indent = "") const;
 
@@ -918,6 +943,9 @@ public:
 
   virtual unsigned
   length() const;
+
+  virtual bool
+  has_local_changes() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
@@ -976,6 +1004,9 @@ public:
   virtual unsigned
   length() const;
 
+  virtual bool
+  has_local_changes() const;
+
   virtual void
   report(ostream&, const string& indent = "") const;
 
@@ -1033,6 +1064,9 @@ public:
   virtual unsigned
   length() const;
 
+  virtual bool
+  has_local_changes() const;
+
   virtual void
   report(ostream&, const string& indent = "") const;
 
@@ -1087,6 +1121,9 @@ public:
 
   virtual unsigned
   length() const;
+
+  virtual bool
+  has_local_changes() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
@@ -1157,6 +1194,9 @@ public:
 
   virtual unsigned
   length() const;
+
+  virtual bool
+  has_local_changes() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
@@ -1279,6 +1319,9 @@ public:
   virtual unsigned
   length() const;
 
+  virtual bool
+  has_local_changes() const;
+
   virtual void
   report(ostream&, const string& indent = "") const;
 
@@ -1334,6 +1377,9 @@ public:
 
   virtual unsigned
   length() const;
+
+  virtual bool
+  has_local_changes() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
@@ -1441,6 +1487,9 @@ public:
   virtual unsigned
   length() const;
 
+  virtual bool
+  has_local_changes() const;
+
   virtual void
   report(ostream& out, const string& indent = "") const;
 
@@ -1518,6 +1567,9 @@ compute_diff(const function_decl_sptr	first,
   virtual unsigned
   length() const;
 
+  virtual bool
+  has_local_changes() const;
+
   virtual void
   report(ostream&, const string& indent = "") const;
 
@@ -1565,6 +1617,9 @@ public:
 
   virtual unsigned
   length() const;
+
+  virtual bool
+  has_local_changes() const;
 
   virtual void
   report(ostream& out, const string& indent = "") const;
@@ -1621,6 +1676,9 @@ public:
   virtual unsigned
   length() const;
 
+  virtual bool
+  has_local_changes() const;
+
   virtual void
   report(ostream&, const string& indent = "") const;
 
@@ -1666,6 +1724,9 @@ public:
 
   virtual unsigned
   length() const;
+
+  virtual bool
+  has_local_changes() const;
 
   virtual void
   report(ostream& out, const string& indent = "") const;
