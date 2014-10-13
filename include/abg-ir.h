@@ -1522,7 +1522,7 @@ public:
   {offset_in_bits_ = o;}
 
   bool
-  operator==(const dm_context_rel& o)
+  operator==(const dm_context_rel& o) const
   {
     if (!context_rel::operator==(o))
       return false;
