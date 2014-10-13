@@ -2323,9 +2323,11 @@ pointer_diff::get_pretty_representation() const
 /// @return the length of this diff.
 unsigned
 pointer_diff::length() const
-{return underlying_type_diff()
+{
+  return underlying_type_diff()
     ? underlying_type_diff()->length()
-    : 0;}
+    : 0;
+}
 
 /// Getter for the diff between the pointed-to types of the pointers
 /// of this diff.
@@ -2748,9 +2750,11 @@ reference_diff::get_pretty_representation() const
 /// @return the length of the diff.
 unsigned
 reference_diff::length() const
-{return underlying_type_diff()
+{
+  return underlying_type_diff()
     ? underlying_type_diff()->length()
-    : 0;}
+    : 0;
+}
 
 /// Report the diff in a serialized form.
 ///
