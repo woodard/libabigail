@@ -7,7 +7,8 @@ Libabigail manual
 =================
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    libabigail-overview
-   tools
+   libabigail-tools
+   libabigail-concepts

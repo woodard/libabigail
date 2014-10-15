@@ -1,3 +1,5 @@
+.. _abidiff_label:
+
 =======
 abidiff
 =======
@@ -102,6 +104,12 @@ Options
     In the resulting report, do not display the linkage names of
     the added, removed, or changed functions or variables.
 
+
+  * --suppressions <*path-to-suppressions*>
+
+    Use a :ref:`suppression specification <suppr_spec_label>` file located
+    at *path-to-suppressions*.
+
   * --drop <*regex*>
 
     When reading the *first-shared-library* and
@@ -158,47 +166,21 @@ Options
 
   * --harmless
 
-    In the diff report, display only the :ref:`harmless <harmlesslabel>`
-    changes.  By default, the harmless changes are filtered out of the
-    diff report keep the clutter to a minimum and have a greater
-    change to spot real ABI issues.
+    In the diff report, display only the :ref:`harmless
+    <harmlesschangeconcept_label>` changes.  By default, the harmless
+    changes are filtered out of the diff report keep the clutter to a
+    minimum and have a greater change to spot real ABI issues.
 
   * --no-harmful
 
-    In the diff report, do not display the :ref:`harmful <harmfullabel>`
-    changes.  By default, only the harmful changes are displayed in
-    diff report.
+    In the diff report, do not display the :ref:`harmful
+    <harmfulchangeconcept_label>` changes.  By default, only the
+    harmful changes are displayed in diff report.
 
   * --redundant
 
     In the diff report, do not display redundant changes.  A redundant
     change is a change that has been displayed elsewhere in the report.
-
-Notes
-=====
-
-.. _harmlesslabel:
-
-Harmless changes
-----------------
-
-A change in the diff report is considered harmless if it will not
-cause any ABI compatibility issue.  That is, it will not prevent
-an application dynamically linked against *first-shared-library*
-to keep working reasonably with *second-shared-library*.
-
-By default, ``abidiff`` filters harmless changes from the diff report.
-
-
-.. _harmfullabel:
-
-Harmful changes
---------------
-
-A change in the diff report is considered harmful if it might cause
-ABI compatibility issues.  That is, it might prevent an application
-dynamically linked against *first-shared-library* to keep working
-reasonably with *second-shared-library*.
 
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 .. _DWARF: http://www.dwarfstd.org
