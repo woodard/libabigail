@@ -4908,12 +4908,11 @@ finish_member_function_reading(Dwarf_Die*		die,
   die_access_specifier(die, access);
   bool is_static = false;
   {
-    // Let's see if the first parameter has the same class
-    // type as the current class has a DW_AT_artificial
-    // attribute flag set.  We are not looking at
-    // DW_AT_object_pointer (for DWARF 3) because it
-    // wasn't being emitted in GCC 4_4, which was already
-    // DWARF 3.
+    // Let's see if the first parameter is a pointer to an instance of
+    // the same class type as the current class and has a
+    // DW_AT_artificial attribute flag set.  We are not looking at
+    // DW_AT_object_pointer (for DWARF 3) because it wasn't being
+    // emitted in GCC 4_4, which was already DWARF 3.
     function_decl::parameter_sptr first_parm;
     if (!f->get_parameters().empty())
       first_parm = f->get_parameters()[0];
@@ -4921,13 +4920,20 @@ finish_member_function_reading(Dwarf_Die*		die,
     bool is_artificial =
       first_parm && first_parm->get_artificial();;
     pointer_type_def_sptr this_ptr_type;
+    type_base_sptr other_klass;
+
     if (is_artificial)
-      this_ptr_type =
-	dynamic_pointer_cast<pointer_type_def>
-	(first_parm->get_type());
-    if (this_ptr_type && (get_pretty_representation
-			  (this_ptr_type->get_pointed_to_type())
-			  == klass->get_pretty_representation()))
+      this_ptr_type = is_pointer(first_parm->get_type());
+    if (this_ptr_type)
+      other_klass = this_ptr_type->get_pointed_to_type();
+    // Sometimes, other_klass can be qualified; e.g, volatile.  In
+    // that case, let's get the unqualified version of other_klass.
+    if (qualified_type_def_sptr q = is_qualified_type(other_klass))
+      other_klass = q->get_underlying_type();
+
+    if (other_klass
+	&& (ir::get_type_declaration(other_klass)->get_qualified_name()
+	    == klass->get_qualified_name()))
       ;
     else
       is_static = true;

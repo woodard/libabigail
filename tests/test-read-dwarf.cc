@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013 Red Hat, Inc.
+// Copyright (C) 2013-2014 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -89,6 +89,11 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test7.so",
     "data/test-read-dwarf/test7.so.abi",
     "output/test-read-dwarf/test7.so.abi"
+  },
+  {
+    "data/test-read-dwarf/test8-qualified-this-pointer.so",
+    "data/test-read-dwarf/test8-qualified-this-pointer.so.abi",
+    "output/test-read-dwarf/test8-qualified-this-pointer.so.abi"
   },
   // This should be the last entry.
   {NULL, NULL, NULL}

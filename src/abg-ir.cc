@@ -3033,6 +3033,26 @@ class_decl_sptr
 is_class_type(const decl_base_sptr d)
 {return is_class_type(is_type(d));}
 
+/// Test whether a type is a pointer_type_def.
+///
+/// @param t the type to test.
+///
+/// @return the @ref pointer_type_def_sptr if @p t is a
+/// pointer_type_def, null otherwise.
+pointer_type_def_sptr
+is_pointer(const type_base_sptr t)
+{return dynamic_pointer_cast<pointer_type_def>(t);}
+
+/// Test whether a type is a qualified_type_def.
+///
+/// @param t the type to test.
+///
+/// @return the @ref qualified_type_def_sptr if @p t is a
+/// qualified_type_def, null otherwise.
+qualified_type_def_sptr
+is_qualified_type(const type_base_sptr t)
+{return dynamic_pointer_cast<qualified_type_def>(t);}
+
 /// If a class is a decl-only class, get its definition.  Otherwise,
 /// just return the initial class.
 ///

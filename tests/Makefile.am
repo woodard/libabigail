@@ -232,12 +232,22 @@ tests/data/test-read-dwarf/test2.so		\
 tests/data/test-read-dwarf/test2.so.abi		\
 tests/data/test-read-dwarf/test3.c		\
 tests/data/test-read-dwarf/test3.so		\
+tests/data/test-read-dwarf/test3.so.abi		\
 tests/data/test-read-dwarf/test4.c		\
 tests/data/test-read-dwarf/test4.so		\
+tests/data/test-read-dwarf/test4.so.abi		\
 tests/data/test-read-dwarf/test5.cc		\
 tests/data/test-read-dwarf/test5.so		\
+tests/data/test-read-dwarf/test5.so.abi		\
 tests/data/test-read-dwarf/test6.cc		\
 tests/data/test-read-dwarf/test6.so		\
+tests/data/test-read-dwarf/test6.so.abi		\
+tests/data/test-read-dwarf/test7.cc		\
+tests/data/test-read-dwarf/test7.so		\
+tests/data/test-read-dwarf/test7.so.abi		\
+tests/data/test-read-dwarf/test8-qualified-this-pointer.cc		\
+tests/data/test-read-dwarf/test8-qualified-this-pointer.so		\
+tests/data/test-read-dwarf/test8-qualified-this-pointer.so.abi		\
 \
 data/test-diff-filter/test0-v0.cc		\
 data/test-diff-filter/test0-v1.cc		\
