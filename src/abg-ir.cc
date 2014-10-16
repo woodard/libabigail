@@ -6818,8 +6818,8 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 {
 #define RETURN(value)				\
   do {						\
-    l.priv_->unmark_as_being_compared(&l);	\
-    l.priv_->unmark_as_being_compared(&r);	\
+    l.priv_->unmark_as_being_compared(l);	\
+    l.priv_->unmark_as_being_compared(r);	\
     return value;				\
   } while(0)
 
@@ -6850,9 +6850,9 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 	  RETURN(true);
 	}
 
-      if (l.priv_->comparison_started(&l)
-	  || l.priv_->comparison_started(&r))
-	RETURN(true);
+      if (l.priv_->comparison_started(l)
+	  || l.priv_->comparison_started(r))
+	return true;
 
       l.priv_->mark_as_being_compared(l);
       l.priv_->mark_as_being_compared(r);
@@ -6871,12 +6871,12 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
       RETURN(false);
     }
 
-  if (l.priv_->comparison_started(&l)
-      || l.priv_->comparison_started(&r))
-    RETURN(true);
+  if (l.priv_->comparison_started(l)
+      || l.priv_->comparison_started(r))
+    return true;
 
-  l.priv_->mark_as_being_compared(&l);
-  l.priv_->mark_as_being_compared(&r);
+  l.priv_->mark_as_being_compared(l);
+  l.priv_->mark_as_being_compared(r);
 
   bool result = true;
 
@@ -6943,6 +6943,7 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 	{
 	  k |= SUBTYPE_CHANGE_KIND;
 	  result = false;
+	  break;
 	}
   }
 
