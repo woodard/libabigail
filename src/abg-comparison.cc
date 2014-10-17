@@ -8609,44 +8609,7 @@ compute_diff(const corpus_sptr	f,
 						 s->get_functions().end(),
 						 r->priv_->fns_edit_script_);
 
-  struct var_eq_type
-  {
-    bool
-    operator()(const var_decl* first,
-	       const var_decl* second)
-    {
-      string n1, n2;
-      if (!first->get_linkage_name().empty())
-	n1 = first->get_linkage_name();
-      if (n1.empty())
-	{
-	  n1 = first->get_pretty_representation();
-	  n2 = second->get_pretty_representation();
-	  assert(!n2.empty());
-	}
-      assert(!n1.empty());
-
-      if (n2.empty())
-	{
-	  n2 = second->get_linkage_name();
-	  if (n2.empty())
-	    {
-	      n2 = second->get_pretty_representation();
-	      n1 = second->get_pretty_representation();
-	      assert(!n1.empty());
-	    }
-	}
-      assert(!n2.empty());
-
-      if (n1 != n2)
-	return false;
-      if (*first->get_type() != *second->get_type())
-	return false;
-      return true;
-    }
-  };
-
-  diff_utils::compute_diff<vars_it_type, var_eq_type>
+  diff_utils::compute_diff<vars_it_type, eq_type>
     (f->get_variables().begin(), f->get_variables().end(),
      s->get_variables().begin(), s->get_variables().end(),
      r->priv_->vars_edit_script_);
