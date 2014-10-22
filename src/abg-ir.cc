@@ -609,19 +609,23 @@ elf_symbol::get_id_string() const
 ///
 /// @return the string.
 string
-elf_symbol::get_aliases_id_string(const string_elf_symbols_map_type& syms) const
+elf_symbol::get_aliases_id_string(const string_elf_symbols_map_type& syms,
+				  bool include_symbol_itself) const
 {
-  string result = get_id_string();
+  string result;
+
+  if (include_symbol_itself)
+      result = get_id_string();
+
   vector<elf_symbol*> aliases;
   compute_aliases_for_elf_symbol(*this, syms, aliases);
+  if (!aliases.empty() && include_symbol_itself)
+    result += ", ";
 
   for (vector<elf_symbol*>::const_iterator i = aliases.begin();
        i != aliases.end();
        ++i)
-    {
-      result += ", ";
-      result += (*i)->get_id_string();
-    }
+    result += (*i)->get_id_string();
   return result;
 }
 

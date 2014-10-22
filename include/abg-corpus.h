@@ -133,6 +133,12 @@ public:
   const variables&
   get_variables() const;
 
+  const elf_symbols&
+  get_unreferenced_function_symbols() const;
+
+  const elf_symbols&
+  get_unreferenced_variable_symbols() const;
+
   vector<string>&
   get_regex_patterns_of_fns_to_suppress();
 

@@ -1,5 +1,7 @@
 Functions changes summary: 0 Removed, 2 Changed, 1 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+Function symbols changes summary: 0 Removed, 1 Added function symbol not referenced by debug info
+Variable symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
 
 1 Added function:
   'method C0::C0()'
@@ -23,4 +25,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
          'E1 C0::m1' offset changed from 8 to 16
 
 
+1 Added function symbol not referenced by debug info:
+
+  _ZN2C0C1Ev
 

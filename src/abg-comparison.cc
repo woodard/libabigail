@@ -650,6 +650,7 @@ struct diff_context::priv
   bool					show_added_vars_;
   bool					show_linkage_names_;
   bool					show_redundant_changes_;
+  bool					show_syms_unreferenced_by_di_;
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
@@ -662,7 +663,8 @@ struct diff_context::priv
       show_changed_vars_(true),
       show_added_vars_(true),
       show_linkage_names_(false),
-      show_redundant_changes_(false)
+      show_redundant_changes_(false),
+      show_syms_unreferenced_by_di_(true)
    {}
  };// end struct diff_context::priv
 
@@ -1122,6 +1124,21 @@ void
 diff_context::show_redundant_changes(bool f)
 {priv_->show_redundant_changes_ = f;}
 
+/// Getter for the flag that indicates if symbols not referenced by
+/// any debug info are to be compared and reported about.
+///
+/// @return the boolean flag.
+bool
+diff_context::show_symbols_unreferenced_by_debug_info() const
+{return priv_->show_syms_unreferenced_by_di_;}
+
+/// Setter for the flag that indicates if symbols not referenced by
+/// any debug info are to be compared and reported about.
+///
+/// @param f the new flag to set.
+void
+diff_context::show_symbols_unreferenced_by_debug_info(bool f)
+{priv_->show_syms_unreferenced_by_di_ = f;}
 // </diff_context stuff>
 
 // <diff stuff>
@@ -7550,12 +7567,18 @@ struct corpus_diff::priv
   corpus_sptr				second_;
   edit_script				fns_edit_script_;
   edit_script				vars_edit_script_;
+  edit_script				unrefed_fn_syms_edit_script_;
+  edit_script				unrefed_var_syms_edit_script_;
   string_function_ptr_map		deleted_fns_;
   string_function_ptr_map		added_fns_;
   string_changed_function_ptr_map	changed_fns_;
   string_var_ptr_map			deleted_vars_;
   string_var_ptr_map			added_vars_;
   string_changed_var_ptr_map		changed_vars_;
+  string_elf_symbol_map		added_unrefed_fn_syms_;
+  string_elf_symbol_map		deleted_unrefed_fn_syms_;
+  string_elf_symbol_map		added_unrefed_var_syms_;
+  string_elf_symbol_map		deleted_unrefed_var_syms_;
 
   priv()
     : finished_(false)
@@ -7580,6 +7603,10 @@ struct corpus_diff::priv
     size_t num_vars_added;
     size_t num_vars_changed;
     size_t num_vars_filtered_out;
+    size_t num_func_syms_removed;
+    size_t num_func_syms_added;
+    size_t num_var_syms_removed;
+    size_t num_var_syms_added;
 
     diff_stats()
       : num_func_removed(0),
@@ -7589,7 +7616,11 @@ struct corpus_diff::priv
 	num_vars_removed(0),
 	num_vars_added(0),
 	num_vars_changed(0),
-	num_vars_filtered_out(0)
+	num_vars_filtered_out(0),
+	num_func_syms_removed(0),
+	num_func_syms_added(0),
+	num_var_syms_removed(0),
+	num_var_syms_added(0)
     {}
   };
 
@@ -7805,6 +7836,96 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	 ++i)
       added_vars_.erase(*i);
   }
+
+  // Massage the edit script for added/removed function symbols that
+  // were not referenced by any debug info and turn them into maps of
+  // {symbol_name, symbol}.
+  {
+    edit_script& e = unrefed_fn_syms_edit_script_;
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	assert(i < first_->get_unreferenced_function_symbols().size());
+	elf_symbol_sptr deleted_sym =
+	  first_->get_unreferenced_function_symbols()[i];
+	if (!second_->lookup_function_symbol(deleted_sym->get_name(),
+					     deleted_sym->get_version()))
+	  deleted_unrefed_fn_syms_[deleted_sym->get_id_string()] = deleted_sym;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    assert(i < second_->get_unreferenced_function_symbols().size());
+	    elf_symbol_sptr added_sym =
+	      second_->get_unreferenced_function_symbols()[i];
+	    if ((deleted_unrefed_fn_syms_.find(added_sym->get_id_string())
+		 == deleted_unrefed_fn_syms_.end()))
+	      {
+		if (!first_->lookup_function_symbol(added_sym->get_name(),
+						    added_sym->get_version()))
+		  added_unrefed_fn_syms_[added_sym->get_id_string()] =
+		    added_sym;
+	      }
+	    else
+	      deleted_unrefed_fn_syms_.erase(added_sym->get_id_string());
+	  }
+      }
+  }
+
+  // Massage the edit script for added/removed variable symbols that
+  // were not referenced by any debug info and turn them into maps of
+  // {symbol_name, symbol}.
+  {
+    edit_script& e = unrefed_var_syms_edit_script_;
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	assert(i < first_->get_unreferenced_variable_symbols().size());
+	elf_symbol_sptr deleted_sym =
+	  first_->get_unreferenced_variable_symbols()[i];
+	if (!second_->lookup_variable_symbol(deleted_sym->get_name(),
+					     deleted_sym->get_version()))
+	  deleted_unrefed_var_syms_[deleted_sym->get_id_string()] = deleted_sym;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    assert(i < second_->get_unreferenced_variable_symbols().size());
+	    elf_symbol_sptr added_sym =
+	      second_->get_unreferenced_variable_symbols()[i];
+	    if (deleted_unrefed_var_syms_.find(added_sym->get_id_string())
+		== deleted_unrefed_var_syms_.end())
+	      {
+		if (!first_->lookup_variable_symbol(added_sym->get_name(),
+						    added_sym->get_version()))
+		  added_unrefed_var_syms_[added_sym->get_id_string()] =
+		    added_sym;
+	      }
+	    else
+	      deleted_unrefed_var_syms_.erase(added_sym->get_id_string());
+	  }
+      }
+  }
 }
 
 /// Compute the diff stats.
@@ -7889,6 +8010,11 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
     }
 
   clear_redundancy_categorization();
+
+  stat.num_func_syms_added = added_unrefed_fn_syms_.size();
+  stat.num_func_syms_removed = deleted_unrefed_fn_syms_.size();
+  stat.num_var_syms_added = added_unrefed_var_syms_.size();
+  stat.num_var_syms_removed = deleted_unrefed_var_syms_.size();
 }
 
 /// Emit the summary of the functions & variables that got
@@ -7934,6 +8060,31 @@ corpus_diff::priv::emit_diff_stats(diff_stats&		s,
     out << "variable\n";
   else
     out << "variables\n";
+
+  if (ctxt_->show_symbols_unreferenced_by_debug_info()
+      && (s.num_func_syms_removed
+	  || s.num_func_syms_added
+	  || s.num_var_syms_removed
+	  || s.num_var_syms_added))
+    {
+      // function symbols changes summary.
+      out << indent
+	  << "Function symbols changes summary: "
+	  << s.num_func_syms_removed << " Removed, "
+	  << s.num_func_syms_added << " Added function symbol";
+      if (s.num_func_syms_added + s.num_func_syms_removed > 1)
+	out << "s";
+      out << " not referenced by debug info\n";
+
+      // variable symbol changes summary.
+      out << indent
+	  << "Variable symbols changes summary: "
+	  << s.num_var_syms_removed << " Removed, "
+	  << s.num_var_syms_added << " Added function symbol";
+      if (s.num_var_syms_added + s.num_var_syms_removed > 1)
+	out << "s";
+      out << " not referenced by debug info\n";
+    }
 }
 
 /// Walk the changed functions and variables diff nodes to categorize
@@ -8139,7 +8290,11 @@ corpus_diff::length() const
 	  + priv_->changed_fns_.size()
 	  + priv_->deleted_vars_.size()
 	  + priv_->added_vars_.size()
-	  + priv_->changed_vars_.size());
+	  + priv_->changed_vars_.size()
+	  + priv_->added_unrefed_fn_syms_.size()
+	  + priv_->deleted_unrefed_fn_syms_.size()
+	  + priv_->added_unrefed_var_syms_.size()
+	  + priv_->deleted_unrefed_var_syms_.size());
 }
 
 /// "Less than" functor to compare instances of @ref function_decl.
@@ -8289,6 +8444,32 @@ sort_string_changed_function_ptr_map(const string_changed_function_ptr_map& map,
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
+/// For a given symbol, emit a string made of its name and version.
+/// The string also contains the list of symbols that alias this one.
+///
+/// @param out the output string to emit the resulting string to.
+///
+/// @param indent the indentation string to use before emitting the
+/// resulting string.
+///
+/// @param symbol the symbol to emit the representation string for.
+///
+/// @param sym_map the symbol map to consider to look for aliases of
+/// @p symbol.
+static void
+show_linkage_name_and_aliases(ostream& out,
+			      const string& indent,
+			      const elf_symbol& symbol,
+			      const string_elf_symbols_map_type& sym_map)
+{
+  out << indent << symbol.get_id_string();
+  string aliases =
+    symbol.get_aliases_id_string(sym_map,
+				 /*include_symbol_itself=*/false);
+  if (!aliases.empty())
+    out << ", aliases " << aliases;
+}
+
 /// Report the diff in a serialized form.
 ///
 /// @param out the stream to serialize the diff to.
@@ -8334,7 +8515,12 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    out << "[D] ";
 	  out << "'" << (*i)->get_pretty_representation() << "'";
 	  if (context()->show_linkage_names())
-	    out << "    {" << (*i)->get_symbol()->get_id_string() << "}";
+	    {
+	      out << "    {";
+	      show_linkage_name_and_aliases(out, "", *(*i)->get_symbol(),
+					    first_corpus()->get_fun_symbol_map());
+	      out << "}";
+	    }
 	  out << "\n";
 	  ++removed;
 	}
@@ -8364,12 +8550,21 @@ corpus_diff::report(ostream& out, const string& indent) const
 	      << (*i)->get_pretty_representation()
 	      << "'";
 	  if (context()->show_linkage_names())
-	    out << "    {" << (*i)->get_symbol()->get_id_string() << "}";
+	    {
+	      out << "    {";
+	      show_linkage_name_and_aliases
+		(out, "", *(*i)->get_symbol(),
+		 second_corpus()->get_fun_symbol_map());
+	      out << "}";
+	    }
 	  out << "\n";
 	  ++added;
 	}
       if (added)
-	out << "\n";
+	{
+	  out << "\n";
+	  added = false;
+	}
     }
 
   if (context()->show_changed_fns())
@@ -8381,6 +8576,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	out << indent << num_changed
 	    << " functions with some indirect sub-type change:\n\n";
 
+      bool emitted = false;
       vector<changed_function_ptr> sorted_changed_fns;
       sort_string_changed_function_ptr_map(priv_->changed_fns_,
 					   sorted_changed_fns);
@@ -8404,9 +8600,14 @@ corpus_diff::report(ostream& out, const string& indent) const
 		  << i->first->get_pretty_representation()
 		  << "' has some indirect sub-type changes:\n";
 	      diff->report(out, indent + "    ");
+	      emitted |= true;
 	    }
 	  }
-      out << "\n";
+      if (emitted)
+	{
+	  out << "\n";
+	  emitted = false;
+	}
     }
 
  // Report added/removed/changed variables.
@@ -8438,12 +8639,20 @@ corpus_diff::report(ostream& out, const string& indent) const
 	      << n
 	      << "'";
 	  if (context()->show_linkage_names())
-	    out << "    {" << i->second->get_symbol()->get_id_string() << "}";
+	    {
+	      out << "    {";
+	      show_linkage_name_and_aliases(out, "", *i->second->get_symbol(),
+					    first_corpus()->get_var_symbol_map());
+	      out << "}";
+	    }
 	  out << "\n";
 	  ++removed;
 	}
       if (removed)
-	out << "\n";
+	{
+	  out << "\n";
+	  removed = 0;
+	}
     }
 
   if (context()->show_added_vars())
@@ -8466,12 +8675,20 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    out << "[A] ";
 	  out << "'" << n << "'";
 	  if (context()->show_linkage_names())
-	    out << "    {" << i->second->get_symbol()->get_id_string() << "}";
+	    {
+	      out << "    {";
+	      show_linkage_name_and_aliases(out, "", *i->second->get_symbol(),
+					    second_corpus()->get_var_symbol_map());
+	      out << "}";
+	    }
 	  out << "\n";
 	  ++added;
 	}
       if (added)
-	out << "\n";
+	{
+	  out << "\n";
+	  added = 0;
+	}
     }
 
   if (context()->show_changed_vars())
@@ -8519,6 +8736,122 @@ corpus_diff::report(ostream& out, const string& indent) const
 	}
       if (num_changed)
 	out << "\n";
+    }
+
+  // Report removed function symbols not referenced by any debug info.
+  if (context()->show_symbols_unreferenced_by_debug_info()
+      && priv_->deleted_unrefed_fn_syms_.size())
+    {
+      if (s.num_func_syms_removed == 1)
+	out << indent
+	    << "1 Removed function symbol not referenced by debug info:\n\n";
+      else if (s.num_func_syms_removed > 0)
+	out << indent
+	    << s.num_func_syms_removed
+	    << " Removed function symbols not referenced by debug info:\n\n";
+
+      for (string_elf_symbol_map::const_iterator i =
+	     priv_->deleted_unrefed_fn_syms_.begin();
+	   i != priv_->deleted_unrefed_fn_syms_.end();
+	   ++i)
+	{
+	  out << indent << "  ";
+	  if (s.num_func_syms_removed > large_num)
+	    out << "[D] ";
+
+	  show_linkage_name_and_aliases(out, "", *i->second,
+					first_corpus()->get_fun_symbol_map());
+	  out << "\n";
+	}
+      if (priv_->deleted_unrefed_fn_syms_.size())
+	out << '\n';
+    }
+
+  // Report added function symbols not referenced by any debug info.
+  if (context()->show_symbols_unreferenced_by_debug_info()
+      && priv_->added_unrefed_fn_syms_.size())
+    {
+      if (s.num_func_syms_added == 1)
+	out << indent
+	    << "1 Added function symbol not referenced by debug info:\n\n";
+      else if (s.num_func_syms_added > 0)
+	out << indent
+	    << s.num_func_syms_added
+	    << " Added function symbols not referenced by debug info:\n\n";
+
+      for (string_elf_symbol_map::const_iterator i =
+	     priv_->added_unrefed_fn_syms_.begin();
+	   i != priv_->added_unrefed_fn_syms_.end();
+	   ++i)
+	{
+	  out << indent << "  ";
+	  if (s.num_func_syms_added > large_num)
+	    out << "[A] ";
+	  show_linkage_name_and_aliases(out, "",
+					*i->second,
+					second_corpus()->get_fun_symbol_map());
+	  out << "\n";
+	}
+      if (priv_->added_unrefed_fn_syms_.size())
+	out << '\n';
+    }
+
+  // Report removed variable symbols not referenced by any debug info.
+  if (context()->show_symbols_unreferenced_by_debug_info()
+      && priv_->deleted_unrefed_var_syms_.size())
+    {
+      if (s.num_var_syms_removed == 1)
+	out << indent
+	    << "1 Removed variable symbol not referenced by debug info:\n\n";
+      else if (s.num_var_syms_removed > 0)
+	out << indent
+	    << s.num_var_syms_removed
+	    << " Removed variable symbols not referenced by debug info:\n\n";
+
+      for (string_elf_symbol_map::const_iterator i =
+	     priv_->deleted_unrefed_var_syms_.begin();
+	   i != priv_->deleted_unrefed_var_syms_.end();
+	   ++i)
+	{
+	  out << indent << "  ";
+	  if (s.num_var_syms_removed > large_num)
+	    out << "[D] ";
+
+	  show_linkage_name_and_aliases(out, "", *i->second,
+					first_corpus()->get_fun_symbol_map());
+	  out << "\n";
+	}
+      if (priv_->deleted_unrefed_var_syms_.size())
+	out << '\n';
+    }
+
+  // Report added variable symbols not referenced by any debug info.
+  if (context()->show_symbols_unreferenced_by_debug_info()
+      && priv_->added_unrefed_var_syms_.size())
+    {
+      if (s.num_var_syms_added == 1)
+	out << indent
+	    << "1 Added variable symbol not referenced by debug info:\n\n";
+      else if (s.num_var_syms_added > 0)
+	out << indent
+	    << s.num_var_syms_added
+	    << " Added variable symbols not referenced by debug info:\n\n";
+
+      for (string_elf_symbol_map::const_iterator i =
+	     priv_->added_unrefed_var_syms_.begin();
+	   i != priv_->added_unrefed_var_syms_.end();
+	   ++i)
+	{
+	  out << indent << "  ";
+	  if (s.num_var_syms_added > large_num)
+	    out << "[A] ";
+	  show_linkage_name_and_aliases(out, "",
+					*i->second,
+					second_corpus()->get_fun_symbol_map());
+	  out << "\n";
+	}
+      if (priv_->added_unrefed_var_syms_.size())
+	out << '\n';
     }
 
 }
@@ -8594,6 +8927,7 @@ compute_diff(const corpus_sptr	f,
 {
   typedef corpus::functions::const_iterator fns_it_type;
   typedef corpus::variables::const_iterator vars_it_type;
+  typedef elf_symbols::const_iterator symbols_it_type;
   typedef diff_utils::deep_ptr_eq_functor eq_type;
 
   if (!ctxt)
@@ -8613,6 +8947,21 @@ compute_diff(const corpus_sptr	f,
     (f->get_variables().begin(), f->get_variables().end(),
      s->get_variables().begin(), s->get_variables().end(),
      r->priv_->vars_edit_script_);
+
+  diff_utils::compute_diff<symbols_it_type, eq_type>
+    (f->get_unreferenced_function_symbols().begin(),
+     f->get_unreferenced_function_symbols().end(),
+     s->get_unreferenced_function_symbols().begin(),
+     s->get_unreferenced_function_symbols().end(),
+     r->priv_->unrefed_fn_syms_edit_script_);
+
+    diff_utils::compute_diff<symbols_it_type, eq_type>
+    (f->get_unreferenced_variable_symbols().begin(),
+     f->get_unreferenced_variable_symbols().end(),
+     s->get_unreferenced_variable_symbols().begin(),
+     s->get_unreferenced_variable_symbols().end(),
+     r->priv_->unrefed_var_syms_edit_script_);
+
   r->priv_->ensure_lookup_tables_populated();
 
   return r;

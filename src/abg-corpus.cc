@@ -105,6 +105,8 @@ struct corpus::priv
   vector<var_decl*>		vars;
   string_elf_symbols_map_sptr	var_symbol_map;
   string_elf_symbols_map_sptr	fun_symbol_map;
+  elf_symbols			unrefed_fun_symbols;
+  elf_symbols			unrefed_var_symbols;
 
 private:
   priv();
@@ -118,6 +120,9 @@ public:
 
   void
   build_public_decl_table();
+
+  void
+  build_unreferenced_symbols_tables();
 };
 
 /// Convenience typedef for a hash map of pointer to function_decl and
@@ -689,6 +694,97 @@ corpus::priv::build_public_decl_table()
   is_public_decl_table_built = true;
 }
 
+/// A comparison functor to compare elf_symbols for the purpose of
+/// sorting.
+struct comp_elf_symbols_functor
+{
+  bool
+  operator()(const elf_symbol& l,
+	     const elf_symbol& r) const
+  {return l.get_id_string() < r.get_id_string();}
+
+  bool
+  operator()(const elf_symbol_sptr l,
+	     const elf_symbol_sptr r) const
+  {return operator()(*l, *r);}
+}; // end struct comp_elf_symbols_functor
+
+/// Build the tables of symbols that are not referenced by any
+/// function or variables of corpus::get_functions() or
+/// corpus::get_variables().
+///
+/// The built tables are accessible from
+/// corpus::get_unreferenced_function_symbols() and
+/// corpus::get_unreferenced_variable_symbols().
+void
+corpus::priv::build_unreferenced_symbols_tables()
+{
+  unordered_map<string, bool> refed_funs, refed_vars;
+  elf_symbol_sptr sym;
+
+  for (vector<function_decl*>::const_iterator f = fns.begin();
+       f != fns.end();
+       ++f)
+    if (sym = (*f)->get_symbol())
+      {
+	refed_funs[sym->get_id_string()] = true;
+	for (elf_symbol* a = sym->get_next_alias();
+	     a && a != sym->get_main_symbol();
+	     a = a->get_next_alias())
+	  refed_funs[a->get_id_string()] = true;
+      }
+
+  for (vector<var_decl*>::const_iterator v = vars.begin();
+       v != vars.end();
+       ++v)
+    if (sym = (*v)->get_symbol())
+      {
+	refed_vars[sym->get_id_string()] = true;
+	for (elf_symbol* a = sym->get_next_alias();
+	     a && a != sym->get_main_symbol();
+	     a = a->get_next_alias())
+	  refed_vars[a->get_id_string()] = true;
+      }
+
+  if (fun_symbol_map)
+    {
+      unrefed_fun_symbols.reserve(fun_symbol_map->size() - refed_funs.size());
+      for (string_elf_symbols_map_type::const_iterator i
+	     = fun_symbol_map->begin();
+	   i != fun_symbol_map->end();
+	   ++i)
+	for (elf_symbols::const_iterator s = i->second.begin();
+	     s != i->second.end();
+	     ++s)
+	  if (refed_funs.find((*s)->get_id_string()) == refed_funs.end())
+	    unrefed_fun_symbols.push_back(*s);
+
+      comp_elf_symbols_functor comp;
+      std::sort(unrefed_fun_symbols.begin(),
+		unrefed_fun_symbols.end(),
+		comp);
+    }
+
+  if (var_symbol_map)
+    {
+      unrefed_var_symbols.reserve(var_symbol_map->size() - refed_vars.size());
+      for (string_elf_symbols_map_type::const_iterator i
+	     = var_symbol_map->begin();
+	   i != var_symbol_map->end();
+	   ++i)
+	for (elf_symbols::const_iterator s = i->second.begin();
+	     s != i->second.end();
+	     ++s)
+	  if (refed_vars.find((*s)->get_id_string()) == refed_vars.end())
+	    unrefed_var_symbols.push_back(*s);
+
+      comp_elf_symbols_functor comp;
+      std::sort(unrefed_var_symbols.begin(),
+		unrefed_var_symbols.end(),
+		comp);
+    }
+}
+
 /// @param path the path to the file containing the ABI corpus.
 corpus::corpus(const string& path)
 {priv_.reset(new priv(path));}
@@ -761,7 +857,13 @@ corpus::set_path(const string& path)
 /// @return true if the corpus contains no translation unit.
 bool
 corpus::is_empty() const
-{return priv_->members.empty();}
+{
+  return (priv_->members.empty()
+	  && priv_->fun_symbol_map
+	  && priv_->fun_symbol_map->empty()
+	  && priv_->var_symbol_map
+	  && priv_->var_symbol_map->empty());
+}
 
 /// Compare the current @ref corpus against another one.
 ///
@@ -966,6 +1068,42 @@ corpus::get_variables() const
   assert(priv_->is_public_decl_table_built);
 
   return priv_->vars;
+}
+
+/// Getter of the set of function symbols that are not referenced by
+/// any function exported by the current corpus.
+///
+/// When the corpus has been created from an ELF library or program,
+/// this function returns the set of function symbols not referenced
+/// by any debug information.
+///
+/// @return the vector of function symbols not referenced by any
+/// function exported by the current corpus.
+const elf_symbols&
+corpus::get_unreferenced_function_symbols() const
+{
+  if (priv_->unrefed_fun_symbols.empty()
+      && priv_->unrefed_var_symbols.empty())
+    priv_->build_unreferenced_symbols_tables();
+  return priv_->unrefed_fun_symbols;
+}
+
+/// Getter of the set of variable symbols that are not referenced by
+/// any variable exported by the current corpus.
+///
+/// When the corpus has been created from an ELF library or program,
+/// this function returns the set of variable symbols not referenced
+/// by any debug information.
+///
+/// @return the vector of variable symbols not referenced by any
+/// variable exported by the current corpus.
+const elf_symbols&
+corpus::get_unreferenced_variable_symbols() const
+{
+    if (priv_->unrefed_fun_symbols.empty()
+      && priv_->unrefed_var_symbols.empty())
+    priv_->build_unreferenced_symbols_tables();
+  return priv_->unrefed_var_symbols;
 }
 
 /// Accessor for the regex patterns describing the functions to drop

@@ -43,16 +43,31 @@ using namespace abigail::ir;
 /// The status of the @ref read_corpus_from_elf() call.
 enum status
 {
+  /// The status is in an unknown state
+  STATUS_UNKNOWN = 0,
+
   /// This status is for when the call went OK.
-  STATUS_OK,
+  STATUS_OK = 1,
 
   /// This satus is for when the debug info could not be read.
-  STATUS_DEBUG_INFO_NOT_FOUND,
+  STATUS_DEBUG_INFO_NOT_FOUND = 1 << 1,
 
   /// This status is for when the symbols of the ELF binaries could
   /// not be read.
-  STATUS_NO_SYMBOLS_FOUND,
+  STATUS_NO_SYMBOLS_FOUND = 1 << 2,
 };
+
+status
+operator|(status, status);
+
+status
+operator&(status, status);
+
+status&
+operator|=(status&, status);
+
+status&
+operator&=(status&, status);
 
 class read_context;
 

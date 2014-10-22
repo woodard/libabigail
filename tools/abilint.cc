@@ -226,30 +226,24 @@ main(int argc, char* argv[])
       if (!tu && !corp)
 	{
 	  cerr << "failed to read " << opts.file_path << "\n";
-	  if (s != abigail::dwarf_reader::STATUS_OK)
+	  if (!(s & abigail::dwarf_reader::STATUS_OK))
 	    {
-	      switch (s)
+	      if (s & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
-		case abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND:
 		  cerr << "could not find the debug info";
 		  if(di_root_path == 0)
 		    cerr << " Maybe you should consider using the "
 		      "--debug-info-dir1 option to tell me about the "
 		      "root directory of the debuginfo? "
 		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
-		    else
-		      cerr << "Maybe the root path to the debug "
-			"information is wrong?\n";
-		  break;
-		case abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND:
-		  cerr << "could not find the ELF symbols in the file "
-		       << opts.file_path
-		       << "\n";
-		  break;
-		case abigail::dwarf_reader::STATUS_OK:
-		  // This cannot be!
-		  abort();
+		  else
+		    cerr << "Maybe the root path to the debug "
+		      "information is wrong?\n";
 		}
+	      if (s & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+		cerr << "could not find the ELF symbols in the file "
+		     << opts.file_path
+		     << "\n";
 	    }
 	  return true;
 	}

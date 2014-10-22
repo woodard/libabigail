@@ -589,20 +589,17 @@ get_version_for_symbol(Elf* elf_handle,
   Elf_Data* versym_data = elf_getdata(versym_section, NULL);
   GElf_Versym versym_mem;
   GElf_Versym* versym = gelf_getversym(versym_data, symbol_index, &versym_mem);
-  if (versym == 0)
+  if (versym == 0 || *versym == 0x8001 || *versym <= 1)
+    // I got these value from the code of readelf.c in elfutils.
+    // Apparently, if the symbol version entry has these values, the
+    // symbol must be discarded. This is not documented in the
+    // official specification. Hugh?
     return false;
 
   Elf_Data* verdef_data = elf_getdata(verdef_section, NULL);
   GElf_Verdef verdef_mem;
   GElf_Verdef* verdef = gelf_getverdef(verdef_data, 0, &verdef_mem);
   size_t vd_offset = 0;
-
-  if (*versym == 0x8001)
-    // I got this value from the code of readelf.c in elfutils.
-    // Apparently, if the symbol version entry has this value, the
-    // symbol must be discarded.  This is not documented in the
-    // official specification. Hugh?
-    return false;
 
   for (;; vd_offset += verdef->vd_next)
     {
@@ -5860,6 +5857,15 @@ build_function_decl(read_context&	ctxt,
 static corpus_sptr
 read_debug_info_into_corpus(read_context& ctxt)
 {
+  if (!ctxt.current_corpus())
+    {
+      corpus_sptr corp (new corpus(ctxt.elf_path()));
+      ctxt.current_corpus(corp);
+    }
+
+  if (!ctxt.dwarf())
+    return ctxt.current_corpus();
+
   uint8_t address_size = 0;
   size_t header_size = 0;
 
@@ -5882,12 +5888,6 @@ read_debug_info_into_corpus(read_context& ctxt)
 	continue;
 
       ctxt.dwarf_version(dwarf_version);
-
-      if (!ctxt.current_corpus())
-	{
-	  corpus_sptr corp (new corpus(ctxt.elf_path()));
-	  ctxt.current_corpus(corp);
-	}
 
       address_size *= 8;
 
@@ -6365,6 +6365,34 @@ build_ir_node_from_die(read_context&	ctxt,
 				where_offset);
 }
 
+status
+operator|(status l, status r)
+{
+  return static_cast<status>(static_cast<unsigned>(l)
+			     | static_cast<unsigned>(r));
+}
+
+status
+operator&(status l, status r)
+{
+  return static_cast<status>(static_cast<unsigned>(l)
+			     & static_cast<unsigned>(r));
+}
+
+status&
+operator|=(status& l, status r)
+{
+  l = l | r;
+  return l;
+}
+
+status&
+operator&=(status& l, status r)
+{
+  l = l & r;
+  return l;
+}
+
 /// Create a dwarf_reader::read_context.
 ///
 /// @param elf_path the path to the elf file the context is to be used for.
@@ -6397,16 +6425,21 @@ create_read_context(const std::string&	elf_path,
 status
 read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
 {
+  enum status status = STATUS_UNKNOWN;
+
   // Load debug info from the elf path.
   if (!ctxt.load_debug_info())
-    return STATUS_DEBUG_INFO_NOT_FOUND;
+    status |= STATUS_DEBUG_INFO_NOT_FOUND;
 
   // First read the symbols for publicly defined decls
   if (!ctxt.load_symbol_maps())
-    return STATUS_NO_SYMBOLS_FOUND;
+    status |= STATUS_NO_SYMBOLS_FOUND;
 
-  // Now, read an ABI corpus proper from the debug info we have
-  // through the dwfl handle.
+  if (status & STATUS_NO_SYMBOLS_FOUND)
+    return status;
+
+  // Read the variable and function descriptions from the debug info
+  // we have, through the dwfl handle.
   corpus_sptr corp = read_debug_info_into_corpus(ctxt);
   corp->set_path(ctxt.elf_path());
   corp->set_origin(corpus::DWARF_ORIGIN);
@@ -6416,7 +6449,8 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
 
   resulting_corp = corp;
 
-  return STATUS_OK;
+  status |= STATUS_OK;
+  return status;
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info

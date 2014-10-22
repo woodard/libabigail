@@ -185,6 +185,10 @@ typedef unordered_map<string, var_decl*> string_var_ptr_map;
 /// the changed variable.
 typedef std::pair<var_decl*, var_decl*> changed_var_ptr;
 
+/// Convenience typedef for a map whose key is a string and whose
+/// value is an @ref elf_symbol_sptr.
+typedef unordered_map<string, elf_symbol_sptr> string_elf_symbol_map;
+
 /// Convenience typedef for a map which key is a stirng and which
 /// value is a @ref changed_var_ptr.
 typedef unordered_map<string, changed_var_ptr> string_changed_var_ptr_map;
@@ -602,6 +606,12 @@ public:
 
   void
   show_redundant_changes(bool f);
+
+  bool
+  show_symbols_unreferenced_by_debug_info() const;
+
+  void
+  show_symbols_unreferenced_by_debug_info(bool f);
 };//end struct diff_context.
 
 /// This type encapsulates an edit script (a set of insertions and

@@ -75,6 +75,7 @@ struct options
   bool			show_harmful_changes;
   bool			show_harmless_changes;
   bool			show_redundant_changes;
+  bool			show_symbols_not_referenced_by_debug_info;
   shared_ptr<char>	di_root_path1;
   shared_ptr<char>	di_root_path2;
 
@@ -94,7 +95,8 @@ struct options
       show_linkage_names(true),
       show_harmful_changes(true),
       show_harmless_changes(false),
-      show_redundant_changes(false)
+      show_redundant_changes(false),
+      show_symbols_not_referenced_by_debug_info(true)
   {}
 };//end struct options;
 
@@ -115,6 +117,8 @@ display_usage(const string& prog_name, ostream& out)
       << " --added-vars  display added global public variables\n"
       << " --no-linkage-name  do not display linkage names of "
              "added/removed/changed\n"
+      << " --no-unreferenced-symbols  do not display changes "
+             "about symbols not referenced by debug info"
       << " --suppressions <path> specify a suppression file\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
@@ -230,6 +234,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--no-linkage-name"))
 	opts.show_linkage_names = false;
+      else if (!strcmp(argv[i], "--no-unreferenced-symbols"))
+	opts.show_symbols_not_referenced_by_debug_info = false;
       else if (!strcmp(argv[i], "--suppressions"))
 	{
 	  int j = i + 1;
@@ -371,6 +377,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
   ctxt->show_linkage_names(opts.show_linkage_names);
   ctxt->show_redundant_changes(opts.show_redundant_changes);
+  ctxt->show_symbols_unreferenced_by_debug_info
+    (opts.show_symbols_not_referenced_by_debug_info);
 
   if (!opts.show_harmless_changes)
       ctxt->switch_categories_off
@@ -542,13 +550,13 @@ main(int argc, char* argv[])
       if (!t1 && !c1)
 	{
 	  cerr << "failed to read input file " << opts.file1 << "\n";
-	  if (c1_status != abigail::dwarf_reader::STATUS_OK)
+	  if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
 	    {
-	      switch (c1_status)
+	      if (c1_status
+		  & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
-		case abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND:
 		  cerr << "could not find the debug info";
-		  if(di_dir1 == 0)
+		  if (di_dir1 == 0)
 		    cerr << " Maybe you should consider using the "
 		      "--debug-info-dir1 option to tell me about the "
 		      "root directory of the debuginfo? "
@@ -556,16 +564,12 @@ main(int argc, char* argv[])
 		  else
 		    cerr << "Maybe the root path to the debug information '"
 			 << di_dir1 << "' is wrong?\n";
-		  break;
-		case abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND:
-		  cerr << "could not find the ELF symbols in the file '"
-		       << opts.file1
-		       << "'\n";
-		  break;
-		case abigail::dwarf_reader::STATUS_OK:
-		  // This cannot be!
-		  abort();
 		}
+	      if (c1_status
+		  & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+		cerr << "could not find the ELF symbols in the file '"
+		       << opts.file1
+		     << "'\n";
 	      return true;
 	    }
 	}
@@ -573,31 +577,26 @@ main(int argc, char* argv[])
       if (!t2 && !c2)
 	{
 	  cerr << "failed to read input file" << opts.file2 << "\n";
-	  if (c2_status != abigail::dwarf_reader::STATUS_OK)
+	  if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
 	    {
-	      switch (c2_status)
+	      if (c2_status
+		  & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
-		case abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND:
 		  cerr << "could not find the debug info";
-		  if(di_dir2 == 0)
+		  if (di_dir2 == 0)
 		    cerr << " Maybe you should consider using the "
 		      "--debug-info-dir1 option to tell me about the "
 		      "root directory of the debuginfo? "
 		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
 		  else
 		    cerr << "Maybe the root path to the debug information '"
-			 << di_dir2
-			 << "' is wrong?\n";
-		  break;
-		case abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND:
-		  cerr << "could not find the ELF symbols in the file '"
-		       << opts.file2
-		       << "'\n";
-		  break;
-		case abigail::dwarf_reader::STATUS_OK:
-		  // This cannot be!
-		  abort();
+			 << di_dir2 << "' is wrong?\n";
 		}
+	      if (c2_status
+		  & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
+		cerr << "could not find the ELF symbols in the file '"
+		     << opts.file2
+		     << "'\n";
 	      return true;
 	    }
 	}

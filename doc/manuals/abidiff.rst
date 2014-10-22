@@ -8,8 +8,11 @@ abidiff compares the Application Binary Interfaces (ABI) of two shared
 libraries in `ELF`_ format.  It emits a meaningful report describing the
 differences between the two ABIs.
 
-The two input shared libraries must be accompanied with their debug
-information in `DWARF`_ format.
+For a comprehensive ABI change report that includes changes about
+function and variable sub-types, the two input shared libraries must
+be accompanied with their debug information in `DWARF`_ format.
+Otherwise, only `ELF`_ symbols that were added or removed are
+reported.
 
 Invocation
 ==========
@@ -103,6 +106,14 @@ Options
 
     In the resulting report, do not display the linkage names of
     the added, removed, or changed functions or variables.
+
+  * --no-unreferenced-symbols
+
+    In the resulting report, do not display change information about
+    function and variable symbols that are not referenced by any debug
+    information.  Note that for these symbols not referenced by any
+    debug information, the change information displayed is either
+    added or removed symbols.
 
 
   * --suppressions <*path-to-suppressions*>

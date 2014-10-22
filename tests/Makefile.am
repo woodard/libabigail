@@ -218,6 +218,20 @@ data/test-diff-dwarf/test15-enum-v0.o		\
 data/test-diff-dwarf/test15-enum-v1.cc		\
 data/test-diff-dwarf/test15-enum-v1.o		\
 data/test-diff-dwarf/test15-enum-report.txt	\
+tests/data/test-diff-dwarf/test16-syms-only-v0.o \
+tests/data/test-diff-dwarf/test16-syms-only-v1.o \
+tests/data/test-diff-dwarf/test16-syms-only-v0.cc \
+tests/data/test-diff-dwarf/test16-syms-only-v1.cc \
+tests/data/test-diff-dwarf/test17-non-refed-syms-v0.o \
+tests/data/test-diff-dwarf/test17-non-refed-syms-v1.o \
+tests/data/test-diff-dwarf/test17-non-refed-syms-v0.cc \
+tests/data/test-diff-dwarf/test17-non-refed-syms-v1.cc \
+tests/data/test-diff-dwarf/libtest18-alias-sym-v0.so \
+tests/data/test-diff-dwarf/libtest18-alias-sym-v1.so \
+tests/data/test-diff-dwarf/test18-alias-sym-report-0.txt \
+tests/data/test-diff-dwarf/test18-alias-sym-v0.cc \
+tests/data/test-diff-dwarf/test18-alias-sym-v1.cc \
+tests/data/test-diff-dwarf/test18-alias-sym-version-script \
 \
 data/test-read-dwarf/test0			\
 data/test-read-dwarf/test0.abi			\
