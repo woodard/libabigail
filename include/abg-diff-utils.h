@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013 Red Hat, Inc.
+// Copyright (C) 2013-2014 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -43,6 +43,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <tr1/memory>
 
 namespace abigail
 {
@@ -54,6 +55,8 @@ namespace abigail
 /// algorithm from Eugene Myers.
 namespace diff_utils
 {
+
+using std::tr1::shared_ptr;
 
 // Inject the names from std:: below into this namespace
 using std::string;
@@ -767,6 +770,12 @@ struct deep_ptr_eq_functor
 
     return *first == *second;
   }
+
+  template<typename T>
+  bool
+  operator()(const shared_ptr<T> first,
+	     const shared_ptr<T> second)
+  {return operator()(first.get(), second.get());}
 };
 
 /// Find the end of the furthest reaching d-path on diagonal k, for
