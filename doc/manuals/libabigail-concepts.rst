@@ -76,7 +76,7 @@ Suppression specifications
 
     [suppress_type]
       type_kind = struct
-      name = ^.*PrivateType
+      name_regexp = ^.*PrivateType
 
  Let's now look at the generic syntax of suppression specification
  files.
