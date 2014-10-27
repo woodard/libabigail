@@ -169,6 +169,25 @@ public:
 	    || char_is_comment_start(b));
   }
 
+  /// Return true iff a given character can be part of a property
+  /// value.
+  ///
+  /// @param b the character to test against.
+  ///
+  /// @return true iff @p b is a character that can be part of a
+  /// property value.
+  bool
+  char_is_property_value_char(int b)
+  {
+    if (b == '['
+	|| b == ']'
+	|| b == '='
+	|| char_is_comment_start(b)
+	|| b == '\n')
+      return false;
+    return true;
+  }
+
   /// Test if a given character is meant to be part of a section name.
   ///
   /// @param b the character to test against.
@@ -251,7 +270,7 @@ public:
 	  case 'a':
 	  case 'b':
 	  case 'r':
-	    // let's replace this by by a space
+	    // let's replace this by a space
 	    c = ' ';
 	    break;
 	  case 't':
@@ -269,6 +288,8 @@ public:
 	  case '\\':
 	  case ';':
 	  case '#':
+	  case '[':
+	  case ']':
 	  default:
 	    c = b;
 	    break;
@@ -418,7 +439,7 @@ public:
 
     for (b = in_.peek(); in_.good();b = in_.peek())
       {
-	if (char_is_delimiter(b))
+	if (!char_is_property_value_char(b))
 	  break;
 	assert(read_next_char(c));
 	value += c;
