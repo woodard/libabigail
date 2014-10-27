@@ -1894,7 +1894,7 @@ public:
   parameters::const_iterator
   get_first_non_implicit_parm() const;
 
-  const shared_ptr<function_type>
+  const function_type_sptr
   get_type() const;
 
   const shared_ptr<type_base>
