@@ -5090,6 +5090,151 @@ var_decl::~var_decl()
 
 // <function_type>
 
+/// The type of the private data of the @ref function_type type.
+struct function_type::priv
+{
+  parameters parms_;
+  type_base_wptr return_type_;
+
+  priv()
+  {}
+
+  priv(const parameters&	parms,
+       type_base_sptr		return_type)
+    : parms_(parms),
+      return_type_(return_type)
+  {}
+
+  priv(type_base_sptr return_type)
+    : return_type_(return_type)
+  {}
+};// end struc function_type::priv
+
+/// The most straightforward constructor for the function_type class.
+///
+/// @param return_type the return type of the function type.
+///
+/// @param parms the list of parameters of the function type.
+/// Stricto sensu, we just need a list of types; we are using a list
+/// of parameters (where each parameter also carries the name of the
+/// parameter and its source location) to try and provide better
+/// diagnostics whenever it makes sense.  If it appears that this
+/// wasts too many resources, we can fall back to taking just a
+/// vector of types here.
+///
+/// @param size_in_bits the size of this type, in bits.
+///
+/// @param alignment_in_bits the alignment of this type, in bits.
+///
+/// @param size_in_bits the size of this type.
+function_type::function_type(type_base_sptr	return_type,
+			     const parameters&	parms,
+			     size_t		size_in_bits,
+			     size_t		alignment_in_bits)
+  : type_base(size_in_bits, alignment_in_bits),
+    priv_(new priv(parms, return_type))
+{
+  for (parameters::size_type i = 0; i < priv_->parms_.size(); ++i)
+    priv_->parms_[i]->set_index(i);
+}
+
+/// A constructor for a function_type that takes no parameters.
+///
+/// @param return_type the return type of this function_type.
+///
+/// @param size_in_bits the size of this type, in bits.
+///
+/// @param alignment_in_bits the alignment of this type, in bits.
+function_type::function_type(shared_ptr<type_base> return_type,
+			     size_t size_in_bits, size_t alignment_in_bits)
+  : type_base(size_in_bits, alignment_in_bits),
+    priv_(new priv(return_type))
+{}
+
+/// A constructor for a function_type that takes no parameter and
+/// that has no return_type yet.  These missing parts can (and must)
+/// be added later.
+///
+/// @param size_in_bits the size of this type, in bits.
+///
+/// @param alignment_in_bits the alignment of this type, in bits.
+function_type::function_type(size_t size_in_bits, size_t alignment_in_bits)
+  : type_base(size_in_bits, alignment_in_bits),
+    priv_(new priv)
+{}
+
+/// Getter for the return type of the current instance of @ref
+/// function_type.
+///
+/// @return the return type.
+type_base_sptr
+function_type::get_return_type() const
+{
+  if (priv_->return_type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(priv_->return_type_);
+}
+
+/// Setter of the return type of the current instance of @ref
+/// function_type.
+///
+/// @param t the new return type to set.
+void
+function_type::set_return_type(type_base_sptr t)
+{priv_->return_type_ = t;}
+
+/// Getter for the set of parameters of the current intance of @ref
+/// function_type.
+///
+/// @return the parameters of the current instance of @ref
+/// function_type.
+const function_decl::parameters&
+function_type::get_parameters() const
+{return priv_->parms_;}
+
+/// Getter for the set of parameters of the current intance of @ref
+/// function_type.
+///
+/// @return the parameters of the current instance of @ref
+/// function_type.
+function_decl::parameters&
+function_type::get_parameters()
+{return priv_->parms_;}
+
+/// Setter for the parameters of the current instance of @ref
+/// function_type.
+///
+/// @param p the new vector of parameters to set.
+void
+function_type::set_parameters(const parameters &p)
+{priv_->parms_ = p;}
+
+/// Append a new parameter to the vector of parameters of the current
+/// instance of @ref function_type.
+///
+/// @param parm the parameter to append.
+void
+function_type::append_parameter(parameter_sptr parm)
+{
+  parm->set_index(priv_->parms_.size());
+  priv_->parms_.push_back(parm);
+}
+
+/// Test if the current instance of @ref function_type is for a
+/// variadic function.
+///
+/// A variadic function is a function that takes a variable number of
+/// arguments.
+///
+/// @return true iff the current instance of @ref function_type is for
+/// a variadic function.
+bool
+function_type::is_variadic() const
+{
+  return (!priv_->parms_.empty()
+	 && priv_->parms_.back()->get_variadic_marker());
+}
+
 /// Compare two function types.
 ///
 /// In case these function types are actually method types, this
@@ -5409,7 +5554,7 @@ struct function_decl::priv
 
 /// Get a name uniquely identifying the parameter in the function.
 ///
-///@return the unique parm name id. 
+///@return the unique parm name id.
 const string
 function_decl::parameter::get_name_id() const
 {

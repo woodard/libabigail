@@ -1947,6 +1947,10 @@ equals(const function_type&, const function_type&, change_kind&);
 /// Abstraction of a function type.
 class function_type : public virtual type_base
 {
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
 public:
   /// Hasher for an instance of function_type
   struct hash;
@@ -1960,98 +1964,40 @@ public:
 private:
   function_type();
 
-  type_base_wptr return_type_;
-
-protected:
-  parameters parms_;
-
 public:
 
-  /// The most straightforward constructor for the the function_type
-  /// class.
-  ///
-  /// @param return_type the return type of the function type.
-  ///
-  /// @param parms the list of parameters of the function type.
-  /// Stricto sensu, we just need a list of types; we are using a list
-  /// of parameters (where each parameter also carries the name of the
-  /// parameter and its source location) to try and provide better
-  /// diagnostics whenever it makes sense.  If it appears that this
-  /// wasts too many resources, we can fall back to taking just a
-  /// vector of types here.
-  ///
-  /// @param size_in_bits the size of this type, in bits.
-  ///
-  /// @param alignment_in_bits the alignment of this type, in bits.
-  ///
-  /// @param size_in_bits the size of this type.
-  function_type(shared_ptr<type_base> return_type, const parameters& parms,
-		size_t size_in_bits, size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits), return_type_(return_type),
-    parms_(parms)
-  {
-    for (parameters::size_type i = 0; i != parms_.size(); ++i)
-      parms_[i]->set_index(i);
-  }
+  function_type(type_base_sptr		return_type,
+		const parameters&	parms,
+		size_t			size_in_bits,
+		size_t			alignment_in_bits);
 
-  /// A constructor for a function_type that takes no parameters.
-  ///
-  /// @param return_type the return type of this function_type.
-  ///
-  /// @param size_in_bits the size of this type, in bits.
-  ///
-  /// @param alignment_in_bits the alignment of this type, in bits.
-  function_type(shared_ptr<type_base> return_type,
-		size_t size_in_bits, size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits),
-    return_type_(return_type)
-  {}
+  function_type(type_base_sptr	return_type,
+		size_t		size_in_bits,
+		size_t		alignment_in_bits);
 
-  /// A constructor for a function_type that takes no parameter and
-  /// that has no return_type yet.  These missing parts can (and must)
-  /// be added later.
-  ///
-  /// @param size_in_bits the size of this type, in bits.
-  ///
-  /// @param alignment_in_bits the alignment of this type, in bits.
-  function_type(size_t size_in_bits, size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits)
-  {}
+  function_type(size_t size_in_bits,
+		size_t alignment_in_bits);
 
   type_base_sptr
-  get_return_type() const
-  {
-    if (return_type_.expired())
-      return type_base_sptr();
-    return type_base_sptr(return_type_);
-  }
+  get_return_type() const;
 
   void
-  set_return_type(type_base_sptr t)
-  {return_type_ = t;}
+  set_return_type(type_base_sptr t);
 
   const parameters&
-  get_parameters() const
-  {return parms_;}
+  get_parameters() const;
 
   parameters&
-  get_parameters()
-  {return parms_;}
+  get_parameters();
 
   void
-  set_parameters(const parameters &p)
-  {parms_ = p;}
+  set_parameters(const parameters &p);
 
   void
-  append_parameter(parameter_sptr parm)
-  {
-    parm->set_index(parms_.size());
-    parms_.push_back(parm);
-  }
+  append_parameter(parameter_sptr parm);
 
   bool
-  is_variadic() const
-  {return !parms_.empty() && parms_.back()->get_variadic_marker();}
+  is_variadic() const;
 
   parameters::const_iterator
   get_first_non_implicit_parm() const;
