@@ -201,7 +201,7 @@ Suppression specifications
 
       * ``[suppress_function]``
 
-	Suppresses report messages about a change the sub-types of a
+	Suppresses report messages about changes on sub-types of a
 	function.  The potential properties of this sections are:
 
 	  * ``label`` ``=`` <some-value>
