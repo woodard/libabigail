@@ -298,6 +298,9 @@ type_suppression::type_suppression(const string& label,
 		   /*type_kind=*/CLASS_TYPE_KIND))
 {}
 
+type_suppression::~type_suppression()
+{}
+
 /// Setter for the "type_name_regex" property of the type suppression
 /// specification.
 ///

@@ -414,6 +414,8 @@ public:
 		   const string& type_name_regexp,
 		   const string& type_name);
 
+  virtual ~type_suppression();
+
   void
   set_type_name_regex_str(const string& name_regex_str);
 
