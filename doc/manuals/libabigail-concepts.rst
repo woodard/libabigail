@@ -94,6 +94,40 @@ Suppression specifications
      Leading and trailing white spaces are ignored around property
      name and values.
 
+.. _suppr_regexp_label:
+
+    * Regular expressions
+
+      The value of some properties might be a regular expression.  In
+      that case, they must comply with the syntax of `extended POSIX
+      regular expressions
+      <http://www.gnu.org/software/findutils/manual/html_node/find_html/posix_002dextended-regular-expression-syntax.html#posix_002dextended-regular-expression-syntax>`_.
+      Note that Libabigail uses the regular expression engine of the
+      `GNU C Library`_.
+
+    * Escaping a character in a regular expression
+
+      When trying to match a string that contains a ``*`` character,
+      like int the pointer type ``int*``, one must be careful to
+      notice that the character ``*`` is a special character in the
+      extended POSIX regular expression syntax.  And that character
+      must be escaped for the regular expression engine.  Thus the
+      regular expression that would match the string ``int*`` in a
+      suppression file should be ::
+
+        int\\*
+
+      Wait; but then why the two ``\`` characters?  Well, because the
+      ``\`` character is a special character in the `Ini File Syntax`_
+      used for specifying suppressions.  So it must be escaped as
+      well, so that the Ini File parser leaves a ``\`` character
+      intact in the data stream that is handed to the regular
+      expression engine.  Hence the ``\\`` targeted at the Ini File
+      parser.
+
+      So, in short, to escape a character in a regular expression,
+      always prefix the character with the ``\\`` sequence.
+
     * Sections
 
      Properties are then grouped into arbitrarily named sections that
@@ -117,7 +151,7 @@ Suppression specifications
 	Suppresses report messages about a type change.  The potential
 	properties of this sections are:
 
-	  * ``name_regexp`` ``=`` <regular-expression>
+	  * ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
 	     Suppresses change reports involving types whose name
 	     matches the regular expression specified as value of this
@@ -157,12 +191,111 @@ Suppression specifications
 		native) types.  Example of built-in types are char,
 		int, unsigned int, etc.
 
+.. _suppr_label_property_label:
 
 	  * ``label`` ``=`` <some-value>
 
 	    Define a label for the section.  A label is just an
 	    informative string that might be used by abidiff to refer
 	    to a type suppression in error messages.
+
+      * ``[suppress_function]``
+
+	Suppresses report messages about a change the sub-types of a
+	function.  The potential properties of this sections are:
+
+	  * ``label`` ``=`` <some-value>
+
+            This property is the same as the :ref:`label property
+            <suppr_label_property_label>` defined above.
+
+	  *  ``name`` ``=`` <some-value>
+
+	    Suppresses change reports involving functions whose name
+	    equals the value of this property.
+
+	  *  ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+	    Suppresses change reports involving functions whose name
+	    matches the regular expression specified as value of this
+	    property.
+
+          * ``parameter`` ``=`` <function-parameter-specification>
+
+	    Suppresses change reports involving functions whose
+	    parameters match the parameter specification indicated as
+	    value of this property.
+
+	    The format of the function parameter specification is:
+
+	      ``'``<parameter-index> `` `` <type-name-or-regular-expression>
+
+	    That is, an apostrophe followed by a number that is the
+	    index of the parameter, followed by one of several spaces,
+	    followed by either the name of the type of the parameter,
+	    or a regular expression describing a family of parameter
+	    type names.
+
+	    If the parameter type name is designated by a regular
+	    expression, then said regular expression must be enclosed
+	    between two slashes; like ``/some-regular-expression/``.
+
+	    The index of the first parameter of the function is zero.
+	    Note that for member functions (methods of classes), the
+	    this is the first parameter that comes after the implicit
+	    "this" pointer parameter.
+
+	    Examples of function parameter specifications are: ::
+
+	      '0 int
+
+            Which means, the parameter at index 0, whose type name is
+            ``int``. ::
+
+	      '4 unsigned char*
+
+	    Which means, the parameter at index 4, whose type name is
+	    ``unsigned char*``.  ::
+
+	      '2 /^foo.*&/
+
+	    Which means, the parameter at index 2, whose type name
+	    starts with the string "foo" and ends with an '&'.  In
+	    other words, this is the third parameter and it's a
+	    reference on a type that starts with the string "foo".
+
+	  *  ``return_type_name`` ``=`` <some-value>
+
+	    Suppresses change reports involving functions whose return
+	    type name equals the value of this property.
+
+	  *  ``return_type_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+	    Suppresses change reports involving functions whose return
+	    type name matches the regular expression specified as
+	    value of this property.
+
+	  *  ``symbol_name`` ``=`` <some-value>
+
+	    Suppresses change reports involving functions whose symbol
+	    name equals the value of this property.
+
+	  *  ``symbol_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+	    Suppresses change reports involving functions whose symbol
+	    name matches the regular expression specified as value of
+	    this property.
+
+	  *  ``symbol_version`` ``=`` <some-value>
+
+	    Suppresses change reports involving functions whose symbol
+	    version equals the value of this property.
+
+	  *  ``symbol_version_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+	    Suppresses change reports involving functions whose symbol
+	    version matches the regular expression specified as value
+	    of this property.
 
     * Comments
 
@@ -171,8 +304,10 @@ Suppression specifications
 
   * Code examples
 
-    Suppose we have a library named ``libtest1-v0.so`` which contains this
-    very useful code: ::
+    1. Suppressing change reports about types.
+
+       Suppose we have a library named ``libtest1-v0.so`` which
+       contains this very useful code: ::
 
 	$ cat -n test1-v0.cc
 	     1	// A forward declaration for a type considered to be opaque to
@@ -279,7 +414,225 @@ Suppression specifications
     As you can see, ``abidiff`` does not report the change anymore; it
     tells us that it was filtered out instead.
 
+  2. Suppressing change reports about functions.
+
+     Suppose we have a first version a library named
+     ``libtest2-v0.so`` whose source code is: ::
+
+	 $ cat -n test2-v0.cc
+
+	  1	struct S1
+	  2	{
+	  3	  int m0;
+	  4	
+	  5	  S1()
+	  6	    : m0()
+	  7	  {}
+	  8	};
+	  9	
+	 10	struct S2
+	 11	{
+	 12	  int m0;
+	 13	
+	 14	  S2()
+	 15	    : m0()
+	 16	  {}
+	 17	};
+	 18	
+	 19	struct S3
+	 20	{
+	 21	  int m0;
+	 22	
+	 23	  S3()
+	 24	    : m0()
+	 25	  {}
+	 26	};
+	 27	
+	 28	int
+	 29	func(S1&)
+	 30	{
+	 31	  // suppose the code does something with the argument.
+	 32	  return 0;
+	 33	
+	 34	}
+	 35	
+	 36	char
+	 37	func(S2*)
+	 38	{
+	 39	  // suppose the code does something with the argument.
+	 40	  return 0;
+	 41	}
+	 42	
+	 43	unsigned
+	 44	func(S3)
+	 45	{
+	 46	  // suppose the code does something with the argument.
+	 47	  return 0;
+	 48	}
+	$
+	
+     And then we come up with a second version ``libtest2-v1.so`` of
+     that library; the source code is modified by making the
+     structures ``S1``, ``S2``, ``S3`` inherit another struct: ::
+
+	$ cat -n test2-v1.cc
+	      1	struct base_type
+	      2	{
+	      3	  int m_inserted;
+	      4	};
+	      5	
+	      6	struct S1 : public base_type // <--- S1 now has base_type as its base
+	      7				     // type.
+	      8	{
+	      9	  int m0;
+	     10	
+	     11	  S1()
+	     12	    : m0()
+	     13	  {}
+	     14	};
+	     15	
+	     16	struct S2 : public base_type // <--- S2 now has base_type as its base
+	     17				     // type.
+	     18	{
+	     19	  int m0;
+	     20	
+	     21	  S2()
+	     22	    : m0()
+	     23	  {}
+	     24	};
+	     25	
+	     26	struct S3 : public base_type // <--- S3 now has base_type as its base
+	     27				     // type.
+	     28	{
+	     29	  int m0;
+	     30	
+	     31	  S3()
+	     32	    : m0()
+	     33	  {}
+	     34	};
+	     35	
+	     36	int
+	     37	func(S1&)
+	     38	{
+	     39	  // suppose the code does something with the argument.
+	     40	  return 0;
+	     41	
+	     42	}
+	     43	
+	     44	char
+	     45	func(S2*)
+	     46	{
+	     47	  // suppose the code does something with the argument.
+	     48	  return 0;
+	     49	}
+	     50	
+	     51	unsigned
+	     52	func(S3)
+	     53	{
+	     54	  // suppose the code does something with the argument.
+	     55	  return 0;
+	     56	}
+	 $ 
+
+     Now let's build the two libraries: ::
+
+	 g++ -Wall -g -shared -o libtest2-v0.so test2-v0.cc
+	 g++ -Wall -g -shared -o libtest2-v0.so test2-v0.cc
+
+     Let's look at the output of ``abidiff``: ::
+
+	 $ abidiff libtest2-v0.so libtest2-v1.so 
+	 Functions changes summary: 0 Removed, 3 Changed, 0 Added functions
+	 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	 3 functions with some indirect sub-type change:
+
+	   [C]'function unsigned int func(S3)' has some indirect sub-type changes:
+	     parameter 0 of type 'struct S3' has sub-type changes:
+	       size changed from 32 to 64 bits
+	       1 base class insertion:
+		 struct base_type
+	       1 data member change:
+		'int S3::m0' offset changed from 0 to 32
+
+	   [C]'function char func(S2*)' has some indirect sub-type changes:
+	     parameter 0 of type 'S2*' has sub-type changes:
+	       in pointed to type 'struct S2':
+		 size changed from 32 to 64 bits
+		 1 base class insertion:
+		   struct base_type
+		 1 data member change:
+		  'int S2::m0' offset changed from 0 to 32
+
+	   [C]'function int func(S1&)' has some indirect sub-type changes:
+	     parameter 0 of type 'S1&' has sub-type changes:
+	       in referenced type 'struct S1':
+		 size changed from 32 to 64 bits
+		 1 base class insertion:
+		   struct base_type
+		 1 data member change:
+		  'int S1::m0' offset changed from 0 to 32
+	 $
+
+     Let's tell ``abidiff`` to avoid showing us the differences on the
+     overloads of ``func`` that takes either a pointer or a reference.
+     For that, we author this simple suppression specification: ::
+
+	 $ cat -n libtest2.suppr
+	      1	[suppress_function]
+	      2	  name = func
+	      3	  parameter = '0 S1&
+	      4	
+	      5	[suppress_function]
+	      6	  name = func
+	      7	  parameter = '0 S2*
+	 $
+     
+     And then let's invoke ``abidiff`` with the suppression
+     specification: ::
+
+       $ ../build/tools/abidiff --suppressions libtest2.suppr libtest2-v0.so libtest2-v1.so 
+       Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added function
+       Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+       1 function with some indirect sub-type change:
+
+	 [C]'function unsigned int func(S3)' has some indirect sub-type changes:
+	   parameter 0 of type 'struct S3' has sub-type changes:
+	     size changed from 32 to 64 bits
+	     1 base class insertion:
+	       struct base_type
+	     1 data member change:
+	      'int S3::m0' offset changed from 0 to 32
+
+
+     The suppression specification could be reduced using
+     :ref:`regular expressions <suppr_regexp_label>`: ::
+
+       $ cat -n libtest2-1.suppr
+	    1	[suppress_function]
+	    2	  name = func
+	    3	  parameter = '0 /^S.(&|\\*)/
+       $
+
+       $ ../build/tools/abidiff --suppressions libtest2-1.suppr libtest2-v0.so libtest2-v1.so 
+       Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added function
+       Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+       1 function with some indirect sub-type change:
+
+	 [C]'function unsigned int func(S3)' has some indirect sub-type changes:
+	   parameter 0 of type 'struct S3' has sub-type changes:
+	     size changed from 32 to 64 bits
+	     1 base class insertion:
+	       struct base_type
+	     1 data member change:
+	      'int S3::m0' offset changed from 0 to 32
+
+       $
 
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 
 .. _Ini File Syntax: http://en.wikipedia.org/wiki/INI_file
+
+.. _GNU C Library: http://www.gnu.org/software/libc

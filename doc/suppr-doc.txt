@@ -3,9 +3,19 @@
   name = Dwarf
   type_kind = enum
 # type_kind = typedef|enum|struct|class|union|array|builtin
+# name_regexp = <regex>
 
 [suppress_function]
-  name= .*
+  name = foo
+# name_regexp = blah
+# parameter = '0 <type-name>
+# parameter = '1 /<type-name-regexp>/
+# return_type_name = <return-type>
+# return_type_regexp = <return-type-regexp>
+# symbol_name
+# symbol_name_regexp = <symbol-regexp>
+# symbol_versin = <symbol-version>
+# symbol_version_regexp = <symbol-version-regex>
 
 [suppress_symbol]
   name= _init

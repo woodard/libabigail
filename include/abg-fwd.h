@@ -167,6 +167,9 @@ is_at_template_scope(const shared_ptr<decl_base>);
 bool
 is_template_parameter(const shared_ptr<decl_base>);
 
+shared_ptr<function_decl>
+is_function_decl(shared_ptr<decl_base>);
+
 bool
 is_type(const decl_base&);
 

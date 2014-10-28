@@ -207,23 +207,26 @@ typedef shared_ptr<diff_traversable_base> diff_traversable_base_sptr;
 
 /// An enum for the different ways to visit a diff tree node.
 ///
-/// This is used by the node traversing code to know when to invoke a
-/// visitor on a diff tree node.
+/// This is used by the node traversing code, to know when to avoid
+/// visiting children nodes, for instance.
 enum visiting_kind
 {
   /// The default enumerator value of this enum.  It doesn't have any
   /// particular meaning yet.
-  NO_VISITING_KIND = 0,
-  /// This says that a visitor should be invoked on a tree node
-  /// *before* visiting the node's children.
-  PRE_VISITING_KIND = 1,
-  /// This says that a visotor should be invoked on a tree node
-  /// *after* visiting the node's children.
-  POST_VISITING_KIND =  1 << 1
+  DEFAULT_VISITING_KIND = 0,
+  /// This says that the traversing code should avoid visiting the
+  /// children nodes of the current node being visited.
+  SKIP_CHILDREN_VISITING_KIND = 1
 };
 
 visiting_kind
 operator|(visiting_kind l, visiting_kind r);
+
+visiting_kind
+operator&(visiting_kind l, visiting_kind r);
+
+visiting_kind
+operator~(visiting_kind l);
 
 ///  The base class for the diff classes that are to be traversed.
 class diff_traversable_base : public traversable_base
@@ -372,6 +375,14 @@ public:
   virtual ~suppression_base();
 }; // end class suppression_base
 
+void
+read_suppressions(std::istream& input,
+		  suppressions_type& suppressions);
+
+void
+read_suppressions(const string& file_path,
+		  suppressions_type& suppressions);
+
 class type_suppression;
 
 /// Convenience typedef for a shared pointer to type_suppression.
@@ -446,15 +457,156 @@ public:
 
 void
 read_type_suppressions(std::istream& input,
-		      type_suppressions_type& suppressions);
+		       type_suppressions_type& suppressions);
+
+class function_suppression;
+
+/// Convenience typedef for a shared pointer to function_suppression.
+typedef shared_ptr<function_suppression> function_suppression_sptr;
+
+/// Convenience typedef for a vector of @ref function_suppression_sptr.
+typedef vector<function_suppression_sptr> function_suppressions_type;
+
+/// Abstraction of a function suppression specification.
+///
+/// Specifies under which condition reports about a @ref
+/// function_decl_diff diff node should be dropped on the floor the
+/// purpose of reporting.
+class function_suppression : public suppression_base
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  // Forbid this.
+  function_suppression();
+
+public:
+
+  class parameter_spec;
+
+  /// Convenience typedef for shared_ptr of @ref parameter_spec.
+  typedef shared_ptr<parameter_spec> parameter_spec_sptr;
+
+  /// Convenience typedef for vector of @ref parameter_spec_sptr.
+  typedef vector<parameter_spec_sptr> parameter_specs_type;
+
+  function_suppression(const string&		label,
+		       const string&		name,
+		       const string&		name_regex,
+		       const string&		return_type_name,
+		       const string&		return_type_regex,
+		       parameter_specs_type&	parm_specs,
+		       const string&		symbol_name,
+		       const string&		symbol_name_regex,
+		       const string&		symbol_version,
+		       const string&		symbol_version_regex_str);
+
+  virtual ~function_suppression();
+
+  const string&
+  get_function_name() const;
+
+  void
+  set_function_name(const string&);
+
+  const string&
+  get_function_name_regex_str() const;
+
+  void
+  set_function_name_regex_str(const string&);
+
+  const string&
+  get_return_type_name() const;
+
+  void
+  set_return_type_name(const string&);
+
+  const string&
+  get_return_type_regex_str() const;
+
+  void
+  set_return_type_regex_str(const string& r);
+
+  const parameter_specs_type&
+  get_parameter_specs() const;
+
+  void
+  set_parameter_specs(parameter_specs_type&);
+
+  void
+  append_parameter_specs(const parameter_spec_sptr);
+
+  const string&
+  get_symbol_name() const;
+
+  void
+  set_symbol_name(const string& n);
+
+  const string&
+  get_symbol_name_regex_str() const;
+
+  void
+  set_symbol_name_regex_str(const string&);
+
+  const string&
+  get_symbol_version() const;
+
+  void
+  set_symbol_version(const string&);
+
+  const string&
+  get_symbol_version_regex_str() const;
+
+  void
+  set_symbol_version_regex_str(const string&);
+
+  virtual bool
+  suppresses_diff(const diff* diff) const;
+}; // end class function_suppression.
+
+/// Abstraction of the specification of a function parameter in a
+/// function suppression specification.
+class function_suppression::parameter_spec
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  friend class function_suppression;
+
+  priv_sptr priv_;
+
+  // Forbid this.
+  parameter_spec();
+
+public:
+  parameter_spec(size_t index,
+		 const string& type_name,
+		 const string& type_name_regex);
+
+  size_t
+  get_index() const;
+
+  void
+  set_index(size_t);
+
+  const string&
+  get_parameter_type_name() const;
+
+  void
+  set_parameter_type_name(const string&);
+
+  const string&
+  get_parameter_type_name_regex_str() const;
+
+  void
+  set_parameter_type_name_regex_str(const string&);
+};// end class function_suppression::parameter_spec
 
 void
-read_suppressions(std::istream& input,
-		  suppressions_type& suppressions);
-
-void
-read_suppressions(const string& file_path,
-		  suppressions_type& suppressions);
+read_function_suppressions(std::istream& input,
+			   function_suppressions_type& suppressions);
 
 /// The context of the diff.  This type holds various bits of
 /// information that is going to be used throughout the diffing of two
@@ -1835,7 +1987,7 @@ protected:
 public:
 
   diff_node_visitor()
-    : visiting_kind_(PRE_VISITING_KIND)
+    : visiting_kind_()
   {}
 
   /// Getter for the visiting policy of the traversing code while

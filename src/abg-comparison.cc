@@ -25,6 +25,7 @@
 /// This contains the implementation of the comparison engine of
 /// libabigail.
 
+#include <ctype.h>
 #include <algorithm>
 #include <sstream>
 #include "abg-hash.h"
@@ -77,6 +78,17 @@ visiting_kind
 operator|(visiting_kind l, visiting_kind r)
 {return static_cast<visiting_kind>(static_cast<unsigned>(l)
 				   | static_cast<unsigned>(r));}
+
+visiting_kind
+operator&(visiting_kind l, visiting_kind r)
+{
+  return static_cast<visiting_kind>(static_cast<unsigned>(l)
+				    & static_cast<unsigned>(r));
+}
+
+visiting_kind
+operator~(visiting_kind l)
+{return static_cast<visiting_kind>(~static_cast<unsigned>(l));}
 
 /// This is a subroutine of a *::report() function.
 ///
@@ -211,6 +223,65 @@ suppression_base::set_label(const string& label)
 
 suppression_base::~suppression_base()
 {}
+
+static type_suppression_sptr
+read_type_suppression(const ini::config::section& section);
+
+static function_suppression_sptr
+read_function_suppression(const ini::config::section& section);
+
+/// Read a vector of suppression specifications from the sections of
+/// an ini::config.
+///
+/// Note that each time a new kind of suppression specification is
+/// added, this function needs to be updated.
+///
+/// @param config the config to read from.
+///
+/// @param suppressions out parameter.  The vector of suppressions to
+/// append the newly read suppressions to.
+static void
+read_suppressions(const ini::config& config,
+		  suppressions_type& suppressions)
+{
+  suppression_sptr s;
+  for (ini::config::sections_type::const_iterator i =
+	 config.get_sections().begin();
+       i != config.get_sections().end();
+       ++i)
+    if ((s = read_type_suppression(**i))
+	|| (s = read_function_suppression(**i)))
+      suppressions.push_back(s);
+
+}
+
+/// Read suppressions specifications from an input stream.
+///
+/// @param input the input stream to read from.
+///
+/// @param suppressions the vector of suppressions to append the newly
+/// read suppressions to.
+void
+read_suppressions(std::istream& input,
+		  suppressions_type& suppressions)
+{
+    if (ini::config_sptr config = ini::read_config(input))
+    read_suppressions(*config, suppressions);
+}
+
+/// Read suppressions specifications from an input file on disk.
+///
+/// @param input the path to the input file to read from.
+///
+/// @param suppressions the vector of suppressions to append the newly
+/// read suppressions to.
+void
+read_suppressions(const string& file_path,
+		  suppressions_type& suppressions)
+{
+  if (ini::config_sptr config = ini::read_config(file_path))
+    read_suppressions(*config, suppressions);
+}
 // </suppression_base stuff>
 
 // <type_suppression stuff>
@@ -572,25 +643,6 @@ read_type_suppressions(const ini::config& config,
       suppressions.push_back(s);
 }
 
-/// Read a vector of suppression specifications from the sections of
-/// an ini::config.
-///
-/// @param config the config to read from.
-///
-/// @param suppressions out parameter.  The vector of suppressions to
-/// append the newly read suppressions to.
-static void
-read_suppressions(const ini::config& config,
-		  suppressions_type& suppressions)
-{
-  for (ini::config::sections_type::const_iterator i =
-	 config.get_sections().begin();
-       i != config.get_sections().end();
-       ++i)
-    if (suppression_sptr s = read_type_suppression(**i))
-      suppressions.push_back(s);
-}
-
 /// Read type suppressions specifications from an input stream.
 ///
 /// @param input the input stream to read from.
@@ -605,33 +657,923 @@ read_type_suppressions(std::istream& input,
     read_type_suppressions(*config, suppressions);
 }
 
-/// Read suppressions specifications from an input stream.
-///
-/// @param input the input stream to read from.
-///
-/// @param suppressions the vector of suppressions to append the newly
-/// read suppressions to.
-void
-read_suppressions(std::istream& input,
-		  suppressions_type& suppressions)
+// <function_suppression stuff>
+class function_suppression::parameter_spec::priv
 {
-    if (ini::config_sptr config = ini::read_config(input))
-    read_suppressions(*config, suppressions);
+  friend class function_suppression::parameter_spec;
+  friend class function_suppression;
+
+  size_t				index_;
+  string				type_name_;
+  string				type_name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	type_name_regex_;
+
+  priv()
+    : index_()
+  {}
+
+  priv(size_t i, const string& tn)
+    : index_(i), type_name_(tn)
+  {}
+
+  priv(size_t i, const string& tn, const string& tn_regex)
+    : index_(i), type_name_(tn), type_name_regex_str_(tn_regex)
+  {}
+
+  const sptr_utils::regex_t_sptr
+  get_type_name_regex() const
+  {
+    if (!type_name_regex_ && !type_name_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    type_name_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  type_name_regex_ = r;
+      }
+    return type_name_regex_;
+  }
+}; // end class function_suppression::parameter_spec::priv
+
+/// Constructor for the @ref the function_suppression::parameter_spec
+/// type.
+///
+/// @param i the index of the parameter designated by this specification.
+///
+/// @param tn the type name of the parameter designated by this specification.
+///
+/// @param tn_regex a regular expression that defines a set of type
+/// names for the parameter designated by this specification.  Note
+/// that at evaluation time, this regular expression is taken in
+/// account only if the parameter @p tn is empty.
+function_suppression::parameter_spec::parameter_spec(size_t i,
+						     const string& tn,
+						     const string& tn_regex)
+  : priv_(new priv(i, tn, tn_regex))
+{}
+
+/// Getter for the index of the parameter designated by this
+/// specification.
+///
+/// @return the index of the parameter designated by this
+/// specification.
+size_t
+function_suppression::parameter_spec::get_index() const
+{return priv_->index_;}
+
+/// Setter for the index of the parameter designated by this
+/// specification.
+///
+/// @param i the new index to set.
+void
+function_suppression::parameter_spec::set_index(size_t i)
+{priv_->index_ = i;}
+
+/// Getter for the type name of the parameter designated by this specification.
+///
+/// @return the type name of the parameter.
+const string&
+function_suppression::parameter_spec::get_parameter_type_name() const
+{return priv_->type_name_;}
+
+/// Setter for the type name of the parameter designated by this
+/// specification.
+///
+/// @param tn new parameter type name to set.
+void
+function_suppression::parameter_spec::set_parameter_type_name(const string& tn)
+{priv_->type_name_ = tn;}
+
+/// Getter for the regular expression that defines a set of type names
+/// for the parameter designated by this specification.
+///
+/// Note that at evaluation time, this regular expression is taken in
+/// account only if the name of the parameter as returned by
+/// function_suppression::parameter_spec::get_parameter_type_name() is
+/// empty.
+///
+/// @return the regular expression or the parameter type name.
+const string&
+function_suppression::parameter_spec::get_parameter_type_name_regex_str() const
+{return priv_->type_name_regex_str_;}
+
+/// Setter for the regular expression that defines a set of type names
+/// for the parameter designated by this specification.
+///
+/// Note that at evaluation time, this regular expression is taken in
+/// account only if the name of the parameter as returned by
+/// function_suppression::parameter_spec::get_parameter_type_name() is
+/// empty.
+///
+/// @param type_name_regex_str the new type name regular expression to
+/// set.
+void
+function_suppression::parameter_spec::set_parameter_type_name_regex_str
+(const string& type_name_regex_str)
+{priv_->type_name_regex_str_ = type_name_regex_str;}
+
+/// The type of the private data of the @ref function_suppression
+/// type.
+class function_suppression::priv
+{
+  friend function_suppression;
+
+  string				name_;
+  string				name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	name_regex_;
+  string				return_type_name_;
+  string				return_type_regex_str_;
+  mutable sptr_utils::regex_t_sptr	return_type_regex_;
+  parameter_specs_type			parm_specs_;
+  string				symbol_name_;
+  string				symbol_name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	symbol_name_regex_;
+  string				symbol_version_;
+  string				symbol_version_regex_str_;
+  mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
+
+  priv(const string&			name,
+       const string&			name_regex_str,
+       const string&			return_type_name,
+       const string&			return_type_regex_str,
+       const parameter_specs_type&	parm_specs,
+       const string&			symbol_name,
+       const string&			symbol_name_regex_str,
+       const string&			symbol_version,
+       const string&			symbol_version_regex_str)
+    : name_(name),
+      name_regex_str_(name_regex_str),
+      return_type_name_(return_type_name),
+      return_type_regex_str_(return_type_regex_str),
+      parm_specs_(parm_specs),
+      symbol_name_(symbol_name),
+      symbol_name_regex_str_(symbol_name_regex_str),
+      symbol_version_(symbol_version),
+      symbol_version_regex_str_(symbol_version_regex_str)
+  {}
+
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
+  /// function_suppression::priv::name_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// function_suppression::priv::name_regex_str_..
+  const sptr_utils::regex_t_sptr
+  get_name_regex() const
+  {
+    if (!name_regex_ && !name_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    name_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  name_regex_ = r;
+      }
+    return name_regex_;
+  }
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
+  /// function_suppression::priv::return_type_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// function_suppression::priv::return_type_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_return_type_regex() const
+  {
+    if (!return_type_regex_ && !return_type_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    return_type_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  return_type_regex_ = r;
+      }
+    return return_type_regex_;
+  }
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
+  /// function_suppression::priv::symbol_name_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// function_suppression::priv::symbol_name_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_symbol_name_regex() const
+  {
+    if (!symbol_name_regex_ && !symbol_name_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    symbol_name_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  symbol_name_regex_ = r;
+      }
+    return symbol_name_regex_;
+  }
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
+  /// function_suppression::priv::symbol_version_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// function_suppression::priv::symbol_version_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_symbol_version_regex() const
+  {
+    if (!symbol_version_regex_ && ! symbol_version_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    symbol_version_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  symbol_version_regex_ = r;
+      }
+    return symbol_version_regex_;
+  }
+}; // end class function_suppression::priv
+
+/// Constructor for the @ref function_suppression type.
+///
+/// @param label an informative text string that the evalution code
+/// might use to designate this function suppression specification in
+/// error messages.  This parameter might be empty, in which case it's
+/// ignored at evaluation time.
+///
+/// @param the name of the function the user wants the current
+/// specification to designate.  This parameter might be empty, in
+/// which case it's ignored at evaluation time.
+///
+/// @param nr if @p name is empty this parameter is a regular
+/// expression for a family of names of functions the user wants the
+/// current specification to designate.  If @p name is not empty, this
+/// parameter is ignored at specification evaluation time.  This
+/// parameter might be empty, in which case it's ignored at evaluation
+/// time.
+///
+/// @param ret_tn the name of the return type of the function the user
+/// wants this specification to designate.  This parameter might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @param ret_tr if @p ret_tn is empty, then this is a regular
+/// expression for a family of return type names for functions the
+/// user wants the current specification to designate.  If @p ret_tn
+/// is not empty, then this parameter is ignored at specification
+/// evaluation time.  This parameter might be empty, in which case
+/// it's ignored at evaluation time.
+///
+/// @param ps a vector of parameter specifications to specify
+/// properties of the parameters of the functions the user wants this
+/// specification to designate.  This parameter might be empty, in
+/// which case it's ignored at evaluation time.
+///
+/// @param sym_n the name of symbol of the function the user wants
+/// this specification to designate.  This parameter might be empty,
+/// in which case it's ignored at evaluation time.
+///
+/// @param sym_nr if the parameter @p sym_n is empty, then this
+/// parameter is a regular expression for a family of names of symbols
+/// of functions the user wants this specification to designate.  If
+/// the parameter @p sym_n is not empty, then this parameter is
+/// ignored at specification evaluation time.  This parameter might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @param sym_v the name of the version of the symbol of the function
+/// the user wants this specification to designate.  This parameter
+/// might be empty, in which case it's ignored at evaluation time.
+///
+/// @param sym_vr if the parameter @p sym_v is empty, then this
+/// parameter is a regular expression for a family of versions of
+/// symbols of functions the user wants the current specification to
+/// designate.  If the parameter @p sym_v is non empty, then this
+/// parameter is ignored.  This parameter might be empty, in which
+/// case it's ignored at evaluation time.
+function_suppression::function_suppression(const string&		label,
+					   const string&		name,
+					   const string&		nr,
+					   const string&		ret_tn,
+					   const string&		ret_tr,
+					   parameter_specs_type&	ps,
+					   const string&		sym_n,
+					   const string&		sym_nr,
+					   const string&		sym_v,
+					   const string&		sym_vr)
+  : suppression_base(label),
+    priv_(new priv(name, nr, ret_tn, ret_tr, ps,
+		   sym_n, sym_nr, sym_v, sym_vr))
+{}
+
+function_suppression::~function_suppression()
+{}
+
+/// Getter for the name of the function the user wants the current
+/// specification to designate.  This might be empty, in which case
+/// it's ignored at evaluation time.
+///
+/// @return the name of the function.
+const string&
+function_suppression::get_function_name() const
+{return priv_->name_;}
+
+/// Setter for the name of the function the user wants the current
+/// specification to designate.  This might be empty, in which case
+/// it's ignored at evaluation time.
+///
+/// @param n the new function name to set.
+void
+function_suppression::set_function_name(const string& n)
+{priv_->name_ = n;}
+
+/// Getter for a regular expression for a family of names of functions
+/// the user wants the current specification to designate.
+///
+/// If the function name as returned by
+/// function_suppression::get_function_name() is not empty, this
+/// property is ignored at specification evaluation time.  This
+/// property might be empty, in which case it's ignored at evaluation
+/// time.
+///
+/// @return the regular expression for the possible names of the
+/// function(s).
+const string&
+function_suppression::get_function_name_regex_str() const
+{return priv_->name_regex_str_;}
+
+/// Setter for a regular expression for a family of names of functions
+/// the user wants the current specification to designate.
+///
+/// If the function name as returned by
+/// function_suppression::get_function_name() is not empty, this
+/// property is ignored at specification evaluation time.  This
+/// property might be empty, in which case it's ignored at evaluation
+/// time.
+///
+/// @param r the new the regular expression for the possible names of
+/// the function(s).
+void
+function_suppression::set_function_name_regex_str(const string& r)
+{priv_->name_regex_str_ = r;}
+
+/// Getter for the name of the return type of the function the user
+/// wants this specification to designate.  This property might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @return the name of the return type of the function.
+const string&
+function_suppression::get_return_type_name() const
+{return priv_->return_type_name_;}
+
+/// Setter for the name of the return type of the function the user
+/// wants this specification to designate.  This property might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @param tr the new name of the return type of the function to set.
+void
+function_suppression::set_return_type_name(const string& tr)
+{priv_->return_type_name_ = tr;}
+
+/// Getter for a regular expression for a family of return type names
+/// for functions the user wants the current specification to
+/// designate.
+///
+/// If the name of the return type of the function as returned by
+/// function_suppression::get_return_type_name() is not empty, then
+/// this property is ignored at specification evaluation time.  This
+/// property might be empty, in which case it's ignored at evaluation
+/// time.
+///
+/// @return the regular expression for the possible names of the
+/// return types of the function(s).
+const string&
+function_suppression::get_return_type_regex_str() const
+{return priv_->return_type_regex_str_;}
+
+/// Setter for a regular expression for a family of return type names
+/// for functions the user wants the current specification to
+/// designate.
+///
+/// If the name of the return type of the function as returned by
+/// function_suppression::get_return_type_name() is not empty, then
+/// this property is ignored at specification evaluation time.  This
+/// property might be empty, in which case it's ignored at evaluation
+/// time.
+///
+/// @param r the new regular expression for the possible names of the
+/// return types of the function(s) to set.
+void
+function_suppression::set_return_type_regex_str(const string& r)
+{priv_->return_type_regex_str_ = r;}
+
+/// Getter for a vector of parameter specifications to specify
+/// properties of the parameters of the functions the user wants this
+/// specification to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @return the specifications of the parameters of the function(s).
+const function_suppression::parameter_specs_type&
+function_suppression::get_parameter_specs() const
+{return priv_->parm_specs_;}
+
+/// Setter for a vector of parameter specifications to specify
+/// properties of the parameters of the functions the user wants this
+/// specification to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @param p the new specifications of the parameters of the
+/// function(s) to set.
+void
+function_suppression::set_parameter_specs(parameter_specs_type& p)
+{priv_->parm_specs_ = p;}
+
+/// Append a specification of a parameter of the function specification.
+///
+/// @param p the parameter specification to add.
+void
+function_suppression::append_parameter_specs(const parameter_spec_sptr p)
+{priv_->parm_specs_.push_back(p);}
+
+/// Getter for the name of symbol of the function the user wants this
+/// specification to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @return name of the symbol of the function.
+const string&
+function_suppression::get_symbol_name() const
+{return priv_->symbol_name_;}
+
+/// Setter for the name of symbol of the function the user wants this
+/// specification to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @return name of the symbol of the function.
+void
+function_suppression::set_symbol_name(const string& n)
+{priv_->symbol_name_ = n;}
+
+/// Getter for a regular expression for a family of names of symbols
+/// of functions the user wants this specification to designate.
+///
+/// If the symbol name as returned by
+/// function_suppression::get_symbol_name() is not empty, then this
+/// property is ignored at specification evaluation time.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @return the regular expression for a family of names of symbols of
+/// functions to designate.
+const string&
+function_suppression::get_symbol_name_regex_str() const
+{return priv_->symbol_name_regex_str_;}
+
+/// Setter for a regular expression for a family of names of symbols
+/// of functions the user wants this specification to designate.
+///
+/// If the symbol name as returned by
+/// function_suppression::get_symbol_name() is not empty, then this
+/// property is ignored at specification evaluation time.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @param r the new regular expression for a family of names of
+/// symbols of functions to set.
+void
+function_suppression::set_symbol_name_regex_str(const string& r)
+{priv_->symbol_name_regex_str_ = r;}
+
+/// Getter for the name of the version of the symbol of the function
+/// the user wants this specification to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @return the symbol version of the function.
+const string&
+function_suppression::get_symbol_version() const
+{return priv_->symbol_version_;}
+
+/// Setter for the name of the version of the symbol of the function
+/// the user wants this specification to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @param v the new symbol version of the function.
+void
+function_suppression::set_symbol_version(const string& v)
+{priv_->symbol_version_ = v;}
+
+/// Getter for a regular expression for a family of versions of
+/// symbols of functions the user wants the current specification to
+/// designate.
+///
+/// If the symbol version as returned by
+/// function_suppression::get_symbol_version() is non empty, then this
+/// property is ignored.  This property might be empty, in which case
+/// it's ignored at evaluation time.
+///
+/// @return the regular expression for the versions of symbols of
+/// functions to designate.
+const string&
+function_suppression::get_symbol_version_regex_str() const
+{return priv_->symbol_version_regex_str_;}
+
+/// Setter for a regular expression for a family of versions of
+/// symbols of functions the user wants the current specification to
+/// designate.
+///
+/// If the symbol version as returned by
+/// function_suppression::get_symbol_version() is non empty, then this
+/// property is ignored.  This property might be empty, in which case
+/// it's ignored at evaluation time.
+///
+/// @param the new regular expression for the versions of symbols of
+/// functions to designate.
+void
+function_suppression::set_symbol_version_regex_str(const string& r)
+{priv_->symbol_version_regex_str_ = r;}
+
+/// Evaluate this suppression specification on a given diff node and
+/// say if the diff node should be suppressed or not.
+///
+/// @param diff the diff node to evaluate this suppression
+/// specification against.
+///
+/// @return true if @p diff should be suppressed.
+bool
+function_suppression::suppresses_diff(const diff* diff) const
+{
+  const function_decl_diff* d = dynamic_cast<const function_decl_diff*>(diff);
+  if (!d)
+    return false;
+
+  function_decl_sptr ff = is_function_decl(d->first_function_decl()),
+    sf = is_function_decl(d->second_function_decl());
+  assert(ff && sf);
+
+  string ff_name = ff->get_qualified_name(), sf_name = sf->get_qualified_name();
+
+  // Check if the "name" property matches.
+  if (!get_function_name().empty())
+    {
+      string n = get_function_name();
+      if (n != ff->get_qualified_name()
+	  && n != sf->get_qualified_name())
+	return false;
+    }
+
+  // Check if the "name_regexp" property matches.
+  const sptr_utils::regex_t_sptr name_regex = priv_->get_name_regex();
+  if (name_regex
+      && (regexec(name_regex.get(), ff_name.c_str(), 0, NULL, 0) != 0
+	  && regexec(name_regex.get(), sf_name.c_str(), 0, NULL, 0) != 0))
+    return false;
+
+  // Check if the "return_type_name" or "return_type_regexp"
+  // properties matches.
+
+    string ff_return_type_name = ff->get_type()->get_return_type()
+      ? (get_type_declaration(ff->get_type()->get_return_type())
+	 ->get_qualified_name())
+      : "";
+  string sf_return_type_name = sf->get_type()->get_return_type()
+    ? (get_type_declaration(sf->get_type()->get_return_type())
+       ->get_qualified_name())
+    : "";
+
+  if (!get_return_type_name().empty())
+    {
+      if (ff_return_type_name != get_return_type_name()
+	  && sf_return_type_name != get_return_type_name())
+	return false;
+    }
+  else
+    {
+      const sptr_utils::regex_t_sptr return_type_regex =
+	priv_->get_return_type_regex();
+      if (return_type_regex
+	  && (regexec(return_type_regex.get(),
+		      ff_return_type_name.c_str(),
+		      0, NULL, 0) != 0
+	      && regexec(return_type_regex.get(),
+			 sf_return_type_name.c_str(),
+			 0, NULL, 0) != 0))
+	return false;
+    }
+
+  // Check if the "symbol_name" and "symbol_name_regexp" properties
+  // match.
+
+  string ff_sym_name, ff_sym_version, sf_sym_name, sf_sym_version;
+  if (ff->get_symbol())
+    {
+      ff_sym_name = ff->get_symbol()->get_name();
+      ff_sym_version = ff->get_symbol()->get_version().str();
+    }
+  if (sf->get_symbol())
+    {
+      sf_sym_name = sf->get_symbol()->get_name();
+      sf_sym_version = sf->get_symbol()->get_version().str();
+    }
+
+  if (!get_symbol_name().empty())
+    {
+      if (ff_sym_name != get_symbol_name()
+	  && sf_sym_name != get_symbol_name())
+	return false;
+    }
+  else
+    {
+      const sptr_utils::regex_t_sptr symbol_name_regex =
+	priv_->get_symbol_name_regex();
+      if (symbol_name_regex
+	  && (regexec(symbol_name_regex.get(),
+		      ff_sym_name.c_str(),
+		      0, NULL, 0) != 0
+	      && regexec(symbol_name_regex.get(),
+			 sf_sym_name.c_str(),
+			 0, NULL, 0) != 0))
+	return false;
+    }
+
+// Check if the "symbol_version" and "symbol_version_regexp"
+// properties match.
+  if (!get_symbol_version().empty())
+    {
+      if (ff_sym_version != get_symbol_version()
+	  && sf_sym_name != get_symbol_version())
+	return false;
+    }
+  else
+    {
+      const sptr_utils::regex_t_sptr symbol_version_regex =
+	priv_->get_symbol_version_regex();
+      if (symbol_version_regex
+	  && (regexec(symbol_version_regex.get(),
+		      ff_sym_version.c_str(),
+		      0, NULL, 0) != 0
+	      && regexec(symbol_version_regex.get(),
+			 sf_sym_version.c_str(),
+			 0, NULL, 0) != 0))
+	return false;
+    }
+
+  if (!get_parameter_specs().empty())
+    {
+      function_type_sptr ff_type = ff->get_type();
+      function_type_sptr sf_type = sf->get_type();
+      type_base_sptr parm_type;
+
+      for (parameter_specs_type::const_iterator p =
+	     get_parameter_specs().begin();
+	   p != get_parameter_specs().end();
+	   ++p)
+	{
+	  size_t index = (*p)->get_index();
+	  function_decl::parameter_sptr ff_parm =
+	    ff_type->get_parm_at_index_from_first_non_implicit_parm(index);
+	  function_decl::parameter_sptr sf_parm =
+	    sf_type->get_parm_at_index_from_first_non_implicit_parm(index);
+	  if (!ff_parm && ! sf_parm)
+	    return false;
+
+	  string ff_parm_type_qualified_name, sf_parm_type_qualified_name;
+	  if (ff_parm)
+	    {
+	      parm_type = ff_parm->get_type();
+	      ff_parm_type_qualified_name =
+		get_type_declaration(parm_type)->get_qualified_name();
+	    }
+
+	  if (sf_parm)
+	    {
+	      parm_type = sf_parm->get_type();
+	      sf_parm_type_qualified_name =
+		get_type_declaration(parm_type)->get_qualified_name();
+	    }
+
+	  const string& tn = (*p)->get_parameter_type_name();
+	  if (!tn.empty())
+	    {
+	      if (tn != ff_parm_type_qualified_name
+		  && tn != sf_parm_type_qualified_name)
+		return false;
+	    }
+	  else
+	    {
+	      const sptr_utils::regex_t_sptr parm_type_name_regex =
+		(*p)->priv_->get_type_name_regex();
+	      if (parm_type_name_regex)
+		{
+		  if ((regexec(parm_type_name_regex.get(),
+			       ff_parm_type_qualified_name.c_str(),
+			       0, NULL, 0) != 0
+		       && regexec(parm_type_name_regex.get(),
+				  sf_parm_type_qualified_name.c_str(),
+				  0, NULL, 0) != 0))
+		    return false;
+		}
+	    }
+	}
+    }
+
+  return true;
 }
 
-/// Read suppressions specifications from an input file on disk.
+/// Parse a string containing a parameter spec, build an instance of
+/// function_suppression::parameter_spec from it and return a pointer
+/// to that object.
 ///
-/// @param input the path to the input file to read from.
-///
-/// @param suppressions the vector of suppressions to append the newly
-/// read suppressions to.
-void
-read_suppressions(const string& file_path,
-		  suppressions_type& suppressions)
+/// @return a shared pointer pointer to the newly built instance of
+/// function_suppression::parameter_spec.  If the parameter
+/// specification could not be parsed, return a nil object.
+static function_suppression::parameter_spec_sptr
+read_parameter_spec_from_string(const string& str)
 {
-  if (ini::config_sptr config = ini::read_config(file_path))
-    read_suppressions(*config, suppressions);
+  string::size_type cur = 0;
+  function_suppression::parameter_spec_sptr result;
+
+  // skip leading white spaces.
+  for (; cur < str.size(); ++cur)
+    if (!isspace(str[cur]))
+      break;
+
+  // look for the parameter index
+  string index_str;
+  if (str[cur] == '\'')
+    {
+      ++cur;
+      for (; cur < str.size(); ++cur)
+	if (!isdigit(str[cur]))
+	  break;
+	else
+	  index_str += str[cur];
+    }
+
+  // skip white spaces.
+  for (; cur < str.size(); ++cur)
+    if (!isspace(str[cur]))
+      break;
+
+  bool is_regex = false;
+  if (str[cur] == '/')
+    {
+      is_regex = true;
+      ++ cur;
+    }
+
+  // look for the type name (regex)
+  string type_name;
+  for (; cur < str.size(); ++cur)
+    if (!isspace(str[cur]))
+      {
+	if (is_regex && str[cur] == '/')
+	  break;
+	type_name += str[cur];
+      }
+
+  if (is_regex && str[cur] == '/')
+    ++cur;
+
+  if (!index_str.empty() || !type_name.empty())
+    {
+      function_suppression::parameter_spec* p;
+      if (is_regex)
+	p = new function_suppression::parameter_spec(atoi(index_str.c_str()),
+						     "", type_name);
+      else
+	p = new function_suppression::parameter_spec(atoi(index_str.c_str()),
+						     type_name, "");
+      result.reset(p);
+    }
+
+  return result;
 }
+
+/// Parse function suppression specification, build a resulting @ref
+/// function_suppression type and return a shared pointer to that
+/// object.
+///
+/// @return a shared pointer to the newly built @ref
+/// function_suppression.  If the function suppression specification
+/// could not be parsed then a nil shared pointer is returned.
+static function_suppression_sptr
+read_function_suppression(const ini::config::section& section)
+{
+  function_suppression_sptr nil;
+
+  if (section.get_name() != "suppress_function")
+    return nil;
+
+  ini::config::property_sptr label_prop = section.find_property("label");
+  string label_str = (label_prop && !label_prop->second.empty())
+    ? label_prop->second
+    : "";
+
+  ini::config::property_sptr name_prop = section.find_property("name");
+  string name = name_prop && !name_prop->second.empty()
+    ? name_prop->second
+    : "";
+
+  ini::config::property_sptr name_regex_prop =
+    section.find_property("name_regexp");
+  string name_regex_str = name_regex_prop && !name_regex_prop->second.empty()
+    ? name_regex_prop->second
+    : "";
+
+  ini::config::property_sptr return_type_name_prop =
+    section.find_property("return_type_name");
+  string return_type_name = (return_type_name_prop)
+    ? return_type_name_prop->second
+    : "";
+
+  ini::config::property_sptr return_type_regex_prop =
+    section.find_property("return_type_regexp");
+  string return_type_regex_str =
+    (return_type_regex_prop
+     && !return_type_regex_prop->second.empty())
+    ? return_type_regex_prop->second
+    : "";
+
+  ini::config::property_sptr sym_name_prop =
+    section.find_property("symbol_name");
+  string sym_name = (sym_name_prop) ? sym_name_prop->second : "";
+
+  ini::config::property_sptr sym_name_regex_prop =
+    section.find_property("symbol_name_regexp");
+  string sym_name_regex_str =
+    (sym_name_regex_prop && !sym_name_regex_prop->second.empty())
+    ? sym_name_regex_prop->second
+    : "";
+
+  ini::config::property_sptr sym_ver_prop =
+    section.find_property("symbol_version");
+  string sym_version = (sym_ver_prop) ? sym_ver_prop->second : "";
+
+  ini::config::property_sptr sym_ver_regex_prop =
+    section.find_property("symbol_version_regexp");
+  string sym_ver_regex_str =
+    (sym_ver_regex_prop && !sym_ver_regex_prop->second.empty())
+    ? sym_ver_regex_prop->second
+    : "";
+
+  function_suppression::parameter_spec_sptr parm;
+  function_suppression::parameter_specs_type parms;
+  for (ini::config::property_vector::const_iterator p =
+	 section.get_properties().begin();
+       p != section.get_properties().end();
+       ++p)
+    if ((*p)->first == "parameter")
+      if (parm = read_parameter_spec_from_string((*p)->second))
+	parms.push_back(parm);
+
+  function_suppression_sptr result;
+  if (!label_str.empty()
+      || !name.empty()
+      || !name_regex_str.empty()
+      || !return_type_name.empty()
+      || !return_type_regex_str.empty()
+      || !sym_name.empty()
+      || !sym_name_regex_str.empty()
+      || !sym_version.empty()
+      || !sym_ver_regex_str.empty()
+      || !parms.empty())
+    result.reset(new function_suppression(label_str, name,
+					  name_regex_str,
+					  return_type_name,
+					  return_type_regex_str,
+					  parms,
+					  sym_name,
+					  sym_name_regex_str,
+					  sym_version,
+					  sym_ver_regex_str));
+
+  return result;
+}
+
+// </function_suppression stuff>
 
 /// The private member (pimpl) for @ref diff_context.
 struct diff_context::priv
@@ -1362,36 +2304,35 @@ diff::traverse(diff_node_visitor& v)
   begin_traversing();
   v.visit_begin(this);
 
-  if (v.get_visiting_kind() & PRE_VISITING_KIND)
-    if (!v.visit(this, /*pre=*/true))
-      {
-	v.visit_end(this);
-	end_traversing();
-	context()->mark_diff_as_traversed(this);
-	return false;
-      }
-
-  for (vector<diff*>::const_iterator i = children_nodes().begin();
-       i != children_nodes().end();
-       ++i)
+  if (!v.visit(this, /*pre=*/true))
     {
-      if (!(*i)->traverse(v))
-	{
-	  v.visit_end(this);
-	  end_traversing();
-	  context()->mark_diff_as_traversed(this);
-	  return false;
-	}
+      v.visit_end(this);
+      end_traversing();
+      context()->mark_diff_as_traversed(this);
+      return false;
     }
 
-  if (v.get_visiting_kind() & POST_VISITING_KIND)
-    if (!v.visit(this, /*pref=*/false))
+  if (!(v.get_visiting_kind() & SKIP_CHILDREN_VISITING_KIND))
+    for (vector<diff*>::const_iterator i = children_nodes().begin();
+	 i != children_nodes().end();
+	 ++i)
       {
-	v.visit_end(this);
-	end_traversing();
-	context()->mark_diff_as_traversed(this);
-	return false;
+	if (!(*i)->traverse(v))
+	  {
+	    v.visit_end(this);
+	    end_traversing();
+	    context()->mark_diff_as_traversed(this);
+	    return false;
+	  }
       }
+
+  if (!v.visit(this, /*pref=*/false))
+    {
+      v.visit_end(this);
+      end_traversing();
+      context()->mark_diff_as_traversed(this);
+      return false;
+    }
 
   v.visit_end(this);
   end_traversing();
@@ -9503,14 +10444,28 @@ print_diff_tree(corpus_diff_sptr diff_tree,
 /// appropriate.
 struct redundancy_marking_visitor : public diff_node_visitor
 {
+  bool skip_children_nodes_;
+
+  redundancy_marking_visitor()
+    : skip_children_nodes_()
+  {}
+
   virtual void
   visit_begin(diff* d)
   {
-    // A diff node that carries a change and that has been already
-    // traversed elsewhere is considered redundant.
-     if (d->context()->diff_has_been_traversed(d)
-	 && d->length())
-      d->add_to_category(REDUNDANT_CATEGORY);
+    if (d->to_be_reported())
+      {
+	// A diff node that carries a change and that has been already
+	// been traversed elsewhere is considered redundant.
+	if (d->context()->diff_has_been_traversed(d) && d->length())
+	  d->add_to_category(REDUNDANT_CATEGORY);
+      }
+    else
+      {
+	// If the node is not be reported, do not look at it children.
+	set_visiting_kind(get_visiting_kind() | SKIP_CHILDREN_VISITING_KIND);
+	skip_children_nodes_ = true;
+      }
   }
 
   virtual void
@@ -9521,34 +10476,46 @@ struct redundancy_marking_visitor : public diff_node_visitor
   virtual void
   visit_end(diff* d)
   {
-    // Propagate the redundancy categorization of the children nodes
-    // to this node.  But if this node has local changes, then it
-    // doesn't inherit redundancy from its children nodes.
-    if (!(d->get_category() & REDUNDANT_CATEGORY)
-	&& !d->has_local_changes())
+    if (skip_children_nodes_)
+      // When visiting this node, we decided to skip its children
+      // node.  Now that we are done visiting the node, lets stop
+      // avoiding the children nodes visiting for the other tree
+      // nodes.
       {
-	bool has_non_redundant_child = false;
-	bool has_non_empty_child = false;
-	for (vector<diff*>::const_iterator i = d->children_nodes().begin();
-	     i != d->children_nodes().end();
-	     ++i)
+	set_visiting_kind(get_visiting_kind() & (~SKIP_CHILDREN_VISITING_KIND));
+	skip_children_nodes_ = false;
+      }
+    else
+      {
+	// Propagate the redundancy categorization of the children nodes
+	// to this node.  But if this node has local changes, then it
+	// doesn't inherit redundancy from its children nodes.
+	if (!(d->get_category() & REDUNDANT_CATEGORY)
+	    && !d->has_local_changes())
 	  {
-	    if ((*i)->length())
+	    bool has_non_redundant_child = false;
+	    bool has_non_empty_child = false;
+	    for (vector<diff*>::const_iterator i = d->children_nodes().begin();
+		 i != d->children_nodes().end();
+		 ++i)
 	      {
-		has_non_empty_child = true;
-		if (((*i)->get_category() & REDUNDANT_CATEGORY) == 0)
-		  has_non_redundant_child = true;
+		if ((*i)->length())
+		  {
+		    has_non_empty_child = true;
+		    if (((*i)->get_category() & REDUNDANT_CATEGORY) == 0)
+		      has_non_redundant_child = true;
+		  }
+		if (has_non_redundant_child)
+		  break;
 	      }
-	    if (has_non_redundant_child)
-	      break;
-	  }
 
-	// A diff node for which at least a child node carries a
-	// change, and for which all the children are redundant is
-	// deemed redundant too, unless it has local changes.
-	if (has_non_empty_child
-	    && !has_non_redundant_child)
-	  d->add_to_category(REDUNDANT_CATEGORY);
+	    // A diff node for which at least a child node carries a
+	    // change, and for which all the children are redundant is
+	    // deemed redundant too, unless it has local changes.
+	    if (has_non_empty_child
+		&& !has_non_redundant_child)
+	      d->add_to_category(REDUNDANT_CATEGORY);
+	  }
       }
   }
 
@@ -9559,9 +10526,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
 
   virtual bool
   visit(diff*, bool)
-  {
-    return true;
-  }
+  {return true;}
 
   virtual bool
   visit(corpus_diff*, bool)

@@ -1990,6 +1990,9 @@ public:
   parameters&
   get_parameters();
 
+  const parameter_sptr
+  get_parm_at_index_from_first_non_implicit_parm(size_t) const;
+
   void
   set_parameters(const parameters &p);
 

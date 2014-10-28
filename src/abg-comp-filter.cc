@@ -46,7 +46,6 @@ using std::tr1::dynamic_pointer_cast;
 void
 apply_filter(filter_base& filter, corpus_diff_sptr d)
 {
-  filter.set_visiting_kind(PRE_VISITING_KIND | POST_VISITING_KIND);
   bool s = d->context()->traversing_a_node_twice_is_forbidden();
   d->context()->forbid_traversing_a_node_twice(false);
   d->traverse(filter);
@@ -63,7 +62,6 @@ apply_filter(filter_base& filter, corpus_diff_sptr d)
 void
 apply_filter(filter_base& filter, diff_sptr d)
 {
-  filter.set_visiting_kind(PRE_VISITING_KIND | POST_VISITING_KIND);
   bool s = d->context()->traversing_a_node_twice_is_forbidden();
   d->context()->forbid_traversing_a_node_twice(false);
   d->traverse(filter);

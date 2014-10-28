@@ -2940,6 +2940,16 @@ is_template_parameter(const shared_ptr<decl_base> decl)
 		   || dynamic_pointer_cast<template_tparameter>(decl)));
 }
 
+/// Test whether a declaration is a @ref function_decl.
+///
+/// @param d the declaration to test for.
+///
+/// @return a shared pointer to @ref function_decl if @p d is a @ref
+/// function_decl.  Otherwise, a nil shared pointer.
+function_decl_sptr
+is_function_decl(decl_base_sptr d)
+{return dynamic_pointer_cast<function_decl>(d);}
+
 /// Test whether a declaration is a type.
 ///
 /// @param d the declaration to test for.
@@ -5200,6 +5210,39 @@ function_type::get_parameters() const
 function_decl::parameters&
 function_type::get_parameters()
 {return priv_->parms_;}
+
+/// Get the Ith parameter of the vector of parameters of the current
+/// instance of @ref function_type.
+///
+/// Note that the first parameter is at index 0.  That parameter is
+/// the first parameter that comes after the possible implicit "this"
+/// parameter, when the current instance @ref function_type is for a
+/// member function.  Otherwise, if the current instance of @ref
+/// function_type is for a non-member function, the parameter at index
+/// 0 is the first parameter of the function.
+///
+///
+/// @param i the index of the parameter to return.  If i is greater
+/// than the index of the last parameter, then this function returns
+/// an empty parameter (smart) pointer.
+///
+/// @return the @p i th parameter that is not implicit.
+const function_decl::parameter_sptr
+function_type::get_parm_at_index_from_first_non_implicit_parm(size_t i) const
+{
+  parameter_sptr result;
+  if (dynamic_cast<const method_type*>(this))
+    {
+      if (i + 1 < get_parameters().size())
+	result = get_parameters()[i + 1];
+    }
+  else
+    {
+      if (i < get_parameters().size())
+	result = get_parameters()[i];
+    }
+  return result;
+}
 
 /// Setter for the parameters of the current instance of @ref
 /// function_type.
