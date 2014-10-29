@@ -9,6 +9,9 @@ foo()
 asm(".symver _Z3foov,foo_alias@VERSION_1.0");
 
 void
+foo_another_alias() __attribute__((alias("_Z3foov")));
+
+void
 bar()
 {
 }

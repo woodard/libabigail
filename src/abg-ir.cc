@@ -625,7 +625,11 @@ elf_symbol::get_aliases_id_string(const string_elf_symbols_map_type& syms,
   for (vector<elf_symbol*>::const_iterator i = aliases.begin();
        i != aliases.end();
        ++i)
-    result += (*i)->get_id_string();
+    {
+      if (i != aliases.begin())
+	result += ", ";
+      result += (*i)->get_id_string();
+    }
   return result;
 }
 
