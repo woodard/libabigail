@@ -625,39 +625,6 @@ read_type_suppression(const ini::config::section& section)
   return suppr;
 }
 
-/// Read a vector of type suppression specifications from the sections
-/// of an ini::config.
-///
-/// @param config the config to read from.
-///
-/// @param suppressions out parameter.  The vector of type
-/// suppressions to append the newly read type suppressions to.
-static void
-read_type_suppressions(const ini::config& config,
-		       type_suppressions_type& suppressions)
-{
-  for (ini::config::sections_type::const_iterator i =
-	 config.get_sections().begin();
-       i != config.get_sections().end();
-       ++i)
-    if (type_suppression_sptr s = read_type_suppression(**i))
-      suppressions.push_back(s);
-}
-
-/// Read type suppressions specifications from an input stream.
-///
-/// @param input the input stream to read from.
-///
-/// @param suppressions the vector of type suppressions to append the
-/// newly read suppressions to.
-void
-read_type_suppressions(std::istream& input,
-		      type_suppressions_type& suppressions)
-{
-  if (ini::config_sptr config = ini::read_config(input))
-    read_type_suppressions(*config, suppressions);
-}
-
 // <function_suppression stuff>
 class function_suppression::parameter_spec::priv
 {

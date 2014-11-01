@@ -455,10 +455,6 @@ public:
   suppresses_diff(const diff* diff) const;
 }; // end type_suppression
 
-void
-read_type_suppressions(std::istream& input,
-		       type_suppressions_type& suppressions);
-
 class function_suppression;
 
 /// Convenience typedef for a shared pointer to function_suppression.
@@ -604,9 +600,6 @@ public:
   set_parameter_type_name_regex_str(const string&);
 };// end class function_suppression::parameter_spec
 
-void
-read_function_suppressions(std::istream& input,
-			   function_suppressions_type& suppressions);
 
 /// The context of the diff.  This type holds various bits of
 /// information that is going to be used throughout the diffing of two
