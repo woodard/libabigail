@@ -40,21 +40,21 @@ namespace abigail
 /**
    @mainpage libabigail
 
+   This is the API documentation of the Application Binary
+   Interface Generic Analysis and Instrumentation Library, aka,
+   <em>libabigail</em>.
 
-   The GNU Application Binary Interface Generic Analysis and
-   Instrumentation Library.
+   Check out <a href="http://sourceware.org/libabigail"> the project
+   homepage</a>!
 
-   This is an interface to the GNU Compiler Collection for the
-   collection and analysis of compiler-generated binaries.
+   The current libabigail source code can be browsed at
+   http://sourceware.org/git/gitweb.cgi?p=libabigail.git
 
-   Checkout out the project homepage <a
-   href="http://sourceware.org/libabigail"> here</a>.
-
-   The current libabigail source code can be checked out with:
-   git clone git://sourceware.org/git/libabigail.git.
+   It can be checked out with:
+       <em>git clone git://sourceware.org/git/libabigail.git</em>
 
    The mailing list to send messages and patches to is
-   libabigail@sourceware.org.
+   libabigail@sourceware.org
 */
 
 // Inject some types.
