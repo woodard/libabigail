@@ -612,7 +612,7 @@ typedef vector<variable_suppression_sptr> variable_suppressions_type;
 
 /// The abstraction of a variable suppression specification.
 ///
-/// It specifies under which condition repots about a @ref var_diff
+/// It specifies under which condition reports about a @ref var_diff
 /// diff node should be dropped on the floor for the purpose of
 /// reporting.
 class variable_suppression : public suppression_base
