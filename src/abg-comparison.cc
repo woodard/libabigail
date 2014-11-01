@@ -175,6 +175,31 @@ static const type_diff_base*
 is_type_diff(const diff* diff)
 {return dynamic_cast<const type_diff_base*>(diff);}
 
+/// Test if a diff node is about differences between declarations.
+///
+/// @param diff the diff node to test.
+///
+/// @return a pointer to the actual decl_diff_base @p diff extends,
+/// iff it is about differences between declarations.
+static const decl_diff_base*
+is_decl_diff(const diff* diff)
+{return dynamic_cast<const decl_diff_base*>(diff);}
+
+/// Test if a diff node is about differences between functions.
+///
+/// @param diff the diff node to test.
+///
+/// @return a pointer to the actual var_diff that @p diff is a type
+/// of, iff it is about differences between variables.
+static const function_decl_diff*
+is_function_decl_diff(const diff* diff)
+{
+  const function_decl_diff *d = dynamic_cast<const function_decl_diff*>(diff);
+  if (d)
+    assert(is_decl_diff(diff));
+  return d;
+}
+
 /// The default traverse function.
 ///
 /// @return true.
@@ -1196,7 +1221,7 @@ function_suppression::set_symbol_version_regex_str(const string& r)
 bool
 function_suppression::suppresses_diff(const diff* diff) const
 {
-  const function_decl_diff* d = dynamic_cast<const function_decl_diff*>(diff);
+  const function_decl_diff* d = is_function_decl_diff(diff);
   if (!d)
     return false;
 
@@ -3588,7 +3613,7 @@ var_diff::var_diff(var_decl_sptr	first,
 		   var_decl_sptr	second,
 		   diff_sptr		type_diff,
 		   diff_context_sptr	ctxt)
-  : diff(first, second, ctxt),
+  : decl_diff_base(first, second, ctxt),
     priv_(new priv)
 {priv_->type_diff_ = type_diff;}
 
@@ -7670,7 +7695,7 @@ function_decl_diff::function_decl_diff(const function_decl_sptr first,
 				       const function_decl_sptr second,
 				       const diff_sptr		ret_type_diff,
 				       diff_context_sptr	ctxt)
-  : diff(first, second, ctxt),
+  : decl_diff_base(first, second, ctxt),
     priv_(new priv(ret_type_diff))
 {
   priv_->first_fn_flags_.push_back

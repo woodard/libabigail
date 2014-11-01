@@ -1013,7 +1013,7 @@ class var_diff;
 typedef shared_ptr<var_diff> var_diff_sptr;
 
 /// Abstracts a diff between two instances of @ref var_decl
-class var_diff : public diff
+class var_diff : public decl_diff_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
@@ -1671,7 +1671,7 @@ class function_decl_diff;
 typedef shared_ptr<function_decl_diff> function_decl_diff_sptr;
 
 /// Abstraction of a diff between two function_decl.
-class function_decl_diff : public diff
+class function_decl_diff : public decl_diff_base
 {
   struct priv;
   shared_ptr<priv> priv_;
