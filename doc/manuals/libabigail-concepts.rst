@@ -108,12 +108,12 @@ Suppression specifications
     * Escaping a character in a regular expression
 
       When trying to match a string that contains a ``*`` character,
-      like int the pointer type ``int*``, one must be careful to
-      notice that the character ``*`` is a special character in the
-      extended POSIX regular expression syntax.  And that character
-      must be escaped for the regular expression engine.  Thus the
-      regular expression that would match the string ``int*`` in a
-      suppression file should be ::
+      like in the pointer type ``int*``, one must be careful to notice
+      that the character ``*`` is a special character in the extended
+      POSIX regular expression syntax.  And that character must be
+      escaped for the regular expression engine.  Thus the regular
+      expression that would match the string ``int*`` in a suppression
+      file should be ::
 
         int\\*
 
