@@ -228,7 +228,7 @@ Suppression specifications
 
 	    The format of the function parameter specification is:
 
-	      ``'``<parameter-index> `` `` <type-name-or-regular-expression>
+	    ``'`` ``<parameter-index>`` ``<space>`` ``<type-name-or-regular-expression>``
 
 	    That is, an apostrophe followed by a number that is the
 	    index of the parameter, followed by one of several spaces,
