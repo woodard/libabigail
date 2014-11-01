@@ -5,7 +5,7 @@ Variables changes summary: 0 Removed, 1 Changed, 1 Added variables
   'unsigned int global_var2'
 
 1 Changed variable:
-  'global_var0' was changed to 'global_var0':
+  'int global_var0' was changed to 'char global_var0':
     type of variable changed:
      name changed from 'int' to 'char'
      size changed from 32 to 8 bits

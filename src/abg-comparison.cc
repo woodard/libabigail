@@ -9662,21 +9662,13 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (!diff->to_be_reported())
 	    continue;
 
-	  if (!f->get_linkage_name().empty())
-	    n1 = demangle_cplus_mangled_name(f->get_linkage_name());
-	  else
-	    n1 = f->get_pretty_representation();
+	  n1 = f->get_pretty_representation();
+	  n2 = s->get_pretty_representation();
 
-	  if (!s->get_linkage_name().empty())
-	    n2 = demangle_cplus_mangled_name(s->get_linkage_name());
-	  else
-	    n2 = s->get_pretty_representation();
-
-	  out << indent << "  '"
-	      << n1
-	      << "' was changed to '"
-	      << n2
-	      << "':\n";
+	  out << indent << "  '" << n1 << "' was changed";
+	  if (n1 != n2)
+	    out << " to '" << n2 << "'";
+	  out << ":\n";
 	  diff->report(out, indent + "    ");
 	}
       if (num_changed)
