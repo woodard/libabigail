@@ -297,6 +297,60 @@ Suppression specifications
 	    version matches the regular expression specified as value
 	    of this property.
 
+      * ``[suppress_variable]``
+
+	Suppresses report messages about changes on sub-types of a
+	variable.  The potential properties of this sections are:
+
+	  * ``label`` ``=`` <some-value>
+
+            This property is the same as the :ref:`label property
+            <suppr_label_property_label>` defined above.
+
+	  *  ``name`` ``=`` <some-value>
+
+	    Suppresses change reports involving variables whose name
+	    equals the value of this property.
+
+	  *  ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+	    Suppresses change reports involving variables whose name
+	    matches the regular expression specified as value of this
+	    property.
+
+	  *  ``symbol_name`` ``=`` <some-value>
+
+	    Suppresses change reports involving variables whose symbol
+	    name equals the value of this property.
+
+	  *  ``symbol_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+	    Suppresses change reports involving variables whose symbol
+	    name matches the regular expression specified as value of
+	    this property.
+
+	  *  ``symbol_version`` ``=`` <some-value>
+
+	    Suppresses change reports involving variables whose symbol
+	    version equals the value of this property.
+
+	  *  ``symbol_version_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+	    Suppresses change reports involving variables whose symbol
+	    version matches the regular expression specified as value
+	    of this property.
+
+	  *  ``type_name`` ``=`` <some-value>
+
+	    Suppresses change reports involving variables whose type
+	    name equals the value of this property.
+
+	  *  ``type_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+	    Suppresses change reports involving variables whose type
+	    name matches the regular expression specified as value of
+	    this property.
+
     * Comments
 
       ``;`` or ``#`` ASCII character at the beginning of a line
