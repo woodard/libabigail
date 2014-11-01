@@ -185,6 +185,21 @@ static const decl_diff_base*
 is_decl_diff(const diff* diff)
 {return dynamic_cast<const decl_diff_base*>(diff);}
 
+/// Test if a diff node is about differences between variables.
+///
+/// @param diff the diff node to test.
+///
+/// @return a pointer to the actual var_diff that @p diff is a type
+/// of, iff it is about differences between variables.
+static const var_diff*
+is_var_diff(const diff* diff)
+{
+  const var_diff* d = dynamic_cast<const var_diff*>(diff);
+  if (d)
+    assert(is_decl_diff(diff));
+  return d;
+}
+
 /// Test if a diff node is about differences between functions.
 ///
 /// @param diff the diff node to test.
@@ -256,6 +271,9 @@ read_type_suppression(const ini::config::section& section);
 static function_suppression_sptr
 read_function_suppression(const ini::config::section& section);
 
+static variable_suppression_sptr
+read_variable_suppression(const ini::config::section& section);
+
 /// Read a vector of suppression specifications from the sections of
 /// an ini::config.
 ///
@@ -276,7 +294,8 @@ read_suppressions(const ini::config& config,
        i != config.get_sections().end();
        ++i)
     if ((s = read_type_suppression(**i))
-	|| (s = read_function_suppression(**i)))
+	|| (s = read_function_suppression(**i))
+	|| (s = read_variable_suppression(**i)))
       suppressions.push_back(s);
 
 }
@@ -1570,6 +1589,598 @@ read_function_suppression(const ini::config::section& section)
 }
 
 // </function_suppression stuff>
+
+// <variable_suppression stuff>
+
+/// The type of the private data of the @ref variable_suppression
+/// type.
+class variable_suppression::priv
+{
+  friend class variable_suppression;
+
+  string				name_;
+  string				name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	name_regex_;
+  string				symbol_name_;
+  string				symbol_name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	symbol_name_regex_;
+  string				symbol_version_;
+  string				symbol_version_regex_str_;
+  mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
+  string				type_name_;
+  string				type_name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	type_name_regex_;
+
+  priv(const string& name,
+       const string& name_regex_str,
+       const string& symbol_name,
+       const string& symbol_name_regex_str,
+       const string& symbol_version,
+       const string& symbol_version_regex_str,
+       const string& type_name,
+       const string& type_name_regex_str)
+    : name_(name),
+      name_regex_str_(name_regex_str),
+      symbol_name_(symbol_name),
+      symbol_name_regex_str_(symbol_name_regex_str),
+      symbol_version_(symbol_version),
+      symbol_version_regex_str_(symbol_version_regex_str),
+      type_name_(type_name),
+      type_name_regex_str_(type_name_regex_str)
+  {}
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
+  /// variable_suppression::priv::name_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// variable_suppression::priv::name_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_name_regex() const
+  {
+    if (!name_regex_ && !name_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    name_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  name_regex_ = r;
+      }
+    return name_regex_;
+  }
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
+  /// variable_suppression::priv::symbol_name_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// variable_suppression::priv::symbol_name_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_symbol_name_regex() const
+  {
+    if (!symbol_name_regex_ && !symbol_name_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    symbol_name_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  symbol_name_regex_ = r;
+      }
+    return symbol_name_regex_;
+  }
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
+  /// variable_suppression::priv::symbol_version_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// variable_suppression::priv::symbol_version_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_symbol_version_regex()  const
+  {
+    if (!symbol_version_regex_ && !symbol_version_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    symbol_version_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  symbol_version_regex_ = r;
+      }
+    return symbol_version_regex_;
+  }
+
+  /// Getter for a pointer to a regular expression object built from
+  /// the regular expression string
+  /// variable_suppression::priv::type_name_regex_str_.
+  ///
+  /// If that string is empty, then an empty regular expression object
+  /// pointer is returned.
+  ///
+  /// @return a pointer to the regular expression object of
+  /// variable_suppression::priv::type_name_regex_str_.
+  const sptr_utils::regex_t_sptr
+  get_type_name_regex() const
+  {
+    if (!type_name_regex_ && !type_name_regex_str_.empty())
+      {
+	sptr_utils::regex_t_sptr r(new regex_t);
+	if (regcomp(r.get(),
+		    type_name_regex_str_.c_str(),
+		    REG_EXTENDED) == 0)
+	  type_name_regex_ = r;
+      }
+    return type_name_regex_;
+  }
+};// end class variable_supppression::priv
+
+/// Constructor for the @ref variable_suppression type.
+///
+/// @param label an informative text string that the evalution code
+/// might use to designate this variable suppression specification in
+/// error messages.  This parameter might be empty, in which case it's
+/// ignored at evaluation time.
+///
+/// @param name the name of the variable the user wants the current
+/// specification to designate.  This parameter might be empty, in
+/// which case it's ignored at evaluation time.
+///
+/// @param name_regex_str if @p name is empty, this parameter is a
+/// regular expression for a family of names of variables the user
+/// wants the current specification to designate.  If @p name is not
+/// empty, then this parameter is ignored at evaluation time.  This
+/// parameter might be empty, in which case it's ignored at evaluation
+/// time.
+///
+/// @param symbol_name the name of the symbol of the variable the user
+/// wants the current specification to designate.  This parameter
+/// might be empty, in which case it's ignored at evaluation time.
+///
+/// @param symbol_name_str if @p symbol_name is empty, this parameter
+/// is a regular expression for a family of names of symbols of
+/// variables the user wants the current specification to designate.
+/// If @p symbol_name is not empty, then this parameter is ignored at
+/// evaluation time.  This parameter might be empty, in which case
+/// it's ignored at evaluation time.
+///
+/// @param symbol_version the version of the symbol of the variable
+/// the user wants the current specification to designate.  This
+/// parameter might be empty, in which case it's ignored at evaluation
+/// time.
+///
+/// @param symbol_version_regex if @p symbol_version is empty, then
+/// this parameter is a regular expression for a family of versions of
+/// symbol for the variables the user wants the current specification
+/// to designate.  If @p symbol_version is not empty, then this
+/// parameter is ignored at evaluation time.  This parameter might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @param type_name the name of the type of the variable the user
+/// wants the current specification to designate.  This parameter
+/// might be empty, in which case it's ignored at evaluation time.
+///
+/// @param type_name_regex_str if @p type_name is empty, then this
+/// parameter is a regular expression for a family of type names of
+/// variables the user wants the current specification to designate.
+/// If @p type_name is not empty, then this parameter is ignored at
+/// evluation time.  This parameter might be empty, in which case it's
+/// ignored at evaluation time.
+variable_suppression::variable_suppression(const string& label,
+					   const string& name,
+					   const string& name_regex_str,
+					   const string& symbol_name,
+					   const string& symbol_name_regex_str,
+					   const string& symbol_version,
+					   const string& symbol_version_regex,
+					   const string& type_name,
+					   const string& type_name_regex_str)
+  : suppression_base(label),
+    priv_(new priv(name, name_regex_str,
+		   symbol_name, symbol_name_regex_str,
+		   symbol_version, symbol_version_regex,
+		   type_name, type_name_regex_str))
+{}
+
+/// Virtual destructor for the @erf variable_suppression type.
+/// variable_suppression type.
+variable_suppression::~variable_suppression()
+{}
+
+/// Getter for the name of the variable the user wants the current
+/// specification to designate.  This property might be empty, in
+/// which case it's ignored at evaluation time.
+///
+/// @return the name of the variable.
+const string&
+variable_suppression::get_name() const
+{return priv_->name_;}
+
+/// Setter for the name of the variable the user wants the current
+/// specification to designate.  This property might be empty, in
+/// which case it's ignored at evaluation time.
+///
+/// @param n the new name of the variable to set.
+void
+variable_suppression::set_name(const string& n)
+{priv_->name_ = n;}
+
+/// Getter for the regular expression for a family of names of
+/// variables the user wants the current specification to designate.
+/// If the variable name as returned by
+/// variable_suppression::get_name() is not empty, then this property
+/// is ignored at evaluation time.  This property might be empty, in
+/// which case it's ignored at evaluation time.
+///
+/// @return the regular expression for the variable name.
+const string&
+variable_suppression::get_name_regex_str() const
+{return priv_->name_regex_str_;}
+
+/// Setter for the regular expression for a family of names of
+/// variables the user wants the current specification to designate.
+/// If the variable name as returned by
+/// variable_suppression::get_name() is not empty, then this property
+/// is ignored at evaluation time.  This property might be empty, in
+/// which case it's ignored at evaluation time.
+///
+/// @param r the new regular expression for the variable name.
+void
+variable_suppression::set_name_regex_str(const string& r)
+{priv_->name_regex_str_ = r;}
+
+/// Getter for the name of the symbol of the variable the user wants
+/// the current specification to designate.
+///
+/// This property might be empty, in which case it is ignored at
+/// evaluation time.
+///
+/// @return the name of the symbol of the variable.
+const string&
+variable_suppression::get_symbol_name() const
+{return priv_->symbol_name_;}
+
+/// Setter for the name of the symbol of the variable the user wants
+/// the current specification to designate.
+///
+/// This property might be empty, in which case it is ignored at
+/// evaluation time.
+///
+/// @param n the new name of the symbol of the variable.
+void
+variable_suppression::set_symbol_name(const string& n)
+{priv_->symbol_name_ = n;}
+
+/// Getter of the regular expression for a family of symbol names of
+/// the variables this specification is about to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.  Otherwise, it is taken in account iff the
+/// property returned by variable_suppression::get_symbol_name() is
+/// empty.
+///
+/// @return the regular expression for a symbol name of the variable.
+const string&
+variable_suppression::get_symbol_name_regex_str() const
+{return priv_->symbol_name_regex_str_;}
+
+/// Setter of the regular expression for a family of symbol names of
+/// the variables this specification is about to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.  Otherwise, it is taken in account iff the
+/// property returned by variable_suppression::get_symbol_name() is
+/// empty.
+///
+/// @param r the regular expression for a symbol name of the variable.
+void
+variable_suppression::set_symbol_name_regex_str(const string& r)
+{priv_->symbol_name_regex_str_ = r;}
+
+/// Getter for the version of the symbol of the variable the user
+/// wants the current specification to designate.  This property might
+/// be empty, in which case it's ignored at evaluation time.
+///
+/// @return the symbol version of the variable.
+const string&
+variable_suppression::get_symbol_version() const
+{return priv_->symbol_version_;}
+
+/// Setter for the version of the symbol of the variable the user
+/// wants the current specification to designate.  This property might
+/// be empty, in which case it's ignored at evaluation time.
+///
+/// @return the new symbol version of the variable.
+void
+variable_suppression::set_symbol_version(const string& v)
+{priv_->symbol_version_ = v;}
+
+/// Getter of the regular expression for a family of versions of
+/// symbol for the variables the user wants the current specification
+/// to designate.  If @p symbol_version is not empty, then this
+/// property is ignored at evaluation time.  This property might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @return the regular expression of the symbol version of the
+/// variable.
+const string&
+variable_suppression::get_symbol_version_regex_str() const
+{return priv_->symbol_version_regex_str_;}
+
+/// Setter of the regular expression for a family of versions of
+/// symbol for the variables the user wants the current specification
+/// to designate.  If @p symbol_version is not empty, then this
+/// property is ignored at evaluation time.  This property might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @param v the new regular expression of the symbol version of the
+/// variable.
+void
+variable_suppression::set_symbol_version_regex_str(const string& r)
+{priv_->symbol_version_regex_str_ = r;}
+
+/// Getter for the name of the type of the variable the user wants the
+/// current specification to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @return the name of the variable type.
+const string&
+variable_suppression::get_type_name() const
+{return priv_->type_name_;}
+
+/// Setter for the name of the type of the variable the user wants the
+/// current specification to designate.
+///
+/// This property might be empty, in which case it's ignored at
+/// evaluation time.
+///
+/// @param n the new name of the variable type.
+void
+variable_suppression::set_type_name(const string& n)
+{priv_->type_name_ = n;}
+
+/// Getter for the regular expression for a family of type names of
+/// variables the user wants the current specification to designate.
+///
+/// If the type name as returned by
+/// variable_suppression::get_type_name() is not empty, then this
+/// property is ignored at evaluation time.  This property might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @return the regular expression of the variable type name.
+const string&
+variable_suppression::get_type_name_regex_str() const
+{return priv_->type_name_regex_str_;}
+
+/// Setter for the regular expression for a family of type names of
+/// variables the user wants the current specification to designate.
+///
+/// If the type name as returned by
+/// variable_suppression::get_type_name() is not empty, then this
+/// property is ignored at evaluation time.  This property might be
+/// empty, in which case it's ignored at evaluation time.
+///
+/// @param r the regular expression of the variable type name.
+void
+variable_suppression::set_type_name_regex_str(const string& r)
+{priv_->type_name_regex_str_ = r;}
+
+/// Evaluate this suppression specification on a given diff node and
+/// say if the diff node should be suppressed or not.
+///
+/// @param diff the diff node to evaluate this suppression
+/// specification against.
+///
+/// @return true if @p diff should be suppressed.
+bool
+variable_suppression::suppresses_diff(const diff* diff) const
+{
+  const var_diff* d = is_var_diff(diff);
+  if (!d)
+    return false;
+
+  var_decl_sptr fv = is_var_decl(d->first_subject()),
+    sv = is_var_decl(d->second_subject());
+
+  assert(fv && sv);
+
+  string fv_name = fv->get_name(), sv_name = sv->get_name();
+
+  // Check for "name" property match.
+  if (!get_name().empty())
+    {
+    if (get_name() != fv_name && get_name () != sv_name)
+      return false;
+    }
+  else
+    {
+      // If the "name" property is empty, then consider checking for the
+      // "name_regex" property match
+      if (get_name().empty())
+	{
+	  const sptr_utils::regex_t_sptr name_regex = priv_->get_name_regex();
+	  if (name_regex
+	      && (regexec(name_regex.get(), fv_name.c_str(),
+			  0, NULL, 0) != 0
+		  && regexec(name_regex.get(), sv_name.c_str(),
+			     0, NULL, 0) != 0))
+	    return false;
+	}
+    }
+
+  // Check for the symbol_name property match.
+  string fv_sym_name = fv->get_symbol() ? fv->get_symbol()->get_name() : "";
+  string sv_sym_name = sv->get_symbol() ? sv->get_symbol()->get_name() : "";
+  if (!get_symbol_name().empty())
+    {
+      if (get_symbol_name() != fv_sym_name && get_symbol_name() != sv_sym_name)
+	return false;
+    }
+  else
+    {
+      const sptr_utils::regex_t_sptr sym_name_regex =
+	priv_->get_symbol_name_regex();
+      if (sym_name_regex
+	  && (regexec(sym_name_regex.get(), fv_sym_name.c_str(),
+		      0, NULL, 0) != 0
+	      && regexec(sym_name_regex.get(), sv_sym_name.c_str(),
+			 0, NULL, 0) != 0))
+	return false;
+    }
+
+  // Check for symbol_version and symbol_version_regexp property match
+  string fv_sym_version =
+    fv->get_symbol() ? fv->get_symbol()->get_version().str() : "";
+  string sv_sym_version =
+    sv->get_symbol() ? fv->get_symbol()->get_version().str() : "";
+  if (!get_symbol_version().empty())
+    {
+      if (get_symbol_version() != fv_sym_version
+	  && get_symbol_version() != sv_sym_version)
+	return false;
+    }
+  else
+    {
+      const sptr_utils::regex_t_sptr symbol_version_regex =
+	priv_->get_symbol_version_regex();
+      if (symbol_version_regex
+	  && (regexec(symbol_version_regex.get(),
+		      fv_sym_version.c_str(),
+		      0, NULL, 0) != 0
+	      && regexec(symbol_version_regex.get(),
+			 sv_sym_version.c_str(),
+			 0, NULL, 0) != 0))
+	return false;
+    }
+
+  string fv_type_name =
+    get_type_declaration(fv->get_type())->get_qualified_name();
+  string sv_type_name =
+    get_type_declaration(sv->get_type())->get_qualified_name();
+
+  // Check for the "type_name" and tye_name_regex properties match.
+  if (!get_type_name().empty())
+    {
+    if (get_type_name() != fv_type_name && get_type_name() != sv_type_name)
+      return false;
+    }
+  else
+    {
+      if (get_type_name().empty())
+	{
+	  const sptr_utils::regex_t_sptr type_name_regex =
+	    priv_->get_type_name_regex();
+	  if (type_name_regex
+	      && (regexec(type_name_regex.get(), fv_type_name.c_str(),
+			  0, NULL, 0) != 0
+		  && regexec(type_name_regex.get(), sv_type_name.c_str(),
+			     0, NULL, 0) != 0))
+	    return false;
+	}
+    }
+
+  return true;
+}
+
+/// Parse variable suppression specification, build a resulting @ref
+/// variable_suppression type and return a shared pointer to that
+/// object.
+///
+/// @return a shared pointer to the newly built @ref
+/// variable_suppression.  If the variable suppression specification
+/// could not be parsed then a nil shared pointer is returned.
+static variable_suppression_sptr
+read_variable_suppression(const ini::config::section& section)
+{
+  variable_suppression_sptr result;
+
+  if (section.get_name() != "suppress_variable")
+    return result;
+
+  ini::config::property_sptr label_prop = section.find_property("label");
+  string label_str = (label_prop && !label_prop->second.empty()
+		      ? label_prop->second
+		      : "");
+
+  ini::config::property_sptr name_prop = section.find_property("name");
+  string name_str = (name_prop && !name_prop->second.empty()
+		     ? name_prop->second
+		     : "");
+
+  ini::config::property_sptr name_regex_prop =
+    section.find_property("name_regexp");
+  string name_regex_str = (name_regex_prop && !name_regex_prop->second.empty()
+			   ? name_regex_prop->second
+			   : "");
+
+  ini::config::property_sptr sym_name_prop =
+    section.find_property("symbol_name");
+  string symbol_name = (sym_name_prop && !sym_name_prop->second.empty()
+			? sym_name_prop->second
+			: "");
+
+  ini::config::property_sptr sym_name_regex_prop =
+    section.find_property("symbol_name_regexp");
+  string symbol_name_regex_str =
+    (sym_name_regex_prop && !sym_name_regex_prop->second.empty()
+     ? sym_name_regex_prop->second
+     : "");
+
+  ini::config::property_sptr sym_version_prop =
+    section.find_property("symbol_version");
+  string symbol_version =
+    (sym_version_prop && !sym_version_prop->second.empty()
+     ? sym_version_prop->second
+     : "");
+
+  ini::config::property_sptr sym_version_regex_prop =
+    section.find_property("symbol_version_regexp");
+  string symbol_version_regex_str =
+    (sym_version_regex_prop && !sym_version_regex_prop->second.empty()
+     ? sym_version_regex_prop->second
+     : "");
+
+  ini::config::property_sptr type_name_prop =
+    section.find_property("type_name");
+  string type_name_str = (type_name_prop && !type_name_prop->second.empty()
+			  ? type_name_prop->second
+			  : "");
+
+  ini::config::property_sptr type_name_regex_prop =
+    section.find_property("type_name_regexp");
+  string type_name_regex_str =
+    (type_name_regex_prop && !type_name_regex_prop->second.empty()
+     ? type_name_regex_prop->second
+     : "");
+
+  if (label_str.empty()
+      && name_str.empty()
+      && name_regex_str.empty()
+      && symbol_name.empty()
+      && symbol_name_regex_str.empty()
+      && symbol_version.empty()
+      && symbol_version_regex_str.empty()
+      && type_name_str.empty()
+      && type_name_regex_str.empty())
+    return result;
+
+  result.reset(new variable_suppression(label_str, name_str, name_regex_str,
+					symbol_name, symbol_name_regex_str,
+					symbol_version, symbol_version_regex_str,
+					type_name_str, type_name_regex_str));
+  return result;
+}
+
+// </variable_suppression stuff>
 
 /// The private member (pimpl) for @ref diff_context.
 struct diff_context::priv

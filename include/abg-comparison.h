@@ -600,6 +600,92 @@ public:
   set_parameter_type_name_regex_str(const string&);
 };// end class function_suppression::parameter_spec
 
+class variable_suppression;
+
+/// A convenience typedef for a shared pointer to @ref
+/// variable_suppression.
+typedef shared_ptr<variable_suppression> variable_suppression_sptr;
+
+/// A convenience typedef for a vector of @ref
+/// variable_suppression_sptr.
+typedef vector<variable_suppression_sptr> variable_suppressions_type;
+
+/// The abstraction of a variable suppression specification.
+///
+/// It specifies under which condition repots about a @ref var_diff
+/// diff node should be dropped on the floor for the purpose of
+/// reporting.
+class variable_suppression : public suppression_base
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+  variable_suppression(const string& label,
+		       const string& name,
+		       const string& name_regex_str,
+		       const string& symbol_name,
+		       const string& symbol_name_regex_str,
+		       const string& symbol_version,
+		       const string& symbol_version_regex_str,
+		       const string& type_name,
+		       const string& type_name_regex_str);
+
+  virtual ~variable_suppression();
+
+  const string&
+  get_name() const;
+
+  void
+  set_name(const string&);
+
+  const string&
+  get_name_regex_str() const;
+
+  void
+  set_name_regex_str(const string&);
+
+  const string&
+  get_symbol_name() const;
+
+  void
+  set_symbol_name(const string&);
+
+  const string&
+  get_symbol_name_regex_str() const;
+
+  void
+  set_symbol_name_regex_str(const string&);
+
+  const string&
+  get_symbol_version() const;
+
+  void
+  set_symbol_version(const string&);
+
+  const string&
+  get_symbol_version_regex_str() const;
+
+  void
+  set_symbol_version_regex_str(const string&);
+
+  const string&
+  get_type_name() const;
+
+  void
+  set_type_name(const string&);
+
+  const string&
+  get_type_name_regex_str() const;
+
+  void
+  set_type_name_regex_str(const string&);
+
+  bool
+  suppresses_diff(const diff* d) const;
+}; // end class variable_suppression
 
 /// The context of the diff.  This type holds various bits of
 /// information that is going to be used throughout the diffing of two
