@@ -470,8 +470,8 @@ typedef vector<function_suppression_sptr> function_suppressions_type;
 /// Abstraction of a function suppression specification.
 ///
 /// Specifies under which condition reports about a @ref
-/// function_decl_diff diff node should be dropped on the floor the
-/// purpose of reporting.
+/// function_decl_diff diff node should be dropped on the floor for
+/// the purpose of reporting.
 class function_suppression : public suppression_base
 {
   class priv;

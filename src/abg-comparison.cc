@@ -169,7 +169,8 @@ operator~(visiting_kind l)
 ///
 /// @param diff the diff node to test.
 ///
-/// @return true if the @p diff is about differences between types.
+/// @return a pointer to the actual type_diff_base* that @p diff extends, iff it is
+/// about differences between types.
 static const type_diff_base*
 is_type_diff(const diff* diff)
 {return dynamic_cast<const type_diff_base*>(diff);}
@@ -233,8 +234,8 @@ read_function_suppression(const ini::config::section& section);
 /// Read a vector of suppression specifications from the sections of
 /// an ini::config.
 ///
-/// Note that each time a new kind of suppression specification is
-/// added, this function needs to be updated.
+/// Note that this function needs to be updated each time a new kind
+/// of suppression specification is added.
 ///
 /// @param config the config to read from.
 ///
@@ -2343,7 +2344,7 @@ diff::traverse(diff_node_visitor& v)
 /// Sets a flag saying if a report has already been emitted for the
 /// current diff.
 ///
-/// @param f true if a repot has already been emitted for the
+/// @param f true if a report has already been emitted for the
 /// current diff, false otherwise.
 void
 diff::reported_once(bool f) const
@@ -8333,7 +8334,7 @@ typedef_diff::has_local_changes() const
 /// Reports the difference between the two subjects of the diff in a
 /// serialized form.
 ///
-/// @param out the output stream to emit the repot to.
+/// @param out the output stream to emit the report to.
 ///
 /// @param indent the indentation string to use.
 void
