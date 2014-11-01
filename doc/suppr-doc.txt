@@ -17,6 +17,17 @@
 # symbol_versin = <symbol-version>
 # symbol_version_regexp = <symbol-version-regex>
 
+[suppress_variable]
+  label = some string in here
+  name = foo
+  name_regexp = foo
+  symbol_name = foo
+  symbol_name_regexp = foo
+  type_name = int
+  type_name_regexp = int
+
+# The stuff below hasn't been implemented yet.
+
 [suppress_symbol]
   name= _init
 
