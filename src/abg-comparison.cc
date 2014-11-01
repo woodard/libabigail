@@ -522,19 +522,22 @@ type_suppression::suppresses_diff(const diff* diff) const
       if (get_type_name() != fn && get_type_name() != sn)
 	return false;
     }
-
-  // So now check if there is a regular expression match.
-  //
-  // If none of the qualified name of the types that are being
-  // compared match the regular expression of the of the type name,
-  // then this suppression doesn't apply.
-  const sptr_utils::regex_t_sptr type_name_regex = priv_->get_type_name_regex();
-  if (type_name_regex
-      && (regexec(type_name_regex.get(), fn.c_str(),
-		  0, NULL, 0) != 0
-	  && regexec(type_name_regex.get(), sn.c_str(),
-		     0, NULL, 0) != 0))
-    return false;
+  else
+    {
+      // So now check if there is a regular expression match.
+      //
+      // If none of the qualified name of the types that are being
+      // compared match the regular expression of the of the type name,
+      // then this suppression doesn't apply.
+      const sptr_utils::regex_t_sptr type_name_regex =
+	priv_->get_type_name_regex();
+      if (type_name_regex
+	  && (regexec(type_name_regex.get(), fn.c_str(),
+		      0, NULL, 0) != 0
+	      && regexec(type_name_regex.get(), sn.c_str(),
+			 0, NULL, 0) != 0))
+	return false;
+    }
 
   return true;
 }
