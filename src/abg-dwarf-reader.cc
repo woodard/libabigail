@@ -391,7 +391,7 @@ find_bss_section(Elf* elf_handle)
 ///
 /// @return true if the function could get the binary load address
 /// and assign @p load_address to it.
-bool
+static bool
 get_binary_load_address(Elf *elf_handle,
 			GElf_Addr &load_address)
 {
