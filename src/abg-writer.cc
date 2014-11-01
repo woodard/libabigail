@@ -61,7 +61,10 @@ using zip_utils::open_archive;
 using zip_utils::open_file_in_archive;
 #endif // WITH_ZIP_ARCHIVE
 
-/// Internal namespace for writer.
+/// The namespace for the native XML file format writer.
+///
+/// It contains utilities to serialize ABI artifacts from the @ref ir
+/// namespace into the native XML format.
 namespace xml_writer
 {
 
