@@ -193,6 +193,168 @@ Options
     In the diff report, do not display redundant changes.  A redundant
     change is a change that has been displayed elsewhere in the report.
 
+Usage examples
+==============
+
+  1. Detecting a change in a sub-type of a function: ::
+
+	$ cat -n test-v0.cc
+		 1	// Compile this with:
+		 2	//   g++ -g -Wall -shared -o libtest-v0.so test-v0.cc
+		 3	
+		 4	struct S0
+		 5	{
+		 6	  int m0;
+		 7	};
+		 8	
+		 9	void
+		10	foo(S0* /*parameter_name*/)
+		11	{
+		12	  // do something with parameter_name.
+		13	}
+	$ 
+	$ cat -n test-v1.cc
+		 1	// Compile this with:
+		 2	//   g++ -g -Wall -shared -o libtest-v1.so test-v1.cc
+		 3	
+		 4	struct type_base
+		 5	{
+		 6	  int inserted;
+		 7	};
+		 8	
+		 9	struct S0 : public type_base
+		10	{
+		11	  int m0;
+		12	};
+		13	
+		14	void
+		15	foo(S0* /*parameter_name*/)
+		16	{
+		17	  // do something with parameter_name.
+		18	}
+	$ 
+	$ g++ -g -Wall -shared -o libtest-v0.so test-v0.cc
+	$ g++ -g -Wall -shared -o libtest-v1.so test-v1.cc
+	$ 
+	$ ../build/tools/abidiff libtest-v0.so libtest-v1.so
+	Functions changes summary: 0 Removed, 1 Changed, 0 Added function
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	1 function with some indirect sub-type change:
+
+	  [C]'function void foo(S0*)' has some indirect sub-type changes:
+		parameter 0 of type 'S0*' has sub-type changes:
+		  in pointed to type 'struct S0':
+		    size changed from 32 to 64 bits
+		    1 base class insertion:
+		      struct type_base
+		    1 data member change:
+		     'int S0::m0' offset changed from 0 to 32
+	$
+
+
+  2. Detecting another change in a sub-type of a function: ::
+
+	$ cat -n test-v0.cc
+		 1	// Compile this with:
+		 2	//   g++ -g -Wall -shared -o libtest-v0.so test-v0.cc
+		 3	
+		 4	struct S0
+		 5	{
+		 6	  int m0;
+		 7	};
+		 8	
+		 9	void
+		10	foo(S0& /*parameter_name*/)
+		11	{
+		12	  // do something with parameter_name.
+		13	}
+	$ 
+	$ cat -n test-v1.cc
+		 1	// Compile this with:
+		 2	//   g++ -g -Wall -shared -o libtest-v1.so test-v1.cc
+		 3	
+		 4	struct S0
+		 5	{
+		 6	  char inserted_member;
+		 7	  int m0;
+		 8	};
+		 9	
+		10	void
+		11	foo(S0& /*parameter_name*/)
+		12	{
+		13	  // do something with parameter_name.
+		14	}
+	$ 
+	$ g++ -g -Wall -shared -o libtest-v0.so test-v0.cc
+	$ g++ -g -Wall -shared -o libtest-v1.so test-v1.cc
+	$ 
+	$ ../build/tools/abidiff libtest-v0.so libtest-v1.so
+	Functions changes summary: 0 Removed, 1 Changed, 0 Added function
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	1 function with some indirect sub-type change:
+
+	  [C]'function void foo(S0&)' has some indirect sub-type changes:
+		parameter 0 of type 'S0&' has sub-type changes:
+		  in referenced type 'struct S0':
+		    size changed from 32 to 64 bits
+		    1 data member insertion:
+		      'char S0::inserted_member', at offset 0 (in bits)
+		    1 data member change:
+		     'int S0::m0' offset changed from 0 to 32
+
+
+	$
+
+  3. Detecting that functions got removed or added to a library: ::
+
+	$ cat -n test-v0.cc
+		 1	// Compile this with:
+		 2	//   g++ -g -Wall -shared -o libtest-v0.so test-v0.cc
+		 3	
+		 4	struct S0
+		 5	{
+		 6	  int m0;
+		 7	};
+		 8	
+		 9	void
+		10	foo(S0& /*parameter_name*/)
+		11	{
+		12	  // do something with parameter_name.
+		13	}
+	$ 
+	$ cat -n test-v1.cc
+		 1	// Compile this with:
+		 2	//   g++ -g -Wall -shared -o libtest-v1.so test-v1.cc
+		 3	
+		 4	struct S0
+		 5	{
+		 6	  char inserted_member;
+		 7	  int m0;
+		 8	};
+		 9	
+		10	void
+		11	bar(S0& /*parameter_name*/)
+		12	{
+		13	  // do something with parameter_name.
+		14	}
+	$ 
+	$ g++ -g -Wall -shared -o libtest-v0.so test-v0.cc
+	$ g++ -g -Wall -shared -o libtest-v1.so test-v1.cc
+	$ 
+	$ ../build/tools/abidiff libtest-v0.so libtest-v1.so
+	Functions changes summary: 1 Removed, 0 Changed, 1 Added functions
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	1 Removed function:
+	  'function void foo(S0&)'    {_Z3fooR2S0}
+
+	1 Added function:
+	  'function void bar(S0&)'    {_Z3barR2S0}
+
+	$
+
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 .. _DWARF: http://www.dwarfstd.org
 
