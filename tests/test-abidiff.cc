@@ -153,7 +153,7 @@ main(int, char*[])
 	}
 
       translation_unit_diff_sptr d = compute_diff(tu1, tu2);
-      ofstream of(out_path, std::ios_base::trunc);
+      ofstream of(out_path.c_str(), std::ios_base::trunc);
       if (!of.is_open())
 	{
 	  cerr << "failed to read " << s->out_path << "\n";

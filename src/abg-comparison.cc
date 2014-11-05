@@ -538,7 +538,7 @@ type_suppression::suppresses_diff(const diff* diff) const
 	  // replace the abort here by a "break;" statement.
 	  abort();
 	case type_suppression::ENUM_TYPE_KIND:
-	  if (!is_enum(ft) && !is_enum(st))
+	  if (!is_enum_type(ft) && !is_enum_type(st))
 	    return false;
 	  break;
 	case type_suppression::ARRAY_TYPE_KIND:
@@ -791,7 +791,7 @@ function_suppression::parameter_spec::set_parameter_type_name_regex_str
 /// type.
 class function_suppression::priv
 {
-  friend function_suppression;
+  friend class function_suppression;
 
   string				name_;
   string				name_regex_str_;
@@ -2404,7 +2404,7 @@ diff_context::diff_has_been_traversed(const diff* d) const
   if (!canonical)
     canonical = d;
 
-  size_t ptr_value = reinterpret_cast<uintptr_t>(canonical);
+  size_t ptr_value = reinterpret_cast<size_t>(canonical);
   return (priv_->traversed_diff_nodes_.find(ptr_value)
 	  != priv_->traversed_diff_nodes_.end());
 }
@@ -2430,7 +2430,7 @@ diff_context::mark_diff_as_traversed(const diff* d)
        canonical = d;
      }
 
-   size_t ptr_value = reinterpret_cast<uintptr_t>(canonical);
+   size_t ptr_value = reinterpret_cast<size_t>(canonical);
    priv_->traversed_diff_nodes_[ptr_value] = true;
 }
 

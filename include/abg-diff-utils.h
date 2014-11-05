@@ -474,7 +474,7 @@ private:
 
   /// Forbid vector size modifications
   void
-  push_back(const typename vector<int>::value_type&);
+  push_back(const vector<int>::value_type&);
 
   /// Forbid default constructor.
   d_path_vec();
@@ -522,15 +522,15 @@ public:
   {
   }
 
-  typename std::vector<int>::const_reference
+  std::vector<int>::const_reference
   operator[](int index) const
   {return at(index);}
 
-  typename std::vector<int>::reference
+  std::vector<int>::reference
   operator[](int index)
   {return at(index);}
 
-  typename std::vector<int>::reference
+  std::vector<int>::reference
   at(long long index)
   {
     //check_index_against_bound(index);
@@ -538,7 +538,7 @@ public:
     return vector<int>::operator[](i);
   }
 
-  typename std::vector<int>::const_reference
+  std::vector<int>::const_reference
   at(long long index) const
   {
     check_index_against_bound(index);

@@ -133,7 +133,7 @@ scope_decl::hash::operator()(const scope_decl& d) const
 {
   if (d.peek_hash_value() == 0 || d.hashing_started())
     {
-      std::hash<string> hash_string;
+      std::tr1::hash<string> hash_string;
       size_t v = hash_string(typeid(d).name());
       for (scope_decl::declarations::const_iterator i =
 	     d.get_member_decls().begin();
@@ -546,9 +546,9 @@ class_decl::base_spec::hash::operator()(const base_spec& t) const
 {
   member_base::hash hash_member;
   type_base::shared_ptr_hash hash_type_ptr;
-  std::hash<size_t> hash_size;
-  std::hash<bool> hash_bool;
-  std::hash<string> hash_string;
+  std::tr1::hash<size_t> hash_size;
+  std::tr1::hash<bool> hash_bool;
+  std::tr1::hash<string> hash_string;
 
   size_t v = hash_string(typeid(t).name());
   v = hashing::combine_hashes(v, hash_member(t));
@@ -821,7 +821,7 @@ operator()(const template_parameter* t) const
 size_t
 type_composition::hash::operator()(const type_composition& t) const
 {
-  std::hash<string> hash_string;
+  std::tr1::hash<string> hash_string;
   type_base::dynamic_hash hash_type;
 
   size_t v = hash_string(typeid(t).name());

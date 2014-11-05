@@ -86,6 +86,9 @@
 /* Version number of package */
 #undef VERSION
 
+/* Defined to 1 if a C++11 compiler is used */
+#undef WITH_CXX11
+
 /* compile the zip archive support */
 #undef WITH_ZIP_ARCHIVE
 

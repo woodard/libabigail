@@ -3012,7 +3012,7 @@ is_typedef(const decl_base_sptr d)
 ///
 /// @return the enum_type_decl_sptr if @p d is an enum, nil otherwise.
 enum_type_decl_sptr
-is_enum(const decl_base_sptr& d)
+is_enum_type(const decl_base_sptr& d)
 {return dynamic_pointer_cast<enum_type_decl>(d);}
 
 /// Test if a type is an enum_type_decl
@@ -3021,7 +3021,7 @@ is_enum(const decl_base_sptr& d)
 ///
 /// @return the enum_type_decl_sptr if @p t is an enum, nil otherwise.
 enum_type_decl_sptr
-is_enum(const type_base_sptr& t)
+is_enum_type(const type_base_sptr& t)
 {return dynamic_pointer_cast<enum_type_decl>(t);}
 
 /// Test whether a type is a class.
@@ -3058,7 +3058,7 @@ is_class_type(const decl_base_sptr d)
 /// @return the @ref pointer_type_def_sptr if @p t is a
 /// pointer_type_def, null otherwise.
 pointer_type_def_sptr
-is_pointer(const type_base_sptr t)
+is_pointer_type(const type_base_sptr t)
 {return dynamic_pointer_cast<pointer_type_def>(t);}
 
 /// Test whether a type is a qualified_type_def.

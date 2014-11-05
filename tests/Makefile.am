@@ -6,6 +6,12 @@ else
 ZIP_ARCHIVE_TESTS =
 endif
 
+if ENABLE_CXX11
+CXX11_TESTS = runtestsvg
+else
+CXX11_TESTS =
+endif
+
 TESTS=				\
 runtestreadwrite		\
 ${ZIP_ARCHIVE_TESTS}		\
@@ -17,7 +23,7 @@ runtestabidiff			\
 runtestdiffdwarf		\
 runtestdifffilter		\
 runtestdiffsuppr		\
-runtestsvg
+${CXX11_TESTS}
 
 
 noinst_PROGRAMS= $(TESTS) testirwalker testdiff2 printdifftree
@@ -82,7 +88,6 @@ printdifftree_LDADD = $(top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools
-AM_CXXFLAGS="-std=gnu++11"
 
 EXTRA_DIST=			\
 data/test-read-write/test0.xml	\

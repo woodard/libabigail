@@ -2447,14 +2447,11 @@ finish_member_function_reading(Dwarf_Die*		die,
 static Dwfl*
 create_default_dwfl(char** debug_info_root_path)
 {
-  static Dwfl_Callbacks offline_callbacks =
-    {
-      0,
-      .find_debuginfo =  dwfl_standard_find_debuginfo,
-      .section_address = dwfl_offline_section_address,
-      0
-    };
+  static Dwfl_Callbacks offline_callbacks;
 
+  memset(&offline_callbacks, 0, sizeof(offline_callbacks));
+  offline_callbacks.find_debuginfo = dwfl_standard_find_debuginfo;
+  offline_callbacks.section_address = dwfl_offline_section_address;
   offline_callbacks.debuginfo_path = debug_info_root_path;
   return dwfl_begin(&offline_callbacks);
 }
@@ -3290,7 +3287,7 @@ public:
   abs() const
   {
     expr_result r = *this;
-    r.const_value_ = std::abs(r.const_value());
+    r.const_value_ = std::abs(static_cast<long double>(r.const_value()));
     return r;
   }
 
@@ -4920,7 +4917,7 @@ finish_member_function_reading(Dwarf_Die*		die,
     type_base_sptr other_klass;
 
     if (is_artificial)
-      this_ptr_type = is_pointer(first_parm->get_type());
+      this_ptr_type = is_pointer_type(first_parm->get_type());
     if (this_ptr_type)
       other_klass = this_ptr_type->get_pointed_to_type();
     // Sometimes, other_klass can be qualified; e.g, volatile.  In

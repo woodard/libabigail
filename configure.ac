@@ -35,6 +35,13 @@ AC_ARG_ENABLE(zip-archive,
 	      ENABLE_ZIP_ARCHIVE=auto)
 
 
+ENABLE_CXX11=no
+AC_ARG_ENABLE(cxx11,
+	      AS_HELP_STRING([--enable-cxx11=yes|no],
+			     [enable features that use the C++11 compiler]),
+	      ENABLE_CXX11=$enableval,
+	      ENABLE_CXX11=no)
+
 dnl *************************************************
 dnl Here is the list of versions of the dependencies
 dnl *************************************************
@@ -120,6 +127,13 @@ AM_CONDITIONAL(ENABLE_ZIP_ARCHIVE, test x$ENABLE_ZIP_ARCHIVE = xyes)
 DEPS_CPPFLAGS="$XML_CFLAGS $LIBZIP_CFLAGS"
 AC_SUBST(DEPS_CPPFLAGS)
 
+dnl Handle conditional use of a C++11 compiler
+if test x$ENABLE_CXX11 = xyes; then
+   AC_DEFINE([WITH_CXX11], 1, [Defined to 1 if a C++11 compiler is used])
+fi
+
+AM_CONDITIONAL(ENABLE_CXX11, test x$ENABLE_CXX11 = xyes)
+
 DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $DW_LIBS $ELF_LIBS"
 AC_SUBST(DEPS_LIBS)
 
@@ -153,5 +167,5 @@ AC_MSG_NOTICE([
 
  OPTIONAL FEATURES:
     Enable zip archives                : ${ENABLE_ZIP_ARCHIVE}
-    
+    Uses a C++-11 compiler             : ${ENABLE_CXX11}
 ])

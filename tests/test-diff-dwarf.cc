@@ -231,7 +231,7 @@ main()
       ref_diff_report_path = get_src_dir() + "/tests/" + s->in_report_path;
       out_diff_report_path = get_build_dir() + "/tests/" + s->out_report_path;
 
-      ofstream of(out_diff_report_path, std::ios_base::trunc);
+      ofstream of(out_diff_report_path.c_str(), std::ios_base::trunc);
       if (!of.is_open())
 	{
 	  cerr << "failed to read " << out_diff_report_path << "\n";

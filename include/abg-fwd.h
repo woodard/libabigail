@@ -186,10 +186,10 @@ shared_ptr<typedef_decl>
 is_typedef(const shared_ptr<decl_base>);
 
 shared_ptr<enum_type_decl>
-is_enum(const shared_ptr<type_base>&);
+is_enum_type(const shared_ptr<type_base>&);
 
 shared_ptr<enum_type_decl>
-is_enum(const shared_ptr<decl_base>&);
+is_enum_type(const shared_ptr<decl_base>&);
 
 shared_ptr<class_decl>
 is_class_type(const shared_ptr<type_base>);
@@ -198,7 +198,7 @@ shared_ptr<class_decl>
 is_class_type(const shared_ptr<decl_base>);
 
 shared_ptr<pointer_type_def>
-is_pointer(const shared_ptr<type_base>);
+is_pointer_type(const shared_ptr<type_base>);
 
 shared_ptr<qualified_type_def>
 is_qualified_type(const shared_ptr<type_base>);

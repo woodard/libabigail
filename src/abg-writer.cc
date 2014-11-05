@@ -883,7 +883,7 @@ write_translation_unit(const translation_unit&	tu,
   o << ">";
 
   typedef scope_decl::declarations		declarations;
-  typedef typename declarations::const_iterator const_iterator;
+  typedef declarations::const_iterator const_iterator;
   const declarations& d = tu.get_global_scope()->get_member_decls();
 
   for (const_iterator i = d.begin(); i != d.end(); ++i)
@@ -937,7 +937,7 @@ write_translation_unit(const translation_unit&	tu,
 
   try
     {
-      ofstream of(path, std::ios_base::trunc);
+      ofstream of(path.c_str(), std::ios_base::trunc);
       if (!of.is_open())
 	{
 	  cerr << "failed to access " << path << "\n";
@@ -1023,7 +1023,7 @@ write_namespace_decl(const shared_ptr<namespace_decl> decl,
   o << "<namespace-decl name='" << decl->get_name() << "'>";
 
   typedef scope_decl::declarations		declarations;
-  typedef typename declarations::const_iterator const_iterator;
+  typedef declarations::const_iterator const_iterator;
   const declarations& d = decl->get_member_decls();
 
   for (const_iterator i = d.begin(); i != d.end(); ++i)
@@ -2542,7 +2542,7 @@ write_corpus_to_native_xml_file(const corpus_sptr	corpus,
 
   try
     {
-      ofstream of(path, std::ios_base::trunc);
+      ofstream of(path.c_str(), std::ios_base::trunc);
       if (!of.is_open())
 	{
 	  cerr << "failed to access " << path << "\n";

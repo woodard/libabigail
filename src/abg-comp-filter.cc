@@ -369,7 +369,7 @@ has_harmless_name_change(decl_base_sptr f, decl_base_sptr s)
   return (decl_name_changed(f, s)
 	  && ((is_typedef(f) && is_typedef(s))
 	      || (is_data_member(f) && is_data_member(s))
-	      || (is_enum(f) && is_enum(s))));
+	      || (is_enum_type(f) && is_enum_type(s))));
 }
 
 /// Test if a class_diff node has non-static members added or

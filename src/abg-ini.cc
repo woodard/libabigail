@@ -663,7 +663,7 @@ bool
 read_sections(const string& path,
 	      config::sections_type& sections)
 {
-  std::ifstream in(path, std::ifstream::binary);
+  std::ifstream in(path.c_str(), std::ifstream::binary);
   if (!in.good())
     return false;
 
@@ -812,7 +812,7 @@ bool
 write_sections(const config::sections_type& sections,
 	       const string& path)
 {
-  std::ofstream f(path, std::ofstream::binary);
+  std::ofstream f(path.c_str(), std::ofstream::binary);
 
   if (!f.good())
     return false;
