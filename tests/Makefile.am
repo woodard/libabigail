@@ -8,6 +8,7 @@ endif
 
 if ENABLE_CXX11
 CXX11_TESTS = runtestsvg
+AM_CXXFLAGS = "-std=gnu++11"
 else
 CXX11_TESTS =
 endif
