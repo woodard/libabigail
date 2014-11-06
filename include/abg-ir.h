@@ -105,7 +105,7 @@ class location
 {
   unsigned		value_;
 
-  location(unsigned v) : value_(v) { }
+  location(unsigned v) : value_(v) {}
 
 public:
 

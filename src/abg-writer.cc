@@ -137,7 +137,7 @@ public:
 
   /// @return true iff type has already been assigned an ID.
   bool
-  type_has_existing_id(shared_ptr<type_base> type) const
+  type_has_existing_id(type_base_sptr type) const
   {return type_has_existing_id(type.get());}
 
   /// @return true iff type has already been assigned an ID.
@@ -2050,9 +2050,9 @@ write_non_type_tparameter(
 /// @return true upon successful completion, false otherwise.
 
 static bool
-write_template_tparameter
-(const shared_ptr<template_tparameter>	decl,
- write_context&	ctxt, unsigned indent)
+write_template_tparameter (const template_tparameter_sptr	decl,
+			   write_context&			ctxt,
+			   unsigned				indent)
 {
   if (!decl)
     return false;
