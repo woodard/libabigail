@@ -2067,27 +2067,38 @@ public:
   virtual ~method_type();
 };// end class method_type.
 
+/// Convenience typedef for shared pointer to template parameter
+typedef shared_ptr<template_parameter> template_parameter_sptr;
+
+/// Convenience typedef for a shared pointer to template_decl
+typedef shared_ptr<template_decl> template_decl_sptr;
+
+/// Convenience typedef for a weak pointer to template_decl
+typedef weak_ptr<template_decl> template_decl_wptr;
+
 /// The base class of templates.
-class template_decl
+class template_decl : public virtual decl_base
 {
-  // XXX
-  std::list<shared_ptr<template_parameter> > parms_;
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+  template_decl();
 
 public:
 
   /// Hasher.
   struct hash;
 
-  template_decl()
-  {}
+  template_decl(const string& name,
+		location locus,
+		visibility vis = VISIBILITY_DEFAULT);
 
   void
-  add_template_parameter(shared_ptr<template_parameter> p)
-  {parms_.push_back(p);}
+  add_template_parameter(const template_parameter_sptr p);
 
-  const std::list<shared_ptr<template_parameter> >&
-  get_template_parameters() const
-  {return parms_;}
+  const std::list<template_parameter_sptr>&
+  get_template_parameters() const;
 
   virtual bool
   operator==(const template_decl& o) const;
@@ -2100,7 +2111,9 @@ public:
 /// non_type_template_parameter and template_template_parameter below.
 class template_parameter
 {
-  unsigned index_;
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
 
   // Forbidden
   template_parameter();
@@ -2112,22 +2125,44 @@ class template_parameter
   struct dynamic_hash;
   struct shared_ptr_hash;
 
-  template_parameter(unsigned index) : index_(index)
-  {}
+  template_parameter(unsigned			index,
+		     template_decl_sptr	enclosing_tdecl);
 
   virtual bool
   operator==(const template_parameter&) const;
 
   unsigned
-  get_index() const
-  {return index_;}
+  get_index() const;
+
+  const template_decl_sptr
+  get_enclosing_template_decl() const;
+
+  bool
+  get_hashing_has_started() const;
+
+  void
+  set_hashing_has_started(bool f) const;
 
   virtual ~template_parameter();
 };//end class template_parameter
 
+struct template_decl::hash
+{
+    size_t
+    operator()(const template_decl& t) const;
+};// end struct template_decl::hash
+
+/// Convenience typedef for a shared pointer to @ref type_tparameter.
+typedef shared_ptr<type_tparameter> type_tparameter_sptr;
+
 /// Abstracts a type template parameter.
 class type_tparameter : public template_parameter, public virtual type_decl
 {
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
   // Forbidden
   type_tparameter();
 
@@ -2136,14 +2171,10 @@ public:
   /// Hasher.
   struct hash;
 
-  type_tparameter(unsigned index,
-		  const std::string& name,
-		  location locus)
-    : decl_base(name, locus),
-      type_base(0, 0),
-      type_decl(name, 0, 0, locus),
-      template_parameter(index)
-  {}
+  type_tparameter(unsigned		index,
+		  template_decl_sptr	enclosing_tdecl,
+		  const std::string&	name,
+		  location		locus);
 
   virtual bool
   operator==(const type_base&) const;
@@ -2157,9 +2188,18 @@ public:
   virtual ~type_tparameter();
 };// end class type_tparameter.
 
+/// Convenience typedef for shared pointer to @ref
+/// non_type_template_parameter
+typedef shared_ptr<non_type_tparameter> non_type_tparameter_sptr;
+
 /// Abstracts non type template parameters.
 class non_type_tparameter : public template_parameter, public virtual decl_base
 {
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
   type_base_wptr type_;
 
   // Forbidden
@@ -2169,13 +2209,11 @@ public:
   /// Hasher.
   struct hash;
 
-  non_type_tparameter(unsigned index, const std::string& name,
-			      shared_ptr<type_base> type, location locus)
-    : decl_base(name, locus, ""),
-      template_parameter(index),
-      type_(type)
-  {}
-
+  non_type_tparameter(unsigned			index,
+		      template_decl_sptr	enclosing_tdecl,
+		      const std::string&	name,
+		      shared_ptr<type_base>	type,
+		      location			locus);
   virtual size_t
   get_hash() const;
 
@@ -2185,13 +2223,8 @@ public:
   virtual bool
   operator==(const template_parameter&) const;
 
-  type_base_sptr
-  get_type() const
-  {
-    if (type_.expired())
-      return type_base_sptr();
-    return type_base_sptr(type_);
-  }
+  const type_base_sptr
+  get_type() const;
 
   virtual ~non_type_tparameter();
 };// end class non_type_tparameter
@@ -2206,9 +2239,18 @@ struct non_type_tparameter::hash
   operator()(const non_type_tparameter* t) const;
 };
 
+class template_tparameter;
+
+/// Convenience typedef for a shared_ptr to @ref template_tparameter.
+typedef shared_ptr<template_tparameter> template_tparameter_sptr;
+
 /// Abstracts a template template parameter.
 class template_tparameter : public type_tparameter, public template_decl
 {
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
   // Forbidden
   template_tparameter();
 
@@ -2218,13 +2260,9 @@ public:
   struct hash;
 
   template_tparameter(unsigned index,
-			      const std::string& name,
-			      location locus)
-    : decl_base(name, locus),
-      type_base(0, 0),
-      type_decl(name, 0, 0, locus, name, VISIBILITY_DEFAULT),
-      type_tparameter(index, name, locus)
-  {}
+		      template_decl_sptr enclosing_tdecl,
+		      const std::string& name,
+		      location locus);
 
   virtual bool
   operator==(const type_base&) const;
@@ -2238,6 +2276,9 @@ public:
   virtual ~template_tparameter();
 };
 
+/// Convenience typedef for shared pointer to type_composition
+typedef shared_ptr<type_composition> type_composition_sptr;
+
 /// This abstracts a composition of types based on template type
 /// parameters.  The result of the composition is a type that can be
 /// referred to by a template non-type parameter.  Instances of this
@@ -2245,27 +2286,25 @@ public:
 /// scope of a template_decl.
 class type_composition : public template_parameter, public virtual decl_base
 {
-  type_base_wptr type_;
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
   type_composition();
 
 public:
   struct hash;
 
-  type_composition(unsigned			index,
-		   shared_ptr<type_base>	composed_type);
+  type_composition(unsigned		index,
+		   template_decl_sptr	tdecl,
+		   type_base_sptr	composed_type);
 
-  type_base_sptr
-  get_composed_type() const
-  {
-    if (type_.expired())
-      return type_base_sptr();
-    return type_base_sptr(type_);
-  }
+  const type_base_sptr
+  get_composed_type() const;
 
   void
-  set_composed_type(type_base_sptr t)
-  {type_ = t;}
+  set_composed_type(type_base_sptr t);
 
   virtual size_t
   get_hash() const;
@@ -2290,8 +2329,10 @@ typedef shared_ptr<function_tdecl> function_tdecl_sptr;
 /// Abstract a function template declaration.
 class function_tdecl : public template_decl, public scope_decl
 {
-  shared_ptr<function_decl> pattern_;
-  binding binding_;
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
   // Forbidden
   function_tdecl();
@@ -2302,22 +2343,14 @@ public:
   struct hash;
   struct shared_ptr_hash;
 
-  function_tdecl(location locus,
-			 visibility vis = VISIBILITY_DEFAULT,
-			 binding bind = BINDING_NONE)
-  : decl_base("", locus, "", vis), scope_decl("", locus),
-    binding_(bind)
-  {}
+  function_tdecl(location	locus,
+		 visibility	vis = VISIBILITY_DEFAULT,
+		 binding	bind = BINDING_NONE);
 
-  function_tdecl(shared_ptr<function_decl> pattern,
-			 location locus,
-			 visibility vis = VISIBILITY_DEFAULT,
-			 binding bind = BINDING_NONE)
-  : decl_base(pattern->get_name(), locus,
-	      pattern->get_name(), vis),
-    scope_decl(pattern->get_name(), locus),
-    binding_(bind)
-  {set_pattern(pattern);}
+  function_tdecl(function_decl_sptr	pattern,
+		 location		locus,
+		 visibility		vis = VISIBILITY_DEFAULT,
+		 binding		bind = BINDING_NONE);
 
   virtual bool
   operator==(const decl_base&) const;
@@ -2326,20 +2359,13 @@ public:
   operator==(const template_decl&) const;
 
   void
-  set_pattern(shared_ptr<function_decl> p)
-  {
-    pattern_ = p;
-    add_decl_to_scope(p, this);
-    set_name(p->get_name());
-  }
+  set_pattern(shared_ptr<function_decl> p);
 
   shared_ptr<function_decl>
-  get_pattern() const
-  {return pattern_;}
+  get_pattern() const;
 
   binding
-  get_binding() const
-  {return binding_;}
+  get_binding() const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -2353,7 +2379,10 @@ typedef shared_ptr<class_tdecl> class_tdecl_sptr;
 /// Abstract a class template.
 class class_tdecl : public template_decl, public scope_decl
 {
-  shared_ptr<class_decl> pattern_;
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
   // Forbidden
   class_tdecl();
@@ -2364,9 +2393,7 @@ public:
   struct hash;
   struct shared_ptr_hash;
 
-  class_tdecl(location locus, visibility vis = VISIBILITY_DEFAULT)
-  : decl_base("", locus, "", vis), scope_decl("", locus)
-  {}
+  class_tdecl(location locus, visibility vis = VISIBILITY_DEFAULT);
 
   class_tdecl(shared_ptr<class_decl> pattern,
 	      location locus, visibility vis = VISIBILITY_DEFAULT);
@@ -2381,11 +2408,10 @@ public:
   operator==(const class_tdecl&) const;
 
   void
-  set_pattern(shared_ptr<class_decl> p);
+  set_pattern(class_decl_sptr p);
 
   shared_ptr<class_decl>
-  get_pattern() const
-  {return pattern_;}
+  get_pattern() const;
 
   virtual bool
   traverse(ir_node_visitor& v);

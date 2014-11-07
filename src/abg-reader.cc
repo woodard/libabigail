@@ -606,20 +606,25 @@ build_function_tdecl(read_context&, const xmlNodePtr, bool);
 static shared_ptr<class_tdecl>
 build_class_tdecl(read_context&, const xmlNodePtr, bool);
 
-static shared_ptr<type_tparameter>
-build_type_tparameter(read_context&, const xmlNodePtr, unsigned);
+static type_tparameter_sptr
+build_type_tparameter(read_context&, const xmlNodePtr,
+		      unsigned, template_decl_sptr);
 
-static shared_ptr<type_composition>
-build_type_composition(read_context&, const xmlNodePtr, unsigned);
+static type_composition_sptr
+build_type_composition(read_context&, const xmlNodePtr,
+		       unsigned, template_decl_sptr);
 
-static shared_ptr<non_type_tparameter>
-build_non_type_tparameter(read_context&, const xmlNodePtr, unsigned);
+static non_type_tparameter_sptr
+build_non_type_tparameter(read_context&, const xmlNodePtr,
+			  unsigned, template_decl_sptr);
 
-static shared_ptr<template_tparameter>
-build_template_tparameter(read_context&, const xmlNodePtr, unsigned);
+static template_tparameter_sptr
+build_template_tparameter(read_context&, const xmlNodePtr,
+			  unsigned, template_decl_sptr);
 
-static shared_ptr<template_parameter>
-build_template_parameter(read_context&, const xmlNodePtr, unsigned);
+static template_parameter_sptr
+build_template_parameter(read_context&, const xmlNodePtr,
+			 unsigned, template_decl_sptr);
 
 // Please make this build_type function be the last one of the list.
 // Note that it should call each type-building function above.  So
@@ -2918,8 +2923,7 @@ build_function_tdecl(read_context& ctxt,
   decl_base::binding bind = decl_base::BINDING_NONE;
   read_binding(node, bind);
 
-  shared_ptr<function_tdecl> fn_tmpl_decl
-    (new function_tdecl(loc, vis, bind));
+  function_tdecl_sptr fn_tmpl_decl(new function_tdecl(loc, vis, bind));
 
   ctxt.push_decl_to_current_scope(fn_tmpl_decl, add_to_current_scope);
 
@@ -2929,8 +2933,8 @@ build_function_tdecl(read_context& ctxt,
       if (n->type != XML_ELEMENT_NODE)
 	continue;
 
-      if (shared_ptr<template_parameter> parm =
-	  build_template_parameter(ctxt, n, parm_index))
+      if (template_parameter_sptr parm =
+	  build_template_parameter(ctxt, n, parm_index, fn_tmpl_decl))
 	{
 	  fn_tmpl_decl->add_template_parameter(parm);
 	  ++parm_index;
@@ -2980,8 +2984,7 @@ build_class_tdecl(read_context&	ctxt,
   decl_base::visibility vis = decl_base::VISIBILITY_NONE;
   read_visibility(node, vis);
 
-  shared_ptr<class_tdecl> class_tmpl
-    (new class_tdecl(loc, vis));
+  class_tdecl_sptr class_tmpl (new class_tdecl(loc, vis));
 
   ctxt.push_decl_to_current_scope(class_tmpl, add_to_current_scope);
 
@@ -2991,8 +2994,8 @@ build_class_tdecl(read_context&	ctxt,
       if (n->type != XML_ELEMENT_NODE)
 	continue;
 
-      if (shared_ptr<template_parameter> parm=
-	  build_template_parameter(ctxt, n, parm_index))
+      if (template_parameter_sptr parm=
+	  build_template_parameter(ctxt, n, parm_index, class_tmpl))
 	{
 	  class_tmpl->add_template_parameter(parm);
 	  ++parm_index;
@@ -3017,14 +3020,18 @@ build_class_tdecl(read_context&	ctxt,
 /// @param index the index (occurrence index, starting from 0) of the
 /// template parameter.
 ///
+/// @param tdecl the enclosing template declaration that holds the
+/// template type parameter.
+///
 /// @return a pointer to a newly created instance of
 /// type_tparameter, a null pointer otherwise.
-static shared_ptr<type_tparameter>
-build_type_tparameter(read_context&	ctxt,
-		      const xmlNodePtr	node,
-		      unsigned		index)
+static type_tparameter_sptr
+build_type_tparameter(read_context&		ctxt,
+		      const xmlNodePtr		node,
+		      unsigned			index,
+		      template_decl_sptr	tdecl)
 {
-  shared_ptr<type_tparameter> nil, result;
+  type_tparameter_sptr nil, result;
 
   if (!xmlStrEqual(node->name, BAD_CAST("template-type-parameter")))
     return nil;
@@ -3050,7 +3057,7 @@ build_type_tparameter(read_context&	ctxt,
   location loc;
   read_location(ctxt, node,loc);
 
-  result.reset(new type_tparameter(index, name, loc));
+  result.reset(new type_tparameter(index, tdecl, name, loc));
 
   if (id.empty())
     ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result),
@@ -3071,20 +3078,24 @@ build_type_tparameter(read_context&	ctxt,
 ///
 /// @param index the index of the previous normal template parameter.
 ///
+/// @param tdecl the enclosing template declaration that holds this
+/// template parameter type composition.
+///
 /// @return a pointer to a new instance of tmpl_parm_type_composition
 /// upon successful completion, a null pointer otherwise.
-static shared_ptr<type_composition>
-build_type_composition(read_context&	ctxt,
-		       const xmlNodePtr node,
-		       unsigned	index)
+static type_composition_sptr
+build_type_composition(read_context&		ctxt,
+		       const xmlNodePtr	node,
+		       unsigned		index,
+		       template_decl_sptr	tdecl)
 {
-  shared_ptr<type_composition> nil, result;
+  type_composition_sptr nil, result;
 
   if (!xmlStrEqual(node->name, BAD_CAST("template-parameter-type-composition")))
     return nil;
 
-  shared_ptr<type_base> composed_type;
-  result.reset(new type_composition(index, composed_type));
+  type_base_sptr composed_type;
+  result.reset(new type_composition(index, tdecl, composed_type));
   ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(result),
 				  /*add_to_current_scope=*/true);
 
@@ -3123,15 +3134,19 @@ build_type_composition(read_context&	ctxt,
 ///
 /// @param index the index of the parameter.
 ///
+/// @param tdecl the enclosing template declaration that holds this
+/// non type template parameter.
+///
 /// @return a pointer to a newly created instance of
 /// non_type_tparameter upon successful completion, a null
 /// pointer code otherwise.
-static shared_ptr<non_type_tparameter>
-build_non_type_tparameter(read_context&		ctxt,
-				  const xmlNodePtr	node,
-				  unsigned		index)
+static non_type_tparameter_sptr
+build_non_type_tparameter(read_context&	ctxt,
+			  const xmlNodePtr	node,
+			  unsigned		index,
+			  template_decl_sptr	tdecl)
 {
-  shared_ptr<non_type_tparameter> r;
+  non_type_tparameter_sptr r;
 
   if (!xmlStrEqual(node->name, BAD_CAST("template-non-type-parameter")))
     return r;
@@ -3139,7 +3154,7 @@ build_non_type_tparameter(read_context&		ctxt,
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
     type_id = CHAR_STR(s);
-  shared_ptr<type_base> type;
+  type_base_sptr type;
   if (type_id.empty()
       || !(type = ctxt.build_or_get_type_decl(type_id, true)))
     abort();
@@ -3151,7 +3166,7 @@ build_non_type_tparameter(read_context&		ctxt,
   location loc;
   read_location(ctxt, node,loc);
 
-  r.reset(new non_type_tparameter(index, name, type, loc));
+  r.reset(new non_type_tparameter(index, tdecl, name, type, loc));
   ctxt.push_decl_to_current_scope(dynamic_pointer_cast<decl_base>(r),
 				  /*add_to_current_scope=*/true);
 
@@ -3167,14 +3182,18 @@ build_non_type_tparameter(read_context&		ctxt,
 ///
 /// @param index the index of the template parameter.
 ///
+/// @param tdecl the enclosing template declaration that holds this
+/// template template parameter.
+///
 /// @return a pointer to a new instance of template_tparameter
 /// upon successful completion, a null pointer otherwise.
-static shared_ptr<template_tparameter>
-build_template_tparameter(read_context& ctxt,
-			  const xmlNodePtr node,
-			  unsigned index)
+static template_tparameter_sptr
+build_template_tparameter(read_context&	ctxt,
+			  const xmlNodePtr	node,
+			  unsigned		index,
+			  template_decl_sptr	tdecl)
 {
-  shared_ptr<template_tparameter> nil;
+  template_tparameter_sptr nil;
 
   if (!xmlStrEqual(node->name, BAD_CAST("template-template-parameter")))
     return nil;
@@ -3201,8 +3220,8 @@ build_template_tparameter(read_context& ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  shared_ptr<template_tparameter> result
-    (new template_tparameter(index, name, loc));
+  template_tparameter_sptr result(new template_tparameter(index, tdecl,
+							  name, loc));
 
   ctxt.push_decl_to_current_scope(result, /*add_to_current_scope=*/true);
 
@@ -3214,7 +3233,7 @@ build_template_tparameter(read_context& ctxt,
 	continue;
 
       if (shared_ptr<template_parameter> p =
-	  build_template_parameter(ctxt, n, parm_index))
+	  build_template_parameter(ctxt, n, parm_index, result))
 	{
 	  result->add_template_parameter(p);
 	  ++parm_index;
@@ -3236,19 +3255,23 @@ build_template_tparameter(read_context& ctxt,
 ///
 /// @param index the index of the template parameter we are parsing.
 ///
+/// @param tdecl the enclosing template declaration that holds this
+/// template parameter.
+///
 /// @return a pointer to a newly created instance of
 /// template_parameter upon successful completion, a null pointer
 /// otherwise.
-static shared_ptr<template_parameter>
+static template_parameter_sptr
 build_template_parameter(read_context&		ctxt,
 			 const xmlNodePtr	node,
-			 unsigned		index)
+			 unsigned		index,
+			 template_decl_sptr	tdecl)
 {
   shared_ptr<template_parameter> r;
-  ((r = build_type_tparameter(ctxt, node, index))
-   || (r = build_non_type_tparameter(ctxt, node, index))
-   || (r = build_template_tparameter(ctxt, node, index))
-   || (r = build_type_composition(ctxt, node, index)));
+  ((r = build_type_tparameter(ctxt, node, index, tdecl))
+   || (r = build_non_type_tparameter(ctxt, node, index, tdecl))
+   || (r = build_template_tparameter(ctxt, node, index, tdecl))
+   || (r = build_type_composition(ctxt, node, index, tdecl)));
 
   return r;
 }

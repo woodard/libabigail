@@ -688,11 +688,26 @@ struct template_parameter::hash
   size_t
   operator()(const template_parameter& t) const
   {
+    // Let's avoid infinite recursion triggered from the fact that
+    // hashing a template parameter triggers hashing the enclosed
+    // template decl, which in turn triggers the hashing of its
+    // template parameters; so the initial template parameter that
+    // triggered the hashing could be hashed again ...
+    if (t.get_hashing_has_started())
+      return 0;
+
+    t.set_hashing_has_started(true);
+
     std::tr1::hash<unsigned> hash_unsigned;
     std::tr1::hash<std::string> hash_string;
+    template_decl::hash hash_template_decl;
 
     size_t v = hash_string(typeid(t).name());
     v = hashing::combine_hashes(v, hash_unsigned(t.get_index()));
+    v = hashing::combine_hashes(v, hash_template_decl
+				(*t.get_enclosing_template_decl()));
+
+    t.set_hashing_has_started(false);
 
     return v;
   }
@@ -708,44 +723,46 @@ struct template_parameter::shared_ptr_hash
 {
   size_t
   operator()(const shared_ptr<template_parameter> t) const
-  { return template_parameter::dynamic_hash()(t.get()); }
+  {return template_parameter::dynamic_hash()(t.get());}
 };
 
-struct template_decl::hash
+size_t
+template_decl::hash::operator()(const template_decl& t) const
 {
-  size_t
-  operator()(const template_decl& t) const
-  {
-    std::tr1::hash<string> hash_string;
-    template_parameter::shared_ptr_hash hash_template_parameter;
+  std::tr1::hash<string> hash_string;
+  template_parameter::shared_ptr_hash hash_template_parameter;
 
-    size_t v = hash_string(typeid(t).name());
+  size_t v = hash_string(typeid(t).name());
+  v = hash_string(t.get_qualified_name());
 
-    for (list<shared_ptr<template_parameter> >::const_iterator p =
-	   t.get_template_parameters().begin();
-	 p != t.get_template_parameters().end();
-	 ++p)
-      {
-	v = hashing::combine_hashes(v, hash_template_parameter(*p));
-      }
-    return v;
-  }
-};
+  for (list<template_parameter_sptr>::const_iterator p =
+	 t.get_template_parameters().begin();
+       p != t.get_template_parameters().end();
+       ++p)
+    if (!(*p)->get_hashing_has_started())
+      v = hashing::combine_hashes(v, hash_template_parameter(*p));
+
+  return v;
+}
 
 struct type_tparameter::hash
 {
   size_t
   operator()(const type_tparameter& t) const
   {
-    std::tr1::hash<string> hash_string;
-    template_parameter::hash hash_template_parameter;
-    type_decl::hash hash_type;
+    if (t.peek_hash_value() == 0 || t.hashing_started())
+      {
+	std::tr1::hash<string> hash_string;
+	template_parameter::hash hash_template_parameter;
+	type_decl::hash hash_type;
 
-    size_t v = hash_string(typeid(t).name());
-    v = hashing::combine_hashes(v, hash_template_parameter(t));
-    v = hashing::combine_hashes(v, hash_type(t));
+	size_t v = hash_string(typeid(t).name());
+	v = hashing::combine_hashes(v, hash_template_parameter(t));
+	v = hashing::combine_hashes(v, hash_type(t));
 
-    return v;
+	t.set_hash(v);
+      }
+    return t.peek_hash_value();
   }
 };
 
@@ -783,15 +800,19 @@ struct template_tparameter::hash
   size_t
   operator()(const template_tparameter& t) const
   {
-    std::tr1::hash<string> hash_string;
-    type_tparameter::hash hash_template_type_parm;
-    template_decl::hash hash_template_decl;
+    if (t.peek_hash_value() == 0 || t.hashing_started())
+      {
+	std::tr1::hash<string> hash_string;
+	type_tparameter::hash hash_template_type_parm;
+	template_decl::hash hash_template_decl;
 
-    size_t v = hash_string(typeid(t).name());
-    v = hashing::combine_hashes(v, hash_template_type_parm(t));
-    v = hashing::combine_hashes(v, hash_template_decl(t));
+	size_t v = hash_string(typeid(t).name());
+	v = hashing::combine_hashes(v, hash_template_type_parm(t));
+	v = hashing::combine_hashes(v, hash_template_decl(t));
+	t.set_hash(v);
+      }
 
-    return v;
+    return t.peek_hash_value();
   }
 };
 

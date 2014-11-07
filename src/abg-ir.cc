@@ -7517,9 +7517,42 @@ operator<<(std::ostream& o, access_specifier a)
 
 // <template_decl stuff>
 
-template_decl::~template_decl()
+/// Data type of the private data of the @template_decl type.
+class template_decl::priv
+{
+  friend class template_decl;
+
+  std::list<template_parameter_sptr> parms_;
+public:
+
+  priv()
+  {}
+}; // end class template_decl::priv
+
+/// Add a new template parameter to the current instance of @ref
+/// template_decl.
+///
+/// @param p the new template parameter to add.
+void
+template_decl::add_template_parameter(const template_parameter_sptr p)
+{priv_->parms_.push_back(p);}
+
+/// Get the list of template parameters of the current instance of
+/// @ref template_decl.
+///
+/// @return the list of template parameters.
+const std::list<template_parameter_sptr>&
+template_decl::get_template_parameters() const
+{return priv_->parms_;}
+
+template_decl::template_decl(const string& name, location locus, visibility vis)
+  : decl_base(name, locus, /*mangled_name=*/"", vis),
+    priv_(new priv)
 {
 }
+
+template_decl::~template_decl()
+{}
 
 bool
 template_decl::operator==(const template_decl& o) const
@@ -7551,13 +7584,83 @@ template_decl::operator==(const template_decl& o) const
 
 //<template_parameter>
 
-bool
-template_parameter::operator==(const template_parameter& o) const
+/// The type of the private data of the @ref template_parameter type.
+class template_parameter::priv
 {
-  return (get_index() == o.get_index());
+  friend class template_parameter;
+
+  unsigned index_;
+  template_decl_wptr template_decl_;
+  mutable bool hashing_started_;
+
+  priv();
+
+public:
+
+  priv(unsigned index, template_decl_sptr enclosing_template_decl)
+    : index_(index),
+      template_decl_(enclosing_template_decl),
+      hashing_started_()
+  {}
+}; // end class template_parameter::priv
+
+template_parameter::template_parameter(unsigned	 index,
+				       template_decl_sptr enclosing_template)
+  : priv_(new priv(index, enclosing_template))
+  {}
+
+unsigned
+template_parameter::get_index() const
+{return priv_->index_;}
+
+const template_decl_sptr
+template_parameter::get_enclosing_template_decl() const
+{
+  if (priv_->template_decl_.expired())
+    return template_decl_sptr();
+  return template_decl_sptr(priv_->template_decl_);
 }
 
+bool
+template_parameter::get_hashing_has_started() const
+{return priv_->hashing_started_;}
+
+void
+template_parameter::set_hashing_has_started(bool f) const
+{priv_->hashing_started_ = f;}
+
+bool
+template_parameter::operator==(const template_parameter& o) const
+{return (get_index() == o.get_index());}
+
 template_parameter::~template_parameter()
+{}
+
+/// The type of the private data of the @ref type_tparameter type.
+class type_tparameter::priv
+{
+  friend class type_tparameter;
+}; // end class type_tparameter::priv
+
+/// Constructor of the @ref type_tparameter type.
+///
+/// @param index the index the type template parameter.
+///
+/// @param enclosing_tdecl the enclosing template declaration.
+///
+/// @param name the name of the template parameter.
+///
+/// @param locus the location of the declaration of this type template
+/// parameter.
+type_tparameter::type_tparameter(unsigned		index,
+				 template_decl_sptr	enclosing_tdecl,
+				 const std::string&	name,
+				 location		locus)
+  : decl_base(name, locus),
+    type_base(0, 0),
+    type_decl(name, 0, 0, locus),
+    template_parameter(index, enclosing_tdecl),
+    priv_(new priv)
 {}
 
 bool
@@ -7593,6 +7696,56 @@ type_tparameter::operator==(const type_tparameter& other) const
 
 type_tparameter::~type_tparameter()
 {}
+
+/// The type of the private data of the @ref non_type_tparameter type.
+class non_type_tparameter::priv
+{
+  friend class non_type_tparameter;
+
+  type_base_wptr type_;
+
+  priv();
+
+public:
+
+  priv(type_base_sptr type)
+    : type_(type)
+  {}
+}; // end class non_type_tparameter::priv
+
+/// The constructor for the @ref non_type_tparameter type.
+///
+/// @param index the index of the template parameter.
+///
+/// @param enclosing_tdecl the enclosing template declaration that
+/// holds this parameter parameter.
+///
+/// @param name the name of the template parameter.
+///
+/// @param type the type of the template parameter.
+///
+/// @param locus the location of the declaration of this template
+/// parameter.
+non_type_tparameter::non_type_tparameter(unsigned		index,
+					 template_decl_sptr	enclosing_tdecl,
+					 const std::string&	name,
+					 type_base_sptr	type,
+					 location		locus)
+    : decl_base(name, locus, ""),
+      template_parameter(index, enclosing_tdecl),
+      priv_(new priv(type))
+{}
+
+/// Getter for the type of the template parameter.
+///
+/// @return the type of the template parameter.
+const type_base_sptr
+non_type_tparameter::get_type() const
+{
+  if (priv_->type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(priv_->type_);
+}
 
 /// Get the hash value of the current instance.
 ///
@@ -7634,6 +7787,35 @@ non_type_tparameter::operator==(const template_parameter& other) const
 }
 
 non_type_tparameter::~non_type_tparameter()
+{}
+
+// <template_tparameter stuff>
+
+/// Type of the private data of the @ref template_tparameter type.
+class template_tparameter::priv
+{
+}; //end class template_tparameter::priv
+
+/// Constructor for the @ref template_tparameter.
+///
+/// @param index the index of the template parameter.
+///
+/// @param enclosing_tdecl the enclosing template declaration.
+///
+/// @param name the name of the template parameter.
+///
+/// @param locus the location of the declaration of the template
+/// parameter.
+template_tparameter::template_tparameter(unsigned		index,
+					 template_decl_sptr	enclosing_tdecl,
+					 const std::string&	name,
+					 location		locus)
+    : decl_base(name, locus),
+      type_base(0, 0),
+      type_decl(name, 0, 0, locus, name, VISIBILITY_DEFAULT),
+      type_tparameter(index, enclosing_tdecl, name, locus),
+      template_decl(name, locus),
+      priv_(new priv)
 {}
 
 bool
@@ -7679,10 +7861,60 @@ template_tparameter::operator==(const template_decl& o) const
 template_tparameter::~template_tparameter()
 {}
 
-type_composition::type_composition(unsigned index, shared_ptr<type_base> t)
-: decl_base("", location()), template_parameter(index),
-  type_(std::tr1::dynamic_pointer_cast<type_base>(t))
+// </template_tparameter stuff>
+
+// <type_composition stuff>
+
+/// The type of the private data of the @ref type_composition type.
+class type_composition::priv
+{
+  friend class type_composition;
+
+  type_base_wptr type_;
+
+  // Forbid this.
+  priv();
+
+public:
+
+  priv(type_base_wptr type)
+    : type_(type)
+  {}
+}; //end class type_composition::priv
+
+/// Constructor for the @ref type_composition type.
+///
+/// @param index the index of the template type composition.
+///
+/// @param tdecl the enclosing template parameter that owns the
+/// composition.
+///
+/// @param t the resulting type.
+type_composition::type_composition(unsigned		index,
+				   template_decl_sptr	tdecl,
+				   type_base_sptr	t)
+  : decl_base("", location()),
+    template_parameter(index, tdecl),
+    priv_(new priv(t))
 {}
+
+/// Getter for the resulting composed type.
+///
+/// @return the composed type.
+const type_base_sptr
+type_composition::get_composed_type() const
+{
+  if (priv_->type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(priv_->type_);
+}
+
+/// Setter for the resulting composed type.
+///
+/// @param t the composed type.
+void
+type_composition::set_composed_type(type_base_sptr t)
+{priv_->type_ = t;}
 
 /// Get the hash value for the current instance.
 ///
@@ -7697,9 +7929,99 @@ type_composition::get_hash() const
 type_composition::~type_composition()
 {}
 
-//</template_parameter>
+// </type_composition stuff>
+
+//</template_parameter stuff>
 
 // <function_template>
+
+class function_tdecl::priv
+{
+  friend class function_tdecl;
+
+  function_decl_sptr pattern_;
+  binding binding_;
+
+  priv();
+
+public:
+
+  priv(function_decl_sptr pattern, binding bind)
+    : pattern_(pattern), binding_(bind)
+  {}
+
+  priv(binding bind)
+    : binding_(bind)
+  {}
+}; // end class function_tdecl::priv
+
+/// Constructor for a function template declaration.
+///
+/// @param locus the location of the declaration.
+///
+/// @param vis the visibility of the declaration.  This is the
+/// visibility the functions instantiated from this template are going
+/// to have.
+///
+/// @param bind the binding of the declaration.  This is the binding
+/// the functions instantiated from this template are going to have.
+function_tdecl::function_tdecl(location	locus,
+			       visibility	vis,
+			       binding		bind)
+  : decl_base("", locus, "", vis),
+    template_decl("", locus, vis),
+    scope_decl("", locus),
+    priv_(new priv(bind))
+{}
+
+/// Constructor for a function template declaration.
+///
+/// @param pattern the pattern of the template.
+///
+/// @param locus the location of the declaration.
+///
+/// @param vis the visibility of the declaration.  This is the
+/// visibility the functions instantiated from this template are going
+/// to have.
+///
+/// @param bind the binding of the declaration.  This is the binding
+/// the functions instantiated from this template are going to have.
+function_tdecl::function_tdecl(function_decl_sptr	pattern,
+			       location		locus,
+			       visibility		vis,
+			       binding			bind)
+  : decl_base(pattern->get_name(), locus,
+	      pattern->get_name(), vis),
+    template_decl(pattern->get_name(), locus, vis),
+    scope_decl(pattern->get_name(), locus),
+    priv_(new priv(pattern, bind))
+{}
+
+/// Set a new pattern to the function template.
+///
+/// @param p the new pattern.
+void
+function_tdecl::set_pattern(function_decl_sptr p)
+{
+  priv_->pattern_ = p;
+  add_decl_to_scope(p, this);
+  set_name(p->get_name());
+}
+
+/// Get the pattern of the function template.
+///
+/// @return the pattern.
+function_decl_sptr
+function_tdecl::get_pattern() const
+{return priv_->pattern_;}
+
+/// Get the binding of the function template.
+///
+/// @return the binding
+decl_base::binding
+function_tdecl::get_binding() const
+{return priv_->binding_;}
+
 bool
 function_tdecl::operator==(const decl_base& other) const
 {
@@ -7758,7 +8080,37 @@ function_tdecl::~function_tdecl()
 
 // <class template>
 
-/// Constructor for the class_tdecl type.
+/// Type of the private data of the the @ref class_tdecl type.
+class class_tdecl::priv
+{
+  friend class class_tdecl;
+  class_decl_sptr pattern_;
+
+public:
+
+  priv()
+  {}
+
+  priv(class_decl_sptr pattern)
+    : pattern_(pattern)
+  {}
+}; // end class class_tdecl::priv
+
+/// Constructor for the @ref class_tdecl type.
+///
+/// @param locus the location of the declaration of the class_tdecl
+/// type.
+///
+/// @param vis the visibility of the instance of class instantiated
+/// from this template.
+class_tdecl::class_tdecl(location locus, visibility vis)
+  : decl_base("", locus, "", vis),
+    template_decl("", locus, vis),
+    scope_decl("", locus),
+    priv_(new priv)
+{}
+
+/// Constructor for the @ref class_tdecl type.
 ///
 /// @param pattern The details of the class template. This must NOT be a
 /// null pointer.  If you really this to be null, please use the
@@ -7768,20 +8120,32 @@ function_tdecl::~function_tdecl()
 ///
 /// @param vis the visibility of the instances of class instantiated
 /// from this template.
-class_tdecl::class_tdecl(shared_ptr<class_decl> pattern,
+class_tdecl::class_tdecl(class_decl_sptr pattern,
 			 location locus, visibility vis)
 : decl_base(pattern->get_name(), locus,
 	    pattern->get_name(), vis),
-  scope_decl(pattern->get_name(), locus)
-{set_pattern(pattern);}
+  template_decl(pattern->get_name(), locus, vis),
+  scope_decl(pattern->get_name(), locus),
+  priv_(new priv(pattern))
+{}
 
+/// Setter of the pattern of the template.
+///
+/// @param p the new template.
 void
-class_tdecl::set_pattern(shared_ptr<class_decl> p)
+class_tdecl::set_pattern(class_decl_sptr p)
 {
-  pattern_ = p;
+  priv_->pattern_ = p;
   add_decl_to_scope(p, this);
   set_name(p->get_name());
 }
+
+/// Getter of the pattern of the template.
+///
+/// @return p the new template.
+class_decl_sptr
+class_tdecl::get_pattern() const
+{return priv_->pattern_;}
 
 bool
 class_tdecl::operator==(const decl_base& other) const
