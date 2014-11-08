@@ -3465,7 +3465,6 @@ demangle_cplus_mangled_name(const string& mangled_name)
   if (str)
     {
       assert(status == 0);
-      assert(l != 0);
       demangled_name = str;
       free(str);
       str = 0;
