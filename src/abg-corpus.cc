@@ -104,7 +104,9 @@ struct corpus::priv
   vector<function_decl*>	fns;
   vector<var_decl*>		vars;
   string_elf_symbols_map_sptr	var_symbol_map;
+  elf_symbols			sorted_var_symbols;
   string_elf_symbols_map_sptr	fun_symbol_map;
+  elf_symbols			sorted_fun_symbols;
   elf_symbols			unrefed_fun_symbols;
   elf_symbols			unrefed_var_symbols;
 
@@ -914,6 +916,74 @@ const string_elf_symbols_map_type&
 corpus::get_fun_symbol_map() const
 {return *get_fun_symbol_map_sptr();}
 
+/// Functor to sort instances of @ref elf_symbol.
+struct elf_symbol_comp_functor
+{
+
+  /// Return true if the first argument is less than the second one.
+  ///
+  /// @param l the first parameter to consider.
+  ///
+  /// @param r the second parameter to consider.
+  ///
+  /// @return true if @p l is less than @p r
+  bool
+  operator()(elf_symbol& l, elf_symbol& r)
+  {return (l.get_id_string() < r.get_id_string());}
+
+  /// Return true if the first argument is less than the second one.
+  ///
+  /// @param l the first parameter to consider.
+  ///
+  /// @param r the second parameter to consider.
+  ///
+  /// @return true if @p l is less than @p r
+  bool
+  operator()(elf_symbol* l, elf_symbol* r)
+  {return operator()(*l, *r);}
+
+  /// Return true if the first argument is less than the second one.
+  ///
+  /// @param l the first parameter to consider.
+  ///
+  /// @param r the second parameter to consider.
+  ///
+  /// @return true if @p l is less than @p r
+  bool
+  operator()(elf_symbol_sptr l, elf_symbol_sptr r)
+  {return operator()(*l, *r);}
+}; // end struct elf_symbol_comp_functor
+
+/// Return a sorted vector of function symbols for this corpus.
+///
+/// Note that the first time this function is called, the symbols are
+/// sorted and cached.  Subsequent invocations of this function return
+/// the cached vector that was built previously.
+///
+/// @return the sorted list of function symbols.
+const elf_symbols&
+corpus::get_sorted_fun_symbols() const
+{
+  if (priv_->sorted_fun_symbols.empty()
+      && !get_fun_symbol_map().empty())
+    {
+      priv_->sorted_fun_symbols.reserve(get_fun_symbol_map().size());
+      for (string_elf_symbols_map_type::const_iterator i =
+	     get_fun_symbol_map().begin();
+	   i != get_fun_symbol_map().end();
+	   ++i)
+	for (elf_symbols::const_iterator s = i->second.begin();
+	     s != i->second.end();
+	     ++s)
+	  priv_->sorted_fun_symbols.push_back(*s);
+
+      elf_symbol_comp_functor comp;
+      std::sort(priv_->sorted_fun_symbols.begin(),
+		priv_->sorted_fun_symbols.end(),
+		comp);
+    }
+  return priv_->sorted_fun_symbols;
+}
 /// Getter for the variable symbols map.
 ///
 /// @return a shared pointer to the variable symbols map.
@@ -927,6 +997,36 @@ corpus::get_var_symbol_map_sptr() const
 const string_elf_symbols_map_type&
 corpus::get_var_symbol_map() const
 {return *get_var_symbol_map_sptr();}
+
+/// Getter for the sorted vector of variable symbols for this corpus.
+///
+/// Note that the first time this function is called, it computes the
+/// sorted vector, caches the result and returns it.  Subsequent
+/// invocations of this function just return the cached vector.
+///
+/// @return the sorted vector of variable symbols for this corpus.
+const elf_symbols&
+corpus::get_sorted_var_symbols() const
+{
+  if (priv_->sorted_var_symbols.empty()
+      && !get_var_symbol_map().empty())
+    {
+      priv_->sorted_var_symbols.reserve(get_var_symbol_map().size());
+      for (string_elf_symbols_map_type::const_iterator i =
+	     get_var_symbol_map().begin();
+	   i != get_var_symbol_map().end();
+	   ++i)
+	for (elf_symbols::const_iterator s = i->second.begin();
+	     s != i->second.end(); ++s)
+	  priv_->sorted_var_symbols.push_back(*s);
+
+      elf_symbol_comp_functor comp;
+      std::sort(priv_->sorted_var_symbols.begin(),
+		priv_->sorted_var_symbols.end(),
+		comp);
+    }
+  return priv_->sorted_var_symbols;
+}
 
 /// Look in the function symbols map for a symbol with a given name.
 ///

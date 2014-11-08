@@ -107,11 +107,17 @@ public:
   const string_elf_symbols_map_type&
   get_fun_symbol_map() const;
 
+  const elf_symbols&
+  get_sorted_fun_symbols() const;
+
   const string_elf_symbols_map_sptr
   get_var_symbol_map_sptr() const;
 
   const string_elf_symbols_map_type&
   get_var_symbol_map() const;
+
+  const elf_symbols&
+  get_sorted_var_symbols() const;
 
   const elf_symbol_sptr
   lookup_function_symbol(const string& n) const;

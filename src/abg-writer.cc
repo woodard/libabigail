@@ -260,7 +260,7 @@ static bool write_typedef_decl(const shared_ptr<typedef_decl>,
 			       write_context&, unsigned);
 static bool write_elf_symbol(const shared_ptr<elf_symbol>,
 			     write_context&, unsigned);
-static bool write_elf_symbols_table(const string_elf_symbols_map_type&,
+static bool write_elf_symbols_table(const elf_symbols&,
 				    write_context&, unsigned);
 static bool write_var_decl(const shared_ptr<var_decl>,
 			   write_context&, bool, unsigned);
@@ -1462,7 +1462,7 @@ write_elf_symbol(const shared_ptr<elf_symbol>	sym,
 /// Write the elf symbol database to the output associated to the
 /// current context.
 ///
-/// @param syms the elf symbol data to write out.
+/// @param syms the sorted elf symbol data to write out.
 ///
 /// @param ctxt the context to consider.
 ///
@@ -1470,8 +1470,9 @@ write_elf_symbol(const shared_ptr<elf_symbol>	sym,
 ///
 /// @return true upon successful completion.
 static bool
-write_elf_symbols_table(const string_elf_symbols_map_type& syms,
-			write_context& ctxt, unsigned indent)
+write_elf_symbols_table(const elf_symbols& syms,
+			write_context& ctxt,
+			unsigned indent)
 {
   if (syms.empty())
     return false;
@@ -1479,14 +1480,9 @@ write_elf_symbols_table(const string_elf_symbols_map_type& syms,
   ostream& o = ctxt.get_ostream();
 
   unordered_map<string, bool> emitted_syms;
-  for (string_elf_symbols_map_type::const_iterator it = syms.begin();
-       it != syms.end();
-       ++it)
+  for (elf_symbols::const_iterator it = syms.begin(); it != syms.end(); ++it)
     {
-      for (elf_symbols::const_iterator e = it->second.begin();
-	   e != it->second.end();
-	   ++e)
-	write_elf_symbol(*e, ctxt, indent);
+      write_elf_symbol(*it, ctxt, indent);
       o << "\n";
     }
 
@@ -2493,7 +2489,7 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
       do_indent_to_level(ctxt, indent, 1);
       out << "<elf-function-symbols>\n";
 
-      write_elf_symbols_table(corpus->get_fun_symbol_map(), ctxt,
+      write_elf_symbols_table(corpus->get_sorted_fun_symbols(), ctxt,
 			      get_indent_to_level(ctxt, indent, 2));
 
       do_indent_to_level(ctxt, indent, 1);
@@ -2506,7 +2502,7 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
       do_indent_to_level(ctxt, indent, 1);
       out << "<elf-variable-symbols>\n";
 
-      write_elf_symbols_table(corpus->get_var_symbol_map(), ctxt,
+      write_elf_symbols_table(corpus->get_sorted_var_symbols(), ctxt,
 			      get_indent_to_level(ctxt, indent, 2));
 
       do_indent_to_level(ctxt, indent, 1);

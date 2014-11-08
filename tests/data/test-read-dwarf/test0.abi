@@ -1,22 +1,22 @@
 <abi-corpus path='data/test-read-dwarf/test0'>
   <elf-function-symbols>
     <elf-symbol name='_ZN3ns03barEiz' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__libc_csu_init' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN3ns04baz2ERi' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN3ns04bar2ERNS_1EE' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='main' type='func-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='_ZN3ns03bazERi' type='func-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='_ZN3ns03fooEPcl' type='func-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_start' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3ns04bar2ERNS_1EE' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3ns04baz2ERi' type='func-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='__libc_csu_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__libc_csu_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_fini' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_start' type='func-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='main' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
     <elf-symbol name='_IO_stdin_used' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__TMC_END__' type='object-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='__dso_handle' type='object-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='global' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__TMC_END__' type='object-type' binding='global-binding' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='test0.cc'>
     <namespace-decl name='ns0'>
