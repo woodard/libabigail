@@ -9916,14 +9916,14 @@ struct function_comp
 	else if (!f.get_linkage_name().empty())
 	  fr = f.get_linkage_name();
 	else
-	  fr = f.get_pretty_representation();
+	  fr = f.get_qualified_name();
 
 	if (s.get_symbol())
 	  fr = s.get_symbol()->get_id_string();
 	else if (!s.get_linkage_name().empty())
 	  fr = s.get_linkage_name();
 	else
-	  fr = s.get_pretty_representation();
+	  fr = s.get_qualified_name();
       }
     return fr < sr;
   }
