@@ -7920,6 +7920,49 @@ scope_diff::has_local_changes() const
   return false;
 }
 
+/// Functor to compare two instance of @ref changed_type_or_decl.
+struct changed_type_or_decl_comp
+{
+  /// Return true if the first parm is less than the second one.
+  ///
+  /// @param f the first changed type or decl to consider.
+  ///
+  /// @param s the second changed type of decl to consider.
+  ///
+  /// @return true if @p f is less than @p s.
+  bool
+  operator()(const changed_type_or_decl& f,
+	     const changed_type_or_decl& s)
+  {
+    decl_base_sptr first_decl = f.first;
+    decl_base_sptr second_decl = s.first;
+
+    return (first_decl->get_qualified_name()
+	    < second_decl->get_qualified_name());
+  }
+}; // end struct changed_type_or_decl_comp
+
+/// Sort an instance of @ref string_changed_type_or_decl_map map.
+///
+/// @param map the input map to sort.
+///
+/// @param sorted the resulting sorted vector of @ref
+/// changed_type_or_decl_comp.  This vector is populated with the
+/// sorted content.
+static void
+sort_changed_type_or_decl(const string_changed_type_or_decl_map& map,
+			  vector<changed_type_or_decl>& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_changed_type_or_decl_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  changed_type_or_decl_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Report the changes of one scope against another.
 ///
 /// @param out the out stream to report the changes to.
@@ -7940,18 +7983,18 @@ scope_diff::report(ostream& out, const string& indent) const
   else
     out << indent << num_changed_types << " changed types:\n";
 
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 changed_types().begin();
-       i != changed_types().end();
+  vector<changed_type_or_decl> sorted_changed_types;
+  sort_changed_type_or_decl(changed_types(), sorted_changed_types);
+  for (vector<changed_type_or_decl>::const_iterator i =
+	 sorted_changed_types.begin();
+       i != sorted_changed_types.end();
        ++i)
     {
       out << indent << "  '"
-	  << i->second.first->get_pretty_representation()
+	  << i->first->get_pretty_representation()
 	  << "' changed:\n";
 
-      diff_sptr diff = compute_diff_for_types(i->second.first,
-					      i->second.second,
-					      context());
+      diff_sptr diff = compute_diff_for_types(i->first, i->second, context());
       if (diff)
 	diff->report(out, indent + "    ");
     }
@@ -7965,19 +8008,19 @@ scope_diff::report(ostream& out, const string& indent) const
   else
     out << indent << num_changed_decls << " changed declarations:\n";
 
-  for (string_changed_type_or_decl_map::const_iterator i=
-	 changed_decls().begin();
-       i != changed_decls().end ();
+  vector<changed_type_or_decl> sorted_changed_decls;
+  sort_changed_type_or_decl(changed_decls(), sorted_changed_decls);
+  for (vector<changed_type_or_decl>::const_iterator i=
+	 sorted_changed_decls.begin();
+       i != sorted_changed_decls.end ();
        ++i)
     {
       out << indent << "  '"
-	  << i->second.first->get_pretty_representation()
+	  << i->first->get_pretty_representation()
 	  << "' was changed to '"
-	  << i->second.second->get_pretty_representation()
+	  << i->second->get_pretty_representation()
 	  << "':\n";
-      diff_sptr diff = compute_diff_for_decls(i->second.first,
-					      i->second.second,
-					      context());
+      diff_sptr diff = compute_diff_for_decls(i->first, i->second, context());
       if (diff)
 	diff->report(out, indent + "    ");
     }
@@ -9995,6 +10038,45 @@ sort_string_changed_function_ptr_map(const string_changed_function_ptr_map& map,
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
+/// Functor to sort instances of @ref changed_var_ptr.
+struct changed_vars_comp
+{
+  /// Return true if the first argument is less than the second one.
+  ///
+  /// @param f the first argument to consider.
+  ///
+  /// @param s the second argument to consider.
+  ///
+  /// @return true if @p f is less than @p s.
+  bool
+  operator()(const changed_var_ptr& f,
+	     const changed_var_ptr& s)
+  {
+    return (f.first->get_qualified_name()
+	    < s.first->get_qualified_name());
+  }
+}; // end struct changed_vars_comp
+
+/// Sort of an instance of @ref changed_var_ptr_map map.
+///
+/// @param map the input map to sort.
+///
+/// @param sorted the ouptut sorted vector of @ref changed_var_ptr.
+/// It's populated with the sorted content.
+static void
+sort_changed_vars(const string_changed_var_ptr_map& map,
+		  vector<changed_var_ptr>& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_changed_var_ptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  changed_vars_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// For a given symbol, emit a string made of its name and version.
 /// The string also contains the list of symbols that alias this one.
 ///
@@ -10251,13 +10333,16 @@ corpus_diff::report(ostream& out, const string& indent) const
 	out << indent << num_changed
 	    << " Changed variables:\n\n";
       string n1, n2;
-      for (string_changed_var_ptr_map::const_iterator i =
-	     priv_->changed_vars_.begin();
-	   i != priv_->changed_vars_.end();
+
+      vector<changed_var_ptr> sorted_changed_vars;
+      sort_changed_vars(priv_->changed_vars_, sorted_changed_vars);
+      for (vector<changed_var_ptr>::const_iterator i =
+	     sorted_changed_vars.begin();
+	   i != sorted_changed_vars.end();
 	   ++i)
 	{
-	  var_decl_sptr f(i->second.first, noop_deleter());
-	  var_decl_sptr s(i->second.second, noop_deleter());
+	  var_decl_sptr f(i->first, noop_deleter());
+	  var_decl_sptr s(i->second, noop_deleter());
 	  diff_sptr diff = compute_diff_for_decls(f, s, context());
 
 	  if (!diff)
