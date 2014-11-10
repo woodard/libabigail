@@ -7591,6 +7591,7 @@ class template_parameter::priv
   unsigned index_;
   template_decl_wptr template_decl_;
   mutable bool hashing_started_;
+  mutable bool comparison_started_;
 
   priv();
 
@@ -7599,7 +7600,8 @@ public:
   priv(unsigned index, template_decl_sptr enclosing_template_decl)
     : index_(index),
       template_decl_(enclosing_template_decl),
-      hashing_started_()
+      hashing_started_(),
+      comparison_started_()
   {}
 }; // end class template_parameter::priv
 
@@ -7630,7 +7632,33 @@ template_parameter::set_hashing_has_started(bool f) const
 
 bool
 template_parameter::operator==(const template_parameter& o) const
-{return (get_index() == o.get_index());}
+{
+  if (get_index() != o.get_index())
+    return false;
+
+  if (priv_->comparison_started_)
+    return true;
+
+  bool result = false;
+
+  // Avoid inifite loops due to the fact that comparison the enclosing
+  // template decl might lead to comparing this very same template
+  // parameter with another one ...
+  priv_->comparison_started_ = true;
+
+  if (!!get_enclosing_template_decl() != !!o.get_enclosing_template_decl())
+    ;
+  else if (get_enclosing_template_decl()
+	   && (*get_enclosing_template_decl()
+	       != *o.get_enclosing_template_decl()))
+    ;
+  else
+    result = true;
+
+  priv_->comparison_started_ = false;
+
+  return result;
+}
 
 template_parameter::~template_parameter()
 {}
