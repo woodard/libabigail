@@ -54,7 +54,10 @@ namespace abigail
        <em>git clone git://sourceware.org/git/libabigail.git</em>
 
    The mailing list to send messages and patches to is
-   libabigail@sourceware.org
+   libabigail@sourceware.org.
+
+   You can hang out with libabigail developers and users on irc at
+   irc://oftc.net\#libabigail.
 */
 
 // Inject some types.

@@ -1,8 +1,10 @@
 /*!
 
-\mainpage Home page of the ABI Generic Analysis and Instrumentation Library
+\mainpage The ABI Generic Analysis and Instrumentation Library
 
-\par Introduction
+\tableofcontents
+
+\section presentation Presentation
 
 This project aims at providing a C++ library for constructing,
 manipulating, serializing and de-serializing ABI-relevant artifacts.
@@ -12,20 +14,60 @@ given library or program.  For a given program or library, this set of
 constructions is called an ABI corpus.
 
 Thus the project aims at providing a library to manipulate ABI
-corpuses, compare them, provide detailed information about their
+corpora, compare them, provide detailed information about their
 differences and help build tools to infer interesting conclusions
 about these differences.
 
-\par Documentation
+\section documentation Documentation
 
-The source code repository of the project contains various tools
-written using the library.  Their documentation is available online <a
+The documentations of the libabigail tools is available online <a
 href="http://sourceware.org/libabigail/manual">here</a>.
 
-The html documentation of the library itself is available online <a
-href="http://sourceware.org/libabigail/apidoc">here</a>.
+The html documentation of the API of the library itself is available
+online <a href="http://sourceware.org/libabigail/apidoc">here</a>.
 
-\par Getting the source code
+\section communication IRC and Mailing lists
+
+To hang out with libabigail developers and users, you can chat with us
+via <a href="http://en.wikipedia.org/wiki/Wikipedia:IRC">IRC</a> at
+<em>irc://oftc.net\#libabigail</em>.
+
+To send us patches or just drop by to say Hi, please send an email to
+our mailing list <em>libabigail@sourceware.org</em>.  You first need to
+register to the mailing list by feeling the form below.
+
+\htmlonly
+
+<form method="get" action="http://sourceware.org/cgi-bin/ml-request">
+  Mailing list name:
+  <input type="text" name="listname" value="libabigail" size="10"/>
+<br>
+  Your e-mail address:
+  <input type="text" name="username" size="14"/>
+ <br>
+  <input type="checkbox" name="digest"/>Digest version
+  <tt>&nbsp;</tt>
+  <select name="operation">
+    <option value="subscribe">subscribe</option>
+    <option value="unsubscribe">unsubscribe</option>
+  </select>
+  <tt>&nbsp;</tt>
+ <input type="Submit" name="submit" value="Send in the request"/>
+</form>
+\endhtmlonly
+
+\section bugs Bug reports
+
+Bug reports are to be filed into our <a
+href="http://sourceware.org/bugzilla/enter_bug.cgi?product=libabigail">Bugzilla
+database</a>.
+
+\section license License
+
+The source code of the library is under <a href="http://www.gnu.org/licenses/lgpl.html"> LGPL version 3</a> or later.
+
+
+\section source Getting the source code
 
 This project is still in an early stage; we haven't released any
 official tarball yet.  You can get the source code in a read-only
@@ -44,7 +86,7 @@ out in read-write by doing:
 	git clone ssh://sourceware.org/git/libabigail.git
 \endcode
 
-\par Compiling
+\section compile Compiling the source code
 
 To compile libabigail, you first need to install its dependencies.  At
 the moment the dependencies are the following Free Software packages:
@@ -89,17 +131,5 @@ And then install its resulting binaries and documentation:
     make install
 \endcode
 
-\par Contribute and file bug reports
-
-To send us patches or just drop by to say hi, feel free to send an
-email to our mailing list libabigail@sourceware.org.
-
-Bug reports are to be filed into our <a
-href="http://sourceware.org/bugzilla/enter_bug.cgi?product=libabigail">Bugzilla
-database</a>.
-
-\par License
-
-The source code of the library is under <a href="http://www.gnu.org/licenses/lgpl.html"> LGPL version 3</a> or later.
 
 */
