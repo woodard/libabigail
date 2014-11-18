@@ -8,7 +8,21 @@ m4data_DATA = $(srcdir)/abigail.m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libabigail.pc
 
-EXTRA_DIST = 			\
-README INSTALL COPYING 		\
-$(headers) $(m4data_DATA) 	\
+EXTRA_DIST = 				\
+README INSTALL COPYING ChangeLog	\
+COPYING-LGPLV2 COPYING-LGPLV3		\
+gen-changelog.py			\
+$(headers) $(m4data_DATA) 		\
 libabigail.pc.in
+
+update-changelog:
+	python $(srcdir)/gen-changelog.py > $(srcdir)/ChangeLog
+
+RELEASED_BRANCH = master
+tag-release-only:
+	git tag -m "$(PACKAGE_NAME) release $(VERSION)" \
+	"$(PACKAGE_NAME)-$(VERSION)" $(RELEASED_BRANCH)
+
+tag-release: tag-release-only
+
+
