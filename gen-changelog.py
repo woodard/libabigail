@@ -75,12 +75,14 @@ def process_commit(lines, files):
     top_line = ' '.join(fields)
     print top_line.strip()
     print
-    if not fileincommit:
-        for f in files:
-            print '\t* %s:' % f
 
     if subject_line_index > 0:
         print '\t', lines[subject_line_index]
+
+    if not fileincommit:
+        for f in files:
+            print '\t* %s:' % f
+        print
 
     if first_cl_body_line_index > 0:
         for l in lines[first_cl_body_line_index:]:
