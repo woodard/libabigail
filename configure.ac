@@ -144,12 +144,13 @@ fi
 
 AC_CONFIG_FILES([Makefile
 libabigail.pc
-include/Makefile
-include/abg-version.h
-doc/Makefile
-src/Makefile
-tools/Makefile
-tests/Makefile])
+  include/Makefile
+  include/abg-version.h
+  doc/Makefile
+    doc/manuals/Makefile
+  src/Makefile
+  tools/Makefile
+  tests/Makefile])
 
 AC_OUTPUT
 

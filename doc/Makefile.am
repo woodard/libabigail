@@ -1,3 +1,4 @@
+SUBDIRS = manuals
 
 html: $(DO_HTML)
 install-html: $(DO_INSTALL_HTML)
