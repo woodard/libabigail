@@ -24,6 +24,15 @@ The line in its entirety should not be longer than 50 characters.
 
 The next line should be an empty line, with no spaces.
 
+Subsequent lines can be a free form introductory text that should
+start column 0.  The introductory text can have an arbitrary number of
+lines.  No line in that text should start with the sequence
+<white-space>*.  That is, no line in that text should start with a
+sequence of white spaces followed by the start character (*).
+
+If there was an introductory text, then the next line should be an
+empty line, with no spaces.
+
 The subsequent lines should have the form of the Body of a GNU ChangeLog
 entry, i.e:
 
@@ -43,6 +52,22 @@ PR 123456 Shorten compilation lines
 	PKG_CHECK_MODULES calls.
 	* tests/Makefile.am: Adjust this.
 ~=~
+
+Another one could be:
+
+~=~
+PR 123456 Shorten compilation lines
+
+Blah blah, this is an introductory text explaining the purpose of this
+commit.  It can contain whatever character I want.  It just cannot
+contain a line that starts with white spaces immediately followed by
+the star character.
+
+	* configure.ac: Shorten compilation lines by regrouping
+	PKG_CHECK_MODULES calls.
+	* tests/Makefile.am: Adjust this.
+~=~
+
 
 We encourage you to look at the existing commit logs or at the
 ChangeLog file for inspiration.

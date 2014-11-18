@@ -51,6 +51,13 @@ def process_commit(lines, files):
             break
 
     top_line = lines[0]
+    subject_line_index = 0 if lines[1].startswith('*') else 1;
+    first_cl_body_line_index = 0;
+
+    for i in range(1, len(lines)):
+        if lines[i].startswith('*'):
+            first_cl_body_line_index = i
+            break;
 
     # Clean up top line of ChangeLog entry:
     fields = top_line.split(' ')
@@ -71,9 +78,16 @@ def process_commit(lines, files):
     if not fileincommit:
         for f in files:
             print '\t* %s:' % f
-    for l in lines[1:]:
-        print '\t ', l
-    print
+
+    if subject_line_index > 0:
+        print '\t', lines[subject_line_index]
+
+    if first_cl_body_line_index > 0:
+        for l in lines[first_cl_body_line_index:]:
+            if l.startswith('Signed-off-by:'):
+                continue
+            print '\t', l
+        print
 
 def output_commits():
     cmd = ['git', 'log', '--pretty=format:--START-COMMIT--%H%n%ai  %an <%ae>%n%n%s%n%b%n--END-COMMIT--',
