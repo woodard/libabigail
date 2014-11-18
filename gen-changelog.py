@@ -46,7 +46,7 @@ def process_commit(lines, files):
     lines = [x.strip() for x in lines if x.strip() and not x.startswith('git-svn-id')]
     files = [x.strip() for x in files if x.strip()]
     for l in lines:
-        if l.startswith('* ') and ':' in l:
+        if l.startswith('* '):
             fileincommit = True
             break
 
