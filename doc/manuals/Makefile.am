@@ -151,3 +151,9 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+install-html:
+	test -z "$(DESTDIR)$(docdir)" || $(mkinstalldirs) "$(DESTDIR)$(docdir)"
+	cp -r "$(BUILDDIR)/html" "$(DESTDIR)$(docdir)"
+
+install-data-local: install-html

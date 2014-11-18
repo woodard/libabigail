@@ -1,11 +1,11 @@
 SUBDIRS = manuals
 
-html: $(DO_HTML)
+html-local: $(DO_HTML)
 install-html: $(DO_INSTALL_HTML)
 website: website-html-doxygen
 
-DO_HTML = doc-html-doxygen website-html-doxygen
-DO_INSTALL_HTML = doc-install-html-doxygen
+DO_HTML = apidoc-html-doxygen website-html-doxygen
+DO_INSTALL_HTML = apidoc-install-html-doxygen
 
 #doxygen
 DOXY_API_SRC_CFG 	=	${abs_srcdir}/api/libabigail.doxy
@@ -35,13 +35,13 @@ doxygen-website-cfg: $(DOXY_WEBSITE_SRC_CFG) $(DOXY_WEBSITE_BLD_DIR)
 	> $(DOXY_WEBSITE_BLD_CFG)
 	sed -i -e "s=LIBABIGAIL_OUTPUT=${abs_builddir}/..=g" $(DOXY_WEBSITE_BLD_CFG)
 
-doc-html-doxygen: doxygen-api-cfg
+apidoc-html-doxygen: doxygen-api-cfg
 	doxygen $(DOXY_API_BLD_CFG)
 
 website-html-doxygen: doxygen-website-cfg
 	doxygen $(DOXY_WEBSITE_BLD_CFG)
 
-doc-install-html-doxygen: doc-html-doxygen
+apidoc-install-html-doxygen: apidoc-html-doxygen
 	test -z "$(DESTDIR)$(docdir)" || $(mkinstalldirs) "$(DESTDIR)$(docdir)"
 	cp -r ${DOXY_API_BLD_DIR} "$(DESTDIR)$(docdir)"
 
@@ -55,3 +55,7 @@ CLEANFILES = $(DOXY_API_BLD_CFG) $(DOXY_WEBSITE_BLD_CFG)
 # To remove directories.
 clean-local:
 	rm -rf $(DOXY_API_BLD_DIR) $(DOXY_WEBSITE_BLD_DIR)
+
+#To install everything:
+
+install-data-local: install-html
