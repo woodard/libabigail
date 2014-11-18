@@ -57,7 +57,7 @@ namespace abigail
    libabigail@sourceware.org.
 
    You can hang out with libabigail developers and users on irc at
-   irc://oftc.net\#libabigail.
+   irc://irc.oftc.net\#libabigail.
 */
 
 // Inject some types.
