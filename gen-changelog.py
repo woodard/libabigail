@@ -63,7 +63,7 @@ def process_commit(lines, files):
     fields = top_line.split(' ')
 
     # 1. remove the time and timezone stuff in "2008-05-13 07:10:28 +0000  name"
-    if fields[2].startswith('+'):
+    if fields[2].startswith('+') or fields[2].startswith('-'):
       del fields[2]
     if fields[1][2] == ':' and fields[1][5] == ':':
       del fields[1]
