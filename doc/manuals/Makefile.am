@@ -1,11 +1,21 @@
 # Makefile for Sphinx documentation
 
+EXTRA_DIST = \
+abidiff.rst \
+abidw.rst \
+abilint.rst \
+conf.py \
+index.rst \
+libabigail-concepts.rst \
+libabigail-overview.rst \
+libabigail-tools.rst
+
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = $(builddir)/_build
-SOURCEDIR     = $(srcdir)
+BUILDDIR      = $(abs_builddir)
+SOURCEDIR     = $(abs_srcdir)
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
@@ -14,11 +24,11 @@ ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) $(S
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) .
 
-.PHONY: help clean html dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
+.PHONY: help clean html-local dirhtml singlehtml pickle json htmlhelp qthelp devhelp epub latex latexpdf text man changes linkcheck doctest gettext
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
-	@echo "  html       to make standalone HTML files"
+	@echo "  html-doc   to make standalone HTML files"
 	@echo "  dirhtml    to make HTML files named index.html in directories"
 	@echo "  singlehtml to make a single large HTML file"
 	@echo "  pickle     to make pickle files"
@@ -38,10 +48,7 @@ help:
 	@echo "  linkcheck  to check all external links for integrity"
 	@echo "  doctest    to run all doctests embedded in the documentation (if enabled)"
 
-clean:
-	-rm -rf $(BUILDDIR)/*
-
-html:
+html-doc:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(DESTDIR)$(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
@@ -153,12 +160,14 @@ doctest:
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
 if ENABLE_MANUAL
-install-html: html
-	test -d "$(DESTDIR)$(docdir)" || $(mkinstalldirs) "$(DESTDIR)$(docdir)"
-	test -d "$(DESTDIR)$(BUILDDIR)/html" && cp -r "$(DESTDIR)$(BUILDDIR)/html" "$(DESTDIR)$(docdir)/manuals/html"
-
-install-data-local: install-html
-
-uninstall-local:
-	test -d "$(DESTDIR)$(docdir)/manuals/html" && rm -rf "$(DESTDIR)$(docdir)/manuals/html"
+install-html-doc: html-doc
+	test -d "$(DESTDIR)$(docdir)/manual" || $(mkinstalldirs) "$(DESTDIR)$(docdir)/manual"
+	cp -r "$(DESTDIR)$(BUILDDIR)/html" "$(DESTDIR)$(docdir)/manual"
 endif
+
+clean-local:
+	-rm -rf $(BUILDDIR)/html
+	-rm -rf $(BUILDDIR)/doctrees
+
+uninstall-local: clean-local
+	-rm -rf $(DESTDIR)$(docdir)/manual/html
