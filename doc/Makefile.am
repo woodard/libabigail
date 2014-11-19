@@ -2,11 +2,11 @@ SUBDIRS = manuals
 
 EXTRA_DIST = api/libabigail.doxy
 
-html-local: $(DO_HTML)
+html-doc: $(DO_HTML)
 website: website-html-doxygen
 
 if ENABLE_APIDOC
-install-html: $(DO_INSTALL_HTML)
+install-html-doc: $(DO_INSTALL_HTML)
 endif
 
 DO_HTML = apidoc-html-doxygen website-html-doxygen
@@ -59,12 +59,13 @@ CLEANFILES = $(DOXY_API_BLD_CFG) $(DOXY_WEBSITE_BLD_CFG)
 
 # To remove directories.
 clean-local:
-	rm -rf $(DOXY_API_BLD_DIR) $(DOXY_WEBSITE_BLD_DIR)
+	-rm -rf $(DOXY_API_BLD_DIR) $(DOXY_WEBSITE_BLD_DIR)
 
 #To install everything:
 if ENABLE_APIDOC
-install-data-local: install-html
 
-uninstall-local:
-	test -d $(DESTDIR)$(docdir) && rm -rf $(DESTDIR)$(docdir)
+install-html-doc: install-html
+
+uninstall-local: clean-local
+	-rm -rf $(DESTDIR)$(docdir)
 endif
