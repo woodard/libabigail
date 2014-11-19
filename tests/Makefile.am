@@ -1,24 +1,29 @@
 h=$(abs_srcdir)
 
-ZIP_ARCHIVE_TESTS =
-
 if ENABLE_ZIP_ARCHIVE
-ZIP_ARCHIVE_TESTS = runtestwritereadarchive
+ZIP_ARCHIVE_TESTS_FIRST_PART = runtestwritereadarchive
+else
+ZIP_ARCHIVE_TESTS_FIRST_PART =
 endif
 
 if ENABLE_CXX11
 CXX11_TESTS = runtestsvg
 AM_CXXFLAGS = "-std=gnu++11"
-if ENABLE_ZIP_ARCHIVE
-ZIP_ARCHIVE_TESTS = "$(ZIP_ARCHIVE_TESTS) runtestdot"
-endif
 else
 CXX11_TESTS =
 endif
 
+if ENABLE_ZIP_ARCHIVE_AND_CXX11
+ZIP_ARCHIVE_TESTS_SECOND_PART = runtestdot
+else
+ZIP_ARCHIVE_TESTS_SECOND_PART =
+endif
+
+ZIP_ARCHIVE_TESTS = $(ZIP_ARCHIVE_TESTS_FIRST_PART) $(ZIP_ARCHIVE_TESTS_SECOND_PART)
+
 TESTS=				\
 runtestreadwrite		\
-${ZIP_ARCHIVE_TESTS}		\
+$(ZIP_ARCHIVE_TESTS)		\
 runtestreaddwarf		\
 runtestlookupsyms		\
 runtestaltdwarf			\
@@ -27,7 +32,7 @@ runtestabidiff			\
 runtestdiffdwarf		\
 runtestdifffilter		\
 runtestdiffsuppr		\
-${CXX11_TESTS}
+$(CXX11_TESTS)
 
 
 noinst_PROGRAMS= $(TESTS) testirwalker testdiff2 printdifftree
@@ -78,8 +83,8 @@ runtestdiffsuppr_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la
 
-runtestdot_SOURCES=test-dot.cc
-runtestdot_LDADD=$(top_builddir)/src/libabigail.la
+runtestdot_SOURCES = test-dot.cc
+runtestdot_LDADD = $(top_builddir)/src/libabigail.la
 
 testirwalker_SOURCES=test-ir-walker.cc
 testirwalker_LDADD=$(top_builddir)/src/libabigail.la
