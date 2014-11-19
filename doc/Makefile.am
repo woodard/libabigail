@@ -47,7 +47,7 @@ website-html-doxygen: doxygen-website-cfg
 	doxygen $(DOXY_WEBSITE_BLD_CFG)
 
 apidoc-install-html-doxygen: apidoc-html-doxygen
-	test -z "$(DESTDIR)$(docdir)" || $(mkinstalldirs) "$(DESTDIR)$(docdir)"
+	test -d "$(DESTDIR)$(docdir)" || $(mkinstalldirs) "$(DESTDIR)$(docdir)"
 	cp -r ${DOXY_API_BLD_DIR} "$(DESTDIR)$(docdir)"
 
 website-install-html-doxygen: doxygen-website-cfg
