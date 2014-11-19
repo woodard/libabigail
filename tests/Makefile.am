@@ -1,14 +1,17 @@
 h=$(abs_srcdir)
 
-if ENABLE_ZIP_ARCHIVE
-ZIP_ARCHIVE_TESTS = runtestwritereadarchive runtestdot
-else
 ZIP_ARCHIVE_TESTS =
+
+if ENABLE_ZIP_ARCHIVE
+ZIP_ARCHIVE_TESTS = runtestwritereadarchive
 endif
 
 if ENABLE_CXX11
 CXX11_TESTS = runtestsvg
 AM_CXXFLAGS = "-std=gnu++11"
+if ENABLE_ZIP_ARCHIVE
+ZIP_ARCHIVE_TESTS = "$(ZIP_ARCHIVE_TESTS) runtestdot"
+endif
 else
 CXX11_TESTS =
 endif
