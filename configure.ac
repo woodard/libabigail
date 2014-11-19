@@ -27,7 +27,6 @@ AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 
-ENABLE_ZIP_ARCHIVE=auto
 AC_ARG_ENABLE(zip-archive,
 	      AS_HELP_STRING([--enable-zip-archive=yes|no|auto],
 			     [enable bundling of TUs in zip archives (default is auto)]),
@@ -35,7 +34,6 @@ AC_ARG_ENABLE(zip-archive,
 	      ENABLE_ZIP_ARCHIVE=auto)
 
 
-ENABLE_CXX11=no
 AC_ARG_ENABLE(cxx11,
 	      AS_HELP_STRING([--enable-cxx11=yes|no],
 			     [enable features that use the C++11 compiler]),
@@ -218,7 +216,7 @@ AC_MSG_NOTICE([
 
  OPTIONAL FEATURES:
     Enable zip archives                : ${ENABLE_ZIP_ARCHIVE}
-    Uses a C++-11 compiler             : ${ENABLE_CXX11}
+    Use a C++-11 compiler              : ${ENABLE_CXX11}
     Generate html apidoc	       : ${ENABLE_APIDOC}
     Generate html manual	       : ${ENABLE_MANUAL}
 ])
