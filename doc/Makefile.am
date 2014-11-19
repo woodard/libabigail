@@ -1,8 +1,11 @@
 SUBDIRS = manuals
 
 html-local: $(DO_HTML)
-install-html: $(DO_INSTALL_HTML)
 website: website-html-doxygen
+
+if ENABLE_APIDOC
+install-html: $(DO_INSTALL_HTML)
+endif
 
 DO_HTML = apidoc-html-doxygen website-html-doxygen
 DO_INSTALL_HTML = apidoc-install-html-doxygen
@@ -57,5 +60,9 @@ clean-local:
 	rm -rf $(DOXY_API_BLD_DIR) $(DOXY_WEBSITE_BLD_DIR)
 
 #To install everything:
-
+if ENABLE_APIDOC
 install-data-local: install-html
+
+uninstall-local:
+	test -d $(DESTDIR)$(docdir) && rm -rf $(DESTDIR)$(docdir)
+endif

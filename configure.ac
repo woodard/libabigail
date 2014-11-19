@@ -42,6 +42,18 @@ AC_ARG_ENABLE(cxx11,
 	      ENABLE_CXX11=$enableval,
 	      ENABLE_CXX11=no)
 
+AC_ARG_ENABLE(apidoc,
+	      AS_HELP_STRING([--enable-apidoc=yes|no|auto],
+			     [enable generation of the apidoc in html]),
+	      ENABLE_APIDOC=$enableval,
+	      ENABLE_APIDOC=auto)
+
+AC_ARG_ENABLE(manual,
+	      AS_HELP_STRING([--enable-manual=yes|no|auto],
+			     [enable generation of the manual in html]),
+	      ENABLE_MANUAL=$enableval,
+	      ENABLE_MANUAL=auto)
+
 dnl *************************************************
 dnl Here is the list of versions of the dependencies
 dnl *************************************************
@@ -142,6 +154,36 @@ fi
 AM_CONDITIONAL(ENABLE_ZIP_ARCHIVE_AND_CXX11, test x$ENABLE_ZIP_ARCHIVE_AND_CXX11 = xyes)
 
 
+dnl Check for the presence of doxygen program
+
+if test x$ENABLE_APIDOC != xno; then
+  AC_CHECK_PROG(FOUND_DOXYGEN, doxygen, yes, no)
+  if test x$ENABLE_APIDOC = xauto; then
+    if test x$FOUND_DOXYGEN = xyes; then
+      ENABLE_APIDOC=yes
+    else
+      ENABLE_APIDOC=no
+    fi
+  fi
+fi
+AM_CONDITIONAL(ENABLE_APIDOC, test x$ENABLE_APIDOC = xyes)
+
+dnl Check for the presence of the sphinx-build program
+
+if test x$ENABLE_MANUAL != xno; then
+  AC_CHECK_PROG(FOUND_SPHINX_BUILD, sphinx-build, yes, no)
+  if test x$ENABLE_MANUAL = xauto; then
+    if test x$FOUND_SPHINX_BUILD = xyes; then
+      ENABLE_MANUAL=yes
+    else
+      ENABLE_MANUAL=no
+    fi
+  fi
+fi
+AM_CONDITIONAL(ENABLE_MANUAL, test x$ENABLE_MANUAL = xyes)
+
+dnl Set the list of libraries libabigail depends on
+
 DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $DW_LIBS $ELF_LIBS"
 AC_SUBST(DEPS_LIBS)
 
@@ -177,4 +219,6 @@ AC_MSG_NOTICE([
  OPTIONAL FEATURES:
     Enable zip archives                : ${ENABLE_ZIP_ARCHIVE}
     Uses a C++-11 compiler             : ${ENABLE_CXX11}
+    Generate html apidoc	       : ${ENABLE_APIDOC}
+    Generate html manual	       : ${ENABLE_MANUAL}
 ])

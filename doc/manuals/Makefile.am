@@ -152,8 +152,13 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
-install-html:
-	test -z "$(DESTDIR)$(docdir)" || $(mkinstalldirs) "$(DESTDIR)$(docdir)"
-	cp -r "$(BUILDDIR)/html" "$(DESTDIR)$(docdir)"
+if ENABLE_MANUAL
+install-html: html
+	test -d "$(DESTDIR)$(docdir)" || $(mkinstalldirs) "$(DESTDIR)$(docdir)"
+	test -d "$(DESTDIR)$(BUILDDIR)/html" && cp -r "$(DESTDIR)$(BUILDDIR)/html" "$(DESTDIR)$(docdir)/manuals/html"
 
 install-data-local: install-html
+
+uninstall-local:
+	test -d "$(DESTDIR)$(docdir)/manuals/html" && rm -rf "$(DESTDIR)$(docdir)/manuals/html"
+endif
