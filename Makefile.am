@@ -9,7 +9,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libabigail.pc
 
 EXTRA_DIST = 				\
-README INSTALL COPYING ChangeLog	\
+README COPYING ChangeLog	\
 COPYING-LGPLV2 COPYING-LGPLV3		\
 gen-changelog.py			\
 $(headers) $(m4data_DATA) 		\
