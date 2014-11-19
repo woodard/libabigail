@@ -1,5 +1,7 @@
 SUBDIRS = manuals
 
+EXTRA_DIST = api/libabigail.doxy
+
 html-local: $(DO_HTML)
 website: website-html-doxygen
 
