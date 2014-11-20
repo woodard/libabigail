@@ -198,7 +198,8 @@ libabigail.pc
     doc/manuals/Makefile
   src/Makefile
   tools/Makefile
-  tests/Makefile])
+  tests/Makefile
+    tests/data/Makefile])
 
 AC_OUTPUT
 
