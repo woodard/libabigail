@@ -98,7 +98,7 @@ printdifftree_LDADD = $(top_builddir)/src/libabigail.la
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools
 
-noinst_DATA = \
+EXTRA_DIST = \
 data/test-read-write/test0.xml	\
 data/test-read-write/test1.xml	\
 data/test-read-write/test2.xml	\
