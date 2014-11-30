@@ -377,10 +377,10 @@ public:
   set_version(const version& v);
 
   bool
-  get_is_defined() const;
+  is_defined() const;
 
   void
-  set_is_defined(bool d);
+  is_defined(bool d);
 
   bool
   is_public() const;

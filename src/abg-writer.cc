@@ -1448,7 +1448,7 @@ write_elf_symbol(const shared_ptr<elf_symbol>	sym,
   write_elf_symbol_aliases(*sym, o);
 
   o << " is-defined='";
-  if (sym->get_is_defined())
+  if (sym->is_defined())
     o << "yes";
   else
     o << "no";

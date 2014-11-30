@@ -390,7 +390,7 @@ elf_symbol::elf_symbol(const elf_symbol& s)
 		   s.get_name(),
 		   s.get_type(),
 		   s.get_binding(),
-		   s.get_is_defined(),
+		   s.is_defined(),
 		   s.get_version()))
 {
   priv_->main_symbol_ = this;
@@ -459,18 +459,18 @@ elf_symbol::set_version(const version& v)
 }
 
 bool
-elf_symbol::get_is_defined() const
+elf_symbol::is_defined() const
 {return priv_->is_defined_;}
 
 
 void
-elf_symbol::set_is_defined(bool d)
+elf_symbol::is_defined(bool d)
 {priv_->is_defined_ = d;}
 
 bool
 elf_symbol::is_public() const
 {
-  return (get_is_defined()
+  return (is_defined()
 	  && (get_binding() == GLOBAL_BINDING
 	      || get_binding() == WEAK_BINDING
 	      || get_binding() == GNU_UNIQUE_BINDING));
@@ -684,7 +684,7 @@ elf_symbol::operator==(const elf_symbol& other) const
   return (get_name() == other.get_name()
 	  && get_type() == other.get_type()
 	  && is_public() == other.is_public()
-	  && get_is_defined() == other.get_is_defined()
+	  && is_defined() == other.is_defined()
 	  && get_version() == other.get_version());
 }
 
