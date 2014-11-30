@@ -2203,6 +2203,7 @@ struct diff_context::priv
   bool					show_linkage_names_;
   bool					show_redundant_changes_;
   bool					show_syms_unreferenced_by_di_;
+  bool					show_added_syms_unreferenced_by_di_;
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
@@ -2216,7 +2217,8 @@ struct diff_context::priv
       show_added_vars_(true),
       show_linkage_names_(false),
       show_redundant_changes_(false),
-      show_syms_unreferenced_by_di_(true)
+      show_syms_unreferenced_by_di_(true),
+      show_added_syms_unreferenced_by_di_(true)
    {}
  };// end struct diff_context::priv
 
@@ -2691,6 +2693,25 @@ diff_context::show_symbols_unreferenced_by_debug_info() const
 void
 diff_context::show_symbols_unreferenced_by_debug_info(bool f)
 {priv_->show_syms_unreferenced_by_di_ = f;}
+
+/// Getter for the flag that indicates if symbols not referenced by
+/// any debug info and that got added are to be reported about.
+///
+/// @return true iff symbols not referenced by any debug info and that
+/// got added are to be reported about.
+bool
+diff_context::show_added_symbols_unreferenced_by_debug_info() const
+{return priv_->show_added_syms_unreferenced_by_di_;}
+
+/// Setter for the flag that indicates if symbols not referenced by
+/// any debug info and that got added are to be reported about.
+///
+/// @param f the new flag that says if symbols not referenced by any
+/// debug info and that got added are to be reported about.
+void
+diff_context::show_added_symbols_unreferenced_by_debug_info(bool f)
+{priv_->show_added_syms_unreferenced_by_di_ = f;}
+
 // </diff_context stuff>
 
 // <diff stuff>
@@ -9150,6 +9171,267 @@ compute_diff(const translation_unit_sptr	first,
 
 // </translation_unit_diff stuff>
 
+/// The type of the private data of corpus_diff::diff_stats.
+class corpus_diff::diff_stats::priv
+{
+  friend class corpus_diff::diff_stats;
+
+  size_t num_func_removed;
+  size_t num_func_added;
+  size_t num_func_changed;
+  size_t num_func_filtered_out;
+  size_t num_vars_removed;
+  size_t num_vars_added;
+  size_t num_vars_changed;
+  size_t num_vars_filtered_out;
+  size_t num_func_syms_removed;
+  size_t num_func_syms_added;
+  size_t num_var_syms_removed;
+  size_t num_var_syms_added;
+
+  priv()
+    : num_func_removed(0),
+      num_func_added(0),
+      num_func_changed(0),
+      num_func_filtered_out(0),
+      num_vars_removed(0),
+      num_vars_added(0),
+      num_vars_changed(0),
+      num_vars_filtered_out(0),
+      num_func_syms_removed(0),
+      num_func_syms_added(0),
+      num_var_syms_removed(0),
+      num_var_syms_added(0)
+  {}
+}; // end class corpus_diff::diff_stats::priv
+
+/// Default constructor for the @ref diff_stat type.
+corpus_diff::diff_stats::diff_stats()
+  : priv_(new priv)
+{}
+
+/// Getter for the number of functions removed.
+///
+/// @return the number of functions removed.
+size_t
+corpus_diff::diff_stats::num_func_removed() const
+{return priv_->num_func_removed;}
+
+/// Setter for the number of functions removed.
+///
+/// @param n the new number of functions removed.
+void
+corpus_diff::diff_stats::num_func_removed(size_t n)
+{priv_->num_func_removed = n;}
+
+/// Getter for the number of functions added.
+///
+/// @return the number of functions added.
+size_t
+corpus_diff::diff_stats::num_func_added() const
+{return priv_->num_func_added;}
+
+/// Setter for the number of functions added.
+///
+/// @param n the new number of functions added.
+void
+corpus_diff::diff_stats::num_func_added(size_t n)
+{priv_->num_func_added = n;}
+
+/// Getter for the number of functions that have a change in one of
+/// their sub-types.
+///
+/// @return the number of functions that have a change in one of their
+/// sub-types.
+size_t
+corpus_diff::diff_stats::num_func_changed() const
+{return priv_->num_func_changed;}
+
+/// Setter for the number of functions that have a change in one of
+/// their sub-types.
+///
+/// @@param n the new number of functions that have a change in one of
+/// their sub-types.
+void
+corpus_diff::diff_stats::num_func_changed(size_t n)
+{priv_->num_func_changed = n;}
+
+/// Getter for the number of functions that have a change in one of
+/// their sub-types, and that have been filtered out.
+///
+/// @return the number of functions that have a change in one of their
+/// sub-types, and that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_func_filtered_out() const
+{return priv_->num_func_filtered_out;}
+
+/// Setter for the number of functions that have a change in one of
+/// their sub-types, and that have been filtered out.
+///
+/// @param n the new number of functions that have a change in one of their
+/// sub-types, and that have been filtered out.
+void
+corpus_diff::diff_stats::num_func_filtered_out(size_t n)
+{priv_->num_func_filtered_out = n;}
+
+/// Getter for the number of functions that have a change in their
+/// sub-types, minus the number of these functions that got filtered
+/// out from the diff.
+///
+/// @return for the the number of functions that have a change in
+/// their sub-types, minus the number of these functions that got
+/// filtered out from the diff.
+size_t
+corpus_diff::diff_stats::net_num_func_changed() const
+{return num_func_changed() - num_func_filtered_out();}
+
+/// Getter for the number of variables removed.
+///
+/// @return the number of variables removed.
+size_t
+corpus_diff::diff_stats::num_vars_removed() const
+{return priv_->num_vars_removed;}
+
+/// Setter for the number of variables removed.
+///
+/// @param n the new number of variables removed.
+void
+corpus_diff::diff_stats::num_vars_removed(size_t n)
+{priv_->num_vars_removed = n;}
+
+/// Getter for the number of variables added.
+///
+/// @return the number of variables added.
+size_t
+corpus_diff::diff_stats::num_vars_added() const
+{return priv_->num_vars_added;}
+
+/// Setter for the number of variables added.
+///
+/// @param n the new number of variables added.
+void
+corpus_diff::diff_stats::num_vars_added(size_t n)
+{priv_->num_vars_added = n;}
+
+/// Getter for the number of variables that have a change in one of
+/// their sub-types.
+///
+/// @return the number of variables that have a change in one of their
+/// sub-types.
+size_t
+corpus_diff::diff_stats::num_vars_changed() const
+{return priv_->num_vars_changed;}
+
+/// Setter for the number of variables that have a change in one of
+/// their sub-types.
+///
+/// @param n the new number of variables that have a change in one of
+/// their sub-types.
+void
+corpus_diff::diff_stats::num_vars_changed(size_t n)
+{priv_->num_vars_changed = n;}
+
+/// Getter for the number of variables that have a change in one of
+/// their sub-types, and that have been filtered out.
+///
+/// @return the number of functions that have a change in one of their
+/// sub-types, and that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_vars_filtered_out() const
+{return priv_->num_vars_filtered_out;}
+
+/// Setter for the number of variables that have a change in one of
+/// their sub-types, and that have been filtered out.
+///
+/// @param n the new number of variables that have a change in one of their
+/// sub-types, and that have been filtered out.
+void
+corpus_diff::diff_stats::num_vars_filtered_out(size_t n)
+{priv_->num_vars_filtered_out = n;}
+
+/// Getter for the number of variables that have a change in their
+/// sub-types, minus the number of these variables that got filtered
+/// out from the diff.
+///
+/// @return for the the number of variables that have a change in
+/// their sub-types, minus the number of these variables that got
+/// filtered out from the diff.
+size_t
+corpus_diff::diff_stats::net_num_vars_changed() const
+{return num_vars_changed() - num_vars_filtered_out();}
+
+/// Getter for the number of function symbols (not referenced by any
+/// debug info) that got removed.
+///
+/// @return the number of function symbols (not referenced by any
+/// debug info) that got removed.
+size_t
+corpus_diff::diff_stats::num_func_syms_removed() const
+{return priv_->num_func_syms_removed;}
+
+/// Setter for the number of function symbols (not referenced by any
+/// debug info) that got removed.
+///
+/// @param n the number of function symbols (not referenced by any
+/// debug info) that got removed.
+void
+corpus_diff::diff_stats::num_func_syms_removed(size_t n)
+{priv_->num_func_syms_removed = n;}
+
+/// Getter for the number of function symbols (not referenced by any
+/// debug info) that got added.
+///
+/// @return the number of function symbols (not referenced by any
+/// debug info) that got added.
+size_t
+corpus_diff::diff_stats::num_func_syms_added() const
+{return priv_->num_func_syms_added;}
+
+/// Setter for the number of function symbols (not referenced by any
+/// debug info) that got added.
+///
+/// @param n the new number of function symbols (not referenced by any
+/// debug info) that got added.
+void
+corpus_diff::diff_stats::num_func_syms_added(size_t n)
+{priv_->num_func_syms_added = n;}
+
+/// Getter for the number of variable symbols (not referenced by any
+/// debug info) that got removed.
+///
+/// @return the number of variable symbols (not referenced by any
+/// debug info) that got removed.
+size_t
+corpus_diff::diff_stats::num_var_syms_removed() const
+{return priv_->num_var_syms_removed;}
+
+/// Setter for the number of variable symbols (not referenced by any
+/// debug info) that got removed.
+///
+/// @param n the number of variable symbols (not referenced by any
+/// debug info) that got removed.
+void
+corpus_diff::diff_stats::num_var_syms_removed(size_t n)
+{priv_->num_var_syms_removed = n;}
+
+/// Getter for the number of variable symbols (not referenced by any
+/// debug info) that got added.
+///
+/// @return the number of variable symbols (not referenced by any
+/// debug info) that got added.
+size_t
+corpus_diff::diff_stats::num_var_syms_added() const
+{return priv_->num_var_syms_added;}
+
+/// Setter for the number of variable symbols (not referenced by any
+/// debug info) that got added.
+///
+/// @param n the new number of variable symbols (not referenced by any
+/// debug info) that got added.
+void
+corpus_diff::diff_stats::num_var_syms_added(size_t n)
+{priv_->num_var_syms_added = n;}
+
 // <corpus stuff>
 struct corpus_diff::priv
 {
@@ -9159,6 +9441,8 @@ struct corpus_diff::priv
   diff_context_sptr			ctxt_;
   corpus_sptr				first_;
   corpus_sptr				second_;
+  corpus_diff::diff_stats		diff_stats_;
+  bool					filters_and_suppr_applied_;
   edit_script				fns_edit_script_;
   edit_script				vars_edit_script_;
   edit_script				unrefed_fn_syms_edit_script_;
@@ -9175,7 +9459,8 @@ struct corpus_diff::priv
   string_elf_symbol_map		deleted_unrefed_var_syms_;
 
   priv()
-    : finished_(false)
+    : finished_(false),
+      filters_and_suppr_applied_(false)
   {}
 
   bool
@@ -9187,44 +9472,13 @@ struct corpus_diff::priv
   void
   ensure_lookup_tables_populated();
 
-  struct diff_stats
-  {
-    size_t num_func_removed;
-    size_t num_func_added;
-    size_t num_func_changed;
-    size_t num_func_filtered_out;
-    size_t num_vars_removed;
-    size_t num_vars_added;
-    size_t num_vars_changed;
-    size_t num_vars_filtered_out;
-    size_t num_func_syms_removed;
-    size_t num_func_syms_added;
-    size_t num_var_syms_removed;
-    size_t num_var_syms_added;
-
-    diff_stats()
-      : num_func_removed(0),
-	num_func_added(0),
-	num_func_changed(0),
-	num_func_filtered_out(0),
-	num_vars_removed(0),
-	num_vars_added(0),
-	num_vars_changed(0),
-	num_vars_filtered_out(0),
-	num_func_syms_removed(0),
-	num_func_syms_added(0),
-	num_var_syms_removed(0),
-	num_var_syms_added(0)
-    {}
-  };
+  void
+  apply_filters_and_compute_diff_stats(corpus_diff::diff_stats&);
 
   void
-  apply_filters_and_compute_diff_stats(diff_stats&);
-
-  void
-  emit_diff_stats(diff_stats&	stats,
-		  ostream&	out,
-		  const string& indent);
+  emit_diff_stats(const diff_stats&	stats,
+		  ostream&		out,
+		  const string&	indent);
 
   void
   categorize_redundant_changed_sub_nodes();
@@ -9540,13 +9794,13 @@ void
 corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 
 {
-  stat.num_func_removed = deleted_fns_.size();
-  stat.num_func_added = added_fns_.size();
-  stat.num_func_changed = changed_fns_.size();
+  stat.num_func_removed(deleted_fns_.size());
+  stat.num_func_added(added_fns_.size());
+  stat.num_func_changed(changed_fns_.size());
 
-  stat.num_vars_removed = deleted_vars_.size();
-  stat.num_vars_added = added_vars_.size();
-  stat.num_vars_changed = changed_vars_.size();
+  stat.num_vars_removed(deleted_vars_.size());
+  stat.num_vars_added(added_vars_.size());
+  stat.num_vars_changed(changed_vars_.size());
 
   // Walk the changed function diff nodes to apply the categorization
   // filters.
@@ -9587,7 +9841,7 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       function_decl_sptr s(i->second.second, noop_deleter());
       diff = compute_diff(f, s, ctxt_);
       if (diff->is_filtered_out())
-	++stat.num_func_filtered_out;
+	stat.num_func_filtered_out(stat.num_func_filtered_out() + 1);
     }
 
   // Walk the changed variables diff nodes to count the number of
@@ -9600,15 +9854,15 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
       var_decl_sptr s(i->second.second, noop_deleter());
       diff = compute_diff_for_decls(f, s, ctxt_);
       if (diff->is_filtered_out())
-	++stat.num_vars_filtered_out;
+	stat.num_vars_filtered_out(stat.num_vars_filtered_out() + 1);
     }
 
   clear_redundancy_categorization();
 
-  stat.num_func_syms_added = added_unrefed_fn_syms_.size();
-  stat.num_func_syms_removed = deleted_unrefed_fn_syms_.size();
-  stat.num_var_syms_added = added_unrefed_var_syms_.size();
-  stat.num_var_syms_removed = deleted_unrefed_var_syms_.size();
+  stat.num_func_syms_added(added_unrefed_fn_syms_.size());
+  stat.num_func_syms_removed(deleted_unrefed_fn_syms_.size());
+  stat.num_var_syms_added(added_unrefed_var_syms_.size());
+  stat.num_var_syms_removed(deleted_unrefed_var_syms_.size());
 }
 
 /// Emit the summary of the functions & variables that got
@@ -9618,66 +9872,88 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 ///
 /// @param indent the indentation string to use in the summary.
 void
-corpus_diff::priv::emit_diff_stats(diff_stats&		s,
+corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 				   ostream&		out,
 				   const string&	indent)
 {
   /// Report added/removed/changed functions.
-  size_t total = s.num_func_removed + s.num_func_added +
-    s.num_func_changed - s.num_func_filtered_out;
+  size_t total = s.num_func_removed() + s.num_func_added() +
+    s.net_num_func_changed();
 
   // function changes summary
   out << indent << "Functions changes summary: ";
-  out << s.num_func_removed << " Removed, ";
-  out << s.num_func_changed - s.num_func_filtered_out << " Changed";
-  if (s.num_func_filtered_out)
-    out << " (" << s.num_func_filtered_out << " filtered out)";
+  out << s.num_func_removed() << " Removed, ";
+  out << s.num_func_changed() - s.num_func_filtered_out() << " Changed";
+  if (s.num_func_filtered_out())
+    out << " (" << s.num_func_filtered_out() << " filtered out)";
   out << ", ";
-  out << s.num_func_added << " Added ";
+  out << s.num_func_added() << " Added ";
   if (total <= 1)
     out << "function\n";
   else
     out << "functions\n";
 
-  total = s.num_vars_removed + s.num_vars_added +
-    s.num_vars_changed - s.num_vars_filtered_out;
+  total = s.num_vars_removed() + s.num_vars_added() +
+    s.net_num_vars_changed();
 
   // variables changes summary
   out << indent << "Variables changes summary: ";
-  out << s.num_vars_removed << " Removed, ";
-  out << s.num_vars_changed - s.num_vars_filtered_out<< " Changed";
-  if (s.num_vars_filtered_out)
-    out << " (" << s.num_vars_filtered_out << " filtered out)";
+  out << s.num_vars_removed() << " Removed, ";
+  out << s.num_vars_changed() - s.num_vars_filtered_out() << " Changed";
+  if (s.num_vars_filtered_out())
+    out << " (" << s.num_vars_filtered_out() << " filtered out)";
   out << ", ";
-  out << s.num_vars_added << " Added ";
+  out << s.num_vars_added() << " Added ";
   if (total <= 1)
     out << "variable\n";
   else
     out << "variables\n";
 
   if (ctxt_->show_symbols_unreferenced_by_debug_info()
-      && (s.num_func_syms_removed
-	  || s.num_func_syms_added
-	  || s.num_var_syms_removed
-	  || s.num_var_syms_added))
+      && (s.num_func_syms_removed()
+	  || s.num_func_syms_added()
+	  || s.num_var_syms_removed()
+	  || s.num_var_syms_added()))
     {
       // function symbols changes summary.
-      out << indent
-	  << "Function symbols changes summary: "
-	  << s.num_func_syms_removed << " Removed, "
-	  << s.num_func_syms_added << " Added function symbol";
-      if (s.num_func_syms_added + s.num_func_syms_removed > 1)
-	out << "s";
-      out << " not referenced by debug info\n";
+
+      if (!ctxt_->show_added_symbols_unreferenced_by_debug_info()
+	  && s.num_func_syms_removed() == 0
+	  && s.num_func_syms_added() != 0)
+	// If the only unreferenced function symbol change is function
+	// syms that got added, but we were forbidden to show function
+	// syms being added, do nothing.
+	;
+      else
+	{
+	  out << indent
+	      << "Function symbols changes summary: "
+	      << s.num_func_syms_removed() << " Removed, "
+	      << s.num_func_syms_added() << " Added function symbol";
+	  if (s.num_func_syms_added() + s.num_func_syms_removed() > 1)
+	    out << "s";
+	  out << " not referenced by debug info\n";
+	}
 
       // variable symbol changes summary.
-      out << indent
-	  << "Variable symbols changes summary: "
-	  << s.num_var_syms_removed << " Removed, "
-	  << s.num_var_syms_added << " Added function symbol";
-      if (s.num_var_syms_added + s.num_var_syms_removed > 1)
-	out << "s";
-      out << " not referenced by debug info\n";
+
+      if (!ctxt_->show_added_symbols_unreferenced_by_debug_info()
+	  && s.num_var_syms_removed() == 0
+	  && s.num_var_syms_added() != 0)
+	// If the only unreferenced variable symbol change is variable
+	// syms that got added, but we were forbidden to show variable
+	// syms being added, do nothing.
+	;
+      else
+	{
+	  out << indent
+	      << "Variable symbols changes summary: "
+	      << s.num_var_syms_removed() << " Removed, "
+	      << s.num_var_syms_added() << " Added function symbol";
+	  if (s.num_var_syms_added() + s.num_var_syms_removed() > 1)
+	    out << "s";
+	  out << " not referenced by debug info\n";
+	}
     }
 }
 
@@ -9843,6 +10119,14 @@ const string_changed_function_ptr_map&
 corpus_diff::changed_functions()
 {return priv_->changed_fns_;}
 
+/// Getter for the variables that got deleted from the first subject
+/// of the diff.
+///
+/// @return the map of deleted variable.
+const string_var_ptr_map&
+corpus_diff::deleted_variables() const
+{return priv_->deleted_vars_;}
+
 /// Getter for the variables which signature didn't change but which
 /// do have some indirect changes in some sub-types.
 ///
@@ -9850,6 +10134,24 @@ corpus_diff::changed_functions()
 const string_changed_var_ptr_map&
 corpus_diff::changed_variables()
 {return priv_->changed_vars_;}
+
+/// Getter for function symbols not referenced by any debug info and
+/// that got deleted.
+///
+/// @return a map of elf function symbols not referenced by any debug
+/// info and that got deleted.
+const string_elf_symbol_map&
+corpus_diff::deleted_unrefed_function_symbols() const
+{return priv_->deleted_unrefed_fn_syms_;}
+
+/// Getter for variable symbols not referenced by any debug info and
+/// that got deleted.
+///
+/// @return a map of elf variable symbols not referenced by any debug
+/// info and that got deleted.
+const string_elf_symbol_map&
+corpus_diff::deleted_unrefed_variable_symbols() const
+{return priv_->deleted_unrefed_var_syms_;}
 
 /// Getter of the diff context of this diff
 ///
@@ -10103,6 +10405,40 @@ show_linkage_name_and_aliases(ostream& out,
     out << ", aliases " << aliases;
 }
 
+/// Apply the different filters that are registered to be applied to
+/// the diff tree; that includes the categorization filters.  Also,
+/// apply the suppression interpretation filters.
+///
+/// After the filters are applied, this function calculates some
+/// statistics about the changes carried by the current instance of
+/// @ref corpus_diff.  These statistics are represented by an instance
+/// of @ref corpus_diff::diff_stats.
+///
+/// This member function is called by the reporting function
+/// corpus_diff::report().
+///
+/// Note that for a given instance of corpus_diff, this function
+/// applies the filters and suppressions only the first time it is
+/// invoked.  Subsequent invocations just return the instance of
+/// corpus_diff::diff_stats that was cached after the first
+/// invocation.
+///
+/// @return a reference to the statistics about the changes carried by
+/// the current instance of @ref corpus_diff.
+const corpus_diff::diff_stats&
+corpus_diff::apply_filters_and_suppressions_before_reporting()
+{
+  if (priv_->filters_and_suppr_applied_)
+    return priv_->diff_stats_;
+
+  apply_suppressions(this);
+  priv_->apply_filters_and_compute_diff_stats(priv_->diff_stats_);
+
+  priv_->filters_and_suppr_applied_ = true;
+
+  return priv_->diff_stats_;
+}
+
 /// Report the diff in a serialized form.
 ///
 /// @param out the stream to serialize the diff to.
@@ -10113,14 +10449,12 @@ void
 corpus_diff::report(ostream& out, const string& indent) const
 {
   size_t total = 0, removed = 0, added = 0;
-  priv::diff_stats s;
-
-  apply_suppressions(this);
+  const diff_stats &s =
+    const_cast<corpus_diff*>(this)->apply_filters_and_suppressions_before_reporting();
 
   /// Report removed/added/changed functions.
-  priv_->apply_filters_and_compute_diff_stats(s);
-  total = s.num_func_removed + s.num_func_added +
-    s.num_func_changed - s.num_func_filtered_out;
+  total = s.num_func_removed() + s.num_func_added() +
+    s.num_func_changed() - s.num_func_filtered_out();
   const unsigned large_num = 100;
 
   priv_->emit_diff_stats(s, out, indent);
@@ -10130,10 +10464,10 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_deleted_fns())
     {
-      if (s.num_func_removed == 1)
+      if (s.num_func_removed() == 1)
 	out << indent << "1 Removed function:\n\n";
-      else if (s.num_func_removed > 1)
-	out << indent << s.num_func_removed << " Removed functions:\n\n";
+      else if (s.num_func_removed() > 1)
+	out << indent << s.num_func_removed() << " Removed functions:\n\n";
 
       vector<function_decl*>sorted_deleted_fns;
       sort_string_function_ptr_map(priv_->deleted_fns_, sorted_deleted_fns);
@@ -10163,10 +10497,10 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_added_fns())
     {
-      if (s.num_func_added == 1)
+      if (s.num_func_added() == 1)
 	out << indent << "1 Added function:\n";
-      else if (s.num_func_added > 1)
-	out << indent << s.num_func_added
+      else if (s.num_func_added() > 1)
+	out << indent << s.num_func_added()
 	    << " Added functions:\n\n";
       vector<function_decl*> sorted_added_fns;
       sort_string_function_ptr_map(priv_->added_fns_, sorted_added_fns);
@@ -10202,7 +10536,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_changed_fns())
     {
-      size_t num_changed = s.num_func_changed - s.num_func_filtered_out;
+      size_t num_changed = s.num_func_changed() - s.num_func_filtered_out();
       if (num_changed == 1)
 	out << indent << "1 function with some indirect sub-type change:\n\n";
       else if (num_changed > 1)
@@ -10244,15 +10578,15 @@ corpus_diff::report(ostream& out, const string& indent) const
     }
 
  // Report added/removed/changed variables.
-  total = s.num_vars_removed + s.num_vars_added +
-    s.num_vars_changed - s.num_vars_filtered_out;
+  total = s.num_vars_removed() + s.num_vars_added() +
+    s.num_vars_changed() - s.num_vars_filtered_out();
 
   if (context()->show_deleted_vars())
     {
-      if (s.num_vars_removed == 1)
+      if (s.num_vars_removed() == 1)
 	out << indent << "1 Deleted variable:\n";
-      else if (s.num_vars_removed > 1)
-	out << indent << s.num_vars_removed
+      else if (s.num_vars_removed() > 1)
+	out << indent << s.num_vars_removed()
 	    << " Deleted variables:\n\n";
       string n;
       for (string_var_ptr_map::const_iterator i =
@@ -10287,10 +10621,10 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_added_vars())
     {
-      if (s.num_vars_added == 1)
+      if (s.num_vars_added() == 1)
 	out << indent << "1 Added variable:\n";
-      else if (s.num_vars_added > 1)
-	out << indent << s.num_vars_added
+      else if (s.num_vars_added() > 1)
+	out << indent << s.num_vars_added()
 	    << " Added variables:\n";
       string n;
       for (string_var_ptr_map::const_iterator i =
@@ -10323,7 +10657,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_changed_vars())
     {
-      size_t num_changed = s.num_vars_changed - s.num_vars_filtered_out;
+      size_t num_changed = s.num_vars_changed() - s.num_vars_filtered_out();
       if (num_changed == 1)
 	out << indent << "1 Changed variable:\n";
       else if (num_changed > 1)
@@ -10367,12 +10701,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_symbols_unreferenced_by_debug_info()
       && priv_->deleted_unrefed_fn_syms_.size())
     {
-      if (s.num_func_syms_removed == 1)
+      if (s.num_func_syms_removed() == 1)
 	out << indent
 	    << "1 Removed function symbol not referenced by debug info:\n\n";
-      else if (s.num_func_syms_removed > 0)
+      else if (s.num_func_syms_removed() > 0)
 	out << indent
-	    << s.num_func_syms_removed
+	    << s.num_func_syms_removed()
 	    << " Removed function symbols not referenced by debug info:\n\n";
 
       for (string_elf_symbol_map::const_iterator i =
@@ -10381,7 +10715,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   ++i)
 	{
 	  out << indent << "  ";
-	  if (s.num_func_syms_removed > large_num)
+	  if (s.num_func_syms_removed() > large_num)
 	    out << "[D] ";
 
 	  show_linkage_name_and_aliases(out, "", *i->second,
@@ -10396,12 +10730,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_symbols_unreferenced_by_debug_info()
       && priv_->added_unrefed_fn_syms_.size())
     {
-      if (s.num_func_syms_added == 1)
+      if (s.num_func_syms_added() == 1)
 	out << indent
 	    << "1 Added function symbol not referenced by debug info:\n\n";
-      else if (s.num_func_syms_added > 0)
+      else if (s.num_func_syms_added() > 0)
 	out << indent
-	    << s.num_func_syms_added
+	    << s.num_func_syms_added()
 	    << " Added function symbols not referenced by debug info:\n\n";
 
       for (string_elf_symbol_map::const_iterator i =
@@ -10410,7 +10744,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   ++i)
 	{
 	  out << indent << "  ";
-	  if (s.num_func_syms_added > large_num)
+	  if (s.num_func_syms_added() > large_num)
 	    out << "[A] ";
 	  show_linkage_name_and_aliases(out, "",
 					*i->second,
@@ -10425,12 +10759,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_symbols_unreferenced_by_debug_info()
       && priv_->deleted_unrefed_var_syms_.size())
     {
-      if (s.num_var_syms_removed == 1)
+      if (s.num_var_syms_removed() == 1)
 	out << indent
 	    << "1 Removed variable symbol not referenced by debug info:\n\n";
-      else if (s.num_var_syms_removed > 0)
+      else if (s.num_var_syms_removed() > 0)
 	out << indent
-	    << s.num_var_syms_removed
+	    << s.num_var_syms_removed()
 	    << " Removed variable symbols not referenced by debug info:\n\n";
 
       for (string_elf_symbol_map::const_iterator i =
@@ -10439,7 +10773,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   ++i)
 	{
 	  out << indent << "  ";
-	  if (s.num_var_syms_removed > large_num)
+	  if (s.num_var_syms_removed() > large_num)
 	    out << "[D] ";
 
 	  show_linkage_name_and_aliases(out, "", *i->second,
@@ -10454,12 +10788,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_symbols_unreferenced_by_debug_info()
       && priv_->added_unrefed_var_syms_.size())
     {
-      if (s.num_var_syms_added == 1)
+      if (s.num_var_syms_added() == 1)
 	out << indent
 	    << "1 Added variable symbol not referenced by debug info:\n\n";
-      else if (s.num_var_syms_added > 0)
+      else if (s.num_var_syms_added() > 0)
 	out << indent
-	    << s.num_var_syms_added
+	    << s.num_var_syms_added()
 	    << " Added variable symbols not referenced by debug info:\n\n";
 
       for (string_elf_symbol_map::const_iterator i =
@@ -10468,7 +10802,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   ++i)
 	{
 	  out << indent << "  ";
-	  if (s.num_var_syms_added > large_num)
+	  if (s.num_var_syms_added() > large_num)
 	    out << "[A] ";
 	  show_linkage_name_and_aliases(out, "",
 					*i->second,

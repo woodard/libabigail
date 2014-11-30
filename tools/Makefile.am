@@ -6,9 +6,9 @@ abg-tools-utils.h		\
 abg-tools-utils.cc
 
 if ENABLE_ZIP_ARCHIVE
-  bin_PROGRAMS = abiar abidiff abilint abidw
+  bin_PROGRAMS = abiar abidiff abilint abidw abicompat
 else
-  bin_PROGRAMS = abidiff abilint abidw  abinilint
+  bin_PROGRAMS = abidiff abilint abidw  abinilint abicompat
 endif
 
 noinst_PROGRAMS = abisym
@@ -36,7 +36,11 @@ abisymdir = $(bindir)
 abisym_LDADD = ../src/libabigail.la
 
 abinilint_SOURCES = binilint.cc
-abinilint = $(bindir)
+abinilintdir = $(bindir)
 abinilint_LDFLAGS = $(abs_top_builddir)/src/libabigail.la
+
+abicompat_SOURCES = abicompat.cc
+abicompatdir = $(bindir)
+abicompat_LDADD = $(abs_top_builddir)/src/libabigail.la libtoolsutils.la
 
 AM_CPPFLAGS=-I$(abs_top_srcdir)/include -I$(abs_top_srcdir)/tools

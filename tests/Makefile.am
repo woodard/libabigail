@@ -32,6 +32,7 @@ runtestabidiff			\
 runtestdiffdwarf		\
 runtestdifffilter		\
 runtestdiffsuppr		\
+runtestabicompat		\
 $(CXX11_TESTS)
 
 
@@ -79,6 +80,9 @@ runtestdifffilter_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestdiffsuppr_SOURCES = test-diff-suppr.cc
 runtestdiffsuppr_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestabicompat_SOURCES = test-abicompat.cc
+runtestabicompat_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la

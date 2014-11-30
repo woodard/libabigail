@@ -99,6 +99,8 @@ struct corpus::priv
   vector<string>		regex_patterns_vars_to_suppress;
   vector<string>		regex_patterns_fns_to_keep;
   vector<string>		regex_patterns_vars_to_keep;
+  vector<string>		sym_id_fns_to_keep;
+  vector<string>		sym_id_vars_to_keep;
   string			path;
   translation_units		members;
   vector<function_decl*>	fns;
@@ -160,9 +162,13 @@ class symtab_build_visitor_type : public ir_node_visitor
 {
   vector<function_decl*>&	functions;
   vector<var_decl*>&		variables;
+  elf_symbols			unrefed_fun_symbols;
+  elf_symbols			unrefed_var_symbols;
   vector<string>&		regex_patterns_fns_to_suppress;
   vector<string>&		regex_patterns_vars_to_suppress;
   vector<string>&		regex_patterns_fns_to_keep;
+  vector<string>&		sym_id_fns_to_keep;
+  vector<string>&		sym_id_vars_to_keep;
   vector<string>&		regex_patterns_vars_to_keep;
   vector<regex_t_sptr>		r_fns_suppress;
   vector<regex_t_sptr>		r_vars_suppress;
@@ -185,12 +191,16 @@ public:
 			    vector<string>&		fns_suppress_regexps,
 			    vector<string>&		vars_suppress_regexps,
 			    vector<string>&		fns_keep_regexps,
+			    vector<string>&		sym_id_of_fns_to_keep,
+			    vector<string>&		sym_id_of_vars_to_keep,
 			    vector<string>&		vars_keep_regexps)
     : functions(fns),
       variables(vars),
       regex_patterns_fns_to_suppress(fns_suppress_regexps),
       regex_patterns_vars_to_suppress(vars_suppress_regexps),
       regex_patterns_fns_to_keep(fns_keep_regexps),
+      sym_id_fns_to_keep(sym_id_of_fns_to_keep),
+      sym_id_vars_to_keep(sym_id_of_vars_to_keep),
       regex_patterns_vars_to_keep(vars_keep_regexps),
       wip_fns_size(0),
       wip_vars_size(0)
@@ -411,40 +421,68 @@ public:
   /// Add a given function to the list of functions that are supposed
   /// to end up in the function public decl table.
   ///
-  /// Note that this function applies regular expressions supposed to
-  /// describe the set of functions to be dropped from the public decl
-  /// table and then drop the functions matched.  It then applies
-  /// regular expressions supposed to describe the set of functions to
-  /// be kept into the public decl table and then keeps the functions that
-  /// match and drops the functions that don't.
+  /// Note that this function looks at the list of function symbols to
+  /// keep and drops this function if its symbol is different from the
+  /// symbols of that list.  It then applies regular expressions
+  /// supposed to describe the set of functions to be dropped from the
+  /// public decl table and then drop this function if it matches any
+  /// of these regular expressions.  It then applies regular
+  /// expressions supposed to describe the set of functions to be kept
+  /// into the public decl table and then keeps this function if it
+  /// matches.
   ///
   /// @param fn the function to add to the public decl table, if it
-  /// complies with the regular expressions that might have been
-  /// specified by the client code.
+  /// complies with the regular expressions and symbol names and
+  /// versions that might have been specified by client code.
   void
   add_fn_to_wip_fns(function_decl* fn)
   {
     string frep = fn->get_qualified_name();
     bool keep = true;
-    for (vector<regex_t_sptr>::const_iterator i =
-	   regex_fns_suppress().begin();
-	 i != regex_fns_suppress().end();
-	 ++i)
-      if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
-	{
+
+    if (elf_symbol_sptr sym = fn->get_symbol())
+      {
+	if (!sym_id_fns_to_keep.empty())
 	  keep = false;
-	  break;
-	}
+	for (vector<string>::const_iterator i = sym_id_fns_to_keep.begin();
+	     i != sym_id_fns_to_keep.end();
+	     ++i)
+	  {
+	    string sym_name, sym_version;
+	    assert(elf_symbol::get_name_and_version_from_id(*i,
+							    sym_name,
+							    sym_version));
+	    if (sym_name == sym->get_name()
+		&& sym_version == sym->get_version().str())
+	      {
+		keep = true;
+		break;
+	      }
+	  }
+      }
+
+    if (keep)
+      for (vector<regex_t_sptr>::const_iterator i =
+	     regex_fns_suppress().begin();
+	   i != regex_fns_suppress().end();
+	   ++i)
+	if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+	  {
+	    keep = false;
+	    break;
+	  }
 
     if (keep)
       {
+	if (!regex_fns_keep().empty())
+	  keep = false;
 	for (vector<regex_t_sptr>::const_iterator i =
 	       regex_fns_keep().begin();
 	     i != regex_fns_keep().end();
 	     ++i)
-	  if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == REG_NOMATCH)
+	  if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
 	    {
-	      keep = false;
+	      keep = true;
 	      break;
 	    }
       }
@@ -459,40 +497,68 @@ public:
   /// Add a given variable to the list of variables that are supposed
   /// to end up in the variable public decl table.
   ///
-  /// Note that this variable applies regular expressions supposed to
-  /// describe the set of variables to be dropped from the public decl
-  /// table and then drop the variables matched.  It then applies
-  /// regular expressions supposed to describe the set of variables to
-  /// be kept into the public decl table and then keeps the variables that
-  /// match and drops the variables that don't.
+  /// Note that this functions looks at the list of variable symbols
+  /// to keep and drops this variable if its symbol is different from
+  /// the symbols of that list.  It then applies regular expressions
+  /// supposed to describe the set of variables to be dropped from the
+  /// public decl table and then drop the this variable if it matches
+  /// any regular expression of that list.  It then applies regular
+  /// expressions supposed to describe the set of variables to be kept
+  /// into the public decl table and then keeps this variable if it
+  /// matches any regular expression in that list.
   ///
-  /// @param var the var to add to the public decl table, if it complies
-  /// with the regular expressions that might have been specified by
-  /// the client code.
+  /// @param var the var to add to the public decl table, if it
+  /// complies with the regular expressions and symbols names and
+  /// versions that might have been specified by client code.
   void
   add_var_to_wip_vars(var_decl* var)
   {
     string vrep = var->get_qualified_name();
     bool keep = true;
-    for (vector<regex_t_sptr>::const_iterator i =
-	   regex_vars_suppress().begin();
-	 i != regex_vars_suppress().end();
-	 ++i)
-      if (regexec(i->get(), vrep.c_str(), 0, NULL, 0) == 0)
-	{
+
+    if (elf_symbol_sptr sym = var->get_symbol())
+      {
+	if (!sym_id_vars_to_keep.empty())
 	  keep = false;
-	  break;
-	}
+	string sym_version, sym_name;
+	for (vector<string>::const_iterator i = sym_id_vars_to_keep.begin();
+	     i != sym_id_vars_to_keep.end();
+	     ++i)
+	  {
+	    assert(elf_symbol::get_name_and_version_from_id(*i,
+							    sym_name,
+							    sym_version));
+	    if (sym->get_name() == sym_name
+		&& sym->get_version().str() == sym_version)
+	      {
+		keep = true;
+		break;
+	      }
+	  }
+      }
+
+    if (keep)
+      for (vector<regex_t_sptr>::const_iterator i =
+	     regex_vars_suppress().begin();
+	   i != regex_vars_suppress().end();
+	   ++i)
+	if (regexec(i->get(), vrep.c_str(), 0, NULL, 0) == 0)
+	  {
+	    keep = false;
+	    break;
+	  }
 
     if (keep)
       {
+	if (!regex_vars_keep().empty())
+	  keep = false;
 	for (vector<regex_t_sptr>::const_iterator i =
 	       regex_vars_keep().begin();
 	     i != regex_vars_keep().end();
 	     ++i)
-	  if (regexec(i->get(), vrep.c_str(), 0, NULL, 0) == REG_NOMATCH)
+	  if (regexec(i->get(), vrep.c_str(), 0, NULL, 0) == 0)
 	    {
-	      keep = false;
+	      keep = true;
 	      break;
 	    }
       }
@@ -634,6 +700,8 @@ corpus::priv::build_public_decl_table()
 			      regex_patterns_fns_to_suppress,
 			      regex_patterns_vars_to_suppress,
 			      regex_patterns_fns_to_keep,
+			      sym_id_fns_to_keep,
+			      sym_id_vars_to_keep,
 			      regex_patterns_vars_to_keep);
 
   for (translation_units::iterator i = members.begin();
@@ -719,12 +787,25 @@ struct comp_elf_symbols_functor
 /// function or variables of corpus::get_functions() or
 /// corpus::get_variables().
 ///
+/// Note that this function considers the list of function and
+/// variable symbols to keep, that is provided by
+/// corpus::get_sym_ids_of_fns_to_keep() and
+/// corpus::get_sym_ids_of_vars_to_keep().  If a given unreferenced
+/// function or variable symbol is not in the list of variable and
+/// function symbols to keep, then that symbol is dropped and will not
+/// be part of the resulting table of unreferenced symbol that is
+/// built.
+///
 /// The built tables are accessible from
 /// corpus::get_unreferenced_function_symbols() and
 /// corpus::get_unreferenced_variable_symbols().
 void
 corpus::priv::build_unreferenced_symbols_tables()
 {
+  if (!is_public_decl_table_built)
+    build_public_decl_table();
+  assert(is_public_decl_table_built);
+
   unordered_map<string, bool> refed_funs, refed_vars;
   elf_symbol_sptr sym;
 
@@ -762,8 +843,26 @@ corpus::priv::build_unreferenced_symbols_tables()
 	for (elf_symbols::const_iterator s = i->second.begin();
 	     s != i->second.end();
 	     ++s)
-	  if (refed_funs.find((*s)->get_id_string()) == refed_funs.end())
-	    unrefed_fun_symbols.push_back(*s);
+	  {
+	    string sym_id = (*s)->get_id_string();
+	    if (refed_funs.find(sym_id) == refed_funs.end())
+	      {
+		bool keep = sym_id_fns_to_keep.empty() ? true : false;
+		for (vector<string>::const_iterator i =
+		       sym_id_fns_to_keep.begin();
+		     i != sym_id_fns_to_keep.end();
+		     ++i)
+		  {
+		    if (*i == sym_id)
+		      {
+			keep = true;
+			break;
+		      }
+		  }
+		if (keep)
+		  unrefed_fun_symbols.push_back(*s);
+	      }
+	  }
 
       comp_elf_symbols_functor comp;
       std::sort(unrefed_fun_symbols.begin(),
@@ -781,8 +880,26 @@ corpus::priv::build_unreferenced_symbols_tables()
 	for (elf_symbols::const_iterator s = i->second.begin();
 	     s != i->second.end();
 	     ++s)
-	  if (refed_vars.find((*s)->get_id_string()) == refed_vars.end())
-	    unrefed_var_symbols.push_back(*s);
+	  {
+	    string sym_id = (*s)->get_id_string();
+	    if (refed_vars.find(sym_id) == refed_vars.end())
+	      {
+		bool keep = sym_id_vars_to_keep.empty() ? true : false;;
+		for (vector<string>::const_iterator i =
+		       sym_id_vars_to_keep.begin();
+		     i != sym_id_vars_to_keep.end();
+		     ++i)
+		  {
+		    if (*i == sym_id)
+		      {
+			keep = true;
+			break;
+		      }
+		  }
+		if (keep)
+		  unrefed_var_symbols.push_back(*s);
+	      }
+	  }
 
       comp_elf_symbols_functor comp;
       std::sort(unrefed_var_symbols.begin(),
@@ -1388,6 +1505,26 @@ const vector<string>&
 corpus::get_regex_patterns_of_fns_to_keep() const
 {return priv_->regex_patterns_fns_to_keep;}
 
+/// Getter for the vector of function symbol IDs to keep.
+///
+/// A symbol ID is a string made of the name of the symbol and its
+/// version, separated by one or two '@'.
+///
+/// @return a vector of IDs of function symbols to keep.
+vector<string>&
+corpus::get_sym_ids_of_fns_to_keep()
+{return priv_->sym_id_fns_to_keep;}
+
+/// Getter for the vector of function symbol IDs to keep.
+///
+/// A symbol ID is a string made of the name of the symbol and its
+/// version, separated by one or two '@'.
+///
+/// @return a vector of IDs of function symbols to keep.
+const vector<string>&
+corpus::get_sym_ids_of_fns_to_keep() const
+{return priv_->sym_id_fns_to_keep;}
+
 /// Accessor for the regex patterns describing the variables to keep
 /// into the public decl table.  The other variables not matches by these
 /// regexes are dropped from the public decl table.
@@ -1408,5 +1545,25 @@ const vector<string>&
 corpus::get_regex_patterns_of_vars_to_keep() const
 {return priv_->regex_patterns_vars_to_keep;}
 
-} // end namespace ir
+/// Getter for the vector of variable symbol IDs to keep.
+///
+/// A symbol ID is a string made of the name of the symbol and its
+/// version, separated by one or two '@'.
+///
+/// @return a vector of IDs of variable symbols to keep.
+vector<string>&
+corpus::get_sym_ids_of_vars_to_keep()
+{return priv_->sym_id_vars_to_keep;}
+
+/// Getter for the vector of variable symbol IDs to keep.
+///
+/// A symbol ID is a string made of the name of the symbol and its
+/// version, separated by one or two '@'.
+///
+/// @return a vector of IDs of variable symbols to keep.
+const vector<string>&
+corpus::get_sym_ids_of_vars_to_keep() const
+{return priv_->sym_id_vars_to_keep;}
+
+}// end namespace ir
 }// end namespace abigail

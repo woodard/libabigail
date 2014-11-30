@@ -188,10 +188,22 @@ public:
   get_regex_patterns_of_fns_to_keep() const;
 
   vector<string>&
+  get_sym_ids_of_fns_to_keep();
+
+  const vector<string>&
+  get_sym_ids_of_fns_to_keep() const;
+
+  vector<string>&
   get_regex_patterns_of_vars_to_keep();
 
   const vector<string>&
   get_regex_patterns_of_vars_to_keep() const;
+
+  vector<string>&
+  get_sym_ids_of_vars_to_keep();
+
+  const vector<string>&
+  get_sym_ids_of_vars_to_keep() const;
 
 };// end class corpus.
 

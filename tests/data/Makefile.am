@@ -423,4 +423,38 @@ test-alt-dwarf-file/test0-common.cc	\
 test-alt-dwarf-file/libtest0-common.so	\
 test-alt-dwarf-file/test0-report.txt	\
 test-alt-dwarf-file/test0-debug-dir/test0-common-dwz.debug \
-test-alt-dwarf-file/test0-debug-dir/.build-id/16/7088580c513b439c9ed95fe6a8b29496495f26.debug
+test-alt-dwarf-file/test0-debug-dir/.build-id/16/7088580c513b439c9ed95fe6a8b29496495f26.debug \
+\
+test-abicompat/libtest0-fn-changed-libapp-v0.so \
+test-abicompat/libtest0-fn-changed-libapp-v1.so \
+test-abicompat/test0-fn-changed-app \
+test-abicompat/test0-fn-changed-0.suppr \
+test-abicompat/test0-fn-changed-app.cc \
+test-abicompat/test0-fn-changed-report-0.txt \
+test-abicompat/test0-fn-changed-report-1.txt \
+test-abicompat/test0-fn-changed-libapp.h \
+test-abicompat/test0-fn-changed-libapp-v0.cc \
+test-abicompat/test0-fn-changed-libapp-v1.cc \
+test-abicompat/libtest1-fn-removed-v0.so \
+test-abicompat/libtest1-fn-removed-v1.so \
+test-abicompat/test1-fn-removed-app \
+test-abicompat/test1-fn-removed-app.cc \
+test-abicompat/test1-fn-removed-report-0.txt \
+test-abicompat/test1-fn-removed-v0.cc \
+test-abicompat/test1-fn-removed-v1.cc \
+test-abicompat/libtest2-var-removed-v0.so \
+test-abicompat/libtest2-var-removed-v1.so \
+test-abicompat/test2-var-removed-app \
+test-abicompat/test2-var-removed-app.cc \
+test-abicompat/test2-var-removed-report-0.txt \
+test-abicompat/test2-var-removed-v0.cc \
+test-abicompat/test2-var-removed-v1.cc \
+test-abicompat/libtest3-fn-removed-v0.so \
+test-abicompat/libtest3-fn-removed-v1.so \
+test-abicompat/test3-fn-removed-app \
+test-abicompat/test3-fn-removed-app.cc \
+test-abicompat/test3-fn-removed-report-0.txt \
+test-abicompat/test3-fn-removed-v0.cc \
+test-abicompat/test3-fn-removed-v1.cc \
+test-abicompat/test3-fn-removed-version-script-0 \
+test-abicompat/test3-fn-removed-version-script-1

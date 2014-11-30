@@ -13,6 +13,7 @@ Tools manuals
 =============
 
   * :doc:`abidiff`
+  * :doc:`abicompat`
   * :doc:`abidw`
   * :doc:`abilint`
 

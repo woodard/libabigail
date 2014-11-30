@@ -845,6 +845,12 @@ public:
 
   void
   show_symbols_unreferenced_by_debug_info(bool f);
+
+  bool
+  show_added_symbols_unreferenced_by_debug_info() const;
+
+  void
+  show_added_symbols_unreferenced_by_debug_info(bool f);
 };//end struct diff_context.
 
 /// This type encapsulates an edit script (a set of insertions and
@@ -1997,6 +2003,8 @@ protected:
 
 public:
 
+  class diff_stats;
+
   corpus_sptr
   first_corpus() const;
 
@@ -2024,8 +2032,17 @@ public:
   const string_changed_function_ptr_map&
   changed_functions();
 
+  const string_var_ptr_map&
+  deleted_variables() const;
+
   const string_changed_var_ptr_map&
   changed_variables();
+
+  const string_elf_symbol_map&
+  deleted_unrefed_function_symbols() const;
+
+  const string_elf_symbol_map&
+  deleted_unrefed_variable_symbols() const;
 
   const diff_context_sptr
   context() const;
@@ -2036,7 +2053,10 @@ public:
   unsigned
   length() const;
 
-  void
+  const diff_stats&
+  apply_filters_and_suppressions_before_reporting();
+
+  virtual void
   report(ostream& out, const string& indent = "") const;
 
   virtual bool
@@ -2055,6 +2075,63 @@ corpus_diff_sptr
 compute_diff(const corpus_sptr,
 	     const corpus_sptr,
 	     diff_context_sptr);
+
+/// This is a document class that aims to capture statistics about the
+/// changes carried by a @ref corpus_diff type.
+///
+/// Its values are populated by the member function
+/// corpus_diff::apply_filters_and_suppressions_before_reporting()
+class corpus_diff::diff_stats
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+
+  diff_stats();
+
+  size_t num_func_removed() const;
+  void num_func_removed(size_t);
+
+  size_t num_func_added() const;
+  void num_func_added(size_t);
+
+  size_t num_func_changed() const;
+  void num_func_changed(size_t);
+
+  size_t num_func_filtered_out() const;
+  void num_func_filtered_out(size_t);
+
+  size_t net_num_func_changed() const;
+
+  size_t num_vars_removed() const;
+  void num_vars_removed(size_t);
+
+  size_t num_vars_added() const;
+  void num_vars_added(size_t);
+
+  size_t num_vars_changed() const;
+  void num_vars_changed(size_t);
+
+  size_t num_vars_filtered_out() const;
+  void num_vars_filtered_out(size_t);
+
+  size_t net_num_vars_changed() const;
+
+  size_t num_func_syms_removed() const;
+  void num_func_syms_removed(size_t);
+
+  size_t num_func_syms_added() const;
+  void num_func_syms_added(size_t);
+
+  size_t num_var_syms_removed() const;
+  void num_var_syms_removed(size_t);
+
+  size_t num_var_syms_added() const;
+  void num_var_syms_added(size_t);
+}; // end class corpus_diff::diff_stats
 
 /// The base class for the node visitors.  These are the types used to
 /// visit each node traversed by the diff_traversable_base::traverse() method.
