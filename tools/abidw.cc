@@ -179,7 +179,7 @@ main(int argc, char* argv[])
       abigail::dwarf_reader::status status =
 	abigail::dwarf_reader::has_alt_debug_info(ctxt,
 						  has_alt_di, alt_di_path);
-      if (status == abigail::dwarf_reader::STATUS_OK)
+      if (status & abigail::dwarf_reader::STATUS_OK)
 	{
 	  if (alt_di_path.empty())
 	    ;
