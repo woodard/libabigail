@@ -526,8 +526,8 @@ compare_symbol_name(const string& symbol_name,
   return symbol_name == name;
 }
 
-/// Return the SHT_GNU_versym and SHT_GNU_verdef sections that are
-/// involved in symbol versionning.
+/// Return the SHT_GNU_versym, SHT_GNU_verdef and SHT_GNU_verneed
+/// sections that are involved in symbol versionning.
 ///
 /// @param elf_handle the elf handle to use.
 ///
@@ -535,15 +535,18 @@ compare_symbol_name(const string& symbol_name,
 ///
 /// @param verdef_section the SHT_GNU_verdef section found.
 ///
+/// @param verneed_section the SHT_GNU_verneed section found.
+///
 /// @return true iff the sections where found.
 static bool
-get_symbol_versionning_sections(Elf* elf_handle,
-				Elf_Scn*& versym_section,
-				Elf_Scn*& verdef_section)
+get_symbol_versionning_sections(Elf*		elf_handle,
+				Elf_Scn*&	versym_section,
+				Elf_Scn*&	verdef_section,
+				Elf_Scn*&	verneed_section)
 {
   Elf_Scn* section = NULL;
   GElf_Shdr mem;
-  Elf_Scn* versym = NULL, *verdef = NULL;
+  Elf_Scn* versym = NULL, *verdef = NULL, *verneed = NULL;
 
   while ((section = elf_nextscn(elf_handle, section)) != NULL)
     {
@@ -552,11 +555,14 @@ get_symbol_versionning_sections(Elf* elf_handle,
 	versym = section;
       else if (h->sh_type == SHT_GNU_verdef)
 	verdef = section;
+      else if (h->sh_type == SHT_GNU_verneed)
+	verneed = section;
 
-      if (versym && verdef)
+      if (versym && verdef && verneed)
 	{
 	  versym_section = versym;
 	  verdef_section = verdef;
+	  verneed_section = verneed;
 	  return true;
 	}
     }
@@ -564,38 +570,25 @@ get_symbol_versionning_sections(Elf* elf_handle,
   return false;
 }
 
-/// Return the version for a symbol that is at a given index in its
-/// SHT_SYMTAB section.
+/// Get the version definition (from the SHT_GNU_verdef section) of a
+/// given symbol represented by a pointer to GElf_Versym.
 ///
-/// @param elf_handle the elf handle to use.
+/// @param elf_hande the elf handle to use.
 ///
-/// @param symbol_index the index of the symbol to consider.
+/// @param versym the symbol to get the version definition for.
 ///
-/// @param version the version found for symbol at @p symbol_index.
+/// @param verdef_section the SHT_GNU_verdef section.
 ///
-/// @return true iff a version was found for symbol at index @p symbol_index.
+/// @param version the resulting version definition.  This is set iff
+/// the function returns true.
+///
+/// @return true upon successful completion, false otherwise.
 static bool
-get_version_for_symbol(Elf* elf_handle,
-		       size_t symbol_index,
-		       elf_symbol::version& version)
+get_version_definition_for_versym(Elf*			 elf_handle,
+				  GElf_Versym*		 versym,
+				  Elf_Scn*		 verdef_section,
+				  elf_symbol::version&	 version)
 {
-  Elf_Scn *versym_section = NULL, *verdef_section = NULL;
-
-  if (!get_symbol_versionning_sections(elf_handle,
-				       versym_section,
-				       verdef_section))
-    return false;
-
-  Elf_Data* versym_data = elf_getdata(versym_section, NULL);
-  GElf_Versym versym_mem;
-  GElf_Versym* versym = gelf_getversym(versym_data, symbol_index, &versym_mem);
-  if (versym == 0 || *versym == 0x8001 || *versym <= 1)
-    // I got these value from the code of readelf.c in elfutils.
-    // Apparently, if the symbol version entry has these values, the
-    // symbol must be discarded. This is not documented in the
-    // official specification. Hugh?
-    return false;
-
   Elf_Data* verdef_data = elf_getdata(verdef_section, NULL);
   GElf_Verdef verdef_mem;
   GElf_Verdef* verdef = gelf_getverdef(verdef_data, 0, &verdef_mem);
@@ -631,9 +624,141 @@ get_version_for_symbol(Elf* elf_handle,
 	    version.is_default(true);
 	  return true;
 	}
-
       if (!verdef || verdef->vd_next == 0)
 	break;
+    }
+  return false;
+}
+
+/// Get the version needed (from the SHT_GNU_verneed section) to
+/// resolve an undefined symbol represented by a pointer to
+/// GElf_Versym.
+///
+/// @param elf_hande the elf handle to use.
+///
+/// @param versym the symbol to get the version definition for.
+///
+/// @param verneed_section the SHT_GNU_verneed section.
+///
+/// @param version the resulting version definition.  This is set iff
+/// the function returns true.
+///
+/// @return true upon successful completion, false otherwise.
+static bool
+get_version_needed_for_versym(Elf*			elf_handle,
+			      GElf_Versym*		versym,
+			      Elf_Scn*			verneed_section,
+			      elf_symbol::version&	version)
+{
+  if (versym == 0 || elf_handle == 0 || verneed_section == 0)
+    return false;
+
+  size_t vn_offset = 0;
+  Elf_Data* verneed_data = elf_getdata(verneed_section, NULL);
+  GElf_Verneed verneed_mem;
+  GElf_Verneed* verneed = gelf_getverneed(verneed_data, 0, &verneed_mem);
+
+  for (;verneed; vn_offset += verneed->vn_next)
+    {
+      size_t vna_offset = vn_offset;
+      GElf_Vernaux vernaux_mem;
+      GElf_Vernaux *vernaux = gelf_getvernaux(verneed_data,
+					      vn_offset + verneed->vn_aux,
+					      &vernaux_mem);
+      for (;vernaux != 0;)
+	{
+	  if (vernaux->vna_other == *versym)
+	    // Found the version of the symbol.
+	    break;
+	  vna_offset += verneed->vn_next;
+	  verneed = (verneed->vn_next == 0
+		    ? 0
+		    : gelf_getverneed(verneed_data, vna_offset, &verneed_mem));
+	}
+
+      if (verneed != 0 && vernaux != 0 && vernaux->vna_other == *versym)
+	{
+	  GElf_Shdr header_mem;
+	  GElf_Shdr* verneed_section_header = gelf_getshdr(verneed_section,
+							  &header_mem);
+	  size_t verneed_stridx = verneed_section_header->sh_link;
+	  version.str(elf_strptr(elf_handle,
+				 verneed_stridx,
+				 vernaux->vna_name));
+	  if (*versym & 0x8000)
+	    version.is_default(false);
+	  else
+	    version.is_default(true);
+	  return true;
+	}
+
+      if (!verneed || verneed->vn_next == 0)
+	break;
+    }
+  return false;
+}
+
+/// Return the version for a symbol that is at a given index in its
+/// SHT_SYMTAB section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @param symbol_index the index of the symbol to consider.
+///
+/// @param get_def_version if this is true, it means that that we want
+/// the version for a defined symbol; in that case, the version is
+/// looked for in a section of type SHT_GNU_verdef.  Otherwise, if
+/// this parameter is false, this means that we want the version for
+/// an undefined symbol; in that case, the version is the needed one
+/// for the symbol to be resolved; so the version is looked fo in a
+/// section of type SHT_GNU_verneed.
+///
+/// @param version the version found for symbol at @p symbol_index.
+///
+/// @return true iff a version was found for symbol at index @p symbol_index.
+static bool
+get_version_for_symbol(Elf*			elf_handle,
+		       size_t			symbol_index,
+		       bool			get_def_version,
+		       elf_symbol::version&	version)
+{
+  Elf_Scn *versym_section = NULL,
+    *verdef_section = NULL,
+    *verneed_section = NULL;
+
+  if (!get_symbol_versionning_sections(elf_handle,
+				       versym_section,
+				       verdef_section,
+				       verneed_section))
+    return false;
+
+  Elf_Data* versym_data = elf_getdata(versym_section, NULL);
+  GElf_Versym versym_mem;
+  GElf_Versym* versym = gelf_getversym(versym_data, symbol_index, &versym_mem);
+  if (versym == 0 || *versym <= 1)
+    // I got these value from the code of readelf.c in elfutils.
+    // Apparently, if the symbol version entry has these values, the
+    // symbol must be discarded. This is not documented in the
+    // official specification.
+    return false;
+
+  if (get_def_version)
+    {
+      if (*versym == 0x8001)
+	// I got this value from the code of readelf.c in elfutils
+	// too.  It's not really documented in the official
+	// specification.
+	return false;
+
+      if (get_version_definition_for_versym(elf_handle, versym,
+					    verdef_section, version))
+	return true;
+    }
+  else
+    {
+      if (get_version_needed_for_versym(elf_handle, versym,
+					verneed_section, version))
+	return true;
     }
 
   return false;
@@ -721,7 +846,8 @@ lookup_symbol_from_sysv_hash_tab(Elf*			elf_handle,
 	  sym_type = stt_to_elf_symbol_type(GELF_ST_TYPE(symbol.st_info));
 	  sym_binding = stb_to_elf_symbol_binding(GELF_ST_BIND(symbol.st_info));
 	  elf_symbol::version ver;
-	  if (get_version_for_symbol(elf_handle, symbol_index, ver))
+	  if (get_version_for_symbol(elf_handle, symbol_index,
+				     /*get_def_version=*/true, ver))
 	    assert(!ver.str().empty());
 	  elf_symbol symbol_found(symbol_index,
 				  sym_name_str,
@@ -990,7 +1116,9 @@ lookup_symbol_from_gnu_hash_tab(Elf*			elf_handle,
 	  sym_type = stt_to_elf_symbol_type(GELF_ST_TYPE(symbol.st_info));
 	  sym_binding = stb_to_elf_symbol_binding(GELF_ST_BIND(symbol.st_info));
 
-	  if (get_version_for_symbol(elf_handle, i, ver))
+	  if (get_version_for_symbol(elf_handle, i,
+				     /*get_def_version=*/true,
+				     ver))
 	    assert(!ver.str().empty());
 
 	  elf_symbol symbol_found(i, sym_name_str, sym_type, sym_binding,
@@ -1123,10 +1251,17 @@ lookup_symbol_from_symtab(Elf*			elf_handle,
 	    stt_to_elf_symbol_type(GELF_ST_TYPE(sym->st_info));
 	  elf_symbol::binding sym_binding =
 	    stb_to_elf_symbol_binding(GELF_ST_BIND(sym->st_info));
-	  if (get_version_for_symbol(elf_handle, i, ver))
+	  bool sym_is_defined = sym->st_shndx != SHN_UNDEF;
+	  if (get_version_for_symbol(elf_handle, i,
+				     /*get_def_version=*/sym_is_defined,
+				     ver))
 	    assert(!ver.str().empty());
-	  elf_symbol symbol_found(i, name_str, sym_type, sym_binding,
-				  sym->st_shndx != SHN_UNDEF, ver);
+	  elf_symbol symbol_found(i,
+				  name_str,
+				  sym_type,
+				  sym_binding,
+				  sym_is_defined,
+				  ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1326,6 +1461,8 @@ class read_context
   string_elf_symbols_map_sptr	fun_syms_;
   addr_elf_symbol_sptr_map_sptr var_addr_sym_map_;
   string_elf_symbols_map_sptr	var_syms_;
+  string_elf_symbols_map_sptr	undefined_fun_syms_;
+  string_elf_symbols_map_sptr	undefined_var_syms_;
 
   read_context();
 
@@ -1802,6 +1939,9 @@ public:
 
     GElf_Sym* s, smem;
     s = gelf_getsym(symtab, symbol_index, &smem);
+    if (!s)
+      return false;
+    bool sym_is_defined = s->st_shndx != SHN_UNDEF;
 
     const char* name_str = elf_strptr(elf_handle(),
 				      symtab_sheader->sh_link,
@@ -1810,12 +1950,15 @@ public:
       name_str = "";
 
     elf_symbol::version v;
-    get_version_for_symbol(elf_handle(), symbol_index, v);
+    get_version_for_symbol(elf_handle(),
+			   symbol_index,
+			   sym_is_defined,
+			   v);
 
     elf_symbol sym(symbol_index, name_str,
 		   stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
 		   stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
-		   s->st_shndx != SHN_UNDEF,
+		   sym_is_defined,
 		   v);
     symbol = sym;
     return true;
@@ -2064,6 +2207,98 @@ public:
     return *var_syms_;
   }
 
+  /// Getter for the map of undefined function symbols (name -> vector
+  /// of symbols).
+  ///
+  /// @return a (smart) pointer to the map of undefined function
+  /// symbols.
+  const string_elf_symbols_map_sptr&
+  undefined_fun_syms_sptr() const
+  {
+    maybe_load_symbol_maps();
+    return undefined_fun_syms_;
+  }
+
+  /// Getter for the map of undefined function symbols (name -> vector
+  /// of symbols).
+  ///
+  /// @return a (smart) pointer to the map of undefined function
+  /// symbols.
+  string_elf_symbols_map_sptr&
+  undefined_fun_syms_sptr()
+  {
+    maybe_load_symbol_maps();
+    return undefined_fun_syms_;
+  }
+
+  /// Getter for the map of undefined function symbols (name -> vector
+  /// of symbols).
+  ///
+  /// @return a reference to the map of undefined function symbols.
+  const string_elf_symbols_map_type&
+  undefined_fun_syms() const
+  {
+    maybe_load_symbol_maps();
+    return *undefined_fun_syms_;
+  }
+
+  /// Getter for the map of undefined function symbols (name -> vector
+  /// of symbols).
+  ///
+  /// @return a reference to the map of undefined function symbols.
+  string_elf_symbols_map_type&
+  undefined_fun_syms()
+  {
+    maybe_load_symbol_maps();
+    return *undefined_fun_syms_;
+  }
+
+  /// Getter for the map of undefined variable symbols (name -> vector
+  /// of symbols).
+  ///
+  /// @return a (smart) pointer to the map of undefined variable
+  /// symbols.
+  const string_elf_symbols_map_sptr&
+  undefined_var_syms_sptr() const
+  {
+    maybe_load_symbol_maps();
+    return undefined_var_syms_;
+  }
+
+  /// Getter for the map of undefined variable symbols (name -> vector
+  /// of symbols).
+  ///
+  /// @return a (smart) pointer to the map of undefined variable
+  /// symbols.
+  string_elf_symbols_map_sptr&
+  undefined_var_syms_sptr()
+  {
+    maybe_load_symbol_maps();
+    return undefined_var_syms_;
+  }
+
+  /// Getter for the map of undefined variable symbols (name -> vector
+  /// of symbols).
+  ///
+  /// @return a reference to the map of undefined variable symbols.
+  const string_elf_symbols_map_type&
+  undefined_var_syms() const
+  {
+    maybe_load_symbol_maps();
+    return *undefined_var_syms_;
+  }
+
+  /// Getter for the map of undefined variable symbols (name -> vector
+  /// of symbols).
+  ///
+  /// @return a reference to the map of undefined variable symbols.
+  string_elf_symbols_map_type&
+  undefined_var_syms()
+  {
+    maybe_load_symbol_maps();
+    return *undefined_var_syms_;
+  }
+
   /// Getter for the map of global variables symbol address -> global
   /// variable symbol index.
   ///
@@ -2088,8 +2323,9 @@ public:
     return *var_addr_sym_map_;
   }
 
-  /// Load the maps of function symbol address -> function symbol and
-  /// global variable symbol address -> variable symbol.
+  /// Load the maps of function symbol address -> function symbol,
+  /// global variable symbol address -> variable symbol and also the
+  /// maps of function and variable undefined symbols.
   ///
   /// @return true iff everything went fine.
   bool
@@ -2097,6 +2333,10 @@ public:
   {
     bool load_fun_map = !fun_addr_sym_map_ || fun_addr_sym_map_->empty();
     bool load_var_map = !var_addr_sym_map_ || var_addr_sym_map_->empty();
+    bool load_undefined_fun_map = (!undefined_fun_syms_
+				    || undefined_fun_syms_->empty());
+    bool load_undefined_var_map = (!undefined_var_syms_
+				   || undefined_var_syms_->empty());
 
     if (!fun_syms_)
       fun_syms_.reset(new string_elf_symbols_map_type);
@@ -2109,6 +2349,12 @@ public:
 
     if (!var_addr_sym_map_)
       var_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
+
+    if (!undefined_fun_syms_)
+      undefined_fun_syms_.reset(new string_elf_symbols_map_type);
+
+    if (!undefined_var_syms_)
+      undefined_var_syms_.reset(new string_elf_symbols_map_type);
 
     Elf_Scn* symtab_section = NULL;
     if (!find_symbol_table_section(elf_handle(), symtab_section))
@@ -2129,38 +2375,51 @@ public:
 	sym = gelf_getsym(symtab, i, &sym_mem);
 	assert(sym);
 
-	if (load_fun_map
+	if ((load_fun_map || load_undefined_fun_map)
 	    && (GELF_ST_TYPE(sym->st_info) == STT_FUNC
 		|| GELF_ST_TYPE(sym->st_info) == STT_GNU_IFUNC))
 	  {
 	    elf_symbol_sptr symbol(new elf_symbol);
 	    assert(lookup_elf_symbol_from_index(i, *symbol));
 	    assert(symbol->is_function());
-	    if (!symbol->is_public())
-	      continue;
 
-	    {
-	      string_elf_symbols_map_type::iterator it =
-		fun_syms_->find(symbol->get_name());
-	      if (it == fun_syms_->end())
+
+	    if (load_fun_map && symbol->is_public())
+	      {
 		{
-		  (*fun_syms_)[symbol->get_name()] = elf_symbols();
-		  it = fun_syms_->find(symbol->get_name());
+		  string_elf_symbols_map_type::iterator it =
+		    fun_syms_->find(symbol->get_name());
+		  if (it == fun_syms_->end())
+		    {
+		      (*fun_syms_)[symbol->get_name()] = elf_symbols();
+		      it = fun_syms_->find(symbol->get_name());
+		    }
+		  string name = symbol->get_name();
+		  it->second.push_back(symbol);
 		}
 
-	      it->second.push_back(symbol);
-	    }
-
-	    {
-	      addr_elf_symbol_sptr_map_type::const_iterator it =
-		fun_addr_sym_map_->find(sym->st_value);
-	      if (it == fun_addr_sym_map_->end())
-		(*fun_addr_sym_map_)[sym->st_value] = symbol;
-	      else
-		it->second->get_main_symbol()->add_alias(symbol.get());
-	    }
+		{
+		  addr_elf_symbol_sptr_map_type::const_iterator it =
+		    fun_addr_sym_map_->find(sym->st_value);
+		  if (it == fun_addr_sym_map_->end())
+		    (*fun_addr_sym_map_)[sym->st_value] = symbol;
+		  else
+		    it->second->get_main_symbol()->add_alias(symbol.get());
+		}
+	      }
+	    else if (load_undefined_fun_map && !symbol->is_defined())
+	      {
+		string_elf_symbols_map_type::iterator it =
+		  undefined_fun_syms_->find(symbol->get_name());
+		if (it == undefined_fun_syms_->end())
+		  {
+		    (*undefined_fun_syms_)[symbol->get_name()] = elf_symbols();
+		    it = undefined_fun_syms_->find(symbol->get_name());
+		  }
+		it->second.push_back(symbol);
+	      }
 	  }
-	else if (load_var_map
+	else if ((load_var_map || load_undefined_var_map)
 		 && (GELF_ST_TYPE(sym->st_info) == STT_OBJECT
 		     || GELF_ST_TYPE(sym->st_info) == STT_TLS)
 		 // If the symbol is for an OBJECT, the index of the
@@ -2172,28 +2431,41 @@ public:
 	    elf_symbol_sptr symbol(new elf_symbol);
 	    assert(lookup_elf_symbol_from_index(i, *symbol));
 	    assert(symbol->is_variable());
-	    if (!symbol->is_public())
-	      continue;
 
-	    {
-	      string_elf_symbols_map_type::iterator it =
-		var_syms_->find(symbol->get_name());
-	      if (it == var_syms_->end())
+	    if (load_var_map && symbol->is_public())
+	      {
 		{
-		  (*var_syms_)[symbol->get_name()] = elf_symbols();
-		  it = var_syms_->find(symbol->get_name());
+		  string_elf_symbols_map_type::iterator it =
+		    var_syms_->find(symbol->get_name());
+		  if (it == var_syms_->end())
+		    {
+		      (*var_syms_)[symbol->get_name()] = elf_symbols();
+		      it = var_syms_->find(symbol->get_name());
+		    }
+		  string name = symbol->get_name();
+		  it->second.push_back(symbol);
 		}
-	      it->second.push_back(symbol);
-	    }
 
-	    {
-	      addr_elf_symbol_sptr_map_type::const_iterator it =
-		var_addr_sym_map_->find(sym->st_value);
-	      if (it == var_addr_sym_map_->end())
-		(*var_addr_sym_map_)[sym->st_value] = symbol;
-	      else
-		it->second->get_main_symbol()->add_alias(symbol.get());
-	    }
+		{
+		  addr_elf_symbol_sptr_map_type::const_iterator it =
+		    var_addr_sym_map_->find(sym->st_value);
+		  if (it == var_addr_sym_map_->end())
+		    (*var_addr_sym_map_)[sym->st_value] = symbol;
+		  else
+		    it->second->get_main_symbol()->add_alias(symbol.get());
+		}
+	      }
+	    else if (load_undefined_var_map && !symbol->is_defined())
+	      {
+		string_elf_symbols_map_type::iterator it =
+		  undefined_var_syms_->find(symbol->get_name());
+		if (it == undefined_var_syms_->end())
+		  {
+		    (*undefined_var_syms_)[symbol->get_name()] = elf_symbols();
+		    it = undefined_var_syms_->find(symbol->get_name());
+		  }
+		it->second.push_back(symbol);
+	      }
 	  }
       }
 
@@ -2210,7 +2482,9 @@ public:
     if (!fun_addr_sym_map_ || fun_addr_sym_map_->empty()
 	|| !var_addr_sym_map_ || var_addr_sym_map_->empty()
 	|| !fun_syms_ || fun_syms_->empty()
-	|| !var_syms_ || var_syms_->empty())
+	|| !var_syms_ || var_syms_->empty()
+	|| !undefined_fun_syms_ || undefined_fun_syms_->empty()
+	|| !undefined_var_syms_ || undefined_var_syms_->empty())
       return const_cast<read_context*>(this)->load_symbol_maps();
     return false;
   }
@@ -6442,7 +6716,9 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
   corp->set_origin(corpus::DWARF_ORIGIN);
 
   corp->set_fun_symbol_map(ctxt.fun_syms_sptr());
+  corp->set_undefined_fun_symbol_map(ctxt.undefined_fun_syms_sptr());
   corp->set_var_symbol_map(ctxt.var_syms_sptr());
+  corp->set_undefined_var_symbol_map(ctxt.undefined_var_syms_sptr());
 
   resulting_corp = corp;
 
