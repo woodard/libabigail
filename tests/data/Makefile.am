@@ -26,6 +26,7 @@ test-read-write/test22.xml \
 test-read-write/test23.xml \
 test-read-write/test24.xml \
 test-read-write/test25.xml \
+test-read-write/test26.xml \
 \
 test-write-read-archive/test0.xml \
 test-write-read-archive/test1.xml \

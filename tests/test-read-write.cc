@@ -36,6 +36,16 @@ using std::string;
 using std::ofstream;
 using std::cerr;
 
+using abigail::tools::file_type;
+using abigail::tools::check_file;
+using abigail::tools::guess_file_type;
+using abigail::translation_unit;
+using abigail::corpus_sptr;
+using abigail::xml_reader::read_translation_unit_from_file;
+using abigail::xml_reader::read_corpus_from_native_xml_file;
+using abigail::xml_writer::write_translation_unit;
+using abigail::xml_writer::write_corpus_to_native_xml;
+
 /// This is an aggregate that specifies where a test shall get its
 /// input from, and where it shall write its ouput to.
 struct InOutSpec
@@ -151,6 +161,10 @@ InOutSpec in_out_specs[] =
     "data/test-read-write/test25.xml",
     "output/test-read-write/test25.xml"
   },
+  {
+    "data/test-read-write/test26.xml",
+    "output/test-read-write/test26.xml"
+  },
   // This should be the last entry.
   {NULL, NULL}
 };
@@ -168,8 +182,22 @@ main()
     {
       string input_suffix(s->in_path);
       in_path = abigail::tests::get_src_dir() + "/tests/" + input_suffix;
-      abigail::translation_unit tu(in_path);
-      if (!abigail::xml_reader::read_translation_unit_from_file(tu))
+
+      if (!check_file(in_path, cerr))
+	return true;
+
+      translation_unit tu(in_path);
+      corpus_sptr corpus;
+
+      bool read = false;
+      file_type t = guess_file_type(in_path);
+      if (t == abigail::tools::FILE_TYPE_NATIVE_BI)
+	read = read_translation_unit_from_file(tu);
+      else if (t == abigail::tools::FILE_TYPE_XML_CORPUS)
+	  read = (corpus = read_corpus_from_native_xml_file(in_path));
+      else
+	abort();
+      if (!read)
 	{
 	  cerr << "failed to read " << in_path << "\n";
 	  is_ok = false;
@@ -193,8 +221,15 @@ main()
 	  continue;
 	}
 
-      bool r =
-	abigail::xml_writer::write_translation_unit(tu, /*indent=*/0, of);
+      bool r = false;
+
+      if (t == abigail::tools::FILE_TYPE_XML_CORPUS)
+	r = write_corpus_to_native_xml(corpus, /*indent=*/0, of);
+      else if (t == abigail::tools::FILE_TYPE_NATIVE_BI)
+	r = write_translation_unit(tu, /*indent=*/0, of);
+      else
+	abort();
+
       is_ok = (is_ok && r);
       of.close();
       string cmd = "diff -u " + in_path + " " + out_path;

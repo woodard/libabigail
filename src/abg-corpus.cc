@@ -1050,7 +1050,11 @@ corpus::set_undefined_var_symbol_map(string_elf_symbols_map_sptr map)
 /// @return a shared pointer to the function symbols map.
 const string_elf_symbols_map_sptr
 corpus::get_fun_symbol_map_sptr() const
-{return priv_->fun_symbol_map;}
+{
+  if (!priv_->fun_symbol_map)
+    priv_->fun_symbol_map.reset(new string_elf_symbols_map_type);
+  return priv_->fun_symbol_map;
+}
 
 /// Getter for the function symbols map.
 ///
@@ -1183,7 +1187,11 @@ corpus::get_sorted_undefined_fun_symbols() const
 /// @return a shared pointer to the variable symbols map.
 const string_elf_symbols_map_sptr
 corpus::get_var_symbol_map_sptr() const
-{return priv_->var_symbol_map;}
+{
+  if (!priv_->var_symbol_map)
+    priv_->var_symbol_map.reset(new string_elf_symbols_map_type);
+  return priv_->var_symbol_map;
+}
 
 /// Getter for the variable symbols map.
 ///
