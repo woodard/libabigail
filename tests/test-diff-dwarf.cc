@@ -165,6 +165,18 @@ InOutSpec in_out_specs[] =
     "output/test-diff-dwarf/test16-syms-only-report.txt"
   },
   {
+    "data/test-diff-dwarf/test17-non-refed-syms-v0.o",
+    "data/test-diff-dwarf/test17-non-refed-syms-v1.o",
+    "data/test-diff-dwarf/test17-non-refed-syms-report-0.txt",
+    "output/test-diff-dwarf/test17-non-refed-syms-report-0.txt"
+  },
+  {
+    "data/test-diff-dwarf/libtest18-alias-sym-v0.so",
+    "data/test-diff-dwarf/libtest18-alias-sym-v1.so",
+    "data/test-diff-dwarf/test18-alias-sym-report-0.txt",
+    "output/test-diff-dwarf/test18-alias-sym-report-0.txt"
+  },
+  {
     "data/test-diff-dwarf/libtest19-soname-v0.so",
     "data/test-diff-dwarf/libtest19-soname-v1.so",
     "data/test-diff-dwarf/test19-soname-report-0.txt",

@@ -3,6 +3,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 2 Added functions:
 
-  'function void bar()'    {_Z3barv}
-  'function void foo()'    {foo_alias@VERSION_1.0, aliases _Z3foov}
+  'function void bar()'
+  'function void foo()'
 

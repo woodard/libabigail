@@ -156,6 +156,7 @@ test-diff-dwarf/test16-syms-only-v1.cc \
 test-diff-dwarf/test16-syms-only-report.txt \
 test-diff-dwarf/test17-non-refed-syms-v0.o \
 test-diff-dwarf/test17-non-refed-syms-v1.o \
+test-diff-dwarf/test17-non-refed-syms-report-0.txt \
 test-diff-dwarf/test17-non-refed-syms-v0.cc \
 test-diff-dwarf/test17-non-refed-syms-v1.cc \
 test-diff-dwarf/libtest18-alias-sym-v0.so \
