@@ -1470,9 +1470,9 @@ write_elf_symbol(const shared_ptr<elf_symbol>	sym,
 ///
 /// @return true upon successful completion.
 static bool
-write_elf_symbols_table(const elf_symbols& syms,
-			write_context& ctxt,
-			unsigned indent)
+write_elf_symbols_table(const elf_symbols&	syms,
+			write_context&		ctxt,
+			unsigned		indent)
 {
   if (syms.empty())
     return false;

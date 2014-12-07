@@ -864,15 +864,16 @@ read_translation_unit_from_input(read_context&	ctxt,
 ///
 /// @return true upon successful parsing, false otherwise.
 static bool
-read_symbol_db_from_input(read_context& ctxt,
-			  bool function_symbols,
-			  string_elf_symbols_map_sptr& symdb)
+read_symbol_db_from_input(read_context&		ctxt,
+			  bool				function_symbols,
+			  string_elf_symbols_map_sptr&	symdb)
 {
-    xml::reader_sptr reader = ctxt.get_reader();
+  xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
     return false;
 
-  // The symbol db node must start with the abi-instr node.
+  // The symbol db must start with the 'elf-function-symbols" or
+  // 'elf-variable-symbols' element node.
   int status = 1;
   while (status == 1
 	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
