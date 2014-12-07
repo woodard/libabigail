@@ -102,6 +102,8 @@ struct corpus::priv
   vector<string>		sym_id_fns_to_keep;
   vector<string>		sym_id_vars_to_keep;
   string			path;
+  vector<string>		needed;
+  string			soname;
   translation_units		members;
   vector<function_decl*>	fns;
   vector<var_decl*>		vars;
@@ -975,6 +977,51 @@ void
 corpus::set_path(const string& path)
 {priv_->path = path;}
 
+/// Getter of the needed property of the corpus.
+///
+/// This property is meaningful for, e.g, corpora built from ELF
+/// shared library files.  In that case, this is a vector of names of
+/// dependencies of the ELF shared library file.
+///
+/// @return the vector of dependencies needed by this corpus.
+const vector<string>&
+corpus::get_needed() const
+{return priv_->needed;}
+
+/// Setter of the needed property of the corpus.
+///
+/// This property is meaningful for, e.g, corpora built from ELF
+/// shared library files.  In that case, this is a vector of names of
+/// dependencies of the ELF shared library file.
+///
+/// @param needed the new vector of dependencies needed by this
+/// corpus.
+void
+corpus::set_needed(const vector<string>& needed)
+{priv_->needed = needed;}
+
+/// Getter for the soname property of the corpus.
+///
+/// This property is meaningful for, e.g, corpora built from ELF
+/// shared library files.  In that case, this is the shared object
+/// name exported by the shared library.
+///
+/// @return the soname property of the corpus.
+const string&
+corpus::get_soname()
+{return priv_->soname;}
+
+/// Setter for the soname property of the corpus.
+///
+/// This property is meaningful for, e.g, corpora built from ELF
+/// shared library files.  In that case, this is the shared object
+/// name exported by the shared library.
+///
+/// @param soname the new soname property of the corpus.
+void
+corpus::set_soname(const string& soname)
+{priv_->soname = soname;}
+
 /// Tests if the corpus contains no translation unit.
 ///
 /// @return true if the corpus contains no translation unit.
@@ -985,7 +1032,9 @@ corpus::is_empty() const
 	  && priv_->fun_symbol_map
 	  && priv_->fun_symbol_map->empty()
 	  && priv_->var_symbol_map
-	  && priv_->var_symbol_map->empty());
+	  && priv_->var_symbol_map->empty()
+	  && priv_->soname.empty()
+	  && priv_->needed.empty());
 }
 
 /// Compare the current @ref corpus against another one.

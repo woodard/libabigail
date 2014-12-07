@@ -1,4 +1,7 @@
 <abi-corpus path='data/test-read-dwarf/test4.so'>
+  <elf-needed>
+    <dependency name='libc.so.6'/>
+  </elf-needed>
   <elf-function-symbols>
     <elf-symbol name='cpy' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>

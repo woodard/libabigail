@@ -1489,6 +1489,38 @@ write_elf_symbols_table(const elf_symbols&	syms,
   return true;
 }
 
+/// Write a vector of dependency names for the current corpus we are
+/// writting.
+///
+/// @param needed the vector of dependency names to write.
+///
+/// @param ctxt the write context to use for the writting.
+///
+/// @param indent the number of indendation spaces to use.
+///
+/// @return true upon successful completion, false otherwise.
+static bool
+write_elf_needed(const vector<string>&	needed,
+		 write_context&	ctxt,
+		 unsigned		indent)
+{
+  if (needed.empty())
+    return false;
+
+  ostream& o = ctxt.get_ostream();
+
+  for (vector<string>::const_iterator i = needed.begin();
+       i != needed.end();
+       ++i)
+    {
+      if (i != needed.begin())
+	o << "\n";
+      do_indent(o, indent);
+      o << "<dependency name='" << *i << "'/>";
+    }
+  return true;
+}
+
 /// Serialize a pointer to an instance of typedef_decl.
 ///
 /// @param decl the typedef_decl to serialize.
@@ -2475,6 +2507,9 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
   if (!corpus->get_path().empty())
     out << " path='" << corpus->get_path() << "'";
 
+  if (!corpus->get_soname().empty())
+    out << " soname='" << corpus->get_soname()<< "'";
+
   if (corpus->is_empty())
     {
       out << "/>\n";
@@ -2482,6 +2517,18 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
     }
 
   out << ">\n";
+
+  // Write the list of needed corpora
+  if (!corpus->get_needed().empty())
+    {
+      do_indent_to_level(ctxt, indent, 1);
+      out << "<elf-needed>\n";
+      write_elf_needed(corpus->get_needed(), ctxt,
+		       get_indent_to_level(ctxt, indent, 2));
+      out << "\n";
+      do_indent_to_level(ctxt, indent, 1);
+      out << "</elf-needed>\n";
+    }
 
   // Write the function symbols data base.
   if (!corpus->get_fun_symbol_map().empty())

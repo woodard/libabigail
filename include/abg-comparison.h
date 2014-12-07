@@ -793,6 +793,12 @@ public:
   show_stats_only() const;
 
   void
+  show_soname_change(bool f);
+
+  bool
+  show_soname_change() const;
+
+  void
   show_deleted_fns(bool f);
 
   bool

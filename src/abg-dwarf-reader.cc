@@ -1463,6 +1463,8 @@ class read_context
   string_elf_symbols_map_sptr	var_syms_;
   string_elf_symbols_map_sptr	undefined_fun_syms_;
   string_elf_symbols_map_sptr	undefined_var_syms_;
+  vector<string>		dt_needed_;
+  string			dt_soname_;
 
   read_context();
 
@@ -2299,6 +2301,16 @@ public:
     return *undefined_var_syms_;
   }
 
+  /// Getter for the ELF dt_needed tag.
+  const vector<string>&
+  dt_needed() const
+  {return dt_needed_;}
+
+  /// Getter for the ELF dt_soname tag.
+  const string&
+  dt_soname() const
+  {return dt_soname_;}
+
   /// Getter for the map of global variables symbol address -> global
   /// variable symbol index.
   ///
@@ -2487,6 +2499,92 @@ public:
 	|| !undefined_var_syms_ || undefined_var_syms_->empty())
       return const_cast<read_context*>(this)->load_symbol_maps();
     return false;
+  }
+
+  /// Load the DT_NEEDED and DT_SONAME elf TAGS.
+  ///
+  /// @return true if the tags could be read, false otherwise.
+  void
+  load_dt_soname_and_needed()
+  {
+    size_t num_prog_headers = 0;
+    if (elf_getphdrnum(elf_handle(), &num_prog_headers) < 0)
+      return;
+
+    unsigned found = 0;
+    // Cycle through each program header.
+    for (size_t i = 0; i < num_prog_headers; ++i)
+      {
+	GElf_Phdr phdr_mem;
+	GElf_Phdr *phdr = gelf_getphdr(elf_handle(), i, &phdr_mem);
+	if (phdr == NULL || phdr->p_type != PT_DYNAMIC)
+	  continue;
+
+	// Poke at the dynamic segment like a section, so that we can
+	// get its section header information; also we'd like to read
+	// the data of the segment by using elf_getdata() but that
+	// function needs a Elf_Scn data structure to act on.
+	// Elfutils doesn't really have any particular function to
+	// access segment data, other than the functions used to
+	// access section data.
+	Elf_Scn *dynamic_section = gelf_offscn(elf_handle(), phdr->p_offset);
+	GElf_Shdr  shdr_mem;
+	GElf_Shdr *dynamic_section_header = gelf_getshdr(dynamic_section,
+							 &shdr_mem);
+	if (dynamic_section_header == NULL
+	    || dynamic_section_header->sh_type != SHT_DYNAMIC)
+	  continue;
+
+	// Get data of the dynamic segment (seen a a section).
+	Elf_Data *data = elf_getdata(dynamic_section, NULL);
+	if (data == NULL)
+	  continue;
+
+	// Get the index of the section headers string table.
+	size_t string_table_index = 0;
+	assert (elf_getshdrstrndx(elf_handle(), &string_table_index) >= 0);
+
+	size_t dynamic_section_header_entry_size = gelf_fsize(elf_handle(),
+							      ELF_T_DYN, 1,
+							      EV_CURRENT);
+
+	GElf_Shdr link_mem;
+	GElf_Shdr *link =
+	  gelf_getshdr(elf_getscn(elf_handle(),
+				  dynamic_section_header->sh_link),
+		       &link_mem);
+	assert(link != NULL);
+
+	size_t num_dynamic_section_entries =
+	  dynamic_section_header->sh_size / dynamic_section_header_entry_size;
+
+	// Now walk through all the DT_* data tags that are in the
+	// segment/section
+	for (size_t j = 0; j < num_dynamic_section_entries; ++j)
+	  {
+	    GElf_Dyn dynamic_section_mem;
+	    GElf_Dyn *dynamic_section = gelf_getdyn(data,
+						    j,
+						    &dynamic_section_mem);
+	    if (dynamic_section == NULL)
+	      break;
+
+	    if (dynamic_section->d_tag == DT_NEEDED)
+	      {
+		string dt_needed = elf_strptr(elf_handle(),
+					      dynamic_section_header->sh_link,
+					      dynamic_section->d_un.d_val);
+		dt_needed_.push_back(dt_needed);
+		++found;
+	      }
+	    else if (dynamic_section->d_tag == DT_SONAME)
+	      {
+		dt_soname_ = elf_strptr(elf_handle(),
+					dynamic_section_header->sh_link,
+					dynamic_section->d_un.d_val);
+	      }
+	  }
+      }
   }
 
   /// This is a sub-routine of maybe_adjust_fn_sym_address and
@@ -6706,6 +6804,8 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
   if (!ctxt.load_symbol_maps())
     status |= STATUS_NO_SYMBOLS_FOUND;
 
+  ctxt.load_dt_soname_and_needed();
+
   if (status & STATUS_NO_SYMBOLS_FOUND)
     return status;
 
@@ -6714,6 +6814,8 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
   corpus_sptr corp = read_debug_info_into_corpus(ctxt);
   corp->set_path(ctxt.elf_path());
   corp->set_origin(corpus::DWARF_ORIGIN);
+  corp->set_soname(ctxt.dt_soname());
+  corp->set_needed(ctxt.dt_needed());
 
   corp->set_fun_symbol_map(ctxt.fun_syms_sptr());
   corp->set_undefined_fun_symbol_map(ctxt.undefined_fun_syms_sptr());

@@ -2194,6 +2194,7 @@ struct diff_context::priv
   corpus_sptr				second_corpus_;
   bool					forbid_traversing_a_node_twice_;
   bool					show_stats_only_;
+  bool					show_soname_change_;
   bool					show_deleted_fns_;
   bool					show_changed_fns_;
   bool					show_added_fns_;
@@ -2209,6 +2210,7 @@ struct diff_context::priv
     : allowed_category_(EVERYTHING_CATEGORY),
       forbid_traversing_a_node_twice_(true),
       show_stats_only_(false),
+      show_soname_change_(true),
       show_deleted_fns_(true),
       show_changed_fns_(true),
       show_added_fns_(true),
@@ -2575,6 +2577,22 @@ diff_context::show_stats_only(bool f)
 bool
 diff_context::show_stats_only() const
 {return priv_->show_stats_only_;}
+
+/// Setter for the property that says if the comparison module should
+/// show the soname changes in its report.
+///
+/// @param f the new value of the property.
+void
+diff_context::show_soname_change(bool f)
+{priv_->show_soname_change_ = f;}
+
+/// Getter for the property that says if the comparison module should
+/// show the soname changes in its report.
+///
+/// @return the value of the property.
+bool
+diff_context::show_soname_change() const
+{return priv_->show_soname_change_;}
 
 /// Set a flag saying to show the deleted functions.
 ///
@@ -9443,6 +9461,7 @@ struct corpus_diff::priv
   corpus_sptr				second_;
   corpus_diff::diff_stats		diff_stats_;
   bool					filters_and_suppr_applied_;
+  bool					sonames_equal_;
   edit_script				fns_edit_script_;
   edit_script				vars_edit_script_;
   edit_script				unrefed_fn_syms_edit_script_;
@@ -9460,7 +9479,8 @@ struct corpus_diff::priv
 
   priv()
     : finished_(false),
-      filters_and_suppr_applied_(false)
+      filters_and_suppr_applied_(false),
+      sonames_equal_(false)
   {}
 
   bool
@@ -9880,6 +9900,9 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
   size_t total = s.num_func_removed() + s.num_func_added() +
     s.net_num_func_changed();
 
+  if (!sonames_equal_)
+    out << indent << "ELF SONAME changed\n";
+
   // function changes summary
   out << indent << "Functions changes summary: ";
   out << s.num_func_removed() << " Removed, ";
@@ -10181,7 +10204,8 @@ corpus_diff::get_pretty_representation() const
 unsigned
 corpus_diff::length() const
 {
-  return (priv_->deleted_fns_.size()
+  return (!priv_->sonames_equal_
+	  + priv_->deleted_fns_.size()
 	  + priv_->added_fns_.size()
 	  + priv_->changed_fns_.size()
 	  + priv_->deleted_vars_.size()
@@ -10461,6 +10485,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_stats_only())
     return;
   out << "\n";
+
+  if (context()->show_soname_change()
+      && !priv_->sonames_equal_)
+    out << indent << "SONAME changed from '"
+	<< first_corpus()->get_soname() << "' to '"
+	<< second_corpus()->get_soname() << "'\n\n";
 
   if (context()->show_deleted_fns())
     {
@@ -10895,6 +10925,8 @@ compute_diff(const corpus_sptr	f,
   ctxt->set_corpora(f, s);
 
   corpus_diff_sptr r(new corpus_diff(f, s, ctxt));
+
+  r->priv_->sonames_equal_ = f->get_soname() == s->get_soname();
 
   diff_utils::compute_diff<fns_it_type, eq_type>(f->get_functions().begin(),
 						 f->get_functions().end(),

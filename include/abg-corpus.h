@@ -89,6 +89,18 @@ public:
   void
   set_path(const string&);
 
+  const vector<string>&
+  get_needed() const;
+
+  void
+  set_needed(const vector<string>&);
+
+  const string&
+  get_soname();
+
+  void
+  set_soname(const string&);
+
   bool
   is_empty() const;
 

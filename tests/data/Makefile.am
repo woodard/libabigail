@@ -164,6 +164,11 @@ test-diff-dwarf/test18-alias-sym-report-0.txt \
 test-diff-dwarf/test18-alias-sym-v0.cc \
 test-diff-dwarf/test18-alias-sym-v1.cc \
 test-diff-dwarf/test18-alias-sym-version-script \
+test-diff-dwarf/libtest19-soname-v0.so \
+test-diff-dwarf/libtest19-soname-v1.so \
+test-diff-dwarf/test19-soname-report-0.txt \
+test-diff-dwarf/test19-soname-v0.cc \
+test-diff-dwarf/test19-soname-v1.cc \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

@@ -1,4 +1,10 @@
 <abi-corpus path='data/test-read-dwarf/test6.so'>
+  <elf-needed>
+    <dependency name='libstdc++.so.6'/>
+    <dependency name='libm.so.6'/>
+    <dependency name='libgcc_s.so.1'/>
+    <dependency name='libc.so.6'/>
+  </elf-needed>
   <elf-function-symbols>
     <elf-symbol name='_Z3barv' type='func-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='_Z4blehv' type='func-type' binding='global-binding' is-defined='yes'/>

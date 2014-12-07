@@ -903,6 +903,82 @@ read_symbol_db_from_input(read_context&		ctxt,
   return symdb;
 }
 
+/// From an "elf-needed" XML_ELEMENT node, build a vector of strings
+/// representing the vector of the dependencies needed by a given
+/// corpus.
+///
+/// @param node the XML_ELEMENT node of name "elf-needed".
+///
+/// @param needed the output vector of string to populate with the
+/// vector of dependency names found on the xml node @p node.
+///
+/// @return true upon successful completion, false otherwise.
+static bool
+build_needed(xmlNode* node, vector<string>& needed)
+{
+  if (!node)
+    return false;
+
+  if (!node || !xmlStrEqual(node->name,BAD_CAST("elf-needed")))
+    return false;
+
+  for (xmlNodePtr n = node->children; n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE
+	  || !xmlStrEqual(n->name, BAD_CAST("dependency")))
+	continue;
+
+      string name;
+      if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(n, "name"))
+	xml::xml_char_sptr_to_string(s, name);
+
+      if (!name.empty())
+	needed.push_back(name);
+    }
+
+  return true;
+}
+
+/// Move to the next xml element node and expext it to be named
+/// "elf-needed".  Then read the sub-tree to made of that node and
+/// extracts a vector of needed dependencies name from it.
+///
+/// @param ctxt the read context used to the xml reading.
+///
+/// @param needed the resulting vector of dependency names.
+///
+/// @return true upon successful completion, false otherwise.
+static bool
+read_elf_needed_from_input(read_context&	ctxt,
+			   vector<string>&	needed)
+{
+  xml::reader_sptr reader = ctxt.get_reader();
+  if (!reader)
+    return false;
+
+  int status = 1;
+  while (status == 1
+	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+    status = advance_cursor (ctxt);
+
+  if (status != 1)
+    return false;
+
+  if (!xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+		    BAD_CAST("elf-needed")))
+    return false;
+
+  xmlNodePtr node = xmlTextReaderExpand(reader.get());
+  if (!node)
+    return false;
+
+  bool result = build_needed(node, needed);
+
+  xmlTextReaderNext(reader.get());
+
+  return result;
+}
+
 /// Parse the input XML document containing an ABI corpus, represented
 /// by an 'abi-corpus' element node, associated to the current
 /// context.
@@ -936,16 +1012,26 @@ read_corpus_from_input(read_context& ctxt)
     }
 
   corpus& corp = *ctxt.get_corpus();
-  xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
 
+  xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
   if (path_str)
     corp.set_path(reinterpret_cast<char*>(path_str.get()));
 
-  // Advance the cursor until the next 'abi-instr' element.
+  xml::xml_char_sptr soname_str = XML_READER_GET_ATTRIBUTE(reader, "soname");
+  if (soname_str)
+    corp.set_soname(reinterpret_cast<char*>(soname_str.get()));
+
+  // Advance the cursor until the next element.
   do
     status = advance_cursor (ctxt);
   while (status == 1
 	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT);
+
+  // Read the needed element
+  vector<string> needed;
+  read_elf_needed_from_input(ctxt, needed);
+  if (!needed.empty())
+    corp.set_needed(needed);
 
   string_elf_symbols_map_sptr fn_sym_db, var_sym_db;
   bool is_ok = false;
@@ -983,6 +1069,7 @@ read_corpus_from_input(read_context& ctxt)
   while (is_ok);
 
   corp.set_origin(corpus::NATIVE_XML_ORIGIN);
+
   return ctxt.get_corpus();;
 }
 
