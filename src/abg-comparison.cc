@@ -10119,6 +10119,13 @@ edit_script&
 corpus_diff::variable_changes() const
 {return priv_->vars_edit_script_;}
 
+/// Test if the soname of the underying corpus has changed.
+///
+/// @return true iff the soname has changed.
+bool
+corpus_diff::soname_changed() const
+{return !priv_->sonames_equal_;}
+
 /// Getter for the deleted functions of the diff.
 ///
 /// @return the the deleted functions of the diff.
@@ -10204,7 +10211,7 @@ corpus_diff::get_pretty_representation() const
 unsigned
 corpus_diff::length() const
 {
-  return (!priv_->sonames_equal_
+  return (soname_changed()
 	  + priv_->deleted_fns_.size()
 	  + priv_->added_fns_.size()
 	  + priv_->changed_fns_.size()

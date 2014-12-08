@@ -380,7 +380,8 @@ main(int argc, char* argv[])
   const corpus_diff::diff_stats& s =
     changes->apply_filters_and_suppressions_before_reporting();
 
-  if (s.num_func_removed() != 0
+  if (changes->soname_changed()
+      || s.num_func_removed() != 0
       || s.num_vars_removed() != 0
       || s.num_func_syms_removed() != 0
       || s.num_var_syms_removed() != 0
@@ -398,7 +399,8 @@ main(int argc, char* argv[])
 	  base_name(opts.lib2_path, lib2_path);
 	}
 
-      bool abi_break_for_sure = s.num_vars_removed()
+      bool abi_break_for_sure = changes->soname_changed()
+	|| s.num_vars_removed()
 	|| s.num_func_removed()
 	|| s.num_var_syms_removed()
 	|| s.num_func_syms_removed();

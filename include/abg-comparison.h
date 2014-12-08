@@ -2029,6 +2029,9 @@ public:
   edit_script&
   variable_changes() const;
 
+  bool
+  soname_changed() const;
+
   const string_function_ptr_map&
   deleted_functions() const;
 

@@ -101,6 +101,15 @@ InOutSpec in_out_specs[] =
     "data/test-abicompat/test3-fn-removed-report-0.txt",
     "output/test-abicompat/test3-fn-removed-report-0.txt",
   },
+  {
+    "data/test-abicompat/test4-soname-changed-app",
+    "data/test-abicompat/libtest4-soname-changed-v0.so",
+    "data/test-abicompat/libtest4-soname-changed-v1.so",
+    "",
+    "--show-base-names",
+    "data/test-abicompat/test4-soname-changed-report-0.txt",
+    "output/test-abicompat/test4-soname-changed-report-0.txt",
+  },
   // This entry must be the last one.
   {0, 0, 0, 0, 0, 0, 0}
 };

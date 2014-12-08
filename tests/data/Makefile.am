@@ -464,4 +464,11 @@ test-abicompat/test3-fn-removed-report-0.txt \
 test-abicompat/test3-fn-removed-v0.cc \
 test-abicompat/test3-fn-removed-v1.cc \
 test-abicompat/test3-fn-removed-version-script-0 \
-test-abicompat/test3-fn-removed-version-script-1
+test-abicompat/test3-fn-removed-version-script-1 \
+test-abicompat/libtest4-soname-changed-v0.so \
+test-abicompat/libtest4-soname-changed-v1.so \
+test-abicompat/test4-soname-changed-app \
+test-abicompat/test4-soname-changed-app.cc \
+test-abicompat/test4-soname-changed-v0.cc \
+test-abicompat/test4-soname-changed-v1.cc \
+test-abicompat/test4-soname-changed-report-0.txt
