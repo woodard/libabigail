@@ -170,6 +170,11 @@ test-diff-dwarf/libtest19-soname-v1.so \
 test-diff-dwarf/test19-soname-report-0.txt \
 test-diff-dwarf/test19-soname-v0.cc \
 test-diff-dwarf/test19-soname-v1.cc \
+test-diff-dwarf/libtest20-add-fn-parm-v0.so \
+test-diff-dwarf/libtest20-add-fn-parm-v1.so \
+test-diff-dwarf/test20-add-fn-parm-report-0.txt \
+test-diff-dwarf/test20-add-fn-parm-v0.c \
+test-diff-dwarf/test20-add-fn-parm-v1.c \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

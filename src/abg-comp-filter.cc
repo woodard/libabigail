@@ -205,8 +205,8 @@ function_name_changed_but_not_symbol(const function_decl_sptr f,
 {
   if (!f || !s)
     return false;
-  string fn = f->get_pretty_representation(),
-    sn = s->get_pretty_representation();
+  string fn = f->get_qualified_name(),
+    sn = s->get_qualified_name();
 
   if (fn != sn)
     {
