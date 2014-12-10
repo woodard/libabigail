@@ -144,14 +144,6 @@ fi
 
 AM_CONDITIONAL(ENABLE_CXX11, test x$ENABLE_CXX11 = xyes)
 
-ENABLE_ZIP_ARCHIVE_AND_CXX11=no
-if test x$ENABLE_CXX11 = xyes -a x$ENABLE_ZIP_ARCHIVE = xyes; then
-   ENABLE_ZIP_ARCHIVE_AND_CXX11 = yes
-fi
-
-AM_CONDITIONAL(ENABLE_ZIP_ARCHIVE_AND_CXX11, test x$ENABLE_ZIP_ARCHIVE_AND_CXX11 = xyes)
-
-
 dnl Check for the presence of doxygen program
 
 if test x$ENABLE_APIDOC != xno; then

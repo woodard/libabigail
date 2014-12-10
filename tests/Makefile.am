@@ -1,25 +1,18 @@
 SUBDIRS = data
 
+ZIP_ARCHIVE_TESTS =
 if ENABLE_ZIP_ARCHIVE
-ZIP_ARCHIVE_TESTS_FIRST_PART = runtestwritereadarchive
-else
-ZIP_ARCHIVE_TESTS_FIRST_PART =
-endif
-
+ZIP_ARCHIVE_TESTS += runtestwritereadarchive
 if ENABLE_CXX11
-CXX11_TESTS = runtestsvg
-AM_CXXFLAGS = "-std=gnu++11"
-else
+ZIP_ARCHIVE_TESTS += runtestdot
+endif
+endif
+
 CXX11_TESTS =
+if ENABLE_CXX11
+CXX11_TESTS += runtestsvg
+AM_CXXFLAGS = "-std=gnu++11"
 endif
-
-if ENABLE_ZIP_ARCHIVE_AND_CXX11
-ZIP_ARCHIVE_TESTS_SECOND_PART = runtestdot
-else
-ZIP_ARCHIVE_TESTS_SECOND_PART =
-endif
-
-ZIP_ARCHIVE_TESTS = $(ZIP_ARCHIVE_TESTS_FIRST_PART) $(ZIP_ARCHIVE_TESTS_SECOND_PART)
 
 TESTS=				\
 runtestreadwrite		\
