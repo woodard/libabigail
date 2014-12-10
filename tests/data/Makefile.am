@@ -329,6 +329,11 @@ test-diff-filter/test22-compatible-fns-report-0.txt  \
 test-diff-filter/test22-compatible-fns-report-1.txt  \
 test-diff-filter/test22-compatible-fns-v0.c \
 test-diff-filter/test22-compatible-fns-v1.c \
+test-diff-filter/libtest23-redundant-fn-parm-change-v0.so \
+test-diff-filter/libtest23-redundant-fn-parm-change-v1.so \
+test-diff-filter/test23-redundant-fn-parm-change-report-0.txt \
+test-diff-filter/test23-redundant-fn-parm-change-v0.c \
+test-diff-filter/test23-redundant-fn-parm-change-v1.c \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

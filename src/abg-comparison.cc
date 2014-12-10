@@ -2218,7 +2218,7 @@ struct diff_context::priv
       show_changed_vars_(true),
       show_added_vars_(true),
       show_linkage_names_(false),
-      show_redundant_changes_(false),
+      show_redundant_changes_(true),
       show_syms_unreferenced_by_di_(true),
       show_added_syms_unreferenced_by_di_(true)
    {}
@@ -11657,6 +11657,8 @@ struct redundancy_clearing_visitor : public diff_node_visitor
 void
 categorize_redundancy(diff* diff_tree)
 {
+  if (diff_tree->context()->show_redundant_changes())
+    return;
   redundancy_marking_visitor v;
   bool s = diff_tree->context()->traversing_a_node_twice_is_forbidden();
   diff_tree->context()->forbid_traversing_a_node_twice(false);

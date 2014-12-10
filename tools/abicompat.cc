@@ -62,11 +62,13 @@ struct options
   bool			display_help;
   bool			list_undefined_symbols_only;
   bool			show_base_names;
+  bool			show_redundant;
 
   options()
     :display_help(),
      list_undefined_symbols_only(),
-     show_base_names()
+     show_base_names(),
+     show_redundant(true)
   {}
 }; // end struct options
 
@@ -89,6 +91,8 @@ display_usage(const string& prog_name, ostream& out)
       << "  --lib-debug-info-dir2 <path-to-lib-debug-info2>  set the path "
          "to the debug information directory for the second library\n"
       <<  "--suppressions <path> specify a suppression file\n"
+      << "--no-redundant  do not display redundant changes\n"
+      << "--redundant  display redundant changes (this is the default)\n"
     ;
 }
 
@@ -158,6 +162,10 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.suppression_paths.push_back(argv[j]);
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--redundant"))
+	opts.show_redundant = true;
+      else if (!strcmp(argv[i], "--no-redundant"))
+	opts.show_redundant = false;
       else if (!strcmp(argv[i], "--help")
 	       || !strcmp(argv[i], "-h"))
 	{
@@ -353,6 +361,7 @@ main(int argc, char* argv[])
   ctxt->show_added_vars(false);
   ctxt->show_added_symbols_unreferenced_by_debug_info(false);
   ctxt->show_linkage_names(true);
+  ctxt->show_redundant_changes(opts.show_redundant);
   ctxt->switch_categories_off
     (abigail::comparison::ACCESS_CHANGE_CATEGORY
      | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
