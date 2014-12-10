@@ -3191,6 +3191,7 @@ decl_diff_base::~decl_diff_base()
 /// The private data structure for @ref distinct_diff.
 struct distinct_diff::priv
 {
+  diff_sptr compatible_child_diff;
 };// end struct distinct_diff
 
 /// @return a pretty representation for the @ref distinct_diff node.
@@ -3225,7 +3226,9 @@ void
 distinct_diff::chain_into_hierarchy()
 {
   assert(entities_are_of_distinct_kinds(first(), second()));
-  // This kind of diff tree node has no children node.
+
+  if (diff_sptr d = compatible_child_diff())
+    append_child_node(d.get());
 }
 
 /// Constructor for @ref distinct_diff.
@@ -3269,6 +3272,37 @@ distinct_diff::first() const
 const decl_base_sptr
 distinct_diff::second() const
 {return second_subject();}
+
+/// Getter for the child diff of this distinct_diff instance.
+///
+/// When a distinct_diff has two subjects that are different but
+/// compatible, then the distinct_diff instance has a child diff node
+/// (named the compatible child diff) that is the diff between the two
+/// subjects stripped from their typedefs.  Otherwise, the compatible
+/// child diff is nul.
+///
+/// Note that two diff subjects (that compare different) are
+/// considered compatible if stripping typedefs out of them makes them
+/// comparing equal.
+///
+/// @return the compatible child diff node, if any.  Otherwise, null.
+const diff_sptr
+distinct_diff::compatible_child_diff() const
+{
+  if (!priv_->compatible_child_diff)
+    {
+      type_base_sptr fs = strip_typedef(is_type(first())),
+	ss = strip_typedef(is_type(second()));
+
+      if (fs && ss
+	  && !entities_are_of_distinct_kinds(get_type_declaration(fs),
+					     get_type_declaration(ss)))
+	priv_->compatible_child_diff = compute_diff(get_type_declaration(fs),
+						    get_type_declaration(ss),
+						    context());
+    }
+  return priv_->compatible_child_diff;
+}
 
 /// Test if the two arguments are of different kind, or that are both
 /// NULL.
@@ -3332,18 +3366,26 @@ distinct_diff::report(ostream& out, const string& indent) const
   string f_repr = f ? f->get_pretty_representation() : "'void'";
   string s_repr = s ? s->get_pretty_representation() : "'void'";
 
-  out << indent << "entity changed from " << f_repr << " to " << s_repr << "\n";
+  diff_sptr diff = compatible_child_diff();
+
+  if (diff)
+    {
+      out << indent
+	  << "entity changed from '" << f_repr
+	  << "' to compatible type '" << s_repr << "'\n";
+    }
+  else
+    {
+      out << indent
+	  << "entity changed from '" << f_repr
+	  << "' to '" << s_repr << "'\n";
+    }
 
   type_base_sptr fs = strip_typedef(is_type(f)),
     ss = strip_typedef(is_type(s));
 
-  if (fs && ss
-      && !entities_are_of_distinct_kinds(get_type_declaration(fs),
-					 get_type_declaration(ss)))
+  if (diff_sptr diff = compatible_child_diff())
     {
-      diff_sptr diff = compute_diff(get_type_declaration(fs),
-				    get_type_declaration(ss),
-				    context());
       if (diff->length())
 	assert(diff->to_be_reported());
       diff->report(out, indent + "  ");

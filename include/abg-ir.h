@@ -1108,8 +1108,9 @@ typedef shared_ptr<qualified_type_def> qualified_type_def_sptr;
 /// The abstraction of a qualified type.
 class qualified_type_def : public virtual type_base, public virtual decl_base
 {
-  char			cv_quals_;
-  weak_ptr<type_base> underlying_type_;
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
 
   // Forbidden.
   qualified_type_def();
@@ -1132,7 +1133,7 @@ public:
     CV_RESTRICT = 1 << 2
   };
 
-  qualified_type_def(shared_ptr<type_base> type, CV quals, location locus);
+  qualified_type_def(type_base_sptr type, CV quals, location locus);
 
   virtual size_t
   get_size_in_bits() const;
@@ -1143,16 +1144,16 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
-  char
+  CV
   get_cv_quals() const;
 
   void
-  set_cv_quals(char cv_quals);
+  set_cv_quals(CV cv_quals);
 
   string
   get_cv_quals_string_prefix() const;
 
-  shared_ptr<type_base>
+  type_base_sptr
   get_underlying_type() const;
 
   virtual void
@@ -1189,7 +1190,7 @@ public:
   /// A hasher for instances of pointer_type_def
   struct hash;
 
-  pointer_type_def(shared_ptr<type_base>& pointed_to_type, size_t size_in_bits,
+  pointer_type_def(const type_base_sptr& pointed_to_type, size_t size_in_bits,
 		   size_t alignment_in_bits, location locus);
 
   virtual bool
@@ -1746,6 +1747,16 @@ public:
       : type_(type), index_(index), variadic_marker_ (variadic_marker),
 	name_(name), location_(loc),
 	artificial_(false)
+    {}
+
+    parameter(const shared_ptr<type_base> type,
+	      unsigned index,
+	      const std::string& name,
+	      location loc, bool variadic_marker,
+	      bool is_artificial)
+      : type_(type), index_(index), variadic_marker_ (variadic_marker),
+	name_(name), location_(loc),
+	artificial_(is_artificial)
     {}
 
     parameter(const shared_ptr<type_base> type,

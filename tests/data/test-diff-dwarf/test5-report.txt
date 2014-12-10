@@ -5,7 +5,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   [C]'function C0 foo()' has some indirect sub-type changes:
     return type changed:
-      entity changed from class C0 to typedef c0_type
+      entity changed from 'class C0' to compatible type 'typedef c0_type'
         1 data member change:
          'int C0::m0' access changed from 'private' to 'public'
 

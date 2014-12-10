@@ -5,7 +5,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   [C]'function void foo(int, char)' has some indirect sub-type changes:
     parameter 0 of type 'int' changed:
-      entity changed from int to typedef Int
+      entity changed from 'int' to compatible type 'typedef Int'
     parameter 1 of type 'char' changed:
-      entity changed from char to typedef Char
+      entity changed from 'char' to compatible type 'typedef Char'
 

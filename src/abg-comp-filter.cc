@@ -326,10 +326,10 @@ static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
 static bool
 is_compatible_change(decl_base_sptr d1, decl_base_sptr d2)
 {
-  if (is_typedef(d1) || is_typedef(d2))
-    if ((d1 != d2) && types_are_compatible(d1, d2))
-      return true;
-
+  if ((d1 && d2)
+      && (d1 != d2)
+      && types_are_compatible(d1, d2))
+    return true;
   return false;
 }
 

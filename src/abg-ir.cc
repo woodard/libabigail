@@ -2251,14 +2251,82 @@ set_member_function_is_virtual(const function_decl_sptr& fn, bool is_virtual)
 /// Recursively returns the the underlying type of a typedef.  The
 /// return type should not be a typedef of anything anymore.
 ///
+/// Also recursively strip typedefs from the sub-types of the type
+/// given in arguments.
+///
 /// @param type the type to strip the typedefs from.
+///
+/// @return the resulting type stripped from its typedefs, or just
+/// return @p type if it has no typedef in any of its sub-types.
 type_base_sptr
 strip_typedef(const type_base_sptr type)
 {
   type_base_sptr t = type;
-  while (const typedef_decl_sptr ty = is_typedef(t))
-    t = ty->get_underlying_type();
 
+  if (const typedef_decl_sptr ty = is_typedef(t))
+    t = strip_typedef(ty->get_underlying_type());
+  else if (const reference_type_def_sptr ty = is_reference_type(t))
+    t.reset(new reference_type_def(strip_typedef(ty->get_pointed_to_type()),
+				   ty->is_lvalue(),
+				   ty->get_size_in_bits(),
+				   ty->get_alignment_in_bits(),
+				   ty->get_location()));
+  else if (const pointer_type_def_sptr ty = is_pointer_type(t))
+    t.reset(new pointer_type_def(strip_typedef(ty->get_pointed_to_type()),
+				 ty->get_size_in_bits(),
+				 ty->get_alignment_in_bits(),
+				 ty->get_location()));
+  else if (const qualified_type_def_sptr ty = is_qualified_type(t))
+    t.reset(new qualified_type_def(strip_typedef(ty->get_underlying_type()),
+				   ty->get_cv_quals(),
+				   ty->get_location()));
+  else if (const method_type_sptr ty = is_method_type(t))
+    {
+      function_decl::parameters parm;
+      for (function_decl::parameters::const_iterator i =
+	     ty->get_parameters().begin();
+	   i != ty->get_parameters().end();
+	   ++i)
+	{
+	  function_decl::parameter_sptr p = *i;
+	  function_decl::parameter_sptr stripped
+	    (new function_decl::parameter(strip_typedef(p->get_type()),
+					  p->get_index(),
+					  p->get_name(),
+					  p->get_location(),
+					  p->get_variadic_marker(),
+					  p->get_artificial()));
+	  parm.push_back(stripped);
+	}
+      t.reset(new method_type(ty->get_return_type(),
+			      ty->get_class_type(),
+			      parm,
+			      ty->get_size_in_bits(),
+			      ty->get_alignment_in_bits()));
+    }
+  else if (const function_type_sptr ty = is_function_type(t))
+    {
+      function_decl::parameters parm;
+      for (function_decl::parameters::const_iterator i =
+	     ty->get_parameters().begin();
+	   i != ty->get_parameters().end();
+	   ++i)
+	{
+	  function_decl::parameter_sptr p = *i;
+	  function_decl::parameter_sptr stripped
+	    (new function_decl::parameter(strip_typedef(p->get_type()),
+					  p->get_index(),
+					  p->get_name(),
+					  p->get_location(),
+					  p->get_variadic_marker(),
+					  p->get_artificial()));
+	  parm.push_back(stripped);
+	}
+      t.reset(new function_type(ty->get_return_type(),
+				parm,
+				ty->get_size_in_bits(),
+				ty->get_alignment_in_bits()));
+    }
   return t;
 }
 /// Add a member decl to this scope.  Note that user code should not
@@ -2788,6 +2856,9 @@ bool
 types_are_compatible(const type_base_sptr type1,
 		     const type_base_sptr type2)
 {
+  if (!type1 || !type2)
+    return false;
+
   type_base_sptr t1 = strip_typedef(type1);
   type_base_sptr t2 = strip_typedef(type2);
 
@@ -3061,6 +3132,16 @@ pointer_type_def_sptr
 is_pointer_type(const type_base_sptr t)
 {return dynamic_pointer_cast<pointer_type_def>(t);}
 
+/// Test whether a type is a reference_type_def.
+///
+/// @param t the type to test.
+///
+/// @return the @ref reference_type_def_sptr if @p t is a
+/// reference_type_def, null otherwise.
+reference_type_def_sptr
+is_reference_type(const type_base_sptr t)
+{return dynamic_pointer_cast<reference_type_def>(t);}
+
 /// Test whether a type is a qualified_type_def.
 ///
 /// @param t the type to test.
@@ -3070,6 +3151,26 @@ is_pointer_type(const type_base_sptr t)
 qualified_type_def_sptr
 is_qualified_type(const type_base_sptr t)
 {return dynamic_pointer_cast<qualified_type_def>(t);}
+
+/// Test whether a type is a function_type.
+///
+/// @param t the type to test.
+///
+/// @return the @ref function_type_sptr if @p t is a
+/// function_type, null otherwise.
+shared_ptr<function_type>
+is_function_type(const shared_ptr<type_base> t)
+{return dynamic_pointer_cast<function_type>(t);}
+
+/// Test whether a type is a method_type.
+///
+/// @param t the type to test.
+///
+/// @return the @ref method_type_sptr if @p t is a
+/// method_type, null otherwise.
+shared_ptr<method_type>
+is_method_type(const shared_ptr<type_base> t)
+{return dynamic_pointer_cast<method_type>(t);}
 
 /// If a class is a decl-only class, get its definition.  Otherwise,
 /// just return the initial class.
@@ -3795,6 +3896,25 @@ namespace_decl::~namespace_decl()
 
 // <qualified_type_def>
 
+/// Type of the private data of qualified_type_def.
+class qualified_type_def::priv
+{
+  friend class qualified_type_def;
+
+  qualified_type_def::CV	cv_quals_;
+  weak_ptr<type_base>		underlying_type_;
+
+  priv()
+    : cv_quals_(CV_NONE)
+  {}
+
+  priv(qualified_type_def::CV quals,
+       type_base_sptr t)
+    : cv_quals_(quals),
+      underlying_type_(t)
+  {}
+};// end class qualified_type_def::priv
+
 /// Build the name of the current instance of qualified type.
 ///
 /// @param fully_qualified if true, build a fully qualified name.
@@ -3812,9 +3932,9 @@ qualified_type_def::build_name(bool fully_qualified) const
   else
     name = td->get_name();
   if (dynamic_pointer_cast<pointer_type_def>(get_underlying_type())
-      || (!underlying_type_.expired()
+      || (!priv_->underlying_type_.expired()
 	  && dynamic_pointer_cast<reference_type_def>
-	  (type_base_sptr(underlying_type_))))
+	  (type_base_sptr(priv_->underlying_type_))))
     {
       name += " ";
       name += quals;
@@ -3838,8 +3958,7 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
 	      type->get_alignment_in_bits()),
     decl_base("", locus, "",
 	      dynamic_pointer_cast<decl_base>(type)->get_visibility()),
-    cv_quals_(quals),
-    underlying_type_(type)
+    priv_(new priv(quals, type))
 {
   string name = build_name(false);
   set_name(name);
@@ -3883,7 +4002,7 @@ equals(const qualified_type_def& l, const qualified_type_def& r, change_kind& k)
       result = false;
     }
 
-  if (*l.get_underlying_type() != *r.get_underlying_type())
+  if (l.get_underlying_type() != r.get_underlying_type())
     {
       k |= SUBTYPE_CHANGE_KIND;
       result = false;
@@ -3957,14 +4076,14 @@ qualified_type_def::~qualified_type_def()
 }
 
 /// Getter of the const/volatile qualifier bit field
-char
+qualified_type_def::CV
 qualified_type_def::get_cv_quals() const
-{return cv_quals_;}
+{return priv_->cv_quals_;}
 
 /// Setter of the const/value qualifiers bit field
 void
-qualified_type_def::set_cv_quals(char cv_quals)
-{cv_quals_ = cv_quals;}
+qualified_type_def::set_cv_quals(CV cv_quals)
+{priv_->cv_quals_ = cv_quals;}
 
 /// Compute and return the string prefix or suffix representing the
 /// qualifiers hold by the current instance of @ref
@@ -3975,15 +4094,15 @@ string
 qualified_type_def::get_cv_quals_string_prefix() const
 {
   string prefix;
-  if (cv_quals_ & qualified_type_def::CV_RESTRICT)
+  if (priv_->cv_quals_ & qualified_type_def::CV_RESTRICT)
     prefix = "restrict";
-  if (cv_quals_ & qualified_type_def::CV_CONST)
+  if (priv_->cv_quals_ & qualified_type_def::CV_CONST)
     {
       if (!prefix.empty())
 	prefix += ' ';
       prefix += "const";
     }
-  if (cv_quals_ & qualified_type_def::CV_VOLATILE)
+  if (priv_->cv_quals_ & qualified_type_def::CV_VOLATILE)
     {
       if (!prefix.empty())
 	prefix += ' ';
@@ -3996,9 +4115,9 @@ qualified_type_def::get_cv_quals_string_prefix() const
 shared_ptr<type_base>
 qualified_type_def::get_underlying_type() const
 {
-  if (underlying_type_.expired())
+  if (priv_->underlying_type_.expired())
     return type_base_sptr();
-  return type_base_sptr(underlying_type_);
+  return type_base_sptr(priv_->underlying_type_);
 }
 
 /// Overloaded bitwise OR operator for cv qualifiers.
@@ -4046,7 +4165,7 @@ operator<<(std::ostream& o, qualified_type_def::CV cv)
 
 //<pointer_type_def definitions>
 
-pointer_type_def::pointer_type_def(shared_ptr<type_base>&	pointed_to,
+pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   size_t			size_in_bits,
 				   size_t			align_in_bits,
 				   location			locus)
@@ -4114,7 +4233,7 @@ pointer_type_def::operator==(const type_base& o) const
   const pointer_type_def* other = dynamic_cast<const pointer_type_def*>(&o);
   if (!other)
     return false;
-  return *get_pointed_to_type() == *other->get_pointed_to_type();
+  return get_pointed_to_type() == other->get_pointed_to_type();
 }
 
 const type_base_sptr
@@ -4199,7 +4318,7 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 bool
 equals(const reference_type_def& l, const reference_type_def& r, change_kind& k)
 {
-  bool result = (*l.get_pointed_to_type() == *r.get_pointed_to_type());
+  bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
   if (!result)
     k |= SUBTYPE_CHANGE_KIND;
   return result;

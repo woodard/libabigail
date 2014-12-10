@@ -243,6 +243,34 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test20-inline-report-1.txt",
     "output/test-diff-filter/test20-inline-report-1.txt",
   },
+  {
+    "data/test-diff-filter/libtest21-compatible-vars-v0.so",
+    "data/test-diff-filter/libtest21-compatible-vars-v1.so",
+    "--harmless",
+    "data/test-diff-filter/test21-compatible-vars-report-0.txt",
+    "output/test-diff-filter/test21-compatible-vars-report-0.txt",
+  },
+  {
+    "data/test-diff-filter/libtest21-compatible-vars-v0.so",
+    "data/test-diff-filter/libtest21-compatible-vars-v1.so",
+    "",
+    "data/test-diff-filter/test21-compatible-vars-report-1.txt",
+    "output/test-diff-filter/test21-compatible-vars-report-1.txt",
+  },
+  {
+    "data/test-diff-filter/libtest22-compatible-fns-v0.so",
+    "data/test-diff-filter/libtest22-compatible-fns-v1.so",
+    "--harmless",
+    "data/test-diff-filter/test22-compatible-fns-report-0.txt",
+    "output/test-diff-filter/test22-compatible-fns-report-0.txt",
+  },
+  {
+    "data/test-diff-filter/libtest22-compatible-fns-v0.so",
+    "data/test-diff-filter/libtest22-compatible-fns-v1.so",
+    "",
+    "data/test-diff-filter/test22-compatible-fns-report-1.txt",
+    "output/test-diff-filter/test22-compatible-fns-report-1.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

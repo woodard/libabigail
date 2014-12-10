@@ -1075,6 +1075,9 @@ public:
   const decl_base_sptr
   second() const;
 
+  const diff_sptr
+  compatible_child_diff() const;
+
   virtual const string&
   get_pretty_representation() const;
 

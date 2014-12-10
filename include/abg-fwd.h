@@ -203,12 +203,20 @@ is_class_type(const shared_ptr<decl_base>);
 shared_ptr<pointer_type_def>
 is_pointer_type(const shared_ptr<type_base>);
 
+shared_ptr<reference_type_def>
+is_reference_type(const shared_ptr<type_base>);
+
 shared_ptr<qualified_type_def>
 is_qualified_type(const shared_ptr<type_base>);
 
+shared_ptr<function_type>
+is_function_type(const shared_ptr<type_base>);
+
+shared_ptr<method_type>
+is_method_type(const shared_ptr<type_base>);
+
 shared_ptr<class_decl>
 look_through_decl_only_class(shared_ptr<class_decl>);
-
 
 shared_ptr<var_decl>
 is_var_decl(const shared_ptr<decl_base>);
