@@ -5037,17 +5037,19 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 		// variable declaration DIE.  Thus remove the global
 		// variable definition from its current non-class
 		// scope ...
-		remove_decl_from_scope(*v);
 		decl_base_sptr d;
 		if (d = lookup_var_decl_in_scope(mem_name,cl))
 		  // This is the data member with the same name in cl.
-		  // We need to flag it as static.
+		  // We just need to flag it as static.
 		  ;
 		else
-		  // In this case there is no data member with the
-		  // same name in cl already.  Let's add it there then
-		  // ...
-		  d = add_decl_to_scope(*v, cl);
+		  {
+		    // In this case there is no data member with the
+		    // same name in cl already.  Let's add it there then
+		    // ...
+		    remove_decl_from_scope(*v);
+		    d = add_decl_to_scope(*v, cl);
+		  }
 
 		assert(dynamic_pointer_cast<var_decl>(d));
 		// Let's flag the data member as static.
