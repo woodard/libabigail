@@ -837,7 +837,9 @@ corpus::priv::build_unreferenced_symbols_tables()
 
   if (fun_symbol_map)
     {
-      unrefed_fun_symbols.reserve(fun_symbol_map->size() - refed_funs.size());
+      // Let's assume that the size of the unreferenced symbols vector
+      // is roughly smaller than the size of the symbol table.
+      unrefed_fun_symbols.reserve(fun_symbol_map->size());
       for (string_elf_symbols_map_type::const_iterator i
 	     = fun_symbol_map->begin();
 	   i != fun_symbol_map->end();
@@ -874,7 +876,9 @@ corpus::priv::build_unreferenced_symbols_tables()
 
   if (var_symbol_map)
     {
-      unrefed_var_symbols.reserve(var_symbol_map->size() - refed_vars.size());
+      // Let's assume that the size of the unreferenced symbols vector
+      // is roughly smaller than the size of the symbol table.
+      unrefed_var_symbols.reserve(var_symbol_map->size());
       for (string_elf_symbols_map_type::const_iterator i
 	     = var_symbol_map->begin();
 	   i != var_symbol_map->end();

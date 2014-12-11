@@ -665,7 +665,7 @@ get_version_needed_for_versym(Elf*			elf_handle,
       GElf_Vernaux *vernaux = gelf_getvernaux(verneed_data,
 					      vn_offset + verneed->vn_aux,
 					      &vernaux_mem);
-      for (;vernaux != 0;)
+      for (;vernaux != 0 && verneed;)
 	{
 	  if (vernaux->vna_other == *versym)
 	    // Found the version of the symbol.
