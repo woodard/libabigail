@@ -3057,12 +3057,31 @@ is_die_attribute_resolved_through_gnu_ref_alt(Dwarf_Die* die,
   if (r)
     is_in_alternate_debug_info = (attr.form == DW_FORM_GNU_ref_alt);
 
+  // Now let's see if we got to the attribute attr_name by looking
+  // through either DW_AT_abstract_origin or DW_AT_specification, or
+  // even DW_AT_abstract_origin *and then* DW_AT_specification.  Would
+  // then be looking at a function which definition is in the
+  // alternate debug info file.
   if (r && !is_in_alternate_debug_info && thru_abstract_origin)
     {
+      Dwarf_Die origin_die;
       Dwarf_Attribute mem;
       Dwarf_Attribute* a = dwarf_attr(die, DW_AT_abstract_origin, &mem);
-      if (a == NULL)
-	a = dwarf_attr(die, DW_AT_specification, &mem);
+      if (a == NULL || a->form != DW_FORM_GNU_ref_alt)
+	{
+	  if (a == NULL)
+	    a = dwarf_attr(die, DW_AT_specification, &mem);
+	  else
+	    {
+	      // so we looked through a DW_AT_abstract_origin
+	      // attribute.  So let's get that origin DIE and see if
+	      // it has an DW_AT_specification attribute ...
+	      assert(dwarf_formref_die(a, &origin_die));
+	      a = dwarf_attr(&origin_die, DW_AT_specification, &mem);
+	    }
+	}
+      // Now if the final function we got by jumping through hoops is
+      // inside an alternate debug info file, we are good.
       if (a && a->form == DW_FORM_GNU_ref_alt)
 	is_in_alternate_debug_info = true;
     }
