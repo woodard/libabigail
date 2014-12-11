@@ -4171,13 +4171,15 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   location			locus)
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, "",
-	      dynamic_pointer_cast<decl_base>(pointed_to)->get_visibility()),
+	      pointed_to
+	      ? get_type_declaration(pointed_to)->get_visibility()
+	      : decl_base::VISIBILITY_DEFAULT),
     pointed_to_type_(pointed_to)
 {
   try
     {
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
-      string name = pto->get_name() + "*";
+      string name = (pto ? pto->get_name() : string("void")) + "*";
       set_name(name);
     }
   catch (...)
@@ -4201,7 +4203,7 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 bool
 equals(const pointer_type_def& l, const pointer_type_def& r, change_kind& k)
 {
-  bool result = (*l.get_pointed_to_type() == *r.get_pointed_to_type());
+  bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
   if (!result)
     k |= SUBTYPE_CHANGE_KIND;
 
@@ -4256,7 +4258,10 @@ pointer_type_def::get_qualified_name(string& qn) const
       decl_base_sptr td =
 	get_type_declaration(get_pointed_to_type());
       string name;
-      td->get_qualified_name(name);
+      if (!td)
+	name = "void";
+      else
+	td->get_qualified_name(name);
       set_qualified_name(name + "*");
     }
   qn = peek_qualified_name();

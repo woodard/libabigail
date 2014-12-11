@@ -4605,10 +4605,12 @@ pointer_diff::report(ostream& out, const string& indent) const
   if (diff_sptr d = underlying_type_diff())
     {
       RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "pointed to type");
+      string repr = d->first_subject()
+	? d->first_subject()->get_pretty_representation()
+	: string("void");
+
       out << indent
-	  << "in pointed to type '"
-	  <<  d->first_subject()->get_pretty_representation()
-	  << "':\n";
+	  << "in pointed to type '" <<  repr << "':\n";
       d->report(out, indent + "  ");
     }
 }

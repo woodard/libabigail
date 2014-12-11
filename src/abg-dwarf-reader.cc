@@ -5768,6 +5768,7 @@ build_pointer_type_def(read_context&	ctxt,
 
   result.reset(new pointer_type_def(utype, size, size, location()));
 
+  assert(result->get_pointed_to_type());
   return result;
 }
 
