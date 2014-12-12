@@ -582,6 +582,14 @@ elf_symbol::add_alias(elf_symbol* alias)
 
 /// Get a string that is representative of a given elf_symbol.
 ///
+/// If the symbol has a version, then the ID string is the
+/// concatenation of the name of the symbol, the '@' character, and
+/// the version of the symbol.  If the version is the default version
+/// of the symbol then the '@' character is replaced by a "@@" string.
+///
+/// Otherwise, if the symbol does not have any version, this function
+/// returns the name of the symbol.
+///
 /// @return a the ID string.
 const string&
 elf_symbol::get_id_string() const
