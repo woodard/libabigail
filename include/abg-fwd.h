@@ -298,7 +298,7 @@ shared_ptr<var_decl>
 is_data_member(const shared_ptr<decl_base>&);
 
 shared_ptr<array_type_def>
-is_array_def(const shared_ptr<type_base> decl);
+is_array_type(const shared_ptr<type_base> decl);
 
 void
 set_data_member_offset(shared_ptr<var_decl>, size_t);

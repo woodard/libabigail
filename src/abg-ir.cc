@@ -2288,6 +2288,10 @@ strip_typedef(const type_base_sptr type)
     t.reset(new qualified_type_def(strip_typedef(ty->get_underlying_type()),
 				   ty->get_cv_quals(),
 				   ty->get_location()));
+  else if (const array_type_def_sptr ty = is_array_type(t))
+    t.reset(new array_type_def(strip_typedef(ty->get_element_type()),
+			       ty->get_subranges(),
+			       ty->get_location()));
   else if (const method_type_sptr ty = is_method_type(t))
     {
       function_decl::parameters parm;
@@ -3244,7 +3248,7 @@ is_function_template_pattern(const shared_ptr<decl_base> decl)
 ///
 /// @return true iff decl is an array_type_def.
 array_type_def_sptr
-is_array_def(const type_base_sptr decl)
+is_array_type(const type_base_sptr decl)
 {return dynamic_pointer_cast<array_type_def>(decl);}
 
 /// Tests whether a decl is a template.
@@ -5208,7 +5212,7 @@ var_decl::get_pretty_representation() const
 
   if (is_member_decl(this) && get_member_is_static(this))
     result = "static ";
-  if(array_type_def_sptr t = is_array_def(get_type()))
+  if(array_type_def_sptr t = is_array_type(get_type()))
     result += get_type_declaration(t->get_element_type())->get_qualified_name()
       + " " + get_qualified_name() + t->get_subrange_representation();
   else

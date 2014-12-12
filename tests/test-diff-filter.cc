@@ -278,6 +278,20 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test23-redundant-fn-parm-change-report-0.txt ",
     "output/test-diff-filter/test23-redundant-fn-parm-change-report-0.txt ",
   },
+  {
+    "data/test-diff-filter/libtest24-compatible-vars-v0.so",
+    "data/test-diff-filter/libtest24-compatible-vars-v1.so",
+    "",
+    "data/test-diff-filter/test24-compatible-vars-report-0.txt ",
+    "output/test-diff-filter/test24-compatible-vars-report-0.txt ",
+  },
+  {
+    "data/test-diff-filter/libtest24-compatible-vars-v0.so",
+    "data/test-diff-filter/libtest24-compatible-vars-v1.so",
+    "--harmless",
+    "data/test-diff-filter/test24-compatible-vars-report-1.txt ",
+    "output/test-diff-filter/test24-compatible-vars-report-1.txt ",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

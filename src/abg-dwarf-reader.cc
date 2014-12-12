@@ -5889,12 +5889,6 @@ build_array_type(read_context&	ctxt,
   if (!type_decl)
     return result;
 
-  size_t type_size;
-  if (!die_unsigned_constant_attribute(&type_die,
-				       DW_AT_byte_size,
-				       type_size))
-    return result;
-
   type_base_sptr type = is_type(type_decl);
   assert(type);
 

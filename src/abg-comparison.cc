@@ -542,7 +542,7 @@ type_suppression::suppresses_diff(const diff* diff) const
 	    return false;
 	  break;
 	case type_suppression::ARRAY_TYPE_KIND:
-	  if (!is_array_def(ft) && !is_array_def(st))
+	  if (!is_array_type(ft) && !is_array_type(st))
 	    return false;
 	  break;
 	case type_suppression::TYPEDEF_TYPE_KIND:
