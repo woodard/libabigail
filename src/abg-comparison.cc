@@ -10201,6 +10201,13 @@ const string_var_ptr_map&
 corpus_diff::deleted_variables() const
 {return priv_->deleted_vars_;}
 
+/// Getter for the added variables of the diff.
+///
+/// @return the map of added variable.
+const string_var_ptr_map&
+corpus_diff::added_variables() const
+{return priv_->added_vars_;}
+
 /// Getter for the variables which signature didn't change but which
 /// do have some indirect changes in some sub-types.
 ///

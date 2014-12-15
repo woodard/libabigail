@@ -2046,6 +2046,9 @@ public:
 
   const string_var_ptr_map&
   deleted_variables() const;
+  
+  const string_var_ptr_map&
+  added_variables() const;
 
   const string_changed_var_ptr_map&
   changed_variables();
