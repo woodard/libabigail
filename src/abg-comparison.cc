@@ -10225,6 +10225,15 @@ const string_elf_symbol_map&
 corpus_diff::deleted_unrefed_function_symbols() const
 {return priv_->deleted_unrefed_fn_syms_;}
 
+/// Getter for function symbols not referenced by any debug info and
+/// that got added.
+///
+/// @return a map of elf function symbols not referenced by any debug
+/// info and that got added.
+const string_elf_symbol_map&
+corpus_diff::added_unrefed_function_symbols() const
+{return priv_->added_unrefed_fn_syms_;}
+
 /// Getter for variable symbols not referenced by any debug info and
 /// that got deleted.
 ///
@@ -10233,6 +10242,15 @@ corpus_diff::deleted_unrefed_function_symbols() const
 const string_elf_symbol_map&
 corpus_diff::deleted_unrefed_variable_symbols() const
 {return priv_->deleted_unrefed_var_syms_;}
+
+/// Getter for variable symbols not referenced by any debug info and
+/// that got added.
+///
+/// @return a map of elf variable symbols not referenced by any debug
+/// info and that got added.
+const string_elf_symbol_map&
+corpus_diff::added_unrefed_variable_symbols() const
+{return priv_->added_unrefed_var_syms_;}
 
 /// Getter of the diff context of this diff
 ///

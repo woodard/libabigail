@@ -2057,7 +2057,13 @@ public:
   deleted_unrefed_function_symbols() const;
 
   const string_elf_symbol_map&
+  added_unrefed_function_symbols() const;
+
+  const string_elf_symbol_map&
   deleted_unrefed_variable_symbols() const;
+
+  const string_elf_symbol_map&
+  added_unrefed_variable_symbols() const;
 
   const diff_context_sptr
   context() const;
