@@ -4542,7 +4542,7 @@ pointer_diff::get_pretty_representation() const
   if (diff::priv_->pretty_representation_.empty())
     {
       std::ostringstream o;
-      o << "pointer_diff"
+      o << "pointer_diff["
 	<< first_subject()->get_pretty_representation()
 	<< ", "
 	<< second_subject()->get_pretty_representation()
