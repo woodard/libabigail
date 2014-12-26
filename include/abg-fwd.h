@@ -473,6 +473,8 @@ lookup_var_decl_in_scope(const std::list<string>&,
 string
 demangle_cplus_mangled_name(const string&);
 
+shared_ptr<type_base>
+type_or_void(const shared_ptr<type_base>);
 } // end namespace ir
 
 using namespace abigail::ir;

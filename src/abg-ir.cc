@@ -2274,13 +2274,15 @@ strip_typedef(const type_base_sptr type)
   if (const typedef_decl_sptr ty = is_typedef(t))
     t = strip_typedef(ty->get_underlying_type());
   else if (const reference_type_def_sptr ty = is_reference_type(t))
-    t.reset(new reference_type_def(strip_typedef(ty->get_pointed_to_type()),
+    t.reset(new reference_type_def(strip_typedef(type_or_void
+						 (ty->get_pointed_to_type())),
 				   ty->is_lvalue(),
 				   ty->get_size_in_bits(),
 				   ty->get_alignment_in_bits(),
 				   ty->get_location()));
   else if (const pointer_type_def_sptr ty = is_pointer_type(t))
-    t.reset(new pointer_type_def(strip_typedef(ty->get_pointed_to_type()),
+    t.reset(new pointer_type_def(strip_typedef(type_or_void
+					       (ty->get_pointed_to_type())),
 				 ty->get_size_in_bits(),
 				 ty->get_alignment_in_bits(),
 				 ty->get_location()));
@@ -3585,6 +3587,16 @@ demangle_cplus_mangled_name(const string& mangled_name)
   return demangled_name;
 }
 
+/// Return either the type given in parameter if it's non-null, or the
+/// void type.
+///
+/// @param t the type to consider.
+///
+/// @return either @p t if it is non-null, or the void type.
+type_base_sptr
+type_or_void(const type_base_sptr t)
+{return t ? t : type_base_sptr(type_decl::get_void_type_decl());}
+
 global_scope::~global_scope()
 {
 }
@@ -4183,10 +4195,8 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   location			locus)
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, "",
-	      pointed_to
-	      ? get_type_declaration(pointed_to)->get_visibility()
-	      : decl_base::VISIBILITY_DEFAULT),
-    pointed_to_type_(pointed_to)
+	      get_type_declaration(type_or_void(pointed_to))->get_visibility()),
+    pointed_to_type_(type_or_void(pointed_to))
 {
   try
     {
@@ -4304,8 +4314,8 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 				       location		locus)
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, "",
-	      dynamic_pointer_cast<decl_base>(pointed_to)->get_visibility()),
-    pointed_to_type_(pointed_to),
+	      dynamic_pointer_cast<decl_base>(type_or_void(pointed_to))->get_visibility()),
+    pointed_to_type_(type_or_void(pointed_to)),
     is_lvalue_(lvalue)
 {
   try
@@ -4384,7 +4394,7 @@ reference_type_def::get_qualified_name(string& qn) const
   if (peek_qualified_name().empty())
     {
       decl_base_sptr td =
-	get_type_declaration(get_pointed_to_type());
+	get_type_declaration(type_or_void(get_pointed_to_type()));
       string name;
       td->get_qualified_name(name);
       set_qualified_name(name + "&");
