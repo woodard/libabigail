@@ -4361,7 +4361,7 @@ reference_type_def::operator==(const type_base& o) const
   return *this == *other;
 }
 
-shared_ptr<type_base>
+type_base_sptr
 reference_type_def::get_pointed_to_type() const
 {
   if (pointed_to_type_.expired())

@@ -3057,7 +3057,8 @@ diff::is_filtered_out() const
   if (get_category() & SUPPRESSED_CATEGORY)
     return true;
 
-  // We don't want to display redundant function or variable diff
+  // We don't want to display redundant top-level function or variable
+  // diff nodes, when the user asked to avoid seeing redundant diff
   // nodes.
   if ((dynamic_cast<const function_decl_diff*>(this)
        || (dynamic_cast<const var_diff*>(this)
