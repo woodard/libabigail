@@ -190,8 +190,15 @@ Options
 
   * --redundant
 
-    In the diff report, do not display redundant changes.  A redundant
-    change is a change that has been displayed elsewhere in the report.
+    In the diff report, do display redundant changes.  A redundant
+    change is a change that has been displayed elsewhere in the
+    report.
+
+  * --no-redundant
+
+    In the diff report, do *NOT* display redundant changes.  A
+    redundant change is a change that has been displayed elsewhere in
+    the report.  This option is switched on by default.
 
 Usage examples
 ==============
