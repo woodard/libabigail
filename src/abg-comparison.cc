@@ -2917,6 +2917,7 @@ struct diff::priv
   decl_base_sptr	first_subject_;
   decl_base_sptr	second_subject_;
   vector<diff_sptr>	children_;
+  diff*		parent_;
   diff*		canonical_diff_;
   diff_context_sptr	ctxt_;
   diff_category	category_;
@@ -2938,6 +2939,7 @@ public:
       traversing_(),
       first_subject_(first_subject),
       second_subject_(second_subject),
+      parent_(),
       canonical_diff_(),
       ctxt_(ctxt),
       category_(category),
@@ -3061,12 +3063,19 @@ decl_base_sptr
 diff::second_subject() const
 {return priv_->second_subject_;}
 
-/// Getter fo the children nodes of the the current @ref diff node.
+/// Getter for the children nodes of the current @ref diff node.
 ///
 /// @return a vector of the children nodes.
 const vector<diff_sptr>&
 diff::children_nodes() const
 {return priv_->children_;}
+
+/// Getter for the parent node of the current @ref diff node.
+///
+/// @return the parent node of the current @ref diff node.
+const diff*
+diff::parent_node() const
+{return priv_->parent_;}
 
 /// Getter for the canonical diff of the current instance of @ref
 /// diff.
@@ -3098,6 +3107,7 @@ diff::append_child_node(diff_sptr d)
 {
   assert(d);
   priv_->children_.push_back(d);
+  d->priv_->parent_ = this;
 }
 
 /// Getter of the context of the current diff.
@@ -11848,9 +11858,52 @@ struct redundancy_marking_visitor : public diff_node_visitor
     if (d->to_be_reported())
       {
 	// A diff node that carries a change and that has been already
-	// been traversed elsewhere is considered redundant.
+	// traversed elsewhere is considered redundant.
 	if (d->context()->diff_has_been_traversed(d) && d->length())
-	  d->add_to_category(REDUNDANT_CATEGORY);
+	  {
+	    // But if two diff nodes are redundant sibbling, do not
+	    // mark them as being redundant.  This is to avoid marking
+	    // nodes as redundant in this case:
+	    //
+	    //     int foo(int a, int b);
+	    // compared with:
+	    //     float foo(float a, float b); (in C).
+	    //
+	    // In this case, we want to report all the occurences of
+	    // the int->float change because logically, they are at
+	    // the same level in the diff tree.
+
+	    bool redundant_with_sibling_node = false;
+	    const diff* p = d->parent_node();
+
+	    // If this is a child node of a fn_parm_diff, look through
+	    // the fn_parm_diff node.
+	    if (p && dynamic_cast<const fn_parm_diff*>(p))
+	      p = p->parent_node();
+
+	    if (p)
+	      for (vector<diff_sptr>::const_iterator s =
+		     p->children_nodes().begin();
+		   s != p->children_nodes().end();
+		   ++s)
+		{
+		  if (s->get() == d)
+		    continue;
+		  diff* sib = s->get();
+		  // If this is a fn_parm_diff, look through the
+		  // fn_parm_diff node to get at the real type node.
+		  if (fn_parm_diff_sptr f =
+		      dynamic_pointer_cast<fn_parm_diff>(*s))
+		    sib = f->get_type_diff().get();
+		  if (sib->get_canonical_diff() == d->get_canonical_diff())
+		    {
+		      redundant_with_sibling_node = true;
+		      break;
+		    }
+		}
+	    if (!redundant_with_sibling_node)
+	      d->add_to_category(REDUNDANT_CATEGORY);
+	  }
       }
     else
       {

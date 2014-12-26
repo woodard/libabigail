@@ -351,6 +351,14 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test9-changed-parm-c-report-1.txt",
     "output/test-diff-suppr/est9-changed-parm-c-report-1.txt"
   },
+  {
+    "data/test-diff-suppr/libtest10-changed-parm-c-v0.so",
+    "data/test-diff-suppr/libtest10-changed-parm-c-v1.so",
+    "",
+    "--no-redundant",
+    "data/test-diff-suppr/test10-changed-parm-c-report-0.txt",
+    "output/test-diff-suppr/test10-changed-parm-c-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
 };

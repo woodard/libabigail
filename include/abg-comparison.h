@@ -965,6 +965,9 @@ public:
   const vector<diff_sptr>&
   children_nodes() const;
 
+  const diff*
+  parent_node() const;
+
   diff* get_canonical_diff() const;
 
   void

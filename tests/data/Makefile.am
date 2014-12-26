@@ -461,6 +461,11 @@ test-diff-suppr/test9-changed-parm-c-report-0.txt \
 test-diff-suppr/test9-changed-parm-c-report-1.txt \
 test-diff-suppr/test9-changed-parm-c-v0.c \
 test-diff-suppr/test9-changed-parm-c-v1.c \
+test-diff-suppr/libtest10-changed-parm-c-v0.so \
+test-diff-suppr/libtest10-changed-parm-c-v1.so \
+test-diff-suppr/test10-changed-parm-c-report-0.txt \
+test-diff-suppr/test10-changed-parm-c-v0.c \
+test-diff-suppr/test10-changed-parm-c-v1.c \
 \
 test-lookup-syms/test0.cc			\
 test-lookup-syms/test0.o			\
