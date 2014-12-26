@@ -45,7 +45,7 @@ namespace comparison
 ///@defgroup DiffNode Internal Representation of the comparison engine
 /// @{
 ///
-/// How changes are represented in libabigail's comparison engine.
+/// @brief How changes are represented in libabigail's comparison engine.
 ///
 ///@par diff nodes
 ///
@@ -86,10 +86,12 @@ namespace comparison
 ///
 
 ///
-/// @defgroup CanonicalDiff Canonical diff tree nodes
+///@defgroup CanonicalDiff Canonical diff tree nodes
 /// @{
 ///
-/// @par Equivalence of @ref diff nodes
+/// @brief How equivalent diff nodes are quickly spotted.
+///
+/// @par Equivalence of diff nodes.
 ///
 /// Each @ref diff node has a property named <em>Canonical Diff
 /// Node</em>.  If \c D is a diff node, the canonical diff node of @c
