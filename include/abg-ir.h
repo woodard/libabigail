@@ -36,54 +36,53 @@
 /// This file contains the declarations of the Internal Representation
 /// of libabigail.
 
-/*!
+/// @defgroup Memory Memory management
+/// @{
+///
+/// How objects' lifetime is handled in libabigail.
+///
+/// For memory management and garbage collection of libabigail's IR
+/// artifacts, we use std::tr1::shared_ptr and std::tr1::weak_ptr.
+///
+/// When manipulating these IR artifacts, there are a few rules to keep in
+/// mind.
+///
+/// <b>The declaration for a type is owned by only one scope </b>
+///
+/// This means that for each instance of abigail::type_base (a type) there
+/// is an instance of abigail::scope_decl that owns a @ref
+/// abigail::decl_base_sptr (a shared pointer to an abigail::decl_base)
+/// that points to the declaration of that type.  The
+/// abigail::type_base_sptr is added to the scope using the function
+/// abigail::add_decl_to_scope().
+///
+/// There is a kind of type that is usually not syntactically owned by a
+/// scope: it's function type.  In libabigail function types are
+/// represented by abigail::function_type and abigail::method_type.  These
+/// types must be owned by the translation unit they originate from.
+/// Adding them to the translation unit must be done by a call to the
+/// method function abigail::translation::get_canonical_function_type().
+/// The type returned by that function is the one to use.
+///
+/// <b> A declaration that has a type does NOT own the type </b>
+///
+/// This means that, for instance, in an abigail::var_decl (a variable
+/// declaration), the type of the declaration is not owned by the
+/// declaration.  In other (concrete) words, the variable declaration
+/// doesn't have a shared pointer to the type.  Rather, it has a *weak*
+/// pointer to its type.  That means that it has a data member of type
+/// abigail::type_base_wptr that contains the type of the declaration.
+///
+/// But then abigail::var_decl::get_type() returns a shared pointer that
+/// is constructed from the internal weak pointer to the type.  That way,
+/// users of the type of the var can own a temporary reference on it and
+/// be assured that the type's life time is long enough for their need.
+///
+/// Likewise, data members, function and template parameters similarly
+/// have weak pointers on their type.
+///
+/// @}
 
-@defgroup Memory Memory management considerations
-@{
-
-For memory management and garbage collection of libabigail's IR
-artifacts, we use std::tr1::shared_ptr and std::tr1::weak_ptr.
-
-When manipulating these IR artifacts, there are a few rules to keep in
-mind.
-
-<b>The declaration for a type is owned by only one scope </b>
-
-This means that for each instance of abigail::type_base (a type) there
-is an instance of abigail::scope_decl that owns a @ref
-abigail::decl_base_sptr (a shared pointer to an abigail::decl_base)
-that points to the declaration of that type.  The
-abigail::type_base_sptr is added to the scope using the function
-abigail::add_decl_to_scope().
-
-There is a kind of type that is usually not syntactically owned by a
-scope: it's function type.  In libabigail function types are
-represented by abigail::function_type and abigail::method_type.  These
-types must be owned by the translation unit they originate from.
-Adding them to the translation unit must be done by a call to the
-method function abigail::translation::get_canonical_function_type().
-The type returned by that function is the one to use.
-
-<b> A declaration that has a type does NOT own the type </b>
-
-This means that, for instance, in an abigail::var_decl (a variable
-declaration), the type of the declaration is not owned by the
-declaration.  In other (concrete) words, the variable declaration
-doesn't have a shared pointer to the type.  Rather, it has a *weak*
-pointer to its type.  That means that it has a data member of type
-abigail::type_base_wptr that contains the type of the declaration.
-
-But then abigail::var_decl::get_type() returns a shared pointer that
-is constructed from the internal weak pointer to the type.  That way,
-users of the type of the var can own a temporary reference on it and
-be assured that the type's life time is long enough for their need.
-
-Likewise, data members, function and template parameters similarly
-have weak pointers on their type.
-
-@}
-
-*/
 namespace abigail
 {
 
@@ -690,6 +689,12 @@ public:
   virtual size_t
   get_hash() const;
 
+  virtual string
+  get_pretty_representation() const;
+
+  virtual void
+  get_qualified_name(string& qualified_name) const;
+
   void
   set_hash(size_t) const;
 
@@ -708,14 +713,8 @@ public:
   const string&
   get_name() const;
 
-  virtual string
-  get_pretty_representation() const;
-
   string
   get_qualified_parent_name() const;
-
-  virtual void
-  get_qualified_name(string& qualified_name) const;
 
   string
   get_qualified_name() const;
@@ -1726,153 +1725,7 @@ public:
   typedef std::vector<parameter_sptr> parameters;
 
   /// Abtraction for the parameter of a function.
-  class parameter
-  {
-    type_base_wptr	type_;
-    unsigned		index_;
-    bool		variadic_marker_;
-    std::string	name_;
-    location		location_;
-    bool		artificial_;
-
-  public:
-
-    /// Hasher for an instance of function::parameter
-    struct hash;
-
-    parameter(const shared_ptr<type_base> type,
-	      unsigned index,
-	      const std::string& name,
-	      location loc, bool variadic_marker = false)
-      : type_(type), index_(index), variadic_marker_ (variadic_marker),
-	name_(name), location_(loc),
-	artificial_(false)
-    {}
-
-    parameter(const shared_ptr<type_base> type,
-	      unsigned index,
-	      const std::string& name,
-	      location loc, bool variadic_marker,
-	      bool is_artificial)
-      : type_(type), index_(index), variadic_marker_ (variadic_marker),
-	name_(name), location_(loc),
-	artificial_(is_artificial)
-    {}
-
-    parameter(const shared_ptr<type_base> type,
-	      const std::string& name,
-	      location loc, bool variadic_marker = false,
-	      bool is_artificial = false)
-      : type_(type), index_(0), variadic_marker_ (variadic_marker),
-	name_(name), location_(loc), artificial_(is_artificial)
-    {}
-
-    parameter(const shared_ptr<type_base> type,
-	      unsigned index = 0,
-	      bool variadic_marker = false)
-    : type_(type),
-      index_(index),
-      variadic_marker_ (variadic_marker),
-      artificial_(false)
-    {}
-
-    const type_base_sptr
-    get_type()const
-    {
-      if (type_.expired())
-	return type_base_sptr();
-      return type_base_sptr(type_);
-    }
-
-    /// @return a copy of the type name of the parameter.
-    const string
-    get_type_name() const
-    {
-      string str;
-      if (variadic_marker_)
-	str = "...";
-      else
-	{
-	  type_base_sptr t = get_type();
-	  assert(t);
-	  str += abigail::ir::get_type_name(t);
-	}
-      return str;
-    }
-
-    /// @return a copy of the pretty representation of the type of the
-    /// parameter.
-    const string
-    get_type_pretty_representation() const
-    {
-      string str;
-      if (variadic_marker_)
-	str = "...";
-      else
-	{
-	  type_base_sptr t = get_type();
-	  assert(t);
-	  str += get_type_declaration(t)->get_pretty_representation();
-	}
-      return str;
-    }
-
-    const string
-    get_name_id() const;
-
-    unsigned
-    get_index() const
-    {return index_;}
-
-    void
-    set_index(unsigned i)
-    {index_ = i;}
-
-    const std::string&
-    get_name() const
-    {return name_;}
-
-    location
-    get_location() const
-    {return location_;}
-
-    /// Test if the parameter is artificial.
-    ///
-    /// Being artificial means the parameter was not explicitely
-    /// mentionned in the source code, but was rather artificially
-    /// created by the compiler.
-    ///
-    /// @return true if the parameter is artificial, false otherwise.
-    bool
-    get_artificial() const
-    {return artificial_;}
-
-    /// Getter for the artificial-ness of the parameter.
-    ///
-    /// Being artificial means the parameter was not explicitely
-    /// mentionned in the source code, but was rather artificially
-    /// created by the compiler.
-    ///
-    /// @param f set to true if the parameter is artificial.
-    void
-    set_artificial(bool f)
-    {artificial_ = f;}
-
-    bool
-    operator==(const parameter& o) const
-    {
-      if ((get_variadic_marker() != o.get_variadic_marker())
-	  || (get_index() != o.get_index())
-	  || (!!get_type() != !!o.get_type())
-	  || (get_type() && (*get_type() != *o.get_type())))
-	return false;
-      return true;
-    }
-
-    bool
-    get_variadic_marker() const
-    {return variadic_marker_;}
-  };
+  class parameter;
 
   function_decl(const std::string& name,
 		function_type_sptr function_type,
@@ -1951,6 +1804,103 @@ public:
 
   virtual ~function_decl();
 }; // end class function_decl
+
+bool
+equals(const function_decl::parameter&,
+       const function_decl::parameter&,
+       change_kind&);
+
+/// Abstraction of a function parameter.
+class function_decl::parameter : public decl_base
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+
+  /// Hasher for an instance of function::parameter
+  struct hash;
+
+  parameter(const type_base_sptr	type,
+	    unsigned			index,
+	    const std::string&		name,
+	    location			loc,
+	    bool			variadic_marker = false);
+
+  parameter(const type_base_sptr	type,
+	    unsigned			index,
+	    const std::string&		name,
+	    location			loc,
+	    bool			variadic_marker,
+	    bool			is_artificial);
+
+  parameter(const type_base_sptr	type,
+	    const std::string&		name,
+	    location			loc,
+	    bool			variadic_marker = false,
+	    bool			is_artificial	= false);
+
+  parameter(const type_base_sptr	type,
+	    unsigned			index = 0,
+	    bool			variadic_marker = false);
+
+  const type_base_sptr
+  get_type()const;
+
+  const string
+  get_type_name() const;
+
+  const string
+  get_type_pretty_representation() const;
+
+  const string
+  get_name_id() const;
+
+  unsigned
+  get_index() const;
+
+  void
+  set_index(unsigned i);
+
+   bool
+  get_artificial() const;
+
+  void
+  set_artificial(bool f);
+
+  bool
+  get_variadic_marker() const;
+
+  bool
+  operator==(const parameter& o) const;
+
+  virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  traverse(ir_node_visitor& v);
+
+  virtual size_t
+  get_hash() const;
+
+  virtual void
+  get_qualified_name(string& qualified_name) const;
+}; // end class function_decl::parameter
+
+/// A hashing functor for a function_decl::parameter.
+struct function_decl::parameter::hash
+{
+  size_t
+  operator()(const function_decl::parameter&) const;
+
+  size_t
+  operator()(const function_decl::parameter*) const;
+
+  size_t
+  operator()(const function_decl::parameter_sptr) const;
+}; // end struct function_decl::parameter::hash
 
 bool
 equals(const function_type&, const function_type&, change_kind&);
@@ -3208,6 +3158,7 @@ struct ir_node_visitor : public node_visitor_base
   virtual bool visit(typedef_decl*);
   virtual bool visit(var_decl*);
   virtual bool visit(function_decl*);
+  virtual bool visit(function_decl::parameter*);
   virtual bool visit(function_tdecl*);
   virtual bool visit(class_tdecl*);
   virtual bool visit(class_decl*);

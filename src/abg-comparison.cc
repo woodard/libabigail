@@ -40,6 +40,78 @@ namespace abigail
 namespace comparison
 {
 
+///
+///
+///@defgroup DiffNode Internal Representation of the comparison engine
+/// @{
+///
+/// How changes are represented in libabigail's comparison engine.
+///
+///@par diff nodes
+///
+/// The internal representation of the comparison engine is basically
+/// a graph of @ref instances of @ref diff node.  We refer to these
+/// just as <em>diff nodes</em>.  A diff node represents a change
+/// between two ABI artifacts represented by instances of types of the
+/// abigail::ir namespace.  These two artifacts that are being
+/// compared are called the <em>subjects of the diff</em>.
+///
+/// The types of that IR are in the abigail::comparison namespace.
+///
+///@par comparing diff nodes
+///
+/// Comparing two instances of @ref diff nodes amounts to comparing
+/// the subject of the diff.  In other words, two @ref diff nodes are
+/// equal if and only if their subjects are equal.  Thus, two @ref
+/// diff nodes can have different memory addresses and yet be equal.
+///
+///@par diff reporting and context
+///
+/// A diff node can be serialized to an output stream to express, in
+/// a human-readable textual form, the different changes that exist
+/// between its two subjects.  This is done by invoking the
+/// diff::report() method.  That reporting is controlled by several
+/// parameters that are conceptually part of the context of the diff.
+/// That context is materialized by an instance of the @ref
+/// diff_context type.
+///
+/// Please note that the role of the instance(s) of @ref diff_context
+/// is boreader than just controlling the reporting of @ref diff
+/// nodes.  Basically, a @ref diff node itself is created following
+/// behaviours that are controlled by a particular instance of
+/// diff_context.  A diff node is created in a particular diff
+/// context, so to speak.
+///
+/// @}
+///
+
+///
+/// @defgroup CanonicalDiff Canonical diff tree nodes
+/// @{
+///
+/// @par Equivalence of @ref diff nodes
+///
+/// Each @ref diff node has a property named <em>Canonical Diff
+/// Node</em>.  If \c D is a diff node, the canonical diff node of @c
+/// D, noted @c C(D) is a particular diff node that is equal to @c D.
+/// Thus, a fast way to compare two @ref diff node is to perform a
+/// pointer comparison of their canonical diff nodes.
+///
+/// A set of equivalent @ref diff nodes is a set of diff nodes that
+/// all have the same canonical node.  All the nodes of that set are
+/// equal.
+///
+/// A canonical node is registereded for a given diff node by invoking
+/// the method diff_context::initialize_canonical_diff().
+///
+/// Please note that the diff_context holds all the canonical diffs
+/// that got registered through it.  Thus, the life time of all of
+/// canonical diff objects is the same as the life time of the @ref
+/// diff_context they relate to.
+///
+/// @}
+///
+
 // Inject types from outside in here.
 using std::vector;
 using std::tr1::dynamic_pointer_cast;
@@ -101,7 +173,7 @@ operator~(visiting_kind l)
 /// @param S2 the second diff subject to take in account.
 #define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(S1, S2) \
   do {									\
-    if (diff_sptr _diff_ = context()->has_diff_for(S1, S2))		\
+    if (diff_sptr _diff_ = context()->get_canonical_diff_for(S1, S2))	\
       if (_diff_->currently_reporting() || _diff_->reported_once())	\
 	{								\
 	  if (_diff_->currently_reporting())				\
@@ -126,7 +198,7 @@ operator~(visiting_kind l)
 /// diagnostic.
 #define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(D, INTRO_TEXT) \
   do {									\
-    if (diff_sptr _diff_ = context()->has_diff_for(D))			\
+    if (diff_sptr _diff_ = context()->get_canonical_diff_for(D))	\
       if (_diff_->currently_reporting() || _diff_->reported_once())	\
 	{								\
 	  string _name_ = _diff_->first_subject()->get_pretty_representation(); \
@@ -151,7 +223,7 @@ operator~(visiting_kind l)
 /// diagnostic.
 #define RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3(S1, S2, INTRO_TEXT) \
     do {								\
-      if (diff_sptr _diff_ = context()->has_diff_for(S1, S2))		\
+      if (diff_sptr _diff_ = context()->get_canonical_diff_for(S1, S2)) \
 	if (_diff_->currently_reporting() || _diff_->reported_once())	\
 	  {								\
 	    string _name_ = _diff_->first_subject()->get_pretty_representation(); \
@@ -2187,6 +2259,7 @@ struct diff_context::priv
 {
   diff_category			allowed_category_;
   decls_diff_map_type			decls_diff_map;
+  vector<diff_sptr>			canonical_diffs;
   vector<filtering::filter_base_sptr>	filters_;
   suppressions_type			suppressions_;
   pointer_map				traversed_diff_nodes_;
@@ -2398,15 +2471,118 @@ diff_context::add_diff(const diff_sptr d)
       add_diff(d->first_subject(), d->second_subject(), d);
 }
 
+/// Getter for the @ref CanonicalDiff "canonical diff node" for the
+/// @ref diff represented by their two subjects.
+///
+/// @param first the first subject of the diff.
+///
+/// @param second the second subject of the diff.
+///
+/// @return the canonical diff for the diff node represented by the
+/// two diff subjects @p first and @p second.  If no canonical diff
+/// node was registered for these subjects, then a nil node is
+/// returned.
+diff_sptr
+diff_context::get_canonical_diff_for(const decl_base_sptr first,
+				     const decl_base_sptr second) const
+{return has_diff_for(first, second);}
+
+/// Getter for the @ref CanonicalDiff "canonical diff node" for the
+/// @ref diff represented by the two subjects of a given diff node.
+///
+/// @param d the diff node to get the canonical node for.
+///
+/// @return the canonical diff for the diff node represented by the
+/// two diff subjects of @p d.  If no canonical diff node was
+/// registered for these subjects, then a nil node is returned.
+diff_sptr
+diff_context::get_canonical_diff_for(const diff_sptr d) const
+{return has_diff_for(d);}
+
+/// Setter for the @ref CanonicalDiff "canonical diff node" for the
+/// @ref diff represented by their two subjects.
+///
+/// @param first the first subject of the diff.
+///
+/// @param second the second subject of the diff.
+///
+/// @param d the new canonical diff.
+void
+diff_context::set_canonical_diff_for(const decl_base_sptr first,
+				     const decl_base_sptr second,
+				     const diff_sptr d)
+{
+  assert(d);
+  if (!has_diff_for(first, second))
+    {
+      add_diff(first, second, d);
+      priv_->canonical_diffs.push_back(d);
+    }
+}
+
+/// If there is is a @ref CanonicalDiff "canonical diff node"
+/// registered for two diff subjects, return it.  Otherwise, register
+/// a canonical diff node for these two diff subjects and return it.
+///
+/// @param first the first subject of the diff.
+///
+/// @param second the second subject of the diff.
+///
+/// @param d the new canonical diff node.
+///
+/// @returnt the canonical diff node.
+diff_sptr
+diff_context::set_or_get_canonical_diff_for(const decl_base_sptr first,
+					    const decl_base_sptr second,
+					    const diff_sptr canonical_diff)
+{
+  assert(canonical_diff);
+
+  diff_sptr canonical = get_canonical_diff_for(first, second);
+  if (!canonical)
+    {
+      canonical = canonical_diff;
+      set_canonical_diff_for(first, second, canonical);
+    }
+  return canonical;
+}
+
+/// Set the canonical diff node property of a given diff node
+/// appropriately.
+///
+/// For a given diff node that has no canonical diff node, retrieve
+/// the canonical diff node (by looking at its diff subjects and at
+/// the current context) and set the canonical diff node property of
+/// the diff node to that canonical diff node.  If no canonical diff
+/// node has been registered to the diff context for the subjects of
+/// the diff node then, register the canonical diff node as being the
+/// diff node itself; and set its canonical diff node property as
+/// such.  Otherwise, if the diff node already has a canonical diff
+/// node, do nothing.
+///
+/// @param diff the diff node to initialize the canonical diff node
+/// property for.
+void
+diff_context::initialize_canonical_diff(const diff_sptr diff)
+{
+  if (diff->get_canonical_diff() == 0)
+    {
+      diff_sptr canonical =
+	set_or_get_canonical_diff_for(diff->first_subject(),
+				      diff->second_subject(),
+				      diff);
+      diff->set_canonical_diff(canonical.get());
+    }
+}
+
 /// Test if a diff node has been traversed.
 ///
 /// @param d the diff node to consider.
 bool
 diff_context::diff_has_been_traversed(const diff* d) const
 {
-  const diff* canonical = has_diff_for(d);
-  if (!canonical)
-    canonical = d;
+  const diff* canonical = d->get_canonical_diff();
+  assert(canonical);
 
   size_t ptr_value = reinterpret_cast<size_t>(canonical);
   return (priv_->traversed_diff_nodes_.find(ptr_value)
@@ -2422,17 +2598,16 @@ diff_context::diff_has_been_traversed(const diff_sptr d) const
 
 /// Mark a diff node as traversed by a traversing algorithm.
 ///
+/// Actually, it's the @ref CanonicalDiff "canonical diff" of this
+/// node that is marked as traversed.
+///
 /// Subsequent invocations of diff_has_been_traversed() on the diff
 /// node will yield true.
 void
 diff_context::mark_diff_as_traversed(const diff* d)
 {
-   const diff* canonical = has_diff_for(d);
-   if (!canonical)
-     {
-       add_diff(d);
-       canonical = d;
-     }
+  const diff* canonical = d->get_canonical_diff();
+  assert(canonical);
 
    size_t ptr_value = reinterpret_cast<size_t>(canonical);
    priv_->traversed_diff_nodes_[ptr_value] = true;
@@ -2741,7 +2916,8 @@ struct diff::priv
   bool			traversing_;
   decl_base_sptr	first_subject_;
   decl_base_sptr	second_subject_;
-  vector<diff*>	children_;
+  vector<diff_sptr>	children_;
+  diff*		canonical_diff_;
   diff_context_sptr	ctxt_;
   diff_category	category_;
   mutable bool		reported_once_;
@@ -2758,17 +2934,16 @@ public:
        diff_category category,
        bool reported_once,
        bool currently_reporting)
-    : finished_(false),
-      traversing_(false),
+    : finished_(),
+      traversing_(),
       first_subject_(first_subject),
       second_subject_(second_subject),
+      canonical_diff_(),
       ctxt_(ctxt),
       category_(category),
       reported_once_(reported_once),
       currently_reporting_(currently_reporting)
   {}
-
-  friend class diff;
 };// end class diff::priv
 
 /// Constructor for the @ref diff type.
@@ -2816,15 +2991,21 @@ diff::diff(decl_base_sptr	first_subject,
 /// given node as being traversed (or not), so that
 /// diff::is_traversing() can tell if the node is being traversed.
 ///
+/// The canonical node is marked as being traversed too.
+///
 /// These functions are called by the traversing code.
 void
 diff::begin_traversing()
 {
   assert(!is_traversing());
+  if (priv_->canonical_diff_)
+    priv_->canonical_diff_->priv_->traversing_ = true;
   priv_->traversing_ = true;
 }
 
 /// Tell if a given node is being traversed or not.
+///
+/// It's the canonical node which is looked at, actually.
 ///
 /// Please read the comments for the diff::begin_traversing() for mode
 /// context.
@@ -2832,9 +3013,13 @@ diff::begin_traversing()
 /// @return true if the current instance of @diff is being traversed.
 bool
 diff::is_traversing() const
-{return priv_->traversing_;}
+{
+  if (priv_->canonical_diff_)
+    return priv_->canonical_diff_->priv_->traversing_;
+  return priv_->traversing_;
+}
 
-/// Flag a given diff node as not being traversed.
+/// Flag a given diff node as not being traversed anymore.
 ///
 /// Please read the comments of the function diff::begin_traversing()
 /// for mode context;
@@ -2842,7 +3027,13 @@ void
 diff::end_traversing()
 {
   assert(is_traversing());
+  if (priv_->canonical_diff_)
+    priv_->canonical_diff_->priv_->traversing_ = false;
   priv_->traversing_ = false;
+
+  // Make this node as having been traversed, to allow the detection
+  // of nodes that might have been visited more than once.
+  context()->mark_diff_as_traversed(this);
 }
 
 /// Finish the building of a given kind of a diff tree node.
@@ -2873,16 +3064,37 @@ diff::second_subject() const
 /// Getter fo the children nodes of the the current @ref diff node.
 ///
 /// @return a vector of the children nodes.
-const vector<diff*>&
+const vector<diff_sptr>&
 diff::children_nodes() const
 {return priv_->children_;}
+
+/// Getter for the canonical diff of the current instance of @ref
+/// diff.
+///
+/// Note that the canonical diff node for the current instanc eof diff
+/// node must have been set by invoking
+/// class_diff::initialize_canonical_diff() on the current instance of
+/// diff node.
+///
+/// @return the canonical diff node or null if none was set.
+diff*
+diff::get_canonical_diff() const
+{return priv_->canonical_diff_;}
+
+/// Setter for the canonical diff of the current instance of @ref
+/// diff.
+///
+/// @param d the new canonical node to set.
+void
+diff::set_canonical_diff(diff * d)
+{priv_->canonical_diff_ = d;}
 
 /// Add a new child node to the vector of children nodes for the
 /// current @ref diff node.
 ///
 /// @param d the new child node to add to the children nodes.
 void
-diff::append_child_node(diff* d)
+diff::append_child_node(diff_sptr d)
 {
   assert(d);
   priv_->children_.push_back(d);
@@ -2909,7 +3121,11 @@ diff::context(diff_context_sptr c)
 /// current diff, false otherwise.
 bool
 diff::currently_reporting() const
-{return priv_->currently_reporting_;}
+{
+  if (priv_->canonical_diff_)
+    return priv_->canonical_diff_->priv_->currently_reporting_;
+  return priv_->currently_reporting_;
+}
 
 /// Sets a flag saying if we are currently in the middle of emitting
 /// a report for this diff.
@@ -2918,7 +3134,11 @@ diff::currently_reporting() const
 /// current diff, false otherwise.
 void
 diff::currently_reporting(bool f) const
-{priv_->currently_reporting_ = f;}
+{
+  if (priv_->canonical_diff_)
+    priv_->canonical_diff_->priv_->currently_reporting_ = f;
+  priv_->currently_reporting_ = f;
+}
 
 /// Tests if a report has already been emitted for the current diff.
 ///
@@ -2926,7 +3146,10 @@ diff::currently_reporting(bool f) const
 /// current diff, false otherwise.
 bool
 diff::reported_once() const
-{return priv_->reported_once_;}
+{
+  assert(priv_->canonical_diff_);
+  return priv_->canonical_diff_->priv_->reported_once_;
+}
 
 /// The generic traversing code that walks a given diff sub-tree.
 ///
@@ -2954,12 +3177,11 @@ diff::traverse(diff_node_visitor& v)
     {
       v.visit_end(this);
       end_traversing();
-      context()->mark_diff_as_traversed(this);
       return false;
     }
 
   if (!(v.get_visiting_kind() & SKIP_CHILDREN_VISITING_KIND))
-    for (vector<diff*>::const_iterator i = children_nodes().begin();
+    for (vector<diff_sptr>::const_iterator i = children_nodes().begin();
 	 i != children_nodes().end();
 	 ++i)
       {
@@ -2967,7 +3189,6 @@ diff::traverse(diff_node_visitor& v)
 	  {
 	    v.visit_end(this);
 	    end_traversing();
-	    context()->mark_diff_as_traversed(this);
 	    return false;
 	  }
       }
@@ -2976,13 +3197,11 @@ diff::traverse(diff_node_visitor& v)
     {
       v.visit_end(this);
       end_traversing();
-      context()->mark_diff_as_traversed(this);
       return false;
     }
 
   v.visit_end(this);
   end_traversing();
-  context()->mark_diff_as_traversed(this);
 
   return true;
 }
@@ -2993,7 +3212,11 @@ diff::traverse(diff_node_visitor& v)
 /// current diff, false otherwise.
 void
 diff::reported_once(bool f) const
-{priv_->reported_once_ = f;}
+{
+  assert(priv_->canonical_diff_);
+  priv_->canonical_diff_->priv_->reported_once_ = f;
+  priv_->reported_once_ = f;
+}
 
 /// Getter for the category of the current diff tree node.
 ///
@@ -3221,15 +3444,15 @@ distinct_diff::get_pretty_representation() const
 /// Populate the vector of children node of the @ref diff base type
 /// sub-object of this instance of @distinct_diff.
 ///
-/// The children node can then later be retrieved using
-/// diff::children_node().
+/// The children nodes can then later be retrieved using
+/// diff::children_nodes().
 void
 distinct_diff::chain_into_hierarchy()
 {
   assert(entities_are_of_distinct_kinds(first(), second()));
 
   if (diff_sptr d = compatible_child_diff())
-    append_child_node(d.get());
+    append_child_node(d);
 }
 
 /// Constructor for @ref distinct_diff.
@@ -3413,15 +3636,10 @@ compute_diff_for_distinct_kinds(const decl_base_sptr first,
   if (!distinct_diff::entities_are_of_distinct_kinds(first, second))
     return distinct_diff_sptr();
 
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      distinct_diff_sptr d = dynamic_pointer_cast<distinct_diff>(dif);
-      assert(d);
-      return d;
-    }
   distinct_diff_sptr result(new distinct_diff(first, second, ctxt));
 
-  ctxt->add_diff(first, second, result);
+  ctxt->initialize_canonical_diff(result);
+
   return result;
 }
 
@@ -3726,13 +3944,7 @@ compute_diff_for_types(const type_base_sptr first,
   decl_base_sptr f = dynamic_pointer_cast<decl_base>(first);
   decl_base_sptr s = dynamic_pointer_cast<decl_base>(second);
 
-  if (d = ctxt->has_diff_for(f, s))
-    ;
-  else
-    {
-      d = compute_diff_for_types(f, s, ctxt);
-      ctxt->add_diff(f, s, d);
-    }
+  d = compute_diff_for_types(f, s, ctxt);
 
   return d;
 }
@@ -3937,12 +4149,10 @@ represent_data_member(var_decl_sptr d, ostream& out)
 	<< " (in bits)\n";
 }
 
-/// Represent the changes that happened on two versions of a given
-/// class data member.
+/// Represent the changes carried by an instance of @ref var_diff that
+/// represent a difference between two class data members.
 ///
-/// @param o the older version of the data member.
-///
-/// @param n the newer version of the data member.
+/// @param diff diff the diff node to represent.
 ///
 /// @param ctxt the diff context to use.
 ///
@@ -3950,15 +4160,16 @@ represent_data_member(var_decl_sptr d, ostream& out)
 ///
 /// @param indent the indentation string to use for the change report.
 static void
-represent(var_decl_sptr	o,
-	  var_decl_sptr	n,
+represent(var_diff_sptr	diff,
 	  diff_context_sptr	ctxt,
 	  ostream&		out,
 	  const string&	indent = "")
 {
-  diff_sptr diff = compute_diff_for_decls(o, n, ctxt);
   if (!diff->to_be_reported())
     return;
+
+  var_decl_sptr o = diff->first_var();
+  var_decl_sptr n = diff->second_var();
 
   bool emitted = false;
   string name1 = o->get_qualified_name();
@@ -4056,11 +4267,8 @@ represent(var_decl_sptr	o,
 	out << "now becomes static";
       emitted = true;
     }
-  if (*o->get_type() != *n->get_type())
+  if (diff_sptr d = diff->type_diff())
     {
-      diff_sptr d = compute_diff_for_types(o->get_type(),
-					   n->get_type(),
-					   ctxt);
       if (d->to_be_reported())
 	{
 	  if (!emitted)
@@ -4265,13 +4473,13 @@ struct var_diff::priv
 };//end struct var_diff
 
 /// Populate the vector of children node of the @ref diff base type
-/// sub-object of this instance of @var_diff.
+/// sub-object of this instance of @ref var_diff.
 ///
 /// The children node can then later be retrieved using
 /// diff::children_node().
 void
 var_diff::chain_into_hierarchy()
-{append_child_node(type_diff().get());}
+{append_child_node(type_diff());}
 
 /// @return the pretty representation for this current instance of
 /// @ref var_diff.
@@ -4340,7 +4548,13 @@ var_diff::second_var() const
 /// @return the diff of the types of the instances of @ref var_decl.
 diff_sptr
 var_diff::type_diff() const
-{return priv_->type_diff_;}
+{
+  if (!priv_->type_diff_)
+    priv_->type_diff_ = compute_diff(first_var()->get_type(),
+				     second_var()->get_type(),
+				     context());
+  return priv_->type_diff_;
+}
 
 /// Compute and return the length of the current diff.
 ///
@@ -4386,6 +4600,7 @@ var_diff::report(ostream& out, const string& indent) const
     {
       if (d->to_be_reported())
 	{
+	  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "type");
 	  out << indent << "type of variable changed:\n";
 	  d->report(out, indent + " ");
 	}
@@ -4406,19 +4621,8 @@ compute_diff(const var_decl_sptr	first,
 	     const var_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (diff_sptr di = ctxt->has_diff_for(first, second))
-    {
-      var_diff_sptr d = dynamic_pointer_cast<var_diff>(di);
-      assert(d);
-      return d;
-    }
-
-  diff_sptr type_diff = compute_diff(first->get_type(),
-				     second->get_type(),
-				     ctxt);
-  var_diff_sptr d(new var_diff(first, second, type_diff, ctxt));
-  ctxt->add_diff(first, second, d);
-
+  var_diff_sptr d(new var_diff(first, second, diff_sptr(), ctxt));
+  ctxt->initialize_canonical_diff(d);
   return d;
 }
 
@@ -4494,7 +4698,7 @@ struct pointer_diff::priv
 /// diff::children_node().
 void
 pointer_diff::chain_into_hierarchy()
-{append_child_node(underlying_type_diff().get());}
+{append_child_node(underlying_type_diff());}
 
 /// Constructor for a pointer_diff.
 ///
@@ -4630,18 +4834,12 @@ compute_diff(pointer_type_def_sptr	first,
 	     pointer_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      pointer_diff_sptr d = dynamic_pointer_cast<pointer_diff>(dif);
-      assert(d);
-      return d;
-    }
 
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
   pointer_diff_sptr result(new pointer_diff(first, second, d, ctxt));
-  ctxt->add_diff(first, second, result);
+  ctxt->initialize_canonical_diff(result);
 
   return result;
 }
@@ -4666,7 +4864,7 @@ struct array_diff::priv
 /// diff::children_node().
 void
 array_diff::chain_into_hierarchy()
-{append_child_node(element_type_diff().get());}
+{append_child_node(element_type_diff());}
 
 /// Constructor for array_diff
 ///
@@ -4893,18 +5091,11 @@ compute_diff(array_type_def_sptr	first,
 	     array_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      array_diff_sptr d = dynamic_pointer_cast<array_diff>(dif);
-      return d;
-    }
-
   diff_sptr d = compute_diff_for_types(first->get_element_type(),
 				       second->get_element_type(),
 				       ctxt);
   array_diff_sptr result(new array_diff(first, second, d, ctxt));
-  ctxt->add_diff(first, second, result);
-
+  ctxt->initialize_canonical_diff(result);
   return result;
 }
 // </array_type_def>
@@ -4925,7 +5116,7 @@ struct reference_diff::priv
 /// diff::children_node().
 void
 reference_diff::chain_into_hierarchy()
-{append_child_node(underlying_type_diff().get());}
+{append_child_node(underlying_type_diff());}
 
 /// Constructor for reference_diff
 ///
@@ -5057,20 +5248,12 @@ compute_diff(reference_type_def_sptr	first,
 	     reference_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      reference_diff_sptr d = dynamic_pointer_cast<reference_diff>(dif);
-      return d;
-    }
-
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
   reference_diff_sptr result(new reference_diff(first, second, d, ctxt));
-  ctxt->add_diff(first, second, result);
-
+  ctxt->initialize_canonical_diff(result);
   return result;
-
 }
 // </reference_type_def>
 
@@ -5091,7 +5274,7 @@ struct qualified_type_diff::priv
 /// diff::children_node().
 void
 qualified_type_diff::chain_into_hierarchy()
-{append_child_node(underlying_type_diff().get());}
+{append_child_node(underlying_type_diff());}
 
 /// Constructor for qualified_type_diff.
 ///
@@ -5276,21 +5459,12 @@ compute_diff(const qualified_type_def_sptr	first,
 	     const qualified_type_def_sptr	second,
 	     diff_context_sptr			ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      qualified_type_diff_sptr d =
-	dynamic_pointer_cast<qualified_type_diff>(dif);
-      assert(d);
-      return d;
-    }
-
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
 				       ctxt);
   qualified_type_diff_sptr result(new qualified_type_diff(first, second,
 							  d, ctxt));
-  ctxt->add_diff(first, second, result);
-
+  ctxt->initialize_canonical_diff(result);
   return result;
 }
 
@@ -5395,7 +5569,7 @@ enum_diff::ensure_lookup_tables_populated()
 /// diff::children_node().
 void
 enum_diff::chain_into_hierarchy()
-{append_child_node(underlying_type_diff().get());}
+{append_child_node(underlying_type_diff());}
 
 /// Constructor for enum_diff.
 ///
@@ -5660,13 +5834,6 @@ compute_diff(const enum_type_decl_sptr first,
 	     const enum_type_decl_sptr second,
 	     diff_context_sptr ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      enum_diff_sptr d = dynamic_pointer_cast<enum_diff>(dif);
-      assert(d);
-      return d;
-    }
-
   diff_sptr ud = compute_diff_for_types(first->get_underlying_type(),
 					second->get_underlying_type(),
 					ctxt);
@@ -5680,7 +5847,7 @@ compute_diff(const enum_type_decl_sptr first,
 
   d->ensure_lookup_tables_populated();
 
-  ctxt->add_diff(first, second, d);
+  ctxt->initialize_canonical_diff(d);
 
   return d;
 }
@@ -5699,7 +5866,7 @@ struct class_diff::priv
 
   string_base_sptr_map deleted_bases_;
   string_base_sptr_map inserted_bases_;
-  string_changed_base_map changed_bases_;
+  string_base_diff_sptr_map changed_bases_;
   string_decl_base_sptr_map deleted_member_types_;
   string_decl_base_sptr_map inserted_member_types_;
   string_changed_type_or_decl_map changed_member_types_;
@@ -5708,13 +5875,13 @@ struct class_diff::priv
   string_decl_base_sptr_map inserted_data_members_;
   unsigned_decl_base_sptr_map inserted_dm_by_offset_;
   // This map contains the data member which sub-type changed.
-  string_changed_type_or_decl_map subtype_changed_dm_;
+  string_var_diff_sptr_map subtype_changed_dm_;
   // This one contains the list of data members changes that can be
   // represented as a data member foo that got removed from offset N,
   // and a data member bar that got inserted at offset N; IOW, this
   // can be translated as data member foo that got changed into data
   // member bar at offset N.
-  unsigned_changed_type_or_decl_map changed_dm_;
+  unsigned_var_diff_sptr_map changed_dm_;
   string_member_function_sptr_map deleted_member_functions_;
   string_member_function_sptr_map inserted_member_functions_;
   string_changed_member_function_sptr_map changed_member_functions_;
@@ -5735,13 +5902,13 @@ struct class_diff::priv
   member_class_tmpl_has_changed(decl_base_sptr) const;
 
   size_t
-  count_filtered_bases(const diff_context_sptr&);
+  count_filtered_bases();
 
   size_t
-  count_filtered_subtype_changed_dm(const diff_context_sptr&);
+  count_filtered_subtype_changed_dm();
 
   size_t
-  count_filtered_changed_dm(const diff_context_sptr&);
+  count_filtered_changed_dm();
 
   size_t
   count_filtered_changed_mem_fns(const diff_context_sptr&);
@@ -5848,7 +6015,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	      {
 		if (j->second != b)
 		  priv_->changed_bases_[qname] =
-		    std::make_pair(j->second, b);
+		    compute_diff(j->second, b, context());
 		priv_->deleted_bases_.erase(j);
 	      }
 	    else
@@ -5931,7 +6098,8 @@ class_diff::ensure_lookup_tables_populated(void) const
 	  {
 	    unsigned i = *iit;
 	    decl_base_sptr d = second_class_decl()->get_data_members()[i];
-	    string qname = d->get_qualified_name();
+	    var_decl_sptr dm = dynamic_pointer_cast<var_decl>(d);
+	    string qname = dm->get_qualified_name();
 	    assert(priv_->inserted_data_members_.find(qname)
 		   == priv_->inserted_data_members_.end());
 	    string_decl_base_sptr_map::const_iterator j =
@@ -5939,8 +6107,12 @@ class_diff::ensure_lookup_tables_populated(void) const
 	    if (j != priv_->deleted_data_members_.end())
 	      {
 		if (*j->second != *d)
-		  priv_->subtype_changed_dm_[qname]=
-		    std::make_pair(j->second, d);
+		  {
+		    var_decl_sptr old_dm =
+		      dynamic_pointer_cast<var_decl>(j->second);
+		    priv_->subtype_changed_dm_[qname]=
+		      compute_diff(old_dm, dm, context());
+		  }
 		priv_->deleted_data_members_.erase(j);
 	      }
 	    else
@@ -5977,10 +6149,15 @@ class_diff::ensure_lookup_tables_populated(void) const
 	unsigned_decl_base_sptr_map::const_iterator j =
 	  priv_->deleted_dm_by_offset_.find(i->first);
 	if (j != priv_->deleted_dm_by_offset_.end())
-	  priv_->changed_dm_[i->first] = std::make_pair(j->second, i->second);
+	  {
+	    var_decl_sptr old_dm = dynamic_pointer_cast<var_decl>(j->second);
+	    var_decl_sptr new_dm = dynamic_pointer_cast<var_decl>(i->second);
+	    priv_->changed_dm_[i->first] =
+	      compute_diff(old_dm, new_dm, context());
+	  }
       }
 
-    for (unsigned_changed_type_or_decl_map::const_iterator i =
+    for (unsigned_var_diff_sptr_map::const_iterator i =
 	   priv_->changed_dm_.begin();
 	 i != priv_->changed_dm_.end();
 	 ++i)
@@ -5988,9 +6165,9 @@ class_diff::ensure_lookup_tables_populated(void) const
 	priv_->deleted_dm_by_offset_.erase(i->first);
 	priv_->inserted_dm_by_offset_.erase(i->first);
 	priv_->deleted_data_members_.erase
-	  (i->second.first->get_qualified_name());
+	  (i->second->first_var()->get_qualified_name());
 	priv_->inserted_data_members_.erase
-	  (i->second.second->get_qualified_name());
+	  (i->second->second_var()->get_qualified_name());
       }
   }
 
@@ -6166,12 +6343,12 @@ class_decl::base_spec_sptr
 class_diff::priv::base_has_changed(class_decl::base_spec_sptr d) const
 {
   string qname = d->get_base_class()->get_qualified_name();
-  string_changed_base_map::const_iterator it =
+  string_base_diff_sptr_map::const_iterator it =
     changed_bases_.find(qname);
 
   return (it == changed_bases_.end())
     ? class_decl::base_spec_sptr()
-    : it->second.second;
+    : it->second->second_base();
 
 }
 
@@ -6203,12 +6380,12 @@ decl_base_sptr
 class_diff::priv::subtype_changed_dm(decl_base_sptr d) const
 {
   string qname = d->get_qualified_name();
-  string_changed_type_or_decl_map::const_iterator it =
+  string_var_diff_sptr_map::const_iterator it =
     subtype_changed_dm_.find(qname);
 
-  return ((it == subtype_changed_dm_.end())
-	  ? decl_base_sptr()
-	  : it->second.second);
+  if (it == subtype_changed_dm_.end())
+    return decl_base_sptr();
+  return it->second->second_var();
 }
 
 /// Test whether a given member class template has changed.
@@ -6231,25 +6408,17 @@ class_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
 
 /// Count the number of bases classes whose changes got filtered out.
 ///
-/// @param ctxt the context to use to determine the filtering settings
-/// from the user.
-///
 /// @return the number of bases classes whose changes got filtered
 /// out.
 size_t
-class_diff::priv::count_filtered_bases(const diff_context_sptr& ctxt)
+class_diff::priv::count_filtered_bases()
 {
   size_t num_filtered = 0;
-  for (string_changed_base_map::const_iterator i = changed_bases_.begin();
+  for (string_base_diff_sptr_map::const_iterator i = changed_bases_.begin();
        i != changed_bases_.end();
        ++i)
     {
-      class_decl::base_spec_sptr o =
-	dynamic_pointer_cast<class_decl::base_spec>(i->second.first);
-      class_decl::base_spec_sptr n =
-	dynamic_pointer_cast<class_decl::base_spec>(i->second.second);
-      diff_sptr diff = compute_diff(o, n, ctxt);
-      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
+      diff_sptr diff = i->second;
       if (diff->is_filtered_out())
 	++num_filtered;
     }
@@ -6263,21 +6432,15 @@ class_diff::priv::count_filtered_bases(const diff_context_sptr& ctxt)
 ///
 /// @return the number of data members whose changes got filtered out.
 size_t
-class_diff::priv::count_filtered_subtype_changed_dm(const diff_context_sptr& ctxt)
+class_diff::priv::count_filtered_subtype_changed_dm()
 {
   size_t num_filtered= 0;
-  for (string_changed_type_or_decl_map::const_iterator i =
+  for (string_var_diff_sptr_map::const_iterator i =
 	 subtype_changed_dm_.begin();
        i != subtype_changed_dm_.end();
        ++i)
     {
-      var_decl_sptr o =
-	dynamic_pointer_cast<var_decl>(i->second.first);
-      var_decl_sptr n =
-	dynamic_pointer_cast<var_decl>(i->second.second);
-      diff_sptr diff = compute_diff_for_decls(o, n, ctxt);
-      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
-      if (diff->is_filtered_out())
+      if (i->second->is_filtered_out())
 	++num_filtered;
     }
   return num_filtered;
@@ -6285,23 +6448,17 @@ class_diff::priv::count_filtered_subtype_changed_dm(const diff_context_sptr& ctx
 
 /// Count the number of data member offsets that have changed.
 ///
-/// @param ctxt the diff context to use.
+/// @return the number of filtered changed data members.
 size_t
-class_diff::priv::count_filtered_changed_dm(const diff_context_sptr& ctxt)
+class_diff::priv::count_filtered_changed_dm()
 {
   size_t num_filtered= 0;
 
-  for (unsigned_changed_type_or_decl_map::const_iterator i =
-	 changed_dm_.begin();
+  for (unsigned_var_diff_sptr_map::const_iterator i = changed_dm_.begin();
        i != changed_dm_.end();
        ++i)
     {
-      var_decl_sptr o =
-	dynamic_pointer_cast<var_decl>(i->second.first);
-      var_decl_sptr n =
-	dynamic_pointer_cast<var_decl>(i->second.second);
-      diff_sptr diff = compute_diff(o, n, ctxt);
-      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
+      diff_sptr diff = i->second;
       if (diff->is_filtered_out())
 	++num_filtered;
     }
@@ -6355,7 +6512,7 @@ class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
 
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
-      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
+      ctxt->maybe_apply_filters(diff);
 
       if (diff->is_filtered_out())
 	++count;
@@ -6389,7 +6546,7 @@ class_diff::priv::count_filtered_inserted_mem_fns(const diff_context_sptr& ctxt)
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
 
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
-      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
+      ctxt->maybe_apply_filters(diff);
 
       if (diff->get_category() != NO_CHANGE_CATEGORY
 	  && diff->is_filtered_out())
@@ -6424,7 +6581,7 @@ class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
 
       diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
-      ctxt->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
+      ctxt->maybe_apply_filters(diff);
 
       if (diff->get_category() != NO_CHANGE_CATEGORY
 	  && diff->is_filtered_out())
@@ -6443,33 +6600,27 @@ void
 class_diff::chain_into_hierarchy()
 {
   // base class changes.
-  for (string_changed_base_map::const_iterator i =
+  for (string_base_diff_sptr_map::const_iterator i =
 	 priv_->changed_bases_.begin();
        i != priv_->changed_bases_.end();
        ++i)
-    if (diff_sptr d = compute_diff(i->second.first,
-				   i->second.second,
-				   context()))
-      append_child_node(d.get());
+    if (diff_sptr d = i->second)
+      append_child_node(d);
 
   // data member changes
-  for (string_changed_type_or_decl_map::const_iterator i =
+  for (string_var_diff_sptr_map::const_iterator i =
 	 priv_->subtype_changed_dm_.begin();
        i != priv_->subtype_changed_dm_.end();
        ++i)
-    if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					     i->second.second,
-					     context()))
-      append_child_node(d.get());
+    if (diff_sptr d = i->second)
+      append_child_node(d);
 
-  for (unsigned_changed_type_or_decl_map::const_iterator i =
+  for (unsigned_var_diff_sptr_map::const_iterator i =
 	 priv_->changed_dm_.begin();
        i != priv_->changed_dm_.end();
        ++i)
-    if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					     i->second.second,
-					     context()))
-      append_child_node(d.get());
+    if (diff_sptr d = i->second)
+      append_child_node(d);
 
   // member types changes
   for (string_changed_type_or_decl_map::const_iterator i =
@@ -6479,7 +6630,7 @@ class_diff::chain_into_hierarchy()
     if (diff_sptr d = compute_diff_for_types(i->second.first,
 					     i->second.second,
 					     context()))
-      append_child_node(d.get());
+      append_child_node(d);
 
   // member function changes
   for (string_changed_member_function_sptr_map::const_iterator i =
@@ -6489,7 +6640,7 @@ class_diff::chain_into_hierarchy()
     if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					     i->second.second,
 					     context()))
-      append_child_node(d.get());
+      append_child_node(d);
 }
 
 /// Constructor of class_diff
@@ -6504,6 +6655,9 @@ class_diff::class_diff(shared_ptr<class_decl>	first_scope,
 		       diff_context_sptr	ctxt)
   : type_diff_base(first_scope, second_scope, ctxt),
     priv_(new priv)
+{}
+
+class_diff::~class_diff()
 {}
 
 /// Finish building the current instance of @ref class_diff.
@@ -6588,7 +6742,7 @@ class_diff::inserted_bases() const
 ///
 /// @return a map containing the changed base classes, keyed with
 /// their pretty representation.
-const string_changed_base_map&
+const string_base_diff_sptr_map&
 class_diff::changed_bases()
 {return priv_->changed_bases_;}
 
@@ -6617,10 +6771,16 @@ edit_script&
 class_diff::data_members_changes()
 {return priv_->data_members_changes_;}
 
+/// Getter for the data members that got inserted.
+///
+/// @return a map of data members that got inserted.
 const string_decl_base_sptr_map&
 class_diff::inserted_data_members() const
 {return priv_->inserted_data_members_;}
 
+/// Getter for the data members that got deleted.
+///
+/// @return a map of data members that got deleted.
 const string_decl_base_sptr_map&
 class_diff::deleted_data_members() const
 {return priv_->deleted_data_members_;}
@@ -6631,6 +6791,10 @@ const edit_script&
 class_diff::member_fns_changes() const
 {return priv_->member_fns_changes_;}
 
+/// Getter for the members functions that have had a change in a
+/// sub-type, without having a change in their symbol name.
+///
+/// @return a map of member functions that have a sub-type change.
 const string_changed_member_function_sptr_map&
 class_diff::changed_member_fns() const
 {return priv_->changed_member_functions_;}
@@ -6675,66 +6839,65 @@ edit_script&
 class_diff::member_class_tmpls_changes()
 {return priv_->member_class_tmpls_changes_;}
 
-/// A comparison functor to compare two changed data members based on
-/// the offset of their initial value.
-struct changed_data_member_comp
+/// A comparison functor to compare two instances of @ref var_diff
+/// that represent changed data members based on the offset of their
+/// initial value.
+struct var_diff_comp
 {
-  /// @param f the first changed data member to take into account
+  /// @param f the first change to data member to take into account
   ///
-  /// @param s the second changed data member to take into account.
+  /// @param s the second change to data member to take into account.
   ///
   /// @return true iff f is before s.
   bool
-  operator()(const changed_type_or_decl& f,
-	     const changed_type_or_decl& s) const
+  operator()(const var_diff_sptr f,
+	     const var_diff_sptr s) const
   {
-    var_decl_sptr first_dm = is_data_member(f.first);
-    var_decl_sptr second_dm = is_data_member(s.first);
+    var_decl_sptr first_dm = f->first_var();
+    var_decl_sptr second_dm = s->first_var();
 
-    assert(first_dm);
-    assert(second_dm);
+    assert(is_data_member(first_dm));
+    assert(is_data_member(second_dm));
 
     return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
   }
-}; // end struct changed_data_member_comp
+}; // end struct var_diff_comp
 
-/// Sort two changed data members by the offset of their initial
-/// value.
+/// Sort the values of a unsigned_var_diff_sptr_map map and store the
+/// result into a vector of var_diff_sptr.
 ///
-/// @param data_members the map of changed data members to sort.
+/// @param map the map of changed data members to sort.
 ///
-/// @param sorted the resulting vector of sorted changed data members.
+/// @param sorted the resulting vector of sorted var_diff_sptr.
 static void
-sort_changed_data_members(const unsigned_changed_type_or_decl_map data_members,
-			  changed_type_or_decl_vector& sorted)
+sort_var_diffs(const unsigned_var_diff_sptr_map map,
+	       vector<var_diff_sptr>& sorted)
 {
-  sorted.reserve(data_members.size());
-  for (unsigned_changed_type_or_decl_map::const_iterator i =
-	 data_members.begin();
-       i != data_members.end();
+  sorted.reserve(map.size());
+  for (unsigned_var_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
        ++i)
     sorted.push_back(i->second);
-  changed_data_member_comp comp;
+  var_diff_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
-/// Sort a map of changed data members by the offset of their initial
-/// value.
+/// Sort the values of a string_var_diff_sptr_map and store the result
+/// in a vector of var_diff_sptr.
 ///
-/// @param data_members the map of changed data members to sort.
+/// @param map the map of changed data members to sort.
 ///
-/// @param sorted the resulting vector of sorted changed data members.
+/// @param sorted the resulting vector of var_diff_sptr.
 static void
-sort_changed_data_members(const string_changed_type_or_decl_map& data_members,
-			  changed_type_or_decl_vector& sorted)
+sort_var_diffs(const string_var_diff_sptr_map& map,
+	       vector<var_diff_sptr>& sorted)
 {
-  sorted.reserve(data_members.size());
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 data_members.begin();
-       i != data_members.end();
+  sorted.reserve(map.size());
+  for (string_var_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
        ++i)
     sorted.push_back(i->second);
-  changed_data_member_comp comp;
+  var_diff_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
@@ -6842,23 +7005,21 @@ class_diff::report(ostream& out, const string& indent) const
 
       // Report changes.
       bool emitted = false;
-      size_t num_filtered = priv_->count_filtered_bases(context());
+      size_t num_filtered = priv_->count_filtered_bases();
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered, change_kind,
 			    "base class", indent);
-	  for (string_changed_base_map::const_iterator it =
+	  for (string_base_diff_sptr_map::const_iterator it =
 		 priv_->changed_bases_.begin();
 	       it != priv_->changed_bases_.end();
 	       ++it)
 	    {
-	      class_decl::base_spec_sptr o =
-		dynamic_pointer_cast<class_decl::base_spec>(it->second.first);
-	      class_decl::base_spec_sptr n =
-		dynamic_pointer_cast<class_decl::base_spec>(it->second.second);
-	      diff_sptr diff = compute_diff(o, n, context());
+	      base_diff_sptr diff = it->second;
 	      if (!diff->to_be_reported())
 		continue;
+
+	      class_decl::base_spec_sptr o = diff->first_base();
 	      out << indent << "  '"
 		  << o->get_base_class()->get_pretty_representation()
 		  << "' changed:\n";
@@ -7031,46 +7192,35 @@ class_diff::report(ostream& out, const string& indent) const
 
       // report change
       size_t numchanges = priv_->subtype_changed_dm_.size();
-      size_t num_filtered = priv_->count_filtered_subtype_changed_dm(context());
+      size_t num_filtered = priv_->count_filtered_subtype_changed_dm();
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    subtype_change_kind, "data member", indent);
-	  changed_type_or_decl_vector sorted_dms;
-	  sort_changed_data_members(priv_->subtype_changed_dm_, sorted_dms);
-	  for (changed_type_or_decl_vector::const_iterator it
-		 = sorted_dms.begin();
+	  vector<var_diff_sptr> sorted_dms;
+	  sort_var_diffs(priv_->subtype_changed_dm_, sorted_dms);
+	  for (vector<var_diff_sptr>::const_iterator it = sorted_dms.begin();
 	       it != sorted_dms.end();
 	       ++it)
-	    {
-	      var_decl_sptr o =
-		dynamic_pointer_cast<var_decl>(it->first);
-	      var_decl_sptr n =
-		dynamic_pointer_cast<var_decl>(it->second);
-	      represent(o, n, context(), out, indent + " ");
-	    }
+	    represent(*it, context(), out, indent + " ");
 	  out << "\n";
 	}
 
       numchanges = priv_->changed_dm_.size();
-      num_filtered = priv_->count_filtered_changed_dm(context());
+      num_filtered = priv_->count_filtered_changed_dm();
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    change_kind, "data member", indent);
-	  changed_type_or_decl_vector sorted_changed_dms;
-	  sort_changed_data_members(priv_->changed_dm_,
-				    sorted_changed_dms);
-	  for (changed_type_or_decl_vector::const_iterator it =
+	  vector<var_diff_sptr> sorted_changed_dms;
+	  sort_var_diffs(priv_->changed_dm_,
+			 sorted_changed_dms);
+	  for (vector<var_diff_sptr>::const_iterator it =
 		 sorted_changed_dms.begin();
 	       it != sorted_changed_dms.end();
 	       ++it)
 	    {
-	      var_decl_sptr o =
-		dynamic_pointer_cast<var_decl>(it->first);
-	      var_decl_sptr n =
-		dynamic_pointer_cast<var_decl>(it->second);
-	      represent(o, n, context(), out, indent + " ");
+	      represent(*it, context(), out, indent + " ");
 	    }
 	  out << "\n";
 	}
@@ -7290,13 +7440,6 @@ compute_diff(const class_decl_sptr	first,
   class_decl_sptr f = look_through_decl_only_class(first),
     s = look_through_decl_only_class(second);
 
-   if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      class_diff_sptr d = dynamic_pointer_cast<class_diff>(dif);
-      assert(d);
-      return d;
-    }
-
   class_diff_sptr changes(new class_diff(f, s, ctxt));
 
   // Compare base specs
@@ -7348,8 +7491,16 @@ compute_diff(const class_decl_sptr	first,
 
   changes->ensure_lookup_tables_populated();
 
-  ctxt->add_diff(first, second, changes);
-  ctxt->add_diff(f, s, changes);
+  ctxt->initialize_canonical_diff(changes);
+  assert(changes->get_canonical_diff());
+  if (!ctxt->get_canonical_diff_for(first, second))
+    {
+      // Either first or second is a decl-only class; let's set the
+      // canonical diff here in that case.
+      diff_sptr canonical_diff = ctxt->get_canonical_diff_for(changes);
+      assert(canonical_diff);
+      ctxt->set_canonical_diff_for(first, second, canonical_diff);
+    }
 
   return changes;
 }
@@ -7373,7 +7524,7 @@ struct base_diff::priv
 /// diff::children_node().
 void
 base_diff::chain_into_hierarchy()
-{append_child_node(get_underlying_class_diff().get());}
+{append_child_node(get_underlying_class_diff());}
 
 /// @param first the first base spec to consider.
 ///
@@ -7531,19 +7682,12 @@ compute_diff(const class_decl::base_spec_sptr	first,
 	     const class_decl::base_spec_sptr	second,
 	     diff_context_sptr			ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      base_diff_sptr d = dynamic_pointer_cast<base_diff>(dif);
-      assert(d);
-      return d;
-    }
-
   class_diff_sptr cl = compute_diff(first->get_base_class(),
 				    second->get_base_class(),
 				    ctxt);
   base_diff_sptr changes(new base_diff(first, second, cl, ctxt));
 
-  ctxt->add_diff(first, second, changes);
+  ctxt->initialize_canonical_diff(changes);
 
   return changes;
 }
@@ -7785,7 +7929,7 @@ scope_diff::chain_into_hierarchy()
     if (diff_sptr d = compute_diff_for_types(i->second.first,
 					     i->second.second,
 					     context()))
-      append_child_node(d.get());
+      append_child_node(d);
 
   for (string_changed_type_or_decl_map::const_iterator i =
 	 changed_decls().begin();
@@ -7794,7 +7938,7 @@ scope_diff::chain_into_hierarchy()
     if (diff_sptr d = compute_diff_for_decls(i->second.first,
 					     i->second.second,
 					     context()))
-      append_child_node(d.get());
+      append_child_node(d);
 }
 
 /// Constructor for scope_diff
@@ -8203,8 +8347,6 @@ compute_diff(const scope_decl_sptr	first,
   d->ensure_lookup_tables_populated();
   d->context(ctxt);
 
-  ctxt->add_diff(first, second, d);
-
   return d;
 }
 
@@ -8223,18 +8365,187 @@ compute_diff(const scope_decl_sptr	first_scope,
 	     const scope_decl_sptr	second_scope,
 	     diff_context_sptr		ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first_scope, second_scope))
-    {
-      scope_diff_sptr d = dynamic_pointer_cast<scope_diff>(dif);
-      assert(d);
-      return d;
-    }
-
   scope_diff_sptr d(new scope_diff(first_scope, second_scope, ctxt));
-  return compute_diff(first_scope, second_scope, d, ctxt);
+  d = compute_diff(first_scope, second_scope, d, ctxt);
+  ctxt->initialize_canonical_diff(d);
+  return d;
 }
 
 //</scope_diff stuff>
+
+// <fn_parm_diff stuff>
+struct fn_parm_diff::priv
+{
+  mutable diff_sptr type_diff;
+}; // end struct fn_parm_diff::priv
+
+/// Constructor for the fn_parm_diff type.
+///
+/// @param first the first subject of the diff.
+///
+/// @param second the second subject of the diff.
+///
+/// @param ctxt the context of the diff.
+fn_parm_diff::fn_parm_diff(const function_decl::parameter_sptr	first,
+			   const function_decl::parameter_sptr	second,
+			   diff_context_sptr			ctxt)
+  : decl_diff_base(first, second, ctxt),
+    priv_(new priv)
+{
+  assert(first->get_index() == second->get_index());
+  priv_->type_diff = compute_diff(first->get_type(),
+				  second->get_type(),
+				  ctxt);
+}
+
+/// Finish the building of the current instance of @ref fn_parm_diff.
+void
+fn_parm_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
+
+/// Getter for the first subject of this diff node.
+///
+/// @return the first function_decl::parameter_sptr subject of this
+/// diff node.
+const function_decl::parameter_sptr
+fn_parm_diff::first_parameter() const
+{return dynamic_pointer_cast<function_decl::parameter>(first_subject());}
+
+/// Getter for the second subject of this diff node.
+///
+/// @return the second function_decl::parameter_sptr subject of this
+/// diff node.
+const function_decl::parameter_sptr
+fn_parm_diff::second_parameter() const
+{return dynamic_pointer_cast<function_decl::parameter>(second_subject());}
+
+/// Getter for the diff representing the changes on the type of the
+/// function parameter involved in the current instance of @ref
+/// fn_parm_diff.
+///
+/// @return a diff_sptr representing the changes on the type of the
+/// function parameter we are interested in.
+diff_sptr
+fn_parm_diff::get_type_diff() const
+{return priv_->type_diff;}
+
+/// Build and return a textual representation of the current instance
+/// of @ref fn_parm_diff.
+///
+/// @return the string representing the current instance of
+/// fn_parm_diff.
+const string&
+fn_parm_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "function_parameter_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
+
+/// Return 0 iff the current diff node carries *NO* change.
+/// Otherwise, return a non-zero positive number.
+///
+/// @return non-zero iff the current diff node carries a change.
+unsigned
+fn_parm_diff::length() const
+{return *first_parameter() != *second_parameter();}
+
+/// Check if the the current diff node carries a local change.
+///
+/// @return true iff the current diff node carries a local change.
+bool
+fn_parm_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_parameter(), *second_parameter(), k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
+
+/// Emit a textual report about the current fn_parm_diff instance.
+///
+/// @param out the output stream to emit the textual report to.
+///
+/// @param indent the indentation string to use in the report.
+void
+fn_parm_diff::report(ostream& out, const string& indent) const
+{
+  function_decl::parameter_sptr f = first_parameter(), s = second_parameter();
+  string f_name_id = f->get_name_id(), s_name_id = s->get_name_id();
+
+  // either the parameter has a sub-type change (if it's name id
+  // hasn't changed) or it has a compatible change (that, is a change
+  // that changes his name w/o changing the signature of the
+  // function).
+  bool has_sub_type_change = (f_name_id == s_name_id);
+
+  if (to_be_reported())
+    {
+      assert(get_type_diff()->to_be_reported());
+      out << indent
+	  << "parameter " << f->get_index()
+	  << " of type '"
+	  << f->get_type_pretty_representation();
+
+      if (has_sub_type_change)
+	out << "' has sub-type changes:\n";
+      else
+	out << "' changed:\n";
+
+      get_type_diff()->report(out, indent + "  ");
+    }
+}
+
+/// Populate the vector of children nodes of the @ref diff base type
+/// sub-object of this instance of @ref fn_parm_diff.
+///
+/// The children nodes can then later be retrieved using
+/// diff::children_nodes()
+void
+fn_parm_diff::chain_into_hierarchy()
+{
+  if (get_type_diff())
+    append_child_node(get_type_diff());
+}
+
+/// Compute the difference between two function_decl::parameter_sptr;
+/// that is, between two function parameters.  Return a resulting
+/// fn_parm_diff_sptr that represents the changes.
+///
+/// @param first the first subject of the diff.
+///
+/// @param second the second subject of the diff.
+///
+/// @param ctxt the context of the diff.
+///
+/// @return fn_parm_diff_sptr the resulting diff node.
+fn_parm_diff_sptr
+compute_diff(const function_decl::parameter_sptr	first,
+	     const function_decl::parameter_sptr	second,
+	     diff_context_sptr				ctxt)
+{
+  if (!first || !second)
+    return fn_parm_diff_sptr();
+
+  fn_parm_diff_sptr result(new fn_parm_diff(first, second, ctxt));
+  ctxt->initialize_canonical_diff(result);
+
+  return result;
+}
+// </fn_parm_diff stuff>
 
 // <function_decl_diff stuff>
 struct function_decl_diff::priv
@@ -8257,12 +8568,18 @@ struct function_decl_diff::priv
   edit_script	fn_flags_changes_;
 
   // useful lookup tables.
-  string_parm_map		deleted_parms_;
-  string_parm_map		added_parms_;
-  string_changed_parm_map	subtype_changed_parms_;
-  unsigned_parm_map		deleted_parms_by_id_;
-  unsigned_parm_map		added_parms_by_id_;
-  unsigned_changed_parm_map	changed_parms_by_id_;
+  string_parm_map			deleted_parms_;
+  string_parm_map			added_parms_;
+  // This map contains parameters sub-type changes that don't change
+  // the name of the type of the parameter.
+  string_fn_parm_diff_sptr_map		subtype_changed_parms_;
+  unsigned_parm_map			deleted_parms_by_id_;
+  unsigned_parm_map			added_parms_by_id_;
+  // This map contains parameter type changes that actually change the
+  // name of the type of the parameter, but in a compatible way;
+  // otherwise, the mangling of the function would have changed (in
+  // c++ at least).
+  unsigned_fn_parm_diff_sptr_map	changed_parms_by_id_;
 
   priv(diff_sptr return_type_diff)
     : return_type_diff_(return_type_diff)
@@ -8368,7 +8685,7 @@ function_decl_diff::ensure_lookup_tables_populated()
 	      {
 		if (*k->second != *parm)
 		  priv_->subtype_changed_parms_[parm_name] =
-		    std::make_pair(k->second, parm);
+		    compute_diff(k->second, parm, context());
 		priv_->deleted_parms_.erase(parm_name);
 	      }
 	    else
@@ -8382,7 +8699,7 @@ function_decl_diff::ensure_lookup_tables_populated()
 		if (*k->second != *parm
 		    && (k->second->get_name_id() != parm_name))
 		  priv_->changed_parms_by_id_[parm->get_index()] =
-		    std::make_pair(k->second, parm);
+		    compute_diff(k->second, parm, context());
 		priv_->added_parms_.erase(parm_name);
 		priv_->deleted_parms_.erase(k->second->get_name_id());
 		priv_->deleted_parms_by_id_.erase(parm->get_index());
@@ -8403,25 +8720,21 @@ void
 function_decl_diff::chain_into_hierarchy()
 {
   if (diff_sptr d = return_type_diff())
-    append_child_node(d.get());
+    append_child_node(d);
 
-  for (string_changed_parm_map::const_iterator i =
+  for (string_fn_parm_diff_sptr_map::const_iterator i =
 	 subtype_changed_parms().begin();
        i != subtype_changed_parms().end();
        ++i)
-    if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
-					     i->second.second->get_type(),
-					     context()))
-      append_child_node(d.get());
+    if (diff_sptr d = i->second)
+      append_child_node(d);
 
-  for (unsigned_changed_parm_map::const_iterator i =
+  for (unsigned_fn_parm_diff_sptr_map::const_iterator i =
 	 priv_->changed_parms_by_id_.begin();
        i != priv_->changed_parms_by_id_.end();
        ++i)
-    if (diff_sptr d = compute_diff_for_types(i->second.first->get_type(),
-					     i->second.second->get_type(),
-					     context()))
-      append_child_node(d.get());
+    if (diff_sptr d = i->second)
+      append_child_node(d);
 }
 
 /// Constructor for function_decl_diff
@@ -8476,7 +8789,7 @@ function_decl_diff::return_type_diff() const
 
 /// @return a map of the parameters whose type got changed.  The key
 /// of the map is the name of the type.
-const string_changed_parm_map&
+const string_fn_parm_diff_sptr_map&
 function_decl_diff::subtype_changed_parms() const
 {return priv_->subtype_changed_parms_;}
 
@@ -8522,39 +8835,43 @@ function_decl_diff::has_local_changes() const
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
-/// A comparison functor to compare two changed function parameters
+/// A comparison functor to compare two instances of @ref fn_parm_diff
 /// based on their indexes.
-struct changed_parm_comp
+struct fn_parm_diff_comp
 {
-  /// @param f the first changed function parameter.
+  /// @param f the first diff
   ///
-  /// @param s the second changed function parameter.
+  /// @param s the second diff
   ///
   /// @return true if the index of @p f is less than the index of @p
   /// s.
   bool
-  operator()(const changed_parm& f, const changed_parm& s)
-  {return f.first->get_index() < s.first->get_index();}
-}; // end struct changed_parm_comp;
+  operator()(const fn_parm_diff& f, const fn_parm_diff& s)
+  {return f.first_parameter()->get_index() < s.first_parameter()->get_index();}
 
-/// Sort a map of changed function parameters by the indexes of the
-/// function parameters.
+  bool
+  operator()(const fn_parm_diff_sptr& f, const fn_parm_diff_sptr& s)
+  {return operator()(*f, *s);}
+}; // end struct fn_parm_diff_comp
+
+/// Sort a map of @ref fn_parm_diff by the indexes of the function
+/// parameters.
 ///
 /// @param map the map to sort.
 ///
 /// @param sorted the resulting sorted vector of changed function
 /// parms.
 static void
-sort_changed_parm_map(const unsigned_changed_parm_map& map,
-		      changed_parms_type& sorted)
+sort_string_fn_parm_diff_sptr_map(const unsigned_fn_parm_diff_sptr_map& map,
+				  vector<fn_parm_diff_sptr>&		sorted)
 {
   sorted.reserve(map.size());
-  for (unsigned_changed_parm_map::const_iterator i = map.begin();
+  for (unsigned_fn_parm_diff_sptr_map::const_iterator i = map.begin();
        i != map.end();
        ++i)
     sorted.push_back(i->second);
 
-  changed_parm_comp comp;
+  fn_parm_diff_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
@@ -8563,19 +8880,19 @@ sort_changed_parm_map(const unsigned_changed_parm_map& map,
 ///
 /// @param map the map to sort.
 ///
-/// @param sorted the resulting sorted vector of changed function
-/// parms.
+/// @param sorted the resulting sorted vector of instances of @ref
+/// fn_parm_diff_sptr
 static void
-sort_changed_parm_map(const string_changed_parm_map& map,
-		      changed_parms_type& sorted)
+sort_string_fn_parm_diff_sptr_map(const string_fn_parm_diff_sptr_map&	map,
+				  vector<fn_parm_diff_sptr>&		sorted)
 {
   sorted.reserve(map.size());
-  for (string_changed_parm_map::const_iterator i = map.begin();
+  for (string_fn_parm_diff_sptr_map::const_iterator i = map.begin();
        i != map.end();
        ++i)
     sorted.push_back(i->second);
 
-  changed_parm_comp comp;
+  fn_parm_diff_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
@@ -8649,58 +8966,36 @@ function_decl_diff::report(ostream& out, const string& indent) const
       priv_->return_type_diff_->report(out, indent + "  ");
     }
 
-  // Hmmh, the above was quick.  Now report about function
-  // parameters; this shouldn't as straightforward.
+  // Hmmh, the above was quick.  Now report about function parameters;
+  // this shouldn't be as straightforward.
   //
   // Report about the parameter types that have changed sub-types.
-  changed_parms_type sorted_fn_parms;
-  sort_changed_parm_map(priv_->subtype_changed_parms_, sorted_fn_parms);
-  for (changed_parms_type::const_iterator i =
+  vector<fn_parm_diff_sptr> sorted_fn_parms;
+  sort_string_fn_parm_diff_sptr_map(priv_->subtype_changed_parms_,
+				    sorted_fn_parms);
+  for (vector<fn_parm_diff_sptr>::const_iterator i =
 	 sorted_fn_parms.begin();
        i != sorted_fn_parms.end();
        ++i)
     {
-      diff_sptr d = compute_diff_for_types(i->first->get_type(),
-					   i->second->get_type(),
-					   context());
-      if (d)
-	{
-	  if (d->to_be_reported())
-	    {
-	      out << indent
-		  << "parameter " << i->first->get_index()
-		  << " of type '"
-		  << i->first->get_type_pretty_representation()
-		  << "' has sub-type changes:\n";
-	      d->report(out, indent + "  ");
-	    }
-	}
+      diff_sptr d = *i;
+      if (d && d->to_be_reported())
+	d->report(out, indent);
     }
   // Report about parameters that have changed, while staying
   // compatible -- otherwise they would have changed the mangled name
   // of the function and the function would have been reported as
   // removed.
   sorted_fn_parms.clear();
-  sort_changed_parm_map(priv_->changed_parms_by_id_, sorted_fn_parms);
-  for (changed_parms_type::const_iterator i = sorted_fn_parms.begin();
+  sort_string_fn_parm_diff_sptr_map(priv_->changed_parms_by_id_,
+				    sorted_fn_parms);
+  for (vector<fn_parm_diff_sptr>::const_iterator i = sorted_fn_parms.begin();
        i != sorted_fn_parms.end();
        ++i)
     {
-      diff_sptr d = compute_diff_for_types(i->first->get_type(),
-					   i->second->get_type(),
-					   context());
-      if (d)
-	{
-	  if (d->to_be_reported())
-	    {
-	      out << indent
-		  << "parameter " << i->first->get_index()
-		  << " of type '"
-		  << i->first->get_type_pretty_representation()
-		  << "' changed:\n";
-	      d->report(out, indent + "  ");
-	    }
-	}
+      diff_sptr d = *i;
+      if (d && d->to_be_reported())
+	d->report(out, indent);
     }
 
   // Report about the parameters that got removed.
@@ -8752,13 +9047,6 @@ compute_diff(const function_decl_sptr first,
       return function_decl_diff_sptr();
     }
 
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      function_decl_diff_sptr d = dynamic_pointer_cast<function_decl_diff>(dif);
-      assert(d);
-      return d;
-    }
-
   diff_sptr return_type_diff =
     compute_diff_for_types(first->get_return_type(),
 			   second->get_return_type(),
@@ -8783,7 +9071,7 @@ compute_diff(const function_decl_sptr first,
 
   result->ensure_lookup_tables_populated();
 
-  ctxt->add_diff(first, second, result);
+  ctxt->initialize_canonical_diff(result);
 
   return result;
 }
@@ -8931,13 +9219,6 @@ compute_diff(const type_decl_sptr	first,
 	     const type_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      type_decl_diff_sptr d = dynamic_pointer_cast<type_decl_diff>(dif);
-      assert(d);
-      return d;
-    }
-
   type_decl_diff_sptr result(new type_decl_diff(first, second, ctxt));
 
   // We don't need to actually compute a diff here as a type_decl
@@ -8947,7 +9228,7 @@ compute_diff(const type_decl_sptr	first,
   // type_decl_diff::length returns 0 if the two type_decls are equal,
   // and 1 otherwise.
 
-  ctxt->add_diff(first, second, result);
+  ctxt->initialize_canonical_diff(result);
 
   return result;
 }
@@ -8972,7 +9253,7 @@ struct typedef_diff::priv
 /// diff::children_node().
 void
 typedef_diff::chain_into_hierarchy()
-{append_child_node(underlying_type_diff().get());}
+{append_child_node(underlying_type_diff());}
 
 /// Constructor for typedef_diff.
 typedef_diff::typedef_diff(const typedef_decl_sptr	first,
@@ -9124,19 +9405,12 @@ compute_diff(const typedef_decl_sptr	first,
 	     const typedef_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  if (diff_sptr dif = ctxt->has_diff_for(first, second))
-    {
-      typedef_diff_sptr d = dynamic_pointer_cast<typedef_diff>(dif);
-      assert(d);
-      return d;
-    }
-
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
 				       ctxt);
   typedef_diff_sptr result(new typedef_diff(first, second, d, ctxt));
 
-  ctxt->add_diff(first, second, result);
+  ctxt->initialize_canonical_diff(result);
 
   return result;
 }
@@ -9228,6 +9502,8 @@ compute_diff(const translation_unit_sptr	first,
 	       static_pointer_cast<scope_decl>(second->get_global_scope()),
 	       sc_diff,
 	       ctxt);
+
+  ctxt->initialize_canonical_diff(tu_diff);
 
   return tu_diff;
 }
@@ -9500,7 +9776,7 @@ struct corpus_diff::priv
 {
   bool					finished_;
   string				pretty_representation_;
-  vector<diff*>			children_;
+  vector<diff_sptr>			children_;
   diff_context_sptr			ctxt_;
   corpus_sptr				first_;
   corpus_sptr				second_;
@@ -9513,10 +9789,10 @@ struct corpus_diff::priv
   edit_script				unrefed_var_syms_edit_script_;
   string_function_ptr_map		deleted_fns_;
   string_function_ptr_map		added_fns_;
-  string_changed_function_ptr_map	changed_fns_;
+  string_function_decl_diff_sptr_map	changed_fns_;
   string_var_ptr_map			deleted_vars_;
   string_var_ptr_map			added_vars_;
-  string_changed_var_ptr_map		changed_vars_;
+  string_var_diff_sptr_map		changed_vars_;
   string_elf_symbol_map		added_unrefed_fn_syms_;
   string_elf_symbol_map		deleted_unrefed_fn_syms_;
   string_elf_symbol_map		added_unrefed_var_syms_;
@@ -9622,9 +9898,11 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	      deleted_fns_.find(n);
 	    if (j != deleted_fns_.end())
 	      {
+		function_decl_sptr f(j->second, noop_deleter());
+		function_decl_sptr s(added_fn, noop_deleter());
+		function_decl_diff_sptr d = compute_diff(f, s, ctxt_);
 		if (*j->second != *added_fn)
-		  changed_fns_[j->first] = std::make_pair(j->second,
-							  added_fn);
+		  changed_fns_[j->first] = d;
 		deleted_fns_.erase(j);
 	      }
 	    else
@@ -9709,7 +9987,11 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    if (j != deleted_vars_.end())
 	      {
 		if (*j->second != *added_var)
-		  changed_vars_[n] = std::make_pair(j->second, added_var);
+		  {
+		    var_decl_sptr f(j->second, noop_deleter());
+		    var_decl_sptr s(added_var, noop_deleter());
+		    changed_vars_[n] = compute_diff(f, s, ctxt_);
+		  }
 		deleted_vars_.erase(j);
 	      }
 	    else
@@ -9870,59 +10152,45 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
   // Walk the changed function diff nodes to apply the categorization
   // filters.
   diff_sptr diff;
-  for (string_changed_function_ptr_map::const_iterator i =
+  for (string_function_decl_diff_sptr_map::const_iterator i =
 	 changed_fns_.begin();
        i != changed_fns_.end();
        ++i)
     {
-      function_decl_sptr f(i->second.first, noop_deleter());
-      function_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff(f, s, ctxt_);
-      ctxt_->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
+      diff_sptr diff = i->second;
+      ctxt_->maybe_apply_filters(diff);
     }
 
   // Walk the changed variable diff nodes to apply the categorization
   // filters.
-  for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
+  for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
        i != changed_vars_.end();
        ++i)
     {
-      var_decl_sptr f(i->second.first, noop_deleter());
-      var_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff_for_decls(f, s, ctxt_);
-      ctxt_->maybe_apply_filters(diff, /*traverse_nodes_once=*/false);
+      diff_sptr diff = i->second;
+      ctxt_->maybe_apply_filters(diff);
     }
 
   categorize_redundant_changed_sub_nodes();
 
   // Walk the changed function diff nodes to count the number of
   // filtered-out functions.
-  for (string_changed_function_ptr_map::const_iterator i =
+  for (string_function_decl_diff_sptr_map::const_iterator i =
 	 changed_fns_.begin();
        i != changed_fns_.end();
        ++i)
-    {
-      function_decl_sptr f(i->second.first, noop_deleter());
-      function_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff(f, s, ctxt_);
-      if (diff->is_filtered_out())
-	stat.num_func_filtered_out(stat.num_func_filtered_out() + 1);
-    }
+    if (i->second->is_filtered_out())
+      stat.num_func_filtered_out(stat.num_func_filtered_out() + 1);
 
   // Walk the changed variables diff nodes to count the number of
   // filtered-out variables.
-  for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
+  for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
        i != changed_vars_.end();
        ++i)
     {
-      var_decl_sptr f(i->second.first, noop_deleter());
-      var_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff_for_decls(f, s, ctxt_);
-      if (diff->is_filtered_out())
+      if (i->second->is_filtered_out())
 	stat.num_vars_filtered_out(stat.num_vars_filtered_out() + 1);
     }
-
-  clear_redundancy_categorization();
 
   stat.num_func_syms_added(added_unrefed_fn_syms_.size());
   stat.num_func_syms_removed(deleted_unrefed_fn_syms_.size());
@@ -10033,23 +10301,19 @@ corpus_diff::priv::categorize_redundant_changed_sub_nodes()
   diff_sptr diff;
 
   ctxt_->forget_traversed_diffs();
-  for (string_changed_function_ptr_map::const_iterator i = changed_fns_.begin();
+  for (string_function_decl_diff_sptr_map::const_iterator i = changed_fns_.begin();
        i!= changed_fns_.end();
        ++i)
     {
-      function_decl_sptr f(i->second.first, noop_deleter());
-      function_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff(f, s, ctxt_);
+      diff = i->second;
       categorize_redundancy(diff);
     }
 
-  for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
+  for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
        i!= changed_vars_.end();
        ++i)
     {
-      var_decl_sptr f(i->second.first, noop_deleter());
-      var_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff(f, s, ctxt_);
+      diff_sptr diff = i->second;
       categorize_redundancy(diff);
     }
 }
@@ -10060,23 +10324,20 @@ void
 corpus_diff::priv::clear_redundancy_categorization()
 {
   diff_sptr diff;
-  for (string_changed_function_ptr_map::const_iterator i = changed_fns_.begin();
+  for (string_function_decl_diff_sptr_map::const_iterator i =
+	 changed_fns_.begin();
        i!= changed_fns_.end();
        ++i)
     {
-      function_decl_sptr f(i->second.first, noop_deleter());
-      function_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff(f, s, ctxt_);
+      diff = i->second;
       abigail::comparison::clear_redundancy_categorization(diff);
     }
 
-  for (string_changed_var_ptr_map::const_iterator i = changed_vars_.begin();
+  for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
        i!= changed_vars_.end();
        ++i)
     {
-      var_decl_sptr f(i->second.first, noop_deleter());
-      var_decl_sptr s(i->second.second, noop_deleter());
-      diff = compute_diff(f, s, ctxt_);
+      diff = i->second;
       abigail::comparison::clear_redundancy_categorization(diff);
     }
 }
@@ -10088,17 +10349,12 @@ corpus_diff::priv::clear_redundancy_categorization()
 void
 corpus_diff::chain_into_hierarchy()
 {
-  for (string_changed_function_ptr_map::const_iterator i =
+  for (string_function_decl_diff_sptr_map::const_iterator i =
 	 changed_functions().begin();
        i != changed_functions().end();
        ++i)
-    {
-      function_decl_sptr f(i->second.first, noop_deleter());
-      function_decl_sptr s(i->second.second, noop_deleter());
-
-      if (diff_sptr d = compute_diff_for_decls(f,s, context()))
-	append_child_node(d.get());
-    }
+    if (diff_sptr d = i->second)
+      append_child_node(d);
 }
 
 /// Constructor for @ref corpus_diff.
@@ -10139,14 +10395,18 @@ corpus_diff::second_corpus() const
 {return priv_->second_;}
 
 /// @return the children nodes of the current instance of corpus_diff.
-const vector<diff*>&
-corpus_diff::chidren_nodes() const
+const vector<diff_sptr>&
+corpus_diff::children_nodes() const
 {return priv_->children_;}
 
 /// Append a new child node to the vector of childre nodes for the
 /// current instance of @ref corpus_diff node.
+///
+/// @param d the new child node.  Note that the life time of the
+/// object held by @p d will thus equal the life time of the current
+/// instance of @ref corpus_diff.
 void
-corpus_diff::append_child_node(diff* d)
+corpus_diff::append_child_node(diff_sptr d)
 {
   assert(d);
   priv_->children_.push_back(d);
@@ -10190,7 +10450,7 @@ corpus_diff::added_functions()
 ///
 /// @return functions which signature didn't change, but which
 /// do have some indirect changes in their parms.
-const string_changed_function_ptr_map&
+const string_function_decl_diff_sptr_map&
 corpus_diff::changed_functions()
 {return priv_->changed_fns_;}
 
@@ -10213,7 +10473,7 @@ corpus_diff::added_variables() const
 /// do have some indirect changes in some sub-types.
 ///
 /// @return the changed variables.
-const string_changed_var_ptr_map&
+const string_var_diff_sptr_map&
 corpus_diff::changed_variables()
 {return priv_->changed_vars_;}
 
@@ -10378,25 +10638,26 @@ sort_string_function_ptr_map(const string_function_ptr_map& map,
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
-/// A "Less Than"functor to compare instances of @ref
-/// changed_function_ptr.
-struct changed_function_ptr_comp
+/// A "Less Than" functor to compare instance of @ref
+/// function_decl_diff.
+struct function_decl_diff_comp
 {
   /// The actual less than operator.
   ///
-  /// It returns true if the first @ref changed_function_ptr is less
+  /// It returns true if the first @ref function_decl_diff is less
   /// than the second one.
   ///
-  /// param first the first @ref changed_function_ptr to consider.
+  /// param first the first @ref function_decl_diff to consider.
   ///
-  /// @param second the second @ref changed_function_ptr to consider.
+  /// @param second the second @ref function_decl_diff to consider.
   ///
   /// @return true iff @p first is less than @p second.
   bool
-  operator()(const changed_function_ptr& first,
-	     const changed_function_ptr& second)
+  operator()(const function_decl_diff& first,
+	     const function_decl_diff& second)
   {
-    function_decl *f = first.first, *s = second.first;
+    function_decl_sptr f = first.first_function_decl(),
+      s = second.first_function_decl();
 
     string fr = f->get_qualified_name(),
       sr = s->get_qualified_name();
@@ -10408,7 +10669,7 @@ struct changed_function_ptr_comp
 	else if (!f->get_linkage_name().empty())
 	  fr = f->get_linkage_name();
 	else
-	  f->get_pretty_representation();
+	  fr = f->get_pretty_representation();
 
 	if (s->get_symbol())
 	  sr = s->get_symbol()->get_id_string();
@@ -10418,31 +10679,50 @@ struct changed_function_ptr_comp
 	  sr = s->get_pretty_representation();
       }
 
-    return fr < sr;
+    return (fr.compare(sr) < 0);
   }
-}; // end struct changed_function_comp
 
-/// Sort a instance of @ref string_changed_function_ptr_map map and
-/// stuff a sorted vector of @ref changed_function_ptr as a result.
+  /// The actual less than operator.
+  ///
+  /// It returns true if the first @ref function_decl_diff_sptr is
+  /// less than the second one.
+  ///
+  /// param first the first @ref function_decl_diff_sptr to consider.
+  ///
+  /// @param second the second @ref function_decl_diff_sptr to
+  /// consider.
+  ///
+  /// @return true iff @p first is less than @p second.
+  bool
+  operator()(const function_decl_diff_sptr first,
+	     const function_decl_diff_sptr second)
+  {return operator()(*first, *second);}
+}; // end struct function_decl_diff_comp
+
+/// Sort the values of a @ref string_function_decl_diff_sptr_map map
+/// and store the result in a vector of @ref function_decl_diff_sptr
+/// objects.
 ///
-/// @param map the map to sort.
+/// @param map the map whose values to store.
 ///
-/// @param sorted the resulting sorted vector.
+/// @param sorted the vector of function_decl_diff_sptr to store the
+/// result of the sort into.
 static void
-sort_string_changed_function_ptr_map(const string_changed_function_ptr_map& map,
-				     vector<changed_function_ptr>& sorted)
+sort_string_function_decl_diff_sptr_map
+(const string_function_decl_diff_sptr_map& map,
+ vector<function_decl_diff_sptr>& sorted)
 {
   sorted.reserve(map.size());
-  for (string_changed_function_ptr_map::const_iterator i = map.begin();
+  for (string_function_decl_diff_sptr_map::const_iterator i = map.begin();
        i != map.end();
        ++i)
     sorted.push_back(i->second);
-  changed_function_ptr_comp comp;
+  function_decl_diff_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
-/// Functor to sort instances of @ref changed_var_ptr.
-struct changed_vars_comp
+/// Functor to sort instances of @ref var_diff_sptr
+struct var_diff_sptr_comp
 {
   /// Return true if the first argument is less than the second one.
   ///
@@ -10452,31 +10732,31 @@ struct changed_vars_comp
   ///
   /// @return true if @p f is less than @p s.
   bool
-  operator()(const changed_var_ptr& f,
-	     const changed_var_ptr& s)
+  operator()(const var_diff_sptr f,
+	     const var_diff_sptr s)
   {
-    return (f.first->get_qualified_name()
-	    < s.first->get_qualified_name());
+    return (f->first_var()->get_qualified_name()
+	    < s->first_var()->get_qualified_name());
   }
-}; // end struct changed_vars_comp
+}; // end struct var_diff_sptr_comp
 
-/// Sort of an instance of @ref changed_var_ptr_map map.
+/// Sort of an instance of @ref string_var_diff_sptr_map map.
 ///
 /// @param map the input map to sort.
 ///
-/// @param sorted the ouptut sorted vector of @ref changed_var_ptr.
+/// @param sorted the ouptut sorted vector of @ref var_diff_sptr.
 /// It's populated with the sorted content.
 static void
-sort_changed_vars(const string_changed_var_ptr_map& map,
-		  vector<changed_var_ptr>& sorted)
+sort_string_var_diff_sptr_map(const string_var_diff_sptr_map& map,
+			      vector<var_diff_sptr>& sorted)
 {
   sorted.reserve(map.size());
-  for (string_changed_var_ptr_map::const_iterator i = map.begin();
+  for (string_var_diff_sptr_map::const_iterator i = map.begin();
        i != map.end();
        ++i)
     sorted.push_back(i->second);
 
-  changed_vars_comp comp;
+  var_diff_sptr_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
@@ -10651,27 +10931,22 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    << " functions with some indirect sub-type change:\n\n";
 
       bool emitted = false;
-      vector<changed_function_ptr> sorted_changed_fns;
-      sort_string_changed_function_ptr_map(priv_->changed_fns_,
-					   sorted_changed_fns);
-      for (vector<changed_function_ptr>::const_iterator i =
+      vector<function_decl_diff_sptr> sorted_changed_fns;
+      sort_string_function_decl_diff_sptr_map(priv_->changed_fns_,
+					      sorted_changed_fns);
+      for (vector<function_decl_diff_sptr>::const_iterator i =
 	     sorted_changed_fns.begin();
 	   i != sorted_changed_fns.end();
 	   ++i)
 	{
-	  function_decl_sptr f(i->first, noop_deleter());
-	  function_decl_sptr s(i->second, noop_deleter());
-
-	  diff_sptr diff = compute_diff(f, s, context());
+	  diff_sptr diff = *i;
 	  if (!diff)
 	    continue;
-
-	  categorize_redundancy(diff);
 
 	  if (diff->to_be_reported())
 	    {
 	      out << indent << "  [C]'"
-		  << i->first->get_pretty_representation()
+		  << (*i)->first_function_decl()->get_pretty_representation()
 		  << "' has some indirect sub-type changes:\n";
 	      diff->report(out, indent + "    ");
 	      emitted |= true;
@@ -10772,27 +11047,23 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    << " Changed variables:\n\n";
       string n1, n2;
 
-      vector<changed_var_ptr> sorted_changed_vars;
-      sort_changed_vars(priv_->changed_vars_, sorted_changed_vars);
-      for (vector<changed_var_ptr>::const_iterator i =
+      vector<var_diff_sptr> sorted_changed_vars;
+      sort_string_var_diff_sptr_map(priv_->changed_vars_, sorted_changed_vars);
+      for (vector<var_diff_sptr>::const_iterator i =
 	     sorted_changed_vars.begin();
 	   i != sorted_changed_vars.end();
 	   ++i)
 	{
-	  var_decl_sptr f(i->first, noop_deleter());
-	  var_decl_sptr s(i->second, noop_deleter());
-	  diff_sptr diff = compute_diff_for_decls(f, s, context());
+	  diff_sptr diff = *i;
 
 	  if (!diff)
 	    continue;
 
-	  categorize_redundancy(diff);
-
 	  if (!diff->to_be_reported())
 	    continue;
 
-	  n1 = f->get_pretty_representation();
-	  n2 = s->get_pretty_representation();
+	  n1 = diff->first_subject()->get_pretty_representation();
+	  n2 = diff->second_subject()->get_pretty_representation();
 
 	  out << indent << "  '" << n1 << "' was changed";
 	  if (n1 != n2)
@@ -10940,14 +11211,12 @@ corpus_diff::traverse(diff_node_visitor& v)
       return false;
     }
 
-  for (string_changed_function_ptr_map::const_iterator i =
+  for (string_function_decl_diff_sptr_map::const_iterator i =
 	 changed_functions().begin();
        i != changed_functions().end();
        ++i)
     {
-      function_decl_sptr f(i->second.first, noop_deleter());
-      function_decl_sptr s(i->second.second, noop_deleter());
-      if (diff_sptr d = compute_diff_for_decls(f,s, context()))
+      if (diff_sptr d = i->second)
 	{
 	  if (!d->traverse(v))
 	    {
@@ -10957,14 +11226,12 @@ corpus_diff::traverse(diff_node_visitor& v)
 	}
     }
 
-  for (string_changed_var_ptr_map::const_iterator i =
+  for (string_var_diff_sptr_map::const_iterator i =
 	 changed_variables().begin();
        i != changed_variables().end();
        ++i)
     {
-      var_decl_sptr f(i->second.first, noop_deleter());
-      var_decl_sptr s(i->second.second, noop_deleter());
-      if (diff_sptr d = compute_diff_for_decls(f,s, context()))
+      if (diff_sptr d = i->second)
 	{
 	  if (!d->traverse(v))
 	    {
@@ -11034,6 +11301,7 @@ compute_diff(const corpus_sptr	f,
 
   return r;
 }
+
 // </corpus stuff>
 
 // <diff_node_visitor stuff>
@@ -11261,7 +11529,7 @@ struct category_propagation_visitor : public diff_node_visitor
   virtual void
   visit_end(diff* d)
   {
-    for (vector<diff*>::const_iterator i = d->children_nodes().begin();
+    for (vector<diff_sptr>::const_iterator i = d->children_nodes().begin();
 	 i != d->children_nodes().end();
 	 ++i)
       {
@@ -11366,11 +11634,11 @@ struct suppression_categorization_visitor : public diff_node_visitor
     if (!(d->get_category() & SUPPRESSED_CATEGORY)
 	&& !d->has_local_changes())
       {
-	for (vector<diff*>::const_iterator i = d->children_nodes().begin();
+	for (vector<diff_sptr>::const_iterator i = d->children_nodes().begin();
 	     i != d->children_nodes().end();
 	     ++i)
 	  {
-	    diff* child = *i;
+	    diff_sptr child = *i;
 	    if (child->length())
 	      {
 		has_non_empty_child = true;
@@ -11619,7 +11887,8 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	  {
 	    bool has_non_redundant_child = false;
 	    bool has_non_empty_child = false;
-	    for (vector<diff*>::const_iterator i = d->children_nodes().begin();
+	    for (vector<diff_sptr>::const_iterator i =
+		   d->children_nodes().begin();
 		 i != d->children_nodes().end();
 		 ++i)
 	      {
@@ -11783,8 +12052,7 @@ clear_redundancy_categorization(corpus_diff_sptr diff_tree)
 void
 apply_filters(corpus_diff_sptr diff_tree)
 {
-  diff_tree->context()->maybe_apply_filters(diff_tree,
-					    /*traverse_nodes_once=*/false);
+  diff_tree->context()->maybe_apply_filters(diff_tree);
   propagate_categories(diff_tree);
 }
 

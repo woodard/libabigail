@@ -175,6 +175,16 @@ test-diff-dwarf/libtest20-add-fn-parm-v1.so \
 test-diff-dwarf/test20-add-fn-parm-report-0.txt \
 test-diff-dwarf/test20-add-fn-parm-v0.c \
 test-diff-dwarf/test20-add-fn-parm-v1.c \
+test-diff-dwarf/libtest21-redundant-fn-v0.so \
+test-diff-dwarf/libtest21-redundant-fn-v1.so \
+test-diff-dwarf/test21-redundant-fn-report-0.txt \
+test-diff-dwarf/test21-redundant-fn-v0.cc \
+test-diff-dwarf/test21-redundant-fn-v1.cc \
+test-diff-dwarf/libtest22-changed-parm-c-v0.so \
+test-diff-dwarf/libtest22-changed-parm-c-v1.so \
+test-diff-dwarf/test22-changed-parm-c-report-0.txt \
+test-diff-dwarf/test22-changed-parm-c-v0.c \
+test-diff-dwarf/test22-changed-parm-c-v1.c \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\
@@ -439,6 +449,18 @@ test-diff-suppr/test7-var-suppr-report-6.txt \
 test-diff-suppr/test7-var-suppr-report-7.txt \
 test-diff-suppr/test7-var-suppr-report-8.txt \
 test-diff-suppr/test7-var-suppr-version-script \
+test-diff-suppr/libtest8-redundant-fn-v0.so \
+test-diff-suppr/libtest8-redundant-fn-v1.so \
+test-diff-suppr/test8-redundant-fn-report-0.txt \
+test-diff-suppr/test8-redundant-fn-report-1.txt \
+test-diff-suppr/test8-redundant-fn-v0.cc \
+test-diff-suppr/test8-redundant-fn-v1.cc \
+test-diff-suppr/libtest9-changed-parm-c-v0.so \
+test-diff-suppr/libtest9-changed-parm-c-v1.so \
+test-diff-suppr/test9-changed-parm-c-report-0.txt \
+test-diff-suppr/test9-changed-parm-c-report-1.txt \
+test-diff-suppr/test9-changed-parm-c-v0.c \
+test-diff-suppr/test9-changed-parm-c-v1.c \
 \
 test-lookup-syms/test0.cc			\
 test-lookup-syms/test0.o			\

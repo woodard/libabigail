@@ -4,14 +4,14 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 2 functions with some indirect sub-type change:
 
-  [C]'function libapp::S0* libapp::create_s0()' has some indirect sub-type changes:
-    return type changed:
-      in pointed to type 'struct libapp::S0':
+  [C]'function int libapp::fun0(libapp::S0&)' has some indirect sub-type changes:
+    parameter 0 of type 'libapp::S0&' has sub-type changes:
+      in referenced type 'struct libapp::S0':
         size changed from 32 to 64 bits
         1 data member insertion:
           'char libapp::S0::m1', at offset 32 (in bits)
-  [C]'function libapp::S1* libapp::create_s1()' has some indirect sub-type changes:
-    return type changed:
+  [C]'function void libapp::fun1(libapp::S1*)' has some indirect sub-type changes:
+    parameter 0 of type 'libapp::S1*' has sub-type changes:
       in pointed to type 'struct libapp::S1':
         size changed from 32 to 96 bits
         2 data member insertions:

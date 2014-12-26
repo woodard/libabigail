@@ -5734,16 +5734,7 @@ struct function_decl::priv
   {}
 }; // end sruct function_decl::priv
 
-/// Get a name uniquely identifying the parameter in the function.
-///
-///@return the unique parm name id.
-const string
-function_decl::parameter::get_name_id() const
-{
-  std::ostringstream o;
-  o << get_type_name() << "-" << get_index();
-  return o.str();
-}
+
 
 function_decl::function_decl(const std::string& name,
 			     function_type_sptr function_type,
@@ -5755,7 +5746,6 @@ function_decl::function_decl(const std::string& name,
   : decl_base(name, locus, mangled_name, vis),
     priv_(new priv(function_type, declared_inline, bind))
 {}
-
 
 /// Constructor of the function_decl type.
 ///
@@ -6182,6 +6172,211 @@ function_decl::~function_decl()
 {}
 
 // <function_decl definitions>
+
+// <function_decl::parameter definitions>
+
+struct function_decl::parameter::priv
+{
+  type_base_wptr	type_;
+  unsigned		index_;
+  bool			variadic_marker_;
+  bool			artificial_;
+
+  priv()
+    : index_(),
+      variadic_marker_(),
+      artificial_()
+  {}
+
+  priv(type_base_sptr type,
+       unsigned index,
+       bool variadic_marker,
+       bool artificial)
+    : type_(type),
+      index_(index),
+      variadic_marker_(variadic_marker),
+      artificial_(artificial)
+  {}
+};// end struct function_decl::parameter::priv
+
+function_decl::parameter::parameter(const type_base_sptr	type,
+				    unsigned			index,
+				    const std::string&		name,
+				    location			loc,
+				    bool			is_variadic)
+  : decl_base(name, loc),
+    priv_(new priv(type, index, is_variadic, /*is_artificial=*/false))
+{}
+
+function_decl::parameter::parameter(const type_base_sptr	type,
+				    unsigned			index,
+				    const std::string&		name,
+				    location			loc,
+				    bool			is_variadic,
+				    bool			is_artificial)
+  : decl_base(name, loc),
+    priv_(new priv(type, index, is_variadic, is_artificial))
+{}
+
+function_decl::parameter::parameter(const type_base_sptr	type,
+				    const std::string&		name,
+				    location			loc,
+				    bool			is_variadic,
+				    bool			is_artificial)
+  : decl_base(name, loc),
+    priv_(new priv(type, 0, is_variadic, is_artificial))
+{}
+
+function_decl::parameter::parameter(const type_base_sptr	type,
+				    unsigned			index,
+				    bool			variad)
+  : decl_base("", location()),
+    priv_(new priv(type, index, variad, /*is_artificial=*/false))
+{}
+
+const type_base_sptr
+function_decl::parameter::get_type()const
+{
+  if (priv_->type_.expired())
+    return type_base_sptr();
+  return type_base_sptr(priv_->type_);
+}
+
+/// @return a copy of the type name of the parameter.
+const string
+function_decl::parameter::get_type_name() const
+{
+  string str;
+  if (get_variadic_marker())
+    str = "...";
+  else
+    {
+	type_base_sptr t = get_type();
+	assert(t);
+	str += abigail::ir::get_type_name(t);
+    }
+  return str;
+}
+
+/// @return a copy of the pretty representation of the type of the
+/// parameter.
+const string
+function_decl::parameter::get_type_pretty_representation() const
+{
+  string str;
+  if (get_variadic_marker())
+    str = "...";
+  else
+    {
+	type_base_sptr t = get_type();
+	assert(t);
+	str += get_type_declaration(t)->get_pretty_representation();
+    }
+  return str;
+}
+
+/// Get a name uniquely identifying the parameter in the function.
+///
+///@return the unique parm name id.
+const string
+function_decl::parameter::get_name_id() const
+{
+  std::ostringstream o;
+  o << get_type_name() << "-" << get_index();
+  return o.str();
+}
+
+unsigned
+function_decl::parameter::get_index() const
+{return priv_->index_;}
+
+void
+function_decl::parameter::set_index(unsigned i)
+{priv_->index_ = i;}
+
+/// Test if the parameter is artificial.
+///
+/// Being artificial means the parameter was not explicitely
+/// mentionned in the source code, but was rather artificially
+/// created by the compiler.
+///
+/// @return true if the parameter is artificial, false otherwise.
+bool
+function_decl::parameter::get_artificial() const
+{return priv_->artificial_;}
+
+bool
+function_decl::parameter::get_variadic_marker() const
+{return priv_->variadic_marker_;}
+
+/// Getter for the artificial-ness of the parameter.
+///
+/// Being artificial means the parameter was not explicitely
+/// mentionned in the source code, but was rather artificially
+/// created by the compiler.
+///
+/// @param f set to true if the parameter is artificial.
+void
+function_decl::parameter::set_artificial(bool f)
+{priv_->artificial_ = f;}
+
+bool
+equals(const function_decl::parameter& l,
+       const function_decl::parameter& r,
+       change_kind& k)
+{
+  bool result = true;
+
+  if ((l.get_variadic_marker() != r.get_variadic_marker())
+      || (l.get_index() != r.get_index())
+      || (!!l.get_type() != !!r.get_type()))
+    {
+      result = false;
+      k |= LOCAL_CHANGE_KIND;
+    }
+
+  if (l.get_type() != r.get_type())
+    {
+      result = false;
+      k |= SUBTYPE_CHANGE_KIND;
+    }
+
+  return result;
+}
+
+bool
+function_decl::parameter::operator==(const parameter& o) const
+{
+  change_kind k = NO_CHANGE_KIND;
+  return equals(*this, o, k);
+}
+
+bool
+function_decl::parameter::operator==(const decl_base& o) const
+{
+  const function_decl::parameter* p =
+    dynamic_cast<const function_decl::parameter*>(&o);
+  if (!p)
+    return false;
+  return function_decl::parameter::operator==(*p);
+}
+
+bool
+function_decl::parameter::traverse(ir_node_visitor& v)
+{return v.visit(this);}
+
+size_t
+function_decl::parameter::get_hash() const
+{
+  function_decl::parameter::hash hash_fn_parm;
+  return hash_fn_parm(this);
+}
+
+void
+function_decl::parameter::get_qualified_name(string& qualified_name) const
+{qualified_name = get_name();}
+
+// </function_decl::parameter definitions>
 
 // <class_decl definitions>
 
@@ -8417,6 +8612,9 @@ bool
 ir_node_visitor::visit(function_decl*)
 {return true;}
 
+bool
+ir_node_visitor::visit(function_decl::parameter*)
+{return true;}
 bool
 ir_node_visitor::visit(function_tdecl*)
 {return true;}

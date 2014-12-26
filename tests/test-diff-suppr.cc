@@ -319,6 +319,38 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test7-var-suppr-report-8.txt",
     "output/test-diff-suppr/test7-var-suppr-report-8.txt"
   },
+  {
+    "data/test-diff-suppr/libtest8-redundant-fn-v0.so",
+    "data/test-diff-suppr/libtest8-redundant-fn-v1.so",
+    "",
+    "--no-redundant",
+    "data/test-diff-suppr/test8-redundant-fn-report-0.txt",
+    "output/test-diff-suppr/test8-redundant-fn-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest8-redundant-fn-v0.so",
+    "data/test-diff-suppr/libtest8-redundant-fn-v1.so",
+    "",
+    "--redundant",
+    "data/test-diff-suppr/test8-redundant-fn-report-1.txt",
+    "output/test-diff-suppr/test8-redundant-fn-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest9-changed-parm-c-v0.so",
+    "data/test-diff-suppr/libtest9-changed-parm-c-v1.so",
+    "",
+    "--no-redundant",
+    "data/test-diff-suppr/test9-changed-parm-c-report-0.txt",
+    "output/test-diff-suppr/est9-changed-parm-c-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest9-changed-parm-c-v0.so",
+    "data/test-diff-suppr/libtest9-changed-parm-c-v1.so",
+    "",
+    "--redundant",
+    "data/test-diff-suppr/test9-changed-parm-c-report-1.txt",
+    "output/test-diff-suppr/est9-changed-parm-c-report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
 };

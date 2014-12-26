@@ -436,20 +436,28 @@ size_t
 function_decl::hash::operator()(const function_decl* t) const
 {return operator()(*t);}
 
-struct function_decl::parameter::hash
+size_t
+function_decl::parameter::hash::operator()
+  (const function_decl::parameter& p) const
 {
-  size_t
-  operator()(const function_decl::parameter& p) const
-  {
-    type_base::shared_ptr_hash hash_type_ptr;
-    std::tr1::hash<bool> hash_bool;
-    std::tr1::hash<unsigned> hash_unsigned;
-    size_t v = hash_type_ptr(p.get_type());
-    v = hashing::combine_hashes(v, hash_unsigned(p.get_index()));
-    v = hashing::combine_hashes(v, hash_bool(p.get_variadic_marker()));
-    return v;
-  }
-};
+  type_base::shared_ptr_hash hash_type_ptr;
+  std::tr1::hash<bool> hash_bool;
+  std::tr1::hash<unsigned> hash_unsigned;
+  size_t v = hash_type_ptr(p.get_type());
+  v = hashing::combine_hashes(v, hash_unsigned(p.get_index()));
+  v = hashing::combine_hashes(v, hash_bool(p.get_variadic_marker()));
+  return v;
+}
+
+size_t
+function_decl::parameter::hash::operator()
+  (const function_decl::parameter* p) const
+{return operator()(*p);}
+
+size_t
+function_decl::parameter::hash::operator()
+  (const function_decl::parameter_sptr p) const
+{return operator()(p.get());}
 
 /// Hashing functor for the @ref method_type type.
 struct method_type::hash

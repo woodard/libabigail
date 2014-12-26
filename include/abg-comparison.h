@@ -62,6 +62,32 @@ class diff;
 /// Convenience typedef for a shared_ptr for the @ref diff class
 typedef shared_ptr<diff> diff_sptr;
 
+class function_decl_diff;
+
+/// Convenience typedef for a shared pointer to a @ref function_decl type.
+typedef shared_ptr<function_decl_diff> function_decl_diff_sptr;
+
+class fn_parm_diff;
+
+/// Convenience typedef for a shared pointer to a @ref fn_parm_diff
+/// type.
+typedef shared_ptr<fn_parm_diff> fn_parm_diff_sptr;
+
+class var_diff;
+
+/// Convenience typedef for a shared pointer to a @ref var_diff type.
+typedef shared_ptr<var_diff> var_diff_sptr;
+
+class base_diff;
+
+/// Convenience typedef for a shared pointer to a @ref base_diff type.
+typedef shared_ptr<base_diff> base_diff_sptr;
+
+class class_diff;
+
+/// Convenience typedef for a shared pointer on a @ref class_diff type.
+typedef shared_ptr<class_diff> class_diff_sptr;
+
 /// Convenience typedef for a map of pointer values.  The Key is a
 /// pointer value and the value is a boolean.
 typedef unordered_map<size_t, bool> pointer_map;
@@ -81,12 +107,8 @@ typedef pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
 /// Convenience typedef for a map of string and class_decl::basse_spec_sptr.
 typedef unordered_map<string, class_decl::base_spec_sptr> string_base_sptr_map;
 
-/// Convenience typedef for a pair of class_decl::base_spec_sptr.
-typedef pair<class_decl::base_spec_sptr,
-	     class_decl::base_spec_sptr> changed_base;
-
-/// Convenience typedef for a map of string and changed_base.
-typedef unordered_map<string, changed_base> string_changed_base_map;
+/// Convenience typedef for a map of string and @ref base_diff_sptr.
+typedef unordered_map<string, base_diff_sptr> string_base_diff_sptr_map;
 
 /// Convenience typedef for a changed function parameter.  The first element of
 /// the pair is the old function parm and the second element is the
@@ -96,11 +118,12 @@ typedef pair<function_decl::parameter_sptr,
 
 /// Convenience typedef for a map which value is a changed function
 /// parameter and which key is the name of the function parameter.
-typedef unordered_map<string, changed_parm> string_changed_parm_map;
+typedef unordered_map<string, fn_parm_diff_sptr> string_fn_parm_diff_sptr_map;
 
 /// Convenience typedef for a map which key is an integer and which
 /// value is a changed parameter.
-typedef unordered_map<unsigned, changed_parm> unsigned_changed_parm_map;
+typedef unordered_map<unsigned, fn_parm_diff_sptr>
+unsigned_fn_parm_diff_sptr_map;
 
 /// Convenience typedef for a vector of changed_parm.
 typedef vector<changed_parm> changed_parms_type;
@@ -115,10 +138,19 @@ typedef unordered_map<unsigned,
 typedef unordered_map<string,
 		      changed_type_or_decl> string_changed_type_or_decl_map;
 
+/// Convenience typedef for a map whose key is a string and whose
+/// value is a changed variable of type @ref var_diff_sptr.
+typedef unordered_map<string,
+		      var_diff_sptr> string_var_diff_sptr_map;
+
 /// Convience typedef for a map which value is a changed type or decl.
 /// The key of the map is an unsigned integer.
 typedef unordered_map<unsigned,
 		      changed_type_or_decl> unsigned_changed_type_or_decl_map;
+
+/// Convenience typedef for a map whose key is an unsigned int and
+/// whose value is a changed variable of type @ref var_diff_sptr.
+typedef unordered_map<unsigned, var_diff_sptr> unsigned_var_diff_sptr_map;
 
 /// Convenience tyepdef for a vector of changed type or decl.
 typedef vector<changed_type_or_decl> changed_type_or_decl_vector;
@@ -147,16 +179,10 @@ typedef unordered_map<string, changed_enumerator> string_changed_enumerator_map;
 /// value is a pointer to @ref decl_base.
 typedef unordered_map<string, function_decl*> string_function_ptr_map;
 
-/// Convenience typedef for a pair of pointer to @ref function_decl
-/// representing a @ref function_decl change.  The first
-/// member of the pair represents the initial function and the second
-/// member represents the changed function.
-typedef std::pair<function_decl*, function_decl*> changed_function_ptr;
-
 /// Convenience typedef for a map which key is a string and which
-/// value is a @ref changed_function_ptr.
+/// value is a @ref function_decl_diff_sptr.
 typedef unordered_map<string,
-		      changed_function_ptr> string_changed_function_ptr_map;
+		      function_decl_diff_sptr> string_function_decl_diff_sptr_map;
 
 /// Convenience typedef for a pair of class_decl::member_function_sptr
 /// representing a changed member function.  The first element of the
@@ -189,9 +215,9 @@ typedef std::pair<var_decl*, var_decl*> changed_var_ptr;
 /// value is an @ref elf_symbol_sptr.
 typedef unordered_map<string, elf_symbol_sptr> string_elf_symbol_map;
 
-/// Convenience typedef for a map which key is a stirng and which
-/// value is a @ref changed_var_ptr.
-typedef unordered_map<string, changed_var_ptr> string_changed_var_ptr_map;
+/// Convenience typedef for a map which key is a string and which
+/// value is a @ref var_diff_sptr.
+typedef unordered_map<string, var_diff_sptr> string_var_diff_ptr_map;
 
 class diff_context;
 
@@ -695,19 +721,6 @@ class diff_context
   struct priv;
   shared_ptr<priv> priv_;
 
-public:
-  diff_context();
-
-  void
-  set_corpora(const corpus_sptr corp1,
-	      const corpus_sptr corp2);
-
-  const corpus_sptr
-  get_first_corpus() const;
-
-  const corpus_sptr
-  get_second_corpus() const;
-
   diff_sptr
   has_diff_for(const decl_base_sptr first,
 	       const decl_base_sptr second) const;
@@ -732,6 +745,39 @@ public:
 
   void
   add_diff(const diff* d);
+
+  void
+  set_canonical_diff_for(const decl_base_sptr first,
+			 const decl_base_sptr second,
+			 const diff_sptr);
+
+  diff_sptr
+  set_or_get_canonical_diff_for(const decl_base_sptr first,
+				const decl_base_sptr second,
+				const diff_sptr canonical_diff);
+
+public:
+  diff_context();
+
+  void
+  set_corpora(const corpus_sptr corp1,
+	      const corpus_sptr corp2);
+
+  const corpus_sptr
+  get_first_corpus() const;
+
+  const corpus_sptr
+  get_second_corpus() const;
+
+  diff_sptr
+  get_canonical_diff_for(const decl_base_sptr first,
+			 const decl_base_sptr second) const;
+
+  diff_sptr
+  get_canonical_diff_for(const diff_sptr d) const;
+
+  void
+  initialize_canonical_diff(const diff_sptr diff);
 
   bool
   diff_has_been_traversed(const diff*) const;
@@ -771,11 +817,11 @@ public:
 
   void
   maybe_apply_filters(diff_sptr diff,
-		      bool traverse_nodes_once = true);
+		      bool traverse_nodes_once = false);
 
   void
   maybe_apply_filters(corpus_diff_sptr diff,
-		      bool traverse_nodes_once = true);
+		      bool traverse_nodes_once = false);
 
   suppressions_type&
   suppressions() const;
@@ -857,13 +903,25 @@ public:
 
   void
   show_added_symbols_unreferenced_by_debug_info(bool f);
+
+  friend class_diff_sptr
+  compute_diff(const class_decl_sptr	first,
+	       const class_decl_sptr	second,
+	       diff_context_sptr	ctxt);
 };//end struct diff_context.
 
+/// The abstraction of a change between two ABI artifacts.
+///
+/// Please read more about the @ref DiffNode "IR" of the comparison
+/// engine to learn more about this.
+///
 /// This type encapsulates an edit script (a set of insertions and
 /// deletions) for two constructs that are to be diff'ed.  The two
 /// constructs are called the "subjects" of the diff.
 class diff : public diff_traversable_base
 {
+  friend class diff_context;
+
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
 
@@ -894,6 +952,9 @@ protected:
   virtual void
   finish_diff_type();
 
+  void
+  set_canonical_diff(diff *);
+
 public:
   decl_base_sptr
   first_subject() const;
@@ -901,11 +962,13 @@ public:
   decl_base_sptr
   second_subject() const;
 
-  const vector<diff*>&
+  const vector<diff_sptr>&
   children_nodes() const;
 
+  diff* get_canonical_diff() const;
+
   void
-  append_child_node(diff*);
+  append_child_node(diff_sptr);
 
   const diff_context_sptr
   context() const;
@@ -1107,11 +1170,6 @@ distinct_diff_sptr
 compute_diff_for_distinct_kinds(const decl_base_sptr,
 				const decl_base_sptr,
 				diff_context_sptr ctxt);
-
-class var_diff;
-
-/// Convenience typedef for a shared pointer to var_diff.
-typedef shared_ptr<var_diff> var_diff_sptr;
 
 /// Abstracts a diff between two instances of @ref var_decl
 class var_diff : public decl_diff_base
@@ -1473,12 +1531,6 @@ compute_diff(const enum_type_decl_sptr,
 	     const enum_type_decl_sptr,
 	     diff_context_sptr);
 
-class class_diff;
-
-/// Convenience typedef for a shared pointer on a @ref class_diff type.
-typedef shared_ptr<class_diff> class_diff_sptr;
-
-
 /// This type abstracts changes for a class_decl.
 class class_diff : public type_diff_base
 {
@@ -1505,10 +1557,12 @@ protected:
 public:
   //TODO: add change of the name of the type.
 
-  shared_ptr<class_decl>
+  virtual ~class_diff();
+
+  class_decl_sptr
   first_class_decl() const;
 
-  shared_ptr<class_decl>
+  class_decl_sptr
   second_class_decl() const;
 
   const edit_script&
@@ -1523,7 +1577,7 @@ public:
   const string_base_sptr_map&
   inserted_bases() const;
 
-  const string_changed_base_map&
+  const string_base_diff_sptr_map&
   changed_bases();
 
   const edit_script&
@@ -1596,11 +1650,6 @@ class_diff_sptr
 compute_diff(const class_decl_sptr	first,
 	     const class_decl_sptr	second,
 	     diff_context_sptr		ctxt);
-
-class base_diff;
-
-/// Convenience typedef for a shared pointer to base_diff.
-typedef shared_ptr<base_diff> base_diff_sptr;
 
 /// An abstraction of a diff between two instances of class_decl::base_spec.
 class base_diff : public diff
@@ -1766,10 +1815,56 @@ compute_diff(const scope_decl_sptr first_scope,
 	     const scope_decl_sptr second_scope,
 	     diff_context_sptr ctxt);
 
-class function_decl_diff;
+/// Abstraction of a diff between two function parameters.
+class fn_parm_diff : public decl_diff_base
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
 
-/// Convenience typedef for a shared pointer on a @ref function_decl type.
-typedef shared_ptr<function_decl_diff> function_decl_diff_sptr;
+  priv_sptr priv_;
+
+  virtual void
+  finish_diff_type();
+
+  fn_parm_diff(const function_decl::parameter_sptr	first,
+	       const function_decl::parameter_sptr	second,
+	       diff_context_sptr			ctxt);
+
+public:
+  friend fn_parm_diff_sptr
+  compute_diff(const function_decl::parameter_sptr	first,
+	       const function_decl::parameter_sptr	second,
+	       diff_context_sptr			ctxt);
+
+  const function_decl::parameter_sptr
+  first_parameter() const;
+
+  const function_decl::parameter_sptr
+  second_parameter() const;
+
+  diff_sptr
+  get_type_diff() const;
+
+  virtual const string&
+  get_pretty_representation() const;
+
+  virtual unsigned
+  length() const;
+
+  virtual bool
+  has_local_changes() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  virtual void
+  chain_into_hierarchy();
+}; // end class fn_parm_diff
+
+fn_parm_diff_sptr
+compute_diff(const function_decl::parameter_sptr	first,
+	     const function_decl::parameter_sptr	second,
+	     diff_context_sptr				ctxt);
 
 /// Abstraction of a diff between two function_decl.
 class function_decl_diff : public decl_diff_base
@@ -1796,6 +1891,7 @@ protected:
   finish_diff_type();
 
 public:
+
 friend function_decl_diff_sptr
 compute_diff(const function_decl_sptr	first,
 	     const function_decl_sptr	second,
@@ -1810,7 +1906,7 @@ compute_diff(const function_decl_sptr	first,
   const diff_sptr
   return_type_diff() const;
 
-  const string_changed_parm_map&
+  const string_fn_parm_diff_sptr_map&
   subtype_changed_parms() const;
 
   const string_parm_map&
@@ -2020,11 +2116,11 @@ public:
   corpus_sptr
   second_corpus() const;
 
-  const vector<diff*>&
-  chidren_nodes() const;
+  const vector<diff_sptr>&
+  children_nodes() const;
 
   void
-  append_child_node(diff*);
+  append_child_node(diff_sptr);
 
   edit_script&
   function_changes() const;
@@ -2041,7 +2137,7 @@ public:
   const string_function_ptr_map&
   added_functions();
 
-  const string_changed_function_ptr_map&
+  const string_function_decl_diff_sptr_map&
   changed_functions();
 
   const string_var_ptr_map&
@@ -2050,7 +2146,7 @@ public:
   const string_var_ptr_map&
   added_variables() const;
 
-  const string_changed_var_ptr_map&
+  const string_var_diff_sptr_map&
   changed_variables();
 
   const string_elf_symbol_map&
