@@ -95,7 +95,7 @@ struct options
       show_linkage_names(true),
       show_harmful_changes(true),
       show_harmless_changes(false),
-      show_redundant_changes(true),
+      show_redundant_changes(false),
       show_symbols_not_referenced_by_debug_info(true)
   {}
 };//end struct options;
@@ -129,8 +129,9 @@ display_usage(const string& prog_name, ostream& out)
       << " --keep-var  <regex>  keep only variables matching a regex\n"
       << " --harmless  display the harmless changes\n"
       << " --no-harmful  do not display the harmful changes\n"
-      << " --redundant  display redundant changes (this is the default)\n"
-      << " --no-redundant  do not display redundant changes\n"
+      << " --redundant  display redundant changes\n"
+      << " --no-redundant  do not display redundant changes "
+         "(this is the default)\n"
       << " --help  display this message\n";
 }
 
