@@ -14,7 +14,7 @@ AC_CONFIG_HEADER([config.h])
 AC_CONFIG_SRCDIR([README])
 AC_CONFIG_MACRO_DIR([m4])
 
-AM_INIT_AUTOMAKE([1.11.1 foreign subdir-objects tar-ustar])
+AM_INIT_AUTOMAKE([1.11.1 foreign subdir-objects tar-ustar parallel-tests])
 AM_MAINTAINER_MODE([enable])
 
 AM_SILENT_RULES([yes])
