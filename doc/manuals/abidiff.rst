@@ -26,7 +26,7 @@ Options
 
   * --help
 
-    Displays a short help about the command and exit.
+    Display a short help about the command and exit.
 
   * --debug-info-dir1 <*di-path1*>
 
