@@ -137,14 +137,6 @@ Options
     result, no change involving these functions will be emitted in the
     diff report.
 
-  * --drop-fn <*regex*>
-
-    When reading the *first-shared-library* and
-    *second-shared-library* ELF input files, drop the globally defined
-    functions matching a the regular expression *regex*.  As a result,
-    no change involving these functions will be emitted in the diff
-    report.
-
   * --drop-var <*regex*>
 
     When reading the *first-shared-library* and
