@@ -2267,6 +2267,8 @@ struct diff_context::priv
   pointer_map				traversed_diff_nodes_;
   corpus_sptr				first_corpus_;
   corpus_sptr				second_corpus_;
+  ostream*				default_output_stream_;
+  ostream*				error_output_stream_;
   bool					forbid_traversing_a_node_twice_;
   bool					show_stats_only_;
   bool					show_soname_change_;
@@ -2280,9 +2282,12 @@ struct diff_context::priv
   bool					show_redundant_changes_;
   bool					show_syms_unreferenced_by_di_;
   bool					show_added_syms_unreferenced_by_di_;
+  bool					dump_diff_tree_;
 
   priv()
     : allowed_category_(EVERYTHING_CATEGORY),
+      default_output_stream_(),
+      error_output_stream_(),
       forbid_traversing_a_node_twice_(true),
       show_stats_only_(false),
       show_soname_change_(true),
@@ -2295,7 +2300,8 @@ struct diff_context::priv
       show_linkage_names_(false),
       show_redundant_changes_(true),
       show_syms_unreferenced_by_di_(true),
-      show_added_syms_unreferenced_by_di_(true)
+      show_added_syms_unreferenced_by_di_(true),
+      dump_diff_tree_()
    {}
  };// end struct diff_context::priv
 
@@ -2907,6 +2913,58 @@ void
 diff_context::show_added_symbols_unreferenced_by_debug_info(bool f)
 {priv_->show_added_syms_unreferenced_by_di_ = f;}
 
+/// Setter for the default output stream used by code of the
+/// comparison engine.  By default the default output stream is a NULL
+/// pointer.
+///
+/// @param o a pointer to the default output stream.
+void
+diff_context::default_output_stream(ostream* o)
+{priv_->default_output_stream_ = o;}
+
+/// Getter for the default output stream used by code of the
+/// comparison engine.  By default the default output stream is a NULL
+/// pointer.
+///
+/// @return a pointer to the default output stream.
+ostream*
+diff_context::default_output_stream()
+{return priv_->default_output_stream_;}
+
+/// Setter for the errror output stream used by code of the comparison
+/// engine.  By default the error output stream is a NULL pointer.
+///
+/// @param o a pointer to the error output stream.
+void
+diff_context::error_output_stream(ostream* o)
+{priv_->error_output_stream_ = o;}
+
+/// Getter for the errror output stream used by code of the comparison
+/// engine.  By default the error output stream is a NULL pointer.
+///
+/// @return a pointer to the error output stream.
+ostream*
+diff_context::error_output_stream()
+{return priv_->error_output_stream_;}
+
+/// Test if the comparison engine should dump the diff tree for the
+/// changed functions and variables it has.
+///
+/// @return true if after the comparison, the engine should dump the
+/// diff tree for the changed functions and variables it has.
+bool
+diff_context::dump_diff_tree() const
+{return priv_->dump_diff_tree_;}
+
+/// Set if the comparison engine should dump the diff tree for the
+/// changed functions and variables it has.
+///
+/// @param f true if after the comparison, the engine should dump the
+/// diff tree for the changed functions and variables it has.
+void
+diff_context::dump_diff_tree(bool f)
+{priv_->dump_diff_tree_ = f;}
+
 // </diff_context stuff>
 
 // <diff stuff>
@@ -3026,9 +3084,14 @@ diff::is_traversing() const
 /// Flag a given diff node as not being traversed anymore.
 ///
 /// Please read the comments of the function diff::begin_traversing()
-/// for mode context;
+/// for mode context.
+///
+/// @param mark_as_traversed if set to true mark the current @ref diff
+/// node has having been traversed.  That way, subsequent calls to
+/// diff_context::diff_has_been_traversed() on the current instance of
+/// @ref diff will yield true.
 void
-diff::end_traversing()
+diff::end_traversing(bool mark_as_traversed)
 {
   assert(is_traversing());
   if (priv_->canonical_diff_)
@@ -3037,7 +3100,8 @@ diff::end_traversing()
 
   // Make this node as having been traversed, to allow the detection
   // of nodes that might have been visited more than once.
-  context()->mark_diff_as_traversed(this);
+  if (mark_as_traversed)
+    context()->mark_diff_as_traversed(this);
 }
 
 /// Finish the building of a given kind of a diff tree node.
@@ -3185,10 +3249,13 @@ diff::traverse(diff_node_visitor& v)
   begin_traversing();
   v.visit_begin(this);
 
+  bool mark_visited_nodes_as_traversed =
+    !(v.get_visiting_kind() & DO_NOT_MARK_VISITED_NODES_AS_TRAVERSED);
+
   if (!v.visit(this, /*pre=*/true))
     {
       v.visit_end(this);
-      end_traversing();
+      end_traversing(mark_visited_nodes_as_traversed);
       return false;
     }
 
@@ -3200,7 +3267,7 @@ diff::traverse(diff_node_visitor& v)
 	if (!(*i)->traverse(v))
 	  {
 	    v.visit_end(this);
-	    end_traversing();
+	    end_traversing(mark_visited_nodes_as_traversed);
 	    return false;
 	  }
       }
@@ -3208,12 +3275,12 @@ diff::traverse(diff_node_visitor& v)
   if (!v.visit(this, /*pref=*/false))
     {
       v.visit_end(this);
-      end_traversing();
+      end_traversing(mark_visited_nodes_as_traversed);
       return false;
     }
 
   v.visit_end(this);
-  end_traversing();
+  end_traversing(mark_visited_nodes_as_traversed);
 
   return true;
 }
@@ -9839,6 +9906,8 @@ struct corpus_diff::priv
   void
   clear_redundancy_categorization();
 
+  void
+  maybe_dump_diff_tree();
 }; // end corpus::priv
 
 /// Tests if the lookup tables are empty.
@@ -10351,6 +10420,44 @@ corpus_diff::priv::clear_redundancy_categorization()
     {
       diff = i->second;
       abigail::comparison::clear_redundancy_categorization(diff);
+    }
+}
+
+/// If the user asked to dump the diff tree node (for changed
+/// variables and functions) on the error output stream, then just do
+/// that.
+///
+/// This function is used for debugging purposes.
+void
+corpus_diff::priv::maybe_dump_diff_tree()
+{
+  if (!ctxt_->dump_diff_tree()
+      || ctxt_->error_output_stream() == 0)
+    return;
+
+  if (!changed_fns_.empty())
+    {
+      *ctxt_->error_output_stream() << "changed functions diff tree: \n\n";
+      for (string_function_decl_diff_sptr_map::const_iterator i =
+	     changed_fns_.begin();
+	   i != changed_fns_.end();
+	   ++i)
+	{
+	  diff_sptr d = i->second;
+	  print_diff_tree(d, *ctxt_->error_output_stream());
+	}
+    }
+
+  if (!changed_vars_.empty())
+    {
+      *ctxt_->error_output_stream() << "\nchanged variables diff tree: \n\n";
+      for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
+	   i != changed_vars_.end();
+	   ++i)
+	{
+	  diff_sptr d = i->second;
+	  print_diff_tree(d, *ctxt_->error_output_stream());
+	}
     }
 }
 
@@ -11203,6 +11310,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	out << '\n';
     }
 
+  priv_->maybe_dump_diff_tree();
 }
 
 /// Traverse the diff sub-tree under the current instance corpus_diff.
@@ -11733,7 +11841,8 @@ struct diff_node_printer : public diff_node_visitor
   unsigned level_;
 
   diff_node_printer(ostream& out)
-    : out_(out),
+    : diff_node_visitor(DO_NOT_MARK_VISITED_NODES_AS_TRAVERSED),
+      out_(out),
       level_(0)
   {}
 
@@ -11762,8 +11871,14 @@ struct diff_node_printer : public diff_node_visitor
   }
 
   virtual bool
-  visit(diff* d, bool)
+  visit(diff* d, bool pre)
   {
+    if (!pre)
+      // We are post-visiting the diff node D.  Which means, we have
+      // printed a pretty representation for it already.  So do
+      // nothing now.
+      return true;
+
     // indent
     for (unsigned i = 0; i < level_; ++i)
       out_ << ' ';
@@ -11776,8 +11891,14 @@ struct diff_node_printer : public diff_node_visitor
   }
 
   virtual bool
-  visit(corpus_diff* d, bool)
+  visit(corpus_diff* d, bool pre)
   {
+    if (!pre)
+      // We are post-visiting the diff node D.  Which means, we have
+      // printed a pretty representation for it already.  So do
+      // nothing now.
+      return true;
+
     // indent
     for (unsigned i = 0; i < level_; ++i)
       out_ << ' ';
@@ -11824,6 +11945,19 @@ print_diff_tree(corpus_diff* diff_tree, std::ostream& out)
   diff_tree->traverse(p);
   diff_tree->context()->forbid_traversing_a_node_twice(s);
 }
+
+/// Emit a textual representation of a @ref diff sub-tree to an
+/// output stream.
+///
+/// @param diff_tree the sub-tree to emit the textual representation
+/// for.
+///
+/// @param out the output stream to emit the textual representation
+/// for @p diff_tree to.
+void
+print_diff_tree(diff_sptr diff_tree,
+		std::ostream& o)
+{print_diff_tree(diff_tree.get(), o);}
 
 /// Emit a textual representation of a @ref corpus_diff tree to an
 /// output stream.

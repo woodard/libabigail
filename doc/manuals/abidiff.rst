@@ -192,6 +192,16 @@ Options
     redundant change is a change that has been displayed elsewhere in
     the report.  This option is switched on by default.
 
+  *  --dump-diff-tree
+
+    After the diff report, emit a textual representation of the diff
+    nodes tree used by the comparison engine to represent the changed
+    functions and variables.  That representation is emitted to the
+    error output for debugging purposes.  Note that this diff tree is
+    relevant only to functions and variables that have some sub-type
+    changes.  Added or removed functions and variables do not have any
+    diff nodes tree associated to them.
+
 Usage examples
 ==============
 

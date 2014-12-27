@@ -76,6 +76,7 @@ struct options
   bool			show_harmless_changes;
   bool			show_redundant_changes;
   bool			show_symbols_not_referenced_by_debug_info;
+  bool			dump_diff_tree;
   shared_ptr<char>	di_root_path1;
   shared_ptr<char>	di_root_path2;
 
@@ -96,7 +97,8 @@ struct options
       show_harmful_changes(true),
       show_harmless_changes(false),
       show_redundant_changes(false),
-      show_symbols_not_referenced_by_debug_info(true)
+      show_symbols_not_referenced_by_debug_info(true),
+      dump_diff_tree()
   {}
 };//end struct options;
 
@@ -132,6 +134,8 @@ display_usage(const string& prog_name, ostream& out)
       << " --redundant  display redundant changes\n"
       << " --no-redundant  do not display redundant changes "
          "(this is the default)\n"
+      << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
+         "the error output stream\n"
       << " --help  display this message\n";
 }
 
@@ -317,6 +321,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_redundant_changes = true;
       else if (!strcmp(argv[i], "--no-redundant"))
 	opts.show_redundant_changes = false;
+      else if (!strcmp(argv[i], "--dump-diff-tree"))
+	opts.dump_diff_tree = true;
       else
 	return false;
     }
@@ -372,6 +378,8 @@ static void
 set_diff_context_from_opts(diff_context_sptr ctxt,
 			   options& opts)
 {
+  ctxt->default_output_stream(&cout);
+  ctxt->error_output_stream(&cerr);
   ctxt->show_stats_only(opts.show_stats_only);
   ctxt->show_deleted_fns(opts.show_all_fns || opts.show_deleted_fns);
   ctxt->show_changed_fns(opts.show_all_fns || opts.show_changed_fns);
@@ -404,6 +412,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
        ++i)
     read_suppressions(*i, supprs);
   ctxt->add_suppressions(supprs);
+
+  ctxt->dump_diff_tree(opts.dump_diff_tree);
 }
 
 /// Set the regex patterns describing the functions to drop from the

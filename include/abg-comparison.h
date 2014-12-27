@@ -240,9 +240,15 @@ enum visiting_kind
   /// The default enumerator value of this enum.  It doesn't have any
   /// particular meaning yet.
   DEFAULT_VISITING_KIND = 0,
+
   /// This says that the traversing code should avoid visiting the
   /// children nodes of the current node being visited.
-  SKIP_CHILDREN_VISITING_KIND = 1
+  SKIP_CHILDREN_VISITING_KIND = 1,
+
+  /// This says that the traversing code should not mark visited nodes
+  /// as having been traversed.  This is useful, for instance, for
+  /// visitors which have debugging purposes.
+  DO_NOT_MARK_VISITED_NODES_AS_TRAVERSED = 1 << 1
 };
 
 visiting_kind
@@ -904,6 +910,24 @@ public:
   void
   show_added_symbols_unreferenced_by_debug_info(bool f);
 
+  void
+  default_output_stream(ostream*);
+
+  ostream*
+  default_output_stream();
+
+  void
+  error_output_stream(ostream*);
+
+  ostream*
+  error_output_stream();
+
+  bool
+  dump_diff_tree() const;
+
+  void
+  dump_diff_tree(bool f);
+
   friend class_diff_sptr
   compute_diff(const class_decl_sptr	first,
 	       const class_decl_sptr	second,
@@ -945,7 +969,7 @@ protected:
   is_traversing() const;
 
   void
-  end_traversing();
+  end_traversing(bool mark_as_traversed = true);
 
 protected:
 
@@ -2262,8 +2286,16 @@ protected:
 
 public:
 
+  /// Default constructor of the @ref diff_node_visitor type.
   diff_node_visitor()
     : visiting_kind_()
+  {}
+
+  /// Constructor of the @ref diff_node_visitor type.
+  ///
+  /// @param k how the visiting has to be performed.
+  diff_node_visitor(visiting_kind k)
+    : visiting_kind_(k)
   {}
 
   /// Getter for the visiting policy of the traversing code while
@@ -2382,6 +2414,10 @@ print_diff_tree(diff* diff_tree, std::ostream&);
 
 void
 print_diff_tree(corpus_diff* diff_tree,
+		std::ostream&);
+
+void
+print_diff_tree(diff_sptr diff_tree,
 		std::ostream&);
 
 void
