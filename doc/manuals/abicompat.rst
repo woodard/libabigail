@@ -22,7 +22,7 @@ Options
 
   * --help
 
-    Displays a short help about the command and exit.
+    Display a short help about the command and exit.
 
   * --list-undefined-symbols|-u
 
@@ -125,7 +125,7 @@ Usage examples
 	$ 
 
 
-    * Compile the first and the second versions of the libraries:
+    * Compile the first and second versions of the libraries:
       ``libtest-0.so`` and ``libtest-1.so``: ::
 
 	$ g++ -g -Wall -shared -o libtest-0.so test0.cc
@@ -137,7 +137,7 @@ Usage examples
 	$ g++ -g -Wall -o test-app -L. -ltest-0.so test-app.cc
 
     * Now, use ``abicompat`` to see if libtest-1.so is ABI compatible
-      with app, with the respect to the ABI of libtest-0.so: ::
+      with app, with respect to the ABI of libtest-0.so: ::
 
 	$ abicompat test-app libtest-0.so libtest-1.so
 	ELF file 'test-app' might not be ABI compatible with 'libtest-1.so' due to differences with 'libtest-0.so' below:
