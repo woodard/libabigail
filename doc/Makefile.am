@@ -1,6 +1,6 @@
 SUBDIRS = manuals
 
-EXTRA_DIST = api/libabigail.doxy
+EXTRA_DIST = api/libabigail.doxy website/libabigail-website.doxy
 
 html-doc: $(DO_HTML)
 website: website-html-doxygen
