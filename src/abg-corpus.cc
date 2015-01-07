@@ -104,6 +104,7 @@ struct corpus::priv
   string			path;
   vector<string>		needed;
   string			soname;
+  string			architecture_name;
   translation_units		members;
   vector<function_decl*>	fns;
   vector<var_decl*>		vars;
@@ -1025,6 +1026,28 @@ corpus::get_soname()
 void
 corpus::set_soname(const string& soname)
 {priv_->soname = soname;}
+
+/// Getter for the architecture name of the corpus.
+///
+/// This property is meaningful for e.g, corpora built from ELF shared
+/// library files.  In that case, this is a string representation of
+/// the Elf{32,64}_Ehdr::e_machine field.
+///
+/// @return the architecture name string.
+const string&
+corpus::get_architecture_name()
+{return priv_->architecture_name;}
+
+/// Setter for the architecture name of the corpus.
+///
+/// This property is meaningful for e.g, corpora built from ELF shared
+/// library files.  In that case, this is a string representation of
+/// the Elf{32,64}_Ehdr::e_machine field.
+///
+/// @param arch the architecture name string.
+void
+corpus::set_architecture_name(const string& arch)
+{priv_->architecture_name = arch;}
 
 /// Tests if the corpus contains no translation unit.
 ///

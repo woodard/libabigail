@@ -1017,6 +1017,11 @@ read_corpus_from_input(read_context& ctxt)
   if (path_str)
     corp.set_path(reinterpret_cast<char*>(path_str.get()));
 
+  xml::xml_char_sptr architecture_str =
+    XML_READER_GET_ATTRIBUTE(reader, "architecture");
+  if (architecture_str)
+    corp.set_architecture_name(reinterpret_cast<char*>(architecture_str.get()));
+
   xml::xml_char_sptr soname_str = XML_READER_GET_ATTRIBUTE(reader, "soname");
   if (soname_str)
     corp.set_soname(reinterpret_cast<char*>(soname_str.get()));

@@ -35,6 +35,7 @@
 #include <cstring>
 #include <cmath>
 #include <elfutils/libdwfl.h>
+#include <elfutils/libebl.h>
 #include <dwarf.h>
 #include <tr1/unordered_map>
 #include <stack>
@@ -1465,6 +1466,7 @@ class read_context
   string_elf_symbols_map_sptr	undefined_var_syms_;
   vector<string>		dt_needed_;
   string			dt_soname_;
+  string			elf_architecture_;
 
   read_context();
 
@@ -2311,6 +2313,11 @@ public:
   dt_soname() const
   {return dt_soname_;}
 
+  /// Getter for the ELF architecture of the current file.
+  const string&
+  elf_architecture() const
+  {return elf_architecture_;}
+
   /// Getter for the map of global variables symbol address -> global
   /// variable symbol index.
   ///
@@ -2585,6 +2592,29 @@ public:
 	      }
 	  }
       }
+  }
+
+  /// Read the string representing the architecture of the current ELF
+  /// file.
+  void
+  load_elf_architecture()
+  {
+    if (!elf_handle())
+      return;
+
+    elf_architecture_ = ebl_backend_name(ebl_openbackend(elf_handle()));
+  }
+
+  /// Load various ELF data.
+  ///
+  /// This function loads ELF data that are not symbol maps or debug
+  /// info.  That is, things like various tags, elf architecture and
+  /// so on.
+  void
+  load_remaining_elf_data()
+  {
+    load_dt_soname_and_needed();
+    load_elf_architecture();
   }
 
   /// This is a sub-routine of maybe_adjust_fn_sym_address and
@@ -6820,7 +6850,7 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
   if (!ctxt.load_symbol_maps())
     status |= STATUS_NO_SYMBOLS_FOUND;
 
-  ctxt.load_dt_soname_and_needed();
+  ctxt.load_remaining_elf_data();
 
   if (status & STATUS_NO_SYMBOLS_FOUND)
     return status;
@@ -6832,6 +6862,7 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
   corp->set_origin(corpus::DWARF_ORIGIN);
   corp->set_soname(ctxt.dt_soname());
   corp->set_needed(ctxt.dt_needed());
+  corp->set_architecture_name(ctxt.elf_architecture());
 
   corp->set_fun_symbol_map(ctxt.fun_syms_sptr());
   corp->set_undefined_fun_symbol_map(ctxt.undefined_fun_syms_sptr());

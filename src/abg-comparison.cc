@@ -2272,6 +2272,7 @@ struct diff_context::priv
   bool					forbid_traversing_a_node_twice_;
   bool					show_stats_only_;
   bool					show_soname_change_;
+  bool					show_architecture_change_;
   bool					show_deleted_fns_;
   bool					show_changed_fns_;
   bool					show_added_fns_;
@@ -2291,6 +2292,7 @@ struct diff_context::priv
       forbid_traversing_a_node_twice_(true),
       show_stats_only_(false),
       show_soname_change_(true),
+      show_architecture_change_(true),
       show_deleted_fns_(true),
       show_changed_fns_(true),
       show_added_fns_(true),
@@ -2776,6 +2778,22 @@ diff_context::show_soname_change(bool f)
 bool
 diff_context::show_soname_change() const
 {return priv_->show_soname_change_;}
+
+/// Setter for the property that says if the comparison module should
+/// show the architecture changes in its report.
+///
+/// @param f the new value of the property.
+void
+diff_context::show_architecture_change(bool f)
+{priv_->show_architecture_change_ = f;}
+
+/// Getter for the property that says if the comparison module should
+/// show the architecture changes in its report.
+///
+/// @return the value of the property.
+bool
+diff_context::show_architecture_change() const
+{return priv_->show_architecture_change_;}
 
 /// Set a flag saying to show the deleted functions.
 ///
@@ -9038,6 +9056,27 @@ function_decl_diff::report(ostream& out, const string& indent) const
 	    << " is now declared inline\n";
     }
 
+  // Report about the size of the function address
+  if (ff->get_type()->get_size_in_bits() != sf->get_type()->get_size_in_bits())
+    {
+      out << indent << "address size of function changed from "
+	  << ff->get_type()->get_size_in_bits()
+	  << " bits to "
+	  << sf->get_type()->get_size_in_bits()
+	  << " bits\n";
+    }
+
+  // Report about the alignment of the function address
+  if (ff->get_type()->get_alignment_in_bits()
+      != sf->get_type()->get_alignment_in_bits())
+    {
+      out << indent << "address alignment of function changed from "
+	  << ff->get_type()->get_alignment_in_bits()
+	  << " bits to "
+	  << sf->get_type()->get_alignment_in_bits()
+	  << " bits\n";
+    }
+
   // Report about return type differences.
   if (priv_->return_type_diff_ && priv_->return_type_diff_->to_be_reported())
     {
@@ -9862,6 +9901,7 @@ struct corpus_diff::priv
   corpus_diff::diff_stats		diff_stats_;
   bool					filters_and_suppr_applied_;
   bool					sonames_equal_;
+  bool					architectures_equal_;
   edit_script				fns_edit_script_;
   edit_script				vars_edit_script_;
   edit_script				unrefed_fn_syms_edit_script_;
@@ -9880,7 +9920,8 @@ struct corpus_diff::priv
   priv()
     : finished_(false),
       filters_and_suppr_applied_(false),
-      sonames_equal_(false)
+      sonames_equal_(false),
+      architectures_equal_(false)
   {}
 
   bool
@@ -10297,6 +10338,9 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
   if (!sonames_equal_)
     out << indent << "ELF SONAME changed\n";
 
+  if (!architectures_equal_)
+    out << indent << "ELF architecture changed\n";
+
   // function changes summary
   out << indent << "Functions changes summary: ";
   out << s.num_func_removed() << " Removed, ";
@@ -10543,12 +10587,19 @@ edit_script&
 corpus_diff::variable_changes() const
 {return priv_->vars_edit_script_;}
 
-/// Test if the soname of the underying corpus has changed.
+/// Test if the soname of the underlying corpus has changed.
 ///
 /// @return true iff the soname has changed.
 bool
 corpus_diff::soname_changed() const
 {return !priv_->sonames_equal_;}
+
+/// Test if the architecture of the underlying corpus has changed.
+///
+/// @return true iff the architecture has changed.
+bool
+corpus_diff::architecture_changed() const
+{return !priv_->architectures_equal_;}
 
 /// Getter for the deleted functions of the diff.
 ///
@@ -10661,6 +10712,7 @@ unsigned
 corpus_diff::length() const
 {
   return (soname_changed()
+	  + architecture_changed()
 	  + priv_->deleted_fns_.size()
 	  + priv_->added_fns_.size()
 	  + priv_->changed_fns_.size()
@@ -10967,6 +11019,12 @@ corpus_diff::report(ostream& out, const string& indent) const
     out << indent << "SONAME changed from '"
 	<< first_corpus()->get_soname() << "' to '"
 	<< second_corpus()->get_soname() << "'\n\n";
+
+  if (context()->show_architecture_change()
+      && !priv_->architectures_equal_)
+    out << indent << "architecture changed from '"
+	<< first_corpus()->get_architecture_name() << "' to '"
+	<< second_corpus()->get_architecture_name() << "'\n\n";
 
   if (context()->show_deleted_fns())
     {
@@ -11391,6 +11449,9 @@ compute_diff(const corpus_sptr	f,
   corpus_diff_sptr r(new corpus_diff(f, s, ctxt));
 
   r->priv_->sonames_equal_ = f->get_soname() == s->get_soname();
+
+  r->priv_->architectures_equal_ =
+    f->get_architecture_name() == s->get_architecture_name();
 
   diff_utils::compute_diff<fns_it_type, eq_type>(f->get_functions().begin(),
 						 f->get_functions().end(),

@@ -121,6 +121,10 @@ main()
 	  continue;
 	}
       corp->set_path(s->in_elf_path);
+      // Do not take architecture names in comparison so that these
+      // test input binaries can come from whatever arch the
+      // programmer likes.
+      corp->set_architecture_name("");
 
       out_abi_path =
 	abigail::tests::get_build_dir() + "/tests/" + s->out_abi_path;

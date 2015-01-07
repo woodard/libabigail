@@ -2507,6 +2507,9 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
   if (!corpus->get_path().empty())
     out << " path='" << corpus->get_path() << "'";
 
+  if (!corpus->get_architecture_name().empty())
+    out << " architecture='" << corpus->get_architecture_name()<< "'";
+
   if (!corpus->get_soname().empty())
     out << " soname='" << corpus->get_soname()<< "'";
 

@@ -185,6 +185,10 @@ test-diff-dwarf/libtest22-changed-parm-c-v1.so \
 test-diff-dwarf/test22-changed-parm-c-report-0.txt \
 test-diff-dwarf/test22-changed-parm-c-v0.c \
 test-diff-dwarf/test22-changed-parm-c-v1.c \
+test-diff-dwarf/libtest-23-diff-arch-v0-32.so \
+test-diff-dwarf/libtest-23-diff-arch-v0-64.so \
+test-diff-dwarf/test-23-diff-arch-report-0.txt \
+test-diff-dwarf/test-23-diff-arch-v0.cc \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

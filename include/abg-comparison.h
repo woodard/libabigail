@@ -851,6 +851,12 @@ public:
   show_soname_change() const;
 
   void
+  show_architecture_change(bool f);
+
+  bool
+  show_architecture_change() const;
+
+  void
   show_deleted_fns(bool f);
 
   bool
@@ -2157,6 +2163,9 @@ public:
 
   bool
   soname_changed() const;
+
+  bool
+  architecture_changed() const;
 
   const string_function_ptr_map&
   deleted_functions() const;

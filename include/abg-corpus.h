@@ -101,6 +101,12 @@ public:
   void
   set_soname(const string&);
 
+  const string&
+  get_architecture_name();
+
+  void
+  set_architecture_name(const string&);
+
   bool
   is_empty() const;
 
