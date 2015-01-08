@@ -35,24 +35,34 @@ using std::string;
 
 namespace abigail
 {
-namespace tools
-{
 
-using std::ostream;
-using std::istream;
-using std::ifstream;
-using std::string;
+/// @brief Namespace for a set of utility function used by tools based
+/// on libabigail.
+namespace tools_utils
+{
 
 #define DECLARE_STAT(st) \
   struct stat st; \
   memset(&st, 0, sizeof(st))
 
+/// Get the stat struct (as returned by the stat() function of the C library)
+/// of a file.
+///
+/// @param path the path to the function to stat.
+///
+/// @param s the resulting stat struct.
+///
+/// @return true iff the stat function completed successfully.
 static bool
 get_stat(const string& path,
 	 struct stat* s)
 {return (stat(path.c_str(), s) == 0);}
 
-/// Tests whether \a path exists;
+/// Tests whether a path exists;
+///
+/// @param path the path to test for.
+///
+/// @return true iff the path at @p path exist.
 bool
 file_exists(const string& path)
 {
@@ -77,9 +87,11 @@ is_regular_file(const string& path)
   return !!S_ISREG(st.st_mode);
 }
 
-/// Tests whether #path is a directory.
+/// Tests if a given path is a directory.
 ///
-/// \return true iff #path is a directory.
+/// @param path the path to test for.
+///
+/// @return true iff @p path is a directory.
 bool
 is_dir(const string& path)
 {
@@ -103,17 +115,17 @@ is_dir(const string& path)
 /// for now it always return true, but that might change in the future).
 bool
 dir_name(string const& path,
-	 string& dirnam)
+	 string& dir_name)
 {
   if (path.empty())
     {
-      dirnam = ".";
+      dir_name = ".";
       return true;
     }
 
   char *p = strdup(path.c_str());
   char *r = ::dirname(p);
-  dirnam = r;
+  dir_name = r;
   free(p);
   return true;
 }
@@ -297,7 +309,7 @@ guess_file_type(istream& in)
 ///
 /// @return the type of content guessed.
 file_type
-guess_file_type(const std::string& file_path)
+guess_file_type(const string& file_path)
 {
   ifstream in(file_path.c_str(), ifstream::binary);
   file_type r = guess_file_type(in);
@@ -343,7 +355,7 @@ make_path_absolute(const char*p)
   return result;
 }
 
-}//end namespace tools
+}//end namespace tools_utils
 
 using abigail::ir::function_decl;
 

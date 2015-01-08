@@ -128,7 +128,7 @@ main()
 
       out_abi_path =
 	abigail::tests::get_build_dir() + "/tests/" + s->out_abi_path;
-      if (!abigail::tools::ensure_parent_dir_created(out_abi_path))
+      if (!abigail::tools_utils::ensure_parent_dir_created(out_abi_path))
 	{
 	  cerr << "Could not create parent director for " << out_abi_path;
 	  is_ok = false;

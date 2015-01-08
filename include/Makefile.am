@@ -12,6 +12,7 @@ abg-libxml-utils.h	\
 abg-libzip-utils.h	\
 abg-fwd.h		\
 abg-hash.h		\
+abg-tools-utils.h	\
 abg-config.h		\
 abg-ini.h		\
 abg-traverse.h		\

@@ -37,9 +37,6 @@ libtestutils_la_SOURCES=	\
 test-utils.h 			\
 test-utils.cc
 
-libtestutils_la_LIBADD=$(top_builddir)/tools/libtoolsutils.la
-libtestutils_la_DEPENDENCIES=$(top_builddir)/tools/libtoolsutils.la
-
 libtestutils_la_CXXFLAGS=		\
 -DABIGAIL_SRC_DIR=\"${abs_top_srcdir}\"  	\
 -DABIGAIL_BUILD_DIR=\"${abs_top_builddir}\"

@@ -110,7 +110,7 @@ main(int, char*[])
 
   string out_path =
     abigail::tests::get_build_dir() + "/tests/" + specs->out_path;
-  if (!abigail::tools::ensure_parent_dir_created(out_path))
+  if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
     {
       cerr << "Could not create parent director for " << out_path;
       return 1;
@@ -128,7 +128,7 @@ main(int, char*[])
       out_path =
 	abigail::tests::get_build_dir() + "/tests/" + s->out_path;
 
-      if (!abigail::tools::ensure_parent_dir_created(out_path))
+      if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
 	{
 	  cerr << "Could not create parent directory for " << out_path;
 	  continue;

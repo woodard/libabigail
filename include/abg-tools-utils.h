@@ -28,19 +28,22 @@
 namespace abigail
 {
 
-namespace tools
+namespace tools_utils
 {
 
-bool file_exists(const std::string&);
-bool is_regular_file(const std::string&);
-bool is_dir(const std::string&);
-bool dirname(std::string const& path,
-	     std::string& dir_name);
-bool base_name(std::string const& path,
-	       std::string& file_name);
-bool ensure_dir_path_created(const std::string&);
-bool ensure_parent_dir_created(const std::string&);
-bool check_file(const std::string& path, std::ostream& out);
+using std::ostream;
+using std::istream;
+using std::ifstream;
+using std::string;
+
+bool file_exists(const string&);
+bool is_regular_file(const string&);
+bool is_dir(const string&);
+bool base_name(string const& path,
+	       string& file_name);
+bool ensure_dir_path_created(const string&);
+bool ensure_parent_dir_created(const string&);
+bool check_file(const string& path, ostream& out);
 
 /// The different types of files understood the bi* suite of tools.
 enum file_type
@@ -62,11 +65,11 @@ enum file_type
   FILE_TYPE_ZIP_CORPUS,
 };
 
-file_type guess_file_type(std::istream& in);
-file_type guess_file_type(const std::string& file_path);
+file_type guess_file_type(istream& in);
+file_type guess_file_type(const string& file_path);
 
 std::tr1::shared_ptr<char>
 make_path_absolute(const char*p);
 
-}// end namespace tools
+}// end namespace tools_utils
 }//end namespace abigail

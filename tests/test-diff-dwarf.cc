@@ -215,7 +215,7 @@ main()
 {
   using abigail::tests::get_src_dir;
   using abigail::tests::get_build_dir;
-  using abigail::tools::ensure_parent_dir_created;
+  using abigail::tools_utils::ensure_parent_dir_created;
   using abigail::dwarf_reader::read_corpus_from_elf;
   using abigail::comparison::compute_diff;
   using abigail::comparison::corpus_diff_sptr;

@@ -47,8 +47,8 @@ using abigail::comparison::suppression_sptr;
 using abigail::comparison::suppressions_type;
 using abigail::comparison::read_suppressions;
 using namespace abigail::dwarf_reader;
-using abigail::tools::check_file;
-using abigail::tools::guess_file_type;
+using abigail::tools_utils::check_file;
+using abigail::tools_utils::guess_file_type;
 
 struct options
 {
@@ -177,7 +177,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    }
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
-	  opts.di_root_path1 = abigail::tools::make_path_absolute(argv[j]);
+	  opts.di_root_path1 =
+	    abigail::tools_utils::make_path_absolute(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--debug-info-dir2"))
@@ -190,7 +191,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    }
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
-	  opts.di_root_path2 = abigail::tools::make_path_absolute(argv[j]);
+	  opts.di_root_path2 =
+	    abigail::tools_utils::make_path_absolute(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--stat"))
@@ -486,17 +488,17 @@ main(int argc, char* argv[])
       if (!check_file(opts.file2, cerr))
 	return true;
 
-      abigail::tools::file_type t1_type, t2_type;
+      abigail::tools_utils::file_type t1_type, t2_type;
 
       t1_type = guess_file_type(opts.file1);
-      if (t1_type == abigail::tools::FILE_TYPE_UNKNOWN)
+      if (t1_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
 	{
 	  cerr << "Unknown content type for file " << opts.file1 << "\n";
 	  return true;
 	}
 
       t2_type = guess_file_type(opts.file2);
-      if (t2_type == abigail::tools::FILE_TYPE_UNKNOWN)
+      if (t2_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
 	{
 	  cerr << "Unknown content type for file " << opts.file2 << "\n";
 	  return true;
@@ -511,24 +513,24 @@ main(int argc, char* argv[])
 
       switch (t1_type)
 	{
-	case abigail::tools::FILE_TYPE_UNKNOWN:
+	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
 	  cerr << "Unknown content type for file " << opts.file1 << "\n";
 	  return true;
 	  break;
-	case abigail::tools::FILE_TYPE_NATIVE_BI:
+	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1);
 	  break;
-	case abigail::tools::FILE_TYPE_ELF:
-	case abigail::tools::FILE_TYPE_AR:
+	case abigail::tools_utils::FILE_TYPE_ELF:
+	case abigail::tools_utils::FILE_TYPE_AR:
 	  di_dir1 = opts.di_root_path1.get();
 	  c1_status = abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
 								  &di_dir1, c1);
 	  break;
-	case abigail::tools::FILE_TYPE_XML_CORPUS:
+	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  c1 =
 	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file1);
 	  break;
-	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
 	  c1 = abigail::xml_reader::read_corpus_from_file(opts.file1);
 #endif //WITH_ZIP_ARCHIVE
@@ -537,24 +539,24 @@ main(int argc, char* argv[])
 
       switch (t2_type)
 	{
-	case abigail::tools::FILE_TYPE_UNKNOWN:
+	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
 	  cerr << "Unknown content type for file " << opts.file2 << "\n";
 	  return true;
 	  break;
-	case abigail::tools::FILE_TYPE_NATIVE_BI:
+	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2);
 	  break;
-	case abigail::tools::FILE_TYPE_ELF:
-	case abigail::tools::FILE_TYPE_AR:
+	case abigail::tools_utils::FILE_TYPE_ELF:
+	case abigail::tools_utils::FILE_TYPE_AR:
 	  di_dir2 = opts.di_root_path2.get();
 	  c2_status = abigail::dwarf_reader::read_corpus_from_elf(opts.file2,
 								  &di_dir2, c2);
 	  break;
-	case abigail::tools::FILE_TYPE_XML_CORPUS:
+	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  c2 =
 	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file2);
 	  break;
-	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
 	  c2 = abigail::xml_reader::read_corpus_from_file(opts.file2);
 #endif //WITH_ZIP_ARCHIVE

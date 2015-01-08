@@ -69,7 +69,7 @@ main()
 {
   using abigail::tests::get_src_dir;
   using abigail::tests::get_build_dir;
-  using abigail::tools::ensure_parent_dir_created;
+  using abigail::tools_utils::ensure_parent_dir_created;
 
   bool is_ok = true;
   string in_elf_path, ref_report_path, out_report_path, debug_info_dir;

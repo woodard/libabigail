@@ -99,7 +99,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    return false;
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
-	  opts.di_root_path = abigail::tools::make_path_absolute(argv[i + 1]);
+	  opts.di_root_path =
+	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--out-file"))
@@ -146,13 +147,13 @@ main(int argc, char* argv[])
     }
 
   assert(!opts.in_file_path.empty());
-  if (!abigail::tools::check_file(opts.in_file_path, cerr))
+  if (!abigail::tools_utils::check_file(opts.in_file_path, cerr))
     return 1;
 
-  abigail::tools::file_type type =
-    abigail::tools::guess_file_type(opts.in_file_path);
-  if (type != abigail::tools::FILE_TYPE_ELF
-      && type != abigail::tools::FILE_TYPE_AR)
+  abigail::tools_utils::file_type type =
+    abigail::tools_utils::guess_file_type(opts.in_file_path);
+  if (type != abigail::tools_utils::FILE_TYPE_ELF
+      && type != abigail::tools_utils::FILE_TYPE_AR)
     {
       cerr << opts.in_file_path << " is not an ELF file\n";
       return 1;
@@ -186,7 +187,7 @@ main(int argc, char* argv[])
 	  else
 	    {
 	      if (opts.show_base_name_alt_debug_info_path)
-		tools::base_name(alt_di_path, alt_di_path);
+		tools_utils::base_name(alt_di_path, alt_di_path);
 
 	      cout << "found the alternate debug info file '"
 		   << alt_di_path

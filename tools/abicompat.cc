@@ -129,7 +129,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
 	  opts.app_di_root_path =
-	    abigail::tools::make_path_absolute(argv[i + 1]);
+	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--lib-debug-info-dir1"))
@@ -140,7 +140,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
 	  opts.lib1_di_root_path =
-	    abigail::tools::make_path_absolute(argv[i + 1]);
+	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--lib-debug-info-dir2"))
@@ -151,7 +151,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  // elfutils wants the root path to the debug info to be
 	  // absolute.
 	  opts.lib2_di_root_path =
-	    abigail::tools::make_path_absolute(argv[i + 1]);
+	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--suppressions"))
@@ -216,20 +216,19 @@ main(int argc, char* argv[])
     }
 
   assert(!opts.app_path.empty());
-  if (!abigail::tools::check_file(opts.app_path, cerr))
+  if (!abigail::tools_utils::check_file(opts.app_path, cerr))
     return 1;
 
-  abigail::tools::file_type type =
-    abigail::tools::guess_file_type(opts.app_path);
-  if (type != abigail::tools::FILE_TYPE_ELF)
+  abigail::tools_utils::file_type type =
+    abigail::tools_utils::guess_file_type(opts.app_path);
+  if (type != abigail::tools_utils::FILE_TYPE_ELF)
     {
       cerr << opts.app_path << " is not an ELF file\n";
       return 1;
     }
 
-  using abigail::tools::check_file;
-  using abigail::tools::dirname;
-  using abigail::tools::base_name;
+  using abigail::tools_utils::check_file;
+  using abigail::tools_utils::base_name;
   using abigail::corpus;
   using abigail::corpus_sptr;
   using abigail::ir::elf_symbols;
@@ -283,10 +282,10 @@ main(int argc, char* argv[])
 
   // Read the first version of the library.
   assert(!opts.lib1_path.empty());
-  if (!abigail::tools::check_file(opts.lib1_path, cerr))
+  if (!abigail::tools_utils::check_file(opts.lib1_path, cerr))
     return 1;
-  type = abigail::tools::guess_file_type(opts.lib1_path);
-  if (type != abigail::tools::FILE_TYPE_ELF)
+  type = abigail::tools_utils::guess_file_type(opts.lib1_path);
+  if (type != abigail::tools_utils::FILE_TYPE_ELF)
     {
       cerr << opts.lib1_path << " is not an ELF file\n";
       return 1;

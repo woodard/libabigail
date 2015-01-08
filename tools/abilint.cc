@@ -47,9 +47,9 @@ using std::cin;
 using std::cout;
 using std::ostream;
 using std::ofstream;
-using abigail::tools::check_file;
-using abigail::tools::file_type;
-using abigail::tools::guess_file_type;
+using abigail::tools_utils::check_file;
+using abigail::tools_utils::file_type;
+using abigail::tools_utils::guess_file_type;
 using abigail::corpus;
 using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
@@ -125,7 +125,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      return false;
 	    // elfutils wants the root path to the debug info to be
 	    // absolute.
-	    opts.di_root_path = abigail::tools::make_path_absolute(argv[i + 1]);
+	    opts.di_root_path =
+	      abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	    ++i;
 	  }
 	else if (!strcmp(argv[i], "--stdin"))
@@ -200,23 +201,23 @@ main(int argc, char* argv[])
 
       switch (type)
 	{
-	case abigail::tools::FILE_TYPE_UNKNOWN:
+	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
 	  cerr << "Unknown file type given in input: " << opts.file_path;
 	  return true;
-	case abigail::tools::FILE_TYPE_NATIVE_BI:
+	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  tu = read_translation_unit_from_file(opts.file_path);
 	  break;
-	case abigail::tools::FILE_TYPE_ELF:
-	case abigail::tools::FILE_TYPE_AR:
+	case abigail::tools_utils::FILE_TYPE_ELF:
+	case abigail::tools_utils::FILE_TYPE_AR:
 	  di_root_path = opts.di_root_path.get();
 	  s= read_corpus_from_elf(opts.file_path,
 				  &di_root_path,
 				  corp);
 	  break;
-	case abigail::tools::FILE_TYPE_XML_CORPUS:
+	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  corp = read_corpus_from_native_xml_file(opts.file_path);
 	  break;
-	case abigail::tools::FILE_TYPE_ZIP_CORPUS:
+	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #if WITH_ZIP_ARCHIVE
 	  corp = read_corpus_from_file(opts.file_path);
 #endif
@@ -272,7 +273,7 @@ main(int argc, char* argv[])
       else
 	{
 	  r = true;
-	  if (type == abigail::tools::FILE_TYPE_XML_CORPUS)
+	  if (type == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	    {
 	      if (opts.diff)
 		r = write_corpus_to_native_xml(corp, /*indent=*/0, of);
@@ -280,7 +281,7 @@ main(int argc, char* argv[])
 	      if (!opts.noout && !opts.diff)
 		r &= write_corpus_to_native_xml(corp, /*indent=*/0, cout);
 	    }
-	  else if (type == abigail::tools::FILE_TYPE_ZIP_CORPUS)
+	  else if (type == abigail::tools_utils::FILE_TYPE_ZIP_CORPUS)
 	    {
 #ifdef WITH_ZIP_ARCHIVE
 	      if (!opts.noout)
@@ -288,7 +289,7 @@ main(int argc, char* argv[])
 #endif //WITH_ZIP_ARCHIVE
 	      of.close();
 	    }
-	  else if (type == abigail::tools::FILE_TYPE_ELF)
+	  else if (type == abigail::tools_utils::FILE_TYPE_ELF)
 	    {
 	      if (!opts.noout)
 		r = write_corpus_to_native_xml(corp, /*indent=*/0, cout);
@@ -301,7 +302,7 @@ main(int argc, char* argv[])
       if (!is_ok)
 	{
 	  string output =
-	    (type == abigail::tools::FILE_TYPE_NATIVE_BI)
+	    (type == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
 	    ? "translation unit"
 	    : "ABI corpus";
 	  cerr << "failed to write the translation unit "
@@ -310,9 +311,9 @@ main(int argc, char* argv[])
 
       if (is_ok
 	  && opts.diff
-	  && ((type == abigail::tools::FILE_TYPE_XML_CORPUS)
-	      || type == abigail::tools::FILE_TYPE_NATIVE_BI
-	      || type == abigail::tools::FILE_TYPE_ZIP_CORPUS))
+	  && ((type == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
+	      || type == abigail::tools_utils::FILE_TYPE_NATIVE_BI
+	      || type == abigail::tools_utils::FILE_TYPE_ZIP_CORPUS))
 	{
 	  string cmd = "diff -u " + opts.file_path + " " + ofile_name;
 	  if (system(cmd.c_str()))

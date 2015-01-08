@@ -36,9 +36,9 @@ using std::string;
 using std::ofstream;
 using std::cerr;
 
-using abigail::tools::file_type;
-using abigail::tools::check_file;
-using abigail::tools::guess_file_type;
+using abigail::tools_utils::file_type;
+using abigail::tools_utils::check_file;
+using abigail::tools_utils::guess_file_type;
 using abigail::translation_unit;
 using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
@@ -191,9 +191,9 @@ main()
 
       bool read = false;
       file_type t = guess_file_type(in_path);
-      if (t == abigail::tools::FILE_TYPE_NATIVE_BI)
+      if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
 	read = read_translation_unit_from_file(tu);
-      else if (t == abigail::tools::FILE_TYPE_XML_CORPUS)
+      else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	  read = (corpus = read_corpus_from_native_xml_file(in_path));
       else
 	abort();
@@ -206,7 +206,7 @@ main()
 
       string output_suffix(s->out_path);
       out_path = abigail::tests::get_build_dir() + "/tests/" + output_suffix;
-      if (!abigail::tools::ensure_parent_dir_created(out_path))
+      if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
 	{
 	  cerr << "Could not create parent director for " << out_path;
 	  is_ok = false;
@@ -223,9 +223,9 @@ main()
 
       bool r = false;
 
-      if (t == abigail::tools::FILE_TYPE_XML_CORPUS)
+      if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	r = write_corpus_to_native_xml(corpus, /*indent=*/0, of);
-      else if (t == abigail::tools::FILE_TYPE_NATIVE_BI)
+      else if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
 	r = write_translation_unit(tu, /*indent=*/0, of);
       else
 	abort();

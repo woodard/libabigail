@@ -119,7 +119,7 @@ main()
 {
   using abigail::tests::get_src_dir;
   using abigail::tests::get_build_dir;
-  using abigail::tools::ensure_parent_dir_created;
+  using abigail::tools_utils::ensure_parent_dir_created;
 
   bool is_ok = true;
   string in_app_path, in_lib1_path, in_lib2_path, suppression_path,
