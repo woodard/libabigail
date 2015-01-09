@@ -12111,6 +12111,8 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		  if (fn_parm_diff_sptr f =
 		      dynamic_pointer_cast<fn_parm_diff>(*s))
 		    sib = f->get_type_diff().get();
+		  if (sib == d)
+		    continue;
 		  if (sib->get_canonical_diff() == d->get_canonical_diff())
 		    {
 		      redundant_with_sibling_node = true;
