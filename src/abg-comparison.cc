@@ -11901,6 +11901,17 @@ struct diff_node_printer : public diff_node_visitor
   ostream& out_;
   unsigned level_;
 
+  /// Emit a certain number of spaces to the output stream associated
+  /// to this diff_node_printer.
+  ///
+  /// @param level half of the numver of spaces to emit.
+  void
+  do_indent(unsigned level)
+  {
+    for (unsigned i = 0; i < level; ++i)
+      out_ << "  ";
+  }
+
   diff_node_printer(ostream& out)
     : diff_node_visitor(DO_NOT_MARK_VISITED_NODES_AS_TRAVERSED),
       out_(out),
@@ -11940,14 +11951,22 @@ struct diff_node_printer : public diff_node_visitor
       // nothing now.
       return true;
 
-    // indent
-    for (unsigned i = 0; i < level_; ++i)
-      out_ << ' ';
+    do_indent(level_);
     out_ << d->get_pretty_representation();
-    out_ << " {"
-	 << "category: "<< d->get_category()
-	 << "}";
-    out_ << '\n';
+    out_ << "\n";
+    do_indent(level_);
+    out_ << "{\n";
+    do_indent(level_ + 1);
+    out_ << "category: "<< d->get_category() << "\n";
+    do_indent(level_ + 1);
+    out_ << "@: " << std::hex << d << std::dec << "\n";
+    do_indent(level_ + 1);
+    out_ << "@-canonical: " << std::hex
+	 << d->get_canonical_diff()
+	 << std::dec << "\n";
+    do_indent(level_);
+    out_ << "}\n";
+
     return true;
   }
 
