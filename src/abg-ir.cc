@@ -5816,6 +5816,25 @@ function_decl::get_pretty_representation() const
 			|| get_member_function_is_ctor(*mem_fn))))
     result += "void ";
 
+  result += get_pretty_representation_of_declarator();
+
+  return result;
+}
+
+/// Compute and return the pretty representation for the part of the
+/// function declaration that starts at the declarator.  That is, the
+/// return type and the other specifiers of the beginning of the
+/// function's declaration ar omitted.
+///
+/// @return the pretty representation for the part of the function
+/// declaration that starts at the declarator.
+string
+function_decl::get_pretty_representation_of_declarator () const
+{
+  const class_decl::method_decl* mem_fn =
+    dynamic_cast<const class_decl::method_decl*>(this);
+
+  string result;
 
   if (mem_fn)
     {
@@ -5846,8 +5865,8 @@ function_decl::get_pretty_representation() const
 	result += "...";
       else
 	{
-	  type = dynamic_pointer_cast<decl_base>(parm->get_type());
-	  result += type->get_qualified_name();
+	  decl_base_sptr type_decl = get_type_declaration(parm->get_type());
+	  result += type_decl->get_qualified_name();
 	}
     }
   result += ")";

@@ -1746,6 +1746,9 @@ public:
   virtual string
   get_pretty_representation() const;
 
+  string
+  get_pretty_representation_of_declarator () const;
+
   const std::vector<parameter_sptr >&
   get_parameters() const;
 

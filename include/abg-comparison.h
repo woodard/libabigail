@@ -67,6 +67,9 @@ class function_decl_diff;
 /// Convenience typedef for a shared pointer to a @ref function_decl type.
 typedef shared_ptr<function_decl_diff> function_decl_diff_sptr;
 
+/// Convenience typedef for a vector of @ref function_decl_diff_sptr
+typedef vector<function_decl_diff_sptr> function_decl_diff_sptrs_type;
+
 class fn_parm_diff;
 
 /// Convenience typedef for a shared pointer to a @ref fn_parm_diff
@@ -77,6 +80,9 @@ class var_diff;
 
 /// Convenience typedef for a shared pointer to a @ref var_diff type.
 typedef shared_ptr<var_diff> var_diff_sptr;
+
+/// Convenience typedef for a vector of @ref var_diff_sptr.
+typedef vector<var_diff_sptr> var_diff_sptrs_type;
 
 class base_diff;
 
@@ -2176,14 +2182,20 @@ public:
   const string_function_decl_diff_sptr_map&
   changed_functions();
 
+  const function_decl_diff_sptrs_type&
+  changed_functions_sorted();
+
   const string_var_ptr_map&
   deleted_variables() const;
-  
+
   const string_var_ptr_map&
   added_variables() const;
 
   const string_var_diff_sptr_map&
   changed_variables();
+
+  const var_diff_sptrs_type&
+  changed_variables_sorted();
 
   const string_elf_symbol_map&
   deleted_unrefed_function_symbols() const;

@@ -239,6 +239,15 @@ operator~(visiting_kind l)
 	  } \
     } while (false)
 
+static void
+sort_string_function_decl_diff_sptr_map
+(const string_function_decl_diff_sptr_map& map,
+ function_decl_diff_sptrs_type& sorted);
+
+static void
+sort_string_var_diff_sptr_map(const string_var_diff_sptr_map& map,
+			      var_diff_sptrs_type& sorted);
+
 /// Test if a diff node is about differences between types.
 ///
 /// @param diff the diff node to test.
@@ -3026,6 +3035,30 @@ public:
   {}
 };// end class diff::priv
 
+/// A functor to compare two instances of @ref diff_sptr.
+struct diff_less_than_functor
+{
+  /// An operator that takes two instances of @ref diff_sptr returns
+  /// true if its first operand compares less than its second operand.
+  ///
+  /// @param l the first operand to consider.
+  ///
+  /// @param r the second operand to consider.
+  ///
+  /// @return true if @p l compares less than @p r.
+  bool
+  operator()(const diff_sptr l, const diff_sptr r) const
+  {
+    if (!l || !r || !l->first_subject() || !r->first_subject())
+      return false;
+
+    string l_qn = l->first_subject()->get_qualified_name();
+    string r_qn = r->first_subject()->get_qualified_name();
+
+    return l_qn < r_qn;
+  }
+};
+
 /// Constructor for the @ref diff type.
 ///
 /// This constructs a diff between two subjects that are actually
@@ -3191,6 +3224,12 @@ diff::append_child_node(diff_sptr d)
 {
   assert(d);
   priv_->children_.push_back(d);
+
+  diff_less_than_functor comp;
+  std::sort(priv_->children_.begin(),
+	    priv_->children_.end(),
+	    comp);
+
   d->priv_->parent_ = this;
 }
 
@@ -9908,10 +9947,12 @@ struct corpus_diff::priv
   edit_script				unrefed_var_syms_edit_script_;
   string_function_ptr_map		deleted_fns_;
   string_function_ptr_map		added_fns_;
-  string_function_decl_diff_sptr_map	changed_fns_;
+  string_function_decl_diff_sptr_map	changed_fns_map_;
+  function_decl_diff_sptrs_type	changed_fns_;
   string_var_ptr_map			deleted_vars_;
   string_var_ptr_map			added_vars_;
-  string_var_diff_sptr_map		changed_vars_;
+  string_var_diff_sptr_map		changed_vars_map_;
+  var_diff_sptrs_type			changed_vars_;
   string_elf_symbol_map		added_unrefed_fn_syms_;
   string_elf_symbol_map		deleted_unrefed_fn_syms_;
   string_elf_symbol_map		added_unrefed_var_syms_;
@@ -9959,10 +10000,10 @@ corpus_diff::priv::lookup_tables_empty() const
 {
   return (deleted_fns_.empty()
 	  && added_fns_.empty()
-	  && changed_fns_.empty()
+	  && changed_fns_map_.empty()
 	  && deleted_vars_.empty()
 	  && added_vars_.empty()
-	  && changed_vars_.empty());
+	  && changed_vars_map_.empty());
 }
 
 /// Clear the lookup tables useful for reporting an enum_diff.
@@ -9971,10 +10012,10 @@ corpus_diff::priv::clear_lookup_tables()
 {
   deleted_fns_.clear();
   added_fns_.clear();
-  changed_fns_.clear();
+  changed_fns_map_.clear();
   deleted_vars_.clear();
   added_vars_.clear();
-  changed_vars_.clear();
+  changed_vars_map_.clear();
 }
 
 /// If the lookup tables are not yet built, walk the differences and
@@ -10024,13 +10065,14 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 		function_decl_sptr s(added_fn, noop_deleter());
 		function_decl_diff_sptr d = compute_diff(f, s, ctxt_);
 		if (*j->second != *added_fn)
-		  changed_fns_[j->first] = d;
+		  changed_fns_map_[j->first] = d;
 		deleted_fns_.erase(j);
 	      }
 	    else
 	      added_fns_[n] = added_fn;
 	  }
       }
+    sort_string_function_decl_diff_sptr_map(changed_fns_map_, changed_fns_);
 
     // Now walk the allegedly deleted functions; check if their
     // underlying symbols are deleted as well; otherwise, consider
@@ -10112,7 +10154,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 		  {
 		    var_decl_sptr f(j->second, noop_deleter());
 		    var_decl_sptr s(added_var, noop_deleter());
-		    changed_vars_[n] = compute_diff(f, s, ctxt_);
+		    changed_vars_map_[n] = compute_diff(f, s, ctxt_);
 		  }
 		deleted_vars_.erase(j);
 	      }
@@ -10120,6 +10162,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	      added_vars_[n] = added_var;
 	  }
       }
+    sort_string_var_diff_sptr_map(changed_vars_map_, changed_vars_);
 
     // Now walk the allegedly deleted variables; check if their
     // underlying symbols are deleted as well; otherwise consider
@@ -10265,31 +10308,31 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 {
   stat.num_func_removed(deleted_fns_.size());
   stat.num_func_added(added_fns_.size());
-  stat.num_func_changed(changed_fns_.size());
+  stat.num_func_changed(changed_fns_map_.size());
 
   stat.num_vars_removed(deleted_vars_.size());
   stat.num_vars_added(added_vars_.size());
-  stat.num_vars_changed(changed_vars_.size());
+  stat.num_vars_changed(changed_vars_map_.size());
 
   // Walk the changed function diff nodes to apply the categorization
   // filters.
   diff_sptr diff;
-  for (string_function_decl_diff_sptr_map::const_iterator i =
+  for (function_decl_diff_sptrs_type::const_iterator i =
 	 changed_fns_.begin();
        i != changed_fns_.end();
        ++i)
     {
-      diff_sptr diff = i->second;
+      diff_sptr diff = *i;
       ctxt_->maybe_apply_filters(diff);
     }
 
   // Walk the changed variable diff nodes to apply the categorization
   // filters.
-  for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
+  for (var_diff_sptrs_type::const_iterator i = changed_vars_.begin();
        i != changed_vars_.end();
        ++i)
     {
-      diff_sptr diff = i->second;
+      diff_sptr diff = *i;
       ctxt_->maybe_apply_filters(diff);
     }
 
@@ -10297,20 +10340,20 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 
   // Walk the changed function diff nodes to count the number of
   // filtered-out functions.
-  for (string_function_decl_diff_sptr_map::const_iterator i =
+  for (function_decl_diff_sptrs_type::const_iterator i =
 	 changed_fns_.begin();
        i != changed_fns_.end();
        ++i)
-    if (i->second->is_filtered_out())
+    if ((*i)->is_filtered_out())
       stat.num_func_filtered_out(stat.num_func_filtered_out() + 1);
 
   // Walk the changed variables diff nodes to count the number of
   // filtered-out variables.
-  for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
+  for (var_diff_sptrs_type ::const_iterator i = changed_vars_.begin();
        i != changed_vars_.end();
        ++i)
     {
-      if (i->second->is_filtered_out())
+      if ((*i)->is_filtered_out())
 	stat.num_vars_filtered_out(stat.num_vars_filtered_out() + 1);
     }
 
@@ -10426,19 +10469,20 @@ corpus_diff::priv::categorize_redundant_changed_sub_nodes()
   diff_sptr diff;
 
   ctxt_->forget_traversed_diffs();
-  for (string_function_decl_diff_sptr_map::const_iterator i = changed_fns_.begin();
+  for (function_decl_diff_sptrs_type::const_iterator i =
+	 changed_fns_.begin();
        i!= changed_fns_.end();
        ++i)
     {
-      diff = i->second;
+      diff = *i;
       categorize_redundancy(diff);
     }
 
-  for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
+  for (var_diff_sptrs_type::const_iterator i = changed_vars_.begin();
        i!= changed_vars_.end();
        ++i)
     {
-      diff_sptr diff = i->second;
+      diff_sptr diff = *i;
       categorize_redundancy(diff);
     }
 }
@@ -10449,20 +10493,19 @@ void
 corpus_diff::priv::clear_redundancy_categorization()
 {
   diff_sptr diff;
-  for (string_function_decl_diff_sptr_map::const_iterator i =
-	 changed_fns_.begin();
+  for (function_decl_diff_sptrs_type::const_iterator i = changed_fns_.begin();
        i!= changed_fns_.end();
        ++i)
     {
-      diff = i->second;
+      diff = *i;
       abigail::comparison::clear_redundancy_categorization(diff);
     }
 
-  for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
+  for (var_diff_sptrs_type::const_iterator i = changed_vars_.begin();
        i!= changed_vars_.end();
        ++i)
     {
-      diff = i->second;
+      diff = *i;
       abigail::comparison::clear_redundancy_categorization(diff);
     }
 }
@@ -10482,12 +10525,12 @@ corpus_diff::priv::maybe_dump_diff_tree()
   if (!changed_fns_.empty())
     {
       *ctxt_->error_output_stream() << "changed functions diff tree: \n\n";
-      for (string_function_decl_diff_sptr_map::const_iterator i =
+      for (function_decl_diff_sptrs_type::const_iterator i =
 	     changed_fns_.begin();
 	   i != changed_fns_.end();
 	   ++i)
 	{
-	  diff_sptr d = i->second;
+	  diff_sptr d = *i;
 	  print_diff_tree(d, *ctxt_->error_output_stream());
 	}
     }
@@ -10495,11 +10538,12 @@ corpus_diff::priv::maybe_dump_diff_tree()
   if (!changed_vars_.empty())
     {
       *ctxt_->error_output_stream() << "\nchanged variables diff tree: \n\n";
-      for (string_var_diff_sptr_map::const_iterator i = changed_vars_.begin();
+      for (var_diff_sptrs_type::const_iterator i =
+	     changed_vars_.begin();
 	   i != changed_vars_.end();
 	   ++i)
 	{
-	  diff_sptr d = i->second;
+	  diff_sptr d = *i;
 	  print_diff_tree(d, *ctxt_->error_output_stream());
 	}
     }
@@ -10512,11 +10556,11 @@ corpus_diff::priv::maybe_dump_diff_tree()
 void
 corpus_diff::chain_into_hierarchy()
 {
-  for (string_function_decl_diff_sptr_map::const_iterator i =
-	 changed_functions().begin();
-       i != changed_functions().end();
+  for (function_decl_diff_sptrs_type::const_iterator i =
+	 changed_functions_sorted().begin();
+       i != changed_functions_sorted().end();
        ++i)
-    if (diff_sptr d = i->second)
+    if (diff_sptr d = *i)
       append_child_node(d);
 }
 
@@ -10573,6 +10617,11 @@ corpus_diff::append_child_node(diff_sptr d)
 {
   assert(d);
   priv_->children_.push_back(d);
+
+  diff_less_than_functor comp;
+  std::sort(priv_->children_.begin(),
+	    priv_->children_.end(),
+	    comp);
 }
 
 /// @return the bare edit script of the functions changed as recorded
@@ -10618,10 +10667,22 @@ corpus_diff::added_functions()
 /// Getter for the functions which signature didn't change, but which
 /// do have some indirect changes in their parms.
 ///
-/// @return functions which signature didn't change, but which
-/// do have some indirect changes in their parms.
+/// @return a non-sorted map of functions which signature didn't
+/// change, but which do have some indirect changes in their parms.
+/// The key of the map is a unique identifier for the function; it's
+/// usually made of the name and version of the underlying ELF symbol
+/// of the function for corpora that were built from ELF files.
 const string_function_decl_diff_sptr_map&
 corpus_diff::changed_functions()
+{return priv_->changed_fns_map_;}
+
+/// Getter for a sorted vector of functions which signature didn't
+/// change, but which do have some indirect changes in their parms.
+///
+/// @return a sorted vector of functions which signature didn't
+/// change, but which do have some indirect changes in their parms.
+const function_decl_diff_sptrs_type&
+corpus_diff::changed_functions_sorted()
 {return priv_->changed_fns_;}
 
 /// Getter for the variables that got deleted from the first subject
@@ -10639,12 +10700,20 @@ const string_var_ptr_map&
 corpus_diff::added_variables() const
 {return priv_->added_vars_;}
 
-/// Getter for the variables which signature didn't change but which
-/// do have some indirect changes in some sub-types.
+/// Getter for the non-sorted map of variables which signature didn't
+/// change but which do have some indirect changes in some sub-types.
 ///
-/// @return the changed variables.
+/// @return the non-sorted map of changed variables.
 const string_var_diff_sptr_map&
 corpus_diff::changed_variables()
+{return priv_->changed_vars_map_;}
+
+/// Getter for the sorted vector of variables which signature didn't
+/// change but which do have some indirect changes in some sub-types.
+///
+/// @return a sorted vector of changed variables.
+const var_diff_sptrs_type&
+corpus_diff::changed_variables_sorted()
 {return priv_->changed_vars_;}
 
 /// Getter for function symbols not referenced by any debug info and
@@ -10715,10 +10784,10 @@ corpus_diff::length() const
 	  + architecture_changed()
 	  + priv_->deleted_fns_.size()
 	  + priv_->added_fns_.size()
-	  + priv_->changed_fns_.size()
+	  + priv_->changed_fns_map_.size()
 	  + priv_->deleted_vars_.size()
 	  + priv_->added_vars_.size()
-	  + priv_->changed_vars_.size()
+	  + priv_->changed_vars_map_.size()
 	  + priv_->added_unrefed_fn_syms_.size()
 	  + priv_->deleted_unrefed_fn_syms_.size()
 	  + priv_->added_unrefed_var_syms_.size()
@@ -10740,25 +10809,28 @@ struct function_comp
   bool
   operator()(const function_decl& f, const function_decl& s)
   {
-    string fr = f.get_qualified_name(),
-      sr = s.get_qualified_name();
+    string fr = f.get_pretty_representation_of_declarator(),
+      sr = s.get_pretty_representation_of_declarator();
 
-    if (fr == sr)
-      {
-	if (f.get_symbol())
-	  fr = f.get_symbol()->get_id_string();
-	else if (!f.get_linkage_name().empty())
-	  fr = f.get_linkage_name();
-	else
-	  fr = f.get_qualified_name();
+    if (fr != sr)
+      return fr < sr;
 
-	if (s.get_symbol())
-	  fr = s.get_symbol()->get_id_string();
-	else if (!s.get_linkage_name().empty())
-	  fr = s.get_linkage_name();
-	else
-	  fr = s.get_qualified_name();
-      }
+    fr = f.get_pretty_representation(),
+      sr = f.get_pretty_representation();
+
+    if (fr != sr)
+      return fr < sr;
+
+    if (f.get_symbol())
+      fr = f.get_symbol()->get_id_string();
+    else if (!f.get_linkage_name().empty())
+      fr = f.get_linkage_name();
+
+    if (s.get_symbol())
+      fr = s.get_symbol()->get_id_string();
+    else if (!s.get_linkage_name().empty())
+      fr = s.get_linkage_name();
+
     return fr < sr;
   }
 
@@ -10881,7 +10953,7 @@ struct function_decl_diff_comp
 static void
 sort_string_function_decl_diff_sptr_map
 (const string_function_decl_diff_sptr_map& map,
- vector<function_decl_diff_sptr>& sorted)
+ function_decl_diff_sptrs_type& sorted)
 {
   sorted.reserve(map.size());
   for (string_function_decl_diff_sptr_map::const_iterator i = map.begin();
@@ -10919,7 +10991,7 @@ struct var_diff_sptr_comp
 /// It's populated with the sorted content.
 static void
 sort_string_var_diff_sptr_map(const string_var_diff_sptr_map& map,
-			      vector<var_diff_sptr>& sorted)
+			      var_diff_sptrs_type& sorted)
 {
   sorted.reserve(map.size());
   for (string_var_diff_sptr_map::const_iterator i = map.begin();
@@ -11109,7 +11181,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
       bool emitted = false;
       vector<function_decl_diff_sptr> sorted_changed_fns;
-      sort_string_function_decl_diff_sptr_map(priv_->changed_fns_,
+      sort_string_function_decl_diff_sptr_map(priv_->changed_fns_map_,
 					      sorted_changed_fns);
       for (vector<function_decl_diff_sptr>::const_iterator i =
 	     sorted_changed_fns.begin();
@@ -11225,7 +11297,7 @@ corpus_diff::report(ostream& out, const string& indent) const
       string n1, n2;
 
       vector<var_diff_sptr> sorted_changed_vars;
-      sort_string_var_diff_sptr_map(priv_->changed_vars_, sorted_changed_vars);
+      sort_string_var_diff_sptr_map(priv_->changed_vars_map_, sorted_changed_vars);
       for (vector<var_diff_sptr>::const_iterator i =
 	     sorted_changed_vars.begin();
 	   i != sorted_changed_vars.end();
@@ -11389,12 +11461,12 @@ corpus_diff::traverse(diff_node_visitor& v)
       return false;
     }
 
-  for (string_function_decl_diff_sptr_map::const_iterator i =
-	 changed_functions().begin();
-       i != changed_functions().end();
+  for (function_decl_diff_sptrs_type::const_iterator i =
+	 changed_functions_sorted().begin();
+       i != changed_functions_sorted().end();
        ++i)
     {
-      if (diff_sptr d = i->second)
+      if (diff_sptr d = *i)
 	{
 	  if (!d->traverse(v))
 	    {
@@ -11404,12 +11476,12 @@ corpus_diff::traverse(diff_node_visitor& v)
 	}
     }
 
-  for (string_var_diff_sptr_map::const_iterator i =
-	 changed_variables().begin();
-       i != changed_variables().end();
+  for (var_diff_sptrs_type::const_iterator i =
+	 changed_variables_sorted().begin();
+       i != changed_variables_sorted().end();
        ++i)
     {
-      if (diff_sptr d = i->second)
+      if (diff_sptr d = *i)
 	{
 	  if (!d->traverse(v))
 	    {
