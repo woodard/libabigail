@@ -285,7 +285,7 @@ extract_tus_from_archive(const string& dest_path,
        ++i)
     {
       string dest = dest_path + "/" + (*i)->get_path();
-      if (!abigail::tools::ensure_parent_dir_created(dest))
+      if (!abigail::tools_utils::ensure_parent_dir_created(dest))
 	{
 	  cerr << "could not create parent director for '" << dest << "'\n";
 	  return false;

@@ -96,7 +96,7 @@ main()
   out_path =
     abigail::tests::get_build_dir() + "/tests/" + archive_spec.out_path;
 
-  if (!abigail::tools::ensure_parent_dir_created(out_path))
+  if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
     {
       cerr << "Could not create parent director for " << out_path;
       return 1;
@@ -117,7 +117,7 @@ main()
 	}
 
       string file_name;
-      abigail::tools::base_name(tu->get_path(), file_name);
+      abigail::tools_utils::base_name(tu->get_path(), file_name);
       tu->set_path(file_name);
       abi_corpus->add(tu);
     }

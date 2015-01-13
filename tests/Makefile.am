@@ -45,7 +45,7 @@ runtestreadwrite_SOURCES=test-read-write.cc
 runtestreadwrite_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestwritereadarchive_SOURCES=test-write-read-archive.cc
-runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la $(top_builddir)/tools/libtoolsutils.la
+runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestreaddwarf_SOURCES=test-read-dwarf.cc
 runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
