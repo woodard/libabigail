@@ -164,6 +164,9 @@ if ENABLE_MANUAL
 install-html-doc: html-doc
 	test -d "$(DESTDIR)$(docdir)/manual" || $(mkinstalldirs) "$(DESTDIR)$(docdir)/manual"
 	cp -r "$(DESTDIR)$(BUILDDIR)/html" "$(DESTDIR)$(docdir)/manual"
+
+man7_MANS = man/abidiff.7 man/abidw.7 man/abilint.7 man/abicompat.7 man/libabigail.7
+
 endif
 
 clean-local:
