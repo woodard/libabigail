@@ -12,8 +12,10 @@ of the project.
 Tools manuals
 =============
 
-  * :doc:`abidiff`
-  * :doc:`abicompat`
-  * :doc:`abidw`
-  * :doc:`abilint`
+.. toctree::
+   :maxdepth: 2
 
+   abidiff
+   abicompat
+   abidw
+   abilint

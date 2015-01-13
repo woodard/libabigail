@@ -230,9 +230,13 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'Libabigailmanuals', u'Libabigail manuals Documentation',
-   u'Dodji Seketeli', 'Libabigailmanuals', 'One line description of project.',
-   'Miscellaneous'),
+  ('index',
+   'abigail',
+   'Comparing Applications Binary Interfacces of binaries in ELF format',
+   'Dodji Seketeli',
+   'abigail',
+   'compare the ABI of ELF binaries',
+   'Individual utilities'),
 ]
 
 # Documents to append as an appendix to all manuals.

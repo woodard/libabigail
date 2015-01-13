@@ -161,13 +161,17 @@ doctest:
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
 manpages =
+texinfodocs =
+
 if ENABLE_MANUAL
 
 manpages += abidiff.7 abidw.7 abilint.7 abicompat.7 libabigail.7
+texinfodocs += abigail.info
 
 install-html-doc: html-doc
 	test -d "$(DESTDIR)$(docdir)/manual" || $(mkinstalldirs) "$(DESTDIR)$(docdir)/manual"
 	cp -r "$(DESTDIR)$(BUILDDIR)/html" "$(DESTDIR)$(docdir)/manual"
+
 endif
 
 clean-local:
@@ -178,5 +182,10 @@ install-data-local:
 	-test -f $(BUILDDIR)/man/abidiff.7 && $(mkinstalldirs) $(DESTDIR)$(mandir)/man7
 	-for m in $(manpages); do test -f $(BUILDDIR)/man/$$m && $(install_sh_DATA) $(BUILDDIR)/man/$$m $(DESTDIR)$(mandir)/man7; done;
 
+	-test -f $(BUILDDIR)/texinfo/abidiff.info && $(mkinstalldirs) $(DESTDIR)$(infodir)
+	-for i in $(texinfodocs); do test -f $(BUILDDIR)/texinfo/$$i && $(install_sh_DATA) $(BUILDDIR)/texinfo/$$i $(DESTDIR)$(infodir)/$$i; done;
+
 uninstall-local: clean-local
+	-for i in $$(manpages); do rm -f $(DESTDIR)$(mandir)/man7/$$i; done
+	-for i in $$(texinfodocs); do rm -f $(DESTDIR)$(infodir)/$$i; done
 	-rm -rf $(DESTDIR)$(docdir)/manual/html
