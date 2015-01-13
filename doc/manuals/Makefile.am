@@ -160,18 +160,23 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
+manpages =
 if ENABLE_MANUAL
+
+manpages += abidiff.7 abidw.7 abilint.7 abicompat.7 libabigail.7
+
 install-html-doc: html-doc
 	test -d "$(DESTDIR)$(docdir)/manual" || $(mkinstalldirs) "$(DESTDIR)$(docdir)/manual"
 	cp -r "$(DESTDIR)$(BUILDDIR)/html" "$(DESTDIR)$(docdir)/manual"
-
-man7_MANS = man/abidiff.7 man/abidw.7 man/abilint.7 man/abicompat.7 man/libabigail.7
-
 endif
 
 clean-local:
 	-rm -rf $(BUILDDIR)/html
 	-rm -rf $(BUILDDIR)/doctrees
+
+install-data-local:
+	-test -f $(BUILDDIR)/man/abidiff.7 && $(mkinstalldirs) $(DESTDIR)$(mandir)/man7
+	-for m in $(manpages); do test -f $(BUILDDIR)/man/$$m && $(install_sh_DATA) $(BUILDDIR)/man/$$m $(DESTDIR)$(mandir)/man7; done;
 
 uninstall-local: clean-local
 	-rm -rf $(DESTDIR)$(docdir)/manual/html
