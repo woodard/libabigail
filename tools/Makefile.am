@@ -3,10 +3,10 @@ h=$(abs_srcdir)
 if ENABLE_ZIP_ARCHIVE
   bin_PROGRAMS = abiar abidiff abilint abidw abicompat
 else
-  bin_PROGRAMS = abidiff abilint abidw  abinilint abicompat
+  bin_PROGRAMS = abidiff abilint abidw abicompat
 endif
 
-noinst_PROGRAMS = abisym
+noinst_PROGRAMS = abisym abinilint
 
 if ENABLE_ZIP_ARCHIVE
 abiar_SOURCES = abiar.cc
