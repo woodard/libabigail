@@ -181,7 +181,7 @@ clean-local:
 	-rm -rf $(BUILDDIR)/html
 	-rm -rf $(BUILDDIR)/doctrees
 
-install-data-local: install-html-doc
+install-man-and-info-doc:
 	-test -f $(BUILDDIR)/man/abidiff.7 && $(mkinstalldirs) $(DESTDIR)$(mandir)/man7
 	-for m in $(manpages); do test -f $(BUILDDIR)/man/$$m && $(install_sh_DATA) $(BUILDDIR)/man/$$m $(DESTDIR)$(mandir)/man7; done;
 
