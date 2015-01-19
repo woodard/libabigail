@@ -4578,7 +4578,7 @@ equals(const array_type_def& l, const array_type_def& r, change_kind& k)
 	break;
       }
 
-  if (*l.get_element_type() != *r.get_element_type())
+  if (l.get_element_type() != r.get_element_type())
     {
       k |= SUBTYPE_CHANGE_KIND;
       result = false;

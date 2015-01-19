@@ -5135,9 +5135,8 @@ array_diff::report(ostream& out, const string& indent) const
   if (d->to_be_reported())
     {
       // report array element type changes
-      out << indent << "array element type '"
-	  << d->first_subject()->get_name()
-	  << "' changed:\n";
+      out << indent << "array element type of '"
+	  << name << "' changed:\n";
       d->report(out, indent + "  ");
     }
 
