@@ -6602,16 +6602,21 @@ build_ir_node_from_die(read_context&	ctxt,
 	  function_decl_sptr fn;
 	  bool is_in_alternate_debug_info = false;
 	  bool has_spec = die_die_attribute(die, die_is_from_alt_di,
-				       DW_AT_specification,
-				       spec_die, is_in_alternate_debug_info,
-				       true);
-	  bool fn_is_clone = die_die_attribute(die, die_is_from_alt_di,
-					       DW_AT_abstract_origin,
-					       spec_die,
-					       is_in_alternate_debug_info,
-					       true);
-	  if (has_spec || fn_is_clone)
+					    DW_AT_specification,
+					    spec_die,
+					    is_in_alternate_debug_info,
+					    true);
+	  bool has_abstract_origin =
+	    die_die_attribute(die, die_is_from_alt_di,
+			      DW_AT_abstract_origin,
+			      spec_die,
+			      is_in_alternate_debug_info,
+			      true);
+	  if (has_spec || has_abstract_origin)
 	    {
+	      string linkage_name = die_linkage_name(die);
+	      string spec_linkage_name = die_linkage_name(&spec_die);
+
 	      scop = get_scope_for_die(ctxt, &spec_die,
 				       is_in_alternate_debug_info,
 				       called_from_public_decl,
@@ -6628,7 +6633,13 @@ build_ir_node_from_die(read_context&	ctxt,
 		  if (d)
 		    {
 		      fn = dynamic_pointer_cast<function_decl>(d);
-		      if (fn_is_clone)
+		      if (has_abstract_origin
+			  && (linkage_name != spec_linkage_name))
+			// The current DIE has 'd' as abstract orign,
+			// and has a linkage name that is different
+			// from from the linkage name of 'd'.  That
+			// means, the current DIE represents a clone
+			// of 'd'.
 			fn = fn->clone();
 		      ctxt.associate_die_to_decl(dwarf_dieoffset(die),
 						 is_in_alternate_debug_info,
