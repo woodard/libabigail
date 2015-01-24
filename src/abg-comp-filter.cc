@@ -46,10 +46,10 @@ using std::tr1::dynamic_pointer_cast;
 void
 apply_filter(filter_base& filter, corpus_diff_sptr d)
 {
-  bool s = d->context()->traversing_a_node_twice_is_forbidden();
-  d->context()->forbid_traversing_a_node_twice(false);
+  bool s = d->context()->visiting_a_node_twice_is_forbidden();
+  d->context()->forbid_visiting_a_node_twice(false);
   d->traverse(filter);
-  d->context()->forbid_traversing_a_node_twice(s);
+  d->context()->forbid_visiting_a_node_twice(s);
 }
 
 /// Walk a diff sub-tree and apply a filter to the nodes visted.  The
@@ -62,10 +62,10 @@ apply_filter(filter_base& filter, corpus_diff_sptr d)
 void
 apply_filter(filter_base& filter, diff_sptr d)
 {
-  bool s = d->context()->traversing_a_node_twice_is_forbidden();
-  d->context()->forbid_traversing_a_node_twice(false);
+  bool s = d->context()->visiting_a_node_twice_is_forbidden();
+  d->context()->forbid_visiting_a_node_twice(false);
   d->traverse(filter);
-  d->context()->forbid_traversing_a_node_twice(s);
+  d->context()->forbid_visiting_a_node_twice(s);
 }
 
 /// Walk a diff sub-tree and apply a filter to the nodes visted.  The

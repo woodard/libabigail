@@ -195,6 +195,13 @@ InOutSpec in_out_specs[] =
     "output/test-diff-filter/test16-report.txt",
   },
   {
+    "data/test-diff-filter/test16-v0.o",
+    "data/test-diff-filter/test16-v1.o",
+    "--redundant",
+    "data/test-diff-filter/test16-report-2.txt",
+    "output/test-diff-filter/test16-report-2.txt",
+  },
+  {
     "data/test-diff-filter/test17-v0.o",
     "data/test-diff-filter/test17-v1.o",
     "--no-redundant",
@@ -291,6 +298,20 @@ InOutSpec in_out_specs[] =
     "--harmless",
     "data/test-diff-filter/test24-compatible-vars-report-1.txt ",
     "output/test-diff-filter/test24-compatible-vars-report-1.txt ",
+  },
+  {
+    "data/test-diff-filter/libtest25-cyclic-type-v0.so",
+    "data/test-diff-filter/libtest25-cyclic-type-v1.so",
+    "",
+    "data/test-diff-filter/test25-cyclic-type-report-0.txt ",
+    "output/test-diff-filter/test25-cyclic-type-report-0.txt "
+  },
+  {
+    "data/test-diff-filter/libtest25-cyclic-type-v0.so",
+    "data/test-diff-filter/libtest25-cyclic-type-v1.so",
+    "--redundant",
+    "data/test-diff-filter/test25-cyclic-type-report-1.txt ",
+    "output/test-diff-filter/test25-cyclic-type-report-1.txt "
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}

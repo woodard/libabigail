@@ -307,7 +307,8 @@ test-diff-filter/test16-v0.cc		\
 test-diff-filter/test16-v1.cc		\
 test-diff-filter/test16-v0.o		\
 test-diff-filter/test16-v1.o		\
-test-diff-filter/test16-report.txt		\
+test-diff-filter/test16-report.txt	\
+test-diff-filter/test16-report-2.txt	\
 test-diff-filter/test17-v0.cc		\
 test-diff-filter/test17-v1.cc		\
 test-diff-filter/test17-v0.o		\
@@ -354,6 +355,12 @@ test-diff-filter/test24-compatible-vars-report-0.txt \
 test-diff-filter/test24-compatible-vars-report-1.txt \
 test-diff-filter/test24-compatible-vars-v0.c \
 test-diff-filter/test24-compatible-vars-v1.c \
+test-diff-filter/libtest25-cyclic-type-v0.so \
+test-diff-filter/libtest25-cyclic-type-v1.so \
+test-diff-filter/test25-cyclic-type-report-0.txt \
+test-diff-filter/test25-cyclic-type-report-1.txt \
+test-diff-filter/test25-cyclic-type-v0.cc \
+test-diff-filter/test25-cyclic-type-v1.cc \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

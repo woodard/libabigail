@@ -254,7 +254,7 @@ enum visiting_kind
   /// This says that the traversing code should not mark visited nodes
   /// as having been traversed.  This is useful, for instance, for
   /// visitors which have debugging purposes.
-  DO_NOT_MARK_VISITED_NODES_AS_TRAVERSED = 1 << 1
+  DO_NOT_MARK_VISITED_NODES_AS_VISITED = 1 << 1
 };
 
 visiting_kind
@@ -792,22 +792,22 @@ public:
   initialize_canonical_diff(const diff_sptr diff);
 
   bool
-  diff_has_been_traversed(const diff*) const;
+  diff_has_been_visited(const diff*) const;
 
   bool
-  diff_has_been_traversed(const diff_sptr) const;
+  diff_has_been_visited(const diff_sptr) const;
 
   void
-  mark_diff_as_traversed(const diff*);
+  mark_diff_as_visited(const diff*);
 
   void
-  forget_traversed_diffs();
+  forget_visited_diffs();
 
   void
-  forbid_traversing_a_node_twice(bool f);
+  forbid_visiting_a_node_twice(bool f);
 
   bool
-  traversing_a_node_twice_is_forbidden() const;
+  visiting_a_node_twice_is_forbidden() const;
 
   diff_category
   get_allowed_category() const;
@@ -977,13 +977,8 @@ protected:
   void
   begin_traversing();
 
-  bool
-  is_traversing() const;
-
   void
-  end_traversing(bool mark_as_traversed = true);
-
-protected:
+  end_traversing();
 
   virtual void
   finish_diff_type();
@@ -1005,6 +1000,9 @@ public:
   parent_node() const;
 
   diff* get_canonical_diff() const;
+
+  bool
+  is_traversing() const;
 
   void
   append_child_node(diff_sptr);
