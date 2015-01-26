@@ -79,11 +79,6 @@ AC_CHECK_HEADER(elfutils/libdwfl.h,
 		[],
 		[AC_MSG_ERROR([could not find elfutils/libdwfl.h installed])])
 
-EBL_LIBS=
-AC_CHECK_LIB(ebl, ebl_openbackend, [EBL_LIBS=-lebl], [], [-ldl -lelf])
-AC_CHECK_HEADER(elfutils/libebl.h,
-		[],
-		[AC_MSG_ERROR([could not find elfutils/libebl.h installed])])
 
 if test x$ELF_LIBS = x; then
    AC_MSG_ERROR([could not find elfutils elf library installed])
@@ -93,12 +88,7 @@ if test x$DW_LIBS = x; then
    AC_MSG_ERROR([could not find elfutils dwarf library installed])
 fi
 
-if test x$EBL_LIBS = x; then
-   AC_MSG_ERROR([could not find elfutils backend library installed])
-fi
-
 AC_SUBST(DW_LIBS)
-AC_SUBST(EBL_LIBS)
 AC_SUBST([ELF_LIBS])
 
 dnl Check for dependency: libxml
@@ -191,7 +181,7 @@ AM_CONDITIONAL(ENABLE_MANUAL, test x$ENABLE_MANUAL = xyes)
 
 dnl Set the list of libraries libabigail depends on
 
-DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $ELF_LIBS $EBL_LIBS $DW_LIBS"
+DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $ELF_LIBS $DW_LIBS"
 AC_SUBST(DEPS_LIBS)
 
 if test x$ABIGAIL_DEVEL != x; then

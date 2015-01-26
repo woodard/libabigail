@@ -35,7 +35,6 @@
 #include <cstring>
 #include <cmath>
 #include <elfutils/libdwfl.h>
-#include <elfutils/libebl.h>
 #include <dwarf.h>
 #include <tr1/unordered_map>
 #include <stack>
@@ -206,6 +205,265 @@ stb_to_elf_symbol_binding(unsigned char stb)
 
   return b;
 
+}
+
+/// Convert the value of the e_machine field of GElf_Ehdr into a
+/// string.  This is to get a string representing the architecture of
+/// the elf file at hand.
+///
+/// @param e_machine the value of GElf_Ehdr::e_machine.
+///
+/// @return the string representation of GElf_Ehdr::e_machine.
+static string
+e_machine_to_string(GElf_Half e_machine)
+{
+  string result;
+  switch (e_machine)
+    {
+    case EM_NONE:
+      result = "elf-no-arch";
+      break;
+    case EM_M32:
+      result = "elf-att-we-32100";
+      break;
+    case EM_SPARC:
+      result = "elf-sun-sparc";
+      break;
+    case EM_386:
+      result = "elf-intel-80386";
+      break;
+    case EM_68K:
+      result = "elf-motorola-68k";
+      break;
+    case EM_88K:
+      result = "elf-motorola-88k";
+      break;
+    case EM_860:
+      result = "elf-intel-80860";
+      break;
+    case EM_MIPS:
+      result = "elf-mips-r3000-be";
+      break;
+    case EM_S370:
+      result = "elf-ibm-s370";
+      break;
+    case EM_MIPS_RS3_LE:
+      result = "elf-mips-r3000-le";
+      break;
+    case EM_PARISC:
+      result = "elf-hp-parisc";
+      break;
+    case EM_VPP500:
+      result = "elf-fujitsu-vpp500";
+      break;
+    case EM_SPARC32PLUS:
+      result = "elf-sun-sparc-v8plus";
+      break;
+    case EM_960:
+      result = "elf-intel-80960";
+      break;
+    case EM_PPC:
+      result = "elf-powerpc";
+      break;
+    case EM_PPC64:
+      result = "elf-powerpc-64";
+      break;
+    case EM_S390:
+      result = "elf-ibm-s390";
+      break;
+    case EM_V800:
+      result = "elf-nec-v800";
+      break;
+    case EM_FR20:
+      result = "elf-fujitsu-fr20";
+      break;
+    case EM_RH32:
+      result = "elf-trw-rh32";
+      break;
+    case EM_RCE:
+      result = "elf-motorola-rce";
+      break;
+    case EM_ARM:
+      result = "elf-arm";
+      break;
+    case EM_FAKE_ALPHA:
+      result = "elf-digital-alpha";
+      break;
+    case EM_SH:
+      result = "elf-hitachi-sh";
+      break;
+    case EM_SPARCV9:
+      result = "elf-sun-sparc-v9-64";
+      break;
+    case EM_TRICORE:
+      result = "elf-siemens-tricore";
+      break;
+    case EM_ARC:
+      result = "elf-argonaut-risc-core";
+      break;
+    case EM_H8_300:
+      result = "elf-hitachi-h8-300";
+      break;
+    case EM_H8_300H:
+      result = "elf-hitachi-h8-300h";
+      break;
+    case EM_H8S:
+      result = "elf-hitachi-h8s";
+      break;
+    case EM_H8_500:
+      result = "elf-hitachi-h8-500";
+      break;
+    case EM_IA_64:
+      result = "elf-intel-ia-64";
+      break;
+    case EM_MIPS_X:
+      result = "elf-stanford-mips-x";
+      break;
+    case EM_COLDFIRE:
+      result = "elf-motorola-coldfire";
+      break;
+    case EM_68HC12:
+      result = "elf-motorola-68hc12";
+      break;
+    case EM_MMA:
+      result = "elf-fujitsu-mma";
+      break;
+    case EM_PCP:
+      result = "elf-siemens-pcp";
+      break;
+    case EM_NCPU:
+      result = "elf-sony-ncpu";
+      break;
+    case EM_NDR1:
+      result = "elf-denso-ndr1";
+      break;
+    case EM_STARCORE:
+      result = "elf-motorola-starcore";
+      break;
+    case EM_ME16:
+      result = "elf-toyota-me16";
+      break;
+    case EM_ST100:
+      result = "elf-stm-st100";
+      break;
+    case EM_TINYJ:
+      result = "elf-alc-tinyj";
+      break;
+    case EM_X86_64:
+      result = "elf-amd-x86_64";
+      break;
+    case EM_PDSP:
+      result = "elf-sony-pdsp";
+      break;
+    case EM_FX66:
+      result = "elf-siemens-fx66";
+      break;
+    case EM_ST9PLUS:
+      result = "elf-stm-st9+";
+      break;
+    case EM_ST7:
+      result = "elf-stm-st7";
+      break;
+    case EM_68HC16:
+      result = "elf-motorola-68hc16";
+      break;
+    case EM_68HC11:
+      result = "elf-motorola-68hc11";
+      break;
+    case EM_68HC08:
+      result = "elf-motorola-68hc08";
+      break;
+    case EM_68HC05:
+      result = "elf-motorola-68hc05";
+      break;
+    case EM_SVX:
+      result = "elf-sg-svx";
+      break;
+    case EM_ST19:
+      result = "elf-stm-st19";
+      break;
+    case EM_VAX:
+      result = "elf-digital-vax";
+      break;
+    case EM_CRIS:
+      result = "elf-axis-cris";
+      break;
+    case EM_JAVELIN:
+      result = "elf-infineon-javelin";
+      break;
+    case EM_FIREPATH:
+      result = "elf-firepath";
+      break;
+    case EM_ZSP:
+      result = "elf-lsi-zsp";
+      break;
+    case EM_MMIX:
+      result = "elf-don-knuth-mmix";
+      break;
+    case EM_HUANY:
+      result = "elf-harvard-huany";
+      break;
+    case EM_PRISM:
+      result = "elf-sitera-prism";
+      break;
+    case EM_AVR:
+      result = "elf-atmel-avr";
+      break;
+    case EM_FR30:
+      result = "elf-fujistu-fr30";
+      break;
+    case EM_D10V:
+      result = "elf-mitsubishi-d10v";
+      break;
+    case EM_D30V:
+      result = "elf-mitsubishi-d30v";
+      break;
+    case EM_V850:
+      result = "elf-nec-v850";
+      break;
+    case EM_M32R:
+      result = "elf-mitsubishi-m32r";
+      break;
+    case EM_MN10300:
+      result = "elf-matsushita-mn10300";
+      break;
+    case EM_MN10200:
+      result = "elf-matsushita-mn10200";
+      break;
+    case EM_PJ:
+      result = "elf-picojava";
+      break;
+    case EM_OPENRISC:
+      result = "elf-openrisc-32";
+      break;
+    case EM_ARC_A5:
+      result = "elf-arc-a5";
+      break;
+    case EM_XTENSA:
+      result = "elf-tensilica-xtensa";
+      break;
+    case EM_AARCH64:
+      result = "elf-arm-aarch64";
+      break;
+    case EM_TILEPRO:
+      result = "elf-tilera-tilepro";
+      break;
+    case EM_TILEGX:
+      result = "elf-tilera-tilegx";
+      break;
+    case EM_NUM:
+      result = "elf-last-arch-number";
+      break;
+    case EM_ALPHA:
+      result = "elf-non-official-alpha";
+    default:
+      {
+	std::ostringstream o;
+	o << "elf-unknown-arch-value-" << e_machine;
+	result = o.str();
+      }
+  }
+    return result;
 }
 
 /// The kind of ELF hash table found by the function
@@ -2602,7 +2860,10 @@ public:
     if (!elf_handle())
       return;
 
-    elf_architecture_ = ebl_backend_name(ebl_openbackend(elf_handle()));
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+
+    elf_architecture_ = e_machine_to_string(elf_header->e_machine);
   }
 
   /// Load various ELF data.
