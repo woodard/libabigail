@@ -248,6 +248,9 @@ static void
 sort_string_var_diff_sptr_map(const string_var_diff_sptr_map& map,
 			      var_diff_sptrs_type& sorted);
 
+static type_base_sptr
+get_leaf_type(qualified_type_def_sptr t);
+
 /// Test if a diff node is about differences between types.
 ///
 /// @param diff the diff node to test.
@@ -5403,6 +5406,8 @@ compute_diff(reference_type_def_sptr	first,
 struct qualified_type_diff::priv
 {
   diff_sptr underlying_type_diff;
+  mutable diff_sptr leaf_underlying_type_diff;
+
   priv(diff_sptr underlying)
     : underlying_type_diff(underlying)
   {}
@@ -5415,7 +5420,7 @@ struct qualified_type_diff::priv
 /// diff::children_node().
 void
 qualified_type_diff::chain_into_hierarchy()
-{append_child_node(underlying_type_diff());}
+{append_child_node(leaf_underlying_type_diff());}
 
 /// Constructor for qualified_type_diff.
 ///
@@ -5464,6 +5469,23 @@ qualified_type_diff::second_qualified_type() const
 diff_sptr
 qualified_type_diff::underlying_type_diff() const
 {return priv_->underlying_type_diff;}
+
+/// Getter for the diff between the most underlying non-qualified
+/// types of two qualified types.
+///
+/// @return the diff between the most underlying non-qualified types
+/// of two qualified types.
+diff_sptr
+qualified_type_diff::leaf_underlying_type_diff() const
+{
+  if (!priv_->leaf_underlying_type_diff)
+    priv_->leaf_underlying_type_diff
+      = compute_diff_for_types(get_leaf_type(first_qualified_type()),
+			       get_leaf_type(second_qualified_type()),
+			       context());
+
+  return priv_->leaf_underlying_type_diff;
+}
 
 /// Setter for the diff between the underlying types of the two
 /// qualified types.
@@ -5574,16 +5596,13 @@ qualified_type_diff::report(ostream& out, const string& indent) const
       return;
     }
 
-  type_base_sptr flt = get_leaf_type(first_qualified_type()),
-    slt = get_leaf_type(second_qualified_type());
-  string fltname = get_type_declaration(flt)->get_pretty_representation(),
-    sltname = get_type_declaration(slt)->get_pretty_representation();
-
-  diff_sptr d = compute_diff_for_types(flt, slt, context());
+  diff_sptr d = leaf_underlying_type_diff();
+  assert(d);
   RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d,
 						    "unqualified "
 						    "underlying type");
 
+  string fltname = d->first_subject()->get_pretty_representation();
   out << indent << "in unqualified underlying type '" << fltname << "':\n";
   d->report(out, indent + "  ");
 }

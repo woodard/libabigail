@@ -1469,6 +1469,9 @@ public:
   void
   underlying_type_diff(const diff_sptr);
 
+  diff_sptr
+  leaf_underlying_type_diff() const;
+
   virtual const string&
   get_pretty_representation() const;
 

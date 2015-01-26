@@ -313,6 +313,20 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test25-cyclic-type-report-1.txt ",
     "output/test-diff-filter/test25-cyclic-type-report-1.txt "
   },
+  {
+    "data/test-diff-filter/libtest26-qualified-redundant-node-v0.so",
+    "data/test-diff-filter/libtest26-qualified-redundant-node-v1.so",
+    "",
+    "data/test-diff-filter/test26-qualified-redundant-node-report-0.txt",
+    "output/test-diff-filter/test26-qualified-redundant-node-report-0.txt"
+  },
+  {
+    "data/test-diff-filter/libtest26-qualified-redundant-node-v0.so",
+    "data/test-diff-filter/libtest26-qualified-redundant-node-v1.so",
+    "--redundant",
+    "data/test-diff-filter/test26-qualified-redundant-node-report-1.txt",
+    "output/test-diff-filter/test26-qualified-redundant-node-report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };
