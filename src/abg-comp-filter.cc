@@ -515,15 +515,15 @@ has_virtual_mem_fn_change(const class_diff* diff)
 	}
     }
 
-  for (string_changed_member_function_sptr_map::const_iterator i =
+  for (function_decl_diff_sptrs_type::const_iterator i =
 	 diff->changed_member_fns().begin();
        i != diff->changed_member_fns().end();
        ++i)
-    if(get_member_function_is_virtual(i->second.first)
-       || !get_member_function_is_virtual(i->second.second))
+    if (get_member_function_is_virtual((*i)->first_function_decl())
+	|| !get_member_function_is_virtual((*i)->second_function_decl()))
       {
-	if (get_member_function_vtable_offset(i->second.first)
-	    == get_member_function_vtable_offset(i->second.second))
+	if (get_member_function_vtable_offset((*i)->first_function_decl())
+	    == get_member_function_vtable_offset((*i)->second_function_decl()))
 	  continue;
 
 	return true;
@@ -573,12 +573,12 @@ has_non_virtual_mem_fn_change(const class_diff* diff)
     if (!get_member_function_is_virtual(i->second))
       return true;
 
-  for (string_changed_member_function_sptr_map::const_iterator i =
+  for (function_decl_diff_sptrs_type::const_iterator i =
 	 diff->changed_member_fns().begin();
        i != diff->changed_member_fns().end();
        ++i)
-    if(!get_member_function_is_virtual(i->second.first)
-       && !get_member_function_is_virtual(i->second.second))
+    if(!get_member_function_is_virtual((*i)->first_function_decl())
+       && !get_member_function_is_virtual((*i)->second_function_decl()))
       return true;
 
   return false;

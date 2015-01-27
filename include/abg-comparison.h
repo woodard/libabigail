@@ -62,6 +62,24 @@ class diff;
 /// Convenience typedef for a shared_ptr for the @ref diff class
 typedef shared_ptr<diff> diff_sptr;
 
+/// Convenience typedef for a vector of @ref diff_sptr.
+typedef vector<diff_sptr> diff_sptrs_type;
+
+class decl_diff_base;
+
+/// Convenience typedef for a shared_ptr of @ref decl_diff_base.
+typedef shared_ptr<decl_diff_base> decl_diff_base_sptr;
+
+/// Convenience typedef for a vector of @ref decl_diff_base_sptr.
+typedef vector<decl_diff_base_sptr> decl_diff_base_sptrs_type;
+
+class type_diff_base;
+/// Convenience pointer for a shared pointer to a type_diff_base
+typedef shared_ptr<type_diff_base> type_diff_base_sptr;
+
+/// Convenience typedef for a vector of @ref type_diff_base_sptr
+typedef vector<type_diff_base_sptr> type_diff_base_sptrs_type;
+
 class function_decl_diff;
 
 /// Convenience typedef for a shared pointer to a @ref function_decl type.
@@ -89,6 +107,9 @@ class base_diff;
 /// Convenience typedef for a shared pointer to a @ref base_diff type.
 typedef shared_ptr<base_diff> base_diff_sptr;
 
+/// Convenience typedef for a vector of @ref base_diff_sptr.
+typedef vector<base_diff_sptr> base_diff_sptrs_type;
+
 class class_diff;
 
 /// Convenience typedef for a shared pointer on a @ref class_diff type.
@@ -106,9 +127,6 @@ typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
 /// which value is a @ref decl_base_sptr
 typedef unordered_map<unsigned, decl_base_sptr> unsigned_decl_base_sptr_map;
 
-/// Convenience typedef for a changed type or decl.  The first element
-/// of the pair is the old type/decl and the second is the new one.
-typedef pair<decl_base_sptr, decl_base_sptr> changed_type_or_decl;
 
 /// Convenience typedef for a map of string and class_decl::basse_spec_sptr.
 typedef unordered_map<string, class_decl::base_spec_sptr> string_base_sptr_map;
@@ -116,11 +134,6 @@ typedef unordered_map<string, class_decl::base_spec_sptr> string_base_sptr_map;
 /// Convenience typedef for a map of string and @ref base_diff_sptr.
 typedef unordered_map<string, base_diff_sptr> string_base_diff_sptr_map;
 
-/// Convenience typedef for a changed function parameter.  The first element of
-/// the pair is the old function parm and the second element is the
-/// new function parm.
-typedef pair<function_decl::parameter_sptr,
-	     function_decl::parameter_sptr> changed_parm;
 
 /// Convenience typedef for a map which value is a changed function
 /// parameter and which key is the name of the function parameter.
@@ -131,35 +144,36 @@ typedef unordered_map<string, fn_parm_diff_sptr> string_fn_parm_diff_sptr_map;
 typedef unordered_map<unsigned, fn_parm_diff_sptr>
 unsigned_fn_parm_diff_sptr_map;
 
-/// Convenience typedef for a vector of changed_parm.
-typedef vector<changed_parm> changed_parms_type;
-
 /// Convenience typedef for a map which key is an integer and which
 /// value is a parameter.
 typedef unordered_map<unsigned,
 		      function_decl::parameter_sptr> unsigned_parm_map;
 
-/// Convenience typedef for a map which value is changed type or decl.
-/// The key of the map is the qualified name of the type/decl.
+/// Convenience typedef for a map which value is a
+/// type_diff_base_sptr.  The key of the map is the qualified name of
+/// the changed type.
 typedef unordered_map<string,
-		      changed_type_or_decl> string_changed_type_or_decl_map;
+		      type_diff_base_sptr> string_type_diff_base_sptr_map;
+
+/// Convenience typedef for a map which value is a
+/// decl_diff_base_sptr.  The key of the map is the qualified name of
+/// the changed type.
+typedef unordered_map<string,
+		      decl_diff_base_sptr> string_decl_diff_base_sptr_map;
+
+/// Convenience typedef for a map which value is a diff_sptr.  The key
+/// of the map is the qualified name of the changed type.
+typedef unordered_map<string, diff_sptr> string_diff_sptr_map;
 
 /// Convenience typedef for a map whose key is a string and whose
 /// value is a changed variable of type @ref var_diff_sptr.
 typedef unordered_map<string,
 		      var_diff_sptr> string_var_diff_sptr_map;
 
-/// Convience typedef for a map which value is a changed type or decl.
-/// The key of the map is an unsigned integer.
-typedef unordered_map<unsigned,
-		      changed_type_or_decl> unsigned_changed_type_or_decl_map;
 
 /// Convenience typedef for a map whose key is an unsigned int and
 /// whose value is a changed variable of type @ref var_diff_sptr.
 typedef unordered_map<unsigned, var_diff_sptr> unsigned_var_diff_sptr_map;
-
-/// Convenience tyepdef for a vector of changed type or decl.
-typedef vector<changed_type_or_decl> changed_type_or_decl_vector;
 
 /// Convenience typedef for a map which value is a function
 /// parameter.  The key is the name of the function parm.
@@ -188,7 +202,8 @@ typedef unordered_map<string, function_decl*> string_function_ptr_map;
 /// Convenience typedef for a map which key is a string and which
 /// value is a @ref function_decl_diff_sptr.
 typedef unordered_map<string,
-		      function_decl_diff_sptr> string_function_decl_diff_sptr_map;
+		      function_decl_diff_sptr>
+				string_function_decl_diff_sptr_map;
 
 /// Convenience typedef for a pair of class_decl::member_function_sptr
 /// representing a changed member function.  The first element of the
@@ -200,7 +215,7 @@ typedef pair<class_decl::method_decl_sptr,
 /// Convenience typedef for a hash map of strings and changed member functions.
 typedef unordered_map<string,
 		      changed_member_function_sptr>
-	string_changed_member_function_sptr_map;
+				string_changed_member_function_sptr_map;
 
 /// Convenience typedef for a hash map of strings  and member functions.
 typedef unordered_map<string,
@@ -1095,10 +1110,6 @@ compute_diff(const type_base_sptr,
 	     const type_base_sptr,
 	     diff_context_sptr ctxt);
 
-class type_diff_base;
-/// Convenience pointer for a shared pointer to a type_diff_base
-typedef shared_ptr<type_diff_base> type_diff_base_sptr;
-
 /// The base class of diff between types.
 class type_diff_base : public diff
 {
@@ -1617,7 +1628,7 @@ public:
   const string_base_sptr_map&
   inserted_bases() const;
 
-  const string_base_diff_sptr_map&
+  const base_diff_sptrs_type&
   changed_bases();
 
   const edit_script&
@@ -1644,7 +1655,7 @@ public:
   edit_script&
   member_fns_changes();
 
-  const string_changed_member_function_sptr_map&
+  const function_decl_diff_sptrs_type&
   changed_member_fns() const;
 
   const string_member_function_sptr_map&
@@ -1810,10 +1821,10 @@ public:
   const decl_base_sptr
   inserted_member_at(vector<unsigned>::const_iterator i);
 
-  const string_changed_type_or_decl_map&
+  const diff_sptrs_type&
   changed_types() const;
 
-  const string_changed_type_or_decl_map&
+  const diff_sptrs_type&
   changed_decls() const;
 
   const string_decl_base_sptr_map&

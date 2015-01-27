@@ -248,6 +248,27 @@ static void
 sort_string_var_diff_sptr_map(const string_var_diff_sptr_map& map,
 			      var_diff_sptrs_type& sorted);
 
+static void
+sort_unsigned_data_member_diff_sptr_map(const unsigned_var_diff_sptr_map map,
+					var_diff_sptrs_type& sorted);
+
+static void
+sort_string_data_member_diff_sptr_map(const string_var_diff_sptr_map& map,
+				      var_diff_sptrs_type& sorted);
+
+static void
+sort_string_virtual_member_function_diff_sptr_map
+(const string_function_decl_diff_sptr_map& map,
+ function_decl_diff_sptrs_type& sorted);
+
+static void
+sort_string_diff_sptr_map(const string_diff_sptr_map& map,
+			  diff_sptrs_type& sorted);
+
+static void
+sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
+			       base_diff_sptrs_type& sorted);
+
 static type_base_sptr
 get_leaf_type(qualified_type_def_sptr t);
 
@@ -4151,7 +4172,7 @@ compute_diff(const decl_base_sptr	first,
     d = compute_diff_for_types(first, second, ctxt);
   else
     d = compute_diff_for_decls(first, second, ctxt);
-
+  assert(d);
   return d;
 }
 
@@ -4176,7 +4197,7 @@ compute_diff(const type_base_sptr	first,
   decl_base_sptr f = get_type_declaration(first),
     s = get_type_declaration(second);
   diff_sptr d = compute_diff_for_types(f,s, ctxt);
-
+  assert(d);
   return d;
 }
 
@@ -6027,27 +6048,33 @@ struct class_diff::priv
   string_base_sptr_map deleted_bases_;
   string_base_sptr_map inserted_bases_;
   string_base_diff_sptr_map changed_bases_;
+  base_diff_sptrs_type sorted_changed_bases_;
   string_decl_base_sptr_map deleted_member_types_;
   string_decl_base_sptr_map inserted_member_types_;
-  string_changed_type_or_decl_map changed_member_types_;
+  string_diff_sptr_map changed_member_types_;
+  diff_sptrs_type sorted_changed_member_types_;
   string_decl_base_sptr_map deleted_data_members_;
   unsigned_decl_base_sptr_map deleted_dm_by_offset_;
   string_decl_base_sptr_map inserted_data_members_;
   unsigned_decl_base_sptr_map inserted_dm_by_offset_;
   // This map contains the data member which sub-type changed.
   string_var_diff_sptr_map subtype_changed_dm_;
+  var_diff_sptrs_type sorted_subtype_changed_dm_;
   // This one contains the list of data members changes that can be
   // represented as a data member foo that got removed from offset N,
   // and a data member bar that got inserted at offset N; IOW, this
   // can be translated as data member foo that got changed into data
   // member bar at offset N.
   unsigned_var_diff_sptr_map changed_dm_;
+  var_diff_sptrs_type sorted_changed_dm_;
   string_member_function_sptr_map deleted_member_functions_;
   string_member_function_sptr_map inserted_member_functions_;
-  string_changed_member_function_sptr_map changed_member_functions_;
+  string_function_decl_diff_sptr_map changed_member_functions_;
+  function_decl_diff_sptrs_type sorted_changed_member_functions_;
   string_decl_base_sptr_map deleted_member_class_tmpls_;
   string_decl_base_sptr_map inserted_member_class_tmpls_;
-  string_changed_type_or_decl_map changed_member_class_tmpls_;
+  string_diff_sptr_map changed_member_class_tmpls_;
+  diff_sptrs_type sorted_changed_member_class_tmpls_;
 
   class_decl::base_spec_sptr
   base_has_changed(class_decl::base_spec_sptr) const;
@@ -6184,6 +6211,9 @@ class_diff::ensure_lookup_tables_populated(void) const
       }
   }
 
+  sort_string_base_diff_sptr_map(priv_->changed_bases_,
+				 priv_->sorted_changed_bases_);
+
   {
     edit_script& e = priv_->member_types_changes_;
 
@@ -6223,7 +6253,8 @@ class_diff::ensure_lookup_tables_populated(void) const
 	      {
 		if (*j->second != *d)
 		  priv_->changed_member_types_[qname] =
-		    std::make_pair(j->second, d);
+		    compute_diff(j->second, d, context());
+
 		priv_->deleted_member_types_.erase(j);
 	      }
 	    else
@@ -6330,6 +6361,11 @@ class_diff::ensure_lookup_tables_populated(void) const
 	  (i->second->second_var()->get_qualified_name());
       }
   }
+  sort_string_data_member_diff_sptr_map(priv_->subtype_changed_dm_,
+					priv_->sorted_subtype_changed_dm_);
+  sort_unsigned_data_member_diff_sptr_map(priv_->changed_dm_,
+					  priv_->sorted_changed_dm_);
+
 
   {
     edit_script& e = priv_->member_fns_changes_;
@@ -6392,7 +6428,9 @@ class_diff::ensure_lookup_tables_populated(void) const
 	      {
 		if (*j->second != *mem_fn)
 		  priv_->changed_member_functions_[name] =
-		    std::make_pair(j->second, mem_fn);
+		    compute_diff(static_pointer_cast<function_decl>(j->second),
+				 static_pointer_cast<function_decl>(mem_fn),
+				 context());
 		priv_->deleted_member_functions_.erase(j);
 	      }
 	    else
@@ -6443,6 +6481,10 @@ class_diff::ensure_lookup_tables_populated(void) const
       priv_->inserted_member_functions_.erase(*i);
   }
 
+  sort_string_virtual_member_function_diff_sptr_map
+    (priv_->changed_member_functions_,
+     priv_->sorted_changed_member_functions_);
+
   {
     edit_script& e = priv_->member_class_tmpls_changes_;
 
@@ -6482,7 +6524,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	      {
 		if (*j->second != *d)
 		  priv_->changed_member_types_[qname]=
-		    std::make_pair(j->second, d);
+		    compute_diff(j->second, d, context());
 		priv_->deleted_member_class_tmpls_.erase(j);
 	      }
 	    else
@@ -6490,6 +6532,8 @@ class_diff::ensure_lookup_tables_populated(void) const
 	  }
       }
   }
+  sort_string_diff_sptr_map(priv_->changed_member_types_,
+			    priv_->sorted_changed_member_types_);
 }
 
 /// Test whether a given base class has changed.  A base class has
@@ -6522,12 +6566,12 @@ decl_base_sptr
 class_diff::priv::member_type_has_changed(decl_base_sptr d) const
 {
   string qname = d->get_qualified_name();
-  string_changed_type_or_decl_map::const_iterator it =
+  string_diff_sptr_map::const_iterator it =
     changed_member_types_.find(qname);
 
   return ((it == changed_member_types_.end())
 	  ? decl_base_sptr()
-	  : it->second.second);
+	  : it->second->second_subject());
 }
 
 /// Test whether a given data member has changed.
@@ -6558,12 +6602,12 @@ decl_base_sptr
 class_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
 {
   string qname = d->get_qualified_name();
-  string_changed_type_or_decl_map::const_iterator it =
+  string_diff_sptr_map::const_iterator it =
     changed_member_class_tmpls_.find(qname);
 
   return ((it == changed_member_class_tmpls_.end())
 	  ? decl_base_sptr()
-	  : it->second.second);
+	  : dynamic_pointer_cast<decl_base>(it->second->second_subject()));
 }
 
 /// Count the number of bases classes whose changes got filtered out.
@@ -6574,12 +6618,12 @@ size_t
 class_diff::priv::count_filtered_bases()
 {
   size_t num_filtered = 0;
-  for (string_base_diff_sptr_map::const_iterator i = changed_bases_.begin();
-       i != changed_bases_.end();
+  for (base_diff_sptrs_type::const_iterator i = sorted_changed_bases_.begin();
+       i != sorted_changed_bases_.end();
        ++i)
     {
-      diff_sptr diff = i->second;
-      if (diff->is_filtered_out())
+      diff_sptr diff = *i;
+      if (diff && diff->is_filtered_out())
 	++num_filtered;
     }
   return num_filtered;
@@ -6595,12 +6639,12 @@ size_t
 class_diff::priv::count_filtered_subtype_changed_dm()
 {
   size_t num_filtered= 0;
-  for (string_var_diff_sptr_map::const_iterator i =
-	 subtype_changed_dm_.begin();
-       i != subtype_changed_dm_.end();
+  for (var_diff_sptrs_type::const_iterator i =
+	 sorted_subtype_changed_dm_.begin();
+       i != sorted_subtype_changed_dm_.end();
        ++i)
     {
-      if (i->second->is_filtered_out())
+      if ((*i)->is_filtered_out())
 	++num_filtered;
     }
   return num_filtered;
@@ -6661,17 +6705,24 @@ class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
   size_t count = 0;
   diff_category allowed_category = ctxt->get_allowed_category();
 
-  for (string_changed_member_function_sptr_map::const_iterator i =
-	 changed_member_functions_.begin();
-       i != changed_member_functions_.end();
+  for (function_decl_diff_sptrs_type::const_iterator i =
+	 sorted_changed_member_functions_.begin();
+       i != sorted_changed_member_functions_.end();
        ++i)
     {
-      class_decl::method_decl_sptr f = i->second.first,
-	s = i->second.second;
+      class_decl::method_decl_sptr f =
+	dynamic_pointer_cast<class_decl::method_decl>
+	((*i)->first_function_decl());
+      assert(f);
+
+      class_decl::method_decl_sptr s =
+	dynamic_pointer_cast<class_decl::method_decl>
+	((*i)->second_function_decl());
+      assert(s);
 
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
 
-      diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
+      diff_sptr diff = *i;
       ctxt->maybe_apply_filters(diff);
 
       if (diff->is_filtered_out())
@@ -6760,19 +6811,19 @@ void
 class_diff::chain_into_hierarchy()
 {
   // base class changes.
-  for (string_base_diff_sptr_map::const_iterator i =
-	 priv_->changed_bases_.begin();
-       i != priv_->changed_bases_.end();
+  for (base_diff_sptrs_type::const_iterator i =
+	 priv_->sorted_changed_bases_.begin();
+       i != priv_->sorted_changed_bases_.end();
        ++i)
-    if (diff_sptr d = i->second)
+    if (diff_sptr d = *i)
       append_child_node(d);
 
   // data member changes
-  for (string_var_diff_sptr_map::const_iterator i =
-	 priv_->subtype_changed_dm_.begin();
-       i != priv_->subtype_changed_dm_.end();
+  for (var_diff_sptrs_type::const_iterator i =
+	 priv_->sorted_subtype_changed_dm_.begin();
+       i != priv_->sorted_subtype_changed_dm_.end();
        ++i)
-    if (diff_sptr d = i->second)
+    if (diff_sptr d = *i)
       append_child_node(d);
 
   for (unsigned_var_diff_sptr_map::const_iterator i =
@@ -6783,23 +6834,19 @@ class_diff::chain_into_hierarchy()
       append_child_node(d);
 
   // member types changes
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 priv_->changed_member_types_.begin();
-       i != priv_->changed_member_types_.end();
+  for (diff_sptrs_type::const_iterator i =
+	 priv_->sorted_changed_member_types_.begin();
+       i != priv_->sorted_changed_member_types_.end();
        ++i)
-    if (diff_sptr d = compute_diff_for_types(i->second.first,
-					     i->second.second,
-					     context()))
+    if (diff_sptr d = *i)
       append_child_node(d);
 
   // member function changes
-  for (string_changed_member_function_sptr_map::const_iterator i =
-	 priv_->changed_member_functions_.begin();
-       i != priv_->changed_member_functions_.end();
+  for (function_decl_diff_sptrs_type::const_iterator i =
+	 priv_->sorted_changed_member_functions_.begin();
+       i != priv_->sorted_changed_member_functions_.end();
        ++i)
-    if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					     i->second.second,
-					     context()))
+    if (diff_sptr d = *i)
       append_child_node(d);
 }
 
@@ -6900,11 +6947,10 @@ class_diff::inserted_bases() const
 
 /// Getter for the changed base classes of the diff.
 ///
-/// @return a map containing the changed base classes, keyed with
-/// their pretty representation.
-const string_base_diff_sptr_map&
+/// @return a sorted vector containing the changed base classes
+const base_diff_sptrs_type&
 class_diff::changed_bases()
-{return priv_->changed_bases_;}
+{return priv_->sorted_changed_bases_;}
 
 /// @return the edit script of the bases of the two classes.
 edit_script&
@@ -6951,13 +6997,14 @@ const edit_script&
 class_diff::member_fns_changes() const
 {return priv_->member_fns_changes_;}
 
-/// Getter for the members functions that have had a change in a
-/// sub-type, without having a change in their symbol name.
+/// Getter for the virtual members functions that have had a change in
+/// a sub-type, without having a change in their symbol name.
 ///
-/// @return a map of member functions that have a sub-type change.
-const string_changed_member_function_sptr_map&
+/// @return a sorted vector of virtual member functions that have a
+/// sub-type change.
+const function_decl_diff_sptrs_type&
 class_diff::changed_member_fns() const
-{return priv_->changed_member_functions_;}
+{return priv_->sorted_changed_member_functions_;}
 
 /// @return the edit script of the member functions of the two
 /// classes.
@@ -6999,10 +7046,53 @@ edit_script&
 class_diff::member_class_tmpls_changes()
 {return priv_->member_class_tmpls_changes_;}
 
+/// A comparison function for instances of @ref base_diff.
+struct base_diff_comp
+{
+  bool
+  operator()(const base_diff& l, const base_diff& r) const
+  {
+    class_decl::base_spec_sptr f = l.first_base(), s = r.first_base();
+    if (f->get_offset_in_bits() >= 0
+	&& s->get_offset_in_bits() >= 0)
+      return f->get_offset_in_bits() < s->get_offset_in_bits();
+    else
+      return (f->get_base_class()->get_pretty_representation()
+	      < s->get_base_class()->get_pretty_representation());
+  }
+
+  bool
+  operator()(const base_diff* l, const base_diff* r) const
+  {return operator()(*l, *r);}
+
+  bool
+  operator()(const base_diff_sptr l, const base_diff_sptr r) const
+  {return operator()(l.get(), r.get());}
+}; // end struct base_diff_comp
+
+/// Sort a map of string -> base_diff_sptr into a sorted vector of
+/// base_diff_sptr.  The base_diff_sptr are sorted by increasing value
+/// of their offset in their containing type.
+///
+/// @param map the input map to sort.
+///
+/// @param sorted the resulting sorted vector.
+static void
+sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
+			       base_diff_sptrs_type& sorted)
+{
+  for (string_base_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+  base_diff_comp comp;
+  sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// A comparison functor to compare two instances of @ref var_diff
 /// that represent changed data members based on the offset of their
 /// initial value.
-struct var_diff_comp
+struct data_member_diff_comp
 {
   /// @param f the first change to data member to take into account
   ///
@@ -7030,15 +7120,15 @@ struct var_diff_comp
 ///
 /// @param sorted the resulting vector of sorted var_diff_sptr.
 static void
-sort_var_diffs(const unsigned_var_diff_sptr_map map,
-	       vector<var_diff_sptr>& sorted)
+sort_unsigned_data_member_diff_sptr_map(const unsigned_var_diff_sptr_map map,
+					var_diff_sptrs_type& sorted)
 {
   sorted.reserve(map.size());
   for (unsigned_var_diff_sptr_map::const_iterator i = map.begin();
        i != map.end();
        ++i)
     sorted.push_back(i->second);
-  var_diff_comp comp;
+  data_member_diff_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
@@ -7049,15 +7139,15 @@ sort_var_diffs(const unsigned_var_diff_sptr_map map,
 ///
 /// @param sorted the resulting vector of var_diff_sptr.
 static void
-sort_var_diffs(const string_var_diff_sptr_map& map,
-	       vector<var_diff_sptr>& sorted)
+sort_string_data_member_diff_sptr_map(const string_var_diff_sptr_map& map,
+				      var_diff_sptrs_type& sorted)
 {
   sorted.reserve(map.size());
   for (string_var_diff_sptr_map::const_iterator i = map.begin();
        i != map.end();
        ++i)
     sorted.push_back(i->second);
-  var_diff_comp comp;
+  data_member_diff_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
@@ -7103,6 +7193,55 @@ sort_data_members(const string_decl_base_sptr_map &data_members,
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
+/// A comparison functor for instances of @ref function_decl_diff that
+/// represent changes between two virtual member functions.
+struct virtual_member_function_diff_comp
+{
+  bool
+  operator()(const function_decl_diff& l,
+	     const function_decl_diff& r) const
+  {
+    assert(get_member_function_is_virtual(l.first_function_decl()));
+    assert(get_member_function_is_virtual(r.first_function_decl()));
+
+    return (get_member_function_vtable_offset(l.first_function_decl())
+	    < get_member_function_vtable_offset(r.first_function_decl()));
+  }
+
+  bool
+  operator()(const function_decl_diff* l,
+	     const function_decl_diff* r)
+  {return operator()(*l, *r);}
+
+  bool
+  operator()(const function_decl_diff_sptr l,
+	     const function_decl_diff_sptr r)
+  {return operator()(l.get(), r.get());}
+}; // end struct virtual_member_function_diff_comp
+
+/// Sort an map of string -> virtual member function into a vector of
+/// virtual member functions.  The virtual member functions are sorted
+/// by increasing order of their virtual index.
+///
+/// @param map the input map.
+///
+/// @param sorted the resulting sorted vector of virtual function
+/// member.
+static void
+sort_string_virtual_member_function_diff_sptr_map
+(const string_function_decl_diff_sptr_map& map,
+ function_decl_diff_sptrs_type& sorted)
+{
+  sorted.reserve(map.size());
+  for (string_function_decl_diff_sptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  virtual_member_function_diff_comp comp;
+  sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Produce a basic report about the changes between two class_decl.
 ///
 /// @param out the output stream to report the changes to.
@@ -7138,7 +7277,7 @@ class_diff::report(ostream& out, const string& indent) const
     {
       // Report deletions.
       int numdels = priv_->deleted_bases_.size();
-      size_t numchanges = priv_->changed_bases_.size();
+      size_t numchanges = priv_->sorted_changed_bases_.size();
 
       if (numdels)
 	{
@@ -7170,13 +7309,13 @@ class_diff::report(ostream& out, const string& indent) const
 	{
 	  report_mem_header(out, numchanges, num_filtered, change_kind,
 			    "base class", indent);
-	  for (string_base_diff_sptr_map::const_iterator it =
-		 priv_->changed_bases_.begin();
-	       it != priv_->changed_bases_.end();
+	  for (base_diff_sptrs_type::const_iterator it =
+		 priv_->sorted_changed_bases_.begin();
+	       it != priv_->sorted_changed_bases_.end();
 	       ++it)
 	    {
-	      base_diff_sptr diff = it->second;
-	      if (!diff->to_be_reported())
+	      base_diff_sptr diff = *it;
+	      if (!diff || !diff->to_be_reported())
 		continue;
 
 	      class_decl::base_spec_sptr o = diff->first_base();
@@ -7270,30 +7409,31 @@ class_diff::report(ostream& out, const string& indent) const
 	out << "\n";
 
       // report member function with sub-types changes
-      int numchanges = priv_->changed_member_functions_.size();
+      int numchanges = priv_->sorted_changed_member_functions_.size();
       num_filtered = priv_->count_filtered_changed_mem_fns(context());
       if (numchanges)
 	report_mem_header(out, numchanges, num_filtered, change_kind,
 			  "member function", indent);
-      for (string_changed_member_function_sptr_map::const_iterator i =
-	     priv_->changed_member_functions_.begin();
-	   i != priv_->changed_member_functions_.end();
+      for (function_decl_diff_sptrs_type::const_iterator i =
+	     priv_->sorted_changed_member_functions_.begin();
+	   i != priv_->sorted_changed_member_functions_.end();
 	   ++i)
 	{
 	  if (!(context()->get_allowed_category()
 		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
-	      && !get_member_function_is_virtual(i->second.first)
-	      && !get_member_function_is_virtual(i->second.second))
+	      && !(get_member_function_is_virtual
+		   ((*i)->first_function_decl()))
+	      && !(get_member_function_is_virtual
+		   ((*i)->second_function_decl())))
 	    continue;
 
-	  class_decl::method_decl_sptr f = i->second.first;
-	  class_decl::method_decl_sptr s = i->second.second;
-	  diff_sptr diff = compute_diff_for_decls(f, s, context());
+	  diff_sptr diff = *i;
 	  if (!diff || !diff->to_be_reported())
 	    continue;
 
-	  string repr = f->get_pretty_representation();
-	  if (i !=priv_->changed_member_functions_.begin())
+	  string repr =
+	    (*i)->first_function_decl()->get_pretty_representation();
+	  if (i != priv_->sorted_changed_member_functions_.begin())
 	    out << "\n";
 	  out << indent << "  '" << repr << "' has some sub-type changes:\n";
 	  diff->report(out, indent + "    ");
@@ -7351,37 +7491,31 @@ class_diff::report(ostream& out, const string& indent) const
 	}
 
       // report change
-      size_t numchanges = priv_->subtype_changed_dm_.size();
+      size_t numchanges = priv_->sorted_subtype_changed_dm_.size();
       size_t num_filtered = priv_->count_filtered_subtype_changed_dm();
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    subtype_change_kind, "data member", indent);
-	  vector<var_diff_sptr> sorted_dms;
-	  sort_var_diffs(priv_->subtype_changed_dm_, sorted_dms);
-	  for (vector<var_diff_sptr>::const_iterator it = sorted_dms.begin();
-	       it != sorted_dms.end();
+	  for (var_diff_sptrs_type::const_iterator it =
+		priv_->sorted_subtype_changed_dm_.begin();
+	       it != priv_->sorted_subtype_changed_dm_.end();
 	       ++it)
 	    represent(*it, context(), out, indent + " ");
 	  out << "\n";
 	}
 
-      numchanges = priv_->changed_dm_.size();
+      numchanges = priv_->sorted_changed_dm_.size();
       num_filtered = priv_->count_filtered_changed_dm();
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    change_kind, "data member", indent);
-	  vector<var_diff_sptr> sorted_changed_dms;
-	  sort_var_diffs(priv_->changed_dm_,
-			 sorted_changed_dms);
-	  for (vector<var_diff_sptr>::const_iterator it =
-		 sorted_changed_dms.begin();
-	       it != sorted_changed_dms.end();
+	  for (var_diff_sptrs_type::const_iterator it =
+		 priv_->sorted_changed_dm_.begin();
+	       it != priv_->sorted_changed_dm_.end();
 	       ++it)
-	    {
-	      represent(*it, context(), out, indent + " ");
-	    }
+	    represent(*it, context(), out, indent + " ");
 	  out << "\n";
 	}
     }
@@ -7389,7 +7523,7 @@ class_diff::report(ostream& out, const string& indent) const
   // member types
   if (const edit_script& e = member_types_changes())
     {
-      int numchanges = priv_->changed_member_types_.size();
+      int numchanges = priv_->sorted_changed_member_types_.size();
       int numdels = priv_->deleted_member_types_.size();
 
       // report deletions
@@ -7418,18 +7552,20 @@ class_diff::report(ostream& out, const string& indent) const
 	  report_mem_header(out, numchanges, 0, change_kind,
 			    "member type", indent);
 
-	  for (string_changed_type_or_decl_map::const_iterator it =
-		 priv_->changed_member_types_.begin();
-	       it != priv_->changed_member_types_.end();
+	  for (diff_sptrs_type::const_iterator it =
+		 priv_->sorted_changed_member_types_.begin();
+	       it != priv_->sorted_changed_member_types_.end();
 	       ++it)
 	    {
-	      decl_base_sptr o = it->second.first;
-	      decl_base_sptr n = it->second.second;
+	      if (!(*it)->to_be_reported())
+		continue;
+
+	      decl_base_sptr o = (*it)->first_subject();
+	      decl_base_sptr n = (*it)->second_subject();
 	      out << indent << "  '"
 		  << o->get_pretty_representation()
 		  << "' changed:\n";
-	      diff_sptr dif = compute_diff_for_types(o, n, context());
-	      dif->report(out, indent + "    ");
+	      (*it)->report(out, indent + "    ");
 	    }
 	  out << "\n";
 	}
@@ -7885,8 +8021,10 @@ struct scope_diff::priv
   //
   // A changed type/decl is one that has been deleted from the first
   // scope and that has been inserted into the second scope.
-  string_changed_type_or_decl_map changed_types_;
-  string_changed_type_or_decl_map changed_decls_;
+  string_diff_sptr_map changed_types_;
+  diff_sptrs_type sorted_changed_types_;
+  string_diff_sptr_map changed_decls_;
+  diff_sptrs_type sorted_changed_decls_;
 
   // The removed types/decls lookup tables.
   //
@@ -7978,7 +8116,8 @@ scope_diff::ensure_lookup_tables_populated()
 	}
     }
 
-  // Populate inserted types & decls lookup tables.
+  // Populate inserted types & decls as well as chagned types & decls
+  // lookup tables.
   for (vector<insertion>::const_iterator it = e.insertions().begin();
        it != e.insertions().end();
        ++it)
@@ -8004,7 +8143,7 @@ scope_diff::ensure_lookup_tables_populated()
 		{
 		  if (*j->second != *decl)
 		    priv_->changed_types_[qname] =
-		      std::make_pair(j->second, decl);
+		      compute_diff(j->second, decl, context());
 		  priv_->deleted_types_.erase(j);
 		}
 	      else
@@ -8020,7 +8159,7 @@ scope_diff::ensure_lookup_tables_populated()
 		{
 		  if (*j->second != *decl)
 		    priv_->changed_decls_[qname] =
-		      std::make_pair(j->second, decl);
+		      compute_diff(j->second, decl, context());
 		  priv_->deleted_decls_.erase(j);
 		}
 	      else
@@ -8028,6 +8167,11 @@ scope_diff::ensure_lookup_tables_populated()
 	    }
 	}
     }
+
+  sort_string_diff_sptr_map(priv_->changed_decls_,
+			    priv_->sorted_changed_decls_);
+  sort_string_diff_sptr_map(priv_->changed_types_,
+			    priv_->sorted_changed_types_);
 
   // Populate removed types/decls lookup tables
   for (string_decl_base_sptr_map::const_iterator i =
@@ -8082,23 +8226,17 @@ scope_diff::ensure_lookup_tables_populated()
 void
 scope_diff::chain_into_hierarchy()
 {
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 changed_types().begin();
+  for (diff_sptrs_type::const_iterator i = changed_types().begin();
        i != changed_types().end();
        ++i)
-    if (diff_sptr d = compute_diff_for_types(i->second.first,
-					     i->second.second,
-					     context()))
-      append_child_node(d);
+    if (*i)
+      append_child_node(*i);
 
-  for (string_changed_type_or_decl_map::const_iterator i =
-	 changed_decls().begin();
+  for (diff_sptrs_type::const_iterator i = changed_decls().begin();
        i != changed_decls().end();
        ++i)
-    if (diff_sptr d = compute_diff_for_decls(i->second.first,
-					     i->second.second,
-					     context()))
-      append_child_node(d);
+    if (*i)
+      append_child_node(*i);
 }
 
 /// Constructor for scope_diff
@@ -8244,17 +8382,17 @@ const decl_base_sptr
 scope_diff::inserted_member_at(vector<unsigned>::const_iterator i)
 {return inserted_member_at(*i);}
 
-/// @return a map containing the types which content has changed from
-/// the first scope to the other.
-const string_changed_type_or_decl_map&
+/// @return a sorted vector of the types which content has changed
+/// from the first scope to the other.
+const diff_sptrs_type&
 scope_diff::changed_types() const
-{return priv_->changed_types_;}
+{return priv_->sorted_changed_types_;}
 
-/// @return a map containing the decls which content has changed from
-/// the first scope to the other.
-const string_changed_type_or_decl_map&
+/// @return a sorted vector of the decls which content has changed
+/// from the first scope to the other.
+const diff_sptrs_type&
 scope_diff::changed_decls() const
-{return priv_->changed_decls_;}
+{return priv_->sorted_changed_decls_;}
 
 const string_decl_base_sptr_map&
 scope_diff::removed_types() const
@@ -8308,47 +8446,40 @@ scope_diff::has_local_changes() const
   return false;
 }
 
-/// Functor to compare two instance of @ref changed_type_or_decl.
-struct changed_type_or_decl_comp
+/// A comparison functor for instances of @ref diff.
+struct diff_comp
 {
-  /// Return true if the first parm is less than the second one.
-  ///
-  /// @param f the first changed type or decl to consider.
-  ///
-  /// @param s the second changed type of decl to consider.
-  ///
-  /// @return true if @p f is less than @p s.
   bool
-  operator()(const changed_type_or_decl& f,
-	     const changed_type_or_decl& s)
+  operator()(const diff& l, diff& r) const
   {
-    decl_base_sptr first_decl = f.first;
-    decl_base_sptr second_decl = s.first;
-
-    return (first_decl->get_qualified_name()
-	    < second_decl->get_qualified_name());
+    return (l.first_subject()->get_qualified_name()
+	    < r.first_subject()->get_qualified_name());
   }
-}; // end struct changed_type_or_decl_comp
 
-/// Sort an instance of @ref string_changed_type_or_decl_map map.
-///
-/// @param map the input map to sort.
-///
-/// @param sorted the resulting sorted vector of @ref
-/// changed_type_or_decl_comp.  This vector is populated with the
-/// sorted content.
+  bool
+  operator()(const diff* l, diff* r) const
+  {return operator()(*l, *r);}
+
+  bool
+  operator()(const diff_sptr l, diff_sptr r) const
+  {return operator()(l.get(), r.get());}
+}; // end struct diff_comp;
+
+/// Sort a map ofg string -> @ref diff_sptr into a vector of @ref
+/// diff_sptr.  The diff_sptr are sorted lexicographically wrt
+/// qualified names of their first subjects.
 static void
-sort_changed_type_or_decl(const string_changed_type_or_decl_map& map,
-			  vector<changed_type_or_decl>& sorted)
+sort_string_diff_sptr_map(const string_diff_sptr_map& map,
+			  diff_sptrs_type& sorted)
 {
   sorted.reserve(map.size());
-  for (string_changed_type_or_decl_map::const_iterator i = map.begin();
+  for (string_diff_sptr_map::const_iterator i = map.begin();
        i != map.end();
        ++i)
     sorted.push_back(i->second);
 
-  changed_type_or_decl_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
+  diff_comp comp;
+  sort(sorted.begin(), sorted.end(), comp);
 }
 
 /// Report the changes of one scope against another.
@@ -8371,20 +8502,17 @@ scope_diff::report(ostream& out, const string& indent) const
   else
     out << indent << num_changed_types << " changed types:\n";
 
-  vector<changed_type_or_decl> sorted_changed_types;
-  sort_changed_type_or_decl(changed_types(), sorted_changed_types);
-  for (vector<changed_type_or_decl>::const_iterator i =
-	 sorted_changed_types.begin();
-       i != sorted_changed_types.end();
-       ++i)
+  for (diff_sptrs_type::const_iterator d = changed_types().begin();
+       d != changed_types().end();
+       ++d)
     {
-      out << indent << "  '"
-	  << i->first->get_pretty_representation()
-	  << "' changed:\n";
+      if (!*d)
+	continue;
 
-      diff_sptr diff = compute_diff_for_types(i->first, i->second, context());
-      if (diff)
-	diff->report(out, indent + "    ");
+      out << indent << "  '"
+	  << (*d)->first_subject()->get_pretty_representation()
+	  << "' changed:\n";
+      (*d)->report(out, indent + "    ");
     }
 
   // Report changed decls
@@ -8396,21 +8524,20 @@ scope_diff::report(ostream& out, const string& indent) const
   else
     out << indent << num_changed_decls << " changed declarations:\n";
 
-  vector<changed_type_or_decl> sorted_changed_decls;
-  sort_changed_type_or_decl(changed_decls(), sorted_changed_decls);
-  for (vector<changed_type_or_decl>::const_iterator i=
-	 sorted_changed_decls.begin();
-       i != sorted_changed_decls.end ();
-       ++i)
+  for (diff_sptrs_type::const_iterator d= changed_decls().begin();
+       d != changed_decls().end ();
+       ++d)
     {
+      if (!*d)
+	continue;
+
       out << indent << "  '"
-	  << i->first->get_pretty_representation()
+	  << (*d)->first_subject()->get_pretty_representation()
 	  << "' was changed to '"
-	  << i->second->get_pretty_representation()
+	  << (*d)->second_subject()->get_pretty_representation()
 	  << "':\n";
-      diff_sptr diff = compute_diff_for_decls(i->first, i->second, context());
-      if (diff)
-	diff->report(out, indent + "    ");
+
+      (*d)->report(out, indent + "    ");
     }
 
   // Report removed types/decls
@@ -9976,7 +10103,7 @@ struct corpus_diff::priv
   string_var_ptr_map			deleted_vars_;
   string_var_ptr_map			added_vars_;
   string_var_diff_sptr_map		changed_vars_map_;
-  var_diff_sptrs_type			changed_vars_;
+  var_diff_sptrs_type			sorted_changed_vars_;
   string_elf_symbol_map		added_unrefed_fn_syms_;
   string_elf_symbol_map		deleted_unrefed_fn_syms_;
   string_elf_symbol_map		added_unrefed_var_syms_;
@@ -10186,7 +10313,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	      added_vars_[n] = added_var;
 	  }
       }
-    sort_string_var_diff_sptr_map(changed_vars_map_, changed_vars_);
+    sort_string_var_diff_sptr_map(changed_vars_map_,
+				  sorted_changed_vars_);
 
     // Now walk the allegedly deleted variables; check if their
     // underlying symbols are deleted as well; otherwise consider
@@ -10352,8 +10480,8 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 
   // Walk the changed variable diff nodes to apply the categorization
   // filters.
-  for (var_diff_sptrs_type::const_iterator i = changed_vars_.begin();
-       i != changed_vars_.end();
+  for (var_diff_sptrs_type::const_iterator i = sorted_changed_vars_.begin();
+       i != sorted_changed_vars_.end();
        ++i)
     {
       diff_sptr diff = *i;
@@ -10373,8 +10501,8 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 
   // Walk the changed variables diff nodes to count the number of
   // filtered-out variables.
-  for (var_diff_sptrs_type ::const_iterator i = changed_vars_.begin();
-       i != changed_vars_.end();
+  for (var_diff_sptrs_type ::const_iterator i = sorted_changed_vars_.begin();
+       i != sorted_changed_vars_.end();
        ++i)
     {
       if ((*i)->is_filtered_out())
@@ -10502,8 +10630,8 @@ corpus_diff::priv::categorize_redundant_changed_sub_nodes()
       categorize_redundancy(diff);
     }
 
-  for (var_diff_sptrs_type::const_iterator i = changed_vars_.begin();
-       i!= changed_vars_.end();
+  for (var_diff_sptrs_type::const_iterator i = sorted_changed_vars_.begin();
+       i!= sorted_changed_vars_.end();
        ++i)
     {
       diff_sptr diff = *i;
@@ -10525,8 +10653,8 @@ corpus_diff::priv::clear_redundancy_categorization()
       abigail::comparison::clear_redundancy_categorization(diff);
     }
 
-  for (var_diff_sptrs_type::const_iterator i = changed_vars_.begin();
-       i!= changed_vars_.end();
+  for (var_diff_sptrs_type::const_iterator i = sorted_changed_vars_.begin();
+       i!= sorted_changed_vars_.end();
        ++i)
     {
       diff = *i;
@@ -10559,12 +10687,12 @@ corpus_diff::priv::maybe_dump_diff_tree()
 	}
     }
 
-  if (!changed_vars_.empty())
+  if (!sorted_changed_vars_.empty())
     {
       *ctxt_->error_output_stream() << "\nchanged variables diff tree: \n\n";
       for (var_diff_sptrs_type::const_iterator i =
-	     changed_vars_.begin();
-	   i != changed_vars_.end();
+	     sorted_changed_vars_.begin();
+	   i != sorted_changed_vars_.end();
 	   ++i)
 	{
 	  diff_sptr d = *i;
@@ -10738,7 +10866,7 @@ corpus_diff::changed_variables()
 /// @return a sorted vector of changed variables.
 const var_diff_sptrs_type&
 corpus_diff::changed_variables_sorted()
-{return priv_->changed_vars_;}
+{return priv_->sorted_changed_vars_;}
 
 /// Getter for function symbols not referenced by any debug info and
 /// that got deleted.
@@ -11320,11 +11448,9 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    << " Changed variables:\n\n";
       string n1, n2;
 
-      vector<var_diff_sptr> sorted_changed_vars;
-      sort_string_var_diff_sptr_map(priv_->changed_vars_map_, sorted_changed_vars);
-      for (vector<var_diff_sptr>::const_iterator i =
-	     sorted_changed_vars.begin();
-	   i != sorted_changed_vars.end();
+      for (var_diff_sptrs_type::const_iterator i =
+	     priv_->sorted_changed_vars_.begin();
+	   i != priv_->sorted_changed_vars_.end();
 	   ++i)
 	{
 	  diff_sptr diff = *i;
