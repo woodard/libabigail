@@ -947,13 +947,19 @@ public:
   error_output_stream(ostream*);
 
   ostream*
-  error_output_stream();
+  error_output_stream() const;
 
   bool
   dump_diff_tree() const;
 
   void
   dump_diff_tree(bool f);
+
+  void
+  do_dump_diff_tree(const diff_sptr) const;
+
+  void
+  do_dump_diff_tree(const corpus_diff_sptr) const;
 
   friend class_diff_sptr
   compute_diff(const class_decl_sptr	first,

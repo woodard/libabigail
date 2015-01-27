@@ -2995,7 +2995,7 @@ diff_context::error_output_stream(ostream* o)
 ///
 /// @return a pointer to the error output stream.
 ostream*
-diff_context::error_output_stream()
+diff_context::error_output_stream() const
 {return priv_->error_output_stream_;}
 
 /// Test if the comparison engine should dump the diff tree for the
@@ -3016,6 +3016,29 @@ void
 diff_context::dump_diff_tree(bool f)
 {priv_->dump_diff_tree_ = f;}
 
+/// Emit a textual representation of a diff tree to the error output
+/// stream of the current context, for debugging purposes.
+///
+/// @param d the diff tree to serialize to the error output associated
+/// to the current instance of @ref diff_context.
+void
+diff_context::do_dump_diff_tree(const diff_sptr d) const
+{
+  if (error_output_stream())
+    print_diff_tree(d, *error_output_stream());
+}
+
+/// Emit a textual representation of a @ref corpus_diff tree to the error
+/// output stream of the current context, for debugging purposes.
+///
+/// @param d the @ref corpus_diff tree to serialize to the error
+/// output associated to the current instance of @ref diff_context.
+void
+diff_context::do_dump_diff_tree(const corpus_diff_sptr d) const
+{
+  if (error_output_stream())
+    print_diff_tree(d, *error_output_stream());
+}
 // </diff_context stuff>
 
 // <diff stuff>
