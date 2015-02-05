@@ -3514,7 +3514,7 @@ diff::is_suppressed() const
 bool
 diff::to_be_reported() const
 {
-  if (length() && !is_filtered_out())
+  if (has_changes() && !is_filtered_out())
     return true;
   return false;
 }
@@ -3741,16 +3741,16 @@ distinct_diff::entities_are_of_distinct_kinds(decl_base_sptr first,
   return typeid(*first.get()) != typeid(*second.get());
 }
 
-/// @return 1 if the two subjects of the diff are different, 0
+/// @return true if the two subjects of the diff are different, false
 /// otherwise.
-unsigned
-distinct_diff::length() const
+bool
+distinct_diff::has_changes() const
 {
   if (first() == second()
       || (first() && second()
 	  && *first() == *second()))
-    return 0;
-  return 1;
+    return false;
+  return true;
 }
 
 /// @return true iff the current diff node carries local changes.
@@ -3758,7 +3758,7 @@ bool
 distinct_diff::has_local_changes() const
 {
   // The changes on a distinct_diff are all local.
-  if (length())
+  if (has_changes())
     return true;
   return false;
 }
@@ -3799,7 +3799,7 @@ distinct_diff::report(ostream& out, const string& indent) const
 
   if (diff_sptr diff = compatible_child_diff())
     {
-      if (diff->length())
+      if (diff->has_changes())
 	assert(diff->to_be_reported());
       diff->report(out, indent + "  ");
     }
@@ -4745,11 +4745,11 @@ var_diff::type_diff() const
   return priv_->type_diff_;
 }
 
-/// Compute and return the length of the current diff.
+/// Return true iff the diff node has a change.
 ///
-/// @return the length of the current diff.
-unsigned
-var_diff::length() const
+/// @return true iff the diff node has a change.
+bool
+var_diff::has_changes() const
 {return *first_var() != *second_var();}
 
 /// @return true iff the current diff node carries local changes.
@@ -4946,15 +4946,15 @@ pointer_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// Getter for the length of this diff.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return the length of this diff.
-unsigned
-pointer_diff::length() const
+/// @return true iff the current diff node carries a change.
+bool
+pointer_diff::has_changes() const
 {
   return underlying_type_diff()
-    ? underlying_type_diff()->length()
-    : 0;
+    ? underlying_type_diff()->has_changes()
+    : false;
 }
 
 /// @return true iff the current diff node carries local changes.
@@ -5129,32 +5129,31 @@ array_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// Getter of the length of the diff.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return the length of the diff.
-unsigned
-array_diff::length() const
+/// @return true iff the current diff node carries a change.
+bool
+array_diff::has_changes() const
 {
-  unsigned l = 0;
-
-  l = element_type_diff() ?
-  element_type_diff()->length() : 0;
+  bool l = false;
 
   //  the array element types match check for differing dimensions
   //  etc...
-  if (!l)
-    {
-      array_type_def_sptr
-        f = dynamic_pointer_cast<array_type_def>(first_subject()),
-        s = dynamic_pointer_cast<array_type_def>(second_subject());
+  array_type_def_sptr
+    f = dynamic_pointer_cast<array_type_def>(first_subject()),
+    s = dynamic_pointer_cast<array_type_def>(second_subject());
 
-      if (f->get_name() != s->get_name())
-	++l;
-      if (f->get_size_in_bits() != s->get_size_in_bits())
-	++l;
-      if (f->get_alignment_in_bits() != s->get_alignment_in_bits())
-	++l;
-    }
+  if (f->get_name() != s->get_name())
+    l |= true;
+  if (f->get_size_in_bits() != s->get_size_in_bits())
+    l |= true;
+  if (f->get_alignment_in_bits() != s->get_alignment_in_bits())
+    l |= true;
+
+  l |=  element_type_diff()
+    ? element_type_diff()->has_changes()
+    : false;
+
   return l;
 }
 
@@ -5381,15 +5380,15 @@ reference_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// Getter of the length of the diff.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return the length of the diff.
-unsigned
-reference_diff::length() const
+/// @return true iff the current diff node carries a change.
+bool
+reference_diff::has_changes() const
 {
   return underlying_type_diff()
-    ? underlying_type_diff()->length()
-    : 0;
+    ? underlying_type_diff()->has_changes()
+    : false;
 }
 
 /// @return true iff the current diff node carries local changes.
@@ -5558,15 +5557,13 @@ qualified_type_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// Return the length of the diff, or zero if the two qualified types
-/// are equal.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return the length of the diff, or zero if the two qualified types
-/// are equal.
-unsigned
-qualified_type_diff::length() const
+/// @return true iff the current diff node carries a change.
+bool
+qualified_type_diff::has_changes() const
 {
-  unsigned l = 0;
+  bool l = false;
   char fcv = first_qualified_type()->get_cv_quals(),
     scv = second_qualified_type()->get_cv_quals();
 
@@ -5574,17 +5571,17 @@ qualified_type_diff::length() const
     {
       if ((fcv & qualified_type_def::CV_CONST)
 	  != (scv & qualified_type_def::CV_CONST))
-	++l;
+	l |= true;
       if ((fcv & qualified_type_def::CV_VOLATILE)
 	  != (scv & qualified_type_def::CV_RESTRICT))
-	++l;
+	l |= true;
       if ((fcv & qualified_type_def::CV_RESTRICT)
 	  != (scv & qualified_type_def::CV_RESTRICT))
-	++l;
+	l |= true;
     }
 
   return (underlying_type_diff()
-	  ? underlying_type_diff()->length() + l
+	  ? underlying_type_diff()->has_changes() || l
 	  : l);
 }
 
@@ -5851,14 +5848,16 @@ enum_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// @return the length of the diff.
-unsigned
-enum_diff::length() const
+/// Return true iff the current diff node carries a change.
+///
+/// @return true iff the current diff node carries a change.
+bool
+enum_diff::has_changes() const
 {
-  unsigned a, b;
-  a = underlying_type_diff() ? underlying_type_diff()->length() : 0;
+  bool a, b;
+  a = underlying_type_diff() ? underlying_type_diff()->has_changes() : false;
   b = priv_->enumerators_changes_.length();
-  return a + b;
+  return a || b;
 }
 
 /// @return true iff the current diff node carries local changes.
@@ -6918,11 +6917,11 @@ class_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// Getter for the length of the diff.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return the length of the diff.
-unsigned
-class_diff::length() const
+/// @return true iff the current diff node carries a change.
+bool
+class_diff::has_changes() const
 {return (*first_class_decl() != *second_class_decl());}
 
 /// @return true iff the current diff node carries local changes.
@@ -7919,11 +7918,11 @@ base_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// Getter for the length of the diff.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return the length of the diff.
-unsigned
-base_diff::length() const
+/// Return true iff the current diff node carries a change.
+bool
+base_diff::has_changes() const
 {return first_base() != second_base();}
 
 /// @return true iff the current diff node carries local changes.
@@ -8451,9 +8450,11 @@ scope_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// @return the length of the diff.
-unsigned
-scope_diff::length() const
+/// Return true iff the current diff node carries a change.
+///
+/// Return true iff the current diff node carries a change.
+bool
+scope_diff::has_changes() const
 {
   // TODO: add the number of really removed/added stuff.
   return changed_types().size() + changed_decls().size();
@@ -8765,12 +8766,11 @@ fn_parm_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// Return 0 iff the current diff node carries *NO* change.
-/// Otherwise, return a non-zero positive number.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return non-zero iff the current diff node carries a change.
-unsigned
-fn_parm_diff::length() const
+/// @return true iff the current diff node carries a change.
+bool
+fn_parm_diff::has_changes() const
 {return *first_parameter() != *second_parameter();}
 
 /// Check if the the current diff node carries a local change.
@@ -9131,9 +9131,11 @@ function_decl_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// @return the length of the changes of the function.
-unsigned
-function_decl_diff::length() const
+/// Return true iff the current diff node carries a change.
+///
+/// @return true iff the current diff node carries a change.
+bool
+function_decl_diff::has_changes() const
 {return *first_function_decl() != *second_function_decl();}
 
 /// @return true iff the current diff node carries local changes.
@@ -9458,11 +9460,11 @@ type_decl_diff::get_pretty_representation() const
     }
   return diff::priv_->pretty_representation_;
 }
-/// Getter for the length of the diff.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return 0 if the two type_decl are equal, 1 otherwise.
-unsigned
-type_decl_diff::length() const
+/// @return true iff the current diff node carries a change.
+bool
+type_decl_diff::has_changes() const
 {
   type_base_sptr f = is_type(first_type_decl()),
     s = is_type(second_type_decl());
@@ -9470,7 +9472,7 @@ type_decl_diff::length() const
 
   return (diff_length_of_decl_bases(first_type_decl(),
 				    second_type_decl())
-	  + diff_length_of_type_bases(f, s));
+	  || diff_length_of_type_bases(f, s));
 }
 
 /// @return true iff the current diff node carries local changes.
@@ -9655,12 +9657,11 @@ typedef_diff::get_pretty_representation() const
   return diff::priv_->pretty_representation_;
 }
 
-/// Getter of the length of the diff between the two typedefs.
+/// Return true iff the current diff node carries a change.
 ///
-/// @return 0 if the two typedefs are equal, or an integer
-/// representing the length of the difference.
-unsigned
-typedef_diff::length() const
+/// @return true iff the current diff node carries a change.
+bool
+typedef_diff::has_changes() const
 {
   decl_base_sptr second = second_typedef_decl();
   return !(*first_typedef_decl() == *second);
@@ -9787,10 +9788,12 @@ const translation_unit_sptr
 translation_unit_diff::second_translation_unit() const
 {return priv_->second_;}
 
-/// @return the length of this diff.
-unsigned
-translation_unit_diff::length() const
-{return scope_diff::length();}
+/// Return true iff the current diff node carries a change.
+///
+/// @return true iff the current diff node carries a change.
+bool
+translation_unit_diff::has_changes() const
+{return scope_diff::has_changes();}
 
 /// @return true iff the current diff node carries local changes.
 bool
@@ -10951,22 +10954,24 @@ corpus_diff::get_pretty_representation() const
     }
   return priv_->pretty_representation_;
 }
-/// @return the length of the changes as recorded by the diff.
-unsigned
-corpus_diff::length() const
+/// Return true iff the current diff node carries a change.
+///
+/// @return true iff the current diff node carries a change.
+bool
+corpus_diff::has_changes() const
 {
   return (soname_changed()
-	  + architecture_changed()
-	  + priv_->deleted_fns_.size()
-	  + priv_->added_fns_.size()
-	  + priv_->changed_fns_map_.size()
-	  + priv_->deleted_vars_.size()
-	  + priv_->added_vars_.size()
-	  + priv_->changed_vars_map_.size()
-	  + priv_->added_unrefed_fn_syms_.size()
-	  + priv_->deleted_unrefed_fn_syms_.size()
-	  + priv_->added_unrefed_var_syms_.size()
-	  + priv_->deleted_unrefed_var_syms_.size());
+	  || architecture_changed()
+	  || priv_->deleted_fns_.size()
+	  || priv_->added_fns_.size()
+	  || priv_->changed_fns_map_.size()
+	  || priv_->deleted_vars_.size()
+	  || priv_->added_vars_.size()
+	  || priv_->changed_vars_map_.size()
+	  || priv_->added_unrefed_fn_syms_.size()
+	  || priv_->deleted_unrefed_fn_syms_.size()
+	  || priv_->added_unrefed_var_syms_.size()
+	  || priv_->deleted_unrefed_var_syms_.size());
 }
 
 /// "Less than" functor to compare instances of @ref function_decl.
@@ -12065,7 +12070,7 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	     ++i)
 	  {
 	    diff_sptr child = *i;
-	    if (child->length())
+	    if (child->has_changes())
 	      {
 		has_non_empty_child = true;
 		if (child->get_category() & SUPPRESSED_CATEGORY)
@@ -12322,7 +12327,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	// traversed elsewhere is considered redundant.
 	if ((d->context()->diff_has_been_visited(d)
 	     || d->get_canonical_diff()->is_traversing())
-	    && d->length())
+	    && d->has_changes())
 	  {
 	    // But if two diff nodes are redundant sibbling, do not
 	    // mark them as being redundant.  This is to avoid marking
@@ -12410,7 +12415,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		 i != d->children_nodes().end();
 		 ++i)
 	      {
-		if ((*i)->length())
+		if ((*i)->has_changes())
 		  {
 		    has_non_empty_child = true;
 		    if (((*i)->get_category() & REDUNDANT_CATEGORY) == 0)

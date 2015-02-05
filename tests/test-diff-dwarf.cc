@@ -281,7 +281,7 @@ main()
 	  continue;
 	}
 
-      if (d->length())
+      if (d->has_changes())
 	d->report(of);
       of.close();
 

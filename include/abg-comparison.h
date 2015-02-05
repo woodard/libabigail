@@ -1078,8 +1078,8 @@ public:
   /// @ref diff doesn't carry any change.
   ///
   /// This is to be implemented by all descendants of this type.
-  virtual unsigned
-  length() const = 0;
+  virtual bool
+  has_changes() const = 0;
 
   /// Pure interface to know if the current instance of @diff carries
   /// a local change.  A local change is a change that is on the @ref
@@ -1198,8 +1198,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1254,8 +1254,8 @@ public:
   virtual void
   chain_into_hierarchy();
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1311,8 +1311,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1371,8 +1371,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1431,8 +1431,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1492,8 +1492,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1565,8 +1565,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1685,8 +1685,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1739,8 +1739,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1848,8 +1848,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1905,8 +1905,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -1975,8 +1975,8 @@ compute_diff(const function_decl_sptr	first,
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -2026,8 +2026,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -2084,8 +2084,8 @@ public:
   virtual const string&
   get_pretty_representation() const;
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -2133,8 +2133,8 @@ public:
 	       const translation_unit_sptr	second,
 	       diff_context_sptr		ctxt);
 
-  virtual unsigned
-  length() const;
+  virtual bool
+  has_changes() const;
 
   virtual bool
   has_local_changes() const;
@@ -2233,8 +2233,8 @@ public:
   const string&
   get_pretty_representation() const;
 
-  unsigned
-  length() const;
+  bool
+  has_changes() const;
 
   const diff_stats&
   apply_filters_and_suppressions_before_reporting();
