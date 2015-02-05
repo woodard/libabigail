@@ -4757,7 +4757,7 @@ bool
 var_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_var(), *second_var(), k))
+  if (!equals(*first_var(), *second_var(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -4962,7 +4962,7 @@ bool
 pointer_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_pointer(), *second_pointer(), k))
+  if (!equals(*first_pointer(), *second_pointer(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -5162,7 +5162,7 @@ bool
 array_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_array(), *second_array(), k))
+  if (!equals(*first_array(), *second_array(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -5396,7 +5396,7 @@ bool
 reference_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_reference(), *second_reference(), k))
+  if (!equals(*first_reference(), *second_reference(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -5590,7 +5590,7 @@ bool
 qualified_type_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_qualified_type(), *second_qualified_type(), k))
+  if (!equals(*first_qualified_type(), *second_qualified_type(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -5865,7 +5865,7 @@ bool
 enum_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_enum(), *second_enum(), k))
+  if (!equals(*first_enum(), *second_enum(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -6929,7 +6929,7 @@ bool
 class_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_class_decl(), *second_class_decl(), k))
+  if (!equals(*first_class_decl(), *second_class_decl(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -7930,7 +7930,7 @@ bool
 base_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_base(), *second_base(), k))
+  if (!equals(*first_base(), *second_base(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -8465,7 +8465,7 @@ bool
 scope_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_scope(), *second_scope(), k))
+  if (!equals(*first_scope(), *second_scope(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -8780,7 +8780,7 @@ bool
 fn_parm_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_parameter(), *second_parameter(), k))
+  if (!equals(*first_parameter(), *second_parameter(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -9143,7 +9143,7 @@ bool
 function_decl_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_function_decl(), *second_function_decl(), k))
+  if (!equals(*first_function_decl(), *second_function_decl(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -9480,7 +9480,7 @@ bool
 type_decl_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_type_decl(), *second_type_decl(), k))
+  if (!equals(*first_type_decl(), *second_type_decl(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
@@ -9672,7 +9672,7 @@ bool
 typedef_diff::has_local_changes() const
 {
   ir::change_kind k = ir::NO_CHANGE_KIND;
-  if (!equals(*first_typedef_decl(), *second_typedef_decl(), k))
+  if (!equals(*first_typedef_decl(), *second_typedef_decl(), &k))
     return k & LOCAL_CHANGE_KIND;
   return false;
 }

@@ -1421,13 +1421,18 @@ operator&=(change_kind& l, change_kind r)
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff it's non-null and if the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const decl_base& l, const decl_base& r, change_kind& k)
+equals(const decl_base& l, const decl_base& r, change_kind* k)
 {
   bool result = true;
   if (!l.get_linkage_name().empty()
@@ -1435,15 +1440,21 @@ equals(const decl_base& l, const decl_base& r, change_kind& k)
     {
       if (l.get_linkage_name() != r.get_linkage_name())
 	{
-	  k |= LOCAL_CHANGE_KIND;
-	  result = false;;
+	  result = false;
+	  if (k)
+	    *k |= LOCAL_CHANGE_KIND;
+	  else
+	    return false;
 	}
     }
 
   if (l.get_name() != r.get_name())
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   if (is_member_decl(l) && is_member_decl(r))
@@ -1451,8 +1462,11 @@ equals(const decl_base& l, const decl_base& r, change_kind& k)
       context_rel_sptr r1 = l.get_context_rel(), r2 = r.get_context_rel();
       if (*r1 != *r2)
 	{
-	  k |= LOCAL_CHANGE_KIND;
 	  result = false;
+	  if (k)
+	    *k |= LOCAL_CHANGE_KIND;
+	  else
+	    return false;
 	}
     }
 
@@ -1468,10 +1482,7 @@ equals(const decl_base& l, const decl_base& r, change_kind& k)
 /// that extend the \p decl_base class.
 bool
 decl_base::operator==(const decl_base& other) const
-{
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, other, k);
-}
+{return equals(*this, other, 0);}
 
 decl_base::~decl_base()
 {}
@@ -2432,20 +2443,28 @@ scope_decl::get_hash() const
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
 ///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
+/// 
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const scope_decl& l, const scope_decl& r, change_kind& k)
+equals(const scope_decl& l, const scope_decl& r, change_kind* k)
 {
   bool result = true;
 
   if (!l.decl_base::operator==(r))
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   scope_decl::declarations::const_iterator i, j;
@@ -2455,16 +2474,24 @@ equals(const scope_decl& l, const scope_decl& r, change_kind& k)
     {
       if (**i != **j)
 	{
-	  k |= SUBTYPE_CHANGE_KIND;
 	  result = false;
-	  break;
+	  if (k)
+	    {
+	      *k |= SUBTYPE_CHANGE_KIND;
+	      break;
+	    }
+	  else
+	    return false;
 	}
     }
 
   if (i != l.get_member_decls().end() || j != r.get_member_decls().end())
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   return result;
@@ -2482,9 +2509,7 @@ scope_decl::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 /// Find a member of the current scope and return an iterator on it.
@@ -3617,18 +3642,24 @@ type_base::type_base(size_t s, size_t a)
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p is non-null and if the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const type_base& l, const type_base& r, change_kind& k)
+equals(const type_base& l, const type_base& r, change_kind* k)
 {
   bool result = (l.get_size_in_bits() == r.get_size_in_bits()
 		 && l.get_alignment_in_bits() == r.get_alignment_in_bits());
   if (!result)
-    k |= LOCAL_CHANGE_KIND;
+    if (k)
+      *k |= LOCAL_CHANGE_KIND;
   return result;
 }
 
@@ -3637,10 +3668,7 @@ equals(const type_base& l, const type_base& r, change_kind& k)
 /// Note that this doesn't test if the scopes of both types are equal.
 bool
 type_base::operator==(const type_base& other) const
-{
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, other, k);
-}
+{return equals(*this, other, 0);}
 
 void
 type_base::set_size_in_bits(size_t s)
@@ -3697,17 +3725,25 @@ type_decl::get_void_type_decl()
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const type_decl& l, const type_decl& r, change_kind& k)
+equals(const type_decl& l, const type_decl& r, change_kind* k)
 {
   bool result = equals(static_cast<const decl_base&>(l),
 		       static_cast<const decl_base&>(r),
 		       k);
+  if (!k && !result)
+    return false;
+
   result &= equals(static_cast<const type_base&>(l),
 		   static_cast<const type_base&>(r),
 		   k);
@@ -3741,8 +3777,7 @@ type_decl::operator==(const decl_base& o) const
   const type_decl* other = dynamic_cast<const type_decl*>(&o);
   if (!other)
     return false;
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 /// Return true if both types equals.
@@ -3798,13 +3833,18 @@ scope_type_decl::scope_type_decl(const std::string&		name,
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const scope_type_decl& l, const scope_type_decl& r, change_kind& k)
+equals(const scope_type_decl& l, const scope_type_decl& r, change_kind* k)
 {
   bool result = true;
 
@@ -3812,9 +3852,12 @@ equals(const scope_type_decl& l, const scope_type_decl& r, change_kind& k)
 		  static_cast<const scope_decl&>(r),
 		  k);
 
-  result &= equals (static_cast<const type_base&>(l),
-		    static_cast<const type_base&>(r),
-		    k);
+  if (!k && !result)
+    return false;
+
+  result &= equals(static_cast<const type_base&>(l),
+		   static_cast<const type_base&>(r),
+		   k);
 
   return result;
 }
@@ -3831,8 +3874,7 @@ scope_type_decl::operator==(const decl_base& o) const
   const scope_type_decl* other = dynamic_cast<const scope_type_decl*>(&o);
   if (!other)
     return false;
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 /// Equality operator between two scope_type_decl.
@@ -4011,25 +4053,40 @@ qualified_type_def::get_size_in_bits() const
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const qualified_type_def& l, const qualified_type_def& r, change_kind& k)
+equals(const qualified_type_def& l, const qualified_type_def& r, change_kind* k)
 {
   bool result = true;
   if (l.get_cv_quals() != r.get_cv_quals())
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   if (l.get_underlying_type() != r.get_underlying_type())
     {
-      k |= SUBTYPE_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	// okay strictly speaking this is not necessary, but I am
+	// putting it here to maintenance; that is, so that adding
+	// subsequent clauses needed to compare two qualified types
+	// later still works.
+	return false;
     }
 
   return result;
@@ -4050,8 +4107,7 @@ qualified_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 /// Equality operator for qualified types.
@@ -4217,17 +4273,23 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const pointer_type_def& l, const pointer_type_def& r, change_kind& k)
+equals(const pointer_type_def& l, const pointer_type_def& r, change_kind* k)
 {
   bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
   if (!result)
-    k |= SUBTYPE_CHANGE_KIND;
+    if (k)
+      *k |= SUBTYPE_CHANGE_KIND;
 
   return result;
 }
@@ -4243,8 +4305,7 @@ pointer_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 /// Return true iff both instances of pointer_type_def are equal.
@@ -4337,17 +4398,23 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const reference_type_def& l, const reference_type_def& r, change_kind& k)
+equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
 {
   bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
   if (!result)
-    k |= SUBTYPE_CHANGE_KIND;
+    if (k)
+      *k |= SUBTYPE_CHANGE_KIND;
   return result;
 }
 
@@ -4358,8 +4425,7 @@ reference_type_def::operator==(const decl_base& o) const
     dynamic_cast<const reference_type_def*>(&o);
   if (!other)
     return false;
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 bool
@@ -4549,13 +4615,18 @@ array_type_def::get_pretty_representation() const
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const array_type_def& l, const array_type_def& r, change_kind& k)
+equals(const array_type_def& l, const array_type_def& r, change_kind* k)
 {
   std::vector<array_type_def::subrange_sptr > this_subs = l.get_subranges();
   std::vector<array_type_def::subrange_sptr > other_subs = r.get_subranges();
@@ -4563,8 +4634,11 @@ equals(const array_type_def& l, const array_type_def& r, change_kind& k)
   bool result = true;
   if (this_subs.size() != other_subs.size())
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   std::vector<array_type_def::subrange_sptr >::const_iterator i,j;
@@ -4573,15 +4647,23 @@ equals(const array_type_def& l, const array_type_def& r, change_kind& k)
        ++i, ++j)
     if (**i != **j)
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
-	break;
+	if (k)
+	  {
+	    *k |= LOCAL_CHANGE_KIND;
+	    break;
+	  }
+	else
+	  return false;
       }
 
   if (l.get_element_type() != r.get_element_type())
     {
-      k |= SUBTYPE_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return false;
     }
 
   return result;
@@ -4594,8 +4676,7 @@ array_type_def::operator==(const decl_base& o) const
     dynamic_cast<const array_type_def*>(&o);
   if (!other)
     return false;
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 bool
@@ -4746,19 +4827,27 @@ enum_type_decl::~enum_type_decl()
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const enum_type_decl& l, const enum_type_decl& r, change_kind& k)
+equals(const enum_type_decl& l, const enum_type_decl& r, change_kind* k)
 {
   bool result = true;
   if (*l.get_underlying_type() != *r.get_underlying_type())
     {
-      k |= SUBTYPE_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return false;
     }
 
   enum_type_decl::enumerators::const_iterator i, j;
@@ -4767,21 +4856,32 @@ equals(const enum_type_decl& l, const enum_type_decl& r, change_kind& k)
        ++i, ++j)
     if (*i != *j)
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
-	break;
+	if (k)
+	  {
+	    *k |= LOCAL_CHANGE_KIND;
+	    break;
+	  }
+	else
+	  return false;
       }
 
   if (i != l.get_enumerators().end() || j != r.get_enumerators().end())
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   return result;
@@ -4800,8 +4900,7 @@ enum_type_decl::operator==(const decl_base& o) const
   if (!op)
     return false;
 
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *op, k);
+  return equals(*this, *op, 0);
 }
 
 /// Equality operator.
@@ -4882,25 +4981,36 @@ typedef_decl::get_alignment_in_bits() const
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const typedef_decl& l, const typedef_decl& r, change_kind& k)
+equals(const typedef_decl& l, const typedef_decl& r, change_kind* k)
 {
   bool result = true;
   if (!l.decl_base::operator==(r))
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   if (*l.get_underlying_type() != *r.get_underlying_type())
     {
-      k |= SUBTYPE_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return false;
     }
 
   return result;
@@ -4915,8 +5025,7 @@ typedef_decl::operator==(const decl_base& o) const
   const typedef_decl* other = dynamic_cast<const typedef_decl*>(&o);
   if (!other)
     return false;
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 /// Equality operator
@@ -5097,13 +5206,18 @@ var_decl::set_scope(scope_decl* scope)
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const var_decl& l, const var_decl& r, change_kind& k)
+equals(const var_decl& l, const var_decl& r, change_kind* k)
 {
   bool result = true;
   // If there are underlying elf symbols for these variables,
@@ -5111,13 +5225,19 @@ equals(const var_decl& l, const var_decl& r, change_kind& k)
   elf_symbol_sptr s0 = l.get_symbol(), s1 = r.get_symbol();
   if (!!s0 != !!s1)
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
   else if (s0 && s0 != s1)
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
   bool symbols_are_equal = (s0 && s1 && result);
 
@@ -5135,22 +5255,22 @@ equals(const var_decl& l, const var_decl& r, change_kind& k)
 
       if (decl_bases_different)
 	{
-	  k |= LOCAL_CHANGE_KIND;
 	  result = false;
+	  if (k)
+	    *k |= LOCAL_CHANGE_KIND;
+	  else
+	    return false;
 	}
     }
   else
     if (!l.decl_base::operator==(r))
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  return false;
       }
-
-  if (*l.get_type() != *r.get_type())
-    {
-      k |= SUBTYPE_CHANGE_KIND;
-      result = false;
-    }
 
   dm_context_rel_sptr c0 =
     dynamic_pointer_cast<dm_context_rel>(l.get_context_rel());
@@ -5160,8 +5280,20 @@ equals(const var_decl& l, const var_decl& r, change_kind& k)
 
   if (*c0 != *c1)
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
+    }
+
+  if (*l.get_type() != *r.get_type())
+    {
+      result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return false;
     }
 
   return result;
@@ -5179,8 +5311,7 @@ var_decl::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *other, k);
+  return equals(*this, *other, 0);
 }
 
 /// Return an ID that tries to uniquely identify the variable inside a
@@ -5442,22 +5573,31 @@ function_type::is_variadic() const
 ///
 /// @param rhs the second function type to consider
 ///
-/// @param k this bitfield is set by the function to give information
-/// about the kind of changes carried by @p lhs and @p rhs.  It is set
-/// iff the function returns false.
+/// @param k a pointer to a bitfield set by the function to give
+/// information about the kind of changes carried by @p lhs and @p
+/// rhs.  It is set iff @p k is non-null and the function returns
+/// false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 ///@return true if lhs == rhs, false otherwise.
 bool
 equals(const function_type& lhs,
        const function_type& rhs,
-       change_kind& k)
+       change_kind* k)
 {
   bool result = true;
 
   if (!lhs.type_base::operator==(rhs))
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   class_decl_sptr lhs_class, rhs_class;
@@ -5481,14 +5621,21 @@ equals(const function_type& lhs,
 
   if (!!lhs_class != !!rhs_class)
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
   else if (lhs_class
-      && (lhs_class->get_qualified_name() != rhs_class->get_qualified_name()))
+	   && (lhs_class->get_qualified_name()
+	       != rhs_class->get_qualified_name()))
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   // Then compare the return type; Beware if it's t's a class type
@@ -5516,15 +5663,21 @@ equals(const function_type& lhs,
     {
       if (lhs.get_return_type() != rhs.get_return_type())
 	{
-	  k |= SUBTYPE_CHANGE_KIND;
 	  result = false;
+	  if (k)
+	    *k |= SUBTYPE_CHANGE_KIND;
+	  else
+	    return false;
 	}
     }
   else
     if (lhs_rt_name != rhs_rt_name)
       {
-	k |= SUBTYPE_CHANGE_KIND;
 	result = false;
+	if (k)
+	  *k |= SUBTYPE_CHANGE_KIND;
+	else
+	  return false;
       }
 
   class_decl_sptr lcl, rcl;
@@ -5547,16 +5700,22 @@ equals(const function_type& lhs,
 	continue;
       if (**i != **j)
 	{
-	  k |= SUBTYPE_CHANGE_KIND;
 	  result = false;
+	  if (k)
+	    *k |= SUBTYPE_CHANGE_KIND;
+	  else
+	    return false;
 	}
     }
 
   if ((i != lhs.get_parameters().end()
        || j != rhs.get_parameters().end()))
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   return result;
@@ -5595,8 +5754,7 @@ function_type::operator==(const type_base& other) const
   const function_type* o = dynamic_cast<const function_type*>(&other);
   if (!o)
     return false;
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *o, k);
+  return equals(*this, *o, 0);
 }
 
 function_type::~function_type()
@@ -6031,28 +6189,39 @@ function_decl::clone() const
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const function_decl& l, const function_decl& r, change_kind& k)
+equals(const function_decl& l, const function_decl& r, change_kind* k)
 {
   bool result = true;
 
   elf_symbol_sptr s0 = l.get_symbol(), s1 = r.get_symbol();
   if (!!s0 != !!s1)
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
   else if (s0 && s0 != s1)
     {
       if (!elf_symbols_alias(s0, s1))
 	{
-	  k |= LOCAL_CHANGE_KIND;
 	  result = false;
+	  if (k)
+	    *k |= LOCAL_CHANGE_KIND;
+	  else
+	    return false;
 	}
     }
   bool symbols_are_equal = (s0 && s1 && result);
@@ -6071,15 +6240,21 @@ equals(const function_decl& l, const function_decl& r, change_kind& k)
 
       if (decl_bases_different)
 	{
-	  k |= LOCAL_CHANGE_KIND;
 	  result = false;
+	  if (k)
+	    *k |= LOCAL_CHANGE_KIND;
+	  else
+	    return false;
 	}
     }
   else
     if (!l.decl_base::operator==(r))
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  return false;
       }
 
   // Compare function types
@@ -6087,22 +6262,31 @@ equals(const function_decl& l, const function_decl& r, change_kind& k)
   if ((t0 && t1 && *t0 != *t1)
       || !!t0 != !!t1)
     {
-      k |= SUBTYPE_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return false;
     }
 
   // Compare the remaining properties
   if (l.is_declared_inline() != r.is_declared_inline()
       || l.get_binding() != r.get_binding())
     {
-      k |= SUBTYPE_CHANGE_KIND;
       result = false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   if (is_member_function(l) != is_member_function(r))
     {
-      k |= LOCAL_CHANGE_KIND;
       result = false;
+      if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   if (is_member_function(l) && is_member_function(r))
@@ -6118,8 +6302,11 @@ equals(const function_decl& l, const function_decl& r, change_kind& k)
 	    && (get_member_function_vtable_offset(l)
 		== get_member_function_vtable_offset(r))))
 	{
-	  k |= LOCAL_CHANGE_KIND;
 	  result = false;
+	  if (k)
+	    *k |= LOCAL_CHANGE_KIND;
+	  else
+	    return false;
 	}
     }
 
@@ -6139,8 +6326,7 @@ function_decl::operator==(const decl_base& other) const
   const function_decl* o = dynamic_cast<const function_decl*>(&other);
   if (!o)
     return false;
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *o, k);
+  return equals(*this, *o, 0);
 }
 
 /// Return true iff the function takes a variable number of
@@ -6349,10 +6535,29 @@ void
 function_decl::parameter::set_artificial(bool f)
 {priv_->artificial_ = f;}
 
+/// Compares two instances of @ref function_decl::parameter.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
+///
+/// @return true if @p l equals @p r, false otherwise.
 bool
 equals(const function_decl::parameter& l,
        const function_decl::parameter& r,
-       change_kind& k)
+       change_kind* k)
 {
   bool result = true;
 
@@ -6361,13 +6566,19 @@ equals(const function_decl::parameter& l,
       || (!!l.get_type() != !!r.get_type()))
     {
       result = false;
-      k |= LOCAL_CHANGE_KIND;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
 
   if (l.get_type() != r.get_type())
     {
       result = false;
-      k |= SUBTYPE_CHANGE_KIND;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return false;
     }
 
   return result;
@@ -6375,10 +6586,7 @@ equals(const function_decl::parameter& l,
 
 bool
 function_decl::parameter::operator==(const parameter& o) const
-{
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, o, k);
-}
+{return equals(*this, o, 0);}
 
 bool
 function_decl::parameter::operator==(const decl_base& o) const
@@ -6962,23 +7170,31 @@ class_decl::base_spec::base_spec(shared_ptr<type_base> base,
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
 equals(const class_decl::base_spec& l,
        const class_decl::base_spec& r,
-       change_kind& k)
+       change_kind* k)
 {
   bool result = true;
 
   if (!l.member_base::operator==(r)
       || (*l.get_base_class() != *r.get_base_class()))
     {
-      k |= LOCAL_CHANGE_KIND;
       result =false;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      else
+	return false;
     }
   return result;
 }
@@ -6999,8 +7215,7 @@ class_decl::base_spec::operator==(const decl_base& other) const
   if (!o)
     return false;
 
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, *o, k);
+  return equals(*this, *o, 0);
 }
 
 /// Comparison operator for @ref class_decl::base_spec.
@@ -7383,13 +7598,18 @@ class_decl::get_hash() const
 ///
 /// @param r the second artifact of the comparison.
 ///
-/// @param k a bitfield that gives information about the kind of
-/// changes there are between @p l and @p r.  This one is set iff the
-/// function returns false.
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
 ///
 /// @return true if @p l equals @p r, false otherwise.
 bool
-equals(const class_decl& l, const class_decl& r, change_kind& k)
+equals(const class_decl& l, const class_decl& r, change_kind* k)
 {
 #define RETURN(value)				\
   do {						\
@@ -7419,7 +7639,8 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 	  string q2 = r.get_qualified_name();
 	  if (q1 != q2)
 	    {
-	      k |= LOCAL_CHANGE_KIND;
+	      if (k)
+		*k |= LOCAL_CHANGE_KIND;
 	      RETURN(false);
 	    }
 	  RETURN(true);
@@ -7434,7 +7655,8 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 
       bool val = *def1 == *def2;
       if (!val)
-	k |= LOCAL_CHANGE_KIND;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
       RETURN(val);
     }
 
@@ -7442,7 +7664,8 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
   // different size / alignment.
   if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
     {
-      k |= LOCAL_CHANGE_KIND;
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
       RETURN(false);
     }
 
@@ -7459,8 +7682,11 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
   {
     if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  RETURN(false);
       }
 
     for(class_decl::base_specs::const_iterator
@@ -7471,9 +7697,13 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 	++b0, ++b1)
       if (*b0 != *b1)
 	{
-	  k |= SUBTYPE_CHANGE_KIND;
 	  result = false;
-	  break;
+	  if (k)
+	    {
+	      *k |= SUBTYPE_CHANGE_KIND;
+	      break;
+	    }
+	  RETURN(false);
 	}
   }
 
@@ -7481,8 +7711,11 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
   {
     if (l.get_data_members().size() != r.get_data_members().size())
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  RETURN(false);
       }
 
     for (class_decl::data_members::const_iterator
@@ -7492,9 +7725,14 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 	 ++d0, ++d1)
       if (**d0 != **d1)
 	{
-	  k |= SUBTYPE_CHANGE_KIND;
 	  result = false;
-	  break;
+	  if (k)
+	    {
+	      *k |= SUBTYPE_CHANGE_KIND;
+	      break;
+	    }
+	  else
+	    RETURN(false);
 	}
   }
 
@@ -7504,8 +7742,11 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
   {
     if (l.get_virtual_mem_fns().size() != r.get_virtual_mem_fns().size())
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  RETURN(false);
       }
 
     for (class_decl::member_functions::const_iterator
@@ -7516,9 +7757,14 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 	 ++f0, ++f1)
       if (**f0 != **f1)
 	{
-	  k |= SUBTYPE_CHANGE_KIND;
 	  result = false;
-	  break;
+	  if (k)
+	    {
+	      *k |= SUBTYPE_CHANGE_KIND;
+	      break;
+	    }
+	  else
+	    RETURN(false);
 	}
   }
 
@@ -7527,8 +7773,11 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
     if (l.get_member_function_templates().size()
 	!= r.get_member_function_templates().size())
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  RETURN(false);
       }
 
     for (class_decl::member_function_templates::const_iterator
@@ -7539,9 +7788,14 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 	 ++fn_tmpl_it0, ++fn_tmpl_it1)
       if (**fn_tmpl_it0 != **fn_tmpl_it1)
 	{
-	  k |= LOCAL_CHANGE_KIND;
 	  result = false;
-	  break;
+	  if (k)
+	    {
+	      *k |= LOCAL_CHANGE_KIND;
+	      break;
+	    }
+	  else
+	    RETURN(false);
 	}
   }
 
@@ -7550,8 +7804,11 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
     if (l.get_member_class_templates().size()
 	!= r.get_member_class_templates().size())
       {
-	k |= LOCAL_CHANGE_KIND;
 	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  RETURN(false);
       }
 
     for (class_decl::member_class_templates::const_iterator
@@ -7562,9 +7819,14 @@ equals(const class_decl& l, const class_decl& r, change_kind& k)
 	 ++cl_tmpl_it0, ++cl_tmpl_it1)
       if (**cl_tmpl_it0 != **cl_tmpl_it1)
 	{
-	  k |= LOCAL_CHANGE_KIND;
 	  result = false;
-	  break;
+	  if (k)
+	    {
+	      *k |= LOCAL_CHANGE_KIND;
+	      break;
+	    }
+	  else
+	    RETURN(false);
 	}
   }
 
@@ -7584,8 +7846,7 @@ class_decl::operator==(const decl_base& other) const
   if (!op)
     return false;
   const class_decl& o = *op;
-  change_kind k = NO_CHANGE_KIND;
-  return equals(*this, o, k);
+  return equals(*this, o, 0);
 }
 
 /// Equality operator for class_decl.
