@@ -12127,11 +12127,14 @@ struct suppression_categorization_visitor : public diff_node_visitor
 void
 apply_suppressions(diff* diff_tree)
 {
-  suppression_categorization_visitor v;
-  bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
-  diff_tree->context()->forbid_visiting_a_node_twice(false);
-  diff_tree->traverse(v);
-  diff_tree->context()->forbid_visiting_a_node_twice(s);
+  if (diff_tree && !diff_tree->context()->suppressions().empty())
+    {
+      suppression_categorization_visitor v;
+      bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
+      diff_tree->context()->forbid_visiting_a_node_twice(false);
+      diff_tree->traverse(v);
+      diff_tree->context()->forbid_visiting_a_node_twice(s);
+    }
 }
 
 /// Walk a given diff-sub tree and appply the suppressions carried by
@@ -12153,11 +12156,14 @@ apply_suppressions(diff_sptr diff_tree)
 void
 apply_suppressions(const corpus_diff*  diff_tree)
 {
-  suppression_categorization_visitor v;
-  bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
-  diff_tree->context()->forbid_visiting_a_node_twice(false);
-  const_cast<corpus_diff*>(diff_tree)->traverse(v);
-  diff_tree->context()->forbid_visiting_a_node_twice(s);
+  if (diff_tree && !diff_tree->context()->suppressions().empty())
+    {
+      suppression_categorization_visitor v;
+      bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
+      diff_tree->context()->forbid_visiting_a_node_twice(false);
+      const_cast<corpus_diff*>(diff_tree)->traverse(v);
+      diff_tree->context()->forbid_visiting_a_node_twice(s);
+    }
 }
 
 /// Walk a diff tree and appply the suppressions carried by the
