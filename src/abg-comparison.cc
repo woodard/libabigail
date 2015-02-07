@@ -3746,6 +3746,14 @@ distinct_diff::entities_are_of_distinct_kinds(decl_base_sptr first,
 bool
 distinct_diff::has_changes() const
 {
+  if (!!first().get() != !!second().get())
+    return true;
+  else if (first().get() == second().get())
+    return false;
+  else if (first()->get_hash() && second()->get_hash()
+	   && (first()->get_hash() != second()->get_hash()))
+    return true;
+
   if (first() == second()
       || (first() && second()
 	  && *first() == *second()))
@@ -4750,7 +4758,19 @@ var_diff::type_diff() const
 /// @return true iff the diff node has a change.
 bool
 var_diff::has_changes() const
-{return *first_var() != *second_var();}
+{
+  if (!!first_var() != !!second_var())
+    return true;
+
+  if (first_var().get() == second_var().get())
+    return false;
+
+  if (first_var()->get_hash() && second_var()->get_hash()
+      && first_var()->get_hash() != second_var()->get_hash())
+    return true;
+
+  return *first_var() != *second_var();
+}
 
 /// @return true iff the current diff node carries local changes.
 bool
@@ -6922,7 +6942,17 @@ class_diff::get_pretty_representation() const
 /// @return true iff the current diff node carries a change.
 bool
 class_diff::has_changes() const
-{return (*first_class_decl() != *second_class_decl());}
+{
+  if (!!first_class_decl() != !! second_class_decl())
+    return true;
+  if (first_class_decl().get() == second_class_decl().get())
+    return false;
+  if (first_class_decl()->get_hash() && second_class_decl()->get_hash()
+      && first_class_decl()->get_hash() != second_class_decl()->get_hash())
+    return true;
+
+  return (*first_class_decl() != *second_class_decl());
+}
 
 /// @return true iff the current diff node carries local changes.
 bool
