@@ -927,11 +927,25 @@ equals(const type_base&, const type_base&, change_kind*);
 /// An abstraction helper for type declarations
 class type_base
 {
-  size_t	size_in_bits_;
-  size_t	alignment_in_bits_;
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
   // Forbid this.
   type_base();
+
+  /// A convenience typedef for a map of canonical types.  The a map
+  /// entry key is the hash value of a particular type and the value
+  /// is the list of canonical types that have the same hash value.
+  typedef std::tr1::unordered_map<size_t,
+				  std::list<type_base_sptr> > canonical_types_map_type;
+
+  static canonical_types_map_type&
+  get_canonical_types_map();
+
+  static type_base_sptr
+  get_canonical_type_for(type_base_sptr);
 
 public:
 
@@ -952,6 +966,12 @@ public:
 
   type_base(size_t s, size_t a);
 
+  friend void
+  enable_canonical_equality(type_base_sptr);
+
+  type_base_sptr
+  get_canonical_type() const;
+
   virtual bool
   operator==(const type_base&) const;
 
@@ -969,6 +989,22 @@ public:
   virtual size_t
   get_alignment_in_bits() const;
 };//end class type_base
+
+void
+enable_canonical_equality(type_base_sptr);
+
+/// Hash functor for instances of @ref type_base.
+struct type_base::hash
+{
+   size_t
+   operator()(const type_base& t) const;
+
+  size_t
+  operator()(const type_base* t) const;
+
+  size_t
+  operator()(const type_base_sptr t) const;
+}; // end struct type_base::hash
 
 /// A predicate for deep equality of instances of
 /// type_base*

@@ -3627,10 +3627,156 @@ global_scope::~global_scope()
 }
 
 // <type_base definitions>
-type_base::type_base(size_t s, size_t a)
-  : size_in_bits_(s),
-    alignment_in_bits_(a)
+
+/// Definition of the private data of @ref type_base.
+struct type_base::priv
 {
+  size_t	size_in_bits;
+  size_t	alignment_in_bits;
+  type_base_wptr canonical_type;
+
+  priv()
+    : size_in_bits(),
+      alignment_in_bits()
+  {}
+
+  priv(size_t s,
+       size_t a,
+       type_base_sptr c = type_base_sptr())
+    : size_in_bits(s),
+      alignment_in_bits(a),
+      canonical_type(c)
+  {}
+}; // end struct type_base::priv
+
+/// Getter of the map that contains the canonical types of all the
+/// types known to libabigail at a certain point in time.
+///
+/// That map is a global value that is initialized at the first
+/// invocation of this function and that is freed when the containing
+/// process is shut down.
+///
+/// The key of the map is the hash value of the type and the value a
+/// list of canonical types that have the same map as the key.
+///
+/// @return the map that contains the canonical types of all the types
+/// known the running instance of libabigail in a given process.
+type_base::canonical_types_map_type&
+type_base::get_canonical_types_map()
+{
+  static canonical_types_map_type m;
+  return m;
+}
+
+/// Compute the canonical type for a given instance of @ref type_base.
+///
+/// Consider two types T and T'.  The canonical type of T, denoted
+/// C(T) is a type such as T == T' if and only if C(T) == C(T').  Said
+/// otherwise, to compare two types, one just needs to compare their
+/// canonical types using pointer equality.  That makes type
+/// comparison faster than the structural comparison performed by the
+/// abigail::ir::equals() overloads.
+///
+/// If there is not yet any canonical type for @p t, then @p t is its
+/// own canonical type.  Otherwise, this function returns the
+/// canonical type of @p t which is the canonical type that has the
+/// same hash value as @p t and that structurally equals @p t.  Note
+/// that after invoking this function, the life time of the returned
+/// canonical time is then equals to the life time of the current
+/// process.
+///
+/// @param t a smart pointer to instance of @ref type_base we want to
+/// compute a canonical type for.
+///
+/// @return the canonical type for the current instance of @ref
+/// type_base.
+type_base_sptr
+type_base::get_canonical_type_for(type_base_sptr t)
+{
+  if (!t)
+    return t;
+
+  size_t h = 0;
+  decl_base_sptr d = get_type_declaration(t);
+  if (d)
+    h = d->get_hash();
+  else
+    {
+      type_base::hash type_base_hash;
+      h = type_base_hash(t);
+    }
+
+  canonical_types_map_type& m = get_canonical_types_map();
+  canonical_types_map_type::iterator i = m.find(h);
+
+  if (i == m.end())
+    {
+      m[h].push_back(t);
+      return t;
+    }
+
+  for (std::list<type_base_sptr>::iterator j = i->second.begin();
+       j != i->second.end();
+       ++j)
+    if (t == *j)
+      return *j;
+
+  i->second.push_back(t);
+  return t;
+}
+
+/// Enable canonical equality for a given current instance of @ref
+/// type_base.
+///
+/// In concrete terms, this function computes the canonical type for a
+/// given instance of @ref type_base.
+///
+/// It means that after invoking this function, comparing the intance
+/// instance @ref type_base and another one (on which
+/// type_base::enable_canonical_equality() would have been invoked as
+/// well) is performed by just comparing the pointer values of the
+/// canonical types of both types.  That equality comparison is
+/// supposedly faster than structural comparison of the types.
+///
+/// @param t a smart pointer to the instance of @ref type_base for
+/// which to enable canoncial equality.
+void
+enable_canonical_equality(type_base_sptr t)
+{
+  if (!t)
+    return;
+
+  if (t->get_canonical_type())
+    return;
+
+  type_base_sptr canonical = type_base::get_canonical_type_for(t);
+  assert(canonical);
+
+  t->priv_->canonical_type = canonical;
+}
+
+/// The constructor of @ref type_base.
+///
+/// @param s the size of the type, in bits.
+///
+/// @param a the alignment of the type, in bits.
+type_base::type_base(size_t s, size_t a)
+  : priv_(new priv(s, a))
+{}
+
+/// Getter of the canonical type of the current instance of @ref
+/// type_base.
+///
+/// @return a smart pointer to the canonical type of the current
+/// intance of @ref type_base, or an empty smart pointer if the
+/// current instance of @ref type_base doesn't have any canonical
+/// type.
+type_base_sptr
+type_base::get_canonical_type() const
+{
+  if (priv_->canonical_type.expired())
+    return type_base_sptr();
+  return type_base_sptr(priv_->canonical_type);
 }
 
 /// Compares two instances of @ref type_base.
@@ -3670,21 +3816,33 @@ bool
 type_base::operator==(const type_base& other) const
 {return equals(*this, other, 0);}
 
+/// Setter for the size of the type.
+///
+/// @param s the new size -- in bits.
 void
 type_base::set_size_in_bits(size_t s)
-{size_in_bits_ = s;}
+{priv_->size_in_bits = s;}
 
+/// Getter for the size of the type.
+///
+/// @return the size in bits of the type.
 size_t
 type_base::get_size_in_bits() const
-{return size_in_bits_;}
+{return priv_->size_in_bits;}
 
+/// Setter for the alignment of the type.
+///
+/// @param a the new alignment -- in bits.
 void
 type_base::set_alignment_in_bits(size_t a)
-{alignment_in_bits_ = a;}
+{priv_->alignment_in_bits = a;}
 
+/// Getter for the alignment of the type.
+///
+/// @return the alignment of the type in bits.
 size_t
 type_base::get_alignment_in_bits() const
-{return alignment_in_bits_;}
+{return priv_->alignment_in_bits;}
 
 type_base::~type_base()
 {}
@@ -3777,6 +3935,10 @@ type_decl::operator==(const decl_base& o) const
   const type_decl* other = dynamic_cast<const type_decl*>(&o);
   if (!other)
     return false;
+
+  if (get_canonical_type() && other->get_canonical_type())
+    return get_canonical_type().get() == other->get_canonical_type().get();
+
   return equals(*this, *other, 0);
 }
 
@@ -3874,6 +4036,10 @@ scope_type_decl::operator==(const decl_base& o) const
   const scope_type_decl* other = dynamic_cast<const scope_type_decl*>(&o);
   if (!other)
     return false;
+
+  if (get_canonical_type() && other->get_canonical_type())
+    return get_canonical_type().get() == other->get_canonical_type().get();
+
   return equals(*this, *other, 0);
 }
 
@@ -4107,6 +4273,10 @@ qualified_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
+  if (get_canonical_type() && other->get_canonical_type())
+    return get_canonical_type().get() == other->get_canonical_type().get();
+
+
   return equals(*this, *other, 0);
 }
 
@@ -4305,6 +4475,9 @@ pointer_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
+  if (get_canonical_type() && other->get_canonical_type())
+    return get_canonical_type().get() == other->get_canonical_type().get();
+
   return equals(*this, *other, 0);
 }
 
@@ -4315,6 +4488,9 @@ pointer_type_def::operator==(const decl_base& o) const
 bool
 pointer_type_def::operator==(const type_base& o) const
 {
+  if (get_canonical_type() && o.get_canonical_type())
+    return get_canonical_type().get() == o.get_canonical_type().get();
+
   const pointer_type_def* other = dynamic_cast<const pointer_type_def*>(&o);
   if (!other)
     return false;
@@ -4425,6 +4601,10 @@ reference_type_def::operator==(const decl_base& o) const
     dynamic_cast<const reference_type_def*>(&o);
   if (!other)
     return false;
+
+  if (get_canonical_type() && other->get_canonical_type())
+    return get_canonical_type().get() == other->get_canonical_type().get();
+
   return equals(*this, *other, 0);
 }
 
@@ -4676,6 +4856,10 @@ array_type_def::operator==(const decl_base& o) const
     dynamic_cast<const array_type_def*>(&o);
   if (!other)
     return false;
+
+  if (get_canonical_type() && other->get_canonical_type())
+    return get_canonical_type().get() == other->get_canonical_type().get();
+
   return equals(*this, *other, 0);
 }
 
@@ -4900,6 +5084,9 @@ enum_type_decl::operator==(const decl_base& o) const
   if (!op)
     return false;
 
+  if (get_canonical_type() && op->get_canonical_type())
+    return get_canonical_type().get() == op->get_canonical_type().get();
+
   return equals(*this, *op, 0);
 }
 
@@ -5025,6 +5212,10 @@ typedef_decl::operator==(const decl_base& o) const
   const typedef_decl* other = dynamic_cast<const typedef_decl*>(&o);
   if (!other)
     return false;
+
+  if (get_canonical_type() && other->get_canonical_type())
+    return get_canonical_type().get() == other->get_canonical_type().get();
+
   return equals(*this, *other, 0);
 }
 
@@ -5751,9 +5942,13 @@ function_type::get_first_non_implicit_parm() const
 bool
 function_type::operator==(const type_base& other) const
 {
+  if (get_canonical_type() && other.get_canonical_type())
+    return get_canonical_type().get() == other.get_canonical_type().get();
+
   const function_type* o = dynamic_cast<const function_type*>(&other);
   if (!o)
     return false;
+
   return equals(*this, *o, 0);
 }
 
@@ -7845,6 +8040,10 @@ class_decl::operator==(const decl_base& other) const
   const class_decl* op = dynamic_cast<const class_decl*>(&other);
   if (!op)
     return false;
+
+  if (get_canonical_type() && op->get_canonical_type())
+    return get_canonical_type().get() == op->get_canonical_type().get();
+
   const class_decl& o = *op;
   return equals(*this, o, 0);
 }

@@ -62,21 +62,42 @@ using namespace abigail::ir;
 // See forward declarations in abg-ir.h.
 
 // Definitions.
-struct type_base::hash
+
+/// Hash function for an instance of @ref type_base.
+///
+/// @param t the type to hash.
+///
+/// @return the type value.
+size_t
+type_base::hash::operator()(const type_base& t) const
 {
-  size_t
-  operator()(const type_base& t) const
-  {
-    std::tr1::hash<size_t> size_t_hash;
-    std::tr1::hash<string> str_hash;
+  std::tr1::hash<size_t> size_t_hash;
+  std::tr1::hash<string> str_hash;
 
-    size_t v = str_hash(typeid(t).name());
-    v = hashing::combine_hashes(v, size_t_hash(t.get_size_in_bits()));
-    v = hashing::combine_hashes(v, size_t_hash(t.get_alignment_in_bits()));
+  size_t v = str_hash(typeid(t).name());
+  v = hashing::combine_hashes(v, size_t_hash(t.get_size_in_bits()));
+  v = hashing::combine_hashes(v, size_t_hash(t.get_alignment_in_bits()));
 
-    return v;
-  }
-};
+  return v;
+}
+
+/// Hash function for an instance of @ref type_base.
+///
+/// @param t the type to hash.
+///
+/// @return the type value.
+size_t
+type_base::hash::operator()(const type_base* t) const
+{return operator()(*t);}
+
+/// Hash function for an instance of @ref type_base.
+///
+/// @param t the type to hash.
+///
+/// @return the type value.
+size_t
+type_base::hash::operator()(const type_base_sptr t) const
+{return operator()(*t);}
 
 struct decl_base::hash
 {

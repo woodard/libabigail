@@ -5474,6 +5474,8 @@ build_type_decl(read_context&	ctxt,
   result.reset(new type_decl(type_name, bit_size,
 			     alignment, loc,
 			     linkage_name));
+  enable_canonical_equality(result);
+
   return result;
 }
 
@@ -5542,10 +5544,12 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   translation_unit_sptr tu = ctxt.cur_tu();
   decl_base_sptr d =
     add_decl_to_scope(t, tu->get_global_scope().get());
+  enable_canonical_equality(t);
 
   t = dynamic_pointer_cast<type_decl>(d);
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
+  enable_canonical_equality(result);
 
   return result;
 }
@@ -5893,6 +5897,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       }
   }
 
+  enable_canonical_equality(result);
+
   return res;
 }
 
@@ -5965,6 +5971,8 @@ build_qualified_type(read_context&	ctxt,
     result.reset(new qualified_type_def(utype,
 					qualified_type_def::CV_RESTRICT,
 					location()));
+
+  enable_canonical_equality(result);
 
   return result;
 }
@@ -6058,8 +6066,10 @@ build_pointer_type_def(read_context&	ctxt,
   size *= 8;
 
   result.reset(new pointer_type_def(utype, size, size, location()));
-
   assert(result->get_pointed_to_type());
+
+  enable_canonical_equality(result);
+
   return result;
 }
 
@@ -6127,6 +6137,7 @@ build_reference_type(read_context&	ctxt,
 
   result.reset(new reference_type_def(utype, is_lvalue, size, size,
 				      location()));
+  enable_canonical_equality(result);
 
   return result;
 }
@@ -6215,6 +6226,7 @@ build_array_type(read_context&	ctxt,
     }
 
   result.reset(new array_type_def(type, subranges, location()));
+  enable_canonical_equality(result);
 
   return result;
 }
@@ -6276,6 +6288,7 @@ build_typedef_type(read_context&	ctxt,
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   result.reset(new typedef_decl(name, utype, loc, linkage_name));
+  enable_canonical_equality(result);
 
   return result;
 }
@@ -6494,6 +6507,7 @@ build_function_decl(read_context&	ctxt,
 						     tu->get_address_size()));
 
       fn_type = tu->get_canonical_function_type(fn_type);
+      enable_canonical_equality(fn_type);
 
       result.reset(is_method
 		   ? new class_decl::method_decl(fname, fn_type,
