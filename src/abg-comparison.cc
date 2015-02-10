@@ -6905,8 +6905,12 @@ class_diff::chain_into_hierarchy()
 class_diff::class_diff(shared_ptr<class_decl>	first_scope,
 		       shared_ptr<class_decl>	second_scope,
 		       diff_context_sptr	ctxt)
-  : type_diff_base(first_scope, second_scope, ctxt),
-    priv_(new priv)
+  : type_diff_base(first_scope, second_scope, ctxt)
+    //  We don't initialize the priv_ data member here.  This is an
+    //  optimization to reduce memory consumption (and also execution
+    //  time) for cases where there are a lot of instances of
+    //  class_diff in the same equivalence class.  In compute_diff(),
+    //  the priv_ is set to the priv_ of the canonical diff node.
 {}
 
 class_diff::~class_diff()
@@ -7793,6 +7797,43 @@ compute_diff(const class_decl_sptr	first,
 
   class_diff_sptr changes(new class_diff(f, s, ctxt));
 
+  ctxt->initialize_canonical_diff(changes);
+  assert(changes->get_canonical_diff());
+
+  if (!ctxt->get_canonical_diff_for(first, second))
+    {
+      // Either first or second is a decl-only class; let's set the
+      // canonical diff here in that case.
+      diff_sptr canonical_diff = ctxt->get_canonical_diff_for(changes);
+      assert(canonical_diff);
+      ctxt->set_canonical_diff_for(first, second, canonical_diff);
+    }
+
+  // Ok, so this is an optimization.  Do not freak out if it looks
+  // weird, because, well, it does look weird.
+  //
+  // We are setting the private data of the new instance of class_diff
+  // (which is 'changes') to the private data of its canonical
+  // instance.  That is, we are sharing the private data of 'changes'
+  // with the private data of its canonical instance to consume less
+  // memory in cases where the equivalence class of 'changes' is huge.
+  //
+  // But if changes is its own canonical instance, then we initialize
+  // its private data properly.
+  if (dynamic_cast<class_diff*>(changes->get_canonical_diff()) == changes.get())
+    // changes is its own canonical instance, so it gets a brand new
+    // private data.
+    changes->priv_.reset(new class_diff::priv);
+  else
+    {
+      // changes has a non-empty equivalence class so it's going to
+      // share its private data with its canonical instance.
+      changes->priv_ =
+	dynamic_cast<class_diff*>(changes->get_canonical_diff())->priv_;
+      assert(changes->priv_);
+      return changes;
+    }
+
   // Compare base specs
   compute_diff(f->get_base_specifiers().begin(),
 	       f->get_base_specifiers().end(),
@@ -7841,17 +7882,6 @@ compute_diff(const class_decl_sptr	first,
 #endif
 
   changes->ensure_lookup_tables_populated();
-
-  ctxt->initialize_canonical_diff(changes);
-  assert(changes->get_canonical_diff());
-  if (!ctxt->get_canonical_diff_for(first, second))
-    {
-      // Either first or second is a decl-only class; let's set the
-      // canonical diff here in that case.
-      diff_sptr canonical_diff = ctxt->get_canonical_diff_for(changes);
-      assert(canonical_diff);
-      ctxt->set_canonical_diff_for(first, second, canonical_diff);
-    }
 
   return changes;
 }
@@ -12363,7 +12393,9 @@ struct redundancy_marking_visitor : public diff_node_visitor
     if (d->to_be_reported())
       {
 	// A diff node that carries a change and that has been already
-	// traversed elsewhere is considered redundant.
+	// traversed elsewhere is considered redundant.  So let's mark
+	// it as such and let's not traverse it; that is, let's not
+	// visit its children.
 	if ((d->context()->diff_has_been_visited(d)
 	     || d->get_canonical_diff()->is_traversing())
 	    && d->has_changes())
@@ -12411,7 +12443,19 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		    }
 		}
 	    if (!redundant_with_sibling_node)
-	      d->add_to_category(REDUNDANT_CATEGORY);
+	      {
+		d->add_to_category(REDUNDANT_CATEGORY);
+		// As we said in preamble, as this node is marked as
+		// being redundant, let's not visit its children.
+		// This is not an optimization; it's needed for
+		// correctness.  In the case of a diff node involving
+		// a class type that refers to himself, visiting the
+		// children nodes might cause them to be wrongly
+		// marked as redundant.
+		set_visiting_kind(get_visiting_kind()
+				  | SKIP_CHILDREN_VISITING_KIND);
+		skip_children_nodes_ = true;
+	      }
 	  }
       }
     else
