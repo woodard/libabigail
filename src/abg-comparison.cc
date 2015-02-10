@@ -2704,6 +2704,9 @@ void
 diff_context::maybe_apply_filters(diff_sptr diff,
 				  bool visit_nodes_once)
 {
+  if (!diff)
+    return;
+
   if (get_allowed_category() == EVERYTHING_CATEGORY)
     return;
 
