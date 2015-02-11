@@ -5012,38 +5012,65 @@ find_last_import_unit_point_before_die(read_context&	ctxt,
   if (dwarf_child(const_cast<Dwarf_Die*>(parent_die), &child) != 0)
     return false;
 
-  bool found = false;
+  // This list contains the children of 'parent_die' in reversed
+  // topological order, starting from the DIE of 'die_offset'; that
+  // die_offset itself is excluded.  If the children of parent_die
+  // don't contain the DIE of 'die_offset', then the list contains all
+  // the children of 'parent_die'.
+  std::list<size_t> imported_unit_die_offsets;
   do
     {
+      if (dwarf_dieoffset(&child) == die_offset)
+	break;
       if (dwarf_tag(&child) == DW_TAG_imported_unit)
+	imported_unit_die_offsets.push_front(dwarf_dieoffset(&child));
+    }
+  while (dwarf_siblingof(&child, &child) == 0);
+
+  // Look if one of the children of 'parent_die' is the import point
+  // we are looking for, starting from the last child of 'parent_die'.
+  for (std::list<size_t>::iterator i = imported_unit_die_offsets.begin();
+       i != imported_unit_die_offsets.end();
+       ++i)
+    {
+      Dwarf_Die die_memory, *die;
+      die = dwarf_offdie(ctxt.dwarf(), *i, &die_memory);
+
+      Dwarf_Die imported_unit;
+      bool is_in_alt_di = false;
+      if (die_die_attribute(die, /*die_is_in_alt_di=*/false,
+			    DW_AT_import, imported_unit, is_in_alt_di))
 	{
-	  Dwarf_Die imported_unit;
-	  bool is_in_alt_di = false;
-	  if (die_die_attribute(&child, /*die_is_in_alt_di=*/false,
-				DW_AT_import, imported_unit, is_in_alt_di))
+	  if (partial_unit_offset == dwarf_dieoffset(&imported_unit))
 	    {
-	      if (partial_unit_offset == dwarf_dieoffset(&imported_unit))
-		imported_point_offset = dwarf_dieoffset(&child);
-	      else
-		found =
-		  find_last_import_unit_point_before_die(ctxt,
-							 partial_unit_offset,
-							 &imported_unit,
-							 die_offset,
-							 imported_point_offset);
+	      imported_point_offset = dwarf_dieoffset(&child);
+	      return true;
 	    }
 	}
-      else if (dwarf_dieoffset(&child) == die_offset
-	       && imported_point_offset)
-	found = true;
-      else
-	found = find_last_import_unit_point_before_die(ctxt,
-						       partial_unit_offset,
-						       &child, die_offset,
-						       imported_point_offset);
-    } while (dwarf_siblingof(&child, &child) == 0 && !found);
+    }
 
-  return found;
+  // Look if the descendants of the children of 'parent_die' contain
+  // the import point we are looking for, starting from the last child
+  // of 'parent_die'.
+    for (std::list<size_t>::iterator i = imported_unit_die_offsets.begin();
+	 i != imported_unit_die_offsets.end();
+	 ++i)
+    {
+      Dwarf_Die die_memory, *die;
+      die = dwarf_offdie(ctxt.dwarf(), *i, &die_memory);
+      Dwarf_Die imported_unit;
+      bool is_in_alt_di = false;
+      if (die_die_attribute(die, /*die_is_in_alt_di=*/false,
+			    DW_AT_import, imported_unit, is_in_alt_di))
+	if (find_last_import_unit_point_before_die(ctxt,
+						   partial_unit_offset,
+						   &imported_unit,
+						   die_offset,
+						   imported_point_offset))
+	  return true;
+    }
+
+  return false;
 }
 
 /// In the current translation unit, get the last point where a
