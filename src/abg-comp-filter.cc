@@ -670,6 +670,9 @@ has_harmful_enum_change(const diff* diff)
 bool
 harmless_filter::visit(diff* d, bool pre)
 {
+  if (!d->has_changes())
+    return true;
+
   diff_category category = NO_CHANGE_CATEGORY;
 
   if (pre)
@@ -720,6 +723,9 @@ bool
 harmful_filter::visit(diff* d, bool pre)
 {
   diff_category category = NO_CHANGE_CATEGORY;
+
+  if (!d->has_changes())
+    return true;
 
   if (pre)
     {

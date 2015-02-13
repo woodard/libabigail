@@ -2710,6 +2710,9 @@ diff_context::maybe_apply_filters(diff_sptr diff,
   if (get_allowed_category() == EVERYTHING_CATEGORY)
     return;
 
+  if (!diff->has_changes())
+    return;
+
   bool s = visiting_a_node_twice_is_forbidden();
   if (!visit_nodes_once)
     forbid_visiting_a_node_twice(false);
@@ -2738,6 +2741,10 @@ void
 diff_context::maybe_apply_filters(corpus_diff_sptr diff,
 				  bool visit_nodes_once)
 {
+
+  if (!diff || !diff->has_changes())
+    return;
+
   bool s = visiting_a_node_twice_is_forbidden();
   if (!visit_nodes_once)
     forbid_visiting_a_node_twice(false);
