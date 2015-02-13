@@ -6453,8 +6453,8 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
       }
 
   // Compare function types
-  shared_ptr<function_type> t0 = l.get_type(), t1 = r.get_type();
-  if ((t0 && t1 && *t0 != *t1)
+  type_base_sptr t0 = l.get_type(), t1 = r.get_type();
+  if ((t0 && t1 && t0 != t1)
       || !!t0 != !!t1)
     {
       result = false;
@@ -8617,7 +8617,7 @@ non_type_tparameter::operator==(const decl_base& other) const
       const non_type_tparameter& o =
 	dynamic_cast<const non_type_tparameter&>(other);
       return (template_parameter::operator==(o)
-	      && *get_type() == *o.get_type());
+	      && get_type() == o.get_type());
     }
   catch(...)
     {return false;}
