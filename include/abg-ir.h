@@ -1276,7 +1276,7 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
-  shared_ptr<type_base>
+  type_base_sptr
   get_pointed_to_type() const;
 
   bool
@@ -1568,7 +1568,7 @@ public:
   virtual string
   get_pretty_representation() const;
 
-  shared_ptr<type_base>
+  type_base_sptr
   get_underlying_type() const;
 
   virtual bool
@@ -1800,11 +1800,11 @@ public:
   const function_type_sptr
   get_type() const;
 
-  const shared_ptr<type_base>
+  const type_base_sptr
   get_return_type() const;
 
   void
-  set_type(shared_ptr<function_type> fn_type);
+  set_type(function_type_sptr fn_type);
 
   void
   set_symbol(elf_symbol_sptr sym);
@@ -3015,7 +3015,7 @@ public:
   operator const class_tdecl& () const
   { return *class_tmpl_; }
 
-  shared_ptr<class_tdecl>
+  class_tdecl_sptr
   as_class_tdecl() const
   {return class_tmpl_;}
 

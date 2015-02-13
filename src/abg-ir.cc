@@ -3631,9 +3631,9 @@ global_scope::~global_scope()
 /// Definition of the private data of @ref type_base.
 struct type_base::priv
 {
-  size_t	size_in_bits;
-  size_t	alignment_in_bits;
-  type_base_wptr canonical_type;
+  size_t		size_in_bits;
+  size_t		alignment_in_bits;
+  type_base_wptr	canonical_type;
 
   priv()
     : size_in_bits(),

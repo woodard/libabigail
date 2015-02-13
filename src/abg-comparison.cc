@@ -5046,7 +5046,6 @@ compute_diff(pointer_type_def_sptr	first,
 	     pointer_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
@@ -11735,6 +11734,7 @@ corpus_diff::traverse(diff_node_visitor& v)
   v.visit_end(this);
   return true;
 }
+
 /// Compute the diff between two instances fo the @ref corpus
 ///
 /// @param f the first @ref corpus to consider for the diff.

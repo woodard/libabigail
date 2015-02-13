@@ -100,13 +100,6 @@ typedef shared_ptr<addr_elf_symbol_sptr_map_type> addr_elf_symbol_sptr_map_sptr;
 /// that is being built.
 typedef stack<scope_decl*> scope_stack_type;
 
-/// Convenience typedef for a map that contains the types that have
-/// been built so far.
-typedef unordered_map<shared_ptr<type_base>,
-		      bool,
-		      type_base::shared_ptr_hash,
-		      type_shared_ptr_equal> type_ptr_map;
-
 /// Convenience typedef for a map which key is a dwarf offset.  The
 /// value is also a dwarf offset.
 typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
@@ -974,7 +967,8 @@ get_version_needed_for_versym(Elf*			elf_handle,
 ///
 /// @param version the version found for symbol at @p symbol_index.
 ///
-/// @return true iff a version was found for symbol at index @p symbol_index.
+/// @return true iff a version was found for symbol at index @p
+/// symbol_index.
 static bool
 get_version_for_symbol(Elf*			elf_handle,
 		       size_t			symbol_index,
@@ -5582,7 +5576,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 }
 
 /// Once a function_decl has been built and added to a class as a
-/// member function, this function updates the informatikon of the
+/// member function, this function updates the information of the
 /// function_decl concerning the properties of its relationship with
 /// the member class.  That is, it updates properties like
 /// virtualness, access, constness, cdtorness, etc ...

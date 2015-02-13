@@ -1866,7 +1866,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 ///
 /// @return a pointer to a newly created function_decl upon successful
 /// completion, a null pointer otherwise.
-static shared_ptr<function_decl>
+static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    const xmlNodePtr	node,
 		    shared_ptr<class_decl> as_method_decl,
@@ -2169,7 +2169,7 @@ build_qualified_type_decl(read_context&	ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      qualified_type_def_sptr ty = dynamic_pointer_cast<qualified_type_def>(d);
+      qualified_type_def_sptr ty = is_qualified_type(d);
       assert(ty);
       assert(*ty->get_underlying_type() == *underlying_type);
       assert(ty->get_cv_quals() == cv);
@@ -2246,7 +2246,7 @@ build_pointer_type_def(read_context&	ctxt,
   assert(!id.empty());
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      pointer_type_def_sptr ty = dynamic_pointer_cast<pointer_type_def>(d);
+      pointer_type_def_sptr ty = is_pointer_type(d);
       assert(ty);
       assert(*pointed_to_type == *ty->get_pointed_to_type());
       return ty;
@@ -2334,7 +2334,7 @@ build_reference_type_def(read_context&		ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      reference_type_def_sptr ty = dynamic_pointer_cast<reference_type_def>(d);
+      reference_type_def_sptr ty = is_reference_type(d);
       assert(ty);
       assert(*pointed_to_type == *ty->get_pointed_to_type());
       return ty;
@@ -2477,7 +2477,7 @@ build_array_type_def(read_context&	ctxt,
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
-      array_type_def_sptr ty = dynamic_pointer_cast<array_type_def>(d);
+      array_type_def_sptr ty = is_array_type(d);
       assert(ty);
       assert(*type == *ty->get_element_type());
       assert(type->get_alignment_in_bits() == alignment_in_bits);
@@ -2636,7 +2636,7 @@ build_typedef_decl(read_context&	ctxt,
 
   if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
     {
-      typedef_decl_sptr result = dynamic_pointer_cast<typedef_decl>(d);
+      typedef_decl_sptr result = is_typedef(d);
       assert(result);
       return result;
     }
@@ -2840,7 +2840,7 @@ build_class_decl(read_context&		ctxt,
 	      if (p->type != XML_ELEMENT_NODE)
 		continue;
 
-	      if (shared_ptr<type_base> t =
+	      if (type_base_sptr t =
 		  build_type(ctxt, p, /*add_to_current_scope=*/false))
 		{
 		  if (!get_type_declaration(t)->get_scope())
