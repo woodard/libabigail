@@ -247,6 +247,12 @@ public:
   set_address_size(char);
 
   bool
+  is_constructed() const;
+
+  void
+  set_is_constructed(bool);
+
+  bool
   operator==(const translation_unit&) const;
 
   function_type_sptr
@@ -607,7 +613,7 @@ bool
 equals(const decl_base&, const decl_base&, change_kind*);
 
 /// The base type of all declarations.
-class decl_base : public ir_traversable_base
+class decl_base : public virtual ir_traversable_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
@@ -925,7 +931,7 @@ bool
 equals(const type_base&, const type_base&, change_kind*);
 
 /// An abstraction helper for type declarations
-class type_base
+class type_base : public virtual ir_traversable_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
@@ -967,13 +973,16 @@ public:
   type_base(size_t s, size_t a);
 
   friend void
-  enable_canonical_equality(type_base_sptr);
+  canonicalize(type_base_sptr);
 
   type_base_sptr
   get_canonical_type() const;
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual bool
+  traverse(ir_node_visitor&);
 
   virtual ~type_base();
 
@@ -991,7 +1000,7 @@ public:
 };//end class type_base
 
 void
-enable_canonical_equality(type_base_sptr);
+canonicalize(type_base_sptr);
 
 /// Hash functor for instances of @ref type_base.
 struct type_base::hash
@@ -1112,6 +1121,9 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
+  virtual bool
+  traverse(ir_node_visitor&);
+
   virtual ~scope_type_decl();
 };
 
@@ -1125,6 +1137,9 @@ public:
 
   namespace_decl(const std::string& name, location locus,
 		 visibility vis = VISIBILITY_DEFAULT);
+
+  virtual string
+  get_pretty_representation() const;
 
   virtual bool
   operator==(const decl_base&) const;
@@ -2008,6 +2023,9 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
+  virtual bool
+  traverse(ir_node_visitor&);
+
   virtual ~function_type();
 };//end class function_type
 
@@ -2568,6 +2586,9 @@ public:
   bool
   has_no_base_nor_member() const;
 
+  bool
+  has_virtual_member_functions() const;
+
   virtual size_t
   get_hash() const;
 
@@ -2720,6 +2741,9 @@ public:
 
   virtual size_t
   get_hash() const;
+
+  virtual bool
+  traverse(ir_node_visitor&);
 };// end class class_decl::base_spec
 
 bool
@@ -3179,31 +3203,82 @@ struct class_tdecl::shared_ptr_hash
 ///
 /// Client code willing to get notified for a certain kind of node
 /// during the IR traversal might want to define a visitor class that
-/// inherit ir_node_visitor, overload the ir_node_visitor::visit
-/// method of its choice, and provide and implementation for it.  That
-/// new visitor class would then be passed to e.g,
+/// inherit ir_node_visitor, overload the ir_node_visitor::visit_begin
+/// or ir_node_visitor::visit_end method of its choice, and provide
+/// and implementation for it.  Note that inside these two methods,the
+/// node_visitor_base::visiting() method returns false.
+
+/// That new visitor class would then be passed to e.g,
 /// translation_unit::traverse or to the traverse method of any type
 /// where the traversal is supposed to start from.
 struct ir_node_visitor : public node_visitor_base
 {
-  virtual bool visit(scope_decl*);
-  virtual bool visit(type_decl*);
-  virtual bool visit(namespace_decl*);
-  virtual bool visit(qualified_type_def*);
-  virtual bool visit(pointer_type_def*);
-  virtual bool visit(reference_type_def*);
-  virtual bool visit(array_type_def*);
-  virtual bool visit(enum_type_decl*);
-  virtual bool visit(typedef_decl*);
-  virtual bool visit(var_decl*);
-  virtual bool visit(function_decl*);
-  virtual bool visit(function_decl::parameter*);
-  virtual bool visit(function_tdecl*);
-  virtual bool visit(class_tdecl*);
-  virtual bool visit(class_decl*);
-  virtual bool visit(class_decl::member_function_template*);
-  virtual bool visit(class_decl::member_class_template*);
-};
+  virtual bool visit_begin(decl_base*);
+  virtual bool visit_end(decl_base*);
+
+  virtual bool visit_begin(scope_decl*);
+  virtual bool visit_end(scope_decl*);
+
+  virtual bool visit_begin(type_base*);
+  virtual bool visit_end(type_base*);
+
+  virtual bool visit_begin(scope_type_decl*);
+  virtual bool visit_end(scope_type_decl*);
+
+  virtual bool visit_begin(type_decl*);
+  virtual bool visit_end(type_decl*);
+
+  virtual bool visit_begin(namespace_decl*);
+  virtual bool visit_end(namespace_decl*);
+
+  virtual bool visit_begin(qualified_type_def*);
+  virtual bool visit_end(qualified_type_def*);
+
+  virtual bool visit_begin(pointer_type_def*);
+  virtual bool visit_end(pointer_type_def*);
+
+  virtual bool visit_begin(reference_type_def*);
+  virtual bool visit_end(reference_type_def*);
+
+  virtual bool visit_begin(array_type_def*);
+  virtual bool visit_end(array_type_def*);
+
+  virtual bool visit_begin(enum_type_decl*);
+  virtual bool visit_end(enum_type_decl*);
+
+  virtual bool visit_begin(typedef_decl*);
+  virtual bool visit_end(typedef_decl*);
+
+  virtual bool visit_begin(function_type*);
+  virtual bool visit_end(function_type*);
+
+  virtual bool visit_begin(var_decl*);
+  virtual bool visit_end(var_decl*);
+
+  virtual bool visit_begin(function_decl*);
+  virtual bool visit_end(function_decl*);
+
+  virtual bool visit_begin(function_decl::parameter*);
+  virtual bool visit_end(function_decl::parameter*);
+
+  virtual bool visit_begin(function_tdecl*);
+  virtual bool visit_end(function_tdecl*);
+
+  virtual bool visit_begin(class_tdecl*);
+  virtual bool visit_end(class_tdecl*);
+
+  virtual bool visit_begin(class_decl*);
+  virtual bool visit_end(class_decl*);
+
+  virtual bool visit_begin(class_decl::base_spec*);
+  virtual bool visit_end(class_decl::base_spec*);
+
+  virtual bool visit_begin(class_decl::member_function_template*);
+  virtual bool visit_end(class_decl::member_function_template*);
+
+  virtual bool visit_begin(class_decl::member_class_template*);
+  virtual bool visit_end(class_decl::member_class_template*);
+}; // end struct ir_node_visitor
 
 // Debugging facility
 void

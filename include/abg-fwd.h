@@ -194,6 +194,9 @@ is_enum_type(const shared_ptr<type_base>&);
 shared_ptr<enum_type_decl>
 is_enum_type(const shared_ptr<decl_base>&);
 
+bool
+is_class_type(decl_base*);
+
 shared_ptr<class_decl>
 is_class_type(const shared_ptr<type_base>);
 
@@ -263,9 +266,6 @@ is_member_decl(const decl_base&);
 
 bool
 is_member_type(const shared_ptr<type_base>);
-
-bool
-is_member_type(const shared_ptr<decl_base>);
 
 void
 remove_decl_from_scope(shared_ptr<decl_base>);
@@ -475,6 +475,9 @@ demangle_cplus_mangled_name(const string&);
 
 shared_ptr<type_base>
 type_or_void(const shared_ptr<type_base>);
+
+bool
+type_has_non_canonicalized_subtype(shared_ptr<type_base> t);
 } // end namespace ir
 
 using namespace abigail::ir;

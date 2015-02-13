@@ -23,11 +23,16 @@ runtestaltdwarf			\
 runtestcorediff			\
 runtestabidiff			\
 runtestdiffdwarf		\
+runtestcanonicalizetypes.sh	\
 runtestdifffilter		\
 runtestdiffsuppr		\
 runtestabicompat		\
 $(CXX11_TESTS)
 
+EXTRA_DIST = runtestcanonicalizetypes.sh.in
+CLEANFILES = \
+ runtestcanonicalizetypes.output.txt \
+ runtestcanonicalizetypes.output.final.txt
 
 noinst_PROGRAMS= $(TESTS) testirwalker testdiff2 printdifftree
 
@@ -88,6 +93,9 @@ testdiff2_LDADD=$(top_builddir)/src/libabigail.la
 
 printdifftree_SOURCES = print-diff-tree.cc
 printdifftree_LDADD = $(top_builddir)/src/libabigail.la
+
+runtestcanonicalizetypes_sh_SOURCES =
+runtestcanonicalizetypes.sh$(EXEEXT):
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools

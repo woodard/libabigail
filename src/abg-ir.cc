@@ -33,6 +33,7 @@
 #include <sstream>
 #include <tr1/memory>
 #include <tr1/unordered_map>
+#include "abg-sptr-utils.h"
 #include "abg-ir.h"
 
 namespace abigail
@@ -158,6 +159,7 @@ typedef unordered_map<function_type_sptr,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
+  bool				is_constructed_;
   char				address_size_;
   std::string			path_;
   location_manager		loc_mgr_;
@@ -165,7 +167,8 @@ struct translation_unit::priv
   mutable fn_type_ptr_map	canonical_function_types_;
 
   priv()
-    : address_size_(0)
+    : is_constructed_(),
+      address_size_()
   {}
 }; // end translation_unit::priv
 
@@ -250,6 +253,38 @@ translation_unit::get_address_size() const
 void
 translation_unit::set_address_size(char a)
 {priv_->address_size_= a;}
+
+/// Getter of the 'is_constructed" flag.  It says if the translation
+/// unit is fully constructed or not.
+///
+/// This flag is important for cases when comparison might depend on
+/// if the translation unit is fully built or not.  For instance, when
+/// reading types from DWARF, the virtual methods of a class are not
+/// necessarily fully constructed until we have reached the end of the
+/// translation unit.  In that case, before we've reached the end of
+/// the translation unit, we might not take virtual functions into
+/// account when comparing classes.
+///
+/// @return true if the translation unit is constructed.
+bool
+translation_unit::is_constructed() const
+{return priv_->is_constructed_;}
+
+/// Setter of the 'is_constructed" flag.  It says if the translation
+/// unit is fully constructed or not.
+///
+/// This flag is important for cases when comparison might depend on
+/// if the translation unit is fully built or not.  For instance, when
+/// reading types from DWARF, the virtual methods of a class are not
+/// necessarily fully constructed until we have reached the end of the
+/// translation unit.  In that case, before we've reached the end of
+/// the translation unit, we might not take virtual functions into
+/// account when comparing classes.
+///
+/// @param f true if the translation unit is constructed.
+void
+translation_unit::set_is_constructed(bool f)
+{priv_->is_constructed_ = f;}
 
 /// Compare the current translation unit against another one.
 ///
@@ -1680,19 +1715,6 @@ is_member_type(const type_base_sptr t)
   return is_member_decl(d);
 }
 
-/// Tests if a type is a class member.
-///
-/// @param t the type to consider.
-///
-/// @return true if @p t is a class member type, false otherwise.
-bool
-is_member_type(const decl_base_sptr d)
-{
-  if (type_base_sptr t = is_type(d))
-    return is_member_type(t);
-  return false;
-}
-
 /// Gets the access specifier for a class member.
 ///
 /// @param d the declaration of the class member to consider.  Note
@@ -2588,21 +2610,21 @@ scope_decl::find_iterator_for_member(const decl_base_sptr decl,
 bool
 scope_decl::traverse(ir_node_visitor &v)
 {
-  if (!v.visit(this))
-    return false;
+  if (visiting())
+    return true;
 
-  scope_decl::declarations::const_iterator i;
-  for (i = get_member_decls().begin();
-       i != get_member_decls ().end();
-       ++i)
+  if (v.visit_begin(this))
     {
-      ir_traversable_base_sptr t =
-	dynamic_pointer_cast<ir_traversable_base>(*i);
-      if (t)
-	if (!t->traverse (v))
-	  return false;
+      visiting(true);
+      for (scope_decl::declarations::const_iterator i =
+	     get_member_decls().begin();
+	   i != get_member_decls ().end();
+	   ++i)
+	if (!(*i)->traverse(v))
+	  break;
+      visiting(false);
     }
-  return true;
+  return v.visit_end(this);
 }
 
 scope_decl::~scope_decl()
@@ -3148,6 +3170,23 @@ is_class_type(const type_base_sptr t)
     return class_decl_sptr();
   type_base_sptr ty = strip_typedef(t);
   return dynamic_pointer_cast<class_decl>(ty);
+}
+
+/// Test if a the declaration of a type is a class.
+///
+/// This function looks through typedefs.
+///
+/// @parm d the declaration of the type to consider.
+///
+/// @return the class_decl if @p t is a class_decl or null otherwise.
+bool
+is_class_type(decl_base *d)
+{
+  if (!d)
+    return false;
+
+  decl_base_sptr decl(d, sptr_utils::noop_deleter());
+  return is_class_type(decl);
 }
 
 /// Test whether a type is a class.
@@ -3696,40 +3735,58 @@ type_base::get_canonical_type_for(type_base_sptr t)
   if (!t)
     return t;
 
+  // Look through declaration-only classes
+  if (class_decl_sptr class_declaration = is_class_type(t))
+    if (class_declaration->get_is_declaration_only())
+      if (class_decl_sptr klass =
+	  class_declaration->get_definition_of_declaration())
+	t = klass;
+
+  if (t->get_canonical_type())
+    return t->get_canonical_type();
+
   size_t h = 0;
   decl_base_sptr d = get_type_declaration(t);
   if (d)
     h = d->get_hash();
   else
     {
-      type_base::hash type_base_hash;
-      h = type_base_hash(t);
+      type_base::dynamic_hash hash;
+      h = hash(t.get());
     }
 
   canonical_types_map_type& m = get_canonical_types_map();
   canonical_types_map_type::iterator i = m.find(h);
 
+  type_base_sptr result;
+
   if (i == m.end())
     {
       m[h].push_back(t);
-      return t;
+      result = t;
+    }
+  else
+    for (std::list<type_base_sptr>::iterator j = i->second.begin();
+	 j != i->second.end();
+	 ++j)
+      if (t == *j)
+	{
+	  result = *j;
+	  break;
+	}
+
+  if (!result)
+    {
+      result = t;
+      i->second.push_back(result);
     }
 
-  for (std::list<type_base_sptr>::iterator j = i->second.begin();
-       j != i->second.end();
-       ++j)
-    if (t == *j)
-      return *j;
+  assert(result);
 
-  i->second.push_back(t);
-  return t;
+  return result;
 }
 
-/// Enable canonical equality for a given current instance of @ref
-/// type_base.
-///
-/// In concrete terms, this function computes the canonical type for a
-/// given instance of @ref type_base.
+/// Compute the canonical type of a given type.
 ///
 /// It means that after invoking this function, comparing the intance
 /// instance @ref type_base and another one (on which
@@ -3741,12 +3798,9 @@ type_base::get_canonical_type_for(type_base_sptr t)
 /// @param t a smart pointer to the instance of @ref type_base for
 /// which to enable canoncial equality.
 void
-enable_canonical_equality(type_base_sptr t)
+canonicalize(type_base_sptr t)
 {
-  if (!t)
-    return;
-
-  if (t->get_canonical_type())
+  if (!t || t->get_canonical_type())
     return;
 
   type_base_sptr canonical = type_base::get_canonical_type_for(t);
@@ -3843,6 +3897,21 @@ type_base::set_alignment_in_bits(size_t a)
 size_t
 type_base::get_alignment_in_bits() const
 {return priv_->alignment_in_bits;}
+
+/// Default implementation of traversal for types.  This function does
+/// nothing.  It must be implemented by every single new type that is
+/// written.
+///
+/// Please look at e.g, class_decl::traverse() for an example of how
+/// to implement this.
+///
+/// @param v the visitor used to visit the type.
+bool
+type_base::traverse(ir_node_visitor& v)
+{
+  v.visit_begin(this);
+  return v.visit_end(this);
+}
 
 type_base::~type_base()
 {}
@@ -3967,7 +4036,11 @@ type_decl::get_pretty_representation() const
 /// otherwise.
 bool
 type_decl::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  v.visit_begin(this);
+
+  return v.visit_end(this);
+}
 
 type_decl::~type_decl()
 {}
@@ -4060,6 +4133,39 @@ scope_type_decl::operator==(const type_base& o) const
   return *this == *other;
 }
 
+/// Traverses an instance of @ref scope_type_decl, visiting all the
+/// sub-types and decls that it might contain.
+///
+/// @param v the visitor that is used to visit every IR sub-node of
+/// the current node.
+///
+/// @return true if either
+///  - all the children nodes of the current IR node were traversed
+///    and the calling code should keep going with the traversing.
+///  - or the current IR node is already being traversed.
+/// Otherwise, returning false means that the calling code should not
+/// keep traversing the tree.
+bool
+scope_type_decl::traverse(ir_node_visitor& v)
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      for (scope_decl::declarations::const_iterator i =
+	     get_member_decls().begin();
+	   i != get_member_decls ().end();
+	   ++i)
+	if (!(*i)->traverse(v))
+	  break;
+      visiting(false);
+    }
+
+  return v.visit_end(this);
+}
+
 scope_type_decl::~scope_type_decl()
 {}
 // </scope_type_decl definitions>
@@ -4077,6 +4183,17 @@ namespace_decl::namespace_decl(const std::string& name,
   decl_base(name, locus, "", vis),
   scope_decl(name, locus)
 {
+}
+
+/// Build and return a copy of the pretty representation of the
+/// namespace.
+///
+/// @retur a copy of the pretty representation of the namespace.
+string
+namespace_decl::get_pretty_representation() const
+{
+  string r = "namespace " + scope_decl::get_pretty_representation();
+  return r;
 }
 
 /// Return true iff both namespaces and their members are equal.
@@ -4103,21 +4220,26 @@ namespace_decl::operator==(const decl_base& o) const
 bool
 namespace_decl::traverse(ir_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  if (visiting())
+    return true;
 
-  scope_decl::declarations::const_iterator i;
-  for (i = get_member_decls().begin();
-       i != get_member_decls ().end();
-       ++i)
+  if (v.visit_begin(this))
     {
-      ir_traversable_base_sptr t =
-	dynamic_pointer_cast<ir_traversable_base>(*i);
-      if (t)
-	if (!t->traverse (v))
-	  return false;
+      visiting(true);
+      scope_decl::declarations::const_iterator i;
+      for (i = get_member_decls().begin();
+	   i != get_member_decls ().end();
+	   ++i)
+	{
+	  ir_traversable_base_sptr t =
+	    dynamic_pointer_cast<ir_traversable_base>(*i);
+	  if (t)
+	    if (!t->traverse (v))
+	      break;
+	}
+      visiting(false);
     }
-  return true;
+  return v.visit_end(this);
 }
 
 namespace_decl::~namespace_decl()
@@ -4319,7 +4441,19 @@ qualified_type_def::get_qualified_name(string& qualified_name) const
 /// otherwise.
 bool
 qualified_type_def::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_underlying_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 qualified_type_def::~qualified_type_def()
 {
@@ -4535,7 +4669,19 @@ pointer_type_def::get_qualified_name(string& qn) const
 /// otherwise.
 bool
 pointer_type_def::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_pointed_to_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 pointer_type_def::~pointer_type_def()
 {}
@@ -4658,7 +4804,19 @@ reference_type_def::get_qualified_name(string& qn) const
 /// otherwise.
 bool
 reference_type_def::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_pointed_to_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 reference_type_def::~reference_type_def()
 {}
@@ -4953,7 +5111,19 @@ array_type_def::get_qualified_name() const
 /// otherwise.
 bool
 array_type_def::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_element_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 location
 array_type_def::get_location() const
@@ -4996,7 +5166,19 @@ enum_type_decl::get_pretty_representation() const
 /// otherwise.
 bool
 enum_type_decl::traverse(ir_node_visitor &v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_underlying_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 /// Destructor for the enum type declaration.
 enum_type_decl::~enum_type_decl()
@@ -5265,7 +5447,19 @@ typedef_decl::get_underlying_type() const
 /// otherwise.
 bool
 typedef_decl::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_underlying_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 typedef_decl::~typedef_decl()
 {}
@@ -5478,7 +5672,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
 	return false;
     }
 
-  if (*l.get_type() != *r.get_type())
+  if (l.get_type() != r.get_type())
     {
       result = false;
       if (k)
@@ -5562,7 +5756,19 @@ var_decl::get_pretty_representation() const
 /// otherwise.
 bool
 var_decl::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 var_decl::~var_decl()
 {}
@@ -5950,6 +6156,48 @@ function_type::operator==(const type_base& other) const
     return false;
 
   return equals(*this, *o, 0);
+}
+
+/// Traverses an instance of @ref function_type, visiting all the
+/// sub-types and decls that it might contain.
+///
+/// @param v the visitor that is used to visit every IR sub-node of
+/// the current node.
+///
+/// @return true if either
+///  - all the children nodes of the current IR node were traversed
+///    and the calling code should keep going with the traversing.
+///  - or the current IR node is already being traversed.
+/// Otherwise, returning false means that the calling code should not
+/// keep traversing the tree.
+bool
+function_type::traverse(ir_node_visitor& v)
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      bool keep_going = true;
+
+      if (type_base_sptr t = get_return_type())
+	{
+	  if (!t->traverse(v))
+	    keep_going = false;
+	}
+
+      if (keep_going)
+	for (parameters::iterator i = get_parameters().begin();
+	     i != get_parameters().end();
+	     ++i)
+	  if (type_base_sptr parm_type = (*i)->get_type())
+	    if (!parm_type->traverse(v))
+	      break;
+
+      visiting(false);
+    }
+  return v.visit_end(this);
 }
 
 function_type::~function_type()
@@ -6578,7 +6826,19 @@ function_decl::get_id() const
 /// otherwise.
 bool
 function_decl::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 function_decl::~function_decl()
 {}
@@ -6797,7 +7057,19 @@ function_decl::parameter::operator==(const decl_base& o) const
 
 bool
 function_decl::parameter::traverse(ir_node_visitor& v)
-{return v.visit(this);}
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (type_base_sptr t = get_type())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
 
 size_t
 function_decl::parameter::get_hash() const
@@ -7327,6 +7599,33 @@ class_decl::base_spec::get_hash() const
   return peek_hash_value();
 }
 
+/// Traverses an instance of @ref class_decl::base_spec, visiting all
+/// the sub-types and decls that it might contain.
+///
+/// @param v the visitor that is used to visit every IR sub-node of
+/// the current node.
+///
+/// @return true if either
+///  - all the children nodes of the current IR node were traversed
+///    and the calling code should keep going with the traversing.
+///  - or the current IR node is already being traversed.
+/// Otherwise, returning false means that the calling code should not
+/// keep traversing the tree.
+bool
+class_decl::base_spec::traverse(ir_node_visitor& v)
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      get_base_class()->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
+}
+
 /// Constructor for base_spec instances.
 ///
 /// Note that this constructor is for clients that don't support RTTI
@@ -7776,6 +8075,15 @@ class_decl::has_no_base_nor_member() const
 	  && priv_->member_class_templates_.empty());
 }
 
+/// Test if the current instance of @ref class_decl has virtual member
+/// functions.
+///
+/// @return true the current instance of @ref class_decl has virtual
+/// member functions.
+bool
+class_decl::has_virtual_member_functions() const
+{return !get_virtual_mem_fns().empty();}
+
 /// Return the hash value for the current instance.
 ///
 /// @return the hash value.
@@ -7936,34 +8244,42 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
   // compare virtual member functions.  We do not compare
   // non-virtual member functions here because we don't consider
   // them as being meaningful in the *equality* of two classes.
-  {
-    if (l.get_virtual_mem_fns().size() != r.get_virtual_mem_fns().size())
-      {
-	result = false;
-	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
-	else
-	  RETURN(false);
-      }
-
-    for (class_decl::member_functions::const_iterator
-	   f0 = l.get_virtual_mem_fns().begin(),
-	   f1 = r.get_virtual_mem_fns().begin();
-	 f0 != l.get_virtual_mem_fns().end()
-	   && f1 != r.get_virtual_mem_fns().end();
-	 ++f0, ++f1)
-      if (**f0 != **f1)
+  //
+  // Also, as the list of virtual member functions is not fully built
+  // until the translation unit is built (when reading from DWARF),
+  // let's ignore them until then.
+  translation_unit* ltu = get_translation_unit(l),
+    * rtu = get_translation_unit(r);
+  if (ltu && ltu->is_constructed()
+      && rtu && rtu->is_constructed())
+    {
+      if (l.get_virtual_mem_fns().size() != r.get_virtual_mem_fns().size())
 	{
 	  result = false;
 	  if (k)
-	    {
-	      *k |= SUBTYPE_CHANGE_KIND;
-	      break;
-	    }
+	    *k |= LOCAL_CHANGE_KIND;
 	  else
 	    RETURN(false);
 	}
-  }
+
+      for (class_decl::member_functions::const_iterator
+	     f0 = l.get_virtual_mem_fns().begin(),
+	     f1 = r.get_virtual_mem_fns().begin();
+	   f0 != l.get_virtual_mem_fns().end()
+	     && f1 != r.get_virtual_mem_fns().end();
+	   ++f0, ++f1)
+	if (**f0 != **f1)
+	  {
+	    result = false;
+	    if (k)
+	      {
+		*k |= SUBTYPE_CHANGE_KIND;
+		break;
+	      }
+	    else
+	      RETURN(false);
+	  }
+    }
 
   // compare member function templates
   {
@@ -8112,67 +8428,80 @@ operator==(class_decl_sptr l, class_decl_sptr r)
 bool
 class_decl::traverse(ir_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  if (visiting())
+    return true;
 
-  for (member_types::const_iterator i = get_member_types().begin();
-       i != get_member_types().end();
-       ++i)
+  if (v.visit_begin(this))
     {
-      ir_traversable_base_sptr t =
-	dynamic_pointer_cast<ir_traversable_base>(*i);
-      assert(t);
-      if (!t->traverse(v))
-	return false;
+      visiting(true);
+      bool stop = false;
+
+      for (base_specs::const_iterator i = get_base_specifiers().begin();
+	   i != get_base_specifiers().end();
+	   ++i)
+	{
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+	}
+
+      if (!stop)
+	for (data_members::const_iterator i = get_data_members().begin();
+	     i != get_data_members().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_functions::const_iterator i= get_member_functions().begin();
+	     i != get_member_functions().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_types::const_iterator i = get_member_types().begin();
+	     i != get_member_types().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_function_templates::const_iterator i =
+	       get_member_function_templates().begin();
+	     i != get_member_function_templates().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_class_templates::const_iterator i =
+	       get_member_class_templates().begin();
+	     i != get_member_class_templates().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+      visiting(false);
     }
 
-  for (member_function_templates::const_iterator i =
-	 get_member_function_templates().begin();
-       i != get_member_function_templates().end();
-       ++i)
-    {
-      ir_traversable_base_sptr t =
-	dynamic_pointer_cast<ir_traversable_base>(*i);
-      assert(t);
-      if (!t->traverse(v))
-	return false;
-    }
-
-  for (member_class_templates::const_iterator i =
-	 get_member_class_templates().begin();
-       i != get_member_class_templates().end();
-       ++i)
-    {
-      ir_traversable_base_sptr t =
-	dynamic_pointer_cast<ir_traversable_base>(*i);
-      assert(t);
-      if (!t->traverse(v))
-	return false;
-    }
-
-  for (data_members::const_iterator i = get_data_members().begin();
-       i != get_data_members().end();
-       ++i)
-    {
-      ir_traversable_base_sptr t =
-	dynamic_pointer_cast<ir_traversable_base>(*i);
-      assert(t);
-      if (!t->traverse(v))
-	return false;
-    }
-
-  for (member_functions::const_iterator i= get_member_functions().begin();
-       i != get_member_functions().end();
-       ++i)
-    {
-      ir_traversable_base_sptr t =
-	dynamic_pointer_cast<ir_traversable_base>(*i);
-      assert(t);
-      if (!t->traverse(v))
-	return false;
-    }
-
-  return true;
+  return v.visit_end(this);
 }
 
 class_decl::~class_decl()
@@ -8244,9 +8573,17 @@ operator==(class_decl::member_function_template_sptr l,
 bool
 class_decl::member_function_template::traverse(ir_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
-  return as_function_tdecl()->traverse(v);
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (function_tdecl_sptr f = as_function_tdecl())
+	f->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
 }
 
 bool
@@ -8297,10 +8634,17 @@ operator==(class_decl::member_class_template_sptr l,
 bool
 class_decl::member_class_template::traverse(ir_node_visitor& v)
 {
-  if (!v.visit(this))
-    return false;
+  if (visiting())
+    return true;
 
-  return as_class_tdecl()->get_pattern()->traverse(v);
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (class_tdecl_sptr t = as_class_tdecl())
+	t->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
 }
 
 /// Streaming operator for class_decl::access_specifier.
@@ -8916,10 +9260,16 @@ function_tdecl::operator==(const template_decl& other) const
 bool
 function_tdecl::traverse(ir_node_visitor&v)
 {
-  if (!v.visit(this))
-    return false;
+  if (visiting())
+    return true;
 
-  return get_pattern()->traverse(v);
+  if (!v.visit_begin(this))
+    {
+      visiting(true);
+      get_pattern()->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
 }
 
 function_tdecl::~function_tdecl()
@@ -9041,90 +9391,279 @@ class_tdecl::operator==(const class_tdecl& o) const
 bool
 class_tdecl::traverse(ir_node_visitor&v)
 {
-  if (!v.visit(this))
-    return false;
+  if (visiting())
+    return true;
 
-  shared_ptr<class_decl> pattern = get_pattern();
-  if (pattern)
-    if (!pattern->traverse(v))
-      return false;
-
-  return true;
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      if (class_decl_sptr pattern = get_pattern())
+	pattern->traverse(v);
+      visiting(false);
+    }
+  return v.visit_end(this);
 }
 
 class_tdecl::~class_tdecl()
 {}
+
+/// This visitor checks if a given type as non-canonicalized sub
+/// types.
+class non_canonicalized_subtype_detector : public ir::ir_node_visitor
+{
+  type_base* type_;
+  bool has_non_canonical_type_;
+
+private:
+  non_canonicalized_subtype_detector();
+
+public:
+  non_canonicalized_subtype_detector(type_base* type)
+    : type_(type),
+      has_non_canonical_type_(false)
+  {}
+
+  /// Return true if the visitor detected that there is a
+  /// non-canonicalized sub-type.
+  ///
+  /// @return true if the visitor detected that there is a
+  /// non-canonicalized sub-type.
+  bool
+  has_non_canonical_type() const
+  {return has_non_canonical_type_;}
+
+  /// When visiting a sub-type, if it's *NOT* been canonicalized, set
+  /// the 'has_non_canonical_type' flag.  And in any case, when
+  /// visiting a sub-type, do not visit its children nodes.  So this
+  /// function only goes to the level below the level of the top-most
+  /// type.
+  ///
+  /// @return true if we are at the same level as the top-most type,
+  /// otherwise return false.
+  bool
+  visit_begin(type_base* t)
+  {
+    if (t != type_)
+      {
+	if (!t->get_canonical_type())
+	    has_non_canonical_type_ = true;
+	return false;
+      }
+    return true;
+  }
+
+  /// When we are done visiting a sub-type, if it's been flagged as
+  /// been non-canonicalized, then stop the traversing.
+  ///
+  /// Otherwise, keep going.
+  ///
+  /// @return false iff the sub-type that has been visited is
+  /// non-canonicalized.
+  bool
+  visit_end(type_base* )
+  {
+    if (has_non_canonical_type_)
+      return false;
+    return true;
+  }
+}; //end struct sub_type_visitor
+
+/// Test if a type has sub-types that are non-canonicalized.
+///
+/// @param t the type which sub-types to consider.
+///
+/// @return true if a type has sub-types that are non-canonicalized.
+bool
+type_has_non_canonicalized_subtype(type_base_sptr t)
+{
+  if (!t)
+    return false;
+
+  non_canonicalized_subtype_detector v(t.get());
+  if (!t->traverse(v))
+    return v.has_non_canonical_type();
+  return false;
+}
 
 bool
 ir_traversable_base::traverse(ir_node_visitor&)
 {return true;}
 
 bool
-ir_node_visitor::visit(scope_decl*)
+ir_node_visitor::visit_begin(decl_base*)
 {return true;}
 
 bool
-ir_node_visitor::visit(type_decl*)
+ir_node_visitor::visit_end(decl_base*)
 {return true;}
 
 bool
-ir_node_visitor::visit(namespace_decl*)
+ir_node_visitor::visit_begin(scope_decl*)
 {return true;}
 
 bool
-ir_node_visitor::visit(qualified_type_def*)
+ir_node_visitor::visit_end(scope_decl*)
 {return true;}
 
 bool
-ir_node_visitor::visit(pointer_type_def*)
+ir_node_visitor::visit_begin(type_base*)
 {return true;}
 
 bool
-ir_node_visitor::visit(reference_type_def*)
+ir_node_visitor::visit_end(type_base*)
 {return true;}
 
 bool
-ir_node_visitor::visit(array_type_def*)
-{return true;}
+ir_node_visitor::visit_begin(scope_type_decl* t)
+{return visit_begin(static_cast<type_base*>(t));}
 
 bool
-ir_node_visitor::visit(enum_type_decl*)
-{return true;}
+ir_node_visitor::visit_end(scope_type_decl* t)
+{return visit_end(static_cast<type_base*>(t));}
 
 bool
-ir_node_visitor::visit(typedef_decl*)
-{return true;}
+ir_node_visitor::visit_begin(type_decl* t)
+{return visit_begin(static_cast<type_base*>(t));}
 
 bool
-ir_node_visitor::visit(var_decl*)
-{return true;}
+ir_node_visitor::visit_end(type_decl* t)
+{return visit_end(static_cast<type_base*>(t));}
 
 bool
-ir_node_visitor::visit(function_decl*)
-{return true;}
+ir_node_visitor::visit_begin(namespace_decl* d)
+{return visit_begin(static_cast<decl_base*>(d));}
 
 bool
-ir_node_visitor::visit(function_decl::parameter*)
-{return true;}
-bool
-ir_node_visitor::visit(function_tdecl*)
-{return true;}
+ir_node_visitor::visit_end(namespace_decl* d)
+{return visit_end(static_cast<decl_base*>(d));}
 
 bool
-ir_node_visitor::visit(class_tdecl*)
-{return true;}
+ir_node_visitor::visit_begin(qualified_type_def* t)
+{return visit_begin(static_cast<type_base*>(t));}
 
 bool
-ir_node_visitor::visit(class_decl*)
-{return true;}
+ir_node_visitor::visit_end(qualified_type_def* t)
+{return visit_end(static_cast<type_base*>(t));}
 
 bool
-ir_node_visitor::visit(class_decl::member_function_template*)
-{return true;}
+ir_node_visitor::visit_begin(pointer_type_def* t)
+{return visit_begin(static_cast<type_base*>(t));}
 
 bool
-ir_node_visitor::visit(class_decl::member_class_template*)
-{return true;}
+ir_node_visitor::visit_end(pointer_type_def* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(reference_type_def* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(reference_type_def* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(array_type_def* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(array_type_def* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(enum_type_decl* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(enum_type_decl* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(typedef_decl* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(typedef_decl* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(function_type* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(function_type* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(var_decl* d)
+{return visit_begin(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_end(var_decl* d)
+{return visit_end(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_begin(function_decl* d)
+{return visit_begin(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_end(function_decl* d)
+{return visit_end(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_begin(function_decl::parameter* d)
+{return visit_begin(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_end(function_decl::parameter* d)
+{return visit_end(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_begin(function_tdecl* d)
+{return visit_begin(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_end(function_tdecl* d)
+{return visit_end(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_begin(class_tdecl* d)
+{return visit_begin(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_end(class_tdecl* d)
+{return visit_end(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_begin(class_decl* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(class_decl* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(class_decl::base_spec* d)
+{return visit_begin(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_end(class_decl::base_spec* d)
+{return visit_end(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_begin(class_decl::member_function_template* d)
+{return visit_begin(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_end(class_decl::member_function_template* d)
+{return visit_end(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_begin(class_decl::member_class_template* d)
+{return visit_begin(static_cast<decl_base*>(d));}
+
+bool
+ir_node_visitor::visit_end(class_decl::member_class_template* d)
+{return visit_end(static_cast<decl_base*>(d));}
 
 // <debugging facilities>
 

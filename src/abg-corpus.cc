@@ -587,7 +587,7 @@ public:
   /// @return true if the traversal of the tree should continue, false
   /// otherwise.
   bool
-  visit(function_decl* fn)
+  visit_end(function_decl* fn)
   {
     add_fn_to_wip_fns(fn);
     return true;
@@ -604,7 +604,7 @@ public:
   /// @return true if the traversal of the tree should continue, false
   /// otherwise.
   bool
-  visit(var_decl* var)
+  visit_end(var_decl* var)
   {
     if (!is_data_member(var)
 	|| get_member_is_static(var))

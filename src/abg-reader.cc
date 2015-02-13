@@ -95,6 +95,8 @@ private:
   unordered_map<string, shared_ptr<type_base> > m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> > m_fn_tmpl_map;
   unordered_map<string, shared_ptr<class_tdecl> > m_class_tmpl_map;
+  unordered_map<string, bool>	m_wip_classes_map;
+  vector<type_base_sptr>	m_types_to_canonicalize;
   string_xml_node_map		m_id_xml_node_map;
   xml_node_decl_base_sptr_map	m_xml_node_decl_map;
   xml::reader_sptr		m_reader;
@@ -379,6 +381,63 @@ public:
   clear_type_map()
   {m_types_map.clear();}
 
+  /// Clean the vector of types to canonicalize after the translation
+  /// unit has been read.
+  void
+  clear_types_to_canonicalize()
+  {m_types_to_canonicalize.clear();}
+
+  /// Clean the map of classes that are "Work In Progress"; that is,
+  /// the map of the class that are currently being built, but at not
+  /// yet fully built.
+  void
+  clear_wip_classes_map()
+  {m_wip_classes_map.clear();}
+
+  /// Mark a given class as being "Work In Progress"; that is, mark it
+  /// as being currently built.
+  ///
+  /// @param klass the class to mark as being "Work In Progress".
+  void
+  mark_class_as_wip(const class_decl_sptr klass)
+  {
+    if (!klass)
+      return;
+    string qname = klass->get_qualified_name();
+    m_wip_classes_map[qname] = true;
+  }
+
+  /// Mark a given class as being *NOT* "Work In Progress" anymore;
+  /// that is, mark it as being fully built.
+  ///
+  /// @param klass the class to mark as being built.
+  void
+  unmark_class_as_wip(const class_decl_sptr klass)
+  {
+    if (!klass)
+      return;
+
+    string qname = klass->get_qualified_name();
+    m_wip_classes_map.erase(qname);
+  }
+
+  /// Test if a class a being currently built; that is, if it's "Work
+  /// In Progress".
+  ///
+  /// @param klass the class to consider.
+  bool
+  is_wip_class(const class_decl_sptr klass)
+  {
+    if (!klass)
+      return false;
+
+    string qname = klass->get_qualified_name();
+    unordered_map<string, bool>::const_iterator i =
+      m_wip_classes_map.find(qname);
+
+    return i != m_wip_classes_map.end();
+  }
+
   /// Associate an ID with a type.
   ///
   /// @param type the type to associate witht he ID.
@@ -532,6 +591,61 @@ public:
     clear_id_xml_node_map();
     clear_xml_node_decl_map();
     clear_decls_stack();
+    clear_types_to_canonicalize();
+  }
+
+  /// Test if a type should be canonicalized early.  If so,
+  /// canonicalize it right away.  Otherwise, schedule it for late
+  /// canonicalizing; that is, schedule it so that it's going to be
+  /// canonicalized when the translation unit is fully read.
+  ///
+  /// @param t the type to consider for canonicalizing.
+  void
+  maybe_canonicalize_type(type_base_sptr t)
+  {
+    if (!t)
+      return;
+
+    if (t->get_canonical_type())
+      return;
+
+    bool is_class_decl_only = false;
+    if (class_decl_sptr klass = is_class_type(t))
+      is_class_decl_only = klass->get_is_declaration_only();
+
+    // If this class has some non-canonicalized sub type, then wait
+    // for the when we've read all the translation unit to
+    // canonicalize all of its non-canonicalized sub types and then we
+    // can canonicalize this one.
+    //
+    // Also, if this is a declaration-only class, wait for the end of
+    // the translation unit reading so that we have its definition and
+    // then we'll use that for canonicalizing it.
+    if (!type_has_non_canonicalized_subtype(t)
+	&& !is_class_decl_only)
+      canonicalize(t);
+    else
+      schedule_type_for_late_canonicalizing(t);
+  }
+
+  /// Schedule a type for being canonicalized after the current
+  /// translation unit is read.
+  ///
+  /// @param t the type to consider for canonicalization.
+  void
+  schedule_type_for_late_canonicalizing(type_base_sptr t)
+  {m_types_to_canonicalize.push_back(t);}
+
+  /// Perform the canonicalizing of types that ought to be done after
+  /// the current translation unit is read.  This function is called
+  /// at the current translation unit is fully built.
+  void
+  perform_late_type_canonicalizing()
+  {
+    for (vector<type_base_sptr>::iterator i = m_types_to_canonicalize.begin();
+	 i != m_types_to_canonicalize.end();
+	 ++i)
+      canonicalize(*i);
   }
 
 };// end class read_context
@@ -847,6 +961,8 @@ read_translation_unit_from_input(read_context&	ctxt,
     }
 
    xmlTextReaderNext(reader.get());
+
+   ctxt.perform_late_type_canonicalizing();
 
    ctxt.clear_per_translation_unit_data();
 
@@ -1916,8 +2032,6 @@ build_function_decl(read_context&	ctxt,
 						      size, align)
 				    : new function_type(size, align));
 
-  fn_type = ctxt.get_translation_unit()->get_canonical_function_type(fn_type);
-
   shared_ptr<function_decl> fn_decl(as_method_decl
 				    ? new class_decl::method_decl
 				    (name, fn_type,
@@ -1960,6 +2074,11 @@ build_function_decl(read_context&	ctxt,
 
   if (fn_decl->get_symbol() && fn_decl->get_symbol()->is_public())
     fn_decl->set_is_in_public_symbol_table(true);
+
+  fn_type = ctxt.get_translation_unit()->get_canonical_function_type(fn_type);
+
+  fn_decl->set_type(fn_type);
+  ctxt.maybe_canonicalize_type(fn_type);
 
   return fn_decl;
 }
@@ -2089,6 +2208,7 @@ build_type_decl(read_context&		ctxt,
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, decl);
+      canonicalize(decl);
       return decl;
     }
 
@@ -2188,6 +2308,7 @@ build_qualified_type_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, decl);
+      ctxt.maybe_canonicalize_type(decl);
       return decl;
     }
 
@@ -2270,6 +2391,7 @@ build_pointer_type_def(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
+      ctxt.maybe_canonicalize_type(t);
       return t;
     }
 
@@ -2359,6 +2481,7 @@ build_reference_type_def(read_context&		ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
+      ctxt.maybe_canonicalize_type(t);
       return t;
     }
 
@@ -2528,6 +2651,7 @@ build_array_type_def(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, ar_type);
+      ctxt.maybe_canonicalize_type(ar_type);
       return ar_type;
     }
 
@@ -2618,6 +2742,7 @@ build_enum_type_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
+      ctxt.maybe_canonicalize_type(t);
       return t;
     }
 
@@ -2690,6 +2815,12 @@ build_typedef_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
+      // If this typedef is *NOT* meant to be a member type then try
+      // to canonicalize it.  Otherwise, the code that is calling it
+      // from the building of a class type is going to handle the
+      // canonicalizing.
+      if (!add_to_current_scope)
+	ctxt.maybe_canonicalize_type(t);
       return t;
     }
 
@@ -2804,6 +2935,8 @@ build_class_decl(read_context&		ctxt,
 
   ctxt.map_xml_node_to_decl(node, decl);
 
+  ctxt.mark_class_as_wip(decl);
+
   for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
     {
       if (n->type != XML_ELEMENT_NODE)
@@ -2861,6 +2994,12 @@ build_class_decl(read_context&		ctxt,
 		      assert(!id.empty());
 		      ctxt.key_type_decl(m, id, /*force=*/true);
 		      ctxt.map_xml_node_to_decl(p, get_type_declaration(m));
+		      if ((!is_class_type(t)
+			   || (!ctxt.is_wip_class(is_class_type(t))))
+			  && !type_has_non_canonicalized_subtype(t))
+			canonicalize(t);
+		      else
+			ctxt.schedule_type_for_late_canonicalizing(t);
 		    }
 		}
 	    }
@@ -2983,6 +3122,10 @@ build_class_decl(read_context&		ctxt,
 
   if (decl)
     ctxt.key_type_decl(decl, id);
+
+  ctxt.unmark_class_as_wip(decl);
+
+  ctxt.maybe_canonicalize_type(decl);
 
   return decl;
 }

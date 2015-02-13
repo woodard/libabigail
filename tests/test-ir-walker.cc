@@ -33,17 +33,97 @@ using std::cout;
 
 struct name_printing_visitor : public abigail::ir_node_visitor
 {
-  bool
-  visit(abigail::class_decl* klass)
+  unsigned level_;
+
+  name_printing_visitor()
+    : level_()
+  {}
+
+  void
+  build_level_prefix(string& str)
   {
-    cout << "class name: " << klass->get_name() << "\n";
+    str.clear();
+    for (unsigned i = 0; i < level_; ++i)
+      str += ' ';
+  }
+
+  string
+  build_level_prefix()
+  {
+    string prefix;
+    build_level_prefix(prefix);
+    return prefix;
+  }
+
+  bool
+  visit_begin(abigail::namespace_decl* ns)
+  {
+    string prefix = build_level_prefix();
+
+    cout << prefix << ns->get_pretty_representation() << "\n"
+	 << prefix << "{\n";
+    ++level_;
     return true;
   }
 
   bool
-  visit(abigail::namespace_decl* ns)
+  visit_end(abigail::namespace_decl*)
   {
-    cout << "namespace name: " << ns->get_name() << "\n";
+    string prefix = build_level_prefix();
+    cout << prefix << "}\n";
+    --level_;
+    return true;
+  }
+
+  bool
+  visit_begin(abigail::class_decl* klass)
+  {
+    string prefix = build_level_prefix();
+
+    cout << prefix << klass->get_pretty_representation() << "\n"
+	 << prefix << "{\n";
+    ++level_;
+    return true;
+  }
+
+  bool
+  visit_end(abigail::class_decl*)
+  {
+    string prefix = build_level_prefix();
+    cout << prefix << "}\n";
+    --level_;
+    return true;
+  }
+
+  bool
+  visit_begin(abigail::function_decl* f)
+  {
+    string prefix = build_level_prefix();
+    cout << prefix << f->get_pretty_representation() << "\n";
+    ++level_;
+    return true;
+  }
+
+  bool
+  visit_end(abigail::function_decl*)
+  {
+    --level_;
+    return true;
+  }
+
+  bool
+  visit_begin(abigail::var_decl* v)
+  {
+    string prefix = build_level_prefix();
+    cout << prefix << v->get_pretty_representation() << "\n";
+    ++level_;
+    return true;
+  }
+
+  bool
+  visit_end(abigail::var_decl*)
+  {
+    --level_;
     return true;
   }
 };

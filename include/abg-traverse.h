@@ -44,8 +44,38 @@ struct node_visitor_base
 
 /// The interface for types which are feeling social and want to be
 /// visited during the traversal of a hierarchy of nodes.
-struct traversable_base
+class traversable_base
 {
+  bool visiting_;
+
+protected:
+
+  /// This should returns false before and after the node has been
+  /// visiting.  During the visiting of the node (and of its children)
+  /// this should return true.
+  ///
+  /// @return true if the current node is being visited.
+  bool
+  visiting()
+  {return visiting_;}
+
+  /// The traversing code should be responsible of calling this, not
+  /// the user code.
+  ///
+  /// This is the setter of the "visiting" flag of the node being
+  /// visited.  If set to yes, it means the node is being visited.
+  /// False means either the node has not yet been visited, or it
+  /// has already been visited.
+  ///
+  /// @param f the new value of the "visiting" flag.
+  void
+  visiting(bool f)
+  {visiting_ = f;}
+
+public:
+  traversable_base()
+    : visiting_()
+  {}
   /// This virtual method is overloaded and implemented by any single
   /// type which instance is going to be visited during the traversal
   /// of translation unit nodes.

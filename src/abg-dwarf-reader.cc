@@ -78,9 +78,13 @@ typedef shared_ptr<Dwfl> dwfl_sptr;
 typedef unordered_map<Dwarf_Off, decl_base_sptr> die_decl_map_type;
 
 /// Convenience typedef for a map which key is the offset of a dwarf
+/// die and which value is the corresponding type_base.
+typedef unordered_map<Dwarf_Off, type_base_sptr> die_type_map_type;
+
+/// Convenience typedef for a map which key is the offset of a dwarf
 /// die, (given by dwarf_dieoffset()) and which value is the
 /// corresponding class_decl.
-typedef unordered_map<Dwarf_Off, decl_base_sptr> die_class_map_type;
+typedef unordered_map<Dwarf_Off, class_decl_sptr> die_class_map_type;
 
 /// Convenience typedef for a map which key is the offset of a
 /// DW_TAG_compile_unit and the key is the corresponding @ref
@@ -1700,7 +1704,17 @@ class read_context
   // described by the DWARF extension (as of DWARF4) described at
   // http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
   die_decl_map_type		alternate_die_decl_map_;
+  // This is a map that associates DIE offsets to their types.  This
+  // is for DIEs that represent types.  Note that it's for DIEs
+  // defined in the main debug info section.
+  die_type_map_type		die_type_map_;
+  // This is a map that associates DIE offsets to their types.  This
+  // is for DIEs that represent types.  Note that it's for DIEs
+  // defined in the alternate debug info section.
+  die_type_map_type		alternate_die_type_map_;
   die_class_map_type		die_wip_classes_map_;
+  vector<Dwarf_Off>		types_to_canonicalize_;
+  vector<Dwarf_Off>		alt_types_to_canonicalize_;
   die_tu_map_type		die_tu_map_;
   corpus_sptr			cur_corpus_;
   translation_unit_sptr	cur_tu_;
@@ -1960,7 +1974,7 @@ public:
       associate_die_to_decl_primary(die_offset, decl);
   }
 
-private:
+public:
   /// Lookup the decl for a given DIE.  This works on DIEs that come
   /// from the main debug info sections.
   ///
@@ -1999,7 +2013,6 @@ private:
     return it->second;
   }
 
-public:
   /// Lookup the decl for a given DIE.
   ///
   /// @param die_offset the offset of the DIE to consider.
@@ -2023,6 +2036,67 @@ public:
       : lookup_decl_from_die_offset_primary(die_offset);
   }
 
+  /// Associated a DIE (representing a type) at a given offset to the
+  /// type that it represents.
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @param in_alt_di true if the DIE comes from the alternate debug
+  /// info section, false if it does not.
+  ///
+  /// @param type the type to associate the DIE to.
+  void
+  associate_die_to_type(size_t		die_offset,
+			bool		in_alt_di,
+			type_base_sptr	type)
+  {
+    if (!type)
+      return;
+
+    if (in_alt_di)
+      alternate_die_type_map_[die_offset] = type;
+    else
+      die_type_map_[die_offset] = type;
+  }
+
+  /// Lookup the type associated to a given DIE.
+  ///
+  /// Note that the DIE must have been associated to type by a
+  /// previous invocation of the function
+  /// read_context::associate_die_to_type().
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @param in_alt_di true if the DIE comes from the alternate debug
+  /// info section, false if it does not.
+  ///
+  /// @return the type associated to the DIE of offset @p die_offset,
+  /// or NULL if no type is associated to the DIE.
+  type_base_sptr
+  lookup_type_from_die_offset(size_t die_offset,
+			      bool in_alt_die)
+  {
+    die_type_map_type::iterator i;
+    type_base_sptr result;
+
+    if (in_alt_die)
+      {
+	i = alternate_die_type_map_.find(die_offset);
+	if (i == alternate_die_type_map_.end())
+	  return type_base_sptr();
+	result = i->second;
+      }
+    else
+      {
+	i = die_type_map_.find(die_offset);
+	if (i == die_type_map_.end())
+	  return type_base_sptr();
+	result = i->second;
+      }
+
+    return result;
+  }
+
   /// Getter of a map that associates a die that represents a
   /// class/struct with the declaration of the class, while the class
   /// is being constructed.
@@ -2036,6 +2110,61 @@ public:
   die_class_map_type&
   die_wip_classes_map()
   {return die_wip_classes_map_;}
+
+  /// Return true iff a given offset if for the DIE of a class that is
+  /// being currently built.
+  ///
+  /// @param offset the DIE offset to consider.
+  ///
+  /// @return true iff @p offset is the offset of the DIE of a class
+  /// that is being currently built.
+  bool
+  is_wip_class_die_offset(Dwarf_Off offset) const
+  {
+    die_class_map_type::const_iterator i = die_wip_classes_map().find(offset);
+    return (i != die_wip_classes_map().end());
+  }
+
+  /// Return a reference to the vector containing the offsets of the
+  /// types that need late canonicalizing.
+  ///
+  /// @param in_alt_di true iff the vector to return is the one
+  /// containining offsets of DIEs that are in the alternate debug
+  /// info section.
+  vector<Dwarf_Off>&
+  types_to_canonicalize(bool in_alt_di)
+  {
+    if (in_alt_di)
+      return alt_types_to_canonicalize_;
+    return types_to_canonicalize_;
+  }
+
+  /// Return a reference to the vector containing the offsets of the
+  /// types that need late canonicalizing.
+  ///
+  /// @param in_alt_di true iff the vector to return is the one
+  /// containining offsets of DIEs that are in the alternate debug
+  /// info section.
+  const vector<Dwarf_Off>&
+  types_to_canonicalize(bool in_alt_di) const
+  {
+    if (in_alt_di)
+      return alt_types_to_canonicalize_;
+    return types_to_canonicalize_;
+  }
+
+  /// Put the offset of a DIE representing a type on a side vector so
+  /// that when the reading of the debug info of the current
+  /// translation unit is done, we can get back to the type DIE and
+  /// from there, to the type it's associated to, and then
+  /// canonicalize it.  This what we call late canonicalization.
+  ///
+  /// @param o the offset of the type DIE to schedule for late type
+  /// canonicalization.
+  void
+  schedule_type_for_canonicalization(Dwarf_Off	o,
+				     bool	in_alt_di)
+  {types_to_canonicalize(in_alt_di).push_back(o);}
 
   const die_tu_map_type&
   die_tu_map() const
@@ -3062,6 +3191,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       bool		die_is_from_alt_di,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
+		       bool		is_member,
 		       size_t		where_offset);
 
 static decl_base_sptr
@@ -3069,6 +3199,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		die_is_from_alt_di,
 		       bool		called_from_public_decl,
+		       bool		is_member,
 		       size_t		where_offset);
 
 static decl_base_sptr
@@ -5266,6 +5397,7 @@ get_scope_for_die(read_context& ctxt,
     d = build_ir_node_from_die(ctxt, &parent_die,
 			       die_is_from_alt_di,
 			       called_for_public_decl,
+			       /*is_member=*/false,
 			       where_offset);
   s =  dynamic_pointer_cast<scope_decl>(d);
   if (!s)
@@ -5335,6 +5467,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
     build_ir_node_from_die(ctxt, &child,
 			   /*die_is_from_alt_di=*/false,
 			   die_is_public_decl(&child),
+			   /*is_member=*/false,
 			   dwarf_dieoffset(&child));
   while (dwarf_siblingof(&child, &child) == 0);
 
@@ -5391,6 +5524,45 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	  }
       }
   ctxt.var_decls_to_re_add_to_tree().clear();
+
+  result->set_is_constructed(true);
+
+  /// Now, look at the types that needs to be canonicalized after the
+  /// translation has been constructed (which is just now) and
+  /// canonicalize them.
+  ///
+  /// The types need to be constructed at the end of the translation
+  /// unit reading phase because some types are modified by some DIEs
+  /// even after the principal DIE describing the type has been read;
+  /// this happens for clones of virtual destructors (for instance) or
+  /// even for some static data members.  We need to that for types
+  /// are in the alternate debug info section and for types that in
+  /// the main debug info section.
+
+  if (!ctxt.types_to_canonicalize(/*in_alt_debug_info_section=*/true).empty())
+    {
+      for (vector<Dwarf_Off>::iterator i =
+	     ctxt.types_to_canonicalize(true).begin();
+	   i != ctxt.types_to_canonicalize(true).end();
+	   ++i)
+	{
+	  decl_base_sptr d = ctxt.lookup_decl_from_die_offset_alternate(*i);
+	  canonicalize(is_type(d));
+	}
+    }
+
+  if (!ctxt.types_to_canonicalize(/*in_alt_debug_info_section=*/false).empty())
+    {
+      for (vector<Dwarf_Off>::iterator i =
+	     ctxt.types_to_canonicalize(false).begin();
+	   i != ctxt.types_to_canonicalize(false).end();
+	   ++i)
+	{
+	  decl_base_sptr d = ctxt.lookup_decl_from_die_offset_primary(*i);
+	  canonicalize(is_type(d));
+	}
+    }
+
   return result;
 }
 
@@ -5452,6 +5624,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
     build_ir_node_from_die(ctxt, &child,
 			   die_is_from_alt_di,
 			   /*called_from_public_decl=*/false,
+			   /*is_member=*/false,
 			   where_offset);
   while (dwarf_siblingof(&child, &child) == 0);
   ctxt.scope_stack().pop();
@@ -5495,8 +5668,6 @@ build_type_decl(read_context&	ctxt,
   result.reset(new type_decl(type_name, bit_size,
 			     alignment, loc,
 			     linkage_name));
-  enable_canonical_equality(result);
-
   return result;
 }
 
@@ -5565,12 +5736,10 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   translation_unit_sptr tu = ctxt.cur_tu();
   decl_base_sptr d =
     add_decl_to_scope(t, tu->get_global_scope().get());
-  enable_canonical_equality(t);
 
   t = dynamic_pointer_cast<type_decl>(d);
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
-  enable_canonical_equality(result);
 
   return result;
 }
@@ -5683,7 +5852,7 @@ finish_member_function_reading(Dwarf_Die*		die,
 /// the DIE tree.
 ///
 /// @return the resulting class_type.
-static decl_base_sptr
+static class_decl_sptr
 build_class_type_and_add_to_ir(read_context&	ctxt,
 			       Dwarf_Die*	die,
 			       bool		is_in_alt_di,
@@ -5748,9 +5917,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   if (!has_child)
     // TODO: set the access specifier for the declaration-only class
     // here.
-    return res;
+    return result;
 
-  ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = res;
+  ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = result;
 
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>(res);
@@ -5779,6 +5948,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		build_ir_node_from_die(ctxt, &type_die,
 				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
+				       /*is_member=*/false,
 				       where_offset);
 	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
 	      if (!b)
@@ -5823,6 +5993,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		build_ir_node_from_die(ctxt, &type_die,
 				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
+				       /*is_member=*/false,
 				       where_offset);
 	      type_base_sptr t = is_type(ty);
 	      if (!t)
@@ -5867,6 +6038,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 							is_in_alt_di,
 							result.get(),
 							called_from_public_decl,
+							/*is_member=*/true,
 							where_offset);
 	      if (!r)
 		continue;
@@ -5886,6 +6058,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		build_ir_node_from_die(ctxt, &child, is_in_alt_di,
 				       result.get(),
 				       called_from_public_decl,
+				       /*is_member=*/true,
 				       where_offset);
 	      if (td)
 		{
@@ -5899,6 +6072,32 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		  ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
 					     is_in_alt_di,
 					     td);
+		  type_base_sptr t = is_type(td);
+		  assert(t);
+		  ctxt.associate_die_to_type(dwarf_dieoffset(&child),
+					     is_in_alt_di, t);
+		  // OK, so, 't' is a member type.  Let's see if we
+		  // can canonicalize it right away, or if we need to
+		  // schedule it for late canonicalizing (that is,
+		  // after the current translation unit is read).
+
+		  // So we can canonicalize it right away if:
+		  if (// it's either fully built class type ...
+		      ((is_class_type(t)
+			&& !ctxt.is_wip_class_die_offset(dwarf_dieoffset
+							 (&child)))
+		       // or a non-class type ...
+		       || !is_class_type(t))
+		      // But in all cases, all its sub-type must have
+		      // been already canonicalized.
+		      && !type_has_non_canonicalized_subtype(t))
+		    canonicalize(t);
+		  else
+		    // Otherwise, well, let's schedule this member
+		    // type for late canonicalizing.
+		    ctxt.schedule_type_for_canonicalization(dwarf_dieoffset
+							    (&child),
+							    is_in_alt_di);
 		}
 	    }
 	} while (dwarf_siblingof(&child, &child) == 0);
@@ -5918,9 +6117,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       }
   }
 
-  enable_canonical_equality(result);
-
-  return res;
+  return result;
 }
 
 /// build a qualified type from a DW_TAG_const_type,
@@ -5973,6 +6170,7 @@ build_qualified_type(read_context&	ctxt,
 			   &underlying_type_die,
 			   utype_is_in_alt_di,
 			   called_from_public_decl,
+			   /*is_member=*/false,
 			   where_offset);
   if (!utype_decl)
     return result;
@@ -5992,8 +6190,6 @@ build_qualified_type(read_context&	ctxt,
     result.reset(new qualified_type_def(utype,
 					qualified_type_def::CV_RESTRICT,
 					location()));
-
-  enable_canonical_equality(result);
 
   return result;
 }
@@ -6074,6 +6270,7 @@ build_pointer_type_def(read_context&	ctxt,
     utype_decl = build_ir_node_from_die(ctxt, &underlying_type_die,
 					utype_die_is_in_alt_di,
 					called_from_public_decl,
+					/*is_member=*/false,
 					where_offset);
   if (!utype_decl)
     return result;
@@ -6088,8 +6285,6 @@ build_pointer_type_def(read_context&	ctxt,
 
   result.reset(new pointer_type_def(utype, size, size, location()));
   assert(result->get_pointed_to_type());
-
-  enable_canonical_equality(result);
 
   return result;
 }
@@ -6142,6 +6337,7 @@ build_reference_type(read_context&	ctxt,
     build_ir_node_from_die(ctxt, &underlying_type_die,
 			   utype_is_in_alt_di,
 			   called_from_public_decl,
+			   /*is_member=*/false,
 			   where_offset);
   if (!utype_decl)
     return result;
@@ -6158,8 +6354,6 @@ build_reference_type(read_context&	ctxt,
 
   result.reset(new reference_type_def(utype, is_lvalue, size, size,
 				      location()));
-  enable_canonical_equality(result);
-
   return result;
 }
 
@@ -6208,6 +6402,7 @@ build_array_type(read_context&	ctxt,
       build_ir_node_from_die(ctxt, &type_die,
 			     utype_is_in_alt_di,
 			     called_from_public_decl,
+			     /*is_member=*/false,
 			     where_offset);
   if (!type_decl)
     return result;
@@ -6247,7 +6442,6 @@ build_array_type(read_context&	ctxt,
     }
 
   result.reset(new array_type_def(type, subranges, location()));
-  enable_canonical_equality(result);
 
   return result;
 }
@@ -6297,6 +6491,7 @@ build_typedef_type(read_context&	ctxt,
     build_ir_node_from_die(ctxt, &underlying_type_die,
 			   utype_is_in_alternate_di,
 			   called_from_public_decl,
+			   /*is_member=*/false,
 			   where_offset);
   if (!utype_decl)
     return result;
@@ -6309,7 +6504,6 @@ build_typedef_type(read_context&	ctxt,
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   result.reset(new typedef_decl(name, utype, loc, linkage_name));
-  enable_canonical_equality(result);
 
   return result;
 }
@@ -6359,6 +6553,7 @@ build_var_decl(read_context&	ctxt,
 	build_ir_node_from_die(ctxt, &type_die,
 			       utype_is_in_alt_di,
 			       /*called_from_public_decl=*/true,
+			       /*is_member=*/false,
 			       where_offset);
       if (!ty)
 	return result;
@@ -6454,6 +6649,7 @@ build_function_decl(read_context&	ctxt,
       build_ir_node_from_die(ctxt, &ret_type_die,
 			     ret_type_die_is_in_alternate_debug_info,
 			     /*called_from_public_decl=*/true,
+			     /*is_member=*/false,
 			     where_offset);
 
   class_decl_sptr is_method =
@@ -6483,6 +6679,7 @@ build_function_decl(read_context&	ctxt,
 		build_ir_node_from_die(ctxt, &parm_type_die,
 				       parm_type_die_is_in_alt_di,
 				       /*called_from_public_decl=*/true,
+				       /*is_member=*/false,
 				       where_offset);
 	    if (!parm_type_decl)
 	      continue;
@@ -6528,7 +6725,6 @@ build_function_decl(read_context&	ctxt,
 						     tu->get_address_size()));
 
       fn_type = tu->get_canonical_function_type(fn_type);
-      enable_canonical_equality(fn_type);
 
       result.reset(is_method
 		   ? new class_decl::method_decl(fname, fn_type,
@@ -6553,6 +6749,10 @@ build_function_decl(read_context&	ctxt,
 	    result->set_is_in_public_symbol_table(true);
 	  }
     }
+
+  ctxt.associate_die_to_type(dwarf_dieoffset(die),
+			     is_in_alt_di,
+			     result->get_type());
 
   return result;
 }
@@ -6611,6 +6811,38 @@ read_debug_info_into_corpus(read_context& ctxt)
   return ctxt.current_corpus();
 }
 
+/// Canonicalize a type if it's suitable for early canonicalizing, or,
+/// if it's not, schedule it for late canonicalization, after the
+/// debug info of the current translation unit has been fully read.
+///
+/// A (composite) type is deemed suitable for early canonicalizing iff
+/// all of its sub-types are canonicalized themselve.  Non composite
+/// types are always deemed suitable for early canonicalization.
+///
+/// @param die_offset the offset of the type DIE to consider for
+/// canonicalization.  Note that this DIE must have been associated
+/// with its type using the function
+/// read_context::associate_die_to_type() prior to calling this
+/// function.
+///
+/// @param in_alt_di true if the DIE represented by @p die_offset
+/// comes from the alternate debug info section.
+///
+/// @param ctxt the @ref read_context to use.
+static void
+maybe_canonicalize_type(Dwarf_Off	die_offset,
+			bool		in_alt_di,
+			read_context&	ctxt)
+{
+  type_base_sptr t = ctxt.lookup_type_from_die_offset(die_offset, in_alt_di);
+  assert(t);
+
+  if (!type_has_non_canonicalized_subtype(t))
+    canonicalize(t);
+  else
+    ctxt.schedule_type_for_canonicalization(die_offset, in_alt_di);
+}
+
 /// Build an IR node from a given DIE and add the node to the current
 /// IR being build and held in the read_context.  Doing that is called
 /// "emitting an IR node for the DIE".
@@ -6633,6 +6865,9 @@ read_debug_info_into_corpus(read_context& ctxt)
 /// This is done to avoid emitting IR nodes for types that are not
 /// referenced by public functions or variables.
 ///
+/// @param is_member true if @p die is for a DIE that is a member
+/// function or a member type.
+///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
 /// e.g, DW_TAG_partial_unit that can be included in several places in
@@ -6645,6 +6880,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       bool		die_is_from_alt_di,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
+		       bool		is_member,
 		       size_t		where_offset)
 {
   decl_base_sptr result;
@@ -6671,9 +6907,14 @@ build_ir_node_from_die(read_context&	ctxt,
     {
       // Type DIEs we support.
     case DW_TAG_base_type:
-      if((result = build_type_decl(ctxt, die)))
-	result =
-	  add_decl_to_scope(result, scope);
+	if(type_decl_sptr t = build_type_decl(ctxt, die))
+	  {
+	    result = add_decl_to_scope(t, scope);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       t);
+	    canonicalize(t);
+	  }
       break;
 
     case DW_TAG_typedef:
@@ -6682,6 +6923,16 @@ build_ir_node_from_die(read_context&	ctxt,
 						 called_from_public_decl,
 						 where_offset);
 	result = add_decl_to_scope(t, scope);
+	if (// t is not a member type
+	    t && !is_member && !is_class_type(scope))
+	  {
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       t);
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
       }
       break;
 
@@ -6691,8 +6942,16 @@ build_ir_node_from_die(read_context&	ctxt,
 	  build_pointer_type_def(ctxt, die, die_is_from_alt_di,
 				 called_from_public_decl,
 				 where_offset);
-	if(p)
-	  result = add_decl_to_scope(p, scope);
+	if (p)
+	  {
+	    result = add_decl_to_scope(p, scope);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       p);
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
       }
       break;
 
@@ -6704,7 +6963,15 @@ build_ir_node_from_die(read_context&	ctxt,
 			       called_from_public_decl,
 			       where_offset);
 	if (r)
+	  {
 	    result = add_decl_to_scope(r, scope);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       r);
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
       }
       break;
 
@@ -6717,7 +6984,15 @@ build_ir_node_from_die(read_context&	ctxt,
 			       called_from_public_decl,
 			       where_offset);
 	if (q)
-	  result = add_decl_to_scope(maybe_strip_qualification(q), scope);
+	  {
+	    result = add_decl_to_scope(maybe_strip_qualification(q), scope);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       q);
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
       }
       break;
 
@@ -6725,7 +7000,15 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	enum_type_decl_sptr e = build_enum_type(ctxt, die);
 	if (e)
-	  result = add_decl_to_scope(e, scope);
+	  {
+	    result = add_decl_to_scope(e, scope);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       e);
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
       }
       break;
 
@@ -6735,6 +7018,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	Dwarf_Die spec_die;
 	scope_decl_sptr scop;
 	bool spec_die_is_in_alt_di = false;
+	class_decl_sptr klass;
 	if (die_die_attribute(die, die_is_from_alt_di,
 			      DW_AT_specification, spec_die,
 			      spec_die_is_in_alt_di))
@@ -6748,12 +7032,13 @@ build_ir_node_from_die(read_context&	ctxt,
 						       spec_die_is_in_alt_di,
 						       skope.get(),
 						       called_from_public_decl,
+						       is_member,
 						       where_offset);
 	    assert(cl);
-	    class_decl_sptr klass = dynamic_pointer_cast<class_decl>(cl);
+	    klass = dynamic_pointer_cast<class_decl>(cl);
 	    assert(klass);
 
-	    result =
+	    klass =
 	      build_class_type_and_add_to_ir(ctxt, die,
 					     die_is_from_alt_di,
 					     skope.get(),
@@ -6763,12 +7048,39 @@ build_ir_node_from_die(read_context&	ctxt,
 					     where_offset);
 	  }
 	else
-	  result =
+	  klass =
 	    build_class_type_and_add_to_ir(ctxt, die, die_is_from_alt_di,
 					   scope, tag == DW_TAG_structure_type,
 					   class_decl_sptr(),
 					   called_from_public_decl,
 					   where_offset);
+	result = klass;
+	// To be ready for canonicalization, klass needs to be:
+	if (// Not a member type ...
+	    !is_member
+	    // And not be an incomplete type that is being currently
+	    // constructed.
+	    && !ctxt.is_wip_class_die_offset(dwarf_dieoffset(die)))
+	  {
+	    // And then do not early-canonicalize klass if it either:
+	    if (// - has got virtual member functions.  This is because
+		//   the number of virtual member function might be
+		//   amended later, outside of the current DIE, by
+		//   cloned virtual functions that are clones of at
+		//   least one of the virtual functions declared in
+		//   the DIE.
+		!klass->has_virtual_member_functions()
+		// - or has ot non-canonicalized sub types.  In that case
+		//   the non-canonicalized sub-type needs to be
+		//   canonicalized before this type is.
+	       && !type_has_non_canonicalized_subtype(klass))
+	      canonicalize(klass);
+	    else
+	      // So klass is not suitable for early canonicalization.
+	      // Let's schedule it for late canonicalization then.
+	      ctxt.schedule_type_for_canonicalization(dwarf_dieoffset(die),
+						      die_is_from_alt_di);
+	  }
       }
       break;
     case DW_TAG_string_type:
@@ -6785,7 +7097,15 @@ build_ir_node_from_die(read_context&	ctxt,
 						 called_from_public_decl,
 						 where_offset);
 	if (a)
-	  result = add_decl_to_scope(a, scope);
+	  {
+	    result = add_decl_to_scope(a, scope);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       a);
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
       }
       break;
     case DW_TAG_packed_type:
@@ -6849,6 +7169,7 @@ build_ir_node_from_die(read_context&	ctxt,
 					 spec_die_is_in_alt_di,
 					 scop.get(),
 					 called_from_public_decl,
+					 is_member,
 					 where_offset);
 		if (d)
 		  {
@@ -6925,6 +7246,7 @@ build_ir_node_from_die(read_context&	ctxt,
 					   is_in_alternate_debug_info,
 					   scop.get(),
 					   called_from_public_decl,
+					   is_member,
 					   where_offset);
 		  if (d)
 		    {
@@ -6959,6 +7281,10 @@ build_ir_node_from_die(read_context&	ctxt,
 	    finish_member_function_reading(die, fn, klass);
 	  }
 
+	if (fn)
+	  maybe_canonicalize_type(dwarf_dieoffset(die),
+				  die_is_from_alt_di,
+				  ctxt);
 	ctxt.scope_stack().pop();
       }
       break;
@@ -7066,12 +7392,21 @@ build_ir_node_for_void_type(read_context& ctxt)
 /// This is done to avoid emitting IR nodes for types that are not
 /// referenced by public functions or variables.
 ///
+/// @param is_member true if @p die is for a DIE that is a member
+/// function or a member type.
+///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
 /// @return the resulting IR node.
 static decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		die_is_from_alt_di,
 		       bool		called_from_public_decl,
+		       bool		is_member,
 		       size_t		where_offset)
 {
   if (!die)
@@ -7084,6 +7419,7 @@ build_ir_node_from_die(read_context&	ctxt,
 				die_is_from_alt_di,
 				scope.get(),
 				called_from_public_decl,
+				is_member,
 				where_offset);
 }
 
