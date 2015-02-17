@@ -579,18 +579,19 @@ public:
   /// Add the function to the public decl table being constructed (WIP
   /// meaning work in progress).
   ///
+  /// Once the function has been added to public decl table table, the
+  /// sub-types of the function are not traversed.
+  ///
   /// @param fn the function being visited.
   ///
-  /// @return true if the traversal of the tree should continue, false
-  /// otherwise.
-  ///
-  /// @return true if the traversal of the tree should continue, false
-  /// otherwise.
+  /// @return false because once the function has been added to the
+  /// public decl table, the sub-types of the function are not
+  /// traversed anymore.
   bool
-  visit_end(function_decl* fn)
+  visit_begin(function_decl* fn)
   {
     add_fn_to_wip_fns(fn);
-    return true;
+    return false;
   }
 
   /// This function is called while visiting a @ref var_decl IR node
@@ -599,17 +600,21 @@ public:
   /// Add the variable to the public decl table being constructed (WIP
   /// meaning work in progress).
   ///
+  /// Once the variable has been added to public decl table table, the
+  /// sub-types of the variable are not traversed.
+  ///
   /// @param var the variable being visited.
   ///
-  /// @return true if the traversal of the tree should continue, false
-  /// otherwise.
+  /// @return false because once the variable has been added to public
+  /// decl table table, the sub-types of the variable are not
+  /// traversed.
   bool
-  visit_end(var_decl* var)
+  visit_begin(var_decl* var)
   {
     if (!is_data_member(var)
 	|| get_member_is_static(var))
       add_var_to_wip_vars(var);
-    return true;
+    return false;
   }
 };// end struct symtab_build_visitor_type
 
