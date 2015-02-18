@@ -109,6 +109,15 @@ typedef stack<scope_decl*> scope_stack_type;
 typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 
 static bool
+find_symbol_table_section(Elf* elf_handle, Elf_Scn*& section);
+
+static bool
+get_symbol_versionning_sections(Elf*		elf_handle,
+				Elf_Scn*&	versym_section,
+				Elf_Scn*&	verdef_section,
+				Elf_Scn*&	verneed_section);
+
+static bool
 eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 				  size_t	expr_len,
 				  ssize_t&	value,
@@ -1724,6 +1733,12 @@ class read_context
   // file.
   offset_offset_map		alternate_die_parent_map_;
   list<var_decl_sptr>		var_decls_to_add_;
+  Elf_Scn*			symtab_section_;
+  bool				symbol_versionning_sections_loaded_;
+  bool				symbol_versionning_sections_found_;
+  Elf_Scn*			versym_section_;
+  Elf_Scn*			verdef_section_;
+  Elf_Scn*			verneed_section_;
   addr_elf_symbol_sptr_map_sptr fun_addr_sym_map_;
   string_elf_symbols_map_sptr	fun_syms_;
   addr_elf_symbol_sptr_map_sptr var_addr_sym_map_;
@@ -1746,7 +1761,13 @@ public:
       elf_module_(0),
       elf_handle_(0),
       elf_path_(elf_path),
-      cur_tu_die_(0)
+      cur_tu_die_(0),
+      symtab_section_(),
+      symbol_versionning_sections_loaded_(),
+      symbol_versionning_sections_found_(),
+      versym_section_(),
+      verdef_section_(),
+      verneed_section_()
   {}
 
   unsigned short
@@ -2272,6 +2293,120 @@ public:
   var_decls_to_re_add_to_tree()
   {return var_decls_to_add_;}
 
+  /// The section containing the symbol table from the current ELF
+  /// file.
+  ///
+  /// Note that after it's first invocation, this function caches the
+  /// symbol table that it found.  Subsequent invocations just return
+  /// the cached symbol table section.
+  ///
+  /// @return the symbol table section if found
+  Elf_Scn*
+  find_symbol_table_section()
+  {
+    if (!symtab_section_)
+      dwarf_reader::find_symbol_table_section(elf_handle(), symtab_section_);
+    assert(symtab_section_);
+    return symtab_section_;
+  }
+
+  /// Return the SHT_GNU_versym, SHT_GNU_verdef and SHT_GNU_verneed
+  /// sections that are involved in symbol versionning.
+  ///
+  /// @param versym_section the SHT_GNU_versym section found.
+  ///
+  /// @param verdef_section the SHT_GNU_verdef section found.
+  ///
+  /// @param verneed_section the SHT_GNU_verneed section found.
+  ///
+  /// @return true iff the sections where found.
+  bool
+  get_symbol_versionning_sections(Elf_Scn*&	versym_section,
+				  Elf_Scn*&	verdef_section,
+				  Elf_Scn*&	verneed_section)
+  {
+    if (!symbol_versionning_sections_loaded_)
+      {
+	symbol_versionning_sections_found_ =
+	  dwarf_reader::get_symbol_versionning_sections(elf_handle(),
+							versym_section_,
+							verdef_section_,
+							verneed_section_);
+	symbol_versionning_sections_loaded_ = true;
+      }
+
+    versym_section = versym_section_;
+    verdef_section = verdef_section_;
+    verneed_section = verneed_section_;
+    return symbol_versionning_sections_found_;
+  }
+
+  /// Return the version for a symbol that is at a given index in its
+  /// SHT_SYMTAB section.
+  ///
+  /// The first invocation of this function caches the results and
+  /// subsequent invocations just return the cached results.
+  ///
+  /// @param symbol_index the index of the symbol to consider.
+  ///
+  /// @param get_def_version if this is true, it means that that we want
+  /// the version for a defined symbol; in that case, the version is
+  /// looked for in a section of type SHT_GNU_verdef.  Otherwise, if
+  /// this parameter is false, this means that we want the version for
+  /// an undefined symbol; in that case, the version is the needed one
+  /// for the symbol to be resolved; so the version is looked fo in a
+  /// section of type SHT_GNU_verneed.
+  ///
+  /// @param version the version found for symbol at @p symbol_index.
+  ///
+  /// @return true iff a version was found for symbol at index @p
+  /// symbol_index.
+  bool
+  get_version_for_symbol(size_t		symbol_index,
+			 bool			get_def_version,
+			 elf_symbol::version&	version)
+  {
+    Elf_Scn *versym_section = NULL,
+      *verdef_section = NULL,
+      *verneed_section = NULL;
+
+    if (!get_symbol_versionning_sections(versym_section,
+					 verdef_section,
+					 verneed_section))
+      return false;
+
+    Elf_Data* versym_data = elf_getdata(versym_section, NULL);
+    GElf_Versym versym_mem;
+    GElf_Versym* versym = gelf_getversym(versym_data, symbol_index, &versym_mem);
+    if (versym == 0 || *versym <= 1)
+      // I got these value from the code of readelf.c in elfutils.
+      // Apparently, if the symbol version entry has these values, the
+      // symbol must be discarded. This is not documented in the
+      // official specification.
+      return false;
+
+    if (get_def_version)
+      {
+	if (*versym == 0x8001)
+	  // I got this value from the code of readelf.c in elfutils
+	  // too.  It's not really documented in the official
+	  // specification.
+	  return false;
+
+	if (get_version_definition_for_versym(elf_handle(), versym,
+					      verdef_section, version))
+	  return true;
+      }
+    else
+      {
+	if (get_version_needed_for_versym(elf_handle(), versym,
+					  verneed_section, version))
+	  return true;
+      }
+
+    return false;
+  }
+
   /// Look into the symbol tables of the underlying elf file and see
   /// if we find a given symbol.
   ///
@@ -2310,9 +2445,7 @@ public:
   lookup_elf_symbol_from_index(size_t symbol_index,
 			       elf_symbol& symbol)
   {
-    Elf_Scn* symtab_section = NULL;
-    if (!find_symbol_table_section(elf_handle(), symtab_section))
-      return false;
+    Elf_Scn* symtab_section = find_symbol_table_section();
     assert(symtab_section);
 
     GElf_Shdr header_mem;
@@ -2335,8 +2468,7 @@ public:
       name_str = "";
 
     elf_symbol::version v;
-    get_version_for_symbol(elf_handle(),
-			   symbol_index,
+    get_version_for_symbol(symbol_index,
 			   sym_is_defined,
 			   v);
 
@@ -2756,9 +2888,7 @@ public:
     if (!undefined_var_syms_)
       undefined_var_syms_.reset(new string_elf_symbols_map_type);
 
-    Elf_Scn* symtab_section = NULL;
-    if (!find_symbol_table_section(elf_handle(), symtab_section))
-      return false;
+    Elf_Scn* symtab_section = find_symbol_table_section();
     assert(symtab_section);
 
     GElf_Shdr header_mem;
