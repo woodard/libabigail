@@ -6494,6 +6494,8 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 		== get_member_is_static(r))
 	    && (get_member_function_is_const(l)
 		== get_member_function_is_const(r))
+	    && (get_member_function_is_virtual(l)
+		== get_member_function_is_virtual(r))
 	    && (get_member_function_vtable_offset(l)
 		== get_member_function_vtable_offset(r))))
 	{
