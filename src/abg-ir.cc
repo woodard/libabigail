@@ -5472,6 +5472,7 @@ struct var_decl::priv
   type_base_wptr	type_;
   decl_base::binding	binding_;
   elf_symbol_sptr	symbol_;
+  string		id_;
 
   priv()
     : binding_(decl_base::BINDING_GLOBAL)
@@ -5711,11 +5712,16 @@ var_decl::operator==(const decl_base& o) const
 string
 var_decl::get_id() const
 {
-  if (elf_symbol_sptr s = get_symbol())
-    return s->get_id_string();
-  else if (!get_linkage_name().empty())
-    return get_linkage_name();
-  return get_pretty_representation();
+  if (priv_->id_.empty())
+    {
+      if (elf_symbol_sptr s = get_symbol())
+	priv_->id_ = s->get_id_string();
+      else if (!get_linkage_name().empty())
+	priv_->id_ = get_linkage_name();
+      else
+	priv_->id_ = get_pretty_representation();
+    }
+  return priv_->id_;
 }
 
 /// Return the hash value for the current instance.
@@ -6320,6 +6326,7 @@ struct function_decl::priv
   decl_base::binding	binding_;
   function_type_wptr	type_;
   elf_symbol_sptr	symbol_;
+  string id_;
 
   priv()
     : declared_inline_(false),
@@ -6810,11 +6817,16 @@ function_decl::get_hash() const
 string
 function_decl::get_id() const
 {
-  if (elf_symbol_sptr s = get_symbol())
-    return s->get_id_string();
-  else if (!get_linkage_name().empty())
-    return get_linkage_name();
-  return get_pretty_representation();
+  if (priv_->id_.empty())
+    {
+      if (elf_symbol_sptr s = get_symbol())
+	priv_->id_ = s->get_id_string();
+      else if (!get_linkage_name().empty())
+	priv_->id_= get_linkage_name();
+      else
+	priv_->id_ = get_pretty_representation();
+    }
+  return priv_->id_;
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
