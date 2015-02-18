@@ -522,6 +522,18 @@ public:
   set_corpus(corpus_sptr c)
   {m_corpus = c;}
 
+  /// Clear all the data that must absolutely be cleared at the end of
+  /// the parsing of a translation unit.
+  void
+  clear_per_translation_unit_data()
+  {
+    clear_id_xml_node_map();
+    clear_type_map();
+    clear_id_xml_node_map();
+    clear_xml_node_decl_map();
+    clear_decls_stack();
+  }
+
 };// end class read_context
 
 static int	advance_cursor(read_context&);
@@ -836,11 +848,7 @@ read_translation_unit_from_input(read_context&	ctxt,
 
    xmlTextReaderNext(reader.get());
 
-   ctxt.clear_id_xml_node_map();
-   ctxt.clear_type_map();
-   ctxt.clear_id_xml_node_map();
-   ctxt.clear_xml_node_decl_map();
-   ctxt.clear_decls_stack();
+   ctxt.clear_per_translation_unit_data();
 
    return true;
 }
