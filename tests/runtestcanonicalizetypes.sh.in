@@ -9,7 +9,7 @@ abidiff=@top_builddir@/tools/abidiff
 objdir=@top_builddir@/src/.libs
 objext=@OBJEXT@
 
-binaries="abg-tools-utils.o abg-hash abg-ini abg-writer"
+binaries="abg-tools-utils abg-hash abg-ini abg-writer"
 outputfile=runtestcanonicalizetypes.output.txt
 finaloutputfile=runtestcanonicalizetypes.output.final.txt
 cat /dev/null > $outputfile
