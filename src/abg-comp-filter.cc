@@ -125,7 +125,8 @@ type_size_changed(const type_base_sptr f, const type_base_sptr s)
   if (!f || !s
       || f->get_size_in_bits() == 0
       || s->get_size_in_bits() == 0
-      || there_is_a_decl_only_class(is_class_type(f), is_class_type(s)))
+      || there_is_a_decl_only_class(is_compatible_with_class_type(f),
+				    is_compatible_with_class_type(s)))
     return false;
 
   return f->get_size_in_bits() != s->get_size_in_bits();

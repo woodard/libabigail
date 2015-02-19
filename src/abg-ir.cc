@@ -2292,8 +2292,15 @@ set_member_function_is_virtual(const function_decl_sptr& fn, bool is_virtual)
 /// Recursively returns the the underlying type of a typedef.  The
 /// return type should not be a typedef of anything anymore.
 ///
+///
 /// Also recursively strip typedefs from the sub-types of the type
 /// given in arguments.
+///
+/// Note that this function can only acts on types that are
+/// canonicalized.  The returned type is a new type that is stripped
+/// from all of its typedefs.  It's actually a canonical type that is
+/// guaranteed to be live for during the entire life time of this
+/// library.
 ///
 /// @param type the type to strip the typedefs from.
 ///
@@ -2302,31 +2309,49 @@ set_member_function_is_virtual(const function_decl_sptr& fn, bool is_virtual)
 type_base_sptr
 strip_typedef(const type_base_sptr type)
 {
+  if (!type)
+    return type;
+
+  assert(type->get_canonical_type());
+
   type_base_sptr t = type;
 
   if (const typedef_decl_sptr ty = is_typedef(t))
     t = strip_typedef(ty->get_underlying_type());
   else if (const reference_type_def_sptr ty = is_reference_type(t))
-    t.reset(new reference_type_def(strip_typedef(type_or_void
-						 (ty->get_pointed_to_type())),
-				   ty->is_lvalue(),
+    {
+      type_base_sptr p =
+	canonicalize(strip_typedef(type_or_void(ty->get_pointed_to_type())));
+      assert(p);
+      t.reset(new reference_type_def(p,
+				     ty->is_lvalue(),
+				     ty->get_size_in_bits(),
+				     ty->get_alignment_in_bits(),
+				     ty->get_location()));
+    }
+  else if (const pointer_type_def_sptr ty = is_pointer_type(t))
+    {
+      type_base_sptr p =
+	canonicalize(strip_typedef(type_or_void(ty->get_pointed_to_type())));
+      assert(p);
+      t.reset(new pointer_type_def(p,
 				   ty->get_size_in_bits(),
 				   ty->get_alignment_in_bits(),
 				   ty->get_location()));
-  else if (const pointer_type_def_sptr ty = is_pointer_type(t))
-    t.reset(new pointer_type_def(strip_typedef(type_or_void
-					       (ty->get_pointed_to_type())),
-				 ty->get_size_in_bits(),
-				 ty->get_alignment_in_bits(),
-				 ty->get_location()));
+    }
   else if (const qualified_type_def_sptr ty = is_qualified_type(t))
-    t.reset(new qualified_type_def(strip_typedef(ty->get_underlying_type()),
-				   ty->get_cv_quals(),
-				   ty->get_location()));
+    {
+      type_base_sptr p = canonicalize(strip_typedef(ty->get_underlying_type()));
+      assert(p);
+      t.reset(new qualified_type_def(p,
+				     ty->get_cv_quals(),
+				     ty->get_location()));
+    }
   else if (const array_type_def_sptr ty = is_array_type(t))
-    t.reset(new array_type_def(strip_typedef(ty->get_element_type()),
-			       ty->get_subranges(),
-			       ty->get_location()));
+    {
+      type_base_sptr p = canonicalize(strip_typedef(ty->get_element_type()));
+      t.reset(new array_type_def(p, ty->get_subranges(), ty->get_location()));
+    }
   else if (const method_type_sptr ty = is_method_type(t))
     {
       function_decl::parameters parm;
@@ -2336,8 +2361,10 @@ strip_typedef(const type_base_sptr type)
 	   ++i)
 	{
 	  function_decl::parameter_sptr p = *i;
+	  type_base_sptr typ = canonicalize(strip_typedef(p->get_type()));
+	  assert(typ);
 	  function_decl::parameter_sptr stripped
-	    (new function_decl::parameter(strip_typedef(p->get_type()),
+	    (new function_decl::parameter(typ,
 					  p->get_index(),
 					  p->get_name(),
 					  p->get_location(),
@@ -2345,7 +2372,9 @@ strip_typedef(const type_base_sptr type)
 					  p->get_artificial()));
 	  parm.push_back(stripped);
 	}
-      t.reset(new method_type(ty->get_return_type(),
+      type_base_sptr p = canonicalize(ty->get_return_type());
+      assert(p);
+      t.reset(new method_type(p,
 			      ty->get_class_type(),
 			      parm,
 			      ty->get_size_in_bits(),
@@ -2360,8 +2389,10 @@ strip_typedef(const type_base_sptr type)
 	   ++i)
 	{
 	  function_decl::parameter_sptr p = *i;
+	  type_base_sptr typ = canonicalize(strip_typedef(p->get_type()));
+	  assert(p);
 	  function_decl::parameter_sptr stripped
-	    (new function_decl::parameter(strip_typedef(p->get_type()),
+	    (new function_decl::parameter(typ,
 					  p->get_index(),
 					  p->get_name(),
 					  p->get_location(),
@@ -2369,13 +2400,17 @@ strip_typedef(const type_base_sptr type)
 					  p->get_artificial()));
 	  parm.push_back(stripped);
 	}
-      t.reset(new function_type(ty->get_return_type(),
-				parm,
+      type_base_sptr p = canonicalize(ty->get_return_type());
+      assert(p);
+      t.reset(new function_type(p, parm,
 				ty->get_size_in_bits(),
 				ty->get_alignment_in_bits()));
     }
+
+  canonicalize(t);
   return t;
 }
+
 /// Add a member decl to this scope.  Note that user code should not
 /// use this, but rather use add_decl_to_scope.
 ///
@@ -3156,9 +3191,21 @@ enum_type_decl_sptr
 is_enum_type(const type_base_sptr& t)
 {return dynamic_pointer_cast<enum_type_decl>(t);}
 
-/// Test whether a type is a class.
+/// Test if a type is a class. This function looks through typedefs.
 ///
-/// This function looks through typedefs.
+/// @parm t the type to consider.
+///
+/// @return the class_decl if @p t is a class_decl or null otherwise.
+class_decl_sptr
+is_compatible_with_class_type(const type_base_sptr t)
+{
+  if (!t)
+    return class_decl_sptr();
+  type_base_sptr ty = strip_typedef(t);
+  return is_class_type(ty);
+}
+
+/// Test whether a type is a class.
 ///
 /// @parm t the type to consider.
 ///
@@ -3168,8 +3215,7 @@ is_class_type(const type_base_sptr t)
 {
   if (!t)
     return class_decl_sptr();
-  type_base_sptr ty = strip_typedef(t);
-  return dynamic_pointer_cast<class_decl>(ty);
+  return dynamic_pointer_cast<class_decl>(t);
 }
 
 /// Test if a the declaration of a type is a class.
@@ -3796,17 +3842,26 @@ type_base::get_canonical_type_for(type_base_sptr t)
 /// supposedly faster than structural comparison of the types.
 ///
 /// @param t a smart pointer to the instance of @ref type_base for
-/// which to enable canoncial equality.
-void
+/// which to compute the canonical type.  After this call,
+/// t->get_canonical_type() will return the newly computed canonical
+/// type.
+///
+/// @return the canonical type computed for @p t.
+type_base_sptr
 canonicalize(type_base_sptr t)
 {
-  if (!t || t->get_canonical_type())
-    return;
+  if (!t)
+    return t;
+
+  if (t->get_canonical_type())
+    return t->get_canonical_type();
 
   type_base_sptr canonical = type_base::get_canonical_type_for(t);
   assert(canonical);
 
   t->priv_->canonical_type = canonical;
+
+  return canonical;
 }
 
 /// The constructor of @ref type_base.

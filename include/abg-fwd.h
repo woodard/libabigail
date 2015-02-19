@@ -203,6 +203,9 @@ is_class_type(const shared_ptr<type_base>);
 shared_ptr<class_decl>
 is_class_type(const shared_ptr<decl_base>);
 
+shared_ptr<class_decl>
+is_compatible_with_class_type(const shared_ptr<type_base>);
+
 shared_ptr<pointer_type_def>
 is_pointer_type(const shared_ptr<type_base>);
 
@@ -475,6 +478,9 @@ demangle_cplus_mangled_name(const string&);
 
 shared_ptr<type_base>
 type_or_void(const shared_ptr<type_base>);
+
+shared_ptr<type_base>
+canonicalize(shared_ptr<type_base>);
 
 bool
 type_has_non_canonicalized_subtype(shared_ptr<type_base> t);

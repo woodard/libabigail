@@ -972,7 +972,7 @@ public:
 
   type_base(size_t s, size_t a);
 
-  friend void
+  friend type_base_sptr
   canonicalize(type_base_sptr);
 
   type_base_sptr
@@ -998,9 +998,6 @@ public:
   virtual size_t
   get_alignment_in_bits() const;
 };//end class type_base
-
-void
-canonicalize(type_base_sptr);
 
 /// Hash functor for instances of @ref type_base.
 struct type_base::hash
