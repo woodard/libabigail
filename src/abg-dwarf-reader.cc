@@ -2200,9 +2200,17 @@ public:
   /// @param o the offset of the type DIE to schedule for late type
   /// canonicalization.
   void
-  schedule_type_for_canonicalization(Dwarf_Off	o,
-				     bool	in_alt_di)
-  {types_to_canonicalize(in_alt_di).push_back(o);}
+  schedule_type_for_late_canonicalization(Dwarf_Off	o,
+					  bool	in_alt_di)
+  {
+    // First, some sanity check: ensure that the offset 'o' is for a
+    // type DIE that we know about.
+    type_base_sptr t = lookup_type_from_die_offset(o, in_alt_di);
+    assert(t);
+
+    // Then really do the scheduling.
+    types_to_canonicalize(in_alt_di).push_back(o);
+  }
 
   const die_tu_map_type&
   die_tu_map() const
@@ -6261,9 +6269,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		  else
 		    // Otherwise, well, let's schedule this member
 		    // type for late canonicalizing.
-		    ctxt.schedule_type_for_canonicalization(dwarf_dieoffset
-							    (&child),
-							    is_in_alt_di);
+		    ctxt.schedule_type_for_late_canonicalization(dwarf_dieoffset
+								 (&child),
+								 is_in_alt_di);
 		}
 	    }
 	} while (dwarf_siblingof(&child, &child) == 0);
@@ -7067,7 +7075,7 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
   if (!type_has_non_canonicalized_subtype(t))
     canonicalize(t);
   else
-    ctxt.schedule_type_for_canonicalization(die_offset, in_alt_di);
+    ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
 }
 
 /// Build an IR node from a given DIE and add the node to the current
