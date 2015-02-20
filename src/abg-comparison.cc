@@ -3816,11 +3816,7 @@ distinct_diff::report(ostream& out, const string& indent) const
     ss = strip_typedef(is_type(s));
 
   if (diff_sptr diff = compatible_child_diff())
-    {
-      if (diff->has_changes())
-	assert(diff->to_be_reported());
-      diff->report(out, indent + "  ");
-    }
+    diff->report(out, indent + "  ");
   else
     report_size_and_alignment_changes(f, s, context(), out, indent, true);
 }
