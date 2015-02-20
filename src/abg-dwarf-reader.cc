@@ -7219,7 +7219,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	enum_type_decl_sptr e = build_enum_type(ctxt,
 						die_is_from_alt_di,
 						die);
-	if (e)
+	if (e && !is_member)
 	  {
 	    result = add_decl_to_scope(e, scope);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
