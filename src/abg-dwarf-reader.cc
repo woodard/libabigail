@@ -3338,7 +3338,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       bool		die_is_from_alt_di,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
-		       bool		is_member,
+		       bool		is_member_type,
 		       size_t		where_offset);
 
 static decl_base_sptr
@@ -3346,7 +3346,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		die_is_from_alt_di,
 		       bool		called_from_public_decl,
-		       bool		is_member,
+		       bool		is_member_type,
 		       size_t		where_offset);
 
 static decl_base_sptr
@@ -5544,7 +5544,7 @@ get_scope_for_die(read_context& ctxt,
     d = build_ir_node_from_die(ctxt, &parent_die,
 			       die_is_from_alt_di,
 			       called_for_public_decl,
-			       /*is_member=*/false,
+			       /*is_member_type=*/false,
 			       where_offset);
   s =  dynamic_pointer_cast<scope_decl>(d);
   if (!s)
@@ -5609,7 +5609,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
     build_ir_node_from_die(ctxt, &child,
 			   /*die_is_from_alt_di=*/false,
 			   die_is_public_decl(&child),
-			   /*is_member=*/false,
+			   /*is_member_type=*/false,
 			   dwarf_dieoffset(&child));
   while (dwarf_siblingof(&child, &child) == 0);
 
@@ -5766,7 +5766,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
     build_ir_node_from_die(ctxt, &child,
 			   die_is_from_alt_di,
 			   /*called_from_public_decl=*/false,
-			   /*is_member=*/false,
+			   /*is_member_type=*/false,
 			   where_offset);
   while (dwarf_siblingof(&child, &child) == 0);
   ctxt.scope_stack().pop();
@@ -6101,7 +6101,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		build_ir_node_from_die(ctxt, &type_die,
 				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
-				       /*is_member=*/false,
+				       /*is_member_type=*/false,
 				       where_offset);
 	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
 	      if (!b)
@@ -6146,7 +6146,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		build_ir_node_from_die(ctxt, &type_die,
 				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
-				       /*is_member=*/false,
+				       /*is_member_type=*/false,
 				       where_offset);
 	      type_base_sptr t = is_type(ty);
 	      if (!t)
@@ -6191,7 +6191,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 							is_in_alt_di,
 							result.get(),
 							called_from_public_decl,
-							/*is_member=*/true,
+							/*is_member_type=*/false,
 							where_offset);
 	      if (!r)
 		continue;
@@ -7092,8 +7092,8 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
 /// This is done to avoid emitting IR nodes for types that are not
 /// referenced by public functions or variables.
 ///
-/// @param is_member true if @p die is for a DIE that is a member
-/// function or a member type.
+/// @param is_member_type true if @p die is for a DIE that is a member
+/// type.
 ///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
@@ -7107,7 +7107,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       bool		die_is_from_alt_di,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
-		       bool		is_member,
+		       bool		is_member_type,
 		       size_t		where_offset)
 {
   decl_base_sptr result;
@@ -7149,7 +7149,7 @@ build_ir_node_from_die(read_context&	ctxt,
 						 called_from_public_decl,
 						 where_offset);
 	result = add_decl_to_scope(t, scope);
-	if (t && !is_member)
+	if (t && !is_member_type)
 	  maybe_canonicalize_type(dwarf_dieoffset(die),
 				  die_is_from_alt_di,
 				  ctxt);
@@ -7216,7 +7216,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	enum_type_decl_sptr e = build_enum_type(ctxt,
 						die_is_from_alt_di,
 						die);
-	if (e && !is_member)
+	if (e && !is_member_type)
 	  {
 	    result = add_decl_to_scope(e, scope);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
@@ -7246,7 +7246,7 @@ build_ir_node_from_die(read_context&	ctxt,
 						       spec_die_is_in_alt_di,
 						       skope.get(),
 						       called_from_public_decl,
-						       is_member,
+						       is_member_type,
 						       where_offset);
 	    assert(cl);
 	    klass = dynamic_pointer_cast<class_decl>(cl);
@@ -7271,7 +7271,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	result = klass;
 	// For klass to be eligible for canonicalization at this
 	// point, it needs to be a non-member type.
-	if (!is_member)
+	if (!is_member_type)
 	  {
 	    // To be early canonicalized here, klass needs:
 	    if (// NOT be an incomplete type that is being currently
@@ -7386,7 +7386,7 @@ build_ir_node_from_die(read_context&	ctxt,
 					 spec_die_is_in_alt_di,
 					 scop.get(),
 					 called_from_public_decl,
-					 is_member,
+					 is_member_type,
 					 where_offset);
 		if (d)
 		  {
@@ -7463,7 +7463,7 @@ build_ir_node_from_die(read_context&	ctxt,
 					   is_in_alternate_debug_info,
 					   scop.get(),
 					   called_from_public_decl,
-					   is_member,
+					   is_member_type,
 					   where_offset);
 		  if (d)
 		    {
@@ -7610,8 +7610,8 @@ build_ir_node_for_void_type(read_context& ctxt)
 /// This is done to avoid emitting IR nodes for types that are not
 /// referenced by public functions or variables.
 ///
-/// @param is_member true if @p die is for a DIE that is a member
-/// function or a member type.
+/// @param is_member_type true if @p die is for a DIE that is a member
+/// type.
 ///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
@@ -7624,7 +7624,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		die_is_from_alt_di,
 		       bool		called_from_public_decl,
-		       bool		is_member,
+		       bool		is_member_type,
 		       size_t		where_offset)
 {
   if (!die)
@@ -7637,7 +7637,7 @@ build_ir_node_from_die(read_context&	ctxt,
 				die_is_from_alt_di,
 				scope.get(),
 				called_from_public_decl,
-				is_member,
+				is_member_type,
 				where_offset);
 }
 
