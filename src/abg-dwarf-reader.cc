@@ -2212,6 +2212,39 @@ public:
     types_to_canonicalize(in_alt_di).push_back(o);
   }
 
+  /// Canonicalize types which DIE offsets are stored in vectors on
+  /// the side.  This is a sub-routine of
+  /// read_context::perform_late_type_canonicalizing().
+  ///
+  /// @param in_alt_di true if the types to canonicalize are in the
+  /// alternate debug info section, otherwise, the types are in the
+  /// main debug info section.
+  void
+  canonicalize_types_scheduled(bool in_alt_di)
+  {
+    if (!types_to_canonicalize(in_alt_di).empty())
+      {
+	for (vector<Dwarf_Off>::iterator i =
+	       types_to_canonicalize(in_alt_di).begin();
+	     i != types_to_canonicalize(in_alt_di).end();
+	     ++i)
+	  {
+	    type_base_sptr t = lookup_type_from_die_offset(*i, in_alt_di);
+	    assert(t);
+	    canonicalize(t);
+	  }
+      }
+  }
+
+  // Look at the types that need to be canonicalized after the
+  // translation unit has been constructed and canonicalize them.
+  void
+  perform_late_type_canonicalizing()
+  {
+    canonicalize_types_scheduled(/*in_alt_di=*/false);
+    canonicalize_types_scheduled(/*in_alt_di=*/true);
+  }
+
   const die_tu_map_type&
   die_tu_map() const
   {return die_tu_map_;}
@@ -5689,29 +5722,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   /// are in the alternate debug info section and for types that in
   /// the main debug info section.
 
-  if (!ctxt.types_to_canonicalize(/*in_alt_debug_info_section=*/true).empty())
-    {
-      for (vector<Dwarf_Off>::iterator i =
-	     ctxt.types_to_canonicalize(true).begin();
-	   i != ctxt.types_to_canonicalize(true).end();
-	   ++i)
-	{
-	  decl_base_sptr d = ctxt.lookup_decl_from_die_offset_alternate(*i);
-	  canonicalize(is_type(d));
-	}
-    }
-
-  if (!ctxt.types_to_canonicalize(/*in_alt_debug_info_section=*/false).empty())
-    {
-      for (vector<Dwarf_Off>::iterator i =
-	     ctxt.types_to_canonicalize(false).begin();
-	   i != ctxt.types_to_canonicalize(false).end();
-	   ++i)
-	{
-	  decl_base_sptr d = ctxt.lookup_decl_from_die_offset_primary(*i);
-	  canonicalize(is_type(d));
-	}
-    }
+  ctxt.perform_late_type_canonicalizing();
 
   return result;
 }
