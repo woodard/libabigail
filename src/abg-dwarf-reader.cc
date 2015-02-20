@@ -7149,13 +7149,10 @@ build_ir_node_from_die(read_context&	ctxt,
 						 called_from_public_decl,
 						 where_offset);
 	result = add_decl_to_scope(t, scope);
-	if (// t is not a member type
-	    t && !is_member && !is_class_type(scope))
-	  {
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
-	  }
+	if (t && !is_member)
+	  maybe_canonicalize_type(dwarf_dieoffset(die),
+				  die_is_from_alt_di,
+				  ctxt);
       }
       break;
 
