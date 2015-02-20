@@ -6324,6 +6324,16 @@ build_qualified_type(read_context&	ctxt,
   if (!utype_decl)
     return result;
 
+  // The call to build_ir_node_from_die() could have triggered the
+  // creation of the type for this DIE.  In that case, just return it.
+  if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
+							  die_is_in_alt_di))
+    {
+      result = is_qualified_type(t);
+      assert(result);
+      return result;
+    }
+
   type_base_sptr utype = is_type(utype_decl);
   assert(utype);
 
@@ -6428,6 +6438,16 @@ build_pointer_type_def(read_context&	ctxt,
   if (!utype_decl)
     return result;
 
+  // The call to build_ir_node_from_die() could have triggered the
+  // creation of the type for this DIE.  In that case, just return it.
+  if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
+							  die_is_in_alt_di))
+    {
+      result = is_pointer_type(t);
+      assert(result);
+      return result;
+    }
+
   type_base_sptr utype = is_type(utype_decl);
   assert(utype);
 
@@ -6497,6 +6517,16 @@ build_reference_type(read_context&	ctxt,
   if (!utype_decl)
     return result;
 
+  // The call to build_ir_node_from_die() could have triggered the
+  // creation of the type for this DIE.  In that case, just return it.
+  if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
+							  die_is_from_alt_di))
+    {
+      result = is_reference_type(t);
+      assert(result);
+      return result;
+    }
+
   type_base_sptr utype = is_type(utype_decl);
   assert(utype);
 
@@ -6564,6 +6594,16 @@ build_array_type(read_context&	ctxt,
 			     where_offset);
   if (!type_decl)
     return result;
+
+  // The call to build_ir_node_from_die() could have triggered the
+  // creation of the type for this DIE.  In that case, just return it.
+  if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
+							  die_is_from_alt_di))
+    {
+      result = is_array_type(t);
+      assert(result);
+      return result;
+    }
 
   type_base_sptr type = is_type(type_decl);
   assert(type);
@@ -6653,6 +6693,16 @@ build_typedef_type(read_context&	ctxt,
 			   where_offset);
   if (!utype_decl)
     return result;
+
+  // The call to build_ir_node_from_die() could have triggered the
+  // creation of the type for this DIE.  In that case, just return it.
+  if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
+							  die_is_from_alt_di))
+    {
+      result = is_typedef(t);
+      assert(result);
+      return result;
+    }
 
   type_base_sptr utype = is_type(utype_decl);
   assert(utype);
