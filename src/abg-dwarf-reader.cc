@@ -5884,6 +5884,7 @@ build_enum_type(read_context& ctxt,
   translation_unit_sptr tu = ctxt.cur_tu();
   decl_base_sptr d =
     add_decl_to_scope(t, tu->get_global_scope().get());
+  canonicalize(t);
 
   t = dynamic_pointer_cast<type_decl>(d);
   assert(t);
@@ -7518,6 +7519,7 @@ build_ir_node_for_void_type(read_context& ctxt)
   decl_base_sptr t = type_decl::get_void_type_decl();
   if (!has_scope(t))
     add_decl_to_scope(t, ctxt.cur_tu()->get_global_scope());
+  canonicalize(is_type(t));
   return t;
 }
 
