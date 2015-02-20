@@ -3818,7 +3818,8 @@ distinct_diff::report(ostream& out, const string& indent) const
   if (diff_sptr diff = compatible_child_diff())
     diff->report(out, indent + "  ");
   else
-    report_size_and_alignment_changes(f, s, context(), out, indent, true);
+    if (report_size_and_alignment_changes(f, s, context(), out, indent, true))
+      out << "\n";
 }
 
 /// Try to diff entities that are of distinct kinds.
