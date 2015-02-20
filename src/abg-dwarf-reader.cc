@@ -1770,6 +1770,24 @@ public:
       verneed_section_()
   {}
 
+  /// Clear the data that is relevant only for the current translation
+  /// unit being read.  The rest of the data is relevant for the
+  /// entire ABI corpus.
+  void
+  clear_per_translation_unit_data()
+  {
+    die_decl_map().clear();
+    alternate_die_decl_map().clear();
+    die_type_map(/*in_alt_di=*/true).clear();
+    die_type_map(/*in_alt_di=*/false).clear();
+    types_to_canonicalize(/*in_alt_di=*/true).clear();
+    types_to_canonicalize(/*in_alt_di=*/false).clear();
+    while (!scope_stack().empty())
+      scope_stack().pop();
+    var_decls_to_re_add_to_tree().clear();
+    type_decl::get_void_type_decl()->set_scope(0);
+  }
+
   unsigned short
   dwarf_version() const
   {return dwarf_version_;}
@@ -2057,6 +2075,19 @@ public:
       : lookup_decl_from_die_offset_primary(die_offset);
   }
 
+  /// Return the the map that associates DIEs to the type they represent.
+  ///
+  /// @param in_alt_die true iff the DIE is in the alternate debug info section.
+  ///
+  /// @return return the map that associated DIEs to the type they represent.
+  die_type_map_type&
+  die_type_map(bool in_alt_die)
+  {
+    if (in_alt_die)
+      return alternate_die_type_map_;
+    return die_type_map_;
+  }
+
   /// Associated a DIE (representing a type) at a given offset to the
   /// type that it represents.
   ///
@@ -2074,10 +2105,8 @@ public:
     if (!type)
       return;
 
-    if (in_alt_di)
-      alternate_die_type_map_[die_offset] = type;
-    else
-      die_type_map_[die_offset] = type;
+    die_type_map_type& m = die_type_map(in_alt_di);
+    m[die_offset] = type;
   }
 
   /// Lookup the type associated to a given DIE.
@@ -2097,24 +2126,12 @@ public:
   lookup_type_from_die_offset(size_t die_offset,
 			      bool in_alt_die)
   {
-    die_type_map_type::iterator i;
     type_base_sptr result;
+    die_type_map_type& m = die_type_map(in_alt_die);
+    die_type_map_type::iterator i = m.find(die_offset);
 
-    if (in_alt_die)
-      {
-	i = alternate_die_type_map_.find(die_offset);
-	if (i == alternate_die_type_map_.end())
-	  return type_base_sptr();
-	result = i->second;
-      }
-    else
-      {
-	i = die_type_map_.find(die_offset);
-	if (i == die_type_map_.end())
-	  return type_base_sptr();
-	result = i->second;
-      }
-
+    if (i != m.end())
+      result = i->second;
     return result;
   }
 
@@ -5573,12 +5590,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 
   // Clear the part of the context that is dependent on the translation
   // unit we are reading.
-  ctxt.die_decl_map().clear();
-  ctxt.alternate_die_decl_map().clear();
-  while (!ctxt.scope_stack().empty())
-    ctxt.scope_stack().pop();
-  ctxt.var_decls_to_re_add_to_tree().clear();
-  type_decl::get_void_type_decl()->set_scope(0);
+  ctxt.clear_per_translation_unit_data();
 
   ctxt.cur_tu_die(die);
 
