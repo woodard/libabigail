@@ -7272,32 +7272,35 @@ build_ir_node_from_die(read_context&	ctxt,
 					   called_from_public_decl,
 					   where_offset);
 	result = klass;
-	// To be ready for canonicalization, klass needs to be:
-	if (// Not a member type ...
-	    !is_member
-	    // And not be an incomplete type that is being currently
-	    // constructed.
-	    && !ctxt.is_wip_class_die_offset(dwarf_dieoffset(die)))
+	// For klass to be eligible for canonicalization at this
+	// point, it needs to be a non-member type.
+	if (!is_member)
 	  {
-	    // And then do not early-canonicalize klass if it either:
-	    if (// - has got virtual member functions.  This is because
-		//   the number of virtual member function might be
-		//   amended later, outside of the current DIE, by
-		//   cloned virtual functions that are clones of at
-		//   least one of the virtual functions declared in
-		//   the DIE.
-		!klass->has_virtual_member_functions()
-		// - or has ot non-canonicalized sub types.  In that case
-		//   the non-canonicalized sub-type needs to be
-		//   canonicalized before this type is.
-	       && !type_has_non_canonicalized_subtype(klass))
+	    // To be early canonicalized here, klass needs:
+	    if (// NOT be an incomplete type that is being currently
+		// constructed.
+		!ctxt.is_wip_class_die_offset(dwarf_dieoffset(die))
+		// And then do not early-canonicalize klass if it either:
+		&& (// - has got virtual member functions.  This is because
+		    //   the number of virtual member function might be
+		    //   amended later, outside of the current DIE, by
+		    //   cloned virtual functions that are clones of at
+		    //   least one of the virtual functions declared in
+		    //   the DIE.
+		    !klass->has_virtual_member_functions()
+		    // - or has got non-canonicalized sub types.  In that case
+		    //   the non-canonicalized sub-type needs to be
+		    //   canonicalized before this type is.
+		    && !type_has_non_canonicalized_subtype(klass)))
 	      canonicalize(klass);
 	    else
 	      // So klass is not suitable for early canonicalization.
 	      // Let's schedule it for late canonicalization then.
-	      ctxt.schedule_type_for_canonicalization(dwarf_dieoffset(die),
-						      die_is_from_alt_di);
+	      ctxt.schedule_type_for_late_canonicalization(dwarf_dieoffset(die),
+							   die_is_from_alt_di);
 	  }
+	// otherwise, if klass is a member type, the caller of this
+	// function is going to handle its canonicalizing.
       }
       break;
     case DW_TAG_string_type:
