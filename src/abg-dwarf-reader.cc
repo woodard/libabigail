@@ -5783,6 +5783,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 /// @return the resulting decl_base_sptr.
 static type_decl_sptr
 build_type_decl(read_context&	ctxt,
+		bool die_is_from_alt_di,
 		Dwarf_Die*	die)
 {
   type_decl_sptr result;
@@ -5810,6 +5811,9 @@ build_type_decl(read_context&	ctxt,
   result.reset(new type_decl(type_name, bit_size,
 			     alignment, loc,
 			     linkage_name));
+  ctxt.associate_die_to_type(dwarf_dieoffset(die),
+			     die_is_from_alt_di,
+			     result);
   return result;
 }
 
@@ -5821,7 +5825,9 @@ build_type_decl(read_context&	ctxt,
 ///
 /// @return the built enum_type_decl or NULL if it could not be built.
 static enum_type_decl_sptr
-build_enum_type(read_context& ctxt, Dwarf_Die* die)
+build_enum_type(read_context& ctxt,
+		bool die_is_from_alt_di,
+		Dwarf_Die* die)
 {
   enum_type_decl_sptr result;
   if (!die)
@@ -5882,7 +5888,9 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   t = dynamic_pointer_cast<type_decl>(d);
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
-
+  ctxt.associate_die_to_type(dwarf_dieoffset(die),
+			     die_is_from_alt_di,
+			     result);
   return result;
 }
 
@@ -6056,6 +6064,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       assert(result);
     }
 
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), is_in_alt_di, result);
+
   if (!has_child)
     // TODO: set the access specifier for the declaration-only class
     // here.
@@ -6211,13 +6221,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		  die_access_specifier(&child, access);
 
 		  set_member_access_specifier(td, access);
-		  ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
-					     is_in_alt_di,
-					     td);
 		  type_base_sptr t = is_type(td);
 		  assert(t);
-		  ctxt.associate_die_to_type(dwarf_dieoffset(&child),
-					     is_in_alt_di, t);
+
 		  // OK, so, 't' is a member type.  Let's see if we
 		  // can canonicalize it right away, or if we need to
 		  // schedule it for late canonicalizing (that is,
@@ -6333,6 +6339,10 @@ build_qualified_type(read_context&	ctxt,
 					qualified_type_def::CV_RESTRICT,
 					location()));
 
+  ctxt.associate_die_to_type(dwarf_dieoffset(die),
+			     die_is_in_alt_di,
+			     result);
+
   return result;
 }
 
@@ -6427,7 +6437,9 @@ build_pointer_type_def(read_context&	ctxt,
 
   result.reset(new pointer_type_def(utype, size, size, location()));
   assert(result->get_pointed_to_type());
-
+  ctxt.associate_die_to_type(dwarf_dieoffset(die),
+			     die_is_in_alt_di,
+			     result);
   return result;
 }
 
@@ -6496,6 +6508,9 @@ build_reference_type(read_context&	ctxt,
 
   result.reset(new reference_type_def(utype, is_lvalue, size, size,
 				      location()));
+  ctxt.associate_die_to_type(dwarf_dieoffset(die),
+			     die_is_from_alt_di,
+			     result);
   return result;
 }
 
@@ -6646,7 +6661,9 @@ build_typedef_type(read_context&	ctxt,
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   result.reset(new typedef_decl(name, utype, loc, linkage_name));
-
+  ctxt.associate_die_to_type(dwarf_dieoffset(die),
+			     die_is_from_alt_di,
+			     result);
   return result;
 }
 
@@ -7049,12 +7066,11 @@ build_ir_node_from_die(read_context&	ctxt,
     {
       // Type DIEs we support.
     case DW_TAG_base_type:
-	if(type_decl_sptr t = build_type_decl(ctxt, die))
+      if (type_decl_sptr t = build_type_decl(ctxt,
+					     die_is_from_alt_di,
+					     die))
 	  {
 	    result = add_decl_to_scope(t, scope);
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       t);
 	    canonicalize(t);
 	  }
       break;
@@ -7068,9 +7084,6 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (// t is not a member type
 	    t && !is_member && !is_class_type(scope))
 	  {
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       t);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);
@@ -7087,9 +7100,6 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (p)
 	  {
 	    result = add_decl_to_scope(p, scope);
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       p);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);
@@ -7128,9 +7138,6 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (q)
 	  {
 	    result = add_decl_to_scope(maybe_strip_qualification(q), scope);
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       q);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);
@@ -7140,13 +7147,12 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_enumeration_type:
       {
-	enum_type_decl_sptr e = build_enum_type(ctxt, die);
+	enum_type_decl_sptr e = build_enum_type(ctxt,
+						die_is_from_alt_di,
+						die);
 	if (e)
 	  {
 	    result = add_decl_to_scope(e, scope);
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       e);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);
