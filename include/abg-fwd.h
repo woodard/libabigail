@@ -197,6 +197,9 @@ is_enum_type(const shared_ptr<decl_base>&);
 bool
 is_class_type(decl_base*);
 
+class_decl*
+is_class_type(type_base*);
+
 shared_ptr<class_decl>
 is_class_type(const shared_ptr<type_base>);
 
@@ -206,11 +209,20 @@ is_class_type(const shared_ptr<decl_base>);
 shared_ptr<class_decl>
 is_compatible_with_class_type(const shared_ptr<type_base>);
 
+pointer_type_def*
+is_pointer_type(type_base*);
+
 shared_ptr<pointer_type_def>
 is_pointer_type(const shared_ptr<type_base>);
 
+reference_type_def*
+is_reference_type(type_base*);
+
 shared_ptr<reference_type_def>
 is_reference_type(const shared_ptr<type_base>);
+
+qualified_type_def*
+is_qualified_type(type_base*);
 
 shared_ptr<qualified_type_def>
 is_qualified_type(const shared_ptr<type_base>);

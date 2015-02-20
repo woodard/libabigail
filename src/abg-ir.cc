@@ -3210,6 +3210,15 @@ is_compatible_with_class_type(const type_base_sptr t)
 /// @parm t the type to consider.
 ///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
+class_decl*
+is_class_type(type_base* t)
+{return dynamic_cast<class_decl*>(t);}
+
+/// Test whether a type is a class.
+///
+/// @parm t the type to consider.
+///
+/// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl_sptr
 is_class_type(const type_base_sptr t)
 {
@@ -3252,9 +3261,23 @@ is_class_type(const decl_base_sptr d)
 ///
 /// @return the @ref pointer_type_def_sptr if @p t is a
 /// pointer_type_def, null otherwise.
+pointer_type_def*
+is_pointer_type(type_base* t)
+{return dynamic_cast<pointer_type_def*>(t);}
+
+/// Test whether a type is a pointer_type_def.
+///
+/// @param t the type to test.
+///
+/// @return the @ref pointer_type_def_sptr if @p t is a
+/// pointer_type_def, null otherwise.
 pointer_type_def_sptr
 is_pointer_type(const type_base_sptr t)
 {return dynamic_pointer_cast<pointer_type_def>(t);}
+
+reference_type_def*
+is_reference_type(type_base* t)
+{return dynamic_cast<reference_type_def*>(t);}
 
 /// Test whether a type is a reference_type_def.
 ///
@@ -3265,6 +3288,16 @@ is_pointer_type(const type_base_sptr t)
 reference_type_def_sptr
 is_reference_type(const type_base_sptr t)
 {return dynamic_pointer_cast<reference_type_def>(t);}
+
+/// Test whether a type is a reference_type_def.
+///
+/// @param t the type to test.
+///
+/// @return the @ref reference_type_def_sptr if @p t is a
+/// reference_type_def, null otherwise.
+qualified_type_def*
+is_qualified_type(type_base* t)
+{return dynamic_cast<qualified_type_def*>(t);}
 
 /// Test whether a type is a qualified_type_def.
 ///
