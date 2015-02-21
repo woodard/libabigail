@@ -2701,8 +2701,7 @@ diff_context::add_diff_filter(filtering::filter_base_sptr f)
 ///
 /// @param diff the diff sub-tree to apply the filters to.
 void
-diff_context::maybe_apply_filters(diff_sptr diff,
-				  bool visit_nodes_once)
+diff_context::maybe_apply_filters(diff_sptr diff)
 {
   if (!diff)
     return;
@@ -2713,10 +2712,6 @@ diff_context::maybe_apply_filters(diff_sptr diff,
   if (!diff->has_changes())
     return;
 
-  bool s = visiting_a_node_twice_is_forbidden();
-  if (!visit_nodes_once)
-    forbid_visiting_a_node_twice(false);
-
   for (filtering::filters::const_iterator i = diff_filters().begin();
        i != diff_filters().end();
        ++i)
@@ -2725,8 +2720,6 @@ diff_context::maybe_apply_filters(diff_sptr diff,
       propagate_categories(diff);
     }
 
-    if (!visit_nodes_once)
-      forbid_visiting_a_node_twice(s);
  }
 
 /// Apply the diff filters to the diff nodes of a @ref corpus_diff
@@ -2738,16 +2731,11 @@ diff_context::maybe_apply_filters(diff_sptr diff,
 ///
 /// @param diff the corpus diff to apply the filters to.
 void
-diff_context::maybe_apply_filters(corpus_diff_sptr diff,
-				  bool visit_nodes_once)
+diff_context::maybe_apply_filters(corpus_diff_sptr diff)
 {
 
   if (!diff || !diff->has_changes())
     return;
-
-  bool s = visiting_a_node_twice_is_forbidden();
-  if (!visit_nodes_once)
-    forbid_visiting_a_node_twice(false);
 
   for (filtering::filters::const_iterator i = diff_filters().begin();
        i != diff_filters().end();
@@ -2756,9 +2744,6 @@ diff_context::maybe_apply_filters(corpus_diff_sptr diff,
       filtering::apply_filter(**i, diff);
       propagate_categories(diff);
     }
-
-  if (!visit_nodes_once)
-    forbid_visiting_a_node_twice(s);
 }
 
 /// Getter for the vector of suppressions that specify which diff node
@@ -3348,6 +3333,35 @@ diff::reported_once() const
 /// without traversing it.  But traversing a node without visiting it
 /// is not possible.
 ///
+/// Note that by default this traversing code visits a given class of
+/// equivalence of a diff node only once.  This behaviour can been
+/// changed by calling
+/// diff_context::visiting_a_node_twice_is_forbidden(), but this is
+/// very risky as it might create endless loops while visiting a diff
+/// tree graph that has changes that refer to themselves; that is,
+/// diff tree graphs with cycles.
+///
+/// When a diff node is encountered, the
+/// diff_node_visitor::visit_begin() method is invoked on the diff
+/// node first.
+///
+/// If the diff node has already been visited, then
+/// node_visitor::visit_end() is called on it and the node traversing
+/// is done; the children of the diff node are not visited in this
+/// case.
+///
+/// If the diff node has *NOT* been visited yet, then the
+/// diff_node_visitor::visit() method is invoked with it's 'pre'
+/// argument set to true.  Then if the diff_node_visitor::visit()
+/// returns true, then the children nodes of the diff node are
+/// visited.  Otherwise, no children nodes of the diff node is
+/// visited and the diff_node_visitor::visit_end() is called.
+
+/// After the children nodes are visited (and only if they are
+/// visited) the diff_node_visitor::visit() method is invoked with
+/// it's 'pre' argument set to false.  And then the
+/// diff_node_visitor::visit_end() is called.
+///
 /// @param v the entity that visits each node of the diff sub-tree.
 ///
 /// @return true to tell the caller that all of the sub-tree could be
@@ -3358,16 +3372,17 @@ diff::traverse(diff_node_visitor& v)
 {
   finish_diff_type();
 
+  v.visit_begin(this);
+
+  bool already_visited = false;
   if (context()->visiting_a_node_twice_is_forbidden()
       && context()->diff_has_been_visited(this))
-    return true;
-
-  v.visit_begin(this);
+    already_visited = true;
 
   bool mark_visited_nodes_as_traversed =
     !(v.get_visiting_kind() & DO_NOT_MARK_VISITED_NODES_AS_VISITED);
 
-  if (!v.visit(this, /*pre=*/true))
+  if (!already_visited && !v.visit(this, /*pre=*/true))
     {
       v.visit_end(this);
       if (mark_visited_nodes_as_traversed)
@@ -3376,7 +3391,8 @@ diff::traverse(diff_node_visitor& v)
     }
 
   if (!(v.get_visiting_kind() & SKIP_CHILDREN_VISITING_KIND)
-      && !is_traversing())
+      && !is_traversing()
+      && !already_visited)
     {
       begin_traversing();
       for (vector<diff_sptr>::const_iterator i = children_nodes().begin();
@@ -3404,7 +3420,7 @@ diff::traverse(diff_node_visitor& v)
     }
 
   v.visit_end(this);
-  if (mark_visited_nodes_as_traversed)
+  if (!already_visited && mark_visited_nodes_as_traversed)
     context()->mark_diff_as_visited(this);
 
   return true;
@@ -12027,13 +12043,40 @@ struct category_propagation_visitor : public diff_node_visitor
   virtual void
   visit_end(diff* d)
   {
+    // Has this diff node 'd' been already visited ?
+    bool already_visited = d->context()->diff_has_been_visited(d);
+
+    // The canonical diff node of the class of equivalence of the diff
+    // node 'd'.
+    diff* canonical = d->get_canonical_diff();
+
+    // If this class of equivalence of diff node is being visited for
+    // the first time, then update its canonical node's category too.
+    bool update_canonical = !already_visited && canonical;
+
     for (vector<diff_sptr>::const_iterator i = d->children_nodes().begin();
 	 i != d->children_nodes().end();
 	 ++i)
       {
-	diff_category c = (*i)->get_category();
+	// If we are visiting the class of equivalence of 'd' for the
+	// first time, then let's look at the children of 'd' and
+	// propagate their categories to 'd'.
+	//
+	// If the class of equivalence of 'd' has already been
+	// visited, then let's look at the canonical diff nodes of the
+	// children of 'd' and propagate their categories to 'd'.
+	diff* diff = already_visited
+	  ? (*i)->get_canonical_diff()
+	  : (*i).get();
+
+	assert(diff);
+
+	diff_category c = diff->get_category();
 	c &= ~(REDUNDANT_CATEGORY|SUPPRESSED_CATEGORY);
 	d->add_to_category(c);
+	if (!already_visited && canonical)
+	  if (update_canonical)
+	    canonical->add_to_category(c);
       }
   }
 };// end struct category_propagation_visitor
@@ -12049,7 +12092,8 @@ propagate_categories(diff* diff_tree)
 {
   category_propagation_visitor v;
   bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
-  diff_tree->context()->forbid_visiting_a_node_twice(false);
+  diff_tree->context()->forbid_visiting_a_node_twice(true);
+  diff_tree->context()->forget_visited_diffs();
   diff_tree->traverse(v);
   diff_tree->context()->forbid_visiting_a_node_twice(s);
 }

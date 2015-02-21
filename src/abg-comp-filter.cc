@@ -56,6 +56,11 @@ apply_filter(filter_base& filter, corpus_diff_sptr d)
 /// filter categorizes each node, assigning it into one or several
 /// categories.
 ///
+/// Note that this function makes sure to avoid visiting a node (or
+/// any other node equivalent to it) more than once.  This helps avoid
+/// infinite loops for diff trees that involve type changes that
+/// reference themselves.
+///
 /// @param filter the filter to apply to the nodes of the sub-tree.
 ///
 /// @param d the diff sub-tree to walk and apply the filter to.
@@ -63,7 +68,8 @@ void
 apply_filter(filter_base& filter, diff_sptr d)
 {
   bool s = d->context()->visiting_a_node_twice_is_forbidden();
-  d->context()->forbid_visiting_a_node_twice(false);
+  d->context()->forbid_visiting_a_node_twice(true);
+  d->context()->forget_visited_diffs();
   d->traverse(filter);
   d->context()->forbid_visiting_a_node_twice(s);
 }
@@ -71,6 +77,11 @@ apply_filter(filter_base& filter, diff_sptr d)
 /// Walk a diff sub-tree and apply a filter to the nodes visted.  The
 /// filter categorizes each node, assigning it into one or several
 /// categories.
+///
+/// Note that this function makes sure to avoid visiting a node (or
+/// any other node equivalent to it) more than once.  This helps avoid
+/// infinite loops for diff trees that involve type changes that
+/// reference themselves.
 ///
 /// @param filter the filter to apply to the nodes of the sub-tree.
 ///
@@ -661,6 +672,9 @@ has_harmful_enum_change(const diff* diff)
 
 /// The visiting code of the harmless_filter.
 ///
+/// Detect if the changes carried by a given diff node are deemed
+/// harmless and do categorize the diff node accordingly.
+///
 /// @param d the diff node being visited.
 ///
 /// @param pre this is true iff the node is being visited *before* the
@@ -705,10 +719,44 @@ harmless_filter::visit(diff* d, bool pre)
 	category |= HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY;
 
       if (category)
-	d->add_to_category(category);
+	{
+	  d->add_to_category(category);
+	  // Also update the category of the canonical node.
+	  if (diff * canonical = d->get_canonical_diff())
+	    canonical->add_to_category(category);
+	}
     }
 
   return true;
+}
+
+/// Part of the visiting code of the harmless_filter.
+///
+/// This function is called after the visiting of a given diff node.
+/// Note that when this function is called, the visiting might not
+/// have taken place *if* the node (or an equivalent node) has already
+/// been visited.
+///
+/// @param d the diff node that has either been visited or skipped
+/// (because it has already been visited during this traversing).
+void
+harmless_filter::visit_end(diff* d)
+{
+  if (d->context()->diff_has_been_visited(d))
+    {
+      // This node or one of its equivalent node has already been
+      // visited.  That means at this moment, harmless_filter::visit()
+      // has *not* been called prior to this
+      // harmless_filter::visit_end() is called.  In other words, only
+      // harmless_filter::visit_begin() and
+      // harmless_filter::visit_end() are called.
+      //
+      // So let's update the category of this diff node from its
+      // canonical node.
+      diff* canonical = d->get_canonical_diff();
+      if (canonical)
+	d->add_to_category(canonical->get_category());
+    }
 }
 
 /// The visiting code of the harmful_filter.
@@ -749,10 +797,44 @@ harmful_filter::visit(diff* d, bool pre)
 	category |= VIRTUAL_MEMBER_CHANGE_CATEGORY;
 
       if (category)
-	d->add_to_category(category);
+	{
+	  d->add_to_category(category);
+	  // Update the category of the canonical diff node too.
+	  if (diff * canonical = d->get_canonical_diff())
+	    canonical->add_to_category(category);
+	}
     }
 
   return true;
+}
+
+/// Part of the visiting code of the harmless_filter.
+///
+/// This function is called after the visiting of a given diff node.
+/// Note that when this function is called, the visiting might not
+/// have taken place *if* the node (or an equivalent node) has already
+/// been visited.
+///
+/// @param d the diff node that has either been visited or skipped
+/// (because it has already been visited during this traversing).
+void
+harmful_filter::visit_end(diff* d)
+{
+  if (d->context()->diff_has_been_visited(d))
+    {
+      // This node or one of its equivalent node has already been
+      // visited.  That means at this moment, harmful_filter::visit()
+      // has *not* been called prior to this
+      // harmful_filter::visit_end() is called.  In other words, only
+      // harmful_filter::visit_begin() and harmful_filter::visit_end()
+      // are called.
+      //
+      // So let's update the category of this diff node from it's
+      // cnanonical node.
+      diff* canonical = d->get_canonical_diff();
+      if (canonical)
+	d->add_to_category(canonical->get_category());
+    }
 }
 
 } // end namespace filtering

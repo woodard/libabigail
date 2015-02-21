@@ -843,12 +843,10 @@ public:
   add_diff_filter(filtering::filter_base_sptr);
 
   void
-  maybe_apply_filters(diff_sptr diff,
-		      bool traverse_nodes_once = false);
+  maybe_apply_filters(diff_sptr diff);
 
   void
-  maybe_apply_filters(corpus_diff_sptr diff,
-		      bool traverse_nodes_once = false);
+  maybe_apply_filters(corpus_diff_sptr diff);
 
   suppressions_type&
   suppressions() const;

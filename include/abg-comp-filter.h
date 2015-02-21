@@ -78,6 +78,9 @@ class harmless_filter : public filter_base
 {
   virtual bool
   visit(diff*, bool);
+
+  virtual void
+  visit_end(diff*);
 }; // end class harmless_filter
 
 class harmful_filter;
@@ -91,6 +94,9 @@ class harmful_filter : public filter_base
 {
   virtual bool
   visit(diff*, bool);
+
+  virtual void
+  visit_end(diff*);
 }; // end class harmful_filter
 
 } // end namespace filtering
