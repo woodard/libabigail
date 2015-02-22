@@ -7168,7 +7168,7 @@ build_ir_node_from_die(read_context&	ctxt,
 						 called_from_public_decl,
 						 where_offset);
 	result = add_decl_to_scope(t, scope);
-	if (t && !is_member_type)
+	if (t && !is_member_type && !is_class_type(scope))
 	  maybe_canonicalize_type(dwarf_dieoffset(die),
 				  die_is_from_alt_di,
 				  ctxt);
@@ -7235,7 +7235,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	enum_type_decl_sptr e = build_enum_type(ctxt,
 						die_is_from_alt_di,
 						die);
-	if (e && !is_member_type)
+	if (e && !is_member_type && !is_class_type(scope))
 	  {
 	    result = add_decl_to_scope(e, scope);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
@@ -7290,7 +7290,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	result = klass;
 	// For klass to be eligible for canonicalization at this
 	// point, it needs to be a non-member type.
-	if (!is_member_type)
+	if (!is_member_type && !is_class_type(scope))
 	  {
 	    // To be early canonicalized here, klass needs:
 	    if (// NOT be an incomplete type that is being currently
