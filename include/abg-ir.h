@@ -91,6 +91,9 @@ namespace abigail
 namespace ir
 {
 
+// Inject some std::tr1 types in here.
+using std::tr1::unordered_map;
+
 /// @brief The source location of a token.
 ///
 /// This represents the location of a token coming from a given
@@ -1711,7 +1714,7 @@ public:
   var_decl_sptr
   clone() const;
 
-  string
+  const string&
   get_id() const;
 
   virtual size_t
@@ -1847,7 +1850,7 @@ public:
   virtual size_t
   get_hash() const;
 
-  string
+  const string&
   get_id() const;
 
   virtual bool

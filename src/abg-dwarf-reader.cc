@@ -1748,6 +1748,7 @@ class read_context
   vector<string>		dt_needed_;
   string			dt_soname_;
   string			elf_architecture_;
+  corpus::exported_decls_builder* exported_decls_builder_;
 
   read_context();
 
@@ -1767,7 +1768,8 @@ public:
       symbol_versionning_sections_found_(),
       versym_section_(),
       verdef_section_(),
-      verneed_section_()
+      verneed_section_(),
+      exported_decls_builder_()
   {}
 
   /// Clear the data that is relevant only for the current translation
@@ -3371,6 +3373,50 @@ public:
     return true;
   }
 
+  /// Getter of the exported decls builder object.
+  ///
+  /// @return the exported decls builder.
+  corpus::exported_decls_builder*
+  exported_decls_builder()
+  {return exported_decls_builder_;}
+
+  /// Setter of the exported decls builder object.
+  ///
+  /// Note that this @ref read_context is not responsible for the live
+  /// time of the exported_decls_builder object.  The corpus is.
+  ///
+  /// @param b the new builder.
+  void
+  exported_decls_builder(corpus::exported_decls_builder* b)
+  {exported_decls_builder_ = b;}
+
+  /// If a given function decl is suitable for the set of exported
+  /// functions of the current corpus, this function adds it to that
+  /// set.
+  ///
+  /// @param fn the function to consider for inclusion into the set of
+  /// exported functions of the current corpus.
+  void
+  maybe_add_fn_to_exported_decls(function_decl* fn)
+  {
+    if (fn)
+      if (corpus::exported_decls_builder* b = exported_decls_builder())
+	b->maybe_add_fn_to_exported_fns(fn);
+  }
+
+  /// If a given variable decl is suitable for the set of exported
+  /// variables of the current corpus, this variable adds it to that
+  /// set.
+  ///
+  /// @param fn the variable to consider for inclusion into the set of
+  /// exported variables of the current corpus.
+  void
+  maybe_add_var_to_exported_decls(var_decl* var)
+  {
+    if (var)
+      if (corpus::exported_decls_builder* b = exported_decls_builder())
+	b->maybe_add_var_to_exported_vars(var);
+  }
 };// end class read_context.
 
 static decl_base_sptr
@@ -7026,6 +7072,9 @@ read_debug_info_into_corpus(read_context& ctxt)
   uint8_t address_size = 0;
   size_t header_size = 0;
 
+  ctxt.exported_decls_builder
+    (ctxt.current_corpus()->get_exported_decls_builder().get());
+
   // Walk all the DIEs of the debug info to build a DIE -> parent map
   // useful for get_die_parent() to work.
   build_die_parent_maps(ctxt);
@@ -7054,6 +7103,10 @@ read_debug_info_into_corpus(read_context& ctxt)
 	build_translation_unit_and_add_to_ir(ctxt, &unit, address_size);
       assert(ir_node);
     }
+
+  ctxt.current_corpus()->sort_functions();
+  ctxt.current_corpus()->sort_variables();
+
   return ctxt.current_corpus();
 }
 
@@ -7427,6 +7480,7 @@ build_ir_node_from_die(read_context&	ctxt,
 			ctxt.var_decls_to_re_add_to_tree().push_back(m);
 		      }
 		    assert(m->get_scope());
+		    ctxt.maybe_add_var_to_exported_decls(m.get());
 		    return m;
 		  }
 	      }
@@ -7441,6 +7495,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    assert(v);
 	    assert(v->get_scope());
 	    ctxt.var_decls_to_re_add_to_tree().push_back(v);
+	    ctxt.maybe_add_var_to_exported_decls(v.get());
 	  }
       }
       break;
@@ -7518,9 +7573,13 @@ build_ir_node_from_die(read_context&	ctxt,
 	  }
 
 	if (fn)
-	  maybe_canonicalize_type(dwarf_dieoffset(die),
-				  die_is_from_alt_di,
-				  ctxt);
+	  {
+	    ctxt.maybe_add_fn_to_exported_decls(fn.get());
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
+
 	ctxt.scope_stack().pop();
       }
       break;

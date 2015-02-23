@@ -5797,7 +5797,7 @@ var_decl::operator==(const decl_base& o) const
 /// pretty representation of the variable.
 ///
 /// @return the ID.
-string
+const string&
 var_decl::get_id() const
 {
   if (priv_->id_.empty())
@@ -6902,7 +6902,7 @@ function_decl::get_hash() const
 /// pretty representation of the function.
 ///
 /// @return the ID.
-string
+const string&
 function_decl::get_id() const
 {
   if (priv_->id_.empty())

@@ -355,6 +355,13 @@ main(int argc, char* argv[])
       lib2_corpus->get_sym_ids_of_vars_to_keep().push_back(id);
     }
 
+  if (!app_corpus->get_sorted_undefined_var_symbols().empty()
+      || !app_corpus->get_sorted_undefined_fun_symbols().empty())
+    {
+      lib1_corpus->maybe_drop_some_exported_decls();
+      lib2_corpus->maybe_drop_some_exported_decls();
+    }
+
   diff_context_sptr ctxt(new diff_context());
   ctxt->show_added_fns(false);
   ctxt->show_added_vars(false);

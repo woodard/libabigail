@@ -43,11 +43,23 @@ typedef shared_ptr<corpus> corpus_sptr;
 class corpus
 {
 public:
-  struct				priv;
-  typedef shared_ptr<priv>		priv_sptr;
-  typedef std::string			string;
-  typedef vector<function_decl*>	functions;
-  typedef vector<var_decl*>		variables;
+  struct priv;
+  /// Convenience typedef for shared_ptr of corpus::priv
+  typedef shared_ptr<priv> priv_sptr;
+
+  /// A convenience typedef for std::vector<string>.
+  typedef vector<string> strings_type;
+
+  /// Convenience typedef for std::vector<abigail::ir::function_decl*>
+  typedef vector<function_decl*> functions;
+
+  ///Convenience typedef for std::vector<abigail::ir::var_decl*>
+  typedef vector<var_decl*> variables;
+
+  class exported_decls_builder;
+
+  /// Convenience typedef for shared_ptr<exported_decls_builder>.
+  typedef shared_ptr<exported_decls_builder> exported_decls_builder_sptr;
 
   /// This abstracts where the corpus comes from.  That is, either it
   /// has been read from the native xml format, from DWARF or built
@@ -178,8 +190,14 @@ public:
   const functions&
   get_functions() const;
 
+  void
+  sort_functions();
+
   const variables&
   get_variables() const;
+
+  void
+  sort_variables();
 
   const elf_symbols&
   get_unreferenced_function_symbols() const;
@@ -223,7 +241,71 @@ public:
   const vector<string>&
   get_sym_ids_of_vars_to_keep() const;
 
+  void
+  maybe_drop_some_exported_decls();
+
+  exported_decls_builder_sptr
+  get_exported_decls_builder() const;
 };// end class corpus.
+
+/// Abstracts the building of the set of exported variables and
+/// functions.
+///
+/// Given a function or variable, this type can decide if it belongs
+/// to the list of exported functions and variables based on all the
+/// parameters needed.
+class corpus::exported_decls_builder
+{
+public:
+  class priv;
+
+  /// Convenience typedef for shared_ptr<priv>
+  typedef shared_ptr<priv> priv_sptr;
+  /// Convenience typedef for a hash map which key is a string an
+  /// which data is an abigail::ir::function_decl*
+  typedef unordered_map<string, function_decl*> str_fn_ptr_map_type;
+  /// Convenience typedef for a hash map which key is a string and
+  /// which data is an abigail::ir::var_decl*.
+  typedef unordered_map<string, var_decl*> str_var_ptr_map_type;
+
+  friend class corpus;
+
+private:
+  priv_sptr priv_;
+
+  // Forbid default construction.
+  exported_decls_builder();
+
+public:
+
+  exported_decls_builder(functions& fns,
+			 variables& vars,
+			 strings_type& fns_suppress_regexps,
+			 strings_type& vars_suppress_regexps,
+			 strings_type& fns_keep_regexps,
+			 strings_type& vars_keep_regexps,
+			 strings_type& sym_id_of_fns_to_keep,
+			 strings_type& sym_id_of_vars_to_keep);
+
+
+  const functions&
+  exported_functions() const;
+
+  functions&
+  exported_functions();
+
+  const variables&
+  exported_variables() const;
+
+  variables&
+  exported_variables();
+
+  void
+  maybe_add_fn_to_exported_fns(function_decl*);
+
+  void
+  maybe_add_var_to_exported_vars(var_decl*);
+}; //corpus::exported_decls_builder
 
 }// end namespace ir
 }//end namespace abigail

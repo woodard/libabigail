@@ -91,10 +91,667 @@ using zip_utils::open_file_in_archive;
 
 using sptr_utils::regex_t_sptr;
 
+/// A convenience typedef for std::vector<regex_t_sptr>.
+typedef vector<regex_t_sptr> regex_t_sptrs_type;
+
+// <corpus::exported_decls_builder>
+
+/// The type of the private data of @ref
+/// corpus::exported_decls_builder type.
+class corpus::exported_decls_builder::priv
+{
+  friend class corpus::exported_decls_builder;
+  priv();
+
+  functions&	fns_;
+  variables&	vars_;
+  str_fn_ptr_map_type	fns_map_;
+  str_var_ptr_map_type	vars_map_;
+  strings_type&	fns_suppress_regexps_;
+  regex_t_sptrs_type	compiled_fns_suppress_regexp_;
+  strings_type&	vars_suppress_regexps_;
+  regex_t_sptrs_type	compiled_vars_suppress_regexp_;
+  strings_type&	fns_keep_regexps_;
+  regex_t_sptrs_type	compiled_fns_keep_regexps_;
+  strings_type&	vars_keep_regexps_;
+  regex_t_sptrs_type	compiled_vars_keep_regexps_;
+  strings_type&	sym_id_of_fns_to_keep_;
+  strings_type&	sym_id_of_vars_to_keep_;
+
+
+public:
+
+  priv(functions& fns,
+       variables& vars,
+       strings_type& fns_suppress_regexps,
+       strings_type& vars_suppress_regexps,
+       strings_type& fns_keep_regexps,
+       strings_type& vars_keep_regexps,
+       strings_type& sym_id_of_fns_to_keep,
+       strings_type& sym_id_of_vars_to_keep)
+    : fns_(fns),
+      vars_(vars),
+      fns_suppress_regexps_(fns_suppress_regexps),
+      vars_suppress_regexps_(vars_suppress_regexps),
+      fns_keep_regexps_(fns_keep_regexps),
+      vars_keep_regexps_(vars_keep_regexps),
+      sym_id_of_fns_to_keep_(sym_id_of_fns_to_keep),
+      sym_id_of_vars_to_keep_(sym_id_of_vars_to_keep)
+  {}
+
+  /// Getter for the compiled regular expressions that designate the
+  /// functions to suppress from the set of exported functions.
+  ///
+  /// @return a vector of the compiled regular expressions.
+  regex_t_sptrs_type&
+  compiled_regex_fns_suppress()
+  {
+    if (compiled_fns_suppress_regexp_.empty())
+      {
+	for (vector<string>::const_iterator i =
+	       fns_suppress_regexps_.begin();
+	     i != fns_suppress_regexps_.end();
+	     ++i)
+	  {
+	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
+	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
+	      compiled_fns_suppress_regexp_.push_back(r);
+	  }
+      }
+    return compiled_fns_suppress_regexp_;
+  }
+
+  /// Getter for the compiled regular expressions that designates the
+  /// functions to keep in the set of exported functions.
+  ///
+  /// @return a vector of compiled regular expressions.
+  regex_t_sptrs_type&
+  compiled_regex_fns_keep()
+  {
+    if (compiled_fns_keep_regexps_.empty())
+      {
+	for (vector<string>::const_iterator i =
+	       fns_keep_regexps_.begin();
+	     i != fns_keep_regexps_.end();
+	     ++i)
+	  {
+	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
+	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
+	      compiled_fns_keep_regexps_.push_back(r);
+	  }
+      }
+    return compiled_fns_keep_regexps_;
+  }
+
+  /// Getter of the compiled regular expressions that designate the
+  /// variables to suppress from the set of exported variables.
+  ///
+  /// @return a vector of compiled regular expressions.
+  regex_t_sptrs_type&
+  compiled_regex_vars_suppress()
+  {
+    if (compiled_vars_suppress_regexp_.empty())
+      {
+	for (vector<string>::const_iterator i =
+	       vars_suppress_regexps_.begin();
+	     i != vars_suppress_regexps_.end();
+	     ++i)
+	  {
+	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
+	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
+	      compiled_vars_suppress_regexp_.push_back(r);
+	  }
+      }
+    return compiled_vars_suppress_regexp_;
+  }
+
+  /// Getter for the compiled regular expressions that designate the
+  /// variables to keep in the set of exported variables.
+  ///
+  /// @return a vector of compiled regular expressions.
+  regex_t_sptrs_type&
+  compiled_regex_vars_keep()
+  {
+    if (compiled_vars_keep_regexps_.empty())
+      {
+	for (vector<string>::const_iterator i =
+	       vars_keep_regexps_.begin();
+	     i != vars_keep_regexps_.end();
+	     ++i)
+	  {
+	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
+	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
+	      compiled_vars_keep_regexps_.push_back(r);
+	  }
+      }
+    return compiled_vars_keep_regexps_;
+  }
+
+  /// Getter for a map of the IDs of the functions that are present in
+  /// the set of exported functions.
+  ///
+  /// This map is useful during the construction of the set of
+  /// exported functions, at least to ensure that every function is
+  /// present only once in that set.
+  ///
+  /// @return a map which key is a string and which data is a pointer
+  /// to a function.
+  const corpus::exported_decls_builder::str_fn_ptr_map_type&
+  fns_map() const
+  {return fns_map_;}
+
+  /// Getter for a map of the IDs of the functions that are present in
+  /// the set of exported functions.
+  ///
+  /// This map is useful during the construction of the set of
+  /// exported functions, at least to ensure that every function is
+  /// present only once in that set.
+  ///
+  /// @return a map which key is a string and which data is a pointer
+  /// to a function.
+  corpus::exported_decls_builder::str_fn_ptr_map_type&
+  fns_map()
+  {return fns_map_;}
+
+  /// Getter for a map of the IDs of the variables that are present in
+  /// the set of exported variables.
+  ///
+  /// This map is useful during the construction of the set of
+  /// exported variables, at least to ensure that every function is
+  /// present only once in that set.
+  ///
+  /// @return a map which key is a string and which data is a pointer
+  /// to a function.
+  const corpus::exported_decls_builder::str_var_ptr_map_type&
+  vars_map() const
+  {return vars_map_;}
+
+  /// Getter for a map of the IDs of the variables that are present in
+  /// the set of exported variables.
+  ///
+  /// This map is useful during the construction of the set of
+  /// exported variables, at least to ensure that every function is
+  /// present only once in that set.
+  ///
+  /// @return a map which key is a string and which data is a pointer
+  /// to a function.
+  corpus::exported_decls_builder::str_var_ptr_map_type&
+  vars_map()
+  {return vars_map_;}
+
+  /// Returns an ID for a given function.
+  ///
+  /// @param fn the function to calculate the ID for.
+  ///
+  /// @return a reference to a string representing the function ID.
+  const string&
+  get_id(const function_decl& fn)
+  {return fn.get_id();}
+
+  /// Returns an ID for a given variable.
+  ///
+  /// @param var the variable to calculate the ID for.
+  ///
+  /// @return a reference to a string representing the variable ID.
+  const string&
+  get_id(const var_decl& var)
+  {return var.get_id();}
+
+  /// Test if a given (ID of a) function is present in the function
+  /// map.  In other words, it tests if a given function is present in
+  /// the set of exported functions.
+  ///
+  /// @param fn_id the ID of the function to consider.
+  ///
+  /// @return true iff the function designated by @p fn_id is present
+  /// in the set of exported functions.
+  bool
+  fn_is_in_map(const string& fn_id)
+  {
+    str_fn_ptr_map_type& m = fns_map();
+    str_fn_ptr_map_type::const_iterator i = m.find(fn_id);
+    return i != m.end();
+  }
+
+  /// Add a given function to the map of functions that are present in
+  /// the set of exported functions.
+  ///
+  /// @param id the function to add to the map.
+  void
+  add_fn_to_map(function_decl* fn)
+  {
+    if (fn)
+      {
+	const string& id = get_id(*fn);
+	fns_map()[id] = fn;
+      }
+  }
+
+  /// Test if a given (ID of a) varialble is present in the variable
+  /// map.  In other words, it tests if a given variable is present in
+  /// the set of exported variables.
+  ///
+  /// @param fn_id the ID of the variable to consider.
+  ///
+  /// @return true iff the variable designated by @p fn_id is present
+  /// in the set of exported variables.
+  bool
+  var_is_in_map(const string& var_id) const
+  {
+    const str_var_ptr_map_type& m = vars_map();
+    str_var_ptr_map_type::const_iterator i = m.find(var_id);
+    return i != m.end();
+  }
+
+  /// Add a given variable to the map of functions that are present in
+  /// the set of exported functions.
+  ///
+  /// @param id the variable to add to the map.
+  void
+  add_var_to_map(var_decl* var)
+  {
+    if (var)
+      {
+	const string& var_id = get_id(*var);
+	vars_map()[var_id] = var;
+      }
+  }
+
+  /// Add a function to the set of exported functions.
+  ///
+  /// @param fn the function to add to the set of exported functions.
+  void
+  add_fn_to_exported(function_decl* fn)
+  {
+    const string& id = get_id(*fn);
+    if (!fn_is_in_map(id))
+      {
+	fns_.push_back(fn);
+	add_fn_to_map(fn);
+      }
+  }
+
+  /// Add a variable to the set of exported variables.
+  ///
+  /// @param fn the variable to add to the set of exported variables.
+  void
+  add_var_to_exported(var_decl* var)
+  {
+    const string& id = get_id(*var);
+    if (!var_is_in_map(id))
+      {
+	vars_.push_back(var);
+	add_var_to_map(var);
+      }
+  }
+
+  /// Getter for the set of ids of functions to keep in the set of
+  /// exported functions.
+  ///
+  /// @return the set of ids of functions to keep in the set of
+  /// exported functions.
+  const strings_type&
+  sym_id_of_fns_to_keep() const
+  {return sym_id_of_fns_to_keep_;}
+
+  /// Getter for the set of ids of variables to keep in the set of
+  /// exported variables.
+  ///
+  /// @return the set of ids of variables to keep in the set of
+  /// exported variables.
+  const strings_type&
+  sym_id_of_vars_to_keep() const
+  {return sym_id_of_vars_to_keep_;}
+
+  /// Look at the set of functions to keep and tell if if a given
+  /// function is to be kept, according to that set.
+  ///
+  /// @param fn the function to consider.
+  ///
+  /// @return true iff the function is to be kept.
+  bool
+  keep_wrt_id_of_fns_to_keep(const function_decl* fn)
+  {
+    if (!fn)
+      return false;
+
+    bool keep = true;
+
+    if (elf_symbol_sptr sym = fn->get_symbol())
+      {
+	if (!sym_id_of_fns_to_keep().empty())
+	  keep = false;
+	if (!keep)
+	  {
+	    string sym_name, sym_version;
+	    for (vector<string>::const_iterator i =
+		   sym_id_of_fns_to_keep().begin();
+		 i != sym_id_of_fns_to_keep().end();
+		 ++i)
+	      {
+		assert(elf_symbol::get_name_and_version_from_id(*i,
+								sym_name,
+								sym_version));
+		if (sym_name == sym->get_name()
+		    && sym_version == sym->get_version().str())
+		  {
+		    keep = true;
+		    break;
+		  }
+	      }
+	  }
+      }
+    else
+      keep = false;
+
+    return keep;
+  }
+
+  /// Look at the set of functions to suppress from the exported
+  /// functions set and tell if if a given function is to be kept,
+  /// according to that set.
+  ///
+  /// @param fn the function to consider.
+  ///
+  /// @return true iff the function is to be kept.
+  bool
+  keep_wrt_regex_of_fns_to_suppress(const function_decl *fn)
+  {
+    if (!fn)
+      return false;
+
+    string frep = fn->get_qualified_name();
+    bool keep = true;
+
+    for (regex_t_sptrs_type::const_iterator i =
+	   compiled_regex_fns_suppress().begin();
+	 i != compiled_regex_fns_suppress().end();
+	 ++i)
+      if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+	{
+	  keep = false;
+	  break;
+	}
+
+    return keep;
+  }
+
+  /// Look at the regular expressions of the functions to keep and
+  /// tell if if a given function is to be kept, according to that
+  /// set.
+  ///
+  /// @param fn the function to consider.
+  ///
+  /// @return true iff the function is to be kept.
+  bool
+  keep_wrt_regex_of_fns_to_keep(const function_decl *fn)
+  {
+    if (!fn)
+      return false;
+
+    string frep = fn->get_qualified_name();
+    bool keep = true;
+
+    if (!compiled_regex_fns_keep().empty())
+      keep = false;
+
+    if (!keep)
+      for (regex_t_sptrs_type::const_iterator i =
+	     compiled_regex_fns_keep().begin();
+	   i != compiled_regex_fns_keep().end();
+	   ++i)
+	if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+	  {
+	    keep = true;
+	    break;
+	  }
+
+    return keep;
+  }
+
+  /// Look at the regular expressions of the variables to keep and
+  /// tell if if a given variable is to be kept, according to that
+  /// set.
+  ///
+  /// @param fn the variable to consider.
+  ///
+  /// @return true iff the variable is to be kept.
+  bool
+  keep_wrt_id_of_vars_to_keep(const var_decl* var)
+  {
+    if (!var)
+      return false;
+
+    bool keep = true;
+
+    if (elf_symbol_sptr sym = var->get_symbol())
+      {
+	if (!sym_id_of_vars_to_keep().empty())
+	  keep = false;
+	if (!keep)
+	  {
+	    string sym_name, sym_version;
+	    for (vector<string>::const_iterator i =
+		   sym_id_of_vars_to_keep().begin();
+		 i != sym_id_of_vars_to_keep().end();
+		 ++i)
+	      {
+		assert(elf_symbol::get_name_and_version_from_id(*i,
+								sym_name,
+								sym_version));
+		if (sym_name == sym->get_name()
+		    && sym_version == sym->get_version().str())
+		  {
+		    keep = true;
+		    break;
+		  }
+	      }
+	  }
+      }
+    else
+      keep = false;
+
+    return keep;
+  }
+
+  /// Look at the set of variables to suppress from the exported
+  /// variables set and tell if if a given variable is to be kept,
+  /// according to that set.
+  ///
+  /// @param fn the variable to consider.
+  ///
+  /// @return true iff the variable is to be kept.
+  bool
+  keep_wrt_regex_of_vars_to_suppress(const var_decl *var)
+  {
+    if (!var)
+      return false;
+
+    string frep = var->get_qualified_name();
+    bool keep = true;
+
+    for (regex_t_sptrs_type::const_iterator i =
+	   compiled_regex_vars_suppress().begin();
+	 i != compiled_regex_vars_suppress().end();
+	 ++i)
+      if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+	{
+	  keep = false;
+	  break;
+	}
+
+    return keep;
+  }
+
+  /// Look at the regular expressions of the variables to keep and
+  /// tell if if a given variable is to be kept, according to that
+  /// set.
+  ///
+  /// @param fn the variable to consider.
+  ///
+  /// @return true iff the variable is to be kept.
+  bool
+  keep_wrt_regex_of_vars_to_keep(const var_decl *var)
+  {
+    if (!var)
+      return false;
+
+    string frep = var->get_qualified_name();
+    bool keep = true;
+
+    if (!compiled_regex_vars_keep().empty())
+      keep = false;
+
+    if (!keep)
+      {
+	for (regex_t_sptrs_type::const_iterator i =
+	       compiled_regex_vars_keep().begin();
+	     i != compiled_regex_vars_keep().end();
+	     ++i)
+	  if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
+	    {
+	      keep = true;
+	      break;
+	    }
+      }
+
+    return keep;
+  }
+}; // end struct corpus::exported_decls_builder::priv
+
+/// Constructor of @ref corpus::exported_decls_builder.
+///
+/// @param fns a reference to the vector of exported functions.
+///
+/// @param vars a reference to the vector of exported variables.
+///
+/// @param fns_suppress_regexps the regular expressions that designate
+/// the functions to suppress from the exported functions set.
+///
+/// @param vars_suppress_regexps the regular expressions that designate
+/// the variables to suppress from the exported variables set.
+///
+/// @param fns_keep_regexps the regular expressions that designate the
+/// functions to keep in the exported functions set.
+///
+/// @param fns_keep_regexps the regular expressions that designate the
+/// functions to keep in the exported functions set.
+///
+/// @param vars_keep_regexps the regular expressions that designate
+/// the variables to keep in the exported variables set.
+///
+/// @param sym_id_of_fns_to_keep the IDs of the functions to keep in
+/// the exported functions set.
+///
+/// @param sym_id_of_vars_to_keep the IDs of the variables to keep in
+/// the exported variables set.
+corpus::exported_decls_builder
+::exported_decls_builder(functions&	fns,
+			 variables&	vars,
+			 strings_type&	fns_suppress_regexps,
+			 strings_type&	vars_suppress_regexps,
+			 strings_type&	fns_keep_regexps,
+			 strings_type&	vars_keep_regexps,
+			 strings_type&	sym_id_of_fns_to_keep,
+			 strings_type&	sym_id_of_vars_to_keep)
+  : priv_(new priv(fns, vars,
+		   fns_suppress_regexps,
+		   vars_suppress_regexps,
+		   fns_keep_regexps,
+		   vars_keep_regexps,
+		   sym_id_of_fns_to_keep,
+		   sym_id_of_vars_to_keep))
+{
+}
+
+/// Getter for the reference to the vector of exported functions.
+/// This vector is shared with with the @ref corpus.  It's where the
+/// set of exported function is ultimately stored.
+///
+/// @return a reference to the vector of exported functions.
+const corpus::functions&
+corpus::exported_decls_builder::exported_functions() const
+{return priv_->fns_;}
+
+/// Getter for the reference to the vector of exported functions.
+/// This vector is shared with with the @ref corpus.  It's where the
+/// set of exported function is ultimately stored.
+///
+/// @return a reference to the vector of exported functions.
+corpus::functions&
+corpus::exported_decls_builder::exported_functions()
+{return priv_->fns_;}
+
+/// Getter for the reference to the vector of exported variables.
+/// This vector is shared with with the @ref corpus.  It's where the
+/// set of exported variable is ultimately stored.
+///
+/// @return a reference to the vector of exported variables.
+const corpus::variables&
+corpus::exported_decls_builder::exported_variables() const
+{return priv_->vars_;}
+
+/// Getter for the reference to the vector of exported variables.
+/// This vector is shared with with the @ref corpus.  It's where the
+/// set of exported variable is ultimately stored.
+///
+/// @return a reference to the vector of exported variables.
+corpus::variables&
+corpus::exported_decls_builder::exported_variables()
+{return priv_->vars_;}
+
+/// Consider at all the tunables that control wether a function should
+/// be added to the set of exported function and if it fits in, add
+/// the function to that set.
+///
+/// @param fn the function to add the set of exported functions.
+void
+corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(function_decl* fn)
+{
+  if (!fn->get_is_in_public_symbol_table())
+    return;
+
+  const string& fn_id = priv_->get_id(*fn);
+  assert(!fn_id.empty());
+
+  if (priv_->fn_is_in_map(fn_id))
+    return;
+
+  if (priv_->keep_wrt_id_of_fns_to_keep(fn)
+      && priv_->keep_wrt_regex_of_fns_to_suppress(fn)
+      && priv_->keep_wrt_regex_of_fns_to_keep(fn))
+    priv_->add_fn_to_exported(fn);
+}
+
+/// Consider at all the tunables that control wether a variable should
+/// be added to the set of exported variable and if it fits in, add
+/// the variable to that set.
+///
+/// @param fn the variable to add the set of exported variables.
+void
+corpus::exported_decls_builder::maybe_add_var_to_exported_vars(var_decl* var)
+{
+  if (!var->get_is_in_public_symbol_table())
+    return;
+
+  const string& var_id = priv_->get_id(*var);
+  assert(!var_id.empty());
+
+  if (priv_->var_is_in_map(var_id))
+    return;
+
+  if (priv_->keep_wrt_id_of_vars_to_keep(var)
+      && priv_->keep_wrt_regex_of_vars_to_suppress(var)
+      && priv_->keep_wrt_regex_of_vars_to_keep(var))
+    priv_->add_var_to_exported(var);
+}
+
+// </corpus::exported_decls_builder>
+
 struct corpus::priv
 {
+  corpus::exported_decls_builder_sptr exported_decls_builder;
   origin			origin_;
-  bool				is_public_decl_table_built;
   vector<string>		regex_patterns_fns_to_suppress;
   vector<string>		regex_patterns_vars_to_suppress;
   vector<string>		regex_patterns_fns_to_keep;
@@ -125,12 +782,8 @@ private:
 public:
   priv(const string &p)
     : origin_(ARTIFICIAL_ORIGIN),
-      is_public_decl_table_built(false),
       path(p)
   {}
-
-  void
-  build_public_decl_table();
 
   void
   build_unreferenced_symbols_tables();
@@ -152,471 +805,6 @@ typedef unordered_map<const var_decl*,
 		      bool,
 		      var_decl::hash,
 		      var_decl::ptr_equal> var_ptr_map_type;
-
-/// Convenience typedef for a hash map of string and pointer to var_decl.
-typedef unordered_map<string, const var_decl*> str_var_ptr_map_type;
-
-/// A visitor type to be used while traversing functions and variables
-/// of the translations units of the corpus.  The goal of this visitor
-/// is to build a public decl table containing all the public functions and
-/// global variables of the all the translation units of the the
-/// corpus.
-class symtab_build_visitor_type : public ir_node_visitor
-{
-  vector<function_decl*>&	functions;
-  vector<var_decl*>&		variables;
-  elf_symbols			unrefed_fun_symbols;
-  elf_symbols			unrefed_var_symbols;
-  vector<string>&		regex_patterns_fns_to_suppress;
-  vector<string>&		regex_patterns_vars_to_suppress;
-  vector<string>&		regex_patterns_fns_to_keep;
-  vector<string>&		sym_id_fns_to_keep;
-  vector<string>&		sym_id_vars_to_keep;
-  vector<string>&		regex_patterns_vars_to_keep;
-  vector<regex_t_sptr>		r_fns_suppress;
-  vector<regex_t_sptr>		r_vars_suppress;
-  vector<regex_t_sptr>		r_fns_keep;
-  vector<regex_t_sptr>		r_vars_keep;
-  str_fn_ptr_map_type		functions_map;
-  str_var_ptr_map_type		variables_map;
-  list<function_decl*>		wip_fns;
-  int				wip_fns_size;
-  list<var_decl*>		wip_vars;
-  int				wip_vars_size;
-
-  symtab_build_visitor_type();
-
-  friend class corpus::priv;
-
-public:
-  symtab_build_visitor_type(vector<function_decl*>&	fns,
-			    vector<var_decl*>&		vars,
-			    vector<string>&		fns_suppress_regexps,
-			    vector<string>&		vars_suppress_regexps,
-			    vector<string>&		fns_keep_regexps,
-			    vector<string>&		sym_id_of_fns_to_keep,
-			    vector<string>&		sym_id_of_vars_to_keep,
-			    vector<string>&		vars_keep_regexps)
-    : functions(fns),
-      variables(vars),
-      regex_patterns_fns_to_suppress(fns_suppress_regexps),
-      regex_patterns_vars_to_suppress(vars_suppress_regexps),
-      regex_patterns_fns_to_keep(fns_keep_regexps),
-      sym_id_fns_to_keep(sym_id_of_fns_to_keep),
-      sym_id_vars_to_keep(sym_id_of_vars_to_keep),
-      regex_patterns_vars_to_keep(vars_keep_regexps),
-      wip_fns_size(0),
-      wip_vars_size(0)
-  {}
-
-  /// Getter for the map of string and function pointers.
-  ///
-  /// @return the map of string and function pointers.
-  const str_fn_ptr_map_type&
-  fns_map() const
-  {return functions_map;}
-
-  /// Getter for the map of string and function pointers.
-  ///
-  /// @return the map of string and function pointers.
-  str_fn_ptr_map_type&
-  fns_map()
-  {return functions_map;}
-
-  /// Build a string that uniquely identifies a function_decl inside
-  /// one corpus.
-  ///
-  /// That ID is either the name of the symbol of the function,
-  /// concatenated with its version name, if the symbol exists.
-  /// Otherwise, it's the linkage name of the function, if it exists.
-  /// Otherwise it's the pretty representation ofthe function.
-  ///
-  /// @param fn the function to build the id for.
-  ///
-  /// @return the unique ID.
-  string
-  build_id(const function_decl& fn)
-  {return fn.get_id();}
-
-  /// Build a string that uniquely identifies a var_decl inside
-  /// one corpus.
-  ///
-  /// That ID is either the name of the symbol of the variable,
-  /// concatenated with its version name, if the symbol exists.
-  /// Otherwise, it's the linkage name of the varible, if it exists.
-  /// Otherwise it's the pretty representation ofthe variable.
-  ///
-  /// @param var the function to build the id for.
-  ///
-  /// @return the unique ID.
-  string
-  build_id(const var_decl& var)
-  {return var.get_id();}
-
-  /// Build a string that uniquely identifies a function_decl inside
-  /// one corpus.
-  ///
-  /// That ID is either the name of the symbol of the function,
-  /// concatenated with its version name, if the symbol exists.
-  /// Otherwise, it's the linkage name of the function, if it exists.
-  /// Otherwise it's the pretty representation ofthe function.
-  ///
-  /// @param fn the function to build the id for.
-  ///
-  /// @return the unique ID.
-  string
-  build_id(const function_decl* fn)
-  {return build_id(*fn);}
-
-  /// Build a string that uniquely identifies a var_decl inside
-  /// one corpus.
-  ///
-  /// That ID is either the name of the symbol of the variable,
-  /// concatenated with its version name, if the symbol exists.
-  /// Otherwise, it's the linkage name of the varible, if it exists.
-  /// Otherwise it's the pretty representation ofthe variable.
-  ///
-  /// @param var the function to build the id for.
-  ///
-  /// @return the unique ID.
-  string
-  build_id(const var_decl* fn)
-  {return build_id(*fn);}
-
-  /// Test if a given function name is in the map of strings and
-  /// function pointer.
-  ///
-  /// @param fn_name the function name to test for.
-  ///
-  /// @return true if @p fn_name is in the map, false otherwise.
-  bool
-  fn_is_in_map(const string& fn_name) const
-  {return fns_map().find(fn_name) != fns_map().end();}
-
-  /// Add a pair function name / function_decl to the map of string
-  /// and function_decl.
-  ///
-  /// @param fn the name of the function to add.
-  ///
-  /// @param v the function to add.
-  void
-  add_fn_to_map(const string& fn, const function_decl* v)
-  {fns_map()[fn] = v;}
-
-  /// Getter for the map of string and poitner to var_decl.
-  ///
-  /// @return the map of string and poitner to var_decl.
-  const str_var_ptr_map_type&
-  vars_map() const
-  {return variables_map;}
-
-  /// Getter for the map of string and pointer to var_decl.
-  ///
-  /// @return the map of string and poitner to var_decl.
-  str_var_ptr_map_type&
-  vars_map()
-  {return variables_map;}
-
-  /// Tests if a variable name is in the map of string and pointer to var_decl.
-  ///
-  /// @param v the string to test.
-  ///
-  /// @return true if @v is in the map.
-  bool
-  var_is_in_map(const string& v) const
-  {return vars_map().find(v) != vars_map().end();}
-
-  /// @return the vector of regex_t* describing the set of functions
-  /// to suppress from the function public decl table.
-  vector<regex_t_sptr>&
-  regex_fns_suppress()
-  {
-    if (r_fns_suppress.empty())
-      {
-	for (vector<string>::const_iterator i =
-	       regex_patterns_fns_to_suppress.begin();
-	     i != regex_patterns_fns_to_suppress.end();
-	     ++i)
-	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
-	      r_fns_suppress.push_back(r);
-	  }
-      }
-    return r_fns_suppress;
-
-  }
-
-  /// @return the vector of regex_t* describing the set of variables
-  /// to suppress from the variable public decl table.
-  vector<regex_t_sptr>&
-  regex_vars_suppress()
-  {
-    if (r_vars_suppress.empty())
-      {
-	for (vector<string>::const_iterator i =
-	       regex_patterns_vars_to_suppress.begin();
-	     i != regex_patterns_vars_to_suppress.end();
-	     ++i)
-	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
-	      r_vars_suppress.push_back(r);
-	  }
-      }
-    return r_vars_suppress;
-  }
-
-  /// @return the vector of regex_t* describing the set of functions
-  /// to keep into the function public decl table.  All the other functions
-  /// not described by these regular expressions are not dropped from
-  /// the public decl table.
-  vector<regex_t_sptr>&
-  regex_fns_keep()
-  {
-    if (r_fns_keep.empty())
-      {
-	for (vector<string>::const_iterator i =
-	       regex_patterns_fns_to_keep.begin();
-	     i != regex_patterns_fns_to_keep.end();
-	     ++i)
-	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
-	      r_fns_keep.push_back(r);
-	  }
-      }
-    return r_fns_keep;
-  }
-
-  /// @return the vector of regex_t* describing the set of variables
-  /// to keep into the variable public decl table.  All the other variabled
-  /// not described by these regular expressions are not dropped from
-  /// the public decl table.
-  vector<regex_t_sptr>&
-  regex_vars_keep()
-  {
-    if (r_vars_keep.empty())
-      {
-	for (vector<string>::const_iterator i =
-	       regex_patterns_vars_to_keep.begin();
-	     i != regex_patterns_vars_to_keep.end();
-	     ++i)
-	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
-	      r_vars_keep.push_back(r);
-	  }
-      }
-      return r_vars_keep;
-  }
-
-  /// Add a pair variable name / pointer var_decl to the map of string
-  /// and pointer to var_decl.
-  ///
-  /// @param vn the name of the variable to add.
-  ///
-  /// @param v the variable to add.
-  void
-  add_var_to_map(const string& vn, const var_decl* v)
-  {vars_map()[vn] = v;}
-
-  /// Add a given function to the list of functions that are supposed
-  /// to end up in the function public decl table.
-  ///
-  /// Note that this function looks at the list of function symbols to
-  /// keep and drops this function if its symbol is different from the
-  /// symbols of that list.  It then applies regular expressions
-  /// supposed to describe the set of functions to be dropped from the
-  /// public decl table and then drop this function if it matches any
-  /// of these regular expressions.  It then applies regular
-  /// expressions supposed to describe the set of functions to be kept
-  /// into the public decl table and then keeps this function if it
-  /// matches.
-  ///
-  /// @param fn the function to add to the public decl table, if it
-  /// complies with the regular expressions and symbol names and
-  /// versions that might have been specified by client code.
-  void
-  add_fn_to_wip_fns(function_decl* fn)
-  {
-    string frep = fn->get_qualified_name();
-    bool keep = true;
-
-    if (elf_symbol_sptr sym = fn->get_symbol())
-      {
-	if (!sym_id_fns_to_keep.empty())
-	  keep = false;
-	for (vector<string>::const_iterator i = sym_id_fns_to_keep.begin();
-	     i != sym_id_fns_to_keep.end();
-	     ++i)
-	  {
-	    string sym_name, sym_version;
-	    assert(elf_symbol::get_name_and_version_from_id(*i,
-							    sym_name,
-							    sym_version));
-	    if (sym_name == sym->get_name()
-		&& sym_version == sym->get_version().str())
-	      {
-		keep = true;
-		break;
-	      }
-	  }
-      }
-
-    if (keep)
-      for (vector<regex_t_sptr>::const_iterator i =
-	     regex_fns_suppress().begin();
-	   i != regex_fns_suppress().end();
-	   ++i)
-	if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
-	  {
-	    keep = false;
-	    break;
-	  }
-
-    if (keep)
-      {
-	if (!regex_fns_keep().empty())
-	  keep = false;
-	for (vector<regex_t_sptr>::const_iterator i =
-	       regex_fns_keep().begin();
-	     i != regex_fns_keep().end();
-	     ++i)
-	  if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
-	    {
-	      keep = true;
-	      break;
-	    }
-      }
-
-    if (keep)
-      {
-	wip_fns.push_back(fn);
-	++wip_fns_size;
-      }
-  }
-
-  /// Add a given variable to the list of variables that are supposed
-  /// to end up in the variable public decl table.
-  ///
-  /// Note that this functions looks at the list of variable symbols
-  /// to keep and drops this variable if its symbol is different from
-  /// the symbols of that list.  It then applies regular expressions
-  /// supposed to describe the set of variables to be dropped from the
-  /// public decl table and then drop the this variable if it matches
-  /// any regular expression of that list.  It then applies regular
-  /// expressions supposed to describe the set of variables to be kept
-  /// into the public decl table and then keeps this variable if it
-  /// matches any regular expression in that list.
-  ///
-  /// @param var the var to add to the public decl table, if it
-  /// complies with the regular expressions and symbols names and
-  /// versions that might have been specified by client code.
-  void
-  add_var_to_wip_vars(var_decl* var)
-  {
-    string vrep = var->get_qualified_name();
-    bool keep = true;
-
-    if (elf_symbol_sptr sym = var->get_symbol())
-      {
-	if (!sym_id_vars_to_keep.empty())
-	  keep = false;
-	string sym_version, sym_name;
-	for (vector<string>::const_iterator i = sym_id_vars_to_keep.begin();
-	     i != sym_id_vars_to_keep.end();
-	     ++i)
-	  {
-	    assert(elf_symbol::get_name_and_version_from_id(*i,
-							    sym_name,
-							    sym_version));
-	    if (sym->get_name() == sym_name
-		&& sym->get_version().str() == sym_version)
-	      {
-		keep = true;
-		break;
-	      }
-	  }
-      }
-
-    if (keep)
-      for (vector<regex_t_sptr>::const_iterator i =
-	     regex_vars_suppress().begin();
-	   i != regex_vars_suppress().end();
-	   ++i)
-	if (regexec(i->get(), vrep.c_str(), 0, NULL, 0) == 0)
-	  {
-	    keep = false;
-	    break;
-	  }
-
-    if (keep)
-      {
-	if (!regex_vars_keep().empty())
-	  keep = false;
-	for (vector<regex_t_sptr>::const_iterator i =
-	       regex_vars_keep().begin();
-	     i != regex_vars_keep().end();
-	     ++i)
-	  if (regexec(i->get(), vrep.c_str(), 0, NULL, 0) == 0)
-	    {
-	      keep = true;
-	      break;
-	    }
-      }
-
-    if (keep)
-      {
-	wip_vars.push_back(var);
-	++wip_vars_size;
-      }
-  }
-
-  /// This function is called while visiting a @ref function_decl IR
-  /// node of a translation unit.
-  ///
-  /// Add the function to the public decl table being constructed (WIP
-  /// meaning work in progress).
-  ///
-  /// Once the function has been added to public decl table table, the
-  /// sub-types of the function are not traversed.
-  ///
-  /// @param fn the function being visited.
-  ///
-  /// @return false because once the function has been added to the
-  /// public decl table, the sub-types of the function are not
-  /// traversed anymore.
-  bool
-  visit_begin(function_decl* fn)
-  {
-    add_fn_to_wip_fns(fn);
-    return false;
-  }
-
-  /// This function is called while visiting a @ref var_decl IR node
-  /// of a translation unit.
-  ///
-  /// Add the variable to the public decl table being constructed (WIP
-  /// meaning work in progress).
-  ///
-  /// Once the variable has been added to public decl table table, the
-  /// sub-types of the variable are not traversed.
-  ///
-  /// @param var the variable being visited.
-  ///
-  /// @return false because once the variable has been added to public
-  /// decl table table, the sub-types of the variable are not
-  /// traversed.
-  bool
-  visit_begin(var_decl* var)
-  {
-    if (!is_data_member(var)
-	|| get_member_is_static(var))
-      add_var_to_wip_vars(var);
-    return false;
-  }
-};// end struct symtab_build_visitor_type
 
 /// This is a comparison functor for comparing pointers to @ref
 /// function_decl.
@@ -698,83 +886,6 @@ struct var_comp
   }
 };
 
-/// Build the public decl tables for the corpus.  That is, walk all the
-/// functions of all translation units of the corpus, stuff them in a
-/// vector and sort the vector.  Likewise for the variables.
-void
-corpus::priv::build_public_decl_table()
-{
-  symtab_build_visitor_type v(fns, vars,
-			      regex_patterns_fns_to_suppress,
-			      regex_patterns_vars_to_suppress,
-			      regex_patterns_fns_to_keep,
-			      sym_id_fns_to_keep,
-			      sym_id_vars_to_keep,
-			      regex_patterns_vars_to_keep);
-
-  for (translation_units::iterator i = members.begin();
-       i != members.end();
-       ++i)
-      (*i)->traverse(v);
-
-  fns.reserve(v.wip_fns_size);
-  for (list<function_decl*>::iterator i = v.wip_fns.begin();
-       i != v.wip_fns.end();
-       ++i)
-    {
-      string n = v.build_id(*i);
-      assert(!n.empty());
-
-      if (origin_ == DWARF_ORIGIN
-	  && !(*i)->get_is_in_public_symbol_table())
-	// The symbol for this function is not exported so let's drop it.
-	continue;
-
-      if (!v.fn_is_in_map(n))
-	{
-	  assert((origin_ == DWARF_ORIGIN
-		  && (*i)->get_is_in_public_symbol_table())
-		 || origin_ != DWARF_ORIGIN);
-	  fns.push_back(*i);
-	  v.add_fn_to_map(n, *i);
-	}
-    }
-  v.wip_fns.clear();
-  v.wip_fns_size = 0;
-
-  vars.reserve(v.wip_vars_size);
-  for (list<var_decl*>::iterator i = v.wip_vars.begin();
-       i != v.wip_vars.end();
-       ++i)
-    {
-      string n = v.build_id(*i);
-      assert(!n.empty());
-
-      if (origin_ == DWARF_ORIGIN
-	  && !(*i)->get_is_in_public_symbol_table())
-	// The symbol for this variable is not exported so let's drop it.
-	continue;
-
-      if (!v.var_is_in_map(n))
-	{
-	  assert((origin_ == DWARF_ORIGIN
-		  && (*i)->get_is_in_public_symbol_table())
-		 || origin_ != DWARF_ORIGIN);
-	  vars.push_back(*i);
-	  v.add_var_to_map(n, *i);
-	}
-    }
-  v.wip_vars.clear();
-  v.wip_vars_size = 0;
-
-  func_comp fc;
-  std::sort(fns.begin(), fns.end(), fc);
-
-  var_comp vc;
-  std::sort(vars.begin(), vars.end(), vc);
-
-  is_public_decl_table_built = true;
-}
 
 /// A comparison functor to compare elf_symbols for the purpose of
 /// sorting.
@@ -810,10 +921,6 @@ struct comp_elf_symbols_functor
 void
 corpus::priv::build_unreferenced_symbols_tables()
 {
-  if (!is_public_decl_table_built)
-    build_public_decl_table();
-  assert(is_public_decl_table_built);
-
   unordered_map<string, bool> refed_funs, refed_vars;
   elf_symbol_sptr sym;
 
@@ -1452,16 +1559,15 @@ corpus::lookup_variable_symbol(const string& symbol_name,
   return elf_symbol_sptr();
 }
 
-/// Build and return the functions public decl table of the current corpus.
+/// Return the functions public decl table of the current corpus.
 ///
-/// The function public decl tables is a vector of all the functions and
-/// member functions found in the current corpus.  This vector is
-/// built the first time this function is called.
+/// The function public decl tables is a vector of all the functions
+/// and member functions found in the current corpus.
 ///
 /// Note that the caller can suppress some functions from the vector
 /// supplying regular expressions describing the set of functions she
-/// want to see removed from the public decl table by populating the vector
-/// of regular expressions returned by
+/// want to see removed from the public decl table by populating the
+/// vector of regular expressions returned by
 /// corpus::get_regex_patterns_of_fns_to_suppress().
 ///
 /// @return the vector of functions of the public decl table.  The
@@ -1469,37 +1575,47 @@ corpus::lookup_variable_symbol(const string& symbol_name,
 /// don't have mangle names.
 const corpus::functions&
 corpus::get_functions() const
-{
-  if (!priv_->is_public_decl_table_built)
-    priv_->build_public_decl_table();
-  assert(priv_->is_public_decl_table_built);
+{return priv_->fns;}
 
-  return priv_->fns;
+/// Sort the set of functions exported by this corpus.
+///
+/// Normally, you shouldn't be calling this as the code that creates
+/// the corpus for you should do it for you too.
+void
+corpus::sort_functions()
+{
+  func_comp fc;
+  std::sort(priv_->fns.begin(), priv_->fns.end(), fc);
 }
 
-/// Build and return the public decl table of the global variables of the
+/// Return the public decl table of the global variables of the
 /// current corpus.
 ///
-/// The variable public decls table is a vector of all the public global
-/// variables and static member variables found in the current corpus.
-/// This vector is built the first time this function is called.
+/// The variable public decls table is a vector of all the public
+/// global variables and static member variables found in the current
+/// corpus.
 ///
 /// Note that the caller can suppress some variables from the vector
 /// supplying regular expressions describing the set of variables she
-/// wants to see removed from the public decl table by populating the vector
-/// of regular expressions returned by
+/// wants to see removed from the public decl table by populating the
+/// vector of regular expressions returned by
 /// corpus::get_regex_patterns_of_fns_to_suppress().
 ///
 /// @return the vector of variables of the public decl table.  The
 /// variables are sorted using their name.
 const corpus::variables&
 corpus::get_variables() const
-{
-  if (!priv_->is_public_decl_table_built)
-    priv_->build_public_decl_table();
-  assert(priv_->is_public_decl_table_built);
+{return priv_->vars;}
 
-  return priv_->vars;
+/// Sort the set of variables exported by this corpus.
+///
+/// Normally, you shouldn't be calling this as the code that creates
+/// the corpus for you should do it for you too.
+void
+corpus::sort_variables()
+{
+  var_comp vc;
+  std::sort(priv_->vars.begin(), priv_->vars.end(), vc);
 }
 
 /// Getter of the set of function symbols that are not referenced by
@@ -1653,6 +1769,68 @@ corpus::get_sym_ids_of_vars_to_keep()
 const vector<string>&
 corpus::get_sym_ids_of_vars_to_keep() const
 {return priv_->sym_id_vars_to_keep;}
+
+/// After the set of exported functions and variables have been built,
+/// consider all the tunables that control that set and see if some
+/// functions need to be removed from that set; if so, remove them.
+void
+corpus::maybe_drop_some_exported_decls()
+{
+  string sym_name, sym_version;
+
+  vector<function_decl*> fns_to_keep;
+  exported_decls_builder* b = get_exported_decls_builder().get();
+  for (vector<function_decl*>::iterator f = priv_->fns.begin();
+       f != priv_->fns.end();
+       ++f)
+    {
+      if (b->priv_->keep_wrt_id_of_fns_to_keep(*f)
+	  && b->priv_->keep_wrt_regex_of_fns_to_suppress(*f)
+	  && b->priv_->keep_wrt_regex_of_fns_to_keep(*f))
+	fns_to_keep.push_back(*f);
+    }
+  priv_->fns = fns_to_keep;
+
+  vector<var_decl*> vars_to_keep;
+  for (vector<var_decl*>::iterator v = priv_->vars.begin();
+       v != priv_->vars.end();
+       ++v)
+    {
+      if (b->priv_->keep_wrt_id_of_vars_to_keep(*v)
+	  && b->priv_->keep_wrt_regex_of_vars_to_suppress(*v)
+	  && b->priv_->keep_wrt_regex_of_vars_to_keep(*v))
+	vars_to_keep.push_back(*v);
+    }
+  priv_->vars = vars_to_keep;
+}
+
+///  Getter for the object that is responsible for determining what
+///  decls ought to be in the set of exported decls.
+///
+///  The object does have methods to add the decls to the set of
+///  exported decls, right at the place where the corpus expects it,
+///  so that there is no unnecessary copying involved.
+///
+///  @return a (smart) pointer to the instance of @ref
+///  corpus::exported_decls_builder that is responsible for determine
+///  what decls ought to be in the set of exported decls.
+corpus::exported_decls_builder_sptr
+corpus::get_exported_decls_builder() const
+{
+  if (!priv_->exported_decls_builder)
+    {
+      priv_->exported_decls_builder.reset
+	(new exported_decls_builder(priv_->fns,
+				    priv_->vars,
+				    priv_->regex_patterns_fns_to_suppress,
+				    priv_->regex_patterns_vars_to_suppress,
+				    priv_->regex_patterns_fns_to_keep,
+				    priv_->regex_patterns_vars_to_keep,
+				    priv_->sym_id_fns_to_keep,
+				    priv_->sym_id_vars_to_keep));
+    }
+  return priv_->exported_decls_builder;
+}
 
 }// end namespace ir
 }// end namespace abigail
