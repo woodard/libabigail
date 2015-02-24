@@ -2317,7 +2317,7 @@ strip_typedef(const type_base_sptr type)
   type_base_sptr t = type;
 
   if (const typedef_decl_sptr ty = is_typedef(t))
-    t = strip_typedef(ty->get_underlying_type());
+    t = strip_typedef(type_or_void(ty->get_underlying_type()));
   else if (const reference_type_def_sptr ty = is_reference_type(t))
     {
       type_base_sptr p =
