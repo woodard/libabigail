@@ -5895,12 +5895,7 @@ enum_diff::get_pretty_representation() const
 /// @return true iff the current diff node carries a change.
 bool
 enum_diff::has_changes() const
-{
-  bool a, b;
-  a = underlying_type_diff() ? underlying_type_diff()->has_changes() : false;
-  b = priv_->enumerators_changes_.length();
-  return a || b;
-}
+{return first_enum() != second_enum();}
 
 /// @return true iff the current diff node carries local changes.
 bool
