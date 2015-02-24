@@ -3234,15 +3234,9 @@ is_class_type(const type_base_sptr t)
 /// @parm d the declaration of the type to consider.
 ///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
-bool
+class_decl*
 is_class_type(decl_base *d)
-{
-  if (!d)
-    return false;
-
-  decl_base_sptr decl(d, sptr_utils::noop_deleter());
-  return is_class_type(decl);
-}
+{return dynamic_cast<class_decl*>(d);}
 
 /// Test whether a type is a class.
 ///
