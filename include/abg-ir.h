@@ -704,6 +704,9 @@ public:
   virtual void
   get_qualified_name(string& qualified_name) const;
 
+  virtual const string&
+  get_qualified_name() const;
+
   void
   set_hash(size_t) const;
 
@@ -722,11 +725,8 @@ public:
   const string&
   get_name() const;
 
-  string
+  const string&
   get_qualified_parent_name() const;
-
-  string
-  get_qualified_name() const;
 
   void
   set_name(const string& n);
@@ -1209,6 +1209,9 @@ public:
   virtual void
   get_qualified_name(string& qualified_name) const;
 
+  virtual const string&
+  get_qualified_name() const;
+
   virtual bool
   traverse(ir_node_visitor& v);
 
@@ -1255,6 +1258,9 @@ public:
   virtual void
   get_qualified_name(string&) const;
 
+  virtual const string&
+  get_qualified_name() const;
+
   virtual bool
   traverse(ir_node_visitor& v);
 
@@ -1299,6 +1305,9 @@ public:
 
   virtual void
   get_qualified_name(string& qualified_name) const;
+
+  virtual const string&
+  get_qualified_name() const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -1394,7 +1403,7 @@ public:
   virtual void
   get_qualified_name(string& qualified_name) const;
 
-  virtual string
+  virtual const string&
   get_qualified_name() const;
 
   const type_base_sptr
@@ -1446,53 +1455,17 @@ public:
   struct hash;
 
   /// Enumerator Datum.
-  class enumerator
-  {
-    string	name_;
-    size_t	value_;
-
-  public:
-
-    enumerator()
-      : value_(0)
-    {}
-
-    enumerator(const string& name, size_t value)
-    : name_(name), value_(value) { }
-
-    bool
-    operator==(const enumerator& other) const
-    {
-      return (get_name() == other.get_name()
-	      && get_value() == other.get_value());
-    }
-    const string&
-    get_name() const
-    {return name_;}
-
-    const string
-    get_qualified_name(const enum_type_decl_sptr enum_type) const
-    {return enum_type->get_qualified_name() + "::" + get_name();}
-
-    void
-    set_name(const string& n)
-    {name_ = n;}
-
-    size_t
-    get_value() const
-    {return value_;}
-
-    void
-    set_value(size_t v)
-    {value_=v;}
-  };
+  class enumerator;
 
   /// Convenience typedef for a list of @ref enumerator.
   typedef std::vector<enumerator> enumerators;
+
 private:
 
-  type_base_sptr	underlying_type_;
-  enumerators		enumerators_;
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
   // Forbidden
   enum_type_decl();
@@ -1516,19 +1489,16 @@ public:
   enum_type_decl(const string& name, location locus,
 		 type_base_sptr underlying_type,
 		 enumerators& enms, const std::string& mangled_name = "",
-		 visibility vis = VISIBILITY_DEFAULT)
-  : type_base(underlying_type->get_size_in_bits(),
-	      underlying_type->get_alignment_in_bits()),
-    decl_base(name, locus, mangled_name, vis),
-    underlying_type_(underlying_type),
-    enumerators_(enms)
-  {}
+		 visibility vis = VISIBILITY_DEFAULT);
 
   type_base_sptr
   get_underlying_type() const;
 
   const enumerators&
   get_enumerators() const;
+
+  enumerators&
+  get_enumerators();
 
   virtual string
   get_pretty_representation() const;
@@ -1544,6 +1514,47 @@ public:
 
   virtual ~enum_type_decl();
 }; // end class enum_type_decl
+
+/// The abstraction of an enumerator
+class enum_type_decl::enumerator
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+
+public:
+
+  enumerator();
+
+  enumerator(const string& name, size_t value);
+
+  enumerator(const enumerator&);
+
+  bool
+  operator==(const enumerator& other) const;
+
+  const string&
+  get_name() const;
+
+  const string&
+  get_qualified_name() const;
+
+  void
+  set_name(const string& n);
+
+  size_t
+  get_value() const;
+
+  void
+  set_value(size_t v);
+
+  enum_type_decl*
+  get_enum_type() const;
+
+  void
+  set_enum_type(enum_type_decl*);
+}; // end class enum_type_def::enumerator
 
 bool
 equals(const typedef_decl&, const typedef_decl&, change_kind*);

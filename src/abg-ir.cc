@@ -1349,7 +1349,7 @@ decl_base::get_scope() const
 /// decl.
 ///
 /// @return the newly-built qualified name of the of the current decl.
-string
+const string&
 decl_base::get_qualified_parent_name() const
 {
   if (priv_->qualified_parent_name_.empty())
@@ -1387,19 +1387,7 @@ decl_base::get_name() const
 /// @param qn the resulting qualified name.
 void
 decl_base::get_qualified_name(string& qn) const
-{
-  if (priv_->qualified_name_.empty())
-    {
-      priv_->qualified_name_ = get_qualified_parent_name();
-      if (!get_name().empty())
-	{
-	  if (!priv_->qualified_name_.empty())
-	    priv_->qualified_name_ += "::";
-	  priv_->qualified_name_ += get_name();
-	}
-    }
-  qn = priv_->qualified_name_;
-}
+{qn = get_qualified_name();}
 
 /// @return the default pretty representation for a decl.  This is
 /// basically the fully qualified name of the decl optionally prefixed
@@ -1411,12 +1399,20 @@ decl_base::get_pretty_representation() const
 /// Compute the qualified name of the decl.
 ///
 /// @return the resulting qualified name.
-string
+const string&
 decl_base::get_qualified_name() const
 {
-  string result;
-  get_qualified_name(result);
-  return result;
+  if (priv_->qualified_name_.empty())
+    {
+      priv_->qualified_name_ = get_qualified_parent_name();
+      if (!get_name().empty())
+	{
+	  if (!priv_->qualified_name_.empty())
+	    priv_->qualified_name_ += "::";
+	  priv_->qualified_name_ += get_name();
+	}
+    }
+  return priv_->qualified_name_;
 }
 
 change_kind
@@ -4508,10 +4504,17 @@ qualified_type_def::operator==(const type_base& o) const
 /// qualified name.
 void
 qualified_type_def::get_qualified_name(string& qualified_name) const
+{qualified_name = get_qualified_name();}
+
+/// Implementation of the virtual qualified name builder/getter.
+///
+/// @return the resulting qualified name.
+const string&
+qualified_type_def::get_qualified_name() const
 {
   if (peek_qualified_name().empty())
     set_qualified_name(build_name(true));
-  qualified_name = peek_qualified_name();
+  return peek_qualified_name();
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -4727,6 +4730,15 @@ pointer_type_def::get_pointed_to_type() const
 /// @param qn output parameter.  The resulting qualified name.
 void
 pointer_type_def::get_qualified_name(string& qn) const
+{qn = get_qualified_name();}
+
+/// Build, cache and return the qualified name of the current instance
+/// of @ref pointer_type_def.  Subsequent invocations of this function
+/// return the cached value.
+///
+/// @return the resulting qualified name.
+const string&
+pointer_type_def::get_qualified_name() const
 {
   if (peek_qualified_name().empty())
     {
@@ -4739,7 +4751,7 @@ pointer_type_def::get_qualified_name(string& qn) const
 	td->get_qualified_name(name);
       set_qualified_name(name + "*");
     }
-  qn = peek_qualified_name();
+  return peek_qualified_name();
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -4864,6 +4876,16 @@ reference_type_def::is_lvalue() const
 /// name of the current instance of @ref reference_type_def.
 void
 reference_type_def::get_qualified_name(string& qn) const
+{qn = get_qualified_name();}
+
+/// Build, cache and return the qualified name of the current instance
+/// of the @ref reference_type_def.  Subsequent invocations of this
+/// function return the cached value.
+///
+/// @return the newly-built qualified name of the current instance of
+/// @ref reference_type_def.
+const string&
+reference_type_def::get_qualified_name() const
 {
   if (peek_qualified_name().empty())
     {
@@ -4873,9 +4895,8 @@ reference_type_def::get_qualified_name(string& qn) const
       td->get_qualified_name(name);
       set_qualified_name(name + "&");
     }
-  qn = peek_qualified_name();
+  return peek_qualified_name();
 }
-
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -5171,17 +5192,17 @@ array_type_def::get_dimension_count() const
 /// name of the current instance of @ref array_type_def.
 void
 array_type_def::get_qualified_name(string& qn) const
-{qn = get_type_representation(*this);}
+{qn = get_qualified_name();}
 
 /// Compute the qualified name of the array.
 ///
 /// @return the resulting qualified name.
-string
+const string&
 array_type_def::get_qualified_name() const
 {
-  string result;
-  get_qualified_name(result);
-  return result;
+  if (decl_base::peek_qualified_name().empty())
+    set_qualified_name(get_type_representation(*this));
+  return decl_base::peek_qualified_name();
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -5221,15 +5242,55 @@ array_type_def::~array_type_def()
 
 // </array_type_def definitions>
 
-/// Return the underlying type of the enum.
-shared_ptr<type_base>
-enum_type_decl::get_underlying_type() const
-{return underlying_type_;}
+// <enum_type_decl definitions>
 
-/// Return the list of enumerators of the enum.
+class enum_type_decl::priv
+{
+  type_base_sptr	underlying_type_;
+  enumerators		enumerators_;
+
+  friend class enum_type_decl;
+
+  priv();
+
+public:
+
+  priv(type_base_sptr underlying_type,
+       enumerators& enumerators)
+    : underlying_type_(underlying_type),
+      enumerators_(enumerators)
+  {}
+}; // end class enum_type_decl::priv
+
+enum_type_decl::enum_type_decl(const string& name, location locus,
+			       type_base_sptr underlying_type,
+			       enumerators& enums, const string& mangled_name,
+			       visibility vis)
+  : type_base(underlying_type->get_size_in_bits(),
+	      underlying_type->get_alignment_in_bits()),
+    decl_base(name, locus, mangled_name, vis),
+    priv_(new priv(underlying_type, enums))
+{
+  for (enumerators::iterator e = get_enumerators().begin();
+       e != get_enumerators().end();
+       ++e)
+    e->set_enum_type(this);
+}
+
+/// Return the underlying type of the enum.
+type_base_sptr
+enum_type_decl::get_underlying_type() const
+{return priv_->underlying_type_;}
+
+/// @return the list of enumerators of the enum.
 const enum_type_decl::enumerators&
 enum_type_decl::get_enumerators() const
-{return enumerators_;}
+{return priv_->enumerators_;}
+
+/// @return the list of enumerators of the enum.
+enum_type_decl::enumerators&
+enum_type_decl::get_enumerators()
+{return priv_->enumerators_;}
 
 /// @return the pretty representation of the enum type.
 string
@@ -5368,6 +5429,129 @@ enum_type_decl::operator==(const type_base& o) const
     return false;
   return *this == *other;
 }
+
+/// The type of the private data of an @ref
+/// enum_type_decl::enumerator.
+class enum_type_decl::enumerator::priv
+{
+  string name_;
+  size_t value_;
+  string qualified_name_;
+  enum_type_decl* enum_type_;
+
+  friend class enum_type_decl::enumerator;
+
+public:
+
+  priv()
+    : enum_type_()
+  {}
+
+  priv(const string& name, size_t value, enum_type_decl* e = 0)
+    : name_(name),
+      value_(value),
+      enum_type_(e)
+  {}
+}; // end class enum_type_def::enumerator::priv
+
+/// Default constructor of the @ref enum_type_decl::enumerator type.
+enum_type_decl::enumerator::enumerator()
+  : priv_(new priv)
+{}
+
+/// Constructor of the @ref enum_type_decl::enumerator type.
+///
+/// @param name the name of the enumerator.
+///
+/// @param value the value of the enumerator.
+enum_type_decl::enumerator::enumerator(const string& name, size_t value)
+  : priv_(new priv(name, value))
+{}
+
+/// Copy constructor of the @ref enum_type_decl::enumerator type.
+///
+/// @param other enumerator to copy.
+enum_type_decl::enumerator::enumerator(const enumerator& other)
+  : priv_(new priv(other.get_name(),
+		   other.get_value(),
+		   other.get_enum_type()))
+{}
+
+/// Equality operator
+///
+/// @param other the enumerator to compare to the current instance of
+/// enum_type_decl::enumerator.
+///
+/// @return true if @p other equals the current instance of
+/// enum_type_decl::enumerator.
+bool
+enum_type_decl::enumerator::operator==(const enumerator& other) const
+{return (get_name() == other.get_name()
+	 && get_value() == other.get_value());}
+
+/// Getter for the name of the current instance of
+/// enum_type_decl::enumerator.
+///
+/// @return a reference to the name of the current instance of
+/// enum_type_decl::enumerator.
+const string&
+enum_type_decl::enumerator::get_name() const
+{return priv_->name_;}
+
+/// Getter for the qualified name of the current instance of
+/// enum_type_decl::enumerator.  The first invocation of the method
+/// builds the qualified name, caches it and return a reference to the
+/// cached qualified name.  Subsequent invocations just return the
+/// cached value.
+///
+/// @return the qualified name of the current instance of
+/// enum_type_decl::enumerator.
+const string&
+enum_type_decl::enumerator::get_qualified_name() const
+{
+  if (priv_->qualified_name_.empty())
+    priv_->qualified_name_ =
+      get_enum_type()->get_qualified_name() + "::" + get_name();
+  return priv_->qualified_name_;
+}
+
+/// Setter for the name of @ref enum_type_decl::enumerator.
+///
+/// @param n the new name.
+void
+enum_type_decl::enumerator::set_name(const string& n)
+{priv_->name_ = n;}
+
+/// Getter for the value of @ref enum_type_decl::enumerator.
+///
+/// @return the value of the current instance of
+/// enum_type_decl::enumerator.
+size_t
+enum_type_decl::enumerator::get_value() const
+{return priv_->value_;}
+
+
+/// Setter for the value of @ref enum_type_decl::enumerator.
+///
+/// @param v the new value of the enum_type_decl::enumerator.
+void
+enum_type_decl::enumerator::set_value(size_t v)
+{priv_->value_= v;}
+
+/// Getter for the enum type that this enumerator is for.
+///
+/// @return the enum type that this enumerator is for.
+enum_type_decl*
+enum_type_decl::enumerator::get_enum_type() const
+{return priv_->enum_type_;}
+
+/// Setter for the enum type that this enumerator is for.
+///
+/// @param e the new enum type.
+void
+enum_type_decl::enumerator::set_enum_type(enum_type_decl* e)
+{priv_->enum_type_ = e;}
+// </enum_type_decl definitions>
 
 // <typedef_decl definitions>
 

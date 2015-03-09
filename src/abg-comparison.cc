@@ -6006,7 +6006,7 @@ enum_diff::report(ostream& out, const string& indent) const
 	    out << "\n";
 	  out << indent
 	      << "  '"
-	      << i->get_qualified_name(first)
+	      << i->get_qualified_name()
 	      << "' value '"
 	      << i->get_value()
 	      << "'";
@@ -6027,7 +6027,7 @@ enum_diff::report(ostream& out, const string& indent) const
 	    out << "\n";
 	  out << indent
 	      << "  '"
-	      << i->get_qualified_name(second)
+	      << i->get_qualified_name()
 	      << "' value '"
 	      << i->get_value()
 	      << "'";
@@ -6049,7 +6049,7 @@ enum_diff::report(ostream& out, const string& indent) const
 	    out << "\n";
 	  out << indent
 	      << "  '"
-	      << i->first.get_qualified_name(first)
+	      << i->first.get_qualified_name()
 	      << "' from value '"
 	      << i->first.get_value() << "' to '"
 	      << i->second.get_value() << "'";
