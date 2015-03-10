@@ -6293,11 +6293,11 @@ equals(const function_type& lhs,
 	return false;
     }
 
-  class_decl_sptr lhs_class, rhs_class;
+  class_decl* lhs_class = 0, *rhs_class = 0;
   try
     {
       const method_type& m = dynamic_cast<const method_type&>(lhs);
-      lhs_class = m.get_class_type();
+      lhs_class = m.get_class_type().get();
     }
   catch (...)
     {}
@@ -6305,7 +6305,7 @@ equals(const function_type& lhs,
   try
     {
       const method_type& m = dynamic_cast<const method_type&>(rhs);
-      rhs_class = m.get_class_type();
+      rhs_class = m.get_class_type().get();
     }
   catch (...)
     {}
@@ -6335,10 +6335,10 @@ equals(const function_type& lhs,
   // that is the same as the method class name; we can recurse for
   // ever in that case.
 
-  decl_base_sptr lhs_return_type_decl =
-    get_type_declaration(lhs.get_return_type());
-  decl_base_sptr rhs_return_type_decl =
-    get_type_declaration(rhs.get_return_type());
+  decl_base* lhs_return_type_decl =
+    get_type_declaration(lhs.get_return_type()).get();
+  decl_base* rhs_return_type_decl =
+    get_type_declaration(rhs.get_return_type()).get();
   bool compare_result_types = true;
   string lhs_rt_name = lhs_return_type_decl
     ? lhs_return_type_decl->get_qualified_name()
@@ -6373,7 +6373,7 @@ equals(const function_type& lhs,
 	  return false;
       }
 
-  class_decl_sptr lcl, rcl;
+  class_decl* lcl = 0, * rcl = 0;
   vector<shared_ptr<function_decl::parameter> >::const_iterator i,j;
   for (i = lhs.get_first_non_implicit_parm(),
 	 j = rhs.get_first_non_implicit_parm();
@@ -6382,12 +6382,12 @@ equals(const function_type& lhs,
        ++i, ++j)
     {
       if (lhs_class)
-	lcl = dynamic_pointer_cast<class_decl>((*i)->get_type());
+	lcl = dynamic_cast<class_decl*>((*i)->get_type().get());
       if (rhs_class)
-	rcl = dynamic_pointer_cast<class_decl>((*j)->get_type());
+	rcl = dynamic_cast<class_decl*>((*j)->get_type().get());
       if (lcl && rcl
-	  && lcl.get() == lhs_class.get()
-	  && rcl.get() == rhs_class.get())
+	  && lcl == lhs_class
+	  && rcl == rhs_class)
 	// Do not compare the class types of two methods that we are
 	// probably comparing atm; otherwise we can recurse indefinitely.
 	continue;
