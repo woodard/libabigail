@@ -5058,7 +5058,7 @@ array_type_def::get_subrange_representation() const
   return r;
 }
 
-string
+static string
 get_type_representation(const array_type_def& a)
 {
   type_base_sptr e_type = a.get_element_type();
