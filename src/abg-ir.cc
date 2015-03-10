@@ -1193,16 +1193,16 @@ decl_base::set_qualified_name(const string& n) const
 ///Getter for the context relationship.
 ///
 ///@return the context relationship for the current decl_base.
-const context_rel_sptr
+const context_rel*
 decl_base::get_context_rel() const
-{return priv_->context_;}
+{return priv_->context_.get();}
 
 ///Getter for the context relationship.
 ///
 ///@return the context relationship for the current decl_base.
-context_rel_sptr
+context_rel*
 decl_base::get_context_rel()
-{return priv_->context_;}
+{return priv_->context_.get();}
 
 void
 decl_base::set_context_rel(context_rel_sptr c)
@@ -1490,7 +1490,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 
   if (is_member_decl(l) && is_member_decl(r))
     {
-      context_rel_sptr r1 = l.get_context_rel(), r2 = r.get_context_rel();
+      const context_rel* r1 = l.get_context_rel(), *r2 = r.get_context_rel();
       if (*r1 != *r2)
 	{
 	  result = false;
@@ -1723,7 +1723,7 @@ get_member_access_specifier(const decl_base& d)
 {
   assert(is_member_decl(d));
 
-  context_rel_sptr c = d.get_context_rel();
+  const context_rel* c = d.get_context_rel();
   assert(c);
 
   return c->get_access_specifier();
@@ -1748,16 +1748,28 @@ get_member_access_specifier(const decl_base_sptr d)
 ///
 /// @param a the new access specifier to set the class member to.
 void
-set_member_access_specifier(decl_base_sptr d,
+set_member_access_specifier(decl_base& d,
 			    access_specifier a)
 {
   assert(is_member_decl(d));
 
-  context_rel_sptr c = d->get_context_rel();
+  context_rel* c = d.get_context_rel();
   assert(c);
 
   c->set_access_specifier(a);
 }
+
+/// Sets the access specifier for a class member.
+///
+/// @param d the class member to set the access specifier for.  Note
+/// that this must be a class member otherwise the function aborts the
+/// current process.
+///
+/// @param a the new access specifier to set the class member to.
+void
+set_member_access_specifier(const decl_base_sptr& d,
+			    access_specifier a)
+{set_member_access_specifier(*d, a);}
 
 /// Gets a flag saying if a class member is static or not.
 ///
@@ -1771,7 +1783,7 @@ get_member_is_static(const decl_base&d)
 {
   assert(is_member_decl(d));
 
-  context_rel_sptr c = d.get_context_rel();
+  const context_rel* c = d.get_context_rel();
   assert(c);
 
   return c->get_is_static();
@@ -1808,15 +1820,27 @@ get_member_is_static(const decl_base_sptr d)
 /// @param s this must be true if the member is to be static, false
 /// otherwise.
 void
-set_member_is_static(decl_base_sptr d, bool s)
+set_member_is_static(decl_base& d, bool s)
 {
   assert(is_member_decl(d));
 
-  context_rel_sptr c = d->get_context_rel();
+  context_rel* c = d.get_context_rel();
   assert(c);
 
   c->set_is_static(s);
 }
+
+/// Sets the static-ness property of a class member.
+///
+/// @param d the class member to set the static-ness property for.
+/// Note that this must be a class member otherwise the function
+/// aborts the current process.
+///
+/// @param s this must be true if the member is to be static, false
+/// otherwise.
+void
+set_member_is_static(const decl_base_sptr& d, bool s)
+{set_member_is_static(*d, s);}
 
 /// Test if a var_decl is a data member.
 ///
@@ -1872,8 +1896,8 @@ set_data_member_offset(var_decl_sptr m, size_t o)
 {
   assert(is_data_member(m));
 
-  dm_context_rel_sptr ctxt_rel =
-    dynamic_pointer_cast<dm_context_rel>(m->get_context_rel());
+  dm_context_rel* ctxt_rel =
+    dynamic_cast<dm_context_rel*>(m->get_context_rel());
   assert(ctxt_rel);
 
   ctxt_rel->set_offset_in_bits(o);
@@ -1888,8 +1912,8 @@ size_t
 get_data_member_offset(const var_decl& m)
 {
   assert(is_data_member(m));
-  dm_context_rel_sptr ctxt_rel =
-    dynamic_pointer_cast<dm_context_rel>(m.get_context_rel());
+  const dm_context_rel* ctxt_rel =
+    dynamic_cast<const dm_context_rel*>(m.get_context_rel());
   assert(ctxt_rel);
   return ctxt_rel->get_offset_in_bits();
 }
@@ -1921,8 +1945,8 @@ void
 set_data_member_is_laid_out(var_decl_sptr m, bool l)
 {
   assert(is_data_member(m));
-  dm_context_rel_sptr ctxt_rel =
-    dynamic_pointer_cast<dm_context_rel>(m->get_context_rel());
+  dm_context_rel* ctxt_rel =
+    dynamic_cast<dm_context_rel*>(m->get_context_rel());
   ctxt_rel->set_is_laid_out(l);
 }
 
@@ -1935,8 +1959,8 @@ bool
 get_data_member_is_laid_out(const var_decl& m)
 {
   assert(is_data_member(m));
-  dm_context_rel_sptr ctxt_rel =
-    dynamic_pointer_cast<dm_context_rel>(m.get_context_rel());
+  const dm_context_rel* ctxt_rel =
+    dynamic_cast<const dm_context_rel*>(m.get_context_rel());
 
   return ctxt_rel->get_is_laid_out();
 }
@@ -1991,8 +2015,8 @@ get_member_function_is_ctor(const function_decl& f)
     dynamic_cast<const class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  const mem_fn_context_rel* ctxt =
+    dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
 
   return ctxt->is_constructor();
 }
@@ -2014,16 +2038,16 @@ get_member_function_is_ctor(const function_decl_sptr f)
 /// @param f the new boolean value of the is_ctor property.  Is true
 /// if @p f is a constructor, false otherwise.
 void
-set_member_function_is_ctor(const function_decl& f, bool c)
+set_member_function_is_ctor(function_decl& f, bool c)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  class_decl::method_decl* m =
+    dynamic_cast<class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  mem_fn_context_rel* ctxt =
+    dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
 
   ctxt->is_constructor(c);
 }
@@ -2052,8 +2076,8 @@ get_member_function_is_dtor(const function_decl& f)
     dynamic_cast<const class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  const mem_fn_context_rel* ctxt =
+    dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
 
   return ctxt->is_destructor();
 }
@@ -2073,16 +2097,16 @@ get_member_function_is_dtor(const function_decl_sptr f)
 ///
 /// @param d true if @p f is a destructor, false otherwise.
 void
-set_member_function_is_dtor(const function_decl& f, bool d)
+set_member_function_is_dtor(function_decl& f, bool d)
 {
     assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  class_decl::method_decl* m =
+    dynamic_cast<class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  mem_fn_context_rel* ctxt =
+    dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
 
   ctxt->is_destructor(d);
 }
@@ -2110,8 +2134,8 @@ get_member_function_is_const(const function_decl& f)
     dynamic_cast<const class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  const mem_fn_context_rel* ctxt =
+    dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
 
   return ctxt->is_const();
 }
@@ -2131,16 +2155,16 @@ get_member_function_is_const(const function_decl_sptr f)
 ///
 /// @param is_const the new value of the const-ness property of @p f
 void
-set_member_function_is_const(const function_decl& f, bool is_const)
+set_member_function_is_const(function_decl& f, bool is_const)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  class_decl::method_decl* m =
+    dynamic_cast<class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  mem_fn_context_rel* ctxt =
+    dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
 
   ctxt->is_const(is_const);
 }
@@ -2168,8 +2192,8 @@ get_member_function_vtable_offset(const function_decl& f)
     dynamic_cast<const class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  const mem_fn_context_rel* ctxt =
+    dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
 
   return ctxt->vtable_offset();
 }
@@ -2189,16 +2213,16 @@ get_member_function_vtable_offset(const function_decl_sptr f)
 ///
 /// @param s the new vtable offset.
 void
-set_member_function_vtable_offset(const function_decl& f, size_t s)
+set_member_function_vtable_offset(function_decl& f, size_t s)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  class_decl::method_decl* m =
+    dynamic_cast<class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  mem_fn_context_rel* ctxt =
+    dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
 
   ctxt->vtable_offset(s);
 }
@@ -2225,8 +2249,8 @@ get_member_function_is_virtual(const function_decl& f)
     dynamic_cast<const class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  const mem_fn_context_rel* ctxt =
+    dynamic_cast<const mem_fn_context_rel*>(m->get_context_rel());
 
   return ctxt->is_virtual();
 }
@@ -2255,16 +2279,16 @@ get_member_function_is_virtual(const function_decl* mem_fn)
 ///
 /// @param is_virtual set to true if the function is virtual.
 void
-set_member_function_is_virtual(const function_decl& f, bool is_virtual)
+set_member_function_is_virtual(function_decl& f, bool is_virtual)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  class_decl::method_decl* m =
+    dynamic_cast<class_decl::method_decl*>(&f);
   assert(m);
 
-  mem_fn_context_rel_sptr ctxt =
-    dynamic_pointer_cast<mem_fn_context_rel>(m->get_context_rel());
+  mem_fn_context_rel* ctxt =
+    dynamic_cast<mem_fn_context_rel*>(m->get_context_rel());
 
   ctxt->is_virtual(is_virtual);
 }
@@ -5924,10 +5948,10 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
 	  return false;
       }
 
-  dm_context_rel_sptr c0 =
-    dynamic_pointer_cast<dm_context_rel>(l.get_context_rel());
-  dm_context_rel_sptr c1 =
-    dynamic_pointer_cast<dm_context_rel>(r.get_context_rel());
+  const dm_context_rel* c0 =
+    dynamic_cast<const dm_context_rel*>(l.get_context_rel());
+  const dm_context_rel* c1 =
+    dynamic_cast<const dm_context_rel*>(r.get_context_rel());
   assert(c0 && c1);
 
   if (*c0 != *c1)

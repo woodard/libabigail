@@ -298,7 +298,7 @@ void
 set_member_is_static(decl_base&, bool);
 
 void
-set_member_is_static(shared_ptr<decl_base>, bool);
+set_member_is_static(const shared_ptr<decl_base>&, bool);
 
 bool
 is_data_member(const var_decl&);
@@ -364,7 +364,7 @@ bool
 get_member_function_is_dtor(const shared_ptr<function_decl>);
 
 void
-set_member_function_is_dtor(const function_decl&, bool);
+set_member_function_is_dtor(function_decl&, bool);
 
 void
 set_member_function_is_dtor(const shared_ptr<function_decl>, bool);
@@ -376,7 +376,7 @@ bool
 get_member_function_is_const(const shared_ptr<function_decl>);
 
 void
-set_member_function_is_const(const function_decl&, bool);
+set_member_function_is_const(function_decl&, bool);
 
 void
 set_member_function_is_const(const shared_ptr<function_decl>, bool);
@@ -405,7 +405,7 @@ bool
 get_member_function_is_virtual(const function_decl*);
 
 void
-set_member_function_is_virtual(const function_decl&, bool);
+set_member_function_is_virtual(function_decl&, bool);
 
 void
 set_member_function_is_virtual(const shared_ptr<function_decl>&, bool);

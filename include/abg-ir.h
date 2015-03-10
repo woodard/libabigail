@@ -669,10 +669,10 @@ public:
   set_scope(scope_decl*);
 
 protected:
-  const context_rel_sptr
+  const context_rel*
   get_context_rel() const;
 
-  context_rel_sptr
+  context_rel*
   get_context_rel();
 
   void
@@ -770,7 +770,7 @@ public:
   get_member_access_specifier(const decl_base_sptr d);
 
   friend void
-  set_member_access_specifier(const decl_base_sptr d,
+  set_member_access_specifier(decl_base& d,
 			      access_specifier a);
 
   friend bool
@@ -780,13 +780,16 @@ public:
   get_member_is_static(const decl_base_sptr d);
 
   friend void
-  set_member_is_static(decl_base_sptr d, bool s);
+  set_member_is_static(const decl_base_sptr& d, bool s);
+
+  friend void
+  set_member_is_static(decl_base& d, bool s);
 
   friend bool
   get_member_function_is_virtual(const function_decl& f);
 
   friend void
-  set_member_function_is_virtual(const function_decl&, bool);
+  set_member_function_is_virtual(function_decl&, bool);
 
   friend class class_decl;
 };// end class decl_base
@@ -2644,8 +2647,13 @@ enum access_specifier
 get_member_access_specifier(const decl_base_sptr);
 
 void
-set_member_access_specifier(decl_base_sptr,
+set_member_access_specifier(decl_base&,
 			    access_specifier);
+
+void
+set_member_access_specifier(const decl_base_sptr&,
+			    access_specifier);
+
 std::ostream&
 operator<<(std::ostream&, access_specifier);
 
@@ -2941,13 +2949,13 @@ public:
   get_member_function_is_ctor(const function_decl&);
 
   friend void
-  set_member_function_is_ctor(const function_decl&, bool);
+  set_member_function_is_ctor(function_decl&, bool);
 
   friend bool
   get_member_function_is_dtor(const function_decl&);
 
   friend void
-  set_member_function_is_dtor(const function_decl&, bool);
+  set_member_function_is_dtor(function_decl&, bool);
 
   friend bool
   get_member_function_is_static(const function_decl&);
@@ -2959,19 +2967,19 @@ public:
   get_member_function_is_const(const function_decl&);
 
   friend void
-  set_member_function_is_const(const function_decl&, bool);
+  set_member_function_is_const(function_decl&, bool);
 
   friend size_t
   get_member_function_vtable_offset(const function_decl&);
 
   friend void
-  set_member_function_vtable_offset(const function_decl&, size_t);
+  set_member_function_vtable_offset(function_decl&, size_t);
 
   friend bool
   get_member_function_is_virtual(const function_decl&);
 
   friend void
-  set_member_function_is_virtual(const function_decl&, bool);
+  set_member_function_is_virtual(function_decl&, bool);
 
   virtual ~method_decl();
 };// end class class_decl::method_decl
