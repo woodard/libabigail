@@ -130,6 +130,11 @@ die_location_address(Dwarf_Die*	die,
 		     Dwarf_Addr&	address,
 		     bool&		is_tls_address);
 
+static void
+maybe_canonicalize_type(Dwarf_Off	die_offset,
+			bool		in_alt_di,
+			read_context&	ctxt);
+
 /// Convert an elf symbol type (given by the ELF{32,64}_ST_TYPE
 /// macros) into an elf_symbol::type value.
 ///
@@ -6976,6 +6981,8 @@ build_function_decl(read_context&	ctxt,
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     is_in_alt_di,
 			     result->get_type());
+
+  maybe_canonicalize_type(dwarf_dieoffset(die), is_in_alt_di, ctxt);
 
   return result;
 }
