@@ -1737,7 +1737,7 @@ get_member_access_specifier(const decl_base& d)
 ///
 /// @return the access specifier for the class member @p d.
 access_specifier
-get_member_access_specifier(const decl_base_sptr d)
+get_member_access_specifier(const decl_base_sptr& d)
 {return get_member_access_specifier(*d);}
 
 /// Sets the access specifier for a class member.
@@ -1808,7 +1808,7 @@ get_member_is_static(const decl_base* d)
 ///
 /// @return true if the class member @p d is static, false otherwise.
 bool
-get_member_is_static(const decl_base_sptr d)
+get_member_is_static(const decl_base_sptr& d)
 {return get_member_is_static(*d);}
 
 /// Sets the static-ness property of a class member.
@@ -1998,7 +1998,7 @@ is_member_function(const function_decl* f)
 ///
 /// @return true if @p f is a member function, false otherwise.
 bool
-is_member_function(const function_decl_sptr f)
+is_member_function(const function_decl_sptr& f)
 {return is_member_function(*f);}
 
 /// Test whether a member function is a constructor.
@@ -2027,7 +2027,7 @@ get_member_function_is_ctor(const function_decl& f)
 ///
 /// @return true if @p f is a constructor, false otherwise.
 bool
-get_member_function_is_ctor(const function_decl_sptr f)
+get_member_function_is_ctor(const function_decl_sptr& f)
 {return get_member_function_is_ctor(*f);}
 
 
@@ -2059,7 +2059,7 @@ set_member_function_is_ctor(function_decl& f, bool c)
 /// @param f the new boolean value of the is_ctor property.  Is true
 /// if @p f is a constructor, false otherwise.
 void
-set_member_function_is_ctor(const function_decl_sptr f, bool c)
+set_member_function_is_ctor(const function_decl_sptr& f, bool c)
 {set_member_function_is_ctor(*f, c);}
 
 /// Test whether a member function is a destructor.
@@ -2088,7 +2088,7 @@ get_member_function_is_dtor(const function_decl& f)
 ///
 /// @return true if @p f is a destructor, false otherwise.
 bool
-get_member_function_is_dtor(const function_decl_sptr f)
+get_member_function_is_dtor(const function_decl_sptr& f)
 {return get_member_function_is_dtor(*f);}
 
 /// Set the destructor-ness property of a member function.
@@ -2117,7 +2117,7 @@ set_member_function_is_dtor(function_decl& f, bool d)
 ///
 /// @param d true if @p f is a destructor, false otherwise.
 void
-set_member_function_is_dtor(const function_decl_sptr f, bool d)
+set_member_function_is_dtor(const function_decl_sptr& f, bool d)
 {set_member_function_is_dtor(*f, d);}
 
 /// Test whether a member function is const.
@@ -2146,7 +2146,7 @@ get_member_function_is_const(const function_decl& f)
 ///
 /// @return true if @p f is const, false otherwise.
 bool
-get_member_function_is_const(const function_decl_sptr f)
+get_member_function_is_const(const function_decl_sptr& f)
 {return get_member_function_is_const(*f);}
 
 /// set the const-ness property of a member function.
@@ -2175,7 +2175,7 @@ set_member_function_is_const(function_decl& f, bool is_const)
 ///
 /// @param is_const the new value of the const-ness property of @p f
 void
-set_member_function_is_const(const function_decl_sptr f, bool is_const)
+set_member_function_is_const(const function_decl_sptr& f, bool is_const)
 {set_member_function_is_const(*f, is_const);}
 
 /// Get the vtable offset of a member function.
@@ -2204,7 +2204,7 @@ get_member_function_vtable_offset(const function_decl& f)
 ///
 /// @return the vtable offset of @p f.
 size_t
-get_member_function_vtable_offset(const function_decl_sptr f)
+get_member_function_vtable_offset(const function_decl_sptr& f)
 {return get_member_function_vtable_offset(*f);}
 
 /// Set the vtable offset of a member function.
@@ -2232,7 +2232,7 @@ set_member_function_vtable_offset(function_decl& f, size_t s)
 ///
 /// @param s the new vtable offset.
 void
-set_member_function_vtable_offset(const function_decl_sptr f, size_t s)
+set_member_function_vtable_offset(const function_decl_sptr& f, size_t s)
 {return set_member_function_vtable_offset(*f, s);}
 
 /// Test if a given member function is virtual.
@@ -2261,7 +2261,7 @@ get_member_function_is_virtual(const function_decl& f)
 ///
 /// @return true iff a @p mem_fn is virtual.
 bool
-get_member_function_is_virtual(const function_decl_sptr mem_fn)
+get_member_function_is_virtual(const function_decl_sptr& mem_fn)
 {return mem_fn ? get_member_function_is_virtual(*mem_fn) : false;}
 
 /// Test if a given member function is virtual.

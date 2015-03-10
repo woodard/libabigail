@@ -292,7 +292,7 @@ bool
 get_member_is_static(const decl_base*);
 
 bool
-get_member_is_static(const shared_ptr<decl_base>);
+get_member_is_static(const shared_ptr<decl_base>&);
 
 void
 set_member_is_static(decl_base&, bool);
@@ -343,63 +343,63 @@ bool
 is_member_function(const function_decl*);
 
 bool
-is_member_function(const shared_ptr<function_decl>);
+is_member_function(const shared_ptr<function_decl>&);
 
 bool
 get_member_function_is_ctor(const function_decl&);
 
 bool
-get_member_function_is_ctor(const shared_ptr<function_decl>);
+get_member_function_is_ctor(const shared_ptr<function_decl>&);
 
 void
 set_member_function_is_ctor(const function_decl&, bool);
 
 void
-set_member_function_is_ctor(const shared_ptr<function_decl>, bool);
+set_member_function_is_ctor(const shared_ptr<function_decl>&, bool);
 
 bool
 get_member_function_is_dtor(const function_decl&);
 
 bool
-get_member_function_is_dtor(const shared_ptr<function_decl>);
+get_member_function_is_dtor(const shared_ptr<function_decl>&);
 
 void
 set_member_function_is_dtor(function_decl&, bool);
 
 void
-set_member_function_is_dtor(const shared_ptr<function_decl>, bool);
+set_member_function_is_dtor(const shared_ptr<function_decl>&, bool);
 
 bool
 get_member_function_is_const(const function_decl&);
 
 bool
-get_member_function_is_const(const shared_ptr<function_decl>);
+get_member_function_is_const(const shared_ptr<function_decl>&);
 
 void
 set_member_function_is_const(function_decl&, bool);
 
 void
-set_member_function_is_const(const shared_ptr<function_decl>, bool);
+set_member_function_is_const(const shared_ptr<function_decl>&, bool);
 
 size_t
 get_member_function_vtable_offset(const function_decl&);
 
 size_t
-get_member_function_vtable_offset(const shared_ptr<function_decl>);
+get_member_function_vtable_offset(const shared_ptr<function_decl>&);
 
 void
 set_member_function_vtable_offset(const function_decl& f,
 				  size_t s);
 
 void
-set_member_function_vtable_offset(const shared_ptr<function_decl> f,
+set_member_function_vtable_offset(const shared_ptr<function_decl> &f,
 				  size_t s);
 
 bool
 get_member_function_is_virtual(const function_decl&);
 
 bool
-get_member_function_is_virtual(const shared_ptr<function_decl>);
+get_member_function_is_virtual(const shared_ptr<function_decl>&);
 
 bool
 get_member_function_is_virtual(const function_decl*);

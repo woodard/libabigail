@@ -767,7 +767,7 @@ public:
   get_member_access_specifier(const decl_base& d);
 
   friend enum access_specifier
-  get_member_access_specifier(const decl_base_sptr d);
+  get_member_access_specifier(const decl_base_sptr& d);
 
   friend void
   set_member_access_specifier(decl_base& d,
@@ -777,7 +777,7 @@ public:
   get_member_is_static(const decl_base& d);
 
   friend bool
-  get_member_is_static(const decl_base_sptr d);
+  get_member_is_static(const decl_base_sptr& d);
 
   friend void
   set_member_is_static(const decl_base_sptr& d, bool s);
@@ -2644,7 +2644,7 @@ enum access_specifier
 get_member_access_specifier(const decl_base&);
 
 enum access_specifier
-get_member_access_specifier(const decl_base_sptr);
+get_member_access_specifier(const decl_base_sptr&);
 
 void
 set_member_access_specifier(decl_base&,
@@ -2951,11 +2951,17 @@ public:
   friend void
   set_member_function_is_ctor(function_decl&, bool);
 
+  friend void
+  set_member_function_is_ctor(const function_decl_sptr&, bool);
+
   friend bool
   get_member_function_is_dtor(const function_decl&);
 
   friend void
   set_member_function_is_dtor(function_decl&, bool);
+
+  friend void
+  set_member_function_is_dtor(const function_decl_sptr&, bool);
 
   friend bool
   get_member_function_is_static(const function_decl&);
@@ -2969,11 +2975,17 @@ public:
   friend void
   set_member_function_is_const(function_decl&, bool);
 
+  friend void
+  set_member_function_is_const(const function_decl_sptr&, bool);
+
   friend size_t
   get_member_function_vtable_offset(const function_decl&);
 
   friend void
   set_member_function_vtable_offset(function_decl&, size_t);
+
+  friend void
+  set_member_function_vtable_offset(const function_decl_sptr&, size_t);
 
   friend bool
   get_member_function_is_virtual(const function_decl&);
