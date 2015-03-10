@@ -5191,17 +5191,18 @@ array_type_def::append_subranges(const std::vector<subrange_sptr>& subs)
     append_subrange(*i);
 }
 
+/// @return true iff one of the sub-ranges of the array is infinite.
 bool
 array_type_def::is_infinite() const
 {
 
-  for (std::vector<shared_ptr<subrange_type> >::const_iterator i = priv_->subranges_.begin();
+  for (std::vector<shared_ptr<subrange_type> >::const_iterator i =
+	 priv_->subranges_.begin();
        i != priv_->subranges_.end();
        ++i)
-    {
-      if ((*i)->is_infinite())
-        return true;
-    }
+    if ((*i)->is_infinite())
+      return true;
+
   return false;
 }
 
