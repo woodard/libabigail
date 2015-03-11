@@ -7431,10 +7431,10 @@ class_diff::report(ostream& out, const string& indent) const
       // report deletions
       int numdels = priv_->deleted_member_functions_.size();
       size_t num_filtered = priv_->count_filtered_deleted_mem_fns(context());
-      size_t net_num_dels = numdels - num_filtered;
       if (numdels)
 	report_mem_header(out, numdels, num_filtered, del_kind,
 			  "member function", indent);
+      bool emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
 	     priv_->deleted_member_functions_.begin();
 	   i != priv_->deleted_member_functions_.end();
@@ -7445,13 +7445,15 @@ class_diff::report(ostream& out, const string& indent) const
 	      && !get_member_function_is_virtual(i->second))
 	    continue;
 
-	  if (i != priv_->deleted_member_functions_.begin())
+	  if (emitted
+	      && i != priv_->deleted_member_functions_.begin())
 	    out << "\n";
 	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(*context(), mem_fun, out);
+	  emitted = true;
 	}
-      if (net_num_dels)
+      if (emitted)
 	out << "\n";
 
       // report insertions;
@@ -7460,7 +7462,7 @@ class_diff::report(ostream& out, const string& indent) const
       if (numins)
 	report_mem_header(out, numins, num_filtered, ins_kind,
 			  "member function", indent);
-      bool emitted = false;
+      emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
 	     priv_->inserted_member_functions_.begin();
 	   i != priv_->inserted_member_functions_.end();
@@ -7471,7 +7473,8 @@ class_diff::report(ostream& out, const string& indent) const
 	      && !get_member_function_is_virtual(i->second))
 	    continue;
 
-	  if (i != priv_->inserted_member_functions_.begin())
+	  if (emitted
+	      && i != priv_->inserted_member_functions_.begin())
 	    out << "\n";
 	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
@@ -7487,6 +7490,7 @@ class_diff::report(ostream& out, const string& indent) const
       if (numchanges)
 	report_mem_header(out, numchanges, num_filtered, change_kind,
 			  "member function", indent);
+      emitted = false;
       for (function_decl_diff_sptrs_type::const_iterator i =
 	     priv_->sorted_changed_member_functions_.begin();
 	   i != priv_->sorted_changed_member_functions_.end();
@@ -7506,7 +7510,8 @@ class_diff::report(ostream& out, const string& indent) const
 
 	  string repr =
 	    (*i)->first_function_decl()->get_pretty_representation();
-	  if (i != priv_->sorted_changed_member_functions_.begin())
+	  if (emitted
+	      && i != priv_->sorted_changed_member_functions_.begin())
 	    out << "\n";
 	  out << indent << "  '" << repr << "' has some sub-type changes:\n";
 	  diff->report(out, indent + "    ");
