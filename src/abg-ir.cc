@@ -3199,6 +3199,17 @@ type_base_sptr
 is_type(const decl_base_sptr decl)
 {return dynamic_pointer_cast<type_base>(decl);}
 
+/// Tests whether a declaration is a type, and return it properly
+/// converted into a type in that case.
+///
+/// @param decl the declaration to consider.
+///
+/// @return the pointer to type_base representing @p decl converted as
+/// a type, iff it's a type, or NULL otherwise.
+type_base*
+is_type(decl_base* decl)
+{return dynamic_cast<type_base*>(decl);}
+
 /// Test whether a type is a type_decl (a builtin type).
 ///
 /// @return the type_decl_sptr for @t if it's type_decl, otherwise,

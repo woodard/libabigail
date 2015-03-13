@@ -179,6 +179,9 @@ is_type(const decl_base&);
 shared_ptr<type_base>
 is_type(const shared_ptr<decl_base>);
 
+type_base*
+is_type(decl_base*);
+
 shared_ptr<type_decl>
 is_type_decl(const shared_ptr<type_base>);
 
