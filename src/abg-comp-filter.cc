@@ -532,7 +532,7 @@ has_virtual_mem_fn_change(const class_diff* diff)
        i != diff->changed_member_fns().end();
        ++i)
     if (get_member_function_is_virtual((*i)->first_function_decl())
-	|| !get_member_function_is_virtual((*i)->second_function_decl()))
+	|| get_member_function_is_virtual((*i)->second_function_decl()))
       {
 	if (get_member_function_vtable_offset((*i)->first_function_decl())
 	    == get_member_function_vtable_offset((*i)->second_function_decl()))
