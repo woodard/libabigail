@@ -2316,11 +2316,16 @@ set_member_function_is_virtual(const function_decl_sptr& fn, bool is_virtual)
 /// Also recursively strip typedefs from the sub-types of the type
 /// given in arguments.
 ///
-/// Note that this function can only acts on types that are
-/// canonicalized.  The returned type is a new type that is stripped
-/// from all of its typedefs.  It's actually a canonical type that is
-/// guaranteed to be live for during the entire life time of this
-/// library.
+/// Note that this function builds types in which typedefs are
+/// stripped off.  Usually, types are held by their scope, so their
+/// life time is bound to the life time of their scope.  But as this
+/// function cannot really insert the built type into it's scope, it
+/// must ensure that the newly built type stays live long enough.
+///
+/// So, if the newly built type has a canonical type, this function
+/// returns the canonical type.  Otherwise, this function ensure that
+/// the newly built type has a life time that is the same as the life
+/// time of the entire libabigail library.
 ///
 /// @param type the type to strip the typedefs from.
 ///
@@ -2332,6 +2337,17 @@ strip_typedef(const type_base_sptr type)
   if (!type)
     return type;
 
+  // If type is a class type the do not try to strip typedefs from it.
+  // And if it has no canonical type (which can mean that it's a
+  // declaration-only class), then, make sure its live for ever and
+  // return it.
+  if (class_decl_sptr cl = is_class_type(type))
+    {
+      if (!cl->get_canonical_type())
+	keep_type_alive(type);
+      return type;
+    }
+
   assert(type->get_canonical_type());
 
   type_base_sptr t = type;
@@ -2340,8 +2356,7 @@ strip_typedef(const type_base_sptr type)
     t = strip_typedef(type_or_void(ty->get_underlying_type()));
   else if (const reference_type_def_sptr ty = is_reference_type(t))
     {
-      type_base_sptr p =
-	canonicalize(strip_typedef(type_or_void(ty->get_pointed_to_type())));
+      type_base_sptr p = strip_typedef(type_or_void(ty->get_pointed_to_type()));
       assert(p);
       t.reset(new reference_type_def(p,
 				     ty->is_lvalue(),
@@ -2351,8 +2366,7 @@ strip_typedef(const type_base_sptr type)
     }
   else if (const pointer_type_def_sptr ty = is_pointer_type(t))
     {
-      type_base_sptr p =
-	canonicalize(strip_typedef(type_or_void(ty->get_pointed_to_type())));
+      type_base_sptr p = strip_typedef(type_or_void(ty->get_pointed_to_type()));
       assert(p);
       t.reset(new pointer_type_def(p,
 				   ty->get_size_in_bits(),
@@ -2361,7 +2375,7 @@ strip_typedef(const type_base_sptr type)
     }
   else if (const qualified_type_def_sptr ty = is_qualified_type(t))
     {
-      type_base_sptr p = canonicalize(strip_typedef(ty->get_underlying_type()));
+      type_base_sptr p = strip_typedef(type_or_void(ty->get_underlying_type()));
       assert(p);
       t.reset(new qualified_type_def(p,
 				     ty->get_cv_quals(),
@@ -2369,7 +2383,8 @@ strip_typedef(const type_base_sptr type)
     }
   else if (const array_type_def_sptr ty = is_array_type(t))
     {
-      type_base_sptr p = canonicalize(strip_typedef(ty->get_element_type()));
+      type_base_sptr p = strip_typedef(ty->get_element_type());
+      assert(p);
       t.reset(new array_type_def(p, ty->get_subranges(), ty->get_location()));
     }
   else if (const method_type_sptr ty = is_method_type(t))
@@ -2381,7 +2396,7 @@ strip_typedef(const type_base_sptr type)
 	   ++i)
 	{
 	  function_decl::parameter_sptr p = *i;
-	  type_base_sptr typ = canonicalize(strip_typedef(p->get_type()));
+	  type_base_sptr typ = strip_typedef(p->get_type());
 	  assert(typ);
 	  function_decl::parameter_sptr stripped
 	    (new function_decl::parameter(typ,
@@ -2409,8 +2424,8 @@ strip_typedef(const type_base_sptr type)
 	   ++i)
 	{
 	  function_decl::parameter_sptr p = *i;
-	  type_base_sptr typ = canonicalize(strip_typedef(p->get_type()));
-	  assert(p);
+	  type_base_sptr typ = strip_typedef(p->get_type());
+	  assert(typ);
 	  function_decl::parameter_sptr stripped
 	    (new function_decl::parameter(typ,
 					  p->get_index(),
@@ -2420,15 +2435,17 @@ strip_typedef(const type_base_sptr type)
 					  p->get_artificial()));
 	  parm.push_back(stripped);
 	}
-      type_base_sptr p = canonicalize(ty->get_return_type());
+      type_base_sptr p = strip_typedef(ty->get_return_type());
       assert(p);
       t.reset(new function_type(p, parm,
 				ty->get_size_in_bits(),
 				ty->get_alignment_in_bits()));
     }
 
-  canonicalize(t);
-  return t;
+  if (!canonicalize(t))
+    keep_type_alive(t);
+
+  return t->get_canonical_type() ? t->get_canonical_type() : t;
 }
 
 /// Add a member decl to this scope.  Note that user code should not
@@ -3848,9 +3865,7 @@ type_base::get_canonical_type_for(type_base_sptr t)
   // Look through declaration-only classes
   if (class_decl_sptr class_declaration = is_class_type(t))
     if (class_declaration->get_is_declaration_only())
-      if (class_decl_sptr klass =
-	  class_declaration->get_definition_of_declaration())
-	t = klass;
+      return type_base_sptr();
 
   if (t->get_canonical_type())
     return t->get_canonical_type();
@@ -3921,7 +3936,6 @@ canonicalize(type_base_sptr t)
     return t->get_canonical_type();
 
   type_base_sptr canonical = type_base::get_canonical_type_for(t);
-  assert(canonical);
 
   t->priv_->canonical_type = canonical;
 
@@ -9838,6 +9852,17 @@ type_has_non_canonicalized_subtype(type_base_sptr t)
   if (!t->traverse(v))
     return v.has_non_canonical_type();
   return false;
+}
+
+/// Make sure that the life time of a given (smart pointer to a) type
+/// is the same as the life time of the libabigail library.
+///
+/// @param t the type to consider.
+void
+keep_type_alive(type_base_sptr t)
+{
+  static vector<type_base_sptr> extra_live_types;
+  extra_live_types.push_back(t);
 }
 
 bool

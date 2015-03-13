@@ -496,6 +496,9 @@ canonicalize(shared_ptr<type_base>);
 
 bool
 type_has_non_canonicalized_subtype(shared_ptr<type_base> t);
+
+void
+keep_type_alive(shared_ptr<type_base> t);
 } // end namespace ir
 
 using namespace abigail::ir;
