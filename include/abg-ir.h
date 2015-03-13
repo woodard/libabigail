@@ -895,6 +895,9 @@ public:
   remove_decl_from_scope(decl_base_sptr decl);
 };//end class scope_decl
 
+bool
+operator==(scope_decl_sptr, scope_decl_sptr);
+
 /// Hasher for the @ref scope_decl type.
 struct scope_decl::hash
 {
@@ -1103,6 +1106,9 @@ public:
 
 bool
 equals(const scope_type_decl&, const scope_type_decl&, change_kind*);
+
+bool
+operator==(type_decl_sptr, type_decl_sptr);
 
 /// A type that introduces a scope.
 class scope_type_decl : public scope_decl, public virtual type_base
@@ -1518,6 +1524,8 @@ public:
   virtual ~enum_type_decl();
 }; // end class enum_type_decl
 
+bool
+operator==(enum_type_decl_sptr l, enum_type_decl_sptr r);
 /// The abstraction of an enumerator
 class enum_type_decl::enumerator
 {

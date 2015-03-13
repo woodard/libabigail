@@ -2589,6 +2589,23 @@ scope_decl::operator==(const decl_base& o) const
   return equals(*this, *other, 0);
 }
 
+/// Equality operator for @ref scope_decl_sptr.
+///
+/// @param l the left hand side operand of the equality operator.
+///
+/// @pram r the right hand side operand of the equalify operator.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator==(scope_decl_sptr l, scope_decl_sptr r)
+{
+  if (!!l != !!r)
+    return false;
+  if (l.get() == r.get())
+    return true;
+  return *l == *r;
+}
+
 /// Find a member of the current scope and return an iterator on it.
 ///
 /// @param decl the scope member to find.
@@ -4125,6 +4142,23 @@ type_decl::operator==(const type_decl& o) const
   return *this == other;
 }
 
+/// Equality operator for @ref type_decl_sptr.
+///
+/// @param l the first operand to compare.
+///
+/// @param r the second operand to compare.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator==(type_decl_sptr l, type_decl_sptr r)
+{
+  if (!!l != !!r)
+    return false;
+  if (l.get() == r.get())
+    return true;
+  return *l == *r;
+}
+
 string
 type_decl::get_pretty_representation() const
 {return get_qualified_name();}
@@ -5453,6 +5487,24 @@ enum_type_decl::operator==(const type_base& o) const
   if (!other)
     return false;
   return *this == *other;
+}
+
+/// Equality operator for @ref enum_type_decl_sptr.
+///
+/// @param l the first operand to compare.
+///
+/// @param r the second operand to compare.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator==(enum_type_decl_sptr l, enum_type_decl_sptr r)
+{
+  if (!!l != !!r)
+    return false;
+  if (l.get() == r.get())
+    return true;
+  decl_base_sptr o = r;
+  return *l == *o;
 }
 
 /// The type of the private data of an @ref

@@ -4268,44 +4268,6 @@ get_pretty_representation(diff* d)
   string prefix= "diff of ";
   return prefix + get_pretty_representation(d->first_subject());
 }
-/// Return the length of the diff between two instances of @ref decl_base
-///
-/// @param first the first instance of @ref decl_base to consider.
-///
-/// @param second the second instance of @ref decl_base to consider.
-///
-/// @return the length of the differences between @p first and @p second.
-static unsigned
-diff_length_of_decl_bases(decl_base_sptr first, decl_base_sptr second)
-{
-  unsigned l = 0;
-
-  if (first->get_name() != second->get_name())
-    ++l;
-  if (first->get_visibility() != second->get_visibility())
-    ++l;
-  return l;
-}
-
-/// Return the length of the diff between two instances of @ref type_base
-///
-/// @param first the first instance of @ref type_base to consider.
-///
-/// @param second the second instance of @ref type_base to consider.
-///
-/// @return the length of the differences between @p first and @p second.
-static unsigned
-diff_length_of_type_bases(type_base_sptr first, type_base_sptr second)
-{
-  unsigned l = 0;
-
-  if (first->get_size_in_bits() != second->get_size_in_bits())
-    ++l;
-  if (first->get_alignment_in_bits() != second->get_alignment_in_bits())
-    ++l;
-
-  return l;
-}
 
 static bool
 maybe_report_diff_for_member(decl_base_sptr	decl1,
@@ -6963,17 +6925,7 @@ class_diff::get_pretty_representation() const
 /// @return true iff the current diff node carries a change.
 bool
 class_diff::has_changes() const
-{
-  if (!!first_class_decl() != !! second_class_decl())
-    return true;
-  if (first_class_decl().get() == second_class_decl().get())
-    return false;
-  if (first_class_decl()->get_hash() && second_class_decl()->get_hash()
-      && first_class_decl()->get_hash() != second_class_decl()->get_hash())
-    return true;
-
-  return (*first_class_decl() != *second_class_decl());
-}
+{return (first_class_decl() != second_class_decl());}
 
 /// @return true iff the current diff node carries local changes.
 bool
@@ -9547,15 +9499,7 @@ type_decl_diff::get_pretty_representation() const
 /// @return true iff the current diff node carries a change.
 bool
 type_decl_diff::has_changes() const
-{
-  type_base_sptr f = is_type(first_type_decl()),
-    s = is_type(second_type_decl());
-  assert(f && s);
-
-  return (diff_length_of_decl_bases(first_type_decl(),
-				    second_type_decl())
-	  || diff_length_of_type_bases(f, s));
-}
+{return first_type_decl() != second_type_decl();}
 
 /// @return true iff the current diff node carries local changes.
 bool
