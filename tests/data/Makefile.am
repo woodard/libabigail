@@ -367,6 +367,13 @@ test-diff-filter/test26-qualified-redundant-node-report-0.txt \
 test-diff-filter/test26-qualified-redundant-node-report-1.txt \
 test-diff-filter/test26-qualified-redundant-node-v0.cc \
 test-diff-filter/test26-qualified-redundant-node-v1.cc \
+test-diff-filter/libtest27-redundant-and-filtered-children-nodes-v0.so \
+test-diff-filter/libtest27-redundant-and-filtered-children-nodes-v1.so \
+test-diff-filter/test27-redundant-and-filtered-children-nodes-report-0.txt \
+test-diff-filter/test27-redundant-and-filtered-children-nodes-report-1.txt \
+test-diff-filter/test27-redundant-and-filtered-children-nodes-report-2.txt \
+test-diff-filter/test27-redundant-and-filtered-children-nodes-v0.cc \
+test-diff-filter/test27-redundant-and-filtered-children-nodes-v1.cc \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

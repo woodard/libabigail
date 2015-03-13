@@ -12493,7 +12493,8 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		if ((*i)->has_changes())
 		  {
 		    has_non_empty_child = true;
-		    if (((*i)->get_category() & REDUNDANT_CATEGORY) == 0)
+		    if ((*i)->to_be_reported()
+			&& ((*i)->get_category() & REDUNDANT_CATEGORY) == 0)
 		      has_non_redundant_child = true;
 		  }
 		if (has_non_redundant_child)
