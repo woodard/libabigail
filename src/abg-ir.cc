@@ -4475,6 +4475,7 @@ qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
 	      dynamic_pointer_cast<decl_base>(type)->get_visibility()),
     priv_(new priv(quals, type))
 {
+  assert(type);
   string name = build_name(false);
   set_name(name);
 }
