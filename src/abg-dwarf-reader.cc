@@ -6249,7 +6249,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   if (klass)
     {
       res = result = klass;
-      result->set_size_in_bits(size);
+      if (size)
+	{
+	  result->set_size_in_bits(size);
+	  result->set_is_declaration_only(false);
+	}
       result->set_location(loc);
     }
   else
@@ -6390,6 +6394,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
 	    {
+	      result->set_is_declaration_only(false);
+
 	      decl_base_sptr r = build_ir_node_from_die(ctxt, &child,
 							is_in_alt_di,
 							result.get(),
@@ -6409,6 +6415,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle member types
 	  else if (is_type_die(&child))
 	    {
+	      result->set_is_declaration_only(false);
 	      decl_base_sptr td =
 		build_ir_node_from_die(ctxt, &child, is_in_alt_di,
 				       result.get(),
