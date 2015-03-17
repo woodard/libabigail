@@ -3640,8 +3640,8 @@ convert_node_to_decl(var_decl_sptr node)
 ///
 /// @param skope the scope to look into.
 ///
-/// @return the declaration of the lookuped node, or NULL if it wasn't
-/// found.
+/// @return the declaration of the looked up node, or NULL if it
+/// wasn't found.
 template<typename NodeKind>
 static const decl_base_sptr
 lookup_node_in_scope(const list<string>& fqn,
@@ -7720,7 +7720,7 @@ class_decl::get_earlier_declaration() const
 ///
 /// @param b the new base specifier.
 void
-class_decl::add_base_specifier(shared_ptr<base_spec> b)
+class_decl::add_base_specifier(base_spec_sptr b)
 {priv_->bases_.push_back(b);}
 
 /// Get the base specifiers for this class.
@@ -9830,7 +9830,7 @@ public:
       return false;
     return true;
   }
-}; //end struct sub_type_visitor
+}; //end class non_canonicalized_subtype_detector
 
 /// Test if a type has sub-types that are non-canonicalized.
 ///

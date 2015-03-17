@@ -640,7 +640,7 @@ class_decl::hash::operator()(const class_decl& t) const
        ++d)
     v = hashing::combine_hashes(v, hash_data_member(**d));
 
-  // Hash member_function
+  // Hash virtual member_functions
   for (class_decl::member_functions::const_iterator f =
 	 t.get_member_functions().begin();
        f != t.get_member_functions().end();
