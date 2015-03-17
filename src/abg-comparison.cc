@@ -6110,6 +6110,12 @@ struct class_diff::priv
   member_class_tmpl_has_changed(decl_base_sptr) const;
 
   size_t
+  get_deleted_non_static_data_members_number() const;
+
+  size_t
+  get_inserted_non_static_data_members_number() const;
+
+  size_t
   count_filtered_bases();
 
   size_t
@@ -6629,6 +6635,46 @@ class_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
   return ((it == changed_member_class_tmpls_.end())
 	  ? decl_base_sptr()
 	  : dynamic_pointer_cast<decl_base>(it->second->second_subject()));
+}
+
+/// Get the number of non-static data member that were deleted from
+/// the class which diff we are looking at.
+///
+/// @return the number of deleted non-static data members.
+size_t
+class_diff::priv::get_deleted_non_static_data_members_number() const
+{
+  size_t result = 0;
+
+  for (string_decl_base_sptr_map::const_iterator i =
+	 deleted_data_members_.begin();
+       i != deleted_data_members_.end();
+       ++i)
+    if (is_member_decl(i->second)
+	&& !get_member_is_static(i->second))
+      ++result;
+
+  return result;
+}
+
+/// Get the number of non-static data member that were inserted to the
+/// class which diff we are looking at.
+///
+/// @return the number of inserted non-static data members.
+size_t
+class_diff::priv::get_inserted_non_static_data_members_number() const
+{
+  size_t result = 0;
+
+  for (string_decl_base_sptr_map::const_iterator i =
+	 inserted_data_members_.begin();
+       i != inserted_data_members_.end();
+       ++i)
+    if (is_member_decl(i->second)
+	&& !get_member_is_static(i->second))
+      ++result;
+
+  return result;
 }
 
 /// Count the number of bases classes whose changes got filtered out.
@@ -7477,7 +7523,7 @@ class_diff::report(ostream& out, const string& indent) const
   if (data_members_changes())
     {
       // report deletions
-      int numdels = priv_->deleted_data_members_.size();
+      int numdels = priv_->get_deleted_non_static_data_members_number();
       if (numdels)
 	{
 	  report_mem_header(out, numdels, 0, del_kind,
@@ -7492,6 +7538,10 @@ class_diff::report(ostream& out, const string& indent) const
 	      var_decl_sptr data_mem =
 		dynamic_pointer_cast<var_decl>(*i);
 	      assert(data_mem);
+	      if (get_member_is_static(data_mem))
+		continue;
+	      if (emitted)
+		out << "\n";
 	      out << indent << "  ";
 	      represent_data_member(data_mem, out);
 	      emitted = true;
