@@ -143,7 +143,7 @@ get_translation_unit(const shared_ptr<decl_base>);
 bool
 is_global_scope(const scope_decl&);
 
-bool
+const global_scope*
 is_global_scope(const scope_decl*);
 
 bool

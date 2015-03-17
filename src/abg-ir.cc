@@ -3059,10 +3059,11 @@ is_global_scope(const scope_decl& scope)
 ///
 /// @param scope the scope to consider.
 ///
-/// @return true iff the current scope is the global one.
-bool
+/// @return the @ref global_scope* representing the scope @p scope or
+/// 0 if @p scope is not a global scope.
+const global_scope*
 is_global_scope(const scope_decl* scope)
-{return scope ? is_global_scope(*scope) : false;}
+{return dynamic_cast<const global_scope*>(scope);}
 
 /// Tests whether if a given scope is the global scope.
 ///
