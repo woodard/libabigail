@@ -5643,6 +5643,7 @@ qualified_type_diff::report(ostream& out, const string& indent) const
 
   diff_sptr d = leaf_underlying_type_diff();
   assert(d);
+  assert(d->to_be_reported());
   RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d,
 						    "unqualified "
 						    "underlying type");
