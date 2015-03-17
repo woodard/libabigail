@@ -586,11 +586,17 @@ public:
   void
   clear_per_translation_unit_data()
   {
-    clear_id_xml_node_map();
-    clear_type_map();
-    clear_id_xml_node_map();
     clear_xml_node_decl_map();
     clear_decls_stack();
+  }
+
+  /// Clear all the data that must absolutely be cleared at the end of
+  /// the parsing of an ABI corpus.
+  void
+  clear_per_corpus_data()
+  {
+    clear_id_xml_node_map();
+    clear_type_map();
     clear_types_to_canonicalize();
   }
 
@@ -962,8 +968,6 @@ read_translation_unit_from_input(read_context&	ctxt,
 
    xmlTextReaderNext(reader.get());
 
-   ctxt.perform_late_type_canonicalizing();
-
    ctxt.clear_per_translation_unit_data();
 
    return true;
@@ -1135,6 +1139,8 @@ read_corpus_from_input(read_context& ctxt)
       ctxt.set_corpus(c);
     }
 
+  ctxt.clear_per_corpus_data();
+
   corpus& corp = *ctxt.get_corpus();
 
   xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
@@ -1197,6 +1203,7 @@ read_corpus_from_input(read_context& ctxt)
     }
   while (is_ok);
 
+  ctxt.perform_late_type_canonicalizing();
   corp.set_origin(corpus::NATIVE_XML_ORIGIN);
 
   return ctxt.get_corpus();;
@@ -2075,7 +2082,7 @@ build_function_decl(read_context&	ctxt,
   if (fn_decl->get_symbol() && fn_decl->get_symbol()->is_public())
     fn_decl->set_is_in_public_symbol_table(true);
 
-  fn_type = ctxt.get_translation_unit()->get_canonical_function_type(fn_type);
+  ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
 
   fn_decl->set_type(fn_type);
   ctxt.maybe_canonicalize_type(fn_type);

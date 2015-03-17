@@ -179,6 +179,9 @@ class function_decl;
 /// Convenience typedef for a shared pointer on a @ref function_type
 typedef shared_ptr<function_type> function_type_sptr;
 
+/// Convenience typedef fo a vector of @ref function_type_sptr
+typedef vector<function_type_sptr> function_types_type;
+
 /// Convenience typedef for a weak pointer on a @ref function_type
 typedef weak_ptr<function_type> function_type_wptr;
 
@@ -258,8 +261,8 @@ public:
   bool
   operator==(const translation_unit&) const;
 
-  function_type_sptr
-  get_canonical_function_type(function_type_sptr ftype) const;
+  void
+  bind_function_type_life_time(function_type_sptr) const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -577,6 +580,9 @@ class class_decl;
 
 /// Convenience typedef for a shared pointer on a @ref class_decl
 typedef shared_ptr<class_decl> class_decl_sptr;
+
+/// Convenience typedef for a vector of @ref class_decl_sptr
+typedef vector<class_decl_sptr> classes_type;
 
 /// Convenience typedef for a weak pointer on a @ref class_decl.
 typedef weak_ptr<class_decl> class_decl_wptr;

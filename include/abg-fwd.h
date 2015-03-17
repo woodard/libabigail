@@ -465,6 +465,9 @@ fqn_to_components(const std::string&,
 		  std::list<string>&);
 
 const shared_ptr<decl_base>
+lookup_type_in_corpus(const string&, const corpus&);
+
+const shared_ptr<decl_base>
 lookup_type_in_translation_unit(const string&,
 				const translation_unit&);
 

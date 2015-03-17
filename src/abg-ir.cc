@@ -164,7 +164,7 @@ struct translation_unit::priv
   std::string			path_;
   location_manager		loc_mgr_;
   mutable global_scope_sptr	global_scope_;
-  mutable fn_type_ptr_map	canonical_function_types_;
+  mutable function_types_type	function_types_;
 
   priv()
     : is_constructed_(),
@@ -301,32 +301,16 @@ translation_unit::operator==(const translation_unit& other)const
   return *get_global_scope() == *other.get_global_scope();
 }
 
-/// Return the canonical version of a given instance of @ref function_type.
+/// Ensure that the life time of a function type is bound to the life
+/// time of the current translation unit.
 ///
-/// A given translation units keeps only one copy of each function
-/// type that is used in the unit.  So each function type that is
-/// built somewhere needs to be passed to this function to
-/// canonicalize it and/or return the canonical version.
-///
-/// Note that it really is the translation unit that 'owns' the
-/// function types that are live in the translation unit.  This is
-/// unlike the other kinds of types that are owned by the scope where
-/// they are defined.
-///
-/// @param ftype the function type to canonicalize.
-///
-/// @return the resulting canonical type.
-function_type_sptr
-translation_unit::get_canonical_function_type(function_type_sptr ftype) const
-{
-  fn_type_ptr_map::iterator i = priv_->canonical_function_types_.find(ftype);
-  if (i == priv_->canonical_function_types_.end())
-    {
-      priv_->canonical_function_types_[ftype] = true;
-      return ftype;
-    }
-  return dynamic_pointer_cast<function_type>(i->first);
-}
+/// @param ftype the function time which life time to bind to the life
+/// time of the current instance of @ref translation_unit.  That is,
+/// it's onlyh when the translation unit is destroyed that the
+/// function type can be destroyed to.
+void
+translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
+{priv_->function_types_.push_back(ftype);}
 
 /// This implements the ir_traversable_base::traverse virtual
 /// function.
@@ -3698,6 +3682,10 @@ lookup_node_in_scope(const list<string>& fqn,
 	      node = dynamic_pointer_cast<NodeKind>(*m);
 	      if (node && get_node_name(node) == *c)
 		{
+		  if (class_decl_sptr cl =
+		      dynamic_pointer_cast<class_decl>(node))
+		    if (cl->get_is_declaration_only())
+		      continue;
 		  resulting_decl = convert_node_to_decl(node);
 		  break;
 		}

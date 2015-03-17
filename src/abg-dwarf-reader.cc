@@ -108,6 +108,10 @@ typedef stack<scope_decl*> scope_stack_type;
 /// value is also a dwarf offset.
 typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 
+/// Convenience typedef for a map which key is a string and which
+/// value is a vector of smart pointer to a class.
+typedef unordered_map<string, classes_type> string_classes_map;
+
 static bool
 find_symbol_table_section(Elf* elf_handle, Elf_Scn*& section);
 
@@ -1729,6 +1733,7 @@ class read_context
   die_class_map_type		die_wip_classes_map_;
   vector<Dwarf_Off>		types_to_canonicalize_;
   vector<Dwarf_Off>		alt_types_to_canonicalize_;
+  string_classes_map		decl_only_classes_map_;
   die_tu_map_type		die_tu_map_;
   corpus_sptr			cur_corpus_;
   translation_unit_sptr	cur_tu_;
@@ -1783,16 +1788,23 @@ public:
   void
   clear_per_translation_unit_data()
   {
+    while (!scope_stack().empty())
+      scope_stack().pop();
+    var_decls_to_re_add_to_tree().clear();
+    type_decl::get_void_type_decl()->set_scope(0);
+  }
+
+  /// Clear the data that is relevant for the current corpus being
+  /// read.
+  void
+  clear_per_corpus_data()
+  {
     die_decl_map().clear();
     alternate_die_decl_map().clear();
     die_type_map(/*in_alt_di=*/true).clear();
     die_type_map(/*in_alt_di=*/false).clear();
     types_to_canonicalize(/*in_alt_di=*/true).clear();
     types_to_canonicalize(/*in_alt_di=*/false).clear();
-    while (!scope_stack().empty())
-      scope_stack().pop();
-    var_decls_to_re_add_to_tree().clear();
-    type_decl::get_void_type_decl()->set_scope(0);
   }
 
   unsigned short
@@ -2168,6 +2180,118 @@ public:
   {
     die_class_map_type::const_iterator i = die_wip_classes_map().find(offset);
     return (i != die_wip_classes_map().end());
+  }
+
+  /// Getter for the map of declaration-only classes that are to be
+  /// resolved to their definition classes by the end of the corpus
+  /// loading.
+  ///
+  /// @return a map of string -> vector of classes where the key is
+  /// the fully qualified name of the class and the value is the
+  /// vector of declaration-only class.
+  const string_classes_map&
+  declaration_only_classes() const
+  {return decl_only_classes_map_;}
+
+    /// Getter for the map of declaration-only classes that are to be
+  /// resolved to their definition classes by the end of the corpus
+  /// loading.
+  ///
+  /// @return a map of string -> vector of classes where the key is
+  /// the fully qualified name of the class and the value is the
+  /// vector of declaration-only class.
+  string_classes_map&
+  declaration_only_classes()
+  {return decl_only_classes_map_;}
+
+  /// If a given class is a declaration-only class then stash it on
+  /// the side so that at the end of the corpus reading we can resolve
+  /// it to its definition.
+  ///
+  /// @param klass the class to consider.
+  void
+  maybe_schedule_declaration_only_class_for_resolution(class_decl_sptr& klass)
+  {
+    if (klass->get_is_declaration_only()
+	&& klass->get_definition_of_declaration() == 0)
+      {
+	string qn = klass->get_qualified_name();
+	string_classes_map::iterator record =
+	  declaration_only_classes().find(qn);
+	if (record == declaration_only_classes().end())
+	  declaration_only_classes()[qn].push_back(klass);
+	else
+	  record->second.push_back(klass);
+      }
+  }
+
+  /// Test if a given declaration-only class has been scheduled for
+  /// resolution to a defined class.
+  ///
+  /// @param klass the class to consider for the test.
+  ///
+  /// @return true iff @p klass is a declaration-only class and if
+  /// it's been scheduled for resolution to a defined class.
+  bool
+  is_decl_only_class_scheduled_for_resolution(class_decl_sptr& klass)
+  {
+    if (klass->get_is_declaration_only())
+      return (declaration_only_classes().find(klass->get_qualified_name())
+	      != declaration_only_classes().end());
+
+    return false;
+  }
+
+  /// Walk the declaration-only classes that have been found during
+  /// the building of the corpus and resolve them to their definitions.
+  void
+  resolve_declaration_only_classes()
+  {
+    vector<string> resolved_classes;
+
+    for (string_classes_map::iterator i =
+	   declaration_only_classes().begin();
+	 i != declaration_only_classes().end();
+	 ++i)
+      {
+	bool to_resolve = false;
+	for (classes_type::iterator j = i->second.begin();
+		 j != i->second.end();
+		 ++j)
+	  if ((*j)->get_is_declaration_only()
+	      && ((*j)->get_definition_of_declaration() == 0))
+	    to_resolve = true;
+
+	if (!to_resolve)
+	  {
+	    resolved_classes.push_back(i->first);
+	    continue;
+	  }
+
+	if (decl_base_sptr type_decl = lookup_type_in_corpus(i->first,
+							     *current_corpus()))
+	  {
+	    class_decl_sptr klass = is_class_type(type_decl);
+	    assert(klass);
+	    if (klass->get_is_declaration_only())
+	      klass = klass->get_definition_of_declaration();
+	    assert(!klass->get_is_declaration_only());
+	    for (classes_type::iterator j = i->second.begin();
+		 j != i->second.end();
+		 ++j)
+	      {
+		if ((*j)->get_is_declaration_only()
+		    && ((*j)->get_definition_of_declaration() == 0))
+		  (*j)->set_definition_of_declaration(klass);
+	      }
+	    resolved_classes.push_back(i->first);
+	  }
+      }
+
+    for (vector<string>::iterator i = resolved_classes.begin();
+	 i != resolved_classes.end();
+	 ++i)
+      declaration_only_classes().erase(*i);
   }
 
   /// Return a reference to the vector containing the offsets of the
@@ -2895,6 +3019,31 @@ public:
   const string&
   elf_architecture() const
   {return elf_architecture_;}
+
+  /// Test if the current elf file being read is an executable.
+  ///
+  /// @return true iff the current elf file being read is an
+  /// executable.
+  bool
+  current_elf_file_is_executable() const
+  {
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+    return elf_header->e_type == ET_EXEC;
+  }
+
+  /// Test if the current elf file being read is a dynamic shared
+  /// object.
+  ///
+  /// @return true iff the current elf file being read is a
+  /// dynamic shared object.
+  bool
+  current_elf_file_is_dso() const
+  {
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+    return elf_header->e_type == ET_DYN;
+  }
 
   /// Getter for the map of global variables symbol address -> global
   /// variable symbol index.
@@ -5757,20 +5906,6 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 
   result->set_is_constructed(true);
 
-  /// Now, look at the types that needs to be canonicalized after the
-  /// translation has been constructed (which is just now) and
-  /// canonicalize them.
-  ///
-  /// The types need to be constructed at the end of the translation
-  /// unit reading phase because some types are modified by some DIEs
-  /// even after the principal DIE describing the type has been read;
-  /// this happens for clones of virtual destructors (for instance) or
-  /// even for some static data members.  We need to that for types
-  /// are in the alternate debug info section and for types that in
-  /// the main debug info section.
-
-  ctxt.perform_late_type_canonicalizing();
-
   return result;
 }
 
@@ -6133,9 +6268,12 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   ctxt.associate_die_to_type(dwarf_dieoffset(die), is_in_alt_di, result);
 
   if (!has_child)
+    {
     // TODO: set the access specifier for the declaration-only class
     // here.
-    return result;
+      ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
+      return result;
+    }
 
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = result;
 
@@ -6191,6 +6329,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 					       ? offset
 					       : -1,
 					       is_virt));
+	      if (b->get_is_declaration_only())
+		assert(ctxt.is_decl_only_class_scheduled_for_resolution(b));
 	      result->add_base_specifier(base);
 	    }
 	  // Handle data members.
@@ -6292,6 +6432,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       }
   }
 
+  ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
   return result;
 }
 
@@ -6952,7 +7093,7 @@ build_function_decl(read_context&	ctxt,
 						     tu->get_address_size(),
 						     tu->get_address_size()));
 
-      fn_type = tu->get_canonical_function_type(fn_type);
+      tu->bind_function_type_life_time(fn_type);
 
       result.reset(is_method
 		   ? new class_decl::method_decl(fname, fn_type,
@@ -6998,6 +7139,8 @@ build_function_decl(read_context&	ctxt,
 static corpus_sptr
 read_debug_info_into_corpus(read_context& ctxt)
 {
+  ctxt.clear_per_corpus_data();
+
   if (!ctxt.current_corpus())
     {
       corpus_sptr corp (new corpus(ctxt.elf_path()));
@@ -7042,6 +7185,22 @@ read_debug_info_into_corpus(read_context& ctxt)
       assert(ir_node);
     }
 
+  ctxt.resolve_declaration_only_classes();
+
+  /// Now, look at the types that needs to be canonicalized after the
+  /// translation has been constructed (which is just now) and
+  /// canonicalize them.
+  ///
+  /// The types need to be constructed at the end of the translation
+  /// unit reading phase because some types are modified by some DIEs
+  /// even after the principal DIE describing the type has been read;
+  /// this happens for clones of virtual destructors (for instance) or
+  /// even for some static data members.  We need to that for types
+  /// are in the alternate debug info section and for types that in
+  /// the main debug info section.
+
+  ctxt.perform_late_type_canonicalizing();
+
   ctxt.current_corpus()->sort_functions();
   ctxt.current_corpus()->sort_variables();
 
@@ -7074,7 +7233,13 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
   type_base_sptr t = ctxt.lookup_type_from_die_offset(die_offset, in_alt_di);
   assert(t);
 
-  if (!type_has_non_canonicalized_subtype(t))
+  if (class_decl_sptr klass = is_class_type(t))
+    {
+      if (klass->get_is_declaration_only()
+	  && (klass->get_definition_of_declaration() == 0))
+	ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
+    }
+  else if (!type_has_non_canonicalized_subtype(t))
     canonicalize(t);
   else
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);

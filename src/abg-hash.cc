@@ -616,7 +616,13 @@ class_decl::hash::operator()(const class_decl& t) const
 	 t.get_base_specifiers().begin();
        b != t.get_base_specifiers().end();
        ++b)
-    v = hashing::combine_hashes(v, hash_base(**b));
+    {
+      class_decl_sptr cl = (*b)->get_base_class();
+      assert(cl
+	     && (!cl->get_is_declaration_only()
+		 || cl->get_definition_of_declaration()));
+      v = hashing::combine_hashes(v, hash_base(**b));
+    }
 
   // Hash member types.
 #if 0
