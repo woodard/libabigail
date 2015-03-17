@@ -1199,24 +1199,18 @@ decl_base::set_context_rel(context_rel_sptr c)
 size_t
 decl_base::get_hash() const
 {
-  size_t result = priv_->hash_;
+  size_t result = 0;
 
-  if (priv_->hash_ == 0 || priv_->hashing_started_)
+  if (const type_base* t = dynamic_cast<const type_base*>(this))
     {
-      const type_base* t = dynamic_cast<const type_base*>(this);
-      if (t)
-	{
-	  type_base::dynamic_hash hash;
-	  result = hash(t);
-
-	  if (!priv_->hashing_started_)
-	    set_hash(result);
-	}
-      else
-	// If we reach this point, it mean we are missing a virtual
-	// overload for decl_base::get_hash.  Add it!
-	abort();
+      type_base::dynamic_hash hash;
+      result = hash(t);
     }
+  else
+    // If we reach this point, it mean we are missing a virtual
+    // overload for decl_base::get_hash.  Add it!
+    abort();
+
   return result;
 }
 
