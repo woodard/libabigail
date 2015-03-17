@@ -54,10 +54,12 @@ struct options
   shared_ptr<char>	di_root_path;
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
+  bool			write_architecture;
 
   options()
     : check_alt_debug_info_path(false),
-      show_base_name_alt_debug_info_path(false)
+      show_base_name_alt_debug_info_path(false),
+      write_architecture(true)
   {}
 };
 
@@ -69,6 +71,7 @@ display_usage(const string& prog_name, ostream& out)
       << "  --help display this message\n"
       << "  --debug-info-dir <dir-path> look for debug info under 'dir-path'\n"
       << "  --out-file <file-path> write the output to 'file-path'\n"
+      << "  --no-architecture do not emit architecture info in the output\n"
       << "  --check-alternate-debug-info <elf-path> check alternate debug info "
 		"of <elf-path>\n"
       << "  --check-alternate-debug-info-base-name <elf-path> check alternate "
@@ -113,6 +116,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.out_file_path = argv[i + 1];
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--no-architecture"))
+	opts.write_architecture = false;
       else if (!strcmp(argv[i], "--check-alternate-debug-info")
 	       || !strcmp(argv[i], "--check-alternate-debug-info-base-name"))
 	{
@@ -232,7 +237,11 @@ main(int argc, char* argv[])
       return 1;
     }
   else
-    abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout);
+    {
+      if (!opts.write_architecture)
+	corp->set_architecture_name("");
+      abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout);
+    }
 
   return 0;
 }
