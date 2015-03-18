@@ -720,10 +720,10 @@ harmless_filter::visit(diff* d, bool pre)
 
       if (category)
 	{
-	  d->add_to_category(category);
+	  d->add_to_local_and_inherited_categories(category);
 	  // Also update the category of the canonical node.
 	  if (diff * canonical = d->get_canonical_diff())
-	    canonical->add_to_category(category);
+	    canonical->add_to_local_and_inherited_categories(category);
 	}
     }
 
@@ -755,7 +755,7 @@ harmless_filter::visit_end(diff* d)
       // canonical node.
       diff* canonical = d->get_canonical_diff();
       if (canonical)
-	d->add_to_category(canonical->get_category());
+	d->add_to_local_and_inherited_categories(canonical->get_local_category());
     }
 }
 
@@ -798,10 +798,10 @@ harmful_filter::visit(diff* d, bool pre)
 
       if (category)
 	{
-	  d->add_to_category(category);
+	  d->add_to_local_and_inherited_categories(category);
 	  // Update the category of the canonical diff node too.
 	  if (diff * canonical = d->get_canonical_diff())
-	    canonical->add_to_category(category);
+	    canonical->add_to_local_and_inherited_categories(category);
 	}
     }
 
@@ -833,7 +833,7 @@ harmful_filter::visit_end(diff* d)
       // cnanonical node.
       diff* canonical = d->get_canonical_diff();
       if (canonical)
-	d->add_to_category(canonical->get_category());
+	d->add_to_local_and_inherited_categories(canonical->get_local_category());
     }
 }
 

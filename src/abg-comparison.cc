@@ -276,8 +276,8 @@ get_leaf_type(qualified_type_def_sptr t);
 ///
 /// @param diff the diff node to test.
 ///
-/// @return a pointer to the actual type_diff_base* that @p diff extends, iff it is
-/// about differences between types.
+/// @return a pointer to the actual type_diff_base* that @p diff
+/// extends, iff it is about differences between types.
 static const type_diff_base*
 is_type_diff(const diff* diff)
 {return dynamic_cast<const type_diff_base*>(diff);}
@@ -3049,6 +3049,7 @@ struct diff::priv
   diff*		parent_;
   diff*		canonical_diff_;
   diff_context_sptr	ctxt_;
+  diff_category         local_category_;
   diff_category	category_;
   mutable bool		reported_once_;
   mutable bool		currently_reporting_;
@@ -3071,10 +3072,42 @@ public:
       parent_(),
       canonical_diff_(),
       ctxt_(ctxt),
+      local_category_(category),
       category_(category),
       reported_once_(reported_once),
       currently_reporting_(currently_reporting)
   {}
+
+  /// Check if a given categorization of a diff node should make it be
+  /// filtered out.
+  ///
+  /// @param category the categorization to take into account.
+  bool
+  is_filtered_out(diff_category category)
+  {
+    if (ctxt_->get_allowed_category() == EVERYTHING_CATEGORY)
+    return false;
+
+  /// We don't want to display nodes suppressed by a user-provided
+  /// suppression specification.
+  if (category & SUPPRESSED_CATEGORY)
+    return true;
+
+  // We don't want to display redundant diff nodes, when the user
+  // asked to avoid seeing redundant diff nodes.
+  if (!ctxt_->show_redundant_changes()
+      && (category & REDUNDANT_CATEGORY))
+    return true;
+
+  if (category == NO_CHANGE_CATEGORY)
+    return false;
+
+  // Ignore the REDUNDANT_CATEGORY bit when comparing allowed
+  // categories and the current set of categories.
+  return !((category & ~REDUNDANT_CATEGORY)
+	   & (ctxt_->get_allowed_category()
+	      & ~REDUNDANT_CATEGORY));
+  }
 };// end class diff::priv
 
 /// A functor to compare two instances of @ref diff_sptr.
@@ -3439,7 +3472,21 @@ diff::reported_once(bool f) const
   priv_->reported_once_ = f;
 }
 
+/// Getter for the local category of the current diff tree node.
+///
+/// The local category represents the set of categories of a diff
+/// node, not taking in account the categories inherited from its
+/// children nodes.
+///
+/// @return the local category of the current diff tree node.
+diff_category
+diff::get_local_category() const
+{return priv_->local_category_;}
+
 /// Getter for the category of the current diff tree node.
+///
+/// This category represents the union of the local category and the
+/// categories inherited from the children diff nodes.
 ///
 /// @return the category of the current diff tree node.
 diff_category
@@ -3447,13 +3494,15 @@ diff::get_category() const
 {return priv_->category_;}
 
 /// Adds the current diff tree node to an additional set of
-/// categories.
+/// categories.  Note that the categories include thoses inherited
+/// from the children nodes of this diff node.
 ///
 /// @param c a bit-map representing the set of categories to add the
 /// current diff tree node to.
 ///
 /// @return the resulting bit-map representing the categories this
-/// current diff tree node belongs to.
+/// current diff tree node belongs to, including those inherited from
+/// its children nodes.
 diff_category
 diff::add_to_category(diff_category c)
 {
@@ -3461,14 +3510,43 @@ diff::add_to_category(diff_category c)
   return priv_->category_;
 }
 
-/// Remove the current diff tree node from an a existing sef of
-/// categories.
+/// Adds the current diff tree node to the categories resulting from
+/// the local changes of the current diff node.
 ///
 /// @param c a bit-map representing the set of categories to add the
 /// current diff tree node to.
 ///
 /// @return the resulting bit-map representing the categories this
-/// current diff tree onde belongs to.
+/// current diff tree node belongs to.
+diff_category
+diff::add_to_local_category(diff_category c)
+{
+  priv_->local_category_ = priv_->local_category_ | c;
+  return priv_->local_category_;
+}
+
+/// Adds the current diff tree node to the categories resulting from
+/// the local and inherited changes of the current diff node.
+///
+/// @param c a bit-map representing the set of categories to add the
+/// current diff tree node to.
+void
+diff::add_to_local_and_inherited_categories(diff_category c)
+{
+  add_to_local_category(c);
+  add_to_category(c);
+}
+
+/// Remove the current diff tree node from an a existing sef of
+/// categories.  The categories include those inherited from the
+/// children nodes of the current diff node.
+///
+/// @param c a bit-map representing the set of categories to add the
+/// current diff tree node to.
+///
+/// @return the resulting bit-map representing the categories this
+/// current diff tree onde belongs to, including the categories
+/// inherited from the children nodes of the current diff node.
 diff_category
 diff::remove_from_category(diff_category c)
 {
@@ -3476,12 +3554,36 @@ diff::remove_from_category(diff_category c)
   return priv_->category_;
 }
 
-/// Set the category of the current @ref diff node.
+/// Remove the current diff tree node from the categories resulting
+/// from the local changes.
+///
+/// @param c a bit-map representing the set of categories to add the
+/// current diff tree node to.
+///
+/// @return the resulting bit-map representing the categories this
+/// current diff tree onde belongs to.
+diff_category
+diff::remove_from_local_category(diff_category c)
+{
+  priv_->local_category_ = priv_->local_category_ & ~c;
+  return priv_->local_category_;
+}
+
+/// Set the category of the current @ref diff node.  This category
+/// includes the categories inherited from the children nodes of the
+/// current diff node.
 ///
 /// @param c the new category for the current diff node.
 void
 diff::set_category(diff_category c)
 {priv_->category_ = c;}
+
+/// Set the local category of the current @ref diff node.
+///
+/// @param c the new category for the current diff node.
+void
+diff::set_local_category(diff_category c)
+{priv_->local_category_ = c;}
 
 /// Test if this diff tree node is to be filtered out for reporting
 /// purposes.
@@ -3492,30 +3594,20 @@ diff::set_category(diff_category c)
 /// @return true iff the current diff node should NOT be reported.
 bool
 diff::is_filtered_out() const
-{
-  if (context()->get_allowed_category() == EVERYTHING_CATEGORY)
-    return false;
+{return priv_->is_filtered_out(get_category());}
 
-  /// We don't want to display nodes suppressed by a user-provided
-  /// suppression specification.
-  if (get_category() & SUPPRESSED_CATEGORY)
-    return true;
-
-  // We don't want to display redundant diff nodes, when the user
-  // asked to avoid seeing redundant diff nodes.
-  if (!context()->show_redundant_changes()
-      && (get_category() & REDUNDANT_CATEGORY))
-    return true;
-
-  if (get_category() == NO_CHANGE_CATEGORY)
-    return false;
-
-  // Ignore the REDUNDANT_CATEGORY bit when comparing allowed
-  // categories and the current set of categories.
-  return !((get_category() & ~REDUNDANT_CATEGORY)
-	   & (context()->get_allowed_category()
-	      & ~REDUNDANT_CATEGORY));
-}
+/// Test if this diff tree node is to be filtered out for reporting
+/// purposes, but by considering only the categories that were *NOT*
+/// inherited from its children nodes.
+///
+/// The function tests if the local categories of the diff tree node
+/// are "forbidden" by the context or not.
+///
+/// @return true iff the current diff node should NOT be reported,
+/// with respect to its local categories.
+bool
+diff::is_filtered_out_wrt_non_inherited_categories() const
+{return priv_->is_filtered_out(get_local_category());}
 
 /// Test if the current diff node has been suppressed by a
 /// user-provided suppression specification.
@@ -3541,6 +3633,19 @@ bool
 diff::to_be_reported() const
 {
   if (has_changes() && !is_filtered_out())
+    return true;
+  return false;
+}
+
+/// Test if this diff tree node should be reported when considering
+/// the categories that were *NOT* inherited from its children nodes.
+///
+/// @return true iff the current node should be reported.
+bool
+diff::has_local_changes_to_be_reported() const
+{
+  if (has_local_changes()
+      && !is_filtered_out_wrt_non_inherited_categories())
     return true;
   return false;
 }
@@ -12144,7 +12249,7 @@ struct suppression_categorization_visitor : public diff_node_visitor
   visit_begin(diff* d)
   {
     if (d->is_suppressed())
-      d->add_to_category(SUPPRESSED_CATEGORY);
+      d->add_to_local_and_inherited_categories(SUPPRESSED_CATEGORY);
   }
 
   /// After visiting the children nodes of a given diff node,
@@ -12532,7 +12637,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	// to this node.  But if this node has local changes, then it
 	// doesn't inherit redundancy from its children nodes.
 	if (!(d->get_category() & REDUNDANT_CATEGORY)
-	    && !d->has_local_changes())
+	    && !d->has_local_changes_to_be_reported())
 	  {
 	    bool has_non_redundant_child = false;
 	    bool has_non_empty_child = false;

@@ -1048,22 +1048,43 @@ public:
   get_category() const;
 
   diff_category
+  get_local_category() const;
+
+  diff_category
   add_to_category(diff_category c);
+
+  diff_category
+  add_to_local_category(diff_category c);
+
+  void
+  add_to_local_and_inherited_categories(diff_category c);
 
   diff_category
   remove_from_category(diff_category c);
 
+  diff_category
+  remove_from_local_category(diff_category c);
+
   void
   set_category(diff_category c);
 
+  void
+  set_local_category(diff_category c);
+
   bool
   is_filtered_out() const;
+
+  bool
+  is_filtered_out_wrt_non_inherited_categories() const;
 
   bool
   is_suppressed() const;
 
   bool
   to_be_reported() const;
+
+  bool
+  has_local_changes_to_be_reported() const;
 
   virtual const string&
   get_pretty_representation() const;
