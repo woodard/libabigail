@@ -3864,15 +3864,8 @@ type_base::get_canonical_type_for(type_base_sptr t)
   if (t->get_canonical_type())
     return t->get_canonical_type();
 
-  size_t h = 0;
-  decl_base_sptr d = get_type_declaration(t);
-  if (d)
-    h = d->get_hash();
-  else
-    {
-      type_base::dynamic_hash hash;
-      h = hash(t.get());
-    }
+  type_base::dynamic_hash hash;
+  size_t h = hash(t.get());
 
   canonical_types_map_type& m = get_canonical_types_map();
   canonical_types_map_type::iterator i = m.find(h);
