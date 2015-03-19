@@ -33,8 +33,11 @@ via <a href="http://en.wikipedia.org/wiki/Wikipedia:IRC">IRC</a> at
 <em>irc://irc.oftc.net\#libabigail</em>.
 
 To send us patches or just drop by to say Hi, please send an email to
-our mailing list <em>libabigail@sourceware.org</em>.  You first need to
-register to the mailing list by feeling the form below.
+our mailing list <em>libabigail@sourceware.org</em>.  The archives of
+the mailing list can be read <a
+href="https://sourceware.org/ml/libabigail">online</a>.  To send us an
+email, you first need to register to the mailing list by feeling the
+form below.
 
 \htmlonly
 
@@ -75,14 +78,14 @@ manner from our <a
 href="http://sourceware.org/git/gitweb.cgi?p=libabigail.git">Git
 repository</a> by doing:
 
-\code{.sh}
+\code
 	git clone git://sourceware.org/git/libabigail.git
 \endcode
 
 If you have write access on sourceware.org, you can check the source
 out in read-write by doing:
 
-\code{.sh}
+\code
 	git clone ssh://sourceware.org/git/libabigail.git
 \endcode
 
@@ -91,15 +94,16 @@ out in read-write by doing:
 To compile libabigail, you first need to install its dependencies.  At
 the moment the dependencies are the following Free Software packages:
 
-    \li <a href="http://www.xmlsoft.org">libxml2</a>
     \li <a href="http://www.gnu.org/software/autoconf/">autoconf</a>
+    \li <a href="http://www.freedesktop.org/wiki/Software/pkg-config/">pkg-config</a>
+    \li <a href="http://www.xmlsoft.org">libxml2</a>
     \li <a href="https://fedorahosted.org/elfutils/">elfutils</a>
 
 Then go to your local libabigail.git directory where the source code
 you've checked out lies and create a 'build' directory that will
 receive the binaries resulting from the compilation:
 
-\code{.sh}
+\code
     cd libabigail
     mkdir build
 \endcode
@@ -107,26 +111,26 @@ receive the binaries resulting from the compilation:
 Generate the relevant build-system-related information needed to
 configure the package for compilation, by typing:
 
-\code{.sh}
+\code
     autoreconf -i
 \endcode
 
 Then configure the package:
 
-\code{.sh}
+\code
     cd build
     ../configure --prefix=<absolute-path-of-where-you-want-the-binaries-to-be-installed>
 \endcode
 
 Then build the package
 
-\code{.sh}
+\code
     make
 \endcode
 
 And then install its resulting binaries and documentation:
 
-\code{.sh}
+\code
     make install
 \endcode
 
