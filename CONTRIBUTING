@@ -12,7 +12,23 @@ Please supply patches using git format-patch or using git send-email.
 
 Bugs are to be filled in bugzilla at http://sourceware.org/bugzilla.
 
+The source code of the website of libabigail is stored in CVS (sigh,
+yeah, that is so old school).  You can check out that web source code
+by doing:
+
+    CVS_RSH=ssh cvs -z9 -d :ext:user@sourceware.org:/cvs/libabigail/ co htdocs
+
+where 'user' is your username on the sourceware system.
+Alternatively, you can check out the the web source code anonymously,
+if you don't have any user account on the sourceware system by doing:
+
+    export CVSROOT=:pserver:anoncvs@cygwin.com:/cvs/libabigail
+    cvs login
+    (the CVS anonymous password to use is "anoncvs")
+    cvs checkout htdocs
+
 Sign your work
+==============
 
 To facilitate tracking of who did what, we've adopted a "sign-off"
 procedure for patches based on the procedure used by the Linux kernel
