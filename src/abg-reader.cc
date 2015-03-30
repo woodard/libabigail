@@ -105,7 +105,9 @@ private:
   corpus::exported_decls_builder* m_exported_decls_builder_;
 
 public:
-  read_context(xml::reader_sptr reader) : m_reader(reader)
+  read_context(xml::reader_sptr reader)
+    : m_reader(reader),
+      m_exported_decls_builder_()
   {}
 
   xml::reader_sptr
