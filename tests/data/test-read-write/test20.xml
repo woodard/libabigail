@@ -62,7 +62,7 @@
   </class-decl>
   <class-decl name='S' visibility='default' is-declaration-only='yes' id='type-id-11'/>
   <pointer-type-def type-id='type-id-11' size-in-bits='64' alignment-in-bits='64' id='type-id-12'/>
-  <class-decl name='S' size-in-bits='192' alignment-in-bits='64' visibility='default' filepath='../../prtests/test9.cc' line='58' column='7' id='type-id-13'>
+  <class-decl name='S' size-in-bits='192' alignment-in-bits='64' visibility='default' filepath='../../prtests/test9.cc' line='58' column='7' def-of-decl-id='type-id-11' id='type-id-13'>
     <base-class access='public' layout-offset-in-bits='64' type-id='type-id-3'/>
     <base-class access='public' layout-offset-in-bits='96' type-id='type-id-6'/>
     <base-class access='private' layout-offset-in-bits='160' is-virtual='yes' type-id='type-id-10'/>

@@ -590,7 +590,8 @@ class_decl::member_class_template::hash::operator()
 size_t
 class_decl::hash::operator()(const class_decl& t) const
 {
-  if (t.hashing_started() || t.get_is_declaration_only())
+  if (t.hashing_started()
+      || (t.get_is_declaration_only() && !t.get_definition_of_declaration()))
     return 0;
 
   std::tr1::hash<string> hash_string;
