@@ -467,6 +467,9 @@ fqn_to_components(const std::string&,
 const shared_ptr<decl_base>
 lookup_type_in_corpus(const string&, const corpus&);
 
+const shared_ptr<class_decl>
+lookup_class_type_in_corpus(const string&, const corpus&);
+
 const shared_ptr<decl_base>
 lookup_type_in_translation_unit(const string&,
 				const translation_unit&);
@@ -474,6 +477,14 @@ lookup_type_in_translation_unit(const string&,
 const shared_ptr<decl_base>
 lookup_type_in_translation_unit(const std::list<string>&,
 				const translation_unit&);
+
+const shared_ptr<class_decl>
+lookup_class_type_in_translation_unit(const std::list<string>& fqn,
+				      const translation_unit& tu);
+
+const shared_ptr<class_decl>
+lookup_class_type_in_translation_unit(const string& fqn,
+				      const translation_unit& tu);
 
 const shared_ptr<decl_base>
 lookup_type_in_scope(const string&,

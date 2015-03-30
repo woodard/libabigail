@@ -2268,8 +2268,9 @@ public:
 	    continue;
 	  }
 
-	if (decl_base_sptr type_decl = lookup_type_in_corpus(i->first,
-							     *current_corpus()))
+	if (decl_base_sptr type_decl =
+	    lookup_class_type_in_corpus(i->first,
+					*current_corpus()))
 	  {
 	    class_decl_sptr klass = is_class_type(type_decl);
 	    assert(klass);

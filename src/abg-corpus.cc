@@ -1855,5 +1855,28 @@ lookup_type_in_corpus(const string& qn, const corpus& abi_corpus)
   return result;
 }
 
+/// Lookup a class type definition in all the translation units of a
+/// given ABI corpus.
+///
+/// @param @param qn the fully qualified name of the class type to lookup.
+///
+/// @param abi_corpus the ABI corpus which to look the type up in.
+///
+/// @return the type definition if any was found, or a NULL pointer.
+const class_decl_sptr
+lookup_class_type_in_corpus(const string& qn, const corpus& abi_corpus)
+{
+  class_decl_sptr result;
+
+  for (translation_units::const_iterator tu =
+	 abi_corpus.get_translation_units().begin();
+       tu != abi_corpus.get_translation_units().end();
+       ++tu)
+    if ((result = lookup_class_type_in_translation_unit(qn, **tu)))
+      break;
+
+  return result;
+}
+
 }// end namespace ir
 }// end namespace abigail

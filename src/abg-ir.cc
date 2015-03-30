@@ -3515,6 +3515,24 @@ lookup_type_in_translation_unit(const string& fqn,
   return lookup_type_in_translation_unit(comps, tu);
 }
 
+/// Lookup a class type from a translation unit.
+///
+/// @param fqn the fully qualified name of the class type node to look
+/// up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the class type IR node found, NULL
+/// otherwise.
+const class_decl_sptr
+lookup_class_type_in_translation_unit(const string& fqn,
+				      const translation_unit& tu)
+{
+  list<string> comps;
+  fqn_to_components(fqn, comps);
+  return lookup_class_type_in_translation_unit(comps, tu);
+}
+
 /// Lookup a type in a scope.
 ///
 /// @param fqn the fully qualified name of the type to lookup.
@@ -3570,6 +3588,16 @@ const string&
 get_node_name(decl_base_sptr node)
 {return node->get_name();}
 
+/// Gets the name of a class_decl node.
+///
+/// @param node the decl_base node to get the name from.
+///
+/// @return the name of the node.
+template<>
+const string&
+get_node_name(class_decl_sptr node)
+{return node->get_name();}
+
 /// Gets the name of a type_base node.
 ///
 /// @param node the type_base node to get the name from.
@@ -3610,6 +3638,17 @@ template<>
 decl_base_sptr
 convert_node_to_decl(decl_base_sptr node)
 {return node;}
+
+/// Get the declaration of a given class_decl node
+///
+/// @param node the class_decl node to consider.
+///
+/// @return the declaration of the node.
+template<>
+decl_base_sptr
+convert_node_to_decl(class_decl_sptr node)
+{return node;}
+
 
 /// Get the declaration of a type_base node.
 ///
@@ -3700,6 +3739,8 @@ lookup_node_in_scope(const list<string>& fqn,
 /// type to lookup.
 ///
 /// @param skope the scope to look into.
+///
+/// @return the declaration of the type found.
 const decl_base_sptr
 lookup_type_in_scope(const list<string>& comps,
 		     const scope_decl_sptr skope)
@@ -3745,6 +3786,20 @@ const decl_base_sptr
 lookup_type_in_translation_unit(const list<string>& fqn,
 				const translation_unit& tu)
 {return lookup_node_in_translation_unit<type_base>(fqn, tu);}
+
+/// Lookup a class type from a translation unit.
+///
+/// @param fqn the components of the fully qualified name of the class
+/// type node to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the class type IR node found, NULL
+/// otherwise.
+const class_decl_sptr
+lookup_class_type_in_translation_unit(const list<string>& fqn,
+				      const translation_unit& tu)
+{return is_class_type(lookup_node_in_translation_unit<class_decl>(fqn, tu));}
 
 /// Demangle a C++ mangled name and return the resulting string
 ///
