@@ -37,6 +37,7 @@
 #include "abg-reader.h"
 #include "test-utils.h"
 #include "abg-comparison.h"
+#include "abg-corpus.h"
 
 using std::string;
 using std::ofstream;
@@ -88,6 +89,12 @@ static InOutSpec specs[] =
     "data/test-abidiff/test-var0-report.txt",
     "output/test-abidiff/test-var0-report.txt"
   },
+  {
+    "data/test-abidiff/test-corpus0-v0.so.abi",
+    "data/test-abidiff/test-corpus0-v1.so.abi",
+    "data/test-abidiff/test-corpus0-report0.txt",
+    "output/test-abidiff/test-corpus0-report0.txt"
+  },
   // This should be the last entry.
   {0, 0, 0, 0}
 };
@@ -98,8 +105,15 @@ static InOutSpec specs[] =
 using std::string;
 using std::cerr;
 using std::ofstream;
+using abigail::tools_utils::file_type;
+using abigail::tools_utils::check_file;
+using abigail::tools_utils::guess_file_type;
+using abigail::corpus_sptr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
+using abigail::xml_reader::read_translation_unit_from_file;
+using abigail::xml_reader::read_corpus_from_native_xml_file;
+using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::compute_diff;
 
@@ -134,25 +148,42 @@ main(int, char*[])
 	  continue;
 	}
 
-      translation_unit_sptr tu1 =
-	abigail::xml_reader::read_translation_unit_from_file(first_in_path);
-      if (!tu1)
+      translation_unit_sptr tu1, tu2;
+      corpus_sptr corpus1, corpus2;
+      file_type t = guess_file_type(first_in_path);
+      if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
+	tu1 = read_translation_unit_from_file(first_in_path);
+      else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
+	corpus1 = read_corpus_from_native_xml_file(first_in_path);
+      else
+	abort();
+      if (!tu1 && !corpus1)
 	{
-	  cerr << "failed to read " << tu1->get_path() << "\n";
+	  cerr << "failed to read " << first_in_path << "\n";
 	  is_ok = false;
 	  continue;
 	}
 
-      translation_unit_sptr tu2 =
-	abigail::xml_reader::read_translation_unit_from_file(second_in_path);
-      if (!tu2)
+      t = guess_file_type(second_in_path);
+      if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
+	tu2 = read_translation_unit_from_file(second_in_path);
+      else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
+	corpus2 = read_corpus_from_native_xml_file(second_in_path);
+      else
+	abort();
+      if (!tu2 && !corpus2)
 	{
-	  cerr << "failed to read " << tu1->get_path() << "\n";
+	  cerr << "failed to read " << second_in_path << "\n";
 	  is_ok = false;
 	  continue;
 	}
 
-      translation_unit_diff_sptr d = compute_diff(tu1, tu2);
+      translation_unit_diff_sptr d1;
+      corpus_diff_sptr d2;
+      if (tu1)
+	d1= compute_diff(tu1, tu2);
+      else
+	d2 = compute_diff(corpus1, corpus2);
       ofstream of(out_path.c_str(), std::ios_base::trunc);
       if (!of.is_open())
 	{
@@ -161,7 +192,10 @@ main(int, char*[])
 	  continue;
 	}
 
-      d->report(of);
+      if (d1)
+	d1->report(of);
+      else
+	d2->report(of);
       of.close();
 
       string cmd = "diff -u " + ref_diff_path + " " + out_path;

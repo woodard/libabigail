@@ -102,6 +102,7 @@ private:
   xml::reader_sptr		m_reader;
   deque<shared_ptr<decl_base> > m_decls_stack;
   corpus_sptr			m_corpus;
+  corpus::exported_decls_builder* m_exported_decls_builder_;
 
 public:
   read_context(xml::reader_sptr reader) : m_reader(reader)
@@ -320,6 +321,26 @@ public:
       return global->get_translation_unit();
 
     return 0;
+  }
+
+  /// Test if a given type is from the current translation unit.
+  ///
+  /// @param type the type to consider.
+  ///
+  /// @return true iff the type is from the current translation unit.
+  bool
+  type_is_from_translation_unit(type_base_sptr type)
+  {
+    decl_base_sptr d = get_type_declaration(type);
+    if (d)
+      return (ir::get_translation_unit(d) == get_translation_unit());
+    else
+      // TODO: This is likely a function type as these don't have
+      // declarations.  For now we don't support lookup function type
+      // from translation units.  It'll be supported in a subsequent
+      // patch.  At that time we should be able to update this code
+      // here.
+      return false;
   }
 
   void
@@ -581,12 +602,59 @@ public:
   set_corpus(corpus_sptr c)
   {m_corpus = c;}
 
+  /// Getter for the object that determines if a given declaration
+  /// ought to be put in the set of exported decls of the current
+  /// corpus.
+  ///
+  /// @return the exported decls builder.
+  corpus::exported_decls_builder*
+  get_exported_decls_builder()
+  {return m_exported_decls_builder_;}
+
+  /// Setter for the object that determines if a given declaration
+  /// ought to be put in the set of exported decls of the current
+  /// corpus.
+  ///
+  /// @param d the new exported decls builder.
+  ///
+  /// @return the exported decls builder.
+  void
+  set_exported_decls_builder(corpus::exported_decls_builder* d)
+  {m_exported_decls_builder_ = d;}
+
+  /// Add a given function to the set of exported functions of the
+  /// current corpus, if the function satisfies the different
+  /// constraints requirements.
+  ///
+  /// @param fn the function to consider.
+  void
+  maybe_add_fn_to_exported_decls(function_decl* fn)
+  {
+    if (fn)
+      if (corpus::exported_decls_builder* b = get_exported_decls_builder())
+	b->maybe_add_fn_to_exported_fns(fn);
+  }
+
+  /// Add a given variable to the set of exported functions of the
+  /// current corpus, if the function satisfies the different
+  /// constraints requirements.
+  ///
+  /// @param var the variable to consider.
+  void
+  maybe_add_var_to_exported_decls(var_decl* var)
+  {
+    if (var)
+      if (corpus::exported_decls_builder* b = get_exported_decls_builder())
+	b->maybe_add_var_to_exported_vars(var);
+  }
+
   /// Clear all the data that must absolutely be cleared at the end of
   /// the parsing of a translation unit.
   void
   clear_per_translation_unit_data()
   {
     clear_xml_node_decl_map();
+    clear_id_xml_node_map();
     clear_decls_stack();
   }
 
@@ -595,7 +663,6 @@ public:
   void
   clear_per_corpus_data()
   {
-    clear_id_xml_node_map();
     clear_type_map();
     clear_types_to_canonicalize();
   }
@@ -652,6 +719,19 @@ public:
 	 i != m_types_to_canonicalize.end();
 	 ++i)
       canonicalize(*i);
+  }
+
+  /// Test if a type ID is new in the current translation unit.
+  ///
+  /// @param id the translation unit ID to test for.
+  ///
+  /// @return true iff the type ID is new in the current translation
+  /// unit.
+  bool
+  type_id_new_in_translation_unit(const string& id)
+  {
+    type_base_sptr t = get_type_decl(id);
+    return !t || !type_is_from_translation_unit(t);
   }
 
 };// end class read_context
@@ -889,23 +969,28 @@ advance_cursor(read_context& ctxt)
 /// Walk an entire XML sub-tree to build a map where the key is the
 /// the value of the 'id' attribute (for type definitions) and the key
 /// is the xml node containing the 'id' attribute.
+///
+/// @param ctxt the context of the reader.
+///
+/// @param node the XML sub-tree node to walk.  It must be an element
+/// node.
 static void
 walk_xml_node_to_map_type_ids(read_context& ctxt,
 			      xmlNodePtr node)
 {
-  for (xmlNodePtr n = node; n; n = n->next)
+  xmlNodePtr n = node;
+
+  if (!n || n->type != XML_ELEMENT_NODE)
+    return;
+
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(n, "id"))
     {
-      if (n->type != XML_ELEMENT_NODE)
-	continue;
-
-      if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(n, "id"))
-	{
-	  string id = CHAR_STR(s);
-	  ctxt.map_id_and_node(id, n);
-	}
-
-      walk_xml_node_to_map_type_ids(ctxt, n->children);
+      string id = CHAR_STR(s);
+      ctxt.map_id_and_node(id, n);
     }
+
+  for (n = n->children; n; n = n->next)
+    walk_xml_node_to_map_type_ids(ctxt, n);
 }
 
 /// Parse the input XML document containing a translation_unit,
@@ -939,8 +1024,6 @@ read_translation_unit_from_input(read_context&	ctxt,
   if (!node)
     return false;
 
-  walk_xml_node_to_map_type_ids(ctxt, node);
-
   xml::xml_char_sptr addrsize_str =
     XML_NODE_GET_ATTRIBUTE(node, "address-size");
   if (addrsize_str)
@@ -958,6 +1041,8 @@ read_translation_unit_from_input(read_context&	ctxt,
   ctxt.push_decl(tu.get_global_scope());
   ctxt.map_xml_node_to_decl(node, tu.get_global_scope());
 
+  walk_xml_node_to_map_type_ids(ctxt, node);
+
   for (xmlNodePtr n = node->children; n; n = n->next)
     {
       if (n->type != XML_ELEMENT_NODE)
@@ -966,11 +1051,11 @@ read_translation_unit_from_input(read_context&	ctxt,
 				 /*add_decl_to_scope=*/true));
     }
 
-   xmlTextReaderNext(reader.get());
+  xmlTextReaderNext(reader.get());
 
-   ctxt.clear_per_translation_unit_data();
+  ctxt.clear_per_translation_unit_data();
 
-   return true;
+  return true;
 }
 
 /// Parse the input XML document containing a function symbols
@@ -992,9 +1077,9 @@ read_translation_unit_from_input(read_context&	ctxt,
 ///
 /// @return true upon successful parsing, false otherwise.
 static bool
-read_symbol_db_from_input(read_context&		ctxt,
-			  bool				function_symbols,
-			  string_elf_symbols_map_sptr&	symdb)
+read_symbol_db_from_input(read_context&		 ctxt,
+			  bool			 function_symbols,
+			  string_elf_symbols_map_sptr& symdb)
 {
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
@@ -1142,6 +1227,7 @@ read_corpus_from_input(read_context& ctxt)
   ctxt.clear_per_corpus_data();
 
   corpus& corp = *ctxt.get_corpus();
+  ctxt.set_exported_decls_builder(corp.get_exported_decls_builder().get());
 
   xml::xml_char_sptr path_str = XML_READER_GET_ATTRIBUTE(reader, "path");
   if (path_str)
@@ -2087,6 +2173,8 @@ build_function_decl(read_context&	ctxt,
   fn_decl->set_type(fn_type);
   ctxt.maybe_canonicalize_type(fn_type);
 
+  ctxt.maybe_add_fn_to_exported_decls(fn_decl.get());
+
   return fn_decl;
 }
 
@@ -2146,6 +2234,8 @@ build_var_decl(read_context&	ctxt,
   if (decl->get_symbol() && decl->get_symbol()->is_public())
     decl->set_is_in_public_symbol_table(true);
 
+  ctxt.maybe_add_var_to_exported_decls(decl.get());
+
   return decl;
 }
 
@@ -2184,7 +2274,7 @@ build_type_decl(read_context&		ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
 
   size_t size_in_bits= 0;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
@@ -2298,7 +2388,7 @@ build_qualified_type_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  assert(!id.empty());
+  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
 
   qualified_type_def_sptr decl;
 
@@ -2379,7 +2469,7 @@ build_pointer_type_def(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       pointer_type_def_sptr ty = is_pointer_type(d);
@@ -2467,7 +2557,7 @@ build_reference_type_def(read_context&		ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
@@ -2611,7 +2701,7 @@ build_array_type_def(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
@@ -2705,7 +2795,7 @@ build_enum_type_decl(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
 
-  assert(!id.empty() && !ctxt.get_type_decl(id));
+  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
 
   string base_type_id;
   enum_type_decl::enumerators enums;
@@ -2784,7 +2874,7 @@ build_typedef_decl(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty());
+  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
@@ -3453,7 +3543,7 @@ build_template_tparameter(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
   // Bail out if a type with the same ID already exists.
-  assert(!id.empty() && !ctxt.get_type_decl(id));
+  assert(!id.empty() && !ctxt.type_id_new_in_translation_unit(id));
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
