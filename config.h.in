@@ -3,6 +3,15 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* Defined to 1 if elf.h has EM_AARCH64 macro defined */
+#undef HAVE_EM_AARCH64_MACRO
+
+/* Defined to 1 if elf.h has EM_TILEGX macro defined */
+#undef HAVE_EM_TILEGX_MACRO
+
+/* Defined to 1 if elf.h has EM_TILEPR0 macro defined */
+#undef HAVE_EM_TILEPRO_MACRO
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 

@@ -189,6 +189,42 @@ if test x$ABIGAIL_DEVEL != x; then
    CXXFLAGS="-g -Wall -Wextra -Werror"
 fi
 
+HAS_EM_AARCH64=no
+AC_CHECK_DECL([EM_AARCH64],
+              [HAS_EM_AARCH64=yes],
+              [HAS_EM_AARCH64=no],
+              [[#include <elf.h>]])
+
+if test x$HAS_EM_AARCH64 = xyes; then
+  AC_DEFINE([HAVE_EM_AARCH64_MACRO],
+                 1,
+            [Defined to 1 if elf.h has EM_AARCH64 macro defined])
+fi
+
+HAS_EM_TILEPRO=no
+AC_CHECK_DECL([EM_TILEPRO],
+              [HAS_EM_TILEPRO=yes],
+              [HAS_EM_TILEPRO=no],
+              [[#include <elf.h>]])
+
+if test x$HAS_EM_TILEPRO = xyes; then
+  AC_DEFINE([HAVE_EM_TILEPRO_MACRO],
+                 1,
+            [Defined to 1 if elf.h has EM_TILEPR0 macro defined])
+fi
+
+HAS_EM_TILEGX=no
+AC_CHECK_DECL([EM_TILEGX],
+              [HAS_EM_TILEGX=yes],
+              [HAS_EM_TILEGX=no],
+              [[#include <elf.h>]])
+
+if test x$HAS_EM_TILEGX = xyes; then
+  AC_DEFINE([HAVE_EM_TILEGX_MACRO],
+                 1,
+            [Defined to 1 if elf.h has EM_TILEGX macro defined])
+fi
+
 AC_CONFIG_FILES([Makefile
 libabigail.pc
   include/Makefile

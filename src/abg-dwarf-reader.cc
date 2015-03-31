@@ -457,15 +457,25 @@ e_machine_to_string(GElf_Half e_machine)
     case EM_XTENSA:
       result = "elf-tensilica-xtensa";
       break;
+
+#ifdef HAVE_EM_AARCH64_MACRO
     case EM_AARCH64:
       result = "elf-arm-aarch64";
       break;
+#endif
+
+#ifdef HAVE_EM_TILEPRO_MACRO
     case EM_TILEPRO:
       result = "elf-tilera-tilepro";
       break;
+#endif
+
+#ifdef HAVE_EM_TILEGX_MACRO
     case EM_TILEGX:
       result = "elf-tilera-tilegx";
       break;
+#endif
+
     case EM_NUM:
       result = "elf-last-arch-number";
       break;
