@@ -77,7 +77,8 @@ typedef shared_ptr<read_context> read_context_sptr;
 
 read_context_sptr
 create_read_context(const std::string&	elf_path,
-		    char**		debug_info_root_path);
+		    char**		debug_info_root_path,
+		    bool		read_all_types = false);
 
 status
 read_corpus_from_elf(read_context&	ctxt,
@@ -85,6 +86,7 @@ read_corpus_from_elf(read_context&	ctxt,
 status
 read_corpus_from_elf(const std::string& elf_path,
 		     char**		debug_info_root_path,
+		     bool		load_all_types,
 		     corpus_sptr&	resulting_corp);
 
 bool

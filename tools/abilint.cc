@@ -212,6 +212,7 @@ main(int argc, char* argv[])
 	  di_root_path = opts.di_root_path.get();
 	  s= read_corpus_from_elf(opts.file_path,
 				  &di_root_path,
+				  /*load_all_types=*/false,
 				  corp);
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:

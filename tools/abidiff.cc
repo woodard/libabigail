@@ -523,8 +523,11 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  di_dir1 = opts.di_root_path1.get();
-	  c1_status = abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
-								  &di_dir1, c1);
+	  c1_status =
+	    abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
+							&di_dir1,
+							/*load_all_types=*/false,
+							c1);
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  c1 =
@@ -549,8 +552,11 @@ main(int argc, char* argv[])
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  di_dir2 = opts.di_root_path2.get();
-	  c2_status = abigail::dwarf_reader::read_corpus_from_elf(opts.file2,
-								  &di_dir2, c2);
+	  c2_status =
+	    abigail::dwarf_reader::read_corpus_from_elf(opts.file2,
+							&di_dir2,
+							/*load_all_types=*/false,
+							c2);
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  c2 =

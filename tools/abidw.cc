@@ -55,11 +55,13 @@ struct options
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
   bool			write_architecture;
+  bool			load_all_types;
 
   options()
-    : check_alt_debug_info_path(false),
-      show_base_name_alt_debug_info_path(false),
-      write_architecture(true)
+    : check_alt_debug_info_path(),
+      show_base_name_alt_debug_info_path(),
+      write_architecture(true),
+      load_all_types()
   {}
 };
 
@@ -76,6 +78,8 @@ display_usage(const string& prog_name, ostream& out)
 		"of <elf-path>\n"
       << "  --check-alternate-debug-info-base-name <elf-path> check alternate "
     "debug info of <elf-path>, and show its base name\n"
+      << "  --load-all-types read all types including those not reachable from"
+         "exported declarations\n"
     ;
 }
 
@@ -131,6 +135,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.in_file_path = argv[i + 1];
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--load-all-types"))
+	opts.load_all_types = true;
       else if (!strcmp(argv[i], "--help"))
 	return false;
       else
@@ -167,15 +173,16 @@ main(int argc, char* argv[])
   using abigail::corpus;
   using abigail::corpus_sptr;
   using abigail::translation_units;
-  using abigail::dwarf_reader::read_context_sptr;
   using abigail::dwarf_reader::read_context;
+  using abigail::dwarf_reader::read_context_sptr;
   using abigail::dwarf_reader::read_corpus_from_elf;
   using abigail::dwarf_reader::create_read_context;
   using namespace abigail;
 
   char* p = opts.di_root_path.get();
   corpus_sptr corp;
-  read_context_sptr c = create_read_context(opts.in_file_path, &p);
+  read_context_sptr c = create_read_context(opts.in_file_path, &p,
+					    opts.load_all_types);
   read_context& ctxt = *c;
 
   if (opts.check_alt_debug_info_path)

@@ -82,6 +82,7 @@ class location_manager;
 class translation_unit;
 class class_decl;
 class class_tdecl;
+class type_or_decl_base;
 class decl_base;
 class enum_type_decl;
 class function_decl;
@@ -173,6 +174,18 @@ is_template_parameter(const shared_ptr<decl_base>);
 shared_ptr<function_decl>
 is_function_decl(shared_ptr<decl_base>);
 
+shared_ptr<decl_base>
+is_decl(const shared_ptr<type_or_decl_base>&);
+
+bool
+is_type(const type_or_decl_base&);
+
+type_base*
+is_type(const type_or_decl_base*);
+
+shared_ptr<type_base>
+is_type(const shared_ptr<type_or_decl_base>& tod);
+
 bool
 is_type(const decl_base&);
 
@@ -232,6 +245,12 @@ is_qualified_type(const shared_ptr<type_base>);
 
 shared_ptr<function_type>
 is_function_type(const shared_ptr<type_base>);
+
+function_type*
+is_function_type(type_base*);
+
+const function_type*
+is_function_type(const type_base*);
 
 shared_ptr<method_type>
 is_method_type(const shared_ptr<type_base>);
@@ -417,7 +436,26 @@ shared_ptr<type_base>
 strip_typedef(const shared_ptr<type_base>);
 
 string
-get_type_name(const shared_ptr<type_base>);
+get_name(const shared_ptr<type_or_decl_base>&,
+	 bool qualified = true);
+
+string
+get_type_name(const shared_ptr<type_base>, bool qualified = true);
+
+string
+get_type_name(const type_base*, bool qualified = true);
+
+string
+get_type_name(const type_base&, bool qualified = true);
+
+string
+get_function_type_name(const shared_ptr<function_type>&);
+
+string
+get_function_type_name(const function_type*);
+
+string
+get_function_type_name(const function_type&);
 
 string
 get_pretty_representation(const decl_base*);
@@ -426,10 +464,22 @@ string
 get_pretty_representation(const type_base*);
 
 string
+get_pretty_representation(const shared_ptr<type_or_decl_base>&);
+
+string
 get_pretty_representation(const shared_ptr<decl_base>&);
 
 string
 get_pretty_representation(const shared_ptr<type_base>&);
+
+string
+get_pretty_representation(const function_type&);
+
+string
+get_pretty_representation(const function_type*);
+
+string
+get_pretty_representation(const shared_ptr<function_type>&);
 
 const decl_base*
 get_type_declaration(const type_base*);
@@ -470,6 +520,9 @@ lookup_type_in_corpus(const string&, const corpus&);
 const shared_ptr<class_decl>
 lookup_class_type_in_corpus(const string&, const corpus&);
 
+const shared_ptr<function_type>
+lookup_function_type_in_corpus(const function_type&, const corpus&);
+
 const shared_ptr<decl_base>
 lookup_type_in_translation_unit(const string&,
 				const translation_unit&);
@@ -485,6 +538,29 @@ lookup_class_type_in_translation_unit(const std::list<string>& fqn,
 const shared_ptr<class_decl>
 lookup_class_type_in_translation_unit(const string& fqn,
 				      const translation_unit& tu);
+
+const shared_ptr<type_base>
+lookup_type_in_translation_unit(const shared_ptr<type_base>,
+				const translation_unit&);
+
+shared_ptr<function_type>
+lookup_function_type_in_translation_unit(const function_type&,
+					 const translation_unit&);
+
+shared_ptr<function_type>
+synthesize_function_type_from_translation_unit(const function_type&,
+					       const translation_unit&);
+
+shared_ptr<function_type>
+lookup_function_type_in_translation_unit(const shared_ptr<function_type>&,
+					 const translation_unit&);
+
+shared_ptr<function_type>
+lookup_function_type_in_corpus(const shared_ptr<function_type>&,
+			       corpus&);
+
+shared_ptr<type_base>
+lookup_type_in_corpus(const shared_ptr<type_base>&, corpus&);
 
 const shared_ptr<decl_base>
 lookup_type_in_scope(const string&,
@@ -516,6 +592,12 @@ type_has_non_canonicalized_subtype(shared_ptr<type_base> t);
 
 void
 keep_type_alive(shared_ptr<type_base> t);
+
+size_t
+hash_type_or_decl(const type_or_decl_base *);
+
+size_t
+hash_type_or_decl(const shared_ptr<type_or_decl_base>&);
 } // end namespace ir
 
 using namespace abigail::ir;

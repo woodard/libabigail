@@ -113,6 +113,7 @@ main()
       in_elf_path = abigail::tests::get_src_dir() + "/tests/" + s->in_elf_path;
       abigail::dwarf_reader::read_corpus_from_elf(in_elf_path,
 						  /*debug_info_root_path=*/0,
+						  /*load_all_types=*/false,
 						  corp);
       if (!corp)
 	{

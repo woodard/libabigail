@@ -1066,6 +1066,68 @@ elf_symbol::version::operator=(const elf_symbol::version& o)
 dm_context_rel::~dm_context_rel()
 {}
 
+
+// <type_or_decl_base stuff>
+
+/// The destructor of the @ref type_or_decl_base type.
+type_or_decl_base::~type_or_decl_base()
+{}
+
+/// Non-member equality operator for the @type_or_decl_base type.
+///
+/// @param lr the left-hand operand of the equality.
+///
+/// @param rr the right-hand operatnr of the equality.
+///
+/// @return true iff @p lr equals @p rr.
+bool
+operator==(const type_or_decl_base& lr, const type_or_decl_base& rr)
+{
+  const type_or_decl_base* l = &lr;
+  const type_or_decl_base* r = &rr;
+
+  const decl_base* dl = dynamic_cast<const decl_base*>(l),
+    *dr = dynamic_cast<const decl_base*>(r);
+
+  if (!!dl != !!dr)
+    return false;
+
+  if (dl && dr)
+    return *dl == *dr;
+
+  const type_base* tl = dynamic_cast<const type_base*>(l),
+    *tr = dynamic_cast<const type_base*>(r);
+
+  if (!!tl != !!tr)
+    return false;
+
+  if (tl && tr)
+    return *tl == *tr;
+
+  return false;
+}
+
+/// Non-member equality operator for the @type_or_decl_base type.
+///
+/// @param l the left-hand operand of the equality.
+///
+/// @param r the right-hand operatnr of the equality.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator==(const type_or_decl_base_sptr& l, const type_or_decl_base_sptr& r)
+{
+  if (!! l != !!r)
+    return false;
+
+  if (!l)
+    return true;
+
+  return *r == *l;
+}
+
+// </type_or_decl_base stuff>
+
 // <Decl definition>
 
 struct decl_base::priv
@@ -2315,7 +2377,7 @@ strip_typedef(const type_base_sptr type)
   if (!type)
     return type;
 
-  // If type is a class type the do not try to strip typedefs from it.
+  // If type is a class type then do not try to strip typedefs from it.
   // And if it has no canonical type (which can mean that it's a
   // declaration-only class), then, make sure its live for ever and
   // return it.
@@ -2325,8 +2387,6 @@ strip_typedef(const type_base_sptr type)
 	keep_type_alive(type);
       return type;
     }
-
-  assert(type->get_canonical_type());
 
   type_base_sptr t = type;
 
@@ -2887,15 +2947,156 @@ get_top_most_scope_under(const decl_base_sptr decl,
 			 const scope_decl_sptr scope)
 {return get_top_most_scope_under(decl, scope.get());}
 
+/// Build and return a copy of the name of an ABI artifact that is
+/// either a type of a decl.
+///
+/// @param tod the ABI artifact to get the name for.
+///
+/// @param qualified if yes, return the qualified name of @p tod;
+/// otherwise, return the non-qualified name;
+///
+/// @return the name of @p tod.
+string
+get_name(const type_or_decl_base_sptr& tod, bool qualified)
+{
+  string result;
+
+  if (type_base_sptr t = dynamic_pointer_cast<type_base>(tod))
+    result = get_type_name(t, qualified);
+  else if (decl_base_sptr d = dynamic_pointer_cast<decl_base>(tod))
+    {
+      if (qualified)
+	result = d->get_qualified_name();
+      else
+	result = d->get_name();
+    }
+  else
+    // We should never reach this point.
+    abort();
+
+  return result;
+}
+
 /// Get the name of a given type and return a copy of it.
+///
+/// @param t the type to consider.
+///
+/// @param qualified if true then return the qualified name of the
+/// type.
 ///
 /// @return a copy of the type name if the type has a name, or the
 /// empty string if it does not.
 string
-get_type_name(const type_base_sptr t)
+get_type_name(const type_base_sptr t, bool qualified)
+{return get_type_name(t.get(), qualified);}
+
+/// Get the name of a given type and return a copy of it.
+///
+/// @param t the type to consider.
+///
+/// @param qualified if true then return the qualified name of the
+/// type.
+///
+/// @return a copy of the type name if the type has a name, or the
+/// empty string if it does not.
+string
+get_type_name(const type_base* t, bool qualified)
 {
-  decl_base_sptr d = dynamic_pointer_cast<decl_base>(t);
+  const decl_base* d = dynamic_cast<const decl_base*>(t);
+  if (!d)
+    {
+      const function_type* fn_type = is_function_type(t);
+      assert(fn_type);
+      return get_function_type_name(fn_type);
+    }
+  if (qualified)
+    return d->get_qualified_name();
   return d->get_name();
+}
+
+/// Get the name of a given type and return a copy of it.
+///
+/// @param t the type to consider.
+///
+/// @param qualified if true then return the qualified name of the
+/// type.
+///
+/// @return a copy of the type name if the type has a name, or the
+/// empty string if it does not.
+string
+get_type_name(const type_base& t, bool qualified)
+{return get_type_name(&t, qualified);}
+
+/// Get the name of a given function type and return a copy of it.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return a copy of the function type name
+string
+get_function_type_name(const function_type_sptr& fn_type)
+{return get_function_type_name(fn_type.get());}
+
+/// Get the name of a given function type and return a copy of it.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return a copy of the function type name
+string
+get_function_type_name(const function_type* fn_type)
+{
+  if (!fn_type)
+    return "";
+  return get_function_type_name(*fn_type);
+}
+
+/// Get the name of a given function type and return a copy of it.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return a copy of the function type name
+string
+get_function_type_name(const function_type& fn_type)
+{
+  std::ostringstream o;
+  type_base_sptr return_type= fn_type.get_return_type();
+
+  o <<  get_pretty_representation(return_type);
+
+  o << " (";
+  for (function_type::parameters::const_iterator i =
+	 fn_type.get_parameters().begin();
+       i != fn_type.get_parameters().end();
+       ++i)
+    {
+      if (i != fn_type.get_parameters().begin())
+	o << ", ";
+      o << get_pretty_representation((*i)->get_type());
+    }
+  o <<")";
+  return o.str();
+}
+
+/// Build and return a copy of the pretty representation of an ABI
+/// artifact that could be either a type of a decl.
+///
+/// param tod the ABI artifact to consider.
+///
+/// @return a copy of the pretty representation of an ABI artifact
+/// that could be either a type of a decl.
+string
+get_pretty_representation(const type_or_decl_base_sptr& tod)
+{
+  string result;
+
+  if (type_base_sptr t = dynamic_pointer_cast<type_base>(tod))
+    result = get_pretty_representation(t);
+  else if (decl_base_sptr d = dynamic_pointer_cast<decl_base>(tod))
+    result =  get_pretty_representation(d);
+  else
+    // We should never reach this point
+    abort();
+
+  return result;
 }
 
 /// Get a copy of the pretty representation of a decl.
@@ -2919,7 +3120,13 @@ get_pretty_representation(const decl_base* d)
 string
 get_pretty_representation(const type_base* t)
 {
+  if (!t)
+    return "void";
+  if (const function_type* fn_type = is_function_type(t))
+    return get_pretty_representation(fn_type);
+
   const decl_base* d = get_type_declaration(t);
+  assert(d);
   return get_pretty_representation(d);
 }
 
@@ -2940,6 +3147,41 @@ get_pretty_representation(const decl_base_sptr& d)
 string
 get_pretty_representation(const type_base_sptr& t)
 {return get_pretty_representation(t.get());}
+
+/// Get the pretty representation of a function type.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return the string represenation of the function type.
+string
+get_pretty_representation(const function_type_sptr& fn_type)
+{return get_pretty_representation(fn_type.get());}
+
+/// Get the pretty representation of a function type.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return the string represenation of the function type.
+string
+get_pretty_representation(const function_type* fn_type)
+{
+  if (!fn_type)
+    return "void";
+  return get_pretty_representation(*fn_type);
+}
+
+/// Get the pretty representation of a function type.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return the string represenation of the function type.
+string
+get_pretty_representation(const function_type& fn_type)
+{
+  std::ostringstream o;
+  o << "function type " << get_function_type_name(fn_type);
+  return o.str();
+}
 
 /// Get the declaration for a given type.
 ///
@@ -3154,6 +3396,47 @@ function_decl_sptr
 is_function_decl(decl_base_sptr d)
 {return dynamic_pointer_cast<function_decl>(d);}
 
+/// Test if an ABI artifact is a declaration.
+///
+/// @param d the artifact to consider.
+///
+/// @param return the declaration sub-object of @p d if it's a
+/// declaration, or NULL if it is not.
+decl_base_sptr
+is_decl(const type_or_decl_base_sptr& d)
+{return dynamic_pointer_cast<decl_base>(d);}
+
+/// Test whether a declaration is a type.
+///
+/// @param d the IR artefact to test for.
+///
+/// @return true if the artifact is a type, false otherwise.
+bool
+is_type(const type_or_decl_base& tod)
+{
+  try {dynamic_cast<const type_base&>(tod);}
+  catch(...) {return false;}
+  return true;
+}
+
+/// Test whether a declaration is a type.
+///
+/// @param d the IR artefact to test for.
+///
+/// @return true if the artifact is a type, false otherwise.
+type_base*
+is_type(const type_or_decl_base* tod)
+{return const_cast<type_base*>(dynamic_cast<const type_base*>(tod));}
+
+/// Test whether a declaration is a type.
+///
+/// @param d the IR artefact to test for.
+///
+/// @return true if the artifact is a type, false otherwise.
+type_base_sptr
+is_type(const type_or_decl_base_sptr& tod)
+{return dynamic_pointer_cast<type_base>(tod);}
+
 /// Test whether a declaration is a type.
 ///
 /// @param d the declaration to test for.
@@ -3357,6 +3640,26 @@ shared_ptr<function_type>
 is_function_type(const shared_ptr<type_base> t)
 {return dynamic_pointer_cast<function_type>(t);}
 
+/// Test whether a type is a function_type.
+///
+/// @param t the type to test.
+///
+/// @return the @ref function_type_sptr if @p t is a
+/// function_type, null otherwise.
+function_type*
+is_function_type(type_base* t)
+{return dynamic_cast<function_type*>(t);}
+
+/// Test whether a type is a function_type.
+///
+/// @param t the type to test.
+///
+/// @return the @ref function_type_sptr if @p t is a
+/// function_type, null otherwise.
+const function_type*
+is_function_type(const type_base* t)
+{return dynamic_cast<const function_type*>(t);}
+
 /// Test whether a type is a method_type.
 ///
 /// @param t the type to test.
@@ -3531,6 +3834,129 @@ lookup_class_type_in_translation_unit(const string& fqn,
   list<string> comps;
   fqn_to_components(fqn, comps);
   return lookup_class_type_in_translation_unit(comps, tu);
+}
+
+/// Lookup a function type from a translation unit.
+///
+/// This walks all the function types held by the translation unit and
+/// compare their sub-type *names*.  If the names match then return
+/// the function type found in the translation unit.
+///
+/// @param t the function type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the function type found, or NULL of none was found.
+function_type_sptr
+lookup_function_type_in_translation_unit(const function_type& t,
+					 const translation_unit& tu)
+{
+  string type_name = get_type_name(t), n;
+  function_types_type& fn_types = tu.priv_->function_types_;
+  for (function_types_type::const_iterator i = fn_types.begin();
+       i != fn_types.end();
+       ++i)
+    {
+      n = get_type_name(**i);
+      bool skip_this = false;
+      if (type_name == n)
+	{
+	  for (function_decl::parameters::const_iterator p0 =
+		 t.get_parameters().begin(),
+		 p1 = (**i).get_parameters().begin();
+	       (p0 != t.get_parameters().end()
+		&& p1 != (**i).get_parameters().end());
+	       ++p0, ++p1)
+	    if ((*p0)->get_artificial() != (*p1)->get_artificial()
+		|| (*p0)->get_variadic_marker() != (*p1)->get_variadic_marker())
+	      {
+		skip_this = true;
+		break;
+	      }
+	  if (skip_this)
+	    continue;
+	  return *i;
+	}
+    }
+  return function_type_sptr();
+}
+
+/// Lookup a function type from a translation unit.
+///
+/// This walks all the function types held by the translation unit and
+/// compare their sub-type *names*.  If the names match then return
+/// the function type found in the translation unit.
+///
+/// @param t the function type to look for.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the function type found, or NULL of none was found.
+function_type_sptr
+lookup_function_type_in_translation_unit(const function_type_sptr& t,
+					 const translation_unit& tu)
+{return lookup_function_type_in_translation_unit(*t, tu);}
+
+/// In a translation unit, lookup the sub-types that make up a given
+/// function type and if the sub-types are all found, synthesize and
+/// return a function_type with them.
+///
+/// This function is like lookup_function_type_in_translation_unit()
+/// execept that it constructs the function type from the sub-types
+/// found in the translation, rather than just looking for the
+/// function types held by the translation unit.  This can be useful
+/// if the translation unit doesnt hold the function type we are
+/// looking for (i.e, lookup_function_type_in_translation_unit()
+/// returned NULL) but we still want to see if the sub-types of the
+/// function types are present in the translation unit.
+///
+/// @param fn_type the function type to consider.
+///
+/// @param tu the translation unit to look into.
+///
+/// @return the resulting synthesized function type if all its
+/// sub-types have been found, NULL otherwise.
+function_type_sptr
+synthesize_function_type_from_translation_unit(const function_type& fn_type,
+					       const translation_unit& tu)
+{
+  function_type_sptr nil = function_type_sptr();
+
+  type_base_sptr return_type = fn_type.get_return_type();
+  type_base_sptr result_return_type;
+  if (!return_type)
+    result_return_type = type_base_sptr(type_decl::get_void_type_decl());
+  else
+    result_return_type = lookup_type_in_translation_unit(return_type, tu);
+  if (!result_return_type)
+    return nil;
+
+  function_type::parameters parms;
+  type_base_sptr parm_type;
+  function_decl::parameter_sptr parm;
+  for (function_type::parameters::const_iterator i =
+	 fn_type.get_parameters().begin();
+       i != fn_type.get_parameters().end();
+       ++i)
+    {
+      type_base_sptr t = (*i)->get_type();
+      parm_type = lookup_type_in_translation_unit(t, tu);
+      if (!parm_type)
+	return nil;
+      parm.reset(new function_decl::parameter(parm_type,
+					      (*i)->get_index(),
+					      (*i)->get_name(),
+					      (*i)->get_location()));
+      parms.push_back(parm);
+    }
+
+  function_type_sptr result_fn_type
+    (new function_type(result_return_type,
+		       parms,
+		       fn_type.get_size_in_bits(),
+		       fn_type.get_alignment_in_bits()));
+
+  return result_fn_type;
 }
 
 /// Lookup a type in a scope.
@@ -3743,8 +4169,92 @@ lookup_node_in_scope(const list<string>& fqn,
 /// @return the declaration of the type found.
 const decl_base_sptr
 lookup_type_in_scope(const list<string>& comps,
-		     const scope_decl_sptr skope)
-{return lookup_node_in_scope<type_base>(comps, skope);}
+		     const scope_decl_sptr scope)
+{return lookup_node_in_scope<type_base>(comps, scope);}
+
+/// lookup a type in a scope.
+///
+/// @param type the type to look for.
+///
+/// @param access_path a vector of scopes the path of scopes to follow
+/// before reaching the scope into which to look for @p type.  Note
+/// that the deepest scope (the one immediately containing @p type) is
+/// at index 0 of this vector, and the top-most scope is the last
+/// element of the vector.
+///
+/// @param scope the top-most scope into which to look for @p type.
+///
+/// @return the scope found in @p scope, or NULL if it wasn't found.
+static const type_base_sptr
+lookup_type_in_scope(const type_base& type,
+		     const vector<scope_decl*>& access_path,
+		     const scope_decl* scope)
+{
+  vector<scope_decl*> a = access_path;
+  type_base_sptr result;
+
+  scope_decl* first_scope = a.back();
+  assert(first_scope->get_name() == scope->get_name());
+  a.pop_back();
+
+  if (a.empty())
+    {
+      string n = get_type_name(type, false);
+      for (scope_decl::declarations::const_iterator i =
+	     scope->get_member_decls().begin();
+	   i != scope->get_member_decls().end();
+	   ++i)
+	if (is_type(*i) && (*i)->get_name() == n)
+	  {
+	    result = is_type(*i);
+	    break;
+	  }
+    }
+  else
+    {
+      first_scope = a.back();
+      string scope_name, cur_scope_name = first_scope->get_name();
+      for (scope_decl::scopes::const_iterator i =
+	     scope->get_member_scopes().begin();
+	   i != scope->get_member_scopes().end();
+	   ++i)
+	{
+	  scope_name = (*i)->get_name();
+	  if (scope_name == cur_scope_name)
+	    {
+	      result = lookup_type_in_scope(type, a, (*i).get());
+	      break;
+	    }
+	}
+    }
+  return result;
+}
+
+/// lookup a type in a scope.
+///
+/// @param type the type to look for.
+///
+/// @param scope the top-most scope into which to look for @p type.
+///
+/// @return the scope found in @p scope, or NULL if it wasn't found.
+static const type_base_sptr
+lookup_type_in_scope(const type_base_sptr type,
+		     const scope_decl* scope)
+{
+  if (!type || is_function_type(type))
+    return type_base_sptr();
+
+  decl_base_sptr type_decl = get_type_declaration(type);
+  assert(type_decl);
+  vector<scope_decl*> access_path;
+  for (scope_decl* s = type_decl->get_scope(); s != 0; s = s->get_scope())
+    {
+      access_path.push_back(s);
+      if (is_global_scope(s))
+	break;
+    }
+  return lookup_type_in_scope(*type, access_path, scope);
+}
 
 /// lookup a var_decl in a scope.
 ///
@@ -3800,6 +4310,23 @@ const class_decl_sptr
 lookup_class_type_in_translation_unit(const list<string>& fqn,
 				      const translation_unit& tu)
 {return is_class_type(lookup_node_in_translation_unit<class_decl>(fqn, tu));}
+
+/// Lookup a type from a translation unit.
+///
+/// @param fqn the components of the fully qualified name of the node
+/// to look up.
+///
+/// @param tu the translation unit to perform lookup from.
+///
+/// @return the declaration of the IR node found, NULL otherwise.
+const type_base_sptr
+lookup_type_in_translation_unit(const type_base_sptr type,
+				const translation_unit& tu)
+{
+  if (function_type_sptr fn_type = is_function_type(type))
+    return lookup_function_type_in_translation_unit(fn_type, tu);
+  return lookup_type_in_scope(type, tu.get_global_scope().get());
+}
 
 /// Demangle a C++ mangled name and return the resulting string
 ///
@@ -6285,15 +6812,6 @@ const function_decl::parameters&
 function_type::get_parameters() const
 {return priv_->parms_;}
 
-/// Getter for the set of parameters of the current intance of @ref
-/// function_type.
-///
-/// @return the parameters of the current instance of @ref
-/// function_type.
-function_decl::parameters&
-function_type::get_parameters()
-{return priv_->parms_;}
-
 /// Get the Ith parameter of the vector of parameters of the current
 /// instance of @ref function_type.
 ///
@@ -6564,6 +7082,15 @@ function_type::operator==(const type_base& other) const
   return equals(*this, *o, 0);
 }
 
+/// Return a copy of the pretty representation of the current @ref
+/// function_type.
+///
+/// @return a copy of the pretty representation of the current @ref
+/// function_type.
+string
+function_type::get_pretty_representation() const
+{return ir::get_pretty_representation(this);}
+
 /// Traverses an instance of @ref function_type, visiting all the
 /// sub-types and decls that it might contain.
 ///
@@ -6594,7 +7121,7 @@ function_type::traverse(ir_node_visitor& v)
 	}
 
       if (keep_going)
-	for (parameters::iterator i = get_parameters().begin();
+	for (parameters::const_iterator i = get_parameters().begin();
 	     i != get_parameters().end();
 	     ++i)
 	  if (type_base_sptr parm_type = (*i)->get_type())
@@ -6712,6 +7239,15 @@ method_type::set_class_type(shared_ptr<class_decl> t)
   class_type_ = t;
 }
 
+/// Return a copy of the pretty representation of the current @ref
+/// method_type.
+///
+/// @return a copy of the pretty representation of the current @ref
+/// method_type.
+string
+method_type::get_pretty_representation() const
+{return ir::get_pretty_representation(*this);}
+
 /// The destructor of method_type
 method_type::~method_type()
 {}
@@ -6813,16 +7349,17 @@ function_decl::get_pretty_representation() const
   if (get_member_function_is_virtual(mem_fn))
     result += "virtual ";
 
-  decl_base_sptr type =
-    mem_fn
-    ? get_type_declaration(mem_fn->get_type()->get_return_type())
-    : get_type_declaration(get_type()->get_return_type());
+  decl_base_sptr type;
+  if ((mem_fn && (get_member_function_is_dtor(*mem_fn)
+		  || get_member_function_is_ctor(*mem_fn))))
+    /*cdtors do not have return types.  */;
+  else
+    type = mem_fn
+      ? get_type_declaration(mem_fn->get_type()->get_return_type())
+      : get_type_declaration(get_type()->get_return_type());
 
   if (type)
     result += type->get_qualified_name() + " ";
-  else if (!(mem_fn && (get_member_function_is_dtor(*mem_fn)
-			|| get_member_function_is_ctor(*mem_fn))))
-    result += "void ";
 
   result += get_pretty_representation_of_declarator();
 
@@ -7467,6 +8004,31 @@ function_decl::parameter::operator==(const decl_base& o) const
   return function_decl::parameter::operator==(*p);
 }
 
+/// Non-member equality operator for @ref function_decl::parameter.
+///
+/// @param l the left-hand side of the equality operator
+///
+/// @param r the right-hand side of the equality operator
+///
+/// @return true iff @p l and @p r equals.
+bool
+operator==(const function_decl::parameter_sptr& l,
+	   const function_decl::parameter_sptr& r)
+{
+  if (!!l != !!r)
+    return false;
+  if (!l)
+    return true;
+  return *l == *r;
+}
+
+/// Traverse the diff sub-tree under the current instance
+/// function_decl.
+///
+/// @param v the visitor to invoke on each diff node of the sub-tree.
+///
+/// @return true if the traversing has to keep going on, false
+/// otherwise.
 bool
 function_decl::parameter::traverse(ir_node_visitor& v)
 {
@@ -7483,6 +8045,10 @@ function_decl::parameter::traverse(ir_node_visitor& v)
   return v.visit_end(this);
 }
 
+/// Get the hash of a decl.  If the hash hasn't been computed yet,
+/// compute it ans store its value; otherwise, just return the hash.
+///
+/// @return the hash of the decl.
 size_t
 function_decl::parameter::get_hash() const
 {
@@ -7490,6 +8056,9 @@ function_decl::parameter::get_hash() const
   return hash_fn_parm(this);
 }
 
+/// Compute the qualified name of the parameter.
+///
+/// @param qn the resulting qualified name.
 void
 function_decl::parameter::get_qualified_name(string& qualified_name) const
 {qualified_name = get_name();}
@@ -7504,18 +8073,18 @@ sort_virtual_member_functions(class_decl::member_functions& mem_fns);
 /// The private data for the class_decl type.
 struct class_decl::priv
 {
-  static unordered_map<string, bool> classes_being_compared_;
-  bool				is_declaration_only_;
-  bool				is_struct_;
-  decl_base_sptr		declaration_;
-  class_decl_sptr		definition_of_declaration_;
-  base_specs			bases_;
-  member_types			member_types_;
-  data_members			data_members_;
-  member_functions		member_functions_;
-  member_functions		virtual_mem_fns_;
-  member_function_templates	member_function_templates_;
-  member_class_templates	member_class_templates_;
+  static unordered_map<string, bool>	classes_being_compared_;
+  bool					is_declaration_only_;
+  bool					is_struct_;
+  decl_base_sptr			declaration_;
+  class_decl_sptr			definition_of_declaration_;
+  base_specs				bases_;
+  member_types				member_types_;
+  data_members				data_members_;
+  member_functions			member_functions_;
+  member_functions			virtual_mem_fns_;
+  member_function_templates		member_function_templates_;
+  member_class_templates		member_class_templates_;
 
   priv()
     : is_declaration_only_(false),
@@ -9907,6 +10476,40 @@ keep_type_alive(type_base_sptr t)
   static vector<type_base_sptr> extra_live_types;
   extra_live_types.push_back(t);
 }
+
+/// Hash an ABI artifact that is either a type or a decl.
+///
+/// @param tod the type or decl to hash.
+///
+/// @return the resulting hash value.
+size_t
+hash_type_or_decl(const type_or_decl_base *tod)
+{
+  size_t result = 0;
+
+  if (tod == 0)
+    ;
+  else if (const type_base* t = dynamic_cast<const type_base*>(tod))
+    {
+      type_base::dynamic_hash hash;
+      result = hash(t);
+    }
+  else if (const decl_base* d = dynamic_cast<const decl_base*>(tod))
+    result = d->get_hash();
+  else
+    // We should never get here.
+    abort();
+  return result;
+}
+
+/// Hash an ABI artifact that is either a type of a decl.
+///
+/// @param tod the ABI artifact to hash.
+///
+/// @return the hash value of the ABI artifact.
+size_t
+hash_type_or_decl(const type_or_decl_base_sptr& tod)
+{return hash_type_or_decl(tod.get());}
 
 bool
 ir_traversable_base::traverse(ir_node_visitor&)

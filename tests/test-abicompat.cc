@@ -110,6 +110,24 @@ InOutSpec in_out_specs[] =
     "data/test-abicompat/test4-soname-changed-report-0.txt",
     "output/test-abicompat/test4-soname-changed-report-0.txt",
   },
+  {
+    "data/test-abicompat/test5-fn-changed-app",
+    "data/test-abicompat/libtest5-fn-changed-libapp-v1.so",
+    "",
+    "",
+    "--show-base-names --weak-mode",
+    "data/test-abicompat/test5-fn-changed-report-0.txt",
+    "output/test-abicompat/test5-fn-changed-report-0.txt",
+  },
+  {
+    "data/test-abicompat/test6-var-changed-app",
+    "data/test-abicompat/libtest6-var-changed-libapp-v1.so",
+    "",
+    "",
+    "--show-base-names --weak-mode",
+    "data/test-abicompat/test6-var-changed-report-0.txt",
+    "output/test-abicompat/test6-var-changed-report-0.txt",
+  },
   // This entry must be the last one.
   {0, 0, 0, 0, 0, 0, 0}
 };
@@ -129,7 +147,10 @@ main()
     {
       in_app_path = get_src_dir() + "/tests/" + s->in_app_path;
       in_lib1_path = get_src_dir() + "/tests/" + s->in_lib1_path;
-      in_lib2_path = get_src_dir() + "/tests/" + s->in_lib2_path;
+      if (s->in_lib2_path && strcmp(s->in_lib2_path, ""))
+	in_lib2_path = get_src_dir() + "/tests/" + s->in_lib2_path;
+      else
+	in_lib2_path.clear();
       if (s->suppressions == 0 || !strcmp(s->suppressions, ""))
 	suppression_path.clear();
       else
@@ -151,8 +172,9 @@ main()
 	abicompat += " --suppressions " + suppression_path;
       abicompat += " " + abicompat_options;
 
-      cmd = abicompat + " "
-	+ in_app_path + " " + in_lib1_path + " " + in_lib2_path;
+      cmd = abicompat + " " + in_app_path + " " + in_lib1_path;
+      if (!in_lib2_path.empty())
+	cmd += string(" ") + in_lib2_path;
 
       cmd += " > " + out_report_path;
 

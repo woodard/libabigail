@@ -1878,5 +1878,65 @@ lookup_class_type_in_corpus(const string& qn, const corpus& abi_corpus)
   return result;
 }
 
+/// Lookup a type in an ABI corpus.
+///
+/// @param type the type to lookup.
+///
+/// @param corpus the ABI corpus to consider for the lookup.
+///
+/// @param the type found in the corpus or NULL if no such type was
+/// found.
+type_base_sptr
+lookup_type_in_corpus(const type_base_sptr& type, corpus& corpus)
+{
+  assert(type);
+
+  type_base_sptr result;
+  for (translation_units::const_iterator i =
+	 corpus.get_translation_units().begin();
+       i != corpus.get_translation_units().end();
+       ++i)
+    if ((result = lookup_type_in_translation_unit(type, **i)))
+      break;
+
+  return result;
+}
+
+/// Look into an ABI corpus for a function type.
+///
+/// @param fn_type the function type to be looked for in the ABI
+/// corpus.
+///
+/// @param corpus the ABI corpus into which to look for the function
+/// type.
+///
+/// @return the function type found in the corpus.
+function_type_sptr
+lookup_function_type_in_corpus(const function_type_sptr& fn_type,
+			       corpus& corpus)
+{
+  assert(fn_type);
+
+  function_type_sptr result;
+
+  for (translation_units::const_iterator i =
+	 corpus.get_translation_units().begin();
+       i != corpus.get_translation_units().end();
+       ++i)
+    if ((result = lookup_function_type_in_translation_unit(fn_type, **i)))
+      return result;
+
+  if (!result)
+    for (translation_units::const_iterator i =
+	   corpus.get_translation_units().begin();
+	 i != corpus.get_translation_units().end();
+	 ++i)
+      if ((result = synthesize_function_type_from_translation_unit(*fn_type,
+								   **i)))
+	return result;
+
+  return result;
+}
+
 }// end namespace ir
 }// end namespace abigail

@@ -559,4 +559,18 @@ test-abicompat/test4-soname-changed-app \
 test-abicompat/test4-soname-changed-app.cc \
 test-abicompat/test4-soname-changed-v0.cc \
 test-abicompat/test4-soname-changed-v1.cc \
-test-abicompat/test4-soname-changed-report-0.txt
+test-abicompat/test4-soname-changed-report-0.txt \
+test-abicompat/libtest5-fn-changed-libapp-v0.so \
+test-abicompat/libtest5-fn-changed-libapp-v1.so \
+test-abicompat/test5-fn-changed-app \
+test-abicompat/test5-fn-changed-app.cc \
+test-abicompat/test5-fn-changed-libapp-v0.cc \
+test-abicompat/test5-fn-changed-libapp-v1.cc \
+test-abicompat/test5-fn-changed-report-0.txt \
+test-abicompat/libtest6-var-changed-libapp-v0.so \
+test-abicompat/libtest6-var-changed-libapp-v1.so \
+test-abicompat/test6-var-changed-app \
+test-abicompat/test6-var-changed-app.cc \
+test-abicompat/test6-var-changed-libapp-v0.cc \
+test-abicompat/test6-var-changed-libapp-v1.cc \
+test-abicompat/test6-var-changed-report-0.txt

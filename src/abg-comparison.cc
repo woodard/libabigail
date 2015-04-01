@@ -120,32 +120,35 @@ using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 using abigail::sptr_utils::noop_deleter;
 
-/// Convenience typedef for a pair of decls.
-typedef std::pair<const decl_base_sptr, const decl_base_sptr> decls_type;
+/// Convenience typedef for a pair of decls or types.
+typedef std::pair<const type_or_decl_base_sptr,
+		  const type_or_decl_base_sptr> types_or_decls_type;
 
-/// A hashing functor for @ef decls_type.
-struct decls_hash
+/// A hashing functor for @ref types_or_decls_type.
+struct types_or_decls_hash
 {
   size_t
-  operator()(const decls_type& d) const
+  operator()(const types_or_decls_type& d) const
   {
-    size_t h1 = d.first ? d.first->get_hash() : 0;
-    size_t h2 = d.second ? d.second->get_hash() : 0;
+    size_t h1 = hash_type_or_decl(d.first);
+    size_t h2 = hash_type_or_decl(d.second);
     return hashing::combine_hashes(h1, h2);
   }
 };
 
-/// An equality functor for @ref decls_type.
-struct decls_equal
+/// An equality functor for @ref types_or_decls_type.
+struct types_or_decls_equal
 {
   bool
-  operator()(const decls_type d1, const decls_type d2) const
+  operator()(const types_or_decls_type d1, const types_or_decls_type d2) const
   {return d1.first == d2.first && d1.second == d2.second;}
 };
 
-/// A convenience typedef for a map of @ref decls_type and diff_sptr.
-typedef unordered_map<decls_type, diff_sptr, decls_hash, decls_equal>
-decls_diff_map_type;
+/// A convenience typedef for a map of @ref types_or_decls_type and
+/// diff_sptr.
+typedef unordered_map<types_or_decls_type, diff_sptr,
+		      types_or_decls_hash, types_or_decls_equal>
+types_or_decls_diff_map_type;
 
 /// The overloaded or operator for @ref visiting_kind.
 visiting_kind
@@ -153,6 +156,7 @@ operator|(visiting_kind l, visiting_kind r)
 {return static_cast<visiting_kind>(static_cast<unsigned>(l)
 				   | static_cast<unsigned>(r));}
 
+/// The overloaded and operator for @ref visiting_kind.
 visiting_kind
 operator&(visiting_kind l, visiting_kind r)
 {
@@ -160,6 +164,7 @@ operator&(visiting_kind l, visiting_kind r)
 				    & static_cast<unsigned>(r));
 }
 
+/// The overloaded 'bit inversion' operator for @ref visiting_kind.
 visiting_kind
 operator~(visiting_kind l)
 {return static_cast<visiting_kind>(~static_cast<unsigned>(l));}
@@ -268,6 +273,14 @@ sort_string_diff_sptr_map(const string_diff_sptr_map& map,
 static void
 sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
 			       base_diff_sptrs_type& sorted);
+
+static void
+sort_string_fn_parm_diff_sptr_map(const unsigned_fn_parm_diff_sptr_map& map,
+				  vector<fn_parm_diff_sptr>&		sorted);
+
+static void
+sort_string_fn_parm_diff_sptr_map(const string_fn_parm_diff_sptr_map&	map,
+				  vector<fn_parm_diff_sptr>&		sorted);
 
 static type_base_sptr
 get_leaf_type(qualified_type_def_sptr t);
@@ -664,8 +677,8 @@ type_suppression::suppresses_diff(const diff* diff) const
     }
 
   string fn, sn;
-  fn = get_type_declaration(ft)->get_qualified_name();
-  sn = get_type_declaration(st)->get_qualified_name();
+  fn = get_name(ft);
+  sn = get_name(st);
 
   // Check if there is an exact type name match.
   if (!get_type_name().empty())
@@ -2095,8 +2108,8 @@ variable_suppression::suppresses_diff(const diff* diff) const
   if (!d)
     return false;
 
-  var_decl_sptr fv = is_var_decl(d->first_subject()),
-    sv = is_var_decl(d->second_subject());
+  var_decl_sptr fv = is_var_decl(is_decl(d->first_subject())),
+    sv = is_var_decl(is_decl(d->second_subject()));
 
   assert(fv && sv);
 
@@ -2293,7 +2306,7 @@ read_variable_suppression(const ini::config::section& section)
 struct diff_context::priv
 {
   diff_category			allowed_category_;
-  decls_diff_map_type			decls_diff_map;
+  types_or_decls_diff_map_type		types_or_decls_diff_map;
   vector<diff_sptr>			canonical_diffs;
   vector<filtering::filter_base_sptr>	filters_;
   suppressions_type			suppressions_;
@@ -2392,12 +2405,12 @@ diff_context::get_second_corpus() const
 /// @return a pointer to the diff for @p first @p second if found,
 /// null otherwise.
 diff_sptr
-diff_context::has_diff_for(const decl_base_sptr first,
-			   const decl_base_sptr second) const
+diff_context::has_diff_for(const type_or_decl_base_sptr first,
+			   const type_or_decl_base_sptr second) const
 {
-  decls_diff_map_type::const_iterator i =
-    priv_->decls_diff_map.find(std::make_pair(first, second));
-  if (i != priv_->decls_diff_map.end())
+  types_or_decls_diff_map_type::const_iterator i =
+    priv_->types_or_decls_diff_map.find(std::make_pair(first, second));
+  if (i != priv_->types_or_decls_diff_map.end())
     return i->second;
   return diff_sptr();
 }
@@ -2413,10 +2426,7 @@ diff_context::has_diff_for(const decl_base_sptr first,
 diff_sptr
 diff_context::has_diff_for_types(const type_base_sptr first,
 				  const type_base_sptr second) const
-{
-  return has_diff_for(get_type_declaration(first),
-		       get_type_declaration(second));
-}
+{return has_diff_for(first, second);}
 
 /// Tests if the current diff context already has a given diff.
 ///
@@ -2486,10 +2496,10 @@ diff_context::switch_categories_off(diff_category c)
 ///
 /// @param the diff to add.
 void
-diff_context::add_diff(decl_base_sptr first,
-		       decl_base_sptr second,
+diff_context::add_diff(type_or_decl_base_sptr first,
+		       type_or_decl_base_sptr second,
 		       const diff_sptr d)
-{priv_->decls_diff_map[std::make_pair(first, second)] = d;}
+{priv_->types_or_decls_diff_map[std::make_pair(first, second)] = d;}
 
 /// Add a diff tree node to the cache of the current diff_context
 ///
@@ -2526,8 +2536,8 @@ diff_context::add_diff(const diff_sptr d)
 /// node was registered for these subjects, then a nil node is
 /// returned.
 diff_sptr
-diff_context::get_canonical_diff_for(const decl_base_sptr first,
-				     const decl_base_sptr second) const
+diff_context::get_canonical_diff_for(const type_or_decl_base_sptr first,
+				     const type_or_decl_base_sptr second) const
 {return has_diff_for(first, second);}
 
 /// Getter for the @ref CanonicalDiff "canonical diff node" for the
@@ -2551,8 +2561,8 @@ diff_context::get_canonical_diff_for(const diff_sptr d) const
 ///
 /// @param d the new canonical diff.
 void
-diff_context::set_canonical_diff_for(const decl_base_sptr first,
-				     const decl_base_sptr second,
+diff_context::set_canonical_diff_for(const type_or_decl_base_sptr first,
+				     const type_or_decl_base_sptr second,
 				     const diff_sptr d)
 {
   assert(d);
@@ -2575,8 +2585,8 @@ diff_context::set_canonical_diff_for(const decl_base_sptr first,
 ///
 /// @returnt the canonical diff node.
 diff_sptr
-diff_context::set_or_get_canonical_diff_for(const decl_base_sptr first,
-					    const decl_base_sptr second,
+diff_context::set_or_get_canonical_diff_for(const type_or_decl_base_sptr first,
+					    const type_or_decl_base_sptr second,
 					    const diff_sptr canonical_diff)
 {
   assert(canonical_diff);
@@ -3041,26 +3051,26 @@ diff_context::do_dump_diff_tree(const corpus_diff_sptr d) const
 /// Private data for the @ref diff type.
 struct diff::priv
 {
-  bool			finished_;
-  bool			traversing_;
-  decl_base_sptr	first_subject_;
-  decl_base_sptr	second_subject_;
-  vector<diff_sptr>	children_;
-  diff*		parent_;
-  diff*		canonical_diff_;
-  diff_context_sptr	ctxt_;
-  diff_category         local_category_;
-  diff_category	category_;
-  mutable bool		reported_once_;
-  mutable bool		currently_reporting_;
-  mutable string	pretty_representation_;
+  bool				finished_;
+  bool				traversing_;
+  type_or_decl_base_sptr	first_subject_;
+  type_or_decl_base_sptr	second_subject_;
+  vector<diff_sptr>		children_;
+  diff*			parent_;
+  diff*			canonical_diff_;
+  diff_context_sptr		ctxt_;
+  diff_category		local_category_;
+  diff_category		category_;
+  mutable bool			reported_once_;
+  mutable bool			currently_reporting_;
+  mutable string		pretty_representation_;
 
   priv();
 
 public:
 
-  priv(decl_base_sptr first_subject,
-       decl_base_sptr second_subject,
+  priv(type_or_decl_base_sptr first_subject,
+       type_or_decl_base_sptr second_subject,
        diff_context_sptr ctxt,
        diff_category category,
        bool reported_once,
@@ -3127,8 +3137,8 @@ struct diff_less_than_functor
     if (!l || !r || !l->first_subject() || !r->first_subject())
       return false;
 
-    string l_qn = l->first_subject()->get_qualified_name();
-    string r_qn = r->first_subject()->get_qualified_name();
+    string l_qn = get_name(l->first_subject());
+    string r_qn = get_name(r->first_subject());
 
     return l_qn < r_qn;
   }
@@ -3142,8 +3152,8 @@ struct diff_less_than_functor
 /// @param first_subject the first decl (subject) of the diff.
 ///
 /// @param second_subject the second decl (subject) of the diff.
-diff::diff(decl_base_sptr first_subject,
-	   decl_base_sptr second_subject)
+diff::diff(type_or_decl_base_sptr first_subject,
+	   type_or_decl_base_sptr second_subject)
   : priv_(new priv(first_subject, second_subject,
 		   diff_context_sptr(),
 		   NO_CHANGE_CATEGORY,
@@ -3161,8 +3171,8 @@ diff::diff(decl_base_sptr first_subject,
 /// @param second_subject the second decl (subject) of the diff.
 ///
 /// @param ctxt the context of the diff.
-diff::diff(decl_base_sptr	first_subject,
-	   decl_base_sptr	second_subject,
+diff::diff(type_or_decl_base_sptr	first_subject,
+	   type_or_decl_base_sptr	second_subject,
 	   diff_context_sptr	ctxt)
   : priv_(new priv(first_subject, second_subject,
 		   ctxt, NO_CHANGE_CATEGORY,
@@ -3240,19 +3250,20 @@ void
 diff::finish_diff_type()
 {
 }
+
 /// Getter of the first subject of the diff.
 ///
 /// @return the first subject of the diff.
-decl_base_sptr
+type_or_decl_base_sptr
 diff::first_subject() const
-{return priv_->first_subject_;}
+{return dynamic_pointer_cast<type_or_decl_base>(priv_->first_subject_);}
 
 /// Getter of the second subject of the diff.
 ///
 /// @return the second subject of the diff.
-decl_base_sptr
+type_or_decl_base_sptr
 diff::second_subject() const
-{return priv_->second_subject_;}
+{return dynamic_pointer_cast<type_or_decl_base>(priv_->second_subject_);}
 
 /// Getter for the children nodes of the current @ref diff node.
 ///
@@ -3687,12 +3698,12 @@ diff::chain_into_hierarchy()
 // </diff stuff>
 
 static bool
-report_size_and_alignment_changes(decl_base_sptr	first,
-				  decl_base_sptr	second,
-				  diff_context_sptr	ctxt,
-				  ostream&		out,
-				  const string&	indent,
-				  bool			nl);
+report_size_and_alignment_changes(type_or_decl_base_sptr	first,
+				  type_or_decl_base_sptr	second,
+				  diff_context_sptr		ctxt,
+				  ostream&			out,
+				  const string&		indent,
+				  bool				nl);
 
 // <type_diff_base stuff>
 class type_diff_base::priv
@@ -3701,8 +3712,8 @@ public:
   friend class type_diff_base;
 }; // end class type_diff_base
 
-type_diff_base::type_diff_base(decl_base_sptr	first_subject,
-			       decl_base_sptr	second_subject,
+type_diff_base::type_diff_base(type_base_sptr	first_subject,
+			       type_base_sptr	second_subject,
 			       diff_context_sptr	ctxt)
   : diff(first_subject, second_subject, ctxt),
     priv_(new priv)
@@ -3785,8 +3796,8 @@ distinct_diff::chain_into_hierarchy()
 /// @param second the second entity to consider for the diff.
 ///
 /// @param ctxt the context of the diff.
-distinct_diff::distinct_diff(decl_base_sptr first,
-			     decl_base_sptr second,
+distinct_diff::distinct_diff(type_or_decl_base_sptr first,
+			     type_or_decl_base_sptr second,
 			     diff_context_sptr ctxt)
   : diff(first, second, ctxt),
     priv_(new priv)
@@ -3806,14 +3817,14 @@ distinct_diff::finish_diff_type()
 /// Getter for the first subject of the diff.
 ///
 /// @return the first subject of the diff.
-const decl_base_sptr
+const type_or_decl_base_sptr
 distinct_diff::first() const
 {return first_subject();}
 
 /// Getter for the second subject of the diff.
 ///
 /// @return the second subject of the diff.
-const decl_base_sptr
+const type_or_decl_base_sptr
 distinct_diff::second() const
 {return second_subject();}
 
@@ -3857,8 +3868,8 @@ distinct_diff::compatible_child_diff() const
 ///
 /// @return true iff the two arguments are of different kind.
 bool
-distinct_diff::entities_are_of_distinct_kinds(decl_base_sptr first,
-					      decl_base_sptr second)
+distinct_diff::entities_are_of_distinct_kinds(type_or_decl_base_sptr first,
+					      type_or_decl_base_sptr second)
 {
   if (!!first != !!second)
     return true;
@@ -3876,21 +3887,7 @@ distinct_diff::entities_are_of_distinct_kinds(decl_base_sptr first,
 /// otherwise.
 bool
 distinct_diff::has_changes() const
-{
-  if (!!first().get() != !!second().get())
-    return true;
-  else if (first().get() == second().get())
-    return false;
-  else if (first()->get_hash() && second()->get_hash()
-	   && (first()->get_hash() != second()->get_hash()))
-    return true;
-
-  if (first() == second()
-      || (first() && second()
-	  && *first() == *second()))
-    return false;
-  return true;
-}
+{return first() != second();}
 
 /// @return true iff the current diff node carries local changes.
 bool
@@ -3913,7 +3910,7 @@ distinct_diff::report(ostream& out, const string& indent) const
   if (!to_be_reported())
     return;
 
-  decl_base_sptr f = first(), s = second();
+  type_or_decl_base_sptr f = first(), s = second();
 
   string f_repr = f ? f->get_pretty_representation() : "'void'";
   string s_repr = s ? s->get_pretty_representation() : "'void'";
@@ -4098,6 +4095,7 @@ compute_diff_for_types(const decl_base_sptr first,
    ||(d = try_to_diff<array_type_def>(f, s, ctxt))
    ||(d = try_to_diff<qualified_type_def>(f, s, ctxt))
    ||(d = try_to_diff<typedef_decl>(f, s, ctxt))
+   ||(d = try_to_diff<function_type>(f, s, ctxt))
    ||(d = try_to_diff_distinct_kinds(f, s, ctxt)));
 
   assert(d);
@@ -4593,12 +4591,12 @@ represent(var_diff_sptr	diff,
 ///
 /// @return true iff something was reported.
 static bool
-report_size_and_alignment_changes(decl_base_sptr	first,
-				  decl_base_sptr	second,
-				  diff_context_sptr	ctxt,
-				  ostream&		out,
-				  const string&	indent,
-				  bool			nl)
+report_size_and_alignment_changes(type_or_decl_base_sptr	first,
+				  type_or_decl_base_sptr	second,
+				  diff_context_sptr		ctxt,
+				  ostream&			out,
+				  const string&		indent,
+				  bool				nl)
 {
   type_base_sptr f = dynamic_pointer_cast<type_base>(first),
     s = dynamic_pointer_cast<type_base>(second);
@@ -6206,7 +6204,7 @@ struct class_diff::priv
   class_decl::base_spec_sptr
   base_has_changed(class_decl::base_spec_sptr) const;
 
-  decl_base_sptr
+  type_or_decl_base_sptr
   member_type_has_changed(decl_base_sptr) const;
 
   decl_base_sptr
@@ -6695,7 +6693,7 @@ class_diff::priv::base_has_changed(class_decl::base_spec_sptr d) const
 ///
 /// @return the new member type if the given member type has changed,
 /// or NULL if it hasn't.
-decl_base_sptr
+type_or_decl_base_sptr
 class_diff::priv::member_type_has_changed(decl_base_sptr d) const
 {
   string qname = d->get_qualified_name();
@@ -6703,7 +6701,7 @@ class_diff::priv::member_type_has_changed(decl_base_sptr d) const
     changed_member_types_.find(qname);
 
   return ((it == changed_member_types_.end())
-	  ? decl_base_sptr()
+	  ? type_or_decl_base_sptr()
 	  : it->second->second_subject());
 }
 
@@ -7746,8 +7744,8 @@ class_diff::report(ostream& out, const string& indent) const
 	      if (!(*it)->to_be_reported())
 		continue;
 
-	      decl_base_sptr o = (*it)->first_subject();
-	      decl_base_sptr n = (*it)->second_subject();
+	      type_or_decl_base_sptr o = (*it)->first_subject();
+	      type_or_decl_base_sptr n = (*it)->second_subject();
 	      out << indent << "  '"
 		  << o->get_pretty_representation()
 		  << "' changed:\n";
@@ -8666,8 +8664,7 @@ struct diff_comp
   bool
   operator()(const diff& l, diff& r) const
   {
-    return (l.first_subject()->get_qualified_name()
-	    < r.first_subject()->get_qualified_name());
+    return (get_name(l.first_subject()) < get_name(r.first_subject()));
   }
 
   bool
@@ -9047,25 +9044,11 @@ compute_diff(const function_decl::parameter_sptr	first,
 }
 // </fn_parm_diff stuff>
 
-// <function_decl_diff stuff>
-struct function_decl_diff::priv
+// <function_type_diff stuff>
+struct function_type_diff::priv
 {
-  enum Flags
-  {
-    NO_FLAG = 0,
-    IS_DECLARED_INLINE_FLAG = 1,
-    IS_NOT_DECLARED_INLINE_FLAG = 1 << 1,
-    BINDING_NONE_FLAG = 1 << 2,
-    BINDING_LOCAL_FLAG = 1 << 3,
-    BINDING_GLOBAL_FLAG = 1 << 4,
-    BINDING_WEAK_FLAG = 1 << 5
-  };// end enum Flags
-
   diff_sptr	return_type_diff_;
   edit_script	parm_changes_;
-  vector<char>	first_fn_flags_;
-  vector<char>	second_fn_flags_;
-  edit_script	fn_flags_changes_;
 
   // useful lookup tables.
   string_parm_map			deleted_parms_;
@@ -9081,71 +9064,18 @@ struct function_decl_diff::priv
   // c++ at least).
   unsigned_fn_parm_diff_sptr_map	changed_parms_by_id_;
 
-  priv(diff_sptr return_type_diff)
-    : return_type_diff_(return_type_diff)
+  priv()
   {}
+}; // end struct function_type_diff::priv
 
-  Flags
-  fn_is_declared_inline_to_flag(function_decl_sptr f) const
-  {
-    return (f->is_declared_inline()
-	    ? IS_DECLARED_INLINE_FLAG
-	    : IS_NOT_DECLARED_INLINE_FLAG);
-  }
-
-  Flags
-  fn_binding_to_flag(function_decl_sptr f) const
-  {
-    decl_base::binding b = f->get_binding();
-    Flags result = NO_FLAG;
-    switch (b)
-      {
-      case decl_base::BINDING_NONE:
-	result = BINDING_NONE_FLAG;
-	break;
-      case decl_base::BINDING_LOCAL:
-	  result = BINDING_LOCAL_FLAG;
-	  break;
-      case decl_base::BINDING_GLOBAL:
-	  result = BINDING_GLOBAL_FLAG;
-	  break;
-      case decl_base::BINDING_WEAK:
-	result = BINDING_WEAK_FLAG;
-	break;
-      }
-    return result;
-  }
-
-};// end struct function_decl_diff::priv
-
-/// Getter for a parameter at a given index (in the sequence of
-/// parameters of the first function of the diff) marked deleted in
-/// the edit script.
-///
-/// @param i the index of the parameter in the sequence of parameters
-/// of the first function considered by the current function_decl_diff
-/// object.
-///
-/// @return the parameter at index
-const function_decl::parameter_sptr
-function_decl_diff::deleted_parameter_at(int i) const
-{return first_function_decl()->get_parameters()[i];}
-
-/// Getter for a parameter at a given index (in the sequence of
-/// parameters of the second function of the diff) marked inserted in
-/// the edit script.
-///
-/// @param i the index of the parameter in the sequence of parameters
-/// of the second function considered by the current
-/// function_decl_diff object.
-const function_decl::parameter_sptr
-function_decl_diff::inserted_parameter_at(int i) const
-{return second_function_decl()->get_parameters()[i];}
-
-/// Build the lookup tables of the diff, if necessary.
 void
-function_decl_diff::ensure_lookup_tables_populated()
+function_type_diff::ensure_lookup_tables_populated()
 {
+  priv_->return_type_diff_ =
+    compute_diff(first_function_type()->get_return_type(),
+		 second_function_type()->get_return_type(),
+		 context());
+
   string parm_name;
   function_decl::parameter_sptr parm;
   for (vector<deletion>::const_iterator i =
@@ -9153,7 +9083,7 @@ function_decl_diff::ensure_lookup_tables_populated()
        i != priv_->parm_changes_.deletions().end();
        ++i)
     {
-      parm = *(first_function_decl()->get_first_non_implicit_parm()
+      parm = *(first_function_type()->get_first_non_implicit_parm()
 	       + i->index());
       parm_name = parm->get_name_id();
       // If for a reason the type name is empty we want to know and
@@ -9173,7 +9103,7 @@ function_decl_diff::ensure_lookup_tables_populated()
 	   j != i->inserted_indexes().end();
 	   ++j)
 	{
-	  parm = *(second_function_decl()->get_first_non_implicit_parm() + *j);
+	  parm = *(second_function_type()->get_first_non_implicit_parm() + *j);
 	  parm_name = parm->get_name_id();
 	  // If for a reason the type name is empty we want to know and
 	  // fix that.
@@ -9211,13 +9141,266 @@ function_decl_diff::ensure_lookup_tables_populated()
     }
 }
 
+/// In the vector of deleted parameters, get the one that is at a given
+/// index.
+///
+/// @param i the index of the deleted parameter to get.
+///
+/// @return the parameter returned.
+const function_decl::parameter_sptr
+function_type_diff::deleted_parameter_at(int i) const
+{return first_function_type()->get_parameters()[i];}
+
+/// In the vector of inserted parameters, get the one that is at a
+/// given index.
+///
+/// @param i the index of the inserted parameter to get.
+///
+/// @return the parameter returned.
+const function_decl::parameter_sptr
+function_type_diff::inserted_parameter_at(int i) const
+{return second_function_type()->get_parameters()[i];}
+
+/// Consutrctor of the @ref function_type type.
+///
+/// @param first the first @ref function_type subject of the diff to
+/// create.
+///
+/// @param second the second @ref function_type subject of the diff to
+/// create.
+///
+/// @param ctxt the diff context to be used by the newly created
+/// instance of function_type_diff.
+function_type_diff::function_type_diff(const function_type_sptr first,
+				       const function_type_sptr second,
+				       diff_context_sptr	ctxt)
+  : type_diff_base(first, second, ctxt),
+    priv_(new priv)
+{}
+
+/// Finish building the current instance of @ref function_type_diff
+void
+function_type_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
+
+/// Getter for the first subject of the diff.
+///
+/// @return the first function type involved in the diff.
+const function_type_sptr
+function_type_diff::first_function_type() const
+{return dynamic_pointer_cast<function_type>(first_subject());}
+
+/// Getter for the second subject of the diff.
+///
+/// @return the second function type involved in the diff.
+const function_type_sptr
+function_type_diff::second_function_type() const
+{return dynamic_pointer_cast<function_type>(second_subject());}
+
+/// Getter for the diff of the return types of the two function types
+/// of the current diff.
+///
+/// @return the diff of the return types of the two function types of
+/// the current diff.
+const diff_sptr
+function_type_diff::return_type_diff() const
+{return priv_->return_type_diff_;}
+
+/// Getter for the map of function parameter changes of the current diff.
+///
+/// @return a map of function parameter changes of the current diff.
+const string_fn_parm_diff_sptr_map&
+function_type_diff::subtype_changed_parms() const
+{return priv_->subtype_changed_parms_;}
+
+/// Getter for the map of parameters that got removed.
+///
+/// @return the map of parameters that got removed.
+const string_parm_map&
+function_type_diff::removed_parms() const
+{return priv_->deleted_parms_;}
+
+/// Getter for the map of parameters that got added.
+///
+/// @return the map of parameters that got added.
+const string_parm_map&
+function_type_diff::added_parms() const
+{return priv_->added_parms_;}
+
+/// Build and return a copy of a pretty representation of the current
+/// instance of @ref function_type_diff.
+///
+/// @return a copy of the pretty representation of the current
+/// instance of @ref function_type_diff.
+const string&
+function_type_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "function_type_diff["
+	<< abigail::ir::get_pretty_representation(first_function_type())
+	<< ", "
+	<< abigail::ir::get_pretty_representation(second_function_type())
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
+
+/// Test if the current diff node carries changes.
+///
+/// @return true iff the current diff node carries changes.
+bool
+function_type_diff::has_changes() const
+{return *first_function_type() != *second_function_type();}
+
+/// Test if the current diff node carries local changes.
+///
+/// A local change is a change that is carried by this diff node, not
+/// by any of its children nodes.
+///
+/// @return true iff the current diff node has local changes.
+bool
+function_type_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_function_type(), *second_function_type(), &k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
+
+/// Build and emit a textual report about the current
+///
+/// @param out the output stream.
+///
+/// @param indent the indentation string to use.
+void
+function_type_diff::report(ostream& out, const string& indent) const
+{
+  if (!to_be_reported())
+    return;
+
+  function_type_sptr fft = first_function_type();
+  function_type_sptr sft = second_function_type();
+
+  diff_context_sptr ctxt = context();
+  corpus_sptr fc = ctxt->get_first_corpus();
+  corpus_sptr sc = ctxt->get_second_corpus();
+
+#if 0
+  string qn1 = get_function_type_name(fft), qn2 = get_function_type_name(sft);
+
+  if (qn1 != qn2)
+    {
+      string frep1 = ir::get_pretty_representation(fft),
+	frep2 = ir::get_pretty_representation(sft);
+      out << indent << "'" << frep1 << "' now becomes '" << frep2 << "'\n";
+      return;
+    }
+#endif
+
+  // Report about the size of the function address
+  if (fft->get_size_in_bits() != sft->get_size_in_bits())
+    {
+      out << indent << "address size of function changed from "
+	  << fft->get_size_in_bits()
+	  << " bits to "
+	  << sft->get_size_in_bits()
+	  << " bits\n";
+    }
+
+  // Report about the alignment of the function address
+  if (fft->get_alignment_in_bits()
+      != sft->get_alignment_in_bits())
+    {
+      out << indent << "address alignment of function changed from "
+	  << fft->get_alignment_in_bits()
+	  << " bits to "
+	  << sft->get_alignment_in_bits()
+	  << " bits\n";
+    }
+
+  // Report about return type differences.
+  if (priv_->return_type_diff_ && priv_->return_type_diff_->to_be_reported())
+    {
+      out << indent << "return type changed:\n";
+      priv_->return_type_diff_->report(out, indent + "  ");
+    }
+
+  // Hmmh, the above was quick.  Now report about function parameters;
+  // this shouldn't be as straightforward.
+  //
+  // Report about the parameter types that have changed sub-types.
+  vector<fn_parm_diff_sptr> sorted_fn_parms;
+  sort_string_fn_parm_diff_sptr_map(priv_->subtype_changed_parms_,
+				    sorted_fn_parms);
+  for (vector<fn_parm_diff_sptr>::const_iterator i =
+	 sorted_fn_parms.begin();
+       i != sorted_fn_parms.end();
+       ++i)
+    {
+      diff_sptr d = *i;
+      if (d && d->to_be_reported())
+	d->report(out, indent);
+    }
+  // Report about parameters that have changed, while staying
+  // compatible -- otherwise they would have changed the mangled name
+  // of the function and the function would have been reported as
+  // removed.
+  sorted_fn_parms.clear();
+  sort_string_fn_parm_diff_sptr_map(priv_->changed_parms_by_id_,
+				    sorted_fn_parms);
+  for (vector<fn_parm_diff_sptr>::const_iterator i = sorted_fn_parms.begin();
+       i != sorted_fn_parms.end();
+       ++i)
+    {
+      diff_sptr d = *i;
+      if (d && d->to_be_reported())
+	d->report(out, indent);
+    }
+
+  // Report about the parameters that got removed.
+  bool emitted = false;
+  for (string_parm_map::const_iterator i = priv_->deleted_parms_.begin();
+       i != priv_->deleted_parms_.end();
+       ++i)
+    {
+      out << indent << "parameter " << i->second->get_index()
+	  << " of type '" << i->second->get_type_pretty_representation()
+	  << "' was removed\n";
+      emitted = true;
+    }
+  if (emitted)
+    out << "\n";
+
+  // Report about the parameters that got added
+  emitted = false;
+  for (string_parm_map::const_iterator i = priv_->added_parms_.begin();
+       i != priv_->added_parms_.end();
+       ++i)
+    {
+      out << indent << "parameter " << i->second->get_index()
+	  << " of type '" << i->second->get_type_pretty_representation()
+	  << "' was added\n";
+      emitted = true;
+    }
+  if (emitted)
+    out << "\n";
+}
+
 /// Populate the vector of children node of the @ref diff base type
-/// sub-object of this instance of @ref function_decl_diff.
+/// sub-object of this instance of @ref function_type_diff.
 ///
 /// The children node can then later be retrieved using
 /// diff::children_node().
 void
-function_decl_diff::chain_into_hierarchy()
+function_type_diff::chain_into_hierarchy()
 {
   if (diff_sptr d = return_type_diff())
     append_child_node(d);
@@ -9237,6 +9420,69 @@ function_decl_diff::chain_into_hierarchy()
       append_child_node(d);
 }
 
+/// Compute the diff between two instances of @ref function_type.
+///
+/// @param first the first @ref function_type to consider for the diff.
+///
+/// @param second the second @ref function_type to consider for the diff.
+///
+/// @param ctxt the diff context to use.
+///
+/// @return the resulting diff between the two @ref function_type.
+function_type_diff_sptr
+compute_diff(const function_type_sptr	first,
+	     const function_type_sptr	second,
+	     diff_context_sptr		ctxt)
+{
+  if (!first || !second)
+    {
+      // TODO: implement this for either first or second being NULL.
+      return function_type_diff_sptr();
+    }
+
+  function_type_diff_sptr result(new function_type_diff(first, second, ctxt));
+
+  diff_utils::compute_diff(first->get_first_non_implicit_parm(),
+			   first->get_parameters().end(),
+			   second->get_first_non_implicit_parm(),
+			   second->get_parameters().end(),
+			   result->priv_->parm_changes_);
+
+  result->ensure_lookup_tables_populated();
+
+  ctxt->initialize_canonical_diff(result);
+
+  return result;
+}
+// </function_type_diff stuff>
+
+// <function_decl_diff stuff>
+struct function_decl_diff::priv
+{
+  function_type_diff_sptr type_diff_;
+
+  priv()
+  {}
+};// end struct function_decl_diff::priv
+
+/// Build the lookup tables of the diff, if necessary.
+void
+function_decl_diff::ensure_lookup_tables_populated()
+{
+}
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref function_decl_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+function_decl_diff::chain_into_hierarchy()
+{
+  if (diff_sptr d = type_diff())
+    append_child_node(d);
+}
+
 /// Constructor for function_decl_diff
 ///
 /// @param first the first function considered by the diff.
@@ -9244,20 +9490,10 @@ function_decl_diff::chain_into_hierarchy()
 /// @param second the second function considered by the diff.
 function_decl_diff::function_decl_diff(const function_decl_sptr first,
 				       const function_decl_sptr second,
-				       const diff_sptr		ret_type_diff,
 				       diff_context_sptr	ctxt)
   : decl_diff_base(first, second, ctxt),
-    priv_(new priv(ret_type_diff))
+    priv_(new priv)
 {
-  priv_->first_fn_flags_.push_back
-    (priv_->fn_is_declared_inline_to_flag(first_function_decl()));
-  priv_->first_fn_flags_.push_back
-    (priv_->fn_binding_to_flag(first_function_decl()));
-
-  priv_->second_fn_flags_.push_back
-    (priv_->fn_is_declared_inline_to_flag(second_function_decl()));
-  priv_->second_fn_flags_.push_back
-    (priv_->fn_binding_to_flag(second_function_decl()));
 }
 
 /// Finish building the current instance of @ref function_decl_diff.
@@ -9280,28 +9516,9 @@ const function_decl_sptr
 function_decl_diff::second_function_decl() const
 {return dynamic_pointer_cast<function_decl>(second_subject());}
 
-/// Accessor for the diff of the return types of the two functions.
-///
-/// @return the diff of the return types.
-const diff_sptr
-function_decl_diff::return_type_diff() const
-{return priv_->return_type_diff_;}
-
-/// @return a map of the parameters whose type got changed.  The key
-/// of the map is the name of the type.
-const string_fn_parm_diff_sptr_map&
-function_decl_diff::subtype_changed_parms() const
-{return priv_->subtype_changed_parms_;}
-
-/// @return a map of parameters that got removed.
-const string_parm_map&
-function_decl_diff::removed_parms() const
-{return priv_->deleted_parms_;}
-
-/// @return a map of parameters that got added.
-const string_parm_map&
-function_decl_diff::added_parms() const
-{return priv_->added_parms_;}
+const function_type_diff_sptr
+function_decl_diff::type_diff() const
+{return priv_->type_diff_;}
 
 /// @return the pretty representation for the current instance of @ref
 /// function_decl_diff.
@@ -9337,6 +9554,7 @@ function_decl_diff::has_local_changes() const
     return k & LOCAL_CHANGE_KIND;
   return false;
 }
+
 /// A comparison functor to compare two instances of @ref fn_parm_diff
 /// based on their indexes.
 struct fn_parm_diff_comp
@@ -9461,93 +9679,9 @@ function_decl_diff::report(ostream& out, const string& indent) const
 	    << " is now declared inline\n";
     }
 
-  // Report about the size of the function address
-  if (ff->get_type()->get_size_in_bits() != sf->get_type()->get_size_in_bits())
-    {
-      out << indent << "address size of function changed from "
-	  << ff->get_type()->get_size_in_bits()
-	  << " bits to "
-	  << sf->get_type()->get_size_in_bits()
-	  << " bits\n";
-    }
-
-  // Report about the alignment of the function address
-  if (ff->get_type()->get_alignment_in_bits()
-      != sf->get_type()->get_alignment_in_bits())
-    {
-      out << indent << "address alignment of function changed from "
-	  << ff->get_type()->get_alignment_in_bits()
-	  << " bits to "
-	  << sf->get_type()->get_alignment_in_bits()
-	  << " bits\n";
-    }
-
-  // Report about return type differences.
-  if (priv_->return_type_diff_ && priv_->return_type_diff_->to_be_reported())
-    {
-      out << indent << "return type changed:\n";
-      priv_->return_type_diff_->report(out, indent + "  ");
-    }
-
-  // Hmmh, the above was quick.  Now report about function parameters;
-  // this shouldn't be as straightforward.
-  //
-  // Report about the parameter types that have changed sub-types.
-  vector<fn_parm_diff_sptr> sorted_fn_parms;
-  sort_string_fn_parm_diff_sptr_map(priv_->subtype_changed_parms_,
-				    sorted_fn_parms);
-  for (vector<fn_parm_diff_sptr>::const_iterator i =
-	 sorted_fn_parms.begin();
-       i != sorted_fn_parms.end();
-       ++i)
-    {
-      diff_sptr d = *i;
-      if (d && d->to_be_reported())
-	d->report(out, indent);
-    }
-  // Report about parameters that have changed, while staying
-  // compatible -- otherwise they would have changed the mangled name
-  // of the function and the function would have been reported as
-  // removed.
-  sorted_fn_parms.clear();
-  sort_string_fn_parm_diff_sptr_map(priv_->changed_parms_by_id_,
-				    sorted_fn_parms);
-  for (vector<fn_parm_diff_sptr>::const_iterator i = sorted_fn_parms.begin();
-       i != sorted_fn_parms.end();
-       ++i)
-    {
-      diff_sptr d = *i;
-      if (d && d->to_be_reported())
-	d->report(out, indent);
-    }
-
-  // Report about the parameters that got removed.
-  bool emitted = false;
-  for (string_parm_map::const_iterator i = priv_->deleted_parms_.begin();
-       i != priv_->deleted_parms_.end();
-       ++i)
-    {
-      out << indent << "parameter " << i->second->get_index()
-	  << " of type '" << i->second->get_type_pretty_representation()
-	  << "' was removed\n";
-      emitted = true;
-    }
-  if (emitted)
-    out << "\n";
-
-  // Report about the parameters that got added
-  emitted = false;
-  for (string_parm_map::const_iterator i = priv_->added_parms_.begin();
-       i != priv_->added_parms_.end();
-       ++i)
-    {
-      out << indent << "parameter " << i->second->get_index()
-	  << " of type '" << i->second->get_type_pretty_representation()
-	  << "' was added\n";
-      emitted = true;
-    }
-  if (emitted)
-    out << "\n";
+  // Report about function type differences.
+  if (type_diff() && type_diff()->to_be_reported())
+    type_diff()->report(out, indent);
 }
 
 /// Compute the diff between two function_decl.
@@ -9570,27 +9704,13 @@ compute_diff(const function_decl_sptr first,
       return function_decl_diff_sptr();
     }
 
-  diff_sptr return_type_diff =
-    compute_diff_for_types(first->get_return_type(),
-			   second->get_return_type(),
-			   ctxt);
+  function_type_diff_sptr type_diff = compute_diff(first->get_type(),
+						   second->get_type(),
+						   ctxt);
 
   function_decl_diff_sptr result(new function_decl_diff(first, second,
-							return_type_diff,
 							ctxt));
-
-
-  diff_utils::compute_diff(first->get_first_non_implicit_parm(),
-			   first->get_parameters().end(),
-			   second->get_first_non_implicit_parm(),
-			   second->get_parameters().end(),
-			   result->priv_->parm_changes_);
-
-  diff_utils::compute_diff(result->priv_->first_fn_flags_.begin(),
-			   result->priv_->first_fn_flags_.end(),
-			   result->priv_->second_fn_flags_.begin(),
-			   result->priv_->second_fn_flags_.end(),
-			   result->priv_->fn_flags_changes_);
+  result->priv_->type_diff_ = type_diff;
 
   result->ensure_lookup_tables_populated();
 

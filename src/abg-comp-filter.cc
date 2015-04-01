@@ -692,8 +692,8 @@ harmless_filter::visit(diff* d, bool pre)
 
   if (pre)
     {
-      decl_base_sptr f = d->first_subject(),
-	s = d->second_subject();
+      decl_base_sptr f = is_decl(d->first_subject()),
+	s = is_decl(d->second_subject());
 
       if (access_changed(f, s))
 	category |= ACCESS_CHANGE_CATEGORY;
@@ -778,8 +778,8 @@ harmful_filter::visit(diff* d, bool pre)
 
   if (pre)
     {
-      decl_base_sptr f = d->first_subject(),
-	s = d->second_subject();
+      decl_base_sptr f = is_decl(d->first_subject()),
+	s = is_decl(d->second_subject());
 
       // Detect size or offset changes as well as data member addition
       // or removal.

@@ -336,12 +336,10 @@ public:
     decl_base_sptr d = get_type_declaration(type);
     if (d)
       return (ir::get_translation_unit(d) == get_translation_unit());
+    else if (function_type_sptr fn_type = is_function_type(type))
+      return lookup_function_type_in_translation_unit(fn_type,
+						      *get_translation_unit());
     else
-      // TODO: This is likely a function type as these don't have
-      // declarations.  For now we don't support lookup function type
-      // from translation units.  It'll be supported in a subsequent
-      // patch.  At that time we should be able to update this code
-      // here.
       return false;
   }
 

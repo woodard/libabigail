@@ -749,8 +749,8 @@ class diff_context
   shared_ptr<priv> priv_;
 
   diff_sptr
-  has_diff_for(const decl_base_sptr first,
-	       const decl_base_sptr second) const;
+  has_diff_for(const type_or_decl_base_sptr first,
+	       const type_or_decl_base_sptr second) const;
 
   diff_sptr
   has_diff_for_types(const type_base_sptr first,
@@ -763,8 +763,8 @@ class diff_context
   has_diff_for(const diff_sptr d) const;
 
   void
-  add_diff(const decl_base_sptr first,
-	   const decl_base_sptr second,
+  add_diff(const type_or_decl_base_sptr first,
+	   const type_or_decl_base_sptr second,
 	   const diff_sptr d);
 
   void
@@ -774,13 +774,13 @@ class diff_context
   add_diff(const diff* d);
 
   void
-  set_canonical_diff_for(const decl_base_sptr first,
-			 const decl_base_sptr second,
+  set_canonical_diff_for(const type_or_decl_base_sptr first,
+			 const type_or_decl_base_sptr second,
 			 const diff_sptr);
 
   diff_sptr
-  set_or_get_canonical_diff_for(const decl_base_sptr first,
-				const decl_base_sptr second,
+  set_or_get_canonical_diff_for(const type_or_decl_base_sptr first,
+				const type_or_decl_base_sptr second,
 				const diff_sptr canonical_diff);
 
 public:
@@ -797,8 +797,8 @@ public:
   get_second_corpus() const;
 
   diff_sptr
-  get_canonical_diff_for(const decl_base_sptr first,
-			 const decl_base_sptr second) const;
+  get_canonical_diff_for(const type_or_decl_base_sptr first,
+			 const type_or_decl_base_sptr second) const;
 
   diff_sptr
   get_canonical_diff_for(const diff_sptr d) const;
@@ -986,11 +986,11 @@ class diff : public diff_traversable_base
 protected:
   priv_sptr priv_;
 
-  diff(decl_base_sptr first_subject,
-       decl_base_sptr second_subject);
+  diff(type_or_decl_base_sptr first_subject,
+       type_or_decl_base_sptr second_subject);
 
-  diff(decl_base_sptr	first_subject,
-       decl_base_sptr	second_subject,
+  diff(type_or_decl_base_sptr	first_subject,
+       type_or_decl_base_sptr	second_subject,
        diff_context_sptr	ctxt);
 
   void
@@ -1006,10 +1006,10 @@ protected:
   set_canonical_diff(diff *);
 
 public:
-  decl_base_sptr
+  type_or_decl_base_sptr
   first_subject() const;
 
-  decl_base_sptr
+  type_or_decl_base_sptr
   second_subject() const;
 
   const vector<diff_sptr>&
@@ -1146,8 +1146,8 @@ class type_diff_base : public diff
   type_diff_base();
 
 protected:
-  type_diff_base(decl_base_sptr	first_subject,
-		 decl_base_sptr	second_subject,
+  type_diff_base(type_base_sptr	first_subject,
+		 type_base_sptr	second_subject,
 		 diff_context_sptr	ctxt);
 
 public:
@@ -1196,8 +1196,8 @@ class distinct_diff : public diff
   priv_sptr priv_;
 
 protected:
-  distinct_diff(decl_base_sptr first,
-		decl_base_sptr second,
+  distinct_diff(type_or_decl_base_sptr first,
+		type_or_decl_base_sptr second,
 		diff_context_sptr ctxt = diff_context_sptr());
 
   virtual void
@@ -1205,10 +1205,10 @@ protected:
 
 public:
 
-  const decl_base_sptr
+  const type_or_decl_base_sptr
   first() const;
 
-  const decl_base_sptr
+  const type_or_decl_base_sptr
   second() const;
 
   const diff_sptr
@@ -1230,8 +1230,8 @@ public:
   chain_into_hierarchy();
 
   static bool
-  entities_are_of_distinct_kinds(decl_base_sptr first,
-				 decl_base_sptr second);
+  entities_are_of_distinct_kinds(type_or_decl_base_sptr first,
+				 type_or_decl_base_sptr second);
 
   friend distinct_diff_sptr
   compute_diff_for_distinct_kinds(const decl_base_sptr first,
@@ -1942,11 +1942,18 @@ compute_diff(const function_decl::parameter_sptr	first,
 	     const function_decl::parameter_sptr	second,
 	     diff_context_sptr				ctxt);
 
-/// Abstraction of a diff between two function_decl.
-class function_decl_diff : public decl_diff_base
+class function_type_diff;
+
+/// A convenience typedef for a shared pointer to @ref
+/// function_type_type_diff
+typedef shared_ptr<function_type_diff> function_type_diff_sptr;
+
+/// Abstraction of a diff between two function types.
+class function_type_diff: public type_diff_base
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
 
   void
   ensure_lookup_tables_populated();
@@ -1958,9 +1965,71 @@ class function_decl_diff : public decl_diff_base
   inserted_parameter_at(int i) const;
 
 protected:
+  function_type_diff(const function_type_sptr	first,
+		     const function_type_sptr	second,
+		     diff_context_sptr		ctxt);
+
+  virtual void
+  finish_diff_type();
+
+public:
+  friend function_type_diff_sptr
+  compute_diff(const function_type_sptr	first,
+	       const function_type_sptr	second,
+	       diff_context_sptr		ctxt);
+
+  const function_type_sptr
+  first_function_type() const;
+
+  const function_type_sptr
+  second_function_type() const;
+
+  const diff_sptr
+  return_type_diff() const;
+
+  const string_fn_parm_diff_sptr_map&
+  subtype_changed_parms() const;
+
+  const string_parm_map&
+  removed_parms() const;
+
+  const string_parm_map&
+  added_parms() const;
+
+  virtual const string&
+  get_pretty_representation() const;
+
+  virtual bool
+  has_changes() const;
+
+  virtual bool
+  has_local_changes() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  virtual void
+  chain_into_hierarchy();
+};// end class function_type_diff
+
+function_type_diff_sptr
+compute_diff(const function_type_sptr	first,
+	     const function_type_sptr	second,
+	     diff_context_sptr		ctxt);
+
+/// Abstraction of a diff between two function_decl.
+class function_decl_diff : public decl_diff_base
+{
+  struct priv;
+  shared_ptr<priv> priv_;
+
+  void
+  ensure_lookup_tables_populated();
+
+
+protected:
   function_decl_diff(const function_decl_sptr	first,
 		     const function_decl_sptr	second,
-		     diff_sptr			ret_type_diff,
 		     diff_context_sptr		ctxt);
 
   virtual void
@@ -1979,17 +2048,8 @@ compute_diff(const function_decl_sptr	first,
   const function_decl_sptr
   second_function_decl() const;
 
-  const diff_sptr
-  return_type_diff() const;
-
-  const string_fn_parm_diff_sptr_map&
-  subtype_changed_parms() const;
-
-  const string_parm_map&
-  removed_parms() const;
-
-  const string_parm_map&
-  added_parms() const;
+  const function_type_diff_sptr
+  type_diff() const;
 
   virtual const string&
   get_pretty_representation() const;

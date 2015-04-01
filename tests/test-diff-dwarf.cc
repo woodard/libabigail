@@ -241,9 +241,11 @@ main()
 
       read_corpus_from_elf(in_elfv0_path,
 			   /*debug_info_root_path=*/0,
+			   /*load_all_types=*/false,
 			   corp0);
       read_corpus_from_elf(in_elfv1_path,
 			   /*debug_info_root_path=*/0,
+			   /*load_all_types=*/false,
 			   corp1);
 
       if (!corp0)

@@ -266,6 +266,10 @@ public:
 
   virtual bool
   traverse(ir_node_visitor& v);
+
+  friend function_type_sptr
+  lookup_function_type_in_translation_unit(const function_type& t,
+					   const translation_unit& tu);
 };//end class translation_unit
 
 bool
@@ -621,8 +625,29 @@ operator&=(change_kind&, change_kind);
 bool
 equals(const decl_base&, const decl_base&, change_kind*);
 
+class type_or_decl_base;
+
+/// Convenience typedef for a shared pointer to @ref
+/// type_or_decl_base.
+typedef shared_ptr<type_or_decl_base> type_or_decl_base_sptr;
+
+/// The base class of both types and declarations.
+class type_or_decl_base : public ir_traversable_base
+{
+public:
+  virtual ~type_or_decl_base();
+  virtual string
+  get_pretty_representation() const = 0;
+}; // end class type_or_decl_base
+
+bool
+operator==(const type_or_decl_base&, const type_or_decl_base&);
+
+bool
+operator==(const type_or_decl_base_sptr&, const type_or_decl_base_sptr&);
+
 /// The base type of all declarations.
-class decl_base : public virtual ir_traversable_base
+class decl_base : public virtual type_or_decl_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
@@ -874,6 +899,10 @@ public:
   get_member_scopes()
   {return member_scopes_;}
 
+  const scopes&
+  get_member_scopes() const
+  {return member_scopes_;}
+
   bool
   is_empty() const
   {return get_member_decls().empty();}
@@ -946,7 +975,7 @@ bool
 equals(const type_base&, const type_base&, change_kind*);
 
 /// An abstraction helper for type declarations
-class type_base : public virtual ir_traversable_base
+class type_base : public virtual type_or_decl_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
@@ -1971,6 +2000,10 @@ public:
   get_qualified_name(string& qualified_name) const;
 }; // end class function_decl::parameter
 
+bool
+operator==(const function_decl::parameter_sptr&,
+	   const function_decl::parameter_sptr&);
+
 /// A hashing functor for a function_decl::parameter.
 struct function_decl::parameter::hash
 {
@@ -2030,9 +2063,6 @@ public:
   const parameters&
   get_parameters() const;
 
-  parameters&
-  get_parameters();
-
   const parameter_sptr
   get_parm_at_index_from_first_non_implicit_parm(size_t) const;
 
@@ -2050,6 +2080,9 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual string
+  get_pretty_representation() const;
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -2109,6 +2142,9 @@ public:
 
   void
   set_class_type(shared_ptr<class_decl> t);
+
+  virtual string
+  get_pretty_representation() const;
 
   virtual ~method_type();
 };// end class method_type.

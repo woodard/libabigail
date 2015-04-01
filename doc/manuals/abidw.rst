@@ -60,6 +60,14 @@ Options
     Like ``--check-alternate-debug-info``, but in the success message,
     only mention the base name of the debug info file; not its full path.
 
+  * --load-all-types
+
+    By default, ``libabigail`` (and thus ``abidw``) only loads types
+    that are reachable from functions and variables declarations that
+    are publicly defined and exported by the binary.  So only those
+    types are present in the output of ``abidw``.  This option however
+    makes ``abidw`` load *all* the types defined in the binaries, even
+    those that are not reachable from public declarations.
 
 Notes
 =====

@@ -1769,6 +1769,7 @@ class read_context
   string			dt_soname_;
   string			elf_architecture_;
   corpus::exported_decls_builder* exported_decls_builder_;
+  bool				load_all_types_;
 
   read_context();
 
@@ -1789,7 +1790,8 @@ public:
       versym_section_(),
       verdef_section_(),
       verneed_section_(),
-      exported_decls_builder_()
+      exported_decls_builder_(),
+      load_all_types_()
   {}
 
   /// Clear the data that is relevant only for the current translation
@@ -2373,7 +2375,8 @@ public:
 	  {
 	    type_base_sptr t = lookup_type_from_die_offset(*i, in_alt_di);
 	    assert(t);
-	    canonicalize(t);
+	    if (!type_has_non_canonicalized_subtype(t))
+	      canonicalize(t);
 	  }
       }
   }
@@ -3554,6 +3557,24 @@ public:
   void
   exported_decls_builder(corpus::exported_decls_builder* b)
   {exported_decls_builder_ = b;}
+
+  /// Getter of the "load_all_types" flag.  This flag tells if all the
+  /// types (including those not reachable by public declarations) are
+  /// to be read and represented in the final ABI corpus.
+  ///
+  /// @return the load_all_types flag.
+  bool
+  load_all_types() const
+  {return load_all_types_;}
+
+  /// Setter of the "load_all_types" flag.  This flag tells if all the
+  /// types (including those not reachable by public declarations) are
+  /// to be read and represented in the final ABI corpus.
+  ///
+  /// @param f the new load_all_types flag.
+  void
+  load_all_types(bool f)
+  {load_all_types_ = f;}
 
   /// If a given function decl is suitable for the set of exported
   /// functions of the current corpus, this function adds it to that
@@ -7040,6 +7061,8 @@ build_function_decl(read_context&	ctxt,
 			     ret_type_die_is_in_alternate_debug_info,
 			     /*called_from_public_decl=*/true,
 			     where_offset);
+  if (!return_type_decl)
+    return_type_decl = build_ir_node_for_void_type(ctxt);
 
   class_decl_sptr is_method =
     dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die, is_in_alt_di,
@@ -7330,10 +7353,14 @@ build_ir_node_from_die(read_context&	ctxt,
 
   if (!called_from_public_decl)
     {
-      if (tag != DW_TAG_subprogram
-	  && tag != DW_TAG_variable
-	  && tag != DW_TAG_member
-	  && tag != DW_TAG_namespace)
+      if (ctxt.load_all_types() && is_type_die(die))
+	/* We were instructed to load debug info for all types,
+	   included those that are not reachable from a public
+	   declaration.  So load the debug info for this type.  */;
+      else if (tag != DW_TAG_subprogram
+	       && tag != DW_TAG_variable
+	       && tag != DW_TAG_member
+	       && tag != DW_TAG_namespace)
 	return result;
     }
 
@@ -7884,15 +7911,22 @@ operator&=(status& l, status r)
 /// debug info is to be found for @p elf_path.  Leave this to NULL if
 /// the debug info is not in a split file.
 ///
+/// @param load_all_types if set to false only the types that are
+/// reachable from publicly exported declarations (of functions and
+/// variables) are read.  If set to true then all types found in the
+/// debug information are loaded.
+///
 /// @return a smart pointer to the resulting dwarf_reader::read_context.
 read_context_sptr
 create_read_context(const std::string&	elf_path,
-		    char**		debug_info_root_path)
+		    char**		debug_info_root_path,
+		    bool		load_all_types)
 {
   // Create a DWARF Front End Library handle to be used by functions
   // of that library.
   dwfl_sptr handle = create_default_dwfl_sptr(debug_info_root_path);
   read_context_sptr result(new read_context(handle, elf_path));
+  result->load_all_types(load_all_types);
   return result;
 }
 
@@ -7958,12 +7992,18 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
 /// /usr/lib/debug will be searched for sub-directories containing the
 /// debug info file.
 ///
+/// @param load_all_types if set to false only the types that are
+/// reachable from publicly exported declarations (of functions and
+/// variables) are read.  If set to true then all types found in the
+/// debug information are loaded.
+///
 /// @param resulting_corp a pointer to the resulting abigail::corpus.
 ///
 /// @return the resulting status.
 status
 read_corpus_from_elf(const std::string& elf_path,
 		     char** debug_info_root_path,
+		     bool load_all_types,
 		     corpus_sptr& resulting_corp)
 {
   // Create a DWARF Front End Library handle to be used by functions
@@ -7971,6 +8011,7 @@ read_corpus_from_elf(const std::string& elf_path,
   dwfl_sptr handle = create_default_dwfl_sptr(debug_info_root_path);
 
   read_context_sptr c = create_read_context(elf_path, debug_info_root_path);
+  c->load_all_types(load_all_types);
   read_context& ctxt = *c;
 
   return read_corpus_from_elf(ctxt, resulting_corp);
