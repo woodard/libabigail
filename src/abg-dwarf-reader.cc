@@ -6260,11 +6260,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   if (klass)
     {
       res = result = klass;
-      if (size)
-	{
-	  result->set_size_in_bits(size);
-	  result->set_is_declaration_only(false);
-	}
       result->set_location(loc);
     }
   else
@@ -6278,6 +6273,12 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       res = add_decl_to_scope(result, scope);
       result = dynamic_pointer_cast<class_decl>(res);
       assert(result);
+    }
+
+  if (size)
+    {
+      result->set_size_in_bits(size);
+      result->set_is_declaration_only(false);
     }
 
   ctxt.associate_die_to_type(dwarf_dieoffset(die), is_in_alt_di, result);
