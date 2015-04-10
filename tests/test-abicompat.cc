@@ -138,6 +138,7 @@ main()
   using abigail::tests::get_src_dir;
   using abigail::tests::get_build_dir;
   using abigail::tools_utils::ensure_parent_dir_created;
+  using abigail::tools_utils::abidiff_status;
 
   bool is_ok = true;
   string in_app_path, in_lib1_path, in_lib2_path, suppression_path,
@@ -179,7 +180,8 @@ main()
       cmd += " > " + out_report_path;
 
       bool abicompat_ok = true;
-      if (system(cmd.c_str()))
+      abidiff_status status = static_cast<abidiff_status>(system(cmd.c_str()));
+      if (abigail::tools_utils::abidiff_status_has_error(status))
 	abicompat_ok = false;
 
       if (abicompat_ok)

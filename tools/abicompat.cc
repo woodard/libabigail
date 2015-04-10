@@ -87,34 +87,6 @@ struct options
   {}
 }; // end struct options
 
-/// The status of the abicompat operations.  It's a bit field.
-enum abicompat_status
-{
-  NO_STATUS = 0,
-  ERROR_STATUS = 1,
-  OK_STATUS = 1 << 1,
-  NO_CHANGE_STATUS = 1 << 2,
-  IS_ABI_INCOMPATIBLE_STATUS = 1 << 3,
-  MAY_BE_ABI_INCOMPATIBLE_STATUS = 1 << 4
-};
-
-abicompat_status
-operator|(abicompat_status l, abicompat_status r)
-{return static_cast<abicompat_status>(static_cast<int>(l)
-				      | static_cast<int>(r));}
-
-abicompat_status&
-operator|=(abicompat_status &l, abicompat_status r)
-{
-  l = static_cast<abicompat_status>( static_cast<int>(l) | static_cast<int>(r));
-  return l;
-}
-
-abicompat_status
-operator&(abicompat_status l, abicompat_status r)
-{return static_cast<abicompat_status>(static_cast<int>(l)
-				      & static_cast<int>(r));}
-
 static void
 display_usage(const string& prog_name, ostream& out)
 {
@@ -240,6 +212,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::base_name;
+using abigail::tools_utils::abidiff_status;
 using abigail::corpus;
 using abigail::corpus_sptr;
 using abigail::ir::elf_symbols;
@@ -279,7 +252,7 @@ using abigail::comparison::read_suppressions;
 /// thing.
 ///
 /// @return a status bitfield.
-static abicompat_status
+static abidiff_status
 perform_compat_check_in_normal_mode(options& opts,
 				    corpus_sptr app_corpus,
 				    corpus_sptr lib1_corpus,
@@ -289,7 +262,7 @@ perform_compat_check_in_normal_mode(options& opts,
   assert(lib2_corpus);
   assert(app_corpus);
 
-  abicompat_status status = NO_STATUS;
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
   // compare lib1 and lib2 only by looking at the functions and
   // variables which symbols are those undefined in the app.
@@ -372,6 +345,8 @@ perform_compat_check_in_normal_mode(options& opts,
 	  base_name(opts.lib2_path, lib2_path);
 	}
 
+      status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+
       bool abi_broke_for_sure = changes->soname_changed()
 	|| s.num_vars_removed()
 	|| s.num_func_removed()
@@ -382,22 +357,16 @@ perform_compat_check_in_normal_mode(options& opts,
       if (abi_broke_for_sure)
 	{
 	  cout << " is not ";
-	  status |= IS_ABI_INCOMPATIBLE_STATUS;
+	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
 	}
       else
-	{
 	  cout << " might not be ";
-	  status |= MAY_BE_ABI_INCOMPATIBLE_STATUS;
-	}
 
       cout << "ABI compatible with '" << lib2_path
 	   << "' due to differences with '" << lib1_path
 	   << "' below:\n";
       changes->report(cout);
-      status |= OK_STATUS;
     }
-  else
-      status |= NO_CHANGE_STATUS | OK_STATUS;
 
   return status;
 }
@@ -455,7 +424,7 @@ struct var_change
 /// layout differences found.
 ///
 /// @return a status bitfield.
-static abicompat_status
+static abidiff_status
 perform_compat_check_in_weak_mode(options& opts,
 				  corpus_sptr app_corpus,
 				  corpus_sptr lib_corpus)
@@ -463,7 +432,7 @@ perform_compat_check_in_weak_mode(options& opts,
   assert(lib_corpus);
   assert(app_corpus);
 
-  abicompat_status status = NO_STATUS;
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
   for (elf_symbols::const_iterator i =
 	 app_corpus->get_sorted_undefined_fun_symbols().begin();
@@ -555,7 +524,7 @@ perform_compat_check_in_weak_mode(options& opts,
       }
 
     if (!fn_changes.empty())
-      status |= MAY_BE_ABI_INCOMPATIBLE_STATUS;
+      status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
 
     type_base_sptr lib_var_type, app_var_type;
     diff_sptr type_diff;
@@ -591,9 +560,6 @@ perform_compat_check_in_weak_mode(options& opts,
 	  }
       }
   }
-
-  status |= OK_STATUS;
-
   return status;
 }
 
@@ -608,30 +574,33 @@ main(int argc, char* argv[])
 	{
 	  cerr << "unrecognized option: " << opts.unknow_option << "\n"
 	       << "try the --help option for more information\n";
-	  return false;
+	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
 
       cerr << "wrong invocation\n"
 	   << "try the --help option for more information\n";
-      return false;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.display_help)
     {
       display_usage(argv[0], cout);
-      return true;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		  | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   assert(!opts.app_path.empty());
   if (!abigail::tools_utils::check_file(opts.app_path, cerr))
-    return 1;
+    return abigail::tools_utils::ABIDIFF_ERROR;
 
   abigail::tools_utils::file_type type =
     abigail::tools_utils::guess_file_type(opts.app_path);
   if (type != abigail::tools_utils::FILE_TYPE_ELF)
     {
       cerr << opts.app_path << " is not an ELF file\n";
-      return 1;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   // Read the application ELF file.
@@ -646,12 +615,12 @@ main(int argc, char* argv[])
   if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
     {
       cerr << "could not read symbols from " << opts.app_path << "\n";
-      return 1;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
   if (!(status & abigail::dwarf_reader::STATUS_OK))
     {
       cerr << "could not read file " << opts.app_path << "\n";
-      return 1;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   if (opts.list_undefined_symbols_only)
@@ -669,18 +638,18 @@ main(int argc, char* argv[])
 	  else
 	    cout << id << "\n";
 	}
-      return 0;
+      return abigail::tools_utils::ABIDIFF_OK;
     }
 
   // Read the first version of the library.
   assert(!opts.lib1_path.empty());
   if (!abigail::tools_utils::check_file(opts.lib1_path, cerr))
-    return 1;
+    return abigail::tools_utils::ABIDIFF_ERROR;
   type = abigail::tools_utils::guess_file_type(opts.lib1_path);
   if (type != abigail::tools_utils::FILE_TYPE_ELF)
     {
       cerr << opts.lib1_path << " is not an ELF file\n";
-      return 1;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   corpus_sptr lib1_corpus;
@@ -694,12 +663,12 @@ main(int argc, char* argv[])
   if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
     {
       cerr << "could not read symbols from " << opts.lib1_path << "\n";
-      return 1;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
   if (!(status & abigail::dwarf_reader::STATUS_OK))
     {
       cerr << "could not read file " << opts.lib1_path << "\n";
-      return 1;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   // Read the second version of the library.
@@ -717,16 +686,16 @@ main(int argc, char* argv[])
       if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
 	{
 	  cerr << "could not read symbols from " << opts.lib2_path << "\n";
-	  return 1;
+	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
       if (!(status & abigail::dwarf_reader::STATUS_OK))
 	{
 	  cerr << "could not read file " << opts.lib2_path << "\n";
-	  return 1;
+	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
     }
 
-  abicompat_status s = NO_STATUS;
+  abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
 
   if (opts.weak_mode)
     s = perform_compat_check_in_weak_mode(opts,
@@ -738,7 +707,5 @@ main(int argc, char* argv[])
 					    lib1_corpus,
 					    lib2_corpus);
 
-  if (s & OK_STATUS)
-    return 0;
-  return 1;
+  return s;
 }

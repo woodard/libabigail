@@ -41,6 +41,86 @@ namespace abigail
 namespace tools_utils
 {
 
+/// The bitwise 'OR' operator for abidiff_status bit masks.
+///
+/// @param l the left hand side operand of the OR operator.
+///
+/// @param r the right hand side operand of the OR operator.
+///
+/// @return the result of the OR expression.
+abidiff_status
+operator|(abidiff_status l, abidiff_status r)
+{return static_cast<abidiff_status>(static_cast<unsigned>(l)
+				     | static_cast<unsigned>(r));}
+
+/// The bitwise 'AND' operator for abidiff_status bit masks.
+///
+/// @param l the left hand side operand of the AND operator.
+///
+/// @param r the right hand side operand of the AND operator.
+///
+/// @return the result of the AND expression.
+abidiff_status
+operator&(abidiff_status l, abidiff_status r)
+{return static_cast<abidiff_status>(static_cast<unsigned>(l)
+				     & static_cast<unsigned>(r));}
+
+/// The |= operator.
+///
+/// @param l the left hand side operand of the operator.
+///
+/// @param r the right hand side operand of the operator.
+///
+/// @param the resulting bit mask.
+abidiff_status&
+operator|=(abidiff_status&l, abidiff_status r)
+{
+  l = static_cast<abidiff_status>(static_cast<unsigned>(l)
+				  | static_cast<unsigned>(r));
+  return l;
+}
+
+/// Test if an instance of @param abidiff_status bits mask represents
+/// an error.
+///
+/// This functions tests if the @ref ABIDIFF_ERROR bit is set in the
+/// given bits mask.
+///
+/// @param s the bit mask to consider.
+///
+/// @return true iff @p s has its ABIDIFF_ERROR bit set.
+bool
+abidiff_status_has_error(abidiff_status s)
+{return s & ABIDIFF_ERROR;}
+
+/// Test if an instance of @param abidiff_status bits mask represents
+/// an abi change.
+///
+/// This functions tests if the @ref ABIDIFF_ABI_CHANGE bit is set in the
+/// given bits mask.
+///
+/// @param s the bit mask to consider.
+///
+/// @return true iff @p s has its @ref ABIDIFF_ABI_CHANGE bit set.
+bool
+abidiff_status_has_abi_change(abidiff_status s)
+{return s & ABIDIFF_ABI_CHANGE;}
+
+/// Test if an instance of @param abidiff_status bits mask represents
+/// an incompatible abi change.
+///
+/// This functions tests if the @ref ABIDIFF_INCOMPATIBLE_ABI_CHANGE
+/// bit is set in the given bits mask.  Note that the this bit is set
+/// then the bit @ref ABIDIFF_ABI_CHANGE must be set as well.
+///
+/// @param s the bit mask to consider.
+///
+/// @return true iff @p s has its @ref ABIDIFF_INCOMPATIBLE ABI_CHANGE
+/// set.
+bool
+abidiff_status_has_incompatible_abi_change(abidiff_status s)
+{return s & ABIDIFF_ABI_INCOMPATIBLE_CHANGE;}
+
 #define DECLARE_STAT(st) \
   struct stat st; \
   memset(&st, 0, sizeof(st))

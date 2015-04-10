@@ -372,6 +372,7 @@ main()
   using abigail::tests::get_src_dir;
   using abigail::tests::get_build_dir;
   using abigail::tools_utils::ensure_parent_dir_created;
+  using abigail::tools_utils::abidiff_status;
 
   bool is_ok = true;
   string in_elfv0_path, in_elfv1_path,
@@ -401,7 +402,9 @@ main()
 	cmd += " > " + out_diff_report_path;
 
 	bool abidiff_ok = true;
-	if (system(cmd.c_str()))
+	abidiff_status status =
+	  static_cast<abidiff_status>(system(cmd.c_str()) & 255);
+	if (abigail::tools_utils::abidiff_status_has_error(status))
 	  abidiff_ok = false;
 
 	if (abidiff_ok)

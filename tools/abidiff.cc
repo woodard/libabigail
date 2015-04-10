@@ -41,6 +41,7 @@ using abigail::translation_unit;
 using abigail::translation_unit_sptr;
 using abigail::corpus_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
+using abigail::comparison::corpus_diff;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::suppression_sptr;
@@ -49,6 +50,7 @@ using abigail::comparison::read_suppressions;
 using namespace abigail::dwarf_reader;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
+using abigail::tools_utils::abidiff_status;
 
 struct options
 {
@@ -464,29 +466,33 @@ main(int argc, char* argv[])
     {
       cerr << "unrecognized option\n"
 	"try the --help option for more information\n";
-      return false;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.missing_operand)
     {
       cerr << "missing operand\n"
 	"try the --help option for more information\n";
-      return false;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.display_usage)
     {
       display_usage(argv[0], cout);
-      return true;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
   if (!opts.file1.empty() && !opts.file2.empty())
     {
       if (!check_file(opts.file1, cerr))
-	return true;
+	return abigail::tools_utils::ABIDIFF_ERROR;
 
       if (!check_file(opts.file2, cerr))
-	return true;
+	return abigail::tools_utils::ABIDIFF_ERROR;
 
       abigail::tools_utils::file_type t1_type, t2_type;
 
@@ -494,14 +500,14 @@ main(int argc, char* argv[])
       if (t1_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
 	{
 	  cerr << "Unknown content type for file " << opts.file1 << "\n";
-	  return true;
+	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
 
       t2_type = guess_file_type(opts.file2);
       if (t2_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
 	{
 	  cerr << "Unknown content type for file " << opts.file2 << "\n";
-	  return true;
+	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
 
       translation_unit_sptr t1, t2;
@@ -515,7 +521,7 @@ main(int argc, char* argv[])
 	{
 	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
 	  cerr << "Unknown content type for file " << opts.file1 << "\n";
-	  return true;
+	  return abigail::tools_utils::ABIDIFF_ERROR;
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1);
@@ -544,7 +550,7 @@ main(int argc, char* argv[])
 	{
 	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
 	  cerr << "Unknown content type for file " << opts.file2 << "\n";
-	  return true;
+	  return abigail::tools_utils::ABIDIFF_ERROR;
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2);
@@ -592,7 +598,7 @@ main(int argc, char* argv[])
 		cerr << "could not find the ELF symbols in the file '"
 		       << opts.file1
 		     << "'\n";
-	      return true;
+	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
 	}
 
@@ -619,7 +625,7 @@ main(int argc, char* argv[])
 		cerr << "could not find the ELF symbols in the file '"
 		     << opts.file2
 		     << "'\n";
-	      return true;
+	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
 	}
 
@@ -627,7 +633,7 @@ main(int argc, char* argv[])
 	  || !!t1 != !!t2)
 	{
 	  cerr << "the two input should be of the same kind\n";
-	  return true;
+	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
 
       if (t1)
@@ -641,7 +647,7 @@ main(int argc, char* argv[])
 	  if (opts.show_symtabs)
 	    {
 	      display_symtabs(c1, c2, cout);
-	      return false;
+	      return abigail::tools_utils::ABIDIFF_OK;
 	    }
 
 	  set_corpus_keep_drop_regex_patterns(opts, c1);
@@ -650,14 +656,27 @@ main(int argc, char* argv[])
 	  diff_context_sptr ctxt(new diff_context);
 	  set_diff_context_from_opts(ctxt, opts);
 	  corpus_diff_sptr diff = compute_diff(c1, c2, ctxt);
+	  const corpus_diff::diff_stats& stats =
+	    diff->apply_filters_and_suppressions_before_reporting();
+	  if (diff->soname_changed()
+	      || stats.num_func_removed() != 0
+	      || stats.num_vars_removed() != 0
+	      || stats.num_func_syms_removed() != 0
+	      || stats.num_var_syms_removed() != 0)
+	    status = (abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE
+		      | abigail::tools_utils::ABIDIFF_ABI_CHANGE);
+	  else if (stats.net_num_func_changed() != 0
+		   || stats.net_num_vars_changed() != 0)
+	    status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+
 	  if (diff->has_changes() > 0)
 	    diff->report(cout);
 	}
-
-      return false;
+      else
+	status = abigail::tools_utils::ABIDIFF_ERROR;
     }
 
-  return true;
+  return status;
 }
 
 #ifdef __ABIGAIL_IN_THE_DEBUGGER__
