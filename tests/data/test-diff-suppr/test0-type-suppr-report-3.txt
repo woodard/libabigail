@@ -9,8 +9,9 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member change:
          type of 'MyType::Private* MyType::priv' changed:
            in pointed to type 'struct MyType::Private':
-             size changed from 32 to 64 bits
+             type size changed from 32 to 64 bits
              1 data member insertion:
                'char MyType::Private::m1', at offset 32 (in bits)
+
 
 

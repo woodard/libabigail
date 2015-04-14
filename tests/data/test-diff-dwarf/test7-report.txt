@@ -8,6 +8,7 @@ Variables changes summary: 0 Removed, 0 Changed, 1 Added variable
       in referenced type 'struct S':
         1 data member insertion:
           'static char S::m0'
+
 1 Added variable:
   'static char S::m0'
 

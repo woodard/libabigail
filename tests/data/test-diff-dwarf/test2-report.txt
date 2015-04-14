@@ -9,3 +9,4 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 1 of type 'char' changed:
       entity changed from 'char' to compatible type 'typedef Char'
 
+

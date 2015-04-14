@@ -8,6 +8,8 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       in referenced type 'struct S':
         1 data member change:
          type of 'int S::m0' changed:
-           name changed from 'int' to 'unsigned int'
+           type name changed from 'int' to 'unsigned int'
+
+
 
 

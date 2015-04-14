@@ -6,3 +6,4 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function int bar()' has some indirect sub-type changes:
     'function int bar() {_ZN1S3fooEv, _Z3barv}' now becomes 'method int S::foo() {_ZN1S3fooEv}'
 
+

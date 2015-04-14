@@ -3936,7 +3936,8 @@ distinct_diff::report(ostream& out, const string& indent) const
   if (diff_sptr diff = compatible_child_diff())
     diff->report(out, indent + "  ");
   else
-    if (report_size_and_alignment_changes(f, s, context(), out, indent, true))
+    if (report_size_and_alignment_changes(f, s, context(), out, indent,
+					  /*start_with_new_line=*/false))
       out << "\n";
 }
 
@@ -4457,9 +4458,26 @@ represent(var_diff_sptr	diff,
   var_decl_sptr n = diff->second_var();
 
   bool emitted = false;
+  bool begin_with_and = false;
   string name1 = o->get_qualified_name();
   string name2 = n->get_qualified_name();
   string pretty_representation = o->get_pretty_representation();
+
+  if (diff_sptr d = diff->type_diff())
+    {
+      if (d->to_be_reported())
+	{
+	  out << indent
+	      << "type of '" << pretty_representation << "' changed:\n";
+	  if (d->currently_reporting())
+	    out << indent << "  details are being reported\n";
+	  else if (d->reported_once())
+	    out << indent << "  details were reported earlier\n";
+	  else
+	    d->report(out, indent + "  ");
+	  begin_with_and = true;
+	}
+    }
 
   if (name1 != name2)
     {
@@ -4469,11 +4487,13 @@ represent(var_diff_sptr	diff,
 	;
       else
 	{
-	  if (!emitted)
-	    out << indent << "'" << pretty_representation << "' ";
-	  else
-	    out << ", ";
-	  out << "name changed to '" << name2 << "'";
+	  out << indent;
+	  if (begin_with_and)
+	    {
+	      out << "and ";
+	      begin_with_and = false;
+	    }
+	  out << "name of '" << name1 << "' changed to '" << name2 << "'";
 	  emitted = true;
 	}
     }
@@ -4481,7 +4501,12 @@ represent(var_diff_sptr	diff,
   if (get_data_member_is_laid_out(o)
       != get_data_member_is_laid_out(n))
     {
-      if (!emitted)
+      if (begin_with_and)
+	{
+	  out << indent << "and ";
+	  begin_with_and = false;
+	}
+      else if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
@@ -4495,18 +4520,29 @@ represent(var_diff_sptr	diff,
       && (get_data_member_offset(o)
 	  != get_data_member_offset(n)))
     {
-      if (!emitted)
+      if (begin_with_and)
+	{
+	  out << indent << "and ";
+	  begin_with_and = false;
+	}
+      else if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
       out << "offset changed from "
 	  << get_data_member_offset(o)
-	  << " to " << get_data_member_offset(n);
+	  << " to " << get_data_member_offset(n)
+	  << " (in bits)";
       emitted = true;
     }
   if (o->get_binding() != n->get_binding())
     {
-      if (!emitted)
+      if (begin_with_and)
+	{
+	  out << indent << "and ";
+	  begin_with_and = false;
+	}
+      else if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
@@ -4516,7 +4552,12 @@ represent(var_diff_sptr	diff,
     }
   if (o->get_visibility() != n->get_visibility())
     {
-      if (!emitted)
+      if (begin_with_and)
+	{
+	  out << indent << "and ";
+	  begin_with_and = false;
+	}
+      else if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
@@ -4527,7 +4568,12 @@ represent(var_diff_sptr	diff,
       && (get_member_access_specifier(o)
 	  != get_member_access_specifier(n)))
     {
-      if (!emitted)
+      if (begin_with_and)
+	{
+	  out << indent << "and ";
+	  begin_with_and = false;
+	}
+      else if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
@@ -4541,7 +4587,12 @@ represent(var_diff_sptr	diff,
   if (get_member_is_static(o)
       != get_member_is_static(n))
     {
-      if (!emitted)
+      if (begin_with_and)
+	{
+	  out << indent << "and ";
+	  begin_with_and = false;
+	}
+      else if (!emitted)
 	out << indent << "'" << pretty_representation << "' ";
       else
 	out << ", ";
@@ -4550,29 +4601,7 @@ represent(var_diff_sptr	diff,
 	out << "is no more static";
       else
 	out << "now becomes static";
-      emitted = true;
     }
-  if (diff_sptr d = diff->type_diff())
-    {
-      if (d->to_be_reported())
-	{
-	  if (!emitted)
-	    out << indent << "type of '" << pretty_representation << "' changed:\n";
-	  else
-	    out << "\n" << indent << "and its type '"
-		<< get_type_declaration(o->get_type())->get_pretty_representation()
-		<< "' changed:\n";
-	  if (d->currently_reporting())
-	    out << indent << "  details are being reported\n";
-	  else if (d->reported_once())
-	    out << indent << "  details were reported earlier\n";
-	  else
-	    d->report(out, indent + "  ");
-	  emitted = false;
-	}
-    }
-  if (emitted)
-    out << "\n";
 }
 
 /// Report the size and alignment changes of a type.
@@ -4607,14 +4636,76 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
   bool n = false;
   unsigned fs = f->get_size_in_bits(), ss = s->get_size_in_bits(),
     fa = f->get_alignment_in_bits(), sa = s->get_alignment_in_bits();
+  array_type_def_sptr first_array = is_array_type(is_type(first)),
+    second_array = is_array_type(is_type(second));
+  unsigned fdc = first_array ? first_array->get_dimension_count(): 0,
+    sdc = second_array ? second_array->get_dimension_count(): 0;
+
+  if (nl)
+    out << "\n";
 
   if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
-      && (fs != ss))
+      && (fs != ss || fdc != sdc))
     {
-      if (nl)
-	out << "\n";
-      out << indent << "size changed from " << fs << " to " << ss << " bits";
-      n = true;
+      if (first_array)
+	{
+	  assert(second_array);
+	  out << indent << "array type size changed from ";
+	  if (first_array->is_infinite())
+	    out << "infinity";
+	  else
+	    out << first_array->get_size_in_bits();
+	  out << " to ";
+	  if (second_array->is_infinite())
+	    out << "infinity";
+	  else
+	    out << second_array->get_size_in_bits();
+	  out << " bits:\n";
+
+	  if (sdc != fdc)
+	    {
+	      out << indent + "  "
+		  << "number of dimensions changed from "
+		  << fdc
+		  << " to "
+		  << sdc
+		  << "\n";
+	    }
+	  array_type_def::subranges_type::const_iterator i, j;
+	  for (i = first_array->get_subranges().begin(),
+		 j = second_array->get_subranges().begin();
+	       (i != first_array->get_subranges().end()
+		&& j != second_array->get_subranges().end());
+	       ++i, ++j)
+	    {
+	      if ((*i)->get_length() != (*j)->get_length())
+		{
+		  out << indent
+		      << "array type subrange "
+		      << i - first_array->get_subranges().begin() + 1
+		      << " changed length from ";
+
+		  if ((*i)->is_infinite())
+		    out << "infinity";
+		  else
+		    out << (*i)->get_length();
+
+		  out << " to ";
+
+		  if ((*j)->is_infinite())
+		    out << "infinity";
+		  else
+		    out << (*j)->get_length();
+		  out << "\n";
+		}
+	    }
+	}
+      else
+	{
+	  out << indent
+	      << "type size changed from " << fs << " to " << ss << " bits";
+	  n = true;
+	}
     }
   if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
       && (fa != sa))
@@ -4622,7 +4713,7 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
       if (n)
 	out << "\n";
       out << indent
-	  << "alignment changed from " << fa << " to " << sa << " bits";
+	  << "type alignment changed from " << fa << " to " << sa << " bits";
       n = true;
     }
 
@@ -4668,8 +4759,12 @@ report_name_size_and_alignment_changes(decl_base_sptr		first,
 	{
 	  if (nl)
 	    out << "\n";
-	  out << indent << "name changed from '"
-	      << fn << "' to '" << sn << "'";
+	  out << indent;
+	  if (is_type(first))
+	    out << "type";
+	  else
+	    out << "declaration";
+	  out << " name changed from '" << fn << "' to '" << sn << "'";
 	  nl = true;
 	}
     }
@@ -5293,84 +5388,18 @@ array_diff::report(ostream& out, const string& indent) const
   diff_sptr d = element_type_diff();
   if (d->to_be_reported())
     {
-      // report array element type changes
-      out << indent << "array element type of '"
-	  << name << "' changed:\n";
+      string fn = ir::get_pretty_representation(is_type(d->first_subject()));
+	// report array element type changes
+      out << indent << "array element type '"
+	  << fn << "' changed: \n";
       d->report(out, indent + "  ");
     }
 
-  const array_type_def_sptr x = first_array(), y = second_array();
-
-  if ((x->get_size_in_bits() != y->get_size_in_bits())
-      || (x->get_dimension_count() != y->get_dimension_count()))
-    {
-      out << indent
-	  << "in array type '"
-	  << name
-	  << "':\n";
-      if (x->get_size_in_bits() != y->get_size_in_bits())
-	{
-	  out << indent + "  "
-	      << "size changed from ";
-
-	  if (x->is_infinite())
-	    out << "infinity";
-	  else
-	    out << x->get_size_in_bits();
-
-	  out << " to ";
-
-	  if (y->is_infinite())
-	    out << "infinity";
-	  else
-	    out << y->get_size_in_bits();
-
-	  out << "\n";
-	}
-
-      size_t a, b;
-      if ((a = x->get_dimension_count())
-	  != (b = y->get_dimension_count()))
-	{
-	  out << indent + "  "
-	      << "number of dimensions changed from "
-	      << a
-	      << " to "
-	      << b
-	      << "\n";
-	}
-      else
-	{
-	  array_type_def::subranges_type::const_iterator i, j;
-	  for (i = x->get_subranges().begin(),
-		 j = y->get_subranges().begin();
-	       i != x->get_subranges().end();
-	       ++i, ++j)
-	    {
-	      if ((*i)->get_length() != (*j)->get_length())
-		{
-		  out << indent + "  "
-		      << "subrange "
-		      << i - x->get_subranges().begin() + 1
-		      << " changed length from ";
-
-		  if ((*i)->is_infinite())
-		    out << "infinity";
-		  else
-		    out << (*i)->get_length();
-
-		  out << " to ";
-
-		  if ((*j)->is_infinite())
-		    out << "infinity";
-		  else
-		    out << (*j)->get_length();
-
-		  out << "\n";
-		}
-	    }
-	}
-    }
+  report_name_size_and_alignment_changes(first_array(),
+					 second_array(),
+					 context(),
+					 out, indent,
+					 /*new line=*/false);
 }
 
 /// Compute the diff between two arrays.
@@ -11680,6 +11709,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 		  << (*i)->first_function_decl()->get_pretty_representation()
 		  << "' has some indirect sub-type changes:\n";
 	      diff->report(out, indent + "    ");
+	      out << "\n";
 	      emitted |= true;
 	    }
 	  }
@@ -11794,11 +11824,12 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  n1 = diff->first_subject()->get_pretty_representation();
 	  n2 = diff->second_subject()->get_pretty_representation();
 
-	  out << indent << "  '" << n1 << "' was changed";
+	  out << indent << "  [C]'" << n1 << "' was changed";
 	  if (n1 != n2)
 	    out << " to '" << n2 << "'";
 	  out << ":\n";
 	  diff->report(out, indent + "    ");
+	  out << "\n";
 	}
       if (num_changed)
 	out << "\n";

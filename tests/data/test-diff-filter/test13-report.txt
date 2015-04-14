@@ -11,16 +11,16 @@ Variable symbols changes summary: 0 Removed, 0 Added function symbol not referen
   [C]'function void foo(S&)' has some indirect sub-type changes:
     parameter 0 of type 'S&' has sub-type changes:
       in referenced type 'struct S':
-        size changed from 64 to 96 bits
+        type size changed from 64 to 96 bits
         no base class change (1 filtered);
         1 base class insertion:
           class B1
         1 data member change:
-         'int S::m0' offset changed from 32 to 64
-         and its type 'int' changed:
-           name changed from 'int' to 'char'
-           size changed from 32 to 8 bits
-           alignment changed from 32 to 8 bits
+         type of 'int S::m0' changed:
+           type name changed from 'int' to 'char'
+           type size changed from 32 to 8 bits
+           type alignment changed from 32 to 8 bits
+         and offset changed from 32 to 64 (in bits)
 
 
 1 Added function symbol not referenced by debug info:

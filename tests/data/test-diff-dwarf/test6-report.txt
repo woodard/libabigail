@@ -7,6 +7,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 0 of type 'S0&' has sub-type changes:
       in referenced type 'struct S0':
         1 data member change:
-         'char S0::m2' name changed to 'S0::m12'
+         name of 'S0::m2' changed to 'S0::m12'
 
 

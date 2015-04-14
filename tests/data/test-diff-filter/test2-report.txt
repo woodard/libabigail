@@ -11,18 +11,18 @@ Variable symbols changes summary: 0 Removed, 0 Added function symbol not referen
   [C]'function void bar(C1&)' has some indirect sub-type changes:
     parameter 0 of type 'C1&' has sub-type changes:
       in referenced type 'class C1':
-        size changed from 8 to 64 bits
+        type size changed from 8 to 64 bits
         1 data member insertion:
           'int C1::m1', at offset 32 (in bits)
+
   [C]'function void foo(C0&)' has some indirect sub-type changes:
     parameter 0 of type 'C0&' has sub-type changes:
       in referenced type 'struct C0':
-        size changed from 16 to 24 bits
+        type size changed from 16 to 24 bits
         1 data member insertion:
           'char C0::m2', at offset 0 (in bits)
         2 data member changes:
-         'E0 C0::m0' offset changed from 0 to 8
-         'E1 C0::m1' offset changed from 8 to 16
+         'E0 C0::m0' offset changed from 0 to 8 (in bits)         'E1 C0::m1' offset changed from 8 to 16 (in bits)
 
 
 1 Added function symbol not referenced by debug info:

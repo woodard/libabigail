@@ -3,13 +3,15 @@ Variables changes summary: 0 Removed, 2 Changed, 0 Added variables
 
 2 Changed variables:
 
-  'S* var1' was changed:
+  [C]'S* var1' was changed:
     type of variable changed:
      in pointed to type 'struct S':
-       size changed from 64 to 96 bits
+       type size changed from 64 to 96 bits
        1 data member insertion:
          'unsigned int S::m2', at offset 64 (in bits)
-  'S* var2' was changed:
+
+  [C]'S* var2' was changed:
     type of variable changed:
      pointed to type 'struct S' changed, as reported earlier
+
 

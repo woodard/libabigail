@@ -13,9 +13,10 @@ Variable symbols changes summary: 0 Removed, 0 Added function symbol not referen
   [C]'function void foo(S&)' has some indirect sub-type changes:
     parameter 0 of type 'S&' has sub-type changes:
       in referenced type 'struct S':
-        size changed from 8 to 32 bits
+        type size changed from 8 to 32 bits
         1 data member insertion:
           'int S::m0', at offset 0 (in bits)
+
 
 1 Added function symbol not referenced by debug info:
 

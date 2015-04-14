@@ -6,14 +6,15 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void foo(S&)' has some indirect sub-type changes:
     parameter 0 of type 'S&' has sub-type changes:
       in referenced type 'struct S':
-        size changed from 128 to 192 bits
+        type size changed from 128 to 192 bits
         3 data member changes:
          type of 'int S::m0' changed:
-           name changed from 'int' to 'unsigned int'
+           type name changed from 'int' to 'unsigned int'
+
          type of 'unsigned int S::m2' changed:
-           name changed from 'unsigned int' to 'long long int'
-           size changed from 32 to 64 bits
-           alignment changed from 32 to 64 bits
-         'unsigned char S::m3' offset changed from 96 to 128
+           type name changed from 'unsigned int' to 'long long int'
+           type size changed from 32 to 64 bits
+           type alignment changed from 32 to 64 bits
+         'unsigned char S::m3' offset changed from 96 to 128 (in bits)
 
 

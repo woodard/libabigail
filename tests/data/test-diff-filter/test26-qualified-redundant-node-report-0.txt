@@ -16,3 +16,4 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                      'char FooStruct::Embedded::m1', at offset 32 (in bits)
 
 
+

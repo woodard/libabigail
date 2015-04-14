@@ -7,14 +7,14 @@ expects:
   function void bar(S0*):
     parameter 0 of type 'S0*' has sub-type changes:
       in pointed to type 'struct S0':
-        size changed from 32 to 64 bits
+        type size changed from 32 to 64 bits
         1 data member insertion:
           'char S0::m1', at offset 32 (in bits)
 
   function int foo(S1*):
     parameter 0 of type 'S1*' has sub-type changes:
       in pointed to type 'struct S1':
-        size changed from 64 to 32 bits
+        type size changed from 64 to 32 bits
         1 data member deletion:
           'unsigned char S1::m1', at offset 32 (in bits)
 
