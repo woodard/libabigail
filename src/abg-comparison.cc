@@ -282,6 +282,10 @@ static void
 sort_string_fn_parm_diff_sptr_map(const string_fn_parm_diff_sptr_map&	map,
 				  vector<fn_parm_diff_sptr>&		sorted);
 
+static void
+sort_string_parm_map(const string_parm_map& map,
+		     vector<function_decl::parameter_sptr>& sorted);
+
 static type_base_sptr
 get_leaf_type(qualified_type_def_sptr t);
 
@@ -9081,7 +9085,9 @@ struct function_type_diff::priv
 
   // useful lookup tables.
   string_parm_map			deleted_parms_;
+  vector<function_decl::parameter_sptr> sorted_deleted_parms_;
   string_parm_map			added_parms_;
+  vector<function_decl::parameter_sptr> sorted_added_parms_;
   // This map contains parameters sub-type changes that don't change
   // the name of the type of the parameter.
   string_fn_parm_diff_sptr_map		subtype_changed_parms_;
@@ -9168,6 +9174,12 @@ function_type_diff::ensure_lookup_tables_populated()
 	  }
 	}
     }
+
+  sort_string_parm_map(priv_->deleted_parms_,
+		       priv_->sorted_deleted_parms_);
+
+  sort_string_parm_map(priv_->added_parms_,
+		       priv_->sorted_added_parms_);
 }
 
 /// In the vector of deleted parameters, get the one that is at a given
@@ -9396,12 +9408,13 @@ function_type_diff::report(ostream& out, const string& indent) const
 
   // Report about the parameters that got removed.
   bool emitted = false;
-  for (string_parm_map::const_iterator i = priv_->deleted_parms_.begin();
-       i != priv_->deleted_parms_.end();
+  for (vector<function_decl::parameter_sptr>::const_iterator i =
+	 priv_->sorted_deleted_parms_.begin();
+       i != priv_->sorted_deleted_parms_.end();
        ++i)
     {
-      out << indent << "parameter " << i->second->get_index()
-	  << " of type '" << i->second->get_type_pretty_representation()
+      out << indent << "parameter " << (*i)->get_index()
+	  << " of type '" << (*i)->get_type_pretty_representation()
 	  << "' was removed\n";
       emitted = true;
     }
@@ -9410,12 +9423,13 @@ function_type_diff::report(ostream& out, const string& indent) const
 
   // Report about the parameters that got added
   emitted = false;
-  for (string_parm_map::const_iterator i = priv_->added_parms_.begin();
-       i != priv_->added_parms_.end();
+  for (vector<function_decl::parameter_sptr>::const_iterator i =
+	 priv_->sorted_added_parms_.begin();
+       i != priv_->sorted_added_parms_.end();
        ++i)
     {
-      out << indent << "parameter " << i->second->get_index()
-	  << " of type '" << i->second->get_type_pretty_representation()
+      out << indent << "parameter " << (*i)->get_index()
+	  << " of type '" << (*i)->get_type_pretty_representation()
 	  << "' was added\n";
       emitted = true;
     }
@@ -9642,6 +9656,59 @@ sort_string_fn_parm_diff_sptr_map(const string_fn_parm_diff_sptr_map&	map,
     sorted.push_back(i->second);
 
   fn_parm_diff_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Functor that compares two function parameters for the purpose of
+/// sorting them.
+struct parm_comp
+{
+  /// Returns true iff the index of the first parameter is smaller
+  /// than the of the second parameter.
+  ///
+  /// @param l the first parameter to compare.
+  ///
+  /// @param r the second parameter to compare.
+  ///
+  /// @return true iff the index of the first parameter is smaller
+  /// than the of the second parameter.
+  bool
+  operator()(const function_decl::parameter& l,
+	     const function_decl::parameter& r)
+  {return l.get_index() < r.get_index();}
+
+  /// Returns true iff the index of the first parameter is smaller
+  /// than the of the second parameter.
+  ///
+  /// @param l the first parameter to compare.
+  ///
+  /// @param r the second parameter to compare.
+  ///
+  /// @return true iff the index of the first parameter is smaller
+  /// than the of the second parameter.
+  bool
+  operator()(const function_decl::parameter_sptr& l,
+	     const function_decl::parameter_sptr& r)
+  {return operator()(*l, *r);}
+}; // end struct parm_comp
+
+/// Sort a map of string -> function parameters.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulting sorted vector of
+/// @ref vector<function_decl::parameter_sptr> 
+static void
+sort_string_parm_map(const string_parm_map& map,
+		     vector<function_decl::parameter_sptr>& sorted)
+{
+  for (string_parm_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  // TODO: finish this.
+  parm_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 

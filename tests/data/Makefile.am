@@ -192,6 +192,16 @@ test-diff-dwarf/libtest-23-diff-arch-v0-32.so \
 test-diff-dwarf/libtest-23-diff-arch-v0-64.so \
 test-diff-dwarf/test-23-diff-arch-report-0.txt \
 test-diff-dwarf/test-23-diff-arch-v0.cc \
+test-diff-dwarf/libtest24-added-fn-parms-v0.so \
+test-diff-dwarf/libtest24-added-fn-parms-v1.so \
+test-diff-dwarf/test24-added-fn-parms-report-0.txt \
+test-diff-dwarf/test24-added-fn-parms-v0.c \
+test-diff-dwarf/test24-added-fn-parms-v1.c \
+test-diff-dwarf/libtest25-removed-fn-parms-v0.so \
+test-diff-dwarf/libtest25-removed-fn-parms-v1.so \
+test-diff-dwarf/test25-removed-fn-parms-report-0.txt \
+test-diff-dwarf/test25-removed-fn-parms-v0.c \
+test-diff-dwarf/test25-removed-fn-parms-v1.c \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\
