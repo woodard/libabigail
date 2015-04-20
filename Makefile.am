@@ -8,11 +8,11 @@ m4data_DATA = $(srcdir)/abigail.m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libabigail.pc
 
-EXTRA_DIST = 				\
+EXTRA_DIST = 			\
 README COPYING ChangeLog	\
-COPYING-LGPLV2 COPYING-LGPLV3		\
-gen-changelog.py			\
-$(headers) $(m4data_DATA) 		\
+COPYING-LGPLV2 COPYING-LGPLV3	\
+COPYING-GPLV3 gen-changelog.py	\
+$(headers) $(m4data_DATA) 	\
 libabigail.pc.in
 
 update-changelog:
