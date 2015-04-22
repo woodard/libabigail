@@ -29,6 +29,7 @@
 #include <ostream>
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
+#include "abg-ini.h"
 
 namespace abigail
 {
@@ -474,6 +475,13 @@ public:
     BUILTIN_TYPE_KIND
   }; // end enum type_kind
 
+  class insertion_range;
+  /// A convenience typedef for a shared pointer to @ref
+  /// insertion_range.
+  typedef shared_ptr<insertion_range> insertion_range_sptr;
+  /// A convenience typedef for a vector of @ref insertion_range_sptr.
+  typedef vector<insertion_range_sptr> insertion_ranges;
+
   type_suppression(const string& label,
 		   const string& type_name_regexp,
 		   const string& type_name);
@@ -504,9 +512,129 @@ public:
   type_kind
   get_type_kind() const;
 
+  void
+  set_data_member_insertion_ranges(const insertion_ranges& r);
+
+  const insertion_ranges&
+  get_data_member_insertion_ranges() const;
+
+  insertion_ranges&
+  get_data_member_insertion_ranges();
+
   virtual bool
   suppresses_diff(const diff* diff) const;
 }; // end type_suppression
+
+/// The abstraction of a range of offsets in which a member of a type
+/// might get inserted.
+class type_suppression::insertion_range
+{
+public:
+
+  class boundary;
+  class integer_boundary;
+  class fn_call_expr_boundary;
+
+  /// Convenience typedef for a shared_ptr to @ref boundary
+  typedef shared_ptr<boundary> boundary_sptr;
+
+  /// Convenience typedef for a shared_ptr to a @ref integer_boundary
+  typedef shared_ptr<integer_boundary> integer_boundary_sptr;
+
+  /// Convenience typedef for a shared_ptr to a @ref
+  /// fn_call_expr_boundary
+  typedef shared_ptr<fn_call_expr_boundary> fn_call_expr_boundary_sptr;
+
+private:
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+  insertion_range();
+
+  insertion_range(boundary_sptr begin, boundary_sptr end);
+
+  boundary_sptr
+  begin() const;
+
+ boundary_sptr
+  end() const;
+
+  static insertion_range::integer_boundary_sptr
+  create_integer_boundary(int value);
+
+  static insertion_range::fn_call_expr_boundary_sptr
+  create_fn_call_expr_boundary(ini::function_call_expr_sptr);
+
+  static insertion_range::fn_call_expr_boundary_sptr
+  create_fn_call_expr_boundary(const string&);
+
+  static bool
+  eval_boundary(boundary_sptr	boundary,
+		class_decl_sptr context,
+		ssize_t&	value);
+}; // end class insertion_range
+
+type_suppression::insertion_range::integer_boundary_sptr
+is_integer_boundary(type_suppression::insertion_range::boundary_sptr);
+
+type_suppression::insertion_range::fn_call_expr_boundary_sptr
+is_fn_call_expr_boundary(type_suppression::insertion_range::boundary_sptr);
+
+/// The abstraction of the boundary of an @ref insertion_range, in the
+/// context of a @ref type_suppression
+class type_suppression::insertion_range::boundary
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+  boundary();
+  virtual ~boundary();
+};// end class type_suppression::insertion_range::boundary
+
+/// An @ref insertion_range boundary that is expressed as an integer
+/// value.  That integer value is usually a bit offset.
+class type_suppression::insertion_range::integer_boundary
+  : public type_suppression::insertion_range::boundary
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  integer_boundary();
+
+public:
+  integer_boundary(int value);
+  int as_integer() const;
+  operator int() const;
+  ~integer_boundary();
+}; //end class type_suppression::insertion_range::integer_boundary
+
+/// An @ref insertion_range boundary that is expressed as function
+/// call expression.  The (integer) value of that expression is
+/// usually a bit offset.
+class type_suppression::insertion_range::fn_call_expr_boundary
+  : public type_suppression::insertion_range::boundary
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  fn_call_expr_boundary();
+
+public:
+  fn_call_expr_boundary(ini::function_call_expr_sptr expr);
+  ini::function_call_expr_sptr as_function_call_expr() const;
+  operator ini::function_call_expr_sptr () const;
+  ~fn_call_expr_boundary();
+}; //end class type_suppression::insertion_range::fn_call_expr_boundary
 
 class function_suppression;
 

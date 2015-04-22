@@ -458,11 +458,12 @@ read_suppressions(const string& file_path,
 /// The private data for @ref type_suppression.
 class type_suppression::priv
 {
-  string				type_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	type_name_regex_;
-  string				type_name_;
-  bool					consider_type_kind_;
-  type_suppression::type_kind		type_kind_;
+  string				 type_name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	 type_name_regex_;
+  string				 type_name_;
+  bool					 consider_type_kind_;
+  type_suppression::type_kind		 type_kind_;
+  type_suppression::insertion_ranges	 insertion_ranges_;
 
   priv();
 
@@ -618,6 +619,33 @@ type_suppression::type_kind
 type_suppression::get_type_kind() const
 {return priv_->type_kind_;}
 
+/// Setter for the vector of data member insertion ranges that
+/// specifies where a data member is inserted as far as this
+/// suppression specification is concerned.
+///
+/// @param r the new insertion range vector.
+void
+type_suppression::set_data_member_insertion_ranges(const insertion_ranges& r)
+{priv_->insertion_ranges_ = r;}
+
+/// Getter for the vector of data member insertion range that
+/// specifiers where a data member is inserted as far as this
+/// suppression specification is concerned.
+///
+/// @return the vector of insertion ranges.
+const type_suppression::insertion_ranges&
+type_suppression::get_data_member_insertion_ranges() const
+{return priv_->insertion_ranges_;}
+
+/// Getter for the vector of data member insertion range that
+/// specifiers where a data member is inserted as far as this
+/// suppression specification is concerned.
+///
+/// @return the vector of insertion ranges.
+type_suppression::insertion_ranges&
+type_suppression::get_data_member_insertion_ranges()
+{return priv_->insertion_ranges_;}
+
 /// Evaluate this suppression specification on a given diff node and
 /// say if the diff node should be suppressed or not.
 ///
@@ -707,8 +735,359 @@ type_suppression::suppresses_diff(const diff* diff) const
 	return false;
     }
 
+  const class_diff* klass_diff = dynamic_cast<const class_diff*>(diff);
+  if (// We are looking at a class diff ...
+      klass_diff
+      // ... that has inserted data members ...
+      && !get_data_member_insertion_ranges().empty()
+      // ... that has no deleted data members ...
+      && klass_diff->deleted_data_members().empty()
+      // ... and in which the class size hasn't shrunk (because, e.g,
+      // the base classes have changed).
+      && (klass_diff->first_class_decl()->get_size_in_bits()
+	  <= klass_diff->second_class_decl()->get_size_in_bits()))
+    {
+      for (string_decl_base_sptr_map::const_iterator m =
+	     klass_diff->inserted_data_members().begin();
+	   m != klass_diff->inserted_data_members().end();
+	   ++m)
+	{
+	  decl_base_sptr member = m->second;
+	  size_t dm_offset = get_data_member_offset(member);
+	  size_t first_type_size =
+	    klass_diff->first_class_decl()->get_size_in_bits();
+	  size_t second_type_size =
+	    klass_diff->second_class_decl()->get_size_in_bits();
+	  bool matched = false;
+
+	  for (insertion_ranges::const_iterator i =
+		 get_data_member_insertion_ranges().begin();
+	       i != get_data_member_insertion_ranges().end();
+	       ++i)
+	    {
+	      type_suppression::insertion_range_sptr range = *i;
+	      ssize_t range_begin_val = 0,range_end_val = 0;
+	      if (!type_suppression::insertion_range::eval_boundary
+		  (range->begin(),
+		   klass_diff->first_class_decl(),
+		   range_begin_val))
+		break;
+	      if (!type_suppression::insertion_range::eval_boundary
+		  (range->end(),
+		   klass_diff->first_class_decl(),
+		   range_end_val))
+		break;
+
+
+	      unsigned range_begin =
+		(range_begin_val < 0) ? first_type_size : range_begin_val;
+
+	      unsigned range_end =
+		(range_end_val < 0) ? second_type_size : range_end_val;
+
+	      if (range_begin > range_end)
+		continue;
+
+	      if (range_begin_val < 0 || range_end_val < 0)
+		{
+		  if (dm_offset < range_begin)
+		    continue;
+		}
+	      else
+		if (dm_offset < range_begin || dm_offset > range_end)
+		  continue;
+
+	      matched = true;
+	    }
+	  if (!matched)
+	    return false;
+	}
+    }
+
   return true;
 }
+
+/// The private data of type_suppression::insertion_range
+struct type_suppression::insertion_range::priv
+{
+  boundary_sptr begin_;
+  boundary_sptr end_;
+
+  priv()
+  {}
+
+  priv(boundary_sptr begin, boundary_sptr end)
+    : begin_(begin), end_(end)
+  {}
+}; // end struct type_suppression::insertion_range::priv
+
+/// Default Constructor of @ref type_suppression::insertion_range.
+type_suppression::insertion_range::insertion_range()
+  : priv_(new priv)
+{}
+
+/// Constructor of @ref type_suppression::insertion_range.
+///
+/// @param begin the start of the range.  A range boundary that is an
+/// instance of @ref interger_boundary with a negative value means the
+/// maximum possible value.
+///
+/// @param end the end of the range.  A range boundary that is an
+/// instance of @ref interger_boundary with a negative value means the
+/// maximum possible value.
+type_suppression::insertion_range::insertion_range(boundary_sptr begin,
+						   boundary_sptr end)
+  : priv_(new priv(begin, end))
+{}
+
+/// Getter for the beginning of the range.
+///
+/// @return the beginning of the range.  A range boundary that is an
+/// instance of @ref interger_boundary with a negative value means the
+/// maximum possible value.
+type_suppression::insertion_range::boundary_sptr
+type_suppression::insertion_range::begin() const
+{return priv_->begin_;}
+
+/// Getter for the end of the range.
+///
+/// @return the end of the range.  A range boundary that is an
+/// instance of @ref interger_boundary with a negative value means the
+/// maximum possible value.
+type_suppression::insertion_range::boundary_sptr
+type_suppression::insertion_range::end() const
+{return priv_->end_;}
+
+/// Create an integer boundary.
+///
+/// The return value of this function is to be used as a boundary for
+/// an instance of @ref type_suppression::insertion_range.  That
+/// boundary evaluates to an integer value.
+///
+/// @param value the value of the integer boundary.
+///
+/// @return the resulting integer boundary.
+type_suppression::insertion_range::integer_boundary_sptr
+type_suppression::insertion_range::create_integer_boundary(int value)
+{return integer_boundary_sptr(new integer_boundary(value));}
+
+
+/// Create a function call expression boundary.
+///
+/// The return value of this function is to be used as a boundary for
+/// an instance of @ref type_suppression::insertion_range.  The value
+/// of that boundary is actually a function call expression that
+/// itself evalutates to an integer value, in the context of a @ref
+/// class_decl.
+///
+/// @param expr the function call expression to create the boundary from.
+///
+/// @return the resulting function call expression boundary.
+type_suppression::insertion_range::fn_call_expr_boundary_sptr
+type_suppression::insertion_range::create_fn_call_expr_boundary(ini::function_call_expr_sptr expr)
+{return fn_call_expr_boundary_sptr(new fn_call_expr_boundary(expr));}
+
+/// Create a function call expression boundary.
+///
+/// The return value of this function is to be used as a boundary for
+/// an instance of @ref type_suppression::insertion_range.  The value
+/// of that boundary is actually a function call expression that
+/// itself evalutates to an integer value, in the context of a @ref
+/// class_decl.
+///
+/// @param s a string representing the expression the function call
+/// expression to create the boundary from.
+///
+/// @return the resulting function call expression boundary.
+type_suppression::insertion_range::fn_call_expr_boundary_sptr
+type_suppression::insertion_range::create_fn_call_expr_boundary(const string& s)
+{
+  fn_call_expr_boundary_sptr result, nil;
+  ini::function_call_expr_sptr expr;
+  if (ini::read_function_call_expr(s, expr) && expr)
+    result.reset(new fn_call_expr_boundary(expr));
+  return result;
+}
+
+/// Evaluate an insertion range boundary to get a resulting integer
+/// value.
+///
+/// @param boundary the boundary to evaluate.
+///
+/// @param context the context of evualuation.  It's a @ref class_decl
+/// to take into account during the evaluation, if there is a need for
+/// it.
+///
+/// @return true iff the evaluation was successful and @p value
+/// contains the resulting value.
+bool
+type_suppression::insertion_range::eval_boundary(boundary_sptr	 boundary,
+						 class_decl_sptr context,
+						 ssize_t&	 value)
+{
+  if (integer_boundary_sptr b = is_integer_boundary(boundary))
+    {
+      value = b->as_integer();
+      return true;
+    }
+  else if (fn_call_expr_boundary_sptr b = is_fn_call_expr_boundary(boundary))
+    {
+      ini::function_call_expr_sptr fn_call = b->as_function_call_expr();
+      if ((fn_call->get_name() == "offset_of"
+	   || fn_call->get_name() == "offset_after")
+	  && fn_call->get_arguments().size() == 1)
+	{
+	  string member_name = fn_call->get_arguments()[0];
+	  for (class_decl::data_members::const_iterator it =
+		 context->get_data_members().begin();
+	       it != context->get_data_members().end();
+	       ++it)
+	    {
+	      if (!get_data_member_is_laid_out(**it))
+		continue;
+	      if ((*it)->get_name() == member_name)
+		{
+		  if (fn_call->get_name() == "offset_of")
+		    value = get_data_member_offset(*it);
+		  else if (fn_call->get_name() == "offset_after")
+		    value = get_data_member_offset(*it) +
+		      (*it)->get_type()->get_size_in_bits();
+		  else
+		    // We should not reach this point.
+		    abort();
+		  return true;
+		}
+	    }
+	}
+    }
+  return false;
+}
+
+/// Tests if a given instance of @ref
+/// type_suppression::insertion_range::boundary is actually an integer boundary.
+///
+/// @param b the boundary to test.
+///
+/// @return a pointer to the instance of
+/// type_suppression::insertion_range::integer_boundary if @p b is
+/// actually an integer boundary.  Otherwise, return a null pointer.
+type_suppression::insertion_range::integer_boundary_sptr
+is_integer_boundary(type_suppression::insertion_range::boundary_sptr b)
+{return dynamic_pointer_cast<type_suppression::insertion_range::integer_boundary>(b);}
+
+/// Tests if a given instance of @ref
+/// type_suppression::insertion_range::boundary is actually an function call expression boundary.
+///
+/// @param b the boundary to test.
+///
+/// @return a pointer to the instance of
+/// type_suppression::insertion_range::fn_call_expr_boundary if @p b
+/// is actually an function call expression boundary.  Otherwise,
+/// return a null pointer.
+type_suppression::insertion_range::fn_call_expr_boundary_sptr
+is_fn_call_expr_boundary(type_suppression::insertion_range::boundary_sptr b)
+{return dynamic_pointer_cast<type_suppression::insertion_range::fn_call_expr_boundary>(b);}
+
+/// The private data type of @ref
+/// type_suppression::insertion_range::boundary.
+struct type_suppression::insertion_range::boundary::priv
+{
+  priv()
+  {}
+}; // end struct type_suppression::insertion_range::boundary::priv
+
+/// Default constructor of @ref
+/// type_suppression::insertion_range::boundary
+type_suppression::insertion_range::boundary::boundary()
+  : priv_(new priv())
+{}
+
+/// Destructor of @ref type_suppression::insertion_range::boundary.
+type_suppression::insertion_range::boundary::~boundary()
+{}
+
+/// Private data type for @ref
+/// type_suppression::insertion_range::integer_boundary.
+struct type_suppression::insertion_range::integer_boundary::priv
+{
+  int value_;
+
+  priv()
+    : value_()
+  {}
+
+  priv(int value)
+    : value_(value)
+  {}
+}; // end type_suppression::insertion_range::integer_boundary::priv
+
+/// Converting constructor of
+/// type_suppression::insertion_range::integer_boundary.
+///
+/// @param value the integer value of the newly created integer boundary.
+type_suppression::insertion_range::integer_boundary::integer_boundary(int value)
+  : priv_(new priv(value))
+{}
+
+/// Return the integer value of the current inace of @ref
+/// type_suppression::insertion_range::integer_boundary.
+///
+/// @return the integer value of the current boundary.
+int
+type_suppression::insertion_range::integer_boundary::as_integer() const
+{return priv_->value_;}
+
+/// Converts the current boundary into an integer value.
+///
+/// @return the integer value of the current boundary.
+type_suppression::insertion_range::integer_boundary::operator int() const
+{return as_integer();}
+
+/// Destructor of @ref type_suppression::insertion_range::integer_boundary.
+type_suppression::insertion_range::integer_boundary::~integer_boundary()
+{}
+
+/// Private data type of type @ref
+/// type_suppression::insertion_range::fn_call_expr_boundary.
+struct type_suppression::insertion_range::fn_call_expr_boundary::priv
+{
+  ini::function_call_expr_sptr expr_;
+
+  priv()
+  {}
+
+  priv(ini::function_call_expr_sptr expr)
+    : expr_(expr)
+  {}
+}; // end struct type_suppression::insertion_range::fn_call_expr_boundary::priv
+
+/// Converting constructor for @ref
+/// type_suppression::insertion_range::fn_call_expr_boundary.
+///
+/// @param expr the function call expression to build this boundary
+/// from.
+type_suppression::insertion_range::fn_call_expr_boundary::
+fn_call_expr_boundary(ini::function_call_expr_sptr expr)
+  : priv_(new priv(expr))
+{}
+
+/// Returns the function call expression value of the current boundary.
+///
+/// @return the function call expression value of the current boundary;
+ini::function_call_expr_sptr
+type_suppression::insertion_range::fn_call_expr_boundary::as_function_call_expr() const
+{return priv_->expr_;}
+
+/// Converts the current boundary to its function call expression value.
+///
+/// @return the function call expression value of the current boundary.
+type_suppression::insertion_range::fn_call_expr_boundary::operator ini::function_call_expr_sptr () const
+{return as_function_call_expr();}
+
+/// Destructor of @ref
+/// type_suppression::insertion_range::fn_call_expr_boundary.
+type_suppression::insertion_range::fn_call_expr_boundary::~fn_call_expr_boundary()
+{}
 
 // </type_suppression stuff>
 
@@ -755,32 +1134,170 @@ read_type_suppression(const ini::config::section& section)
   if (section.get_name() != "suppress_type")
     return nil;
 
-  ini::config::property_sptr label = section.find_property("label");
-  string label_str = label && !label->second.empty() ? label->second : "";
+  ini::simple_property_sptr label =
+    is_simple_property(section.find_property("label"));
+  string label_str = label ? label->get_value()->as_string() : ":";
 
-  ini::config::property_sptr name_regex_prop =
-    section.find_property("name_regexp");
-  string name_regex_str =
-    name_regex_prop && !name_regex_prop->second.empty()
-    ? name_regex_prop->second
+  ini::simple_property_sptr name_regex_prop =
+    is_simple_property(section.find_property("name_regexp"));
+  string name_regex_str = name_regex_prop
+    ? name_regex_prop->get_value()->as_string()
     : "";
 
-  ini::config::property_sptr name_prop = section.find_property("name");
-  string name_str = name_prop && !name_prop->second.empty()
-    ? name_prop->second
+  ini::simple_property_sptr name_prop =
+    is_simple_property(section.find_property("name"));
+  string name_str = name_prop
+    ? name_prop->get_value()->as_string()
     : "";
 
   bool consider_type_kind = false;
   type_suppression::type_kind type_kind = type_suppression::UNKNOWN_TYPE_KIND;
-  if (ini::config::property_sptr type_kind_prop =
-      section.find_property("type_kind"))
+  if (ini::simple_property_sptr type_kind_prop =
+      is_simple_property(section.find_property("type_kind")))
     {
       consider_type_kind = true;
-      type_kind = read_type_kind_string(type_kind_prop->second);
+      type_kind =
+	read_type_kind_string(type_kind_prop->get_value()->as_string());
     }
 
-  if ((!name_regex_prop || name_regex_prop->second.empty())
-      && (!name_prop || name_prop->second.empty())
+  // Support has_data_member_inserted_at
+  vector<type_suppression::insertion_range_sptr> insert_ranges;
+  bool consider_data_member_insertion = false;
+  if (ini::simple_property_sptr prop =
+      is_simple_property(section.find_property("has_data_member_inserted_at")))
+    {
+      // So this property has the form:
+      //   has_data_member_inserted_at = <one-string-property-value>
+      string ins_point = prop->get_value()->as_string();
+      type_suppression::insertion_range::boundary_sptr begin, end;
+      if (ins_point == "end")
+	begin = type_suppression::insertion_range::create_integer_boundary(-1);
+      else if (isdigit(ins_point[0]))
+	begin = type_suppression::insertion_range::create_integer_boundary
+	  (atoi(ins_point.c_str()));
+      else if (type_suppression::insertion_range::fn_call_expr_boundary_sptr expr =
+	       type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(ins_point)))
+	begin = expr;
+      else
+	return nil;
+
+      end = type_suppression::insertion_range::create_integer_boundary(-1);
+      type_suppression::insertion_range_sptr insert_range
+	(new type_suppression::insertion_range(begin, end));
+	  insert_ranges.push_back(insert_range);
+	  consider_data_member_insertion = true;
+    }
+
+  // Support has_data_member_inserted_between
+  if (ini::tuple_property_sptr prop =
+      is_tuple_property(section.find_property
+			("has_data_member_inserted_between")))
+    {
+      // ensures that this has the form:
+      //  has_data_member_inserted_between = {0 , end};
+      // and not (for instance):
+      //  has_data_member_inserted_between = {{0 , end}, {1, foo}}
+      type_suppression::insertion_range::boundary_sptr begin, end;
+      if (prop->get_value()->get_value_items().size() == 2
+	  && is_string_property_value(prop->get_value()->get_value_items()[0])
+	  && is_string_property_value(prop->get_value()->get_value_items()[1]))
+	{
+	  string str = prop->get_value()->get_value_items()[0]->as_string();
+	  if (str == "end")
+	    begin =
+	      type_suppression::insertion_range::create_integer_boundary(-1);
+	  else if (isdigit(str[0]))
+	    begin = type_suppression::insertion_range::create_integer_boundary
+	      (atoi(str.c_str()));
+	  else if (type_suppression::insertion_range::fn_call_expr_boundary_sptr expr =
+		   type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(str)))
+	    begin = expr;
+	  else
+	    return nil;
+
+	  str = prop->get_value()->get_value_items()[1]->as_string();
+	  if (str == "end")
+	    end =
+	      type_suppression::insertion_range::create_integer_boundary(-1);
+	  else if (isdigit(str[0]))
+	    end = type_suppression::insertion_range::create_integer_boundary
+	      (atoi(str.c_str()));
+	  else if (type_suppression::insertion_range::fn_call_expr_boundary_sptr expr =
+		   type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(str)))
+	    end = expr;
+	  else
+	    return nil;
+
+	  type_suppression::insertion_range_sptr insert_range
+	    (new type_suppression::insertion_range(begin, end));
+	  insert_ranges.push_back(insert_range);
+	  consider_data_member_insertion = true;
+	}
+      else
+	// the 'has_data_member_inserted_between' property has a wrong
+	// value type, so let's discard the endire [suppress_type]
+	// section.
+	return nil;
+    }
+
+  // Support has_data_members_inserted_between
+  if (ini::tuple_property_sptr prop =
+      is_tuple_property(section.find_property
+			("has_data_members_inserted_between")))
+    {
+      bool is_well_formed = true;
+      for (vector<ini::property_value_sptr>::const_iterator i =
+	     prop->get_value()->get_value_items().begin();
+	   is_well_formed && i != prop->get_value()->get_value_items().end();
+	   ++i)
+	{
+	  ini::tuple_property_value_sptr tuple_value =
+	    is_tuple_property_value(*i);
+	  if (!tuple_value
+	      || tuple_value->get_value_items().size() != 2
+	      || !is_string_property_value(tuple_value->get_value_items()[0])
+	      || !is_string_property_value(tuple_value->get_value_items()[1]))
+	    is_well_formed = false;
+
+	  type_suppression::insertion_range::boundary_sptr begin, end;
+	  string str = tuple_value->get_value_items()[0]->as_string();
+	  if (str == "end")
+	    begin =
+	      type_suppression::insertion_range::create_integer_boundary(-1);
+	  else if (isdigit(str[0]))
+	    begin =
+	      type_suppression::insertion_range::create_integer_boundary
+	      (atoi(str.c_str()));
+	  else if (type_suppression::insertion_range::fn_call_expr_boundary_sptr expr =
+		   type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(str)))
+	    begin = expr;
+	  else
+	    return nil;
+
+	  str = tuple_value->get_value_items()[1]->as_string();
+	  if (str == "end")
+	    end =
+	      type_suppression::insertion_range::create_integer_boundary(-1);
+	  else if (isdigit(str[0]))
+	    end = type_suppression::insertion_range::create_integer_boundary
+	      (atoi(str.c_str()));
+	  else if (type_suppression::insertion_range::fn_call_expr_boundary_sptr expr =
+		   type_suppression::insertion_range::create_fn_call_expr_boundary(ini::read_function_call_expr(str)))
+	    end = expr;
+	  else
+	    return nil;
+
+	  type_suppression::insertion_range_sptr insert_range
+	    (new type_suppression::insertion_range(begin, end));
+	  insert_ranges.push_back(insert_range);
+	  consider_data_member_insertion = true;
+	}
+      if (!is_well_formed)
+	return nil;
+    }
+
+  if ((!name_regex_prop || name_regex_prop->get_value()->as_string().empty())
+      && (!name_prop || name_prop->get_value()->as_string().empty())
       && !consider_type_kind)
     return nil;
 
@@ -792,6 +1309,9 @@ read_type_suppression(const ini::config::section& section)
       suppr->set_consider_type_kind(true);
       suppr->set_type_kind(type_kind);
     }
+
+  if (consider_data_member_insertion)
+    suppr->set_data_member_insertion_ranges(insert_ranges);
 
   return suppr;
 }
@@ -1626,56 +2146,58 @@ read_function_suppression(const ini::config::section& section)
   if (section.get_name() != "suppress_function")
     return nil;
 
-  ini::config::property_sptr label_prop = section.find_property("label");
-  string label_str = (label_prop && !label_prop->second.empty())
-    ? label_prop->second
+  ini::simple_property_sptr label_prop =
+    is_simple_property(section.find_property("label"));
+  string label_str = label_prop
+    ? label_prop->get_value()->as_string()
     : "";
 
-  ini::config::property_sptr name_prop = section.find_property("name");
-  string name = name_prop && !name_prop->second.empty()
-    ? name_prop->second
+  ini::simple_property_sptr name_prop =
+    is_simple_property(section.find_property("name"));
+  string name = name_prop
+    ? name_prop->get_value()->as_string()
     : "";
 
-  ini::config::property_sptr name_regex_prop =
-    section.find_property("name_regexp");
-  string name_regex_str = name_regex_prop && !name_regex_prop->second.empty()
-    ? name_regex_prop->second
+  ini::simple_property_sptr name_regex_prop =
+    is_simple_property(section.find_property("name_regexp"));
+  string name_regex_str = name_regex_prop
+    ? name_regex_prop->get_value()->as_string()
     : "";
 
-  ini::config::property_sptr return_type_name_prop =
-    section.find_property("return_type_name");
-  string return_type_name = (return_type_name_prop)
-    ? return_type_name_prop->second
+  ini::simple_property_sptr return_type_name_prop =
+    is_simple_property(section.find_property("return_type_name"));
+  string return_type_name = return_type_name_prop
+    ? return_type_name_prop->get_value()->as_string()
     : "";
 
-  ini::config::property_sptr return_type_regex_prop =
-    section.find_property("return_type_regexp");
-  string return_type_regex_str =
-    (return_type_regex_prop
-     && !return_type_regex_prop->second.empty())
-    ? return_type_regex_prop->second
+  ini::simple_property_sptr return_type_regex_prop =
+    is_simple_property(section.find_property("return_type_regexp"));
+  string return_type_regex_str = return_type_regex_prop
+    ? return_type_regex_prop->get_value()->as_string()
     : "";
 
-  ini::config::property_sptr sym_name_prop =
-    section.find_property("symbol_name");
-  string sym_name = (sym_name_prop) ? sym_name_prop->second : "";
-
-  ini::config::property_sptr sym_name_regex_prop =
-    section.find_property("symbol_name_regexp");
-  string sym_name_regex_str =
-    (sym_name_regex_prop && !sym_name_regex_prop->second.empty())
-    ? sym_name_regex_prop->second
+  ini::simple_property_sptr sym_name_prop =
+    is_simple_property(section.find_property("symbol_name"));
+  string sym_name = sym_name_prop
+    ? sym_name_prop->get_value()->as_string()
     : "";
 
-  ini::config::property_sptr sym_ver_prop =
-    section.find_property("symbol_version");
-  string sym_version = (sym_ver_prop) ? sym_ver_prop->second : "";
+  ini::simple_property_sptr sym_name_regex_prop =
+    is_simple_property(section.find_property("symbol_name_regexp"));
+  string sym_name_regex_str = sym_name_regex_prop
+    ? sym_name_regex_prop->get_value()->as_string()
+    : "";
 
-  ini::config::property_sptr sym_ver_regex_prop =
-    section.find_property("symbol_version_regexp");
-  string sym_ver_regex_str =
-    (sym_ver_regex_prop && !sym_ver_regex_prop->second.empty())
-    ? sym_ver_regex_prop->second
+  ini::simple_property_sptr sym_ver_prop =
+    is_simple_property(section.find_property("symbol_version"));
+  string sym_version = sym_ver_prop
+    ? sym_ver_prop->get_value()->as_string()
+    : "";
+
+  ini::simple_property_sptr sym_ver_regex_prop =
+    is_simple_property(section.find_property("symbol_version_regexp"));
+  string sym_ver_regex_str = sym_ver_regex_prop
+    ? sym_ver_regex_prop->get_value()->as_string()
     : "";
 
   function_suppression::parameter_spec_sptr parm;
@@ -1684,9 +2206,14 @@ read_function_suppression(const ini::config::section& section)
 	 section.get_properties().begin();
        p != section.get_properties().end();
        ++p)
-    if ((*p)->first == "parameter")
-      if (parm = read_parameter_spec_from_string((*p)->second))
-	parms.push_back(parm);
+    if ((*p)->get_name() == "parameter")
+      {
+	ini::simple_property_sptr prop = is_simple_property(*p);
+	assert(prop);
+	if (parm = read_parameter_spec_from_string
+	    (prop->get_value()->as_string()))
+	  parms.push_back(parm);
+      }
 
   function_suppression_sptr result;
   if (!label_str.empty()
@@ -2230,61 +2757,59 @@ read_variable_suppression(const ini::config::section& section)
   if (section.get_name() != "suppress_variable")
     return result;
 
-  ini::config::property_sptr label_prop = section.find_property("label");
-  string label_str = (label_prop && !label_prop->second.empty()
-		      ? label_prop->second
+  ini::simple_property_sptr label_prop =
+    is_simple_property(section.find_property("label"));
+  string label_str = (label_prop
+		      ? label_prop->get_value()->as_string()
 		      : "");
 
-  ini::config::property_sptr name_prop = section.find_property("name");
-  string name_str = (name_prop && !name_prop->second.empty()
-		     ? name_prop->second
+  ini::simple_property_sptr name_prop =
+    is_simple_property(section.find_property("name"));
+  string name_str = (name_prop
+		     ? name_prop->get_value()->as_string()
 		     : "");
 
-  ini::config::property_sptr name_regex_prop =
-    section.find_property("name_regexp");
-  string name_regex_str = (name_regex_prop && !name_regex_prop->second.empty()
-			   ? name_regex_prop->second
+  ini::simple_property_sptr name_regex_prop =
+    is_simple_property(section.find_property("name_regexp"));
+  string name_regex_str = (name_regex_prop
+			   ? name_regex_prop->get_value()->as_string()
 			   : "");
 
-  ini::config::property_sptr sym_name_prop =
-    section.find_property("symbol_name");
-  string symbol_name = (sym_name_prop && !sym_name_prop->second.empty()
-			? sym_name_prop->second
+  ini::simple_property_sptr sym_name_prop =
+    is_simple_property(section.find_property("symbol_name"));
+  string symbol_name = (sym_name_prop
+			? sym_name_prop->get_value()->as_string()
 			: "");
 
-  ini::config::property_sptr sym_name_regex_prop =
-    section.find_property("symbol_name_regexp");
-  string symbol_name_regex_str =
-    (sym_name_regex_prop && !sym_name_regex_prop->second.empty()
-     ? sym_name_regex_prop->second
-     : "");
+  ini::simple_property_sptr sym_name_regex_prop =
+    is_simple_property(section.find_property("symbol_name_regexp"));
+  string symbol_name_regex_str = sym_name_regex_prop
+    ? sym_name_regex_prop->get_value()->as_string()
+    : "";
 
-  ini::config::property_sptr sym_version_prop =
-    section.find_property("symbol_version");
-  string symbol_version =
-    (sym_version_prop && !sym_version_prop->second.empty()
-     ? sym_version_prop->second
-     : "");
+  ini::simple_property_sptr sym_version_prop =
+    is_simple_property(section.find_property("symbol_version"));
+  string symbol_version = sym_version_prop
+    ? sym_version_prop->get_value()->as_string()
+    : "";
 
-  ini::config::property_sptr sym_version_regex_prop =
-    section.find_property("symbol_version_regexp");
-  string symbol_version_regex_str =
-    (sym_version_regex_prop && !sym_version_regex_prop->second.empty()
-     ? sym_version_regex_prop->second
-     : "");
+  ini::simple_property_sptr sym_version_regex_prop =
+    is_simple_property(section.find_property("symbol_version_regexp"));
+  string symbol_version_regex_str = sym_version_regex_prop
+    ? sym_version_regex_prop->get_value()->as_string()
+     : "";
 
-  ini::config::property_sptr type_name_prop =
-    section.find_property("type_name");
-  string type_name_str = (type_name_prop && !type_name_prop->second.empty()
-			  ? type_name_prop->second
-			  : "");
+  ini::simple_property_sptr type_name_prop =
+    is_simple_property(section.find_property("type_name"));
+  string type_name_str = type_name_prop
+    ? type_name_prop->get_value()->as_string()
+    : "";
 
-  ini::config::property_sptr type_name_regex_prop =
-    section.find_property("type_name_regexp");
-  string type_name_regex_str =
-    (type_name_regex_prop && !type_name_regex_prop->second.empty()
-     ? type_name_regex_prop->second
-     : "");
+  ini::simple_property_sptr type_name_regex_prop =
+    is_simple_property(section.find_property("type_name_regexp"));
+  string type_name_regex_str = type_name_regex_prop
+    ? type_name_regex_prop->get_value()->as_string()
+     : "";
 
   if (label_str.empty()
       && name_str.empty()

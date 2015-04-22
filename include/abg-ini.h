@@ -41,9 +41,215 @@ namespace ini
 {
 // Inject some standard types in this namespace.
 using std::tr1::shared_ptr;
+using std::tr1::dynamic_pointer_cast;
 using std::string;
 using std::vector;
 using std:: pair;
+
+class property;
+/// Convenience typefef for shared_ptr to @ref property.
+typedef shared_ptr<property> property_sptr;
+
+/// The base class of the different kinds of properties of an INI
+/// file.
+class property
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+public:
+
+  property();
+
+  property(const string& name);
+
+  const string&
+  get_name() const;
+
+  void
+  set_name(const string& name);
+
+  virtual ~property();
+}; // end class property
+
+class property_value;
+
+/// Convenience typedef for a shared_ptr to @ref property_value.
+typedef shared_ptr<property_value> property_value_sptr;
+
+/// Base class of propertie values.
+class property_value
+{
+public:
+  enum value_kind
+  {
+    ABSTRACT_PROPERTY_VALUE = 0,
+    STRING_PROPERTY_VALUE = 1,
+    TUPLE_PROPERTY_VALUE = 2,
+  };
+
+private:
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+public:
+
+  property_value();
+  property_value(value_kind);
+
+  value_kind
+  get_kind() const;
+
+  virtual const string&
+  as_string() const = 0;
+
+  operator const string& () const;
+
+  virtual ~property_value();
+}; // end class property_value.
+
+class string_property_value;
+
+/// A convenience typedef for a shared_ptr to @ref string_property_value.
+typedef shared_ptr<string_property_value> string_property_value_sptr;
+
+/// A property value which is a string.
+class string_property_value : public property_value
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+public:
+  string_property_value();
+  string_property_value(const string& value);
+
+  void
+  set_content(const string&);
+
+  virtual const string&
+  as_string() const;
+
+  operator string() const;
+
+  virtual ~string_property_value();
+}; // end class string_property_value
+
+string_property_value*
+is_string_property_value(const property_value*);
+
+string_property_value_sptr
+is_string_property_value(const property_value_sptr);
+
+class tuple_property_value;
+
+/// Convenience typedef for a shared_ptr to a @ref
+/// tuple_property_value.
+typedef shared_ptr<tuple_property_value> tuple_property_value_sptr;
+
+/// A property value that is a tuple.
+///
+/// Each element of the tuple is itself a property value that can
+/// either be a string, or another tuple, for instance.
+class tuple_property_value : public property_value
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+public:
+  tuple_property_value(const vector<property_value_sptr>&);
+
+  const vector<property_value_sptr>&
+  get_value_items() const;
+
+  vector<property_value_sptr>&
+  get_value_items();
+
+  virtual const string&
+  as_string() const;
+
+  operator string() const;
+
+  virtual ~tuple_property_value();
+}; // end class tuple_property_value
+
+tuple_property_value*
+is_tuple_property_value(const property_value*);
+
+tuple_property_value_sptr
+is_tuple_property_value(const property_value_sptr);
+
+class simple_property;
+/// Convenience typedef for a shared_ptr to an @ref simple_property.
+typedef shared_ptr<simple_property> simple_property_sptr;
+
+/// A simple property.  That is, one which value is a
+/// @ref string_property_value.
+class simple_property : public property
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+  simple_property();
+
+  simple_property(const string& name,
+		  const string_property_value_sptr value);
+
+  const string_property_value_sptr&
+  get_value() const;
+
+  void
+  set_value(const string_property_value_sptr value);
+
+  virtual ~simple_property();
+}; // end class simple_property
+
+simple_property*
+is_simple_property(const property* p);
+
+simple_property_sptr
+is_simple_property(const property_sptr p);
+
+class tuple_property;
+/// Convenience typedef for a shared_ptr of @ref tuple_property.
+typedef shared_ptr<tuple_property> tuple_property_sptr;
+
+/// Abstraction of a tuple property.  A tuple property is a property
+/// which value is a @ref tuple_property_value.
+class tuple_property : public property
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+  tuple_property();
+
+  tuple_property(const string& name,
+		 const tuple_property_value_sptr v);
+
+  void
+  set_value(const tuple_property_value_sptr value);
+
+  const tuple_property_value_sptr&
+  get_value() const;
+
+  virtual
+  ~tuple_property();
+}; // end class tuple_property
+
+tuple_property*
+is_tuple_property(const property* p);
+
+tuple_property_sptr
+is_tuple_property(const property_sptr p);
 
 class config;
 
@@ -65,14 +271,6 @@ public:
 
   /// A convenience typedef for a vector of config::section_sptr.
   typedef vector<section_sptr> sections_type;
-
-  /// A convenience typedef for a pair of strings representing a
-  /// property that lies inside a section.  The first element of the
-  /// pair is the property name, and the second is the property value.
-  typedef std::pair<string, string> property;
-
-  /// A convenience typedef for a shared pointer to a @ref property.
-  typedef shared_ptr<property> property_sptr;
 
   /// A convenience typedef for a vector of @ref property_sptr
   typedef vector<property_sptr> property_vector;
@@ -174,6 +372,44 @@ bool
 write_config(const config& conf,
 	     const string& path);
 
+class function_call_expr;
+
+/// Convenience typedef for a shared pointer to function_call_expr
+typedef shared_ptr<function_call_expr> function_call_expr_sptr;
+
+/// The abstraction of a function call expression.
+class function_call_expr
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+  function_call_expr();
+
+public:
+  function_call_expr(const string& name,
+		     const vector<string>& args);
+
+  const string&
+  get_name() const;
+
+  const vector<string>&
+  get_arguments() const;
+
+  vector<string>&
+  get_arguments();
+}; //end function_call_expr
+
+bool
+read_function_call_expr(std::istream& input,
+			function_call_expr_sptr& expr);
+
+bool
+read_function_call_expr(const string& input,
+			function_call_expr_sptr& expr);
+
+function_call_expr_sptr
+read_function_call_expr(const string& input);
 }// end namespace ini
 }// end namespace abigail
 #endif // __ABG_INI_H__

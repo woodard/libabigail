@@ -191,7 +191,90 @@ Suppression specifications
 		native) types.  Example of built-in types are char,
 		int, unsigned int, etc.
 
-.. _suppr_label_property_label:
+	    .. _suppr_has_data_member_inserted_at_label:
+	  * ``has_data_member_inserted_at`` ``=`` <``offset-in-bit``>
+
+	    Suppresses change reports involving a type which has at
+	    least one data member inserted at an offset specified by
+	    the property value ``offset-in-bit``.  The value
+	    ``offset-in-bit`` is either:
+
+	    	- an integer value, expressed in bits, which denotes
+		  the offset of the insertion point of the data
+		  member, starting from the beginning of the relevant
+		  structure or class.
+
+		- the keyword ``end`` which is a named constant which
+		  value equals the offset of the end of the of the
+		  structure or class.
+
+		- the function call expression
+		  ``offset_of(data-member-name)`` where
+		  `data-member-name` is the name of a given data
+		  member of the relevant structure or class.  The
+		  value of this function call expression is an integer
+		  that represents the offset of the data member
+		  denoted by ``data-member-name``.
+
+	        - the function call expression
+		  ``offset_after(data-member-name)`` where
+		  `data-member-name` is the name of a given data
+		  member of the relevant structure or class.  The
+		  value of this function call expression is an integer
+		  that represents the offset of the point that comes
+		  right after the region occupied by the data member
+		  denoted by ``data-member-name``.
+
+            .. _suppr_has_data_member_inserted_between_label:
+	  * ``has_data_member_inserted_between`` ``=`` {<``range-begin``>, <``range-end``>}
+
+	    Suppresses change reports involving a type which has at
+	    least one data member inserted at an offset that is
+	    comprised in the range between ``range-begin`` and
+	    ``range-end``.  Please note that each of the values
+	    ``range-begin`` and ``range-end`` can be of the same form
+	    as for the :ref:`has_data_member_inserted_at
+	    <suppr_has_data_member_inserted_at_label>` property above.
+
+            Usage examples of this properties are: ::
+
+	      has_data_member_inserted_between = {8, 64}
+
+	    or: ::
+
+	      has_data_member_inserted_between = {16, end}
+
+	    or: ::
+
+	      has_data_member_inserted_between = {offset_after(member1), end}
+
+	    .. _suppr_has_data_members_inserted_between_label:
+	  * ``has_data_members_inserted_between`` ``=`` {<sequence-of-ranges>}
+
+	    Suppresses change reports involving a type which has multiple
+	    data member inserted in various offset ranges.  A usage
+	    example of this property is, for instance: ::
+
+	      has_data_members_inserted_between = {{8, 31}, {72, 95}}
+
+	    This usage example suppresses change reports involving a
+	    type which has data members inserted in bit offset ranges
+	    [8 31] and [72 95].  The length of the sequence of ranges
+	    or this ``has_data_members_inserted_between`` is not
+	    bounded; it can be as long as the system can cope with.
+	    The values of the boundaries of the ranges are of the same
+	    kind as for the :ref:`has_data_member_inserted_at
+	    <suppr_has_data_member_inserted_at_label>` property above.
+
+	    Another usage example of this property is thus: ::
+
+              has_data_members_inserted_between =
+	        {
+		 {offset_after(member0), offset_of(member1)},
+		 {72, end}
+                }
+
+           .. _suppr_label_property_label:
 
 	  * ``label`` ``=`` <some-value>
 
@@ -468,7 +551,110 @@ Suppression specifications
     As you can see, ``abidiff`` does not report the change anymore; it
     tells us that it was filtered out instead.
 
-  2. Suppressing change reports about functions.
+  2. Suppressing change reports about types with data member
+     insertions
+
+     Suppose the first version of a library named ``libtest3-v0.so``
+     has this source code: ::
+
+	/* Compile this with:
+	     gcc -g -Wall -shared -o libtest3-v0.so test3-v0.c
+	 */
+
+	struct S
+	{
+	  char member0;
+	  int member1; /* 
+			  between member1 and member2, there is some padding,
+			  at least on some popular platforms.  On
+			  these platforms, adding a small enough data
+			  member into that padding shouldn't change
+			  the offset of member1.  Right?
+			*/
+	};
+
+	int
+	foo(struct S* s)
+	{
+	  return s->member0 + s->member1;
+	}
+
+     Now, suppose the second version of the library named
+     ``libtest3-v1.so`` has this source code in which a data member
+     has been added in the padding space of struct S and another data
+     member has been added at its end: ::
+
+	/* Compile this with:
+	     gcc -g -Wall -shared -o libtest3-v1.so test3-v1.c
+	 */
+
+	struct S
+	{
+	  char member0;
+	  char inserted1; /* <---- A data member has been added here...  */
+	  int member1;
+	  char inserted2; /* <---- ... and another one has been added here.  */
+	};
+
+	int
+	foo(struct S* s)
+	{
+	  return s->member0 + s->member1;
+	}
+
+     In ``libtest3-v1.so`` adding char data members ``S::inserted1``
+     and ``S::inserted2`` can be considered harmless (from an ABI
+     compatibility perspective), at least on the x86 platform, because
+     that doesn't change the offsets of the data members S::member0
+     and S::member1.  But then running ``abidiff` on these two
+     versions of library yields: ::
+
+	$ abidiff libtest3-v0.so libtest3-v1.so
+	Functions changes summary: 0 Removed, 1 Changed, 0 Added function
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	1 function with some indirect sub-type change:
+
+	  [C]'function int foo(S*)' has some indirect sub-type changes:
+	    parameter 0 of type 'S*' has sub-type changes:
+	      in pointed to type 'struct S':
+		type size changed from 64 to 96 bits
+		2 data member insertions:
+		  'char S::inserted1', at offset 8 (in bits)
+		  'char S::inserted2', at offset 64 (in bits)
+	$
+
+
+
+     That is, ``abidiff`` shows us the two changes, even though we (the
+     developers of that very involved library) know that these changes
+     are harmless in this particular context.
+
+     Luckily, we can devise a suppression specification that essentially
+     tells abidiff to filter out change reports about adding a data
+     member between ``S::member0`` and ``S::member1``, and adding a data
+     member at the end of struct S.  We have written such a suppression
+     specification in a file called test3-1.suppr and it unsurprisingly
+     looks like: ::
+
+	[suppress_type]
+	  name = S
+	  has_data_member_inserted_between = {offset_after(member0), offset_of(member1)}
+	  has_data_member_inserted_at = end
+
+
+     Now running ``abidiff`` with this suppression specification yields: ::
+
+	$ ../build/tools/abidiff --suppressions test3-1.suppr libtest3-v0.so libtest3-v1.so
+	Functions changes summary: 0 Removed, 0 Changed (1 filtered out), 0 Added function
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	$ 
+
+
+     Hooora! \\o/ (I guess)
+
+  3. Suppressing change reports about functions.
 
      Suppose we have a first version a library named
      ``libtest2-v0.so`` whose source code is: ::
