@@ -2315,7 +2315,7 @@ write_class_tdecl(const shared_ptr<class_tdecl> decl,
 /// from client code.
 struct archive_write_ctxt
 {
-  vector<string> serialized_tus;
+  list<string> serialized_tus;
   zip_sptr archive;
 
   archive_write_ctxt(zip_sptr ar)
@@ -2341,7 +2341,8 @@ create_archive_write_context(const string& archive_path)
 
   int error_code = 0;
   zip_sptr archive = open_archive(archive_path,
-				  ZIP_CREATE|ZIP_CHECKCONS, &error_code);
+				  ZIP_CREATE|ZIP_TRUNCATE|ZIP_CHECKCONS,
+				  &error_code);
   if (error_code)
     return archive_write_ctxt_sptr();
 
@@ -2379,22 +2380,11 @@ write_translation_unit_to_archive(const translation_unit& tu,
 				  false)) == 0)
     return false;
 
-  int index = zip_name_locate(ctxt.archive.get(), tu.get_path().c_str(), 0);
-  if ( index == -1)
+  if (zip_file_add(ctxt.archive.get(), tu.get_path().c_str(), source,
+		   ZIP_FL_OVERWRITE|ZIP_FL_ENC_GUESS) < 0)
     {
-      if (zip_add(ctxt.archive.get(), tu.get_path().c_str(), source) < 0)
-	{
-	  zip_source_free(source);
-	  return false;
-	}
-    }
-  else
-    {
-      if (zip_replace(ctxt.archive.get(), index, source) != 0)
-	{
-	  zip_source_free(source);
-	  return false;
-	}
+      zip_source_free(source);
+      return false;
     }
 
   return true;

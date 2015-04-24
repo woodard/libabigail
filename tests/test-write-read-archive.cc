@@ -109,7 +109,7 @@ main()
       in_path = abigail::tests::get_src_dir() + "/tests/" + s->in_path;
       abigail::translation_unit_sptr tu =
 	abigail::xml_reader::read_translation_unit_from_file(in_path);
-      if (!tu)
+      if (!tu || tu->is_empty())
 	{
 	  cerr << "failed to read " << in_path << "\n";
 	  is_ok = false;

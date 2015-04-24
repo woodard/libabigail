@@ -100,7 +100,7 @@ AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
 
 dnl Check for dependency: libzip
-LIBZIP_VERSION=0.10
+LIBZIP_VERSION=0.10.1
 
 HAS_LIBZIP=no
 # The below doesn't seem to work on my box for a reason.  Let's write
