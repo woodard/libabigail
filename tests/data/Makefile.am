@@ -202,6 +202,11 @@ test-diff-dwarf/libtest25-removed-fn-parms-v1.so \
 test-diff-dwarf/test25-removed-fn-parms-report-0.txt \
 test-diff-dwarf/test25-removed-fn-parms-v0.c \
 test-diff-dwarf/test25-removed-fn-parms-v1.c \
+test-diff-dwarf/libtest26-added-parms-before-variadic-v0.so \
+test-diff-dwarf/libtest26-added-parms-before-variadic-v1.so \
+test-diff-dwarf/test26-added-parms-before-variadic-report.txt \
+test-diff-dwarf/test26-added-parms-before-variadic-v0.c \
+test-diff-dwarf/test26-added-parms-before-variadic-v1.c \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

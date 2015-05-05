@@ -218,6 +218,12 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test25-removed-fn-parms-report-0.txt",
     "output/test-diff-dwarf/test25-removed-fn-parms-report-0.txt"
   },
+{
+    "data/test-diff-dwarf/libtest26-added-parms-before-variadic-v0.so",
+    "data/test-diff-dwarf/libtest26-added-parms-before-variadic-v1.so",
+    "data/test-diff-dwarf/test26-added-parms-before-variadic-report.txt",
+    "output/test-diff-dwarf/test26-added-parms-before-variadic-report.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };

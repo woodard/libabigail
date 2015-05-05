@@ -334,6 +334,9 @@ is_data_member(const shared_ptr<var_decl>);
 shared_ptr<var_decl>
 is_data_member(const shared_ptr<decl_base>&);
 
+array_type_def*
+is_array_type(const type_base* decl);
+
 shared_ptr<array_type_def>
 is_array_type(const shared_ptr<type_base> decl);
 

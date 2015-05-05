@@ -1121,6 +1121,9 @@ public:
   static type_decl_sptr
   get_void_type_decl();
 
+  static type_decl_sptr&
+  get_variadic_parameter_type_decl();
+
   virtual bool
   operator==(const type_base&) const;
 

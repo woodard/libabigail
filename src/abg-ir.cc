@@ -3728,14 +3728,23 @@ is_function_template_pattern(const shared_ptr<decl_base> decl)
 	  && dynamic_cast<template_decl*>(decl->get_scope()));
 }
 
-/// Test if a decl is an array_type_def.
+/// Test if a type is an array_type_def.
 ///
-/// @param decl the decl to consider.
+/// @param type the type to consider.
 ///
-/// @return true iff decl is an array_type_def.
+/// @return true iff type is an array_type_def.
+array_type_def*
+is_array_type(const type_base* type)
+{return dynamic_cast<array_type_def*>(const_cast<type_base*>(type));}
+
+/// Test if a type is an array_type_def.
+///
+/// @param type the type to consider.
+///
+/// @return true iff type is an array_type_def.
 array_type_def_sptr
-is_array_type(const type_base_sptr decl)
-{return dynamic_pointer_cast<array_type_def>(decl);}
+is_array_type(const type_base_sptr type)
+{return dynamic_pointer_cast<array_type_def>(type);}
 
 /// Tests whether a decl is a template.
 ///
@@ -4645,6 +4654,18 @@ type_decl::get_void_type_decl()
   return void_type_decl;
 }
 
+/// Get a singleton representing the type of a variadic parameter.
+///
+/// @return the variadic parameter type.
+type_decl_sptr&
+type_decl::get_variadic_parameter_type_decl()
+{
+  static type_decl_sptr variadic_parm_type_decl;
+  if (!variadic_parm_type_decl)
+    variadic_parm_type_decl.reset(new type_decl("variadic parameter type",
+						0, 0, location()));
+  return variadic_parm_type_decl;
+}
 /// Compares two instances of @ref type_decl.
 ///
 /// If the two intances are different, set a bitfield to give some

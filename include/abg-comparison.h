@@ -2569,6 +2569,17 @@ clear_redundancy_categorization(corpus_diff_sptr diff_tree);
 void
 apply_filters(corpus_diff_sptr diff_tree);
 
+bool
+is_diff_of_variadic_parameter_type(const diff*);
+
+bool
+is_diff_of_variadic_parameter_type(const diff_sptr&);
+
+bool
+is_diff_of_variadic_parameter(const diff*);
+
+bool
+is_diff_of_variadic_parameter(const diff_sptr&);
 }// end namespace comparison
 
 }// end namespace abigail

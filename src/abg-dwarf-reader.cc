@@ -7103,8 +7103,10 @@ build_function_decl(read_context&	ctxt,
 	else if (child_tag == DW_TAG_unspecified_parameters)
 	  {
 	    bool is_artificial = die_is_artificial(&child);
+	    type_decl_sptr parm_type =
+	      type_decl::get_variadic_parameter_type_decl();
 	    function_decl::parameter_sptr p
-	      (new function_decl::parameter(type_base_sptr(),
+	      (new function_decl::parameter(parm_type,
 					    /*name=*/"",
 					    location(),
 					    /*variadic_marker=*/true,

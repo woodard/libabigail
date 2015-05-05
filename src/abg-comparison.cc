@@ -4353,8 +4353,7 @@ compute_diff(const type_base_sptr	first,
 	     const type_base_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-    if (!first || !second)
-      return diff_sptr();
+  assert(first && second);
 
   decl_base_sptr f = get_type_declaration(first),
     s = get_type_declaration(second);
@@ -4651,9 +4650,10 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
   if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
       && (fs != ss || fdc != sdc))
     {
-      if (first_array)
+      if (first_array && second_array)
 	{
-	  assert(second_array);
+	  // We are looking at size or alignment changes between two
+	  // arrays ...
 	  out << indent << "array type size changed from ";
 	  if (first_array->is_infinite())
 	    out << "infinity";
@@ -8927,6 +8927,7 @@ fn_parm_diff::fn_parm_diff(const function_decl::parameter_sptr	first,
   priv_->type_diff = compute_diff(first->get_type(),
 				  second->get_type(),
 				  ctxt);
+  assert(priv_->type_diff);
 }
 
 /// Finish the building of the current instance of @ref fn_parm_diff.
@@ -9024,7 +9025,7 @@ fn_parm_diff::report(ostream& out, const string& indent) const
 
   if (to_be_reported())
     {
-      assert(get_type_diff()->to_be_reported());
+      assert(get_type_diff() && get_type_diff()->to_be_reported());
       out << indent
 	  << "parameter " << f->get_index()
 	  << " of type '"
@@ -12782,7 +12783,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	    const diff* p = d->parent_node();
 
 	    // If this is a child node of a fn_parm_diff, look through
-	    // the fn_parm_diff node.
+	    // the fn_parm_diff node to get the function diff node.
 	    if (p && dynamic_cast<const fn_parm_diff*>(p))
 	      p = p->parent_node();
 
@@ -12808,7 +12809,16 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		      break;
 		    }
 		}
-	    if (!redundant_with_sibling_node)
+	    if (!redundant_with_sibling_node
+		// Functions with similar *local* changes are never marked
+		// redundant because otherwise one could miss important
+		// similar local changes that are applied to different
+		// functions.
+		&& !dynamic_cast<function_type_diff*>(d)
+		// Changes involving variadic parameters of functions
+		// should never be marked redundant because we want to see
+		// them all.
+		&& !is_diff_of_variadic_parameter(d))
 	      {
 		d->add_to_category(REDUNDANT_CATEGORY);
 		// As we said in preamble, as this node is marked as
@@ -13029,5 +13039,65 @@ apply_filters(corpus_diff_sptr diff_tree)
   propagate_categories(diff_tree);
 }
 
+/// Test if a diff node represents the difference between a variadic
+/// parameter type and something else.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d is a diff node that represents the
+/// difference between a variadic parameter type and something else.
+bool
+is_diff_of_variadic_parameter_type(const diff* d)
+{
+  if (!d)
+    return false;
+
+  type_base_sptr t = is_type(d->first_subject());
+  if (t && t.get() == type_decl::get_variadic_parameter_type_decl().get())
+    return true;
+
+  t = is_type(d->second_subject());
+  if (t && t.get() == type_decl::get_variadic_parameter_type_decl().get())
+    return true;
+
+  return false;
+}
+
+/// Test if a diff node represents the difference between a variadic
+/// parameter type and something else.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d is a diff node that represents the
+/// difference between a variadic parameter type and something else.
+bool
+is_diff_of_variadic_parameter_type(const diff_sptr& d)
+{return is_diff_of_variadic_parameter_type(d.get());}
+
+/// Test if a diff node represents the difference between a variadic
+/// parameter and something else.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d is a diff node that represents the
+/// difference between a variadic parameter and something else.
+bool
+is_diff_of_variadic_parameter(const diff* d)
+{
+  fn_parm_diff* diff =
+    dynamic_cast<fn_parm_diff*>(const_cast<abigail::comparison::diff*>(d));
+  return (diff && is_diff_of_variadic_parameter_type(diff->get_type_diff()));
+}
+
+/// Test if a diff node represents the difference between a variadic
+/// parameter and something else.
+///
+/// @param d the diff node to consider.
+///
+/// @return true iff @p d is a diff node that represents the
+/// difference between a variadic parameter and something else.
+bool
+is_diff_of_variadic_parameter(const diff_sptr& d)
+{return is_diff_of_variadic_parameter(d.get());}
 }// end namespace comparison
 } // end namespace abigail
