@@ -7937,7 +7937,7 @@ const string
 function_decl::parameter::get_name_id() const
 {
   std::ostringstream o;
-  o << get_type_name() << "-" << get_index();
+  o << "parameter-" << get_index();
   return o.str();
 }
 
