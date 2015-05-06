@@ -3084,13 +3084,15 @@ get_function_type_name(const function_type& fn_type)
 /// @return a copy of the pretty representation of an ABI artifact
 /// that could be either a type of a decl.
 string
-get_pretty_representation(const type_or_decl_base_sptr& tod)
+get_pretty_representation(const type_or_decl_base* tod)
 {
   string result;
 
-  if (type_base_sptr t = dynamic_pointer_cast<type_base>(tod))
+  if (type_base* t =
+      dynamic_cast<type_base*>(const_cast<type_or_decl_base*>(tod)))
     result = get_pretty_representation(t);
-  else if (decl_base_sptr d = dynamic_pointer_cast<decl_base>(tod))
+  else if (decl_base* d =
+	   dynamic_cast<decl_base*>(const_cast<type_or_decl_base*>(tod)))
     result =  get_pretty_representation(d);
   else
     // We should never reach this point
@@ -3098,6 +3100,17 @@ get_pretty_representation(const type_or_decl_base_sptr& tod)
 
   return result;
 }
+
+/// Build and return a copy of the pretty representation of an ABI
+/// artifact that could be either a type of a decl.
+///
+/// param tod the ABI artifact to consider.
+///
+/// @return a copy of the pretty representation of an ABI artifact
+/// that could be either a type of a decl.
+string
+get_pretty_representation(const type_or_decl_base_sptr& tod)
+{return get_pretty_representation(tod.get());}
 
 /// Get a copy of the pretty representation of a decl.
 ///

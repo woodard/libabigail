@@ -467,6 +467,9 @@ string
 get_pretty_representation(const type_base*);
 
 string
+get_pretty_representation(const type_or_decl_base*);
+
+string
 get_pretty_representation(const shared_ptr<type_or_decl_base>&);
 
 string
