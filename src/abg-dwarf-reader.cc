@@ -7077,6 +7077,7 @@ build_function_decl(read_context&	ctxt,
 	int child_tag = dwarf_tag(&child);
 	if (child_tag == DW_TAG_formal_parameter)
 	  {
+	    // This is a "normal" function parameter.
 	    string name, linkage_name;
 	    location loc;
 	    die_loc_and_name(ctxt, &child, loc, name, linkage_name);
@@ -7102,6 +7103,7 @@ build_function_decl(read_context&	ctxt,
 	  }
 	else if (child_tag == DW_TAG_unspecified_parameters)
 	  {
+	    // This is a variadic function parameter.
 	    bool is_artificial = die_is_artificial(&child);
 	    type_decl_sptr parm_type =
 	      type_decl::get_variadic_parameter_type_decl();
