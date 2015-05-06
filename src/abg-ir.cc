@@ -10528,6 +10528,29 @@ type_has_non_canonicalized_subtype(type_base_sptr t)
   return false;
 }
 
+/// Tests if the change of a given type effectively comes from just
+/// its sub-types.  That is, if the type has changed but its type name
+/// hasn't changed, then the change of the type mostly likely is a
+/// sub-type change.
+///
+/// @param t_v1 the first version of the type.
+///
+/// @param t_v2 the second version of the type.
+///
+/// @return true iff the type changed and the change is about its
+/// sub-types.
+bool
+type_has_sub_type_changes(const type_base_sptr t_v1,
+			  const type_base_sptr t_v2)
+{
+  type_base_sptr t1 = strip_typedef(t_v1);
+  type_base_sptr t2 = strip_typedef(t_v2);
+
+  string repr1 = get_pretty_representation(t1),
+    repr2 = get_pretty_representation(t2);
+  return (t1 != t2 && repr1 == repr2);
+}
+
 /// Make sure that the life time of a given (smart pointer to a) type
 /// is the same as the life time of the libabigail library.
 ///

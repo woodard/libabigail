@@ -596,6 +596,10 @@ canonicalize(shared_ptr<type_base>);
 bool
 type_has_non_canonicalized_subtype(shared_ptr<type_base> t);
 
+bool
+type_has_sub_type_changes(shared_ptr<type_base> t_v1,
+			  shared_ptr<type_base> t_v2);
+
 void
 keep_type_alive(shared_ptr<type_base> t);
 

@@ -9015,13 +9015,14 @@ void
 fn_parm_diff::report(ostream& out, const string& indent) const
 {
   function_decl::parameter_sptr f = first_parameter(), s = second_parameter();
-  string f_name_id = f->get_name_id(), s_name_id = s->get_name_id();
 
-  // either the parameter has a sub-type change (if it's name id
-  // hasn't changed) or it has a compatible change (that, is a change
-  // that changes his name w/o changing the signature of the
+  // either the parameter has a sub-type change (if its type name
+  // hasn't changed) or it has a "grey" change (that is, a change that
+  // changes his type name w/o changing the signature of the
   // function).
-  bool has_sub_type_change = (f_name_id == s_name_id);
+  bool has_sub_type_change =
+    type_has_sub_type_changes(first_parameter()->get_type(),
+			      second_parameter()->get_type());
 
   if (to_be_reported())
     {
