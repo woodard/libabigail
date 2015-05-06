@@ -2001,6 +2001,9 @@ public:
 
   virtual void
   get_qualified_name(string& qualified_name) const;
+
+  virtual string
+  get_pretty_representation() const;
 }; // end class function_decl::parameter
 
 bool

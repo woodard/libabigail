@@ -8097,6 +8097,34 @@ void
 function_decl::parameter::get_qualified_name(string& qualified_name) const
 {qualified_name = get_name();}
 
+/// Compute and return a copy of the pretty representation of the
+/// current function parameter.
+///
+/// @return a copy of the textual representation of the current
+/// function parameter.
+string
+function_decl::parameter::get_pretty_representation() const
+{
+  string type_repr;
+  type_base_sptr t = get_type();
+  if (!t)
+    type_repr = "void";
+  else if (t ==
+	   dynamic_pointer_cast<type_base>
+	   (type_decl::get_variadic_parameter_type_decl()))
+    type_repr = "...";
+  else
+    type_repr = ir::get_pretty_representation(t);
+
+  string result = type_repr;
+  string parm_name = get_name_id();
+
+  if (!parm_name.empty())
+    result += " " + parm_name;
+
+  return result;
+}
+
 // </function_decl::parameter definitions>
 
 // <class_decl definitions>
