@@ -12818,7 +12818,8 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		// Changes involving variadic parameters of functions
 		// should never be marked redundant because we want to see
 		// them all.
-		&& !is_diff_of_variadic_parameter(d))
+		&& !is_diff_of_variadic_parameter(d)
+		&& !is_diff_of_variadic_parameter_type(d))
 	      {
 		d->add_to_category(REDUNDANT_CATEGORY);
 		// As we said in preamble, as this node is marked as
