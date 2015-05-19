@@ -1,9 +1,9 @@
 h=$(abs_srcdir)
 
 if ENABLE_ZIP_ARCHIVE
-  bin_PROGRAMS = abiar abidiff abilint abidw abicompat
+  bin_PROGRAMS = abiar abidiff abilint abidw abicompat abipkgdiff
 else
-  bin_PROGRAMS = abidiff abilint abidw abicompat
+  bin_PROGRAMS = abidiff abilint abidw abicompat abipkgdiff
 endif
 
 noinst_PROGRAMS = abisym abinilint
@@ -37,5 +37,9 @@ abinilint_LDFLAGS = $(abs_top_builddir)/src/libabigail.la
 abicompat_SOURCES = abicompat.cc
 abicompatdir = $(bindir)
 abicompat_LDADD = $(abs_top_builddir)/src/libabigail.la
+
+abipkgdiff_SOURCES = abipkgdiff.cc
+abipkgdiffdir = $(bindir)
+abipkgdiff_LDADD = $(abs_top_builddir)/src/libabigail.la
 
 AM_CPPFLAGS=-I$(abs_top_srcdir)/include -I$(abs_top_srcdir)/tools -fPIC
