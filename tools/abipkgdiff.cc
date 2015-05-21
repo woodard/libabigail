@@ -32,10 +32,14 @@
 #include <string>
 #include <cstring>
 
+#include "abg-tools-utils.h"
+
 using std::cout;
 using std::cerr;
 using std::string;
 using std::ostream;
+using abigail::tools_utils::guess_file_type;
+using abigail::tools_utils::file_type;
 
 struct options
 {
@@ -138,10 +142,25 @@ main(int argc, char* argv[])
       display_usage(argv[0], cout);
       return 1;
     }
-  cout << "Package1 = " << opts.pkg1 << std::endl;
-  cout << "package2 = " << opts.pkg2 << std::endl;
-  if (!opts.debug_pkg1.empty())
-    cout << "Debug-info pacakge " << opts.debug_pkg1 << std::endl;
-  if (!opts.debug_pkg2.empty())
-    cout << "Debug-info package2 = " << opts.debug_pkg2 << std::endl;
+
+  abigail::tools_utils::file_type pkg1_type, pkg2_type;
+  pkg1_type = guess_file_type(opts.pkg1);
+  pkg2_type = guess_file_type(opts.pkg2);
+
+  switch (pkg1_type)
+    {
+      case abigail::tools_utils::FILE_TYPE_RPM:
+        if (!(pkg2_type == abigail::tools_utils::FILE_TYPE_RPM))
+          {
+            cerr << opts.pkg2 << " should be an RPM file\n";
+            return 1;
+          }
+        break;
+
+      default:
+        cerr << opts.pkg1 << " should be a valid package file \n";
+        return 1;
+    }
+
+  return 0;
 }

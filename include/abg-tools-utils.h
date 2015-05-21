@@ -63,6 +63,10 @@ enum file_type
   // A zip file, possibly containing a corpus of one of several
   // translation units.
   FILE_TYPE_ZIP_CORPUS,
+  /// An RPM (.rpm) binary file
+  FILE_TYPE_RPM,
+  /// An SRPM (.src.rpm) file
+  FILE_TYPE_SRPM,
 };
 
 /// Exit status for abidiff and abicompat tools.
@@ -115,6 +119,9 @@ abidiff_status_has_abi_change(abidiff_status s);
 
 bool
 abidiff_status_has_incompatible_abi_change(abidiff_status s);
+
+ostream&
+operator<<(ostream& output, file_type r);
 
 file_type guess_file_type(istream& in);
 file_type guess_file_type(const string& file_path);

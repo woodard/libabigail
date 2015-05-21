@@ -222,8 +222,12 @@ main(int argc, char* argv[])
 #if WITH_ZIP_ARCHIVE
 	  corp = read_corpus_from_file(opts.file_path);
 #endif
-	  break;
-	}
+          break;
+        case abigail::tools_utils::FILE_TYPE_RPM:
+          break;
+        case abigail::tools_utils::FILE_TYPE_SRPM:
+          break;
+        }
 
       if (!tu && !corp)
 	{

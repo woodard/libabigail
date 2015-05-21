@@ -311,6 +311,44 @@ check_file(const string& path,
   return true;
 }
 
+ostream&
+operator<<(ostream& output,
+	   file_type r)
+{
+  string repr;
+
+  switch(r)
+    {
+    case FILE_TYPE_UNKNOWN:
+      repr = "unknown file type";
+      break;
+    case FILE_TYPE_NATIVE_BI:
+      repr = "native binary instrumentation file type";
+      break;
+    case FILE_TYPE_ELF:
+      repr = "ELF file type";
+      break;
+    case FILE_TYPE_AR:
+      repr = "archive file type";
+      break;
+    case FILE_TYPE_XML_CORPUS:
+      repr = "native XML corpus file type";
+      break;
+    case FILE_TYPE_ZIP_CORPUS:
+      repr = "native ZIP corpus file type";
+      break;
+    case FILE_TYPE_RPM:
+      repr = "RPM file type";
+      break;
+    case FILE_TYPE_SRPM:
+      repr = "SRPM file type";
+      break;
+    }
+
+  output << repr;
+  return output;
+}
+
 /// Guess the type of the content of an input stream.
 ///
 /// @param in the input stream to guess the content type for.
@@ -379,6 +417,19 @@ guess_file_type(istream& in)
       && buf[2] == 0x03
       && buf[3] == 0x04)
     return FILE_TYPE_ZIP_CORPUS;
+
+  if ((unsigned char)buf[0]    == 0xed
+      && (unsigned char) buf[1] == 0xab
+      && (unsigned char)buf[2] == 0xee
+      &&  (unsigned char)buf[3] == 0xdb)
+    {
+        if (buf[7] == 0x00)
+          return FILE_TYPE_RPM;
+        else if (buf[7] == 0x01)
+          return FILE_TYPE_SRPM;
+        else
+          return FILE_TYPE_UNKNOWN;
+    }
 
   return FILE_TYPE_UNKNOWN;
 }

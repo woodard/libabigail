@@ -545,8 +545,12 @@ main(int argc, char* argv[])
 #ifdef WITH_ZIP_ARCHIVE
 	  c1 = abigail::xml_reader::read_corpus_from_file(opts.file1);
 #endif //WITH_ZIP_ARCHIVE
-	  break;
-	}
+          break;
+        case abigail::tools_utils::FILE_TYPE_RPM:
+          break;
+        case abigail::tools_utils::FILE_TYPE_SRPM:
+          break;
+        }
 
       switch (t2_type)
 	{
@@ -573,8 +577,12 @@ main(int argc, char* argv[])
 #ifdef WITH_ZIP_ARCHIVE
 	  c2 = abigail::xml_reader::read_corpus_from_file(opts.file2);
 #endif //WITH_ZIP_ARCHIVE
-	  break;
-	}
+          break;
+        case abigail::tools_utils::FILE_TYPE_RPM:
+          break;
+        case abigail::tools_utils::FILE_TYPE_SRPM:
+          break;
+        }
 
       if (!t1 && !c1)
 	{
