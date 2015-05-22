@@ -49,10 +49,10 @@ Suppression specifications
 
   * Introductory examples
 
- Its syntax is based on a simplified form of `Ini File Syntax`_.  For
- instance, specify that change reports on a type named FooPrivateType
- should be suppressed, one could write this suppression specification:
- ::
+ Its syntax is based on a simplified and customized form of `Ini File
+ Syntax`_.  For instance, to specify that change reports on a type
+ named FooPrivateType should be suppressed, one could write this
+ suppression specification: ::
 
     [suppress_type]
       name = FooPrivateType
@@ -72,7 +72,7 @@ Suppression specifications
       name = FooPrivateType
 
  Or, we could want to suppress change reports about all struct which
- names ends with PrivateType: ::
+ names end with PrivateType: ::
 
     [suppress_type]
       type_kind = struct
