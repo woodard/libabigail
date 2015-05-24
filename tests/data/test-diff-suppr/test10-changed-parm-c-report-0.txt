@@ -7,10 +7,10 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     return type changed:
       type name changed from 'int' to 'float'
 
-    parameter 0 of type 'int' changed:
+    parameter 1 of type 'int' changed:
       type name changed from 'int' to 'float'
 
-    parameter 1 of type 'int' changed:
+    parameter 2 of type 'int' changed:
       type name changed from 'int' to 'float'
 
 

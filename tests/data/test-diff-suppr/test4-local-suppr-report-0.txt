@@ -4,7 +4,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 1 function with some indirect sub-type change:
 
   [C]'function void foo(public_type*, a_not_private_type*)' has some indirect sub-type changes:
-    parameter 0 of type 'public_type*' has sub-type changes:
+    parameter 1 of type 'public_type*' has sub-type changes:
       in pointed to type 'struct public_type':
         type size changed from 64 to 128 bits
         1 data member insertion:
@@ -16,7 +16,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
              1 data member insertion:
                'char private_data::private_data1', at offset 32 (in bits)
          and offset changed from 0 to 64 (in bits)
-    parameter 1 of type 'a_not_private_type*' has sub-type changes:
+    parameter 2 of type 'a_not_private_type*' has sub-type changes:
       in pointed to type 'struct a_not_private_type':
         type size changed from 32 to 64 bits
         1 data member insertion:

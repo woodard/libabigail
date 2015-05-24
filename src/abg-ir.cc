@@ -6788,8 +6788,19 @@ function_type::function_type(type_base_sptr	return_type,
   : type_base(size_in_bits, alignment_in_bits),
     priv_(new priv(parms, return_type))
 {
-  for (parameters::size_type i = 0; i < priv_->parms_.size(); ++i)
-    priv_->parms_[i]->set_index(i);
+  for (parameters::size_type i = 0, j = 1;
+       i < priv_->parms_.size();
+       ++i, ++j)
+    {
+      if (i == 0 && priv_->parms_[i]->get_artificial())
+	// If the first parameter is artificial, then it certainly
+	// means that this is a member function, and the first
+	// parameter is the implicit this pointer.  In that case, set
+	// the index of that implicit parameter to zero.  Otherwise,
+	// the index of the first parameter starts at one.
+	j = 0;
+      priv_->parms_[i]->set_index(j);
+    }
 }
 
 /// A constructor for a function_type that takes no parameters.

@@ -4,7 +4,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 1 function with some indirect sub-type change:
 
   [C]'function void foo(S0&)' has some indirect sub-type changes:
-    parameter 0 of type 'S0&' has sub-type changes:
+    parameter 1 of type 'S0&' has sub-type changes:
       in referenced type 'struct S0':
         1 data member change:
          name of 'S0::m2' changed to 'S0::m12'

@@ -13,7 +13,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     'method void S1::member0()' access changed from 'private' to 'public'
 
   [C]'function void foo(S0&, S1*)' has some indirect sub-type changes:
-    parameter 0 of type 'S0&' has sub-type changes:
+    parameter 1 of type 'S0&' has sub-type changes:
       in referenced type 'class S0':
         type size changed from 96 to 128 bits
         1 base class change:
