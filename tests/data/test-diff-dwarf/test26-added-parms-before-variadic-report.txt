@@ -7,7 +7,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 1 of type '...' changed:
       entity changed from 'variadic parameter type' to 'const char*'
       type size changed from 0 to 64 bits
-      type alignment changed from 0 to 64 bits
     parameter 2 of type '...' was added
 
 
@@ -15,7 +14,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 1 of type '...' changed:
       entity changed from 'variadic parameter type' to 'const char*'
       type size changed from 0 to 64 bits
-      type alignment changed from 0 to 64 bits
     parameter 2 of type '...' was added
 
 
@@ -23,7 +21,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 2 of type '...' changed:
       entity changed from 'variadic parameter type' to 'const int*'
       type size changed from 0 to 64 bits
-      type alignment changed from 0 to 64 bits
     parameter 3 of type '...' was added
 
 
@@ -31,7 +28,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 2 of type '...' changed:
       entity changed from 'variadic parameter type' to 'const int*'
       type size changed from 0 to 64 bits
-      type alignment changed from 0 to 64 bits
     parameter 3 of type '...' was added
 
 

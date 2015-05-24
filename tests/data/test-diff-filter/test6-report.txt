@@ -8,6 +8,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
       underlying type 'unsigned char' changed:
         type name changed from 'unsigned char' to 'unsigned int'
         type size changed from 8 to 32 bits
-        type alignment changed from 8 to 32 bits
 
 

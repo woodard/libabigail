@@ -348,8 +348,11 @@ var_decl::hash::operator()(const var_decl& t) const
       v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
 
       if (is_data_member(t) && get_data_member_is_laid_out(t))
-	v = hashing::combine_hashes(v,
-				    hash_size_t(get_data_member_offset(t)));
+	{
+	  v = hashing::combine_hashes(v, hash_decl(*t.get_scope()));
+	  v = hashing::combine_hashes(v,
+				      hash_size_t(get_data_member_offset(t)));
+	}
 
       t.set_hash(v);
     }

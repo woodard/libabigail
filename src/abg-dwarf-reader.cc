@@ -6035,13 +6035,12 @@ build_type_decl(read_context&	ctxt,
   if (bit_size == 0)
     bit_size = byte_size * 8;
 
-  size_t alignment = bit_size < 8 ? 8 : bit_size;
   string type_name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, type_name, linkage_name);
 
   result.reset(new type_decl(type_name, bit_size,
-			     alignment, loc,
+			     /*alignment=*/0, loc,
 			     linkage_name));
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_from_alt_di,
@@ -6285,7 +6284,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
     }
   else
     {
-      result.reset(new class_decl(name, size, 0, is_struct, loc,
+      result.reset(new class_decl(name, size, /*alignment=*/0, is_struct, loc,
 				  decl_base::VISIBILITY_DEFAULT));
 
       if (is_declaration_only)
@@ -6661,7 +6660,9 @@ build_pointer_type_def(read_context&	ctxt,
     return result;
   size *= 8;
 
-  result.reset(new pointer_type_def(utype, size, size, location()));
+  result.reset(new pointer_type_def(utype, size,
+				    /*alignment=*/0,
+				    location()));
   assert(result->get_pointed_to_type());
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_in_alt_di,
@@ -6741,7 +6742,8 @@ build_reference_type(read_context&	ctxt,
 
   bool is_lvalue = (tag == DW_TAG_reference_type) ? true : false;
 
-  result.reset(new reference_type_def(utype, is_lvalue, size, size,
+  result.reset(new reference_type_def(utype, is_lvalue, size,
+				      /*alignment=*/0,
 				      location()));
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_from_alt_di,
@@ -7133,11 +7135,11 @@ build_function_decl(read_context&	ctxt,
 						   is_method,
 						   function_parms,
 						   tu->get_address_size(),
-						   tu->get_address_size())
+						   /*alignment=*/0)
 				 : new function_type(is_type(return_type_decl),
 						     function_parms,
 						     tu->get_address_size(),
-						     tu->get_address_size()));
+						     /*alignement=*/0));
 
       tu->bind_function_type_life_time(fn_type);
 

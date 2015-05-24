@@ -23,7 +23,6 @@ Variable symbols changes summary: 0 Removed, 0 Added function symbol not referen
          type of 'int S::m0' changed:
            type name changed from 'int' to 'char'
            type size changed from 32 to 8 bits
-           type alignment changed from 32 to 8 bits
          and offset changed from 32 to 64 (in bits), access changed from 'public' to 'private'
 
 

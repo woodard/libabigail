@@ -7,6 +7,5 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 0 of type 'int' changed:
       type name changed from 'int' to 'char'
       type size changed from 32 to 8 bits
-      type alignment changed from 32 to 8 bits
 
 

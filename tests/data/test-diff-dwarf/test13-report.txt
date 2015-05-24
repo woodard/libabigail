@@ -14,7 +14,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
          type of 'unsigned int S::m2' changed:
            type name changed from 'unsigned int' to 'long long int'
            type size changed from 32 to 64 bits
-           type alignment changed from 32 to 64 bits
          'unsigned char S::m3' offset changed from 96 to 128 (in bits)
 
 
