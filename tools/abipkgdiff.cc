@@ -31,15 +31,21 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <cstdlib>
+#include <vector>
 
 #include "abg-tools-utils.h"
 
 using std::cout;
 using std::cerr;
+using std::endl;
 using std::string;
 using std::ostream;
+using std::vector;
+using std::tr1::shared_ptr;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
+using abigail::tools_utils::make_path_absolute;
 
 struct options
 {
@@ -56,6 +62,38 @@ struct options
   {}
 };
 
+struct package
+{
+  string pkg_path;
+  string extracted_pkg_dir_path;
+//   string pkg_name;
+  abigail::tools_utils::file_type pkg_type;
+  bool is_debuginfo_pkg;
+
+
+  package(string path, string dir, abigail::tools_utils::file_type file_type,
+          bool is_debuginfo = false )
+  : pkg_path(path),
+    is_debuginfo_pkg(is_debuginfo),
+    pkg_type(file_type)
+    {
+      const char *tmpdir = getenv("TMPDIR");
+      if (tmpdir != NULL)
+        extracted_pkg_dir_path = tmpdir;
+      else
+        extracted_pkg_dir_path = "/tmp";
+      extracted_pkg_dir_path = extracted_pkg_dir_path + "/" + dir;
+    }
+
+  ~package()
+    {
+      string cmd = "rm -r " + extracted_pkg_dir_path;
+      system(cmd.c_str());
+    }
+};
+
+typedef shared_ptr<package> package_sptr;
+
 static void
 display_usage(const string& prog_name, ostream& out)
 {
@@ -66,7 +104,46 @@ display_usage(const string& prog_name, ostream& out)
       << " --help                    Display help message\n";
 }
 
+const bool
+extract_rpm(const string& pkg_path, const string &extracted_pkg_dir_path)
+{
+  string cmd = "mkdir " + extracted_pkg_dir_path + " && cd " +
+    extracted_pkg_dir_path + " && rpm2cpio " + pkg_path + " | cpio -dium";
 
+  if (!system(cmd.c_str()))
+          return true;
+  return false;
+
+}
+
+static bool
+extract_pkg(package_sptr pkg)
+{
+  switch(pkg->pkg_type)
+    {
+      case abigail::tools_utils::FILE_TYPE_RPM:
+        if (!extract_rpm(pkg->pkg_path, pkg->extracted_pkg_dir_path))
+        {
+          cerr << "Error while extracting package" << pkg->pkg_path << endl;
+          return false;
+        }
+        return true;
+      break;
+      default:
+        return false;
+    }
+    return true;
+}
+
+static bool
+pkg_diff(vector<package_sptr> &packages)
+{
+  for (vector< package_sptr>::iterator it = packages.begin() ; it != packages.end(); ++it)
+  {
+      if (!extract_pkg(*it))
+        return false;
+  }
+}
 
 bool
 parse_command_line(int argc, char* argv[], options& opts)
@@ -79,9 +156,9 @@ parse_command_line(int argc, char* argv[], options& opts)
       if (argv[i][0] != '-')
         {
           if (opts.pkg1.empty())
-            opts.pkg1 = argv[i];
+            opts.pkg1 = abigail::tools_utils::make_path_absolute(argv[i]).get();
           else if (opts.pkg2.empty())
-            opts.pkg2 = argv[i];
+            opts.pkg2 = abigail::tools_utils::make_path_absolute(argv[i]).get();
           else
             return false;
         }
@@ -93,7 +170,7 @@ parse_command_line(int argc, char* argv[], options& opts)
               opts.missing_operand = true;
               return true;
             }
-          opts.debug_pkg1 = argv[j];
+          opts.debug_pkg1 = abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
       else if (!strcmp(argv[i], "--debug-info-pkg2"))
@@ -104,7 +181,7 @@ parse_command_line(int argc, char* argv[], options& opts)
               opts.missing_operand = true;
               return true;
             }
-          opts.debug_pkg2 = argv[j];
+          opts.debug_pkg2 = abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
       else if (!strcmp(argv[i], "--help"))
@@ -123,6 +200,7 @@ int
 main(int argc, char* argv[])
 {
   options opts;
+  vector<package_sptr> packages;
   if (!parse_command_line(argc, argv, opts))
     {
       cerr << "unrecognized option\n"
@@ -143,14 +221,26 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  abigail::tools_utils::file_type pkg1_type, pkg2_type;
-  pkg1_type = guess_file_type(opts.pkg1);
-  pkg2_type = guess_file_type(opts.pkg2);
+  if (opts.pkg1.empty() || opts.pkg2.empty())
+  {
+    cerr << "Please enter two pacakge to diff against" << endl;
+    return 1;
+  }
+  packages.push_back(package_sptr (new package(
+    opts.pkg1, "pkg1", guess_file_type(opts.pkg1))));
+  packages.push_back(package_sptr(new package(
+    opts.pkg2, "pkg2", guess_file_type(opts.pkg2))));
+  if (!opts.debug_pkg1.empty())
+    packages.push_back(package_sptr (new package(
+      opts.debug_pkg1, "debug_pkg1", guess_file_type(opts.debug_pkg1), true)));
+      if (!opts.debug_pkg2.empty())
+    packages.push_back(package_sptr (new package(
+      opts.debug_pkg2, "debug_pkg2", guess_file_type(opts.debug_pkg2), true)));
 
-  switch (pkg1_type)
+  switch (packages.at(0)->pkg_type)
     {
       case abigail::tools_utils::FILE_TYPE_RPM:
-        if (!(pkg2_type == abigail::tools_utils::FILE_TYPE_RPM))
+        if (!(packages.at(1)->pkg_type == abigail::tools_utils::FILE_TYPE_RPM))
           {
             cerr << opts.pkg2 << " should be an RPM file\n";
             return 1;
@@ -162,5 +252,6 @@ main(int argc, char* argv[])
         return 1;
     }
 
-  return 0;
+    return pkg_diff(packages);
+
 }
