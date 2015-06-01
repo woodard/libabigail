@@ -1856,9 +1856,9 @@ build_elf_symbol(read_context&, const xmlNodePtr node)
 
   elf_symbol::version version(version_string, is_default_version);
 
-  elf_symbol_sptr e(new elf_symbol(/*index=*/0, name,
-				   type, binding,
-				   is_defined, version));
+  elf_symbol_sptr e = elf_symbol::create(/*index=*/0, name,
+					 type, binding,
+					 is_defined, version);
   return e;
 }
 
@@ -2001,7 +2001,7 @@ build_elf_symbol_db(read_context& ctxt,
           assert(i != id_sym_map.end());
           assert(i->second->is_main_symbol());
 
-          x->second->get_main_symbol()->add_alias(i->second.get());
+          x->second->get_main_symbol()->add_alias(i->second);
         }
 	}
     }

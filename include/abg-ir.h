@@ -288,6 +288,9 @@ class elf_symbol;
 /// A convenience typedef for a shared pointer to elf_symbol.
 typedef shared_ptr<elf_symbol> elf_symbol_sptr;
 
+/// A convenience typedef for a weak pointer to elf_symbol.
+typedef weak_ptr<elf_symbol> elf_symbol_wptr;
+
 /// Convenience typedef for a map which key is a string and which
 /// value if the elf symbol of the same name.
 typedef std::tr1::unordered_map<string, elf_symbol_sptr>
@@ -349,7 +352,6 @@ private:
   struct priv;
   shared_ptr<priv> priv_;
 
-public:
   elf_symbol();
 
   elf_symbol(size_t		i,
@@ -360,6 +362,22 @@ public:
 	     const version&	v);
 
   elf_symbol(const elf_symbol&);
+
+  elf_symbol&
+  operator=(const elf_symbol& s);
+
+public:
+
+  static elf_symbol_sptr
+  create();
+
+  static elf_symbol_sptr
+  create(size_t	i,
+	 const string&	n,
+	 type		t,
+	 binding	b,
+	 bool		d,
+	 const version& v);
 
   size_t
   get_index() const;
@@ -406,26 +424,29 @@ public:
   bool
   is_variable() const;
 
-  const elf_symbol*
+  const elf_symbol_sptr
   get_main_symbol() const;
 
-  elf_symbol*
+  elf_symbol_sptr
   get_main_symbol();
 
   bool
   is_main_symbol() const;
 
-  elf_symbol*
+  elf_symbol_sptr
   get_next_alias() const;
 
   bool
   has_aliases() const;
 
   void
-  add_alias(elf_symbol*);
+  add_alias(elf_symbol_sptr);
 
   const string&
   get_id_string() const;
+
+  elf_symbol_sptr
+  get_alias_which_equals(const elf_symbol& other) const;
 
   string
   get_aliases_id_string(const string_elf_symbols_map_type& symtab,
@@ -435,9 +456,6 @@ public:
   get_name_and_version_from_id(const string& id,
 			       string& name,
 			       string& ver);
-
-  elf_symbol&
-  operator=(const elf_symbol& s);
 
   bool
   operator==(const elf_symbol&) const;
@@ -467,7 +485,7 @@ elf_symbols_alias(const elf_symbol& s1, const elf_symbol& s2);
 void
 compute_aliases_for_elf_symbol(const elf_symbol& symbol,
 			       const string_elf_symbols_map_type& symtab,
-			       vector<elf_symbol*>& alias_set);
+			       vector<elf_symbol_sptr>& alias_set);
 
 /// The abstraction of the version of an ELF symbol.
 class elf_symbol::version

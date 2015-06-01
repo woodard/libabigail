@@ -357,17 +357,15 @@ struct elf_symbol::priv
   elf_symbol::binding	binding_;
   elf_symbol::version	version_;
   bool			is_defined_;
-  elf_symbol*		main_symbol_;
-  elf_symbol*		next_alias_;
+  elf_symbol_wptr	main_symbol_;
+  elf_symbol_wptr	next_alias_;
   string		id_string_;
 
   priv()
     : index_(0),
       type_(elf_symbol::NOTYPE_TYPE),
       binding_(elf_symbol::GLOBAL_BINDING),
-      is_defined_(false),
-      main_symbol_(0),
-      next_alias_(0)
+      is_defined_(false)
   {}
 
   priv(size_t				i,
@@ -381,16 +379,13 @@ struct elf_symbol::priv
       type_(t),
       binding_(b),
       version_(v),
-      is_defined_(d),
-      main_symbol_(0),
-      next_alias_(0)
+      is_defined_(d)
   {}
 }; // end struct elf_symbol::priv
 
 elf_symbol::elf_symbol()
   : priv_(new priv)
 {
-  priv_->main_symbol_ = this;
 }
 
 elf_symbol::elf_symbol(size_t		i,
@@ -400,29 +395,69 @@ elf_symbol::elf_symbol(size_t		i,
 		       bool		d,
 		       const version&	v)
   : priv_(new priv(i, n, t, b, d, v))
+{}
+
+/// Factory of instances of @ref elf_symbol.
+///
+/// This is the function to use to create instances of @ref elf_symbol.
+///
+/// @return a (smart) pointer to a newly created instance of @ref
+/// elf_symbol.
+elf_symbol_sptr
+elf_symbol::create()
 {
-  priv_->main_symbol_ = this;
+  elf_symbol_sptr e(new elf_symbol());
+  e->priv_->main_symbol_ = e;
+  return e;
 }
 
-elf_symbol::elf_symbol(const elf_symbol& s)
-  : priv_(new priv(s.get_index(),
-		   s.get_name(),
-		   s.get_type(),
-		   s.get_binding(),
-		   s.is_defined(),
-		   s.get_version()))
+/// Factory of instances of @ref elf_symbol.
+///
+/// This is the function to use to create instances of @ref elf_symbol.
+///
+/// @param i the index of the symbol in the (ELF) symbol table.
+///
+/// @param n the name of the symbol.
+///
+/// @param t the type of the symbol.
+///
+/// @param b the binding of the symbol.
+///
+/// @param d true if the symbol is defined, false otherwise.
+///
+/// @param v the version of the symbol.
+///
+/// @return a (smart) pointer to a newly created instance of @ref
+/// elf_symbol.
+elf_symbol_sptr
+elf_symbol::create(size_t		i,
+		   const string&	n,
+		   type		t,
+		   binding		b,
+		   bool		d,
+		   const version&	v)
 {
-  priv_->main_symbol_ = this;
+  elf_symbol_sptr e(new elf_symbol(i, n, t, b, d, v));
+  e->priv_->main_symbol_ = e;
+  return e;
 }
 
-elf_symbol&
-elf_symbol::operator=(const elf_symbol& s)
+/// Test textual equality between two symbols.
+///
+/// Textual equality means that the aliases of the compared symbols
+/// are not taken into account.  Only the name, type, and version of
+/// the symbols are compared.
+///
+/// @return true iff the two symbols are textually equal.
+static bool
+textually_equals(const elf_symbol&l,
+		 const elf_symbol&r)
 {
-  *priv_ = *s.priv_;
-  priv_->main_symbol_ = this;
-  priv_->next_alias_ = 0;
-
-  return *this;
+  return (l.get_name() == r.get_name()
+	  && l.get_type() == r.get_type()
+	  && l.is_public() == r.is_public()
+	  && l.is_defined() == r.is_defined()
+	  && l.get_version() == r.get_version());
 }
 
 /// Getter for the index
@@ -529,30 +564,34 @@ elf_symbol::is_variable() const
 /// Get the main symbol of an alias chain.
 ///
 ///@return the main symbol.
-const elf_symbol*
+const elf_symbol_sptr
 elf_symbol::get_main_symbol() const
-{return priv_->main_symbol_;}
+{return elf_symbol_sptr(priv_->main_symbol_);}
 
 /// Get the main symbol of an alias chain.
 ///
 ///@return the main symbol.
-elf_symbol*
+elf_symbol_sptr
 elf_symbol::get_main_symbol()
-{return priv_->main_symbol_;}
+{return elf_symbol_sptr(priv_->main_symbol_);}
 
 /// Tests whether this symbol is the main symbol.
 ///
 /// @return true iff this symbol is the main symbol.
 bool
 elf_symbol::is_main_symbol() const
-{return get_main_symbol() == this;}
+{return get_main_symbol().get() == this;}
 
 /// Get the next alias of the current symbol.
 ///
 ///@return the alias, or NULL if there is no alias.
-elf_symbol*
+elf_symbol_sptr
 elf_symbol::get_next_alias() const
-{return priv_->next_alias_;}
+{
+  if (priv_->next_alias_.expired())
+    return elf_symbol_sptr();
+  return elf_symbol_sptr(priv_->next_alias_);
+}
 
 
 /// Check if the current elf_symbol has an alias.
@@ -567,7 +606,7 @@ elf_symbol::has_aliases() const
 /// @param alias the new alias.  Note that this elf_symbol should *NOT*
 /// have aliases prior to the invocation of this function.
 void
-elf_symbol::add_alias(elf_symbol* alias)
+elf_symbol::add_alias(elf_symbol_sptr alias)
 {
   if (!alias)
     return;
@@ -577,9 +616,9 @@ elf_symbol::add_alias(elf_symbol* alias)
 
   if (has_aliases())
     {
-      elf_symbol* last_alias = 0;
-      for (elf_symbol* a = get_next_alias();
-	   a != get_main_symbol();
+      elf_symbol_sptr last_alias;
+      for (elf_symbol_sptr a = get_next_alias();
+	   a && (a != get_main_symbol());
 	   a = a->get_next_alias())
 	{
 	  if (a->get_next_alias() == get_main_symbol())
@@ -631,6 +670,22 @@ elf_symbol::get_id_string() const
   return priv_->id_string_;
 }
 
+/// In the list of aliases of a given elf symbol, get the alias that
+/// equals this current symbol.
+///
+/// @param other the elf symbol to get the potential aliases from.
+///
+/// @return the alias of @p other that texually equals the current
+/// symbol, or nil if no alias textually equals the current symbol.
+elf_symbol_sptr
+elf_symbol::get_alias_which_equals(const elf_symbol& other) const
+{
+  for (elf_symbol_sptr a = other.get_next_alias(); a; a = a->get_next_alias())
+    if (textually_equals(*this, *a))
+      return a;
+  return elf_symbol_sptr();
+}
+
 /// Return a comma separated list of the id of the current symbol as
 /// well as the id string of its aliases.
 ///
@@ -644,12 +699,12 @@ elf_symbol::get_aliases_id_string(const string_elf_symbols_map_type& syms,
   if (include_symbol_itself)
       result = get_id_string();
 
-  vector<elf_symbol*> aliases;
+  vector<elf_symbol_sptr> aliases;
   compute_aliases_for_elf_symbol(*this, syms, aliases);
   if (!aliases.empty() && include_symbol_itself)
     result += ", ";
 
-  for (vector<elf_symbol*>::const_iterator i = aliases.begin();
+  for (vector<elf_symbol_sptr>::const_iterator i = aliases.begin();
        i != aliases.end();
        ++i)
     {
@@ -705,14 +760,21 @@ elf_symbol::get_name_and_version_from_id(const string&	id,
 
 ///@}
 
+/// Test if two main symbols are textually equal, or, if they have
+/// aliases that are textually equal.
+///
+/// @param other the symbol to compare against.
+///
+/// @return true iff the current instance of elf symbol equals the @p
+/// other.
 bool
 elf_symbol::operator==(const elf_symbol& other) const
 {
-  return (get_name() == other.get_name()
-	  && get_type() == other.get_type()
-	  && is_public() == other.is_public()
-	  && is_defined() == other.is_defined()
-	  && get_version() == other.get_version());
+  bool are_equal = textually_equals(*this, other);
+  return are_equal;
+  if (!are_equal)
+    are_equal = get_alias_which_equals(other);
+    return are_equal;
 }
 
 /// Test if the current symbol aliases another one.
@@ -726,8 +788,8 @@ elf_symbol::does_alias(const elf_symbol& o) const
   if (*this == o)
     return true;
 
-  for (const elf_symbol* a = get_next_alias();
-       a && a != get_main_symbol();
+  for (elf_symbol_sptr a = get_next_alias();
+       a && a!= get_main_symbol();
        a = a->get_next_alias())
     {
       if (o == *a)
@@ -762,10 +824,10 @@ elf_symbols_alias(const elf_symbol& s1, const elf_symbol& s2)
 void
 compute_aliases_for_elf_symbol(const elf_symbol& sym,
 			       const string_elf_symbols_map_type& symtab,
-			       vector<elf_symbol*>& aliases)
+			       vector<elf_symbol_sptr>& aliases)
 {
 
-  if (elf_symbol* a = sym.get_next_alias())
+  if (elf_symbol_sptr a = sym.get_next_alias())
     for (; a != sym.get_main_symbol(); a = a->get_next_alias())
       aliases.push_back(a);
   else
@@ -777,16 +839,16 @@ compute_aliases_for_elf_symbol(const elf_symbol& sym,
 	   ++j)
 	{
 	  if (**j == sym)
-	    for (elf_symbol* s = (*j)->get_next_alias();
+	    for (elf_symbol_sptr s = (*j)->get_next_alias();
 		 s && s != (*j)->get_main_symbol();
 		 s = s->get_next_alias())
 	      aliases.push_back(s);
 	  else
-	    for (const elf_symbol* s = (*j)->get_next_alias();
+	    for (elf_symbol_sptr s = (*j)->get_next_alias();
 		 s && s != (*j)->get_main_symbol();
 		 s = s->get_next_alias())
 	      if (*s == sym)
-		aliases.push_back(j->get());
+		aliases.push_back(*j);
 	}
 }
 
@@ -7664,11 +7726,18 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
       // so now, let's compare the decl_base part of the functions
       // w/o considering their decl names.
       string n1 = l.get_name(), n2 = r.get_name();
+      string ln1 = l.get_linkage_name(), ln2 = r.get_linkage_name();
       const_cast<function_decl&>(l).set_name("");
+      const_cast<function_decl&>(l).set_linkage_name("");
       const_cast<function_decl&>(r).set_name("");
+      const_cast<function_decl&>(r).set_linkage_name("");
+
       bool decl_bases_different = !l.decl_base::operator==(r);
+
       const_cast<function_decl&>(l).set_name(n1);
+      const_cast<function_decl&>(l).set_linkage_name(ln1);
       const_cast<function_decl&>(r).set_name(n2);
+      const_cast<function_decl&>(r).set_linkage_name(ln2);
 
       if (decl_bases_different)
 	{

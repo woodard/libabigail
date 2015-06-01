@@ -7141,9 +7141,10 @@ class_diff::ensure_lookup_tables_populated(void) const
 	   ++i)
 	// We assume that all the functions we look at here have ELF
 	// symbols.
-	if (i->second->get_symbol()
-	    && s->lookup_function_symbol(i->second->get_symbol()->get_name(),
-					 i->second->get_symbol()->get_version().str()))
+	if (!i->second->get_symbol()
+	    || (i->second->get_symbol()
+		&& s->lookup_function_symbol(i->second->get_symbol()->get_name(),
+					     i->second->get_symbol()->get_version().str())))
 	  to_delete.push_back(i->first);
 
 

@@ -930,8 +930,8 @@ corpus::priv::build_unreferenced_symbols_tables()
     if (sym = (*f)->get_symbol())
       {
 	refed_funs[sym->get_id_string()] = true;
-	for (elf_symbol* a = sym->get_next_alias();
-	     a && a != sym->get_main_symbol();
+	for (elf_symbol_sptr a = sym->get_next_alias();
+	     a && (a != sym->get_main_symbol());
 	     a = a->get_next_alias())
 	  refed_funs[a->get_id_string()] = true;
       }
@@ -942,7 +942,7 @@ corpus::priv::build_unreferenced_symbols_tables()
     if (sym = (*v)->get_symbol())
       {
 	refed_vars[sym->get_id_string()] = true;
-	for (elf_symbol* a = sym->get_next_alias();
+	for (elf_symbol_sptr a = sym->get_next_alias();
 	     a && a != sym->get_main_symbol();
 	     a = a->get_next_alias())
 	  refed_vars[a->get_id_string()] = true;

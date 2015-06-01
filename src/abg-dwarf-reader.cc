@@ -1073,12 +1073,12 @@ get_version_for_symbol(Elf*			elf_handle,
 /// @param syms_found a vector of symbols found with the name @p
 /// sym_name.  table.
 static bool
-lookup_symbol_from_sysv_hash_tab(Elf*			elf_handle,
-				 const string&		sym_name,
-				 size_t		ht_index,
-				 size_t		sym_tab_index,
-				 bool			demangle,
-				 vector<elf_symbol>&	syms_found)
+lookup_symbol_from_sysv_hash_tab(Elf*				elf_handle,
+				 const string&			sym_name,
+				 size_t			ht_index,
+				 size_t			sym_tab_index,
+				 bool				demangle,
+				 vector<elf_symbol_sptr>&	syms_found)
 {
   Elf_Scn* sym_tab_section = elf_getscn(elf_handle, sym_tab_index);
   assert(sym_tab_section);
@@ -1134,12 +1134,13 @@ lookup_symbol_from_sysv_hash_tab(Elf*			elf_handle,
 	  if (get_version_for_symbol(elf_handle, symbol_index,
 				     /*get_def_version=*/true, ver))
 	    assert(!ver.str().empty());
-	  elf_symbol symbol_found(symbol_index,
-				  sym_name_str,
-				  sym_type,
-				  sym_binding,
-				  symbol.st_shndx != SHN_UNDEF,
-				  ver);
+	  elf_symbol_sptr symbol_found =
+	    elf_symbol::create(symbol_index,
+			       sym_name_str,
+			       sym_type,
+			       sym_binding,
+			       symbol.st_shndx != SHN_UNDEF,
+			       ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1333,12 +1334,12 @@ setup_gnu_ht(Elf* elf_handle,
 ///
 /// @return true if a symbol was actually found.
 static bool
-lookup_symbol_from_gnu_hash_tab(Elf*			elf_handle,
-				const string&		sym_name,
-				size_t			ht_index,
-				size_t			sym_tab_index,
-				bool			demangle,
-				vector<elf_symbol>&	syms_found)
+lookup_symbol_from_gnu_hash_tab(Elf*				elf_handle,
+				const string&			sym_name,
+				size_t				ht_index,
+				size_t				sym_tab_index,
+				bool				demangle,
+				vector<elf_symbol_sptr>&	syms_found)
 {
   gnu_ht ht;
   if (!setup_gnu_ht(elf_handle, ht_index, sym_tab_index, ht))
@@ -1406,8 +1407,9 @@ lookup_symbol_from_gnu_hash_tab(Elf*			elf_handle,
 				     ver))
 	    assert(!ver.str().empty());
 
-	  elf_symbol symbol_found(i, sym_name_str, sym_type, sym_binding,
-				  symbol.st_shndx != SHN_UNDEF, ver);
+	  elf_symbol_sptr symbol_found =
+	    elf_symbol::create(i, sym_name_str, sym_type, sym_binding,
+			       symbol.st_shndx != SHN_UNDEF, ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1448,13 +1450,13 @@ lookup_symbol_from_gnu_hash_tab(Elf*			elf_handle,
 /// @return true iff the function found the symbol from the elf hash
 /// table.
 static bool
-lookup_symbol_from_elf_hash_tab(Elf*			elf_handle,
-				hash_table_kind	ht_kind,
-				size_t			ht_index,
-				size_t			symtab_index,
-				const string&		symbol_name,
-				bool			demangle,
-				vector<elf_symbol>&	syms_found)
+lookup_symbol_from_elf_hash_tab(Elf*				elf_handle,
+				hash_table_kind		ht_kind,
+				size_t				ht_index,
+				size_t				symtab_index,
+				const string&			symbol_name,
+				bool				demangle,
+				vector<elf_symbol_sptr>&	syms_found)
 {
   if (elf_handle == 0 || symbol_name.empty())
     return false;
@@ -1499,11 +1501,11 @@ lookup_symbol_from_elf_hash_tab(Elf*			elf_handle,
 ///
 /// @return true iff the symbol was found.
 static bool
-lookup_symbol_from_symtab(Elf*			elf_handle,
-			  const string&	sym_name,
-			  size_t		sym_tab_index,
-			  bool			demangle,
-			  vector<elf_symbol>&	syms_found)
+lookup_symbol_from_symtab(Elf*				elf_handle,
+			  const string&		sym_name,
+			  size_t			sym_tab_index,
+			  bool				demangle,
+			  vector<elf_symbol_sptr>&	syms_found)
 {
   // TODO: read all of the symbol table, store it in memory in a data
   // structure that associates each symbol with its versions and in
@@ -1541,12 +1543,9 @@ lookup_symbol_from_symtab(Elf*			elf_handle,
 				     /*get_def_version=*/sym_is_defined,
 				     ver))
 	    assert(!ver.str().empty());
-	  elf_symbol symbol_found(i,
-				  name_str,
-				  sym_type,
-				  sym_binding,
-				  sym_is_defined,
-				  ver);
+	  elf_symbol_sptr symbol_found =
+	    elf_symbol::create(i, name_str, sym_type, sym_binding,
+			       sym_is_defined, ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1584,10 +1583,10 @@ lookup_symbol_from_symtab(Elf*			elf_handle,
 ///
 /// @return true iff a symbol with the name @p symbol_name was found.
 static bool
-lookup_symbol_from_elf(Elf*			elf_handle,
-		       const string&		symbol_name,
-		       bool			demangle,
-		       vector<elf_symbol>&	syms_found)
+lookup_symbol_from_elf(Elf*				elf_handle,
+		       const string&			symbol_name,
+		       bool				demangle,
+		       vector<elf_symbol_sptr>&	syms_found)
 {
   size_t hash_table_index = 0, symbol_table_index = 0;
   hash_table_kind ht_kind = NO_HASH_TABLE_KIND;
@@ -1630,11 +1629,11 @@ lookup_symbol_from_elf(Elf*			elf_handle,
 ///
 /// @return true iff the symbol was found.
 static bool
-lookup_public_function_symbol_from_elf(Elf*			elf_handle,
-				       const string&		symbol_name,
-				       vector<elf_symbol>&	func_syms)
+lookup_public_function_symbol_from_elf(Elf*				elf_handle,
+				       const string&			symbol_name,
+				       vector<elf_symbol_sptr>&	func_syms)
 {
-  vector<elf_symbol> syms_found;
+  vector<elf_symbol_sptr> syms_found;
   bool found = false;
 
   if (lookup_symbol_from_elf(elf_handle,
@@ -1642,12 +1641,12 @@ lookup_public_function_symbol_from_elf(Elf*			elf_handle,
 			     /*demangle=*/false,
 			     syms_found))
     {
-      for (vector<elf_symbol>::const_iterator i = syms_found.begin();
+      for (vector<elf_symbol_sptr>::const_iterator i = syms_found.begin();
 	   i != syms_found.end();
 	   ++i)
 	{
-	  elf_symbol::type type = i->get_type();
-	  elf_symbol::binding binding = i->get_binding();
+	  elf_symbol::type type = (*i)->get_type();
+	  elf_symbol::binding binding = (*i)->get_binding();
 
 	  if ((type == elf_symbol::FUNC_TYPE
 	       || type == elf_symbol::GNU_IFUNC_TYPE
@@ -1675,11 +1674,11 @@ lookup_public_function_symbol_from_elf(Elf*			elf_handle,
 ///
 /// @return true iff symbol @p symname was found.
 static bool
-lookup_public_variable_symbol_from_elf(Elf*			elf,
-				       const string&		symname,
-				       vector<elf_symbol>&	var_syms)
+lookup_public_variable_symbol_from_elf(Elf*				elf,
+				       const string&			symname,
+				       vector<elf_symbol_sptr>&	var_syms)
 {
-  vector<elf_symbol> syms_found;
+  vector<elf_symbol_sptr> syms_found;
   bool found = false;
 
   if (lookup_symbol_from_elf(elf,
@@ -1687,12 +1686,12 @@ lookup_public_variable_symbol_from_elf(Elf*			elf,
 			     /*demangle=*/false,
 			     syms_found))
     {
-      for (vector<elf_symbol>::const_iterator i = syms_found.begin();
+      for (vector<elf_symbol_sptr>::const_iterator i = syms_found.begin();
 	   i != syms_found.end();
 	   ++i)
-	if (i->is_variable()
-	    && (i->get_binding() == elf_symbol::GLOBAL_BINDING
-		|| i->get_binding() == elf_symbol::WEAK_BINDING))
+	if ((*i)->is_variable()
+	    && ((*i)->get_binding() == elf_symbol::GLOBAL_BINDING
+		|| (*i)->get_binding() == elf_symbol::WEAK_BINDING))
 	    {
 	      var_syms.push_back(*i);
 	      found = true;
@@ -2623,9 +2622,9 @@ public:
   ///
   /// @return true iff the symbol was found.
   bool
-  lookup_symbol_from_elf(const string&		symbol_name,
-			 bool			demangle,
-			 vector<elf_symbol>&	syms) const
+  lookup_symbol_from_elf(const string&			symbol_name,
+			 bool				demangle,
+			 vector<elf_symbol_sptr>&	syms) const
   {
     return dwarf_reader::lookup_symbol_from_elf(elf_handle(),
 						symbol_name,
@@ -2643,10 +2642,9 @@ public:
   /// @param symbol the resulting instance of @ref elf_symbol, iff the
   /// function returns true.
   ///
-  /// @return true iff the symbol was found.
-  bool
-  lookup_elf_symbol_from_index(size_t symbol_index,
-			       elf_symbol& symbol)
+  /// @return the elf symbol found or nil if none was found.
+  elf_symbol_sptr
+  lookup_elf_symbol_from_index(size_t symbol_index)
   {
     Elf_Scn* symtab_section = find_symbol_table_section();
     assert(symtab_section);
@@ -2661,7 +2659,8 @@ public:
     GElf_Sym* s, smem;
     s = gelf_getsym(symtab, symbol_index, &smem);
     if (!s)
-      return false;
+      return elf_symbol_sptr();
+
     bool sym_is_defined = s->st_shndx != SHN_UNDEF;
 
     const char* name_str = elf_strptr(elf_handle(),
@@ -2675,13 +2674,12 @@ public:
 			   sym_is_defined,
 			   v);
 
-    elf_symbol sym(symbol_index, name_str,
-		   stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
-		   stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
-		   sym_is_defined,
-		   v);
-    symbol = sym;
-    return true;
+    elf_symbol_sptr sym =
+      elf_symbol::create(symbol_index, name_str,
+			 stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
+			 stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
+			 sym_is_defined, v);
+    return sym;
   }
 
   /// Given the address of the beginning of a function, lookup the
@@ -2694,38 +2692,20 @@ public:
   /// @param sym the resulting symbol.  This is set iff the function
   /// returns true.
   ///
-  /// @return true iff a function symbol is found for the address @p
-  /// symbol_start_addr.
-  bool
-  lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr,
-				    elf_symbol& sym)
+  /// @return the elf symbol found at address @p symbol_start_addr, or
+  /// nil if none was found.
+  elf_symbol_sptr
+  lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr)
   {
     addr_elf_symbol_sptr_map_type::const_iterator i,
       nil = fun_addr_sym_map().end();
 
     if ((i = fun_addr_sym_map().find(symbol_start_addr)) == nil)
-      return false;
+      return elf_symbol_sptr();
 
-    sym = *i->second;
-    return true;
+    return i->second;
   }
 
-  /// Given the address of the beginning of a function, lookup the
-  /// symbol of the function, build an instance of @ref elf_symbol out
-  /// of it and return it.
-  ///
-  /// @param symbol_start_addr the address of the beginning of the
-  /// function to consider.
-  ///
-  /// @return the symbol found, if any.  NULL otherwise.
-  elf_symbol_sptr
-  lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr)
-  {
-    elf_symbol_sptr sym(new elf_symbol);
-    if (lookup_elf_fn_symbol_from_address(symbol_start_addr, *sym))
-      return sym;
-    return elf_symbol_sptr();
-  }
   /// Given the address of a global variable, lookup the symbol of the
   /// variable, build an instance of @ref elf_symbol out of it and
   /// return it.
@@ -2735,36 +2715,17 @@ public:
   ///
   /// @param the symbol found, iff the function returns true.
   ///
-  /// @return true iff the variable was found.
-  bool
-  lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr,
-				     elf_symbol& symbol)
+  /// @return the elf symbol found or nil if none was found.
+  elf_symbol_sptr
+  lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr)
   {
     addr_elf_symbol_sptr_map_type::const_iterator i,
       nil = var_addr_sym_map().end();
 
     if ((i = var_addr_sym_map().find(symbol_start_addr)) == nil)
-      return false;
+      return elf_symbol_sptr();
 
-    symbol = *i->second;
-    return true;
-  }
-
-  /// Given the address of a global variable, lookup the symbol of the
-  /// variable, build an instance of @ref elf_symbol out of it and
-  /// return it.
-  ///
-  /// @param symbol_start_addr the address of the beginning of the
-  /// variable to consider.
-  ///
-  /// @return the symbol found, if any.  NULL otherwise.
-  elf_symbol_sptr
-  lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr)
-  {
-    elf_symbol_sptr sym(new elf_symbol);
-    if (lookup_elf_var_symbol_from_address(symbol_start_addr, *sym))
-      return sym;
-    return elf_symbol_sptr();
+    return i->second;
   }
 
   /// Look in the symbol tables of the underying elf file and see if
@@ -2777,8 +2738,8 @@ public:
   ///
   /// @return true iff the symbol was found.
   bool
-  lookup_public_function_symbol_from_elf(const string&		sym_name,
-					 vector<elf_symbol>&	syms)
+  lookup_public_function_symbol_from_elf(const string&			sym_name,
+					 vector<elf_symbol_sptr>&	syms)
   {
     return dwarf_reader::lookup_public_function_symbol_from_elf(elf_handle(),
 								sym_name,
@@ -2795,8 +2756,8 @@ public:
   ///
   /// @return true iff the symbol was found.
   bool
-  lookup_public_variable_symbol_from_elf(const string& sym_name,
-					 vector<elf_symbol>& syms)
+  lookup_public_variable_symbol_from_elf(const string&			sym_name,
+					 vector<elf_symbol_sptr>&	syms)
   {
     return dwarf_reader::lookup_public_variable_symbol_from_elf(elf_handle(),
 								sym_name,
@@ -3137,8 +3098,8 @@ public:
 	    && (GELF_ST_TYPE(sym->st_info) == STT_FUNC
 		|| GELF_ST_TYPE(sym->st_info) == STT_GNU_IFUNC))
 	  {
-	    elf_symbol_sptr symbol(new elf_symbol);
-	    assert(lookup_elf_symbol_from_index(i, *symbol));
+	    elf_symbol_sptr symbol = lookup_elf_symbol_from_index(i);
+	    assert(symbol);
 	    assert(symbol->is_function());
 
 
@@ -3162,7 +3123,7 @@ public:
 		  if (it == fun_addr_sym_map_->end())
 		    (*fun_addr_sym_map_)[sym->st_value] = symbol;
 		  else
-		    it->second->get_main_symbol()->add_alias(symbol.get());
+		    it->second->get_main_symbol()->add_alias(symbol);
 		}
 	      }
 	    else if (load_undefined_fun_map && !symbol->is_defined())
@@ -3186,8 +3147,8 @@ public:
 		 && (sym->st_shndx != SHN_ABS
 		     || GELF_ST_TYPE(sym->st_info) != STT_OBJECT ))
 	  {
-	    elf_symbol_sptr symbol(new elf_symbol);
-	    assert(lookup_elf_symbol_from_index(i, *symbol));
+	    elf_symbol_sptr symbol = lookup_elf_symbol_from_index(i);
+	    assert(symbol);
 	    assert(symbol->is_variable());
 
 	    if (load_var_map && symbol->is_public())
@@ -3210,7 +3171,7 @@ public:
 		  if (it == var_addr_sym_map_->end())
 		    (*var_addr_sym_map_)[sym->st_value] = symbol;
 		  else
-		    it->second->get_main_symbol()->add_alias(symbol.get());
+		    it->second->get_main_symbol()->add_alias(symbol);
 		}
 	      }
 	    else if (load_undefined_var_map && !symbol->is_defined())
@@ -6999,8 +6960,8 @@ build_var_decl(read_context&	ctxt,
       Dwarf_Addr var_addr;
       if (ctxt.get_variable_address(die, var_addr))
 	{
-	  elf_symbol_sptr sym;
-	  if ((sym = ctxt.lookup_elf_var_symbol_from_address(var_addr)))
+	  if (elf_symbol_sptr sym =
+	      ctxt.lookup_elf_var_symbol_from_address(var_addr))
 	    if (sym->is_variable() && sym->is_public())
 	      {
 		result->set_symbol(sym);
@@ -7157,8 +7118,7 @@ build_function_decl(read_context&	ctxt,
   Dwarf_Addr fn_addr;
   if (ctxt.get_function_address(die, fn_addr))
     {
-      elf_symbol_sptr sym;
-      if ((sym = ctxt.lookup_elf_fn_symbol_from_address(fn_addr)))
+      if (elf_symbol_sptr sym = ctxt.lookup_elf_fn_symbol_from_address(fn_addr))
 	if (sym->is_function() && sym->is_public())
 	  {
 	    result->set_symbol(sym);
@@ -8038,10 +7998,10 @@ read_corpus_from_elf(const std::string& elf_path,
 /// @return true iff the symbol was found among the publicly exported
 /// symbols of the ELF file.
 bool
-lookup_symbol_from_elf(const string&		elf_path,
-		       const string&		symbol_name,
-		       bool			demangle,
-		       vector<elf_symbol>&	syms)
+lookup_symbol_from_elf(const string&			elf_path,
+		       const string&			symbol_name,
+		       bool				demangle,
+		       vector<elf_symbol_sptr>&	syms)
 
 {
   if(elf_version(EV_CURRENT) == EV_NONE)
@@ -8080,9 +8040,9 @@ lookup_symbol_from_elf(const string&		elf_path,
 /// @return true iff a function with symbol name @p symbol_name is
 /// found.
 bool
-lookup_public_function_symbol_from_elf(const string&		path,
-				       const string&		symname,
-				       vector<elf_symbol>&	syms)
+lookup_public_function_symbol_from_elf(const string&			path,
+				       const string&			symname,
+				       vector<elf_symbol_sptr>&	syms)
 {
   if(elf_version(EV_CURRENT) == EV_NONE)
     return false;

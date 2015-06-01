@@ -90,15 +90,15 @@ read_corpus_from_elf(const std::string& elf_path,
 		     corpus_sptr&	resulting_corp);
 
 bool
-lookup_symbol_from_elf(const string&		elf_path,
-		       const string&		symbol_name,
-		       bool			demangle,
-		       vector<elf_symbol>&	symbols);
+lookup_symbol_from_elf(const string&			elf_path,
+		       const string&			symbol_name,
+		       bool				demangle,
+		       vector<elf_symbol_sptr>&	symbols);
 
 bool
-lookup_public_function_symbol_from_elf(const string&		path,
-				       const string&		symname,
-				       vector<elf_symbol>&	func_syms);
+lookup_public_function_symbol_from_elf(const string&			path,
+				       const string&			symname,
+				       vector<elf_symbol_sptr>&	func_syms);
 
 status
 has_alt_debug_info(read_context&	elf_path,

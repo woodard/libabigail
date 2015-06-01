@@ -41,6 +41,7 @@ using std::vector;
 
 using abigail::dwarf_reader::lookup_symbol_from_elf;
 using abigail::elf_symbol;
+using abigail::elf_symbol_sptr;
 
 struct options
 {
@@ -122,7 +123,7 @@ main(int argc, char* argv[])
 	 && opts.symbol_name != 0);
 
   string p = opts.elf_path, n = opts.symbol_name;
-  vector<elf_symbol> syms;
+  vector<elf_symbol_sptr> syms;
   if (!lookup_symbol_from_elf(p, n, opts.demangle, syms))
     {
       cout << "could not find symbol '"
@@ -135,26 +136,26 @@ main(int argc, char* argv[])
       return 0;
     }
 
-  elf_symbol sym = syms[0];
+  elf_symbol_sptr sym = syms[0];
   cout << " found symbol '" << n << "'";
-  if (n != sym.get_name())
-    cout << " (" << sym.get_name() << ")";
+  if (n != sym->get_name())
+    cout << " (" << sym->get_name() << ")";
     cout << ", an instance of "
-	 << (elf_symbol::type) sym.get_type()
-	 << " of " << sym.get_binding();
-    if (syms.size() > 1 || !sym.get_version().is_empty())
+	 << (elf_symbol::type) sym->get_type()
+	 << " of " << sym->get_binding();
+    if (syms.size() > 1 || !sym->get_version().is_empty())
       {
 	cout << ", of version";
 	if (syms.size () > 1)
 	  cout << "s";
 	cout << " ";
-	for (vector<elf_symbol>::const_iterator i = syms.begin();
+	for (vector<elf_symbol_sptr>::const_iterator i = syms.begin();
 	     i != syms.end();
 	     ++i)
 	  {
 	    if (i != syms.begin())
 	      cout << ", ";
-	    cout << "'" << i->get_version().str() << "'";
+	    cout << "'" << (*i)->get_version().str() << "'";
 	  }
       }
     cout << '\n';
