@@ -33,7 +33,13 @@
 #include <cstring>
 #include <cstdlib>
 #include <vector>
-
+#include <ftw.h>
+#include <map>
+#include <assert.h>
+#include <limits.h>
+#include <fcntl.h>
+#include <elf.h>
+#include <elfutils/libdw.h>
 #include "abg-tools-utils.h"
 
 using std::cout;
@@ -42,10 +48,13 @@ using std::endl;
 using std::string;
 using std::ostream;
 using std::vector;
+using std::map;
 using std::tr1::shared_ptr;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
+
+vector<string> dir_elf_files_path;
 
 struct options
 {
@@ -62,6 +71,30 @@ struct options
   {}
 };
 
+enum elf_type
+{
+  ELF_TYPE_EXEC,
+  ELF_TYPE_DSO,
+  ELF_TYPE_UNKNOWN
+};
+
+struct elf_file
+{
+  string name;
+  string path;
+  string soname;
+  elf_type type;
+
+  elf_file(string name, string path, elf_type type, string soname)
+  : name(name), path(path), type(type), soname(soname)
+    { }
+
+  ~elf_file()
+  {
+    delete this;
+  }
+};
+
 struct package
 {
   string pkg_path;
@@ -69,7 +102,8 @@ struct package
 //   string pkg_name;
   abigail::tools_utils::file_type pkg_type;
   bool is_debuginfo_pkg;
-
+  vector<string> dir_elf_files_path;
+  map<string, elf_file*> dir_elf_files_map;
 
   package(string path, string dir, abigail::tools_utils::file_type file_type,
           bool is_debuginfo = false )
@@ -91,7 +125,6 @@ struct package
       system(cmd.c_str());
     }
 };
-
 typedef shared_ptr<package> package_sptr;
 
 static void
@@ -104,11 +137,72 @@ display_usage(const string& prog_name, ostream& out)
       << " --help                    Display help message\n";
 }
 
+string
+get_soname(Elf *elf, GElf_Ehdr *ehdr)
+{
+    for (int i = 0; i < ehdr->e_phnum; ++i)
+    {
+      GElf_Phdr phdr_mem;
+      GElf_Phdr *phdr = gelf_getphdr (elf, i, &phdr_mem);
+
+      if (phdr != NULL && phdr->p_type == PT_DYNAMIC)
+        {
+          Elf_Scn *scn = gelf_offscn (elf, phdr->p_offset);
+          GElf_Shdr shdr_mem;
+          GElf_Shdr *shdr = gelf_getshdr (scn, &shdr_mem);
+          int maxcnt = (shdr != NULL
+                        ? shdr->sh_size / shdr->sh_entsize : INT_MAX);
+          assert (shdr == NULL || shdr->sh_type == SHT_DYNAMIC);
+          Elf_Data *data = elf_getdata (scn, NULL);
+          if (data == NULL)
+            {
+              return NULL;
+            }
+
+          for (int cnt = 0; cnt < maxcnt; ++cnt)
+            {
+              GElf_Dyn dynmem;
+              GElf_Dyn *dyn = gelf_getdyn (data, cnt, &dynmem);
+              if (dyn == NULL)
+                continue;
+
+              if (dyn->d_tag == DT_NULL)
+                break;
+
+              if (dyn->d_tag != DT_SONAME)
+                continue;
+
+              // XXX Don't rely on SHDR
+              return elf_strptr (elf, shdr->sh_link, dyn->d_un.d_val);
+            }
+          break;
+        }
+    }
+}
+
+
+elf_type
+elf_file_type(const GElf_Ehdr* ehdr)
+{
+  switch (ehdr->e_type)
+    {
+    case ET_DYN:
+      return ELF_TYPE_DSO;
+      break;
+    case ET_EXEC:
+      return ELF_TYPE_EXEC;
+      break;
+    default:
+      return ELF_TYPE_UNKNOWN;
+      break;
+    }
+}
+
 const bool
 extract_rpm(const string& pkg_path, const string &extracted_pkg_dir_path)
 {
   string cmd = "mkdir " + extracted_pkg_dir_path + " && cd " +
-    extracted_pkg_dir_path + " && rpm2cpio " + pkg_path + " | cpio -dium";
+    extracted_pkg_dir_path + " && rpm2cpio " + pkg_path + " | cpio -dium --quiet";
 
   if (!system(cmd.c_str()))
           return true;
@@ -135,14 +229,55 @@ extract_pkg(package_sptr pkg)
     return true;
 }
 
+static int
+callback(const char *fpath, const struct stat *st, int flag)
+{
+  if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
+    dir_elf_files_path.push_back(fpath);
+  return 0;
+}
+
 static bool
 pkg_diff(vector<package_sptr> &packages)
 {
   for (vector< package_sptr>::iterator it = packages.begin() ; it != packages.end(); ++it)
-  {
+    {
       if (!extract_pkg(*it))
         return false;
-  }
+
+      // Getting files path available in packages
+      if (!(*it)->is_debuginfo_pkg)
+        {
+          dir_elf_files_path.clear();
+          if (!(ftw((*it)->extracted_pkg_dir_path.c_str(), callback, 16)))
+            {
+              (*it)->dir_elf_files_path = dir_elf_files_path;
+              for (vector<string>::const_iterator iter = dir_elf_files_path.begin();
+                   iter != dir_elf_files_path.end(); ++iter)
+                {
+                  int fd = open((*iter).c_str(), O_RDONLY);
+                  if(fd == -1)
+                    return false;
+                  elf_version (EV_CURRENT);
+                  Elf *elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
+                  GElf_Ehdr ehdr_mem;
+                  GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
+                  string soname;
+                  elf_type e = elf_file_type(ehdr);
+                  if (e == ELF_TYPE_DSO)
+                    string soname = get_soname(elf, ehdr);
+
+                  string file_base_name(basename(const_cast<char*>((*iter).c_str())));
+                  (*it)->dir_elf_files_map[file_base_name] =
+                  new elf_file((*iter), file_base_name, e, soname);
+                }
+              }
+          else
+            cerr << "Error while getting list of files in package"
+            << (*it)->extracted_pkg_dir_path << std::endl;
+        }
+    }
+    return true;
 }
 
 bool
@@ -223,7 +358,7 @@ main(int argc, char* argv[])
 
   if (opts.pkg1.empty() || opts.pkg2.empty())
   {
-    cerr << "Please enter two pacakge to diff against" << endl;
+    cerr << "Please enter two pacakges to diff" << endl;
     return 1;
   }
   packages.push_back(package_sptr (new package(
