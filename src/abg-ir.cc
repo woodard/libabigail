@@ -8804,18 +8804,14 @@ equals(const class_decl::base_spec& l,
        const class_decl::base_spec& r,
        change_kind* k)
 {
-  bool result = true;
-
-  if (!l.member_base::operator==(r)
-      || (*l.get_base_class() != *r.get_base_class()))
+  if (!l.member_base::operator==(r))
     {
-      result =false;
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
-      else
-	return false;
+      return false;
     }
-  return result;
+
+  return (*l.get_base_class() == *r.get_base_class());
 }
 
 /// Comparison operator for @ref class_decl::base_spec.

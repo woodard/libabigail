@@ -207,6 +207,11 @@ test-diff-dwarf/libtest26-added-parms-before-variadic-v1.so \
 test-diff-dwarf/test26-added-parms-before-variadic-report.txt \
 test-diff-dwarf/test26-added-parms-before-variadic-v0.c \
 test-diff-dwarf/test26-added-parms-before-variadic-v1.c \
+test-diff-dwarf/test27-local-base-diff-v0.o \
+test-diff-dwarf/test27-local-base-diff-v1.o \
+test-diff-dwarf/test27-local-base-diff-v0.cc \
+test-diff-dwarf/test27-local-base-diff-v1.cc \
+test-diff-dwarf/test27-local-base-diff-report.txt \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

@@ -224,6 +224,12 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test26-added-parms-before-variadic-report.txt",
     "output/test-diff-dwarf/test26-added-parms-before-variadic-report.txt"
   },
+{
+    "data/test-diff-dwarf/test27-local-base-diff-v0.o",
+    "data/test-diff-dwarf/test27-local-base-diff-v1.o",
+    "data/test-diff-dwarf/test27-local-base-diff-report.txt",
+    "output/test-diff-dwarf/test27-local-base-diff-report.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };
