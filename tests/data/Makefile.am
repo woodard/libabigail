@@ -403,6 +403,11 @@ test-diff-filter/test28-redundant-and-filtered-children-nodes-report-0.txt \
 test-diff-filter/test28-redundant-and-filtered-children-nodes-report-1.txt \
 test-diff-filter/test28-redundant-and-filtered-children-nodes-v0.cc \
 test-diff-filter/test28-redundant-and-filtered-children-nodes-v1.cc \
+test-diff-filter/test29-finer-redundancy-marking-report-0.txt \
+test-diff-filter/test29-finer-redundancy-marking-v0.o  \
+test-diff-filter/test29-finer-redundancy-marking-v1.cc \
+test-diff-filter/test29-finer-redundancy-marking-v0.cc \
+test-diff-filter/test29-finer-redundancy-marking-v1.o \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

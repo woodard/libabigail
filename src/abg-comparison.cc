@@ -339,6 +339,82 @@ is_function_decl_diff(const diff* diff)
   return d;
 }
 
+/// Test if a diff node is about differences between two pointers.
+///
+/// @param diff the diff node to consider.
+///
+/// @return the @p diff converted into an instance of @ref
+/// pointer_diff iff @p diff is about differences between two
+/// pointers.
+static const pointer_diff*
+is_pointer_diff(const diff* diff)
+{return dynamic_cast<const pointer_diff*>(diff);}
+
+/// Test if a diff node is about differences between two references.
+///
+/// @param diff the diff node to consider.
+///
+/// @return the @p diff converted into an instance of @ref
+/// reference_diff iff @p diff is about differences between two
+/// references.
+static const reference_diff*
+is_reference_diff(const diff* diff)
+{return dynamic_cast<const reference_diff*>(diff);}
+
+/// Test if a diff node is either a reference diff node or a pointer
+/// diff node.
+///
+/// @param diff the diff node to test.
+///
+/// @return true iff @p diff is either reference diff node or a
+/// pointer diff node.
+static bool
+is_reference_or_pointer_diff(const diff* diff)
+{return is_reference_diff(diff) || is_pointer_diff(diff);}
+
+/// Test if a diff node is about differences between two function
+/// parameters.
+///
+/// @param diff the diff node to consider.
+///
+/// @return the @p diff converted into an instance of @ref
+/// reference_diff iff @p diff is about differences between two
+/// function parameters.
+static const fn_parm_diff*
+is_fn_parm_diff(const diff* diff)
+{return dynamic_cast<const fn_parm_diff*>(diff);}
+
+/// Test if a diff node is about differences between two base class
+/// specifiers.
+///
+/// @param diff the diff node to consider.
+///
+/// @return the @p diff converted into an instance of @ref base_diff
+/// iff @p diff is about differences between two base class
+/// specifiers.
+static const base_diff*
+is_base_diff(const diff* diff)
+{return dynamic_cast<const base_diff*>(diff);}
+
+/// Test if a diff node is a child node of a function parameter diff node.
+///
+/// @param diff the diff node to test.
+///
+/// @return true iff @p diff is a child node of a function parameter
+/// diff node.
+static bool
+is_child_node_of_function_parm_diff(const diff* diff)
+{return diff && is_fn_parm_diff(diff->parent_node());}
+
+/// Test if a diff node is a child node of a base diff node.
+///
+/// @param diff the diff node to test.
+///
+/// @return true iff @p diff is a child node of a base diff node.
+static bool
+is_child_node_of_base_diff(const diff* diff)
+{return diff && is_base_diff(diff->parent_node());}
+
 /// The default traverse function.
 ///
 /// @return true.
@@ -3160,39 +3236,53 @@ diff_context::initialize_canonical_diff(const diff_sptr diff)
 /// Test if a diff node has been traversed.
 ///
 /// @param d the diff node to consider.
-bool
+///
+/// @return the first diff node against which @p d is redundant.
+diff*
 diff_context::diff_has_been_visited(const diff* d) const
 {
   const diff* canonical = d->get_canonical_diff();
   assert(canonical);
 
   size_t ptr_value = reinterpret_cast<size_t>(canonical);
-  return (priv_->visited_diff_nodes_.find(ptr_value)
-	  != priv_->visited_diff_nodes_.end());
+  pointer_map::iterator it = priv_->visited_diff_nodes_.find(ptr_value);
+  if (it != priv_->visited_diff_nodes_.end())
+    return reinterpret_cast<diff*>(it->second);
+  else
+    return 0;
 }
 
 /// Test if a diff node has been traversed.
 ///
 /// @param d the diff node to consider.
-bool
+///
+/// @return the first diff node against which @p d is redundant.
+diff_sptr
 diff_context::diff_has_been_visited(const diff_sptr d) const
-{return diff_has_been_visited(d.get());}
+{
+  diff_sptr diff(diff_has_been_visited(d.get()));
+  return diff;
+}
 
 /// Mark a diff node as traversed by a traversing algorithm.
 ///
 /// Actually, it's the @ref CanonicalDiff "canonical diff" of this
 /// node that is marked as traversed.
 ///
-/// Subsequent invocations of diff_has_been_visited() on the diff
-/// node will yield true.
+/// Subsequent invocations of diff_has_been_visited() on the diff node
+/// will yield true.
 void
 diff_context::mark_diff_as_visited(const diff* d)
 {
+  if(diff_has_been_visited(d))
+    return;
+
   const diff* canonical = d->get_canonical_diff();
   assert(canonical);
 
-   size_t ptr_value = reinterpret_cast<size_t>(canonical);
-   priv_->visited_diff_nodes_[ptr_value] = true;
+   size_t canonical_ptr_value = reinterpret_cast<size_t>(canonical);
+   size_t diff_ptr_value = reinterpret_cast<size_t>(d);;
+   priv_->visited_diff_nodes_[canonical_ptr_value] = diff_ptr_value;
 }
 
 /// Unmark all the diff nodes that were marked as being traversed.
@@ -13346,7 +13436,19 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		// should never be marked redundant because we want to see
 		// them all.
 		&& !is_diff_of_variadic_parameter(d)
-		&& !is_diff_of_variadic_parameter_type(d))
+		&& !is_diff_of_variadic_parameter_type(d)
+		// If the *same* diff node (not one that is merely
+		// equivalent to this one) has already been visited
+		// the do not mark it as beind redundant.  It's only
+		// the other nodes that are equivalent to this one
+		// that must be marked redundant.
+		&& d->context()->diff_has_been_visited(d) != d
+		// If the diff node is a function parameter and is not
+		// a reference/pointer then do not mark it as
+		// redundant.
+		&& (is_reference_or_pointer_diff(d)
+		    || (!is_child_node_of_function_parm_diff(d)
+			&& !is_child_node_of_base_diff(d))))
 	      {
 		d->add_to_category(REDUNDANT_CATEGORY);
 		// As we said in preamble, as this node is marked as

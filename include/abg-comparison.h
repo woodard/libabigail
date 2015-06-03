@@ -117,8 +117,9 @@ class class_diff;
 typedef shared_ptr<class_diff> class_diff_sptr;
 
 /// Convenience typedef for a map of pointer values.  The Key is a
-/// pointer value and the value is a boolean.
-typedef unordered_map<size_t, bool> pointer_map;
+/// pointer value and the value is potentially another pointer value
+/// associated to the first one.
+typedef unordered_map<size_t, size_t> pointer_map;
 
 /// Convenience typedef for a map which key is a string and which
 /// value is a @ref decl_base_sptr.
@@ -934,10 +935,10 @@ public:
   void
   initialize_canonical_diff(const diff_sptr diff);
 
-  bool
+  diff*
   diff_has_been_visited(const diff*) const;
 
-  bool
+  diff_sptr
   diff_has_been_visited(const diff_sptr) const;
 
   void

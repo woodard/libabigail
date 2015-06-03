@@ -362,6 +362,13 @@ InOutSpec in_out_specs[] =
    "data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-1.txt",
     "output/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-1.txt",
   },
+  {
+    "data/test-diff-filter/test29-finer-redundancy-marking-v0.o",
+    "data/test-diff-filter/test29-finer-redundancy-marking-v1.o",
+    "--no-linkage-name --no-redundant",
+    "data/test-diff-filter/test29-finer-redundancy-marking-report-0.txt",
+    "output/test-diff-filter/test29-finer-redundancy-marking-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };
