@@ -476,6 +476,26 @@ public:
     BUILTIN_TYPE_KIND
   }; // end enum type_kind
 
+  /// The different ways through which the type diff has been reached.
+  enum reach_kind
+  {
+    /// The type diff has been reached (from a function or variable
+    /// change) directly.
+    DIRECT_REACH_KIND = 0,
+
+    /// The type diff has been reached (from a function or variable
+    /// change) through a pointer.
+    POINTER_REACH_KIND,
+
+    /// The type diff has been reached (from a function or variable
+    /// change) through a reference; you know, like a c++ reference..
+    REFERENCE_REACH_KIND,
+
+    /// The type diff has been reached (from a function or variable
+    /// change) through either a reference or a pointer.
+    REFERENCE_OR_POINTER_REACH_KIND
+  }; // end enum reach_kind
+
   class insertion_range;
   /// A convenience typedef for a shared pointer to @ref
   /// insertion_range.
@@ -512,6 +532,18 @@ public:
 
   type_kind
   get_type_kind() const;
+
+  bool
+  get_consider_reach_kind() const;
+
+  void
+  set_consider_reach_kind(bool f);
+
+  reach_kind
+  get_reach_kind() const;
+
+  void
+  set_reach_kind(reach_kind k);
 
   void
   set_data_member_insertion_ranges(const insertion_ranges& r);
@@ -946,6 +978,15 @@ public:
 
   void
   forget_visited_diffs();
+
+  void
+  mark_last_diff_visited_per_class_of_equivalence(const diff*);
+
+  void
+  clear_last_diffs_visited_per_class_of_equivalence();
+
+  const diff*
+  get_last_visited_diff_of_class_of_equivalence(const diff*);
 
   void
   forbid_visiting_a_node_twice(bool f);

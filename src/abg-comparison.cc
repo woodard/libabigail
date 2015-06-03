@@ -415,6 +415,23 @@ static bool
 is_child_node_of_base_diff(const diff* diff)
 {return diff && is_base_diff(diff->parent_node());}
 
+/// Test if the current diff node has an ancestor node that has been
+/// filtered out.
+///
+/// @param diff the diff node to take into account.
+///
+/// @return true iff the current diff node has an ancestor node that
+/// has been filtered out.
+static bool
+diff_has_ancestor_filtered_out(const diff* diff)
+{
+  if (!diff || !diff->parent_node())
+    return false;
+  if (diff->parent_node()->is_filtered_out())
+    return true;
+  return diff_has_ancestor_filtered_out(diff->parent_node());
+}
+
 /// The default traverse function.
 ///
 /// @return true.
@@ -539,6 +556,8 @@ class type_suppression::priv
   string				 type_name_;
   bool					 consider_type_kind_;
   type_suppression::type_kind		 type_kind_;
+  bool					 consider_reach_kind_;
+  type_suppression::reach_kind		 reach_kind_;
   type_suppression::insertion_ranges	 insertion_ranges_;
 
   priv();
@@ -547,11 +566,15 @@ public:
   priv(const string&			type_name_regexp,
        const string&			type_name,
        bool				consider_type_kind,
-       type_suppression::type_kind	type_kind)
+       type_suppression::type_kind	type_kind,
+       bool				consider_reach_kind,
+       type_suppression::reach_kind	reach_kind)
     : type_name_regex_str_(type_name_regexp),
       type_name_(type_name),
       consider_type_kind_(consider_type_kind),
-      type_kind_(type_kind)
+      type_kind_(type_kind),
+      consider_reach_kind_(consider_reach_kind),
+      reach_kind_(reach_kind)
   {}
 
   /// Get the regular expression object associated to the 'type_name_regex'
@@ -611,8 +634,10 @@ type_suppression::type_suppression(const string& label,
   : suppression_base(label),
     priv_(new priv(type_name_regexp,
 		   type_name,
-		   /*consider_type_kings=*/false,
-		   /*type_kind=*/CLASS_TYPE_KIND))
+		   /*consider_type_kind=*/false,
+		   /*type_kind=*/CLASS_TYPE_KIND,
+		   /*consider_reach_kind=*/false,
+		   /*reach_kind=*/DIRECT_REACH_KIND))
 {}
 
 type_suppression::~type_suppression()
@@ -695,6 +720,43 @@ type_suppression::type_kind
 type_suppression::get_type_kind() const
 {return priv_->type_kind_;}
 
+/// Test if the current type suppression specification
+/// suggests to consider how the matching diff node is reached.
+///
+/// @return true if the current type suppression specification
+/// suggests to consider how the matching diff node is reached.
+bool
+type_suppression::get_consider_reach_kind() const
+{return priv_->consider_reach_kind_;}
+
+/// Set a flag saying if the current type suppression specification
+/// suggests to consider how the matching diff node is reached.
+///
+/// @param f the new value of the flag.  It's true iff the current
+/// type suppression specification suggests to consider how the
+/// matching diff node is reached.
+void
+type_suppression::set_consider_reach_kind(bool f)
+{priv_->consider_reach_kind_ = f;}
+
+/// Getter of the way the diff node matching the current suppression
+/// specification is to be reached.
+///
+/// @return the way the diff node matching the current suppression
+/// specification is to be reached.
+type_suppression::reach_kind
+type_suppression::get_reach_kind() const
+{return priv_->reach_kind_;}
+
+/// Setter of the way the diff node matching the current suppression
+/// specification is to be reached.
+///
+/// @param p the way the diff node matching the current suppression
+/// specification is to be reached.
+void
+type_suppression::set_reach_kind(reach_kind k)
+{priv_->reach_kind_ = k;}
+
 /// Setter for the vector of data member insertion ranges that
 /// specifies where a data member is inserted as far as this
 /// suppression specification is concerned.
@@ -735,6 +797,47 @@ type_suppression::suppresses_diff(const diff* diff) const
   const type_diff_base* d = is_type_diff(diff);
   if (!d)
     return false;
+
+  // If the suppression should consider the way the diff node has been
+  // reached, then do it now.
+  if (get_consider_reach_kind())
+    {
+      if (get_reach_kind() == POINTER_REACH_KIND)
+	{
+	  if (const pointer_diff* ptr_diff = is_pointer_diff(diff))
+	    {
+	      d = is_type_diff(ptr_diff->underlying_type_diff().get());
+	      assert(d);
+	    }
+	  else
+	    return false;
+	}
+      else if (get_reach_kind() == REFERENCE_REACH_KIND)
+	{
+	  if (const reference_diff* ref_diff = is_reference_diff(diff))
+	    {
+	      d = is_type_diff(ref_diff->underlying_type_diff().get());
+	      assert(d);
+	    }
+	  else
+	    return false;
+	}
+      else if (get_reach_kind() == REFERENCE_OR_POINTER_REACH_KIND)
+	{
+	  if (const pointer_diff* ptr_diff = is_pointer_diff(diff))
+	    {
+	      d = is_type_diff(ptr_diff->underlying_type_diff().get());
+	      assert(d);
+	    }
+	  else if (const reference_diff* ref_diff = is_reference_diff(diff))
+	    {
+	      d = is_type_diff(ref_diff->underlying_type_diff().get());
+	      assert(d);
+	    }
+	  else
+	    return false;
+	}
+    }
 
   type_base_sptr ft, st;
   ft = is_type(d->first_subject());
@@ -1195,6 +1298,28 @@ read_type_kind_string(const string& input)
     return type_suppression::UNKNOWN_TYPE_KIND;
 }
 
+/// Parse the value of the "accessed_through" property in the
+/// "suppress_type" section.
+///
+/// @param input the input string representing the value of the
+/// "accessed_through" property.
+///
+/// @return the @ref type_suppression::reach_kind enumerator parsed.
+static type_suppression::reach_kind
+read_suppression_reach_kind(const string& input)
+{
+  if (input == "direct")
+    return type_suppression::DIRECT_REACH_KIND;
+  else if (input == "pointer")
+    return type_suppression::POINTER_REACH_KIND;
+  else if (input == "reference")
+    return type_suppression::REFERENCE_REACH_KIND;
+  else if (input == "reference-or-pointer")
+    return type_suppression::REFERENCE_OR_POINTER_REACH_KIND;
+  else
+    return type_suppression::DIRECT_REACH_KIND;
+}
+
 /// Read a type suppression from an instance of ini::config::section
 /// and build a @ref type_suppression as a result.
 ///
@@ -1234,6 +1359,16 @@ read_type_suppression(const ini::config::section& section)
       consider_type_kind = true;
       type_kind =
 	read_type_kind_string(type_kind_prop->get_value()->as_string());
+    }
+
+  bool consider_reach_kind = false;
+  type_suppression::reach_kind reach_kind = type_suppression::DIRECT_REACH_KIND;
+  if (ini::simple_property_sptr reach_kind_prop =
+      is_simple_property(section.find_property("accessed_through")))
+    {
+      consider_reach_kind = true;
+      reach_kind =
+	read_suppression_reach_kind(reach_kind_prop->get_value()->as_string());
     }
 
   // Support has_data_member_inserted_at
@@ -1384,6 +1519,12 @@ read_type_suppression(const ini::config::section& section)
     {
       suppr->set_consider_type_kind(true);
       suppr->set_type_kind(type_kind);
+    }
+
+  if (consider_reach_kind)
+    {
+      suppr->set_consider_reach_kind(true);
+      suppr->set_reach_kind(reach_kind);
     }
 
   if (consider_data_member_insertion)
@@ -2916,6 +3057,9 @@ struct diff_context::priv
   vector<filtering::filter_base_sptr>	filters_;
   suppressions_type			suppressions_;
   pointer_map				visited_diff_nodes_;
+  // This is the last visited diff node, per class of equivalence.
+  // It's set during the redundant diff node marking process.
+  pointer_map				last_visited_diff_node_;
   corpus_sptr				first_corpus_;
   corpus_sptr				second_corpus_;
   ostream*				default_output_stream_;
@@ -3289,6 +3433,45 @@ diff_context::mark_diff_as_visited(const diff* d)
 void
 diff_context::forget_visited_diffs()
 {priv_->visited_diff_nodes_.clear();}
+
+/// Mark a given diff node as being the last one that has been visited
+/// in its class of equivalence.
+///
+/// @param d the diff node to mark.
+void
+diff_context::mark_last_diff_visited_per_class_of_equivalence(const diff* d)
+{
+  if (!d->get_canonical_diff())
+    return;
+
+  size_t v0 = reinterpret_cast<size_t>(d->get_canonical_diff());
+  size_t v1 = reinterpret_cast<size_t>(d);
+  priv_->last_visited_diff_node_[v0]= v1;
+}
+
+/// Clear the marking about the diff diff nodes in a given class of
+/// equivalence.
+void
+diff_context::clear_last_diffs_visited_per_class_of_equivalence()
+{priv_->last_visited_diff_node_.clear();}
+
+/// Return the last diff node visited in the class of equivalence of
+/// a given diff node.
+///
+/// @param d the diff node which class of equivalence to consider.
+///
+/// @return the last diff node visited in the class of equivalence of
+/// the diff node @p d.
+const diff*
+diff_context::get_last_visited_diff_of_class_of_equivalence(const diff* d)
+{
+  size_t v0 = reinterpret_cast<size_t>(d);
+
+  pointer_map::const_iterator it = priv_->last_visited_diff_node_.find(v0);
+  if (it != priv_->last_visited_diff_node_.end())
+    return reinterpret_cast<const diff*>(it->second);
+  return 0;
+}
 
 /// This sets a flag that, if it's true, then during the traversing of
 /// a diff nodes tree each node is visited at most once.
@@ -13437,6 +13620,12 @@ struct redundancy_marking_visitor : public diff_node_visitor
 		// them all.
 		&& !is_diff_of_variadic_parameter(d)
 		&& !is_diff_of_variadic_parameter_type(d)
+		// If the canonical diff itself has been filtered out,
+		// then this one is not marked redundant, obviously.
+		&& !d->get_canonical_diff()->is_filtered_out()
+		&& !(diff_has_ancestor_filtered_out
+		     (d->context()->
+		      get_last_visited_diff_of_class_of_equivalence(d)))
 		// If the *same* diff node (not one that is merely
 		// equivalent to this one) has already been visited
 		// the do not mark it as beind redundant.  It's only
@@ -13470,6 +13659,8 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	set_visiting_kind(get_visiting_kind() | SKIP_CHILDREN_VISITING_KIND);
 	skip_children_nodes_ = true;
       }
+
+    d->context()->mark_last_diff_visited_per_class_of_equivalence(d);
   }
 
   virtual void
@@ -13570,10 +13761,12 @@ categorize_redundancy(diff* diff_tree)
   if (diff_tree->context()->show_redundant_changes())
     return;
   redundancy_marking_visitor v;
+  diff_tree->context()->clear_last_diffs_visited_per_class_of_equivalence();
   bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
   diff_tree->context()->forbid_visiting_a_node_twice(false);
   diff_tree->traverse(v);
   diff_tree->context()->forbid_visiting_a_node_twice(s);
+  diff_tree->context()->clear_last_diffs_visited_per_class_of_equivalence();
 }
 
 /// Walk a given @ref diff sub-tree to categorize each of the nodes

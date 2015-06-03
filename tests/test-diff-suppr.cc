@@ -431,6 +431,38 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test12-add-data-member-report-2.txt",
     "output/test-diff-suppr/test12-add-data-member-report-2.txt"
   },
+  {
+    "data/test-diff-suppr/libtest13-suppr-through-pointer-v0.so",
+    "data/test-diff-suppr/libtest13-suppr-through-pointer-v1.so",
+    "",
+    "--no-redundant",
+    "data/test-diff-suppr/test13-suppr-through-pointer-report-0.txt",
+    "output/test-diff-suppr/test13-suppr-through-pointer-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest13-suppr-through-pointer-v0.so",
+    "data/test-diff-suppr/libtest13-suppr-through-pointer-v1.so",
+    "data/test-diff-suppr/test13-suppr-through-pointer-0.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test13-suppr-through-pointer-report-1.txt",
+    "output/test-diff-suppr/test13-suppr-through-pointer-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test14-suppr-non-redundant-v0.o",
+    "data/test-diff-suppr/test14-suppr-non-redundant-v1.o",
+    "",
+    "--no-redundant",
+    "data/test-diff-suppr/test14-suppr-non-redundant-report-0.txt",
+    "output/test-diff-suppr/test14-suppr-non-redundant-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/test14-suppr-non-redundant-v0.o",
+    "data/test-diff-suppr/test14-suppr-non-redundant-v1.o",
+    "data/test-diff-suppr/test14-suppr-non-redundant-0.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test14-suppr-non-redundant-report-1.txt",
+    "output/test-diff-suppr/test14-suppr-non-redundant-report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
 };

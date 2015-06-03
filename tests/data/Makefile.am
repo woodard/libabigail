@@ -544,6 +544,20 @@ test-diff-suppr/test12-add-data-member-report-1.txt \
 test-diff-suppr/test12-add-data-member-report-2.txt \
 test-diff-suppr/test12-add-data-member-v0.cc \
 test-diff-suppr/test12-add-data-member-v1.cc \
+test-diff-suppr/libtest13-suppr-through-pointer-v0.so \
+test-diff-suppr/libtest13-suppr-through-pointer-v1.so \
+test-diff-suppr/test13-suppr-through-pointer-0.suppr \
+test-diff-suppr/test13-suppr-through-pointer-report-0.txt \
+test-diff-suppr/test13-suppr-through-pointer-report-1.txt \
+test-diff-suppr/test13-suppr-through-pointer-v0.cc \
+test-diff-suppr/test13-suppr-through-pointer-v1.cc \
+test-diff-suppr/test14-suppr-non-redundant-v0.o \
+test-diff-suppr/test14-suppr-non-redundant-v1.o \
+test-diff-suppr/test14-suppr-non-redundant-0.suppr \
+test-diff-suppr/test14-suppr-non-redundant-report-0.txt \
+test-diff-suppr/test14-suppr-non-redundant-report-1.txt \
+test-diff-suppr/test14-suppr-non-redundant-v0.cc \
+test-diff-suppr/test14-suppr-non-redundant-v1.cc \
 \
 test-lookup-syms/test0.cc		\
 test-lookup-syms/test0.o		\

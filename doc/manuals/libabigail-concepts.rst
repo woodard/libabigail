@@ -274,6 +274,52 @@ Suppression specifications
 		 {72, end}
                 }
 
+           .. _suppr_accessed_through_property_label:
+
+	  * ``accessed_through`` ``=`` <some-predefined-values>
+
+	    Suppress change reports involving a type which is referred
+	    to either directly or through a pointer or a reference.
+	    The potential values of this property are the predefined
+	    keywords below:
+
+		* ``direct``
+
+		  So if the ``[suppress_type]`` contains the property
+		  description: ::
+
+		    accessed_through = direct
+
+		  then changes about a type that is referred-to
+		  directly (i.e, not through a pointer or a reference)
+		  are going to be suppressed.
+
+		* ``pointer``
+
+		  If the ``accessed_through`` property is set to the
+		  value ``pointer`` then changes about a type that is
+		  referred-to through a pointer are going to be
+		  suppressed.
+
+		* ``reference``
+
+		  If the ``accessed_through`` property is set to the
+		  value ``reference`` then changes about a type that is
+		  referred-to through a reference are going to be
+		  suppressed.
+
+		* ``reference-or-pointer``
+
+		  If the ``accessed_through`` property is set to the
+		  value ``reference-or-pointer`` then changes about a
+		  type that is referred-to through either a reference
+		  or a pointer are going to be suppressed.
+
+	    For an extensive example of how to use this property,
+	    please check out the example below about :ref:`suppressing
+	    change reports about types accessed either directly or
+	    through pointers <example_accessed_through_label>`.
+
            .. _suppr_label_property_label:
 
 	  * ``label`` ``=`` <some-value>
@@ -654,7 +700,170 @@ Suppression specifications
 
      Hooora! \\o/ (I guess)
 
-  3. Suppressing change reports about functions.
+     .. _example_accessed_through_label:
+  3. Suppressing change reports about types accessed either directly
+     or through pointers
+   
+     Suppose we have a first version of an object file which source
+     code is the file widget-v0.cc below: ::
+
+	// Compile with: g++ -g -c widget-v0.cc
+
+	struct widget
+	{
+	  int x;
+	  int y;
+
+	  widget()
+	    :x(), y()
+	  {}
+	};
+
+	void
+	fun0(widget*)
+	{
+	  // .. do stuff here.
+	}
+
+	void
+	fun1(widget&)
+	{
+	  // .. do stuff here ..
+	}
+
+	void
+	fun2(widget w)
+	{
+	  // ... do other stuff here ...
+	}
+
+     Now suppose in the second version of that file, named
+     widget-v1.cc, we have added some data members at the end of
+     the type ``struct widget``; here is what the content of that file
+     would look like: ::
+
+	// Compile with: g++ -g -c widget-v1.cc
+
+	struct widget
+	{
+	  int x;
+	  int y;
+	  int w; // We have added these two new data members here ..
+	  int h; // ... and here.
+
+	  widget()
+	    : x(), y(), w(), h()
+	  {}
+	};
+
+	void
+	fun0(widget*)
+	{
+	  // .. do stuff here.
+	}
+
+	void
+	fun1(widget&)
+	{
+	  // .. do stuff here ..
+	}
+
+	void
+	fun2(widget w)
+	{
+	  // ... do other stuff here ...
+	}
+
+     When we invoke ``abidiff`` on the object files resulting from the
+     compilation of the two file above, here is what we get: ::
+
+	$ abidiff widget-v0.o widget-v1.o
+	Functions changes summary: 0 Removed, 2 Changed (1 filtered out), 0 Added functions
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	2 functions with some indirect sub-type change:
+
+	  [C]'function void fun0(widget*)' has some indirect sub-type changes:
+	    parameter 1 of type 'widget*' has sub-type changes:
+	      in pointed to type 'struct widget':
+		type size changed from 64 to 128 bits
+		2 data member insertions:
+		  'int widget::w', at offset 64 (in bits)
+		  'int widget::h', at offset 96 (in bits)
+
+	  [C]'function void fun2(widget)' has some indirect sub-type changes:
+	    parameter 1 of type 'struct widget' has sub-type changes:
+	      details were reported earlier
+	$
+
+     I guess a little bit of explaining is due here.  ``abidiff``
+     detects that two data member got added at the end of ``struct
+     widget``.  it also tells us that the type change impacts the
+     exported function ``fun0()`` which uses the type ``struct
+     widget`` through a pointer, in its signature.
+
+     Careful readers will notice that the change to ``struct widget``
+     also impacts the exported function ``fun1()``, that uses type
+     ``struct widget`` through a reference.  But then ``abidiff``
+     doesn't tell us about the impact on that function ``fun1()``
+     because it has evaluated that change as being **redundant** with
+     the change it reported on ``fun0()``.  It has thus filtered it
+     out, to avoid cluttering the output with noise.
+
+     Redundancy detection and filtering is fine and helpful to avoid
+     burying the important information in a sea of noise.  However, it
+     must be treated with care, by fear of mistakenly filtering out
+     relevant and important information.
+
+     That is why ``abidiff`` tells us about the impact that the change
+     to ``struct widget`` has on function ``fun2()``.  In this case,
+     that function uses the type ``struct widget`` **directly** (in
+     its signature).  It does not use it via a pointer or a reference.
+     In this case, the direct use of this type causes ``fun2()`` to be
+     exposed to a potentially harmful ABI change.  Hence, the report
+     about ``fun2()`` is not filtered out, even though it's about that
+     same change on ``struct widget``.
+
+     To go further in suppressing reports about changes that are
+     harmless and keeping only those that we know are harmful, we
+     would like to go tell abidiff to suppress reports about this
+     particular ``struct widget`` change when it impacts uses of
+     ``struct widget`` through a pointer or reference.  In other
+     words, suppress the change reports about ``fun0()`` **and**
+     ``fun1()``.  We would then write this suppression specification,
+     in file ``widget.suppr``: ::
+
+	[suppress_type]
+	  name = widget
+	  type_kind = struct
+	  has_data_member_inserted_at = end
+	  accessed_through = reference-or-pointer
+
+	  # So this suppression specification says to suppress reports about
+	  # the type 'struct widget', if this type was added some data member
+	  # at its end, and if the change impacts uses of the type through a
+	  # reference or a pointer.
+
+     Invoking ``abidiff`` on ``widget-v0.o`` and ``widget-v1.o`` with
+     this suppression specification yields: ::
+
+	$ abidiff --suppressions widget.suppr widget-v0.o widget-v1.o
+	Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added function
+	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+	1 function with some indirect sub-type change:
+
+	  [C]'function void fun2(widget)' has some indirect sub-type changes:
+	    parameter 1 of type 'struct widget' has sub-type changes:
+	      type size changed from 64 to 128 bits
+	      2 data member insertions:
+		'int widget::w', at offset 64 (in bits)
+		'int widget::h', at offset 96 (in bits)
+	$
+
+     As expected, I guess.
+
+  4. Suppressing change reports about functions.
 
      Suppose we have a first version a library named
      ``libtest2-v0.so`` whose source code is: ::
