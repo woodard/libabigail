@@ -3332,7 +3332,7 @@ diff_context::set_canonical_diff_for(const type_or_decl_base_sptr first,
 ///
 /// @param d the new canonical diff node.
 ///
-/// @returnt the canonical diff node.
+/// @return the canonical diff node.
 diff_sptr
 diff_context::set_or_get_canonical_diff_for(const type_or_decl_base_sptr first,
 					    const type_or_decl_base_sptr second,
@@ -7855,6 +7855,7 @@ class_diff::class_diff(shared_ptr<class_decl>	first_scope,
     //  time) for cases where there are a lot of instances of
     //  class_diff in the same equivalence class.  In compute_diff(),
     //  the priv_ is set to the priv_ of the canonical diff node.
+    //  See PR libabigail/17948.
 {}
 
 class_diff::~class_diff()
@@ -8753,7 +8754,9 @@ compute_diff(const class_decl_sptr	first,
     }
 
   // Ok, so this is an optimization.  Do not freak out if it looks
-  // weird, because, well, it does look weird.
+  // weird, because, well, it does look weird.  This speeds up
+  // greatly, for instance, the test case given at PR
+  // libabigail/17948.
   //
   // We are setting the private data of the new instance of class_diff
   // (which is 'changes') to the private data of its canonical
@@ -13693,7 +13696,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
       }
     else
       {
-	// If the node is not be reported, do not look at it children.
+	// If the node is not to be reported, do not look at it children.
 	set_visiting_kind(get_visiting_kind() | SKIP_CHILDREN_VISITING_KIND);
 	skip_children_nodes_ = true;
       }

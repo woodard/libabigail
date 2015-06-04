@@ -620,7 +620,7 @@ elf_symbol::is_variable() const
 ///
 /// When there are several aliases to a symbol, the main symbol is the
 /// the first symbol found in the symbol table for a given address.
-
+///
 /// The alias chain is circular.  That means if S is the main symbol
 /// and A is the alias, S is chained to A and A
 /// is chained back to the main symbol S.  The last alias in an alias
