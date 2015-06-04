@@ -383,11 +383,35 @@ struct elf_symbol::priv
   {}
 }; // end struct elf_symbol::priv
 
+/// Default constructor of the @ref elf_symbol type.
+///
+/// Note that this constructor is private, so client code cannot use
+/// it to create instances of @ref elf_symbol.  Rather, client code
+/// should use the @ref elf_symbol::create() function to create
+/// instances of @ref elf_symbol instead.
 elf_symbol::elf_symbol()
   : priv_(new priv)
 {
 }
 
+/// Constructor of the @ref elf_symbol type.
+///
+/// Note that this constructor is private, so client code cannot use
+/// it to create instances of @ref elf_symbol.  Rather, client code
+/// should use the @ref elf_symbol::create() function to create
+/// instances of @ref elf_symbol instead.
+///
+/// @param i the index of the symbol in the (ELF) symbol table.
+///
+/// @param n the name of the symbol.
+///
+/// @param t the type of the symbol.
+///
+/// @param b the binding of the symbol.
+///
+/// @param d true if the symbol is defined, false otherwise.
+///
+/// @param v the version of the symbol.
 elf_symbol::elf_symbol(size_t		i,
 		       const string&	n,
 		       type		t,
@@ -474,10 +498,16 @@ void
 elf_symbol::set_index(size_t s)
 {priv_->index_ = s;}
 
+/// Getter for the name of the @ref elf_symbol.
+///
+/// @return a reference to the name of the @ref symbol.
 const string&
 elf_symbol::get_name() const
 {return priv_->name_;}
 
+/// Setter for the name of the current intance of @ref elf_symbol.
+///
+/// @param n the new name.
 void
 elf_symbol::set_name(const string& n)
 {
@@ -485,26 +515,44 @@ elf_symbol::set_name(const string& n)
   priv_->id_string_.clear();
 }
 
+/// Getter for the type of the current instance of @ref elf_symbol.
+///
+/// @return the type of the elf symbol.
 elf_symbol::type
 elf_symbol::get_type() const
 {return priv_->type_;}
 
+/// Setter for the type of the current instance of @ref elf_symbol.
+///
+/// @param t the new symbol type.
 void
 elf_symbol::set_type(type t)
 {priv_->type_ = t;}
 
+/// Getter for the binding of the current instance of @ref elf_symbol.
+///
+/// @return the binding of the symbol.
 elf_symbol::binding
 elf_symbol::get_binding() const
 {return priv_->binding_;}
 
+/// Setter for the binding of the current instance of @ref elf_symbol.
+///
+/// @param b the new binding.
 void
 elf_symbol::set_binding(binding b)
 {priv_->binding_ = b;}
 
+/// Getter for the version of the current instanc of @ref elf_symbol.
+///
+/// @return the version of the elf symbol.
 elf_symbol::version&
 elf_symbol::get_version() const
 {return priv_->version_;}
 
+/// Setter for the version of the current instance of @ref elf_symbol.
+///
+/// @param v the new version of the elf symbol.
 void
 elf_symbol::set_version(const version& v)
 {
@@ -512,15 +560,31 @@ elf_symbol::set_version(const version& v)
   priv_->id_string_.clear();
 }
 
+/// Test if the current instance of @ref elf_symbol is defined or not.
+///
+/// @return true if the current instance of @ref elf_symbol is
+/// defined, false otherwise.
 bool
 elf_symbol::is_defined() const
 {return priv_->is_defined_;}
 
-
+/// Sets a flag saying if the current instance of @ref elf_symbol is
+/// defined
+///
+/// @param b the new value of the flag.
 void
 elf_symbol::is_defined(bool d)
 {priv_->is_defined_ = d;}
 
+/// Test if the current instance of @ref elf_symbol is public or not.
+///
+/// This tests if the symbol defined, and either
+///		- has global binding
+///		- has weak binding
+///		- or has a GNU_UNIQUE binding.
+///
+/// return true if the current instance of @ref elf_symbol is public,
+/// false otherwise.
 bool
 elf_symbol::is_public() const
 {
@@ -530,10 +594,20 @@ elf_symbol::is_public() const
 	      || get_binding() == GNU_UNIQUE_BINDING));
 }
 
+/// Test if the current instance of @ref elf_symbol is a function
+/// symbol or not.
+///
+/// @return true if the current instance of @ref elf_symbol is a
+/// function symbol, false otherwise.
 bool
 elf_symbol::is_function() const
 {return get_type() == FUNC_TYPE || get_type() == GNU_IFUNC_TYPE;}
 
+/// Test if the current instance of @ref elf_symbol is a variable
+/// symbol or not.
+///
+/// @return true if the current instance of @ref elf_symbol is a
+/// variable symbol, false otherwise.
 bool
 elf_symbol::is_variable() const
 {return get_type() == OBJECT_TYPE || get_type() == TLS_TYPE;}
