@@ -10554,6 +10554,30 @@ function_decl_diff::report(ostream& out, const string& indent) const
     linkage_names2 =
       s2->get_aliases_id_string(sc->get_fun_symbol_map());
 
+  /// If the set of linkage names of the function have changed, report
+  /// it.
+  if (linkage_names1 != linkage_names2)
+    {
+      if (linkage_names1.empty())
+	{
+	  out << indent << ff->get_pretty_representation()
+	      << " didn't have any linkage name, and it now has: '"
+	      << linkage_names2 << "'\n";
+	}
+      else if (linkage_names2.empty())
+	{
+	  out << indent << ff->get_pretty_representation()
+	      << " did have linkage names '" << linkage_names1
+	      << "'\n"
+	      << indent << "but it doesn't have any linkage name anymore\n";
+	}
+      else
+	out << indent << "linkage names of "
+	    << ff->get_pretty_representation()
+	    << "\n" << indent << "changed from '"
+	    << linkage_names1 << "' to '" << linkage_names2 << "'\n";
+    }
+
   if (qn1 != qn2)
     {
       string frep1 = first_function_decl()->get_pretty_representation(),
