@@ -446,6 +446,9 @@ public:
   get_id_string() const;
 
   elf_symbol_sptr
+  get_alias_from_name(const string& name) const;
+
+  elf_symbol_sptr
   get_alias_which_equals(const elf_symbol& other) const;
 
   string

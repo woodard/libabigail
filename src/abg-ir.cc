@@ -744,6 +744,25 @@ elf_symbol::get_id_string() const
   return priv_->id_string_;
 }
 
+/// From the aliases of the current symbol, lookup one with a given name.
+///
+/// @param name the name of symbol alias we are looking for.
+///
+/// @return the symbol alias that has the name @p name, or nil if none
+/// has been found.
+elf_symbol_sptr
+elf_symbol::get_alias_from_name(const string& name) const
+{
+  if (name == get_name())
+    return elf_symbol_sptr(priv_->main_symbol_);
+
+   for (elf_symbol_sptr a = get_next_alias(); a; a = a->get_next_alias())
+     if (a->get_name() == name)
+       return a;
+
+   return elf_symbol_sptr();
+}
+
 /// In the list of aliases of a given elf symbol, get the alias that
 /// equals this current symbol.
 ///

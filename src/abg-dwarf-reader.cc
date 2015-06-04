@@ -6965,7 +6965,12 @@ build_var_decl(read_context&	ctxt,
 	    if (sym->is_variable() && sym->is_public())
 	      {
 		result->set_symbol(sym);
-		result->set_linkage_name(sym->get_name());
+		// If the linkage name is not set or is wrong, set it to
+		// the name of the underlying symbol.
+		string linkage_name = result->get_linkage_name();
+		if (linkage_name.empty()
+		    || !sym->get_alias_from_name(linkage_name))
+		  result->set_linkage_name(sym->get_name());
 		result->set_is_in_public_symbol_table(true);
 	      }
 	}
@@ -7122,7 +7127,11 @@ build_function_decl(read_context&	ctxt,
 	if (sym->is_function() && sym->is_public())
 	  {
 	    result->set_symbol(sym);
-	    result->set_linkage_name(sym->get_name());
+	    // If the linkage name is not set or is wrong, set it to
+	    // the name of the underlying symbol.
+	    string linkage_name = result->get_linkage_name();
+	    if (linkage_name.empty() || !sym->get_alias_from_name(linkage_name))
+	      result->set_linkage_name(sym->get_name());
 	    result->set_is_in_public_symbol_table(true);
 	  }
     }
