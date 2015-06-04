@@ -129,13 +129,11 @@ typedef unordered_map<string, decl_base_sptr> string_decl_base_sptr_map;
 /// which value is a @ref decl_base_sptr
 typedef unordered_map<unsigned, decl_base_sptr> unsigned_decl_base_sptr_map;
 
-
 /// Convenience typedef for a map of string and class_decl::basse_spec_sptr.
 typedef unordered_map<string, class_decl::base_spec_sptr> string_base_sptr_map;
 
 /// Convenience typedef for a map of string and @ref base_diff_sptr.
 typedef unordered_map<string, base_diff_sptr> string_base_diff_sptr_map;
-
 
 /// Convenience typedef for a map which value is a changed function
 /// parameter and which key is the name of the function parameter.
