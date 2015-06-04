@@ -212,6 +212,11 @@ test-diff-dwarf/test27-local-base-diff-v1.o \
 test-diff-dwarf/test27-local-base-diff-v0.cc \
 test-diff-dwarf/test27-local-base-diff-v1.cc \
 test-diff-dwarf/test27-local-base-diff-report.txt \
+test-diff-dwarf/test28-vtable-changes-report-0.txt \
+test-diff-dwarf/test28-vtable-changes-v0.o \
+test-diff-dwarf/test28-vtable-changes-v1.o \
+test-diff-dwarf/test28-vtable-changes-v0.cc \
+test-diff-dwarf/test28-vtable-changes-v1.cc \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

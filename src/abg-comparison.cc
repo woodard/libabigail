@@ -10576,6 +10576,34 @@ function_decl_diff::report(ostream& out, const string& indent) const
 	    << " is now declared inline\n";
     }
 
+  // Report about vtable offset changes.
+  if (is_member_function(ff) && is_member_function(sf))
+    {
+      bool ff_is_virtual = get_member_function_is_virtual(ff),
+	sf_is_virtual = get_member_function_is_virtual(sf);
+      if (ff_is_virtual != sf_is_virtual)
+	{
+	  out << indent;
+	  if (ff_is_virtual)
+	    out << ff->get_pretty_representation()
+		<< " is no more declared virtual\n";
+	  else
+	    out << ff->get_pretty_representation()
+		<< " is now declared virtual\n";
+	}
+
+      size_t ff_vtable_offset = get_member_function_vtable_offset(ff),
+	sf_vtable_offset = get_member_function_vtable_offset(sf);
+      if (ff_is_virtual && sf_is_virtual
+	  && (ff_vtable_offset != sf_vtable_offset))
+	{
+	  out << indent
+	      << "the vtable offset of "  << ff->get_pretty_representation()
+	      << " changed from " << ff_vtable_offset
+	      << " to " << sf_vtable_offset << "\n";
+	}
+    }
+
   // Report about function type differences.
   if (type_diff() && type_diff()->to_be_reported())
     type_diff()->report(out, indent);
