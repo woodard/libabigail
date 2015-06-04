@@ -7371,21 +7371,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	      continue;
 	    string_member_function_sptr_map::const_iterator j =
 	      priv_->deleted_member_functions_.find(name);
-	    if (j == priv_->deleted_member_functions_.end()
-		&& name == mem_fn->get_linkage_name())
-	      {
-		// So we didn't find a function with the same mangled
-		// named that got previously deleted.  Keep in mind
-		// that in some case, the mangled name can be missing
-		// from DWARF (bug), so we might not find the deleted
-		// function because of that.  So to work around that
-		// possible bug, let's try to refer to that function
-		// using its pretty representation then.
-		string pretty_name = mem_fn->get_pretty_representation();
-		j = priv_->deleted_member_functions_.find(pretty_name);
-		if (j != priv_->deleted_member_functions_.end())
-		  name = pretty_name;
-	      }
+
 	    if (j != priv_->deleted_member_functions_.end())
 	      {
 		if (*j->second != *mem_fn)
