@@ -98,7 +98,7 @@ runtestcanonicalizetypes_sh_SOURCES =
 runtestcanonicalizetypes.sh$(EXEEXT):
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
--I${abs_top_builddir}/include -I${abs_top_srcdir}/tools
+-I${abs_top_builddir}/include -I${abs_top_srcdir}/tools -fPIC
 
 clean-local: clean-local-check
 .PHONY: clean-local-check
