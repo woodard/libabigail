@@ -38,4 +38,4 @@ abicompat_SOURCES = abicompat.cc
 abicompatdir = $(bindir)
 abicompat_LDADD = $(abs_top_builddir)/src/libabigail.la
 
-AM_CPPFLAGS=-I$(abs_top_srcdir)/include -I$(abs_top_srcdir)/tools
+AM_CPPFLAGS=-I$(abs_top_srcdir)/include -I$(abs_top_srcdir)/tools -fPIC
