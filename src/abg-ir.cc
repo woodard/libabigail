@@ -756,7 +756,9 @@ elf_symbol::get_alias_from_name(const string& name) const
   if (name == get_name())
     return elf_symbol_sptr(priv_->main_symbol_);
 
-   for (elf_symbol_sptr a = get_next_alias(); a; a = a->get_next_alias())
+   for (elf_symbol_sptr a = get_next_alias();
+	a && a.get() != get_main_symbol().get();
+	a = a->get_next_alias())
      if (a->get_name() == name)
        return a;
 
@@ -773,7 +775,9 @@ elf_symbol::get_alias_from_name(const string& name) const
 elf_symbol_sptr
 elf_symbol::get_alias_which_equals(const elf_symbol& other) const
 {
-  for (elf_symbol_sptr a = other.get_next_alias(); a; a = a->get_next_alias())
+  for (elf_symbol_sptr a = other.get_next_alias();
+       a && a.get() != a->get_main_symbol().get();
+       a = a->get_next_alias())
     if (textually_equals(*this, *a))
       return a;
   return elf_symbol_sptr();
