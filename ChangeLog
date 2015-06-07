@@ -1,3 +1,3747 @@
+2015-06-07  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog file.
+	* ChangeLog: Update this automatically by typing make
+	update-changelog.
+
+2015-06-07  Dodji Seketeli <dodji@redhat.com>
+
+	Avoid infinite loop in elf_symbol::get_alias_from_name()
+	* src/abg-ir.cc (elf_symbol::get_alias_from_name)
+	(elf_symbol::get_alias_which_equals): Test for the next alias
+	pointing to the main symbol, in the loop exit condition.
+
+2015-06-04  Dodji Seketeli <dodji@redhat.com>
+
+	Change the linkage name only when necessary
+	* include/abg-ir.h (elf_symbol::get_alias_from_name): Declare new
+	member function.
+	* src/abg-ir.cc (elf_symbol::get_alias_from_name): Define it.
+	* src/abg-dwarf-reader.cc (build_var_decl, build_function_decl):
+	Once the linkage name is supposed to contain the value of the
+	DW_AT_linkage_name attribute, set it the name of the underlying
+	symbol only if value of DW_At_linkage_name is missing or different
+	from the names of all the aliases of the underlying symbol.
+	* tests/data/test-read-dwarf/test2.so.abi: Adjust.
+
+2015-06-04  Dodji Seketeli <dodji@redhat.com>
+
+	Various white space cleanups
+	* include/abg-comparison.h: Remove various useless vertical white
+	spaces.
+	* tests/test-diff-dwarf.cc (in_out_spec): Fix indentation of some
+	entries.
+
+2015-06-04  Dodji Seketeli <dodji@redhat.com>
+
+	Fix various comments here and there
+	* src/abg-comparison.cc
+	(diff_context::set_or_get_canonical_diff_for, compute_diff)
+	(redundancy_marking_visitor::visit_begin): Fix comment in these
+	functions.
+	* src/abg-ir.cc (elf_symbol::is_variable): Likewise.
+
+2015-06-04  Dodji Seketeli <dodji@redhat.com>
+
+	Add missing apidoc to elf_symbol type
+	* src/abg-ir.cc (elf_symbol::{elf_symbol, get_name, set_name,
+	get_type, set_type, get_binding, set_binding, get_version,
+	is_defined, is_public, is_function, is_variable}): Add missing
+	apidoc to these member functions.
+
+2015-06-04  Dodji Seketeli <dodji@redhat.com>
+
+	Cleanup logic in class_diff::ensure_lookup_tables_populated()
+	* src/abg-comparison.cc
+	(class_diff::ensure_lookup_tables_populated): Remove the code that
+	tries to lookup allegedly added functions from the set of deleted
+	ones, by using the pretty printed name of the function.  Handling
+	the case of a function decl not correctly tied to it symbol is
+	handled my generically a bit later in this function.
+
+2015-06-04  Dodji Seketeli <dodji@redhat.com>
+
+	Report possible changes in the set of aliases of a symbol.
+	* src/abg-comparison.cc (function_decl_diff::report): Report
+	a change in the aliases of the symbols of a function; note that
+	everything else but have stayed equal in the function.
+
+2015-06-04  Dodji Seketeli <dodji@redhat.com>
+
+	Report vtable changes in top-level function change reports
+	* src/abg-comparison.cc (function_decl_diff::report): Report about
+	virtual-ness and vtable offset changes.
+	* tests/data/test-diff-dwarf/test28-vtable-changes-report-0.txt:
+	New test input file.
+	* tests/data/test-diff-dwarf/test28-vtable-changes-v{0,1}.o: New
+	test input binaries.
+	* tests/data/test-diff-dwarf/test28-vtable-changes-v{0,1}.cc:
+	Source code of the input binaries above.
+	* tests/data/Makefile.am: Add the new test input above to source
+	distribution.
+	* tests/test-diff-dwarf.cc (in_out_specs): Add the new test input
+	above to the list of input this test harness has to run over.
+
+2015-06-03  Dodji Seketeli <dodji@redhat.com>
+
+	Support new 'accessed_through' suppression property
+	* include/abg-comparison.h (enum type_suppression::reach_kind):
+	Define new enum.
+	(type_suppression::{get_consider_reach_kind,
+	set_consider_reach_kind, get_reach_kind,
+	mark_last_diff_visited_per_class_of_equivalence,
+	clear_last_diffs_visited_per_class_of_equivalence,
+	get_last_visited_diff_of_class_of_equivalence}): Declare new
+	member functions.
+	* src/abg-comparison.cc (diff_has_ancestor_filtered_out)
+	(read_suppression_reach_kind): Define static function.
+	(type_suppression::priv::{consider_reach_kind_, reach_kind_}):
+	Define new data members.
+	(type_suppression::priv::priv): Take a new reach_kind parameter.
+	(type_suppression::type_suppression): Adjust to new prototype of
+	priv constructor.
+	(type_suppression::{get_consider_reach_kind,
+	set_consider_reach_kind, get_reach_kind, set_reach_kind}): Define
+	new member functions.
+	(type_suppression::suppresses_diff): Interpret the result of
+	type_suppression::get_reach_kind() to determine if the suppression
+	specification suppresses a given diff node.
+	(read_type_suppression): Support reading the content of the
+	"accessed_through" property.
+	(diff_context::priv::last_visited_diff_node_): New data member.
+	(diff_context::{mark_last_diff_visited_per_class_of_equivalence,
+	clear_last_diffs_visited_per_class_of_equivalence,
+	get_last_visited_diff_of_class_of_equivalence}): Define new data
+	members.
+	(redundancy_marking_visitor::visit_begin): So if the current diff
+	node has already been visited, but if the previously visited node
+	has been filtered out, then do not mark this node as being
+	redundant.  And mark the current diff node as being the last
+	visited one in its class of equivalence.
+	(categorize_redundancy): Clear the map of diff nodes visited per
+	class of equivalence.
+	* doc/manuals/libabigail-concepts.rst: Document the new
+	'accessed_through' property.
+	* tests/data/test-diff-suppr/test13-suppr-through-pointer-0.suppr:
+	New test input data.
+	* tests/data/test-diff-suppr/test13-suppr-through-pointer-report-{0,1}.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/libtest13-suppr-through-pointer-v{0,1}.so:
+	New test input binaries.
+	* tests/data/test-diff-suppr/test13-suppr-through-pointer-v{0,1}.cc:
+	Source code of the test input binaries above.
+	* tests/data/test-diff-suppr/test14-suppr-non-redundant-0.suppr:
+	New test input data.
+	* tests/data/test-diff-suppr/test14-suppr-non-redundant-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test14-suppr-non-redundant-v{0,1}.o:
+	New test input binaries.
+	* tests/data/test-diff-suppr/test14-suppr-non-redundant-v{0,1}.cc:
+	Source code of the binaries above.
+
+2015-06-03  Dodji Seketeli <dodji@redhat.com>
+
+	Fix redundancy marking for change of types used directly
+	* include/abg-comparison.h (pointer_map): Make this be a map of
+	{size_t, size_t} pairs, rather than {size_t, bool}, so that each
+	pointer in the map can be associated to another one.
+	(diff_context::diff_has_been_visited): Return the pointer to the
+	first diff node of the equivalence class that has been visited.
+	* src/abg-comparison.cc (is_pointer_diff, is_reference_diff)
+	(is_reference_or_pointer_diff, is_fn_parm_diff, is_base_diff)
+	(is_child_node_of_function_parm_diff, is_child_node_of_base_diff):
+	Define new static functions.
+	(diff_context::diff_has_been_visited): Return the pointer to the
+	first diff node of the equivalence class that has been visited.
+	(diff_context::mark_diff_as_visited): Save the pointer to the
+	first diff node of a given class of equivalence that has been
+	visited.
+	(redundancy_marking_visitor::visit_begin): If a diff node is a
+	child node of a function parameter diff or base diff node and if
+	it's not a pointer or reference diff node, then do not mark it as
+	redundant.  Also, make sure to not mark the first diff node of a
+	given class of equivalence that has been visited, as redundant;
+	only the other subsequent nodes should be marked redundant; we
+	were hitting this case because of an optimization that makes
+	equivalent class diff nodes to share their private (pimpl) data.
+	* tests/data/test-diff-filter/test29-finer-redundancy-marking-v{0,1}.o:
+	New test input binaries.
+	* tests/data/test-diff-filter/test29-finer-redundancy-marking-v{0,1}.cc:
+	Source code of the new test input binaries above.
+	* tests/data/test-diff-filter/test29-finer-redundancy-marking-report-0.txt:
+	New test input.
+	* tests/data/Makefile.am: Add the new test material above to the
+	source distribution.
+	* tests/test-diff-filter.cc (in_out_specs): Make this test harness
+	run over the additional test input above.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-0.txt: Adjust.
+
+2015-06-02  Dodji Seketeli <dodji@redhat.com>
+
+	Fix detection of local changes in base classes
+	* abg-ir.cc (equals): In the overload of class_decl::base_spec, if
+	the underlying class carries changes, then do not flag these
+	changes as local for the class_decl::base_spec.
+	* tests/data/test-diff-dwarf/test27-local-base-diff-v{0,1}.o: New
+	test input binaries.
+	* tests/data/test-diff-dwarf/test27-local-base-diff-v{0,1}.cc: Source
+	code for the test input binaries above.
+	* tests/data/test-diff-dwarf/test27-local-base-diff-report.txt:
+	New test input.
+	* tests/data/Makefile.am: Add the test inputs above to source
+	distribution.
+
+2015-06-02  Dodji Seketeli <dodji@redhat.com>
+
+	Fix symbols comparison
+	* include/abg-ir.h (elf_symbol_wptr): New typedef.
+	(elf_symbol): Make the constructors and assignment operator
+	private.  The type can neither be copied nor created with the new
+	operator.
+	(elf_symbol::create): New static member function.
+	(elf_symbol::{get_main_symbol, get_next_alias, add_alias}):
+	Adjust.
+	( compute_aliases_for_elf_symbol): Likewise.
+	(elf_symbol::operator=): Make this private.
+	(elf_symbol::get_alias_which_equals): Declare new member function.
+	* src/abg-comp-filter.cc (function_name_changed_but_not_symbol):
+	Adjust.
+	* src/abg-comparison.cc
+	(class_diff::ensure_lookup_tables_populated): Adjust.
+	* src/abg-corpus.cc
+	(corpus::priv::build_unreferenced_symbols_tables): Likewise.
+	* include/abg-dwarf-reader.h (lookup_symbol_from_elf)
+	(lookup_public_function_symbol_from_elf): Adjust.
+	* src/abg-dwarf-reader.cc (lookup_symbol_from_sysv_hash_tab)
+	(lookup_symbol_from_gnu_hash_tab, lookup_symbol_from_elf_hash_tab)
+	(lookup_symbol_from_symtab, lookup_symbol_from_elf)
+	(lookup_public_function_symbol_from_elf)
+	(lookup_public_variable_symbol_from_elf): Adjust.
+	(read_context::lookup_elf_symbol_from_index): Likewise.
+	(read_context::lookup_elf_fn_symbol_from_address): Likewise.
+	(read_context::lookup_elf_var_symbol_from_address): Likewise.
+	(read_context::lookup_public_function_symbol_from_elf): Likewise.
+	(read_context::lookup_public_variable_symbol_from_elf): Likewise.
+	(read_context::load_symbol_maps): Likewise.
+	(build_var_decl, build_function_decl): Likewise.
+	* src/abg-ir.cc (elf_symbol::priv::{main_symbol_, next_alias_}):
+	Change the type of these from elf_symbol* to elf_symbol_wptr.
+	(elf_symbol::priv::priv): Adjust.
+	(elf_symbol::{create, get_alias_which_equals}): Define new functions.
+	(textually_equals): Likewise.
+	(elf_symbol::{get_main_symbol, is_main_symbol, get_next_alias,
+	add_alias}): Adjust to return or take elf_symbol_sptr type, rather
+	than a elf_symbol* one.
+	(elf_symbol::{get_aliases_id_string, does_alias}): Adjust.
+	(compute_alias_for_elf_symbol): Likewise.
+	(elf_symbol::operator==): Two symbols A and B are now equal if A
+	has at least one alias that is textually equal to B.
+	(equals): In the overload for function_decls, in the part where we
+	compare the decl_base part of the functions without considering
+	their decl names, we now also omit considering their linkage
+	names, because we compared they symbols before.
+	* tools/abisym.cc (main): Adjust.
+	* tests/data/test-diff-dwarf/test12-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test12-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test18-alias-sym-report-0.txt: Adjust.
+	* tests/data/test-diff-dwarf/test8-report.txt: Adjust.
+	* tests/data/test-diff-filter/test10-report.txt: Adjust.
+	* tests/data/test-diff-filter/test13-report.txt: Adjust.
+	* tests/data/test-diff-filter/test2-report.txt: Adjust.
+	* tests/data/test-diff-filter/test20-inline-report-0.txt: Adjust.
+	* tests/data/test-diff-filter/test20-inline-report-1.txt: Adjust.
+	* tests/data/test-diff-filter/test9-report.txt: Adjust.
+
+2015-04-22  Dodji Seketeli <dodji@redhat.com>
+
+	Support specifying data member insertion in suppressions
+	* include/abg-comparison.h (type_suppression::insertion_range):
+	Declare new type.
+	(type_suppression::insertion_ranges): Declare new typedef.
+	(type_suppression::{s,g}et_data_member_insertion_ranges): Declare
+	new member functions.
+	(is_integer_boundary, is_fn_call_expr_boundary): Declare new
+	functions.
+	(type_suppression::insertion_range::{boundary, integer_boundary,
+	fn_call_expr_boundary}): Define new types.
+	* src/abg-comparison.cc:
+	(struct type_suppression::insertion_range::priv): New type.
+	(type_suppression::insertion_range::{insertion_range, begin,
+	end}): Define new member functions.
+	(type_suppression::priv::insertion_ranges_): Add data member.
+	(type_suppression::{s,g}et_data_member_insertion_ranges): Define
+	new member functions.
+	(type_suppression::insertion_range::boundary::priv): Define new
+	type.
+	(type_suppression::insertion_range::boundary::{boundary,
+	~boundary}): Define new member functions.
+	(type_suppression::insertion_range::integer_boundary::priv):
+	Define new type.
+	(type_suppression::insertion_range::integer_boundary::{integer_boundary,
+	as_integer, operator int, ~integer_boundary}): Define member
+	functions.
+	(type_suppression::insertion_range::fn_call_expr_boundary::priv):
+	Define new type.
+	(type_suppression::insertion_range::fn_call_expr_boundary::{fn_call_expr_boundary,
+	as_function_call_expr, operator ini::function_call_expr_sptr}):
+	Define new member functions.
+	(type_suppression::insertion_range::{create_integer_boundary,
+	type_suppression::insertion_range::create_fn_call_expr_boundary,
+	type_suppression::insertion_range::eval_boundary}): Define new
+	member functions.
+	(is_integer_boundary, is_fn_call_expr_boundary): Define new
+	functions.
+	(read_type_suppression, read_function_suppression)
+	(read_variable_suppression): Support the new kinds of
+	property-related types. Aslo, in read_type_suppression, support
+	the new properties has_data_member_inserted_at,
+	has_data_member_inserted_between and
+	has_data_members_inserted_between.
+	(type_suppression::suppresses_diff): If we are looking at a type
+	diff node that has inserted data members, evaluate the insertion
+	ranges of the current type_suppression and see if they match the
+	inserted data members.
+	* include/abg-ini.h (property, simple_property, property_value)
+	(string_property_value, tuple_property_value, function_call_expr):
+	Declare new types.
+	(property_sptr, property_value_sptr, string_property_value_sptr)
+	(tuple_property_value_sptr): Declare new typedefs.
+	(is_string_property_value, is_tuple_property_value)
+	(is_simple_property, is_tuple_property, read_function_call_expr):
+	Declare new functions.
+	* src/abg-ini.cc (char_is_white_space, char_is_comment_start)
+	(char_is_delimiter, char_is_property_value_char)
+	(char_is_section_name_char, char_is_property_name_char)
+	(char_is_comment_start, char_is_white_space)
+	(remove_trailing_white_spaces, is_string_property_value)
+	(is_tuple_property_value, is_simple_property, is_tuple_property)
+	(write_property_value, char_is_function_name_char)
+	(char_is_function_argument_char): Define new functions.
+	(property::priv, tuple_property_value::priv)
+	(simple_property::priv, tuple_property::priv): Define new types.
+	(property::{property, get_name, set_name, ~property}): Define new
+	member functions.
+	(struct property_value::priv): Define new type.
+	(property_value::{property_value, get_kind, operator const
+	string&(), ~property_value}): Define new member functions.
+	(struct string_property_value::priv): Define new type.
+	(string_property_value::{string_property_value, set_content,
+	as_string, operator string()}, ~string_property_value): Define new
+	member functions.
+	(tuple_property_value::{tuple_property_value, get_value_items,
+	~tuple_property_value, as_string}): Likewise.
+	(simple_property::{simple_property, get_value, set_value,
+	~simple_property}): Likewise.
+	(tuple_property::{tuple_property, set_value, get_value}):
+	Likewise.
+	(config::section::find_property): Adjust return type.
+	(read_context::{char_is_delimiter, char_is_property_value_char,
+	char_is_section_name_char, char_is_property_name_char,
+	char_is_comment_start, char_is_white_space}): Remove these from
+	here as they got moved them to be non-member functions above.
+	(read_context::read_property_value): Return a property_value_sptr
+	and do not take any parameter anymore.
+	(read_context::{read_string_property_value,
+	read_tuple_property_value, read_function_name,
+	read_function_argument, read_function_call_expr}): Define new
+	member functions.
+	(read_context::read_property): Adjust return type.  Also, change to read
+	the different new kinds of properties values.
+	(function_call_expr::priv): Define new type.
+	(function_call_expr::{function_call_expr, get_name,
+	get_arguments}): New member functions.
+	(read_context::read_section): Adjust.
+	(write_property, write_section): Adjust.
+	* tests/data/test-diff-suppr/libtest{11,12}-add-data-member-v{0,1}.so:
+	New test input binaries.
+	* tests/data/test-diff-suppr/test{11,12}-add-data-member-{0,1}.suppr:
+	New input suppression files.
+	* tests/data/test-diff-suppr/test11-add-data-member-{2,3,4}.suppr:
+	Add new test input files.
+	* tests/data/test-diff-suppr/test{11,12}-add-data-member-report-{0,1}.txt:
+	New reference output files.
+	* tests/data/test-diff-suppr/test12-add-data-member-report-2.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test{11,12}-add-data-member-v{0,1}.cc:
+	Source code for the new binaries above.
+	* tests/test-diff-suppr.cc (in_out_specs): Add new test inputs.
+	* tests/data/Makefile.am: Add the new test related files above to
+	source distribution.
+	* doc/manuals/libabigail-concepts.rst: Document the new properties
+	has_data_member_inserted_at, has_data_member_inserted_between and
+	has_data_members_inserted_between.
+
+2015-05-24  Dodji Seketeli <dodji@redhat.com>
+
+	Make indexes of function parameters start at 1
+	* src/abg-ir.cc (function_type::function_type): Starts the index
+	of the parameters at 1, unless the firs parameter is an artificial
+	one, in which case it starts at 0.
+	* tests/data/test-abicompat/test5-fn-changed-report-0.txt: Adjust.
+	* tests/data/test-diff-dwarf/test0-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test1-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test10-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test11-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test13-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test15-enum-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test2-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test20-add-fn-parm-report-0.txt: Adjust.
+	* tests/data/test-diff-dwarf/test21-redundant-fn-report-0.txt: Adjust.
+	* tests/data/test-diff-dwarf/test22-changed-parm-c-report-0.txt: Adjust.
+	* tests/data/test-diff-dwarf/test24-added-fn-parms-report-0.txt: Adjust.
+	* tests/data/test-diff-dwarf/test25-removed-fn-parms-report-0.txt: Adjust.
+	* tests/data/test-diff-dwarf/test26-added-parms-before-variadic-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test4-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test6-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test7-report.txt: Adjust.
+	* tests/data/test-diff-dwarf/test8-report.txt: Adjust.
+	* tests/data/test-diff-filter/test0-report.txt: Adjust.
+	* tests/data/test-diff-filter/test01-report.txt: Adjust.
+	* tests/data/test-diff-filter/test1-report.txt: Adjust.
+	* tests/data/test-diff-filter/test10-report.txt: Adjust.
+	* tests/data/test-diff-filter/test13-report.txt: Adjust.
+	* tests/data/test-diff-filter/test14-0-report.txt: Adjust.
+	* tests/data/test-diff-filter/test14-1-report.txt: Adjust.
+	* tests/data/test-diff-filter/test16-report-2.txt: Adjust.
+	* tests/data/test-diff-filter/test16-report.txt: Adjust.
+	* tests/data/test-diff-filter/test17-0-report.txt: Adjust.
+	* tests/data/test-diff-filter/test17-1-report.txt: Adjust.
+	* tests/data/test-diff-filter/test18-report.txt: Adjust.
+	* tests/data/test-diff-filter/test19-enum-report-1.txt: Adjust.
+	* tests/data/test-diff-filter/test2-report.txt: Adjust.
+	* tests/data/test-diff-filter/test22-compatible-fns-report-0.txt: Adjust.
+	* tests/data/test-diff-filter/test23-redundant-fn-parm-change-report-0.txt: Adjust.
+	* tests/data/test-diff-filter/test25-cyclic-type-report-0.txt: Adjust.
+	* tests/data/test-diff-filter/test25-cyclic-type-report-1.txt: Adjust.
+	* tests/data/test-diff-filter/test26-qualified-redundant-node-report-0.txt: Adjust.
+	* tests/data/test-diff-filter/test26-qualified-redundant-node-report-1.txt: Adjust.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-1.txt: Adjust.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-2.txt: Adjust.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-0.txt: Adjust.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-1.txt: Adjust.
+	* tests/data/test-diff-filter/test3-report.txt: Adjust.
+	* tests/data/test-diff-filter/test9-report.txt: Adjust.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-3.txt: Adjust.
+	* tests/data/test-diff-suppr/test1-typedef-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test1-typedef-suppr-report-2.txt: Adjust.
+	* tests/data/test-diff-suppr/test10-changed-parm-c-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test2-struct-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-1.txt: Adjust.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-2.txt: Adjust.
+	* tests/data/test-diff-suppr/test4-local-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test4-local-suppr-report-1.txt: Adjust.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-1.txt: Adjust.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-2.txt: Adjust.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-3.txt: Adjust.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-4.txt: Adjust.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-5.txt: Adjust.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-1.txt: Adjust.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-2.txt: Adjust.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-3.txt: Adjust.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-1.txt: Adjust.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-1.txt: Adjust.
+
+2015-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Some wording fixes to doc/manuals/libabigail-concepts.rst
+	* doc/manuals/libabigail-concepts.rst: Some light wording fixes.
+
+2015-05-24  Dodji Seketeli <dodji@redhat.com>
+
+	Type read from DWARF don't have alignment information
+	* src/abg-dwarf-reader.cc (build_type_decl)
+	(build_class_type_and_add_to_ir, build_pointer_type_def)
+	(build_reference_type, build_function_decl): Set the alignment for
+	native types, class, reference and function type to zero,
+	effectively meaning that they don't have alignment information.
+	* src/abg-hash.cc (var_decl::hash::operator): Take the hash value
+	of the data member context in account when computing the hash
+	value of a given data member.
+	* tests/data/test-diff-dwarf/test-23-diff-arch-report-0.txt:
+	Adjust.
+	* tests/data/test-diff-dwarf/test10-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test13-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test22-changed-parm-c-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test26-added-parms-before-variadic-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test8-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test9-report.txt: Likewise.
+	* tests/data/test-diff-filter/test13-report.txt: Likewise.
+	* tests/data/test-diff-filter/test6-report.txt: Likewise.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-0.txt: Likewise.
+	* tests/data/test-read-dwarf/test0.abi: Likewise.
+	* tests/data/test-read-dwarf/test1.abi: Likewise.
+	* tests/data/test-read-dwarf/test2.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test3.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test4.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test5.o.abi: Likewise.
+	* tests/data/test-read-dwarf/test6.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test7.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test8-qualified-this-pointer.so.abi: Likewise.
+
+2015-05-06  Dodji Seketeli <dodji@redhat.com>
+
+	Better name ID function parameters
+	* src/abg-ir.cc (function_decl::parameter::get_name_id): Make this
+	be "parameter-<index>".
+
+2015-05-06  Dodji Seketeli <dodji@redhat.com>
+
+	Better detection of parameter sub-type changes
+	* include/abg-fwd.h (type_has_sub_type_changes): Declare new
+	function.
+	* src/abg-ir.cc (type_has_sub_type_changes): Define it.
+	* src/abg-comparison.cc (fn_parm_diff::report): Use the new
+	function type_has_sub_type_changes() instead of just looking at
+	name changes.
+	* tests/data/test-diff-dwarf/test4-report.txt: Adjust this
+	reference test output.
+
+2015-05-06  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a potential crash when comparing variadic parameters again
+	* src/abg-comparison.cc (redundancy_marking_visitor::visit_begin):
+	Avoid flagging diffs of variadic parameter *types* as redundant as
+	well.
+
+2015-05-06  Dodji Seketeli <dodji@redhat.com>
+
+	Add debugging function for function parameters
+	* include/abg-ir.h
+	(function_decl::parameter::get_pretty_representation): Declare new
+	virtual member function.
+	* src/abg-ir.cc
+	(function_decl::parameter::get_pretty_representation): Define it.
+
+2015-05-06  Dodji Seketeli <dodji@redhat.com>
+
+	Add comments
+	* src/abg-dwarf-reader.cc (build_function_decl): Add comments when
+	building the function parameters.
+
+2015-05-06  Dodji Seketeli <dodji@redhat.com>
+
+	Add a debugging function for type_or_decl_base*
+	* include/abg-fwd.h (get_pretty_representation): Declare new
+	overload for type_or_decl_base*.
+	* src/abg-ir.cc (get_pretty_representation): Define it and express
+	the previous overload for type_or_decl_base_sptr in terms of this
+	new one.
+
+2015-05-05  Dodji Seketeli <dodji@redhat.com>
+
+	Return a reference to smart pointer for the void type node
+	* src/abg-ir.h (type_decl::get_void_type_decl): Return a reference
+	to the smart pointer initially returned.
+	* src/abg-ir.cc (type_decl::get_void_type_decl): Likewise.
+
+2015-05-05  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 18342 - Segmentation fault while comparing functions with variadic parameters
+	* include/abg-fwd.h (is_array_type): New overload for a naked
+	pointer.
+	* include/abg-ir.h (type_decl::get_variadic_parameter_type_decl): Declare new
+	static function.
+	* src/abg-ir.cc (is_array_type): Define new function overload for
+	naked pointers
+	(type_decl::get_variadic_parameter_type_decl): Define new static
+	function.
+	* src/abg-dwarf-reader.cc (build_function_decl): The type of
+	variadic parameter is now a special type_decl.
+	* include/abg-comparison.h (is_diff_of_variadic_parameter_type)
+	(is_diff_of_variadic_parameter): New function declarations.
+	* src/abg-comparison.cc (is_diff_of_variadic_parameter_type)
+	(is_diff_of_variadic_parameter): Define new functions.
+	(compute_diff): Refuse to return a NULL
+	diff for types.  Assert that the parameters are non-NULL.
+	(report_size_and_alignment_changes): We are comparing arrays only
+	if the two parameters are arrays.
+	(fn_parm_diff::fn_parm_diff): Refuse that type diff for this diff
+	node is non empty.
+	(fn_parm_diff::report): Strengthen an assert.  Cleanup a comment.
+	(redundancy_marking_visitor::visit_begin): Do not mark function
+	type and variadic parms diff nodes as redundant for local changes.
+	* tests/data/test-diff-dwarf/libtest26-added-parms-before-variadic-v{0,1}.so:
+	New test input binaries.
+	* tests/data/test-diff-dwarf/test26-added-parms-before-variadic-report.txt:
+	New test output reference.
+	* tests/data/test-diff-dwarf/test26-added-parms-before-variadic-v{0,1}.c:
+	Source code of the new test input binaries above.
+	* tests/data/Makefile.am: Add the new test stuff to source
+	distribution.
+	* tests/test-diff-dwarf.cc (in_out_specs): Add the new test inputs
+	above to the set of input to run this test harness over.
+
+2015-04-24  Dodji Seketeli <dodji@redhat.com>
+
+	Fix archive writing support
+	* configure.ac: Require libzip 0.10.1 at least.
+	* src/abg-writer.cc (archive_write_ctxt::serialized_tus): Make
+	this be a list<string>, rather than a vector<string>.
+	(create_archive_write_context): Truncate the archive if it exists
+	already.
+	(write_translation_unit_to_archive): Do not use the deprecated
+	zip_add() function anymore.  Rather, use zip_file_add().
+	* tests/test-write-read-archive.cc (main): Double check if the
+	translation unit we read is empty or not.
+
+2015-04-22  Dodji Seketeli <dodji@redhat.com>
+
+	Use a better wording for the COPYING file
+	* COPYING: Update to a more complete description.
+
+2015-04-20  Dodji Seketeli <dodji@redhat.com>
+
+	Update licence texts
+	* COPYING: Of course we know the licence we want to use now :-)
+	* COPYING-GPLV3: Add the text of GPLv3.
+	* Makefile.am: Add the file COPYING-GPLV3 above to source
+	distribution.
+
+2015-04-15  Dodji Seketeli <dodji@redhat.com>
+
+	18252 - Added parameters are not properly sorted
+	* src/abg-comparison.cc (sort_string_parm_map): Define new static
+	function.
+	(struct parm_comp): Define new type.
+	(function_type_diff::priv::{sorted_deleted_parms_,
+	sorted_added_parms_}): New data members that hold sorted
+	deleted/added parameters.
+	(function_type_diff::ensure_lookup_tables_populated): Initialize
+	the two new data members above.
+	(function_type_diff::report): For the report of parameters that
+	got added/removed, use the sorted set of added/removed parameters
+	above.
+	* tests/data/test-diff-dwarf/test24-added-fn-parms-report-0.txt:
+	New test input.
+	* tests/data/test-diff-dwarf/libtest24-added-fn-parms-v{0,1}.so:
+	Likewise.
+	* tests/data/test-diff-dwarf/test25-removed-fn-parms-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-dwarf/libtest25-removed-fn-parms-v{0,1}.so:
+	Likewise.
+	* tests/data/test-diff-dwarf/test24-added-fn-parms-v{0,1}.c:
+	Likewise.
+	* tests/data/test-diff-dwarf/test25-removed-fn-parms-v{0,1}.c:
+	Likewise.
+	* tests/data/Makefile.am: Add the new test material above to the
+	source distribution.
+
+2015-04-14  Dodji Seketeli <dodji@redhat.com>
+
+	Misc reporting fixes/improvements
+	* src/abg-comparison.cc (distinct_diff::report): Remove spurious
+	vertical space before reporting size and alignment changes here.
+	(represent): In the variables/data member overload, report type
+	changes first.  Then the other changes.
+	(report_size_and_alignment_changes): Make this report array size
+	changes too.  Also, make some small adjustments about how type
+	size/alignment changes are introduced.
+	(array_diff::report): Now that report_size_and_alignment_changes()
+	supports size change reporting, just use that function rather than
+	doing it here.
+	(corpus_diff::report): Consistently add a space between each
+	changed function report.  Prefix changed variables with a [C],
+	just like for functions.
+	* tests/data/test-abicompat/test0-fn-changed-report-0.txt: Adjust.
+	* tests/data/test-abicompat/test5-fn-changed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test6-var-changed-report-0.txt: Likewise.
+	* tests/data/test-abidiff/test-qual-type0-report.txt: Likewise.
+	* tests/data/test-abidiff/test-struct0-report.txt: Likewise.
+	* tests/data/test-abidiff/test-struct1-report.txt: Likewise.
+	* tests/data/test-abidiff/test-var0-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test-23-diff-arch-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test0-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test1-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test10-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test11-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test13-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test15-enum-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test2-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test20-add-fn-parm-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test21-redundant-fn-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test22-changed-parm-c-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test3-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test6-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test7-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test8-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test9-report.txt: Likewise.
+	* tests/data/test-diff-filter/test0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test01-report.txt: Likewise.
+	* tests/data/test-diff-filter/test1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test10-report.txt: Likewise.
+	* tests/data/test-diff-filter/test11-report.txt: Likewise.
+	* tests/data/test-diff-filter/test13-report.txt: Likewise.
+	* tests/data/test-diff-filter/test14-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test14-1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test15-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test15-1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test16-report-2.txt: Likewise.
+	* tests/data/test-diff-filter/test16-report.txt: Likewise.
+	* tests/data/test-diff-filter/test17-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test17-1-report.txt: Likewise.
+	* tests/data/test-diff-filter/test18-report.txt: Likewise.
+	* tests/data/test-diff-filter/test19-enum-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test2-report.txt: Likewise.
+	* tests/data/test-diff-filter/test20-inline-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test21-compatible-vars-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test22-compatible-fns-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test23-redundant-fn-parm-change-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test24-compatible-vars-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test25-cyclic-type-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test25-cyclic-type-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test26-qualified-redundant-node-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test26-qualified-redundant-node-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-2.txt: Likewise.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-0.txt: Likewise.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test3-report.txt: Likewise.
+	* tests/data/test-diff-filter/test6-report.txt: Likewise.
+	* tests/data/test-diff-filter/test9-report.txt: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test1-typedef-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test1-typedef-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test10-changed-parm-c-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test2-struct-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test3-struct-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test4-local-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test4-local-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-7.txt: Likewise.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-8.txt: Likewise.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-1.txt: Likewise.
+
+2015-04-10  Dodji Seketeli <dodji@redhat.com>
+
+	Make abidiff and abicompat return meaningful exit codes
+	* doc/manuals/abicompat.rst: Update documentation for abicompat
+	exit codes.
+	* doc/manuals/abidiff.rst: Likewise for abidiff exit codes.
+	* include/abg-tools-utils.h (enum abidiff_status): Declare new
+	enum.
+	(operator{|,&,|=}): Declare new operators for the new enum
+	abidiff_status.
+	(abidiff_status_has_error, abidiff_status_has_abi_change)
+	(abidiff_status_has_incompatible_abi_change): Declare new
+	functions.
+	* src/abg-tools-utils.cc (operator{|,&,|=}): Define these new
+	operators.
+	(abidiff_status_has_error, abidiff_status_has_abi_change)
+	(abidiff_status_has_incompatible_abi_change): Define new
+	functions.
+	* tests/test-diff-filter.cc (main): Adjust for the new exit code
+	of abidiff.
+	* tests/test-diff-suppr.cc (main): Likewise.
+	* tests/test-abicompat.cc (main): Likewise.
+	* tools/abicompat.cc (enum abicompat_status): Remove.
+	(operator{|,&,|=}): Remove these operators for enum
+	abicompat_status.
+	(perform_compat_check_in_normal_mode)
+	(perform_compat_check_in_weak_mode): Return abidiff_status instead
+	of abicompat_status.  Adjust therefore.
+	(main): Adjust to return abidiff_status now, instead of a just
+	zero for all non-error cases.
+	* tools/abidiff.cc (main): Likewise.
+
+2015-04-01  Dodji Seketeli <dodji@redhat.com>
+
+	Add support for abicompat weak mode
+	* include/abg-fwd.h (class type_or_decl_base): Forward declare
+	this.
+	(is_decl, is_type, is_function_type, get_name, get_type_name)
+	(get_function_type_name, get_pretty_representation)
+	(lookup_function_type_in_corpus, lookup_type_in_translation_unit)
+	(lookup_function_type_in_translation_unit)
+	(synthesize_function_type_from_translation_unit)
+	(hash_type_or_decl): New function declarations.
+	* src/abg-corpus.cc (lookup_type_in_corpus)
+	(lookup_function_type_in_corpus): Define new functions.
+	* include/abg-ir.h
+	(translation_unit::lookup_function_type_in_translation_unit):
+	Declare new friend function.
+	(class type_or_decl_base): Declare this.
+	(operator==(const type_or_decl_base&, const type_or_decl_base&)):
+	Declare new operator.
+	(operator==(const type_or_decl_base_sptr&, const
+	type_or_decl_base_sptr&)): Likewise.
+	(class {decl_base, type_base}): Make these class inherit
+	type_or_decl_base.
+	(decl_base::get_member_scopes): New const overload.
+	(bool operator==(const function_decl::parameter_sptr&,
+	const function_decl::parameter_sptr&)): New operator.
+	(function_type::get_parameters): Remove the non-const overload.
+	(function_type::get_pretty_representation): Declare new member
+	function.
+	(method_type::get_pretty_representation): Likewise.
+	* src/abg-ir.cc (bool operator==(const type_or_decl_base&, const
+	type_or_decl_base&)): Define new equality operator.
+	(bool operator==(const type_or_decl_base_sptr&, const
+	type_or_decl_base_sptr&)): Likewise.
+	(strip_typedef): Do not expect canonicalized types anymore.  Now
+	the system accepts (and expects) canonicalized types in certain
+	cases.  For instance, non-complete types and aggregated types that
+	contain non-complete sub-types.
+	(get_name, get_function_type_name, get_type_name)
+	(get_pretty_representation, is_decl, is_type, is_function_type)
+	(lookup_function_type_in_translation_unit)
+	(synthesize_function_type_from_translation_unit)
+	(lookup_type_in_scope, lookup_type_in_translation_unit): Define
+	new functions or new overloads.
+	(bool operator==(const function_decl::parameter_sptr&,
+	const function_decl::parameter_sptr& r)): Define
+	new operator.
+	(function_type::get_parameters): Remove non-const overload.
+	(function_type::get_pretty_representation): Define new function.
+	(function_type::traverse): Adjust.
+	(method_type::get_pretty_representation): Likewise.
+	(function_decl::get_pretty_representation): Avoid emitting the
+	type of cdtors.
+	(hash_type_or_decl): Define new function.
+	* include/abg-dwarf-reader.h (create_read_context)
+	(read_corpus_from_elf): Take a new 'read_all_types' flag.
+	* src/abg-dwarf-reader.cc (read_context::load_all_types_): New
+	flag.
+	(read_context::read_context): Initialize it.
+	(read_context::canonical_types_scheduled): If some types still
+	have non-canonicalized sub-types, then do not canonicalize them.
+	(read_context::load_all_types): New member functions.
+	(build_function_decl): Do not represent void return type like
+	empty type anymore, rather, represent it like a void type node.
+	(build_ir_node_from_die): When asked, load all types
+	including those that are not reachable from an exported
+	declaration.
+	(create_read_context, read_corpus_from_elf): Take a new
+	'load_all_types' flag and honour it.
+	* src/abg-reader.cc (read_context::type_is_from_translation_unit):
+	Support looking up function types in the current translation unit,
+	now that we now how to lookup function types.
+	* include/abg-comparison.h (diff_context::{has_diff_for, add_diff,
+	set_canonical_diff_for, set_or_get_canonical_diff_for,
+	get_canonical_diff_for}): Make these take instances of
+	type_or_decl_base_sptr, instead of decl_base_sptr.
+	(diff::diff): Likewise.
+	(diff::{first_subject, second_subject}): Make these return
+	type_or_decl_base_sptr instead of decl_base_sptr.
+	(type_diff_base::type_diff_base): Make these take instances of
+	type_or_decl_base_sptr instead of decl_base_sptr.
+	(distinct_diff::distinct_diff): Likewise.
+	(distinct_diff::{first, second}): Make these return
+	type_or_decl_base_sptr instead of decl_base_sptr.
+	(distinct_diff::entities_are_of_distinct_kinds): Make these take
+	instances of type_or_decl_base_sptr instead of decl_base_sptr.
+	(class function_type_diff): Create this new type.  It's a
+	factorization of the function_decl_diff type.
+	* src/abg-comparison.cc ():
+	* src/abg-comp-filter.cc ({harmless, harmful}_filter::visit):
+	Adjust as diff::{first,second}_subject() now returns a
+	type_or_decl_base_sptr, no more a decl_base_sptr.
+	(decls_type, decls_diff_map_type): Remove these typedefs and replace it with ...
+	(types_or_decls_type, types_or_decls_diff_map_type): ... these.
+	(struct {decls_hash, decls_equals): Remove these type sand replace them with ...
+	(struct {types_or_decls_hash, types_or_decls_equals}): ... these.
+	({type_suppression, variable_suppression}::suppresses_diff):
+	Adjust.
+	(diff_context::priv::decls_diff_map): Replace this with ...
+	(diff_context::priv::types_or_decls_diff_map): ... this.
+	(diff_context::{has_diff_for, add_diff, get_canonical_diff_for,
+	set_canonical_diff_for, set_or_get_canonical_diff_for}): Take
+	type_or_decl_base_sptr instead of decl_base_sptr.
+	(diff::priv::{first, second}_subject): Make the type of these be
+	type_or_decl_base_sptr, no more decl_base_sptr.
+	(diff::priv::priv): Adjust for the subjects of the diff being of
+	type type_or_decl_sptr now, no more decl_base_sptr.
+	(diff_less_than_functor::operator()(const diff_sptr, const
+	diff_sptr) const): Adjust.
+	(diff::diff): djust for the subjects of the diff being of type
+	type_or_decl_sptr now, no more decl_base_sptr.
+	(diff::{first,second}_subject): Make the type of these be
+	type_or_decl_base_sptr, no more decl_base_sptr.
+	(report_size_and_alignment_changes): Likewise.
+	(type_diff_base::type_diff_base): Make the type of this be
+	type_or_decl_base_sptr instead of type_base_sptr.
+	(distinct_diff::distinct_diff): Make this take instances of
+	type_or_decl_base_sptr instead of decl_base_sptr.
+	(distinct_diff::{first, second, entities_are_of_distinct_kinds}):
+	Likewise.
+	(distinct_diff::has_changes): Simplify logic.
+	(distinct_diff::report): Adjust.
+	(compute_diff_for_types): Add an additional case to support the
+	new function_type.
+	(report_size_and_alignment_changes): Make this take instances of
+	type_or_decl_base_sptr instead of decl_base_sptr.
+	(class_diff::priv::member_type_has_changed): Return an instance of
+	type_or_decl_base_sptr rather than a decl_base_sptr.
+	(class_diff::report): Adjust.
+	(diff_comp::operator()(const diff&, diff&) const): Adjust.
+	(enum function_decl_diff::priv::Flags): Remove.
+	(function_decl_diff::priv::{first_fn_flags_, second_fn_flags_,
+	fn_flags_changes_}): Remove.
+	(function_decl_diff::priv::{fn_is_declared_inline_to_flag,
+	fn_binding_to_flag}): Remove.
+	(function_decl_diff::{deleted_parameter_at,
+	inserted_parameter_at}): Remove.
+	(function_decl_diff::ensure_lookup_tables_populated): Empty this.
+	(function_decl_diff::chain_into_hierarchy): Adjust.
+	(function_decl_diff::function_decl_diff): This now only takes the
+	subjects.  It's body is now empty.
+	(function_decl_diff::{return_type_diff, subtype_changed_parms,
+	removed_parms, added_parms, type_diff}): Remove these member
+	functions.
+	(function_decl_diff::type_diff): Define new member function.
+	(function_decl_diff::report): Simplify logic by using the
+	reporting of the child type diff node.
+	(compute_diff): Likewise, in the overload for function_decl_sptr
+	simplify logic by using the child type diff object.
+	(function_type_diff::priv): Define new type.
+	(function_type_diff::{function_type_diff,
+	ensure_lookup_tables_populated, deleted_parameter_at,
+	inserted_parameter_at, finish_diff_type, first_function_type,
+	second_function_type, return_type_diff, subtype_changed_parms,
+	removed_parms, added_parms, get_pretty_representation,
+	has_changes, has_local_changes, report, chain_into_hierarchy}):
+	Define new functions.
+	(compute_diff): Define new overload for function_type_sptr.
+	* tools/abicompat.cc (options::weak_mode): New data member.
+	(options::options): Initialize it.
+	(enum abicompat_status): New enum
+	(abicompat_status operator|(abicompat_status, abicompat_status))
+	(abicompat_status& operator|=(abicompat_status &, abicompat_status))
+	(abicompat_status operator&(abicompat_status, abicompat_status)):
+	New operators to manipulate the abicompat_status enum.
+	(display_usage): Add help string for the new --weak-mode option.
+	(parse_command_line): Add the new --weak-mode command line
+	argument.  If the tool is called with just the application and one
+	library then assume that we are in the weak mode.
+	(perform_compat_check_in_normal_mode): Define new function, factorized
+	from what was in the main function.
+	(perform_compat_check_in_weak_mode): Define new function.
+	(struct {fn,var}_change): Define new types.
+	(main): Use perform_compat_check_in_weak_mode() and
+	perform_compat_check_in_normal_mode().
+	* tools/abidiff.cc (main): Adjust.
+	* tools/abidw.cc: (options::load_all_types): Add new data member.
+	(options::options): Initialize it.
+	(display_usage): New help string for --load-all-types.
+	(parse_command_line): Support the new --load-all-types option.
+	(main): Adjust and honour the --load-all-types option.
+	* tools/abilint.cc (main): Adjust.
+	* doc/manuals/abicompat.rst: Update documentation for the new weak
+	mode.  Also provide stuff that was missing from the examples
+	provided.
+	* doc/manuals/abidw.rst: Update documentation for the new
+	--load-all-types option.
+	* tests/print-diff-tree.cc (main): Adjust.
+	* tests/test-diff-dwarf.cc (main): Likewise.
+	* tests/test-read-dwarf.cc (main): Likewise.
+	* tests/data/test-abicompat/test0-fn-changed-app: Recompile this.
+	* tests/data/test-abicompat/libtest5-fn-changed-libapp-v{0,1}.so:
+	New new test input binaries
+	* tests/data/test-abicompat/test5-fn-changed-app: Likewise.
+	* tests/data/test-abicompat/test6-var-changed-app: Likewise.
+	* tests/data/test-abicompat/libtest6-var-changed-libapp-v{0,1}.so:
+	Likewise.
+	* tests/data/test-abicompat/test5-fn-changed-report-0.txt:
+	Reference output for one test above.
+	* tests/data/test-abicompat/test6-var-changed-report-0.txt:
+	Likewise.
+	* tests/data/test-abicompat/test5-fn-changed-app.cc: Source file
+	for a binary above.
+	* tests/data/test-abicompat/test5-fn-changed-libapp-v{0,1}.{h,cc}:
+	Likewise.
+	* tests/data/test-abicompat/test6-var-changed-libapp-v{0,1}.{cc,h}:
+	Likewise.
+	* tests/data/test-abicompat/test6-var-changed-app.cc: Likewise.
+	* tests/data/Makefile.am: Add the test related files above to the
+	source distribution.
+	* tests/test-abicompat.cc (in_out_spec): Add the new test input
+	above to the list of inputs to feed to this test harness.
+	(main): Support taking just the app and one library.
+	* tests/data/test-read-dwarf/test{0, 1, 2.so, 3.so, 5.o,
+	8-qualified-this-pointer.so,}.abi: Adjust for void type being
+	really emitted now, as opposed to just being an empty type.
+
+2015-04-01  Dodji Seketeli <dodji@redhat.com>
+
+	18186 - Assertion in abigail::ir::class_decl::hash::operator()
+	* src/abg-dwarf-reader.cc (build_class_type_and_add_to_ir): When
+	the size of the class is provided then the class is complete, no
+	matter if this function called to update the class or to build it
+	for the first time.
+
+2015-03-31  Sinny Kumari <sinny@redhat.com>
+
+	Check if EM_AARCH64, EM_TILEPRO and EM_TILEGX macros are defined in elf.h
+	* config.h.in: Generated autoheader by configure.ac
+	for added macros
+	* configure.ac: Defining HAVE_EM_AARCH64_MACRO,
+	HAVE_EM_TILEPRO_MACRO and HAVE_EM_TILEGX_MACRO to check
+	whether EM_AARCH64, EM_TILEPRO and EM_TILEGX macros are defined
+	in elf.h or not
+	* src/abg-dwarf-reader.cc (e_machine_to_string): Look for
+	EM_AARCH64, EM_TILEPRO and EM_TILEGX macros only
+	if they are defined in elf.h
+
+2015-03-30  Dodji <dodji@ks305400.kimsufi.com>
+
+	PR libabigail/18180
+	* src/abg-hash.cc (class_decl::hash::operator()(const class_decl&)
+	const): Return zero only for class declarations that are not
+	resolved.
+	* tests/data/test-read-write/test20.xml: Fix the output to make a
+	class definition to reference its declaration, when there was a
+	forward declaration for it.
+
+2015-03-30  Dodji Seketeli <dodji@redhat.com>
+
+	18179 - abidiff crashes on libcangjie
+	* include/abg-fwd.h (lookup_class_type_in_corpus)
+	(lookup_class_type_in_translation_unit): Declare new functions.
+	* src/abg-ir.cc (lookup_class_type_in_translation_unit): Define
+	new function.
+	(get_node, convert_node_to_decl): Define new specializations for
+	the class_decl type.
+	* src/abg-corpus.cc (lookup_class_type_in_corpus): Define new
+	function.
+	* src/abg-dwarf-reader.cc
+	(read_context::resolve_declaration_only_classes): Lookup class
+	types specifically.
+
+2015-03-30  Dodji Seketeli <dodji@redhat.com>
+
+	Forgot to initialize a data member
+	* src/abg-reader.cc (read_context::read_context): Initialize the
+	new m_exported_decls_builder_ data member.
+
+2015-03-30  Dodji Seketeli <dodji@redhat.com>
+
+	18166 - Abidiff fails with internal on Libtirpc ABI in XML format
+	* src/abg-reader.cc (read_context::m_exported_decls_builder_): New
+	data member.
+	(read_context::read_context): Initialize it.
+	(read_context::{type_is_from_translation_unit,
+	get_exported_decls_builder, set_exported_decls_builder,
+	maybe_add_fn_to_exported_decls, maybe_add_fn_to_exported_decls,
+	type_id_new_in_translation_unit}): New member functions.
+	(read_context::clear_per_translation_unit_data): Clear id->xml
+	node map here ...
+	(read_context::clear_per_corpus_data): ... not here.
+	(read_context::walk_xml_node_to_map_type_ids): Only walk the
+	sub-tree we are asked to walk.
+	(read_translation_unit_from_input): Cleanup.
+	(read_corpus_from_input): Wire populating of exported declarations
+	of the current corpus.
+	(build_function_decl, build_var_decl): Populate exported
+	declarations of the current corpus here.
+	(build_type_decl, build_qualified_type_decl)
+	(build_pointer_type_def, build_reference_type_def)
+	(build_array_type_def, build_enum_type_decl, build_type_decl)
+	(build_template_tparameter): Adjust assert on ID to make sure
+	it's the first type it's being defined in the current translation
+	unit.
+	* tests/data/test-abidiff/test-corpus0-report0.txt: New test
+	reference output.
+	* tests/data/test-abidiff/test-corpus0-v{0,1}.so.abi: New test
+	input.
+	* tests/test-abidiff.cc (specs): Add the test inputs above to the
+	list of inputs over which to run the test harness.
+	(main): Support reading corpora too, as this test harness was
+	reading just translation units before.
+	(tests/data/Makefile.am): Add test material above to source
+	distribution.
+
+2015-03-19  Dodji Seketeli <dodji@redhat.com>
+
+	Update the CONTRIBUTING file
+	* CONTRIBUTING: How to check out the web pages.
+
+2015-03-19  Dodji Seketeli <dodji@redhat.com>
+
+	Update website documentation
+	* doc/website/mainpage.txt: Update the web page.
+
+2015-03-18  Dodji Seketeli <dodji@redhat.com>
+
+	Cleanup type canonicalizing logic
+	* src/abg-ir.cc (type_base::get_canonical_type_for): Cleanup the
+	logic here.  Basically since we are not trying to cache the result
+	of type hashing anymore, this can be simpler.
+
+2015-03-18  Dodji Seketeli <dodji@redhat.com>
+
+	Fix redundancy propagation on node with filtered local changes
+	*NOT* take in account the categories inherited from its children
+	nodes.  That way, it's possible to know if the *local changes* of a
+	given node have been filtered out.
+	* include/abg-comparison.h (diff::{get_local_category,
+	add_to_local_category, add_to_local_and_inherited_categories,
+	remove_from_local_category, set_local_category,
+	is_filtered_out_wrt_non_inherited_categories,
+	has_local_changes_to_be_reported}): Declare new member functions.
+	* src/abg-comp-filter.cc ({harmless, harmful}_filter::{visit,
+	visit_end}): Update local category too.
+	* src/abg-comparison.cc (diff::priv::local_category_): Add new
+	data member.
+	(diff::priv::priv): Initialize it.
+	(diff::priv::is_filtered_out): Add new member function.  This is
+	factorized out of diff::is_filtered_out().
+	(diff::is_filtered_out): Re-write in terms of
+	diff::priv::is_filtered_out().
+	(diff::{get_local_category, add_to_local_category,
+	add_to_local_and_inherited_categories, remove_from_local_category,
+	set_local_category, is_filtered_out_wrt_non_inherited_categories,
+	has_local_changes_to_be_reported}): Define new member functions.
+	(suppression_categorization_visitor::visit_begin): Update local
+	categories too.
+	(redundancy_marking_visitor::visit_end): If all of the children
+	nodes of the a diff node N are redundant and if N has filtered-out
+	local changes, then N is redundant too.
+	* tests/data/test-diff-filter/libtest28-redundant-and-filtered-children-nodes-v{1,2}.so:
+	New binary test inputs.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-v{0,1}.cc:
+	Source code for the binary test inputs above.
+	* tests/data/test-diff-filter/test28-redundant-and-filtered-children-nodes-report-{0,1}.txt:
+	New test output references.
+	* tests/test-diff-filter.cc (in_out_specs): Add the test inputs
+	above to the set of inputs this test harness has to run over.
+	* tests/data/Makefile.am: Add the test materials above to the
+	source distribution.
+
+2015-03-17  Dodji Seketeli <dodji@redhat.com>
+
+	Various style cleanups
+	* src/abg-hash.cc (class_decl::hash::operator()(const class_decl&
+	t) const): Fix comment.
+	* src/abg-ir.cc (lookup_node_in_scope): Likewise.
+	(class_decl::add_base_specifier): Use base_spec_sptr rather than
+	shared_ptr<base_spec>.
+	(class non_canonicalized_subtype_detector): Fix comment.
+
+2015-03-17  Dodji Seketeli <dodji@redhat.com>
+
+	Make is_global_scope() return a pointer to the global scope
+	* include/abg-fwd.h (is_global_scope): Return a global_scope*.
+	* src/abg-ir.cc (is_global_scope): Likewise.
+
+2015-03-17  Dodji Seketeli <dodji@redhat.com>
+
+	Add a useful assert in the comparison engine
+	* src/abg-comparison.cc (qualified_type_diff::report): Assert that
+	if the qualified type diff node has changes to be reported and no
+	local change, then its child node must have changes to be
+	reported.
+
+2015-03-17  Dodji Seketeli <dodji@redhat.com>
+
+	Fix diff report about non-static data members.
+	* src/abg-comparison.cc
+	(class_diff::priv::{get_deleted_non_static_data_members_number,
+	get_inserted_non_static_data_members_number}): Define new member
+	functions.
+	(class_diff::reports): Use the new functions above.  Also, add
+	forgotten new lines where they belong.
+
+2015-03-17  Dodji Seketeli <dodji@redhat.com>
+
+	Do not cache hash values in decl_base::get_hash
+	* src/abg-ir.cc (decl_base::get_hash): Do not cache the hash
+	value.
+
+2015-03-17  Dodji Seketeli <dodji@redhat.com>
+
+	Do not miss early non-complete type resolution when it's possible
+	* src/abg-dwarf-reader.cc (build_class_type_and_add_to_ir): A type
+	that has its size defined is not non-complete.  Same if it has a
+	method or a member type.
+
+2015-03-17  Dodji Seketeli <dodji@redhat.com>
+
+	Delay non-complete class type resolution up to end of corpus reading
+	* include/abg-fwd.h (lookup_type_in_corpus): Declare new function.
+	* src/abg-corpus.cc (lookup_type_in_corpus): Define new function
+	here.
+	* include/abg-ir.h (function_types_type): Declare new typedef.
+	(translation_unit::get_canonical_function_type): Remove member function.
+	(translation_unit::bind_function_type_life_time): Declare new
+	member function.
+	(classes_type): New typedef.
+	* src/abg-ir.cc
+	(translation_unit::priv::canonical_function_types_): Remove data
+	member.
+	(translation_unit::priv::function_types): New data member.
+	(translation_unit::get_canonical_function_type): Remove this
+	function definition.
+	(translation_unit::bind_function_type_life_time): New function
+	definition.
+	(lookup_node_in_scope): Ensure that the type returned is
+	complete.
+	* src/abg-dwarf-reader.cc (string_classes_map): New typedef.
+	(read_context::decl_only_classes_map_): New data member.
+	(read_context::declaration_only_classes): New accessor.
+	(read_context::{maybe_schedule_declaration_only_class_for_resolution,
+	is_decl_only_class_scheduled_for_resolution,
+	resolve_declaration_only_classes, current_elf_file_is_executable,
+	current_elf_file_is_dso}): Define new member functions.
+	(read_context::clear_per_translation_unit_data): Do not clear the
+	data structures that associate DIEs to decls/types or that contain
+	the types to canonicalize here.  Rather, clear them ...
+	(read_context::clear_per_corpus_data): ... here instead.
+	(read_context::build_translation_unit_and_add_to_ir): Do not
+	perform late type canonicalizing here.  Rather, do it ...
+	(read_debug_info_into_corpus): ... here instead.  And before that,
+	call read_context::clear_per_corpus_data() and the new
+	read_context::resolve_declaration_only_classes() here.
+	(build_class_type_and_add_to_ir): Schedule the non-complete types
+	for resolution to complete types.  Assert that base classes that
+	are non-complete are scheduled to be completed.
+	(build_function_decl): Do not try to canonicalize function types
+	this early, systematically.  Now, all the non-complete types needs
+	to be completed before starting canonicalizing.  So let function
+	types go through the normal processes of deciding when to
+	canonicalize them.  But then, bind the life time of the function
+	type to the life time of the current translation unit.
+	(maybe_canonicalize_type): If a class type is non-complete,
+	schedule it for late canonicalizing.
+	* src/abg-hash.cc (class_decl::hash::operator()(const class_decl&)
+	const): During hashing, a base class should be complete.
+	* src/abg-reader.cc
+	(read_context::clear_per_translation_unit_data): Do not clear
+	id/xml node, and type maps here.  Rather, clear it ...
+	(read_context::clear_per_corpus_data): ... here instead.
+	(read_translation_unit_from_input): Do not perform late
+	canonicalizing here.  Rather, do it ...
+	(read_corpus_from_input): ... here.  Also, call the new
+	read_context::clear_per_corpus_data() here.
+	(build_function_decl): Do not canonicalize function types here so
+	early.  Rather, bind the life time of the function type to the
+	life time of the translation unit.
+	* src/abg-writer.cc (write_translation_unit): Do not clear the
+	type/ID map here.
+	* tests/data/test-read-dwarf/test2.so.abi: Adjust test input.
+
+2015-03-17  Dodji Seketeli <dodji@redhat.com>
+
+	Add --no-architecture option to abidw
+	* tools/abidw.cc (options::write_architecture): New flag.
+	(options::options): Initialize it.
+	(display_usage): Add usage string for the new --no-architecture
+	option.
+	(parse_command): Parse the new --no-architecture command line
+	option.
+	(main): Ignore the architecture name if required by the user.
+
+2015-03-13  Dodji Seketeli <dodji@redhat.com>
+
+	We shouldn't build qualified types with empty underlying type
+	* src/abg-ir.cc (qualified_type_def::qualified_type_def): Assert
+	that we shouldn't build qualified types with empty underlying
+	type.
+
+2015-03-13  Dodji Seketeli <dodji@redhat.com>
+
+	Add an overload for is_type() that takes naked pointers
+	* include/abg-fwd.h (is_type): Declare new overload that takes a
+	naked pointer.
+	* src/abg-ir.cc (is_type): Define new overload that takes a naked
+	pointer.
+
+2015-03-13  Dodji Seketeli <dodji@redhat.com>
+
+	Declaration-only classes shouldn't have canonical types
+	* include/abg-fwd.h (keep_type_alive): Declare new function.
+	* src/abg-ir.cc (strip_typedef): Simplify logic.  Support types
+	that are not canonicalized.
+	(type_base::get_canonical_type_for): For declaration-only classes,
+	return an empty canonical class, forcing the class to be compared
+	structurally.
+	(keep_type_alive): Define new function.
+	* src/abg-hash.cc ({decl_base, type_decl, scope_type_decl,
+	qualified_type_def, pointer_type_def, reference_type_def,
+	array_type_def, enum_type_decl, typedef_decl,
+	class_decl::member_class_template, class_decl, type_tparameter,
+	template_tparameter, }::hash::operator()): Do not cache the
+	computed hash.
+
+2015-03-13  Dodji Seketeli <dodji@redhat.com>
+
+	Fix redundancy categorization propagation
+	* src/abg-comparison.cc (redundancy_marking_visitor::visit_end):
+	Consider the cases of changes that are a filtered out.
+	* tests/data/test-diff-filter/libtest27-redundant-and-filtered-children-nodes-v{0,1}.so:
+	New test binaries to use as test input.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-report-{0,1,2}.txt:
+	New test result baselines.
+	* tests/data/test-diff-filter/test27-redundant-and-filtered-children-nodes-v{0,1}.cc:
+	Source code for the test input binaries above.
+	* tests/test-diff-filter.cc (in_out_spec): Add the binaries to the
+	test inputs used for this test harness.
+	* tests/data/Makefile.am: Add the new test material above to the
+	distribution.
+
+2015-03-13  Dodji Seketeli <dodji@redhat.com>
+
+	Fix thinko in has_virtual_mem_fn_change().
+	* src/abg-comp-filter.cc (has_virtual_mem_fn_change): Fix thinko.
+
+2015-03-13  Dodji Seketeli <dodji@redhat.com>
+
+	From inside the comparison engine re-use IR's equality operators
+	* include/abg-ir.h (operator==(scope_decl_sptr, scope_decl_sptr)):
+	Declare.
+	(operator==(type_decl_sptr, type_decl_sptr)): Likewise.
+	(operator==(enum_type_decl_sptr, enum_type_decl_sptr)): Likewise.
+	* src/abg-comparison.cc (diff_length_of_decl_bases)
+	(diff_length_of_type_bases): Remove these static functions.
+	(class_diff::has_changes): Re-use the comparison operator for
+	class_decl_sptr.
+	(type_decl_diff::has_changes): Re-use the comparison operator for
+	type_decl_sptr.
+	* src/abg-ir.cc (operator==(scope_decl_sptr, scope_decl_sptr)):
+	Define.
+	(operator==(type_decl_sptr, type_decl_sptr)): Likewise.
+	(operator==(enum_type_decl_sptr, enum_type_decl_sptr)): Likewise.
+
+2015-03-11  Dodji Seketeli <dodji@redhat.com>
+
+	Remove unnecessary vertical white space from diff report
+	* src/abg-comparison.cc (class_diff::report): When reporting
+	virtual member functions make sure to emit the newline only if one
+	report for member function has already been emitted.
+
+2015-03-10  Dodji Seketeli <dodji@redhat.com>
+
+	Cleanup array_type_def::is_infinite
+	* src/abg-ir.cc (array_type_def::is_infinite): Style cleanup.
+
+2015-03-10  Dodji Seketeli <dodji@redhat.com>
+
+	Make a function static as it oughts to be
+	* src/abg-ir.cc (get_type_representation): Make this static.
+
+2015-03-10  Dodji Seketeli <dodji@redhat.com>
+
+	Canonicalize function types
+	* src/abg-dwarf-reader.cc (build_function_decl): Call
+	maybe_canonicalize_type to canonicalize the function type.
+
+2015-03-10  Dodji Seketeli <dodji@redhat.com>
+
+	Use more naked pointers when comparing function types
+	* src/abg-ir.cc (equals): In the overload for function types, use
+	more naked pointers, less smart pointers.
+
+2015-03-10  Dodji Seketeli <dodji@redhat.com>
+
+	Pass a bunch of smart pointers by reference
+	* include/abg-fwd.h (get_member_is_static, is_member_function)
+	(get_member_function_is_ctor, set_member_function_is_ctor)
+	(get_member_function_is_dtor, set_member_function_is_dtor)
+	(get_member_function_is_const, set_member_function_is_const)
+	(get_member_function_vtable_offset)
+	(set_member_function_vtable_offset)
+	(get_member_function_is_virtual): Declare the smart pointer
+	parameter of these as being passed by reference.
+	* include/abg-ir.h (get_member_access_specifier)
+	(get_member_is_static, get_member_access_specifier)
+	(set_member_function_is_ctor, set_member_function_is_const)
+	(set_member_function_vtable_offset): Likewise, for these friend
+	declarations to the decl_base type.
+	* src/abg-ir.cc (get_member_access_specifier)
+	(get_member_is_static, is_member_function)
+	(get_member_function_is_ctor, set_member_function_is_ctor)
+	(get_member_function_is_dtor, set_member_function_is_dtor)
+	(get_member_function_is_const, set_member_function_is_const)
+	(get_member_function_vtable_offset)
+	(set_member_function_vtable_offset)
+	(get_member_function_is_virtual): In these definitions, the smart
+	pointer parameter is passed by reference.
+
+2015-03-10  Dodji Seketeli <dodji@redhat.com>
+
+	Make decl_base::get_context_rel() return a naked pointer
+	* include/abg-fwd.h (set_member_is_static): Add an overload that
+	takes the member as a reference to a smart pointer.
+	(set_member_function_{is_dtor, is_ctor, is_const, vtable_offset,
+	is_virtual}): Pass the member function as a reference.
+	(set_member_function_is_const, set_member_function_is_virtual):
+	Pass the member function as a non-const reference.
+	* include/abg-ir.h (decl_base::get_context_rel): Return a naked
+	pointer.
+	(set_member_is_static, set_member_function_is_virtual): Adjust
+	this friend declaration.
+	(set_member_access_specifier): Add an overload that takes a
+	reference to the member.  Pass a reference to smart pointer to the
+	other overload.
+	(set_member_function_is_{is_ctor,is_dtor,is_const,is_virtual,vtable_offset}):
+	Take a non-const reference to function_decl.
+	* src/abg-ir.cc (decl_base::get_context_rel): Likewise.
+	(equals(const decl_base&, const decl_base&, change_kind*)):
+	Adjust.
+	(equals(const var_decl&, const var_decl&, change_kind*)):
+	Likewise.
+	(get_member_access_specifier, get_member_is_static)
+	(set_data_member_offset, get_data_member_offset)
+	(set_data_member_is_laid_out, get_data_member_is_laid_out)
+	(get_member_function_is_ctor, set_member_function_is_ctor)
+	(get_member_function_is_dtor, set_member_function_is_dtor)
+	(get_member_function_is_const, set_member_function_is_const)
+	(get_member_function_vtable_offset)
+	(set_member_function_vtable_offset)
+	(get_member_function_is_virtual, set_member_function_is_virtual):
+	Likewise.
+	(set_member_access_specifier): Add an overload that takes a
+	reference to decl_base.
+	(set_member_is_static, set_member_function_{is_dtor, is_ctor,
+	is_const, vtable_offset, is_virtual}): Pass the member function as
+	a reference.): Add an overload that takes the member as a
+	reference, and write the older overload in terms of the new one.
+
+2015-03-09  Dodji Seketeli <dodji@redhat.com>
+
+	Make overloads of decl_base::get_qualified_name() return a reference
+	* incude/abg-ir.h (decl::get_{qualified_name,
+	qualified_parent_name}): Return a reference to a string rather
+	than a copy of a string.
+	(qualified_type_def::get_qualified_name): Likewise.
+	(reference_type_def::get_qualified_name): Likewise.
+	(array_type_def::get_qualified_name): Likewise.
+	(class enum_type_decl::enumerator): Make this is an out-of-line
+	pimpled class implementation.
+	(enum_type_decl::enumerator::{get, set}_enum_type): Declare new
+	method.
+	(enum_type_decl::enumerator::get_qualified_name): Change this so
+	that it doesn't take the name of the enum type anymore.
+	* src/abg-comparison.cc (enum_diff::report): Adjust for
+	enum_type_decl::enumerator::get_qualified_name() not taking the
+	name of the enum type anymore.
+	* src/abg-ir.cc (decl_base::get_qualified_parent_name): Return a
+	reference to string.
+	(decl_base::get_qualified_name): Likewise.
+	(decl_base::get_qualified_name(string&)): Use the new verson of
+	decl_base::get_qualified_name() that returns a reference.
+	({qualified_type_def, pointer_type_def, reference_type_def,
+	array_type_def}::get_qualified_name()): Return a string reference.
+	({qualified_type_def, pointer_type_def, reference_type_def,
+	array_type_def}::get_qualified_name(string& qualified_name)
+	const): Use the new qualified_type_def::get_qualified_name() that
+	returns a string reference.
+	(class enum_type_decl::priv): New type.
+	(enum_type_decl::{get_underlying_type, get_enumerators}): Adjust.
+	(enum_type_decl::{enumerator::enumerator, enumerator::operator==,
+	enumerator::get_name, enumerator::get_qualified_name,
+	enumerator::set_name, enumerator::get_value,
+	enumerator::set_value, enumerator::get_enum_type,
+	enumerator::set_enum_type}): Define methodes out-of-line here.
+
+2015-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Harden strip_typedef
+	* src/abg-ir.cc (strip_typedef): Consider that the underlying type
+	can be void.
+
+2015-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	When reading DWARF set member type access where the type is built
+	* include/abg-fwd.h (is_class(decl_base*)): Return a class_decl*
+	rather than just a bool.
+	* abg-ir.cc (is_class(decl_base*)): Return a class_decl* rather
+	than just a bool.  Simplify the implementation.
+	* src/abg-dwarf-reader.cc
+	(maybe_set_member_type_access_specifier): Define new static
+	function.
+	(build_ir_node_from_die): Remove the is_member_type flag.  When
+	building member types set their access specifier.  Simplify the
+	logic of detecting that a type is a member type; basically
+	delegate taht to the new maybe_set_member_type_access_specifier().
+	(build_class_type_and_add_to_ir): Do not try to set the member
+	type access specifiers anymore.
+	(build_qualified_type, build_pointer_type, build_reference_type)
+	(build_typedef_type, build_var_decl, build_function_decl): Adjust.
+
+2015-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Fix enum_diff::has_changes()
+	* src/abg-comparison.cc (enum_diff::has_changes): Just use the
+	normal comparison operator to compare the two enums here.  It's
+	fast now.
+
+2015-02-23  Dodji Seketeli <dodji@redhat.com>
+
+	Build the set of exported decls directly during DWARF loading
+	* include/abg-ir.h ({var,function}_decl::get_id): Return a
+	reference.
+	* src/abg-ir.cc ({var,function}_decl::get_id): Return a reference
+	to the string rather than copying it over.
+	* include/abg-corpus.h (class corpus::exported_decls_builder):
+	Declare new type.
+	(corpus::{sort_functions, sort_variables,
+	maybe_drop_some_exported_decls, get_exported_decls_builder}):
+	Declare new methods.
+	* src/abg-corpus.h (corpus::exported_decls_builder::priv): Define
+	new type.
+	(class symtab_build_visitor_type): Remove this type that is
+	useless now.
+	(corpus::exported_decls_builder::{exported_decls_builder,
+	exported_functions, exported_variables,
+	maybe_add_fn_to_exported_fns, maybe_add_var_to_exported_vars}):
+	Define new functions.
+	(corpus::priv::is_public_decl_table_built): Remove this data
+	member.  It's now useless.
+	(corpus::priv::priv): Adjust.
+	(corpus::priv::build_public_decl_table): Remove this member
+	function.  It's now useless.
+	(corpus::{priv::build_unreferenced_symbols_tables, get_functions,
+	get_variables}): No need to build the public decls table here.
+	It's already built by the time the corpus is read from DWARF now.
+	(corpus::{sort_functions, sort_variables,
+	maybe_drop_some_exported_decls, get_exported_decls_builder}):
+	Define new member functions.
+	* src/abg-dwarf-reader.cc (read_context::exported_decls_builder):
+	New data member.
+	(read_context::read_context): Initialize it.
+	(read_context::{exported_decls_builder,
+	maybe_add_fn_to_exported_fns, maybe_add_var_to_exported_vars}):
+	Define new member functions.
+	(read_debug_info_into_corpus): Get the the new
+	'exported_decls_builder' object from the corpus and stick it into
+	the read context so the DWARF reading code can use it to build the
+	exported decls set.  When the DWARF reading is done, sort the set
+	of exported functions and variables that was built.
+	(build_ir_node_from_die): When a function or variable is built,
+	consider putting it into the set of exported decls.
+	* tools/abicompat.cc (main): Now that the exported decls is built
+	*before* we had a chance to stick the list of symbol IDs to keep,
+	call corpus::maybe_drop_some_exported_decls() to update the set of
+	exported decls we should consider for the corpus.
+	was applied to that list and the final
+
+2015-02-22  Dodji Seketeli <dodji@redhat.com>
+
+	Fix canonicalizing of member types ... *AGAIN*
+	* src/abg-dwarf-reader.cc (build_ir_node_from_die): For typedefs,
+	we don't need to test that the current scope is a class to know
+	that we are looking at a member type.  Just looking at the
+	is_member flag is enough.
+	So the issue arises when for instance, we are reading a class that
+	defines a member typedef (or enum) and uses that enum as the type of a
+	data member.  When reading that data member (before reading the
+	definition of the typedef), we read the type of the data member; so we
+	hit the typedef.  But build_ir_node_from_die() cannot fully construct
+	the scope of the typedef before handing off the typedef because we are
+	currently building it!  So it hands out a non-complete version of the
+	class that is being built;  'is_member' is not set to 'true' because
+	we are getting the type of the data member; it's not *necessarily* a
+	member type.  So we need to check !is_class_type(scope) to know if we
+	are given a member type.  I am now thinking that the "is_member" flag
+	is actually useless.  I think I'll remove it in a later patch.
+	Anyway, this fixes 'abidiff libabigail.so libabigail.so' again.  I
+	have some stashed patches that brings it's time down to ~ 45 seconds.
+	So we are getting close to being able to include that *ultimate* test in
+	regression test suite.  Oh well.
+	* src/abg-dwarf-reader.cc (build_ir_node_from_die): When building
+	typedefs, enum and memeber classes, check that the scope is a
+	member class to detect if we are building a member type.  In which
+	case the caller is going to handle the canonicalizing of the
+	member type *after* it's access specification has been adjusted.
+	Otherwise, that adjustments happens after the type has been
+	canonicalized and bad things happen at comparison type.
+
+2015-02-21  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 17649 Avoid endless looping on diff graph with cycles
+	* include/abg-comp-filter.h (harm{less,ful}_filter::visit_end):
+	Declare new methods.
+	* include/abg-comparison.h (diff_context::maybe_apply_filters):
+	Remove the traverse_nodes_once flag.
+	* src/abg-comp-filter.cc (apply_filter): Force the traversing to
+	operate in cycle avoidance mode.
+	(harm{less,ful}_filter::visit): Update the category of the
+	canonical node too.
+	(harm{less,ful}_filter::visit_end): Define new method.
+	* src/abg-comparison.cc (diff_context::maybe_apply_filters):
+	Remove the traverse_nodes_once flag.  Adjust.  Simplify logic.
+	(diff::traverse): Always call diff_node_visitor::{begin,end}.  If
+	the node has already been visited previously then do not call
+	diff_node_visitor::visit() and do not visit the children nodes.
+	(category_propagation_visitor::visit_end):  If the node has
+	already been visited, then propagate the category from the
+	canonical nodes of the children nodes.
+	(propagate_categories):  Force the traversing to operate in cycle
+	avoidance mode.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Add missing new line after reporting alignment changes
+	* src/abg-comparison.cc (distinct_diff::report): After calling
+	report_size_and_alignment_changes, one needs to add a new line if
+	some stuff got emitted out the output stream.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Add type checking overloads that ease their calling from GDB
+	* include/abg-fwd.h (is_class_type, is_pointer, is_reference_type)
+	(is_qualified_type): Declare overloads that take naked (non-smart)
+	pointers.
+	* src/abg-ir.cc (is_class_type, is_pointer, is_reference_type)
+	(is_qualified_type): Define overloads that take naked (non-smart)
+	pointers.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Remove overly eager assert in distinct_diff::report
+	* src/abg-comparison.cc (distinct_diff::report): Remove over-eager
+	assert.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Factorize late canonicalizing code in the dwarf reader
+	* src/abg-dwarf-reader.cc
+	(read_context::{canonicalize_types_scheduled,
+	perform_late_type_canonicalizing}):  Factorize these from ...
+	(build_translation_unit_and_add_to_ir): ... here.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Rename schedule_type_for_canonicalization -> schedule_type_for_late_canonicalization
+	* src/abg-dwarf-reader.cc
+	(read_context::schedule_type_for_late_canonicalization): Renamed
+	read_context::schedule_type_for_canonicalization into this.  Also,
+	add some sanity checking code in there.
+	(build_class_type_and_add_to_ir, maybe_canonicalize_type): Adjust.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Adjust semantics of the 'is_member' flag of build_ir_node_from_die()
+	* src/abg-dwarf-reader.cc (build_ir_node_from_die): Rename
+	is_member into is_member_type.  Adjust.
+	(get_scope_for_die, build_translation_unit_and_add_to_ir)
+	(build_namespace_decl_and_add_to_ir): Adjust.
+	(build_class_type_and_add_to_ir): Adjust.  Adjust set to false
+	when calling build_ir_node_from_die() to build a function_decl.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Simplify canonicalizing handling for typedefs
+	* src/abg-dwarf-reader.cc (build_ir_node_from_die): For typedefs,
+	we don't need to test that the current scope is a class to know
+	that we are looking at a member type.  Just looking at the
+	is_member flag is enough.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Do not miss canonicalizing opportunities on non-member class types
+	* src/abg-dwarf-reader.cc (build_ir_node_from_die): When a class
+	is not a member type, then it at least ought to be scheduled for
+	late canonicalizing.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Fix handling of canonicalizing of member enum types
+	* src/abg-dwarf-reader.cc (build_ir_node_from_die): Once we've
+	built the enum type by calling build_enum_type(), do not try to
+	canonicalize it here if it's a member type.  The calling
+	build_class_type_and_add_to_ir() must deal with it already.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Stick qualified, pointer, reference and array types into the global scope
+	* src/abg-dwarf-reader.cc (build_class_type_and_add_to_ir): Do not
+	consider qualified, pointer, reference and array types as member
+	types.  Only typedef, class and enum types are.
+	(build_ir_node_from_die): Stick base, pointer, reference,
+	qualified and array types into the global scope.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Avoid creating multiple versions of certain composite types
+	* src/abg-dwarf-reader.cc (build_qualified_type)
+	(build_pointer_type_def, build_reference_type, build_array_type)
+	(build_typedef_type): If the composite type we are about to create
+	was already created, just return the one that exists already.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Do not forget to canonicalize enum underlying type and void type
+	* src/abg-dwarf-reader.cc (build_enum_type): Canoncialize the
+	underlying type of the enum type.
+	(build_ir_node_for_void_type): Canonicalize the void type.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Do not forget to associate DIE to the types they represent
+	* src/abg-dwarf-reader.cc (build_type_decl, build_enum_type)
+	(build_qualified_type, build_pointer_type_def)
+	(build_reference_type, build_typedef_type)
+	(build_class_type_and_add_to_ir): Take a new flag that says if the
+	DIE is from the alternate debug info section or not.  Perform the
+	DIE->type association in these functions.  Note that in
+	build_class_type_and_add_to_ir we are now doing the DIE->type
+	association even for declaration-only classes.  And for member
+	types, do not bother doing the association because it's already
+	been done by build_ir_node_from_die().
+	(build_ir_node_from_die): Do not do the DIE->type association here
+	anymore.  Adjust to the new signature of the build_* functions
+	above that actually build the types.
+
+2015-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Clear per-TU data before reading debub info for a TU
+	* src/abg-dwarf-reader.cc
+	(read_context::die_type_map): New accessor for the two DIE->Type
+	maps we have; the one of the main debug info section and the one
+	of the alternate debug info section.
+	(read_context::{associate_die_to_type,
+	lookup_type_from_die_offset}): use the new die_type_map()
+	accessor.
+	(read_context::clear_per_translation_unit_data): Factorize this
+	from build_translation_unit_and_add_to_ir().  Also, add code to
+	clear the DIE->type map as well as the vectors of offsets of the
+	types of the DIEs to canonicalize after the translation unit has
+	been read.
+
+2015-02-19  Dodji Seketeli <dodji@redhat.com>
+
+	Fix the new regression test for type canonicalizing
+	* tests/runtestcanonicalizetypes.sh.in (binaries): Refer to
+	abg-tools-utils, not abg-tools-utils.o; the extension is computed
+	automatically, depending on the underlying platform.
+
+2015-02-19  Dodji Seketeli <dodji@redhat.com>
+
+	Make strip_typedef() act on canonical types only
+	* include/abg-fwd.h (is_compatible_with_class_type): Declare new
+	function.
+	(canonicalize): Move the declaration here, from ...
+	* include/abg-ir.h (canonicalize): ... here.
+	* src/abg-ir.cc (strip_typedef): Assert that the input type is
+	canonicalized.  Make sure that weak references are on
+	canonicalized types.  Make sure that the returned type is a
+	canonical one.
+	(canonicalize): Make this return the canonical type that it has
+	computed.
+	* src/abg-comp-filter.cc (type_size_changed): Use the new
+	is_compatible_with_class_type() function, instead of
+	is_class_type().
+
+2015-02-18  Dodji Seketeli <dodji@redhat.com>
+
+	Speed up function_decl::get_id() and var_decl::get_id()
+	* src/abg-ir.cc (var_decl::priv::id_): New data member.
+	(var_decl::get_id): Cache the result on the first invocation and
+	and returns it on subsequent invocations.
+	(function_dec::priv::id_): New data member.
+	(function_decl::get_id): Cache the result on the first invocation
+	and and returns it on subsequent invocations.
+
+2015-02-18  Dodji Seketeli <dodji@redhat.com>
+
+	Speed up symbol version reading
+	* src/abg-dwarf-reader.cc (find_symbol_table_section)
+	(get_symbol_versionning_sections): Forward declare these existing
+	static functions.
+	(read_context::{symtab_section_,
+	symbol_versionning_sections_loaded_,
+	symbol_versionning_sections_found_, versym_section_
+	verdef_section, verneed_section}): New data members.
+	(read_context::read_context): Initialize them.
+	(read_context::{find_symbol_table_section,
+	get_symbol_versionning_sections, get_version_for_symbol}):
+	Implement a caching version of their exisiting non-caching
+	counterpart.
+	(read_context::lookup_elf_symbol_from_index): Use the new caching
+	functions read_context::find_symbol_table_section and
+	read_context::get_version_for_symbol.
+	(read_context::load_symbol_maps): Likewise, use the new caching
+	function read_context::find_symbol_table_section.
+
+2015-02-17  Dodji Seketeli <dodji@redhat.com>
+
+	Stop traversing function/variable node when added to symbol table
+	* src/abg-corpus.cc (symtab_build_visitor_type::visit_begin):
+	Replace symtab_build_visitor_type::visit_end with this and return
+	false.
+
+2015-02-13  Dodji Seketeli <dodji@redhat.com>
+
+	Do not apply diff filters sub-tree not carrying changes
+	* src/abg-comp-filter.cc ({harmless, harmful}_filter::visit): Do
+	not try to do the categorizing on a diff sub-tree that does
+	not carry any change.
+	* src/abg-comparison.cc (diff_context::maybe_apply_filters): Do
+	not bother trying to apply the filters on a diff sub-tree that
+	does not carry any change.
+
+2015-02-13  Dodji Seketeli <dodji@redhat.com>
+
+	Canonicalize types either early or late after TU reading
+	* include/abg-fwd.h (is_class_type)
+	(type_has_non_canonicalized_subtype): Declare new functions.
+	(is_member_type): Remove the overload that takes a decl_base_sptr.
+	It's superfluous.  We just need the one that takes a
+	type_base_sptr.
+	* include/abg-ir.h (translation_unit::{is_constructed,
+	set_is_constructed}): Add new methods.
+	(class_decl::has_virtual_member_functions): Likewise.
+	(class decl_base): Makes it virtually inherit ir_traversable_base.
+	(class type_base): Make this virtually inherit traversable_base
+	too.
+	(type_base::canonicalize): Renamed enable_canonical_equality
+	into this.
+	(type_base::traverse): Declare new virtual method.
+	(canonicalize): Renamed enable_canonical_equality into this.
+	(scope_type_decl::traverse): Declare new virtual method.
+	(namespace_decl::get_pretty_representation): Declare new virtual
+	method.
+	(function_type::traverse): Likewise.
+	(class_decl::base_spec::traverse): Likewise.
+	(ir_node_visitor::visit): Remove the overloads and replace each of
+	them with a pair of ...
+	(ir_node_visitor::{visit_begin, visit_end}): ... of these.
+	* include/abg-traverse.h (traversable_base::visiting): New
+	method.
+	(traversable_base::visiting_): New data member.
+	(traversable_base::traversable_base): New constructor.
+	* src/abg-ir.cc ({scope_decl, type_decl, namespace_decl,
+	qualified_type_def, pointer_type_def, reference_type_def,
+	array_type_def, enum_type_decl, typedef_decl, var_decl,
+	function_decl, function_decl::parameter, class_decl,
+	class_decl::member_function_template,
+	class_decl::member_class_template, function_tdecl,
+	class_tdecl}::traverse): Fix this to properly set the
+	traversable_base::visiting_ flag and to reflect the new signatures
+	of the ir_node_visitor methods.
+	({type_base, scope_type_decl, function_type,
+	class_decl::base_spec}::traverse): New method.
+	(type_base::get_canonical_type_for): Handle the case of the type
+	already having a canonical type.  Properly hash the type using the
+	dynamic type hasher.  Look through declaration-only classes to
+	consider the definition of the class instead.  Fix logic to have a
+	single pointer of return, to ease debugging.
+	(canonicalize): Renamed enable_canonical_equality into this.
+	(namespace_decl::get_pretty_representation): Define new method.
+	(ir_node_visitor::visit): Replace each of these overloads with a
+	pair of visit_begin/visit_end ones.
+	(translation_unit::priv::is_constructed_): New data member.
+	(translation_unit::priv::priv): Initialize it.
+	(translation_unit::{is_constructed, set_is_constructed}): Define
+	new methods.
+	(is_member_type(const decl_base_sptr)): Remove.
+	(is_class_type(decl_base *d)): Define new function.
+	(class_decl::has_virtual_member_functions): Define new method.
+	(equals(const class_decl&, const class_decl&, change_kind*)): If
+	the containing translation unit is not constructed yet, do not
+	take virtual member functions in account when comparing the
+	classes.  This is because when reading from DWARF, there can be
+	DIEs that change the number of virtual member functions after the
+	DIE of the class.  So one needs to start taking virtual members
+	into account only after the translation unit has been constructed.
+	(class non_canonicalized_subtype_detector): Define new type.
+	(type_has_non_canonicalized_subtype): Define new function.
+	* src/abg-corpus.cc (symtab_build_visitor_type::visit): Renamed
+	this into symtab_build_visitor_type::visit_end.
+	* src/abg-dwarf-reader.cc (die_type_map_type): New typedef.
+	(die_class_map_type): This is now a typedef on a map of
+	Dwarf_Off/class_decl_sptr.
+	(read_context::{die_type_map_, alternate_die_type_map_,
+	types_to_canonicalize_, alt_types_to_canonicalize_}): New data
+	members.
+	(read_context::{associate_die_to_decl,
+	associate_die_to_decl_primary}): Make these methods public.
+	(read_context::{associate_die_to_type,
+	lookup_type_from_die_offset, is_wip_class_die_offset,
+	types_to_canonicalize, schedule_type_for_canonicalization}):
+	Define new methods.
+	(build_type_decl, build_enum_type)
+	(build_class_type_and_add_to_ir, build_qualified_type)
+	(build_pointer_type_def, build_reference_type, build_array_type)
+	(build_typedef_type, build_function_decl): Do not canonicalize
+	types here.
+	(maybe_canonicalize_type): Define new function.
+	(build_ir_node_from_die): Take a new flag that says if the ir node
+	is a member type/function or not. Early-canonicalize base types.
+	Canonicalize composite types that have only canonicalized
+	sub-types.  Schedule the other types for late canonicalizing.  For
+	class types, early canonicalize those that are non-member types,
+	that are fully constructed and that have only canonicalized
+	sub-types.  Adjust to the new signature of build_ir_node_from_die.
+	(get_scope_for_die, build_namespace_decl_and_add_to_ir)
+	(build_qualified_type, build_pointer_type_def)
+	(build_reference_type, build_array_type, build_typedef_type)
+	(build_var_decl, build_function_decl): Adjust for the new
+	signature of build_ir_node_from_die.
+	(build_translation_unit_and_add_to_ir): Likewise.  Perform the
+	late canonicalizing of the types that have been scheduled for
+	that.
+	(build_class_type_and_add_to_ir): Return a class_decl_sptr, not a
+	decl_base_sptr.  Adjust for the new signature of
+	build_ir_node_from_die.  Early canonicalize member types that are
+	created and added to a given class, or schedule them for late
+	canonicalizing.
+	* src/abg-reader.cc (class read_context::{m_wip_classes_map,
+	m_types_to_canonicalize}): New data members.
+	(read_context::{clear_types_to_canonicalize,
+	clear_wip_classes_map, mark_class_as_wip, unmark_class_as_wip,
+	is_wip_class, maybe_canonicalize_type,
+	schedule_type_for_late_canonicalizing,
+	perform_late_type_canonicalizing}): Add new method definitions.
+	(read_context::clear_per_translation_unit_data): Call
+	read_context::clear_types_to_canonicalize().
+	(read_translation_unit_from_input): Call
+	read_context::perform_late_type_canonicalizing() at the end of the
+	function.
+	(build_function_decl): Fix the function type canonicalizing (per
+	translation) that was already in place.  Do the canonicalizing of
+	these only when the type is fully built.  Oops.  This was really
+	brokend.  Also, when the function type is constructed, consider it
+	for type canonicalizing.
+	(build_type_decl): Early canonicalize basic types.
+	(build_qualified_type_decl, build_pointer_type_def)
+	(build_pointer_type_def, build_reference_type_def)
+	(build_array_type_def, build_enum_type_decl, build_typedef_decl):
+	Handle the canonicalizing for these composite types: either early
+	or late.
+	(build_class_decl): Likewise.  Also, mark this class a 'being
+	built' until it's fully built.  This helps the canonicalizing code
+	to know that it should leave a class alone until it's fully built.
+	* tests/test-ir-walker.cc (struct name_printing_visitor): Adjust
+	to the visitor methods naming change.
+	* configure.ac: Generate the tests/runtestcanonicalizetypes.sh
+	testing script from tests/runtestcanonicalizetypes.sh.in.
+	* tests/runtestcanonicalizetypes.sh.in: Add the template for the
+	new runtestcanonicalizetypes.sh script that test for type
+	canonicalizing.
+	* tests/Makefile.am: Add the new runtestcanonicalizetypes.sh
+	regression testing script to the build system.
+
+2015-02-18  Dodji Seketeli <dodji@redhat.com>
+
+	Factorize per TU data clearing in the xml-abi reader
+	* src/abg-reader.cc
+	(read_context::clear_per_translation_unit_data): Factorize this
+	function out of ...
+	(read_context::read_translation_unit_from_input): ... this one.
+
+2015-02-13  Dodji Seketeli <dodji@redhat.com>
+
+	Use the deep type sptr equality operator when possible
+	* src/abg-ir.cc (equals):  On function_decl overload, use the deep
+	sptr type equality operator when comparing types.
+	(non_type_tparameter::operator==): Likewise.
+
+2015-02-18  Dodji Seketeli <dodji@redhat.com>
+
+	Properly compare virtualness of member functions
+	* src/abg-ir.cc (equals(const function_decl&, const
+	function_decl&, change_kind*)): Compare virtualness of member
+	function before comparing their vtable offsets.
+
+2015-02-13  Dodji Seketeli <dodji@redhat.com>
+
+	Misc style fixes
+	* include/abg-ir.h (reference_type_def::get_pointed_to_type): use
+	type_base_sptr, rather than shared_ptr<type_base>
+	(typdef_decl::get_underlying_type): Likewise.
+	(function_decl::get_return_type): Likewise.
+	(function_decl::set_type): Likewise.
+	(class_decl::member_class_template::as_class_tdecl): Likewise.
+	* src/abg-comparison.cc (compute_diff): Remove useless vertical
+	space.
+	(corpus_diff::traverse): Add a vertical space after this.
+	* src/abg-dwarf-reader.cc (type_ptr_map): Remove this unused
+	typedef.
+	(get_version_for_symbol)
+	(finish_member_function_reading): Fix the comments of these
+	functions.
+	* src/abg-reader.cc (build_function_decl): Return a
+	function_decl_sptr rather than a shared_ptr<function_decl>.
+	(build_qualified_type_decl)
+	(build_pointer_type_def, build_reference_type_def)
+	(build_array_type_def, build_typedef_decl, build_class_decl): Use
+	the is_<someking_of_type> functions here, rather than using the
+	dynamic cast.  This increases maintainability.
+
+2015-02-11  Dodji Seketeli <dodji@redhat.com>
+
+	Optimize compressed debug info reading for speed
+	* src/abg-dwarf-reader.cc
+	(find_last_import_unit_point_before_die): Look for the inclusion
+	point of the partial unit in reverse topological order.
+
+2015-02-10  Dodji Seketeli <dodji@redhat.com>
+
+	Share private data of class_diff nodes
+	* src/abg-comparison.cc (class_diff::class_diff): Do not
+	initialize the private data of class_diff here.
+	(compute_diff): In the overload for class_diff, initialize the
+	private data of the new instance of class_diff to the private data
+	of its canonical instance.
+	(redundancy_marking_visitor::visit_begin): If a node is marked
+	redundant, do not dare visit its children.  In cases of classes
+	that have members that reference themselves, this prevents us from
+	wrongly marking some of the data member changes as being
+	redundant.
+
+2015-02-10  Dodji Seketeli <dodji@redhat.com>
+
+	Do not crash when applying filters to a NULL diff
+	* src/abg-comparison.cc (diff_context::maybe_apply_filters): Do
+	not crash when called with a NULL diff.
+
+2015-02-09  Dodji Seketeli <dodji@redhat.com>
+
+	Initial implementation of canonical type comparison in the IR
+	* include/abg-ir.h (class type_base): Pimplify this class.
+	(type_base::canonical_types_map_type): New typedef.
+	(type_base::{get_canonical_types_map, get_canonical_type_for,
+	get_canonical_type}): Declare new member functions.
+	(enable_canonical_equality): Declare new function.
+	(struct type_base::hash): Declare this functor here.
+	* src/abg-ir.cc ():
+	* src/abg-dwarf-reader.cc (build_type_decl, build_enum_type)
+	(build_class_type_and_add_to_ir, build_qualified_type)
+	(build_pointer_type_def, build_reference_type, build_array_type)
+	(build_typedef_type, build_function_decl): Enable canonical
+	equality for the resulting type returned by these functions.
+	* src/abg-hash.cc (type_base::hash::operator()(const type_base&)):
+	Adjust as this is now out-of-line.  Also, add two overloads for
+	type_base* and type_base_sptr.
+	(struct type_base::priv): Define new type for private data of
+	type_base.
+	(type_base::{get_canonical_types_map, get_canonical_type_for,
+	get_canonical_type}): Define new member functions.
+	(enable_canonical_equality): Define new function
+	(type_base::{type_base, set_size_in_bits, get_size_in_bits,
+	set_alignment_in_bits, get_alignment_in_bits}): Adjust.
+	({type_decl, scope_type_decl, qualified_type_def,
+	pointer_type_def, reference_type_def, array_type_def,
+	enum_type_decl, typedef_decl, function_type,
+	class_decl}::operator==): If the types being compared have
+	canonical type then use them for comparison.
+
+2015-02-07  Dodji Seketeli <dodji@redhat.com>
+
+	Don't walk the diff tree when there are no suppressions
+	* src/abg-comparison.cc (apply_suppressions): Do not walk the diff
+	tree to apply suppressions when there are no suppressions to
+	apply.
+
+2015-02-07  Dodji Seketeli <dodji@redhat.com>
+
+	Speedup some diff::has_changes() implementations
+	* src/abg-comparison.cc ({distinct_diff, var_diff,
+	class_diff}::has_changes): Use the hash value of the diff subjects
+	to detect quickly if they differ.  If they don't, then go the slow
+	path of comparing the types.
+
+2015-02-05  Dodji Seketeli <dodji@redhat.com>
+
+	Get out as early as possible when comparing different ABI artefacts
+	* include/abg-ir.h (equal): Turn the last parameter of type
+	change_kind& into a change_kind*.  Do this on all the overloads'
+	declarations.
+	* src/abg-ir.cc (equal): Do the same for the definitions of the
+	overloads and adapt them to report about the kind of changes makes
+	the two ABI artifact different -- only if the change_kind pointer
+	is non-null.  That way, callers have a way to choose if they want
+	to go the expensive route of knowing what kind of changes there
+	are.
+	({decl_base, scope_decl, type_base, scope_type_decl,
+	qualified_type_def, pointer_type_def, pointer_type_def,
+	reference_type_def, array_type_def, enum_type_decl, typedef_decl,
+	var_decl, function_type, function_decl, function_decl::parameter,
+	class_decl::base_spec, class_decl}::operator==): Adjust to the new
+	signature of equals; call it with the change_kind* parameter set
+	to NULL.
+	* src/abg-comparison.cc ({var_diff, pointer_diff, array_diff,
+	reference_diff, qualified_type_diff, enum_diff, class_diff,
+	base_diff, scope_diff, fn_parm_diff, function_decl_diff,
+	type_decl_diff, typedef_diff}::has_local_changes): Adjust.
+
+2015-02-05  Dodji Seketeli <dodji@redhat.com>
+
+	Rename diff::length() into diff::has_changes()
+	* include/abg-comparison.h (*::has_changes): Rename the ::length()
+	method of all the diff types that inherit the diff class into
+	this, in the class declarations.
+	* src/abg-comparison.cc (*::has_changes): Do the same as in the
+	declarations, in the definitions.
+	(diff::to_be_reported, distinct_diff::has_local_changes)
+	(distinct_diff::report, distinct_diff::, array_diff::has_changes)
+	(reference_diff::has_changes, qualified_type_diff::has_changes)
+	(enum_diff::has_changes, translation_unit_diff::has_changes)
+	(suppression_categorization_visitor::visit_end)
+	(redundancy_marking_visitor::visit_begin): Adjust.
+	* tests/test-diff-dwarf.cc (main): Adjust.
+	* tools/abidiff.cc (main): Likewise.
+
+2015-01-27  Dodji Seketeli <dodji@redhat.com>
+
+	Add a method to diff_context to dump a diff tree to error output
+	* include/abg-comparison.h (diff_context::error_output_stream):
+	Make this function const.
+	(diff_context::{do_dump_diff_tree}): Declare new methods.
+	* src/abg-comparison.cc (diff_context::error_output_stream): Make
+	this function const.
+	(diff_context::do_dump_diff_tree): Define new methods.
+
+2015-01-27  Dodji Seketeli <dodji@redhat.com>
+
+	Keep children nodes of class_diff and scope_diff sorted
+	* include/abg-comparison.h (decl_diff_base, type_diff_base):
+	Forward declare these types.
+	(diff_sptrs_type, decl_diff_base_sptr, decl_diff_base_sptrs_type)
+	(type_diff_base_sptr, type_diff_base_sptrs_type)
+	(base_diff_sptrs_type, string_type_diff_base_sptr_map)
+	(string_decl_diff_base_sptr_map, string_diff_sptr_map): New
+	typedefs.
+	(changed_type_or_decl, changed_parm, changed_parms_type)
+	(string_changed_type_or_decl_map)
+	(unsigned_changed_type_or_decl_map, changed_type_or_decl_vector):
+	Remove typedefs.
+	(class_diff::changed_base): Make this return a
+	base_diff_sptrs_type now.  No more a string_base_diff_sptr_map.
+	(class_diff::changed_member_fns): Make this return a
+	function_decl_diff_sptrs_type, no more a
+	string_changed_member_function_sptr_map.
+	(class_diff::changed_types): Make this return a diff_sptrs_type,
+	not a string_changed_type_or_decl_map anymore.
+	(class_diff::changed_decls): Make this return a diff_sptrs_type,
+	not a string_changed_type_or_decl_map anymore.
+	* src/abg-comp-filter.cc (has_virtual_mem_fn_change)
+	(has_non_virtual_mem_fn_change): Adjust.
+	* src/abg-comparison.cc (compute_diff): For the decl_base_sptr and
+	type_base_sptr overloads, assert that the resulting diff is
+	non-null.
+	(class_diff::priv::{sorted_changed_base_,
+	sorted_changed_member_types_, sorted_subtype_changed_dm_,
+	sorted_changed_dm_, sorted_changed_member_functions_,
+	sorted_changed_member_class_tmpls_}): New data members.
+	(class_diff::priv::changed_member_types_): Changed the type of
+	this from string_changed_type_or_decl_map to string_diff_sptr_map.
+	(class_diff::priv::changed_member_functions_): Changed the type of
+	this from string_changed_member_function_sptr_map to
+	string_function_decl_diff_sptr_map.
+	(class_diff::priv::changed_member_class_tmpls_): Changed the type
+	of this from string_changed_type_or_decl_map to
+	string_diff_sptr_map.
+	(class_diff::ensure_lookup_tables_populated): Adjust.  Initialize
+	the new sorted members class_diff::priv::{sorted_changed_bases_,
+	sorted_subtype_changed_dm_, sorted_changed_dm_,
+	sorted_changed_member_functions_, sorted_changed_member_types_}.
+	(class_diff::priv::{member_type_has_changed,
+	member_class_tmpl_has_changed, count_filtered_bases,
+	count_filtered_subtype_changed_dm, count_filtered_changed_mem_fns,
+	}): Adjust.
+	(class_diff::chain_into_hierarchy): Adjust:  The children nodes of
+	class_diff are now laid out in a sorted way.
+	(class_diff::{changed_bases, changed_member_fns}): Adjust.
+	(base_diff_comp, virtual_member_function_diff_comp): New types.
+	(sort_string_base_diff_sptr_map)
+	(sort_string_virtual_member_function_diff_sptr_map): New static
+	functions.
+	(data_member_diff_comp): Renamed var_diff_comp into this.
+	(sort_unsigned_data_member_diff_sptr_map): Renamed sort_var_diffs
+	into this and adjust.
+	(class_diff::report): Do not sort the nodes we are about to emit
+	here.  Just use the natural order of the nodes in their parent
+	tree as they should now be sorted.
+	(scope_diff::priv::{changed_types_, changed_decls_}): Change the
+	type of these from string_changed_type_or_decl_map to
+	string_diff_sptr_map.
+	(scope_diff::priv::{sorted_changed_types_,
+	sorted_changed_decls_}): New data members.
+	(scope_diff::ensure_lookup_tables_populated): Adjust.  Initialize
+	the new scope_diff::priv::sorted_changed_{types_, decls_}.
+	(scope_diff::chain_into_hierarchy): Adjust.  The children of
+	scope_diff are now sorted.
+	(scope_diff::changed_{types, decls}): Return the sorted vectors of
+	children nodes.
+	(struct changed_type_or_decl_comp): Remove.
+	(struct diff_comp): New type.
+	(sort_changed_type_or_decl): Remove.
+	(sort_string_diff_sptr_map): New static function.
+	(scope_diff::report): Adjust.  Do not sort children nodes here
+	ourselves before reporting about them.  Rather, use the natural
+	topological order of the children as they are now sorted.
+	(corpus_diff::priv::sorted_changed_vars_): Renamed
+	corpus_diff::priv::changed_vars_ into this to make it more
+	explicit that the things it holds are sorted.
+	(corpus_diff::changed_variables_sorted): Adjust.
+	(corpus_diff::priv::ensure_lookup_tables_populated): Likewise.
+	(corpus_diff::priv::apply_filters_and_compute_diff_stats):
+	Likewise.
+	(corpus_diff::priv::categorize_redundant_changed_sub_nodes):
+	Likewise.
+	(corpus_diff::priv::clear_redundancy_categorization): Likewise.
+	(corpus_diff::priv::maybe_dump_diff_tree): Likewise.
+	(corpus_diff::report): Likewise.
+
+2015-01-26  Dodji Seketeli <dodji@redhat.com>
+
+	Hand-code the string representation of GElf_Ehdr::e_machine
+	* configure.ac: Do not check for elfutils/libebl.h and libebl.a
+	anymore.
+	* src/abg-dwarf-reader.cc: Do not include elfutils/libebl.h
+	anymore.
+	(e_machine_to_string): Define new static
+	function.
+	(read_context::::load_elf_architecture): Use the new
+	e_machine_to_string() function rather than ebl_backend_name() and
+	ebl_openbackend().
+	* tests/data/test-diff-dwarf/test-23-diff-arch-report-0.txt: Adjust.
+
+2015-01-26  Dodji Seketeli <dodji@redhat.com>
+
+	Fix chaining of descendant node of qualified type diff node
+	* include/abg-comparison.h
+	(qualified_type_diff::leaf_underlying_type_diff): Declare new
+	accessor.
+	* src/abg-comparison.cc (get_leaf_type): Forward declare this
+	static function.
+	(qualified_type_diff::priv::leaf_underlying_type_diff): Define new
+	data member.
+	(qualified_type_diff::leaf_underlying_type_diff): Define this new
+	accessor.
+	(qualified_type_diff::chain_into_hierarchy): Call
+	leaf_underlying_type_diff() here rather than
+	underlying_type_diff().
+	(qualified_type_diff::report): Use leaf_underlying_type_diff()
+	rather than re-computing the diff between the two leaf underlying
+	type diff nodes.
+	* libtest26-qualified-redundant-node-v{0,1}.so: New binary test
+	input files.
+	* tests/data/test-diff-filter/test26-qualified-redundant-node-v{0,1}.cc:
+	Source code for the binary test inputs above.
+	* tests/test-diff-filter.cc (int_out_spec): Add the new test input
+	to the vector of test input data over which to run this test
+	harness.
+	* tests/data/test-diff-filter/test26-qualified-redundant-node-report-{0,1.txt:
+	New test input file.
+	* tests/data/Makefile.am: Add the new test input data to the
+	source distribution.
+
+2015-01-24  Dodji Seketeli <dodji@redhat.com>
+
+	Recognize cyclic diff tree nodes as being redundant
+	* include/abg-comparison.h (enum visiting_kind): Rename
+	enumerator DO_NOT_MARK_VISITED_NODES_AS_TRAVERSED into
+	DO_NOT_MARK_VISITED_NODES_AS_VISITED.
+	(diff_context::diff_has_been_visited): Rename
+	diff_context::diff_has_been_traversed into this.
+	(diff_context::mark_diff_as_visited): Rename
+	diff_context::mark_diff_as_traversed into this.
+	(diff_context::forget_visited_diffs): Rename
+	diff_context::forget_traversed_diffs into this.
+	(diff_context::forbid_visiting_a_node_twice): Rename
+	diff_context::forbid_traversing_a_node_twice into this.
+	(diff_context::visiting_a_node_twice_is_forbidden): Rename
+	diff_context::traversing_a_node_twice_is_forbidden into this.
+	(diff::is_traversing): Move this from protected to public.
+	* src/abg-comparison.cc (diff_context::priv::visited_diff_nodes_):
+	Rename diff_context::priv::traversed_diff_nodes_ into this.
+	(diff_context::priv::forbid_visiting_a_node_twice_): Rename
+	diff_context::priv::forbid_traversing_a_node_twice_ into this.
+	(diff_context::priv::priv): Adjust.
+	(diff_context::diff_has_been_visited): Rename
+	diff_context::diff_has_been_traversed into this.  Adjust.
+	(diff_context::mark_diff_as_visited): Rename
+	diff_context::mark_diff_as_traversed into this.  Adjust.
+	(diff_context::forget_visited_diffs): Rename
+	diff_context::forget_traversed_diffs into this.  Adjust.
+	(diff_context::forbid_visiting_a_node_twice): Rename
+	diff_context::forbid_traversing_a_node_twice into this.
+	(diff_context::visiting_a_node_twice_is_forbidden): Rename
+	diff_context::traversing_a_node_twice_is_forbidden into this.
+	(diff_context::maybe_apply_filters): Adjust.
+	(diff::end_traversing): Remove the 'mark_as_traversed' parameter
+	of this.  Remove the visited-marking code.
+	(diff::traverse): This is the crux of the changes of this patch.
+	Avoid traversing a node that is being traversed, but one can visit
+	a node being visited.  Also, traversing a node means visiting it
+	and visiting its children nodes.
+	(diff::is_filtered_out):  Simplify logic for filtering redundant
+	code.  Basically all nodes that are redundant are filtered.  All
+	the complicated logic that was due when diff nodes were shared is
+	not relevant anymore.
+	(corpus_diff::priv::categorize_redundant_changed_sub_nodes)
+	(propagate_categories, apply_suppressions)
+	(diff_node_printer::diff_node_printer, print_diff_tree)
+	(categorize_redundant_changed_sub_nodes)
+	(clear_redundancy_categorization)
+	(clear_redundancy_categorization): Adjust.
+	(redundancy_marking_visitor::visit_begin): Adjust.  Also, if the
+	current diff node is already being traversed (that's a clyclic
+	node) then mark it as redundant.
+	* src/abg-comp-filter.cc (apply_filter): Adjust.
+	* tests/data/test-diff-filter/test16-report-2.txt: New test input data.
+	* tests/data/test-diff-filter/libtest25-cyclic-type-v{0,1}.so: New
+	test input binaries.
+	* tests/data/test-diff-filter/test25-cyclic-type-v{0,1}.cc: Source
+	code for the test input binaries.
+	* tests/data/test-diff-filter/test25-cyclic-type-report-0.txt: New
+	test input data.
+	* tests/data/test-diff-filter/test25-cyclic-type-report-1.txt:
+	Likewise.
+	* tests/test-diff-filter.cc (in_out_specs): Add the new test
+	inputs above to the list of test input data over which to run this
+	test harness.
+	* tests/data/Makefile.am: Add the new test files above to source
+	distribution.
+	* tests/data/test-diff-filter/test16-report.txt: Adjust.
+	* tests/data/test-diff-filter/test17-0-report.txt: Likewise.
+
+2015-01-20  Dodji Seketeli <dodji@redhat.com>
+
+	Tighten the condition for creating a cloned function from DWARF
+	* src/abg-dwarf-reader.cc (build_ir_node): Re-indent.  Also,
+	consider that when a DIE C refers to a DIE A via the
+	DW_abstract_origin attribute, C represents a clone of A, only if C
+	and A have *different* linkage names.
+
+2015-01-19  Dodji Seketeli <dodji@redhat.com>
+
+	Fix the output of the array diff report
+	* src/abg-comparison.cc (array_diff::report): Refer to the pretty
+	representation of the array when talking about changes of the
+	array element type.
+	* src/abg-ir.cc (equals): In the overload for array_type, use the
+	equality operator that knows how to handle null pointers to
+	element type.  This avoids crashes when the pointer to element
+	type is null.
+	* tests/data/test-diff-dwarf/test10-report.txt: Adjust.
+	* tests/data/test-diff-filter/test24-compatible-vars-report-1.txt:
+	Likewise.
+
+2015-01-14  Dodji Seketeli <dodji@redhat.com>
+
+	Do not install the generated documentation by default
+	* doc/manuals/Makefile.am: Do not install the generated
+	documentation by default
+
+2015-01-14  Dodji Seketeli <dodji@redhat.com>
+
+	Make sure to install html docs & gziped info on make install
+	* doc/manuals/Makefile.am: Make sure Make sure to install html
+	docs & gziped info on make install
+
+2015-01-14  Dodji Seketeli <dodji@redhat.com>
+
+	Do not install the abinilint program
+	* tools/Makefile.am: Add abinilint to the noinst_PROGRAMS primary.
+
+2015-01-13  Dodji Seketeli <dodji@redhat.com>
+
+	Small grammar fix in a manpage title
+	* doc/manuals/conf.py: Fix the grammar of the title of the abidiff
+	man page.
+
+2015-01-13  Dodji Seketeli <dodji@redhat.com>
+
+	Generate texinfo documentation properly
+	* doc/manuals/Makefile.am: Generate texinfo doc, install it and
+	uninstall it.
+	* doc/manuals/libabigail-tools.rst: Do not use the :doc: syntax to
+	refer to documents because it doesn't seem to work with sphinx
+	right now.  Rather, use a table of content.
+
+2015-01-13  Dodji Seketeli <dodji@redhat.com>
+
+	Fix man pages installation
+	* doc/manuals/Makefile.am: Install the man pages only if they are
+	generated.
+
+2015-01-13  Dodji Seketeli <dodji@redhat.com>
+
+	Bump the candidate version of the library to 1.0
+	* configure.ac: Bump version to 1.0.0
+
+2015-01-13  Dodji Seketeli <dodji@redhat.com>
+
+	Do not forget to install the Manpages
+	* doc/manuals/Makefile.am: Add the man pages to the man7_MANS
+	automake primary.
+
+2015-01-13  Dodji Seketeli <dodji@redhat.com>
+
+	Adjust archive-related code for the recent addition of tools_utils::*
+	* tests/Makefile.am: tools/libtoolsutils.la is no more.
+	* tests/test-write-read-archive.cc (main): Adjust.
+	* tools/abiar.cc (extract_tus_from_archive): Likewise.
+
+2015-01-13  Dodji Seketeli <dodji@redhat.com>
+
+	Generate Manpages for abidiff, abidw, abilint
+	* doc/manuals/conf.py: Define man pages for abidiff, abidw,
+	abilint and an introductory one for libabigail.
+
+2015-01-09  Dodji Seketeli <dodji@redhat.com>
+
+	Sort functions & variables diff nodes in the diff tree
+	* include/abg-comparison.h (function_decl_diff_sptrs_type)
+	(var_diff_sptrs_type): New typedefs.
+	(corpus_diff::{changed_functions, changed_variables}): Declare new
+	methods.
+	* src/abg-comparison.cc (sort_string_function_decl_diff_sptr_map)
+	(sort_string_var_diff_sptr_map): Forward declare these static
+	functions there were already defined later.
+	(struct diff_less_than_functor): Define new comparison functor.
+	(diff::append_child_node): Sort the children diff nodes of a given
+	diff node.
+	(corpus_diff::priv::changed_fns_map_): Renamed the data member
+	corpus_diff::priv::changed_fns_ into this.
+	(corpus_diff::priv::changed_fns_): New data member that is a
+	sorted vector of changed functions.
+	(corpus_diff::priv::{lookup_tables_empty, clear_lookup_tables}):
+	Adjust changed_fns_ -> changed_fns_map_ and changed_vars_ ->
+	changed_vars_map_.
+	(corpus_diff::priv::ensure_lookup_tables_populated): Likewise.
+	Sort the changed functions and changed variables.
+	(corpus_diff::priv::apply_filters_and_compute_diff_stats): Adjust
+	changed_fns_ -> changed_fns_map_ and changed_vars_ ->
+	changed_vars_map_.  Also, walk the changed functions and variables
+	diff nodes in their sorted order.
+	(corpus_diff::priv::{categorize_redundant_changed_sub_nodes,
+	clear_redundancy_categorization, maybe_dump_diff_tree}): Walk the
+	changed functions and variables diff nodes in their sorted order.
+	* include/abg-ir.h
+	(function_decl::get_pretty_representation_of_declarator):
+	Declarenew method.
+	* src/abg-ir.cc
+	(function_decl::get_pretty_representation_of_declarator): Define
+	new function.  Its content got split out of ...
+	(function_decl::get_pretty_representation): ... this one.
+	* src/abg-comparison.cc (corpus_diff::chain_into_hierarchy):
+	Consider the sorted the children nodes of a diff tree node.
+	(corpus_diff::append_child_node): Keep the children nodes of a
+	diff tree node sorted.
+	(corpus_diff::{changed_functions, changed_variables, length,
+	report}): Adjust.
+	(corpus_diff::{changed_functions_sorted,
+	changed_variables_sorted}): Define new functions.
+	(function_comp::operator()): First compare the qualified function
+	names along with the parameter declarations, then the rest.
+	(sort_string_function_decl_diff_sptr_map)
+	(sort_string_var_diff_sptr_map): Adjust.
+	* tests/data/test-abicompat/test0-fn-changed-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-0.txt:
+	Adjust.
+
+2015-01-09  Dodji Seketeli <dodji@redhat.com>
+
+	Fix logic of function parmeters diff redundancy detection
+	* src/abg-comparison.cc (redundancy_marking_visitor::visit_begin):
+	For a given function parameter diff node N, we were comparing it
+	against the other parmeter diff nodes of the function.  This
+	change ensures that we do not compare N against itself.
+
+2015-01-09  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright year for tests/test-abicompat.cc
+	* tests/test-abicompat.cc: Update copyright year.
+
+2015-01-09  Dodji Seketeli <dodji@redhat.com>
+
+	Enhance the format of the diff tree dumping report
+	* src/abg-comparison.cc (diff_node_printer::do_indent): New
+	method.
+	(diff_node_printer::visit): Use diff_node_printer::do_indent().
+	Print the addresses of the diff tree node and its canonical node.
+	Add some vertical spaces and some indenting to make the report
+	more readable.
+
+2015-01-08  Dodji Seketeli <dodji@redhat.com>
+
+	Expose a new libabigail::tools_utils namespace
+	* include/abg-tools-utils.h: Moved tools/abg-tools-utils.h in
+	here.  Renamed the namespace tools into tools_utils.  Inject
+	std::ostream, std::istream, std::ifstream, and std::string types
+	into the tools_utils namespace.  Adjust the function declarations
+	accordingly.  Remove the useless dirname() function declaration.
+	* include/Makefile.am: Add abg-tools-utils.h to the list of
+	exported headers.
+	* src/abg-tools-utils.cc: Moved tools/abg-tools-utils.cc in here.
+	Renamed the namespace tools into tools_utils.
+	(get_stat): Add apidoc.
+	(is_dir): Cleanup apidoc.
+	(dir_name); Cleanup parameter name.
+	(guess_file_type): Cleanup parameter type.
+	* src/Makefile.am: Add abg-tools-utils.cc to the list of exported
+	headers.
+	* tools/Makefile.am: Do not build the temporary library
+	libtoolsutils.la anymore as abg-tools-utils.{h,cc} have moved out
+	of this directory.
+	* tools/abicompat.cc (parse_command_line, main): Adjust for tools
+	-> tools_utils namespace change.
+	* tools/abidiff.cc (parse_command_line, main): Likewise.
+	* tools/abidw.cc (parse_command_line, main): Likewise.
+	* tools/abilint.cc (parse_command_line, main): Likewise.
+	* tests/test-abicompat.cc (main): Adjust for tools -> tools_utils
+	namespace change.
+	* tests/test-abidiff.cc (main): Likewise.
+	* tests/test-alt-dwarf-file.cc (main): Likewise.
+	* tests/test-core-diff.cc (main): Likewise.
+	* tests/test-diff-dwarf.cc (main): Likewise.
+	* tests/test-diff-filter.cc (main): Likewise.
+	* tests/test-diff-suppr.cc (main): Likewise.
+	* tests/test-lookup-syms.cc (main): Likewise.
+	* tests/test-read-dwarf.cc (main): Likewise.
+	* tests/test-read-write.cc (main): Likewise.
+	* tests/Makefile.am: Do not reference the libtoolsutils.la private
+	library anymore.
+
+2015-01-07  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright years
+	* include/abg-comp-filter.h: Update copyright years.
+	* include/abg-comparison.h: Likewise.
+	* include/abg-config.h: Likewise.
+	* include/abg-corpus.h: Likewise.
+	* include/abg-diff-utils.h: Likewise.
+	* include/abg-dwarf-reader.h: Likewise.
+	* include/abg-fwd.h: Likewise.
+	* include/abg-hash.h: Likewise.
+	* include/abg-ini.h: Likewise.
+	* include/abg-ir.h: Likewise.
+	* include/abg-libxml-utils.h: Likewise.
+	* include/abg-libzip-utils.h: Likewise.
+	* include/abg-reader.h: Likewise.
+	* include/abg-sptr-utils.h: Likewise.
+	* include/abg-traverse.h: Likewise.
+	* include/abg-viz-common.h: Likewise.
+	* include/abg-viz-dot.h: Likewise.
+	* include/abg-viz-svg.h: Likewise.
+	* include/abg-writer.h: Likewise.
+	* src/abg-comp-filter.cc: Likewise.
+	* src/abg-comparison.cc: Likewise.
+	* src/abg-config.cc: Likewise.
+	* src/abg-corpus.cc: Likewise.
+	* src/abg-diff-utils.cc: Likewise.
+	* src/abg-dwarf-reader.cc: Likewise.
+	* src/abg-hash.cc: Likewise.
+	* src/abg-ini.cc: Likewise.
+	* src/abg-ir.cc: Likewise.
+	* src/abg-libxml-utils.cc: Likewise.
+	* src/abg-libzip-utils.cc: Likewise.
+	* src/abg-reader.cc: Likewise.
+	* src/abg-traverse.cc: Likewise.
+	* src/abg-viz-common.cc: Likewise.
+	* src/abg-viz-dot.cc: Likewise.
+	* src/abg-viz-svg.cc: Likewise.
+	* src/abg-writer.cc: Likewise.
+	* tests/print-diff-tree.cc: Likewise.
+	* tests/test-abidiff.cc: Likewise.
+	* tests/test-alt-dwarf-file.cc: Likewise.
+	* tests/test-core-diff.cc: Likewise.
+	* tests/test-diff-dwarf.cc: Likewise.
+	* tests/test-diff-filter.cc: Likewise.
+	* tests/test-diff-suppr.cc: Likewise.
+	* tests/test-diff2.cc: Likewise.
+	* tests/test-ir-walker.cc: Likewise.
+	* tests/test-lookup-syms.cc: Likewise.
+	* tests/test-read-dwarf.cc: Likewise.
+	* tests/test-read-write.cc: Likewise.
+	* tests/test-utils.cc: Likewise.
+	* tests/test-utils.h: Likewise.
+	* tests/test-write-read-archive.cc: Likewise.
+	* tools/abg-tools-utils.cc: Likewise.
+	* tools/abg-tools-utils.h: Likewise.
+	* tools/abiar.cc: Likewise.
+	* tools/abidiff.cc: Likewise.
+	* tools/abidw.cc: Likewise.
+	* tools/abilint.cc: Likewise.
+	* tools/abisym.cc: Likewise.
+	* tools/binilint.cc: Likewise.
+
+2015-01-07  Dodji Seketeli <dodji@redhat.com>
+
+	Detect and report changes in ELF architecture
+	* configure.ac: Detect the presence of libebl.a and add it to the
+	list of library we depend on to build libabigail.  Report when
+	libelf.so is not found.
+	* include/abg-comparison.h:
+	(diff_context::show_architecture_change): Declare new accessors.
+	(corpus_diff::architecture_changed): Declare new method.
+	* include/abg-corpus.h (corpus::{get,set}_architecture_name):
+	Declare new accessors.
+	* src/abg-comparison.cc
+	(diff_context::priv::show_architecture_change_): New data member.
+	(diff_context::priv::priv): Initialize it.
+	(diff_context::show_architecture_change): Define new accessors.
+	(function_decl_diff::report): Report when the size/alignment of
+	the function address changes.
+	(corpus_diff::priv::architectures_equal_): New data member.
+	(corpus_diff::priv::priv): Initialize it.
+	(corpus_diff::priv::emit_diff_stats): Take in account changes of
+	architecture.
+	(corpus_diff::architecture_changed): Define new method.
+	(corpus_diff::length): Take in account changes of architecture.
+	(corpus_diff::report): Report about changes of architecture.
+	(compute_diff): In the overload for corpus_diff_sptr, detect
+	changes fo architecture.
+	* src/abg-corpus.cc (corpus_priv::architecture_name): Define new
+	data member.
+	(corpus::{get,set}_architecture_name): Define new method.
+	* src/abg-dwarf-reader.cc: Include elfutils/libebl.h to use
+	ebl_openbackend() and ebl_backend_name()
+	(read_context::elf_architecture_): Define new data member.
+	(read_context::elf_architecture): Define new accessor.
+	(read_context::{load_elf_architecture, load_remaining_elf_data}):
+	Define new methods.
+	(read_corpus_from_elf): Use ctxt.load_remaining_elf_data() in lieu
+	of ctxt.load_dt_soname_and_needed.  Stick the architecture into
+	the corpus.
+	* src/abg-reader.cc (read_corpus_from_input): Read the
+	'architecture' XML property.
+	* src/abg-writer.cc (write_corpus_to_native_xml): Write the
+	'architecture' XML property.
+	* tests/data/test-diff-dwarf/libtest-23-diff-arch-v0-32.so: New
+	test input file.
+	* tests/data/test-diff-dwarf/libtest-23-diff-arch-v0-64.so:
+	Likewise.
+	* tests/data/test-diff-dwarf/test-23-diff-arch-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-dwarf/test-23-diff-arch-v0.cc: Source code
+	for the binary test input files above.
+	* tests/data/Makefile.am: Add the new test input files to the
+	source distribution.
+	* tests/test-diff-dwarf.cc (in_out_specs): Add the new test input
+	data to the set of input data to run this test harness over.
+	* tests/test-read-dwarf.cc (main): Do not take the architecture in
+	account during comparisons.
+
+2015-01-05  Sinny Kumari <skumari@redhat.com>
+
+	Include libabigail-website.doxy file in EXTRA_DIST
+	* doc/Makefile.am: Include website/libabigail-website.doxy
+	file in EXTRA_DIST
+
+2015-01-06  Dodji Seketeli <dodji@redhat.com>
+
+	Delete ltsugar.m4 and pkg.m4 files from m4/
+	* m4/ltsugar.m4: Removed.
+	* m4/pkg.m4: Likewise.
+
+2014-12-27  Dodji Seketeli <dodji@redhat.com>
+
+	Enable parallel tests
+	* configure.ac (AM_INIT_AUTOMAKE): Enable parallel tests by
+	switching on the parallel-tests option.
+
+2014-12-27  Dodji Seketeli <dodji@redhat.com>
+
+	Add a --dump-diff-tree to abidiff for debugging purposes
+	* include/abg-comparison.h (enum visiting_kind): Add new
+	DO_NOT_MARK_VISITED_NODES_AS_TRAVERSED enumerator.
+	(diff_context::{default_output_stream, error_output_stream,
+	dump_diff_tree}): Declare new accessors.
+	(diff::end_traversing): Take a new boolean flag.
+	(print_diff_tree): Add new overload for diff_sptr.
+	* src/abg-comparison.cc
+	(diff_context::priv::{default_output_stream_,
+	error_output_stream_, dump_diff_tree_}): New data members.
+	(priv::priv): Initialize them.
+	(diff_context::{default_output_stream_, error_output_stream_,
+	dump_diff_tree, dump_diff_tree}): Define new accessors.
+	(diff::end_traversing): Take a new flag that control whether or
+	not to mark the current diff node as having been traversed.
+	(diff::traverse): Take in account the visiting kind carried by the
+	visitor to determine if the visited node should be marked as being
+	traversed.
+	(corpus_diff::priv::maybe_dump_diff_tree): Define new member
+	function.
+	(corpus_diff::report): Call it.
+	(diff_node_printer::visit): Pretty print the diff node just once.
+	(print_diff_tree): Define a new overload for diff_sptr.
+	* tools/abidiff.cc (options::dump_diff_tree): New data member.
+	(options::options): Initialize it.
+	(display_usage): Add a help string for the new --dump-diff-tree
+	command line switch.
+	(parse_command_line): Parse the new --dump-diff-tree command line
+	switch.
+	(set_diff_context_from_opts): Set the diff context according to
+	the --dump-diff-tree presence.
+	* doc/manuals/abidiff.rst: Add a bullet point for the new
+	--dump-diff-tree command line switch.
+
+2014-12-27  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typos in the abicompat manual
+	* doc/manuals/abicompat.rst: Fix typos.
+
+2014-12-27  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a typo in the abidiff manual
+	* doc/manuals/abidiff.rst: Fix a typo.
+
+2014-12-27  Dodji Seketeli <dodji@redhat.com>
+
+	Fix redundancy in abidiff manual
+	* doc/manuals/abidiff.rst: Remove the redundant bullet point about
+	the --drop-fn command line switch.
+
+2014-12-26  Dodji Seketeli <dodji@redhat.com>
+
+	Fix the doc string of the CanonicalDiff section of the apidoc
+	* src/abg-comparison.cc: The summary of the CanonicalDiff should
+	not be a @par directive, otherwise it won't show up in the summary
+	field on the html-genereated page.
+
+2014-12-26  Dodji Seketeli <dodji@redhat.com>
+
+	Update doc string for new --no-redundant option of abidiff
+	* doc/manuals/abidiff.rst: Update the documentation string for the
+	--no-redundant option of abidiff.
+
+2014-12-26  Dodji Seketeli <dodji@redhat.com>
+
+	Make abidiff *NOT* show redundant changes by default
+	* tools/abidiff.cc (options::options): Initialize
+	options::show_redundant_changes to false.
+
+2014-12-26  Dodji Seketeli <dodji@redhat.com>
+
+	Try harder to handle pointer/reference to void
+	* include/abg-fwd.h (type_or_void): Declare new function.
+	* src/abg-ir.cc (type_or_void): Define it.
+	(pointer_type_def::pointer_type_def)
+	(reference_type_def::reference_type_def)
+	(reference_type_def::get_qualified_name, strip_typedef): Use it to
+	ensure that empty pointed-to-type is considered as a void type.
+
+2014-12-26  Dodji Seketeli <dodji@redhat.com>
+
+	Do not mark sibling structurally identical nodes as redundant
+	* include/abg-comparison.h (diff::parent_node): Declare new
+	accessor.
+	* src/abg-comparison.cc (diff::priv::parent_): New data member.
+	(diff::priv::priv): Initialize it.
+	(diff::parent_node): Define new accessor.
+	(diff::append_child_node): Set the diff::priv::parent_ data member
+	of the added child node.
+	(redundancy_marking_visitor::visit_begin): If two (logical)
+	sibbling nodes are structurally equivalent, do not mark them as
+	being redundant.
+	* tests/data/test-diff-suppr/libtest10-changed-parm-c-v0.so: New
+	test input binary.
+	* tests/data/test-diff-suppr/libtest10-changed-parm-c-v1.so:
+	Likewise.
+	* tests/data/test-diff-suppr/test10-changed-parm-c-report-0.txt:
+	New test input data.
+	* tests/data/test-diff-suppr/test10-changed-parm-c-v0.c: Source
+	code for the binary input above.
+	* tests/data/test-diff-suppr/test10-changed-parm-c-v1.c: Likewise.
+	* tests/data/Makefile.am: Add the new test files to source
+	distribution.
+	* tests/test-diff-suppr.cc (in_out_specs): Add the new test input
+	to the vector of test inputs to run this harness over.
+
+2014-12-26  Dodji Seketeli <dodji@redhat.com>
+
+	Un-share diff nodes in the comparison IR
+	* include/abg-ir.h: Prefix the doc string with "///", rather than
+	writing it inside a /**/ comment.
+	* include/abg-comparison.h (function_decl_diff)
+	(function_decl_diff_sptr, fn_parm_diff, fn_parm_diff_sptr)
+	(var_diff_sptr, base_diff, class_diff, class_diff_sptr): Move
+	these class & typedef decls to the top of the file.
+	(string_changed_base_map, string_changed_parm_map)
+	(unsigned_changed_parm_map, changed_function_ptr)
+	(string_changed_function_ptr_map): Remove these typedefs.
+	(string_base_diff_sptr_map, string_fn_parm_diff_sptr_map)
+	(unsigned_fn_parm_diff_sptr_map, string_var_diff_sptr_map)
+	(unsigned_var_diff_sptr_map, string_function_decl_diff_sptr_map)
+	(string_var_diff_ptr_map): New typedefs.
+	(diff_context::{has_diff_for,add_diff}): Make these member
+	functions private.
+	(diff_context::{set_canonical_diff_for,
+	set_or_get_canonical_diff_for}): Declare new private member
+	functions.
+	(diff_context::{get_canonical_diff_for,
+	initialize_canonical_diff}): New public member functions.
+	(diff_context::maybe_apply_filters): Set the default value of the
+	'traverse_nodes_once' parameter to false.
+	(compute_diff): Make the overload for class_decl_sptr friend of
+	the diff_context class.
+	(class diff): Make the diff_context class a friend of this one.
+	(diff::set_canonical_diff): Declare new private member function.
+	(diff::get_canonical_diff): Declare new public member function.
+	(diff::children_nodes): Make this return a vector<diff_sptr>, rather
+	than a vector<diff*>.
+	(diff::append_child_node): Make this take a diff_sptr rather than
+	a diff*.
+	(class fn_parm_diff): Declare new type.
+	(compute_diff): Declare new overload for the new
+	function_decl::parameter_sptr.
+	(function_decl_diff::subtype_changed_parms): Return a
+	string_fn_parm_diff_sptr_map rather than a string_changed_parm.
+	(function_decl_diff::children_nodes): Return a vector<diff_sptr>.
+	(function_decl_diff::append_child_node): Take a diff_sptr.
+	(function_decl_diff::changed_functions): Return a
+	string_function_decl_diff_sptr_map.
+	(function_decl_diff::changed_variables): Return a
+	string_var_diff_sptr.
+	(class function_decl::parameter): Make this a pimpled class.
+	Also, make it inherit decl_base.
+	(equals): New overload for function_decl::parameter.
+	(struct function_decl::parameter::hash): Declare this.
+	(ir_node_visitor::visit): Declare new overload for
+	function_decl::parameter.
+	* src/abg-comparison.cc: Add doc-string about the internal
+	representation of the comparison engine and also about the concept
+	of canonical diff of the comparison engine.
+	(RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER)
+	(RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2)
+	(RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER3): Consider the
+	canonical diff when trying to know if the current node was
+	reported earlier.
+	(diff_context::priv::canonical_diffs): New data member.
+	(diff_context::{get_canonical_diff_for, set_canonical_diff_for,
+	set_or_get_canonical_diff_for, initialize_canonical_diff}): Define
+	new member functions.
+	(diff_context::{diff_has_been_traversed, mark_diff_as_traversed):
+	Consider canonical diff for these tests and actions.
+	(diff::priv::children_): Change the type of this to
+	vector<diff_sptr>.
+	(diff::canonical_diff_): New data member.
+	(diff::diff): Initialize the diff::canonical_diff_ data member.
+	(diff::begin_traversing): Mark the canonical diff node too.
+	(diff::is_traversing): Consider the canonical diff node in this
+	test.
+	(diff::end_traversing): Make the canonical diff node too.  Also
+	mark the current node as having been traversed.
+	(diff::children_nodes): Return a vector<diff_sptr> type.
+	(diff::{get_canonical_diff, set_canonical_diff}): Define new
+	member functions.
+	(diff::append_child_node): Take a diff_sptr type parameter.
+	(diff::{reported_once, currently_reporting}): Flag the canonical
+	diff node too.  And consider the canonical diff node when checking
+	the flag.
+	(diff::traverse): No need to mark the node as being traversed
+	because the diff::end_traversing() function does it now.  Adjust
+	the code because diff::children_nodes() now returns
+	vector<diff_sptr>.
+	({distinct_diff, var_diff, pointer_diff, array_diff,
+	reference_diff, qualified_type_diff, enum_diff, class_diff,
+	base_diff, scope_diff, function_decl_diff, typedef_diff,
+	corpus_diff}::chain_into_hierarchy): Adjust to the new type that
+	diff::append_child_node() takes.  Also, take into account that the
+	diff nodes are now un-shared.
+	(compute_diff_for_distinct_kinds, compute_diff_for_types)
+	(compute_diff): Do not share diff nodes anymore.  Initialize the
+	canonical diff node for the new created node.
+	(represent): Take a var_diff_sptr rather than two var_decl_sptr.
+	Adjust.  Also take in account the fact that diff nodes are not
+	shared anymore, and that they do have canonical diffs.
+	(var_diff::type_diff): Make the computation of the type_diff of
+	the var_diff be lazy.  This avoids infinite (recursive) creation
+	of diff nodes when a class diff node has a sub-type of data member
+	that is a class diff node too.
+	(var_diff::report): Detect redundant reporting of this kind of
+	diff node.
+	(class_diff::priv::changed_bases_): Change the type of this to
+	string_base_diff_sptr_map.
+	(class_diff::priv::subtype_changed_dm_): Change the type of this
+	to string_var_diff_sptr_map.
+	(class_diff::priv::changed_dm_): Change the type of this to
+	unsigned_var_diff_sptr_map.
+	(class_diff::priv::{count_filtered_subtype_changed_dm,
+	count_filtered_bases}): Do not take a diff_context_sptr anymore.
+	(class_diff::ensure_lookup_tables_populated): changed_bases_
+	subtype_changed_dm_ and changed_dm_ are now *NOT* shared diff
+	nodes anymore.
+	(class_diff::priv::base_has_changed): Adjust.
+	(class_diff::priv::subtype_changed_dm): Adjust.
+	(class_diff::priv::count_filtered_bases): Adjust as changed_bases_
+	is now a map of un-shared diff nodes.
+	(class_diff::priv::count_filtered_subtype_changed_dm): Adjust as
+	subtype_changed_dm_ is now a map of un-shared diff nodes.
+	(class_diff::priv::{count_filtered_changed_mem_fns,
+	count_filtered_inserted_mem_fns, count_filtered_deleted_mem_fns,
+	}): Adjust for change of the default parameter value of
+	diff_context::maybe_apply_filters().
+	(class_diff::~class_diff): New destructor.
+	(class_diff::changed_bases): Return a string_base_diff_sptr_map&
+	type.
+	(class_diff::{inserted_data_members, deleted_data_members,
+	changed_member_fns}): Add doc strings.
+	(struct changed_data_member_comp): Remove.
+	(struct var_diff_comp): New comparison functor.
+	(sort_changed_data_members): Remove.
+	(sort_var_diffs): Define new sorting function.
+	(class_diff::report): Adjust.
+	(fn_parm_diff::*): Define member types and functions of the new
+	fn_parm_diff type.
+	(function_decl_diff::priv::{subtype_changed_parms_,
+	changed_parms_by_id_}): Make these take a map of fn_parm_diff_sptr
+	nodes.
+	(function_decl_diff::ensure_lookup_tables_populated): Adjust to
+	the fact that priv_->subtype_changed_parms_ and
+	priv_->priv_->changed_parms_by_id_ now are maps of un-shared
+	fn_parm_diff_sptr nodes.
+	(function_decl_diff::subtype_changed_parms): Adjust.
+	(struct changed_parm_comp): Remove.
+	(struct fn_parm_diff_comp): New comparison functor.
+	(sort_changed_parm_map): Remove.
+	(sort_string_fn_parm_diff_sptr_map): New sorting function.
+	(function_decl_diff::report): Adjust.
+	(corpus_diff::priv::children_): Change the type of this to
+	vector<diff_sptr>.
+	(corpus_diff::priv::changed_fns_): Changed the type of this to
+	string_function_decl_diff_sptr_map.
+	(corpus_diff::priv::changed_vars_): Changed the type of this to
+	string_var_diff_sptr_map.
+	(corpus_diff::priv::ensure_lookup_tables_populated): Adjust.
+	(corpus_diff::priv::apply_filters_and_compute_diff_stats}):
+	Adjust.  Do not need to clear redundancy categorization anymore
+	because the diff nodes are not shared anymore.
+	(corpus_diff::priv::categorize_redundant_changed_sub_nodes):
+	Adjust.
+	(corpus_diff::priv::clear_redundancy_categorization): Adjust.
+	(corpus_diff::changed_variables): Adjust.
+	(struct changed_function_ptr_comp): Remove.
+	(struct function_decl_diff_comp): New comparison functor.
+	(sort_string_changed_function_ptr_map): Remove.
+	(sort_string_function_decl_diff_sptr_map): Define new sorting
+	function.
+	(struct changed_vars_comp): Remove.
+	(struct var_diff_sptr_comp): New comparison functor.
+	(sort_changed_vars): Remove.
+	(sort_string_var_diff_sptr_map): Define new sorting function.
+	(corpus_diff::report): Adjust.
+	(corpus_diff::traverse): Adjust.
+	({category_propagation_visitor,
+	suppression_categorization_visitor}::visit_end): Adjust.
+	(clear_redundancy_categorization): Adjust.
+	* src/abg-hash.cc (function_decl::parameter::hash::operator):
+	Adjust.
+	* src/abg-ir.cc (struct function_decl::parameter::priv): Define
+	here as part of pimpl-ifying the function_decl::parameter type.
+	(function_decl::parameter::*): Define here the member functions as
+	part of pimpl-ifying the function_decl::parameter type.
+	(equals): Define the overload for function_decl::parameter here
+	too.
+	(ir_node_visitor::visit(function_decl::parameter*)): Define this.
+	* tests/data/test-abicompat/test0-fn-changed-report-0.txt: Adjust.
+	* tests/data/test-diff-suppr/test5-fn-suppr-report-0.txt: Adjust.
+	* tests/data/test-diff-dwarf/libtest21-redundant-fn-v0.so: New
+	test input data.
+	* tests/data/test-diff-dwarf/libtest21-redundant-fn-v1.so:
+	Likewise.
+	* tests/data/test-diff-dwarf/test21-redundant-fn-v0.cc: Source
+	code for test input binary above.
+	* tests/data/test-diff-dwarf/test21-redundant-fn-v1.cc: Likewise.
+	* tests/data/test-diff-dwarf/test21-redundant-fn-report-0.txt: New
+	test input data.
+	* tests/data/test-diff-dwarf/libtest22-changed-parm-c-v0.so: New
+	test input data.
+	* tests/data/test-diff-dwarf/libtest22-changed-parm-c-v1.so:
+	Likewise.
+	* tests/data/test-diff-dwarf/test22-changed-parm-c-v0.c: Source
+	code for test input binary above.
+	* tests/data/test-diff-dwarf/test22-changed-parm-c-v1.c: Likewise.
+	* tests/test-diff-dwarf.cc (in_out_spec): Add the new test input
+	data to the vector the test inputs to run this harness over.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-0.txt: New
+	test input data.
+	* tests/data/test-diff-suppr/test8-redundant-fn-report-1.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/libtest8-redundant-fn-v0.so: New test
+	input binary.
+	* tests/data/test-diff-suppr/libtest8-redundant-fn-v1.so: Likewise.
+	* tests/data/test-diff-suppr/test8-redundant-fn-v0.cc: Source code
+	code for binary test input above.
+	* tests/data/test-diff-suppr/test8-redundant-fn-v1.cc: Likewise.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-0.txt:
+	New test input data.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-report-1.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/libtest9-changed-parm-c-v0.so: New
+	test input binary.
+	* tests/data/test-diff-suppr/libtest9-changed-parm-c-v1.so: New
+	test input binary.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-v0.c: Source
+	code for binary test input above.
+	* tests/data/test-diff-suppr/test9-changed-parm-c-v1.c: Likewise.
+	* tests/test-diff-suppr.cc (in_out_specs): Add the new test input
+	data to the vector the test inputs to run this harness over.
+	* tests/data/Makefile.am: Add the new files to the source
+	distribution.
+
+2014-12-26  Dodji Seketeli <dodji@redhat.com>
+
+	Style fix
+	* src/abg-ir.cc (reference_type_def::get_pointed_to_type): Return
+	a type_base_sptr.
+	* src/abg-comparison.cc (diff::is_filtered_out): Fix a comment.
+
+2014-12-25  Dodji Seketeli <dodji@redhat.com>
+
+	Fix pretty printing of pointer_diff node
+	* src/abg-comparison.cc (pointer_diff::get_pretty_representation):
+	Add the missing opening square bracket.
+
+2014-12-17  Sinny Kumari <skumari@redhat.com>
+
+	Add new methods in corpus_diff class
+	* include/abg-comparison.h
+	(corpus_diff::added_unrefed_function_symbols):
+	Declare new member function
+	(corpus_diff::added_unrefed_variable_symbols):
+	Declare new member function
+	* src/abg-comparison.cc
+	(corpus_diff::added_unrefed_function_symbols):
+	Define new member function
+	(corpus_diff::added_unrefed_variable_symbols):
+	Define new member function
+
+2014-12-15  Sinny Kumari <sinny@redhat.com>
+
+	Add new corpus_diff::added_variables() method
+	* include/abg-comparison.h (corpus_diff::added_variables):
+	Declare new member function
+	* src/abg-comparison.cc (corpus_diff::added_variables):
+	Define new member function
+
+2014-12-12  Dodji Seketeli <dodji@redhat.com>
+
+	Extend detection of compatible types to arrays
+	* include/abg-fwd.h (is_array_type): Renamed is_array_type_def()
+	into this for consistency.
+	* src/abg-comparison.cc (type_suppression::suppresses_diff):
+	Adjust.
+	* src/abg-dwarf-reader.cc (build_array_type): Remove useless code
+	that was trying to read a DW_AT_byte_size attribute from the DIE
+	of the array, but then wasn't doing anything with the value.  But
+	then if the attribute was not present, the array type wouldn't be
+	built.
+	* src/abg-ir.cc (strip_typedef): Strip typedefs from sub-types of
+	array types too.
+	(is_array_type): Rename is_array_def() to this, for consistency.
+	(var_decl::get_pretty_representation): Adjust.
+	* tests/data/test-diff-filter/libtest24-compatible-vars-v0.so: New
+	test input data.
+	* tests/data/test-diff-filter/libtest24-compatible-vars-v1.so: Likewise.
+	* tests/data/test-diff-filter/test24-compatible-vars-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-filter/test24-compatible-vars-v0.c: Source
+	code for the first binary above.
+	* tests/data/test-diff-filter/test24-compatible-vars-v1.c: Source
+	code for the second binary above.
+	* tests/data/Makefile.am: Add the new test input data to source
+	distribution.
+	* tests/test-diff-filter.cc (in_out_specs): Add the new test input
+	data to the list of input to run this test harness over.
+
+2014-12-12  Dodji Seketeli <dodji@redhat.com>
+
+	Improve the doc string for the elf_symbol::get_id_string() method
+	* src/abg-ir.cc (elf_symbol::get_id_string): Improve doc string.
+	Talk about the content of the id string of an elf symbol.
+
+2014-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	Better handle pointer-to-void in various places of the pipeline
+	* src/abg-comparison.cc (pointer_diff::report): Handle the case of
+	pointer to void.
+	* src/abg-dwarf-reader.cc (build_pointer_type_def): Assert that
+	the underlying pointer is non-null.
+	* src/abg-ir.cc (pointer_type_def::pointer_type_def): Handle the
+	case of pointer to void.
+	(equals): Likewise in the overload for const pointer_type_def.
+	(pointer_type_def::get_qualified_name): Likewise.
+
+2014-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	Try harder to detect a DWARF attribute pointing into alternate DWARF section
+	* src/abg-dwarf-reader.cc
+	(is_die_attribute_resolved_through_gnu_ref_alt): Support the case
+	of the origin function itself having a specification function
+	link.
+
+2014-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	Fix accidentally removing the scope of variables when fixing them up
+	* src/abg-dwarf-reader.cc (build_translation_unit_and_add_to_ir):
+	During var decl fixup, remove the scope of a variable only when we
+	are sure that we want to re-scope it.
+
+2014-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	Fix several aborts while diffing libdw.so
+	* src/abg-corpus.cc
+	(corpus::priv::build_unreferenced_symbols_tables): Fix wrong
+	guestimation of the size of the map of unreferenced symbol table.
+	* src/abg-dwarf-reader.cc (get_version_needed_for_versym): Honour
+	the conditions of breaking out from walking the verneed table.
+
+2014-12-10  Dodji Seketeli <dodji@redhat.com>
+
+	Temporarily disable redundant diff report elimination
+	* src/abg-comparison.cc
+	(diff_context::priv::priv): Show redundant changes by default.
+	(categorize_redundancy): Do not categorize redundancy if the
+	diff_context says that we shouldn't.
+	* tools/abicompat.cc (options::show_redundant): New data member.
+	(options::options): Initialize to true.
+	(display_usage): Add new help string for new --no-redundant and
+	--redundant options.
+	(parse_command_line): Parse new --no-redundant and --redundant
+	command line options.
+	(main): Initialize the diff context with respect to the
+	options::show_redundant property.
+	* tools/abidiff.cc (options::options): Initialize the
+	show_redundant_changes data member to true.
+	(display_usage): Show new help string for the new --no-redundant
+	command line option.
+	(parse_command_line): Parse the new --no-redundant command line
+	option.
+	* tests/data/test-diff-filter/libtest23-redundant-fn-parm-change-v0.so:
+	New test data input.
+	* tests/data/test-diff-filter/libtest23-redundant-fn-parm-change-v1.so:
+	Likewise.
+	* tests/data/test-diff-filter/test23-redundant-fn-parm-change-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-filter/test23-redundant-fn-parm-change-v0.c:
+	Source code for the first binary above.
+	* tests/data/test-diff-filter/test23-redundant-fn-parm-change-v1.c:
+	Source code for the second binary above.
+	* tests/data/Makefile.am: Add the new test data input to source
+	distribution.
+	* tests/test-abicompat.cc (in_out_specs): Add --no-redundant to
+	abicompat when we don't want it to show redundant diff reports.
+	* test-diff-filter.cc (in_out_specs): Likewise for abidiff.
+	* test-diff-suppr.cc (in_out_specs): Likewise.
+
+2014-12-10  Jan Engelhardt <jengelh@inai.de>
+
+	Fix conditional build wrt zip archives and cx11
+	* configure.ac: remove (broken) assignment to the
+	ENABLE_ZIP_ARCHIVE_AND_CXX11 variable
+	* Makefile.am: replace variable assignments to
+	ZIP_ARCHIVE_TESTS_FIRST_PART, ZIP_ARCHIVE_TESTS_SECOND_PART
+	by ZIP_ARCHIVE_TESTS using the "+=" automake operator.
+	Likewise for CXX11_TESTS.
+
+2014-12-10  Dodji Seketeli <dodji@redhat.com>
+
+	Make determining of compatible types complete
+	* include/abg-fwd.h (is_reference_type, is_function_type)
+	(is_method_type): Declare new predicates.
+	* include/abg-ir.h (class qualified_type_def): Pimpl this class.
+	(qualified_type_def::qualified_type_def): Use the convenience
+	type_base_sptr typedef.
+	(qualified_type_def::{get_cv_quals, set_cv_quals}): Use the
+	qualified_type_def::CV type rather than char.
+	(qualified_type_def::get_underlying_type): Use the convenience
+	type_base_sptr typedef.
+	(pointer_type_def::pointer_type_def): Likewise.
+	(function_decl::parameter::parameter): Add a new constructor.
+	* src/abg-ir.cc (is_reference_type, is_function_type)
+	(is_method_type): Define new predicates.
+	(class qualified_type_def::priv): Define this new private type,
+	for the purpose of Pimpl-ifying the qualified_type_def class.
+	(qualified_type_def::{qualified_type_def, build_name,
+	get_cv_quals_string_prefix, get_underlying_type}): Adjust for the
+	purpose of Pimpl-ifying the qualified_type_def class.
+	(equals): In the qualified_type_def, reference_type_def overloads,
+	trust the fact that we have operator== overload for the
+	type_base_sptr.  This avoids crashes for when the (possible)
+	underlying type is null.
+	(pointer_type_def::operator==): Likewise.
+	(strip_typedef): Make this recursively strip
+	typedefs from sub-types.
+	(types_are_compatible): Handle null types.
+	(qualified_type_def::{get_cv_quals, set_cv_quals}): Handle
+	qualified_type_def::CV rather than char.
+	(pointer_type_def::pointer_type_def): Use the convenience
+	type_base_sptr typedef.
+	* include/abg-comparison.h (distinct_diff::compatible_child_diff):
+	Declare new member function.
+	* src/abg-comparison.cc (distinct_diff::compatible_child_diff):
+	Define new member function.
+	(distinct_diff::chain_into_hierarchy):
+	Chain the compatible child diff node that might be present.
+	(distinct_diff::report): Now when a distinct diff carries a
+	compatible change, mention it in the report.
+	* src/abg-comp-filter.cc (is_compatible_change): A compatible
+	change can now involve types that are not typedefs.  Only their
+	sub-types need to be involved with typedef-ness.
+	* tests/data/test-diff-dwarf/test{2,4,5}-report.txt: Adjust.
+	* tests/data/test-diff-filter/libtest21-compatible-vars-v0.so: New
+	test data input.
+	* tests/data/test-diff-filter/libtest21-compatible-vars-v1.so: Likewise.
+	* tests/data/test-diff-filter/test21-compatible-vars-report-0.txt Likewise.
+	* tests/data/test-diff-filter/test21-compatible-vars-report-1.txt Likewise.
+	* tests/data/test-diff-filter/test21-compatible-vars-v0.cc: Source
+	code for the first data input binary above.
+	* tests/data/test-diff-filter/test21-compatible-vars-v1.cc: Source
+	code for the second data input binary above.
+	* tests/data/test-diff-filter/libtest22-compatible-fns-v0.so: New
+	test data input.
+	* tests/data/test-diff-filter/libtest22-compatible-fns-v1.so Likewise.
+	* tests/data/test-diff-filter/test22-compatible-fns-report-0.txt:
+	New test data input.
+	* tests/data/test-diff-filter/test22-compatible-fns-report-1.txt: Likewise.
+	* tests/data/test-diff-filter/test22-compatible-fns-v0.c: Source
+	code for the first test data input binary above.
+	* tests/data/test-diff-filter/test22-compatible-fns-v1.c: Source
+	code for the second test data input binary above.
+	* tests/data/Makefile.am: Add the new test input data to source
+	distribution.
+	* tests/test-diff-filter.cc (in_out_specs): Add the new test data
+	input above to the list of test data this harness has to be run
+	over.
+
+2014-12-09  Dodji Seketeli <dodji@redhat.com>
+
+	Fix classification of parameter addition in C
+	* src/abg-comp-filter.cc (function_name_changed_but_not_symbol):
+	Compare the fully qualified name of the functions; not their
+	pretty representation.
+	* tests/data/test-diff-dwarf/libtest20-add-fn-parm-v0.so: New test
+	data intput.
+	* tests/data/test-diff-dwarf/libtest20-add-fn-parm-v1.so:
+	Likewise.
+	* tests/data/test-diff-dwarf/test20-add-fn-parm-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-dwarf/test20-add-fn-parm-v0.c: Source code
+	for the first shared library above.
+	* tests/data/test-diff-dwarf/test20-add-fn-parm-v1.c: Source code
+	for the second shared library above.
+	* tests/test-diff-dwarf.cc (in_out_specs): Add the test input data
+	above to the list of test input the harness must run over.
+	* Makefile.am: Add the new files above to source distribution.
+
+2014-12-08  Dodji Seketeli <dodji@redhat.com>
+
+	Wire the soname check into abicompat
+	* include/abg-comparison.h (corpus_diff::soname_changed): Declare
+	new member function.
+	* src/abg-comparison.cc (corpus_diff::soname_changed): Define new
+	member function.
+	(corpus_diff::length): Use the new corpus_diff::soname_changed()
+	method.
+	* tests/data/test-abicompat/libtest4-soname-changed-v0.so: New
+	test input data.
+	* tests/data/test-abicompat/libtest4-soname-changed-v1.so:
+	Likewise.
+	* tests/data/test-abicompat/test4-soname-changed-app: Likewise.
+	* tests/data/test-abicompat/test4-soname-changed-report-0.txt:
+	Likewise.
+	* tests/data/test-abicompat/test4-soname-changed-app.cc: Source
+	code for one of the binaries above.
+	* tests/data/test-abicompat/test4-soname-changed-v0.cc: Likewise.
+	* tests/data/test-abicompat/test4-soname-changed-v1.cc: Likewise.
+	* tests/test-abicompat.cc (in_out_specs): Add the new test input
+	data to the list of input data to run this harness over.
+	(main): Take the soname change in account to determine if the
+	change is ABI incompatible.
+	* tests/data/Makefile.am: Add the new test input data above to source
+	distribution.
+
+2014-12-07  Dodji Seketeli <dodji@redhat.com>
+
+	Fixup messed up old runtestdiffdwarf input tests
+	* tests/data/test-diff-dwarf/test17-non-refed-syms-report-0.txt:
+	Add this missing reference test output.
+	* tests/data/Makefile.am: Add the new reference test output to
+	source distribution.
+	* tests/data/test-diff-dwarf/test18-alias-sym-report-0.txt: Fix
+	this output to avoid emitting symbol alias information in it.
+	* tests/test-diff-dwarf.cc (in_out_specs): Add two missing test
+	input data to the list of input data this harness is supposed to
+	run over.
+
+2014-12-07  Dodji Seketeli <dodji@redhat.com>
+
+	Support reading and comparing soname from ELF files
+	* include/abg-corpus.h (corpus::{get_needed, set_needed,
+	get_soname, set_soname}): Declare new accessors.
+	* src/abg-corpus.cc (corpus::priv::{needed, soname}): New data
+	members.
+	(corpus::{get_needed, set_needed, get_soname, set_soname}): Define
+	new accessors.
+	(corpus::is_empty): Take dt_needed and dt_soname in account in
+	computing empty-ness.
+	* src/abg-dwarf-reader.cc (read_context::{dt_needed_,
+	dt_soname_}): New data members.
+	(read_context::{dt_needed, dt_soname}): New accessors.
+	(read_context::load_dt_soname_and_needed): New member function.
+	(read_corpus_from_elf): Call the new
+	read_context::load_dt_soname_and_needed() to read the dt_soname
+	and dt_needed tags.  Set them to the corpus.
+	* include/abg-comparison.h (diff_context::show_soname_change):
+	Declare new accessors.
+	* src/abg-comparison.cc (diff_context::priv::show_soname_change_):
+	New data member.
+	(diff_context::priv::priv): Initialize the new data member
+	diff_context::priv::show_soname_change_.
+	(diff_context::show_soname_change): Define new accessors.
+	(corpus_diff::priv::sonames_equal_): New data member.
+	(corpus_diff::priv::priv): Initialize the new data member
+	corpus_diff::priv::sonames_equal_.
+	(corpus_diff::length): Take the new priv_->sonames_equals_ data
+	member in account.
+	(corpus_diff::{report, priv::emit_diff_stats}): If the sonames
+	changed and we are allowed to report it, then report it.
+	(compute_diff): In the variant for corpus_diff, do not forget to
+	compare the sonames.
+	* src/abg-reader.cc (build_needed, read_elf_needed_from_input):
+	Define new static functions.
+	(read_corpus_from_input): Read the 'soname' attribute from the
+	'abi-corpus' xml element node.
+	* src/abg-writer.cc (write_elf_needed): Define new static
+	function.
+	(write_corpus_to_native_xml): Write a new 'elf-needed' xml element
+	node that contains one xml 'dependency' element node per
+	dependency to emit.  This uses the new write_elf_needed() function
+	above.
+	* tests/data/test-diff-dwarf/libtest19-soname-v0.so: New test
+	input data.
+	* tests/data/test-diff-dwarf/libtest19-soname-v1.so: Likewise.
+	* tests/data/test-diff-dwarf/test19-soname-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test19-soname-v0.c: Source code of
+	the first binary above.
+	* tests/data/test-diff-dwarf/test19-soname-v1.c: Source code of
+	the second binary above.
+	* tests/test-diff-dwarf.cc (in_out_specs): Add the test input
+	above to the list of test input to run this harness on.
+	* tests/data/Makefile.am: Add the new test input data above.
+	* tests/data/test-read-dwarf/test{0,1}.abi: Adjust.
+	* tests/data/test-read-dwarf/test{2,3,4,6,}.so.abi: Adjust.
+
+2014-12-07  Dodji Seketeli <dodji@redhat.com>
+
+	Fix some style nits in the native reader and writer
+	* src/abg-reader.cc (read_symbol_db_from_input): Align parameter
+	names.  Fix indentation of the first line of the function.
+	* src/abg-writer.cc (write_elf_symbols_table): Align parameter names.
+
+2014-12-07  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a crash while writing symbol information
+	* src/abg-corpus.cc (corpus::{get_fun_symbol_map_sptr,
+	get_var_symbol_map_sptr}): Make sure the symbol map is always
+	constructed, even if it's empty.
+	* tests/data/test-read-write/test26.xml: New test input data.
+	* tests/test-read-write.cc (in_out_spec): Add this new test input
+	data to the list of input data to run the harness on.
+	(main): Support reading and writing corpus files alongside
+	translation unit files that we were handling already.
+	* tests/data/Makefile.am: Add the new test input data to source
+	distribution.
+
+2014-12-05  Dodji Seketeli <dodji@redhat.com>
+
+	Avoid showing ugly version info in the libabigail online manual
+	* doc/manuals/conf.py: Update copyright mention.  Do not show ugly
+	version information.
+
+2014-11-30  Dodji Seketeli <dodji@redhat.com>
+
+	Initial implementation of the abicompat tool
+	* include/abg-comparison.h
+	(diff_context::show_added_symbols_unreferenced_by_debug_info):
+	Declare new accessors.
+	(corpus_diff::{deleted_variables,
+	deleted_unrefed_function_symbols,
+	deleted_unrefed_variable_symbols,
+	apply_filters_and_suppressions_before_reporting}): Declare new
+	methods.
+	(corpus_diff::diff_stats): Declare this new type.  Actually this
+	was previously corpus_diff::priv::diff_stats, which was a hidden
+	internal type..  We are moving it here, in the external API so
+	that client code can have more information about changes
+	statistics.  Change all the previously publicly accessible data
+	members into accessor functions.
+	* src/abg-comparison.cc (class corpus_diff::diff_stats::priv): New
+	type.
+	(diff_context::priv::show_added_syms_unreferenced_by_di_): New
+	data member.
+	(diff_context::priv::priv): Adjust.
+	(diff_context::show_added_symbols_unreferenced_by_debug_info):
+	Define this new method.
+	(corpus_diff::priv::emit_diff_stats):  Do not show the diff stat
+	if the only changes is added function or variables symbols and if
+	we were instructed to not show added symbols.
+	(corpus_diff::priv::{diff_stats_, filters_and_suppr_applied_}):
+	New data members.
+	(corpus_diff::priv::priv): Initialize the
+	filters_and_suppr_applied_ data member.
+	(corpus_diff::priv::diff_stats): Move this type to
+	corpus_diff::diff_stats.
+	(corpus_diff::priv::{apply_filters_and_compute_diff_stats,
+	emit_diff_stats}): Adjust.
+	(corpus_diff::apply_filters_and_suppressions_before_reporting):
+	Define new member function.
+	(corpus_diff::report): Use the new
+	apply_filters_and_suppressions_before_reporting() function, rather
+	than applying the filters and suppressions by ourselves.  Also
+	adjust to the use the accessors of the new corpus_diff::diff_stats
+	type.
+	(corpus_diff::{deleted_variables,
+	deleted_unrefed_function_symbols,
+	deleted_unrefed_variable_symbols}): Define new accessors.
+	(corpus_diff::diff_stats::{diff_stats, num_func_removed,
+	num_func_added, num_func_changed, num_func_filtered_out,
+	net_num_func_changed, num_vars_removed, num_vars_added,
+	num_vars_changed, num_vars_filtered_out, net_num_vars_changed,
+	num_func_sym_removed, num_func_syms_added, num_var_syms_removed,
+	num_var_syms_added}): Define new member functions.
+	* include/abg-corpus.h (corpus::{get_sym_ids_of_fns_to_keep,
+	get_sym_ids_of_vars_to_keep}): Declare new methods.
+	* src/abg-corpus.cc (corpus::priv::{sym_id_fns_to_keep,
+	sym_id_vars_to_keep}): Added data members.
+	(symtab_build_visitor_type::{unrefed_fun_symbols,
+	unrefed_var_symbols, sym_id_fns_to_keep, sym_id_vars_to_keep}):
+	Added new data members.
+	(symtab_build_visitor_type::symtab_build_visitor_type): Take two
+	additional parameters for the function and variable symbol ids to
+	keep.
+	(symtab_build_visitor_type::add_fn_to_wip_fns): Take the function
+	symbols to keep in account when building the exported symbol
+	table.
+	(symtab_build_visitor_type::add_var_to_wip_vars): Likewise, take
+	the variable symbols to keep in account when building the exported
+	symbol table.
+	(corpus::priv::build_public_decl_table): Adjust the initialization
+	of the visitor that walks the ABI artifacts to build the exported
+	symbol table to know take a list of function/variable symbols to
+	keep.
+	(corpus::priv::build_unreferenced_symbols_tables): Ensure that the
+	public table of functions/variables is built before doing the work
+	of this function.  Also, if a list of variable/function symbols to
+	keep is given, drop all symbols that are not in that list on the
+	floor.
+	(corpus::{get_sym_ids_of_fns_to_keep,
+	get_sym_ids_of_vars_to_keep}): Define new accessors.
+	* tools/abicompat.cc: New abicompat tool.
+	* doc/manuals/abicompat.rst: New documentation source for
+	abicompat.
+	* doc/manuals/libabigail-tools.rst: Add an entry for the abicompat
+	doc.
+	* tests/test-abicompat.cc: New test harness for the 'abicompat'
+	tool.
+	* tests/Makefile.am: Build the runtestabicompat test harness and
+	add it to the list of tests harnesses that are run by make check.
+	* tests/data/test-abicompat/libtest0-fn-changed-libapp-v0.so: New
+	test input.
+	* tests/data/test-abicompat/libtest0-fn-changed-libapp-v1.so: Likewise.
+	* tests/data/test-abicompat/test0-fn-changed-app: Likewise.
+	* tests/data/test-abicompat/test0-fn-changed-0.suppr: Likewise
+	* tests/data/test-abicompat/test0-fn-changed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test0-fn-changed-report-1.txt: Likewise.
+	* tests/data/test-abicompat/test0-fn-changed-app.cc: Likewise.
+	* tests/data/test-abicompat/test0-fn-changed-libapp.h: Likewise.
+	* tests/data/test-abicompat/test0-fn-changed-libapp-v0.cc: Likewise.
+	* tests/data/test-abicompat/test0-fn-changed-libapp-v1.cc: Likewise.
+	* tests/data/test-abicompat/libtest1-fn-removed-v0.so: Likewise.
+	* tests/data/test-abicompat/libtest1-fn-removed-v1.so: Likewise.
+	* tests/data/test-abicompat/test1-fn-removed-app: Likewise.
+	* tests/data/test-abicompat/test1-fn-removed-app.cc: Likewise.
+	* tests/data/test-abicompat/test1-fn-removed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test1-fn-removed-v0.cc: Likewise.
+	* tests/data/test-abicompat/test1-fn-removed-v1.cc: Likewise.
+	* tests/data/test-abicompat/libtest2-var-removed-v0.so: Likewise.
+	* tests/data/test-abicompat/libtest2-var-removed-v1.so: Likewise.
+	* tests/data/test-abicompat/test2-var-removed-app: Likewise.
+	* tests/data/test-abicompat/test2-var-removed-app.cc: Likewise.
+	* tests/data/test-abicompat/test2-var-removed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test2-var-removed-v0.cc: Likewise.
+	* tests/data/test-abicompat/test2-var-removed-v1.cc: Likewise.
+	* tests/data/test-abicompat/libtest3-fn-removed-v0.so: Likewise.
+	* tests/data/test-abicompat/libtest3-fn-removed-v1.so: Likewise.
+	* tests/data/test-abicompat/test3-fn-removed-app: Likewise.
+	* tests/data/test-abicompat/test3-fn-removed-app.cc: Likewise.
+	* tests/data/test-abicompat/test3-fn-removed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test3-fn-removed-v0.cc: Likewise.
+	* tests/data/test-abicompat/test3-fn-removed-v1.cc: Likewise.
+	* tests/data/test-abicompat/test3-fn-removed-version-script-0 Likewise.:
+	* tests/data/test-abicompat/test3-fn-removed-version-script-1: Likewise.
+	* tests/data/Makefile.am: Add the new test inputs above to the
+	source distribution.
+
+2014-11-30  Dodji Seketeli <dodji@redhat.com>
+
+	Support reading undefined symbols from an ELF file
+	* include/abg-corpus.h (corpus::{set_undefined_fun_symbol_map,
+	set_undefined_var_symbol_map, get_undefined_fun_symbol_map_sptr,
+	get_undefined_fun_symbol_map, get_sorted_undefined_fun_symbols,
+	get_undefined_var_symbol_map_sptr, get_undefined_var_symbol_map,
+	get_sorted_undefined_var_symbols}): Declare new methods ...
+	* src/abg-corpus.cc (corpus::{set_undefined_fun_symbol_map,
+	set_undefined_var_symbol_map, get_undefined_fun_symbol_map_sptr,
+	get_undefined_fun_symbol_map, get_sorted_undefined_fun_symbols,
+	get_undefined_var_symbol_map_sptr, get_undefined_var_symbol_map,
+	get_sorted_undefined_var_symbols}): ... and define them.
+	(struct corpus::priv::{undefined_var_symbol_map,
+	sorted_undefined_var_symbols, undefined_fun_symbol_map,
+	sorted_undefined_fun_symbols}): New data members.
+	* src/abg-dwarf-reader.cc (get_symbol_versionning_sections): Also
+	return the SHT_GNU_verneed section.
+	(get_version_needed_for_versym): New static function.
+	(get_version_definition_for_versym): Factorize this function out
+	of ..
+	(get_version_for_symbol): ... this one.  Take a flag that says if
+	we want the definition version or the needed version of a symbol.
+	Extend the implementation using the two new function
+	get_version_needed_for_versym() and
+	get_version_definition_for_versym() above.  This function now
+	returns the version either for a defined & exported symbol, or for
+	an undefined symbol.
+	(lookup_symbol_from_sysv_hash_tab)
+	(lookup_symbol_from_gnu_hash_tab, lookup_symbol_from_symtab):
+	Adjust for the change of signature of get_version_for_symbol().
+	(read_context::{undefined_fun_syms_, undefined_var_syms_}): New
+	data members.
+	(read_context::lookup_elf_symbol_from_index): Adjust for
+	invocation of the new signature of get_version_for_symbol().
+	(read_context::{undefined_fun_syms_sptr, undefined_fun_syms,
+	undefined_var_syms_sptr, undefined_var_syms}): Define new methods.
+	(read_context::load_symbol_maps): Add support for loading
+	undefined symbols and their versions.
+	(read_context::maybe_load_symbol_maps):  Take in account the need
+	to load undefined symbols as well.
+	(read_corpus_from_elf): Once the undefined symbols have been read
+	from the ELF file, stuff them into the resulting ABI corpus that
+	has been built.
+
+2014-11-30  Dodji Seketeli <dodji@redhat.com>
+
+	Show the pretty representation of deleted variables in the diff output
+	* src/abg-comparison.cc (corpus_diff::report): Show the pretty
+	representation of deleted variables in all cases.
+
+2014-11-30  Dodji Seketeli <dodji@redhat.com>
+
+	Fix status checking in abidw
+	* tools/abidw.cc (main): Fix successful status checking.
+
+2014-11-30  Dodji Seketeli <dodji@redhat.com>
+
+	Rename elf_symbol::get_is_defined() to elf_symbol::is_defined()
+	* include/abg-ir.h (elf_symbol::get_is_defined): Rename into
+	elf_symbol::is_defined.
+	(elf_symbol::set_is_defined): Rename into elf_symbol::is_defined.
+	* src/abg-ir.cc (elf_symbol::get_is_defined): Likewise, rename
+	this into elf_symbol::is_defined.
+	(elf_symbol::set_is_defined): Likewise, rename this into
+	elf_symbol::is_defined.
+	(elf_symbol::{elf_symbol, is_public}): Adjust.
+	* src/abg-writer.cc (write_elf_symbol): Adjust.
+
+2014-11-30  Dodji Seketeli <dodji@redhat.com>
+
+	Update the copyright years of include/abg-corpus.h
+	* include/abg-corpus.h: Update the copyright years of this file.
+
+2014-11-20  Dodji Seketeli <dodji@redhat.com>
+
+	Make tests/data directory have its own Makefile
+	* configure.ac(AC_CONFIG_FILE): Generate a new tests/data/Makefile
+	file.
+	* tests/Makefile.am: Link the data/ sub-directory from here.  Move
+	the EXTRA_DIST definition to ...
+	* tests/data/Makefile.am: ... this new file here.
+
+2014-11-20  Dodji Seketeli <dodji@redhat.com>
+
+	Hmh, finally EXTRA_DIST was just fine
+	* tests/Makefile.am: Put EXTRA_DIST back.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Make sure we don't try to build test data
+	* tests/Makefile.am: Replace EXTRA_DIST with noinst_DATA.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Fix manual documentation generation
+	* doc/manuals/Makefile.am: Trigger the manual generation from the
+	html-doc target.  Add the source files to the distribution.  Fix
+	the clean target.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Fix apidoc building
+	* doc/Makefile.am: Trigger the building frm the html-doc target.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Cleanup of configure.ac
+	* configure.ac: Remove useless variables and fix a typo.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Add loads of forgotten test data files to source distribution
+	* tests/Makefile.am: Add lots of test data file that were
+	forgotten and then revealed by running make distcheck.  Also fix
+	some wrong paths to test data files.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Use DESTDIR in doc/manuals/Makefile.am when creating the manuals
+	* doc/manuals/Makefile.am: Use the DESTDIR variable when
+	addressing the destination directory of the created manuals.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a thinko in doc/Makefile.am
+	* apidoc-install-html-doxygen: Make sure that the directory
+	$(DESTDIR)$(docdir) does not exist, before trying to create it.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Add doc/api/libabigail.doxy to source distribution
+	* doc/Makefile.am: Add the file api/libabigail.doxy to source
+	distribution.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Make the install-html target of apidoc/manual be conditional
+	* configure.ac: add --enable-apidoc and --enable-manual.  Add the
+	two ENABLE_APIDOC and ENABLE_MANUAL automake conditional
+	variables.  Add the activation of the apidoc and manual into the
+	final package configuration report.
+	* doc/Makefile.am: Make the install-html, install-data-local and
+	uninstall-local targets conditional on the ENABLE_APIDOC
+	conditional variable.
+	* doc/manuals/Makefile.am: Likewise, make the install-html,
+	install-data-local and uninstall-data-local conditional on the
+	ENABLE_MANUAL conditional variable.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Make the alt dwarf debug file *not* be a symlink
+	* tests/data/test-alt-dwarf-file/test0-debug-dir/.build-id/16/7088580c513b439c9ed95fe6a8b29496495f26.debug:
+	Make this be a real file, no more a symlink to
+	../../../test0-common-dwz.debug.
+	* tests/data/test-alt-dwarf-file/test0-report.txt: Now that the
+	file above is no more a symlink the message emitted by the test
+	changes.  It now says that the file found is the base name of the
+	real file.  So change the reference report accordingly.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Use the POSIX 1003.1-1988 tar format for dist tar
+	* configure.ac: For the tar invocation made by make dist, make
+	sure to use the POSIX 1003.1-1988 tar format that can support file
+	names of more than 99 characters.  This is useful for the
+	test-alt-dwarf-file test that has data made of a file which patch
+	has more than 99 characters.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	Nested automake conditionals don't work
+	* configure.ac (ENABLE_ZIP_ARCHIVE_AND_CXX11): Define this
+	automake condition variable that is true if both the zip archive
+	and c++11 features are enabled.  This is important to know if the
+	test runtestdot is going to be compiled.  That test needs both
+	c++11 and the zip archive features.
+	* tests/Makefile.am: Do not nest automake conditional statements.
+	It does not work.  Rather, use the new
+	ENABLE_ZIP_ARCHIVE_AND_CXX11 condition variable.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	INSTALL file is not yet in the distribution
+	* Makefile.am: Do not say that INSTALL file is in the distribution
+	while it is not.
+
+2014-11-19  Dodji Seketeli <dodji@redhat.com>
+
+	If c++11 is disable do not execute the runtestdot test
+	* tests/Makefile.am: runtestdot should not be executed if c++11 is
+	disabled.
+
+2014-11-18  Dodji Seketeli <dodji@redhat.com>
+
+	make html now generates the apidoc, manual and web site
+	* doc/Makefile.am (html-local): Make the html file generation be
+	triggered by the html-local target, not the html target.  The html
+	target is a recursive target that calls the the html-local targets
+	under each directory.
+	(apidoc-html-doxygen): Rename the doc-html-doxygen target into
+	(apidoc-install-html-doxygen): Rename doc-install-html-doxygen
+	into this.  this.
+	(DO_HTML, DO_INSTALL_HTML): Adjust.
+	(install-data-local): New target.
+	* doc/manuals/Makefile.am (install-html, install-data-local): New
+	targets.
+
+2014-11-18  Dodji Seketeli <dodji@redhat.com>
+
+	Generate the manual html documentation in the proper build directory
+	* doc/manuals/Makefile.am: Renamed doc/manuals/Makefile into this.
+	(BUILDDIR): Make this variable point to $(builddir)/_build as
+	opposed to just _build previously.
+	(SOURCEDIR): New variable that points to the source dir as known
+	by the autotools magic.
+	(ALLSPHINXOPTS): Make the source dir refer to the new
+	$(SOURCEDIR), rather than just '.' as previously.
+	* configure.ac (doc/manuals/Makefile): Generate this now.
+	* doc/Makefile.am: Link the sub-directory doc/manuals.
+
+2014-11-18  Dodji Seketeli <dodji@redhat.com>
+
+	Update Makefile.am after the additions related to gen-changelog.py
+	* Makefile.am: Add ChangeLog and COPYING-LGPLV2 to the source
+	distribution.
+	(update-changelog, tag-release-only tag-release): New Makefile
+	targets.
+
+2014-11-18  Dodji Seketeli <dodji@redhat.com>
+
+	Added a ChangeLog that is auto-generated by gen-changelog.py
+	* ChangeLog: Add this auto-generated file.
+
+2014-11-18  Dodji Seketeli <dodji@redhat.com>
+
+	[gen-changelog] Make subject line always come first
+	* gen-changelog.py (process_commit): In changelog entries with an
+	empty body, make sure the subject line comes first.
+
+2014-11-18  Dodji Seketeli <dodji@redhat.com>
+
+	Try harder to remove timezone info from the date
+	* gen-changelog.py (process_commit): The timezone shit can start
+	either with a '+' or a '-'.
+
+2014-11-18  Dodji Seketeli <dodji@redhat.com>
+
+	Not all ChangeLog file lines end up with a ':'
+	* gen-changelog.py (process_commit): When trying to recognize the
+	beginning of a ChangeLog entry body, do not expect a line that
+	starts with a '*' to end with a ':' because there can be long file
+	names that end on the next line.
+
 2014-11-18  Dodji Seketeli <dodji@redhat.com>
 
 	Allow introductory text in commit log and ignore it when generating ChangeLog
@@ -16,6 +3760,28 @@
 	https://github.com/GNOME/gnet/blob/master/gen-changelog.py.
 	License it under LGPLV v2+ after asking Edward Hervey's kind
 	permission.  Ain't Free Software really great?
+
+2014-11-18  Dodji Seketeli <dodji@redhat.com>
+
+	Fix the reference to the IRC channel on the web page
+	* doc/website/mainpage.txt: The IRC server address is
+	irc.oftc.net, not just oftc.net.
+	* include/abg-fwd.h: Likewise.
+
+2014-11-10  Dodji Seketeli <dodji@redhat.com>
+
+	Consider enclosing template when comparing template parameters
+	* src/abg-ir.cc (template_parameter::priv::comparison_started_):
+	New data member.
+	(template_parameter::priv::priv): Initialize it.
+	(template_parameter::operator==): Compare the enclosing template
+	too.  And avoid infinite recursion.
+
+2014-11-10  Dodji Seketeli <dodji@redhat.com>
+
+	Remove mention of libzip from the web page
+	* doc/website/mainpage.txt: Remove mention of libzip from the list
+	of dependencies.
 
 2014-11-10  Dodji Seketeli <dodji@redhat.com>
 
