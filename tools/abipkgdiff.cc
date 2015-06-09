@@ -85,8 +85,8 @@ struct elf_file
   string soname;
   elf_type type;
 
-  elf_file(string name, string path, elf_type type, string soname)
-  : name(name), path(path), type(type), soname(soname)
+  elf_file(string path, string name, elf_type type, string soname)
+  : path(path), name(name), type(type), soname(soname)
     { }
 
   ~elf_file()
@@ -102,8 +102,8 @@ struct package
 //   string pkg_name;
   abigail::tools_utils::file_type pkg_type;
   bool is_debuginfo_pkg;
-  vector<string> dir_elf_files_path;
   map<string, elf_file*> dir_elf_files_map;
+  shared_ptr<package> debuginfo_pkg;
 
   package(string path, string dir, abigail::tools_utils::file_type file_type,
           bool is_debuginfo = false )
@@ -121,10 +121,11 @@ struct package
 
   ~package()
     {
-      string cmd = "rm -r " + extracted_pkg_dir_path;
+      string cmd = "rm -rf " + extracted_pkg_dir_path;
       system(cmd.c_str());
     }
 };
+
 typedef shared_ptr<package> package_sptr;
 
 static void
@@ -237,6 +238,21 @@ callback(const char *fpath, const struct stat *st, int flag)
   return 0;
 }
 
+void
+compute_abidiff (const elf_file* elf1, const string debug_dir1,
+                 const elf_file* elf2, const string &debug_dir2)
+{
+  cout << "~ ABI changes between libraries " << elf1->name << " and " << elf2->name;
+  cout << "  =======>\n";
+  string cmd = "abidiff " +
+  elf1->path + " " + elf2->path;
+  if (!debug_dir1.empty())
+    cmd += " --debug-info-dir1 " + debug_dir1;
+  if (!debug_dir2.empty())
+    cmd += " --debug-info-dir2 " + debug_dir2;
+  system(cmd.c_str());
+}
+
 static bool
 pkg_diff(vector<package_sptr> &packages)
 {
@@ -251,7 +267,6 @@ pkg_diff(vector<package_sptr> &packages)
           dir_elf_files_path.clear();
           if (!(ftw((*it)->extracted_pkg_dir_path.c_str(), callback, 16)))
             {
-              (*it)->dir_elf_files_path = dir_elf_files_path;
               for (vector<string>::const_iterator iter = dir_elf_files_path.begin();
                    iter != dir_elf_files_path.end(); ++iter)
                 {
@@ -277,6 +292,27 @@ pkg_diff(vector<package_sptr> &packages)
             << (*it)->extracted_pkg_dir_path << std::endl;
         }
     }
+    // Setting debug-info path of libraries
+    string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
+    if (packages[0]->debuginfo_pkg != NULL)
+      {
+        debug_dir1 = packages[2]->extracted_pkg_dir_path + relative_debug_path;
+        if (packages[1]->debuginfo_pkg != NULL)
+            debug_dir2 = packages[3]->extracted_pkg_dir_path + relative_debug_path;
+      }
+    else if (packages[1]->debuginfo_pkg != NULL)
+        debug_dir2 = packages[2]->extracted_pkg_dir_path + relative_debug_path;
+
+    for (map<string, elf_file*>::iterator it = packages[0]->dir_elf_files_map.begin();
+          it != packages[0]->dir_elf_files_map.end();
+          ++it)
+      {
+        map<string, elf_file*>::iterator iter =
+          packages[1]->dir_elf_files_map.find(it->first);
+        if (iter != packages[1]->dir_elf_files_map.end())
+          compute_abidiff(it->second, debug_dir1, iter->second, debug_dir2);
+      }
+
     return true;
 }
 
@@ -366,11 +402,17 @@ main(int argc, char* argv[])
   packages.push_back(package_sptr(new package(
     opts.pkg2, "pkg2", guess_file_type(opts.pkg2))));
   if (!opts.debug_pkg1.empty())
-    packages.push_back(package_sptr (new package(
-      opts.debug_pkg1, "debug_pkg1", guess_file_type(opts.debug_pkg1), true)));
-      if (!opts.debug_pkg2.empty())
-    packages.push_back(package_sptr (new package(
-      opts.debug_pkg2, "debug_pkg2", guess_file_type(opts.debug_pkg2), true)));
+    {
+      packages.push_back(package_sptr (new package(
+        opts.debug_pkg1, "debug_pkg1", guess_file_type(opts.debug_pkg1), true)));
+      packages[0]->debuginfo_pkg = packages[packages.size() - 1];
+    }
+  if (!opts.debug_pkg2.empty())
+    {
+      packages.push_back(package_sptr (new package(
+        opts.debug_pkg2, "debug_pkg2", guess_file_type(opts.debug_pkg2), true)));
+      packages[1]->debuginfo_pkg = packages[packages.size() - 1];
+    }
 
   switch (packages.at(0)->pkg_type)
     {
