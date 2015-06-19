@@ -38,6 +38,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <elf.h>
 #include <elfutils/libdw.h>
 #include "abg-tools-utils.h"
@@ -94,6 +95,13 @@ struct elf_file
     delete this;
   }
 };
+
+struct abi_changes
+{
+  vector <string> added_binaries;
+  vector <string> removed_binaries;
+  vector <string> abi_changes;
+}abi_diffs;
 
 struct package
 {
@@ -233,8 +241,14 @@ extract_pkg(package_sptr pkg)
 static int
 callback(const char *fpath, const struct stat *st, int flag)
 {
-  if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
-    dir_elf_files_path.push_back(fpath);
+  struct stat s;
+  lstat(fpath, &s);
+
+  if (!S_ISLNK(s.st_mode))
+  {
+    if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
+      dir_elf_files_path.push_back(fpath);
+  }
   return 0;
 }
 
@@ -242,7 +256,7 @@ void
 compute_abidiff (const elf_file* elf1, const string debug_dir1,
                  const elf_file* elf2, const string &debug_dir2)
 {
-  cout << "~ ABI changes between libraries " << elf1->name << " and " << elf2->name;
+  cout << "ABI change between binaries " << elf1->name << " and " << elf2->name;
   cout << "  =======>\n";
   string cmd = "abidiff " +
   elf1->path + " " + elf2->path;
@@ -280,11 +294,15 @@ pkg_diff(vector<package_sptr> &packages)
                   string soname;
                   elf_type e = elf_file_type(ehdr);
                   if (e == ELF_TYPE_DSO)
-                    string soname = get_soname(elf, ehdr);
+                    soname = get_soname(elf, ehdr);
 
                   string file_base_name(basename(const_cast<char*>((*iter).c_str())));
-                  (*it)->dir_elf_files_map[file_base_name] =
-                  new elf_file((*iter), file_base_name, e, soname);
+                  if (soname.empty())
+                    (*it)->dir_elf_files_map[file_base_name] =
+                    new elf_file((*iter), file_base_name, e, soname);
+                  else
+                    (*it)->dir_elf_files_map[soname] =
+                    new elf_file((*iter), file_base_name, e, soname);
                 }
               }
           else
@@ -307,11 +325,44 @@ pkg_diff(vector<package_sptr> &packages)
           it != packages[0]->dir_elf_files_map.end();
           ++it)
       {
+
         map<string, elf_file*>::iterator iter =
           packages[1]->dir_elf_files_map.find(it->first);
         if (iter != packages[1]->dir_elf_files_map.end())
-          compute_abidiff(it->second, debug_dir1, iter->second, debug_dir2);
+          {
+           compute_abidiff(it->second, debug_dir1, iter->second, debug_dir2);
+            packages[1]->dir_elf_files_map.erase(iter);
+          }
+        else
+          abi_diffs.removed_binaries.push_back(it->second->name);
       }
+
+      for (map<string, elf_file*>::iterator it = packages[1]->dir_elf_files_map.begin();
+          it != packages[1]->dir_elf_files_map.end();
+          ++it)
+        {
+          abi_diffs.added_binaries.push_back(it->second->name);
+        }
+
+      if (abi_diffs.removed_binaries.size())
+        {
+          cout << "Removed binaries\n";
+          for (vector<string>::iterator it = abi_diffs.removed_binaries.begin();
+               it != abi_diffs.removed_binaries.end(); ++it)
+            {
+              cout << *it << std::endl;
+            }
+        }
+
+      if (abi_diffs.added_binaries.size())
+        {
+          cout << "Added binaries\n";
+          for (vector<string>::iterator it = abi_diffs.added_binaries.begin();
+               it != abi_diffs.added_binaries.end(); ++it)
+            {
+              cout << *it << std::endl;
+            }
+        }
 
     return true;
 }
