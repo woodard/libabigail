@@ -247,7 +247,22 @@ main(int argc, char* argv[])
     {
       if (!opts.write_architecture)
 	corp->set_architecture_name("");
-      abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout);
+
+      if (!opts.out_file_path.empty())
+	{
+	  ofstream of(opts.out_file_path.c_str(), std::ios_base::trunc);
+	  if (!of.is_open())
+	    {
+	      cerr << "could not open output file '"
+		   << opts.out_file_path << "'\n";
+	      return 1;
+	    }
+	  abigail::xml_writer::write_corpus_to_native_xml(corp, 0, of);
+	  of.close();
+	  return 0;
+	}
+      else
+	abigail::xml_writer::write_corpus_to_native_xml(corp, 0, cout);
     }
 
   return 0;
