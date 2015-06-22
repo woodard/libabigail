@@ -12642,7 +12642,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
     }
 }
 
-/// Test if the change reports for a give given deleted function have
+/// Test if the change reports for a given deleted function have
 /// been deleted.
 ///
 /// @param fn the function to consider.
@@ -12699,12 +12699,12 @@ corpus_diff::priv::deleted_variable_is_suppressed(const var_decl* var) const
   return (i != suppressed_deleted_vars_.end());
 }
 
-/// Test if the change reports for a give given added variable has
-/// been deleted.
+/// Test if the change reports for a given added variable have been
+/// suppressed.
 ///
 /// @param var the variable to consider.
 ///
-/// @return true iff the change reports for a give given deleted
+/// @return true iff the change reports for a given deleted
 /// variable has been deleted.
 bool
 corpus_diff::priv::added_variable_is_suppressed(const var_decl* var) const
