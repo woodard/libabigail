@@ -38,459 +38,618 @@ By default, ``abidiff`` filters harmless changes from the diff report.
 Suppression specifications
 ==========================
 
-  * Definition
 
- A suppression specification file is a way for a user to instruct
- :ref:`abidiff <abidiff_label>` to avoid emitting reports for changes
- involving certain :ref:`ABI artifacts<abi_artifacts_label>`.
+Definition
+----------
 
- It contains directives (or specifications) that describe the set of
- ABI artifacts to avoid emitting change reports about.
+A suppression specification file is a way for a user to instruct
+:ref:`abidiff <abidiff_label>` to avoid emitting reports for changes
+involving certain :ref:`ABI artifacts<abi_artifacts_label>`.
 
-  * Introductory examples
+It contains directives (or specifications) that describe the set of
+ABI artifacts to avoid emitting change reports about.
 
- Its syntax is based on a simplified and customized form of `Ini File
- Syntax`_.  For instance, to specify that change reports on a type
- named FooPrivateType should be suppressed, one could write this
- suppression specification: ::
+Introductory examples
+---------------------
 
-    [suppress_type]
-      name = FooPrivateType
+Its syntax is based on a simplified and customized form of `Ini File
+Syntax`_.  For instance, to specify that change reports on a type
+named FooPrivateType should be suppressed, one could write this
+suppression specification: ::
 
- Maybe we want to ensure that only a change reports about structures
- named FooPrivateType should be suppressed, one could write: ::
+   [suppress_type]
+     name = FooPrivateType
 
-    [suppress_type]
-      type_kind = struct
-      name = FooPrivateType
+If we want to ensure that only change reports about structures named
+FooPrivateType should be suppressed, we could write: ::
 
- But we could also want to suppress change reports avoid typedefs named
- FooPrivateType.  In that case we would write:  ::
+   [suppress_type]
+     type_kind = struct
+     name = FooPrivateType
 
-    [suppress_type]
-      type_kind = typedef
-      name = FooPrivateType
+But we could also want to suppress change reports avoid typedefs named
+FooPrivateType.  In that case we would write:  ::
 
- Or, we could want to suppress change reports about all struct which
- names end with PrivateType: ::
+   [suppress_type]
+     type_kind = typedef
+     name = FooPrivateType
 
-    [suppress_type]
-      type_kind = struct
-      name_regexp = ^.*PrivateType
+Or, we could want to suppress change reports about all struct which
+names end with the string "PrivateType": ::
 
- Let's now look at the generic syntax of suppression specification
- files.
+   [suppress_type]
+     type_kind = struct
+     name_regexp = ^.*PrivateType
 
-  * Syntax
+Let's now look at the generic syntax of suppression specification
+files.
 
-    * Properties
+Syntax
+------
 
-     More generally, the format of suppression lists is organized
-     around the concept of `property`.  Every property has a name and
-     a value, delimited by the ``=`` sign.  E.g: ::
+Properties
+^^^^^^^^^^
+
+More generally, the format of suppression lists is organized around
+the concept of `property`.  Every property has a name and a value,
+delimited by the ``=`` sign.  E.g: ::
 
 	 name = value
 
-     Leading and trailing white spaces are ignored around property
-     name and values.
+Leading and trailing white spaces are ignored around property names
+and values.
 
 .. _suppr_regexp_label:
 
-    * Regular expressions
+Regular expressions
+^^^^^^^^^^^^^^^^^^^
 
-      The value of some properties might be a regular expression.  In
-      that case, they must comply with the syntax of `extended POSIX
-      regular expressions
-      <http://www.gnu.org/software/findutils/manual/html_node/find_html/posix_002dextended-regular-expression-syntax.html#posix_002dextended-regular-expression-syntax>`_.
-      Note that Libabigail uses the regular expression engine of the
-      `GNU C Library`_.
+The value of some properties might be a regular expression.  In that
+case, they must comply with the syntax of `extended POSIX regular
+expressions
+<http://www.gnu.org/software/findutils/manual/html_node/find_html/posix_002dextended-regular-expression-syntax.html#posix_002dextended-regular-expression-syntax>`_.
+Note that Libabigail uses the regular expression engine of the `GNU C
+Library`_.
 
-    * Escaping a character in a regular expression
+Escaping a character in a regular expression
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-      When trying to match a string that contains a ``*`` character,
-      like in the pointer type ``int*``, one must be careful to notice
-      that the character ``*`` is a special character in the extended
-      POSIX regular expression syntax.  And that character must be
-      escaped for the regular expression engine.  Thus the regular
-      expression that would match the string ``int*`` in a suppression
-      file should be ::
+When trying to match a string that contains a ``*`` character, like in
+the pointer type ``int*``, one must be careful to notice that the
+character ``*`` is a special character in the extended POSIX regular
+expression syntax.  And that character must be escaped for the regular
+expression engine.  Thus the regular expression that would match the
+string ``int*`` in a suppression file should be ::
 
-        int\\*
+  int\\*
 
-      Wait; but then why the two ``\`` characters?  Well, because the
-      ``\`` character is a special character in the `Ini File Syntax`_
-      used for specifying suppressions.  So it must be escaped as
-      well, so that the Ini File parser leaves a ``\`` character
-      intact in the data stream that is handed to the regular
-      expression engine.  Hence the ``\\`` targeted at the Ini File
-      parser.
+Wait; but then why the two ``\`` characters?  Well, because the ``\``
+character is a special character in the `Ini File Syntax`_ used for
+specifying suppressions.  So it must be escaped as well, so that the
+Ini File parser leaves a ``\`` character intact in the data stream
+that is handed to the regular expression engine.  Hence the ``\\``
+targeted at the Ini File parser.
 
-      So, in short, to escape a character in a regular expression,
-      always prefix the character with the ``\\`` sequence.
+So, in short, to escape a character in a regular expression, always
+prefix the character with the ``\\`` sequence.
 
-    * Sections
+Sections
+^^^^^^^^
 
-     Properties are then grouped into arbitrarily named sections that
-     shall not be nested.  The name of the section is on a line by
-     itself and is surrounded by square brackets, i.e: ::
+Properties are then grouped into arbitrarily named sections that shall
+not be nested.  The name of the section is on a line by itself and is
+surrounded by square brackets, i.e: ::
 
 	 [section_name]
 	 property1_name = property1_value
 	 property2_name = property2_value
 
 
-     A section might or might not have properties.  Sections that
-     expect having properties and which are found nonetheless empty
-     are just ignored.  Properties that are not recognized by the
-     reader are ignored as well.
+A section might or might not have properties.  Sections that expect to
+have properties and which are found nonetheless empty are just
+ignored.  Properties that are not recognized by the reader are ignored
+as well.
 
-    * Section names
+Section names
+^^^^^^^^^^^^^
 
-      * ``[suppress_type]``
+``[suppress_type]``
+$$$$$$$$$$$$$$$$$$$
 
-	Suppresses report messages about a type change.  The potential
-	properties of this sections are:
+Suppresses report messages about a type change.  The potential
+properties of this sections are:
 
-	  * ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+* ``name_regexp``
 
-	     Suppresses change reports involving types whose name
-	     matches the regular expression specified as value of this
-	     property.
+ Usage:
 
-	  * ``name`` ``=`` <a-value>
+ ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
-	    Suppresses change reports involving types whose name
-	    equals the value of this property.
+ Suppresses change reports involving types whose name matches the
+ regular expression specified as value of this property.
 
-	  * ``type_kind`` ``=`` ``class`` | ``struct`` | ``union`` |
-	    ``enum`` | ``array`` | ``typedef`` | ``builtin``
+* ``name``
 
-	    Suppresses change reports involving a certain kind of
-	    type.  The kind of type to suppress change reports for is
-	    specified by the possible values listed above:
+ Usage:
 
-	      - ``class``: suppress change reports for class types.
-		Note that even if class types don't exist for C, this
-		value still triggers the suppression of change reports
-		for struct types, in C.  In C++ however, it should do
-		what it suggests.
+ ``name`` ``=`` <a-value>
 
-	      - ``struct``: suppress change reports for struct types
-		in C or C++.  Note that the value ``class`` above is a
-		super-set of this one.
+ Suppresses change reports involving types whose name equals the value
+ of this property.
 
-	      - ``union``: suppress change reports for union types.
+* ``type_kind``
 
-	      - ``enum``: suppress change reports for enum types.
+ Usage:
 
-	      - ``array``: suppress change reports for array types.
+   ``type_kind`` ``=`` ``class`` | ``struct`` | ``union`` | ``enum`` |
+		       ``array`` | ``typedef`` | ``builtin``
 
-	      - ``typedef``: suppress change reports for typedef types.
+ Suppresses change reports involving a certain kind of type.  The kind
+ of type to suppress change reports for is specified by the possible
+ values listed above:
 
-	      - ``builtin``: suppress change reports for built-in (or
-		native) types.  Example of built-in types are char,
-		int, unsigned int, etc.
+   - ``class``: suppress change reports for class types.  Note that
+	 even if class types don't exist for C, this value still
+	 triggers the suppression of change reports for struct types,
+	 in C.  In C++ however, it should do what it suggests.
 
-	    .. _suppr_has_data_member_inserted_at_label:
-	  * ``has_data_member_inserted_at`` ``=`` <``offset-in-bit``>
+   - ``struct``: suppress change reports for struct types in C or C++.
+	 Note that the value ``class`` above is a super-set of this
+	 one.
 
-	    Suppresses change reports involving a type which has at
-	    least one data member inserted at an offset specified by
-	    the property value ``offset-in-bit``.  The value
-	    ``offset-in-bit`` is either:
+   - ``union``: suppress change reports for union types.
 
-	    	- an integer value, expressed in bits, which denotes
-		  the offset of the insertion point of the data
-		  member, starting from the beginning of the relevant
-		  structure or class.
+   - ``enum``: suppress change reports for enum types.
 
-		- the keyword ``end`` which is a named constant which
-		  value equals the offset of the end of the of the
-		  structure or class.
+   - ``array``: suppress change reports for array types.
 
-		- the function call expression
-		  ``offset_of(data-member-name)`` where
-		  `data-member-name` is the name of a given data
-		  member of the relevant structure or class.  The
-		  value of this function call expression is an integer
-		  that represents the offset of the data member
-		  denoted by ``data-member-name``.
+   - ``typedef``: suppress change reports for typedef types.
 
-	        - the function call expression
-		  ``offset_after(data-member-name)`` where
-		  `data-member-name` is the name of a given data
-		  member of the relevant structure or class.  The
-		  value of this function call expression is an integer
-		  that represents the offset of the point that comes
-		  right after the region occupied by the data member
-		  denoted by ``data-member-name``.
+   - ``builtin``: suppress change reports for built-in (or native)
+     types.  Example of built-in types are char, int, unsigned int,
+     etc.
 
-            .. _suppr_has_data_member_inserted_between_label:
-	  * ``has_data_member_inserted_between`` ``=`` {<``range-begin``>, <``range-end``>}
+ .. _suppr_has_data_member_inserted_at_label:
 
-	    Suppresses change reports involving a type which has at
-	    least one data member inserted at an offset that is
-	    comprised in the range between ``range-begin`` and
-	    ``range-end``.  Please note that each of the values
-	    ``range-begin`` and ``range-end`` can be of the same form
-	    as for the :ref:`has_data_member_inserted_at
-	    <suppr_has_data_member_inserted_at_label>` property above.
+* ``has_data_member_inserted_at``
 
-            Usage examples of this properties are: ::
+ Usage:
 
-	      has_data_member_inserted_between = {8, 64}
+   ``has_data_member_inserted_at`` ``=`` <``offset-in-bit``>
 
-	    or: ::
+ Suppresses change reports involving a type which has at least one
+ data member inserted at an offset specified by the property value
+ ``offset-in-bit``.  The value ``offset-in-bit`` is either:
 
-	      has_data_member_inserted_between = {16, end}
+	 - an integer value, expressed in bits, which denotes the
+	   offset of the insertion point of the data member, starting
+	   from the beginning of the relevant structure or class.
 
-	    or: ::
+	 - the keyword ``end`` which is a named constant which value
+	   equals the offset of the end of the of the structure or
+	   class.
 
-	      has_data_member_inserted_between = {offset_after(member1), end}
+	 - the function call expression
+	   ``offset_of(data-member-name)`` where `data-member-name` is
+	   the name of a given data member of the relevant structure
+	   or class.  The value of this function call expression is an
+	   integer that represents the offset of the data member
+	   denoted by ``data-member-name``.
 
-	    .. _suppr_has_data_members_inserted_between_label:
-	  * ``has_data_members_inserted_between`` ``=`` {<sequence-of-ranges>}
+	 - the function call expression
+	   ``offset_after(data-member-name)`` where `data-member-name`
+	   is the name of a given data member of the relevant
+	   structure or class.  The value of this function call
+	   expression is an integer that represents the offset of the
+	   point that comes right after the region occupied by the
+	   data member denoted by ``data-member-name``.
 
-	    Suppresses change reports involving a type which has multiple
-	    data member inserted in various offset ranges.  A usage
-	    example of this property is, for instance: ::
+  .. _suppr_has_data_member_inserted_between_label:
 
-	      has_data_members_inserted_between = {{8, 31}, {72, 95}}
 
-	    This usage example suppresses change reports involving a
-	    type which has data members inserted in bit offset ranges
-	    [8 31] and [72 95].  The length of the sequence of ranges
-	    or this ``has_data_members_inserted_between`` is not
-	    bounded; it can be as long as the system can cope with.
-	    The values of the boundaries of the ranges are of the same
-	    kind as for the :ref:`has_data_member_inserted_at
-	    <suppr_has_data_member_inserted_at_label>` property above.
+* ``has_data_member_inserted_between``
 
-	    Another usage example of this property is thus: ::
+ Usage:
 
-              has_data_members_inserted_between =
-	        {
-		 {offset_after(member0), offset_of(member1)},
-		 {72, end}
-                }
+   ``has_data_member_inserted_between`` ``=`` {<``range-begin``>, <``range-end``>}
 
-           .. _suppr_accessed_through_property_label:
+ Suppresses change reports involving a type which has at least one
+ data mber inserted at an offset that is comprised in the range
+ between range-begin`` and ``range-end``.  Please note that each of
+ the lues ``range-begin`` and ``range-end`` can be of the same form as
+ the :ref:`has_data_member_inserted_at
+ <suppr_has_data_member_inserted_at_label>` property above.
 
-	  * ``accessed_through`` ``=`` <some-predefined-values>
+ Usage examples of this properties are: ::
 
-	    Suppress change reports involving a type which is referred
-	    to either directly or through a pointer or a reference.
-	    The potential values of this property are the predefined
-	    keywords below:
+   has_data_member_inserted_between = {8, 64}
 
-		* ``direct``
+ or: ::
 
-		  So if the ``[suppress_type]`` contains the property
-		  description: ::
+   has_data_member_inserted_between = {16, end}
 
-		    accessed_through = direct
+ or: ::
 
-		  then changes about a type that is referred-to
-		  directly (i.e, not through a pointer or a reference)
-		  are going to be suppressed.
+   has_data_member_inserted_between = {offset_after(member1), end}
 
-		* ``pointer``
+.. _suppr_has_data_members_inserted_between_label:
 
-		  If the ``accessed_through`` property is set to the
-		  value ``pointer`` then changes about a type that is
-		  referred-to through a pointer are going to be
-		  suppressed.
 
-		* ``reference``
+* ``has_data_members_inserted_between``
 
-		  If the ``accessed_through`` property is set to the
-		  value ``reference`` then changes about a type that is
-		  referred-to through a reference are going to be
-		  suppressed.
+ Usage:
 
-		* ``reference-or-pointer``
+   ``has_data_members_inserted_between`` ``=`` {<sequence-of-ranges>}
 
-		  If the ``accessed_through`` property is set to the
-		  value ``reference-or-pointer`` then changes about a
-		  type that is referred-to through either a reference
-		  or a pointer are going to be suppressed.
+ Suppresses change reports involving a type which has multiple data
+ member inserted in various offset ranges.  A usage example of this
+ property is, for instance: ::
 
-	    For an extensive example of how to use this property,
-	    please check out the example below about :ref:`suppressing
-	    change reports about types accessed either directly or
-	    through pointers <example_accessed_through_label>`.
+   has_data_members_inserted_between = {{8, 31}, {72, 95}}
 
-           .. _suppr_label_property_label:
+ This usage example suppresses change reports involving a type which
+ has data members inserted in bit offset ranges [8 31] and [72 95].
+ The length of the sequence of ranges or this
+ ``has_data_members_inserted_between`` is not bounded; it can be as
+ long as the system can cope with.  The values of the boundaries of
+ the ranges are of the same kind as for the
+ :ref:`has_data_member_inserted_at
+ <suppr_has_data_member_inserted_at_label>` property above.
 
-	  * ``label`` ``=`` <some-value>
+ Another usage example of this property is thus: ::
 
-	    Define a label for the section.  A label is just an
-	    informative string that might be used by abidiff to refer
-	    to a type suppression in error messages.
+   has_data_members_inserted_between =
+     {
+	  {offset_after(member0), offset_of(member1)},
+	  {72, end}
+     }
 
-      * ``[suppress_function]``
+ .. _suppr_accessed_through_property_label:
 
-	Suppresses report messages about changes on sub-types of a
-	function.  The potential properties of this sections are:
+* ``accessed_through``
 
-	  * ``label`` ``=`` <some-value>
+ Usage:
 
-            This property is the same as the :ref:`label property
-            <suppr_label_property_label>` defined above.
+   ``accessed_through`` ``=`` <some-predefined-values>
 
-	  *  ``name`` ``=`` <some-value>
+ Suppress change reports involving a type which is referred to either
+ directly or through a pointer or a reference.  The potential values
+ of this property are the predefined keywords below:
 
-	    Suppresses change reports involving functions whose name
-	    equals the value of this property.
+	 * ``direct``
 
-	  *  ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+	   So if the ``[suppress_type]`` contains the property
+	   description: ::
 
-	    Suppresses change reports involving functions whose name
-	    matches the regular expression specified as value of this
-	    property.
+	     accessed_through = direct
 
-          * ``parameter`` ``=`` <function-parameter-specification>
+	   then changes about a type that is referred-to
+	   directly (i.e, not through a pointer or a reference)
+	   are going to be suppressed.
 
-	    Suppresses change reports involving functions whose
-	    parameters match the parameter specification indicated as
-	    value of this property.
+	 * ``pointer``
 
-	    The format of the function parameter specification is:
+	   If the ``accessed_through`` property is set to the
+	   value ``pointer`` then changes about a type that is
+	   referred-to through a pointer are going to be
+	   suppressed.
 
-	    ``'`` ``<parameter-index>`` ``<space>`` ``<type-name-or-regular-expression>``
+	 * ``reference``
 
-	    That is, an apostrophe followed by a number that is the
-	    index of the parameter, followed by one of several spaces,
-	    followed by either the name of the type of the parameter,
-	    or a regular expression describing a family of parameter
-	    type names.
+	   If the ``accessed_through`` property is set to the
+	   value ``reference`` then changes about a type that is
+	   referred-to through a reference are going to be
+	   suppressed.
 
-	    If the parameter type name is designated by a regular
-	    expression, then said regular expression must be enclosed
-	    between two slashes; like ``/some-regular-expression/``.
+	 * ``reference-or-pointer``
 
-	    The index of the first parameter of the function is zero.
-	    Note that for member functions (methods of classes), the
-	    this is the first parameter that comes after the implicit
-	    "this" pointer parameter.
+	   If the ``accessed_through`` property is set to the
+	   value ``reference-or-pointer`` then changes about a
+	   type that is referred-to through either a reference
+	   or a pointer are going to be suppressed.
 
-	    Examples of function parameter specifications are: ::
+ For an extensive example of how to use this property, please check
+ out the example below about :ref:`suppressing change reports about
+ types accessed either directly or through pointers
+ <example_accessed_through_label>`.
 
-	      '0 int
+ .. _suppr_label_property_label:
 
-            Which means, the parameter at index 0, whose type name is
-            ``int``. ::
+* ``label``
 
-	      '4 unsigned char*
+ Usage:
 
-	    Which means, the parameter at index 4, whose type name is
-	    ``unsigned char*``.  ::
+   ``label`` ``=`` <some-value>
 
-	      '2 /^foo.*&/
+ Define a label for the section.  A label is just an informative
+ string that might be used by abidiff to refer to a type suppression
+ in error messages.
 
-	    Which means, the parameter at index 2, whose type name
-	    starts with the string "foo" and ends with an '&'.  In
-	    other words, this is the third parameter and it's a
-	    reference on a type that starts with the string "foo".
+``[suppress_function]``
+$$$$$$$$$$$$$$$$$$$$$$$$
 
-	  *  ``return_type_name`` ``=`` <some-value>
+Suppresses report messages about changes on a set of functions.  The
+potential properties of this sections are:
 
-	    Suppresses change reports involving functions whose return
-	    type name equals the value of this property.
+* ``label``
 
-	  *  ``return_type_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+ Usage:
 
-	    Suppresses change reports involving functions whose return
-	    type name matches the regular expression specified as
-	    value of this property.
+   ``label`` ``=`` <some-value>
 
-	  *  ``symbol_name`` ``=`` <some-value>
+ This property is the same as the :ref:`label property
+ <suppr_label_property_label>` defined above.
 
-	    Suppresses change reports involving functions whose symbol
-	    name equals the value of this property.
 
-	  *  ``symbol_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+* ``name``
 
-	    Suppresses change reports involving functions whose symbol
-	    name matches the regular expression specified as value of
-	    this property.
+ Usage:
 
-	  *  ``symbol_version`` ``=`` <some-value>
+   ``name`` ``=`` <some-value>
 
-	    Suppresses change reports involving functions whose symbol
-	    version equals the value of this property.
+ Suppresses change reports involving functions whose name equals the
+ value of this property.
 
-	  *  ``symbol_version_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+* ``name_regexp``
 
-	    Suppresses change reports involving functions whose symbol
-	    version matches the regular expression specified as value
-	    of this property.
+ Usage:
 
-      * ``[suppress_variable]``
+   ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
-	Suppresses report messages about changes on sub-types of a
-	variable.  The potential properties of this sections are:
+ Suppresses change reports involving functions whose name matches the
+ regular expression specified as value of this property.
 
-	  * ``label`` ``=`` <some-value>
+  .. _suppr_change_kind_property_label:
 
-            This property is the same as the :ref:`label property
-            <suppr_label_property_label>` defined above.
 
-	  *  ``name`` ``=`` <some-value>
+* ``change_kind``
 
-	    Suppresses change reports involving variables whose name
-	    equals the value of this property.
+ Usage:
 
-	  *  ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+   ``change_kind`` ``=`` <predefined-possible-values>
 
-	    Suppresses change reports involving variables whose name
-	    matches the regular expression specified as value of this
-	    property.
+ Specifies the kind of changes this suppression specification should
+ apply to.  The possible values of this property as well as their
+ meaning are listed below:
 
-	  *  ``symbol_name`` ``=`` <some-value>
+	 - ``function-subtype-change``
 
-	    Suppresses change reports involving variables whose symbol
-	    name equals the value of this property.
+	   This suppression specification applies to functions
+	   that which have at least one sub-type that has
+	   changed.
 
-	  *  ``symbol_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+	 - ``added-function``
 
-	    Suppresses change reports involving variables whose symbol
-	    name matches the regular expression specified as value of
-	    this property.
+	   This suppression specification applies to functions
+	   that have been added to the binary.
 
-	  *  ``symbol_version`` ``=`` <some-value>
+	 - ``deleted-function``
 
-	    Suppresses change reports involving variables whose symbol
-	    version equals the value of this property.
+	   This suppression specification applies to functions
+	   that have been removed from the binary.
 
-	  *  ``symbol_version_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+	 - ``all``
 
-	    Suppresses change reports involving variables whose symbol
-	    version matches the regular expression specified as value
-	    of this property.
+	   This suppression specification applies to functions
+	   that have all of the changes above.  Note that not
+	   providing the ``change_kind`` property at all is
+	   equivalent to setting it to the value ``all``.
 
-	  *  ``type_name`` ``=`` <some-value>
 
-	    Suppresses change reports involving variables whose type
-	    name equals the value of this property.
+* ``parameter``
 
-	  *  ``type_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+ Usage:
 
-	    Suppresses change reports involving variables whose type
-	    name matches the regular expression specified as value of
-	    this property.
+ ``parameter`` ``=`` <function-parameter-specification>
 
-    * Comments
+ Suppresses change reports involving functions whose
+ parameters match the parameter specification indicated as
+ value of this property.
 
-      ``;`` or ``#`` ASCII character at the beginning of a line
-      indicates a comment.  Comment lines are ignored.
+ The format of the function parameter specification is:
 
-  * Code examples
+ ``'`` ``<parameter-index>`` ``<space>`` ``<type-name-or-regular-expression>``
 
-    1. Suppressing change reports about types.
+ That is, an apostrophe followed by a number that is the
+ index of the parameter, followed by one of several spaces,
+ followed by either the name of the type of the parameter,
+ or a regular expression describing a family of parameter
+ type names.
 
-       Suppose we have a library named ``libtest1-v0.so`` which
-       contains this very useful code: ::
+ If the parameter type name is designated by a regular
+ expression, then said regular expression must be enclosed
+ between two slashes; like ``/some-regular-expression/``.
+
+ The index of the first parameter of the function is zero.
+ Note that for member functions (methods of classes), the
+ this is the first parameter that comes after the implicit
+ "this" pointer parameter.
+
+ Examples of function parameter specifications are: ::
+
+   '0 int
+
+ Which means, the parameter at index 0, whose type name is
+ ``int``. ::
+
+   '4 unsigned char*
+
+ Which means, the parameter at index 4, whose type name is
+ ``unsigned char*``.  ::
+
+   '2 /^foo.*&/
+
+ Which means, the parameter at index 2, whose type name
+ starts with the string "foo" and ends with an '&'.  In
+ other words, this is the third parameter and it's a
+ reference on a type that starts with the string "foo".
+
+* ``return_type_name``
+
+ Usage:
+
+   ``return_type_name`` ``=`` <some-value>
+
+ Suppresses change reports involving functions whose return type name
+ equals the value of this property.
+
+* ``return_type_regexp``
+
+ Usage:
+
+   ``return_type_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving functions whose return type name
+ matches the regular expression specified as value of this property.
+
+* ``symbol_name``
+
+ Usage:
+
+   ``symbol_name`` ``=`` <some-value>
+
+ Suppresses change reports involving functions whose symbol name equals
+ the value of this property.
+
+* ``symbol_name_regexp``
+
+ Usage:
+
+ ``symbol_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving functions whose symbol name
+ matches the regular expression specified as value of this property.
+
+* ``symbol_version``
+
+ Usage:
+
+   ``symbol_version`` ``=`` <some-value>
+
+ Suppresses change reports involving functions whose symbol version
+ equals the value of this property.
+
+* ``symbol_version_regexp``
+
+ Usage:
+
+   ``symbol_version_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving functions whose symbol version
+ matches the regular expression specified as value of this property.
+
+``[suppress_variable]``
+$$$$$$$$$$$$$$$$$$$$$$$$
+
+Suppresses report messages about changes on a set of variables.  The
+potential properties of this sections are:
+
+* ``label``
+
+ Usage:
+
+   ``label`` ``=`` <some-value>
+
+ This property is the same as the :ref:`label property
+ <suppr_label_property_label>` defined above.
+
+* ``name``
+
+ Usage:
+
+   ``name`` ``=`` <some-value>
+
+ Suppresses change reports involving variables whose name equals the
+ value of this property.
+
+* ``name_regexp``
+
+ Usage:
+
+   ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving variables whose name matches the
+ regular expression specified as value of this property.
+
+* ``change_kind``
+
+ Usage:
+
+   ``change_kind`` ``=`` <predefined-possible-values>
+
+ Specifies the kind of changes this suppression specification should
+ apply to.  The possible values of this property as well as their
+ meaning are the same as when it's :ref:`used in the
+ [suppress_function] section <suppr_change_kind_property_label>`.
+
+* ``symbol_name``
+
+ Usage:
+
+   ``symbol_name`` ``=`` <some-value>
+
+ Suppresses change reports involving variables whose symbol name equals
+ the value of this property.
+
+* symbol_name_regexp
+
+ Usage:
+
+   ``symbol_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving variables whose symbol name
+ matches the regular expression specified as value of this property.
+
+
+* ``symbol_version``
+
+ Usage:
+
+   ``symbol_version`` ``=`` <some-value>
+
+ Suppresses change reports involving variables whose symbol version
+ equals the value of this property.
+
+* ``symbol_version_regexp``
+
+ Usage:
+
+   ``symbol_version_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving variables whose symbol version
+ matches the regular expression specified as value of this property.
+
+* ``type_name``
+
+ Usage:
+
+   ``type_name`` ``=`` <some-value>
+
+ Suppresses change reports involving variables whose type name equals
+ the value of this property.
+
+* ``type_name_regexp``
+
+ Usage:
+
+   ``type_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving variables whose type name matches
+ the regular expression specified as value of this property.
+
+Comments
+^^^^^^^^
+
+``;`` or ``#`` ASCII character at the beginning of a line
+indicates a comment.  Comment lines are ignored.
+
+Code examples
+^^^^^^^^^^^^^
+
+1. Suppressing change reports about types.
+
+   Suppose we have a library named ``libtest1-v0.so`` which
+   contains this very useful code: ::
 
 	$ cat -n test1-v0.cc
 	     1	// A forward declaration for a type considered to be opaque to
@@ -512,9 +671,9 @@ Suppression specifications
 	    17	};
 	$
 
-    Let's change the layout of struct opaque_type by inserting a data
-    member around line 15, leading to a new version of the library,
-    that we shall name ``libtest1-v1.so``: ::
+Let's change the layout of struct opaque_type by inserting a data
+member around line 15, leading to a new version of the library,
+that we shall name ``libtest1-v1.so``: ::
 
 	$ cat -n test1-v1.cc
 	     1	// A forward declaration for a type considered to be opaque to
@@ -537,14 +696,14 @@ Suppression specifications
 	    18	};
 	$
 
-    Let's compile both examples.  We shall not forget to compile them
-    with debug information generation turned on: ::
+Let's compile both examples.  We shall not forget to compile them
+with debug information generation turned on: ::
 
 	$ g++ -shared -g -Wall -o libtest1-v0.so test1-v0.cc
 	$ g++ -shared -g -Wall -o libtest1-v1.so test1-v1.cc
 
-    Let's ask :ref:`abidiff <abidiff_label>` which ABI differences it sees
-    between ``libtest1-v0.so`` and ``libtest1-v1.so``: ::
+Let's ask :ref:`abidiff <abidiff_label>` which ABI differences it sees
+between ``libtest1-v0.so`` and ``libtest1-v1.so``: ::
 
 	$ abidiff libtest1-v0.so libtest1-v1.so
 	Functions changes summary: 0 Removed, 1 Changed, 0 Added function
@@ -563,45 +722,45 @@ Suppression specifications
 		 'char opaque_type::member1' offset changed from 32 to 64
 
 
-    So ``abidiff`` reports that the opaque_type's layout has changed
-    in a significant way, as far as ABI implications are concerned, in
-    theory.  After all, a sub-type (``struct opaque_type``) of an
-    exported function (``foo()``) has seen its layout change.  This
-    might have non negligible ABI implications.  But in practice here,
-    the programmer of the litest1-v1.so library knows that the "soft"
-    contract between the function ``foo()`` and the type ``struct
-    opaque_type`` is to stay away from the data members of the type.
-    So layout changes of ``struct opaque_type`` should not impact
-    ``foo()``.
+So ``abidiff`` reports that the opaque_type's layout has changed
+in a significant way, as far as ABI implications are concerned, in
+theory.  After all, a sub-type (``struct opaque_type``) of an
+exported function (``foo()``) has seen its layout change.  This
+might have non negligible ABI implications.  But in practice here,
+the programmer of the litest1-v1.so library knows that the "soft"
+contract between the function ``foo()`` and the type ``struct
+opaque_type`` is to stay away from the data members of the type.
+So layout changes of ``struct opaque_type`` should not impact
+``foo()``.
 
-    Now to teach ``abidiff`` about this soft contract and have it
-    avoid emitting what amounts to false positives in this case, we
-    write the suppression specification file below: ::
+Now to teach ``abidiff`` about this soft contract and have it
+avoid emitting what amounts to false positives in this case, we
+write the suppression specification file below: ::
 
 	$ cat test1.suppr
 	[suppress_type]
 	  type_kind = struct
 	  name = opaque_type
 
-    Translated in plain English, this suppression specification would
-    read: "Do not emit change reports about a struct which name is
-    opaque_type".
+Translated in plain English, this suppression specification would
+read: "Do not emit change reports about a struct which name is
+opaque_type".
 
-    Let's now invoke ``abidiff`` on the two versions of the library
-    again, but this time with the suppression specification: ::
+Let's now invoke ``abidiff`` on the two versions of the library
+again, but this time with the suppression specification: ::
 
 	$ abidiff --suppressions test1.suppr libtest1-v0.so libtest1-v1.so
 	Functions changes summary: 0 Removed, 0 Changed (1 filtered out), 0 Added function
 	Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
-    As you can see, ``abidiff`` does not report the change anymore; it
-    tells us that it was filtered out instead.
+As you can see, ``abidiff`` does not report the change anymore; it
+tells us that it was filtered out instead.
 
-  2. Suppressing change reports about types with data member
-     insertions
+Suppressing change reports about types with data member
+insertions
 
-     Suppose the first version of a library named ``libtest3-v0.so``
-     has this source code: ::
+Suppose the first version of a library named ``libtest3-v0.so``
+has this source code: ::
 
 	/* Compile this with:
 	     gcc -g -Wall -shared -o libtest3-v0.so test3-v0.c
@@ -625,10 +784,10 @@ Suppression specifications
 	  return s->member0 + s->member1;
 	}
 
-     Now, suppose the second version of the library named
-     ``libtest3-v1.so`` has this source code in which a data member
-     has been added in the padding space of struct S and another data
-     member has been added at its end: ::
+Now, suppose the second version of the library named
+``libtest3-v1.so`` has this source code in which a data member
+has been added in the padding space of struct S and another data
+member has been added at its end: ::
 
 	/* Compile this with:
 	     gcc -g -Wall -shared -o libtest3-v1.so test3-v1.c
@@ -648,12 +807,12 @@ Suppression specifications
 	  return s->member0 + s->member1;
 	}
 
-     In ``libtest3-v1.so`` adding char data members ``S::inserted1``
-     and ``S::inserted2`` can be considered harmless (from an ABI
-     compatibility perspective), at least on the x86 platform, because
-     that doesn't change the offsets of the data members S::member0
-     and S::member1.  But then running ``abidiff` on these two
-     versions of library yields: ::
+
+In libtest3-v1.so, adding char data members ``S::inserted1`` and
+``S::inserted2`` can be considered harmless (from an ABI compatibility
+perspective), at least on the x86 platform, because that doesn't
+change the offsets of the data members S::member0 and S::member1.  But
+then running ``abidiff`` on these two versions of library yields: ::
 
 	$ abidiff libtest3-v0.so libtest3-v1.so
 	Functions changes summary: 0 Removed, 1 Changed, 0 Added function
@@ -672,16 +831,16 @@ Suppression specifications
 
 
 
-     That is, ``abidiff`` shows us the two changes, even though we (the
-     developers of that very involved library) know that these changes
-     are harmless in this particular context.
+That is, ``abidiff`` shows us the two changes, even though we (the
+developers of that very involved library) know that these changes
+are harmless in this particular context.
 
-     Luckily, we can devise a suppression specification that essentially
-     tells abidiff to filter out change reports about adding a data
-     member between ``S::member0`` and ``S::member1``, and adding a data
-     member at the end of struct S.  We have written such a suppression
-     specification in a file called test3-1.suppr and it unsurprisingly
-     looks like: ::
+Luckily, we can devise a suppression specification that essentially
+tells abidiff to filter out change reports about adding a data
+member between ``S::member0`` and ``S::member1``, and adding a data
+member at the end of struct S.  We have written such a suppression
+specification in a file called test3-1.suppr and it unsurprisingly
+looks like: ::
 
 	[suppress_type]
 	  name = S
@@ -689,7 +848,7 @@ Suppression specifications
 	  has_data_member_inserted_at = end
 
 
-     Now running ``abidiff`` with this suppression specification yields: ::
+Now running ``abidiff`` with this suppression specification yields: ::
 
 	$ ../build/tools/abidiff --suppressions test3-1.suppr libtest3-v0.so libtest3-v1.so
 	Functions changes summary: 0 Removed, 0 Changed (1 filtered out), 0 Added function
@@ -698,14 +857,15 @@ Suppression specifications
 	$ 
 
 
-     Hooora! \\o/ (I guess)
+Hooora! \\o/ (I guess)
 
-     .. _example_accessed_through_label:
-  3. Suppressing change reports about types accessed either directly
-     or through pointers
-   
-     Suppose we have a first version of an object file which source
-     code is the file widget-v0.cc below: ::
+.. _example_accessed_through_label:
+
+Suppressing change reports about types accessed either directly
+or through pointers
+
+Suppose we have a first version of an object file which source
+code is the file widget-v0.cc below: ::
 
 	// Compile with: g++ -g -c widget-v0.cc
 
@@ -737,10 +897,10 @@ Suppression specifications
 	  // ... do other stuff here ...
 	}
 
-     Now suppose in the second version of that file, named
-     widget-v1.cc, we have added some data members at the end of
-     the type ``struct widget``; here is what the content of that file
-     would look like: ::
+Now suppose in the second version of that file, named
+widget-v1.cc, we have added some data members at the end of
+the type ``struct widget``; here is what the content of that file
+would look like: ::
 
 	// Compile with: g++ -g -c widget-v1.cc
 
@@ -774,8 +934,8 @@ Suppression specifications
 	  // ... do other stuff here ...
 	}
 
-     When we invoke ``abidiff`` on the object files resulting from the
-     compilation of the two file above, here is what we get: ::
+When we invoke ``abidiff`` on the object files resulting from the
+compilation of the two file above, here is what we get: ::
 
 	$ abidiff widget-v0.o widget-v1.o
 	Functions changes summary: 0 Removed, 2 Changed (1 filtered out), 0 Added functions
@@ -794,44 +954,44 @@ Suppression specifications
 	  [C]'function void fun2(widget)' has some indirect sub-type changes:
 	    parameter 1 of type 'struct widget' has sub-type changes:
 	      details were reported earlier
-	$
+       $
 
-     I guess a little bit of explaining is due here.  ``abidiff``
-     detects that two data member got added at the end of ``struct
-     widget``.  it also tells us that the type change impacts the
-     exported function ``fun0()`` which uses the type ``struct
-     widget`` through a pointer, in its signature.
+I guess a little bit of explaining is due here.  ``abidiff``
+detects that two data member got added at the end of ``struct
+widget``.  it also tells us that the type change impacts the
+exported function ``fun0()`` which uses the type ``struct
+widget`` through a pointer, in its signature.
 
-     Careful readers will notice that the change to ``struct widget``
-     also impacts the exported function ``fun1()``, that uses type
-     ``struct widget`` through a reference.  But then ``abidiff``
-     doesn't tell us about the impact on that function ``fun1()``
-     because it has evaluated that change as being **redundant** with
-     the change it reported on ``fun0()``.  It has thus filtered it
-     out, to avoid cluttering the output with noise.
+Careful readers will notice that the change to ``struct widget``
+also impacts the exported function ``fun1()``, that uses type
+``struct widget`` through a reference.  But then ``abidiff``
+doesn't tell us about the impact on that function ``fun1()``
+because it has evaluated that change as being **redundant** with
+the change it reported on ``fun0()``.  It has thus filtered it
+out, to avoid cluttering the output with noise.
 
-     Redundancy detection and filtering is fine and helpful to avoid
-     burying the important information in a sea of noise.  However, it
-     must be treated with care, by fear of mistakenly filtering out
-     relevant and important information.
+Redundancy detection and filtering is fine and helpful to avoid
+burying the important information in a sea of noise.  However, it
+must be treated with care, by fear of mistakenly filtering out
+relevant and important information.
 
-     That is why ``abidiff`` tells us about the impact that the change
-     to ``struct widget`` has on function ``fun2()``.  In this case,
-     that function uses the type ``struct widget`` **directly** (in
-     its signature).  It does not use it via a pointer or a reference.
-     In this case, the direct use of this type causes ``fun2()`` to be
-     exposed to a potentially harmful ABI change.  Hence, the report
-     about ``fun2()`` is not filtered out, even though it's about that
-     same change on ``struct widget``.
+That is why ``abidiff`` tells us about the impact that the change
+to ``struct widget`` has on function ``fun2()``.  In this case,
+that function uses the type ``struct widget`` **directly** (in
+its signature).  It does not use it via a pointer or a reference.
+In this case, the direct use of this type causes ``fun2()`` to be
+exposed to a potentially harmful ABI change.  Hence, the report
+about ``fun2()`` is not filtered out, even though it's about that
+same change on ``struct widget``.
 
-     To go further in suppressing reports about changes that are
-     harmless and keeping only those that we know are harmful, we
-     would like to go tell abidiff to suppress reports about this
-     particular ``struct widget`` change when it impacts uses of
-     ``struct widget`` through a pointer or reference.  In other
-     words, suppress the change reports about ``fun0()`` **and**
-     ``fun1()``.  We would then write this suppression specification,
-     in file ``widget.suppr``: ::
+To go further in suppressing reports about changes that are
+harmless and keeping only those that we know are harmful, we
+would like to go tell abidiff to suppress reports about this
+particular ``struct widget`` change when it impacts uses of
+``struct widget`` through a pointer or reference.  In other
+words, suppress the change reports about ``fun0()`` **and**
+``fun1()``.  We would then write this suppression specification,
+in file ``widget.suppr``: ::
 
 	[suppress_type]
 	  name = widget
@@ -844,8 +1004,8 @@ Suppression specifications
 	  # at its end, and if the change impacts uses of the type through a
 	  # reference or a pointer.
 
-     Invoking ``abidiff`` on ``widget-v0.o`` and ``widget-v1.o`` with
-     this suppression specification yields: ::
+Invoking ``abidiff`` on ``widget-v0.o`` and ``widget-v1.o`` with
+this suppression specification yields: ::
 
 	$ abidiff --suppressions widget.suppr widget-v0.o widget-v1.o
 	Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added function
@@ -861,12 +1021,12 @@ Suppression specifications
 		'int widget::h', at offset 96 (in bits)
 	$
 
-     As expected, I guess.
+As expected, I guess.
 
-  4. Suppressing change reports about functions.
+Suppressing change reports about functions.
 
-     Suppose we have a first version a library named
-     ``libtest2-v0.so`` whose source code is: ::
+Suppose we have a first version a library named
+``libtest2-v0.so`` whose source code is: ::
 
 	 $ cat -n test2-v0.cc
 
@@ -920,9 +1080,9 @@ Suppression specifications
 	 48	}
 	$
 	
-     And then we come up with a second version ``libtest2-v1.so`` of
-     that library; the source code is modified by making the
-     structures ``S1``, ``S2``, ``S3`` inherit another struct: ::
+And then we come up with a second version ``libtest2-v1.so`` of
+that library; the source code is modified by making the
+structures ``S1``, ``S2``, ``S3`` inherit another struct: ::
 
 	$ cat -n test2-v1.cc
 	      1	struct base_type
@@ -983,12 +1143,12 @@ Suppression specifications
 	     56	}
 	 $ 
 
-     Now let's build the two libraries: ::
+Now let's build the two libraries: ::
 
 	 g++ -Wall -g -shared -o libtest2-v0.so test2-v0.cc
 	 g++ -Wall -g -shared -o libtest2-v0.so test2-v0.cc
 
-     Let's look at the output of ``abidiff``: ::
+Let's look at the output of ``abidiff``: ::
 
 	 $ abidiff libtest2-v0.so libtest2-v1.so 
 	 Functions changes summary: 0 Removed, 3 Changed, 0 Added functions
@@ -1023,9 +1183,9 @@ Suppression specifications
 		  'int S1::m0' offset changed from 0 to 32
 	 $
 
-     Let's tell ``abidiff`` to avoid showing us the differences on the
-     overloads of ``func`` that takes either a pointer or a reference.
-     For that, we author this simple suppression specification: ::
+Let's tell ``abidiff`` to avoid showing us the differences on the
+overloads of ``func`` that takes either a pointer or a reference.
+For that, we author this simple suppression specification: ::
 
 	 $ cat -n libtest2.suppr
 	      1	[suppress_function]
@@ -1036,15 +1196,15 @@ Suppression specifications
 	      6	  name = func
 	      7	  parameter = '0 S2*
 	 $
-     
-     And then let's invoke ``abidiff`` with the suppression
-     specification: ::
 
-       $ ../build/tools/abidiff --suppressions libtest2.suppr libtest2-v0.so libtest2-v1.so 
-       Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added function
-       Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+And then let's invoke ``abidiff`` with the suppression
+specification: ::
 
-       1 function with some indirect sub-type change:
+  $ ../build/tools/abidiff --suppressions libtest2.suppr libtest2-v0.so libtest2-v1.so 
+  Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added function
+  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+  1 function with some indirect sub-type change:
 
 	 [C]'function unsigned int func(S3)' has some indirect sub-type changes:
 	   parameter 0 of type 'struct S3' has sub-type changes:
@@ -1055,20 +1215,20 @@ Suppression specifications
 	      'int S3::m0' offset changed from 0 to 32
 
 
-     The suppression specification could be reduced using
-     :ref:`regular expressions <suppr_regexp_label>`: ::
+The suppression specification could be reduced using
+:ref:`regular expressions <suppr_regexp_label>`: ::
 
-       $ cat -n libtest2-1.suppr
+  $ cat -n libtest2-1.suppr
 	    1	[suppress_function]
 	    2	  name = func
 	    3	  parameter = '0 /^S.(&|\\*)/
-       $
+  $
 
-       $ ../build/tools/abidiff --suppressions libtest2-1.suppr libtest2-v0.so libtest2-v1.so 
-       Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added function
-       Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+  $ ../build/tools/abidiff --suppressions libtest2-1.suppr libtest2-v0.so libtest2-v1.so 
+  Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added function
+  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
-       1 function with some indirect sub-type change:
+  1 function with some indirect sub-type change:
 
 	 [C]'function unsigned int func(S3)' has some indirect sub-type changes:
 	   parameter 0 of type 'struct S3' has sub-type changes:
@@ -1078,7 +1238,7 @@ Suppression specifications
 	     1 data member change:
 	      'int S3::m0' offset changed from 0 to 32
 
-       $
+  $
 
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 

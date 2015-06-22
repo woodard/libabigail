@@ -2,6 +2,7 @@ Functions changes summary: 0 Removed, 2 Changed, 1 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Added function:
+
   'method C0::C0()'
 
 2 functions with some indirect sub-type change:

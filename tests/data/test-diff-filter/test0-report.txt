@@ -2,6 +2,7 @@ Functions changes summary: 0 Removed, 1 Changed (2 filtered out), 1 Added functi
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Added function:
+
   'method int S0::get_member0()'
 
 1 function with some indirect sub-type change:

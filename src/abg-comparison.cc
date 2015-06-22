@@ -1276,6 +1276,18 @@ type_suppression::insertion_range::fn_call_expr_boundary::operator ini::function
 type_suppression::insertion_range::fn_call_expr_boundary::~fn_call_expr_boundary()
 {}
 
+/// Test if an instance of @ref suppression is an instance of @ref
+/// type_suppression.
+///
+/// @param suppr the instance of @ref suppression to test for.
+///
+/// @return if @p suppr is an instance of @ref type_suppression, then
+/// return the sub-object of the @p suppr of type @ref
+/// type_suppression, otherwise return a nil pointer.
+type_suppression_sptr
+is_type_suppression(suppression_sptr suppr)
+{return dynamic_pointer_cast<type_suppression>(suppr);}
+
 // </type_suppression stuff>
 
 /// Parse the value of the "type_kind" property in the "suppress_type"
@@ -1662,6 +1674,7 @@ class function_suppression::priv
 {
   friend class function_suppression;
 
+  change_kind				change_kind_;
   string				name_;
   string				name_regex_str_;
   mutable sptr_utils::regex_t_sptr	name_regex_;
@@ -1685,7 +1698,8 @@ class function_suppression::priv
        const string&			symbol_name_regex_str,
        const string&			symbol_version,
        const string&			symbol_version_regex_str)
-    : name_(name),
+    : change_kind_(ALL_CHANGE_KIND),
+      name_(name),
       name_regex_str_(name_regex_str),
       return_type_name_(return_type_name),
       return_type_regex_str_(return_type_regex_str),
@@ -1862,6 +1876,42 @@ function_suppression::function_suppression(const string&		label,
 
 function_suppression::~function_suppression()
 {}
+
+/// Parses a string containing the content of the "change-kind"
+/// property and returns the an instance of @ref
+/// function_suppression::change_kind as a result.
+///
+/// @param s the string to parse.
+///
+/// @return the resulting @ref function_suppression::change_kind.
+function_suppression::change_kind
+function_suppression::parse_change_kind(const string& s)
+{
+  if (s == "function-subtype-change")
+    return FUNCTION_SUBTYPE_CHANGE_KIND;
+  else if (s == "added-function")
+    return ADDED_FUNCTION_CHANGE_KIND;
+  else if (s == "deleted-function")
+    return DELETED_FUNCTION_CHANGE_KIND;
+  else if (s == "all")
+    return ALL_CHANGE_KIND;
+  else
+    return UNDEFINED_CHANGE_KIND;
+}
+
+/// Getter of the "change-kind" property.
+///
+/// @param returnthe "change-kind" property.
+function_suppression::change_kind
+function_suppression::get_change_kind() const
+{return priv_->change_kind_;}
+
+/// Setter of the "change-kind" property.
+///
+/// @param k the new value of the change_kind property.
+void
+function_suppression::set_change_kind(change_kind k)
+{priv_->change_kind_ = k;}
 
 /// Getter for the name of the function the user wants the current
 /// specification to designate.  This might be empty, in which case
@@ -2117,40 +2167,51 @@ function_suppression::suppresses_diff(const diff* diff) const
     sf = is_function_decl(d->second_function_decl());
   assert(ff && sf);
 
-  string ff_name = ff->get_qualified_name(), sf_name = sf->get_qualified_name();
+  return (suppresses_function(ff, FUNCTION_SUBTYPE_CHANGE_KIND)
+	  || suppresses_function(sf, FUNCTION_SUBTYPE_CHANGE_KIND));
+}
+
+/// Evaluate the current function suppression specification on a given
+/// @ref function_decl and say if a report about a change involving this
+/// @ref function_decl should be suppressed or not.
+///
+/// @param fn the @ref function_decl to evaluate this suppression
+/// specification against.
+///
+/// @param k the kind of function change @p fn is supposed to have.
+///
+/// @return true iff a report about a change involving the function @p
+/// fn should be suppressed.
+bool
+function_suppression::suppresses_function(const function_decl* fn,
+					  change_kind k) const
+{
+  if (!(get_change_kind() & k))
+    return false;
+
+  string fname = fn->get_qualified_name();
 
   // Check if the "name" property matches.
   if (!get_function_name().empty())
-    {
-      string n = get_function_name();
-      if (n != ff->get_qualified_name()
-	  && n != sf->get_qualified_name())
-	return false;
-    }
+    if (get_function_name() != fn->get_qualified_name())
+      return false;
 
   // Check if the "name_regexp" property matches.
   const sptr_utils::regex_t_sptr name_regex = priv_->get_name_regex();
-  if (name_regex
-      && (regexec(name_regex.get(), ff_name.c_str(), 0, NULL, 0) != 0
-	  && regexec(name_regex.get(), sf_name.c_str(), 0, NULL, 0) != 0))
+  if (name_regex && (regexec(name_regex.get(), fname.c_str(), 0, NULL, 0) != 0))
     return false;
 
   // Check if the "return_type_name" or "return_type_regexp"
   // properties matches.
 
-    string ff_return_type_name = ff->get_type()->get_return_type()
-      ? (get_type_declaration(ff->get_type()->get_return_type())
-	 ->get_qualified_name())
-      : "";
-  string sf_return_type_name = sf->get_type()->get_return_type()
-    ? (get_type_declaration(sf->get_type()->get_return_type())
+  string fn_return_type_name = fn->get_type()->get_return_type()
+    ? (get_type_declaration(fn->get_type()->get_return_type())
        ->get_qualified_name())
     : "";
 
   if (!get_return_type_name().empty())
     {
-      if (ff_return_type_name != get_return_type_name()
-	  && sf_return_type_name != get_return_type_name())
+      if (fn_return_type_name != get_return_type_name())
 	return false;
     }
   else
@@ -2159,33 +2220,23 @@ function_suppression::suppresses_diff(const diff* diff) const
 	priv_->get_return_type_regex();
       if (return_type_regex
 	  && (regexec(return_type_regex.get(),
-		      ff_return_type_name.c_str(),
-		      0, NULL, 0) != 0
-	      && regexec(return_type_regex.get(),
-			 sf_return_type_name.c_str(),
-			 0, NULL, 0) != 0))
+		      fn_return_type_name.c_str(),
+		      0, NULL, 0) != 0))
 	return false;
     }
 
   // Check if the "symbol_name" and "symbol_name_regexp" properties
   // match.
-
-  string ff_sym_name, ff_sym_version, sf_sym_name, sf_sym_version;
-  if (ff->get_symbol())
+  string fn_sym_name, fn_sym_version;
+  if (fn->get_symbol())
     {
-      ff_sym_name = ff->get_symbol()->get_name();
-      ff_sym_version = ff->get_symbol()->get_version().str();
-    }
-  if (sf->get_symbol())
-    {
-      sf_sym_name = sf->get_symbol()->get_name();
-      sf_sym_version = sf->get_symbol()->get_version().str();
+      fn_sym_name = fn->get_symbol()->get_name();
+      fn_sym_version = fn->get_symbol()->get_version().str();
     }
 
   if (!get_symbol_name().empty())
     {
-      if (ff_sym_name != get_symbol_name()
-	  && sf_sym_name != get_symbol_name())
+      if (fn_sym_name != get_symbol_name())
 	return false;
     }
   else
@@ -2194,20 +2245,16 @@ function_suppression::suppresses_diff(const diff* diff) const
 	priv_->get_symbol_name_regex();
       if (symbol_name_regex
 	  && (regexec(symbol_name_regex.get(),
-		      ff_sym_name.c_str(),
-		      0, NULL, 0) != 0
-	      && regexec(symbol_name_regex.get(),
-			 sf_sym_name.c_str(),
-			 0, NULL, 0) != 0))
+		      fn_sym_name.c_str(),
+		      0, NULL, 0) != 0))
 	return false;
     }
 
-// Check if the "symbol_version" and "symbol_version_regexp"
-// properties match.
+  // Check if the "symbol_version" and "symbol_version_regexp"
+  // properties match.
   if (!get_symbol_version().empty())
     {
-      if (ff_sym_version != get_symbol_version()
-	  && sf_sym_name != get_symbol_version())
+      if (fn_sym_version != get_symbol_version())
 	return false;
     }
   else
@@ -2216,18 +2263,15 @@ function_suppression::suppresses_diff(const diff* diff) const
 	priv_->get_symbol_version_regex();
       if (symbol_version_regex
 	  && (regexec(symbol_version_regex.get(),
-		      ff_sym_version.c_str(),
-		      0, NULL, 0) != 0
-	      && regexec(symbol_version_regex.get(),
-			 sf_sym_version.c_str(),
-			 0, NULL, 0) != 0))
+		      fn_sym_version.c_str(),
+		      0, NULL, 0) != 0))
 	return false;
     }
 
+  // Check the 'parameter' property.
   if (!get_parameter_specs().empty())
     {
-      function_type_sptr ff_type = ff->get_type();
-      function_type_sptr sf_type = sf->get_type();
+      function_type_sptr fn_type = fn->get_type();
       type_base_sptr parm_type;
 
       for (parameter_specs_type::const_iterator p =
@@ -2236,33 +2280,23 @@ function_suppression::suppresses_diff(const diff* diff) const
 	   ++p)
 	{
 	  size_t index = (*p)->get_index();
-	  function_decl::parameter_sptr ff_parm =
-	    ff_type->get_parm_at_index_from_first_non_implicit_parm(index);
-	  function_decl::parameter_sptr sf_parm =
-	    sf_type->get_parm_at_index_from_first_non_implicit_parm(index);
-	  if (!ff_parm && ! sf_parm)
+	  function_decl::parameter_sptr fn_parm =
+	    fn_type->get_parm_at_index_from_first_non_implicit_parm(index);
+	  if (!fn_parm)
 	    return false;
 
-	  string ff_parm_type_qualified_name, sf_parm_type_qualified_name;
-	  if (ff_parm)
+	  string fn_parm_type_qualified_name;
+	  if (fn_parm)
 	    {
-	      parm_type = ff_parm->get_type();
-	      ff_parm_type_qualified_name =
-		get_type_declaration(parm_type)->get_qualified_name();
-	    }
-
-	  if (sf_parm)
-	    {
-	      parm_type = sf_parm->get_type();
-	      sf_parm_type_qualified_name =
+	      parm_type = fn_parm->get_type();
+	      fn_parm_type_qualified_name =
 		get_type_declaration(parm_type)->get_qualified_name();
 	    }
 
 	  const string& tn = (*p)->get_parameter_type_name();
 	  if (!tn.empty())
 	    {
-	      if (tn != ff_parm_type_qualified_name
-		  && tn != sf_parm_type_qualified_name)
+	      if (tn != fn_parm_type_qualified_name)
 		return false;
 	    }
 	  else
@@ -2272,11 +2306,8 @@ function_suppression::suppresses_diff(const diff* diff) const
 	      if (parm_type_name_regex)
 		{
 		  if ((regexec(parm_type_name_regex.get(),
-			       ff_parm_type_qualified_name.c_str(),
-			       0, NULL, 0) != 0
-		       && regexec(parm_type_name_regex.get(),
-				  sf_parm_type_qualified_name.c_str(),
-				  0, NULL, 0) != 0))
+			       fn_parm_type_qualified_name.c_str(),
+			       0, NULL, 0) != 0))
 		    return false;
 		}
 	    }
@@ -2284,6 +2315,156 @@ function_suppression::suppresses_diff(const diff* diff) const
     }
 
   return true;
+}
+
+/// Evaluate the current function suppression specification on a given
+/// @ref function_decl and say if a report about a change involving this
+/// @ref function_decl should be suppressed or not.
+///
+/// @param fn the @ref function_decl to evaluate this suppression
+/// specification against.
+///
+/// @param k the kind of function change @p fn is supposed to have.
+///
+/// @return true iff a report about a change involving the function @p
+/// fn should be suppressed.
+bool
+function_suppression::suppresses_function(const function_decl_sptr fn,
+					  change_kind k) const
+{return suppresses_function(fn.get(), k);}
+
+/// Evaluate the current function suppression specification on a given
+/// @ref elf_symbol and say if a report about a change involving this
+/// @ref elf_symbol should be suppressed or not.
+///
+/// @param sym the @ref elf_symbol to evaluate this suppression
+/// specification against.
+///
+/// @param k the kind of function change @p sym is supposed to have.
+///
+/// @return true iff a report about a change involving the symbol @p
+/// sym should be suppressed.
+bool
+function_suppression::suppresses_function_symbol(const elf_symbol* sym,
+						 change_kind k)
+{
+  if (!sym)
+    return false;
+
+  if (!(get_change_kind() & k))
+    return false;
+
+  if (!sym->is_function())
+    return false;
+
+  assert(k & function_suppression::ADDED_FUNCTION_CHANGE_KIND
+	 || k & function_suppression::DELETED_FUNCTION_CHANGE_KIND);
+
+  string sym_name = sym->get_name(), sym_version = sym->get_version().str();
+  bool no_symbol_name = false, no_symbol_version = false;
+
+  // Consider the symbol name.
+  if (!get_symbol_name().empty())
+    {
+      if (sym_name != get_symbol_name())
+	return false;
+    }
+  else if (!get_symbol_name_regex_str().empty())
+    {
+      const sptr_utils::regex_t_sptr symbol_name_regex =
+	priv_->get_symbol_name_regex();
+      if (symbol_name_regex
+	  && (regexec(symbol_name_regex.get(),
+		      sym_name.c_str(),
+		      0, NULL, 0) != 0))
+	return false;
+    }
+  else
+    no_symbol_name = true;
+
+  // Consider the symbol version
+  if (!get_symbol_version().empty())
+    {
+      if (sym_version != get_symbol_version())
+	return false;
+    }
+  else if (!get_symbol_version_regex_str().empty())
+    {
+      const sptr_utils::regex_t_sptr symbol_version_regex =
+	priv_->get_symbol_version_regex();
+      if (symbol_version_regex
+	  && (regexec(symbol_version_regex.get(),
+		      sym_version.c_str(),
+		      0, NULL, 0) != 0))
+	return false;
+    }
+  else
+    no_symbol_version = true;
+
+  if (no_symbol_name && no_symbol_version)
+    return false;
+
+  return true;
+}
+
+/// Evaluate the current function suppression specification on a given
+/// @ref elf_symbol and say if a report about a change involving this
+/// @ref elf_symbol should be suppressed or not.
+///
+/// @param sym the @ref elf_symbol to evaluate this suppression
+/// specification against.
+///
+/// @param k the kind of function change @p sym is supposed to have.
+///
+/// @return true iff a report about a change involving the symbol @p
+/// sym should be suppressed.
+bool
+function_suppression::suppresses_function_symbol(const elf_symbol_sptr sym,
+						 change_kind k)
+{return suppresses_function_symbol(sym.get(), k);}
+
+/// Test if an instance of @ref suppression is an instance of @ref
+/// function_suppression.
+///
+/// @param suppr the instance of @ref suppression to test for.
+///
+/// @return if @p suppr is an instance of @ref function_suppression, then
+/// return the sub-object of the @p suppr of type @ref
+/// function_suppression, otherwise return a nil pointer.
+function_suppression_sptr
+is_function_suppression(const suppression_sptr suppr)
+{return dynamic_pointer_cast<function_suppression>(suppr);}
+
+/// The bitwise 'and' operator for the enum @ref
+/// function_suppression::change_kind.
+///
+/// @param l the first operand of the 'and' operator.
+///
+/// @param r the second operand of the 'and' operator.
+///
+/// @return the result of 'and' operation on @p l and @p r.
+function_suppression::change_kind
+operator&(function_suppression::change_kind l,
+	  function_suppression::change_kind r)
+{
+  return static_cast<function_suppression::change_kind>
+    (static_cast<unsigned>(l) & static_cast<unsigned>(r));
+}
+
+/// The bitwise 'or' operator for the enum @ref
+/// function_suppression::change_kind.
+///
+/// @param l the first operand of the 'or' operator.
+///
+/// @param r the second operand of the 'or' operator.
+///
+/// @return the result of 'or' operation on @p l and @p r.
+function_suppression::change_kind
+operator|(function_suppression::change_kind l,
+	  function_suppression::change_kind r)
+{
+    return static_cast<function_suppression::change_kind>
+      (static_cast<unsigned>(l) | static_cast<unsigned>(r));
 }
 
 /// Parse a string containing a parameter spec, build an instance of
@@ -2370,6 +2551,12 @@ read_function_suppression(const ini::config::section& section)
 
   if (section.get_name() != "suppress_function")
     return nil;
+
+  ini::simple_property_sptr change_kind_prop =
+    is_simple_property(section.find_property("change_kind"));
+  string change_kind_str = change_kind_prop
+    ? change_kind_prop->get_value()->as_string()
+    : "";
 
   ini::simple_property_sptr label_prop =
     is_simple_property(section.find_property("label"));
@@ -2460,6 +2647,9 @@ read_function_suppression(const ini::config::section& section)
 					  sym_name_regex_str,
 					  sym_version,
 					  sym_ver_regex_str));
+  if (result && !change_kind_str.empty())
+    result->set_change_kind
+      (function_suppression::parse_change_kind(change_kind_str));
 
   return result;
 }
@@ -2474,6 +2664,7 @@ class variable_suppression::priv
 {
   friend class variable_suppression;
 
+  change_kind				change_kind_;
   string				name_;
   string				name_regex_str_;
   mutable sptr_utils::regex_t_sptr	name_regex_;
@@ -2495,7 +2686,8 @@ class variable_suppression::priv
        const string& symbol_version_regex_str,
        const string& type_name,
        const string& type_name_regex_str)
-    : name_(name),
+    : change_kind_(ALL_CHANGE_KIND),
+      name_(name),
       name_regex_str_(name_regex_str),
       symbol_name_(symbol_name),
       symbol_name_regex_str_(symbol_name_regex_str),
@@ -2669,6 +2861,42 @@ variable_suppression::variable_suppression(const string& label,
 /// variable_suppression type.
 variable_suppression::~variable_suppression()
 {}
+
+/// Parses a string containing the content of the "change-kind"
+/// property and returns the an instance of @ref
+/// variable_suppression::change_kind as a result.
+///
+/// @param s the string to parse.
+///
+/// @return the resulting @ref variable_suppression::change_kind.
+variable_suppression::change_kind
+variable_suppression::parse_change_kind(const string& s)
+{
+  if (s == "variable-subtype-change")
+    return VARIABLE_SUBTYPE_CHANGE_KIND;
+  else if (s == "added-variable")
+    return ADDED_VARIABLE_CHANGE_KIND;
+  else if (s == "deleted-variable")
+    return DELETED_VARIABLE_CHANGE_KIND;
+  else if (s == "all")
+    return ALL_CHANGE_KIND;
+  else
+    return UNDEFINED_CHANGE_KIND;
+}
+
+/// Getter of the "change_king" property.
+///
+/// @return the value of the "change_kind" property.
+variable_suppression::change_kind
+variable_suppression::get_change_kind() const
+{return priv_->change_kind_;}
+
+/// Setter of the "change_kind" property.
+///
+/// @param k the new value of of the change_kind.
+void
+variable_suppression::set_change_kind(change_kind k)
+{priv_->change_kind_ = k;}
 
 /// Getter for the name of the variable the user wants the current
 /// specification to designate.  This property might be empty, in
@@ -2869,12 +3097,34 @@ variable_suppression::suppresses_diff(const diff* diff) const
 
   assert(fv && sv);
 
-  string fv_name = fv->get_name(), sv_name = sv->get_name();
+  return (suppresses_variable(fv, VARIABLE_SUBTYPE_CHANGE_KIND)
+	  || suppresses_variable(sv, VARIABLE_SUBTYPE_CHANGE_KIND));
+}
 
-  // Check for "name" property match.
+/// Evaluate the current variable suppression specification on a given
+/// @ref var_decl and say if a report about a change involving this
+/// @ref var_decl should be suppressed or not.
+///
+/// @param var the @ref var_decl to evaluate this suppression
+/// specification against.
+///
+/// @param k the kind of variable change @p var is supposed to have.
+///
+/// @return true iff a report about a change involving the variable @p
+/// var should be suppressed.
+bool
+variable_suppression::suppresses_variable(const var_decl* var,
+					  change_kind k) const
+{
+  if (!(get_change_kind() & k))
+    return false;
+
+  string var_name = var->get_qualified_name();
+
+    // Check for "name" property match.
   if (!get_name().empty())
     {
-    if (get_name() != fv_name && get_name () != sv_name)
+      if (get_name() != var_name)
       return false;
     }
   else
@@ -2885,20 +3135,17 @@ variable_suppression::suppresses_diff(const diff* diff) const
 	{
 	  const sptr_utils::regex_t_sptr name_regex = priv_->get_name_regex();
 	  if (name_regex
-	      && (regexec(name_regex.get(), fv_name.c_str(),
-			  0, NULL, 0) != 0
-		  && regexec(name_regex.get(), sv_name.c_str(),
-			     0, NULL, 0) != 0))
+	      && (regexec(name_regex.get(), var_name.c_str(),
+			  0, NULL, 0) != 0))
 	    return false;
 	}
     }
 
   // Check for the symbol_name property match.
-  string fv_sym_name = fv->get_symbol() ? fv->get_symbol()->get_name() : "";
-  string sv_sym_name = sv->get_symbol() ? sv->get_symbol()->get_name() : "";
+  string var_sym_name = var->get_symbol() ? var->get_symbol()->get_name() : "";
   if (!get_symbol_name().empty())
     {
-      if (get_symbol_name() != fv_sym_name && get_symbol_name() != sv_sym_name)
+      if (get_symbol_name() != var_sym_name)
 	return false;
     }
   else
@@ -2906,22 +3153,17 @@ variable_suppression::suppresses_diff(const diff* diff) const
       const sptr_utils::regex_t_sptr sym_name_regex =
 	priv_->get_symbol_name_regex();
       if (sym_name_regex
-	  && (regexec(sym_name_regex.get(), fv_sym_name.c_str(),
-		      0, NULL, 0) != 0
-	      && regexec(sym_name_regex.get(), sv_sym_name.c_str(),
-			 0, NULL, 0) != 0))
+	  && (regexec(sym_name_regex.get(), var_sym_name.c_str(),
+		      0, NULL, 0) != 0))
 	return false;
     }
 
   // Check for symbol_version and symbol_version_regexp property match
-  string fv_sym_version =
-    fv->get_symbol() ? fv->get_symbol()->get_version().str() : "";
-  string sv_sym_version =
-    sv->get_symbol() ? fv->get_symbol()->get_version().str() : "";
+  string var_sym_version =
+    var->get_symbol() ? var->get_symbol()->get_version().str() : "";
   if (!get_symbol_version().empty())
     {
-      if (get_symbol_version() != fv_sym_version
-	  && get_symbol_version() != sv_sym_version)
+      if (get_symbol_version() != var_sym_version)
 	return false;
     }
   else
@@ -2930,24 +3172,19 @@ variable_suppression::suppresses_diff(const diff* diff) const
 	priv_->get_symbol_version_regex();
       if (symbol_version_regex
 	  && (regexec(symbol_version_regex.get(),
-		      fv_sym_version.c_str(),
-		      0, NULL, 0) != 0
-	      && regexec(symbol_version_regex.get(),
-			 sv_sym_version.c_str(),
-			 0, NULL, 0) != 0))
+		      var_sym_version.c_str(),
+		      0, NULL, 0) != 0))
 	return false;
     }
 
-  string fv_type_name =
-    get_type_declaration(fv->get_type())->get_qualified_name();
-  string sv_type_name =
-    get_type_declaration(sv->get_type())->get_qualified_name();
-
   // Check for the "type_name" and tye_name_regex properties match.
+  string var_type_name =
+    get_type_declaration(var->get_type())->get_qualified_name();
+
   if (!get_type_name().empty())
     {
-    if (get_type_name() != fv_type_name && get_type_name() != sv_type_name)
-      return false;
+      if (get_type_name() != var_type_name)
+	return false;
     }
   else
     {
@@ -2956,15 +3193,169 @@ variable_suppression::suppresses_diff(const diff* diff) const
 	  const sptr_utils::regex_t_sptr type_name_regex =
 	    priv_->get_type_name_regex();
 	  if (type_name_regex
-	      && (regexec(type_name_regex.get(), fv_type_name.c_str(),
-			  0, NULL, 0) != 0
-		  && regexec(type_name_regex.get(), sv_type_name.c_str(),
-			     0, NULL, 0) != 0))
+	      && (regexec(type_name_regex.get(), var_type_name.c_str(),
+			  0, NULL, 0) != 0))
 	    return false;
 	}
     }
 
   return true;
+}
+
+/// Evaluate the current variable suppression specification on a given
+/// @ref var_decl and say if a report about a change involving this
+/// @ref var_decl should be suppressed or not.
+///
+/// @param var the @ref var_decl to evaluate this suppression
+/// specification against.
+///
+/// @param k the kind of variable change @p var is supposed to have.
+///
+/// @return true iff a report about a change involving the variable @p
+/// var should be suppressed.
+bool
+variable_suppression::suppresses_variable(const var_decl_sptr var,
+					  change_kind k) const
+{return suppresses_variable(var.get(), k);}
+
+/// Evaluate the current variable suppression specification on a given
+/// @ref elf_symbol and say if a report about a change involving this
+/// @ref elf_symbol should be suppressed or not.
+///
+/// @param sym the @ref elf_symbol to evaluate this suppression
+/// specification against.
+///
+/// @param k the kind of variable change @p sym is supposed to have.
+///
+/// @return true iff a report about a change involving the symbol @p
+/// sym should be suppressed.
+bool
+variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
+						 change_kind k) const
+{
+  if (!sym)
+    return false;
+
+  if (!(get_change_kind() & k))
+    return false;
+
+  if (!sym->is_variable())
+    return false;
+
+  assert(k & ADDED_VARIABLE_CHANGE_KIND
+	 || k & DELETED_VARIABLE_CHANGE_KIND);
+
+  string sym_name = sym->get_name(), sym_version = sym->get_version().str();
+
+  bool no_symbol_name = false, no_symbol_version = false;
+
+  // Consider the symbol name
+  if (!get_name().empty())
+    {
+      if (get_name() != sym_name)
+	return false;
+    }
+  else if (!get_symbol_name().empty())
+    {
+      if (get_symbol_name() != sym_name)
+	return false;
+    }
+  else if (!get_symbol_name_regex_str().empty())
+    {
+      const sptr_utils::regex_t_sptr sym_name_regex =
+	priv_->get_symbol_name_regex();
+      if (sym_name_regex
+	  && (regexec(sym_name_regex.get(), sym_name.c_str(),
+		      0, NULL, 0) != 0))
+	return false;
+    }
+  else
+    no_symbol_name = true;
+
+
+  // Consider the symbol version.
+  if (!get_symbol_version().empty())
+    {
+      if (get_symbol_version() != sym_version)
+	return false;
+    }
+  else if (!get_symbol_version_regex_str().empty())
+    {
+      const sptr_utils::regex_t_sptr symbol_version_regex =
+	priv_->get_symbol_version_regex();
+      if (symbol_version_regex
+	  && (regexec(symbol_version_regex.get(),
+		      sym_version.c_str(),
+		      0, NULL, 0) != 0))
+	return false;
+    }
+  else
+    no_symbol_version = true;
+
+  if (no_symbol_name && no_symbol_version)
+    return false;
+
+  return true;
+}
+
+/// Evaluate the current variable suppression specification on a given
+/// @ref elf_symbol and say if a report about a change involving this
+/// @ref elf_symbol should be suppressed or not.
+///
+/// @param sym the @ref elf_symbol to evaluate this suppression
+/// specification against.
+///
+/// @param k the kind of variable change @p sym is supposed to have.
+///
+/// @return true iff a report about a change involving the symbol @p
+/// sym should be suppressed.
+bool
+variable_suppression::suppresses_variable_symbol(const elf_symbol_sptr sym,
+						 change_kind k) const
+{return suppresses_variable_symbol(sym.get(), k);}
+
+/// Test if an instance of @ref suppression is an instance of @ref
+/// variable_suppression.
+///
+/// @param suppr the instance of @ref suppression to test for.
+///
+/// @return if @p suppr is an instance of @ref variable_suppression, then
+/// return the sub-object of the @p suppr of type @ref
+/// variable_suppression, otherwise return a nil pointer.
+variable_suppression_sptr
+is_variable_suppression(const suppression_sptr s)
+{return dynamic_pointer_cast<variable_suppression>(s);}
+
+/// The bitwise 'and' operator for the enum @ref
+/// variable_suppression::change_kind.
+///
+/// @param l the first operand of the 'and' operator.
+///
+/// @param r the second operand of the 'and' operator.
+///
+/// @return the result of 'and' operation on @p l and @p r.
+variable_suppression::change_kind
+operator&(variable_suppression::change_kind l,
+	  variable_suppression::change_kind r)
+{
+  return static_cast<variable_suppression::change_kind>
+    (static_cast<unsigned>(l) & static_cast<unsigned>(r));
+}
+
+/// The bitwise 'or' operator for the enum @ref
+/// variable_suppression::change_kind.
+///
+/// @param l the first operand of the 'or' operator.
+///
+/// @param r the second operand of the 'or' operator.
+///
+/// @return the result of 'or' operation on @p l and @p r.
+variable_suppression::change_kind
+operator|(variable_suppression::change_kind l,
+	  variable_suppression::change_kind r)
+{
+    return static_cast<variable_suppression::change_kind>
+    (static_cast<unsigned>(l) | static_cast<unsigned>(r));
 }
 
 /// Parse variable suppression specification, build a resulting @ref
@@ -2981,6 +3372,12 @@ read_variable_suppression(const ini::config::section& section)
 
   if (section.get_name() != "suppress_variable")
     return result;
+
+  ini::simple_property_sptr change_kind_prop =
+    is_simple_property(section.find_property("change_kind"));
+  string change_kind_str = change_kind_prop
+    ? change_kind_prop->get_value()->as_string()
+    : "";
 
   ini::simple_property_sptr label_prop =
     is_simple_property(section.find_property("label"));
@@ -3051,6 +3448,11 @@ read_variable_suppression(const ini::config::section& section)
 					symbol_name, symbol_name_regex_str,
 					symbol_version, symbol_version_regex_str,
 					type_name_str, type_name_regex_str));
+
+  if (result && !change_kind_str.empty())
+    result->set_change_kind
+      (variable_suppression::parse_change_kind(change_kind_str));
+
   return result;
 }
 
@@ -11178,31 +11580,47 @@ class corpus_diff::diff_stats::priv
   friend class corpus_diff::diff_stats;
 
   size_t num_func_removed;
+  size_t num_removed_func_filtered_out;
   size_t num_func_added;
+  size_t num_added_func_filtered_out;
   size_t num_func_changed;
-  size_t num_func_filtered_out;
+  size_t num_changed_func_filtered_out;
   size_t num_vars_removed;
+  size_t num_removed_vars_filtered_out;
   size_t num_vars_added;
+  size_t num_added_vars_filtered_out;
   size_t num_vars_changed;
-  size_t num_vars_filtered_out;
+  size_t num_changed_vars_filtered_out;
   size_t num_func_syms_removed;
+  size_t num_removed_func_syms_filtered_out;
   size_t num_func_syms_added;
+  size_t num_added_func_syms_filtered_out;
   size_t num_var_syms_removed;
+  size_t num_removed_var_syms_filtered_out;
   size_t num_var_syms_added;
+  size_t num_added_var_syms_filtered_out;
 
   priv()
-    : num_func_removed(0),
-      num_func_added(0),
-      num_func_changed(0),
-      num_func_filtered_out(0),
-      num_vars_removed(0),
-      num_vars_added(0),
-      num_vars_changed(0),
-      num_vars_filtered_out(0),
-      num_func_syms_removed(0),
-      num_func_syms_added(0),
-      num_var_syms_removed(0),
-      num_var_syms_added(0)
+    : num_func_removed(),
+      num_removed_func_filtered_out(),
+      num_func_added(),
+      num_added_func_filtered_out(),
+      num_func_changed(),
+      num_changed_func_filtered_out(),
+      num_vars_removed(),
+      num_removed_vars_filtered_out(),
+      num_vars_added(),
+      num_added_vars_filtered_out(),
+      num_vars_changed(),
+      num_changed_vars_filtered_out(),
+      num_func_syms_removed(),
+      num_removed_func_syms_filtered_out(),
+      num_func_syms_added(),
+      num_added_func_syms_filtered_out(),
+      num_var_syms_removed(),
+      num_removed_var_syms_filtered_out(),
+      num_var_syms_added(),
+      num_added_var_syms_filtered_out()
   {}
 }; // end class corpus_diff::diff_stats::priv
 
@@ -11225,6 +11643,36 @@ void
 corpus_diff::diff_stats::num_func_removed(size_t n)
 {priv_->num_func_removed = n;}
 
+/// Getter for the number of removed functions that have been filtered
+/// out.
+///
+/// @return the number of removed functions that have been filtered
+/// out.
+size_t
+corpus_diff::diff_stats::num_removed_func_filtered_out() const
+{return priv_->num_removed_func_filtered_out;}
+
+/// Setter for the number of removed functions that have been filtered
+/// out.
+///
+/// @param t the new value.
+void
+corpus_diff::diff_stats::num_removed_func_filtered_out(size_t t)
+{priv_->num_removed_func_filtered_out = t;}
+
+/// Getter for the net number of function removed.
+///
+/// This is the difference between the number of functions removed and
+/// the number of functons removed that have been filtered out.
+///
+/// @return the net number of function removed.
+size_t
+corpus_diff::diff_stats::net_num_func_removed() const
+{
+  assert(num_func_removed() >= num_removed_func_filtered_out());
+  return num_func_removed() - num_removed_func_filtered_out();
+}
+
 /// Getter for the number of functions added.
 ///
 /// @return the number of functions added.
@@ -11238,6 +11686,35 @@ corpus_diff::diff_stats::num_func_added() const
 void
 corpus_diff::diff_stats::num_func_added(size_t n)
 {priv_->num_func_added = n;}
+
+/// Getter for the number of added function that have been filtered out.
+///
+/// @return the number of added function that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_added_func_filtered_out() const
+{return priv_->num_added_func_filtered_out;}
+
+/// Setter for the number of added function that have been filtered
+/// out.
+///
+/// @param n the new value.
+void
+corpus_diff::diff_stats::num_added_func_filtered_out(size_t n)
+{priv_->num_added_func_filtered_out = n;}
+
+/// Getter for the net number of added functions.
+///
+/// The net number of added functions is the difference between the
+/// number of added functions and the number of added functions that
+/// have been filtered out.
+///
+/// @return the net number of added functions.
+size_t
+corpus_diff::diff_stats::net_num_func_added() const
+{
+  assert(num_func_added() >= num_added_func_filtered_out());
+  return num_func_added() - num_added_func_filtered_out();
+}
 
 /// Getter for the number of functions that have a change in one of
 /// their sub-types.
@@ -11263,8 +11740,8 @@ corpus_diff::diff_stats::num_func_changed(size_t n)
 /// @return the number of functions that have a change in one of their
 /// sub-types, and that have been filtered out.
 size_t
-corpus_diff::diff_stats::num_func_filtered_out() const
-{return priv_->num_func_filtered_out;}
+corpus_diff::diff_stats::num_changed_func_filtered_out() const
+{return priv_->num_changed_func_filtered_out;}
 
 /// Setter for the number of functions that have a change in one of
 /// their sub-types, and that have been filtered out.
@@ -11272,8 +11749,8 @@ corpus_diff::diff_stats::num_func_filtered_out() const
 /// @param n the new number of functions that have a change in one of their
 /// sub-types, and that have been filtered out.
 void
-corpus_diff::diff_stats::num_func_filtered_out(size_t n)
-{priv_->num_func_filtered_out = n;}
+corpus_diff::diff_stats::num_changed_func_filtered_out(size_t n)
+{priv_->num_changed_func_filtered_out = n;}
 
 /// Getter for the number of functions that have a change in their
 /// sub-types, minus the number of these functions that got filtered
@@ -11284,7 +11761,7 @@ corpus_diff::diff_stats::num_func_filtered_out(size_t n)
 /// filtered out from the diff.
 size_t
 corpus_diff::diff_stats::net_num_func_changed() const
-{return num_func_changed() - num_func_filtered_out();}
+{return num_func_changed() - num_changed_func_filtered_out();}
 
 /// Getter for the number of variables removed.
 ///
@@ -11300,6 +11777,36 @@ void
 corpus_diff::diff_stats::num_vars_removed(size_t n)
 {priv_->num_vars_removed = n;}
 
+/// Getter for the number removed variables that have been filtered
+/// out.
+///
+/// @return the number removed variables that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_removed_vars_filtered_out() const
+{return priv_->num_removed_vars_filtered_out;}
+
+/// Setter for the number of removed variables that have been filtered
+/// out.
+///
+/// @param n the new value.
+void
+corpus_diff::diff_stats::num_removed_vars_filtered_out(size_t n) const
+{priv_->num_removed_vars_filtered_out = n;}
+
+/// Getter for the net number of removed variables.
+///
+/// The net number of removed variables is the difference between the
+/// number of removed variables and the number of removed variables
+/// that have been filtered out.
+///
+/// @return the net number of removed variables.
+size_t
+corpus_diff::diff_stats::net_num_vars_removed() const
+{
+  assert(num_vars_removed() >= num_removed_vars_filtered_out());
+  return num_vars_removed() - num_removed_vars_filtered_out();
+}
+
 /// Getter for the number of variables added.
 ///
 /// @return the number of variables added.
@@ -11313,6 +11820,36 @@ corpus_diff::diff_stats::num_vars_added() const
 void
 corpus_diff::diff_stats::num_vars_added(size_t n)
 {priv_->num_vars_added = n;}
+
+/// Getter for the number of added variables that have been filtered
+/// out.
+///
+/// @return the number of added variables that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_added_vars_filtered_out() const
+{return priv_->num_added_vars_filtered_out;}
+
+/// Setter for the number of added variables that have been filtered
+/// out.
+///
+/// @param n the new value.
+void
+corpus_diff::diff_stats::num_added_vars_filtered_out(size_t n)
+{priv_->num_added_vars_filtered_out = n;}
+
+/// Getter for the net number of added variables.
+///
+/// The net number of added variables is the difference between the
+/// number of added variables and the number of added variables that
+/// have been filetered out.
+///
+/// @return the net number of added variables.
+size_t
+corpus_diff::diff_stats::net_num_vars_added() const
+{
+  assert(num_vars_added() >= num_added_vars_filtered_out());
+  return num_vars_added() - num_added_vars_filtered_out();
+}
 
 /// Getter for the number of variables that have a change in one of
 /// their sub-types.
@@ -11338,8 +11875,8 @@ corpus_diff::diff_stats::num_vars_changed(size_t n)
 /// @return the number of functions that have a change in one of their
 /// sub-types, and that have been filtered out.
 size_t
-corpus_diff::diff_stats::num_vars_filtered_out() const
-{return priv_->num_vars_filtered_out;}
+corpus_diff::diff_stats::num_changed_vars_filtered_out() const
+{return priv_->num_changed_vars_filtered_out;}
 
 /// Setter for the number of variables that have a change in one of
 /// their sub-types, and that have been filtered out.
@@ -11347,8 +11884,8 @@ corpus_diff::diff_stats::num_vars_filtered_out() const
 /// @param n the new number of variables that have a change in one of their
 /// sub-types, and that have been filtered out.
 void
-corpus_diff::diff_stats::num_vars_filtered_out(size_t n)
-{priv_->num_vars_filtered_out = n;}
+corpus_diff::diff_stats::num_changed_vars_filtered_out(size_t n)
+{priv_->num_changed_vars_filtered_out = n;}
 
 /// Getter for the number of variables that have a change in their
 /// sub-types, minus the number of these variables that got filtered
@@ -11359,7 +11896,7 @@ corpus_diff::diff_stats::num_vars_filtered_out(size_t n)
 /// filtered out from the diff.
 size_t
 corpus_diff::diff_stats::net_num_vars_changed() const
-{return num_vars_changed() - num_vars_filtered_out();}
+{return num_vars_changed() - num_changed_vars_filtered_out();}
 
 /// Getter for the number of function symbols (not referenced by any
 /// debug info) that got removed.
@@ -11379,6 +11916,41 @@ void
 corpus_diff::diff_stats::num_func_syms_removed(size_t n)
 {priv_->num_func_syms_removed = n;}
 
+/// Getter for the number of removed function symbols, not referenced
+/// by debug info, that have been filtered out.
+///
+/// @return the number of removed function symbols, not referenced by
+/// debug info, that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_removed_func_syms_filtered_out() const
+{return priv_->num_removed_func_syms_filtered_out;}
+
+/// Setter for the number of removed function symbols, not referenced
+/// by debug info, that have been filtered out.
+///
+/// @param n the new the number of removed function symbols, not
+/// referenced by debug info, that have been filtered out.
+void
+corpus_diff::diff_stats::num_removed_func_syms_filtered_out(size_t n)
+{priv_->num_removed_func_syms_filtered_out = n;}
+
+/// Getter of the net number of removed function symbols that are not
+/// referenced by any debug info.
+///
+/// This is the difference between the total number of removed
+/// function symbols and the number of removed function symbols that
+/// have been filteted out.  Both numbers are for symbols not
+/// referenced by debug info.
+///
+/// return the net number of removed function symbols that are not
+/// referenced by any debug info.
+size_t
+corpus_diff::diff_stats::net_num_removed_func_syms() const
+{
+  assert(num_func_syms_removed() >= num_removed_func_syms_filtered_out());
+  return num_func_syms_removed() - num_removed_func_syms_filtered_out();
+}
+
 /// Getter for the number of function symbols (not referenced by any
 /// debug info) that got added.
 ///
@@ -11396,6 +11968,41 @@ corpus_diff::diff_stats::num_func_syms_added() const
 void
 corpus_diff::diff_stats::num_func_syms_added(size_t n)
 {priv_->num_func_syms_added = n;}
+
+/// Getter for the number of added function symbols, not referenced by
+/// any debug info, that have been filtered out.
+///
+/// @return the number of added function symbols, not referenced by
+/// any debug info, that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_added_func_syms_filtered_out() const
+{return priv_->num_added_func_syms_filtered_out;}
+
+/// Setter for the number of added function symbols, not referenced by
+/// any debug info, that have been filtered out.
+///
+/// @param n the new number of added function symbols, not referenced
+/// by any debug info, that have been filtered out.
+void
+corpus_diff::diff_stats::num_added_func_syms_filtered_out(size_t n)
+{priv_->num_added_func_syms_filtered_out = n;}
+
+/// Getter of the net number of added function symbols that are not
+/// referenced by any debug info.
+///
+/// This is the difference between the total number of added
+/// function symbols and the number of added function symbols that
+/// have been filteted out.  Both numbers are for symbols not
+/// referenced by debug info.
+///
+/// return the net number of added function symbols that are not
+/// referenced by any debug info.
+size_t
+corpus_diff::diff_stats::net_num_added_func_syms() const
+{
+  assert(num_func_syms_added() >= num_added_func_syms_filtered_out());
+  return num_func_syms_added()- num_added_func_syms_filtered_out();
+}
 
 /// Getter for the number of variable symbols (not referenced by any
 /// debug info) that got removed.
@@ -11415,6 +12022,41 @@ void
 corpus_diff::diff_stats::num_var_syms_removed(size_t n)
 {priv_->num_var_syms_removed = n;}
 
+/// Getter for the number of removed variable symbols, not referenced
+/// by any debug info, that have been filtered out.
+///
+/// @return the number of removed variable symbols, not referenced
+/// by any debug info, that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_removed_var_syms_filtered_out() const
+{return priv_->num_removed_var_syms_filtered_out;}
+
+/// Setter for the number of removed variable symbols, not referenced
+/// by any debug info, that have been filtered out.
+///
+/// @param n the number of removed variable symbols, not referenced by
+/// any debug info, that have been filtered out.
+void
+corpus_diff::diff_stats::num_removed_var_syms_filtered_out(size_t n)
+{priv_->num_removed_var_syms_filtered_out = n;}
+
+/// Getter of the net number of removed variable symbols that are not
+/// referenced by any debug info.
+///
+/// This is the difference between the total number of removed
+/// variable symbols and the number of removed variable symbols that
+/// have been filteted out.  Both numbers are for symbols not
+/// referenced by debug info.
+///
+/// return the net number of removed variable symbols that are not
+/// referenced by any debug info.
+size_t
+corpus_diff::diff_stats::net_num_removed_var_syms() const
+{
+  assert(num_var_syms_removed() >= num_removed_var_syms_filtered_out());
+  return num_var_syms_removed() - num_removed_var_syms_filtered_out();
+}
+
 /// Getter for the number of variable symbols (not referenced by any
 /// debug info) that got added.
 ///
@@ -11432,6 +12074,41 @@ corpus_diff::diff_stats::num_var_syms_added() const
 void
 corpus_diff::diff_stats::num_var_syms_added(size_t n)
 {priv_->num_var_syms_added = n;}
+
+/// Getter for the number of added variable symbols, not referenced by
+/// any debug info, that have been filtered out.
+///
+/// @return the number of added variable symbols, not referenced by
+/// any debug info, that have been filtered out.
+size_t
+corpus_diff::diff_stats::num_added_var_syms_filtered_out() const
+{return priv_->num_added_var_syms_filtered_out;}
+
+/// Setter for the number of added variable symbols, not referenced by
+/// any debug info, that have been filtered out.
+///
+/// @param n the new number of added variable symbols, not referenced
+/// by any debug info, that have been filtered out.
+void
+corpus_diff::diff_stats::num_added_var_syms_filtered_out(size_t n)
+{priv_->num_added_var_syms_filtered_out = n;}
+
+/// Getter of the net number of added variable symbols that are not
+/// referenced by any debug info.
+///
+/// This is the difference between the total number of added
+/// variable symbols and the number of added variable symbols that
+/// have been filteted out.  Both numbers are for symbols not
+/// referenced by debug info.
+///
+/// return the net number of added variable symbols that are not
+/// referenced by any debug info.
+size_t
+corpus_diff::diff_stats::net_num_added_var_syms() const
+{
+  assert(num_var_syms_added() >= num_added_var_syms_filtered_out());
+  return num_var_syms_added() - num_added_var_syms_filtered_out();
+}
 
 // <corpus stuff>
 struct corpus_diff::priv
@@ -11451,17 +12128,25 @@ struct corpus_diff::priv
   edit_script				unrefed_fn_syms_edit_script_;
   edit_script				unrefed_var_syms_edit_script_;
   string_function_ptr_map		deleted_fns_;
+  string_function_ptr_map		suppressed_deleted_fns_;
   string_function_ptr_map		added_fns_;
+  string_function_ptr_map		suppressed_added_fns_;
   string_function_decl_diff_sptr_map	changed_fns_map_;
   function_decl_diff_sptrs_type	changed_fns_;
   string_var_ptr_map			deleted_vars_;
+  string_var_ptr_map			suppressed_deleted_vars_;
   string_var_ptr_map			added_vars_;
+  string_var_ptr_map			suppressed_added_vars_;
   string_var_diff_sptr_map		changed_vars_map_;
   var_diff_sptrs_type			sorted_changed_vars_;
   string_elf_symbol_map		added_unrefed_fn_syms_;
+  string_elf_symbol_map		suppressed_added_unrefed_fn_syms_;
   string_elf_symbol_map		deleted_unrefed_fn_syms_;
+  string_elf_symbol_map		suppressed_deleted_unrefed_fn_syms_;
   string_elf_symbol_map		added_unrefed_var_syms_;
+  string_elf_symbol_map		suppressed_added_unrefed_var_syms_;
   string_elf_symbol_map		deleted_unrefed_var_syms_;
+  string_elf_symbol_map		suppressed_deleted_unrefed_var_syms_;
 
   priv()
     : finished_(false),
@@ -11478,6 +12163,33 @@ struct corpus_diff::priv
 
   void
   ensure_lookup_tables_populated();
+
+  void
+  apply_suppressions_to_added_removed_fns_vars();
+
+  bool
+  deleted_function_is_suppressed(const function_decl* fn) const;
+
+  bool
+  added_function_is_suppressed(const function_decl* fn) const;
+
+  bool
+  deleted_variable_is_suppressed(const var_decl* var) const;
+
+  bool
+  added_variable_is_suppressed(const var_decl* var) const;
+
+  bool
+  deleted_unrefed_fn_sym_is_suppressed(const elf_symbol*) const;
+
+  bool
+  added_unrefed_fn_sym_is_suppressed(const elf_symbol*) const;
+
+  bool
+  deleted_unrefed_var_sym_is_suppressed(const elf_symbol*) const;
+
+  bool
+  added_unrefed_var_sym_is_suppressed(const elf_symbol*) const;
 
   void
   apply_filters_and_compute_diff_stats(corpus_diff::diff_stats&);
@@ -11794,6 +12506,294 @@ corpus_diff::priv::ensure_lookup_tables_populated()
   }
 }
 
+/// Test if a change reports about a given @ref function_decl that is
+/// changed in a certain way is suppressed by a given suppression
+/// specifiation
+///
+/// @param fn the @ref function_decl to consider.
+///
+/// @param suppr the suppression specification to consider.
+///
+/// @param k the kind of change that happened to @p fn.
+///
+/// @return true iff the suppression specification @p suppr suppresses
+/// change reports about function @p fn, if that function changes in
+/// the way expressed by @p k.
+static bool
+function_is_suppressed(const function_decl* fn,
+		       const suppression_sptr suppr,
+		       function_suppression::change_kind k)
+{
+  function_suppression_sptr fn_suppr = is_function_suppression(suppr);
+  if (!fn_suppr)
+    return false;
+  return fn_suppr->suppresses_function(fn, k);
+}
+
+/// Test if a change reports about a given @ref var_decl that is
+/// changed in a certain way is suppressed by a given suppression
+/// specifiation
+///
+/// @param fn the @ref var_decl to consider.
+///
+/// @param suppr the suppression specification to consider.
+///
+/// @param k the kind of change that happened to @p fn.
+///
+/// @return true iff the suppression specification @p suppr suppresses
+/// change reports about variable @p fn, if that variable changes in
+/// the way expressed by @p k.
+static bool
+variable_is_suppressed(const var_decl* var,
+		       const suppression_sptr suppr,
+		       variable_suppression::change_kind k)
+{
+  variable_suppression_sptr var_suppr = is_variable_suppression(suppr);
+  if (!var_suppr)
+    return false;
+  return var_suppr->suppresses_variable(var, k);
+}
+
+/// Apply the suppression specifications for this corpus diff to the
+/// set of added and removed functions and variables.
+void
+corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
+{
+  const suppressions_type& suppressions = ctxt_->suppressions();
+  for (suppressions_type::const_iterator i = suppressions.begin();
+       i != suppressions.end();
+       ++i)
+    {
+      // Added/Deleted functions.
+      if (function_suppression_sptr fn_suppr = is_function_suppression(*i))
+	{
+	  // Added functions
+	  for (string_function_ptr_map::const_iterator e = added_fns_.begin();
+	       e != added_fns_.end();
+	       ++e)
+	    if (function_is_suppressed(e->second, fn_suppr,
+				       function_suppression::ADDED_FUNCTION_CHANGE_KIND))
+	      suppressed_added_fns_[e->first] = e->second;
+
+	  // Deleted functions.
+	  for (string_function_ptr_map::const_iterator e = deleted_fns_.begin();
+	       e != deleted_fns_.end();
+	       ++e)
+	    if (function_is_suppressed(e->second, fn_suppr,
+				       function_suppression::DELETED_FUNCTION_CHANGE_KIND))
+	      suppressed_deleted_fns_[e->first] = e->second;
+
+	  // Added function symbols not referenced by any debug info
+	  for (string_elf_symbol_map::const_iterator e =
+		 added_unrefed_fn_syms_.begin();
+	       e != added_unrefed_fn_syms_.end();
+	       ++e)
+	    if (fn_suppr->suppresses_function_symbol(e->second,
+						     function_suppression::ADDED_FUNCTION_CHANGE_KIND))
+	      suppressed_added_unrefed_fn_syms_[e->first] = e->second;
+
+	  // Removed function symbols not referenced by any debug info
+	  for (string_elf_symbol_map::const_iterator e =
+		 deleted_unrefed_fn_syms_.begin();
+	       e != deleted_unrefed_fn_syms_.end();
+	       ++e)
+	    if (fn_suppr->suppresses_function_symbol(e->second,
+						     function_suppression::DELETED_FUNCTION_CHANGE_KIND))
+	      suppressed_deleted_unrefed_fn_syms_[e->first] = e->second;
+	}
+      // Added/Deleted variables
+      else if (variable_suppression_sptr var_suppr =
+	       is_variable_suppression(*i))
+	{
+	  // Added variables
+	  for (string_var_ptr_map::const_iterator e = added_vars_.begin();
+	       e != added_vars_.end();
+	       ++e)
+	    if (variable_is_suppressed(e->second, var_suppr,
+				       variable_suppression::ADDED_VARIABLE_CHANGE_KIND))
+	      suppressed_added_vars_[e->first] = e->second;
+
+	  //Deleted variables
+	  for (string_var_ptr_map::const_iterator e = deleted_vars_.begin();
+	       e != deleted_vars_.end();
+	       ++e)
+	    if (variable_is_suppressed(e->second, var_suppr,
+				       variable_suppression::DELETED_VARIABLE_CHANGE_KIND))
+	      suppressed_deleted_vars_[e->first] = e->second;
+
+	  // Added variable symbols not referenced by any debug info
+	  for (string_elf_symbol_map::const_iterator e =
+		 added_unrefed_var_syms_.begin();
+	       e != added_unrefed_var_syms_.end();
+	       ++e)
+	    if (var_suppr->suppresses_variable_symbol(e->second,
+						      variable_suppression::ADDED_VARIABLE_CHANGE_KIND))
+	      suppressed_added_unrefed_var_syms_[e->first] = e->second;
+
+	  // Removed variable symbols not referenced by any debug info
+	  for (string_elf_symbol_map::const_iterator e =
+		 deleted_unrefed_var_syms_.begin();
+	       e != deleted_unrefed_var_syms_.end();
+	       ++e)
+	    if (var_suppr->suppresses_variable_symbol(e->second,
+						      variable_suppression::DELETED_VARIABLE_CHANGE_KIND))
+	      suppressed_deleted_unrefed_var_syms_[e->first] = e->second;
+	}
+    }
+}
+
+/// Test if the change reports for a give given deleted function have
+/// been deleted.
+///
+/// @param fn the function to consider.
+///
+/// @return true iff the change reports for a give given deleted
+/// function have been deleted.
+bool
+corpus_diff::priv::deleted_function_is_suppressed(const function_decl* fn) const
+{
+  if (!fn)
+    return false;
+
+  string_function_ptr_map::const_iterator i =
+    suppressed_deleted_fns_.find(fn->get_id());
+
+  return (i != suppressed_deleted_fns_.end());
+}
+
+/// Test if the change reports for a give given added function has
+/// been deleted.
+///
+/// @param fn the function to consider.
+///
+/// @return true iff the change reports for a give given added
+/// function has been deleted.
+bool
+corpus_diff::priv::added_function_is_suppressed(const function_decl* fn) const
+{
+  if (!fn)
+    return false;
+
+  string_function_ptr_map::const_iterator i =
+    suppressed_added_fns_.find(fn->get_id());
+
+  return (i != suppressed_added_fns_.end());
+}
+
+/// Test if the change reports for a give given deleted variable has
+/// been deleted.
+///
+/// @param var the variable to consider.
+///
+/// @return true iff the change reports for a give given deleted
+/// variable has been deleted.
+bool
+corpus_diff::priv::deleted_variable_is_suppressed(const var_decl* var) const
+{
+  if (!var)
+    return false;
+
+  string_var_ptr_map::const_iterator i =
+    suppressed_deleted_vars_.find(var->get_id());
+
+  return (i != suppressed_deleted_vars_.end());
+}
+
+/// Test if the change reports for a give given added variable has
+/// been deleted.
+///
+/// @param var the variable to consider.
+///
+/// @return true iff the change reports for a give given deleted
+/// variable has been deleted.
+bool
+corpus_diff::priv::added_variable_is_suppressed(const var_decl* var) const
+{
+  if (!var)
+    return false;
+
+  string_var_ptr_map::const_iterator i =
+    suppressed_added_vars_.find(var->get_id());
+
+  return (i != suppressed_added_vars_.end());
+}
+
+/// Test if the change reports for a given deleted function symbol
+/// (that is not referenced by any debug info) has been suppressed.
+///
+/// @param var the function to consider.
+///
+/// @return true iff the change reports for a given deleted function
+/// symbol has been suppressed.
+bool
+corpus_diff::priv::deleted_unrefed_fn_sym_is_suppressed(const elf_symbol* s) const
+{
+  if (!s)
+    return false;
+
+  string_elf_symbol_map::const_iterator i =
+    suppressed_deleted_unrefed_fn_syms_.find(s->get_id_string());
+
+  return (i != suppressed_deleted_unrefed_fn_syms_.end());
+}
+
+/// Test if the change reports for a given added function symbol
+/// (that is not referenced by any debug info) has been suppressed.
+///
+/// @param var the function to consider.
+///
+/// @return true iff the change reports for a given added function
+/// symbol has been suppressed.
+bool
+corpus_diff::priv::added_unrefed_fn_sym_is_suppressed(const elf_symbol* s) const
+{
+  if (!s)
+    return false;
+
+  string_elf_symbol_map::const_iterator i =
+    suppressed_added_unrefed_fn_syms_.find(s->get_id_string());
+
+  return (i != suppressed_added_unrefed_fn_syms_.end());
+}
+
+/// Test if the change reports for a given deleted variable symbol
+/// (that is not referenced by any debug info) has been suppressed.
+///
+/// @param var the variable to consider.
+///
+/// @return true iff the change reports for a given deleted variable
+/// symbol has been suppressed.
+bool
+corpus_diff::priv::deleted_unrefed_var_sym_is_suppressed(const elf_symbol* s) const
+{
+  if (!s)
+    return false;
+
+  string_elf_symbol_map::const_iterator i =
+    suppressed_deleted_unrefed_var_syms_.find(s->get_id_string());
+
+  return (i != suppressed_deleted_unrefed_var_syms_.end());
+}
+
+/// Test if the change reports for a given added variable symbol
+/// (that is not referenced by any debug info) has been suppressed.
+///
+/// @param var the variable to consider.
+///
+/// @return true iff the change reports for a given added variable
+/// symbol has been suppressed.
+bool
+corpus_diff::priv::added_unrefed_var_sym_is_suppressed(const elf_symbol* s) const
+{
+  if (!s)
+    return false;
+
+  string_elf_symbol_map::const_iterator i =
+    suppressed_added_unrefed_var_syms_.find(s->get_id_string());
+
+  return (i != suppressed_added_unrefed_var_syms_.end());
+}
+
 /// Compute the diff stats.
 ///
 /// To know the number of functions that got filtered out, this
@@ -11813,11 +12813,15 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
 
 {
   stat.num_func_removed(deleted_fns_.size());
+  stat.num_removed_func_filtered_out(suppressed_deleted_fns_.size());
   stat.num_func_added(added_fns_.size());
+  stat.num_added_func_filtered_out(suppressed_added_fns_.size());
   stat.num_func_changed(changed_fns_map_.size());
 
   stat.num_vars_removed(deleted_vars_.size());
+  stat.num_removed_vars_filtered_out(suppressed_deleted_vars_.size());
   stat.num_vars_added(added_vars_.size());
+  stat.num_added_vars_filtered_out(suppressed_added_vars_.size());
   stat.num_vars_changed(changed_vars_map_.size());
 
   // Walk the changed function diff nodes to apply the categorization
@@ -11851,7 +12855,7 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
        i != changed_fns_.end();
        ++i)
     if ((*i)->is_filtered_out())
-      stat.num_func_filtered_out(stat.num_func_filtered_out() + 1);
+      stat.num_changed_func_filtered_out(stat.num_changed_func_filtered_out() + 1);
 
   // Walk the changed variables diff nodes to count the number of
   // filtered-out variables.
@@ -11860,13 +12864,17 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
        ++i)
     {
       if ((*i)->is_filtered_out())
-	stat.num_vars_filtered_out(stat.num_vars_filtered_out() + 1);
+	stat.num_changed_vars_filtered_out(stat.num_changed_vars_filtered_out() + 1);
     }
 
   stat.num_func_syms_added(added_unrefed_fn_syms_.size());
+  stat.num_added_func_syms_filtered_out(suppressed_added_unrefed_fn_syms_.size());
   stat.num_func_syms_removed(deleted_unrefed_fn_syms_.size());
+  stat.num_removed_func_syms_filtered_out(suppressed_deleted_unrefed_fn_syms_.size());
   stat.num_var_syms_added(added_unrefed_var_syms_.size());
+  stat.num_added_var_syms_filtered_out(suppressed_added_unrefed_var_syms_.size());
   stat.num_var_syms_removed(deleted_unrefed_var_syms_.size());
+  stat.num_removed_var_syms_filtered_out(suppressed_deleted_unrefed_var_syms_.size());
 }
 
 /// Emit the summary of the functions & variables that got
@@ -11881,7 +12889,7 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 				   const string&	indent)
 {
   /// Report added/removed/changed functions.
-  size_t total = s.num_func_removed() + s.num_func_added() +
+  size_t total = s.net_num_func_removed() + s.net_num_func_added() +
     s.net_num_func_changed();
 
   if (!sonames_equal_)
@@ -11892,32 +12900,48 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 
   // function changes summary
   out << indent << "Functions changes summary: ";
-  out << s.num_func_removed() << " Removed, ";
-  out << s.num_func_changed() - s.num_func_filtered_out() << " Changed";
-  if (s.num_func_filtered_out())
-    out << " (" << s.num_func_filtered_out() << " filtered out)";
+  out << s.net_num_func_removed() << " Removed";
+  if (s.num_removed_func_filtered_out())
+    out << " ("
+	<< s.num_removed_func_filtered_out()
+	<< " filtered out)";
   out << ", ";
-  out << s.num_func_added() << " Added ";
+  out << s.net_num_func_changed() << " Changed";
+  if (s.num_changed_func_filtered_out())
+    out << " (" << s.num_changed_func_filtered_out() << " filtered out)";
+  out << ", ";
+  out << s.net_num_func_added() << " Added ";
   if (total <= 1)
-    out << "function\n";
+    out << "function";
   else
-    out << "functions\n";
+    out << "functions";
+  if (s.num_added_func_filtered_out())
+    out << " (" << s.num_added_func_filtered_out() << " filtered out)";
+  out << "\n";
 
   total = s.num_vars_removed() + s.num_vars_added() +
     s.net_num_vars_changed();
 
   // variables changes summary
   out << indent << "Variables changes summary: ";
-  out << s.num_vars_removed() << " Removed, ";
-  out << s.num_vars_changed() - s.num_vars_filtered_out() << " Changed";
-  if (s.num_vars_filtered_out())
-    out << " (" << s.num_vars_filtered_out() << " filtered out)";
+  out << s.net_num_vars_removed() << " Removed";
+  if (s.num_removed_vars_filtered_out())
+    out << " (" << s.num_removed_vars_filtered_out()
+	<< " filtered out)";
   out << ", ";
-  out << s.num_vars_added() << " Added ";
+  out << s.num_vars_changed() - s.num_changed_vars_filtered_out() << " Changed";
+  if (s.num_changed_vars_filtered_out())
+    out << " (" << s.num_changed_vars_filtered_out() << " filtered out)";
+  out << ", ";
+  out << s.net_num_vars_added() << " Added ";
   if (total <= 1)
-    out << "variable\n";
+    out << "variable";
   else
-    out << "variables\n";
+    out << "variables";
+  if (s.num_added_vars_filtered_out())
+    out << " (" << s.num_added_vars_filtered_out()
+	<< " filtered out)";
+  out << "\n";
 
   if (ctxt_->show_symbols_unreferenced_by_debug_info()
       && (s.num_func_syms_removed()
@@ -11938,8 +12962,16 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 	{
 	  out << indent
 	      << "Function symbols changes summary: "
-	      << s.num_func_syms_removed() << " Removed, "
-	      << s.num_func_syms_added() << " Added function symbol";
+	      << s.net_num_removed_func_syms() << " Removed";
+	  if (s.num_removed_func_syms_filtered_out())
+	    out << " (" << s.num_removed_func_syms_filtered_out()
+		<< " filtered out)";
+	  out << ", ";
+	  out << s.net_num_added_func_syms() << " Added";
+	  if (s.num_added_func_syms_filtered_out())
+	    out << " (" << s.num_added_func_syms_filtered_out()
+		<< " filtered out)";
+	  out << " function symbol";
 	  if (s.num_func_syms_added() + s.num_func_syms_removed() > 1)
 	    out << "s";
 	  out << " not referenced by debug info\n";
@@ -11958,8 +12990,16 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 	{
 	  out << indent
 	      << "Variable symbols changes summary: "
-	      << s.num_var_syms_removed() << " Removed, "
-	      << s.num_var_syms_added() << " Added function symbol";
+	      << s.net_num_removed_var_syms() << " Removed";
+	  if (s.num_removed_var_syms_filtered_out())
+	    out << " (" << s.num_removed_var_syms_filtered_out()
+		  << " filtered out)";
+	  out << ", ";
+	  out << s.net_num_added_var_syms() << " Added";
+	  if (s.num_added_var_syms_filtered_out())
+	    out << " (" << s.num_added_var_syms_filtered_out()
+		<< " filtered out)";
+	  out << " variable symbol";
 	  if (s.num_var_syms_added() + s.num_var_syms_removed() > 1)
 	    out << "s";
 	  out << " not referenced by debug info\n";
@@ -12585,8 +13625,8 @@ corpus_diff::report(ostream& out, const string& indent) const
     const_cast<corpus_diff*>(this)->apply_filters_and_suppressions_before_reporting();
 
   /// Report removed/added/changed functions.
-  total = s.num_func_removed() + s.num_func_added() +
-    s.num_func_changed() - s.num_func_filtered_out();
+  total = s.net_num_func_removed() + s.net_num_func_added() +
+    s.net_num_func_changed();
   const unsigned large_num = 100;
 
   priv_->emit_diff_stats(s, out, indent);
@@ -12608,9 +13648,9 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_deleted_fns())
     {
-      if (s.num_func_removed() == 1)
+      if (s.net_num_func_removed() == 1)
 	out << indent << "1 Removed function:\n\n";
-      else if (s.num_func_removed() > 1)
+      else if (s.net_num_func_removed() > 1)
 	out << indent << s.num_func_removed() << " Removed functions:\n\n";
 
       vector<function_decl*>sorted_deleted_fns;
@@ -12620,6 +13660,9 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != sorted_deleted_fns.end();
 	   ++i)
 	{
+	  if (priv_->deleted_function_is_suppressed(*i))
+	    continue;
+
 	  out << indent
 	      << "  ";
 	  if (total > large_num)
@@ -12641,10 +13684,10 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_added_fns())
     {
-      if (s.num_func_added() == 1)
-	out << indent << "1 Added function:\n";
-      else if (s.num_func_added() > 1)
-	out << indent << s.num_func_added()
+      if (s.net_num_func_added() == 1)
+	out << indent << "1 Added function:\n\n";
+      else if (s.net_num_func_added() > 1)
+	out << indent << s.net_num_func_added()
 	    << " Added functions:\n\n";
       vector<function_decl*> sorted_added_fns;
       sort_string_function_ptr_map(priv_->added_fns_, sorted_added_fns);
@@ -12652,6 +13695,9 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != sorted_added_fns.end();
 	   ++i)
 	{
+	  if (priv_->added_function_is_suppressed(*i))
+	    continue;
+
 	  out
 	    << indent
 	    << "  ";
@@ -12680,7 +13726,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_changed_fns())
     {
-      size_t num_changed = s.num_func_changed() - s.num_func_filtered_out();
+      size_t num_changed = s.num_func_changed() - s.num_changed_func_filtered_out();
       if (num_changed == 1)
 	out << indent << "1 function with some indirect sub-type change:\n\n";
       else if (num_changed > 1)
@@ -12719,14 +13765,14 @@ corpus_diff::report(ostream& out, const string& indent) const
 
  // Report added/removed/changed variables.
   total = s.num_vars_removed() + s.num_vars_added() +
-    s.num_vars_changed() - s.num_vars_filtered_out();
+    s.num_vars_changed() - s.num_changed_vars_filtered_out();
 
   if (context()->show_deleted_vars())
     {
-      if (s.num_vars_removed() == 1)
-	out << indent << "1 Deleted variable:\n";
-      else if (s.num_vars_removed() > 1)
-	out << indent << s.num_vars_removed()
+      if (s.net_num_vars_removed() == 1)
+	out << indent << "1 Deleted variable:\n\n";
+      else if (s.net_num_vars_removed() > 1)
+	out << indent << s.net_num_vars_removed()
 	    << " Deleted variables:\n\n";
       string n;
       vector<var_decl*> sorted_deleted_vars;
@@ -12736,7 +13782,11 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != sorted_deleted_vars.end();
 	   ++i)
 	{
+	  if (priv_->deleted_variable_is_suppressed(*i))
+	    continue;
+
 	  n = (*i)->get_pretty_representation();
+
 	  out << indent
 	      << "  ";
 	  if (total > large_num)
@@ -12763,11 +13813,11 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_added_vars())
     {
-      if (s.num_vars_added() == 1)
-	out << indent << "1 Added variable:\n";
-      else if (s.num_vars_added() > 1)
-	out << indent << s.num_vars_added()
-	    << " Added variables:\n";
+      if (s.net_num_vars_added() == 1)
+	out << indent << "1 Added variable:\n\n";
+      else if (s.net_num_vars_added() > 1)
+	out << indent << s.net_num_vars_added()
+	    << " Added variables:\n\n";
       string n;
       vector<var_decl*> sorted_added_vars;
       sort_string_var_ptr_map(priv_->added_vars_, sorted_added_vars);
@@ -12776,7 +13826,11 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != sorted_added_vars.end();
 	   ++i)
 	{
+	  if (priv_->added_variable_is_suppressed(*i))
+	    continue;
+
 	  n = (*i)->get_pretty_representation();
+
 	  out << indent
 	      << "  ";
 	  if (total > large_num)
@@ -12801,9 +13855,9 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   if (context()->show_changed_vars())
     {
-      size_t num_changed = s.num_vars_changed() - s.num_vars_filtered_out();
+      size_t num_changed = s.num_vars_changed() - s.num_changed_vars_filtered_out();
       if (num_changed == 1)
-	out << indent << "1 Changed variable:\n";
+	out << indent << "1 Changed variable:\n\n";
       else if (num_changed > 1)
 	out << indent << num_changed
 	    << " Changed variables:\n\n";
@@ -12840,12 +13894,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_symbols_unreferenced_by_debug_info()
       && priv_->deleted_unrefed_fn_syms_.size())
     {
-      if (s.num_func_syms_removed() == 1)
+      if (s.net_num_removed_func_syms() == 1)
 	out << indent
 	    << "1 Removed function symbol not referenced by debug info:\n\n";
-      else if (s.num_func_syms_removed() > 0)
+      else if (s.net_num_removed_func_syms() > 0)
 	out << indent
-	    << s.num_func_syms_removed()
+	    << s.net_num_removed_func_syms()
 	    << " Removed function symbols not referenced by debug info:\n\n";
 
       vector<elf_symbol_sptr> sorted_deleted_unrefed_fn_syms;
@@ -12856,8 +13910,11 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != sorted_deleted_unrefed_fn_syms.end();
 	   ++i)
 	{
+	  if (priv_->deleted_unrefed_fn_sym_is_suppressed((*i).get()))
+	    continue;
+
 	  out << indent << "  ";
-	  if (s.num_func_syms_removed() > large_num)
+	  if (s.net_num_removed_func_syms() > large_num)
 	    out << "[D] ";
 
 	  show_linkage_name_and_aliases(out, "", **i,
@@ -12872,12 +13929,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_symbols_unreferenced_by_debug_info()
       && priv_->added_unrefed_fn_syms_.size())
     {
-      if (s.num_func_syms_added() == 1)
+      if (s.net_num_added_func_syms() == 1)
 	out << indent
 	    << "1 Added function symbol not referenced by debug info:\n\n";
-      else if (s.num_func_syms_added() > 0)
+      else if (s.net_num_added_func_syms() > 0)
 	out << indent
-	    << s.num_func_syms_added()
+	    << s.net_num_added_func_syms()
 	    << " Added function symbols not referenced by debug info:\n\n";
 
       vector<elf_symbol_sptr> sorted_added_unrefed_fn_syms;
@@ -12888,8 +13945,11 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != sorted_added_unrefed_fn_syms.end();
 	   ++i)
 	{
+	  if (priv_->added_unrefed_fn_sym_is_suppressed((*i).get()))
+	    continue;
+
 	  out << indent << "  ";
-	  if (s.num_func_syms_added() > large_num)
+	  if (s.net_num_added_func_syms() > large_num)
 	    out << "[A] ";
 	  show_linkage_name_and_aliases(out, "",
 					**i,
@@ -12904,12 +13964,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_symbols_unreferenced_by_debug_info()
       && priv_->deleted_unrefed_var_syms_.size())
     {
-      if (s.num_var_syms_removed() == 1)
+      if (s.net_num_removed_var_syms() == 1)
 	out << indent
 	    << "1 Removed variable symbol not referenced by debug info:\n\n";
-      else if (s.num_var_syms_removed() > 0)
+      else if (s.net_num_removed_var_syms() > 0)
 	out << indent
-	    << s.num_var_syms_removed()
+	    << s.net_num_removed_var_syms()
 	    << " Removed variable symbols not referenced by debug info:\n\n";
 
       vector<elf_symbol_sptr> sorted_deleted_unrefed_var_syms;
@@ -12920,6 +13980,9 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != sorted_deleted_unrefed_var_syms.end();
 	   ++i)
 	{
+	  if (priv_->deleted_unrefed_var_sym_is_suppressed((*i).get()))
+	    continue;
+
 	  out << indent << "  ";
 	  if (s.num_var_syms_removed() > large_num)
 	    out << "[D] ";
@@ -12936,12 +13999,12 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_symbols_unreferenced_by_debug_info()
       && priv_->added_unrefed_var_syms_.size())
     {
-      if (s.num_var_syms_added() == 1)
+      if (s.net_num_added_var_syms() == 1)
 	out << indent
 	    << "1 Added variable symbol not referenced by debug info:\n\n";
-      else if (s.num_var_syms_added() > 0)
+      else if (s.net_num_added_var_syms() > 0)
 	out << indent
-	    << s.num_var_syms_added()
+	    << s.net_num_added_var_syms()
 	    << " Added variable symbols not referenced by debug info:\n\n";
 
       vector<elf_symbol_sptr> sorted_added_unrefed_var_syms;
@@ -12952,8 +14015,11 @@ corpus_diff::report(ostream& out, const string& indent) const
 	   i != sorted_added_unrefed_var_syms.end();
 	   ++i)
 	{
+	  if (priv_->added_unrefed_var_sym_is_suppressed((*i).get()))
+	    continue;
+
 	  out << indent << "  ";
-	  if (s.num_var_syms_added() > large_num)
+	  if (s.net_num_added_var_syms() > large_num)
 	    out << "[A] ";
 	  show_linkage_name_and_aliases(out, "", **i,
 					second_corpus()->get_fun_symbol_map());
@@ -13473,6 +14539,8 @@ apply_suppressions(diff* diff_tree)
 {
   if (diff_tree && !diff_tree->context()->suppressions().empty())
     {
+      // Apply suppressions to functions and variables that have
+      // changed sub-types.
       suppression_categorization_visitor v;
       bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
       diff_tree->context()->forbid_visiting_a_node_twice(false);
@@ -13498,15 +14566,22 @@ apply_suppressions(diff_sptr diff_tree)
 ///
 /// @param diff_tree the diff tree to apply the suppressions to.
 void
-apply_suppressions(const corpus_diff*  diff_tree)
+apply_suppressions(const corpus_diff* diff_tree)
 {
   if (diff_tree && !diff_tree->context()->suppressions().empty())
     {
+      // First, visit the children trees of changed constructs:
+      // changed functions, variables, as well as sub-types of these,
+      // and apply suppression specifications to these ...
       suppression_categorization_visitor v;
       bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
       diff_tree->context()->forbid_visiting_a_node_twice(false);
       const_cast<corpus_diff*>(diff_tree)->traverse(v);
       diff_tree->context()->forbid_visiting_a_node_twice(s);
+
+      // ... then also visit the set added and removed functions,
+      // variables, and symbols
+      diff_tree->priv_->apply_suppressions_to_added_removed_fns_vars();
     }
 }
 

@@ -556,6 +556,9 @@ public:
   suppresses_diff(const diff* diff) const;
 }; // end type_suppression
 
+type_suppression_sptr
+is_type_suppression(const suppression_sptr);
+
 /// The abstraction of a range of offsets in which a member of a type
 /// might get inserted.
 class type_suppression::insertion_range
@@ -700,6 +703,26 @@ public:
   /// Convenience typedef for vector of @ref parameter_spec_sptr.
   typedef vector<parameter_spec_sptr> parameter_specs_type;
 
+  /// The kind of change the current function suppression should apply
+  /// to.
+  enum change_kind
+  {
+    UNDEFINED_CHANGE_KIND,
+    /// A change in a sub-type of the function.
+    FUNCTION_SUBTYPE_CHANGE_KIND = 1,
+    /// The function was added to the second second subject of the
+    /// diff.
+    ADDED_FUNCTION_CHANGE_KIND = 1 << 1,
+    /// The function was deleted from the second subject of the diff.
+    DELETED_FUNCTION_CHANGE_KIND = 1 << 2,
+    /// This represents all the changes possibly described by this
+    /// enum.  It's a logical 'OR' of all the change enumerators
+    /// above.
+    ALL_CHANGE_KIND = (FUNCTION_SUBTYPE_CHANGE_KIND
+		       | ADDED_FUNCTION_CHANGE_KIND
+		       | DELETED_FUNCTION_CHANGE_KIND)
+  };
+
   function_suppression(const string&		label,
 		       const string&		name,
 		       const string&		name_regex,
@@ -712,6 +735,15 @@ public:
 		       const string&		symbol_version_regex_str);
 
   virtual ~function_suppression();
+
+  static change_kind
+  parse_change_kind(const string&);
+
+  change_kind
+  get_change_kind() const;
+
+  void
+  set_change_kind(change_kind k);
 
   const string&
   get_function_name() const;
@@ -772,7 +804,30 @@ public:
 
   virtual bool
   suppresses_diff(const diff* diff) const;
+
+  bool
+  suppresses_function(const function_decl* fn, change_kind k) const;
+
+  bool
+  suppresses_function(const function_decl_sptr fn, change_kind k) const;
+
+  bool
+  suppresses_function_symbol(const elf_symbol* sym, change_kind k);
+
+  bool
+  suppresses_function_symbol(const elf_symbol_sptr sym, change_kind k);
 }; // end class function_suppression.
+
+function_suppression_sptr
+is_function_suppression(const suppression_sptr);
+
+function_suppression::change_kind
+operator&(function_suppression::change_kind l,
+	  function_suppression::change_kind r);
+
+function_suppression::change_kind
+operator|(function_suppression::change_kind l,
+	  function_suppression::change_kind r);
 
 /// Abstraction of the specification of a function parameter in a
 /// function suppression specification.
@@ -829,6 +884,30 @@ typedef vector<variable_suppression_sptr> variable_suppressions_type;
 /// reporting.
 class variable_suppression : public suppression_base
 {
+public:
+
+
+  /// The kind of change the current variable suppression should apply
+  /// to.
+  enum change_kind
+  {
+    UNDEFINED_CHANGE_KIND,
+    /// A change in a sub-type of the variable.
+    VARIABLE_SUBTYPE_CHANGE_KIND = 1,
+    /// The variable was added to the second second subject of the
+    /// diff.
+    ADDED_VARIABLE_CHANGE_KIND = 1 << 1,
+    /// The variable was deleted from the second subject of the diff.
+    DELETED_VARIABLE_CHANGE_KIND = 1 << 2,
+    /// This represents all the changes possibly described by this
+    /// enum.  It's a logical 'OR' of all the change enumerators
+    /// above.
+    ALL_CHANGE_KIND = (VARIABLE_SUBTYPE_CHANGE_KIND
+		       | ADDED_VARIABLE_CHANGE_KIND
+		       | DELETED_VARIABLE_CHANGE_KIND)
+  };
+
+private:
   class priv;
   typedef shared_ptr<priv> priv_sptr;
 
@@ -846,6 +925,15 @@ public:
 		       const string& type_name_regex_str);
 
   virtual ~variable_suppression();
+
+  static change_kind
+  parse_change_kind(const string&);
+
+  change_kind
+  get_change_kind() const;
+
+  void
+  set_change_kind(change_kind k);
 
   const string&
   get_name() const;
@@ -897,7 +985,30 @@ public:
 
   bool
   suppresses_diff(const diff* d) const;
+
+  bool
+  suppresses_variable(const var_decl* fn, change_kind k) const;
+
+  bool
+  suppresses_variable(const var_decl_sptr fn, change_kind k) const;
+
+  bool
+  suppresses_variable_symbol(const elf_symbol* sym, change_kind k) const;
+
+  bool
+  suppresses_variable_symbol(const elf_symbol_sptr fn, change_kind k) const;
 }; // end class variable_suppression
+
+variable_suppression_sptr
+is_variable_suppression(const suppression_sptr);
+
+variable_suppression::change_kind
+operator&(variable_suppression::change_kind l,
+	  variable_suppression::change_kind r);
+
+variable_suppression::change_kind
+operator|(variable_suppression::change_kind l,
+	  variable_suppression::change_kind r);
 
 /// The context of the diff.  This type holds various bits of
 /// information that is going to be used throughout the diffing of two
@@ -2499,6 +2610,9 @@ public:
   compute_diff(const corpus_sptr f,
 	       const corpus_sptr s,
 	       diff_context_sptr ctxt = diff_context_sptr());
+
+  friend void
+  apply_suppressions(const corpus_diff* diff_tree);
 }; // end class corpus_diff
 
 corpus_diff_sptr
@@ -2525,42 +2639,80 @@ public:
   size_t num_func_removed() const;
   void num_func_removed(size_t);
 
+  size_t num_removed_func_filtered_out() const;
+  void num_removed_func_filtered_out(size_t);
+
+  size_t net_num_func_removed() const;
+
   size_t num_func_added() const;
   void num_func_added(size_t);
+
+  size_t num_added_func_filtered_out() const;
+  void num_added_func_filtered_out(size_t);
+
+  size_t net_num_func_added() const;
 
   size_t num_func_changed() const;
   void num_func_changed(size_t);
 
-  size_t num_func_filtered_out() const;
-  void num_func_filtered_out(size_t);
+  size_t num_changed_func_filtered_out() const;
+  void num_changed_func_filtered_out(size_t);
 
   size_t net_num_func_changed() const;
 
   size_t num_vars_removed() const;
   void num_vars_removed(size_t);
 
+  size_t num_removed_vars_filtered_out() const;
+  void num_removed_vars_filtered_out(size_t) const;
+
+  size_t net_num_vars_removed() const;
+
   size_t num_vars_added() const;
   void num_vars_added(size_t);
+
+  size_t num_added_vars_filtered_out() const;
+  void num_added_vars_filtered_out(size_t);
+
+  size_t net_num_vars_added() const;
 
   size_t num_vars_changed() const;
   void num_vars_changed(size_t);
 
-  size_t num_vars_filtered_out() const;
-  void num_vars_filtered_out(size_t);
+  size_t num_changed_vars_filtered_out() const;
+  void num_changed_vars_filtered_out(size_t);
 
   size_t net_num_vars_changed() const;
 
   size_t num_func_syms_removed() const;
   void num_func_syms_removed(size_t);
 
+  size_t num_removed_func_syms_filtered_out() const;
+  void num_removed_func_syms_filtered_out(size_t);
+
   size_t num_func_syms_added() const;
   void num_func_syms_added(size_t);
+
+  size_t num_added_func_syms_filtered_out() const;
+  void num_added_func_syms_filtered_out(size_t);
+
+  size_t net_num_removed_func_syms() const;
+  size_t net_num_added_func_syms() const;
 
   size_t num_var_syms_removed() const;
   void num_var_syms_removed(size_t);
 
+  size_t num_removed_var_syms_filtered_out() const;
+  void num_removed_var_syms_filtered_out(size_t);
+
   size_t num_var_syms_added() const;
   void num_var_syms_added(size_t);
+
+  size_t num_added_var_syms_filtered_out() const;
+  void num_added_var_syms_filtered_out(size_t);
+
+  size_t net_num_removed_var_syms() const;
+  size_t net_num_added_var_syms() const;
 }; // end class corpus_diff::diff_stats
 
 /// The base class for the node visitors.  These are the types used to
