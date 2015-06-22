@@ -7419,8 +7419,8 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     inserted_member_fns().begin();
 	   i != inserted_member_fns().end();
 	   ++i)
-	if (i->second->get_symbol()
-	    && f->lookup_function_symbol(i->second->get_symbol()->get_name(),
+	if (!i->second->get_symbol()
+	    || f->lookup_function_symbol(i->second->get_symbol()->get_name(),
 					 i->second->get_symbol()->get_version().str()))
 	  to_delete.push_back(i->first);
 
