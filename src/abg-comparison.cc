@@ -7241,7 +7241,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	 ++it)
       {
 	unsigned i = it->index();
-	decl_base_sptr d = first_class_decl()->get_data_members()[i];
+	decl_base_sptr d = first_class_decl()->get_non_static_data_members()[i];
 	string qname = d->get_qualified_name();
 	assert(priv_->deleted_data_members_.find(qname)
 	       == priv_->deleted_data_members_.end());
@@ -7258,7 +7258,8 @@ class_diff::ensure_lookup_tables_populated(void) const
 	     ++iit)
 	  {
 	    unsigned i = *iit;
-	    decl_base_sptr d = second_class_decl()->get_data_members()[i];
+	    decl_base_sptr d =
+	      second_class_decl()->get_non_static_data_members()[i];
 	    var_decl_sptr dm = dynamic_pointer_cast<var_decl>(d);
 	    string qname = dm->get_qualified_name();
 	    assert(priv_->inserted_data_members_.find(qname)
@@ -8806,10 +8807,10 @@ compute_diff(const class_decl_sptr	first,
 #endif
 
   // Compare data member
-  compute_diff(f->get_data_members().begin(),
-	       f->get_data_members().end(),
-	       s->get_data_members().begin(),
-	       s->get_data_members().end(),
+  compute_diff(f->get_non_static_data_members().begin(),
+	       f->get_non_static_data_members().end(),
+	       s->get_non_static_data_members().begin(),
+	       s->get_non_static_data_members().end(),
 	       changes->data_members_changes());
 
   // Compare virtual member functions

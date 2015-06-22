@@ -8320,6 +8320,7 @@ struct class_decl::priv
   base_specs				bases_;
   member_types				member_types_;
   data_members				data_members_;
+  data_members				non_static_data_members_;
   member_functions			member_functions_;
   member_functions			virtual_mem_fns_;
   member_function_templates		member_function_templates_;
@@ -8340,7 +8341,13 @@ struct class_decl::priv
       member_types_(mbr_types),
       data_members_(data_mbrs),
       member_functions_(mbr_fns)
-  {}
+  {
+    for (data_members::const_iterator i = data_members_.begin();
+	 i != data_members_.end();
+	 ++i)
+      if (!get_member_is_static(*i))
+	non_static_data_members_.push_back(*i);
+  }
 
   priv(bool is_struct)
     : is_declaration_only_(false),
@@ -8599,6 +8606,13 @@ class_decl::get_member_types() const
 const class_decl::data_members&
 class_decl::get_data_members() const
 {return priv_->data_members_;}
+
+/// Get the non-static data memebers of this class.
+///
+/// @return a vector of the non-static data members of this class.
+const class_decl::data_members&
+class_decl::get_non_static_data_members() const
+{return priv_->non_static_data_members_;}
 
 /// Get the member functions of this class.
 ///
@@ -8978,6 +8992,9 @@ class_decl::add_data_member(var_decl_sptr v, access_specifier access,
   v->set_context_rel(ctxt);
   priv_->data_members_.push_back(v);
   scope_decl::add_member_decl(v);
+
+  if (!is_static)
+    priv_->non_static_data_members_.push_back(v);
 }
 
 mem_fn_context_rel::~mem_fn_context_rel()
@@ -9430,7 +9447,8 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 
   //compare data_members
   {
-    if (l.get_data_members().size() != r.get_data_members().size())
+    if (l.get_non_static_data_members().size()
+	!= r.get_non_static_data_members().size())
       {
 	result = false;
 	if (k)
@@ -9440,9 +9458,10 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
       }
 
     for (class_decl::data_members::const_iterator
-	   d0 = l.get_data_members().begin(),
-	   d1 = r.get_data_members().begin();
-	 d0 != l.get_data_members().end() && d1 != r.get_data_members().end();
+	   d0 = l.get_non_static_data_members().begin(),
+	   d1 = r.get_non_static_data_members().begin();
+	 (d0 != l.get_non_static_data_members().end()
+	  && d1 != r.get_non_static_data_members().end());
 	 ++d0, ++d1)
       if (**d0 != **d1)
 	{

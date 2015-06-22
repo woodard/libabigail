@@ -639,8 +639,8 @@ class_decl::hash::operator()(const class_decl& t) const
 
   // Hash data members.
   for (class_decl::data_members::const_iterator d =
-	 t.get_data_members().begin();
-       d != t.get_data_members().end();
+	 t.get_non_static_data_members().begin();
+       d != t.get_non_static_data_members().end();
        ++d)
     v = hashing::combine_hashes(v, hash_data_member(**d));
 

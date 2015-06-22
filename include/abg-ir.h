@@ -2645,6 +2645,9 @@ public:
   const data_members&
   get_data_members() const;
 
+  const data_members&
+  get_non_static_data_members() const;
+
   void
   add_member_function(method_decl_sptr f,
 		      access_specifier a,
