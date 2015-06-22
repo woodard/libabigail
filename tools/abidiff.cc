@@ -123,7 +123,7 @@ display_usage(const string& prog_name, ostream& out)
              "added/removed/changed\n"
       << " --no-unreferenced-symbols  do not display changes "
              "about symbols not referenced by debug info"
-      << " --suppressions <path> specify a suppression file\n"
+      << " --suppressions|--suppr <path> specify a suppression file\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
@@ -246,7 +246,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--no-unreferenced-symbols"))
 	opts.show_symbols_not_referenced_by_debug_info = false;
-      else if (!strcmp(argv[i], "--suppressions"))
+      else if (!strcmp(argv[i], "--suppressions")
+	       || !strcmp(argv[i], "--suppr"))
 	{
 	  int j = i + 1;
 	  if (j >= argc)
