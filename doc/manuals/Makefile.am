@@ -160,12 +160,16 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
+section1_manpages =
+section7_manpages =
 manpages =
 texinfodocs =
 
 if ENABLE_MANUAL
 
-manpages += abidiff.7 abidw.7 abilint.7 abicompat.7 libabigail.7
+section1_manpages += abidiff.1 abidw.1 abilint.1 abicompat.1
+section7_manpages += libabigail.7
+manpages +=  $(section1_manpages) $(section7_manpages)
 texinfodocs += abigail.info
 
 install-html-doc: html-doc
@@ -182,13 +186,16 @@ clean-local:
 	-rm -rf $(BUILDDIR)/doctrees
 
 install-man-and-info-doc:
-	-test -f $(BUILDDIR)/man/abidiff.7 && $(mkinstalldirs) $(DESTDIR)$(mandir)/man7
-	-for m in $(manpages); do test -f $(BUILDDIR)/man/$$m && $(install_sh_DATA) $(BUILDDIR)/man/$$m $(DESTDIR)$(mandir)/man7; done;
+	-test -f $(BUILDDIR)/man/abidiff.1 && $(mkinstalldirs) $(DESTDIR)$(mandir)/man1
+	-test -f $(BUILDDIR)/man/libabigail.7 && $(mkinstalldirs) $(DESTDIR)$(mandir)/man7
+	-for m in $(section1_manpages); do test -f $(BUILDDIR)/man/$$m && $(install_sh_DATA) $(BUILDDIR)/man/$$m $(DESTDIR)$(mandir)/man1; done;
+	-for m in $(section7_manpages); do test -f $(BUILDDIR)/man/$$m && $(install_sh_DATA) $(BUILDDIR)/man/$$m $(DESTDIR)$(mandir)/man7; done;
 
 	-test -f $(BUILDDIR)/texinfo/abidiff.info && $(mkinstalldirs) $(DESTDIR)$(infodir)
 	-for i in $(texinfodocs); do test -f $(BUILDDIR)/texinfo/$$i && $(install_sh_DATA) $(BUILDDIR)/texinfo/$$i $(DESTDIR)$(infodir)/$$i; gzip $(DESTDIR)$(infodir)/$$i; done;
 
 uninstall-local: clean-local
-	-for i in $$(manpages); do rm -f $(DESTDIR)$(mandir)/man7/$$i; done
-	-for i in $$(texinfodocs); do rm -f $(DESTDIR)$(infodir)/$$i; done
+	-for i in $(section1_manpages); do rm -f $(DESTDIR)$(mandir)/man1/$$i; done
+	-for i in $(section7_manpages); do rm -f $(DESTDIR)$(mandir)/man7/$$i; done
+	-for i in $(texinfodocs); do rm -f $(DESTDIR)$(infodir)/$$i; done
 	-rm -rf $(DESTDIR)$(docdir)/manual/html

@@ -214,10 +214,10 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'libabigail', u'Library to analyze and compare ELF ABIs', [u'Dodji Seketeli'], 7),
-    ('abidiff', 'abidiff', u'compare ABIs of ELF files ', [u'Dodji Seketeli'], 7),
-    ('abidw', 'abidw', u'serialize the ABI of an ELF file', [u'Dodji Seketeli'], 7),
-    ('abilint', 'abilint', u'validate an abigail ABI representation', [u'Dodji Seketeli'], 7),
-    ('abicompat', 'abicompat', u'check ABI compatibility', [u'Dodji Seketeli'], 7),
+    ('abidiff', 'abidiff', u'compare ABIs of ELF files ', [u'Dodji Seketeli'], 1),
+    ('abidw', 'abidw', u'serialize the ABI of an ELF file', [u'Dodji Seketeli'], 1),
+    ('abilint', 'abilint', u'validate an abigail ABI representation', [u'Dodji Seketeli'], 1),
+    ('abicompat', 'abicompat', u'check ABI compatibility', [u'Dodji Seketeli'], 1),
 ]
 
 # If true, show URL addresses after external links.
