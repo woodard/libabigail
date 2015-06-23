@@ -286,6 +286,14 @@ static void
 sort_string_parm_map(const string_parm_map& map,
 		     vector<function_decl::parameter_sptr>& sorted);
 
+static void
+sort_string_var_ptr_map(const string_var_ptr_map& map,
+			vector<var_decl*>& sorted);
+
+static void
+sort_string_elf_symbol_map(const string_elf_symbol_map& map,
+			   vector<elf_symbol_sptr>& sorted);
+
 static type_base_sptr
 get_leaf_type(qualified_type_def_sptr t);
 
@@ -10502,6 +10510,85 @@ sort_string_parm_map(const string_parm_map& map,
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
+/// A functor to compare instances of @ref var_decl base on their
+/// qualified names.
+struct var_comp
+{
+  bool
+  operator() (const var_decl& l, const var_decl& r) const
+  {
+    string name1 = l.get_qualified_name(), name2 = r.get_qualified_name();
+    return name1 < name2;
+  }
+
+  bool
+  operator() (const var_decl* l, const var_decl* r) const
+  {return operator()(*l, *r);}
+};// end struct var_comp
+
+/// Sort a map of string -> pointer to @ref var_decl.
+///
+/// The result is a vector of var_decl* sorted by the qualified name
+/// of the variables.
+///
+/// @param map the map to sort.
+///
+/// @param sorted out parameter; the sorted vector of @ref var_decl.
+static void
+sort_string_var_ptr_map(const string_var_ptr_map& map,
+			vector<var_decl*>& sorted)
+{
+  for (string_var_ptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  var_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// A functor to compare instances of @ref elf_symbol base on their
+/// names.
+struct elf_symbol_comp
+{
+  bool
+  operator()(const elf_symbol& l, const elf_symbol& r)
+  {
+    string name1 = l.get_id_string(), name2 = r.get_id_string();
+    return name1 < name2;
+  }
+
+  bool
+  operator()(const elf_symbol* l, const elf_symbol* r)
+  {return operator()(*l, *r);}
+
+  bool
+  operator()(const elf_symbol_sptr& l, const elf_symbol_sptr& r)
+  {return operator()(l.get(), r.get());}
+}; //end struct elf_symbol_comp
+
+/// Sort a map of string -> pointer to @ref elf_symbol.
+///
+/// The result is a vector of @ref elf_symbol_sptr sorted by the
+/// name of the symbol.
+///
+/// @param map the map to sort.
+///
+/// @param sorted out parameter; the sorted vector of @ref
+/// elf_symbol_sptr.
+static void
+sort_string_elf_symbol_map(const string_elf_symbol_map& map,
+			   vector<elf_symbol_sptr>& sorted)
+{
+  for (string_elf_symbol_map::const_iterator i = map.begin();
+       i!= map.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  elf_symbol_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// Serialize a report of the changes encapsulated in the current
 /// instance of function_decl_diff over to an output stream.
 ///
@@ -12641,12 +12728,14 @@ corpus_diff::report(ostream& out, const string& indent) const
 	out << indent << s.num_vars_removed()
 	    << " Deleted variables:\n\n";
       string n;
-      for (string_var_ptr_map::const_iterator i =
-	     priv_->deleted_vars_.begin();
-	   i != priv_->deleted_vars_.end();
+      vector<var_decl*> sorted_deleted_vars;
+      sort_string_var_ptr_map(priv_->deleted_vars_, sorted_deleted_vars);
+      for (vector<var_decl*>::const_iterator i =
+	     sorted_deleted_vars.begin();
+	   i != sorted_deleted_vars.end();
 	   ++i)
 	{
-	  n = i->second->get_pretty_representation();
+	  n = (*i)->get_pretty_representation();
 	  out << indent
 	      << "  ";
 	  if (total > large_num)
@@ -12657,7 +12746,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (context()->show_linkage_names())
 	    {
 	      out << "    {";
-	      show_linkage_name_and_aliases(out, "", *i->second->get_symbol(),
+	      show_linkage_name_and_aliases(out, "", *(*i)->get_symbol(),
 					    first_corpus()->get_var_symbol_map());
 	      out << "}";
 	    }
@@ -12679,12 +12768,14 @@ corpus_diff::report(ostream& out, const string& indent) const
 	out << indent << s.num_vars_added()
 	    << " Added variables:\n";
       string n;
-      for (string_var_ptr_map::const_iterator i =
-	     priv_->added_vars_.begin();
-	   i != priv_->added_vars_.end();
+      vector<var_decl*> sorted_added_vars;
+      sort_string_var_ptr_map(priv_->added_vars_, sorted_added_vars);
+      for (vector<var_decl*>::const_iterator i =
+	     sorted_added_vars.begin();
+	   i != sorted_added_vars.end();
 	   ++i)
 	{
-	  n = i->second->get_pretty_representation();
+	  n = (*i)->get_pretty_representation();
 	  out << indent
 	      << "  ";
 	  if (total > large_num)
@@ -12693,7 +12784,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (context()->show_linkage_names())
 	    {
 	      out << "    {";
-	      show_linkage_name_and_aliases(out, "", *i->second->get_symbol(),
+	      show_linkage_name_and_aliases(out, "", *(*i)->get_symbol(),
 					    second_corpus()->get_var_symbol_map());
 	      out << "}";
 	    }
@@ -12756,20 +12847,23 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    << s.num_func_syms_removed()
 	    << " Removed function symbols not referenced by debug info:\n\n";
 
-      for (string_elf_symbol_map::const_iterator i =
-	     priv_->deleted_unrefed_fn_syms_.begin();
-	   i != priv_->deleted_unrefed_fn_syms_.end();
+      vector<elf_symbol_sptr> sorted_deleted_unrefed_fn_syms;
+      sort_string_elf_symbol_map(priv_->deleted_unrefed_fn_syms_,
+				 sorted_deleted_unrefed_fn_syms);
+      for (vector<elf_symbol_sptr>::const_iterator i =
+	     sorted_deleted_unrefed_fn_syms.begin();
+	   i != sorted_deleted_unrefed_fn_syms.end();
 	   ++i)
 	{
 	  out << indent << "  ";
 	  if (s.num_func_syms_removed() > large_num)
 	    out << "[D] ";
 
-	  show_linkage_name_and_aliases(out, "", *i->second,
+	  show_linkage_name_and_aliases(out, "", **i,
 					first_corpus()->get_fun_symbol_map());
 	  out << "\n";
 	}
-      if (priv_->deleted_unrefed_fn_syms_.size())
+      if (sorted_deleted_unrefed_fn_syms.size())
 	out << '\n';
     }
 
@@ -12785,20 +12879,23 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    << s.num_func_syms_added()
 	    << " Added function symbols not referenced by debug info:\n\n";
 
-      for (string_elf_symbol_map::const_iterator i =
-	     priv_->added_unrefed_fn_syms_.begin();
-	   i != priv_->added_unrefed_fn_syms_.end();
+      vector<elf_symbol_sptr> sorted_added_unrefed_fn_syms;
+      sort_string_elf_symbol_map(priv_->added_unrefed_fn_syms_,
+				 sorted_added_unrefed_fn_syms);
+      for (vector<elf_symbol_sptr>::const_iterator i =
+	     sorted_added_unrefed_fn_syms.begin();
+	   i != sorted_added_unrefed_fn_syms.end();
 	   ++i)
 	{
 	  out << indent << "  ";
 	  if (s.num_func_syms_added() > large_num)
 	    out << "[A] ";
 	  show_linkage_name_and_aliases(out, "",
-					*i->second,
+					**i,
 					second_corpus()->get_fun_symbol_map());
 	  out << "\n";
 	}
-      if (priv_->added_unrefed_fn_syms_.size())
+      if (sorted_added_unrefed_fn_syms.size())
 	out << '\n';
     }
 
@@ -12814,20 +12911,23 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    << s.num_var_syms_removed()
 	    << " Removed variable symbols not referenced by debug info:\n\n";
 
-      for (string_elf_symbol_map::const_iterator i =
-	     priv_->deleted_unrefed_var_syms_.begin();
-	   i != priv_->deleted_unrefed_var_syms_.end();
+      vector<elf_symbol_sptr> sorted_deleted_unrefed_var_syms;
+      sort_string_elf_symbol_map(priv_->deleted_unrefed_var_syms_,
+				 sorted_deleted_unrefed_var_syms);
+      for (vector<elf_symbol_sptr>::const_iterator i =
+	     sorted_deleted_unrefed_var_syms.begin();
+	   i != sorted_deleted_unrefed_var_syms.end();
 	   ++i)
 	{
 	  out << indent << "  ";
 	  if (s.num_var_syms_removed() > large_num)
 	    out << "[D] ";
 
-	  show_linkage_name_and_aliases(out, "", *i->second,
+	  show_linkage_name_and_aliases(out, "", **i,
 					first_corpus()->get_fun_symbol_map());
 	  out << "\n";
 	}
-      if (priv_->deleted_unrefed_var_syms_.size())
+      if (sorted_deleted_unrefed_var_syms.size())
 	out << '\n';
     }
 
@@ -12843,20 +12943,22 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    << s.num_var_syms_added()
 	    << " Added variable symbols not referenced by debug info:\n\n";
 
-      for (string_elf_symbol_map::const_iterator i =
-	     priv_->added_unrefed_var_syms_.begin();
-	   i != priv_->added_unrefed_var_syms_.end();
+      vector<elf_symbol_sptr> sorted_added_unrefed_var_syms;
+      sort_string_elf_symbol_map(priv_->added_unrefed_var_syms_,
+				 sorted_added_unrefed_var_syms);
+      for (vector<elf_symbol_sptr>::const_iterator i =
+	     sorted_added_unrefed_var_syms.begin();
+	   i != sorted_added_unrefed_var_syms.end();
 	   ++i)
 	{
 	  out << indent << "  ";
 	  if (s.num_var_syms_added() > large_num)
 	    out << "[A] ";
-	  show_linkage_name_and_aliases(out, "",
-					*i->second,
+	  show_linkage_name_and_aliases(out, "", **i,
 					second_corpus()->get_fun_symbol_map());
 	  out << "\n";
 	}
-      if (priv_->added_unrefed_var_syms_.size())
+      if (sorted_added_unrefed_var_syms.size())
 	out << '\n';
     }
 
