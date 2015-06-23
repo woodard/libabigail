@@ -225,6 +225,9 @@ if test x$HAS_EM_TILEGX = xyes; then
             [Defined to 1 if elf.h has EM_TILEGX macro defined])
 fi
 
+dnl Set large files support
+AC_SYS_LARGEFILE
+
 AC_CONFIG_FILES([Makefile
 libabigail.pc
   include/Makefile
