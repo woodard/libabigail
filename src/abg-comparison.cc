@@ -10487,7 +10487,7 @@ struct parm_comp
 /// @param map the map to sort.
 ///
 /// @param sorted the resulting sorted vector of
-/// @ref vector<function_decl::parameter_sptr> 
+/// @ref vector<function_decl::parameter_sptr>
 static void
 sort_string_parm_map(const string_parm_map& map,
 		     vector<function_decl::parameter_sptr>& sorted)
