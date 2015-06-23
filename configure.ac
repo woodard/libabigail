@@ -29,9 +29,9 @@ AC_SUBST(VERSION_REVISION)
 
 AC_ARG_ENABLE(zip-archive,
 	      AS_HELP_STRING([--enable-zip-archive=yes|no|auto],
-			     [enable bundling of TUs in zip archives (default is auto)]),
+			     [enable bundling of TUs in zip archives (default is no)]),
 	      ENABLE_ZIP_ARCHIVE=$enableval,
-	      ENABLE_ZIP_ARCHIVE=auto)
+	      ENABLE_ZIP_ARCHIVE=no)
 
 
 AC_ARG_ENABLE(cxx11,
