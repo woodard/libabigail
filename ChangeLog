@@ -1,6 +1,469 @@
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Misc typo fixes
+	* src/abg-comparison.cc
+	(corpus_diff::priv::{deleted, added}n_variable_is_suppressed): Fix
+	a typo.
+	* tests/data/test-diff-dwarf/test16-syms-only-v0.cc: Fix a typo in
+	the comments.
+	* tests/data/test-diff-dwarf/test16-syms-only-v1.cc: Likewise.
+
+2015-06-22  Dodji Seketeli <dodji@redhat.com>
+
+	Apply suppression specifications to added and removed functions and variables
+	* include/abg-comparison.h (is_type_suppression)
+	(is_function_suppression): Declare new functions.
+	({function, variable}_suppression::change_kind): Declare new enum.
+	(function_suppression::{parse_change_kind, get_change_kind,
+	set_change_kind, suppresses_function,
+	suppresses_function_symbol}): Declare new member functions.
+	(variable_suppression::{parse_change_kind, get_change_kind,
+	set_change_kind, suppresses_variable, suppresses_variable,
+	suppresses_variable_symbol}): Declare new member functions.
+	(operator{&,|}): Declare new operators for
+	function_suppression::change_kind and
+	variable_suppression::change_kind enums.
+	(corpus_diff::diff_stats::{num_removed_func_filtered_out,
+	net_num_func_removed, num_added_func_filtered_out,
+	net_num_func_added, num_removed_vars_filtered_out,
+	net_num_vars_removed, num_added_vars_filtered_out,
+	net_num_vars_added, num_removed_func_syms_filtered_out,
+	num_added_func_syms_filtered_out, net_num_removed_func_syms,
+	net_num_added_func_syms, num_added_var_syms_filtered_out,
+	num_removed_vars_filtered_out, net_num_removed_var_syms,
+	net_num_added_var_syms}): Declare new member functions.
+	(corpus_diff::diff_stats::num_changed_vars_filtered_out): Renamed
+	corpus_diff::diff_stats::num_vars_filtered_out into this.
+	(corpus_diff::diff_stats::num_changed_func_filtered_out): Renamed
+	corpus_diff::diff_stats::num_func_filtered_out into this.
+	* src/abg-comparison.cc (is_type_suppression)
+	(is_function_suppression): Define new
+	function.
+	(function_suppression::priv::change_kind): New data member.
+	(function_suppression::priv): Initialize it.
+	(function_suppression::{parse_change_kind, get_change_kind,
+	set_change_kind, suppresses_function,
+	suppresses_function_symbol}): Define new member functions.
+	(operator{&,|}): Define new operators for the new
+	function_suppression::change_kind enum.
+	(function_suppression::suppresses_diff): Re-write this in terms of
+	the new function_suppression::suppresses_function() function.
+	(read_function_suppression): Support reading the new "change_kind"
+	property.
+	(variable_suppression::priv::change_kind_): New data member.
+	(variable_suppression::priv::priv): Initialize it.
+	(variable_suppression::{parse_change_kind, get_change_kind,
+	set_change_kind, suppresses_variable,
+	suppresses_variable_symbol}): Define new member functions.
+	(is_variable_suppression): Define new function.
+	(operator{&,|}): Define new operators for
+	variable_suppression::change_kind enum.
+	(variable_suppression::suppresses_diff): Re-write in terms of the
+	new variable_suppression::suppresses_variable function.
+	(read_variable_suppression): Support reading the new "change_kind"
+	property.
+	(corpus_diff::diff_stats::priv::{num_removed_func_filtered_out,
+	num_added_func_filtered_out, num_removed_vars_filtered_out,
+	num_added_vars_filtered_out, num_removed_func_syms_filtered_out,
+	num_added_func_syms_filtered_out,
+	num_removed_var_syms_filtered_out,
+	num_added_var_syms_filtered_out}): New data members.
+	(corpus_diff::diff_stats::priv::num_changed_func_filtered_out):
+	Renamed the data member num_func_filtered_out into this.
+	(corpus_diff::diff_stats::priv::num_changed_vars_filtered_out):
+	Renamed data member num_vars_filtered_out into this.
+	(corpus_diff::diff_stats::priv::priv): Initialize the new data
+	members.
+	(corpus_diff::diff_stats::{num_removed_func_filtered_out,
+	num_removed_func_filtered_out, net_num_func_removed,
+	net_num_func_added, num_added_func_filtered_out,
+	net_num_func_added, num_removed_vars_filtered_out,
+	num_removed_vars_filtered_out, net_num_vars_removed,
+	num_added_vars_filtered_out, net_num_vars_added,
+	num_removed_func_syms_filtered_out,
+	num_added_func_syms_filtered_out, net_num_removed_func_syms,
+	net_num_added_func_syms, num_added_var_syms_filtered_out,
+	num_removed_vars_filtered_out, net_num_removed_var_syms,
+	net_num_added_var_syms}): Define new member functions.
+	(corpus_diff::diff_stats::num_changed_func_filtered_out): Renamed
+	corpus_diff::diff_stats::num_func_filtered_out into this.
+	(corpus_diff::diff_stats::num_changed_vars_filtered_out): Renamed
+	corpus_diff::diff_stats::num_vars_filtered_out into this.
+	(corpus_diff::diff_stats::{net_num_func_changed,
+	net_num_vars_changed}): Adjust.
+	(corpus_diff::priv::{suppressed_deleted_fns_,
+	suppressed_added_fns_, suppressed_deleted_vars_,
+	suppressed_added_vars_, suppressed_added_unrefed_fn_syms_,
+	suppressed_deleted_unrefed_fn_syms_,
+	suppressed_added_unrefed_var_syms_,
+	suppressed_deleted_unrefed_fn_syms_}): New data members.
+	(corpus_diff::priv::{apply_suppressions_to_added_removed_fns_vars,
+	deleted_function_is_suppressed, added_function_is_suppressed,
+	deleted_variable_is_suppressed, added_variable_is_suppressed,
+	added_unrefed_fn_sym_is_suppressed,
+	deleted_unrefed_fn_sym_is_suppressed,
+	added_unrefed_var_sym_is_suppressed,
+	deleted_unrefed_var_sym_is_suppressed}): Define member functions.
+	(function_is_suppressed, variable_is_suppressed): Define new
+	functions.
+	(corpus_diff::priv::apply_filters_and_compute_diff_stats): Compute
+	stats for filtered added or removed functions, variables and their
+	symbols.
+	(corpus_diff::priv::emit_diff_stats): Emit diff stats for filtered
+	added or removed functions, variables and symbols.
+	(corpus_diff::report): Support suppressed reports about added or
+	removed functions, variables and symbols.  Fixed a typo that was
+	in there for a while.  Note that that fix requires updating some
+	regression tests, and the part of this patch that touches
+	regression tests does that.
+	(apply_suppressions):  In the overload for corpus_diff, apply the
+	suppression to added or removed functions and variables.
+	* doc/manuals/libabigail-concepts.rst: Update this manual to
+	reflect the changes above.  Also, perform an extensive cleanup of
+	the manual to introduce more section titles to make it easier to
+	navigate the document using the table of content.
+	* tests/data/test-abicompat/test2-var-removed-report-0.txt:
+	Adjust.
+	* tests/data/test-diff-dwarf/test0-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test12-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test18-alias-sym-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-dwarf/test19-soname-report-0.txt: Likewise.
+	* tests/data/test-diff-dwarf/test7-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test8-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test9-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test16-syms-only-report.txt: Likewise.
+	* tests/data/test-diff-dwarf/test17-non-refed-syms-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-dwarf/test28-vtable-changes-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-filter/test0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test01-report.txt: Likewise.
+	* tests/data/test-diff-filter/test13-report.txt: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-v0.o: Add new test
+	material.
+	* tests/data/test-diff-filter/test15-0-report.txt: Likewise.
+	* tests/data/test-diff-filter/test2-report.txt: Likewise.
+	* tests/data/test-diff-filter/test21-compatible-vars-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-filter/test24-compatible-vars-report-1.txt:
+	Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-v1.o: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-0.suppr: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-1.suppr: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-2.suppr: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-3.suppr: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-4.suppr: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-report-0.txt: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-report-1.txt: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-report-2.txt: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-report-3.txt: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-report-4.txt: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-report-5.txt: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-v0.cc: Likewise.
+	* test-diff-suppr/test15-suppr-added-fn-v1.cc: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-v0.o: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-v1.o: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-0.suppr: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-1.suppr: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-2.suppr: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-3.suppr: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-4.suppr: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-report-0.txt: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-report-1.txt: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-report-2.txt: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-report-3.txt: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-report-4.txt: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-report-5.txt: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-v0.cc: Likewise.
+	* test-diff-suppr/test16-suppr-removed-fn-v1.cc: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-v0.o: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-v1.o: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-0.suppr: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-1.suppr: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-2.suppr: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-3.suppr: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-4.suppr: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-report-0.txt: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-report-1.txt: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-report-2.txt: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-report-3.txt: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-report-4.txt: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-report-5.txt: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-v0.cc: Likewise.
+	* test-diff-suppr/test17-suppr-added-var-v1.cc: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-v0.o: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-v1.o: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-0.suppr: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-1.suppr: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-2.suppr: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-3.suppr: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-4.suppr: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-report-0.txt: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-report-1.txt: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-report-2.txt: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-report-3.txt: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-report-4.txt: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-report-5.txt: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-v0.cc: Likewise.
+	* test-diff-suppr/test18-suppr-removed-var-v1.cc: Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-v0.o: New
+	test input.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-v1.o:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-0.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-1.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-2.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-3.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-4.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-report-1.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-report-2.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-report-3.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-report-4.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-report-5.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-v0.cc:
+	Likewise.
+	* tests/data/test-diff-suppr/test19-suppr-added-fn-sym-v1.cc:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-v0.o:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-v1.o:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-0.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-1.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-2.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-3.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-4.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-report-1.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-report-2.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-report-3.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-report-4.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-report-5.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-v0.cc:
+	Likewise.
+	* tests/data/test-diff-suppr/test20-suppr-removed-fn-sym-v1.cc:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-v0.o:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-v1.o:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-0.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-1.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-2.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-3.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-4.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-report-1.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-report-2.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-report-3.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-report-4.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-report-5.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-v0.cc:
+	Likewise.
+	* tests/data/test-diff-suppr/test21-suppr-added-var-sym-v1.cc:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-v0.o:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-v1.o:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-0.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-1.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-2.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-3.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-4.suppr:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-report-0.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-report-1.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-report-2.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-report-3.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-report-4.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-report-5.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-v0.cc:
+	Likewise.
+	* tests/data/test-diff-suppr/test22-suppr-removed-var-sym-v1.cc:
+	Likewise.
+	* tests/data/Makefile.am: Add the new test materials above to source
+	distribution.
+	* tests/test-diff-suppr.cc (in_out_specs): Add the new tests
+	material above to the list of test inputs this harness has to run
+	over.
+
+2015-06-22  Dodji Seketeli <dodji@redhat.com>
+
+	Do not compare static data members when comparing types
+	* include/abg-ir.h (class_decl::get_non_static_data_members):
+	Declare new data members.
+	* src/abg-comparison.cc
+	(class_diff::ensure_lookup_tables_populated): Only look at
+	non-static data members.
+	(compute_diff): In the overload for class_decl, only compare
+	non-static data members.
+	* src/abg-hash.cc (class_decl::hash::operator()): Do not hash
+	static data members members hashing a class_decl.
+	* src/abg-ir.cc (class_decl::priv::data_members_): New data
+	member.
+	(class_decl::priv::priv): When initializing data members, store
+	the non-static data members on the side, in the new
+	class_decl::priv::non_static_data_members_ data member.
+	(class_decl::get_non_static_data_members): Define member function.
+	(class_decl::add_data_member): Store the non-static data members
+	on the side in class_decl::priv::non_static_data_members_.
+	(equals): In the overload for class_decl, do not take in account
+	static data members when running the comparison.
+	* tests/data/test-diff-dwarf/test7-report.txt: Adjust.
+	* tests/data/test-diff-filter/test12-report.txt: Adjust.
+
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Add a --suppr short alias to the --suppressions option of abidiff
+	* tools/abidiff.cc (display_usage): Add a help string for the new
+	--suppr option.
+	(parse_command_line): Support the --suppr option which is an alias
+	for --suppressions.
+
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Enable large file support
+	* configure.ac: Call the AC_SYS_LARGEFILE autoconf macro.
+	* config.h.in: Update.
+
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Do not build zip archive support by default
+	* configure.ac: By default, unconditionally disable the
+	zip-archive support.
+
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Put the man pages of the binaries in section 1
+	* doc/manuals/Makefile.am(section1_manpages, section7_manpages):
+	Two new variables to contain the man page names per section.
+	(manpages): Set this variable to $section1_manpages and $section7_manpages.
+	(install-man-and-info-doc): In this rule, create the destination
+	directories for section 1 and 7 and copy the right man pages in
+	their right directory.
+	* doc/manuals/conf.py (man_pages): Generate the binary man pages
+	into section 1 and the libabigail man page into section 7.
+
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Sort deleted/added variables and symbols before emitting report
+	* src/abg-comparison.cc (sort_string_var_ptr_map)
+	(sort_string_elf_symbol_map): Define new static functions.
+	(var_comp, elf_symbol_comp): Define new comparison functors.
+	(corpus_diff::report): Sort the deleted variables, added
+	variables, deleted function symbols, added function symbols,
+	deleted variable symbols, and added variable symbols before
+	walking them to emit reports.
+
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Remove useless white space
+	* src/abg-comparison.cc (sort_string_parm_map): Remove trailing
+	white space from comment.
+
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 18580 - abidw ignores --out-file
+	* tools/abidw.cc (main): Take the argument of --out-file into
+	account when emitting the serialized form of the ABI.
+
+2015-06-23  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a thinko in the comparison code
+	* src/abg-comparison.cc
+	(class_diff::ensure_lookup_tables_populated): Ensure that when a
+	member function is wrongly considered as being added, then either
+	the new member function doesn't have a symbol name (linkage name)
+	or it has one, and it was already present in the first version of
+	the binary.
+	# Veuillez saisir le message de validation pour vos
+	modifications. Les lignes # commençant par '#' seront ignorées, et
+	un message vide abandonne la validation.  # Sur la branche
+	fix-master # Votre branche est à jour avec 'origin/master'.  # #
+	Modifications qui seront validées : # modified:
+	src/abg-comparison.cc # # Modifications qui ne seront pas validées
+	: # modified: tools/abidw.cc # # Fichiers non suivis: # abidw.abi
+	# build/ # depcomp # missing # patch-edited.txt # patch.txt #
+	prtests/ # test-driver # # ------------------------ >8
+	------------------------ # Ne touchez pas à la ligne ci-dessus #
+	Tout se qui suit sera éliminé.
+	diff --git a/src/abg-comparison.cc b/src/abg-comparison.cc
+	index 14208f5..ef7c6c9 100644
+	--- a/src/abg-comparison.cc
+	+++ b/src/abg-comparison.cc
+	@@ -7419,8 +7419,8 @@ class_diff::ensure_lookup_tables_populated(void) const
+	inserted_member_fns().begin();
+	i != inserted_member_fns().end();
+	++i)
+	-	if (i->second->get_symbol()
+	-	    && f->lookup_function_symbol(i->second->get_symbol()->get_name(),
+	+	if (!i->second->get_symbol()
+	+	    || f->lookup_function_symbol(i->second->get_symbol()->get_name(),
+	i->second->get_symbol()->get_version().str()))
+	to_delete.push_back(i->first);
+
 2015-06-07  Dodji Seketeli <dodji@redhat.com>
 
-	Update ChangeLog file.
+	Build libabigail tests with position-independent code
+	* tests/Makefile.am: Add -fPIC to the compile flags.
+
+2015-06-07  Dodji Seketeli <dodji@redhat.com>
+
+	Build libabigail tools as position-independent code
+	* tools/Makefile.am: Compile the binaries here with -fPIC.  Note
+	that the library libabigail.la is built with libtool which already
+	takes care of this, so no need to worry about this for
+	libabigail.la.
+
+2015-06-07  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog file
 	* ChangeLog: Update this automatically by typing make
 	update-changelog.
 
