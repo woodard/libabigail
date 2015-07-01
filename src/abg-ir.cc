@@ -786,6 +786,12 @@ elf_symbol::get_alias_which_equals(const elf_symbol& other) const
 /// Return a comma separated list of the id of the current symbol as
 /// well as the id string of its aliases.
 ///
+/// @param syms a map of all the symbols of the corpus the current
+/// symbol belongs to.
+///
+/// @param include_symbol_itself if set to true, then the name of the
+/// current symbol is included in the list of alias names that is emitted.
+///
 /// @return the string.
 string
 elf_symbol::get_aliases_id_string(const string_elf_symbols_map_type& syms,
