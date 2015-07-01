@@ -812,6 +812,38 @@ elf_symbol::get_aliases_id_string(const string_elf_symbols_map_type& syms,
   return result;
 }
 
+/// Return a comma separated list of the id of the current symbol as
+/// well as the id string of its aliases.
+///
+/// @param include_symbol_itself if set to true, then the name of the
+/// current symbol is included in the list of alias names that is emitted.
+///
+/// @return the string.
+string
+elf_symbol::get_aliases_id_string(bool include_symbol_itself) const
+{
+  vector<elf_symbol_sptr> aliases;
+  if (include_symbol_itself)
+    aliases.push_back(get_main_symbol());
+
+  for (elf_symbol_sptr a = get_next_alias();
+       a && a.get() != get_main_symbol().get();
+       a = a->get_next_alias())
+    aliases.push_back(a);
+
+  string result;
+  for (vector<elf_symbol_sptr>::const_iterator i = aliases.begin();
+       i != aliases.end();
+       ++i)
+    {
+      if (i != aliases.begin())
+	result += ", ";
+      result += (*i)->get_id_string();
+    }
+
+  return result;
+}
+
 /// Given the ID of a symbol, get the name and the version of said
 /// symbol.
 ///

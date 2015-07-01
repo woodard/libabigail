@@ -13748,9 +13748,23 @@ corpus_diff::report(ostream& out, const string& indent) const
 
 	  if (diff->to_be_reported())
 	    {
+	      function_decl_sptr fn = (*i)->first_function_decl();
 	      out << indent << "  [C]'"
-		  << (*i)->first_function_decl()->get_pretty_representation()
+		  << fn->get_pretty_representation()
 		  << "' has some indirect sub-type changes:\n";
+	      if (fn->get_symbol()->has_aliases()
+		  && !(is_member_function(fn)
+		       && get_member_function_is_ctor(fn))
+		  && !(is_member_function(fn)
+		       && get_member_function_is_dtor(fn)))
+		{
+		  out << indent << "    "
+		      << "Please note that the symbol of this function is "
+		      << fn->get_symbol()->get_id_string()
+		      << "\n     and it aliases: "
+		      << fn->get_symbol()->get_aliases_id_string(false)
+		      << "\n";
+		}
 	      diff->report(out, indent + "    ");
 	      out << "\n";
 	      emitted |= true;

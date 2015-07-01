@@ -455,6 +455,9 @@ public:
   get_aliases_id_string(const string_elf_symbols_map_type& symtab,
 			bool include_symbol_itself = true) const;
 
+  string
+  get_aliases_id_string(bool include_symbol_itself = true) const;
+
   static bool
   get_name_and_version_from_id(const string& id,
 			       string& name,
