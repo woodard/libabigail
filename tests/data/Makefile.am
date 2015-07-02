@@ -683,6 +683,22 @@ test-diff-suppr/test22-suppr-removed-var-sym-report-4.txt \
 test-diff-suppr/test22-suppr-removed-var-sym-report-5.txt \
 test-diff-suppr/test22-suppr-removed-var-sym-v0.cc \
 test-diff-suppr/test22-suppr-removed-var-sym-v1.cc \
+test-diff-suppr/libtest23-alias-filter-v0.so \
+test-diff-suppr/libtest23-alias-filter-v1.so \
+test-diff-suppr/test23-alias-filter-0.suppr \
+test-diff-suppr/test23-alias-filter-1.suppr \
+test-diff-suppr/test23-alias-filter-2.suppr \
+test-diff-suppr/test23-alias-filter-3.suppr \
+test-diff-suppr/test23-alias-filter-4.suppr \
+test-diff-suppr/test23-alias-filter-report-0.txt \
+test-diff-suppr/test23-alias-filter-report-1.txt \
+test-diff-suppr/test23-alias-filter-report-2.txt \
+test-diff-suppr/test23-alias-filter-report-3.txt \
+test-diff-suppr/test23-alias-filter-report-4.txt \
+test-diff-suppr/test23-alias-filter-report-5.txt \
+test-diff-suppr/test23-alias-filter-v0.c \
+test-diff-suppr/test23-alias-filter-v1.c \
+test-diff-suppr/test23-alias-filter-version-script \
 \
 test-lookup-syms/test0.cc		\
 test-lookup-syms/test0.o		\

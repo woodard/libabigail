@@ -675,6 +675,22 @@ bool
 elf_symbol::has_aliases() const
 {return get_next_alias();}
 
+/// Get the number of aliases to this elf symbol
+///
+/// @return the number of aliases to this elf symbol.
+int
+elf_symbol::get_number_of_aliases() const
+{
+  int result = 0;
+
+  for (elf_symbol_sptr a = get_next_alias();
+       a && a.get() != get_main_symbol().get();
+       a = a->get_next_alias())
+    ++result;
+
+  return result;
+}
+
 /// Add an alias to the current elf symbol.
 ///
 /// @param alias the new alias.  Note that this elf_symbol should *NOT*

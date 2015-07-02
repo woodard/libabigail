@@ -439,6 +439,9 @@ public:
   bool
   has_aliases() const;
 
+  int
+  get_number_of_aliases() const;
+
   void
   add_alias(elf_symbol_sptr);
 

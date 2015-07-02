@@ -5,7 +5,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   [C]'function C0 foo()' has some indirect sub-type changes:
     Please note that the symbol of this function is _ZN2C0C2Ev
-     and it aliases: _ZN2C0C1Ev, _Z3foov
+     and it aliases symbols: _ZN2C0C1Ev, _Z3foov
     return type changed:
       entity changed from 'class C0' to compatible type 'typedef c0_type'
         1 data member change:

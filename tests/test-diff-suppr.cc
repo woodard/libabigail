@@ -832,12 +832,44 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test22-suppr-removed-var-sym-report-4.txt"
   },
   {
-    "data/test-diff-suppr/test22-suppr-removed-var-sym-v0.o",
-    "data/test-diff-suppr/test22-suppr-removed-var-sym-v1.o",
-    "data/test-diff-suppr/test22-suppr-removed-var-sym-4.suppr",
+    "data/test-diff-suppr/libtest23-alias-filter-v0.so",
+    "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "",
     "--no-redundant",
-    "data/test-diff-suppr/test22-suppr-removed-var-sym-report-5.txt",
-    "output/test-diff-suppr/test22-suppr-removed-var-sym-report-5.txt"
+    "data/test-diff-suppr/test23-alias-filter-report-0.txt",
+    "output/test-diff-suppr/test23-alias-filter-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest23-alias-filter-v0.so",
+    "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "data/test-diff-suppr/test23-alias-filter-0.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test23-alias-filter-report-1.txt",
+    "output/test-diff-suppr/test23-alias-filter-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest23-alias-filter-v0.so",
+    "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "data/test-diff-suppr/test23-alias-filter-1.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test23-alias-filter-report-2.txt",
+    "output/test-diff-suppr/test23-alias-filter-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest23-alias-filter-v0.so",
+    "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "data/test-diff-suppr/test23-alias-filter-2.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test23-alias-filter-report-3.txt",
+    "output/test-diff-suppr/test23-alias-filter-report-3.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest23-alias-filter-v0.so",
+    "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "data/test-diff-suppr/test23-alias-filter-4.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test23-alias-filter-report-5.txt",
+    "output/test-diff-suppr/test23-alias-filter-report-5.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}

@@ -1688,6 +1688,7 @@ class function_suppression::priv
   string				symbol_version_;
   string				symbol_version_regex_str_;
   mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
+  bool					allow_other_aliases_;
 
   priv(const string&			name,
        const string&			name_regex_str,
@@ -1707,7 +1708,8 @@ class function_suppression::priv
       symbol_name_(symbol_name),
       symbol_name_regex_str_(symbol_name_regex_str),
       symbol_version_(symbol_version),
-      symbol_version_regex_str_(symbol_version_regex_str)
+      symbol_version_regex_str_(symbol_version_regex_str),
+      allow_other_aliases_(true)
   {}
 
 
@@ -2149,6 +2151,22 @@ void
 function_suppression::set_symbol_version_regex_str(const string& r)
 {priv_->symbol_version_regex_str_ = r;}
 
+/// Getter for the "allow_other_aliases" property of the function
+/// suppression specification.
+///
+/// @return the value of the "allow_other_aliases" property.
+bool
+function_suppression::get_allow_other_aliases() const
+{return priv_->allow_other_aliases_;}
+
+/// Setter for the "allow_other_aliases" property of the function
+/// suppression specification.
+///
+/// @param f the new value of the property.
+void
+function_suppression::set_allow_other_aliases(bool f)
+{priv_->allow_other_aliases_ = f;}
+
 /// Evaluate this suppression specification on a given diff node and
 /// say if the diff node should be suppressed or not.
 ///
@@ -2193,13 +2211,54 @@ function_suppression::suppresses_function(const function_decl* fn,
 
   // Check if the "name" property matches.
   if (!get_function_name().empty())
-    if (get_function_name() != fn->get_qualified_name())
-      return false;
+    {
+      if (get_function_name() != fn->get_qualified_name())
+	return false;
 
-  // Check if the "name_regexp" property matches.
+      if (get_allow_other_aliases())
+	{
+	  string symbol_name;
+	  elf_symbol_sptr sym = fn->get_symbol();
+	  if (sym)
+	    symbol_name = sym->get_name();
+	  if (sym->has_aliases() && sym->get_alias_from_name(fname))
+	    {
+	      for (elf_symbol_sptr a = sym->get_next_alias();
+		   a && a.get() != sym->get_main_symbol().get();
+		   a = a->get_next_alias())
+		if (a->get_name() != symbol_name)
+		  return false;
+	    }
+	}
+    }
+
+  // check if the "name_regexp" property matches.
   const sptr_utils::regex_t_sptr name_regex = priv_->get_name_regex();
-  if (name_regex && (regexec(name_regex.get(), fname.c_str(), 0, NULL, 0) != 0))
-    return false;
+  if (name_regex)
+    {
+      if (regexec(name_regex.get(),
+		  fname.c_str(),
+		  0, NULL, 0) != 0)
+	return false;
+
+      if (get_allow_other_aliases())
+	{
+	  string symbol_name;
+	  elf_symbol_sptr sym = fn->get_symbol();
+	  if (sym)
+	    symbol_name = sym->get_name();
+	  if (sym->has_aliases())
+	    {
+	      for (elf_symbol_sptr a = sym->get_next_alias();
+		   a && a.get() != sym->get_main_symbol().get();
+		   a = a->get_next_alias())
+		if (regexec(name_regex.get(),
+			    a->get_name().c_str(),
+			    0, NULL, 0) != 0)
+		  return false;
+	    }
+	}
+    }
 
   // Check if the "return_type_name" or "return_type_regexp"
   // properties matches.
@@ -2228,16 +2287,29 @@ function_suppression::suppresses_function(const function_decl* fn,
   // Check if the "symbol_name" and "symbol_name_regexp" properties
   // match.
   string fn_sym_name, fn_sym_version;
-  if (fn->get_symbol())
+  elf_symbol_sptr sym = fn->get_symbol();
+  if (sym)
     {
-      fn_sym_name = fn->get_symbol()->get_name();
-      fn_sym_version = fn->get_symbol()->get_version().str();
+      fn_sym_name = sym->get_name();
+      fn_sym_version = sym->get_version().str();
     }
 
   if (!get_symbol_name().empty())
     {
       if (fn_sym_name != get_symbol_name())
 	return false;
+
+      if (get_allow_other_aliases())
+	{
+	  if (sym->has_aliases())
+	    {
+	      for (elf_symbol_sptr a = sym->get_next_alias();
+		   a && a.get() != sym->get_main_symbol().get();
+		   a = a->get_next_alias())
+		if (a->get_name() != fn_sym_name)
+		  return false;
+	    }
+	}
     }
   else
     {
@@ -2248,6 +2320,21 @@ function_suppression::suppresses_function(const function_decl* fn,
 		      fn_sym_name.c_str(),
 		      0, NULL, 0) != 0))
 	return false;
+
+      if (get_allow_other_aliases())
+	{
+	  if (sym->has_aliases())
+	    {
+	      for (elf_symbol_sptr a = sym->get_next_alias();
+		   a && a.get() != sym->get_main_symbol().get();
+		   a = a->get_next_alias())
+		if (symbol_name_regex
+		    && (regexec(symbol_name_regex.get(),
+				a->get_name().c_str(),
+				0, NULL, 0) != 0))
+		  return false;
+	    }
+	}
     }
 
   // Check if the "symbol_version" and "symbol_version_regexp"
@@ -2612,6 +2699,12 @@ read_function_suppression(const ini::config::section& section)
     ? sym_ver_regex_prop->get_value()->as_string()
     : "";
 
+  ini::simple_property_sptr allow_other_aliases_prop =
+    is_simple_property(section.find_property("allow_other_aliases"));
+  string allow_other_aliases = allow_other_aliases_prop
+    ? allow_other_aliases_prop->get_value()->as_string()
+    : "";
+
   function_suppression::parameter_spec_sptr parm;
   function_suppression::parameter_specs_type parms;
   for (ini::config::property_vector::const_iterator p =
@@ -2650,6 +2743,10 @@ read_function_suppression(const ini::config::section& section)
   if (result && !change_kind_str.empty())
     result->set_change_kind
       (function_suppression::parse_change_kind(change_kind_str));
+
+  if (result && !allow_other_aliases.empty())
+    result->set_allow_other_aliases(allow_other_aliases == "yes"
+				    || allow_other_aliases == "true");
 
   return result;
 }
@@ -3125,7 +3222,7 @@ variable_suppression::suppresses_variable(const var_decl* var,
   if (!get_name().empty())
     {
       if (get_name() != var_name)
-      return false;
+	return false;
     }
   else
     {
@@ -13758,10 +13855,15 @@ corpus_diff::report(ostream& out, const string& indent) const
 		  && !(is_member_function(fn)
 		       && get_member_function_is_dtor(fn)))
 		{
+		  int number_of_aliases =
+		    fn->get_symbol()->get_number_of_aliases();
 		  out << indent << "    "
 		      << "Please note that the symbol of this function is "
 		      << fn->get_symbol()->get_id_string()
-		      << "\n     and it aliases: "
+		      << "\n     and it aliases symbol";
+		  if (number_of_aliases > 1)
+		    out << "s";
+		  out << ": "
 		      << fn->get_symbol()->get_aliases_id_string(false)
 		      << "\n";
 		}

@@ -802,6 +802,12 @@ public:
   void
   set_symbol_version_regex_str(const string&);
 
+  bool
+  get_allow_other_aliases() const;
+
+  void
+  set_allow_other_aliases(bool f);
+
   virtual bool
   suppresses_diff(const diff* diff) const;
 

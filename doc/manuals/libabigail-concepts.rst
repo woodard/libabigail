@@ -153,11 +153,14 @@ as well.
 Section names
 ^^^^^^^^^^^^^
 
+Each different section can be thought of as being a directive to
+suppress diff reports for a particular kind of ABI artifact.
+
 ``[suppress_type]``
 $$$$$$$$$$$$$$$$$$$
 
-Suppresses report messages about a type change.  The potential
-properties of this sections are:
+This directive suppresses report messages about a type change.  The
+potential properties of this sections are:
 
 * ``name_regexp``
 
@@ -368,8 +371,8 @@ properties of this sections are:
 ``[suppress_function]``
 $$$$$$$$$$$$$$$$$$$$$$$$
 
-Suppresses report messages about changes on a set of functions.  The
-potential properties of this sections are:
+This directive suppresses report messages about changes on a set of
+functions.  The potential properties of this sections are:
 
 * ``label``
 
@@ -398,6 +401,15 @@ potential properties of this sections are:
 
  Suppresses change reports involving functions whose name matches the
  regular expression specified as value of this property.
+
+ Let's consider the case of functions that have several symbol names.
+ This happens when the underlying symbol for the function has
+ aliases.  Each symbol name is actually one alias name.
+
+ In this case, if the regular expression matches the name of
+ at least one of the aliases names, then it must match the names of
+ all of the aliases of the function for the directive to actually
+ suppress the diff reports for said function.
 
   .. _suppr_change_kind_property_label:
 
@@ -520,6 +532,14 @@ potential properties of this sections are:
  Suppresses change reports involving functions whose symbol name
  matches the regular expression specified as value of this property.
 
+ Let's consider the case of functions that have several symbol names.
+ This happens when the underlying symbol for the function has
+ aliases.  Each symbol name is actually one alias name.
+
+ In this case, the regular expression must match the names of all of
+ the aliases of the function for the directive to actually suppress
+ the diff reports for said function.
+
 * ``symbol_version``
 
  Usage:
@@ -541,8 +561,8 @@ potential properties of this sections are:
 ``[suppress_variable]``
 $$$$$$$$$$$$$$$$$$$$$$$$
 
-Suppresses report messages about changes on a set of variables.  The
-potential properties of this sections are:
+This directive suppresses report messages about changes on a set of
+variables.  The potential properties of this sections are:
 
 * ``label``
 
