@@ -245,7 +245,7 @@ extract_pkg(package_sptr pkg)
 }
 
 static int
-callback(const char *fpath, const struct stat *st, int flag)
+callback(const char *fpath, const struct stat *, int /*flag*/)
 {
   struct stat s;
   lstat(fpath, &s);
