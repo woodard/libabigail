@@ -152,6 +152,8 @@ display_usage(const string& prog_name, ostream& out)
 string
 get_soname(Elf *elf, GElf_Ehdr *ehdr)
 {
+  string result;
+
     for (int i = 0; i < ehdr->e_phnum; ++i)
     {
       GElf_Phdr phdr_mem;
@@ -167,9 +169,7 @@ get_soname(Elf *elf, GElf_Ehdr *ehdr)
           assert (shdr == NULL || shdr->sh_type == SHT_DYNAMIC);
           Elf_Data *data = elf_getdata (scn, NULL);
           if (data == NULL)
-            {
-              return NULL;
-            }
+	    break;
 
           for (int cnt = 0; cnt < maxcnt; ++cnt)
             {
@@ -185,11 +185,14 @@ get_soname(Elf *elf, GElf_Ehdr *ehdr)
                 continue;
 
               // XXX Don't rely on SHDR
-              return elf_strptr (elf, shdr->sh_link, dyn->d_un.d_val);
+              result = elf_strptr (elf, shdr->sh_link, dyn->d_un.d_val);
+	      break;
             }
           break;
         }
     }
+
+    return result;
 }
 
 
