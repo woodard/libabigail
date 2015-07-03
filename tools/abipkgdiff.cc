@@ -87,7 +87,10 @@ struct elf_file
   elf_type type;
 
   elf_file(string path, string name, elf_type type, string soname)
-  : path(path), name(name), type(type), soname(soname)
+    : name(name),
+      path(path),
+      soname(soname),
+      type(type)
     { }
 
   ~elf_file()
@@ -116,8 +119,8 @@ struct package
   package(string path, string dir, abigail::tools_utils::file_type file_type,
           bool is_debuginfo = false )
   : pkg_path(path),
-    is_debuginfo_pkg(is_debuginfo),
-    pkg_type(file_type)
+    pkg_type(file_type),
+    is_debuginfo_pkg(is_debuginfo)
     {
       const char *tmpdir = getenv("TMPDIR");
       if (tmpdir != NULL)
