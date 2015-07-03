@@ -213,7 +213,7 @@ elf_file_type(const GElf_Ehdr* ehdr)
     }
 }
 
-const bool
+bool
 extract_rpm(const string& pkg_path, const string &extracted_pkg_dir_path)
 {
   string cmd = "mkdir " + extracted_pkg_dir_path + " && cd " +
