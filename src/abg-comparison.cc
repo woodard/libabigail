@@ -9012,8 +9012,10 @@ class_diff::report(ostream& out, const string& indent) const
 		priv_->sorted_subtype_changed_dm_.begin();
 	       it != priv_->sorted_subtype_changed_dm_.end();
 	       ++it)
-	    represent(*it, context(), out, indent + " ");
-	  out << "\n";
+	    {
+	      represent(*it, context(), out, indent + " ");
+	      out << "\n";
+	    }
 	}
 
       numchanges = priv_->sorted_changed_dm_.size();
@@ -9026,8 +9028,10 @@ class_diff::report(ostream& out, const string& indent) const
 		 priv_->sorted_changed_dm_.begin();
 	       it != priv_->sorted_changed_dm_.end();
 	       ++it)
-	    represent(*it, context(), out, indent + " ");
-	  out << "\n";
+	    {
+	      represent(*it, context(), out, indent + " ");
+	      out << "\n";
+	    }
 	}
     }
 
