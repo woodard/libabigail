@@ -227,7 +227,7 @@ extract_rpm(const string& pkg_path, const string &extracted_pkg_dir_path)
 }
 
 static bool
-extract_pkg(package_sptr pkg)
+extract_package(package_sptr pkg)
 {
   switch(pkg->pkg_type)
     {
@@ -275,13 +275,13 @@ compute_abidiff (const elf_file* elf1, const string debug_dir1,
 }
 
 static bool
-pkg_diff(vector<package_sptr> &packages)
+compare_packages(vector<package_sptr>& packages)
 {
   for (vector< package_sptr>::iterator it = packages.begin();
        it != packages.end();
        ++it)
     {
-      if (!extract_pkg(*it))
+      if (!extract_package(*it))
         return false;
 
       // Getting files path available in packages
@@ -457,7 +457,7 @@ main(int argc, char* argv[])
 
   if (opts.pkg1.empty() || opts.pkg2.empty())
     {
-      cerr << "Please enter two pacakges to diff" << endl;
+      cerr << "Please enter two packages to compare" << endl;
       return 1;
     }
   packages.push_back(package_sptr (new package(
@@ -492,6 +492,6 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  return pkg_diff(packages);
+  return compare_packages(packages);
 
 }
