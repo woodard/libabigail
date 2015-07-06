@@ -142,10 +142,10 @@ typedef shared_ptr<package> package_sptr;
 static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << " [options] <bi-package1> <bi-package2>\n"
+  out << "usage: " << prog_name << " [options] <package1> <package2>\n"
       << " where options can be:\n"
-      << " --debug-info-pkg1 <path>  Path of debug-info package of bi-pacakge1\n"
-      << " --debug-info-pkg2 <path>  Path of debug-info package of bi-pacakge2\n"
+      << " --debug-info-pkg1 <path>  Path of debug-info package of package1\n"
+      << " --debug-info-pkg2 <path>  Path of debug-info package of package2\n"
       << " --help                    Display help message\n";
 }
 
@@ -262,7 +262,7 @@ void
 compute_abidiff (const elf_file* elf1, const string debug_dir1,
                  const elf_file* elf2, const string &debug_dir2)
 {
-  cout << "ABI change between binaries " << elf1->name << " and " << elf2->name;
+  cout << "Changes between " << elf1->name << " and " << elf2->name;
   cout << "  =======>\n";
   string cmd = "abidiff " +
   elf1->path + " " + elf2->path;
