@@ -55,16 +55,16 @@ using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
 
-vector<string> dir_elf_files_path;
+vector<string> elf_file_paths;
 
 struct options
 {
   bool display_usage;
   bool missing_operand;
-  string pkg1;
-  string pkg2;
-  string debug_pkg1;
-  string debug_pkg2;
+  string package1;
+  string package2;
+  string debug_package1;
+  string debug_package2;
 
   options()
     : display_usage(false),
@@ -92,12 +92,9 @@ struct elf_file
       soname(soname),
       type(type)
   {}
-
-  ~elf_file()
-  {
-    delete this;
-  }
 };
+
+typedef shared_ptr<elf_file> elf_file_sptr;
 
 struct abi_changes
 {
@@ -108,32 +105,41 @@ struct abi_changes
 
 struct package
 {
-  string pkg_path;
-  string extracted_pkg_dir_path;
-  // string pkg_name;
-  abigail::tools_utils::file_type pkg_type;
-  bool is_debuginfo_pkg;
-  map<string, elf_file*> dir_elf_files_map;
-  shared_ptr<package> debuginfo_pkg;
+  string path;
+  string extracted_package_dir_path;
+  abigail::tools_utils::file_type type;
+  bool is_debug_info;
+  map<string, elf_file_sptr> path_elf_file_sptr_map;
+  shared_ptr<package> debug_info_package;
 
-  package(string path, string dir, abigail::tools_utils::file_type file_type,
-          bool is_debuginfo = false)
-    : pkg_path(path),
-      pkg_type(file_type),
-      is_debuginfo_pkg(is_debuginfo)
+  package(string path, string dir,
+	  abigail::tools_utils::file_type file_type,
+          bool is_debug_info = false)
+    : path(path),
+      type(file_type),
+      is_debug_info(is_debug_info)
   {
     const char *tmpdir = getenv("TMPDIR");
     if (tmpdir != NULL)
-      extracted_pkg_dir_path = tmpdir;
+      extracted_package_dir_path = tmpdir;
     else
-      extracted_pkg_dir_path = "/tmp";
-    extracted_pkg_dir_path = extracted_pkg_dir_path + "/" + dir;
+      extracted_package_dir_path = "/tmp";
+    extracted_package_dir_path = extracted_package_dir_path + "/" + dir;
   }
 
-  ~package()
+  void
+  erase_extraction_directory() const
   {
-    string cmd = "rm -rf " + extracted_pkg_dir_path;
+    string cmd = "rm -rf " + extracted_package_dir_path;
     system(cmd.c_str());
+  }
+
+  void
+  erase_extraction_directories() const
+  {
+    erase_extraction_directory();
+    if (debug_info_package)
+      debug_info_package->erase_extraction_directory();
   }
 };
 
@@ -144,12 +150,12 @@ display_usage(const string& prog_name, ostream& out)
 {
   out << "usage: " << prog_name << " [options] <package1> <package2>\n"
       << " where options can be:\n"
-      << " --debug-info-pkg1 <path>  Path of debug-info package of package1\n"
-      << " --debug-info-pkg2 <path>  Path of debug-info package of package2\n"
-      << " --help                    Display help message\n";
+      << " --debug-info-pkg1|--d1 <path>  Path of debug-info package of package1\n"
+      << " --debug-info-pkg2|--d2 <path>  Path of debug-info package of package2\n"
+      << " --help                         Display help message\n";
 }
 
-string
+static string
 get_soname(Elf *elf, GElf_Ehdr *ehdr)
 {
   string result;
@@ -195,8 +201,7 @@ get_soname(Elf *elf, GElf_Ehdr *ehdr)
   return result;
 }
 
-
-elf_type
+static elf_type
 elf_file_type(const GElf_Ehdr* ehdr)
 {
   switch (ehdr->e_type)
@@ -213,28 +218,35 @@ elf_file_type(const GElf_Ehdr* ehdr)
     }
 }
 
-bool
-extract_rpm(const string& pkg_path, const string &extracted_pkg_dir_path)
+static bool
+extract_rpm(const string& pkg_path, const string &extracted_package_dir_path)
 {
-  string cmd = "mkdir " + extracted_pkg_dir_path + " && cd " +
-    extracted_pkg_dir_path + " && rpm2cpio " + pkg_path +
+  string cmd = "mkdir " + extracted_package_dir_path + " && cd " +
+    extracted_package_dir_path + " && rpm2cpio " + pkg_path +
     " | cpio -dium --quiet";
 
   if (!system(cmd.c_str()))
     return true;
   return false;
+}
 
+static void
+erase_created_temporary_directories(const package& first_package,
+				    const package& second_package)
+{
+  first_package.erase_extraction_directories();
+  second_package.erase_extraction_directories();
 }
 
 static bool
-extract_package(package_sptr pkg)
+extract_package(const package& package)
 {
-  switch(pkg->pkg_type)
+  switch(package.type)
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
-      if (!extract_rpm(pkg->pkg_path, pkg->extracted_pkg_dir_path))
+      if (!extract_rpm(package.path, package.extracted_package_dir_path))
         {
-          cerr << "Error while extracting package" << pkg->pkg_path << endl;
+          cerr << "Error while extracting package" << package.path << endl;
           return false;
         }
       return true;
@@ -246,7 +258,9 @@ extract_package(package_sptr pkg)
 }
 
 static int
-callback(const char *fpath, const struct stat *, int /*flag*/)
+file_tree_walker_callback_fn(const char *fpath,
+			     const struct stat *,
+			     int /*flag*/)
 {
   struct stat s;
   lstat(fpath, &s);
@@ -254,19 +268,19 @@ callback(const char *fpath, const struct stat *, int /*flag*/)
   if (!S_ISLNK(s.st_mode))
     {
       if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
-	dir_elf_files_path.push_back(fpath);
+	elf_file_paths.push_back(fpath);
     }
   return 0;
 }
 
-void
-compute_abidiff (const elf_file* elf1, const string debug_dir1,
-                 const elf_file* elf2, const string &debug_dir2)
+static void
+compare(const elf_file& elf1, const string& debug_dir1,
+	const elf_file& elf2, const string& debug_dir2)
 {
-  cout << "Changes between " << elf1->name << " and " << elf2->name;
+  cout << "Changes between " << elf1.name << " and " << elf2.name;
   cout << "  =======>\n";
   string cmd = "abidiff " +
-    elf1->path + " " + elf2->path;
+    elf1.path + " " + elf2.path;
   if (!debug_dir1.empty())
     cmd += " --debug-info-dir1 " + debug_dir1;
   if (!debug_dir2.empty())
@@ -275,95 +289,127 @@ compute_abidiff (const elf_file* elf1, const string debug_dir1,
 }
 
 static bool
-compare_packages(vector<package_sptr>& packages)
+create_maps_of_package_content(package& package)
 {
-  for (vector< package_sptr>::iterator it = packages.begin();
-       it != packages.end();
-       ++it)
+  elf_file_paths.clear();
+  if (ftw(package.extracted_package_dir_path.c_str(),
+	  file_tree_walker_callback_fn,
+	  16))
     {
-      if (!extract_package(*it))
-        return false;
-
-      // Getting files path available in packages
-      if (!(*it)->is_debuginfo_pkg)
-        {
-          dir_elf_files_path.clear();
-          if (!(ftw((*it)->extracted_pkg_dir_path.c_str(), callback, 16)))
-            {
-              for (vector<string>::const_iterator iter =
-		     dir_elf_files_path.begin();
-                   iter != dir_elf_files_path.end(); ++iter)
-                {
-                  int fd = open((*iter).c_str(), O_RDONLY);
-                  if(fd == -1)
-                    return false;
-                  elf_version (EV_CURRENT);
-                  Elf *elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
-                  GElf_Ehdr ehdr_mem;
-                  GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
-                  string soname;
-                  elf_type e = elf_file_type(ehdr);
-                  if (e == ELF_TYPE_DSO)
-                    soname = get_soname(elf, ehdr);
-
-                  string file_base_name(basename(const_cast<char*>((*iter).c_str())));
-                  if (soname.empty())
-                    (*it)->dir_elf_files_map[file_base_name] =
-		      new elf_file((*iter), file_base_name, e, soname);
-                  else
-                    (*it)->dir_elf_files_map[soname] =
-		      new elf_file((*iter), file_base_name, e, soname);
-                }
-	    }
-          else
-            cerr << "Error while getting list of files in package"
-		 << (*it)->extracted_pkg_dir_path << std::endl;
-        }
+      cerr << "Error while inspecting files in package"
+	   << package.extracted_package_dir_path << std::endl;
+      return false;
     }
+
+  for (vector<string>::const_iterator file =
+	 elf_file_paths.begin();
+       file != elf_file_paths.end();
+       ++file)
+    {
+      int fd = open((*file).c_str(), O_RDONLY);
+      if(fd == -1)
+	return false;
+      elf_version (EV_CURRENT);
+      Elf *elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
+      GElf_Ehdr ehdr_mem;
+      GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
+      string soname;
+      elf_type e = elf_file_type(ehdr);
+      if (e == ELF_TYPE_DSO)
+	soname = get_soname(elf, ehdr);
+
+      string file_base_name(basename(const_cast<char*>((*file).c_str())));
+      if (soname.empty())
+	package.path_elf_file_sptr_map[file_base_name] =
+	  elf_file_sptr(new elf_file((*file), file_base_name, e, soname));
+      else
+	package.path_elf_file_sptr_map[soname] =
+	  elf_file_sptr( new elf_file((*file), file_base_name, e, soname));
+    }
+
+  return true;
+}
+
+static bool
+extract_package_and_map_its_content(package& package)
+{
+  if (!extract_package(package))
+    return false;
+
+  bool result = true;
+  if (!package.is_debug_info)
+    result |= create_maps_of_package_content(package);
+
+  return result;
+}
+
+static bool
+prepare_packages(package& first_package,
+		 package& second_package)
+{
+    if (!extract_package_and_map_its_content(first_package)
+	|| !extract_package_and_map_its_content(second_package))
+    return false;
+
+    if ((first_package.debug_info_package
+	 && !extract_package(*first_package.debug_info_package))
+	|| (second_package.debug_info_package
+	    && !extract_package(*second_package.debug_info_package)))
+      return false;
+
+    return true;
+}
+
+static bool
+compare(package& first_package, package& second_package)
+{
+  if (!prepare_packages(first_package, second_package))
+    return false;
+
   // Setting debug-info path of libraries
   string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
-  if (packages[0]->debuginfo_pkg != NULL)
+  if (first_package.debug_info_package
+      && second_package.debug_info_package)
     {
-      debug_dir1 = packages[2]->extracted_pkg_dir_path + relative_debug_path;
-      if (packages[1]->debuginfo_pkg != NULL)
-	debug_dir2 = packages[3]->extracted_pkg_dir_path + relative_debug_path;
+      debug_dir1 =
+	first_package.debug_info_package->extracted_package_dir_path +
+	relative_debug_path;
+      if (second_package.debug_info_package)
+	debug_dir2 =
+	  second_package.debug_info_package->extracted_package_dir_path +
+	  relative_debug_path;
     }
-  else if (packages[1]->debuginfo_pkg != NULL)
-    debug_dir2 = packages[2]->extracted_pkg_dir_path + relative_debug_path;
 
-  for (map<string, elf_file*>::iterator it =
-	 packages[0]->dir_elf_files_map.begin();
-       it != packages[0]->dir_elf_files_map.end();
+  for (map<string, elf_file_sptr>::iterator it =
+	 first_package.path_elf_file_sptr_map.begin();
+       it != first_package.path_elf_file_sptr_map.end();
        ++it)
     {
+      map<string, elf_file_sptr>::iterator iter =
+	second_package.path_elf_file_sptr_map.find(it->first);
 
-      map<string, elf_file*>::iterator iter =
-	packages[1]->dir_elf_files_map.find(it->first);
-      if (iter != packages[1]->dir_elf_files_map.end())
+      if (iter != second_package.path_elf_file_sptr_map.end())
 	{
-	  compute_abidiff(it->second, debug_dir1, iter->second, debug_dir2);
-	  packages[1]->dir_elf_files_map.erase(iter);
+	  compare(*it->second, debug_dir1,
+		  *iter->second, debug_dir2);
+	  second_package.path_elf_file_sptr_map.erase(iter);
 	}
       else
 	abi_diffs.removed_binaries.push_back(it->second->name);
     }
 
-  for (map<string, elf_file*>::iterator it =
-	 packages[1]->dir_elf_files_map.begin();
-       it != packages[1]->dir_elf_files_map.end();
+  for (map<string, elf_file_sptr>::iterator it =
+	 second_package.path_elf_file_sptr_map.begin();
+       it != second_package.path_elf_file_sptr_map.end();
        ++it)
-    {
-      abi_diffs.added_binaries.push_back(it->second->name);
-    }
+    abi_diffs.added_binaries.push_back(it->second->name);
 
   if (abi_diffs.removed_binaries.size())
     {
       cout << "Removed binaries\n";
       for (vector<string>::iterator it = abi_diffs.removed_binaries.begin();
 	   it != abi_diffs.removed_binaries.end(); ++it)
-	{
-	  cout << *it << std::endl;
-	}
+	cout << *it << std::endl;
     }
 
   if (abi_diffs.added_binaries.size())
@@ -371,15 +417,15 @@ compare_packages(vector<package_sptr>& packages)
       cout << "Added binaries\n";
       for (vector<string>::iterator it = abi_diffs.added_binaries.begin();
 	   it != abi_diffs.added_binaries.end(); ++it)
-	{
-	  cout << *it << std::endl;
-	}
+	cout << *it << std::endl;
     }
+
+  erase_created_temporary_directories(first_package, second_package);
 
   return true;
 }
 
-bool
+static bool
 parse_command_line(int argc, char* argv[], options& opts)
 {
   if (argc < 2)
@@ -389,14 +435,15 @@ parse_command_line(int argc, char* argv[], options& opts)
     {
       if (argv[i][0] != '-')
         {
-          if (opts.pkg1.empty())
-            opts.pkg1 = abigail::tools_utils::make_path_absolute(argv[i]).get();
-          else if (opts.pkg2.empty())
-            opts.pkg2 = abigail::tools_utils::make_path_absolute(argv[i]).get();
+          if (opts.package1.empty())
+            opts.package1 = abigail::tools_utils::make_path_absolute(argv[i]).get();
+          else if (opts.package2.empty())
+            opts.package2 = abigail::tools_utils::make_path_absolute(argv[i]).get();
           else
             return false;
         }
-      else if (!strcmp(argv[i], "--debug-info-pkg1"))
+      else if (!strcmp(argv[i], "--debug-info-pkg1")
+	       || !strcmp(argv[i], "--d1"))
         {
           int j = i + 1;
           if (j >= argc)
@@ -404,10 +451,12 @@ parse_command_line(int argc, char* argv[], options& opts)
               opts.missing_operand = true;
               return true;
             }
-          opts.debug_pkg1 = abigail::tools_utils::make_path_absolute(argv[j]).get();
+          opts.debug_package1 =
+	    abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
-      else if (!strcmp(argv[i], "--debug-info-pkg2"))
+      else if (!strcmp(argv[i], "--debug-info-pkg2")
+	       || !strcmp(argv[i], "--d2"))
         {
           int j = i + 1;
           if (j >= argc)
@@ -415,7 +464,8 @@ parse_command_line(int argc, char* argv[], options& opts)
               opts.missing_operand = true;
               return true;
             }
-          opts.debug_pkg2 = abigail::tools_utils::make_path_absolute(argv[j]).get();
+          opts.debug_package2 =
+	    abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
       else if (!strcmp(argv[i], "--help"))
@@ -455,43 +505,44 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  if (opts.pkg1.empty() || opts.pkg2.empty())
+  if (opts.package1.empty() || opts.package2.empty())
     {
       cerr << "Please enter two packages to compare" << endl;
       return 1;
     }
-  packages.push_back(package_sptr (new package(
-					       opts.pkg1, "pkg1", guess_file_type(opts.pkg1))));
-  packages.push_back(package_sptr(new package(
-					      opts.pkg2, "pkg2", guess_file_type(opts.pkg2))));
-  if (!opts.debug_pkg1.empty())
-    {
-      packages.push_back(package_sptr (new package(
-						   opts.debug_pkg1, "debug_pkg1", guess_file_type(opts.debug_pkg1), true)));
-      packages[0]->debuginfo_pkg = packages[packages.size() - 1];
-    }
-  if (!opts.debug_pkg2.empty())
-    {
-      packages.push_back(package_sptr (new package(
-						   opts.debug_pkg2, "debug_pkg2", guess_file_type(opts.debug_pkg2), true)));
-      packages[1]->debuginfo_pkg = packages[packages.size() - 1];
-    }
 
-  switch (packages.at(0)->pkg_type)
+  package_sptr first_package(new package(opts.package1, "package1",
+					 guess_file_type(opts.package1)));
+
+  package_sptr second_package(new package(opts.package2, "package2",
+					  guess_file_type(opts.package2)));
+
+  if (!opts.debug_package1.empty())
+    first_package->debug_info_package =
+      package_sptr(new package(opts.debug_package1, "debug_package1",
+			       guess_file_type(opts.debug_package1),
+			       /*is_debug_info=*/true));
+
+  if (!opts.debug_package2.empty())
+    second_package->debug_info_package =
+      package_sptr(new package(opts.debug_package2, "debug_package2",
+			       guess_file_type(opts.debug_package2),
+			       /*is_debug_info=*/true));
+
+  switch (first_package->type)
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
-      if (!(packages.at(1)->pkg_type == abigail::tools_utils::FILE_TYPE_RPM))
+      if (!(second_package->type == abigail::tools_utils::FILE_TYPE_RPM))
 	{
-	  cerr << opts.pkg2 << " should be an RPM file\n";
+	  cerr << opts.package2 << " should be an RPM file\n";
 	  return 1;
 	}
       break;
 
     default:
-      cerr << opts.pkg1 << " should be a valid package file \n";
+      cerr << opts.package1 << " should be a valid package file \n";
       return 1;
     }
 
-  return compare_packages(packages);
-
+  return compare(*first_package, *second_package);
 }
