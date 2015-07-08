@@ -32,7 +32,7 @@ Options
 
     Display a short help about the command and exit.
 
-  * --debug-info-dir1 <*di-path1*>
+  * --debug-info-dir1 | --d1 <*di-path1*>
 
     For cases where the debug information for *first-shared-library*
     is split out into a separate file, tells ``abidiff`` where to find
@@ -47,7 +47,7 @@ Options
     information installed by your system's package manager because
     then ``abidiff`` knows where to find it.
 
-  * --debug-info-dir2 <*di-path2*>
+  * --debug-info-dir2 | --d2 <*di-path2*>
 
     Like ``--debug-info-dir1``, this options tells ``abidiff`` where
     to find the split debug information for the

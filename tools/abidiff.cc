@@ -107,10 +107,10 @@ struct options
 static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << " [options] [<bi-file1> <bi-file2>]\n"
+  out << "usage: " << prog_name << " [options] [<file1> <file2>]\n"
       << " where options can be:\n"
-      << " --debug-info-dir1 <path> the root for the debug info of bi-file1\n"
-      << " --debug-info-dir2 <path> the root for the debug info of bi-file2\n"
+      << " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
+      << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
       << " --stat  only display the diff stats\n"
       << " --symtabs  only display the symbol tables of the corpora\n"
       << " --deleted-fns  display deleted public functions\n"
@@ -169,7 +169,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  else
 	    return false;
 	}
-      else if (!strcmp(argv[i], "--debug-info-dir1"))
+      else if (!strcmp(argv[i], "--debug-info-dir1")
+	       || !strcmp(argv[i], "--d1"))
 	{
 	  int j = i + 1;
 	  if (j >= argc)
@@ -183,7 +184,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[j]);
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--debug-info-dir2"))
+      else if (!strcmp(argv[i], "--debug-info-dir2")
+	       || !strcmp(argv[i], "--d2"))
 	{
 	  int j = i + 1;
 	  if (j >= argc)
