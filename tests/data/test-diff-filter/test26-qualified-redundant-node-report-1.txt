@@ -14,6 +14,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                  in pointed to type 'struct FooStruct::Embedded':
                    1 data member insertion:
                      'char FooStruct::Embedded::m1', at offset 32 (in bits)
+
                type of 'FooStruct::Embedded** S::m2' changed:
                  in pointed to type 'FooStruct::Embedded*':
                    pointed to type 'struct FooStruct::Embedded' changed, as reported earlier
