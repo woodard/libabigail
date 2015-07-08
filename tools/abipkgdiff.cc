@@ -45,7 +45,6 @@
 
 using std::cout;
 using std::cerr;
-using std::endl;
 using std::string;
 using std::ostream;
 using std::vector;
@@ -201,7 +200,7 @@ extract_package(const package& package)
     case abigail::tools_utils::FILE_TYPE_RPM:
       if (!extract_rpm(package.path, package.extracted_package_dir_path))
         {
-          cerr << "Error while extracting package" << package.path << endl;
+          cerr << "Error while extracting package" << package.path << "\n";
           return false;
         }
       return true;
@@ -252,7 +251,7 @@ create_maps_of_package_content(package& package)
 	  16))
     {
       cerr << "Error while inspecting files in package"
-	   << package.extracted_package_dir_path << std::endl;
+	   << package.extracted_package_dir_path << "\n";
       return false;
     }
 
@@ -367,7 +366,7 @@ compare(package& first_package, package& second_package)
       cout << "Removed binaries\n";
       for (vector<string>::iterator it = abi_diffs.removed_binaries.begin();
 	   it != abi_diffs.removed_binaries.end(); ++it)
-	cout << *it << std::endl;
+	cout << *it << "\n";
     }
 
   if (abi_diffs.added_binaries.size())
@@ -375,7 +374,7 @@ compare(package& first_package, package& second_package)
       cout << "Added binaries\n";
       for (vector<string>::iterator it = abi_diffs.added_binaries.begin();
 	   it != abi_diffs.added_binaries.end(); ++it)
-	cout << *it << std::endl;
+	cout << *it << "\n";
     }
 
   erase_created_temporary_directories(first_package, second_package);
@@ -465,7 +464,7 @@ main(int argc, char* argv[])
 
   if (opts.package1.empty() || opts.package2.empty())
     {
-      cerr << "Please enter two packages to compare" << endl;
+      cerr << "Please enter two packages to compare" << "\n";
       return 1;
     }
 
