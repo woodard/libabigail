@@ -86,7 +86,10 @@ struct elf_file
   string soname;
   elf_type type;
 
-  elf_file(string path, string name, elf_type type, string soname)
+  elf_file(const string& path,
+	   const string& name,
+	   const string& soname,
+	   elf_type type)
     : name(name),
       path(path),
       soname(soname),
@@ -112,7 +115,7 @@ struct package
   map<string, elf_file_sptr> path_elf_file_sptr_map;
   shared_ptr<package> debug_info_package;
 
-  package(string path, string dir,
+  package(const string& path, const string& dir,
 	  abigail::tools_utils::file_type file_type,
           bool is_debug_info = false)
     : path(path),
@@ -278,10 +281,10 @@ create_maps_of_package_content(package& package)
       string file_base_name(basename(const_cast<char*>((*file).c_str())));
       if (soname.empty())
 	package.path_elf_file_sptr_map[file_base_name] =
-	  elf_file_sptr(new elf_file((*file), file_base_name, e, soname));
+	  elf_file_sptr(new elf_file((*file), file_base_name, soname, e));
       else
 	package.path_elf_file_sptr_map[soname] =
-	  elf_file_sptr( new elf_file((*file), file_base_name, e, soname));
+	  elf_file_sptr( new elf_file((*file), file_base_name, soname, e));
     }
 
   return true;
