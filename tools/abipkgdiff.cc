@@ -62,6 +62,8 @@ using abigail::comparison::corpus_diff_sptr;
 using abigail::dwarf_reader::get_soname_from_elf;
 using abigail::dwarf_reader::read_corpus_from_elf;
 
+static bool verbose;
+
 vector<string> elf_file_paths;
 
 struct options
@@ -140,8 +142,16 @@ struct package
   void
   erase_extraction_directory() const
   {
+    if (verbose)
+      cerr << "Erasing temporary extraction directory "
+	   << extracted_package_dir_path
+	   << " ...";
+
     string cmd = "rm -rf " + extracted_package_dir_path;
     system(cmd.c_str());
+
+    if (verbose)
+      cerr << " DONE\n";
   }
 
   void
@@ -162,6 +172,7 @@ display_usage(const string& prog_name, ostream& out)
       << " where options can be:\n"
       << " --debug-info-pkg1|--d1 <path>  Path of debug-info package of package1\n"
       << " --debug-info-pkg2|--d2 <path>  Path of debug-info package of package2\n"
+      << " --verbose                      Emit verbose progress messages\n"
       << " --help                         Display help message\n";
 }
 
@@ -183,15 +194,36 @@ elf_file_type(const GElf_Ehdr* ehdr)
 }
 
 static bool
-extract_rpm(const string& pkg_path, const string &extracted_package_dir_path)
+extract_rpm(const string& pkg_path, const string& extracted_package_dir_path)
 {
-  string cmd = "mkdir " + extracted_package_dir_path + " && cd " +
+  if (verbose)
+    cerr << "Extracting package "
+	 << pkg_path
+	 << "to "
+	 << extracted_package_dir_path
+	 << " ...";
+
+  string cmd = "test -d " +
+    extracted_package_dir_path +
+    " && rm -rf " + extracted_package_dir_path;
+
+  system(cmd.c_str());
+
+  cmd = "mkdir " + extracted_package_dir_path + " && cd " +
     extracted_package_dir_path + " && rpm2cpio " + pkg_path +
     " | cpio -dium --quiet";
 
-  if (!system(cmd.c_str()))
-    return true;
-  return false;
+  if (system(cmd.c_str()))
+    {
+      if (verbose)
+	cerr << " FAILED\n";
+      return false;
+    }
+
+  if (verbose)
+    cerr << " DONE\n";
+
+  return true;
 }
 
 static void
@@ -244,8 +276,20 @@ compare(const elf_file& elf1, const string& debug_dir1,
   char *di_dir1 = (char*) debug_dir1.c_str(),
     *di_dir2 = (char*) debug_dir2.c_str();
 
+  if (verbose)
+    cerr << "Comparing the ABIs of file "
+	 << elf1.path
+	 << " and "
+	 << elf2.path
+	 << "...\n";
+
   abigail::dwarf_reader::status c1_status = abigail::dwarf_reader::STATUS_OK,
     c2_status = abigail::dwarf_reader::STATUS_OK;
+
+  if (verbose)
+    cerr << "  Reading file "
+	 << elf1.path
+	 << " ...";
 
   corpus_sptr corpus1 = read_corpus_from_elf(elf1.path, &di_dir1,
 					     /*load_all_types=*/false,
@@ -258,6 +302,14 @@ compare(const elf_file& elf1, const string& debug_dir1,
       return;
     }
 
+  if (verbose)
+    cerr << " DONE\n";
+
+  if (verbose)
+    cerr << "  Reading file "
+	 << elf2.path
+	 << " ...";
+
   corpus_sptr corpus2 = read_corpus_from_elf(elf2.path, &di_dir2,
 					     /*load_all_types=*/false,
 					     c2_status);
@@ -267,9 +319,18 @@ compare(const elf_file& elf1, const string& debug_dir1,
 	   << elf2.path
 	   << "' properly\n";
       return;
-    }:!
+    }
+
+  if (verbose)
+    cerr << " DONE\n";
+
+  if (verbose)
+    cerr << "  Comparing the ABI of the two files ...";
 
   corpus_diff_sptr diff = compute_diff(corpus1, corpus2);
+
+  if (verbose)
+    cerr << "DONE\n";
 
   if (diff->has_changes())
     {
@@ -286,12 +347,25 @@ compare(const elf_file& elf1, const string& debug_dir1,
 	   << "'===============\n\n";
     }
 
+  if (verbose)
+    cerr << "Comparing the ABIs of file "
+	 << elf1.path
+	 << " and "
+	 << elf2.path
+	 << " is DONE\n";
 }
 
 static bool
 create_maps_of_package_content(package& package)
 {
   elf_file_paths.clear();
+  if (verbose)
+    cerr << "Analyzing the content of package "
+	 << package.path
+	 << " extracted to "
+	 << package.extracted_package_dir_path
+	 << " ...";
+
   if (ftw(package.extracted_package_dir_path.c_str(),
 	  file_tree_walker_callback_fn,
 	  16))
@@ -330,6 +404,8 @@ create_maps_of_package_content(package& package)
 	  elf_file_sptr( new elf_file((*file), file_base_name, soname, e));
     }
 
+  if (verbose)
+    cerr << " DONE\n";
   return true;
 }
 
@@ -473,6 +549,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
+      else if (!strcmp(argv[i], "--verbose"))
+	verbose = true;
       else if (!strcmp(argv[i], "--help"))
         {
           opts.display_usage = true;
