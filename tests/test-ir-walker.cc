@@ -136,13 +136,13 @@ main(int argc, char **argv)
 
   string file_name = argv[1];
 
-  abigail::translation_unit tu(file_name);
-  if (!abigail::xml_reader::read_translation_unit_from_file(tu))
+  abigail::translation_unit_sptr tu;
+  if (!(tu = abigail::xml_reader::read_translation_unit_from_file(file_name)))
     {
       cerr << "failed to read " << file_name << "\n";
       return 1;
     }
 
   name_printing_visitor v;
-  tu.traverse(v);
+  tu->traverse(v);
 }

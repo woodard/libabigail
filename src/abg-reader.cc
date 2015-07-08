@@ -737,8 +737,7 @@ public:
 };// end class read_context
 
 static int	advance_cursor(read_context&);
-static bool	read_translation_unit_from_input(read_context&,
-						 translation_unit&);
+static translation_unit_sptr read_translation_unit_from_input(read_context&);
 static bool	read_symbol_db_from_input(read_context&, bool,
 					  string_elf_symbols_map_sptr&);
 static bool	read_location(read_context&, xmlNodePtr, location&);
@@ -999,16 +998,16 @@ walk_xml_node_to_map_type_ids(read_context& ctxt,
 ///
 /// @param ctxt the current input context
 ///
-/// @param tu the translation unit resulting from the parsing.
-///
-/// @return true upon successful parsing, false otherwise.
-static bool
-read_translation_unit_from_input(read_context&	ctxt,
-				 translation_unit&	tu)
+/// @return the translation unit resulting from the parsing upon
+/// successful completion, or nil.
+static translation_unit_sptr
+read_translation_unit_from_input(read_context&	ctxt)
 {
+  translation_unit_sptr tu, nil;
+
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
-    return false;
+    return nil;
 
   // The document must start with the abi-instr node.
   int status = 1;
@@ -1018,28 +1017,30 @@ read_translation_unit_from_input(read_context&	ctxt,
 
   if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
 				   BAD_CAST("abi-instr")))
-    return false;
+    return nil;
 
   xmlNodePtr node = xmlTextReaderExpand(reader.get());
   if (!node)
-    return false;
+    return nil;
+
+  tu.reset(new translation_unit(""));
 
   xml::xml_char_sptr addrsize_str =
     XML_NODE_GET_ATTRIBUTE(node, "address-size");
   if (addrsize_str)
     {
       char address_size = atoi(reinterpret_cast<char*>(addrsize_str.get()));
-      tu.set_address_size(address_size);
+      tu->set_address_size(address_size);
     }
 
   xml::xml_char_sptr path_str = XML_NODE_GET_ATTRIBUTE(node, "path");
   if (path_str)
-    tu.set_path(reinterpret_cast<char*>(path_str.get()));
+    tu->set_path(reinterpret_cast<char*>(path_str.get()));
 
   // We are at global scope, as we've just seen the top-most
   // "abi-instr" element.
-  ctxt.push_decl(tu.get_global_scope());
-  ctxt.map_xml_node_to_decl(node, tu.get_global_scope());
+  ctxt.push_decl(tu->get_global_scope());
+  ctxt.map_xml_node_to_decl(node, tu->get_global_scope());
 
   walk_xml_node_to_map_type_ids(ctxt, node);
 
@@ -1055,7 +1056,7 @@ read_translation_unit_from_input(read_context&	ctxt,
 
   ctxt.clear_per_translation_unit_data();
 
-  return true;
+  return tu;
 }
 
 /// Parse the input XML document containing a function symbols
@@ -1282,8 +1283,8 @@ read_corpus_from_input(read_context& ctxt)
   // Read the translation units.
   do
     {
-      translation_unit_sptr tu(new translation_unit(""));
-      is_ok = read_translation_unit_from_input(ctxt, *tu);
+      translation_unit_sptr tu = read_translation_unit_from_input(ctxt);
+      is_ok = tu;
       if (is_ok)
 	corp.add(tu);
     }
@@ -1300,28 +1301,14 @@ read_corpus_from_input(read_context& ctxt)
 /// @param input_file a path to the file containing the xml document
 /// to parse.
 ///
-/// @param tu the translation unit resulting from the parsing.
-///
-/// @return true upon successful parsing, false otherwise.
-bool
-read_translation_unit_from_file(const string&		input_file,
-				translation_unit&	tu)
+/// @return the translation unit resulting from the parsing upon
+/// successful completion, or nil.
+translation_unit_sptr
+read_translation_unit_from_file(const string&		input_file)
 {
   read_context read_ctxt(xml::new_reader_from_file(input_file));
-  return read_translation_unit_from_input(read_ctxt, tu);
+  return read_translation_unit_from_input(read_ctxt);
 }
-
-/// Parse an ABI instrumentation file (in XML format) at a given path.
-/// The path used is the one associated to the instance of @ref
-/// translation_unit.
-///
-/// @param tu the translation unit to populate with the de-serialized
-/// from of what is read at translation_unit::get_path().
-///
-/// @return true upon successful parsing, false otherwise.
-bool
-read_translation_unit_from_file(translation_unit&	tu)
-{return read_translation_unit_from_file(tu.get_path(), tu);}
 
 /// Parse an ABI instrumentation file (in XML format) from an
 /// in-memory buffer.
@@ -1329,15 +1316,13 @@ read_translation_unit_from_file(translation_unit&	tu)
 /// @param buffer the in-memory buffer containing the xml document to
 /// parse.
 ///
-/// @param tu the translation unit resulting from the parsing.
-///
-/// @return true upon successful parsing, false otherwise.
-bool
-read_translation_unit_from_buffer(const string&	buffer,
-				  translation_unit&	tu)
+/// @return the translation unit resulting from the parsing upon
+/// successful completion, or nil.
+translation_unit_sptr
+read_translation_unit_from_buffer(const string&	buffer)
 {
   read_context read_ctxt(xml::new_reader_from_buffer(buffer));
-  return read_translation_unit_from_input(read_ctxt, tu);
+  return read_translation_unit_from_input(read_ctxt);
 }
 
 /// This function is called by @ref read_translation_unit_from_input.
@@ -3847,68 +3832,14 @@ handle_class_tdecl(read_context&	ctxt,
 ///
 /// @param in a pointer to the input stream.
 ///
-/// @param tu the translation unit resulting from the parsing.  This
-/// is populated iff the function returns true.
-///
-/// @return true upon successful parsing, false otherwise.
-bool
-read_translation_unit_from_istream(istream* in,
-				   translation_unit& tu)
-{
-  read_context read_ctxt(xml::new_reader_from_istream(in));
-  return read_translation_unit_from_input(read_ctxt, tu);
-}
-
-/// De-serialize a translation unit from an ABI Instrumentation xml
-/// file coming from an input stream.
-///
-/// @param in a pointer to the input stream.
-///
-/// @return a pointer to the resulting translation unit.
+/// @return the translation unit resulting from the parsing upon
+/// successful completion, or nil.
 translation_unit_sptr
 read_translation_unit_from_istream(istream* in)
 {
-  translation_unit_sptr result(new translation_unit(""));
-  if (!read_translation_unit_from_istream(in, *result))
-    return translation_unit_sptr();
-  return result;
+  read_context read_ctxt(xml::new_reader_from_istream(in));
+  return read_translation_unit_from_input(read_ctxt);
 }
-
-/// De-serialize a translation unit from an ABI Instrumentation XML
-/// file at a given path.
-///
-/// @param file_path the path to the ABI Instrumentation XML file.
-///
-/// @return the deserialized translation or NULL if file_path could
-/// not be read.  If file_path contains nothing, a non-null
-/// translation_unit is returned, but with empty content.
-translation_unit_sptr
-read_translation_unit_from_file(const string& file_path)
-{
-  translation_unit_sptr result(new translation_unit(file_path));
-
-  if (!xml_reader::read_translation_unit_from_file(result->get_path(), *result))
-    return translation_unit_sptr();
-  return result;
-}
-
-/// De-serialize a translation unit from an in-memory buffer
-/// containing and ABI Instrumentation XML content.
-///
-/// @param buffer the buffer containing the ABI Instrumentation XML
-/// content to parse.
-///
-/// @return the deserialized translation.
-translation_unit_sptr
-read_translation_unit_from_buffer(const std::string& buffer)
-{
-  translation_unit_sptr result(new translation_unit(""));
-
-  if (!xml_reader::read_translation_unit_from_buffer(buffer, *result))
-    return translation_unit_sptr();
-  return result;
-}
-
 template<typename T>
 struct array_deleter
 {
@@ -3933,17 +3864,17 @@ struct array_deleter
 /// read from the zip archive.
 ///
 /// @return true upon successful completion, false otherwise.
-static bool
-read_to_translation_unit(translation_unit& tu,
-			 zip_sptr ar,
+static translation_unit_sptr
+read_to_translation_unit(zip_sptr ar,
 			 int file_index)
 {
+  translation_unit_sptr nil;
   if (!ar)
-    return false;
+    return nil;
 
   zip_file_sptr f = open_file_in_archive(ar, file_index);
   if (!f)
-    return false;
+    return nil;
 
   string input;
   {
@@ -3960,10 +3891,7 @@ read_to_translation_unit(translation_unit& tu,
       }
   }
 
-  if (!read_translation_unit_from_buffer(input, tu))
-    return false;
-
-  return true;
+  return read_translation_unit_from_buffer(input);
 }
 
 /// Read an ABI corpus from an archive file which is a ZIP archive of

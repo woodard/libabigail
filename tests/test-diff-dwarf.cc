@@ -253,7 +253,6 @@ main()
   bool is_ok = true;
   string in_elfv0_path, in_elfv1_path,
     ref_diff_report_path, out_diff_report_path;
-  abigail::corpus_sptr corp0, corp1;
 
   for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
     {
@@ -269,14 +268,20 @@ main()
 	  continue;
 	}
 
-      read_corpus_from_elf(in_elfv0_path,
-			   /*debug_info_root_path=*/0,
-			   /*load_all_types=*/false,
-			   corp0);
-      read_corpus_from_elf(in_elfv1_path,
-			   /*debug_info_root_path=*/0,
-			   /*load_all_types=*/false,
-			   corp1);
+      abigail::dwarf_reader::status status =
+	abigail::dwarf_reader::STATUS_UNKNOWN;
+
+      abigail::corpus_sptr corp0 =
+	read_corpus_from_elf(in_elfv0_path,
+			     /*debug_info_root_path=*/0,
+			     /*load_all_types=*/false,
+			     status);
+
+      abigail::corpus_sptr corp1 =
+	read_corpus_from_elf(in_elfv1_path,
+			     /*debug_info_root_path=*/0,
+			     /*load_all_types=*/false,
+			     status);
 
       if (!corp0)
 	{
@@ -284,6 +289,7 @@ main()
 	  is_ok = false;
 	  continue;
 	}
+
       if (!corp1)
 	{
 	  cerr << "failed to read " << in_elfv1_path << "\n";

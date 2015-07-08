@@ -1012,14 +1012,6 @@ class type_base : public virtual type_or_decl_base
   // Forbid this.
   type_base();
 
-  /// A convenience typedef for a map of canonical types.  The a map
-  /// entry key is the hash value of a particular type and the value
-  /// is the list of canonical types that have the same hash value.
-  typedef std::tr1::unordered_map<size_t,
-				  std::list<type_base_sptr> > canonical_types_map_type;
-
-  static canonical_types_map_type&
-  get_canonical_types_map();
 
   static type_base_sptr
   get_canonical_type_for(type_base_sptr);

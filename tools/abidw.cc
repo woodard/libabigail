@@ -214,7 +214,8 @@ main(int argc, char* argv[])
 	}
     }
 
-  dwarf_reader::status s = read_corpus_from_elf(ctxt, corp);
+  dwarf_reader::status s = dwarf_reader::STATUS_UNKNOWN;
+  corp = read_corpus_from_elf(ctxt, s);
   if (!corp)
     {
       if (s == dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)

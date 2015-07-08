@@ -7914,10 +7914,10 @@ create_read_context(const std::string&	elf_path,
 /// @param resulting_corp a pointer to the resulting abigail::corpus.
 ///
 /// @return the resulting status.
-status
-read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
+corpus_sptr
+read_corpus_from_elf(read_context& ctxt, status& status)
 {
-  enum status status = STATUS_UNKNOWN;
+  status = STATUS_UNKNOWN;
 
   // Load debug info from the elf path.
   if (!ctxt.load_debug_info())
@@ -7930,7 +7930,7 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
   ctxt.load_remaining_elf_data();
 
   if (status & STATUS_NO_SYMBOLS_FOUND)
-    return status;
+    return corpus_sptr();
 
   // Read the variable and function descriptions from the debug info
   // we have, through the dwfl handle.
@@ -7946,10 +7946,9 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
   corp->set_var_symbol_map(ctxt.var_syms_sptr());
   corp->set_undefined_var_symbol_map(ctxt.undefined_var_syms_sptr());
 
-  resulting_corp = corp;
-
   status |= STATUS_OK;
-  return status;
+
+  return corp;
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info
@@ -7975,11 +7974,11 @@ read_corpus_from_elf(read_context& ctxt, corpus_sptr& resulting_corp)
 /// @param resulting_corp a pointer to the resulting abigail::corpus.
 ///
 /// @return the resulting status.
-status
+corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,
 		     char** debug_info_root_path,
 		     bool load_all_types,
-		     corpus_sptr& resulting_corp)
+		     status& status)
 {
   // Create a DWARF Front End Library handle to be used by functions
   // of that library.
@@ -7989,7 +7988,7 @@ read_corpus_from_elf(const std::string& elf_path,
   c->load_all_types(load_all_types);
   read_context& ctxt = *c;
 
-  return read_corpus_from_elf(ctxt, resulting_corp);
+  return read_corpus_from_elf(ctxt, status);
 }
 
 /// Look into the symbol tables of a given elf file and see if we find

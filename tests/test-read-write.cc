@@ -39,7 +39,7 @@ using std::cerr;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
-using abigail::translation_unit;
+using abigail::translation_unit_sptr;
 using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
@@ -186,13 +186,13 @@ main()
       if (!check_file(in_path, cerr))
 	return true;
 
-      translation_unit tu(in_path);
+      translation_unit_sptr tu;
       corpus_sptr corpus;
 
       bool read = false;
       file_type t = guess_file_type(in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	read = read_translation_unit_from_file(tu);
+	read = (tu = read_translation_unit_from_file(in_path));
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	  read = (corpus = read_corpus_from_native_xml_file(in_path));
       else
@@ -226,7 +226,7 @@ main()
       if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
 	r = write_corpus_to_native_xml(corpus, /*indent=*/0, of);
       else if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	r = write_translation_unit(tu, /*indent=*/0, of);
+	r = write_translation_unit(*tu, /*indent=*/0, of);
       else
 	abort();
 

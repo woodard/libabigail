@@ -43,23 +43,8 @@ using namespace abigail::ir;
 translation_unit_sptr
 read_translation_unit_from_file(const std::string& file_path);
 
-bool
-read_translation_unit_from_file(const string&		input_file,
-				translation_unit&	tu);
-
-bool
-read_translation_unit_from_file(translation_unit&	tu);
-
 translation_unit_sptr
 read_translation_unit_from_buffer(const std::string& file_path);
-
-bool
-read_translation_unit_from_buffer(const string&	buffer,
-				  translation_unit&	tu);
-
-bool
-read_translation_unit_from_istream(std::istream*	in,
-				   translation_unit&	tu);
 
 translation_unit_sptr
 read_translation_unit_from_istream(std::istream* in);

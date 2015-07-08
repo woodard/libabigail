@@ -80,14 +80,16 @@ create_read_context(const std::string&	elf_path,
 		    char**		debug_info_root_path,
 		    bool		read_all_types = false);
 
-status
+
+corpus_sptr
 read_corpus_from_elf(read_context&	ctxt,
-		     corpus_sptr&	resulting_corp);
-status
+		     status&);
+
+corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,
 		     char**		debug_info_root_path,
 		     bool		load_all_types,
-		     corpus_sptr&	resulting_corp);
+		     status&);
 
 bool
 lookup_symbol_from_elf(const string&			elf_path,

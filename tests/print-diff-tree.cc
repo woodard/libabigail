@@ -118,18 +118,18 @@ main(int argc, char* argv[])
       dwarf_reader::status c1_status, c2_status;
       corpus_sptr c1, c2;
 
-      c1_status = dwarf_reader::read_corpus_from_elf(opts.elf1, 0,
-						     /*load_all_types=*/false,
-						     c1);
+      c1 = dwarf_reader::read_corpus_from_elf(opts.elf1, 0,
+					      /*load_all_types=*/false,
+					      c1_status);
       if (c1_status != dwarf_reader::STATUS_OK)
 	{
 	  cerr << "Failed to read elf file " << opts.elf1 << "\n";
 	  return 1;
 	}
 
-      c2_status = dwarf_reader::read_corpus_from_elf(opts.elf2, 0,
-						     /*load_all_types=*/false,
-						     c2);
+      c2 = dwarf_reader::read_corpus_from_elf(opts.elf2, 0,
+					      /*load_all_types=*/false,
+					      c2_status);
       if (c2_status != dwarf_reader::STATUS_OK)
 	{
 	  cerr << "Failed to read elf file " << opts.elf2 << "\n";

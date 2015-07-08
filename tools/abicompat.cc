@@ -604,13 +604,13 @@ main(int argc, char* argv[])
     }
 
   // Read the application ELF file.
-  corpus_sptr app_corpus;
   char * app_di_root = opts.app_di_root_path.get();
-  status status =
+  status status = abigail::dwarf_reader::STATUS_UNKNOWN;
+  corpus_sptr app_corpus=
     read_corpus_from_elf(opts.app_path,
 			 &app_di_root,
 			 /*load_all_types=*/opts.weak_mode,
-			 app_corpus);
+			 status);
 
   if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
     {
@@ -652,12 +652,11 @@ main(int argc, char* argv[])
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
-  corpus_sptr lib1_corpus;
   char * lib1_di_root = opts.lib1_di_root_path.get();
-  status = read_corpus_from_elf(opts.lib1_path,
+  corpus_sptr lib1_corpus = read_corpus_from_elf(opts.lib1_path,
 				&lib1_di_root,
 				/*load_all_types=*/false,
-				lib1_corpus);
+				     status);
   if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
     cerr << "could not read debug info for " << opts.lib1_path << "\n";
   if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
@@ -677,10 +676,10 @@ main(int argc, char* argv[])
     {
       assert(!opts.lib2_path.empty());
       char * lib2_di_root = opts.lib2_di_root_path.get();
-      status = read_corpus_from_elf(opts.lib2_path,
-				    &lib2_di_root,
-				    /*load_all_types=*/false,
-				    lib2_corpus);
+      lib2_corpus = read_corpus_from_elf(opts.lib2_path,
+					 &lib2_di_root,
+					 /*load_all_types=*/false,
+					 status);
       if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 	cerr << "could not read debug info for " << opts.lib2_path << "\n";
       if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)

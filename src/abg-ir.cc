@@ -50,6 +50,96 @@ using std::tr1::unordered_map;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 
+// A convenience typedef for a map of canonical types.  The a map
+/// entry key is the hash value of a particular type and the value
+/// is the list of canonical types that have the same hash value.
+typedef std::tr1::unordered_map<size_t,
+				std::list<type_base_sptr> > canonical_types_map_type;
+
+static canonical_types_map_type& get_canonical_types_map();
+
+/// This is a type which instance is referenced by relevant users
+/// (types) of the type system, so that we can know when the type
+/// system is 'used' or not.
+///
+/// It can then serve to detect when the type system is not used
+/// anymore, so that resources that should stay live only during the
+/// life time of *users* of the type system can be deallocated.
+///
+/// A kind of canary in a coal mine, so to speak.
+class usage_watchdog
+{};
+
+/// A convenience typedef for a shared pointer to @ref usage_watchdog.
+typedef shared_ptr<usage_watchdog> usage_watchdog_sptr;
+
+/// A convenience typedef for a weak pointer to @ref usage_watchdog.
+typedef weak_ptr<usage_watchdog> usage_watchdog_wptr;
+
+/// Getter of the usage watchdog.
+///
+/// Note that this getter does *not* increment the usage count of the
+/// watchdog.
+///
+/// @return a reference on the usage watchdog.
+static usage_watchdog_sptr&
+get_usage_watchdog()
+{
+  static usage_watchdog_sptr watchdog;
+  return watchdog;
+}
+
+/// Getter of a weak pointer to the usage watchdog.
+///
+/// This weak pointer on the usage watchdog allows users to test if
+/// the usage watchdog is referenced by someone else or not.  This
+/// test is done via the method weak_ptr::expired().  What a wonderful
+/// method ...
+///
+/// @return a reference to the weak pointer to the usage watchdog.
+static usage_watchdog_wptr&
+get_usage_watchdog_wptr()
+{
+  static usage_watchdog_wptr watchdog;
+  return watchdog;
+}
+
+/// Increase the reference count of the usage watchdog.
+///
+/// Actually this function returns a shared pointer to the usage
+/// pointer.  Storing that shared pointer is what increases the
+/// reference count of the watchdog.  When the shared pointer that
+/// stores the returned usage watchdog is destroyed, the reference
+/// count goes down.
+///
+/// @return a shared pointer to the usage watchdog so that its
+/// reference count can be increased by the simple fact of storing it.
+static usage_watchdog_sptr
+ref_usage_watchdog()
+{
+  usage_watchdog_sptr result;
+  if (!get_usage_watchdog())
+    {
+      usage_watchdog_sptr w(new usage_watchdog);
+      get_usage_watchdog() = w;
+      get_usage_watchdog_wptr() = w;
+    }
+  result = get_usage_watchdog();
+
+  return result;
+}
+
+/// Test if the reference count of the usage watchdog shared point
+/// reached zero.  If yes, cleanup the data of the type system that is
+/// supposed to stay live only as long as the usage watchdog shared
+/// pointer is live.
+static void
+maybe_cleanup_type_system_data()
+{
+  if (!get_usage_watchdog_wptr().expired())
+    get_canonical_types_map().clear();
+}
+
 /// @brief the location of a token represented in its simplest form.
 /// Instances of this type are to be stored in a sorted vector, so the
 /// type must have proper relational operators.
@@ -159,6 +249,7 @@ typedef unordered_map<function_type_sptr,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
+  usage_watchdog_sptr		usage_watchdog_;
   bool				is_constructed_;
   char				address_size_;
   std::string			path_;
@@ -169,7 +260,30 @@ struct translation_unit::priv
   priv()
     : is_constructed_(),
       address_size_()
-  {}
+  {
+    // Note that translation units own types.
+    //
+    // There is data in the type system that is global and that should
+    // have the same lifetime as the type system itself.  So when the
+    // type system has no more users, its global data should be
+    // de-allocated.
+    //
+    // So let's say that we are using the type system.  We say this by
+    // increasing the reference count of the shared pointer to the
+    // usage watchdog of the type system.  When that ref-count goes to
+    // zero, that means the type system has no more use.  At that
+    // point the global data of the type system needs to be
+    // de-allocated.  This is done in the destructor of this
+    // translation_unit::priv type.
+    usage_watchdog_ = ref_usage_watchdog();
+  }
+
+  ~priv()
+  {
+    // So when the translation unit is de-allocated, let's de-allocate
+    // type system data that should not outlive translation units.
+    maybe_cleanup_type_system_data();
+  }
 }; // end translation_unit::priv
 
 // <translation_unit stuff>
@@ -4638,8 +4752,8 @@ struct type_base::priv
 ///
 /// @return the map that contains the canonical types of all the types
 /// known the running instance of libabigail in a given process.
-type_base::canonical_types_map_type&
-type_base::get_canonical_types_map()
+static canonical_types_map_type&
+get_canonical_types_map()
 {
   static canonical_types_map_type m;
   return m;
