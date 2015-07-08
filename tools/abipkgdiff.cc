@@ -41,6 +41,7 @@
 #include <elf.h>
 #include <elfutils/libdw.h>
 #include "abg-tools-utils.h"
+#include "abg-comparison.h"
 #include "abg-dwarf-reader.h"
 
 using std::cout;
@@ -53,7 +54,13 @@ using std::tr1::shared_ptr;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
+using abigail::ir::corpus_sptr;
+using abigail::comparison::diff_context;
+using abigail::comparison::diff_context_sptr;
+using abigail::comparison::compute_diff;
+using abigail::comparison::corpus_diff_sptr;
 using abigail::dwarf_reader::get_soname_from_elf;
+using abigail::dwarf_reader::read_corpus_from_elf;
 
 vector<string> elf_file_paths;
 
@@ -234,15 +241,51 @@ static void
 compare(const elf_file& elf1, const string& debug_dir1,
 	const elf_file& elf2, const string& debug_dir2)
 {
-  cout << "Changes between " << elf1.name << " and " << elf2.name;
-  cout << "  =======>\n";
-  string cmd = "abidiff " +
-    elf1.path + " " + elf2.path;
-  if (!debug_dir1.empty())
-    cmd += " --debug-info-dir1 " + debug_dir1;
-  if (!debug_dir2.empty())
-    cmd += " --debug-info-dir2 " + debug_dir2;
-  system(cmd.c_str());
+  char *di_dir1 = (char*) debug_dir1.c_str(),
+    *di_dir2 = (char*) debug_dir2.c_str();
+
+  abigail::dwarf_reader::status c1_status = abigail::dwarf_reader::STATUS_OK,
+    c2_status = abigail::dwarf_reader::STATUS_OK;
+
+  corpus_sptr corpus1 = read_corpus_from_elf(elf1.path, &di_dir1,
+					     /*load_all_types=*/false,
+					     c1_status);
+  if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
+    {
+      cerr << "could not read file '"
+	   << elf1.path
+	   << "' properly\n";
+      return;
+    }
+
+  corpus_sptr corpus2 = read_corpus_from_elf(elf2.path, &di_dir2,
+					     /*load_all_types=*/false,
+					     c2_status);
+  if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
+    {
+      cerr << "could not find the read file '"
+	   << elf2.path
+	   << "' properly\n";
+      return;
+    }:!
+
+  corpus_diff_sptr diff = compute_diff(corpus1, corpus2);
+
+  if (diff->has_changes())
+    {
+      const string prefix = "  ";
+
+      cout << "================ changes of '"
+	   << elf1.name
+	   << "'===============\n";
+
+      diff->report(cout, prefix);
+
+      cout << "================ end of changes of '"
+	   << elf1.name
+	   << "'===============\n\n";
+    }
+
 }
 
 static bool
