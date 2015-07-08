@@ -36,12 +36,12 @@
 #include <ftw.h>
 #include <map>
 #include <assert.h>
-#include <limits.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <elf.h>
 #include <elfutils/libdw.h>
 #include "abg-tools-utils.h"
+#include "abg-dwarf-reader.h"
 
 using std::cout;
 using std::cerr;
@@ -54,6 +54,7 @@ using std::tr1::shared_ptr;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
+using abigail::dwarf_reader::get_soname_from_elf;
 
 vector<string> elf_file_paths;
 
@@ -153,52 +154,6 @@ display_usage(const string& prog_name, ostream& out)
       << " --debug-info-pkg1|--d1 <path>  Path of debug-info package of package1\n"
       << " --debug-info-pkg2|--d2 <path>  Path of debug-info package of package2\n"
       << " --help                         Display help message\n";
-}
-
-static string
-get_soname(Elf *elf, GElf_Ehdr *ehdr)
-{
-  string result;
-
-  for (int i = 0; i < ehdr->e_phnum; ++i)
-    {
-      GElf_Phdr phdr_mem;
-      GElf_Phdr *phdr = gelf_getphdr (elf, i, &phdr_mem);
-
-      if (phdr != NULL && phdr->p_type == PT_DYNAMIC)
-        {
-          Elf_Scn *scn = gelf_offscn (elf, phdr->p_offset);
-          GElf_Shdr shdr_mem;
-          GElf_Shdr *shdr = gelf_getshdr (scn, &shdr_mem);
-          int maxcnt = (shdr != NULL
-                        ? shdr->sh_size / shdr->sh_entsize : INT_MAX);
-          assert (shdr == NULL || shdr->sh_type == SHT_DYNAMIC);
-          Elf_Data *data = elf_getdata (scn, NULL);
-          if (data == NULL)
-	    break;
-
-          for (int cnt = 0; cnt < maxcnt; ++cnt)
-            {
-              GElf_Dyn dynmem;
-              GElf_Dyn *dyn = gelf_getdyn (data, cnt, &dynmem);
-              if (dyn == NULL)
-                continue;
-
-              if (dyn->d_tag == DT_NULL)
-                break;
-
-              if (dyn->d_tag != DT_SONAME)
-                continue;
-
-              // XXX Don't rely on SHDR
-              result = elf_strptr (elf, shdr->sh_link, dyn->d_un.d_val);
-	      break;
-            }
-          break;
-        }
-    }
-
-  return result;
 }
 
 static elf_type
@@ -316,7 +271,10 @@ create_maps_of_package_content(package& package)
       string soname;
       elf_type e = elf_file_type(ehdr);
       if (e == ELF_TYPE_DSO)
-	soname = get_soname(elf, ehdr);
+        {
+          if (! get_soname_from_elf(elf, soname))
+            return false;
+        }
 
       string file_base_name(basename(const_cast<char*>((*file).c_str())));
       if (soname.empty())

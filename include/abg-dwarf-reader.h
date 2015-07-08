@@ -27,6 +27,7 @@
 /// elf format, containing dwarf information.
 
 #include <ostream>
+#include <elfutils/libdwfl.h>
 #include "abg-corpus.h"
 
 #ifndef __ABG_DWARF_READER_H__
@@ -112,6 +113,9 @@ has_alt_debug_info(const string&	elf_path,
 		   char**		debug_info_root_path,
 		   bool&		has_alt_di,
 		   string&		alt_debug_info_path);
+
+bool
+get_soname_from_elf(Elf *elf, string &soname);
 
 }// end namespace dwarf_reader
 

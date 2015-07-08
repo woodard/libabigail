@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <libgen.h>
 #include <assert.h>
+#include <limits.h>
 #include <cstring>
 #include <cmath>
 #include <elfutils/libdwfl.h>
@@ -8159,6 +8160,62 @@ has_alt_debug_info(const string&	elf_path,
     has_alt_di = false;
 
   return STATUS_OK;
+}
+
+/// Fetch SONAME from an ELF binary
+///
+/// @param elf ELF handler of a binary file
+///
+/// @param soname contains SONAME of binary file if present
+///
+/// return False if an error occured while looking for SONAME in binary,
+/// True otherwise.
+bool
+get_soname_from_elf(Elf *elf, string &soname)
+{
+  GElf_Ehdr ehdr_mem;
+  GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
+  if (ehdr == NULL)
+    return false;
+
+  for (int i = 0; i < ehdr->e_phnum; ++i)
+    {
+      GElf_Phdr phdr_mem;
+      GElf_Phdr *phdr = gelf_getphdr (elf, i, &phdr_mem);
+
+      if (phdr != NULL && phdr->p_type == PT_DYNAMIC)
+        {
+          Elf_Scn *scn = gelf_offscn (elf, phdr->p_offset);
+          GElf_Shdr shdr_mem;
+          GElf_Shdr *shdr = gelf_getshdr (scn, &shdr_mem);
+          int maxcnt = (shdr != NULL
+                        ? shdr->sh_size / shdr->sh_entsize : INT_MAX);
+          assert (shdr == NULL || shdr->sh_type == SHT_DYNAMIC);
+          Elf_Data *data = elf_getdata (scn, NULL);
+          if (data == NULL)
+            break;
+
+          for (int cnt = 0; cnt < maxcnt; ++cnt)
+            {
+              GElf_Dyn dynmem;
+              GElf_Dyn *dyn = gelf_getdyn (data, cnt, &dynmem);
+              if (dyn == NULL)
+                continue;
+
+              if (dyn->d_tag == DT_NULL)
+                break;
+
+              if (dyn->d_tag != DT_SONAME)
+                continue;
+
+              soname = elf_strptr (elf, shdr->sh_link, dyn->d_un.d_val);
+              break;
+            }
+          break;
+        }
+    }
+
+  return true;
 }
 
 }// end namespace dwarf_reader
