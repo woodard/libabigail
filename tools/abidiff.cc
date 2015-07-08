@@ -657,17 +657,11 @@ main(int argc, char* argv[])
 	  diff_context_sptr ctxt(new diff_context);
 	  set_diff_context_from_opts(ctxt, opts);
 	  corpus_diff_sptr diff = compute_diff(c1, c2, ctxt);
-	  const corpus_diff::diff_stats& stats =
-	    diff->apply_filters_and_suppressions_before_reporting();
-	  if (diff->soname_changed()
-	      || stats.num_func_removed() != 0
-	      || stats.num_vars_removed() != 0
-	      || stats.num_func_syms_removed() != 0
-	      || stats.num_var_syms_removed() != 0)
+
+	  if (diff->has_incompatible_changes())
 	    status = (abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE
 		      | abigail::tools_utils::ABIDIFF_ABI_CHANGE);
-	  else if (stats.net_num_func_changed() != 0
-		   || stats.net_num_vars_changed() != 0)
+	  else if (diff->has_net_subtype_changes())
 	    status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
 
 	  if (diff->has_changes() > 0)

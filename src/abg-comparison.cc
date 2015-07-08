@@ -13443,6 +13443,57 @@ corpus_diff::has_changes() const
 	  || priv_->deleted_unrefed_var_syms_.size());
 }
 
+/// Test if the current instance of @ref corpus_diff carries changes
+/// that we are sure are incompatible.  By incompatible change we mean
+/// a change that "breaks" the ABI of the corpus we are looking at.
+///
+/// In concrete terms, this function considers the following changes
+/// as being ABI incompatible for sure:
+///
+///   - a soname change
+///   - if exported functions or variables got removed
+///
+/// Note that subtype changes *can* represent changes that break ABI
+/// too.  But they also can be changes that are OK, ABI-wise.
+///
+/// It's up to the user to provide suppression specifications to say
+/// explicitely which subtype change is OK.  The remaining sub-type
+/// changes are then considered to be ABI incompatible.  But to test
+/// if such ABI incompatible subtype changes are present you need to
+/// use the function @ref corpus_diff::has_net_subtype_changes()
+///
+/// @return true iff the current instance of @ref corpus_diff carries
+/// changes that we are sure are ABI incompatible.
+bool
+corpus_diff::has_incompatible_changes() const
+{
+  const diff_stats& stats = const_cast<corpus_diff*>(this)->
+    apply_filters_and_suppressions_before_reporting();
+
+  return (soname_changed()
+	  || stats.num_func_removed() != 0
+	  || stats.num_vars_removed() != 0
+	  || stats.num_func_syms_removed() != 0
+	  || stats.num_var_syms_removed() != 0);
+}
+
+/// Test if the current instance of @ref corpus_diff carries subtype
+/// changes whose reports are not suppressed by any suppression
+/// specification.  In effect, these are deemed incompatible ABI
+/// changes.
+///
+/// @return true iff the the current instance of @ref corpus_diff
+/// carries subtype changes that are deemed incompatible ABI changes.
+bool
+corpus_diff::has_net_subtype_changes() const
+{
+  const diff_stats& stats = const_cast<corpus_diff*>(this)->
+      apply_filters_and_suppressions_before_reporting();
+
+  return (stats.net_num_func_changed() != 0
+	  || stats.net_num_vars_changed() != 0);
+}
+
 /// "Less than" functor to compare instances of @ref function_decl.
 struct function_comp
 {
