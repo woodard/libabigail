@@ -345,7 +345,9 @@ compare(package& first_package, package& second_package)
       map<string, elf_file_sptr>::iterator iter =
 	second_package.path_elf_file_sptr_map.find(it->first);
 
-      if (iter != second_package.path_elf_file_sptr_map.end())
+      if (iter != second_package.path_elf_file_sptr_map.end()
+	  && (iter->second->type == ELF_TYPE_DSO
+	      || iter->second->type == ELF_TYPE_EXEC))
 	{
 	  compare(*it->second, debug_dir1,
 		  *iter->second, debug_dir2);
