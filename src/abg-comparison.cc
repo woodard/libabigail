@@ -5658,8 +5658,6 @@ compute_diff(const type_base_sptr	first,
 	     const type_base_sptr	second,
 	     diff_context_sptr		ctxt)
 {
-  assert(first && second);
-
   decl_base_sptr f = get_type_declaration(first),
     s = get_type_declaration(second);
   diff_sptr d = compute_diff_for_types(f,s, ctxt);
