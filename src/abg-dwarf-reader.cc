@@ -8182,31 +8182,31 @@ get_soname_of_elf_file(const string& path, string &soname)
   Elf* elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
 
   GElf_Ehdr ehdr_mem;
-  GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
+  GElf_Ehdr* ehdr = gelf_getehdr (elf, &ehdr_mem);
   if (ehdr == NULL)
     return false;
 
   for (int i = 0; i < ehdr->e_phnum; ++i)
     {
       GElf_Phdr phdr_mem;
-      GElf_Phdr *phdr = gelf_getphdr (elf, i, &phdr_mem);
+      GElf_Phdr* phdr = gelf_getphdr (elf, i, &phdr_mem);
 
       if (phdr != NULL && phdr->p_type == PT_DYNAMIC)
         {
-          Elf_Scn *scn = gelf_offscn (elf, phdr->p_offset);
+          Elf_Scn* scn = gelf_offscn (elf, phdr->p_offset);
           GElf_Shdr shdr_mem;
-          GElf_Shdr *shdr = gelf_getshdr (scn, &shdr_mem);
+          GElf_Shdr* shdr = gelf_getshdr (scn, &shdr_mem);
           int maxcnt = (shdr != NULL
                         ? shdr->sh_size / shdr->sh_entsize : INT_MAX);
           assert (shdr == NULL || shdr->sh_type == SHT_DYNAMIC);
-          Elf_Data *data = elf_getdata (scn, NULL);
+          Elf_Data* data = elf_getdata (scn, NULL);
           if (data == NULL)
             break;
 
           for (int cnt = 0; cnt < maxcnt; ++cnt)
             {
               GElf_Dyn dynmem;
-              GElf_Dyn *dyn = gelf_getdyn (data, cnt, &dynmem);
+              GElf_Dyn* dyn = gelf_getdyn (data, cnt, &dynmem);
               if (dyn == NULL)
                 continue;
 

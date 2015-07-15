@@ -65,16 +65,16 @@ using abigail::dwarf_reader::read_corpus_from_elf;
 
 static bool verbose;
 
-vector<string> elf_file_paths;
+static vector<string> elf_file_paths;
 
 struct options
 {
-  bool display_usage;
-  bool missing_operand;
-  string package1;
-  string package2;
-  string debug_package1;
-  string debug_package2;
+  bool		display_usage;
+  bool		missing_operand;
+  string	package1;
+  string	package2;
+  string	debug_package1;
+  string	debug_package2;
 
   options()
     : display_usage(false),
@@ -203,11 +203,12 @@ display_usage(const string& prog_name, ostream& out)
 }
 
 static bool
-extract_rpm(const string& pkg_path, const string& extracted_package_dir_path)
+extract_rpm(const string& package_path,
+	    const string& extracted_package_dir_path)
 {
   if (verbose)
     cerr << "Extracting package "
-	 << pkg_path
+	 << package_path
 	 << "to "
 	 << extracted_package_dir_path
 	 << " ...";
@@ -219,7 +220,7 @@ extract_rpm(const string& pkg_path, const string& extracted_package_dir_path)
   system(cmd.c_str());
 
   cmd = "mkdir " + extracted_package_dir_path + " && cd " +
-    extracted_package_dir_path + " && rpm2cpio " + pkg_path +
+    extracted_package_dir_path + " && rpm2cpio " + package_path +
     " | cpio -dium --quiet";
 
   if (system(cmd.c_str()))
