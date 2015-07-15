@@ -2,6 +2,7 @@
 
 EXTRA_DIST = \
 abidiff.rst \
+abipkgdiff.rst \
 abicompat.rst \
 abidw.rst \
 abilint.rst \

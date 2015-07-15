@@ -16,6 +16,7 @@ Tools manuals
    :maxdepth: 2
 
    abidiff
+   abipkgdiff
    abicompat
    abidw
    abilint
