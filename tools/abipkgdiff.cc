@@ -63,10 +63,19 @@ using abigail::dwarf_reader::get_soname_of_elf_file;
 using abigail::dwarf_reader::get_type_of_elf_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
 
+/// Set to true if the user wants to see verbose information about the
+/// progress of what's being done.
 static bool verbose;
 
+/// This contains the set of files of a given package.  It's populated
+/// by a worker function that is invoked on each file contained in the
+/// package.  So this global variable is filled by the
+/// file_tree_walker_callback_fn() function.  Its content is relevant
+/// only during the time after which the current package has been
+/// analyzed and before we start analyzing the next package.
 static vector<string> elf_file_paths;
 
+/// The options passed to the current program.
 struct options
 {
   bool		display_usage;
@@ -165,6 +174,8 @@ struct package
     extracted_package_dir_path = extracted_package_dir_path + "/" + dir;
   }
 
+  /// Erase the content of the temporary extraction directory that has
+  /// been populated by the @ref extract_package() function;
   void
   erase_extraction_directory() const
   {
@@ -180,6 +191,7 @@ struct package
       cerr << " DONE\n";
   }
 
+  /// Erase the content of all the temporary extraction directories.
   void
   erase_extraction_directories() const
   {
@@ -189,8 +201,14 @@ struct package
   }
 };
 
+/// A convenience typedef for shared_ptr of package.
 typedef shared_ptr<package> package_sptr;
 
+/// Show the usage of this program.
+///
+/// @param prog_name the name of the program.
+///
+/// @param out the output stream to emit the usage to .
 static void
 display_usage(const string& prog_name, ostream& out)
 {
@@ -202,6 +220,14 @@ display_usage(const string& prog_name, ostream& out)
       << " --help                         Display help message\n";
 }
 
+/// Extract an RPM package.
+///
+/// @param package_path the path to the package to extract.
+///
+/// @param extracted_package_dir_path the path where to extract the
+/// package to.
+///
+/// @return true upon successful completion, false otherwise.
 static bool
 extract_rpm(const string& package_path,
 	    const string& extracted_package_dir_path)
@@ -236,6 +262,12 @@ extract_rpm(const string& package_path,
   return true;
 }
 
+/// Erase the temporary directories created for the extraction of two
+/// packages.
+///
+/// @param first_package the first package to consider.
+///
+/// @param second_package the second package to consider.
 static void
 erase_created_temporary_directories(const package& first_package,
 				    const package& second_package)
@@ -244,6 +276,9 @@ erase_created_temporary_directories(const package& first_package,
   second_package.erase_extraction_directories();
 }
 
+/// Extract the content of a package.
+///
+/// @param package the package we are looking at.
 static bool
 extract_package(const package& package)
 {
@@ -263,6 +298,12 @@ extract_package(const package& package)
   return true;
 }
 
+/// A callback function invoked by the ftw() function while walking
+/// the directory of files extracted from a given package.
+///
+/// @param fpath the path to the file being considered.
+///
+/// @param stat the stat struct of the file.
 static int
 file_tree_walker_callback_fn(const char *fpath,
 			     const struct stat *,
@@ -279,6 +320,22 @@ file_tree_walker_callback_fn(const char *fpath,
   return 0;
 }
 
+/// Compare the ABI two elf files, using their associated debug info.
+///
+/// The result of the comparison is emitted to standard output.
+///
+/// @param elf1 the first elf file to consider.
+///
+/// @param debug_dir1 the directory where the debug info file for @p
+/// elf1 is stored.
+///
+/// @param elf2 the second eld file to consider.
+///
+/// @param debug_dir2 the directory where the debug info file for @p
+/// elf2 is stored.
+///
+/// @return true iff the comparison yields differences between the two
+/// files, false otherwise.
 static bool
 compare(const elf_file& elf1, const string& debug_dir1,
 	const elf_file& elf2, const string& debug_dir2)
@@ -368,6 +425,16 @@ compare(const elf_file& elf1, const string& debug_dir1,
   return has_changes;
 }
 
+/// Create maps of the content of a given package.
+///
+/// The maps contain relevant metadata about the content of the
+/// files.  These maps are used afterwards during the comparison of
+/// the content of the package.  Note that the maps are stored in the
+/// object that represents that package.
+///
+/// @param package the package to consider.
+///
+/// @param true upon successful completion, false otherwise.
 static bool
 create_maps_of_package_content(package& package)
 {
@@ -408,6 +475,13 @@ create_maps_of_package_content(package& package)
   return true;
 }
 
+/// Extract the content of a package and map its content.
+///
+/// The extracting is done to a temporary
+///
+/// @param package the package to consider.
+///
+/// @return true upon successful completion, false otherwise.
 static bool
 extract_package_and_map_its_content(package& package)
 {
@@ -421,6 +495,11 @@ extract_package_and_map_its_content(package& package)
   return result;
 }
 
+/// Prepare the packages for comparison.
+///
+/// This function extracts the content of the package and maps it.
+///
+/// @return true upon successful completion, false otherwise.
 static bool
 prepare_packages(package& first_package,
 		 package& second_package)
@@ -438,6 +517,17 @@ prepare_packages(package& first_package,
     return true;
 }
 
+/// Compare the ABI of two packages
+///
+/// @param first_package the first package to consider.
+///
+/// @param second_package the second package to consider.
+///
+/// @param diff out parameter.  If this function returns true, then
+/// this parameter is set to the result of the comparison.
+///
+/// @return true iff the comparison yields differences between the two
+/// packages.
 static bool
 compare(package& first_package, package& second_package, abi_diff& diff)
 {
@@ -523,6 +613,16 @@ compare(package& first_package, package& second_package)
   return compare(first_package, second_package, diff);
 }
 
+/// Parse the command line of the current program.
+///
+/// @param argc the number of arguments in the @p argv parameter.
+///
+/// @param argv the array of arguemnts passed to the function.  The
+/// first argument is the name of this program.
+///
+/// @param opts the resulting options.
+///
+/// @return true upon successful parsing.
 static bool
 parse_command_line(int argc, char* argv[], options& opts)
 {

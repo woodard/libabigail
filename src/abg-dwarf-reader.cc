@@ -8162,14 +8162,15 @@ has_alt_debug_info(const string&	elf_path,
   return STATUS_OK;
 }
 
-/// Fetch SONAME from an ELF binary
+/// Fetch the SONAME ELF property from an ELF binary file.
 ///
-/// @param elf ELF handler of a binary file
+/// @param elf The handler of an ELF binary file.
 ///
-/// @param soname contains SONAME of binary file if present
+/// @param soname out parameter. Set to the SONAME property of the
+/// binary file, if it present in the ELF file.
 ///
-/// return False if an error occured while looking for SONAME in binary,
-/// True otherwise.
+/// return false if an error occured while looking for the SONAME
+/// property in the binary, true otherwise.
 bool
 get_soname_of_elf_file(const string& path, string &soname)
 {
