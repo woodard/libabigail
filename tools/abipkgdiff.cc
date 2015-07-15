@@ -119,7 +119,7 @@ public:
 /// A convenience typedef for a shared pointer to elf_file.
 typedef shared_ptr<elf_file> elf_file_sptr;
 
-/// Abstract the result of comparing two package.
+/// Abstract the result of comparing two packages.
 ///
 /// This contains the the paths of the set of added binaries, removed
 /// binaries, and binaries whic ABI changed.
