@@ -59,7 +59,8 @@ using abigail::comparison::diff_context;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::corpus_diff_sptr;
-using abigail::dwarf_reader::get_soname_from_elf;
+using abigail::dwarf_reader::get_soname_of_elf_file;
+using abigail::dwarf_reader::get_type_of_elf_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
 
 static bool verbose;
@@ -81,56 +82,81 @@ struct options
   {}
 };
 
-enum elf_type
+/// Abstract ELF files from the packages which ABIs ought to be
+/// compared
+class elf_file
 {
-  ELF_TYPE_EXEC,
-  ELF_TYPE_DSO,
-  ELF_TYPE_UNKNOWN
+private:
+  elf_file();
+
+public:
+  string				path;
+  string				name;
+  string				soname;
+  abigail::dwarf_reader::elf_type	type;
+
+  /// The path to the elf file.
+  ///
+  /// @param path the path to the elf file.
+  elf_file(const string& path)
+    : path(path)
+   {
+     abigail::tools_utils::base_name(path, name);
+     get_soname_of_elf_file(path, soname);
+     get_type_of_elf_file(path, type);
+  }
 };
 
-struct elf_file
-{
-  string name;
-  string path;
-  string soname;
-  elf_type type;
-
-  elf_file(const string& path,
-	   const string& name,
-	   const string& soname,
-	   elf_type type)
-    : name(name),
-      path(path),
-      soname(soname),
-      type(type)
-  {}
-};
-
+/// A convenience typedef for a shared pointer to elf_file.
 typedef shared_ptr<elf_file> elf_file_sptr;
 
-struct abi_changes
+/// Abstract the result of comparing two package.
+///
+/// This contains the the paths of the set of added binaries, removed
+/// binaries, and binaries whic ABI changed.
+struct abi_diff
 {
   vector <string> added_binaries;
   vector <string> removed_binaries;
-  vector <string> abi_changes;
-} abi_diffs;
+  vector <string> changed_binaries;
 
+  /// Test if the current diff carries changes.
+  ///
+  /// @return true iff the current diff carries changes.
+  bool
+  has_changes()
+  {
+    return (!added_binaries.empty()
+	    || !removed_binaries.empty()
+	    ||!changed_binaries.empty());
+  }
+};
+
+/// Abstracts a package.
 struct package
 {
-  string path;
-  string extracted_package_dir_path;
-  abigail::tools_utils::file_type type;
-  bool is_debug_info;
-  map<string, elf_file_sptr> path_elf_file_sptr_map;
-  shared_ptr<package> debug_info_package;
+  string				path;
+  string				extracted_package_dir_path;
+  abigail::tools_utils::file_type	type;
+  bool					is_debug_info;
+  map<string, elf_file_sptr>		path_elf_file_sptr_map;
+  shared_ptr<package>			debug_info_package;
 
-  package(const string& path, const string& dir,
-	  abigail::tools_utils::file_type file_type,
-          bool is_debug_info = false)
+  /// Constructor for the @ref package type.
+  ///
+  /// @param path the path to the package.
+  ///
+  /// @parm dir the temporary directory where to extract the content
+  /// of the package.
+  ///
+  /// @param is_debug_info true if the pacakge is a debug info package.
+  package(const string&			path,
+	  const string&			dir,
+          bool					is_debug_info = false)
     : path(path),
-      type(file_type),
       is_debug_info(is_debug_info)
   {
+    type = guess_file_type(path);
     const char *tmpdir = getenv("TMPDIR");
     if (tmpdir != NULL)
       extracted_package_dir_path = tmpdir;
@@ -174,23 +200,6 @@ display_usage(const string& prog_name, ostream& out)
       << " --debug-info-pkg2|--d2 <path>  Path of debug-info package of package2\n"
       << " --verbose                      Emit verbose progress messages\n"
       << " --help                         Display help message\n";
-}
-
-static elf_type
-elf_file_type(const GElf_Ehdr* ehdr)
-{
-  switch (ehdr->e_type)
-    {
-    case ET_DYN:
-      return ELF_TYPE_DSO;
-      break;
-    case ET_EXEC:
-      return ELF_TYPE_EXEC;
-      break;
-    default:
-      return ELF_TYPE_UNKNOWN;
-      break;
-    }
 }
 
 static bool
@@ -269,7 +278,7 @@ file_tree_walker_callback_fn(const char *fpath,
   return 0;
 }
 
-static void
+static bool
 compare(const elf_file& elf1, const string& debug_dir1,
 	const elf_file& elf2, const string& debug_dir2)
 {
@@ -299,7 +308,7 @@ compare(const elf_file& elf1, const string& debug_dir1,
       cerr << "could not read file '"
 	   << elf1.path
 	   << "' properly\n";
-      return;
+      return false;
     }
 
   if (verbose)
@@ -318,7 +327,7 @@ compare(const elf_file& elf1, const string& debug_dir1,
       cerr << "could not find the read file '"
 	   << elf2.path
 	   << "' properly\n";
-      return;
+      return false;
     }
 
   if (verbose)
@@ -332,7 +341,8 @@ compare(const elf_file& elf1, const string& debug_dir1,
   if (verbose)
     cerr << "DONE\n";
 
-  if (diff->has_changes())
+  bool has_changes = diff->has_changes();
+  if (has_changes)
     {
       const string prefix = "  ";
 
@@ -353,6 +363,8 @@ compare(const elf_file& elf1, const string& debug_dir1,
 	 << " and "
 	 << elf2.path
 	 << " is DONE\n";
+
+  return has_changes;
 }
 
 static bool
@@ -380,28 +392,14 @@ create_maps_of_package_content(package& package)
        file != elf_file_paths.end();
        ++file)
     {
-      int fd = open((*file).c_str(), O_RDONLY);
-      if(fd == -1)
-	return false;
-      elf_version (EV_CURRENT);
-      Elf *elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
-      GElf_Ehdr ehdr_mem;
-      GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
-      string soname;
-      elf_type e = elf_file_type(ehdr);
-      if (e == ELF_TYPE_DSO)
-        {
-          if (! get_soname_from_elf(elf, soname))
-            return false;
-        }
+      elf_file_sptr e (new elf_file(*file));
+      if (!e->type != abigail::dwarf_reader::ELF_TYPE_DSO)
+	continue;
 
-      string file_base_name(basename(const_cast<char*>((*file).c_str())));
-      if (soname.empty())
-	package.path_elf_file_sptr_map[file_base_name] =
-	  elf_file_sptr(new elf_file((*file), file_base_name, soname, e));
+      if (e->soname.empty())
+	package.path_elf_file_sptr_map[e->name] = e;
       else
-	package.path_elf_file_sptr_map[soname] =
-	  elf_file_sptr( new elf_file((*file), file_base_name, soname, e));
+	package.path_elf_file_sptr_map[e->soname] = e;
     }
 
   if (verbose)
@@ -440,7 +438,7 @@ prepare_packages(package& first_package,
 }
 
 static bool
-compare(package& first_package, package& second_package)
+compare(package& first_package, package& second_package, abi_diff& diff)
 {
   if (!prepare_packages(first_package, second_package))
     return false;
@@ -459,6 +457,7 @@ compare(package& first_package, package& second_package)
 	  relative_debug_path;
     }
 
+  bool has_abi_changes = false;
   for (map<string, elf_file_sptr>::iterator it =
 	 first_package.path_elf_file_sptr_map.begin();
        it != first_package.path_elf_file_sptr_map.end();
@@ -468,42 +467,59 @@ compare(package& first_package, package& second_package)
 	second_package.path_elf_file_sptr_map.find(it->first);
 
       if (iter != second_package.path_elf_file_sptr_map.end()
-	  && (iter->second->type == ELF_TYPE_DSO
-	      || iter->second->type == ELF_TYPE_EXEC))
+	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
+	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC))
 	{
-	  compare(*it->second, debug_dir1,
-		  *iter->second, debug_dir2);
+	  has_abi_changes |= compare(*it->second, debug_dir1,
+				     *iter->second, debug_dir2);
 	  second_package.path_elf_file_sptr_map.erase(iter);
+	  if (has_abi_changes)
+	    diff.changed_binaries.push_back(it->second->name);
 	}
       else
-	abi_diffs.removed_binaries.push_back(it->second->name);
+	diff.removed_binaries.push_back(it->second->name);
     }
 
   for (map<string, elf_file_sptr>::iterator it =
 	 second_package.path_elf_file_sptr_map.begin();
        it != second_package.path_elf_file_sptr_map.end();
        ++it)
-    abi_diffs.added_binaries.push_back(it->second->name);
+    diff.added_binaries.push_back(it->second->name);
 
-  if (abi_diffs.removed_binaries.size())
+  if (diff.removed_binaries.size())
     {
       cout << "Removed binaries\n";
-      for (vector<string>::iterator it = abi_diffs.removed_binaries.begin();
-	   it != abi_diffs.removed_binaries.end(); ++it)
+      for (vector<string>::iterator it = diff.removed_binaries.begin();
+	   it != diff.removed_binaries.end(); ++it)
 	cout << *it << "\n";
     }
 
-  if (abi_diffs.added_binaries.size())
+  if (diff.added_binaries.size())
     {
       cout << "Added binaries\n";
-      for (vector<string>::iterator it = abi_diffs.added_binaries.begin();
-	   it != abi_diffs.added_binaries.end(); ++it)
+      for (vector<string>::iterator it = diff.added_binaries.begin();
+	   it != diff.added_binaries.end(); ++it)
 	cout << *it << "\n";
     }
 
   erase_created_temporary_directories(first_package, second_package);
 
-  return true;
+  return diff.has_changes();
+}
+
+/// Compare the ABI of two packages.
+///
+/// @param first_package the first package to consider.
+///
+/// @param second_package the second package to consider.
+///
+/// @return true if the comparison yields ABI differences between the
+/// two packages.
+static bool
+compare(package& first_package, package& second_package)
+{
+  abi_diff diff;
+  return compare(first_package, second_package, diff);
 }
 
 static bool
@@ -594,22 +610,20 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  package_sptr first_package(new package(opts.package1, "package1",
-					 guess_file_type(opts.package1)));
+  package_sptr first_package(new package(opts.package1, "package1"));
 
-  package_sptr second_package(new package(opts.package2, "package2",
-					  guess_file_type(opts.package2)));
+  package_sptr second_package(new package(opts.package2, "package2"));
 
   if (!opts.debug_package1.empty())
     first_package->debug_info_package =
-      package_sptr(new package(opts.debug_package1, "debug_package1",
-			       guess_file_type(opts.debug_package1),
+      package_sptr(new package(opts.debug_package1,
+			       "debug_package1",
 			       /*is_debug_info=*/true));
 
   if (!opts.debug_package2.empty())
     second_package->debug_info_package =
-      package_sptr(new package(opts.debug_package2, "debug_package2",
-			       guess_file_type(opts.debug_package2),
+      package_sptr(new package(opts.debug_package2,
+			       "debug_package2",
 			       /*is_debug_info=*/true));
 
   switch (first_package->type)

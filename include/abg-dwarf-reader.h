@@ -70,6 +70,14 @@ operator|=(status&, status);
 status&
 operator&=(status&, status);
 
+/// The kind of ELF file we are looking at.
+enum elf_type
+{
+  ELF_TYPE_EXEC,
+  ELF_TYPE_DSO,
+  ELF_TYPE_UNKNOWN
+};
+
 class read_context;
 
 /// A convenience typedef for a smart pointer to a
@@ -115,7 +123,10 @@ has_alt_debug_info(const string&	elf_path,
 		   string&		alt_debug_info_path);
 
 bool
-get_soname_from_elf(Elf *elf, string &soname);
+get_soname_of_elf_file(const string& path, string& soname);
+
+bool
+get_type_of_elf_file(const string& path, elf_type& type);
 
 }// end namespace dwarf_reader
 

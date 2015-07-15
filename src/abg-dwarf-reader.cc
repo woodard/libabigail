@@ -8171,8 +8171,16 @@ has_alt_debug_info(const string&	elf_path,
 /// return False if an error occured while looking for SONAME in binary,
 /// True otherwise.
 bool
-get_soname_from_elf(Elf *elf, string &soname)
+get_soname_of_elf_file(const string& path, string &soname)
 {
+
+  int fd = open(path.c_str(), O_RDONLY);
+  if(fd == -1)
+    return false;
+
+  elf_version (EV_CURRENT);
+  Elf* elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
+
   GElf_Ehdr ehdr_mem;
   GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
   if (ehdr == NULL)
@@ -8214,6 +8222,56 @@ get_soname_from_elf(Elf *elf, string &soname)
           break;
         }
     }
+
+  close(fd);
+
+  return true;
+}
+
+/// Convert the type of ELF file into @ref elf_type.
+///
+/// @param header a elf header to get the ELF file type from.
+///
+/// @return the @ref elf_type for a given elf type.
+static elf_type
+elf_file_type(const GElf_Ehdr* header)
+{
+  switch (header->e_type)
+    {
+    case ET_DYN:
+      return ELF_TYPE_DSO;
+      break;
+    case ET_EXEC:
+      return ELF_TYPE_EXEC;
+      break;
+    default:
+      return ELF_TYPE_UNKNOWN;
+      break;
+    }
+}
+
+/// Get the type of a given elf type.
+///
+/// @param path the absolute path to the ELF file to analyzed.
+///
+/// @param out parameter.  Is set to the type of ELF file of @p path.
+/// This parameter is set iff the function returns true.
+///
+/// @return true iff the file could be opened and analyzed.
+bool
+get_type_of_elf_file(const string& path, elf_type& type)
+{
+  int fd = open(path.c_str(), O_RDONLY);
+  if(fd == -1)
+    return false;
+
+  elf_version (EV_CURRENT);
+  Elf *elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
+  GElf_Ehdr ehdr_mem;
+  GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
+  string soname;
+  type = elf_file_type(ehdr);
+  close(fd);
 
   return true;
 }
