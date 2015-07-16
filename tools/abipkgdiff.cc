@@ -644,18 +644,18 @@ compare(package&	first_package,
 
   if (diff.removed_binaries.size())
     {
-      cout << "Removed binaries\n";
+      cout << "Removed binaries:\n";
       for (vector<string>::iterator it = diff.removed_binaries.begin();
 	   it != diff.removed_binaries.end(); ++it)
-	cout << *it << "\n";
+	cout << "  " << *it << "\n";
     }
 
   if (diff.added_binaries.size())
     {
-      cout << "Added binaries\n";
+      cout << "Added binaries:\n";
       for (vector<string>::iterator it = diff.added_binaries.begin();
 	   it != diff.added_binaries.end(); ++it)
-	cout << *it << "\n";
+	cout << "  " << *it << "\n";
     }
 
   erase_created_temporary_directories(first_package, second_package);
