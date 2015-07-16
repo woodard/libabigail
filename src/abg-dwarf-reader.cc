@@ -2508,7 +2508,6 @@ public:
   {
     if (!symtab_section_)
       dwarf_reader::find_symbol_table_section(elf_handle(), symtab_section_);
-    assert(symtab_section_);
     return symtab_section_;
   }
 
@@ -2647,7 +2646,8 @@ public:
   lookup_elf_symbol_from_index(size_t symbol_index)
   {
     Elf_Scn* symtab_section = find_symbol_table_section();
-    assert(symtab_section);
+    if (!symtab_section)
+      return elf_symbol_sptr();
 
     GElf_Shdr header_mem;
     GElf_Shdr* symtab_sheader = gelf_getshdr(symtab_section,
@@ -3078,7 +3078,8 @@ public:
       undefined_var_syms_.reset(new string_elf_symbols_map_type);
 
     Elf_Scn* symtab_section = find_symbol_table_section();
-    assert(symtab_section);
+    if (!symtab_section)
+      return false;
 
     GElf_Shdr header_mem;
     GElf_Shdr* symtab_sheader = gelf_getshdr(symtab_section,
