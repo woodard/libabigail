@@ -85,11 +85,13 @@ struct options
   string	debug_package1;
   string	debug_package2;
   bool		compare_dso_only;
+  bool		show_redundant_changes;
 
   options()
     : display_usage(),
       missing_operand(),
-      compare_dso_only()
+      compare_dso_only(),
+      show_redundant_changes()
   {}
 };
 
@@ -219,6 +221,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --debug-info-pkg1|--d1 <path>  path of debug-info package of package1\n"
       << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
       << " --dso-only                     pompare shared libraries only\n"
+      << " --redundant                    display redundant changes\n"
       << " --verbose                      emit verbose progress messages\n"
       << " --help                         display help message\n";
 }
@@ -323,6 +326,29 @@ file_tree_walker_callback_fn(const char *fpath,
   return 0;
 }
 
+/// Update the diff context from the @ref options data structure.
+///
+/// @param ctxt the diff context to update.
+///
+/// @param opts the instance of @ref options to consider.
+static void
+set_diff_context_from_opts(diff_context_sptr ctxt,
+			   const options& opts)
+{
+  ctxt->default_output_stream(&cout);
+  ctxt->error_output_stream(&cerr);
+  ctxt->show_redundant_changes(opts.show_redundant_changes);
+
+  ctxt->switch_categories_off
+    (abigail::comparison::ACCESS_CHANGE_CATEGORY
+     | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
+     | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
+     | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
+     | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
+     | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
+     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
+}
+
 /// Compare the ABI two elf files, using their associated debug info.
 ///
 /// The result of the comparison is emitted to standard output.
@@ -337,11 +363,16 @@ file_tree_walker_callback_fn(const char *fpath,
 /// @param debug_dir2 the directory where the debug info file for @p
 /// elf2 is stored.
 ///
+/// @param opts the options the current program has been called with.
+///
 /// @return true iff the comparison yields differences between the two
 /// files, false otherwise.
 static bool
-compare(const elf_file& elf1, const string& debug_dir1,
-	const elf_file& elf2, const string& debug_dir2)
+compare(const elf_file& elf1,
+	const string&	debug_dir1,
+	const elf_file& elf2,
+	const string&	debug_dir2,
+	const options&	opts)
 {
   char *di_dir1 = (char*) debug_dir1.c_str(),
     *di_dir2 = (char*) debug_dir2.c_str();
@@ -397,7 +428,9 @@ compare(const elf_file& elf1, const string& debug_dir1,
   if (verbose)
     cerr << "  Comparing the ABI of the two files ...";
 
-  corpus_diff_sptr diff = compute_diff(corpus1, corpus2);
+  diff_context_sptr ctxt(new diff_context);
+  set_diff_context_from_opts(ctxt, opts);
+  corpus_diff_sptr diff = compute_diff(corpus1, corpus2, ctxt);
 
   if (verbose)
     cerr << "DONE\n";
@@ -593,7 +626,8 @@ compare(package&	first_package,
 	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC))
 	{
 	  has_abi_changes |= compare(*it->second, debug_dir1,
-				     *iter->second, debug_dir2);
+				     *iter->second, debug_dir2,
+				     opts);
 	  second_package.path_elf_file_sptr_map.erase(iter);
 	  if (has_abi_changes)
 	    diff.changed_binaries.push_back(it->second->name);
@@ -701,6 +735,8 @@ parse_command_line(int argc, char* argv[], options& opts)
         }
       else if (!strcmp(argv[i], "--dso-only"))
 	opts.compare_dso_only = true;
+      else if (!strcmp(argv[i], "--redundant"))
+	opts.show_redundant_changes = true;
       else if (!strcmp(argv[i], "--verbose"))
 	verbose = true;
       else if (!strcmp(argv[i], "--help"))

@@ -53,6 +53,12 @@ Options
     Compare ELF files that are shared libraries, only.  Do not compare
     executable files, for instance.
 
+  *  --redundant
+
+    In the diff reports, do display redundant changes.  A redundant
+    change is a change that has been displayed elsewhere in a given
+    report.
+
   * --verbose
 
     Emit verbose progress messages.
