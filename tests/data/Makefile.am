@@ -773,4 +773,15 @@ test-abicompat/test6-var-changed-app \
 test-abicompat/test6-var-changed-app.cc \
 test-abicompat/test6-var-changed-libapp-v0.cc \
 test-abicompat/test6-var-changed-libapp-v1.cc \
-test-abicompat/test6-var-changed-report-0.txt
+test-abicompat/test6-var-changed-report-0.txt \
+\
+test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm \
+test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm \
+test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \
+test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm \
+test-diff-pkg/test-rpm-report-0.txt \
+test-diff-pkg/test-rpm-report-1.txt \
+test-diff-pkg/test-rpm-report-2.txt \
+test-diff-pkg/test-rpm-report-3.txt \
+test-diff-pkg/test-rpm-report-4.txt
+
