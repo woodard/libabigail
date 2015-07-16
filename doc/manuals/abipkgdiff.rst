@@ -48,6 +48,11 @@ Options
     into a separate file, tells ``abipkgdiff`` where to find that
     separate debug information package.
 
+  * --dso-only
+
+    Compare ELF files that are shared libraries, only.  Do not compare
+    executable files, for instance.
+
   * --verbose
 
     Emit verbose progress messages.

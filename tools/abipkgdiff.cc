@@ -84,10 +84,12 @@ struct options
   string	package2;
   string	debug_package1;
   string	debug_package2;
+  bool		compare_dso_only;
 
   options()
-    : display_usage(false),
-      missing_operand(false)
+    : display_usage(),
+      missing_operand(),
+      compare_dso_only()
   {}
 };
 
@@ -214,10 +216,11 @@ display_usage(const string& prog_name, ostream& out)
 {
   out << "usage: " << prog_name << " [options] <package1> <package2>\n"
       << " where options can be:\n"
-      << " --debug-info-pkg1|--d1 <path>  Path of debug-info package of package1\n"
-      << " --debug-info-pkg2|--d2 <path>  Path of debug-info package of package2\n"
-      << " --verbose                      Emit verbose progress messages\n"
-      << " --help                         Display help message\n";
+      << " --debug-info-pkg1|--d1 <path>  path of debug-info package of package1\n"
+      << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
+      << " --dso-only                     pompare shared libraries only\n"
+      << " --verbose                      emit verbose progress messages\n"
+      << " --help                         display help message\n";
 }
 
 /// Extract an RPM package.
@@ -434,9 +437,12 @@ compare(const elf_file& elf1, const string& debug_dir1,
 ///
 /// @param package the package to consider.
 ///
+/// @param opts the options the current program has been called with.
+///
 /// @param true upon successful completion, false otherwise.
 static bool
-create_maps_of_package_content(package& package)
+create_maps_of_package_content(package& package,
+			       const options& opts)
 {
   elf_file_paths.clear();
   if (verbose)
@@ -461,8 +467,17 @@ create_maps_of_package_content(package& package)
        ++file)
     {
       elf_file_sptr e (new elf_file(*file));
-      if (!e->type != abigail::dwarf_reader::ELF_TYPE_DSO)
-	continue;
+      if (opts.compare_dso_only)
+	{
+	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO)
+	    continue;
+	}
+      else
+	{
+	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO
+	      && e->type != abigail::dwarf_reader::ELF_TYPE_EXEC)
+	    continue;
+	}
 
       if (e->soname.empty())
 	package.path_elf_file_sptr_map[e->name] = e;
@@ -481,31 +496,41 @@ create_maps_of_package_content(package& package)
 ///
 /// @param package the package to consider.
 ///
+/// @param opts the options the current package has been called with.
+///
 /// @return true upon successful completion, false otherwise.
 static bool
-extract_package_and_map_its_content(package& package)
+extract_package_and_map_its_content(package& package,
+				    const options& opts)
 {
   if (!extract_package(package))
     return false;
 
   bool result = true;
   if (!package.is_debug_info)
-    result |= create_maps_of_package_content(package);
+    result |= create_maps_of_package_content(package, opts);
 
   return result;
 }
 
 /// Prepare the packages for comparison.
 ///
-/// This function extracts the content of the package and maps it.
+/// This function extracts the content of each package and maps it.
+///
+/// @param first_package the first package to prepare.
+///
+/// @param second_package the second package to prepare.
+///
+/// @param opts the options the current program has been called with.
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-prepare_packages(package& first_package,
-		 package& second_package)
+prepare_packages(package&	first_package,
+		 package&	second_package,
+		 const options& opts)
 {
-    if (!extract_package_and_map_its_content(first_package)
-	|| !extract_package_and_map_its_content(second_package))
+  if (!extract_package_and_map_its_content(first_package, opts)
+      || !extract_package_and_map_its_content(second_package, opts))
     return false;
 
     if ((first_package.debug_info_package
@@ -523,15 +548,21 @@ prepare_packages(package& first_package,
 ///
 /// @param second_package the second package to consider.
 ///
+/// @param options the options the current program has been called
+/// with.
+///
 /// @param diff out parameter.  If this function returns true, then
 /// this parameter is set to the result of the comparison.
 ///
 /// @return true iff the comparison yields differences between the two
 /// packages.
 static bool
-compare(package& first_package, package& second_package, abi_diff& diff)
+compare(package&	first_package,
+	package&	second_package,
+	const options&	opts,
+	abi_diff&	diff)
 {
-  if (!prepare_packages(first_package, second_package))
+  if (!prepare_packages(first_package, second_package, opts))
     return false;
 
   // Setting debug-info path of libraries
@@ -604,13 +635,15 @@ compare(package& first_package, package& second_package, abi_diff& diff)
 ///
 /// @param second_package the second package to consider.
 ///
+/// @param opts the options the current program has been called with.
+///
 /// @return true if the comparison yields ABI differences between the
 /// two packages.
 static bool
-compare(package& first_package, package& second_package)
+compare(package& first_package, package& second_package, const options& opts)
 {
   abi_diff diff;
-  return compare(first_package, second_package, diff);
+  return compare(first_package, second_package, opts, diff);
 }
 
 /// Parse the command line of the current program.
@@ -666,6 +699,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
+      else if (!strcmp(argv[i], "--dso-only"))
+	opts.compare_dso_only = true;
       else if (!strcmp(argv[i], "--verbose"))
 	verbose = true;
       else if (!strcmp(argv[i], "--help"))
@@ -742,5 +777,5 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  return compare(*first_package, *second_package);
+  return compare(*first_package, *second_package, opts);
 }
