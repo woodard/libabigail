@@ -9011,8 +9011,11 @@ class_diff::report(ostream& out, const string& indent) const
 	       it != priv_->sorted_subtype_changed_dm_.end();
 	       ++it)
 	    {
-	      represent(*it, context(), out, indent + " ");
-	      out << "\n";
+	      if ((*it)->to_be_reported())
+		{
+		  represent(*it, context(), out, indent + " ");
+		  out << "\n";
+		}
 	    }
 	}
 
@@ -9027,8 +9030,11 @@ class_diff::report(ostream& out, const string& indent) const
 	       it != priv_->sorted_changed_dm_.end();
 	       ++it)
 	    {
-	      represent(*it, context(), out, indent + " ");
-	      out << "\n";
+	      if ((*it)->to_be_reported())
+		{
+		  represent(*it, context(), out, indent + " ");
+		  out << "\n";
+		}
 	    }
 	}
     }
