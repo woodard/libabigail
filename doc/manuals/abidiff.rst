@@ -28,11 +28,11 @@ Invocation
 Options
 =======
 
-  * --help
+  * ``--help``
 
     Display a short help about the command and exit.
 
-  * --debug-info-dir1 | --d1 <*di-path1*>
+  * ``--debug-info-dir1 | --d1`` <*di-path1*>
 
     For cases where the debug information for *first-shared-library*
     is split out into a separate file, tells ``abidiff`` where to find
@@ -47,71 +47,71 @@ Options
     information installed by your system's package manager because
     then ``abidiff`` knows where to find it.
 
-  * --debug-info-dir2 | --d2 <*di-path2*>
+  * ``--debug-info-dir2 | --d2`` <*di-path2*>
 
     Like ``--debug-info-dir1``, this options tells ``abidiff`` where
     to find the split debug information for the
     *second-shared-library* file.
 
-  * --stat
+  * ``--stat``
 
     Rather than displaying the detailed ABI differences between
     *first-shared-library* and *second-shared-library*, just display
     some summary statistics about these differences.
 
-  * --symtabs
+  * ``--symtabs``
 
     Only display the symbol tables of the *first-shared-library* and
     *second-shared-library*.
 
-  * --deleted-fns
+  * ``--deleted-fns``
 
     In the resulting report about the differences between
     *first-shared-library* and *second-shared-library*, only display
     the globally defined functions that got deleted from
     *first-shared-library*.
 
-  * --changed-fns
+  * ``--changed-fns``
 
     In the resulting report about the differences between
     *first-shared-library* and *second-shared-library*, only display
     the changes in sub-types of the global functions defined in
     *first-shared-library*.
 
-  * --added-fns
+  * ``--added-fns``
 
     In the resulting report about the differences between
     *first-shared-library* and *second-shared-library*, only display
     the globally defined functions that were added to
     *second-shared-library*.
 
-  * --deleted-vars
+  * ``--deleted-vars``
 
     In the resulting report about the differences between
     *first-shared-library* and *second-shared-library*, only display
     the globally defined variables that were deleted from
     *first-shared-library*.
 
-  * --changed-vars
+  * ``--changed-vars``
 
     In the resulting report about the differences between
     *first-shared-library* and *second-shared-library*, only display
     the changes in the sub-types of the global variables defined in
     *first-shared-library*
 
-  * --added-vars
+  * ``--added-vars``
 
     In the resulting report about the differences between
     *first-shared-library* and *second-shared-library*, only display
     the global variables that were added (defined) to
     *second-shared-library*.
 
-  * --no-linkage-name 
+  * ``--no-linkage-name``
 
     In the resulting report, do not display the linkage names of
     the added, removed, or changed functions or variables.
 
-  * --no-unreferenced-symbols
+  * ``--no-unreferenced-symbols``
 
     In the resulting report, do not display change information about
     function and variable symbols that are not referenced by any debug
@@ -120,12 +120,12 @@ Options
     added or removed symbols.
 
 
-  * --suppressions <*path-to-suppressions*>
+  * ``--suppressions`` <*path-to-suppressions*>
 
     Use a :ref:`suppression specification <suppr_spec_label>` file located
     at *path-to-suppressions*.
 
-  * --drop <*regex*>
+  * ``--drop`` <*regex*>
 
     When reading the *first-shared-library* and
     *second-shared-library* ELF input files, drop the globally defined
@@ -133,7 +133,7 @@ Options
     *regex*.  As a result, no change involving these functions or
     variables will be emitted in the diff report.
 
-  * --drop-fn <*regex*>
+  * ``--drop-fn`` <*regex*>
 
     When reading the *first-shared-library* and
     *second-shared-library* ELF input files, drop the globally defined
@@ -141,13 +141,13 @@ Options
     result, no change involving these functions will be emitted in the
     diff report.
 
-  * --drop-var <*regex*>
+  * ``--drop-var`` <*regex*>
 
     When reading the *first-shared-library* and
     *second-shared-library* ELF input files, drop the globally defined
     variables matching a the regular expression *regex*.
 
-  * --keep <*regex*>
+  * ``--keep`` <*regex*>
 
     When reading the *first-shared-library* and
     *second-shared-library* ELF input files, keep the globally defined
@@ -155,7 +155,7 @@ Options
     *regex*.  All other functions and variables are dropped on the
     floor and will thus not appear in the resulting diff report.
 
-  * --keep-fn <*regex*>
+  * ``--keep-fn`` <*regex*>
 
     When reading the *first-shared-library* and
     *second-shared-library* ELF input files, keep the globally defined
@@ -163,7 +163,7 @@ Options
     other functions are dropped on the floor and will thus not appear
     in the resulting diff report.
 
-  * --keep-var <*regex*>
+  * ``--keep-var`` <*regex*>
 
     When reading the *first-shared-library* and
     *second-shared-library* ELF input files, keep the globally defined
@@ -171,32 +171,32 @@ Options
     variables are dropped on the floor and will thus not appear in the
     resulting diff report.
 
-  * --harmless
+  * ``--harmless``
 
     In the diff report, display only the :ref:`harmless
     <harmlesschangeconcept_label>` changes.  By default, the harmless
     changes are filtered out of the diff report keep the clutter to a
     minimum and have a greater change to spot real ABI issues.
 
-  * --no-harmful
+  * ``--no-harmful``
 
     In the diff report, do not display the :ref:`harmful
     <harmfulchangeconcept_label>` changes.  By default, only the
     harmful changes are displayed in diff report.
 
-  * --redundant
+  * ``--redundant``
 
     In the diff report, do display redundant changes.  A redundant
     change is a change that has been displayed elsewhere in the
     report.
 
-  * --no-redundant
+  * ``--no-redundant``
 
     In the diff report, do *NOT* display redundant changes.  A
     redundant change is a change that has been displayed elsewhere in
     the report.  This option is switched on by default.
 
-  *  --dump-diff-tree
+  *  ``--dump-diff-tree``
 
     After the diff report, emit a textual representation of the diff
     nodes tree used by the comparison engine to represent the changed

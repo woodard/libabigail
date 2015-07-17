@@ -20,11 +20,11 @@ Invocation
 Options
 =======
 
-  * --help
+  * ``--help``
 
     Display a short help about the command and exit.
 
-  * --debug-info-dir <*dir-path*>
+  * ``--debug-info-dir`` <*dir-path*>
 
     In cases where the debug info for *path-to-elf-file* is in a
     separate file that is located in a non-standard place, this tells
@@ -39,13 +39,13 @@ Options
     installed by your system's package manager because then
     ``abidw`` knows where to find it.
 
-  * --out-file <*file-path*>
+  * ``--out-file`` <*file-path*>
 
     This option instructs ``abidw`` to emit the XML representation of
     *path-to-elf-file* into the file *file-path*, rather than emitting
     it to its standard output.
 
-  * --check-alternate-debug-info <*elf-path*>
+  * ``--check-alternate-debug-info`` <*elf-path*>
 
     If the debug info for the file *elf-path* contains a reference to
     an `alternate debug info <alt-di-label>`_ file, ``abidw`` checks
@@ -54,13 +54,13 @@ Options
     alternate debug info file found.  Otherwise, it emits an error
     code.
 
-  * --check-alternate-debug-info-base-name <*elf-path*>
+  * ``--check-alternate-debug-info-base-name`` <*elf-path*>
 
 
     Like ``--check-alternate-debug-info``, but in the success message,
     only mention the base name of the debug info file; not its full path.
 
-  * --load-all-types
+  * ``--load-all-types``
 
     By default, ``libabigail`` (and thus ``abidw``) only loads types
     that are reachable from functions and variables declarations that

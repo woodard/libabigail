@@ -24,15 +24,15 @@ Invocation
 Options
 =======
 
-  * --help
+  * ``--help``
 
     Display a short help about the command and exit.
 
-  * --list-undefined-symbols|-u
+  * ``--list-undefined-symbols | -u``
 
     Display the list of undefined symbols of the application and exit.
 
-  * --show-base-names|-b
+  * ``--show-base-names | -b``
 
     In the resulting report emitted by the tool, this option makes the
     application and libraries be referred to by their base names only;
@@ -40,28 +40,28 @@ Options
     scripts that wants to compare names of the application and
     libraries independently of what their directory names are.
 
-  * --app-debug-info-dir <path-to-app-debug-info-directory>
+  * ``--app-debug-info-dir`` <path-to-app-debug-info-directory>
 
     Set the path to the directory under which the debug information of
     the application is supposed to be laid out.  This is useful for
     application binaries for which the debug info is in a separate set
     of files.
 
-  * --lib-debug-info-dir1 <path-to-lib1-debug-info>
+  * ``--lib-debug-info-dir1`` <path-to-lib1-debug-info>
 
     Set the path to the directory under which the debug information of
     the first version of the shared library is supposed to be laid
     out.  This is useful for shared library binaries for which the
     debug info is in a separate set of files.
 
-  * --lib-debug-info-dir2 <path-to-lib1-debug-info>
+  * ``--lib-debug-info-dir2`` <path-to-lib1-debug-info>
 
     Set the path to the directory under which the debug information of
     the second version of the shared library is supposed to be laid
     out.  This is useful for shared library binaries for which the
     debug info is in a separate set of files.
 
-  * --weak-mode
+  * ``--weak-mode``
 
     This triggers the weak mode of ``abicompat``.  In this mode, only
     one version of the library is required.  That is, abicompat is

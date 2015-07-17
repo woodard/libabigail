@@ -32,34 +32,34 @@ Invocation
 Options
 =======
 
-  * --help
+  * ``--help``
 
     Display a short help about the command and exit.
 
-  * --debug-info-pkg1|--d1 <path>
+  * ``--debug-info-pkg1 | --d1`` <path>
 
     For cases where the debug information for *package1* is split out
     into a separate file, tells ``abipkgdiff`` where to find that
     separate debug information package.
 
-  * --debug-info-pkg2|--d2 <path>
+  * ``--debug-info-pkg2 | --d2`` <path>
 
     For cases where the debug information for *package2* is split out
     into a separate file, tells ``abipkgdiff`` where to find that
     separate debug information package.
 
-  * --dso-only
+  * ``--dso-only``
 
     Compare ELF files that are shared libraries, only.  Do not compare
     executable files, for instance.
 
-  *  --redundant
+  *  ``--redundant``
 
     In the diff reports, do display redundant changes.  A redundant
     change is a change that has been displayed elsewhere in a given
     report.
 
-  * --verbose
+  * ``--verbose``
 
     Emit verbose progress messages.
 

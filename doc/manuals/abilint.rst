@@ -27,11 +27,12 @@ abilint [options] [<abi-file1>]
 Options
 =======
 
-  * --help
+  * ``--help``
 
     Display a short help message and exits.
 
-  * --debug-info-dir <*path*>
+  * ``--debug-info-dir`` <*path*>
+
     When reading an `ELF`_ input file which debug information is split
     out into a separate file, this options tells ``abilint`` where to
     find that separate debug information file.
@@ -45,22 +46,22 @@ Options
     information installed by your system's package manager because
     then ``abidiff`` knows where to find it.
 
-  * --diff
+  * ``--diff``
 
     For XML inputs, perform a text diff between the input and the
     memory model saved back to disk.  This can help to spot issues in
     the handling of the XML format by the underlying Libabigail library.
 
-  * --noout
+  * ``--noout``
 
     Do not display anything on standard output.  The return code of
     the command is the only way to know if the command succeeded.
 
-  * --stdin|--
+  * ``--stdin | --``
 
     Read the input content from standard input.
 
-  * --tu
+  * ``--tu``
 
     Expect the input XML to represent a single translation unit.
 
