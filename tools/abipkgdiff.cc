@@ -397,9 +397,10 @@ compare(const elf_file& elf1,
 					     c1_status);
   if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
     {
-      cerr << "could not read file '"
-	   << elf1.path
-	   << "' properly\n";
+      if (verbose)
+	cerr << "could not read file '"
+	     << elf1.path
+	     << "' properly\n";
       return false;
     }
 
@@ -416,9 +417,10 @@ compare(const elf_file& elf1,
 					     c2_status);
   if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
     {
-      cerr << "could not find the read file '"
-	   << elf2.path
-	   << "' properly\n";
+      if (verbose)
+	cerr << "could not find the read file '"
+	     << elf2.path
+	     << "' properly\n";
       return false;
     }
 
