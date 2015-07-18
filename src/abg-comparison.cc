@@ -33,6 +33,7 @@
 #include "abg-comp-filter.h"
 #include "abg-sptr-utils.h"
 #include "abg-ini.h"
+#include "abg-tools-utils.h"
 
 namespace abigail
 {
@@ -452,7 +453,11 @@ diff_traversable_base::traverse(diff_node_visitor&)
 /// The private data of @ref suppression_base.
 class suppression_base::priv
 {
-  string label_;
+  string				label_;
+  string				file_name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	file_name_regex_;
+  string				soname_regex_str_;
+  mutable sptr_utils::regex_t_sptr	soname_regex_;
 
 public:
   priv()
@@ -463,6 +468,57 @@ public:
   {}
 
   friend class suppression_base;
+
+  /// Get the regular expression object associated to the 'file_name_regex'
+  /// property of @ref type_suppression.
+  ///
+  /// If the regular expression object is not created, this method
+  /// creates it and returns it.
+  ///
+  /// If the 'file_name_regex' property of @ref type_suppression is
+  /// empty then this method returns nil.
+  const sptr_utils::regex_t_sptr
+  get_file_name_regex() const
+  {
+    if (!file_name_regex_)
+      {
+	if (!file_name_regex_str_.empty())
+	  {
+	    sptr_utils::regex_t_sptr r(new regex_t);
+	    if (regcomp(r.get(),
+			file_name_regex_str_.c_str(),
+			REG_EXTENDED) == 0)
+	      file_name_regex_ = r;
+	  }
+      }
+    return file_name_regex_;
+  }
+
+  /// Get the regular expression object associated to the 'soname_regex'
+  /// property of @ref type_suppression.
+  ///
+  /// If the regular expression object is not created, this method
+  /// creates it and returns it.
+  ///
+  /// If the 'soname_regex' property of @ref type_suppression is
+  /// empty then this method returns nil.
+  const sptr_utils::regex_t_sptr
+  get_soname_regex() const
+  {
+    if (!soname_regex_)
+      {
+	if (!soname_regex_str_.empty())
+	  {
+	    sptr_utils::regex_t_sptr r(new regex_t);
+	    if (regcomp(r.get(),
+			soname_regex_str_.c_str(),
+			REG_EXTENDED) == 0)
+	      soname_regex_ = r;
+	  }
+      }
+    return soname_regex_;
+  }
+
 }; // end clas suppression_base::priv
 
 /// Constructor for @ref suppression_base
@@ -486,6 +542,54 @@ suppression_base::get_label() const
 void
 suppression_base::set_label(const string& label)
 {priv_->label_ = label;}
+
+/// Setter for the "file_name_regex" property of the current instance
+/// of @ref suppression_base.
+///
+/// The "file_name_regex" property is a regular expression string that
+/// designates the file name that contains the ABI artifact this
+/// suppression should apply to.
+///
+/// @param regexp the new regular expression string.
+void
+suppression_base::set_file_name_regex_str(const string& regexp)
+{priv_->file_name_regex_str_ = regexp;}
+
+/// Getter for the "file_name_regex" property of the current instance
+/// of @ref suppression_base.
+///
+/// The "file_name_regex" property is a regular expression string that
+/// designates the file name that contains the ABI artifacts this
+/// suppression should apply to.
+///
+/// @return the regular expression string.
+const string&
+suppression_base::get_file_name_regex_str() const
+{return priv_->file_name_regex_str_;}
+
+/// Setter of the "soname_regex_str property of the current isntance
+/// of @ref suppression_base.
+///
+/// The "soname_regex_str" is a regular expression string that
+/// designates the soname of the shared library that contains the ABI
+/// artifacts this suppression should apply to.
+///
+/// @param regexp the new regular expression string.
+void
+suppression_base::set_soname_regex_str(const string& regexp)
+{priv_->soname_regex_str_ = regexp;}
+
+/// Getter of the "soname_regex_str property of the current isntance
+/// of @ref suppression_base.
+///
+/// The "soname_regex_str" is a regular expression string that
+/// designates the soname of the shared library that contains the ABI
+/// artifacts this suppression should apply to.
+///
+/// @return the regular expression string.
+const string&
+suppression_base::get_soname_regex_str() const
+{return priv_->soname_regex_str_;}
 
 suppression_base::~suppression_base()
 {}
@@ -805,6 +909,45 @@ type_suppression::suppresses_diff(const diff* diff) const
   const type_diff_base* d = is_type_diff(diff);
   if (!d)
     return false;
+
+  // Check if the name of the binaries match
+  if (sptr_utils::regex_t_sptr regexp =
+      suppression_base::priv_->get_file_name_regex())
+    {
+      diff_context_sptr ctxt = diff->context();
+      assert(ctxt);
+
+      string first_binary_path = ctxt->get_first_corpus()->get_path(),
+	second_binary_path = ctxt->get_second_corpus()->get_path();
+
+      string first_binary_name, second_binary_name;
+
+      tools_utils::base_name(first_binary_path, first_binary_name);
+      tools_utils::base_name(second_binary_path, second_binary_name);
+
+      if ((regexec(regexp.get(), first_binary_name.c_str(),
+		   0, NULL, 0) != 0)
+	  && (regexec(regexp.get(), second_binary_name.c_str(),
+		      0, NULL, 0) != 0))
+	return false;
+    }
+
+  // Check if the soname of the binaries match
+  if (sptr_utils::regex_t_sptr regexp =
+      suppression_base::priv_->get_soname_regex())
+    {
+      diff_context_sptr ctxt = diff->context();
+      assert(ctxt);
+
+      string first_soname = ctxt->get_first_corpus()->get_soname(),
+	second_soname = ctxt->get_second_corpus()->get_soname();
+
+      if ((regexec(regexp.get(), first_soname.c_str(),
+		   0, NULL, 0) != 0)
+	  && (regexec(regexp.get(), second_soname.c_str(),
+		      0, NULL, 0) != 0))
+	return false;
+    }
 
   // If the suppression should consider the way the diff node has been
   // reached, then do it now.
@@ -1361,7 +1504,17 @@ read_type_suppression(const ini::config::section& section)
 
   ini::simple_property_sptr label =
     is_simple_property(section.find_property("label"));
-  string label_str = label ? label->get_value()->as_string() : ":";
+  string label_str = label ? label->get_value()->as_string() : "";
+
+  ini::simple_property_sptr file_name_regex_prop =
+    is_simple_property(section.find_property("file_name_regexp"));
+  string file_name_regex_str =
+    file_name_regex_prop ? file_name_regex_prop->get_value()->as_string() : "";
+
+  ini::simple_property_sptr soname_regex_prop =
+    is_simple_property(section.find_property("soname_regexp"));
+  string soname_regex_str =
+    soname_regex_prop ? soname_regex_prop->get_value()->as_string() : "";
 
   ini::simple_property_sptr name_regex_prop =
     is_simple_property(section.find_property("name_regexp"));
@@ -1553,6 +1706,12 @@ read_type_suppression(const ini::config::section& section)
 
   if (consider_data_member_insertion)
     suppr->set_data_member_insertion_ranges(insert_ranges);
+
+  if (!file_name_regex_str.empty())
+    suppr->set_file_name_regex_str(file_name_regex_str);
+
+  if (!soname_regex_str.empty())
+    suppr->set_soname_regex_str(soname_regex_str);
 
   return suppr;
 }
@@ -2189,8 +2348,12 @@ function_suppression::suppresses_diff(const diff* diff) const
     sf = is_function_decl(d->second_function_decl());
   assert(ff && sf);
 
-  return (suppresses_function(ff, FUNCTION_SUBTYPE_CHANGE_KIND)
-	  || suppresses_function(sf, FUNCTION_SUBTYPE_CHANGE_KIND));
+  return (suppresses_function(ff,
+			      FUNCTION_SUBTYPE_CHANGE_KIND,
+			      diff->context())
+	  || suppresses_function(sf,
+				 FUNCTION_SUBTYPE_CHANGE_KIND,
+				 diff->context()));
 }
 
 /// Evaluate the current function suppression specification on a given
@@ -2202,14 +2365,54 @@ function_suppression::suppresses_diff(const diff* diff) const
 ///
 /// @param k the kind of function change @p fn is supposed to have.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff a report about a change involving the function @p
 /// fn should be suppressed.
 bool
 function_suppression::suppresses_function(const function_decl* fn,
-					  change_kind k) const
+					  change_kind k,
+					  const diff_context_sptr ctxt) const
 {
   if (!(get_change_kind() & k))
     return false;
+
+  // Check if the name and soname of the binaries match
+  if (ctxt)
+    {
+      // Check if the name of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_file_name_regex())
+	{
+	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
+	    second_binary_path = ctxt->get_second_corpus()->get_path();
+
+	  string first_binary_name, second_binary_name;
+
+	  tools_utils::base_name(first_binary_path, first_binary_name);
+	  tools_utils::base_name(second_binary_path, second_binary_name);
+
+	  if ((regexec(regexp.get(), first_binary_name.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_binary_name.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+
+      // Check if the soname of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_soname_regex())
+	{
+	  string first_soname = ctxt->get_first_corpus()->get_soname(),
+	    second_soname = ctxt->get_second_corpus()->get_soname();
+
+	  if ((regexec(regexp.get(), first_soname.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_soname.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+    }
 
   string fname = fn->get_qualified_name();
 
@@ -2417,12 +2620,15 @@ function_suppression::suppresses_function(const function_decl* fn,
 ///
 /// @param k the kind of function change @p fn is supposed to have.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff a report about a change involving the function @p
 /// fn should be suppressed.
 bool
 function_suppression::suppresses_function(const function_decl_sptr fn,
-					  change_kind k) const
-{return suppresses_function(fn.get(), k);}
+					  change_kind k,
+					  const diff_context_sptr ctxt) const
+{return suppresses_function(fn.get(), k, ctxt);}
 
 /// Evaluate the current function suppression specification on a given
 /// @ref elf_symbol and say if a report about a change involving this
@@ -2433,11 +2639,14 @@ function_suppression::suppresses_function(const function_decl_sptr fn,
 ///
 /// @param k the kind of function change @p sym is supposed to have.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff a report about a change involving the symbol @p
 /// sym should be suppressed.
 bool
 function_suppression::suppresses_function_symbol(const elf_symbol* sym,
-						 change_kind k)
+						 change_kind k,
+						 const diff_context_sptr ctxt)
 {
   if (!sym)
     return false;
@@ -2450,6 +2659,43 @@ function_suppression::suppresses_function_symbol(const elf_symbol* sym,
 
   assert(k & function_suppression::ADDED_FUNCTION_CHANGE_KIND
 	 || k & function_suppression::DELETED_FUNCTION_CHANGE_KIND);
+
+  // Check if the name and soname of the binaries match
+  if (ctxt)
+    {
+      // Check if the name of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_file_name_regex())
+	{
+	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
+	    second_binary_path = ctxt->get_second_corpus()->get_path();
+
+	  string first_binary_name, second_binary_name;
+
+	  tools_utils::base_name(first_binary_path, first_binary_name);
+	  tools_utils::base_name(second_binary_path, second_binary_name);
+
+	  if ((regexec(regexp.get(), first_binary_name.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_binary_name.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+
+      // Check if the soname of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_soname_regex())
+	{
+	  string first_soname = ctxt->get_first_corpus()->get_soname(),
+	    second_soname = ctxt->get_second_corpus()->get_soname();
+
+	  if ((regexec(regexp.get(), first_soname.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_soname.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+    }
 
   string sym_name = sym->get_name(), sym_version = sym->get_version().str();
   bool no_symbol_name = false, no_symbol_version = false;
@@ -2507,12 +2753,15 @@ function_suppression::suppresses_function_symbol(const elf_symbol* sym,
 ///
 /// @param k the kind of function change @p sym is supposed to have.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff a report about a change involving the symbol @p
 /// sym should be suppressed.
 bool
 function_suppression::suppresses_function_symbol(const elf_symbol_sptr sym,
-						 change_kind k)
-{return suppresses_function_symbol(sym.get(), k);}
+						 change_kind k,
+						 const diff_context_sptr ctxt)
+{return suppresses_function_symbol(sym.get(), k, ctxt);}
 
 /// Test if an instance of @ref suppression is an instance of @ref
 /// function_suppression.
@@ -2655,6 +2904,16 @@ read_function_suppression(const ini::config::section& section)
     ? label_prop->get_value()->as_string()
     : "";
 
+  ini::simple_property_sptr file_name_regex_prop =
+    is_simple_property(section.find_property("file_name_regexp"));
+  string file_name_regex_str =
+    file_name_regex_prop ? file_name_regex_prop->get_value()->as_string() : "";
+
+  ini::simple_property_sptr soname_regex_prop =
+    is_simple_property(section.find_property("soname_regexp"));
+  string soname_regex_str =
+    soname_regex_prop ? soname_regex_prop->get_value()->as_string() : "";
+
   ini::simple_property_sptr name_prop =
     is_simple_property(section.find_property("name"));
   string name = name_prop
@@ -2751,6 +3010,12 @@ read_function_suppression(const ini::config::section& section)
   if (result && !allow_other_aliases.empty())
     result->set_allow_other_aliases(allow_other_aliases == "yes"
 				    || allow_other_aliases == "true");
+
+  if (!file_name_regex_str.empty())
+    result->set_file_name_regex_str(file_name_regex_str);
+
+  if (!soname_regex_str.empty())
+    result->set_soname_regex_str(soname_regex_str);
 
   return result;
 }
@@ -3198,8 +3463,12 @@ variable_suppression::suppresses_diff(const diff* diff) const
 
   assert(fv && sv);
 
-  return (suppresses_variable(fv, VARIABLE_SUBTYPE_CHANGE_KIND)
-	  || suppresses_variable(sv, VARIABLE_SUBTYPE_CHANGE_KIND));
+  return (suppresses_variable(fv,
+			      VARIABLE_SUBTYPE_CHANGE_KIND,
+			      diff->context())
+	  || suppresses_variable(sv,
+				 VARIABLE_SUBTYPE_CHANGE_KIND,
+				 diff->context()));
 }
 
 /// Evaluate the current variable suppression specification on a given
@@ -3211,14 +3480,54 @@ variable_suppression::suppresses_diff(const diff* diff) const
 ///
 /// @param k the kind of variable change @p var is supposed to have.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff a report about a change involving the variable @p
 /// var should be suppressed.
 bool
 variable_suppression::suppresses_variable(const var_decl* var,
-					  change_kind k) const
+					  change_kind k,
+					  const diff_context_sptr ctxt) const
 {
   if (!(get_change_kind() & k))
     return false;
+
+  // Check if the name and soname of the binaries match
+  if (ctxt)
+    {
+      // Check if the name of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_file_name_regex())
+	{
+	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
+	    second_binary_path = ctxt->get_second_corpus()->get_path();
+
+	  string first_binary_name, second_binary_name;
+
+	  tools_utils::base_name(first_binary_path, first_binary_name);
+	  tools_utils::base_name(second_binary_path, second_binary_name);
+
+	  if ((regexec(regexp.get(), first_binary_name.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_binary_name.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+
+      // Check if the soname of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_soname_regex())
+	{
+	  string first_soname = ctxt->get_first_corpus()->get_soname(),
+	    second_soname = ctxt->get_second_corpus()->get_soname();
+
+	  if ((regexec(regexp.get(), first_soname.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_soname.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+    }
 
   string var_name = var->get_qualified_name();
 
@@ -3312,12 +3621,15 @@ variable_suppression::suppresses_variable(const var_decl* var,
 ///
 /// @param k the kind of variable change @p var is supposed to have.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff a report about a change involving the variable @p
 /// var should be suppressed.
 bool
 variable_suppression::suppresses_variable(const var_decl_sptr var,
-					  change_kind k) const
-{return suppresses_variable(var.get(), k);}
+					  change_kind k,
+					  const diff_context_sptr ctxt) const
+{return suppresses_variable(var.get(), k, ctxt);}
 
 /// Evaluate the current variable suppression specification on a given
 /// @ref elf_symbol and say if a report about a change involving this
@@ -3328,11 +3640,14 @@ variable_suppression::suppresses_variable(const var_decl_sptr var,
 ///
 /// @param k the kind of variable change @p sym is supposed to have.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff a report about a change involving the symbol @p
 /// sym should be suppressed.
 bool
 variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
-						 change_kind k) const
+						 change_kind k,
+						 const diff_context_sptr ctxt) const
 {
   if (!sym)
     return false;
@@ -3345,6 +3660,43 @@ variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
 
   assert(k & ADDED_VARIABLE_CHANGE_KIND
 	 || k & DELETED_VARIABLE_CHANGE_KIND);
+
+  // Check if the name and soname of the binaries match
+  if (ctxt)
+    {
+      // Check if the name of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_file_name_regex())
+	{
+	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
+	    second_binary_path = ctxt->get_second_corpus()->get_path();
+
+	  string first_binary_name, second_binary_name;
+
+	  tools_utils::base_name(first_binary_path, first_binary_name);
+	  tools_utils::base_name(second_binary_path, second_binary_name);
+
+	  if ((regexec(regexp.get(), first_binary_name.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_binary_name.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+
+      // Check if the soname of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_soname_regex())
+	{
+	  string first_soname = ctxt->get_first_corpus()->get_soname(),
+	    second_soname = ctxt->get_second_corpus()->get_soname();
+
+	  if ((regexec(regexp.get(), first_soname.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_soname.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+    }
 
   string sym_name = sym->get_name(), sym_version = sym->get_version().str();
 
@@ -3408,12 +3760,15 @@ variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
 ///
 /// @param k the kind of variable change @p sym is supposed to have.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff a report about a change involving the symbol @p
 /// sym should be suppressed.
 bool
 variable_suppression::suppresses_variable_symbol(const elf_symbol_sptr sym,
-						 change_kind k) const
-{return suppresses_variable_symbol(sym.get(), k);}
+						 change_kind k,
+						 const diff_context_sptr ctxt) const
+{return suppresses_variable_symbol(sym.get(), k, ctxt);}
 
 /// Test if an instance of @ref suppression is an instance of @ref
 /// variable_suppression.
@@ -3486,6 +3841,16 @@ read_variable_suppression(const ini::config::section& section)
 		      ? label_prop->get_value()->as_string()
 		      : "");
 
+  ini::simple_property_sptr file_name_regex_prop =
+    is_simple_property(section.find_property("file_name_regexp"));
+  string file_name_regex_str =
+    file_name_regex_prop ? file_name_regex_prop->get_value()->as_string() : "";
+
+  ini::simple_property_sptr soname_regex_prop =
+    is_simple_property(section.find_property("soname_regexp"));
+  string soname_regex_str =
+    soname_regex_prop ? soname_regex_prop->get_value()->as_string() : "";
+
   ini::simple_property_sptr name_prop =
     is_simple_property(section.find_property("name"));
   string name_str = (name_prop
@@ -3553,6 +3918,12 @@ read_variable_suppression(const ini::config::section& section)
   if (result && !change_kind_str.empty())
     result->set_change_kind
       (variable_suppression::parse_change_kind(change_kind_str));
+
+  if (!file_name_regex_str.empty())
+    result->set_file_name_regex_str(file_name_regex_str);
+
+  if (!soname_regex_str.empty())
+    result->set_soname_regex_str(soname_regex_str);
 
   return result;
 }
@@ -12625,18 +12996,21 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 ///
 /// @param k the kind of change that happened to @p fn.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff the suppression specification @p suppr suppresses
 /// change reports about function @p fn, if that function changes in
 /// the way expressed by @p k.
 static bool
 function_is_suppressed(const function_decl* fn,
 		       const suppression_sptr suppr,
-		       function_suppression::change_kind k)
+		       function_suppression::change_kind k,
+		       const diff_context_sptr ctxt)
 {
   function_suppression_sptr fn_suppr = is_function_suppression(suppr);
   if (!fn_suppr)
     return false;
-  return fn_suppr->suppresses_function(fn, k);
+  return fn_suppr->suppresses_function(fn, k, ctxt);
 }
 
 /// Test if a change reports about a given @ref var_decl that is
@@ -12649,18 +13023,21 @@ function_is_suppressed(const function_decl* fn,
 ///
 /// @param k the kind of change that happened to @p fn.
 ///
+/// @param ctxt the context of the current diff.
+///
 /// @return true iff the suppression specification @p suppr suppresses
 /// change reports about variable @p fn, if that variable changes in
 /// the way expressed by @p k.
 static bool
 variable_is_suppressed(const var_decl* var,
 		       const suppression_sptr suppr,
-		       variable_suppression::change_kind k)
+		       variable_suppression::change_kind k,
+		       const diff_context_sptr ctxt)
 {
   variable_suppression_sptr var_suppr = is_variable_suppression(suppr);
   if (!var_suppr)
     return false;
-  return var_suppr->suppresses_variable(var, k);
+  return var_suppr->suppresses_variable(var, k, ctxt);
 }
 
 /// Apply the suppression specifications for this corpus diff to the
@@ -12681,7 +13058,8 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       e != added_fns_.end();
 	       ++e)
 	    if (function_is_suppressed(e->second, fn_suppr,
-				       function_suppression::ADDED_FUNCTION_CHANGE_KIND))
+				       function_suppression::ADDED_FUNCTION_CHANGE_KIND,
+				       ctxt_))
 	      suppressed_added_fns_[e->first] = e->second;
 
 	  // Deleted functions.
@@ -12689,7 +13067,8 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       e != deleted_fns_.end();
 	       ++e)
 	    if (function_is_suppressed(e->second, fn_suppr,
-				       function_suppression::DELETED_FUNCTION_CHANGE_KIND))
+				       function_suppression::DELETED_FUNCTION_CHANGE_KIND,
+				       ctxt_))
 	      suppressed_deleted_fns_[e->first] = e->second;
 
 	  // Added function symbols not referenced by any debug info
@@ -12698,7 +13077,8 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       e != added_unrefed_fn_syms_.end();
 	       ++e)
 	    if (fn_suppr->suppresses_function_symbol(e->second,
-						     function_suppression::ADDED_FUNCTION_CHANGE_KIND))
+						     function_suppression::ADDED_FUNCTION_CHANGE_KIND,
+						     ctxt_))
 	      suppressed_added_unrefed_fn_syms_[e->first] = e->second;
 
 	  // Removed function symbols not referenced by any debug info
@@ -12707,7 +13087,8 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       e != deleted_unrefed_fn_syms_.end();
 	       ++e)
 	    if (fn_suppr->suppresses_function_symbol(e->second,
-						     function_suppression::DELETED_FUNCTION_CHANGE_KIND))
+						     function_suppression::DELETED_FUNCTION_CHANGE_KIND,
+						     ctxt_))
 	      suppressed_deleted_unrefed_fn_syms_[e->first] = e->second;
 	}
       // Added/Deleted variables
@@ -12719,7 +13100,8 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       e != added_vars_.end();
 	       ++e)
 	    if (variable_is_suppressed(e->second, var_suppr,
-				       variable_suppression::ADDED_VARIABLE_CHANGE_KIND))
+				       variable_suppression::ADDED_VARIABLE_CHANGE_KIND,
+				       ctxt_))
 	      suppressed_added_vars_[e->first] = e->second;
 
 	  //Deleted variables
@@ -12727,7 +13109,8 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       e != deleted_vars_.end();
 	       ++e)
 	    if (variable_is_suppressed(e->second, var_suppr,
-				       variable_suppression::DELETED_VARIABLE_CHANGE_KIND))
+				       variable_suppression::DELETED_VARIABLE_CHANGE_KIND,
+				       ctxt_))
 	      suppressed_deleted_vars_[e->first] = e->second;
 
 	  // Added variable symbols not referenced by any debug info
@@ -12736,7 +13119,8 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       e != added_unrefed_var_syms_.end();
 	       ++e)
 	    if (var_suppr->suppresses_variable_symbol(e->second,
-						      variable_suppression::ADDED_VARIABLE_CHANGE_KIND))
+						      variable_suppression::ADDED_VARIABLE_CHANGE_KIND,
+						      ctxt_))
 	      suppressed_added_unrefed_var_syms_[e->first] = e->second;
 
 	  // Removed variable symbols not referenced by any debug info
@@ -12745,7 +13129,8 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       e != deleted_unrefed_var_syms_.end();
 	       ++e)
 	    if (var_suppr->suppresses_variable_symbol(e->second,
-						      variable_suppression::DELETED_VARIABLE_CHANGE_KIND))
+						      variable_suppression::DELETED_VARIABLE_CHANGE_KIND,
+						      ctxt_))
 	      suppressed_deleted_unrefed_var_syms_[e->first] = e->second;
 	}
     }

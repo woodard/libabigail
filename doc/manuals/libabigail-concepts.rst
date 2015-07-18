@@ -162,6 +162,26 @@ $$$$$$$$$$$$$$$$$$$
 This directive suppresses report messages about a type change.  The
 potential properties of this sections are:
 
+* ``file_name_regexp``
+
+  Usage:
+
+  ``file_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Suppresses change reports about ABI artifacts that are defined in a
+  binary file which name matches the regular expression specified as
+  value of this property.
+
+* ``soname_regexp``
+
+  Usage:
+
+  ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Suppresses change reports about ABI artifact that are defined in a
+  shared library which SONAME matches the regular expression specified
+  as value of this property.
+
 * ``name_regexp``
 
  Usage:

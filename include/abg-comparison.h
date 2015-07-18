@@ -408,10 +408,11 @@ class suppression_base
   class priv;
   typedef shared_ptr<priv> priv_sptr;
 
-  priv_sptr priv_;
-
   // Forbid default constructor
   suppression_base();
+
+protected:
+  priv_sptr priv_;
 
 public:
   suppression_base(const string& label);
@@ -421,6 +422,18 @@ public:
 
   void
   set_label(const string&);
+
+  void
+  set_file_name_regex_str(const string& regexp);
+
+  const string&
+  get_file_name_regex_str() const;
+
+  void
+  set_soname_regex_str(const string& regexp);
+
+  const string&
+  get_soname_regex_str() const;
 
   virtual bool
   suppresses_diff(const diff*) const = 0;
@@ -812,16 +825,24 @@ public:
   suppresses_diff(const diff* diff) const;
 
   bool
-  suppresses_function(const function_decl* fn, change_kind k) const;
+  suppresses_function(const function_decl* fn,
+		      change_kind k,
+		      const diff_context_sptr ctxt) const;
 
   bool
-  suppresses_function(const function_decl_sptr fn, change_kind k) const;
+  suppresses_function(const function_decl_sptr fn,
+		      change_kind k,
+		      const diff_context_sptr ctxt) const;
 
   bool
-  suppresses_function_symbol(const elf_symbol* sym, change_kind k);
+  suppresses_function_symbol(const elf_symbol* sym,
+			     change_kind k,
+			     const diff_context_sptr ctxt);
 
   bool
-  suppresses_function_symbol(const elf_symbol_sptr sym, change_kind k);
+  suppresses_function_symbol(const elf_symbol_sptr sym,
+			     change_kind k,
+			     const diff_context_sptr ctxt);
 }; // end class function_suppression.
 
 function_suppression_sptr
@@ -993,16 +1014,24 @@ public:
   suppresses_diff(const diff* d) const;
 
   bool
-  suppresses_variable(const var_decl* fn, change_kind k) const;
+  suppresses_variable(const var_decl* fn,
+		      change_kind k,
+		      const diff_context_sptr cxt) const;
 
   bool
-  suppresses_variable(const var_decl_sptr fn, change_kind k) const;
+  suppresses_variable(const var_decl_sptr fn,
+		      change_kind k,
+		      const diff_context_sptr cxt) const;
 
   bool
-  suppresses_variable_symbol(const elf_symbol* sym, change_kind k) const;
+  suppresses_variable_symbol(const elf_symbol* sym,
+			     change_kind k,
+			     const diff_context_sptr cxt) const;
 
   bool
-  suppresses_variable_symbol(const elf_symbol_sptr fn, change_kind k) const;
+  suppresses_variable_symbol(const elf_symbol_sptr fn,
+			     change_kind k,
+			     const diff_context_sptr cxt) const;
 }; // end class variable_suppression
 
 variable_suppression_sptr

@@ -871,6 +871,46 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test23-alias-filter-report-5.txt",
     "output/test-diff-suppr/test23-alias-filter-report-5.txt"
   },
+{
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-0.txt",
+    "--no-redundant",
+    "data/test-diff-suppr/test24-soname-report-0.txt",
+    "output/test-diff-suppr/test24-soname-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-1.txt",
+    "--no-redundant",
+    "data/test-diff-suppr/test24-soname-report-1.txt",
+    "output/test-diff-suppr/test24-soname-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-2.txt",
+    "--no-redundant",
+    "data/test-diff-suppr/test24-soname-report-2.txt",
+    "output/test-diff-suppr/test24-soname-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-3.txt",
+    "--no-redundant",
+    "data/test-diff-suppr/test24-soname-report-3.txt",
+    "output/test-diff-suppr/test24-soname-report-3.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-4.txt",
+    "--no-redundant",
+    "data/test-diff-suppr/test24-soname-report-4.txt",
+    "output/test-diff-suppr/test24-soname-report-4.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
 };

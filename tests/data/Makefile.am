@@ -699,6 +699,20 @@ test-diff-suppr/test23-alias-filter-report-5.txt \
 test-diff-suppr/test23-alias-filter-v0.c \
 test-diff-suppr/test23-alias-filter-v1.c \
 test-diff-suppr/test23-alias-filter-version-script \
+test-diff-suppr/libtest24-soname-v0.so \
+test-diff-suppr/libtest24-soname-v1.so \
+test-diff-suppr/test24-soname-report-0.txt \
+test-diff-suppr/test24-soname-report-1.txt \
+test-diff-suppr/test24-soname-report-2.txt \
+test-diff-suppr/test24-soname-report-3.txt \
+test-diff-suppr/test24-soname-report-4.txt \
+test-diff-suppr/test24-soname-suppr-0.txt \
+test-diff-suppr/test24-soname-suppr-1.txt \
+test-diff-suppr/test24-soname-suppr-2.txt \
+test-diff-suppr/test24-soname-suppr-3.txt \
+test-diff-suppr/test24-soname-suppr-4.txt \
+test-diff-suppr/test24-soname-v0.cc \
+test-diff-suppr/test24-soname-v1.cc \
 \
 test-lookup-syms/test0.cc		\
 test-lookup-syms/test0.o		\

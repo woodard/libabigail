@@ -1,0 +1,5 @@
+[suppress_type]
+  soname_regexp = ^libtest24-soname$
+  name = S
+  type_kind = struct
+  reached_through = reference_or_pointer

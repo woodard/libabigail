@@ -1,0 +1,4 @@
+[suppress_type]
+  soname_regexp = ^libtest24-soname-<wrong-soname>$
+  name = S
+  reached_through = reference_or_pointer
