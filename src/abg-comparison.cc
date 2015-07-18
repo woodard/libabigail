@@ -815,7 +815,9 @@ type_suppression::suppresses_diff(const diff* diff) const
 	  if (const pointer_diff* ptr_diff = is_pointer_diff(diff))
 	    {
 	      d = is_type_diff(ptr_diff->underlying_type_diff().get());
-	      assert(d);
+	      if (!d)
+		// This might be of, e.g, distinct_diff type.
+		return false;
 	    }
 	  else
 	    return false;
@@ -825,7 +827,9 @@ type_suppression::suppresses_diff(const diff* diff) const
 	  if (const reference_diff* ref_diff = is_reference_diff(diff))
 	    {
 	      d = is_type_diff(ref_diff->underlying_type_diff().get());
-	      assert(d);
+	      if (!d)
+		// This might be of, e.g, distinct_diff type.
+		return false;
 	    }
 	  else
 	    return false;
