@@ -1037,6 +1037,12 @@ read_translation_unit_from_input(read_context&	ctxt)
   if (path_str)
     tu->set_path(reinterpret_cast<char*>(path_str.get()));
 
+  xml::xml_char_sptr language_str = XML_NODE_GET_ATTRIBUTE(node, "language");
+  if (language_str)
+    tu->set_language(string_to_translation_unit_language
+		     (reinterpret_cast<char*>(language_str.get())));
+
+
   // We are at global scope, as we've just seen the top-most
   // "abi-instr" element.
   ctxt.push_decl(tu->get_global_scope());

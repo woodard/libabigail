@@ -252,6 +252,7 @@ struct translation_unit::priv
   usage_watchdog_sptr		usage_watchdog_;
   bool				is_constructed_;
   char				address_size_;
+  language			language_;
   std::string			path_;
   location_manager		loc_mgr_;
   mutable global_scope_sptr	global_scope_;
@@ -259,7 +260,8 @@ struct translation_unit::priv
 
   priv()
     : is_constructed_(),
-      address_size_()
+      address_size_(),
+      language_(LANG_UNKNOWN)
   {
     // Note that translation units own types.
     //
@@ -315,6 +317,20 @@ translation_unit::get_global_scope() const
       (new global_scope(const_cast<translation_unit*>(this)));
   return priv_->global_scope_;
 }
+
+/// Getter of the language of the source code of the translation unit.
+///
+/// @return the language of the source code.
+translation_unit::language
+translation_unit::get_language() const
+{return priv_->language_;}
+
+/// Setter of the language of the source code of the translation unit.
+///
+/// @param l the new language.
+void
+translation_unit::set_language(language l)
+{priv_->language_ = l;}
 
 /// @return the path of the compilation unit associated to the current
 /// instance of translation_unit.
@@ -440,6 +456,165 @@ translation_unit::traverse(ir_node_visitor& v)
 
 translation_unit::~translation_unit()
 {}
+
+/// Converts a translation_unit::language enumerator into a string.
+///
+/// @param l the language enumerator to translate.
+///
+/// @return the resulting string.
+string
+translation_unit_language_to_string(translation_unit::language l)
+{
+  switch (l)
+    {
+    case translation_unit::LANG_UNKNOWN:
+      return "LANG_UNKNOWN";
+    case translation_unit::LANG_Cobol74:
+      return "LANG_Cobol74";
+    case translation_unit::LANG_Cobol85:
+      return "LANG_Cobol85";
+    case translation_unit::LANG_C89:
+      return "LANG_C89";
+    case translation_unit::LANG_C99:
+      return "LANG_C99";
+    case translation_unit::LANG_C11:
+      return "LANG_C11";
+    case translation_unit::LANG_C:
+      return "LANG_C";
+    case translation_unit::LANG_C_plus_plus_11:
+      return "LANG_C_plus_plus_11";
+    case translation_unit::LANG_C_plus_plus_14:
+      return "LANG_C_plus_plus_14";
+    case translation_unit::LANG_C_plus_plus:
+      return "LANG_C_plus_plus";
+    case translation_unit::LANG_ObjC:
+      return "LANG_ObjC";
+    case translation_unit::LANG_ObjC_plus_plus:
+      return "LANG_ObjC_plus_plus";
+    case translation_unit::LANG_Fortran77:
+      return "LANG_Fortran77";
+    case translation_unit::LANG_Fortran90:
+      return "LANG_Fortran90";
+    case translation_unit::LANG_Fortran95:
+      return "LANG_Fortran95";
+    case translation_unit::LANG_Ada83:
+      return "LANG_Ada83";
+    case translation_unit::LANG_Ada95:
+      return "LANG_Ada95";
+    case translation_unit::LANG_Pascal83:
+      return "LANG_Pascal83";
+    case translation_unit::LANG_Modula2:
+      return "LANG_Modula2";
+    case translation_unit::LANG_Java:
+      return "LANG_Java";
+    case translation_unit::LANG_PL1:
+      return "LANG_PL1";
+    case translation_unit::LANG_UPC:
+      return "LANG_UPC";
+    case translation_unit::LANG_D:
+      return "LANG_D";
+    case translation_unit::LANG_Python:
+      return "LANG_Python";
+    case translation_unit::LANG_Go:
+      return "LANG_Go";
+    case translation_unit::LANG_Mips_Assembler:
+      return "LANG_Mips_Assembler";
+    default:
+      return "LANG_UNKNOWN";
+    }
+
+  return "LANG_UNKNOWN";
+}
+
+/// Parse a string representing a language into a
+/// translation_unit::language enumerator into a string.
+///
+/// @param l the string representing the language.
+///
+/// @return the resulting translation_unit::language enumerator.
+translation_unit::language
+string_to_translation_unit_language(const string& l)
+{
+  if (l == "LANG_Cobol74")
+    return translation_unit::LANG_Cobol74;
+  else if ("LANG_Cobol85")
+    return translation_unit::LANG_Cobol85;
+  else if ("LANG_C89")
+    return translation_unit::LANG_C89;
+  else if ("LANG_C99")
+    return translation_unit::LANG_C99;
+  else if ("LANG_C11")
+    return translation_unit::LANG_C11;
+  else if ("LANG_C")
+    return translation_unit::LANG_C;
+  else if ("LANG_C_plus_plus_11")
+    return translation_unit::LANG_C_plus_plus_11;
+  else if ("LANG_C_plus_plus_14")
+    return translation_unit::LANG_C_plus_plus_14;
+  else if ("LANG_C_plus_plus")
+    return translation_unit::LANG_C_plus_plus;
+  else if ("LANG_ObjC")
+    return translation_unit::LANG_ObjC;
+  else if ("LANG_ObjC_plus_plus")
+    return translation_unit::LANG_ObjC_plus_plus;
+  else if ("LANG_Fortran77")
+    return translation_unit::LANG_Fortran77;
+  else if ("LANG_Fortran90")
+    return translation_unit::LANG_Fortran90;
+    else if ("LANG_Fortran95")
+    return translation_unit::LANG_Fortran95;
+  else if ("LANG_Ada83")
+    return translation_unit::LANG_Ada83;
+  else if ("LANG_Ada95")
+    return translation_unit::LANG_Ada95;
+  else if ("LANG_Pascal83")
+    return translation_unit::LANG_Pascal83;
+  else if ("LANG_Modula2")
+    return translation_unit::LANG_Modula2;
+  else if ("LANG_Java")
+    return translation_unit::LANG_Java;
+  else if ("LANG_PL1")
+    return translation_unit::LANG_PL1;
+  else if ("LANG_UPC")
+    return translation_unit::LANG_UPC;
+  else if ("LANG_D")
+    return translation_unit::LANG_D;
+  else if ("LANG_Python")
+    return translation_unit::LANG_Python;
+  else if ("LANG_Go")
+    return translation_unit::LANG_Go;
+  else if ("LANG_Mips_Assembler")
+    return translation_unit::LANG_Mips_Assembler;
+
+  return translation_unit::LANG_UNKNOWN;
+}
+
+/// Test if a language enumerator designates the C language.
+///
+/// @param l the language enumerator to consider.
+///
+/// @return true iff @p l designates the C language.
+bool
+is_c_language(translation_unit::language l)
+{
+  return (l == translation_unit::LANG_C89
+	  || l == translation_unit::LANG_C99
+	  || l == translation_unit::LANG_C11
+	  || l == translation_unit::LANG_C);
+}
+
+/// Test if a language enumerator designates the C++ language.
+///
+/// @param l the language enumerator to consider.
+///
+/// @return true iff @p l designates the C++ language.
+bool
+is_cplus_plus_language(translation_unit::language l)
+{
+  return (l == translation_unit::LANG_C_plus_plus_11
+	  || l == translation_unit::LANG_C_plus_plus_14
+	  || l == translation_unit::LANG_C_plus_plus);
+}
 
 /// A deep comparison operator for pointers to translation units.
 ///

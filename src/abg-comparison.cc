@@ -14297,23 +14297,36 @@ corpus_diff::report(ostream& out, const string& indent) const
 	      out << indent << "  [C]'"
 		  << fn->get_pretty_representation()
 		  << "' has some indirect sub-type changes:\n";
-	      if (fn->get_symbol()->has_aliases()
-		  && !(is_member_function(fn)
-		       && get_member_function_is_ctor(fn))
-		  && !(is_member_function(fn)
-		       && get_member_function_is_dtor(fn)))
+	      if ((fn->get_symbol()->has_aliases()
+		   && !(is_member_function(fn)
+			&& get_member_function_is_ctor(fn))
+		   && !(is_member_function(fn)
+			&& get_member_function_is_dtor(fn)))
+		  || (is_c_language(get_translation_unit(fn)->get_language())
+		      && fn->get_name() != fn->get_linkage_name()))
 		{
 		  int number_of_aliases =
 		    fn->get_symbol()->get_number_of_aliases();
-		  out << indent << "    "
-		      << "Please note that the symbol of this function is "
-		      << fn->get_symbol()->get_id_string()
-		      << "\n     and it aliases symbol";
-		  if (number_of_aliases > 1)
-		    out << "s";
-		  out << ": "
-		      << fn->get_symbol()->get_aliases_id_string(false)
-		      << "\n";
+		  if (number_of_aliases == 0)
+		    {
+		      out << indent << "    "
+			  << "Please note that the exported symbol of "
+			     "this function is "
+			  << fn->get_symbol()->get_id_string()
+			  << "\n";
+		    }
+		  else
+		    {
+		      out << indent << "    "
+			  << "Please note that the symbol of this function is "
+			  << fn->get_symbol()->get_id_string()
+			  << "\n     and it aliases symbol";
+		      if (number_of_aliases > 1)
+			out << "s";
+		      out << ": "
+			  << fn->get_symbol()->get_aliases_id_string(false)
+			  << "\n";
+		    }
 		}
 	      diff->report(out, indent + "    ");
 	      out << "\n";

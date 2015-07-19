@@ -222,11 +222,48 @@ public:
   /// Convenience typedef for a shared pointer on a @ref global_scope.
   typedef shared_ptr<global_scope> global_scope_sptr;
 
+  /// The language of the translation unit.
+  enum language
+  {
+    LANG_UNKNOWN = 0,
+    LANG_Cobol74,
+    LANG_Cobol85,
+    LANG_C89,
+    LANG_C99,
+    LANG_C11,
+    LANG_C,
+    LANG_C_plus_plus_11,
+    LANG_C_plus_plus_14,
+    LANG_C_plus_plus,
+    LANG_ObjC,
+    LANG_ObjC_plus_plus,
+    LANG_Fortran77,
+    LANG_Fortran90,
+    LANG_Fortran95,
+    LANG_Ada83,
+    LANG_Ada95,
+    LANG_Pascal83,
+    LANG_Modula2,
+    LANG_Java,
+    LANG_PL1,
+    LANG_UPC,
+    LANG_D,
+    LANG_Python,
+    LANG_Go,
+    LANG_Mips_Assembler
+  };
+
 public:
   translation_unit(const std::string& path,
 		   char address_size = 0);
 
   virtual ~translation_unit();
+
+  language
+  get_language() const;
+
+  void
+  set_language(language l);
 
   const std::string&
   get_path() const;
@@ -271,6 +308,18 @@ public:
   lookup_function_type_in_translation_unit(const function_type& t,
 					   const translation_unit& tu);
 };//end class translation_unit
+
+string
+translation_unit_language_to_string(translation_unit::language);
+
+translation_unit::language
+string_to_translation_unit_language(const string&);
+
+bool
+is_c_language(translation_unit::language l);
+
+bool
+is_cplus_plus_language(translation_unit::language l);
 
 bool
 operator==(translation_unit_sptr, translation_unit_sptr);

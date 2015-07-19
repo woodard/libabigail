@@ -872,6 +872,11 @@ write_translation_unit(const translation_unit&	tu,
   if (!tu.get_path().empty())
     o << " path='" << tu.get_path() << "'";
 
+  if (tu.get_language() != translation_unit::LANG_UNKNOWN)
+    o << " language='"
+      << translation_unit_language_to_string(tu.get_language())
+      <<"'";
+
   if (tu.is_empty())
     {
       o << "/>";

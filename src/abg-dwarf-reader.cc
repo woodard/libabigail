@@ -5797,6 +5797,97 @@ get_scope_for_die(read_context& ctxt,
   return s;
 }
 
+/// Convert a DWARF constant representing the value of the
+/// DW_AT_language property into the translation_unit::language
+/// enumerator.
+///
+/// @param l the DWARF constant to convert.
+///
+/// @return the resulting translation_unit::language enumerator.
+static translation_unit::language
+dwarf_language_to_tu_language(size_t l)
+{
+  switch (l)
+    {
+    case DW_LANG_C89:
+      return translation_unit::LANG_C89;
+    case DW_LANG_C:
+      return translation_unit::LANG_C;
+    case DW_LANG_Ada83:
+      return translation_unit::LANG_Ada83;
+    case DW_LANG_C_plus_plus:
+      return translation_unit::LANG_C_plus_plus;
+    case DW_LANG_Cobol74:
+      return translation_unit::LANG_Cobol74;
+    case DW_LANG_Cobol85:
+      return translation_unit::LANG_Cobol85;
+    case DW_LANG_Fortran77:
+      return translation_unit::LANG_Fortran77;
+    case DW_LANG_Fortran90:
+      return translation_unit::LANG_Fortran90;
+    case DW_LANG_Pascal83:
+      return translation_unit::LANG_Pascal83;
+    case DW_LANG_Modula2:
+      return translation_unit::LANG_Modula2;
+    case DW_LANG_Java:
+      return translation_unit::LANG_Java;
+    case DW_LANG_C99:
+      return translation_unit::LANG_C99;
+    case DW_LANG_Ada95:
+      return translation_unit::LANG_Ada95;
+    case DW_LANG_Fortran95:
+      return translation_unit::LANG_Fortran95;
+    case DW_LANG_PL1:
+      return translation_unit::LANG_PL1;
+    case DW_LANG_ObjC:
+      return translation_unit::LANG_ObjC;
+    case DW_LANG_ObjC_plus_plus:
+      return translation_unit::LANG_ObjC_plus_plus;
+#ifdef DW_LANG_UPC
+    case DW_LANG_UPC:
+      return DW_LANG_UPC;
+#endif
+
+#ifdef DW_LANG_D
+    case DW_LANG_D:
+      return translation_unit::LANG_D;
+#endif
+
+#ifdef DW_LANG_Python
+    case DW_LANG_Python:
+      return translation_unit::LANG_Python;
+#endif
+
+#ifdef DW_LANG_Go
+    case DW_LANG_Go:
+      return translation_unit::LANG_Go;
+#endif
+
+#ifdef DW_LANG_C_plus_plus_11
+    case DW_LANG_C_plus_plus_11:
+      return translation_unit::LANG_C_plus_plus_11;
+#endif
+
+#ifdef DW_LANG_C11
+    case DW_LANG_C11:
+      return translation_unit::LANG_C11;
+#endif
+
+#ifdef DW_LANG_C_plus_plus_14
+    case DW_LANG_C_plus_plus_14:
+      return translation_unit::LANG_C_plus_plus_14;
+#endif
+
+#ifdef DW_LANG_Mips_Assembler
+    case DW_LANG_Mips_Assembler:
+      return translation_unit::LANG_Mips_Assembler;
+#endif
+
+    default:
+      return translation_unit::LANG_UNKNOWN;
+    }
+}
+
 /// Given a DW_TAG_compile_unit, build and return the corresponding
 /// abigail::translation_unit ir node.  Note that this function
 /// recursively reads the children dies of the current DIE and
@@ -5829,6 +5920,10 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 
   string path = die_string_attribute(die, DW_AT_name);
   result.reset(new translation_unit(path, address_size));
+
+  size_t l = 0;
+  die_unsigned_constant_attribute(die, DW_AT_language, l);
+  result->set_language(dwarf_language_to_tu_language(l));
 
   ctxt.current_corpus()->add(result);
   ctxt.cur_tu(result);
