@@ -45,6 +45,13 @@ bool ensure_dir_path_created(const string&);
 bool ensure_parent_dir_created(const string&);
 bool check_file(const string& path, ostream& out);
 
+
+size_t
+get_random_number();
+
+string
+get_random_number_as_string();
+
 /// The different types of files understood the bi* suite of tools.
 enum file_type
 {

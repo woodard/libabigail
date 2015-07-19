@@ -158,6 +158,7 @@ struct abi_diff
 struct package
 {
   string				path;
+  string				extracted_package_parent_dir_path;
   string				extracted_package_dir_path;
   abigail::tools_utils::file_type	type;
   bool					is_debug_info;
@@ -184,7 +185,13 @@ struct package
       extracted_package_dir_path = tmpdir;
     else
       extracted_package_dir_path = "/tmp";
-    extracted_package_dir_path = extracted_package_dir_path + "/" + dir;
+
+    using abigail::tools_utils::get_random_number_as_string;
+
+    extracted_package_parent_dir_path = extracted_package_dir_path
+      + "/libabigail-tmp-dir-" + get_random_number_as_string();
+
+    extracted_package_dir_path =  extracted_package_parent_dir_path + "/" + dir;
   }
 
   /// Erase the content of the temporary extraction directory that has
@@ -197,7 +204,7 @@ struct package
 	   << extracted_package_dir_path
 	   << " ...";
 
-    string cmd = "rm -rf " + extracted_package_dir_path;
+    string cmd = "rm -rf " + extracted_package_parent_dir_path;
     system(cmd.c_str());
 
     if (verbose)
@@ -260,7 +267,7 @@ extract_rpm(const string& package_path,
 
   system(cmd.c_str());
 
-  cmd = "mkdir " + extracted_package_dir_path + " && cd " +
+  cmd = "mkdir -p " + extracted_package_dir_path + " && cd " +
     extracted_package_dir_path + " && rpm2cpio " + package_path +
     " | cpio -dium --quiet";
 

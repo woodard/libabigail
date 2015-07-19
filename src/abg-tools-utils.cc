@@ -23,11 +23,13 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <cstdlib>
 #include <cstring>
 #include <libgen.h>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <abg-ir.h>
 #include "abg-tools-utils.h"
 
@@ -309,6 +311,36 @@ check_file(const string& path,
     }
 
   return true;
+}
+
+
+/// Get a pseudo random number.
+///
+/// @return a pseudo random number.
+size_t
+get_random_number()
+{
+  static __thread bool initialized = false;
+
+  if (!initialized)
+    {
+      srand(time(NULL));
+      initialized = true;
+    }
+
+  return rand();
+}
+
+/// Get a pseudo random number as string.
+///
+/// @return a pseudo random number as string.
+string
+get_random_number_as_string()
+{
+  std::ostringstream o;
+  o << get_random_number();
+
+  return o.str();
 }
 
 ostream&
