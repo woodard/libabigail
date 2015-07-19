@@ -120,10 +120,12 @@ Options
     added or removed symbols.
 
 
-  * ``--suppressions`` <*path-to-suppressions*>
+  * ``--suppressions | --suppr`` <*path-to-suppressions*>
 
     Use a :ref:`suppression specification <suppr_spec_label>` file located
-    at *path-to-suppressions*.
+    at *path-to-suppressions*.  Note that this option can appear
+    multiple times on the command line; all the suppression
+    specification files are then taken into account.
 
   * ``--drop`` <*regex*>
 
