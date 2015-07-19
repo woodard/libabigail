@@ -59,6 +59,9 @@ using abigail::comparison::diff_context;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::corpus_diff_sptr;
+using abigail::comparison::suppression_sptr;
+using abigail::comparison::suppressions_type;
+using abigail::comparison::read_suppressions;
 using abigail::dwarf_reader::get_soname_of_elf_file;
 using abigail::dwarf_reader::get_type_of_elf_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
@@ -86,6 +89,7 @@ struct options
   string	debug_package2;
   bool		compare_dso_only;
   bool		show_redundant_changes;
+  vector<string> suppression_paths;
 
   options()
     : display_usage(),
@@ -347,6 +351,13 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
      | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
      | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
      | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
+
+  suppressions_type supprs;
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    read_suppressions(*i, supprs);
+  ctxt->add_suppressions(supprs);
 }
 
 /// Compare the ABI two elf files, using their associated debug info.
@@ -741,6 +752,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_redundant_changes = true;
       else if (!strcmp(argv[i], "--verbose"))
 	verbose = true;
+      else if (!strcmp(argv[i], "--suppressions")
+	       || !strcmp(argv[i], "--suppr"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.suppression_paths.push_back(argv[j]);
+	  ++i;
+	}
       else if (!strcmp(argv[i], "--help"))
         {
           opts.display_usage = true;

@@ -59,6 +59,13 @@ Options
     change is a change that has been displayed elsewhere in a given
     report.
 
+  * ``--suppressions | --suppr`` <*path-to-suppressions*>
+
+    Use a :ref:`suppression specification <suppr_spec_label>` file
+    located at *path-to-suppressions*.  Note that this option can
+    appear multiple times on the command line; all the suppression
+    specification files are then taken into account.
+
   * ``--verbose``
 
     Emit verbose progress messages.
