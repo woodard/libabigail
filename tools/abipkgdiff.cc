@@ -22,11 +22,16 @@
 
 /// @file
 
-/// This program gives abi changes for avilable binaries inside two
-/// packages. It takes input as two packages (e.g. .rpms, .tar, .deb) and
-/// optional corresponding debug-info packages. The program extracts pacakges
-/// and looks for avilable ELF binaries in each pacakge and gives results for
-/// possible abi changes occured between two pacakges.
+/// This program compares the ABIs of binaries inside two packages.
+/// For now, the supported package format is RPM, but support for
+/// other format would be greatly appreciated.
+///
+/// The program takes the two packages to compares as well as their
+/// associated debug info packages.
+///
+/// The program extracts the content of the two packages into a
+/// temporary directory , looks for the ELF binaries in there,
+/// compares their ABIs and emit a report about the changes.
 
 #include <iostream>
 #include <string>
