@@ -506,10 +506,10 @@ perform_compat_check_in_weak_mode(options& opts,
 
     if (!fn_changes.empty())
       {
-	cout << "functions defined in library\n    "
+	cout << "functions defined in library "
 	     << "'" << lib1_path << "'\n"
-	     << "have sub-types that are different from what application\n    "
-	     << "'" << app_path << "'\n"
+	     << "have sub-types that are different from what application "
+	     << "'" << app_path << "' "
 	     << "expects:\n\n";
 	for (vector<fn_change>::const_iterator i = fn_changes.begin();
 	     i != fn_changes.end();
@@ -543,10 +543,10 @@ perform_compat_check_in_weak_mode(options& opts,
       }
     if (!var_changes.empty())
       {
-	cout << "variables defined in library\n    "
+	cout << "variables defined in library "
 	     << "'" << lib1_path << "'\n"
-	     << "have sub-types that are different from what application\n    "
-	     << "'" << app_path << "'\n"
+	     << "have sub-types that are different from what application "
+	     << "'" << app_path << "' "
 	     << "expects:\n\n";
 	for (vector<var_change>::const_iterator i = var_changes.begin();
 	     i != var_changes.end();

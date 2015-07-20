@@ -1,8 +1,5 @@
-variables defined in library
-    'libtest6-var-changed-libapp-v1.so'
-have sub-types that are different from what application
-    'test6-var-changed-app'
-expects:
+variables defined in library 'libtest6-var-changed-libapp-v1.so'
+have sub-types that are different from what application 'test6-var-changed-app' expects:
 
   S0* bar:
     in pointed to type 'struct S0':
