@@ -797,6 +797,7 @@ test-abicompat/test7-fn-changed-libapp-v0.h \
 test-abicompat/test7-fn-changed-libapp-v1.c \
 test-abicompat/test7-fn-changed-libapp-v1.h \
 test-abicompat/test7-fn-changed-report-0.txt \
+test-abicompat/test7-fn-changed-report-1.txt \
 \
 test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm \

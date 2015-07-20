@@ -307,6 +307,14 @@ public:
   friend function_type_sptr
   lookup_function_type_in_translation_unit(const function_type& t,
 					   const translation_unit& tu);
+
+  friend function_type_sptr
+  synthesize_function_type_from_translation_unit(const function_type& fn_type,
+						 translation_unit& tu);
+
+  friend type_base_sptr
+  synthesize_type_from_translation_unit(const type_base_sptr& type,
+					translation_unit& tu);
 };//end class translation_unit
 
 string

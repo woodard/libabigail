@@ -553,9 +553,13 @@ shared_ptr<function_type>
 lookup_function_type_in_translation_unit(const function_type&,
 					 const translation_unit&);
 
+shared_ptr<type_base>
+synthesize_type_from_translation_unit(const shared_ptr<type_base>& type,
+				      translation_unit& tu);
+
 shared_ptr<function_type>
 synthesize_function_type_from_translation_unit(const function_type&,
-					       const translation_unit&);
+					       translation_unit&);
 
 shared_ptr<function_type>
 lookup_function_type_in_translation_unit(const shared_ptr<function_type>&,

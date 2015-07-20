@@ -249,14 +249,15 @@ typedef unordered_map<function_type_sptr,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
-  usage_watchdog_sptr		usage_watchdog_;
-  bool				is_constructed_;
-  char				address_size_;
-  language			language_;
-  std::string			path_;
-  location_manager		loc_mgr_;
-  mutable global_scope_sptr	global_scope_;
-  mutable function_types_type	function_types_;
+  usage_watchdog_sptr			usage_watchdog_;
+  bool					is_constructed_;
+  char					address_size_;
+  language				language_;
+  std::string				path_;
+  location_manager			loc_mgr_;
+  mutable global_scope_sptr		global_scope_;
+  mutable function_types_type		function_types_;
+  mutable vector<type_base_sptr>	synthesized_types_;
 
   priv()
     : is_constructed_(),
@@ -4423,6 +4424,42 @@ lookup_function_type_in_translation_unit(const function_type_sptr& t,
 					 const translation_unit& tu)
 {return lookup_function_type_in_translation_unit(*t, tu);}
 
+/// In a translation unit, lookup a given type or synthesize it if
+/// it's a qualified type.
+///
+/// So this function first looks the type up in the translation unit.
+/// If it's found, then OK, it's returned.  Otherwise, if it's a
+/// qualified type, lookup the unqualified underlying type and
+/// synthesize the qualified type from it.
+///
+/// If the unqualified underlying type is not found either, then give
+/// up and return nil.
+///
+/// If the type is not
+type_base_sptr
+synthesize_type_from_translation_unit(const type_base_sptr& type,
+				      translation_unit& tu)
+{
+  type_base_sptr result;
+
+  // TODO: Maybe handle the case of a function type here?
+  result = lookup_type_in_translation_unit(type, tu);
+
+  if (!result)
+    if (qualified_type_def_sptr qual = is_qualified_type(type))
+      {
+	type_base_sptr underlying_type =
+	  synthesize_type_from_translation_unit(qual->get_underlying_type(), tu);
+	if (underlying_type)
+	  result.reset(new qualified_type_def(underlying_type,
+					      qual->get_cv_quals(),
+					      qual->get_location()));
+	tu.priv_->synthesized_types_.push_back(result);
+      }
+
+  return result;
+}
+
 /// In a translation unit, lookup the sub-types that make up a given
 /// function type and if the sub-types are all found, synthesize and
 /// return a function_type with them.
@@ -4444,16 +4481,17 @@ lookup_function_type_in_translation_unit(const function_type_sptr& t,
 /// sub-types have been found, NULL otherwise.
 function_type_sptr
 synthesize_function_type_from_translation_unit(const function_type& fn_type,
-					       const translation_unit& tu)
+					       translation_unit& tu)
 {
   function_type_sptr nil = function_type_sptr();
 
   type_base_sptr return_type = fn_type.get_return_type();
   type_base_sptr result_return_type;
-  if (!return_type)
+  if (!return_type
+      || return_type.get() == type_decl::get_void_type_decl().get())
     result_return_type = type_base_sptr(type_decl::get_void_type_decl());
   else
-    result_return_type = lookup_type_in_translation_unit(return_type, tu);
+    result_return_type = synthesize_type_from_translation_unit(return_type, tu);
   if (!result_return_type)
     return nil;
 
@@ -4466,7 +4504,7 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
        ++i)
     {
       type_base_sptr t = (*i)->get_type();
-      parm_type = lookup_type_in_translation_unit(t, tu);
+      parm_type = synthesize_type_from_translation_unit(t, tu);
       if (!parm_type)
 	return nil;
       parm.reset(new function_decl::parameter(parm_type,
@@ -4481,6 +4519,8 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
 		       parms,
 		       fn_type.get_size_in_bits(),
 		       fn_type.get_alignment_in_bits()));
+
+  tu.priv_->synthesized_types_.push_back(result_fn_type);
 
   return result_fn_type;
 }
