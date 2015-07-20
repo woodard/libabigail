@@ -24,6 +24,7 @@
 #include <string>
 #include <ostream>
 #include <istream>
+#include <iostream>
 
 namespace abigail
 {
@@ -35,6 +36,7 @@ using std::ostream;
 using std::istream;
 using std::ifstream;
 using std::string;
+using std::tr1::shared_ptr;
 
 bool file_exists(const string&);
 bool is_regular_file(const string&);
@@ -45,6 +47,45 @@ bool ensure_dir_path_created(const string&);
 bool ensure_parent_dir_created(const string&);
 bool check_file(const string& path, ostream& out);
 
+class temp_file;
+
+/// Convenience typedef for a shared_ptr to @ref temp_file.
+typedef shared_ptr<temp_file> temp_file_sptr;
+
+/// A temporary file.
+///
+/// This is a helper file around the  mkstemp API.
+///
+/// Once the temporary file is created, users can interact with it
+/// using an iostream.  They can also get the path to the newly
+/// created temporary file.
+///
+/// When the instance of @ref temp_file is destroyed, the underlying
+/// resources are de-allocated, the underlying temporary file is
+/// closed and removed.
+class temp_file
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  temp_file();
+
+public:
+
+  bool
+  is_good() const;
+
+  const char*
+  get_path() const;
+
+  std::iostream&
+  get_stream();
+
+  static temp_file_sptr
+  create();
+}; // end class temp_file
 
 size_t
 get_random_number();

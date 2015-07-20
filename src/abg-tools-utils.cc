@@ -27,6 +27,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <libgen.h>
+#include <ext/stdio_filebuf.h> // For __gnu_cxx::stdio_filebuf
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -313,6 +314,101 @@ check_file(const string& path,
   return true;
 }
 
+/// The private data of the @ref temp_file type.
+struct temp_file::priv
+{
+  char*					path_template_;
+  int						fd_;
+  shared_ptr<__gnu_cxx::stdio_filebuf<char> >	filebuf_;
+  shared_ptr<std::iostream>			iostream_;
+
+  priv()
+  {
+    const char* templat = "/tmp/libabigail-tmp-file-XXXXXX";
+    int s = strlen(templat);
+    path_template_ = new char[s + 1];
+    memset(path_template_, 0, s + 1);
+    memcpy(path_template_, templat, s);
+
+    fd_ = mkstemp(path_template_);
+    if (fd_ == -1)
+      return;
+
+    using __gnu_cxx::stdio_filebuf;
+    filebuf_.reset(new stdio_filebuf<char>(fd_,
+					   std::ios::in | std::ios::out));
+    iostream_.reset(new std::iostream(filebuf_.get()));
+  }
+
+  ~priv()
+  {
+    if (fd_ && fd_ != -1)
+      {
+	iostream_.reset();
+	filebuf_.reset();
+	close(fd_);
+	remove(path_template_);
+      }
+    delete [] path_template_;
+  }
+};
+
+/// Default constructor of @ref temp_file.
+///
+/// It actually creates the temporary file.
+temp_file::temp_file()
+  : priv_(new priv)
+{}
+
+/// Test if the temporary file has been created and is usable.
+///
+/// @return true iff the temporary file has been created and is
+/// useable.
+bool
+temp_file::is_good() const
+{return (priv_->fd_ && priv_->fd_ != -1);}
+
+/// Return the path to the temporary file.
+///
+/// @return the path to the temporary file if it's usable, otherwise
+/// return nil.
+const char*
+temp_file::get_path() const
+{
+  if (is_good())
+    return priv_->path_template_;
+
+  return 0;
+}
+
+/// Get the iostream to the temporary file.
+///
+/// Note that the current process is aborted if this member function
+/// is invoked on an instance of @ref temp_file that is not usable.
+/// So please test that the instance is usable by invoking the
+/// temp_file::is_good() member function on it first.
+///
+/// @return the iostream to the temporary file.
+std::iostream&
+temp_file::get_stream()
+{
+  assert(is_good());
+  return *priv_->iostream_;
+}
+
+/// Create the temporary file and return it if it's usable.
+///
+/// @return the newly created temporary file if it's usable, nil
+/// otherwise.
+temp_file_sptr
+temp_file::create()
+{
+  temp_file_sptr result(new temp_file);
+  if (result->is_good())
+    return result;
+
+  return temp_file_sptr();
+}
 
 /// Get a pseudo random number.
 ///

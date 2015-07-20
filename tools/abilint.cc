@@ -254,24 +254,24 @@ main(int argc, char* argv[])
 	  return true;
 	}
 
-      char tmpn[L_tmpnam];
-      tmpnam(tmpn);
+      using abigail::tools_utils::temp_file;
+      using abigail::tools_utils::temp_file_sptr;
 
-      string ofile_name = tmpn;
-
-      ofstream of(ofile_name.c_str(), std::ios_base::trunc);
-      if (!of.is_open())
+      temp_file_sptr tmp_file = temp_file::create();
+      if (!tmp_file)
 	{
-	  cerr << "open temporary output file " << ofile_name << "\n";
+	  cerr << "failed to create temporary file\n";
 	  return true;
 	}
 
+      std::iostream& of = tmp_file->get_stream();
       bool r = true;
 
       if (tu)
 	{
 	  if (opts.diff)
-	    r = write_translation_unit(*tu, /*indent=*/0, of);
+	    r = write_translation_unit(*tu, /*indent=*/0,
+				       tmp_file->get_stream());
 	  if (!opts.noout && !opts.diff)
 	    r &= write_translation_unit(*tu, /*indent=*/0, cout);
 	}
@@ -290,9 +290,8 @@ main(int argc, char* argv[])
 	    {
 #ifdef WITH_ZIP_ARCHIVE
 	      if (!opts.noout)
-		r = write_corpus_to_archive(*corp, ofile_name);
+		r = write_corpus_to_archive(*corp, tmp_file->get_path());
 #endif //WITH_ZIP_ARCHIVE
-	      of.close();
 	    }
 	  else if (type == abigail::tools_utils::FILE_TYPE_ELF)
 	    {
@@ -302,7 +301,6 @@ main(int argc, char* argv[])
 	}
 
       bool is_ok = r;
-      of.close();
 
       if (!is_ok)
 	{
@@ -320,11 +318,11 @@ main(int argc, char* argv[])
 	      || type == abigail::tools_utils::FILE_TYPE_NATIVE_BI
 	      || type == abigail::tools_utils::FILE_TYPE_ZIP_CORPUS))
 	{
-	  string cmd = "diff -u " + opts.file_path + " " + ofile_name;
+	  string cmd = "diff -u " + opts.file_path + " " + tmp_file->get_path();
 	  if (system(cmd.c_str()))
 	    is_ok = false;
 	}
-      remove(ofile_name.c_str());
+
       return !is_ok;
     }
 
