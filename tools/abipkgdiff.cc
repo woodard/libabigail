@@ -237,6 +237,7 @@ display_usage(const string& prog_name, ostream& out)
       << " where options can be:\n"
       << " --debug-info-pkg1|--d1 <path>  path of debug-info package of package1\n"
       << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
+      << " --suppressions|--suppr <path>  specify supression specification path\n"
       << " --dso-only                     pompare shared libraries only\n"
       << " --redundant                    display redundant changes\n"
       << " --verbose                      emit verbose progress messages\n"
