@@ -423,12 +423,12 @@ public:
 	  keep = false;
 	if (!keep)
 	  {
-	    string sym_name, sym_version;
 	    for (vector<string>::const_iterator i =
 		   sym_id_of_fns_to_keep().begin();
 		 i != sym_id_of_fns_to_keep().end();
 		 ++i)
 	      {
+		string sym_name, sym_version;
 		assert(elf_symbol::get_name_and_version_from_id(*i,
 								sym_name,
 								sym_version));
@@ -530,12 +530,12 @@ public:
 	  keep = false;
 	if (!keep)
 	  {
-	    string sym_name, sym_version;
 	    for (vector<string>::const_iterator i =
 		   sym_id_of_vars_to_keep().begin();
 		 i != sym_id_of_vars_to_keep().end();
 		 ++i)
 	      {
+		string sym_name, sym_version;
 		assert(elf_symbol::get_name_and_version_from_id(*i,
 								sym_name,
 								sym_version));

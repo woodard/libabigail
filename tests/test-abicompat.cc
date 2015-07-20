@@ -128,6 +128,15 @@ InOutSpec in_out_specs[] =
     "data/test-abicompat/test6-var-changed-report-0.txt",
     "output/test-abicompat/test6-var-changed-report-0.txt",
   },
+  {
+    "data/test-abicompat/test7-fn-changed-app",
+    "data/test-abicompat/libtest7-fn-changed-libapp-v0.so",
+    "data/test-abicompat/libtest7-fn-changed-libapp-v1.so",
+    "",
+    "--show-base-names --no-redundant",
+    "data/test-abicompat/test7-fn-changed-report-0.txt",
+    "output/test-abicompat/test7-fn-changed-report-0.txt",
+  },
   // This entry must be the last one.
   {0, 0, 0, 0, 0, 0, 0}
 };

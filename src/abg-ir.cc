@@ -1169,6 +1169,8 @@ elf_symbol::get_name_and_version_from_id(const string&	id,
 					 string&	name,
 					 string&	ver)
 {
+  name.clear(), ver.clear();
+
   string::size_type i = id.find("@");
   if (i == string::npos)
     {
