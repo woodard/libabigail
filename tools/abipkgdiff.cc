@@ -23,10 +23,11 @@
 /// @file
 
 /// This program compares the ABIs of binaries inside two packages.
-/// For now, the supported package format is RPM, but support for
-/// other format would be greatly appreciated.
 ///
-/// The program takes the two packages to compares as well as their
+/// For now, the supported package format is RPM, but support for
+/// other formats would be greatly appreciated.
+///
+/// The program takes the two packages to compare as well as their
 /// associated debug info packages.
 ///
 /// The program extracts the content of the two packages into a
