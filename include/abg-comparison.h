@@ -2635,6 +2635,9 @@ public:
   bool
   has_net_subtype_changes() const;
 
+  bool
+  has_net_changes() const;
+
   const diff_stats&
   apply_filters_and_suppressions_before_reporting();
 

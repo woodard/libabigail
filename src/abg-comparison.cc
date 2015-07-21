@@ -13887,6 +13887,29 @@ corpus_diff::has_net_subtype_changes() const
 	  || stats.net_num_vars_changed() != 0);
 }
 
+/// Test if the current instance of @ref corpus_diff carries changes
+/// whose reports are not suppressed by any suppression specification.
+/// In effect, these are deemed incompatible ABI changes.
+///
+/// @return true iff the the current instance of @ref corpus_diff
+/// carries subtype changes that are deemed incompatible ABI changes.
+bool
+corpus_diff::has_net_changes() const
+{
+    const diff_stats& stats = const_cast<corpus_diff*>(this)->
+      apply_filters_and_suppressions_before_reporting();
+
+  return (stats.net_num_func_changed()
+	  || stats.net_num_vars_changed()
+	  || stats.net_num_func_added()
+	  || stats.net_num_added_func_syms()
+	  || stats.net_num_func_removed()
+	  || stats.net_num_removed_func_syms()
+	  || stats.net_num_vars_added()
+	  || stats.net_num_added_var_syms()
+	  || stats.net_num_removed_var_syms());
+}
+
 /// "Less than" functor to compare instances of @ref function_decl.
 struct function_comp
 {
