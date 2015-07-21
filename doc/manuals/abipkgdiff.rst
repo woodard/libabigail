@@ -76,4 +76,9 @@ Return value
 ============
 
 The exit code of the ``abipkgdiff`` command is either 0 if the ABI of
-the binaries compared are equal, or 1 if they differ.
+the binaries compared are equal, or non-zero if they differ or if the
+tool encountered an error.
+
+In the later case, the value of the exit code is the same as for the
+:ref:`abidiff tool <abidiff_return_value_label>`.
+

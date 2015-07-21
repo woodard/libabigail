@@ -60,6 +60,7 @@ using std::tr1::shared_ptr;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
+using abigail::tools_utils::abidiff_status;
 using abigail::ir::corpus_sptr;
 using abigail::comparison::diff_context;
 using abigail::comparison::diff_context_sptr;
@@ -390,9 +391,8 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 ///
 /// @param opts the options the current program has been called with.
 ///
-/// @return true iff the comparison yields differences between the two
-/// files, false otherwise.
-static bool
+/// @return the status of the comparison.
+static abidiff_status
 compare(const elf_file& elf1,
 	const string&	debug_dir1,
 	const elf_file& elf2,
@@ -426,7 +426,7 @@ compare(const elf_file& elf1,
 	cerr << "could not read file '"
 	     << elf1.path
 	     << "' properly\n";
-      return false;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   if (verbose)
@@ -446,7 +446,7 @@ compare(const elf_file& elf1,
 	cerr << "could not find the read file '"
 	     << elf2.path
 	     << "' properly\n";
-      return false;
+      return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   if (verbose)
@@ -462,8 +462,13 @@ compare(const elf_file& elf1,
   if (verbose)
     cerr << "DONE\n";
 
-  bool has_changes = diff->has_changes();
-  if (has_changes)
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+  if (diff->has_net_changes())
+    status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+  if (diff->has_incompatible_changes())
+    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+  if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+      || (verbose && diff->has_changes()))
     {
       const string prefix = "  ";
 
@@ -485,7 +490,7 @@ compare(const elf_file& elf1,
 	 << elf2.path
 	 << " is DONE\n";
 
-  return has_changes;
+  return status;
 }
 
 /// Create maps of the content of a given package.
@@ -614,16 +619,15 @@ prepare_packages(package&	first_package,
 /// @param diff out parameter.  If this function returns true, then
 /// this parameter is set to the result of the comparison.
 ///
-/// @return true iff the comparison yields differences between the two
-/// packages.
-static bool
+/// @return the status of the comparison.
+static abidiff_status
 compare(package&	first_package,
 	package&	second_package,
 	const options&	opts,
 	abi_diff&	diff)
 {
   if (!prepare_packages(first_package, second_package, opts))
-    return false;
+    return abigail::tools_utils::ABIDIFF_ERROR;
 
   // Setting debug-info path of libraries
   string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
@@ -639,7 +643,8 @@ compare(package&	first_package,
 	  relative_debug_path;
     }
 
-  bool has_abi_changes = false;
+  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
+
   for (map<string, elf_file_sptr>::iterator it =
 	 first_package.path_elf_file_sptr_map.begin();
        it != first_package.path_elf_file_sptr_map.end();
@@ -652,15 +657,20 @@ compare(package&	first_package,
 	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
 	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC))
 	{
-	  has_abi_changes |= compare(*it->second, debug_dir1,
+	  abidiff_status s = compare(*it->second, debug_dir1,
 				     *iter->second, debug_dir2,
 				     opts);
 	  second_package.path_elf_file_sptr_map.erase(iter);
-	  if (has_abi_changes)
+	  if (s & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
 	    diff.changed_binaries.push_back(it->second->name);
+	  status |= s;
 	}
       else
-	diff.removed_binaries.push_back(it->second->name);
+	{
+	  diff.removed_binaries.push_back(it->second->name);
+	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+	  status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+	}
     }
 
   for (map<string, elf_file_sptr>::iterator it =
@@ -687,7 +697,7 @@ compare(package&	first_package,
 
   erase_created_temporary_directories(first_package, second_package);
 
-  return diff.has_changes();
+  return status;
 }
 
 /// Compare the ABI of two packages.
@@ -698,9 +708,8 @@ compare(package&	first_package,
 ///
 /// @param opts the options the current program has been called with.
 ///
-/// @return true if the comparison yields ABI differences between the
-/// two packages.
-static bool
+/// @return the status of the comparison.
+static abidiff_status
 compare(package& first_package, package& second_package, const options& opts)
 {
   abi_diff diff;
