@@ -95,6 +95,7 @@ struct options
   string	debug_package1;
   string	debug_package2;
   bool		compare_dso_only;
+  bool		show_linkage_names;
   bool		show_redundant_changes;
   bool		show_added_binaries;
   vector<string> suppression_paths;
@@ -103,6 +104,7 @@ struct options
     : display_usage(),
       missing_operand(),
       compare_dso_only(),
+      show_linkage_names(true),
       show_redundant_changes(),
       show_added_binaries(true)
   {}
@@ -242,6 +244,8 @@ display_usage(const string& prog_name, ostream& out)
       << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
       << " --suppressions|--suppr <path>  specify supression specification path\n"
       << " --dso-only                     pompare shared libraries only\n"
+      << " --no-linkage-name  do not display linkage names of "
+             "added/removed/changed\n"
       << " --redundant                    display redundant changes\n"
       << " --no-added-binaries            do not display added binaries\n"
       << " --verbose                      emit verbose progress messages\n"
@@ -360,6 +364,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
   ctxt->show_redundant_changes(opts.show_redundant_changes);
+  ctxt->show_linkage_names(opts.show_linkage_names);
 
   ctxt->switch_categories_off
     (abigail::comparison::ACCESS_CHANGE_CATEGORY
@@ -774,6 +779,8 @@ parse_command_line(int argc, char* argv[], options& opts)
         }
       else if (!strcmp(argv[i], "--dso-only"))
 	opts.compare_dso_only = true;
+      else if (!strcmp(argv[i], "--no-linkage-name"))
+	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--redundant"))
 	opts.show_redundant_changes = true;
       else if (!strcmp(argv[i], "--no-added-binaries"))

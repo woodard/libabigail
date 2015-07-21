@@ -6,8 +6,8 @@
 
   2 Removed functions:
 
-    'function BaseInfo* base_info_ref(BaseInfo*)'
-    'function void base_info_unref(BaseInfo*)'
+    'function BaseInfo* base_info_ref(BaseInfo*)'    {base_info_ref}
+    'function void base_info_unref(BaseInfo*)'    {base_info_unref}
 
 
   1 Added function symbol not referenced by debug info:

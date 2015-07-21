@@ -59,6 +59,11 @@ Options
     change is a change that has been displayed elsewhere in a given
     report.
 
+  * ``--no-linkage-name``
+
+    In the resulting report, do not display the linkage names of
+    the added, removed, or changed functions or variables.
+
   * ``--no-added-binaries``
 
     Do not show the list of binaries that got added to the second
