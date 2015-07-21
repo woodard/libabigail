@@ -666,13 +666,13 @@ main(int argc, char* argv[])
 	  set_diff_context_from_opts(ctxt, opts);
 	  corpus_diff_sptr diff = compute_diff(c1, c2, ctxt);
 
-	  if (diff->has_incompatible_changes())
-	    status = (abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE
-		      | abigail::tools_utils::ABIDIFF_ABI_CHANGE);
-	  else if (diff->has_net_subtype_changes())
+	  if (diff->has_net_changes())
 	    status = abigail::tools_utils::ABIDIFF_ABI_CHANGE;
 
-	  if (diff->has_changes() > 0)
+	  if (diff->has_incompatible_changes())
+	    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+
+	  if (diff->has_changes())
 	    diff->report(cout);
 	}
       else
