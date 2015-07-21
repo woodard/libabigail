@@ -59,6 +59,17 @@ Options
     change is a change that has been displayed elsewhere in a given
     report.
 
+  * ``--no-added-binaries``
+
+    Do not show the list of binaries that got added to the second
+    package.
+
+    Please note that the presence of such added binaries is not
+    considered like an ABI change by this tool; as such, it doesn't
+    have any impact on the exit code of the tool.  It does only have
+    an informational value.  Removed binaries are, however, considered
+    as an ABI change.
+
   * ``--suppressions | --suppr`` <*path-to-suppressions*>
 
     Use a :ref:`suppression specification <suppr_spec_label>` file

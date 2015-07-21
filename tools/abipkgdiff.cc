@@ -96,13 +96,15 @@ struct options
   string	debug_package2;
   bool		compare_dso_only;
   bool		show_redundant_changes;
+  bool		show_added_binaries;
   vector<string> suppression_paths;
 
   options()
     : display_usage(),
       missing_operand(),
       compare_dso_only(),
-      show_redundant_changes()
+      show_redundant_changes(),
+      show_added_binaries(true)
   {}
 };
 
@@ -241,6 +243,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --suppressions|--suppr <path>  specify supression specification path\n"
       << " --dso-only                     pompare shared libraries only\n"
       << " --redundant                    display redundant changes\n"
+      << " --no-added-binaries            do not display added binaries\n"
       << " --verbose                      emit verbose progress messages\n"
       << " --help                         display help message\n";
 }
@@ -687,7 +690,7 @@ compare(package&	first_package,
 	cout << "  " << *it << "\n";
     }
 
-  if (diff.added_binaries.size())
+  if (opts.show_added_binaries && diff.added_binaries.size())
     {
       cout << "Added binaries:\n";
       for (vector<string>::iterator it = diff.added_binaries.begin();
@@ -773,6 +776,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.compare_dso_only = true;
       else if (!strcmp(argv[i], "--redundant"))
 	opts.show_redundant_changes = true;
+      else if (!strcmp(argv[i], "--no-added-binaries"))
+	opts.show_added_binaries = false;
       else if (!strcmp(argv[i], "--verbose"))
 	verbose = true;
       else if (!strcmp(argv[i], "--suppressions")
