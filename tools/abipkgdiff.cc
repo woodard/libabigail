@@ -94,6 +94,7 @@ struct options
   string	package2;
   string	debug_package1;
   string	debug_package2;
+  bool		keep_tmp_files;
   bool		compare_dso_only;
   bool		show_linkage_names;
   bool		show_redundant_changes;
@@ -103,6 +104,7 @@ struct options
   options()
     : display_usage(),
       missing_operand(),
+      keep_tmp_files(),
       compare_dso_only(),
       show_linkage_names(true),
       show_redundant_changes(),
@@ -243,6 +245,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --debug-info-pkg1|--d1 <path>  path of debug-info package of package1\n"
       << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
       << " --suppressions|--suppr <path>  specify supression specification path\n"
+      << " --keep-tmp-files               don't erase created temporary files\n"
       << " --dso-only                     pompare shared libraries only\n"
       << " --no-linkage-name  do not display linkage names of "
              "added/removed/changed\n"
@@ -703,7 +706,8 @@ compare(package&	first_package,
 	cout << "  " << *it << "\n";
     }
 
-  erase_created_temporary_directories(first_package, second_package);
+  if (!opts.keep_tmp_files)
+    erase_created_temporary_directories(first_package, second_package);
 
   return status;
 }
@@ -777,6 +781,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
+      else if (!strcmp(argv[i], "--keep-tmp-files"))
+	opts.keep_tmp_files = true;
       else if (!strcmp(argv[i], "--dso-only"))
 	opts.compare_dso_only = true;
       else if (!strcmp(argv[i], "--no-linkage-name"))

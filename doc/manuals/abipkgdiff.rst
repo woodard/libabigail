@@ -82,6 +82,11 @@ Options
     appear multiple times on the command line; all the suppression
     specification files are then taken into account.
 
+  * ``--keep-tmp-files``
+
+    Do not erase the temporary directory files that are created during
+    the execution of the tool.
+
   * ``--verbose``
 
     Emit verbose progress messages.
