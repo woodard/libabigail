@@ -163,15 +163,16 @@ struct abi_diff
 };
 
 /// Abstracts a package.
-struct package
+class package
 {
-  string				path;
-  string				extracted_package_parent_dir_path;
-  string				extracted_package_dir_path;
-  abigail::tools_utils::file_type	type;
-  bool					is_debug_info;
-  map<string, elf_file_sptr>		path_elf_file_sptr_map;
-  shared_ptr<package>			debug_info_package;
+  string				path_;
+  string				extracted_dir_path_;
+  abigail::tools_utils::file_type	type_;
+  bool					is_debug_info_;
+  map<string, elf_file_sptr>		path_elf_file_sptr_map_;
+  shared_ptr<package>			debug_info_package_;
+
+public:
 
   /// Constructor for the @ref package type.
   ///
@@ -184,23 +185,109 @@ struct package
   package(const string&			path,
 	  const string&			dir,
           bool					is_debug_info = false)
-    : path(path),
-      is_debug_info(is_debug_info)
+    : path_(path),
+      is_debug_info_(is_debug_info)
   {
-    type = guess_file_type(path);
-    const char *tmpdir = getenv("TMPDIR");
-    if (tmpdir != NULL)
-      extracted_package_dir_path = tmpdir;
-    else
-      extracted_package_dir_path = "/tmp";
-
-    using abigail::tools_utils::get_random_number_as_string;
-
-    extracted_package_parent_dir_path = extracted_package_dir_path
-      + "/libabigail-tmp-dir-" + get_random_number_as_string();
-
-    extracted_package_dir_path =  extracted_package_parent_dir_path + "/" + dir;
+    type_ = guess_file_type(path);
+    extracted_dir_path_ =  extracted_packages_parent_dir() + "/" + dir;
   }
+
+  /// Getter of the path of the package.
+  ///
+  /// @return the path of the package.
+  const string&
+  path() const
+  {return path_;}
+
+  /// Setter of the path of the package.
+  ///
+  /// @param s the new path.
+  void
+  path(const string& s)
+  {path_ = s;}
+
+  /// Getter for the path to the root dir where the packages are
+  /// extracted.
+  ///
+  /// @return the path to the root dir where the packages are
+  /// extracted.
+  static const string&
+  extracted_packages_parent_dir();
+
+  /// Getter for the path to the directory where the packages are
+  /// extracted for the current thread.
+  ///
+  /// @return the path to the directory where the packages are
+  /// extracted for the current thread.
+  const string&
+  extracted_dir_path() const
+  {return extracted_dir_path_;}
+
+  /// Setter for the path to the directory where the packages are
+  /// extracted for the current thread.
+  ///
+  /// @param p the new path.
+  void
+  extracted_dir_path(const string& p)
+  {extracted_dir_path_ = p;}
+
+  /// Getter for the file type of the current package.
+  ///
+  /// @return the file type of the current package.
+  abigail::tools_utils::file_type
+  type() const
+  {return type_;}
+
+  /// Setter for the file type of the current package.
+  ///
+  /// @param t the new file type.
+  void type(abigail::tools_utils::file_type t)
+  {type_ = t;}
+
+  /// Test if the current package is a debug info package.
+  ///
+  /// @return true iff the current package is a debug info package.
+  bool
+  is_debug_info() const
+  {return is_debug_info_;}
+
+  /// Set the flag that says if the current package is a debug info package.
+  ///
+  /// @param f the new flag.
+  void
+  is_debug_info(bool f)
+  {is_debug_info_ = f;}
+
+  /// Getter for the path <-> elf_file map.
+  ///
+  /// @return the the path <-> elf_file map.
+  const map<string, elf_file_sptr>&
+  path_elf_file_sptr_map() const
+  {return path_elf_file_sptr_map_;}
+
+  /// Getter for the path <-> elf_file map.
+  ///
+  /// @return the the path <-> elf_file map.
+  map<string, elf_file_sptr>&
+  path_elf_file_sptr_map()
+  {return path_elf_file_sptr_map_;}
+
+  /// Getter for the debug info package associated to the current
+  /// package.
+  ///
+  /// @return the debug info package associated to the current
+  /// package.
+  const shared_ptr<package>&
+  debug_info_package() const
+  {return debug_info_package_;}
+
+  /// Setter for the debug info package associated to the current
+  /// package.
+  ///
+  /// @param p the new debug info package.
+  void
+  debug_info_package(const shared_ptr<package> p)
+  {debug_info_package_ = p;}
 
   /// Erase the content of the temporary extraction directory that has
   /// been populated by the @ref extract_package() function;
@@ -209,10 +296,10 @@ struct package
   {
     if (verbose)
       cerr << "Erasing temporary extraction directory "
-	   << extracted_package_dir_path
+	   << extracted_dir_path()
 	   << " ...";
 
-    string cmd = "rm -rf " + extracted_package_parent_dir_path;
+    string cmd = "rm -rf " + extracted_dir_path();
     system(cmd.c_str());
 
     if (verbose)
@@ -224,10 +311,37 @@ struct package
   erase_extraction_directories() const
   {
     erase_extraction_directory();
-    if (debug_info_package)
-      debug_info_package->erase_extraction_directory();
+    if (debug_info_package())
+      debug_info_package()->erase_extraction_directory();
   }
 };
+
+/// Getter for the path to the parent directory under which packages
+/// extracted by the current thread are placed.
+///
+/// @return the path to the parent directory under which packages
+/// extracted by the current thread are placed.
+const string&
+package::extracted_packages_parent_dir()
+{
+  static __thread string p;
+
+  if (p.empty())
+    {
+      const char *tmpdir = getenv("TMPDIR");
+
+      if (tmpdir != NULL)
+	p = tmpdir;
+      else
+	p = "/tmp";
+
+      using abigail::tools_utils::get_random_number_as_string;
+
+      p = p + "/libabigail-tmp-dir-" + get_random_number_as_string();
+    }
+
+  return p;
+}
 
 /// A convenience typedef for shared_ptr of package.
 typedef shared_ptr<package> package_sptr;
@@ -247,8 +361,8 @@ display_usage(const string& prog_name, ostream& out)
       << " --suppressions|--suppr <path>  specify supression specification path\n"
       << " --keep-tmp-files               don't erase created temporary files\n"
       << " --dso-only                     pompare shared libraries only\n"
-      << " --no-linkage-name  do not display linkage names of "
-             "added/removed/changed\n"
+      << " --no-linkage-name		  do not display linkage names of "
+                                          "added/removed/changed\n"
       << " --redundant                    display redundant changes\n"
       << " --no-added-binaries            do not display added binaries\n"
       << " --verbose                      emit verbose progress messages\n"
@@ -317,12 +431,12 @@ erase_created_temporary_directories(const package& first_package,
 static bool
 extract_package(const package& package)
 {
-  switch(package.type)
+  switch(package.type())
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
-      if (!extract_rpm(package.path, package.extracted_package_dir_path))
+      if (!extract_rpm(package.path(), package.extracted_dir_path()))
         {
-          cerr << "Error while extracting package" << package.path << "\n";
+          cerr << "Error while extracting package" << package.path() << "\n";
           return false;
         }
       return true;
@@ -523,17 +637,17 @@ create_maps_of_package_content(package& package,
   elf_file_paths.clear();
   if (verbose)
     cerr << "Analyzing the content of package "
-	 << package.path
+	 << package.path()
 	 << " extracted to "
-	 << package.extracted_package_dir_path
+	 << package.extracted_dir_path()
 	 << " ...";
 
-  if (ftw(package.extracted_package_dir_path.c_str(),
+  if (ftw(package.extracted_dir_path().c_str(),
 	  file_tree_walker_callback_fn,
 	  16))
     {
       cerr << "Error while inspecting files in package"
-	   << package.extracted_package_dir_path << "\n";
+	   << package.extracted_dir_path() << "\n";
       return false;
     }
 
@@ -556,9 +670,9 @@ create_maps_of_package_content(package& package,
 	}
 
       if (e->soname.empty())
-	package.path_elf_file_sptr_map[e->name] = e;
+	package.path_elf_file_sptr_map()[e->name] = e;
       else
-	package.path_elf_file_sptr_map[e->soname] = e;
+	package.path_elf_file_sptr_map()[e->soname] = e;
     }
 
   if (verbose)
@@ -583,7 +697,7 @@ extract_package_and_map_its_content(package& package,
     return false;
 
   bool result = true;
-  if (!package.is_debug_info)
+  if (!package.is_debug_info())
     result |= create_maps_of_package_content(package, opts);
 
   return result;
@@ -609,10 +723,10 @@ prepare_packages(package&	first_package,
       || !extract_package_and_map_its_content(second_package, opts))
     return false;
 
-    if ((first_package.debug_info_package
-	 && !extract_package(*first_package.debug_info_package))
-	|| (second_package.debug_info_package
-	    && !extract_package(*second_package.debug_info_package)))
+  if ((first_package.debug_info_package()
+	 && !extract_package(*first_package.debug_info_package()))
+      || (second_package.debug_info_package()
+	    && !extract_package(*second_package.debug_info_package())))
       return false;
 
     return true;
@@ -642,36 +756,36 @@ compare(package&	first_package,
 
   // Setting debug-info path of libraries
   string debug_dir1, debug_dir2, relative_debug_path = "/usr/lib/debug/";
-  if (first_package.debug_info_package
-      && second_package.debug_info_package)
+  if (first_package.debug_info_package()
+      && second_package.debug_info_package())
     {
       debug_dir1 =
-	first_package.debug_info_package->extracted_package_dir_path +
+	first_package.debug_info_package()->extracted_dir_path() +
 	relative_debug_path;
-      if (second_package.debug_info_package)
+      if (second_package.debug_info_package())
 	debug_dir2 =
-	  second_package.debug_info_package->extracted_package_dir_path +
+	  second_package.debug_info_package()->extracted_dir_path() +
 	  relative_debug_path;
     }
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
   for (map<string, elf_file_sptr>::iterator it =
-	 first_package.path_elf_file_sptr_map.begin();
-       it != first_package.path_elf_file_sptr_map.end();
+	 first_package.path_elf_file_sptr_map().begin();
+       it != first_package.path_elf_file_sptr_map().end();
        ++it)
     {
       map<string, elf_file_sptr>::iterator iter =
-	second_package.path_elf_file_sptr_map.find(it->first);
+	second_package.path_elf_file_sptr_map().find(it->first);
 
-      if (iter != second_package.path_elf_file_sptr_map.end()
+      if (iter != second_package.path_elf_file_sptr_map().end()
 	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
 	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC))
 	{
 	  abidiff_status s = compare(*it->second, debug_dir1,
 				     *iter->second, debug_dir2,
 				     opts);
-	  second_package.path_elf_file_sptr_map.erase(iter);
+	  second_package.path_elf_file_sptr_map().erase(iter);
 	  if (s & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
 	    diff.changed_binaries.push_back(it->second->name);
 	  status |= s;
@@ -685,8 +799,8 @@ compare(package&	first_package,
     }
 
   for (map<string, elf_file_sptr>::iterator it =
-	 second_package.path_elf_file_sptr_map.begin();
-       it != second_package.path_elf_file_sptr_map.end();
+	 second_package.path_elf_file_sptr_map().begin();
+       it != second_package.path_elf_file_sptr_map().end();
        ++it)
     diff.added_binaries.push_back(it->second->name);
 
@@ -850,21 +964,21 @@ main(int argc, char* argv[])
   package_sptr second_package(new package(opts.package2, "package2"));
 
   if (!opts.debug_package1.empty())
-    first_package->debug_info_package =
-      package_sptr(new package(opts.debug_package1,
-			       "debug_package1",
-			       /*is_debug_info=*/true));
+    first_package->debug_info_package
+      (package_sptr(new package(opts.debug_package1,
+				"debug_package1",
+				/*is_debug_info=*/true)));
 
   if (!opts.debug_package2.empty())
-    second_package->debug_info_package =
-      package_sptr(new package(opts.debug_package2,
-			       "debug_package2",
-			       /*is_debug_info=*/true));
+    second_package->debug_info_package
+      (package_sptr(new package(opts.debug_package2,
+				"debug_package2",
+				/*is_debug_info=*/true)));
 
-  switch (first_package->type)
+  switch (first_package->type())
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
-      if (!(second_package->type == abigail::tools_utils::FILE_TYPE_RPM))
+      if (!(second_package->type() == abigail::tools_utils::FILE_TYPE_RPM))
 	{
 	  cerr << opts.package2 << " should be an RPM file\n";
 	  return 1;
