@@ -11100,9 +11100,8 @@ type_has_non_canonicalized_subtype(type_base_sptr t)
     return false;
 
   non_canonicalized_subtype_detector v(t.get());
-  if (!t->traverse(v))
-    return v.has_non_canonical_type();
-  return false;
+  t->traverse(v);
+  return v.has_non_canonical_type();
 }
 
 /// Tests if the change of a given type effectively comes from just
