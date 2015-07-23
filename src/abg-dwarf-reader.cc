@@ -6504,14 +6504,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	    }
 	  // Handle member types
 	  else if (is_type_die(&child))
-	    {
-	      result->set_is_declaration_only(false);
-	      decl_base_sptr td =
-		build_ir_node_from_die(ctxt, &child, is_in_alt_di,
-				       result.get(),
-				       called_from_public_decl,
-				       where_offset);
-	    }
+	    decl_base_sptr td =
+	      build_ir_node_from_die(ctxt, &child, is_in_alt_di,
+				     result.get(),
+				     called_from_public_decl,
+				     where_offset);
 	} while (dwarf_siblingof(&child, &child) == 0);
     }
 
