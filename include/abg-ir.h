@@ -3369,11 +3369,14 @@ struct class_tdecl::shared_ptr_hash
 ///
 /// Client code willing to get notified for a certain kind of node
 /// during the IR traversal might want to define a visitor class that
-/// inherit ir_node_visitor, overload the ir_node_visitor::visit_begin
-/// or ir_node_visitor::visit_end method of its choice, and provide
-/// and implementation for it.  Note that inside these two methods,the
-/// node_visitor_base::visiting() method returns false.
-
+/// inherit ir_node_visitor, overload the ir_node_visitor::visit_begin()
+/// or ir_node_visitor::visit_end() method of its choice, and provide
+/// and implementation for it.  If either
+/// ir_node_visitor::visit_begin() or ir_node_visitor::visit_end()
+/// return false, it means the traversal has to stop immediately after
+/// the methods' return.  If the methods return true, it means the
+/// traversal keeps going.
+///
 /// That new visitor class would then be passed to e.g,
 /// translation_unit::traverse or to the traverse method of any type
 /// where the traversal is supposed to start from.

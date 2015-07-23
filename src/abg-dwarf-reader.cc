@@ -7584,16 +7584,16 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (// NOT be an incomplete type that is being currently
 	    // constructed.
 	    !ctxt.is_wip_class_die_offset(dwarf_dieoffset(die))
-	    // And then do not early-canonicalize klass if it either:
-	    && (// - has got virtual member functions.  This is because
-		//   the number of virtual member function might be
-		//   amended later, outside of the current DIE, by
-		//   cloned virtual functions that are clones of at
-		//   least one of the virtual functions declared in
-		//   the DIE.
+	    // And not early-canonicalize klass if it either:
+	    && (// - has got virtual member functions.  This is
+		//   because the number of virtual member function
+		//   might be amended later, outside of the current
+		//   DIE, by cloned virtual functions that are clones
+		//   of at least one of the virtual functions declared
+		//   in the DIE.
 		!klass->has_virtual_member_functions()
-		// - or has got non-canonicalized sub types.  In that case
-		//   the non-canonicalized sub-type needs to be
+		// - or has got non-canonicalized sub types.  In that
+		//   case the non-canonicalized sub-type needs to be
 		//   canonicalized before this type is.
 		&& !type_has_non_canonicalized_subtype(klass)))
 	  canonicalize(klass);
