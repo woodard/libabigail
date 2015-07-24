@@ -425,6 +425,23 @@ erase_created_temporary_directories(const package& first_package,
   second_package.erase_extraction_directories();
 }
 
+/// Erase the root of all the temporary directories created by the
+/// current thread.
+static void
+erase_created_temporary_directories_parent()
+{
+  if (verbose)
+    cerr << "Erasing temporary extraction parent directory "
+	 << package::extracted_packages_parent_dir()
+	 << " ...";
+
+  string cmd = "rm -rf " + package::extracted_packages_parent_dir();
+  system(cmd.c_str());
+
+  if (verbose)
+    cerr << "DONE\n";
+}
+
 /// Extract the content of a package.
 ///
 /// @param package the package we are looking at.
@@ -821,7 +838,10 @@ compare(package&	first_package,
     }
 
   if (!opts.keep_tmp_files)
-    erase_created_temporary_directories(first_package, second_package);
+    {
+      erase_created_temporary_directories(first_package, second_package);
+      erase_created_temporary_directories_parent();
+    }
 
   return status;
 }
