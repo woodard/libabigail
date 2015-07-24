@@ -12877,7 +12877,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (vector<string>::const_iterator i = to_delete.begin();
 	 i != to_delete.end();
 	 ++i)
-      deleted_fns_.erase(*i);
+      deleted_vars_.erase(*i);
 
     // Do something similar for added variables.
 
