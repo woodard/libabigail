@@ -14424,10 +14424,10 @@ corpus_diff::report(ostream& out, const string& indent) const
   if (context()->show_deleted_vars())
     {
       if (s.net_num_vars_removed() == 1)
-	out << indent << "1 Deleted variable:\n\n";
+	out << indent << "1 Removed variable:\n\n";
       else if (s.net_num_vars_removed() > 1)
 	out << indent << s.net_num_vars_removed()
-	    << " Deleted variables:\n\n";
+	    << " Removed variables:\n\n";
       string n;
       vector<var_decl*> sorted_deleted_vars;
       sort_string_var_ptr_map(priv_->deleted_vars_, sorted_deleted_vars);

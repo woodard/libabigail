@@ -2,7 +2,7 @@ ELF file 'test2-var-removed-app' is not ABI compatible with 'libtest2-var-remove
 Functions changes summary: 0 Removed, 0 Changed, 0 Added function
 Variables changes summary: 1 Removed, 0 Changed, 0 Added variable
 
-1 Deleted variable:
+1 Removed variable:
 
   'int global_var1'    {global_var1}
 
