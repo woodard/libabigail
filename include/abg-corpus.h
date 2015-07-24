@@ -178,14 +178,20 @@ public:
 
   const elf_symbol_sptr
   lookup_function_symbol(const string& symbol_name,
-			 const string& symbol_version) const;
+			 const elf_symbol::version& version) const;
+
+  const elf_symbol_sptr
+  lookup_function_symbol(const elf_symbol& symbol) const;
 
   const elf_symbol_sptr
   lookup_variable_symbol(const string& n) const;
 
   const elf_symbol_sptr
   lookup_variable_symbol(const string& symbol_name,
-			 const string& symbol_version) const;
+			 const elf_symbol::version& version) const;
+
+  const elf_symbol_sptr
+  lookup_variable_symbol(const elf_symbol& symbol) const;
 
   const functions&
   get_functions() const;

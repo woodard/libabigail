@@ -8283,8 +8283,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	// symbols.
 	if (!i->second->get_symbol()
 	    || (i->second->get_symbol()
-		&& s->lookup_function_symbol(i->second->get_symbol()->get_name(),
-					     i->second->get_symbol()->get_version().str())))
+		&& s->lookup_function_symbol(*i->second->get_symbol())))
 	  to_delete.push_back(i->first);
 
 
@@ -8301,8 +8300,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	   i != inserted_member_fns().end();
 	   ++i)
 	if (!i->second->get_symbol()
-	    || f->lookup_function_symbol(i->second->get_symbol()->get_name(),
-					 i->second->get_symbol()->get_version().str()))
+	    || f->lookup_function_symbol(*i->second->get_symbol()))
 	  to_delete.push_back(i->first);
 
     for (vector<string>::const_iterator i = to_delete.begin();
@@ -12779,8 +12777,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_function_ptr_map::const_iterator i = deleted_fns_.begin();
 	 i != deleted_fns_.end();
 	 ++i)
-      if (second_->lookup_function_symbol(i->second->get_symbol()->get_name(),
-					  i->second->get_symbol()->get_version().str()))
+      if (second_->lookup_function_symbol(*i->second->get_symbol()))
 	to_delete.push_back(i->first);
 
     for (vector<string>::const_iterator i = to_delete.begin();
@@ -12794,9 +12791,23 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_function_ptr_map::const_iterator i = added_fns_.begin();
 	 i != added_fns_.end();
 	 ++i)
-      if (first_->lookup_function_symbol(i->second->get_symbol()->get_name(),
-					 i->second->get_symbol()->get_version().str()))
-	to_delete.push_back(i->first);
+      {
+	if (first_->lookup_function_symbol(*i->second->get_symbol()))
+	  to_delete.push_back(i->first);
+	else if (! i->second->get_symbol()->get_version().is_empty()
+		 && i->second->get_symbol()->get_version().is_default())
+	  // We are looking for a symbol that has a default version,
+	  // and which seems to be newly added.  Let's see if the same
+	  // symbol with *no* version was already present in the
+	  // former corpus.  If yes, then the symbol shouldn't be
+	  // considered as 'added'.
+	  {
+	    elf_symbol::version empty_version;
+	    if (first_->lookup_function_symbol(i->second->get_symbol()->get_name(),
+					       empty_version))
+	      to_delete.push_back(i->first);
+	  }
+      }
 
     for (vector<string>::const_iterator i = to_delete.begin();
 	 i != to_delete.end();
@@ -12870,8 +12881,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_var_ptr_map::const_iterator i = deleted_vars_.begin();
 	 i != deleted_vars_.end();
 	 ++i)
-      if (second_->lookup_variable_symbol(i->second->get_symbol()->get_name(),
-					  i->second->get_symbol()->get_version().str()))
+      if (second_->lookup_variable_symbol(*i->second->get_symbol()))
 	to_delete.push_back(i->first);
 
     for (vector<string>::const_iterator i = to_delete.begin();
@@ -12885,9 +12895,21 @@ corpus_diff::priv::ensure_lookup_tables_populated()
     for (string_var_ptr_map::const_iterator i = added_vars_.begin();
 	 i != added_vars_.end();
 	 ++i)
-      if (first_->lookup_variable_symbol(i->second->get_symbol()->get_name(),
-					 i->second->get_symbol()->get_version().str()))
+      if (first_->lookup_variable_symbol(*i->second->get_symbol()))
 	to_delete.push_back(i->first);
+      else if (! i->second->get_symbol()->get_version().is_empty()
+		 && i->second->get_symbol()->get_version().is_default())
+	// We are looking for a symbol that has a default version,
+	// and which seems to be newly added.  Let's see if the same
+	// symbol with *no* version was already present in the
+	// former corpus.  If yes, then the symbol shouldn't be
+	// considered as 'added'.
+	{
+	  elf_symbol::version empty_version;
+	  if (first_->lookup_variable_symbol(i->second->get_symbol()->get_name(),
+					     empty_version))
+	    to_delete.push_back(i->first);
+	}
 
     for (vector<string>::const_iterator i = to_delete.begin();
 	 i != to_delete.end();
@@ -12908,8 +12930,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	assert(i < first_->get_unreferenced_function_symbols().size());
 	elf_symbol_sptr deleted_sym =
 	  first_->get_unreferenced_function_symbols()[i];
-	if (!second_->lookup_function_symbol(deleted_sym->get_name(),
-					     deleted_sym->get_version()))
+	if (!second_->lookup_function_symbol(*deleted_sym))
 	  deleted_unrefed_fn_syms_[deleted_sym->get_id_string()] = deleted_sym;
       }
 
@@ -12929,10 +12950,27 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    if ((deleted_unrefed_fn_syms_.find(added_sym->get_id_string())
 		 == deleted_unrefed_fn_syms_.end()))
 	      {
-		if (!first_->lookup_function_symbol(added_sym->get_name(),
-						    added_sym->get_version()))
-		  added_unrefed_fn_syms_[added_sym->get_id_string()] =
-		    added_sym;
+		if (!first_->lookup_function_symbol(*added_sym))
+		  {
+		    bool do_add = true;
+		    if (! added_sym->get_version().is_empty()
+			&& added_sym->get_version().is_default())
+		      {
+			// So added_seem has a default version.  If
+			// the former corpus had a symbol with the
+			// same name as added_sym but with *no*
+			// version, then added_sym shouldn't be
+			// considered as a newly added symbol.
+			elf_symbol::version empty_version;
+			if(first_->lookup_function_symbol(added_sym->get_name(),
+							  empty_version))
+			  do_add = false;
+		      }
+
+		    if (do_add)
+		      added_unrefed_fn_syms_[added_sym->get_id_string()] =
+			added_sym;
+		  }
 	      }
 	    else
 	      deleted_unrefed_fn_syms_.erase(added_sym->get_id_string());
@@ -12953,8 +12991,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	assert(i < first_->get_unreferenced_variable_symbols().size());
 	elf_symbol_sptr deleted_sym =
 	  first_->get_unreferenced_variable_symbols()[i];
-	if (!second_->lookup_variable_symbol(deleted_sym->get_name(),
-					     deleted_sym->get_version()))
+	if (!second_->lookup_variable_symbol(*deleted_sym))
 	  deleted_unrefed_var_syms_[deleted_sym->get_id_string()] = deleted_sym;
       }
 
@@ -12974,10 +13011,27 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    if (deleted_unrefed_var_syms_.find(added_sym->get_id_string())
 		== deleted_unrefed_var_syms_.end())
 	      {
-		if (!first_->lookup_variable_symbol(added_sym->get_name(),
-						    added_sym->get_version()))
-		  added_unrefed_var_syms_[added_sym->get_id_string()] =
-		    added_sym;
+		if (!first_->lookup_variable_symbol(*added_sym))
+		  {
+		    bool do_add = true;
+		    if (! added_sym->get_version().is_empty()
+			&& added_sym->get_version().is_default())
+		      {
+			// So added_seem has a default version.  If
+			// the former corpus had a symbol with the
+			// same name as added_sym but with *no*
+			// version, then added_sym shouldn't be
+			// considered as a newly added symbol.
+			elf_symbol::version empty_version;
+			if(first_->lookup_variable_symbol(added_sym->get_name(),
+							  empty_version))
+			  do_add = false;
+		      }
+
+		    if (do_add)
+		      added_unrefed_var_syms_[added_sym->get_id_string()] =
+			added_sym;
+		  }
 	      }
 	    else
 	      deleted_unrefed_var_syms_.erase(added_sym->get_id_string());

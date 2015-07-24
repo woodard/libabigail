@@ -1485,18 +1485,62 @@ corpus::lookup_function_symbol(const string& n) const
   return it->second[0];
 }
 
+/// Look into a set of symbols and look for a symbol that has a given
+/// version.
+///
+/// This is a sub-routine for corpus::lookup_function_symbol() and
+/// corpus::lookup_variable_symbol().
+///
+/// @param version the version of the symbol to look for.
+///
+/// @param symbols the set of symbols to consider.
+///
+/// @return the symbol found, or nil if none was found.
+static const elf_symbol_sptr
+find_symbol_by_version(const elf_symbol::version& version,
+		       const vector<elf_symbol_sptr>& symbols)
+{
+  if (version.is_empty())
+    {
+      // We are looing for a symbol with no version.
+
+      // So first look for possible aliases with no version
+      for (elf_symbols::const_iterator s = symbols.begin();
+	   s != symbols.end();
+	   ++s)
+	if ((*s)->get_version().is_empty())
+	  return *s;
+
+      // Or, look for a version that is a default one!
+      for (elf_symbols::const_iterator s = symbols.begin();
+	   s != symbols.end();
+	   ++s)
+	if ((*s)->get_version().is_default())
+	  return *s;
+    }
+  else
+    // We are looking for a symbol with a particular defined version.
+    for (elf_symbols::const_iterator s = symbols.begin();
+	 s != symbols.end();
+	 ++s)
+      if ((*s)->get_version().str() == version.str())
+	return *s;
+
+  return elf_symbol_sptr();
+}
+
 /// Look in the function symbols map for a symbol with a given name.
 ///
 /// @param symbol_name the name of the symbol to look for.
 ///
-/// @param symbol_version the version of the symbol to look for.
+/// @param version the version of the symbol to look for.
 ///
-/// return the symbol with the name @p symbol_name and with the name
-/// @p symbol_version, or nil if no symbol has been found with that
-/// name and version.
+/// return the symbol with name @p symbol_name and with version @p
+/// version, or nil if no symbol has been found with that name and
+/// version.
 const elf_symbol_sptr
 corpus::lookup_function_symbol(const string& symbol_name,
-			       const string& symbol_version) const
+			       const elf_symbol::version& version) const
 {
   if (!get_fun_symbol_map_sptr())
     return elf_symbol_sptr();
@@ -1506,13 +1550,18 @@ corpus::lookup_function_symbol(const string& symbol_name,
   if ( it == get_fun_symbol_map_sptr()->end())
     return elf_symbol_sptr();
 
-  for (elf_symbols::const_iterator s = it->second.begin();
-       s != it->second.end();
-       ++s)
-    if ((*s)->get_version().str() == symbol_version)
-      return *s;
-  return elf_symbol_sptr();
+  return find_symbol_by_version(version, it->second);
 }
+
+/// Look in the function symbols map for a symbol with the same name
+/// and version as a given symbol.
+///
+/// @param symbol the symbol to look for.
+///
+/// return the symbol with the same name and version as @p symbol.
+const elf_symbol_sptr
+corpus::lookup_function_symbol(const elf_symbol& symbol) const
+{return lookup_function_symbol(symbol.get_name(), symbol.get_version());}
 
 /// Look in the variable symbols map for a symbol with a given name.
 ///
@@ -1538,10 +1587,11 @@ corpus::lookup_variable_symbol(const string& n) const
 ///
 /// @param symbol_version the version of the symbol to look for.
 ///
-/// return the first symbol with the name @p n.
+/// return the first symbol with the name @p symbol_name and with
+/// version @p version.
 const elf_symbol_sptr
 corpus::lookup_variable_symbol(const string& symbol_name,
-			       const string& symbol_version) const
+			       const elf_symbol::version& version) const
 {
     if (!get_var_symbol_map_sptr())
     return elf_symbol_sptr();
@@ -1551,13 +1601,18 @@ corpus::lookup_variable_symbol(const string& symbol_name,
   if ( it == get_var_symbol_map_sptr()->end())
     return elf_symbol_sptr();
 
-  for (elf_symbols::const_iterator s = it->second.begin();
-       s != it->second.end();
-       ++s)
-    if ((*s)->get_version().str() == symbol_version)
-      return *s;
-  return elf_symbol_sptr();
+  return find_symbol_by_version(version, it->second);
 }
+
+/// Look in the variable symbols map for a symbol with the same name
+/// and version as a given symbol.
+///
+/// @param symbol the symbol to look for.
+///
+/// return the symbol with the same name and version as @p symbol.
+const elf_symbol_sptr
+corpus::lookup_variable_symbol(const elf_symbol& symbol) const
+{return lookup_variable_symbol(symbol.get_name(), symbol.get_version());}
 
 /// Return the functions public decl table of the current corpus.
 ///
