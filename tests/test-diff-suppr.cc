@@ -911,6 +911,22 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test24-soname-report-4.txt",
     "output/test-diff-suppr/test24-soname-report-4.txt"
   },
+  {
+    "data/test-diff-suppr/libtest25-typedef-v0.so",
+    "data/test-diff-suppr/libtest25-typedef-v1.so",
+    "",
+    "--no-redundant",
+    "data/test-diff-suppr/test25-typedef-report-0.txt",
+    "output/test-diff-suppr/test25-typedef-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest25-typedef-v0.so",
+    "data/test-diff-suppr/libtest25-typedef-v1.so",
+    "data/test-diff-suppr/test25-typedef-suppr-0.txt",
+    "--no-redundant",
+    "data/test-diff-suppr/test25-typedef-report-1.txt",
+    "output/test-diff-suppr/test25-typedef-report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
 };

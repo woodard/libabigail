@@ -438,6 +438,9 @@ set_member_function_is_virtual(const shared_ptr<function_decl>&, bool);
 shared_ptr<type_base>
 strip_typedef(const shared_ptr<type_base>);
 
+shared_ptr<type_base>
+get_typedef_underlying_type(const shared_ptr<type_base>&);
+
 string
 get_name(const shared_ptr<type_or_decl_base>&,
 	 bool qualified = true);

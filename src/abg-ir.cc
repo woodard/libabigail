@@ -2991,6 +2991,33 @@ strip_typedef(const type_base_sptr type)
   return t->get_canonical_type() ? t->get_canonical_type() : t;
 }
 
+/// Return the leaf underlying type node of a @ref typedef_dec node.
+///
+/// If the underlying type of a @ref typedef_decl node is itself a
+/// @ref typedef_decl node, then recursively look at the underlying
+/// type nodes to get the first one that is not a a @ref typedef_decl
+/// node.  This is what a leaf underlying type node means.
+///
+/// Otherwise, if the underlying type node of @ref typedef_decl is
+/// *NOT* a @ref typedef_decl node, then just return the underlying
+/// type node.
+///
+/// And if the type node considered is not a @ref typedef_decl node,
+/// then just return it.
+///
+/// @return the leaf underlying type node of a @p type.
+type_base_sptr
+get_typedef_underlying_type(const type_base_sptr& type)
+{
+  typedef_decl_sptr t = is_typedef(type);
+  if (!t)
+    return type;
+
+  if (is_typedef(t->get_underlying_type()))
+    return get_typedef_underlying_type(t->get_underlying_type());
+  return t->get_underlying_type();
+}
+
 /// Add a member decl to this scope.  Note that user code should not
 /// use this, but rather use add_decl_to_scope.
 ///

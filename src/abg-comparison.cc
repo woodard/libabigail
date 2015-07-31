@@ -910,45 +910,6 @@ type_suppression::suppresses_diff(const diff* diff) const
   if (!d)
     return false;
 
-  // Check if the name of the binaries match
-  if (sptr_utils::regex_t_sptr regexp =
-      suppression_base::priv_->get_file_name_regex())
-    {
-      diff_context_sptr ctxt = diff->context();
-      assert(ctxt);
-
-      string first_binary_path = ctxt->get_first_corpus()->get_path(),
-	second_binary_path = ctxt->get_second_corpus()->get_path();
-
-      string first_binary_name, second_binary_name;
-
-      tools_utils::base_name(first_binary_path, first_binary_name);
-      tools_utils::base_name(second_binary_path, second_binary_name);
-
-      if ((regexec(regexp.get(), first_binary_name.c_str(),
-		   0, NULL, 0) != 0)
-	  && (regexec(regexp.get(), second_binary_name.c_str(),
-		      0, NULL, 0) != 0))
-	return false;
-    }
-
-  // Check if the soname of the binaries match
-  if (sptr_utils::regex_t_sptr regexp =
-      suppression_base::priv_->get_soname_regex())
-    {
-      diff_context_sptr ctxt = diff->context();
-      assert(ctxt);
-
-      string first_soname = ctxt->get_first_corpus()->get_soname(),
-	second_soname = ctxt->get_second_corpus()->get_soname();
-
-      if ((regexec(regexp.get(), first_soname.c_str(),
-		   0, NULL, 0) != 0)
-	  && (regexec(regexp.get(), second_soname.c_str(),
-		      0, NULL, 0) != 0))
-	return false;
-    }
-
   // If the suppression should consider the way the diff node has been
   // reached, then do it now.
   if (get_consider_reach_kind())
@@ -999,77 +960,20 @@ type_suppression::suppresses_diff(const diff* diff) const
   st = is_type(d->second_subject());
   assert(ft && st);
 
-  // If the suppression should consider type kind, then well, check
-  // for that.
-  if (get_consider_type_kind())
+  if (!suppresses_type(ft, d->context())
+      && !suppresses_type(st, d->context()))
     {
-      type_kind k = get_type_kind();
-      switch (k)
-	{
-	case type_suppression::UNKNOWN_TYPE_KIND:
-	case type_suppression::CLASS_TYPE_KIND:
-	  if (!is_class_type(ft) && !is_class_type(st))
-	    return false;
-	  break;
-	case type_suppression::STRUCT_TYPE_KIND:
-	  {
-	    class_decl_sptr fc = is_class_type(ft), sc = is_class_type(st);
-	    if ((!fc && !sc)
-		|| (fc && !fc->is_struct() && sc && !sc->is_struct()))
-	      return false;
-	  }
-	  break;
-	case type_suppression::UNION_TYPE_KIND:
-	  // We do not support unions yet.  When we do, we should
-	  // replace the abort here by a "break;" statement.
-	  abort();
-	case type_suppression::ENUM_TYPE_KIND:
-	  if (!is_enum_type(ft) && !is_enum_type(st))
-	    return false;
-	  break;
-	case type_suppression::ARRAY_TYPE_KIND:
-	  if (!is_array_type(ft) && !is_array_type(st))
-	    return false;
-	  break;
-	case type_suppression::TYPEDEF_TYPE_KIND:
-	  if (!is_typedef(ft) && !is_typedef(st))
-	    return false;
-	  break;
-	case type_suppression::BUILTIN_TYPE_KIND:
-	  if (!is_type_decl(ft) && !is_type_decl(st))
-	    return false;
-	  break;
-	}
-    }
+      ft = get_typedef_underlying_type(ft);
+      st = get_typedef_underlying_type(st);
 
-  string fn, sn;
-  fn = get_name(ft);
-  sn = get_name(st);
-
-  // Check if there is an exact type name match.
-  if (!get_type_name().empty())
-    {
-      if (get_type_name() != fn && get_type_name() != sn)
+      if (!suppresses_type(ft, d->context())
+	  && !suppresses_type(st, d->context()))
 	return false;
-    }
-  else
-    {
-      // So now check if there is a regular expression match.
-      //
-      // If none of the qualified name of the types that are being
-      // compared match the regular expression of the of the type name,
-      // then this suppression doesn't apply.
-      const sptr_utils::regex_t_sptr type_name_regex =
-	priv_->get_type_name_regex();
-      if (type_name_regex
-	  && (regexec(type_name_regex.get(), fn.c_str(),
-		      0, NULL, 0) != 0
-	      && regexec(type_name_regex.get(), sn.c_str(),
-			 0, NULL, 0) != 0))
-	return false;
+
+      d = is_type_diff(get_typedef_diff_underlying_type_diff(d));
     }
 
-  const class_diff* klass_diff = dynamic_cast<const class_diff*>(diff);
+  const class_diff* klass_diff = dynamic_cast<const class_diff*>(d);
   if (// We are looking at a class diff ...
       klass_diff
       // ... that has inserted data members ...
@@ -1136,6 +1040,127 @@ type_suppression::suppresses_diff(const diff* diff) const
 	  if (!matched)
 	    return false;
 	}
+    }
+
+  return true;
+}
+
+/// Test if the current instance of @ref type_suppression suppresses a
+/// change reports about a given type.
+///
+/// @param type the type to consider.
+///
+/// @param ctxt the context of comparison we are involved with.
+///
+/// @return true iff the suppression specification suppresses type @p
+/// type.
+bool
+type_suppression::suppresses_type(const type_base_sptr type,
+				  const diff_context_sptr ctxt) const
+{
+  if (ctxt)
+    {
+      // Check if the names of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_file_name_regex())
+	{
+	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
+	    second_binary_path = ctxt->get_second_corpus()->get_path();
+
+	  string first_binary_name, second_binary_name;
+
+	  tools_utils::base_name(first_binary_path, first_binary_name);
+	  tools_utils::base_name(second_binary_path, second_binary_name);
+
+	  if ((regexec(regexp.get(), first_binary_name.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_binary_name.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+
+      // Check if the sonames of the binaries match
+      if (sptr_utils::regex_t_sptr regexp =
+	  suppression_base::priv_->get_soname_regex())
+	{
+	  string first_soname = ctxt->get_first_corpus()->get_soname(),
+	    second_soname = ctxt->get_second_corpus()->get_soname();
+
+	  if ((regexec(regexp.get(), first_soname.c_str(),
+		       0, NULL, 0) != 0)
+	      && (regexec(regexp.get(), second_soname.c_str(),
+			  0, NULL, 0) != 0))
+	    return false;
+	}
+    }
+
+  // If the suppression should consider type kind then, well, check
+  // for that.
+  if (get_consider_type_kind())
+    {
+      type_kind tk = get_type_kind();
+      bool matches = true;
+      switch (tk)
+	{
+	case type_suppression::UNKNOWN_TYPE_KIND:
+	case type_suppression::CLASS_TYPE_KIND:
+	  if (!is_class_type(type))
+	    matches = false;
+	  break;
+	case type_suppression::STRUCT_TYPE_KIND:
+	  {
+	    class_decl_sptr klass = is_class_type(type);
+	    if (!klass || (klass && !klass->is_struct()))
+	      matches = false;
+	  }
+	  break;
+	case type_suppression::UNION_TYPE_KIND:
+	  // We do not support unions yet.  When we do, we should
+	  // replace the abort here by a "break;" statement.
+	  abort();
+	case type_suppression::ENUM_TYPE_KIND:
+	  if (!is_enum_type(type))
+	    matches = false;
+	  break;
+	case type_suppression::ARRAY_TYPE_KIND:
+	  if (!is_array_type(type))
+	    matches = false;
+	  break;
+	case type_suppression::TYPEDEF_TYPE_KIND:
+	  if (!is_typedef(type))
+	    matches = false;
+	  break;
+	case type_suppression::BUILTIN_TYPE_KIND:
+	  if (!is_type_decl(type))
+	    matches = false;
+	  break;
+	}
+
+      if (!matches)
+	return false;
+    }
+
+  string name = get_name(type);
+
+  // Check if there is an exact type name match.
+  if (!get_type_name().empty())
+    {
+      if (get_type_name() != name)
+	return false;
+    }
+  else
+    {
+      // So now check if there is a regular expression match.
+      //
+      // If the qualified name of the considered type doesn't match
+      // the regular expression of the type name, then this
+      // suppression doesn't apply.
+      const sptr_utils::regex_t_sptr type_name_regex =
+	priv_->get_type_name_regex();
+      if (type_name_regex && (regexec(type_name_regex.get(),
+				      name.c_str(),
+				      0, NULL, 0) != 0))
+	return false;
     }
 
   return true;
@@ -11953,6 +11978,35 @@ compute_diff(const typedef_decl_sptr	first,
   ctxt->initialize_canonical_diff(result);
 
   return result;
+}
+
+/// Return the leaf underlying diff node of a @ref typedef_diff node.
+///
+/// If the underlying diff node of a @ref typedef_diff node is itself
+/// a @ref typedef_diff node, then recursively look at the underlying
+/// diff nodes to get the first one that is not a a @ref typedef_diff
+/// node.  This is what a leaf underlying diff node means.
+///
+/// Otherwise, if the underlying diff node of @ref typedef_diff is
+/// *NOT* a @ref typedef_diff node, then just return the underlying
+/// diff node.
+///
+/// And if the diff node considered is not a @ref typedef_diff node,
+/// then just return it.
+///
+/// @return the leaf underlying diff node of a @p diff.
+const diff*
+get_typedef_diff_underlying_type_diff(const diff* diff)
+{
+  const typedef_diff* d = dynamic_cast<const typedef_diff*>(diff);
+  if (!d)
+    return diff;
+
+  if (const typedef_diff* deef =
+      dynamic_cast<const typedef_diff*>(d->underlying_type_diff().get()))
+    return get_typedef_diff_underlying_type_diff(deef);
+
+  return d->underlying_type_diff().get();
 }
 
 // </typedef_diff stuff>

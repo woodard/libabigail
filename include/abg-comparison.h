@@ -567,6 +567,10 @@ public:
 
   virtual bool
   suppresses_diff(const diff* diff) const;
+
+  bool
+  suppresses_type(const type_base_sptr type,
+		  const diff_context_sptr ctxt) const;
 }; // end type_suppression
 
 type_suppression_sptr
@@ -2494,6 +2498,9 @@ typedef_diff_sptr
 compute_diff(const typedef_decl_sptr,
 	     const typedef_decl_sptr,
 	     diff_context_sptr ctxt);
+
+const diff*
+get_typedef_diff_underlying_type_diff(const diff* diff);
 
 class translation_unit_diff;
 

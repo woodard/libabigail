@@ -713,6 +713,13 @@ test-diff-suppr/test24-soname-suppr-3.txt \
 test-diff-suppr/test24-soname-suppr-4.txt \
 test-diff-suppr/test24-soname-v0.cc \
 test-diff-suppr/test24-soname-v1.cc \
+test-diff-suppr/libtest25-typedef-v0.so \
+test-diff-suppr/libtest25-typedef-v1.so \
+test-diff-suppr/test25-typedef-suppr-0.txt \
+test-diff-suppr/test25-typedef-report-0.txt \
+test-diff-suppr/test25-typedef-report-1.txt\
+test-diff-suppr/test25-typedef-v0.c \
+test-diff-suppr/test25-typedef-v1.c \
 \
 test-lookup-syms/test0.cc		\
 test-lookup-syms/test0.o		\
