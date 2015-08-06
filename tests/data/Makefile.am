@@ -814,5 +814,6 @@ test-diff-pkg/test-rpm-report-0.txt \
 test-diff-pkg/test-rpm-report-1.txt \
 test-diff-pkg/test-rpm-report-2.txt \
 test-diff-pkg/test-rpm-report-3.txt \
-test-diff-pkg/test-rpm-report-4.txt
+test-diff-pkg/test-rpm-report-4.txt \
+test-diff-pkg/test-rpm-report-5.txt
 

@@ -98,6 +98,7 @@ struct options
   bool		compare_dso_only;
   bool		show_linkage_names;
   bool		show_redundant_changes;
+  bool		show_added_syms;
   bool		show_added_binaries;
   vector<string> suppression_paths;
 
@@ -108,6 +109,7 @@ struct options
       compare_dso_only(),
       show_linkage_names(true),
       show_redundant_changes(),
+      show_added_syms(true),
       show_added_binaries(true)
   {}
 };
@@ -364,6 +366,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --no-linkage-name		  do not display linkage names of "
                                           "added/removed/changed\n"
       << " --redundant                    display redundant changes\n"
+      << " --no-added-syms                do not display added functions or variables\n"
       << " --no-added-binaries            do not display added binaries\n"
       << " --verbose                      emit verbose progress messages\n"
       << " --help                         display help message\n";
@@ -499,6 +502,10 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->error_output_stream(&cerr);
   ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_linkage_names(opts.show_linkage_names);
+  ctxt->show_added_fns(opts.show_added_syms);
+  ctxt->show_added_vars(opts.show_added_syms);
+  ctxt->show_added_symbols_unreferenced_by_debug_info
+    (opts.show_added_syms);
 
   ctxt->switch_categories_off
     (abigail::comparison::ACCESS_CHANGE_CATEGORY
@@ -923,6 +930,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--redundant"))
 	opts.show_redundant_changes = true;
+      else if (!strcmp(argv[i], "--no-added-syms"))
+		 opts.show_added_syms = false;
       else if (!strcmp(argv[i], "--no-added-binaries"))
 	opts.show_added_binaries = false;
       else if (!strcmp(argv[i], "--verbose"))

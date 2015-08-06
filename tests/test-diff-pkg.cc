@@ -43,6 +43,7 @@ struct InOutSpec
 {
   const char* first_in_package_path;
   const char* second_in_package_path;
+  const char* prog_options;
   const char* first_in_debug_package_path;
   const char* second_in_debug_package_path;
   const char* ref_report_path;
@@ -55,6 +56,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+    "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
     "data/test-diff-pkg/test-rpm-report-0.txt",
@@ -64,6 +66,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+  "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
   "",
   "data/test-diff-pkg/test-rpm-report-1.txt",
@@ -73,6 +76,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+  "",
   "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
   "data/test-diff-pkg/test-rpm-report-2.txt",
@@ -84,6 +88,7 @@ static InOutSpec in_out_specs[] =
   "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
   "",
   "",
+  "",
   "data/test-diff-pkg/test-rpm-report-3.txt",
   "output/test-diff-pkg/test-rpm-report-3.txt"
   },
@@ -91,13 +96,25 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+  "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/test-rpm-report-4.txt",
   "output/test-diff-pkg/test-rpm-report-4.txt"
   },
+  // Two RPM packages with debuginfo available and we don't want to
+  // see added symbols.
+  {
+    "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+    "--no-added-syms",
+    "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
+    "data/test-diff-pkg/test-rpm-report-5.txt",
+    "output/test-diff-pkg/test-rpm-report-5.txt"
+  },
   // This should be the last entry.
-  {0, 0, 0, 0, 0, 0}
+  {0, 0, 0, 0, 0, 0, 0}
 };
 
 int
@@ -109,6 +126,7 @@ main()
 
   bool is_ok = true;
   string first_in_package_path, second_in_package_path,
+    prog_options,
     ref_abi_diff_report_path, out_abi_diff_report_path, cmd, abipkgdiff,
     first_in_debug_package_path, second_in_debug_package_path;
   for (InOutSpec *s = in_out_specs; s->first_in_package_path; ++s)
@@ -117,6 +135,9 @@ main()
         get_src_dir() + "/tests/" + s->first_in_package_path;
       second_in_package_path =
         get_src_dir() + "/tests/" + s->second_in_package_path;
+
+      prog_options = s->prog_options;
+
       if (s->first_in_debug_package_path
           && strcmp(s->first_in_debug_package_path, ""))
         first_in_debug_package_path =
@@ -143,6 +164,10 @@ main()
         }
 
       abipkgdiff = get_build_dir() + "/tools/abipkgdiff";
+
+      if (!prog_options.empty())
+	abipkgdiff +=  " " + prog_options;
+
       if (!first_in_debug_package_path.empty())
         abipkgdiff += " --d1 " + first_in_debug_package_path;
       if (!second_in_debug_package_path.empty())
