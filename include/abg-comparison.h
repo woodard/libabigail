@@ -245,6 +245,9 @@ class diff_context;
 /// Convenience typedef for a shared pointer of @ref diff_context.
 typedef shared_ptr<diff_context> diff_context_sptr;
 
+/// Convenience typedef for a weak pointer of @ref diff_context.
+typedef weak_ptr<diff_context> diff_context_wptr;
+
 class diff_node_visitor;
 
 struct diff_traversable_base;
@@ -2567,6 +2570,9 @@ public:
 
   class diff_stats;
 
+  /// A convenience typedef for a shared pointer to @ref diff_stats
+  typedef shared_ptr<diff_stats> diff_stats_sptr;
+
   corpus_sptr
   first_corpus() const;
 
@@ -2683,9 +2689,11 @@ class corpus_diff::diff_stats
 
   priv_sptr priv_;
 
+  diff_stats();
+
 public:
 
-  diff_stats();
+  diff_stats(diff_context_sptr);
 
   size_t num_func_removed() const;
   void num_func_removed(size_t);

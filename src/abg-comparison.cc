@@ -12111,29 +12111,31 @@ class corpus_diff::diff_stats::priv
 {
   friend class corpus_diff::diff_stats;
 
-  size_t num_func_removed;
-  size_t num_removed_func_filtered_out;
-  size_t num_func_added;
-  size_t num_added_func_filtered_out;
-  size_t num_func_changed;
-  size_t num_changed_func_filtered_out;
-  size_t num_vars_removed;
-  size_t num_removed_vars_filtered_out;
-  size_t num_vars_added;
-  size_t num_added_vars_filtered_out;
-  size_t num_vars_changed;
-  size_t num_changed_vars_filtered_out;
-  size_t num_func_syms_removed;
-  size_t num_removed_func_syms_filtered_out;
-  size_t num_func_syms_added;
-  size_t num_added_func_syms_filtered_out;
-  size_t num_var_syms_removed;
-  size_t num_removed_var_syms_filtered_out;
-  size_t num_var_syms_added;
-  size_t num_added_var_syms_filtered_out;
+  diff_context_wptr	ctxt_;
+  size_t		num_func_removed;
+  size_t		num_removed_func_filtered_out;
+  size_t		num_func_added;
+  size_t		num_added_func_filtered_out;
+  size_t		num_func_changed;
+  size_t		num_changed_func_filtered_out;
+  size_t		num_vars_removed;
+  size_t		num_removed_vars_filtered_out;
+  size_t		num_vars_added;
+  size_t		num_added_vars_filtered_out;
+  size_t		num_vars_changed;
+  size_t		num_changed_vars_filtered_out;
+  size_t		num_func_syms_removed;
+  size_t		num_removed_func_syms_filtered_out;
+  size_t		num_func_syms_added;
+  size_t		num_added_func_syms_filtered_out;
+  size_t		num_var_syms_removed;
+  size_t		num_removed_var_syms_filtered_out;
+  size_t		num_var_syms_added;
+  size_t		num_added_var_syms_filtered_out;
 
-  priv()
-    : num_func_removed(),
+  priv(diff_context_sptr ctxt)
+    : ctxt_(ctxt),
+      num_func_removed(),
       num_removed_func_filtered_out(),
       num_func_added(),
       num_added_func_filtered_out(),
@@ -12154,11 +12156,15 @@ class corpus_diff::diff_stats::priv
       num_var_syms_added(),
       num_added_var_syms_filtered_out()
   {}
+
+  diff_context_sptr
+  ctxt()
+  {return ctxt_.expired() ? diff_context_sptr() : diff_context_sptr(ctxt_);}
 }; // end class corpus_diff::diff_stats::priv
 
-/// Default constructor for the @ref diff_stat type.
-corpus_diff::diff_stats::diff_stats()
-  : priv_(new priv)
+/// Constructor for the @ref diff_stat type.
+corpus_diff::diff_stats::diff_stats(diff_context_sptr ctxt)
+  : priv_(new priv(ctxt))
 {}
 
 /// Getter for the number of functions removed.
@@ -12182,7 +12188,11 @@ corpus_diff::diff_stats::num_func_removed(size_t n)
 /// out.
 size_t
 corpus_diff::diff_stats::num_removed_func_filtered_out() const
-{return priv_->num_removed_func_filtered_out;}
+{
+  if (priv_->ctxt() && !priv_->ctxt()->show_deleted_fns())
+    return num_func_removed();
+  return priv_->num_removed_func_filtered_out;
+}
 
 /// Setter for the number of removed functions that have been filtered
 /// out.
@@ -12224,7 +12234,11 @@ corpus_diff::diff_stats::num_func_added(size_t n)
 /// @return the number of added function that have been filtered out.
 size_t
 corpus_diff::diff_stats::num_added_func_filtered_out() const
-{return priv_->num_added_func_filtered_out;}
+{
+  if (priv_->ctxt() && !priv_->ctxt()->show_added_fns())
+    return num_func_added();
+  return priv_->num_added_func_filtered_out;
+}
 
 /// Setter for the number of added function that have been filtered
 /// out.
@@ -12315,7 +12329,11 @@ corpus_diff::diff_stats::num_vars_removed(size_t n)
 /// @return the number removed variables that have been filtered out.
 size_t
 corpus_diff::diff_stats::num_removed_vars_filtered_out() const
-{return priv_->num_removed_vars_filtered_out;}
+{
+  if (priv_->ctxt() && !priv_->ctxt()->show_deleted_vars())
+    return num_vars_removed();
+  return priv_->num_removed_vars_filtered_out;
+}
 
 /// Setter for the number of removed variables that have been filtered
 /// out.
@@ -12359,7 +12377,11 @@ corpus_diff::diff_stats::num_vars_added(size_t n)
 /// @return the number of added variables that have been filtered out.
 size_t
 corpus_diff::diff_stats::num_added_vars_filtered_out() const
-{return priv_->num_added_vars_filtered_out;}
+{
+  if (priv_->ctxt() && !priv_->ctxt()->show_added_vars())
+    return num_vars_added();
+  return priv_->num_added_vars_filtered_out;
+}
 
 /// Setter for the number of added variables that have been filtered
 /// out.
@@ -12455,7 +12477,12 @@ corpus_diff::diff_stats::num_func_syms_removed(size_t n)
 /// debug info, that have been filtered out.
 size_t
 corpus_diff::diff_stats::num_removed_func_syms_filtered_out() const
-{return priv_->num_removed_func_syms_filtered_out;}
+{
+  if (priv_->ctxt()
+      && !priv_->ctxt()->show_symbols_unreferenced_by_debug_info())
+    return num_func_syms_removed();
+  return priv_->num_removed_func_syms_filtered_out;
+}
 
 /// Setter for the number of removed function symbols, not referenced
 /// by debug info, that have been filtered out.
@@ -12508,7 +12535,13 @@ corpus_diff::diff_stats::num_func_syms_added(size_t n)
 /// any debug info, that have been filtered out.
 size_t
 corpus_diff::diff_stats::num_added_func_syms_filtered_out() const
-{return priv_->num_added_func_syms_filtered_out;}
+{
+  if (priv_->ctxt()
+      && !(priv_->ctxt()->show_added_symbols_unreferenced_by_debug_info()
+	   && priv_->ctxt()->show_symbols_unreferenced_by_debug_info()))
+    return num_func_syms_added();
+  return priv_->num_added_func_syms_filtered_out;
+}
 
 /// Setter for the number of added function symbols, not referenced by
 /// any debug info, that have been filtered out.
@@ -12561,7 +12594,12 @@ corpus_diff::diff_stats::num_var_syms_removed(size_t n)
 /// by any debug info, that have been filtered out.
 size_t
 corpus_diff::diff_stats::num_removed_var_syms_filtered_out() const
-{return priv_->num_removed_var_syms_filtered_out;}
+{
+  if (priv_->ctxt()
+      && !priv_->ctxt()->show_symbols_unreferenced_by_debug_info())
+    return num_var_syms_removed();
+  return priv_->num_removed_var_syms_filtered_out;
+}
 
 /// Setter for the number of removed variable symbols, not referenced
 /// by any debug info, that have been filtered out.
@@ -12614,7 +12652,13 @@ corpus_diff::diff_stats::num_var_syms_added(size_t n)
 /// any debug info, that have been filtered out.
 size_t
 corpus_diff::diff_stats::num_added_var_syms_filtered_out() const
-{return priv_->num_added_var_syms_filtered_out;}
+{
+  if (priv_->ctxt()
+      && !(priv_->ctxt()->show_added_symbols_unreferenced_by_debug_info()
+	   && priv_->ctxt()->show_symbols_unreferenced_by_debug_info()))
+    return num_var_syms_added();
+  return priv_->num_added_var_syms_filtered_out;
+}
 
 /// Setter for the number of added variable symbols, not referenced by
 /// any debug info, that have been filtered out.
@@ -12651,8 +12695,7 @@ struct corpus_diff::priv
   diff_context_sptr			ctxt_;
   corpus_sptr				first_;
   corpus_sptr				second_;
-  corpus_diff::diff_stats		diff_stats_;
-  bool					filters_and_suppr_applied_;
+  corpus_diff::diff_stats_sptr		diff_stats_;
   bool					sonames_equal_;
   bool					architectures_equal_;
   edit_script				fns_edit_script_;
@@ -12682,7 +12725,6 @@ struct corpus_diff::priv
 
   priv()
     : finished_(false),
-      filters_and_suppr_applied_(false),
       sonames_equal_(false),
       architectures_equal_(false)
   {}
@@ -14276,15 +14318,13 @@ show_linkage_name_and_aliases(ostream& out,
 const corpus_diff::diff_stats&
 corpus_diff::apply_filters_and_suppressions_before_reporting()
 {
-  if (priv_->filters_and_suppr_applied_)
-    return priv_->diff_stats_;
+  if (priv_->diff_stats_)
+    return *priv_->diff_stats_;
 
   apply_suppressions(this);
-  priv_->apply_filters_and_compute_diff_stats(priv_->diff_stats_);
-
-  priv_->filters_and_suppr_applied_ = true;
-
-  return priv_->diff_stats_;
+  priv_->diff_stats_.reset(new diff_stats(priv_->ctxt_));
+  priv_->apply_filters_and_compute_diff_stats(*priv_->diff_stats_);
+  return *priv_->diff_stats_;
 }
 
 /// Report the diff in a serialized form.
@@ -14635,6 +14675,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   // Report added function symbols not referenced by any debug info.
   if (context()->show_symbols_unreferenced_by_debug_info()
+      && context()->show_added_symbols_unreferenced_by_debug_info()
       && priv_->added_unrefed_fn_syms_.size())
     {
       if (s.net_num_added_func_syms() == 1)
@@ -14705,6 +14746,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 
   // Report added variable symbols not referenced by any debug info.
   if (context()->show_symbols_unreferenced_by_debug_info()
+      && context()->show_added_symbols_unreferenced_by_debug_info()
       && priv_->added_unrefed_var_syms_.size())
     {
       if (s.net_num_added_var_syms() == 1)
