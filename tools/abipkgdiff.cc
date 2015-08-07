@@ -417,6 +417,47 @@ extract_rpm(const string& package_path,
   return true;
 }
 
+/// Extract an Debian binary package.
+///
+/// @param package_path the path to the package to extract.
+///
+/// @param extracted_package_dir_path the path where to extract the
+/// package to.
+///
+/// @return true upon successful completion, false otherwise.
+static bool
+extract_deb(const string& package_path,
+	    const string& extracted_package_dir_path)
+{
+  if (verbose)
+    cerr << "Extracting package "
+	 << package_path
+	 << "to "
+	 << extracted_package_dir_path
+	 << " ...";
+
+  string cmd = "test -d " +
+    extracted_package_dir_path +
+    " && rm -rf " + extracted_package_dir_path;
+
+  system(cmd.c_str());
+
+  cmd = "mkdir -p " + extracted_package_dir_path + " && dpkg -x " +
+    package_path + " " + extracted_package_dir_path;
+
+  if (system(cmd.c_str()))
+    {
+      if (verbose)
+	cerr << " FAILED\n";
+      return false;
+    }
+
+  if (verbose)
+    cerr << " DONE\n";
+
+  return true;
+}
+
 /// Erase the temporary directories created for the extraction of two
 /// packages.
 ///
@@ -458,6 +499,14 @@ extract_package(const package& package)
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
       if (!extract_rpm(package.path(), package.extracted_dir_path()))
+        {
+          cerr << "Error while extracting package" << package.path() << "\n";
+          return false;
+        }
+      return true;
+      break;
+    case abigail::tools_utils::FILE_TYPE_DEB:
+      if (!extract_deb(package.path(), package.extracted_dir_path()))
         {
           cerr << "Error while extracting package" << package.path() << "\n";
           return false;
@@ -1040,6 +1089,14 @@ main(int argc, char* argv[])
       if (!(second_package->type() == abigail::tools_utils::FILE_TYPE_RPM))
 	{
 	  cerr << opts.package2 << " should be an RPM file\n";
+	  return 1;
+	}
+      break;
+
+    case abigail::tools_utils::FILE_TYPE_DEB:
+      if (!(second_package->type() == abigail::tools_utils::FILE_TYPE_DEB))
+	{
+	  cerr << opts.package2 << " should be an DEB file\n";
 	  return 1;
 	}
       break;

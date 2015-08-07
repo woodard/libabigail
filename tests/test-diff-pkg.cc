@@ -113,6 +113,16 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/test-rpm-report-5.txt",
     "output/test-diff-pkg/test-rpm-report-5.txt"
   },
+  // Two debian packages.
+  {
+    "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64.deb",
+    "data/test-diff-pkg/libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64.deb",
+    "--fail-no-dbg",
+    "data/test-diff-pkg/libsigc++-2.0-0c2a-dbgsym_2.4.0-1_amd64.ddeb",
+    "data/test-diff-pkg/libsigc++-2.0-0v5-dbgsym_2.4.1-1ubuntu2_amd64.ddeb",
+    "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt",
+    "output/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt"
+  },
   // This should be the last entry.
   {0, 0, 0, 0, 0, 0, 0}
 };

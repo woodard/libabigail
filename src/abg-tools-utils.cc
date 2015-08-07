@@ -471,6 +471,9 @@ operator<<(ostream& output,
     case FILE_TYPE_SRPM:
       repr = "SRPM file type";
       break;
+    case FILE_TYPE_DEB:
+      repr = "Debian binary file type";
+      break;
     }
 
   output << repr;
@@ -485,8 +488,8 @@ operator<<(ostream& output,
 file_type
 guess_file_type(istream& in)
 {
-  const unsigned BUF_LEN = 13;
-  const unsigned NB_BYTES_TO_READ = 12;
+  const unsigned BUF_LEN = 25;
+  const unsigned NB_BYTES_TO_READ = 24;
 
   char buf[BUF_LEN];
   memset(buf, 0, BUF_LEN);
@@ -511,7 +514,12 @@ guess_file_type(istream& in)
       && buf[4] == 'c'
       && buf[5] == 'h'
       && buf[6] == '>')
-    return FILE_TYPE_AR;
+    {
+      if (strstr(buf, "debian-binary"))
+	return FILE_TYPE_DEB;
+      else
+	return FILE_TYPE_AR;
+    }
 
   if (buf[0] == '<'
       && buf[1] == 'a'

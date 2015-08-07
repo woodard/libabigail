@@ -818,5 +818,9 @@ test-diff-pkg/test-rpm-report-1.txt \
 test-diff-pkg/test-rpm-report-2.txt \
 test-diff-pkg/test-rpm-report-3.txt \
 test-diff-pkg/test-rpm-report-4.txt \
-test-diff-pkg/test-rpm-report-5.txt
-
+test-diff-pkg/test-rpm-report-5.txt \
+test-diff-pkg/libsigc++-2.0-0c2a-dbgsym_2.4.0-1_amd64.ddeb \
+test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt \
+test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64.deb \
+test-diff-pkg/libsigc++-2.0-0v5-dbgsym_2.4.1-1ubuntu2_amd64.ddeb \
+test-diff-pkg/libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64.deb
