@@ -538,53 +538,53 @@ string_to_translation_unit_language(const string& l)
 {
   if (l == "LANG_Cobol74")
     return translation_unit::LANG_Cobol74;
-  else if ("LANG_Cobol85")
+  else if (l == "LANG_Cobol85")
     return translation_unit::LANG_Cobol85;
-  else if ("LANG_C89")
+  else if (l == "LANG_C89")
     return translation_unit::LANG_C89;
-  else if ("LANG_C99")
+  else if (l == "LANG_C99")
     return translation_unit::LANG_C99;
-  else if ("LANG_C11")
+  else if (l == "LANG_C11")
     return translation_unit::LANG_C11;
-  else if ("LANG_C")
+  else if (l == "LANG_C")
     return translation_unit::LANG_C;
-  else if ("LANG_C_plus_plus_11")
+  else if (l == "LANG_C_plus_plus_11")
     return translation_unit::LANG_C_plus_plus_11;
-  else if ("LANG_C_plus_plus_14")
+  else if (l == "LANG_C_plus_plus_14")
     return translation_unit::LANG_C_plus_plus_14;
-  else if ("LANG_C_plus_plus")
+  else if (l == "LANG_C_plus_plus")
     return translation_unit::LANG_C_plus_plus;
-  else if ("LANG_ObjC")
+  else if (l == "LANG_ObjC")
     return translation_unit::LANG_ObjC;
-  else if ("LANG_ObjC_plus_plus")
+  else if (l == "LANG_ObjC_plus_plus")
     return translation_unit::LANG_ObjC_plus_plus;
-  else if ("LANG_Fortran77")
+  else if (l == "LANG_Fortran77")
     return translation_unit::LANG_Fortran77;
-  else if ("LANG_Fortran90")
+  else if (l == "LANG_Fortran90")
     return translation_unit::LANG_Fortran90;
-    else if ("LANG_Fortran95")
+    else if (l == "LANG_Fortran95")
     return translation_unit::LANG_Fortran95;
-  else if ("LANG_Ada83")
+  else if (l == "LANG_Ada83")
     return translation_unit::LANG_Ada83;
-  else if ("LANG_Ada95")
+  else if (l == "LANG_Ada95")
     return translation_unit::LANG_Ada95;
-  else if ("LANG_Pascal83")
+  else if (l == "LANG_Pascal83")
     return translation_unit::LANG_Pascal83;
-  else if ("LANG_Modula2")
+  else if (l == "LANG_Modula2")
     return translation_unit::LANG_Modula2;
-  else if ("LANG_Java")
+  else if (l == "LANG_Java")
     return translation_unit::LANG_Java;
-  else if ("LANG_PL1")
+  else if (l == "LANG_PL1")
     return translation_unit::LANG_PL1;
-  else if ("LANG_UPC")
+  else if (l == "LANG_UPC")
     return translation_unit::LANG_UPC;
-  else if ("LANG_D")
+  else if (l == "LANG_D")
     return translation_unit::LANG_D;
-  else if ("LANG_Python")
+  else if (l == "LANG_Python")
     return translation_unit::LANG_Python;
-  else if ("LANG_Go")
+  else if (l == "LANG_Go")
     return translation_unit::LANG_Go;
-  else if ("LANG_Mips_Assembler")
+  else if (l == "LANG_Mips_Assembler")
     return translation_unit::LANG_Mips_Assembler;
 
   return translation_unit::LANG_UNKNOWN;
