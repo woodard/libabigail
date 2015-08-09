@@ -221,7 +221,8 @@ public:
   }
 
   scope_decl_sptr
-  get_scope_for_node(xmlNodePtr node);
+  get_scope_for_node(xmlNodePtr node,
+		     access_specifier& access);
 
   // This is defined later, after build_type() is declared, because it
   // uses it.
@@ -871,28 +872,38 @@ static decl_base_sptr	handle_class_tdecl(read_context&, xmlNodePtr, bool);
 /// @param node the XML for which to return the scope decl.  If its
 /// parent XML node has no corresponding IR node, that IR node is constructed.
 ///
+/// @param access the access specifier of the node in its scope, if
+/// applicable.  If the node doesn't have any access specifier
+/// provided in its scope, then the parameter is set to no_access.
+///
 /// @return the IR node representing the scope of the IR node for the
 /// XML node given in argument.
 scope_decl_sptr
-read_context::get_scope_for_node(xmlNodePtr node)
+read_context::get_scope_for_node(xmlNodePtr node,
+				 access_specifier& access)
 {
   scope_decl_sptr nil, scope;
   if (!node)
     return nil;
 
   xmlNodePtr parent = node->parent;
+  access = no_access;
   if (parent
       && (xmlStrEqual(parent->name, BAD_CAST("data-member"))
 	  || xmlStrEqual(parent->name, BAD_CAST("member-type"))
 	  || xmlStrEqual(parent->name, BAD_CAST("member-function"))
 	  || xmlStrEqual(parent->name, BAD_CAST("member-template"))))
-    parent = parent->parent;
+    {
+      read_access(parent, access);
+      parent = parent->parent;
+    }
 
   xml_node_decl_base_sptr_map::const_iterator i =
     get_xml_node_decl_map().find(parent);
   if (i == get_xml_node_decl_map().end())
     {
-      scope_decl_sptr parent_scope = get_scope_for_node(parent);
+      access_specifier a = no_access;
+      scope_decl_sptr parent_scope = get_scope_for_node(parent, a);
       push_decl(parent_scope);
       scope = dynamic_pointer_cast<scope_decl>
 	(handle_element_node(*this, parent, /*add_decl_to_scope=*/true));
@@ -926,9 +937,10 @@ read_context::build_or_get_type_decl(const string& id,
       assert(n);
 
       scope_decl_sptr scope;
+      access_specifier access = no_access;
       if (add_decl_to_scope)
 	{
-	  scope = get_scope_for_node(n);
+	  scope = get_scope_for_node(n, access);
 	  /// In some cases, if for instance the scope of 'n' is a
 	  /// namespace, get_scope_for_node() can trigger the building
 	  /// of what is underneath of the namespace, if that has not
@@ -944,6 +956,13 @@ read_context::build_or_get_type_decl(const string& id,
 
       t = build_type(*this, n, add_decl_to_scope);
       assert(t);
+      if (is_member_type(t) && access != no_access)
+	{
+	  assert(add_decl_to_scope);
+	  decl_base_sptr d = get_type_declaration(t);
+	  assert(d);
+	  set_member_access_specifier(d, access);
+	}
       map_xml_node_to_decl(n, get_type_declaration(t));
 
       if (add_decl_to_scope)
@@ -2387,8 +2406,8 @@ build_qualified_type_decl(read_context&	ctxt,
     {
       qualified_type_def_sptr ty = is_qualified_type(d);
       assert(ty);
-      assert(*ty->get_underlying_type() == *underlying_type);
-      assert(ty->get_cv_quals() == cv);
+      string pr1 = get_pretty_representation(ty->get_underlying_type()),
+	pr2 = get_pretty_representation(underlying_type);
       return ty;
     }
 

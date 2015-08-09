@@ -70,6 +70,9 @@ test-abidiff/test-var0-report.txt	\
 test-abidiff/test-corpus0-v0.so.abi	\
 test-abidiff/test-corpus0-v1.so.abi	\
 test-abidiff/test-corpus0-report0.txt	\
+test-abidiff/test-PR18791-report0.txt   \
+test-abidiff/test-PR18791-v0.so.abi     \
+test-abidiff/test-PR18791-v1.so.abi     \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

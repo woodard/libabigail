@@ -95,6 +95,12 @@ static InOutSpec specs[] =
     "data/test-abidiff/test-corpus0-report0.txt",
     "output/test-abidiff/test-corpus0-report0.txt"
   },
+  {
+    "data/test-abidiff/test-PR18791-v0.so.abi",
+    "data/test-abidiff/test-PR18791-v1.so.abi",
+    "data/test-abidiff/test-PR18791-report0.txt",
+    "output/test-abidiff/test-PR18791-report0.txt"
+  },
   // This should be the last entry.
   {0, 0, 0, 0}
 };
