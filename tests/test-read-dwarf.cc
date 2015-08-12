@@ -95,6 +95,16 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test8-qualified-this-pointer.so.abi",
     "output/test-read-dwarf/test8-qualified-this-pointer.so.abi"
   },
+  {
+    "data/test-read-dwarf/test9-pr18818-clang.so",
+    "data/test-read-dwarf/test9-pr18818-clang.so.abi",
+    "output/test-read-dwarf/test9-pr18818-clang.so.abi",
+  },
+  {
+    "data/test-read-dwarf/test10-pr18818-gcc.so",
+    "data/test-read-dwarf/test10-pr18818-gcc.so.abi",
+    "output/test-read-dwarf/test10-pr18818-gcc.so.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL}
 };

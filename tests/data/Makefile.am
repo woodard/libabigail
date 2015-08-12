@@ -250,6 +250,10 @@ test-read-dwarf/test7.so.abi		\
 test-read-dwarf/test8-qualified-this-pointer.cc		\
 test-read-dwarf/test8-qualified-this-pointer.so		\
 test-read-dwarf/test8-qualified-this-pointer.so.abi		\
+test-read-dwarf/test9-pr18818-clang.so  \
+test-read-dwarf/test10-pr18818-gcc.so \
+test-read-dwarf/test9-pr18818-clang.so.abi  \
+test-read-dwarf/test10-pr18818-gcc.so.abi \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\
