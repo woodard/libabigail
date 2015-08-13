@@ -138,7 +138,7 @@ display_usage(const string& prog_name, ostream& out)
          "(this is the default)\n"
       << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
          "the error output stream\n"
-      << " --help  display this message\n";
+      << " --help|-h display this message\n";
 }
 
 /// Parse the command line and set the options accordingly.
@@ -203,7 +203,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_stats_only = true;
       else if (!strcmp(argv[i], "--symtabs"))
 	opts.show_symtabs = true;
-      else if (!strcmp(argv[i], "--help"))
+      else if (!strcmp(argv[i], "--help")
+	       || !strcmp(argv[i], "-h"))
 	{
 	  opts.display_usage = true;
 	  return true;

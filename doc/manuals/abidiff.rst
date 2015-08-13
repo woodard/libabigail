@@ -28,7 +28,7 @@ Invocation
 Options
 =======
 
-  * ``--help``
+  * ``--help | -h``
 
     Display a short help about the command and exit.
 
