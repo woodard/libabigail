@@ -87,6 +87,19 @@ Options
     appear multiple times on the command line; all the suppression
     specification files are then taken into account.
 
+  * ``--fail-no-dbg``
+
+    Make the program fail and return a non-zero exit code if couldn't
+    read any of the debug information that comes from the debug info
+    packages that were given on the command line.  If no debug info
+    package were provided on the command line then this option is not
+    active.
+
+    Note that the non-zero exit code returned by the program as a
+    result of this option is the constant ``ABIDIFF_ERROR``.  To know
+    the numerical value of that constant, please refer to the
+    :ref:`exit code documentation <abidiff_return_value_label>`.
+
   * ``--keep-tmp-files``
 
     Do not erase the temporary directory files that are created during

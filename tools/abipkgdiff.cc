@@ -100,6 +100,7 @@ struct options
   bool		show_redundant_changes;
   bool		show_added_syms;
   bool		show_added_binaries;
+  bool		fail_if_no_debug_info;
   vector<string> suppression_paths;
 
   options()
@@ -110,7 +111,8 @@ struct options
       show_linkage_names(true),
       show_redundant_changes(),
       show_added_syms(true),
-      show_added_binaries(true)
+      show_added_binaries(true),
+      fail_if_no_debug_info()
   {}
 };
 
@@ -368,6 +370,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --redundant                    display redundant changes\n"
       << " --no-added-syms                do not display added functions or variables\n"
       << " --no-added-binaries            do not display added binaries\n"
+      << " --fail-no-dbg                  fail if no debug info was found\n"
       << " --verbose                      emit verbose progress messages\n"
       << " --help|-h                      display help message\n";
 }
@@ -578,6 +581,18 @@ compare(const elf_file& elf1,
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
+  if (opts.fail_if_no_debug_info
+      && (c1_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND))
+    {
+      cerr << "Could not find debug info file";
+      if (di_dir1 && strcmp(di_dir1, ""))
+	cerr << " under " << di_dir1 << "\n";
+      else
+	cerr << "\n";
+
+      return abigail::tools_utils::ABIDIFF_ERROR;
+    }
+
   if (verbose)
     cerr << " DONE\n";
 
@@ -595,6 +610,18 @@ compare(const elf_file& elf1,
 	cerr << "could not find the read file '"
 	     << elf2.path
 	     << "' properly\n";
+      return abigail::tools_utils::ABIDIFF_ERROR;
+    }
+
+  if (opts.fail_if_no_debug_info
+      && (c2_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND))
+    {
+      cerr << "Could not find debug info file";
+      if (di_dir1 && strcmp(di_dir2, ""))
+	cerr << " under " << di_dir2 << "\n";
+      else
+	cerr << "\n";
+
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
@@ -934,6 +961,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 		 opts.show_added_syms = false;
       else if (!strcmp(argv[i], "--no-added-binaries"))
 	opts.show_added_binaries = false;
+      else if (!strcmp(argv[i], "--fail-no-dbg"))
+	opts.fail_if_no_debug_info = true;
       else if (!strcmp(argv[i], "--verbose"))
 	verbose = true;
       else if (!strcmp(argv[i], "--suppressions")
