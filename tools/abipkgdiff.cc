@@ -369,7 +369,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --no-added-syms                do not display added functions or variables\n"
       << " --no-added-binaries            do not display added binaries\n"
       << " --verbose                      emit verbose progress messages\n"
-      << " --help                         display help message\n";
+      << " --help|-h                      display help message\n";
 }
 
 /// Extract an RPM package.
@@ -945,7 +945,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.suppression_paths.push_back(argv[j]);
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--help"))
+      else if (!strcmp(argv[i], "--help")
+	       || !strcmp(argv[i], "-h"))
         {
           opts.display_usage = true;
           return true;
