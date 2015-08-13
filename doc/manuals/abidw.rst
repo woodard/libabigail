@@ -20,11 +20,11 @@ Invocation
 Options
 =======
 
-  * ``--help``
+  * ``--help | -h``
 
     Display a short help about the command and exit.
 
-  * ``--debug-info-dir`` <*dir-path*>
+  * ``--debug-info-dir | -d`` <*dir-path*>
 
     In cases where the debug info for *path-to-elf-file* is in a
     separate file that is located in a non-standard place, this tells

@@ -70,8 +70,8 @@ display_usage(const string& prog_name, ostream& out)
 {
   out << "usage: " << prog_name << " [options] [<path-to-elf-file>]\n"
       << " where options can be: \n"
-      << "  --help display this message\n"
-      << "  --debug-info-dir <dir-path> look for debug info under 'dir-path'\n"
+      << "  --help|-h display this message\n"
+      << "  --debug-info-dir|-d <dir-path> look for debug info under 'dir-path'\n"
       << "  --out-file <file-path> write the output to 'file-path'\n"
       << "  --no-architecture do not emit architecture info in the output\n"
       << "  --check-alternate-debug-info <elf-path> check alternate debug info "
@@ -98,7 +98,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  else
 	    return false;
 	}
-      else if (!strcmp(argv[i], "--debug-info-dir"))
+      else if (!strcmp(argv[i], "--debug-info-dir")
+	       || !strcmp(argv[i], "-d"))
 	{
 	  if (argc <= i + 1
 	      || argv[i + 1][0] == '-'
@@ -137,7 +138,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--load-all-types"))
 	opts.load_all_types = true;
-      else if (!strcmp(argv[i], "--help"))
+      else if (!strcmp(argv[i], "--help")
+	       || !strcmp(argv[i], "--h"))
 	return false;
       else
 	return false;
