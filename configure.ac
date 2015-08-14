@@ -99,6 +99,17 @@ AC_SUBST(LIBXML2_VERSION)
 AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
 
+dnl Check for some programs like rm, mkdir, etc ...
+AC_CHECK_PROG(HAS_RM, rm, yes, no)
+if test x$HAS_RM = xno; then
+   AC_MSG_ERROR([could not find the program 'rm' installed])
+fi
+
+AC_CHECK_PROG(HAS_MKDIR, mkdir, yes, no)
+if test x$HAS_MKDIR = xno; then
+   AC_MSG_ERROR([could not find the program 'mkdir' installed])
+fi
+
 dnl Check for dependency: libzip
 LIBZIP_VERSION=0.10.1
 
