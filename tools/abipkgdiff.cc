@@ -366,7 +366,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
       << " --suppressions|--suppr <path>  specify supression specification path\n"
       << " --keep-tmp-files               don't erase created temporary files\n"
-      << " --dso-only                     pompare shared libraries only\n"
+      << " --dso-only                     compare shared libraries only\n"
       << " --no-linkage-name		  do not display linkage names of "
                                           "added/removed/changed\n"
       << " --redundant                    display redundant changes\n"
@@ -374,7 +374,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --no-added-binaries            do not display added binaries\n"
       << " --fail-no-dbg                  fail if no debug info was found\n"
       << " --verbose                      emit verbose progress messages\n"
-      << " --help|-h                      display help message\n";
+      << " --help|-h                      display this help message\n";
 }
 
 #ifdef WITH_RPM
@@ -394,7 +394,7 @@ extract_rpm(const string& package_path,
   if (verbose)
     cerr << "Extracting package "
 	 << package_path
-	 << "to "
+	 << " to "
 	 << extracted_package_dir_path
 	 << " ...";
 
