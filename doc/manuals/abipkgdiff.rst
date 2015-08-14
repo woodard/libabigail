@@ -5,8 +5,8 @@ abipkgdiff
 ===========
 
 ``abipkgdiff`` compares the Application Binary Interfaces (ABI) of the
-`ELF`_ binaries contained in two software packages.  The format of
-software package that is currently supported is `RPM`_.
+`ELF`_ binaries contained in two software packages.  The software package formats of
+that are currently supported are `Deb`_ and `RPM`_.
 
 For a comprehensive ABI change report that includes changes about
 function and variable sub-types, the two input packages must be
@@ -15,6 +15,7 @@ information in `DWARF`_ format.
 
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 .. _RPM: https://en.wikipedia.org/wiki/RPM_Package_Manager
+.. _Deb: https://en.wikipedia.org/wiki/Deb_%28file_format%29
 .. _DWARF: http://www.dwarfstd.org
 
 
