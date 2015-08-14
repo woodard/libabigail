@@ -254,6 +254,8 @@ test-read-dwarf/test9-pr18818-clang.so  \
 test-read-dwarf/test10-pr18818-gcc.so \
 test-read-dwarf/test9-pr18818-clang.so.abi  \
 test-read-dwarf/test10-pr18818-gcc.so.abi \
+test-read-dwarf/test11-pr18828.so \
+test-read-dwarf/test11-pr18828.so.abi \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\

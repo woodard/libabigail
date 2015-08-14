@@ -2392,15 +2392,24 @@ public:
 	 i != declaration_only_classes_to_force_defined().end();
 	 ++i)
       {
+	// So i->first is the name of the declaration-only type.  i->second
+	// is a vector of instances of the declaration-only type named
+	// i->first.  Each instance was referenced in a context that
+	// needs a complete type.
 	for (classes_type::iterator j = i->second.begin();
 		 j != i->second.end();
 		 ++j)
 	  {
-	    assert ((*j)->get_is_declaration_only()
-		    && (*j)->get_size_in_bits() == 0
-		    && ((*j)->get_definition_of_declaration() == 0));
-	    (*j)->set_is_declaration_only(false);
-	    (*j)->set_size_in_bits(1);
+	    if ((*j)->get_is_declaration_only())
+	      {
+		// This particular declaration-only type hasn't been
+		// resolved yet.  So force resolve it.
+		assert ((*j)->get_size_in_bits() == 0
+			&& ((*j)->get_definition_of_declaration() == 0));
+
+		(*j)->set_is_declaration_only(false);
+		(*j)->set_size_in_bits(1);
+	      }
 	  }
 	declaration_only_classes().erase(i->first);
       }
