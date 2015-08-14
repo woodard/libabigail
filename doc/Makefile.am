@@ -59,7 +59,7 @@ CLEANFILES = $(DOXY_API_BLD_CFG) $(DOXY_WEBSITE_BLD_CFG)
 
 # To remove directories.
 clean-local:
-	-rm -rf $(DOXY_API_BLD_DIR) $(DOXY_WEBSITE_BLD_DIR)
+	-rm -rf $(DOXY_API_BLD_DIR)/*/* $(DOXY_WEBSITE_BLD_DIR)/*/*
 
 #To install everything:
 if ENABLE_APIDOC
