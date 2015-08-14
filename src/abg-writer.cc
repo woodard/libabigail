@@ -200,6 +200,56 @@ public:
   clear_type_id_map()
   {m_type_id_map.clear();}
 
+  /// Record a given type id as belonging to a type that as been
+  /// written out to the XML output.
+  ///
+  /// @param id the ID of the type.
+  void
+  record_type_id_as_emitted(const string& id)
+  {m_emitted_type_id_map[id] = true;}
+
+  /// Flag a type as having been written out to the XML output.
+  ///
+  /// @param t the type to flag.
+  void
+  record_type_as_emitted(const type_base_sptr& t)
+  {
+    string id = get_id_for_type(t);
+    record_type_id_as_emitted(id);
+  }
+
+  /// Test if a given type ID belongs to a type that has been written
+  /// out to the XML output.
+  ///
+  /// @param id the ID of the type to test.
+  ///
+  /// @return true if the type has already been emitted, false
+  /// otherwise.
+  bool
+  type_id_is_emitted(const string& id)
+  {return m_emitted_type_id_map.find(id) != m_emitted_type_id_map.end();}
+
+  /// Test if a given type has been written out to the XML output.
+  ///
+  /// @param the type to test for.
+  ///
+  /// @return true if the type has already been emitted, false
+  /// otherwise.
+  bool
+  type_is_emitted(const type_base_sptr& t)
+  {
+    if (!type_has_existing_id(t))
+      return false;
+    string id = get_id_for_type(t);
+    return type_id_is_emitted(id);
+  }
+
+  /// Clear the map that contains the IDs of the types that has been
+  /// recorded as having been written out to the XML output.
+  void
+  clear_emitted_types_map()
+  {m_emitted_type_id_map.clear();}
+
   const string_elf_symbol_sptr_map_type&
   get_fun_symbol_map() const
   {return m_fun_symbol_map;}
@@ -213,6 +263,7 @@ private:
   config				m_config;
   ostream&				m_ostream;
   type_ptr_map				m_type_id_map;
+  unordered_map<string, bool>		m_emitted_type_id_map;
   fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
@@ -858,6 +909,15 @@ write_translation_unit(const translation_unit&	tu,
   ostream& o = ctxt.get_ostream();
   const config& c = ctxt.get_config();
 
+  // In a given translation unit, we'd like to ensure that a given
+  // type is defined only once.  The same type can be present in
+  // several translation units, though.  They'll be canonicalized
+  // later, by the reader's code.
+  //
+  // So lets clear the map that contains the types that are emitted in
+  // the translation unit tu.
+  ctxt.clear_emitted_types_map();
+
   do_indent(o, indent);
 
   o << "<abi-instr version='"
@@ -890,6 +950,11 @@ write_translation_unit(const translation_unit&	tu,
 
   for (const_iterator i = d.begin(); i != d.end(); ++i)
     {
+      if (type_base_sptr t = is_type(*i))
+	if (ctxt.type_is_emitted(t))
+	  // This type has already been written out to the current
+	  // translation unit, so do not emit it again.
+	  continue;
       o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
@@ -996,6 +1061,8 @@ write_type_decl(const type_decl_sptr d,
 
   o << " id='" << ctxt.get_id_for_type(d) << "'" <<  "/>";
 
+  ctxt.record_type_as_emitted(d);
+
   return true;
 }
 
@@ -1030,6 +1097,11 @@ write_namespace_decl(const shared_ptr<namespace_decl> decl,
 
   for (const_iterator i = d.begin(); i != d.end(); ++i)
     {
+      if (type_base_sptr t = is_type(*i))
+	if (ctxt.type_is_emitted(t))
+	  // This type has already been emitted to the current
+	  // translation unit so do not emit it again.
+	  continue;
       o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
@@ -1090,6 +1162,8 @@ write_qualified_type_def(const qualified_type_def_sptr		decl,
     i = ctxt.get_id_for_type(decl);
 
   o<< " id='" << i << "'/>";
+
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }
@@ -1154,6 +1228,8 @@ write_pointer_type_def(const pointer_type_def_sptr	decl,
 
   write_location(static_pointer_cast<decl_base>(decl), o);
   o << "/>";
+
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }
@@ -1222,6 +1298,9 @@ write_reference_type_def(const reference_type_def_sptr		decl,
   write_location(static_pointer_cast<decl_base>(decl), o);
 
   o << "/>";
+
+  ctxt.record_type_as_emitted(decl);
+
   return true;
 }
 
@@ -1315,6 +1394,8 @@ write_array_type_def(const array_type_def_sptr		decl,
       o << "</array-type-def>";
     }
 
+  ctxt.record_type_as_emitted(decl);
+
   return true;
 }
 
@@ -1391,6 +1472,8 @@ write_enum_type_decl(const enum_type_decl_sptr	decl,
 
   do_indent(o, indent);
   o << "</enum-decl>";
+
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }
@@ -1564,6 +1647,8 @@ write_typedef_decl(const typedef_decl_sptr	decl,
     i = ctxt.get_id_for_type(decl);
 
   o << " id='" << i << "'/>";
+
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }
@@ -1924,6 +2009,8 @@ write_class_decl(const class_decl_sptr	decl,
       o << "</class-decl>";
     }
 
+  ctxt.record_type_as_emitted(decl);
+
   return true;
 }
 
@@ -2032,6 +2119,8 @@ write_type_tparameter(const type_tparameter_sptr	decl,
 
   o << "/>";
 
+  ctxt.record_type_as_emitted(decl);
+
   return true;
 }
 
@@ -2116,6 +2205,8 @@ write_template_tparameter (const template_tparameter_sptr	decl,
 
   do_indent_to_level(ctxt, indent, 0);
   o << "</template-template-parameter>";
+
+  ctxt.record_type_as_emitted(decl);
 
   return true;
 }

@@ -1136,7 +1136,6 @@
     <function-decl name='fgetc' filepath='/usr/include/stdio.h' line='531' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <typedef-decl name='_G_fpos_t' type-id='type-id-22' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-48'/>
     <typedef-decl name='fpos_t' type-id='type-id-48' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-49'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4498,7 +4497,6 @@
     <function-decl name='fgetc' filepath='/usr/include/stdio.h' line='531' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <typedef-decl name='_G_fpos64_t' type-id='type-id-22' filepath='/usr/include/_G_config.h' line='30' column='1' id='type-id-200'/>
     <typedef-decl name='fpos_t' type-id='type-id-200' filepath='/usr/include/stdio.h' line='112' column='1' id='type-id-201'/>
     <function-decl name='fgetpos' mangled-name='fgetpos64' filepath='/usr/include/stdio.h' line='806' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -7466,7 +7464,6 @@
     <function-decl name='fgetc' filepath='/usr/include/stdio.h' line='531' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <typedef-decl name='_G_fpos_t' type-id='type-id-22' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-48'/>
     <typedef-decl name='fpos_t' type-id='type-id-48' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-49'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -9302,7 +9299,6 @@
     <function-decl name='fgetc' filepath='/usr/include/stdio.h' line='531' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <typedef-decl name='_G_fpos_t' type-id='type-id-22' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-48'/>
     <typedef-decl name='fpos_t' type-id='type-id-48' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-49'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -10527,7 +10523,6 @@
     <function-decl name='fgetc' filepath='/usr/include/stdio.h' line='531' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <typedef-decl name='_G_fpos_t' type-id='type-id-22' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-48'/>
     <typedef-decl name='fpos_t' type-id='type-id-48' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-49'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -13152,7 +13147,6 @@
     <function-decl name='fgetc' filepath='/usr/include/stdio.h' line='531' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <typedef-decl name='_G_fpos_t' type-id='type-id-22' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-48'/>
     <typedef-decl name='fpos_t' type-id='type-id-48' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-49'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -14818,7 +14812,6 @@
     <function-decl name='fgetc' filepath='/usr/include/stdio.h' line='531' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-3'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <typedef-decl name='_G_fpos_t' type-id='type-id-22' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-48'/>
     <typedef-decl name='fpos_t' type-id='type-id-48' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-49'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -15310,7 +15303,6 @@
     <function-decl name='getwchar' filepath='/usr/include/wchar.h' line='752' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-22'/>
     <typedef-decl name='__mbstate_t' type-id='type-id-22' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-268'/>
     <typedef-decl name='mbstate_t' type-id='type-id-268' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-269'/>
     <function-decl name='mbrlen' filepath='/usr/include/wchar.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
