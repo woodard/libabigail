@@ -53,7 +53,7 @@ AC_ARG_ENABLE(manual,
 	      ENABLE_MANUAL=auto)
 
 dnl *************************************************
-dnl Here is the list of versions of the dependencies
+dnl check for dependencies
 dnl *************************************************
 
 AC_PROG_CXX
