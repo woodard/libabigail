@@ -27,6 +27,18 @@ AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 
+AC_ARG_ENABLE(rpm,
+	      AS_HELP_STRING([--enable-rpm=yes|no|auto],
+			     [enable the suppot of rpm in abipkgdiff (default is auto)]),
+	      ENABLE_RPM=$enableval,
+	      ENABLE_RPM=auto)
+
+AC_ARG_ENABLE(deb,
+	      AS_HELP_STRING([--enable-rpm=yes|no|auto],
+			     [enable the suppot of deb in abipkgdiff (default is auto)]),
+	      ENABLE_DEB=$enableval,
+	      ENABLE_DEB=auto)
+
 AC_ARG_ENABLE(zip-archive,
 	      AS_HELP_STRING([--enable-zip-archive=yes|no|auto],
 			     [enable bundling of TUs in zip archives (default is no)]),
@@ -109,6 +121,47 @@ AC_CHECK_PROG(HAS_MKDIR, mkdir, yes, no)
 if test x$HAS_MKDIR = xno; then
    AC_MSG_ERROR([could not find the program 'mkdir' installed])
 fi
+
+dnl Check for the rpm2cpio and cpio programs
+if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM = xauto; then
+  AC_CHECK_PROG(HAS_RPM2CPIO, rpm2cpio, yes, no)
+  AC_CHECK_PROG(HAS_CPIO, cpio, yes, no)
+  
+  if test x$ENABLE_RPM = xauto; then
+    if test x$HAS_RPM2CPIO = xyes -a x$HAS_CPIO = xyes; then
+       ENABLE_RPM=yes
+    fi
+  fi
+fi
+
+if test x$ENABLE_RPM = xyes; then
+   AC_DEFINE([WITH_RPM], 1, [compile the rpm package support in abipkgdiff])
+   AC_MSG_NOTICE(rpm support in abipkgdiff is enabled);
+else
+   AC_MSG_NOTICE(rpm support in abipkgdiff is disabled);
+fi
+
+AM_CONDITIONAL(ENABLE_RPM, test x$ENABLE_RPM = xyes)
+
+dnl Check for the dpkg program
+if test x$ENABLE_DEB = xauto -o x$ENABLE_DEB = xyes; then
+   AC_CHECK_PROG(HAS_DPKG, dpkg, yes, no)
+
+   if test x$ENABLE_DEB = xauto; then
+     if test x$HAS_DPKG = xyes; then
+       ENABLE_DEB=yes
+    fi
+   fi
+fi
+
+if test x$ENABLE_DEB = xyes; then
+   AC_DEFINE([WITH_DEB], 1, [compile the deb package support in abipkgdiff])
+   AC_MSG_NOTICE(deb support in abipkgdiff is enabled);
+else
+   AC_MSG_NOTICE(deb support in abipkgdiff is disabled);
+fi
+
+AM_CONDITIONAL(ENABLE_DEB, test x$ENABLE_DEB = xyes)
 
 dnl Check for dependency: libzip
 LIBZIP_VERSION=0.10.1
@@ -270,6 +323,8 @@ AC_MSG_NOTICE([
  OPTIONAL FEATURES:
     Enable zip archives                : ${ENABLE_ZIP_ARCHIVE}
     Use a C++-11 compiler              : ${ENABLE_CXX11}
+    Enable rpm support in abipkgdiff   : ${ENABLE_RPM}
+    Enable deb support in abipkgdiff   : ${ENABLE_DEB}
     Generate html apidoc	       : ${ENABLE_APIDOC}
     Generate html manual	       : ${ENABLE_MANUAL}
 ])

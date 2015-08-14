@@ -34,6 +34,8 @@
 /// temporary directory , looks for the ELF binaries in there,
 /// compares their ABIs and emit a report about the changes.
 
+// For package configuration macros.
+#include "config.h"
 #include <iostream>
 #include <string>
 #include <cstring>
@@ -375,6 +377,8 @@ display_usage(const string& prog_name, ostream& out)
       << " --help|-h                      display help message\n";
 }
 
+#ifdef WITH_RPM
+
 /// Extract an RPM package.
 ///
 /// @param package_path the path to the package to extract.
@@ -417,6 +421,10 @@ extract_rpm(const string& package_path,
   return true;
 }
 
+#endif // WITH_RPM
+
+#ifdef WITH_DEB
+
 /// Extract an Debian binary package.
 ///
 /// @param package_path the path to the package to extract.
@@ -458,6 +466,8 @@ extract_deb(const string& package_path,
   return true;
 }
 
+#endif // WITH_DEB
+
 /// Erase the temporary directories created for the extraction of two
 /// packages.
 ///
@@ -498,20 +508,32 @@ extract_package(const package& package)
   switch(package.type())
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
+#ifdef WITH_RPM
       if (!extract_rpm(package.path(), package.extracted_dir_path()))
         {
           cerr << "Error while extracting package" << package.path() << "\n";
           return false;
         }
       return true;
+#else
+      cerr << "Support for rpm hasn't been enabled.  Please consider "
+	"enabling it at package configure time\n";
+      return false;
+#endif // WITH_RPM
       break;
     case abigail::tools_utils::FILE_TYPE_DEB:
+#ifdef WITH_DEB
       if (!extract_deb(package.path(), package.extracted_dir_path()))
         {
           cerr << "Error while extracting package" << package.path() << "\n";
           return false;
         }
       return true;
+#else
+      cerr << "Support for deb hasn't been enabled.  Please consider "
+	"enabling it at package configure time\n";
+      return false;
+#endif // WITH_DEB
       break;
     default:
       return false;

@@ -29,6 +29,8 @@
 /// The set of input files and reference reports to consider should be
 /// present in the source distribution.
 
+// For package configuration macros.
+#include "config.h"
 #include <cstring>
 #include <string>
 #include <cstdlib>
@@ -52,6 +54,7 @@ struct InOutSpec
 
 static InOutSpec in_out_specs[] =
 {
+#ifdef WITH_RPM
   // Two RPM packages with debuginfo available and have ABI changes
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
@@ -113,6 +116,9 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/test-rpm-report-5.txt",
     "output/test-diff-pkg/test-rpm-report-5.txt"
   },
+#endif //WITH_RPM
+
+#ifdef WITH_DEB
   // Two debian packages.
   {
     "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64.deb",
@@ -123,6 +129,7 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt",
     "output/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt"
   },
+#endif // WITH_DEB
   // This should be the last entry.
   {0, 0, 0, 0, 0, 0, 0}
 };

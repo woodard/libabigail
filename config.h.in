@@ -98,6 +98,12 @@
 /* Defined to 1 if a C++11 compiler is used */
 #undef WITH_CXX11
 
+/* compile the deb package support in abipkgdiff */
+#undef WITH_DEB
+
+/* compile the rpm package support in abipkgdiff */
+#undef WITH_RPM
+
 /* compile the zip archive support */
 #undef WITH_ZIP_ARCHIVE
 
