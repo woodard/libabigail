@@ -6469,14 +6469,12 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
     }
 
   ctxt.associate_die_to_type(dwarf_dieoffset(die), is_in_alt_di, result);
+  ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
 
   if (!has_child)
-    {
     // TODO: set the access specifier for the declaration-only class
     // here.
-      ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
-      return result;
-    }
+    return result;
 
   ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = result;
 
