@@ -1089,7 +1089,9 @@ write_namespace_decl(const shared_ptr<namespace_decl> decl,
 
   do_indent(o, indent);
 
-  o << "<namespace-decl name='" << decl->get_name() << "'>";
+  o << "<namespace-decl name='"
+    << xml::escape_xml_string(decl->get_name())
+    << "'>";
 
   typedef scope_decl::declarations		declarations;
   typedef declarations::const_iterator const_iterator;
@@ -1636,7 +1638,9 @@ write_typedef_decl(const typedef_decl_sptr	decl,
 
   do_indent(o, indent);
 
-  o << "<typedef-decl name='" << decl->get_name() << "'";
+  o << "<typedef-decl name='"
+    << xml::escape_xml_string(decl->get_name())
+    << "'";
 
   o << " type-id='" << ctxt.get_id_for_type(decl->get_underlying_type()) << "'";
 
@@ -1691,7 +1695,7 @@ write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
 
   do_indent(o, indent);
 
-  o << "<var-decl name='" << decl->get_name() << "'";
+  o << "<var-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
   o << " type-id='" << ctxt.get_id_for_type(decl->get_type()) << "'";
 
   if (write_linkage_name)
