@@ -2484,8 +2484,7 @@ public:
 	  {
 	    type_base_sptr t = lookup_type_from_die_offset(*i, in_alt_di);
 	    assert(t);
-	    if (!type_has_non_canonicalized_subtype(t))
-	      canonicalize(t);
+	    canonicalize(t);
 	  }
       }
   }

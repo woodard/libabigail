@@ -1,5 +1,5 @@
 ================ changes of 'libsigc-2.0.so.0.0.0'===============
-  Functions changes summary: 1 Removed, 2 Changed (15 filtered out), 1 Added functions
+  Functions changes summary: 1 Removed, 2 Changed (17 filtered out), 1 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   1 Removed function:
