@@ -907,6 +907,8 @@ public:
   set_member_function_is_virtual(function_decl&, bool);
 
   friend class class_decl;
+
+  friend class scope_decl;
 };// end class decl_base
 
 bool
@@ -1064,8 +1066,10 @@ class type_base : public virtual type_or_decl_base
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
 
+protected:
   priv_sptr priv_;
 
+private:
   // Forbid this.
   type_base();
 

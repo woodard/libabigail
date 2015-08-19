@@ -3029,6 +3029,7 @@ scope_decl::add_member_decl(const shared_ptr<decl_base> member)
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     member_scopes_.push_back(m);
+  member->priv_->qualified_name_.clear();
   return member;
 }
 
@@ -3048,6 +3049,8 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     member_scopes_.push_back(m);
+
+  member->priv_->qualified_name_.clear();
   return member;
 }
 
