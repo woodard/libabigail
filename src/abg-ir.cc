@@ -3007,15 +3007,199 @@ strip_typedef(const type_base_sptr type)
 ///
 /// @return the leaf underlying type node of a @p type.
 type_base_sptr
-get_typedef_underlying_type(const type_base_sptr& type)
+peel_typedef_type(const type_base_sptr& type)
 {
   typedef_decl_sptr t = is_typedef(type);
   if (!t)
     return type;
 
   if (is_typedef(t->get_underlying_type()))
-    return get_typedef_underlying_type(t->get_underlying_type());
+    return peel_typedef_type(t->get_underlying_type());
   return t->get_underlying_type();
+}
+
+/// Return the leaf underlying type node of a @ref typedef_decl node.
+///
+/// If the underlying type of a @ref typedef_decl node is itself a
+/// @ref typedef_decl node, then recursively look at the underlying
+/// type nodes to get the first one that is not a a @ref typedef_decl
+/// node.  This is what a leaf underlying type node means.
+///
+/// Otherwise, if the underlying type node of @ref typedef_decl is
+/// *NOT* a @ref typedef_decl node, then just return the underlying
+/// type node.
+///
+/// And if the type node considered is not a @ref typedef_decl node,
+/// then just return it.
+///
+/// @return the leaf underlying type node of a @p type.
+const type_base*
+peel_typedef_type(const type_base* type)
+{
+  const typedef_decl* t = is_typedef(type);
+  if (!t)
+    return t;
+
+  return peel_typedef_type(t->get_underlying_type()).get();
+}
+
+/// Return the leaf pointed-to type node of a @ref pointer_type_def
+/// node.
+///
+/// If the pointed-to type of a @ref pointer_type_def node is itself a
+/// @ref pointer_type_def node, then recursively look at the
+/// pointed-to type nodes to get the first one that is not a a @ref
+/// pointer_type_def node.  This is what a leaf pointed-to type node
+/// means.
+///
+/// Otherwise, if the pointed-to type node of @ref pointer_type_def is
+/// *NOT* a @ref pointer_type_def node, then just return the
+/// pointed-to type node.
+///
+/// And if the type node considered is not a @ref pointer_type_def
+/// node, then just return it.
+///
+/// @return the leaf pointed-to type node of a @p type.
+type_base_sptr
+peel_pointer_type(const type_base_sptr& type)
+{
+  pointer_type_def_sptr t = is_pointer_type(type);
+  if (!t)
+    return type;
+
+  if (is_pointer_type(t->get_pointed_to_type()))
+    return peel_pointer_type(t->get_pointed_to_type());
+  return t->get_pointed_to_type();
+}
+
+/// Return the leaf pointed-to type node of a @ref pointer_type_def
+/// node.
+///
+/// If the pointed-to type of a @ref pointer_type_def node is itself a
+/// @ref pointer_type_def node, then recursively look at the
+/// pointed-to type nodes to get the first one that is not a a @ref
+/// pointer_type_def node.  This is what a leaf pointed-to type node
+/// means.
+///
+/// Otherwise, if the pointed-to type node of @ref pointer_type_def is
+/// *NOT* a @ref pointer_type_def node, then just return the
+/// pointed-to type node.
+///
+/// And if the type node considered is not a @ref pointer_type_def
+/// node, then just return it.
+///
+/// @return the leaf pointed-to type node of a @p type.
+const type_base*
+peel_pointer_type(const type_base* type)
+{
+  const pointer_type_def* t = is_pointer_type(type);
+  if (!t)
+    return type;
+
+  return peel_pointer_type(t->get_pointed_to_type()).get();
+}
+
+/// Return the leaf pointed-to type node of a @ref reference_type_def
+/// node.
+///
+/// If the pointed-to type of a @ref reference_type_def node is itself
+/// a @ref reference_type_def node, then recursively look at the
+/// pointed-to type nodes to get the first one that is not a a @ref
+/// reference_type_def node.  This is what a leaf pointed-to type node
+/// means.
+///
+/// Otherwise, if the pointed-to type node of @ref reference_type_def
+/// is *NOT* a @ref reference_type_def node, then just return the
+/// pointed-to type node.
+///
+/// And if the type node considered is not a @ref reference_type_def
+/// node, then just return it.
+///
+/// @return the leaf pointed-to type node of a @p type.
+type_base_sptr
+peel_reference_type(const type_base_sptr& type)
+{
+  reference_type_def_sptr t = is_reference_type(type);
+  if (!t)
+    return type;
+
+  if (is_reference_type(t->get_pointed_to_type()))
+    return peel_reference_type(t->get_pointed_to_type());
+  return t->get_pointed_to_type();
+}
+
+/// Return the leaf pointed-to type node of a @ref reference_type_def
+/// node.
+///
+/// If the pointed-to type of a @ref reference_type_def node is itself
+/// a @ref reference_type_def node, then recursively look at the
+/// pointed-to type nodes to get the first one that is not a a @ref
+/// reference_type_def node.  This is what a leaf pointed-to type node
+/// means.
+///
+/// Otherwise, if the pointed-to type node of @ref reference_type_def
+/// is *NOT* a @ref reference_type_def node, then just return the
+/// pointed-to type node.
+///
+/// And if the type node considered is not a @ref reference_type_def
+/// node, then just return it.
+///
+/// @return the leaf pointed-to type node of a @p type.
+const type_base*
+peel_reference_type(const type_base* type)
+{
+  const reference_type_def* t = is_reference_type(type);
+  if (!t)
+    return type;
+
+  return peel_reference_type(t->get_pointed_to_type()).get();
+}
+
+/// Return the leaf underlying or pointed-to type node of a @ref
+/// typedef_decl, @ref pointer_type_def or @ref reference_type_def
+/// node.
+///
+/// @return the leaf underlying or pointed-to type node of @p type.
+type_base_sptr
+peel_typedef_pointer_or_reference_type(const type_base_sptr type)
+{
+  type_base_sptr typ  = type;
+  while (is_typedef(type) || is_pointer_type(type) || is_reference_type(type))
+    {
+      if (typedef_decl_sptr t = is_typedef(typ))
+	typ = peel_typedef_type(t);
+
+      if (pointer_type_def_sptr t = is_pointer_type(typ))
+	typ = peel_pointer_type(t);
+
+      if (reference_type_def_sptr t = is_reference_type(typ))
+	typ = peel_reference_type(t);
+    }
+
+  return typ;
+}
+
+/// Return the leaf underlying or pointed-to type node of a @ref
+/// typedef_decl, @ref pointer_type_def or @ref reference_type_def
+/// node.
+///
+/// @return the leaf underlying or pointed-to type node of @p type.
+type_base*
+peel_typedef_pointer_or_reference_type(const type_base* type)
+{
+  while (is_typedef(type) || is_pointer_type(type) || is_reference_type(type))
+    {
+      if (const typedef_decl* t = is_typedef(type))
+	type = peel_typedef_type(t);
+
+      if (const pointer_type_def* t = is_pointer_type(type))
+	type = peel_pointer_type(t);
+
+      if (const reference_type_def* t = is_reference_type(type))
+	type = peel_reference_type(t);
+    }
+
+  return const_cast<type_base*>(type);
 }
 
 /// Add a member decl to this scope.  Note that user code should not
@@ -4048,6 +4232,26 @@ typedef_decl_sptr
 is_typedef(const decl_base_sptr d)
 {return is_typedef(is_type(d));}
 
+/// Test whether a type is a typedef.
+///
+/// @param t the declaration of the type to test for.
+///
+/// @return the typedef declaration of the @p t, or NULL if it's not a
+/// typedef.
+const typedef_decl*
+is_typedef(const type_base* t)
+{return dynamic_cast<const typedef_decl*>(t);}
+
+/// Test whether a type is a typedef.
+///
+/// @param t the declaration of the type to test for.
+///
+/// @return the typedef declaration of the @p t, or NULL if it's not a
+/// typedef.
+typedef_decl*
+is_typedef(type_base* t)
+{return dynamic_cast<typedef_decl*>(t);}
+
 /// Test if a decl is an enum_type_decl
 ///
 /// @param d the decl to test for.
@@ -4140,13 +4344,39 @@ is_pointer_type(type_base* t)
 ///
 /// @return the @ref pointer_type_def_sptr if @p t is a
 /// pointer_type_def, null otherwise.
+const pointer_type_def*
+is_pointer_type(const type_base* t)
+{return dynamic_cast<const pointer_type_def*>(t);}
+
+/// Test whether a type is a pointer_type_def.
+///
+/// @param t the type to test.
+///
+/// @return the @ref pointer_type_def_sptr if @p t is a
+/// pointer_type_def, null otherwise.
 pointer_type_def_sptr
 is_pointer_type(const type_base_sptr t)
 {return dynamic_pointer_cast<pointer_type_def>(t);}
 
+/// Test whether a type is a reference_type_def.
+///
+/// @param t the type to test.
+///
+/// @return the @ref reference_type_def_sptr if @p t is a
+/// reference_type_def, null otherwise.
 reference_type_def*
 is_reference_type(type_base* t)
 {return dynamic_cast<reference_type_def*>(t);}
+
+/// Test whether a type is a reference_type_def.
+///
+/// @param t the type to test.
+///
+/// @return the @ref reference_type_def_sptr if @p t is a
+/// reference_type_def, null otherwise.
+const reference_type_def*
+is_reference_type(const type_base* t)
+{return dynamic_cast<const reference_type_def*>(t);}
 
 /// Test whether a type is a reference_type_def.
 ///
@@ -11062,7 +11292,7 @@ class_tdecl::~class_tdecl()
 class non_canonicalized_subtype_detector : public ir::ir_node_visitor
 {
   type_base* type_;
-  bool has_non_canonical_type_;
+  type_base* has_non_canonical_type_;
 
 private:
   non_canonicalized_subtype_detector();
@@ -11070,7 +11300,7 @@ private:
 public:
   non_canonicalized_subtype_detector(type_base* type)
     : type_(type),
-      has_non_canonical_type_(false)
+      has_non_canonical_type_()
   {}
 
   /// Return true if the visitor detected that there is a
@@ -11078,9 +11308,21 @@ public:
   ///
   /// @return true if the visitor detected that there is a
   /// non-canonicalized sub-type.
-  bool
+  type_base*
   has_non_canonical_type() const
   {return has_non_canonical_type_;}
+
+  /// The intent of this visitor handler is to avoid looking into
+  /// sub-types of member functions of the type we are traversing.
+  bool
+  visit_begin(function_decl* f)
+  {
+    // Do not look at sub-types of non-virtual member functions.
+    if (is_member_function(f)
+	&& get_member_function_is_virtual(*f))
+      return false;
+    return true;
+  }
 
   /// When visiting a sub-type, if it's *NOT* been canonicalized, set
   /// the 'has_non_canonical_type' flag.  And in any case, when
@@ -11095,8 +11337,20 @@ public:
   {
     if (t != type_)
       {
+	// If 'type_' references a type which is a combination of
+	// pointer to, reference to, or typedef of himself, then do
+	// not look in there for a sub-type which doesn't have a
+	// canonical type.
+	type_base* type = peel_typedef_pointer_or_reference_type(t);
+	if (get_type_name(type, true) == get_type_name(type_, true))
+	  return true;
+
 	if (!t->get_canonical_type())
-	    has_non_canonical_type_ = true;
+	  // We are looking a sub-type of 'type_' which has no
+	  // canonical type.  So tada! we found one!  Get out right
+	  // now with the trophy.
+	  has_non_canonical_type_ = t;
+
 	return false;
       }
     return true;
@@ -11123,11 +11377,11 @@ public:
 /// @param t the type which sub-types to consider.
 ///
 /// @return true if a type has sub-types that are non-canonicalized.
-bool
+type_base*
 type_has_non_canonicalized_subtype(type_base_sptr t)
 {
   if (!t)
-    return false;
+    return 0;
 
   non_canonicalized_subtype_detector v(t.get());
   t->traverse(v);

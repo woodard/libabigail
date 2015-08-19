@@ -963,8 +963,8 @@ type_suppression::suppresses_diff(const diff* diff) const
   if (!suppresses_type(ft, d->context())
       && !suppresses_type(st, d->context()))
     {
-      ft = get_typedef_underlying_type(ft);
-      st = get_typedef_underlying_type(st);
+      ft = peel_typedef_type(ft);
+      st = peel_typedef_type(st);
 
       if (!suppresses_type(ft, d->context())
 	  && !suppresses_type(st, d->context()))

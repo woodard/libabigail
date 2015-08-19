@@ -204,6 +204,12 @@ is_typedef(const shared_ptr<type_base>);
 shared_ptr<typedef_decl>
 is_typedef(const shared_ptr<decl_base>);
 
+const typedef_decl*
+is_typedef(const type_base*);
+
+typedef_decl*
+is_typedef(type_base*);
+
 shared_ptr<enum_type_decl>
 is_enum_type(const shared_ptr<type_base>&);
 
@@ -228,11 +234,17 @@ is_compatible_with_class_type(const shared_ptr<type_base>);
 pointer_type_def*
 is_pointer_type(type_base*);
 
+const pointer_type_def*
+is_pointer_type(const type_base*);
+
 shared_ptr<pointer_type_def>
 is_pointer_type(const shared_ptr<type_base>);
 
 reference_type_def*
 is_reference_type(type_base*);
+
+const reference_type_def*
+is_reference_type(const type_base*);
 
 shared_ptr<reference_type_def>
 is_reference_type(const shared_ptr<type_base>);
@@ -439,7 +451,28 @@ shared_ptr<type_base>
 strip_typedef(const shared_ptr<type_base>);
 
 shared_ptr<type_base>
-get_typedef_underlying_type(const shared_ptr<type_base>&);
+peel_typedef_type(const shared_ptr<type_base>&);
+
+const type_base*
+peel_typedef_type(const type_base*);
+
+shared_ptr<type_base>
+peel_pointer_type(const shared_ptr<type_base>&);
+
+const type_base*
+peel_pointer_type(const type_base*);
+
+shared_ptr<type_base>
+peel_reference_type(const shared_ptr<type_base>&);
+
+const type_base*
+peel_reference_type(const type_base*);
+
+shared_ptr<type_base>
+peel_typedef_pointer_or_reference_type(const shared_ptr<type_base>);
+
+type_base*
+peel_typedef_pointer_or_reference_type(const type_base*);
 
 string
 get_name(const shared_ptr<type_or_decl_base>&,
@@ -600,7 +633,7 @@ type_or_void(const shared_ptr<type_base>);
 shared_ptr<type_base>
 canonicalize(shared_ptr<type_base>);
 
-bool
+type_base*
 type_has_non_canonicalized_subtype(shared_ptr<type_base> t);
 
 bool
