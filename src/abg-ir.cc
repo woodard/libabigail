@@ -5334,6 +5334,11 @@ canonicalize(type_base_sptr t)
 
   t->priv_->canonical_type = canonical;
 
+  if (class_decl_sptr cl = is_class_type(t))
+    if (type_base_sptr d = is_type(cl->get_earlier_declaration()))
+      if (d->get_canonical_type())
+	d->priv_->canonical_type = canonical;
+
   return canonical;
 }
 
@@ -9307,6 +9312,8 @@ class_decl::set_definition_of_declaration(class_decl_sptr d)
 {
   assert(get_is_declaration_only());
   priv_->definition_of_declaration_ = d;
+  if (d->get_canonical_type())
+    type_base::priv_->canonical_type = d->get_canonical_type();
 }
 
 /// set the earlier declaration of this class definition.
