@@ -208,6 +208,10 @@ Options
     changes.  Added or removed functions and variables do not have any
     diff nodes tree associated to them.
 
+  * ``--stats``
+
+    Emit statistics about various internal things.
+
 .. _abidiff_return_value_label:
 
 Return values

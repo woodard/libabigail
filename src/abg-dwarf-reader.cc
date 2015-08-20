@@ -37,6 +37,7 @@
 #include <cmath>
 #include <elfutils/libdwfl.h>
 #include <dwarf.h>
+#include <iostream>
 #include <tr1/unordered_map>
 #include <stack>
 #include <deque>
@@ -50,6 +51,8 @@ using std::string;
 
 namespace abigail
 {
+
+using std::cerr;
 
 /// The namespace for the DWARF reader.
 namespace dwarf_reader
@@ -1780,6 +1783,7 @@ class read_context
   string			elf_architecture_;
   corpus::exported_decls_builder* exported_decls_builder_;
   bool				load_all_types_;
+  bool				show_stats_;
 
   read_context();
 
@@ -1801,7 +1805,8 @@ public:
       verdef_section_(),
       verneed_section_(),
       exported_decls_builder_(),
-      load_all_types_()
+      load_all_types_(),
+      show_stats_()
   {}
 
   /// Clear the data that is relevant only for the current translation
@@ -2129,6 +2134,19 @@ public:
     return die_type_map_;
   }
 
+  /// Return the map that associates DIEs to the type they represent.
+  ///
+  /// @param in_alt_die true iff the DIE is in the alternate debug info section.
+  ///
+  /// @return return the map that associated DIEs to the type they represent.
+  const die_type_map_type&
+  die_type_map(bool in_alt_die) const
+  {
+    if (in_alt_die)
+      return alternate_die_type_map_;
+    return die_type_map_;
+  }
+
   /// Associated a DIE (representing a type) at a given offset to the
   /// type that it represents.
   ///
@@ -2165,11 +2183,11 @@ public:
   /// or NULL if no type is associated to the DIE.
   type_base_sptr
   lookup_type_from_die_offset(size_t die_offset,
-			      bool in_alt_die)
+			      bool in_alt_die) const
   {
     type_base_sptr result;
-    die_type_map_type& m = die_type_map(in_alt_die);
-    die_type_map_type::iterator i = m.find(die_offset);
+    const die_type_map_type& m = die_type_map(in_alt_die);
+    die_type_map_type::const_iterator i = m.find(die_offset);
 
     if (i != m.end())
       result = i->second;
@@ -2489,6 +2507,59 @@ public:
       }
   }
 
+  /// Compute the number of canonicalized and missed types in the late
+  /// canonicalization phase.
+  ///
+  /// @param in_alt_di if set to yes, this means to look for types in
+  /// the alternate debug info.  If set to no, this means to look for
+  /// the main debug info.
+  ///
+  /// @param canonicalized the number of types that got canonicalized
+  /// is added to the value already present in this parameter.
+  ///
+  /// @param missed the number of types scheduled for late
+  /// canonicalization and which couldn't be canonicalized (for a
+  /// reason) is added to the value already present in this parameter.
+  void
+  add_late_canonicalized_types_stats(bool in_alt_di,
+				     size_t& canonicalized,
+				     size_t& missed) const
+  {
+    for (vector<Dwarf_Off>::const_iterator i =
+	   types_to_canonicalize(in_alt_di).begin();
+	 i != types_to_canonicalize(in_alt_di).end();
+	 ++i)
+      {
+        type_base_sptr t = lookup_type_from_die_offset(*i, in_alt_di);
+	if (t->get_canonical_type())
+	  ++canonicalized;
+	else
+	  ++missed;
+      }
+  }
+
+  /// Compute the number of canonicalized and missed types in the late
+  /// canonicalization phase.
+  ///
+  /// @param canonicalized the number of types that got canonicalized
+  /// is added to the value already present in this parameter.
+  ///
+  /// @param missed the number of types scheduled for late
+  /// canonicalization and which couldn't be canonicalized (for a
+  /// reason) is added to the value already present in this parameter.
+  void
+  add_late_canonicalized_types_stats(size_t& canonicalized,
+				     size_t& missed) const
+  {
+    add_late_canonicalized_types_stats(/*in_alt_di=*/true,
+				       canonicalized,
+				       missed);
+
+      add_late_canonicalized_types_stats(/*in_alt_di=*/false,
+					 canonicalized,
+					 missed);
+  }
+
   // Look at the types that need to be canonicalized after the
   // translation unit has been constructed and canonicalize them.
   void
@@ -2496,6 +2567,24 @@ public:
   {
     canonicalize_types_scheduled(/*in_alt_di=*/false);
     canonicalize_types_scheduled(/*in_alt_di=*/true);
+
+    if (show_stats())
+      {
+	size_t num_canonicalized = 0, num_missed = 0, total = 0;
+	add_late_canonicalized_types_stats(num_canonicalized,
+					   num_missed);
+	total = num_canonicalized + num_missed;
+	cerr << "binary: "
+	     << elf_path()
+	     << "\n";
+	cerr << "    # late canonicalized types: "
+	     << num_canonicalized
+	     << " (" << num_canonicalized * 100 / total << "%)\n"
+	     << "    # missed canonicalization opportunities: "
+	     << num_missed
+	     << " (" << num_missed * 100 / total << "%)\n";
+      }
+
   }
 
   const die_tu_map_type&
@@ -3647,6 +3736,26 @@ public:
   load_all_types(bool f)
   {load_all_types_ = f;}
 
+  /// Getter of the "show_stats" flag.
+  ///
+  /// This flag tells if we should emit statistics about various
+  /// internal stuff.
+  ///
+  /// @return the value of the flag.
+  bool
+  show_stats() const
+  {return show_stats_;}
+
+  /// Setter of the "show_stats" flag.
+  ///
+  /// This flag tells if we should emit statistics about various
+  /// internal stuff.
+  ///
+  /// @param f the value of the flag.
+  void
+  show_stats(bool f)
+  {show_stats_ = f;}
+
   /// If a given function decl is suitable for the set of exported
   /// functions of the current corpus, this function adds it to that
   /// set.
@@ -3705,6 +3814,38 @@ static void
 finish_member_function_reading(Dwarf_Die*		die,
 			       function_decl_sptr	f,
 			       class_decl_sptr		klass);
+
+/// Getter of the "show_stats" flag.
+///
+/// This flag tells if we should emit statistics about various
+/// internal stuff.
+///
+/// @param ctx the read context to consider for this flag.
+///
+/// @return the value of the flag.
+bool
+get_show_stats(read_context_sptr& ctxt)
+{
+  if(!ctxt)
+    return false;
+  return ctxt->show_stats();
+}
+
+/// Setter of the "show_stats" flag.
+///
+/// This flag tells if we should emit statistics about various
+/// internal stuff.
+///
+/// @param ctxt the read context to consider for this flag.
+///
+/// @param f the value of the flag.
+void
+set_show_stats(read_context_sptr& ctxt,
+	       bool f)
+{
+  if (ctxt)
+    ctxt->show_stats(f);
+}
 
 /// Constructor for a default Dwfl handle that knows how to load debug
 /// info from a library or executable elf file.

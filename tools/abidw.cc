@@ -56,12 +56,14 @@ struct options
   bool			show_base_name_alt_debug_info_path;
   bool			write_architecture;
   bool			load_all_types;
+  bool			show_stats;
 
   options()
     : check_alt_debug_info_path(),
       show_base_name_alt_debug_info_path(),
       write_architecture(true),
-      load_all_types()
+      load_all_types(),
+      show_stats()
   {}
 };
 
@@ -80,6 +82,7 @@ display_usage(const string& prog_name, ostream& out)
     "debug info of <elf-path>, and show its base name\n"
       << "  --load-all-types read all types including those not reachable from"
          "exported declarations\n"
+      << "  --stats  show statistics about various internal stuff\n";
     ;
 }
 
@@ -138,6 +141,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--load-all-types"))
 	opts.load_all_types = true;
+      else if (!strcmp(argv[i], "--stats"))
+	opts.show_stats = true;
       else if (!strcmp(argv[i], "--help")
 	       || !strcmp(argv[i], "--h"))
 	return false;
@@ -185,6 +190,7 @@ main(int argc, char* argv[])
   corpus_sptr corp;
   read_context_sptr c = create_read_context(opts.in_file_path, &p,
 					    opts.load_all_types);
+  set_show_stats(c, opts.show_stats);
   read_context& ctxt = *c;
 
   if (opts.check_alt_debug_info_path)

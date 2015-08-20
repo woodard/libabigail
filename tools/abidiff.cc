@@ -79,6 +79,7 @@ struct options
   bool			show_redundant_changes;
   bool			show_symbols_not_referenced_by_debug_info;
   bool			dump_diff_tree;
+  bool			show_stats;
   shared_ptr<char>	di_root_path1;
   shared_ptr<char>	di_root_path2;
 
@@ -100,7 +101,8 @@ struct options
       show_harmless_changes(false),
       show_redundant_changes(false),
       show_symbols_not_referenced_by_debug_info(true),
-      dump_diff_tree()
+      dump_diff_tree(),
+      show_stats()
   {}
 };//end struct options;
 
@@ -111,6 +113,7 @@ display_usage(const string& prog_name, ostream& out)
       << " where options can be:\n"
       << " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
       << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
+      << " --help|-h  display this message\n "
       << " --stat  only display the diff stats\n"
       << " --symtabs  only display the symbol tables of the corpora\n"
       << " --deleted-fns  display deleted public functions\n"
@@ -138,7 +141,7 @@ display_usage(const string& prog_name, ostream& out)
          "(this is the default)\n"
       << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
          "the error output stream\n"
-      << " --help|-h display this message\n";
+      <<  " --stats  show statistics about various internal stuff\n";
 }
 
 /// Parse the command line and set the options accordingly.
@@ -331,6 +334,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_redundant_changes = false;
       else if (!strcmp(argv[i], "--dump-diff-tree"))
 	opts.dump_diff_tree = true;
+      else if (!strcmp(argv[i], "--stats"))
+	opts.show_stats = true;
       else
 	return false;
     }
@@ -532,11 +537,18 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
-	  di_dir1 = opts.di_root_path1.get();
-	  c1 = abigail::dwarf_reader::read_corpus_from_elf(opts.file1,
-							   &di_dir1,
-							   /*load_all_types=*/false,
-							   c1_status);
+	  {
+	    di_dir1 = opts.di_root_path1.get();
+	    abigail::dwarf_reader::read_context_sptr ctxt =
+	      abigail::dwarf_reader::create_read_context(opts.file1,
+							 &di_dir1,
+							 /*read_all_types=*/false);
+	    assert(ctxt);
+	    abigail::dwarf_reader::set_show_stats
+	      (ctxt, opts.show_stats);
+
+	    c1 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c1_status);
+	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  c1 =
@@ -566,11 +578,17 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
-	  di_dir2 = opts.di_root_path2.get();
-	  c2 = abigail::dwarf_reader::read_corpus_from_elf(opts.file2,
-							   &di_dir2,
-							   /*load_all_types=*/false,
-							   c2_status);
+	  {
+	    di_dir2 = opts.di_root_path2.get();
+	    abigail::dwarf_reader::read_context_sptr ctxt =
+	      abigail::dwarf_reader::create_read_context(opts.file2,
+							 &di_dir2,
+							 /*read_all_types=*/false);
+	    assert(ctxt);
+	    abigail::dwarf_reader::set_show_stats
+	      (ctxt, opts.show_stats);
+	    c2 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c2_status);
+	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  c2 =

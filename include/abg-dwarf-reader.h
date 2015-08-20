@@ -128,6 +128,14 @@ get_soname_of_elf_file(const string& path, string& soname);
 bool
 get_type_of_elf_file(const string& path, elf_type& type);
 
+
+bool
+get_show_stats(read_context_sptr& ctxt);
+
+void
+set_show_stats(read_context_sptr& ctxt,
+				    bool f);
+
 }// end namespace dwarf_reader
 
 }// end namespace abigail

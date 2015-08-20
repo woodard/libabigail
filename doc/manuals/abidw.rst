@@ -69,6 +69,10 @@ Options
     makes ``abidw`` load *all* the types defined in the binaries, even
     those that are not reachable from public declarations.
 
+  * ``--stats``
+
+    Emit statistics about various internal things.
+
 Notes
 =====
 
