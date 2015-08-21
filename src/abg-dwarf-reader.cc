@@ -6964,10 +6964,18 @@ build_pointer_type_def(read_context&	ctxt,
   type_base_sptr utype = is_type(utype_decl);
   assert(utype);
 
-  size_t size;
-  if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
-    return result;
-  size *= 8;
+  // if the DIE for the pointer type doesn't have a byte_size
+  // attribute then we assume the size of the pointer is the address
+  // size of the current translation unit.
+  size_t size = ctxt.cur_tu()->get_address_size();
+  if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
+    // The size as expressed by DW_AT_byte_size is in byte, so let's
+    // convert it to bits.
+    size *= 8;
+
+  // And the size of the pointer must be the same as the address size
+  // of the current translation unit.
+  assert((size_t) ctxt.cur_tu()->get_address_size() == size);
 
   result.reset(new pointer_type_def(utype, size,
 				    /*alignment=*/0,
