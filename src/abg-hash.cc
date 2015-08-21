@@ -595,10 +595,25 @@ class_decl::hash::operator()(const class_decl& t) const
 {
   if (t.hashing_started()
       || (t.get_is_declaration_only() && !t.get_definition_of_declaration()))
+    // All non-resolved decl-only types have a hash of zero.  Their hash
+    // will differ from the resolved hash, but then at least, having
+    // it be zero will give a hint that we couldn't actually compute
+    // the hash.
     return 0;
 
+
+  // If the type is decl-only and now has a definition, then hash its
+  // definition instead.
+
+  if (t.get_is_declaration_only())
+    {
+      assert(t.get_definition_of_declaration());
+      return operator()(*t.get_definition_of_declaration());
+    }
+
+  assert(!t.get_is_declaration_only());
+
   std::tr1::hash<string> hash_string;
-  std::tr1::hash<bool> hash_bool;
 #if 0
   type_base::dynamic_hash hash_type;
 #endif
@@ -611,7 +626,6 @@ class_decl::hash::operator()(const class_decl& t) const
 
   size_t v = hash_string(typeid(t).name());
   v = hashing::combine_hashes(v, hash_scope_type(t));
-  v = hashing::combine_hashes(v, hash_bool(t.get_is_declaration_only()));
 
   t.hashing_started(true);
 

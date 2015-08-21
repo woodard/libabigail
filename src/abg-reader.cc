@@ -696,7 +696,13 @@ public:
     // the translation unit reading so that we have its definition and
     // then we'll use that for canonicalizing it.
     if (!type_has_non_canonicalized_subtype(t)
-	&& !is_class_decl_only)
+	&& !is_class_decl_only
+	// Method decl are usually built in two times; first the
+	// method is created (so its type is created at that moment)
+	// and then, later, it's added to its class.  So we need to
+	// wait until the end of the corpus to make sure we finished
+	// building the type.
+	&& !is_method_type(t))
       canonicalize(t);
     else
       schedule_type_for_late_canonicalizing(t);
