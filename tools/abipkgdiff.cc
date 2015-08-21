@@ -330,7 +330,12 @@ public:
 const string&
 package::extracted_packages_parent_dir()
 {
-  static __thread string p;
+  // I tried to declare this in thread-local storage, but GCC 4.4.7
+  //won't let me.  So for now, I am just making it static.  I'll deal
+  //with this later when time of multi-threading comes.
+
+  //static __thread string p;
+  static string p;
 
   if (p.empty())
     {
