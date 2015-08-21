@@ -2991,7 +2991,7 @@ strip_typedef(const type_base_sptr type)
   return t->get_canonical_type() ? t->get_canonical_type() : t;
 }
 
-/// Return the leaf underlying type node of a @ref typedef_dec node.
+/// Return the leaf underlying type node of a @ref typedef_decl node.
 ///
 /// If the underlying type of a @ref typedef_decl node is itself a
 /// @ref typedef_decl node, then recursively look at the underlying

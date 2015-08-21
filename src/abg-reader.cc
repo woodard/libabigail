@@ -718,7 +718,7 @@ public:
 
   /// Perform the canonicalizing of types that ought to be done after
   /// the current translation unit is read.  This function is called
-  /// at the current translation unit is fully built.
+  /// when the current corpus is fully built.
   void
   perform_late_type_canonicalizing()
   {

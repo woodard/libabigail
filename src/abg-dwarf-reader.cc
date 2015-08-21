@@ -2121,7 +2121,7 @@ public:
       : lookup_decl_from_die_offset_primary(die_offset);
   }
 
-  /// Return the the map that associates DIEs to the type they represent.
+  /// Return the map that associates DIEs to the type they represent.
   ///
   /// @param in_alt_die true iff the DIE is in the alternate debug info section.
   ///
