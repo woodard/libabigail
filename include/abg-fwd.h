@@ -267,6 +267,12 @@ is_function_type(const type_base*);
 shared_ptr<method_type>
 is_method_type(const shared_ptr<type_base>);
 
+const method_type*
+is_method_type(const type_base*);
+
+method_type*
+is_method_type(type_base*);
+
 shared_ptr<class_decl>
 look_through_decl_only_class(shared_ptr<class_decl>);
 
@@ -497,6 +503,15 @@ string
 get_function_type_name(const function_type&);
 
 string
+get_method_type_name(const shared_ptr<method_type>&
+);
+string
+get_method_type_name(const method_type*);
+
+string
+get_method_type_name(const method_type&);
+
+string
 get_pretty_representation(const decl_base*);
 
 string
@@ -522,6 +537,16 @@ get_pretty_representation(const function_type*);
 
 string
 get_pretty_representation(const shared_ptr<function_type>&);
+
+string
+get_pretty_representation(const method_type&);
+
+string
+get_pretty_representation(const method_type*);
+
+string
+get_pretty_representation(const shared_ptr<method_type>&);
+
 
 const decl_base*
 get_type_declaration(const type_base*);

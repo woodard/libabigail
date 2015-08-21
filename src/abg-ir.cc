@@ -3765,6 +3765,10 @@ get_function_type_name(const function_type* fn_type)
 {
   if (!fn_type)
     return "";
+
+  if (const method_type* method = is_method_type(fn_type))
+    return get_method_type_name(method);
+
   return get_function_type_name(*fn_type);
 }
 
@@ -3782,6 +3786,61 @@ get_function_type_name(const function_type& fn_type)
   o <<  get_pretty_representation(return_type);
 
   o << " (";
+  for (function_type::parameters::const_iterator i =
+	 fn_type.get_parameters().begin();
+       i != fn_type.get_parameters().end();
+       ++i)
+    {
+      if (i != fn_type.get_parameters().begin())
+	o << ", ";
+      o << get_pretty_representation((*i)->get_type());
+    }
+  o <<")";
+  return o.str();
+}
+
+/// Get the name of a given method type and return a copy of it.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return a copy of the function type name
+string
+get_method_type_name(const method_type_sptr fn_type)
+{return get_method_type_name(fn_type.get());}
+
+/// Get the name of a given method type and return a copy of it.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return a copy of the function type name
+string
+get_method_type_name(const method_type* fn_type)
+{
+  if (fn_type)
+    get_method_type_name(*fn_type);
+
+  return "";
+}
+
+/// Get the name of a given method type and return a copy of it.
+///
+/// @param fn_type the function type to consider.
+///
+/// @return a copy of the function type name
+string
+get_method_type_name(const method_type& fn_type)
+{
+  std::ostringstream o;
+  type_base_sptr return_type= fn_type.get_return_type();
+
+  o <<  get_pretty_representation(return_type);
+
+  class_decl_sptr class_type = fn_type.get_class_type();
+  assert(class_type);
+
+  o << " (" << class_type->get_qualified_name() << "::*)"
+    << " (";
+
   for (function_type::parameters::const_iterator i =
 	 fn_type.get_parameters().begin();
        i != fn_type.get_parameters().end();
@@ -3899,6 +3958,10 @@ get_pretty_representation(const function_type* fn_type)
 {
   if (!fn_type)
     return "void";
+
+  if (const method_type* method = is_method_type(fn_type))
+    return get_pretty_representation(method);
+
   return get_pretty_representation(*fn_type);
 }
 
@@ -3914,6 +3977,40 @@ get_pretty_representation(const function_type& fn_type)
   o << "function type " << get_function_type_name(fn_type);
   return o.str();
 }
+
+/// Get the pretty representation of a method type.
+///
+/// @param method the method type to consider.
+///
+/// @return the string represenation of the method type.
+string
+get_pretty_representation(const method_type& method)
+{
+  std::ostringstream o;
+  o << "method type " << get_method_type_name(method);
+  return o.str();
+}
+/// Get the pretty representation of a method type.
+///
+/// @param method the method type to consider.
+///
+/// @return the string represenation of the method type.
+string
+get_pretty_representation(const method_type* method)
+{
+  if (!method)
+    return "void";
+  return get_pretty_representation(*method);
+}
+
+/// Get the pretty representation of a method type.
+///
+/// @param method the method type to consider.
+///
+/// @return the string represenation of the method type.
+string
+get_pretty_representation(const method_type_sptr method)
+{return get_pretty_representation(method.get());}
 
 /// Get the declaration for a given type.
 ///
@@ -4447,6 +4544,26 @@ is_function_type(const type_base* t)
 shared_ptr<method_type>
 is_method_type(const shared_ptr<type_base> t)
 {return dynamic_pointer_cast<method_type>(t);}
+
+/// Test whether a type is a method_type.
+///
+/// @param t the type to test.
+///
+/// @return the @ref method_type_sptr if @p t is a
+/// method_type, null otherwise.
+const method_type*
+is_method_type(const type_base* t)
+{return dynamic_cast<const method_type*>(t);}
+
+/// Test whether a type is a method_type.
+///
+/// @param t the type to test.
+///
+/// @return the @ref method_type_sptr if @p t is a
+/// method_type, null otherwise.
+method_type*
+is_method_type(type_base* t)
+{return dynamic_cast<method_type*>(t);}
 
 /// If a class is a decl-only class, get its definition.  Otherwise,
 /// just return the initial class.
