@@ -115,7 +115,7 @@ enum file_type
   FILE_TYPE_RPM,
   /// An SRPM (.src.rpm) file
   FILE_TYPE_SRPM,
-  /// An DEB (.deb) binary file
+  /// A DEB (.deb) binary file
   FILE_TYPE_DEB,
   /// A plain directory
   FILE_TYPE_DIR

@@ -1128,7 +1128,7 @@ main(int argc, char* argv[])
   switch (first_package->type())
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
-      if (!(second_package->type() == abigail::tools_utils::FILE_TYPE_RPM))
+      if (second_package->type() != abigail::tools_utils::FILE_TYPE_RPM)
 	{
 	  cerr << opts.package2 << " should be an RPM file\n";
 	  return 1;
@@ -1136,9 +1136,9 @@ main(int argc, char* argv[])
       break;
 
     case abigail::tools_utils::FILE_TYPE_DEB:
-      if (!(second_package->type() == abigail::tools_utils::FILE_TYPE_DEB))
+      if (second_package->type() != abigail::tools_utils::FILE_TYPE_DEB)
 	{
-	  cerr << opts.package2 << " should be an DEB file\n";
+	  cerr << opts.package2 << " should be a DEB file\n";
 	  return 1;
 	}
       break;
