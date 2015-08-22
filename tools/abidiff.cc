@@ -636,7 +636,7 @@ main(int argc, char* argv[])
 
       if (!t2 && !c2)
 	{
-	  cerr << "failed to read input file" << opts.file2 << "\n";
+	  cerr << "failed to read input file " << opts.file2 << "\n";
 	  if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
 	    {
 	      if (c2_status

@@ -439,7 +439,7 @@ extract_rpm(const string& package_path,
 
 #ifdef WITH_DEB
 
-/// Extract an Debian binary package.
+/// Extract a Debian binary package.
 ///
 /// @param package_path the path to the package to extract.
 ///

@@ -575,10 +575,10 @@ guess_file_type(istream& in)
       && buf[3] == 0x04)
     return FILE_TYPE_ZIP_CORPUS;
 
-  if ((unsigned char)buf[0]    == 0xed
+  if ((unsigned char) buf[0]    == 0xed
       && (unsigned char) buf[1] == 0xab
-      && (unsigned char)buf[2] == 0xee
-      &&  (unsigned char)buf[3] == 0xdb)
+      && (unsigned char) buf[2] == 0xee
+      && (unsigned char) buf[3] == 0xdb)
     {
         if (buf[7] == 0x00)
           return FILE_TYPE_RPM;

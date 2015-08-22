@@ -124,6 +124,7 @@ static InOutSpec in_out_specs[] =
   "data/test-diff-pkg/test-rpm-report-1.txt",
   "output/test-diff-pkg/test-rpm-report-1.txt"
   },
+
   // Two RPM packages with first package debuginfo missing
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
@@ -134,6 +135,7 @@ static InOutSpec in_out_specs[] =
   "data/test-diff-pkg/test-rpm-report-2.txt",
   "output/test-diff-pkg/test-rpm-report-2.txt"
   },
+
   // Two RPM packages with missing debuginfo
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
@@ -144,6 +146,7 @@ static InOutSpec in_out_specs[] =
   "data/test-diff-pkg/test-rpm-report-3.txt",
   "output/test-diff-pkg/test-rpm-report-3.txt"
   },
+
   // Two RPM packages with no ABI change
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",

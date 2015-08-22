@@ -29,13 +29,13 @@ AC_SUBST(VERSION_REVISION)
 
 AC_ARG_ENABLE(rpm,
 	      AS_HELP_STRING([--enable-rpm=yes|no|auto],
-			     [enable the suppot of rpm in abipkgdiff (default is auto)]),
+			     [enable the support of rpm in abipkgdiff (default is auto)]),
 	      ENABLE_RPM=$enableval,
 	      ENABLE_RPM=auto)
 
 AC_ARG_ENABLE(deb,
 	      AS_HELP_STRING([--enable-rpm=yes|no|auto],
-			     [enable the suppot of deb in abipkgdiff (default is auto)]),
+			     [enable the support of deb in abipkgdiff (default is auto)]),
 	      ENABLE_DEB=$enableval,
 	      ENABLE_DEB=auto)
 
