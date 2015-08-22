@@ -54,6 +54,15 @@ struct InOutSpec
 
 static InOutSpec in_out_specs[] =
 {
+  {
+    "data/test-diff-pkg/dirpkg-0-dir1",
+    "data/test-diff-pkg/dirpkg-0-dir2",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/dirpkg-0-report-0.txt",
+    "output/test-diff-pkg/dirpkg-0-report-0.txt"
+  },
 #ifdef WITH_RPM
   // Two RPM packages with debuginfo available and have ABI changes
   {

@@ -195,7 +195,10 @@ public:
       is_debug_info_(is_debug_info)
   {
     type_ = guess_file_type(path);
-    extracted_dir_path_ =  extracted_packages_parent_dir() + "/" + dir;
+    if (type_ == abigail::tools_utils::FILE_TYPE_DIR)
+      extracted_dir_path_ = path;
+    else
+      extracted_dir_path_ = extracted_packages_parent_dir() + "/" + dir;
   }
 
   /// Getter of the path of the package.
@@ -300,6 +303,12 @@ public:
   void
   erase_extraction_directory() const
   {
+    if (type() == abigail::tools_utils::FILE_TYPE_DIR)
+      // If we are comparing two directories, do not erase the
+      // directory as it was provided by the user; it's not a
+      // temporary directory we created ourselves.
+      return;
+
     if (verbose)
       cerr << "Erasing temporary extraction directory "
 	   << extracted_dir_path()
@@ -540,6 +549,12 @@ extract_package(const package& package)
       return false;
 #endif // WITH_DEB
       break;
+
+    case  abigail::tools_utils::FILE_TYPE_DIR:
+      // The input package is just a directory that contains binaries,
+      // there is nothing to extract.
+      break;
+
     default:
       return false;
     }
@@ -1124,6 +1139,14 @@ main(int argc, char* argv[])
       if (!(second_package->type() == abigail::tools_utils::FILE_TYPE_DEB))
 	{
 	  cerr << opts.package2 << " should be an DEB file\n";
+	  return 1;
+	}
+      break;
+
+    case abigail::tools_utils::FILE_TYPE_DIR:
+      if (second_package->type() != abigail::tools_utils::FILE_TYPE_DIR)
+	{
+	  cerr << opts.package2 << " should be a directory\n";
 	  return 1;
 	}
       break;

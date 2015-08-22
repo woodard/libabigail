@@ -831,4 +831,9 @@ test-diff-pkg/libsigc++-2.0-0c2a-dbgsym_2.4.0-1_amd64.ddeb \
 test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt \
 test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64.deb \
 test-diff-pkg/libsigc++-2.0-0v5-dbgsym_2.4.1-1ubuntu2_amd64.ddeb \
-test-diff-pkg/libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64.deb
+test-diff-pkg/libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64.deb \
+test-diff-pkg/dirpkg-0-dir1/libobj-v0.so \
+test-diff-pkg/dirpkg-0-dir2/libobj-v0.so \
+test-diff-pkg/dirpkg-0-report-0.txt \
+test-diff-pkg/dirpkg-0-dir1/obj-v0.cc \
+test-diff-pkg/dirpkg-0-dir2/obj-v0.cc

@@ -474,6 +474,9 @@ operator<<(ostream& output,
     case FILE_TYPE_DEB:
       repr = "Debian binary file type";
       break;
+    case FILE_TYPE_DIR:
+      repr = "Directory type";
+      break;
     }
 
   output << repr;
@@ -578,6 +581,9 @@ guess_file_type(istream& in)
 file_type
 guess_file_type(const string& file_path)
 {
+  if (is_dir(file_path))
+    return FILE_TYPE_DIR;
+
   ifstream in(file_path.c_str(), ifstream::binary);
   file_type r = guess_file_type(in);
   in.close();
