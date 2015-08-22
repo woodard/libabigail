@@ -231,6 +231,8 @@ main(int argc, char* argv[])
           break;
         case abigail::tools_utils::FILE_TYPE_DIR:
           break;
+        case abigail::tools_utils::FILE_TYPE_TAR:
+          break;
         }
 
       if (!tu && !corp)

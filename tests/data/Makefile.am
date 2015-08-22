@@ -836,4 +836,13 @@ test-diff-pkg/dirpkg-0-dir1/libobj-v0.so \
 test-diff-pkg/dirpkg-0-dir2/libobj-v0.so \
 test-diff-pkg/dirpkg-0-report-0.txt \
 test-diff-pkg/dirpkg-0-dir1/obj-v0.cc \
-test-diff-pkg/dirpkg-0-dir2/obj-v0.cc
+test-diff-pkg/dirpkg-0-dir2/obj-v0.cc \
+test-diff-pkg/tarpkg-0-dir1.tar \
+test-diff-pkg/tarpkg-0-dir1.ta \
+test-diff-pkg/tarpkg-0-dir1.tar.bz2 \
+test-diff-pkg/tarpkg-0-dir1.tar.gz \
+test-diff-pkg/tarpkg-0-dir2.tar \
+test-diff-pkg/tarpkg-0-dir2.ta \
+test-diff-pkg/tarpkg-0-dir2.tar.bz2 \
+test-diff-pkg/tarpkg-0-dir2.tar.gz \
+test-diff-pkg/tarpkg-0-report-0.txt

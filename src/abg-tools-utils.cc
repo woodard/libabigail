@@ -314,6 +314,21 @@ check_file(const string& path,
   return true;
 }
 
+/// Test if a given string ends with a particular suffix.
+///
+/// @param str the string to consider.
+///
+/// @param suffix the suffix to test for.
+///
+/// @return true iff string @p str ends with suffix @p suffix.
+bool
+string_ends_with(const string& str, const string& suffix)
+{
+  return str.compare(str.length() - suffix.length(),
+		     suffix.length(),
+		     suffix) == 0;
+}
+
 /// The private data of the @ref temp_file type.
 struct temp_file::priv
 {
@@ -477,6 +492,9 @@ operator<<(ostream& output,
     case FILE_TYPE_DIR:
       repr = "Directory type";
       break;
+    case FILE_TYPE_TAR:
+      repr = "GNU tar archive type";
+      break;
     }
 
   output << repr;
@@ -491,8 +509,8 @@ operator<<(ostream& output,
 file_type
 guess_file_type(istream& in)
 {
-  const unsigned BUF_LEN = 25;
-  const unsigned NB_BYTES_TO_READ = 24;
+  const unsigned BUF_LEN = 264;
+  const unsigned NB_BYTES_TO_READ = 263;
 
   char buf[BUF_LEN];
   memset(buf, 0, BUF_LEN);
@@ -570,6 +588,13 @@ guess_file_type(istream& in)
           return FILE_TYPE_UNKNOWN;
     }
 
+  if (buf[257]    == 'u'
+      && buf[258] == 's'
+      && buf[259] == 't'
+      && buf[260] == 'a'
+      && buf[261] == 'r')
+    return FILE_TYPE_TAR;
+
   return FILE_TYPE_UNKNOWN;
 }
 
@@ -583,6 +608,23 @@ guess_file_type(const string& file_path)
 {
   if (is_dir(file_path))
     return FILE_TYPE_DIR;
+
+  if (string_ends_with(file_path, ".tar")
+      || string_ends_with(file_path, ".tar.gz")
+      || string_ends_with(file_path, ".tgz")
+      || string_ends_with(file_path, ".tar.bz2")
+      || string_ends_with(file_path, ".tbz2")
+      || string_ends_with(file_path, ".tbz")
+      || string_ends_with(file_path, ".tb2")
+      || string_ends_with(file_path, ".tar.xz")
+      || string_ends_with(file_path, ".txz")
+      || string_ends_with(file_path, ".tar.lzma")
+      || string_ends_with(file_path, ".tar.lz")
+      || string_ends_with(file_path, ".tlz")
+      || string_ends_with(file_path, ".tar.Z")
+      || string_ends_with(file_path, ".taz")
+      || string_ends_with(file_path, ".tz"))
+    return FILE_TYPE_TAR;
 
   ifstream in(file_path.c_str(), ifstream::binary);
   file_type r = guess_file_type(in);

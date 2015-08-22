@@ -39,6 +39,12 @@ AC_ARG_ENABLE(deb,
 	      ENABLE_DEB=$enableval,
 	      ENABLE_DEB=auto)
 
+AC_ARG_ENABLE(tar,
+	      AS_HELP_STRING([--enable-tar=yes|no|auto],
+			     [enable the support of GNU tar archives in abipkgdiff (default is auto)]),
+	      ENABLE_TAR=$enableval,
+	      ENABLE_TAR=auto)
+
 AC_ARG_ENABLE(zip-archive,
 	      AS_HELP_STRING([--enable-zip-archive=yes|no|auto],
 			     [enable bundling of TUs in zip archives (default is no)]),
@@ -162,6 +168,26 @@ else
 fi
 
 AM_CONDITIONAL(ENABLE_DEB, test x$ENABLE_DEB = xyes)
+
+dnl Check for the tar program
+if test x$ENABLE_TAR = xauto -o x$ENABLE_TAR = xyes; then
+   AC_CHECK_PROG(HAS_TAR, tar, yes, no)
+
+   if test x$ENABLE_TAR = xauto; then
+     if test x$HAS_TAR = xyes; then
+       ENABLE_TAR=yes
+    fi
+   fi
+fi
+
+if test x$ENABLE_TAR = xyes; then
+   AC_DEFINE([WITH_TAR], 1, [compile the GNU tar archive support in abipkgdiff])
+   AC_MSG_NOTICE(GNU tar support in abipkgdiff is enabled);
+else
+   AC_MSG_NOTICE(GNU tar support in abipkgdiff is disabled);
+fi
+
+AM_CONDITIONAL(ENABLE_TAR, test x$ENABLE_TAR = xyes)
 
 dnl Check for dependency: libzip
 LIBZIP_VERSION=0.10.1
@@ -315,16 +341,17 @@ AC_MSG_NOTICE([
 
 		Here is the configuration of the package:
 
-    Prefix                             : ${prefix}
-    Source code location               : ${srcdir}
-    C Compiler                         : ${CC}
-    C++ Compiler		       : ${CXX}
+    Prefix                                         : ${prefix}
+    Source code location                           : ${srcdir}
+    C Compiler                                     : ${CC}
+    C++ Compiler		                   : ${CXX}
 
  OPTIONAL FEATURES:
-    Enable zip archives                : ${ENABLE_ZIP_ARCHIVE}
-    Use a C++-11 compiler              : ${ENABLE_CXX11}
-    Enable rpm support in abipkgdiff   : ${ENABLE_RPM}
-    Enable deb support in abipkgdiff   : ${ENABLE_DEB}
-    Generate html apidoc	       : ${ENABLE_APIDOC}
-    Generate html manual	       : ${ENABLE_MANUAL}
+    Enable zip archives                            : ${ENABLE_ZIP_ARCHIVE}
+    Use a C++-11 compiler                          : ${ENABLE_CXX11}
+    Enable rpm support in abipkgdiff               : ${ENABLE_RPM}
+    Enable deb support in abipkgdiff               : ${ENABLE_DEB}
+    Enable GNU tar archive support in abipkgdiff   : ${ENABLE_TAR}
+    Generate html apidoc	                   : ${ENABLE_APIDOC}
+    Generate html manual	                   : ${ENABLE_MANUAL}
 ])

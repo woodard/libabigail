@@ -63,6 +63,46 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dirpkg-0-report-0.txt",
     "output/test-diff-pkg/dirpkg-0-report-0.txt"
   },
+
+#if WITH_TAR
+  {
+    "data/test-diff-pkg/tarpkg-0-dir1.tar",
+    "data/test-diff-pkg/tarpkg-0-dir2.tar",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/tarpkg-0-report-0.txt",
+    "output/test-diff-pkg/tarpkg-0-report-0.txt"
+  },
+  {
+    "data/test-diff-pkg/tarpkg-0-dir1.ta",
+    "data/test-diff-pkg/tarpkg-0-dir2.ta",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/tarpkg-0-report-0.txt",
+    "output/test-diff-pkg/tarpkg-0-report-0.txt"
+  },
+  {
+    "data/test-diff-pkg/tarpkg-0-dir1.tar.gz",
+    "data/test-diff-pkg/tarpkg-0-dir2.tar.gz",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/tarpkg-0-report-0.txt",
+    "output/test-diff-pkg/tarpkg-0-report-0.txt"
+  },
+  {
+    "data/test-diff-pkg/tarpkg-0-dir1.tar.bz2",
+    "data/test-diff-pkg/tarpkg-0-dir2.tar.bz2",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/tarpkg-0-report-0.txt",
+    "output/test-diff-pkg/tarpkg-0-report-0.txt"
+  },
+#endif //WITH_TAR
+
 #ifdef WITH_RPM
   // Two RPM packages with debuginfo available and have ABI changes
   {

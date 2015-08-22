@@ -104,6 +104,9 @@
 /* compile the rpm package support in abipkgdiff */
 #undef WITH_RPM
 
+/* compile the GNU tar archive support in abipkgdiff */
+#undef WITH_TAR
+
 /* compile the zip archive support */
 #undef WITH_ZIP_ARCHIVE
 

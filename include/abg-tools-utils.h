@@ -46,6 +46,7 @@ bool base_name(string const& path,
 bool ensure_dir_path_created(const string&);
 bool ensure_parent_dir_created(const string&);
 bool check_file(const string& path, ostream& out);
+bool string_ends_with(const string&, const string&);
 
 class temp_file;
 
@@ -118,7 +119,10 @@ enum file_type
   /// A DEB (.deb) binary file
   FILE_TYPE_DEB,
   /// A plain directory
-  FILE_TYPE_DIR
+  FILE_TYPE_DIR,
+  /// A tar archive.  The archive can be compressed with the popular
+  /// compression schemes recognized by GNU tar.
+  FILE_TYPE_TAR
 };
 
 /// Exit status for abidiff and abicompat tools.

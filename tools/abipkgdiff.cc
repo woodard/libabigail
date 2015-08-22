@@ -482,6 +482,51 @@ extract_deb(const string& package_path,
 
 #endif // WITH_DEB
 
+#ifdef WITH_TAR
+
+/// Extract a GNU Tar archive.
+///
+/// @param package_path the path to the archive to extract.
+///
+/// @param extracted_package_dir_path the path where to extract the
+/// archive to.
+///
+/// @return true upon successful completion, false otherwise.
+static bool
+extract_tar(const string& package_path,
+	    const string& extracted_package_dir_path)
+{
+  if (verbose)
+    cerr << "Extracting tar archive "
+	 << package_path
+	 << " to "
+	 << extracted_package_dir_path
+	 << " ...";
+
+  string cmd = "test -d " +
+    extracted_package_dir_path +
+    " && rm -rf " + extracted_package_dir_path;
+
+  system(cmd.c_str());
+
+  cmd = "mkdir -p " + extracted_package_dir_path + " && cd " +
+    extracted_package_dir_path + " && tar -xf " + package_path;
+
+  if (system(cmd.c_str()))
+    {
+      if (verbose)
+	cerr << " FAILED\n";
+      return false;
+    }
+
+  if (verbose)
+    cerr << " DONE\n";
+
+  return true;
+}
+
+#endif // WITH_TAR
+
 /// Erase the temporary directories created for the extraction of two
 /// packages.
 ///
@@ -553,6 +598,22 @@ extract_package(const package& package)
     case  abigail::tools_utils::FILE_TYPE_DIR:
       // The input package is just a directory that contains binaries,
       // there is nothing to extract.
+      break;
+
+    case abigail::tools_utils::FILE_TYPE_TAR:
+#ifdef WITH_TAR
+      if (!extract_tar(package.path(), package.extracted_dir_path()))
+        {
+          cerr << "Error while extracting GNU tar archive"
+	       << package.path() << "\n";
+          return false;
+        }
+      return true;
+#else
+      cerr << "Support for GNU tar hasn't been enabled.  Please consider "
+	"enabling it at package configure time\n";
+      return false;
+#endif // WITH_TAR
       break;
 
     default:
@@ -1147,6 +1208,14 @@ main(int argc, char* argv[])
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_DIR)
 	{
 	  cerr << opts.package2 << " should be a directory\n";
+	  return 1;
+	}
+      break;
+
+    case abigail::tools_utils::FILE_TYPE_TAR:
+      if (second_package->type() != abigail::tools_utils::FILE_TYPE_TAR)
+	{
+	  cerr << opts.package2 << " should be a GNU tar archive\n";
 	  return 1;
 	}
       break;

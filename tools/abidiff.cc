@@ -560,12 +560,10 @@ main(int argc, char* argv[])
 #endif //WITH_ZIP_ARCHIVE
           break;
         case abigail::tools_utils::FILE_TYPE_RPM:
-          break;
         case abigail::tools_utils::FILE_TYPE_SRPM:
-          break;
         case abigail::tools_utils::FILE_TYPE_DEB:
-          break;
         case abigail::tools_utils::FILE_TYPE_DIR:
+        case abigail::tools_utils::FILE_TYPE_TAR:
           break;
         }
 
@@ -602,12 +600,10 @@ main(int argc, char* argv[])
 #endif //WITH_ZIP_ARCHIVE
           break;
         case abigail::tools_utils::FILE_TYPE_RPM:
-          break;
         case abigail::tools_utils::FILE_TYPE_SRPM:
-          break;
         case abigail::tools_utils::FILE_TYPE_DEB:
-          break;
         case abigail::tools_utils::FILE_TYPE_DIR:
+        case abigail::tools_utils::FILE_TYPE_TAR:
           break;
         }
 
