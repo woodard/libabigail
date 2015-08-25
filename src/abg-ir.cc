@@ -1897,7 +1897,9 @@ decl_base::get_scope() const
 const string&
 decl_base::get_qualified_parent_name() const
 {
-  if (priv_->qualified_parent_name_.empty())
+  if (priv_->qualified_parent_name_.empty()
+      || (is_type(this)
+	  && !is_type(this)->get_canonical_type()))
     {
       list<string> qn_components;
       for (scope_decl* s = get_scope();
@@ -1947,7 +1949,9 @@ decl_base::get_pretty_representation() const
 const string&
 decl_base::get_qualified_name() const
 {
-  if (priv_->qualified_name_.empty())
+  if (priv_->qualified_name_.empty()
+      || (is_type(this)
+	  && !is_type(this)->get_canonical_type()))
     {
       priv_->qualified_name_ = get_qualified_parent_name();
       if (!get_name().empty())
@@ -6114,7 +6118,8 @@ qualified_type_def::get_qualified_name(string& qualified_name) const
 const string&
 qualified_type_def::get_qualified_name() const
 {
-  if (peek_qualified_name().empty())
+  if (peek_qualified_name().empty()
+      || !get_canonical_type())
     set_qualified_name(build_name(true));
   return peek_qualified_name();
 }
@@ -6342,7 +6347,8 @@ pointer_type_def::get_qualified_name(string& qn) const
 const string&
 pointer_type_def::get_qualified_name() const
 {
-  if (peek_qualified_name().empty())
+  if (peek_qualified_name().empty()
+      || !get_canonical_type())
     {
       decl_base_sptr td =
 	get_type_declaration(get_pointed_to_type());
@@ -6489,7 +6495,8 @@ reference_type_def::get_qualified_name(string& qn) const
 const string&
 reference_type_def::get_qualified_name() const
 {
-  if (peek_qualified_name().empty())
+  if (peek_qualified_name().empty()
+      || !get_canonical_type())
     {
       decl_base_sptr td =
 	get_type_declaration(type_or_void(get_pointed_to_type()));
@@ -6803,7 +6810,8 @@ array_type_def::get_qualified_name(string& qn) const
 const string&
 array_type_def::get_qualified_name() const
 {
-  if (decl_base::peek_qualified_name().empty())
+  if (decl_base::peek_qualified_name().empty()
+      || !get_canonical_type())
     set_qualified_name(get_type_representation(*this));
   return decl_base::peek_qualified_name();
 }
