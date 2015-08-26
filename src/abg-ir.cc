@@ -8325,12 +8325,16 @@ function_decl::get_pretty_representation() const
 
   string result = mem_fn ? "method ": "function ";
 
-  if (get_member_function_is_virtual(mem_fn))
+  if (mem_fn
+      && is_member_function(mem_fn)
+      && get_member_function_is_virtual(mem_fn))
     result += "virtual ";
 
   decl_base_sptr type;
-  if ((mem_fn && (get_member_function_is_dtor(*mem_fn)
-		  || get_member_function_is_ctor(*mem_fn))))
+  if ((mem_fn
+       && is_member_function(mem_fn)
+       && (get_member_function_is_dtor(*mem_fn)
+	   || get_member_function_is_ctor(*mem_fn))))
     /*cdtors do not have return types.  */;
   else
     type = mem_fn
@@ -8395,7 +8399,9 @@ function_decl::get_pretty_representation_of_declarator () const
     }
   result += ")";
 
-  if (mem_fn && get_member_function_is_const(*mem_fn))
+  if (mem_fn
+      && is_member_function(mem_fn)
+      && get_member_function_is_const(*mem_fn))
     result += " const";
 
   return result;
