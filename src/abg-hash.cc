@@ -109,7 +109,7 @@ struct decl_base::hash
     size_t v = str_hash(typeid(d).name());
     if (!d.get_linkage_name().empty())
       v = hashing::combine_hashes(v, str_hash(d.get_linkage_name()));
-    else if (!d.get_name().empty())
+    if (!d.get_name().empty())
       v = hashing::combine_hashes(v, str_hash(d.get_qualified_name()));
     if (is_member_decl(d))
       {
