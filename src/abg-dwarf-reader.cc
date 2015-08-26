@@ -6646,7 +6646,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
 				       where_offset);
-	      class_decl_sptr b = dynamic_pointer_cast<class_decl>(base_type);
+	      class_decl_sptr b = is_compatible_with_class_type(base_type);
 	      if (!b)
 		continue;
 	      if (lookup_type_in_scope(base_type->get_name(), result))

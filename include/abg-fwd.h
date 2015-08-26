@@ -231,6 +231,9 @@ is_class_type(const shared_ptr<decl_base>);
 shared_ptr<class_decl>
 is_compatible_with_class_type(const shared_ptr<type_base>);
 
+shared_ptr<class_decl>
+is_compatible_with_class_type(const shared_ptr<decl_base>);
+
 pointer_type_def*
 is_pointer_type(type_base*);
 

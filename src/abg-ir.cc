@@ -4385,6 +4385,15 @@ is_compatible_with_class_type(const type_base_sptr t)
   return is_class_type(ty);
 }
 
+/// Test if a type is a class. This function looks through typedefs.
+///
+/// @parm t the type to consider.
+///
+/// @return the class_decl if @p t is a class_decl or null otherwise.
+class_decl_sptr
+is_compatible_with_class_type(const decl_base_sptr t)
+{return is_compatible_with_class_type(is_type(t));}
+
 /// Test whether a type is a class.
 ///
 /// @parm t the type to consider.
