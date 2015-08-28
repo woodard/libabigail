@@ -4672,6 +4672,60 @@ enum lookup_entity_kind
   LOOKUP_ENTITY_VAR,
 };
 
+/// Find the first relevant delimiter (the "::" string) in a fully
+/// qualified C++ type name, starting from a given position.  The
+/// delimiter returned separates a type name from the name of its
+/// context.
+///
+/// This is supposed to work correctly on names in cases like this:
+///
+///    foo<ns1::name1, ns2::name2>
+///
+/// In that case when called with with parameter @p begin set to 0, no
+/// delimiter is returned, because the type name in this case is:
+/// 'foo<ns1::name1, ns2::name2>'.
+///
+/// But in this case:
+///
+///   foo<p1, bar::name>::some_type
+///
+/// The "::" returned is the one right before 'some_type'.
+///
+/// @param fqn the fully qualified name of the type to consider.
+///
+/// @param begin the position from which to look for the delimiter.
+///
+/// @param delim_pos out parameter. Is set to the position of the
+/// delimiter iff the function returned true.
+///
+/// @return true iff the function found and returned the delimiter.
+static bool
+find_next_delim_in_cplus_type(const string&	fqn,
+			      size_t		begin,
+			      size_t&		delim_pos)
+{
+  int angle_count = 0;
+  bool found = false;
+  size_t i = begin;
+  for (; i < fqn.size(); ++i)
+    {
+      if (fqn[i] == '<')
+	++angle_count;
+      else if (fqn[i] == '>')
+	--angle_count;
+      else if (i + 1 < fqn.size()
+	       && !angle_count
+	       && fqn[i] == ':'
+	       && fqn[i+1] == ':')
+	{
+	  delim_pos = i;
+	  found = true;
+	  break;
+	}
+    }
+  return found;
+}
+
 /// Decompose a fully qualified name into the list of its components.
 ///
 /// @param fqn the fully qualified name to decompose.
@@ -4681,11 +4735,10 @@ void
 fqn_to_components(const string& fqn,
 		  list<string>& comps)
 {
-  string::size_type comp_begin = 0, comp_end = 0, fqn_size = fqn.size();
+  string::size_type fqn_size = fqn.size(), comp_begin = 0, comp_end = fqn_size;
   do
     {
-      comp_end = fqn.find_first_of("::", comp_begin);
-      if (comp_end == fqn.npos)
+      if (!find_next_delim_in_cplus_type(fqn, comp_begin, comp_end))
 	comp_end = fqn_size;
 
       string comp = fqn.substr(comp_begin, comp_end - comp_begin);
@@ -5100,7 +5153,8 @@ lookup_node_in_scope(const list<string>& fqn,
 		{
 		  if (class_decl_sptr cl =
 		      dynamic_pointer_cast<class_decl>(node))
-		    if (cl->get_is_declaration_only())
+		    if (cl->get_is_declaration_only()
+			&& !cl->get_definition_of_declaration())
 		      continue;
 		  resulting_decl = convert_node_to_decl(node);
 		  break;
