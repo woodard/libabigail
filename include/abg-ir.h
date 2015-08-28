@@ -1110,13 +1110,13 @@ public:
 
   virtual ~type_base();
 
-  void
+  virtual void
   set_size_in_bits(size_t);
 
   virtual size_t
   get_size_in_bits() const;
 
-  void
+  virtual void
   set_alignment_in_bits(size_t);
 
   virtual size_t
@@ -2649,6 +2649,18 @@ public:
 	     location locus, visibility vis);
   class_decl(const std::string& name, bool is_struct,
 	     bool is_declaration_only = true);
+
+  virtual void
+  set_size_in_bits(size_t);
+
+  virtual size_t
+  get_size_in_bits() const;
+
+  virtual size_t
+  get_alignment_in_bits() const;
+
+  virtual void
+  set_alignment_in_bits(size_t);
 
   virtual string
   get_pretty_representation() const;

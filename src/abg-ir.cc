@@ -9388,6 +9388,66 @@ class_decl::class_decl(const std::string& name,
     priv_(new priv(is_declaration_only, is_struct))
 {}
 
+/// Setter of the size of the class type.
+///
+/// If this class is a declaration of a definition that is elsewhere,
+/// then the new size is set to the definition.
+///
+/// @param s the new size.
+void
+class_decl::set_size_in_bits(size_t s)
+{
+  if (get_is_declaration_only() && get_definition_of_declaration())
+    get_definition_of_declaration()->set_size_in_bits(s);
+  else
+    type_base::set_size_in_bits(s);
+}
+
+/// Getter of the size of the class type.
+///
+/// If this class is a declaration of a definition that is elsewhere,
+/// then the size of the definition is returned.
+///
+/// @return the size of the class type.
+size_t
+class_decl::get_size_in_bits() const
+{
+  if (get_is_declaration_only() && get_definition_of_declaration())
+    return get_definition_of_declaration()->get_size_in_bits();
+
+  return type_base::get_size_in_bits();
+}
+
+/// Getter of the alignment of the class type.
+///
+/// If this class is a declaration of a definition that is elsewhere,
+/// then the size of the definition is returned.
+///
+/// @return the alignment of the class type.
+size_t
+class_decl::get_alignment_in_bits() const
+{
+  if (get_is_declaration_only() && get_definition_of_declaration())
+    return get_definition_of_declaration()->get_alignment_in_bits();
+
+   return type_base::get_alignment_in_bits();
+}
+
+/// Setter of the alignment of the class type.
+///
+/// If this class is a declaration of a definition that is elsewhere,
+/// then the new alignment is set to the definition.
+///
+/// @param s the new alignment.
+void
+class_decl::set_alignment_in_bits(size_t a)
+{
+  if (get_is_declaration_only() && get_definition_of_declaration())
+    get_definition_of_declaration()->set_alignment_in_bits(a);
+  else
+    type_base::set_alignment_in_bits(a);
+}
+
 /// Test if a class is a declaration-only class.
 ///
 /// @return true iff the current class is a declaration-only class.
