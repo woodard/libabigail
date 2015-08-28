@@ -10684,7 +10684,11 @@ class_decl::member_function_template::operator==(const member_base& other) const
 	return false;
 
       if (function_tdecl_sptr ftdecl = as_function_tdecl())
-	return ftdecl->function_tdecl::operator==(static_cast<const decl_base&>(o));
+	{
+	  function_tdecl_sptr other_ftdecl = o.as_function_tdecl();
+	  if (other_ftdecl)
+	    return ftdecl->function_tdecl::operator==(*other_ftdecl);
+	}
     }
   catch(...)
     {}
@@ -10748,8 +10752,8 @@ bool
 class_decl::member_class_template::operator==
 (const member_class_template& other) const
 {
-  const class_decl::member_class_template& o = other;
-  return *this == o;
+  const decl_base* o = dynamic_cast<const decl_base*>(&other);
+  return *this == *o;
 }
 
 bool
@@ -11359,35 +11363,39 @@ function_tdecl::get_binding() const
 bool
 function_tdecl::operator==(const decl_base& other) const
 {
-  try
-    {
-      const function_tdecl& o = dynamic_cast<const function_tdecl&>(other);
-
-      if (!(get_binding() == o.get_binding()
-	    && template_decl::operator==(o)
-	    && scope_decl::operator==(o)
-	    && !!get_pattern() == !!o.get_pattern()))
-	return false;
-
-      if (get_pattern())
-	return (*get_pattern() == *o.get_pattern());
-
-      return true;
-    }
-  catch(...)
-    {return false;}
+  const function_tdecl* o = dynamic_cast<const function_tdecl*>(&other);
+  if (o)
+    return *this == *o;
+  return false;
 }
 
 bool
 function_tdecl::operator==(const template_decl& other) const
 {
-  try
-    {
-      const function_tdecl& o = dynamic_cast<const function_tdecl&>(other);
-      return *this == static_cast<const decl_base&>(o);
-    }
-  catch(...)
-    {return false;}
+  const function_tdecl* o = dynamic_cast<const function_tdecl*>(&other);
+  if (o)
+    return *this == *o;
+  return false;
+}
+
+/// Comparison operator for the @ref function_tdecl type.
+///
+/// @param o the other instance of @ref function_tdecl to compare against.
+///
+/// @return true iff the two instance are equal.
+bool
+function_tdecl::operator==(const function_tdecl& o) const
+{
+  if (!(get_binding() == o.get_binding()
+	&& template_decl::operator==(o)
+	&& scope_decl::operator==(o)
+	&& !!get_pattern() == !!o.get_pattern()))
+    return false;
+
+  if (get_pattern())
+    return (*get_pattern() == *o.get_pattern());
+
+  return true;
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual

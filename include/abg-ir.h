@@ -2526,6 +2526,9 @@ public:
   virtual bool
   operator==(const template_decl&) const;
 
+  virtual bool
+  operator==(const function_tdecl&) const;
+
   void
   set_pattern(shared_ptr<function_decl> p);
 
