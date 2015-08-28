@@ -636,9 +636,6 @@ class_decl::hash::operator()(const class_decl& t) const
        ++b)
     {
       class_decl_sptr cl = (*b)->get_base_class();
-      assert(cl
-	     && (!cl->get_is_declaration_only()
-		 || cl->get_definition_of_declaration()));
       v = hashing::combine_hashes(v, hash_base(**b));
     }
 
@@ -660,11 +657,13 @@ class_decl::hash::operator()(const class_decl& t) const
 
   // Hash virtual member_functions
   for (class_decl::member_functions::const_iterator f =
-	 t.get_member_functions().begin();
-       f != t.get_member_functions().end();
+	 t.get_virtual_mem_fns().begin();
+       f != t.get_virtual_mem_fns().end();
        ++f)
-    if (get_member_function_is_virtual(*f))
+    {
+      assert(get_member_function_is_virtual(*f));
       v = hashing::combine_hashes(v, hash_member_fn(**f));
+    }
 
   // Hash member function templates
   for (class_decl::member_function_templates::const_iterator f =
