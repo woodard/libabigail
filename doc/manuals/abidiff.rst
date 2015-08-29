@@ -198,6 +198,10 @@ Options
     redundant change is a change that has been displayed elsewhere in
     the report.  This option is switched on by default.
 
+  * ``--no-architecture``
+
+    Do not take architecture in account when comparing ABIs.
+
   *  ``--dump-diff-tree``
 
     After the diff report, emit a textual representation of the diff

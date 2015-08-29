@@ -63,6 +63,7 @@ struct options
   vector<string>	drop_var_regex_patterns;
   vector<string>	keep_fn_regex_patterns;
   vector<string>	keep_var_regex_patterns;
+  bool			no_arch;
   bool			show_stats_only;
   bool			show_symtabs;
   bool			show_deleted_fns;
@@ -84,22 +85,23 @@ struct options
   shared_ptr<char>	di_root_path2;
 
   options()
-    : display_usage(false),
-      missing_operand(false),
-      show_stats_only(false),
-      show_symtabs(false),
-      show_deleted_fns(false),
-      show_changed_fns(false),
-      show_added_fns(false),
+    : display_usage(),
+      missing_operand(),
+      no_arch(),
+      show_stats_only(),
+      show_symtabs(),
+      show_deleted_fns(),
+      show_changed_fns(),
+      show_added_fns(),
       show_all_fns(true),
-      show_deleted_vars(false),
-      show_changed_vars(false),
-      show_added_vars(false),
+      show_deleted_vars(),
+      show_changed_vars(),
+      show_added_vars(),
       show_all_vars(true),
       show_linkage_names(true),
       show_harmful_changes(true),
-      show_harmless_changes(false),
-      show_redundant_changes(false),
+      show_harmless_changes(),
+      show_redundant_changes(),
       show_symbols_not_referenced_by_debug_info(true),
       dump_diff_tree(),
       show_stats()
@@ -116,6 +118,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --help|-h  display this message\n "
       << " --stat  only display the diff stats\n"
       << " --symtabs  only display the symbol tables of the corpora\n"
+      << " --no-architecture  do not take architecture in account\n"
       << " --deleted-fns  display deleted public functions\n"
       << " --changed-fns  display changed public functions\n"
       << " --added-fns  display added public functions\n"
@@ -212,6 +215,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.display_usage = true;
 	  return true;
 	}
+      else if (!strcmp(argv[i], "--no-architecture"))
+	opts.no_arch = true;
       else if (!strcmp(argv[i], "--deleted-fns"))
 	{
 	  opts.show_deleted_fns = true;
@@ -666,6 +671,14 @@ main(int argc, char* argv[])
 	{
 	  cerr << "the two input should be of the same kind\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
+	}
+
+      if (opts.no_arch)
+	{
+	  if (c1)
+	    c1->set_architecture_name("");
+	  if (c2)
+	    c2->set_architecture_name("");
 	}
 
       if (t1)
