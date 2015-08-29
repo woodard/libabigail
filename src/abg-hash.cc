@@ -620,7 +620,6 @@ class_decl::hash::operator()(const class_decl& t) const
   scope_type_decl::hash hash_scope_type;
   class_decl::base_spec::hash hash_base;
   var_decl::hash hash_data_member;
-  function_decl::hash hash_member_fn;
   class_decl::member_function_template::hash hash_member_fn_tmpl;
   class_decl::member_class_template::hash hash_member_class_tmpl;
 
@@ -639,15 +638,6 @@ class_decl::hash::operator()(const class_decl& t) const
       v = hashing::combine_hashes(v, hash_base(**b));
     }
 
-  // Hash member types.
-#if 0
-  for (class_decl::member_types::const_iterator ti =
-	 t.get_member_types().begin();
-       ti != t.get_member_types().end();
-       ++ti)
-    v = hashing::combine_hashes(v, hash_type((*ti).get()));
-#endif
-
   // Hash data members.
   for (class_decl::data_members::const_iterator d =
 	 t.get_non_static_data_members().begin();
@@ -655,15 +645,9 @@ class_decl::hash::operator()(const class_decl& t) const
        ++d)
     v = hashing::combine_hashes(v, hash_data_member(**d));
 
-  // Hash virtual member_functions
-  for (class_decl::member_functions::const_iterator f =
-	 t.get_virtual_mem_fns().begin();
-       f != t.get_virtual_mem_fns().end();
-       ++f)
-    {
-      assert(get_member_function_is_virtual(*f));
-      v = hashing::combine_hashes(v, hash_member_fn(**f));
-    }
+  // Do not hash member functions. All of them are not necessarily
+  // emitted per class, in a given TU so do not consider them when
+  // hashing a class.
 
   // Hash member function templates
   for (class_decl::member_function_templates::const_iterator f =

@@ -10382,45 +10382,10 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	}
   }
 
-  // compare virtual member functions.  We do not compare
-  // non-virtual member functions here because we don't consider
-  // them as being meaningful in the *equality* of two classes.
-  //
-  // Also, as the list of virtual member functions is not fully built
-  // until the translation unit is built (when reading from DWARF),
-  // let's ignore them until then.
-  translation_unit* ltu = get_translation_unit(l),
-    * rtu = get_translation_unit(r);
-  if (ltu && ltu->is_constructed()
-      && rtu && rtu->is_constructed())
-    {
-      if (l.get_virtual_mem_fns().size() != r.get_virtual_mem_fns().size())
-	{
-	  result = false;
-	  if (k)
-	    *k |= LOCAL_CHANGE_KIND;
-	  else
-	    RETURN(false);
-	}
-
-      for (class_decl::member_functions::const_iterator
-	     f0 = l.get_virtual_mem_fns().begin(),
-	     f1 = r.get_virtual_mem_fns().begin();
-	   f0 != l.get_virtual_mem_fns().end()
-	     && f1 != r.get_virtual_mem_fns().end();
-	   ++f0, ++f1)
-	if (**f0 != **f1)
-	  {
-	    result = false;
-	    if (k)
-	      {
-		*k |= SUBTYPE_CHANGE_KIND;
-		break;
-	      }
-	    else
-	      RETURN(false);
-	  }
-    }
+  // Do not compare member functions.  DWARF does not necessarily
+  // all the member functions, be they virtual or not, in all
+  // translation units.  So we cannot have a clear view of them, per
+  // class
 
   // compare member function templates
   {
