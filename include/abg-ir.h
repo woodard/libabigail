@@ -26,6 +26,7 @@
 #define __ABG_IR_H__
 
 #include <assert.h>
+#include <cstdlib>
 #include <tr1/unordered_map>
 #include "abg-fwd.h"
 #include "abg-hash.h"
@@ -1672,7 +1673,7 @@ public:
   void
   set_name(const string& n);
 
-  size_t
+  ssize_t
   get_value() const;
 
   void

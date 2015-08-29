@@ -34462,13 +34462,13 @@
       </class-decl>
       <enum-decl name='float_denorm_style' id='type-id-618'>
         <underlying-type type-id='type-id-619'/>
-        <enumerator name='denorm_indeterminate' value='18446744073709551615'/>
+        <enumerator name='denorm_indeterminate' value='-1'/>
         <enumerator name='denorm_absent' value='0'/>
         <enumerator name='denorm_present' value='1'/>
       </enum-decl>
       <enum-decl name='float_round_style' id='type-id-620'>
         <underlying-type type-id='type-id-621'/>
-        <enumerator name='round_indeterminate' value='18446744073709551615'/>
+        <enumerator name='round_indeterminate' value='-1'/>
         <enumerator name='round_toward_zero' value='0'/>
         <enumerator name='round_to_nearest' value='1'/>
         <enumerator name='round_toward_infinity' value='2'/>

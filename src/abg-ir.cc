@@ -7219,7 +7219,7 @@ enum_type_decl::enumerator::set_name(const string& n)
 ///
 /// @return the value of the current instance of
 /// enum_type_decl::enumerator.
-size_t
+ssize_t
 enum_type_decl::enumerator::get_value() const
 {return priv_->value_;}
 
@@ -11629,14 +11629,6 @@ public:
   {
     if (t != type_)
       {
-	// If 'type_' references a type which is a combination of
-	// pointer to, reference to, or typedef of himself, then do
-	// not look in there for a sub-type which doesn't have a
-	// canonical type.
-	type_base* type = peel_typedef_pointer_or_reference_type(t);
-	if (get_type_name(type, true) == get_type_name(type_, true))
-	  return true;
-
 	if (!t->get_canonical_type())
 	  // We are looking a sub-type of 'type_' which has no
 	  // canonical type.  So tada! we found one!  Get out right

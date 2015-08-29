@@ -18472,13 +18472,13 @@
       </class-decl>
       <enum-decl name='float_denorm_style' id='type-id-498'>
         <underlying-type type-id='type-id-499'/>
-        <enumerator name='denorm_indeterminate' value='18446744073709551615'/>
+        <enumerator name='denorm_indeterminate' value='-1'/>
         <enumerator name='denorm_absent' value='0'/>
         <enumerator name='denorm_present' value='1'/>
       </enum-decl>
       <enum-decl name='float_round_style' id='type-id-500'>
         <underlying-type type-id='type-id-501'/>
-        <enumerator name='round_indeterminate' value='18446744073709551615'/>
+        <enumerator name='round_indeterminate' value='-1'/>
         <enumerator name='round_toward_zero' value='0'/>
         <enumerator name='round_to_nearest' value='1'/>
         <enumerator name='round_toward_infinity' value='2'/>
@@ -19920,41 +19920,41 @@
         <var-decl name='reg_save_area' type-id='type-id-35' visibility='default'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='__va_list_tag' type-id='type-id-73' id='type-id-509'/>
-    <pointer-type-def type-id='type-id-509' size-in-bits='64' id='type-id-510'/>
+    <typedef-decl name='__va_list_tag' type-id='type-id-73' id='type-id-74'/>
+    <pointer-type-def type-id='type-id-74' size-in-bits='64' id='type-id-75'/>
     <function-decl name='vfwprintf' filepath='/usr/include/wchar.h' line='612' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-63'/>
       <parameter type-id='type-id-52'/>
-      <parameter type-id='type-id-510'/>
+      <parameter type-id='type-id-75'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='vfwscanf' filepath='/usr/include/wchar.h' line='689' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-63'/>
       <parameter type-id='type-id-52'/>
-      <parameter type-id='type-id-510'/>
+      <parameter type-id='type-id-75'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='vswprintf' filepath='/usr/include/wchar.h' line='625' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-44'/>
       <parameter type-id='type-id-37'/>
       <parameter type-id='type-id-52'/>
-      <parameter type-id='type-id-510'/>
+      <parameter type-id='type-id-75'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='vswscanf' filepath='/usr/include/wchar.h' line='701' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-52'/>
       <parameter type-id='type-id-52'/>
-      <parameter type-id='type-id-510'/>
+      <parameter type-id='type-id-75'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='vwprintf' filepath='/usr/include/wchar.h' line='620' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-52'/>
-      <parameter type-id='type-id-510'/>
+      <parameter type-id='type-id-75'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='vwscanf' filepath='/usr/include/wchar.h' line='697' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-52'/>
-      <parameter type-id='type-id-510'/>
+      <parameter type-id='type-id-75'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='wcrtomb' filepath='/usr/include/wchar.h' line='370' column='1' visibility='default' binding='global' size-in-bits='64'>

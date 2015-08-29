@@ -29354,7 +29354,7 @@
       </class-decl>
       <enum-decl name='BSONType' id='type-id-2236'>
         <underlying-type type-id='type-id-2336'/>
-        <enumerator name='MinKey' value='18446744073709551615'/>
+        <enumerator name='MinKey' value='-1'/>
         <enumerator name='EOO' value='0'/>
         <enumerator name='NumberDouble' value='1'/>
         <enumerator name='String' value='2'/>
