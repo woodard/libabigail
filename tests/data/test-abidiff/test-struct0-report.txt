@@ -13,5 +13,5 @@
     referenced type 'class s0' changed, as reported earlier
 1 changed declaration:
   'function int foo(s0&)' was changed to 'function int foo(s0&)':
-    parameter 0 of type 's0&' has sub-type changes:
+    parameter 1 of type 's0&' has sub-type changes:
       referenced type 'class s0' changed, as reported earlier

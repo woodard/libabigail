@@ -8,7 +8,7 @@
 
 1 changed declaration:
   'function void foo(E)' was changed to 'function void foo(E)':
-    parameter 0 of type 'enum E' has sub-type changes:
+    parameter 1 of type 'enum E' has sub-type changes:
       1 enumerator insertion:
         'E::e1' value '1'
 
