@@ -11608,6 +11608,41 @@ function_decl_diff::report(ostream& out, const string& indent) const
 	      << " changed from " << ff_vtable_offset
 	      << " to " << sf_vtable_offset << "\n";
 	}
+
+      // the classes of the two member functions.
+      class_decl_sptr fc = is_method_type(ff->get_type())->get_class_type(),
+	sc = is_method_type(sf->get_type())->get_class_type();
+
+      // Detect if the virtual member function changes above
+      // introduced a vtable change or not.
+      bool vtable_added = !fc->has_vtable() && sc->has_vtable();
+      bool vtable_removed = fc->has_vtable() && !sc->has_vtable();
+      bool vtable_changed = ((ff_is_virtual != sf_is_virtual)
+			    || (ff_vtable_offset != sf_vtable_offset));
+      bool incompatible_change = (ff_vtable_offset != sf_vtable_offset);
+
+      if (vtable_added)
+	out << indent
+	    << "  note that a vtable was added to "
+	    << fc->get_pretty_representation()
+	    << "\n";
+      else if (vtable_removed)
+	out << indent
+	    << "  note that the vtable was removed from "
+	    << fc->get_pretty_representation()
+	    << "\n";
+      else if (vtable_changed)
+	{
+	  out << indent;
+	  if (incompatible_change)
+	    out << "  note that this is an ABI incompatible "
+	      "change to the vtable of ";
+	  else
+	    out << "  note that this induces a change to the vtable of ";
+	  out << fc->get_pretty_representation()
+	      << "\n";
+	}
+
     }
 
   // Report about function type differences.
@@ -14392,6 +14427,16 @@ corpus_diff::report(ostream& out, const string& indent) const
 	      out << "}";
 	    }
 	  out << "\n";
+	  if (is_member_function(*i) && get_member_function_is_virtual(*i))
+	    {
+	      class_decl_sptr c =
+		is_method_type((*i)->get_type())->get_class_type();
+	      out << indent
+		  << "    "
+		  << "note that this removes an entry from the vtable of "
+		  << c->get_pretty_representation()
+		  << "\n";
+	    }
 	  ++removed;
 	}
       if (removed)
@@ -14431,6 +14476,16 @@ corpus_diff::report(ostream& out, const string& indent) const
 	      out << "}";
 	    }
 	  out << "\n";
+	  if (is_member_function(*i) && get_member_function_is_virtual(*i))
+	    {
+	      class_decl_sptr c =
+		is_method_type((*i)->get_type())->get_class_type();
+	      out << indent
+		  << "    "
+		  << "note that this adds a new entry to the vtable of "
+		  << c->get_pretty_representation()
+		  << "\n";
+	    }
 	  ++added;
 	}
       if (added)

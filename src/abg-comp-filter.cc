@@ -544,6 +544,44 @@ has_virtual_mem_fn_change(const class_diff* diff)
   return false;
 }
 
+/// Test if the function_decl_diff node has a change involving virtual
+/// member functions.
+///
+/// That means whether there is an added, removed or changed virtual
+/// member function.
+///
+/// @param diff the function_decl_diff node to consider.
+///
+/// @return true iff the function_decl_diff node contains changes
+/// involving virtual member functions.
+static bool
+has_virtual_mem_fn_change(const function_decl_diff* diff)
+{
+  if (!diff)
+    return false;
+
+  function_decl_sptr ff = diff->first_function_decl(),
+    sf = diff->second_function_decl();
+
+  if (!is_member_function(ff)
+      || !is_member_function(sf))
+    return false;
+
+  bool ff_is_virtual = get_member_function_is_virtual(ff),
+    sf_is_virtual = get_member_function_is_virtual(sf);
+
+  if (ff_is_virtual != sf_is_virtual)
+    return true;
+
+  size_t ff_vtable_offset = get_member_function_vtable_offset(ff),
+    sf_vtable_offset = get_member_function_vtable_offset(sf);
+
+  if (ff_vtable_offset != sf_vtable_offset)
+    return true;
+
+  return false;
+}
+
 /// Test if the class_diff node has a change involving virtual member
 /// functions.
 ///
@@ -556,7 +594,10 @@ has_virtual_mem_fn_change(const class_diff* diff)
 /// virtual member functions.
 static bool
 has_virtual_mem_fn_change(const diff* diff)
-{return has_virtual_mem_fn_change(dynamic_cast<const class_diff*>(diff));}
+{
+  return (has_virtual_mem_fn_change(dynamic_cast<const class_diff*>(diff))
+	  || has_virtual_mem_fn_change(dynamic_cast<const function_decl_diff*>(diff)));
+}
 
 /// Test if the class_diff has changes to non virtual member
 /// functions.

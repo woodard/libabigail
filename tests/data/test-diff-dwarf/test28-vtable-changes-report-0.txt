@@ -6,12 +6,15 @@ Variable symbols changes summary: 0 Removed, 3 Added variable symbols not refere
 2 Added functions:
 
   'method virtual S::~S(int)'
+    note that this adds a new entry to the vtable of struct S
   'method virtual S::~S(int)'
+    note that this adds a new entry to the vtable of struct S
 
 1 function with some indirect sub-type change:
 
   [C]'method void S::bar()' has some indirect sub-type changes:
     method void S::bar() is now declared virtual
+      note that a vtable was added to struct S
 
 
 3 Added variable symbols not referenced by debug info:

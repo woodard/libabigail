@@ -220,6 +220,21 @@ test-diff-dwarf/test28-vtable-changes-v0.o \
 test-diff-dwarf/test28-vtable-changes-v1.o \
 test-diff-dwarf/test28-vtable-changes-v0.cc \
 test-diff-dwarf/test28-vtable-changes-v1.cc \
+test-diff-dwarf/test29-vtable-changes-report-0.txt \
+test-diff-dwarf/test29-vtable-changes-v0.cc \
+test-diff-dwarf/test29-vtable-changes-v0.o \
+test-diff-dwarf/test29-vtable-changes-v1.cc \
+test-diff-dwarf/test29-vtable-changes-v1.o \
+test-diff-dwarf/test30-vtable-changes-report-0.txt \
+test-diff-dwarf/test30-vtable-changes-v0.cc \
+test-diff-dwarf/test30-vtable-changes-v0.o \
+test-diff-dwarf/test30-vtable-changes-v1.cc \
+test-diff-dwarf/test30-vtable-changes-v1.o \
+test-diff-dwarf/test31-vtable-changes-report-0.txt \
+test-diff-dwarf/test31-vtable-changes-v0.cc \
+test-diff-dwarf/test31-vtable-changes-v0.o \
+test-diff-dwarf/test31-vtable-changes-v1.cc \
+test-diff-dwarf/test31-vtable-changes-v1.o \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

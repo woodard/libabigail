@@ -10217,11 +10217,44 @@ class_decl::has_no_base_nor_member() const
 /// Test if the current instance of @ref class_decl has virtual member
 /// functions.
 ///
-/// @return true the current instance of @ref class_decl has virtual
-/// member functions.
+/// @return true iff the current instance of @ref class_decl has
+/// virtual member functions.
 bool
 class_decl::has_virtual_member_functions() const
 {return !get_virtual_mem_fns().empty();}
+
+/// Test if the current instance of @ref class_decl has at least one
+/// virtual base.
+///
+/// @return true iff the current instance of @ref class_decl has a
+/// virtual member function.
+bool
+class_decl::has_virtual_bases() const
+{
+  for (base_specs::const_iterator b = get_base_specifiers().begin();
+       b != get_base_specifiers().end();
+       ++b)
+    if ((*b)->get_is_virtual()
+	|| (*b)->get_base_class()->has_virtual_bases())
+      return true;
+
+  return false;
+}
+
+/// Test if the current instance has a vtable.
+///
+/// This is only valid for a C++ program.
+///
+/// Basically this function checks if the class has either virtual
+/// functions, or virtual bases.
+bool
+class_decl::has_vtable() const
+{
+  if (has_virtual_member_functions()
+      || has_virtual_bases())
+    return true;
+  return false;
+}
 
 /// Return the hash value for the current instance.
 ///

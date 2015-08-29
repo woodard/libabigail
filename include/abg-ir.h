@@ -2757,6 +2757,12 @@ public:
   bool
   has_virtual_member_functions() const;
 
+  bool
+  has_virtual_bases() const;
+
+  bool
+  has_vtable() const;
+
   virtual size_t
   get_hash() const;
 
