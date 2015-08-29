@@ -1747,16 +1747,6 @@ class read_context
   vector<Dwarf_Off>		types_to_canonicalize_;
   vector<Dwarf_Off>		alt_types_to_canonicalize_;
   string_classes_map		decl_only_classes_map_;
-  // Decl-only classes that are expected to be complete.  This is to
-  // implement a work-around for DWARF producers that are over-eager
-  // to mark certain classes as being declarations, forget to provide
-  // their definitions and use the declaration-only classes in
-  // contexts that require them to be defined; for instance, using
-  // those decl-only classes as base class.  The idea of the
-  // work-around is to detect those decl-only classes that are
-  // expected to be complete and mark them as complete, with a size of
-  // 1, if their size is still zero.
-  string_classes_map		decl_only_classes_to_force_defined_map_;
   die_tu_map_type		die_tu_map_;
   corpus_sptr			cur_corpus_;
   translation_unit_sptr	cur_tu_;
@@ -2233,48 +2223,6 @@ public:
   declaration_only_classes() const
   {return decl_only_classes_map_;}
 
-  /// Getter for the map of declaration-only classes that *REALLY* are
-  /// to be resolved to their definition classes (because they are
-  /// actually used in context that require a complete type) by the
-  /// end of the corpus loading.  If they are are not resolved at the
-  /// end of corpus loading then they need to be "forced" to be
-  /// complete by considering that they are a type of size 1 and with
-  /// no data member and no base class.
-  ///
-  /// This is to implement a work-around for DWARF producers that
-  /// forget to provide definitions for classes that are actually
-  /// empty (no data member and no base class), and more importantly,
-  /// are used in contexts that require complete types like a base
-  /// class.
-  ///
-  /// @return a map of string -> vector of classes where the key is
-  /// the fully qualified name of the class and the value is the
-  /// vector of declaration-only class.
-  const string_classes_map&
-  declaration_only_classes_to_force_defined() const
-  {return decl_only_classes_to_force_defined_map_;}
-
-  /// Getter for the map of declaration-only classes that *REALLY* are
-  /// to be resolved to their definition classes (because they are
-  /// actually used in context that require a complete type) by the
-  /// end of the corpus loading.  If they are are not resolved at the
-  /// end of corpus loading then they need to be "forced" to be
-  /// complete by considering that they are a type of size 1 and with
-  /// no data member and no base class.
-  ///
-  /// This is to implement a work-around for DWARF producers that
-  /// forget to provide definitions for classes that are actually
-  /// empty (no data member and no base class), and more importantly,
-  /// are used in contexts that require complete types like a base
-  /// class.
-  ///
-  /// @return a map of string -> vector of classes where the key is
-  /// the fully qualified name of the class and the value is the
-  /// vector of declaration-only class.
-  string_classes_map&
-  declaration_only_classes_to_force_defined()
-  {return decl_only_classes_to_force_defined_map_;}
-
   /// Getter for the map of declaration-only classes that are to be
   /// resolved to their definition classes by the end of the corpus
   /// loading.
@@ -2302,29 +2250,6 @@ public:
 	  declaration_only_classes().find(qn);
 	if (record == declaration_only_classes().end())
 	  declaration_only_classes()[qn].push_back(klass);
-	else
-	  record->second.push_back(klass);
-      }
-  }
-
-  /// If a given class is a declaration-only class that really needs
-  /// to be resolved because it's used in a context that requires a
-  /// complete class, then stash it on the side so that at the end of
-  /// the corpus reading we can force its resolution it to its
-  /// definition.
-  ///
-  /// @param klass the class to consider.
-  void
-  schedule_declaration_only_class_for_forced_resolution(class_decl_sptr& klass)
-  {
-    if (klass->get_is_declaration_only()
-	&& klass->get_definition_of_declaration() == 0)
-      {
-	string qn = klass->get_qualified_name();
-	string_classes_map::iterator record =
-	  declaration_only_classes_to_force_defined().find(qn);
-	if (record == declaration_only_classes_to_force_defined().end())
-	  declaration_only_classes_to_force_defined()[qn].push_back(klass);
 	else
 	  record->second.push_back(klass);
       }
@@ -2397,41 +2322,7 @@ public:
     for (vector<string>::iterator i = resolved_classes.begin();
 	 i != resolved_classes.end();
 	 ++i)
-      {
-	declaration_only_classes().erase(*i);
-	declaration_only_classes_to_force_defined().erase(*i);
-      }
-
-    // Now force-resolve the remaining decl-only classes that were not
-    // resolved, but that are used in contexts where they need to be
-    // complete.
-    for (string_classes_map::iterator i =
-	   declaration_only_classes_to_force_defined().begin();
-	 i != declaration_only_classes_to_force_defined().end();
-	 ++i)
-      {
-	// So i->first is the name of the declaration-only type.  i->second
-	// is a vector of instances of the declaration-only type named
-	// i->first.  Each instance was referenced in a context that
-	// needs a complete type.
-	for (classes_type::iterator j = i->second.begin();
-		 j != i->second.end();
-		 ++j)
-	  {
-	    if ((*j)->get_is_declaration_only())
-	      {
-		// This particular declaration-only type hasn't been
-		// resolved yet.  So force resolve it.
-		assert ((*j)->get_size_in_bits() == 0
-			&& ((*j)->get_definition_of_declaration() == 0));
-
-		(*j)->set_is_declaration_only(false);
-		(*j)->set_size_in_bits(1);
-	      }
-	  }
-	declaration_only_classes().erase(i->first);
-      }
-    declaration_only_classes_to_force_defined().clear();
+      declaration_only_classes().erase(*i);
   }
 
   /// Return a reference to the vector containing the offsets of the
@@ -6671,14 +6562,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 					       : -1,
 					       is_virt));
 	      if (b->get_is_declaration_only())
-		{
-		  assert(ctxt.is_decl_only_class_scheduled_for_resolution(b));
-		  // In case the declared class "b" is not defined
-		  // until the end of the current DSO (some DWARF
-		  // producers emit debug info like that, yes) make
-		  // sure to force it to be defined somehow.
-		  ctxt.schedule_declaration_only_class_for_forced_resolution(b);
-		}
+		assert(ctxt.is_decl_only_class_scheduled_for_resolution(b));
 	      result->add_base_specifier(base);
 	    }
 	  // Handle data members.
@@ -6738,8 +6622,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
 	    {
-	      result->set_is_declaration_only(false);
-
 	      decl_base_sptr r = build_ir_node_from_die(ctxt, &child,
 							is_in_alt_di,
 							result.get(),
@@ -6752,6 +6634,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      assert(f);
 
 	      finish_member_function_reading(&child, f, result);
+	      if (is_member_function(f)
+		  && get_member_function_is_virtual(f))
+		result->set_is_declaration_only(false);
 
 	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
 					 is_in_alt_di, f);
