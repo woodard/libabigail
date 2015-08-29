@@ -71,8 +71,6 @@ class read_context;
 /// representation of ABI Corpus.
 class read_context
 {
-  read_context();
-
 public:
 
   typedef unordered_map<string,
@@ -92,27 +90,39 @@ public:
   typedef unordered_map<xmlNodePtr, decl_base_sptr> xml_node_decl_base_sptr_map;
 
 private:
-  unordered_map<string, shared_ptr<type_base> > m_types_map;
-  unordered_map<string, shared_ptr<function_tdecl> > m_fn_tmpl_map;
-  unordered_map<string, shared_ptr<class_tdecl> > m_class_tmpl_map;
-  unordered_map<string, bool>	m_wip_classes_map;
-  vector<type_base_sptr>	m_types_to_canonicalize;
-  string_xml_node_map		m_id_xml_node_map;
-  xml_node_decl_base_sptr_map	m_xml_node_decl_map;
-  xml::reader_sptr		m_reader;
-  deque<shared_ptr<decl_base> > m_decls_stack;
-  corpus_sptr			m_corpus;
-  corpus::exported_decls_builder* m_exported_decls_builder_;
+  unordered_map<string, shared_ptr<type_base> >	m_types_map;
+  unordered_map<string, shared_ptr<function_tdecl> >	m_fn_tmpl_map;
+  unordered_map<string, shared_ptr<class_tdecl> >	m_class_tmpl_map;
+  unordered_map<string, size_t>			m_wip_types_map;
+  vector<type_base_sptr>				m_types_to_canonicalize;
+  string_xml_node_map					m_id_xml_node_map;
+  xml_node_decl_base_sptr_map				m_xml_node_decl_map;
+  xml::reader_sptr					m_reader;
+  xmlNodePtr						m_corp_node;
+  deque<shared_ptr<decl_base> >			m_decls_stack;
+  corpus_sptr						m_corpus;
+  corpus::exported_decls_builder*			m_exported_decls_builder_;
+
+  read_context();
 
 public:
   read_context(xml::reader_sptr reader)
     : m_reader(reader),
+      m_corp_node(),
       m_exported_decls_builder_()
   {}
 
   xml::reader_sptr
   get_reader() const
   {return m_reader;}
+
+  xmlNodePtr
+  get_corpus_node() const
+  {return m_corp_node;}
+
+  void
+  set_corpus_node(xmlNodePtr node)
+  {m_corp_node = node;}
 
   const string_xml_node_map&
   get_id_xml_node_map() const
@@ -167,46 +177,10 @@ public:
 
     string_xml_node_map::const_iterator i = get_id_xml_node_map().find(id);
     if (i != get_id_xml_node_map().end())
-      {
-	// So, there has already been an xml node that has been mapped
-	// to this ID.  That means, there ware an another xml node
-	// with the same ID.  There are just a few cases where we
-	// should allow this. Let's check that we are in one of these cases.
-	xml_char_sptr p0 = XML_NODE_GET_ATTRIBUTE(node, "is-declaration-only");
-	bool node_is_declaration_only =
-	  (p0 && xmlStrEqual(p0.get(), BAD_CAST("yes")));
-	bool node_is_class =
-	  (xmlStrEqual(node->name, BAD_CAST("class-decl")));
-	bool node_is_type_decl =
-	  (xmlStrEqual(node->name, BAD_CAST("type-decl")));
-	bool node_is_pointer_or_reference =
-	  (xmlStrEqual(node->name, BAD_CAST("pointer-type-def"))
-	   || xmlStrEqual(node->name, BAD_CAST("reference-type-def")));
-	bool node_is_array =
-	  xmlStrEqual(node->name, BAD_CAST("array-type-def"));
-	bool node_is_typedef =
-	  xmlStrEqual(node->name, BAD_CAST("typedef-decl"));
-	bool node_is_qualified_type =
-	  (xmlStrEqual(node->name, BAD_CAST("qualified-type-def")));
-	xml_char_sptr name_val = XML_NODE_GET_ATTRIBUTE(node, "name");
-	bool node_is_unnamed_enum_ut =
-	  xmlStrEqual(name_val.get(), BAD_CAST("unnamed-enum-underlying-type"));
-
-	xml_char_sptr p1 = XML_NODE_GET_ATTRIBUTE(i->second,
-						  "is-declaration-only");
-	bool is_ok = (node_is_declaration_only
-		      || (p1 && xmlStrEqual(p1.get(), BAD_CAST("yes")))
-		      || node_is_class
-		      || node_is_type_decl
-		      || node_is_pointer_or_reference
-		      || node_is_array
-		      || node_is_typedef
-		      || node_is_qualified_type
-		      || node_is_unnamed_enum_ut);
-	assert(is_ok);
-	if (is_ok)
-	  get_id_xml_node_map()[id] = node;
-      }
+      // So an xml node with the same ID was already present.  In that
+      // case do not add again, let's just remember about the first
+      // one.
+      ;
     else
       get_id_xml_node_map()[id] = node;
   }
@@ -309,7 +283,6 @@ public:
   {
     if (m_decls_stack.empty())
       return shared_ptr<decl_base>(static_cast<decl_base*>(0));
-
     return m_decls_stack.back();
   }
 
@@ -317,8 +290,13 @@ public:
   get_translation_unit()
   {
     const global_scope* global = 0;
-    if (shared_ptr<decl_base> d = m_decls_stack.front())
-      global = get_global_scope(d);
+    for (deque<shared_ptr<decl_base> >::reverse_iterator i =
+	   m_decls_stack.rbegin();
+	 i != m_decls_stack.rend();
+	 ++i)
+      if (decl_base_sptr d = *i)
+	if ((global = get_global_scope(d)))
+	  break;
 
     if (global)
       return global->get_translation_unit();
@@ -414,50 +392,80 @@ public:
   /// yet fully built.
   void
   clear_wip_classes_map()
-  {m_wip_classes_map.clear();}
+  {m_wip_types_map.clear();}
 
-  /// Mark a given class as being "Work In Progress"; that is, mark it
+  /// Mark a given type as being "Work In Progress"; that is, mark it
   /// as being currently built.
   ///
-  /// @param klass the class to mark as being "Work In Progress".
+  /// @param t the class to mark as being "Work In Progress".
   void
-  mark_class_as_wip(const class_decl_sptr klass)
+  mark_type_as_wip(const type_base_sptr t)
   {
-    if (!klass)
+    if (!t)
       return;
-    string qname = klass->get_qualified_name();
-    m_wip_classes_map[qname] = true;
+    string qname = get_type_name(t, /*qualified=*/true);
+    unordered_map<string, size_t>::iterator it = m_wip_types_map.find(qname);
+    if (it == m_wip_types_map.end())
+      m_wip_types_map[qname] = 1;
+    else
+      ++it->second;
   }
 
   /// Mark a given class as being *NOT* "Work In Progress" anymore;
   /// that is, mark it as being fully built.
   ///
-  /// @param klass the class to mark as being built.
+  /// @param t the type to mark as being built.
   void
-  unmark_class_as_wip(const class_decl_sptr klass)
+  unmark_type_as_wip(const type_base_sptr t)
   {
-    if (!klass)
+    if (!t)
       return;
 
-    string qname = klass->get_qualified_name();
-    m_wip_classes_map.erase(qname);
+    string qname = get_type_name(t, /*qualified=*/true);
+    unordered_map<string, size_t>::iterator it = m_wip_types_map.find(qname);
+    if (it == m_wip_types_map.end())
+      return;
+    if (it->second)
+      --it->second;
+    if (it->second == 0)
+      m_wip_types_map.erase(it);
   }
 
-  /// Test if a class a being currently built; that is, if it's "Work
+  /// Test if a type is being currently built; that is, if it's "Work
   /// In Progress".
   ///
-  /// @param klass the class to consider.
+  /// @param t the type to consider.
   bool
-  is_wip_class(const class_decl_sptr klass)
+  is_wip_type(const type_base_sptr t)
   {
-    if (!klass)
+    if (!t)
       return false;
 
-    string qname = klass->get_qualified_name();
-    unordered_map<string, bool>::const_iterator i =
-      m_wip_classes_map.find(qname);
+    string qname = get_type_name(t, /*qualified=*/true);
+    unordered_map<string, size_t>::const_iterator i =
+      m_wip_types_map.find(qname);
+    return i != m_wip_types_map.end();
+  }
 
-    return i != m_wip_classes_map.end();
+  /// Test if two types are equal, without comparing them structurally.
+  ///
+  /// This either tests that type pointers are equal, or it tests
+  /// their names.  This is because it might be two early to compare
+  /// types structurally because we are not necessarily done building
+  /// them yet.
+  ///
+  /// @param t1 the first type to compare.
+  ///
+  /// @param t2 the second type to compare.
+  ///
+  /// @return true iff the types are equal.
+  bool
+  types_equal(type_base_sptr t1, type_base_sptr t2)
+  {
+    if (t1.get() == t2.get())
+      return true;
+    return (get_type_name(t1, /*qualified=*/true)
+	    == get_type_name(t2, /*qualified=*/true));
   }
 
   /// Associate an ID with a type.
@@ -654,9 +662,6 @@ public:
   void
   clear_per_translation_unit_data()
   {
-    clear_xml_node_decl_map();
-    clear_id_xml_node_map();
-    clear_decls_stack();
   }
 
   /// Clear all the data that must absolutely be cleared at the end of
@@ -666,6 +671,9 @@ public:
   {
     clear_type_map();
     clear_types_to_canonicalize();
+    clear_xml_node_decl_map();
+    clear_id_xml_node_map();
+    clear_decls_stack();
   }
 
   /// Test if a type should be canonicalized early.  If so,
@@ -675,17 +683,14 @@ public:
   ///
   /// @param t the type to consider for canonicalizing.
   void
-  maybe_canonicalize_type(type_base_sptr t)
+  maybe_canonicalize_type(type_base_sptr t,
+			  bool force_delay = false)
   {
     if (!t)
       return;
 
     if (t->get_canonical_type())
       return;
-
-    bool is_class_decl_only = false;
-    if (class_decl_sptr klass = is_class_type(t))
-      is_class_decl_only = klass->get_is_declaration_only();
 
     // If this class has some non-canonicalized sub type, then wait
     // for the when we've read all the translation unit to
@@ -695,14 +700,25 @@ public:
     // Also, if this is a declaration-only class, wait for the end of
     // the translation unit reading so that we have its definition and
     // then we'll use that for canonicalizing it.
-    if (!type_has_non_canonicalized_subtype(t)
-	&& !is_class_decl_only
-	// Method decl are usually built in two times; first the
-	// method is created (so its type is created at that moment)
-	// and then, later, it's added to its class.  So we need to
-	// wait until the end of the corpus to make sure we finished
-	// building the type.
-	&& !is_method_type(t))
+    if (!force_delay
+	&& !type_has_non_canonicalized_subtype(t)
+	&& !is_class_type(t)
+	&& !is_wip_type(t)
+	// Below are types that *must* be canonicalized only after
+	// they are added to their context; but then this function
+	// might be called to early, before they are actually added to
+	// their context.
+	//
+	// TODO: make sure this this function is called after types
+	// are added to their context, so that we can try to
+	// early-canonicalize some of these types, reducing the size
+	// of the set of types to put on the side, waiting for being
+	// canonicalized.
+	&& !is_method_type(t)
+	&& !is_reference_type(t)
+	&& !is_pointer_type(t)
+	&& !is_qualified_type(t)
+	&& !is_typedef(t))
       canonicalize(t);
     else
       schedule_type_for_late_canonicalizing(t);
@@ -727,25 +743,14 @@ public:
 	 ++i)
       canonicalize(*i);
   }
-
-  /// Test if a type ID is new in the current translation unit.
-  ///
-  /// @param id the translation unit ID to test for.
-  ///
-  /// @return true iff the type ID is new in the current translation
-  /// unit.
-  bool
-  type_id_new_in_translation_unit(const string& id)
-  {
-    type_base_sptr t = get_type_decl(id);
-    return !t || !type_is_from_translation_unit(t);
-  }
-
 };// end class read_context
 
 static int	advance_cursor(read_context&);
+static translation_unit_sptr
+read_translation_unit(read_context&, xmlNodePtr);
 static translation_unit_sptr read_translation_unit_from_input(read_context&);
-static bool	read_symbol_db_from_input(read_context&, bool,
+static bool	read_symbol_db_from_input(read_context&,
+					  string_elf_symbols_map_sptr&,
 					  string_elf_symbols_map_sptr&);
 static bool	read_location(read_context&, xmlNodePtr, location&);
 static bool	read_visibility(xmlNodePtr, decl_base::visibility&);
@@ -908,6 +913,14 @@ read_context::get_scope_for_node(xmlNodePtr node,
     get_xml_node_decl_map().find(parent);
   if (i == get_xml_node_decl_map().end())
     {
+      if (xmlStrEqual(parent->name, BAD_CAST("abi-instr")))
+	{
+	  translation_unit_sptr tu =
+	    read_translation_unit(*this, parent);
+	  get_corpus()->add(tu);
+	  return tu->get_global_scope();
+	}
+
       access_specifier a = no_access;
       scope_decl_sptr parent_scope = get_scope_for_node(parent, a);
       push_decl(parent_scope);
@@ -1017,36 +1030,17 @@ walk_xml_node_to_map_type_ids(read_context& ctxt,
     walk_xml_node_to_map_type_ids(ctxt, n);
 }
 
-/// Parse the input XML document containing a translation_unit,
-/// represented by an 'abi-instr' element node, associated to the current
-/// context.
-///
-/// @param ctxt the current input context
-///
-/// @return the translation unit resulting from the parsing upon
-/// successful completion, or nil.
 static translation_unit_sptr
-read_translation_unit_from_input(read_context&	ctxt)
+read_translation_unit(read_context& ctxt, xmlNodePtr node)
 {
   translation_unit_sptr tu, nil;
 
-  xml::reader_sptr reader = ctxt.get_reader();
-  if (!reader)
+  if (!node
+      || node->type != XML_ELEMENT_NODE
+      || !xmlStrEqual(node->name, BAD_CAST("abi-instr")))
     return nil;
 
-  // The document must start with the abi-instr node.
-  int status = 1;
-  while (status == 1
-	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
-    status = advance_cursor (ctxt);
-
-  if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-				   BAD_CAST("abi-instr")))
-    return nil;
-
-  xmlNodePtr node = xmlTextReaderExpand(reader.get());
-  if (!node)
-    return nil;
+  ctxt.set_corpus_node(node);
 
   tu.reset(new translation_unit(""));
 
@@ -1073,7 +1067,9 @@ read_translation_unit_from_input(read_context&	ctxt)
   ctxt.push_decl(tu->get_global_scope());
   ctxt.map_xml_node_to_decl(node, tu->get_global_scope());
 
-  walk_xml_node_to_map_type_ids(ctxt, node);
+  if (ctxt.get_id_xml_node_map().empty()
+      || !ctxt.get_corpus())
+    walk_xml_node_to_map_type_ids(ctxt, node);
 
   for (xmlNodePtr n = node->children; n; n = n->next)
     {
@@ -1083,11 +1079,70 @@ read_translation_unit_from_input(read_context&	ctxt)
 				 /*add_decl_to_scope=*/true));
     }
 
-  xmlTextReaderNext(reader.get());
+  ctxt.pop_scope_or_abort(tu->get_global_scope());
+
+  xml::reader_sptr reader = ctxt.get_reader();
+  if (!reader)
+    return nil;
 
   ctxt.clear_per_translation_unit_data();
 
   return tu;
+}
+
+/// Parse the input XML document containing a translation_unit,
+/// represented by an 'abi-instr' element node, associated to the current
+/// context.
+///
+/// @param ctxt the current input context
+///
+/// @return the translation unit resulting from the parsing upon
+/// successful completion, or nil.
+static translation_unit_sptr
+read_translation_unit_from_input(read_context&	ctxt)
+{
+  translation_unit_sptr tu, nil;
+
+  xmlNodePtr node = 0;
+  if (!ctxt.get_corpus_node())
+    {
+      xml::reader_sptr reader = ctxt.get_reader();
+      if (!reader)
+	return nil;
+
+      // The document must start with the abi-instr node.
+      int status = 1;
+      while (status == 1
+	     && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+	status = advance_cursor (ctxt);
+
+      if (status != 1 || !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+				       BAD_CAST("abi-instr")))
+	return nil;
+
+      node = xmlTextReaderExpand(reader.get());
+      if (!node)
+	return nil;
+    }
+  else
+    {
+      node = 0;
+      for (xmlNodePtr n = ctxt.get_corpus_node()->next; n; n = n->next)
+	{
+	  if (!n
+	      || n->type != XML_ELEMENT_NODE)
+	    continue;
+	  if (!xmlStrEqual(n->name, BAD_CAST("abi-instr")))
+	    return nil;
+	  node = n;
+	  break;
+	}
+    }
+
+  if (node == 0)
+    return nil;
+
+  return read_translation_unit(ctxt, node);
 }
 
 /// Parse the input XML document containing a function symbols
@@ -1110,42 +1165,84 @@ read_translation_unit_from_input(read_context&	ctxt)
 /// @return true upon successful parsing, false otherwise.
 static bool
 read_symbol_db_from_input(read_context&		 ctxt,
-			  bool			 function_symbols,
-			  string_elf_symbols_map_sptr& symdb)
+			  string_elf_symbols_map_sptr& fn_symdb,
+			  string_elf_symbols_map_sptr& var_symdb)
 {
   xml::reader_sptr reader = ctxt.get_reader();
   if (!reader)
     return false;
 
-  // The symbol db must start with the 'elf-function-symbols" or
-  // 'elf-variable-symbols' element node.
-  int status = 1;
-  while (status == 1
-	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
-    status = advance_cursor (ctxt);
+  bool found = false;
 
-  if (status != 1)
-    return false;
+  if (!ctxt.get_corpus_node())
+    for (;;)
+      {
+	int status = 1;
+	while (status == 1
+	       && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+	  status = advance_cursor (ctxt);
 
-  if (function_symbols
-      && !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		       BAD_CAST("elf-function-symbols")))
-    return false;
+	if (status != 1)
+	  return false;
 
-  if (!function_symbols
-      && !xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		       BAD_CAST("elf-variable-symbols")))
-    return false;
+	bool has_fn_syms = false, has_var_syms = false;
+	if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+			 BAD_CAST("elf-function-symbols")))
+	  has_fn_syms = true;
+	else if (xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+			      BAD_CAST("elf-variable-symbols")))
+	  has_var_syms = true;
+	else
+	  break;
 
-  xmlNodePtr node = xmlTextReaderExpand(reader.get());
-  if (!node)
-    return false;
+	xmlNodePtr node = xmlTextReaderExpand(reader.get());
+	if (!node)
+	  return false;
 
-  symdb = build_elf_symbol_db(ctxt, node, function_symbols);
+	if (has_fn_syms)
+	  {
+	    fn_symdb = build_elf_symbol_db(ctxt, node, true);
+	    if (fn_symdb)
+	      found = true;
+	  }
+	else if (has_var_syms)
+	  {
+	    var_symdb = build_elf_symbol_db(ctxt, node, false);
+	    if (var_symdb)
+	      found = true;
+	  }
 
-  xmlTextReaderNext(reader.get());
+	xmlTextReaderNext(reader.get());
+      }
+  else
+    for (xmlNodePtr n = ctxt.get_corpus_node()->next; n; n = n->next)
+      {
+	if (!n || n->type != XML_ELEMENT_NODE)
+	  continue;
 
-  return symdb;
+	bool has_fn_syms = false, has_var_syms = false;
+	if (xmlStrEqual(n->name, BAD_CAST("elf-function-symbols")))
+	  has_fn_syms = true;
+	else if (xmlStrEqual(n->name, BAD_CAST("elf-variable-symbols")))
+	  has_var_syms = true;
+	else
+	  break;
+	ctxt.set_corpus_node(n);
+	if (has_fn_syms)
+	  {
+	    fn_symdb = build_elf_symbol_db(ctxt, n, true);
+	    found = true;
+	  }
+	else if (has_var_syms)
+	  {
+	    var_symdb = build_elf_symbol_db(ctxt, n, false);
+	    found = true;
+	  }
+	else
+	  break;
+      }
+
+  return found;
 }
 
 /// From an "elf-needed" XML_ELEMENT node, build a vector of strings
@@ -1201,25 +1298,45 @@ read_elf_needed_from_input(read_context&	ctxt,
   if (!reader)
     return false;
 
-  int status = 1;
-  while (status == 1
-	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
-    status = advance_cursor (ctxt);
+  xmlNodePtr node = 0;
 
-  if (status != 1)
-    return false;
+  if (ctxt.get_corpus_node() == 0)
+    {
+      int status = 1;
+      while (status == 1
+	     && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT)
+	status = advance_cursor (ctxt);
 
-  if (!xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
-		    BAD_CAST("elf-needed")))
-    return false;
+      if (status != 1)
+	return false;
 
-  xmlNodePtr node = xmlTextReaderExpand(reader.get());
-  if (!node)
-    return false;
+      if (!xmlStrEqual (XML_READER_GET_NODE_NAME(reader).get(),
+			BAD_CAST("elf-needed")))
+	return false;
 
-  bool result = build_needed(node, needed);
+      node = xmlTextReaderExpand(reader.get());
+      if (!node)
+	return false;
+    }
+  else
+    {
+      for (xmlNodePtr n = ctxt.get_corpus_node()->next; n; n = n->next)
+	{
+	  if (!n || n->type != XML_ELEMENT_NODE)
+	    continue;
+	  if (!xmlStrEqual(n->name, BAD_CAST("elf-needed")))
+	    return false;
+	  node = n;
+	  break;
+	}
+    }
 
-  xmlTextReaderNext(reader.get());
+  bool result = false;
+  if (node)
+    {
+      result = build_needed(node, needed);
+      ctxt.set_corpus_node(node);
+    }
 
   return result;
 }
@@ -1274,11 +1391,12 @@ read_corpus_from_input(read_context& ctxt)
   if (soname_str)
     corp.set_soname(reinterpret_cast<char*>(soname_str.get()));
 
-  // Advance the cursor until the next element.
-  do
-    status = advance_cursor (ctxt);
-  while (status == 1
-	 && XML_READER_GET_NODE_TYPE(reader) != XML_READER_TYPE_ELEMENT);
+  xmlNodePtr node = xmlTextReaderExpand(reader.get());
+  if (!node)
+    return nil;
+
+  ctxt.set_corpus_node(node->children);
+  walk_xml_node_to_map_type_ids(ctxt, node);
 
   // Read the needed element
   vector<string> needed;
@@ -1290,26 +1408,21 @@ read_corpus_from_input(read_context& ctxt)
   bool is_ok = false;
 
   // Read the symbol databases.
-  do
+  is_ok = read_symbol_db_from_input(ctxt, fn_sym_db, var_sym_db);
+  if (is_ok)
     {
-      is_ok = (read_symbol_db_from_input(ctxt, true, fn_sym_db)
-	       || read_symbol_db_from_input(ctxt, false, var_sym_db));
-      if (is_ok)
+      assert(fn_sym_db || var_sym_db);
+      if (fn_sym_db)
 	{
-	  assert(fn_sym_db || var_sym_db);
-	  if (fn_sym_db)
-	    {
-	      corp.set_fun_symbol_map(fn_sym_db);
-	      fn_sym_db.reset();
-	    }
-	  else if (var_sym_db)
-	    {
-	      corp.set_var_symbol_map(var_sym_db);
-	      var_sym_db.reset();
-	    }
+	  corp.set_fun_symbol_map(fn_sym_db);
+	  fn_sym_db.reset();
+	}
+      if (var_sym_db)
+	{
+	  corp.set_var_symbol_map(var_sym_db);
+	  var_sym_db.reset();
 	}
     }
-  while (is_ok);
 
   // Read the translation units.
   do
@@ -1961,6 +2074,8 @@ build_elf_symbol_db(read_context& ctxt,
       && !xmlStrEqual(node->name, BAD_CAST("elf-variable-symbols")))
     return nil;
 
+  ctxt.set_corpus_node(node);
+
   typedef std::tr1::unordered_map<xmlNodePtr, elf_symbol_sptr>
     xml_node_ptr_elf_symbol_sptr_map_type;
   xml_node_ptr_elf_symbol_sptr_map_type xml_node_ptr_elf_symbol_map;
@@ -2061,12 +2176,14 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
     type_id = CHAR_STR(a);
 
   shared_ptr<type_base> type;
-  if (!is_variadic)
+  if (is_variadic)
+    type = type_decl::get_variadic_parameter_type_decl();
+  else
     {
       assert(!type_id.empty());
       type = ctxt.build_or_get_type_decl(type_id, true);
     }
-  assert(type || is_variadic);
+  assert(type);
 
   string name;
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("name"))))
@@ -2136,10 +2253,36 @@ build_function_decl(read_context&	ctxt,
   read_location(ctxt, node, loc);
 
   std::vector<shared_ptr<function_decl::parameter> > parms;
+  type_base_sptr return_type;
+
+  for (xmlNodePtr n = node->children; n ; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      else if (xmlStrEqual(n->name, BAD_CAST("parameter")))
+	{
+	  if (shared_ptr<function_decl::parameter> p =
+	      build_function_parameter(ctxt, n))
+	    parms.push_back(p);
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("return")))
+	{
+	  string type_id;
+	  if (xml_char_sptr s =
+	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
+	    type_id = CHAR_STR(s);
+	  if (!type_id.empty())
+	    return_type = ctxt.build_or_get_type_decl(type_id, true);
+	}
+    }
+
   shared_ptr<function_type> fn_type(as_method_decl
-				    ? new method_type(as_method_decl,
-						      size, align)
-				    : new function_type(size, align));
+				    ? new method_type(return_type,
+						      as_method_decl,
+						      parms, size, align)
+				    : new function_type(return_type,
+							parms, size, align));
 
   shared_ptr<function_decl> fn_decl(as_method_decl
 				    ? new class_decl::method_decl
@@ -2158,36 +2301,12 @@ build_function_decl(read_context&	ctxt,
   if (sym)
     fn_decl->set_symbol(sym);
 
-  for (xmlNodePtr n = node->children; n ; n = n->next)
-    {
-      if (n->type != XML_ELEMENT_NODE)
-	continue;
-
-      else if (xmlStrEqual(n->name, BAD_CAST("parameter")))
-	{
-	  if (shared_ptr<function_decl::parameter> p =
-	      build_function_parameter(ctxt, n))
-	    fn_type->append_parameter(p);
-	}
-      else if (xmlStrEqual(n->name, BAD_CAST("return")))
-	{
-	  string type_id;
-	  if (xml_char_sptr s =
-	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
-	    type_id = CHAR_STR(s);
-	  if (!type_id.empty())
-	    fn_type->set_return_type(ctxt.build_or_get_type_decl(type_id,
-								 true));
-	}
-    }
-
   if (fn_decl->get_symbol() && fn_decl->get_symbol()->is_public())
     fn_decl->set_is_in_public_symbol_table(true);
 
   ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
 
-  fn_decl->set_type(fn_type);
-  ctxt.maybe_canonicalize_type(fn_type);
+  ctxt.maybe_canonicalize_type(fn_type, !add_to_current_scope);
 
   ctxt.maybe_add_fn_to_exported_decls(fn_decl.get());
 
@@ -2290,7 +2409,7 @@ build_type_decl(read_context&		ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
+  assert(!id.empty());
 
   size_t size_in_bits= 0;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
@@ -2404,7 +2523,7 @@ build_qualified_type_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
+  assert(!id.empty());
 
   qualified_type_def_sptr decl;
 
@@ -2421,7 +2540,7 @@ build_qualified_type_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, decl);
-      ctxt.maybe_canonicalize_type(decl);
+      ctxt.maybe_canonicalize_type(decl, !add_to_current_scope);
       return decl;
     }
 
@@ -2485,12 +2604,13 @@ build_pointer_type_def(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
+  assert(!id.empty());
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       pointer_type_def_sptr ty = is_pointer_type(d);
       assert(ty);
-      assert(*pointed_to_type == *ty->get_pointed_to_type());
+      assert(ctxt.types_equal(pointed_to_type,
+			      ty->get_pointed_to_type()));
       return ty;
     }
 
@@ -2504,7 +2624,7 @@ build_pointer_type_def(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
-      ctxt.maybe_canonicalize_type(t);
+      ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
       return t;
     }
 
@@ -2573,13 +2693,13 @@ build_reference_type_def(read_context&		ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
+  assert(!id.empty());
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       reference_type_def_sptr ty = is_reference_type(d);
       assert(ty);
-      assert(*pointed_to_type == *ty->get_pointed_to_type());
+      assert(ctxt.types_equal(pointed_to_type, ty->get_pointed_to_type()));
       return ty;
     }
 
@@ -2594,7 +2714,7 @@ build_reference_type_def(read_context&		ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
-      ctxt.maybe_canonicalize_type(t);
+      ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
       return t;
     }
 
@@ -2678,7 +2798,7 @@ build_array_type_def(read_context&	ctxt,
     type_id = CHAR_STR(s);
 
   // The type of array elements.
-  shared_ptr<type_base> type =
+  type_base_sptr type =
     ctxt.build_or_get_type_decl(type_id, true);
   assert(type);
 
@@ -2693,6 +2813,7 @@ build_array_type_def(read_context&	ctxt,
     }
 
   size_t size_in_bits = 0, alignment_in_bits = 0;
+  bool has_size_in_bits = false;
   char *endptr;
 
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size-in-bits"))
@@ -2705,6 +2826,7 @@ build_array_type_def(read_context&	ctxt,
           else
             return nil;
         }
+      has_size_in_bits = true;
     }
 
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "alignment-in-bits"))
@@ -2717,7 +2839,7 @@ build_array_type_def(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
+  assert(!id.empty());
 
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
@@ -2754,17 +2876,18 @@ build_array_type_def(read_context&	ctxt,
 	  != ar_type->get_element_type()->get_alignment_in_bits()))
     return nil;
 
-  if (size_in_bits != ar_type->get_size_in_bits())
-    {
-      assert(size_in_bits == (size_t) -1
-	     || ar_type->get_element_type()->get_size_in_bits() == (size_t)-1
-	     || ar_type->get_element_type()->get_size_in_bits() == 0);
-    }
+  if (has_size_in_bits)
+    if (size_in_bits != ar_type->get_size_in_bits())
+      {
+	assert(size_in_bits == (size_t) -1
+	       || ar_type->get_element_type()->get_size_in_bits() == (size_t)-1
+	       || ar_type->get_element_type()->get_size_in_bits() == 0);
+      }
 
   if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, ar_type);
-      ctxt.maybe_canonicalize_type(ar_type);
+      ctxt.maybe_canonicalize_type(ar_type, !add_to_current_scope);
       return ar_type;
     }
 
@@ -2811,7 +2934,7 @@ build_enum_type_decl(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
 
-  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
+  assert(!id.empty());
 
   string base_type_id;
   enum_type_decl::enumerators enums;
@@ -2855,7 +2978,7 @@ build_enum_type_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
-      ctxt.maybe_canonicalize_type(t);
+      ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
       return t;
     }
 
@@ -2890,7 +3013,7 @@ build_typedef_decl(read_context&	ctxt,
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
-  assert(!id.empty() && ctxt.type_id_new_in_translation_unit(id));
+  assert(!id.empty());
 
   string name;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
@@ -2920,7 +3043,8 @@ build_typedef_decl(read_context&	ctxt,
       typedef_decl_sptr ty = dynamic_pointer_cast<typedef_decl>(d);
       assert(ty);
       assert(name == ty->get_name());
-      assert(underlying_type == ty->get_underlying_type());
+      assert(get_type_name(underlying_type)
+	     == get_type_name(ty->get_underlying_type()));
       // it's possible to have the same typedef several times.
     }
   shared_ptr<typedef_decl> t(new typedef_decl(name, underlying_type, loc));
@@ -2928,12 +3052,7 @@ build_typedef_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
-      // If this typedef is *NOT* meant to be a member type then try
-      // to canonicalize it.  Otherwise, the code that is calling it
-      // from the building of a class type is going to handle the
-      // canonicalizing.
-      if (!add_to_current_scope)
-	ctxt.maybe_canonicalize_type(t);
+      ctxt.maybe_canonicalize_type(t, /*force_late_canonicalizing=*/true);
       return t;
     }
 
@@ -3048,7 +3167,7 @@ build_class_decl(read_context&		ctxt,
 
   ctxt.map_xml_node_to_decl(node, decl);
 
-  ctxt.mark_class_as_wip(decl);
+  ctxt.mark_type_as_wip(decl);
 
   for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
     {
@@ -3107,12 +3226,7 @@ build_class_decl(read_context&		ctxt,
 		      assert(!id.empty());
 		      ctxt.key_type_decl(m, id, /*force=*/true);
 		      ctxt.map_xml_node_to_decl(p, get_type_declaration(m));
-		      if ((!is_class_type(t)
-			   || (!ctxt.is_wip_class(is_class_type(t))))
-			  && !type_has_non_canonicalized_subtype(t))
-			canonicalize(t);
-		      else
-			ctxt.schedule_type_for_late_canonicalizing(t);
+		      ctxt.maybe_canonicalize_type(t);
 		    }
 		}
 	    }
@@ -3236,9 +3350,9 @@ build_class_decl(read_context&		ctxt,
   if (decl)
     ctxt.key_type_decl(decl, id);
 
-  ctxt.unmark_class_as_wip(decl);
+  ctxt.unmark_type_as_wip(decl);
 
-  ctxt.maybe_canonicalize_type(decl);
+  ctxt.maybe_canonicalize_type(decl, !add_to_current_scope);
 
   return decl;
 }
@@ -3559,7 +3673,7 @@ build_template_tparameter(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
   // Bail out if a type with the same ID already exists.
-  assert(!id.empty() && !ctxt.type_id_new_in_translation_unit(id));
+  assert(!id.empty());
 
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
