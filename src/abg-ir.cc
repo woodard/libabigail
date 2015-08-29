@@ -6167,7 +6167,8 @@ qualified_type_def::operator==(const type_base& o) const
   return *this == *other;
 }
 
-/// Implementation for the virtual qualified name builder for.
+/// Implementation for the virtual qualified name builder for @ref
+/// qualified_type_def.
 ///
 /// @param qualified_name the output parameter to hold the resulting
 /// qualified name.
@@ -7221,7 +7222,6 @@ enum_type_decl::enumerator::set_name(const string& n)
 size_t
 enum_type_decl::enumerator::get_value() const
 {return priv_->value_;}
-
 
 /// Setter for the value of @ref enum_type_decl::enumerator.
 ///
@@ -10748,6 +10748,13 @@ class_decl::member_class_template::operator==(const member_base& other) const
     {return false;}
 }
 
+/// Comparison operator for the @ref class_decl::member_class_template
+/// type.
+///
+/// @param other the other instance of @ref
+/// class_decl::member_class_template to compare against.
+///
+/// @return true iff the two instances are equal.
 bool
 class_decl::member_class_template::operator==
 (const member_class_template& other) const
@@ -10756,6 +10763,14 @@ class_decl::member_class_template::operator==
   return *this == *o;
 }
 
+/// Comparison operator for the @ref class_decl::member_class_template
+/// type.
+///
+/// @param l the first argument of the operator.
+///
+/// @param r the second argument of the operator.
+///
+/// @return true iff the two instances are equal.
 bool
 operator==(class_decl::member_class_template_sptr l,
 	   class_decl::member_class_template_sptr r)
@@ -11360,6 +11375,11 @@ decl_base::binding
 function_tdecl::get_binding() const
 {return priv_->binding_;}
 
+/// Comparison operator for the @ref function_tdecl type.
+///
+/// @param other the other instance of @ref function_tdecl to compare against.
+///
+/// @return true iff the two instance are equal.
 bool
 function_tdecl::operator==(const decl_base& other) const
 {
@@ -11369,6 +11389,11 @@ function_tdecl::operator==(const decl_base& other) const
   return false;
 }
 
+/// Comparison operator for the @ref function_tdecl type.
+///
+/// @param other the other instance of @ref function_tdecl to compare against.
+///
+/// @return true iff the two instance are equal.
 bool
 function_tdecl::operator==(const template_decl& other) const
 {
