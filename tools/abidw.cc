@@ -57,13 +57,15 @@ struct options
   bool			write_architecture;
   bool			load_all_types;
   bool			show_stats;
+  bool			noout;
 
   options()
     : check_alt_debug_info_path(),
       show_base_name_alt_debug_info_path(),
       write_architecture(true),
       load_all_types(),
-      show_stats()
+      show_stats(),
+      noout()
   {}
 };
 
@@ -75,6 +77,7 @@ display_usage(const string& prog_name, ostream& out)
       << "  --help|-h display this message\n"
       << "  --debug-info-dir|-d <dir-path> look for debug info under 'dir-path'\n"
       << "  --out-file <file-path> write the output to 'file-path'\n"
+      << "  --noout do not emit anything after reading the binary\n"
       << "  --no-architecture do not emit architecture info in the output\n"
       << "  --check-alternate-debug-info <elf-path> check alternate debug info "
 		"of <elf-path>\n"
@@ -124,6 +127,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.out_file_path = argv[i + 1];
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--noout"))
+	opts.noout = true;
       else if (!strcmp(argv[i], "--no-architecture"))
 	opts.write_architecture = false;
       else if (!strcmp(argv[i], "--check-alternate-debug-info")
@@ -254,6 +259,9 @@ main(int argc, char* argv[])
     }
   else
     {
+      if (opts.noout)
+	return 0;
+
       if (!opts.write_architecture)
 	corp->set_architecture_name("");
 

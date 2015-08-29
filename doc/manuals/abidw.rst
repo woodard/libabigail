@@ -45,6 +45,13 @@ Options
     *path-to-elf-file* into the file *file-path*, rather than emitting
     it to its standard output.
 
+  * ``--noout``
+
+    This option instructs ``abidw`` to not emit the XML representation
+    of the ABI.  So it only reads the ELF and debug information,
+    builds the internal representation of the ABI and exits.  This
+    option is usually useful for debugging purposes.
+
   * ``--check-alternate-debug-info`` <*elf-path*>
 
     If the debug info for the file *elf-path* contains a reference to
