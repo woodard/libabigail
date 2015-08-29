@@ -39,6 +39,7 @@ using std::cerr;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
+using abigail::tests::get_build_dir;
 using abigail::translation_unit_sptr;
 using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
@@ -232,9 +233,30 @@ main()
 
       is_ok = (is_ok && r);
       of.close();
-      string cmd = "diff -u " + in_path + " " + out_path;
+      string abilint = get_build_dir() + "/tools/abilint";
+      abilint += " --noout";
+      string cmd = abilint + " " + out_path;
       if (system(cmd.c_str()))
-	is_ok = false;
+	{
+	  cerr << "ABI XML file doesn't pass abilint: " << out_path << "\n";
+	  is_ok &= false;
+	}
+
+      string abidiff = get_build_dir() + "/tools/abidiff";
+      cmd = abidiff + " --no-architecture " + in_path + " " + out_path;
+      if (system(cmd.c_str()))
+	{
+	  cerr << "ABIs differ:\n"
+	       << in_path
+	       << "\nand:\n"
+	       << out_path
+	       << "\n";
+	  is_ok &= false;
+	}
+
+      cmd = "diff -u " + in_path + " " + out_path;
+      if (system(cmd.c_str()))
+	is_ok &= false;
     }
 
   return !is_ok;

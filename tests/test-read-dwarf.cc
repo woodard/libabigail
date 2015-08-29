@@ -37,6 +37,7 @@
 using std::string;
 using std::ofstream;
 using std::cerr;
+using abigail::tests::get_build_dir;
 
 /// This is an aggregate that specifies where a test shall get its
 /// input from, and where it shall write its ouput to.
@@ -149,8 +150,7 @@ main()
       // programmer likes.
       corp->set_architecture_name("");
 
-      out_abi_path =
-	abigail::tests::get_build_dir() + "/tests/" + s->out_abi_path;
+      out_abi_path = get_build_dir() + "/tests/" + s->out_abi_path;
       if (!abigail::tools_utils::ensure_parent_dir_created(out_abi_path))
 	{
 	  cerr << "Could not create parent director for " << out_abi_path;
@@ -173,10 +173,38 @@ main()
       is_ok = (is_ok && r);
       of.close();
 
-      in_abi_path = abigail::tests::get_src_dir() + "/tests/" + s->in_abi_path;
-      string cmd = "diff -u " + in_abi_path + " " + out_abi_path;
+      string abilint = get_build_dir() + "/tools/abilint";
+      abilint += " --noout";
+      string cmd = abilint + " " + out_abi_path;
       if (system(cmd.c_str()))
-	is_ok = false;
+	{
+	  cerr << "output file doesn't pass abilint: " << out_abi_path << "\n";
+	  r = false;
+	}
+      is_ok = (is_ok && r);
+
+
+      in_elf_path = abigail::tests::get_src_dir() + "/tests/" + s->in_elf_path;
+      string abidiff = get_build_dir() + "/tools/abidiff";
+      cmd = abidiff + " --no-architecture " + in_elf_path + " " + out_abi_path;
+      r = true;
+      if (system(cmd.c_str()))
+	{
+	  cerr << "ABIs differ:\n"
+	       << in_elf_path
+	       << "\nand:\n"
+	       << out_abi_path
+	       << "\n";
+	  r = false;
+	}
+      is_ok = (is_ok && r);
+
+      in_abi_path = abigail::tests::get_src_dir() + "/tests/" + s->in_abi_path;
+      cmd = "diff -u " + in_abi_path + " " + out_abi_path;
+      r = true;
+      if (system(cmd.c_str()))
+	r = false;
+      is_ok = (is_ok && r);
     }
 
   return !is_ok;
