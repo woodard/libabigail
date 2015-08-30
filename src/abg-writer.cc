@@ -1447,6 +1447,9 @@ write_enum_type_decl(const enum_type_decl_sptr	decl,
   do_indent(o, indent);
   o << "<enum-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
 
+  if (!decl->get_linkage_name().empty())
+    o << " linkage-name='" << decl->get_linkage_name() << "'";
+
   write_location(decl, o);
 
   string i = id;

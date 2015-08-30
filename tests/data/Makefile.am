@@ -277,6 +277,8 @@ test-read-dwarf/test13-pr18894.so \
 test-read-dwarf/test13-pr18894.so.abi \
 test-read-dwarf/test14-pr18893.so \
 test-read-dwarf/test14-pr18893.so.abi \
+test-read-dwarf/test15-pr18892.so \
+test-read-dwarf/test15-pr18892.so.abi \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\

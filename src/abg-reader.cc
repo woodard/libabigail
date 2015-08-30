@@ -718,7 +718,8 @@ public:
 	&& !is_reference_type(t)
 	&& !is_pointer_type(t)
 	&& !is_qualified_type(t)
-	&& !is_typedef(t))
+	&& !is_typedef(t)
+	&& !is_enum_type(t))
       canonicalize(t);
     else
       schedule_type_for_late_canonicalizing(t);
@@ -2927,6 +2928,10 @@ build_enum_type_decl(read_context&	ctxt,
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
     name = xml::unescape_xml_string(CHAR_STR(s));
 
+  string linkage_name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "linkage-name"))
+    linkage_name = xml::unescape_xml_string(CHAR_STR(s));
+
   location loc;
   read_location(ctxt, node, loc);
 
@@ -2974,7 +2979,7 @@ build_enum_type_decl(read_context&	ctxt,
 
   shared_ptr<enum_type_decl> t(new enum_type_decl(name, loc,
 						  underlying_type,
-						  enums));
+						  enums, linkage_name));
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
