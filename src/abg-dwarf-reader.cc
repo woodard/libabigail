@@ -7499,14 +7499,16 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
 
   if (class_decl_sptr klass = is_class_type(t))
     {
-      if (klass->get_is_declaration_only()
-	  && (klass->get_definition_of_declaration() == 0))
+      if ((klass->get_is_declaration_only()
+	   && (klass->get_definition_of_declaration() == 0))
+	  || klass->has_virtual_member_functions()
+	  || type_has_non_canonicalized_subtype(t))
 	ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
     }
-  else if (!type_has_non_canonicalized_subtype(t))
-    canonicalize(t);
-  else
+  else if(type_has_non_canonicalized_subtype(t))
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
+  else
+    canonicalize(t);
 }
 
 /// If a given decl is a member type declaration, set its access
@@ -7733,28 +7735,9 @@ build_ir_node_from_die(read_context&	ctxt,
 					   where_offset);
 	result = klass;
 	maybe_set_member_type_access_specifier(klass, die);
-	// To be early canonicalized here, klass needs:
-	if (// NOT be an incomplete type that is being currently
-	    // constructed.
-	    !ctxt.is_wip_class_die_offset(dwarf_dieoffset(die))
-	    // And not early-canonicalize klass if it either:
-	    && (// - has got virtual member functions.  This is
-		//   because the number of virtual member function
-		//   might be amended later, outside of the current
-		//   DIE, by cloned virtual functions that are clones
-		//   of at least one of the virtual functions declared
-		//   in the DIE.
-		!klass->has_virtual_member_functions()
-		// - or has got non-canonicalized sub types.  In that
-		//   case the non-canonicalized sub-type needs to be
-		//   canonicalized before this type is.
-		&& !type_has_non_canonicalized_subtype(klass)))
-	  canonicalize(klass);
-	else
-	  // So klass is not suitable for early canonicalization.
-	  // Let's schedule it for late canonicalization then.
-	  ctxt.schedule_type_for_late_canonicalization(dwarf_dieoffset(die),
-						       die_is_from_alt_di);
+	maybe_canonicalize_type(dwarf_dieoffset(die),
+				die_is_from_alt_di,
+				ctxt);
       }
       break;
     case DW_TAG_string_type:
