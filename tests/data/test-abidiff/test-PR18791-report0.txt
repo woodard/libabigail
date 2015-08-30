@@ -1,4 +1,4 @@
-Functions changes summary: 1 Removed, 19 Changed, 1 Added functions
+Functions changes summary: 1 Removed, 13 Changed, 1 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Removed function:
@@ -9,7 +9,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   'method void std::__cxx11::_List_base<sigc::slot_base, std::allocator<sigc::slot_base> >::_M_clear()'
 
-19 functions with some indirect sub-type change:
+13 functions with some indirect sub-type change:
 
   [C]'method sigc::connection::connection(const sigc::connection&)' has some indirect sub-type changes:
     parameter 1 of type 'const sigc::connection&' has sub-type changes:
@@ -161,39 +161,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
     parameter 1 of type 'const sigc::signal_base&' has sub-type changes:
       in referenced type 'const sigc::signal_base':
         unqualified underlying type 'struct sigc::signal_base' changed, as reported earlier
-
-  [C]'method sigc::slot_base& sigc::slot_base::operator=(const sigc::slot_base&)' has some indirect sub-type changes:
-    return type changed:
-      referenced type 'class sigc::slot_base' changed, as reported earlier
-    parameter 1 of type 'const sigc::slot_base&' has sub-type changes:
-      in referenced type 'const sigc::slot_base':
-        unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
-
-  [C]'method sigc::slot_base::slot_base(sigc::slot_base::rep_type*)' has some indirect sub-type changes:
-    parameter 1 of type 'sigc::slot_base::rep_type*' has sub-type changes:
-      in pointed to type 'typedef sigc::slot_base::rep_type':
-        underlying type 'struct sigc::internal::slot_rep' changed, as reported earlier
-
-  [C]'method sigc::slot_base::slot_base(const sigc::slot_base&)' has some indirect sub-type changes:
-    parameter 1 of type 'const sigc::slot_base&' has sub-type changes:
-      in referenced type 'const sigc::slot_base':
-        unqualified underlying type 'class sigc::slot_base' changed, as reported earlier
-
-  [C]'method sigc::internal::trackable_callback_list* sigc::trackable::callback_list()' has some indirect sub-type changes:
-    return type changed:
-      pointed to type 'struct sigc::internal::trackable_callback_list' changed, as reported earlier
-
-  [C]'method sigc::trackable& sigc::trackable::operator=(const sigc::trackable&)' has some indirect sub-type changes:
-    return type changed:
-      referenced type 'struct sigc::trackable' changed, as reported earlier
-    parameter 1 of type 'const sigc::trackable&' has sub-type changes:
-      in referenced type 'const sigc::trackable':
-        unqualified underlying type 'struct sigc::trackable' changed, as reported earlier
-
-  [C]'method sigc::trackable::trackable(const sigc::trackable&)' has some indirect sub-type changes:
-    parameter 1 of type 'const sigc::trackable&' has sub-type changes:
-      in referenced type 'const sigc::trackable':
-        unqualified underlying type 'struct sigc::trackable' changed, as reported earlier
 
 
 

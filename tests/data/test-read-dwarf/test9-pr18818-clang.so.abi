@@ -708,14 +708,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -3017,72 +3010,7 @@
       <namespace-decl name='system'>
         <namespace-decl name='errc'>
         </namespace-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='185' column='1' id='type-id-10'>
-          <base-class access='public' layout-offset-in-bits='0' type-id='type-id-11'/>
-          <member-function access='public'>
-            <function-decl name='operator==' mangled-name='_ZNK5boost6system14error_categoryeqERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='198' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_categoryeqERKS1_'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator!=' mangled-name='_ZNK5boost6system14error_categoryneERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator&lt;' mangled-name='_ZNK5boost6system14error_categoryltERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='200' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~error_category' mangled-name='_ZN5boost6system14error_categoryD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system14error_categoryD0Ev'>
-              <parameter type-id='type-id-12' is-artificial='yes'/>
-              <return type-id='type-id-6'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='2'>
-            <function-decl name='name' mangled-name='_ZNK5boost6system14error_category4nameEv' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='190' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <return type-id='type-id-13'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='3'>
-            <function-decl name='message' mangled-name='_ZNK5boost6system14error_category7messageEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-8'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='4'>
-            <function-decl name='default_error_condition' mangled-name='_ZNK5boost6system14error_category23default_error_conditionEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='192' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category23default_error_conditionEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-2'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='5'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='193' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <parameter type-id='type-id-14'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='6'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-15'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-        </class-decl>
+        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <function-decl name='system_category' mangled-name='_ZN5boost6system15system_categoryEv' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='212' column='1' visibility='default' binding='global' size-in-bits='64'>
           <return type-id='type-id-1'/>
         </function-decl>
@@ -5287,14 +5215,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -7867,72 +7788,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='185' column='1' id='type-id-10'>
-          <base-class access='public' layout-offset-in-bits='0' type-id='type-id-11'/>
-          <member-function access='public'>
-            <function-decl name='operator==' mangled-name='_ZNK5boost6system14error_categoryeqERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='198' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_categoryeqERKS1_'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator!=' mangled-name='_ZNK5boost6system14error_categoryneERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator&lt;' mangled-name='_ZNK5boost6system14error_categoryltERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='200' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~error_category' mangled-name='_ZN5boost6system14error_categoryD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system14error_categoryD0Ev'>
-              <parameter type-id='type-id-12' is-artificial='yes'/>
-              <return type-id='type-id-6'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='2'>
-            <function-decl name='name' mangled-name='_ZNK5boost6system14error_category4nameEv' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='190' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <return type-id='type-id-13'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='3'>
-            <function-decl name='message' mangled-name='_ZNK5boost6system14error_category7messageEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-8'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='4'>
-            <function-decl name='default_error_condition' mangled-name='_ZNK5boost6system14error_category23default_error_conditionEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='192' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category23default_error_conditionEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-2'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='5'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='193' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <parameter type-id='type-id-14'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='6'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-15'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-        </class-decl>
+        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-2'>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='m_val' type-id='type-id-3' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='304' column='1'/>
@@ -9100,14 +8956,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -11052,72 +10901,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='185' column='1' id='type-id-10'>
-          <base-class access='public' layout-offset-in-bits='0' type-id='type-id-11'/>
-          <member-function access='public'>
-            <function-decl name='operator==' mangled-name='_ZNK5boost6system14error_categoryeqERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='198' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_categoryeqERKS1_'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator!=' mangled-name='_ZNK5boost6system14error_categoryneERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator&lt;' mangled-name='_ZNK5boost6system14error_categoryltERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='200' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~error_category' mangled-name='_ZN5boost6system14error_categoryD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system14error_categoryD0Ev'>
-              <parameter type-id='type-id-12' is-artificial='yes'/>
-              <return type-id='type-id-6'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='2'>
-            <function-decl name='name' mangled-name='_ZNK5boost6system14error_category4nameEv' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='190' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <return type-id='type-id-13'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='3'>
-            <function-decl name='message' mangled-name='_ZNK5boost6system14error_category7messageEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-8'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='4'>
-            <function-decl name='default_error_condition' mangled-name='_ZNK5boost6system14error_category23default_error_conditionEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='192' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category23default_error_conditionEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-2'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='5'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='193' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <parameter type-id='type-id-14'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='6'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-15'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-        </class-decl>
+        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-2'>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='m_val' type-id='type-id-3' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='304' column='1'/>
@@ -11450,14 +11234,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -12947,72 +12724,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='185' column='1' id='type-id-10'>
-          <base-class access='public' layout-offset-in-bits='0' type-id='type-id-11'/>
-          <member-function access='public'>
-            <function-decl name='operator==' mangled-name='_ZNK5boost6system14error_categoryeqERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='198' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_categoryeqERKS1_'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator!=' mangled-name='_ZNK5boost6system14error_categoryneERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator&lt;' mangled-name='_ZNK5boost6system14error_categoryltERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='200' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~error_category' mangled-name='_ZN5boost6system14error_categoryD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system14error_categoryD0Ev'>
-              <parameter type-id='type-id-12' is-artificial='yes'/>
-              <return type-id='type-id-6'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='2'>
-            <function-decl name='name' mangled-name='_ZNK5boost6system14error_category4nameEv' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='190' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <return type-id='type-id-13'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='3'>
-            <function-decl name='message' mangled-name='_ZNK5boost6system14error_category7messageEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-8'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='4'>
-            <function-decl name='default_error_condition' mangled-name='_ZNK5boost6system14error_category23default_error_conditionEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='192' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category23default_error_conditionEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-2'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='5'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='193' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <parameter type-id='type-id-14'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='6'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-15'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-        </class-decl>
+        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-2'>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='m_val' type-id='type-id-3' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='304' column='1'/>
@@ -13165,14 +12877,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -15604,72 +15309,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='185' column='1' id='type-id-10'>
-          <base-class access='public' layout-offset-in-bits='0' type-id='type-id-11'/>
-          <member-function access='public'>
-            <function-decl name='operator==' mangled-name='_ZNK5boost6system14error_categoryeqERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='198' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_categoryeqERKS1_'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator!=' mangled-name='_ZNK5boost6system14error_categoryneERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='199' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public'>
-            <function-decl name='operator&lt;' mangled-name='_ZNK5boost6system14error_categoryltERKS1_' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='200' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-1'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' destructor='yes' vtable-offset='0'>
-            <function-decl name='~error_category' mangled-name='_ZN5boost6system14error_categoryD0Ev' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='188' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6system14error_categoryD0Ev'>
-              <parameter type-id='type-id-12' is-artificial='yes'/>
-              <return type-id='type-id-6'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='2'>
-            <function-decl name='name' mangled-name='_ZNK5boost6system14error_category4nameEv' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='190' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <return type-id='type-id-13'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='3'>
-            <function-decl name='message' mangled-name='_ZNK5boost6system14error_category7messageEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-8'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='4'>
-            <function-decl name='default_error_condition' mangled-name='_ZNK5boost6system14error_category23default_error_conditionEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='192' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category23default_error_conditionEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-2'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='5'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='193' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentEiRKNS0_15error_conditionE'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-3'/>
-              <parameter type-id='type-id-14'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-          <member-function access='public' vtable-offset='6'>
-            <function-decl name='equivalent' mangled-name='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='195' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZNK5boost6system14error_category10equivalentERKNS0_10error_codeEi'>
-              <parameter type-id='type-id-4' is-artificial='yes'/>
-              <parameter type-id='type-id-15'/>
-              <parameter type-id='type-id-3'/>
-              <return type-id='type-id-9'/>
-            </function-decl>
-          </member-function>
-        </class-decl>
+        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-2'>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='m_val' type-id='type-id-3' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='304' column='1'/>
@@ -16535,14 +16175,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -18554,14 +18187,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -19612,14 +19238,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -19906,20 +19525,7 @@
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-59'/>
     </function-decl>
-    <class-decl name='__va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-73'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='gp_offset' type-id='type-id-46' visibility='default'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='fp_offset' type-id='type-id-46' visibility='default'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='overflow_arg_area' type-id='type-id-35' visibility='default'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='reg_save_area' type-id='type-id-35' visibility='default'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='__va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-73'/>
     <typedef-decl name='__va_list_tag' type-id='type-id-73' id='type-id-74'/>
     <pointer-type-def type-id='type-id-74' size-in-bits='64' id='type-id-75'/>
     <function-decl name='vfwprintf' filepath='/usr/include/wchar.h' line='612' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -19988,41 +19594,7 @@
       <parameter type-id='type-id-51'/>
       <return type-id='type-id-37'/>
     </function-decl>
-    <class-decl name='tm' size-in-bits='448' is-struct='yes' visibility='default' filepath='/usr/include/time.h' line='133' column='1' id='type-id-76'>
-      <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='tm_sec' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='135' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='tm_min' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='136' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='tm_hour' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='137' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='96'>
-        <var-decl name='tm_mday' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='138' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='tm_mon' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='139' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='160'>
-        <var-decl name='tm_year' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='140' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='tm_wday' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='141' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='224'>
-        <var-decl name='tm_yday' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='142' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='tm_isdst' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='143' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='tm_gmtoff' type-id='type-id-34' visibility='default' filepath='/usr/include/time.h' line='146' column='1'/>
-      </data-member>
-      <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='tm_zone' type-id='type-id-13' visibility='default' filepath='/usr/include/time.h' line='147' column='1'/>
-      </data-member>
-    </class-decl>
+    <class-decl name='tm' size-in-bits='448' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-76'/>
     <qualified-type-def type-id='type-id-76' const='yes' id='type-id-77'/>
     <pointer-type-def type-id='type-id-77' size-in-bits='64' id='type-id-78'/>
     <qualified-type-def type-id='type-id-78' restrict='yes' id='type-id-79'/>

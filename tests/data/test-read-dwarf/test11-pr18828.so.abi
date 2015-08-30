@@ -32247,7 +32247,7 @@
           </function-decl>
         </member-function>
       </class-decl>
-      <class-decl name='DBException' visibility='default' id='type-id-2499'>
+      <class-decl name='DBException' visibility='default' is-declaration-only='yes' id='type-id-2499'>
         <member-function access='public' constructor='yes'>
           <function-decl name='DBException' filepath='src/mongo/util/assert_util.h' line='106' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-2500' is-artificial='yes'/>

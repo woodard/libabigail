@@ -336,7 +336,9 @@ struct typedef_decl::hash
 size_t
 var_decl::hash::operator()(const var_decl& t) const
 {
-  if (t.peek_hash_value() == 0 || t.hashing_started())
+  if (t.peek_hash_value() == 0
+      || t.hashing_started()
+      || (t.get_type() && t.get_type()->get_canonical_type() == 0))
     {
       std::tr1::hash<string> hash_string;
       decl_base::hash hash_decl;
@@ -380,7 +382,8 @@ var_decl::hash::operator()(const var_decl* t) const
 size_t
 function_decl::hash::operator()(const function_decl& t) const
 {
-  if (t.peek_hash_value() == 0 || t.hashing_started())
+  if (t.peek_hash_value() == 0 || t.hashing_started()
+      || (t.get_type() && t.get_type()->get_canonical_type() == 0))
     {
       std::tr1::hash<int> hash_int;
       std::tr1::hash<size_t> hash_size_t;

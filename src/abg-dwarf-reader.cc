@@ -6634,9 +6634,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      assert(f);
 
 	      finish_member_function_reading(&child, f, result);
-	      if (is_member_function(f)
-		  && get_member_function_is_virtual(f))
-		result->set_is_declaration_only(false);
 
 	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
 					 is_in_alt_di, f);

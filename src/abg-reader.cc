@@ -3118,25 +3118,40 @@ build_class_decl(read_context&		ctxt,
   bool is_struct = false;
   read_is_struct(node, is_struct);
 
-  // Keep in mind that there can be instances of DSOs that define a
-  // class twice!! Hugh.  So the test + assert() below doesn't work in
-  // these.  Oh well.
-#if 0
-  // If the id is not empty, then we should be seeing this type for
-  // the first time, unless it's a declaration-only type class.
-  if (!id.empty())
+  assert(!id.empty());
+  class_decl_sptr declaration;
+  type_base_sptr t = ctxt.get_type_decl(id);
+  if (t)
     {
-      type_base_sptr t = ctxt.get_type_decl(id);
-      if (t)
-	{
-	  class_decl_sptr c = as_non_member_class_decl(get_type_declaration(t));
-	  assert((c && c->is_declaration_only())
-		 || is_decl_only);
-	}
-    }
-#endif
+      // So we've already seen a type with the same type ID as this
+      // one.  That type must be of class type then, just like this one.
+      class_decl_sptr cl = is_class_type(t);
+      assert(cl);
 
-  if (!is_decl_only)
+      // And it must have the same name as this one.
+      assert(cl->get_name() == name);
+
+      // If the definition-ness of this class is the same as the one
+      // we already have, then let's honour the "One Definition Rule"
+      // by enforcing that the new class we are seing now is the same
+      // (a copy of) the one we have already registered.  We just keep
+      // that one then.
+      //
+      // TODO: read this class until its end and check that it's the
+      // same as the one we already have.
+      if (cl->get_is_declaration_only() == is_decl_only)
+	return cl;
+
+      // Otherwise, if the class we already had is just a declaration,
+      // then we are likely reading it's definition.  Let's keep the
+      // declaration under our belt.
+      if (cl->get_is_declaration_only())
+	declaration = cl;
+    }
+
+  if (is_decl_only)
+    decl.reset(new class_decl(name, is_struct));
+  else
     decl.reset(new class_decl(name, size_in_bits, alignment_in_bits,
 			      is_struct, loc, vis, bases, mbrs, data_mbrs,
 			      mbr_functions));
@@ -3158,10 +3173,17 @@ build_class_decl(read_context&		ctxt,
 	}
     }
 
-  assert(!is_decl_only || !is_def_of_decl);
+  if ( decl && !decl->get_definition_of_declaration() && declaration)
+    {
+      // We are looking a the definition of a previous declaration.
+      //
+      // Let's link them.
+      decl->set_earlier_declaration(declaration);
+      declaration->set_definition_of_declaration(decl);
+      is_def_of_decl = true;
+    }
 
-  if (is_decl_only)
-    decl.reset(new class_decl(name, is_struct));
+  assert(!is_decl_only || !is_def_of_decl);
 
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
