@@ -369,6 +369,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test29-finer-redundancy-marking-report-0.txt",
     "output/test-diff-filter/test29-finer-redundancy-marking-report-0.txt",
   },
+  {
+    "data/test-diff-filter/test30-pr18904-rvalueref-liba.so",
+    "data/test-diff-filter/test30-pr18904-rvalueref-libb.so",
+    "--no-linkage-name --no-redundant",
+    "data/test-diff-filter/test30-pr18904-rvalueref-report0.txt",
+    "output/test-diff-filter/test30-pr18904-rvalueref-report0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

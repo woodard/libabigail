@@ -7229,9 +7229,7 @@ reference_diff::get_pretty_representation() const
 bool
 reference_diff::has_changes() const
 {
-  return underlying_type_diff()
-    ? underlying_type_diff()->has_changes()
-    : false;
+  return first_reference() != second_reference();
 }
 
 /// @return true iff the current diff node carries local changes.
@@ -7254,6 +7252,28 @@ reference_diff::report(ostream& out, const string& indent) const
 {
   if (!to_be_reported())
     return;
+
+  reference_type_def_sptr f = first_reference(), s = second_reference();
+  assert(f && s);
+
+
+  if (f->is_lvalue() != s->is_lvalue())
+    {
+      string f_repr = f->get_pretty_representation(),
+	s_repr = s->get_pretty_representation();
+
+      out << indent;
+      if (f->is_lvalue())
+	out << "lvalue reference type '" << f_repr
+	    << " became an rvalue reference type: '"
+	    << s_repr
+	    << "'";
+      else
+	out << "rvalue reference type '" << f_repr
+	    << " became an lvalue reference type: '"
+	    << s_repr
+	    << "'\n";
+    }
 
   if (diff_sptr d = underlying_type_diff())
     {

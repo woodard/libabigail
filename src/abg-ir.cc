@@ -6497,6 +6497,8 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
     {
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
       string name = pto->get_name() + "&";
+      if (!is_lvalue())
+	name += "&";
       set_name(name);
     }
   catch (...)
@@ -6525,6 +6527,13 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 bool
 equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
 {
+  if (l.is_lvalue() != r.is_lvalue())
+    {
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      return false;
+    }
+
   bool result = (l.get_pointed_to_type() == r.get_pointed_to_type());
   if (!result)
     if (k)
@@ -6592,7 +6601,10 @@ reference_type_def::get_qualified_name() const
 	get_type_declaration(type_or_void(get_pointed_to_type()));
       string name;
       td->get_qualified_name(name);
-      set_qualified_name(name + "&");
+      if (is_lvalue())
+	set_qualified_name(name + "&");
+      else
+	set_qualified_name(name + "&&");
     }
   return peek_qualified_name();
 }
