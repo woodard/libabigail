@@ -487,6 +487,12 @@ string
 get_name(const shared_ptr<type_or_decl_base>&,
 	 bool qualified = true);
 
+scope_decl*
+get_type_scope(type_base*);
+
+scope_decl*
+get_type_scope(const shared_ptr<type_base>&);
+
 string
 get_type_name(const shared_ptr<type_base>, bool qualified = true);
 

@@ -62,6 +62,8 @@ using zip_utils::open_archive;
 using zip_utils::open_file_in_archive;
 #endif //WITH_ZIP_ARCHIVE
 
+static bool	read_is_declaration_only(xmlNodePtr, bool&);
+
 class read_context;
 
 /// This abstracts the context in which the current ABI
@@ -74,8 +76,12 @@ class read_context
 public:
 
   typedef unordered_map<string,
-			shared_ptr<type_base> >::const_iterator
+			vector<type_base_sptr> >::const_iterator
   const_types_map_it;
+
+  typedef unordered_map<string,
+			vector<type_base_sptr> >::iterator
+  types_map_it;
 
   typedef unordered_map<string,
 			shared_ptr<function_tdecl> >::const_iterator
@@ -90,7 +96,7 @@ public:
   typedef unordered_map<xmlNodePtr, decl_base_sptr> xml_node_decl_base_sptr_map;
 
 private:
-  unordered_map<string, shared_ptr<type_base> >	m_types_map;
+  unordered_map<string, vector<type_base_sptr> >	m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> >	m_fn_tmpl_map;
   unordered_map<string, shared_ptr<class_tdecl> >	m_class_tmpl_map;
   unordered_map<string, size_t>			m_wip_types_map;
@@ -175,12 +181,14 @@ public:
     if (!node)
       return;
 
-    string_xml_node_map::const_iterator i = get_id_xml_node_map().find(id);
+    string_xml_node_map::iterator i = get_id_xml_node_map().find(id);
     if (i != get_id_xml_node_map().end())
-      // So an xml node with the same ID was already present.  In that
-      // case do not add again, let's just remember about the first
-      // one.
-      ;
+      {
+	bool is_declaration = false;
+	read_is_declaration_only(node, is_declaration);
+	if (is_declaration)
+	  i->second = node;
+      }
     else
       get_id_xml_node_map()[id] = node;
   }
@@ -204,21 +212,46 @@ public:
   build_or_get_type_decl(const string& id,
 			 bool add_decl_to_scope);
 
-  /// Return the type that is identified by a unique ID.  Note that
-  /// for a type to be "identified" by id, the function key_type_decl
-  /// must have been previously called with that type and with id.
+  /// Return the first type already seen, that is identified by a
+  /// given ID.
   ///
-  /// @param id the unique id to consider.
+  /// Note that for a type to be "identified" by id, the function
+  /// key_type_decl must have been previously called with that type
+  /// and with id.
+  ///
+  /// @param id the id to consider.
   ///
   /// @return the type identified by the unique id id, or a null
   /// pointer if no type has ever been associated with id before.
-  shared_ptr<type_base>
+  type_base_sptr
   get_type_decl(const string& id) const
   {
     const_types_map_it i = m_types_map.find(id);
     if (i == m_types_map.end())
       return shared_ptr<type_base>();
-    return shared_ptr<type_base>(i->second);
+    return shared_ptr<type_base>(i->second[0]);
+  }
+
+  /// Return the vector of types already seen, that are identified by
+  /// a given ID.
+  ///
+  /// Note that for a type to be "identified" by id, the function
+  /// key_type_decl must have been previously called with that type
+  /// and with id.
+  ///
+  /// @param id the id to consider.
+  ///
+  /// @return thevector of types already seen, that are identified by
+  /// a given ID, or 0 if no type has ever been associated with @p id
+  /// before.
+  const vector<type_base_sptr>*
+  get_all_type_decls(const string& id) const
+  {
+    const_types_map_it i = m_types_map.find(id);
+    if (i == m_types_map.end())
+      return 0;
+    else
+      return &i->second;
   }
 
   /// Return the function template that is identified by a unique ID.
@@ -464,8 +497,13 @@ public:
   {
     if (t1.get() == t2.get())
       return true;
-    return (get_type_name(t1, /*qualified=*/true)
-	    == get_type_name(t2, /*qualified=*/true));
+
+    // We are going to test qualified names only if both types have
+    // already been added to their scope.
+    bool qualified = (get_type_scope(t1) && get_type_scope(t2));
+
+    return (get_type_name(t1, qualified)
+	    == get_type_name(t2, qualified));
   }
 
   /// Associate an ID with a type.
@@ -474,20 +512,25 @@ public:
   ///
   /// @param id the ID to associate to the type.
   ///
-  /// @return true upon successful completion, false otherwise.  Note
-  /// that this returns false if the was already associate to an ID
-  /// before.
+  /// @return true upon successful completion.
   bool
-  key_type_decl(shared_ptr<type_base> type, const string& id,
-		bool force = false)
+  key_type_decl(shared_ptr<type_base> type, const string& id)
   {
-    assert(type);
-
-    const_types_map_it i = m_types_map.find(id);
-    if (i != m_types_map.end() && !force)
+    if (!type)
       return false;
 
-    m_types_map[id] = type;
+    type_base_sptr t = type;
+
+    types_map_it i = m_types_map.find(id);
+    if (i != m_types_map.end())
+      i->second.push_back(type);
+    else
+      {
+	vector<type_base_sptr> types;
+	types.push_back(type);
+	m_types_map[id] = types;
+      }
+
     return true;
   }
 
@@ -761,7 +804,6 @@ static bool	read_size_and_alignment(xmlNodePtr, size_t&, size_t&);
 static bool	read_static(xmlNodePtr, bool&);
 static bool	read_offset_in_bits(xmlNodePtr, size_t&);
 static bool	read_cdtor_const(xmlNodePtr, bool&, bool&, bool&);
-static bool	read_is_declaration_only(xmlNodePtr, bool&);
 static bool	read_is_virtual(xmlNodePtr, bool&);
 static bool	read_is_struct(xmlNodePtr, bool&);
 static bool	read_elf_symbol_type(xmlNodePtr, elf_symbol::type&);
@@ -1143,7 +1185,17 @@ read_translation_unit_from_input(read_context&	ctxt)
   if (node == 0)
     return nil;
 
-  return read_translation_unit(ctxt, node);
+  tu = read_translation_unit(ctxt, node);
+  // So read_translation_unit() can trigger (under the hood) reading
+  // from several translation units just because
+  // read_context::get_scope_for_node() has been called.  In that
+  // case, after that unexpected call to read_translation_unit(), the
+  // current corpus node of the context is going to point to that
+  // translation unit that has been read under the hood.  Let's set
+  // the corpus node to the one we initially called
+  // read_translation_unit() on here.
+  ctxt.set_corpus_node(node);
+  return tu;
 }
 
 /// Parse the input XML document containing a function symbols
@@ -3124,34 +3176,37 @@ build_class_decl(read_context&		ctxt,
   read_is_struct(node, is_struct);
 
   assert(!id.empty());
-  class_decl_sptr declaration;
-  type_base_sptr t = ctxt.get_type_decl(id);
-  if (t)
+  class_decl_sptr previous_definition, previous_declaration;
+  const vector<type_base_sptr> *types_ptr = ctxt.get_all_type_decls(id);
+  if (types_ptr)
     {
-      // So we've already seen a type with the same type ID as this
-      // one.  That type must be of class type then, just like this one.
-      class_decl_sptr cl = is_class_type(t);
-      assert(cl);
+      // Lets look at the previous declarations and the first previous
+      // definition of this type that we've already seen while parsing
+      // this corpus.
+      for (vector<type_base_sptr>::const_iterator i = types_ptr->begin();
+	   i != types_ptr->end();
+	   ++i)
+	{
+	  class_decl_sptr klass = is_class_type(*i);
+	  assert(klass);
+	  if (klass->get_is_declaration_only()
+	      && !klass->get_definition_of_declaration())
+	    previous_declaration = klass;
+	  else if (!klass->get_is_declaration_only()
+		   && !previous_definition)
+	    previous_definition = klass;
+	  if (previous_definition && previous_declaration)
+	    break;
+	}
 
-      // And it must have the same name as this one.
-      assert(cl->get_name() == name);
+      if (previous_declaration)
+	assert(previous_declaration->get_name() == name);
 
-      // If the definition-ness of this class is the same as the one
-      // we already have, then let's honour the "One Definition Rule"
-      // by enforcing that the new class we are seing now is the same
-      // (a copy of) the one we have already registered.  We just keep
-      // that one then.
-      //
-      // TODO: read this class until its end and check that it's the
-      // same as the one we already have.
-      if (cl->get_is_declaration_only() == is_decl_only)
-	return cl;
+      if (previous_definition)
+	assert(previous_definition->get_name() == name);
 
-      // Otherwise, if the class we already had is just a declaration,
-      // then we are likely reading it's definition.  Let's keep the
-      // declaration under our belt.
-      if (cl->get_is_declaration_only())
-	declaration = cl;
+      if (is_decl_only && previous_declaration)
+	return previous_declaration;
     }
 
   if (is_decl_only)
@@ -3178,14 +3233,38 @@ build_class_decl(read_context&		ctxt,
 	}
     }
 
-  if ( decl && !decl->get_definition_of_declaration() && declaration)
+  if (!is_decl_only
+      && decl
+      && !decl->get_is_declaration_only()
+      && previous_declaration)
     {
-      // We are looking a the definition of a previous declaration.
+      // decl is the definition of the previous declaration
+      // previous_declaration.
       //
       // Let's link them.
-      decl->set_earlier_declaration(declaration);
-      declaration->set_definition_of_declaration(decl);
-      is_def_of_decl = true;
+      decl->set_earlier_declaration(previous_declaration);
+      for (vector<type_base_sptr>::const_iterator i = types_ptr->begin();
+	   i != types_ptr->end();
+	   ++i)
+	{
+	  class_decl_sptr d = is_class_type(*i);
+	  assert(d);
+	  if (d->get_is_declaration_only()
+	      && !d->get_definition_of_declaration())
+	    {
+	      previous_declaration->set_definition_of_declaration(decl);
+	      is_def_of_decl = true;
+	    }
+	}
+    }
+
+  if (is_decl_only && previous_definition)
+    {
+      // decl is a declaration of the previous definition
+      // previous_definition.  Let's link them.
+      assert(decl->get_is_declaration_only()
+	     && !decl->get_definition_of_declaration());
+      decl->set_definition_of_declaration(previous_definition);
     }
 
   assert(!is_decl_only || !is_def_of_decl);
@@ -3193,8 +3272,8 @@ build_class_decl(read_context&		ctxt,
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
 
   ctxt.map_xml_node_to_decl(node, decl);
-
   ctxt.mark_type_as_wip(decl);
+  ctxt.key_type_decl(decl, id);
 
   for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
     {
@@ -3251,9 +3330,8 @@ build_class_decl(read_context&		ctxt,
 		      xml_char_sptr i= XML_NODE_GET_ATTRIBUTE(p, "id");
 		      string id = CHAR_STR(i);
 		      assert(!id.empty());
-		      ctxt.key_type_decl(m, id, /*force=*/true);
+		      ctxt.key_type_decl(m, id);
 		      ctxt.map_xml_node_to_decl(p, get_type_declaration(m));
-		      ctxt.maybe_canonicalize_type(t);
 		    }
 		}
 	    }
@@ -3373,12 +3451,7 @@ build_class_decl(read_context&		ctxt,
     }
 
   ctxt.pop_scope_or_abort(decl);
-
-  if (decl)
-    ctxt.key_type_decl(decl, id);
-
   ctxt.unmark_type_as_wip(decl);
-
   ctxt.maybe_canonicalize_type(decl, !add_to_current_scope);
 
   return decl;

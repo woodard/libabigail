@@ -3700,6 +3700,32 @@ get_name(const type_or_decl_base_sptr& tod, bool qualified)
   return result;
 }
 
+/// Get the scope of a given type.
+///
+/// @param t the type to consider.
+///
+/// @return the scope of type @p t or 0 if the type has no scope yet.
+scope_decl*
+get_type_scope(type_base* t)
+{
+  if (!t)
+    return 0;
+
+  decl_base* d = get_type_declaration(t);
+  if (d)
+    d->get_scope();
+  return 0;
+}
+
+/// Get the scope of a given type.
+///
+/// @param t the type to consider.
+///
+/// @return the scope of type @p t or 0 if the type has no scope yet.
+scope_decl*
+get_type_scope(const type_base_sptr& t)
+{return get_type_scope(t.get());}
+
 /// Get the name of a given type and return a copy of it.
 ///
 /// @param t the type to consider.

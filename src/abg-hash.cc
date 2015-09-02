@@ -336,29 +336,22 @@ struct typedef_decl::hash
 size_t
 var_decl::hash::operator()(const var_decl& t) const
 {
-  if (t.peek_hash_value() == 0
-      || t.hashing_started()
-      || (t.get_type() && t.get_type()->get_canonical_type() == 0))
+  std::tr1::hash<string> hash_string;
+  decl_base::hash hash_decl;
+  type_base::shared_ptr_hash hash_type_ptr;
+  std::tr1::hash<size_t> hash_size_t;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_decl(t));
+  v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
+
+  if (is_data_member(t) && get_data_member_is_laid_out(t))
     {
-      std::tr1::hash<string> hash_string;
-      decl_base::hash hash_decl;
-      type_base::shared_ptr_hash hash_type_ptr;
-      std::tr1::hash<size_t> hash_size_t;
-
-      size_t v = hash_string(typeid(t).name());
-      v = hashing::combine_hashes(v, hash_decl(t));
-      v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
-
-      if (is_data_member(t) && get_data_member_is_laid_out(t))
-	{
-	  v = hashing::combine_hashes(v, hash_decl(*t.get_scope()));
-	  v = hashing::combine_hashes(v,
-				      hash_size_t(get_data_member_offset(t)));
-	}
-
-      t.set_hash(v);
+      v = hashing::combine_hashes(v, hash_decl(*t.get_scope()));
+      v = hashing::combine_hashes(v, hash_size_t(get_data_member_offset(t)));
     }
-  return t.peek_hash_value();
+
+  return v;
 }
 
 /// Compute a hash for a pointer to @ref var_decl.
@@ -382,40 +375,43 @@ var_decl::hash::operator()(const var_decl* t) const
 size_t
 function_decl::hash::operator()(const function_decl& t) const
 {
-  if (t.peek_hash_value() == 0 || t.hashing_started()
-      || (t.get_type() && t.get_type()->get_canonical_type() == 0))
+  if (t.peek_hash_value() != 0)
+    return t.peek_hash_value();
+
+  std::tr1::hash<int> hash_int;
+  std::tr1::hash<size_t> hash_size_t;
+  std::tr1::hash<bool> hash_bool;
+  std::tr1::hash<string> hash_string;
+  decl_base::hash hash_decl_base;
+  type_base::shared_ptr_hash hash_type_ptr;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_decl_base(t));
+  v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
+  v = hashing::combine_hashes(v, hash_bool(t.is_declared_inline()));
+  v = hashing::combine_hashes(v, hash_int(t.get_binding()));
+  if (is_member_function(t))
     {
-      std::tr1::hash<int> hash_int;
-      std::tr1::hash<size_t> hash_size_t;
-      std::tr1::hash<bool> hash_bool;
-      std::tr1::hash<string> hash_string;
-      decl_base::hash hash_decl_base;
-      type_base::shared_ptr_hash hash_type_ptr;
+      bool is_ctor = get_member_function_is_ctor(t),
+	is_dtor = get_member_function_is_dtor(t),
+	is_static = get_member_is_static(t),
+	is_const = get_member_function_is_const(t);
+      size_t voffset = get_member_function_vtable_offset(t);
 
-      size_t v = hash_string(typeid(t).name());
-      v = hashing::combine_hashes(v, hash_decl_base(t));
-      v = hashing::combine_hashes(v, hash_type_ptr(t.get_type()));
-      v = hashing::combine_hashes(v, hash_bool(t.is_declared_inline()));
-      v = hashing::combine_hashes(v, hash_int(t.get_binding()));
-      if (is_member_function(t))
-	{
-	  bool is_ctor = get_member_function_is_ctor(t),
-	    is_dtor = get_member_function_is_dtor(t),
-	    is_static = get_member_is_static(t),
-	    is_const = get_member_function_is_const(t);
-	  size_t voffset = get_member_function_vtable_offset(t);
-
-	  v = hashing::combine_hashes(v, hash_bool(is_ctor));
-	  v = hashing::combine_hashes(v, hash_bool(is_dtor));
-	  v = hashing::combine_hashes(v, hash_bool(is_static));
-	  v = hashing::combine_hashes(v, hash_bool(is_const));
-	  if (!is_static && !is_ctor)
-	    v = hashing::combine_hashes(v, hash_size_t(voffset));
-	}
-      t.set_hash(v);
+      v = hashing::combine_hashes(v, hash_bool(is_ctor));
+      v = hashing::combine_hashes(v, hash_bool(is_dtor));
+      v = hashing::combine_hashes(v, hash_bool(is_static));
+      v = hashing::combine_hashes(v, hash_bool(is_const));
+      if (!is_static && !is_ctor)
+	v = hashing::combine_hashes(v, hash_size_t(voffset));
     }
-  return t.peek_hash_value();
+
+  if (t.get_type() && (t.get_type()->get_canonical_type() != 0))
+    t.set_hash(v);
+
+  return v;
 }
+
 /// Compute a hash for a pointer to @ref function_decl.
 ///
 /// @param t the pointer to @ref function_decl to compute the hash for.
