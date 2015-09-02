@@ -15,6 +15,8 @@ AM_CXXFLAGS = "-std=gnu++11"
 endif
 
 TESTS=				\
+runtestreaddwarf		\
+runtestcanonicalizetypes.sh	\
 runtestreadwrite		\
 $(ZIP_ARCHIVE_TESTS)		\
 runtestreaddwarf		\
@@ -23,7 +25,6 @@ runtestaltdwarf			\
 runtestcorediff			\
 runtestabidiff			\
 runtestdiffdwarf		\
-runtestcanonicalizetypes.sh	\
 runtestdifffilter		\
 runtestdiffsuppr		\
 runtestabicompat		\
