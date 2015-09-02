@@ -613,9 +613,6 @@ class_decl::hash::operator()(const class_decl& t) const
   assert(!t.get_is_declaration_only());
 
   std::tr1::hash<string> hash_string;
-#if 0
-  type_base::dynamic_hash hash_type;
-#endif
   scope_type_decl::hash hash_scope_type;
   class_decl::base_spec::hash hash_base;
   var_decl::hash hash_data_member;

@@ -10404,12 +10404,12 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	  RETURN(false);
       }
 
-    for(class_decl::base_specs::const_iterator
-	  b0 = l.get_base_specifiers().begin(),
-	  b1 = r.get_base_specifiers().begin();
-	(b0 != l.get_base_specifiers().end()
+    for (class_decl::base_specs::const_iterator
+	   b0 = l.get_base_specifiers().begin(),
+	   b1 = r.get_base_specifiers().begin();
+	 (b0 != l.get_base_specifiers().end()
 	 && b1 != r.get_base_specifiers().end());
-	++b0, ++b1)
+	 ++b0, ++b1)
       if (*b0 != *b1)
 	{
 	  result = false;
