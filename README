@@ -9,10 +9,11 @@ types, variable, fonctions and declarations of a given library or
 program.  For a given library or program this set of quantities is
 called an ABI corpus.
 
-This library aims at (among other things) providing a way to comparing
-two ABI Corpuses, provide detailed information about their
-differences, and help build tools to infer interesting conclusions
-about these differences.
+This library aims at (among other things) providing a way to compare
+two ABI Corpora (apparently the plural of corpus is copora, heh,
+that's cool), provide detailed information about their differences,
+and help build tools to infer interesting conclusions about these
+differences.
 
 You are welcome to contribute to this project after reading the files
 CONTRIBUTING and COMMIT-LOG-GUIDELINES files in the source tree.
