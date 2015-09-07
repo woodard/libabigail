@@ -4977,7 +4977,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <type-decl name='void' id='type-id-6'/>
     <type-decl name='enum-file_type-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-158'/>
     <type-decl name='enum-perms-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-159'/>
     <pointer-type-def type-id='type-id-115' size-in-bits='64' id='type-id-155'/>
@@ -8601,7 +8600,6 @@
     <reference-type-def kind='lvalue' type-id='type-id-295' size-in-bits='64' id='type-id-298'/>
     <qualified-type-def type-id='type-id-295' const='yes' id='type-id-345'/>
     <pointer-type-def type-id='type-id-345' size-in-bits='64' id='type-id-299'/>
-    <type-decl name='void' id='type-id-6'/>
     <pointer-type-def type-id='type-id-295' size-in-bits='64' id='type-id-300'/>
     <pointer-type-def type-id='type-id-24' size-in-bits='64' id='type-id-40'/>
     <qualified-type-def type-id='type-id-306' const='yes' id='type-id-346'/>
@@ -11176,7 +11174,6 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <type-decl name='void' id='type-id-6'/>
     <type-decl name='char' size-in-bits='8' id='type-id-24'/>
     <qualified-type-def type-id='type-id-24' const='yes' id='type-id-25'/>
     <pointer-type-def type-id='type-id-25' size-in-bits='64' id='type-id-13'/>
@@ -12836,7 +12833,6 @@
     </namespace-decl>
     <qualified-type-def type-id='type-id-8' const='yes' id='type-id-145'/>
     <reference-type-def kind='lvalue' type-id='type-id-145' size-in-bits='64' id='type-id-141'/>
-    <type-decl name='void' id='type-id-6'/>
     <function-decl name='abort' filepath='/usr/include/stdlib.h' line='515' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-6'/>
     </function-decl>
@@ -15833,7 +15829,6 @@
       </class-decl>
     </namespace-decl>
     <type-decl name='long unsigned int' size-in-bits='64' id='type-id-36'/>
-    <type-decl name='void' id='type-id-6'/>
     <pointer-type-def type-id='type-id-113' size-in-bits='64' id='type-id-135'/>
     <qualified-type-def type-id='type-id-113' const='yes' id='type-id-343'/>
     <reference-type-def kind='lvalue' type-id='type-id-343' size-in-bits='64' id='type-id-114'/>
@@ -18118,7 +18113,6 @@
         <enumerator name='round_toward_neg_infinity' value='3'/>
       </enum-decl>
     </namespace-decl>
-    <type-decl name='void' id='type-id-6'/>
     <pointer-type-def type-id='type-id-485' size-in-bits='64' id='type-id-486'/>
     <type-decl name='long unsigned int' size-in-bits='64' id='type-id-36'/>
     <type-decl name='enum-result-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-451'/>
@@ -19193,7 +19187,6 @@
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/windows_file_codecvt.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
     </namespace-decl>
-    <type-decl name='void' id='type-id-6'/>
     <function-decl name='abort' filepath='/usr/include/stdlib.h' line='515' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-6'/>
     </function-decl>

@@ -7470,6 +7470,8 @@ read_debug_info_into_corpus(read_context& ctxt)
   // useful for get_die_parent() to work.
   build_die_parent_maps(ctxt);
 
+  ctxt.env()->canonicalization_is_done(false);
+
   // And now walk all the DIEs again to build the libabigail IR.
   Dwarf_Half dwarf_version = 0;
   for (Dwarf_Off offset = 0, next_offset = 0;
@@ -7510,6 +7512,8 @@ read_debug_info_into_corpus(read_context& ctxt)
   /// the main debug info section.
 
   ctxt.perform_late_type_canonicalizing();
+
+  ctxt.env()->canonicalization_is_done(true);
 
   ctxt.current_corpus()->sort_functions();
   ctxt.current_corpus()->sort_variables();

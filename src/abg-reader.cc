@@ -1501,6 +1501,8 @@ read_corpus_from_input(read_context& ctxt)
 	}
     }
 
+  ctxt.get_environment()->canonicalization_is_done(false);
+
   // Read the translation units.
   do
     {
@@ -1512,6 +1514,9 @@ read_corpus_from_input(read_context& ctxt)
   while (is_ok);
 
   ctxt.perform_late_type_canonicalizing();
+
+  ctxt.get_environment()->canonicalization_is_done(true);
+
   corp.set_origin(corpus::NATIVE_XML_ORIGIN);
 
   return ctxt.get_corpus();;

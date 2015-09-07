@@ -908,6 +908,15 @@ type_base::dynamic_hash::operator()(const type_base* t) const
 {
   if (t == 0)
     return 0;
+
+  if (t->get_environment()
+      && t->get_environment()->canonicalization_is_done()
+      && t->get_cached_hash_value())
+    // Type canonicalization has been done, so we can use cached hash
+    // values.  And it appears that a has value was cached here, so
+    // let's re-use it to save precious CPU time.
+    return t->get_cached_hash_value();
+
   if (const class_decl::member_function_template* d =
       dynamic_cast<const class_decl::member_function_template*>(t))
     return class_decl::member_function_template::hash()(*d);

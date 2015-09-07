@@ -5700,6 +5700,15 @@ type_base::get_canonical_type_for(type_base_sptr t)
 
   assert(result);
 
+  // Cache the hashed value that took so much CPU time to compute.
+  // That way, next time when the entire canonicalization process is
+  // done, one can re-use the cached value.
+  if (!t->get_cached_hash_value())
+    {
+      t->set_cached_hash_value(h);
+      t->set_cached_hash_value(h);
+    }
+
   return result;
 }
 

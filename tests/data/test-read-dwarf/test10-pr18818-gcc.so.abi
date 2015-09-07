@@ -10145,7 +10145,6 @@
     </namespace-decl>
     <type-decl name='int' size-in-bits='32' id='type-id-36'/>
     <pointer-type-def type-id='type-id-36' size-in-bits='64' id='type-id-321'/>
-    <type-decl name='void' id='type-id-7'/>
     <type-decl name='char' size-in-bits='8' id='type-id-35'/>
     <qualified-type-def type-id='type-id-35' const='yes' id='type-id-27'/>
     <pointer-type-def type-id='type-id-27' size-in-bits='64' id='type-id-34'/>
@@ -16465,7 +16464,6 @@
     <pointer-type-def type-id='type-id-35' size-in-bits='64' id='type-id-4'/>
     <reference-type-def kind='lvalue' type-id='type-id-35' size-in-bits='64' id='type-id-43'/>
     <reference-type-def kind='lvalue' type-id='type-id-27' size-in-bits='64' id='type-id-44'/>
-    <type-decl name='void' id='type-id-7'/>
     <pointer-type-def type-id='type-id-41' size-in-bits='64' id='type-id-90'/>
     <qualified-type-def type-id='type-id-41' const='yes' id='type-id-141'/>
     <reference-type-def kind='lvalue' type-id='type-id-141' size-in-bits='64' id='type-id-91'/>
@@ -21919,7 +21917,6 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-52'/>
     </function-decl>
-    <type-decl name='void' id='type-id-7'/>
     <pointer-type-def type-id='type-id-7' size-in-bits='64' id='type-id-71'/>
     <type-decl name='long unsigned int' size-in-bits='64' id='type-id-46'/>
     <typedef-decl name='size_t' type-id='type-id-46' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='212' column='1' id='type-id-72'/>
@@ -26378,7 +26375,6 @@
     <pointer-type-def type-id='type-id-27' size-in-bits='64' id='type-id-34'/>
     <reference-type-def kind='lvalue' type-id='type-id-35' size-in-bits='64' id='type-id-43'/>
     <reference-type-def kind='lvalue' type-id='type-id-27' size-in-bits='64' id='type-id-44'/>
-    <type-decl name='void' id='type-id-7'/>
     <pointer-type-def type-id='type-id-41' size-in-bits='64' id='type-id-90'/>
     <qualified-type-def type-id='type-id-41' const='yes' id='type-id-141'/>
     <reference-type-def kind='lvalue' type-id='type-id-141' size-in-bits='64' id='type-id-91'/>
@@ -31304,7 +31300,6 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-52'/>
     </function-decl>
-    <type-decl name='void' id='type-id-7'/>
     <pointer-type-def type-id='type-id-7' size-in-bits='64' id='type-id-71'/>
     <type-decl name='long unsigned int' size-in-bits='64' id='type-id-46'/>
     <typedef-decl name='size_t' type-id='type-id-46' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='212' column='1' id='type-id-72'/>
@@ -34499,7 +34494,6 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-52'/>
     </function-decl>
-    <type-decl name='void' id='type-id-7'/>
     <pointer-type-def type-id='type-id-7' size-in-bits='64' id='type-id-71'/>
     <type-decl name='long unsigned int' size-in-bits='64' id='type-id-46'/>
     <typedef-decl name='size_t' type-id='type-id-46' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='212' column='1' id='type-id-72'/>
@@ -35699,7 +35693,6 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-52'/>
     </function-decl>
-    <type-decl name='void' id='type-id-7'/>
     <pointer-type-def type-id='type-id-7' size-in-bits='64' id='type-id-71'/>
     <type-decl name='long unsigned int' size-in-bits='64' id='type-id-46'/>
     <typedef-decl name='size_t' type-id='type-id-46' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='212' column='1' id='type-id-72'/>
