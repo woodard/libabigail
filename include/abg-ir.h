@@ -1349,6 +1349,12 @@ public:
 qualified_type_def::CV
 operator|(qualified_type_def::CV, qualified_type_def::CV);
 
+qualified_type_def::CV
+operator&(qualified_type_def::CV, qualified_type_def::CV);
+
+qualified_type_def::CV
+operator~(qualified_type_def::CV);
+
 std::ostream&
 operator<<(std::ostream&, qualified_type_def::CV);
 

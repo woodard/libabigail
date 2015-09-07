@@ -6295,6 +6295,19 @@ operator| (qualified_type_def::CV lhs,
     (static_cast<unsigned>(lhs) | static_cast<unsigned>(rhs));
 }
 
+/// Overloaded bitwise AND operator for CV qualifiers.
+qualified_type_def::CV
+operator&(qualified_type_def::CV lhs, qualified_type_def::CV rhs)
+{
+    return static_cast<qualified_type_def::CV>
+    (static_cast<unsigned>(lhs) & static_cast<unsigned>(rhs));
+}
+
+/// Overloaded bitwise inverting operator for CV qualifiers.
+qualified_type_def::CV
+operator~(qualified_type_def::CV q)
+{return static_cast<qualified_type_def::CV>(~static_cast<unsigned>(q));}
+
 /// Streaming operator for qualified_type_decl::CV
 ///
 /// @param o the output stream to serialize the cv qualifier to.

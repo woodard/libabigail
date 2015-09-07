@@ -6759,10 +6759,11 @@ build_qualified_type(read_context&	ctxt,
 /// reference is always const.  The issue is these redundant type then
 /// leaks into the IR and makes for bad diagnostics.
 ///
-/// This function thus strips qualified type in that case.  It might
-/// contain code to strip other cases like this in the future.
+/// This function thus strips the const qualifier from the type in
+/// that case.  It might contain code to strip other cases like this
+/// in the future.
 ///
-/// @param t the type to strip qualification from.
+/// @param t the type to strip const qualification from.
 ///
 /// @return the stripped type or just return @p t.
 static decl_base_sptr
@@ -6771,10 +6772,21 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
   if (!t)
     return t;
 
-  if (dynamic_pointer_cast<reference_type_def>(t->get_underlying_type()))
-    return get_type_declaration(t->get_underlying_type());
+  decl_base_sptr result = t;
+  type_base_sptr u = t->get_underlying_type();
+  if (t->get_cv_quals() & qualified_type_def::CV_CONST
+      && is_reference_type(t->get_underlying_type()))
+    {
+      // Let's strip only the const qualifier.
+      if (qualified_type_def::CV q =
+	  (t->get_cv_quals() & ~(qualified_type_def::CV_CONST)))
+	result.reset(new qualified_type_def(u, t->get_cv_quals() | q,
+					    t->get_location()));
+      else
+	result = get_type_declaration(u);
+    }
 
-  return t;
+  return result;
 }
 
 /// Build a pointer type from a DW_TAG_pointer_type DIE.
@@ -7664,8 +7676,17 @@ build_ir_node_from_die(read_context&	ctxt,
 			       where_offset);
 	if (q)
 	  {
-	    result = add_decl_to_scope(maybe_strip_qualification(q),
-				       ctxt.cur_tu()->get_global_scope());
+	    // Strip some potentially redundant type qualifiers from
+	    // the qualified type we just built.
+	    decl_base_sptr d = maybe_strip_qualification(q);
+	    type_base_sptr ty = is_type(d);
+	    // Associate the die to type ty again because 'ty'might be
+	    // different from 'q', because 'ty' is 'q' possibly
+	    // stripped from some redundant type qualifier.
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       ty);
+	    result = add_decl_to_scope(d, ctxt.cur_tu()->get_global_scope());
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);
