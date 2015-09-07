@@ -145,18 +145,15 @@ struct type_decl::hash
 size_t
 scope_decl::hash::operator()(const scope_decl& d) const
 {
-  if (d.peek_hash_value() == 0 || d.hashing_started())
-    {
-      std::tr1::hash<string> hash_string;
-      size_t v = hash_string(typeid(d).name());
-      for (scope_decl::declarations::const_iterator i =
-	     d.get_member_decls().begin();
-	   i != d.get_member_decls().end();
-	   ++i)
-	v = hashing::combine_hashes(v, (*i)->get_hash());
-      d.set_hash(v);
-    }
-  return d.peek_hash_value();
+  std::tr1::hash<string> hash_string;
+  size_t v = hash_string(typeid(d).name());
+  for (scope_decl::declarations::const_iterator i =
+	 d.get_member_decls().begin();
+       i != d.get_member_decls().end();
+       ++i)
+    v = hashing::combine_hashes(v, (*i)->get_hash());
+
+  return v;
 }
 
 /// Hashing operator for the @ref scope_decl type.
@@ -375,9 +372,6 @@ var_decl::hash::operator()(const var_decl* t) const
 size_t
 function_decl::hash::operator()(const function_decl& t) const
 {
-  if (t.peek_hash_value() != 0)
-    return t.peek_hash_value();
-
   std::tr1::hash<int> hash_int;
   std::tr1::hash<size_t> hash_size_t;
   std::tr1::hash<bool> hash_bool;
@@ -405,9 +399,6 @@ function_decl::hash::operator()(const function_decl& t) const
       if (!is_static && !is_ctor)
 	v = hashing::combine_hashes(v, hash_size_t(voffset));
     }
-
-  if (t.get_type() && (t.get_type()->get_canonical_type() != 0))
-    t.set_hash(v);
 
   return v;
 }

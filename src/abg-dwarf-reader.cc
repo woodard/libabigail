@@ -1713,7 +1713,9 @@ lookup_public_variable_symbol_from_elf(Elf*				elf,
 /// get some important data from it.
 class read_context
 {
+  environment*			env_;
   unsigned short		dwarf_version_;
+  Dwfl_Callbacks		offline_callbacks_;
   dwfl_sptr			handle_;
   Dwarf*			dwarf_;
   // The alternate debug info.  Alternate debug info sections are a
@@ -1778,16 +1780,16 @@ class read_context
   read_context();
 
 public:
-  read_context(dwfl_sptr handle,
-	       const string& elf_path)
-    : dwarf_version_(0),
-      handle_(handle),
-      dwarf_(0),
-      alt_dwarf_(0),
-      elf_module_(0),
-      elf_handle_(0),
+  read_context(const string& elf_path)
+    : env_(),
+      dwarf_version_(),
+      handle_(),
+      dwarf_(),
+      alt_dwarf_(),
+      elf_module_(),
+      elf_handle_(),
       elf_path_(elf_path),
-      cur_tu_die_(0),
+      cur_tu_die_(),
       symtab_section_(),
       symbol_versionning_sections_loaded_(),
       symbol_versionning_sections_found_(),
@@ -1797,7 +1799,9 @@ public:
       exported_decls_builder_(),
       load_all_types_(),
       show_stats_()
-  {}
+  {
+    memset(&offline_callbacks_, 0, sizeof(offline_callbacks_));
+  }
 
   /// Clear the data that is relevant only for the current translation
   /// unit being read.  The rest of the data is relevant for the
@@ -1808,7 +1812,6 @@ public:
     while (!scope_stack().empty())
       scope_stack().pop();
     var_decls_to_re_add_to_tree().clear();
-    type_decl::get_void_type_decl()->set_scope(0);
   }
 
   /// Clear the data that is relevant for the current corpus being
@@ -1824,6 +1827,67 @@ public:
     types_to_canonicalize(/*in_alt_di=*/false).clear();
   }
 
+  /// Getter for the current environment.
+  ///
+  /// @return the current environment.
+  const ir::environment*
+  env() const
+  {return env_;}
+
+  /// Getter for the current environment.
+  ///
+  /// @return the current environment.
+  ir::environment*
+  env()
+  {return env_;}
+
+  /// Setter for the current environment.
+  ///
+  /// @param env the new current environment.
+  void
+  env(ir::environment* env)
+  {env_ = env;}
+
+  /// Getter for the callbacks of the Dwarf Front End library of
+  /// elfutils that is used by this reader to read dwarf.
+  ///
+  /// @return the callbacks.
+  const Dwfl_Callbacks*
+  offline_callbacks() const
+  {return &offline_callbacks_;}
+
+  /// Getter for the callbacks of the Dwarf Front End library of
+  /// elfutils that is used by this reader to read dwarf.
+  /// @returnthe callbacks
+  Dwfl_Callbacks*
+  offline_callbacks()
+  {return &offline_callbacks_;}
+
+  /// Constructor for a default Dwfl handle that knows how to load debug
+  /// info from a library or executable elf file.
+  ///
+  /// @param debug_info_root_path a pointer to the root path under which
+  /// to look for the debug info of the elf files that are later handled
+  /// by the Dwfl.  This for cases where the debug info is split into a
+  /// different file from the binary we want to inspect.  On Red Hat
+  /// compatible systems, this root path is usually /usr/lib/debug by
+  /// default.  If this argument is set to NULL, then "./debug" and
+  /// /usr/lib/debug will be searched for sub-directories containing the
+  /// debug info file.  Note that for now, elfutils wants this path to
+  /// be absolute otherwise things just don't work and the debug info is
+  /// not found.
+  ///
+  /// @return the constructed Dwfl handle.
+  void
+  create_default_dwfl(char** debug_info_root_path)
+  {
+    offline_callbacks()->find_debuginfo = dwfl_standard_find_debuginfo;
+    offline_callbacks()->section_address = dwfl_offline_section_address;
+    offline_callbacks()->debuginfo_path = debug_info_root_path;
+    handle_.reset(dwfl_begin(offline_callbacks()),
+		  dwfl_deleter());
+  }
+
   unsigned short
   dwarf_version() const
   {return dwarf_version_;}
@@ -1832,9 +1896,21 @@ public:
   dwarf_version(unsigned short v)
   {dwarf_version_ = v;}
 
+  /// Getter for a smart pointer to a handle on the dwarf front end
+  /// library that we use to read dwarf.
+  ///
+  /// @return the dwfl handle.
   dwfl_sptr
   dwfl_handle() const
   {return handle_;}
+
+  /// Setter for a smart pointer to a handle on the dwarf front end
+  /// library that we use to read dwarf.
+  ///
+  /// @param h the new dwfl handle.
+  void
+  dwfl_handle(dwfl_sptr& h)
+  {handle_ = h;}
 
   Dwfl_Module*
   elf_module() const
@@ -3706,6 +3782,28 @@ finish_member_function_reading(Dwarf_Die*		die,
 			       function_decl_sptr	f,
 			       class_decl_sptr		klass);
 
+/// Setter of the debug info root path for a dwarf reader context.
+///
+/// @param ctxt the dwarf reader context to consider.
+///
+/// @param path the new debug info root path.  This must be a pointer to a
+/// character string which life time should be greater than the life
+/// time of the read context.
+void
+set_debug_info_root_path(read_context& ctxt, char** path)
+{ctxt.offline_callbacks()->debuginfo_path = path;}
+
+/// Setter of the debug info root path for a dwarf reader context.
+///
+/// @param ctxt the dwarf reader context to consider.
+///
+/// @return a pointer to the the debug info root path.
+///
+/// time of the read context.
+char**
+get_debug_info_root_path(read_context& ctxt)
+{return ctxt.offline_callbacks()->debuginfo_path;}
+
 /// Getter of the "show_stats" flag.
 ///
 /// This flag tells if we should emit statistics about various
@@ -3715,12 +3813,8 @@ finish_member_function_reading(Dwarf_Die*		die,
 ///
 /// @return the value of the flag.
 bool
-get_show_stats(read_context_sptr& ctxt)
-{
-  if(!ctxt)
-    return false;
-  return ctxt->show_stats();
-}
+get_show_stats(read_context& ctxt)
+{return ctxt.show_stats();}
 
 /// Setter of the "show_stats" flag.
 ///
@@ -3731,68 +3825,8 @@ get_show_stats(read_context_sptr& ctxt)
 ///
 /// @param f the value of the flag.
 void
-set_show_stats(read_context_sptr& ctxt,
-	       bool f)
-{
-  if (ctxt)
-    ctxt->show_stats(f);
-}
-
-/// Constructor for a default Dwfl handle that knows how to load debug
-/// info from a library or executable elf file.
-///
-/// @param debug_info_root_path a pointer to the root path under which
-/// to look for the debug info of the elf files that are later handled
-/// by the Dwfl.  This for cases where the debug info is split into a
-/// different file from the binary we want to inspect.  On Red Hat
-/// compatible systems, this root path is usually /usr/lib/debug by
-/// default.  If this argument is set to NULL, then "./debug" and
-/// /usr/lib/debug will be searched for sub-directories containing the
-/// debug info file.  Note that for now, elfutils wants this path to
-/// be absolute otherwise things just don't work and the debug info is
-/// not found.
-///
-/// @return the constructed Dwfl handle.
-static Dwfl*
-create_default_dwfl(char** debug_info_root_path)
-{
-  static Dwfl_Callbacks offline_callbacks;
-
-  memset(&offline_callbacks, 0, sizeof(offline_callbacks));
-  offline_callbacks.find_debuginfo = dwfl_standard_find_debuginfo;
-  offline_callbacks.section_address = dwfl_offline_section_address;
-  offline_callbacks.debuginfo_path = debug_info_root_path;
-  return dwfl_begin(&offline_callbacks);
-}
-
-/// Create a shared pointer for a pointer to Dwfl.
-///
-/// @param dwfl the pointer to Dwfl to create the shared pointer for.
-///
-/// @return the newly created shared pointer.
-static dwfl_sptr
-create_dwfl_sptr(Dwfl* dwfl)
-{
-  dwfl_sptr result(dwfl, dwfl_deleter());
-  return result;
-}
-
-/// Create a shared pointer to a default Dwfl handle.  This uses the
-/// create_default_dwfl() function.
-///
-/// @param di_path a pointer to the root path under which to look for
-/// the debug info of the elf files that are later handled by the
-/// Dwfl.  This for cases where the debug info is split into a
-/// different file from the binary we want to inspect.  On Red Hat
-/// compatible systems, this root path is usually /usr/lib/debug by
-/// default.  If this argument is set to NULL, then "./debug" and
-/// /usr/lib/debug will be searched for sub-directories containing the
-/// debug info file.
-///
-/// @return the created shared pointer.
-static dwfl_sptr
-create_default_dwfl_sptr(char** di_path)
-{return create_dwfl_sptr(create_default_dwfl(di_path));}
+set_show_stats(read_context& ctxt, bool f)
+{ctxt.show_stats(f);}
 
 /// Get the value of an attribute that is supposed to be a string, or
 /// an empty string if the attribute could not be found.
@@ -6059,7 +6093,9 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   ctxt.cur_tu_die(die);
 
   string path = die_string_attribute(die, DW_AT_name);
-  result.reset(new translation_unit(path, address_size));
+  result.reset(new translation_unit(path,
+				    ctxt.env(),
+				    address_size));
 
   size_t l = 0;
   die_unsigned_constant_attribute(die, DW_AT_language, l);
@@ -6756,8 +6792,8 @@ build_qualified_type(read_context&	ctxt,
 /// Strip qualification from a qualified type, when it makes sense.
 ///
 /// DWARF constructs "const reference".  This is redundant because a
-/// reference is always const.  The issue is these redundant type then
-/// leaks into the IR and makes for bad diagnostics.
+/// reference is always const.  The issue is these redundant types then
+/// leak into the IR and make for bad diagnostics.
 ///
 /// This function thus strips the const qualifier from the type in
 /// that case.  It might contain code to strip other cases like this
@@ -7329,8 +7365,9 @@ build_function_decl(read_context&	ctxt,
 	  {
 	    // This is a variadic function parameter.
 	    bool is_artificial = die_is_artificial(&child);
-	    type_decl_sptr parm_type =
-	      type_decl::get_variadic_parameter_type_decl();
+	    ir::environment* env = ctxt.env();
+	    assert(env);
+	    type_decl_sptr parm_type = env->get_variadic_parameter_type_decl();
 	    function_decl::parameter_sptr p
 	      (new function_decl::parameter(parm_type,
 					    /*name=*/"",
@@ -7396,8 +7433,6 @@ build_function_decl(read_context&	ctxt,
 			     is_in_alt_di,
 			     result->get_type());
 
-  maybe_canonicalize_type(dwarf_dieoffset(die), is_in_alt_di, ctxt);
-
   return result;
 }
 
@@ -7416,8 +7451,10 @@ read_debug_info_into_corpus(read_context& ctxt)
 
   if (!ctxt.current_corpus())
     {
-      corpus_sptr corp (new corpus(ctxt.elf_path()));
+      corpus_sptr corp (new corpus(ctxt.elf_path(), ctxt.env()));
       ctxt.current_corpus(corp);
+      if (!ctxt.env())
+	ctxt.env(corp->get_environment());
     }
 
   if (!ctxt.dwarf())
@@ -8046,7 +8083,9 @@ build_ir_node_from_die(read_context&	ctxt,
 static decl_base_sptr
 build_ir_node_for_void_type(read_context& ctxt)
 {
-  decl_base_sptr t = type_decl::get_void_type_decl();
+  ir::environment* env = ctxt.env();
+  assert(env);
+  decl_base_sptr t = env->get_void_type_decl();
   if (!has_scope(t))
     add_decl_to_scope(t, ctxt.cur_tu()->get_global_scope());
   canonicalize(is_type(t));
@@ -8134,6 +8173,17 @@ operator&=(status& l, status r)
 /// debug info is to be found for @p elf_path.  Leave this to NULL if
 /// the debug info is not in a split file.
 ///
+/// @param environment the environment used by the current context.
+/// This environment contains resources needed by the reader and by
+/// the types and declarations that are to be created later.  Note
+/// that ABI artifacts that are to be compared all need to be created
+/// within the same environment.
+///
+/// Please also note that the life time of this environment object
+/// must be greater than the life time of the resulting @ref
+/// read_context the context uses resources that are allocated in the
+/// environment.
+///
 /// @param load_all_types if set to false only the types that are
 /// reachable from publicly exported declarations (of functions and
 /// variables) are read.  If set to true then all types found in the
@@ -8141,15 +8191,17 @@ operator&=(status& l, status r)
 ///
 /// @return a smart pointer to the resulting dwarf_reader::read_context.
 read_context_sptr
-create_read_context(const std::string&	elf_path,
-		    char**		debug_info_root_path,
-		    bool		load_all_types)
+create_read_context(const std::string&		elf_path,
+		    char**			debug_info_root_path,
+		    ir::environment*		environment,
+		    bool			load_all_types)
 {
   // Create a DWARF Front End Library handle to be used by functions
   // of that library.
-  dwfl_sptr handle = create_default_dwfl_sptr(debug_info_root_path);
-  read_context_sptr result(new read_context(handle, elf_path));
+  read_context_sptr result(new read_context(elf_path));
+  result->create_default_dwfl(debug_info_root_path);
   result->load_all_types(load_all_types);
+  result->env(environment);
   return result;
 }
 
@@ -8214,6 +8266,15 @@ read_corpus_from_elf(read_context& ctxt, status& status)
 /// /usr/lib/debug will be searched for sub-directories containing the
 /// debug info file.
 ///
+/// @param environment the environment used by the current context.
+/// This environment contains resources needed by the reader and by
+/// the types and declarations that are to be created later.  Note
+/// that ABI artifacts that are to be compared all need to be created
+/// within the same environment.  Also, the lifetime of the
+/// environment must be greater than the lifetime of the resulting
+/// corpus because the corpus uses resources that are allocated in the
+/// environment.
+///
 /// @param load_all_types if set to false only the types that are
 /// reachable from publicly exported declarations (of functions and
 /// variables) are read.  If set to true then all types found in the
@@ -8224,18 +8285,16 @@ read_corpus_from_elf(read_context& ctxt, status& status)
 /// @return the resulting status.
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,
-		     char** debug_info_root_path,
-		     bool load_all_types,
-		     status& status)
+		     char**		debug_info_root_path,
+		     ir::environment*	environment,
+		     bool		load_all_types,
+		     status&		status)
 {
-  // Create a DWARF Front End Library handle to be used by functions
-  // of that library.
-  dwfl_sptr handle = create_default_dwfl_sptr(debug_info_root_path);
-
-  read_context_sptr c = create_read_context(elf_path, debug_info_root_path);
-  c->load_all_types(load_all_types);
+  read_context_sptr c = create_read_context(elf_path,
+					    debug_info_root_path,
+					    environment,
+					    load_all_types);
   read_context& ctxt = *c;
-
   return read_corpus_from_elf(ctxt, status);
 }
 
@@ -8390,7 +8449,7 @@ has_alt_debug_info(const string&	elf_path,
 		   bool&		has_alt_di,
 		   string&		alt_debug_info_path)
 {
-  read_context_sptr c = create_read_context(elf_path, debug_info_root_path);
+  read_context_sptr c = create_read_context(elf_path, debug_info_root_path, 0);
   read_context& ctxt = *c;
 
   // Load debug info from the elf path.

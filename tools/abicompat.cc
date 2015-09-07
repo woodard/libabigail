@@ -213,6 +213,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::base_name;
 using abigail::tools_utils::abidiff_status;
+using abigail::ir::environment;
+using abigail::ir::environment_sptr;
 using abigail::corpus;
 using abigail::corpus_sptr;
 using abigail::ir::elf_symbols;
@@ -606,9 +608,10 @@ main(int argc, char* argv[])
   // Read the application ELF file.
   char * app_di_root = opts.app_di_root_path.get();
   status status = abigail::dwarf_reader::STATUS_UNKNOWN;
+  environment_sptr env(new environment);
   corpus_sptr app_corpus=
     read_corpus_from_elf(opts.app_path,
-			 &app_di_root,
+			 &app_di_root, env.get(),
 			 /*load_all_types=*/opts.weak_mode,
 			 status);
 
@@ -654,9 +657,9 @@ main(int argc, char* argv[])
 
   char * lib1_di_root = opts.lib1_di_root_path.get();
   corpus_sptr lib1_corpus = read_corpus_from_elf(opts.lib1_path,
-				&lib1_di_root,
-				/*load_all_types=*/false,
-				     status);
+						 &lib1_di_root, env.get(),
+						 /*load_all_types=*/false,
+						 status);
   if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
     cerr << "could not read debug info for " << opts.lib1_path << "\n";
   if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
@@ -678,6 +681,7 @@ main(int argc, char* argv[])
       char * lib2_di_root = opts.lib2_di_root_path.get();
       lib2_corpus = read_corpus_from_elf(opts.lib2_path,
 					 &lib2_di_root,
+					 env.get(),
 					 /*load_all_types=*/false,
 					 status);
       if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)

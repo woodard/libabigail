@@ -78,7 +78,16 @@ private:
 
 public:
 
-  corpus(const string&);
+  corpus(const string&, ir::environment*);
+
+  environment*
+  get_environment();
+
+  const environment*
+  get_environment() const;
+
+  void
+  set_environment(environment*) const;
 
   void
   add(const translation_unit_sptr);

@@ -57,13 +57,13 @@
 /// abigail::type_base_sptr is added to the scope using the function
 /// abigail::add_decl_to_scope().
 ///
-/// There is a kind of type that is usually not syntactically owned by a
-/// scope: it's function type.  In libabigail function types are
-/// represented by abigail::function_type and abigail::method_type.  These
-/// types must be owned by the translation unit they originate from.
-/// Adding them to the translation unit must be done by a call to the
-/// method function abigail::translation::get_canonical_function_type().
-/// The type returned by that function is the one to use.
+/// There is a kind of type that is usually not syntactically owned by
+/// a scope: it's function type.  In libabigail, function types are
+/// represented by abigail::function_type and abigail::method_type.
+/// These types must be owned by the translation unit they originate
+/// from.  Adding them to the translation unit must be done by a call
+/// to the method function
+/// abigail::translation::bind_function_type_life_time().
 ///
 /// <b> A declaration that has a type does NOT own the type </b>
 ///
@@ -82,6 +82,12 @@
 /// Likewise, data members, function and template parameters similarly
 /// have weak pointers on their type.
 ///
+/// If, for a reason, you really need to keep a type alive for the
+/// entire lifetime of the type system, then you can bind the life
+/// time of that type to the life time of the @ref environment that is
+/// supposed to outlive the type system.  You do that by passing the
+/// type to the function environment::keep_type_alive().
+///
 /// @}
 
 namespace abigail
@@ -94,6 +100,69 @@ namespace ir
 
 // Inject some std::tr1 types in here.
 using std::tr1::unordered_map;
+
+/// Convenience typedef for a shared pointer on a @ref type_base
+typedef shared_ptr<type_base> type_base_sptr;
+
+/// Convenience typedef for a shared pointer on a @ref type_decl.
+typedef shared_ptr<type_decl> type_decl_sptr;
+
+/// Convenience typedef for a shared pointer to an @ref environment
+typedef shared_ptr<environment> environment_sptr;
+
+/// This is an abstraction of the set of resources necessary to manage
+/// several aspects of the internal representations of the Abigail
+/// library.
+///
+/// An environment can be seen as the boundaries in which all related
+/// Abigail artifacts live.  So before doing anything using this
+/// library, the first thing to create is, well, you know it now, an
+/// environment.
+///
+/// Note that the lifetime of environment objects must be longer than
+/// the lifetime of any other type in the Abigail system.  So a given
+/// instance of @ref environment must stay around as long as you are
+/// using libabigail.  It's only when you are done using the library
+/// that you can de-allocate the environment instance.
+class environment
+{
+public:
+
+  // A convenience typedef for a map of canonical types.  The a map
+  /// entry key is the hash value of a particular type and the value
+  /// is the list of canonical types that have the same hash value.
+  typedef std::tr1::unordered_map<size_t,
+				  std::list<type_base_sptr> > canonical_types_map_type;
+
+private:
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+public:
+
+  environment();
+  virtual ~environment();
+
+  canonical_types_map_type&
+  get_canonical_types_map();
+
+  const type_decl_sptr&
+  get_void_type_decl() const;
+
+  const type_decl_sptr&
+  get_variadic_parameter_type_decl() const;
+
+  bool
+  canonicalization_is_done() const;
+
+  void
+  canonicalization_is_done(bool);
+
+  friend class class_decl;
+
+  friend void keep_type_alive(type_base_sptr);
+}; // end class environment
 
 /// @brief The source location of a token.
 ///
@@ -163,9 +232,6 @@ typedef shared_ptr<translation_unit> translation_unit_sptr;
 
 /// Convenience typedef for a vector of @ref translation_unit_sptr.
 typedef std::vector<translation_unit_sptr> translation_units;
-
-/// Convenience typedef for a shared pointer on a @ref type_base
-typedef shared_ptr<type_base> type_base_sptr;
 
 /// Convenience typedef for a weak pointer on a @ref type_base
 typedef weak_ptr<type_base> type_base_wptr;
@@ -255,10 +321,20 @@ public:
   };
 
 public:
-  translation_unit(const std::string& path,
-		   char address_size = 0);
+  translation_unit(const std::string&	path,
+		   ir::environment*	env,
+		   char		address_size = 0);
 
   virtual ~translation_unit();
+
+  const environment*
+  get_environment() const;
+
+  environment*
+  get_environment();
+
+  void
+  set_environment(environment*);
 
   language
   get_language() const;
@@ -719,8 +795,40 @@ typedef shared_ptr<type_or_decl_base> type_or_decl_base_sptr;
 /// The base class of both types and declarations.
 class type_or_decl_base : public ir_traversable_base
 {
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  mutable priv_sptr priv_;
+
+protected:
+
+  size_t get_cached_hash_value() const;
+
+  void set_cached_hash_value(size_t) const;
+
+  bool hashing_started() const;
+
+  void hashing_started(bool) const;
+
 public:
+
+  type_or_decl_base();
+
+  type_or_decl_base(const type_or_decl_base&);
+
   virtual ~type_or_decl_base();
+
+  const environment*
+  get_environment() const;
+
+  environment*
+  get_environment();
+
+  void
+  set_environment(environment*);
+
+  virtual bool
+  traverse(ir_node_visitor&);
+
   virtual string
   get_pretty_representation() const = 0;
 }; // end class type_or_decl_base
@@ -731,6 +839,14 @@ operator==(const type_or_decl_base&, const type_or_decl_base&);
 bool
 operator==(const type_or_decl_base_sptr&, const type_or_decl_base_sptr&);
 
+void
+set_environment_for_artifact(type_or_decl_base* artifact,
+			    environment* env);
+
+void
+set_environment_for_artifact(type_or_decl_base_sptr artifact,
+			     environment* env);
+
 /// The base type of all declarations.
 class decl_base : public virtual type_or_decl_base
 {
@@ -739,15 +855,6 @@ class decl_base : public virtual type_or_decl_base
 
 protected:
   mutable priv_sptr priv_;
-
-  bool
-  hashing_started() const;
-
-  void
-  hashing_started(bool b) const;
-
-  size_t
-  peek_hash_value() const;
 
   const string&
   peek_qualified_name() const;
@@ -822,9 +929,6 @@ public:
 
   virtual const string&
   get_qualified_name() const;
-
-  void
-  set_hash(size_t) const;
 
   bool
   get_is_in_public_symbol_table() const;
@@ -962,7 +1066,8 @@ public:
 
   scope_decl(const std::string& name, location locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
-  : decl_base(name, locus, /*mangled_name=*/name, vis)
+    : type_or_decl_base(),
+      decl_base(name, locus, /*mangled_name=*/name, vis)
   {}
 
   scope_decl(location l) : decl_base("", l)
@@ -1074,7 +1179,6 @@ private:
   // Forbid this.
   type_base();
 
-
   static type_base_sptr
   get_canonical_type_for(type_base_sptr);
 
@@ -1127,8 +1231,8 @@ public:
 /// Hash functor for instances of @ref type_base.
 struct type_base::hash
 {
-   size_t
-   operator()(const type_base& t) const;
+  size_t
+  operator()(const type_base& t) const;
 
   size_t
   operator()(const type_base* t) const;
@@ -1180,9 +1284,6 @@ struct type_shared_ptr_equal
 bool
 equals(const type_decl&, const type_decl&, change_kind*);
 
-/// Convenience typedef for a shared pointer on a @ref type_decl.
-typedef shared_ptr<type_decl> type_decl_sptr;
-
 /// A basic type declaration that introduces no scope.
 class type_decl : public virtual decl_base, public virtual type_base
 {
@@ -1198,12 +1299,6 @@ public:
 	    size_t size_in_bits, size_t alignment_in_bits,
 	    location locus, const std::string&	mangled_name = "",
 	    visibility vis = VISIBILITY_DEFAULT);
-
-  static type_decl_sptr&
-  get_void_type_decl();
-
-  static type_decl_sptr&
-  get_variadic_parameter_type_decl();
 
   virtual bool
   operator==(const type_base&) const;

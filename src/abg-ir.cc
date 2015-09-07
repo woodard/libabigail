@@ -36,6 +36,65 @@
 #include "abg-sptr-utils.h"
 #include "abg-ir.h"
 
+namespace
+{
+/// This internal type is a tree walker that walks the sub-tree of a
+/// type and sets the environment of the type (including its sub-type)
+/// to a new environment.
+class environment_setter : public abigail::ir::ir_node_visitor
+{
+  abigail::ir::type_or_decl_base* artifact_;
+  abigail::ir::environment* env_;
+
+public:
+  environment_setter(abigail::ir::type_or_decl_base*	a,
+		     abigail::ir::environment*		env)
+    : artifact_(a),
+      env_(env)
+  {}
+
+  /// This function is called on each sub-tree node that is a
+  /// declaration.  Note that it's also called on some types because
+  /// most types that have a declarations also inherit the type @ref
+  /// decl_base.
+  ///
+  /// @param d the declaration being visited.
+  bool
+  visit_begin(abigail::ir::decl_base* d)
+  {
+    if (abigail::ir::environment* env = d->get_environment())
+      {
+	assert(env == env_);
+	return false;
+      }
+    else
+      d->set_environment(env_);
+
+    return true;
+
+  }
+
+  /// This function is called on each sub-tree node that is a type.
+  ///
+  /// @param t the type being visited.
+  bool
+  visit_begin(abigail::ir::type_base* t)
+  {
+    if (abigail::ir::environment* env = t->get_environment())
+      {
+	assert(env == env_);
+	return false;
+      }
+    else
+      {
+	assert(!t->get_environment());
+	t->set_environment(env_);
+      }
+    return true;
+  }
+};
+}
+
 namespace abigail
 {
 
@@ -49,96 +108,6 @@ using std::vector;
 using std::tr1::unordered_map;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
-
-// A convenience typedef for a map of canonical types.  The a map
-/// entry key is the hash value of a particular type and the value
-/// is the list of canonical types that have the same hash value.
-typedef std::tr1::unordered_map<size_t,
-				std::list<type_base_sptr> > canonical_types_map_type;
-
-static canonical_types_map_type& get_canonical_types_map();
-
-/// This is a type which instance is referenced by relevant users
-/// (types) of the type system, so that we can know when the type
-/// system is 'used' or not.
-///
-/// It can then serve to detect when the type system is not used
-/// anymore, so that resources that should stay live only during the
-/// life time of *users* of the type system can be deallocated.
-///
-/// A kind of canary in a coal mine, so to speak.
-class usage_watchdog
-{};
-
-/// A convenience typedef for a shared pointer to @ref usage_watchdog.
-typedef shared_ptr<usage_watchdog> usage_watchdog_sptr;
-
-/// A convenience typedef for a weak pointer to @ref usage_watchdog.
-typedef weak_ptr<usage_watchdog> usage_watchdog_wptr;
-
-/// Getter of the usage watchdog.
-///
-/// Note that this getter does *not* increment the usage count of the
-/// watchdog.
-///
-/// @return a reference on the usage watchdog.
-static usage_watchdog_sptr&
-get_usage_watchdog()
-{
-  static usage_watchdog_sptr watchdog;
-  return watchdog;
-}
-
-/// Getter of a weak pointer to the usage watchdog.
-///
-/// This weak pointer on the usage watchdog allows users to test if
-/// the usage watchdog is referenced by someone else or not.  This
-/// test is done via the method weak_ptr::expired().  What a wonderful
-/// method ...
-///
-/// @return a reference to the weak pointer to the usage watchdog.
-static usage_watchdog_wptr&
-get_usage_watchdog_wptr()
-{
-  static usage_watchdog_wptr watchdog;
-  return watchdog;
-}
-
-/// Increase the reference count of the usage watchdog.
-///
-/// Actually this function returns a shared pointer to the usage
-/// pointer.  Storing that shared pointer is what increases the
-/// reference count of the watchdog.  When the shared pointer that
-/// stores the returned usage watchdog is destroyed, the reference
-/// count goes down.
-///
-/// @return a shared pointer to the usage watchdog so that its
-/// reference count can be increased by the simple fact of storing it.
-static usage_watchdog_sptr
-ref_usage_watchdog()
-{
-  usage_watchdog_sptr result;
-  if (!get_usage_watchdog())
-    {
-      usage_watchdog_sptr w(new usage_watchdog);
-      get_usage_watchdog() = w;
-      get_usage_watchdog_wptr() = w;
-    }
-  result = get_usage_watchdog();
-
-  return result;
-}
-
-/// Test if the reference count of the usage watchdog shared point
-/// reached zero.  If yes, cleanup the data of the type system that is
-/// supposed to stay live only as long as the usage watchdog shared
-/// pointer is live.
-static void
-maybe_cleanup_type_system_data()
-{
-  if (!get_usage_watchdog_wptr().expired())
-    get_canonical_types_map().clear();
-}
 
 /// @brief the location of a token represented in its simplest form.
 /// Instances of this type are to be stored in a sorted vector, so the
@@ -249,7 +218,7 @@ typedef unordered_map<function_type_sptr,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
-  usage_watchdog_sptr			usage_watchdog_;
+  environment*				env_;
   bool					is_constructed_;
   char					address_size_;
   language				language_;
@@ -259,34 +228,15 @@ struct translation_unit::priv
   mutable function_types_type		function_types_;
   mutable vector<type_base_sptr>	synthesized_types_;
 
-  priv()
-    : is_constructed_(),
+  priv(environment* env)
+    : env_(env),
+      is_constructed_(),
       address_size_(),
       language_(LANG_UNKNOWN)
-  {
-    // Note that translation units own types.
-    //
-    // There is data in the type system that is global and that should
-    // have the same lifetime as the type system itself.  So when the
-    // type system has no more users, its global data should be
-    // de-allocated.
-    //
-    // So let's say that we are using the type system.  We say this by
-    // increasing the reference count of the shared pointer to the
-    // usage watchdog of the type system.  When that ref-count goes to
-    // zero, that means the type system has no more use.  At that
-    // point the global data of the type system needs to be
-    // de-allocated.  This is done in the destructor of this
-    // translation_unit::priv type.
-    usage_watchdog_ = ref_usage_watchdog();
-  }
+  {}
 
   ~priv()
-  {
-    // So when the translation unit is de-allocated, let's de-allocate
-    // type system data that should not outlive translation units.
-    maybe_cleanup_type_system_data();
-  }
+  {}
 }; // end translation_unit::priv
 
 // <translation_unit stuff>
@@ -295,11 +245,17 @@ struct translation_unit::priv
 ///
 /// @param path the location of the translation unit.
 ///
+/// @param env the environment of this translation unit.  Please note
+/// that the life time of the environment must be greater than the
+/// life time of the translation unit because the translation uses
+/// resources that are allocated in the environment.
+///
 /// @param address_size the size of addresses in the translation unit,
 /// in bits.
-translation_unit::translation_unit(const std::string& path,
-				   char address_size)
-  : priv_(new priv)
+translation_unit::translation_unit(const std::string&	path,
+				   environment*	env,
+				   char		address_size)
+  : priv_(new priv(env))
 {
   priv_->path_ = path;
   priv_->address_size_ = address_size;
@@ -314,10 +270,37 @@ const shared_ptr<global_scope>
 translation_unit::get_global_scope() const
 {
   if (!priv_->global_scope_)
-    priv_->global_scope_.reset
-      (new global_scope(const_cast<translation_unit*>(this)));
+    {
+      priv_->global_scope_.reset
+	(new global_scope(const_cast<translation_unit*>(this)));
+      // The global scope must be out of the same environment as its
+      // translation unit.
+      priv_->global_scope_->
+	set_environment(const_cast<environment*>(get_environment()));
+    }
   return priv_->global_scope_;
 }
+
+/// Getter of the environment of the current @ref translation_unit.
+///
+/// @return the translation unit of the current translation unit.
+const environment*
+translation_unit::get_environment() const
+{return priv_->env_;}
+
+/// Getter of the environment of the current @ref translation_unit.
+///
+/// @return the translation unit of the current translation unit.
+environment*
+translation_unit::get_environment()
+{return priv_->env_;}
+
+/// Setter of the environment of the current @ref translation_unit.
+///
+/// @param env the environment.
+void
+translation_unit::set_environment(environment* env)
+{priv_->env_ = env;}
 
 /// Getter of the language of the source code of the translation unit.
 ///
@@ -441,7 +424,16 @@ translation_unit::operator==(const translation_unit& other)const
 /// function type can be destroyed to.
 void
 translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
-{priv_->function_types_.push_back(ftype);}
+{
+  priv_->function_types_.push_back(ftype);
+
+  // The function type must be ouf of the same environment as its
+  // translation unit.
+  if (const environment* env = get_environment())
+    assert(env == get_environment());
+
+  ftype->set_environment(const_cast<environment*>(get_environment()));
+}
 
 /// This implements the ir_traversable_base::traverse virtual
 /// function.
@@ -1571,12 +1563,217 @@ elf_symbol::version::operator=(const elf_symbol::version& o)
 dm_context_rel::~dm_context_rel()
 {}
 
+// <environment stuff>
+
+/// The private data of the @ref environment type.
+struct environment::priv
+{
+  bool				canonicalization_is_done_;
+  canonical_types_map_type	canonical_types_;
+  type_decl_sptr		void_type_decl_;
+  type_decl_sptr		variadic_marker_type_decl_;
+  unordered_map<string, bool>	classes_being_compared_;
+  vector<type_base_sptr>	extra_live_types_;
+
+  priv()
+    : canonicalization_is_done_()
+  {}
+};// end struct environment::priv
+
+/// Default constructor of the @ref environment type.
+environment::environment()
+  :priv_(new priv)
+{}
+
+/// Destructor for the @ref environment type.
+environment::~environment()
+{}
+
+/// Getter the map of canonical types.
+///
+/// @return the map of canonical types.  The key of the map is the
+/// hash of the canonical type and its value if the canonical type.
+environment::canonical_types_map_type&
+environment::get_canonical_types_map()
+{return priv_->canonical_types_;}
+
+/// Get a @ref type_decl that represents a "void" type for the current
+/// environment.
+///
+/// @return the @ref type_decl that represents a "void" type.
+const type_decl_sptr&
+environment::get_void_type_decl() const
+{
+  if (!priv_->void_type_decl_)
+    {
+      priv_->void_type_decl_.reset(new type_decl("void", 0, 0, location()));
+      priv_->void_type_decl_->set_environment(const_cast<environment*>(this));
+    }
+  return priv_->void_type_decl_;
+}
+
+/// Get a @ref type_decl instance that represents a the type of a
+/// variadic function parameter.
+///
+/// @return the Get a @ref type_decl instance that represents a the
+/// type of a variadic function parameter.
+const type_decl_sptr&
+environment::get_variadic_parameter_type_decl() const
+{
+  if (!priv_->variadic_marker_type_decl_)
+    {
+      priv_->variadic_marker_type_decl_.
+	reset(new type_decl("variadic parameter type",
+			    0, 0, location()));
+      priv_->variadic_marker_type_decl_->
+	set_environment(const_cast<environment*>(this));
+    }
+  return priv_->variadic_marker_type_decl_;
+}
+
+/// Test if the canonicalization of types created out of the current
+/// environment is done.
+///
+/// @return true iff the canonicalization of types created out of the current
+/// environment is done.
+bool
+environment::canonicalization_is_done() const
+{return priv_->canonicalization_is_done_;}
+
+/// Set a flag saying if the canonicalization of types created out of
+/// the current environment is done or not.
+///
+/// Note that this function must only be called by internal code of
+/// the library that creates ABI artifacts (e.g, read an abi corpus
+/// from elf or from our own xml format and creates representations of
+/// types out of it) and thus needs to canonicalize types to speed-up
+/// further type comparison.
+///
+/// @param f the new value of the flag.
+void
+environment::canonicalization_is_done(bool f)
+{priv_->canonicalization_is_done_ = f;}
+
+// </environment stuff>
 
 // <type_or_decl_base stuff>
+
+/// The private data of @ref type_or_decl_base.
+struct type_or_decl_base::priv
+{
+  // If a non-scalar data member is added, please think about adding a
+  // copy operator for this type.
+  size_t	hash_;
+  bool		hashing_started_;
+  environment*	env_;
+
+  priv()
+    : hash_(),
+      hashing_started_(),
+      env_()
+  {}
+}; // end struct type_or_decl_base
+
+/// Default constructor of @ref type_or_decl_base.
+type_or_decl_base::type_or_decl_base()
+  :priv_(new priv)
+{}
+
+/// Copy constructor of @ref type_or_decl_base.
+type_or_decl_base::type_or_decl_base(const type_or_decl_base& o)
+{*priv_ = *o.priv_;}
 
 /// The destructor of the @ref type_or_decl_base type.
 type_or_decl_base::~type_or_decl_base()
 {}
+
+/// Getter for the 'hashing_started' property.
+///
+/// @return the 'hashing_started' property.
+bool
+type_or_decl_base::hashing_started() const
+{return priv_->hashing_started_;}
+
+/// Setter for the 'hashing_started' property.
+///
+/// @param b the value to set the 'hashing_property' to.
+void
+type_or_decl_base::hashing_started(bool b) const
+{priv_->hashing_started_ = b;}
+
+/// Getter of the cached hash value of this ABI artifact.
+///
+/// @return cached hash value of this ABI artifact.
+size_t
+type_or_decl_base::get_cached_hash_value() const
+{return priv_->hash_;}
+
+/// Setter of the cached hash value of this ABI artifact.
+///
+/// @param v the new cached value.
+void
+type_or_decl_base::set_cached_hash_value(size_t v) const
+{priv_->hash_ = v;}
+
+/// Setter of the environment of the current ABI artifact.
+///
+/// This just sets the environment artifact of the current ABI
+/// artifact, not on its sub-trees.  If you want to set the
+/// environment of an ABI artifact including its sub-tree, use the
+/// abigail::ir::set_environment_for_artifact() function.
+///
+/// @param env the new environment.
+void
+type_or_decl_base::set_environment(environment* env)
+{priv_->env_ = env;}
+
+/// Getter of the environment of the current ABI artifact.
+///
+/// @return the environment of the artifact.
+const environment*
+type_or_decl_base::get_environment() const
+{return priv_->env_;}
+
+/// Getter of the environment of the current ABI artifact.
+///
+/// @return the environment of the artifact.
+environment*
+type_or_decl_base::get_environment()
+{return priv_->env_;}
+
+/// Traverse the the ABI artifact.
+///
+/// @param v the visitor used to traverse the sub-tree nodes of the
+/// artifact.
+bool
+type_or_decl_base::traverse(ir_node_visitor&)
+{return true;}
+
+/// Set the environment of a given ABI artifact, including recursively
+/// setting the environment on the sub-trees of the artifact.
+///
+/// @param artifact the artifact to set the environment for.
+///
+/// @param env the new environment.
+void
+set_environment_for_artifact(type_or_decl_base* artifact, environment* env)
+{
+  assert(artifact && env);
+
+  ::environment_setter s(artifact, env);
+  artifact->traverse(s);
+}
+
+/// Set the environment of a given ABI artifact, including recursively
+/// setting the environment on the sub-trees of the artifact.
+///
+/// @param artifact the artifact to set the environment for.
+///
+/// @param env the new environment.
+void
+set_environment_for_artifact(type_or_decl_base_sptr artifact,
+			     environment* env)
+{set_environment_for_artifact(artifact.get(), env);}
 
 /// Non-member equality operator for the @type_or_decl_base type.
 ///
@@ -1637,8 +1834,6 @@ operator==(const type_or_decl_base_sptr& l, const type_or_decl_base_sptr& r)
 
 struct decl_base::priv
 {
-  size_t		hash_;
-  bool			hashing_started_;
   bool			in_pub_sym_tab_;
   location		location_;
   context_rel_sptr	context_;
@@ -1649,17 +1844,13 @@ struct decl_base::priv
   visibility		visibility_;
 
   priv()
-    : hash_(0),
-      hashing_started_(false),
-      in_pub_sym_tab_(false),
+    : in_pub_sym_tab_(false),
       visibility_(VISIBILITY_DEFAULT)
   {}
 
   priv(const std::string& name, location locus,
        const std::string& linkage_name, visibility vis)
-    : hash_(0),
-      hashing_started_(false),
-      in_pub_sym_tab_(false),
+    : in_pub_sym_tab_(false),
       location_(locus),
       name_(name),
       linkage_name_(linkage_name),
@@ -1667,9 +1858,7 @@ struct decl_base::priv
   {}
 
   priv(location l)
-    : hash_(0),
-      hashing_started_(0),
-      in_pub_sym_tab_(false),
+    : in_pub_sym_tab_(false),
       location_(l),
       visibility_(VISIBILITY_DEFAULT)
   {}
@@ -1687,9 +1876,8 @@ decl_base::decl_base(location l)
 {}
 
 decl_base::decl_base(const decl_base& d)
+  : type_or_decl_base(d)
 {
-  priv_->hash_ = d.priv_->hash_;
-  priv_->hashing_started_ = d.priv_->hashing_started_;
   priv_->in_pub_sym_tab_ = d.priv_->in_pub_sym_tab_;
   priv_->location_ = d.priv_->location_;
   priv_->name_ = d.priv_->name_;
@@ -1699,30 +1887,6 @@ decl_base::decl_base(const decl_base& d)
   priv_->context_ = d.priv_->context_;
   priv_->visibility_ = d.priv_->visibility_;
 }
-
-/// Getter for the 'hashing_started' property.
-///
-/// @return the 'hashing_started' property.
-bool
-decl_base::hashing_started() const
-{return priv_->hashing_started_;}
-
-/// Setter for the 'hashing_started' property.
-///
-/// @param b the value to set the 'hashing_property' to.
-void
-decl_base::hashing_started(bool b) const
-{priv_->hashing_started_ = b;}
-
-/// Getter for the hash value.
-///
-/// unlike decl_base::get_hash() this does not try to update the hash
-/// value.
-///
-/// @return the hash value.
-size_t
-decl_base::peek_hash_value() const
-{return priv_->hash_;}
 
 /// Getter for the qualified name.
 ///
@@ -1780,13 +1944,6 @@ decl_base::get_hash() const
 
   return result;
 }
-
-/// Set a new hash for the type.
-///
-/// @param h the new hash.
-void
-decl_base::set_hash(size_t h) const
-{priv_->hash_ = h;}
 
 /// Test if the decl is defined in a ELF symbol table as a public
 /// symbol.
@@ -2897,13 +3054,16 @@ strip_typedef(const type_base_sptr type)
       return type;
     }
 
+  environment* env = type->get_environment();
+  assert(env);
   type_base_sptr t = type;
 
   if (const typedef_decl_sptr ty = is_typedef(t))
-    t = strip_typedef(type_or_void(ty->get_underlying_type()));
+    t = strip_typedef(type_or_void(ty->get_underlying_type(), env));
   else if (const reference_type_def_sptr ty = is_reference_type(t))
     {
-      type_base_sptr p = strip_typedef(type_or_void(ty->get_pointed_to_type()));
+      type_base_sptr p = strip_typedef(type_or_void(ty->get_pointed_to_type(),
+						    env));
       assert(p);
       t.reset(new reference_type_def(p,
 				     ty->is_lvalue(),
@@ -2913,7 +3073,8 @@ strip_typedef(const type_base_sptr type)
     }
   else if (const pointer_type_def_sptr ty = is_pointer_type(t))
     {
-      type_base_sptr p = strip_typedef(type_or_void(ty->get_pointed_to_type()));
+      type_base_sptr p = strip_typedef(type_or_void(ty->get_pointed_to_type(),
+						    env));
       assert(p);
       t.reset(new pointer_type_def(p,
 				   ty->get_size_in_bits(),
@@ -2922,7 +3083,8 @@ strip_typedef(const type_base_sptr type)
     }
   else if (const qualified_type_def_sptr ty = is_qualified_type(t))
     {
-      type_base_sptr p = strip_typedef(type_or_void(ty->get_underlying_type()));
+      type_base_sptr p = strip_typedef(type_or_void(ty->get_underlying_type(),
+						    env));
       assert(p);
       t.reset(new qualified_type_def(p,
 				     ty->get_cv_quals(),
@@ -2988,6 +3150,9 @@ strip_typedef(const type_base_sptr type)
 				ty->get_size_in_bits(),
 				ty->get_alignment_in_bits()));
     }
+
+  if (!t->get_environment())
+    set_environment_for_artifact(t, env);
 
   if (!canonicalize(t))
     keep_type_alive(t);
@@ -3211,13 +3376,18 @@ peel_typedef_pointer_or_reference_type(const type_base* type)
 ///
 /// @param member the new member decl to add to this scope.
 decl_base_sptr
-scope_decl::add_member_decl(const shared_ptr<decl_base> member)
+scope_decl::add_member_decl(const decl_base_sptr member)
 {
   members_.push_back(member);
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     member_scopes_.push_back(m);
+
   member->priv_->qualified_name_.clear();
+
+  if (environment* env = get_environment())
+    set_environment_for_artifact(member, env);
+
   return member;
 }
 
@@ -3239,6 +3409,10 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
     member_scopes_.push_back(m);
 
   member->priv_->qualified_name_.clear();
+
+  if (environment* env = get_environment())
+    set_environment_for_artifact(member, env);
+
   return member;
 }
 
@@ -3487,8 +3661,10 @@ scope_decl::~scope_decl()
 ///
 /// @param scope the scope to append the declaration to
 decl_base_sptr
-add_decl_to_scope(shared_ptr<decl_base> decl, scope_decl* scope)
+add_decl_to_scope(decl_base_sptr decl, scope_decl* scope)
 {
+  assert(scope);
+
   if (scope && decl && !decl->get_scope())
     {
       decl = scope->add_member_decl(decl);
@@ -4918,11 +5094,17 @@ synthesize_type_from_translation_unit(const type_base_sptr& type,
     if (qualified_type_def_sptr qual = is_qualified_type(type))
       {
 	type_base_sptr underlying_type =
-	  synthesize_type_from_translation_unit(qual->get_underlying_type(), tu);
+	  synthesize_type_from_translation_unit(qual->get_underlying_type(),
+						tu);
 	if (underlying_type)
-	  result.reset(new qualified_type_def(underlying_type,
-					      qual->get_cv_quals(),
-					      qual->get_location()));
+	  {
+	    result.reset(new qualified_type_def(underlying_type,
+						qual->get_cv_quals(),
+						qual->get_location()));
+	    // The new qualified type must be in the same environment
+	    // as its underlying type.
+	    result->set_environment(underlying_type->get_environment());
+	  }
 	tu.priv_->synthesized_types_.push_back(result);
       }
 
@@ -4954,11 +5136,14 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
 {
   function_type_sptr nil = function_type_sptr();
 
+  environment* env = tu.get_environment();
+  assert(env);
+
   type_base_sptr return_type = fn_type.get_return_type();
   type_base_sptr result_return_type;
   if (!return_type
-      || return_type.get() == type_decl::get_void_type_decl().get())
-    result_return_type = type_base_sptr(type_decl::get_void_type_decl());
+      || return_type.get() == env->get_void_type_decl().get())
+    result_return_type = type_base_sptr(env->get_void_type_decl());
   else
     result_return_type = synthesize_type_from_translation_unit(return_type, tu);
   if (!result_return_type)
@@ -4990,6 +5175,9 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
 		       fn_type.get_alignment_in_bits()));
 
   tu.priv_->synthesized_types_.push_back(result_fn_type);
+  // The new synthesized type must be in the same environment as its
+  // translation unit.
+  result_fn_type->set_environment(tu.get_environment());
 
   return result_fn_type;
 }
@@ -5395,10 +5583,25 @@ demangle_cplus_mangled_name(const string& mangled_name)
 ///
 /// @param t the type to consider.
 ///
+/// @param env the environment to use.  If NULL, just abort the
+/// process.
+///
 /// @return either @p t if it is non-null, or the void type.
 type_base_sptr
-type_or_void(const type_base_sptr t)
-{return t ? t : type_base_sptr(type_decl::get_void_type_decl());}
+type_or_void(const type_base_sptr t, const environment* env)
+{
+  type_base_sptr r;
+
+  if (t)
+    r = t;
+  else
+    {
+      assert(env);
+      r = type_base_sptr(env->get_void_type_decl());
+    }
+
+  return r;
+}
 
 global_scope::~global_scope()
 {
@@ -5426,25 +5629,6 @@ struct type_base::priv
       canonical_type(c)
   {}
 }; // end struct type_base::priv
-
-/// Getter of the map that contains the canonical types of all the
-/// types known to libabigail at a certain point in time.
-///
-/// That map is a global value that is initialized at the first
-/// invocation of this function and that is freed when the containing
-/// process is shut down.
-///
-/// The key of the map is the hash value of the type and the value a
-/// list of canonical types that have the same map as the key.
-///
-/// @return the map that contains the canonical types of all the types
-/// known the running instance of libabigail in a given process.
-static canonical_types_map_type&
-get_canonical_types_map()
-{
-  static canonical_types_map_type m;
-  return m;
-}
 
 /// Compute the canonical type for a given instance of @ref type_base.
 ///
@@ -5474,6 +5658,9 @@ type_base::get_canonical_type_for(type_base_sptr t)
   if (!t)
     return t;
 
+  environment* env = t->get_environment();
+  assert(env);
+
   // Look through declaration-only classes
   if (class_decl_sptr class_declaration = is_class_type(t))
     if (class_declaration->get_is_declaration_only())
@@ -5485,8 +5672,8 @@ type_base::get_canonical_type_for(type_base_sptr t)
   type_base::dynamic_hash hash;
   size_t h = hash(t.get());
 
-  canonical_types_map_type& m = get_canonical_types_map();
-  canonical_types_map_type::iterator i = m.find(h);
+  environment::canonical_types_map_type& m = env->get_canonical_types_map();
+  environment::canonical_types_map_type::iterator i = m.find(h);
 
   type_base_sptr result;
 
@@ -5674,30 +5861,6 @@ type_decl::type_decl(const std::string&	name,
 {
 }
 
-/// Get a singleton representing a void type node.
-///
-/// @return the void type node.
-type_decl_sptr&
-type_decl::get_void_type_decl()
-{
-  static type_decl_sptr void_type_decl;
-  if (!void_type_decl)
-    void_type_decl.reset(new type_decl("void", 0, 0, location()));
-  return void_type_decl;
-}
-
-/// Get a singleton representing the type of a variadic parameter.
-///
-/// @return the variadic parameter type.
-type_decl_sptr&
-type_decl::get_variadic_parameter_type_decl()
-{
-  static type_decl_sptr variadic_parm_type_decl;
-  if (!variadic_parm_type_decl)
-    variadic_parm_type_decl.reset(new type_decl("variadic parameter type",
-						0, 0, location()));
-  return variadic_parm_type_decl;
-}
 /// Compares two instances of @ref type_decl.
 ///
 /// If the two intances are different, set a bitfield to give some
@@ -6350,8 +6513,9 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   location			locus)
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, "",
-	      get_type_declaration(type_or_void(pointed_to))->get_visibility()),
-    pointed_to_type_(type_or_void(pointed_to))
+	      get_type_declaration(type_or_void(pointed_to,
+						0))->get_visibility()),
+    pointed_to_type_(type_or_void(pointed_to, 0))
 {
   try
     {
@@ -6502,8 +6666,9 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 				       location		locus)
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, "",
-	      dynamic_pointer_cast<decl_base>(type_or_void(pointed_to))->get_visibility()),
-    pointed_to_type_(type_or_void(pointed_to)),
+	      dynamic_pointer_cast<decl_base>(type_or_void(pointed_to,
+							   0))->get_visibility()),
+    pointed_to_type_(type_or_void(pointed_to, 0)),
     is_lvalue_(lvalue)
 {
   try
@@ -6611,7 +6776,8 @@ reference_type_def::get_qualified_name() const
       || !get_canonical_type())
     {
       decl_base_sptr td =
-	get_type_declaration(type_or_void(get_pointed_to_type()));
+	get_type_declaration(type_or_void(get_pointed_to_type(),
+					  get_environment()));
       string name;
       td->get_qualified_name(name);
       if (is_lvalue())
@@ -9177,13 +9343,16 @@ function_decl::parameter::get_qualified_name(string& qualified_name) const
 string
 function_decl::parameter::get_pretty_representation() const
 {
+  const environment* env = get_environment();
+
   string type_repr;
   type_base_sptr t = get_type();
   if (!t)
     type_repr = "void";
-  else if (t ==
-	   dynamic_pointer_cast<type_base>
-	   (type_decl::get_variadic_parameter_type_decl()))
+  else if (env
+	   && (t ==
+	       dynamic_pointer_cast<type_base>
+	       (env->get_variadic_parameter_type_decl())))
     type_repr = "...";
   else
     type_repr = ir::get_pretty_representation(t);
@@ -9207,19 +9376,18 @@ sort_virtual_member_functions(class_decl::member_functions& mem_fns);
 /// The private data for the class_decl type.
 struct class_decl::priv
 {
-  static unordered_map<string, bool>	classes_being_compared_;
-  bool					is_declaration_only_;
-  bool					is_struct_;
-  decl_base_sptr			declaration_;
-  class_decl_sptr			definition_of_declaration_;
-  base_specs				bases_;
-  member_types				member_types_;
-  data_members				data_members_;
-  data_members				non_static_data_members_;
-  member_functions			member_functions_;
-  member_functions			virtual_mem_fns_;
-  member_function_templates		member_function_templates_;
-  member_class_templates		member_class_templates_;
+  bool				is_declaration_only_;
+  bool				is_struct_;
+  decl_base_sptr		declaration_;
+  class_decl_sptr		definition_of_declaration_;
+  base_specs			bases_;
+  member_types			member_types_;
+  data_members			data_members_;
+  data_members			non_static_data_members_;
+  member_functions		member_functions_;
+  member_functions		virtual_mem_fns_;
+  member_function_templates	member_function_templates_;
+  member_class_templates	member_class_templates_;
 
   priv()
     : is_declaration_only_(false),
@@ -9257,11 +9425,6 @@ struct class_decl::priv
   /// Mark a class as being currently compared using the class_decl==
   /// operator.
   ///
-  /// This method is not thread safe because it uses the static data
-  /// member classes_being_compared_.  If you wish to use it in a
-  /// multi-threaded environment you should probably protect the
-  /// access to that static data member with a mutex or somesuch.
-  ///
   /// Note that is marking business is to avoid infinite loop when
   /// comparing a class. If via the comparison of a data member or a
   /// member function a recursive re-comparison of the class is
@@ -9271,7 +9434,11 @@ struct class_decl::priv
   /// @param klass the class to mark as being currently compared.
   void
   mark_as_being_compared(const class_decl& klass) const
-  {classes_being_compared_[klass.get_qualified_name()] = true;}
+  {
+    const environment* env = klass.get_environment();
+    assert(env);
+    env->priv_->classes_being_compared_[klass.get_qualified_name()] = true;
+  }
 
   /// Mark a class as being currently compared using the class_decl==
   /// operator.
@@ -9313,7 +9480,11 @@ struct class_decl::priv
   /// @param klass the instance of class_decl to unmark.
   void
   unmark_as_being_compared(const class_decl& klass) const
-  {classes_being_compared_.erase(klass.get_qualified_name());}
+  {
+    const environment* env = klass.get_environment();
+    assert(env);
+    env->priv_->classes_being_compared_.erase(klass.get_qualified_name());
+  }
 
   /// If the instance of class_decl has been previously marked as
   /// being compared -- via an invocation of mark_as_being_compared()
@@ -9322,7 +9493,11 @@ struct class_decl::priv
   /// @param klass the instance of class_decl to unmark.
   void
   unmark_as_being_compared(const class_decl* klass) const
-  {classes_being_compared_.erase(klass->get_qualified_name());}
+  {
+    const environment* env = klass->get_environment();
+    assert(env);
+    env->priv_->classes_being_compared_.erase(klass->get_qualified_name());
+  }
 
   /// Test if a given instance of class_decl is being currently
   /// compared.
@@ -9333,8 +9508,10 @@ struct class_decl::priv
   bool
   comparison_started(const class_decl& klass) const
   {
-    return (classes_being_compared_.find(klass.get_qualified_name())
-	    != classes_being_compared_.end());
+    const environment* env = klass.get_environment();
+    assert(env);
+    unordered_map<string, bool>& c = env->priv_->classes_being_compared_;
+    return (c.find(klass.get_qualified_name()) != c.end());
   }
 
   /// Test if a given instance of class_decl is being currently
@@ -9347,8 +9524,6 @@ struct class_decl::priv
   comparison_started(const class_decl* klass) const
   {return comparison_started(*klass);}
 };// end struct class_decl::priv
-
-unordered_map<string, bool> class_decl::priv::classes_being_compared_;
 
 /// A Constructor for instances of \ref class_decl
 ///
@@ -9782,12 +9957,12 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 size_t
 class_decl::base_spec::get_hash() const
 {
-  if (peek_hash_value() == 0)
+  if (get_cached_hash_value() == 0)
     {
       base_spec::hash h;
-      set_hash(h(*this));
+      set_cached_hash_value(h(*this));
     }
-  return peek_hash_value();
+  return get_cached_hash_value();
 }
 
 /// Traverses an instance of @ref class_decl::base_spec, visiting all
@@ -11753,8 +11928,9 @@ type_has_sub_type_changes(const type_base_sptr t_v1,
 void
 keep_type_alive(type_base_sptr t)
 {
-  static vector<type_base_sptr> extra_live_types;
-  extra_live_types.push_back(t);
+  environment* env = t->get_environment();
+  assert(env);
+  env->priv_->extra_live_types_.push_back(t);
 }
 
 /// Hash an ABI artifact that is either a type or a decl.
@@ -11979,7 +12155,7 @@ ir_node_visitor::visit_end(class_decl::member_class_template* d)
 static string
 get_next_string()
 {
-  static size_t counter;
+  static __thread size_t counter;
   ++counter;
   std::ostringstream o;
   o << counter;

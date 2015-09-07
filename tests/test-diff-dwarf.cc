@@ -267,6 +267,8 @@ main()
   using abigail::dwarf_reader::read_corpus_from_elf;
   using abigail::comparison::compute_diff;
   using abigail::comparison::corpus_diff_sptr;
+  using abigail::ir::environment;
+  using abigail::ir::environment_sptr;
 
   bool is_ok = true;
   string in_elfv0_path, in_elfv1_path,
@@ -289,15 +291,18 @@ main()
       abigail::dwarf_reader::status status =
 	abigail::dwarf_reader::STATUS_UNKNOWN;
 
+      environment_sptr env(new environment);
       abigail::corpus_sptr corp0 =
 	read_corpus_from_elf(in_elfv0_path,
 			     /*debug_info_root_path=*/0,
+			     env.get(),
 			     /*load_all_types=*/false,
 			     status);
 
       abigail::corpus_sptr corp1 =
 	read_corpus_from_elf(in_elfv1_path,
 			     /*debug_info_root_path=*/0,
+			     env.get(),
 			     /*load_all_types=*/false,
 			     status);
 

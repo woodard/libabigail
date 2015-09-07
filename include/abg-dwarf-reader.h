@@ -87,8 +87,8 @@ typedef shared_ptr<read_context> read_context_sptr;
 read_context_sptr
 create_read_context(const std::string&	elf_path,
 		    char**		debug_info_root_path,
+		    ir::environment*	environment,
 		    bool		read_all_types = false);
-
 
 corpus_sptr
 read_corpus_from_elf(read_context&	ctxt,
@@ -97,6 +97,7 @@ read_corpus_from_elf(read_context&	ctxt,
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,
 		     char**		debug_info_root_path,
+		     ir::environment*	environment,
 		     bool		load_all_types,
 		     status&);
 
@@ -129,13 +130,30 @@ bool
 get_type_of_elf_file(const string& path, elf_type& type);
 
 
+void
+set_debug_info_root_path(read_context& ctxt,
+			 char** path);
+
+char**
+get_debug_info_root_path(read_context& ctxt,
+			 char**& path);
+
 bool
 get_show_stats(read_context_sptr& ctxt);
 
 void
 set_show_stats(read_context_sptr& ctxt,
-				    bool f);
+	       bool f);
 
+void
+set_environment(read_context& ctxt,
+		ir::environment*);
+
+const environment_sptr&
+get_environment(const read_context& ctxt);
+
+environment_sptr&
+get_environment(read_context& ctxt);
 }// end namespace dwarf_reader
 
 }// end namespace abigail

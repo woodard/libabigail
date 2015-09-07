@@ -6018,6 +6018,9 @@ compute_diff_for_decls(const decl_base_sptr first,
 /// Compute the difference between two decls.  The decls can represent
 /// either type declarations, or non-type declaration.
 ///
+/// Note that the two decls must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first decl to consider.
 ///
 /// @param second the second decl to consider.
@@ -6034,6 +6037,8 @@ compute_diff(const decl_base_sptr	first,
   if (!first || !second)
     return diff_sptr();
 
+  assert(first->get_environment() == second->get_environment());
+
   diff_sptr d;
   if (is_type(first) && is_type(second))
     d = compute_diff_for_types(first, second, ctxt);
@@ -6044,6 +6049,9 @@ compute_diff(const decl_base_sptr	first,
 }
 
 /// Compute the difference between two types.
+///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
 ///
 /// @param first the first type to consider.
 ///
@@ -6060,6 +6068,10 @@ compute_diff(const type_base_sptr	first,
 {
   decl_base_sptr f = get_type_declaration(first),
     s = get_type_declaration(second);
+
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   diff_sptr d = compute_diff_for_types(f,s, ctxt);
   assert(d);
   return d;
@@ -6708,6 +6720,9 @@ var_diff::report(ostream& out, const string& indent) const
 
 /// Compute the diff between two instances of @ref var_decl.
 ///
+/// Note that the two decls must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first @ref var_decl to consider for the diff.
 ///
 /// @param second the second @ref var_decl to consider for the diff.
@@ -6720,6 +6735,9 @@ compute_diff(const var_decl_sptr	first,
 	     const var_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   var_diff_sptr d(new var_diff(first, second, diff_sptr(), ctxt));
   ctxt->initialize_canonical_diff(d);
   return d;
@@ -6921,6 +6939,9 @@ pointer_diff::report(ostream& out, const string& indent) const
 
 /// Compute the diff between between two pointers.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the pointer to consider for the diff.
 ///
 /// @param second the pointer to consider for the diff.
@@ -6933,6 +6954,9 @@ compute_diff(pointer_type_def_sptr	first,
 	     pointer_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
@@ -7111,6 +7135,9 @@ array_diff::report(ostream& out, const string& indent) const
 
 /// Compute the diff between two arrays.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first array to consider for the diff.
 ///
 /// @param second the second array to consider for the diff.
@@ -7121,6 +7148,9 @@ compute_diff(array_type_def_sptr	first,
 	     array_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   diff_sptr d = compute_diff_for_types(first->get_element_type(),
 				       second->get_element_type(),
 				       ctxt);
@@ -7288,6 +7318,9 @@ reference_diff::report(ostream& out, const string& indent) const
 
 /// Compute the diff between two references.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first reference to consider for the diff.
 ///
 /// @param second the second reference to consider for the diff.
@@ -7298,6 +7331,9 @@ compute_diff(reference_type_def_sptr	first,
 	     reference_type_def_sptr	second,
 	     diff_context_sptr		ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   diff_sptr d = compute_diff_for_types(first->get_pointed_to_type(),
 				       second->get_pointed_to_type(),
 				       ctxt);
@@ -7514,6 +7550,9 @@ qualified_type_diff::report(ostream& out, const string& indent) const
 
 /// Compute the diff between two qualified types.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first qualified type to consider for the diff.
 ///
 /// @param second the second qualified type to consider for the diff.
@@ -7524,6 +7563,9 @@ compute_diff(const qualified_type_def_sptr	first,
 	     const qualified_type_def_sptr	second,
 	     diff_context_sptr			ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
 				       ctxt);
@@ -7883,6 +7925,9 @@ enum_diff::report(ostream& out, const string& indent) const
 /// Compute the set of changes between two instances of @ref
 /// enum_type_decl.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first a pointer to the first enum_type_decl to consider.
 ///
 /// @param second a pointer to the second enum_type_decl to consider.
@@ -7896,6 +7941,9 @@ compute_diff(const enum_type_decl_sptr first,
 	     const enum_type_decl_sptr second,
 	     diff_context_sptr ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   diff_sptr ud = compute_diff_for_types(first->get_underlying_type(),
 					second->get_underlying_type(),
 					ctxt);
@@ -9658,6 +9706,9 @@ class_diff::report(ostream& out, const string& indent) const
 
 /// Compute the set of changes between two instances of class_decl.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first class_decl to consider.
 ///
 /// @param second the second class_decl to consider.
@@ -9670,6 +9721,9 @@ compute_diff(const class_decl_sptr	first,
 	     const class_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   class_decl_sptr f = look_through_decl_only_class(first),
     s = look_through_decl_only_class(second);
 
@@ -9931,6 +9985,9 @@ base_diff::report(ostream& out, const string& indent) const
 /// Constructs the diff object representing a diff between two base
 /// class specifications.
 ///
+/// Note that the two artifacts must have been created in the same
+/// @ref environment, otherwise, this function aborts.
+///
 /// @param first the first base class specification.
 ///
 /// @param second the second base class specification.
@@ -9943,6 +10000,9 @@ compute_diff(const class_decl::base_spec_sptr	first,
 	     const class_decl::base_spec_sptr	second,
 	     diff_context_sptr			ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   class_diff_sptr cl = compute_diff(first->get_base_class(),
 				    second->get_base_class(),
 				    ctxt);
@@ -10571,6 +10631,9 @@ scope_diff::report(ostream& out, const string& indent) const
 
 /// Compute the diff between two scopes.
 ///
+/// Note that the two decls must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first scope to consider in computing the diff.
 ///
 /// @param second the second scope to consider in the diff
@@ -10591,6 +10654,9 @@ compute_diff(const scope_decl_sptr	first,
 {
   assert(d->first_scope() == first && d->second_scope() == second);
 
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   compute_diff(first->get_member_decls().begin(),
 	       first->get_member_decls().end(),
 	       second->get_member_decls().begin(),
@@ -10605,6 +10671,9 @@ compute_diff(const scope_decl_sptr	first,
 
 /// Compute the diff between two scopes.
 ///
+/// Note that the two decls must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first_scope the first scope to consider in computing the diff.
 ///
 /// @param second_scope the second scope to consider in the diff
@@ -10618,6 +10687,10 @@ compute_diff(const scope_decl_sptr	first_scope,
 	     const scope_decl_sptr	second_scope,
 	     diff_context_sptr		ctxt)
 {
+  if (first_scope && second_scope)
+    assert(first_scope->get_environment()
+	   == second_scope->get_environment());
+
   scope_diff_sptr d(new scope_diff(first_scope, second_scope, ctxt));
   d = compute_diff(first_scope, second_scope, d, ctxt);
   ctxt->initialize_canonical_diff(d);
@@ -10779,6 +10852,9 @@ fn_parm_diff::chain_into_hierarchy()
 /// that is, between two function parameters.  Return a resulting
 /// fn_parm_diff_sptr that represents the changes.
 ///
+/// Note that the two decls must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first subject of the diff.
 ///
 /// @param second the second subject of the diff.
@@ -10793,6 +10869,8 @@ compute_diff(const function_decl::parameter_sptr	first,
 {
   if (!first || !second)
     return fn_parm_diff_sptr();
+
+  assert(first->get_environment() == second->get_environment());
 
   fn_parm_diff_sptr result(new fn_parm_diff(first, second, ctxt));
   ctxt->initialize_canonical_diff(result);
@@ -11189,6 +11267,9 @@ function_type_diff::chain_into_hierarchy()
 
 /// Compute the diff between two instances of @ref function_type.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first @ref function_type to consider for the diff.
 ///
 /// @param second the second @ref function_type to consider for the diff.
@@ -11206,6 +11287,8 @@ compute_diff(const function_type_sptr	first,
       // TODO: implement this for either first or second being NULL.
       return function_type_diff_sptr();
     }
+
+  assert(first->get_environment() == second->get_environment());
 
   function_type_diff_sptr result(new function_type_diff(first, second, ctxt));
 
@@ -11672,6 +11755,9 @@ function_decl_diff::report(ostream& out, const string& indent) const
 
 /// Compute the diff between two function_decl.
 ///
+/// Note that the two decls must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first the first function_decl to consider for the diff
 ///
 /// @param second the second function_decl to consider for the diff
@@ -11689,6 +11775,8 @@ compute_diff(const function_decl_sptr first,
       // TODO: implement this for either first or second being NULL.
       return function_decl_diff_sptr();
     }
+
+  assert(first->get_environment() == second->get_environment());
 
   function_type_diff_sptr type_diff = compute_diff(first->get_type(),
 						   second->get_type(),
@@ -11819,6 +11907,9 @@ type_decl_diff::report(ostream& out, const string& indent) const
 
 /// Compute a diff between two type_decl.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// This function doesn't actually compute a diff.  As a type_decl is
 /// very simple (unlike compound constructs like function_decl or
 /// class_decl) it's easy to just compare the components of the
@@ -11840,6 +11931,9 @@ compute_diff(const type_decl_sptr	first,
 	     const type_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   type_decl_diff_sptr result(new type_decl_diff(first, second, ctxt));
 
   // We don't need to actually compute a diff here as a type_decl
@@ -12013,6 +12107,9 @@ typedef_diff::report(ostream& out, const string& indent) const
 
 /// Compute a diff between two typedef_decl.
 ///
+/// Note that the two types must have been created in the same @ref
+/// environment, otherwise, this function aborts.
+///
 /// @param first a pointer to the first typedef_decl to consider.
 ///
 /// @param second a pointer to the second typedef_decl to consider.
@@ -12025,6 +12122,9 @@ compute_diff(const typedef_decl_sptr	first,
 	     const typedef_decl_sptr	second,
 	     diff_context_sptr		ctxt)
 {
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
   diff_sptr d = compute_diff_for_types(first->get_underlying_type(),
 				       second->get_underlying_type(),
 				       ctxt);
@@ -12128,6 +12228,9 @@ translation_unit_diff::report(ostream& out, const string& indent) const
 
 /// Compute the diff between two translation_units.
 ///
+/// Note that the two translation units must have been created in the
+/// same @ref environment, otherwise, this function aborts.
+///
 /// @param first the first translation_unit to consider.
 ///
 /// @param second the second translation_unit to consider.
@@ -12141,6 +12244,10 @@ compute_diff(const translation_unit_sptr	first,
 	     const translation_unit_sptr	second,
 	     diff_context_sptr			ctxt)
 {
+  assert(first && second);
+
+  assert(first->get_environment() == second->get_environment());
+
   if (!ctxt)
     ctxt.reset(new diff_context);
 
@@ -14909,7 +15016,10 @@ corpus_diff::traverse(diff_node_visitor& v)
   return true;
 }
 
-/// Compute the diff between two instances fo the @ref corpus
+/// Compute the diff between two instances of @ref corpus.
+///
+/// Note that the two corpora must have been created in the same @ref
+/// environment, otherwise, this function aborts.
 ///
 /// @param f the first @ref corpus to consider for the diff.
 ///
@@ -14927,6 +15037,12 @@ compute_diff(const corpus_sptr	f,
   typedef corpus::variables::const_iterator vars_it_type;
   typedef elf_symbols::const_iterator symbols_it_type;
   typedef diff_utils::deep_ptr_eq_functor eq_type;
+
+  assert(f && s);
+
+  // We can only compare two corpora that were built out of the same
+  // environment.
+  assert(f->get_environment() == s->get_environment());
 
   if (!ctxt)
     ctxt.reset(new diff_context);
@@ -15920,11 +16036,15 @@ is_diff_of_variadic_parameter_type(const diff* d)
     return false;
 
   type_base_sptr t = is_type(d->first_subject());
-  if (t && t.get() == type_decl::get_variadic_parameter_type_decl().get())
+  if (t
+      && (t.get()
+	  == t->get_environment()->get_variadic_parameter_type_decl().get()))
     return true;
 
   t = is_type(d->second_subject());
-  if (t && t.get() == type_decl::get_variadic_parameter_type_decl().get())
+  if (t
+      && (t.get()
+	  == t->get_environment()->get_variadic_parameter_type_decl().get()))
     return true;
 
   return false;

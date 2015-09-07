@@ -160,6 +160,7 @@ main(int argc, char* argv[])
       return true;
     }
 
+  abigail::ir::environment_sptr env(new abigail::ir::environment);
   if (opts.read_from_stdin)
     {
       if (!cin.good())
@@ -168,7 +169,7 @@ main(int argc, char* argv[])
       if (opts.read_tu)
 	{
 	  abigail::translation_unit_sptr tu =
-	    read_translation_unit_from_istream(&cin);
+	    read_translation_unit_from_istream(&cin, env.get());
 
 	  if (!tu)
 	    {
@@ -182,7 +183,7 @@ main(int argc, char* argv[])
 	}
       else
 	{
-	  corpus_sptr corp = read_corpus_from_native_xml(&cin);
+	  corpus_sptr corp = read_corpus_from_native_xml(&cin, env.get());
 	  if (!opts.noout)
 	    write_corpus_to_native_xml(corp, /*indent=*/0, cout);
 	  return false;
@@ -192,7 +193,6 @@ main(int argc, char* argv[])
     {
       if (!check_file(opts.file_path, cerr))
 	return true;
-
       abigail::translation_unit_sptr tu;
       abigail::corpus_sptr corp;
       abigail::dwarf_reader::status s = abigail::dwarf_reader::STATUS_OK;
@@ -205,18 +205,19 @@ main(int argc, char* argv[])
 	  cerr << "Unknown file type given in input: " << opts.file_path;
 	  return true;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
-	  tu = read_translation_unit_from_file(opts.file_path);
+	  tu = read_translation_unit_from_file(opts.file_path, env.get());
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
 	  di_root_path = opts.di_root_path.get();
 	  corp = read_corpus_from_elf(opts.file_path,
-				  &di_root_path,
-				  /*load_all_types=*/false,
-				  s);
+				      &di_root_path,
+				      env.get(),
+				      /*load_all_types=*/false,
+				      s);
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
-	  corp = read_corpus_from_native_xml_file(opts.file_path);
+	  corp = read_corpus_from_native_xml_file(opts.file_path, env.get());
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #if WITH_ZIP_ARCHIVE

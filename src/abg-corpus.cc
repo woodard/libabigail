@@ -750,38 +750,41 @@ corpus::exported_decls_builder::maybe_add_var_to_exported_vars(var_decl* var)
 
 struct corpus::priv
 {
-  corpus::exported_decls_builder_sptr exported_decls_builder;
-  origin			origin_;
-  vector<string>		regex_patterns_fns_to_suppress;
-  vector<string>		regex_patterns_vars_to_suppress;
-  vector<string>		regex_patterns_fns_to_keep;
-  vector<string>		regex_patterns_vars_to_keep;
-  vector<string>		sym_id_fns_to_keep;
-  vector<string>		sym_id_vars_to_keep;
-  string			path;
-  vector<string>		needed;
-  string			soname;
-  string			architecture_name;
-  translation_units		members;
-  vector<function_decl*>	fns;
-  vector<var_decl*>		vars;
-  string_elf_symbols_map_sptr	var_symbol_map;
-  string_elf_symbols_map_sptr	undefined_var_symbol_map;
-  elf_symbols			sorted_var_symbols;
-  elf_symbols			sorted_undefined_var_symbols;
-  string_elf_symbols_map_sptr	fun_symbol_map;
-  string_elf_symbols_map_sptr	undefined_fun_symbol_map;
-  elf_symbols			sorted_fun_symbols;
-  elf_symbols			sorted_undefined_fun_symbols;
-  elf_symbols			unrefed_fun_symbols;
-  elf_symbols			unrefed_var_symbols;
+  environment*				env;
+  corpus::exported_decls_builder_sptr	exported_decls_builder;
+  origin				origin_;
+  vector<string>			regex_patterns_fns_to_suppress;
+  vector<string>			regex_patterns_vars_to_suppress;
+  vector<string>			regex_patterns_fns_to_keep;
+  vector<string>			regex_patterns_vars_to_keep;
+  vector<string>			sym_id_fns_to_keep;
+  vector<string>			sym_id_vars_to_keep;
+  string				path;
+  vector<string>			needed;
+  string				soname;
+  string				architecture_name;
+  translation_units			members;
+  vector<function_decl*>		fns;
+  vector<var_decl*>			vars;
+  string_elf_symbols_map_sptr		var_symbol_map;
+  string_elf_symbols_map_sptr		undefined_var_symbol_map;
+  elf_symbols				sorted_var_symbols;
+  elf_symbols				sorted_undefined_var_symbols;
+  string_elf_symbols_map_sptr		fun_symbol_map;
+  string_elf_symbols_map_sptr		undefined_fun_symbol_map;
+  elf_symbols				sorted_fun_symbols;
+  elf_symbols				sorted_undefined_fun_symbols;
+  elf_symbols				unrefed_fun_symbols;
+  elf_symbols				unrefed_var_symbols;
 
 private:
   priv();
 
 public:
-  priv(const string &p)
-    : origin_(ARTIFICIAL_ORIGIN),
+  priv(const string &	p,
+       environment*	e)
+    : env(e),
+      origin_(ARTIFICIAL_ORIGIN),
       path(p)
   {}
 
@@ -1027,19 +1030,51 @@ corpus::priv::build_unreferenced_symbols_tables()
     }
 }
 
+/// Constructor of the @ref corpus type.
+///
 /// @param path the path to the file containing the ABI corpus.
-corpus::corpus(const string& path)
-{priv_.reset(new priv(path));}
+///
+/// @param env the environment of the corpus.
+corpus::corpus(const string& path, ir::environment* env)
+{priv_.reset(new priv(path, env));}
 
-/// Add a translation unit to the current ABI Corpus.	Next time
-/// corpus::save is called, all the translation unit that got added
-/// to the corpus are going to be serialized on disk in the file
+/// Getter of the enviroment of the corpus.
+///
+/// @return the environment of this corpus.
+const environment*
+corpus::get_environment() const
+{return priv_->env;}
+
+/// Getter of the enviroment of the corpus.
+///
+/// @return the environment of this corpus.
+environment*
+corpus::get_environment()
+{return priv_->env;}
+
+/// Setter of the environment of this corpus.
+///
+/// @param e the new environment.
+void
+corpus::set_environment(environment* e) const
+{priv_->env = e;}
+
+/// Add a translation unit to the current ABI Corpus. Next time
+/// corpus::save is called, all the translation unit that got added to
+/// the corpus are going to be serialized on disk in the file
 /// associated to the current corpus.
 ///
 /// @param tu the new translation unit to add.
 void
 corpus::add(const translation_unit_sptr tu)
-{priv_->members.push_back(tu);}
+{
+  if (!tu->get_environment())
+    tu->set_environment(get_environment());
+
+  assert(tu->get_environment() == get_environment());
+
+  priv_->members.push_back(tu);
+}
 
 /// Return the list of translation units of the current corpus.
 ///
@@ -1076,7 +1111,7 @@ corpus::set_origin(origin o)
 /// the abi file expected at this path; likewise, a call to
 /// corpus::write will serialize the translation units contained in
 /// the corpus object into the on-disk file at this path.
-
+///
 /// @return the file path associated to the current corpus.
 string&
 corpus::get_path() const

@@ -77,6 +77,7 @@ namespace ir
 class corpus;
 
 // Forward declarations for ir.
+class environment;
 class location;
 class location_manager;
 class translation_unit;
@@ -662,7 +663,7 @@ string
 demangle_cplus_mangled_name(const string&);
 
 shared_ptr<type_base>
-type_or_void(const shared_ptr<type_base>);
+type_or_void(const shared_ptr<type_base>, const environment*);
 
 shared_ptr<type_base>
 canonicalize(shared_ptr<type_base>);

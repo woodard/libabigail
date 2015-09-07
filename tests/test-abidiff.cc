@@ -114,6 +114,8 @@ using std::ofstream;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
+using abigail::ir::environment;
+using abigail::ir::environment_sptr;
 using abigail::corpus_sptr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
@@ -154,13 +156,14 @@ main(int, char*[])
 	  continue;
 	}
 
+      environment_sptr env(new environment);
       translation_unit_sptr tu1, tu2;
       corpus_sptr corpus1, corpus2;
       file_type t = guess_file_type(first_in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	tu1 = read_translation_unit_from_file(first_in_path);
+	tu1 = read_translation_unit_from_file(first_in_path, env.get());
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	corpus1 = read_corpus_from_native_xml_file(first_in_path);
+	corpus1 = read_corpus_from_native_xml_file(first_in_path, env.get());
       else
 	abort();
       if (!tu1 && !corpus1)
@@ -172,9 +175,9 @@ main(int, char*[])
 
       t = guess_file_type(second_in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	tu2 = read_translation_unit_from_file(second_in_path);
+	tu2 = read_translation_unit_from_file(second_in_path, env.get());
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	corpus2 = read_corpus_from_native_xml_file(second_in_path);
+	corpus2 = read_corpus_from_native_xml_file(second_in_path, env.get());
       else
 	abort();
       if (!tu2 && !corpus2)

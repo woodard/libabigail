@@ -96,6 +96,7 @@ public:
   typedef unordered_map<xmlNodePtr, decl_base_sptr> xml_node_decl_base_sptr_map;
 
 private:
+  environment*						m_env;
   unordered_map<string, vector<type_base_sptr> >	m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> >	m_fn_tmpl_map;
   unordered_map<string, shared_ptr<class_tdecl> >	m_class_tmpl_map;
@@ -112,11 +113,34 @@ private:
   read_context();
 
 public:
-  read_context(xml::reader_sptr reader)
-    : m_reader(reader),
+  read_context(xml::reader_sptr reader,
+	       environment*	env)
+    : m_env(env),
+      m_reader(reader),
       m_corp_node(),
       m_exported_decls_builder_()
   {}
+
+  /// Getter for the environment of this reader.
+  ///
+  /// @return the environment of this reader.
+  const environment*
+  get_environment() const
+  {return m_env;}
+
+  /// Getter for the environment of this reader.
+  ///
+  /// @return the environment of this reader.
+  environment*
+  get_environment()
+  {return m_env;}
+
+  /// Setter for the environment of this reader.
+  ///
+  /// @param env the environment of this reader.
+  void
+  set_environment(environment* env)
+  {m_env = env;}
 
   xml::reader_sptr
   get_reader() const
@@ -1085,7 +1109,7 @@ read_translation_unit(read_context& ctxt, xmlNodePtr node)
 
   ctxt.set_corpus_node(node);
 
-  tu.reset(new translation_unit(""));
+  tu.reset(new translation_unit("", ctxt.get_environment()));
 
   xml::xml_char_sptr addrsize_str =
     XML_NODE_GET_ATTRIBUTE(node, "address-size");
@@ -1422,7 +1446,7 @@ read_corpus_from_input(read_context& ctxt)
 
   if (!ctxt.get_corpus())
     {
-      corpus_sptr c(new corpus(""));
+      corpus_sptr c(new corpus("", ctxt.get_environment()));
       ctxt.set_corpus(c);
     }
 
@@ -1498,12 +1522,15 @@ read_corpus_from_input(read_context& ctxt)
 /// @param input_file a path to the file containing the xml document
 /// to parse.
 ///
+/// @param env the environment to use.
+///
 /// @return the translation unit resulting from the parsing upon
 /// successful completion, or nil.
 translation_unit_sptr
-read_translation_unit_from_file(const string&		input_file)
+read_translation_unit_from_file(const string&	input_file,
+				environment*	env)
 {
-  read_context read_ctxt(xml::new_reader_from_file(input_file));
+  read_context read_ctxt(xml::new_reader_from_file(input_file), env);
   return read_translation_unit_from_input(read_ctxt);
 }
 
@@ -1513,12 +1540,15 @@ read_translation_unit_from_file(const string&		input_file)
 /// @param buffer the in-memory buffer containing the xml document to
 /// parse.
 ///
+/// @param env the environment to use.
+///
 /// @return the translation unit resulting from the parsing upon
 /// successful completion, or nil.
 translation_unit_sptr
-read_translation_unit_from_buffer(const string&	buffer)
+read_translation_unit_from_buffer(const string&	buffer,
+				  environment*		env)
 {
-  read_context read_ctxt(xml::new_reader_from_buffer(buffer));
+  read_context read_ctxt(xml::new_reader_from_buffer(buffer), env);
   return read_translation_unit_from_input(read_ctxt);
 }
 
@@ -2206,6 +2236,8 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
   if (!node || !xmlStrEqual(node->name, BAD_CAST("parameter")))
     return nil;
 
+  assert(ctxt.get_environment());
+
   bool is_variadic = false;
   string is_variadic_str;
   if (xml_char_sptr s =
@@ -2230,7 +2262,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 
   shared_ptr<type_base> type;
   if (is_variadic)
-    type = type_decl::get_variadic_parameter_type_decl();
+    type = ctxt.get_environment()->get_variadic_parameter_type_decl();
   else
     {
       assert(!type_id.empty());
@@ -4077,12 +4109,14 @@ handle_class_tdecl(read_context&	ctxt,
 ///
 /// @param in a pointer to the input stream.
 ///
+/// @param env the environment to use.
+///
 /// @return the translation unit resulting from the parsing upon
 /// successful completion, or nil.
 translation_unit_sptr
-read_translation_unit_from_istream(istream* in)
+read_translation_unit_from_istream(istream* in, environment* env)
 {
-  read_context read_ctxt(xml::new_reader_from_istream(in));
+  read_context read_ctxt(xml::new_reader_from_istream(in), env);
   return read_translation_unit_from_input(read_ctxt);
 }
 template<typename T>
@@ -4245,16 +4279,19 @@ read_corpus_from_file(const string& path)
 ///
 /// @param in the input stream to read the XML document from.
 ///
-/// @param corp the corpus de-serialized from the parsing.  This is
-/// set iff the function returns true.
+/// @param env the environment to use.  Note that the life time of
+/// this environment must be greater than the lifetime of the
+/// resulting corpus as the corpus uses resources that are allocated
+/// in the environment.
 ///
 /// @return the resulting corpus de-serialized from the parsing.  This
 /// is non-null iff the parsing resulted in a valid corpus.
 corpus_sptr
-read_corpus_from_native_xml(std::istream* in)
+read_corpus_from_native_xml(std::istream* in,
+			    environment* env)
 {
-  read_context read_ctxt(xml::new_reader_from_istream(in));
-  corpus_sptr corp(new corpus(""));
+  read_context read_ctxt(xml::new_reader_from_istream(in), env);
+  corpus_sptr corp(new corpus("", read_ctxt.get_environment()));
   read_ctxt.set_corpus(corp);
   return read_corpus_from_input(read_ctxt);
 }
@@ -4265,15 +4302,18 @@ read_corpus_from_native_xml(std::istream* in)
 /// @param path the path to the input file to read the XML document
 /// from.
 ///
-/// @param corp the corpus de-serialized from the parsing.  This is
-/// set iff the function returns true.
+/// @param env the environment to use.  Note that the life time of
+/// this environment must be greater than the lifetime of the
+/// resulting corpus as the corpus uses resources that are allocated
+/// in the environment.
 ///
 /// @return the resulting corpus de-serialized from the parsing.  This
 /// is non-null if the parsing successfully resulted in a corpus.
 corpus_sptr
-read_corpus_from_native_xml_file(const string& path)
+read_corpus_from_native_xml_file(const string& path,
+				 environment* env)
 {
-  read_context read_ctxt(xml::new_reader_from_file(path));
+  read_context read_ctxt(xml::new_reader_from_file(path), env);
   corpus_sptr corp = read_corpus_from_input(read_ctxt);
   if (corp)
     {

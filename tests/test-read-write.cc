@@ -40,6 +40,8 @@ using abigail::tools_utils::file_type;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
 using abigail::tests::get_build_dir;
+using abigail::ir::environment;
+using abigail::ir::environment_sptr;
 using abigail::translation_unit_sptr;
 using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
@@ -187,15 +189,16 @@ main()
       if (!check_file(in_path, cerr))
 	return true;
 
+      environment_sptr env(new environment);
       translation_unit_sptr tu;
       corpus_sptr corpus;
 
       bool read = false;
       file_type t = guess_file_type(in_path);
       if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	read = (tu = read_translation_unit_from_file(in_path));
+	read = (tu = read_translation_unit_from_file(in_path, env.get()));
       else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	  read = (corpus = read_corpus_from_native_xml_file(in_path));
+	read = (corpus = read_corpus_from_native_xml_file(in_path, env.get()));
       else
 	abort();
       if (!read)

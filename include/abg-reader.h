@@ -41,28 +41,34 @@ namespace xml_reader
 using namespace abigail::ir;
 
 translation_unit_sptr
-read_translation_unit_from_file(const std::string& file_path);
+read_translation_unit_from_file(const std::string&	file_path,
+				environment*		env);
 
 translation_unit_sptr
-read_translation_unit_from_buffer(const std::string& file_path);
+read_translation_unit_from_buffer(const std::string&	file_path,
+				  environment*		env);
 
 translation_unit_sptr
-read_translation_unit_from_istream(std::istream* in);
+read_translation_unit_from_istream(std::istream*	in,
+				   environment*	env);
 
 abigail::corpus_sptr
 read_corpus_from_file(const string& path);
 
 int
-read_corpus_from_file(corpus_sptr& corp, const string& path);
+read_corpus_from_file(corpus_sptr& corp,
+		      const string& path);
 
 int
 read_corpus_from_file(corpus_sptr& corp);
 
 corpus_sptr
-read_corpus_from_native_xml(std::istream* in);
+read_corpus_from_native_xml(std::istream* in,
+			    environment*  env);
 
 corpus_sptr
-read_corpus_from_native_xml_file(const string& path);
+read_corpus_from_native_xml_file(const string& path,
+				 environment*  env);
 
 }//end xml_reader
 }//end namespace abigail

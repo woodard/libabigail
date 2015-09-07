@@ -715,13 +715,14 @@ compare(const elf_file& elf1,
 
   abigail::dwarf_reader::status c1_status = abigail::dwarf_reader::STATUS_OK,
     c2_status = abigail::dwarf_reader::STATUS_OK;
+  abigail::ir::environment_sptr env(new abigail::ir::environment);
 
   if (verbose)
     cerr << "  Reading file "
 	 << elf1.path
 	 << " ...";
 
-  corpus_sptr corpus1 = read_corpus_from_elf(elf1.path, &di_dir1,
+  corpus_sptr corpus1 = read_corpus_from_elf(elf1.path, &di_dir1, env.get(),
 					     /*load_all_types=*/false,
 					     c1_status);
   if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
@@ -753,7 +754,7 @@ compare(const elf_file& elf1,
 	 << elf2.path
 	 << " ...";
 
-  corpus_sptr corpus2 = read_corpus_from_elf(elf2.path, &di_dir2,
+  corpus_sptr corpus2 = read_corpus_from_elf(elf2.path, &di_dir2, env.get(),
 					     /*load_all_types=*/false,
 					     c2_status);
   if (!(c2_status & abigail::dwarf_reader::STATUS_OK))

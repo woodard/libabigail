@@ -182,6 +182,8 @@ main(int argc, char* argv[])
       return 1;
     }
 
+  using abigail::ir::environment_sptr;
+  using abigail::ir::environment;
   using abigail::corpus;
   using abigail::corpus_sptr;
   using abigail::translation_units;
@@ -192,8 +194,10 @@ main(int argc, char* argv[])
   using namespace abigail;
 
   char* p = opts.di_root_path.get();
+  environment_sptr env(new environment);
   corpus_sptr corp;
-  read_context_sptr c = create_read_context(opts.in_file_path, &p,
+  read_context_sptr c = create_read_context(opts.in_file_path,
+					    &p, env.get(),
 					    opts.load_all_types);
   set_show_stats(c, opts.show_stats);
   read_context& ctxt = *c;

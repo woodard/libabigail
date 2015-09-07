@@ -33,6 +33,8 @@ using std::string;
 
 using abigail::comparison::diff;
 using abigail::comparison::diff_sptr;
+using abigail::ir::environment;
+using abigail::ir::environment_sptr;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::print_diff_tree;
@@ -118,7 +120,8 @@ main(int argc, char* argv[])
       dwarf_reader::status c1_status, c2_status;
       corpus_sptr c1, c2;
 
-      c1 = dwarf_reader::read_corpus_from_elf(opts.elf1, 0,
+      environment_sptr env(new environment);
+      c1 = dwarf_reader::read_corpus_from_elf(opts.elf1, 0, env.get(),
 					      /*load_all_types=*/false,
 					      c1_status);
       if (c1_status != dwarf_reader::STATUS_OK)
@@ -127,7 +130,7 @@ main(int argc, char* argv[])
 	  return 1;
 	}
 
-      c2 = dwarf_reader::read_corpus_from_elf(opts.elf2, 0,
+      c2 = dwarf_reader::read_corpus_from_elf(opts.elf2, 0, env.get(),
 					      /*load_all_types=*/false,
 					      c2_status);
       if (c2_status != dwarf_reader::STATUS_OK)

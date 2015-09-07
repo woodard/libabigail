@@ -37,6 +37,8 @@ using std::ostream;
 using std::cout;
 using std::cerr;
 using std::tr1::shared_ptr;
+using abigail::ir::environment;
+using abigail::ir::environment_sptr;
 using abigail::translation_unit;
 using abigail::translation_unit_sptr;
 using abigail::corpus_sptr;
@@ -524,6 +526,7 @@ main(int argc, char* argv[])
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
 
+      environment_sptr env(new environment);
       translation_unit_sptr t1, t2;
       abigail::dwarf_reader::status c1_status =
 	abigail::dwarf_reader::STATUS_OK,
@@ -538,7 +541,8 @@ main(int argc, char* argv[])
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
-	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1);
+	  t1 = abigail::xml_reader::read_translation_unit_from_file(opts.file1,
+								    env.get());
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
@@ -546,7 +550,7 @@ main(int argc, char* argv[])
 	    di_dir1 = opts.di_root_path1.get();
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context(opts.file1,
-							 &di_dir1,
+							 &di_dir1, env.get(),
 							 /*read_all_types=*/false);
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats
@@ -557,7 +561,8 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  c1 =
-	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file1);
+	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file1,
+								  env.get());
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
@@ -579,7 +584,8 @@ main(int argc, char* argv[])
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
-	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2);
+	  t2 = abigail::xml_reader::read_translation_unit_from_file(opts.file2,
+								    env.get());
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
@@ -587,7 +593,7 @@ main(int argc, char* argv[])
 	    di_dir2 = opts.di_root_path2.get();
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context(opts.file2,
-							 &di_dir2,
+							 &di_dir2, env.get(),
 							 /*read_all_types=*/false);
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats
@@ -597,7 +603,8 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
 	  c2 =
-	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file2);
+	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file2,
+								  env.get());
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE

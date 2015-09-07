@@ -143,21 +143,25 @@ InOutSpec in_out_specs[] =
 int
 main()
 {
+  using abigail::dwarf_reader::read_corpus_from_elf;
   unsigned result = 1;
 
   bool is_ok = true;
   string in_elf_path, in_abi_path, out_abi_path;
+  abigail::ir::environment_sptr env;
   abigail::corpus_sptr corp;
 
   for (InOutSpec* s = in_out_specs; s->in_elf_path; ++s)
     {
       in_elf_path = abigail::tests::get_src_dir() + "/tests/" + s->in_elf_path;
+      env.reset(new abigail::ir::environment);
       abigail::dwarf_reader::status status =
 	abigail::dwarf_reader::STATUS_UNKNOWN;
-      corp = abigail::dwarf_reader::read_corpus_from_elf(in_elf_path,
-							 /*debug_info_root_path=*/0,
-							 /*load_all_types=*/false,
-							 status);
+      corp = read_corpus_from_elf(in_elf_path,
+				  /*debug_info_root_path=*/0,
+				  env.get(),
+				  /*load_all_types=*/false,
+				  status);
       if (!corp)
 	{
 	  cerr << "failed to read " << in_elf_path << "\n";

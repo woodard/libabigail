@@ -136,8 +136,10 @@ main(int argc, char **argv)
 
   string file_name = argv[1];
 
+  abigail::ir::environment_sptr env(new abigail::ir::environment);
   abigail::translation_unit_sptr tu;
-  if (!(tu = abigail::xml_reader::read_translation_unit_from_file(file_name)))
+  if (!(tu = abigail::xml_reader::read_translation_unit_from_file(file_name,
+								  env.get())))
     {
       cerr << "failed to read " << file_name << "\n";
       return 1;
