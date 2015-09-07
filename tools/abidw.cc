@@ -199,8 +199,8 @@ main(int argc, char* argv[])
   read_context_sptr c = create_read_context(opts.in_file_path,
 					    &p, env.get(),
 					    opts.load_all_types);
-  set_show_stats(c, opts.show_stats);
   read_context& ctxt = *c;
+  set_show_stats(ctxt, opts.show_stats);
 
   if (opts.check_alt_debug_info_path)
     {

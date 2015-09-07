@@ -554,7 +554,7 @@ main(int argc, char* argv[])
 							 /*read_all_types=*/false);
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats
-	      (ctxt, opts.show_stats);
+	      (*ctxt, opts.show_stats);
 
 	    c1 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c1_status);
 	  }
@@ -597,7 +597,7 @@ main(int argc, char* argv[])
 							 /*read_all_types=*/false);
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats
-	      (ctxt, opts.show_stats);
+	      (*ctxt, opts.show_stats);
 	    c2 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c2_status);
 	  }
 	  break;

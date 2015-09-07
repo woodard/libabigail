@@ -139,10 +139,10 @@ get_debug_info_root_path(read_context& ctxt,
 			 char**& path);
 
 bool
-get_show_stats(read_context_sptr& ctxt);
+get_show_stats(read_context& ctxt);
 
 void
-set_show_stats(read_context_sptr& ctxt,
+set_show_stats(read_context& ctxt,
 	       bool f);
 
 void
