@@ -14244,7 +14244,7 @@ struct function_comp
       return fr < sr;
 
     fr = f.get_pretty_representation(),
-      sr = f.get_pretty_representation();
+      sr = s.get_pretty_representation();
 
     if (fr != sr)
       return fr < sr;
@@ -14255,9 +14255,9 @@ struct function_comp
       fr = f.get_linkage_name();
 
     if (s.get_symbol())
-      fr = s.get_symbol()->get_id_string();
+      sr = s.get_symbol()->get_id_string();
     else if (!s.get_linkage_name().empty())
-      fr = s.get_linkage_name();
+      sr = s.get_linkage_name();
 
     return fr < sr;
   }
