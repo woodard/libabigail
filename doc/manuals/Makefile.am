@@ -192,8 +192,8 @@ install-man-and-info-doc:
 	-for m in $(section1_manpages); do test -f $(BUILDDIR)/man/$$m && $(install_sh_DATA) $(BUILDDIR)/man/$$m $(DESTDIR)$(mandir)/man1; done;
 	-for m in $(section7_manpages); do test -f $(BUILDDIR)/man/$$m && $(install_sh_DATA) $(BUILDDIR)/man/$$m $(DESTDIR)$(mandir)/man7; done;
 
-	-test -f $(BUILDDIR)/texinfo/abidiff.info && $(mkinstalldirs) $(DESTDIR)$(infodir)
-	-for i in $(texinfodocs); do test -f $(BUILDDIR)/texinfo/$$i && $(install_sh_DATA) $(BUILDDIR)/texinfo/$$i $(DESTDIR)$(infodir)/$$i; gzip $(DESTDIR)$(infodir)/$$i; done;
+	-test -f $(BUILDDIR)/texinfo/abigail.info && $(mkinstalldirs) $(DESTDIR)$(infodir)
+	-for i in $(texinfodocs); do test -f $(BUILDDIR)/texinfo/$$i && $(install_sh_DATA) $(BUILDDIR)/texinfo/$$i $(DESTDIR)$(infodir)/$$i; gzip -f $(DESTDIR)$(infodir)/$$i; done;
 
 uninstall-local: clean-local
 	-for i in $(section1_manpages); do rm -f $(DESTDIR)$(mandir)/man1/$$i; done
