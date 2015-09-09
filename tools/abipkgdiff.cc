@@ -315,10 +315,16 @@ public:
 	   << " ...";
 
     string cmd = "rm -rf " + extracted_dir_path();
-    system(cmd.c_str());
-
-    if (verbose)
-      cerr << " DONE\n";
+    if (system(cmd.c_str()))
+      {
+	if (verbose)
+	  cerr << " FAILED\n";
+      }
+    else
+      {
+	if (verbose)
+	  cerr << " DONE\n";
+      }
   }
 
   /// Erase the content of all the temporary extraction directories.
@@ -416,7 +422,11 @@ extract_rpm(const string& package_path,
     extracted_package_dir_path +
     " && rm -rf " + extracted_package_dir_path;
 
-  system(cmd.c_str());
+  if (system(cmd.c_str()))
+    {
+      if (verbose)
+	cerr << "command " << cmd << " FAILED\n";
+    }
 
   cmd = "mkdir -p " + extracted_package_dir_path + " && cd " +
     extracted_package_dir_path + " && rpm2cpio " + package_path +
@@ -462,7 +472,11 @@ extract_deb(const string& package_path,
     extracted_package_dir_path +
     " && rm -rf " + extracted_package_dir_path;
 
-  system(cmd.c_str());
+  if (system(cmd.c_str()))
+    {
+      if (verbose)
+	cerr << "command "  << cmd <<  " FAILED\n";
+    }
 
   cmd = "mkdir -p " + extracted_package_dir_path + " && dpkg -x " +
     package_path + " " + extracted_package_dir_path;
@@ -507,7 +521,11 @@ extract_tar(const string& package_path,
     extracted_package_dir_path +
     " && rm -rf " + extracted_package_dir_path;
 
-  system(cmd.c_str());
+  if (system(cmd.c_str()))
+    {
+      if (verbose)
+	cerr << "command " << cmd << " FAILED\n";
+    }
 
   cmd = "mkdir -p " + extracted_package_dir_path + " && cd " +
     extracted_package_dir_path + " && tar -xf " + package_path;
@@ -552,10 +570,16 @@ erase_created_temporary_directories_parent()
 	 << " ...";
 
   string cmd = "rm -rf " + package::extracted_packages_parent_dir();
-  system(cmd.c_str());
-
-  if (verbose)
-    cerr << "DONE\n";
+  if (system(cmd.c_str()))
+    {
+      if (verbose)
+	cerr << "FAILED\n";
+    }
+  else
+    {
+      if (verbose)
+	cerr << "DONE\n";
+    }
 }
 
 /// Extract the content of a package.
@@ -604,7 +628,7 @@ extract_package(const package& package)
 #ifdef WITH_TAR
       if (!extract_tar(package.path(), package.extracted_dir_path()))
         {
-          cerr << "Error while extracting GNU tar archive"
+          cerr << "Error while extracting GNU tar archive "
 	       << package.path() << "\n";
           return false;
         }
