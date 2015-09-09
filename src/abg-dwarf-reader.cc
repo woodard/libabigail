@@ -3754,7 +3754,7 @@ public:
   }
 };// end class read_context.
 
-static decl_base_sptr
+static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		die_is_from_alt_di,
@@ -3762,7 +3762,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       bool		called_from_public_decl,
 		       size_t		where_offset);
 
-static decl_base_sptr
+static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		die_is_from_alt_di,
@@ -5939,7 +5939,7 @@ get_scope_for_die(read_context& ctxt,
     }
 
   scope_decl_sptr s;
-  decl_base_sptr d;
+  type_or_decl_base_sptr d;
   if (dwarf_tag(&parent_die) == DW_TAG_subprogram)
     // this is an entity defined in a scope that is a function.
     // Normally, I would say that this should be dropped.  But I have
@@ -6570,11 +6570,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 				     type_die_is_in_alternate_debug_info))
 		continue;
 
-	      decl_base_sptr base_type =
+	      decl_base_sptr base_type = is_decl(
 		build_ir_node_from_die(ctxt, &type_die,
 				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
-				       where_offset);
+				       where_offset));
 	      class_decl_sptr b = is_compatible_with_class_type(base_type);
 	      if (!b)
 		continue;
@@ -6614,11 +6614,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 				     type_die_is_in_alternate_debug_info))
 		continue;
 
-	      decl_base_sptr ty =
+	      decl_base_sptr ty = is_decl(
 		build_ir_node_from_die(ctxt, &type_die,
 				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
-				       where_offset);
+				       where_offset));
 	      type_base_sptr t = is_type(ty);
 	      if (!t)
 		continue;
@@ -6660,11 +6660,12 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
 	    {
-	      decl_base_sptr r = build_ir_node_from_die(ctxt, &child,
-							is_in_alt_di,
-							result.get(),
-							called_from_public_decl,
-							where_offset);
+	      decl_base_sptr r =
+		is_decl(build_ir_node_from_die(ctxt, &child,
+					       is_in_alt_di,
+					       result.get(),
+					       called_from_public_decl,
+					       where_offset));
 	      if (!r)
 		continue;
 
@@ -6679,10 +6680,10 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  // Handle member types
 	  else if (is_type_die(&child))
 	    decl_base_sptr td =
-	      build_ir_node_from_die(ctxt, &child, is_in_alt_di,
-				     result.get(),
-				     called_from_public_decl,
-				     where_offset);
+	      is_decl(build_ir_node_from_die(ctxt, &child, is_in_alt_di,
+					     result.get(),
+					     called_from_public_decl,
+					     where_offset));
 	} while (dwarf_siblingof(&child, &child) == 0);
     }
 
@@ -6750,11 +6751,10 @@ build_qualified_type(read_context&	ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt,
-			   &underlying_type_die,
-			   utype_is_in_alt_di,
-			   called_from_public_decl,
-			   where_offset);
+    is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
+				   utype_is_in_alt_di,
+				   called_from_public_decl,
+				   where_offset));
   if (!utype_decl)
     return result;
 
@@ -6871,15 +6871,15 @@ build_pointer_type_def(read_context&	ctxt,
 			 utype_die_is_in_alt_di))
     // If the DW_AT_type attribute is missing, that means we are
     // looking at a pointer to "void".
-    utype_decl = build_ir_node_for_void_type(ctxt);
+    utype_decl = is_decl(build_ir_node_for_void_type(ctxt));
   else
     has_underlying_type_die = true;
 
   if (!utype_decl && has_underlying_type_die)
-    utype_decl = build_ir_node_from_die(ctxt, &underlying_type_die,
-					utype_die_is_in_alt_di,
-					called_from_public_decl,
-					where_offset);
+    utype_decl = is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
+						utype_die_is_in_alt_di,
+						called_from_public_decl,
+						where_offset));
   if (!utype_decl)
     return result;
 
@@ -6964,10 +6964,10 @@ build_reference_type(read_context&	ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die,
-			   utype_is_in_alt_di,
-			   called_from_public_decl,
-			   where_offset);
+    is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
+				   utype_is_in_alt_di,
+				   called_from_public_decl,
+				   where_offset));
   if (!utype_decl)
     return result;
 
@@ -7047,11 +7047,10 @@ build_array_type(read_context&	ctxt,
   bool utype_is_in_alt_di = false;
   if (die_die_attribute(die, die_is_from_alt_di, DW_AT_type,
 			type_die, utype_is_in_alt_di))
-    type_decl =
-      build_ir_node_from_die(ctxt, &type_die,
-			     utype_is_in_alt_di,
-			     called_from_public_decl,
-			     where_offset);
+    type_decl = is_decl(build_ir_node_from_die(ctxt, &type_die,
+					       utype_is_in_alt_di,
+					       called_from_public_decl,
+					       where_offset));
   if (!type_decl)
     return result;
 
@@ -7146,10 +7145,10 @@ build_typedef_type(read_context&	ctxt,
     return result;
 
   decl_base_sptr utype_decl =
-    build_ir_node_from_die(ctxt, &underlying_type_die,
-			   utype_is_in_alternate_di,
-			   called_from_public_decl,
-			   where_offset);
+    is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
+				   utype_is_in_alternate_di,
+				   called_from_public_decl,
+				   where_offset));
   if (!utype_decl)
     return result;
 
@@ -7219,10 +7218,10 @@ build_var_decl(read_context&	ctxt,
 			DW_AT_type, type_die, utype_is_in_alt_di))
     {
       decl_base_sptr ty =
-	build_ir_node_from_die(ctxt, &type_die,
-			       utype_is_in_alt_di,
-			       /*called_from_public_decl=*/true,
-			       where_offset);
+	is_decl(build_ir_node_from_die(ctxt, &type_die,
+				       utype_is_in_alt_di,
+				       /*called_from_public_decl=*/true,
+				       where_offset));
       if (!ty)
 	return result;
       type = is_type(ty);
@@ -7319,10 +7318,10 @@ build_function_decl(read_context&	ctxt,
   if (die_die_attribute(die, is_in_alt_di, DW_AT_type, ret_type_die,
 			ret_type_die_is_in_alternate_debug_info))
     return_type_decl =
-      build_ir_node_from_die(ctxt, &ret_type_die,
-			     ret_type_die_is_in_alternate_debug_info,
-			     /*called_from_public_decl=*/true,
-			     where_offset);
+      is_decl(build_ir_node_from_die(ctxt, &ret_type_die,
+				     ret_type_die_is_in_alternate_debug_info,
+				     /*called_from_public_decl=*/true,
+				     where_offset));
   if (!return_type_decl)
     return_type_decl = build_ir_node_for_void_type(ctxt);
 
@@ -7351,10 +7350,10 @@ build_function_decl(read_context&	ctxt,
 				  DW_AT_type, parm_type_die,
 				  parm_type_die_is_in_alt_di))
 	      parm_type_decl =
-		build_ir_node_from_die(ctxt, &parm_type_die,
-				       parm_type_die_is_in_alt_di,
-				       /*called_from_public_decl=*/true,
-				       where_offset);
+		is_decl(build_ir_node_from_die(ctxt, &parm_type_die,
+					       parm_type_die_is_in_alt_di,
+					       /*called_from_public_decl=*/true,
+					       where_offset));
 	    if (!parm_type_decl)
 	      continue;
 	    function_decl::parameter_sptr p
@@ -7606,7 +7605,7 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
 /// the DIE tree.
 ///
 /// @return the resulting IR node.
-static decl_base_sptr
+static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		die_is_from_alt_di,
@@ -7614,7 +7613,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		       bool		called_from_public_decl,
 		       size_t		where_offset)
 {
-  decl_base_sptr result;
+  type_or_decl_base_sptr result;
 
   if (!die || !scope)
     return result;
@@ -7659,7 +7658,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	result = add_decl_to_scope(t, scope);
 	if (result)
 	  {
-	    maybe_set_member_type_access_specifier(result, die);
+	    maybe_set_member_type_access_specifier(is_decl(result), die);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);
@@ -7739,7 +7738,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	result = add_decl_to_scope(e, scope);
 	if (result)
 	  {
-	    maybe_set_member_type_access_specifier(result, die);
+	    maybe_set_member_type_access_specifier(is_decl(result), die);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);
@@ -7763,11 +7762,12 @@ build_ir_node_from_die(read_context&	ctxt,
 						      called_from_public_decl,
 						      where_offset);
 	    assert(skope);
-	    decl_base_sptr cl = build_ir_node_from_die(ctxt, &spec_die,
-						       spec_die_is_in_alt_di,
-						       skope.get(),
-						       called_from_public_decl,
-						       where_offset);
+	    decl_base_sptr cl =
+	      is_decl(build_ir_node_from_die(ctxt, &spec_die,
+					     spec_die_is_in_alt_di,
+					     skope.get(),
+					     called_from_public_decl,
+					     where_offset));
 	    assert(cl);
 	    klass = dynamic_pointer_cast<class_decl>(cl);
 	    assert(klass);
@@ -7877,11 +7877,11 @@ build_ir_node_from_die(read_context&	ctxt,
 	    if (scop)
 	      {
 		decl_base_sptr d =
-		  build_ir_node_from_die(ctxt, &spec_die,
-					 spec_die_is_in_alt_di,
-					 scop.get(),
-					 called_from_public_decl,
-					 where_offset);
+		  is_decl(build_ir_node_from_die(ctxt, &spec_die,
+						 spec_die_is_in_alt_di,
+						 scop.get(),
+						 called_from_public_decl,
+						 where_offset));
 		if (d)
 		  {
 		    var_decl_sptr m =
@@ -7912,7 +7912,7 @@ build_ir_node_from_die(read_context&	ctxt,
 						  where_offset))
 	  {
 	    result = add_decl_to_scope(v, scope);
-	    assert(result->get_scope());
+	    assert(is_decl(result)->get_scope());
 	    v = dynamic_pointer_cast<var_decl>(result);
 	    assert(v);
 	    assert(v->get_scope());
@@ -7954,12 +7954,12 @@ build_ir_node_from_die(read_context&	ctxt,
 	      if (scop)
 		{
 		  decl_base_sptr d =
-		    build_ir_node_from_die(ctxt,
-					   &spec_die,
-					   is_in_alternate_debug_info,
-					   scop.get(),
-					   called_from_public_decl,
-					   where_offset);
+		    is_decl(build_ir_node_from_die(ctxt,
+						   &spec_die,
+						   is_in_alternate_debug_info,
+						   scop.get(),
+						   called_from_public_decl,
+						   where_offset));
 		  if (d)
 		    {
 		      fn = dynamic_pointer_cast<function_decl>(d);
@@ -7982,7 +7982,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	result = build_function_decl(ctxt, die, die_is_from_alt_di,
 				     where_offset, fn);
 	if (result && !fn)
-	  result = add_decl_to_scope(result, scope);
+	  result = add_decl_to_scope(is_decl(result), scope);
 
 	fn = dynamic_pointer_cast<function_decl>(result);
 	if (fn && is_member_function(fn))
@@ -8067,10 +8067,10 @@ build_ir_node_from_die(read_context&	ctxt,
       break;
     }
 
-  if (result)
+  if (result && tag != DW_TAG_subroutine_type)
     ctxt.associate_die_to_decl(dwarf_dieoffset(die),
 			       die_is_from_alt_di,
-			       result);
+			       is_decl(result));
 
   return result;
 }
@@ -8117,7 +8117,7 @@ build_ir_node_for_void_type(read_context& ctxt)
 /// the DIE tree.
 ///
 /// @return the resulting IR node.
-static decl_base_sptr
+static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       bool		die_is_from_alt_di,
