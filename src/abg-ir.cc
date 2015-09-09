@@ -2185,7 +2185,7 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 	}
     }
 
-  if (l.get_name() != r.get_name())
+  if (l.get_qualified_name() != r.get_qualified_name())
     {
       result = false;
       if (k)
