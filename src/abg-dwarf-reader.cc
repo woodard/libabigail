@@ -485,12 +485,14 @@ e_machine_to_string(GElf_Half e_machine)
       break;
     case EM_ALPHA:
       result = "elf-non-official-alpha";
+      break;
     default:
       {
 	std::ostringstream o;
 	o << "elf-unknown-arch-value-" << e_machine;
 	result = o.str();
       }
+      break;
   }
     return result;
 }
