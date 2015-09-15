@@ -324,7 +324,7 @@ check_file(const string& path,
 bool
 string_ends_with(const string& str, const string& suffix)
 {
-  if (str.length() <= suffix.length())
+  if (str.length() < suffix.length())
     return false;
   return str.compare(str.length() - suffix.length(),
 		     suffix.length(),
