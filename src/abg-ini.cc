@@ -468,7 +468,7 @@ simple_property::simple_property()
 ///
 /// @param value the value of the property.
 simple_property::simple_property(const string& name,
-				 const string_property_value_sptr value)
+				 const string_property_value_sptr& value)
   : property(name),
     priv_(new priv(value))
 {}
@@ -484,7 +484,7 @@ simple_property::get_value() const
 ///
 /// @param value the new string value of the property.
 void
-simple_property::set_value(const string_property_value_sptr value)
+simple_property::set_value(const string_property_value_sptr& value)
 {priv_->value_ = value;}
 
 /// Destructor of the @ref simple_property type.

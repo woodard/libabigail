@@ -199,13 +199,13 @@ public:
   simple_property();
 
   simple_property(const string& name,
-		  const string_property_value_sptr value);
+		  const string_property_value_sptr& value);
 
   const string_property_value_sptr&
   get_value() const;
 
   void
-  set_value(const string_property_value_sptr value);
+  set_value(const string_property_value_sptr& value);
 
   virtual ~simple_property();
 }; // end class simple_property
