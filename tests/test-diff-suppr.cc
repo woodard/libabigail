@@ -927,6 +927,38 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test25-typedef-report-1.txt",
     "output/test-diff-suppr/test25-typedef-report-1.txt"
   },
+  {
+    "data/test-diff-suppr/libtest26-loc-suppr-v0.so",
+    "data/test-diff-suppr/libtest26-loc-suppr-v1.so",
+    "",
+    "--no-redundant",
+    "data/test-diff-suppr/test26-loc-suppr-report-0.txt",
+    "output/test-diff-suppr/test26-loc-suppr-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest26-loc-suppr-v0.so",
+    "data/test-diff-suppr/libtest26-loc-suppr-v1.so",
+    "data/test-diff-suppr/test26-loc-suppr-0.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test26-loc-suppr-report-1.txt",
+    "output/test-diff-suppr/test26-loc-suppr-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest26-loc-suppr-v0.so",
+    "data/test-diff-suppr/libtest26-loc-suppr-v1.so",
+    "data/test-diff-suppr/test26-loc-suppr-1.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test26-loc-suppr-report-2.txt",
+    "output/test-diff-suppr/test26-loc-suppr-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest26-loc-suppr-v0.so",
+    "data/test-diff-suppr/libtest26-loc-suppr-v1.so",
+    "data/test-diff-suppr/test26-loc-suppr-2.suppr",
+    "--no-redundant",
+    "data/test-diff-suppr/test26-loc-suppr-report-3.txt",
+    "output/test-diff-suppr/test26-loc-suppr-report-3.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
 };

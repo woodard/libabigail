@@ -663,14 +663,17 @@ read_suppressions(const string& file_path,
 /// The private data for @ref type_suppression.
 class type_suppression::priv
 {
-  string				 type_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	 type_name_regex_;
-  string				 type_name_;
-  bool					 consider_type_kind_;
-  type_suppression::type_kind		 type_kind_;
-  bool					 consider_reach_kind_;
-  type_suppression::reach_kind		 reach_kind_;
-  type_suppression::insertion_ranges	 insertion_ranges_;
+  string				type_name_regex_str_;
+  mutable sptr_utils::regex_t_sptr	type_name_regex_;
+  string				type_name_;
+  bool					consider_type_kind_;
+  type_suppression::type_kind		type_kind_;
+  bool					consider_reach_kind_;
+  type_suppression::reach_kind		reach_kind_;
+  type_suppression::insertion_ranges	insertion_ranges_;
+  vector<string>			source_locations_to_keep_;
+  string				source_location_to_keep_regex_str_;
+  mutable sptr_utils::regex_t_sptr	source_location_to_keep_regex_;
 
   priv();
 
@@ -720,6 +723,33 @@ public:
   void
   set_type_name_regex(sptr_utils::regex_t_sptr r)
   {type_name_regex_ = r;}
+
+  /// Getter for the source_location_to_keep_regex object.
+  ///
+  /// This function builds the regex if it's not yet built.
+  const sptr_utils::regex_t_sptr
+  get_source_location_to_keep_regex() const
+  {
+    if (!source_location_to_keep_regex_)
+      {
+	if (!source_location_to_keep_regex_str_.empty())
+	  {
+	    sptr_utils::regex_t_sptr r(new regex_t);
+	    if (regcomp(r.get(),
+			source_location_to_keep_regex_str_.c_str(),
+			REG_EXTENDED) == 0)
+	      source_location_to_keep_regex_ = r;
+	  }
+      }
+    return source_location_to_keep_regex_;
+  }
+
+  /// Setter for the source_location_to_keep_regex object.
+  ///
+  /// @param r the new regex object.
+  void
+  set_source_location_to_keep_regex(sptr_utils::regex_t_sptr r)
+  {source_location_to_keep_regex_ = r;}
 
   friend class type_suppression;
 }; // class type_suppression::priv
@@ -895,6 +925,39 @@ type_suppression::get_data_member_insertion_ranges() const
 type_suppression::insertion_ranges&
 type_suppression::get_data_member_insertion_ranges()
 {return priv_->insertion_ranges_;}
+
+/// Getter for the array of source location paths of types that should
+/// *NOT* be suppressed.
+///
+/// @return the array of source locations of types that should *NOT*
+/// be supressed.
+const vector<string>&
+type_suppression::get_source_locations_to_keep() const
+{return priv_->source_locations_to_keep_;}
+
+/// Setter for the array of source location paths of types that should
+/// *NOT* be suppressed.
+///
+/// @param l the new array.
+void
+type_suppression::set_source_locations_to_keep(const vector<string>& l)
+{priv_->source_locations_to_keep_ = l;}
+
+/// Getter of the regular expression string that designates the source
+/// location paths of types that should not be suppressed.
+///
+/// @return the regular expression string.
+const string&
+type_suppression::get_source_location_to_keep_regex_str() const
+{return priv_->source_location_to_keep_regex_str_;}
+
+/// Setter of the regular expression string that designates the source
+/// location paths of types that should not be suppressed.
+///
+/// @param r the new regular expression.
+void
+type_suppression::set_source_location_to_keep_regex_str(const string& r)
+{priv_->source_location_to_keep_regex_str_ = r;}
 
 /// Evaluate this suppression specification on a given diff node and
 /// say if the diff node should be suppressed or not.
@@ -1160,6 +1223,69 @@ type_suppression::suppresses_type(const type_base_sptr type,
       if (type_name_regex && (regexec(type_name_regex.get(),
 				      name.c_str(),
 				      0, NULL, 0) != 0))
+	return false;
+    }
+
+  // Check if there is a source location related match.
+  if (decl_base_sptr d = get_type_declaration(type))
+    {
+      location loc = d->get_location();
+      if (loc)
+	{
+	  translation_unit* tu = get_translation_unit(d);
+	  if (tu)
+	    {
+	      string loc_path, loc_path_base;
+	      unsigned loc_line = 0, loc_column = 0;
+	      tu->get_loc_mgr().expand_location(loc, loc_path,
+						loc_line, loc_column);
+
+	      if (sptr_utils::regex_t_sptr regexp =
+		  priv_->get_source_location_to_keep_regex())
+		if (regexec(regexp.get(), loc_path.c_str(), 0, NULL, 0) == 0)
+		  return false;
+
+	      tools_utils::base_name(loc_path, loc_path_base);
+	      for (vector<string>::const_iterator s =
+		     get_source_locations_to_keep().begin();
+		   s != get_source_locations_to_keep().end();
+		   ++s)
+		{
+		  if (tools_utils::string_ends_with(*s, loc_path)
+		      || tools_utils::string_ends_with(*s, loc_path_base))
+		    return false;
+		}
+	    }
+	  else
+	    {
+	      if (!get_source_locations_to_keep().empty()
+		  || priv_->get_source_location_to_keep_regex())
+		// The user provided a "source_location_not_regexp" or
+		// a "source_location_not_in" property that was not
+		// triggered.  This means the current type suppression
+		// doesn't suppress the type given.
+		return false;
+	    }
+	}
+      else
+	{
+	  if (!get_source_locations_to_keep().empty()
+	      || priv_->get_source_location_to_keep_regex())
+	    // The user provided a "source_location_not_regexp" or
+	    // a "source_location_not_in" property that was not
+	    // triggered.  This means the current type suppression
+	    // doesn't suppress the type given.
+	    return false;
+	}
+    }
+  else
+    {
+      if (!get_source_locations_to_keep().empty()
+	  || priv_->get_source_location_to_keep_regex())
+	// The user provided a "source_location_not_regexp" or
+	// a "source_location_not_in" property that was not
+	// triggered.  This means the current type suppression
+	// doesn't suppress the type given.
 	return false;
     }
 
@@ -1553,6 +1679,28 @@ read_type_suppression(const ini::config::section& section)
     ? name_prop->get_value()->as_string()
     : "";
 
+  ini::property_sptr srcloc_not_in_prop =
+    section.find_property("source_location_not_in");
+  vector<string> srcloc_not_in;
+  if (srcloc_not_in_prop)
+    {
+      if (ini::simple_property_sptr p = is_simple_property(srcloc_not_in_prop))
+	srcloc_not_in.push_back(p->get_value()->as_string());
+      else
+	{
+	  ini::list_property_sptr list_property =
+	    is_list_property(srcloc_not_in_prop);
+	  if (list_property)
+	    srcloc_not_in = list_property->get_value()->get_content();
+	}
+    }
+
+  ini::simple_property_sptr srcloc_not_regexp_prop =
+    is_simple_property(section.find_property("source_location_not_regexp"));
+  string srcloc_not_regexp_str;
+  if (srcloc_not_regexp_prop)
+    srcloc_not_regexp_str = srcloc_not_regexp_prop->get_value()->as_string();
+
   bool consider_type_kind = false;
   type_suppression::type_kind type_kind = type_suppression::UNKNOWN_TYPE_KIND;
   if (ini::simple_property_sptr type_kind_prop =
@@ -1610,12 +1758,21 @@ read_type_suppression(const ini::config::section& section)
       //  has_data_member_inserted_between = {0 , end};
       // and not (for instance):
       //  has_data_member_inserted_between = {{0 , end}, {1, foo}}
+      //
+      //  This means that the tuple_property_value contains just one
+      //  value, which is a list_property that itself contains 2
+      //  values.
       type_suppression::insertion_range::boundary_sptr begin, end;
-      if (prop->get_value()->get_value_items().size() == 2
-	  && is_string_property_value(prop->get_value()->get_value_items()[0])
-	  && is_string_property_value(prop->get_value()->get_value_items()[1]))
+      ini::tuple_property_value_sptr v = prop->get_value();
+      if (v
+	  && v->get_value_items().size() == 1
+	  && is_list_property_value(v->get_value_items()[0])
+	  && is_list_property_value(v->get_value_items()[0])->get_content().size() == 2)
 	{
-	  string str = prop->get_value()->get_value_items()[0]->as_string();
+	  ini::list_property_value_sptr val =
+	    is_list_property_value(v->get_value_items()[0]);
+	  assert(val);
+	  string str = val->get_content()[0];
 	  if (str == "end")
 	    begin =
 	      type_suppression::insertion_range::create_integer_boundary(-1);
@@ -1628,7 +1785,7 @@ read_type_suppression(const ini::config::section& section)
 	  else
 	    return nil;
 
-	  str = prop->get_value()->get_value_items()[1]->as_string();
+	  str = val->get_content()[1];
 	  if (str == "end")
 	    end =
 	      type_suppression::insertion_range::create_integer_boundary(-1);
@@ -1654,6 +1811,13 @@ read_type_suppression(const ini::config::section& section)
     }
 
   // Support has_data_members_inserted_between
+  // The syntax looks like:
+  //
+  //    has_data_members_inserted_between = {{8, 24}, {32, 64}, {128, end}}
+  //
+  // So we expect a tuple property, with potentially several pairs (as
+  // part of the value); each pair designating a range.  Note that
+  // each pair (range) is a list property value.
   if (ini::tuple_property_sptr prop =
       is_tuple_property(section.find_property
 			("has_data_members_inserted_between")))
@@ -1667,13 +1831,22 @@ read_type_suppression(const ini::config::section& section)
 	  ini::tuple_property_value_sptr tuple_value =
 	    is_tuple_property_value(*i);
 	  if (!tuple_value
-	      || tuple_value->get_value_items().size() != 2
-	      || !is_string_property_value(tuple_value->get_value_items()[0])
-	      || !is_string_property_value(tuple_value->get_value_items()[1]))
-	    is_well_formed = false;
+	      || tuple_value->get_value_items().size() != 1
+	      || !is_list_property_value(tuple_value->get_value_items()[0]))
+	    {
+	      is_well_formed = false;
+	      break;
+	    }
+	  ini::list_property_value_sptr list_value =
+	    is_list_property_value(tuple_value->get_value_items()[0]);
+	  if (list_value->get_content().size() != 2)
+	    {
+	      is_well_formed = false;
+	      break;
+	    }
 
 	  type_suppression::insertion_range::boundary_sptr begin, end;
-	  string str = tuple_value->get_value_items()[0]->as_string();
+	  string str = list_value->get_content()[0];
 	  if (str == "end")
 	    begin =
 	      type_suppression::insertion_range::create_integer_boundary(-1);
@@ -1687,7 +1860,7 @@ read_type_suppression(const ini::config::section& section)
 	  else
 	    return nil;
 
-	  str = tuple_value->get_value_items()[1]->as_string();
+	  str = list_value->get_content()[1];
 	  if (str == "end")
 	    end =
 	      type_suppression::insertion_range::create_integer_boundary(-1);
@@ -1711,7 +1884,9 @@ read_type_suppression(const ini::config::section& section)
 
   if ((!name_regex_prop || name_regex_prop->get_value()->as_string().empty())
       && (!name_prop || name_prop->get_value()->as_string().empty())
-      && !consider_type_kind)
+      && !consider_type_kind
+      && srcloc_not_regexp_str.empty()
+      && srcloc_not_in.empty())
     return nil;
 
   type_suppression_sptr suppr(new type_suppression(label_str,
@@ -1737,6 +1912,12 @@ read_type_suppression(const ini::config::section& section)
 
   if (!soname_regex_str.empty())
     suppr->set_soname_regex_str(soname_regex_str);
+
+  if (!srcloc_not_in.empty())
+    suppr->set_source_locations_to_keep(srcloc_not_in);
+
+  if (!srcloc_not_regexp_str.empty())
+    suppr->set_source_location_to_keep_regex_str(srcloc_not_regexp_str);
 
   return suppr;
 }

@@ -232,6 +232,44 @@ potential properties of this sections are:
      types.  Example of built-in types are char, int, unsigned int,
      etc.
 
+ .. _suppr_source_location_not_in_label:
+
+* ``source_location_not_in``
+
+ Usage:
+
+  ``source_location_not_in`` ``=`` <``list-of-file-paths``>
+
+ Suppresses change reports involving a type which is defined in a file
+ which path is *NOT* listed in the value ``list-of-file-paths``.  Note
+ that the value is a comma-separated list of file paths e.g, this
+ property ::
+ 
+   source_location_not_in = libabigail/abg-ir.h, libabigail/abg-dwarf-reader.h 
+
+ suppresses change reports about all the types that are *NOT* defined
+ in header files whose path end up with the strings
+ libabigail/abg-ir.h or libabigail/abg-dwarf-reader.h.
+
+ .. _suppr_source_location_not_regexp_label:
+
+* ``source_location_not_regexp``
+
+ Usage:
+
+  ``source_location_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving a type which is defined in a file
+ which path does *NOT* match the :ref:`regular expression
+ <suppr_regexp_label>` provided as value of the property. E.g, this
+ property ::
+
+   source_location_not_regexp = libabigail/abg-.*\\.h
+
+ suppresses change reports involving all the types that are *NOT*
+ defined in header files whose path match the regular expression
+ provided a value of the property.
+
  .. _suppr_has_data_member_inserted_at_label:
 
 * ``has_data_member_inserted_at``

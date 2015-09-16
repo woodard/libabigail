@@ -757,6 +757,18 @@ test-diff-suppr/test25-typedef-report-0.txt \
 test-diff-suppr/test25-typedef-report-1.txt\
 test-diff-suppr/test25-typedef-v0.c \
 test-diff-suppr/test25-typedef-v1.c \
+test-diff-suppr/libtest26-loc-suppr-v0.so \
+test-diff-suppr/libtest26-loc-suppr-v1.so \
+test-diff-suppr/test26-loc-suppr-0.suppr \
+test-diff-suppr/test26-loc-suppr-1.suppr \
+test-diff-suppr/test26-loc-suppr-2.suppr \
+test-diff-suppr/test26-loc-suppr-report-0.txt \
+test-diff-suppr/test26-loc-suppr-report-1.txt \
+test-diff-suppr/test26-loc-suppr-report-2.txt \
+test-diff-suppr/test26-loc-suppr-report-3.txt \
+test-diff-suppr/test26-loc-suppr-v0.cc \
+test-diff-suppr/test26-loc-suppr-v1.cc \
+test-diff-suppr/test26-loc-suppr.h \
 \
 test-lookup-syms/test0.cc		\
 test-lookup-syms/test0.o		\

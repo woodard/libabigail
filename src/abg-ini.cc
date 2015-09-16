@@ -26,6 +26,7 @@
 /// the libabigail library.
 
 #include <cassert>
+#include <cstdlib>
 #include <utility>
 #include <memory>
 #include <fstream>
@@ -352,7 +353,101 @@ is_string_property_value(const property_value_sptr v)
 string_property_value::~string_property_value()
 {}
 
-// </string_property stuff>
+// </string_property_value stuff>
+
+// <list_property_value stuff>
+struct list_property_value::priv
+{
+  vector<string> values_;
+  string representation_;
+
+  priv()
+  {}
+
+  priv(const vector<string>& vals)
+    : values_(vals)
+  {}
+}; // end struct list_property_value::priv
+
+/// Default constructor of the @ref list_property_value type.
+list_property_value::list_property_value()
+  : property_value(property_value::LIST_PROPERTY_VALUE),
+   priv_(new priv)
+{}
+
+/// Copy constructor of the @ref list_property_value type.
+///
+/// @param values the instance of @ref list_property_value to copy from.
+list_property_value::list_property_value(const vector<string>& values)
+  : property_value(property_value::LIST_PROPERTY_VALUE),
+    priv_(new priv(values))
+{
+}
+
+/// Getter of the content of the @ref list_property_value.
+///
+/// The content of the @ref list_property_value is a vector of
+/// strings.
+///
+/// @return the vector of strings contained in the @ref
+/// list_property_value.
+const vector<string>&
+list_property_value::get_content() const
+{return priv_->values_;}
+
+/// Setter of the content of the @ref list_property_value.
+///
+/// @param values the new content, which is a vector of strings.
+void
+list_property_value::set_content(const vector<string>& values)
+{
+  priv_->values_ = values;
+  priv_->representation_.clear();
+}
+
+/// Return a string representation of the @list_property_value.
+///
+/// @return the string representation.
+const string&
+list_property_value::as_string() const
+{
+  if (priv_->representation_.empty())
+    {
+      for (vector<string>::const_iterator i = priv_->values_.begin();
+	   i != priv_->values_.end();
+	   ++i)
+	{
+	  if (i != priv_->values_.begin())
+	    priv_->representation_ += ",";
+	  priv_->representation_ += *i;
+	}
+    }
+  return priv_->representation_;
+}
+
+/// Test if an instance of @property_value is a @ref list_property_value.
+///
+/// @param v the property_value to consider.
+///
+/// @return the @ref property_value converted into a @ref
+/// list_property_value if the @p v is a @ref list_property_value, nil
+/// otherwise.
+list_property_value*
+is_list_property_value(const property_value* v)
+{return dynamic_cast<list_property_value*>(const_cast<property_value*>(v));}
+
+/// Test if an instance of @property_value is a @ref list_property_value.
+///
+/// @param v the property_value to consider.
+///
+/// @return the @ref property_value converted into a @ref
+/// list_property_value if the @p v is a @ref list_property_value, nil
+/// otherwise.
+list_property_value_sptr
+is_list_property_value(const property_value_sptr&v)
+{return dynamic_pointer_cast<list_property_value>(v);}
+
+// </list_property_value stuff>
 
 // <tuple_property_value>
 
@@ -510,6 +605,74 @@ is_simple_property(const property_sptr p)
 {return dynamic_pointer_cast<simple_property>(p);}
 
 // </simple_property stuff>
+
+// <list_property stuff>
+struct list_property::priv
+{
+  list_property_value_sptr value_;
+
+  priv()
+  {}
+
+  priv(const list_property_value_sptr value)
+    : value_(value)
+  {}
+}; //end struct list_property
+
+/// Default constructor for @ref list_property.
+list_property::list_property()
+  : priv_(new priv)
+{}
+
+/// Constructor for @ref list_property.
+///
+/// @param name the name of the property.
+///
+/// @param value the value of the property.
+list_property::list_property(const string& name,
+			     const list_property_value_sptr& value)
+  : property(name),
+    priv_(new priv(value))
+{}
+
+/// Getter for the value of the @ref list_property_value
+const list_property_value_sptr&
+list_property::get_value() const
+{return priv_->value_;}
+
+/// Setter for the value of the @ref list_property.
+///
+/// @param value the new value.
+void
+list_property::set_value(const list_property_value_sptr& value)
+{priv_->value_ = value;}
+
+/// Destructor of the @ref list_property type.
+list_property::~list_property()
+{}
+
+/// Test if an instance of a @ref property is actually an instance of
+/// @ref list_property.
+///
+/// @param p the @ref property to test.
+///
+/// @return the @p p converted into a @ref list_property if it's of
+/// type @ref list_property, or nil otherwise.
+list_property*
+is_list_property(const property* p)
+{return dynamic_cast<list_property*>(const_cast<property*>(p));}
+
+/// Test if an instance of a @ref property is actually an instance of
+/// @ref list_property.
+///
+/// @param p the @ref property to test.
+///
+/// @return the @p p converted into a @ref list_property if it's of
+/// type @ref list_property, or nil otherwise.
+list_property_sptr
+is_list_property(const property_sptr p)
+{return dynamic_pointer_cast<list_property>(p);}
+// </list_property stuff>
 
 // <tuple_property stuff>
 struct tuple_property::priv
@@ -684,12 +847,15 @@ class read_context
   unsigned cur_line_;
   /// The current column on the current line.
   unsigned cur_column_;
+  vector<char> buf_;
 
   // Forbid this;
   read_context();
 
 public:
 
+  /// The constructor of @ref read_context.
+  ///
   /// @param in the input stream to parse from.
   read_context(istream& in)
     : in_(in),
@@ -697,35 +863,120 @@ public:
       cur_column_(0)
   {}
 
-  /// Read the next character from the input stream.
+  /// @return the character that is going to be read by the next
+  /// invocation of read_next_char().
   ///
-  /// This method updates the current line/column number after looking
-  /// at the actual char that got read.  It also handle escaped
-  /// characters.
+  /// Note that this function doesn't alter the input stream.
   ///
-  /// @param c output parameter.  This is set by this function to the
-  /// character that was read.  It's set iff the function returned
-  /// true.
+  /// Also note that this function handles escaping using the '\'
+  /// (backslash) character.
   ///
-  /// @return true if the reading went well and if the input stream is
-  /// in a non-erratic state.
-  bool
-  read_next_char(char& c)
+  /// @return peeked character.
+  char
+  peek()
   {
-    char b = in_.get();
-    if (!in_.good())
-      return false;
+    if (!buf_.empty())
+      return buf_.back();
 
-    bool escaping = false;
-    if (b == '\\')
-      escaping = true;
+    char c = in_.peek();
+    if (handle_escape(c, /*peek=*/true))
+      put_back(c);
+    return c;
+  }
 
-    // Handle escape
-    if (escaping)
+  /// Get the next character of the input stream.
+  ///
+  /// This function knows how to handles escaped characters from the
+  /// input stream.
+  ///
+  /// @param do_handle_escape if yes, this function handles escaped
+  /// characters from the input stream.
+  ///
+  /// @return the next character of the input stream.
+  char
+  get(bool do_handle_escape = true)
+  {
+    char result = 0;
+    if (!buf_.empty())
       {
-	b = in_.get();
-	if (!in_.good())
-	  return false;
+	result = buf_.back();
+	buf_.pop_back();
+      }
+    else
+      {
+	result = in_.get();
+	if (do_handle_escape)
+	  handle_escape(result);
+      }
+    return result;
+  }
+
+  /// Put a character that was read from the input stream, back into
+  /// that input stream, so that a subsequent call to
+  /// read_context::get() returns that same character.
+  ///
+  /// @param c the character to put back into the stream.
+  void
+  put_back(char c)
+  {buf_.push_back(c);}
+
+  /// Test if the status of the input stream is good.
+  ///
+  /// @return true iff the status of the input stream is good.
+  bool
+  good() const
+  {
+    if (!buf_.empty())
+      return true;
+    return in_.good();
+  }
+
+  /// Tests if the input stream has reached end of file.
+  ///
+  /// @return true iff the input stream has reached end of file.
+  bool
+  eof() const
+  {
+    if (!buf_.empty())
+      return false;
+    return in_.eof();
+  }
+
+  /// Handles the escaping of a character.
+  ///
+  /// This function must be called whenever the low level character
+  /// reading function encountered a backslash character ('\').  In
+  /// that case, this function reads the subsequent characters from
+  /// the input stream, sees if it needs to espace those and then
+  /// handles the escaping if need be.  Otherwise, it does nothing.
+  ///
+  /// This is a subroutine of the read_context::get() and
+  /// read_context::peek() functions.
+  ///
+  /// @param peek if true, it means this function was called after the
+  /// caller issued a read_context::peek() call, rather than a
+  /// read_context::get() call.
+  ///
+  /// @return true if an escaping took place.
+  bool
+  handle_escape(char& c, bool peek = false)
+  {
+    bool escaped = false;
+    char b = c;
+
+    if (b == '\\')
+      {
+	escaped = true;
+	b = get(/*escape=*/false);
+	if (!good())
+	  return escaped;
+	if (peek)
+	  {
+	    assert(b == c);
+	    b = get(/*escape=*/false);
+	    if (!good())
+	      return escaped;
+	  }
 
 	switch (b)
 	  {
@@ -744,9 +995,10 @@ public:
 	    // character and this end-of-line character on the floor
 	    // just like if they never existed.
 	    ++cur_column_;
-	    b = in_.get();
-	    if (!in_.good())
-	      return false;
+	    b = get(/*escape=*/false);
+	    if (!good())
+	      return escaped;
+	    c = b;
 	    break;
 	  case '\\':
 	  case ';':
@@ -757,10 +1009,33 @@ public:
 	    c = b;
 	    break;
 	  }
-	++cur_column_;
       }
     else
       c = b;
+
+    return escaped;
+  }
+
+  /// Read the next character from the input stream.
+  ///
+  /// This method updates the current line/column number after looking
+  /// at the actual char that got read.  Note that escaped characters
+  /// are handled transparently at this point.
+  ///
+  /// @param c output parameter.  This is set by this function to the
+  /// character that was read.  It's set iff the function returned
+  /// true.
+  ///
+  /// @return true if the reading went well and if the input stream is
+  /// in a non-erratic state.
+  bool
+  read_next_char(char& c)
+  {
+    char b = get();
+    if (!good())
+      return false;
+
+    c = b;
 
     if (cur_line_ == 0)
       cur_line_ = 1;
@@ -794,7 +1069,7 @@ public:
       if (c == '\n')
 	break;
 
-    return (c == '\n' || in_.eof());
+    return (c == '\n' || eof());
   }
 
   /// If the current character is a white space, skip it and all the
@@ -804,12 +1079,12 @@ public:
   bool
   skip_white_spaces()
   {
-    for (char c = in_.peek(); in_.good(); c = in_.peek())
+    for (char c = peek(); good(); c = peek())
       if (char_is_white_space(c))
 	assert(read_next_char(c));
       else
 	break;
-    return in_.good() || in_.eof();
+    return good() || eof();
   }
 
   /// If the current character is the beginning of a comment, skip
@@ -820,12 +1095,12 @@ public:
   bool
   skip_comments()
   {
-    for (char c = in_.peek(); in_.good(); c = in_.peek())
+    for (char c = peek(); good(); c = peek())
       if (char_is_comment_start(c))
 	skip_line();
       else
 	break;
-    return in_.good() || in_.eof();
+    return good() || eof();
   }
 
   /// If the current character is either the beginning of a comment or
@@ -837,9 +1112,9 @@ public:
   skip_white_spaces_or_comments()
   {
     int b = 0;
-    while (in_.good())
+    while (good())
       {
-	b = in_.peek();
+	b = peek();
 	if (char_is_white_space(b))
 	  skip_white_spaces();
 	else if (char_is_comment_start(b))
@@ -847,7 +1122,7 @@ public:
 	else
 	  break;
       }
-    return in_.good() || in_.eof();
+    return good() || eof();
   }
 
   /// Read a property name.
@@ -861,14 +1136,14 @@ public:
   bool
   read_property_name(string& name)
   {
-    char c = in_.peek();
-    if (!in_.good() || !char_is_property_name_char(c))
+    char c = peek();
+    if (!good() || !char_is_property_name_char(c))
       return false;
 
     assert(read_next_char(c));
     name += c;
 
-    for (c = in_.peek(); in_.good(); c = in_.peek())
+    for (c = peek(); good(); c = peek())
       {
 	if (!char_is_property_name_char(c))
 	  break;
@@ -890,14 +1165,14 @@ public:
   bool
   read_function_name(string& name)
   {
-    char c = in_.peek();
-    if (!in_.good() || !char_is_function_name_char(c))
+    char c = peek();
+    if (!good() || !char_is_function_name_char(c))
       return false;
 
     assert(read_next_char(c));
     name += c;
 
-    for (c = in_.peek(); in_.good(); c = in_.peek())
+    for (c = peek(); good(); c = peek())
       {
 	if (!char_is_function_name_char(c))
 	  break;
@@ -918,14 +1193,14 @@ public:
   bool
   read_function_argument(string& argument)
   {
-    char c = in_.peek();
-    if (!in_.good() || !char_is_function_argument_char(c))
+    char c = peek();
+    if (!good() || !char_is_function_argument_char(c))
       return false;
 
     assert(read_next_char(c));
     argument += c;
 
-    for (c = in_.peek(); in_.good(); c = in_.peek())
+    for (c = peek(); good(); c = peek())
       {
 	if (!char_is_function_argument_char(c))
 	  break;
@@ -950,11 +1225,11 @@ public:
   bool
   read_function_call_expr(function_call_expr_sptr& expr)
   {
-    if (!in_.good())
+    if (!good())
       return false;
 
     skip_white_spaces_or_comments();
-    if (!in_.good())
+    if (!good())
       return false;
 
     string name;
@@ -963,8 +1238,8 @@ public:
 
     skip_white_spaces_or_comments();
 
-    int b = in_.peek();
-    if (!in_.good() || b != '(')
+    int b = peek();
+    if (!good() || b != '(')
       return false;
 
     char c = 0;
@@ -973,14 +1248,14 @@ public:
     assert(c == '(');
 
     skip_white_spaces_or_comments();
-    if (!in_.good())
+    if (!good())
       return false;
 
     // Read function call arguments.
     vector<string> arguments;
     for (;;)
       {
-	if (in_.peek() == ')')
+	if (peek() == ')')
 	  break;
 
 	string arg;
@@ -988,15 +1263,15 @@ public:
 	  return true;
 
 	skip_white_spaces_or_comments();
-	if (!in_.good())
+	if (!good())
 	  return false;
 
-	if (in_.peek() == ',')
+	if (peek() == ',')
 	  {
 	    c = 0;
 	    assert(read_next_char(c) && c == ',');
 	    skip_white_spaces_or_comments();
-	    if (!in_.good())
+	    if (!good())
 	      return false;
 	  }
 
@@ -1018,8 +1293,8 @@ public:
   {
     property_value_sptr nil, result;
 
-    int b = in_.peek();
-    if (!in_.good())
+    int b = peek();
+    if (!good())
       return nil;
 
     if (b == '{')
@@ -1028,7 +1303,45 @@ public:
 	  return t;
 	return nil;
       }
-    return read_string_property_value();
+
+    list_property_value_sptr list = read_list_property_value();
+    if (list->get_content().size() == 1)
+      result.reset(new string_property_value(list->get_content()[0]));
+    else
+      result = list;
+
+    return result;
+  }
+
+  /// Reads a string from the input stream.
+  ///
+  /// A string is just a contiguous set of characters that test
+  /// positive when passed to
+  /// read_context::char_is_property_name_char().
+  ///
+  /// @return the string read.
+  string
+  read_string()
+  {
+    int b = peek();
+    if (!good())
+      return "";
+
+    if (char_is_delimiter(b, /*include_white_space=*/false))
+      // Empty property value.  This is accepted.
+      return "";
+
+    string v;
+    for (b = peek(); good();b = peek())
+      {
+	if (!char_is_property_value_char(b))
+	  break;
+	char c = 0;
+	assert(read_next_char(c));
+	v += c;
+      }
+    string result = remove_trailing_white_spaces(v);
+    return result;
   }
 
   /// Read a string property value.
@@ -1038,31 +1351,47 @@ public:
   read_string_property_value()
   {
     string_property_value_sptr nil, result;
-    int b = in_.peek();
-    if (!in_.good())
+    if (!good())
       return nil;
 
-    if (char_is_delimiter(b, /*include_white_space=*/false))
-      {
-	// Empty property value.  This is accepted.
-	result.reset(new string_property_value);
-	return result;
-      }
-
-    string v;
-    char c = 0;
-    assert(read_next_char(c));
-    v += c;
-
-    for (b = in_.peek(); in_.good();b = in_.peek())
-      {
-	if (!char_is_property_value_char(b))
-	  break;
-	assert(read_next_char(c));
-	v += c;
-      }
-    string value = remove_trailing_white_spaces(v);
+    string value = read_string();
     result.reset(new string_property_value(value));
+    return result;
+  }
+
+  /// Read a @ref list_property_value.
+  ///
+  /// @return the instance of @ref list_property_value read, or nil if
+  /// none was read.
+  list_property_value_sptr
+  read_list_property_value()
+  {
+    list_property_value_sptr nil, result;
+    string str;
+    vector<string> content;
+
+    for (;;)
+      {
+	str = read_string();
+	if (str.empty())
+	  break;
+	content.push_back(str);
+
+	skip_white_spaces();
+
+	int b = peek();
+	if (!good() || b != ',')
+	  break;
+	skip_white_spaces();
+
+	char c = 0;
+	read_next_char(c);
+	assert(c == ',');
+      }
+
+    if (!content.empty())
+      result.reset(new list_property_value(content));
+
     return result;
   }
 
@@ -1076,8 +1405,8 @@ public:
   read_tuple_property_value()
   {
     tuple_property_value_sptr nil, result;
-    int b = in_.peek();
-    if (!in_.good())
+    int b = peek();
+    if (!good())
       return nil;
 
     if (b != '{')
@@ -1088,22 +1417,23 @@ public:
 
     property_value_sptr value;
     vector<property_value_sptr> values;
-    while (in_.good() && in_.peek() != '}')
+    while (good() && peek() != '}')
       {
 	skip_white_spaces();
 	if ((value = read_property_value()))
 	  values.push_back(value);
 	skip_white_spaces();
-	if (in_.good() && in_.peek() == ',')
+	if (good() && peek() == ',')
 	  {
 	    c = 0;
 	    read_next_char(c);
 	  }
       }
 
-    b = in_.peek();
+    b = peek();
     if (b != '}')
       return nil;
+
     c = 0;
     read_next_char(c);
 
@@ -1122,15 +1452,15 @@ public:
   bool
   read_section_name(string& name)
   {
-    int b = in_.peek();
-    if (!in_.good() || !char_is_section_name_char(b))
+    int b = peek();
+    if (!good() || !char_is_section_name_char(b))
       return false;
 
     char c = 0;
     assert(read_next_char(c) || char_is_section_name_char(b));
     name += c;
 
-    for (b = in_.peek(); in_.good(); b = in_.peek())
+    for (b = peek(); good(); b = peek())
       {
 	if (!char_is_section_name_char(b))
 	  break;
@@ -1155,7 +1485,7 @@ public:
       return nil;
 
     skip_white_spaces();
-    if (!in_.good())
+    if (!good())
       return nil;
 
     char c = 0;
@@ -1163,7 +1493,7 @@ public:
       return nil;
 
     skip_white_spaces();
-    if (!in_.good())
+    if (!good())
       return nil;
 
     property_value_sptr value = read_property_value();
@@ -1173,12 +1503,13 @@ public:
     property_sptr result;
     if (tuple_property_value_sptr tv = is_tuple_property_value(value))
       result.reset(new tuple_property(name, tv));
+    else if (list_property_value_sptr lv = is_list_property_value(value))
+      result.reset(new list_property(name, lv));
+    else if (string_property_value_sptr sv = is_string_property_value(value))
+      result.reset(new simple_property(name, sv));
     else
-      {
-	string_property_value_sptr sv = is_string_property_value(value);
-	assert(sv);
-	result.reset(new simple_property(name, sv));
-      }
+      // This new kind of property is not yet supported!
+      std::abort();
 
     return result;
   }
@@ -1192,8 +1523,8 @@ public:
   {
     config::section_sptr nil;
 
-    int b = in_.peek();
-    if (!in_.good())
+    int b = peek();
+    if (!good())
       return nil;
 
     char c = 0;
@@ -1423,12 +1754,13 @@ write_property_value(const property_sptr& prop)
   string result;
   if (simple_property_sptr simple_prop = is_simple_property(prop))
     result = simple_prop->get_value()->as_string();
-  else
-    {
-      tuple_property_sptr tuple_prop = is_tuple_property(prop);
-      assert(tuple_prop);
+  else if (list_property_sptr list_prop = is_list_property(prop))
+    result = list_prop->get_value()->as_string();
+  else if (tuple_property_sptr tuple_prop = is_tuple_property(prop))
       result = tuple_prop->get_value()->as_string();
-    }
+  else
+    // This new kind of property is not yet supported!
+    abort();
     return result;
 }
 

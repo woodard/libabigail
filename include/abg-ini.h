@@ -86,7 +86,8 @@ public:
   {
     ABSTRACT_PROPERTY_VALUE = 0,
     STRING_PROPERTY_VALUE = 1,
-    TUPLE_PROPERTY_VALUE = 2,
+    LIST_PROPERTY_VALUE = 2,
+    TUPLE_PROPERTY_VALUE = 3,
   };
 
 private:
@@ -142,6 +143,48 @@ is_string_property_value(const property_value*);
 
 string_property_value_sptr
 is_string_property_value(const property_value_sptr);
+
+class list_property_value;
+
+/// A convenience typedef for a shared_ptr to @ref
+/// list_property_value.
+typedef shared_ptr<list_property_value> list_property_value_sptr;
+
+/// Abstracts the value of a property representing a list of strings.
+///
+/// It's the right hand side of the construct which syntax looks like:
+///
+///   name = val1, val2, val3
+///
+/// where val1, val2 and val3 are strings.
+///
+/// So this class abstracts the set [val1, val2, val3].
+class list_property_value : public property_value
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+  list_property_value();
+  list_property_value(const vector<string>& values);
+
+  const vector<string>&
+  get_content() const;
+
+  void
+  set_content(const vector<string>&);
+
+  virtual const string&
+  as_string() const;
+}; // end class list_property_value
+
+list_property_value*
+is_list_property_value(const property_value*);
+
+list_property_value_sptr
+is_list_property_value(const property_value_sptr&);
 
 class tuple_property_value;
 
@@ -215,6 +258,47 @@ is_simple_property(const property* p);
 
 simple_property_sptr
 is_simple_property(const property_sptr p);
+
+class list_property;
+
+/// A convenience typedef for a shared_ptr to a @ref list_property.
+typedef shared_ptr<list_property> list_property_sptr;
+
+/// A class representing a list property.
+///
+/// It abstracts a construct which syntax looks like:
+///
+///    name = val1, val2, val3
+///
+/// The value of a list property is a @ref list_property_value, i.e, a
+/// list of strings.
+class list_property : public property
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+public:
+  list_property();
+
+  list_property(const string& name,
+		const list_property_value_sptr& value);
+
+  const list_property_value_sptr&
+  get_value() const;
+
+  void
+  set_value(const list_property_value_sptr& value);
+
+  virtual ~list_property();
+}; // end class list_property
+
+list_property*
+is_list_property(const property* p);
+
+list_property_sptr
+is_list_property(const property_sptr p);
 
 class tuple_property;
 /// Convenience typedef for a shared_ptr of @ref tuple_property.

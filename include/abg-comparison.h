@@ -568,6 +568,18 @@ public:
   insertion_ranges&
   get_data_member_insertion_ranges();
 
+  const vector<string>&
+  get_source_locations_to_keep() const;
+
+  void
+  set_source_locations_to_keep(const vector<string>&);
+
+  const string&
+  get_source_location_to_keep_regex_str() const;
+
+  void
+  set_source_location_to_keep_regex_str(const string&);
+
   virtual bool
   suppresses_diff(const diff* diff) const;
 
