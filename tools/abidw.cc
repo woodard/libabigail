@@ -39,6 +39,8 @@
 #include "abg-corpus.h"
 #include "abg-dwarf-reader.h"
 #include "abg-writer.h"
+#include "abg-reader.h"
+#include "abg-comparison.h"
 
 using std::string;
 using std::cerr;
@@ -46,6 +48,15 @@ using std::cout;
 using std::ostream;
 using std::ofstream;
 using std::tr1::shared_ptr;
+using abigail::tools_utils::temp_file;
+using abigail::tools_utils::temp_file_sptr;
+using abigail::comparison::corpus_diff;
+using abigail::comparison::corpus_diff_sptr;
+using abigail::comparison::compute_diff;
+using abigail::comparison::diff_context_sptr;
+using abigail::comparison::diff_context;
+using abigail::xml_writer::write_corpus_to_native_xml;
+using abigail::xml_reader::read_corpus_from_native_xml_file;
 
 struct options
 {
@@ -58,6 +69,7 @@ struct options
   bool			load_all_types;
   bool			show_stats;
   bool			noout;
+  bool			abidiff;
 
   options()
     : check_alt_debug_info_path(),
@@ -65,7 +77,8 @@ struct options
       write_architecture(true),
       load_all_types(),
       show_stats(),
-      noout()
+      noout(),
+      abidiff()
   {}
 };
 
@@ -85,6 +98,7 @@ display_usage(const string& prog_name, ostream& out)
     "debug info of <elf-path>, and show its base name\n"
       << "  --load-all-types read all types including those not reachable from"
          "exported declarations\n"
+      << "  --abidiff compare the loaded ABI against itself\n"
       << "  --stats  show statistics about various internal stuff\n";
     ;
 }
@@ -146,6 +160,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--load-all-types"))
 	opts.load_all_types = true;
+      else if (!strcmp(argv[i], "--abidiff"))
+	opts.abidiff = true;
       else if (!strcmp(argv[i], "--stats"))
 	opts.show_stats = true;
       else if (!strcmp(argv[i], "--help")
@@ -263,6 +279,36 @@ main(int argc, char* argv[])
     }
   else
     {
+      if (opts.abidiff)
+	{
+	  // Save the abi in abixml format in a temporary file, read
+	  // it back, and compare the ABI of what we've read back
+	  // against the ABI of the input ELF file.
+	  temp_file_sptr tmp_file = temp_file::create();
+	  write_corpus_to_native_xml(corp, 0, tmp_file->get_stream());
+	  tmp_file->get_stream().flush();
+	  corpus_sptr corp2 =
+	    read_corpus_from_native_xml_file(tmp_file->get_path(),
+					     env.get());
+	  if (!corp2)
+	    {
+	      cerr << "Could not read temporary XML representation of "
+		"elf file back\n";
+	      return 1;
+	    }
+	  diff_context_sptr ctxt(new diff_context);
+	  ctxt->default_output_stream(&cerr);
+	  ctxt->error_output_stream(&cerr);
+	  corpus_diff_sptr diff = compute_diff(corp, corp2, ctxt);
+	  bool has_error = diff->has_changes();
+	  if (has_error)
+	    {
+	      diff->report(cerr);
+	      return 1;
+	    }
+	  return 0;
+	}
+
       if (opts.noout)
 	return 0;
 

@@ -76,6 +76,17 @@ Options
     makes ``abidw`` load *all* the types defined in the binaries, even
     those that are not reachable from public declarations.
 
+  *  ``--abidiff``
+
+    Load the ABI of the ELF binary given in argument, save it in
+    libabigail's XML format in a temporary file; read the ABI from the
+    temporary XML file and compare the ABI that has been read back
+    against the ABI of the ELF binary given in argument.  The ABIs
+    should compare equal.  If they don't, the program emits a
+    diagnostic and exits with a non-zero code.
+
+    This is a debugging and sanity check option.
+ 
   * ``--stats``
 
     Emit statistics about various internal things.
