@@ -708,7 +708,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -732,6 +732,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+      </data-member>
+    </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-41'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-34'/>
@@ -3010,7 +3018,7 @@
       <namespace-decl name='system'>
         <namespace-decl name='errc'>
         </namespace-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
+        <class-decl name='error_category' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <function-decl name='system_category' mangled-name='_ZN5boost6system15system_categoryEv' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='212' column='1' visibility='default' binding='global' size-in-bits='64'>
           <return type-id='type-id-1'/>
         </function-decl>
@@ -5214,7 +5222,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -5237,6 +5245,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+      </data-member>
+    </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-41'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-34'/>
@@ -7787,7 +7803,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
+        <class-decl name='error_category' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-2'>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='m_val' type-id='type-id-3' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='304' column='1'/>
@@ -8954,7 +8970,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -8977,6 +8993,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+      </data-member>
+    </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-41'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-34'/>
@@ -10899,7 +10923,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
+        <class-decl name='error_category' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-2'>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='m_val' type-id='type-id-3' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='304' column='1'/>
@@ -11231,7 +11255,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -11254,6 +11278,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+      </data-member>
+    </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-41'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-34'/>
@@ -12721,7 +12753,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
+        <class-decl name='error_category' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-2'>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='m_val' type-id='type-id-3' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='304' column='1'/>
@@ -12873,7 +12905,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -12897,6 +12929,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+      </data-member>
+    </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-41'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-34'/>
@@ -15305,7 +15345,7 @@
             </function-decl>
           </member-function>
         </class-decl>
-        <class-decl name='error_category' size-in-bits='64' visibility='default' is-declaration-only='yes' id='type-id-10'/>
+        <class-decl name='error_category' visibility='default' is-declaration-only='yes' id='type-id-10'/>
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-2'>
           <data-member access='private' layout-offset-in-bits='0'>
             <var-decl name='m_val' type-id='type-id-3' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='304' column='1'/>
@@ -16170,7 +16210,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -16193,6 +16233,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+      </data-member>
+    </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-41'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-34'/>
@@ -18181,7 +18229,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -18204,6 +18252,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+      </data-member>
+    </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-41'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-34'/>
@@ -19231,7 +19287,7 @@
       <parameter type-id='type-id-37'/>
       <return type-id='type-id-35'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-38'/>
     <typedef-decl name='div_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-39'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
@@ -19255,6 +19311,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-38'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='quot' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='rem' type-id='type-id-34' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
+      </data-member>
+    </class-decl>
     <typedef-decl name='ldiv_t' type-id='type-id-38' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-41'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-34'/>
@@ -19518,7 +19582,7 @@
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-59'/>
     </function-decl>
-    <class-decl name='__va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-73'/>
+    <class-decl name='__va_list_tag' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-73'/>
     <typedef-decl name='__va_list_tag' type-id='type-id-73' id='type-id-74'/>
     <pointer-type-def type-id='type-id-74' size-in-bits='64' id='type-id-75'/>
     <function-decl name='vfwprintf' filepath='/usr/include/wchar.h' line='612' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -19587,7 +19651,7 @@
       <parameter type-id='type-id-51'/>
       <return type-id='type-id-37'/>
     </function-decl>
-    <class-decl name='tm' size-in-bits='448' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-76'/>
+    <class-decl name='tm' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-76'/>
     <qualified-type-def type-id='type-id-76' const='yes' id='type-id-77'/>
     <pointer-type-def type-id='type-id-77' size-in-bits='64' id='type-id-78'/>
     <qualified-type-def type-id='type-id-78' restrict='yes' id='type-id-79'/>

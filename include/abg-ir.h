@@ -128,11 +128,12 @@ class environment
 {
 public:
 
-  // A convenience typedef for a map of canonical types.  The a map
-  /// entry key is the hash value of a particular type and the value
-  /// is the list of canonical types that have the same hash value.
-  typedef std::tr1::unordered_map<size_t,
-				  std::list<type_base_sptr> > canonical_types_map_type;
+  /// A convenience typedef for a map of canonical types.  The key is
+  /// the pretty representation string of a particular type and the
+  /// value is the vector of canonical types that have the same pretty
+  /// representation string.
+  typedef std::tr1::unordered_map<string,
+				  std::vector<type_base_sptr> > canonical_types_map_type;
 
 private:
   struct priv;
@@ -801,10 +802,6 @@ class type_or_decl_base : public ir_traversable_base
 
 protected:
 
-  size_t get_cached_hash_value() const;
-
-  void set_cached_hash_value(size_t) const;
-
   bool hashing_started() const;
 
   void hashing_started(bool) const;
@@ -1200,8 +1197,6 @@ public:
   /// A hasher for shared_ptr<type_base> that will hash it based on the
   /// runtime type of the type pointed to.
   struct shared_ptr_hash;
-
-  struct cached_hash;
 
   type_base(size_t s, size_t a);
 
@@ -3368,17 +3363,6 @@ struct type_base::dynamic_hash
 {
   size_t
   operator()(const type_base* t) const;
-};
-
-/// A hasher that manages to cache the computed hash and re-use it if
-/// it is available.
-struct type_base::cached_hash
-{
-  size_t
-  operator() (const type_base* t) const;
-
-  size_t
-  operator() (const type_base_sptr t) const;
 };
 
 /// A hashing functor for instances and pointers of @ref var_decl.

@@ -245,18 +245,6 @@ main()
 	  is_ok &= false;
 	}
 
-      string abidiff = get_build_dir() + "/tools/abidiff";
-      cmd = abidiff + " --no-architecture " + in_path + " " + out_path;
-      if (system(cmd.c_str()))
-	{
-	  cerr << "ABIs differ:\n"
-	       << in_path
-	       << "\nand:\n"
-	       << out_path
-	       << "\n";
-	  is_ok &= false;
-	}
-
       cmd = "diff -u " + in_path + " " + out_path;
       if (system(cmd.c_str()))
 	is_ok &= false;

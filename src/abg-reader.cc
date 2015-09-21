@@ -252,8 +252,9 @@ public:
   {
     const_types_map_it i = m_types_map.find(id);
     if (i == m_types_map.end())
-      return shared_ptr<type_base>();
-    return shared_ptr<type_base>(i->second[0]);
+      return type_base_sptr();
+    type_base_sptr result = i->second[0];
+    return result;
   }
 
   /// Return the vector of types already seen, that are identified by
@@ -1535,8 +1536,12 @@ translation_unit_sptr
 read_translation_unit_from_file(const string&	input_file,
 				environment*	env)
 {
-  read_context read_ctxt(xml::new_reader_from_file(input_file), env);
-  return read_translation_unit_from_input(read_ctxt);
+  read_context ctxt(xml::new_reader_from_file(input_file), env);
+  translation_unit_sptr tu = read_translation_unit_from_input(ctxt);
+  ctxt.get_environment()->canonicalization_is_done(false);
+  ctxt.perform_late_type_canonicalizing();
+  ctxt.get_environment()->canonicalization_is_done(true);
+  return tu;
 }
 
 /// Parse an ABI instrumentation file (in XML format) from an
@@ -1553,8 +1558,12 @@ translation_unit_sptr
 read_translation_unit_from_buffer(const string&	buffer,
 				  environment*		env)
 {
-  read_context read_ctxt(xml::new_reader_from_buffer(buffer), env);
-  return read_translation_unit_from_input(read_ctxt);
+  read_context ctxt(xml::new_reader_from_buffer(buffer), env);
+  translation_unit_sptr tu = read_translation_unit_from_input(ctxt);
+  ctxt.get_environment()->canonicalization_is_done(false);
+  ctxt.perform_late_type_canonicalizing();
+  ctxt.get_environment()->canonicalization_is_done(true);
+  return tu;
 }
 
 /// This function is called by @ref read_translation_unit_from_input.
@@ -3678,6 +3687,10 @@ build_type_tparameter(read_context&		ctxt,
   else
     ctxt.push_and_key_type_decl(result, id, /*add_to_current_scope=*/true);
 
+  assert(result->get_environment());
+
+  ctxt.maybe_canonicalize_type(result, /*force_delay=*/false);
+
   return result;
 }
 
@@ -3854,7 +3867,10 @@ build_template_tparameter(read_context&	ctxt,
     }
 
   if (result)
-    ctxt.key_type_decl(result, id);
+    {
+      ctxt.key_type_decl(result, id);
+      ctxt.maybe_canonicalize_type(result, /*force_delay=*/false);
+    }
 
   return result;
 }

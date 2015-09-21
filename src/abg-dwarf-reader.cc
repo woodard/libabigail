@@ -7549,14 +7549,8 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
   type_base_sptr t = ctxt.lookup_type_from_die_offset(die_offset, in_alt_di);
   assert(t);
 
-  if (class_decl_sptr klass = is_class_type(t))
-    {
-      if ((klass->get_is_declaration_only()
-	   && (klass->get_definition_of_declaration() == 0))
-	  || klass->has_virtual_member_functions()
-	  || type_has_non_canonicalized_subtype(t))
-	ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
-    }
+  if (class_decl_sptr klass = is_class_type(peel_typedef_type(t)))
+    ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
   else if(type_has_non_canonicalized_subtype(t))
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
   else

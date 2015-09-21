@@ -33,6 +33,7 @@
 #include <tr1/unordered_map>
 #include "abg-config.h"
 #include "abg-corpus.h"
+#include "abg-diff-utils.h"
 
 #if WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
@@ -101,10 +102,20 @@ public:
   }
 };
 
+/// A hashing functor that should be as fast as possible.
+struct type_hasher
+{
+  size_t
+  operator()(const type_base* t) const
+  {return hash_type_or_decl(t);}
+};
+
+/// A convenience typedef for a map that associates a pointer to type
+/// to a string.  The pointer to type is hashed as fast as possible.
 typedef unordered_map<type_base*,
 		      string,
-		      type_base::cached_hash,
-		      type_ptr_equal> type_ptr_map;
+		      type_hasher,
+		      abigail::diff_utils::deep_ptr_eq_functor> type_ptr_map;
 
 typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
@@ -1833,7 +1844,8 @@ write_class_decl(const class_decl_sptr	decl,
 
   o << "<class-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
 
-  write_size_and_alignment(decl, o);
+  if (!decl->get_is_declaration_only())
+    write_size_and_alignment(decl, o);
 
   write_is_struct(decl, o);
 
@@ -2016,7 +2028,9 @@ write_class_decl(const class_decl_sptr	decl,
       o << "</class-decl>";
     }
 
-  ctxt.record_type_as_emitted(decl);
+  if (!(decl->get_is_declaration_only()
+	&& decl->get_definition_of_declaration()))
+    ctxt.record_type_as_emitted(decl);
 
   return true;
 }

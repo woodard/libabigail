@@ -1684,15 +1684,11 @@ environment::canonicalization_is_done(bool f)
 /// The private data of @ref type_or_decl_base.
 struct type_or_decl_base::priv
 {
-  // If a non-scalar data member is added, please think about adding a
-  // copy operator for this type.
-  size_t	hash_;
   bool		hashing_started_;
   environment*	env_;
 
   priv()
-    : hash_(),
-      hashing_started_(),
+    : hashing_started_(),
       env_()
   {}
 }; // end struct type_or_decl_base
@@ -1723,20 +1719,6 @@ type_or_decl_base::hashing_started() const
 void
 type_or_decl_base::hashing_started(bool b) const
 {priv_->hashing_started_ = b;}
-
-/// Getter of the cached hash value of this ABI artifact.
-///
-/// @return cached hash value of this ABI artifact.
-size_t
-type_or_decl_base::get_cached_hash_value() const
-{return priv_->hash_;}
-
-/// Setter of the cached hash value of this ABI artifact.
-///
-/// @param v the new cached value.
-void
-type_or_decl_base::set_cached_hash_value(size_t v) const
-{priv_->hash_ = v;}
 
 /// Setter of the environment of the current ABI artifact.
 ///
@@ -5704,51 +5686,49 @@ type_base::get_canonical_type_for(type_base_sptr t)
   // Look through declaration-only classes
   if (class_decl_sptr class_declaration = is_class_type(t))
     if (class_declaration->get_is_declaration_only())
-      return type_base_sptr();
+      {
+	if (class_decl_sptr def =
+	    class_declaration->get_definition_of_declaration())
+	  t = def;
+	else
+	  return type_base_sptr();
+      }
 
   if (t->get_canonical_type())
     return t->get_canonical_type();
 
-  type_base::dynamic_hash hash;
-  size_t h = hash(t.get());
-
-  environment::canonical_types_map_type& m = env->get_canonical_types_map();
-  environment::canonical_types_map_type::iterator i = m.find(h);
+  string repr = ir::get_pretty_representation(t);
+  environment::canonical_types_map_type& types =
+    env->get_canonical_types_map();
 
   type_base_sptr result;
-
-  if (i == m.end())
+  environment::canonical_types_map_type::iterator i = types.find(repr);
+  if (i == types.end())
     {
-      m[h].push_back(t);
+      vector<type_base_sptr> v;
+      v.push_back(t);
+      types[repr] = v;
       result = t;
     }
   else
-    for (std::list<type_base_sptr>::iterator j = i->second.begin();
-	 j != i->second.end();
-	 ++j)
-      if (t == *j)
+    {
+      vector<type_base_sptr> &v = i->second;
+      for (vector<type_base_sptr>::const_iterator it = v.begin();
+	   it != v.end();
+	   ++it)
 	{
-	  result = *j;
-	  break;
+	  if (*it == t)
+	    {
+	      result = *it;
+	      break;
+	    }
 	}
-
-  if (!result)
-    {
-      result = t;
-      i->second.push_back(result);
+      if (!result)
+	{
+	  v.push_back(t);
+	  result = t;
+	}
     }
-
-  assert(result);
-
-  // Cache the hashed value that took so much CPU time to compute.
-  // That way, next time when the entire canonicalization process is
-  // done, one can re-use the cached value.
-  if (!t->get_cached_hash_value())
-    {
-      t->set_cached_hash_value(h);
-      t->set_cached_hash_value(h);
-    }
-
   return result;
 }
 
@@ -10005,12 +9985,8 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 size_t
 class_decl::base_spec::get_hash() const
 {
-  if (get_cached_hash_value() == 0)
-    {
-      base_spec::hash h;
-      set_cached_hash_value(h(*this));
-    }
-  return get_cached_hash_value();
+  base_spec::hash h;
+  return h(*this);
 }
 
 /// Traverses an instance of @ref class_decl::base_spec, visiting all
@@ -10785,8 +10761,25 @@ class_decl::operator==(const decl_base& other) const
   if (!op)
     return false;
 
-  if (get_canonical_type() && op->get_canonical_type())
-    return get_canonical_type().get() == op->get_canonical_type().get();
+  type_base_sptr canonical_type = get_canonical_type(),
+    other_canonical_type = op->get_canonical_type();
+
+  // If this is a declaration only class with no canonical class, use
+  // the canonical type of the definition, if any.
+  if (!canonical_type
+      && get_is_declaration_only()
+      && get_definition_of_declaration())
+    canonical_type = get_definition_of_declaration()->get_canonical_type();
+
+  // Likewise for the other class.
+  if (!other_canonical_type
+      && op->get_is_declaration_only()
+      && op->get_definition_of_declaration())
+    other_canonical_type =
+      op->get_definition_of_declaration()->get_canonical_type();
+
+  if (canonical_type && other_canonical_type)
+    return canonical_type.get() == other_canonical_type.get();
 
   const class_decl& o = *op;
   return equals(*this, o, 0);
@@ -12083,6 +12076,19 @@ keep_type_alive(type_base_sptr t)
 
 /// Hash an ABI artifact that is either a type or a decl.
 ///
+/// This function intends to provides the fastest possible hashing for
+/// types and decls, while being completely correct.
+///
+/// Note that if the artifact is a type and if it has a canonical
+/// type, the hash value is going to be the pointer value of the
+/// canonical type.  Otherwise, this function computes a hash value
+/// for the type by recursively walking the type members.  This last
+/// code path is possibly *very* slow and should only be used when
+/// only handful of types are going to be hashed.
+///
+/// If the artifact is a decl, then a combination of the hash of its
+/// type and the hash of the other properties of the decl is computed.
+///
 /// @param tod the type or decl to hash.
 ///
 /// @return the resulting hash value.
@@ -12095,11 +12101,42 @@ hash_type_or_decl(const type_or_decl_base *tod)
     ;
   else if (const type_base* t = dynamic_cast<const type_base*>(tod))
     {
-      type_base::dynamic_hash hash;
-      result = hash(t);
+      // If the type has a canonical type, then use the pointer value
+      // as a hash.  This is the fastest we can get.
+      if (t->get_canonical_type())
+	result = reinterpret_cast<size_t>(t->get_canonical_type().get());
+      else
+	{
+	  type_base::dynamic_hash hash;
+	  result = hash(t);
+	}
     }
   else if (const decl_base* d = dynamic_cast<const decl_base*>(tod))
-    result = d->get_hash();
+    {
+      if (var_decl* v = is_var_decl(d))
+	{
+	  assert(v->get_type());
+	  size_t h = hash_type_or_decl(v->get_type());
+	  string repr = v->get_pretty_representation();
+	  std::tr1::hash<string> hash_string;
+	  h = hashing::combine_hashes(h, hash_string(repr));
+	  result = h;
+	}
+      else if (function_decl* f = is_function_decl(d))
+	{
+	  assert(f->get_type());
+	  size_t h = hash_type_or_decl(f->get_type());
+	  string repr = f->get_pretty_representation();
+	  std::tr1::hash<string> hash_string;
+	  h = hashing::combine_hashes(h, hash_string(repr));
+	  result = h;
+	}
+      else
+	// This is a *really* *SLOW* path.  If it shows up in a
+	// performan profile, I bet it'd be a good idea to try to
+	// avoid it altogether.
+	result = d->get_hash();
+    }
   else
     // We should never get here.
     abort();

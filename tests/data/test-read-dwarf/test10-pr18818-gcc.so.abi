@@ -35862,7 +35862,7 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-158'/>
     </function-decl>
-    <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-159'/>
+    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-159'/>
     <typedef-decl name='__FILE' type-id='type-id-159' filepath='/usr/include/stdio.h' line='64' column='1' id='type-id-169'/>
     <pointer-type-def type-id='type-id-169' size-in-bits='64' id='type-id-170'/>
     <function-decl name='fgetwc' filepath='/usr/include/wchar.h' line='745' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -36052,7 +36052,7 @@
       <parameter type-id='type-id-82'/>
       <return type-id='type-id-72'/>
     </function-decl>
-    <class-decl name='tm' size-in-bits='448' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-180'/>
+    <class-decl name='tm' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-180'/>
     <qualified-type-def type-id='type-id-180' const='yes' id='type-id-181'/>
     <pointer-type-def type-id='type-id-181' size-in-bits='64' id='type-id-182'/>
     <function-decl name='wcsftime' filepath='/usr/include/wchar.h' line='855' column='1' visibility='default' binding='global' size-in-bits='64'>

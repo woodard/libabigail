@@ -909,14 +909,6 @@ type_base::dynamic_hash::operator()(const type_base* t) const
   if (t == 0)
     return 0;
 
-  if (t->get_environment()
-      && t->get_environment()->canonicalization_is_done()
-      && t->get_cached_hash_value())
-    // Type canonicalization has been done, so we can use cached hash
-    // values.  And it appears that a has value was cached here, so
-    // let's re-use it to save precious CPU time.
-    return t->get_cached_hash_value();
-
   if (const class_decl::member_function_template* d =
       dynamic_cast<const class_decl::member_function_template*>(t))
     return class_decl::member_function_template::hash()(*d);
@@ -960,14 +952,4 @@ size_t
 type_base::shared_ptr_hash::operator()(const shared_ptr<type_base> t) const
 {return type_base::dynamic_hash()(t.get());}
 
-size_t
-type_base::cached_hash::operator()(const type_base* t) const
-{
-  const decl_base* d = get_type_declaration(t);
-  return d->get_hash();
-}
-
-size_t
-type_base::cached_hash::operator() (const type_base_sptr t) const
-{return type_base::cached_hash()(t.get());}
 }//end namespace abigail
