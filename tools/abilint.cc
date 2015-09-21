@@ -68,7 +68,6 @@ struct options
   bool				read_from_stdin;
   bool				read_tu;
   bool				diff;
-  bool				bidiff;
   bool				noout;
   std::tr1::shared_ptr<char>	di_root_path;
 
@@ -76,7 +75,6 @@ struct options
     : read_from_stdin(false),
       read_tu(false),
       diff(false),
-      bidiff(false),
       noout(false)
   {}
 };//end struct options;
@@ -91,8 +89,6 @@ display_usage(const string& prog_name, ostream& out)
            "debug info for the elf <abi-file>\n"
       << "  --diff  for xml inputs, perform a text diff between "
          "the input and the memory model saved back to disk\n"
-      << "  --bidiff perform an abi diff between the input "
-         "and the memory model(not yet implemented)\n"
       << "  --noout  do not display anything on stdout\n"
       << "  --stdin|--  read abi-file content from stdin\n"
       << "  --tu  expect a single translation unit file\n";
@@ -135,8 +131,6 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.read_tu = true;
 	else if (!strcmp(argv[i], "--diff"))
 	  opts.diff = true;
-	else if (!strcmp(argv[i], "--bidiff"))
-	  opts.bidiff = true;
 	else if (!strcmp(argv[i], "--noout"))
 	  opts.noout = true;
 	else
