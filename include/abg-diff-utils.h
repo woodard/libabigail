@@ -760,7 +760,7 @@ struct deep_ptr_eq_functor
   template<typename T>
   bool
   operator()(const T* first,
-	     const T* second)
+	     const T* second) const
   {
     if (!!first != !!second)
       return false;
@@ -774,7 +774,7 @@ struct deep_ptr_eq_functor
   template<typename T>
   bool
   operator()(const shared_ptr<T> first,
-	     const shared_ptr<T> second)
+	     const shared_ptr<T> second) const
   {return operator()(first.get(), second.get());}
 };
 
