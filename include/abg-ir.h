@@ -854,7 +854,6 @@ class decl_base : public virtual type_or_decl_base
   typedef shared_ptr<priv> priv_sptr;
 
 protected:
-  mutable priv_sptr priv_;
 
   const string&
   peek_qualified_name() const;
@@ -863,6 +862,11 @@ protected:
   set_qualified_name(const string&) const;
 
 public:
+  // This is public because some internals of the library need to
+  // update it.  But it's opaque to client code anyway, so no big
+  // deal.
+  priv_sptr priv_;
+
   /// Facility to hash instances of decl_base.
   struct hash;
 
@@ -2884,6 +2888,9 @@ public:
 
   friend void
   fixup_virtual_member_function(method_decl_sptr method);
+
+  friend void
+  set_member_is_static(decl_base& d, bool s);
 
   friend bool
   equals(const class_decl&, const class_decl&, change_kind*);

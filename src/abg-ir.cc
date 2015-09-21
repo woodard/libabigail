@@ -93,7 +93,30 @@ public:
     return true;
   }
 };
-}
+
+/// This internal type is a tree walking that is used to set the
+/// qualified name of a tree of decls and types.  It used by the
+/// function update_qualified_name().
+class qualified_name_setter : public abigail::ir::ir_node_visitor
+{
+  abigail::ir::decl_base* node_;
+
+public:
+  qualified_name_setter(abigail::ir::decl_base* node)
+    : node_(node)
+  {}
+
+  bool
+  do_update(abigail::ir::decl_base* d);
+
+  bool
+  visit_begin(abigail::ir::decl_base* d);
+
+  bool
+  visit_begin(abigail::ir::type_base* d);
+}; // end class qualified_name_setter
+
+}// end anon namespace
 
 namespace abigail
 {
@@ -2053,31 +2076,7 @@ decl_base::get_scope() const
 /// @return the newly-built qualified name of the of the current decl.
 const string&
 decl_base::get_qualified_parent_name() const
-{
-  if (priv_->qualified_parent_name_.empty()
-      || (is_type(this)
-	  && !is_type(this)->get_canonical_type()))
-    {
-      list<string> qn_components;
-      for (scope_decl* s = get_scope();
-	   s && !is_global_scope(s);
-	   s = s->get_scope())
-	qn_components.push_front(s->get_name());
-
-      string qn;
-      for (list<string>::const_iterator i = qn_components.begin();
-	   i != qn_components.end();
-	   ++i)
-	if (i == qn_components.begin())
-	  qn += *i;
-	else
-	  qn += "::" + *i;
-
-      priv_->qualified_parent_name_ = qn;
-    }
-
-  return priv_->qualified_parent_name_;
-}
+{return priv_->qualified_parent_name_;}
 
 /// Getter for the name of the current decl.
 ///
@@ -2105,21 +2104,7 @@ decl_base::get_pretty_representation() const
 /// @return the resulting qualified name.
 const string&
 decl_base::get_qualified_name() const
-{
-  if (priv_->qualified_name_.empty()
-      || (is_type(this)
-	  && !is_type(this)->get_canonical_type()))
-    {
-      priv_->qualified_name_ = get_qualified_parent_name();
-      if (!get_name().empty())
-	{
-	  if (!priv_->qualified_name_.empty())
-	    priv_->qualified_name_ += "::";
-	  priv_->qualified_name_ += get_name();
-	}
-    }
-  return priv_->qualified_name_;
-}
+{return priv_->qualified_name_.empty() ? get_name() : priv_->qualified_name_;}
 
 change_kind
 operator|(change_kind l, change_kind r)
@@ -2526,37 +2511,6 @@ get_member_is_static(const decl_base* d)
 bool
 get_member_is_static(const decl_base_sptr& d)
 {return get_member_is_static(*d);}
-
-/// Sets the static-ness property of a class member.
-///
-/// @param d the class member to set the static-ness property for.
-/// Note that this must be a class member otherwise the function
-/// aborts the current process.
-///
-/// @param s this must be true if the member is to be static, false
-/// otherwise.
-void
-set_member_is_static(decl_base& d, bool s)
-{
-  assert(is_member_decl(d));
-
-  context_rel* c = d.get_context_rel();
-  assert(c);
-
-  c->set_is_static(s);
-}
-
-/// Sets the static-ness property of a class member.
-///
-/// @param d the class member to set the static-ness property for.
-/// Note that this must be a class member otherwise the function
-/// aborts the current process.
-///
-/// @param s this must be true if the member is to be static, false
-/// otherwise.
-void
-set_member_is_static(const decl_base_sptr& d, bool s)
-{set_member_is_static(*d, s);}
 
 /// Test if a var_decl is a data member.
 ///
@@ -3381,19 +3335,44 @@ peel_typedef_pointer_or_reference_type(const type_base* type)
   return const_cast<type_base*>(type);
 }
 
+/// Update the qualified name of a given sub-tree.
+///
+/// @param d the sub-tree for which to update the qualified name.
+static void
+update_qualified_name(decl_base * d)
+{
+  ::qualified_name_setter setter(d);
+  d->traverse(setter);
+}
+
+/// Update the qualified name of a given sub-tree.
+///
+/// @param d the sub-tree for which to update the qualified name.
+static void
+update_qualified_name(decl_base_sptr d)
+{return update_qualified_name(d.get());}
+
 /// Add a member decl to this scope.  Note that user code should not
 /// use this, but rather use add_decl_to_scope.
+///
+/// Note that this function updates the qualified name of the member
+/// decl that is added.  It also sets the scope of the member.  Thus,
+/// it asserts that member should not have its scope set, prior to
+/// calling this function.
 ///
 /// @param member the new member decl to add to this scope.
 decl_base_sptr
 scope_decl::add_member_decl(const decl_base_sptr member)
 {
+  assert(!has_scope(member));
+
+  member->set_scope(this);
   members_.push_back(member);
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     member_scopes_.push_back(m);
 
-  member->priv_->qualified_name_.clear();
+  update_qualified_name(member);
 
   if (environment* env = get_environment())
     set_environment_for_artifact(member, env);
@@ -3405,6 +3384,9 @@ scope_decl::add_member_decl(const decl_base_sptr member)
 /// pointed to by a given iterator.  Note that user code should not
 /// use this, but rather use insert_decl_into_scope.
 ///
+/// Note that this function updates the qualified name of the inserted
+/// member.
+///
 /// @param member the new member decl to add to this scope.
 ///
 /// @param before an interator pointing to the element before which
@@ -3413,12 +3395,15 @@ decl_base_sptr
 scope_decl::insert_member_decl(const decl_base_sptr member,
 			       declarations::iterator before)
 {
+  assert(!member->get_scope());
+
+  member->set_scope(this);
   members_.insert(before, member);
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
     member_scopes_.push_back(m);
 
-  member->priv_->qualified_name_.clear();
+  update_qualified_name(member);
 
   if (environment* env = get_environment())
     set_environment_for_artifact(member, env);
@@ -3676,10 +3661,8 @@ add_decl_to_scope(decl_base_sptr decl, scope_decl* scope)
   assert(scope);
 
   if (scope && decl && !decl->get_scope())
-    {
-      decl = scope->add_member_decl(decl);
-      decl->set_scope(scope);
-    }
+    decl = scope->add_member_decl(decl);
+
   return decl;
 }
 
@@ -3724,7 +3707,6 @@ insert_decl_into_scope(decl_base_sptr decl,
   if (scope && decl && !decl->get_scope())
     {
       decl_base_sptr d = scope->insert_member_decl(decl, before);
-      decl->set_scope(scope);
       decl = d;
     }
   return decl;
@@ -9885,7 +9867,7 @@ class_decl::insert_member_decl(decl_base_sptr d,
     {
       add_data_member(v, public_access,
 		      /*is_laid_out=*/false,
-		      /*is_static=*/false,
+		      /*is_static=*/true,
 		      /*offset_in_bits=*/0);
       d = v;
     }
@@ -9945,7 +9927,6 @@ class_decl::insert_member_type(type_base_sptr t,
   assert(d);
   assert(!has_scope(d));
 
-  d->set_scope(this);
   priv_->member_types_.push_back(t);
   scope_decl::insert_member_decl(d, before);
 }
@@ -10185,15 +10166,31 @@ class_decl::add_data_member(var_decl_sptr v, access_specifier access,
 {
   assert(!has_scope(v));
 
-  dm_context_rel_sptr ctxt(new dm_context_rel(this, is_laid_out,
-					      offset_in_bits,
-					      access, is_static));
-  v->set_context_rel(ctxt);
   priv_->data_members_.push_back(v);
   scope_decl::add_member_decl(v);
+  set_data_member_is_laid_out(v, is_laid_out);
+  set_data_member_offset(v, offset_in_bits);
+  set_member_access_specifier(v, access);
+  set_member_is_static(v, is_static);
+
 
   if (!is_static)
-    priv_->non_static_data_members_.push_back(v);
+    {
+      // If this is a non-static variable, add it to the set of
+      // non-static variables, if it's not only in there.
+      bool is_already_in = false;
+      for (data_members::const_iterator i =
+	     priv_->non_static_data_members_.begin();
+	   i != priv_->non_static_data_members_.end();
+	   ++i)
+	if (*i == v)
+	  {
+	    is_already_in = true;
+	    break;
+	  }
+      if (!is_already_in)
+	priv_->non_static_data_members_.push_back(v);
+    }
 }
 
 mem_fn_context_rel::~mem_fn_context_rel()
@@ -10421,20 +10418,19 @@ class_decl::add_member_function(method_decl_sptr f,
 {
   assert(!has_scope(f));
 
-  mem_fn_context_rel_sptr ctxt(new mem_fn_context_rel(this, is_ctor,
-						      is_dtor, is_const,
-						      is_virtual,
-						      vtable_offset,
-						      a, is_static));
-
-  f->set_context_rel(ctxt);
-  priv_->member_functions_.push_back(f);
   scope_decl::add_member_decl(f);
-  if (get_member_function_is_virtual(f))
-    {
-      priv_->virtual_mem_fns_.push_back(f);
-      sort_virtual_member_functions(priv_->virtual_mem_fns_);
-    }
+
+  set_member_function_is_ctor(f, is_ctor);
+  set_member_function_is_dtor(f, is_dtor);
+  set_member_function_is_virtual(f, is_virtual);
+  set_member_function_vtable_offset(f, vtable_offset);
+  set_member_access_specifier(f, a);
+  set_member_is_static(f, is_static);
+  set_member_function_is_const(f, is_const);
+
+  priv_->member_functions_.push_back(f);
+  if (is_virtual)
+    sort_virtual_member_functions(priv_->virtual_mem_fns_);
 }
 
 /// When a virtual member function has seen its virtualness set by
@@ -10473,10 +10469,9 @@ class_decl::add_member_function_template
   decl_base* c = m->as_function_tdecl()->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
-  assert(!c);
-  m->as_function_tdecl()->set_scope(this);
   priv_->member_function_templates_.push_back(m);
-  scope_decl::add_member_decl(m->as_function_tdecl());
+  if (!c)
+    scope_decl::add_member_decl(m->as_function_tdecl());
 }
 
 /// Append a member class template to the class.
@@ -10488,11 +10483,10 @@ class_decl::add_member_class_template(shared_ptr<member_class_template> m)
   decl_base* c = m->as_class_tdecl()->get_scope();
   /// TODO: use our own assertion facility that adds a meaningful
   /// error message or something like a structured error.
-  assert(!c);
-  priv_->member_class_templates_.push_back(m);
   m->set_scope(this);
-  m->as_class_tdecl()->set_scope(this);
-  scope_decl::add_member_decl(m->as_class_tdecl());
+  priv_->member_class_templates_.push_back(m);
+  if (!c)
+    scope_decl::add_member_decl(m->as_class_tdecl());
 }
 
 /// Return true iff the class has no entity in its scope.
@@ -11128,6 +11122,93 @@ operator<<(std::ostream& o, access_specifier a)
   o << r;
   return o;
 }
+
+/// Sets the static-ness property of a class member.
+///
+/// @param d the class member to set the static-ness property for.
+/// Note that this must be a class member otherwise the function
+/// aborts the current process.
+///
+/// @param s this must be true if the member is to be static, false
+/// otherwise.
+void
+set_member_is_static(decl_base& d, bool s)
+{
+  assert(is_member_decl(d));
+
+  context_rel* c = d.get_context_rel();
+  assert(c);
+
+  c->set_is_static(s);
+
+  scope_decl* scope = d.get_scope();
+  assert(scope);
+
+  if (class_decl* cl = is_class_type(scope))
+    {
+      if (var_decl* v = is_var_decl(&d))
+	{
+	  if (s)
+	    // remove from the non-static data members
+	    for (class_decl::data_members::iterator i =
+		   cl->priv_->non_static_data_members_.begin();
+		 i != cl->priv_->non_static_data_members_.end();
+		 ++i)
+	      {
+		if (**i == *v)
+		  {
+		    cl->priv_->non_static_data_members_.erase(i);
+		    break;
+		  }
+	      }
+	  else
+	    {
+	      bool is_already_in_non_static_data_members = false;
+	      for (class_decl::data_members::iterator i =
+		     cl->priv_->non_static_data_members_.begin();
+		   i != cl->priv_->non_static_data_members_.end();
+		   ++i)
+	      {
+		if (**i == *v)
+		  {
+		    is_already_in_non_static_data_members = true;
+		    break;
+		  }
+	      }
+	      if (!is_already_in_non_static_data_members)
+		{
+		  var_decl_sptr var;
+		  // add to non-static data members.
+		  for (class_decl::data_members::const_iterator i =
+			 cl->priv_->data_members_.begin();
+		       i != cl->priv_->data_members_.end();
+		       ++i)
+		    {
+		      if (**i == *v)
+			{
+			  var = *i;
+			  break;
+			}
+		    }
+		  assert(var);
+		  cl->priv_->non_static_data_members_.push_back(var);
+		}
+	    }
+	}
+    }
+}
+
+/// Sets the static-ness property of a class member.
+///
+/// @param d the class member to set the static-ness property for.
+/// Note that this must be a class member otherwise the function
+/// aborts the current process.
+///
+/// @param s this must be true if the member is to be static, false
+/// otherwise.
+void
+set_member_is_static(const decl_base_sptr& d, bool s)
+{set_member_is_static(*d, s);}
 
 // </class_decl>
 
@@ -12361,3 +12442,63 @@ fns_to_str(vector<function_decl*>::const_iterator a_begin,
 
 }// end namespace ir
 }//end namespace abigail
+
+namespace
+{
+
+/// Update the qualified parent name and qualified name of a tree decl
+/// node.
+///
+/// @return true if the tree walking should continue, false otherwise.
+///
+/// @param d the tree node to take in account.
+bool
+qualified_name_setter::do_update(abigail::ir::decl_base* d)
+{
+  std::string parent_qualified_name;
+  if (abigail::ir::scope_decl* parent = d->get_scope())
+    d->priv_->qualified_parent_name_ = parent->get_qualified_name();
+  else
+    d->priv_->qualified_parent_name_.clear();
+
+  if (d->priv_->qualified_parent_name_.empty())
+    d->priv_->qualified_name_ = d->get_name();
+  else
+    {
+      if (d->get_name().empty())
+	d->priv_->qualified_name_.clear();
+      else
+	d->priv_->qualified_name_ =
+	  d->priv_->qualified_parent_name_ + "::" + d->get_name();
+    }
+
+  if (!is_scope_decl(d))
+    return false;
+
+  return true;
+}
+
+/// This is called when we start visiting a decl node, during the
+/// udpate of the qualified name of a given sub-tree.
+///
+/// @param d the decl node we are visiting.
+///
+/// @return true iff the traversal should keep going.
+bool
+qualified_name_setter::visit_begin(abigail::ir::decl_base* d)
+{return do_update(d);}
+
+/// This is called when we start visiting a type node, during the
+/// udpate of the qualified name of a given sub-tree.
+///
+/// @param d the decl node we are visiting.
+///
+/// @return true iff the traversal should keep going.
+bool
+qualified_name_setter::visit_begin(abigail::ir::type_base* t)
+{
+  if (abigail::ir::decl_base* d = get_type_declaration(t))
+    return do_update(d);
+  return false;
+}
+}// end anonymous namespace.

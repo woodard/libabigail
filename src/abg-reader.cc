@@ -3394,9 +3394,13 @@ build_class_decl(read_context&		ctxt,
 		continue;
 
 	      if (shared_ptr<var_decl> v =
-		  build_var_decl(ctxt, p, /*add_to_current_scope=*/false))
-		decl->add_data_member(v, access, is_laid_out,
-				      is_static, offset_in_bits);
+		  build_var_decl(ctxt, p, /*add_to_current_scope=*/true))
+		{
+		  set_member_access_specifier(v, access);
+		  set_data_member_is_laid_out(v, is_laid_out);
+		  set_member_is_static(v, is_static);
+		  set_data_member_offset(v, offset_in_bits);
+		}
 	    }
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("member-function")))
@@ -3428,17 +3432,18 @@ build_class_decl(read_context&		ctxt,
 
 	      if (function_decl_sptr f =
 		  build_function_decl(ctxt, p, decl,
-				      /*add_to_current_scope=*/false))
+				      /*add_to_current_scope=*/true))
 		{
 		  class_decl::method_decl_sptr m =
 		    dynamic_pointer_cast<class_decl::method_decl>(f);
 		  assert(m);
-		  decl->add_member_function(m, access,
-					    is_virtual,
-					    vtable_offset,
-					    is_static,
-					    is_ctor, is_dtor,
-					    is_const);
+		  set_member_access_specifier(m, access);
+		  set_member_is_static(m, is_static);
+		  set_member_function_is_virtual(m, is_virtual);
+		  set_member_function_vtable_offset(m, vtable_offset);
+		  set_member_function_is_ctor(m, is_ctor);
+		  set_member_function_is_dtor(m, is_dtor);
+		  set_member_function_is_const(m, is_const);
 		  break;
 		}
 	    }
@@ -3463,24 +3468,24 @@ build_class_decl(read_context&		ctxt,
 
 	      if (shared_ptr<function_tdecl> f =
 		  build_function_tdecl(ctxt, p,
-				       /*add_to_current_scope=*/false))
+				       /*add_to_current_scope=*/true))
 		{
 		  shared_ptr<class_decl::member_function_template> m
 		    (new class_decl::member_function_template(f, access,
 							      is_static,
 							      is_ctor,
 							      is_const));
-		  assert(!f->get_scope());
+		  assert(f->get_scope());
 		  decl->add_member_function_template(m);
 		}
 	      else if (shared_ptr<class_tdecl> c =
 		       build_class_tdecl(ctxt, p,
-					 /*add_to_current_scope=*/false))
+					 /*add_to_current_scope=*/true))
 		{
 		  shared_ptr<class_decl::member_class_template> m
 		    (new class_decl::member_class_template(c, access,
 							   is_static));
-		  assert(!c->get_scope());
+		  assert(c->get_scope());
 		  decl->add_member_class_template(m);
 		}
 	    }
