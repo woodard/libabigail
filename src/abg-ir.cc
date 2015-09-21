@@ -2405,6 +2405,16 @@ bool
 is_member_decl(const decl_base& d)
 {return is_at_class_scope(d);}
 
+/// Test if a declaration is a @ref scope_decl.
+///
+/// @param d the declaration to take in account.
+///
+/// @return the a pointer to the @ref scope_decl sub-object of @p d,
+/// if d is a @ref scope_decl.
+scope_decl*
+is_scope_decl(decl_base* d)
+{return dynamic_cast<scope_decl*>(d);}
+
 /// Tests if a type is a class member.
 ///
 /// @param t the type to consider.
@@ -4427,9 +4437,29 @@ is_template_parameter(const shared_ptr<decl_base> decl)
 ///
 /// @return a shared pointer to @ref function_decl if @p d is a @ref
 /// function_decl.  Otherwise, a nil shared pointer.
+function_decl*
+is_function_decl(const decl_base* d)
+{return dynamic_cast<function_decl*>(const_cast<decl_base*>(d));}
+
+/// Test whether a declaration is a @ref function_decl.
+///
+/// @param d the declaration to test for.
+///
+/// @return a shared pointer to @ref function_decl if @p d is a @ref
+/// function_decl.  Otherwise, a nil shared pointer.
 function_decl_sptr
 is_function_decl(decl_base_sptr d)
 {return dynamic_pointer_cast<function_decl>(d);}
+
+/// Test if an ABI artifact is a declaration.
+///
+/// @param d the artifact to consider.
+///
+/// @param return the declaration sub-object of @p d if it's a
+/// declaration, or NULL if it is not.
+decl_base*
+is_decl(const decl_base* d)
+{return dynamic_cast<decl_base*>(const_cast<decl_base*>(d));}
 
 /// Test if an ABI artifact is a declaration.
 ///
@@ -4801,7 +4831,17 @@ look_through_decl_only_class(class_decl_sptr klass)
   return klass;
 }
 
-/// Tests wheter a declaration is a variable declaration.
+/// Tests if a declaration is a variable declaration.
+///
+/// @param decl the decl to test.
+///
+/// @return the var_decl_sptr iff decl is a variable declaration; nil
+/// otherwise.
+var_decl*
+is_var_decl(const type_or_decl_base* tod)
+{return dynamic_cast<var_decl*>(const_cast<type_or_decl_base*>(tod));}
+
+/// Tests if a declaration is a variable declaration.
 ///
 /// @param decl the decl to test.
 ///
@@ -4810,6 +4850,24 @@ look_through_decl_only_class(class_decl_sptr klass)
 var_decl_sptr
 is_var_decl(const shared_ptr<decl_base> decl)
 {return dynamic_pointer_cast<var_decl>(decl);}
+
+/// Tests if a declaration is a namespace declaration.
+///
+/// @param d the decalration to consider.
+///
+/// @return the namespace declaration if @p d is a namespace.
+namespace_decl_sptr
+is_namespace(const decl_base_sptr& d)
+{return dynamic_pointer_cast<namespace_decl>(d);}
+
+/// Tests if a declaration is a namespace declaration.
+///
+/// @param d the decalration to consider.
+///
+/// @return the namespace declaration if @p d is a namespace.
+namespace_decl*
+is_namespace(const decl_base* d)
+{return dynamic_cast<namespace_decl*>(const_cast<decl_base*>(d));}
 
 /// Tests whether a decl is a template parameter composition type.
 ///

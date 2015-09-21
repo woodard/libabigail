@@ -172,8 +172,14 @@ is_at_template_scope(const shared_ptr<decl_base>);
 bool
 is_template_parameter(const shared_ptr<decl_base>);
 
+function_decl*
+is_function_decl(decl_base*);
+
 shared_ptr<function_decl>
 is_function_decl(shared_ptr<decl_base>);
+
+decl_base*
+is_decl(const type_or_decl_base*);
 
 shared_ptr<decl_base>
 is_decl(const shared_ptr<type_or_decl_base>&);
@@ -280,8 +286,17 @@ is_method_type(type_base*);
 shared_ptr<class_decl>
 look_through_decl_only_class(shared_ptr<class_decl>);
 
+var_decl*
+is_var_decl(const type_or_decl_base*);
+
 shared_ptr<var_decl>
 is_var_decl(const shared_ptr<decl_base>);
+
+shared_ptr<namespace_decl>
+is_namespace(const shared_ptr<decl_base>&);
+
+namespace_decl*
+is_namespace(const namespace_decl*);
 
 bool
 is_template_parm_composition_type(const shared_ptr<decl_base>);
@@ -322,6 +337,9 @@ is_member_decl(const decl_base*);
 
 bool
 is_member_decl(const decl_base&);
+
+scope_decl*
+is_scope_decl(decl_base*);
 
 bool
 is_member_type(const shared_ptr<type_base>);
