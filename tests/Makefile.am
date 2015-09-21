@@ -19,7 +19,6 @@ runtestreaddwarf		\
 runtestcanonicalizetypes.sh	\
 runtestreadwrite		\
 $(ZIP_ARCHIVE_TESTS)		\
-runtestreaddwarf		\
 runtestlookupsyms		\
 runtestaltdwarf			\
 runtestcorediff			\
