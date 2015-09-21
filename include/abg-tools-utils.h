@@ -43,6 +43,8 @@ bool is_regular_file(const string&);
 bool is_dir(const string&);
 bool base_name(string const& path,
 	       string& file_name);
+bool dir_name(string const &path,
+	      string& path_dir_name);
 bool ensure_dir_path_created(const string&);
 bool ensure_parent_dir_created(const string&);
 bool check_file(const string& path, ostream& out);
