@@ -598,7 +598,8 @@ class_decl::hash::operator()(const class_decl& t) const
   if (t.get_is_declaration_only())
     {
       assert(t.get_definition_of_declaration());
-      return operator()(*t.get_definition_of_declaration());
+      size_t v = operator()(*t.get_definition_of_declaration());
+      return v;
     }
 
   assert(!t.get_is_declaration_only());

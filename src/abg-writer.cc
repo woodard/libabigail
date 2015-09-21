@@ -127,6 +127,16 @@ typedef unordered_map<shared_ptr<class_tdecl>,
 
 class write_context
 {
+  id_manager				m_id_manager;
+  config				m_config;
+  ostream&				m_ostream;
+  type_ptr_map				m_type_id_map;
+  unordered_map<string, bool>		m_emitted_type_id_map;
+  fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
+  class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
+  string_elf_symbol_sptr_map_type	m_fun_symbol_map;
+  string_elf_symbol_sptr_map_type	m_var_symbol_map;
+
   write_context();
 
 public:
@@ -269,17 +279,8 @@ public:
   get_fun_symbol_map()
   {return m_fun_symbol_map;}
 
-private:
-  id_manager				m_id_manager;
-  config				m_config;
-  ostream&				m_ostream;
-  type_ptr_map				m_type_id_map;
-  unordered_map<string, bool>		m_emitted_type_id_map;
-  fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
-  class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
-  string_elf_symbol_sptr_map_type	m_fun_symbol_map;
-  string_elf_symbol_sptr_map_type	m_var_symbol_map;
-};				//end write_context
+
+};//end write_context
 
 static bool write_translation_unit(const translation_unit&,
 				   write_context&, unsigned);

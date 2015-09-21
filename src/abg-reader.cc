@@ -494,7 +494,7 @@ public:
   ///
   /// @param t the type to consider.
   bool
-  is_wip_type(const type_base_sptr t)
+  is_wip_type(const type_base_sptr t) const
   {
     if (!t)
       return false;
