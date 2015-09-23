@@ -27,6 +27,7 @@ test-read-write/test23.xml \
 test-read-write/test24.xml \
 test-read-write/test25.xml \
 test-read-write/test26.xml \
+test-read-write/test27.xml \
 \
 test-write-read-archive/test0.xml \
 test-write-read-archive/test1.xml \
@@ -235,6 +236,16 @@ test-diff-dwarf/test31-vtable-changes-v0.cc \
 test-diff-dwarf/test31-vtable-changes-v0.o \
 test-diff-dwarf/test31-vtable-changes-v1.cc \
 test-diff-dwarf/test31-vtable-changes-v1.o \
+test-diff-dwarf/test32-fnptr-changes-report-0.txt \
+test-diff-dwarf/test32-fnptr-changes-v0.cc \
+test-diff-dwarf/test32-fnptr-changes-v0.o \
+test-diff-dwarf/test32-fnptr-changes-v1.cc \
+test-diff-dwarf/test32-fnptr-changes-v1.o \
+test-diff-dwarf/test33-fnref-changes-report-0.txt \
+test-diff-dwarf/test33-fnref-changes-v0.cc \
+test-diff-dwarf/test33-fnref-changes-v0.o \
+test-diff-dwarf/test33-fnref-changes-v1.cc \
+test-diff-dwarf/test33-fnref-changes-v1.o \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

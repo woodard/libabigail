@@ -1567,14 +1567,14 @@ public:
 				 type_or_decl_base_sptr second);
 
   friend distinct_diff_sptr
-  compute_diff_for_distinct_kinds(const decl_base_sptr first,
-				  const decl_base_sptr second,
+  compute_diff_for_distinct_kinds(const type_or_decl_base_sptr first,
+				  const type_or_decl_base_sptr second,
 				  diff_context_sptr ctxt);
 };// end class distinct_types_diff
 
 distinct_diff_sptr
-compute_diff_for_distinct_kinds(const decl_base_sptr,
-				const decl_base_sptr,
+compute_diff_for_distinct_kinds(const type_or_decl_base_sptr,
+				const type_or_decl_base_sptr,
 				diff_context_sptr ctxt);
 
 /// Abstracts a diff between two instances of @ref var_decl

@@ -20,9 +20,9 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
     note that this adds a new entry to the vtable of class std::bad_array_new_length
   'method virtual std::bad_array_new_length::~bad_array_new_length(int)'
     note that this adds a new entry to the vtable of class std::bad_array_new_length
-  'function void std::get_new_handler()'
-  'function void std::get_terminate()'
-  'function void std::get_unexpected()'
+  'function std::new_handler std::get_new_handler()'
+  'function std::terminate_handler std::get_terminate()'
+  'function std::unexpected_handler std::get_unexpected()'
   'method std::regex_error::regex_error(std::regex_constants::error_type)'
 
 2 functions with some indirect sub-type change:
@@ -30,7 +30,11 @@ Variable symbols changes summary: 0 Removed, 6 Added variable symbols not refere
   [C]'function __cxxabiv1::__cxa_dependent_exception* __cxxabiv1::__cxa_allocate_dependent_exception()' has some indirect sub-type changes:
     return type changed:
       in pointed to type 'struct __cxxabiv1::__cxa_dependent_exception':
-        4 data member changes:
+        1 data member insertion:
+          'void (void*)* __cxxabiv1::__cxa_dependent_exception::__padding', at offset 32 (in bits)
+        6 data member changes:
+         'std::unexpected_handler __cxxabiv1::__cxa_dependent_exception::unexpectedHandler' offset changed from 32 to 64 (in bits)
+         'std::terminate_handler __cxxabiv1::__cxa_dependent_exception::terminateHandler' offset changed from 64 to 96 (in bits)
          '__cxxabiv1::__cxa_exception* __cxxabiv1::__cxa_dependent_exception::nextException' offset changed from 96 to 128 (in bits)
          'int __cxxabiv1::__cxa_dependent_exception::handlerCount' offset changed from 128 to 160 (in bits)
          '__cxxabiv1::__cxa_exception* __cxxabiv1::__cxa_dependent_exception::nextPropagatingException' offset changed from 160 to 192 (in bits)

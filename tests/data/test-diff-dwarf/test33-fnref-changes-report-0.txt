@@ -1,0 +1,49 @@
+Functions changes summary: 1 Removed, 3 Changed, 1 Added functions
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+1 Removed function:
+
+  'function void fn2(const callback)'
+
+1 Added function:
+
+  'function void fn2(const callback)'
+
+3 functions with some indirect sub-type change:
+
+  [C]'function callback fn0()' has some indirect sub-type changes:
+    return type changed:
+      underlying type 'int (int)&' changed:
+        in referenced type 'function type int (int)':
+          return type changed:
+            type name changed from 'int' to 'void'
+            type size changed from 32 to 0 bits
+
+  [C]'function double (int)& fn1()' has some indirect sub-type changes:
+    return type changed:
+      in referenced type 'function type double (int)':
+        return type changed:
+          type name changed from 'double' to 'int'
+          type size changed from 64 to 32 bits
+
+  [C]'function void foo(S&)' has some indirect sub-type changes:
+    parameter 1 of type 'S&' has sub-type changes:
+      in referenced type 'class S':
+        3 data member changes:
+         type of 'int ()& S::fnref0' changed:
+           in referenced type 'function type int ()':
+             parameter 1 of type 'double' was added
+
+
+         type of 'int ()& S::fnref1' changed:
+           in referenced type 'function type int ()':
+             entity changed from 'function type int ()' to 'int*'
+
+         type of 'int ()& S::fnref2' changed:
+           in referenced type 'function type int ()':
+             entity changed from 'function type int ()' to 'int'
+             type size changed from 64 to 32 bits
+
+
+
+

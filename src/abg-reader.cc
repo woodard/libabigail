@@ -876,6 +876,9 @@ build_pointer_type_def(read_context&, const xmlNodePtr, bool);
 static shared_ptr<reference_type_def>
 build_reference_type_def(read_context&, const xmlNodePtr, bool);
 
+static shared_ptr<function_type>
+build_function_type(read_context&, const xmlNodePtr, bool);
+
 static array_type_def::subrange_sptr
 build_subrange_type(read_context&, const xmlNodePtr);
 
@@ -925,7 +928,7 @@ static shared_ptr<type_base>
 build_type(read_context&, const xmlNodePtr, bool);
 // </build a c++ class  from an instance of xmlNodePtr>
 
-static decl_base_sptr	handle_element_node(read_context&, xmlNodePtr, bool);
+static type_or_decl_base_sptr	handle_element_node(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_type_decl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_namespace_decl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_qualified_type_decl(read_context&,
@@ -934,6 +937,8 @@ static decl_base_sptr	handle_pointer_type_def(read_context&,
 						xmlNodePtr, bool);
 static decl_base_sptr	handle_reference_type_def(read_context&,
 						  xmlNodePtr, bool);
+static type_base_sptr	handle_function_type(read_context&,
+					     xmlNodePtr, bool);
 static decl_base_sptr	handle_array_type_def(read_context&,
 					      xmlNodePtr, bool);
 static decl_base_sptr	handle_enum_type_decl(read_context&, xmlNodePtr, bool);
@@ -1574,11 +1579,11 @@ read_translation_unit_from_buffer(const string&	buffer,
 /// @param ctxt the current parsing context.
 ///
 /// @return true upon successful completion, false otherwise.
-static decl_base_sptr
+static type_or_decl_base_sptr
 handle_element_node(read_context& ctxt, xmlNodePtr node,
 		    bool add_to_current_scope)
 {
-  decl_base_sptr decl;
+  type_or_decl_base_sptr decl;
   if (!node)
     return decl;
 
@@ -1589,6 +1594,7 @@ handle_element_node(read_context& ctxt, xmlNodePtr node,
    ||(decl = handle_pointer_type_def(ctxt, node,
 				     add_to_current_scope))
    || (decl = handle_reference_type_def(ctxt, node, add_to_current_scope))
+   || (decl = handle_function_type(ctxt, node, add_to_current_scope))
    || (decl = handle_array_type_def(ctxt, node, add_to_current_scope))
    || (decl = handle_enum_type_decl(ctxt, node,
 				    add_to_current_scope))
@@ -2820,6 +2826,69 @@ build_reference_type_def(read_context&		ctxt,
   return nil;
 }
 
+/// Build a function_type from a pointer to 'function-type'
+/// xml node.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param node the xml node to build the function_type from.
+///
+/// @param add_to_current_scope if set to yes, the result of
+/// this function is added to its current scope.
+///
+/// @return a pointer to a newly built function_type upon
+/// successful completion, a null pointer otherwise.
+static shared_ptr<function_type>
+build_function_type(read_context&	ctxt,
+		    const xmlNodePtr	node,
+		    bool		add_to_current_scope)
+{
+  shared_ptr<function_type> nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("function-type")))
+    return nil;
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+  assert(!id.empty());
+
+  size_t size = 0, align = 0;
+  read_size_and_alignment(node, size, align);
+
+  std::vector<shared_ptr<function_decl::parameter> > parms;
+  type_base_sptr return_type;
+
+  for (xmlNodePtr n = node->children; n ; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      else if (xmlStrEqual(n->name, BAD_CAST("parameter")))
+	{
+	  if (shared_ptr<function_decl::parameter> p =
+	      build_function_parameter(ctxt, n))
+	    parms.push_back(p);
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("return")))
+	{
+	  string type_id;
+	  if (xml_char_sptr s =
+	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
+	    type_id = CHAR_STR(s);
+	  if (!type_id.empty())
+	    return_type = ctxt.build_or_get_type_decl(type_id, true);
+	}
+    }
+
+  shared_ptr<function_type> fn_type(new function_type(return_type,
+						      parms, size, align));
+
+  ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
+
+  ctxt.maybe_canonicalize_type(fn_type, !add_to_current_scope);
+
+  return fn_type;
+}
 /// Build a array_type_def from a 'array-type-def' xml node.
 ///
 /// @param ctxt the context of the parsing.
@@ -3924,6 +3993,7 @@ build_type(read_context&	ctxt,
    || (t = build_qualified_type_decl(ctxt, node, add_to_current_scope))
    || (t = build_pointer_type_def(ctxt, node, add_to_current_scope))
    || (t = build_reference_type_def(ctxt, node , add_to_current_scope))
+   || (t = build_function_type(ctxt, node, add_to_current_scope))
    || (t = build_array_type_def(ctxt, node, add_to_current_scope))
    || (t = build_enum_type_decl(ctxt, node, add_to_current_scope))
    || (t = build_typedef_decl(ctxt, node, add_to_current_scope))
@@ -4005,6 +4075,21 @@ handle_reference_type_def(read_context& ctxt,
   reference_type_def_sptr decl = build_reference_type_def(ctxt, node,
 							  add_to_current_scope);
   return decl;
+}
+
+/// Parse a function-type element.
+///
+/// @param ctxt the context of the parsing.
+///
+/// function_type is added to.
+static type_base_sptr
+handle_function_type(read_context&	ctxt,
+		     xmlNodePtr		node,
+		     bool		add_to_current_scope)
+{
+  function_type_sptr type = build_function_type(ctxt, node,
+						add_to_current_scope);
+  return type;
 }
 
 /// Parse a array-type-def element.

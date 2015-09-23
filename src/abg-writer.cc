@@ -117,6 +117,11 @@ typedef unordered_map<type_base*,
 		      type_hasher,
 		      abigail::diff_utils::deep_ptr_eq_functor> type_ptr_map;
 
+/// A convenience typedef for a map that associates a shared pointer to a bool.
+typedef unordered_map<shared_ptr<type_base>,
+		      bool,
+		      type_base::shared_ptr_hash> fn_shared_ptr_map;
+
 typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
 		      function_tdecl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
@@ -132,6 +137,10 @@ class write_context
   ostream&				m_ostream;
   type_ptr_map				m_type_id_map;
   unordered_map<string, bool>		m_emitted_type_id_map;
+  /// A vector of function types that are referenced by emitted pointers
+  /// or reference, i.e, that are pointed-to types of pointers or references
+  /// that are emitted.
+  fn_shared_ptr_map			m_referenced_fntypes_map;
   fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
@@ -229,6 +238,27 @@ public:
   record_type_id_as_emitted(const string& id)
   {m_emitted_type_id_map[id] = true;}
 
+  /// Record a given function type as being referenced by
+  /// a pointer or a reference type that is being emitted to the
+  /// XML output.
+  ///
+  /// @param f a shared pointer to a function type
+  void
+  record_fntype_as_referenced(const function_type_sptr& f)
+  {m_referenced_fntypes_map[f->get_canonical_type()] = true;}
+
+  /// Test if a given function type has been referenced by
+  /// a pointer or a reference type that was emitted to the
+  /// XML output.
+  ///
+  /// @param f a shared pointer to a function type
+  ///
+  /// @return true if the type has been referenced, false
+  /// otherwise.
+  bool
+  fntype_is_referenced(const function_type_sptr& f)
+  {return m_referenced_fntypes_map.find(f->get_canonical_type()) != m_referenced_fntypes_map.end();}
+
   /// Flag a type as having been written out to the XML output.
   ///
   /// @param t the type to flag.
@@ -270,6 +300,12 @@ public:
   void
   clear_emitted_types_map()
   {m_emitted_type_id_map.clear();}
+
+  /// Clear the map that contains the IDs of the types that has been
+  /// recorded as having been written out to the XML output.
+  void
+  clear_referenced_fntypes_map()
+  {m_referenced_fntypes_map.clear();}
 
   const string_elf_symbol_sptr_map_type&
   get_fun_symbol_map() const
@@ -329,6 +365,8 @@ static bool write_var_decl(const shared_ptr<var_decl>,
 			   write_context&, bool, unsigned);
 static bool write_function_decl(const shared_ptr<function_decl>,
 				write_context&, bool, unsigned);
+static bool write_function_type(const shared_ptr<function_type>,
+				write_context&, unsigned);
 static bool write_member_type(const type_base_sptr,
 			      write_context&, unsigned);
 static bool write_class_decl(const shared_ptr<class_decl>,
@@ -929,6 +967,7 @@ write_translation_unit(const translation_unit&	tu,
   // So lets clear the map that contains the types that are emitted in
   // the translation unit tu.
   ctxt.clear_emitted_types_map();
+  ctxt.clear_referenced_fntypes_map();
 
   do_indent(o, indent);
 
@@ -969,6 +1008,20 @@ write_translation_unit(const translation_unit&	tu,
 	  continue;
       o << "\n";
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
+    }
+
+  typedef scope_decl::function_types function_types;
+  typedef function_types::const_iterator const_fn_iterator;
+  const function_types& t = tu.get_function_types();
+
+  for (const_fn_iterator i = t.begin(); i != t.end(); ++i)
+    {
+      if (!ctxt.fntype_is_referenced(*i) || ctxt.type_is_emitted(*i))
+	// This function type is either not referenced by any emitted
+	// pointer or reference type, or has already been emitted, so skip it.
+	continue;
+      o << "\n";
+      write_function_type(*i, ctxt, indent + c.get_xml_element_indent());
     }
 
   o << "\n";
@@ -1232,6 +1285,9 @@ write_pointer_type_def(const pointer_type_def_sptr	decl,
     << ctxt.get_id_for_type(decl->get_pointed_to_type())
     << "'";
 
+  if (function_type_sptr f = is_function_type(decl->get_pointed_to_type()))
+    ctxt.record_fntype_as_referenced(f);
+
   write_size_and_alignment(decl, o);
 
   string i = id;
@@ -1301,6 +1357,9 @@ write_reference_type_def(const reference_type_def_sptr		decl,
   o << "'";
 
   o << " type-id='" << ctxt.get_id_for_type(decl->get_pointed_to_type()) << "'";
+
+  if (function_type_sptr f = is_function_type(decl->get_pointed_to_type()))
+    ctxt.record_fntype_as_referenced(f);
 
   write_size_and_alignment(decl, o);
 
@@ -1774,7 +1833,6 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
   write_binding(decl, o);
 
   write_size_and_alignment(decl->get_type(), o);
-
   write_elf_symbol_reference(decl->get_symbol(), o);
 
   o << ">\n";
@@ -1815,6 +1873,68 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
   return true;
 }
 
+/// Serialize a function_type.
+///
+/// @param decl the pointer to function_type to serialize.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the number of indentation white spaces to use.
+///
+/// @return true upon succesful completion, false otherwise.
+static bool
+write_function_type(const shared_ptr<function_type> decl, write_context& ctxt,
+		    unsigned indent)
+{
+  if (!decl)
+    return false;
+
+  ostream &o = ctxt.get_ostream();
+
+  do_indent(o, indent);
+
+  o << "<function-type";
+
+  write_size_and_alignment(decl, o);
+
+  o << " id='"
+    << ctxt.get_id_for_type(decl) << "'";
+  o << ">\n";
+
+  for (vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
+       decl->get_parameters().begin();
+       pi != decl->get_parameters().end();
+       ++pi)
+    {
+      do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+      if ((*pi)->get_variadic_marker())
+	o << "<parameter is-variadic='yes'";
+      else
+	{
+	  o << "<parameter type-id='"
+	    << ctxt.get_id_for_type((*pi)->get_type())
+	    << "'";
+
+	  if (!(*pi)->get_name().empty())
+	    o << " name='" << (*pi)->get_name() << "'";
+	}
+      if ((*pi)->get_artificial())
+	o << " is-artificial='yes'";
+      o << "/>\n";
+    }
+
+  if (shared_ptr<type_base> return_type = decl->get_return_type())
+    {
+      do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
+      o << "<return type-id='" << ctxt.get_id_for_type(return_type) << "'/>\n";
+    }
+
+  do_indent(o, indent);
+  o << "</function-type>";
+
+  ctxt.record_type_as_emitted(decl);
+  return true;
+}
 /// Serialize a class_decl type.
 ///
 /// @param decl the pointer to class_decl to serialize.

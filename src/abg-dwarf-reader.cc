@@ -6614,6 +6614,21 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 				     type_die_is_in_alternate_debug_info))
 		continue;
 
+	      string n, m;
+	      location loc;
+	      die_loc_and_name(ctxt, &child, loc, n, m);
+	       /// For now, we skip the hidden vtable pointer.
+	       /// Currently, we're looking for a member starting with
+	       /// "_vptr[^0-9a-zA-Z_]", which is what Clang and GCC
+	       /// use as a name for the hidden vtable pointer.
+	      if (n.substr(0, 5) == "_vptr"
+		  && !std::isalnum(n.at(5))
+		  && n.at(5) != '_')
+                continue;
+
+	      if (lookup_var_decl_in_scope(n, result))
+		continue;
+
 	      decl_base_sptr ty = is_decl(
 		build_ir_node_from_die(ctxt, &type_die,
 				       type_die_is_in_alternate_debug_info,
@@ -6621,12 +6636,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 				       where_offset));
 	      type_base_sptr t = is_type(ty);
 	      if (!t)
-		continue;
-
-	      string n, m;
-	      location loc;
-	      die_loc_and_name(ctxt, &child, loc, n, m);
-	      if (lookup_var_decl_in_scope(n, result))
 		continue;
 
 	      ssize_t offset_in_bits = 0;
@@ -6862,7 +6871,7 @@ build_pointer_type_def(read_context&	ctxt,
   if (tag != DW_TAG_pointer_type)
     return result;
 
-  decl_base_sptr utype_decl;
+  type_or_decl_base_sptr utype_decl;
   Dwarf_Die underlying_type_die;
   bool has_underlying_type_die = false;
   bool utype_die_is_in_alt_di = false;
@@ -6871,15 +6880,15 @@ build_pointer_type_def(read_context&	ctxt,
 			 utype_die_is_in_alt_di))
     // If the DW_AT_type attribute is missing, that means we are
     // looking at a pointer to "void".
-    utype_decl = is_decl(build_ir_node_for_void_type(ctxt));
+    utype_decl = build_ir_node_for_void_type(ctxt);
   else
     has_underlying_type_die = true;
 
   if (!utype_decl && has_underlying_type_die)
-    utype_decl = is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
-						utype_die_is_in_alt_di,
-						called_from_public_decl,
-						where_offset));
+    utype_decl = build_ir_node_from_die(ctxt, &underlying_type_die,
+					utype_die_is_in_alt_di,
+					called_from_public_decl,
+					where_offset);
   if (!utype_decl)
     return result;
 
@@ -6963,11 +6972,11 @@ build_reference_type(read_context&	ctxt,
 			 utype_is_in_alt_di))
     return result;
 
-  decl_base_sptr utype_decl =
-    is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
-				   utype_is_in_alt_di,
-				   called_from_public_decl,
-				   where_offset));
+  type_or_decl_base_sptr utype_decl =
+    build_ir_node_from_die(ctxt, &underlying_type_die,
+			   utype_is_in_alt_di,
+			   called_from_public_decl,
+			   where_offset);
   if (!utype_decl)
     return result;
 
@@ -7003,6 +7012,134 @@ build_reference_type(read_context&	ctxt,
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_from_alt_di,
 			     result);
+  return result;
+}
+
+/// Build a subroutine type from a DW_TAG_subroutine_type DIE.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param die the DIE to read from.
+///
+/// @param die_is_from_alt_di true if @p is from alternate debug
+/// info.
+///
+/// @param is_method points to a class declaration iff we're
+/// building the type for a method.
+///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positioned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
+/// @return a pointer to the resulting function_type_sptr.
+static function_type_sptr
+build_function_type(read_context&	ctxt,
+		    Dwarf_Die*		die,
+		    bool		die_is_from_alt_di,
+		    class_decl_sptr	is_method,
+		    size_t		where_offset)
+{
+  function_type_sptr result;
+
+  if (!die)
+    return result;
+
+  assert(dwarf_tag(die) == DW_TAG_subroutine_type
+	 || dwarf_tag(die) == DW_TAG_subprogram);
+
+  decl_base_sptr type_decl;
+
+  translation_unit_sptr tu = ctxt.cur_tu();
+  assert(tu);
+
+  // The call to build_ir_node_from_die() could have triggered the
+  // creation of the type for this DIE.  In that case, just return it.
+  if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
+							  die_is_from_alt_di))
+    {
+      result = is_function_type(t);
+      assert(result);
+      return result;
+    }
+
+  decl_base_sptr return_type_decl;
+  Dwarf_Die ret_type_die;
+  bool ret_type_die_is_in_alternate_debug_info = false;
+  if (die_die_attribute(die, die_is_from_alt_di, DW_AT_type, ret_type_die,
+			ret_type_die_is_in_alternate_debug_info))
+    return_type_decl =
+      is_decl(build_ir_node_from_die(ctxt, &ret_type_die,
+				     ret_type_die_is_in_alternate_debug_info,
+				     /*called_from_public_decl=*/true,
+				     where_offset));
+  if (!return_type_decl)
+    return_type_decl = build_ir_node_for_void_type(ctxt);
+
+  Dwarf_Die child;
+  function_decl::parameters function_parms;
+
+  if (dwarf_child(die, &child) == 0)
+    do
+      {
+	int child_tag = dwarf_tag(&child);
+	if (child_tag == DW_TAG_formal_parameter)
+	  {
+	    // This is a "normal" function parameter.
+	    string name, linkage_name;
+	    location loc;
+	    die_loc_and_name(ctxt, &child, loc, name, linkage_name);
+	    bool is_artificial = die_is_artificial(&child);
+	    decl_base_sptr parm_type_decl;
+	    Dwarf_Die parm_type_die;
+	    bool parm_type_die_is_in_alt_di = false;
+	    if (die_die_attribute(&child, die_is_from_alt_di,
+				  DW_AT_type, parm_type_die,
+				  parm_type_die_is_in_alt_di))
+	      parm_type_decl =
+		is_decl(build_ir_node_from_die(ctxt, &parm_type_die,
+					       parm_type_die_is_in_alt_di,
+					       /*called_from_public_decl=*/true,
+					       where_offset));
+	    if (!parm_type_decl)
+	      continue;
+	    function_decl::parameter_sptr p
+	      (new function_decl::parameter(is_type(parm_type_decl), name, loc,
+					    /*variadic_marker=*/false,
+					    is_artificial));
+	    function_parms.push_back(p);
+	  }
+	else if (child_tag == DW_TAG_unspecified_parameters)
+	  {
+	    // This is a variadic function parameter.
+	    bool is_artificial = die_is_artificial(&child);
+	    ir::environment* env = ctxt.env();
+	    assert(env);
+	    type_decl_sptr parm_type = env->get_variadic_parameter_type_decl();
+	    function_decl::parameter_sptr p
+	      (new function_decl::parameter(parm_type,
+					    /*name=*/"",
+					    location(),
+					    /*variadic_marker=*/true,
+					    is_artificial));
+	    function_parms.push_back(p);
+	  }
+      }
+  while (dwarf_siblingof(&child, &child) == 0);
+
+  result.reset(is_method
+	       ? new method_type(is_type(return_type_decl),
+				 is_method,
+				 function_parms,
+				 tu->get_address_size(),
+				 /*alignment=*/0)
+	       : new function_type(is_type(return_type_decl),
+				   function_parms,
+				   tu->get_address_size(),
+				   /*alignment=*/0));
+
+  tu->bind_function_type_life_time(result);
+
   return result;
 }
 
@@ -7311,74 +7448,9 @@ build_function_decl(read_context&	ctxt,
   die_loc_and_name(ctxt, die, floc, fname, flinkage_name);
 
   size_t is_inline = die_is_declared_inline(die);
-
-  decl_base_sptr return_type_decl;
-  Dwarf_Die ret_type_die;
-  bool ret_type_die_is_in_alternate_debug_info = false;
-  if (die_die_attribute(die, is_in_alt_di, DW_AT_type, ret_type_die,
-			ret_type_die_is_in_alternate_debug_info))
-    return_type_decl =
-      is_decl(build_ir_node_from_die(ctxt, &ret_type_die,
-				     ret_type_die_is_in_alternate_debug_info,
-				     /*called_from_public_decl=*/true,
-				     where_offset));
-  if (!return_type_decl)
-    return_type_decl = build_ir_node_for_void_type(ctxt);
-
   class_decl_sptr is_method =
     dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die, is_in_alt_di,
 						       true, where_offset));
-
-  Dwarf_Die child;
-  function_decl::parameters function_parms;
-
-  if (!result && dwarf_child(die, &child) == 0)
-    do
-      {
-	int child_tag = dwarf_tag(&child);
-	if (child_tag == DW_TAG_formal_parameter)
-	  {
-	    // This is a "normal" function parameter.
-	    string name, linkage_name;
-	    location loc;
-	    die_loc_and_name(ctxt, &child, loc, name, linkage_name);
-	    bool is_artificial = die_is_artificial(&child);
-	    decl_base_sptr parm_type_decl;
-	    Dwarf_Die parm_type_die;
-	    bool parm_type_die_is_in_alt_di = false;
-	    if (die_die_attribute(&child, is_in_alt_di,
-				  DW_AT_type, parm_type_die,
-				  parm_type_die_is_in_alt_di))
-	      parm_type_decl =
-		is_decl(build_ir_node_from_die(ctxt, &parm_type_die,
-					       parm_type_die_is_in_alt_di,
-					       /*called_from_public_decl=*/true,
-					       where_offset));
-	    if (!parm_type_decl)
-	      continue;
-	    function_decl::parameter_sptr p
-	      (new function_decl::parameter(is_type(parm_type_decl), name, loc,
-					    /*variadic_marker=*/false,
-					    is_artificial));
-	    function_parms.push_back(p);
-	  }
-	else if (child_tag == DW_TAG_unspecified_parameters)
-	  {
-	    // This is a variadic function parameter.
-	    bool is_artificial = die_is_artificial(&child);
-	    ir::environment* env = ctxt.env();
-	    assert(env);
-	    type_decl_sptr parm_type = env->get_variadic_parameter_type_decl();
-	    function_decl::parameter_sptr p
-	      (new function_decl::parameter(parm_type,
-					    /*name=*/"",
-					    location(),
-					    /*variadic_marker=*/true,
-					    is_artificial));
-	    function_parms.push_back(p);
-	  }
-      }
-  while (!result && dwarf_siblingof(&child, &child) == 0);
 
   if (result)
     {
@@ -7390,18 +7462,11 @@ build_function_decl(read_context&	ctxt,
     }
   else
     {
-      function_type_sptr fn_type(is_method
-				 ? new method_type(is_type(return_type_decl),
-						   is_method,
-						   function_parms,
-						   tu->get_address_size(),
-						   /*alignment=*/0)
-				 : new function_type(is_type(return_type_decl),
-						     function_parms,
-						     tu->get_address_size(),
-						     /*alignement=*/0));
-
-      tu->bind_function_type_life_time(fn_type);
+      function_type_sptr fn_type(build_function_type(ctxt,
+						     die,
+						     is_in_alt_di,
+						     is_method,
+						     where_offset));
 
       result.reset(is_method
 		   ? new class_decl::method_decl(fname, fn_type,
@@ -7798,6 +7863,23 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_string_type:
       break;
     case DW_TAG_subroutine_type:
+      {
+	function_type_sptr f =
+	  build_function_type(ctxt, die, die_is_from_alt_di,
+			      /*called_from_public_decl,*/
+			      class_decl_sptr(),
+			      where_offset);
+	if (f)
+	  {
+	    result = f;
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
+				       die_is_from_alt_di,
+				       f);
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
+      }
       break;
     case DW_TAG_union_type:
       break;

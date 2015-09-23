@@ -304,6 +304,13 @@ translation_unit::get_global_scope() const
   return priv_->global_scope_;
 }
 
+/// Getter of the function types of the current @ref translation_unit.
+///
+/// @return the function types of the current translation unit.
+const function_types_type
+translation_unit::get_function_types() const
+{ return priv_->function_types_; }
+
 /// Getter of the environment of the current @ref translation_unit.
 ///
 /// @return the translation unit of the current translation unit.
@@ -6541,16 +6548,16 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   size_t			align_in_bits,
 				   location			locus)
   : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus, "",
-	      get_type_declaration(type_or_void(pointed_to,
-						0))->get_visibility()),
-    pointed_to_type_(type_or_void(pointed_to, 0))
+    decl_base("", locus, "")
 {
   try
     {
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
       string name = (pto ? pto->get_name() : string("void")) + "*";
       set_name(name);
+      if (pto)
+        set_visibility(pto->get_visibility());
+      pointed_to_type_ = type_base_wptr(type_or_void(pointed_to, 0));
     }
   catch (...)
     {}
@@ -6646,14 +6653,9 @@ pointer_type_def::get_qualified_name() const
   if (peek_qualified_name().empty()
       || !get_canonical_type())
     {
-      decl_base_sptr td =
-	get_type_declaration(get_pointed_to_type());
-      string name;
-      if (!td)
-	name = "void";
-      else
-	td->get_qualified_name(name);
-      set_qualified_name(name + "*");
+      string name = get_type_name(get_pointed_to_type(),
+				  /*qualified_name=*/true) + "*";
+      set_qualified_name(name);
     }
   return peek_qualified_name();
 }
@@ -6694,19 +6696,27 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 				       size_t			align_in_bits,
 				       location		locus)
   : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus, "",
-	      dynamic_pointer_cast<decl_base>(type_or_void(pointed_to,
-							   0))->get_visibility()),
-    pointed_to_type_(type_or_void(pointed_to, 0)),
+    decl_base("", locus, ""),
     is_lvalue_(lvalue)
 {
   try
     {
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
-      string name = pto->get_name() + "&";
+      string name;
+      if (pto)
+        {
+          set_visibility(pto->get_visibility());
+          name = pto->get_name() + "&";
+        }
+      else
+	name = get_type_name(is_function_type(pointed_to),
+			     /*qualified_name=*/true) + "&";
+
       if (!is_lvalue())
 	name += "&";
       set_name(name);
+
+      pointed_to_type_ = type_base_wptr(type_or_void(pointed_to, 0));
     }
   catch (...)
     {}
@@ -6804,11 +6814,8 @@ reference_type_def::get_qualified_name() const
   if (peek_qualified_name().empty()
       || !get_canonical_type())
     {
-      decl_base_sptr td =
-	get_type_declaration(type_or_void(get_pointed_to_type(),
-					  get_environment()));
-      string name;
-      td->get_qualified_name(name);
+      string name = get_type_name(get_pointed_to_type(),
+				  /*qualified_name=*/true);
       if (is_lvalue())
 	set_qualified_name(name + "&");
       else

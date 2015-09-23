@@ -5842,8 +5842,8 @@ distinct_diff::report(ostream& out, const string& indent) const
 /// @return a non-null diff if a diff object could be built, null
 /// otherwise.
 distinct_diff_sptr
-compute_diff_for_distinct_kinds(const decl_base_sptr first,
-				const decl_base_sptr second,
+compute_diff_for_distinct_kinds(const type_or_decl_base_sptr first,
+				const type_or_decl_base_sptr second,
 				diff_context_sptr ctxt)
 {
   if (!distinct_diff::entities_are_of_distinct_kinds(first, second))
@@ -5878,8 +5878,8 @@ compute_diff_for_distinct_kinds(const decl_base_sptr first,
 ///returns a NULL pointer value.
 template<typename DiffType>
 diff_sptr
-try_to_diff(const decl_base_sptr first,
-	    const decl_base_sptr second,
+try_to_diff(const type_or_decl_base_sptr first,
+	    const type_or_decl_base_sptr second,
 	    diff_context_sptr ctxt)
 {
   if (shared_ptr<DiffType> f =
@@ -5907,8 +5907,8 @@ try_to_diff(const decl_base_sptr first,
 /// @param ctxt the diff context to use.
 template<>
 diff_sptr
-try_to_diff<class_decl>(const decl_base_sptr first,
-			const decl_base_sptr second,
+try_to_diff<class_decl>(const type_or_decl_base_sptr first,
+			const type_or_decl_base_sptr second,
 			diff_context_sptr ctxt)
 {
   if (class_decl_sptr f =
@@ -5946,8 +5946,8 @@ try_to_diff<class_decl>(const decl_base_sptr first,
 /// @return a non-null diff if a diff object could be built, null
 /// otherwise.
 static diff_sptr
-try_to_diff_distinct_kinds(const decl_base_sptr first,
-			   const decl_base_sptr second,
+try_to_diff_distinct_kinds(const type_or_decl_base_sptr first,
+			   const type_or_decl_base_sptr second,
 			   diff_context_sptr ctxt)
 {return compute_diff_for_distinct_kinds(first, second, ctxt);}
 
@@ -5969,14 +5969,14 @@ try_to_diff_distinct_kinds(const decl_base_sptr first,
 /// @return the resulting diff.  It's a pointer to a descendent of
 /// abigail::comparison::diff.
 static diff_sptr
-compute_diff_for_types(const decl_base_sptr first,
-		       const decl_base_sptr second,
+compute_diff_for_types(const type_or_decl_base_sptr first,
+		       const type_or_decl_base_sptr second,
 		       diff_context_sptr ctxt)
 {
   diff_sptr d;
 
-  const decl_base_sptr f = first;
-  const decl_base_sptr s = second;
+  const type_or_decl_base_sptr f = first;
+  const type_or_decl_base_sptr s = second;
 
   ((d = try_to_diff<type_decl>(f, s, ctxt))
    ||(d = try_to_diff<enum_type_decl>(f, s, ctxt))
@@ -6133,34 +6133,6 @@ operator<<(ostream& o, diff_category c)
     }
 
   return o;
-}
-
-/// Compute the difference between two types.
-///
-/// The function considers every possible types known to libabigail
-/// and runs the appropriate diff function on them.
-///
-/// @param first the first construct to consider for the diff
-///
-/// @param second the second construct to consider for the diff.
-///
-/// @param ctxt the diff context to use.
-///
-/// @return the resulting diff.  It's a pointer to a descendent of
-/// abigail::comparison::diff.
-static diff_sptr
-compute_diff_for_types(const type_base_sptr first,
-		       const type_base_sptr second,
-		       diff_context_sptr ctxt)
-{
-  diff_sptr d;
-
-  decl_base_sptr f = dynamic_pointer_cast<decl_base>(first);
-  decl_base_sptr s = dynamic_pointer_cast<decl_base>(second);
-
-  d = compute_diff_for_types(f, s, ctxt);
-
-  return d;
 }
 
 /// Compute the difference between two decls.

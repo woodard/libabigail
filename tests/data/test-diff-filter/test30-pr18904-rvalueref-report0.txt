@@ -1,7 +1,7 @@
-Functions changes summary: 82 Removed, 7 Changed (21 filtered out), 1081 Added functions
-Variables changes summary: 25 Removed, 1 Changed, 7 Added variables
+Functions changes summary: 82 Removed, 6 Changed (22 filtered out), 1081 Added functions
+Variables changes summary: 47 Removed, 1 Changed, 11 Added variables
 Function symbols changes summary: 7 Removed, 76 Added function symbols not referenced by debug info
-Variable symbols changes summary: 22 Removed, 4 Added variable symbols not referenced by debug info
+Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
 
 82 Removed functions:
 
@@ -308,13 +308,13 @@ Variable symbols changes summary: 22 Removed, 4 Added variable symbols not refer
   [A] 'method __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >& __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >::operator++()'
   [A] 'method __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > > __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >::operator-(__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >::difference_type)'
   [A] 'method __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >& __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >::operator--()'
-  [A] 'method void __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::_Iter_comp_iter()'
+  [A] 'method void __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::_Iter_comp_iter(bool (const VarTable::Entry*, const VarTable::Entry*)*)'
   [A] 'method bool __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::operator()<__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*> >, __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*> > >(__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >, __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >)'
-  [A] 'method void __gnu_cxx::__ops::_Iter_comp_val<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::_Iter_comp_val()'
+  [A] 'method void __gnu_cxx::__ops::_Iter_comp_val<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::_Iter_comp_val(bool (const VarTable::Entry*, const VarTable::Entry*)*)'
   [A] 'method bool __gnu_cxx::__ops::_Iter_comp_val<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::operator()<__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*> >, const VarTable::Entry*>(__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >, const VarTable::Entry*&)'
-  [A] 'method void __gnu_cxx::__ops::_Val_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::_Val_comp_iter()'
+  [A] 'method void __gnu_cxx::__ops::_Val_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::_Val_comp_iter(bool (const VarTable::Entry*, const VarTable::Entry*)*)'
   [A] 'method bool __gnu_cxx::__ops::_Val_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>::operator()<const VarTable::Entry*, __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*> > >(const VarTable::Entry*&, __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >)'
-  [A] 'function __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)> __gnu_cxx::__ops::__iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>()'
+  [A] 'function __gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)> __gnu_cxx::__ops::__iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>(bool (const VarTable::Entry*, const VarTable::Entry*)*)'
   [A] 'function __gnu_cxx::__ops::_Iter_comp_val<bool (*)(const VarTable::Entry*, const VarTable::Entry*)> __gnu_cxx::__ops::__iter_comp_val<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>(__gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>)'
   [A] 'function __gnu_cxx::__ops::_Val_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)> __gnu_cxx::__ops::__val_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>(__gnu_cxx::__ops::_Iter_comp_iter<bool (*)(const VarTable::Entry*, const VarTable::Entry*)>)'
   [A] 'method __gnu_cxx::new_allocator<const VarTable::Entry*>::pointer __gnu_cxx::new_allocator<const VarTable::Entry*>::allocate(__gnu_cxx::new_allocator<const VarTable::Entry*>::size_type)'
@@ -1154,7 +1154,7 @@ Variable symbols changes summary: 22 Removed, 4 Added variable symbols not refer
   [A] 'method std::pair<std::_Rb_tree_const_iterator<PtrData>, bool> std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::insert(std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::value_type&)'
   [A] 'method void std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::set()'
   [A] 'function std::_Setprecision std::setprecision(int)'
-  [A] 'function void std::sort<__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*> >, bool (*)(const VarTable::Entry*, const VarTable::Entry*)>(__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >, __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >)'
+  [A] 'function void std::sort<__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*> >, bool (*)(const VarTable::Entry*, const VarTable::Entry*)>(__gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >, __gnu_cxx::__normal_iterator<const VarTable::Entry**, std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> > >, bool (const VarTable::Entry*, const VarTable::Entry*)*)'
   [A] 'function void std::swap<const VarTable::Entry*>(const VarTable::Entry*&, const VarTable::Entry*&)'
   [A] 'method void std::tuple<long unsigned int const&>::tuple(std::tuple<long unsigned int const&>&)'
   [A] 'method void std::tuple<long unsigned int const&>::tuple<void, 1u>(const long unsigned int&)'
@@ -1172,7 +1172,7 @@ Variable symbols changes summary: 22 Removed, 4 Added variable symbols not refer
   [A] 'method void std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::vector<Iterator, void>(Iterator, Iterator, const std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::allocator_type&)'
   [A] 'method std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::~vector(int)'
 
-7 functions with some indirect sub-type change:
+6 functions with some indirect sub-type change:
 
   [C]'function int ORSLRelease(const int, const int* restrict, const ORSLBusySet* restrict, const restrict ORSLTag)' has some indirect sub-type changes:
     parameter 2 of type 'const int* restrict' changed:
@@ -1311,13 +1311,6 @@ Variable symbols changes summary: 22 Removed, 4 Added variable symbols not refer
           '__anonymous_enum__::c_coipipe_max_number' from value '123' to '133'
 
 
-  [C]'function void __offload_myoRegisterTables(InitTableEntry*, SharedTableEntry*, FptrTableEntry*)' has some indirect sub-type changes:
-    parameter 1 of type 'InitTableEntry*' changed:
-      in pointed to type 'struct InitTableEntry':
-        entity changed from 'struct InitTableEntry' to compatible type 'typedef InitTableEntry'
-          type name changed from 'InitTableEntry' to '__anonymous_struct__'
-
-
   [C]'function int __offload_offload(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, int)' has some indirect sub-type changes:
     parameter 1 of type 'typedef OFFLOAD' has sub-type changes:
       underlying type 'OffloadDescriptor*' changed:
@@ -1441,8 +1434,30 @@ Variable symbols changes summary: 22 Removed, 4 Added variable symbols not refer
       in referenced type 'const VarTable::Entry*':
 
 
-25 Removed variables:
+47 Removed variables:
 
+  'typedef COIRESULT (typedef COIBUFFER, typedef COIBUFFER, typedef uint64_t, typedef uint64_t, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferCopy'
+  'typedef COIRESULT (typedef uint64_t, typedef COI_BUFFER_TYPE, typedef uint32_t, typedef uint32_t, const COIPROCESS*, COIBUFFER*)* COI::BufferCreate'
+  'typedef COIRESULT (typedef uint64_t, typedef COI_BUFFER_TYPE, typedef uint32_t, void*, typedef uint32_t, const COIPROCESS*, COIBUFFER*)* COI::BufferCreateFromMemory'
+  'typedef COIRESULT (typedef COIBUFFER)* COI::BufferDestroy'
+  'typedef COIRESULT (typedef COIBUFFER, uint64_t*)* COI::BufferGetSinkAddress'
+  'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, typedef uint64_t, typedef COI_MAP_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*, COIMAPINSTANCE*, void**)* COI::BufferMap'
+  'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, void*, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferRead'
+  'typedef COIRESULT (typedef COIBUFFER, typedef COIPROCESS, typedef COI_BUFFER_STATE, typedef COI_BUFFER_MOVE_FLAG, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferSetState'
+  'typedef COIRESULT (typedef COIMAPINSTANCE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferUnmap'
+  'typedef COIRESULT (typedef COIBUFFER, typedef uint64_t, typedef uint64_t, typedef COI_COPY_TYPE, typedef uint32_t, const COIEVENT*, COIEVENT*)* COI::BufferWrite'
+  'typedef COIRESULT (typedef COI_ISA_TYPE, uint32_t*)* COI::EngineGetCount'
+  'typedef COIRESULT (typedef COI_ISA_TYPE, typedef uint32_t, COIENGINE*)* COI::EngineGetHandle'
+  'typedef COIRESULT (typedef uint16_t, const COIEVENT*, typedef int32_t, typedef uint8_t, uint32_t*, uint32_t*)* COI::EventWait'
+  'typedef uint64_t ()* COI::PerfGetCycleFrequency'
+  'typedef COIRESULT (typedef COIPROCESS, uint64_t*, typedef uint32_t, COIPIPELINE*)* COI::PipelineCreate'
+  'typedef COIRESULT (typedef COIPIPELINE)* COI::PipelineDestroy'
+  'typedef COIRESULT (typedef COIPIPELINE, typedef COIFUNCTION, typedef uint32_t, const COIBUFFER*, const COI_ACCESS_FLAGS*, typedef uint32_t, const COIEVENT*, typedef uint16_t, void*, typedef uint16_t, COIEVENT*)* COI::PipelineRunFunction'
+  'typedef COIRESULT (typedef COIENGINE, const char*, typedef uint64_t, int, const char**, typedef uint8_t, const char**, typedef uint8_t, const char*, typedef uint64_t, const char*, const char*, typedef uint64_t, COIPROCESS*)* COI::ProcessCreateFromMemory'
+  'typedef COIRESULT (typedef COIPROCESS, typedef int32_t, typedef uint8_t, int8_t*, uint32_t*)* COI::ProcessDestroy'
+  'typedef COIRESULT (typedef COIPROCESS, typedef uint32_t, const char**, COIFUNCTION*)* COI::ProcessGetFunctionHandles'
+  'typedef COIRESULT (typedef COIPROCESS, typedef uint64_t, const char*, const char*, const char*, typedef uint64_t, typedef uint32_t, COILIBRARY*)* COI::ProcessLoadLibraryFromMemory'
+  'typedef COIRESULT (typedef uint32_t, const uint64_t*, const char**, const uint64_t*)* COI::ProcessRegisterLibraries'
   'bool COI::is_available'
   'static const int MicEnvVar::any_card'
   'FuncList __offload_entries'
@@ -1469,8 +1484,12 @@ Variable symbols changes summary: 22 Removed, 4 Added variable symbols not refer
   'const char* prefix'
   'int timer_enabled'
 
-7 Added variables:
+11 Added variables:
 
+  'typedef COIRESULT (typedef COIENGINE, typedef uint32_t, COI_ENGINE_INFO*)* COI::EngineGetInfo'
+  'typedef COIRESULT (typedef COIEVENT, void (typedef COIEVENT, typedef COIRESULT)*, typedef uint64_t)* COI::EventRegisterCallback'
+  'typedef COIRESULT (uint64_t*)* COI::PipelineClearCPUMask'
+  'typedef COIRESULT (typedef COIPROCESS, typedef uint32_t, typedef uint8_t, uint64_t*)* COI::PipelineSetCPUMask'
   'static Stream::StreamMap Stream::all_streams'
   'static mutex_t Stream::m_stream_lock'
   'static uint64_t Stream::m_streams_count'
@@ -1576,36 +1595,4 @@ Variable symbols changes summary: 22 Removed, 4 Added variable symbols not refer
   _ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EED2Ev, aliases _ZNSt8_Rb_treeImSt4pairIKmP6StreamESt10_Select1stIS4_ESt4lessImESaIS4_EE13_Rb_tree_implIS8_Lb1EED1Ev
   _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC1Ev
   _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC2Ev, aliases _ZNSt8iteratorISt18input_iterator_tagN8VarTable5EntryElPS2_RS2_EC1Ev
-
-22 Removed variable symbols not referenced by debug info:
-
-  _ZN3COI10BufferCopyE
-  _ZN3COI10BufferReadE
-  _ZN3COI11BufferUnmapE
-  _ZN3COI11BufferWriteE
-  _ZN3COI12BufferCreateE
-  _ZN3COI13BufferDestroyE
-  _ZN3COI14BufferSetStateE
-  _ZN3COI14EngineGetCountE
-  _ZN3COI14PipelineCreateE
-  _ZN3COI14ProcessDestroyE
-  _ZN3COI15EngineGetHandleE
-  _ZN3COI15PipelineDestroyE
-  _ZN3COI19PipelineRunFunctionE
-  _ZN3COI20BufferGetSinkAddressE
-  _ZN3COI21PerfGetCycleFrequencyE
-  _ZN3COI22BufferCreateFromMemoryE
-  _ZN3COI23ProcessCreateFromMemoryE
-  _ZN3COI24ProcessRegisterLibrariesE
-  _ZN3COI25ProcessGetFunctionHandlesE
-  _ZN3COI28ProcessLoadLibraryFromMemoryE
-  _ZN3COI9BufferMapE
-  _ZN3COI9EventWaitE
-
-4 Added variable symbols not referenced by debug info:
-
-  _ZN3COI13EngineGetInfoE
-  _ZN3COI18PipelineSetCPUMaskE
-  _ZN3COI20PipelineClearCPUMaskE
-  _ZN3COI21EventRegisterCallbackE
 

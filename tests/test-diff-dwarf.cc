@@ -254,6 +254,18 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test31-vtable-changes-report-0.txt",
     "output/test-diff-dwarf/test31-vtable-changes-report-0.txt"
   },
+  {
+    "data/test-diff-dwarf/test32-fnptr-changes-v0.o",
+    "data/test-diff-dwarf/test32-fnptr-changes-v1.o",
+    "data/test-diff-dwarf/test32-fnptr-changes-report-0.txt",
+    "output/test-diff-dwarf/test32-fnptr-changes-report-0.txt"
+  },
+  {
+    "data/test-diff-dwarf/test33-fnref-changes-v0.o",
+    "data/test-diff-dwarf/test33-fnref-changes-v1.o",
+    "data/test-diff-dwarf/test33-fnref-changes-report-0.txt",
+    "output/test-diff-dwarf/test33-fnref-changes-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };
