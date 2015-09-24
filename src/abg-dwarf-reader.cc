@@ -6607,8 +6607,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	  else if (tag == DW_TAG_member
 		   || tag == DW_TAG_variable)
 	    {
-	      result->set_is_declaration_only(false);
-
 	      Dwarf_Die type_die;
 	      bool type_die_is_in_alternate_debug_info = false;
 	      if (!die_die_attribute(&child, is_in_alt_di,
@@ -6635,7 +6633,15 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      bool is_laid_out = false;
 	      is_laid_out = die_member_offset(&child, offset_in_bits);
 	      offset_in_bits *= 8;
-
+	      // For now, is_static == !is_laid_out.  When we have
+	      // templates, we'll try to be more specific.  For now,
+	      // this approximation should do OK.
+	      bool is_static = !is_laid_out;
+	      if (!is_static)
+		// We have a non-static data member.  So this class
+		// cannot be a declaration-only class anymore, even if
+		// some DWARF emitters might consider it otherwise.
+		result->set_is_declaration_only(false);
 	      access_specifier access =
 		is_struct
 		? public_access
@@ -6645,13 +6651,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      var_decl_sptr dm(new var_decl(n, t, loc, m));
 	      result->add_data_member(dm, access, is_laid_out,
-				      // For now, is_static ==
-				      // !is_laid_out.  When we have
-				      // templates, we'll try to be
-				      // more specific.  For now, this
-				      // approximation should do OK.
-				      /*is_static=*/!is_laid_out,
-				      offset_in_bits);
+				      is_static, offset_in_bits);
 	      assert(has_scope(dm));
 	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
 					 is_in_alt_di,

@@ -1,0 +1,54 @@
+Functions changes summary: 0 Removed, 2 Changed (3 filtered out), 13 Added functions
+Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
+Variable symbols changes summary: 0 Removed, 6 Added variable symbols not referenced by debug info
+
+13 Added functions:
+
+  'function void __cxxabiv1::__cxa_throw_bad_array_length()'
+  'function void __cxxabiv1::__cxa_throw_bad_array_new_length()'
+  'function void std::__throw_out_of_range_fmt(const char*, ...)'
+  'method virtual const char* std::bad_array_length::what()'
+    note that this adds a new entry to the vtable of class std::bad_array_length
+  'method virtual std::bad_array_length::~bad_array_length(int)'
+    note that this adds a new entry to the vtable of class std::bad_array_length
+  'method virtual std::bad_array_length::~bad_array_length(int)'
+    note that this adds a new entry to the vtable of class std::bad_array_length
+  'method virtual const char* std::bad_array_new_length::what()'
+    note that this adds a new entry to the vtable of class std::bad_array_new_length
+  'method virtual std::bad_array_new_length::~bad_array_new_length(int)'
+    note that this adds a new entry to the vtable of class std::bad_array_new_length
+  'method virtual std::bad_array_new_length::~bad_array_new_length(int)'
+    note that this adds a new entry to the vtable of class std::bad_array_new_length
+  'function void std::get_new_handler()'
+  'function void std::get_terminate()'
+  'function void std::get_unexpected()'
+  'method std::regex_error::regex_error(std::regex_constants::error_type)'
+
+2 functions with some indirect sub-type change:
+
+  [C]'function __cxxabiv1::__cxa_dependent_exception* __cxxabiv1::__cxa_allocate_dependent_exception()' has some indirect sub-type changes:
+    return type changed:
+      in pointed to type 'struct __cxxabiv1::__cxa_dependent_exception':
+        4 data member changes:
+         '__cxxabiv1::__cxa_exception* __cxxabiv1::__cxa_dependent_exception::nextException' offset changed from 96 to 128 (in bits)
+         'int __cxxabiv1::__cxa_dependent_exception::handlerCount' offset changed from 128 to 160 (in bits)
+         '__cxxabiv1::__cxa_exception* __cxxabiv1::__cxa_dependent_exception::nextPropagatingException' offset changed from 160 to 192 (in bits)
+         'int __cxxabiv1::__cxa_dependent_exception::propagationCount' offset changed from 192 to 224 (in bits)
+
+  [C]'function void std::__throw_regex_error(std::regex_constants::error_type)' has some indirect sub-type changes:
+    parameter 1 of type 'enum std::regex_constants::error_type' has sub-type changes:
+      1 enumerator deletion:
+        'std::regex_constants::error_type::_S_error_last' value '13'
+
+
+
+6 Added variable symbols not referenced by debug info:
+
+  _ZTISt16bad_array_length@@CXXABI_1.3.8
+  _ZTISt20bad_array_new_length@@CXXABI_1.3.8
+  _ZTSSt16bad_array_length@@CXXABI_1.3.8
+  _ZTSSt20bad_array_new_length@@CXXABI_1.3.8
+  _ZTVSt16bad_array_length@@CXXABI_1.3.8
+  _ZTVSt20bad_array_new_length@@CXXABI_1.3.8
+

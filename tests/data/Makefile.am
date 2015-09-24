@@ -450,6 +450,9 @@ test-diff-filter/test29-finer-redundancy-marking-v1.o \
 test-diff-filter/test30-pr18904-rvalueref-liba.so \
 test-diff-filter/test30-pr18904-rvalueref-libb.so \
 test-diff-filter/test30-pr18904-rvalueref-report0.txt \
+test-diff-filter/test31-pr18535-libstdc++-4.8.3.so \
+test-diff-filter/test31-pr18535-libstdc++-4.9.2.so \
+test-diff-filter/test31-pr18535-libstdc++-report-0.txt \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\
