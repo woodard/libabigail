@@ -847,6 +847,9 @@ set_environment_for_artifact(type_or_decl_base_sptr artifact,
 /// The base type of all declarations.
 class decl_base : public virtual type_or_decl_base
 {
+  // Forbidden
+  decl_base();
+
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
 
@@ -885,9 +888,6 @@ public:
     BINDING_GLOBAL,
     BINDING_WEAK
   };
-
-  // Forbidden
-  decl_base();
 
   virtual void
   set_scope(scope_decl*);
