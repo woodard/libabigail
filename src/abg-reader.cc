@@ -27,6 +27,7 @@
 #include "config.h"
 #include <cstring>
 #include <cstdlib>
+#include <cerrno>
 #include <tr1/unordered_map>
 #include <deque>
 #include <assert.h>
@@ -3134,7 +3135,11 @@ build_enum_type_decl(read_context&	ctxt,
 
 	  a = xml::build_sptr(xmlGetProp(n, BAD_CAST("value")));
 	  if (a)
-	    value = atoi(CHAR_STR(a));
+	    {
+	      value = strtol(CHAR_STR(a), NULL, 0);
+	      if (errno == ERANGE)
+		return nil;
+	    }
 
 	  enums.push_back(enum_type_decl::enumerator(name, value));
 	}
