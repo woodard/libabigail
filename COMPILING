@@ -29,7 +29,7 @@ receive the binaries resulting from the compilation:
 Generate the relevant build-system-related information needed to
 configure the package for compilation, by typing:
 
-    autoreconf
+    autoreconf -i
 
 Then configure the package:
 
