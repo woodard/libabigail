@@ -117,11 +117,6 @@ typedef unordered_map<type_base*,
 		      type_hasher,
 		      abigail::diff_utils::deep_ptr_eq_functor> type_ptr_map;
 
-/// A convenience typedef for a map that associates a shared pointer to a bool.
-typedef unordered_map<shared_ptr<type_base>,
-		      bool,
-		      type_base::shared_ptr_hash> fn_shared_ptr_map;
-
 typedef unordered_map<shared_ptr<function_tdecl>,
 		      string,
 		      function_tdecl::shared_ptr_hash> fn_tmpl_shared_ptr_map;
@@ -140,7 +135,7 @@ class write_context
   /// A vector of function types that are referenced by emitted pointers
   /// or reference, i.e, that are pointed-to types of pointers or references
   /// that are emitted.
-  fn_shared_ptr_map			m_referenced_fntypes_map;
+  type_ptr_map				m_referenced_fntypes_map;
   fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
@@ -245,7 +240,7 @@ public:
   /// @param f a shared pointer to a function type
   void
   record_fntype_as_referenced(const function_type_sptr& f)
-  {m_referenced_fntypes_map[f->get_canonical_type()] = true;}
+  {m_referenced_fntypes_map[f->get_canonical_type().get()] = true;}
 
   /// Test if a given function type has been referenced by
   /// a pointer or a reference type that was emitted to the
@@ -257,7 +252,10 @@ public:
   /// otherwise.
   bool
   fntype_is_referenced(const function_type_sptr& f)
-  {return m_referenced_fntypes_map.find(f->get_canonical_type()) != m_referenced_fntypes_map.end();}
+  {
+    return m_referenced_fntypes_map.find
+      (f->get_canonical_type().get()) != m_referenced_fntypes_map.end();
+  }
 
   /// Flag a type as having been written out to the XML output.
   ///
