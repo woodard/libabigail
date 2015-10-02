@@ -7032,11 +7032,7 @@ pointer_diff::get_pretty_representation() const
 /// @return true iff the current diff node carries a change.
 bool
 pointer_diff::has_changes() const
-{
-  return underlying_type_diff()
-    ? underlying_type_diff()->has_changes()
-    : false;
-}
+{return first_pointer() != second_pointer();}
 
 /// @return true iff the current diff node carries local changes.
 bool
