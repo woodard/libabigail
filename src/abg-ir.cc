@@ -12213,8 +12213,27 @@ hash_type_or_decl(const type_or_decl_base *tod)
       // as a hash.  This is the fastest we can get.
       if (t->get_canonical_type())
 	result = reinterpret_cast<size_t>(t->get_canonical_type().get());
+      else if (const class_decl* cl = is_class_type(t))
+	{
+	  if (cl->get_is_declaration_only()
+	      && cl->get_definition_of_declaration())
+	    // The is a declaration-only class, so it has no canonical
+	    // type; but then it's class definition has one.  Let's
+	    // use that one.
+	    return hash_type_or_decl(cl->get_definition_of_declaration());
+	  else
+	    {
+	      // The class really has no canonical type, let's use the
+	      // slow path of hashing the class recursively.  Well
+	      // it's not that slow as the hash value is quickly going
+	      // to result to zero anyway.
+	      type_base::dynamic_hash hash;
+	      result = hash(t);
+	    }
+	}
       else
 	{
+	  // Let's use the slow path of hashing the class recursively.
 	  type_base::dynamic_hash hash;
 	  result = hash(t);
 	}
