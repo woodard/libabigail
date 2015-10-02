@@ -6612,18 +6612,34 @@ pointer_type_def::operator==(const decl_base& o) const
 
 /// Return true iff both instances of pointer_type_def are equal.
 ///
-/// Note that this function does not check for the scopes of the this
+/// Note that this function does not check for the scopes of the
 /// types.
+///
+/// @param other the other type to compare against.
+///
+/// @return true iff @p other equals the current instance.
 bool
-pointer_type_def::operator==(const type_base& o) const
+pointer_type_def::operator==(const type_base& other) const
 {
-  if (get_canonical_type() && o.get_canonical_type())
-    return get_canonical_type().get() == o.get_canonical_type().get();
-
-  const pointer_type_def* other = dynamic_cast<const pointer_type_def*>(&o);
-  if (!other)
+  const decl_base* o = dynamic_cast<const decl_base*>(&other);
+  if (!o)
     return false;
-  return get_pointed_to_type() == other->get_pointed_to_type();
+  return *this == *o;
+}
+
+/// Return true iff both instances of pointer_type_def are equal.
+///
+/// Note that this function does not check for the scopes of the
+/// types.
+///
+/// @param other the other type to compare against.
+///
+/// @return true iff @p other equals the current instance.
+bool
+pointer_type_def::operator==(const pointer_type_def& other) const
+{
+  const decl_base& o = other;
+  return *this == o;
 }
 
 const type_base_sptr
@@ -6685,6 +6701,28 @@ pointer_type_def::traverse(ir_node_visitor& v)
 
 pointer_type_def::~pointer_type_def()
 {}
+
+/// Turn equality of shared_ptr of @ref pointer_type_def into a deep
+/// equality; that is, make it compare the pointed to objects too.
+///
+/// @param l the shared_ptr of @ref pointer_type_def on left-hand-side
+/// of the equality.
+///
+/// @param r the shared_ptr of @ref pointer_type_def on
+/// right-hand-side of the equality.
+///
+/// @return true if the @ref pointer_type_def pointed to by the
+/// shared_ptrs are equal, false otherwise.
+bool
+operator==(const pointer_type_def_sptr& l, const pointer_type_def_sptr& r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
 
 // </pointer_type_def definitions>
 
@@ -6758,6 +6796,12 @@ equals(const reference_type_def& l, const reference_type_def& r, change_kind* k)
   return result;
 }
 
+/// Equality operator of the @ref reference_type_def type.
+///
+/// @param o the other instance of @ref reference_type_def to compare
+/// against.
+///
+/// @return true iff the two instances are equal.
 bool
 reference_type_def::operator==(const decl_base& o) const
 {
@@ -6772,8 +6816,29 @@ reference_type_def::operator==(const decl_base& o) const
   return equals(*this, *other, 0);
 }
 
+/// Equality operator of the @ref reference_type_def type.
+///
+/// @param o the other instance of @ref reference_type_def to compare
+/// against.
+///
+/// @return true iff the two instances are equal.
 bool
 reference_type_def::operator==(const type_base& o) const
+{
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
+}
+
+/// Equality operator of the @ref reference_type_def type.
+///
+/// @param o the other instance of @ref reference_type_def to compare
+/// against.
+///
+/// @return true iff the two instances are equal.
+bool
+reference_type_def::operator==(const reference_type_def& o) const
 {
   const decl_base* other = dynamic_cast<const decl_base*>(&o);
   if (!other)
@@ -6850,6 +6915,27 @@ reference_type_def::traverse(ir_node_visitor& v)
 reference_type_def::~reference_type_def()
 {}
 
+/// Turn equality of shared_ptr of @ref reference_type_def into a deep
+/// equality; that is, make it compare the pointed to objects too.
+///
+/// @param l the shared_ptr of @ref reference_type_def on left-hand-side
+/// of the equality.
+///
+/// @param r the shared_ptr of @ref reference_type_def on
+/// right-hand-side of the equality.
+///
+/// @return true if the @ref reference_type_def pointed to by the
+/// shared_ptrs are equal, false otherwise.
+bool
+operator==(const reference_type_def_sptr& l, const reference_type_def_sptr& r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
+}
 // </reference_type_def definitions>
 
 // <array_type_def definitions>

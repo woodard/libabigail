@@ -1485,6 +1485,9 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
+  bool
+  operator==(const pointer_type_def&) const;
+
   const type_base_sptr
   get_pointed_to_type() const;
 
@@ -1499,6 +1502,9 @@ public:
 
   virtual ~pointer_type_def();
 }; // end class pointer_type_def
+
+bool
+operator==(const pointer_type_def_sptr&, const pointer_type_def_sptr&);
 
 bool
 equals(const reference_type_def&, const reference_type_def&, change_kind*);
@@ -1530,6 +1536,9 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
+  bool
+  operator==(const reference_type_def&) const;
+
   type_base_sptr
   get_pointed_to_type() const;
 
@@ -1547,6 +1556,9 @@ public:
 
   virtual ~reference_type_def();
 }; // end class reference_type_def
+
+bool
+operator==(const reference_type_def_sptr&, const reference_type_def_sptr&);
 
 bool
 equals(const array_type_def&, const array_type_def&, change_kind*);
