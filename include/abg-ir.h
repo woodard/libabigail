@@ -1326,7 +1326,7 @@ bool
 equals(const scope_type_decl&, const scope_type_decl&, change_kind*);
 
 bool
-operator==(type_decl_sptr, type_decl_sptr);
+operator==(const type_decl_sptr&, const type_decl_sptr&);
 
 /// A type that introduces a scope.
 class scope_type_decl : public scope_decl, public virtual type_base
@@ -1761,7 +1761,7 @@ public:
 }; // end class enum_type_decl
 
 bool
-operator==(enum_type_decl_sptr l, enum_type_decl_sptr r);
+operator==(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r);
 /// The abstraction of an enumerator
 class enum_type_decl::enumerator
 {
@@ -2939,7 +2939,7 @@ std::ostream&
 operator<<(std::ostream&, access_specifier);
 
 bool
-operator==(class_decl_sptr l, class_decl_sptr r);
+operator==(const class_decl_sptr& l, const class_decl_sptr& r);
 
 /// The base class for member types, data members and member
 /// functions.  Its purpose is mainly to carry the access specifier

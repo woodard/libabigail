@@ -5985,7 +5985,7 @@ type_decl::operator==(const type_decl& o) const
 ///
 /// @return true iff @p l equals @p r.
 bool
-operator==(type_decl_sptr l, type_decl_sptr r)
+operator==(const type_decl_sptr& l, const type_decl_sptr& r)
 {
   if (!!l != !!r)
     return false;
@@ -7452,7 +7452,7 @@ enum_type_decl::operator==(const type_base& o) const
 ///
 /// @return true iff @p l equals @p r.
 bool
-operator==(enum_type_decl_sptr l, enum_type_decl_sptr r)
+operator==(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r)
 {
   if (!!l != !!r)
     return false;
@@ -10919,7 +10919,7 @@ class_decl::operator==(const class_decl& other) const
 /// @return true if the class_decl pointed to by the shared_ptrs are
 /// equal, false otherwise.
 bool
-operator==(class_decl_sptr l, class_decl_sptr r)
+operator==(const class_decl_sptr& l, const class_decl_sptr& r)
 {
   if (l.get() == r.get())
     return true;
