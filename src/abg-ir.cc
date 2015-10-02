@@ -3107,7 +3107,7 @@ strip_typedef(const type_base_sptr type)
   if (!t->get_environment())
     set_environment_for_artifact(t, env);
 
-  if (!canonicalize(t))
+  if (!(type->get_canonical_type() && canonicalize(t)))
     keep_type_alive(t);
 
   return t->get_canonical_type() ? t->get_canonical_type() : t;
