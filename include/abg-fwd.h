@@ -224,10 +224,10 @@ shared_ptr<enum_type_decl>
 is_enum_type(const shared_ptr<decl_base>&);
 
 class_decl*
-is_class_type(decl_base*);
+is_class_type(const decl_base*);
 
 class_decl*
-is_class_type(type_base*);
+is_class_type(const type_base*);
 
 shared_ptr<class_decl>
 is_class_type(const shared_ptr<type_base>);

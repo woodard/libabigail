@@ -4603,8 +4603,8 @@ is_compatible_with_class_type(const decl_base_sptr t)
 ///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl*
-is_class_type(type_base* t)
-{return dynamic_cast<class_decl*>(t);}
+is_class_type(const type_base* t)
+{return dynamic_cast<class_decl*>(const_cast<type_base*>(t));}
 
 /// Test whether a type is a class.
 ///
@@ -4627,8 +4627,8 @@ is_class_type(const type_base_sptr t)
 ///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl*
-is_class_type(decl_base *d)
-{return dynamic_cast<class_decl*>(d);}
+is_class_type(const decl_base *d)
+{return dynamic_cast<class_decl*>(const_cast<decl_base*>(d));}
 
 /// Test whether a type is a class.
 ///
