@@ -8232,7 +8232,22 @@ function_type::get_parm_at_index_from_first_non_implicit_parm(size_t i) const
 /// @param p the new vector of parameters to set.
 void
 function_type::set_parameters(const parameters &p)
-{priv_->parms_ = p;}
+{
+  priv_->parms_ = p;
+  for (parameters::size_type i = 0, j = 1;
+       i < priv_->parms_.size();
+       ++i, ++j)
+    {
+      if (i == 0 && priv_->parms_[i]->get_artificial())
+	// If the first parameter is artificial, then it certainly
+	// means that this is a member function, and the first
+	// parameter is the implicit this pointer.  In that case, set
+	// the index of that implicit parameter to zero.  Otherwise,
+	// the index of the first parameter starts at one.
+	j = 0;
+      priv_->parms_[i]->set_index(j);
+    }
+}
 
 /// Append a new parameter to the vector of parameters of the current
 /// instance of @ref function_type.

@@ -7063,6 +7063,21 @@ build_function_type(read_context&	ctxt,
       return result;
     }
 
+  // Let's create the type early and record it as being for the DIE
+  // 'die'.  This way, when building the sub-type triggers the
+  // creation of a type matching the same 'die', then we'll reuse this
+  // one.
+  result.reset(is_method
+	       ? new method_type(is_method,
+				 tu->get_address_size(),
+				 /*alignment=*/0)
+	       : new function_type(tu->get_address_size(),
+				   /*alignment=*/0));
+  tu->bind_function_type_life_time(result);
+  ctxt.associate_die_to_type(dwarf_dieoffset(die),
+			     die_is_from_alt_di,
+			     result);
+
   decl_base_sptr return_type_decl;
   Dwarf_Die ret_type_die;
   bool ret_type_die_is_in_alternate_debug_info = false;
@@ -7075,6 +7090,7 @@ build_function_type(read_context&	ctxt,
 				     where_offset));
   if (!return_type_decl)
     return_type_decl = build_ir_node_for_void_type(ctxt);
+  result->set_return_type(is_type(return_type_decl));
 
   Dwarf_Die child;
   function_decl::parameters function_parms;
@@ -7127,18 +7143,7 @@ build_function_type(read_context&	ctxt,
       }
   while (dwarf_siblingof(&child, &child) == 0);
 
-  result.reset(is_method
-	       ? new method_type(is_type(return_type_decl),
-				 is_method,
-				 function_parms,
-				 tu->get_address_size(),
-				 /*alignment=*/0)
-	       : new function_type(is_type(return_type_decl),
-				   function_parms,
-				   tu->get_address_size(),
-				   /*alignment=*/0));
-
-  tu->bind_function_type_life_time(result);
+  result->set_parameters(function_parms);
 
   return result;
 }
@@ -7872,9 +7877,6 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (f)
 	  {
 	    result = f;
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       f);
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);
