@@ -101,6 +101,12 @@ namespace ir
 // Inject some std::tr1 types in here.
 using std::tr1::unordered_map;
 
+/// Convenience typedef for a shared pointer to a @ref corpus.
+typedef shared_ptr<corpus> corpus_sptr;
+
+/// Convenience typedef for a weak pointer to a @ref corpus.
+typedef weak_ptr<corpus> corpus_wptr;
+
 /// Convenience typedef for a shared pointer on a @ref type_base
 typedef shared_ptr<type_base> type_base_sptr;
 
@@ -348,6 +354,12 @@ public:
 
   void
   set_path(const string&);
+
+  void
+  set_corpus(const corpus*);
+
+  const corpus*
+  get_corpus() const;
 
   const global_scope_sptr
   get_global_scope() const;
@@ -826,6 +838,12 @@ public:
   void
   set_environment(environment*);
 
+  void
+  set_corpus(const corpus*);
+
+  const corpus*
+  get_corpus() const;
+
   virtual bool
   traverse(ir_node_visitor&);
 
@@ -954,6 +972,12 @@ public:
 
   void
   set_name(const string& n);
+
+  bool
+  get_is_anonymous() const;
+
+  void
+  set_is_anonymous(bool);
 
   const string&
   get_linkage_name() const;

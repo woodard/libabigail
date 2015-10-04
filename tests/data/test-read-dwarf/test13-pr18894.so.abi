@@ -468,7 +468,7 @@
     </class-decl>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-9'/>
     <typedef-decl name='DBusString' type-id='type-id-7' filepath='../dbus/dbus-string.h' line='40' column='1' id='type-id-5'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.c' line='145' column='1' id='type-id-34'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.c' line='145' column='1' id='type-id-34'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='name' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.c' line='146' column='1'/>
       </data-member>
@@ -481,7 +481,7 @@
     <typedef-decl name='DBusAuth' type-id='type-id-28' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.h' line='33' column='1' id='type-id-36'/>
     <pointer-type-def type-id='type-id-36' size-in-bits='64' id='type-id-37'/>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-39'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-39'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_AUTH_COMMAND_AUTH' value='0'/>
       <enumerator name='DBUS_AUTH_COMMAND_CANCEL' value='1'/>
@@ -502,7 +502,7 @@
     <typedef-decl name='DBusAuthStateData' type-id='type-id-34' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.c' line='148' column='1' id='type-id-43'/>
     <qualified-type-def type-id='type-id-43' const='yes' id='type-id-44'/>
     <pointer-type-def type-id='type-id-44' size-in-bits='64' id='type-id-29'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='640' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.c' line='103' column='1' id='type-id-45'>
+    <class-decl name='__anonymous_struct__' size-in-bits='640' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.c' line='103' column='1' id='type-id-45'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='mechanism' type-id='type-id-3' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.c' line='104' column='1'/>
       </data-member>
@@ -637,7 +637,7 @@
       <parameter type-id='type-id-8' name='bytes_sent' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-auth.c' line='2501' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>
-    <enum-decl name='__anonymous_enum__' id='type-id-67'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-67'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_AUTH_STATE_WAITING_FOR_INPUT' value='0'/>
       <enumerator name='DBUS_AUTH_STATE_WAITING_FOR_MEMORY' value='1'/>
@@ -806,7 +806,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-75'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-75'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_BUS_SESSION' value='0'/>
       <enumerator name='DBUS_BUS_SYSTEM' value='1'/>
@@ -1119,7 +1119,7 @@
     <typedef-decl name='DBusConnection' type-id='type-id-70' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='51' column='1' id='type-id-71'/>
     <pointer-type-def type-id='type-id-71' size-in-bits='64' id='type-id-72'/>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-126'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-126'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_DISPATCH_DATA_REMAINS' value='0'/>
       <enumerator name='DBUS_DISPATCH_COMPLETE' value='1'/>
@@ -1319,7 +1319,7 @@
     </class-decl>
     <pointer-type-def type-id='type-id-143' size-in-bits='64' id='type-id-144'/>
     <typedef-decl name='DBusObjectPathUnregisterFunction' type-id='type-id-144' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-connection.h' line='367' column='1' id='type-id-141'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-145'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-145'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_HANDLER_RESULT_HANDLED' value='0'/>
       <enumerator name='DBUS_HANDLER_RESULT_NOT_YET_HANDLED' value='1'/>
@@ -1830,7 +1830,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-184'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-184'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_CREDENTIAL_UNIX_PROCESS_ID' value='0'/>
       <enumerator name='DBUS_CREDENTIAL_UNIX_USER_ID' value='1'/>
@@ -2076,7 +2076,7 @@
     </class-decl>
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-9'/>
     <typedef-decl name='DBusString' type-id='type-id-7' filepath='../dbus/dbus-string.h' line='40' column='1' id='type-id-5'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='320' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-keyring.c' line='93' column='1' id='type-id-189'>
+    <class-decl name='__anonymous_struct__' size-in-bits='320' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-keyring.c' line='93' column='1' id='type-id-189'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='id' type-id='type-id-95' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-keyring.c' line='94' column='1'/>
       </data-member>
@@ -2304,13 +2304,13 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-194'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-194'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_VALIDATION_MODE_WE_TRUST_THIS_DATA_ABSOLUTELY' value='0'/>
       <enumerator name='DBUS_VALIDATION_MODE_DATA_IS_UNTRUSTED' value='1'/>
     </enum-decl>
     <typedef-decl name='DBusValidationMode' type-id='type-id-194' filepath='../dbus/dbus-marshal-validate.h' line='40' column='1' id='type-id-195'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-196'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-196'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_VALIDITY_UNKNOWN_OOM_ERROR' value='-4'/>
       <enumerator name='DBUS_INVALID_FOR_UNKNOWN_REASON' value='-3'/>
@@ -2754,7 +2754,7 @@
     <qualified-type-def type-id='type-id-1' const='yes' id='type-id-2'/>
     <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-3'/>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-196'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-196'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_VALIDITY_UNKNOWN_OOM_ERROR' value='-4'/>
       <enumerator name='DBUS_INVALID_FOR_UNKNOWN_REASON' value='-3'/>
@@ -3149,7 +3149,7 @@
       </data-member>
     </class-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-196'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-196'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_VALIDITY_UNKNOWN_OOM_ERROR' value='-4'/>
       <enumerator name='DBUS_INVALID_FOR_UNKNOWN_REASON' value='-3'/>
@@ -4104,7 +4104,7 @@
     <pointer-type-def type-id='type-id-143' size-in-bits='64' id='type-id-144'/>
     <typedef-decl name='DBusObjectPathUnregisterFunction' type-id='type-id-144' filepath='../dbus/dbus-connection.h' line='367' column='1' id='type-id-141'/>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-145'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-145'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_HANDLER_RESULT_HANDLED' value='0'/>
       <enumerator name='DBUS_HANDLER_RESULT_NOT_YET_HANDLED' value='1'/>
@@ -5151,7 +5151,7 @@
       <return type-id='type-id-272'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-278'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-278'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_SERVER_LISTEN_NOT_HANDLED' value='0'/>
       <enumerator name='DBUS_SERVER_LISTEN_OK' value='1'/>
@@ -5411,7 +5411,7 @@
       <return type-id='type-id-272'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-278'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-278'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_SERVER_LISTEN_NOT_HANDLED' value='0'/>
       <enumerator name='DBUS_SERVER_LISTEN_OK' value='1'/>
@@ -5519,7 +5519,7 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='dbus-signature.c' language='LANG_C89'>
-    <class-decl name='__anonymous_struct__' size-in-bits='256' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='45' column='1' id='type-id-286'>
+    <class-decl name='__anonymous_struct__' size-in-bits='256' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='45' column='1' id='type-id-286'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='dummy1' type-id='type-id-11' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-signature.h' line='46' column='1'/>
       </data-member>
@@ -5886,7 +5886,7 @@
       <return type-id='type-id-13'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-291'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-291'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='_DBUS_LOCK_list' value='0'/>
       <enumerator name='_DBUS_LOCK_connection_slots' value='1'/>
@@ -5915,7 +5915,7 @@
     <type-decl name='unsigned int' size-in-bits='32' id='type-id-9'/>
     <typedef-decl name='dbus_uint32_t' type-id='type-id-9' filepath='../dbus/dbus-arch-deps.h' line='43' column='1' id='type-id-21'/>
     <typedef-decl name='dbus_bool_t' type-id='type-id-21' filepath='../dbus/dbus-types.h' line='35' column='1' id='type-id-22'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='1216' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='153' column='1' id='type-id-293'>
+    <class-decl name='__anonymous_struct__' size-in-bits='1216' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='153' column='1' id='type-id-293'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='mask' type-id='type-id-9' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-threads.h' line='154' column='1'/>
       </data-member>
@@ -6428,7 +6428,7 @@
       <return type-id='type-id-22'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-126'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-126'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_DISPATCH_DATA_REMAINS' value='0'/>
       <enumerator name='DBUS_DISPATCH_COMPLETE' value='1'/>
@@ -6767,7 +6767,7 @@
       <return type-id='type-id-83'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-348'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-348'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_TRANSPORT_OPEN_NOT_HANDLED' value='0'/>
       <enumerator name='DBUS_TRANSPORT_OPEN_OK' value='1'/>
@@ -7087,7 +7087,7 @@
     <typedef-decl name='DBusAllocatedSlot' type-id='type-id-356' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-dataslot.h' line='42' column='1' id='type-id-357'/>
     <pointer-type-def type-id='type-id-357' size-in-bits='64' id='type-id-355'/>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-291'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-291'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='_DBUS_LOCK_list' value='0'/>
       <enumerator name='_DBUS_LOCK_connection_slots' value='1'/>
@@ -7246,7 +7246,7 @@
       <subrange length='4'/>
     </array-type-def>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-369'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-369'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_HASH_STRING' value='0'/>
       <enumerator name='DBUS_HASH_INT' value='1'/>
@@ -9377,7 +9377,7 @@
       <parameter type-id='type-id-419' name='tv_usec' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-sysdeps-unix.c' line='2695' column='1'/>
       <return type-id='type-id-13'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' visibility='default' filepath='../dbus/dbus-sysdeps.h' line='311' column='1' id='type-id-420'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../dbus/dbus-sysdeps.h' line='311' column='1' id='type-id-420'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='fd' type-id='type-id-8' visibility='default' filepath='../dbus/dbus-sysdeps.h' line='312' column='1'/>
       </data-member>
@@ -10000,7 +10000,7 @@
       <return type-id='type-id-83'/>
     </function-decl>
     <type-decl name='enum-__anonymous_enum__-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-38'/>
-    <enum-decl name='__anonymous_enum__' id='type-id-348'>
+    <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-348'>
       <underlying-type type-id='type-id-38'/>
       <enumerator name='DBUS_TRANSPORT_OPEN_NOT_HANDLED' value='0'/>
       <enumerator name='DBUS_TRANSPORT_OPEN_OK' value='1'/>

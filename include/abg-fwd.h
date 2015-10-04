@@ -80,6 +80,7 @@ class corpus;
 class environment;
 class location;
 class location_manager;
+class corpus;
 class translation_unit;
 class class_decl;
 class class_tdecl;
@@ -201,6 +202,12 @@ is_type(const shared_ptr<decl_base>);
 
 type_base*
 is_type(decl_base*);
+
+bool
+is_anonymous_type(type_base*);
+
+bool
+is_anonymous_type(const shared_ptr<type_base>&);
 
 shared_ptr<type_decl>
 is_type_decl(const shared_ptr<type_base>);

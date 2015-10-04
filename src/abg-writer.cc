@@ -337,6 +337,7 @@ static bool write_elf_symbol_reference(const elf_symbol_sptr, ostream&);
 static void write_class_is_declaration_only(const shared_ptr<class_decl>,
 					    ostream&);
 static void write_is_struct(const shared_ptr<class_decl>, ostream&);
+static void write_is_anonymous(const decl_base_sptr&, ostream&);
 static bool write_decl(const shared_ptr<decl_base>,
 		       write_context&, unsigned);
 static bool write_type_decl(const shared_ptr<type_decl>,
@@ -890,6 +891,19 @@ write_is_struct(const shared_ptr<class_decl> klass, ostream& o)
     o << " is-struct='yes'";
 }
 
+/// Serialize the attribute "is-anonymous", if the current instance of
+/// decl is anonymous
+///
+/// @param dcl a pointer to the instance of @ref decl_base to consider.
+///
+/// @param o the output stream to serialize to.
+static void
+write_is_anonymous(const decl_base_sptr& decl, ostream& o)
+{
+  if (decl->get_is_anonymous())
+    o << " is-anonymous='yes'";
+}
+
 /// Serialize a pointer to an of decl_base into an output stream.
 ///
 /// @param decl the pointer to decl_base to serialize
@@ -1117,6 +1131,8 @@ write_type_decl(const type_decl_sptr d,
   do_indent(o, indent);
 
   o << "<type-decl name='" << xml::escape_xml_string(d->get_name()) << "'";
+
+  write_is_anonymous(d, o);
 
   write_size_and_alignment(d, o);
 
@@ -1515,6 +1531,8 @@ write_enum_type_decl(const enum_type_decl_sptr	decl,
 
   do_indent(o, indent);
   o << "<enum-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
+
+  write_is_anonymous(decl, o);
 
   if (!decl->get_linkage_name().empty())
     o << " linkage-name='" << decl->get_linkage_name() << "'";
@@ -1967,6 +1985,8 @@ write_class_decl(const class_decl_sptr	decl,
     write_size_and_alignment(decl, o);
 
   write_is_struct(decl, o);
+
+  write_is_anonymous(decl, o);
 
   write_visibility(decl, o);
 

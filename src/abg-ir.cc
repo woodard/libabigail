@@ -242,6 +242,7 @@ typedef unordered_map<function_type_sptr,
 struct translation_unit::priv
 {
   environment*				env_;
+  const corpus*			corp;
   bool					is_constructed_;
   char					address_size_;
   language				language_;
@@ -253,6 +254,7 @@ struct translation_unit::priv
 
   priv(environment* env)
     : env_(env),
+      corp(),
       is_constructed_(),
       address_size_(),
       language_(LANG_UNKNOWN)
@@ -300,6 +302,7 @@ translation_unit::get_global_scope() const
       // translation unit.
       priv_->global_scope_->
 	set_environment(const_cast<environment*>(get_environment()));
+      priv_->global_scope_->set_corpus(get_corpus());
     }
   return priv_->global_scope_;
 }
@@ -359,6 +362,24 @@ translation_unit::get_path() const
 void
 translation_unit::set_path(const string& a_path)
 {priv_->path_ = a_path;}
+
+/// Set the corpus this translation unit is a member of.
+///
+/// Note that adding a translation unit to a @ref corpus automatically
+/// triggers a call to this member function.
+///
+/// @param corpus the corpus.
+void
+translation_unit::set_corpus(const corpus* c)
+{priv_->corp = c;}
+
+/// Get the corpus this translation unit is a member of.
+///
+/// @return the parent corpus, or nil if this doesn't belong to any
+/// corpus yet.
+const corpus*
+translation_unit::get_corpus() const
+{return priv_->corp;}
 
 /// Getter of the location manager for the current translation unit.
 ///
@@ -460,9 +481,19 @@ translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
   // The function type must be ouf of the same environment as its
   // translation unit.
   if (const environment* env = get_environment())
-    assert(env == get_environment());
+    {
+      if (const environment* e = ftype->get_environment())
+	assert(env == e);
+      ftype->set_environment(const_cast<environment*>(env));
+    }
 
-  ftype->set_environment(const_cast<environment*>(get_environment()));
+  if (const corpus* c = get_corpus())
+    {
+      if (const corpus* existing_corpus = ftype->get_corpus())
+	assert(existing_corpus == c);
+      else
+	ftype->set_corpus(c);
+    }
 }
 
 /// This implements the ir_traversable_base::traverse virtual
@@ -1691,12 +1722,14 @@ environment::canonicalization_is_done(bool f)
 /// The private data of @ref type_or_decl_base.
 struct type_or_decl_base::priv
 {
-  bool		hashing_started_;
-  environment*	env_;
+  bool			hashing_started_;
+  environment*		env_;
+  const corpus*	corpus_;
 
   priv()
     : hashing_started_(),
-      env_()
+      env_(),
+      corpus_()
   {}
 }; // end struct type_or_decl_base
 
@@ -1752,6 +1785,24 @@ type_or_decl_base::get_environment() const
 environment*
 type_or_decl_base::get_environment()
 {return priv_->env_;}
+
+/// Set the @ref corpus this ABI artifact belongs to.
+///
+/// Note that adding an ABI artifact to a containining one should
+/// invoke this this member function.
+///
+/// @param c the new corpus.
+void
+type_or_decl_base::set_corpus(const corpus* c)
+{priv_->corpus_ = c;}
+
+/// Get the @ref corpus this ABI artifact belongs to.
+///
+/// @return the corpus this ABI artifact belongs to, or nil if it
+/// belongs to none for now.
+const corpus*
+type_or_decl_base::get_corpus() const
+{return priv_->corpus_;}
 
 /// Traverse the the ABI artifact.
 ///
@@ -1847,6 +1898,7 @@ operator==(const type_or_decl_base_sptr& l, const type_or_decl_base_sptr& r)
 struct decl_base::priv
 {
   bool			in_pub_sym_tab_;
+  bool			is_anonymous_;
   location		location_;
   context_rel_sptr	context_;
   std::string		name_;
@@ -1857,6 +1909,7 @@ struct decl_base::priv
 
   priv()
     : in_pub_sym_tab_(false),
+      is_anonymous_(true),
       visibility_(VISIBILITY_DEFAULT)
   {}
 
@@ -1867,10 +1920,13 @@ struct decl_base::priv
       name_(name),
       linkage_name_(linkage_name),
       visibility_(vis)
-  {}
+  {
+    is_anonymous_ = name_.empty();
+  }
 
   priv(location l)
     : in_pub_sym_tab_(false),
+      is_anonymous_(true),
       location_(l),
       visibility_(VISIBILITY_DEFAULT)
   {}
@@ -2017,7 +2073,30 @@ decl_base::set_location(const location& l)
 /// @param n the new name to set.
 void
 decl_base::set_name(const string& n)
-{priv_->name_ = n;}
+{
+  priv_->name_ = n;
+  priv_->is_anonymous_ = priv_->name_.empty();
+}
+
+/// Test if the current declaration is anonymous.
+///
+/// Being anonymous means that the declaration was created without a
+/// name.  This can usually happen for enum or struct types.
+///
+/// @return true iff the type is anonymous.
+bool
+decl_base::get_is_anonymous() const
+{return priv_->is_anonymous_;}
+
+/// Set the "is_anonymous" flag of the current declaration.
+///
+/// Being anonymous means that the declaration was created without a
+/// name.  This can usually happen for enum or struct types.
+///
+/// @param f the new value of the flag.
+void
+decl_base::set_is_anonymous(bool f)
+{priv_->is_anonymous_ = f;}
 
 /// Getter for the mangled name.
 ///
@@ -3412,6 +3491,14 @@ scope_decl::add_member_decl(const decl_base_sptr member)
   if (environment* env = get_environment())
     set_environment_for_artifact(member, env);
 
+  if (const corpus* c = get_corpus())
+    {
+      if (const corpus* existing_corpus = member->get_corpus())
+	assert(c == existing_corpus);
+      else
+	member->set_corpus(c);
+    }
+
   return member;
 }
 
@@ -3442,6 +3529,14 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
 
   if (environment* env = get_environment())
     set_environment_for_artifact(member, env);
+
+  if (const corpus* c = get_corpus())
+    {
+      if (const corpus* existing_corpus = member->get_corpus())
+	assert(c == existing_corpus);
+      else
+	member->set_corpus(c);
+    }
 
   return member;
 }
@@ -4553,6 +4648,29 @@ is_type(const decl_base_sptr decl)
 type_base*
 is_type(decl_base* decl)
 {return dynamic_cast<type_base*>(decl);}
+
+/// Test if a given type is anonymous.
+///
+/// @param t the type to consider.
+///
+/// @return true iff @p t is anonymous.
+bool
+is_anonymous_type(type_base* t)
+{
+  decl_base* d = get_type_declaration(t);
+  if (!d)
+    return false;
+  return d->get_is_anonymous();
+}
+
+/// Test if a given type is anonymous.
+///
+/// @param t the type to consider.
+///
+/// @return true iff @p t is anonymous.
+bool
+is_anonymous_type(const type_base_sptr& t)
+{return is_anonymous_type(t.get());}
 
 /// Test whether a type is a type_decl (a builtin type).
 ///
@@ -5765,11 +5883,75 @@ type_base::get_canonical_type_for(type_base_sptr t)
     }
   else
     {
+      const corpus* t_corpus = t->get_corpus();
       vector<type_base_sptr> &v = i->second;
-      for (vector<type_base_sptr>::const_iterator it = v.begin();
-	   it != v.end();
+      // Let's compare 't' structurally (i.e, compare its sub-types
+      // recursively) against the canonical types of the system. If it
+      // equals a given canonical type C, then it means C is the
+      // canonical type of 't'.  Otherwise, if 't' is different from
+      // all the canonical types of the system, then it means 't' is a
+      // canonical type itself.
+      for (vector<type_base_sptr>::const_reverse_iterator it = v.rbegin();
+	   it != v.rend();
 	   ++it)
 	{
+	  // We are going to use the One Definition Rule[1] to perform
+	  // a speed optimization here.
+	  //
+	  // Here is how I'd phrase that optimization: If 't' has the
+	  // same *name* as a canonical type C which comes from the
+	  // same *abi corpus* as 't', then C is the canonical type of
+	  // 't.
+	  //
+	  // [1]: https://en.wikipedia.org/wiki/One_Definition_Rule
+	  //
+	  // Note how we walk the vector of canonical types by
+	  // starting from the end; that is because since canonical
+	  // types of a given corpus are added at the end of the this
+	  // vector, when two ABI corpora have been loaded and their
+	  // canonical types are present in this vector (e.g, when
+	  // comparing two ABI corpora), the canonical types of the
+	  // second corpus are going to be near the end the vector.
+	  // As this function is likely to called during the loading
+	  // of the ABI corpus, looking from the end of the vector
+	  // maximizes the changes of triggering the optimization,
+	  // even when we are reading the second corpus.
+	  if (t_corpus
+	      // We are not doing the optimizatin for anymous types
+	      // because, well, two anonymous type have the same name
+	      // (okay, they have no name), but that doesn't mean they
+	      // are equal.
+	      && !is_anonymous_type(t)
+	      // We are not doing it for typedefs either, as I've seen
+	      // instances of two typedefs with the same name but
+	      // pointing to deferent types, e.g, in some boost
+	      // library in our testsuite.
+	      && !is_typedef(t)
+	      // We are not doing it for pointers/references/arrays as
+	      // two pointers to a type 'foo' might point to 'foo'
+	      // meaning different things, as we've seen above.
+	      && !is_pointer_type(t)
+	      && !is_reference_type(t)
+	      && !is_array_type(t)
+	      // And we are not doing it for function types either,
+	      // for similar reasons.
+	      && !is_function_type(t))
+	    {
+	      if (const corpus* it_corpus = (*it)->get_corpus())
+		{
+		  if (it_corpus == t_corpus)
+		    {
+		      // Both types come from the same ABI corpus and
+		      // have the same name; the One Definition Rule
+		      // of C and C++ says that these two types should
+		      // be equal.  Using that rule would saves us
+		      // from a potentially expensive type comparison
+		      // here.
+		      result = *it;
+		      break;
+		    }
+		}
+	    }
 	  if (*it == t)
 	    {
 	      result = *it;

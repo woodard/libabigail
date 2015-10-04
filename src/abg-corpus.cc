@@ -1074,6 +1074,8 @@ corpus::add(const translation_unit_sptr tu)
   assert(tu->get_environment() == get_environment());
 
   priv_->members.push_back(tu);
+
+  tu->set_corpus(this);
 }
 
 /// Return the list of translation units of the current corpus.

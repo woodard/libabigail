@@ -6308,17 +6308,26 @@ build_enum_type(read_context& ctxt,
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
+  bool enum_is_anonymous = false;
   // If the enum is anonymous, let's give it a name.
   if (name.empty())
-    name = "__anonymous_enum__";
+    {
+      name = "__anonymous_enum__";
+      // But we remember that the type is anonymous.
+      enum_is_anonymous = true;
+    }
 
   size_t size = 0;
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     size *= 8;
 
+  bool enum_underlying_type_is_anonymous= false;
   string underlying_type_name;
   if (name.empty())
-    underlying_type_name = "unnamed-enum";
+    {
+      underlying_type_name = "unnamed-enum";
+      enum_underlying_type_is_anonymous = true;
+    }
   else
     underlying_type_name = string("enum-") + name;
   underlying_type_name += "-underlying-type";
@@ -6348,6 +6357,7 @@ build_enum_type(read_context& ctxt,
   // enum_type_decl type.
   type_decl_sptr t(new type_decl(underlying_type_name,
 				 size, size, location()));
+  t->set_is_anonymous(enum_underlying_type_is_anonymous);
   translation_unit_sptr tu = ctxt.cur_tu();
   decl_base_sptr d =
     add_decl_to_scope(t, tu->get_global_scope().get());
@@ -6356,6 +6366,7 @@ build_enum_type(read_context& ctxt,
   t = dynamic_pointer_cast<type_decl>(d);
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
+  result->set_is_anonymous(enum_is_anonymous);
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_from_alt_di,
 			     result);
@@ -6500,10 +6511,15 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
+  bool is_anonymous = false;
   if (name.empty())
-    // So we are looking at an anonymous struct.  Let's
-    // give it a name.
-    name = "__anonymous_struct__";
+    {
+      // So we are looking at an anonymous struct.  Let's
+      // give it a name.
+      name = "__anonymous_struct__";
+      // But we remember that the type is anonymous.
+      is_anonymous = true;
+    }
 
   size_t size = 0;
   die_size_in_bits(die, size);
@@ -6522,6 +6538,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
     {
       result.reset(new class_decl(name, size, /*alignment=*/0, is_struct, loc,
 				  decl_base::VISIBILITY_DEFAULT));
+      result->set_is_anonymous(is_anonymous);
 
       if (is_declaration_only)
 	result->set_is_declaration_only(true);

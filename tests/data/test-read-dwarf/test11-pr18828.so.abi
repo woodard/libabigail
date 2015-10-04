@@ -13519,7 +13519,7 @@
       </class-decl>
       <class-decl name='_Mutex_base&lt;(__gnu_cxx::_Lock_policy)2u&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/4.9/bits/shared_ptr_base.h' line='88' column='1' id='type-id-1063'>
         <member-type access='protected'>
-          <enum-decl name='__anonymous_enum__' id='type-id-1067'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-1067'>
             <underlying-type type-id='type-id-1068'/>
             <enumerator name='_S_need_barriers' value='0'/>
           </enum-decl>
@@ -25440,7 +25440,7 @@
         </data-member>
       </class-decl>
     </namespace-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='118' column='1' id='type-id-2183'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/stdlib.h' line='118' column='1' id='type-id-2183'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='quot' type-id='type-id-1872' visibility='default' filepath='/usr/include/stdlib.h' line='119' column='1'/>
       </data-member>
@@ -32001,7 +32001,7 @@
       </class-decl>
       <class-decl name='BSONSizeTracker' size-in-bits='352' visibility='default' filepath='src/mongo/bson/bsonmisc.h' line='271' column='1' id='type-id-2500'>
         <member-type access='private'>
-          <enum-decl name='__anonymous_enum__' id='type-id-2501'>
+          <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-2501'>
             <underlying-type type-id='type-id-1068'/>
             <enumerator name='SIZE' value='10'/>
           </enum-decl>
@@ -34943,7 +34943,7 @@
     <function-decl name='getwchar' filepath='/usr/include/wchar.h' line='752' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-2889'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-2905'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-2905'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__count' type-id='type-id-160' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1'/>
       </data-member>
@@ -35393,7 +35393,7 @@
       <parameter type-id='type-id-2923'/>
       <return type-id='type-id-435'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='98' column='1' id='type-id-2924'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/stdlib.h' line='98' column='1' id='type-id-2924'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='quot' type-id='type-id-160' visibility='default' filepath='/usr/include/stdlib.h' line='99' column='1'/>
       </data-member>
@@ -35411,7 +35411,7 @@
       <parameter type-id='type-id-212'/>
       <return type-id='type-id-184'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/stdlib.h' line='106' column='1' id='type-id-2926'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/stdlib.h' line='106' column='1' id='type-id-2926'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='quot' type-id='type-id-157' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
       </data-member>
@@ -35550,7 +35550,7 @@
       <parameter type-id='type-id-2930'/>
       <return type-id='type-id-160'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/_G_config.h' line='22' column='1' id='type-id-2931'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/_G_config.h' line='22' column='1' id='type-id-2931'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__pos' type-id='type-id-2893' visibility='default' filepath='/usr/include/_G_config.h' line='23' column='1'/>
       </data-member>

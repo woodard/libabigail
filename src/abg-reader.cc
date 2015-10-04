@@ -832,6 +832,7 @@ static bool	read_offset_in_bits(xmlNodePtr, size_t&);
 static bool	read_cdtor_const(xmlNodePtr, bool&, bool&, bool&);
 static bool	read_is_virtual(xmlNodePtr, bool&);
 static bool	read_is_struct(xmlNodePtr, bool&);
+static bool	read_is_anonymous(xmlNodePtr, bool&);
 static bool	read_elf_symbol_type(xmlNodePtr, elf_symbol::type&);
 static bool	read_elf_symbol_binding(xmlNodePtr, elf_symbol::binding&);
 
@@ -1941,6 +1942,26 @@ read_is_struct(xmlNodePtr node, bool& is_struct)
   return false;
 }
 
+/// Read the 'is-anonymous' attribute.
+///
+/// @param node the xml node to read the attribute from.
+///
+/// @param is_anonymous is set to true iff the "is-anonymous" is present
+/// and set to "yes".
+///
+/// @return true iff the "is-anonymous" attribute is present.
+static bool
+read_is_anonymous(xmlNodePtr node, bool& is_anonymous)
+{
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-anonymous"))
+    {
+      string str = CHAR_STR(s);
+      is_anonymous = (str == "yes");
+      return true;
+    }
+  return false;
+}
+
 /// Read the 'type' attribute of the 'elf-symbol' element.
 ///
 /// @param node the XML node to read the attribute from.
@@ -2528,6 +2549,9 @@ build_type_decl(read_context&		ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
+  bool is_anonymous = false;
+  read_is_anonymous(node, is_anonymous);
+
   if (type_base_sptr d = ctxt.get_type_decl(id))
     {
       // I've seen instances of DSOs where a type_decl would appear
@@ -2543,6 +2567,7 @@ build_type_decl(read_context&		ctxt,
   shared_ptr<type_decl> decl(new type_decl(name, size_in_bits,
 					   alignment_in_bits,
 					   loc));
+  decl->set_is_anonymous(is_anonymous);
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, decl);
@@ -3103,6 +3128,9 @@ build_enum_type_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
+  bool is_anonymous = false;
+  read_is_anonymous(node, is_anonymous);
+
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
@@ -3295,6 +3323,9 @@ build_class_decl(read_context&		ctxt,
   bool is_struct = false;
   read_is_struct(node, is_struct);
 
+  bool is_anonymous = false;
+  read_is_anonymous(node, is_anonymous);
+
   assert(!id.empty());
   class_decl_sptr previous_definition, previous_declaration;
   const vector<type_base_sptr> *types_ptr = ctxt.get_all_type_decls(id);
@@ -3335,6 +3366,8 @@ build_class_decl(read_context&		ctxt,
     decl.reset(new class_decl(name, size_in_bits, alignment_in_bits,
 			      is_struct, loc, vis, bases, mbrs, data_mbrs,
 			      mbr_functions));
+
+  decl->set_is_anonymous(is_anonymous);
 
   string def_id;
   bool is_def_of_decl = false;
