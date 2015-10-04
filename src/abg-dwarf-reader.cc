@@ -7618,7 +7618,14 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
   type_base_sptr t = ctxt.lookup_type_from_die_offset(die_offset, in_alt_di);
   assert(t);
 
-  if (class_decl_sptr klass = is_class_type(peel_typedef_type(t)))
+  if (class_decl_sptr klass =
+      is_class_type(peel_typedef_pointer_or_reference_type(t)))
+    // We delay canonicalization of classes or typedef, pointers,
+    // references and array to classes.  This is because the
+    // (underlying) class might not be finished yet and we might not
+    // be able to able detect it here (thinking about classes that are
+    // work-in-progress, or classes that might be later amended by
+    // some DWARF construct).  So we err on the safe side.
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
   else if(type_has_non_canonicalized_subtype(t))
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);

@@ -496,6 +496,12 @@ peel_reference_type(const shared_ptr<type_base>&);
 const type_base*
 peel_reference_type(const type_base*);
 
+const shared_ptr<type_base>
+peel_array_type(const shared_ptr<type_base>&);
+
+const type_base*
+peel_array_type(const type_base*);
+
 shared_ptr<type_base>
 peel_typedef_pointer_or_reference_type(const shared_ptr<type_base>);
 

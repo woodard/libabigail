@@ -3277,6 +3277,46 @@ peel_reference_type(const type_base* type)
   return peel_reference_type(t->get_pointed_to_type()).get();
 }
 
+/// Return the leaf element type of an array.
+///
+/// If the element type is itself an array, then recursively return
+/// the element type of that array itself.
+///
+/// @param type the array type to consider.  If this is not an array
+/// type, this type is returned by the function.
+///
+/// @return the leaf element type of the array @p type, or, if it's
+/// not an array type, then just return @p.
+const type_base_sptr
+peel_array_type(const type_base_sptr& type)
+{
+  const array_type_def_sptr t = is_array_type(type);
+  if (!t)
+    return type;
+
+  return peel_array_type(t->get_element_type());
+}
+
+/// Return the leaf element type of an array.
+///
+/// If the element type is itself an array, then recursively return
+/// the element type of that array itself.
+///
+/// @param type the array type to consider.  If this is not an array
+/// type, this type is returned by the function.
+///
+/// @return the leaf element type of the array @p type, or, if it's
+/// not an array type, then just return @p.
+const type_base*
+peel_array_type(const type_base* type)
+{
+  const array_type_def* t = is_array_type(type);
+  if (!t)
+    return type;
+
+  return peel_array_type(t->get_element_type()).get();
+}
+
 /// Return the leaf underlying or pointed-to type node of a @ref
 /// typedef_decl, @ref pointer_type_def or @ref reference_type_def
 /// node.
@@ -3296,6 +3336,9 @@ peel_typedef_pointer_or_reference_type(const type_base_sptr type)
 
       if (reference_type_def_sptr t = is_reference_type(typ))
 	typ = peel_reference_type(t);
+
+      if (array_type_def_sptr t = is_array_type(typ))
+	typ = peel_array_type(t);
     }
 
   return typ;
@@ -3319,6 +3362,9 @@ peel_typedef_pointer_or_reference_type(const type_base* type)
 
       if (const reference_type_def* t = is_reference_type(type))
 	type = peel_reference_type(t);
+
+      if (const array_type_def* t = is_array_type(type))
+	type = peel_array_type(t);
     }
 
   return const_cast<type_base*>(type);
