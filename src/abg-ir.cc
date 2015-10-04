@@ -3286,7 +3286,7 @@ type_base_sptr
 peel_typedef_pointer_or_reference_type(const type_base_sptr type)
 {
   type_base_sptr typ  = type;
-  while (is_typedef(type) || is_pointer_type(type) || is_reference_type(type))
+  while (is_typedef(typ) || is_pointer_type(typ) || is_reference_type(typ))
     {
       if (typedef_decl_sptr t = is_typedef(typ))
 	typ = peel_typedef_type(t);
