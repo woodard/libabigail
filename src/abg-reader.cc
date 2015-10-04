@@ -1923,8 +1923,8 @@ read_is_virtual(xmlNodePtr node, bool& is_virtual)
 ///
 /// @param node the xml node to read the attribute from.
 ///
-/// @param is_virtual is set to true iff the "is-struct" is present
-/// and set to "yes".
+/// @param is_struct is set to true iff the "is-struct" attribute is
+/// present and set to "yes".
 ///
 /// @return true iff the "is-struct" attribute is present.
 static bool
@@ -2564,9 +2564,9 @@ build_type_decl(read_context&		ctxt,
       return ty;
     }
 
-  shared_ptr<type_decl> decl(new type_decl(name, size_in_bits,
-					   alignment_in_bits,
-					   loc));
+  type_decl_sptr decl(new type_decl(name, size_in_bits,
+				    alignment_in_bits,
+				    loc));
   decl->set_is_anonymous(is_anonymous);
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
@@ -3252,7 +3252,7 @@ build_typedef_decl(read_context&	ctxt,
 	     == get_type_name(ty->get_underlying_type()));
       // it's possible to have the same typedef several times.
     }
-  shared_ptr<typedef_decl> t(new typedef_decl(name, underlying_type, loc));
+  typedef_decl_sptr t(new typedef_decl(name, underlying_type, loc));
 
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
