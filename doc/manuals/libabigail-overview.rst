@@ -23,7 +23,7 @@ In more concrete terms, ``libabigail`` can parse a shared library in
 `ELF`_ format, accompanied with its associated debug information in
 `DWARF`_ format, build an internal representation of all the functions
 and variables it exports, along with their types.  It also builds an
-internal representation of the `ELF_ symbols`_ of these functions and
+internal representation of the `ELF symbols`_ of these functions and
 variables.  That information about these exported functions and
 variables is roughly what we consider as being the ABI of the shared
 library, at least, in the scope of Libabigail.
@@ -40,4 +40,4 @@ enough way to help us spot ABI incompatibilities.
 
 .. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
 .. _DWARF: http://www.dwarfstd.org
-.. _Elf symbols: https://blogs.oracle.com/ali/entry/inside_elf_symbol_tables
+.. _ELF symbols: https://blogs.oracle.com/ali/entry/inside_elf_symbol_tables
