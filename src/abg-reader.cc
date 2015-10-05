@@ -1727,7 +1727,9 @@ read_access(xmlNodePtr node, access_specifier& access)
       else if (a == "public")
 	access = public_access;
       else
-	access = private_access;
+	/// If there is an access specifier of an unsupported value,
+	/// we should not assume anything and abort.
+	abort();
 
       return true;
     }
@@ -3435,7 +3437,10 @@ build_class_decl(read_context&		ctxt,
 
       if (xmlStrEqual(n->name, BAD_CAST("base-class")))
 	{
-	  access_specifier access = private_access;
+	  access_specifier access =
+	    is_struct
+	    ? public_access
+	    : private_access;
 	  read_access(n, access);
 
 	  string type_id;
@@ -3462,7 +3467,10 @@ build_class_decl(read_context&		ctxt,
 	}
       else if (xmlStrEqual(n->name, BAD_CAST("member-type")))
 	{
-	  access_specifier access = private_access;
+	  access_specifier access =
+	    is_struct
+	    ? public_access
+	    : private_access;
 	  read_access(n, access);
 
 	  ctxt.map_xml_node_to_decl(n, decl);
@@ -3493,7 +3501,10 @@ build_class_decl(read_context&		ctxt,
 	{
 	  ctxt.map_xml_node_to_decl(n, decl);
 
-	  access_specifier access = private_access;
+	  access_specifier access =
+	    is_struct
+	    ? public_access
+	    : private_access;
 	  read_access(n, access);
 
 	  bool is_laid_out = false;
@@ -3523,7 +3534,10 @@ build_class_decl(read_context&		ctxt,
 	{
 	  ctxt.map_xml_node_to_decl(n, decl);
 
-	  access_specifier access = private_access;
+	  access_specifier access =
+	    is_struct
+	    ? public_access
+	    : private_access;
 	  read_access(n, access);
 
 	  bool is_virtual = false;
@@ -3568,7 +3582,10 @@ build_class_decl(read_context&		ctxt,
 	{
 	  ctxt.map_xml_node_to_decl(n, decl);
 
-	  access_specifier access = private_access;
+	  access_specifier access =
+	    is_struct
+	    ? public_access
+	    : private_access;
 	  read_access(n, access);
 
 	  bool is_static = false;
