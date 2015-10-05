@@ -22,7 +22,7 @@ Invocation
 
 ::
 
-abilint [options] [<abi-file1>]
+  abilint [options] [<abi-file1>]
 
 Options
 =======

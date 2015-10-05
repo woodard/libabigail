@@ -25,7 +25,7 @@ information in `DWARF`_ format.
 .. _abipkgdiff_invocation_label:
 
 Invocation
-=========
+==========
 
 ::
 
