@@ -2816,6 +2816,9 @@ public:
   void
   set_is_declaration_only(bool f);
 
+  void
+  is_struct(bool f);
+
   bool
   is_struct() const;
 

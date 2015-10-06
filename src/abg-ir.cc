@@ -5854,21 +5854,40 @@ type_base::get_canonical_type_for(type_base_sptr t)
   environment* env = t->get_environment();
   assert(env);
 
+  class_decl_sptr is_class;
   // Look through declaration-only classes
   if (class_decl_sptr class_declaration = is_class_type(t))
-    if (class_declaration->get_is_declaration_only())
-      {
-	if (class_decl_sptr def =
-	    class_declaration->get_definition_of_declaration())
-	  t = def;
-	else
-	  return type_base_sptr();
-      }
+    {
+      if (class_declaration->get_is_declaration_only())
+	{
+	  if (class_decl_sptr def =
+	      class_declaration->get_definition_of_declaration())
+	    t = def;
+	  else
+	    return type_base_sptr();
+	}
+      is_class = is_class_type(t);
+    }
 
   if (t->get_canonical_type())
     return t->get_canonical_type();
 
+  bool is_struct = false;
+  if (is_class)
+    {
+      is_struct = is_class->is_struct();
+      // Make sure the struct-ness of the class doesn't influence the
+      // pretty representation that we are going to use for hashing
+      // purposes below.
+      is_class->is_struct(false);
+    }
+
   string repr = ir::get_pretty_representation(t);
+
+  if (is_class)
+    // Set the struct-ness of the class back.
+    is_class->is_struct(is_struct);
+
   environment::canonical_types_map_type& types =
     env->get_canonical_types_map();
 
@@ -10052,6 +10071,13 @@ class_decl::get_is_declaration_only() const
 void
 class_decl::set_is_declaration_only(bool f)
 {priv_->is_declaration_only_ = f;}
+
+/// Set the "is-struct" flag of the class.
+///
+/// @param f the new value of the flag.
+void
+class_decl::is_struct(bool f)
+{priv_->is_struct_ = f;}
 
 /// Test if the class is a struct.
 ///
