@@ -55,6 +55,7 @@ runtestwritereadarchive_LDADD= libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestreaddwarf_SOURCES=test-read-dwarf.cc
 runtestreaddwarf_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
+runtestreaddwarf_LDFLAGS=-pthread
 
 runtestlookupsyms_SOURCES=test-lookup-syms.cc
 runtestlookupsyms_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
