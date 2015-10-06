@@ -121,7 +121,7 @@ class corpus::exported_decls_builder::priv
   // of the first instantiation, for instance.  So there can be cases
   // where one ID appertains to more than one function.
   str_fn_ptrs_map_type	id_fns_map_;
-  str_var_ptr_map_type	vars_map_;
+  str_var_ptr_map_type	id_var_map_;
   strings_type&	fns_suppress_regexps_;
   regex_t_sptrs_type	compiled_fns_suppress_regexp_;
   strings_type&	vars_suppress_regexps_;
@@ -132,7 +132,6 @@ class corpus::exported_decls_builder::priv
   regex_t_sptrs_type	compiled_vars_keep_regexps_;
   strings_type&	sym_id_of_fns_to_keep_;
   strings_type&	sym_id_of_vars_to_keep_;
-
 
 public:
 
@@ -282,8 +281,8 @@ public:
   /// @return a map which key is a string and which data is a pointer
   /// to a function.
   const str_var_ptr_map_type&
-  vars_map() const
-  {return vars_map_;}
+  id_var_map() const
+  {return id_var_map_;}
 
   /// Getter for a map of the IDs of the variables that are present in
   /// the set of exported variables.
@@ -295,8 +294,8 @@ public:
   /// @return a map which key is a string and which data is a pointer
   /// to a function.
   str_var_ptr_map_type&
-  vars_map()
-  {return vars_map_;}
+  id_var_map()
+  {return id_var_map_;}
 
   /// Returns an ID for a given function.
   ///
@@ -419,9 +418,9 @@ public:
   /// @return true iff the variable designated by @p fn_id is present
   /// in the set of exported variables.
   bool
-  var_is_in_map(const string& var_id) const
+  var_id_is_in_id_var_map(const string& var_id) const
   {
-    const str_var_ptr_map_type& m = vars_map();
+    const str_var_ptr_map_type& m = id_var_map();
     str_var_ptr_map_type::const_iterator i = m.find(var_id);
     return i != m.end();
   }
@@ -436,7 +435,7 @@ public:
     if (var)
       {
 	const string& var_id = get_id(*var);
-	vars_map()[var_id] = var;
+	id_var_map()[var_id] = var;
       }
   }
 
@@ -460,7 +459,7 @@ public:
   add_var_to_exported(var_decl* var)
   {
     const string& id = get_id(*var);
-    if (!var_is_in_map(id))
+    if (!var_id_is_in_id_var_map(id))
       {
 	vars_.push_back(var);
 	add_var_to_map(var);
@@ -819,7 +818,7 @@ corpus::exported_decls_builder::maybe_add_var_to_exported_vars(var_decl* var)
   const string& var_id = priv_->get_id(*var);
   assert(!var_id.empty());
 
-  if (priv_->var_is_in_map(var_id))
+  if (priv_->var_id_is_in_id_var_map(var_id))
     return;
 
   if (priv_->keep_wrt_id_of_vars_to_keep(var)
