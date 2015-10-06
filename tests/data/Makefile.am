@@ -294,6 +294,8 @@ test-read-dwarf/test16-pr18904.so \
 test-read-dwarf/test16-pr18904.so.abi \
 test-read-dwarf/test17-pr19027.so \
 test-read-dwarf/test17-pr19027.so.abi \
+test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so \
+test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\

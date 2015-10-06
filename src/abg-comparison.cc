@@ -11812,14 +11812,19 @@ function_decl_diff::report(ostream& out, const string& indent) const
 	    << linkage_names1 << "' to '" << linkage_names2 << "'\n";
     }
 
-  if (qn1 != qn2)
+  if (qn1 != qn2
+      && type_diff()
+      && type_diff()->to_be_reported())
     {
+      // So the function has sub-type changes that are to be
+      // reported.  Let's see if the function name changed too; if it
+      // did, then we'd report that change right before reporting the
+      // sub-type changes.
       string frep1 = first_function_decl()->get_pretty_representation(),
 	frep2 = second_function_decl()->get_pretty_representation();
       out << indent << "'" << frep1 << " {" << linkage_names1<< "}"
 	  << "' now becomes '"
 	  << frep2 << " {" << linkage_names2 << "}" << "'\n";
-      return;
     }
 
   // Now report about inline-ness changes
@@ -13141,7 +13146,10 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	function_decl* deleted_fn = first_->get_functions()[i];
 	string n = deleted_fn->get_id();
 	assert(!n.empty());
-	assert(deleted_fns_.find(n) == deleted_fns_.end());
+	// The below is commented out because there can be several
+	// functions with the same ID in the corpus.  So several
+	// functions with the same ID can be deleted.
+	// assert(deleted_fns_.find(n) == deleted_fns_.end());
 	deleted_fns_[n] = deleted_fn;
       }
 
@@ -13158,7 +13166,10 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	    function_decl* added_fn = second_->get_functions()[i];
 	    string n = added_fn->get_id();
 	    assert(!n.empty());
-	    assert(added_fns_.find(n) == added_fns_.end());
+	    // The below is commented out because there can be several
+	    // functions with the same ID in the corpus.  So several
+	    // functions with the same ID can be added.
+	    // assert(added_fns_.find(n) == added_fns_.end());
 	    string_function_ptr_map::const_iterator j =
 	      deleted_fns_.find(n);
 	    if (j != deleted_fns_.end())

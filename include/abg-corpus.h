@@ -276,12 +276,6 @@ public:
 
   /// Convenience typedef for shared_ptr<priv>
   typedef shared_ptr<priv> priv_sptr;
-  /// Convenience typedef for a hash map which key is a string an
-  /// which data is an abigail::ir::function_decl*
-  typedef unordered_map<string, function_decl*> str_fn_ptr_map_type;
-  /// Convenience typedef for a hash map which key is a string and
-  /// which data is an abigail::ir::var_decl*.
-  typedef unordered_map<string, var_decl*> str_var_ptr_map_type;
 
   friend class corpus;
 

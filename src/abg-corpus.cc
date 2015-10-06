@@ -96,6 +96,13 @@ typedef vector<regex_t_sptr> regex_t_sptrs_type;
 
 // <corpus::exported_decls_builder>
 
+/// Convenience typedef for a hash map which key is a string an which
+/// data is a vector of abigail::ir::function_decl*
+typedef unordered_map<string, vector<function_decl*> > str_fn_ptrs_map_type;
+/// Convenience typedef for a hash map which key is a string and
+/// which data is an abigail::ir::var_decl*.
+typedef unordered_map<string, var_decl*> str_var_ptr_map_type;
+
 /// The type of the private data of @ref
 /// corpus::exported_decls_builder type.
 class corpus::exported_decls_builder::priv
@@ -103,9 +110,17 @@ class corpus::exported_decls_builder::priv
   friend class corpus::exported_decls_builder;
   priv();
 
-  functions&	fns_;
-  variables&	vars_;
-  str_fn_ptr_map_type	fns_map_;
+  functions&		fns_;
+  variables&		vars_;
+  // A map that associates a function ID (function symbol and its
+  // version) to to a vector of functions with that ID.  Normally, one
+  // would think that in the corpus, there must only one function for
+  // a given ID.  Actually, in c++, there can be two function template
+  // instantiations that produce the same function ID because the
+  // template parameters of the second instantiation are just typedefs
+  // of the first instantiation, for instance.  So there can be cases
+  // where one ID appertains to more than one function.
+  str_fn_ptrs_map_type	id_fns_map_;
   str_var_ptr_map_type	vars_map_;
   strings_type&	fns_suppress_regexps_;
   regex_t_sptrs_type	compiled_fns_suppress_regexp_;
@@ -232,13 +247,17 @@ public:
   ///
   /// This map is useful during the construction of the set of
   /// exported functions, at least to ensure that every function is
-  /// present only once in that set.
+  /// present only once in that set.  Actually, for each symbol ID,
+  /// there can be several functions, given that each of those have
+  /// different declaration names; this can happen with function
+  /// template instantiations which decl names differ because the type
+  /// parameters of the templates are typedefs of each other.
   ///
   /// @return a map which key is a string and which data is a pointer
   /// to a function.
-  const corpus::exported_decls_builder::str_fn_ptr_map_type&
-  fns_map() const
-  {return fns_map_;}
+  const str_fn_ptrs_map_type&
+  id_fns_map() const
+  {return id_fns_map_;}
 
   /// Getter for a map of the IDs of the functions that are present in
   /// the set of exported functions.
@@ -249,9 +268,9 @@ public:
   ///
   /// @return a map which key is a string and which data is a pointer
   /// to a function.
-  corpus::exported_decls_builder::str_fn_ptr_map_type&
-  fns_map()
-  {return fns_map_;}
+  str_fn_ptrs_map_type&
+  id_fns_map()
+  {return id_fns_map_;}
 
   /// Getter for a map of the IDs of the variables that are present in
   /// the set of exported variables.
@@ -262,7 +281,7 @@ public:
   ///
   /// @return a map which key is a string and which data is a pointer
   /// to a function.
-  const corpus::exported_decls_builder::str_var_ptr_map_type&
+  const str_var_ptr_map_type&
   vars_map() const
   {return vars_map_;}
 
@@ -275,7 +294,7 @@ public:
   ///
   /// @return a map which key is a string and which data is a pointer
   /// to a function.
-  corpus::exported_decls_builder::str_var_ptr_map_type&
+  str_var_ptr_map_type&
   vars_map()
   {return vars_map_;}
 
@@ -297,20 +316,78 @@ public:
   get_id(const var_decl& var)
   {return var.get_id();}
 
-  /// Test if a given (ID of a) function is present in the function
-  /// map.  In other words, it tests if a given function is present in
-  /// the set of exported functions.
+  /// Test if a given function ID is in the id-functions map.
   ///
-  /// @param fn_id the ID of the function to consider.
+  /// If it is, then return a pointer to the vector of functions with
+  /// that ID.  If not, just return nil.
   ///
-  /// @return true iff the function designated by @p fn_id is present
-  /// in the set of exported functions.
-  bool
-  fn_is_in_map(const string& fn_id)
+  /// @param fn_id the ID to consider.
+  ///
+  /// @return the pointer to the vector of functions with ID @p fn_id,
+  /// or nil if no function with that ID exists.
+  vector<function_decl*>*
+  fn_id_is_in_id_fns_map(const string& fn_id)
   {
-    str_fn_ptr_map_type& m = fns_map();
-    str_fn_ptr_map_type::const_iterator i = m.find(fn_id);
-    return i != m.end();
+    str_fn_ptrs_map_type& m = id_fns_map();
+    str_fn_ptrs_map_type::iterator i = m.find(fn_id);
+    if (i == m.end())
+      return 0;
+    return &i->second;
+  }
+
+  /// Test if a a function if the same ID as a given function is
+  /// present in the id-functions map.
+  ///
+  /// @param fn the function to consider.
+  ///
+  /// @return a pointer to the vector of functions with the same ID as
+  /// @p fn, that are present in the id-functions map, or nil if no
+  /// function with the same ID as @p fn is present in the
+  /// id-functions map.
+  vector<function_decl*>*
+  fn_id_is_in_id_fns_map(const function_decl* fn)
+  {
+    string fn_id = fn->get_id();
+    return fn_id_is_in_id_fns_map(fn_id);
+  }
+
+  /// Test if a given function is present in a vector of functions.
+  ///
+  /// The function compares the ID and the qualified name of
+  /// functions.
+  ///
+  /// @param fn the function to consider.
+  ///
+  /// @parm fns the vector of functions to consider.
+  static bool
+  fn_is_in_fns(const function_decl* fn, const vector<function_decl*>& fns)
+  {
+    if (fns.empty())
+      return false;
+
+    const string fn_id = fn->get_id();
+    for (vector<function_decl*>::const_iterator i = fns.begin();
+	 i != fns.end();
+	 ++i)
+      if ((*i)->get_id() == fn_id
+	  && (*i)->get_qualified_name() == fn->get_qualified_name())
+	return true;
+
+    return false;
+  }
+
+  ///  Test if a function is in the id-functions map.
+  ///
+  ///  @param fn the function to consider.
+  ///
+  ///  @return true iff the function is in the id-functions map.
+  bool
+  fn_is_in_id_fns_map(const function_decl* fn)
+  {
+    vector<function_decl*>* fns = fn_id_is_in_id_fns_map(fn);
+    if (fns && fn_is_in_fns(fn, *fns))
+      return true;
+    return false;
   }
 
   /// Add a given function to the map of functions that are present in
@@ -318,13 +395,19 @@ public:
   ///
   /// @param id the function to add to the map.
   void
-  add_fn_to_map(function_decl* fn)
+  add_fn_to_id_fns_map(function_decl* fn)
   {
-    if (fn)
-      {
-	const string& id = get_id(*fn);
-	fns_map()[id] = fn;
-      }
+    if (!fn)
+      return;
+
+    if (!fn_is_in_id_fns_map(fn))
+      return;
+
+    string fn_id = fn->get_id();
+    vector<function_decl*>* fns = fn_id_is_in_id_fns_map(fn_id);
+    if (!fns)
+      fns = &(id_fns_map()[fn_id] = vector<function_decl*>());
+    fns->push_back(fn);
   }
 
   /// Test if a given (ID of a) varialble is present in the variable
@@ -363,11 +446,10 @@ public:
   void
   add_fn_to_exported(function_decl* fn)
   {
-    const string& id = get_id(*fn);
-    if (!fn_is_in_map(id))
+    if (!fn_is_in_id_fns_map(fn))
       {
 	fns_.push_back(fn);
-	add_fn_to_map(fn);
+	add_fn_to_id_fns_map(fn);
       }
   }
 
@@ -714,7 +796,7 @@ corpus::exported_decls_builder::maybe_add_fn_to_exported_fns(function_decl* fn)
   const string& fn_id = priv_->get_id(*fn);
   assert(!fn_id.empty());
 
-  if (priv_->fn_is_in_map(fn_id))
+  if (priv_->fn_is_in_id_fns_map(fn))
     return;
 
   if (priv_->keep_wrt_id_of_fns_to_keep(fn)
