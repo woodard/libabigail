@@ -6321,9 +6321,10 @@ build_enum_type(read_context& ctxt,
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     size *= 8;
 
-  bool enum_underlying_type_is_anonymous= false;
+  // for now we consider that underlying types of enums are all anonymous
+  bool enum_underlying_type_is_anonymous= true;
   string underlying_type_name;
-  if (name.empty())
+  if (enum_underlying_type_is_anonymous)
     {
       underlying_type_name = "unnamed-enum";
       enum_underlying_type_is_anonymous = true;
