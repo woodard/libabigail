@@ -12262,6 +12262,7 @@
       <subrange length='624'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-317'/>
+    <type-decl name='void' id='type-id-7'/>
     <function-type size-in-bits='64' id='type-id-70'>
       <return type-id='type-id-7'/>
     </function-type>
@@ -18989,6 +18990,7 @@
       <subrange length='624'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-317'/>
+    <type-decl name='void' id='type-id-7'/>
     <function-type size-in-bits='64' id='type-id-70'>
       <return type-id='type-id-7'/>
     </function-type>
@@ -24443,6 +24445,7 @@
     <qualified-type-def type-id='type-id-52' const='yes' id='type-id-121'/>
     <type-decl name='short int' size-in-bits='16' id='type-id-220'/>
     <qualified-type-def type-id='type-id-220' const='yes' id='type-id-123'/>
+    <type-decl name='void' id='type-id-7'/>
     <function-type size-in-bits='64' id='type-id-70'>
       <return type-id='type-id-7'/>
     </function-type>
@@ -28059,6 +28062,7 @@
       <subrange length='624'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-317'/>
+    <type-decl name='void' id='type-id-7'/>
     <function-type size-in-bits='64' id='type-id-70'>
       <return type-id='type-id-7'/>
     </function-type>
@@ -34427,6 +34431,7 @@
       <subrange length='624'/>
     </array-type-def>
     <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-317'/>
+    <type-decl name='void' id='type-id-7'/>
     <function-type size-in-bits='64' id='type-id-70'>
       <return type-id='type-id-7'/>
     </function-type>
@@ -35786,6 +35791,7 @@
     <type-decl name='enum-float_round_style-underlying-type' size-in-bits='32' alignment-in-bits='32' id='type-id-626'/>
     <qualified-type-def type-id='type-id-625' const='yes' id='type-id-622'/>
     <qualified-type-def type-id='type-id-46' const='yes' id='type-id-118'/>
+    <type-decl name='void' id='type-id-7'/>
     <function-type size-in-bits='64' id='type-id-70'>
       <return type-id='type-id-7'/>
     </function-type>
@@ -36347,6 +36353,93 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-125'/>
     </function-decl>
+    <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' filepath='/usr/include/libio.h' line='245' column='1' id='type-id-166'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='_flags' type-id='type-id-36' visibility='default' filepath='/usr/include/libio.h' line='246' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='_IO_read_ptr' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='251' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='128'>
+        <var-decl name='_IO_read_end' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='252' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='192'>
+        <var-decl name='_IO_read_base' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='253' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='256'>
+        <var-decl name='_IO_write_base' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='254' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='320'>
+        <var-decl name='_IO_write_ptr' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='255' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='384'>
+        <var-decl name='_IO_write_end' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='256' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='448'>
+        <var-decl name='_IO_buf_base' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='257' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='512'>
+        <var-decl name='_IO_buf_end' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='258' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='576'>
+        <var-decl name='_IO_save_base' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='260' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='640'>
+        <var-decl name='_IO_backup_base' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='261' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='704'>
+        <var-decl name='_IO_save_end' type-id='type-id-4' visibility='default' filepath='/usr/include/libio.h' line='262' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='768'>
+        <var-decl name='_markers' type-id='type-id-167' visibility='default' filepath='/usr/include/libio.h' line='264' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='832'>
+        <var-decl name='_chain' type-id='type-id-168' visibility='default' filepath='/usr/include/libio.h' line='266' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='896'>
+        <var-decl name='_fileno' type-id='type-id-36' visibility='default' filepath='/usr/include/libio.h' line='268' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='928'>
+        <var-decl name='_flags2' type-id='type-id-36' visibility='default' filepath='/usr/include/libio.h' line='272' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='960'>
+        <var-decl name='_old_offset' type-id='type-id-169' visibility='default' filepath='/usr/include/libio.h' line='274' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1024'>
+        <var-decl name='_cur_column' type-id='type-id-170' visibility='default' filepath='/usr/include/libio.h' line='278' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1040'>
+        <var-decl name='_vtable_offset' type-id='type-id-171' visibility='default' filepath='/usr/include/libio.h' line='279' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1048'>
+        <var-decl name='_shortbuf' type-id='type-id-172' visibility='default' filepath='/usr/include/libio.h' line='280' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1152'>
+        <var-decl name='_offset' type-id='type-id-173' visibility='default' filepath='/usr/include/libio.h' line='293' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1216'>
+        <var-decl name='__pad1' type-id='type-id-73' visibility='default' filepath='/usr/include/libio.h' line='302' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1280'>
+        <var-decl name='__pad2' type-id='type-id-73' visibility='default' filepath='/usr/include/libio.h' line='303' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1344'>
+        <var-decl name='__pad3' type-id='type-id-73' visibility='default' filepath='/usr/include/libio.h' line='304' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1408'>
+        <var-decl name='__pad4' type-id='type-id-73' visibility='default' filepath='/usr/include/libio.h' line='305' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1472'>
+        <var-decl name='__pad5' type-id='type-id-74' visibility='default' filepath='/usr/include/libio.h' line='306' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1536'>
+        <var-decl name='_mode' type-id='type-id-36' visibility='default' filepath='/usr/include/libio.h' line='308' column='1'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='1568'>
+        <var-decl name='_unused2' type-id='type-id-174' visibility='default' filepath='/usr/include/libio.h' line='310' column='1'/>
+      </data-member>
+    </class-decl>
+    <type-decl name='void' id='type-id-7'/>
     <function-type size-in-bits='64' id='type-id-70'>
       <return type-id='type-id-7'/>
     </function-type>

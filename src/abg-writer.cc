@@ -30,10 +30,13 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <stack>
+#include <algorithm>
 #include <tr1/unordered_map>
 #include "abg-config.h"
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
+#include "abg-sptr-utils.h"
 
 #if WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
@@ -53,7 +56,9 @@ using std::ostream;
 using std::ostringstream;
 using std::list;
 using std::vector;
+using std::stack;
 using std::tr1::unordered_map;
+using abigail::sptr_utils::noop_deleter;
 
 #if WITH_ZIP_ARCHIVE
 using zip_utils::zip_sptr;
@@ -125,6 +130,88 @@ typedef unordered_map<shared_ptr<class_tdecl>,
 		      string,
 		      class_tdecl::shared_ptr_hash> class_tmpl_shared_ptr_map;
 
+/// A comparison functor to compare pointers to @ref type_base.
+///
+/// What is compared is the string representation of the pointed-to
+/// type.
+struct type_ptr_comp_functor
+{
+  /// The comparison operator of the functor.
+  ///
+  /// @param l the first type to consider.
+  ///
+  /// @param r the second type to consider.
+  ///
+  /// @return true if the string representation of type @p l is
+  /// considered to be "less than" the string representation of the
+  /// type @p r.
+ bool
+ operator()(const type_base* l, const type_base* r) const
+  {
+    if (!l && r)
+      return true;
+    if (l && !r)
+      return false;
+    if (!l && !r)
+      return false;
+
+    string r1 = ir::get_pretty_representation(l),
+      r2 = ir::get_pretty_representation(r);
+
+    if (r1 == r2)
+      {
+	// The two types have the same string representation.  If they
+	// are either typedefs, pointers or references, then look
+	// through them to get their underlying pointer, and compare
+	// the string represenation of these underlying pointers
+	// instead.
+	type_base *t1 = peel_typedef_pointer_or_reference_type(l),
+	  *t2 = peel_typedef_pointer_or_reference_type(r);
+	assert(t1 && t2);
+	r1 = get_pretty_representation(t1);
+	r2 = get_pretty_representation(t2);
+      }
+
+    return r1 < r2;
+  }
+
+  /// The comparison operator of the functor.
+  ///
+  /// @param l the first type to consider.
+  ///
+  /// @param r the second type to consider.
+  ///
+  /// @return true if the string representation of type @p l is
+  /// considered to be "less than" the string representation of the
+  /// type @p r.
+  bool
+  operator()(const type_base_sptr& l, const type_base_sptr& r)
+  {return operator()(l.get(), r.get());}
+}; // end struct type_ptr_comp_functor
+
+/// Sort the content of a map of type pointers into a vector.
+///
+/// The pointers are sorted by using their string representation as
+/// the key to sort, lexicographically.
+///
+/// @param map the map to sort.
+///
+/// @param sorted the resulted sorted vector.  It's set by this
+/// function with the result of the sorting.
+static void
+sort_type_ptr_map(const type_ptr_map& map,
+		  vector<type_base*>& sorted)
+{
+  sorted.reserve(map.size());
+  for (type_ptr_map::const_iterator i = map.begin();
+       i != map.end();
+       ++i)
+    sorted.push_back(i->first);
+
+  type_ptr_comp_functor compare;
+  std::sort(sorted.begin(), sorted.end(), compare);
+}
+
 class write_context
 {
   id_manager				m_id_manager;
@@ -132,10 +219,9 @@ class write_context
   ostream&				m_ostream;
   type_ptr_map				m_type_id_map;
   unordered_map<string, bool>		m_emitted_type_id_map;
-  /// A vector of function types that are referenced by emitted pointers
-  /// or reference, i.e, that are pointed-to types of pointers or references
-  /// that are emitted.
-  type_ptr_map				m_referenced_fntypes_map;
+  // A map of types that are referenced by emitted pointers,
+  // references or typedefs
+  type_ptr_map				m_referenced_types_map;
   fn_tmpl_shared_ptr_map		m_fn_tmpl_id_map;
   class_tmpl_shared_ptr_map		m_class_tmpl_id_map;
   string_elf_symbol_sptr_map_type	m_fun_symbol_map;
@@ -233,28 +319,35 @@ public:
   record_type_id_as_emitted(const string& id)
   {m_emitted_type_id_map[id] = true;}
 
-  /// Record a given function type as being referenced by
-  /// a pointer or a reference type that is being emitted to the
-  /// XML output.
+  /// Getter of the map of types that were referenced by a pointer,
+  /// reference or typedef.
   ///
-  /// @param f a shared pointer to a function type
-  void
-  record_fntype_as_referenced(const function_type_sptr& f)
-  {m_referenced_fntypes_map[f->get_canonical_type().get()] = true;}
+  /// @return the map of types that were referenced.
+  const type_ptr_map&
+  get_referenced_types() const
+  {return m_referenced_types_map;}
 
-  /// Test if a given function type has been referenced by
-  /// a pointer or a reference type that was emitted to the
-  /// XML output.
+  /// Record a given type as being referenced by a pointer, a
+  /// reference or a typedef type that is being emitted to the XML
+  /// output.
   ///
-  /// @param f a shared pointer to a function type
+  /// @param t a shared pointer to a type
+  void
+  record_type_as_referenced(const type_base_sptr& t)
+  {m_referenced_types_map[t->get_canonical_type().get()] = true;}
+
+  /// Test if a given type has been referenced by a pointer, a
+  /// reference or a typedef type that was emitted to the XML output.
+  ///
+  /// @param f a shared pointer to a type
   ///
   /// @return true if the type has been referenced, false
   /// otherwise.
   bool
-  fntype_is_referenced(const function_type_sptr& f)
+  type_is_referenced(const type_base_sptr& t)
   {
-    return m_referenced_fntypes_map.find
-      (f->get_canonical_type().get()) != m_referenced_fntypes_map.end();
+    return m_referenced_types_map.find
+      (t->get_canonical_type().get()) != m_referenced_types_map.end();
   }
 
   /// Flag a type as having been written out to the XML output.
@@ -302,8 +395,8 @@ public:
   /// Clear the map that contains the IDs of the types that has been
   /// recorded as having been written out to the XML output.
   void
-  clear_referenced_fntypes_map()
-  {m_referenced_fntypes_map.clear();}
+  clear_referenced_types_map()
+  {m_referenced_types_map.clear();}
 
   const string_elf_symbol_sptr_map_type&
   get_fun_symbol_map() const
@@ -340,6 +433,9 @@ static void write_is_struct(const shared_ptr<class_decl>, ostream&);
 static void write_is_anonymous(const decl_base_sptr&, ostream&);
 static bool write_decl(const shared_ptr<decl_base>,
 		       write_context&, unsigned);
+static void write_decl_in_scope(const decl_base_sptr,
+				write_context&,
+				unsigned);
 static bool write_type_decl(const shared_ptr<type_decl>,
 			    write_context&, unsigned);
 static bool write_namespace_decl(const shared_ptr<namespace_decl>,
@@ -952,6 +1048,83 @@ write_decl(const decl_base_sptr decl, write_context& ctxt, unsigned indent)
   return false;
 }
 
+/// Emit a declaration, along with its scope.
+///
+/// This function is called at the end of emitting a translation unit,
+/// to emit type declarations that were referenced by types that were
+/// emitted in the TU already, but that were not emitted themselves.
+///
+/// @param decl the decl to emit.
+///
+/// @param ctxt the write context to use.
+///
+/// @param initial_indent the number of indentation spaces to use.
+static void
+write_decl_in_scope(const decl_base_sptr	decl,
+		    write_context&		ctxt,
+		    unsigned			initial_indent)
+{
+  list<scope_decl*> scopes;
+  for (scope_decl* s = decl->get_scope();
+       s && !is_global_scope(s);
+       s = s->get_scope())
+    scopes.push_front(s);
+
+  ostream& o = ctxt.get_ostream();
+  const config& c = ctxt.get_config();
+  stack<string> closing_tags;
+  stack<unsigned> closing_indents;
+  unsigned indent = initial_indent;
+  bool wrote_context = false;
+  for (list<scope_decl*>::const_iterator i = scopes.begin();
+       i != scopes.end();
+       ++i)
+    {
+      assert(!is_global_scope(*i));
+
+      if (i != scopes.begin())
+	o << "\n";
+
+      do_indent(o, indent);
+      if (namespace_decl* n = is_namespace(*i))
+	{
+	  o << "<namespace-decl name='"
+	    << xml::escape_xml_string(n->get_name())
+	    << "'>";
+	  closing_tags.push("</namespace-decl>");
+	  closing_indents.push(indent);
+	}
+      else
+	{
+	  type_base* t = is_type(*i);
+	  assert(t);
+	  decl_base_sptr d(*i, noop_deleter());
+	  write_decl(d, ctxt, indent);
+	}
+      indent += c.get_xml_element_indent();
+      wrote_context = true;
+    }
+
+  if (type_base_sptr t = is_type(decl))
+    {
+      if (!ctxt.type_is_emitted(t))
+	{
+	  if (wrote_context)
+	    o << "\n";
+	  write_decl(decl, ctxt, indent);
+	}
+    }
+
+  while (!closing_tags.empty())
+    {
+      o << "\n";
+      do_indent(o, closing_indents.top());
+      o << closing_tags.top();
+      closing_tags.pop();
+      closing_indents.pop();
+    }
+}
+
 /// Serialize a translation unit to an output stream.
 ///
 /// @param tu the translation unit to serialize.
@@ -979,7 +1152,7 @@ write_translation_unit(const translation_unit&	tu,
   // So lets clear the map that contains the types that are emitted in
   // the translation unit tu.
   ctxt.clear_emitted_types_map();
-  ctxt.clear_referenced_fntypes_map();
+  ctxt.clear_referenced_types_map();
 
   do_indent(o, indent);
 
@@ -1022,13 +1195,33 @@ write_translation_unit(const translation_unit&	tu,
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
 
+  vector<type_base*> sorted_referenced_types;
+  sort_type_ptr_map(ctxt.get_referenced_types(),
+		    sorted_referenced_types);
+  for (vector<type_base*>::const_iterator i =
+	 sorted_referenced_types.begin();
+       i != sorted_referenced_types.end();
+       ++i)
+    {
+      type_base_sptr type(*i, noop_deleter());
+      if (ctxt.type_is_emitted(type))
+	continue;
+
+      if (decl_base* d = get_type_declaration(*i))
+	{
+	  decl_base_sptr decl(d, noop_deleter());
+	  o << "\n";
+	  write_decl_in_scope(decl, ctxt, indent + c.get_xml_element_indent());
+	}
+    }
+
   typedef scope_decl::function_types function_types;
   typedef function_types::const_iterator const_fn_iterator;
   const function_types& t = tu.get_function_types();
 
   for (const_fn_iterator i = t.begin(); i != t.end(); ++i)
     {
-      if (!ctxt.fntype_is_referenced(*i) || ctxt.type_is_emitted(*i))
+      if (!ctxt.type_is_referenced(*i) || ctxt.type_is_emitted(*i))
 	// This function type is either not referenced by any emitted
 	// pointer or reference type, or has already been emitted, so skip it.
 	continue;
@@ -1295,12 +1488,15 @@ write_pointer_type_def(const pointer_type_def_sptr	decl,
 
   do_indent(o, indent);
 
+  type_base_sptr pointed_to_type = decl->get_pointed_to_type();
   o << "<pointer-type-def type-id='"
-    << ctxt.get_id_for_type(decl->get_pointed_to_type())
+    << ctxt.get_id_for_type(pointed_to_type)
     << "'";
 
+  ctxt.record_type_as_referenced(pointed_to_type);
+
   if (function_type_sptr f = is_function_type(decl->get_pointed_to_type()))
-    ctxt.record_fntype_as_referenced(f);
+    ctxt.record_type_as_referenced(f);
 
   write_size_and_alignment(decl, o);
 
@@ -1370,10 +1566,13 @@ write_reference_type_def(const reference_type_def_sptr		decl,
     o << "rvalue";
   o << "'";
 
-  o << " type-id='" << ctxt.get_id_for_type(decl->get_pointed_to_type()) << "'";
+  type_base_sptr pointed_to_type = decl->get_pointed_to_type();
+  o << " type-id='" << ctxt.get_id_for_type(pointed_to_type) << "'";
+
+  ctxt.record_type_as_referenced(pointed_to_type);
 
   if (function_type_sptr f = is_function_type(decl->get_pointed_to_type()))
-    ctxt.record_fntype_as_referenced(f);
+    ctxt.record_type_as_referenced(f);
 
   write_size_and_alignment(decl, o);
 
@@ -1732,7 +1931,9 @@ write_typedef_decl(const typedef_decl_sptr	decl,
     << xml::escape_xml_string(decl->get_name())
     << "'";
 
-  o << " type-id='" << ctxt.get_id_for_type(decl->get_underlying_type()) << "'";
+  type_base_sptr underlying_type = decl->get_underlying_type();
+  o << " type-id='" << ctxt.get_id_for_type(underlying_type) << "'";
+  ctxt.record_type_as_referenced(underlying_type);
 
   write_location(decl, o);
 

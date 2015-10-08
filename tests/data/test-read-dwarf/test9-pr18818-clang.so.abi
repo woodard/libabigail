@@ -6940,6 +6940,7 @@
     <qualified-type-def type-id='type-id-260' const='yes' id='type-id-391'/>
     <reference-type-def kind='lvalue' type-id='type-id-391' size-in-bits='64' id='type-id-262'/>
     <reference-type-def kind='lvalue' type-id='type-id-260' size-in-bits='64' id='type-id-263'/>
+    <type-decl name='void' id='type-id-8'/>
     <function-type size-in-bits='64' id='type-id-33'>
       <return type-id='type-id-8'/>
     </function-type>
@@ -10729,6 +10730,7 @@
     <pointer-type-def type-id='type-id-435' size-in-bits='64' id='type-id-394'/>
     <reference-type-def kind='lvalue' type-id='type-id-392' size-in-bits='64' id='type-id-396'/>
     <reference-type-def kind='lvalue' type-id='type-id-435' size-in-bits='64' id='type-id-395'/>
+    <type-decl name='void' id='type-id-8'/>
     <function-type size-in-bits='64' id='type-id-33'>
       <return type-id='type-id-8'/>
     </function-type>
@@ -12489,6 +12491,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-450' size-in-bits='64' id='type-id-451'/>
     <pointer-type-def type-id='type-id-442' size-in-bits='64' id='type-id-452'/>
     <reference-type-def kind='lvalue' type-id='type-id-452' size-in-bits='64' id='type-id-453'/>
+    <type-decl name='void' id='type-id-8'/>
     <function-type size-in-bits='64' id='type-id-33'>
       <return type-id='type-id-8'/>
     </function-type>
@@ -14684,6 +14687,7 @@
     <qualified-type-def type-id='type-id-417' const='yes' id='type-id-431'/>
     <pointer-type-def type-id='type-id-431' size-in-bits='64' id='type-id-422'/>
     <reference-type-def kind='lvalue' type-id='type-id-417' size-in-bits='64' id='type-id-423'/>
+    <type-decl name='void' id='type-id-8'/>
     <function-type size-in-bits='64' id='type-id-33'>
       <return type-id='type-id-8'/>
     </function-type>
@@ -18005,6 +18009,7 @@
     <qualified-type-def type-id='type-id-417' const='yes' id='type-id-431'/>
     <pointer-type-def type-id='type-id-431' size-in-bits='64' id='type-id-422'/>
     <reference-type-def kind='lvalue' type-id='type-id-417' size-in-bits='64' id='type-id-423'/>
+    <type-decl name='void' id='type-id-8'/>
     <function-type size-in-bits='64' id='type-id-33'>
       <return type-id='type-id-8'/>
     </function-type>
@@ -19360,6 +19365,7 @@
     <qualified-type-def type-id='type-id-504' const='yes' id='type-id-501'/>
     <namespace-decl name=''>
     </namespace-decl>
+    <type-decl name='void' id='type-id-8'/>
     <function-type size-in-bits='64' id='type-id-33'>
       <return type-id='type-id-8'/>
     </function-type>
@@ -19949,6 +19955,21 @@
       <parameter type-id='type-id-5'/>
       <return type-id='type-id-63'/>
     </function-decl>
+    <class-decl name='__va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-80'>
+      <data-member access='public' layout-offset-in-bits='0'>
+        <var-decl name='gp_offset' type-id='type-id-53' visibility='default'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='32'>
+        <var-decl name='fp_offset' type-id='type-id-53' visibility='default'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='64'>
+        <var-decl name='overflow_arg_area' type-id='type-id-39' visibility='default'/>
+      </data-member>
+      <data-member access='public' layout-offset-in-bits='128'>
+        <var-decl name='reg_save_area' type-id='type-id-39' visibility='default'/>
+      </data-member>
+    </class-decl>
+    <type-decl name='void' id='type-id-8'/>
     <function-type size-in-bits='64' id='type-id-33'>
       <return type-id='type-id-8'/>
     </function-type>

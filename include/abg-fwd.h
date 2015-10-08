@@ -303,7 +303,7 @@ shared_ptr<namespace_decl>
 is_namespace(const shared_ptr<decl_base>&);
 
 namespace_decl*
-is_namespace(const namespace_decl*);
+is_namespace(const decl_base*);
 
 bool
 is_template_parm_composition_type(const shared_ptr<decl_base>);

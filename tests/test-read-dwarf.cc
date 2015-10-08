@@ -154,6 +154,11 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
     "output/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
   },
+  {
+    "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so",
+    "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
+    "output/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL}
 };
