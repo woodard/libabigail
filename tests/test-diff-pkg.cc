@@ -40,12 +40,14 @@
 
 using std::string;
 using std::cerr;
+using abigail::tests::get_src_dir;
 
 struct InOutSpec
 {
   const char* first_in_package_path;
   const char* second_in_package_path;
   const char* prog_options;
+  const char* suppression_path;
   const char* first_in_debug_package_path;
   const char* second_in_debug_package_path;
   const char* ref_report_path;
@@ -54,20 +56,85 @@ struct InOutSpec
 
 static InOutSpec in_out_specs[] =
 {
+  // dir1 contains a suppr spec - it should be ignored.
   {
     "data/test-diff-pkg/dirpkg-0-dir1",
     "data/test-diff-pkg/dirpkg-0-dir2",
     "",
     "",
     "",
+    "",
     "data/test-diff-pkg/dirpkg-0-report-0.txt",
     "output/test-diff-pkg/dirpkg-0-report-0.txt"
+  },
+  // dir2 contains a suppr spec - it should be recognized.
+  {
+    "data/test-diff-pkg/dirpkg-1-dir1",
+    "data/test-diff-pkg/dirpkg-1-dir2",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/dirpkg-1-report-0.txt",
+    "output/test-diff-pkg/dirpkg-1-report-0.txt"
+  },
+  // dir2 contains a suppr spec but --no-abignore is specified,
+  // the file should be ignored.
+  {
+    "data/test-diff-pkg/dirpkg-1-dir1",
+    "data/test-diff-pkg/dirpkg-1-dir2",
+    "--no-abignore",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/dirpkg-1-report-1.txt",
+    "output/test-diff-pkg/dirpkg-1-report-1.txt"
+  },
+  // dir2 contains several suppr spec files, ".abignore" and
+  // "dir.abignore", so the specs should be merged.
+  {
+    "data/test-diff-pkg/dirpkg-2-dir1",
+    "data/test-diff-pkg/dirpkg-2-dir2",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/dirpkg-2-report-0.txt",
+    "output/test-diff-pkg/dirpkg-2-report-0.txt"
+  },
+  // dir2 contains a suppr spec file, ".abignore" and
+  // an additional suppr file is specified on the command line,
+  // so the specs should be merged.
+  {
+    "data/test-diff-pkg/dirpkg-3-dir1",
+    "data/test-diff-pkg/dirpkg-3-dir2",
+    "",
+    "data/test-diff-pkg/dirpkg-3.suppr",
+    "",
+    "",
+    "data/test-diff-pkg/dirpkg-3-report-0.txt",
+    "output/test-diff-pkg/dirpkg-3-report-0.txt"
+  },
+  // dir2 contains a suppr spec file, ".abignore", which should
+  // be ignored because of the program options  and
+  // an additional suppr file is specified on the command line,
+  // which should be recognized.
+  {
+    "data/test-diff-pkg/dirpkg-3-dir1",
+    "data/test-diff-pkg/dirpkg-3-dir2",
+    "--no-abignore",
+    "data/test-diff-pkg/dirpkg-3.suppr",
+    "",
+    "",
+    "data/test-diff-pkg/dirpkg-3-report-1.txt",
+    "output/test-diff-pkg/dirpkg-3-report-1.txt"
   },
 
 #if WITH_TAR
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar",
     "data/test-diff-pkg/tarpkg-0-dir2.tar",
+    "",
     "",
     "",
     "",
@@ -80,6 +147,7 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
     "output/test-diff-pkg/tarpkg-0-report-0.txt"
   },
@@ -89,12 +157,14 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
     "output/test-diff-pkg/tarpkg-0-report-0.txt"
   },
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar.bz2",
     "data/test-diff-pkg/tarpkg-0-dir2.tar.bz2",
+    "",
     "",
     "",
     "",
@@ -109,6 +179,7 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
     "",
+    "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
     "data/test-diff-pkg/test-rpm-report-0.txt",
@@ -118,6 +189,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+  "",
   "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
   "",
@@ -129,6 +201,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+  "",
   "",
   "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -143,6 +216,7 @@ static InOutSpec in_out_specs[] =
   "",
   "",
   "",
+  "",
   "data/test-diff-pkg/test-rpm-report-3.txt",
   "output/test-diff-pkg/test-rpm-report-3.txt"
   },
@@ -151,6 +225,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+  "",
   "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
@@ -163,6 +238,7 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
     "--no-added-syms",
+    "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
     "data/test-diff-pkg/test-rpm-report-5.txt",
@@ -176,6 +252,7 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64.deb",
     "data/test-diff-pkg/libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64.deb",
     "--fail-no-dbg",
+    "",
     "data/test-diff-pkg/libsigc++-2.0-0c2a-dbgsym_2.4.0-1_amd64.ddeb",
     "data/test-diff-pkg/libsigc++-2.0-0v5-dbgsym_2.4.1-1ubuntu2_amd64.ddeb",
     "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt",
@@ -183,13 +260,12 @@ static InOutSpec in_out_specs[] =
   },
 #endif // WITH_DEB
   // This should be the last entry.
-  {0, 0, 0, 0, 0, 0, 0}
+  {0, 0, 0, 0, 0, 0, 0, 0}
 };
 
 int
 main()
 {
-  using abigail::tests::get_src_dir;
   using abigail::tests::get_build_dir;
   using abigail::tools_utils::ensure_parent_dir_created;
 
@@ -197,7 +273,8 @@ main()
   string first_in_package_path, second_in_package_path,
     prog_options,
     ref_abi_diff_report_path, out_abi_diff_report_path, cmd, abipkgdiff,
-    first_in_debug_package_path, second_in_debug_package_path;
+    first_in_debug_package_path, second_in_debug_package_path,
+    suppression_path;
   for (InOutSpec *s = in_out_specs; s->first_in_package_path; ++s)
     {
       first_in_package_path =
@@ -220,6 +297,14 @@ main()
           get_src_dir() + "/tests/" + s->second_in_debug_package_path;
       else
         second_in_debug_package_path.clear();
+
+      if (s->suppression_path
+          && strcmp(s->suppression_path, ""))
+        suppression_path =
+          get_src_dir() + "/tests/" + s->suppression_path;
+      else
+        suppression_path.clear();
+
       ref_abi_diff_report_path = get_src_dir() + "/tests/" + s->ref_report_path;
       out_abi_diff_report_path =
         get_build_dir() + "/tests/" + s->out_report_path;
@@ -241,6 +326,9 @@ main()
         abipkgdiff += " --d1 " + first_in_debug_package_path;
       if (!second_in_debug_package_path.empty())
         abipkgdiff += " --d2 " + second_in_debug_package_path;
+
+      if (!suppression_path.empty())
+        abipkgdiff += " --suppressions " + suppression_path;
 
       cmd =
         abipkgdiff + " " + first_in_package_path + " " + second_in_package_path;

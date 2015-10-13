@@ -60,6 +60,7 @@ using std::vector;
 using std::map;
 using std::tr1::shared_ptr;
 using abigail::tools_utils::guess_file_type;
+using abigail::tools_utils::string_ends_with;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
 using abigail::tools_utils::abidiff_status;
@@ -82,16 +83,21 @@ static bool verbose;
 /// This contains the set of files of a given package.  It's populated
 /// by a worker function that is invoked on each file contained in the
 /// package.  So this global variable is filled by the
-/// file_tree_walker_callback_fn() function.  Its content is relevant
-/// only during the time after which the current package has been
+/// {first,second}_package_tree_walker_callback_fn() functions.  Its content
+/// is relevant only during the time after which the current package has been
 /// analyzed and before we start analyzing the next package.
 static vector<string> elf_file_paths;
+
+/// This points to the set of options shared by all the routines of the
+/// program.
+static struct options *prog_options;
 
 /// The options passed to the current program.
 struct options
 {
   bool		display_usage;
   bool		missing_operand;
+  bool		abignore;
   string	package1;
   string	package2;
   string	debug_package1;
@@ -108,6 +114,7 @@ struct options
   options()
     : display_usage(),
       missing_operand(),
+      abignore(true),
       keep_tmp_files(),
       compare_dso_only(),
       show_linkage_names(true),
@@ -145,6 +152,10 @@ public:
 
 /// A convenience typedef for a shared pointer to elf_file.
 typedef shared_ptr<elf_file> elf_file_sptr;
+
+/// A convenience typedef for a pointer to a function type that
+/// the ftw() function accepts.
+typedef int (*ftw_cb_type)(const char *, const struct stat*, int);
 
 /// Abstract the result of comparing two packages.
 ///
@@ -647,15 +658,15 @@ extract_package(const package& package)
 }
 
 /// A callback function invoked by the ftw() function while walking
-/// the directory of files extracted from a given package.
+/// the directory of files extracted from the first package.
 ///
 /// @param fpath the path to the file being considered.
 ///
 /// @param stat the stat struct of the file.
 static int
-file_tree_walker_callback_fn(const char *fpath,
-			     const struct stat *,
-			     int /*flag*/)
+first_package_tree_walker_callback_fn(const char *fpath,
+				      const struct stat *,
+				      int /*flag*/)
 {
   struct stat s;
   lstat(fpath, &s);
@@ -668,6 +679,31 @@ file_tree_walker_callback_fn(const char *fpath,
   return 0;
 }
 
+/// A callback function invoked by the ftw() function while walking
+/// the directory of files extracted from the second package.
+///
+/// @param fpath the path to the file being considered.
+///
+/// @param stat the stat struct of the file.
+static int
+second_package_tree_walker_callback_fn(const char *fpath,
+				       const struct stat *,
+				       int /*flag*/)
+{
+  struct stat s;
+  lstat(fpath, &s);
+
+  if (!S_ISLNK(s.st_mode))
+    {
+      if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
+	elf_file_paths.push_back(fpath);
+      /// We go through the files of the newer (second) pkg to look for
+      /// suppression specifications, matching the "*.abignore" name pattern.
+      else if (prog_options->abignore && string_ends_with(fpath, ".abignore"))
+	prog_options->suppression_paths.push_back(fpath);
+    }
+  return 0;
+}
 /// Update the diff context from the @ref options data structure.
 ///
 /// @param ctxt the diff context to update.
@@ -860,7 +896,8 @@ compare(const elf_file& elf1,
 /// @param true upon successful completion, false otherwise.
 static bool
 create_maps_of_package_content(package& package,
-			       const options& opts)
+			       const options& opts,
+			       ftw_cb_type callback)
 {
   elf_file_paths.clear();
   if (verbose)
@@ -870,9 +907,7 @@ create_maps_of_package_content(package& package,
 	 << package.extracted_dir_path()
 	 << " ...";
 
-  if (ftw(package.extracted_dir_path().c_str(),
-	  file_tree_walker_callback_fn,
-	  16))
+  if (ftw(package.extracted_dir_path().c_str(), callback, 16))
     {
       cerr << "Error while inspecting files in package"
 	   << package.extracted_dir_path() << "\n";
@@ -919,14 +954,15 @@ create_maps_of_package_content(package& package,
 /// @return true upon successful completion, false otherwise.
 static bool
 extract_package_and_map_its_content(package& package,
-				    const options& opts)
+				    const options& opts,
+				    ftw_cb_type callback)
 {
   if (!extract_package(package))
     return false;
 
   bool result = true;
   if (!package.is_debug_info())
-    result |= create_maps_of_package_content(package, opts);
+    result |= create_maps_of_package_content(package, opts, callback);
 
   return result;
 }
@@ -947,8 +983,10 @@ prepare_packages(package&	first_package,
 		 package&	second_package,
 		 const options& opts)
 {
-  if (!extract_package_and_map_its_content(first_package, opts)
-      || !extract_package_and_map_its_content(second_package, opts))
+  if (!extract_package_and_map_its_content(first_package, opts,
+					   first_package_tree_walker_callback_fn)
+      || !extract_package_and_map_its_content(second_package, opts,
+					      second_package_tree_walker_callback_fn))
     return false;
 
   if ((first_package.debug_info_package()
@@ -1142,6 +1180,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.fail_if_no_debug_info = true;
       else if (!strcmp(argv[i], "--verbose"))
 	verbose = true;
+      else if (!strcmp(argv[i], "--no-abignore"))
+	opts.abignore = false;
       else if (!strcmp(argv[i], "--suppressions")
 	       || !strcmp(argv[i], "--suppr"))
 	{
@@ -1168,6 +1208,7 @@ int
 main(int argc, char* argv[])
 {
   options opts;
+  prog_options = &opts;
   vector<package_sptr> packages;
   if (!parse_command_line(argc, argv, opts))
     {
