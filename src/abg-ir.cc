@@ -3148,8 +3148,8 @@ strip_typedef(const type_base_sptr type)
 					  p->get_artificial()));
 	  parm.push_back(stripped);
 	}
-      type_base_sptr p = canonicalize(ty->get_return_type());
-      assert(p);
+      type_base_sptr p = strip_typedef(ty->get_return_type());
+      assert(!!p == !!ty->get_return_type());
       t.reset(new method_type(p,
 			      ty->get_class_type(),
 			      parm,
@@ -3177,7 +3177,7 @@ strip_typedef(const type_base_sptr type)
 	  parm.push_back(stripped);
 	}
       type_base_sptr p = strip_typedef(ty->get_return_type());
-      assert(p);
+      assert(!!p == !!ty->get_return_type());
       t.reset(new function_type(p, parm,
 				ty->get_size_in_bits(),
 				ty->get_alignment_in_bits()));
