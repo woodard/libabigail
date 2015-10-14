@@ -2142,6 +2142,9 @@ public:
 }; // end class function_decl
 
 bool
+function_decls_alias(const function_decl& f1, const function_decl& f2);
+
+bool
 equals(const function_decl::parameter&,
        const function_decl::parameter&,
        change_kind*);

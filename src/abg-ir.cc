@@ -2230,11 +2230,22 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
     {
       if (l.get_linkage_name() != r.get_linkage_name())
 	{
-	  result = false;
-	  if (k)
-	    *k |= LOCAL_CHANGE_KIND;
+	  // Linkage names are different.  That usually means the two
+	  // decls are different, unless we are looking at two
+	  // function declarations which have two different symbols
+	  // that are aliases of each other.
+	  const function_decl *f1 = is_function_decl(&l),
+	    *f2 = is_function_decl(&r);
+	  if (f1 && f2 && function_decls_alias(*f1, *f2))
+	    ;// The two functions are aliases, so they are not different.
 	  else
-	    return false;
+	    {
+	      result = false;
+	      if (k)
+		*k |= LOCAL_CHANGE_KIND;
+	      else
+		return false;
+	    }
 	}
     }
 
@@ -9460,6 +9471,27 @@ function_decl::get_id() const
 	priv_->id_ = get_pretty_representation();
     }
   return priv_->id_;
+}
+
+/// Test if two function declarations are aliases.
+///
+/// Two functions declarations are aliases if their symbols are
+/// aliases, in the ELF sense.
+///
+/// @param f1 the first function to consider.
+///
+/// @param f2 the second function to consider.
+///
+/// @return true iff @p f1 is an alias of @p f2
+bool
+function_decls_alias(const function_decl& f1, const function_decl& f2)
+{
+  elf_symbol_sptr s1 = f1.get_symbol(), s2 = f2.get_symbol();
+
+  if (!s1 || !s2)
+    return false;
+
+  return elf_symbols_alias(s1, s2);
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
