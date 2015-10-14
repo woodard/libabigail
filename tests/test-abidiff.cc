@@ -90,10 +90,10 @@ static InOutSpec specs[] =
     "output/test-abidiff/test-var0-report.txt"
   },
   {
-    "data/test-abidiff/test-corpus0-v0.so.abi",
-    "data/test-abidiff/test-corpus0-v1.so.abi",
-    "data/test-abidiff/test-corpus0-report0.txt",
-    "output/test-abidiff/test-corpus0-report0.txt"
+    "data/test-abidiff/test-PR18166-libtirpc.so.abi",
+    "data/test-abidiff/test-PR18166-libtirpc.so.abi",
+    "data/test-abidiff/test-PR18166-libtirpc.so.report.txt",
+    "output/test-abidiff/test-PR18166-libtirpc.so.report.txt"
   },
   {
     "data/test-abidiff/test-PR18791-v0.so.abi",

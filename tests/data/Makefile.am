@@ -68,9 +68,9 @@ test-abidiff/test-struct1-report.txt	\
 test-abidiff/test-var0-v0.cc.bi		\
 test-abidiff/test-var0-v1.cc.bi		\
 test-abidiff/test-var0-report.txt	\
-test-abidiff/test-corpus0-v0.so.abi	\
-test-abidiff/test-corpus0-v1.so.abi	\
-test-abidiff/test-corpus0-report0.txt	\
+test-abidiff/test-PR18166-libtirpc.so \
+test-abidiff/test-PR18166-libtirpc.so.abi \
+test-abidiff/test-PR18166-libtirpc.so.report.txt \
 test-abidiff/test-PR18791-report0.txt   \
 test-abidiff/test-PR18791-v0.so.abi     \
 test-abidiff/test-PR18791-v1.so.abi     \
