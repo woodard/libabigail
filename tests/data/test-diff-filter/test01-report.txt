@@ -1,17 +1,11 @@
-Functions changes summary: 0 Removed, 3 Changed, 1 Added functions
+Functions changes summary: 0 Removed, 1 Changed, 1 Added functions
 Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
 1 Added function:
 
   'method int S0::get_member0()'
 
-3 functions with some indirect sub-type change:
-
-  [C]'method void S0::member0()' has some indirect sub-type changes:
-    'method void S0::member0()' access changed from 'private' to 'public'
-
-  [C]'method void S1::member0()' has some indirect sub-type changes:
-    'method void S1::member0()' access changed from 'private' to 'public'
+1 function with some indirect sub-type change:
 
   [C]'function void foo(S0&, S1*)' has some indirect sub-type changes:
     parameter 1 of type 'S0&' has sub-type changes:

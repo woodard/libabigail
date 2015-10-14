@@ -179,6 +179,9 @@ is_function_decl(decl_base*);
 shared_ptr<function_decl>
 is_function_decl(shared_ptr<decl_base>);
 
+bool
+is_function_decl(const decl_base&);
+
 decl_base*
 is_decl(const type_or_decl_base*);
 

@@ -2249,8 +2249,39 @@ equals(const decl_base& l, const decl_base& r, change_kind* k)
 
   if (is_member_decl(l) && is_member_decl(r))
     {
-      const context_rel* r1 = l.get_context_rel(), *r2 = r.get_context_rel();
-      if (*r1 != *r2)
+      context_rel* r1 = const_cast<context_rel*>(l.get_context_rel());
+      context_rel *r2 = const_cast<context_rel*>(r.get_context_rel());
+
+      access_specifier la = no_access, ra = no_access;
+      bool member_types_or_functions =
+	((is_type(l) && is_type(r))
+	 || (is_function_decl(l) && is_function_decl(r)));
+
+      if (member_types_or_functions)
+	{
+	  // Access specifiers on member types in DWARF is not
+	  // reliable; in the same DSO, the same struct can be either
+	  // a class or a struct, and the access specifiers of its
+	  // member types are not necessarily given, so they
+	  // effectively can be considered differently, again, in the
+	  // same DSO.  So, here, let's avoid considering those!
+	  // during comparison.
+	  la = r1->get_access_specifier();
+	  ra = r2->get_access_specifier();
+	  r1->set_access_specifier(no_access);
+	  r2->set_access_specifier(no_access);
+	}
+
+      bool rels_are_different = *r1 != *r2;
+
+      if (member_types_or_functions)
+	{
+	  // restore the access specifiers.
+	  r1->set_access_specifier(la);
+	  r2->set_access_specifier(ra);
+	}
+
+      if (rels_are_different)
 	{
 	  result = false;
 	  if (k)
@@ -4552,6 +4583,15 @@ is_template_parameter(const shared_ptr<decl_base> decl)
 function_decl*
 is_function_decl(const decl_base* d)
 {return dynamic_cast<function_decl*>(const_cast<decl_base*>(d));}
+
+/// Test whether a declaration is a @ref function_decl.
+///
+/// @param d the declaration to test for.
+///
+/// @return true if @p d is a function_decl.
+bool
+is_function_decl(const decl_base& d)
+{return is_function_decl(&d);}
 
 /// Test whether a declaration is a @ref function_decl.
 ///
