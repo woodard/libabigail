@@ -84,6 +84,11 @@ Options
     an informational value.  Removed binaries are, however, considered
     as an ABI change.
 
+  * ``--no-abignore``
+
+    Do not search the *package2* for the presence of suppression
+    files.
+
   * ``--suppressions | --suppr`` <*path-to-suppressions*>
 
     Use a :ref:`suppression specification <suppr_spec_label>` file

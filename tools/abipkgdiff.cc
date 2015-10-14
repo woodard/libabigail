@@ -403,6 +403,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --redundant                    display redundant changes\n"
       << " --no-added-syms                do not display added functions or variables\n"
       << " --no-added-binaries            do not display added binaries\n"
+      << " --no-abignore                  do not look for *.abignore files\n"
       << " --fail-no-dbg                  fail if no debug info was found\n"
       << " --verbose                      emit verbose progress messages\n"
       << " --help|-h                      display this help message\n";
