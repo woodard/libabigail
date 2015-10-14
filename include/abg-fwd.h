@@ -174,7 +174,7 @@ bool
 is_template_parameter(const shared_ptr<decl_base>);
 
 function_decl*
-is_function_decl(decl_base*);
+is_function_decl(const decl_base*);
 
 shared_ptr<function_decl>
 is_function_decl(shared_ptr<decl_base>);
