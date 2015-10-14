@@ -2869,7 +2869,7 @@ build_reference_type_def(read_context&		ctxt,
 static shared_ptr<function_type>
 build_function_type(read_context&	ctxt,
 		    const xmlNodePtr	node,
-		    bool		add_to_current_scope)
+		    bool /*add_to_current_scope*/)
 {
   shared_ptr<function_type> nil;
 
@@ -2913,10 +2913,11 @@ build_function_type(read_context&	ctxt,
 
   ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
 
-  ctxt.maybe_canonicalize_type(fn_type, !add_to_current_scope);
+  ctxt.maybe_canonicalize_type(fn_type, /*force_delay=true*/true);
 
   return fn_type;
 }
+
 /// Build a array_type_def from a 'array-type-def' xml node.
 ///
 /// @param ctxt the context of the parsing.
