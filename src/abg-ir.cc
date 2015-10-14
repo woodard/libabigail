@@ -2156,22 +2156,40 @@ decl_base::get_name() const
 /// Compute the qualified name of the decl.
 ///
 /// @param qn the resulting qualified name.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
 void
-decl_base::get_qualified_name(string& qn) const
-{qn = get_qualified_name();}
+decl_base::get_qualified_name(string& qn, bool internal) const
+{qn = get_qualified_name(internal);}
 
+/// Get the pretty representatin of the current declaration.
+///
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the default pretty representation for a decl.  This is
 /// basically the fully qualified name of the decl optionally prefixed
 /// with a meaningful string to add context for the user.
 string
-decl_base::get_pretty_representation() const
-{return get_qualified_name();}
+decl_base::get_pretty_representation(bool internal) const
+{return get_qualified_name(internal);}
 
 /// Compute the qualified name of the decl.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the resulting qualified name.
 const string&
-decl_base::get_qualified_name() const
+decl_base::get_qualified_name(bool /*internal*/) const
 {return priv_->qualified_name_.empty() ? get_name() : priv_->qualified_name_;}
 
 change_kind
@@ -4073,11 +4091,16 @@ get_type_scope(const type_base_sptr& t)
 /// @param qualified if true then return the qualified name of the
 /// type.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the type name if the type has a name, or the
 /// empty string if it does not.
 string
-get_type_name(const type_base_sptr t, bool qualified)
-{return get_type_name(t.get(), qualified);}
+get_type_name(const type_base_sptr t, bool qualified, bool internal)
+{return get_type_name(t.get(), qualified, internal);}
 
 /// Get the name of a given type and return a copy of it.
 ///
@@ -4086,17 +4109,22 @@ get_type_name(const type_base_sptr t, bool qualified)
 /// @param qualified if true then return the qualified name of the
 /// type.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the type name if the type has a name, or the
 /// empty string if it does not.
 string
-get_type_name(const type_base* t, bool qualified)
+get_type_name(const type_base* t, bool qualified, bool internal)
 {
   const decl_base* d = dynamic_cast<const decl_base*>(t);
   if (!d)
     {
       const function_type* fn_type = is_function_type(t);
       assert(fn_type);
-      return get_function_type_name(fn_type);
+      return get_function_type_name(fn_type, internal);
     }
   if (qualified)
     return d->get_qualified_name();
@@ -4110,50 +4138,73 @@ get_type_name(const type_base* t, bool qualified)
 /// @param qualified if true then return the qualified name of the
 /// type.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the type name if the type has a name, or the
 /// empty string if it does not.
 string
-get_type_name(const type_base& t, bool qualified)
-{return get_type_name(&t, qualified);}
+get_type_name(const type_base& t, bool qualified, bool internal)
+{return get_type_name(&t, qualified, internal);}
 
 /// Get the name of a given function type and return a copy of it.
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the function type name
 string
-get_function_type_name(const function_type_sptr& fn_type)
-{return get_function_type_name(fn_type.get());}
+get_function_type_name(const function_type_sptr& fn_type,
+		       bool internal)
+{return get_function_type_name(fn_type.get(), internal);}
 
 /// Get the name of a given function type and return a copy of it.
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the function type name
 string
-get_function_type_name(const function_type* fn_type)
+get_function_type_name(const function_type* fn_type,
+		       bool internal)
 {
   if (!fn_type)
     return "";
 
   if (const method_type* method = is_method_type(fn_type))
-    return get_method_type_name(method);
+    return get_method_type_name(method, internal);
 
-  return get_function_type_name(*fn_type);
+  return get_function_type_name(*fn_type, internal);
 }
 
 /// Get the name of a given function type and return a copy of it.
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the function type name
 string
-get_function_type_name(const function_type& fn_type)
+get_function_type_name(const function_type& fn_type,
+		       bool internal)
 {
   std::ostringstream o;
   type_base_sptr return_type= fn_type.get_return_type();
 
-  o <<  get_pretty_representation(return_type);
+  o <<  get_pretty_representation(return_type, internal);
 
   o << " (";
   for (function_type::parameters::const_iterator i =
@@ -4163,7 +4214,7 @@ get_function_type_name(const function_type& fn_type)
     {
       if (i != fn_type.get_parameters().begin())
 	o << ", ";
-      o << get_pretty_representation((*i)->get_type());
+      o << get_pretty_representation((*i)->get_type(), internal);
     }
   o <<")";
   return o.str();
@@ -4173,21 +4224,33 @@ get_function_type_name(const function_type& fn_type)
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the function type name
 string
-get_method_type_name(const method_type_sptr fn_type)
-{return get_method_type_name(fn_type.get());}
+get_method_type_name(const method_type_sptr fn_type,
+		     bool internal)
+{return get_method_type_name(fn_type.get(), internal);}
 
 /// Get the name of a given method type and return a copy of it.
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the function type name
 string
-get_method_type_name(const method_type* fn_type)
+get_method_type_name(const method_type* fn_type,
+		     bool internal)
 {
   if (fn_type)
-    get_method_type_name(*fn_type);
+    get_method_type_name(*fn_type, internal);
 
   return "";
 }
@@ -4196,14 +4259,20 @@ get_method_type_name(const method_type* fn_type)
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the function type name
 string
-get_method_type_name(const method_type& fn_type)
+get_method_type_name(const method_type& fn_type,
+		     bool internal)
 {
   std::ostringstream o;
   type_base_sptr return_type= fn_type.get_return_type();
 
-  o <<  get_pretty_representation(return_type);
+  o <<  get_pretty_representation(return_type, internal);
 
   class_decl_sptr class_type = fn_type.get_class_type();
   assert(class_type);
@@ -4218,7 +4287,7 @@ get_method_type_name(const method_type& fn_type)
     {
       if (i != fn_type.get_parameters().begin())
 	o << ", ";
-      o << get_pretty_representation((*i)->get_type());
+      o << get_pretty_representation((*i)->get_type(), internal);
     }
   o <<")";
   return o.str();
@@ -4229,19 +4298,24 @@ get_method_type_name(const method_type& fn_type)
 ///
 /// param tod the ABI artifact to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the pretty representation of an ABI artifact
 /// that could be either a type of a decl.
 string
-get_pretty_representation(const type_or_decl_base* tod)
+get_pretty_representation(const type_or_decl_base* tod, bool internal)
 {
   string result;
 
   if (type_base* t =
       dynamic_cast<type_base*>(const_cast<type_or_decl_base*>(tod)))
-    result = get_pretty_representation(t);
+    result = get_pretty_representation(t, internal);
   else if (decl_base* d =
 	   dynamic_cast<decl_base*>(const_cast<type_or_decl_base*>(tod)))
-    result =  get_pretty_representation(d);
+    result =  get_pretty_representation(d, internal);
   else
     // We should never reach this point
     abort();
@@ -4254,97 +4328,138 @@ get_pretty_representation(const type_or_decl_base* tod)
 ///
 /// param tod the ABI artifact to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the pretty representation of an ABI artifact
 /// that could be either a type of a decl.
 string
-get_pretty_representation(const type_or_decl_base_sptr& tod)
-{return get_pretty_representation(tod.get());}
+get_pretty_representation(const type_or_decl_base_sptr& tod, bool internal)
+{return get_pretty_representation(tod.get(), internal);}
 
 /// Get a copy of the pretty representation of a decl.
 ///
 /// @param d the decl to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the pretty representation of the decl.
 string
-get_pretty_representation(const decl_base* d)
+get_pretty_representation(const decl_base* d, bool internal)
 {
   if (!d)
     return "";
-  return d->get_pretty_representation();
+  return d->get_pretty_representation(internal);
 }
 
 /// Get a copy of the pretty representation of a type.
 ///
 /// @param d the type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the pretty representation of the type.
 string
-get_pretty_representation(const type_base* t)
+get_pretty_representation(const type_base* t, bool internal)
 {
   if (!t)
     return "void";
   if (const function_type* fn_type = is_function_type(t))
-    return get_pretty_representation(fn_type);
+    return get_pretty_representation(fn_type, internal);
 
   const decl_base* d = get_type_declaration(t);
   assert(d);
-  return get_pretty_representation(d);
+  return get_pretty_representation(d, internal);
 }
 
 /// Get a copy of the pretty representation of a decl.
 ///
 /// @param d the decl to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the pretty representation of the decl.
 string
-get_pretty_representation(const decl_base_sptr& d)
-{return get_pretty_representation(d.get());}
+get_pretty_representation(const decl_base_sptr& d, bool internal)
+{return get_pretty_representation(d.get(), internal);}
 
 /// Get a copy of the pretty representation of a type.
 ///
 /// @param d the type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the pretty representation of the type.
 string
-get_pretty_representation(const type_base_sptr& t)
-{return get_pretty_representation(t.get());}
+get_pretty_representation(const type_base_sptr& t, bool internal)
+{return get_pretty_representation(t.get(), internal);}
 
 /// Get the pretty representation of a function type.
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the string represenation of the function type.
 string
-get_pretty_representation(const function_type_sptr& fn_type)
-{return get_pretty_representation(fn_type.get());}
+get_pretty_representation(const function_type_sptr& fn_type,
+			  bool internal)
+{return get_pretty_representation(fn_type.get(), internal);}
 
 /// Get the pretty representation of a function type.
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the string represenation of the function type.
 string
-get_pretty_representation(const function_type* fn_type)
+get_pretty_representation(const function_type* fn_type, bool internal)
 {
   if (!fn_type)
     return "void";
 
   if (const method_type* method = is_method_type(fn_type))
-    return get_pretty_representation(method);
+    return get_pretty_representation(method, internal);
 
-  return get_pretty_representation(*fn_type);
+  return get_pretty_representation(*fn_type, internal);
 }
 
 /// Get the pretty representation of a function type.
 ///
 /// @param fn_type the function type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the string represenation of the function type.
 string
-get_pretty_representation(const function_type& fn_type)
+get_pretty_representation(const function_type& fn_type, bool internal)
 {
   std::ostringstream o;
-  o << "function type " << get_function_type_name(fn_type);
+  o << "function type " << get_function_type_name(fn_type, internal);
   return o.str();
 }
 
@@ -4352,35 +4467,51 @@ get_pretty_representation(const function_type& fn_type)
 ///
 /// @param method the method type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the string represenation of the method type.
 string
-get_pretty_representation(const method_type& method)
+get_pretty_representation(const method_type& method, bool internal)
 {
   std::ostringstream o;
-  o << "method type " << get_method_type_name(method);
+  o << "method type " << get_method_type_name(method, internal);
   return o.str();
 }
+
 /// Get the pretty representation of a method type.
 ///
 /// @param method the method type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the string represenation of the method type.
 string
-get_pretty_representation(const method_type* method)
+get_pretty_representation(const method_type* method, bool internal)
 {
   if (!method)
     return "void";
-  return get_pretty_representation(*method);
+  return get_pretty_representation(*method, internal);
 }
 
 /// Get the pretty representation of a method type.
 ///
 /// @param method the method type to consider.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the string represenation of the method type.
 string
-get_pretty_representation(const method_type_sptr method)
-{return get_pretty_representation(method.get());}
+get_pretty_representation(const method_type_sptr method, bool internal)
+{return get_pretty_representation(method.get(), internal);}
 
 /// Get the declaration for a given type.
 ///
@@ -5923,21 +6054,17 @@ type_base::get_canonical_type_for(type_base_sptr t)
   if (t->get_canonical_type())
     return t->get_canonical_type();
 
-  bool is_struct = false;
-  if (is_class)
-    {
-      is_struct = is_class->is_struct();
-      // Make sure the struct-ness of the class doesn't influence the
-      // pretty representation that we are going to use for hashing
-      // purposes below.
-      is_class->is_struct(false);
-    }
-
-  string repr = ir::get_pretty_representation(t);
-
-  if (is_class)
-    // Set the struct-ness of the class back.
-    is_class->is_struct(is_struct);
+  // We want the pretty representation of the type, but for an
+  // internal use, not for a user-facing purpose.
+  //
+  // If two classe types Foo are declared, one as a class and the
+  // other as a struct, but are otherwise equivalent, we want their
+  // pretty representation to be the same.  Hence the 'internal'
+  // argument of ir::get_pretty_representation() is set to true here.
+  // So in this case, the pretty representation of Foo is going to be
+  // "class Foo", regardless of its struct-ness. This also applies to
+  // composite types which would have "class Foo" as a sub-type.
+  string repr = ir::get_pretty_representation(t, /*internal=*/true);
 
   environment::canonical_types_map_type& types =
     env->get_canonical_types_map();
@@ -6292,9 +6419,18 @@ operator==(const type_decl_sptr& l, const type_decl_sptr& r)
   return *l == *r;
 }
 
+/// Get the pretty representation of the current instance of @ref
+/// type_decl.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
+/// @return the pretty representatin of the @ref type_decl.
 string
-type_decl::get_pretty_representation() const
-{return get_qualified_name();}
+type_decl::get_pretty_representation(bool internal) const
+{return get_qualified_name(internal);}
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -6457,11 +6593,16 @@ namespace_decl::namespace_decl(const std::string& name,
 /// Build and return a copy of the pretty representation of the
 /// namespace.
 ///
-/// @retur a copy of the pretty representation of the namespace.
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
+/// @return a copy of the pretty representation of the namespace.
 string
-namespace_decl::get_pretty_representation() const
+namespace_decl::get_pretty_representation(bool internal) const
 {
-  string r = "namespace " + scope_decl::get_pretty_representation();
+  string r = "namespace " + scope_decl::get_pretty_representation(internal);
   return r;
 }
 
@@ -6542,16 +6683,21 @@ class qualified_type_def::priv
 ///
 /// @param fully_qualified if true, build a fully qualified name.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the newly-built name.
 string
-qualified_type_def::build_name(bool fully_qualified) const
+qualified_type_def::build_name(bool fully_qualified, bool internal) const
 {
   string quals = get_cv_quals_string_prefix();
   decl_base_sptr td =
     get_type_declaration(get_underlying_type());
   string name;
   if (fully_qualified)
-    name = td->get_qualified_name();
+    name = td->get_qualified_name(internal);
   else
     name = td->get_name();
   if (dynamic_pointer_cast<pointer_type_def>(get_underlying_type())
@@ -6695,19 +6841,30 @@ qualified_type_def::operator==(const type_base& o) const
 ///
 /// @param qualified_name the output parameter to hold the resulting
 /// qualified name.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
 void
-qualified_type_def::get_qualified_name(string& qualified_name) const
-{qualified_name = get_qualified_name();}
+qualified_type_def::get_qualified_name(string& qualified_name,
+				       bool internal) const
+{qualified_name = get_qualified_name(internal);}
 
 /// Implementation of the virtual qualified name builder/getter.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the resulting qualified name.
 const string&
-qualified_type_def::get_qualified_name() const
+qualified_type_def::get_qualified_name(bool internal) const
 {
   if (peek_qualified_name().empty()
       || !get_canonical_type())
-    set_qualified_name(build_name(true));
+    set_qualified_name(build_name(true, internal));
   return peek_qualified_name();
 }
 
@@ -6952,23 +7109,34 @@ pointer_type_def::get_pointed_to_type() const
 /// @ref pointer_type_def.
 ///
 /// @param qn output parameter.  The resulting qualified name.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
 void
-pointer_type_def::get_qualified_name(string& qn) const
-{qn = get_qualified_name();}
+pointer_type_def::get_qualified_name(string& qn, bool internal) const
+{qn = get_qualified_name(internal);}
 
 /// Build, cache and return the qualified name of the current instance
 /// of @ref pointer_type_def.  Subsequent invocations of this function
 /// return the cached value.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the resulting qualified name.
 const string&
-pointer_type_def::get_qualified_name() const
+pointer_type_def::get_qualified_name(bool internal) const
 {
   if (peek_qualified_name().empty()
       || !get_canonical_type())
     {
       string name = get_type_name(get_pointed_to_type(),
-				  /*qualified_name=*/true) + "*";
+				  /*qualified_name=*/true,
+				  internal) + "*";
       set_qualified_name(name);
     }
   return peek_qualified_name();
@@ -7161,24 +7329,35 @@ reference_type_def::is_lvalue() const
 ///
 /// @param qn output parameter.  Is set to the newly-built qualified
 /// name of the current instance of @ref reference_type_def.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
 void
-reference_type_def::get_qualified_name(string& qn) const
-{qn = get_qualified_name();}
+reference_type_def::get_qualified_name(string& qn, bool internal) const
+{qn = get_qualified_name(internal);}
 
 /// Build, cache and return the qualified name of the current instance
 /// of the @ref reference_type_def.  Subsequent invocations of this
 /// function return the cached value.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the newly-built qualified name of the current instance of
 /// @ref reference_type_def.
 const string&
-reference_type_def::get_qualified_name() const
+reference_type_def::get_qualified_name(bool internal) const
 {
   if (peek_qualified_name().empty()
       || !get_canonical_type())
     {
       string name = get_type_name(get_pointed_to_type(),
-				  /*qualified_name=*/true);
+				  /*qualified_name=*/true,
+				  internal);
       if (is_lvalue())
 	set_qualified_name(name + "&");
       else
@@ -7353,8 +7532,15 @@ get_type_representation(const array_type_def& a)
   return r;
 }
 
+/// Get the pretty representation of the current instance of @ref
+/// array_type_def.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
 string
-array_type_def::get_pretty_representation() const
+array_type_def::get_pretty_representation(bool /*internal*/) const
 {return get_type_representation(*this);}
 
 /// Compares two instances of @ref array_type_def.
@@ -7501,15 +7687,25 @@ array_type_def::get_dimension_count() const
 ///
 /// @param qn output parameter.  Is set to the newly-built qualified
 /// name of the current instance of @ref array_type_def.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
 void
-array_type_def::get_qualified_name(string& qn) const
-{qn = get_qualified_name();}
+array_type_def::get_qualified_name(string& qn, bool internal) const
+{qn = get_qualified_name(internal);}
 
 /// Compute the qualified name of the array.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the resulting qualified name.
 const string&
-array_type_def::get_qualified_name() const
+array_type_def::get_qualified_name(bool /*internal*/) const
 {
   if (decl_base::peek_qualified_name().empty()
       || !get_canonical_type())
@@ -7604,11 +7800,19 @@ enum_type_decl::enumerators&
 enum_type_decl::get_enumerators()
 {return priv_->enumerators_;}
 
+/// Get the pretty representation of the current instance of @ref
+/// enum_type_decl.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the pretty representation of the enum type.
 string
-enum_type_decl::get_pretty_representation() const
+enum_type_decl::get_pretty_representation(bool internal) const
 {
-  string r = "enum " + decl_base::get_pretty_representation();
+  string r = "enum " + decl_base::get_pretty_representation(internal);
   return r;
 }
 
@@ -7834,14 +8038,19 @@ enum_type_decl::enumerator::get_name() const
 /// cached qualified name.  Subsequent invocations just return the
 /// cached value.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the qualified name of the current instance of
 /// enum_type_decl::enumerator.
 const string&
-enum_type_decl::enumerator::get_qualified_name() const
+enum_type_decl::enumerator::get_qualified_name(bool internal) const
 {
   if (priv_->qualified_name_.empty())
     priv_->qualified_name_ =
-      get_enum_type()->get_qualified_name() + "::" + get_name();
+      get_enum_type()->get_qualified_name(internal) + "::" + get_name();
   return priv_->qualified_name_;
 }
 
@@ -8013,10 +8222,15 @@ typedef_decl::operator==(const type_base& o) const
 
 /// Build a pretty representation for a typedef_decl.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the pretty representation of the current
 /// instance of typedef_decl.
 string
-typedef_decl::get_pretty_representation() const
+typedef_decl::get_pretty_representation(bool /*internal*/) const
 {
   string result = "typedef " + get_qualified_name();
   return result;
@@ -8331,9 +8545,14 @@ var_decl::get_hash() const
 
 /// Build and return the pretty representation of this variable.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the pretty representation of this variable.
 string
-var_decl::get_pretty_representation() const
+var_decl::get_pretty_representation(bool /*internal*/) const
 {
   string result;
 
@@ -8779,11 +8998,16 @@ function_type::operator==(const type_base& other) const
 /// Return a copy of the pretty representation of the current @ref
 /// function_type.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the pretty representation of the current @ref
 /// function_type.
 string
-function_type::get_pretty_representation() const
-{return ir::get_pretty_representation(this);}
+function_type::get_pretty_representation(bool internal) const
+{return ir::get_pretty_representation(this, internal);}
 
 /// Traverses an instance of @ref function_type, visiting all the
 /// sub-types and decls that it might contain.
@@ -8936,11 +9160,16 @@ method_type::set_class_type(shared_ptr<class_decl> t)
 /// Return a copy of the pretty representation of the current @ref
 /// method_type.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the pretty representation of the current @ref
 /// method_type.
 string
-method_type::get_pretty_representation() const
-{return ir::get_pretty_representation(*this);}
+method_type::get_pretty_representation(bool internal) const
+{return ir::get_pretty_representation(*this, internal);}
 
 /// The destructor of method_type
 method_type::~method_type()
@@ -9031,9 +9260,16 @@ function_decl::function_decl(const std::string& name,
 		   bind))
 {}
 
+/// Get the pretty representation of the current instance of @ref function_decl.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the pretty representation for a function.
 string
-function_decl::get_pretty_representation() const
+function_decl::get_pretty_representation(bool /*internal*/) const
 {
   const class_decl::method_decl* mem_fn =
     dynamic_cast<const class_decl::method_decl*>(this);
@@ -9786,18 +10022,29 @@ function_decl::parameter::get_hash() const
 
 /// Compute the qualified name of the parameter.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @param qn the resulting qualified name.
 void
-function_decl::parameter::get_qualified_name(string& qualified_name) const
+function_decl::parameter::get_qualified_name(string& qualified_name,
+					     bool /*internal*/) const
 {qualified_name = get_name();}
 
 /// Compute and return a copy of the pretty representation of the
 /// current function parameter.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return a copy of the textual representation of the current
 /// function parameter.
 string
-function_decl::parameter::get_pretty_representation() const
+function_decl::parameter::get_pretty_representation(bool internal) const
 {
   const environment* env = get_environment();
 
@@ -9811,7 +10058,7 @@ function_decl::parameter::get_pretty_representation() const
 	       (env->get_variadic_parameter_type_decl())))
     type_repr = "...";
   else
-    type_repr = ir::get_pretty_representation(t);
+    type_repr = ir::get_pretty_representation(t, internal);
 
   string result = type_repr;
   string parm_name = get_name_id();
@@ -10240,12 +10487,23 @@ const class_decl::member_class_templates&
 class_decl::get_member_class_templates() const
 {return priv_->member_class_templates_;}
 
+/// Getter of the pretty representation of the current instance of
+/// @ref class_decl.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the pretty representaion for a class_decl.
 string
-class_decl::get_pretty_representation() const
+class_decl::get_pretty_representation(bool internal) const
 {
-  string cl= is_struct() ? "struct " : "class ";
-  return cl + get_qualified_name();}
+  string cl = "class ";
+  if (!internal && is_struct())
+    cl = "struct ";
+  return cl + get_qualified_name();
+}
 
 /// Set the definition of this declaration-only class.
 ///

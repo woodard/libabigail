@@ -529,68 +529,76 @@ scope_decl*
 get_type_scope(const shared_ptr<type_base>&);
 
 string
-get_type_name(const shared_ptr<type_base>, bool qualified = true);
+get_type_name(const shared_ptr<type_base>,
+	      bool qualified = true,
+	      bool internal = false);
 
 string
-get_type_name(const type_base*, bool qualified = true);
+get_type_name(const type_base*,
+	      bool qualified = true,
+	      bool internal = false);
 
 string
-get_type_name(const type_base&, bool qualified = true);
+get_type_name(const type_base&,
+	      bool qualified = true,
+	      bool internal = false);
 
 string
-get_function_type_name(const shared_ptr<function_type>&);
+get_function_type_name(const shared_ptr<function_type>&,
+		       bool internal = false);
 
 string
-get_function_type_name(const function_type*);
+get_function_type_name(const function_type*, bool internal = false);
 
 string
-get_function_type_name(const function_type&);
+get_function_type_name(const function_type&, bool internal = false);
 
 string
-get_method_type_name(const shared_ptr<method_type>&
-);
+get_method_type_name(const shared_ptr<method_type>&, bool internal = false);
 string
-get_method_type_name(const method_type*);
+get_method_type_name(const method_type*, bool internal = false);
 
 string
-get_method_type_name(const method_type&);
+get_method_type_name(const method_type&, bool internal = false);
 
 string
-get_pretty_representation(const decl_base*);
+get_pretty_representation(const decl_base*, bool internal = false);
 
 string
-get_pretty_representation(const type_base*);
+get_pretty_representation(const type_base*, bool internal = false);
 
 string
-get_pretty_representation(const type_or_decl_base*);
+get_pretty_representation(const type_or_decl_base*,bool internal = false);
 
 string
-get_pretty_representation(const shared_ptr<type_or_decl_base>&);
+get_pretty_representation(const shared_ptr<type_or_decl_base>&,
+			  bool internal = false);
 
 string
-get_pretty_representation(const shared_ptr<decl_base>&);
+get_pretty_representation(const shared_ptr<decl_base>&, bool internal = false);
 
 string
-get_pretty_representation(const shared_ptr<type_base>&);
+get_pretty_representation(const shared_ptr<type_base>&, bool internal = false);
 
 string
-get_pretty_representation(const function_type&);
+get_pretty_representation(const function_type&, bool internal = false);
 
 string
-get_pretty_representation(const function_type*);
+get_pretty_representation(const function_type*, bool internal = false);
 
 string
-get_pretty_representation(const shared_ptr<function_type>&);
+get_pretty_representation(const shared_ptr<function_type>&,
+			  bool internal = false);
 
 string
-get_pretty_representation(const method_type&);
+get_pretty_representation(const method_type&, bool internal = false);
 
 string
-get_pretty_representation(const method_type*);
+get_pretty_representation(const method_type*, bool internal = false);
 
 string
-get_pretty_representation(const shared_ptr<method_type>&);
-
+get_pretty_representation(const shared_ptr<method_type>&,
+			  bool internal = false);
 
 const decl_base*
 get_type_declaration(const type_base*);

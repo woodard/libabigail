@@ -848,7 +848,7 @@ public:
   traverse(ir_node_visitor&);
 
   virtual string
-  get_pretty_representation() const = 0;
+  get_pretty_representation(bool internal = false) const = 0;
 }; // end class type_or_decl_base
 
 bool
@@ -944,13 +944,13 @@ public:
   get_hash() const;
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   virtual void
-  get_qualified_name(string& qualified_name) const;
+  get_qualified_name(string& qualified_name, bool internal = false) const;
 
   virtual const string&
-  get_qualified_name() const;
+  get_qualified_name(bool internal = false) const;
 
   bool
   get_is_in_public_symbol_table() const;
@@ -1338,7 +1338,7 @@ public:
   operator==(const type_decl&) const;
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -1390,7 +1390,7 @@ public:
 		 visibility vis = VISIBILITY_DEFAULT);
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   virtual bool
   operator==(const decl_base&) const;
@@ -1417,7 +1417,7 @@ class qualified_type_def : public virtual type_base, public virtual decl_base
   qualified_type_def();
 
 protected:
-  string build_name(bool) const;
+  string build_name(bool, bool internal = false) const;
 
 public:
 
@@ -1458,10 +1458,10 @@ public:
   get_underlying_type() const;
 
   virtual void
-  get_qualified_name(string& qualified_name) const;
+  get_qualified_name(string& qualified_name, bool internal = false) const;
 
   virtual const string&
-  get_qualified_name() const;
+  get_qualified_name(bool internal = false) const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -1516,10 +1516,10 @@ public:
   get_pointed_to_type() const;
 
   virtual void
-  get_qualified_name(string&) const;
+  get_qualified_name(string&, bool internal = false) const;
 
   virtual const string&
-  get_qualified_name() const;
+  get_qualified_name(bool internal = false) const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -1570,10 +1570,10 @@ public:
   is_lvalue() const;
 
   virtual void
-  get_qualified_name(string& qualified_name) const;
+  get_qualified_name(string& qualified_name, bool internal = false) const;
 
   virtual const string&
-  get_qualified_name() const;
+  get_qualified_name(bool internal = false) const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -1670,10 +1670,10 @@ public:
   operator==(const type_base&) const;
 
   virtual void
-  get_qualified_name(string& qualified_name) const;
+  get_qualified_name(string& qualified_name, bool internal = false) const;
 
   virtual const string&
-  get_qualified_name() const;
+  get_qualified_name(bool internal = false) const;
 
   const type_base_sptr
   get_element_type() const;
@@ -1691,7 +1691,7 @@ public:
   is_infinite() const;
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   virtual string
   get_subrange_representation() const;
@@ -1770,7 +1770,7 @@ public:
   get_enumerators();
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   virtual bool
   operator==(const decl_base&) const;
@@ -1809,7 +1809,7 @@ public:
   get_name() const;
 
   const string&
-  get_qualified_name() const;
+  get_qualified_name(bool internal = false) const;
 
   void
   set_name(const string& n);
@@ -1863,7 +1863,7 @@ public:
   operator==(const type_base&) const;
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   type_base_sptr
   get_underlying_type() const;
@@ -2003,7 +2003,7 @@ public:
   get_hash() const;
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -2077,7 +2077,7 @@ public:
 		binding bind = BINDING_GLOBAL);
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   string
   get_pretty_representation_of_declarator () const;
@@ -2225,10 +2225,10 @@ public:
   get_hash() const;
 
   virtual void
-  get_qualified_name(string& qualified_name) const;
+  get_qualified_name(string& qualified_name, bool internal = false) const;
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 }; // end class function_decl::parameter
 
 bool
@@ -2313,7 +2313,7 @@ public:
   operator==(const type_base&) const;
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -2375,7 +2375,7 @@ public:
   set_class_type(shared_ptr<class_decl> t);
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   virtual ~method_type();
 };// end class method_type.
@@ -2811,7 +2811,7 @@ public:
   set_alignment_in_bits(size_t);
 
   virtual string
-  get_pretty_representation() const;
+  get_pretty_representation(bool internal = false) const;
 
   bool
   get_is_declaration_only() const;
