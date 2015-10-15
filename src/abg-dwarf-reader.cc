@@ -2397,10 +2397,33 @@ public:
 	  }
       }
 
-    for (vector<string>::iterator i = resolved_classes.begin();
+    size_t num_decl_only_classes = declaration_only_classes().size(),
+      num_resolved = resolved_classes.size();
+    if (show_stats())
+      cerr << "resolved " << num_resolved
+	   << " class declarations out of "
+	   << num_decl_only_classes
+	   << "\n";
+
+    for (vector<string>::const_iterator i = resolved_classes.begin();
 	 i != resolved_classes.end();
 	 ++i)
       declaration_only_classes().erase(*i);
+
+    for (string_classes_map::iterator i = declaration_only_classes().begin();
+	 i != declaration_only_classes().end();
+	 ++i)
+      {
+	if (show_stats())
+	  {
+	    if (i == declaration_only_classes().begin())
+	      cerr << "Here are the "
+		   << num_decl_only_classes - num_resolved
+		   << " unresolved class declarations:\n";
+	    else
+	      cerr << "    " << i->first << "\n";
+	  }
+      }
   }
 
   /// Return a reference to the vector containing the offsets of the
