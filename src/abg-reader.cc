@@ -778,8 +778,8 @@ public:
 	// might be called to early, before they are actually added to
 	// their context.
 	//
-	// TODO: make sure this this function is called after types
-	// are added to their context, so that we can try to
+	// TODO: make sure this function is called after types are
+	// added to their context, so that we can try to
 	// early-canonicalize some of these types, reducing the size
 	// of the set of types to put on the side, waiting for being
 	// canonicalized.

@@ -3734,7 +3734,7 @@ scope_decl::get_hash() const
 /// negative performance impact because even if @p l and @p r are not
 /// equal, the function keeps up the comparison in order to determine
 /// the different kinds of ways in which they are different.
-/// 
+///
 /// @return true if @p l equals @p r, false otherwise.
 bool
 equals(const scope_decl& l, const scope_decl& r, change_kind* k)

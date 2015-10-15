@@ -96,7 +96,6 @@ class location;
 class location_manager;
 class method_type;
 class namespace_decl;
-class parameter;
 class pointer_type_def;
 class qualified_type_def;
 class reference_type_def;
