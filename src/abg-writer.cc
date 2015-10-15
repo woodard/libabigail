@@ -1144,16 +1144,6 @@ write_translation_unit(const translation_unit&	tu,
   ostream& o = ctxt.get_ostream();
   const config& c = ctxt.get_config();
 
-  // In a given translation unit, we'd like to ensure that a given
-  // type is defined only once.  The same type can be present in
-  // several translation units, though.  They'll be canonicalized
-  // later, by the reader's code.
-  //
-  // So lets clear the map that contains the types that are emitted in
-  // the translation unit tu.
-  ctxt.clear_emitted_types_map();
-  ctxt.clear_referenced_types_map();
-
   do_indent(o, indent);
 
   o << "<abi-instr version='"
@@ -1495,9 +1485,6 @@ write_pointer_type_def(const pointer_type_def_sptr	decl,
 
   ctxt.record_type_as_referenced(pointed_to_type);
 
-  if (function_type_sptr f = is_function_type(decl->get_pointed_to_type()))
-    ctxt.record_type_as_referenced(f);
-
   write_size_and_alignment(decl, o);
 
   string i = id;
@@ -1638,7 +1625,10 @@ write_array_type_def(const array_type_def_sptr		decl,
 
   o << " dimensions='" << decl->get_dimension_count() << "'";
 
-  o << " type-id='" << ctxt.get_id_for_type(decl->get_element_type()) << "'";
+  type_base_sptr element_type = decl->get_element_type();
+  o << " type-id='" << ctxt.get_id_for_type(element_type) << "'";
+
+  ctxt.record_type_as_referenced(element_type);
 
   write_array_size_and_alignment(decl, o);
 
@@ -2054,6 +2044,7 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 
   o << ">\n";
 
+  type_base_sptr parm_type;
   vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
     decl->get_parameters().begin();
   for ((skip_first_parm && pi != decl->get_parameters().end()) ? ++pi: pi;
@@ -2065,9 +2056,11 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 	o << "<parameter is-variadic='yes'";
       else
 	{
+	  parm_type = (*pi)->get_type();
 	  o << "<parameter type-id='"
-	    << ctxt.get_id_for_type((*pi)->get_type())
+	    << ctxt.get_id_for_type(parm_type)
 	    << "'";
+	  ctxt.record_type_as_referenced(parm_type);
 
 	  if (!(*pi)->get_name().empty())
 	    o << " name='" << (*pi)->get_name() << "'";
@@ -2082,6 +2075,7 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
     {
       do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
       o << "<return type-id='" << ctxt.get_id_for_type(return_type) << "'/>\n";
+      ctxt.record_type_as_referenced(return_type);
     }
 
   do_indent(o, indent);
@@ -2118,6 +2112,7 @@ write_function_type(const shared_ptr<function_type> decl, write_context& ctxt,
     << ctxt.get_id_for_type(decl) << "'";
   o << ">\n";
 
+  type_base_sptr parm_type;
   for (vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
        decl->get_parameters().begin();
        pi != decl->get_parameters().end();
@@ -2128,9 +2123,11 @@ write_function_type(const shared_ptr<function_type> decl, write_context& ctxt,
 	o << "<parameter is-variadic='yes'";
       else
 	{
+	  parm_type = (*pi)->get_type();
 	  o << "<parameter type-id='"
-	    << ctxt.get_id_for_type((*pi)->get_type())
+	    << ctxt.get_id_for_type(parm_type)
 	    << "'";
+	  ctxt.record_type_as_referenced(parm_type);
 
 	  if (!(*pi)->get_name().empty())
 	    o << " name='" << (*pi)->get_name() << "'";
@@ -2144,6 +2141,7 @@ write_function_type(const shared_ptr<function_type> decl, write_context& ctxt,
     {
       do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
       o << "<return type-id='" << ctxt.get_id_for_type(return_type) << "'/>\n";
+      ctxt.record_type_as_referenced(return_type);
     }
 
   do_indent(o, indent);
@@ -2214,6 +2212,7 @@ write_class_decl(const class_decl_sptr	decl,
       o << ">\n";
 
       unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
+      type_base_sptr base_type;
       for (class_decl::base_specs::const_iterator base =
 	     decl->get_base_specifiers().begin();
 	   base != decl->get_base_specifiers().end();
@@ -2229,9 +2228,12 @@ write_class_decl(const class_decl_sptr	decl,
 	  if ((*base)->get_is_virtual ())
 	    o << " is-virtual='yes'";
 
+	  base_type = (*base)->get_base_class();
 	  o << " type-id='"
-	    << ctxt.get_id_for_type((*base)->get_base_class())
+	    << ctxt.get_id_for_type(base_type)
 	    << "'/>\n";
+
+	  ctxt.record_type_as_referenced(base_type);
 	}
 
       for (class_decl::member_types::const_iterator ti =
@@ -2368,8 +2370,9 @@ write_class_decl(const class_decl_sptr	decl,
       o << "</class-decl>";
     }
 
-  if (!(decl->get_is_declaration_only()
-	&& decl->get_definition_of_declaration()))
+  // We allow several *declarations* of the same class in the corpus,
+  // but only one definition.
+  if (!decl->get_is_declaration_only())
     ctxt.record_type_as_emitted(decl);
 
   return true;
