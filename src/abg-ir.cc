@@ -241,16 +241,17 @@ typedef unordered_map<function_type_sptr,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
-  environment*				env_;
-  const corpus*			corp;
-  bool					is_constructed_;
-  char					address_size_;
-  language				language_;
-  std::string				path_;
-  location_manager			loc_mgr_;
-  mutable global_scope_sptr		global_scope_;
-  mutable function_types_type		function_types_;
-  mutable vector<type_base_sptr>	synthesized_types_;
+  environment*					env_;
+  const corpus*				corp;
+  bool						is_constructed_;
+  char						address_size_;
+  language					language_;
+  std::string					path_;
+  location_manager				loc_mgr_;
+  mutable global_scope_sptr			global_scope_;
+  mutable function_types_type			function_types_;
+  mutable vector<type_base_sptr>		synthesized_types_;
+  mutable string_type_base_wptr_map_type	types_;
 
   priv(environment* env)
     : env_(env),
@@ -313,6 +314,22 @@ translation_unit::get_global_scope() const
 const function_types_type
 translation_unit::get_function_types() const
 { return priv_->function_types_; }
+
+/// Getter of the types of the current @ref translation_unit.
+///
+/// @return a map of the types of the translation unit.  The key of
+/// the map is the qualified name of the type, and value is the type.
+const string_type_base_wptr_map_type&
+translation_unit::get_types() const
+{return priv_->types_;}
+
+/// Getter of the types of the current @ref translation_unit.
+///
+/// @return a map of the types of the translation unit.  The key of
+/// the map is the qualified name of the type, and value is the type.
+string_type_base_wptr_map_type&
+translation_unit::get_types()
+{return priv_->types_;}
 
 /// Getter of the environment of the current @ref translation_unit.
 ///
@@ -3526,6 +3543,51 @@ static void
 update_qualified_name(decl_base_sptr d)
 {return update_qualified_name(d.get());}
 
+/// Update the map that is going to be used later for lookup of types
+/// in a given scope declaration.
+///
+/// That is, add a new name -> type relationship in the map, for a
+/// given type declaration.
+///
+/// @param member the declaration of the type to update the scope for.
+/// This type declaration must be added to the scope, after or before
+/// invoking this function.  If it appears that this @p member is not
+/// a type, this function does nothing.  Also, if this member is a
+/// declaration-only class, the function does nothing.
+static void
+maybe_update_types_lookup_map(scope_decl *scope,
+			      decl_base_sptr member)
+{
+  string n = member->get_qualified_name();
+  type_base_sptr t = is_type(member);
+  bool update_qname_map = t;
+  if (update_qname_map)
+    {
+      if (class_decl_sptr c = is_class_type(member))
+	{
+	  if (c->get_is_declaration_only())
+	    {
+	      if (class_decl_sptr def = c->get_definition_of_declaration())
+		t = def;
+	      else
+		update_qname_map = false;
+	    }
+	}
+    }
+  if (update_qname_map)
+    {
+      translation_unit* tu = get_translation_unit(scope);
+      if (tu)
+	{
+	  string qname = member->get_qualified_name();
+	  string_type_base_wptr_map_type& types = tu->get_types();
+	  string_type_base_wptr_map_type::iterator it = types.find(qname);
+	  if (it == types.end())
+	    types[qname] = t;
+	}
+    }
+}
+
 /// Add a member decl to this scope.  Note that user code should not
 /// use this, but rather use add_decl_to_scope.
 ///
@@ -3558,6 +3620,8 @@ scope_decl::add_member_decl(const decl_base_sptr member)
       else
 	member->set_corpus(c);
     }
+
+  maybe_update_types_lookup_map(this, member);
 
   return member;
 }
@@ -3597,6 +3661,8 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
       else
 	member->set_corpus(c);
     }
+
+  maybe_update_types_lookup_map(this, member);
 
   return member;
 }
@@ -3755,38 +3821,21 @@ bool
 scope_decl::find_iterator_for_member(const decl_base* decl,
 				     declarations::iterator& i)
 {
-  if (class_decl* klass = dynamic_cast<class_decl*>(this))
-    assert(!klass->get_is_declaration_only());
-
   if (!decl)
     return false;
 
   if (get_member_decls().empty())
     {
       i = get_member_decls().end();
-      return true;
+      return false;
     }
 
-  const class_decl* is_class = dynamic_cast<const class_decl*>(decl);
-  if (is_class)
-    assert(!is_class->get_is_declaration_only());
-
-  string qual_name1 = decl->get_qualified_name();
   for (declarations::iterator it = get_member_decls().begin();
        it != get_member_decls().end();
        ++it)
     {
-      string qual_name2 = (*it)->get_qualified_name();
-      if (qual_name1 == qual_name2)
+      if ((*it).get() == decl)
 	{
-	  if (is_class)
-	    {
-	      class_decl_sptr cur_class =
-		dynamic_pointer_cast<class_decl>(*it);
-	      assert(cur_class);
-	      if (cur_class->get_is_declaration_only())
-		continue;
-	    }
 	  i = it;
 	  return true;
 	}
@@ -5327,6 +5376,27 @@ fqn_to_components(const string& fqn,
     } while (true);
 }
 
+/// Turn a set of qualified name components (that name a type) into a
+/// qualified name string.
+///
+/// @param comps the name components
+///
+/// @return the resulting string, which would be the qualified name of
+/// a type.
+string
+components_to_type_name(const list<string>& comps)
+{
+  string result;
+  for (list<string>::const_iterator c = comps.begin();
+       c != comps.end();
+       ++c)
+    if (c == comps.begin())
+      result = *c;
+    else
+      result += "::" + *c;
+  return result;
+}
+
 /// This predicate returns true if a given container iterator points
 /// to the last element of the container, false otherwise.
 ///
@@ -5360,9 +5430,15 @@ const decl_base_sptr
 lookup_type_in_translation_unit(const string& fqn,
 				const translation_unit& tu)
 {
-  list<string> comps;
-  fqn_to_components(fqn, comps);
-  return lookup_type_in_translation_unit(comps, tu);
+  decl_base_sptr result;
+  const string_type_base_wptr_map_type& types = tu.get_types();
+  string_type_base_wptr_map_type::const_iterator it, nil = types.end();
+  it = types.find(fqn);
+  if (it != nil)
+    if (!it->second.expired())
+      result = get_type_declaration(type_base_sptr(it->second));
+
+  return result;
 }
 
 /// Lookup a class type from a translation unit.
@@ -5377,11 +5453,7 @@ lookup_type_in_translation_unit(const string& fqn,
 const class_decl_sptr
 lookup_class_type_in_translation_unit(const string& fqn,
 				      const translation_unit& tu)
-{
-  list<string> comps;
-  fqn_to_components(fqn, comps);
-  return lookup_class_type_in_translation_unit(comps, tu);
-}
+{return is_class_type(lookup_type_in_translation_unit(fqn, tu));}
 
 /// Lookup a function type from a translation unit.
 ///
@@ -10389,7 +10461,18 @@ class_decl::get_is_declaration_only() const
 /// @param f true if the class is a decalaration-only class.
 void
 class_decl::set_is_declaration_only(bool f)
-{priv_->is_declaration_only_ = f;}
+{
+  priv_->is_declaration_only_ = f;
+  if (!f)
+    if (scope_decl* s = get_scope())
+      {
+	declarations::iterator i;
+	if (s->find_iterator_for_member(this, i))
+	  maybe_update_types_lookup_map(s, *i);
+	else
+	  abort();
+      }
+}
 
 /// Set the "is-struct" flag of the class.
 ///

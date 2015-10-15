@@ -633,6 +633,9 @@ void
 fqn_to_components(const std::string&,
 		  std::list<string>&);
 
+string
+components_to_type_name(const std::list<string>&);
+
 const shared_ptr<decl_base>
 lookup_type_in_corpus(const string&, const corpus&);
 

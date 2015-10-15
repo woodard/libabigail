@@ -279,6 +279,10 @@ struct ir_traversable_base : public traversable_base
   traverse(ir_node_visitor& v);
 }; // end class ir_traversable_base
 
+/// A convenience typedef for a map which key is a string and which
+/// value is a @ref type_base_wptr.
+typedef unordered_map<string, type_base_wptr> string_type_base_wptr_map_type;
+
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
 /// into a translation unit.
@@ -366,6 +370,12 @@ public:
 
   const function_types_type
   get_function_types() const;
+
+  const string_type_base_wptr_map_type&
+  get_types() const;
+
+  string_type_base_wptr_map_type&
+  get_types();
 
   location_manager&
   get_loc_mgr();

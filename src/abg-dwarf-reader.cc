@@ -6137,9 +6137,13 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	    string mem_name = fqn_comps.back();
 	    fqn_comps.pop_back();
 	    decl_base_sptr ty_decl;
+	    string ty_name;
 	    if (!fqn_comps.empty())
-	      ty_decl = lookup_type_in_translation_unit(fqn_comps,
-							*ctxt.cur_tu());
+	      {
+		ty_name = components_to_type_name(fqn_comps);
+		ty_decl = lookup_type_in_translation_unit(ty_name,
+							  *ctxt.cur_tu());
+	      }
 	    if (class_decl_sptr cl = dynamic_pointer_cast<class_decl>(ty_decl))
 	      {
 		// So we are seeing a member variable for which there
