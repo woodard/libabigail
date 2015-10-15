@@ -174,14 +174,31 @@ parse_command_line(int argc, char* argv[], options& opts)
   return true;
 }
 
+/// Initialize the context use for driving ABI comparison.
+///
+/// @param ctxt the context to initialize.
+static void
+set_diff_context(diff_context_sptr& ctxt)
+{
+  ctxt->default_output_stream(&cerr);
+  ctxt->error_output_stream(&cerr);
+  // Filter out changes that are not meaningful from an ABI
+  // standpoint, from the diff output.
+  ctxt->switch_categories_off
+    (abigail::comparison::ACCESS_CHANGE_CATEGORY
+     | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
+     | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY);
+}
+
 int
 main(int argc, char* argv[])
 {
   options opts;
 
-  if (!parse_command_line(argc, argv, opts))
+  if (!parse_command_line(argc, argv, opts)
+      || opts.in_file_path.empty())
     {
-      display_usage(argv[0], cout);
+      display_usage(argv[0], cerr);
       return 1;
     }
 
@@ -297,10 +314,9 @@ main(int argc, char* argv[])
 	      return 1;
 	    }
 	  diff_context_sptr ctxt(new diff_context);
-	  ctxt->default_output_stream(&cerr);
-	  ctxt->error_output_stream(&cerr);
+	  set_diff_context(ctxt);
 	  corpus_diff_sptr diff = compute_diff(corp, corp2, ctxt);
-	  bool has_error = diff->has_changes();
+	  bool has_error = diff->has_incompatible_changes();
 	  if (has_error)
 	    {
 	      diff->report(cerr);
