@@ -1055,10 +1055,10 @@ public:
 };// end class decl_base
 
 bool
-operator==(const decl_base_sptr, const decl_base_sptr);
+operator==(const decl_base_sptr&, const decl_base_sptr&);
 
 bool
-operator==(const type_base_sptr, const type_base_sptr);
+operator==(const type_base_sptr&, const type_base_sptr&);
 
 std::ostream&
 operator<<(std::ostream&, decl_base::visibility);
@@ -1998,9 +1998,9 @@ public:
   set_binding(binding b);
 
   void
-  set_symbol(elf_symbol_sptr sym);
+  set_symbol(const elf_symbol_sptr& sym);
 
-  elf_symbol_sptr
+  const elf_symbol_sptr&
   get_symbol() const;
 
   var_decl_sptr
@@ -2114,9 +2114,9 @@ public:
   set_type(function_type_sptr fn_type);
 
   void
-  set_symbol(elf_symbol_sptr sym);
+  set_symbol(const elf_symbol_sptr& sym);
 
-  elf_symbol_sptr
+  const elf_symbol_sptr&
   get_symbol() const;
 
   bool

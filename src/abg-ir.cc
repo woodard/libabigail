@@ -2461,7 +2461,7 @@ operator<<(std::ostream& o, decl_base::binding b)
 /// @return true if the decl_base pointed to by the shared_ptrs are
 /// equal, false otherwise.
 bool
-operator==(const decl_base_sptr l, const decl_base_sptr r)
+operator==(const decl_base_sptr& l, const decl_base_sptr& r)
 {
   if (l.get() == r.get())
     return true;
@@ -2483,7 +2483,7 @@ operator==(const decl_base_sptr l, const decl_base_sptr r)
 /// @return true if the type_base pointed to by the shared_ptrs are
 /// equal, false otherwise.
 bool
-operator==(const type_base_sptr l, const type_base_sptr r)
+operator==(const type_base_sptr& l, const type_base_sptr& r)
 {
     if (l.get() == r.get())
     return true;
@@ -8430,7 +8430,7 @@ var_decl::set_binding(decl_base::binding b)
 ///
 /// @param sym the new ELF symbol for this variable decl.
 void
-var_decl::set_symbol(elf_symbol_sptr sym)
+var_decl::set_symbol(const elf_symbol_sptr& sym)
 {priv_->symbol_ = sym;}
 
 /// Gets the the underlying ELF symbol for the current variable,
@@ -8440,7 +8440,7 @@ var_decl::set_symbol(elf_symbol_sptr sym)
 ///
 /// @return sym the underlying ELF symbol for this variable decl, if
 /// one exists.
-elf_symbol_sptr
+const elf_symbol_sptr&
 var_decl::get_symbol() const
 {return priv_->symbol_;}
 
@@ -9505,7 +9505,7 @@ function_decl::set_type(shared_ptr<function_type> fn_type)
 ///
 /// @param sym the new ELF symbol for this function decl.
 void
-function_decl::set_symbol(elf_symbol_sptr sym)
+function_decl::set_symbol(const elf_symbol_sptr& sym)
 {priv_->symbol_ = sym;}
 
 /// Gets the the underlying ELF symbol for the current variable,
@@ -9515,7 +9515,7 @@ function_decl::set_symbol(elf_symbol_sptr sym)
 ///
 /// @return sym the underlying ELF symbol for this function decl, if
 /// one exists.
-elf_symbol_sptr
+const elf_symbol_sptr&
 function_decl::get_symbol() const
 {return priv_->symbol_;}
 
