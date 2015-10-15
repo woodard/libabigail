@@ -1118,6 +1118,7 @@ read_translation_unit(read_context& ctxt, xmlNodePtr node)
   ctxt.set_corpus_node(node);
 
   tu.reset(new translation_unit("", ctxt.get_environment()));
+  tu->set_corpus(ctxt.get_corpus().get());
 
   xml::xml_char_sptr addrsize_str =
     XML_NODE_GET_ATTRIBUTE(node, "address-size");
