@@ -6234,7 +6234,11 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	    {
 	      if (const corpus* it_corpus = (*it)->get_corpus())
 		{
-		  if (it_corpus == t_corpus)
+		  if (it_corpus == t_corpus
+		      // Let's add one more size constraint to rule
+		      // out programs that break the One Definition
+		      // Rule too easily.
+		      && v[0]->get_size_in_bits() == t->get_size_in_bits())
 		    {
 		      // Both types come from the same ABI corpus and
 		      // have the same name; the One Definition Rule

@@ -300,6 +300,8 @@ test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so \
 test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi \
 test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so \
 test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi \
+test-read-dwarf/test21-pr19092.so \
+test-read-dwarf/test21-pr19092.so.abi \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\

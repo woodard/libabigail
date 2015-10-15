@@ -159,6 +159,11 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
     "output/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
   },
+  {
+    "data/test-read-dwarf/test21-pr19092.so",
+    "data/test-read-dwarf/test21-pr19092.so.abi",
+    "output/test-read-dwarf/",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL}
 };
