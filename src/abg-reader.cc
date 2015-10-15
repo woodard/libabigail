@@ -1528,6 +1528,10 @@ read_corpus_from_input(read_context& ctxt)
 
   corp.set_origin(corpus::NATIVE_XML_ORIGIN);
 
+  // This is the necessary counter-part of the xmlTextReaderExpand()
+  // call at the beginning of the function.
+  xmlTextReaderNext(reader.get());
+
   return ctxt.get_corpus();;
 }
 
