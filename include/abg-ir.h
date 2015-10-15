@@ -2258,6 +2258,12 @@ struct function_decl::parameter::hash
   operator()(const function_decl::parameter_sptr) const;
 }; // end struct function_decl::parameter::hash
 
+function_decl::parameter*
+is_function_parameter(const type_or_decl_base*);
+
+function_decl::parameter_sptr
+is_function_parameter(const type_or_decl_base_sptr tod);
+
 bool
 equals(const function_type&, const function_type&, change_kind*);
 
@@ -3089,6 +3095,12 @@ public:
 bool
 operator==(const class_decl::base_spec_sptr l,
 	   const class_decl::base_spec_sptr r);
+
+class_decl::base_spec*
+is_class_base_spec(type_or_decl_base*);
+
+class_decl::base_spec_sptr
+is_class_base_spec(type_or_decl_base_sptr);
 
 class mem_fn_context_rel;
 

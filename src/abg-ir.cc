@@ -4794,6 +4794,29 @@ function_decl_sptr
 is_function_decl(decl_base_sptr d)
 {return dynamic_pointer_cast<function_decl>(d);}
 
+/// Test whether a declaration is a @ref function_decl.
+///
+/// @param d the declaration to test for.
+///
+/// @return a pointer to @ref function_decl if @p d is a @ref
+/// function_decl.  Otherwise, a nil shared pointer.
+function_decl::parameter*
+is_function_parameter(const type_or_decl_base* tod)
+{
+  return dynamic_cast<function_decl::parameter*>
+    (const_cast<type_or_decl_base*>(tod));
+}
+
+/// Test whether an ABI artifact is a @ref function_decl.
+///
+/// @param tod the declaration to test for.
+///
+/// @return a pointer to @ref function_decl if @p d is a @ref
+/// function_decl.  Otherwise, a nil shared pointer.
+function_decl::parameter_sptr
+is_function_parameter(const type_or_decl_base_sptr tod)
+{return dynamic_pointer_cast<function_decl::parameter>(tod);}
+
 /// Test if an ABI artifact is a declaration.
 ///
 /// @param d the artifact to consider.
@@ -11723,6 +11746,29 @@ operator==(const class_decl::base_spec_sptr l,
   return *l == static_cast<const decl_base&>(*r);
 }
 
+/// Test if an ABI artifact is a class base specifier.
+///
+/// @param tod the ABI artifact to consider.
+///
+/// @return a pointer to the @ref class_decl::base_spec sub-object of
+/// @p tod iff it's a class base specifier.
+class_decl::base_spec*
+is_class_base_spec(const type_or_decl_base* tod)
+{
+  return dynamic_cast<class_decl::base_spec*>
+    (const_cast<type_or_decl_base*>(tod));
+}
+
+/// Test if an ABI artifact is a class base specifier.
+///
+/// @param tod the ABI artifact to consider.
+///
+/// @return a pointer to the @ref class_decl::base_spec sub-object of
+/// @p tod iff it's a class base specifier.
+class_decl::base_spec_sptr
+is_class_base_spec(type_or_decl_base_sptr tod)
+{return dynamic_pointer_cast<class_decl::base_spec>(tod);}
+
 bool
 class_decl::member_function_template::operator==(const member_base& other) const
 {
@@ -12923,6 +12969,29 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	  string repr = f->get_pretty_representation();
 	  std::tr1::hash<string> hash_string;
 	  h = hashing::combine_hashes(h, hash_string(repr));
+	  result = h;
+	}
+      else if (function_decl::parameter* p = is_function_parameter(d))
+	{
+	  type_base_sptr parm_type = p->get_type();
+	  assert(parm_type);
+	  std::tr1::hash<bool> hash_bool;
+	  std::tr1::hash<unsigned> hash_unsigned;
+	  size_t h = hash_type_or_decl(parm_type);
+	  h = hashing::combine_hashes(h, hash_unsigned(p->get_index()));
+	  h = hashing::combine_hashes(h, hash_bool(p->get_variadic_marker()));
+	  result = h;
+	}
+      else if (class_decl::base_spec *bs = is_class_base_spec(d))
+	{
+	  class_decl::member_base::hash hash_member;
+	  std::tr1::hash<size_t> hash_size;
+	  std::tr1::hash<bool> hash_bool;
+	  type_base_sptr type = bs->get_base_class();
+	  size_t h = hash_type_or_decl(type);
+	  h = hashing::combine_hashes(h, hash_member(*bs));
+	  h = hashing::combine_hashes(h, hash_size(bs->get_offset_in_bits()));
+	  h = hashing::combine_hashes(h, hash_bool(bs->get_is_virtual()));
 	  result = h;
 	}
       else
