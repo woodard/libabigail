@@ -156,6 +156,8 @@ if test x$ENABLE_DEB = xauto -o x$ENABLE_DEB = xyes; then
    if test x$ENABLE_DEB = xauto; then
      if test x$HAS_DPKG = xyes; then
        ENABLE_DEB=yes
+     else
+       ENABLE_DEB=no
     fi
    fi
 fi
