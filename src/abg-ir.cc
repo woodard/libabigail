@@ -1301,6 +1301,9 @@ elf_symbol::does_alias(const elf_symbol& o) const
   if (*this == o)
     return true;
 
+  if (get_main_symbol() == o.get_main_symbol())
+    return true;
+
   for (elf_symbol_sptr a = get_next_alias();
        a && a!= get_main_symbol();
        a = a->get_next_alias())
@@ -9622,7 +9625,18 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 {
   bool result = true;
 
-  elf_symbol_sptr s0 = l.get_symbol(), s1 = r.get_symbol();
+  // Compare function types
+  const type_base_sptr &t0 = l.get_type(), &t1 = r.get_type();
+  if (t0 != t1)
+    {
+      result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return false;
+    }
+
+  const elf_symbol_sptr &s0 = l.get_symbol(), &s1 = r.get_symbol();
   if (!!s0 != !!s1)
     {
       result = false;
@@ -9681,18 +9695,6 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
 	else
 	  return false;
       }
-
-  // Compare function types
-  type_base_sptr t0 = l.get_type(), t1 = r.get_type();
-  if ((t0 && t1 && t0 != t1)
-      || !!t0 != !!t1)
-    {
-      result = false;
-      if (k)
-	*k |= SUBTYPE_CHANGE_KIND;
-      else
-	return false;
-    }
 
   // Compare the remaining properties
   if (l.is_declared_inline() != r.is_declared_inline()
@@ -11379,9 +11381,21 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	    {
 	      if (k)
 		*k |= LOCAL_CHANGE_KIND;
-	      RETURN(false);
+	      // Not using RETURN(true) here, because that causes
+	      // performance issues.  We don't need to do
+	      // l.priv_->unmark_as_being_compared({l,r}) here because
+	      // we haven't marked l or r as being compared yet, and
+	      // doing so has a peformance cost that shows up on
+	      // performance profiles for *big* libraries.
+	      return false;
 	    }
-	  RETURN(true);
+	  // Not using RETURN(true) here, because that causes
+	  // performance issues.  We don't need to do
+	  // l.priv_->unmark_as_being_compared({l,r}) here because
+	  // we haven't marked l or r as being compared yet, and
+	  // doing so has a peformance cost that shows up on
+	  // performance profiles for *big* libraries.
+	  return true;
 	}
 
       if (l.priv_->comparison_started(l)

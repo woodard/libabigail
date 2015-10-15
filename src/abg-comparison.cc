@@ -6813,19 +6813,7 @@ var_diff::type_diff() const
 /// @return true iff the diff node has a change.
 bool
 var_diff::has_changes() const
-{
-  if (!!first_var() != !!second_var())
-    return true;
-
-  if (first_var().get() == second_var().get())
-    return false;
-
-  if (first_var()->get_hash() && second_var()->get_hash()
-      && first_var()->get_hash() != second_var()->get_hash())
-    return true;
-
-  return *first_var() != *second_var();
-}
+{return *first_var() != *second_var();}
 
 /// @return true iff the current diff node carries local changes.
 bool
