@@ -246,17 +246,8 @@ handle_in_out_spec(void)
     pthread_mutex_unlock(&write_lock);
     of.close();
 
-    string abilint = get_build_dir() + "/tools/abilint";
-    abilint += " --noout";
-    string cmd = abilint + " " + out_abi_path;
-    if (system(cmd.c_str()))
-      {
-	cerr << "output file doesn't pass abilint: " << out_abi_path << "\n";
-	is_ok = false;
-      }
-
-    string abidiff = get_build_dir() + "/tools/abidiff";
-    cmd = abidiff + " --no-architecture " + in_elf_path + " " + out_abi_path;
+    string abidw = get_build_dir() + "/tools/abidw";
+    string cmd = abidw + " --abidiff " + in_elf_path;
     if (system(cmd.c_str()))
       {
 	cerr << "ABIs differ:\n"
