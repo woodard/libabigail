@@ -8897,15 +8897,16 @@
     <reference-type-def kind='lvalue' type-id='type-id-390' size-in-bits='64' id='type-id-394'/>
     <reference-type-def kind='lvalue' type-id='type-id-433' size-in-bits='64' id='type-id-393'/>
     <namespace-decl name='std'>
-            <class-decl name='iterator_traits&lt;char *&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/stl_iterator_base_types.h' line='175' column='1' id='type-id-318'>
-        <member-type access='public'>
-          <typedef-decl name='reference' type-id='type-id-295' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/stl_iterator_base_types.h' line='181' column='1' id='type-id-422'/>
-        </member-type>
+      <class-decl name='iterator_traits&lt;char *&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/stl_iterator_base_types.h' line='175' column='1' id='type-id-318'>
         <member-type access='public'>
           <typedef-decl name='pointer' type-id='type-id-47' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/stl_iterator_base_types.h' line='180' column='1' id='type-id-424'/>
         </member-type>
+      </class-decl>
+    </namespace-decl>
+    <namespace-decl name='std'>
+      <class-decl name='iterator_traits&lt;char *&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/stl_iterator_base_types.h' line='175' column='1' id='type-id-318'>
         <member-type access='public'>
-          <typedef-decl name='difference_type' type-id='type-id-198' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/stl_iterator_base_types.h' line='179' column='1' id='type-id-319'/>
+          <typedef-decl name='reference' type-id='type-id-295' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/stl_iterator_base_types.h' line='181' column='1' id='type-id-422'/>
         </member-type>
       </class-decl>
     </namespace-decl>

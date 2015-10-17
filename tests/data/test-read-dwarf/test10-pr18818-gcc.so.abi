@@ -9673,18 +9673,9 @@
     </array-type-def>
     <pointer-type-def type-id='type-id-312' size-in-bits='64' id='type-id-317'/>
     <namespace-decl name='std'>
-            <class-decl name='iterator_traits&lt;char*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='175' column='1' id='type-id-47'>
+      <class-decl name='iterator_traits&lt;char*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='175' column='1' id='type-id-47'>
         <member-type access='public'>
           <typedef-decl name='iterator_category' type-id='type-id-224' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='177' column='1' id='type-id-309'/>
-        </member-type>
-        <member-type access='public'>
-          <typedef-decl name='difference_type' type-id='type-id-49' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='179' column='1' id='type-id-48'/>
-        </member-type>
-        <member-type access='public'>
-          <typedef-decl name='pointer' type-id='type-id-4' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='180' column='1' id='type-id-50'/>
-        </member-type>
-        <member-type access='public'>
-          <typedef-decl name='reference' type-id='type-id-43' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='181' column='1' id='type-id-51'/>
         </member-type>
       </class-decl>
     </namespace-decl>
@@ -10697,18 +10688,9 @@
     <reference-type-def kind='lvalue' type-id='type-id-587' size-in-bits='64' id='type-id-577'/>
     <var-decl name='__dso_handle' type-id='type-id-73' visibility='default'/>
     <namespace-decl name='std'>
-            <class-decl name='iterator_traits&lt;char const*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='186' column='1' id='type-id-53'>
+      <class-decl name='iterator_traits&lt;char const*&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='186' column='1' id='type-id-53'>
         <member-type access='public'>
           <typedef-decl name='iterator_category' type-id='type-id-224' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='188' column='1' id='type-id-569'/>
-        </member-type>
-        <member-type access='public'>
-          <typedef-decl name='difference_type' type-id='type-id-49' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='190' column='1' id='type-id-54'/>
-        </member-type>
-        <member-type access='public'>
-          <typedef-decl name='pointer' type-id='type-id-34' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='191' column='1' id='type-id-55'/>
-        </member-type>
-        <member-type access='public'>
-          <typedef-decl name='reference' type-id='type-id-44' filepath='/usr/include/c++/4.9/bits/stl_iterator_base_types.h' line='192' column='1' id='type-id-56'/>
         </member-type>
       </class-decl>
     </namespace-decl>
