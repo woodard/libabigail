@@ -130,88 +130,6 @@ typedef unordered_map<shared_ptr<class_tdecl>,
 		      string,
 		      class_tdecl::shared_ptr_hash> class_tmpl_shared_ptr_map;
 
-/// A comparison functor to compare pointers to @ref type_base.
-///
-/// What is compared is the string representation of the pointed-to
-/// type.
-struct type_ptr_comp_functor
-{
-  /// The comparison operator of the functor.
-  ///
-  /// @param l the first type to consider.
-  ///
-  /// @param r the second type to consider.
-  ///
-  /// @return true if the string representation of type @p l is
-  /// considered to be "less than" the string representation of the
-  /// type @p r.
- bool
- operator()(const type_base* l, const type_base* r) const
-  {
-    if (!l && r)
-      return true;
-    if (l && !r)
-      return false;
-    if (!l && !r)
-      return false;
-
-    string r1 = ir::get_pretty_representation(l),
-      r2 = ir::get_pretty_representation(r);
-
-    if (r1 == r2)
-      {
-	// The two types have the same string representation.  If they
-	// are either typedefs, pointers or references, then look
-	// through them to get their underlying pointer, and compare
-	// the string represenation of these underlying pointers
-	// instead.
-	type_base *t1 = peel_typedef_pointer_or_reference_type(l),
-	  *t2 = peel_typedef_pointer_or_reference_type(r);
-	assert(t1 && t2);
-	r1 = get_pretty_representation(t1);
-	r2 = get_pretty_representation(t2);
-      }
-
-    return r1 < r2;
-  }
-
-  /// The comparison operator of the functor.
-  ///
-  /// @param l the first type to consider.
-  ///
-  /// @param r the second type to consider.
-  ///
-  /// @return true if the string representation of type @p l is
-  /// considered to be "less than" the string representation of the
-  /// type @p r.
-  bool
-  operator()(const type_base_sptr& l, const type_base_sptr& r)
-  {return operator()(l.get(), r.get());}
-}; // end struct type_ptr_comp_functor
-
-/// Sort the content of a map of type pointers into a vector.
-///
-/// The pointers are sorted by using their string representation as
-/// the key to sort, lexicographically.
-///
-/// @param map the map to sort.
-///
-/// @param sorted the resulted sorted vector.  It's set by this
-/// function with the result of the sorting.
-static void
-sort_type_ptr_map(const type_ptr_map& map,
-		  vector<type_base*>& sorted)
-{
-  sorted.reserve(map.size());
-  for (type_ptr_map::const_iterator i = map.begin();
-       i != map.end();
-       ++i)
-    sorted.push_back(i->first);
-
-  type_ptr_comp_functor compare;
-  std::sort(sorted.begin(), sorted.end(), compare);
-}
-
 class write_context
 {
   id_manager				m_id_manager;
@@ -219,6 +137,7 @@ class write_context
   ostream&				m_ostream;
   type_ptr_map				m_type_id_map;
   unordered_map<string, bool>		m_emitted_type_id_map;
+  type_ptr_map				m_emitted_decl_only_map;
   // A map of types that are referenced by emitted pointers,
   // references or typedefs
   type_ptr_map				m_referenced_types_map;
@@ -334,7 +253,7 @@ public:
   /// @param t a shared pointer to a type
   void
   record_type_as_referenced(const type_base_sptr& t)
-  {m_referenced_types_map[t->get_canonical_type().get()] = true;}
+  {m_referenced_types_map[t.get()] = true;}
 
   /// Test if a given type has been referenced by a pointer, a
   /// reference or a typedef type that was emitted to the XML output.
@@ -347,7 +266,77 @@ public:
   type_is_referenced(const type_base_sptr& t)
   {
     return m_referenced_types_map.find
-      (t->get_canonical_type().get()) != m_referenced_types_map.end();
+      (t.get()) != m_referenced_types_map.end();
+  }
+
+  /// A comparison functor to compare pointers to @ref type_base.
+  ///
+  /// What is compared is the string representation of the pointed-to
+  /// type.
+  struct type_ptr_cmp
+  {
+    type_ptr_map *map;
+    type_ptr_cmp(type_ptr_map *m)
+      : map(m)
+    {}
+
+    /// The comparison operator of the functor.
+    ///
+    /// @param l the first type to consider.
+    ///
+    /// @param r the second type to consider.
+    ///
+    /// @return true if the string representation of type @p l is
+    /// considered to be "less than" the string representation of the
+    /// type @p r.
+    ///
+    /// But when the two string representations are equal (for
+    /// instance, for typedefs that have the same string
+    /// representation), this function compares the type-ids of the
+    /// types.  This allows for a stable result.
+    bool
+    operator()(const type_base* l, const type_base* r) const
+    {
+      if (!l && r)
+	return true;
+      if (l && !r)
+	return false;
+      if (!l && !r)
+	return false;
+
+      string r1 = ir::get_pretty_representation(l),
+	r2 = ir::get_pretty_representation(r);
+
+      if (r1 == r2)
+	{
+	  r1 = (*map)[const_cast<type_base*>(l)];
+	  r2 = (*map)[const_cast<type_base*>(r)];
+	}
+
+      return r1 < r2;
+    }
+  }; // end struct type_ptr_cmp
+
+  /// Sort the content of a map of type pointers into a vector.
+  ///
+  /// The pointers are sorted by using their string representation as
+  /// the key to sort, lexicographically.
+  ///
+  /// @param types the map to sort.
+  ///
+  /// @param sorted the resulted sorted vector.  It's set by this
+  /// function with the result of the sorting.
+  void
+  sort_types(type_ptr_map& types,
+	     vector<type_base*>& sorted)
+  {
+    string id;
+    for (type_ptr_map::const_iterator i = types.begin();
+	 i != types.end();
+	 ++i)
+	sorted.push_back(i->first);
+    type_ptr_cmp comp(&m_type_id_map);
+    sort(sorted.begin(), sorted.end(), comp);
   }
 
   /// Flag a type as having been written out to the XML output.
@@ -385,6 +374,55 @@ public:
     string id = get_id_for_type(t);
     return type_id_is_emitted(id);
   }
+
+  /// Record a declaration-only class as being emitted.
+  ///
+  /// For now, this function expects a declaration-only class,
+  /// otherwise, it aborts.
+  ///
+  /// @param t the declaration-only class to report as emitted.
+  void
+  record_decl_only_type_as_emitted(type_base* t)
+  {
+    class_decl* cl = is_class_type(t);
+    assert(cl && cl->get_is_declaration_only());
+    m_emitted_decl_only_map[t] = true;
+  }
+
+  /// Record a declaration-only class as being emitted.
+  ///
+  /// For now, this function expects a declaration-only class,
+  /// otherwise, it aborts.
+  ///
+  /// @param t the declaration-only class to report as emitted.
+  void
+  record_decl_only_type_as_emitted(const type_base_sptr& t)
+  {record_decl_only_type_as_emitted(t.get());}
+
+  /// Test if a declaration-only class has been emitted.
+  ///
+  /// @param t the declaration-only class to test for.
+  ///
+  /// @return true iff the declaration-only class @p t has been
+  /// emitted.
+  bool
+  decl_only_type_is_emitted(type_base* t)
+  {
+    type_ptr_map::const_iterator i = m_emitted_decl_only_map.find(t);
+    if (i == m_emitted_decl_only_map.end())
+      return false;
+    return true;
+  }
+
+  /// Test if a declaration-only class has been emitted.
+  ///
+  /// @param t the declaration-only class to test for.
+  ///
+  /// @return true iff the declaration-only class @p t has been
+  /// emitted.
+  bool
+  decl_only_type_is_emitted(const type_base_sptr& t)
+  {return decl_only_type_is_emitted(t.get());}
 
   /// Clear the map that contains the IDs of the types that has been
   /// recorded as having been written out to the XML output.
@@ -462,8 +500,12 @@ static bool write_function_decl(const shared_ptr<function_decl>,
 				write_context&, bool, unsigned);
 static bool write_function_type(const shared_ptr<function_type>,
 				write_context&, unsigned);
+static bool write_member_type_opening_tag(const type_base_sptr,
+					  write_context&, unsigned);
 static bool write_member_type(const type_base_sptr,
 			      write_context&, unsigned);
+static bool write_class_decl_opening_tag(const class_decl_sptr, const string&,
+					 write_context&, unsigned, bool);
 static bool write_class_decl(const shared_ptr<class_decl>,
 			     write_context&, unsigned);
 static bool write_type_tparameter
@@ -1064,6 +1106,12 @@ write_decl_in_scope(const decl_base_sptr	decl,
 		    write_context&		ctxt,
 		    unsigned			initial_indent)
 {
+  type_base_sptr type = is_type(decl);
+  assert(type);
+
+  if (ctxt.type_is_emitted(type))
+    return;
+
   list<scope_decl*> scopes;
   for (scope_decl* s = decl->get_scope();
        s && !is_global_scope(s);
@@ -1085,35 +1133,42 @@ write_decl_in_scope(const decl_base_sptr	decl,
       if (i != scopes.begin())
 	o << "\n";
 
-      do_indent(o, indent);
+      // A type scope is either a namespace ...
       if (namespace_decl* n = is_namespace(*i))
 	{
+	  do_indent(o, indent);
 	  o << "<namespace-decl name='"
 	    << xml::escape_xml_string(n->get_name())
 	    << "'>";
 	  closing_tags.push("</namespace-decl>");
 	  closing_indents.push(indent);
 	}
-      else
+      // ... or a class.
+      else if (class_decl* c = is_class_type(*i))
 	{
-	  type_base* t = is_type(*i);
-	  assert(t);
-	  decl_base_sptr d(*i, noop_deleter());
-	  write_decl(d, ctxt, indent);
+	  class_decl_sptr class_type(c, noop_deleter());
+	  write_class_decl_opening_tag(class_type, "", ctxt, indent,
+				       /*prepare_to_handle_members=*/false);
+	  closing_tags.push("</class-decl>");
+	  closing_indents.push(indent);
+
+	  unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
+	  write_member_type_opening_tag(type, ctxt, nb_ws);
+	  indent = nb_ws;
+	  closing_tags.push("</member-type>");
+	  closing_indents.push(nb_ws);
 	}
+      else
+	// We should never reach this point.
+	abort();
       indent += c.get_xml_element_indent();
       wrote_context = true;
     }
 
-  if (type_base_sptr t = is_type(decl))
-    {
-      if (!ctxt.type_is_emitted(t))
-	{
-	  if (wrote_context)
-	    o << "\n";
-	  write_decl(decl, ctxt, indent);
-	}
-    }
+  if (wrote_context)
+    o << "\n";
+
+  write_decl(decl, ctxt, indent);
 
   while (!closing_tags.empty())
     {
@@ -1185,23 +1240,77 @@ write_translation_unit(const translation_unit&	tu,
       write_decl(*i, ctxt, indent + c.get_xml_element_indent());
     }
 
-  vector<type_base*> sorted_referenced_types;
-  sort_type_ptr_map(ctxt.get_referenced_types(),
-		    sorted_referenced_types);
-  for (vector<type_base*>::const_iterator i =
-	 sorted_referenced_types.begin();
-       i != sorted_referenced_types.end();
+  // Now let's handle types that were referenced, but not yet
+  // emitted.  We must emit those, along with their scope.
+
+  // So this map of type -> string is to contain the referenced types
+  // we need to emit.
+  type_ptr_map referenced_types_to_emit;
+
+  for (type_ptr_map::const_iterator i = ctxt.get_referenced_types().begin();
+       i != ctxt.get_referenced_types().end();
        ++i)
     {
-      type_base_sptr type(*i, noop_deleter());
-      if (ctxt.type_is_emitted(type))
-	continue;
+      type_base_sptr type(i->first, noop_deleter());
+      if (get_type_declaration(type)
+	  && !ctxt.type_is_emitted(type)
+	  && !ctxt.decl_only_type_is_emitted(type))
+	// A referenced type that was not emitted at all must be
+	// emitted now.
+	referenced_types_to_emit[type.get()] = "";
+    }
 
-      if (decl_base* d = get_type_declaration(*i))
+  // Ok, now let's emit the referenced type for good.
+  while (!referenced_types_to_emit.empty())
+    {
+      // But first, we need to sort them, otherwise, emitting the ABI
+      // (in xml) of the same binary twice will yield different
+      // results, because we'd be walking a *unordered* hash table.
+      vector<type_base*> sorted_referenced_types;
+      ctxt.sort_types(referenced_types_to_emit,
+		      sorted_referenced_types);
+
+      // Now, emit the referenced decls in a sorted order.
+      for (vector<type_base*>::const_iterator i =
+	     sorted_referenced_types.begin();
+	   i != sorted_referenced_types.end();
+	   ++i)
 	{
-	  decl_base_sptr decl(d, noop_deleter());
-	  o << "\n";
-	  write_decl_in_scope(decl, ctxt, indent + c.get_xml_element_indent());
+	  // We handle types which have declarations here.
+	  // Types that don't have declarations, like function types
+	  // are handled later.  Other types with no declarations must
+	  // have been emitted already, by virtue of walking all
+	  // namespaces in declaration order, up to now.
+	  if (decl_base* d = get_type_declaration(*i))
+	    {
+	      decl_base_sptr decl(d, noop_deleter());
+	      o << "\n";
+	      write_decl_in_scope(decl, ctxt,
+				  indent + c.get_xml_element_indent());
+	    }
+	  else
+	    abort();
+	}
+
+      // So all referenced types that we wanted to emit were emitted.
+      referenced_types_to_emit.clear();
+
+      // But then, while emitting those referenced type, other types
+      // might have been referenced by those referenced types
+      // themselves!  So let's look at the map of referenced type that
+      // is maintained for the entire ABI corpus and see if there are
+      // still some referenced types in there that are not emitted
+      // yet.  If yes, then we'll emit those again.
+      for (type_ptr_map::const_iterator i =
+	     ctxt.get_referenced_types().begin();
+	   i != ctxt.get_referenced_types().end();
+	   ++i)
+	{
+	  type_base_sptr type(i->first, noop_deleter());
+	  if (get_type_declaration(type)
+	      && !ctxt.type_is_emitted(type)
+	      && !ctxt.decl_only_type_is_emitted(type))
+	    referenced_types_to_emit[type.get()] = "";
 	}
     }
 
@@ -1408,9 +1517,13 @@ write_qualified_type_def(const qualified_type_def_sptr		decl,
 
   do_indent(o, indent);
 
+  type_base_sptr underlying_type = decl->get_underlying_type();
+
   o << "<qualified-type-def type-id='"
-    << ctxt.get_id_for_type(decl->get_underlying_type())
+    << ctxt.get_id_for_type(underlying_type)
     << "'";
+
+  ctxt.record_type_as_referenced(underlying_type);
 
   if (decl->get_cv_quals() & qualified_type_def::CV_CONST)
     o << " const='yes'";
@@ -1922,7 +2035,8 @@ write_typedef_decl(const typedef_decl_sptr	decl,
     << "'";
 
   type_base_sptr underlying_type = decl->get_underlying_type();
-  o << " type-id='" << ctxt.get_id_for_type(underlying_type) << "'";
+  string type_id = ctxt.get_id_for_type(underlying_type);
+  o << " type-id='" <<  type_id << "'";
   ctxt.record_type_as_referenced(underlying_type);
 
   write_location(decl, o);
@@ -1977,7 +2091,9 @@ write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
   do_indent(o, indent);
 
   o << "<var-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
-  o << " type-id='" << ctxt.get_id_for_type(decl->get_type()) << "'";
+  type_base_sptr var_type = decl->get_type();
+  o << " type-id='" << ctxt.get_id_for_type(var_type) << "'";
+  ctxt.record_type_as_referenced(var_type);
 
   if (write_linkage_name)
     {
@@ -2150,26 +2266,30 @@ write_function_type(const shared_ptr<function_type> decl, write_context& ctxt,
   ctxt.record_type_as_emitted(decl);
   return true;
 }
-/// Serialize a class_decl type.
+
+/// Write the opening tag of a 'class-decl' element.
 ///
-/// @param decl the pointer to class_decl to serialize.
+/// @param decl the class declaration to serialize.
 ///
-/// @param id the type id identitifier to use in the serialized
-/// output.  If this is empty, the function will compute an
-/// appropriate one.  This is useful when this function is called to
-/// serialize the underlying type of a member type; in that case, the
-/// caller has already computed the id of the *member type*, and that
-/// id is the one to be written as the value of the 'id' attribute of
-/// the XML element of the underlying type.
+/// @param the type ID to use for the 'class-decl' element,, or empty
+/// if we need to build a new one.
 ///
-/// @param ctxt the context of the serialization.
+/// @param ctxt the write context to use.
 ///
-/// @param indent the initial indentation to use.
+/// @param indent the number of white space to use for indentation.
+///
+/// @param prepare_to_handle_members if set to true, then this function
+/// figures out if the opening tag should be for an empty element or
+/// not.  If set to false, then the opening tag is unconditionnaly for
+/// a non-empty element.
+///
+/// @return true upon successful completion.
 static bool
-write_class_decl(const class_decl_sptr	decl,
-		 const string&		id,
-		 write_context&	ctxt,
-		 unsigned		indent)
+write_class_decl_opening_tag(const class_decl_sptr	decl,
+			     const string&		id,
+			     write_context&		ctxt,
+			     unsigned			indent,
+			     bool			prepare_to_handle_members)
 {
   if (!decl)
     return false;
@@ -2205,12 +2325,51 @@ write_class_decl(const class_decl_sptr	decl,
   if (i.empty())
     i = ctxt.get_id_for_type(decl);
   o << " id='" << i << "'";
-  if (decl->has_no_base_nor_member())
-    o << "/>";
+
+  if (!prepare_to_handle_members)
+    o << ">\n";
   else
     {
-      o << ">\n";
+      if (decl->has_no_base_nor_member())
+	o << "/>";
+      else
+	o << ">\n";
+    }
 
+  return true;
+}
+
+/// Serialize a class_decl type.
+///
+/// @param decl the pointer to class_decl to serialize.
+///
+/// @param id the type id identitifier to use in the serialized
+/// output.  If this is empty, the function will compute an
+/// appropriate one.  This is useful when this function is called to
+/// serialize the underlying type of a member type; in that case, the
+/// caller has already computed the id of the *member type*, and that
+/// id is the one to be written as the value of the 'id' attribute of
+/// the XML element of the underlying type.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the initial indentation to use.
+static bool
+write_class_decl(const class_decl_sptr	decl,
+		 const string&		id,
+		 write_context&	ctxt,
+		 unsigned		indent)
+{
+  if (!decl)
+    return false;
+
+  ostream& o = ctxt.get_ostream();
+
+  write_class_decl_opening_tag(decl, id, ctxt, indent,
+			       /*prepare_to_handle_members=*/true);
+
+  if (!decl->has_no_base_nor_member())
+    {
       unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
       type_base_sptr base_type;
       for (class_decl::base_specs::const_iterator base =
@@ -2374,6 +2533,8 @@ write_class_decl(const class_decl_sptr	decl,
   // but only one definition.
   if (!decl->get_is_declaration_only())
     ctxt.record_type_as_emitted(decl);
+  else
+    ctxt.record_decl_only_type_as_emitted(decl);
 
   return true;
 }
@@ -2390,6 +2551,33 @@ write_class_decl(const class_decl_sptr	decl,
 		 write_context&	ctxt,
 		 unsigned		indent)
 {return write_class_decl(decl, "", ctxt, indent);}
+
+/// Write the opening tag for a 'member-type' element.
+///
+/// @param t the member type to consider.
+///
+/// @param ctxt the write context to use.
+///
+/// @param indent the number of white spaces to use for indentation.
+///
+/// @return true upon successful completion.
+static bool
+write_member_type_opening_tag(const type_base_sptr t,
+			      write_context& ctxt, unsigned indent)
+{
+  ostream& o = ctxt.get_ostream();
+
+  do_indent_to_level(ctxt, indent, 0);
+
+  decl_base_sptr decl = get_type_declaration(t);
+  assert(decl);
+
+  o << "<member-type";
+  write_access(decl, o);
+  o << ">";
+
+  return true;
+}
 
 /// Serialize a member type.
 ///
@@ -2412,14 +2600,8 @@ write_member_type(const type_base_sptr t,
 
   ostream& o = ctxt.get_ostream();
 
-  do_indent_to_level(ctxt, indent, 0);
-
-  decl_base_sptr decl = get_type_declaration(t);
-  assert(decl);
-
-  o << "<member-type";
-  write_access(decl, o);
-  o << ">\n";
+  write_member_type_opening_tag(t, ctxt, indent);
+  o << "\n";
 
   string id = ctxt.get_id_for_type(t);
 
