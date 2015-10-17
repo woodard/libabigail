@@ -791,7 +791,14 @@ public:
 	&& !is_enum_type(t))
       canonicalize(t);
     else
-      schedule_type_for_late_canonicalizing(t);
+      {
+	// We do not want to try to canonicalize a class type that
+	// hasn't been properly added to its context.
+	if (class_decl_sptr c = is_class_type(t))
+	  assert(c->get_scope());
+
+	schedule_type_for_late_canonicalizing(t);
+      }
   }
 
   /// Schedule a type for being canonicalized after the current
@@ -1061,6 +1068,8 @@ read_context::build_or_get_type_decl(const string& id,
 
       if (add_decl_to_scope)
 	pop_scope_or_abort(scope);
+
+      maybe_canonicalize_type(t, !add_decl_to_scope);
     }
   return t;
 }
@@ -2578,7 +2587,6 @@ build_type_decl(read_context&		ctxt,
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, decl);
-      canonicalize(decl);
       return decl;
     }
 
@@ -2678,7 +2686,6 @@ build_qualified_type_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, decl);
-      ctxt.maybe_canonicalize_type(decl, !add_to_current_scope);
       return decl;
     }
 
@@ -2762,7 +2769,6 @@ build_pointer_type_def(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
-      ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
       return t;
     }
 
@@ -2852,7 +2858,6 @@ build_reference_type_def(read_context&		ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
-      ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
       return t;
     }
 
@@ -2917,8 +2922,6 @@ build_function_type(read_context&	ctxt,
 						      parms, size, align));
 
   ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
-
-  ctxt.maybe_canonicalize_type(fn_type, /*force_delay=true*/true);
 
   return fn_type;
 }
@@ -3089,7 +3092,6 @@ build_array_type_def(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(ar_type, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, ar_type);
-      ctxt.maybe_canonicalize_type(ar_type, !add_to_current_scope);
       return ar_type;
     }
 
@@ -3191,7 +3193,6 @@ build_enum_type_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
-      ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
       return t;
     }
 
@@ -3265,7 +3266,6 @@ build_typedef_decl(read_context&	ctxt,
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
-      ctxt.maybe_canonicalize_type(t, /*force_late_canonicalizing=*/true);
       return t;
     }
 
@@ -3493,7 +3493,7 @@ build_class_decl(read_context&		ctxt,
 		    {
 		      type_base_sptr m =
 			decl->add_member_type(t, access);
-
+		      ctxt.maybe_canonicalize_type(m, !add_to_current_scope);
 		      xml_char_sptr i= XML_NODE_GET_ATTRIBUTE(p, "id");
 		      string id = CHAR_STR(i);
 		      assert(!id.empty());
@@ -3633,7 +3633,6 @@ build_class_decl(read_context&		ctxt,
 
   ctxt.pop_scope_or_abort(decl);
   ctxt.unmark_type_as_wip(decl);
-  ctxt.maybe_canonicalize_type(decl, !add_to_current_scope);
 
   return decl;
 }
@@ -3754,7 +3753,11 @@ build_class_tdecl(read_context&	ctxt,
 	}
       else if (shared_ptr<class_decl> c =
 	       build_class_decl(ctxt, n, add_to_current_scope))
-	class_tmpl->set_pattern(c);
+	{
+	  if (c->get_scope())
+	    ctxt.maybe_canonicalize_type(c, /*force_delay=*/false);
+	  class_tmpl->set_pattern(c);
+	}
     }
 
   ctxt.key_class_tmpl_decl(class_tmpl, id);
@@ -3873,6 +3876,8 @@ build_type_composition(read_context&		ctxt,
 	      build_qualified_type_decl(ctxt, n,
 					/*add_to_current_scope=*/true)))
 	{
+	  ctxt.maybe_canonicalize_type(composed_type,
+				       /*force_delay=*/true);
 	  result->set_composed_type(composed_type);
 	  break;
 	}
@@ -4074,6 +4079,8 @@ handle_type_decl(read_context&	ctxt,
 		 bool		add_to_current_scope)
 {
   type_decl_sptr decl = build_type_decl(ctxt, node, add_to_current_scope);
+  if (decl && decl->get_scope())
+    ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
 
@@ -4105,6 +4112,8 @@ handle_qualified_type_decl(read_context&	ctxt,
   qualified_type_def_sptr decl =
     build_qualified_type_decl(ctxt, node,
 			      add_to_current_scope);
+  if (decl && decl->get_scope())
+    ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
 
@@ -4120,6 +4129,8 @@ handle_pointer_type_def(read_context&	ctxt,
 {
   pointer_type_def_sptr decl = build_pointer_type_def(ctxt, node,
 						      add_to_current_scope);
+  if (decl && decl->get_scope())
+    ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
 
@@ -4135,6 +4146,8 @@ handle_reference_type_def(read_context& ctxt,
 {
   reference_type_def_sptr decl = build_reference_type_def(ctxt, node,
 							  add_to_current_scope);
+  if (decl && decl->get_scope())
+    ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
 
@@ -4150,6 +4163,7 @@ handle_function_type(read_context&	ctxt,
 {
   function_type_sptr type = build_function_type(ctxt, node,
 						add_to_current_scope);
+  ctxt.maybe_canonicalize_type(type, /*force_delay=*/true);
   return type;
 }
 
@@ -4165,6 +4179,7 @@ handle_array_type_def(read_context&	ctxt,
 {
   array_type_def_sptr decl = build_array_type_def(ctxt, node,
 						  add_to_current_scope);
+  ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
 
@@ -4178,6 +4193,8 @@ handle_enum_type_decl(read_context&	ctxt,
 {
   enum_type_decl_sptr decl = build_enum_type_decl(ctxt, node,
 						  add_to_current_scope);
+  if (decl && decl->get_scope())
+    ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
 
@@ -4191,6 +4208,8 @@ handle_typedef_decl(read_context&	ctxt,
 {
   typedef_decl_sptr decl = build_typedef_decl(ctxt, node,
 					      add_to_current_scope);
+  if (decl && decl->get_scope())
+    ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
 
@@ -4242,6 +4261,8 @@ handle_class_decl(read_context& ctxt,
 {
   class_decl_sptr decl = build_class_decl(ctxt, node,
 					  add_to_current_scope);
+  if (decl && decl->get_scope())
+    ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
 }
 
