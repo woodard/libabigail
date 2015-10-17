@@ -2080,7 +2080,7 @@ write_typedef_decl(const typedef_decl_sptr	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_var_decl(const shared_ptr<var_decl> decl, write_context& ctxt,
+write_var_decl(const var_decl_sptr decl, write_context& ctxt,
 	       bool write_linkage_name, unsigned indent)
 {
   if (!decl)
@@ -2500,7 +2500,7 @@ write_class_decl(const class_decl_sptr	decl,
 				   (*fn)->get_is_static(), o);
 	  o << ">\n";
 	  write_function_tdecl((*fn)->as_function_tdecl(), ctxt,
-				       get_indent_to_level(ctxt, indent, 2));
+			       get_indent_to_level(ctxt, indent, 2));
 	  o << "\n";
 	  do_indent(o, nb_ws);
 	  o << "</member-template>\n";
@@ -2518,7 +2518,7 @@ write_class_decl(const class_decl_sptr	decl,
 				   (*cl)->get_is_static(), o);
 	  o << ">\n";
 	  write_class_tdecl((*cl)->as_class_tdecl(), ctxt,
-				    get_indent_to_level(ctxt, indent, 2));
+			    get_indent_to_level(ctxt, indent, 2));
 	  o << "\n";
 	  do_indent(o, nb_ws);
 	  o << "</member-template>\n";
