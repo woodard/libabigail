@@ -10545,6 +10545,25 @@ const class_decl::base_specs&
 class_decl::get_base_specifiers() const
 {return priv_->bases_;}
 
+/// Find a base class of a given qualified name for the current class.
+///
+/// @param qualified_name the qualified name of the base class to look for.
+///
+/// @return a pointer to the @ref class_decl that represents the base
+/// class of name @p qualified_name, if found.
+class_decl_sptr
+class_decl::find_base_class(const string& qualified_name) const
+{
+  for (base_specs::const_iterator i = get_base_specifiers().begin();
+       i != get_base_specifiers().end();
+       ++i)
+    if ((*i)->get_base_class()->get_qualified_name()
+	== qualified_name)
+      return (*i)->get_base_class();
+
+  return class_decl_sptr();
+}
+
 /// Get the member types of this class.
 ///
 /// @return a vector of the member types of this class.
@@ -10552,12 +10571,47 @@ const class_decl::member_types&
 class_decl::get_member_types() const
 {return priv_->member_types_;}
 
+/// Find a member type of a given name, inside the current class @ref
+/// class_decl.
+///
+/// @param name the name of the member type to look for.
+///
+/// @return a pointer to the @ref type_base that represents the member
+/// type of name @p name, for the current class.
+type_base_sptr
+class_decl::find_member_type(const string& name) const
+{
+  for (member_types::const_iterator i = get_member_types().begin();
+       i != get_member_types().end();
+       ++i)
+    if (get_type_name(*i, /*qualified*/false) == name)
+      return *i;
+  return type_base_sptr();
+}
+
 /// Get the data members of this class.
 ///
 /// @return a vector of the data members of this class.
 const class_decl::data_members&
 class_decl::get_data_members() const
 {return priv_->data_members_;}
+
+/// Find a data member of a given name in the current class.
+///
+/// @param name the name of the data member to find in the current class.
+///
+/// @return a pointer to the @ref var_decl that represents the data
+/// member to find inside the current class.
+const var_decl_sptr
+class_decl::find_data_member(const string& name) const
+{
+  for (data_members::const_iterator i = get_data_members().begin();
+       i != get_data_members().end();
+       ++i)
+    if ((*i)->get_name() == name)
+      return *i;
+  return var_decl_sptr();
+}
 
 /// Get the non-static data memebers of this class.
 ///

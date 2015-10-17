@@ -3368,14 +3368,30 @@ build_class_decl(read_context&		ctxt,
 	return previous_declaration;
     }
 
-  if (is_decl_only)
-    decl.reset(new class_decl(name, is_struct));
+  // A flag to know if we are reading a class definition, that we've
+  // read before, but to which we'll maybe need to add new data
+  // members, member types, or base classes.
+  bool updating = false;
+  if (!is_decl_only && previous_definition)
+    {
+      decl = previous_definition;
+      // So, we are precisely in the case where we've read this class
+      // definition before, but we might need to update it to add some
+      // new stuff to it; we might thus find the new stuff to add in
+      // the current (new) incarnation of that definition that we are
+      // currently reading.
+      updating = true;
+    }
   else
-    decl.reset(new class_decl(name, size_in_bits, alignment_in_bits,
-			      is_struct, loc, vis, bases, mbrs, data_mbrs,
-			      mbr_functions));
-
-  decl->set_is_anonymous(is_anonymous);
+    {
+      if (is_decl_only)
+	decl.reset(new class_decl(name, is_struct));
+      else
+	decl.reset(new class_decl(name, size_in_bits, alignment_in_bits,
+				  is_struct, loc, vis, bases, mbrs, data_mbrs,
+				  mbr_functions));
+      decl->set_is_anonymous(is_anonymous);
+    }
 
   string def_id;
   bool is_def_of_decl = false;
@@ -3457,6 +3473,13 @@ build_class_decl(read_context&		ctxt,
 	    (ctxt.build_or_get_type_decl(type_id, true));
 	  assert(b);
 
+	  if (updating
+	      && previous_definition->find_base_class(b->get_qualified_name()))
+	    // We are in updating mode for this class.  The version of
+	    // the class we have already has this base class, so we
+	    // are not going to add it again.
+	    continue;
+
 	  size_t offset_in_bits = 0;
 	  bool offset_present = read_offset_in_bits (n, offset_in_bits);
 
@@ -3527,12 +3550,25 @@ build_class_decl(read_context&		ctxt,
 		continue;
 
 	      if (shared_ptr<var_decl> v =
-		  build_var_decl(ctxt, p, /*add_to_current_scope=*/true))
+		  build_var_decl(ctxt, p, /*add_to_current_scope=*/false))
 		{
-		  set_member_access_specifier(v, access);
-		  set_data_member_is_laid_out(v, is_laid_out);
-		  set_member_is_static(v, is_static);
-		  set_data_member_offset(v, offset_in_bits);
+		  if (updating
+		      && previous_definition->find_data_member(v->get_name()))
+		    {
+		      // We are in updating mode and the current
+		      // version of this class already has this data
+		      // member, so we are not going to add it again.
+		      // So we need to discard the data member we have
+		      // built (and that was pushed to the current
+		      // stack of decls built) and move on.
+		      decl_base_sptr d = ctxt.pop_decl();
+		      is_var_decl(d);
+		      continue;
+		    }
+		  decl->add_data_member(v, access,
+					is_laid_out,
+					is_static,
+					offset_in_bits);
 		}
 	    }
 	}

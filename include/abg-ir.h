@@ -2859,6 +2859,9 @@ public:
   const base_specs&
   get_base_specifiers() const;
 
+  class_decl_sptr
+  find_base_class(const string&) const;
+
   void
   insert_member_type(type_base_sptr t,
 		     declarations::iterator before);
@@ -2875,6 +2878,9 @@ public:
   const member_types&
   get_member_types() const;
 
+  type_base_sptr
+  find_member_type(const string& name) const;
+
   void
   add_data_member(var_decl_sptr v, access_specifier a,
 		  bool is_laid_out, bool is_static,
@@ -2882,6 +2888,9 @@ public:
 
   const data_members&
   get_data_members() const;
+
+  const var_decl_sptr
+  find_data_member(const string&) const;
 
   const data_members&
   get_non_static_data_members() const;
