@@ -2247,7 +2247,10 @@ write_function_type(const shared_ptr<function_type> decl, write_context& ctxt,
 	  ctxt.record_type_as_referenced(parm_type);
 
 	  if (!(*pi)->get_name().empty())
-	    o << " name='" << (*pi)->get_name() << "'";
+	    {
+	      string name = xml::escape_xml_string((*pi)->get_name());
+	      o << " name='" << name << "'";
+	    }
 	}
       if ((*pi)->get_artificial())
 	o << " is-artificial='yes'";

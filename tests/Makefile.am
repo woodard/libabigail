@@ -28,6 +28,7 @@ runtestdifffilter		\
 runtestdiffsuppr		\
 runtestabicompat		\
 runtestdiffpkg			\
+runtesttypesstability		\
 $(CXX11_TESTS)
 
 EXTRA_DIST = runtestcanonicalizetypes.sh.in
@@ -83,6 +84,9 @@ runtestabicompat_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestdiffpkg_SOURCES = test-diff-pkg.cc
 runtestdiffpkg_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtesttypesstability_SOURCES = test-types-stability.cc
+runtesttypesstability_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestsvg_SOURCES=test-svg.cc
 runtestsvg_LDADD=$(top_builddir)/src/libabigail.la

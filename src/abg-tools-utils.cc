@@ -26,6 +26,7 @@
 #include <time.h>
 #include <cstdlib>
 #include <cstring>
+#include <ctype.h>
 #include <libgen.h>
 #include <ext/stdio_filebuf.h> // For __gnu_cxx::stdio_filebuf
 #include <fstream>
@@ -329,6 +330,21 @@ string_ends_with(const string& str, const string& suffix)
   return str.compare(str.length() - suffix.length(),
 		     suffix.length(),
 		     suffix) == 0;
+}
+
+/// Test if a string is made of ascii characters.
+///
+/// @param str the string to consider.
+///
+/// @return true iff @p str is made of ascii characters.
+bool
+string_is_ascii(const string& str)
+{
+  for (string::const_iterator i = str.begin(); i != str.end(); ++i)
+    if (!isascii(*i))
+      return false;
+
+  return true;
 }
 
 /// The private data of the @ref temp_file type.

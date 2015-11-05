@@ -46,6 +46,7 @@
 #include <sstream>
 #include "abg-dwarf-reader.h"
 #include "abg-sptr-utils.h"
+#include "abg-tools-utils.h"
 
 using std::string;
 
@@ -7150,6 +7151,10 @@ build_function_type(read_context&	ctxt,
 	    string name, linkage_name;
 	    location loc;
 	    die_loc_and_name(ctxt, &child, loc, name, linkage_name);
+	    if (!tools_utils::string_is_ascii(name))
+	      // Sometimes, bogus compiler emit names that are
+	      // non-ascii garbage.  Let's just ditch that for now.
+	      name.clear();
 	    bool is_artificial = die_is_artificial(&child);
 	    decl_base_sptr parm_type_decl;
 	    Dwarf_Die parm_type_die;
