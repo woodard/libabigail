@@ -22,7 +22,8 @@
 ///
 /// This file contains the definitions of the entry points to
 /// de-serialize an instance of @ref abigail::translation_unit from an
-/// ABI Instrumentation file in libabigail native XML format.
+/// ABI Instrumentation file in libabigail native XML format.  This
+/// native XML format is named "abixml".
 
 #include "config.h"
 #include <cstring>
