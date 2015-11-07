@@ -1122,6 +1122,7 @@ lookup_symbol_from_sysv_hash_tab(Elf*				elf_handle,
 
   GElf_Sym symbol;
   const char* sym_name_str;
+  size_t sym_size;
   elf_symbol::type sym_type;
   elf_symbol::binding sym_binding;
   bool found = false;
@@ -1137,12 +1138,14 @@ lookup_symbol_from_sysv_hash_tab(Elf*				elf_handle,
 	{
 	  sym_type = stt_to_elf_symbol_type(GELF_ST_TYPE(symbol.st_info));
 	  sym_binding = stb_to_elf_symbol_binding(GELF_ST_BIND(symbol.st_info));
+	  sym_size = symbol.st_size;
 	  elf_symbol::version ver;
 	  if (get_version_for_symbol(elf_handle, symbol_index,
 				     /*get_def_version=*/true, ver))
 	    assert(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(symbol_index,
+			       sym_size,
 			       sym_name_str,
 			       sym_type,
 			       sym_binding,
@@ -1415,7 +1418,8 @@ lookup_symbol_from_gnu_hash_tab(Elf*				elf_handle,
 	    assert(!ver.str().empty());
 
 	  elf_symbol_sptr symbol_found =
-	    elf_symbol::create(i, sym_name_str, sym_type, sym_binding,
+	    elf_symbol::create(i, symbol.st_size, sym_name_str,
+			       sym_type, sym_binding,
 			       symbol.st_shndx != SHN_UNDEF, ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
@@ -1551,8 +1555,8 @@ lookup_symbol_from_symtab(Elf*				elf_handle,
 				     ver))
 	    assert(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
-	    elf_symbol::create(i, name_str, sym_type, sym_binding,
-			       sym_is_defined, ver);
+	    elf_symbol::create(i, sym->st_size, name_str, sym_type,
+			       sym_binding, sym_is_defined, ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -2866,7 +2870,7 @@ public:
 			   v);
 
     elf_symbol_sptr sym =
-      elf_symbol::create(symbol_index, name_str,
+      elf_symbol::create(symbol_index, s->st_size, name_str,
 			 stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
 			 stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
 			 sym_is_defined, v);

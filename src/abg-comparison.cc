@@ -6251,6 +6251,12 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 			     ostream&			out,
 			     const string&		indent);
 
+static bool
+maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
+			     const elf_symbol_sptr&	symbol2,
+			     ostream&			out,
+			     const string&		indent);
+
 /// Stream a string representation for a member function.
 ///
 /// @param ctxt the current diff context.
@@ -6846,6 +6852,10 @@ var_diff::report(ostream& out, const string& indent) const
 					     /*start_with_new_line=*/false))
     out << "\n";
 
+  maybe_report_diff_for_symbol(first_var()->get_symbol(),
+			       second_var()->get_symbol(),
+			       out, indent);
+
   maybe_report_diff_for_member(first, second, context(), out, indent);
 
   if (diff_sptr d = type_diff())
@@ -6935,6 +6945,123 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
 	  << "'\n";
       reported = true;
     }
+  return reported;
+}
+
+/// Report the difference between two ELF symbols, if there is any.
+///
+/// @param symbol1 the first symbol to consider.
+///
+/// @param symbol2 the second symbol to consider.
+///
+/// @param the output stream to emit the report to.
+///
+/// @param indent the indentation string to use.
+///
+/// @return true if a report was emitted to the output stream @p out,
+/// false otherwise.
+static bool
+maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
+			     const elf_symbol_sptr&	symbol2,
+			     ostream&			out,
+			     const string&		indent)
+{
+  bool reported = false;
+
+  if (!symbol1 ||!symbol2 || symbol1 == symbol2)
+    return reported;
+
+  if (symbol1->get_size() != symbol2->get_size())
+    {
+      out << indent << "size of symbol (in bytes) changed from "
+	  << symbol1->get_size()
+	  << " to "
+	  << symbol2->get_size();
+
+      reported = true;
+    }
+
+  if (symbol1->get_name() != symbol2->get_name())
+    {
+      if (reported)
+	out << ",\n" << indent
+	    << "its name ";
+      else
+	out << "\n" << indent << "name of symbol ";
+
+      out << "changed from "
+	  << symbol1->get_name()
+	  << " to "
+	  << symbol2->get_name();
+
+      reported = true;
+    }
+
+  if (symbol1->get_type() != symbol2->get_type())
+    {
+      if (reported)
+	out << ",\n" << indent
+	    << "its type ";
+      else
+	out << "\n" << indent << "type of symbol ";
+
+      out << "changed from '"
+	  << symbol1->get_type()
+	  << "' to '"
+	  << symbol2->get_type()
+	  << "'";
+
+      reported = true;
+    }
+
+  if (symbol1->is_public() != symbol2->is_public())
+    {
+      if (reported)
+	out << ",\n" << indent
+	    << "it became ";
+	else
+	  out << "\n" << indent << "symbol became ";
+
+      if (symbol2->is_public())
+	out << "exported";
+      else
+	out << "non-exported";
+
+      reported = true;
+    }
+
+  if (symbol1->is_defined() != symbol2->is_defined())
+    {
+      if (reported)
+	out << ",\n" << indent
+	    << "it became ";
+      else
+	out << "\n" << indent << "symbol became ";
+
+      if (symbol2->is_defined())
+	out << "defined";
+      else
+	out << "undefined";
+
+      reported = true;
+    }
+
+  if (symbol1->get_version() != symbol2->get_version())
+    {
+      if (reported)
+	out << ",\n" << indent
+	    << "its version changed from ";
+      else
+	out << "\n" << indent << "symbol version changed from ";
+
+      out << symbol1->get_version().str()
+	  << " to "
+	  << symbol2->get_version().str();
+    }
+
+  if (reported)
+    out << "\n";
+
   return reported;
 }
 
@@ -11814,6 +11941,10 @@ function_decl_diff::report(ostream& out, const string& indent) const
 	  << "' now becomes '"
 	  << frep2 << " {" << linkage_names2 << "}" << "'\n";
     }
+
+  maybe_report_diff_for_symbol(ff->get_symbol(),
+			       sf->get_symbol(),
+			       out, indent);
 
   // Now report about inline-ness changes
   if (ff->is_declared_inline() != sf->is_declared_inline())

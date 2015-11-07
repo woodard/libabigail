@@ -22,17 +22,17 @@
     <elf-symbol name='main' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='_IO_stdin_used' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI2b0' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI2b1' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI2s0' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS2b0' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS2b1' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS2s0' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTT2s0' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV2s0' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN10__cxxabiv117__class_type_infoE@@CXXABI_1.3' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN10__cxxabiv121__vmi_class_type_infoE@@CXXABI_1.3' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_IO_stdin_used' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI2b0' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI2b1' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI2s0' size='56' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS2b0' size='4' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS2b1' size='4' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS2s0' size='4' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTT2s0' size='8' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV2s0' size='32' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN10__cxxabiv117__class_type_infoE@@CXXABI_1.3' size='88' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN10__cxxabiv121__vmi_class_type_infoE@@CXXABI_1.3' size='88' type='object-type' binding='weak-binding' is-defined='yes'/>
     <elf-symbol name='__TMC_END__' type='object-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='__dso_handle' type='object-type' binding='global-binding' is-defined='yes'/>
   </elf-variable-symbols>

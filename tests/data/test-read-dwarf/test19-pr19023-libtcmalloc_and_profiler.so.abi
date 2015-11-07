@@ -617,182 +617,182 @@
     <elf-symbol name='valloc' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='TCMalloc_SystemTaken' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN11CpuProfiler9instance_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN11HeapCleaner14heap_cleanups_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN11ProfileData13kBufferLengthE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN11ProfileData14kAssociativityE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN11ProfileData14kMaxStackDepthE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN11ProfileData8kBucketsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN14ProfileHandler13kMaxFrequencyE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN14ProfileHandler17kDefaultFrequencyE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN14ProfileHandler5once_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN14ProfileHandler9instance_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15HeapLeakChecker9Allocator12alloc_count_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15HeapLeakChecker9Allocator6arena_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap11owner_lock_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap11unmap_size_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap12num_buckets_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap13bucket_table_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap13client_count_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap14saved_buckets_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap15lock_owner_tid_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap16max_stack_depth_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap16recursion_count_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap19saved_buckets_keys_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap20saved_buckets_count_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap5lock_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap6arena_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap8regions_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN15MemoryRegionMap9map_size_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN16HeapProfileTable14kMaxStackDepthE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN16HeapProfileTable8kFileExtE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN28HeapLeakCheckerGlobalPrePost6count_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN4base11ElfMemImage12kInvalidBaseE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN4base11VDSOSupport10vdso_base_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead14FLAGS_mmap_logE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead16FLAGS_nommap_logE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead18FLAGS_mmap_profileE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead20FLAGS_nommap_profileE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead22FLAGS_malloc_skip_mmapE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead22FLAGS_malloc_skip_sbrkE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead23FLAGS_heap_check_reportE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead23FLAGS_only_mmap_profileE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead24FLAGS_nomalloc_skip_mmapE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead24FLAGS_nomalloc_skip_sbrkE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead25FLAGS_noheap_check_reportE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead25FLAGS_noonly_mmap_profileE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead27FLAGS_cpu_profiler_unittestE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead29FLAGS_heap_check_strict_checkE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead29FLAGS_nocpu_profiler_unittestE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead30FLAGS_heap_check_run_under_gdbE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead30FLAGS_memfs_malloc_map_privateE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead31FLAGS_cleanup_old_heap_profilesE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead31FLAGS_heap_check_identify_leaksE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead31FLAGS_noheap_check_strict_checkE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_memfs_malloc_abort_on_failE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_noheap_check_run_under_gdbE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_nomemfs_malloc_map_privateE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead33FLAGS_nocleanup_old_heap_profilesE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead33FLAGS_noheap_check_identify_leaksE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead34FLAGS_heap_check_after_destructorsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead34FLAGS_nomemfs_malloc_abort_on_failE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead35FLAGS_heap_check_ignore_global_liveE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead35FLAGS_heap_check_ignore_thread_liveE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead35FLAGS_malloc_disable_memory_releaseE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead35FLAGS_memfs_malloc_ignore_mmap_failE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead36FLAGS_heap_check_before_constructorsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead36FLAGS_noheap_check_after_destructorsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_noheap_check_ignore_global_liveE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_noheap_check_ignore_thread_liveE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_nomalloc_disable_memory_releaseE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_nomemfs_malloc_ignore_mmap_failE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead38FLAGS_noheap_check_before_constructorsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead39FLAGS_heap_check_test_pointer_alignmentE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead41FLAGS_noheap_check_test_pointer_alignmentE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead15FLAGS_noverboseE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_limitE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_startE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead26FLAGS_heap_check_max_leaksE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead27FLAGS_nomalloc_devmem_limitE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead27FLAGS_nomalloc_devmem_startE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead28FLAGS_noheap_check_max_leaksE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead30FLAGS_heap_check_delay_secondsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead32FLAGS_noheap_check_delay_secondsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead41FLAGS_heap_check_pointer_source_alignmentE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead43FLAGS_noheap_check_pointer_source_alignmentE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead27FLAGS_memfs_malloc_limit_mbE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead28FLAGS_tcmalloc_heap_limit_mbE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead29FLAGS_nomemfs_malloc_limit_mbE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead30FLAGS_notcmalloc_heap_limit_mbE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead31FLAGS_tcmalloc_sample_parameterE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead32FLAGS_heap_profile_time_intervalE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead33FLAGS_heap_profile_inuse_intervalE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead33FLAGS_notcmalloc_sample_parameterE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead34FLAGS_noheap_profile_time_intervalE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead35FLAGS_heap_check_max_pointer_offsetE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead35FLAGS_noheap_profile_inuse_intervalE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead37FLAGS_noheap_check_max_pointer_offsetE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead38FLAGS_heap_profile_allocation_intervalE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead40FLAGS_heap_profile_deallocation_intervalE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead40FLAGS_noheap_profile_allocation_intervalE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead42FLAGS_noheap_profile_deallocation_intervalE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead43FLAGS_tcmalloc_large_alloc_report_thresholdE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead45FLAGS_notcmalloc_large_alloc_report_thresholdE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_double_instead27FLAGS_tcmalloc_release_rateE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_double_instead29FLAGS_notcmalloc_release_rateE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead16FLAGS_heap_checkE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead18FLAGS_noheap_checkE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead21FLAGS_symbolize_pprofE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead23FLAGS_memfs_malloc_pathE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead23FLAGS_nosymbolize_pprofE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead24FLAGS_heap_profile_pprofE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead25FLAGS_nomemfs_malloc_pathE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead26FLAGS_noheap_profile_pprofE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead31FLAGS_heap_check_dump_directoryE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead33FLAGS_noheap_check_dump_directoryE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8SpinLock18LINKER_INITIALIZEDE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache11tsd_inited_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache13thread_heaps_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache17threadlocal_data_E' type='tls-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache18next_memory_steal_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache18thread_heap_count_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache22per_thread_cache_size_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache22unclaimed_cache_space_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache26overall_thread_cache_size_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc11ThreadCache9heap_key_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc18log_message_writerE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc21threadcache_allocatorE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static14central_cache_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static14growth_stacks_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static14pageheap_lock_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static15span_allocator_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static16sampled_objects_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static17bucket_allocator_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static21stacktrace_allocator_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static8sizemap_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc6Static9pageheap_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN8tcmalloc7Sampler10log_table_E' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSbIcSt11char_traitsIcE13STL_AllocatorIcN15HeapLeakChecker9AllocatorEEE4_Rep11_S_terminalE' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='_ZNSbIcSt11char_traitsIcE13STL_AllocatorIcN15HeapLeakChecker9AllocatorEEE4_Rep20_S_empty_rep_storageE' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI12SysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI15MallocExtension' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI16MmapSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI16SbrkSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI18DevMemSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI19DefaultSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI19HugetlbSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI22TCMallocImplementation' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS12SysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS15MallocExtension' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS16MmapSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS16SbrkSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS18DevMemSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS19DefaultSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS19HugetlbSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS22TCMallocImplementation' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV12SysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV15MallocExtension' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV16MmapSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV16SbrkSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV18DevMemSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV19DefaultSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV19HugetlbSysAllocator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV22TCMallocImplementation' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE13kPageHeapType' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE14kLargeSpanType' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE16kThreadCacheType' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE17kCentralCacheType' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE18kTransferCacheType' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE21kPageHeapUnmappedType' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE22kLargeUnmappedSpanType' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
-    <elf-symbol name='__free_hook' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__malloc_hook' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__memalign_hook' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__realloc_hook' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='heap_leak_checker_bcad_variable' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='sys_alloc' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='TCMalloc_SystemTaken' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN11CpuProfiler9instance_E' size='88' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN11HeapCleaner14heap_cleanups_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN11ProfileData13kBufferLengthE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN11ProfileData14kAssociativityE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN11ProfileData14kMaxStackDepthE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN11ProfileData8kBucketsE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN14ProfileHandler13kMaxFrequencyE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN14ProfileHandler17kDefaultFrequencyE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN14ProfileHandler5once_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN14ProfileHandler9instance_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15HeapLeakChecker9Allocator12alloc_count_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15HeapLeakChecker9Allocator6arena_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap11owner_lock_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap11unmap_size_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap12num_buckets_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap13bucket_table_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap13client_count_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap14saved_buckets_E' size='1120' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap15lock_owner_tid_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap16max_stack_depth_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap16recursion_count_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap19saved_buckets_keys_E' size='5120' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap20saved_buckets_count_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap5lock_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap6arena_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap8regions_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN15MemoryRegionMap9map_size_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16HeapProfileTable14kMaxStackDepthE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN16HeapProfileTable8kFileExtE' size='6' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN28HeapLeakCheckerGlobalPrePost6count_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN4base11ElfMemImage12kInvalidBaseE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN4base11VDSOSupport10vdso_base_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead14FLAGS_mmap_logE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead16FLAGS_nommap_logE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead18FLAGS_mmap_profileE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead20FLAGS_nommap_profileE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead22FLAGS_malloc_skip_mmapE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead22FLAGS_malloc_skip_sbrkE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead23FLAGS_heap_check_reportE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead23FLAGS_only_mmap_profileE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead24FLAGS_nomalloc_skip_mmapE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead24FLAGS_nomalloc_skip_sbrkE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead25FLAGS_noheap_check_reportE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead25FLAGS_noonly_mmap_profileE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead27FLAGS_cpu_profiler_unittestE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead29FLAGS_heap_check_strict_checkE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead29FLAGS_nocpu_profiler_unittestE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead30FLAGS_heap_check_run_under_gdbE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead30FLAGS_memfs_malloc_map_privateE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead31FLAGS_cleanup_old_heap_profilesE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead31FLAGS_heap_check_identify_leaksE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead31FLAGS_noheap_check_strict_checkE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_memfs_malloc_abort_on_failE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_noheap_check_run_under_gdbE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_nomemfs_malloc_map_privateE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead33FLAGS_nocleanup_old_heap_profilesE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead33FLAGS_noheap_check_identify_leaksE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead34FLAGS_heap_check_after_destructorsE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead34FLAGS_nomemfs_malloc_abort_on_failE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead35FLAGS_heap_check_ignore_global_liveE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead35FLAGS_heap_check_ignore_thread_liveE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead35FLAGS_malloc_disable_memory_releaseE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead35FLAGS_memfs_malloc_ignore_mmap_failE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead36FLAGS_heap_check_before_constructorsE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead36FLAGS_noheap_check_after_destructorsE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_noheap_check_ignore_global_liveE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_noheap_check_ignore_thread_liveE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_nomalloc_disable_memory_releaseE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_nomemfs_malloc_ignore_mmap_failE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead38FLAGS_noheap_check_before_constructorsE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead39FLAGS_heap_check_test_pointer_alignmentE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead41FLAGS_noheap_check_test_pointer_alignmentE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead15FLAGS_noverboseE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_limitE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_startE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead26FLAGS_heap_check_max_leaksE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead27FLAGS_nomalloc_devmem_limitE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead27FLAGS_nomalloc_devmem_startE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead28FLAGS_noheap_check_max_leaksE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead30FLAGS_heap_check_delay_secondsE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead32FLAGS_noheap_check_delay_secondsE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead41FLAGS_heap_check_pointer_source_alignmentE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead43FLAGS_noheap_check_pointer_source_alignmentE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead27FLAGS_memfs_malloc_limit_mbE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead28FLAGS_tcmalloc_heap_limit_mbE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead29FLAGS_nomemfs_malloc_limit_mbE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead30FLAGS_notcmalloc_heap_limit_mbE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead31FLAGS_tcmalloc_sample_parameterE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead32FLAGS_heap_profile_time_intervalE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead33FLAGS_heap_profile_inuse_intervalE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead33FLAGS_notcmalloc_sample_parameterE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead34FLAGS_noheap_profile_time_intervalE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead35FLAGS_heap_check_max_pointer_offsetE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead35FLAGS_noheap_profile_inuse_intervalE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead37FLAGS_noheap_check_max_pointer_offsetE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead38FLAGS_heap_profile_allocation_intervalE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead40FLAGS_heap_profile_deallocation_intervalE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead40FLAGS_noheap_profile_allocation_intervalE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead42FLAGS_noheap_profile_deallocation_intervalE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead43FLAGS_tcmalloc_large_alloc_report_thresholdE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead45FLAGS_notcmalloc_large_alloc_report_thresholdE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_double_instead27FLAGS_tcmalloc_release_rateE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_double_instead29FLAGS_notcmalloc_release_rateE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead16FLAGS_heap_checkE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead18FLAGS_noheap_checkE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead21FLAGS_symbolize_pprofE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead23FLAGS_memfs_malloc_pathE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead23FLAGS_nosymbolize_pprofE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead24FLAGS_heap_profile_pprofE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead25FLAGS_nomemfs_malloc_pathE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead26FLAGS_noheap_profile_pprofE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead31FLAGS_heap_check_dump_directoryE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_string_instead33FLAGS_noheap_check_dump_directoryE' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8SpinLock18LINKER_INITIALIZEDE' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache11tsd_inited_E' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache13thread_heaps_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache17threadlocal_data_E' size='16' type='tls-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache18next_memory_steal_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache18thread_heap_count_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache22per_thread_cache_size_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache22unclaimed_cache_space_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache26overall_thread_cache_size_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc11ThreadCache9heap_key_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc18log_message_writerE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc21threadcache_allocatorE' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static14central_cache_E' size='107008' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static14growth_stacks_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static14pageheap_lock_E' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static15span_allocator_E' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static16sampled_objects_E' size='48' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static17bucket_allocator_E' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static21stacktrace_allocator_E' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static8sizemap_E' size='3936' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc6Static9pageheap_E' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN8tcmalloc7Sampler10log_table_E' size='8192' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSbIcSt11char_traitsIcE13STL_AllocatorIcN15HeapLeakChecker9AllocatorEEE4_Rep11_S_terminalE' size='1' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='_ZNSbIcSt11char_traitsIcE13STL_AllocatorIcN15HeapLeakChecker9AllocatorEEE4_Rep20_S_empty_rep_storageE' size='32' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI12SysAllocator' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI15MallocExtension' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI16MmapSysAllocator' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI16SbrkSysAllocator' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI18DevMemSysAllocator' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI19DefaultSysAllocator' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI19HugetlbSysAllocator' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI22TCMallocImplementation' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS12SysAllocator' size='15' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS15MallocExtension' size='18' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS16MmapSysAllocator' size='19' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS16SbrkSysAllocator' size='19' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS18DevMemSysAllocator' size='21' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS19DefaultSysAllocator' size='22' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS19HugetlbSysAllocator' size='22' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS22TCMallocImplementation' size='25' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV12SysAllocator' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV15MallocExtension' size='232' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV16MmapSysAllocator' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV16SbrkSysAllocator' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV18DevMemSysAllocator' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV19DefaultSysAllocator' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV19HugetlbSysAllocator' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV22TCMallocImplementation' size='232' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE13kPageHeapType' size='8' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE14kLargeSpanType' size='8' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE16kThreadCacheType' size='8' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE17kCentralCacheType' size='8' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE18kTransferCacheType' size='8' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE21kPageHeapUnmappedType' size='8' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='_ZZN22TCMallocImplementation16GetFreeListSizesEPSt6vectorIN15MallocExtension12FreeListInfoESaIS2_EEE22kLargeUnmappedSpanType' size='8' type='object-type' binding='gnu-unique-binding' is-defined='yes'/>
+    <elf-symbol name='__free_hook' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__malloc_hook' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__memalign_hook' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__realloc_hook' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='heap_leak_checker_bcad_variable' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='sys_alloc' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/tcmalloc.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>

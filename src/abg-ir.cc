@@ -712,6 +712,7 @@ operator==(translation_unit_sptr l, translation_unit_sptr r)
 struct elf_symbol::priv
 {
   size_t		index_;
+  size_t		size_;
   string		name_;
   elf_symbol::type	type_;
   elf_symbol::binding	binding_;
@@ -722,19 +723,22 @@ struct elf_symbol::priv
   string		id_string_;
 
   priv()
-    : index_(0),
+    : index_(),
+      size_(),
       type_(elf_symbol::NOTYPE_TYPE),
       binding_(elf_symbol::GLOBAL_BINDING),
       is_defined_(false)
   {}
 
   priv(size_t				i,
+       size_t				s,
        const string&			n,
        elf_symbol::type		t,
        elf_symbol::binding		b,
        bool				d,
        const elf_symbol::version&	v)
     : index_(i),
+      size_(s),
       name_(n),
       type_(t),
       binding_(b),
@@ -763,6 +767,8 @@ elf_symbol::elf_symbol()
 ///
 /// @param i the index of the symbol in the (ELF) symbol table.
 ///
+/// @param s the size of the symbol.
+///
 /// @param n the name of the symbol.
 ///
 /// @param t the type of the symbol.
@@ -773,12 +779,13 @@ elf_symbol::elf_symbol()
 ///
 /// @param v the version of the symbol.
 elf_symbol::elf_symbol(size_t		i,
+		       size_t		s,
 		       const string&	n,
 		       type		t,
 		       binding		b,
 		       bool		d,
 		       const version&	v)
-  : priv_(new priv(i, n, t, b, d, v))
+  : priv_(new priv(i, s, n, t, b, d, v))
 {}
 
 /// Factory of instances of @ref elf_symbol.
@@ -801,6 +808,8 @@ elf_symbol::create()
 ///
 /// @param i the index of the symbol in the (ELF) symbol table.
 ///
+/// @param s the size of the symbol.
+///
 /// @param n the name of the symbol.
 ///
 /// @param t the type of the symbol.
@@ -815,13 +824,14 @@ elf_symbol::create()
 /// elf_symbol.
 elf_symbol_sptr
 elf_symbol::create(size_t		i,
+		   size_t		s,
 		   const string&	n,
 		   type		t,
 		   binding		b,
 		   bool		d,
 		   const version&	v)
 {
-  elf_symbol_sptr e(new elf_symbol(i, n, t, b, d, v));
+  elf_symbol_sptr e(new elf_symbol(i, s, n, t, b, d, v));
   e->priv_->main_symbol_ = e;
   return e;
 }
@@ -837,11 +847,20 @@ static bool
 textually_equals(const elf_symbol&l,
 		 const elf_symbol&r)
 {
-  return (l.get_name() == r.get_name()
-	  && l.get_type() == r.get_type()
-	  && l.is_public() == r.is_public()
-	  && l.is_defined() == r.is_defined()
-	  && l.get_version() == r.get_version());
+  bool equals = (l.get_name() == r.get_name()
+		 && l.get_type() == r.get_type()
+		 && l.is_public() == r.is_public()
+		 && l.is_defined() == r.is_defined()
+		 && l.get_version() == r.get_version());
+
+  if (equals && l.is_variable())
+    // These are variable symbols.  Let's compare their symbol size.
+    // The symbol size in this case is the size taken by the storage
+    // of the variable.  If that size changes, then it's an ABI
+    // change.
+    equals = l.get_size() == r.get_size();
+
+  return equals;
 }
 
 /// Getter for the index
@@ -888,6 +907,20 @@ elf_symbol::get_type() const
 void
 elf_symbol::set_type(type t)
 {priv_->type_ = t;}
+
+/// Getter of the size of the symbol.
+///
+/// @return the size of the symbol, in bytes.
+size_t
+elf_symbol::get_size() const
+{return priv_->size_;}
+
+/// Setter of the size of the symbol.
+///
+/// @param size the new size of the symbol, in bytes.
+void
+elf_symbol::set_size(size_t size)
+{priv_->size_ = size;}
 
 /// Getter for the binding of the current instance of @ref elf_symbol.
 ///

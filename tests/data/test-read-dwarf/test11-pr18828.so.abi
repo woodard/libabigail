@@ -607,31 +607,31 @@
     <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='_ZN5mongo16saslGlobalParamsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo19SASLHostNameSettingE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo20SASLAuthdPathSettingE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo22SASLServiceNameSettingE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo24scramIterationCountParamE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN5mongo35SASLAuthenticationMechanismsSettingE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIFN5mongo6StatusEPNS_18InitializerContextEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5mongo18AssertionExceptionE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5mongo23ExportedServerParameterISsEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5mongo23ExportedServerParameterIiEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5mongo36ExportedScramIterationCountParameterE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIPFN5mongo6StatusEPNS_18InitializerContextEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSFN5mongo6StatusEPNS_18InitializerContextEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5mongo18AssertionExceptionE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5mongo23ExportedServerParameterISsEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5mongo23ExportedServerParameterIiEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5mongo36ExportedScramIterationCountParameterE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSPFN5mongo6StatusEPNS_18InitializerContextEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5mongo18AssertionExceptionE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5mongo23ExportedServerParameterISsEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5mongo23ExportedServerParameterIiEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5mongo36ExportedScramIterationCountParameterE' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo16saslGlobalParamsE' size='56' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo19SASLHostNameSettingE' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo20SASLAuthdPathSettingE' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo22SASLServiceNameSettingE' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo24scramIterationCountParamE' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN5mongo35SASLAuthenticationMechanismsSettingE' size='32' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIFN5mongo6StatusEPNS_18InitializerContextEE' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5mongo18AssertionExceptionE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5mongo23ExportedServerParameterISsEE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5mongo23ExportedServerParameterIiEE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5mongo36ExportedScramIterationCountParameterE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIPFN5mongo6StatusEPNS_18InitializerContextEE' size='32' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSFN5mongo6StatusEPNS_18InitializerContextEE' size='43' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5mongo18AssertionExceptionE' size='29' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5mongo23ExportedServerParameterISsEE' size='38' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEE' size='55' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5mongo23ExportedServerParameterIiEE' size='37' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5mongo36ExportedScramIterationCountParameterE' size='47' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSPFN5mongo6StatusEPNS_18InitializerContextEE' size='44' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5mongo18AssertionExceptionE' size='88' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5mongo23ExportedServerParameterISsEE' size='80' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5mongo23ExportedServerParameterISt6vectorISsSaISsEEEE' size='80' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5mongo23ExportedServerParameterIiEE' size='80' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5mongo36ExportedScramIterationCountParameterE' size='80' type='object-type' binding='weak-binding' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/mongo/db/auth/sasl_options.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>

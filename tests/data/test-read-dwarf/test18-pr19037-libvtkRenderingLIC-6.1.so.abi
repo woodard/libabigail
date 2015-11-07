@@ -411,44 +411,44 @@
     <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='_ZTI17vtkImageDataLIC2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI20vtkSurfaceLICPainter' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI22vtkPainterCommunicator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI22vtkStructuredGridLIC2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI22vtkSurfaceLICComposite' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI27vtkSurfaceLICDefaultPainter' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI28vtkLineIntegralConvolution2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTI33vtkImageDataLIC2DExtentTranslator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS17vtkImageDataLIC2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS20vtkSurfaceLICPainter' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS22vtkPainterCommunicator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS22vtkStructuredGridLIC2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS22vtkSurfaceLICComposite' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS27vtkSurfaceLICDefaultPainter' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS28vtkLineIntegralConvolution2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTS33vtkImageDataLIC2DExtentTranslator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV17vtkImageDataLIC2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV20vtkSurfaceLICPainter' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV22vtkPainterCommunicator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV22vtkStructuredGridLIC2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV22vtkSurfaceLICComposite' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV27vtkSurfaceLICDefaultPainter' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV28vtkLineIntegralConvolution2D' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTV33vtkImageDataLIC2DExtentTranslator' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='vtkLineIntegralConvolution2D_AAH' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkLineIntegralConvolution2D_AAV' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkLineIntegralConvolution2D_CE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkLineIntegralConvolution2D_EE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkLineIntegralConvolution2D_LIC0' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkLineIntegralConvolution2D_LICI' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkLineIntegralConvolution2D_LICN' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkLineIntegralConvolution2D_VT' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkStructuredGridLIC2D_fs' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkSurfaceLICPainter_CE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkSurfaceLICPainter_DCpy' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkSurfaceLICPainter_GeomFs' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkSurfaceLICPainter_GeomVs' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vtkSurfaceLICPainter_SC' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI17vtkImageDataLIC2D' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI20vtkSurfaceLICPainter' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI22vtkPainterCommunicator' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI22vtkStructuredGridLIC2D' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI22vtkSurfaceLICComposite' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI27vtkSurfaceLICDefaultPainter' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI28vtkLineIntegralConvolution2D' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTI33vtkImageDataLIC2DExtentTranslator' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS17vtkImageDataLIC2D' size='20' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS20vtkSurfaceLICPainter' size='23' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS22vtkPainterCommunicator' size='25' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS22vtkStructuredGridLIC2D' size='25' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS22vtkSurfaceLICComposite' size='25' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS27vtkSurfaceLICDefaultPainter' size='30' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS28vtkLineIntegralConvolution2D' size='31' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTS33vtkImageDataLIC2DExtentTranslator' size='36' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV17vtkImageDataLIC2D' size='720' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV20vtkSurfaceLICPainter' size='696' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV22vtkPainterCommunicator' size='104' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV22vtkStructuredGridLIC2D' size='664' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV22vtkSurfaceLICComposite' size='232' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV27vtkSurfaceLICDefaultPainter' size='408' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV28vtkLineIntegralConvolution2D' size='600' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTV33vtkImageDataLIC2DExtentTranslator' size='384' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_AAH' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_AAV' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_CE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_EE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_LIC0' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_LICI' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_LICN' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkLineIntegralConvolution2D_VT' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkStructuredGridLIC2D_fs' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_CE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_DCpy' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_GeomFs' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_GeomVs' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vtkSurfaceLICPainter_SC' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Rendering/LIC/vtkImageDataLIC2D.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>

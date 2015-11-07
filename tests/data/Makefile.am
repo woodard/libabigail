@@ -246,6 +246,9 @@ test-diff-dwarf/test33-fnref-changes-v0.cc \
 test-diff-dwarf/test33-fnref-changes-v0.o \
 test-diff-dwarf/test33-fnref-changes-v1.cc \
 test-diff-dwarf/test33-fnref-changes-v1.o \
+test-diff-dwarf/test34-pr19173-libfoo.so \
+test-diff-dwarf/test34-pr19173-libfoo2.so \
+test-diff-dwarf/test34-pr19173-libfoo-report-0.txt \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

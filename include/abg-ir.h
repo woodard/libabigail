@@ -515,6 +515,7 @@ private:
   elf_symbol();
 
   elf_symbol(size_t		i,
+	     size_t		s,
 	     const string&	n,
 	     type		t,
 	     binding		b,
@@ -533,6 +534,7 @@ public:
 
   static elf_symbol_sptr
   create(size_t	i,
+	 size_t	s,
 	 const string&	n,
 	 type		t,
 	 binding	b,
@@ -556,6 +558,12 @@ public:
 
   void
   set_type(type t);
+
+  size_t
+  get_size() const;
+
+  void
+  set_size(size_t);
 
   binding
   get_binding() const;

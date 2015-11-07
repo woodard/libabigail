@@ -1595,25 +1595,25 @@
     <elf-symbol name='omp_unset_nest_lock_target' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='_ZN3COI13EngineGetInfoE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN3COI18PipelineSetCPUMaskE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN3COI20PipelineClearCPUMaskE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN3COI21EventRegisterCallbackE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN6Engine12m_func_namesE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN6Engine14c_signal_namesE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN6Stream11all_streamsE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN6Stream13m_stream_lockE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_ZN6Stream15m_streams_countE' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__dbg_api_major_version' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__dbg_api_minor_version' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__dbg_is_attached' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__dbg_target_exe_name' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__dbg_target_id' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__dbg_target_so_pid' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__offload_myo_func_tables' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__offload_myo_init_tables' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__offload_myo_var_tables' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__offload_myo_vtable_tables' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3COI13EngineGetInfoE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3COI18PipelineSetCPUMaskE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3COI20PipelineClearCPUMaskE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN3COI21EventRegisterCallbackE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN6Engine12m_func_namesE' size='56' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN6Engine14c_signal_namesE' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN6Stream11all_streamsE' size='48' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN6Stream13m_stream_lockE' size='40' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_ZN6Stream15m_streams_countE' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__dbg_api_major_version' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__dbg_api_minor_version' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__dbg_is_attached' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__dbg_target_exe_name' size='512' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__dbg_target_id' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__dbg_target_so_pid' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__offload_myo_func_tables' size='48' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__offload_myo_init_tables' size='48' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__offload_myo_var_tables' size='48' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__offload_myo_vtable_tables' size='48' type='object-type' binding='global-binding' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='../../../gcc/liboffloadmic/runtime/dv_util.cpp' language='LANG_C_plus_plus'>
     <class-decl name='_IO_FILE_plus' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1'/>

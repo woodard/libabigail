@@ -386,29 +386,29 @@
     <elf-symbol name='_init' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='_ZTIN5boost10filesystem16filesystem_errorE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost10filesystem6detail18utf8_codecvt_facetE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost12noncopyable_11noncopyableE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6detail15sp_counted_baseE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6system12system_errorE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTIN5boost6system14error_categoryE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost10filesystem16filesystem_errorE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost10filesystem6detail18utf8_codecvt_facetE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost12noncopyable_11noncopyableE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6detail15sp_counted_baseE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6system12system_errorE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTSN5boost6system14error_categoryE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost10filesystem16filesystem_errorE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost10filesystem6detail18utf8_codecvt_facetE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6detail15sp_counted_baseE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6system12system_errorE' type='object-type' binding='weak-binding' is-defined='yes'/>
-    <elf-symbol name='_ZTVN5boost6system14error_categoryE' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost10filesystem16filesystem_errorE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost10filesystem6detail18utf8_codecvt_facetE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost12noncopyable_11noncopyableE' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6detail15sp_counted_baseE' size='16' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6system12system_errorE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTIN5boost6system14error_categoryE' size='24' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost10filesystem16filesystem_errorE' size='39' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost10filesystem6detail18utf8_codecvt_facetE' size='48' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost12noncopyable_11noncopyableE' size='36' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6detail15sp_counted_baseE' size='33' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='77' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='73' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6system12system_errorE' size='30' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTSN5boost6system14error_categoryE' size='32' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost10filesystem16filesystem_errorE' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost10filesystem6detail18utf8_codecvt_facetE' size='88' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6detail15sp_counted_baseE' size='64' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6detail17sp_counted_impl_pINS_10filesystem16filesystem_error5m_impEEE' size='64' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6detail17sp_counted_impl_pINS_10filesystem6detail11dir_itr_impEEE' size='64' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6system12system_errorE' size='40' type='object-type' binding='weak-binding' is-defined='yes'/>
+    <elf-symbol name='_ZTVN5boost6system14error_categoryE' size='72' type='object-type' binding='weak-binding' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/codecvt_error_category.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>

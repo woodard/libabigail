@@ -1910,6 +1910,9 @@ write_elf_symbol(const shared_ptr<elf_symbol>	sym,
 
   do_indent(o, indent);
   o << "<elf-symbol name='" << sym->get_name() << "'";
+  if (sym->is_variable() && sym->get_size())
+  o << " size='" << sym->get_size() << "'";
+
   if (!sym->get_version().is_empty())
     {
       o << " version='" << sym->get_version().str() << "'";

@@ -397,60 +397,60 @@
     <elf-symbol name='xstrerror' type='func-type' binding='global-binding' is-defined='yes'/>
   </elf-function-symbols>
   <elf-variable-symbols>
-    <elf-symbol name='_IO_stdin_used' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_IO_stdin_used' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='__DTOR_END__' type='object-type' binding='global-binding' is-defined='yes'/>
     <elf-symbol name='__TMC_END__' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='__environ@@GLIBC_2.2.5' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_cpp_trigraph_map' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_hex_value' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_sch_istable' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_sch_tolower' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_sch_toupper' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='_xexit_cleanup' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='bug_report_url' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='c_file_name' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='close_quote' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='cplus_demangle_builtin_types' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='cplus_demangle_operators' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='current_demangling_style' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='debug' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='do_collecting' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='environ@@GLIBC_2.2.5' type='object-type' binding='weak-binding' alias='__environ@@GLIBC_2.2.5' is-defined='yes'/>
-    <elf-symbol name='file_stack' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='file_stack_obstack' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='funcs' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='global_dc' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='helpflag' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='htab_eq_pointer' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='htab_hash_pointer' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='identifier_to_locale_alloc' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='identifier_to_locale_free' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='input_location' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='lderrout' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='ldout' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='libiberty_concat_ptr' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='libiberty_demanglers' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='line_table' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='locale_encoding' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='locale_utf8' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='no_demangle' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='num_expanded_macros_counter' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='num_macro_tokens_counter' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='open_quote' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='pkgversion_string' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='progname' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='rtl_zone' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='stderr@@GLIBC_2.2.5' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='stdin@@GLIBC_2.2.5' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='stdout@@GLIBC_2.2.5' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='symbol_stack' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='symbol_stack_obstack' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='temporary_firstobj' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='temporary_obstack' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='tree_id_zone' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='tree_zone' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='version_string' type='object-type' binding='global-binding' is-defined='yes'/>
-    <elf-symbol name='vflag' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='__environ@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_cpp_trigraph_map' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_hex_value' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_sch_istable' size='512' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_sch_tolower' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_sch_toupper' size='256' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='_xexit_cleanup' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='bug_report_url' size='31' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='c_file_name' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='close_quote' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_builtin_types' size='1056' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='cplus_demangle_operators' size='1392' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='current_demangling_style' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='debug' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='do_collecting' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='environ@@GLIBC_2.2.5' size='8' type='object-type' binding='weak-binding' alias='__environ@@GLIBC_2.2.5' is-defined='yes'/>
+    <elf-symbol name='file_stack' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='file_stack_obstack' size='88' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='funcs' size='72' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='global_dc' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='helpflag' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_eq_pointer' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='htab_hash_pointer' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='identifier_to_locale_alloc' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='identifier_to_locale_free' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='input_location' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='lderrout' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='ldout' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='libiberty_concat_ptr' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='libiberty_demanglers' size='264' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='line_table' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='locale_encoding' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='locale_utf8' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='no_demangle' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='num_expanded_macros_counter' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='num_macro_tokens_counter' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='open_quote' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='pkgversion_string' size='7' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='progname' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='rtl_zone' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='stderr@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='stdin@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='stdout@@GLIBC_2.2.5' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='symbol_stack' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='symbol_stack_obstack' size='88' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='temporary_firstobj' size='8' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='temporary_obstack' size='88' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='tree_id_zone' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='tree_zone' size='4' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='version_string' size='6' type='object-type' binding='global-binding' is-defined='yes'/>
+    <elf-symbol name='vflag' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/collect2.c' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>

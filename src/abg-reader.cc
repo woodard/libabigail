@@ -2095,6 +2095,10 @@ build_elf_symbol(read_context&, const xmlNodePtr node)
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
     xml::xml_char_sptr_to_string(s, name);
 
+  size_t size = 0;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "size"))
+    size = strtol(CHAR_STR(s), NULL, 0);
+
   bool is_defined = true;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-defined"))
     {
@@ -2127,8 +2131,8 @@ build_elf_symbol(read_context&, const xmlNodePtr node)
 
   elf_symbol::version version(version_string, is_default_version);
 
-  elf_symbol_sptr e = elf_symbol::create(/*index=*/0, name,
-					 type, binding,
+  elf_symbol_sptr e = elf_symbol::create(/*index=*/0, size,
+					  name, type, binding,
 					 is_defined, version);
   return e;
 }
