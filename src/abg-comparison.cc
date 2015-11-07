@@ -6245,11 +6245,11 @@ get_pretty_representation(diff* d)
 }
 
 static bool
-maybe_report_diff_for_member(decl_base_sptr	decl1,
-			     decl_base_sptr	decl2,
-			     diff_context_sptr	ctxt,
-			     ostream&		out,
-			     const string&	indent);
+maybe_report_diff_for_member(const decl_base_sptr&	decl1,
+			     const decl_base_sptr&	decl2,
+			     const diff_context_sptr&	ctxt,
+			     ostream&			out,
+			     const string&		indent);
 
 /// Stream a string representation for a member function.
 ///
@@ -6899,11 +6899,11 @@ compute_diff(const var_decl_sptr	first,
 ///
 /// @return true if something was reported, false otherwise.
 static bool
-maybe_report_diff_for_member(decl_base_sptr	decl1,
-			     decl_base_sptr	decl2,
-			     diff_context_sptr	ctxt,
-			     ostream&		out,
-			     const string&	indent)
+maybe_report_diff_for_member(const decl_base_sptr&	decl1,
+			     const decl_base_sptr&	decl2,
+			     const diff_context_sptr&	ctxt,
+			     ostream&			out,
+			     const string&		indent)
 
 {
   bool reported = false;

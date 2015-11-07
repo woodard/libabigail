@@ -1315,7 +1315,7 @@ elf_symbol::does_alias(const elf_symbol& o) const
 }
 
 bool
-operator==(const elf_symbol_sptr lhs, const elf_symbol_sptr rhs)
+operator==(const elf_symbol_sptr& lhs, const elf_symbol_sptr& rhs)
 {
   if (!!lhs != !!rhs)
     return false;
