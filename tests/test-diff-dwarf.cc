@@ -272,6 +272,18 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test34-pr19173-libfoo-report-0.txt",
     "output/test-diff-dwarf/test34-pr19173-libfoo-report-0.txt"
   },
+  {
+    "data/test-diff-dwarf/test35-pr19173-libfoo-long-gcc.so",
+    "data/test-diff-dwarf/test35-pr19173-libfoo-long-gcc2.so",
+    "data/test-diff-dwarf/test35-pr19173-libfoo-long-gcc-report-0.txt",
+    "output/test-diff-dwarf/test35-pr19173-libfoo-long-gcc-report-0.txt"
+  },
+  {
+    "data/test-diff-dwarf/test35-pr19173-libfoo-long-clang.so",
+    "data/test-diff-dwarf/test35-pr19173-libfoo-long-clang2.so",
+    "data/test-diff-dwarf/test35-pr19173-libfoo-long-clang-report-0.txt",
+    "output/test-diff-dwarf/test35-pr19173-libfoo-long-clang-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };

@@ -144,6 +144,9 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
 			bool		in_alt_di,
 			read_context&	ctxt);
 
+static int
+get_default_array_lower_bound(translation_unit::language l);
+
 /// Convert an elf symbol type (given by the ELF{32,64}_ST_TYPE
 /// macros) into an elf_symbol::type value.
 ///
@@ -6092,6 +6095,64 @@ dwarf_language_to_tu_language(size_t l)
     }
 }
 
+/// Get the default array lower bound value as defined by the DWARF
+/// specification, version 4, depending on the language of the
+/// translation unit.
+///
+/// @param l the language of the translation unit.
+///
+/// @return the default array lower bound value.
+static int
+get_default_array_lower_bound(translation_unit::language l)
+{
+  int value = 0;
+    switch (l)
+    {
+    case translation_unit::LANG_UNKNOWN:
+      value = 0;
+      break;
+    case translation_unit::LANG_Cobol74:
+    case translation_unit::LANG_Cobol85:
+      value = 1;
+      break;
+    case translation_unit::LANG_C89:
+    case translation_unit::LANG_C99:
+    case translation_unit::LANG_C11:
+    case translation_unit::LANG_C:
+    case translation_unit::LANG_C_plus_plus_11:
+    case translation_unit::LANG_C_plus_plus_14:
+    case translation_unit::LANG_C_plus_plus:
+    case translation_unit::LANG_ObjC:
+    case translation_unit::LANG_ObjC_plus_plus:
+      value = 0;
+      break;
+    case translation_unit::LANG_Fortran77:
+    case translation_unit::LANG_Fortran90:
+    case translation_unit::LANG_Fortran95:
+    case translation_unit::LANG_Ada83:
+    case translation_unit::LANG_Ada95:
+    case translation_unit::LANG_Pascal83:
+    case translation_unit::LANG_Modula2:
+      value = 1;
+      break;
+    case translation_unit::LANG_Java:
+      value = 0;
+      break;
+    case translation_unit::LANG_PL1:
+      value = 1;
+      break;
+    case translation_unit::LANG_UPC:
+    case translation_unit::LANG_D:
+    case translation_unit::LANG_Python:
+    case translation_unit::LANG_Go:
+    case translation_unit::LANG_Mips_Assembler:
+      value = 0;
+      break;
+    }
+
+    return value;
+}
+
 /// Given a DW_TAG_compile_unit, build and return the corresponding
 /// abigail::translation_unit ir node.  Note that this function
 /// recursively reads the children dies of the current DIE and
@@ -7265,7 +7326,11 @@ build_array_type(read_context&	ctxt,
 
   Dwarf_Die child;
   array_type_def::subranges_type subranges;
-  size_t upper_bound, lower_bound = 0;
+  translation_unit::language language =
+    ctxt.current_translation_unit()->get_language();
+  size_t upper_bound = 0;
+  size_t lower_bound = get_default_array_lower_bound(language);
+  size_t count = 0;
 
   if (dwarf_child(die, &child) == 0)
     {
@@ -7274,15 +7339,48 @@ build_array_type(read_context&	ctxt,
 	  int child_tag = dwarf_tag(&child);
 	  if (child_tag == DW_TAG_subrange_type)
 	    {
-	      // usually not specified for C/C++
+	      // The DWARF 4 specifications says, in [5.11 Subrange
+	      // Type Entries]:
+	      //
+	      //     The subrange entry may have the attributes
+	      //     DW_AT_lower_bound and DW_AT_upper_bound to
+	      //     specify, respectively, the lower and upper bound
+	      //     values of the subrange.
+	      //
+	      // So let's look for DW_AT_lower_bound first.
 	      die_unsigned_constant_attribute(&child,
 					      DW_AT_lower_bound,
 					      lower_bound);
 
+	      // Then, DW_AT_upper_bound.
 	      if (!die_unsigned_constant_attribute(&child,
 						   DW_AT_upper_bound,
 						   upper_bound))
-		return result;
+		{
+		  // The DWARF 4 spec says, in [5.11 Subrange Type
+		  // Entries]:
+		  //
+		  //   The DW_AT_upper_bound attribute may be replaced
+		  //   by a DW_AT_count attribute, whose value
+		  //   describes the number of elements in the
+		  //   subrange rather than the value of the last
+		  //   element."
+		  //
+		  // So, as DW_AT_upper_bound is not present in this
+		  // case, let's see if there is a DW_AT_count.
+		  if (!die_unsigned_constant_attribute(&child,
+						       DW_AT_count,
+						       count))
+		    // We have no information about the number of
+		    // elements of the array.  Let's bail out then.
+		    return result;
+
+		  // We can deduce the upper_bound from the
+		  // lower_bound and the number of elements of the
+		  // array:
+		  if (size_t u = lower_bound + count)
+		    upper_bound = u - 1;
+		}
 
 	      array_type_def::subrange_sptr s
 		(new array_type_def::subrange_type(lower_bound,

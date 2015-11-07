@@ -249,6 +249,12 @@ test-diff-dwarf/test33-fnref-changes-v1.o \
 test-diff-dwarf/test34-pr19173-libfoo.so \
 test-diff-dwarf/test34-pr19173-libfoo2.so \
 test-diff-dwarf/test34-pr19173-libfoo-report-0.txt \
+test-diff-dwarf/test35-pr19173-libfoo-long-gcc.so \
+test-diff-dwarf/test35-pr19173-libfoo-long-gcc2.so \
+test-diff-dwarf/test35-pr19173-libfoo-long-gcc-report-0.txt \
+test-diff-dwarf/test35-pr19173-libfoo-long-clang.so \
+test-diff-dwarf/test35-pr19173-libfoo-long-clang2.so \
+test-diff-dwarf/test35-pr19173-libfoo-long-clang-report-0.txt \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\
