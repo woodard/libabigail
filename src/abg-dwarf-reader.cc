@@ -7294,6 +7294,7 @@ build_array_type(read_context&	ctxt,
 
   return result;
 }
+
 /// Create a typedef_decl from a DW_TAG_typedef DIE.
 ///
 /// @param ctxt the read context to consider.
