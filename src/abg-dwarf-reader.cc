@@ -8563,7 +8563,7 @@ lookup_symbol_from_elf(const string&			elf_path,
 		       vector<elf_symbol_sptr>&	syms)
 
 {
-  if(elf_version(EV_CURRENT) == EV_NONE)
+  if (elf_version(EV_CURRENT) == EV_NONE)
     return false;
 
   int fd = open(elf_path.c_str(), O_RDONLY);
@@ -8603,7 +8603,7 @@ lookup_public_function_symbol_from_elf(const string&			path,
 				       const string&			symname,
 				       vector<elf_symbol_sptr>&	syms)
 {
-  if(elf_version(EV_CURRENT) == EV_NONE)
+  if (elf_version(EV_CURRENT) == EV_NONE)
     return false;
 
   int fd = open(path.c_str(), O_RDONLY);
@@ -8725,7 +8725,7 @@ get_soname_of_elf_file(const string& path, string &soname)
 {
 
   int fd = open(path.c_str(), O_RDONLY);
-  if(fd == -1)
+  if (fd == -1)
     return false;
 
   elf_version (EV_CURRENT);
@@ -8812,7 +8812,7 @@ bool
 get_type_of_elf_file(const string& path, elf_type& type)
 {
   int fd = open(path.c_str(), O_RDONLY);
-  if(fd == -1)
+  if (fd == -1)
     return false;
 
   elf_version (EV_CURRENT);

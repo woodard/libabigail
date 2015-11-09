@@ -4506,7 +4506,7 @@ diff_context::diff_has_been_visited(const diff_sptr d) const
 void
 diff_context::mark_diff_as_visited(const diff* d)
 {
-  if(diff_has_been_visited(d))
+  if (diff_has_been_visited(d))
     return;
 
   const diff* canonical = d->get_canonical_diff();
@@ -13499,8 +13499,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 			// version, then added_sym shouldn't be
 			// considered as a newly added symbol.
 			elf_symbol::version empty_version;
-			if(first_->lookup_function_symbol(added_sym->get_name(),
-							  empty_version))
+			if (first_->lookup_function_symbol(added_sym->get_name(),
+							   empty_version))
 			  do_add = false;
 		      }
 
@@ -13560,8 +13560,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 			// version, then added_sym shouldn't be
 			// considered as a newly added symbol.
 			elf_symbol::version empty_version;
-			if(first_->lookup_variable_symbol(added_sym->get_name(),
-							  empty_version))
+			if (first_->lookup_variable_symbol(added_sym->get_name(),
+							   empty_version))
 			  do_add = false;
 		      }
 

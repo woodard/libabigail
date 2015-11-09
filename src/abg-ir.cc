@@ -8693,7 +8693,7 @@ var_decl::get_pretty_representation(bool /*internal*/) const
 
   if (is_member_decl(this) && get_member_is_static(this))
     result = "static ";
-  if(array_type_def_sptr t = is_array_type(get_type()))
+  if (array_type_def_sptr t = is_array_type(get_type()))
     result += get_type_declaration(t->get_element_type())->get_qualified_name()
       + " " + get_qualified_name() + t->get_subrange_representation();
   else
