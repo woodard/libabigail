@@ -10265,7 +10265,13 @@ compute_diff(const class_decl::base_spec_sptr	first,
 	     diff_context_sptr			ctxt)
 {
   if (first && second)
-    assert(first->get_environment() == second->get_environment());
+    {
+      assert(first->get_environment() == second->get_environment());
+      assert(first->get_base_class()->get_environment()
+	     == second->get_base_class()->get_environment());
+      assert(first->get_environment()
+	     == first->get_base_class()->get_environment());
+    }
 
   class_diff_sptr cl = compute_diff(first->get_base_class(),
 				    second->get_base_class(),

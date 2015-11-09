@@ -10569,7 +10569,12 @@ class_decl::get_earlier_declaration() const
 /// @param b the new base specifier.
 void
 class_decl::add_base_specifier(base_spec_sptr b)
-{priv_->bases_.push_back(b);}
+{
+  priv_->bases_.push_back(b);
+  assert(!b->get_environment());
+  if (environment* env = get_environment())
+    b->set_environment(env);
+}
 
 /// Get the base specifiers for this class.
 ///
