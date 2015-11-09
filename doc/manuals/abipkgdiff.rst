@@ -89,6 +89,12 @@ Options
     Do not search the *package2* for the presence of suppression
     files.
 
+  * ``--no-parallel``
+
+    By default, ``abipkgdiff`` will use all the processors it has available to
+    execute concurrently.  This option tells it not to extract packages or run
+    comparisons in parallel.
+
   * ``--suppressions | --suppr`` <*path-to-suppressions*>
 
     Use a :ref:`suppression specification <suppr_spec_label>` file

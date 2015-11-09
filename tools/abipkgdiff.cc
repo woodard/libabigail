@@ -33,6 +33,29 @@
 /// The program extracts the content of the two packages into a
 /// temporary directory , looks for the ELF binaries in there,
 /// compares their ABIs and emit a report about the changes.
+/// As this program uses libpthread to perform several tasks
+/// concurrently, here is a coarse grain description of the sequence
+/// of actions performed, including where things are done
+/// concurrently.
+///
+/// (steps 1/ to /5 are performed in sequence)
+///
+/// 1/ the first package and its debug info are extracted concurrently.
+/// One thread extracts the package (and maps its content) and another one
+/// extracts the debug info package.
+///
+/// 2/ the second package and its debug info are extracted in parallel.
+/// One thread extracts the package (and maps its content) and another one
+/// extracts the debug info package.
+///
+/// 3/ the file system trees of extracted packages are traversed to
+/// identify existing pairs and a list of arguments for future comparison
+/// is made.  The trees are traversed concurrently.
+///
+/// 4/ comparisons are performed concurrently.
+///
+/// 5/ the reports are then emitted to standard output, always in the same
+/// order.
 
 // For package configuration macros.
 #include "config.h"
@@ -42,12 +65,15 @@
 #include <cstdlib>
 #include <vector>
 #include <ftw.h>
+#include <algorithm>
 #include <map>
 #include <assert.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <elf.h>
 #include <elfutils/libdw.h>
+#include <unistd.h>
+#include <pthread.h>
 #include "abg-tools-utils.h"
 #include "abg-comparison.h"
 #include "abg-dwarf-reader.h"
@@ -80,13 +106,28 @@ using abigail::dwarf_reader::read_corpus_from_elf;
 /// progress of what's being done.
 static bool verbose;
 
-/// This contains the set of files of a given package.  It's populated
+/// The key for getting the thread-local elf_file_paths vector, which
+/// contains the set of files of a given package.  The vector is populated
 /// by a worker function that is invoked on each file contained in the
-/// package.  So this global variable is filled by the
+/// package, specifically by the
 /// {first,second}_package_tree_walker_callback_fn() functions.  Its content
-/// is relevant only during the time after which the current package has been
-/// analyzed and before we start analyzing the next package.
-static vector<string> elf_file_paths;
+/// is relevant only until the mapping of the packages elf files is done.
+static pthread_key_t elf_file_paths_tls_key;
+
+/// A convenience typedef for a map of corpus diffs
+typedef map<string, corpus_diff_sptr> corpora_report_map;
+/// This map is used to gather the computed diffs of ELF pairs
+static corpora_report_map reports_map;
+
+/// This map is used to keep environments for differing corpora
+/// referenced. The environment needs to be kept alive longer than
+/// all the objects that depend on it.
+static map<corpus_diff_sptr, abigail::ir::environment_sptr> env_map;
+
+/// This mutex is used to control access to the reports_map
+static pthread_mutex_t map_lock = PTHREAD_MUTEX_INITIALIZER;
+/// This mutex is used to control access to the pre-computed list of ELF pairs
+static pthread_mutex_t arg_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /// This points to the set of options shared by all the routines of the
 /// program.
@@ -98,6 +139,7 @@ struct options
   bool		display_usage;
   bool		missing_operand;
   bool		abignore;
+  bool		parallel;
   string	package1;
   string	package2;
   string	debug_package1;
@@ -115,6 +157,7 @@ struct options
     : display_usage(),
       missing_operand(),
       abignore(true),
+      parallel(true),
       keep_tmp_files(),
       compare_dso_only(),
       show_linkage_names(true),
@@ -136,6 +179,7 @@ public:
   string				path;
   string				name;
   string				soname;
+  off_t 				size;
   abigail::dwarf_reader::elf_type	type;
 
   /// The path to the elf file.
@@ -147,6 +191,9 @@ public:
      abigail::tools_utils::base_name(path, name);
      get_soname_of_elf_file(path, soname);
      get_type_of_elf_file(path, type);
+     struct stat estat;
+     stat(path.c_str(), &estat);
+     size = estat.st_size;
   }
 };
 
@@ -348,6 +395,47 @@ public:
   }
 };
 
+/// Arguments passed to the package extraction functions.
+struct package_descriptor
+{
+  package &pkg;
+  const options& opts;
+  ftw_cb_type callback;
+};
+
+/// Arguments passed to the comparison workers.
+struct compare_args
+{
+  const elf_file	elf1;
+  const string&		debug_dir1;
+  const elf_file	elf2;
+  const string&		debug_dir2;
+  const options&	opts;
+
+  /// Constructor for compare_args, which is used to pass
+  /// information to the comparison threads.
+  ///
+  /// @param elf1 the first elf file to consider.
+  ///
+  /// @param debug_dir1 the directory where the debug info file for @p
+  /// elf1 is stored.
+  ///
+  /// @param elf2 the second elf file to consider.
+  ///
+  /// @param debug_dir2 the directory where the debug info file for @p
+  /// elf2 is stored.
+  ///
+  /// @param opts the options the current program has been called with.
+  compare_args(const elf_file &elf1, const string& debug_dir1,
+	       const elf_file &elf2, const string& debug_dir2,
+	       const options& opts)
+    : elf1(elf1), debug_dir1(debug_dir1), elf2(elf2),
+    debug_dir2(debug_dir2), opts(opts)
+  {}
+};
+/// A convenience typedef for arguments passed to the comparison workers.
+typedef shared_ptr<compare_args> compare_args_sptr;
+
 /// Getter for the path to the parent directory under which packages
 /// extracted by the current thread are placed.
 ///
@@ -404,6 +492,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --no-added-syms                do not display added functions or variables\n"
       << " --no-added-binaries            do not display added binaries\n"
       << " --no-abignore                  do not look for *.abignore files\n"
+      << " --no-parallel                  do not execute in parallel\n"
       << " --fail-no-dbg                  fail if no debug info was found\n"
       << " --verbose                      emit verbose progress messages\n"
       << " --help|-h                      display this help message\n";
@@ -657,6 +746,18 @@ extract_package(const package& package)
     }
   return true;
 }
+/// A wrapper to call extract_package in a separate thread.
+///
+/// @param pkg the package we want to extract.
+///
+/// @return via pthread_exit() a pointer to a boolean value of true upon
+/// successful completion, false otherwise.
+static void
+pthread_routine_extract_package(void *pkg)
+{
+  const package &package = *static_cast<class package*>(pkg);
+  pthread_exit(new bool(extract_package(package)));
+}
 
 /// A callback function invoked by the ftw() function while walking
 /// the directory of files extracted from the first package.
@@ -675,7 +776,11 @@ first_package_tree_walker_callback_fn(const char *fpath,
   if (!S_ISLNK(s.st_mode))
     {
       if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
-	elf_file_paths.push_back(fpath);
+	{
+	  vector<string> *elf_file_paths
+	    = static_cast<vector<string>*>(pthread_getspecific(elf_file_paths_tls_key));
+	  elf_file_paths->push_back(fpath);
+	}
     }
   return 0;
 }
@@ -697,7 +802,11 @@ second_package_tree_walker_callback_fn(const char *fpath,
   if (!S_ISLNK(s.st_mode))
     {
       if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
-	elf_file_paths.push_back(fpath);
+	{
+	  vector<string> *elf_file_paths
+	    = static_cast<vector<string>*>(pthread_getspecific(elf_file_paths_tls_key));
+	  elf_file_paths->push_back(fpath);
+	}
       /// We go through the files of the newer (second) pkg to look for
       /// suppression specifications, matching the "*.abignore" name pattern.
       else if (prog_options->abignore && string_ends_with(fpath, ".abignore"))
@@ -748,13 +857,19 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 ///
 /// @param debug_dir1 the directory where the debug info file for @p
 /// elf1 is stored.
+/// The result of the comparison is saved to a global corpus map.
 ///
 /// @param elf2 the second eld file to consider.
+/// @args the list of argument sets used for comparison
 ///
 /// @param debug_dir2 the directory where the debug info file for @p
 /// elf2 is stored.
 ///
 /// @param opts the options the current program has been called with.
+///
+/// @param env the environment encapsulating the entire comparison.
+///
+/// @param diff the shared pointer to be set to the result of the comparison.
 ///
 /// @return the status of the comparison.
 static abidiff_status
@@ -762,10 +877,12 @@ compare(const elf_file& elf1,
 	const string&	debug_dir1,
 	const elf_file& elf2,
 	const string&	debug_dir2,
-	const options&	opts)
+	const options&	opts,
+	abigail::ir::environment_sptr	&env,
+	corpus_diff_sptr	&diff)
 {
   char *di_dir1 = (char*) debug_dir1.c_str(),
-    *di_dir2 = (char*) debug_dir2.c_str();
+	*di_dir2 = (char*) debug_dir2.c_str();
 
   if (verbose)
     cerr << "Comparing the ABIs of file "
@@ -776,12 +893,11 @@ compare(const elf_file& elf1,
 
   abigail::dwarf_reader::status c1_status = abigail::dwarf_reader::STATUS_OK,
     c2_status = abigail::dwarf_reader::STATUS_OK;
-  abigail::ir::environment_sptr env(new abigail::ir::environment);
 
   if (verbose)
     cerr << "  Reading file "
 	 << elf1.path
-	 << " ...";
+	 << " ...\n";
 
   corpus_sptr corpus1 = read_corpus_from_elf(elf1.path, &di_dir1, env.get(),
 					     /*load_all_types=*/false,
@@ -789,7 +905,7 @@ compare(const elf_file& elf1,
   if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
     {
       if (verbose)
-	cerr << "could not read file '"
+	cerr << "Could not read file '"
 	     << elf1.path
 	     << "' properly\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
@@ -808,12 +924,14 @@ compare(const elf_file& elf1,
     }
 
   if (verbose)
-    cerr << " DONE\n";
+    cerr << " DONE reading file "
+      << elf1.path
+      << " ...\n";
 
   if (verbose)
     cerr << "  Reading file "
 	 << elf2.path
-	 << " ...";
+	 << " ...\n";
 
   corpus_sptr corpus2 = read_corpus_from_elf(elf2.path, &di_dir2, env.get(),
 					     /*load_all_types=*/false,
@@ -821,7 +939,7 @@ compare(const elf_file& elf1,
   if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
     {
       if (verbose)
-	cerr << "could not find the read file '"
+	cerr << "Could not find the read file '"
 	     << elf2.path
 	     << "' properly\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
@@ -840,38 +958,18 @@ compare(const elf_file& elf1,
     }
 
   if (verbose)
-    cerr << " DONE\n";
+    cerr << " DONE reading file "
+      << elf2.path
+      << " ...\n";
 
-  if (verbose)
-    cerr << "  Comparing the ABI of the two files ...";
+if (verbose)
+    cerr << "  Comparing the ABIs of: \n"
+      << "    " << elf1.path << "\n"
+      << "    " << elf2.path << "\n";
 
   diff_context_sptr ctxt(new diff_context);
   set_diff_context_from_opts(ctxt, opts);
-  corpus_diff_sptr diff = compute_diff(corpus1, corpus2, ctxt);
-
-  if (verbose)
-    cerr << "DONE\n";
-
-  abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
-  if (diff->has_net_changes())
-    status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
-  if (diff->has_incompatible_changes())
-    status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
-  if ((status & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
-      || (verbose && diff->has_changes()))
-    {
-      const string prefix = "  ";
-
-      cout << "================ changes of '"
-	   << elf1.name
-	   << "'===============\n";
-
-      diff->report(cout, prefix);
-
-      cout << "================ end of changes of '"
-	   << elf1.name
-	   << "'===============\n\n";
-    }
+  diff = compute_diff(corpus1, corpus2, ctxt);
 
   if (verbose)
     cerr << "Comparing the ABIs of file "
@@ -880,7 +978,68 @@ compare(const elf_file& elf1,
 	 << elf2.path
 	 << " is DONE\n";
 
-  return status;
+  abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
+  if (diff->has_net_changes())
+    s |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
+  if (diff->has_incompatible_changes())
+    s |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
+
+  return s;
+}
+
+/// A wrapper to call compare in a separate thread.
+/// The result of the comparison is saved to a global corpus map.
+///
+/// @args the vector of argument sets used for comparison.
+///
+/// @return the status of the comparison via pthread_exit().
+static void
+pthread_routine_compare(vector<compare_args_sptr> *args)
+{
+  abidiff_status s, status = abigail::tools_utils::ABIDIFF_OK;
+  compare_args_sptr a;
+  corpus_diff_sptr diff;
+
+  while (true)
+    {
+      pthread_mutex_lock(&arg_lock);
+      if (args->empty())
+	a = compare_args_sptr();
+      else
+	{
+	  a = *args->begin();
+	  args->erase(args->begin());
+	}
+      pthread_mutex_unlock(&arg_lock);
+
+      if (!a)
+	break;
+
+      abigail::ir::environment_sptr env(new abigail::ir::environment);
+      status |= s = compare(a->elf1, a->debug_dir1,
+			    a->elf2, a->debug_dir2,
+			    a->opts, env, diff);
+
+      const string key = a->elf1.path;
+      if ((s & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
+	  || (verbose && diff->has_changes()))
+	{
+	  pthread_mutex_lock(&map_lock);
+	  reports_map[key] = diff;
+	  // We need to keep the environment around, until the corpus is
+	  // report()-ed.
+	  env_map[diff] = env;
+	  pthread_mutex_unlock(&map_lock);
+	}
+      else
+	{
+	  pthread_mutex_lock(&map_lock);
+	  reports_map[key] = corpus_diff_sptr();
+	  pthread_mutex_unlock(&map_lock);
+	}
+    }
+
+  pthread_exit(new abidiff_status(status));
 }
 
 /// Create maps of the content of a given package.
@@ -900,7 +1059,9 @@ create_maps_of_package_content(package& package,
 			       const options& opts,
 			       ftw_cb_type callback)
 {
-  elf_file_paths.clear();
+  vector<string> *elf_file_paths = new vector<string>;
+  pthread_setspecific(elf_file_paths_tls_key, elf_file_paths);
+
   if (verbose)
     cerr << "Analyzing the content of package "
 	 << package.path()
@@ -916,8 +1077,8 @@ create_maps_of_package_content(package& package,
     }
 
   for (vector<string>::const_iterator file =
-	 elf_file_paths.begin();
-       file != elf_file_paths.end();
+	 elf_file_paths->begin();
+       file != elf_file_paths->end();
        ++file)
     {
       elf_file_sptr e (new elf_file(*file));
@@ -939,33 +1100,93 @@ create_maps_of_package_content(package& package,
 	package.path_elf_file_sptr_map()[e->soname] = e;
     }
 
+  pthread_setspecific(elf_file_paths_tls_key, /*value=*/NULL);
+  delete elf_file_paths;
+
   if (verbose)
     cerr << " DONE\n";
   return true;
 }
 
-/// Extract the content of a package and map its content.
-///
-/// The extracting is done to a temporary
-///
-/// @param package the package to consider.
-///
-/// @param opts the options the current package has been called with.
-///
-/// @return true upon successful completion, false otherwise.
-static bool
-extract_package_and_map_its_content(package& package,
-				    const options& opts,
-				    ftw_cb_type callback)
+static inline bool
+pthread_join(pthread_t thr)
 {
-  if (!extract_package(package))
+  bool *thread_retval;
+  if (!pthread_join(thr, reinterpret_cast<void**>(&thread_retval)))
+    {
+      bool retval = *thread_retval;
+      delete thread_retval;
+      return retval;
+    }
+  else
     return false;
+}
 
-  bool result = true;
-  if (!package.is_debug_info())
-    result |= create_maps_of_package_content(package, opts, callback);
+/// Extract the content of a package and map its content.
+/// Also extract its accompanying debuginfo package.
+///
+/// The extracting is done to a temporary directory.
+///
+/// @param a the set of arguments needed for successful extraction;
+/// specifically the package itself, the options the current package has been
+/// called with and a callback to traverse the directory structure.
+///
+/// @return via pthread_exit() true upon successful completion, false
+/// otherwise.
+static void
+pthread_routine_extract_pkg_and_map_its_content(package_descriptor *a)
+{
+  pthread_t thr_pkg, thr_debug;
+  package& package = a->pkg;
+  const options& opts = a->opts;
+  ftw_cb_type callback = a->callback;
+  bool has_debug_info_pkg, result = true;
 
-  return result;
+  // The debug-info package usually takes longer to extract than the main
+  // package plus that package's mapping for ELFs and optionally suppression
+  // specs, so we run it ASAP.
+  if ((has_debug_info_pkg = package.debug_info_package()))
+    {
+      if (pthread_create(&thr_debug, /*attr=*/NULL,
+			 reinterpret_cast<void*(*)(void*)>(pthread_routine_extract_package),
+			 package.debug_info_package().get()))
+	{
+	  result = false;
+	  goto exit;
+	}
+
+      // Wait for debug-info package extraction to complete if we're
+      // not running in parallel.
+      if (!opts.parallel)
+	{
+	  result = pthread_join(thr_debug);
+	  if (!result)
+	    goto exit;
+	}
+    }
+
+  // Extract the package itself.
+  if (pthread_create(&thr_pkg, /*attr=*/NULL,
+		     reinterpret_cast<void*(*)(void*)>(pthread_routine_extract_package),
+		     &package))
+    result = false;
+
+  // We need to wait for the package's successful extraction, if we
+  // want to do a mapping on its files.
+  if (result)
+    result = pthread_join(thr_pkg);
+
+  // If extracting the package failed, there's no sense in going further.
+  if (result)
+    result = create_maps_of_package_content(package, opts, callback);
+
+  // Let's wait for both extractions to finish before we exit.
+  if (has_debug_info_pkg && opts.parallel)
+    result &= pthread_join(thr_debug);
+
+exit:
+  pthread_exit(new bool(result));
+
 }
 
 /// Prepare the packages for comparison.
@@ -984,19 +1205,73 @@ prepare_packages(package&	first_package,
 		 package&	second_package,
 		 const options& opts)
 {
-  if (!extract_package_and_map_its_content(first_package, opts,
-					   first_package_tree_walker_callback_fn)
-      || !extract_package_and_map_its_content(second_package, opts,
-					      second_package_tree_walker_callback_fn))
-    return false;
+  bool result = true;
+  const int npkgs = 2;
+  pthread_t extract_thread[npkgs];
 
-  if ((first_package.debug_info_package()
-	 && !extract_package(*first_package.debug_info_package()))
-      || (second_package.debug_info_package()
-	    && !extract_package(*second_package.debug_info_package())))
-      return false;
+  package_descriptor ea[] =
+    {
+      {
+	.pkg = first_package,
+	.opts = opts,
+	.callback = first_package_tree_walker_callback_fn
+      },
+      {
+	.pkg = second_package,
+	.opts = opts,
+	.callback = second_package_tree_walker_callback_fn
+      },
+    };
 
-    return true;
+  // Since we can't pass custom arguments to the callback of ftw(),
+  // and we are going to walk two directory trees in parallel, we
+  // need a separate thread-local vector of files for each package.
+  pthread_key_create(&elf_file_paths_tls_key, /*destructor=*/NULL);
+
+  for (int i = 0; i < npkgs; ++i)
+    {
+      pthread_create(&extract_thread[i], /*attr=*/NULL,
+		     reinterpret_cast<void*(*)(void*)>(pthread_routine_extract_pkg_and_map_its_content),
+		     &ea[i]);
+
+      if (!opts.parallel)
+	// We're not running in parallel, so wait for the first package set to
+	// finish extracting before starting to work on the second one.
+	result &= pthread_join(extract_thread[i]);
+    }
+
+  if (opts.parallel)
+    {
+      // We're running in parallel, so we collect the threads here.
+      for (int i = 0; i < npkgs; ++i)
+	result &= pthread_join(extract_thread[i]);
+    }
+
+  pthread_key_delete(elf_file_paths_tls_key);
+  return result;
+}
+
+/// Compare the added sizes of a ELF pair specified by @a1
+/// with the sizes of a ELF pair from @a2.
+///
+/// Larger filesize strongly raises the possibility of larger debug-info,
+/// hence longer diff time. For a package containing several relatively
+/// large and small ELFs, it is often more efficient to start working on
+/// the larger ones first. This function is used to order the pairs by
+/// size, starting from the largest.
+///
+/// @a1 the first set of arguments containing also the size information about
+/// the ELF pair being compared.
+///
+/// @a2 the second set of arguments containing also the size information about
+/// the ELF pair being compared.
+bool
+elf_size_is_greater(const compare_args_sptr &a1, const compare_args_sptr &a2)
+{
+  off_t s1 = a1->elf1.size + a1->elf2.size;
+  off_t s2 = a2->elf1.size + a2->elf2.size;
+
+  return s1 > s2;
 }
 
 /// Compare the ABI of two packages
@@ -1037,6 +1312,8 @@ compare(package&	first_package,
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
 
+  vector<compare_args_sptr> elf_pairs;
+
   for (map<string, elf_file_sptr>::iterator it =
 	 first_package.path_elf_file_sptr_map().begin();
        it != first_package.path_elf_file_sptr_map().end();
@@ -1049,13 +1326,9 @@ compare(package&	first_package,
 	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
 	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC))
 	{
-	  abidiff_status s = compare(*it->second, debug_dir1,
-				     *iter->second, debug_dir2,
-				     opts);
-	  second_package.path_elf_file_sptr_map().erase(iter);
-	  if (s & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
-	    diff.changed_binaries.push_back(it->second->name);
-	  status |= s;
+	  elf_pairs.push_back(compare_args_sptr(new compare_args(*it->second,
+						debug_dir1, *iter->second,
+						debug_dir2, opts)));
 	}
       else
 	{
@@ -1063,6 +1336,94 @@ compare(package&	first_package,
 	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
 	  status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
 	}
+    }
+
+  // Larger elfs are processed first, since it's usually safe to assume
+  // their debug-info is larger as well, but the results are still
+  // in a map ordered by looked up in elf.name order.
+  std::sort(elf_pairs.begin(), elf_pairs.end(), elf_size_is_greater);
+
+  size_t nprocs = opts.parallel ? sysconf(_SC_NPROCESSORS_ONLN) : 1;
+  // There's no reason to spawn more threads than there are pairs to be diffed.
+  nprocs = std::min(nprocs, elf_pairs.size());
+  assert(nprocs >= 1);
+
+  // We've identified the elf couples to compare, let's spawn NPROCS threads
+  // to do comparisons.
+  pthread_t thr;
+  vector<pthread_t> waitlist;
+  for (size_t i = 0; i < nprocs; ++i)
+    {
+      if (!pthread_create(&thr, /*attr=*/NULL,
+			  reinterpret_cast<void*(*)(void*)>(pthread_routine_compare),
+			  &elf_pairs))
+        // Record all the threads we will be waiting for.
+	waitlist.push_back(thr);
+    }
+
+  // Let's iterate over the valid ELF pairs in-order again, this time
+  // waiting for their diffs to come up from the other threads and reporting
+  // them ASAP.
+  for (map<string, elf_file_sptr>::iterator it =
+	 first_package.path_elf_file_sptr_map().begin();
+       it != first_package.path_elf_file_sptr_map().end();
+       ++it)
+    {
+      map<string, elf_file_sptr>::iterator iter =
+	second_package.path_elf_file_sptr_map().find(it->first);
+
+      if (iter != second_package.path_elf_file_sptr_map().end()
+	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
+	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC))
+	{
+	  second_package.path_elf_file_sptr_map().erase(iter);
+	  while (true)
+	    {
+	      pthread_mutex_lock(&map_lock);
+	      corpora_report_map::iterator d = reports_map.find(it->second->path);
+	      pthread_mutex_unlock(&map_lock);
+
+	      if (d == reports_map.end())
+		// No result yet.
+		continue;
+	      if (!d->second)
+		// The objects match.
+		break;
+	      else
+		{
+		  // Diff created -> report it.
+		  string name = it->second->name;
+		  diff.changed_binaries.push_back(name);
+		  const string prefix = "  ";
+
+		  cout << "================ changes of '"
+		       << name
+		       << "'===============\n";
+		  d->second->report(cout, prefix);
+
+		  cout << "================ end of changes of '"
+		       << name
+		       << "'===============\n\n";
+
+		  pthread_mutex_lock(&map_lock);
+		  env_map.erase(d->second);
+		  reports_map.erase(d);
+		  pthread_mutex_unlock(&map_lock);
+
+		  break;
+		}
+	    }
+	}
+    }
+
+  abidiff_status *s;
+  // Join the comparison threads and collect the statuses.
+  for (vector<pthread_t>::iterator it = waitlist.begin(); it != waitlist.end();
+       ++it)
+    {
+      pthread_join(*it, reinterpret_cast<void **>(&s));
+      status |= *s;
+      delete s;
     }
 
   for (map<string, elf_file_sptr>::iterator it =
@@ -1183,6 +1544,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	verbose = true;
       else if (!strcmp(argv[i], "--no-abignore"))
 	opts.abignore = false;
+      else if (!strcmp(argv[i], "--no-parallel"))
+	opts.parallel = false;
       else if (!strcmp(argv[i], "--suppressions")
 	       || !strcmp(argv[i], "--suppr"))
 	{
