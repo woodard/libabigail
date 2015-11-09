@@ -21518,15 +21518,14 @@
     </class-decl>
     <qualified-type-def type-id='type-id-1761' const='yes' id='type-id-1775'/>
     <pointer-type-def type-id='type-id-1775' size-in-bits='64' id='type-id-1759'/>
-    <pointer-type-def type-id='type-id-1776' size-in-bits='64' id='type-id-1777'/>
     <pointer-type-def type-id='type-id-1770' size-in-bits='64' id='type-id-1771'/>
     <reference-type-def kind='lvalue' type-id='type-id-1691' size-in-bits='64' id='type-id-1772'/>
-    <qualified-type-def type-id='type-id-1770' const='yes' id='type-id-1778'/>
-    <reference-type-def kind='lvalue' type-id='type-id-1778' size-in-bits='64' id='type-id-1773'/>
+    <qualified-type-def type-id='type-id-1770' const='yes' id='type-id-1776'/>
+    <reference-type-def kind='lvalue' type-id='type-id-1776' size-in-bits='64' id='type-id-1773'/>
     <reference-type-def kind='lvalue' type-id='type-id-1770' size-in-bits='64' id='type-id-1774'/>
-    <pointer-type-def type-id='type-id-1779' size-in-bits='64' id='type-id-1763'/>
-    <pointer-type-def type-id='type-id-1780' size-in-bits='64' id='type-id-1764'/>
-    <pointer-type-def type-id='type-id-1781' size-in-bits='64' id='type-id-1765'/>
+    <pointer-type-def type-id='type-id-1777' size-in-bits='64' id='type-id-1763'/>
+    <pointer-type-def type-id='type-id-1778' size-in-bits='64' id='type-id-1764'/>
+    <pointer-type-def type-id='type-id-1779' size-in-bits='64' id='type-id-1765'/>
     <enum-decl name='hb_ot_shape_normalization_mode_t' id='type-id-1766'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='HB_OT_SHAPE_NORMALIZATION_MODE_NONE' value='0'/>
@@ -21535,7 +21534,7 @@
       <enumerator name='HB_OT_SHAPE_NORMALIZATION_MODE_COMPOSED_DIACRITICS_NO_SHORT_CIRCUIT' value='3'/>
       <enumerator name='HB_OT_SHAPE_NORMALIZATION_MODE_DEFAULT' value='2'/>
     </enum-decl>
-    <class-decl name='hb_ot_shape_normalize_context_t' size-in-bits='384' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize-private.hh' line='53' column='1' id='type-id-1782'>
+    <class-decl name='hb_ot_shape_normalize_context_t' size-in-bits='384' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize-private.hh' line='53' column='1' id='type-id-1780'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='plan' type-id='type-id-1686' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize-private.hh' line='54' column='1'/>
       </data-member>
@@ -21555,10 +21554,10 @@
         <var-decl name='compose' type-id='type-id-1768' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize-private.hh' line='65' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-1783' size-in-bits='64' id='type-id-1767'/>
-    <qualified-type-def type-id='type-id-1782' const='yes' id='type-id-1784'/>
-    <pointer-type-def type-id='type-id-1784' size-in-bits='64' id='type-id-1785'/>
-    <pointer-type-def type-id='type-id-1786' size-in-bits='64' id='type-id-1768'/>
+    <pointer-type-def type-id='type-id-1781' size-in-bits='64' id='type-id-1767'/>
+    <qualified-type-def type-id='type-id-1780' const='yes' id='type-id-1782'/>
+    <pointer-type-def type-id='type-id-1782' size-in-bits='64' id='type-id-1783'/>
+    <pointer-type-def type-id='type-id-1784' size-in-bits='64' id='type-id-1768'/>
     <enum-decl name='hb_ot_shape_zero_width_marks_type_t' id='type-id-1769'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='HB_OT_SHAPE_ZERO_WIDTH_MARKS_NONE' value='0'/>
@@ -21568,14 +21567,14 @@
       <enumerator name='HB_OT_SHAPE_ZERO_WIDTH_MARKS_DEFAULT' value='1'/>
     </enum-decl>
     <pointer-type-def type-id='type-id-1691' size-in-bits='64' id='type-id-1760'/>
-    <class-decl name='hb_ot_shaper_font_data_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape.cc' line='146' column='1' id='type-id-1787'/>
-    <pointer-type-def type-id='type-id-1787' size-in-bits='64' id='type-id-1788'/>
+    <class-decl name='hb_ot_shaper_font_data_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape.cc' line='146' column='1' id='type-id-1785'/>
+    <pointer-type-def type-id='type-id-1785' size-in-bits='64' id='type-id-1786'/>
     <function-decl name='_hb_ot_shaper_font_data_create' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape.cc' line='149' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-146' name='font' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape.cc' line='149' column='1'/>
-      <return type-id='type-id-1788'/>
+      <return type-id='type-id-1786'/>
     </function-decl>
     <function-decl name='_hb_ot_shaper_font_data_destroy' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape.cc' line='155' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1788' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape.cc' line='155' column='1'/>
+      <parameter type-id='type-id-1786' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape.cc' line='155' column='1'/>
       <return type-id='type-id-5'/>
     </function-decl>
     <function-decl name='hb_ot_shape_plan_collect_lookups' mangled-name='hb_ot_shape_plan_collect_lookups' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape.cc' line='740' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_ot_shape_plan_collect_lookups'>
@@ -21648,35 +21647,29 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1776'>
-      <parameter type-id='type-id-1686'/>
-      <parameter type-id='type-id-146'/>
-      <parameter type-id='type-id-143'/>
-      <return type-id='type-id-5'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-1779'>
+    <function-type size-in-bits='64' id='type-id-1777'>
       <parameter type-id='type-id-1771'/>
       <return type-id='type-id-5'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1780'>
+    <function-type size-in-bits='64' id='type-id-1778'>
       <parameter type-id='type-id-1686'/>
       <return type-id='type-id-20'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1781'>
+    <function-type size-in-bits='64' id='type-id-1779'>
       <parameter type-id='type-id-1686'/>
       <parameter type-id='type-id-143'/>
       <parameter type-id='type-id-146'/>
       <return type-id='type-id-5'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1783'>
-      <parameter type-id='type-id-1785'/>
+    <function-type size-in-bits='64' id='type-id-1781'>
+      <parameter type-id='type-id-1783'/>
       <parameter type-id='type-id-70'/>
       <parameter type-id='type-id-107'/>
       <parameter type-id='type-id-107'/>
       <return type-id='type-id-7'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1786'>
-      <parameter type-id='type-id-1785'/>
+    <function-type size-in-bits='64' id='type-id-1784'>
+      <parameter type-id='type-id-1783'/>
       <parameter type-id='type-id-70'/>
       <parameter type-id='type-id-70'/>
       <parameter type-id='type-id-107'/>
@@ -21694,7 +21687,7 @@
         </data-member>
         <member-function access='public'>
           <function-decl name='Supplier' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='488' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1789' is-artificial='yes'/>
+            <parameter type-id='type-id-1787' is-artificial='yes'/>
             <parameter type-id='type-id-182'/>
             <parameter type-id='type-id-10'/>
             <return type-id='type-id-5'/>
@@ -21702,29 +21695,29 @@
         </member-function>
         <member-function access='public'>
           <function-decl name='operator[]' mangled-name='_ZNK2OT8SupplierINS_7IntTypeItLj2EEEEixEj' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='493' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1790' is-artificial='yes'/>
+            <parameter type-id='type-id-1788' is-artificial='yes'/>
             <parameter type-id='type-id-10'/>
             <return type-id='type-id-275'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='advance' mangled-name='_ZN2OT8SupplierINS_7IntTypeItLj2EEEE7advanceEj' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='499' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1789' is-artificial='yes'/>
+            <parameter type-id='type-id-1787' is-artificial='yes'/>
             <parameter type-id='type-id-10'/>
             <return type-id='type-id-5'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
           <function-decl name='Supplier' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='508' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1789' is-artificial='yes'/>
-            <parameter type-id='type-id-1791'/>
+            <parameter type-id='type-id-1787' is-artificial='yes'/>
+            <parameter type-id='type-id-1789'/>
             <return type-id='type-id-5'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
           <function-decl name='operator=' mangled-name='_ZN2OT8SupplierINS_7IntTypeItLj2EEEEaSERKS3_' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='509' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1789' is-artificial='yes'/>
-            <parameter type-id='type-id-1791'/>
+            <parameter type-id='type-id-1787' is-artificial='yes'/>
+            <parameter type-id='type-id-1789'/>
             <return type-id='type-id-436'/>
           </function-decl>
         </member-function>
@@ -21735,41 +21728,41 @@
           <var-decl name='len' type-id='type-id-10' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='511' column='1'/>
         </data-member>
         <data-member access='private' layout-offset-in-bits='64'>
-          <var-decl name='head' type-id='type-id-1792' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='512' column='1'/>
+          <var-decl name='head' type-id='type-id-1790' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='512' column='1'/>
         </data-member>
         <member-function access='public'>
           <function-decl name='Supplier' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='488' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1793' is-artificial='yes'/>
-            <parameter type-id='type-id-1792'/>
+            <parameter type-id='type-id-1791' is-artificial='yes'/>
+            <parameter type-id='type-id-1790'/>
             <parameter type-id='type-id-10'/>
             <return type-id='type-id-5'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='operator[]' mangled-name='_ZNK2OT8SupplierIjEixEj' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='493' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1794' is-artificial='yes'/>
+            <parameter type-id='type-id-1792' is-artificial='yes'/>
             <parameter type-id='type-id-10'/>
             <return type-id='type-id-77'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='advance' mangled-name='_ZN2OT8SupplierIjE7advanceEj' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='499' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1793' is-artificial='yes'/>
+            <parameter type-id='type-id-1791' is-artificial='yes'/>
             <parameter type-id='type-id-10'/>
             <return type-id='type-id-5'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
           <function-decl name='Supplier' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='508' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1793' is-artificial='yes'/>
-            <parameter type-id='type-id-1795'/>
+            <parameter type-id='type-id-1791' is-artificial='yes'/>
+            <parameter type-id='type-id-1793'/>
             <return type-id='type-id-5'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
           <function-decl name='operator=' mangled-name='_ZN2OT8SupplierIjEaSERKS1_' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='509' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-1793' is-artificial='yes'/>
-            <parameter type-id='type-id-1795'/>
+            <parameter type-id='type-id-1791' is-artificial='yes'/>
+            <parameter type-id='type-id-1793'/>
             <return type-id='type-id-901'/>
           </function-decl>
         </member-function>
@@ -21777,7 +21770,6 @@
       <class-decl name='Supplier&lt;OT::OffsetTo&lt;OT::Sequence, OT::IntType&lt;short unsigned int, 2u&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-917'/>
       <class-decl name='Supplier&lt;OT::OffsetTo&lt;OT::ArrayOf&lt;OT::IntType&lt;short unsigned int, 2u&gt;, OT::IntType&lt;short unsigned int, 2u&gt; &gt;, OT::IntType&lt;short unsigned int, 2u&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-710'/>
       <class-decl name='Supplier&lt;OT::OffsetTo&lt;OT::LigatureSet, OT::IntType&lt;short unsigned int, 2u&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-973'/>
-      <typedef-decl name='match_func_t' type-id='type-id-1796' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-layout-gsubgpos-private.hh' line='628' column='1' id='type-id-1797'/>
       <class-decl name='Supplier&lt;OT::OffsetTo&lt;OT::Rule, OT::IntType&lt;short unsigned int, 2u&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1001'/>
       <class-decl name='Supplier&lt;OT::OffsetTo&lt;OT::RuleSet, OT::IntType&lt;short unsigned int, 2u&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1013'/>
       <class-decl name='Supplier&lt;OT::OffsetTo&lt;OT::Coverage, OT::IntType&lt;short unsigned int, 2u&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-933'/>
@@ -21790,33 +21782,31 @@
       <class-decl name='Supplier&lt;OT::OffsetTo&lt;OT::LigGlyph, OT::IntType&lt;short unsigned int, 2u&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-752'/>
       <class-decl name='Supplier&lt;OT::OffsetTo&lt;OT::SubstLookupSubTable, OT::IntType&lt;short unsigned int, 2u&gt; &gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1326'/>
     </namespace-decl>
-    <pointer-type-def type-id='type-id-1798' size-in-bits='64' id='type-id-1796'/>
-    <reference-type-def kind='lvalue' type-id='type-id-1160' size-in-bits='64' id='type-id-1799'/>
-    <pointer-type-def type-id='type-id-582' size-in-bits='64' id='type-id-1800'/>
-    <reference-type-def kind='lvalue' type-id='type-id-577' size-in-bits='64' id='type-id-1801'/>
-    <reference-type-def kind='lvalue' type-id='type-id-582' size-in-bits='64' id='type-id-1802'/>
-    <pointer-type-def type-id='type-id-590' size-in-bits='64' id='type-id-1803'/>
-    <reference-type-def kind='lvalue' type-id='type-id-585' size-in-bits='64' id='type-id-1804'/>
-    <reference-type-def kind='lvalue' type-id='type-id-590' size-in-bits='64' id='type-id-1805'/>
-    <reference-type-def kind='lvalue' type-id='type-id-883' size-in-bits='64' id='type-id-1806'/>
-    <reference-type-def kind='lvalue' type-id='type-id-891' size-in-bits='64' id='type-id-1807'/>
-    <reference-type-def kind='lvalue' type-id='type-id-938' size-in-bits='64' id='type-id-1808'/>
-    <reference-type-def kind='lvalue' type-id='type-id-954' size-in-bits='64' id='type-id-1809'/>
-    <reference-type-def kind='lvalue' type-id='type-id-967' size-in-bits='64' id='type-id-1810'/>
-    <reference-type-def kind='lvalue' type-id='type-id-934' size-in-bits='64' id='type-id-1811'/>
-    <reference-type-def kind='lvalue' type-id='type-id-208' size-in-bits='64' id='type-id-1812'/>
-    <qualified-type-def type-id='type-id-1191' const='yes' id='type-id-1813'/>
-    <reference-type-def kind='lvalue' type-id='type-id-1813' size-in-bits='64' id='type-id-1814'/>
-    <pointer-type-def type-id='type-id-1815' size-in-bits='64' id='type-id-1816'/>
-    <pointer-type-def type-id='type-id-437' size-in-bits='64' id='type-id-1789'/>
-    <qualified-type-def type-id='type-id-437' const='yes' id='type-id-1817'/>
-    <pointer-type-def type-id='type-id-1817' size-in-bits='64' id='type-id-1790'/>
-    <reference-type-def kind='lvalue' type-id='type-id-1817' size-in-bits='64' id='type-id-1791'/>
-    <pointer-type-def type-id='type-id-77' size-in-bits='64' id='type-id-1792'/>
-    <pointer-type-def type-id='type-id-918' size-in-bits='64' id='type-id-1793'/>
-    <qualified-type-def type-id='type-id-918' const='yes' id='type-id-1818'/>
-    <pointer-type-def type-id='type-id-1818' size-in-bits='64' id='type-id-1794'/>
-    <reference-type-def kind='lvalue' type-id='type-id-1818' size-in-bits='64' id='type-id-1795'/>
+    <reference-type-def kind='lvalue' type-id='type-id-1160' size-in-bits='64' id='type-id-1794'/>
+    <pointer-type-def type-id='type-id-582' size-in-bits='64' id='type-id-1795'/>
+    <reference-type-def kind='lvalue' type-id='type-id-577' size-in-bits='64' id='type-id-1796'/>
+    <reference-type-def kind='lvalue' type-id='type-id-582' size-in-bits='64' id='type-id-1797'/>
+    <pointer-type-def type-id='type-id-590' size-in-bits='64' id='type-id-1798'/>
+    <reference-type-def kind='lvalue' type-id='type-id-585' size-in-bits='64' id='type-id-1799'/>
+    <reference-type-def kind='lvalue' type-id='type-id-590' size-in-bits='64' id='type-id-1800'/>
+    <reference-type-def kind='lvalue' type-id='type-id-883' size-in-bits='64' id='type-id-1801'/>
+    <reference-type-def kind='lvalue' type-id='type-id-891' size-in-bits='64' id='type-id-1802'/>
+    <reference-type-def kind='lvalue' type-id='type-id-938' size-in-bits='64' id='type-id-1803'/>
+    <reference-type-def kind='lvalue' type-id='type-id-954' size-in-bits='64' id='type-id-1804'/>
+    <reference-type-def kind='lvalue' type-id='type-id-967' size-in-bits='64' id='type-id-1805'/>
+    <reference-type-def kind='lvalue' type-id='type-id-934' size-in-bits='64' id='type-id-1806'/>
+    <reference-type-def kind='lvalue' type-id='type-id-208' size-in-bits='64' id='type-id-1807'/>
+    <qualified-type-def type-id='type-id-1191' const='yes' id='type-id-1808'/>
+    <reference-type-def kind='lvalue' type-id='type-id-1808' size-in-bits='64' id='type-id-1809'/>
+    <pointer-type-def type-id='type-id-437' size-in-bits='64' id='type-id-1787'/>
+    <qualified-type-def type-id='type-id-437' const='yes' id='type-id-1810'/>
+    <pointer-type-def type-id='type-id-1810' size-in-bits='64' id='type-id-1788'/>
+    <reference-type-def kind='lvalue' type-id='type-id-1810' size-in-bits='64' id='type-id-1789'/>
+    <pointer-type-def type-id='type-id-77' size-in-bits='64' id='type-id-1790'/>
+    <pointer-type-def type-id='type-id-918' size-in-bits='64' id='type-id-1791'/>
+    <qualified-type-def type-id='type-id-918' const='yes' id='type-id-1811'/>
+    <pointer-type-def type-id='type-id-1811' size-in-bits='64' id='type-id-1792'/>
+    <reference-type-def kind='lvalue' type-id='type-id-1811' size-in-bits='64' id='type-id-1793'/>
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -21985,18 +21975,6 @@
     <var-decl name='static_size' type-id='type-id-77' mangled-name='_ZN2OT8OffsetToINS_11SubstLookupENS_7IntTypeItLj2EEEE11static_sizeE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='778' column='1'/>
     <var-decl name='min_size' type-id='type-id-77' mangled-name='_ZN2OT8OffsetToINS_11SubstLookupENS_7IntTypeItLj2EEEE8min_sizeE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='778' column='1'/>
     <var-decl name='min_size' type-id='type-id-77' mangled-name='_ZN2OT7ArrayOfINS_8OffsetToINS_11SubstLookupENS_7IntTypeItLj2EEEEES4_E8min_sizeE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='895' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1798'>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-1543'/>
-      <return type-id='type-id-7'/>
-    </function-type>
-    <function-type size-in-bits='64' id='type-id-1815'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-default.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
@@ -22005,7 +21983,6 @@
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
     <var-decl name='_hb_modified_combining_class' type-id='type-id-149' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-unicode-private.hh' line='38' column='1'/>
-    <pointer-type-def type-id='type-id-1819' size-in-bits='64' id='type-id-1820'/>
     <var-decl name='_hb_ot_complex_shaper_default' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-default.cc' line='30' column='1'/>
     <var-decl name='_hb_ot_complex_shaper_arabic' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
     <var-decl name='_hb_ot_complex_shaper_hangul' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
@@ -22032,18 +22009,10 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1819'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-hangul.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
     </namespace-decl>
-    <pointer-type-def type-id='type-id-1821' size-in-bits='64' id='type-id-1822'/>
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22074,13 +22043,6 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1821'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-hebrew.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
@@ -22089,7 +22051,6 @@
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
     <var-decl name='_hb_modified_combining_class' type-id='type-id-149' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-unicode-private.hh' line='38' column='1'/>
-    <pointer-type-def type-id='type-id-1823' size-in-bits='64' id='type-id-1824'/>
     <var-decl name='_hb_ot_complex_shaper_default' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
     <var-decl name='_hb_ot_complex_shaper_arabic' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
     <var-decl name='_hb_ot_complex_shaper_hangul' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
@@ -22116,20 +22077,13 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1823'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-indic.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
     </namespace-decl>
-    <class-decl name='indic_shape_plan_t' size-in-bits='1344' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='507' column='1' id='type-id-1825'>
+    <class-decl name='indic_shape_plan_t' size-in-bits='1344' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='507' column='1' id='type-id-1812'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='config' type-id='type-id-1826' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='529' column='1'/>
+        <var-decl name='config' type-id='type-id-1813' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='529' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='is_old_spec' type-id='type-id-7' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='531' column='1'/>
@@ -22138,36 +22092,36 @@
         <var-decl name='virama_glyph' type-id='type-id-70' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='532' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='rphf' type-id='type-id-1827' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='534' column='1'/>
+        <var-decl name='rphf' type-id='type-id-1814' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='534' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='pref' type-id='type-id-1827' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='535' column='1'/>
+        <var-decl name='pref' type-id='type-id-1814' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='535' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='blwf' type-id='type-id-1827' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='536' column='1'/>
+        <var-decl name='blwf' type-id='type-id-1814' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='536' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
-        <var-decl name='pstf' type-id='type-id-1827' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='537' column='1'/>
+        <var-decl name='pstf' type-id='type-id-1814' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='537' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
-        <var-decl name='mask_array' type-id='type-id-1828' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='539' column='1'/>
+        <var-decl name='mask_array' type-id='type-id-1815' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='539' column='1'/>
       </data-member>
       <member-function access='public'>
         <function-decl name='_static_assertion_on_line_508' mangled-name='_ZNK18indic_shape_plan_t29_static_assertion_on_line_508Ev' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='508' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1829' is-artificial='yes'/>
+          <parameter type-id='type-id-1816' is-artificial='yes'/>
           <return type-id='type-id-5'/>
         </function-decl>
       </member-function>
       <member-function access='public'>
         <function-decl name='get_virama_glyph' mangled-name='_ZNK18indic_shape_plan_t16get_virama_glyphEP9hb_font_tPj' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='510' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1829' is-artificial='yes'/>
+          <parameter type-id='type-id-1816' is-artificial='yes'/>
           <parameter type-id='type-id-146'/>
           <parameter type-id='type-id-107'/>
           <return type-id='type-id-7'/>
         </function-decl>
       </member-function>
     </class-decl>
-    <class-decl name='indic_config_t' size-in-bits='256' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='305' column='1' id='type-id-1830'>
+    <class-decl name='indic_config_t' size-in-bits='256' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='305' column='1' id='type-id-1817'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='script' type-id='type-id-106' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='306' column='1'/>
       </data-member>
@@ -22178,28 +22132,28 @@
         <var-decl name='virama' type-id='type-id-70' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='308' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='96'>
-        <var-decl name='base_pos' type-id='type-id-1831' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='309' column='1'/>
+        <var-decl name='base_pos' type-id='type-id-1818' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='309' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='reph_pos' type-id='type-id-1832' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='310' column='1'/>
+        <var-decl name='reph_pos' type-id='type-id-1819' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='310' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='160'>
-        <var-decl name='reph_mode' type-id='type-id-1833' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='311' column='1'/>
+        <var-decl name='reph_mode' type-id='type-id-1820' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='311' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='blwf_mode' type-id='type-id-1834' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='312' column='1'/>
+        <var-decl name='blwf_mode' type-id='type-id-1821' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='312' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='224'>
-        <var-decl name='pref_len' type-id='type-id-1835' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='313' column='1'/>
+        <var-decl name='pref_len' type-id='type-id-1822' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='313' column='1'/>
       </data-member>
     </class-decl>
-    <enum-decl name='base_position_t' id='type-id-1831'>
+    <enum-decl name='base_position_t' id='type-id-1818'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='BASE_POS_FIRST' value='0'/>
       <enumerator name='BASE_POS_LAST_SINHALA' value='1'/>
       <enumerator name='BASE_POS_LAST' value='2'/>
     </enum-decl>
-    <enum-decl name='reph_position_t' id='type-id-1832'>
+    <enum-decl name='reph_position_t' id='type-id-1819'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='REPH_POS_AFTER_MAIN' value='5'/>
       <enumerator name='REPH_POS_BEFORE_SUB' value='7'/>
@@ -22208,27 +22162,27 @@
       <enumerator name='REPH_POS_AFTER_POST' value='12'/>
       <enumerator name='REPH_POS_DONT_CARE' value='1'/>
     </enum-decl>
-    <enum-decl name='reph_mode_t' id='type-id-1833'>
+    <enum-decl name='reph_mode_t' id='type-id-1820'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='REPH_MODE_IMPLICIT' value='0'/>
       <enumerator name='REPH_MODE_EXPLICIT' value='1'/>
       <enumerator name='REPH_MODE_VIS_REPHA' value='2'/>
       <enumerator name='REPH_MODE_LOG_REPHA' value='3'/>
     </enum-decl>
-    <enum-decl name='blwf_mode_t' id='type-id-1834'>
+    <enum-decl name='blwf_mode_t' id='type-id-1821'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='BLWF_MODE_PRE_AND_POST' value='0'/>
       <enumerator name='BLWF_MODE_POST_ONLY' value='1'/>
     </enum-decl>
-    <enum-decl name='pref_len_t' id='type-id-1835'>
+    <enum-decl name='pref_len_t' id='type-id-1822'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='PREF_LEN_1' value='1'/>
       <enumerator name='PREF_LEN_2' value='2'/>
       <enumerator name='PREF_LEN_DONT_CARE' value='2'/>
     </enum-decl>
-    <qualified-type-def type-id='type-id-1830' const='yes' id='type-id-1836'/>
-    <pointer-type-def type-id='type-id-1836' size-in-bits='64' id='type-id-1826'/>
-    <class-decl name='would_substitute_feature_t' size-in-bits='128' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='481' column='1' id='type-id-1827'>
+    <qualified-type-def type-id='type-id-1817' const='yes' id='type-id-1823'/>
+    <pointer-type-def type-id='type-id-1823' size-in-bits='64' id='type-id-1813'/>
+    <class-decl name='would_substitute_feature_t' size-in-bits='128' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='481' column='1' id='type-id-1814'>
       <data-member access='private' layout-offset-in-bits='0'>
         <var-decl name='lookups' type-id='type-id-1674' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='501' column='1'/>
       </data-member>
@@ -22240,7 +22194,7 @@
       </data-member>
       <member-function access='public'>
         <function-decl name='init' mangled-name='_ZN26would_substitute_feature_t4initEPK11hb_ot_map_tjb' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='482' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1837' is-artificial='yes'/>
+          <parameter type-id='type-id-1824' is-artificial='yes'/>
           <parameter type-id='type-id-1684'/>
           <parameter type-id='type-id-169'/>
           <parameter type-id='type-id-7'/>
@@ -22249,7 +22203,7 @@
       </member-function>
       <member-function access='public'>
         <function-decl name='would_substitute' mangled-name='_ZNK26would_substitute_feature_t16would_substituteEPKjjP9hb_face_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='490' column='1' visibility='default' binding='global' size-in-bits='64'>
-          <parameter type-id='type-id-1838' is-artificial='yes'/>
+          <parameter type-id='type-id-1825' is-artificial='yes'/>
           <parameter type-id='type-id-87'/>
           <parameter type-id='type-id-10'/>
           <parameter type-id='type-id-308'/>
@@ -22257,15 +22211,14 @@
         </function-decl>
       </member-function>
     </class-decl>
-    <pointer-type-def type-id='type-id-1839' size-in-bits='64' id='type-id-1840'/>
-    <pointer-type-def type-id='type-id-1827' size-in-bits='64' id='type-id-1837'/>
-    <qualified-type-def type-id='type-id-1827' const='yes' id='type-id-1841'/>
-    <pointer-type-def type-id='type-id-1841' size-in-bits='64' id='type-id-1838'/>
-    <array-type-def dimensions='1' type-id='type-id-88' size-in-bits='672' id='type-id-1828'>
+    <pointer-type-def type-id='type-id-1814' size-in-bits='64' id='type-id-1824'/>
+    <qualified-type-def type-id='type-id-1814' const='yes' id='type-id-1826'/>
+    <pointer-type-def type-id='type-id-1826' size-in-bits='64' id='type-id-1825'/>
+    <array-type-def dimensions='1' type-id='type-id-88' size-in-bits='672' id='type-id-1815'>
       <subrange length='21'/>
     </array-type-def>
-    <qualified-type-def type-id='type-id-1825' const='yes' id='type-id-1842'/>
-    <pointer-type-def type-id='type-id-1842' size-in-bits='64' id='type-id-1829'/>
+    <qualified-type-def type-id='type-id-1812' const='yes' id='type-id-1827'/>
+    <pointer-type-def type-id='type-id-1827' size-in-bits='64' id='type-id-1816'/>
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22296,13 +22249,6 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1839'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-indic-table.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
@@ -22315,7 +22261,6 @@
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
     <var-decl name='_hb_modified_combining_class' type-id='type-id-149' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-unicode-private.hh' line='38' column='1'/>
-    <pointer-type-def type-id='type-id-1843' size-in-bits='64' id='type-id-1844'/>
     <var-decl name='_hb_ot_complex_shaper_default' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
     <var-decl name='_hb_ot_complex_shaper_arabic' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
     <var-decl name='_hb_ot_complex_shaper_hangul' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
@@ -22342,18 +22287,10 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1843'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-myanmar.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
     </namespace-decl>
-    <pointer-type-def type-id='type-id-1845' size-in-bits='64' id='type-id-1846'/>
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22384,18 +22321,10 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1845'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-sea.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
     </namespace-decl>
-    <pointer-type-def type-id='type-id-1847' size-in-bits='64' id='type-id-1848'/>
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22426,13 +22355,6 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1847'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-thai.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
@@ -22441,7 +22363,6 @@
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
     <var-decl name='_hb_modified_combining_class' type-id='type-id-149' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-unicode-private.hh' line='38' column='1'/>
-    <pointer-type-def type-id='type-id-1849' size-in-bits='64' id='type-id-1850'/>
     <var-decl name='_hb_ot_complex_shaper_default' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
     <var-decl name='_hb_ot_complex_shaper_arabic' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
     <var-decl name='_hb_ot_complex_shaper_hangul' type-id='type-id-1775' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-private.hh' line='150' column='1'/>
@@ -22468,18 +22389,10 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1849'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-tibetan.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
     </namespace-decl>
-    <pointer-type-def type-id='type-id-1851' size-in-bits='64' id='type-id-1852'/>
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22510,18 +22423,10 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1851'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-normalize.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
     </namespace-decl>
-    <pointer-type-def type-id='type-id-1853' size-in-bits='64' id='type-id-1854'/>
     <function-decl name='_hb_ot_shape_normalize' mangled-name='_Z22_hb_ot_shape_normalizePK18hb_ot_shape_plan_tP11hb_buffer_tP9hb_font_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize.cc' line='288' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-1686' name='plan' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize.cc' line='288' column='1'/>
       <parameter type-id='type-id-143' name='buffer' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize.cc' line='289' column='1'/>
@@ -22558,13 +22463,6 @@
     <var-decl name='mask_bytes' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE10mask_bytesE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='47' column='1'/>
     <var-decl name='mask_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE9mask_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='48' column='1'/>
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1853'>
-      <parameter type-id='type-id-1785'/>
-      <parameter type-id='type-id-70'/>
-      <parameter type-id='type-id-107'/>
-      <parameter type-id='type-id-107'/>
-      <return type-id='type-id-7'/>
-    </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-fallback.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='OT'>
@@ -22723,36 +22621,36 @@
     <var-decl name='min_size' type-id='type-id-77' mangled-name='_ZN2OT7ArrayOfINS_8OffsetToINS_6LookupENS_7IntTypeItLj2EEEEES4_E8min_sizeE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='895' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-fallback-shape.cc' language='LANG_C_plus_plus'>
-    <class-decl name='hb_fallback_shaper_face_data_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='35' column='1' id='type-id-1855'/>
-    <pointer-type-def type-id='type-id-1855' size-in-bits='64' id='type-id-1856'/>
+    <class-decl name='hb_fallback_shaper_face_data_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='35' column='1' id='type-id-1828'/>
+    <pointer-type-def type-id='type-id-1828' size-in-bits='64' id='type-id-1829'/>
     <function-decl name='_hb_fallback_shaper_face_data_create' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='38' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-308' name='face' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='38' column='1'/>
-      <return type-id='type-id-1856'/>
+      <return type-id='type-id-1829'/>
     </function-decl>
     <function-decl name='_hb_fallback_shaper_face_data_destroy' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='44' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1856' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='44' column='1'/>
+      <parameter type-id='type-id-1829' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='44' column='1'/>
       <return type-id='type-id-5'/>
     </function-decl>
-    <class-decl name='hb_fallback_shaper_font_data_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='53' column='1' id='type-id-1857'/>
-    <pointer-type-def type-id='type-id-1857' size-in-bits='64' id='type-id-1858'/>
+    <class-decl name='hb_fallback_shaper_font_data_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='53' column='1' id='type-id-1830'/>
+    <pointer-type-def type-id='type-id-1830' size-in-bits='64' id='type-id-1831'/>
     <function-decl name='_hb_fallback_shaper_font_data_create' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='56' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-146' name='font' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='56' column='1'/>
-      <return type-id='type-id-1858'/>
+      <return type-id='type-id-1831'/>
     </function-decl>
     <function-decl name='_hb_fallback_shaper_font_data_destroy' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='62' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1858' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='62' column='1'/>
+      <parameter type-id='type-id-1831' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='62' column='1'/>
       <return type-id='type-id-5'/>
     </function-decl>
-    <class-decl name='hb_fallback_shaper_shape_plan_data_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='71' column='1' id='type-id-1859'/>
-    <pointer-type-def type-id='type-id-1859' size-in-bits='64' id='type-id-1860'/>
+    <class-decl name='hb_fallback_shaper_shape_plan_data_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='71' column='1' id='type-id-1832'/>
+    <pointer-type-def type-id='type-id-1832' size-in-bits='64' id='type-id-1833'/>
     <function-decl name='_hb_fallback_shaper_shape_plan_data_create' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='74' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-302' name='shape_plan' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='74' column='1'/>
       <parameter type-id='type-id-362' name='user_features' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='75' column='1'/>
       <parameter type-id='type-id-10' name='num_user_features' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='76' column='1'/>
-      <return type-id='type-id-1860'/>
+      <return type-id='type-id-1833'/>
     </function-decl>
     <function-decl name='_hb_fallback_shaper_shape_plan_data_destroy' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='82' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-1860' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='82' column='1'/>
+      <parameter type-id='type-id-1833' name='data' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='82' column='1'/>
       <return type-id='type-id-5'/>
     </function-decl>
     <function-decl name='_hb_fallback_shape' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-fallback-shape.cc' line='92' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -22773,7 +22671,7 @@
     <function-decl name='hb_glib_get_unicode_funcs' mangled-name='hb_glib_get_unicode_funcs' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-glib.cc' line='368' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_glib_get_unicode_funcs'>
       <return type-id='type-id-68'/>
     </function-decl>
-    <enum-decl name='GUnicodeScript' id='type-id-1861'>
+    <enum-decl name='GUnicodeScript' id='type-id-1834'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='G_UNICODE_SCRIPT_INVALID_CODE' value='-1'/>
       <enumerator name='G_UNICODE_SCRIPT_COMMON' value='0'/>
@@ -22905,160 +22803,160 @@
     </enum-decl>
     <function-decl name='hb_glib_script_from_script' mangled-name='hb_glib_script_from_script' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-glib.cc' line='177' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_glib_script_from_script'>
       <parameter type-id='type-id-106' name='script' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-glib.cc' line='177' column='1'/>
-      <return type-id='type-id-1861'/>
+      <return type-id='type-id-1834'/>
     </function-decl>
     <function-decl name='hb_glib_script_to_script' mangled-name='hb_glib_script_to_script' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-glib.cc' line='161' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_glib_script_to_script'>
-      <parameter type-id='type-id-1861' name='script' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-glib.cc' line='161' column='1'/>
+      <parameter type-id='type-id-1834' name='script' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-glib.cc' line='161' column='1'/>
       <return type-id='type-id-106'/>
     </function-decl>
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
-    <typedef-decl name='gchar' type-id='type-id-28' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/glib@2.42.1-46d6a76b/include/glib-2.0/glib/gtypes.h' line='46' column='1' id='type-id-1862'/>
-    <qualified-type-def type-id='type-id-1862' const='yes' id='type-id-1863'/>
-    <pointer-type-def type-id='type-id-1863' size-in-bits='64' id='type-id-1864'/>
-    <qualified-type-def type-id='type-id-1864' const='yes' id='type-id-1865'/>
-    <var-decl name='g_utf8_skip' type-id='type-id-1865' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/glib@2.42.1-46d6a76b/include/glib-2.0/glib/gunicode.h' line='680' column='1'/>
+    <typedef-decl name='gchar' type-id='type-id-28' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/glib@2.42.1-46d6a76b/include/glib-2.0/glib/gtypes.h' line='46' column='1' id='type-id-1835'/>
+    <qualified-type-def type-id='type-id-1835' const='yes' id='type-id-1836'/>
+    <pointer-type-def type-id='type-id-1836' size-in-bits='64' id='type-id-1837'/>
+    <qualified-type-def type-id='type-id-1837' const='yes' id='type-id-1838'/>
+    <var-decl name='g_utf8_skip' type-id='type-id-1838' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/glib@2.42.1-46d6a76b/include/glib-2.0/glib/gunicode.h' line='680' column='1'/>
     <var-decl name='_hb_modified_combining_class' type-id='type-id-149' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-unicode-private.hh' line='38' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ft.cc' language='LANG_C_plus_plus'>
-    <class-decl name='FT_FaceRec_' size-in-bits='1984' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='959' column='1' id='type-id-1866'>
+    <class-decl name='FT_FaceRec_' size-in-bits='1984' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='959' column='1' id='type-id-1839'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='num_faces' type-id='type-id-1867' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='960' column='1'/>
+        <var-decl name='num_faces' type-id='type-id-1840' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='960' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='face_index' type-id='type-id-1867' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='961' column='1'/>
+        <var-decl name='face_index' type-id='type-id-1840' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='961' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='face_flags' type-id='type-id-1867' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='963' column='1'/>
+        <var-decl name='face_flags' type-id='type-id-1840' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='963' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='style_flags' type-id='type-id-1867' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='964' column='1'/>
+        <var-decl name='style_flags' type-id='type-id-1840' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='964' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='num_glyphs' type-id='type-id-1867' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='966' column='1'/>
+        <var-decl name='num_glyphs' type-id='type-id-1840' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='966' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='family_name' type-id='type-id-1868' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='968' column='1'/>
+        <var-decl name='family_name' type-id='type-id-1841' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='968' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='style_name' type-id='type-id-1868' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='969' column='1'/>
+        <var-decl name='style_name' type-id='type-id-1841' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='969' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
-        <var-decl name='num_fixed_sizes' type-id='type-id-1869' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='971' column='1'/>
+        <var-decl name='num_fixed_sizes' type-id='type-id-1842' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='971' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
-        <var-decl name='available_sizes' type-id='type-id-1870' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='972' column='1'/>
+        <var-decl name='available_sizes' type-id='type-id-1843' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='972' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='576'>
-        <var-decl name='num_charmaps' type-id='type-id-1869' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='974' column='1'/>
+        <var-decl name='num_charmaps' type-id='type-id-1842' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='974' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
-        <var-decl name='charmaps' type-id='type-id-1871' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='975' column='1'/>
+        <var-decl name='charmaps' type-id='type-id-1844' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='975' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='704'>
-        <var-decl name='generic' type-id='type-id-1872' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='977' column='1'/>
+        <var-decl name='generic' type-id='type-id-1845' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='977' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='832'>
-        <var-decl name='bbox' type-id='type-id-1873' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='982' column='1'/>
+        <var-decl name='bbox' type-id='type-id-1846' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='982' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1088'>
-        <var-decl name='units_per_EM' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='984' column='1'/>
+        <var-decl name='units_per_EM' type-id='type-id-1847' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='984' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1104'>
-        <var-decl name='ascender' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='985' column='1'/>
+        <var-decl name='ascender' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='985' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1120'>
-        <var-decl name='descender' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='986' column='1'/>
+        <var-decl name='descender' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='986' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1136'>
-        <var-decl name='height' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='987' column='1'/>
+        <var-decl name='height' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='987' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1152'>
-        <var-decl name='max_advance_width' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='989' column='1'/>
+        <var-decl name='max_advance_width' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='989' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1168'>
-        <var-decl name='max_advance_height' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='990' column='1'/>
+        <var-decl name='max_advance_height' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='990' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1184'>
-        <var-decl name='underline_position' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='992' column='1'/>
+        <var-decl name='underline_position' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='992' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1200'>
-        <var-decl name='underline_thickness' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='993' column='1'/>
+        <var-decl name='underline_thickness' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='993' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1216'>
-        <var-decl name='glyph' type-id='type-id-1876' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='995' column='1'/>
+        <var-decl name='glyph' type-id='type-id-1849' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='995' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1280'>
-        <var-decl name='size' type-id='type-id-1877' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='996' column='1'/>
+        <var-decl name='size' type-id='type-id-1850' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='996' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1344'>
-        <var-decl name='charmap' type-id='type-id-1878' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='997' column='1'/>
+        <var-decl name='charmap' type-id='type-id-1851' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='997' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1408'>
-        <var-decl name='driver' type-id='type-id-1879' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1001' column='1'/>
+        <var-decl name='driver' type-id='type-id-1852' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1001' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1472'>
-        <var-decl name='memory' type-id='type-id-1880' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1002' column='1'/>
+        <var-decl name='memory' type-id='type-id-1853' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1002' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1536'>
-        <var-decl name='stream' type-id='type-id-1881' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1003' column='1'/>
+        <var-decl name='stream' type-id='type-id-1854' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1003' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1600'>
-        <var-decl name='sizes_list' type-id='type-id-1882' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1005' column='1'/>
+        <var-decl name='sizes_list' type-id='type-id-1855' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1005' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1728'>
-        <var-decl name='autohint' type-id='type-id-1872' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1007' column='1'/>
+        <var-decl name='autohint' type-id='type-id-1845' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1007' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1856'>
         <var-decl name='extensions' type-id='type-id-20' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1008' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1920'>
-        <var-decl name='internal' type-id='type-id-1883' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1010' column='1'/>
+        <var-decl name='internal' type-id='type-id-1856' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1010' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='FT_Long' type-id='type-id-62' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='238' column='1' id='type-id-1867'/>
-    <typedef-decl name='FT_String' type-id='type-id-28' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='183' column='1' id='type-id-1884'/>
-    <pointer-type-def type-id='type-id-1884' size-in-bits='64' id='type-id-1868'/>
-    <typedef-decl name='FT_Int' type-id='type-id-4' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='216' column='1' id='type-id-1869'/>
-    <class-decl name='FT_Bitmap_Size_' size-in-bits='256' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='334' column='1' id='type-id-1885'>
+    <typedef-decl name='FT_Long' type-id='type-id-62' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='238' column='1' id='type-id-1840'/>
+    <typedef-decl name='FT_String' type-id='type-id-28' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='183' column='1' id='type-id-1857'/>
+    <pointer-type-def type-id='type-id-1857' size-in-bits='64' id='type-id-1841'/>
+    <typedef-decl name='FT_Int' type-id='type-id-4' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='216' column='1' id='type-id-1842'/>
+    <class-decl name='FT_Bitmap_Size_' size-in-bits='256' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='334' column='1' id='type-id-1858'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='height' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='335' column='1'/>
+        <var-decl name='height' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='335' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='16'>
-        <var-decl name='width' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='336' column='1'/>
+        <var-decl name='width' type-id='type-id-1848' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='336' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='size' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='338' column='1'/>
+        <var-decl name='size' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='338' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='x_ppem' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='340' column='1'/>
+        <var-decl name='x_ppem' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='340' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='y_ppem' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='341' column='1'/>
+        <var-decl name='y_ppem' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='341' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='FT_Short' type-id='type-id-246' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='194' column='1' id='type-id-1875'/>
-    <typedef-decl name='FT_Pos' type-id='type-id-62' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='58' column='1' id='type-id-1886'/>
-    <typedef-decl name='FT_Bitmap_Size' type-id='type-id-1885' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='343' column='1' id='type-id-1887'/>
-    <pointer-type-def type-id='type-id-1887' size-in-bits='64' id='type-id-1870'/>
-    <class-decl name='FT_CharMapRec_' size-in-bits='128' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='780' column='1' id='type-id-1888'>
+    <typedef-decl name='FT_Short' type-id='type-id-246' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='194' column='1' id='type-id-1848'/>
+    <typedef-decl name='FT_Pos' type-id='type-id-62' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='58' column='1' id='type-id-1859'/>
+    <typedef-decl name='FT_Bitmap_Size' type-id='type-id-1858' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='343' column='1' id='type-id-1860'/>
+    <pointer-type-def type-id='type-id-1860' size-in-bits='64' id='type-id-1843'/>
+    <class-decl name='FT_CharMapRec_' size-in-bits='128' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='780' column='1' id='type-id-1861'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='face' type-id='type-id-1889' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='781' column='1'/>
+        <var-decl name='face' type-id='type-id-1862' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='781' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='encoding' type-id='type-id-1890' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='782' column='1'/>
+        <var-decl name='encoding' type-id='type-id-1863' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='782' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='96'>
-        <var-decl name='platform_id' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='783' column='1'/>
+        <var-decl name='platform_id' type-id='type-id-1847' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='783' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='112'>
-        <var-decl name='encoding_id' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='784' column='1'/>
+        <var-decl name='encoding_id' type-id='type-id-1847' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='784' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-1866' size-in-bits='64' id='type-id-1891'/>
-    <typedef-decl name='FT_Face' type-id='type-id-1891' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='440' column='1' id='type-id-1889'/>
-    <enum-decl name='FT_Encoding_' id='type-id-1892'>
+    <pointer-type-def type-id='type-id-1839' size-in-bits='64' id='type-id-1864'/>
+    <typedef-decl name='FT_Face' type-id='type-id-1864' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='440' column='1' id='type-id-1862'/>
+    <enum-decl name='FT_Encoding_' id='type-id-1865'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='FT_ENCODING_NONE' value='0'/>
       <enumerator name='FT_ENCODING_MS_SYMBOL' value='1937337698'/>
@@ -23080,84 +22978,84 @@
       <enumerator name='FT_ENCODING_OLD_LATIN_2' value='1818326066'/>
       <enumerator name='FT_ENCODING_APPLE_ROMAN' value='1634889070'/>
     </enum-decl>
-    <typedef-decl name='FT_Encoding' type-id='type-id-1892' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='727' column='1' id='type-id-1890'/>
-    <typedef-decl name='FT_UShort' type-id='type-id-55' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='205' column='1' id='type-id-1874'/>
-    <pointer-type-def type-id='type-id-1888' size-in-bits='64' id='type-id-1893'/>
-    <typedef-decl name='FT_CharMap' type-id='type-id-1893' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='524' column='1' id='type-id-1878'/>
-    <pointer-type-def type-id='type-id-1878' size-in-bits='64' id='type-id-1871'/>
-    <class-decl name='FT_Generic_' size-in-bits='128' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='456' column='1' id='type-id-1894'>
+    <typedef-decl name='FT_Encoding' type-id='type-id-1865' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='727' column='1' id='type-id-1863'/>
+    <typedef-decl name='FT_UShort' type-id='type-id-55' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='205' column='1' id='type-id-1847'/>
+    <pointer-type-def type-id='type-id-1861' size-in-bits='64' id='type-id-1866'/>
+    <typedef-decl name='FT_CharMap' type-id='type-id-1866' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='524' column='1' id='type-id-1851'/>
+    <pointer-type-def type-id='type-id-1851' size-in-bits='64' id='type-id-1844'/>
+    <class-decl name='FT_Generic_' size-in-bits='128' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='456' column='1' id='type-id-1867'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='data' type-id='type-id-20' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='457' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='finalizer' type-id='type-id-1895' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='458' column='1'/>
+        <var-decl name='finalizer' type-id='type-id-1868' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='458' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='FT_Generic_Finalizer' type-id='type-id-31' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='424' column='1' id='type-id-1895'/>
-    <typedef-decl name='FT_Generic' type-id='type-id-1894' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='460' column='1' id='type-id-1872'/>
-    <class-decl name='FT_BBox_' size-in-bits='256' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='116' column='1' id='type-id-1896'>
+    <typedef-decl name='FT_Generic_Finalizer' type-id='type-id-31' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='424' column='1' id='type-id-1868'/>
+    <typedef-decl name='FT_Generic' type-id='type-id-1867' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='460' column='1' id='type-id-1845'/>
+    <class-decl name='FT_BBox_' size-in-bits='256' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='116' column='1' id='type-id-1869'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='xMin' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='117' column='1'/>
+        <var-decl name='xMin' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='117' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='yMin' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='117' column='1'/>
+        <var-decl name='yMin' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='117' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='xMax' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='118' column='1'/>
+        <var-decl name='xMax' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='118' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='yMax' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='118' column='1'/>
+        <var-decl name='yMax' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='118' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='FT_BBox' type-id='type-id-1896' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='120' column='1' id='type-id-1873'/>
-    <class-decl name='FT_GlyphSlotRec_' size-in-bits='2432' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1671' column='1' id='type-id-1897'>
+    <typedef-decl name='FT_BBox' type-id='type-id-1869' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='120' column='1' id='type-id-1846'/>
+    <class-decl name='FT_GlyphSlotRec_' size-in-bits='2432' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1671' column='1' id='type-id-1870'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='library' type-id='type-id-1898' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1672' column='1'/>
+        <var-decl name='library' type-id='type-id-1871' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1672' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='face' type-id='type-id-1889' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1673' column='1'/>
+        <var-decl name='face' type-id='type-id-1862' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1673' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='next' type-id='type-id-1876' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1674' column='1'/>
+        <var-decl name='next' type-id='type-id-1849' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1674' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='reserved' type-id='type-id-1899' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1675' column='1'/>
+        <var-decl name='reserved' type-id='type-id-1872' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1675' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='generic' type-id='type-id-1872' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1676' column='1'/>
+        <var-decl name='generic' type-id='type-id-1845' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1676' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='metrics' type-id='type-id-1900' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1678' column='1'/>
+        <var-decl name='metrics' type-id='type-id-1873' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1678' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='896'>
-        <var-decl name='linearHoriAdvance' type-id='type-id-1901' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1679' column='1'/>
+        <var-decl name='linearHoriAdvance' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1679' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='960'>
-        <var-decl name='linearVertAdvance' type-id='type-id-1901' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1680' column='1'/>
+        <var-decl name='linearVertAdvance' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1680' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1024'>
-        <var-decl name='advance' type-id='type-id-1902' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1681' column='1'/>
+        <var-decl name='advance' type-id='type-id-1875' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1681' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1152'>
-        <var-decl name='format' type-id='type-id-1903' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1683' column='1'/>
+        <var-decl name='format' type-id='type-id-1876' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1683' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1216'>
-        <var-decl name='bitmap' type-id='type-id-1904' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1685' column='1'/>
+        <var-decl name='bitmap' type-id='type-id-1877' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1685' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1536'>
-        <var-decl name='bitmap_left' type-id='type-id-1869' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1686' column='1'/>
+        <var-decl name='bitmap_left' type-id='type-id-1842' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1686' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1568'>
-        <var-decl name='bitmap_top' type-id='type-id-1869' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1687' column='1'/>
+        <var-decl name='bitmap_top' type-id='type-id-1842' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1687' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1600'>
-        <var-decl name='outline' type-id='type-id-1905' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1689' column='1'/>
+        <var-decl name='outline' type-id='type-id-1878' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1689' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1920'>
-        <var-decl name='num_subglyphs' type-id='type-id-1899' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1691' column='1'/>
+        <var-decl name='num_subglyphs' type-id='type-id-1872' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1691' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1984'>
-        <var-decl name='subglyphs' type-id='type-id-1906' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1692' column='1'/>
+        <var-decl name='subglyphs' type-id='type-id-1879' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1692' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2048'>
         <var-decl name='control_data' type-id='type-id-20' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1694' column='1'/>
@@ -23166,62 +23064,62 @@
         <var-decl name='control_len' type-id='type-id-62' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1695' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2176'>
-        <var-decl name='lsb_delta' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1697' column='1'/>
+        <var-decl name='lsb_delta' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1697' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2240'>
-        <var-decl name='rsb_delta' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1698' column='1'/>
+        <var-decl name='rsb_delta' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1698' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2304'>
         <var-decl name='other' type-id='type-id-20' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1700' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='2368'>
-        <var-decl name='internal' type-id='type-id-1907' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1702' column='1'/>
+        <var-decl name='internal' type-id='type-id-1880' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1702' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='FT_LibraryRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1908'/>
-    <pointer-type-def type-id='type-id-1908' size-in-bits='64' id='type-id-1909'/>
-    <typedef-decl name='FT_Library' type-id='type-id-1909' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='376' column='1' id='type-id-1898'/>
-    <pointer-type-def type-id='type-id-1897' size-in-bits='64' id='type-id-1910'/>
-    <typedef-decl name='FT_GlyphSlot' type-id='type-id-1910' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='492' column='1' id='type-id-1876'/>
-    <typedef-decl name='FT_UInt' type-id='type-id-10' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='227' column='1' id='type-id-1899'/>
-    <class-decl name='FT_Glyph_Metrics_' size-in-bits='512' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='280' column='1' id='type-id-1911'>
+    <class-decl name='FT_LibraryRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1881'/>
+    <pointer-type-def type-id='type-id-1881' size-in-bits='64' id='type-id-1882'/>
+    <typedef-decl name='FT_Library' type-id='type-id-1882' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='376' column='1' id='type-id-1871'/>
+    <pointer-type-def type-id='type-id-1870' size-in-bits='64' id='type-id-1883'/>
+    <typedef-decl name='FT_GlyphSlot' type-id='type-id-1883' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='492' column='1' id='type-id-1849'/>
+    <typedef-decl name='FT_UInt' type-id='type-id-10' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='227' column='1' id='type-id-1872'/>
+    <class-decl name='FT_Glyph_Metrics_' size-in-bits='512' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='280' column='1' id='type-id-1884'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='width' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='281' column='1'/>
+        <var-decl name='width' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='281' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='height' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='282' column='1'/>
+        <var-decl name='height' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='282' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='horiBearingX' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='284' column='1'/>
+        <var-decl name='horiBearingX' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='284' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='horiBearingY' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='285' column='1'/>
+        <var-decl name='horiBearingY' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='285' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='horiAdvance' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='286' column='1'/>
+        <var-decl name='horiAdvance' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='286' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='vertBearingX' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='288' column='1'/>
+        <var-decl name='vertBearingX' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='288' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='vertBearingY' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='289' column='1'/>
+        <var-decl name='vertBearingY' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='289' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
-        <var-decl name='vertAdvance' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='290' column='1'/>
+        <var-decl name='vertAdvance' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='290' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='FT_Glyph_Metrics' type-id='type-id-1911' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='292' column='1' id='type-id-1900'/>
-    <typedef-decl name='FT_Fixed' type-id='type-id-62' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='284' column='1' id='type-id-1901'/>
-    <class-decl name='FT_Vector_' size-in-bits='128' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='75' column='1' id='type-id-1912'>
+    <typedef-decl name='FT_Glyph_Metrics' type-id='type-id-1884' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='292' column='1' id='type-id-1873'/>
+    <typedef-decl name='FT_Fixed' type-id='type-id-62' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='284' column='1' id='type-id-1874'/>
+    <class-decl name='FT_Vector_' size-in-bits='128' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='75' column='1' id='type-id-1885'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='x' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='76' column='1'/>
+        <var-decl name='x' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='76' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='y' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='77' column='1'/>
+        <var-decl name='y' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='77' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='FT_Vector' type-id='type-id-1912' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='79' column='1' id='type-id-1902'/>
-    <enum-decl name='FT_Glyph_Format_' id='type-id-1913'>
+    <typedef-decl name='FT_Vector' type-id='type-id-1885' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='79' column='1' id='type-id-1875'/>
+    <enum-decl name='FT_Glyph_Format_' id='type-id-1886'>
       <underlying-type type-id='type-id-45'/>
       <enumerator name='FT_GLYPH_FORMAT_NONE' value='0'/>
       <enumerator name='FT_GLYPH_FORMAT_COMPOSITE' value='1668246896'/>
@@ -23229,8 +23127,8 @@
       <enumerator name='FT_GLYPH_FORMAT_OUTLINE' value='1869968492'/>
       <enumerator name='FT_GLYPH_FORMAT_PLOTTER' value='1886154612'/>
     </enum-decl>
-    <typedef-decl name='FT_Glyph_Format' type-id='type-id-1913' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='796' column='1' id='type-id-1903'/>
-    <class-decl name='FT_Bitmap_' size-in-bits='320' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='320' column='1' id='type-id-1914'>
+    <typedef-decl name='FT_Glyph_Format' type-id='type-id-1886' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='796' column='1' id='type-id-1876'/>
+    <class-decl name='FT_Bitmap_' size-in-bits='320' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='320' column='1' id='type-id-1887'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='rows' type-id='type-id-4' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='321' column='1'/>
       </data-member>
@@ -23241,7 +23139,7 @@
         <var-decl name='pitch' type-id='type-id-4' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='323' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='buffer' type-id='type-id-1915' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='324' column='1'/>
+        <var-decl name='buffer' type-id='type-id-1888' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='324' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
         <var-decl name='num_grays' type-id='type-id-246' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='325' column='1'/>
@@ -23256,9 +23154,9 @@
         <var-decl name='palette' type-id='type-id-20' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='328' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-137' size-in-bits='64' id='type-id-1915'/>
-    <typedef-decl name='FT_Bitmap' type-id='type-id-1914' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='330' column='1' id='type-id-1904'/>
-    <class-decl name='FT_Outline_' size-in-bits='320' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='393' column='1' id='type-id-1916'>
+    <pointer-type-def type-id='type-id-137' size-in-bits='64' id='type-id-1888'/>
+    <typedef-decl name='FT_Bitmap' type-id='type-id-1887' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='330' column='1' id='type-id-1877'/>
+    <class-decl name='FT_Outline_' size-in-bits='320' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='393' column='1' id='type-id-1889'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='n_contours' type-id='type-id-246' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='394' column='1'/>
       </data-member>
@@ -23266,101 +23164,101 @@
         <var-decl name='n_points' type-id='type-id-246' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='395' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='points' type-id='type-id-1917' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='397' column='1'/>
+        <var-decl name='points' type-id='type-id-1890' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='397' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <var-decl name='tags' type-id='type-id-50' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='398' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='contours' type-id='type-id-1918' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='399' column='1'/>
+        <var-decl name='contours' type-id='type-id-1891' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='399' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <var-decl name='flags' type-id='type-id-4' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='401' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-1902' size-in-bits='64' id='type-id-1917'/>
-    <pointer-type-def type-id='type-id-246' size-in-bits='64' id='type-id-1918'/>
-    <typedef-decl name='FT_Outline' type-id='type-id-1916' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='403' column='1' id='type-id-1905'/>
-    <class-decl name='FT_SubGlyphRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1919'/>
-    <pointer-type-def type-id='type-id-1919' size-in-bits='64' id='type-id-1920'/>
-    <typedef-decl name='FT_SubGlyph' type-id='type-id-1920' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1486' column='1' id='type-id-1906'/>
-    <class-decl name='FT_Slot_InternalRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1921'/>
-    <pointer-type-def type-id='type-id-1921' size-in-bits='64' id='type-id-1922'/>
-    <typedef-decl name='FT_Slot_Internal' type-id='type-id-1922' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1498' column='1' id='type-id-1907'/>
-    <class-decl name='FT_SizeRec_' size-in-bits='704' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1461' column='1' id='type-id-1923'>
+    <pointer-type-def type-id='type-id-1875' size-in-bits='64' id='type-id-1890'/>
+    <pointer-type-def type-id='type-id-246' size-in-bits='64' id='type-id-1891'/>
+    <typedef-decl name='FT_Outline' type-id='type-id-1889' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftimage.h' line='403' column='1' id='type-id-1878'/>
+    <class-decl name='FT_SubGlyphRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1892'/>
+    <pointer-type-def type-id='type-id-1892' size-in-bits='64' id='type-id-1893'/>
+    <typedef-decl name='FT_SubGlyph' type-id='type-id-1893' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1486' column='1' id='type-id-1879'/>
+    <class-decl name='FT_Slot_InternalRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1894'/>
+    <pointer-type-def type-id='type-id-1894' size-in-bits='64' id='type-id-1895'/>
+    <typedef-decl name='FT_Slot_Internal' type-id='type-id-1895' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1498' column='1' id='type-id-1880'/>
+    <class-decl name='FT_SizeRec_' size-in-bits='704' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1461' column='1' id='type-id-1896'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='face' type-id='type-id-1889' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1462' column='1'/>
+        <var-decl name='face' type-id='type-id-1862' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1462' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='generic' type-id='type-id-1872' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1463' column='1'/>
+        <var-decl name='generic' type-id='type-id-1845' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1463' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='metrics' type-id='type-id-1924' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1464' column='1'/>
+        <var-decl name='metrics' type-id='type-id-1897' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1464' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='640'>
-        <var-decl name='internal' type-id='type-id-1925' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1465' column='1'/>
+        <var-decl name='internal' type-id='type-id-1898' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1465' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='FT_Size_Metrics_' size-in-bits='448' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1426' column='1' id='type-id-1926'>
+    <class-decl name='FT_Size_Metrics_' size-in-bits='448' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1426' column='1' id='type-id-1899'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='x_ppem' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1427' column='1'/>
+        <var-decl name='x_ppem' type-id='type-id-1847' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1427' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='16'>
-        <var-decl name='y_ppem' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1428' column='1'/>
+        <var-decl name='y_ppem' type-id='type-id-1847' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1428' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='x_scale' type-id='type-id-1901' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1430' column='1'/>
+        <var-decl name='x_scale' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1430' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='y_scale' type-id='type-id-1901' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1431' column='1'/>
+        <var-decl name='y_scale' type-id='type-id-1874' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1431' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='ascender' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1433' column='1'/>
+        <var-decl name='ascender' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1433' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='descender' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1434' column='1'/>
+        <var-decl name='descender' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1434' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='height' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1435' column='1'/>
+        <var-decl name='height' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1435' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='max_advance' type-id='type-id-1886' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1436' column='1'/>
+        <var-decl name='max_advance' type-id='type-id-1859' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1436' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='FT_Size_Metrics' type-id='type-id-1926' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1438' column='1' id='type-id-1924'/>
-    <class-decl name='FT_Size_InternalRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1927'/>
-    <pointer-type-def type-id='type-id-1927' size-in-bits='64' id='type-id-1928'/>
-    <typedef-decl name='FT_Size_Internal' type-id='type-id-1928' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1367' column='1' id='type-id-1925'/>
-    <pointer-type-def type-id='type-id-1923' size-in-bits='64' id='type-id-1929'/>
-    <typedef-decl name='FT_Size' type-id='type-id-1929' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='471' column='1' id='type-id-1877'/>
-    <class-decl name='FT_DriverRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1930'/>
-    <pointer-type-def type-id='type-id-1930' size-in-bits='64' id='type-id-1931'/>
-    <typedef-decl name='FT_Driver' type-id='type-id-1931' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='401' column='1' id='type-id-1879'/>
-    <class-decl name='FT_MemoryRec_' size-in-bits='256' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='172' column='1' id='type-id-1932'>
+    <typedef-decl name='FT_Size_Metrics' type-id='type-id-1899' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1438' column='1' id='type-id-1897'/>
+    <class-decl name='FT_Size_InternalRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1900'/>
+    <pointer-type-def type-id='type-id-1900' size-in-bits='64' id='type-id-1901'/>
+    <typedef-decl name='FT_Size_Internal' type-id='type-id-1901' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='1367' column='1' id='type-id-1898'/>
+    <pointer-type-def type-id='type-id-1896' size-in-bits='64' id='type-id-1902'/>
+    <typedef-decl name='FT_Size' type-id='type-id-1902' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='471' column='1' id='type-id-1850'/>
+    <class-decl name='FT_DriverRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1903'/>
+    <pointer-type-def type-id='type-id-1903' size-in-bits='64' id='type-id-1904'/>
+    <typedef-decl name='FT_Driver' type-id='type-id-1904' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='401' column='1' id='type-id-1852'/>
+    <class-decl name='FT_MemoryRec_' size-in-bits='256' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='172' column='1' id='type-id-1905'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='user' type-id='type-id-20' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='173' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='alloc' type-id='type-id-1933' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='174' column='1'/>
+        <var-decl name='alloc' type-id='type-id-1906' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='174' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='free' type-id='type-id-1934' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='175' column='1'/>
+        <var-decl name='free' type-id='type-id-1907' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='175' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='realloc' type-id='type-id-1935' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='176' column='1'/>
+        <var-decl name='realloc' type-id='type-id-1908' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='176' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-1932' size-in-bits='64' id='type-id-1936'/>
-    <typedef-decl name='FT_Memory' type-id='type-id-1936' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='66' column='1' id='type-id-1880'/>
-    <pointer-type-def type-id='type-id-1937' size-in-bits='64' id='type-id-1938'/>
-    <typedef-decl name='FT_Alloc_Func' type-id='type-id-1938' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='90' column='1' id='type-id-1933'/>
-    <pointer-type-def type-id='type-id-1939' size-in-bits='64' id='type-id-1940'/>
-    <typedef-decl name='FT_Free_Func' type-id='type-id-1940' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='111' column='1' id='type-id-1934'/>
-    <pointer-type-def type-id='type-id-1941' size-in-bits='64' id='type-id-1942'/>
-    <typedef-decl name='FT_Realloc_Func' type-id='type-id-1942' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='146' column='1' id='type-id-1935'/>
-    <class-decl name='FT_StreamRec_' size-in-bits='640' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='322' column='1' id='type-id-1943'>
+    <pointer-type-def type-id='type-id-1905' size-in-bits='64' id='type-id-1909'/>
+    <typedef-decl name='FT_Memory' type-id='type-id-1909' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='66' column='1' id='type-id-1853'/>
+    <pointer-type-def type-id='type-id-1910' size-in-bits='64' id='type-id-1911'/>
+    <typedef-decl name='FT_Alloc_Func' type-id='type-id-1911' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='90' column='1' id='type-id-1906'/>
+    <pointer-type-def type-id='type-id-1912' size-in-bits='64' id='type-id-1913'/>
+    <typedef-decl name='FT_Free_Func' type-id='type-id-1913' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='111' column='1' id='type-id-1907'/>
+    <pointer-type-def type-id='type-id-1914' size-in-bits='64' id='type-id-1915'/>
+    <typedef-decl name='FT_Realloc_Func' type-id='type-id-1915' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='146' column='1' id='type-id-1908'/>
+    <class-decl name='FT_StreamRec_' size-in-bits='640' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='322' column='1' id='type-id-1916'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='base' type-id='type-id-1915' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='323' column='1'/>
+        <var-decl name='base' type-id='type-id-1888' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='323' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='size' type-id='type-id-63' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='324' column='1'/>
@@ -23369,103 +23267,103 @@
         <var-decl name='pos' type-id='type-id-63' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='325' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='read' type-id='type-id-1944' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='329' column='1'/>
+        <var-decl name='read' type-id='type-id-1917' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='329' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='close' type-id='type-id-1945' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='330' column='1'/>
+        <var-decl name='close' type-id='type-id-1918' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='330' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
-        <var-decl name='memory' type-id='type-id-1880' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='332' column='1'/>
+        <var-decl name='memory' type-id='type-id-1853' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='332' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
-        <var-decl name='cursor' type-id='type-id-1915' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='333' column='1'/>
+        <var-decl name='cursor' type-id='type-id-1888' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='333' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='576'>
-        <var-decl name='limit' type-id='type-id-1915' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='334' column='1'/>
+        <var-decl name='limit' type-id='type-id-1888' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='334' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-1943' size-in-bits='64' id='type-id-1946'/>
-    <typedef-decl name='FT_Stream' type-id='type-id-1946' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='196' column='1' id='type-id-1881'/>
-    <pointer-type-def type-id='type-id-1947' size-in-bits='64' id='type-id-1948'/>
-    <typedef-decl name='FT_Stream_IoFunc' type-id='type-id-1948' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='251' column='1' id='type-id-1944'/>
-    <pointer-type-def type-id='type-id-1949' size-in-bits='64' id='type-id-1950'/>
-    <typedef-decl name='FT_Stream_CloseFunc' type-id='type-id-1950' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='268' column='1' id='type-id-1945'/>
-    <class-decl name='FT_ListRec_' size-in-bits='128' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='564' column='1' id='type-id-1951'>
+    <pointer-type-def type-id='type-id-1916' size-in-bits='64' id='type-id-1919'/>
+    <typedef-decl name='FT_Stream' type-id='type-id-1919' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='196' column='1' id='type-id-1854'/>
+    <pointer-type-def type-id='type-id-1920' size-in-bits='64' id='type-id-1921'/>
+    <typedef-decl name='FT_Stream_IoFunc' type-id='type-id-1921' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='251' column='1' id='type-id-1917'/>
+    <pointer-type-def type-id='type-id-1922' size-in-bits='64' id='type-id-1923'/>
+    <typedef-decl name='FT_Stream_CloseFunc' type-id='type-id-1923' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/ftsystem.h' line='268' column='1' id='type-id-1918'/>
+    <class-decl name='FT_ListRec_' size-in-bits='128' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='564' column='1' id='type-id-1924'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='head' type-id='type-id-1952' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='565' column='1'/>
+        <var-decl name='head' type-id='type-id-1925' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='565' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='tail' type-id='type-id-1952' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='566' column='1'/>
+        <var-decl name='tail' type-id='type-id-1925' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='566' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='FT_ListNodeRec_' size-in-bits='192' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='541' column='1' id='type-id-1953'>
+    <class-decl name='FT_ListNodeRec_' size-in-bits='192' is-struct='yes' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='541' column='1' id='type-id-1926'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='prev' type-id='type-id-1952' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='542' column='1'/>
+        <var-decl name='prev' type-id='type-id-1925' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='542' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='next' type-id='type-id-1952' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='543' column='1'/>
+        <var-decl name='next' type-id='type-id-1925' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='543' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <var-decl name='data' type-id='type-id-20' visibility='default' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='544' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-1953' size-in-bits='64' id='type-id-1954'/>
-    <typedef-decl name='FT_ListNode' type-id='type-id-1954' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='511' column='1' id='type-id-1952'/>
-    <typedef-decl name='FT_ListRec' type-id='type-id-1951' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='568' column='1' id='type-id-1882'/>
-    <class-decl name='FT_Face_InternalRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1955'/>
-    <pointer-type-def type-id='type-id-1955' size-in-bits='64' id='type-id-1956'/>
-    <typedef-decl name='FT_Face_Internal' type-id='type-id-1956' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='810' column='1' id='type-id-1883'/>
+    <pointer-type-def type-id='type-id-1926' size-in-bits='64' id='type-id-1927'/>
+    <typedef-decl name='FT_ListNode' type-id='type-id-1927' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='511' column='1' id='type-id-1925'/>
+    <typedef-decl name='FT_ListRec' type-id='type-id-1924' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/fttypes.h' line='568' column='1' id='type-id-1855'/>
+    <class-decl name='FT_Face_InternalRec_' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1928'/>
+    <pointer-type-def type-id='type-id-1928' size-in-bits='64' id='type-id-1929'/>
+    <typedef-decl name='FT_Face_Internal' type-id='type-id-1929' filepath='/collab/usr/global/tools/order/spack/opt/chaos_5_x86_64_ib/gcc@4.4.7/freetype@2.5.3-77fab1b8/include/freetype2/freetype.h' line='810' column='1' id='type-id-1856'/>
     <function-decl name='hb_ft_font_get_face' mangled-name='hb_ft_font_get_face' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='515' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_ft_font_get_face'>
       <parameter type-id='type-id-146' name='font' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='515' column='1'/>
-      <return type-id='type-id-1889'/>
+      <return type-id='type-id-1862'/>
     </function-decl>
     <function-decl name='hb_ft_font_set_funcs' mangled-name='hb_ft_font_set_funcs' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='473' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_ft_font_set_funcs'>
       <parameter type-id='type-id-146' name='font' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='473' column='1'/>
       <return type-id='type-id-5'/>
     </function-decl>
     <function-decl name='hb_ft_face_create' mangled-name='hb_ft_face_create' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='333' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_ft_face_create'>
-      <parameter type-id='type-id-1889' name='ft_face' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='333' column='1'/>
+      <parameter type-id='type-id-1862' name='ft_face' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='333' column='1'/>
       <parameter type-id='type-id-21' name='destroy' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='334' column='1'/>
       <return type-id='type-id-308'/>
     </function-decl>
     <function-decl name='hb_ft_font_create' mangled-name='hb_ft_font_create' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='408' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_ft_font_create'>
-      <parameter type-id='type-id-1889' name='ft_face' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='408' column='1'/>
+      <parameter type-id='type-id-1862' name='ft_face' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='408' column='1'/>
       <parameter type-id='type-id-21' name='destroy' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='409' column='1'/>
       <return type-id='type-id-146'/>
     </function-decl>
     <function-decl name='hb_ft_face_create_cached' mangled-name='hb_ft_face_create_cached' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='377' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_ft_face_create_cached'>
-      <parameter type-id='type-id-1889' name='ft_face' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='377' column='1'/>
+      <parameter type-id='type-id-1862' name='ft_face' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ft.cc' line='377' column='1'/>
       <return type-id='type-id-308'/>
     </function-decl>
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
-    <function-type size-in-bits='64' id='type-id-1937'>
-      <parameter type-id='type-id-1880'/>
+    <function-type size-in-bits='64' id='type-id-1910'>
+      <parameter type-id='type-id-1853'/>
       <parameter type-id='type-id-62'/>
       <return type-id='type-id-20'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1939'>
-      <parameter type-id='type-id-1880'/>
+    <function-type size-in-bits='64' id='type-id-1912'>
+      <parameter type-id='type-id-1853'/>
       <parameter type-id='type-id-20'/>
       <return type-id='type-id-5'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1941'>
-      <parameter type-id='type-id-1880'/>
+    <function-type size-in-bits='64' id='type-id-1914'>
+      <parameter type-id='type-id-1853'/>
       <parameter type-id='type-id-62'/>
       <parameter type-id='type-id-62'/>
       <parameter type-id='type-id-20'/>
       <return type-id='type-id-20'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1947'>
-      <parameter type-id='type-id-1881'/>
+    <function-type size-in-bits='64' id='type-id-1920'>
+      <parameter type-id='type-id-1854'/>
       <parameter type-id='type-id-63'/>
-      <parameter type-id='type-id-1915'/>
+      <parameter type-id='type-id-1888'/>
       <parameter type-id='type-id-63'/>
       <return type-id='type-id-63'/>
     </function-type>
-    <function-type size-in-bits='64' id='type-id-1949'>
-      <parameter type-id='type-id-1881'/>
+    <function-type size-in-bits='64' id='type-id-1922'>
+      <parameter type-id='type-id-1854'/>
       <return type-id='type-id-5'/>
     </function-type>
   </abi-instr>

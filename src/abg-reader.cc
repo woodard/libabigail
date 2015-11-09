@@ -2901,6 +2901,13 @@ build_function_type(read_context&	ctxt,
   std::vector<shared_ptr<function_decl::parameter> > parms;
   type_base_sptr return_type;
 
+ function_type_sptr fn_type(new function_type(return_type,
+					      parms, size, align));
+
+  ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
+  ctxt.mark_type_as_wip(fn_type);
+  ctxt.key_type_decl(fn_type, id);
+
   for (xmlNodePtr n = node->children; n ; n = n->next)
     {
       if (n->type != XML_ELEMENT_NODE)
@@ -2919,14 +2926,13 @@ build_function_type(read_context&	ctxt,
 	      xml::build_sptr(xmlGetProp(n, BAD_CAST("type-id"))))
 	    type_id = CHAR_STR(s);
 	  if (!type_id.empty())
-	    return_type = ctxt.build_or_get_type_decl(type_id, true);
+	    fn_type->set_return_type(ctxt.build_or_get_type_decl
+				     (type_id, true));
 	}
     }
 
-  shared_ptr<function_type> fn_type(new function_type(return_type,
-						      parms, size, align));
-
-  ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
+  fn_type->set_parameters(parms);
+  ctxt.unmark_type_as_wip(fn_type);
 
   return fn_type;
 }

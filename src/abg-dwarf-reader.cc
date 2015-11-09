@@ -91,6 +91,10 @@ typedef unordered_map<Dwarf_Off, type_base_sptr> die_type_map_type;
 /// corresponding class_decl.
 typedef unordered_map<Dwarf_Off, class_decl_sptr> die_class_map_type;
 
+/// Convenience typedef for a map which key is the offset of a dwarf
+/// die and which value is the corresponding function_type.
+typedef unordered_map<Dwarf_Off, function_type_sptr> die_function_type_map_type;
+
 /// Convenience typedef for a map which key is the offset of a
 /// DW_TAG_compile_unit and the key is the corresponding @ref
 /// translation_unit_sptr.
@@ -1756,6 +1760,7 @@ class read_context
   // defined in the alternate debug info section.
   die_type_map_type		alternate_die_type_map_;
   die_class_map_type		die_wip_classes_map_;
+  die_function_type_map_type	die_wip_function_types_map_;
   vector<Dwarf_Off>		types_to_canonicalize_;
   vector<Dwarf_Off>		alt_types_to_canonicalize_;
   string_classes_map		decl_only_classes_map_;
@@ -2284,7 +2289,25 @@ public:
   die_wip_classes_map()
   {return die_wip_classes_map_;}
 
-  /// Return true iff a given offset if for the DIE of a class that is
+  /// Getter for a map that associates a die (that represents a
+  /// function type) whith a function type, while the function type is
+  /// being constructed (WIP == work in progress).
+  ///
+  /// @return the map of wip function types.
+  const die_function_type_map_type&
+  die_wip_function_types_map() const
+  {return die_wip_function_types_map_;}
+
+  /// Getter for a map that associates a die (that represents a
+  /// function type) whith a function type, while the function type is
+  /// being constructed (WIP == work in progress).
+  ///
+  /// @return the map of wip function types.
+  die_function_type_map_type&
+  die_wip_function_types_map()
+  {return die_wip_function_types_map_;}
+
+  /// Return true iff a given offset is for the DIE of a class that is
   /// being currently built.
   ///
   /// @param offset the DIE offset to consider.
@@ -2296,6 +2319,21 @@ public:
   {
     die_class_map_type::const_iterator i = die_wip_classes_map().find(offset);
     return (i != die_wip_classes_map().end());
+  }
+
+  /// Return true iff a given offset is for the DIE of a function type
+  /// that is currently built.  WIP == work in progress.
+  ///
+  /// @param offset DIE offset to consider.
+  ///
+  /// @return true iff @p offset is the offset of the DIE of a
+  /// function type that is being currently built.
+  bool
+  is_wip_function_type_die_offset(Dwarf_Off offset) const
+  {
+    die_function_type_map_type::const_iterator i =
+      die_wip_function_types_map().find(offset);
+    return (i != die_wip_function_types_map().end());
   }
 
   /// Getter for the map of declaration-only classes that are to be
@@ -7188,6 +7226,7 @@ build_function_type(read_context&	ctxt,
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_from_alt_di,
 			     result);
+  ctxt.die_wip_function_types_map()[dwarf_dieoffset(die)] = result;
 
   decl_base_sptr return_type_decl;
   Dwarf_Die ret_type_die;
@@ -7259,6 +7298,13 @@ build_function_type(read_context&	ctxt,
   while (dwarf_siblingof(&child, &child) == 0);
 
   result->set_parameters(function_parms);
+
+  {
+    die_function_type_map_type::const_iterator i =
+      ctxt.die_wip_function_types_map().find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_function_types_map().end())
+      ctxt.die_wip_function_types_map().erase(i);
+  }
 
   return result;
 }
@@ -7780,7 +7826,9 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
     // work-in-progress, or classes that might be later amended by
     // some DWARF construct).  So we err on the safe side.
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
-  else if(type_has_non_canonicalized_subtype(t))
+  else if ((is_function_type(t)
+	    && ctxt.is_wip_function_type_die_offset(die_offset))
+	   || type_has_non_canonicalized_subtype(t))
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
   else
     canonicalize(t);

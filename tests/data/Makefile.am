@@ -807,6 +807,9 @@ test-diff-suppr/test26-loc-suppr-report-3.txt \
 test-diff-suppr/test26-loc-suppr-v0.cc \
 test-diff-suppr/test26-loc-suppr-v1.cc \
 test-diff-suppr/test26-loc-suppr.h \
+test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
+test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \
+test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1-report-0.txt \
 \
 test-lookup-syms/test0.cc		\
 test-lookup-syms/test0.o		\

@@ -26,6 +26,7 @@ runtestabidiff			\
 runtestdiffdwarf		\
 runtestdifffilter		\
 runtestdiffsuppr		\
+runtestdiffdwarfabixml		\
 runtestabicompat		\
 runtestdiffpkg			\
 runtesttypesstability		\
@@ -78,6 +79,9 @@ runtestdifffilter_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestdiffsuppr_SOURCES = test-diff-suppr.cc
 runtestdiffsuppr_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestdiffdwarfabixml_SOURCES = test-diff-dwarf-abixml.cc
+runtestdiffdwarfabixml_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestabicompat_SOURCES = test-abicompat.cc
 runtestabicompat_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
