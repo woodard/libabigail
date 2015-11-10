@@ -72,7 +72,7 @@ main()
       in_elf_path = get_src_dir() + "/tests/" + s->in_elf_path;
       in_abi_path = get_src_dir() + "/tests/"+ s->in_abi_path;
       ref_diff_report_path = get_src_dir() + "/tests/" + s->in_report_path;
-      out_diff_report_path = get_build_dir() + "/tests" + s->out_report_path;
+      out_diff_report_path = get_build_dir() + "/tests/" + s->out_report_path;
 
       if (!ensure_parent_dir_created(out_diff_report_path))
 	{
