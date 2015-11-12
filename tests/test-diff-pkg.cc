@@ -244,6 +244,16 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/test-rpm-report-5.txt",
     "output/test-diff-pkg/test-rpm-report-5.txt"
   },
+  {
+    "data/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64.rpm",
+    "data/test-diff-pkg/qemu-img-rhev-2.3.0-20.el7.ppc64.rpm",
+    "--no-added-syms",
+    "",
+    "data/test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-7.el7.ppc64.rpm",
+    "data/test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-20.el7.ppc64.rpm",
+    "data/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64--qemu-img-rhev-2.3.0-20.el7.ppc64-report-0.txt",
+    "output/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64--qemu-img-rhev-2.3.0-20.el7.ppc64-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB

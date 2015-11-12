@@ -948,4 +948,9 @@ test-diff-pkg/tarpkg-0-dir2.tar \
 test-diff-pkg/tarpkg-0-dir2.ta \
 test-diff-pkg/tarpkg-0-dir2.tar.bz2 \
 test-diff-pkg/tarpkg-0-dir2.tar.gz \
-test-diff-pkg/tarpkg-0-report-0.txt
+test-diff-pkg/tarpkg-0-report-0.txt \
+test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-7.el7.ppc64.rpm \
+test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-20.el7.ppc64.rpm \
+test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64.rpm \
+test-diff-pkg/qemu-img-rhev-2.3.0-20.el7.ppc64.rpm \
+test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64--qemu-img-rhev-2.3.0-20.el7.ppc64-report-0.txt

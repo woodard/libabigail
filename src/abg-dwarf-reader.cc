@@ -8264,7 +8264,7 @@ build_ir_node_from_die(read_context&	ctxt,
 			// of 'd'.
 			fn = fn->clone();
 		      ctxt.associate_die_to_decl(dwarf_dieoffset(die),
-						 is_in_alternate_debug_info,
+						 die_is_from_alt_di,
 						 fn);
 		    }
 		}
