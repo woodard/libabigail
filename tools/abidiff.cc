@@ -138,7 +138,6 @@ display_usage(const string& prog_name, ostream& out)
       << " --suppressions|--suppr <path> specify a suppression file\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
-      << " --drop-fn <regex> drop functions matching a regexp\n"
       << " --drop-var <regex> drop variables matching a regexp\n"
       << " --keep <regex>  keep only functions and variables matching a regex\n"
       << " --keep-fn <regex>  keep only functions matching a regex\n"
