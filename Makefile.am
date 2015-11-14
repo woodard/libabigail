@@ -1,4 +1,4 @@
-SUBDIRS = include src tools tests doc
+SUBDIRS = include src tools tests doc bash-completion
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 headers = config.h
 
@@ -7,6 +7,9 @@ m4data_DATA = $(srcdir)/abigail.m4
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libabigail.pc
+
+#bashcompletiondir = $(datadir)/bash-completion/completions
+#dist_bashcompletion_DATA =
 
 EXTRA_DIST = 			\
 README COPYING ChangeLog	\
