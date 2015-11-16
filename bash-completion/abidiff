@@ -49,6 +49,7 @@ _abidiff_module()
 		    --no-redundant
 		    --no-unreferenced-symbols
 		    --redundant
+		    --no-show-locs
 		    --stat
 		    --symtabs"
 	    COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )

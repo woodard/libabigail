@@ -115,6 +115,11 @@ Options
     In the resulting report, do not display the linkage names of
     the added, removed, or changed functions or variables.
 
+  * ``--no-show-locs``
+
+   Do not show information about where in the *second shared library*
+   the respective type was changed.
+
   * ``--no-unreferenced-symbols``
 
     In the resulting report, do not display change information about

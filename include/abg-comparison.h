@@ -1251,6 +1251,12 @@ public:
   show_linkage_names(bool f);
 
   bool
+  show_locs() const;
+
+  void
+  show_locs(bool f);
+
+  bool
   show_redundant_changes() const;
 
   void

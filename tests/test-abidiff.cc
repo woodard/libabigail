@@ -124,6 +124,8 @@ using abigail::xml_reader::read_corpus_from_native_xml_file;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::compute_diff;
+using abigail::comparison::diff_context_sptr;
+using abigail::comparison::diff_context;
 
 int
 main(int, char*[])
@@ -189,10 +191,12 @@ main(int, char*[])
 
       translation_unit_diff_sptr d1;
       corpus_diff_sptr d2;
+      diff_context_sptr ctxt(new diff_context);
+      ctxt->show_locs(false);
       if (tu1)
-	d1= compute_diff(tu1, tu2);
+	d1= compute_diff(tu1, tu2, ctxt);
       else
-	d2 = compute_diff(corpus1, corpus2);
+	d2 = compute_diff(corpus1, corpus2, ctxt);
       ofstream of(out_path.c_str(), std::ios_base::trunc);
       if (!of.is_open())
 	{

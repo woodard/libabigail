@@ -150,6 +150,7 @@ struct options
   bool		compare_dso_only;
   bool		show_linkage_names;
   bool		show_redundant_changes;
+  bool		show_locs;
   bool		show_added_syms;
   bool		show_added_binaries;
   bool		fail_if_no_debug_info;
@@ -165,6 +166,7 @@ struct options
       compare_dso_only(),
       show_linkage_names(true),
       show_redundant_changes(),
+      show_locs(true),
       show_added_syms(true),
       show_added_binaries(true),
       fail_if_no_debug_info()
@@ -492,6 +494,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --no-linkage-name		  do not display linkage names of "
                                           "added/removed/changed\n"
       << " --redundant                    display redundant changes\n"
+      << " --no-show-locs                 do not show location information\n"
       << " --no-added-syms                do not display added functions or variables\n"
       << " --no-added-binaries            do not display added binaries\n"
       << " --no-abignore                  do not look for *.abignore files\n"
@@ -831,6 +834,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
   ctxt->show_redundant_changes(opts.show_redundant_changes);
+  ctxt->show_locs(opts.show_locs);
   ctxt->show_linkage_names(opts.show_linkage_names);
   ctxt->show_added_fns(opts.show_added_syms);
   ctxt->show_added_vars(opts.show_added_syms);
@@ -1541,6 +1545,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--redundant"))
 	opts.show_redundant_changes = true;
+      else if (!strcmp(argv[i], "--no-show-locs"))
+	opts.show_locs = false;
       else if (!strcmp(argv[i], "--no-added-syms"))
 		 opts.show_added_syms = false;
       else if (!strcmp(argv[i], "--no-added-binaries"))

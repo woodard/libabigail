@@ -106,6 +106,11 @@ Options
     appear multiple times on the command line; all the suppression
     specification files are then taken into account.
 
+  * ``--no-show-locs``
+
+   Do not show information about where in the *second shared library*
+   the respective type was changed.
+
   * ``--fail-no-dbg``
 
     Make the program fail and return a non-zero exit code if couldn't

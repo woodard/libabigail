@@ -65,6 +65,11 @@ Options
     alternate debug info file found.  Otherwise, it emits an error
     code.
 
+  * ``--no-show-locs``
+
+   Do not show information about where in the *second shared library*
+   the respective type was changed.
+
   * ``--check-alternate-debug-info-base-name`` <*elf-path*>
 
 

@@ -30,6 +30,7 @@ _abipkgdiff_module()
 		    --no-added-binaries
 		    --no-linkage-name
 		    --redundant
+		    --no-show-locs
 		    --suppr
 		    --suppressions
 		    --verbose"

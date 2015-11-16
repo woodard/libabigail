@@ -299,6 +299,8 @@ main()
   using abigail::comparison::corpus_diff_sptr;
   using abigail::ir::environment;
   using abigail::ir::environment_sptr;
+  using abigail::comparison::diff_context_sptr;
+  using abigail::comparison::diff_context;
 
   bool is_ok = true;
   string in_elfv0_path, in_elfv1_path,
@@ -353,7 +355,10 @@ main()
       corp0->set_path(s->in_elfv0_path);
       corp1->set_path(s->in_elfv1_path);
 
-      corpus_diff_sptr d = compute_diff(corp0, corp1);
+      diff_context_sptr ctxt(new diff_context);
+      ctxt->show_locs(false);
+
+      corpus_diff_sptr d = compute_diff(corp0, corp1, ctxt);
       if (!d)
 	{
 	  cerr << "failed to compute diff\n";

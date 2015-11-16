@@ -36,6 +36,7 @@ _abidw_module()
 		    --no-architecture
 		    --noout
 		    --out-file
+		    --no-show-locs
 		    --stats"
 	    COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
 	    return 0

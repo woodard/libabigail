@@ -71,6 +71,7 @@ struct options
   bool			load_all_types;
   bool			show_stats;
   bool			noout;
+  bool			show_locs;
   bool			abidiff;
 
   options()
@@ -81,6 +82,7 @@ struct options
       load_all_types(),
       show_stats(),
       noout(),
+      show_locs(true),
       abidiff()
   {}
 };
@@ -96,6 +98,7 @@ display_usage(const string& prog_name, ostream& out)
       << "  --out-file <file-path>  write the output to 'file-path'\n"
       << "  --noout  do not emit anything after reading the binary\n"
       << "  --no-architecture  do not emit architecture info in the output\n"
+      << "  --no-show-locs  do now show location information\n"
       << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
 		"of <elf-path>\n"
       << "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
@@ -155,6 +158,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.noout = true;
       else if (!strcmp(argv[i], "--no-architecture"))
 	opts.write_architecture = false;
+      else if (!strcmp(argv[i], "--no-show-locs"))
+	opts.show_locs = false;
       else if (!strcmp(argv[i], "--check-alternate-debug-info")
 	       || !strcmp(argv[i], "--check-alternate-debug-info-base-name"))
 	{
@@ -334,6 +339,7 @@ main(int argc, char* argv[])
 	    }
 	  diff_context_sptr ctxt(new diff_context);
 	  set_diff_context(ctxt);
+	  ctxt->show_locs(opts.show_locs);
 	  corpus_diff_sptr diff = compute_diff(corp, corp2, ctxt);
 	  bool has_error = diff->has_incompatible_changes();
 	  if (has_error)

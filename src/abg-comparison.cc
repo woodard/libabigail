@@ -28,6 +28,7 @@
 #include <ctype.h>
 #include <algorithm>
 #include <sstream>
+#include <libgen.h>
 #include "abg-hash.h"
 #include "abg-comparison.h"
 #include "abg-comp-filter.h"
@@ -4163,6 +4164,7 @@ struct diff_context::priv
   bool					show_changed_vars_;
   bool					show_added_vars_;
   bool					show_linkage_names_;
+  bool					show_locs_;
   bool					show_redundant_changes_;
   bool					show_syms_unreferenced_by_di_;
   bool					show_added_syms_unreferenced_by_di_;
@@ -4183,6 +4185,7 @@ struct diff_context::priv
       show_changed_vars_(true),
       show_added_vars_(true),
       show_linkage_names_(false),
+      show_locs_(true),
       show_redundant_changes_(true),
       show_syms_unreferenced_by_di_(true),
       show_added_syms_unreferenced_by_di_(true),
@@ -4806,6 +4809,19 @@ diff_context::show_linkage_names() const
 void
 diff_context::show_linkage_names(bool f)
 {priv_->show_linkage_names_= f;}
+
+/// Set a flag saying to show location information.
+///
+/// @param f true to show location information.
+void
+diff_context::show_locs(bool f)
+{priv_->show_locs_= f;}
+
+/// @return true if we want to show location information, false
+/// otherwise.
+bool
+diff_context::show_locs() const
+{return priv_->show_locs_;}
 
 /// A getter for the flag that says if we should report about
 /// functions or variables diff nodes that have *exclusively*
@@ -5595,6 +5611,11 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 				  const string&		indent,
 				  bool				nl);
 
+static bool
+report_loc_info(const type_or_decl_base_sptr& tod,
+		const diff_context& ctxt,
+		ostream &out);
+
 // <type_diff_base stuff>
 class type_diff_base::priv
 {
@@ -5807,18 +5828,12 @@ distinct_diff::report(ostream& out, const string& indent) const
 
   diff_sptr diff = compatible_child_diff();
 
-  if (diff)
-    {
-      out << indent
-	  << "entity changed from '" << f_repr
-	  << "' to compatible type '" << s_repr << "'\n";
-    }
-  else
-    {
-      out << indent
-	  << "entity changed from '" << f_repr
-	  << "' to '" << s_repr << "'\n";
-    }
+  string compatible = diff ? " to compatible type '": " to '";
+
+  out << indent << "entity changed from '" << f_repr << "'"
+      << compatible << s_repr << "'";
+  report_loc_info(s, *context(), out);
+  out << "\n";
 
   type_base_sptr fs = strip_typedef(is_type(f)),
     ss = strip_typedef(is_type(s));
@@ -6273,7 +6288,7 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 ///
 /// @param out the output stream to send the representation to
 static void
-represent(diff_context& ctxt,
+represent(const diff_context& ctxt,
 	  class_decl::method_decl_sptr mem_fn,
 	  ostream& out)
 {
@@ -6285,6 +6300,7 @@ represent(diff_context& ctxt,
   assert(meth);
 
   out << "'" << mem_fn->get_pretty_representation() << "'";
+  report_loc_info(meth, ctxt, out);
   if (get_member_function_is_virtual(mem_fn))
     out << ", virtual at voffset "
 	<< get_member_function_vtable_offset(mem_fn)
@@ -6305,9 +6321,13 @@ represent(diff_context& ctxt,
 ///
 /// @param d the data member to stream
 ///
+/// @param ctxt the current diff context.
+///
 /// @param out the output stream to send the representation to
 static void
-represent_data_member(var_decl_sptr d, ostream& out)
+represent_data_member(var_decl_sptr d,
+		      const diff_context_sptr& ctxt,
+		      ostream& out)
 {
   if (!is_data_member(d)
       || (!get_member_is_static(d) && !get_data_member_is_laid_out(d)))
@@ -6315,9 +6335,13 @@ represent_data_member(var_decl_sptr d, ostream& out)
 
   out << "'" << d->get_pretty_representation() << "'";
   if (!get_member_is_static(d))
-    out << ", at offset "
-	<< get_data_member_offset(d)
-	<< " (in bits)\n";
+    {
+      out << ", at offset "
+	  << get_data_member_offset(d)
+	  << " (in bits)";
+      report_loc_info(d, *ctxt, out);
+      out << "\n";
+    }
 }
 
 /// Represent the changes carried by an instance of @ref var_diff that
@@ -6379,6 +6403,7 @@ represent(var_diff_sptr	diff,
 	      begin_with_and = false;
 	    }
 	  out << "name of '" << name1 << "' changed to '" << name2 << "'";
+	  report_loc_info(n, *ctxt, out);
 	  emitted = true;
 	}
     }
@@ -6605,6 +6630,45 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 
   if (n)
     return true;
+  return false;
+}
+
+/// @param tod the type or declaration to emit loc info about
+///
+/// @param ctxt the content of the current diff.
+///
+/// @param out the output stream to report the change to.
+///
+/// @return true iff something was reported.
+static bool
+report_loc_info(const type_or_decl_base_sptr& tod,
+		const diff_context& ctxt,
+		ostream &out)
+{
+  if (!ctxt.show_locs())
+    return false;
+
+  decl_base_sptr decl = is_decl(tod);
+
+  if (!decl)
+    return false;
+
+  location loc;
+  translation_unit* tu = get_translation_unit(decl);
+
+  if (tu && (loc = decl->get_location()))
+  {
+    string path;
+    unsigned line, column;
+
+    loc.expand(path, line, column);
+    //tu->get_loc_mgr().expand_location(loc, path, line, column);
+    path = basename(const_cast<char*>(path.c_str()));
+
+    out  << " at " << path << ":" << line << ":" << column;
+
+    return true;
+  }
   return false;
 }
 
@@ -6935,6 +6999,8 @@ maybe_report_diff_for_member(const decl_base_sptr&	decl1,
     {
       bool lost = get_member_is_static(decl1);
       out << indent << "'" << decl1_repr << "' ";
+      if (report_loc_info(decl2, *ctxt, out))
+	out << " ";
       if (lost)
 	out << "became non-static";
       else
@@ -7204,7 +7270,9 @@ pointer_diff::report(ostream& out, const string& indent) const
 	: string("void");
 
       out << indent
-	  << "in pointed to type '" <<  repr << "':\n";
+	  << "in pointed to type '" <<  repr << "'";
+	  report_loc_info(d->second_subject(), *context(), out);
+      out << ":\n";
       d->report(out, indent + "  ");
     }
 }
@@ -7403,6 +7471,7 @@ array_diff::report(ostream& out, const string& indent) const
 					 context(),
 					 out, indent,
 					 /*new line=*/false);
+  report_loc_info(second_array(), *context(), out);
 }
 
 /// Compute the diff between two arrays.
@@ -7580,10 +7649,12 @@ reference_diff::report(ostream& out, const string& indent) const
   if (diff_sptr d = underlying_type_diff())
     {
       RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "referenced type");
+
       out << indent
 	  << "in referenced type '"
-	  << d->first_subject()->get_pretty_representation()
-	  << "':\n";
+	  << d->first_subject()->get_pretty_representation() << "'";
+      report_loc_info(d->second_subject(), *context(), out);
+      out << ":\n";
       d->report(out, indent + "  ");
     }
 }
@@ -7795,7 +7866,9 @@ qualified_type_diff::report(ostream& out, const string& indent) const
 						    "underlying type");
 
   string fltname = d->first_subject()->get_pretty_representation();
-  out << indent << "in unqualified underlying type '" << fltname << "':\n";
+  out << indent << "in unqualified underlying type '" << fltname << "'";
+  report_loc_info(d->second_subject(), *context(), out);
+  out << ":\n";
   d->report(out, indent + "  ");
 }
 
@@ -8168,6 +8241,7 @@ enum_diff::report(ostream& out, const string& indent) const
 	      << "' from value '"
 	      << i->first.get_value() << "' to '"
 	      << i->second.get_value() << "'";
+	  report_loc_info(second, *context(), out);
 	}
       out << "\n\n";
     }
@@ -9515,6 +9589,7 @@ class_diff::report(ostream& out, const string& indent) const
 		continue;
 	      out << indent << "  "
 		  << base->get_base_class()->get_pretty_representation();
+	      report_loc_info(base->get_base_class(), *context(), out);
 	    }
 	  out << "\n";
 	}
@@ -9537,8 +9612,9 @@ class_diff::report(ostream& out, const string& indent) const
 
 	      class_decl::base_spec_sptr o = diff->first_base();
 	      out << indent << "  '"
-		  << o->get_base_class()->get_pretty_representation()
-		  << "' changed:\n";
+		  << o->get_base_class()->get_pretty_representation() << "'";
+	      report_loc_info(o->get_base_class(), *context(), out);
+	      out << " changed:\n";
 	      diff->report(out, indent + "    ");
 	      emitted = true;
 	    }
@@ -9563,6 +9639,7 @@ class_diff::report(ostream& out, const string& indent) const
 	      if (emitted)
 		out << "\n";
 	      out << indent << "  " << b->get_pretty_representation();
+	      report_loc_info(b, *context(), out);
 	      emitted = true;
 	    }
 	  out << "\n";
@@ -9689,7 +9766,7 @@ class_diff::report(ostream& out, const string& indent) const
 	      if (emitted)
 		out << "\n";
 	      out << indent << "  ";
-	      represent_data_member(data_mem, out);
+	      represent_data_member(data_mem, context(), out);
 	      emitted = true;
 	    }
 	  if (emitted)
@@ -9712,7 +9789,7 @@ class_diff::report(ostream& out, const string& indent) const
 		dynamic_pointer_cast<var_decl>(*i);
 	      assert(data_mem);
 	      out << indent << "  ";
-	      represent_data_member(data_mem, out);
+	      represent_data_member(data_mem, context(), out);
 	    }
 	}
 
@@ -9800,7 +9877,9 @@ class_diff::report(ostream& out, const string& indent) const
 	      type_or_decl_base_sptr n = (*it)->second_subject();
 	      out << indent << "  '"
 		  << o->get_pretty_representation()
-		  << "' changed:\n";
+		  << "' changed ";
+	      report_loc_info(n, *context(), out);
+	      out << ":\n";
 	      (*it)->report(out, indent + "    ");
 	    }
 	  out << "\n";
@@ -10816,9 +10895,10 @@ scope_diff::report(ostream& out, const string& indent) const
 
       out << indent << "  '"
 	  << (*d)->first_subject()->get_pretty_representation()
-	  << "' was changed to '"
-	  << (*d)->second_subject()->get_pretty_representation()
-	  << "':\n";
+          << "' was changed to '"
+          << (*d)->second_subject()->get_pretty_representation() << "'";
+      report_loc_info((*d)->second_subject(), *context(), out);
+      out << ":\n";
 
       (*d)->report(out, indent + "    ");
     }
@@ -11080,8 +11160,9 @@ fn_parm_diff::report(ostream& out, const string& indent) const
     {
       assert(get_type_diff() && get_type_diff()->to_be_reported());
       out << indent
-	  << "parameter " << f->get_index()
-	  << " of type '"
+	  << "parameter " << f->get_index();
+      report_loc_info(f, *context(), out);
+      out << " of type '"
 	  << f->get_type_pretty_representation();
 
       if (has_sub_type_change)
@@ -12349,9 +12430,10 @@ typedef_diff::report(ostream& out, const string& indent) const
     {
       out << indent << "typedef name changed from "
 	  << f->get_qualified_name()
-	  << " to "
-	  << s->get_qualified_name()
-	  << "\n";
+          << " to "
+	  << s->get_qualified_name();
+	  report_loc_info(s, *context(), out);
+      out << "\n";
       emit_nl = true;
     }
 
@@ -12361,8 +12443,9 @@ typedef_diff::report(ostream& out, const string& indent) const
       RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER2(d, "underlying type");
       out << indent
 	  << "underlying type '"
-	  << d->first_subject()->get_pretty_representation()
-	  << "' changed:\n";
+	  << d->first_subject()->get_pretty_representation() << "'";
+      report_loc_info(d->second_subject(), *context(), out);
+      out << " changed:\n";
       d->report(out, indent + "  ");
       emit_nl = false;
     }
@@ -14920,8 +15003,9 @@ corpus_diff::report(ostream& out, const string& indent) const
 	    {
 	      function_decl_sptr fn = (*i)->first_function_decl();
 	      out << indent << "  [C]'"
-		  << fn->get_pretty_representation()
-		  << "' has some indirect sub-type changes:\n";
+		  << fn->get_pretty_representation() << "'";
+	      report_loc_info((*i)->second_function_decl(), *context(), out);
+	      out << " has some indirect sub-type changes:\n";
 	      if ((fn->get_symbol()->has_aliases()
 		   && !(is_member_function(fn)
 			&& get_member_function_is_ctor(fn))
@@ -15084,6 +15168,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  out << indent << "  [C]'" << n1 << "' was changed";
 	  if (n1 != n2)
 	    out << " to '" << n2 << "'";
+	  report_loc_info(diff->second_subject(), *context(), out);
 	  out << ":\n";
 	  diff->report(out, indent + "    ");
 	  out << "\n";

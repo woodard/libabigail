@@ -79,6 +79,7 @@ struct options
   bool			show_added_vars;
   bool			show_all_vars;
   bool			show_linkage_names;
+  bool			show_locs;
   bool			show_harmful_changes;
   bool			show_harmless_changes;
   bool			show_redundant_changes;
@@ -104,6 +105,7 @@ struct options
       show_added_vars(),
       show_all_vars(true),
       show_linkage_names(true),
+      show_locs(true),
       show_harmful_changes(true),
       show_harmless_changes(),
       show_redundant_changes(),
@@ -135,6 +137,7 @@ display_usage(const string& prog_name, ostream& out)
              "added/removed/changed\n"
       << " --no-unreferenced-symbols  do not display changes "
              "about symbols not referenced by debug info\n"
+      << " --no-show-locs  do now show location information\n"
       << " --suppressions|--suppr <path> specify a suppression file\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
@@ -268,6 +271,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_linkage_names = false;
       else if (!strcmp(argv[i], "--no-unreferenced-symbols"))
 	opts.show_symbols_not_referenced_by_debug_info = false;
+      else if (!strcmp(argv[i], "--no-show-locs"))
+	opts.show_locs = false;
       else if (!strcmp(argv[i], "--suppressions")
 	       || !strcmp(argv[i], "--suppr"))
 	{
@@ -417,6 +422,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->show_changed_vars(opts.show_all_vars || opts.show_changed_vars);
   ctxt->show_added_vars(opts.show_all_vars || opts.show_added_vars);
   ctxt->show_linkage_names(opts.show_linkage_names);
+  ctxt->show_locs(opts.show_locs);
   ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_symbols_unreferenced_by_debug_info
     (opts.show_symbols_not_referenced_by_debug_info);

@@ -485,9 +485,11 @@ test-diff-filter/test29-finer-redundancy-marking-v1.o \
 test-diff-filter/test30-pr18904-rvalueref-liba.so \
 test-diff-filter/test30-pr18904-rvalueref-libb.so \
 test-diff-filter/test30-pr18904-rvalueref-report0.txt \
+test-diff-filter/test30-pr18904-rvalueref-report1.txt \
 test-diff-filter/test31-pr18535-libstdc++-4.8.3.so \
 test-diff-filter/test31-pr18535-libstdc++-4.9.2.so \
 test-diff-filter/test31-pr18535-libstdc++-report-0.txt \
+test-diff-filter/test31-pr18535-libstdc++-report-1.txt \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\
@@ -558,6 +560,7 @@ test-diff-suppr/test6-fn-suppr-1.suppr \
 test-diff-suppr/test6-fn-suppr-2.suppr \
 test-diff-suppr/test6-fn-suppr-3.suppr \
 test-diff-suppr/test6-fn-suppr-report-0.txt \
+test-diff-suppr/test6-fn-suppr-report-0-1.txt \
 test-diff-suppr/test6-fn-suppr-report-1.txt \
 test-diff-suppr/test6-fn-suppr-report-2.txt \
 test-diff-suppr/test6-fn-suppr-report-3.txt \
@@ -844,6 +847,7 @@ test-abicompat/test0-fn-changed-0.suppr \
 test-abicompat/test0-fn-changed-app.cc \
 test-abicompat/test0-fn-changed-report-0.txt \
 test-abicompat/test0-fn-changed-report-1.txt \
+test-abicompat/test0-fn-changed-report-2.txt \
 test-abicompat/test0-fn-changed-libapp.h \
 test-abicompat/test0-fn-changed-libapp-v0.cc \
 test-abicompat/test0-fn-changed-libapp-v1.cc \
@@ -884,6 +888,7 @@ test-abicompat/test5-fn-changed-app.cc \
 test-abicompat/test5-fn-changed-libapp-v0.cc \
 test-abicompat/test5-fn-changed-libapp-v1.cc \
 test-abicompat/test5-fn-changed-report-0.txt \
+test-abicompat/test5-fn-changed-report-1.txt \
 test-abicompat/libtest6-var-changed-libapp-v0.so \
 test-abicompat/libtest6-var-changed-libapp-v1.so \
 test-abicompat/test6-var-changed-app \
@@ -891,6 +896,7 @@ test-abicompat/test6-var-changed-app.cc \
 test-abicompat/test6-var-changed-libapp-v0.cc \
 test-abicompat/test6-var-changed-libapp-v1.cc \
 test-abicompat/test6-var-changed-report-0.txt \
+test-abicompat/test6-var-changed-report-1.txt \
 test-abicompat/libtest7-fn-changed-libapp-v0.so \
 test-abicompat/libtest7-fn-changed-libapp-v1.so \
 test-abicompat/test7-fn-changed-app \
@@ -901,6 +907,7 @@ test-abicompat/test7-fn-changed-libapp-v1.c \
 test-abicompat/test7-fn-changed-libapp-v1.h \
 test-abicompat/test7-fn-changed-report-0.txt \
 test-abicompat/test7-fn-changed-report-1.txt \
+test-abicompat/test7-fn-changed-report-2.txt \
 \
 test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm \
@@ -945,6 +952,7 @@ test-diff-pkg/dirpkg-3-dir2/libobj-v0.so \
 test-diff-pkg/dirpkg-3-dir2/obj-v0.cc \
 test-diff-pkg/dirpkg-3-report-0.txt \
 test-diff-pkg/dirpkg-3-report-1.txt \
+test-diff-pkg/dirpkg-3-report-2.txt \
 test-diff-pkg/dirpkg-3.suppr \
 test-diff-pkg/tarpkg-0-dir1.tar \
 test-diff-pkg/tarpkg-0-dir1.ta \

@@ -79,6 +79,7 @@ struct options
   bool			list_undefined_symbols_only;
   bool			show_base_names;
   bool			show_redundant;
+  bool			show_locs;
 
   options()
     :display_help(),
@@ -86,7 +87,8 @@ struct options
      weak_mode(),
      list_undefined_symbols_only(),
      show_base_names(),
-     show_redundant(true)
+     show_redundant(true),
+     show_locs(true)
   {}
 }; // end struct options
 
@@ -111,6 +113,7 @@ display_usage(const string& prog_name, ostream& out)
          "to the debug information directory for the second library\n"
       <<  "--suppressions <path> specify a suppression file\n"
       << "--no-redundant  do not display redundant changes\n"
+      << "--no-show-locs  do now show location information\n"
       << "--redundant  display redundant changes (this is the default)\n"
       << "--weak-mode  check compatibility between the application and "
          "just one version of the library."
@@ -193,6 +196,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_redundant = true;
       else if (!strcmp(argv[i], "--no-redundant"))
 	opts.show_redundant = false;
+      else if (!strcmp(argv[i], "--no-show-locs"))
+	opts.show_locs = false;
       else if (!strcmp(argv[i], "--help")
 	       || !strcmp(argv[i], "-h"))
 	{
@@ -311,6 +316,7 @@ perform_compat_check_in_normal_mode(options& opts,
   ctxt->show_added_symbols_unreferenced_by_debug_info(false);
   ctxt->show_linkage_names(true);
   ctxt->show_redundant_changes(opts.show_redundant);
+  ctxt->show_locs(opts.show_locs);
   ctxt->switch_categories_off
     (abigail::comparison::ACCESS_CHANGE_CATEGORY
      | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
@@ -473,6 +479,7 @@ perform_compat_check_in_weak_mode(options& opts,
   ctxt->show_added_symbols_unreferenced_by_debug_info(false);
   ctxt->show_linkage_names(true);
   ctxt->show_redundant_changes(opts.show_redundant);
+  ctxt->show_locs(opts.show_locs);
   ctxt->switch_categories_off
     (abigail::comparison::ACCESS_CHANGE_CATEGORY
      | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY

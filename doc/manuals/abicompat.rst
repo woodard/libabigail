@@ -65,6 +65,11 @@ Options
     out.  This is useful for shared library binaries for which the
     debug info is in a separate set of files.
 
+  * ``--no-show-locs``
+
+   Do not show information about where in the *second shared library*
+   the respective type was changed.
+
   * ``--weak-mode``
 
     This triggers the weak mode of ``abicompat``.  In this mode, only

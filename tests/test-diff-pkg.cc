@@ -60,7 +60,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-0-dir1",
     "data/test-diff-pkg/dirpkg-0-dir2",
-    "",
+    "--no-show-locs",
     "",
     "",
     "",
@@ -71,7 +71,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-1-dir1",
     "data/test-diff-pkg/dirpkg-1-dir2",
-    "",
+    "--no-show-locs",
     "",
     "",
     "",
@@ -83,7 +83,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-1-dir1",
     "data/test-diff-pkg/dirpkg-1-dir2",
-    "--no-abignore",
+    "--no-abignore --no-show-locs",
     "",
     "",
     "",
@@ -95,7 +95,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-2-dir1",
     "data/test-diff-pkg/dirpkg-2-dir2",
-    "",
+    "--no-show-locs",
     "",
     "",
     "",
@@ -108,7 +108,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-3-dir1",
     "data/test-diff-pkg/dirpkg-3-dir2",
-    "",
+    "--no-show-locs",
     "data/test-diff-pkg/dirpkg-3.suppr",
     "",
     "",
@@ -122,19 +122,28 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-3-dir1",
     "data/test-diff-pkg/dirpkg-3-dir2",
-    "--no-abignore",
+    "--no-show-locs --no-abignore",
     "data/test-diff-pkg/dirpkg-3.suppr",
     "",
     "",
     "data/test-diff-pkg/dirpkg-3-report-1.txt",
     "output/test-diff-pkg/dirpkg-3-report-1.txt"
   },
-
+  { // Just like the previous tests, but loc info is emitted.
+    "data/test-diff-pkg/dirpkg-3-dir1",
+    "data/test-diff-pkg/dirpkg-3-dir2",
+    "--no-abignore",
+    "data/test-diff-pkg/dirpkg-3.suppr",
+    "",
+    "",
+    "data/test-diff-pkg/dirpkg-3-report-2.txt",
+    "output/test-diff-pkg/dirpkg-3-report-2.txt"
+  },
 #if WITH_TAR
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar",
     "data/test-diff-pkg/tarpkg-0-dir2.tar",
-    "",
+    "--no-show-locs",
     "",
     "",
     "",
@@ -144,7 +153,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tarpkg-0-dir1.ta",
     "data/test-diff-pkg/tarpkg-0-dir2.ta",
-    "",
+    "--no-show-locs",
     "",
     "",
     "",
@@ -154,7 +163,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar.gz",
     "data/test-diff-pkg/tarpkg-0-dir2.tar.gz",
-    "",
+    "--no-show-locs",
     "",
     "",
     "",
@@ -164,7 +173,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar.bz2",
     "data/test-diff-pkg/tarpkg-0-dir2.tar.bz2",
-    "",
+    "--no-show-locs",
     "",
     "",
     "",
@@ -178,7 +187,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "",
+    "--no-show-locs",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -189,7 +198,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-  "",
+  "--no-show-locs",
   "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
   "",
@@ -201,7 +210,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-  "",
+  "--no-show-locs",
   "",
   "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -213,7 +222,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-  "",
+  "--no-show-locs",
   "",
   "",
   "",
@@ -225,7 +234,7 @@ static InOutSpec in_out_specs[] =
   {
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
-  "",
+  "--no-show-locs",
   "",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
   "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
@@ -237,7 +246,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-added-syms",
+    "--no-show-locs --no-added-syms",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -247,7 +256,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64.rpm",
     "data/test-diff-pkg/qemu-img-rhev-2.3.0-20.el7.ppc64.rpm",
-    "--no-added-syms",
+    "--no-show-locs --no-added-syms",
     "",
     "data/test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-7.el7.ppc64.rpm",
     "data/test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-20.el7.ppc64.rpm",
@@ -270,7 +279,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64.deb",
     "data/test-diff-pkg/libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64.deb",
-    "--fail-no-dbg",
+    "--no-show-locs --fail-no-dbg",
     "",
     "data/test-diff-pkg/libsigc++-2.0-0c2a-dbgsym_2.4.0-1_amd64.ddeb",
     "data/test-diff-pkg/libsigc++-2.0-0v5-dbgsym_2.4.1-1ubuntu2_amd64.ddeb",

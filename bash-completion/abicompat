@@ -34,6 +34,7 @@ _abicompat_module()
 		    --no-redundant
 		    --redundant
 		    --show-base-names
+		    --no-show-locs
 		    --suppressions
 		    --weak-mode"
 	    COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
