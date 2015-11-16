@@ -16,9 +16,9 @@ DO_INSTALL_HTML = apidoc-install-html-doxygen
 DOXY_API_SRC_CFG 	=	${abs_srcdir}/api/libabigail.doxy
 DOXY_API_BLD_DIR 	=	${abs_builddir}/api
 DOXY_API_BLD_CFG 	=	${abs_builddir}/api/html.doxy
-DOXY_WEBSITE_BLD_DIR 	=	${abs_builddir}/doc/website
-DOXY_WEBSITE_SRC_CFG 	=	${abs_srcdir}/doc/website/libabigail-website.doxy
-DOXY_WEBSITE_BLD_CFG 	=	${abs_builddir}/doc/website/libabigail-website.doxy
+DOXY_WEBSITE_BLD_DIR 	=	${abs_builddir}/website
+DOXY_WEBSITE_SRC_CFG 	=	${abs_srcdir}/website/libabigail-website.doxy
+DOXY_WEBSITE_BLD_CFG 	=	${abs_builddir}/website/libabigail-website.doxy
 
 $(DOXY_API_BLD_DIR):
 	if test ! -d $(DOXY_API_BLD_DIR); then		\
