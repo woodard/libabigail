@@ -1,5 +1,15 @@
 2015-11-16  Dodji Seketeli <dodji@redhat.com>
 
+	Fix doxygen configuration file paths in doc/Makefile.am
+	* doc/Makefile.am: There was an extra "/doc" in the path.
+
+2015-11-16  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog file in preparation of 1.0.rc0 release
+	* ChangeLog: Update using make update-changelog.
+
+2015-11-16  Dodji Seketeli <dodji@redhat.com>
+
 	Add --version option to several libabigail tools
 	* configure.ac: Set the version revision to "rc0".
 	* doc/manuals/abicompat.rst: Adjust manual for new --version
