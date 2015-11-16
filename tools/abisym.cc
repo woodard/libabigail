@@ -29,6 +29,7 @@
 #include <cstring>
 #include <iostream>
 #include <sstream>
+#include "abg-config.h"
 #include "abg-dwarf-reader.h"
 #include "abg-ir.h"
 
@@ -46,6 +47,7 @@ using abigail::elf_symbol_sptr;
 struct options
 {
   bool	show_help;
+  bool	display_version;
   char* elf_path;
   char* symbol_name;
   bool	demangle;
@@ -53,6 +55,7 @@ struct options
 
   options()
     : show_help(false),
+      display_version(false),
       elf_path(0),
       symbol_name(0),
       demangle(false),
@@ -64,10 +67,11 @@ static void
 display_usage(const string& prog_name, ostream &out)
 {
   out << "usage: " << prog_name << " [options] <elf file> <symbol-name>\n"
-       << "where [options] can be:\n"
-       << "  --help  display this help string\n"
-       << "  --demangle demangle the symbols from the symbol table\n"
-       << "  --no-absolute-path do not show absolute paths in messages\n";
+      << "where [options] can be:\n"
+      << "  --help  display this help string\n"
+      << "  --version|-v  display program version information and exit\n"
+      << "  --demangle  demangle the symbols from the symbol table\n"
+      << "  --no-absolute-path  do not show absolute paths in messages\n";
 }
 
 static void
@@ -99,6 +103,12 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.show_help = true;
 	  return;
 	}
+      else if (!strcmp(argv[i], "--version")
+	       || !strcmp(argv[i], "-v"))
+	{
+	  opts.display_version = true;
+	  return;
+	}
       else if (!strcmp(argv[i], "--demangle"))
 	opts.demangle = true;
       else if (!strcmp(argv[i], "--no-absolute-path"))
@@ -119,6 +129,15 @@ main(int argc, char* argv[])
       display_usage(argv[0], cout);
       return 1;
     }
+
+  if (opts.display_version)
+    {
+      string major, minor, revision;
+      abigail::abigail_get_library_version(major, minor, revision);
+      cout << major << "." << minor << "." << revision << "\n";
+      return 0;
+    }
+
   assert(opts.elf_path != 0
 	 && opts.symbol_name != 0);
 

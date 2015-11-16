@@ -31,26 +31,26 @@ namespace abigail
 /// This type abstracts the configuration information of the library.
 class config
 {
-  unsigned char 	m_format_minor;
-  unsigned char 	m_format_major;
-  unsigned 		m_xml_element_indent;
-  std::string 		m_tu_instr_suffix;
-  std::string 		m_tu_instr_archive_suffix;
+  std::string	m_format_minor;
+  std::string	m_format_major;
+  unsigned	m_xml_element_indent;
+  std::string	m_tu_instr_suffix;
+  std::string	m_tu_instr_archive_suffix;
 
 public:
   config();
 
-  unsigned char
+  const std::string&
   get_format_minor_version_number() const;
 
   void
-  set_format_minor_version_number(unsigned char);
+  set_format_minor_version_number(const std::string& v);
 
-  unsigned char
+  const std::string&
   get_format_major_version_number() const;
 
   void
-  set_format_major_version_number(unsigned char);
+  set_format_major_version_number(const std::string& v);
 
   unsigned
   get_xml_element_indent() const;
@@ -81,7 +81,9 @@ extern "C"
   ///
   /// \param rev the revision version number of the library.
   void
-  abigail_get_library_version(int& maj, int& min, int& rev);
+  abigail_get_library_version(std::string& maj,
+			      std::string& min,
+			      std::string& rev);
 }
 
 }//end namespace abigail

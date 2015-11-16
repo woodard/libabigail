@@ -40,6 +40,10 @@ Options
 
     Display a short help about the command and exit.
 
+  * `--version | -v`
+
+    Display the version of the program and exit.
+
   * ``--debug-info-pkg1 | --d1`` <path>
 
     For cases where the debug information for *package1* is split out

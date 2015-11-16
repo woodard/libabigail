@@ -35,6 +35,7 @@
 #include <iostream>
 #include <fstream>
 #include <tr1/memory>
+#include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-corpus.h"
 #include "abg-dwarf-reader.h"
@@ -63,6 +64,7 @@ struct options
   string		in_file_path;
   string		out_file_path;
   shared_ptr<char>	di_root_path;
+  bool			display_version;
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
   bool			write_architecture;
@@ -72,7 +74,8 @@ struct options
   bool			abidiff;
 
   options()
-    : check_alt_debug_info_path(),
+    : display_version(),
+      check_alt_debug_info_path(),
       show_base_name_alt_debug_info_path(),
       write_architecture(true),
       load_all_types(),
@@ -87,18 +90,19 @@ display_usage(const string& prog_name, ostream& out)
 {
   out << "usage: " << prog_name << " [options] [<path-to-elf-file>]\n"
       << " where options can be: \n"
-      << "  --help|-h display this message\n"
-      << "  --debug-info-dir|-d <dir-path> look for debug info under 'dir-path'\n"
-      << "  --out-file <file-path> write the output to 'file-path'\n"
-      << "  --noout do not emit anything after reading the binary\n"
-      << "  --no-architecture do not emit architecture info in the output\n"
-      << "  --check-alternate-debug-info <elf-path> check alternate debug info "
+      << "  --help|-h  display this message\n"
+      << "  --version|-v  display program version information and exit\n"
+      << "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
+      << "  --out-file <file-path>  write the output to 'file-path'\n"
+      << "  --noout  do not emit anything after reading the binary\n"
+      << "  --no-architecture  do not emit architecture info in the output\n"
+      << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
 		"of <elf-path>\n"
-      << "  --check-alternate-debug-info-base-name <elf-path> check alternate "
+      << "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
     "debug info of <elf-path>, and show its base name\n"
-      << "  --load-all-types read all types including those not reachable from"
+      << "  --load-all-types  read all types including those not reachable from"
          "exported declarations\n"
-      << "  --abidiff compare the loaded ABI against itself\n"
+      << "  --abidiff  compare the loaded ABI against itself\n"
       << "  --stats  show statistics about various internal stuff\n";
     ;
 }
@@ -117,6 +121,12 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    opts.in_file_path = argv[i];
 	  else
 	    return false;
+	}
+      else if (!strcmp(argv[i], "--version")
+	       || !strcmp(argv[i], "-v"))
+	{
+	  opts.display_version = true;
+	  return true;
 	}
       else if (!strcmp(argv[i], "--debug-info-dir")
 	       || !strcmp(argv[i], "-d"))
@@ -200,6 +210,14 @@ main(int argc, char* argv[])
     {
       display_usage(argv[0], cerr);
       return 1;
+    }
+
+  if (opts.display_version)
+    {
+      string major, minor, revision;
+      abigail::abigail_get_library_version(major, minor, revision);
+      cout << major << "." << minor << "." << revision << "\n";
+      return 0;
     }
 
   assert(!opts.in_file_path.empty());

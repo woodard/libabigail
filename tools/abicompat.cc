@@ -49,6 +49,7 @@
 #include <iostream>
 #include <fstream>
 #include <tr1/memory>
+#include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-corpus.h"
 #include "abg-dwarf-reader.h"
@@ -73,6 +74,7 @@ struct options
   shared_ptr<char>	lib2_di_root_path;
   vector<string>	suppression_paths;
   bool			display_help;
+  bool			display_version;
   bool			weak_mode;
   bool			list_undefined_symbols_only;
   bool			show_base_names;
@@ -80,6 +82,7 @@ struct options
 
   options()
     :display_help(),
+     display_version(),
      weak_mode(),
      list_undefined_symbols_only(),
      show_base_names(),
@@ -95,6 +98,7 @@ display_usage(const string& prog_name, ostream& out)
       << "\n"
       << " where options can be: \n"
       << "  --help|-h  display this help message\n"
+      << "  --version|-v  show program version information and exit\n"
       << "  --list-undefined-symbols|-u  display the list of "
          "undefined symbols of the application\n"
       << "  --show-base-names|b  in the report, only show the base names "
@@ -131,6 +135,12 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    opts.lib2_path = argv[i];
 	  else
 	    return false;
+	}
+      else if (!strcmp(argv[i], "--version")
+	       || !strcmp(argv[i], "-v"))
+	{
+	  opts.display_version = true;
+	  return true;
 	}
       else if (!strcmp(argv[i], "--list-undefined-symbols")
 	       || !strcmp(argv[i], "-u"))
@@ -591,6 +601,14 @@ main(int argc, char* argv[])
       display_usage(argv[0], cout);
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
+    }
+
+  if (opts.display_version)
+    {
+      string major, minor, revision;
+      abigail::abigail_get_library_version(major, minor, revision);
+      cout << major << "." << minor << "." << revision << "\n";
+      return 0;
     }
 
   assert(!opts.app_path.empty());

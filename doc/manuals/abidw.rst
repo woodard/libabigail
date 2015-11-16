@@ -24,6 +24,10 @@ Options
 
     Display a short help about the command and exit.
 
+  * `--version | -v`
+
+    Display the version of the program and exit.
+
   * ``--debug-info-dir | -d`` <*dir-path*>
 
     In cases where the debug info for *path-to-elf-file* is in a

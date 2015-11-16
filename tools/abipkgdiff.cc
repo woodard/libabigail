@@ -74,6 +74,7 @@
 #include <elfutils/libdw.h>
 #include <unistd.h>
 #include <pthread.h>
+#include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-comparison.h"
 #include "abg-dwarf-reader.h"
@@ -137,6 +138,7 @@ static struct options *prog_options;
 struct options
 {
   bool		display_usage;
+  bool		display_version;
   bool		missing_operand;
   bool		abignore;
   bool		parallel;
@@ -155,6 +157,7 @@ struct options
 
   options()
     : display_usage(),
+      display_version(),
       missing_operand(),
       abignore(true),
       parallel(true),
@@ -495,7 +498,9 @@ display_usage(const string& prog_name, ostream& out)
       << " --no-parallel                  do not execute in parallel\n"
       << " --fail-no-dbg                  fail if no debug info was found\n"
       << " --verbose                      emit verbose progress messages\n"
-      << " --help|-h                      display this help message\n";
+      << " --help|-h                      display this help message\n"
+      << " --version|-v                   display program version information"
+               " and exit\n";
 }
 
 #ifdef WITH_RPM
@@ -1561,6 +1566,12 @@ parse_command_line(int argc, char* argv[], options& opts)
           opts.display_usage = true;
           return true;
         }
+      else if (!strcmp(argv[i], "--version")
+	       || !strcmp(argv[i], "-v"))
+	{
+	  opts.display_version = true;
+	  return true;
+	}
       else
         return false;
     }
@@ -1592,6 +1603,14 @@ main(int argc, char* argv[])
     {
       display_usage(argv[0], cout);
       return 1;
+    }
+
+  if (opts.display_version)
+    {
+      string major, minor, revision;
+      abigail::abigail_get_library_version(major, minor, revision);
+      cout << major << "." << minor << "." << revision << "\n";
+      return 0;
     }
 
   if (opts.package1.empty() || opts.package2.empty())

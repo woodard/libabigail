@@ -1203,8 +1203,8 @@ write_translation_unit(const translation_unit&	tu,
   do_indent(o, indent);
 
   o << "<abi-instr version='"
-    << static_cast<int> (c.get_format_major_version_number())
-    << "." << static_cast<int>(c.get_format_minor_version_number())
+    << c.get_format_major_version_number()
+    << "." << c.get_format_minor_version_number()
     << "'";
 
   if (tu.get_address_size() != 0)

@@ -31,6 +31,10 @@ Options
 
     Display a short help message and exits.
 
+  * `--version | -v`
+
+    Display the version of the program and exit.
+
   * ``--debug-info-dir`` <*path*>
 
     When reading an `ELF`_ input file which debug information is split

@@ -32,6 +32,10 @@ Options
 
     Display a short help about the command and exit.
 
+  * `--version | -v`
+
+    Display the version of the program and exit.
+
   * ``--debug-info-dir1 | --d1`` <*di-path1*>
 
     For cases where the debug information for *first-shared-library*

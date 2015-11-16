@@ -28,6 +28,10 @@ Options
 
     Display a short help about the command and exit.
 
+  * `--version | -v`
+
+    Display the version of the program and exit.
+
   * ``--list-undefined-symbols | -u``
 
     Display the list of undefined symbols of the application and exit.

@@ -26,6 +26,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "abg-config.h"
 #include "abg-comp-filter.h"
 #include "abg-tools-utils.h"
 #include "abg-reader.h"
@@ -57,6 +58,7 @@ using abigail::tools_utils::abidiff_status;
 struct options
 {
   bool display_usage;
+  bool display_version;
   bool missing_operand;
   string		file1;
   string		file2;
@@ -88,6 +90,7 @@ struct options
 
   options()
     : display_usage(),
+      display_version(),
       missing_operand(),
       no_arch(),
       show_stats_only(),
@@ -115,6 +118,7 @@ display_usage(const string& prog_name, ostream& out)
 {
   out << "usage: " << prog_name << " [options] [<file1> <file2>]\n"
       << " where options can be:\n"
+      << " --version|-v  display program version information and exit\n"
       << " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
       << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
       << " --help|-h  display this message\n "
@@ -176,6 +180,12 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    opts.file2 = argv[i];
 	  else
 	    return false;
+	}
+      else if (!strcmp(argv[i], "--version")
+	       || !strcmp(argv[i], "-v"))
+	{
+	  opts.display_version = true;
+	  return true;
 	}
       else if (!strcmp(argv[i], "--debug-info-dir1")
 	       || !strcmp(argv[i], "--d1"))
@@ -499,6 +509,14 @@ main(int argc, char* argv[])
       display_usage(argv[0], cout);
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
+    }
+
+  if (opts.display_version)
+    {
+      string major, minor, revision;
+      abigail::abigail_get_library_version(major, minor, revision);
+      cout << major << "." << minor << "." << revision << "\n";
+      return 0;
     }
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;

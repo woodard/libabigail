@@ -34,6 +34,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-ir.h"
 #include "abg-corpus.h"
@@ -65,6 +66,7 @@ using abigail::xml_writer::write_corpus_to_archive;
 struct options
 {
   string			file_path;
+  bool				display_version;
   bool				read_from_stdin;
   bool				read_tu;
   bool				diff;
@@ -72,7 +74,8 @@ struct options
   std::tr1::shared_ptr<char>	di_root_path;
 
   options()
-    : read_from_stdin(false),
+    : display_version(false),
+      read_from_stdin(false),
       read_tu(false),
       diff(false),
       noout(false)
@@ -85,6 +88,7 @@ display_usage(const string& prog_name, ostream& out)
   out << "usage: " << prog_name << " [options] [<abi-file1>]\n"
       << " where options can be:\n"
       << "  --help  display this message\n"
+      << "  --version|-v  display program version information and exit\n"
       << "  --debug-info-dir <path> the path under which to look for "
            "debug info for the elf <abi-file>\n"
       << "  --diff  for xml inputs, perform a text diff between "
@@ -114,6 +118,12 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  }
 	else if (!strcmp(argv[i], "--help"))
 	  return false;
+	else if (!strcmp(argv[i], "--version")
+		 || !strcmp(argv[i], "-v"))
+	  {
+	    opts.display_version = true;
+	    return true;
+	  }
 	else if (!strcmp(argv[i], "--debug-info-dir"))
 	  {
 	    if (argc <= i + 1
@@ -154,6 +164,13 @@ main(int argc, char* argv[])
       return true;
     }
 
+  if (opts.display_version)
+    {
+      string major, minor, revision;
+      abigail::abigail_get_library_version(major, minor, revision);
+      cout << major << "." << minor << "." << revision << "\n";
+      return 0;
+    }
   abigail::ir::environment_sptr env(new abigail::ir::environment);
   if (opts.read_from_stdin)
     {
