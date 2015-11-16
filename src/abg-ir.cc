@@ -229,7 +229,7 @@ location_manager::create_new_location(const std::string&	file_path,
 /// Given an instance of location type, return the triplet
 /// {path,line,column} that represents the source locus.  Note that
 /// the location must have been previously created from the function
-/// location_manager::expand_location otherwise this function yields
+/// location_manager::create_new_location, otherwise this function yields
 /// unexpected results, including possibly a crash.
 ///
 /// @param location the instance of location type to expand
