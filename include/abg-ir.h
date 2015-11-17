@@ -1832,7 +1832,7 @@ public:
   void
   set_name(const string& n);
 
-  ssize_t
+  size_t
   get_value() const;
 
   void

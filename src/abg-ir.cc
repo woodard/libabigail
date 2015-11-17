@@ -8200,7 +8200,7 @@ enum_type_decl::enumerator::set_name(const string& n)
 ///
 /// @return the value of the current instance of
 /// enum_type_decl::enumerator.
-ssize_t
+size_t
 enum_type_decl::enumerator::get_value() const
 {return priv_->value_;}
 

@@ -3956,6 +3956,7 @@ die_unsigned_constant_attribute(Dwarf_Die*	die,
   return true;
 }
 
+#if 0
 /// Get the value of an attribute that is supposed to be a signed
 /// constant.
 ///
@@ -3988,6 +3989,7 @@ die_signed_constant_attribute(Dwarf_Die*	die,
   cst = result;
   return true;
 }
+#endif
 
 /// Get the value of a DIE attribute; that value is meant to be a
 /// flag.
@@ -6476,8 +6478,8 @@ build_enum_type(read_context& ctxt,
 	  string n, m;
 	  location l;
 	  die_loc_and_name(ctxt, &child, loc, n, m);
-	  ssize_t val = 0;
-	  die_signed_constant_attribute(&child, DW_AT_const_value, val);
+	  size_t val = 0;
+	  die_unsigned_constant_attribute(&child, DW_AT_const_value, val);
 	  enms.push_back(enum_type_decl::enumerator(n, val));
 	}
       while (dwarf_siblingof(&child, &child) == 0);

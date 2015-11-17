@@ -3176,7 +3176,7 @@ build_enum_type_decl(read_context&	ctxt,
       if (xmlStrEqual(n->name, BAD_CAST("enumerator")))
 	{
 	  string name;
-	  ssize_t value = 0;
+	  size_t value = 0;
 
 	  xml_char_sptr a = xml::build_sptr(xmlGetProp(n, BAD_CAST("name")));
 	  if (a)
@@ -3185,7 +3185,7 @@ build_enum_type_decl(read_context&	ctxt,
 	  a = xml::build_sptr(xmlGetProp(n, BAD_CAST("value")));
 	  if (a)
 	    {
-	      value = strtol(CHAR_STR(a), NULL, 0);
+	      value = strtoll(CHAR_STR(a), NULL, 0);
 	      if (errno == ERANGE)
 		return nil;
 	    }
