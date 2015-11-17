@@ -1217,14 +1217,14 @@ prepare_packages(package&	first_package,
   package_descriptor ea[] =
     {
       {
-	.pkg = first_package,
-	.opts = opts,
-	.callback = first_package_tree_walker_callback_fn
+	first_package,
+	opts,
+	first_package_tree_walker_callback_fn
       },
       {
-	.pkg = second_package,
-	.opts = opts,
-	.callback = second_package_tree_walker_callback_fn
+	second_package,
+	opts,
+	second_package_tree_walker_callback_fn
       },
     };
 
