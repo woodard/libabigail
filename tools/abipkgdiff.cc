@@ -1349,9 +1349,11 @@ compare(package&	first_package,
   std::sort(elf_pairs.begin(), elf_pairs.end(), elf_size_is_greater);
 
   size_t nprocs = opts.parallel ? sysconf(_SC_NPROCESSORS_ONLN) : 1;
+  assert(nprocs >= 1);
   // There's no reason to spawn more threads than there are pairs to be diffed.
   nprocs = std::min(nprocs, elf_pairs.size());
-  assert(nprocs >= 1);
+
+  // if nprocs is zero, it means we have no binary to compare.
 
   // We've identified the elf couples to compare, let's spawn NPROCS threads
   // to do comparisons.

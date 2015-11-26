@@ -254,6 +254,15 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64--qemu-img-rhev-2.3.0-20.el7.ppc64-report-0.txt",
     "output/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64--qemu-img-rhev-2.3.0-20.el7.ppc64-report-0.txt"
   },
+  {"data/test-diff-pkg/empty-pkg-libvirt-0.9.11.3-1.el7.ppc64.rpm",
+   "data/test-diff-pkg/empty-pkg-libvirt-1.2.17-13.el7_2.2.ppc64.rpm",
+   "",
+   "",
+   "",
+   "",
+   "data/test-diff-pkg/empty-pkg-report-0.txt",
+   "output/test-diff-pkg/empty-pkg-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB
