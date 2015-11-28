@@ -134,7 +134,7 @@ display_usage(const string& prog_name, ostream& out)
       << " --no-linkage-name  do not display linkage names of "
              "added/removed/changed\n"
       << " --no-unreferenced-symbols  do not display changes "
-             "about symbols not referenced by debug info"
+             "about symbols not referenced by debug info\n"
       << " --suppressions|--suppr <path> specify a suppression file\n"
       << " --drop <regex>  drop functions and variables matching a regexp\n"
       << " --drop-fn <regex> drop functions matching a regexp\n"
