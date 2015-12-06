@@ -4212,7 +4212,7 @@ get_type_name(const type_base* t, bool qualified, bool internal)
       return get_function_type_name(fn_type, internal);
     }
   if (qualified)
-    return d->get_qualified_name();
+    return d->get_qualified_name(internal);
   return d->get_name();
 }
 
@@ -4362,7 +4362,7 @@ get_method_type_name(const method_type& fn_type,
   class_decl_sptr class_type = fn_type.get_class_type();
   assert(class_type);
 
-  o << " (" << class_type->get_qualified_name() << "::*)"
+  o << " (" << class_type->get_qualified_name(internal) << "::*)"
     << " (";
 
   for (function_type::parameters::const_iterator i =
@@ -8365,9 +8365,9 @@ typedef_decl::operator==(const type_base& o) const
 /// @return a copy of the pretty representation of the current
 /// instance of typedef_decl.
 string
-typedef_decl::get_pretty_representation(bool /*internal*/) const
+typedef_decl::get_pretty_representation(bool internal) const
 {
-  string result = "typedef " + get_qualified_name();
+  string result = "typedef " + get_qualified_name(internal);
   return result;
 }
 
@@ -8687,18 +8687,19 @@ var_decl::get_hash() const
 ///
 /// @return a copy of the pretty representation of this variable.
 string
-var_decl::get_pretty_representation(bool /*internal*/) const
+var_decl::get_pretty_representation(bool internal) const
 {
   string result;
 
   if (is_member_decl(this) && get_member_is_static(this))
     result = "static ";
   if (array_type_def_sptr t = is_array_type(get_type()))
-    result += get_type_declaration(t->get_element_type())->get_qualified_name()
-      + " " + get_qualified_name() + t->get_subrange_representation();
+    result +=
+      get_type_declaration(t->get_element_type())->get_qualified_name(internal)
+      + " " + get_qualified_name(internal) + t->get_subrange_representation();
   else
-    result += get_type_declaration(get_type())->get_qualified_name()
-      + " " + get_qualified_name();
+    result += get_type_declaration(get_type())->get_qualified_name(internal)
+      + " " + get_qualified_name(internal);
   return result;
 }
 
@@ -9404,7 +9405,7 @@ function_decl::function_decl(const std::string& name,
 ///
 /// @return the pretty representation for a function.
 string
-function_decl::get_pretty_representation(bool /*internal*/) const
+function_decl::get_pretty_representation(bool internal) const
 {
   const class_decl::method_decl* mem_fn =
     dynamic_cast<const class_decl::method_decl*>(this);
@@ -9428,7 +9429,7 @@ function_decl::get_pretty_representation(bool /*internal*/) const
       : get_type_declaration(get_type()->get_return_type());
 
   if (type)
-    result += type->get_qualified_name() + " ";
+    result += type->get_qualified_name(internal) + " ";
 
   result += get_pretty_representation_of_declarator();
 
@@ -10706,7 +10707,7 @@ class_decl::get_pretty_representation(bool internal) const
   string cl = "class ";
   if (!internal && is_struct())
     cl = "struct ";
-  return cl + get_qualified_name();
+  return cl + get_qualified_name(internal);
 }
 
 /// Set the definition of this declaration-only class.
