@@ -266,12 +266,13 @@ main(int argc, char* argv[])
 	    ;
 	  else
 	    {
+	      cout << "found the alternate debug info file";
 	      if (opts.show_base_name_alt_debug_info_path)
-		tools_utils::base_name(alt_di_path, alt_di_path);
-
-	      cout << "found the alternate debug info file '"
-		   << alt_di_path
-		   << "'\n";
+		{
+		  tools_utils::base_name(alt_di_path, alt_di_path);
+		  cout << " '" << alt_di_path << "'";
+		}
+	      cout << "\n";
 	    }
 	  return 0;
 	}

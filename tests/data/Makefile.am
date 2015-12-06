@@ -830,6 +830,12 @@ test-alt-dwarf-file/libtest0-common.so	\
 test-alt-dwarf-file/test0-report.txt	\
 test-alt-dwarf-file/test0-debug-dir/test0-common-dwz.debug \
 test-alt-dwarf-file/test0-debug-dir/.build-id/16/7088580c513b439c9ed95fe6a8b29496495f26.debug \
+test-alt-dwarf-file/test1-libgromacs_d.so.0.0.0 \
+test-alt-dwarf-file/test1-report-0.txt \
+test-alt-dwarf-file/test1-libgromacs-debug-dir/.build-id/45/0c27b7c158eecb67822a8639b21735ecfc409f.debug \
+test-alt-dwarf-file/test1-libgromacs-debug-dir/.build-id/7c/85cee9a5a59e7d0a866386b47c1674da5d201f.debug \
+test-alt-dwarf-file/test1-libgromacs-debug-dir/.dwz/gromacs-5.0.6-4.fc22.x86_64 \
+test-alt-dwarf-file/test1-libgromacs-debug-dir/usr/lib64/libgromacs_d.so.0.0.0.debug \
 \
 test-abicompat/libtest0-fn-changed-libapp-v0.so \
 test-abicompat/libtest0-fn-changed-libapp-v1.so \

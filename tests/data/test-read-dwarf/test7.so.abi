@@ -52,8 +52,9 @@
       <subrange length='infinite'/>
     </array-type-def>
     <reference-type-def kind='lvalue' type-id='type-id-2' size-in-bits='64' id='type-id-15'/>
+    <qualified-type-def type-id='type-id-15' id='type-id-16'/>
     <function-decl name='foo' mangled-name='_Z3fooR1S' filepath='/home/ooprala/rh/u/libabigail/tests/data/test-read-dwarf/test7.cc' line='11' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooR1S'>
-      <parameter type-id='type-id-15'/>
+      <parameter type-id='type-id-16'/>
       <return type-id='type-id-1'/>
     </function-decl>
   </abi-instr>

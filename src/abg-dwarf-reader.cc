@@ -6974,15 +6974,11 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
   type_base_sptr u = t->get_underlying_type();
   if (t->get_cv_quals() & qualified_type_def::CV_CONST
       && is_reference_type(t->get_underlying_type()))
-    {
-      // Let's strip only the const qualifier.
-      if (qualified_type_def::CV q =
-	  (t->get_cv_quals() & ~(qualified_type_def::CV_CONST)))
-	result.reset(new qualified_type_def(u, t->get_cv_quals() | q,
-					    t->get_location()));
-      else
-	result = get_type_declaration(u);
-    }
+    // Let's strip only the const qualifier.  To do that, the "const"
+    // qualified is turned into a no-op "none" qualified.
+    result.reset(new qualified_type_def
+		 (u, t->get_cv_quals() & ~qualified_type_def::CV_CONST,
+		  t->get_location()));
 
   return result;
 }

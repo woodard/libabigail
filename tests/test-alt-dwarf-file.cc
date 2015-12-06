@@ -59,6 +59,13 @@ InOutSpec in_out_specs[] =
     "data/test-alt-dwarf-file/test0-report.txt",
     "output/test-alt-dwarf-file/test0-report.txt"
   },
+  {
+    "data/test-alt-dwarf-file/test1-libgromacs_d.so.0.0.0",
+    "data/test-alt-dwarf-file/test1-libgromacs-debug-dir",
+    "--noout --check-alternate-debug-info",
+    "data/test-alt-dwarf-file/test1-report-0.txt",
+    "output/test-alt-dwarf-file/test1-report-0.txt"
+  },
 
   // This should always be the last entry
   {NULL, NULL, NULL, NULL, NULL}

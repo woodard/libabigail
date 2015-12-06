@@ -1956,6 +1956,11 @@ struct decl_base::priv
   context_rel_sptr	context_;
   std::string		name_;
   std::string		qualified_parent_name_;
+  // This temporary qualified name is the cache used for the qualified
+  // name before the type associated to this decl (if applicable) is
+  // canonicalized.  Once the type is canonicalized, the cached use is
+  // the data member qualified_parent_name_ above.
+  std::string		temporary_qualified_name_;
   std::string		qualified_name_;
   std::string		linkage_name_;
   visibility		visibility_;
@@ -2025,6 +2030,33 @@ decl_base::peek_qualified_name() const
 void
 decl_base::set_qualified_name(const string& n) const
 {priv_->qualified_name_ = n;}
+
+/// Getter of the temporary qualified name of the current declaration.
+///
+/// This temporary qualified name is used as a qualified name cache by
+/// the type for which this is the declaration (when applicable)
+/// before the type is canonicalized.  Once the type is canonicalized,
+/// it's the result of decl_base::peek_qualified_name() that becomes
+/// the qualified name cached.
+///
+/// @return the temporary qualified name.
+const string&
+decl_base::peek_temporary_qualified_name() const
+{return priv_->temporary_qualified_name_;}
+
+/// Setter for the temporary qualified name of the current
+/// declaration.
+///
+///@param n the new temporary qualified name.
+///
+/// This temporary qualified name is used as a qualified name cache by
+/// the type for which this is the declaration (when applicable)
+/// before the type is canonicalized.  Once the type is canonicalized,
+/// it's the result of decl_base::peek_qualified_name() that becomes
+/// the qualified name cached.
+void
+decl_base::set_temporary_qualified_name(const string& n) const
+{priv_->temporary_qualified_name_ = n;}
 
 ///Getter for the context relationship.
 ///
@@ -6857,6 +6889,12 @@ class qualified_type_def::priv
   friend class qualified_type_def;
 
   qualified_type_def::CV	cv_quals_;
+  // Before the type is canonicalized, this is used as a temporary
+  // internal name.
+  string			temporary_internal_name_;
+  // Once the type is canonicalized, this is used as the internal
+  // name.
+  string			internal_name_;
   weak_ptr<type_base>		underlying_type_;
 
   priv()
@@ -6883,24 +6921,32 @@ class qualified_type_def::priv
 string
 qualified_type_def::build_name(bool fully_qualified, bool internal) const
 {
+  assert(get_underlying_type());
   string quals = get_cv_quals_string_prefix();
-  decl_base_sptr td =
-    get_type_declaration(get_underlying_type());
-  string name;
-  if (fully_qualified)
-    name = td->get_qualified_name(internal);
-  else
-    name = td->get_name();
-  if (dynamic_pointer_cast<pointer_type_def>(get_underlying_type())
-      || (!priv_->underlying_type_.expired()
-	  && dynamic_pointer_cast<reference_type_def>
-	  (type_base_sptr(priv_->underlying_type_))))
+  string name = get_type_name(get_underlying_type(),
+			      fully_qualified,
+			      internal);
+
+  if (quals.empty() && internal)
+    // We are asked to return the internal name, that might be used
+    // for type canonicalization.  For that canonicalization, we need
+    // to make a difference between a no-op qualified type which
+    // underlying type is foo (the qualified type is named "none
+    // foo"), and the name of foo, which is just "foo".
+    quals = "none";
+
+  if (!quals.empty())
     {
-      name += " ";
-      name += quals;
+      if (is_pointer_type(get_underlying_type())
+	  || is_reference_type(get_underlying_type()))
+	{
+	  name += " ";
+	  name += quals;
+	}
+      else
+	name = quals + " " + name;
     }
-  else
-    name = quals + " " + name;
+
   return name;
 }
 
@@ -7053,10 +7099,47 @@ qualified_type_def::get_qualified_name(string& qualified_name,
 const string&
 qualified_type_def::get_qualified_name(bool internal) const
 {
-  if (peek_qualified_name().empty()
-      || !get_canonical_type())
-    set_qualified_name(build_name(true, internal));
-  return peek_qualified_name();
+  if (!get_canonical_type())
+    {
+      // The type hasn't been canonicalized yet. We want to return a
+      // temporary name.
+      if (internal)
+	{
+	  // We are asked to return a temporary *internal* name.  So
+	  // let's return it from the right cache.
+	  if (priv_->temporary_internal_name_.empty())
+	    priv_->temporary_internal_name_ =
+	      build_name(true, /*internal=*/true);
+	  return priv_->temporary_internal_name_;
+	}
+      else
+	{
+	  // We are asked to return a temporary non-internal name.
+	  // This comes from a different cache.
+	  if (peek_temporary_qualified_name().empty())
+	    set_temporary_qualified_name(build_name(true, /*internal=*/false));
+	  return peek_temporary_qualified_name();
+	}
+    }
+  else
+    {
+      // The type has already been canonicalized. We want to return
+      // the definitive name.
+      if (internal)
+	{
+	  if (priv_->internal_name_.empty())
+	    priv_->internal_name_ =
+	      build_name(/*qualified=*/true, /*internal=*/true);
+	  return priv_->internal_name_;
+	}
+      else
+	{
+	  if (peek_qualified_name().empty())
+	    set_qualified_name(build_name(/*qualified=*/true,
+					  /*internal=*/false));
+	  return peek_qualified_name();
+	}
+    }
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -13528,9 +13611,7 @@ qualified_name_setter::do_update(abigail::ir::decl_base* d)
   else
     d->priv_->qualified_parent_name_.clear();
 
-  if (d->priv_->qualified_parent_name_.empty())
-    d->priv_->qualified_name_ = d->get_name();
-  else
+  if (!d->priv_->qualified_parent_name_.empty())
     {
       if (d->get_name().empty())
 	d->priv_->qualified_name_.clear();

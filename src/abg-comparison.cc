@@ -5969,14 +5969,22 @@ try_to_diff_distinct_kinds(const type_or_decl_base_sptr first,
 /// @return the resulting diff.  It's a pointer to a descendent of
 /// abigail::comparison::diff.
 static diff_sptr
-compute_diff_for_types(const type_or_decl_base_sptr first,
-		       const type_or_decl_base_sptr second,
-		       diff_context_sptr ctxt)
+compute_diff_for_types(const type_or_decl_base_sptr& first,
+		       const type_or_decl_base_sptr& second,
+		       const diff_context_sptr& ctxt)
 {
-  diff_sptr d;
+  type_or_decl_base_sptr f = first;
+  type_or_decl_base_sptr s = second;
 
-  const type_or_decl_base_sptr f = first;
-  const type_or_decl_base_sptr s = second;
+  // Look through no-op qualified types.
+  if (qualified_type_def_sptr fq = is_qualified_type(is_type(f)))
+    if (fq->get_cv_quals() == qualified_type_def::CV_NONE)
+      f = fq->get_underlying_type();
+  if (qualified_type_def_sptr sq = is_qualified_type(is_type(s)))
+    if (sq->get_cv_quals() == qualified_type_def::CV_NONE)
+      s = sq->get_underlying_type();
+
+  diff_sptr d;
 
   ((d = try_to_diff<type_decl>(f, s, ctxt))
    ||(d = try_to_diff<enum_type_decl>(f, s, ctxt))

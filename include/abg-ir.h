@@ -900,6 +900,12 @@ protected:
   void
   set_qualified_name(const string&) const;
 
+  const string&
+  peek_temporary_qualified_name() const;
+
+  void
+  set_temporary_qualified_name(const string&) const;
+
 public:
   // This is public because some internals of the library need to
   // update it.  But it's opaque to client code anyway, so no big
