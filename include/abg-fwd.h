@@ -269,7 +269,7 @@ shared_ptr<reference_type_def>
 is_reference_type(const shared_ptr<type_base>);
 
 qualified_type_def*
-is_qualified_type(type_base*);
+is_qualified_type(const type_base*);
 
 shared_ptr<qualified_type_def>
 is_qualified_type(const shared_ptr<type_base>);

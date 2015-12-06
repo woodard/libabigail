@@ -5162,8 +5162,8 @@ is_reference_type(const type_base_sptr t)
 /// @return the @ref reference_type_def_sptr if @p t is a
 /// reference_type_def, null otherwise.
 qualified_type_def*
-is_qualified_type(type_base* t)
-{return dynamic_cast<qualified_type_def*>(t);}
+is_qualified_type(const type_base* t)
+{return dynamic_cast<qualified_type_def*>(const_cast<type_base*>(t));}
 
 /// Test whether a type is a qualified_type_def.
 ///
