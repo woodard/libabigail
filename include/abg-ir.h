@@ -1469,6 +1469,9 @@ public:
   virtual bool
   operator==(const type_base&) const;
 
+  virtual bool
+  operator==(const qualified_type_def&) const;
+
   CV
   get_cv_quals() const;
 
@@ -1492,6 +1495,9 @@ public:
 
   virtual ~qualified_type_def();
 }; // end class qualified_type_def.
+
+bool
+operator==(const qualified_type_def_sptr&, const qualified_type_def_sptr&);
 
 qualified_type_def::CV
 operator|(qualified_type_def::CV, qualified_type_def::CV);

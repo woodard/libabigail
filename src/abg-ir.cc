@@ -7073,6 +7073,24 @@ qualified_type_def::operator==(const type_base& o) const
   return *this == *other;
 }
 
+/// Equality operator for qualified types.
+///
+/// Note that this function does not check for equality of the scopes.
+/// Also, this re-uses the equality operator above that takes a
+/// decl_base.
+///
+///@param o the other qualified type to compare against.
+///
+/// @return true iff both qualified types are equal.
+bool
+qualified_type_def::operator==(const qualified_type_def& o) const
+{
+  const decl_base* other = dynamic_cast<const decl_base*>(&o);
+  if (!other)
+    return false;
+  return *this == *other;
+}
+
 /// Implementation for the virtual qualified name builder for @ref
 /// qualified_type_def.
 ///
@@ -7212,6 +7230,24 @@ qualified_type_def::get_underlying_type() const
   if (priv_->underlying_type_.expired())
     return type_base_sptr();
   return type_base_sptr(priv_->underlying_type_);
+}
+
+/// Non-member equality operator for @ref qualified_type_def
+///
+/// @param l the left-hand side of the equality operator
+///
+/// @param r the right-hand side of the equality operator
+///
+/// @return true iff @p l and @p r equals.
+bool
+operator==(const qualified_type_def_sptr& l, const qualified_type_def_sptr& r)
+{
+  if (l.get() == r.get())
+    return true;
+  if (!!l != !!r)
+    return false;
+
+  return *l == *r;
 }
 
 /// Overloaded bitwise OR operator for cv qualifiers.

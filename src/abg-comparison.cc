@@ -7733,28 +7733,7 @@ qualified_type_diff::get_pretty_representation() const
 /// @return true iff the current diff node carries a change.
 bool
 qualified_type_diff::has_changes() const
-{
-  bool l = false;
-  char fcv = first_qualified_type()->get_cv_quals(),
-    scv = second_qualified_type()->get_cv_quals();
-
-  if (fcv != scv)
-    {
-      if ((fcv & qualified_type_def::CV_CONST)
-	  != (scv & qualified_type_def::CV_CONST))
-	l |= true;
-      if ((fcv & qualified_type_def::CV_VOLATILE)
-	  != (scv & qualified_type_def::CV_RESTRICT))
-	l |= true;
-      if ((fcv & qualified_type_def::CV_RESTRICT)
-	  != (scv & qualified_type_def::CV_RESTRICT))
-	l |= true;
-    }
-
-  return (underlying_type_diff()
-	  ? underlying_type_diff()->has_changes() || l
-	  : l);
-}
+{return first_qualified_type() != second_qualified_type();}
 
 /// @return true iff the current diff node carries local changes.
 bool
