@@ -7769,6 +7769,7 @@ operator==(const reference_type_def_sptr& l, const reference_type_def_sptr& r)
 
   return *l == *r;
 }
+
 // </reference_type_def definitions>
 
 // <array_type_def definitions>

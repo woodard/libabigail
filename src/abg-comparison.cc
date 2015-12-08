@@ -9511,7 +9511,7 @@ class_diff::report(ostream& out, const string& indent) const
 
 	      class_decl::base_spec_sptr base = i->second;
 
-	      if ( priv_->base_has_changed(base))
+	      if (priv_->base_has_changed(base))
 		continue;
 	      out << indent << "  "
 		  << base->get_base_class()->get_pretty_representation();
