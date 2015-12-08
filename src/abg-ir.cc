@@ -4969,9 +4969,9 @@ is_decl(const type_or_decl_base_sptr& d)
 bool
 is_type(const type_or_decl_base& tod)
 {
-  try {dynamic_cast<const type_base&>(tod);}
-  catch(...) {return false;}
-  return true;
+  if (dynamic_cast<const type_base*>(&tod))
+    return true;
+  return false;
 }
 
 /// Test whether a declaration is a type.
@@ -5000,9 +5000,9 @@ is_type(const type_or_decl_base_sptr& tod)
 bool
 is_type(const decl_base& d)
 {
-  try {dynamic_cast<const type_base&>(d);}
-  catch(...) {return false;}
-  return true;
+  if (dynamic_cast<const type_base*>(&d))
+    return true;
+  return false;
 }
 
 /// Tests whether a declaration is a type, and return it properly
@@ -9146,21 +9146,11 @@ equals(const function_type& lhs,
     }
 
   class_decl* lhs_class = 0, *rhs_class = 0;
-  try
-    {
-      const method_type& m = dynamic_cast<const method_type&>(lhs);
-      lhs_class = m.get_class_type().get();
-    }
-  catch (...)
-    {}
+  if (const method_type* m = dynamic_cast<const method_type*>(&lhs))
+    lhs_class = m->get_class_type().get();
 
-  try
-    {
-      const method_type& m = dynamic_cast<const method_type&>(rhs);
-      rhs_class = m.get_class_type().get();
-    }
-  catch (...)
-    {}
+  if (const method_type* m = dynamic_cast<const method_type*>(&rhs))
+    rhs_class = m->get_class_type().get();
 
   // Compare the names of the class of the method
 
