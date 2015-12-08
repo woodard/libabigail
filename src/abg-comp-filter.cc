@@ -455,6 +455,52 @@ static_data_member_added_or_removed(const class_diff* diff)
   return false;
 }
 
+/// Test if a class_diff node has a harmless "One Definition Rule"
+/// violation that will cause a diagnostic rule.
+///
+/// The conditions this function looks for are:
+///
+///  1/ The two subject of the diff must be canonically different
+///
+///  2/ The two subjects of the diff must be structurally equal
+///
+///  3/ The canonical types of the subjects of the diff must be
+///  structurally different.
+///
+/// These conditions makes the diff node appears as it carries changes
+/// (because of a ODR glitch present in the binary), but the glitch
+/// has no effect on the structural equality of the subjects of the
+/// diff.  If we do not detect these conditions, we'd end up with a
+/// diagnostic glitch where the reporter thinks there is an ABI change
+/// (because of the canonical difference), but then it fails to give
+/// any detail about it, because there is no structural change.
+///
+/// @param diff the diff node to consider.
+///
+/// @return true iff the the diff node has a harmless "One Definition
+/// Rule" violation that cause an empty false positive.
+static bool
+class_diff_has_harmless_odr_violation_change(const diff* dif)
+{
+  class_diff* d =  dynamic_cast<class_diff*>(const_cast<diff*>(dif));
+  if (!d || !d->has_changes())
+    return false;
+
+  class_decl_sptr first = d->first_class_decl();
+  class_decl_sptr second = d->second_class_decl();
+
+  if (equals(*first, *second, 0))
+    {
+      class_decl_sptr fc = is_class_type(first->get_canonical_type());
+      class_decl_sptr sc = is_class_type(second->get_canonical_type());
+
+      if (!equals(*fc, *sc, 0))
+	return true;
+    }
+
+  return false;
+}
+
 /// Test if a class_diff node has static members added or
 /// removed.
 ///
@@ -742,7 +788,8 @@ harmless_filter::visit(diff* d, bool pre)
       if (is_compatible_change(f, s))
 	category |= COMPATIBLE_TYPE_CHANGE_CATEGORY;
 
-      if (has_harmless_name_change(f, s))
+      if (has_harmless_name_change(f, s)
+	  || class_diff_has_harmless_odr_violation_change(d))
 	category |= HARMLESS_DECL_NAME_CHANGE_CATEGORY;
 
       if (has_non_virtual_mem_fn_change(d))
