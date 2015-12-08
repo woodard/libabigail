@@ -7308,12 +7308,28 @@ operator<<(std::ostream& o, qualified_type_def::CV cv)
 
 //<pointer_type_def definitions>
 
+/// Private data structure of the @ref pointer_type_def.
+struct pointer_type_def::priv
+{
+  type_base_wptr pointed_to_type_;
+  string internal_qualified_name_;
+  string temp_internal_qualified_name_;
+
+  priv(const type_base_sptr& t)
+    : pointed_to_type_(t)
+  {}
+
+  priv()
+  {}
+}; //end struct pointer_type_def
+
 pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   size_t			size_in_bits,
 				   size_t			align_in_bits,
 				   location			locus)
   : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus, "")
+    decl_base("", locus, ""),
+    priv_(new priv)
 {
   try
     {
@@ -7322,7 +7338,7 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
       set_name(name);
       if (pto)
         set_visibility(pto->get_visibility());
-      pointed_to_type_ = type_base_wptr(type_or_void(pointed_to, 0));
+      priv_->pointed_to_type_ = type_base_wptr(type_or_void(pointed_to, 0));
     }
   catch (...)
     {}
@@ -7410,9 +7426,9 @@ pointer_type_def::operator==(const pointer_type_def& other) const
 const type_base_sptr
 pointer_type_def::get_pointed_to_type() const
 {
-  if (pointed_to_type_.expired())
+  if (priv_->pointed_to_type_.expired())
     return type_base_sptr();
-  return type_base_sptr(pointed_to_type_);
+  return type_base_sptr(priv_->pointed_to_type_);
 }
 
 /// Build and return the qualified name of the current instance of
@@ -7441,15 +7457,45 @@ pointer_type_def::get_qualified_name(string& qn, bool internal) const
 const string&
 pointer_type_def::get_qualified_name(bool internal) const
 {
-  if (peek_qualified_name().empty()
-      || !get_canonical_type())
+  if (internal)
     {
-      string name = get_type_name(get_pointed_to_type(),
-				  /*qualified_name=*/true,
-				  internal) + "*";
-      set_qualified_name(name);
+      if (get_canonical_type())
+	{
+	  if (priv_->internal_qualified_name_.empty())
+	    priv_->internal_qualified_name_ =
+	      get_type_name(get_pointed_to_type(),
+			    /*qualified_name=*/true,
+			    /*internal=*/true) + "*";
+	  return priv_->internal_qualified_name_;
+	}
+      else
+	{
+	  if (priv_->temp_internal_qualified_name_.empty())
+	    priv_->temp_internal_qualified_name_ =
+	      get_type_name(get_pointed_to_type(),
+			    /*qualified_name=*/true,
+			    /*internal=*/true) + "*";
+	  return priv_->temp_internal_qualified_name_;
+	}
     }
-  return peek_qualified_name();
+  else
+    {
+      if (get_canonical_type())
+	{
+	  if (decl_base::peek_qualified_name().empty())
+	    set_qualified_name(get_type_name(get_pointed_to_type(),
+					     /*qualified_name=*/true,
+					     /*internal=*/false) + "*");
+	  return decl_base::peek_qualified_name();
+	}
+      else
+	{
+	  set_qualified_name(get_type_name(get_pointed_to_type(),
+					   /*qualified_name=*/true,
+					   /*internal=*/false) + "*");
+	  return decl_base::peek_qualified_name();
+	}
+    }
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -7789,6 +7835,8 @@ struct array_type_def::priv
 {
   type_base_wptr	element_type_;
   subranges_type	subranges_;
+  string		temp_internal_qualified_name_;
+  string		internal_qualified_name_;
 
   priv(type_base_sptr t)
     : element_type_(t) {}
@@ -7833,12 +7881,28 @@ array_type_def::get_subrange_representation() const
   return r;
 }
 
+/// Get the string representation of an @ref array_type_def.
+///
+/// @param a the array type to consider.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
 static string
-get_type_representation(const array_type_def& a)
+get_type_representation(const array_type_def& a, bool internal)
 {
   type_base_sptr e_type = a.get_element_type();
   decl_base_sptr d = get_type_declaration(e_type);
-  string r = d->get_name() + a.get_subrange_representation();
+  string r;
+
+  if (internal)
+    r = get_type_name(e_type, /*qualified=*/true, /*internal=*/true)
+      + a.get_subrange_representation();
+  else
+    r = get_type_name(e_type, /*qualified=*/false, /*internal=*/false)
+      + a.get_subrange_representation();
+
   return r;
 }
 
@@ -7850,8 +7914,8 @@ get_type_representation(const array_type_def& a)
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 string
-array_type_def::get_pretty_representation(bool /*internal*/) const
-{return get_type_representation(*this);}
+array_type_def::get_pretty_representation(bool internal) const
+{return get_type_representation(*this, internal);}
 
 /// Compares two instances of @ref array_type_def.
 ///
@@ -8015,12 +8079,41 @@ array_type_def::get_qualified_name(string& qn, bool internal) const
 ///
 /// @return the resulting qualified name.
 const string&
-array_type_def::get_qualified_name(bool /*internal*/) const
+array_type_def::get_qualified_name(bool internal) const
 {
-  if (decl_base::peek_qualified_name().empty()
-      || !get_canonical_type())
-    set_qualified_name(get_type_representation(*this));
-  return decl_base::peek_qualified_name();
+  if (internal)
+    {
+      if (get_canonical_type())
+	{
+	  if (priv_->internal_qualified_name_.empty())
+	    priv_->internal_qualified_name_ =
+	      get_type_representation(*this, /*internal=*/true);
+	  return priv_->internal_qualified_name_;
+	}
+      else
+	{
+	  if (priv_->temp_internal_qualified_name_.empty())
+	    priv_->temp_internal_qualified_name_ =
+	      get_type_representation(*this, /*internal=*/true);
+	  return priv_->temp_internal_qualified_name_;
+	}
+    }
+  else
+    {
+      if (get_canonical_type())
+	{
+	  if (decl_base::peek_qualified_name().empty())
+	    set_qualified_name(get_type_representation(*this,
+						       /*internal=*/false));
+	  return decl_base::peek_qualified_name();
+	}
+      else
+	{
+	  set_qualified_name(get_type_representation(*this,
+						     /*internal=*/false));
+	  return decl_base::peek_qualified_name();
+	}
+    }
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -8403,6 +8496,18 @@ enum_type_decl::enumerator::set_enum_type(enum_type_decl* e)
 
 // <typedef_decl definitions>
 
+/// Private data structure of the @ref typedef_decl.
+struct typedef_decl::priv
+{
+  type_base_wptr	underlying_type_;
+  string		internal_qualified_name_;
+  string		temp_internal_qualified_name_;
+
+  priv(const type_base_sptr& t)
+    : underlying_type_(t)
+  {}
+}; // end struct typedef_decl::priv
+
 /// Constructor of the typedef_decl type.
 ///
 /// @param name the name of the typedef.
@@ -8415,14 +8520,14 @@ enum_type_decl::enumerator::set_enum_type(enum_type_decl* e)
 ///
 /// @param vis the visibility of the typedef type.
 typedef_decl::typedef_decl(const string&		name,
-			   const shared_ptr<type_base>	underlying_type,
+			   const type_base_sptr	underlying_type,
 			   location			locus,
 			   const std::string&		linkage_name,
 			   visibility vis)
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
     decl_base(name, locus, linkage_name, vis),
-    underlying_type_(underlying_type)
+    priv_(new priv(underlying_type))
 {}
 
 /// Return the size of the typedef.
@@ -8552,9 +8657,9 @@ typedef_decl::get_pretty_representation(bool internal) const
 type_base_sptr
 typedef_decl::get_underlying_type() const
 {
-  if (underlying_type_.expired())
+  if (priv_->underlying_type_.expired())
     return type_base_sptr();
-  return type_base_sptr(underlying_type_);
+  return type_base_sptr(priv_->underlying_type_);
 }
 
 /// This implements the ir_traversable_base::traverse pure virtual

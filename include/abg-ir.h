@@ -1520,7 +1520,10 @@ typedef shared_ptr<pointer_type_def> pointer_type_def_sptr;
 /// The abstraction of a pointer type.
 class pointer_type_def : public virtual type_base, public virtual decl_base
 {
-  type_base_wptr pointed_to_type_;
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
   // Forbidden.
   pointer_type_def();
@@ -1866,7 +1869,10 @@ typedef shared_ptr<typedef_decl> typedef_decl_sptr;
 /// The abstraction of a typedef declaration.
 class typedef_decl : public virtual type_base, public virtual decl_base
 {
-  type_base_wptr underlying_type_;
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
 
   // Forbidden
   typedef_decl();
