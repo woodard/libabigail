@@ -450,7 +450,7 @@ public:
 
 static bool write_translation_unit(const translation_unit&,
 				   write_context&, unsigned);
-static void write_location(location, translation_unit&, ostream&);
+static void write_location(const location&, ostream&);
 static void write_location(const shared_ptr<decl_base>&, ostream&);
 static bool write_visibility(const shared_ptr<decl_base>&, ostream&);
 static bool write_binding(const shared_ptr<decl_base>&, ostream&);
@@ -582,7 +582,7 @@ get_indent_to_level(write_context& ctxt, unsigned initial_indent,
 ///
 /// @param o the output stream to write to.
 static void
-write_location(location	loc, translation_unit& tu, ostream&	o)
+write_location(const location& loc, ostream& o)
 {
   if (!loc)
     return;
@@ -590,7 +590,7 @@ write_location(location	loc, translation_unit& tu, ostream&	o)
   string filepath;
   unsigned line = 0, column = 0;
 
-  tu.get_loc_mgr().expand_location(loc, filepath, line, column);
+  loc.expand(filepath, line, column);
 
   o << " filepath='" << filepath << "'"
     << " line='"     << line     << "'"
@@ -605,8 +605,8 @@ write_location(location	loc, translation_unit& tu, ostream&	o)
 ///
 /// @param o the output stream to write to.
 static void
-write_location(const shared_ptr<decl_base>&	decl,
-	       ostream&			o)
+write_location(const decl_base_sptr&	decl,
+	       ostream&		o)
 {
   if (!decl)
     return;
@@ -617,9 +617,8 @@ write_location(const shared_ptr<decl_base>&	decl,
 
   string filepath;
   unsigned line = 0, column = 0;
-  translation_unit& tu = *get_translation_unit(decl);
 
-  tu.get_loc_mgr().expand_location(loc, filepath, line, column);
+  loc.expand(filepath, line, column);
 
   o << " filepath='" << filepath << "'"
     << " line='"     << line     << "'"
@@ -1775,7 +1774,7 @@ write_array_type_def(const array_type_def_sptr		decl,
             }
           o << "'";
 
-          write_location((*si)->get_location(), *get_translation_unit(decl), o);
+          write_location((*si)->get_location(), o);
 
           o << "/>\n";
         }
@@ -2187,7 +2186,7 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 	}
       if ((*pi)->get_artificial())
 	  o << " is-artificial='yes'";
-      write_location((*pi)->get_location(), *get_translation_unit(decl), o);
+      write_location((*pi)->get_location(), o);
       o << "/>\n";
     }
 
@@ -3364,9 +3363,9 @@ dump_decl_location(const decl_base& d, ostream& o)
 {
   string path;
   unsigned line = 0, col = 0;
-  translation_unit* tu = get_translation_unit(d);
 
-  tu->get_loc_mgr().expand_location(d.get_location(), path, line, col);
+  const location& l = d.get_location();
+  l.expand(path, line, col);
   o << path << ":" << line << "," << col << "\n";
 }
 

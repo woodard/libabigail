@@ -176,6 +176,23 @@ public:
   }
 };
 
+/// Expand the location into a tripplet path, line and column number.
+///
+/// @param path the output parameter where this function sets the
+/// expanded path.
+///
+/// @param line the output parameter where this function sets the
+/// expanded line.
+///
+/// @param column the ouptut parameter where this function sets the
+/// expanded column.
+void
+location::expand(std::string& path, unsigned& line, unsigned& column) const
+{
+  assert(get_location_manager());
+  get_location_manager()->expand_location(*this, path, line, column);
+}
+
 struct location_manager::priv
 {
   /// This sorted vector contains the expanded locations of the tokens
@@ -206,7 +223,7 @@ location_manager::create_new_location(const std::string&	file_path,
   // Just append the new expanded location to the end of the vector
   // and return its index.  Note that indexes start at 1.
   priv_->locs.push_back(l);
-  return location(priv_->locs.size());
+  return location(priv_->locs.size(), this);
 }
 
 /// Given an instance of location type, return the triplet
@@ -220,7 +237,7 @@ location_manager::create_new_location(const std::string&	file_path,
 /// @param line the resulting line of the source locus
 /// @param column the resulting colum of the source locus
 void
-location_manager::expand_location(const location	location,
+location_manager::expand_location(const location&	location,
 				  std::string&		path,
 				  unsigned&		line,
 				  unsigned&		column) const
@@ -303,7 +320,7 @@ translation_unit::get_global_scope() const
       // translation unit.
       priv_->global_scope_->
 	set_environment(const_cast<environment*>(get_environment()));
-      priv_->global_scope_->set_corpus(get_corpus());
+      priv_->global_scope_->set_translation_unit(this);
     }
   return priv_->global_scope_;
 }
@@ -504,13 +521,10 @@ translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
       ftype->set_environment(const_cast<environment*>(env));
     }
 
-  if (const corpus* c = get_corpus())
-    {
-      if (const corpus* existing_corpus = ftype->get_corpus())
-	assert(existing_corpus == c);
-      else
-	ftype->set_corpus(c);
-    }
+  if (const translation_unit* existing_tu = ftype->get_translation_unit())
+    assert(existing_tu == this);
+  else
+    ftype->set_translation_unit(this);
 }
 
 /// This implements the ir_traversable_base::traverse virtual
@@ -1777,12 +1791,12 @@ struct type_or_decl_base::priv
 {
   bool			hashing_started_;
   environment*		env_;
-  const corpus*	corpus_;
+  const translation_unit* translation_unit_;
 
   priv()
     : hashing_started_(),
       env_(),
-      corpus_()
+      translation_unit_()
   {}
 }; // end struct type_or_decl_base
 
@@ -1839,23 +1853,34 @@ environment*
 type_or_decl_base::get_environment()
 {return priv_->env_;}
 
-/// Set the @ref corpus this ABI artifact belongs to.
-///
-/// Note that adding an ABI artifact to a containining one should
-/// invoke this this member function.
-///
-/// @param c the new corpus.
-void
-type_or_decl_base::set_corpus(const corpus* c)
-{priv_->corpus_ = c;}
-
 /// Get the @ref corpus this ABI artifact belongs to.
 ///
 /// @return the corpus this ABI artifact belongs to, or nil if it
 /// belongs to none for now.
 const corpus*
 type_or_decl_base::get_corpus() const
-{return priv_->corpus_;}
+{
+  const translation_unit* tu = get_translation_unit();
+  if (!tu)
+    return 0;
+  return tu->get_corpus();
+}
+
+/// Set the @ref translation_unit this ABI artifact belongs to.
+///
+/// Note that adding an ABI artifact to a containining on should
+/// invoke this member function.
+void
+type_or_decl_base::set_translation_unit(const translation_unit* tu)
+{priv_->translation_unit_ = tu;}
+
+/// Get the @ref translation_unit this ABI artifact belongs to.
+///
+/// @return the translation unit this ABI artifact belongs to, or nil
+/// if belongs to none for now.
+const translation_unit*
+type_or_decl_base::get_translation_unit() const
+{return priv_->translation_unit_;}
 
 /// Traverse the the ABI artifact.
 ///
@@ -1971,7 +1996,7 @@ struct decl_base::priv
       visibility_(VISIBILITY_DEFAULT)
   {}
 
-  priv(const std::string& name, location locus,
+  priv(const std::string& name, const location& locus,
        const std::string& linkage_name, visibility vis)
     : in_pub_sym_tab_(false),
       location_(locus),
@@ -1990,14 +2015,28 @@ struct decl_base::priv
   {}
 };// end struct decl_base::priv
 
-decl_base::decl_base(const std::string& name,
-		     location		locus,
-		     const std::string& linkage_name,
-		     visibility	vis)
+/// Constructor for the @ref decl_base type.
+///
+/// @param name the name of the declaration.
+///
+/// @param locus the location where to find the declaration in the
+/// source code.
+///
+/// @pram linkage_name the linkage name of the declaration.
+///
+/// @param vis the visibility of the declaration.
+decl_base::decl_base(const std::string&	name,
+		     const location&		locus,
+		     const std::string&	linkage_name,
+		     visibility		vis)
   : priv_(new priv(name, locus, linkage_name, vis))
 {}
 
-decl_base::decl_base(location l)
+/// Constructor for the @ref decl_base type.
+///
+/// @param l the location where to find the declaration in the source
+/// code.
+decl_base::decl_base(const location& l)
   : priv_(new priv(l))
 {}
 
@@ -2131,7 +2170,7 @@ decl_base::set_is_in_public_symbol_table(bool f)
 /// translation_unit::get_loc_mgr().
 ///
 /// @return the location of the current instance of @ref decl_base.
-location
+const location&
 decl_base::get_location() const
 {return priv_->location_;}
 
@@ -3737,12 +3776,12 @@ scope_decl::add_member_decl(const decl_base_sptr member)
   if (environment* env = get_environment())
     set_environment_for_artifact(member, env);
 
-  if (const corpus* c = get_corpus())
+  if (const translation_unit* tu = get_translation_unit())
     {
-      if (const corpus* existing_corpus = member->get_corpus())
-	assert(c == existing_corpus);
+      if (const translation_unit* existing_tu = member->get_translation_unit())
+	assert(tu == existing_tu);
       else
-	member->set_corpus(c);
+	member->set_translation_unit(tu);
     }
 
   maybe_update_types_lookup_map(this, member);
@@ -3778,12 +3817,12 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
   if (environment* env = get_environment())
     set_environment_for_artifact(member, env);
 
-  if (const corpus* c = get_corpus())
+  if (const translation_unit* tu = get_translation_unit())
     {
-      if (const corpus* existing_corpus = member->get_corpus())
-	assert(c == existing_corpus);
+      if (const translation_unit* existing_tu = member->get_translation_unit())
+	assert(tu == existing_tu);
       else
-	member->set_corpus(c);
+	member->set_translation_unit(tu);
     }
 
   maybe_update_types_lookup_map(this, member);
@@ -4763,13 +4802,7 @@ types_are_compatible(const decl_base_sptr d1,
 /// yet added to a translation unit.
 translation_unit*
 get_translation_unit(const decl_base& decl)
-{
-  const global_scope* global = get_global_scope(decl);
-
-  if (global)
-    return global->get_translation_unit();
-  return 0;
-}
+{return const_cast<translation_unit*>(decl.get_translation_unit());}
 
 /// Return the translation unit a declaration belongs to.
 ///
@@ -6536,7 +6569,7 @@ type_base::~type_base()
 type_decl::type_decl(const std::string&	name,
 		     size_t			size_in_bits,
 		     size_t			alignment_in_bits,
-		     location			locus,
+		     const location&		locus,
 		     const std::string&	linkage_name,
 		     visibility		vis)
 
@@ -6676,11 +6709,11 @@ type_decl::~type_decl()
 
 // <scope_type_decl definitions>
 
-scope_type_decl::scope_type_decl(const std::string&		name,
-				 size_t			size_in_bits,
-				 size_t			alignment_in_bits,
-				 location			locus,
-				 visibility			vis)
+scope_type_decl::scope_type_decl(const std::string&	name,
+				 size_t		size_in_bits,
+				 size_t		alignment_in_bits,
+				 const location&	locus,
+				 visibility		vis)
   : decl_base(name, locus, "", vis),
     type_base(size_in_bits, alignment_in_bits),
     scope_decl(name, locus)
@@ -6799,9 +6832,9 @@ scope_type_decl::~scope_type_decl()
 // </scope_type_decl definitions>
 
 // <namespace_decl>
-namespace_decl::namespace_decl(const std::string& name,
-			       location	  locus,
-			       visibility	  vis)
+namespace_decl::namespace_decl(const std::string&	name,
+			       const location&		locus,
+			       visibility		vis)
   : // We need to call the constructor of decl_base directly here
     // because it is virtually inherited by scope_decl.  Note that we
     // just implicitely call the default constructor for scope_decl
@@ -6957,9 +6990,9 @@ qualified_type_def::build_name(bool fully_qualified, bool internal) const
 /// @param quals a bitfield representing the const/volatile qualifiers
 ///
 /// @param locus the location of the qualified type definition
-qualified_type_def::qualified_type_def(shared_ptr<type_base>	type,
-				       CV			quals,
-				       location		locus)
+qualified_type_def::qualified_type_def(type_base_sptr	type,
+				       CV		quals,
+				       const location&	locus)
   : type_base(type->get_size_in_bits(),
 	      type->get_alignment_in_bits()),
     decl_base("", locus, "",
@@ -7326,7 +7359,7 @@ struct pointer_type_def::priv
 pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   size_t			size_in_bits,
 				   size_t			align_in_bits,
-				   location			locus)
+				   const location&		locus)
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, ""),
     priv_(new priv)
@@ -7554,7 +7587,7 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 				       bool			lvalue,
 				       size_t			size_in_bits,
 				       size_t			align_in_bits,
-				       location		locus)
+				       const location&		locus)
   : type_base(size_in_bits, align_in_bits),
     decl_base("", locus, ""),
     is_lvalue_(lvalue)
@@ -7780,19 +7813,21 @@ struct array_type_def::subrange_type::priv
   size_t	lower_bound_;
   size_t	upper_bound_;
   location	location_;
-  priv(size_t ub, location loc)
+  priv(size_t ub, const location& loc)
     : lower_bound_(0), upper_bound_(ub), location_(loc) {}
-  priv(size_t lb, size_t ub, location loc)
+
+  priv(size_t lb, size_t ub, const location& loc)
     : lower_bound_(lb), upper_bound_(ub), location_(loc) {}
 };
 
-array_type_def::subrange_type::subrange_type(size_t	lower_bound,
-					     size_t	upper_bound,
-					     location	loc)
+array_type_def::subrange_type::subrange_type(size_t		lower_bound,
+					     size_t		upper_bound,
+					     const location&	loc)
   : priv_(new priv(lower_bound, upper_bound, loc))
 {}
 
-array_type_def::subrange_type::subrange_type(size_t upper_bound, location loc)
+array_type_def::subrange_type::subrange_type(size_t		upper_bound,
+					     const location&	loc)
   : priv_(new priv(upper_bound, loc))
 {}
 
@@ -7827,7 +7862,7 @@ array_type_def::subrange_type::operator==(const subrange_type& o) const
 	  && get_upper_bound() == o.get_upper_bound());
 }
 
-location
+const location&
 array_type_def::subrange_type::get_location() const
 {return priv_->location_;}
 
@@ -7860,7 +7895,7 @@ struct array_type_def::priv
 /// @param locus the source location of the array type definition.
 array_type_def::array_type_def(const type_base_sptr			e_type,
 			       const std::vector<subrange_sptr>&	subs,
-			       location				locus)
+			       const location&				locus)
   : type_base(0, e_type->get_alignment_in_bits()),
     decl_base(locus),
     priv_(new priv(e_type))
@@ -8140,7 +8175,7 @@ array_type_def::traverse(ir_node_visitor& v)
   return v.visit_end(this);
 }
 
-location
+const location&
 array_type_def::get_location() const
 {return decl_base::get_location();}
 
@@ -8174,9 +8209,11 @@ public:
   {}
 }; // end class enum_type_decl::priv
 
-enum_type_decl::enum_type_decl(const string& name, location locus,
+enum_type_decl::enum_type_decl(const string& name,
+			       const location& locus,
 			       type_base_sptr underlying_type,
-			       enumerators& enums, const string& mangled_name,
+			       enumerators& enums,
+			       const string& mangled_name,
 			       visibility vis)
   : type_base(underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
@@ -8522,7 +8559,7 @@ struct typedef_decl::priv
 /// @param vis the visibility of the typedef type.
 typedef_decl::typedef_decl(const string&		name,
 			   const type_base_sptr	underlying_type,
-			   location			locus,
+			   const location&		locus,
 			   const std::string&		linkage_name,
 			   visibility vis)
   : type_base(underlying_type->get_size_in_bits(),
@@ -8712,7 +8749,7 @@ struct var_decl::priv
 
 var_decl::var_decl(const std::string&		name,
 		   shared_ptr<type_base>	type,
-		   location			locus,
+		   const location&		locus,
 		   const std::string&		linkage_name,
 		   visibility			vis,
 		   binding			bind)
@@ -9623,7 +9660,7 @@ struct function_decl::priv
 function_decl::function_decl(const std::string& name,
 			     function_type_sptr function_type,
 			     bool declared_inline,
-			     location locus,
+			     const location& locus,
 			     const std::string& mangled_name,
 			     visibility vis,
 			     binding bind)
@@ -9657,7 +9694,7 @@ function_decl::function_decl(const std::string& name,
 function_decl::function_decl(const std::string& name,
 			     shared_ptr<type_base> fn_type,
 			     bool	declared_inline,
-			     location locus,
+			     const location& locus,
 			     const std::string& linkage_name,
 			     visibility vis,
 			     binding bind)
@@ -10193,7 +10230,7 @@ struct function_decl::parameter::priv
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    unsigned			index,
 				    const std::string&		name,
-				    location			loc,
+				    const location&		loc,
 				    bool			is_variadic)
   : decl_base(name, loc),
     priv_(new priv(type, index, is_variadic, /*is_artificial=*/false))
@@ -10202,7 +10239,7 @@ function_decl::parameter::parameter(const type_base_sptr	type,
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    unsigned			index,
 				    const std::string&		name,
-				    location			loc,
+				    const location&		loc,
 				    bool			is_variadic,
 				    bool			is_artificial)
   : decl_base(name, loc),
@@ -10211,7 +10248,7 @@ function_decl::parameter::parameter(const type_base_sptr	type,
 
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    const std::string&		name,
-				    location			loc,
+				    const location&		loc,
 				    bool			is_variadic,
 				    bool			is_artificial)
   : decl_base(name, loc),
@@ -10660,7 +10697,7 @@ struct class_decl::priv
 /// class_decl.
 class_decl::class_decl(const std::string& name, size_t size_in_bits,
 		       size_t align_in_bits, bool is_struct,
-		       location locus, visibility vis,
+		       const location& locus, visibility vis,
 		       base_specs& bases, member_types& mbr_types,
 		       data_members& data_mbrs,
 		       member_functions& mbr_fns)
@@ -10700,7 +10737,7 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
 /// @param vis the visibility of instances of class_decl.
 class_decl::class_decl(const std::string& name, size_t size_in_bits,
 		       size_t align_in_bits, bool is_struct,
-		       location locus, visibility vis)
+		       const location& locus, visibility vis)
   : decl_base(name, locus, name, vis),
     type_base(size_in_bits, align_in_bits),
     scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
@@ -11361,7 +11398,7 @@ class_decl::method_decl::method_decl
 (const std::string&			name,
  shared_ptr<method_type>		type,
  bool					declared_inline,
- location				locus,
+ const location&			locus,
  const std::string&			linkage_name,
  visibility				vis,
  binding				bind)
@@ -11391,7 +11428,7 @@ class_decl::method_decl::method_decl
 class_decl::method_decl::method_decl(const std::string&	name,
 				     shared_ptr<function_type>	type,
 				     bool			declared_inline,
-				     location			locus,
+				     const location&		locus,
 			const std::string&			linkage_name,
 			visibility				vis,
 			binding				bind)
@@ -11421,7 +11458,7 @@ class_decl::method_decl::method_decl(const std::string&	name,
 class_decl::method_decl::method_decl(const std::string&	name,
 				     shared_ptr<type_base>	type,
 				     bool			declared_inline,
-				     location			locus,
+				     const location&		locus,
 				     const std::string&	linkage_name,
 				     visibility		vis,
 				     binding			bind)
@@ -12438,7 +12475,9 @@ const std::list<template_parameter_sptr>&
 template_decl::get_template_parameters() const
 {return priv_->parms_;}
 
-template_decl::template_decl(const string& name, location locus, visibility vis)
+template_decl::template_decl(const string& name,
+			     const location& locus,
+			     visibility vis)
   : decl_base(name, locus, /*mangled_name=*/"", vis),
     priv_(new priv)
 {
@@ -12576,7 +12615,7 @@ class type_tparameter::priv
 type_tparameter::type_tparameter(unsigned		index,
 				 template_decl_sptr	enclosing_tdecl,
 				 const std::string&	name,
-				 location		locus)
+				 const location&	locus)
   : decl_base(name, locus),
     type_base(0, 0),
     type_decl(name, 0, 0, locus),
@@ -12651,7 +12690,7 @@ non_type_tparameter::non_type_tparameter(unsigned		index,
 					 template_decl_sptr	enclosing_tdecl,
 					 const std::string&	name,
 					 type_base_sptr	type,
-					 location		locus)
+					 const location&	locus)
     : decl_base(name, locus, ""),
       template_parameter(index, enclosing_tdecl),
       priv_(new priv(type))
@@ -12730,7 +12769,7 @@ class template_tparameter::priv
 template_tparameter::template_tparameter(unsigned		index,
 					 template_decl_sptr	enclosing_tdecl,
 					 const std::string&	name,
-					 location		locus)
+					 const location&	locus)
     : decl_base(name, locus),
       type_base(0, 0),
       type_decl(name, 0, 0, locus, name, VISIBILITY_DEFAULT),
@@ -12886,7 +12925,7 @@ public:
 ///
 /// @param bind the binding of the declaration.  This is the binding
 /// the functions instantiated from this template are going to have.
-function_tdecl::function_tdecl(location	locus,
+function_tdecl::function_tdecl(const location&	locus,
 			       visibility	vis,
 			       binding		bind)
   : decl_base("", locus, "", vis),
@@ -12908,7 +12947,7 @@ function_tdecl::function_tdecl(location	locus,
 /// @param bind the binding of the declaration.  This is the binding
 /// the functions instantiated from this template are going to have.
 function_tdecl::function_tdecl(function_decl_sptr	pattern,
-			       location		locus,
+			       const location&		locus,
 			       visibility		vis,
 			       binding			bind)
   : decl_base(pattern->get_name(), locus,
@@ -13044,7 +13083,7 @@ public:
 ///
 /// @param vis the visibility of the instance of class instantiated
 /// from this template.
-class_tdecl::class_tdecl(location locus, visibility vis)
+class_tdecl::class_tdecl(const location& locus, visibility vis)
   : decl_base("", locus, "", vis),
     template_decl("", locus, vis),
     scope_decl("", locus),
@@ -13062,7 +13101,8 @@ class_tdecl::class_tdecl(location locus, visibility vis)
 /// @param vis the visibility of the instances of class instantiated
 /// from this template.
 class_tdecl::class_tdecl(class_decl_sptr pattern,
-			 location locus, visibility vis)
+			 const location& locus,
+			 visibility vis)
 : decl_base(pattern->get_name(), locus,
 	    pattern->get_name(), vis),
   template_decl(pattern->get_name(), locus, vis),

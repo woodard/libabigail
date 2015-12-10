@@ -171,6 +171,7 @@ public:
   friend void keep_type_alive(type_base_sptr);
 }; // end class environment
 
+class location_manager;
 /// @brief The source location of a token.
 ///
 /// This represents the location of a token coming from a given
@@ -183,27 +184,82 @@ public:
 class location
 {
   unsigned		value_;
+  // The location manager to use to decode the value above.  There is
+  // one location manager per translation unit, and the location
+  // manager's life time is managed by its translation unit.
+  location_manager*	loc_manager_;
 
-  location(unsigned v) : value_(v) {}
+  location(unsigned v, location_manager* m)
+    : value_(v), loc_manager_(m)
+  {}
+
+  /// Get the location manager to use to decode the value of this
+  /// location.
+  ///
+  /// @return the location manager for the current location value.
+  location_manager*
+  get_location_manager() const
+  {return loc_manager_;}
 
 public:
 
-  location() : value_(0) { }
+  /// Copy constructor of the location.
+  ///
+  /// @param l the location to copy from.
+  location(const location& l)
+    : value_(l.value_),
+      loc_manager_(l.loc_manager_)
+  {}
 
+  /// Default constructor for the @ref location type.
+  location()
+    : value_(), loc_manager_()
+  {}
+
+  /// Get the value of the location.
   unsigned
   get_value() const
   {return value_;}
 
+  /// Convert the location into a boolean.
+  ///
+  /// @return true iff the value of the location is different from
+  /// zero.
   operator bool() const
-  { return !!value_; }
+  {return !!value_;}
 
+  /// Equality operator of the @ref location type.
+  ///
+  /// @param other the other location to compare against.
+  ///
+  /// @return true iff both locations are equal.
   bool
   operator==(const location other) const
   {return value_ == other.value_;}
 
+  /// "Less than" operator of the @ref location type.
+  ///
+  /// @parm other the other location type to compare against.
+  ///
+  /// @return true iff the current instance is less than the @p other
+  /// one.
   bool
   operator<(const location other) const
-  { return value_ < other.value_; }
+  {return value_ < other.value_;}
+
+  /// Expand the current location into a tripplet file path, line and
+  /// column number.
+  ///
+  /// @param path the output parameter this function sets the expanded
+  /// path to.
+  ///
+  /// @param line the output parameter this function sets the expanded
+  /// line number to.
+  ///
+  /// @param column the output parameter this function sets the
+  /// expanded column number to.
+  void
+  expand(std::string& path, unsigned& line, unsigned& column) const;
 
   friend class location_manager;
 }; // end class location
@@ -227,7 +283,7 @@ public:
   create_new_location(const std::string& fle, size_t lne, size_t col);
 
   void
-  expand_location(const location location, std::string& path,
+  expand_location(const location& location, std::string& path,
 		  unsigned& line, unsigned& column) const;
 };
 
@@ -856,11 +912,14 @@ public:
   void
   set_environment(environment*);
 
-  void
-  set_corpus(const corpus*);
-
   const corpus*
   get_corpus() const;
+
+  void
+  set_translation_unit(const translation_unit*);
+
+  const translation_unit*
+  get_translation_unit() const;
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -948,11 +1007,11 @@ protected:
   set_context_rel(context_rel_sptr c);
 
 public:
-  decl_base(const std::string&	name, location locus,
+  decl_base(const std::string&	name, const location& locus,
 	    const std::string&	mangled_name = "",
 	    visibility vis = VISIBILITY_DEFAULT);
 
-  decl_base(location);
+  decl_base(const location&);
 
   decl_base(const decl_base&);
 
@@ -982,7 +1041,7 @@ public:
   void
   set_is_in_public_symbol_table(bool);
 
-  location
+  const location&
   get_location() const;
 
   void
@@ -1118,13 +1177,13 @@ protected:
 public:
   struct hash;
 
-  scope_decl(const std::string& name, location locus,
+  scope_decl(const std::string& name, const location& locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
     : type_or_decl_base(),
       decl_base(name, locus, /*mangled_name=*/name, vis)
   {}
 
-  scope_decl(location l) : decl_base("", l)
+  scope_decl(location& l) : decl_base("", l)
   {}
 
   virtual size_t
@@ -1348,8 +1407,10 @@ public:
   struct hash;
 
   type_decl(const std::string& name,
-	    size_t size_in_bits, size_t alignment_in_bits,
-	    location locus, const std::string&	mangled_name = "",
+	    size_t size_in_bits,
+	    size_t alignment_in_bits,
+	    const location& locus,
+	    const std::string&	mangled_name = "",
 	    visibility vis = VISIBILITY_DEFAULT);
 
   virtual bool
@@ -1387,7 +1448,7 @@ public:
   struct hash;
 
   scope_type_decl(const std::string& name, size_t size_in_bits,
-		  size_t alignment_in_bits, location locus,
+		  size_t alignment_in_bits, const location& locus,
 		  visibility vis = VISIBILITY_DEFAULT);
 
   virtual bool
@@ -1410,7 +1471,7 @@ class namespace_decl : public scope_decl
 {
 public:
 
-  namespace_decl(const std::string& name, location locus,
+  namespace_decl(const std::string& name, const location& locus,
 		 visibility vis = VISIBILITY_DEFAULT);
 
   virtual string
@@ -1458,7 +1519,7 @@ public:
     CV_RESTRICT = 1 << 2
   };
 
-  qualified_type_def(type_base_sptr type, CV quals, location locus);
+  qualified_type_def(type_base_sptr type, CV quals, const location& locus);
 
   virtual size_t
   get_size_in_bits() const;
@@ -1534,7 +1595,7 @@ public:
   struct hash;
 
   pointer_type_def(const type_base_sptr& pointed_to_type, size_t size_in_bits,
-		   size_t alignment_in_bits, location locus);
+		   size_t alignment_in_bits, const location& locus);
 
   virtual bool
   operator==(const decl_base&) const;
@@ -1585,7 +1646,7 @@ public:
 
   reference_type_def(const type_base_sptr pointed_to_type,
 		     bool lvalue, size_t size_in_bits,
-		     size_t alignment_in_bits, location locus);
+		     size_t alignment_in_bits, const location& locus);
 
   virtual bool
   operator==(const decl_base&) const;
@@ -1662,10 +1723,11 @@ public:
     /// Hasher for an instance of array::subrange
     struct hash;
 
-    subrange_type(size_t lower_bound, size_t upper_bound,
-		  location loc);
+    subrange_type(size_t lower_bound,
+		  size_t upper_bound,
+		  const location& loc);
 
-    subrange_type(size_t upper_bound, location loc);
+    subrange_type(size_t upper_bound, const location& loc);
 
     size_t
     get_upper_bound() const;
@@ -1688,13 +1750,13 @@ public:
     bool
     operator==(const subrange_type& o) const;
 
-    location
+    const location&
     get_location() const;
   };
 
   array_type_def(const type_base_sptr type,
 		 const std::vector<subrange_sptr>& subs,
-		 location locus);
+		 const location& locus);
 
   virtual bool
   operator==(const decl_base&) const;
@@ -1732,7 +1794,7 @@ public:
   virtual bool
   traverse(ir_node_visitor& v);
 
-  location
+  const location&
   get_location() const;
 
   const std::vector<subrange_sptr>&
@@ -1788,7 +1850,7 @@ public:
   /// @param mangled_name the mangled name of the enum type.
   ///
   /// @param vis the visibility of instances of this type.
-  enum_type_decl(const string& name, location locus,
+  enum_type_decl(const string& name, const location& locus,
 		 type_base_sptr underlying_type,
 		 enumerators& enms, const std::string& mangled_name = "",
 		 visibility vis = VISIBILITY_DEFAULT);
@@ -1883,7 +1945,7 @@ public:
   struct hash;
 
   typedef_decl(const string& name, const shared_ptr<type_base> underlying_type,
-	       location locus, const std::string& mangled_name = "",
+	       const location& locus, const std::string& mangled_name = "",
 	       visibility vis = VISIBILITY_DEFAULT);
 
   virtual size_t
@@ -2006,7 +2068,7 @@ public:
 
   var_decl(const std::string&		name,
 	   shared_ptr<type_base>	type,
-	   location			locus,
+	   const location&		locus,
 	   const std::string&		mangled_name,
 	   visibility			vis = VISIBILITY_DEFAULT,
 	   binding			bind = BINDING_NONE);
@@ -2099,7 +2161,7 @@ public:
   function_decl(const std::string& name,
 		function_type_sptr function_type,
 		bool declared_inline,
-		location locus,
+		const location& locus,
 		const std::string& mangled_name,
 		visibility vis,
 		binding bind);
@@ -2107,7 +2169,7 @@ public:
   function_decl(const std::string& name,
 		shared_ptr<type_base> fn_type,
 		bool declared_inline,
-		location locus,
+		const location& locus,
 		const std::string& mangled_name = "",
 		visibility vis = VISIBILITY_DEFAULT,
 		binding bind = BINDING_GLOBAL);
@@ -2201,19 +2263,19 @@ public:
   parameter(const type_base_sptr	type,
 	    unsigned			index,
 	    const std::string&		name,
-	    location			loc,
+	    const location&		loc,
 	    bool			variadic_marker = false);
 
   parameter(const type_base_sptr	type,
 	    unsigned			index,
 	    const std::string&		name,
-	    location			loc,
+	    const location&		loc,
 	    bool			variadic_marker,
 	    bool			is_artificial);
 
   parameter(const type_base_sptr	type,
 	    const std::string&		name,
-	    location			loc,
+	    const location&		loc,
 	    bool			variadic_marker = false,
 	    bool			is_artificial	= false);
 
@@ -2445,9 +2507,9 @@ public:
   /// Hasher.
   struct hash;
 
-  template_decl(const string& name,
-		location locus,
-		visibility vis = VISIBILITY_DEFAULT);
+  template_decl(const string&		name,
+		const location&	locus,
+		visibility		vis = VISIBILITY_DEFAULT);
 
   void
   add_template_parameter(const template_parameter_sptr p);
@@ -2529,7 +2591,7 @@ public:
   type_tparameter(unsigned		index,
 		  template_decl_sptr	enclosing_tdecl,
 		  const std::string&	name,
-		  location		locus);
+		  const location&	locus);
 
   virtual bool
   operator==(const type_base&) const;
@@ -2567,8 +2629,8 @@ public:
   non_type_tparameter(unsigned			index,
 		      template_decl_sptr	enclosing_tdecl,
 		      const std::string&	name,
-		      shared_ptr<type_base>	type,
-		      location			locus);
+		      type_base_sptr		type,
+		      const location&		locus);
   virtual size_t
   get_hash() const;
 
@@ -2614,10 +2676,10 @@ public:
   /// A hasher for instances of template_tparameter
   struct hash;
 
-  template_tparameter(unsigned index,
-		      template_decl_sptr enclosing_tdecl,
-		      const std::string& name,
-		      location locus);
+  template_tparameter(unsigned			index,
+		      template_decl_sptr	enclosing_tdecl,
+		      const std::string&	name,
+		      const location&		locus);
 
   virtual bool
   operator==(const type_base&) const;
@@ -2698,12 +2760,12 @@ public:
   struct hash;
   struct shared_ptr_hash;
 
-  function_tdecl(location	locus,
-		 visibility	vis = VISIBILITY_DEFAULT,
-		 binding	bind = BINDING_NONE);
+  function_tdecl(const location&	locus,
+		 visibility		vis = VISIBILITY_DEFAULT,
+		 binding		bind = BINDING_NONE);
 
   function_tdecl(function_decl_sptr	pattern,
-		 location		locus,
+		 const location&	locus,
 		 visibility		vis = VISIBILITY_DEFAULT,
 		 binding		bind = BINDING_NONE);
 
@@ -2751,10 +2813,11 @@ public:
   struct hash;
   struct shared_ptr_hash;
 
-  class_tdecl(location locus, visibility vis = VISIBILITY_DEFAULT);
+  class_tdecl(const location& locus, visibility vis = VISIBILITY_DEFAULT);
 
-  class_tdecl(shared_ptr<class_decl> pattern,
-	      location locus, visibility vis = VISIBILITY_DEFAULT);
+  class_tdecl(class_decl_sptr	pattern,
+	      const location&	locus,
+	      visibility	vis = VISIBILITY_DEFAULT);
 
   virtual bool
   operator==(const decl_base&) const;
@@ -2830,13 +2893,13 @@ public:
 
   class_decl(const std::string& name, size_t size_in_bits,
 	     size_t align_in_bits, bool is_struct,
-	     location locus, visibility vis,
+	     const location& locus, visibility vis,
 	     base_specs& bases, member_types& mbrs,
 	     data_members& data_mbrs, member_functions& member_fns);
 
   class_decl(const std::string& name, size_t size_in_bits,
 	     size_t align_in_bits, bool is_struct,
-	     location locus, visibility vis);
+	     const location& locus, visibility vis);
   class_decl(const std::string& name, bool is_struct,
 	     bool is_declaration_only = true);
 
@@ -3284,22 +3347,22 @@ class class_decl::method_decl : public function_decl
 
 public:
 
-  method_decl(const std::string& name, shared_ptr<method_type> type,
-	      bool declared_inline, location locus,
+  method_decl(const std::string& name, method_type_sptr type,
+	      bool declared_inline, const location& locus,
 	      const std::string& mangled_name = "",
 	      visibility vis = VISIBILITY_DEFAULT,
 	      binding	bind = BINDING_GLOBAL);
 
   method_decl(const std::string& name,
-	      shared_ptr<function_type> type,
+	      function_type_sptr type,
 	      bool declared_inline,
-	      location locus,
+	      const location& locus,
 	      const std::string& mangled_name = "",
 	      visibility vis  = VISIBILITY_DEFAULT,
 	      binding	bind = BINDING_GLOBAL);
 
-  method_decl(const std::string& name, shared_ptr<type_base> type,
-	      bool declared_inline, location locus,
+  method_decl(const std::string& name, type_base_sptr type,
+	      bool declared_inline, const location& locus,
 	      const std::string& mangled_name = "",
 	      visibility vis = VISIBILITY_DEFAULT,
 	      binding bind = BINDING_GLOBAL);
