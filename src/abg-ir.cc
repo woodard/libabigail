@@ -2458,8 +2458,9 @@ bool
 decl_base::operator==(const decl_base& other) const
 {return equals(*this, other, 0);}
 
+/// Destructor of the @ref decl_base type.
 decl_base::~decl_base()
-{}
+{delete priv_;}
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -6561,7 +6562,8 @@ type_base::traverse(ir_node_visitor& v)
 }
 
 type_base::~type_base()
-{}
+{delete priv_;}
+
 // </type_base definitions>
 
 //<type_decl definitions>
@@ -10196,8 +10198,9 @@ function_decl::traverse(ir_node_visitor& v)
   return v.visit_end(this);
 }
 
+/// Destructor of the @ref function_decl type.
 function_decl::~function_decl()
-{}
+{delete priv_;}
 
 // <function_decl definitions>
 
@@ -12140,8 +12143,9 @@ class_decl::traverse(ir_node_visitor& v)
   return v.visit_end(this);
 }
 
+/// Destructor of the @ref class_decl type.
 class_decl::~class_decl()
-{}
+{delete priv_;}
 
 context_rel::~context_rel()
 {}

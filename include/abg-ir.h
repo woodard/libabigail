@@ -949,7 +949,6 @@ class decl_base : public virtual type_or_decl_base
   decl_base();
 
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
 
 protected:
 
@@ -968,8 +967,15 @@ protected:
 public:
   // This is public because some internals of the library need to
   // update it.  But it's opaque to client code anyway, so no big
-  // deal.
-  priv_sptr priv_;
+  // deal.  Also, it's not handled by a shared_ptr because accessing
+  // the data members of the priv struct for this decl_base shows up
+  // on performance profiles when dealing with big binaries with a lot
+  // of types; dereferencing the shared_ptr involves locking of some
+  // sort and that is slower than just dereferencing a pointer likere
+  // here.  There are other types for which the priv pointer is
+  // managed using shared_ptr just fine, because those didn't show up
+  // during our performance profiling.
+  priv* priv_;
 
   /// Facility to hash instances of decl_base.
   struct hash;
@@ -1283,10 +1289,17 @@ equals(const type_base&, const type_base&, change_kind*);
 class type_base : public virtual type_or_decl_base
 {
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
 
 protected:
-  priv_sptr priv_;
+  // This priv pointer is not handled by a shared_ptr because
+  // accessing the data members of the priv struct for this type_base
+  // shows up on performance profiles when dealing with big binaries
+  // with a lot of types; dereferencing the shared_ptr involves
+  // locking of some sort and that is slower than just dereferencing a
+  // pointer likere here.  There are other types for which the priv
+  // pointer is managed using shared_ptr just fine, because those
+  // didn't show up during our performance profiling.
+  priv* priv_;
 
 private:
   // Forbid this.
@@ -2137,7 +2150,15 @@ typedef shared_ptr<function_decl> function_decl_sptr;
 class function_decl : public virtual decl_base
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  // This priv pointer is not handled by a shared_ptr because
+  // accessing the data members of the priv struct for this
+  // function_decl shows up on performance profiles when dealing with
+  // big binaries with a lot of types; dereferencing the shared_ptr
+  // involves locking of some sort and that is slower than just
+  // dereferencing a pointer likere here.  There are other types for
+  // which the priv pointer is managed using shared_ptr just fine,
+  // because those didn't show up during our performance profiling.
+  priv* priv_;
 
 public:
   /// Hasher for function_decl
@@ -2876,8 +2897,15 @@ public:
 
 private:
   struct priv;
-  typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
+  // This priv it's not handled by a shared_ptr because accessing the
+  // data members of the priv struct for this class_decl shows up on
+  // performance profiles when dealing with big binaries with a lot of
+  // types; dereferencing the shared_ptr involves locking of some sort
+  // and that is slower than just dereferencing a pointer likere here.
+  // There are other types for which the priv pointer is managed using
+  // shared_ptr just fine, because those didn't show up during our
+  // performance profiling.
+  priv * priv_;
 protected:
 
   virtual decl_base_sptr
