@@ -6243,10 +6243,18 @@ struct type_base::priv
   size_t		size_in_bits;
   size_t		alignment_in_bits;
   type_base_wptr	canonical_type;
+  // The data member below holds the canonical type that is managed by
+  // the smart pointer referenced by the canonical_type data member
+  // above.  We are storing this underlying (naked) pointer here, so
+  // that users can access it *fast*.  Otherwise, accessing
+  // canonical_type above implies creating a shared_ptr, and that has
+  // been measured to be slow for some performance hot spots.
+  type_base*		naked_canonical_type;
 
   priv()
     : size_in_bits(),
-      alignment_in_bits()
+      alignment_in_bits(),
+      canonical_type()
   {}
 
   priv(size_t s,
@@ -6254,7 +6262,8 @@ struct type_base::priv
        type_base_sptr c = type_base_sptr())
     : size_in_bits(s),
       alignment_in_bits(a),
-      canonical_type(c)
+      canonical_type(c),
+      naked_canonical_type(c.get())
   {}
 }; // end struct type_base::priv
 
@@ -6448,11 +6457,15 @@ canonicalize(type_base_sptr t)
   type_base_sptr canonical = type_base::get_canonical_type_for(t);
 
   t->priv_->canonical_type = canonical;
+  t->priv_->naked_canonical_type = canonical.get();
 
   if (class_decl_sptr cl = is_class_type(t))
     if (type_base_sptr d = is_type(cl->get_earlier_declaration()))
       if (d->get_canonical_type())
-	d->priv_->canonical_type = canonical;
+	{
+	  d->priv_->canonical_type = canonical;
+	  d->priv_->naked_canonical_type = canonical.get();
+	}
 
   return canonical;
 }
@@ -6480,6 +6493,22 @@ type_base::get_canonical_type() const
     return type_base_sptr();
   return type_base_sptr(priv_->canonical_type);
 }
+
+/// Getter of the canonical type pointer.
+///
+/// Note that this function doesn't return a smart pointer, but rather
+/// the underlying pointer managed by the smart pointer.  So it's as
+/// fast as possible.  This getter is to be used in code paths that
+/// are proven to be performance hot spots; especially, when comparing
+/// sensitive types like class, function, pointers and reference
+/// types.  Those are compared extremely frequently and thus, their
+/// accessing the canonical type must be fast.
+///
+/// @return the canonical type pointer, not managed by a smart
+/// pointer.
+type_base*
+type_base::get_naked_canonical_type() const
+{return priv_->naked_canonical_type;}
 
 /// Compares two instances of @ref type_base.
 ///
@@ -7420,8 +7449,11 @@ pointer_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  if (get_canonical_type() && other->get_canonical_type())
-    return get_canonical_type().get() == other->get_canonical_type().get();
+  type_base* canonical_type = get_naked_canonical_type();
+  type_base* other_canonical_type = other->get_naked_canonical_type();
+
+  if (canonical_type && other_canonical_type)
+    return canonical_type == other_canonical_type;
 
   return equals(*this, *other, 0);
 }
@@ -7667,8 +7699,11 @@ reference_type_def::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  if (get_canonical_type() && other->get_canonical_type())
-    return get_canonical_type().get() == other->get_canonical_type().get();
+  type_base* canonical_type = get_naked_canonical_type();
+  type_base* other_canonical_type = other->get_naked_canonical_type();
+
+  if (canonical_type && other_canonical_type)
+    return canonical_type == other_canonical_type;
 
   return equals(*this, *other, 0);
 }
@@ -9431,8 +9466,11 @@ function_type::get_first_non_implicit_parm() const
 bool
 function_type::operator==(const type_base& other) const
 {
-  if (get_canonical_type() && other.get_canonical_type())
-    return get_canonical_type().get() == other.get_canonical_type().get();
+  type_base* canonical_type = get_naked_canonical_type();
+  type_base* other_canonical_type = other.get_naked_canonical_type();
+
+  if (canonical_type && other_canonical_type)
+    return canonical_type == other_canonical_type;
 
   const function_type* o = dynamic_cast<const function_type*>(&other);
   if (!o)
@@ -9630,12 +9668,14 @@ struct function_decl::priv
   bool			declared_inline_;
   decl_base::binding	binding_;
   function_type_wptr	type_;
+  function_type*	naked_type_;
   elf_symbol_sptr	symbol_;
   string id_;
 
   priv()
     : declared_inline_(false),
-      binding_(decl_base::BINDING_GLOBAL)
+      binding_(decl_base::BINDING_GLOBAL),
+      naked_type_()
   {}
 
   priv(function_type_sptr t,
@@ -9643,7 +9683,8 @@ struct function_decl::priv
        decl_base::binding binding)
     : declared_inline_(declared_inline),
       binding_(binding),
-      type_(t)
+      type_(t),
+      naked_type_(t.get())
   {}
 
   priv(function_type_sptr t,
@@ -9653,6 +9694,7 @@ struct function_decl::priv
     : declared_inline_(declared_inline),
       binding_(binding),
       type_(t),
+      naked_type_(t.get()),
       symbol_(s)
   {}
 }; // end sruct function_decl::priv
@@ -9825,10 +9867,10 @@ function_decl::get_first_non_implicit_parm() const
   return i;
 }
 
-/// Return the type of the current instance of #function_decl.
+/// Return the type of the current instance of @ref function_decl.
 ///
 /// It's either a function_type or method_type.
-/// @return the type of the current instance of #function_decl.
+/// @return the type of the current instance of @ref function_decl.
 const shared_ptr<function_type>
 function_decl::get_type() const
 {
@@ -9837,9 +9879,27 @@ function_decl::get_type() const
   return function_type_sptr(priv_->type_);
 }
 
+/// Fast getter of the type of the current instance of @ref function_decl.
+///
+/// Note that this function returns the underlying pointer managed by
+/// the smart pointer returned by function_decl::get_type().  It's
+/// faster than function_decl::get_type().  This getter is to be used
+/// in code paths that are proven to be performance hot spots;
+/// especially (for instance) when comparing function types.  Those
+/// are compared extremely frequently when libabigail is used to
+/// handle huge binaries with a lot of functions.
+///
+/// @return the type of the current instance of @ref function_decl.
+const function_type*
+function_decl::get_naked_type() const
+{return priv_->naked_type_;}
+
 void
-function_decl::set_type(shared_ptr<function_type> fn_type)
-{priv_->type_ = fn_type;}
+function_decl::set_type(const function_type_sptr& fn_type)
+{
+  priv_->type_ = fn_type;
+  priv_->naked_type_ = fn_type.get();
+}
 
 /// This sets the underlying ELF symbol for the current function decl.
 ///
@@ -9974,8 +10034,11 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
   bool result = true;
 
   // Compare function types
-  const type_base_sptr &t0 = l.get_type(), &t1 = r.get_type();
-  if (t0 != t1)
+  const type_base* t0 = l.get_naked_type(), *t1 = r.get_naked_type();
+  if (t0 == t1 || *t0 == *t1)
+    ; // the types are equal, let's move on to compare the other
+      // properties of the functions.
+  else
     {
       result = false;
       if (k)
@@ -11981,25 +12044,26 @@ class_decl::operator==(const decl_base& other) const
   if (!op)
     return false;
 
-  type_base_sptr canonical_type = get_canonical_type(),
-    other_canonical_type = op->get_canonical_type();
+  type_base *canonical_type = get_naked_canonical_type(),
+    *other_canonical_type = op->get_naked_canonical_type();
 
   // If this is a declaration only class with no canonical class, use
   // the canonical type of the definition, if any.
   if (!canonical_type
       && get_is_declaration_only()
       && get_definition_of_declaration())
-    canonical_type = get_definition_of_declaration()->get_canonical_type();
+    canonical_type =
+      get_definition_of_declaration()->get_naked_canonical_type();
 
   // Likewise for the other class.
   if (!other_canonical_type
       && op->get_is_declaration_only()
       && op->get_definition_of_declaration())
     other_canonical_type =
-      op->get_definition_of_declaration()->get_canonical_type();
+      op->get_definition_of_declaration()->get_naked_canonical_type();
 
   if (canonical_type && other_canonical_type)
-    return canonical_type.get() == other_canonical_type.get();
+    return canonical_type == other_canonical_type;
 
   const class_decl& o = *op;
   return equals(*this, o, 0);

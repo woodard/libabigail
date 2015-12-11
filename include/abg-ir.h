@@ -1331,6 +1331,9 @@ public:
   type_base_sptr
   get_canonical_type() const;
 
+  type_base*
+  get_naked_canonical_type() const;
+
   virtual bool
   operator==(const type_base&) const;
 
@@ -2216,11 +2219,14 @@ public:
   const function_type_sptr
   get_type() const;
 
+  const function_type*
+  get_naked_type() const;
+
   const type_base_sptr
   get_return_type() const;
 
   void
-  set_type(function_type_sptr fn_type);
+  set_type(const function_type_sptr& fn_type);
 
   void
   set_symbol(const elf_symbol_sptr& sym);
