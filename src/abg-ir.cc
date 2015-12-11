@@ -11831,24 +11831,31 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 
   // if one of the classes is declaration-only, look through it to
   // get its definition.
-  if (l.get_is_declaration_only()
-      || r.get_is_declaration_only())
+  bool l_is_decl_only = l.get_is_declaration_only();
+  bool r_is_decl_only = r.get_is_declaration_only();
+  if (l_is_decl_only || r_is_decl_only)
     {
-      const class_decl* def1 = l.get_is_declaration_only()
+      const class_decl* def1 = l_is_decl_only
 	? l.get_definition_of_declaration().get()
 	: &l;
 
-      const class_decl* def2 = r.get_is_declaration_only()
+      const class_decl* def2 = r_is_decl_only
 	? r.get_definition_of_declaration().get()
 	: &r;
 
-      if (!def1 || !def2
-	  || def1->get_is_declaration_only()
-	  || def2->get_is_declaration_only())
+      if (!def1 || !def2)
 	{
-	  string q1 = l.get_qualified_name();
-	  string q2 = r.get_qualified_name();
-	  if (q1 != q2)
+	  const string& q1 = l.get_qualified_name();
+	  const string& q2 = r.get_qualified_name();
+	  if (q1 == q2)
+	    // Not using RETURN(true) here, because that causes
+	    // performance issues.  We don't need to do
+	    // l.priv_->unmark_as_being_compared({l,r}) here because
+	    // we haven't marked l or r as being compared yet, and
+	    // doing so has a peformance cost that shows up on
+	    // performance profiles for *big* libraries.
+	    return true;
+	  else
 	    {
 	      if (k)
 		*k |= LOCAL_CHANGE_KIND;
@@ -11860,13 +11867,6 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	      // performance profiles for *big* libraries.
 	      return false;
 	    }
-	  // Not using RETURN(true) here, because that causes
-	  // performance issues.  We don't need to do
-	  // l.priv_->unmark_as_being_compared({l,r}) here because
-	  // we haven't marked l or r as being compared yet, and
-	  // doing so has a peformance cost that shows up on
-	  // performance profiles for *big* libraries.
-	  return true;
 	}
 
       if (l.priv_->comparison_started(l)
