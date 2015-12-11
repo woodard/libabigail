@@ -5818,7 +5818,7 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
 /// @return the declaration of the type if found, NULL otherwise.
 const decl_base_sptr
 lookup_type_in_scope(const string& fqn,
-		     const scope_decl_sptr skope)
+		     const scope_decl_sptr& skope)
 {
   list<string> comps;
   fqn_to_components(fqn, comps);
@@ -5835,7 +5835,7 @@ lookup_type_in_scope(const string& fqn,
 /// otherwise.
 const decl_base_sptr
 lookup_var_decl_in_scope(const string& fqn,
-			 const scope_decl_sptr skope)
+			 const scope_decl_sptr& skope)
 {
   list<string> comps;
   fqn_to_components(fqn, comps);
@@ -6020,7 +6020,7 @@ lookup_node_in_scope(const list<string>& fqn,
 /// @return the declaration of the type found.
 const decl_base_sptr
 lookup_type_in_scope(const list<string>& comps,
-		     const scope_decl_sptr scope)
+		     const scope_decl_sptr& scope)
 {return lookup_node_in_scope<type_base>(comps, scope);}
 
 /// lookup a type in a scope.
@@ -6115,7 +6115,7 @@ lookup_type_in_scope(const type_base_sptr type,
 /// @param skope the scope to look into.
 const decl_base_sptr
 lookup_var_decl_in_scope(const std::list<string>& comps,
-			 const scope_decl_sptr skope)
+			 const scope_decl_sptr& skope)
 {return lookup_node_in_scope<var_decl>(comps, skope);}
 
 /// Lookup an IR node from a translation unit.
