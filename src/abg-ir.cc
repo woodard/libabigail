@@ -9013,12 +9013,15 @@ var_decl::get_id() const
 {
   if (priv_->id_.empty())
     {
+      string repr = get_name();
+      string sym_str;
       if (elf_symbol_sptr s = get_symbol())
-	priv_->id_ = s->get_id_string();
+	sym_str = s->get_id_string();
       else if (!get_linkage_name().empty())
-	priv_->id_ = get_linkage_name();
-      else
-	priv_->id_ = get_pretty_representation();
+	sym_str = get_linkage_name();
+      priv_->id_ = repr;
+      if (!sym_str.empty())
+	priv_->id_ += "{" + sym_str + "}";
     }
   return priv_->id_;
 }
