@@ -11226,6 +11226,22 @@ class_decl::remove_member_type(type_base_sptr t)
     }
 }
 
+/// The private data structure of class_decl::base_spec.
+struct class_decl::base_spec::priv
+{
+  class_decl_wptr	base_class_;
+  long			offset_in_bits_;
+  bool			is_virtual_;
+
+  priv(const class_decl_sptr& cl,
+       long offset_in_bits,
+       bool is_virtual)
+    : base_class_(cl),
+      offset_in_bits_(offset_in_bits),
+      is_virtual_(is_virtual)
+  {}
+};
+
 /// Constructor for base_spec instances.
 ///
 /// @param base the base class to consider
@@ -11245,10 +11261,34 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
   : decl_base(base->get_name(), base->get_location(),
 	      base->get_linkage_name(), base->get_visibility()),
     member_base(a),
-    base_class_(base),
-    offset_in_bits_(offset_in_bits),
-    is_virtual_(is_virtual)
+    priv_(new priv(base, offset_in_bits, is_virtual))
 {}
+
+/// Get the base class referred to by the current base class
+/// specifier.
+///
+/// @return the base class.
+class_decl_sptr
+class_decl::base_spec::get_base_class() const
+{
+  if (priv_->base_class_.expired())
+    return class_decl_sptr();
+  return class_decl_sptr(priv_->base_class_);
+}
+
+/// Getter of the "is-virtual" proprerty of the base class specifier.
+///
+/// @return true iff this specifies a virtual base class.
+bool
+class_decl::base_spec::get_is_virtual() const
+{return priv_->is_virtual_;}
+
+/// Getter of the offset of the base.
+///
+/// @return the offset of the base.
+long
+class_decl::base_spec::get_offset_in_bits() const
+{return priv_->offset_in_bits_;}
 
 /// Calculate the hash value for a class_decl::base_spec.
 ///
@@ -11313,9 +11353,9 @@ class_decl::base_spec::base_spec(shared_ptr<type_base> base,
 	      get_type_declaration(base)->get_linkage_name(),
 	      get_type_declaration(base)->get_visibility()),
       member_base(a),
-      base_class_(dynamic_pointer_cast<class_decl>(base)),
-      offset_in_bits_(offset_in_bits),
-      is_virtual_(is_virtual)
+      priv_(new priv(dynamic_pointer_cast<class_decl>(base),
+		     offset_in_bits,
+		     is_virtual))
 {}
 
 /// Compares two instances of @ref class_decl::base_spec.

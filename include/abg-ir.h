@@ -3180,10 +3180,10 @@ equals(const class_decl::base_spec&,
 class class_decl::base_spec : public member_base,
 			      public virtual decl_base
 {
+  struct priv;
+  typedef shared_ptr<priv>priv_sptr;
 
-  shared_ptr<class_decl>	base_class_;
-  long				offset_in_bits_;
-  bool				is_virtual_;
+  priv_sptr priv_;
 
   // Forbidden
   base_spec();
@@ -3199,17 +3199,14 @@ public:
   base_spec(shared_ptr<type_base> base, access_specifier a,
 	    long offset_in_bits = -1, bool is_virtual = false);
 
-  const shared_ptr<class_decl>&
-  get_base_class() const
-  {return base_class_;}
+  class_decl_sptr
+  get_base_class() const;
 
   bool
-  get_is_virtual() const
-  {return is_virtual_;}
+  get_is_virtual() const;
 
   long
-  get_offset_in_bits() const
-  {return offset_in_bits_;}
+  get_offset_in_bits() const;
 
   virtual bool
   operator==(const decl_base&) const;
