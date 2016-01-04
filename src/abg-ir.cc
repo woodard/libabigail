@@ -10593,6 +10593,7 @@ struct class_decl::priv
   decl_base_sptr		declaration_;
   class_decl_sptr		definition_of_declaration_;
   base_specs			bases_;
+  unordered_map<string, base_spec_sptr>	bases_map_;
   member_types			member_types_;
   data_members			data_members_;
   data_members			non_static_data_members_;
@@ -10946,6 +10947,7 @@ void
 class_decl::add_base_specifier(base_spec_sptr b)
 {
   priv_->bases_.push_back(b);
+  priv_->bases_map_[b->get_base_class()->get_qualified_name()] = b;
   assert(!b->get_environment());
   if (environment* env = get_environment())
     b->set_environment(env);
@@ -10967,12 +10969,11 @@ class_decl::get_base_specifiers() const
 class_decl_sptr
 class_decl::find_base_class(const string& qualified_name) const
 {
-  for (base_specs::const_iterator i = get_base_specifiers().begin();
-       i != get_base_specifiers().end();
-       ++i)
-    if ((*i)->get_base_class()->get_qualified_name()
-	== qualified_name)
-      return (*i)->get_base_class();
+  unordered_map<string, base_spec_sptr>::iterator i =
+    priv_->bases_map_.find(qualified_name);
+
+  if (i != priv_->bases_map_.end())
+    return i->second->get_base_class();
 
   return class_decl_sptr();
 }
