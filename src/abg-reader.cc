@@ -3379,20 +3379,13 @@ build_class_decl(read_context&		ctxt,
 	return previous_declaration;
     }
 
-  // A flag to know if we are reading a class definition, that we've
-  // read before, but to which we'll maybe need to add new data
-  // members, member types, or base classes.
-  bool updating = false;
   if (!is_decl_only && previous_definition)
-    {
-      decl = previous_definition;
-      // So, we are precisely in the case where we've read this class
-      // definition before, but we might need to update it to add some
-      // new stuff to it; we might thus find the new stuff to add in
-      // the current (new) incarnation of that definition that we are
-      // currently reading.
-      updating = true;
-    }
+    // We are in the case where we've read this class definition
+    // before, but we might need to update it to add some new stuff to
+    // it; we might thus find the new stuff to add in the current
+    // (new) incarnation of that definition that we are currently
+    // reading.
+    decl = previous_definition;
   else
     {
       if (is_decl_only)
@@ -3484,8 +3477,7 @@ build_class_decl(read_context&		ctxt,
 	    (ctxt.build_or_get_type_decl(type_id, true));
 	  assert(b);
 
-	  if (updating
-	      && previous_definition->find_base_class(b->get_qualified_name()))
+	  if (decl->find_base_class(b->get_qualified_name()))
 	    // We are in updating mode for this class.  The version of
 	    // the class we have already has this base class, so we
 	    // are not going to add it again.
@@ -3563,8 +3555,7 @@ build_class_decl(read_context&		ctxt,
 	      if (shared_ptr<var_decl> v =
 		  build_var_decl(ctxt, p, /*add_to_current_scope=*/false))
 		{
-		  if (updating
-		      && previous_definition->find_data_member(v->get_name()))
+		  if (decl->find_data_member(v->get_name()))
 		    {
 		      // We are in updating mode and the current
 		      // version of this class already has this data
@@ -3573,7 +3564,7 @@ build_class_decl(read_context&		ctxt,
 		      // built (and that was pushed to the current
 		      // stack of decls built) and move on.
 		      decl_base_sptr d = ctxt.pop_decl();
-		      is_var_decl(d);
+		      assert(is_var_decl(d));
 		      continue;
 		    }
 		  decl->add_data_member(v, access,

@@ -6752,6 +6752,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 					       is_virt));
 	      if (b->get_is_declaration_only())
 		assert(ctxt.is_decl_only_class_scheduled_for_resolution(b));
+	      if (result->find_base_class(b->get_qualified_name()))
+		continue;
 	      result->add_base_specifier(base);
 	    }
 	  // Handle data members.
