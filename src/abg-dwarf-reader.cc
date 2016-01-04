@@ -121,6 +121,88 @@ typedef unordered_map<Dwarf_Off, Dwarf_Off> offset_offset_map;
 /// value is a vector of smart pointer to a class.
 typedef unordered_map<string, classes_type> string_classes_map;
 
+/// The abstraction of the place where a partial unit has been
+/// imported.  This is what the DW_TAG_imported_unit DIE expresses.
+///
+/// This type thus contains:
+///	- the offset to which the partial unit is imported
+///	- the offset of the imported partial unit.
+///	- the offset of the imported partial unit.
+struct imported_unit_point
+{
+  Dwarf_Off offset_of_import;
+  Dwarf_Off imported_unit_die_off;
+  Dwarf_Off imported_unit_cu_off;
+  Dwarf_Off imported_unit_child_off;
+
+  /// Default constructor for @ref the type imported_unit_point.
+  imported_unit_point ()
+    : offset_of_import(),
+      imported_unit_die_off(),
+      imported_unit_cu_off(),
+      imported_unit_child_off()
+  {}
+
+  /// Constructor of @ref the type imported_unit_point.
+  ///
+  /// @param import_off the offset of the point at which the unit has
+  /// been imported.
+  imported_unit_point (Dwarf_Off import_off)
+    : offset_of_import(import_off),
+      imported_unit_die_off(),
+      imported_unit_cu_off(),
+      imported_unit_child_off()
+  {}
+
+  /// Constructor of @ref the type imported_unit_point.
+  ///
+  /// @param import_off the offset of the point at which the unit has
+  /// been imported.
+  ///
+  /// @param imported_die the die of the unit that has been imported.
+  imported_unit_point (Dwarf_Off import_off,
+		       const Dwarf_Die& imported_die)
+    : offset_of_import(import_off),
+      imported_unit_die_off(dwarf_dieoffset
+			    (const_cast<Dwarf_Die*>(&imported_die))),
+      imported_unit_cu_off(),
+      imported_unit_child_off()
+  {
+    Dwarf_Die imported_unit_child;
+
+    dwarf_child(const_cast<Dwarf_Die*>(&imported_die),
+		&imported_unit_child);
+    imported_unit_child_off =
+      dwarf_dieoffset(const_cast<Dwarf_Die*>(&imported_unit_child));
+
+    Dwarf_Die cu_die_memory;
+    Dwarf_Die *cu_die;
+
+    cu_die = dwarf_diecu(const_cast<Dwarf_Die*>(&imported_unit_child),
+			 &cu_die_memory, 0, 0);
+    imported_unit_cu_off = dwarf_dieoffset(cu_die);
+  }
+}; // struct imported_unit_point
+
+/// "Less than" operator for instances of @ref imported_unit_point
+/// type.
+///
+/// @param the left hand side operand of the "Less than" operator.
+///
+/// @param the right hand side operand of the "Less than" operator.
+///
+/// @return true iff @p l is less than @p r.
+static bool
+operator<(const imported_unit_point& l, const imported_unit_point& r)
+{return l.offset_of_import < r.offset_of_import;}
+
+/// Convenience typedef for a vector of @ref imported_unit_point.
+typedef vector<imported_unit_point> imported_unit_points_type;
+
+/// Convenience typedef for a vector of @ref imported_unit_point.
+typedef unordered_map<Dwarf_Off, imported_unit_points_type>
+tu_die_imported_unit_points_map_type;
+
 static bool
 find_symbol_table_section(Elf* elf_handle, Elf_Scn*& section);
 
@@ -150,6 +232,11 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
 
 static int
 get_default_array_lower_bound(translation_unit::language l);
+
+static bool
+find_lower_bound_in_imported_unit_points(const imported_unit_points_type&,
+					 Dwarf_Off,
+					 imported_unit_points_type::const_iterator&);
 
 /// Convert an elf symbol type (given by the ELF{32,64}_ST_TYPE
 /// macros) into an elf_symbol::type value.
@@ -1769,6 +1856,7 @@ class read_context
   translation_unit_sptr	cur_tu_;
   scope_stack_type		scope_stack_;
   offset_offset_map		die_parent_map_;
+  tu_die_imported_unit_points_map_type tu_die_imported_unit_points_map_;
   // A DIE -> parent map for DIEs coming from the alternate debug info
   // file.
   offset_offset_map		alternate_die_parent_map_;
@@ -2632,6 +2720,22 @@ public:
   die_tu_map_type&
   die_tu_map()
   {return die_tu_map_;}
+
+  /// Getter for the map that associates a translation unit DIE to the
+  /// vector of imported unit points that it contains.
+  ///
+  /// @return the map.
+  tu_die_imported_unit_points_map_type&
+  tu_die_imported_unit_points_map()
+  {return tu_die_imported_unit_points_map_;}
+
+  /// Getter for the map that associates a translation unit DIE to the
+  /// vector of imported unit points that it contains.
+  ///
+  /// @return the map.
+  const tu_die_imported_unit_points_map_type&
+  tu_die_imported_unit_points_map() const
+  {return tu_die_imported_unit_points_map_;}
 
   const corpus_sptr
   current_corpus() const
@@ -4185,6 +4289,43 @@ die_die_attribute(Dwarf_Die* die, bool die_is_in_alt_di,
   return r;
 }
 
+/// Get the value of an attribute which value is supposed to be a
+/// reference to a DIE.
+///
+/// @param die the DIE to read the value from.
+///
+/// @param attr_name the DW_AT_* attribute name to read.
+///
+/// @param result the DIE resulting from reading the attribute value.
+/// This is set iff the function returns true.
+///
+/// @param look_thru_abstract_origin if yes, the function looks
+/// through the possible DW_AT_abstract_origin attribute all the way
+/// down to the initial DIE that is cloned and look on that DIE to see
+/// if it has the @p attr_name attribute.
+///
+/// @return true if the DIE @p die contains an attribute named @p
+/// attr_name that is a DIE reference, false otherwise.
+static bool
+die_die_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Die& result,
+		  bool look_thru_abstract_origin = true)
+{
+  Dwarf_Attribute attr;
+  if (look_thru_abstract_origin)
+    {
+      if (!dwarf_attr_integrate(die, attr_name, &attr))
+	return false;
+    }
+  else
+    {
+      if (!dwarf_attr(die, attr_name, &attr))
+	return false;
+    }
+
+  bool r = dwarf_formref_die(&attr, &result);
+  return r;
+}
+
 /// Read and return a DW_FORM_addr attribute from a given DIE.
 ///
 /// @param die the DIE to consider.
@@ -5606,15 +5747,22 @@ die_virtual_function_index(Dwarf_Die* die,
 /// die -> parent map to record the child -> parent relationship that
 /// exists between the child and the given die.
 ///
+/// The function also builds the vector of places where units are
+/// imported.
+///
 /// This is done recursively as for each child DIE, this function
 /// walks its children as well.
 ///
 /// @param die the DIE whose children to walk recursively.
 ///
 /// @param die_parent_map the die -> parent map to populate.
+///
+/// @param a vector containing all the offsets of the points where
+/// unit have been imported, under @p die.
 static void
-build_die_parent_relations_under(Dwarf_Die*		die,
-				 offset_offset_map&	die_parent_map)
+build_die_parent_relations_under(Dwarf_Die*			die,
+				 offset_offset_map&		die_parent_map,
+				 imported_unit_points_type &	imported_units)
 {
   if (!die)
     return;
@@ -5626,58 +5774,18 @@ build_die_parent_relations_under(Dwarf_Die*		die,
   do
     {
       die_parent_map[dwarf_dieoffset(&child)] = dwarf_dieoffset(die);
-      build_die_parent_relations_under(&child, die_parent_map);
+      if (dwarf_tag(&child) == DW_TAG_imported_unit)
+	{
+	  Dwarf_Die imported_unit;
+	  if (die_die_attribute(&child, DW_AT_import, imported_unit))
+	    imported_units.push_back
+	      (imported_unit_point(dwarf_dieoffset(&child),
+				   imported_unit));
+	}
+      build_die_parent_relations_under(&child, die_parent_map, imported_units);
     }
   while (dwarf_siblingof(&child, &child) == 0);
-}
 
-/// Walk the DIEs under a given die and for each child, populate the
-/// read_context::die_parent_map() to record the child -> parent
-/// relationship that exists between the child and the given die.
-///
-/// This is done recursively as for each child DIE, this function
-/// walks its children as well.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param die the DIE whose children to walk recursively.
-static void
-build_primary_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die)
-{build_die_parent_relations_under(die, ctxt.die_parent_map());}
-
-/// Walk the DIEs under a given die and for each child, populate the
-/// read_context::alternate_die_parent_map() to record the child ->
-/// parent relationship that exists between the child and the given
-/// die.
-///
-/// This is done recursively as for each child DIE, this function
-/// walks its children as well.
-///
-/// @param ctxt the read context to consider.
-///
-/// @param die the DIE whose children to walk recursively.
-static void
-build_alternate_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die)
-{build_die_parent_relations_under(die, ctxt.alternate_die_parent_map());}
-
-/// Walk the DIEs under a given die and for each childde, populate the
-/// appropriate die -> parent map to record the child -> parent
-/// relationship that exists between the child and the given DIE.
-///
-/// @param ctxt the read context to use.
-///
-/// @param die the DIEs whose children to walk recursively.
-///
-/// @param die_is_from_alt_debug_info true if @p die is from the
-/// alternate debug info section, false otherwise.
-static void
-build_die_parent_relations_under(read_context& ctxt, Dwarf_Die *die,
-				 bool die_is_from_alt_debug_info)
-{
-  if (die_is_from_alt_debug_info)
-    build_alternate_die_parent_relations_under(ctxt, die);
-  else
-    build_primary_die_parent_relations_under(ctxt, die);
 }
 
 /// Walk all the DIEs accessible in the debug info (and in the
@@ -5702,8 +5810,13 @@ build_die_parent_maps(read_context& ctxt)
       Dwarf_Die cu;
       if (!dwarf_offdie(ctxt.alt_dwarf(), die_offset, &cu))
 	continue;
-      build_die_parent_relations_under(ctxt, &cu,
-				       /*die_is_from_alt_debug_info=*/true);
+      ctxt.cur_tu_die(&cu);
+      imported_unit_points_type& imported_units =
+	ctxt.tu_die_imported_unit_points_map()[die_offset] =
+	imported_unit_points_type();
+      build_die_parent_relations_under(&cu,
+				       ctxt.alternate_die_parent_map(),
+				       imported_units);
     }
 
   address_size = 0;
@@ -5717,110 +5830,111 @@ build_die_parent_maps(read_context& ctxt)
       Dwarf_Die cu;
       if (!dwarf_offdie(ctxt.dwarf(), die_offset, &cu))
 	continue;
-      build_die_parent_relations_under(ctxt, &cu,
-				       /*die_is_from_alt_debug_info=*/false);
+      ctxt.cur_tu_die(&cu);
+      imported_unit_points_type& imported_units =
+	ctxt.tu_die_imported_unit_points_map()[die_offset] =
+	imported_unit_points_type();
+      build_die_parent_relations_under(&cu,
+				       ctxt.die_parent_map(),
+				       imported_units);
     }
 }
 
-/// Get the last point where a DW_AT_import DIE is used to import a
-/// given (unit) DIE, before a given DIE is found.  That given DIE is
-/// called the limit DIE.
-///
-/// Said otherwise, this function returns the last import point of a
-/// unit, before a limit.
+/// Get the point where a DW_AT_import DIE is used to import a given
+/// (unit) DIE, between two DIEs.
 ///
 /// @param ctxt the dwarf reading context to consider.
 ///
 /// @param partial_unit_offset the imported unit for which we want to
-/// know the insertion point of.  This is usually a partial unit (with
+/// know the insertion point.  This is usually a partial unit (with
 /// tag DW_TAG_partial_unit) but it does not necessarily have to be
 /// so.
 ///
-/// @param parent_die the DIE under which the lookup is to be
-/// performed.  The children of this DIE are visited in a depth-first
-/// manner, looking for the die which is at offset @p
-/// partial_unit_offset.
+/// @param first_die_offset the offset of the DIE from which this
+/// function starts looking for the import point of
+/// @partial_unit_offset.  Note that this offset is excluded from the
+/// set of potential solutions.
 ///
-/// @param die_offset the offset of the limit DIE.
+/// @param first_die_cu_offset the offset of the (compilation) unit
+/// that @p first_die_cu_offset belongs to.
 ///
-/// @param imported_point_offset.  The resulting imported_point_offset.
-/// Note that if the imported DIE @p partial_unit_offset is not found
-/// before @p die_offset, this is set to the last @p
-/// partial_unit_offset found under @p parent_die.
+/// @param last_die_offset the offset of the last DIE of the up to
+/// which this function looks for the import point of @p
+/// partial_unit_offset.  Note that this offset is excluded from the
+/// set of potential solutions.
 ///
-/// @return true iff an imported unit is found before @p die_offset.
-/// Note that if an imported unit is found after @p die_offset then @p
-/// imported_point_offset is set and the function return false.
+/// @param imported_point_offset.  The resulting
+/// imported_point_offset.  Note that if the imported DIE @p
+/// partial_unit_offset is not found between @p first_die_offset and
+/// @p last_die_offset, this parameter is left untouched by this
+/// function.
+///
+/// @return true iff an imported unit is found between @p
+/// first_die_offset and @p last_die_offset.
 static bool
-find_last_import_unit_point_before_die(read_context&	ctxt,
-				       size_t		partial_unit_offset,
-				       const Dwarf_Die* parent_die,
-				       size_t		die_offset,
-				       size_t&		imported_point_offset)
+find_import_unit_point_between_dies(read_context&	ctxt,
+				    size_t		partial_unit_offset,
+				    Dwarf_Off		first_die_offset,
+				    Dwarf_Off		first_die_cu_offset,
+				    size_t		last_die_offset,
+				    size_t&		imported_point_offset)
 {
-  if (!parent_die)
-    return false;
+  tu_die_imported_unit_points_map_type::iterator iter =
+    ctxt.tu_die_imported_unit_points_map().find(first_die_cu_offset);
+  assert(iter != ctxt.tu_die_imported_unit_points_map().end());
 
-  Dwarf_Die child;
-  if (dwarf_child(const_cast<Dwarf_Die*>(parent_die), &child) != 0)
-    return false;
+  imported_unit_points_type& imported_unit_points = iter->second;
+  imported_unit_points_type::const_iterator b = imported_unit_points.begin();
+  imported_unit_points_type::const_iterator e = imported_unit_points.end();
 
-  // This list contains the children of 'parent_die' in reversed
-  // topological order, starting from the DIE of 'die_offset'; that
-  // die_offset itself is excluded.  If the children of parent_die
-  // don't contain the DIE of 'die_offset', then the list contains all
-  // the children of 'parent_die'.
-  std::list<size_t> imported_unit_die_offsets;
-  do
+  find_lower_bound_in_imported_unit_points(imported_unit_points,
+					   first_die_offset,
+					   b);
+
+  if (last_die_offset != static_cast<size_t>(-1))
+    find_lower_bound_in_imported_unit_points(imported_unit_points,
+					     last_die_offset,
+					     e);
+
+  if (e != imported_unit_points.end())
     {
-      if (dwarf_dieoffset(&child) == die_offset)
-	break;
-      if (dwarf_tag(&child) == DW_TAG_imported_unit)
-	imported_unit_die_offsets.push_front(dwarf_dieoffset(&child));
-    }
-  while (dwarf_siblingof(&child, &child) == 0);
+      for (imported_unit_points_type::const_iterator i = e; i >= b; --i)
+	if (i->imported_unit_die_off == partial_unit_offset)
+	  {
+	    imported_point_offset = i->offset_of_import ;
+	    return true;
+	  }
 
-  // Look if one of the children of 'parent_die' is the import point
-  // we are looking for, starting from the last child of 'parent_die'.
-  for (std::list<size_t>::iterator i = imported_unit_die_offsets.begin();
-       i != imported_unit_die_offsets.end();
-       ++i)
-    {
-      Dwarf_Die die_memory, *die;
-      die = dwarf_offdie(ctxt.dwarf(), *i, &die_memory);
-
-      Dwarf_Die imported_unit;
-      bool is_in_alt_di = false;
-      if (die_die_attribute(die, /*die_is_in_alt_di=*/false,
-			    DW_AT_import, imported_unit, is_in_alt_di))
+      for (imported_unit_points_type::const_iterator i = e; i >= b; --i)
 	{
-	  if (partial_unit_offset == dwarf_dieoffset(&imported_unit))
-	    {
-	      imported_point_offset = dwarf_dieoffset(&child);
-	      return true;
-	    }
+	  if (find_import_unit_point_between_dies(ctxt,
+						       partial_unit_offset,
+						       i->imported_unit_child_off,
+						       i->imported_unit_cu_off,
+						       (Dwarf_Off)-1,
+						       imported_point_offset))
+	    return true;
 	}
     }
-
-  // Look if the descendants of the children of 'parent_die' contain
-  // the import point we are looking for, starting from the last child
-  // of 'parent_die'.
-    for (std::list<size_t>::iterator i = imported_unit_die_offsets.begin();
-	 i != imported_unit_die_offsets.end();
-	 ++i)
+  else
     {
-      Dwarf_Die die_memory, *die;
-      die = dwarf_offdie(ctxt.dwarf(), *i, &die_memory);
-      Dwarf_Die imported_unit;
-      bool is_in_alt_di = false;
-      if (die_die_attribute(die, /*die_is_in_alt_di=*/false,
-			    DW_AT_import, imported_unit, is_in_alt_di))
-	if (find_last_import_unit_point_before_die(ctxt,
-						   partial_unit_offset,
-						   &imported_unit,
-						   die_offset,
-						   imported_point_offset))
-	  return true;
+      for (imported_unit_points_type::const_iterator i = b; i != e; ++i)
+	if (i->imported_unit_die_off == partial_unit_offset)
+	  {
+	    imported_point_offset = i->offset_of_import ;
+	    return true;
+	  }
+
+      for (imported_unit_points_type::const_iterator i = b; i != e; ++i)
+	{
+	  if (find_import_unit_point_between_dies(ctxt,
+						       partial_unit_offset,
+						       i->imported_unit_child_off,
+						       i->imported_unit_cu_off,
+						       (Dwarf_Off)-1,
+						       imported_point_offset))
+	    return true;
+	}
     }
 
   return false;
@@ -5851,15 +5965,29 @@ find_last_import_unit_point_before_die(read_context&	ctxt,
 /// Note that if an imported unit is found after @p die_offset then @p
 /// imported_point_offset is set and the function return false.
 static bool
-find_last_import_unit_point_before_die(read_context&	ctxt,
-				       size_t		partial_unit_offset,
-				       size_t		where_offset,
-				       size_t&		imported_point_offset)
+find_import_unit_point_before_die(read_context&	ctxt,
+				  size_t		partial_unit_offset,
+				  size_t		where_offset,
+				  size_t&		imported_point_offset)
 {
   size_t import_point_offset = 0;
-  if (find_last_import_unit_point_before_die(ctxt, partial_unit_offset,
-					     ctxt.cur_tu_die(), where_offset,
-					     import_point_offset))
+  Dwarf_Die first_die_of_tu;
+
+  if (dwarf_child(const_cast<Dwarf_Die*>(ctxt.cur_tu_die()),
+		  &first_die_of_tu) != 0)
+    return false;
+
+    Dwarf_Die cu_die_memory;
+    Dwarf_Die *cu_die;
+
+    cu_die = dwarf_diecu(const_cast<Dwarf_Die*>(&first_die_of_tu),
+			 &cu_die_memory, 0, 0);
+
+  if (find_import_unit_point_between_dies(ctxt, partial_unit_offset,
+					  dwarf_dieoffset(&first_die_of_tu),
+					  dwarf_dieoffset(cu_die),
+					  where_offset,
+					  import_point_offset))
     {
       imported_point_offset = import_point_offset;
       return true;
@@ -5924,12 +6052,12 @@ get_parent_die(read_context&	ctxt,
       assert(where_offset);
       size_t import_point_offset = 0;
       bool found =
-	find_last_import_unit_point_before_die(ctxt,
-					       dwarf_dieoffset(&parent_die),
-					       where_offset,
-					       import_point_offset);
+	find_import_unit_point_before_die(ctxt,
+					  dwarf_dieoffset(&parent_die),
+					  where_offset,
+					  import_point_offset);
       if (!found && die_is_from_alt_di)
-	;
+	abort();
       else
 	{
 	  assert(found);
@@ -6191,6 +6319,39 @@ get_default_array_lower_bound(translation_unit::language l)
     }
 
     return value;
+}
+
+/// For a given offset, find the lower bound of a sorted vector of
+/// imported unit point offset.
+///
+/// The lower bound is the smallest point (the point with the smallest
+/// offset) which is the greater than a given offset.
+///
+/// @param imported_unit_points_type the sorted vector  of imported
+/// unit points.
+///
+/// @param val the offset to consider when looking for the lower
+/// bound.
+///
+/// @param r an iterator to the lower bound found.  This parameter is
+/// set iff the function returns true.
+///
+/// @return true iff the lower bound has been found.
+static bool
+find_lower_bound_in_imported_unit_points(const imported_unit_points_type& p,
+					 Dwarf_Off val,
+					 imported_unit_points_type::const_iterator& r)
+{
+  imported_unit_point v(val);
+  imported_unit_points_type::const_iterator result =
+    std::lower_bound(p.begin(), p.end(), v);
+
+  bool is_ok = result != p.end();
+
+  if (is_ok)
+    r = result;
+
+  return is_ok;
 }
 
 /// Given a DW_TAG_compile_unit, build and return the corresponding
