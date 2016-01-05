@@ -127,10 +127,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--version")
 	       || !strcmp(argv[i], "-v"))
-	{
-	  opts.display_version = true;
-	  return true;
-	}
+	opts.display_version = true;
       else if (!strcmp(argv[i], "--debug-info-dir")
 	       || !strcmp(argv[i], "-d"))
 	{
@@ -211,7 +208,8 @@ main(int argc, char* argv[])
   options opts;
 
   if (!parse_command_line(argc, argv, opts)
-      || opts.in_file_path.empty())
+      || (opts.in_file_path.empty()
+	  && !opts.display_version))
     {
       display_usage(argv[0], cerr);
       return 1;
