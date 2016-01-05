@@ -1,0 +1,32 @@
+1.0.rc1
+=======
+Dodji Seketeli:
+      Bug 19336 - Better handle redundantly qualified reference types
+      Bug 19126 - abidw segv on a dwz compressed version of r300_dri.so
+      Bug 19355 - Libabigail slow on r300_dri.so
+      Do not use designated initializers in abipkgdiff.cc
+      Read enum values in the size_t and write them in ssize_t
+      Do not abort when there is no binary to compare in a package
+      Add missing new line to abidiff help message
+      Constify is_qualified_type()
+      Find more spots where to discriminate internal and non-internal names
+      Do not forget to peel qualified type off when peeling types
+      Fix comparison in qualified_type_diff::has_changes
+      Avoid try/catch code paths when that is possible
+      Fix internal name for pointers, typedefs and arrays
+      Filter out harmless diagnostics glitches due to some ODR violation
+      [PERF] Pass a bunch of perf-sensitive smart pointers by reference
+      [PERF] Turn some pimpl pointers into naked pointers
+      [PERF] Access naked pointers for canonical types and function types
+      [PERF] Speedup comparing declaration-only class_decls
+      Speed up class_decl::find_base_class
+      Avoid adding the same base class twice
+      Support two different variables having the same underlying symbol
+      Add a NEWS file
+      Fix abidw -v
+
+Ondrej Oprala:
+      Add bash-completion scripts for the libabigail tools
+      Abidiff: Remove doubled line in help.
+      Fix a function doc
+      Support printing the file, line and column information in change reports

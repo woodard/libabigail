@@ -12,7 +12,7 @@ pkgconfig_DATA = libabigail.pc
 #dist_bashcompletion_DATA =
 
 EXTRA_DIST = 			\
-README COPYING ChangeLog	\
+NEWS README COPYING ChangeLog	\
 COPYING-LGPLV2 COPYING-LGPLV3	\
 COPYING-GPLV3 gen-changelog.py	\
 $(headers) $(m4data_DATA) 	\
