@@ -1,3 +1,475 @@
+2016-01-05  Dodji Seketeli <dodji@redhat.com>
+
+	Fix abidw -v
+	* tools/abidw.cc (parse_command_line): Simplify logic.
+	(main): Fix logic.
+
+2016-01-05  Dodji Seketeli <dodji@redhat.com>
+
+	Add a NEWS file
+	* NEWS: New file.
+	* Makefile.am: Add NEWS file to source distribution.
+
+2016-01-04  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19355 - Libabigail slow on r300_dri.so
+	* src/abg-dwarf-reader.cc (struct imported_unit_point): Define new
+	type.
+	(operator<(const imported_unit_point&, const
+	imported_unit_point&)): Define less-than operator for new
+	imported_unit_point& type.
+	(imported_unit_points_type, tu_die_imported_unit_points_map_type):
+	New typedefs.
+	(find_lower_bound_in_imported_unit_points): Define new static function.
+	(read_context::tu_die_imported_unit_points_map_): New data member.
+	(read_context::tu_die_imported_unit_points_map): New getter.
+	(die_die_attribute): Define new overload.
+	(build_die_parent_relations_under): Take imported_unit_points_type
+	output parameter and populate it along the way. Remove the
+	overload that takes a read_context as a parameter.
+	(build_primary_die_parent_relations_under)
+	(build_alternate_die_parent_relations_under): Remove.
+	(build_die_parent_maps): Pass an instance of
+	imported_unit_points_type to build_die_parent_relations_under.
+	(find_import_unit_point_between_dies): Rename one overload of
+	find_last_import_unit_point_before_die into this.  Adjust to make
+	it find the import point between two offsets.
+	(find_import_unit_point_before_die): Rename the other overload of
+	find_last_import_unit_point_before_die into this. Adjust to use
+	find_import_unit_point_between_dies.
+	(get_parent_die): Adjust to use find_import_unit_point_before_die.
+
+2016-01-04  Dodji Seketeli <dodji@redhat.com>
+
+	Support two different variables having the same underlying symbol
+	* src/abg-ir.cc (var_decl::get_id()): Include the name of the
+	variable in the ID.
+
+2016-01-04  Dodji Seketeli <dodji@redhat.com>
+
+	Avoid adding the same base class twice
+	* src/abg-dwarf-reader.cc:
+	* src/abg-reader.cc:
+
+2016-01-04  Dodji Seketeli <dodji@redhat.com>
+
+	Speed up class_decl::find_base_class
+	* src/abg-ir.cc (class_decl::priv::bases_map_): New data member.
+	(class_decl::add_base_specifier): Add the new base specifier to
+	the new class_decl::priv::bases_map_ data member.
+	(class_decl::find_base_class): Use the new
+	class_decl::priv::bases_map_ data member to speed up finding the
+	base class.
+
+2016-01-04  Dodji Seketeli <dodji@redhat.com>
+
+	Make class_decl::base_spec class follow the pimpl pattern
+	* include/abg-ir.h (class_decl::base_spec::priv): Declare new
+	private data type.
+	(class_decl::base_spec::priv_): Declare new pimpl data member.
+	(class_decl::base_spec::{base_class_, offset_in_bits_,
+	is_virtual_}): Remove.
+	(class_decl::base_spec::{get_base_class, get_is_virtual,
+	get_offset_in_bits}): Make these member functions out of line.
+	* src/abg-ir.cc (struct class_decl::base_spec::priv): New type.
+	(class_decl::base_spec::{get_base_class, get_is_virtual,
+	get_offset_in_bits}): Define these functions here.
+	(class_decl::base_spec::base_spec): Adjust because now there is
+	only one pimpl data member to initialize.
+
+2015-11-16  Ondrej Oprala <ooprala@redhat.com>
+
+	Add the option of printing the file, line and column information about a type being reported.
+	* bash-completion/abicompat: Complete the new "--no-show-locs" option.
+	* bash-completion/abidiff: Likewise.
+	* bash-completion/abidw: Likewise.
+	* bash-completion/abipkgdiff: Likewise.
+	* doc/manuals/abicompat.rst: Mention the new "--no-show-locs" option.
+	* doc/manuals/abidiff.rst: Likewise.
+	* doc/manuals/abidw.rst: Likewise.
+	* doc/manuals/abipkgdiff.rst: Likewise.
+	* include/abg-comparison.h (show_locs): Add declarations.
+	* src/abg-comparison.cc: (diff_context::priv): Add a new switch
+	called "show_locs_" and set its default value to false.
+	(report_loc_info): New function. Outputting the extra information
+	is conditionalized based on the associated diff contexts settings.
+	(show_locs): define a getter/setter for
+	diff_context::priv::show_locs_.
+	({distinct,pointer,reference,qualified_type,enum,class,scope,fn_parm,
+	typedef,corpus}_diff::report): Call report_loc_info when
+	appropriate.
+	(maybe_report_diff_for_member): Likewise.
+	(represent): Accept a const reference to a diff_context_sptr as a first
+	argument and call report_loc_info on its second argument.
+	* src/abg-dwarf-reader.cc:
+	* tests/data/Makefile.am: Add the new test reference files.
+	* tests/data/test-abicompat/test0-fn-changed-report-2.txt: New test
+	reference output.
+	* tests/data/test-abicompat/test5-fn-changed-report-1.txt: Likewise.
+	* tests/data/test-abicompat/test6-var-changed-report-1.txt: Likewise.
+	* tests/data/test-abicompat/test7-fn-changed-report-2.txt: Likewise.
+	* tests/data/test-diff-filter/test30-pr18904-rvalueref-report1.txt:
+	Likewise.
+	* tests/data/test-diff-filter/test31-pr18535-libstdc++-report-1.txt:
+	Likewise.
+	* tests/data/test-diff-pkg/dirpkg-3-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test6-fn-suppr-report-0-1.txt: Likewise.
+	* tests/test-abidiff.cc: Explicitly create a diff context and turn off
+	location emitting.
+	* tests/test-diff-dwarf.cc: Likewise.
+	* tests/test-abicompat.cc: Add --no-show-locs to all existing test
+	arguments. Run a few of the existing tests again, but without this
+	option.
+	* tests/test-diff-filter.cc: Likewise.
+	* tests/test-diff-pkg.cc: Likewise.
+	* tests/test-diff-suppr.cc: Likewise.
+	* tools/abicompat.cc: Handle the new "--no-show-locs" option.
+	* tools/abidiff.cc: Likewise.
+	* tools/abidw.cc: Likewise.
+	* tools/abipkgdiff.cc: Likewise.
+
+2015-11-16  Ondrej Oprala <ooprala@redhat.com>
+
+	Fix a function doc
+	* src/abg-ir.cc: (location_manager::expand_location): Fix a factual
+	error in the function documentation.
+
+2015-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	[PERF] Speedup comparing declaration-only class_decls
+	* src/abg-ir.cc (equals): In the overload for class_decl, avoid
+	calling class_decl::get_is_declaration_only() several times.
+	Avoid copying the qualified name of the class_decl.  Also, use the
+	== operator to compare strings, rather than the != one.
+
+2015-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	[PERF] Access naked pointers for canonical types and function types
+	* include/abg-ir.h (type_base::get_naked_canonical_type): Declare
+	new accessor.
+	(function_decl::get_naked_canonical_type): Likewise.
+	(function_decl::set_type): Pass a reference to the shared_ptr.
+	* src/abg-ir.cc (type_base::priv::naked_canonical_type): New data
+	member.
+	(type_base::priv::priv): Initialize it.
+	(canonicalize): Set the naked canonicalize type when we set its
+	shared pointer.
+	(type_base::get_naked_canonical_type): Define new accessor.
+	({pointer_type_def,reference_type_def,function_type,class_decl}::operator==):
+	Use naked canonical pointers rather than the slower shared_ptr to
+	canonical pointers.
+	(function_decl::priv::naked_type_): New data member.
+	(function_decl::priv::priv): Initialize it.
+	(function_decl::get_naked_type): Define new accessor.
+	(function_decl::set_type): Pass a reference to the shared_ptr .
+	(equals): In the overload for function_decl, use the faster naked
+	pointers to the type of the function.
+
+2015-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	[PERF] Turn some pimpl pointers into naked pointers
+	* include/abg-ir.h ({decl_base, type_base, function_decl}::priv_)
+	Make this a naked pointer to priv, rather than a shared_ptr<priv>.
+	* src/abg-ir.cc (decl_base::~decl_base): Destroy the private data
+	pointer, aka pimpl pointer.
+	(type_base::~type_base): Likewise.
+	(function_decl::~function_decl): Likewise.
+	(class_decl::~class_decl): Likewise.
+
+2015-12-11  Dodji Seketeli <dodji@redhat.com>
+
+	[PERF] Pass a bunch of perf-sensitive smart pointers by reference
+	* include/abg-fwd.h (lookup_type_in_corpus, lookup_type_in_scope)
+	(lookup_var_decl_in_scope): Pass the decls smart pointers by
+	reference.
+	* src/abg-ir.cc (lookup_type_in_corpus, lookup_type_in_scope)
+	(lookup_var_decl_in_scope): Pass the decls smart pointers by
+	reference, for performance reasons.
+
+2015-12-10  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19126 - abidw segv on a dwz compressed version of r300_dri.so
+	* include/abg-ir.h (class location_manager): Forward declare it
+	before class location.
+	(location::loc_manager_): New data member.
+	(location::location): Take the location manager in one overload
+	and initialize the new loc_managers_ in all the overloads.
+	(location::get_location_manager): New getter.
+	(location::expand): New member function.
+	(location::*): Add API doc to all entry points.
+	(location_manager::expand_location): Take a const location.
+	(type_or_decl_base::set_corpus): Remove.
+	(type_or_decl_base::{get,set}_translation): New accessors.
+	(decl_base::{decl_base,get_location}): Take or return a reference
+	on location.
+	(scope_decl::scope_decl): Likewise.
+	(type_decl::type_decl): Likewise.
+	(namespace_decl::namespace_decl): Likewise.
+	(qualified_type_def::qualified_type_def): Likewise.
+	(pointer_type_def::pointer_type_def): Likewise.
+	(reference_type_def::reference_type_def): Likewise.
+	(array_type_def::subrange_type::{subrange_type,
+	get_location}): Likewise.
+	(enum_type_decl::enum_type_decl): Likewise.
+	(typedef_decl::typedef_decl): Likewise.
+	(var_decl::var_decl): Likewise.
+	(function_decl::function_decl): Likewise.
+	(function_decl::parameter::parameter): Likewise.
+	(template_decl::template_decl): Likewise.
+	(type_tparameter::type_tparameter): Likewise.
+	(non_type_tparameter::non_type_tparameter): Likewise.
+	(function_tdecl::function_tdecl): Likewise.
+	(class_tdecl::class_tdecl): Likewise.
+	(class_decl::class_decl): Likewise.
+	(class_decl::method_decl::method_decl): Likewise.
+	* src/abg-ir.cc (location::expand_location): Define new member
+	function.
+	(type_or_decl_base::priv::corpus_): Remove.
+	(type_or_decl_base::priv::translation_unit_): New data member.
+	(type_or_decl_base::priv::priv): Adjust.
+	(type_or_decl_base::set_corpus): Remove.
+	(type_or_decl_base::get_corpus): Adjust.
+	(type_or_decl_base::{get,set}_translation_unit): New member
+	functions.
+	(decl_base::priv::priv): Take a reference to location.
+	(decl_base::decl_base): Likewise.
+	(decl_base::get_location): Return a reference to location.
+	(location_manager::create_new_location): Adjust.
+	(location_manager::expand_location): Take a reference to location.
+	(translation_unit::get_global_scope()): Adjust.
+	(translation_unit::bind_function_type_life_time): Likewise.
+	(scope_decl::{add,insert}_member_decl): Adjust.
+	(get_translation_unit): Likewise.
+	(type_decl::type_decl): Take a reference to location.
+	(namespace_decl::namespace_decl): Likewise.
+	(qualified_type_def::qualified_type_def): Likewise.
+	(pointer_type_def::pointer_type_def): Likewise.
+	(reference_type_def::reference_type_def): Likewise.
+	(array_type_def::subrange_type::priv::priv): Likewise.
+	(array_type_def::subrange_type::{subrange_type,
+	get_location}): Likewise.
+	(enum_type_decl::enum_type_decl): Likewise.
+	(typedef_decl::typedef_decl): Likewise.
+	(var_decl::var_decl): Likewise.
+	(function_decl::function_decl): Likewise.
+	(function_decl::parameter::parameter): Likewise.
+	(template_decl::template_decl): Likewise.
+	(type_tparameter::type_tparameter): Likewise.
+	(non_type_tparameter::non_type_tparameter): Likewise.
+	(function_tdecl::function_tdecl): Likewise.
+	(class_tdecl::class_tdecl): Likewise.
+	(class_decl::class_decl): Likewise.
+	(class_decl::method_decl::method_decl): Likewise.
+	* src/abg-writer.cc (write_location): Take a reference to
+	location and adjust.
+	(write_array_type_def, write_function_decl, dump_decl_location):
+	Adjust.
+
+2015-12-08  Dodji Seketeli <dodji@redhat.com>
+
+	Fix some white space nits
+	* src/abg-comparison.cc (class_diff::report): Remove a useless
+	horizontal white space.
+	* src/abg-ir.cc (operator==): Add a vertical space.
+
+2015-12-08  Dodji Seketeli <dodji@redhat.com>
+
+	Filter out harmless diagnostics glitches due to some ODR violation
+	* src/abg-comp-filter.cc
+	(class_diff_has_harmless_odr_violation_change): New static
+	function.
+	(harmless_filter::visit): Call it.
+
+2015-12-08  Dodji Seketeli <dodji@redhat.com>
+
+	Fix internal name for pointers, typedefs and arrays
+	* include/abg-ir.h (pointer_type_def::priv_): New data structure.
+	The type is now pimpled.
+	(typedef_decl::priv_): Likewise.
+	* src/abg-ir.cc (struct pointer_type_def::priv): New struct.
+	(pointer_type_def::pointer_type_def): Adjust.
+	(pointer_type_def::get_pointed_to_type): Likewise.
+	(pointer_type_def::get_qualified_name): Store temporary/internal
+	names into different caches.
+	(array_type_def::priv::{temp_internal_qualified_name_,
+	internal_qualified_name_}): New data members.
+	(get_type_representation): In the overload for array_type_def,
+	take requests for internal names into account.
+	(array_type_def::get_qualified_name): Take requests for internal
+	names into account.  Store temporary/internal names into different
+	caches.
+	(typedef_decl::priv): New struct.
+	(typedef_decl::typedef_decl): Adjust.
+	(typedef_decl::get_underlying_type): Likewise.
+
+2015-12-08  Dodji Seketeli <dodji@redhat.com>
+
+	Avoid try/catch code paths when that is possible
+	* src/abg-ir.cc (is_type, equals): Do not use try/catch based
+	dynamic_cast.
+
+2015-12-08  Dodji Seketeli <dodji@redhat.com>
+
+	Fix comparison in qualified_type_diff::has_changes
+	* src/abg-comparison.cc (qualified_type_diff::has_changes): Make
+	this stupid and simple, now that we have (fast) canonical type
+	based comparison.
+	* include/abg-ir.h (qualified_type_diff::operator==): Add an
+	overload for qualified_type_diff here.
+	(operator==): Likewise.
+	* src/abg-ir.cc (qualified_type_diff::operator==): Define it.
+	(operator==): Likewise.
+
+2015-12-06  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19336 - Better handle redundantly qualified reference types
+	* src/abg-dwarf-reader.cc (maybe_strip_qualification): Do not nuke
+	the qualified type.  Rather, just turn the redundant const
+	qualifier into a no-op one.
+	* src/abg-comparison.cc (compute_diff_for_types): Look through
+	no-op qualified types.
+	* include/abg-ir.h
+	(decl_base::{peek,set}_temporary_qualified_name): Declare new
+	accessors.
+	* src/abg-ir.cc (decl_base::priv::temporary_qualified_name_): New
+	data member.
+	(decl_base::{peek,set}_temporary_qualified_name): Define new
+	accessors.
+	(qualified_type_def::priv::{temporary_internal_name_,
+	internal_name}): New data members.
+	(qualified_type_def::build_name): For a no-op qualified type, the
+	internal name (which contains the 'none' qualifier) is different
+	from the non-internal name.
+	(qualified_type_def::get_qualified_name): Handle temporary names
+	and non-temporary names in two different caches.  Also handle
+	internal and non-internal names in two different caches.  This
+	makes four different caches.
+	(qualified_name_setter::do_update): Do not touch the non-internal,
+	non-temporary qualified name cache if the qualified parent name is
+	empty.
+	* tools/abidw.cc (main): change --check-alternate-debug-info to
+	make it *not* display the name/path to the alternate debug info,
+	when it's found.  Rather, only
+	--check-alternate-debug-info-base-name keeps displaying the base
+	name of the alternate debug info.
+	* tests/data/test-alt-dwarf-file/test1-libgromacs-debug-dir/*: New
+	test material.
+	* tests/data/Makefile.am: Add the new test material to the build
+	system.
+	* tests/test-alt-dwarf-file.cc (in_out_specs): Take the new test
+	input into account.
+	* tests/data/test-read-dwarf/test1.abi: Adjust.
+	* tests/data/test-read-dwarf/test7.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test10-pr18818-gcc.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test11-pr18828.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test14-pr18893.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test15-pr18892.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test16-pr18904.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test17-pr19027.so.abi: Likewise.
+	* tests/data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi:
+	Likewise.
+	* tests/data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi:
+	Likewise.
+
+2015-12-06  Dodji Seketeli <dodji@redhat.com>
+
+	Do not forget to peel qualified type off when peeling types
+	* include/abg-fwd.h (peel_qualified_type): Declare new function
+	...
+	* src/abg-ir.cc (peel_qualified_type): ... and define it.
+	(peel_typedef_pointer_or_reference_type): Peel qualified types
+	here too.
+
+2015-12-06  Dodji Seketeli <dodji@redhat.com>
+
+	Find more spots where to discriminate internal and non-internal names
+	* src/abg-ir.cc (get_type_name, get_method_type_name)
+	({typedef_decl,var_decl,function_decl,class_decl}::get_pretty_representation):
+	Propagate the internal-ness to the call to get_qualified_name().
+
+2015-12-06  Dodji Seketeli <dodji@redhat.com>
+
+	Constify is_qualified_type()
+	* include/abg-fwd.h (is_qualified_type): Make this take a const
+	parameter.
+	* src/abg-ir.cc (is_qualified_type): Likewise.
+
+2015-11-28  Dodji Seketeli <dodji@redhat.com>
+
+	Add missing new line to abidiff help message
+	* tools/abidiff.cc (display_usage): Add missing new line.
+
+2015-11-26  Dodji Seketeli <dodji@seketeli.org>
+
+	Do not abort when there is no binary to compare in a package
+	* tests/data/test-diff-pkg/empty-pkg-libvirt-0.9.11.3-1.el7.ppc64.rpm:
+	New input test package.
+	* tests/data/test-diff-pkg/empty-pkg-libvirt-1.2.17-13.el7_2.2.ppc64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/empty-pkg-report-0.txt: New test
+	reference output.
+	* data/Makefile.am: Add the new test material above to the build system.
+	* tests/test-diff-pkg.cc (int_out_specs): Add the new test inputs
+	to the set of tests.
+	* tools/abipkgdiff.cc (compare): Do not abort if there is no
+	binary to compare.
+
+2015-11-14  Ondrej Oprala <ooprala@redhat.com>
+
+	Abidiff: Remove doubled line in help.
+	* tools/abidiff.cc (display_usage): Remove a doubled help message.
+
+2015-11-14  Ondrej Oprala <ooprala@redhat.com>
+
+	Add bash-completion scripts for the libabigail tools
+	* Makefile.am: include bash-completion/Makefile.am
+	* bash-completion/Makefile.am: New makefile for the bash-completion
+	directory.
+	* bash-completion/abicompat: New completion script.
+	* bash-completion/abidiff: Likewise.
+	* bash-completion/abidw: Likewise.
+	* bash-completion/abilint: Likewise.
+	* bash-completion/abinilint: Likewise.
+	* bash-completion/abipkgdiff: Likewise.
+	* bash-completion/abisym: Likewise.
+	* configure.ac: Check for the bash-completion package. Handle
+	the new --enable-bash-completion[=WHEN] configure option.
+	* manuals/libabigail-tools.rst: Mention the scripts.
+
+2015-11-17  Dodji Seketeli <dodji@redhat.com>
+
+	Read enum values in the size_t and write them in ssize_t
+	* include/abg-ir.h (enum_type_def::enumerator::get_value): Return
+	a size_t.
+	* src/abg-ir.cc (enum_type_decl::enumerator::get_value): Likewise.
+	* src/abg-dwarf-reader.cc (die_signed_constant_attribute): #if-out
+	this static function that is not used anymore.
+	(build_enum_type): Read the value of the enumerator using a size_t
+	value.
+	* src/abg-reader.cc (build_enum_type_decl): Read the enum value
+	using a long long int.
+	* src/abg-writer.cc (write_enum_type_decl): Write using a ssize_t.
+
+2015-11-17  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version to release candidate 1.0.rc1
+	* configure.ac: Bump version to release candidate 1.0.rc1
+
+2015-11-17  Dodji Seketeli <dodji@redhat.com>
+
+	Do not use designated initializers in abipkgdiff.cc
+	* tools/abipkgdiff.cc (prepare_packages): Do not use designated
+	initializers syntax.
+
+2015-11-16  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog for 1.0.rc0
+	* ChangeLog: Udpate using make update-changelog
+
 2015-11-16  Dodji Seketeli <dodji@redhat.com>
 
 	Fix doxygen configuration file paths in doc/Makefile.am
