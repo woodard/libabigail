@@ -970,4 +970,9 @@ test-diff-pkg/qemu-img-rhev-2.3.0-20.el7.ppc64.rpm \
 test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64--qemu-img-rhev-2.3.0-20.el7.ppc64-report-0.txt \
 test-diff-pkg/empty-pkg-libvirt-0.9.11.3-1.el7.ppc64.rpm \
 test-diff-pkg/empty-pkg-libvirt-1.2.17-13.el7_2.2.ppc64.rpm \
-test-diff-pkg/empty-pkg-report-0.txt
+test-diff-pkg/empty-pkg-report-0.txt \
+test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm \
+test-diff-pkg/tbb-4.3-3.20141204.fc23.x86_64.rpm \
+test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm \
+test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm \
+tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt

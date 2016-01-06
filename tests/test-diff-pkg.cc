@@ -272,6 +272,16 @@ static InOutSpec in_out_specs[] =
    "data/test-diff-pkg/empty-pkg-report-0.txt",
    "output/test-diff-pkg/empty-pkg-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm",
+    "data/test-diff-pkg/tbb-4.3-3.20141204.fc23.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm",
+    "data/test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm",
+    "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt",
+    "output/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB
