@@ -1,3 +1,9 @@
+1.0.rc2
+======
+Dodji Seketeli:
+      Fix regression on the support for alternate debug info files
+      Lexicographically sort added/removed base classes in change report
+
 1.0.rc1
 =======
 Dodji Seketeli:
