@@ -1,3 +1,90 @@
+2016-01-07  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog before 1.0.rc2
+	* ChangeLog: Update with make update-changelog
+
+2016-01-07  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS for 1.0.rc2
+	* NEWS: Update.
+
+2016-01-07  Dodji Seketeli <dodji@redhat.com>
+
+	Fix tests/data/Makefile.am glitch
+	* tests/data/Makefile.am: Fix a faulty file path.
+
+2016-01-07  Dodji Seketeli <dodji@redhat.com>
+
+	Lexicographically sort added/removed base classes in change report
+	* src/abg-comparison.cc (sort_string_base_diff_sptr_map): Define
+	new static function.
+	(struct base_spec_comp): Define new type.
+	(class_diff::priv::sorted_{deleted,inserted}_bases_): New data
+	members.
+	(class_diff::ensure_lookup_tables_populated): Sort the deleted and
+	inserted base classes.
+	(class_diff::report): Use the sorted set of deleted/inserted base
+	classes in the report.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt: Adjust.
+
+2016-01-06  Dodji Seketeli <dodji@redhat.com>
+
+	Fix regression on the support for alternate debug info files
+	* src/abg-dwarf-reader.cc
+	(imported_unit_point::imported_unit_from_alt_di): New data member.
+	(imported_unit_point::imported_unit_point): Adjust.
+	(read_context::alt_tu_die_imported_unit_points_map_): New data
+	member.
+	(read_context::alt_tu_die_imported_unit_points_map): New accessor.
+	(die_die_attribute): Remove the overload which doesn't say if the
+	resulting DIE comes from alternate debug info.
+	(build_die_parent_relations_under): Take a new flag which says if
+	we are building the relations about DIEs in the alternate debug
+	info section or not.  Use that flag to know if the imported unit
+	trace we are building is for an alternate debug info file or not.
+	(build_die_parent_maps): Build two different imported unit point
+	trace vectors: one for the main debug info file, and another one
+	for the alternate debug info file.
+	(find_import_unit_point_between_dies): Take a flag that says if
+	the beginning of the search is a DIE in the alternate debug info
+	file or not.  Use it to know if we should use the import point
+	trace vectors from alternate debug info or from the main debug
+	info file.  When the import point trace vector is empty, return
+	immediatly.
+	(get_parent_die): If the parent DIE is a DW_TAG_partial_unit which
+	hasn't been imported into this TU, then assume the logical parent
+	is the DIE for the current translation unit.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt:
+	Reference test output.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm: New
+	input test rpm.
+	* tests/data/test-diff-pkg/tbb-4.3-3.20141204.fc23.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm:
+	Likewise.
+	* tests/data/Makefile.am: Add the new test materials to the source
+	distribution.
+	* tests/test-diff-pkg.cc (int_out_specs): Add the new rpms to the
+	list of rpms to test against.
+
+2016-01-06  Dodji Seketeli <dodji@redhat.com>
+
+	Bump revision number to 1.0.rc2
+	* configure.ac: Bump revision number to 1.0.rc2
+
+2016-01-05  Dodji Seketeli <dodji@redhat.com>
+
+	Update link to the 1.0.rc1 tarball
+	* doc/website/mainpage.txt: Update the "Getting source code"
+	section.
+
+2016-01-05  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog before 1.0.rc1
+	* ChangeLog: Update automatically with make update-changelog
+
 2016-01-05  Dodji Seketeli <dodji@redhat.com>
 
 	Fix abidw -v
