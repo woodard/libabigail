@@ -95,11 +95,11 @@
                          type of 'tbb::internal::arena_slot tbb::internal::arena::my_slots[1]' changed:
                            array element type 'struct tbb::internal::arena_slot' changed: 
                              2 base class deletions:
-                               struct tbb::internal::padded<tbb::internal::arena_slot_line2> at tbb_stddef.h:261:1
                                struct tbb::internal::padded<tbb::internal::arena_slot_line1> at tbb_stddef.h:261:1
+                               struct tbb::internal::padded<tbb::internal::arena_slot_line2> at tbb_stddef.h:261:1
                              2 base class insertions:
-                               struct tbb::internal::padded<tbb::internal::arena_slot_line2, 128ul> at tbb_stddef.h:251:1
                                struct tbb::internal::padded<tbb::internal::arena_slot_line1, 128ul> at tbb_stddef.h:251:1
+                               struct tbb::internal::padded<tbb::internal::arena_slot_line2, 128ul> at tbb_stddef.h:251:1
 
 
                     type of 'tbb::internal::mail_inbox tbb::internal::scheduler_state::my_inbox' changed:

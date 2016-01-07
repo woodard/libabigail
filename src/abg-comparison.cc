@@ -277,6 +277,10 @@ sort_string_base_diff_sptr_map(const string_base_diff_sptr_map& map,
 			       base_diff_sptrs_type& sorted);
 
 static void
+sort_string_base_sptr_map(const string_base_sptr_map& m,
+			  class_decl::base_specs& sorted);
+
+static void
 sort_string_fn_parm_diff_sptr_map(const unsigned_fn_parm_diff_sptr_map& map,
 				  vector<fn_parm_diff_sptr>&		sorted);
 
@@ -8300,7 +8304,9 @@ struct class_diff::priv
   edit_script member_class_tmpls_changes_;
 
   string_base_sptr_map deleted_bases_;
+  class_decl::base_specs sorted_deleted_bases_;
   string_base_sptr_map inserted_bases_;
+  class_decl::base_specs sorted_inserted_bases_;
   string_base_diff_sptr_map changed_bases_;
   base_diff_sptrs_type sorted_changed_bases_;
   string_decl_base_sptr_map deleted_member_types_;
@@ -8471,6 +8477,10 @@ class_diff::ensure_lookup_tables_populated(void) const
       }
   }
 
+  sort_string_base_sptr_map(priv_->deleted_bases_,
+			    priv_->sorted_deleted_bases_);
+  sort_string_base_sptr_map(priv_->inserted_bases_,
+			    priv_->sorted_inserted_bases_);
   sort_string_base_diff_sptr_map(priv_->changed_bases_,
 				 priv_->sorted_changed_bases_);
 
@@ -9337,6 +9347,38 @@ edit_script&
 class_diff::member_class_tmpls_changes()
 {return priv_->member_class_tmpls_changes_;}
 
+/// A functor to compare instances of @ref class_decl::base_spec.
+struct base_spec_comp
+{
+  bool
+  operator()(const class_decl::base_spec&l,
+	     const class_decl::base_spec&r)
+  {
+    string str1 = l.get_pretty_representation();
+    string str2 = r.get_pretty_representation();
+    return str1 < str2;
+  }
+  bool
+  operator()(const class_decl::base_spec_sptr&l,
+	     const class_decl::base_spec_sptr&r)
+  {return operator()(*l, *r);}
+}; // end base_spec_comp
+
+/// Lexicographically sort base specifications found
+/// in instances of string_base_sptr_map.
+static void
+sort_string_base_sptr_map(const string_base_sptr_map& m,
+			  class_decl::base_specs& sorted)
+{
+  for (string_base_sptr_map::const_iterator i = m.begin();
+       i != m.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  base_spec_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
 /// A comparison function for instances of @ref base_diff.
 struct base_diff_comp
 {
@@ -9575,15 +9617,15 @@ class_diff::report(ostream& out, const string& indent) const
 	  report_mem_header(out, numdels, 0, del_kind,
 			    "base class", indent);
 
-	  for (string_base_sptr_map::const_iterator i
-		 = priv_->deleted_bases_.begin();
-	       i != priv_->deleted_bases_.end();
+	  for (class_decl::base_specs::const_iterator i
+		 = priv_->sorted_deleted_bases_.begin();
+	       i != priv_->sorted_deleted_bases_.end();
 	       ++i)
 	    {
-	      if (i != priv_->deleted_bases_.begin())
+	      if (i != priv_->sorted_deleted_bases_.begin())
 		out << "\n";
 
-	      class_decl::base_spec_sptr base = i->second;
+	      class_decl::base_spec_sptr base = *i;
 
 	      if (priv_->base_has_changed(base))
 		continue;
@@ -9630,12 +9672,12 @@ class_diff::report(ostream& out, const string& indent) const
 			    "base class", indent);
 
 	  bool emitted = false;
-	  for (string_base_sptr_map::const_iterator i =
-		 priv_->inserted_bases_.begin();
-	       i != priv_->inserted_bases_.end();
+	  for (class_decl::base_specs::const_iterator i =
+		 priv_->sorted_inserted_bases_.begin();
+	       i != priv_->sorted_inserted_bases_.end();
 	       ++i)
 	    {
-	      class_decl_sptr b = i->second->get_base_class();
+	      class_decl_sptr b = (*i)->get_base_class();
 	      if (emitted)
 		out << "\n";
 	      out << indent << "  " << b->get_pretty_representation();
