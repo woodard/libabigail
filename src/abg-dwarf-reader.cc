@@ -721,13 +721,19 @@ find_symbol_table_section_index(Elf* elf_handle,
   return true;
 }
 
-/// Find and return the .text section.
+/// Find and return a section by its name and its type.
 ///
 /// @param elf_handle the elf handle to use.
 ///
-/// @return the .text section found.
+/// @param name the name of the section.
+///
+/// @param section_type the type of the section.  This is the
+/// Elf32_Shdr::sh_type (or Elf64_Shdr::sh_type) data member.
+/// Examples of values of this parameter are SHT_PROGBITS or SHT_NOBITS.
+///
+/// @return the section found, nor nil if none was found.
 static Elf_Scn*
-find_text_section(Elf* elf_handle)
+find_section(Elf* elf_handle, const string& name, Elf64_Word section_type)
 {
   GElf_Ehdr ehmem, *elf_header;
   elf_header = gelf_getehdr(elf_handle, &ehmem);
@@ -737,17 +743,26 @@ find_text_section(Elf* elf_handle)
     {
       GElf_Shdr header_mem, *header;
       header = gelf_getshdr(section, &header_mem);
-      if (header->sh_type != SHT_PROGBITS)
+      if (header->sh_type != section_type)
 	continue;
 
       const char* section_name =
 	elf_strptr(elf_handle, elf_header->e_shstrndx, header->sh_name);
-      if (section_name && !strcmp(section_name, ".text"))
+      if (section_name && name == section_name)
 	return section;
     }
 
   return 0;
 }
+
+/// Find and return the .text section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @return the .text section found.
+static Elf_Scn*
+find_text_section(Elf* elf_handle)
+{return find_section(elf_handle, ".text", SHT_PROGBITS);}
 
 /// Find and return the .bss section.
 ///
@@ -756,26 +771,34 @@ find_text_section(Elf* elf_handle)
 /// @return the .bss section found.
 static Elf_Scn*
 find_bss_section(Elf* elf_handle)
-{
-  GElf_Ehdr ehmem, *elf_header;
-  elf_header = gelf_getehdr(elf_handle, &ehmem);
+{return find_section(elf_handle, ".bss", SHT_NOBITS);}
 
-  Elf_Scn* section = 0;
-  while ((section = elf_nextscn(elf_handle, section)) != 0)
-    {
-      GElf_Shdr header_mem, *header;
-      header = gelf_getshdr(section, &header_mem);
-      if (header->sh_type != SHT_NOBITS)
-	continue;
+/// Find and return the .rodata section.
+///
+/// @param elf_handle.
+///
+/// @return the .rodata section found.
+static Elf_Scn*
+find_rodata_section(Elf* elf_handle)
+{return find_section(elf_handle, ".rodata", SHT_PROGBITS);}
 
-      const char* section_name =
-	elf_strptr(elf_handle, elf_header->e_shstrndx, header->sh_name);
-      if (section_name && !strcmp(section_name, ".bss"))
-	return section;
-    }
+/// Find and return the .data section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @return the .data section found.
+static Elf_Scn*
+find_data_section(Elf* elf_handle)
+{return find_section(elf_handle, ".data", SHT_PROGBITS);}
 
-  return 0;
-}
+/// Find and return the .data1 section.
+///
+/// @param elf_handle the elf handle to use.
+///
+/// @return the .data1 section found.
+static Elf_Scn*
+find_data1_section(Elf* elf_handle)
+{return find_section(elf_handle, ".data1", SHT_PROGBITS);}
 
 /// Get the address at which a given binary is loaded in memory⋅
 ///
@@ -1814,6 +1837,27 @@ lookup_public_variable_symbol_from_elf(Elf*				elf,
     }
 
   return found;
+}
+
+/// Convert the type of ELF file into @ref elf_type.
+///
+/// @param header a elf header to get the ELF file type from.
+///
+/// @return the @ref elf_type for a given elf type.
+static elf_type
+elf_file_type(const GElf_Ehdr* header)
+{
+  switch (header->e_type)
+    {
+    case ET_DYN:
+      return ELF_TYPE_DSO;
+    case ET_EXEC:
+      return ELF_TYPE_EXEC;
+    case ET_REL:
+      return ELF_TYPE_RELOCATABLE;
+    default:
+      return ELF_TYPE_UNKNOWN;
+    }
 }
 
 /// The context used to build ABI corpus from debug info in DWARF
@@ -2868,6 +2912,18 @@ public:
   var_decls_to_re_add_to_tree()
   {return var_decls_to_add_;}
 
+  /// Return the type of the current elf file.
+  ///
+  /// @return the type of the current elf file.
+  elf_type
+  get_elf_file_type()
+  {
+    Elf* elf = elf_handle();
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
+    return elf_file_type(elf_header);
+  }
+
   /// The section containing the symbol table from the current ELF
   /// file.
   ///
@@ -3780,11 +3836,64 @@ public:
     return addr;
   }
 
+  /// Test if a given address is in a given section.
+  ///
+  /// @param addr the address to consider.
+  ///
+  /// @param section the section to consider.
+  bool
+  address_is_in_section(Dwarf_Addr addr, Elf_Scn* section) const
+  {
+    if (!section)
+      return false;
+
+    GElf_Shdr sheader_mem;
+    GElf_Shdr* sheader = gelf_getshdr(section, &sheader_mem);
+
+    if (sheader->sh_addr <= addr && addr <= sheader->sh_addr + sheader->sh_size)
+      return true;
+
+    return false;
+  }
+
+  /// Get the section which a global variable address comes from.
+  ///
+  /// @param elf the elf handle to consider.
+  ///
+  /// @param var_addr the address for the variable.
+  ///
+  /// @return the ELF section the @p var_addr comes from, or nil if no
+  /// section was found for that variable address.
+  Elf_Scn*
+  get_data_section_for_variable_address(Elf* elf, Dwarf_Addr var_addr) const
+  {
+    // There are several potential 'data sections" from which an
+    // variable address can come from: .data, .data1 and .rodata.
+    // Let's try to try them all in sequence.
+
+    Elf_Scn* data_section = find_bss_section(elf);
+    if (!address_is_in_section(var_addr, data_section))
+      {
+	data_section = find_data_section(elf);
+	if (!address_is_in_section(var_addr, data_section))
+	  {
+	    data_section = find_data1_section(elf);
+	    if (!address_is_in_section(var_addr, data_section))
+	      {
+		data_section = find_rodata_section(elf);
+		if (!address_is_in_section(var_addr, data_section))
+		  return 0;
+	      }
+	  }
+      }
+    return data_section;
+  }
+
   /// For a relocatable (*.o) elf file, this function expects an
   /// absolute address, representing a global variable symbol.  It
-  /// then extracts the address of the .data section from the symbol
-  /// absolute address to get the relative address of the variable
-  /// from the beginning of the .data section.
+  /// then extracts the address of the {.data,.data1,.rodata,.bss}
+  /// section from the symbol absolute address to get the relative
+  /// address of the variable from the beginning of the data section.
   ///
   /// For executable or shared library, this function expects an
   /// address of a variable symbol that was retrieved by looking at a
@@ -3808,8 +3917,12 @@ public:
 
     if (elf_header->e_type == ET_REL)
       {
-	Elf_Scn* data_section = find_bss_section(elf);
-	assert(data_section);
+	Elf_Scn* data_section =
+	  get_data_section_for_variable_address(elf, addr);
+	if (!data_section)
+	  // It's likely that this address doesn't come from any
+	  // data section.
+	  return addr;
 
 	GElf_Shdr sheader_mem;
 	GElf_Shdr* data_sheader = gelf_getshdr(data_section, &sheader_mem);
@@ -3855,8 +3968,8 @@ public:
   /// The address of the global variable is considered to be the value
   /// of the DW_AT_location attribute, possibly adjusted (in
   /// relocatable files only) to not point to an absolute address
-  /// anymore, but rather to the address of the global variable inside the
-  /// .bss segment.
+  /// anymore, but rather to the address of the global variable inside
+  /// the data segment.
   ///
   /// @param variable_die the die of the function to consider.
   ///
@@ -9014,28 +9127,6 @@ get_soname_of_elf_file(const string& path, string &soname)
   close(fd);
 
   return true;
-}
-
-/// Convert the type of ELF file into @ref elf_type.
-///
-/// @param header a elf header to get the ELF file type from.
-///
-/// @return the @ref elf_type for a given elf type.
-static elf_type
-elf_file_type(const GElf_Ehdr* header)
-{
-  switch (header->e_type)
-    {
-    case ET_DYN:
-      return ELF_TYPE_DSO;
-      break;
-    case ET_EXEC:
-      return ELF_TYPE_EXEC;
-      break;
-    default:
-      return ELF_TYPE_UNKNOWN;
-      break;
-    }
 }
 
 /// Get the type of a given elf type.

@@ -75,6 +75,7 @@ enum elf_type
 {
   ELF_TYPE_EXEC,
   ELF_TYPE_DSO,
+  ELF_TYPE_RELOCATABLE,
   ELF_TYPE_UNKNOWN
 };
 
