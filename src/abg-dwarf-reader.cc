@@ -37,6 +37,7 @@
 #include <cmath>
 #include <elfutils/libdwfl.h>
 #include <dwarf.h>
+#include <algorithm>
 #include <iostream>
 #include <tr1/unordered_map>
 #include <stack>
