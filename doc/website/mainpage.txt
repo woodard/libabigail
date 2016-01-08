@@ -101,7 +101,38 @@ the moment the dependencies are the following Free Software packages:
     \li <a href="http://www.xmlsoft.org">libxml2</a>
     \li <a href="https://fedorahosted.org/elfutils/">elfutils</a>
 
-Then go to your local libabigail.git directory where the source code
+\subsection compile-from-tarball Compiling the code from the tarball
+
+Once you've downloaded the tarball, please extract its content to a
+directory of your choice.  To xxtracting the tarball on GNU/Linux, please type:
+
+\code
+  tar -xvf libabigail-<version>.tar.gz
+\endcode
+
+This should create a directory <em>libabigail-<version></em>.
+
+Then go to that directory and run the commands:
+
+\code
+  mkdir build
+  cd build
+  ../configure --prefix=/where/you/want/to/install/libabigail
+  make all install
+\endcode
+
+Make sure the directory <em>/where/you/want/to/install/libabigail</em>
+exists and is writeable by you.
+
+The commands above should have built libabigail and its associated
+tools, and installed them under
+<em>/where/you/want/to/install/libabigail</em>.  Note that built
+objects are under the <embuild</emd> sub-directory of the source tree
+of Libabigail which you extracted from the tarball.
+
+\subsection compile-from-git Compiling the code retrieved via the source code repository
+
+Go to your local libabigail.git directory where the source code
 you've checked out lies and create a 'build' directory that will
 receive the binaries resulting from the compilation:
 
