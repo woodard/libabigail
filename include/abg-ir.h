@@ -26,6 +26,7 @@
 #define __ABG_IR_H__
 
 #include <assert.h>
+#include <stdint.h>
 #include <cstdlib>
 #include <tr1/unordered_map>
 #include "abg-fwd.h"
@@ -1909,7 +1910,7 @@ public:
 
   enumerator();
 
-  enumerator(const string& name, size_t value);
+  enumerator(const string& name, int64_t value);
 
   enumerator(const enumerator&);
 
@@ -1925,11 +1926,11 @@ public:
   void
   set_name(const string& n);
 
-  size_t
+  int64_t
   get_value() const;
 
   void
-  set_value(size_t v);
+  set_value(int64_t v);
 
   enum_type_decl*
   get_enum_type() const;

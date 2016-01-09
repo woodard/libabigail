@@ -3176,7 +3176,7 @@ build_enum_type_decl(read_context&	ctxt,
       if (xmlStrEqual(n->name, BAD_CAST("enumerator")))
 	{
 	  string name;
-	  size_t value = 0;
+	  int64_t value = 0;
 
 	  xml_char_sptr a = xml::build_sptr(xmlGetProp(n, BAD_CAST("name")));
 	  if (a)

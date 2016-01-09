@@ -8447,7 +8447,7 @@ operator==(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r)
 class enum_type_decl::enumerator::priv
 {
   string name_;
-  size_t value_;
+  int64_t value_;
   string qualified_name_;
   enum_type_decl* enum_type_;
 
@@ -8459,7 +8459,7 @@ public:
     : enum_type_()
   {}
 
-  priv(const string& name, size_t value, enum_type_decl* e = 0)
+  priv(const string& name, int64_t value, enum_type_decl* e = 0)
     : name_(name),
       value_(value),
       enum_type_(e)
@@ -8476,7 +8476,7 @@ enum_type_decl::enumerator::enumerator()
 /// @param name the name of the enumerator.
 ///
 /// @param value the value of the enumerator.
-enum_type_decl::enumerator::enumerator(const string& name, size_t value)
+enum_type_decl::enumerator::enumerator(const string& name, int64_t value)
   : priv_(new priv(name, value))
 {}
 
@@ -8543,7 +8543,7 @@ enum_type_decl::enumerator::set_name(const string& n)
 ///
 /// @return the value of the current instance of
 /// enum_type_decl::enumerator.
-size_t
+int64_t
 enum_type_decl::enumerator::get_value() const
 {return priv_->value_;}
 
@@ -8551,7 +8551,7 @@ enum_type_decl::enumerator::get_value() const
 ///
 /// @param v the new value of the enum_type_decl::enumerator.
 void
-enum_type_decl::enumerator::set_value(size_t v)
+enum_type_decl::enumerator::set_value(int64_t v)
 {priv_->value_= v;}
 
 /// Getter for the enum type that this enumerator is for.

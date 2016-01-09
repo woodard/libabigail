@@ -1860,7 +1860,7 @@ write_enum_type_decl(const enum_type_decl_sptr	decl,
       o << "<enumerator name='"
 	<< i->get_name()
 	<< "' value='"
-	<< (ssize_t)i->get_value()
+	<< i->get_value()
 	<< "'/>\n";
     }
 

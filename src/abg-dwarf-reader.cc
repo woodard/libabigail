@@ -4192,7 +4192,7 @@ die_string_attribute(Dwarf_Die* die, unsigned attr_name)
 static bool
 die_unsigned_constant_attribute(Dwarf_Die*	die,
 				unsigned	attr_name,
-				size_t&	cst)
+				uint64_t&	cst)
 {
   if (!die)
     return false;
@@ -4226,7 +4226,7 @@ die_unsigned_constant_attribute(Dwarf_Die*	die,
 static bool
 die_signed_constant_attribute(Dwarf_Die*	die,
 			      unsigned		attr_name,
-			      ssize_t&		cst)
+			      int64_t&		cst)
 {
     if (!die)
     return false;
@@ -4468,7 +4468,7 @@ die_location(read_context& ctxt, Dwarf_Die* die)
     return location();
 
   string file = die_decl_file_attribute(die);
-  size_t line = 0;
+  uint64_t line = 0;
   die_unsigned_constant_attribute(die, DW_AT_decl_line, line);
 
   if (!file.empty() && line != 0)
@@ -4518,7 +4518,7 @@ die_size_in_bits(Dwarf_Die* die, size_t& size)
   if (!die)
     return false;
 
-  size_t byte_size = 0, bit_size = 0;
+  uint64_t byte_size = 0, bit_size = 0;
 
   if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, byte_size))
     {
@@ -4548,7 +4548,7 @@ die_access_specifier(Dwarf_Die * die, access_specifier& access)
   if (!die)
     return false;
 
-  size_t a = 0;
+  uint64_t a = 0;
   if (!die_unsigned_constant_attribute(die, DW_AT_accessibility, a))
     return false;
 
@@ -4698,7 +4698,7 @@ die_virtuality(Dwarf_Die* die, virtuality& virt)
   if (!die)
     return false;
 
-  size_t v = 0;
+  uint64_t v = 0;
   die_unsigned_constant_attribute(die, DW_AT_virtuality, v);
 
   if (v == DW_VIRTUALITY_virtual)
@@ -4736,7 +4736,7 @@ die_is_virtual(Dwarf_Die* die)
 static bool
 die_is_declared_inline(Dwarf_Die* die)
 {
-  size_t inline_value = 0;
+  uint64_t inline_value = 0;
   if (!die_unsigned_constant_attribute(die, DW_AT_inline, inline_value))
     return false;
   return inline_value == DW_INL_declared_inlined;
@@ -6532,7 +6532,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 				    ctxt.env(),
 				    address_size));
 
-  size_t l = 0;
+  uint64_t l = 0;
   die_unsigned_constant_attribute(die, DW_AT_language, l);
   result->set_language(dwarf_language_to_tu_language(l));
 
@@ -6697,7 +6697,7 @@ build_type_decl(read_context&	ctxt,
     return result;
   assert(dwarf_tag(die) == DW_TAG_base_type);
 
-  size_t byte_size = 0, bit_size = 0;
+  uint64_t byte_size = 0, bit_size = 0;
   if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, byte_size))
     if (!die_unsigned_constant_attribute(die, DW_AT_bit_size, bit_size))
       return result;
@@ -6754,7 +6754,7 @@ build_enum_type(read_context& ctxt,
       enum_is_anonymous = true;
     }
 
-  size_t size = 0;
+  uint64_t size = 0;
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     size *= 8;
 
@@ -6782,7 +6782,7 @@ build_enum_type(read_context& ctxt,
 	  string n, m;
 	  location l;
 	  die_loc_and_name(ctxt, &child, loc, n, m);
-	  size_t val = 0;
+	  uint64_t val = 0;
 	  die_unsigned_constant_attribute(&child, DW_AT_const_value, val);
 	  enms.push_back(enum_type_decl::enumerator(n, val));
 	}
@@ -7361,7 +7361,7 @@ build_pointer_type_def(read_context&	ctxt,
   // if the DIE for the pointer type doesn't have a byte_size
   // attribute then we assume the size of the pointer is the address
   // size of the current translation unit.
-  size_t size = ctxt.cur_tu()->get_address_size();
+  uint64_t size = ctxt.cur_tu()->get_address_size();
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     // The size as expressed by DW_AT_byte_size is in byte, so let's
     // convert it to bits.
@@ -7449,7 +7449,7 @@ build_reference_type(read_context&	ctxt,
   // if the DIE for the reference type doesn't have a byte_size
   // attribute then we assume the size of the reference is the address
   // size of the current translation unit.
-  size_t size = ctxt.cur_tu()->get_address_size();
+  uint64_t size = ctxt.cur_tu()->get_address_size();
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     size *= 8;
 
@@ -7678,9 +7678,9 @@ build_array_type(read_context&	ctxt,
   array_type_def::subranges_type subranges;
   translation_unit::language language =
     ctxt.current_translation_unit()->get_language();
-  size_t upper_bound = 0;
-  size_t lower_bound = get_default_array_lower_bound(language);
-  size_t count = 0;
+  uint64_t upper_bound = 0;
+  uint64_t lower_bound = get_default_array_lower_bound(language);
+  uint64_t count = 0;
 
   if (dwarf_child(die, &child) == 0)
     {
