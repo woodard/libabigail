@@ -347,6 +347,38 @@ string_is_ascii(const string& str)
   return true;
 }
 
+/// Test if a string is made of ascii characters which are identifiers
+/// acceptable in C or C++ programs.
+///
+///
+/// In the C++ spec, [lex.charset]/2, we can read:
+///
+/// "if the hexadecimal value for a universal-character-name [...]  or
+///  string literal corresponds to a control character (in either of
+///  the ranges 0x00–0x1F or 0x7F–0x9F, both inclusive) [...] the
+///  program is ill-formed."
+///
+/// @param str the string to consider.
+///
+/// @return true iff @p str is made of ascii characters, and is an
+/// identifier.
+bool
+string_is_ascii_identifier(const string& str)
+{
+  for (string::const_iterator i = str.begin(); i != str.end(); ++i)
+    {
+      unsigned char c = *i;
+    if (!isascii(c)
+	|| (c <= 0x1F) // Rule out control characters
+	|| (c >= 0x7F && c <= 0x9F)) // Rule out special extended
+				     // ascii characters.
+      return false;
+    }
+
+  return true;
+}
+
+
 /// The private data of the @ref temp_file type.
 struct temp_file::priv
 {

@@ -50,6 +50,7 @@ bool ensure_parent_dir_created(const string&);
 bool check_file(const string& path, ostream& out);
 bool string_ends_with(const string&, const string&);
 bool string_is_ascii(const string&);
+bool string_is_ascii_identifier(const string&);
 
 class temp_file;
 

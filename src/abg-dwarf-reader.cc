@@ -7559,7 +7559,7 @@ build_function_type(read_context&	ctxt,
 	    string name, linkage_name;
 	    location loc;
 	    die_loc_and_name(ctxt, &child, loc, name, linkage_name);
-	    if (!tools_utils::string_is_ascii(name))
+	    if (!tools_utils::string_is_ascii_identifier(name))
 	      // Sometimes, bogus compiler emit names that are
 	      // non-ascii garbage.  Let's just ditch that for now.
 	      name.clear();

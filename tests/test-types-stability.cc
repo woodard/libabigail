@@ -53,6 +53,7 @@ using std::cerr;
 // A set of elf files to test type stability for.
 const char* elf_paths[] =
 {
+  "data/test-types-stability/pr19434-elf0",
   "data/test-types-stability/pr19139-DomainNeighborMapInst.o",
   "data/test-types-stability/pr19202-libmpi_gpfs.so.5.0",
   "data/test-types-stability/pr19026-libvtkIOSQL-6.1.so.1",

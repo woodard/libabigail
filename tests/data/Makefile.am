@@ -314,6 +314,7 @@ test-read-dwarf/test21-pr19092.so.abi \
 test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so \
 test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi \
 \
+test-types-stability/pr19434-elf0 \
 test-types-stability/pr19139-DomainNeighborMapInst.o \
 test-types-stability/pr19202-libmpi_gpfs.so.5.0 \
 test-types-stability/pr19026-libvtkIOSQL-6.1.so.1 \
