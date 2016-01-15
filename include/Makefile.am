@@ -15,6 +15,7 @@ abg-hash.h		\
 abg-tools-utils.h	\
 abg-config.h		\
 abg-ini.h		\
+abg-workers.h		\
 abg-traverse.h		\
 abg-version.h		\
 abg-viz-common.h	\

@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -316,36 +316,37 @@ main()
   for (InOutSpec *s = in_out_specs; s->first_in_package_path; ++s)
     {
       first_in_package_path =
-        get_src_dir() + "/tests/" + s->first_in_package_path;
+        string(get_src_dir()) + "/tests/" + s->first_in_package_path;
       second_in_package_path =
-        get_src_dir() + "/tests/" + s->second_in_package_path;
+        string(get_src_dir()) + "/tests/" + s->second_in_package_path;
 
       prog_options = s->prog_options;
 
       if (s->first_in_debug_package_path
           && strcmp(s->first_in_debug_package_path, ""))
         first_in_debug_package_path =
-          get_src_dir() + "/tests/" + s->first_in_debug_package_path;
+          string(get_src_dir()) + "/tests/" + s->first_in_debug_package_path;
       else
         first_in_debug_package_path.clear();
 
       if (s->second_in_debug_package_path
           && strcmp(s->second_in_debug_package_path, ""))
         second_in_debug_package_path =
-          get_src_dir() + "/tests/" + s->second_in_debug_package_path;
+          string(get_src_dir()) + "/tests/" + s->second_in_debug_package_path;
       else
         second_in_debug_package_path.clear();
 
       if (s->suppression_path
           && strcmp(s->suppression_path, ""))
         suppression_path =
-          get_src_dir() + "/tests/" + s->suppression_path;
+          string(get_src_dir()) + "/tests/" + s->suppression_path;
       else
         suppression_path.clear();
 
-      ref_abi_diff_report_path = get_src_dir() + "/tests/" + s->ref_report_path;
+      ref_abi_diff_report_path =
+	string(get_src_dir()) + "/tests/" + s->ref_report_path;
       out_abi_diff_report_path =
-        get_build_dir() + "/tests/" + s->out_report_path;
+        string(get_build_dir()) + "/tests/" + s->out_report_path;
 
       if (!ensure_parent_dir_created(out_abi_diff_report_path))
         {
@@ -355,7 +356,7 @@ main()
           continue;
         }
 
-      abipkgdiff = get_build_dir() + "/tools/abipkgdiff";
+      abipkgdiff = string(get_build_dir()) + "/tools/abipkgdiff";
 
       if (!prog_options.empty())
 	abipkgdiff +=  " " + prog_options;

@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -183,8 +183,8 @@ bool is_ok = true;
 
 // These prefixes don't change during the program's lifetime, so
 // we only get them once.
-const string out_abi_base = get_build_dir() + "/tests/";
-const string in_elf_base  = abigail::tests::get_src_dir() + "/tests/";
+const string out_abi_base = string(get_build_dir()) + "/tests/";
+const string in_elf_base  = string(abigail::tests::get_src_dir()) + "/tests/";
 const string in_abi_base = in_elf_base;
 
 void
@@ -251,7 +251,7 @@ handle_in_out_spec(void)
     pthread_mutex_unlock(&write_lock);
     of.close();
 
-    string abidw = get_build_dir() + "/tools/abidw";
+    string abidw = string(get_build_dir()) + "/tools/abidw";
     string cmd = abidw + " --abidiff " + in_elf_path;
     if (system(cmd.c_str()))
       {

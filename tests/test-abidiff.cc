@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -133,7 +133,7 @@ main(int, char*[])
   bool is_ok = true;
 
   string out_path =
-    abigail::tests::get_build_dir() + "/tests/" + specs->out_path;
+    string(abigail::tests::get_build_dir()) + "/tests/" + specs->out_path;
   if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
     {
       cerr << "Could not create parent director for " << out_path;
@@ -144,13 +144,13 @@ main(int, char*[])
   for (InOutSpec *s = specs; s->first_in_path; ++s)
     {
       first_in_path =
-	abigail::tests::get_src_dir() + "/tests/" + s->first_in_path;
+	string(abigail::tests::get_src_dir()) + "/tests/" + s->first_in_path;
       second_in_path =
-	abigail::tests::get_src_dir() + "/tests/" + s->second_in_path;
+	string(abigail::tests::get_src_dir()) + "/tests/" + s->second_in_path;
       ref_diff_path =
-	abigail::tests::get_src_dir() + "/tests/" + s->ref_diff_path;
+	string(abigail::tests::get_src_dir()) + "/tests/" + s->ref_diff_path;
       out_path =
-	abigail::tests::get_build_dir() + "/tests/" + s->out_path;
+	string(abigail::tests::get_build_dir()) + "/tests/" + s->out_path;
 
       if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
 	{

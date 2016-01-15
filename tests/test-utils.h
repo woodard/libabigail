@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -28,8 +28,8 @@ namespace abigail
 namespace tests
 {
 
-const std::string& get_src_dir();
-const std::string& get_build_dir();
+const char* get_src_dir();
+const char* get_build_dir();
 
 }//end namespace tests
 }//end namespace abigail

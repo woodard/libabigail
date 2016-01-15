@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -31,28 +31,28 @@ namespace tests
 /// Returns the absolute path to the source directory.
 ///
 /// \return the absolute path tho the source directory.
-const std::string&
+const char*
 get_src_dir()
 {
 #ifndef ABIGAIL_SRC_DIR
 #error the macro ABIGAIL_SRC_DIR must be set at compile time
 #endif
 
-  static string s(ABIGAIL_SRC_DIR);
+  static __thread const char* s(ABIGAIL_SRC_DIR);
   return s;
 }
 
 /// Returns the absolute path to the build directory.
 ///
 /// \return the absolute path the build directory.
-const std::string&
+const char*
 get_build_dir()
 {
 #ifndef ABIGAIL_BUILD_DIR
 #error the macro ABIGAIL_BUILD_DIR must be set at compile time
 #endif
 
-  static string s(ABIGAIL_BUILD_DIR);
+  static __thread const char* s(ABIGAIL_BUILD_DIR);
   return s;
 }
 

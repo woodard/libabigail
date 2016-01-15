@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -31,10 +31,12 @@
 /// The set of input files and reference reports to consider should be
 /// present in the source distribution.
 
+#include <cassert>
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include "abg-workers.h"
 #include "abg-tools-utils.h"
 #include "test-utils.h"
 
@@ -401,57 +403,139 @@ InOutSpec in_out_specs[] =
   {NULL, NULL, NULL, NULL, NULL}
 };
 
+/// A task which launches abidiff on the binaries passed to the
+/// constructor of the task.  The test also launches gnu diff on the
+/// result of the abidiff to compare it against a reference abidiff
+/// result.
+struct test_task : public abigail::workers::task
+{
+  InOutSpec spec;
+  bool is_ok;
+  string diff_cmd;
+  string error_message;
+
+  test_task(const InOutSpec& s)
+    : spec(s),
+      is_ok(true)
+  {}
+
+  /// This virtual function overload actually performs the job of the
+  /// task.
+  ///
+  /// It actually launches abidiff on the binaries passed to the
+  /// constructor of the task.  It also launches gnu diff on the
+  /// result of the abidiff to compare it against a reference abidiff
+  /// result.
+  virtual void
+  perform()
+  {
+    using abigail::tests::get_src_dir;
+    using abigail::tests::get_build_dir;
+    using abigail::tools_utils::ensure_parent_dir_created;
+    using abigail::tools_utils::abidiff_status;
+
+    string in_elfv0_path, in_elfv1_path,
+      abidiff_options, abidiff, cmd,
+      ref_diff_report_path, out_diff_report_path;
+
+    in_elfv0_path = string(get_src_dir()) + "/tests/" + spec.in_elfv0_path;
+    in_elfv1_path = string(get_src_dir()) + "/tests/" + spec.in_elfv1_path;
+    abidiff_options = spec.abidiff_options;
+    ref_diff_report_path =
+      string(get_src_dir()) + "/tests/" + spec.in_report_path;
+    out_diff_report_path =
+      string(get_build_dir()) + "/tests/" + spec.out_report_path;
+
+    if (!ensure_parent_dir_created(out_diff_report_path))
+      {
+	error_message = string("could not create parent directory for ")
+	  + out_diff_report_path;
+	is_ok = false;
+	return;
+      }
+
+    abidiff = string(get_build_dir()) + "/tools/abidiff";
+    abidiff += " " + abidiff_options;
+
+    cmd = abidiff + " " + in_elfv0_path + " " + in_elfv1_path;
+    cmd += " > " + out_diff_report_path;
+
+    bool abidiff_ok = true;
+    abidiff_status status =
+      static_cast<abidiff_status>(system(cmd.c_str()) & 255);
+    if (abigail::tools_utils::abidiff_status_has_error(status))
+      abidiff_ok = false;
+
+    if (abidiff_ok)
+      {
+	cmd = "diff -u " + ref_diff_report_path
+	  + " " + out_diff_report_path;
+
+	string cmd_no_out = cmd + " > /dev/null";
+	if (system(cmd_no_out.c_str()))
+	  {
+	    is_ok = false;
+	    diff_cmd = cmd;
+	  }
+      }
+    else
+      is_ok = false;
+  }
+}; //end struct test_task.
+
+/// A convenience typedef for shared
+typedef shared_ptr<test_task> test_task_sptr;
+
 int
 main()
 {
-  using abigail::tests::get_src_dir;
-  using abigail::tests::get_build_dir;
-  using abigail::tools_utils::ensure_parent_dir_created;
-  using abigail::tools_utils::abidiff_status;
+  using std::vector;
+  using std::tr1::dynamic_pointer_cast;
+  using abigail::workers::queue;
+  using abigail::workers::task;
+  using abigail::workers::task_sptr;
+  using abigail::workers::get_number_of_threads;
+
+  /// Create a task queue.  The max number of worker threads of the
+  /// queue is the number of the concurrent threads supported by the
+  /// processor of the machine this code runs on.
+  const size_t num_tests = sizeof(in_out_specs) / sizeof (InOutSpec) - 1;
+  size_t num_workers = std::min(get_number_of_threads(), num_tests);
+  queue task_queue(num_workers);
 
   bool is_ok = true;
-  string in_elfv0_path, in_elfv1_path,
-    abidiff_options, abidiff, cmd,
-    ref_diff_report_path, out_diff_report_path;
 
-    for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
-      {
-	in_elfv0_path = get_src_dir() + "/tests/" + s->in_elfv0_path;
-	in_elfv1_path = get_src_dir() + "/tests/" + s->in_elfv1_path;
-	abidiff_options = s->abidiff_options;
-	ref_diff_report_path = get_src_dir() + "/tests/" + s->in_report_path;
-	out_diff_report_path = get_build_dir() + "/tests/" + s->out_report_path;
+  for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
+    {
+      test_task_sptr t(new test_task(*s));
+      assert(task_queue.schedule_task(t));
+    }
 
-	if (!ensure_parent_dir_created(out_diff_report_path))
-	  {
-	    cerr << "could not create parent directory for "
-		 << out_diff_report_path;
-	    is_ok = false;
-	    continue;
-	  }
+  /// Wait for all worker threads to finish their job, and wind down.
+  task_queue.wait_for_workers_to_complete();
 
-	abidiff = get_build_dir() + "/tools/abidiff";
-	abidiff += " " + abidiff_options;
+  // Now walk the results and print whatever error messages need to be
+  // printed.
 
-	cmd = abidiff + " " + in_elfv0_path + " " + in_elfv1_path;
-	cmd += " > " + out_diff_report_path;
+  const vector<task_sptr>& completed_tasks =
+    task_queue.get_completed_tasks();
 
-	bool abidiff_ok = true;
-	abidiff_status status =
-	  static_cast<abidiff_status>(system(cmd.c_str()) & 255);
-	if (abigail::tools_utils::abidiff_status_has_error(status))
-	  abidiff_ok = false;
+  assert(completed_tasks.size() == num_tests);
 
-	if (abidiff_ok)
-	  {
-	    cmd = "diff -u " + ref_diff_report_path
-	      + " " + out_diff_report_path;
-	    if (system(cmd.c_str()))
-	      is_ok = false;
-	  }
-	else
+  for (vector<task_sptr>::const_iterator ti = completed_tasks.begin();
+       ti != completed_tasks.end();
+       ++ti)
+    {
+      test_task_sptr t = dynamic_pointer_cast<test_task>(*ti);
+      if (!t->is_ok)
+	{
 	  is_ok = false;
-      }
+	  if (!t->diff_cmd.empty())
+	    system(t->diff_cmd.c_str());
+	  if (!t->error_message.empty())
+	    cerr << t->error_message << '\n';
+	}
+    }
 
-    return !is_ok;
+  return !is_ok;
 }

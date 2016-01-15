@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2014-2015 Red Hat, Inc.
+// Copyright (C) 2014-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -200,19 +200,20 @@ main()
 
   for (InOutSpec* s = in_out_specs; s->in_app_path; ++s)
     {
-      in_app_path = get_src_dir() + "/tests/" + s->in_app_path;
-      in_lib1_path = get_src_dir() + "/tests/" + s->in_lib1_path;
+      in_app_path = string(get_src_dir()) + "/tests/" + s->in_app_path;
+      in_lib1_path = string(get_src_dir()) + "/tests/" + s->in_lib1_path;
       if (s->in_lib2_path && strcmp(s->in_lib2_path, ""))
-	in_lib2_path = get_src_dir() + "/tests/" + s->in_lib2_path;
+	in_lib2_path = string(get_src_dir()) + "/tests/" + s->in_lib2_path;
       else
 	in_lib2_path.clear();
       if (s->suppressions == 0 || !strcmp(s->suppressions, ""))
 	suppression_path.clear();
       else
-	suppression_path = get_src_dir() + "/tests/" + s->suppressions;
+	suppression_path = string(get_src_dir()) + "/tests/" + s->suppressions;
       abicompat_options = s->options;
-      ref_report_path = get_src_dir() + "/tests/" + s->in_report_path;
-      out_report_path = get_build_dir() + "/tests/" + s->out_report_path;
+      ref_report_path = string(get_src_dir()) + "/tests/" + s->in_report_path;
+      out_report_path =
+	string(get_build_dir()) + "/tests/" + s->out_report_path;
 
       if (!ensure_parent_dir_created(out_report_path))
 	{
@@ -222,7 +223,7 @@ main()
 	  continue;
 	}
 
-      abicompat = get_build_dir() + "/tools/abicompat";
+      abicompat = string(get_build_dir()) + "/tools/abicompat";
       if (!suppression_path.empty())
 	abicompat += " --suppressions " + suppression_path;
       abicompat += " " + abicompat_options;

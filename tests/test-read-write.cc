@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -188,7 +188,8 @@ main()
   for (InOutSpec* s = in_out_specs; s->in_path; ++s)
     {
       string input_suffix(s->in_path);
-      in_path = abigail::tests::get_src_dir() + "/tests/" + input_suffix;
+      in_path =
+	string(abigail::tests::get_src_dir()) + "/tests/" + input_suffix;
 
       if (!check_file(in_path, cerr))
 	return true;
@@ -213,7 +214,8 @@ main()
 	}
 
       string output_suffix(s->out_path);
-      out_path = abigail::tests::get_build_dir() + "/tests/" + output_suffix;
+      out_path =
+	string(abigail::tests::get_build_dir()) + "/tests/" + output_suffix;
       if (!abigail::tools_utils::ensure_parent_dir_created(out_path))
 	{
 	  cerr << "Could not create parent director for " << out_path;
@@ -240,7 +242,7 @@ main()
 
       is_ok = (is_ok && r);
       of.close();
-      string abilint = get_build_dir() + "/tools/abilint";
+      string abilint = string(get_build_dir()) + "/tools/abilint";
       abilint += " --noout";
       string cmd = abilint + " " + out_path;
       if (system(cmd.c_str()))

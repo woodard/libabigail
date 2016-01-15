@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -308,9 +308,10 @@ main()
 
   for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
     {
-      in_elfv0_path = get_src_dir() + "/tests/" + s->in_elfv0_path;
-      in_elfv1_path = get_src_dir() + "/tests/" + s->in_elfv1_path;
-      out_diff_report_path = get_build_dir() + "/tests/" + s->out_report_path;
+      in_elfv0_path = string(get_src_dir()) + "/tests/" + s->in_elfv0_path;
+      in_elfv1_path = string(get_src_dir()) + "/tests/" + s->in_elfv1_path;
+      out_diff_report_path =
+	string(get_build_dir()) + "/tests/" + s->out_report_path;
 
       if (!ensure_parent_dir_created(out_diff_report_path))
 	{
@@ -366,8 +367,10 @@ main()
 	  continue;
 	}
 
-      ref_diff_report_path = get_src_dir() + "/tests/" + s->in_report_path;
-      out_diff_report_path = get_build_dir() + "/tests/" + s->out_report_path;
+      ref_diff_report_path =
+	string(get_src_dir()) + "/tests/" + s->in_report_path;
+      out_diff_report_path =
+	string(get_build_dir()) + "/tests/" + s->out_report_path;
 
       ofstream of(out_diff_report_path.c_str(), std::ios_base::trunc);
       if (!of.is_open())

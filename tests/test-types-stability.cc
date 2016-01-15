@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -36,7 +36,6 @@
 ///
 /// The comparison is expected to yield the empty set.
 
-
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -45,6 +44,7 @@
 #include "test-utils.h"
 #include "abg-dwarf-reader.h"
 #include "abg-comparison.h"
+#include "abg-workers.h"
 
 using std::string;
 using std::ofstream;
@@ -62,24 +62,95 @@ const char* elf_paths[] =
   0
 };
 
+/// A task which launches abidw --abidiff on a binary
+/// passed to the constructor of the task.
+struct test_task : public abigail::workers::task
+{
+  string path;
+  string error_message;
+  bool is_ok;
+
+  /// The constructor of the test task.
+  ///
+  /// @param elf_path the path to the elf binary on which we are
+  /// supposed to launch abidw --abidiff.
+  test_task(const string& elf_path)
+    : path(elf_path),
+      is_ok(true)
+  {}
+
+  /// This virtual function overload actually performs the job of the task.
+  ///
+  /// It calls abidw --abidiff on the binary refered to by the task.
+  /// It thus stores a flag saying if the result of abidw --abidiff is
+  /// OK or not.
+  virtual void
+  perform()
+  {
+    using abigail::tests::get_src_dir;
+    using abigail::tests::get_build_dir;
+
+    string abidw = string(get_build_dir()) + "/tools/abidw";
+    string elf_path = string(get_src_dir()) + "/tests/" + path;
+    string cmd = abidw + " --abidiff " + elf_path;
+    if (system(cmd.c_str()))
+      {
+	error_message = "IR stability issue detected for binary " + elf_path;
+	is_ok = false;
+      }
+  }
+}; // end struct test_task
+
+/// A convenience typedef for a shared_ptr to @ref test_task.
+typedef shared_ptr<test_task> test_task_sptr;
+
 int
 main()
 {
-  using abigail::tests::get_src_dir;
-  using abigail::tests::get_build_dir;
+  using std::vector;
+  using std::tr1::dynamic_pointer_cast;
+  using abigail::workers::queue;
+  using abigail::workers::task;
+  using abigail::workers::task_sptr;
+  using abigail::workers::get_number_of_threads;
 
-  bool is_ok = true;
+  /// Create a task queue.  The max number of worker threads of the
+  /// queue is the number of the concurrent threads supported by the
+  /// processor of the machine this code runs on.
+  const size_t num_tests = sizeof(elf_paths) / sizeof (char*) - 1;
+  size_t num_workers = std::min(get_number_of_threads(), num_tests);
+  queue task_queue(num_workers);
 
+  /// Create one task per binary registered for this test, and push
+  /// them to the task queue.  Pushing a task to the queue triggers
+  /// a worker thread that starts working on the task.
   for (const char** p = elf_paths; p && *p; ++p)
     {
-      string abidw = get_build_dir() + "/tools/abidw";
-      string elf_path = get_src_dir() + "/tests/" + *p;
-      string cmd = abidw + " --abidiff " + elf_path;
-      if (system(cmd.c_str()))
+      test_task_sptr t(new test_task(*p));
+      assert(task_queue.schedule_task(t));
+    }
+
+  /// Wait for all worker threads to finish their job, and wind down.
+  task_queue.wait_for_workers_to_complete();
+
+  // Now walk the results and print whatever error messages need to be
+  // printed.
+
+  const vector<task_sptr>& completed_tasks =
+    task_queue.get_completed_tasks();
+
+  assert(completed_tasks.size () == num_tests);
+
+  bool is_ok = true;
+  for (vector<task_sptr>::const_iterator ti = completed_tasks.begin();
+       ti != completed_tasks.end();
+       ++ti)
+    {
+      test_task_sptr t = dynamic_pointer_cast<test_task>(*ti);
+      if (!t->is_ok)
 	{
-	  cerr << "IR stability issue detected for binary "
-	       << elf_path;
 	  is_ok = false;
+	  cerr << t->error_message << "\n";
 	}
     }
 

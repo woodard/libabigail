@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -986,16 +986,19 @@ main()
 
     for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
       {
-	in_elfv0_path = get_src_dir() + "/tests/" + s->in_elfv0_path;
-	in_elfv1_path = get_src_dir() + "/tests/" + s->in_elfv1_path;
+	in_elfv0_path = string(get_src_dir()) + "/tests/" + s->in_elfv0_path;
+	in_elfv1_path = string(get_src_dir()) + "/tests/" + s->in_elfv1_path;
 	if (s->in_suppr_path && strcmp(s->in_suppr_path, ""))
-	  in_suppression_path = get_src_dir() + "/tests/" + s->in_suppr_path;
+	  in_suppression_path =
+	    string(get_src_dir()) + "/tests/" + s->in_suppr_path;
 	else
 	  in_suppression_path.clear();
 
 	bidiff_options = s->bidiff_options;
-	ref_diff_report_path = get_src_dir() + "/tests/" + s->in_report_path;
-	out_diff_report_path = get_build_dir() + "/tests/" + s->out_report_path;
+	ref_diff_report_path =
+	  string(get_src_dir()) + "/tests/" + s->in_report_path;
+	out_diff_report_path =
+	  string(get_build_dir()) + "/tests/" + s->out_report_path;
 
 	if (!ensure_parent_dir_created(out_diff_report_path))
 	  {
@@ -1005,7 +1008,7 @@ main()
 	    continue;
 	  }
 
-	bidiff = get_build_dir() + "/tools/abidiff";
+	bidiff = string(get_build_dir()) + "/tools/abidiff";
 	bidiff += " " + bidiff_options;
 
 	if (!in_suppression_path.empty())

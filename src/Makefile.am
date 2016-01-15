@@ -25,6 +25,7 @@ abg-hash.cc				\
 abg-writer.cc				\
 abg-config.cc				\
 abg-ini.cc				\
+abg-workers.cc				\
 abg-tools-utils.cc			\
 $(CXX11_SOURCES)
 
