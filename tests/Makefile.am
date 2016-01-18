@@ -17,19 +17,19 @@ endif
 TESTS=				\
 runtestreaddwarf		\
 runtestcanonicalizetypes.sh	\
-runtestreadwrite		\
+runtestdiffpkg			\
+runtestdifffilter		\
 $(ZIP_ARCHIVE_TESTS)		\
+runtestdiffsuppr		\
+runtestreadwrite		\
+runtestabidiff			\
+runtestdiffdwarfabixml		\
+runtestabicompat		\
+runtesttypesstability		\
+runtestdiffdwarf		\
 runtestlookupsyms		\
 runtestaltdwarf			\
 runtestcorediff			\
-runtestabidiff			\
-runtestdiffdwarf		\
-runtestdifffilter		\
-runtestdiffsuppr		\
-runtestdiffdwarfabixml		\
-runtestabicompat		\
-runtestdiffpkg			\
-runtesttypesstability		\
 $(CXX11_TESTS)
 
 EXTRA_DIST = runtestcanonicalizetypes.sh.in
