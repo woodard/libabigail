@@ -592,7 +592,7 @@ write_location(const location& loc, ostream& o)
 
   loc.expand(filepath, line, column);
 
-  o << " filepath='" << filepath << "'"
+  o << " filepath='" << xml::escape_xml_string(filepath) << "'"
     << " line='"     << line     << "'"
     << " column='"   << column   << "'";
 }
@@ -620,7 +620,7 @@ write_location(const decl_base_sptr&	decl,
 
   loc.expand(filepath, line, column);
 
-  o << " filepath='" << filepath << "'"
+  o << " filepath='" << xml::escape_xml_string(filepath) << "'"
     << " line='"     << line     << "'"
     << " column='"   << column   << "'";
 }
@@ -1210,7 +1210,7 @@ write_translation_unit(const translation_unit&	tu,
     o << " address-size='" << static_cast<int>(tu.get_address_size()) << "'";
 
   if (!tu.get_path().empty())
-    o << " path='" << tu.get_path() << "'";
+    o << " path='" << xml::escape_xml_string(tu.get_path()) << "'";
 
   if (tu.get_language() != translation_unit::LANG_UNKNOWN)
     o << " language='"
@@ -3141,7 +3141,7 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
   do_indent_to_level(ctxt, indent, 0);
   out << "<abi-corpus";
   if (!corpus->get_path().empty())
-    out << " path='" << corpus->get_path() << "'";
+    out << " path='" << xml::escape_xml_string(corpus->get_path()) << "'";
 
   if (!corpus->get_architecture_name().empty())
     out << " architecture='" << corpus->get_architecture_name()<< "'";

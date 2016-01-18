@@ -57,6 +57,7 @@ const char* elf_paths[] =
   "data/test-types-stability/pr19202-libmpi_gpfs.so.5.0",
   "data/test-types-stability/pr19026-libvtkIOSQL-6.1.so.1",
   "data/test-types-stability/pr19138-elf0",
+  "data/test-types-stability/pr19433-custom0",
   // The below should always be the last element of array.
   0
 };
