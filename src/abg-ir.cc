@@ -732,8 +732,38 @@ struct elf_symbol::priv
   elf_symbol::binding	binding_;
   elf_symbol::version	version_;
   bool			is_defined_;
+  // This flag below says if the symbol is a common elf symbol.  In
+  // relocatable files, a common symbol is a symbol defined in a
+  // section of kind SHN_COMMON.
+  //
+  // Note that a symbol of kind STT_COMMON is also considered a common
+  // symbol.  Here is what the gABI says about STT_COMMON and
+  // SHN_COMMON:
+  //
+  //     Symbols with type STT_COMMON label uninitialized common
+  //     blocks. In relocatable objects, these symbols are not
+  //     allocated and must have the special section index SHN_COMMON
+  //     (see below). In shared objects and executables these symbols
+  //     must be allocated to some section in the defining object.
+  //
+  //     In relocatable objects, symbols with type STT_COMMON are
+  //     treated just as other symbols with index SHN_COMMON. If the
+  //     link-editor allocates space for the SHN_COMMON symbol in an
+  //     output section of the object it is producing, it must
+  //     preserve the type of the output symbol as STT_COMMON.
+  //
+  //     When the dynamic linker encounters a reference to a symbol
+  //     that resolves to a definition of type STT_COMMON, it may (but
+  //     is not required to) change its symbol resolution rules as
+  //     follows: instead of binding the reference to the first symbol
+  //     found with the given name, the dynamic linker searches for
+  //     the first symbol with that name with type other than
+  //     STT_COMMON. If no such symbol is found, it looks for the
+  //     STT_COMMON definition of that name that has the largest size.
+  bool			is_common_;
   elf_symbol_wptr	main_symbol_;
   elf_symbol_wptr	next_alias_;
+  elf_symbol_wptr	next_common_instance_;
   string		id_string_;
 
   priv()
@@ -741,7 +771,8 @@ struct elf_symbol::priv
       size_(),
       type_(elf_symbol::NOTYPE_TYPE),
       binding_(elf_symbol::GLOBAL_BINDING),
-      is_defined_(false)
+      is_defined_(false),
+      is_common_(false)
   {}
 
   priv(size_t				i,
@@ -750,6 +781,7 @@ struct elf_symbol::priv
        elf_symbol::type		t,
        elf_symbol::binding		b,
        bool				d,
+       bool				c,
        const elf_symbol::version&	v)
     : index_(i),
       size_(s),
@@ -757,8 +789,12 @@ struct elf_symbol::priv
       type_(t),
       binding_(b),
       version_(v),
-      is_defined_(d)
-  {}
+      is_defined_(d),
+      is_common_(c)
+  {
+    if (!is_common_)
+      is_common_ = type_ == COMMON_TYPE;
+  }
 }; // end struct elf_symbol::priv
 
 /// Default constructor of the @ref elf_symbol type.
@@ -791,6 +827,8 @@ elf_symbol::elf_symbol()
 ///
 /// @param d true if the symbol is defined, false otherwise.
 ///
+/// @param c true if the symbol is a common symbol, false otherwise.
+///
 /// @param v the version of the symbol.
 elf_symbol::elf_symbol(size_t		i,
 		       size_t		s,
@@ -798,8 +836,9 @@ elf_symbol::elf_symbol(size_t		i,
 		       type		t,
 		       binding		b,
 		       bool		d,
+		       bool		c,
 		       const version&	v)
-  : priv_(new priv(i, s, n, t, b, d, v))
+  : priv_(new priv(i, s, n, t, b, d, c, v))
 {}
 
 /// Factory of instances of @ref elf_symbol.
@@ -832,6 +871,8 @@ elf_symbol::create()
 ///
 /// @param d true if the symbol is defined, false otherwise.
 ///
+/// @param c true if the symbol is a common symbol.
+///
 /// @param v the version of the symbol.
 ///
 /// @return a (smart) pointer to a newly created instance of @ref
@@ -843,9 +884,10 @@ elf_symbol::create(size_t		i,
 		   type		t,
 		   binding		b,
 		   bool		d,
+		   bool		c,
 		   const version&	v)
 {
-  elf_symbol_sptr e(new elf_symbol(i, s, n, t, b, d, v));
+  elf_symbol_sptr e(new elf_symbol(i, s, n, t, b, d, c, v));
   e->priv_->main_symbol_ = e;
   return e;
 }
@@ -865,6 +907,7 @@ textually_equals(const elf_symbol&l,
 		 && l.get_type() == r.get_type()
 		 && l.is_public() == r.is_public()
 		 && l.is_defined() == r.is_defined()
+		 && l.is_common_symbol() == r.is_common_symbol()
 		 && l.get_version() == r.get_version());
 
   if (equals && l.is_variable())
@@ -1115,10 +1158,10 @@ elf_symbol::add_alias(elf_symbol_sptr alias)
     {
       elf_symbol_sptr last_alias;
       for (elf_symbol_sptr a = get_next_alias();
-	   a && (a != get_main_symbol());
+	   a && (a.get() != get_main_symbol().get());
 	   a = a->get_next_alias())
 	{
-	  if (a->get_next_alias() == get_main_symbol())
+	  if (a->get_next_alias().get() == get_main_symbol().get())
 	    {
 	      assert(last_alias == 0);
 	      last_alias = a;
@@ -1133,6 +1176,89 @@ elf_symbol::add_alias(elf_symbol_sptr alias)
 
   alias->priv_->next_alias_ = get_main_symbol();
   alias->priv_->main_symbol_ = get_main_symbol();
+}
+
+/// Return true if the symbol is a common one.
+///
+/// @return true iff the symbol is common.
+bool
+elf_symbol::is_common_symbol() const
+{return priv_->is_common_;}
+
+/// Return true if this common common symbol has other common instances.
+///
+/// A common instance of a given common symbol is another common
+/// symbol with the same name.  Those exist in relocatable files.  The
+/// linker normally allocates all the instances into a common block in
+/// the final output file.
+///
+/// Note that the current object must be a common symbol, otherwise,
+/// this function aborts.
+///
+/// @return true iff the current common symbol has other common
+/// instances.
+bool
+elf_symbol::has_other_common_instances() const
+{
+  assert(is_common_symbol());
+  return get_next_common_instance();
+}
+
+/// Get the next common instance of the current common symbol.
+///
+/// A common instance of a given common symbol is another common
+/// symbol with the same name.  Those exist in relocatable files.  The
+/// linker normally allocates all the instances into a common block in
+/// the final output file.
+///
+/// @return the next common instance, or nil if there is not any.
+elf_symbol_sptr
+elf_symbol::get_next_common_instance() const
+{
+  if (priv_->next_common_instance_.expired())
+    return elf_symbol_sptr();
+  return elf_symbol_sptr(priv_->next_common_instance_);
+}
+
+/// Add a common instance to the current common elf symbol.
+///
+/// Note that this symbol must be the main symbol.  Being the main
+/// symbol means being the first common symbol to appear in the symbol
+/// table.
+///
+/// @param common the other common instance to add.
+void
+elf_symbol::add_common_instance(const elf_symbol_sptr& common)
+{
+  if (!common)
+    return;
+
+  assert(!common->has_other_common_instances());
+  assert(is_common_symbol());
+  assert(is_main_symbol());
+
+  if (has_other_common_instances())
+    {
+      elf_symbol_sptr last_common_instance;
+      for (elf_symbol_sptr c = get_next_common_instance();
+	   c && (c.get() != get_main_symbol().get());
+	   c = c->get_next_common_instance())
+	{
+	  if (c->get_next_common_instance().get() == get_main_symbol().get())
+	    {
+	      assert(last_common_instance == 0);
+	      last_common_instance = c;
+	    }
+	}
+      assert(last_common_instance);
+
+      last_common_instance->priv_->next_common_instance_ = common;
+    }
+  else
+    priv_->next_common_instance_ = common;
+
+  common->priv_->next_common_instance_ = get_main_symbol();
+  common->priv_->main_symbol_ = get_main_symbol();
 }
 
 /// Get a string that is representative of a given elf_symbol.

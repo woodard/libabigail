@@ -1278,6 +1278,7 @@ lookup_symbol_from_sysv_hash_tab(Elf*				elf_handle,
 			       sym_type,
 			       sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
+			       symbol.st_shndx == SHN_COMMON,
 			       ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
@@ -1548,7 +1549,9 @@ lookup_symbol_from_gnu_hash_tab(Elf*				elf_handle,
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(i, symbol.st_size, sym_name_str,
 			       sym_type, sym_binding,
-			       symbol.st_shndx != SHN_UNDEF, ver);
+			       symbol.st_shndx != SHN_UNDEF,
+			       symbol.st_shndx == SHN_COMMON,
+			       ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -1678,13 +1681,15 @@ lookup_symbol_from_symtab(Elf*				elf_handle,
 	  elf_symbol::binding sym_binding =
 	    stb_to_elf_symbol_binding(GELF_ST_BIND(sym->st_info));
 	  bool sym_is_defined = sym->st_shndx != SHN_UNDEF;
+	  bool sym_is_common = sym->st_shndx == SHN_COMMON;
 	  if (get_version_for_symbol(elf_handle, i,
 				     /*get_def_version=*/sym_is_defined,
 				     ver))
 	    assert(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
 	    elf_symbol::create(i, sym->st_size, name_str, sym_type,
-			       sym_binding, sym_is_defined, ver);
+			       sym_binding, sym_is_defined,
+			       sym_is_common, ver);
 	  syms_found.push_back(symbol_found);
 	  found = true;
 	}
@@ -3092,7 +3097,9 @@ public:
       return elf_symbol_sptr();
 
     bool sym_is_defined = s->st_shndx != SHN_UNDEF;
-
+    bool sym_is_common = s->st_shndx == SHN_COMMON; // this occurs in
+						    // relocatable
+						    // files.
     const char* name_str = elf_strptr(elf_handle(),
 				      symtab_sheader->sh_link,
 				      s->st_name);
@@ -3108,7 +3115,7 @@ public:
       elf_symbol::create(symbol_index, s->st_size, name_str,
 			 stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
 			 stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
-			 sym_is_defined, v);
+			 sym_is_defined, sym_is_common, v);
     return sym;
   }
 
@@ -3596,14 +3603,33 @@ public:
 		  it->second.push_back(symbol);
 		}
 
-		{
-		  addr_elf_symbol_sptr_map_type::const_iterator it =
-		    var_addr_sym_map_->find(sym->st_value);
-		  if (it == var_addr_sym_map_->end())
-		    (*var_addr_sym_map_)[sym->st_value] = symbol;
-		  else
-		    it->second->get_main_symbol()->add_alias(symbol);
-		}
+		if (symbol->is_common_symbol())
+		  {
+		    string_elf_symbols_map_type::iterator it =
+		      var_syms_->find(symbol->get_name());
+		    assert(it != var_syms_->end());
+		    const elf_symbols& common_sym_instances = it->second;
+		    assert(!common_sym_instances.empty());
+		    if (common_sym_instances.size() > 1)
+		      {
+			elf_symbol_sptr main_common_sym =
+			  common_sym_instances[0];
+			assert(main_common_sym->get_name()
+			       == symbol->get_name());
+			assert(main_common_sym->is_common_symbol());
+			assert(symbol.get() != main_common_sym.get());
+			main_common_sym->add_common_instance(symbol);
+		      }
+		  }
+		else
+		  {
+		    addr_elf_symbol_sptr_map_type::const_iterator it =
+		      var_addr_sym_map_->find(sym->st_value);
+		    if (it == var_addr_sym_map_->end())
+		      (*var_addr_sym_map_)[sym->st_value] = symbol;
+		    else
+		      it->second->get_main_symbol()->add_alias(symbol);
+		  }
 	      }
 	    else if (load_undefined_var_map && !symbol->is_defined())
 	      {

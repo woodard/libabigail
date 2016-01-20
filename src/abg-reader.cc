@@ -2110,6 +2110,17 @@ build_elf_symbol(read_context&, const xmlNodePtr node)
 	is_defined = false;
     }
 
+  bool is_common = false;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "is-common"))
+    {
+      string value;
+      xml::xml_char_sptr_to_string(s, value);
+      if (value == "true" || value == "yes")
+	is_common = true;
+      else
+	is_common = false;
+    }
+
   string version_string;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "version"))
     xml::xml_char_sptr_to_string(s, version_string);
@@ -2133,7 +2144,8 @@ build_elf_symbol(read_context&, const xmlNodePtr node)
 
   elf_symbol_sptr e = elf_symbol::create(/*index=*/0, size,
 					  name, type, binding,
-					 is_defined, version);
+					 is_defined, is_common,
+					 version);
   return e;
 }
 

@@ -320,6 +320,8 @@ test-types-stability/pr19202-libmpi_gpfs.so.5.0 \
 test-types-stability/pr19026-libvtkIOSQL-6.1.so.1 \
 test-types-stability/pr19138-elf0 \
 test-types-stability/pr19433-custom0 \
+test-types-stability/pr19141-get5d.o \
+test-types-stability/pr19142-topo.o \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\

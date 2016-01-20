@@ -1936,6 +1936,9 @@ write_elf_symbol(const shared_ptr<elf_symbol>	sym,
     o << "no";
   o << "'";
 
+  if (sym->is_common_symbol())
+    o << " is-common='yes'";
+
   o << "/>";
 
   return true;

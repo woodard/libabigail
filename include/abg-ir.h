@@ -577,6 +577,7 @@ private:
 	     type		t,
 	     binding		b,
 	     bool		d,
+	     bool		c,
 	     const version&	v);
 
   elf_symbol(const elf_symbol&);
@@ -596,6 +597,7 @@ public:
 	 type		t,
 	 binding	b,
 	 bool		d,
+	 bool		c,
 	 const version& v);
 
   size_t
@@ -669,6 +671,18 @@ public:
 
   void
   add_alias(elf_symbol_sptr);
+
+  bool
+  is_common_symbol() const;
+
+  bool
+  has_other_common_instances() const;
+
+  elf_symbol_sptr
+  get_next_common_instance() const;
+
+  void
+  add_common_instance(const elf_symbol_sptr&);
 
   const string&
   get_id_string() const;
