@@ -670,7 +670,7 @@ public:
   get_number_of_aliases() const;
 
   void
-  add_alias(elf_symbol_sptr);
+  add_alias(const elf_symbol_sptr&);
 
   bool
   is_common_symbol() const;

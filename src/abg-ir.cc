@@ -1146,7 +1146,7 @@ elf_symbol::get_number_of_aliases() const
 /// @param alias the new alias.  Note that this elf_symbol should *NOT*
 /// have aliases prior to the invocation of this function.
 void
-elf_symbol::add_alias(elf_symbol_sptr alias)
+elf_symbol::add_alias(const elf_symbol_sptr& alias)
 {
   if (!alias)
     return;
