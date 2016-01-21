@@ -322,6 +322,7 @@ test-types-stability/pr19138-elf0 \
 test-types-stability/pr19433-custom0 \
 test-types-stability/pr19141-get5d.o \
 test-types-stability/pr19142-topo.o \
+test-types-stability/pr19204-libtcmalloc.so.4.2.6-xlc \
 \
 test-diff-filter/test0-v0.cc		\
 test-diff-filter/test0-v1.cc		\

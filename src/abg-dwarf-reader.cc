@@ -6188,7 +6188,10 @@ find_import_unit_point_before_die(read_context&	ctxt,
 /// positionned at, in the DIE tree.  This is useful when @p die is
 /// e.g, DW_TAG_partial_unit that can be included in several places in
 /// the DIE tree.
-static void
+///
+/// @return true if the function could get a parent DIE, false
+/// otherwise.
+static bool
 get_parent_die(read_context&	ctxt,
 	       Dwarf_Die*	die,
 	       bool		die_is_from_alt_di,
@@ -6204,13 +6207,45 @@ get_parent_die(read_context&	ctxt,
 
   if (die_is_from_alt_di)
     {
-      assert(i != ctxt.alternate_die_parent_map().end());
-      assert(dwarf_offdie(ctxt.alt_dwarf(), i->second, &parent_die));
+      if (i == ctxt.alternate_die_parent_map().end())
+	{
+	  // We haven't found the DIE in the alternate debug info.
+	  //
+	  // This could a problem in the debug info (the DIE doesn't
+	  // exist in it).
+	  //
+	  // But first let's make sure the DIE we are looking for is
+	  // not in the main debug info either; if it is, it might
+	  // mean that we are looking for the DIE in the wrong debug
+	  // info.  And that would most likely argue for a wrongdoing
+	  // on our part that ought fixing.
+	  assert(ctxt.die_parent_map().find(dwarf_dieoffset(die))
+		 == ctxt.die_parent_map().end());
+	  return false;
+	}
+      else
+	assert(dwarf_offdie(ctxt.alt_dwarf(), i->second, &parent_die));
     }
   else
     {
-      assert(i != ctxt.die_parent_map().end());
-      assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
+      if (i == ctxt.die_parent_map().end())
+	{
+	  // We haven't found the DIE in the main debug info.
+	  //
+	  // This could a problem in the debug info (the DIE doesn't
+	  // exist in it).
+	  //
+	  // But first let's make sure the DIE we are looking for is not
+	  // in the alternate debug info either; if it is, it might mean
+	  // that we are looking for the DIE int the wrong debug info.
+	  // And that would most likely argue for a wrongdoing on our
+	  // part that ought fixing.
+	  assert(ctxt.alternate_die_parent_map().find(dwarf_dieoffset(die))
+		 == ctxt.alternate_die_parent_map().end());
+	  return false;
+	}
+      else
+	assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
     }
 
   if (dwarf_tag(&parent_die) == DW_TAG_partial_unit)
@@ -6235,11 +6270,13 @@ get_parent_die(read_context&	ctxt,
 	  assert(dwarf_offdie(ctxt.dwarf(),
 			      import_point_offset,
 			      &import_point_die));
-	  get_parent_die(ctxt, &import_point_die,
-			 /*die_is_from_alt_di=*/false,
-			 parent_die, where_offset);
+	  return get_parent_die(ctxt, &import_point_die,
+				/*die_is_from_alt_di=*/false,
+				parent_die, where_offset);
 	}
     }
+
+  return true;
 }
 
 /// Return the abigail IR node representing the scope of a given DIE.
@@ -6284,8 +6321,10 @@ get_scope_for_die(read_context& ctxt,
 			     where_offset);
 
   Dwarf_Die parent_die;
-  get_parent_die(ctxt, die, die_is_from_alt_di,
-		 parent_die, where_offset);
+
+  if (!get_parent_die(ctxt, die, die_is_from_alt_di,
+		      parent_die, where_offset))
+    return scope_decl_sptr();
 
   if (dwarf_tag(&parent_die) == DW_TAG_compile_unit
       || dwarf_tag(&parent_die) == DW_TAG_partial_unit)
