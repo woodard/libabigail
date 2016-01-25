@@ -1158,10 +1158,10 @@ elf_symbol::add_alias(const elf_symbol_sptr& alias)
     {
       elf_symbol_sptr last_alias;
       for (elf_symbol_sptr a = get_next_alias();
-	   a && (a.get() != get_main_symbol().get());
+	   a && !a->is_main_symbol();
 	   a = a->get_next_alias())
 	{
-	  if (a->get_next_alias().get() == get_main_symbol().get())
+	  if (a->get_next_alias()->is_main_symbol())
 	    {
 	      assert(last_alias == 0);
 	      last_alias = a;
@@ -1457,10 +1457,9 @@ bool
 elf_symbol::operator==(const elf_symbol& other) const
 {
   bool are_equal = textually_equals(*this, other);
-  return are_equal;
   if (!are_equal)
     are_equal = get_alias_which_equals(other);
-    return are_equal;
+  return are_equal;
 }
 
 /// Test if the current symbol aliases another one.
@@ -1478,7 +1477,7 @@ elf_symbol::does_alias(const elf_symbol& o) const
     return true;
 
   for (elf_symbol_sptr a = get_next_alias();
-       a && a!= get_main_symbol();
+       a && !a->is_main_symbol();
        a = a->get_next_alias())
     {
       if (o == *a)
@@ -1517,7 +1516,7 @@ compute_aliases_for_elf_symbol(const elf_symbol& sym,
 {
 
   if (elf_symbol_sptr a = sym.get_next_alias())
-    for (; a != sym.get_main_symbol(); a = a->get_next_alias())
+    for (; a && !a->is_main_symbol(); a = a->get_next_alias())
       aliases.push_back(a);
   else
     for (string_elf_symbols_map_type::const_iterator i = symtab.begin();
@@ -1529,12 +1528,12 @@ compute_aliases_for_elf_symbol(const elf_symbol& sym,
 	{
 	  if (**j == sym)
 	    for (elf_symbol_sptr s = (*j)->get_next_alias();
-		 s && s != (*j)->get_main_symbol();
+		 s && !s->is_main_symbol();
 		 s = s->get_next_alias())
 	      aliases.push_back(s);
 	  else
 	    for (elf_symbol_sptr s = (*j)->get_next_alias();
-		 s && s != (*j)->get_main_symbol();
+		 s && !s->is_main_symbol();
 		 s = s->get_next_alias())
 	      if (*s == sym)
 		aliases.push_back(*j);

@@ -226,7 +226,7 @@ function_name_changed_but_not_symbol(const function_decl_sptr f,
       if (fs == ss)
 	return true;
       for (elf_symbol_sptr s = fs->get_next_alias();
-	   s && s != fs->get_main_symbol();
+	   s && !s->is_main_symbol();
 	   s = s->get_next_alias())
 	if (*s == *ss)
 	  return true;

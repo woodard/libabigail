@@ -930,10 +930,10 @@ write_elf_symbol_aliases(const elf_symbol& sym, ostream& o)
        !s->is_main_symbol();
        s = s->get_next_alias())
     {
-      if (s->get_next_alias() == s->get_main_symbol())
-          o << s->get_id_string() << "'";
+      if (s->get_next_alias()->is_main_symbol())
+	o << s->get_id_string() << "'";
       else
-          o << s->get_id_string() << ",";
+	o << s->get_id_string() << ",";
 
       emitted = true;
     }
