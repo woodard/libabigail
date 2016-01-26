@@ -18,6 +18,10 @@ COPYING-GPLV3 gen-changelog.py	\
 $(headers) $(m4data_DATA) 	\
 libabigail.pc.in
 
+# automake already tells which subdir is being entered.
+# Don't make make repeat.
+AM_MAKEFLAGS = --no-print-directory
+
 update-changelog:
 	python $(srcdir)/gen-changelog.py > $(srcdir)/ChangeLog
 
