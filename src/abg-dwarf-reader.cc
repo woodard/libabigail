@@ -6142,11 +6142,11 @@ find_import_unit_point_before_die(read_context&	ctxt,
 		  &first_die_of_tu) != 0)
     return false;
 
-    Dwarf_Die cu_die_memory;
-    Dwarf_Die *cu_die;
+  Dwarf_Die cu_die_memory;
+  Dwarf_Die *cu_die;
 
-    cu_die = dwarf_diecu(const_cast<Dwarf_Die*>(&first_die_of_tu),
-			 &cu_die_memory, 0, 0);
+  cu_die = dwarf_diecu(const_cast<Dwarf_Die*>(&first_die_of_tu),
+		       &cu_die_memory, 0, 0);
 
   if (find_import_unit_point_between_dies(ctxt, partial_unit_offset,
 					  dwarf_dieoffset(&first_die_of_tu),

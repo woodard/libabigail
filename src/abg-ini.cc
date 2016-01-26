@@ -1761,7 +1761,7 @@ write_property_value(const property_sptr& prop)
   else
     // This new kind of property is not yet supported!
     abort();
-    return result;
+  return result;
 }
 
 /// Serialize an ini property to an output stream.
