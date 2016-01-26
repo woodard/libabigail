@@ -5980,16 +5980,6 @@ template<typename NodeKind>
 static const string&
 get_node_name(shared_ptr<NodeKind> node);
 
-/// Gets the name of a decl_base node.
-///
-/// @param node the decl_base node to get the name from.
-///
-/// @return the name of the node.
-template<>
-const string&
-get_node_name(decl_base_sptr node)
-{return node->get_name();}
-
 /// Gets the name of a class_decl node.
 ///
 /// @param node the decl_base node to get the name from.
@@ -6030,16 +6020,6 @@ get_node_name(var_decl_sptr node)
 template<typename NodeKind>
 static decl_base_sptr
 convert_node_to_decl(shared_ptr<NodeKind> node);
-
-/// Get the declaration of a given decl_base node
-///
-/// @param node the decl_base node to consider.
-///
-/// @return the declaration of the node.
-template<>
-decl_base_sptr
-convert_node_to_decl(decl_base_sptr node)
-{return node;}
 
 /// Get the declaration of a given class_decl node
 ///
