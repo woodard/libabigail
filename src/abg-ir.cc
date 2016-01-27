@@ -6170,9 +6170,13 @@ lookup_type_in_scope(const type_base& type,
   vector<scope_decl*> a = access_path;
   type_base_sptr result;
 
-  scope_decl* first_scope = a.back();
-  assert(first_scope->get_name() == scope->get_name());
-  a.pop_back();
+  scope_decl* first_scope = 0;
+  if (!a.empty())
+    {
+      first_scope = a.back();
+      assert(first_scope->get_name() == scope->get_name());
+      a.pop_back();
+    }
 
   if (a.empty())
     {
