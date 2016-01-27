@@ -501,7 +501,6 @@ perform_compat_check_in_weak_mode(options& opts,
 
   {
     function_type_sptr lib_fn_type, app_fn_type;
-    function_type_diff_sptr fn_type_diff;
     vector<fn_change> fn_changes;
     for (corpus::functions::const_iterator i =
 	   lib_corpus->get_functions().begin();
@@ -511,7 +510,9 @@ perform_compat_check_in_weak_mode(options& opts,
 	lib_fn_type = (*i)->get_type();
 	assert(lib_fn_type);
 	app_fn_type = lookup_function_type_in_corpus(lib_fn_type, *app_corpus);
-	fn_type_diff = compute_diff(app_fn_type, lib_fn_type, ctxt);
+	function_type_diff_sptr fn_type_diff;
+	if (app_fn_type)
+	  fn_type_diff = compute_diff(app_fn_type, lib_fn_type, ctxt);
 	if (fn_type_diff && fn_type_diff->to_be_reported())
 	  fn_changes.push_back(fn_change(*i, fn_type_diff));
       }
@@ -546,7 +547,6 @@ perform_compat_check_in_weak_mode(options& opts,
       status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
 
     type_base_sptr lib_var_type, app_var_type;
-    diff_sptr type_diff;
     vector<var_change> var_changes;
     for (corpus::variables::const_iterator i =
 	   lib_corpus->get_variables().begin();
@@ -556,7 +556,9 @@ perform_compat_check_in_weak_mode(options& opts,
 	lib_var_type = (*i)->get_type();
 	assert(lib_var_type);
 	app_var_type = lookup_type_in_corpus(lib_var_type, *app_corpus);
-	type_diff = compute_diff(app_var_type, lib_var_type, ctxt);
+	diff_sptr type_diff;
+	if (app_var_type)
+	  type_diff = compute_diff(app_var_type, lib_var_type, ctxt);
 	if (type_diff && type_diff->to_be_reported())
 	  var_changes.push_back(var_change(*i, type_diff));
       }
