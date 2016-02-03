@@ -5844,22 +5844,40 @@ synthesize_type_from_translation_unit(const type_base_sptr& type,
   result = lookup_type_in_translation_unit(type, tu);
 
   if (!result)
-    if (qualified_type_def_sptr qual = is_qualified_type(type))
-      {
-	type_base_sptr underlying_type =
-	  synthesize_type_from_translation_unit(qual->get_underlying_type(),
-						tu);
-	if (underlying_type)
-	  {
-	    result.reset(new qualified_type_def(underlying_type,
-						qual->get_cv_quals(),
-						qual->get_location()));
-	    // The new qualified type must be in the same environment
-	    // as its underlying type.
-	    result->set_environment(underlying_type->get_environment());
-	  }
-	tu.priv_->synthesized_types_.push_back(result);
-      }
+    {
+      if (qualified_type_def_sptr qual = is_qualified_type(type))
+	{
+	  type_base_sptr underlying_type =
+	    synthesize_type_from_translation_unit(qual->get_underlying_type(),
+						  tu);
+	  if (underlying_type)
+	    {
+	      result.reset(new qualified_type_def(underlying_type,
+						  qual->get_cv_quals(),
+						  qual->get_location()));
+	      // The new qualified type must be in the same environment
+	      // as its underlying type.
+	      result->set_environment(underlying_type->get_environment());
+	    }
+	}
+      else if (pointer_type_def_sptr p = is_pointer_type(type))
+	{
+	  type_base_sptr pointed_to_type =
+	    synthesize_type_from_translation_unit(p->get_pointed_to_type(),
+						  tu);
+	  if (pointed_to_type)
+	    {
+	      result.reset(new pointer_type_def(pointed_to_type,
+						p->get_size_in_bits(),
+						p->get_alignment_in_bits(),
+						p->get_location()));
+	      result->set_environment(pointed_to_type->get_environment());
+	    }
+	}
+    }
+
+  if (result)
+    tu.priv_->synthesized_types_.push_back(result);
 
   return result;
 }
