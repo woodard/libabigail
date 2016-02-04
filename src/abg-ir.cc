@@ -5874,6 +5874,20 @@ synthesize_type_from_translation_unit(const type_base_sptr& type,
 	      result->set_environment(pointed_to_type->get_environment());
 	    }
 	}
+      else if (reference_type_def_sptr r = is_reference_type(type))
+	{
+	  type_base_sptr pointed_to_type =
+	    synthesize_type_from_translation_unit(r->get_pointed_to_type(), tu);
+	  if (pointed_to_type)
+	    {
+	      result.reset(new reference_type_def(pointed_to_type,
+						  r->is_lvalue(),
+						  r->get_size_in_bits(),
+						  r->get_alignment_in_bits(),
+						  r->get_location()));
+	      result->set_environment(pointed_to_type->get_environment());
+	    }
+	}
     }
 
   if (result)
