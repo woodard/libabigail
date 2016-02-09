@@ -6,6 +6,7 @@ Makefile.in
 *.lo
 *.o
 *~
+*.swp
 
 /aclocal.m4
 /autom4te.cache/
@@ -17,3 +18,8 @@ Makefile.in
 
 /include/abg-version.h
 /*.pc
+
+.tags
+build/
+TAGS
+fedabipkgdiffc

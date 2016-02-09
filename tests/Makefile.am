@@ -31,9 +31,10 @@ runtestlookupsyms		\
 runtestaltdwarf			\
 runtestcorediff			\
 runtestabidiffexit		\
+runtestfedabipkgdiff.py		\
 $(CXX11_TESTS)
 
-EXTRA_DIST = runtestcanonicalizetypes.sh.in
+EXTRA_DIST = runtestcanonicalizetypes.sh.in runtestfedabipkgdiff.py.in
 CLEANFILES = \
  runtestcanonicalizetypes.output.txt \
  runtestcanonicalizetypes.output.final.txt
@@ -113,6 +114,9 @@ printdifftree_LDADD = $(top_builddir)/src/libabigail.la
 
 runtestcanonicalizetypes_sh_SOURCES =
 runtestcanonicalizetypes.sh$(EXEEXT):
+
+runtestfedabipkgdiff_py_SOURCES =
+runtestfedabipkgdiff.py$(EXEEXT):
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools -fPIC

@@ -12,6 +12,9 @@ pkgconfig_DATA = libabigail.pc
 #dist_bashcompletion_DATA =
 
 EXTRA_DIST = 			\
+autoconf-archive/ax_python_module.m4 \
+autoconf-archive/ax_prog_python_version.m4 \
+autoconf-archive/ax_compare_version.m4 \
 NEWS README COPYING ChangeLog	\
 COPYING-LGPLV2 COPYING-LGPLV3	\
 COPYING-GPLV3 gen-changelog.py	\

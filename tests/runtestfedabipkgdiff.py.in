@@ -1,0 +1,638 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# -*- Mode: Python
+#
+# This file is part of the GNU Application Binary Interface Generic
+# Analysis and Instrumentation Library (libabigail).  This library is
+# free software; you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 3, or (at your option) any
+# later version.
+#
+# This library is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public
+# License along with this program; see the file COPYING-GPLV3.  If
+# not, see <http:#www.gnu.org/licenses/>.
+#
+# Author: Chenxiong Qi
+
+import os
+import itertools
+import unittest
+import tempfile
+import shutil
+
+import koji
+
+"""
+This test harness tests various global methods and classes within
+tools/fedabipkgdiff.
+"""
+
+try:
+    from mock import patch
+except ImportError:
+    import sys
+    print >>sys.stderr, \
+        'mock is required to run tests. Please install before running tests.'
+    sys.exit(1)
+
+import imp
+# Import the fedabipkgdiff program file from the source directory.
+fedabipkgdiff_mod = imp.load_source('fedabidiff',
+                                    '@top_srcdir@/tools/fedabipkgdiff')
+
+# Used to generate integer values (greater or equal to zero) in
+# RunAbipkgdiffTest.test_partial_failure, those values simulate return code
+# from run_abipkgdiff. To represent partial failure, counter must start from 0.
+counter = itertools.count(0)
+
+# prefix for creating a temporary file or directory. The name would be
+# fedabipkgdiff-test-slkw3ksox
+temp_file_or_dir_prefix = 'fedabipkgdiff-test-'
+
+
+class UtilsTest(unittest.TestCase):
+
+    def test_is_distro_valid(self):
+        """Test is_fedora_distro method
+
+        is_fedora_distro aims to test if a string is a valid Fedora distro. I
+        don't see there is a general rule or format definition for such a
+        Fedora distro. I refer to second part of %{dist} splited by dot as the
+        reference. Generally, fc4, fc19, fc23 are valid ones, and el6, el7 are
+        also valid one currently.
+        """
+        distro = 'fc5'
+        self.assertTrue(fedabipkgdiff_mod.is_distro_valid(distro))
+
+        distro = 'f5'
+        self.assertFalse(fedabipkgdiff_mod.is_distro_valid(distro))
+
+        distro = 'fc23'
+        self.assertTrue(fedabipkgdiff_mod.is_distro_valid(distro))
+
+        distro = 'fc'
+        self.assertFalse(fedabipkgdiff_mod.is_distro_valid(distro))
+
+        distro = 'fc234'
+        self.assertFalse(fedabipkgdiff_mod.is_distro_valid(distro))
+
+        distro = 'el7'
+        self.assertTrue(fedabipkgdiff_mod.is_distro_valid(distro))
+
+        distro = 'el7_2'
+        self.assertFalse(fedabipkgdiff_mod.is_distro_valid(distro))
+
+
+class RPMTest(unittest.TestCase):
+    """Test case for RPM class
+
+    RPM class is a class wrapping a underlying dict object represeting a RPM
+    information, that is returned from Koji XMLRPC APIs.
+
+    This test aims to test the class to see if RPM attributes is accessible in
+    Python class attribute way, and if a RPM is specific type of RPM, for
+    example, if it's a debuginfo.
+    """
+
+    def setUp(self):
+        """Setup test data for testing RPM class
+
+        According to the tests, it's unnecessary to contruct a complete dict
+        containing full RPM information. So, only part of of them is
+        enough. This test case only need name, version, release, and arch.
+
+        In case Koji changes the name of name, version, release or arch in the
+        future to express same meaning individually, (I don't think it could
+        happen), please update there also.
+        """
+
+        # Argument passed to RPM.__init__ to construct a RPM class object, that
+        # represents a debuginfo RPM.
+        self.debuginfo_rpm_info = {
+            'arch': 'i686',
+            'name': 'httpd-debuginfo',
+            'release': '1.fc22',
+            'version': '2.4.18'
+            }
+
+        # Argument passed to RPM.__init__ to construct a RPM class object, that
+        # represents a RPM.
+        self.rpm_info = {
+            'arch': 'x86_64',
+            'name': 'httpd',
+            'release': '1.fc22',
+            'version': '2.4.18'
+            }
+
+    def test_attribute_access(self):
+        """Ensure wrapped RPM information is accessible via attribute"""
+        rpm = fedabipkgdiff_mod.RPM(self.debuginfo_rpm_info)
+        self.assertEquals(self.debuginfo_rpm_info['arch'], rpm.arch)
+        self.assertEquals(self.debuginfo_rpm_info['name'], rpm.name)
+        self.assertEquals(self.debuginfo_rpm_info['release'], rpm.release)
+        self.assertEquals(self.debuginfo_rpm_info['version'], rpm.version)
+
+    def test_raise_error_if_name_not_exist(self):
+        """
+        Ensure AttributeError should be raised when accessing a non-existent
+        attribute
+        """
+        rpm = fedabipkgdiff_mod.RPM({})
+        try:
+            rpm.xxxxx
+        except AttributeError:
+            # Succeed, exit normally
+            return
+        self.fail('AttributeError should be raised, but not.')
+
+    def test_is_debuginfo(self):
+        """Ensure to return True if a RPM's name contains -debuginfo"""
+        rpm = fedabipkgdiff_mod.RPM(self.debuginfo_rpm_info)
+        self.assertTrue(rpm.is_debuginfo)
+
+        rpm = fedabipkgdiff_mod.RPM(self.rpm_info)
+        self.assertFalse(rpm.is_debuginfo)
+
+    def test_nvra(self):
+        """
+        Ensure value from RPM.nvra is parsable and contains correct value from
+        underlying RPM information
+        """
+        rpm = fedabipkgdiff_mod.RPM(self.rpm_info)
+        nvra = koji.parse_NVRA(rpm.nvra)
+        self.assertEquals(nvra['name'], rpm.name)
+        self.assertEquals(nvra['version'], rpm.version)
+        self.assertEquals(nvra['release'], rpm.release)
+        self.assertEquals(nvra['arch'], rpm.arch)
+
+    def test_str_representation(self):
+        """
+        Enforce a RPM object has same string represetation as underlying
+        wrapped rpm information that is a dict object.
+        """
+        rpm = fedabipkgdiff_mod.RPM(self.rpm_info)
+        self.assertEquals(str(self.rpm_info), str(rpm))
+
+
+class LocalRPMTest(unittest.TestCase):
+    """Test case for LocalRPM class
+
+    Because LocalRPM inherits from RPM, all tests against RPM class are also
+    applied to LocalRPM, so I don't repeat them again here. This test case
+    mainly focus on the abilities against files on the local disk.
+    """
+
+    def setUp(self):
+        # A RPM filename that simulates a RPM file that is stored somewhere on
+        # the disk.
+        # This is the only argument passed to LocalRPM.__init__ to initialize
+        # an object.
+        self.filename = 'httpd-2.4.18-1.fc22.x86_64.rpm'
+
+    def test_file_parser_without_path(self):
+        """Ensure LocalRPM can get RPM information from a filename
+
+        LocalRPM gets name, version, release, and arch of a RPM by parsing the
+        passed filename to __init__ method. Then, all these information is
+        accessible via LocalRPM name, version, release, and arch attribute.
+
+        A filename either with an absolute path, relative path, or without a
+        path, LocalRPM should be able to find these files and get correct
+        information by removing the potential present path. For example, by
+        giving following filenames,
+
+        - httpd-2.4.18-1.fc22.x86_64.rpm
+        - artifacts/httpd-2.4.18-1.fc22.x86_64.rpm
+        - /mnt/koji/packages/httpd/2.4.18/1.fc22/httpd-2.4.18-1.fc22.x86_64.rpm
+
+        LocalRPM has to determine the necessary RPM information from
+        httpd-2.4.18-1.fc22.x86_64.rpm
+
+        Without specifying path in the filename, it usually means LocalRPM
+        should find the RPM file relative to current working directory. So, no
+        need of additional test against a filename with a relative path.
+        """
+        rpm = fedabipkgdiff_mod.LocalRPM(self.filename)
+        nvra = koji.parse_NVRA(self.filename)
+        self.assertEquals(nvra['name'], rpm.name)
+        self.assertEquals(nvra['version'], rpm.version)
+        self.assertEquals(nvra['release'], rpm.release)
+        self.assertEquals(nvra['arch'], rpm.arch)
+
+        full_filename = os.path.join('/', 'tmp', self.filename)
+        rpm = fedabipkgdiff_mod.LocalRPM(full_filename)
+        nvra = koji.parse_NVRA(self.filename)
+        self.assertEquals(nvra['name'], rpm.name)
+        self.assertEquals(nvra['version'], rpm.version)
+        self.assertEquals(nvra['release'], rpm.release)
+        self.assertEquals(nvra['arch'], rpm.arch)
+        self.assertEquals(full_filename, rpm.downloaded_file)
+
+    @patch('os.path.exists')
+    def test_find_existent_debuginfo(self, mock_exists):
+        """Ensure LocalRPM can find an associated existent debuginfo RPM
+
+        Currently, find_debuginfo is only able to find associated debuginfo RPM
+        from the directory where local RPM resides. This test works for this
+        case at this moment. If there is a requirement to allow find debuginfo
+        RPM from somewhere else, any level of subdirectory for instance, add
+        new test case for that, and update these words you are reading :)
+        """
+        mock_exists.return_value = True
+
+        rpm = fedabipkgdiff_mod.LocalRPM(self.filename)
+        self.assertTrue(isinstance(rpm, fedabipkgdiff_mod.LocalRPM))
+
+        nvra = koji.parse_NVRA(self.filename)
+        expected_debuginfo = fedabipkgdiff_mod.LocalRPM(
+            '%(name)s-debuginfo-%(version)s-%(release)s.%(arch)s.rpm' % nvra)
+        debuginfo = rpm.find_debuginfo()
+        self.assertEquals(expected_debuginfo.name, debuginfo.name)
+        self.assertEquals(expected_debuginfo.version, debuginfo.version)
+        self.assertEquals(expected_debuginfo.release, debuginfo.release)
+
+    def test_find_non_existent_debuginfo(self):
+        """Ensure to return None if cannot find associated debuginfo RPM
+
+        os.path.exists is not mocked, that is because the associated debuginfo
+        RPM of httpd-2.4.18-1.fc22.x86_64.rpm given in setUp must be
+        non-existed during this test's run.
+        """
+        rpm = fedabipkgdiff_mod.LocalRPM(self.filename)
+        self.assertEquals(None, rpm.find_debuginfo())
+
+
+class RunAbipkgdiffTest(unittest.TestCase):
+    """Test case for method run_abipkgdiff
+
+    Method run_abipkgdiff accepts package informations and passes them to and
+    run abipkgdiff command line utility. Since run_abipkgdiff does not catch
+    output to either standard output or standard error, and only returns the
+    return code that is returned from underlying abipkgdiff, these various test
+    cases test whether run_abipkgdiff is able to return the return code
+    correctly.
+    """
+
+    def setUp(self):
+        """Define packages information for calling run_abipkgdiff method
+
+        Due to the tests just care about the return code from underlying
+        abipkgdiff, only partial attributes of a RPM is required. That means,
+        it's unnecessary to give a full dict representing a complete RPM, just
+        build_id, name, version, release, and arch.
+
+        Full RPM information is not required. For this test case, only partial
+        information arch, build_id, name, release, and version are enough.
+        """
+
+        # Used for testing the case of running abipkgdiff against one RPM
+        self.pkg1_single_info = {
+            'i686': [
+                fedabipkgdiff_mod.RPM({'arch': 'i686',
+                                       'build_id': 720222,
+                                       'name': 'httpd',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
+                fedabipkgdiff_mod.RPM({'arch': 'i686',
+                                       'build_id': 720222,
+                                       'name': 'httpd-debuginfo',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       })
+                ],
+            }
+
+        # Whatever the concrete content of pkg2_infos is, so just make a copy
+        # from self.pkg1_infos
+        self.pkg2_single_info = self.pkg1_single_info.copy()
+
+        # Used for testing the case of running abipkgdiff against multiple RPMs
+        self.pkg1_infos = {
+            'i686': [
+                fedabipkgdiff_mod.RPM({'arch': 'i686',
+                                       'build_id': 720222,
+                                       'name': 'httpd',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
+                fedabipkgdiff_mod.RPM({'arch': 'i686',
+                                       'build_id': 720222,
+                                       'name': 'httpd-debuginfo',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
+                ],
+            'x86_64': [
+                fedabipkgdiff_mod.RPM({'arch': 'x86_64',
+                                       'build_id': 720222,
+                                       'name': 'httpd',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
+                fedabipkgdiff_mod.RPM({'arch': 'x86_64',
+                                       'build_id': 720222,
+                                       'name': 'httpd-debuginfo',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
+                ],
+            'armv7hl': [
+                fedabipkgdiff_mod.RPM({'arch': 'armv7hl',
+                                       'build_id': 720222,
+                                       'name': 'httpd',
+                                       'release': '2.fc24',
+                                      'version': '2.4.18',
+                                       }),
+                fedabipkgdiff_mod.RPM({'arch': 'armv7hl',
+                                       'build_id': 720222,
+                                       'name': 'httpd-debuginfo',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
+                ],
+            }
+
+        # Whatever the concrete content of pkg2_infos is, so just make a copy
+        # from self.pkg1_infos
+        self.pkg2_infos = self.pkg1_infos.copy()
+
+    @patch('fedabidiff.abipkgdiff')
+    def test_all_success(self, mock_abipkgdiff):
+        """
+        Ensure run_abipkgdiff returns 0 when it succeeds to run against one or
+        more packages.
+        """
+        mock_abipkgdiff.return_value = 0
+
+        result = fedabipkgdiff_mod.run_abipkgdiff(self.pkg1_single_info,
+                                                  self.pkg2_single_info)
+        self.assertEquals(0, result)
+
+        result = fedabipkgdiff_mod.run_abipkgdiff(self.pkg1_infos,
+                                                  self.pkg2_infos)
+        self.assertEquals(0, result)
+
+    @patch('fedabidiff.abipkgdiff')
+    def test_all_failure(self, mock_abipkgdiff):
+        """
+        Ensure run_abipkgdiff returns the return code from underlying
+        abipkgdiff when all calls to abipkgdiff fails against one or more
+        packages.
+        """
+        mock_abipkgdiff.return_value = 4
+
+        result = fedabipkgdiff_mod.run_abipkgdiff(self.pkg1_single_info,
+                                                  self.pkg2_single_info)
+        self.assertEquals(4, result)
+
+        result = fedabipkgdiff_mod.run_abipkgdiff(self.pkg1_infos,
+                                                  self.pkg2_infos)
+        self.assertEquals(4, result)
+
+    @patch('fedabidiff.abipkgdiff', new=lambda param1, param2: counter.next())
+    def test_partial_failure(self):
+        """
+        Ensure run_abipkgdiff returns non-zero when partial calls to
+        run_abipkgdiff succeed
+
+        abipkgdiff is mocked in order to simulte the partial success
+        calls. Why? That is because, counter starts from 0. So, it will
+        generate 0, 1, 2, ...
+        """
+        result = fedabipkgdiff_mod.run_abipkgdiff(self.pkg1_infos,
+                                                  self.pkg2_infos)
+        self.assertTrue(result > 0)
+
+class MockGlobalConfig(object):
+    """Used to mock global_config
+
+    Since tests do not parse options from command line, so this class is
+    helpful for tests to contain all potential parsed (simulated)
+    options.
+
+    Currently, only koji_server and dry_run are required for running
+    tests. If any new test cases need others, please add them add as
+    class attribute directly.
+
+    """
+    koji_server = fedabipkgdiff_mod.DEFAULT_KOJI_SERVER
+
+    dry_run = False
+
+
+def mock_get_session():
+    """Used to mock get_session method to get mocked KojiSession instance"""
+    return MockKojiClientSession(baseurl=fedabipkgdiff_mod.DEFAULT_KOJI_SERVER)
+
+
+class MockKojiClientSession(object):
+    """Mock koji.ClientSession
+
+    This mock ClientSession aims to avoid touching a real Koji instance to
+    interact with XMLRPC APIs required by fedabipkgdiff.
+
+    For the tests within this module, methods do not necessarily to return
+    complete RPM and build information. So, if you need more additional
+    information, here is the right place to add them.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Accept arbitrary parameters but do nothing for this mock
+
+        Add this method, although it's not used by this mock ClientSession.
+        That is because, when initiate an instance of koji.ClientSession,
+        paramters, at least URL to kojihub, is required and passed.
+        """
+        self.args = args
+        self.kwargs = kwargs
+
+    def getPackage(self, *args, **kwargs):
+        return {
+            'id': 1,
+            'name': 'whatever a name of a package',
+        }
+
+    def listRPMs(self, *args, **kwargs):
+        return [{'arch': 'i686',
+                 'name': 'httpd-debuginfo',
+                 'nvr': 'httpd-debuginfo-2.4.18-1.fc22',
+                 'release': '1.fc22',
+                 'version': '2.4.18'},
+                {'arch': 'i686',
+                 'name': 'mod_session',
+                 'nvr': 'mod_session-2.4.18-1.fc22',
+                 'release': '1.fc22',
+                 'version': '2.4.18'},
+                {'arch': 'i686',
+                 'name': 'httpd',
+                 'nvr': 'httpd-2.4.18-1.fc22',
+                 'release': '1.fc22',
+                 'version': '2.4.18'},
+                {'arch': 'i686',
+                 'name': 'mod_proxy_html',
+                 'nvr': 'mod_proxy_html-2.4.18-1.fc22',
+                 'release': '1.fc22',
+                 'version': '2.4.18'},
+                {'arch': 'i686',
+                 'name': 'mod_ldap',
+                 'nvr': 'mod_ldap-2.4.18-1.fc22',
+                 'release': '1.fc22',
+                 'version': '2.4.18'},
+                {'arch': 'i686',
+                 'name': 'mod_ssl',
+                 'nvr': 'mod_ssl-2.4.18-1.fc22',
+                 'release': '1.fc22',
+                 'version': '2.4.18'}]
+
+    def listBuilds(self, *args, **kwargs):
+        return [
+            {'build_id': 720222,
+             'name': 'httpd',
+             'nvr': 'httpd-2.4.18-2.fc24',
+             'release': '2.fc24',
+             'version': '2.4.18'},
+            {'build_id': 708769,
+             'name': 'httpd',
+             'nvr': 'httpd-2.4.18-1.fc22',
+             'release': '1.fc22',
+             'version': '2.4.18'},
+            {'build_id': 708711,
+             'name': 'httpd',
+             'nvr': 'httpd-2.4.18-1.fc23',
+             'release': '1.fc23',
+             'version': '2.4.18'},
+            {'build_id': 705335,
+             'name': 'httpd',
+             'nvr': 'httpd-2.4.18-1.fc24',
+             'release': '1.fc24',
+             'version': '2.4.18'},
+            {'build_id': 704434,
+             'name': 'httpd',
+             'nvr': 'httpd-2.4.17-4.fc24',
+             'release': '4.fc24',
+             'version': '2.4.17'},
+            {'build_id': 704433,
+             'name': 'httpd',
+             'nvr': 'httpd-2.4.17-4.fc23',
+             'release': '4.fc23',
+             'version': '2.4.17'},
+        ]
+
+
+class GetPackageLatestBuildTest(unittest.TestCase):
+    """Test case for get_package_latest_build"""
+
+    @patch('fedabidiff.global_config', new=MockGlobalConfig)
+    @patch('koji.ClientSession', new=MockKojiClientSession)
+    def test_get_latest_one(self):
+        """Ensure to get latest build of a package
+
+        Brew.listBuilds is mocked to return a series of builds that contains
+        a latest build, which is httpd-2.4.18-1.fc23, of package httpd for
+        Fedora 23, and that must be found and returned.
+        """
+        session = fedabipkgdiff_mod.get_session()
+        build = session.get_package_latest_build('httpd', 'fc23')
+        self.assertEquals('httpd-2.4.18-1.fc23', build['nvr'])
+
+    @patch('fedabidiff.global_config', new=MockGlobalConfig)
+    @patch('koji.ClientSession', new=MockKojiClientSession)
+    def test_cannot_find_a_latest_build_with_invalid_distro(self):
+        """
+        Ensure NoCompleteBuilds is raised when trying to find a latest build of
+        a package for unknown Fedora distribution.
+        """
+        session = fedabipkgdiff_mod.get_session()
+        self.assertRaises(fedabipkgdiff_mod.NoCompleteBuilds,
+                          session.get_package_latest_build, 'httpd', 'xxxx')
+
+
+class DownloadRPMTest(unittest.TestCase):
+    """Test case for download_rpm
+
+    Download a remote file, which is a local file simulating a remote file with
+    scheme file://, for example file:///tmp/a.txt, to download directory.
+    """
+
+    def setUp(self):
+        # Create a remote file for testing download of this file
+        self.fd, self.remote_filename = tempfile.mkstemp(
+            prefix=temp_file_or_dir_prefix)
+        # Whatever the content is, this case does not care about. Close it
+        # immediately.
+        os.close(self.fd)
+
+        # Used as a fake download directory to mock get_download_dir method
+        self.download_dir = tempfile.mkdtemp(prefix=temp_file_or_dir_prefix)
+
+    def tearDown(self):
+        os.remove(self.remote_filename)
+        shutil.rmtree(self.download_dir)
+
+    def make_remote_file_url(self):
+        """Make URL of remote file that is used for downloading this file"""
+        return 'file://{}'.format(self.remote_filename)
+
+    def make_nonexistent_remote_file_url(self):
+        """Return URL to a non-existent remote file"""
+        return os.path.join(self.make_remote_file_url(), 'nonexistent-file')
+
+    @patch('fedabidiff.global_config', new=MockGlobalConfig)
+    @patch('__main__.fedabipkgdiff_mod.get_download_dir')
+    def test_succeed_to_download_a_rpm(self, mock_get_download_dir):
+        """Enusre True is returned if curl succeeds to download remote file
+
+        Download remote file to a fake download directory. Ensure everything is
+        okay, and return value from download_rpm should be truth.
+        """
+        mock_get_download_dir.return_value = self.download_dir
+
+        url = self.make_remote_file_url()
+        ret = fedabipkgdiff_mod.download_rpm(url)
+        self.assertTrue(ret)
+
+    @patch('fedabidiff.global_config', new=MockGlobalConfig)
+    @patch('__main__.fedabipkgdiff_mod.get_download_dir')
+    def test_failed_to_download_a_rpm(self, mock_get_download_dir):
+        """Ensure False is returned if curl fails to download remote file
+
+        Download remote file to a fake download directory. But, making
+        something wrong to cause download_rpm returns false.
+        """
+        mock_get_download_dir.return_value = self.download_dir
+
+        url = self.make_nonexistent_remote_file_url()
+        ret = fedabipkgdiff_mod.download_rpm(url)
+        self.assertFalse(ret)
+
+class BrewListRPMsTest(unittest.TestCase):
+    """Test case for Brew.listRPMs"""
+
+    @patch('fedabidiff.global_config', new=MockGlobalConfig)
+    @patch('fedabidiff.koji.ClientSession', new=MockKojiClientSession)
+    def test_select_specific_rpms(self):
+        """Ensure Brew.listRPMs can select RPMs by a specific selector
+
+        This test will select RPMs whose name starts with httpd, that is only
+        httpd and httpd-debuginfo RPMs are selected and returned.
+        """
+        session = fedabipkgdiff_mod.get_session()
+        selector = lambda rpm: rpm['name'].startswith('httpd')
+        rpms = session.listRPMs(buildID=1000, selector=selector)
+        self.assertTrue(
+            len(rpms) > 0,
+            'More than one rpms should be selected. But, it\'s empty.')
+        for rpm in rpms:
+            self.assertTrue(rpm['name'] in ('httpd', 'httpd-debuginfo'),
+                            '{0} should not be selected'.format(rpm['name']))
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -20,3 +20,4 @@ Tools manuals
    abicompat
    abidw
    abilint
+   fedabipkgdiff

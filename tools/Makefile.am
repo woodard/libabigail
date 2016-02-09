@@ -6,6 +6,12 @@ else
   bin_PROGRAMS = abidiff abilint abidw abicompat abipkgdiff
 endif
 
+if ENABLE_FEDABIPKGDIFF
+  dist_bin_SCRIPTS = fedabipkgdiff
+else
+  noinst_SCRIPTS = fedabipkgdiff
+endif
+
 noinst_PROGRAMS = abisym abinilint
 
 if ENABLE_ZIP_ARCHIVE

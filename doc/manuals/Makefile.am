@@ -10,7 +10,8 @@ conf.py \
 index.rst \
 libabigail-concepts.rst \
 libabigail-overview.rst \
-libabigail-tools.rst
+libabigail-tools.rst \
+fedabipkgdiff.rst
 
 # You can set these variables from the command line.
 SPHINXOPTS    =

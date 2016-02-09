@@ -219,6 +219,7 @@ man_pages = [
     ('abidw', 'abidw', u'serialize the ABI of an ELF file', [u'Dodji Seketeli'], 1),
     ('abilint', 'abilint', u'validate an abigail ABI representation', [u'Dodji Seketeli'], 1),
     ('abicompat', 'abicompat', u'check ABI compatibility', [u'Dodji Seketeli'], 1),
+    ('fedabipkgdiff', 'fedabipkgdiff', u'compare ABIs of Fedora packages', [u'Chenxiong Qi'], 1),
 ]
 
 # If true, show URL addresses after external links.
