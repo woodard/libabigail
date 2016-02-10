@@ -31,6 +31,7 @@
 
 // For package configuration macros.
 #include "config.h"
+#include <sys/wait.h>
 #include <cstring>
 #include <string>
 #include <cstdlib>
@@ -374,8 +375,9 @@ main()
       cmd += " > " + out_abi_diff_report_path;
 
       bool abipkgdiff_ok = true;
-      if (system(cmd.c_str()) & 255)
-        abipkgdiff_ok = false;
+      int code = system(cmd.c_str());
+      if (!WIFEXITED(code))
+	abipkgdiff_ok = false;
 
       if (abipkgdiff_ok)
         {

@@ -31,6 +31,7 @@
 /// The set of input files and reference reports to consider should be
 /// present in the source distribution.
 
+#include <sys/wait.h>
 #include <cassert>
 #include <string>
 #include <fstream>
@@ -461,10 +462,16 @@ struct test_task : public abigail::workers::task
     cmd += " > " + out_diff_report_path;
 
     bool abidiff_ok = true;
-    abidiff_status status =
-      static_cast<abidiff_status>(system(cmd.c_str()) & 255);
-    if (abigail::tools_utils::abidiff_status_has_error(status))
+    int code = system(cmd.c_str());
+    if (!WIFEXITED(code))
       abidiff_ok = false;
+    else
+      {
+	abidiff_status status =
+	  static_cast<abidiff_status>(WEXITSTATUS(code));
+	if (abigail::tools_utils::abidiff_status_has_error(status))
+	  abidiff_ok = false;
+      }
 
     if (abidiff_ok)
       {

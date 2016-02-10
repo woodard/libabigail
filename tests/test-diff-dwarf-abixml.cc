@@ -22,6 +22,7 @@
 
 /// @file compare the ABI of an an elf binary and an abixml file.
 
+#include <sys/wait.h>
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -89,11 +90,16 @@ main()
       cmd += " > " + out_diff_report_path;
 
       bool abidiff_ok = true;
-      abidiff_status status =
-	static_cast<abidiff_status>(system(cmd.c_str()) & 255);
-      if (abigail::tools_utils::abidiff_status_has_error(status))
+      int code = system(cmd.c_str());
+      if (!WIFEXITED(code))
 	abidiff_ok = false;
-
+      else
+	{
+	  abidiff_status status =
+	    static_cast<abidiff_status>(WEXITSTATUS(code));
+	  if (abigail::tools_utils::abidiff_status_has_error(status))
+	    abidiff_ok = false;
+	}
       if (abidiff_ok)
 	{
 	  cmd = "diff -u " + ref_diff_report_path

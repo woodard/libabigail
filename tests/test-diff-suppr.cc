@@ -30,6 +30,7 @@
 /// suppression file and compares the resulting diff with a reference
 /// one.
 
+#include <sys/wait.h>
 #include <cstring>
 #include <string>
 #include <fstream>
@@ -1018,10 +1019,16 @@ main()
 	cmd += " > " + out_diff_report_path;
 
 	bool bidiff_ok = true;
-	abigail::tools_utils::abidiff_status status =
-	  static_cast<abidiff_status>(system(cmd.c_str()) & 255);
-	if (abigail::tools_utils::abidiff_status_has_error(status))
+	int code = system(cmd.c_str());
+	if (!WIFEXITED(code))
 	  bidiff_ok = false;
+	else
+	  {
+	    abigail::tools_utils::abidiff_status status =
+	      static_cast<abidiff_status>(WEXITSTATUS(code));
+	    if (abigail::tools_utils::abidiff_status_has_error(status))
+	      bidiff_ok = false;
+	  }
 
 	if (bidiff_ok)
 	  {
