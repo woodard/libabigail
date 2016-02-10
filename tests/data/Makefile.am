@@ -75,6 +75,12 @@ test-abidiff/test-PR18791-report0.txt   \
 test-abidiff/test-PR18791-v0.so.abi     \
 test-abidiff/test-PR18791-v1.so.abi     \
 \
+test-abidiff-exit/test1-voffset-change-report0.txt \
+test-abidiff-exit/test1-voffset-change-v0.cc \
+test-abidiff-exit/test1-voffset-change-v0.o \
+test-abidiff-exit/test1-voffset-change-v1.cc \
+test-abidiff-exit/test1-voffset-change-v1.o \
+\
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\
 test-diff-dwarf/test0-v1.cc		\

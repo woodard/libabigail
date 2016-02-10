@@ -12671,6 +12671,7 @@ class corpus_diff::diff_stats::priv
   size_t		num_added_func_filtered_out;
   size_t		num_func_changed;
   size_t		num_changed_func_filtered_out;
+  size_t		num_func_with_virt_offset_changes;
   size_t		num_vars_removed;
   size_t		num_removed_vars_filtered_out;
   size_t		num_vars_added;
@@ -12694,6 +12695,7 @@ class corpus_diff::diff_stats::priv
       num_added_func_filtered_out(),
       num_func_changed(),
       num_changed_func_filtered_out(),
+      num_func_with_virt_offset_changes(),
       num_vars_removed(),
       num_removed_vars_filtered_out(),
       num_vars_added(),
@@ -12850,6 +12852,23 @@ corpus_diff::diff_stats::num_changed_func_filtered_out() const
 void
 corpus_diff::diff_stats::num_changed_func_filtered_out(size_t n)
 {priv_->num_changed_func_filtered_out = n;}
+
+/// Getter for the number of functions that carry virtual member
+/// offset changes.
+///
+/// @return the number of functions that carry virtual member changes.
+size_t
+corpus_diff::diff_stats::num_func_with_virtual_offset_changes() const
+{return priv_->num_func_with_virt_offset_changes;}
+
+/// Setter for the number of functions that carry virtual member
+/// offset changes.
+///
+/// @param n the new number of functions that carry virtual member
+/// offset.  changes.
+void
+corpus_diff::diff_stats::num_func_with_virtual_offset_changes(size_t n)
+{priv_->num_func_with_virt_offset_changes = n;}
 
 /// Getter for the number of functions that have a change in their
 /// sub-types, minus the number of these functions that got filtered
@@ -14052,13 +14071,21 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
   categorize_redundant_changed_sub_nodes();
 
   // Walk the changed function diff nodes to count the number of
-  // filtered-out functions.
+  // filtered-out functions and the number of functions with virtual
+  // offset changes.
   for (function_decl_diff_sptrs_type::const_iterator i =
 	 changed_fns_.begin();
        i != changed_fns_.end();
        ++i)
-    if ((*i)->is_filtered_out())
-      stat.num_changed_func_filtered_out(stat.num_changed_func_filtered_out() + 1);
+    {
+      if ((*i)->is_filtered_out())
+	stat.num_changed_func_filtered_out
+	  (stat.num_changed_func_filtered_out() + 1);
+      else
+	if ((*i)->get_category() & VIRTUAL_MEMBER_CHANGE_CATEGORY)
+	  stat.num_func_with_virtual_offset_changes
+	    (stat.num_func_with_virtual_offset_changes() + 1);
+    }
 
   // Walk the changed variables diff nodes to count the number of
   // filtered-out variables.
@@ -14574,6 +14601,7 @@ corpus_diff::has_incompatible_changes() const
 
   return (soname_changed()
 	  || stats.num_func_removed() != 0
+	  || stats.num_func_with_virtual_offset_changes() != 0
 	  || stats.num_vars_removed() != 0
 	  || stats.num_func_syms_removed() != 0
 	  || stats.num_var_syms_removed() != 0);

@@ -341,8 +341,8 @@ enum diff_category
   /// enum fall in this category too.
   SIZE_OR_OFFSET_CHANGE_CATEGORY = 1 << 8,
 
-  /// This means that a diff node in the sub-tree carries a change to
-  /// a vtable.
+  /// This means that a diff node in the sub-tree carries an
+  /// incompatible change to a vtable.
   VIRTUAL_MEMBER_CHANGE_CATEGORY = 1 << 9,
 
   /// A diff node in this category is redundant.  That means it's
@@ -2734,6 +2734,9 @@ public:
 
   size_t num_changed_func_filtered_out() const;
   void num_changed_func_filtered_out(size_t);
+
+  size_t num_func_with_virtual_offset_changes() const;
+  void num_func_with_virtual_offset_changes(size_t);
 
   size_t net_num_func_changed() const;
 

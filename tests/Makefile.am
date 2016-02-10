@@ -30,6 +30,7 @@ runtestdiffdwarf		\
 runtestlookupsyms		\
 runtestaltdwarf			\
 runtestcorediff			\
+runtestabidiffexit		\
 $(CXX11_TESTS)
 
 EXTRA_DIST = runtestcanonicalizetypes.sh.in
@@ -70,6 +71,9 @@ runtestcorediff_LDADD=libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestabidiff_SOURCES = test-abidiff.cc
 runtestabidiff_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
+
+runtestabidiffexit_SOURCES = test-abidiff-exit.cc
+runtestabidiffexit_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
 
 runtestdiffdwarf_SOURCES = test-diff-dwarf.cc
 runtestdiffdwarf_LDADD = libtestutils.la $(top_builddir)/src/libabigail.la
