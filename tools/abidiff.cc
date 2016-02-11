@@ -403,6 +403,25 @@ display_symtabs(const corpus_sptr c1, const corpus_sptr c2, ostream& o)
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
 
+/// Check that the suppression specification files supplied are
+/// present.  If not, emit an error on stderr.
+///
+/// @param opts the options instance to use.
+///
+/// @return true if all suppression specification files are present,
+/// false otherwise.
+static bool
+maybe_check_suppression_files(const options& opts)
+{
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    if (!check_file(*i, cerr))
+      return false;
+
+  return true;
+}
+
 /// Update the diff context from the @ref options data structure.
 ///
 /// @param ctxt the diff context to update.
@@ -523,6 +542,10 @@ main(int argc, char* argv[])
       cout << major << "." << minor << "." << revision << "\n";
       return 0;
     }
+
+  if (!maybe_check_suppression_files(opts))
+    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	    | abigail::tools_utils::ABIDIFF_ERROR);
 
   abidiff_status status = abigail::tools_utils::ABIDIFF_OK;
   if (!opts.file1.empty() && !opts.file2.empty())
