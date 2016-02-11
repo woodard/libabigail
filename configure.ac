@@ -91,6 +91,9 @@ AC_LANG([C++])
 AC_LANG_COMPILER_REQUIRE
 
 dnl Check for dependency: libelf, libdw, libebl (elfutils)
+dnl Note that we need to use at least elfutils 0.159 but
+dnl at that time elfutils didnt have pkgconfig capabilities
+dnl  to easily query for its version.
 ELF_LIBS=
 AC_CHECK_LIB([elf], [elf_end], [ELF_LIBS="-lelf"])
 AC_CHECK_HEADER([libelf.h],
