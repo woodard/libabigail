@@ -86,6 +86,7 @@ using std::ostream;
 using std::vector;
 using std::map;
 using std::tr1::shared_ptr;
+using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::string_ends_with;
 using abigail::tools_utils::file_type;
@@ -822,6 +823,26 @@ second_package_tree_walker_callback_fn(const char *fpath,
     }
   return 0;
 }
+
+/// Check that the suppression specification files supplied are
+/// present.  If not, emit an error on stderr.
+///
+/// @param opts the options instance to use.
+///
+/// @return true if all suppression specification files are present,
+/// false otherwise.
+static bool
+maybe_check_suppression_files(const options& opts)
+{
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    if (!check_file(*i, cerr))
+      return false;
+
+  return true;
+}
+
 /// Update the diff context from the @ref options data structure.
 ///
 /// @param ctxt the diff context to update.
@@ -1623,6 +1644,10 @@ main(int argc, char* argv[])
       cout << major << "." << minor << "." << revision << "\n";
       return 0;
     }
+
+  if (!maybe_check_suppression_files(opts))
+    return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	    | abigail::tools_utils::ABIDIFF_ERROR);
 
   if (opts.package1.empty() || opts.package2.empty())
     {
