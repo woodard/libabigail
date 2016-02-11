@@ -1597,20 +1597,23 @@ main(int argc, char* argv[])
     {
       cerr << "unrecognized option\n"
         "try the --help option for more information\n";
-      return 1;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.missing_operand)
     {
       cerr << "missing operand\n"
         "try the --help option for more information\n";
-      return 1;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.display_usage)
     {
       display_usage(argv[0], cout);
-      return 1;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.display_version)
@@ -1624,7 +1627,8 @@ main(int argc, char* argv[])
   if (opts.package1.empty() || opts.package2.empty())
     {
       cerr << "Please enter two packages to compare" << "\n";
-      return 1;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   package_sptr first_package(new package(opts.package1, "package1"));
@@ -1649,7 +1653,8 @@ main(int argc, char* argv[])
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_RPM)
 	{
 	  cerr << opts.package2 << " should be an RPM file\n";
-	  return 1;
+	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
       break;
 
@@ -1657,7 +1662,8 @@ main(int argc, char* argv[])
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_DEB)
 	{
 	  cerr << opts.package2 << " should be a DEB file\n";
-	  return 1;
+	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
       break;
 
@@ -1665,7 +1671,8 @@ main(int argc, char* argv[])
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_DIR)
 	{
 	  cerr << opts.package2 << " should be a directory\n";
-	  return 1;
+	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
       break;
 
@@ -1673,13 +1680,15 @@ main(int argc, char* argv[])
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_TAR)
 	{
 	  cerr << opts.package2 << " should be a GNU tar archive\n";
-	  return 1;
+	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
       break;
 
     default:
       cerr << opts.package1 << " should be a valid package file \n";
-      return 1;
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   return compare(*first_package, *second_package, opts);
