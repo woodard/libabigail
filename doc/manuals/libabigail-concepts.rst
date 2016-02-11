@@ -159,8 +159,18 @@ suppress diff reports for a particular kind of ABI artifact.
 ``[suppress_type]``
 $$$$$$$$$$$$$$$$$$$
 
-This directive suppresses report messages about a type change.  The
-potential properties of this sections are:
+This directive suppresses report messages about a type change.
+
+Note that for the ``[suppress_type]`` directive to work, at least one
+of the following properties must be provided:
+
+  ``name``, ``name_regexp``, ``type_kind``,
+  ``source_location_not_in``, ``source_location_not_regexp``.
+
+If none of the following properties are provided, then the
+``[suppression_type]`` directive is simply ignored.
+
+The potential properties of this sections are listed below:
 
 * ``file_name_regexp``
 
@@ -430,7 +440,19 @@ potential properties of this sections are:
 $$$$$$$$$$$$$$$$$$$$$$$$
 
 This directive suppresses report messages about changes on a set of
-functions.  The potential properties of this sections are:
+functions.
+
+Note that for the ``[suppress_function]`` directive to work, at least
+one of the following properties must be provided:
+
+  ``label``, ``name``, ``name_regexp``, ``parameter``,
+  ``return_type_name``, ``symbol_name``, ``symbol_name_regexp``,
+  ``symbol_version``, ``symbol_version_regexp``.
+
+If none of the following properties are provided, then the
+``[suppression_function]`` directive is simply ignored.
+
+The potential properties of this sections are:
 
 * ``label``
 
@@ -620,7 +642,19 @@ functions.  The potential properties of this sections are:
 $$$$$$$$$$$$$$$$$$$$$$$$
 
 This directive suppresses report messages about changes on a set of
-variables.  The potential properties of this sections are:
+variables.
+
+Note that for the ``[suppress_variable]`` directive to work, at least
+one of the following properties must be provided:
+
+  ``label``, ``name``, ``name_regexp``, ``symbol_name``,
+  ``symbol_name_regexp``, ``symbol_version``,
+  ``symbol_version_regexp``.
+
+If none of the following properties are provided, then the
+``[suppres_variable]`` directive is simply ignored.
+
+The potential properties of this sections are:
 
 * ``label``
 
