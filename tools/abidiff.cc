@@ -60,6 +60,7 @@ struct options
   bool display_usage;
   bool display_version;
   bool missing_operand;
+  string		wrong_option;
   string		file1;
   string		file2;
   vector<string>	suppression_paths;
@@ -196,6 +197,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    {
 	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
 	      return true;
 	    }
 	  // elfutils wants the root path to the debug info to be
@@ -211,6 +213,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    {
 	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
 	      return true;
 	    }
 	  // elfutils wants the root path to the debug info to be
@@ -278,7 +281,11 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
 	  opts.suppression_paths.push_back(argv[j]);
 	  ++i;
 	}
@@ -286,7 +293,11 @@ parse_command_line(int argc, char* argv[], options& opts)
 	{
 	  int j = i + 1;
 	  if (j >= argc)
-	    return false;
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
 	  opts.drop_fn_regex_patterns.push_back(argv[j]);
 	  opts.drop_var_regex_patterns.push_back(argv[j]);
 	  ++i;
@@ -297,6 +308,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    {
 	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
 	      return true;
 	    }
 	  opts.drop_fn_regex_patterns.push_back(argv[j]);
@@ -308,6 +320,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    {
 	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
 	      return true;
 	    }
 	  opts.drop_var_regex_patterns.push_back(argv[j]);
@@ -319,6 +332,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    {
 	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
 	      return true;
 	    }
 	  opts.keep_fn_regex_patterns.push_back(argv[j]);
@@ -331,6 +345,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    {
 	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
 	      return true;
 	    }
 	  opts.keep_fn_regex_patterns.push_back(argv[j]);
@@ -341,6 +356,7 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  if (j >= argc)
 	    {
 	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
 	      return true;
 	    }
 	  opts.keep_var_regex_patterns.push_back(argv[j]);
@@ -358,7 +374,11 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--stats"))
 	opts.show_stats = true;
       else
-	return false;
+	{
+	  if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-')
+	    opts.wrong_option = argv[i];
+	  return false;
+	}
     }
 
   return true;
@@ -514,7 +534,7 @@ main(int argc, char* argv[])
   options opts;
   if (!parse_command_line(argc, argv, opts))
     {
-      cerr << "unrecognized option\n"
+      cerr << "unrecognized option: " << opts.wrong_option << "\n"
 	"try the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
@@ -522,7 +542,7 @@ main(int argc, char* argv[])
 
   if (opts.missing_operand)
     {
-      cerr << "missing operand\n"
+      cerr << "missing operand to option: " << opts.wrong_option <<"\n"
 	"try the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
