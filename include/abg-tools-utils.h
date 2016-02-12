@@ -47,7 +47,8 @@ bool dir_name(string const &path,
 	      string& path_dir_name);
 bool ensure_dir_path_created(const string&);
 bool ensure_parent_dir_created(const string&);
-bool check_file(const string& path, ostream& out);
+ostream& emit_prefix(const string& prog_name, ostream& out);
+bool check_file(const string& path, ostream& out, const string& prog_name = "");
 bool string_ends_with(const string&, const string&);
 bool string_is_ascii(const string&);
 bool string_is_ascii_identifier(const string&);

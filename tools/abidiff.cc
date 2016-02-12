@@ -51,6 +51,7 @@ using abigail::comparison::suppression_sptr;
 using abigail::comparison::suppressions_type;
 using abigail::comparison::read_suppressions;
 using namespace abigail::dwarf_reader;
+using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::abidiff_status;
@@ -119,41 +120,42 @@ struct options
 static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << " [options] [<file1> <file2>]\n"
-      << " where options can be:\n"
-      << " --version|-v  display program version information and exit\n"
-      << " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
-      << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
-      << " --help|-h  display this message\n "
-      << " --stat  only display the diff stats\n"
-      << " --symtabs  only display the symbol tables of the corpora\n"
-      << " --no-architecture  do not take architecture in account\n"
-      << " --deleted-fns  display deleted public functions\n"
-      << " --changed-fns  display changed public functions\n"
-      << " --added-fns  display added public functions\n"
-      << " --deleted-vars  display deleted global public variables\n"
-      << " --changed-vars  display changed global public variables\n"
-      << " --added-vars  display added global public variables\n"
-      << " --no-linkage-name  do not display linkage names of "
-             "added/removed/changed\n"
-      << " --no-unreferenced-symbols  do not display changes "
-             "about symbols not referenced by debug info\n"
-      << " --no-show-locs  do now show location information\n"
-      << " --suppressions|--suppr <path> specify a suppression file\n"
-      << " --drop <regex>  drop functions and variables matching a regexp\n"
-      << " --drop-fn <regex> drop functions matching a regexp\n"
-      << " --drop-var <regex> drop variables matching a regexp\n"
-      << " --keep <regex>  keep only functions and variables matching a regex\n"
-      << " --keep-fn <regex>  keep only functions matching a regex\n"
-      << " --keep-var  <regex>  keep only variables matching a regex\n"
-      << " --harmless  display the harmless changes\n"
-      << " --no-harmful  do not display the harmful changes\n"
-      << " --redundant  display redundant changes\n"
-      << " --no-redundant  do not display redundant changes "
-         "(this is the default)\n"
-      << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
-         "the error output stream\n"
-      <<  " --stats  show statistics about various internal stuff\n";
+  emit_prefix(prog_name, out)
+    << "usage: " << prog_name << " [options] [<file1> <file2>]\n"
+    << " where options can be:\n"
+    << " --version|-v  display program version information and exit\n"
+    << " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
+    << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
+    << " --help|-h  display this message\n "
+    << " --stat  only display the diff stats\n"
+    << " --symtabs  only display the symbol tables of the corpora\n"
+    << " --no-architecture  do not take architecture in account\n"
+    << " --deleted-fns  display deleted public functions\n"
+    << " --changed-fns  display changed public functions\n"
+    << " --added-fns  display added public functions\n"
+    << " --deleted-vars  display deleted global public variables\n"
+    << " --changed-vars  display changed global public variables\n"
+    << " --added-vars  display added global public variables\n"
+    << " --no-linkage-name  do not display linkage names of "
+    "added/removed/changed\n"
+    << " --no-unreferenced-symbols  do not display changes "
+    "about symbols not referenced by debug info\n"
+    << " --no-show-locs  do now show location information\n"
+    << " --suppressions|--suppr <path> specify a suppression file\n"
+    << " --drop <regex>  drop functions and variables matching a regexp\n"
+    << " --drop-fn <regex> drop functions matching a regexp\n"
+    << " --drop-var <regex> drop variables matching a regexp\n"
+    << " --keep <regex>  keep only functions and variables matching a regex\n"
+    << " --keep-fn <regex>  keep only functions matching a regex\n"
+    << " --keep-var  <regex>  keep only variables matching a regex\n"
+    << " --harmless  display the harmless changes\n"
+    << " --no-harmful  do not display the harmful changes\n"
+    << " --redundant  display redundant changes\n"
+    << " --no-redundant  do not display redundant changes "
+    "(this is the default)\n"
+    << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
+    "the error output stream\n"
+    <<  " --stats  show statistics about various internal stuff\n";
 }
 
 /// Parse the command line and set the options accordingly.
@@ -534,16 +536,19 @@ main(int argc, char* argv[])
   options opts;
   if (!parse_command_line(argc, argv, opts))
     {
-      cerr << "unrecognized option: " << opts.wrong_option << "\n"
-	"try the --help option for more information\n";
+      emit_prefix(argv[0], cerr)
+	<< "unrecognized option: "
+	<< opts.wrong_option << "\n"
+	<< "try the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.missing_operand)
     {
-      cerr << "missing operand to option: " << opts.wrong_option <<"\n"
-	"try the --help option for more information\n";
+      emit_prefix(argv[0], cerr)
+	<< "missing operand to option: " << opts.wrong_option <<"\n"
+	<< "try the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
@@ -559,7 +564,8 @@ main(int argc, char* argv[])
     {
       string major, minor, revision;
       abigail::abigail_get_library_version(major, minor, revision);
-      cout << major << "." << minor << "." << revision << "\n";
+      emit_prefix(argv[0], cout)
+	<< major << "." << minor << "." << revision << "\n";
       return 0;
     }
 
@@ -581,14 +587,16 @@ main(int argc, char* argv[])
       t1_type = guess_file_type(opts.file1);
       if (t1_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
 	{
-	  cerr << "Unknown content type for file " << opts.file1 << "\n";
+	  emit_prefix(argv[0], cerr)
+	    << "Unknown content type for file " << opts.file1 << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
 
       t2_type = guess_file_type(opts.file2);
       if (t2_type == abigail::tools_utils::FILE_TYPE_UNKNOWN)
 	{
-	  cerr << "Unknown content type for file " << opts.file2 << "\n";
+	  emit_prefix(argv[0], cerr)
+	    << "Unknown content type for file " << opts.file2 << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
 
@@ -603,7 +611,8 @@ main(int argc, char* argv[])
       switch (t1_type)
 	{
 	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
-	  cerr << "Unknown content type for file " << opts.file1 << "\n";
+	  emit_prefix(argv[0], cerr)
+	    << "Unknown content type for file " << opts.file1 << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
@@ -646,7 +655,8 @@ main(int argc, char* argv[])
       switch (t2_type)
 	{
 	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
-	  cerr << "Unknown content type for file " << opts.file2 << "\n";
+	  emit_prefix(argv[0], cerr)
+	    << "Unknown content type for file " << opts.file2 << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	  break;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
@@ -687,54 +697,62 @@ main(int argc, char* argv[])
 
       if (!t1 && !c1)
 	{
-	  cerr << "failed to read input file " << opts.file1 << "\n";
+	  emit_prefix(argv[0], cerr)
+	    << "failed to read input file " << opts.file1 << "\n";
 	  if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
 	    {
 	      if (c1_status
 		  & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
-		  cerr << "could not find the debug info";
+		  emit_prefix(argv[0], cerr) << "could not find the debug info";
 		  if (di_dir1 == 0)
-		    cerr << " Maybe you should consider using the "
+		    emit_prefix(argv[0], cerr)
+		      << " Maybe you should consider using the "
 		      "--debug-info-dir1 option to tell me about the "
 		      "root directory of the debuginfo? "
 		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
 		  else
-		    cerr << "Maybe the root path to the debug information '"
-			 << di_dir1 << "' is wrong?\n";
+		    emit_prefix(argv[0], cerr)
+		      << "Maybe the root path to the debug information '"
+		      << di_dir1 << "' is wrong?\n";
 		}
 	      if (c1_status
 		  & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-		cerr << "could not find the ELF symbols in the file '"
-		       << opts.file1
-		     << "'\n";
+		emit_prefix(argv[0], cerr)
+		  << "could not find the ELF symbols in the file '"
+		  << opts.file1
+		  << "'\n";
 	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
 	}
 
       if (!t2 && !c2)
 	{
-	  cerr << "failed to read input file " << opts.file2 << "\n";
+	  emit_prefix(argv[0],  cerr)
+	    << "failed to read input file " << opts.file2 << "\n";
 	  if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
 	    {
 	      if (c2_status
 		  & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
-		  cerr << "could not find the debug info";
+		  emit_prefix(argv[0], cerr) << "could not find the debug info";
 		  if (di_dir2 == 0)
-		    cerr << " Maybe you should consider using the "
+		    emit_prefix(argv[0], cerr)
+		      << " Maybe you should consider using the "
 		      "--debug-info-dir1 option to tell me about the "
 		      "root directory of the debuginfo? "
 		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
 		  else
-		    cerr << "Maybe the root path to the debug information '"
-			 << di_dir2 << "' is wrong?\n";
+		    emit_prefix(argv[0], cerr)
+		      << "Maybe the root path to the debug information '"
+		      << di_dir2 << "' is wrong?\n";
 		}
 	      if (c2_status
 		  & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-		cerr << "could not find the ELF symbols in the file '"
-		     << opts.file2
-		     << "'\n";
+		emit_prefix(argv[0], cerr)
+		  << "could not find the ELF symbols in the file '"
+		  << opts.file2
+		  << "'\n";
 	      return abigail::tools_utils::ABIDIFF_ERROR;
 	    }
 	}
@@ -742,7 +760,8 @@ main(int argc, char* argv[])
       if (!!c1 != !!c2
 	  || !!t1 != !!t2)
 	{
-	  cerr << "the two input should be of the same kind\n";
+	  emit_prefix(argv[0], cerr)
+	    << "the two input should be of the same kind\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
 

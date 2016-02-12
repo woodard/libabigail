@@ -289,6 +289,24 @@ ensure_parent_dir_created(const string& path)
   return is_ok;
 }
 
+/// Emit a prefix made of the name of the program which is emitting a
+/// message to an output stream.
+///
+/// The prefix is a string which looks like:
+///
+///   "<program-name> : "
+///
+/// @param prog_name the name of the program to use in the prefix.
+/// @param out the output stream where to emit the prefix.
+///
+/// @return the output stream where the prefix was emitted.
+ostream&
+emit_prefix(const string& prog_name, ostream& out)
+{
+  out << prog_name << ": ";
+  return out;
+}
+
 /// Check if a given path exists and is readable.
 ///
 /// @param path the path to consider.
@@ -297,18 +315,17 @@ ensure_parent_dir_created(const string& path)
 ///
 /// @return true iff path exists and is readable.
 bool
-check_file(const string& path,
-	   ostream& out)
+check_file(const string& path, ostream& out, const string& prog_name)
 {
   if (!file_exists(path))
     {
-      out << "file " << path << " does not exist\n";
+      emit_prefix(prog_name, out) << "file " << path << " does not exist\n";
       return false;
     }
 
   if (!is_regular_file(path))
     {
-      out << path << " is not a regular file\n";
+      emit_prefix(prog_name, out) << path << " is not a regular file\n";
       return false;
     }
 
