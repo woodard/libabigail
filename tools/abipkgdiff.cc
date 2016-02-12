@@ -86,6 +86,7 @@ using std::ostream;
 using std::vector;
 using std::map;
 using std::tr1::shared_ptr;
+using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::string_ends_with;
@@ -136,8 +137,13 @@ static pthread_mutex_t arg_lock = PTHREAD_MUTEX_INITIALIZER;
 static struct options *prog_options;
 
 /// The options passed to the current program.
-struct options
+class options
 {
+  options();
+
+public:
+  string	wrong_option;
+  string	prog_name;
   bool		display_usage;
   bool		display_version;
   bool		missing_operand;
@@ -157,8 +163,9 @@ struct options
   bool		fail_if_no_debug_info;
   vector<string> suppression_paths;
 
-  options()
-    : display_usage(),
+  options(const string& program_name)
+    : prog_name(program_name),
+      display_usage(),
       display_version(),
       missing_operand(),
       abignore(true),
@@ -374,20 +381,21 @@ public:
       return;
 
     if (verbose)
-      cerr << "Erasing temporary extraction directory "
-	   << extracted_dir_path()
-	   << " ...";
+      emit_prefix("abipkgdiff", cerr)
+	<< "Erasing temporary extraction directory "
+	<< extracted_dir_path()
+	<< " ...";
 
     string cmd = "rm -rf " + extracted_dir_path();
     if (system(cmd.c_str()))
       {
 	if (verbose)
-	  cerr << " FAILED\n";
+	  emit_prefix("abipkgdiff", cerr) << " FAILED\n";
       }
     else
       {
 	if (verbose)
-	  cerr << " DONE\n";
+	  emit_prefix("abipkgdiff", cerr) << " DONE\n";
       }
   }
 
@@ -485,26 +493,27 @@ typedef shared_ptr<package> package_sptr;
 static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << " [options] <package1> <package2>\n"
-      << " where options can be:\n"
-      << " --debug-info-pkg1|--d1 <path>  path of debug-info package of package1\n"
-      << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
-      << " --suppressions|--suppr <path>  specify supression specification path\n"
-      << " --keep-tmp-files               don't erase created temporary files\n"
-      << " --dso-only                     compare shared libraries only\n"
-      << " --no-linkage-name		  do not display linkage names of "
-                                          "added/removed/changed\n"
-      << " --redundant                    display redundant changes\n"
-      << " --no-show-locs                 do not show location information\n"
-      << " --no-added-syms                do not display added functions or variables\n"
-      << " --no-added-binaries            do not display added binaries\n"
-      << " --no-abignore                  do not look for *.abignore files\n"
-      << " --no-parallel                  do not execute in parallel\n"
-      << " --fail-no-dbg                  fail if no debug info was found\n"
-      << " --verbose                      emit verbose progress messages\n"
-      << " --help|-h                      display this help message\n"
-      << " --version|-v                   display program version information"
-               " and exit\n";
+  emit_prefix(prog_name, out)
+    << "usage: " << prog_name << " [options] <package1> <package2>\n"
+    << " where options can be:\n"
+    << " --debug-info-pkg1|--d1 <path>  path of debug-info package of package1\n"
+    << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
+    << " --suppressions|--suppr <path>  specify supression specification path\n"
+    << " --keep-tmp-files               don't erase created temporary files\n"
+    << " --dso-only                     compare shared libraries only\n"
+    << " --no-linkage-name		  do not display linkage names of "
+    "added/removed/changed\n"
+    << " --redundant                    display redundant changes\n"
+    << " --no-show-locs                 do not show location information\n"
+    << " --no-added-syms                do not display added functions or variables\n"
+    << " --no-added-binaries            do not display added binaries\n"
+    << " --no-abignore                  do not look for *.abignore files\n"
+    << " --no-parallel                  do not execute in parallel\n"
+    << " --fail-no-dbg                  fail if no debug info was found\n"
+    << " --verbose                      emit verbose progress messages\n"
+    << " --help|-h                      display this help message\n"
+    << " --version|-v                   display program version information"
+    " and exit\n";
 }
 
 #ifdef WITH_RPM
@@ -522,11 +531,12 @@ extract_rpm(const string& package_path,
 	    const string& extracted_package_dir_path)
 {
   if (verbose)
-    cerr << "Extracting package "
-	 << package_path
-	 << " to "
-	 << extracted_package_dir_path
-	 << " ...";
+    emit_prefix("abipkgdiff", cerr)
+      << "Extracting package "
+      << package_path
+      << " to "
+      << extracted_package_dir_path
+      << " ...";
 
   string cmd = "test -d " +
     extracted_package_dir_path +
@@ -535,7 +545,7 @@ extract_rpm(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (verbose)
-	cerr << "command " << cmd << " FAILED\n";
+	emit_prefix("abipkgdiff", cerr) << "command " << cmd << " FAILED\n";
     }
 
   cmd = "mkdir -p " + extracted_package_dir_path + " && cd " +
@@ -545,12 +555,12 @@ extract_rpm(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (verbose)
-	cerr << " FAILED\n";
+	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
       return false;
     }
 
   if (verbose)
-    cerr << " DONE\n";
+    emit_prefix("abipkgdiff", cerr) << " DONE\n";
 
   return true;
 }
@@ -572,11 +582,12 @@ extract_deb(const string& package_path,
 	    const string& extracted_package_dir_path)
 {
   if (verbose)
-    cerr << "Extracting package "
-	 << package_path
-	 << "to "
-	 << extracted_package_dir_path
-	 << " ...";
+    emit_prefix("abipkgdiff", cerr)
+      << "Extracting package "
+      << package_path
+      << "to "
+      << extracted_package_dir_path
+      << " ...";
 
   string cmd = "test -d " +
     extracted_package_dir_path +
@@ -585,7 +596,7 @@ extract_deb(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (verbose)
-	cerr << "command "  << cmd <<  " FAILED\n";
+	emit_prefix("abipkgdiff", cerr) << "command "  << cmd <<  " FAILED\n";
     }
 
   cmd = "mkdir -p " + extracted_package_dir_path + " && dpkg -x " +
@@ -594,12 +605,12 @@ extract_deb(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (verbose)
-	cerr << " FAILED\n";
+	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
       return false;
     }
 
   if (verbose)
-    cerr << " DONE\n";
+    emit_prefix("abipkgdiff", cerr) << " DONE\n";
 
   return true;
 }
@@ -621,11 +632,12 @@ extract_tar(const string& package_path,
 	    const string& extracted_package_dir_path)
 {
   if (verbose)
-    cerr << "Extracting tar archive "
-	 << package_path
-	 << " to "
-	 << extracted_package_dir_path
-	 << " ...";
+    emit_prefix("abipkgdiff", cerr)
+      << "Extracting tar archive "
+      << package_path
+      << " to "
+      << extracted_package_dir_path
+      << " ...";
 
   string cmd = "test -d " +
     extracted_package_dir_path +
@@ -634,7 +646,7 @@ extract_tar(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (verbose)
-	cerr << "command " << cmd << " FAILED\n";
+	emit_prefix("abipkgdiff", cerr) << "command " << cmd << " FAILED\n";
     }
 
   cmd = "mkdir -p " + extracted_package_dir_path + " && cd " +
@@ -643,12 +655,12 @@ extract_tar(const string& package_path,
   if (system(cmd.c_str()))
     {
       if (verbose)
-	cerr << " FAILED\n";
+	emit_prefix("abipkgdiff", cerr) << " FAILED\n";
       return false;
     }
 
   if (verbose)
-    cerr << " DONE\n";
+    emit_prefix("abipkgdiff", cerr) << " DONE\n";
 
   return true;
 }
@@ -675,20 +687,21 @@ static void
 erase_created_temporary_directories_parent()
 {
   if (verbose)
-    cerr << "Erasing temporary extraction parent directory "
-	 << package::extracted_packages_parent_dir()
-	 << " ...";
+    emit_prefix("abipkgdiff", cerr)
+      << "Erasing temporary extraction parent directory "
+      << package::extracted_packages_parent_dir()
+      << " ...";
 
   string cmd = "rm -rf " + package::extracted_packages_parent_dir();
   if (system(cmd.c_str()))
     {
       if (verbose)
-	cerr << "FAILED\n";
+	emit_prefix("abipkgdiff", cerr) << "FAILED\n";
     }
   else
     {
       if (verbose)
-	cerr << "DONE\n";
+	emit_prefix("abipkgdiff", cerr) << "DONE\n";
     }
 }
 
@@ -704,12 +717,14 @@ extract_package(const package& package)
 #ifdef WITH_RPM
       if (!extract_rpm(package.path(), package.extracted_dir_path()))
         {
-          cerr << "Error while extracting package" << package.path() << "\n";
+          emit_prefix("abipkgdiff", cerr)
+	    << "Error while extracting package" << package.path() << "\n";
           return false;
         }
       return true;
 #else
-      cerr << "Support for rpm hasn't been enabled.  Please consider "
+      emit_prefix("abipkgdiff", cerr)
+	<< "Support for rpm hasn't been enabled.  Please consider "
 	"enabling it at package configure time\n";
       return false;
 #endif // WITH_RPM
@@ -718,12 +733,14 @@ extract_package(const package& package)
 #ifdef WITH_DEB
       if (!extract_deb(package.path(), package.extracted_dir_path()))
         {
-          cerr << "Error while extracting package" << package.path() << "\n";
+          emit_prefix("abipkgdiff", cerr)
+	    << "Error while extracting package" << package.path() << "\n";
           return false;
         }
       return true;
 #else
-      cerr << "Support for deb hasn't been enabled.  Please consider "
+      emit_prefix("abipkgdiff", cerr)
+	<< "Support for deb hasn't been enabled.  Please consider "
 	"enabling it at package configure time\n";
       return false;
 #endif // WITH_DEB
@@ -738,13 +755,15 @@ extract_package(const package& package)
 #ifdef WITH_TAR
       if (!extract_tar(package.path(), package.extracted_dir_path()))
         {
-          cerr << "Error while extracting GNU tar archive "
-	       << package.path() << "\n";
+          emit_prefix("abipkgdiff", cerr)
+	    << "Error while extracting GNU tar archive "
+	    << package.path() << "\n";
           return false;
         }
       return true;
 #else
-      cerr << "Support for GNU tar hasn't been enabled.  Please consider "
+      emit_prefix("abipkgdiff", cerr)
+	<< "Support for GNU tar hasn't been enabled.  Please consider "
 	"enabling it at package configure time\n";
       return false;
 #endif // WITH_TAR
@@ -837,7 +856,7 @@ maybe_check_suppression_files(const options& opts)
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
        i != opts.suppression_paths.end();
        ++i)
-    if (!check_file(*i, cerr))
+    if (!check_file(*i, cerr, opts.prog_name))
       return false;
 
   return true;
@@ -915,19 +934,21 @@ compare(const elf_file& elf1,
 	*di_dir2 = (char*) debug_dir2.c_str();
 
   if (verbose)
-    cerr << "Comparing the ABIs of file "
-	 << elf1.path
-	 << " and "
-	 << elf2.path
-	 << "...\n";
+    emit_prefix("abipkgdiff", cerr)
+      << "Comparing the ABIs of file "
+      << elf1.path
+      << " and "
+      << elf2.path
+      << "...\n";
 
   abigail::dwarf_reader::status c1_status = abigail::dwarf_reader::STATUS_OK,
     c2_status = abigail::dwarf_reader::STATUS_OK;
 
   if (verbose)
-    cerr << "  Reading file "
-	 << elf1.path
-	 << " ...\n";
+    emit_prefix("abipkgdiff", cerr)
+      << "  Reading file "
+      << elf1.path
+      << " ...\n";
 
   corpus_sptr corpus1 = read_corpus_from_elf(elf1.path, &di_dir1, env.get(),
 					     /*load_all_types=*/false,
@@ -935,33 +956,36 @@ compare(const elf_file& elf1,
   if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
     {
       if (verbose)
-	cerr << "Could not read file '"
-	     << elf1.path
-	     << "' properly\n";
+	emit_prefix("abipkgdiff", cerr)
+	  << "Could not read file '"
+	  << elf1.path
+	  << "' properly\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   if (opts.fail_if_no_debug_info
       && (c1_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND))
     {
-      cerr << "Could not find debug info file";
+      emit_prefix("abipkgdiff", cerr) << "Could not find debug info file";
       if (di_dir1 && strcmp(di_dir1, ""))
-	cerr << " under " << di_dir1 << "\n";
+	emit_prefix("abipkgdiff", cerr) << " under " << di_dir1 << "\n";
       else
-	cerr << "\n";
+	emit_prefix("abipkgdiff", cerr) << "\n";
 
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   if (verbose)
-    cerr << " DONE reading file "
+    emit_prefix("abipkgdiff", cerr)
+      << " DONE reading file "
       << elf1.path
       << " ...\n";
 
   if (verbose)
-    cerr << "  Reading file "
-	 << elf2.path
-	 << " ...\n";
+    emit_prefix("abipkgdiff", cerr)
+      << "  Reading file "
+      << elf2.path
+      << " ...\n";
 
   corpus_sptr corpus2 = read_corpus_from_elf(elf2.path, &di_dir2, env.get(),
 					     /*load_all_types=*/false,
@@ -969,44 +993,48 @@ compare(const elf_file& elf1,
   if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
     {
       if (verbose)
-	cerr << "Could not find the read file '"
-	     << elf2.path
-	     << "' properly\n";
+	emit_prefix("abipkgdiff", cerr)
+	  << "Could not find the read file '"
+	  << elf2.path
+	  << "' properly\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   if (opts.fail_if_no_debug_info
       && (c2_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND))
     {
-      cerr << "Could not find debug info file";
+      emit_prefix("abipkgdiff", cerr)
+	<< "Could not find debug info file";
       if (di_dir1 && strcmp(di_dir2, ""))
-	cerr << " under " << di_dir2 << "\n";
+	emit_prefix("abipkgdiff", cerr)
+	  << " under " << di_dir2 << "\n";
       else
-	cerr << "\n";
+	emit_prefix("abipkgdiff", cerr) << "\n";
 
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
   if (verbose)
-    cerr << " DONE reading file "
-      << elf2.path
-      << " ...\n";
+    emit_prefix("abipkgdiff", cerr)
+      << " DONE reading file " << elf2.path << " ...\n";
 
 if (verbose)
-    cerr << "  Comparing the ABIs of: \n"
-      << "    " << elf1.path << "\n"
-      << "    " << elf2.path << "\n";
+  emit_prefix("abipkgdiff", cerr)
+    << "  Comparing the ABIs of: \n"
+    << "    " << elf1.path << "\n"
+    << "    " << elf2.path << "\n";
 
   diff_context_sptr ctxt(new diff_context);
   set_diff_context_from_opts(ctxt, opts);
   diff = compute_diff(corpus1, corpus2, ctxt);
 
   if (verbose)
-    cerr << "Comparing the ABIs of file "
-	 << elf1.path
-	 << " and "
-	 << elf2.path
-	 << " is DONE\n";
+    emit_prefix("abipkgdiff", cerr)
+      << "Comparing the ABIs of file "
+      << elf1.path
+      << " and "
+      << elf2.path
+      << " is DONE\n";
 
   abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
   if (diff->has_net_changes())
@@ -1093,16 +1121,18 @@ create_maps_of_package_content(package& package,
   pthread_setspecific(elf_file_paths_tls_key, elf_file_paths);
 
   if (verbose)
-    cerr << "Analyzing the content of package "
-	 << package.path()
-	 << " extracted to "
-	 << package.extracted_dir_path()
-	 << " ...";
+    emit_prefix("abipkgdiff", cerr)
+      << "Analyzing the content of package "
+      << package.path()
+      << " extracted to "
+      << package.extracted_dir_path()
+      << " ...";
 
   if (ftw(package.extracted_dir_path().c_str(), callback, 16))
     {
-      cerr << "Error while inspecting files in package"
-	   << package.extracted_dir_path() << "\n";
+      emit_prefix("abipkgdiff", cerr)
+	<< "Error while inspecting files in package"
+	<< package.extracted_dir_path() << "\n";
       return false;
     }
 
@@ -1134,7 +1164,7 @@ create_maps_of_package_content(package& package,
   delete elf_file_paths;
 
   if (verbose)
-    cerr << " DONE\n";
+    emit_prefix("abipkgdiff", cerr) << " DONE\n";
   return true;
 }
 
@@ -1538,8 +1568,9 @@ parse_command_line(int argc, char* argv[], options& opts)
           int j = i + 1;
           if (j >= argc)
             {
-              opts.missing_operand = true;
-              return true;
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
             }
           opts.debug_package1 =
 	    abigail::tools_utils::make_path_absolute(argv[j]).get();
@@ -1551,8 +1582,9 @@ parse_command_line(int argc, char* argv[], options& opts)
           int j = i + 1;
           if (j >= argc)
             {
-              opts.missing_operand = true;
-              return true;
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
             }
           opts.debug_package2 =
 	    abigail::tools_utils::make_path_absolute(argv[j]).get();
@@ -1602,7 +1634,11 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  return true;
 	}
       else
-        return false;
+	{
+	  if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-')
+	    opts.wrong_option = argv[i];
+	  return false;
+	}
     }
 
   return true;
@@ -1611,20 +1647,22 @@ parse_command_line(int argc, char* argv[], options& opts)
 int
 main(int argc, char* argv[])
 {
-  options opts;
+  options opts(argv[0]);
   prog_options = &opts;
   vector<package_sptr> packages;
   if (!parse_command_line(argc, argv, opts))
     {
-      cerr << "unrecognized option\n"
-        "try the --help option for more information\n";
+      emit_prefix("abipkgdiff", cerr)
+	<< "unrecognized option:" << opts.wrong_option
+	<< "\ntry the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
   if (opts.missing_operand)
     {
-      cerr << "missing operand\n"
+      emit_prefix("abipkgdiff", cerr)
+	<< "missing operand\n"
         "try the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
@@ -1651,7 +1689,8 @@ main(int argc, char* argv[])
 
   if (opts.package1.empty() || opts.package2.empty())
     {
-      cerr << "Please enter two packages to compare" << "\n";
+      emit_prefix("abipkgdiff", cerr)
+	<< "Please enter two packages to compare" << "\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
@@ -1677,7 +1716,8 @@ main(int argc, char* argv[])
     case abigail::tools_utils::FILE_TYPE_RPM:
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_RPM)
 	{
-	  cerr << opts.package2 << " should be an RPM file\n";
+	  emit_prefix("abipkgdiff", cerr)
+	    << opts.package2 << " should be an RPM file\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
@@ -1686,7 +1726,8 @@ main(int argc, char* argv[])
     case abigail::tools_utils::FILE_TYPE_DEB:
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_DEB)
 	{
-	  cerr << opts.package2 << " should be a DEB file\n";
+	  emit_prefix("abipkgdiff", cerr)
+	    << opts.package2 << " should be a DEB file\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
@@ -1695,7 +1736,8 @@ main(int argc, char* argv[])
     case abigail::tools_utils::FILE_TYPE_DIR:
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_DIR)
 	{
-	  cerr << opts.package2 << " should be a directory\n";
+	  emit_prefix("abipkgdiff", cerr)
+	    << opts.package2 << " should be a directory\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
@@ -1704,14 +1746,16 @@ main(int argc, char* argv[])
     case abigail::tools_utils::FILE_TYPE_TAR:
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_TAR)
 	{
-	  cerr << opts.package2 << " should be a GNU tar archive\n";
+	  emit_prefix("abipkgdiff", cerr)
+	    << opts.package2 << " should be a GNU tar archive\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
       break;
 
     default:
-      cerr << opts.package1 << " should be a valid package file \n";
+      emit_prefix("abipkgdiff", cerr)
+	<< opts.package1 << " should be a valid package file \n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }

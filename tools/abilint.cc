@@ -48,6 +48,7 @@ using std::cin;
 using std::cout;
 using std::ostream;
 using std::ofstream;
+using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::guess_file_type;
@@ -65,6 +66,7 @@ using abigail::xml_writer::write_corpus_to_archive;
 
 struct options
 {
+  string			wrong_option;
   string			file_path;
   bool				display_version;
   bool				read_from_stdin;
@@ -85,17 +87,18 @@ struct options
 static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << " [options] [<abi-file1>]\n"
-      << " where options can be:\n"
-      << "  --help  display this message\n"
-      << "  --version|-v  display program version information and exit\n"
-      << "  --debug-info-dir <path> the path under which to look for "
-           "debug info for the elf <abi-file>\n"
-      << "  --diff  for xml inputs, perform a text diff between "
-         "the input and the memory model saved back to disk\n"
-      << "  --noout  do not display anything on stdout\n"
-      << "  --stdin|--  read abi-file content from stdin\n"
-      << "  --tu  expect a single translation unit file\n";
+  emit_prefix(prog_name, out)
+    << "usage: " << prog_name << " [options] [<abi-file1>]\n"
+    << " where options can be:\n"
+    << "  --help  display this message\n"
+    << "  --version|-v  display program version information and exit\n"
+    << "  --debug-info-dir <path> the path under which to look for "
+    "debug info for the elf <abi-file>\n"
+    << "  --diff  for xml inputs, perform a text diff between "
+    "the input and the memory model saved back to disk\n"
+    << "  --noout  do not display anything on stdout\n"
+    << "  --stdin|--  read abi-file content from stdin\n"
+    << "  --tu  expect a single translation unit file\n";
 }
 
 bool
@@ -144,7 +147,11 @@ parse_command_line(int argc, char* argv[], options& opts)
 	else if (!strcmp(argv[i], "--noout"))
 	  opts.noout = true;
 	else
-	  return false;
+	  {
+	    if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-')
+	      opts.wrong_option = argv[i];
+	    return false;
+	  }
       }
 
     if (opts.file_path.empty())
@@ -160,6 +167,9 @@ main(int argc, char* argv[])
   options opts;
   if (!parse_command_line(argc, argv, opts))
     {
+      if (!opts.wrong_option.empty())
+	emit_prefix(argv[0], cerr)
+	  << "unrecognized option: " << opts.wrong_option << "\n";
       display_usage(argv[0], cerr);
       return true;
     }
@@ -184,7 +194,8 @@ main(int argc, char* argv[])
 
 	  if (!tu)
 	    {
-	      cerr << "failed to read the ABI instrumentation from stdin\n";
+	      emit_prefix(argv[0], cerr)
+		<< "failed to read the ABI instrumentation from stdin\n";
 	      return true;
 	    }
 
@@ -202,7 +213,7 @@ main(int argc, char* argv[])
     }
   else if (!opts.file_path.empty())
     {
-      if (!check_file(opts.file_path, cerr))
+      if (!check_file(opts.file_path, cerr, argv[0]))
 	return true;
       abigail::translation_unit_sptr tu;
       abigail::corpus_sptr corp;
@@ -213,7 +224,8 @@ main(int argc, char* argv[])
       switch (type)
 	{
 	case abigail::tools_utils::FILE_TYPE_UNKNOWN:
-	  cerr << "Unknown file type given in input: " << opts.file_path;
+	  emit_prefix(argv[0], cerr)
+	    << "Unknown file type given in input: " << opts.file_path;
 	  return true;
 	case abigail::tools_utils::FILE_TYPE_NATIVE_BI:
 	  tu = read_translation_unit_from_file(opts.file_path, env.get());
@@ -249,25 +261,29 @@ main(int argc, char* argv[])
 
       if (!tu && !corp)
 	{
-	  cerr << "failed to read " << opts.file_path << "\n";
+	  emit_prefix(argv[0], cerr)
+	    << "failed to read " << opts.file_path << "\n";
 	  if (!(s & abigail::dwarf_reader::STATUS_OK))
 	    {
 	      if (s & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
 		{
 		  cerr << "could not find the debug info";
 		  if(di_root_path == 0)
-		    cerr << " Maybe you should consider using the "
+		    emit_prefix(argv[0], cerr)
+		      << " Maybe you should consider using the "
 		      "--debug-info-dir1 option to tell me about the "
 		      "root directory of the debuginfo? "
 		      "(e.g, --debug-info-dir1 /usr/lib/debug)\n";
 		  else
-		    cerr << "Maybe the root path to the debug "
+		    emit_prefix(argv[0], cerr)
+		      << "Maybe the root path to the debug "
 		      "information is wrong?\n";
 		}
 	      if (s & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-		cerr << "could not find the ELF symbols in the file "
-		     << opts.file_path
-		     << "\n";
+		emit_prefix(argv[0], cerr)
+		  << "could not find the ELF symbols in the file "
+		  << opts.file_path
+		  << "\n";
 	    }
 	  return true;
 	}
@@ -278,7 +294,7 @@ main(int argc, char* argv[])
       temp_file_sptr tmp_file = temp_file::create();
       if (!tmp_file)
 	{
-	  cerr << "failed to create temporary file\n";
+	  emit_prefix(argv[0], cerr) << "failed to create temporary file\n";
 	  return true;
 	}
 
@@ -326,8 +342,9 @@ main(int argc, char* argv[])
 	    (type == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
 	    ? "translation unit"
 	    : "ABI corpus";
-	  cerr << "failed to write the translation unit "
-	       << opts.file_path << " back\n";
+	  emit_prefix(argv[0], cerr)
+	    << "failed to write the translation unit "
+	    << opts.file_path << " back\n";
 	}
 
       if (is_ok

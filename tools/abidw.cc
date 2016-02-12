@@ -49,6 +49,7 @@ using std::cout;
 using std::ostream;
 using std::ofstream;
 using std::tr1::shared_ptr;
+using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::temp_file;
 using abigail::tools_utils::temp_file_sptr;
 using abigail::comparison::corpus_diff;
@@ -61,6 +62,7 @@ using abigail::xml_reader::read_corpus_from_native_xml_file;
 
 struct options
 {
+  string		wrong_option;
   string		in_file_path;
   string		out_file_path;
   shared_ptr<char>	di_root_path;
@@ -90,24 +92,25 @@ struct options
 static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name << " [options] [<path-to-elf-file>]\n"
-      << " where options can be: \n"
-      << "  --help|-h  display this message\n"
-      << "  --version|-v  display program version information and exit\n"
-      << "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
-      << "  --out-file <file-path>  write the output to 'file-path'\n"
-      << "  --noout  do not emit anything after reading the binary\n"
-      << "  --no-architecture  do not emit architecture info in the output\n"
-      << "  --no-show-locs  do now show location information\n"
-      << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
-		"of <elf-path>\n"
-      << "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
+  emit_prefix(prog_name, out)
+    << "usage: " << prog_name << " [options] [<path-to-elf-file>]\n"
+    << " where options can be: \n"
+    << "  --help|-h  display this message\n"
+    << "  --version|-v  display program version information and exit\n"
+    << "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
+    << "  --out-file <file-path>  write the output to 'file-path'\n"
+    << "  --noout  do not emit anything after reading the binary\n"
+    << "  --no-architecture  do not emit architecture info in the output\n"
+    << "  --no-show-locs  do now show location information\n"
+    << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
+    "of <elf-path>\n"
+    << "  --check-alternate-debug-info-base-name <elf-path>  check alternate "
     "debug info of <elf-path>, and show its base name\n"
-      << "  --load-all-types  read all types including those not reachable from"
-         "exported declarations\n"
-      << "  --abidiff  compare the loaded ABI against itself\n"
-      << "  --stats  show statistics about various internal stuff\n";
-    ;
+    << "  --load-all-types  read all types including those not reachable from"
+    "exported declarations\n"
+    << "  --abidiff  compare the loaded ABI against itself\n"
+    << "  --stats  show statistics about various internal stuff\n";
+  ;
 }
 
 static bool
@@ -180,7 +183,11 @@ parse_command_line(int argc, char* argv[], options& opts)
 	       || !strcmp(argv[i], "--h"))
 	return false;
       else
-	return false;
+	{
+	  if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-')
+	    opts.wrong_option = argv[i];
+	  return false;
+	}
     }
 
   return true;
@@ -211,6 +218,9 @@ main(int argc, char* argv[])
       || (opts.in_file_path.empty()
 	  && !opts.display_version))
     {
+      if (!opts.wrong_option.empty())
+	emit_prefix(argv[0], cerr)
+	  << "unrecognized option: " << opts.wrong_option << "\n";
       display_usage(argv[0], cerr);
       return 1;
     }
@@ -224,7 +234,7 @@ main(int argc, char* argv[])
     }
 
   assert(!opts.in_file_path.empty());
-  if (!abigail::tools_utils::check_file(opts.in_file_path, cerr))
+  if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
     return 1;
 
   abigail::tools_utils::file_type type =
@@ -232,7 +242,8 @@ main(int argc, char* argv[])
   if (type != abigail::tools_utils::FILE_TYPE_ELF
       && type != abigail::tools_utils::FILE_TYPE_AR)
     {
-      cerr << opts.in_file_path << " is not an ELF file\n";
+      emit_prefix(argv[0], cerr)
+	<< opts.in_file_path << " is not an ELF file\n";
       return 1;
     }
 
@@ -281,7 +292,8 @@ main(int argc, char* argv[])
 	}
       else
 	{
-	  cerr << "could not find alternate debug info file\n";
+	  emit_prefix(argv[0], cerr)
+	    << "could not find alternate debug info file\n";
 	  return 1;
 	}
     }
@@ -294,25 +306,28 @@ main(int argc, char* argv[])
 	{
 	  if (p == 0)
 	    {
-	      cerr <<
-		"Could not read debug info from "
-		   << opts.in_file_path << "\n";
+	      emit_prefix(argv[0], cerr)
+		<< "Could not read debug info from "
+		<< opts.in_file_path << "\n";
 
-	      cerr << "You might want to supply the root directory where "
+	      emit_prefix(argv[0], cerr)
+		<< "You might want to supply the root directory where "
 		"to search debug info from, using the "
 		"--debug-info-dir option "
 		"(e.g --debug-info-dir /usr/lib/debug)\n";
 	    }
 	  else
 	    {
-	      cerr << "Could not read debug info for '" << opts.in_file_path
-		   << "' from debug info root directory '" << p
-		   << "'\n";
+	      emit_prefix(argv[0], cerr)
+		<< "Could not read debug info for '" << opts.in_file_path
+		<< "' from debug info root directory '" << p
+		<< "'\n";
 	    }
 	}
       else if (s == dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
-	cerr << "Could not read ELF symbol information from "
-	     << opts.in_file_path << "\n";
+	emit_prefix(argv[0], cerr)
+	  << "Could not read ELF symbol information from "
+	  << opts.in_file_path << "\n";
 
       return 1;
     }
@@ -331,7 +346,8 @@ main(int argc, char* argv[])
 					     env.get());
 	  if (!corp2)
 	    {
-	      cerr << "Could not read temporary XML representation of "
+	      emit_prefix(argv[0], cerr)
+		<< "Could not read temporary XML representation of "
 		"elf file back\n";
 	      return 1;
 	    }
@@ -359,8 +375,9 @@ main(int argc, char* argv[])
 	  ofstream of(opts.out_file_path.c_str(), std::ios_base::trunc);
 	  if (!of.is_open())
 	    {
-	      cerr << "could not open output file '"
-		   << opts.out_file_path << "'\n";
+	      emit_prefix(argv[0], cerr)
+		<< "could not open output file '"
+		<< opts.out_file_path << "'\n";
 	      return 1;
 	    }
 	  abigail::xml_writer::write_corpus_to_native_xml(corp, 0, of);

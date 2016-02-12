@@ -63,8 +63,14 @@ using std::ofstream;
 using std::vector;
 using std::tr1::shared_ptr;
 
-struct options
+using abigail::tools_utils::emit_prefix;
+
+class options
 {
+  options();
+
+public:
+  string		prog_name;
   string		unknow_option;
   string		app_path;
   string		lib1_path;
@@ -81,8 +87,9 @@ struct options
   bool			show_redundant;
   bool			show_locs;
 
-  options()
-    :display_help(),
+  options(const char* program_name)
+    :prog_name(program_name),
+     display_help(),
      display_version(),
      weak_mode(),
      list_undefined_symbols_only(),
@@ -95,28 +102,29 @@ struct options
 static void
 display_usage(const string& prog_name, ostream& out)
 {
-  out << "usage: " << prog_name
-      << " [options] [application-path] [lib-v1-path] [lib-v2-path]"
-      << "\n"
-      << " where options can be: \n"
-      << "  --help|-h  display this help message\n"
-      << "  --version|-v  show program version information and exit\n"
-      << "  --list-undefined-symbols|-u  display the list of "
-         "undefined symbols of the application\n"
-      << "  --show-base-names|b  in the report, only show the base names "
-         " of the files; not the full paths\n"
-      << "  --app-debug-info-dir <path-to-app-debug-info>  set the path "
-         "to the debug information directory for the application\n"
-      << "  --lib-debug-info-dir1 <path-to-lib-debug-info1>  set the path "
-         "to the debug information directory for the first library\n"
-      << "  --lib-debug-info-dir2 <path-to-lib-debug-info2>  set the path "
-         "to the debug information directory for the second library\n"
-      <<  "--suppressions <path> specify a suppression file\n"
-      << "--no-redundant  do not display redundant changes\n"
-      << "--no-show-locs  do now show location information\n"
-      << "--redundant  display redundant changes (this is the default)\n"
-      << "--weak-mode  check compatibility between the application and "
-         "just one version of the library."
+  emit_prefix(prog_name, out)
+    << "usage: " << prog_name
+    << " [options] [application-path] [lib-v1-path] [lib-v2-path]"
+    << "\n"
+    << " where options can be: \n"
+    << "  --help|-h  display this help message\n"
+    << "  --version|-v  show program version information and exit\n"
+    << "  --list-undefined-symbols|-u  display the list of "
+    "undefined symbols of the application\n"
+    << "  --show-base-names|b  in the report, only show the base names "
+    " of the files; not the full paths\n"
+    << "  --app-debug-info-dir <path-to-app-debug-info>  set the path "
+    "to the debug information directory for the application\n"
+    << "  --lib-debug-info-dir1 <path-to-lib-debug-info1>  set the path "
+    "to the debug information directory for the first library\n"
+    << "  --lib-debug-info-dir2 <path-to-lib-debug-info2>  set the path "
+    "to the debug information directory for the second library\n"
+    <<  "--suppressions <path> specify a suppression file\n"
+    << "--no-redundant  do not display redundant changes\n"
+    << "--no-show-locs  do now show location information\n"
+    << "--redundant  display redundant changes (this is the default)\n"
+    << "--weak-mode  check compatibility between the application and "
+    "just one version of the library."
     ;
 }
 
@@ -332,7 +340,7 @@ perform_compat_check_in_normal_mode(options& opts,
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
        i != opts.suppression_paths.end();
        ++i)
-    if (check_file(*i, cerr))
+    if (check_file(*i, cerr, opts.prog_name))
       read_suppressions(*i, supprs);
 
   if (!supprs.empty())
@@ -493,7 +501,7 @@ perform_compat_check_in_weak_mode(options& opts,
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
        i != opts.suppression_paths.end();
        ++i)
-    if (check_file(*i, cerr))
+    if (check_file(*i, cerr, opts.prog_name))
       read_suppressions(*i, supprs);
 
   if (!supprs.empty())
@@ -587,20 +595,22 @@ perform_compat_check_in_weak_mode(options& opts,
 int
 main(int argc, char* argv[])
 {
-  options opts;
+  options opts(argv[0]);
 
   if (!parse_command_line(argc, argv, opts))
     {
       if (!opts.unknow_option.empty())
 	{
-	  cerr << "unrecognized option: " << opts.unknow_option << "\n"
-	       << "try the --help option for more information\n";
+	  emit_prefix(argv[0], cerr)
+	    << "unrecognized option: " << opts.unknow_option << "\n"
+	    << "try the --help option for more information\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
 
-      cerr << "wrong invocation\n"
-	   << "try the --help option for more information\n";
+      emit_prefix(argv[0], cerr)
+	<< "wrong invocation\n"
+	<< "try the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
@@ -621,14 +631,15 @@ main(int argc, char* argv[])
     }
 
   assert(!opts.app_path.empty());
-  if (!abigail::tools_utils::check_file(opts.app_path, cerr))
+  if (!abigail::tools_utils::check_file(opts.app_path, cerr, opts.prog_name))
     return abigail::tools_utils::ABIDIFF_ERROR;
 
   abigail::tools_utils::file_type type =
     abigail::tools_utils::guess_file_type(opts.app_path);
   if (type != abigail::tools_utils::FILE_TYPE_ELF)
     {
-      cerr << opts.app_path << " is not an ELF file\n";
+      emit_prefix(argv[0], cerr)
+	<< opts.app_path << " is not an ELF file\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
@@ -644,12 +655,14 @@ main(int argc, char* argv[])
 
   if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
     {
-      cerr << "could not read symbols from " << opts.app_path << "\n";
+      emit_prefix(argv[0], cerr)
+	<< "could not read symbols from " << opts.app_path << "\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
   if (!(status & abigail::dwarf_reader::STATUS_OK))
     {
-      cerr << "could not read file " << opts.app_path << "\n";
+      emit_prefix(argv[0], cerr)
+	<< "could not read file " << opts.app_path << "\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
@@ -673,12 +686,12 @@ main(int argc, char* argv[])
 
   // Read the first version of the library.
   assert(!opts.lib1_path.empty());
-  if (!abigail::tools_utils::check_file(opts.lib1_path, cerr))
+  if (!abigail::tools_utils::check_file(opts.lib1_path, cerr, opts.prog_name))
     return abigail::tools_utils::ABIDIFF_ERROR;
   type = abigail::tools_utils::guess_file_type(opts.lib1_path);
   if (type != abigail::tools_utils::FILE_TYPE_ELF)
     {
-      cerr << opts.lib1_path << " is not an ELF file\n";
+      emit_prefix(argv[0], cerr) << opts.lib1_path << " is not an ELF file\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
@@ -688,7 +701,8 @@ main(int argc, char* argv[])
 						 /*load_all_types=*/false,
 						 status);
   if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-    cerr << "could not read debug info for " << opts.lib1_path << "\n";
+    emit_prefix(argv[0], cerr)
+      << "could not read debug info for " << opts.lib1_path << "\n";
   if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
     {
       cerr << "could not read symbols from " << opts.lib1_path << "\n";
@@ -696,7 +710,8 @@ main(int argc, char* argv[])
     }
   if (!(status & abigail::dwarf_reader::STATUS_OK))
     {
-      cerr << "could not read file " << opts.lib1_path << "\n";
+      emit_prefix(argv[0], cerr)
+	<< "could not read file " << opts.lib1_path << "\n";
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
@@ -712,15 +727,18 @@ main(int argc, char* argv[])
 					 /*load_all_types=*/false,
 					 status);
       if (status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)
-	cerr << "could not read debug info for " << opts.lib2_path << "\n";
+	emit_prefix(argv[0], cerr)
+	  << "could not read debug info for " << opts.lib2_path << "\n";
       if (status & abigail::dwarf_reader::STATUS_NO_SYMBOLS_FOUND)
 	{
-	  cerr << "could not read symbols from " << opts.lib2_path << "\n";
+	  emit_prefix(argv[0], cerr)
+	    << "could not read symbols from " << opts.lib2_path << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
       if (!(status & abigail::dwarf_reader::STATUS_OK))
 	{
-	  cerr << "could not read file " << opts.lib2_path << "\n";
+	  emit_prefix(argv[0], cerr)
+	    << "could not read file " << opts.lib2_path << "\n";
 	  return abigail::tools_utils::ABIDIFF_ERROR;
 	}
     }
