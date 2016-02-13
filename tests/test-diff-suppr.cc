@@ -968,6 +968,110 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test26-loc-suppr-report-3.txt",
     "output/test-diff-suppr/test26-loc-suppr-report-3.txt"
   },
+  {
+    "data/test-diff-suppr/test27-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test27-add-aliased-function-report-0.txt",
+    "output/test-diff-suppr/test27-add-aliased-function-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/test27-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test27-add-aliased-function-0.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test27-add-aliased-function-report-1.txt",
+    "output/test-diff-suppr/test27-add-aliased-function-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test27-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test27-add-aliased-function-1.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test27-add-aliased-function-report-2.txt",
+    "output/test-diff-suppr/test27-add-aliased-function-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/test27-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test27-add-aliased-function-2.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test27-add-aliased-function-report-3.txt",
+    "output/test-diff-suppr/test27-add-aliased-function-report-3.txt"
+  },
+  {
+    "data/test-diff-suppr/test27-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test27-add-aliased-function-3.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test27-add-aliased-function-report-4.txt",
+    "output/test-diff-suppr/test27-add-aliased-function-report-4.txt"
+  },
+  {
+    "data/test-diff-suppr/test27-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test27-add-aliased-function-4.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test27-add-aliased-function-report-5.txt",
+    "output/test-diff-suppr/test27-add-aliased-function-report-5.txt"
+  },
+  {
+    "data/test-diff-suppr/test28-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test28-add-aliased-function-report-0.txt",
+    "output/test-diff-suppr/test28-add-aliased-function-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/test28-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test28-add-aliased-function-0.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test28-add-aliased-function-report-1.txt",
+    "output/test-diff-suppr/test28-add-aliased-function-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/test28-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test28-add-aliased-function-1.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test28-add-aliased-function-report-2.txt",
+    "output/test-diff-suppr/test28-add-aliased-function-report-2.txt"
+  },
+  {
+    "data/test-diff-suppr/test28-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test28-add-aliased-function-2.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test28-add-aliased-function-report-3.txt",
+    "output/test-diff-suppr/test28-add-aliased-function-report-3.txt"
+  },
+  {
+    "data/test-diff-suppr/test28-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test28-add-aliased-function-3.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test28-add-aliased-function-report-4.txt",
+    "output/test-diff-suppr/test28-add-aliased-function-report-4.txt"
+  },
+  {
+    "data/test-diff-suppr/test28-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test28-add-aliased-function-4.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test28-add-aliased-function-report-5.txt",
+    "output/test-diff-suppr/test28-add-aliased-function-report-5.txt"
+  },
+  {
+    "data/test-diff-suppr/test28-add-aliased-function-v0.o",
+    "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "data/test-diff-suppr/test28-add-aliased-function-5.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test28-add-aliased-function-report-6.txt",
+    "output/test-diff-suppr/test28-add-aliased-function-report-6.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
 };
