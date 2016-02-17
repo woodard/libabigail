@@ -9701,12 +9701,11 @@ function_type::~function_type()
 ///
 /// @param alignment_in_bits the alignment of an instance of
 /// method_type, expressed in bits.
-method_type::method_type
-(shared_ptr<type_base> return_type,
- shared_ptr<class_decl> class_type,
- const std::vector<shared_ptr<function_decl::parameter> >& parms,
- size_t size_in_bits,
- size_t alignment_in_bits)
+method_type::method_type (type_base_sptr return_type,
+			  class_decl_sptr class_type,
+			  const std::vector<shared_ptr<function_decl::parameter> >& parms,
+			  size_t size_in_bits,
+			  size_t alignment_in_bits)
   : type_base(size_in_bits, alignment_in_bits),
     function_type(return_type, parms, size_in_bits, alignment_in_bits)
 {set_class_type(class_type);}
@@ -9730,9 +9729,8 @@ method_type::method_type
 ///
 /// @param alignment_in_bits the alignment of an instance of
 /// method_type, expressed in bits.
-
-method_type::method_type(shared_ptr<type_base> return_type,
-			 shared_ptr<type_base> class_type,
+method_type::method_type(type_base_sptr return_type,
+			 type_base_sptr class_type,
 			 const std::vector<shared_ptr<function_decl::parameter> >& parms,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)

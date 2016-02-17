@@ -2494,19 +2494,19 @@ public:
   /// Hasher for intances of method_type
   struct hash;
 
-  method_type(shared_ptr<type_base> return_type,
-	      shared_ptr<class_decl> class_type,
+  method_type(type_base_sptr return_type,
+	      class_decl_sptr class_type,
 	      const std::vector<shared_ptr<function_decl::parameter> >& parms,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
-  method_type(shared_ptr<type_base> return_type,
-	      shared_ptr<type_base> class_type,
+  method_type(type_base_sptr return_type,
+	      type_base_sptr class_type,
 	      const std::vector<shared_ptr<function_decl::parameter> >& parms,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
-  method_type(shared_ptr<class_decl> class_type,
+  method_type(class_decl_sptr class_type,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
@@ -2518,7 +2518,7 @@ public:
   {return class_decl_sptr(class_type_);}
 
   void
-  set_class_type(shared_ptr<class_decl> t);
+  set_class_type(class_decl_sptr t);
 
   virtual string
   get_pretty_representation(bool internal = false) const;
@@ -2905,15 +2905,15 @@ public:
   /// Convenience typedef
   /// @{
   typedef shared_ptr<base_spec>			base_spec_sptr;
-  typedef std::vector<base_spec_sptr>			base_specs;
-  typedef std::vector<type_base_sptr>			member_types;
-  typedef std::vector<var_decl_sptr>			data_members;
+  typedef vector<base_spec_sptr>			base_specs;
+  typedef vector<type_base_sptr>			member_types;
+  typedef vector<var_decl_sptr>			data_members;
   typedef shared_ptr<method_decl>			method_decl_sptr;
-  typedef std::vector<method_decl_sptr>		member_functions;
-  typedef shared_ptr<member_function_template>		member_function_template_sptr;
-  typedef std::vector<member_function_template_sptr>	member_function_templates;
-  typedef shared_ptr<member_class_template>		member_class_template_sptr;
-  typedef std::vector<member_class_template_sptr>	member_class_templates;
+  typedef vector<method_decl_sptr>		member_functions;
+  typedef shared_ptr<member_function_template>	member_function_template_sptr;
+  typedef vector<member_function_template_sptr> member_function_templates;
+  typedef shared_ptr<member_class_template>	member_class_template_sptr;
+  typedef vector<member_class_template_sptr> member_class_templates;
   /// @}
 
 private:
@@ -3415,11 +3415,11 @@ public:
 
   /// @return the type of the current instance of the
   /// class_decl::method_decl.
-  const shared_ptr<method_type>
+  const method_type_sptr
   get_type() const;
 
   void
-  set_type(shared_ptr<method_type> fn_type)
+  set_type(const method_type_sptr fn_type)
   {function_decl::set_type(fn_type);}
 
   friend bool

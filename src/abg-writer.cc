@@ -2443,6 +2443,8 @@ write_class_decl(const class_decl_sptr	decl,
 	{
 	  function_decl_sptr fn = *f;
 	  if (get_member_function_is_virtual(fn))
+	    // All virtual member functions are emitted together,
+	    // later.
 	    continue;
 
 	  assert(!get_member_function_is_virtual(fn));
