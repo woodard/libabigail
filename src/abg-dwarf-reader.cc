@@ -8030,7 +8030,13 @@ build_function_decl(read_context&	ctxt,
       // Add the properties that might have been missing from the
       // first declaration of the function.  For now, it usually is
       // the mangled name that goes missing in the first declarations.
-      if (!flinkage_name.empty() && result->get_linkage_name().empty())
+      //
+      // Also note that if 'fn' has just been cloned, the current
+      // linkage name (of the current DIE) might be different from the
+      // linkage name of 'fn'.  In that case, update the linkage name
+      // of 'fn' too.
+      if (!flinkage_name.empty()
+	  && result->get_linkage_name() != flinkage_name)
 	result->set_linkage_name(flinkage_name);
     }
   else
@@ -8142,11 +8148,11 @@ read_debug_info_into_corpus(read_context& ctxt)
   /// translation has been constructed (which is just now) and
   /// canonicalize them.
   ///
-  /// The types need to be constructed at the end of the translation
+  /// These types need to be constructed at the end of the translation
   /// unit reading phase because some types are modified by some DIEs
   /// even after the principal DIE describing the type has been read;
   /// this happens for clones of virtual destructors (for instance) or
-  /// even for some static data members.  We need to that for types
+  /// even for some static data members.  We need to do that for types
   /// are in the alternate debug info section and for types that in
   /// the main debug info section.
 
@@ -8586,6 +8592,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_subprogram:
       {
 	  Dwarf_Die spec_die;
+	  Dwarf_Die abstract_origin_die;
+	  Dwarf_Die *interface_die = 0, *origin_die = 0;
 	  scope_decl_sptr scop;
 	  if (die_is_artificial(die))
 	    break;
@@ -8600,15 +8608,24 @@ build_ir_node_from_die(read_context&	ctxt,
 	  bool has_abstract_origin =
 	    die_die_attribute(die, die_is_from_alt_di,
 			      DW_AT_abstract_origin,
-			      spec_die,
+			      abstract_origin_die,
 			      is_in_alternate_debug_info,
 			      true);
 	  if (has_spec || has_abstract_origin)
 	    {
-	      string linkage_name = die_linkage_name(die);
-	      string spec_linkage_name = die_linkage_name(&spec_die);
+	      interface_die =
+		has_spec
+		? &spec_die
+		: &abstract_origin_die;
+	      origin_die =
+		has_abstract_origin
+		? &abstract_origin_die
+		: &spec_die;
 
-	      scop = get_scope_for_die(ctxt, &spec_die,
+	      string linkage_name = die_linkage_name(die);
+	      string spec_linkage_name = die_linkage_name(interface_die);
+
+	      scop = get_scope_for_die(ctxt, interface_die,
 				       is_in_alternate_debug_info,
 				       called_from_public_decl,
 				       where_offset);
@@ -8616,7 +8633,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		{
 		  decl_base_sptr d =
 		    is_decl(build_ir_node_from_die(ctxt,
-						   &spec_die,
+						   origin_die,
 						   is_in_alternate_debug_info,
 						   scop.get(),
 						   called_from_public_decl,

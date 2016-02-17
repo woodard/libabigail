@@ -6571,6 +6571,67 @@ type_base::get_canonical_type_for(type_base_sptr t)
   return result;
 }
 
+/// This is a subroutine of the canonicalize() function.
+///
+/// When the canonical type C of type T has just been computed, there
+/// can be cases where T has member functions that C doesn't have.
+///
+/// This is possible because non virtual member functions are not
+/// taken in account when comparing two types.
+///
+/// In that case, this function updates C so that it contains the
+/// member functions.
+///
+/// There can also be cases where C has a method M which is not linked
+/// to any underlying symbol, whereas in T, M is to link to an
+/// underlying symbol.  In that case, this function updates M in C so
+/// that it's linked to the same underlying symbol as for M in T.
+static void
+maybe_adjust_canonical_type(const type_base_sptr& canonical,
+			    const type_base_sptr& type)
+{
+  if (// If 'type' is *NOT* a newly canonicalized type ...
+      type->get_naked_canonical_type()
+      // ... or if 'type' is it's own canonical type, then get out.
+      || type.get() == canonical.get())
+    return;
+
+  if (class_decl_sptr cl = is_class_type(type))
+    {
+      class_decl_sptr canonical_class = is_class_type(canonical);
+
+      if (canonical_class)
+	{
+	  // Set symbols of member functions that might be missing
+	  // theirs.
+	  for (class_decl::member_functions::const_iterator i =
+		 cl->get_member_functions().begin();
+	       i != cl->get_member_functions().end();
+	       ++i)
+	    if ((*i)->get_symbol())
+	      {
+		if (class_decl::method_decl *m = canonical_class->
+		    find_member_function((*i)->get_linkage_name()))
+		  {
+		    elf_symbol_sptr s1 = (*i)->get_symbol();
+		    if (s1 && !m->get_symbol())
+		      // Method 'm' in the canonical type is not
+		      // linked to the underlying symbol of '*i'.
+		      // Let's link it now.  have th
+		      m->set_symbol(s1);
+		  }
+		else
+		  // There is a member function defined and publicly
+		  // exported in the other class, and the canonical
+		  // class doesn't have that member function.  Let's
+		  // copy that member function to the canonical class
+		  // then.
+		  copy_member_function (canonical_class, *i);
+	      }
+	}
+    }
+}
+
 /// Compute the canonical type of a given type.
 ///
 /// It means that after invoking this function, comparing the intance
@@ -6596,6 +6657,7 @@ canonicalize(type_base_sptr t)
     return t->get_canonical_type();
 
   type_base_sptr canonical = type_base::get_canonical_type_for(t);
+  maybe_adjust_canonical_type(canonical, t);
 
   t->priv_->canonical_type = canonical;
   t->priv_->naked_canonical_type = canonical.get();
@@ -10349,10 +10411,10 @@ function_decl::get_id() const
 {
   if (priv_->id_.empty())
     {
-      if (elf_symbol_sptr s = get_symbol())
-	priv_->id_ = s->get_id_string();
-      else if (!get_linkage_name().empty())
+      if (!get_linkage_name().empty())
 	priv_->id_= get_linkage_name();
+      else if (elf_symbol_sptr s = get_symbol())
+	priv_->id_ = s->get_id_string();
       else
 	priv_->id_ = get_pretty_representation();
     }
@@ -10740,6 +10802,7 @@ struct class_decl::priv
   data_members			data_members_;
   data_members			non_static_data_members_;
   member_functions		member_functions_;
+  string_mem_fn_ptr_map_type	mem_fns_map_;
   member_functions		virtual_mem_fns_;
   member_function_templates	member_function_templates_;
   member_class_templates	member_class_templates_;
@@ -11191,9 +11254,40 @@ const class_decl::member_functions&
 class_decl::get_virtual_mem_fns() const
 {return priv_->virtual_mem_fns_;}
 
+/// Sort the virtual member functions by their virtual index.
 void
 class_decl::sort_virtual_mem_fns()
 {sort_virtual_member_functions(priv_->virtual_mem_fns_);}
+
+/// Find a method, using its linkage name as a key.
+///
+/// @param linkage_name the linkage name of the method to find.
+///
+/// @return the method found, or nil if none was found.
+const class_decl::method_decl*
+class_decl::find_member_function(const string& linkage_name) const
+{
+  string_mem_fn_ptr_map_type::const_iterator i =
+    priv_->mem_fns_map_.find(linkage_name);
+  if (i == priv_->mem_fns_map_.end())
+    return 0;
+  return i->second;
+}
+
+/// Find a method, using its linkage name as a key.
+///
+/// @param linkage_name the linkage name of the method to find.
+///
+/// @return the method found, or nil if none was found.
+class_decl::method_decl*
+class_decl::find_member_function(const string& linkage_name)
+{
+  string_mem_fn_ptr_map_type::const_iterator i =
+    priv_->mem_fns_map_.find(linkage_name);
+  if (i == priv_->mem_fns_map_.end())
+    return 0;
+  return i->second;
+}
 
 /// Get the member function templates of this class.
 ///
@@ -11717,6 +11811,23 @@ class_decl::method_decl::method_decl(const std::string&	name,
 		  declared_inline, locus, linkage_name, vis, bind)
 {}
 
+/// Set the linkage name of the method.
+///
+/// @param l the new linkage name of the method.
+void
+class_decl::method_decl::set_linkage_name(const string& l)
+{
+  decl_base::set_linkage_name(l);
+  // Update the linkage_name -> member function map of the containing
+  // class declaration.
+  if (!l.empty())
+    {
+      method_type_sptr t = get_type();
+      class_decl_sptr cl = t->get_class_type();
+      cl->priv_->mem_fns_map_[l] = this;
+    }
+}
+
 class_decl::method_decl::~method_decl()
 {}
 
@@ -11859,6 +11970,12 @@ class_decl::add_member_function(method_decl_sptr f,
   set_member_function_is_const(f, is_const);
 
   priv_->member_functions_.push_back(f);
+
+  // Update the map of linkage name -> member functions.  It's useful,
+  // so that class_decl::find_member_function() can function.
+  if (!f->get_linkage_name().empty())
+    priv_->mem_fns_map_[f->get_linkage_name()] = f.get();
+
   if (is_virtual)
     sort_virtual_member_functions(priv_->virtual_mem_fns_);
 }
@@ -11982,6 +12099,63 @@ class_decl::get_hash() const
   class_decl::hash hash_class;
   return hash_class(this);
 }
+
+/// Copy a method of a class into a new class.
+///
+/// @param klass the class into which the method is to be copied.
+///
+/// @param method the method to copy into @p klass.
+///
+/// @return the resulting newly copied method.
+class_decl::method_decl_sptr
+copy_member_function(class_decl_sptr& klass,
+		     const class_decl::method_decl* method)
+{
+  assert(klass);
+  assert(method);
+
+  method_type_sptr old_type = method->get_type();
+  assert(old_type);
+  method_type_sptr new_type(new method_type(old_type->get_return_type(),
+					    klass,
+					    old_type->get_parameters(),
+					    old_type->get_size_in_bits(),
+					    old_type->get_alignment_in_bits()));
+  new_type->set_environment(klass->get_environment());
+  keep_type_alive(new_type);
+
+  class_decl::method_decl_sptr
+    new_method(new class_decl::method_decl(method->get_name(),
+					   new_type,
+					   method->is_declared_inline(),
+					   method->get_location(),
+					   method->get_linkage_name(),
+					   method->get_visibility(),
+					   method->get_binding()));
+  new_method->set_symbol(method->get_symbol());
+
+  klass->add_member_function(new_method,
+			     get_member_access_specifier(*method),
+			     get_member_function_is_virtual(*method),
+			     get_member_function_vtable_offset(*method),
+			     get_member_is_static(*method),
+			     get_member_function_is_ctor(*method),
+			     get_member_function_is_dtor(*method),
+			     get_member_function_is_const(*method));
+  return new_method;
+}
+
+/// Copy a method of a class into a new class.
+///
+/// @param klass the class into which the method is to be copied.
+///
+/// @param method the method to copy into @p klass.
+///
+/// @return the resulting newly copied method.
+class_decl::method_decl_sptr
+copy_member_function(class_decl_sptr& klass,
+		     const class_decl::method_decl_sptr& method)
+{return copy_member_function(klass, method.get());}
 
 /// Compares two instances of @ref class_decl.
 ///

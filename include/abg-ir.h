@@ -1086,7 +1086,7 @@ public:
   const string&
   get_linkage_name() const;
 
-  void
+  virtual void
   set_linkage_name(const std::string& m);
 
   scope_decl*
@@ -2910,6 +2910,7 @@ public:
   typedef vector<var_decl_sptr>			data_members;
   typedef shared_ptr<method_decl>			method_decl_sptr;
   typedef vector<method_decl_sptr>		member_functions;
+  typedef unordered_map<string, method_decl*> string_mem_fn_ptr_map_type;
   typedef shared_ptr<member_function_template>	member_function_template_sptr;
   typedef vector<member_function_template_sptr> member_function_templates;
   typedef shared_ptr<member_class_template>	member_class_template_sptr;
@@ -3050,6 +3051,12 @@ public:
   void
   sort_virtual_mem_fns();
 
+  const method_decl*
+  find_member_function(const string& mangled_name) const;
+
+  method_decl*
+  find_member_function(const string& mangled_name);
+
   void
   add_member_function_template(shared_ptr<member_function_template>);
 
@@ -3091,6 +3098,14 @@ public:
 
   virtual ~class_decl();
 
+  friend method_decl_sptr
+  copy_member_function(class_decl_sptr& clazz,
+		       const method_decl_sptr& m);
+
+  friend method_decl_sptr
+  copy_member_function(class_decl_sptr& clazz,
+		       const method_decl*m);
+
   friend void
   fixup_virtual_member_function(method_decl_sptr method);
 
@@ -3100,6 +3115,14 @@ public:
   friend bool
   equals(const class_decl&, const class_decl&, change_kind*);
 };// end class class_decl
+
+class_decl::method_decl_sptr
+copy_member_function(class_decl_sptr& clazz,
+		     const class_decl::method_decl_sptr& f);
+
+class_decl::method_decl_sptr
+copy_member_function(class_decl_sptr& clazz,
+		     const class_decl::method_decl* f);
 
 void
 fixup_virtual_member_function(class_decl::method_decl_sptr method);
@@ -3412,6 +3435,9 @@ public:
 	      const std::string& mangled_name = "",
 	      visibility vis = VISIBILITY_DEFAULT,
 	      binding bind = BINDING_GLOBAL);
+
+  virtual void
+  set_linkage_name(const string&);
 
   /// @return the type of the current instance of the
   /// class_decl::method_decl.
