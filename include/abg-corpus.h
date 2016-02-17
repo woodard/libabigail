@@ -205,6 +205,9 @@ public:
   const functions&
   get_functions() const;
 
+  const vector<function_decl*>*
+  lookup_functions(const string& id) const;
+
   void
   sort_functions();
 

@@ -108,6 +108,8 @@ typedef unordered_map<string, var_decl*> str_var_ptr_map_type;
 class corpus::exported_decls_builder::priv
 {
   friend class corpus::exported_decls_builder;
+  friend class corpus;
+
   priv();
 
   functions&		fns_;
@@ -392,21 +394,38 @@ public:
   /// Add a given function to the map of functions that are present in
   /// the set of exported functions.
   ///
-  /// @param id the function to add to the map.
+  /// @param fn the function to add to the map.
   void
   add_fn_to_id_fns_map(function_decl* fn)
   {
     if (!fn)
       return;
 
-    if (!fn_is_in_id_fns_map(fn))
-      return;
-
+    // First associate the function id to the function.
     string fn_id = fn->get_id();
     vector<function_decl*>* fns = fn_id_is_in_id_fns_map(fn_id);
     if (!fns)
       fns = &(id_fns_map()[fn_id] = vector<function_decl*>());
     fns->push_back(fn);
+
+    // Now associate all aliases of the underlying symbol to the
+    // function too.
+    elf_symbol_sptr sym = fn->get_symbol();
+    assert(sym);
+    string sym_id;
+    do
+      {
+	sym_id = sym->get_id_string();
+	if (sym_id == fn_id)
+	  goto loop;
+	fns = fn_id_is_in_id_fns_map(fn_id);
+	if (!fns)
+	  fns = &(id_fns_map()[fn_id] = vector<function_decl*>());
+	fns->push_back(fn);
+      loop:
+	sym = sym->get_next_alias();
+      }
+    while (sym && !sym->is_main_symbol());
   }
 
   /// Test if a given (ID of a) varialble is present in the variable
@@ -1749,6 +1768,31 @@ corpus::lookup_variable_symbol(const elf_symbol& symbol) const
 const corpus::functions&
 corpus::get_functions() const
 {return priv_->fns;}
+
+/// Lookup the function which has a given function ID.
+///
+/// Note that there can have been several functions with the same ID.
+/// This is because debug info can declare the same function in
+/// several different translation units.  Normally, all these function
+/// should be equal.  But still, this function returns all these
+/// functions.
+///
+/// @param id the ID of the function to lookup.  This ID must be
+/// either the result of invoking function::get_id() of
+/// elf_symbol::get_id_string().
+///
+/// @return the vector functions which ID is @p id, or nil if no
+/// function with that ID was found.
+const vector<function_decl*>*
+corpus::lookup_functions(const string& id) const
+{
+  exported_decls_builder_sptr b = get_exported_decls_builder();
+  str_fn_ptrs_map_type::const_iterator i =
+    b->priv_->id_fns_map_.find(id);
+  if (i == b->priv_->id_fns_map_.end())
+    return 0;
+  return &i->second;
+}
 
 /// Sort the set of functions exported by this corpus.
 ///
