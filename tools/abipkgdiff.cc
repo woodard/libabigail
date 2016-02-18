@@ -1601,7 +1601,7 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
       else if (!strcmp(argv[i], "--no-added-syms"))
-		 opts.show_added_syms = false;
+	opts.show_added_syms = false;
       else if (!strcmp(argv[i], "--no-added-binaries"))
 	opts.show_added_binaries = false;
       else if (!strcmp(argv[i], "--fail-no-dbg"))
