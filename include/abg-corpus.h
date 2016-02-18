@@ -76,6 +76,9 @@ private:
 
   corpus();
 
+  void record_canonical_type(const type_base_sptr&) const;
+  type_base_sptr lookup_canonical_type(const string& qualified_name) const;
+
 public:
 
   corpus(const string&, ir::environment*);
@@ -264,6 +267,8 @@ public:
 
   exported_decls_builder_sptr
   get_exported_decls_builder() const;
+
+  friend class type_base;
 };// end class corpus.
 
 /// Abstracts the building of the set of exported variables and

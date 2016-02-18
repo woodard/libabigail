@@ -35,6 +35,7 @@
 #include <tr1/unordered_map>
 #include "abg-sptr-utils.h"
 #include "abg-ir.h"
+#include "abg-corpus.h"
 
 namespace
 {
@@ -6469,6 +6470,13 @@ type_base::get_canonical_type_for(type_base_sptr t)
   // composite types which would have "class Foo" as a sub-type.
   string repr = ir::get_pretty_representation(t, /*internal=*/true);
 
+  // This is the corpus of the type we want to canonicalize.
+  const corpus* t_corpus = t->get_corpus();
+
+  // If 't' already has a canonical type 'inside' its corpus
+  // (t_corpus), then this variable is going to contain that canonical
+  // type.
+  type_base_sptr canonical_type_present_in_corpus;
   environment::canonical_types_map_type& types =
     env->get_canonical_types_map();
 
@@ -6483,7 +6491,6 @@ type_base::get_canonical_type_for(type_base_sptr t)
     }
   else
     {
-      const corpus* t_corpus = t->get_corpus();
       vector<type_base_sptr> &v = i->second;
       // Let's compare 't' structurally (i.e, compare its sub-types
       // recursively) against the canonical types of the system. If it
@@ -6512,10 +6519,10 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  // canonical types are present in this vector (e.g, when
 	  // comparing two ABI corpora), the canonical types of the
 	  // second corpus are going to be near the end the vector.
-	  // As this function is likely to called during the loading
-	  // of the ABI corpus, looking from the end of the vector
-	  // maximizes the changes of triggering the optimization,
-	  // even when we are reading the second corpus.
+	  // As this function is likely to be called during the
+	  // loading of the ABI corpus, looking from the end of the
+	  // vector maximizes the changes of triggering the
+	  // optimization, even when we are reading the second corpus.
 	  if (t_corpus
 	      // We are not doing the optimizatin for anymous types
 	      // because, well, two anonymous type have the same name
@@ -6539,7 +6546,16 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	    {
 	      if (const corpus* it_corpus = (*it)->get_corpus())
 		{
-		  if (it_corpus == t_corpus
+		  // This is true if the canonical type candidate and
+		  // the type being canonicalized are both from the
+		  // same corpus.
+		  bool same_corpus = (it_corpus == t_corpus);
+		  if (!same_corpus)
+		    // Maybe a canonical type for 't' has already been
+		    // computed from this corpus?
+		    canonical_type_present_in_corpus =
+		      t_corpus->lookup_canonical_type(repr);
+		  if ((same_corpus || canonical_type_present_in_corpus)
 		      // Let's add one more size constraint to rule
 		      // out programs that break the One Definition
 		      // Rule too easily.
@@ -6551,7 +6567,9 @@ type_base::get_canonical_type_for(type_base_sptr t)
 		      // be equal.  Using that rule would saves us
 		      // from a potentially expensive type comparison
 		      // here.
-		      result = *it;
+		      result = same_corpus
+			? *it
+			: canonical_type_present_in_corpus;
 		      break;
 		    }
 		}
@@ -6568,6 +6586,16 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  result = t;
 	}
     }
+
+  if (result && t_corpus && !canonical_type_present_in_corpus)
+    // So we have found a canonical type for 't'.  Let's cache that
+    // canonical type inside the corpus of t.  So that next time we
+    // come across a type of that corpus which has the same name as
+    // this canonical type, we know that both types ought to be the
+    // same (per the One Definition Rule), potentially saving us from
+    // expensive structural type comparisons.
+    t_corpus->record_canonical_type(result);
+
   return result;
 }
 
