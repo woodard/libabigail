@@ -1944,6 +1944,7 @@ class read_context
   corpus::exported_decls_builder* exported_decls_builder_;
   bool				load_all_types_;
   bool				show_stats_;
+  bool				do_log_;
 
   read_context();
 
@@ -1966,7 +1967,8 @@ public:
       verneed_section_(),
       exported_decls_builder_(),
       load_all_types_(),
-      show_stats_()
+      show_stats_(),
+      do_log_()
   {
     memset(&offline_callbacks_, 0, sizeof(offline_callbacks_));
   }
@@ -2684,18 +2686,43 @@ public:
   void
   canonicalize_types_scheduled(bool in_alt_di)
   {
+    if (do_log())
+      {
+	cerr << "going to canonicalize types";
+	corpus_sptr c = current_corpus();
+	if (c)
+	  cerr << " of corpus " << current_corpus()->get_path();
+	cerr << " (in alt di: " << in_alt_di << ")\n";
+      }
+
     if (!types_to_canonicalize(in_alt_di).empty())
       {
-	for (vector<Dwarf_Off>::iterator i =
-	       types_to_canonicalize(in_alt_di).begin();
-	     i != types_to_canonicalize(in_alt_di).end();
-	     ++i)
+	size_t total = types_to_canonicalize(in_alt_di).size();
+	if (do_log())
+	  cerr << total << " types to canonicalize\n";
+	for (size_t i = 0; i < total; ++i)
 	  {
-	    type_base_sptr t = lookup_type_from_die_offset(*i, in_alt_di);
+	    Dwarf_Off element = types_to_canonicalize(in_alt_di)[i];
+	    type_base_sptr t =
+	      lookup_type_from_die_offset(element, in_alt_di);
 	    assert(t);
+	    if (do_log())
+	      {
+		cerr << "canonicalizing type "
+		     << get_pretty_representation(t, false)
+		     << " [" << i + 1 << "/" << total << "]";
+		if (corpus_sptr c = current_corpus())
+		  cerr << "@" << c->get_path();
+		cerr << " ...";
+	      }
 	    canonicalize(t);
+	    if (do_log())
+		cerr << " DONE\n";
 	  }
       }
+    if (do_log())
+      cerr << "finished canonicalizing types.  (in alt di: "
+	   << in_alt_di << ")\n";
   }
 
   /// Compute the number of canonicalized and missed types in the late
@@ -4071,6 +4098,25 @@ public:
   show_stats(bool f)
   {show_stats_ = f;}
 
+  /// Getter of the "do_log" flag.
+  ///
+  /// This flag tells if we should log about various internal
+  /// details.
+  ///
+  /// return the "do_log" flag.
+  bool
+  do_log() const
+  {return do_log_;}
+
+  /// Setter of the "do_log" flag.
+  ///
+  /// This flag tells if we should log about various internal details.
+  ///
+  /// @param f the new value of the flag.
+  void
+  do_log(bool f)
+  {do_log_ = f;}
+
   /// If a given function decl is suitable for the set of exported
   /// functions of the current corpus, this function adds it to that
   /// set.
@@ -4175,6 +4221,18 @@ get_show_stats(read_context& ctxt)
 void
 set_show_stats(read_context& ctxt, bool f)
 {ctxt.show_stats(f);}
+
+/// Setter of the "do_log" flag.
+///
+/// This flag tells if we should emit verbose logs for various
+/// internal things related to DWARF reading.
+///
+/// @param ctxt the DWARF reading context to consider.
+///
+/// @param f the new value of the flag.
+void
+set_do_log(read_context& ctxt, bool f)
+{ctxt.do_log(f);}
 
 /// Get the value of an attribute that is supposed to be a string, or
 /// an empty string if the attribute could not be found.
@@ -8113,10 +8171,18 @@ read_debug_info_into_corpus(read_context& ctxt)
 
   // Walk all the DIEs of the debug info to build a DIE -> parent map
   // useful for get_die_parent() to work.
+  if (ctxt.do_log())
+    cerr << "building die -> parent maps ...";
+
   build_die_parent_maps(ctxt);
+
+  if (ctxt.do_log())
+    cerr << " DONE@" << ctxt.current_corpus()->get_path() << "\n";
 
   ctxt.env()->canonicalization_is_done(false);
 
+  if (ctxt.do_log())
+    cerr << "building the libabigail internal representation ...";
   // And now walk all the DIEs again to build the libabigail IR.
   Dwarf_Half dwarf_version = 0;
   for (Dwarf_Off offset = 0, next_offset = 0;
@@ -8141,8 +8207,14 @@ read_debug_info_into_corpus(read_context& ctxt)
 	build_translation_unit_and_add_to_ir(ctxt, &unit, address_size);
       assert(ir_node);
     }
+  if (ctxt.do_log())
+    cerr << " DONE@" << ctxt.current_corpus()->get_path() << "\n";
 
+  if (ctxt.do_log())
+    cerr << "resolving declaration only classes ...";
   ctxt.resolve_declaration_only_classes();
+  if (ctxt.do_log())
+    cerr << " DONE@" << ctxt.current_corpus()->get_path() <<"\n";
 
   /// Now, look at the types that needs to be canonicalized after the
   /// translation has been constructed (which is just now) and
@@ -8155,13 +8227,22 @@ read_debug_info_into_corpus(read_context& ctxt)
   /// even for some static data members.  We need to do that for types
   /// are in the alternate debug info section and for types that in
   /// the main debug info section.
-
+  if (ctxt.do_log())
+    cerr << "perform late type canonicalizing ...\n";
   ctxt.perform_late_type_canonicalizing();
+  if (ctxt.do_log())
+    cerr << "late type canonicalizing DONE@"
+	 << ctxt.current_corpus()->get_path()
+	 << "\n";
 
   ctxt.env()->canonicalization_is_done(true);
 
+  if (ctxt.do_log())
+    cerr << "sort functions and variables ...";
   ctxt.current_corpus()->sort_functions();
   ctxt.current_corpus()->sort_variables();
+  if (ctxt.do_log())
+    cerr << " DONE@" << ctxt.current_corpus()->get_path() <<" \n";
 
   return ctxt.current_corpus();
 }

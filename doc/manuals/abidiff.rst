@@ -225,6 +225,11 @@ Options
 
     Emit statistics about various internal things.
 
+  * ``--verbose``
+
+    Emit verbose logs about the progress of miscellaneous internal
+    things.
+
 .. _abidiff_return_value_label:
 
 Return values

@@ -88,6 +88,7 @@ struct options
   bool			show_symbols_not_referenced_by_debug_info;
   bool			dump_diff_tree;
   bool			show_stats;
+  bool			do_log;
   shared_ptr<char>	di_root_path1;
   shared_ptr<char>	di_root_path2;
 
@@ -113,7 +114,8 @@ struct options
       show_redundant_changes(),
       show_symbols_not_referenced_by_debug_info(true),
       dump_diff_tree(),
-      show_stats()
+      show_stats(),
+      do_log()
   {}
 };//end struct options;
 
@@ -155,7 +157,8 @@ display_usage(const string& prog_name, ostream& out)
     "(this is the default)\n"
     << " --dump-diff-tree  emit a debug dump of the internal diff tree to "
     "the error output stream\n"
-    <<  " --stats  show statistics about various internal stuff\n";
+    <<  " --stats  show statistics about various internal stuff\n"
+    << " --verbose show verbose messages about internal stuff\n";
 }
 
 /// Parse the command line and set the options accordingly.
@@ -375,6 +378,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.dump_diff_tree = true;
       else if (!strcmp(argv[i], "--stats"))
 	opts.show_stats = true;
+      else if (!strcmp(argv[i], "--verbose"))
+	opts.do_log = true;
       else
 	{
 	  if (strlen(argv[i]) >= 2 && argv[i][0] == '-' && argv[i][1] == '-')
@@ -631,6 +636,8 @@ main(int argc, char* argv[])
 	    abigail::dwarf_reader::set_show_stats
 	      (*ctxt, opts.show_stats);
 
+	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
+
 	    c1 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c1_status);
 	  }
 	  break;
@@ -674,6 +681,8 @@ main(int argc, char* argv[])
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats
 	      (*ctxt, opts.show_stats);
+	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
+
 	    c2 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c2_status);
 	  }
 	  break;

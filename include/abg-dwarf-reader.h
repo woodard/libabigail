@@ -147,6 +147,9 @@ set_show_stats(read_context& ctxt,
 	       bool f);
 
 void
+set_do_log(read_context& ctxt, bool f);
+
+void
 set_environment(read_context& ctxt,
 		ir::environment*);
 
