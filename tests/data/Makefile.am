@@ -844,6 +844,7 @@ test-diff-suppr/test28-add-aliased-function-2.suppr \
 test-diff-suppr/test28-add-aliased-function-3.suppr \
 test-diff-suppr/test28-add-aliased-function-4.suppr \
 test-diff-suppr/test28-add-aliased-function-5.suppr \
+test-diff-suppr/test28-add-aliased-function-report-0.txt \
 test-diff-suppr/test28-add-aliased-function-report-1.txt \
 test-diff-suppr/test28-add-aliased-function-report-2.txt \
 test-diff-suppr/test28-add-aliased-function-report-3.txt \
