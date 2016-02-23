@@ -501,6 +501,16 @@ translation_unit::operator==(const translation_unit& other)const
   return *get_global_scope() == *other.get_global_scope();
 }
 
+/// Inequality operator.
+///
+/// @param o the instance of @ref translation_unit to compare the
+/// current instance against.
+///
+/// @return true iff the current instance is different from @p o.
+bool
+translation_unit::operator!=(const translation_unit& o) const
+{return ! operator==(o);}
+
 /// Ensure that the life time of a function type is bound to the life
 /// time of the current translation unit.
 ///
@@ -710,7 +720,7 @@ is_cplus_plus_language(translation_unit::language l)
 ///
 /// @return true if the two translation units are equal, false otherwise.
 bool
-operator==(translation_unit_sptr l, translation_unit_sptr r)
+operator==(const translation_unit_sptr& l, const translation_unit_sptr& r)
 {
   if (l.get() == r.get())
     return true;
@@ -720,6 +730,17 @@ operator==(translation_unit_sptr l, translation_unit_sptr r)
 
   return *l == *r;
 }
+
+/// A deep inequality operator for pointers to translation units.
+///
+/// @param l the first translation unit to consider for the comparison.
+///
+/// @param r the second translation unit to consider for the comparison.
+///
+/// @return true iff the two translation units are different.
+bool
+operator!=(const translation_unit_sptr& l, const translation_unit_sptr& r)
+{return !operator==(l, r);}
 
 // </translation_unit stuff>
 
@@ -1499,6 +1520,17 @@ operator==(const elf_symbol_sptr& lhs, const elf_symbol_sptr& rhs)
   return *lhs == *rhs;
 }
 
+/// Inequality operator for smart pointers to elf_symbol.
+///
+/// @param lhs the first elf symbol to consider.
+///
+/// @param rhs the second elf symbol to consider.
+///
+/// @return true iff @p lhs is different from @p rhs.
+bool
+operator!=(const elf_symbol_sptr& lhs, const elf_symbol_sptr& rhs)
+{return !operator==(lhs, rhs);}
+
 /// Test if two symbols alias.
 ///
 /// @param s1 the first symbol to consider.
@@ -1797,6 +1829,15 @@ bool
 elf_symbol::version::operator==(const elf_symbol::version& o) const
 {return str() == o.str();}
 
+/// Inequality operator.
+///
+/// @param o the version to compare against the current one.
+///
+/// @return true iff both versions are different.
+bool
+elf_symbol::version::operator!=(const version& o) const
+{return !operator==(o);}
+
 /// Assign a version to the current one.
 ///
 /// @param o the other version to assign to this one.
@@ -2094,6 +2135,17 @@ operator==(const type_or_decl_base_sptr& l, const type_or_decl_base_sptr& r)
 
   return *r == *l;
 }
+
+/// Non-member inequality operator for the @type_or_decl_base type.
+///
+/// @param l the left-hand operand of the equality.
+///
+/// @param r the right-hand operatnr of the equality.
+///
+/// @return true iff @p l is different from @p r.
+bool
+operator!=(const type_or_decl_base_sptr& l, const type_or_decl_base_sptr& r)
+{return !operator==(l, r);}
 
 // </type_or_decl_base stuff>
 
@@ -2584,6 +2636,17 @@ bool
 decl_base::operator==(const decl_base& other) const
 {return equals(*this, other, 0);}
 
+/// Inequality operator.
+///
+/// @param other to other instance of @ref decl_base to compare the
+/// current instance to.
+///
+/// @return true iff the current instance of @ref decl_base is
+/// different from @p other.
+bool
+decl_base::operator!=(const decl_base& other) const
+{return !operator==(other);}
+
 /// Destructor of the @ref decl_base type.
 decl_base::~decl_base()
 {delete priv_;}
@@ -2723,6 +2786,21 @@ operator==(const type_base_sptr& l, const type_base_sptr& r)
 
   return *l == *r;
 }
+
+/// Turn inequality of shared_ptr of type_base into a deep equality;
+/// that is, make it compare the pointed to objects..
+///
+/// @param l the shared_ptr of type_base on left-hand-side of the
+/// equality.
+///
+/// @param r the shared_ptr of type_base on right-hand-side of the
+/// equality.
+///
+/// @return true iff the type_base pointed to by the shared_ptrs are
+/// different.
+bool
+operator!=(const type_base_sptr& l, const type_base_sptr& r)
+{return !operator==(l, r);}
 
 /// Tests if a declaration has got a scope.
 ///
@@ -4090,7 +4168,7 @@ scope_decl::operator==(const decl_base& o) const
 ///
 /// @return true iff @p l equals @p r.
 bool
-operator==(scope_decl_sptr l, scope_decl_sptr r)
+operator==(const scope_decl_sptr& l, const scope_decl_sptr& r)
 {
   if (!!l != !!r)
     return false;
@@ -4098,6 +4176,17 @@ operator==(scope_decl_sptr l, scope_decl_sptr r)
     return true;
   return *l == *r;
 }
+
+/// Inequality operator for @ref scope_decl_sptr.
+///
+/// @param l the left hand side operand of the equality operator.
+///
+/// @pram r the right hand side operand of the equalify operator.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator!=(const scope_decl_sptr& l, const scope_decl_sptr& r)
+{return !operator==(l, r);}
 
 /// Find a member of the current scope and return an iterator on it.
 ///
@@ -6778,6 +6867,16 @@ bool
 type_base::operator==(const type_base& other) const
 {return equals(*this, other, 0);}
 
+/// Inequality operator.
+///
+///@param other the instance of @ref type_base to compare the current
+/// instance against.
+///
+/// @return true iff the current instance is different from @p other.
+bool
+type_base::operator!=(const type_base& other) const
+{return !operator==(other);}
+
 /// Setter for the size of the type.
 ///
 /// @param s the new size -- in bits.
@@ -6920,6 +7019,15 @@ type_decl::operator==(const type_decl& o) const
   return *this == other;
 }
 
+/// Inequality operator.
+///
+/// @param o the other type to compare against.
+///
+/// @return true iff the current instance is different from @p o.
+bool
+type_decl::operator!=(const type_decl& o) const
+{return !operator==(o);}
+
 /// Equality operator for @ref type_decl_sptr.
 ///
 /// @param l the first operand to compare.
@@ -6936,6 +7044,17 @@ operator==(const type_decl_sptr& l, const type_decl_sptr& r)
     return true;
   return *l == *r;
 }
+
+/// Inequality operator for @ref type_decl_sptr.
+///
+/// @param l the first operand to compare.
+///
+/// @param r the second operand to compare.
+///
+/// @return true iff @p l is different from @p r.
+bool
+operator!=(const type_decl_sptr& l, const type_decl_sptr& r)
+{return !operator==(l, r);}
 
 /// Get the pretty representation of the current instance of @ref
 /// type_decl.
@@ -7545,6 +7664,17 @@ operator==(const qualified_type_def_sptr& l, const qualified_type_def_sptr& r)
   return *l == *r;
 }
 
+/// Non-member inequality operator for @ref qualified_type_def
+///
+/// @param l the left-hand side of the equality operator
+///
+/// @param r the right-hand side of the equality operator
+///
+/// @return true iff @p l and @p r equals.
+bool
+operator!=(const qualified_type_def_sptr& l, const qualified_type_def_sptr& r)
+{return ! operator==(l, r);}
+
 /// Overloaded bitwise OR operator for cv qualifiers.
 qualified_type_def::CV
 operator| (qualified_type_def::CV lhs,
@@ -7844,6 +7974,21 @@ operator==(const pointer_type_def_sptr& l, const pointer_type_def_sptr& r)
   return *l == *r;
 }
 
+/// Turn inequality of shared_ptr of @ref pointer_type_def into a deep
+/// equality; that is, make it compare the pointed to objects too.
+///
+/// @param l the shared_ptr of @ref pointer_type_def on left-hand-side
+/// of the equality.
+///
+/// @param r the shared_ptr of @ref pointer_type_def on
+/// right-hand-side of the equality.
+///
+/// @return true iff the @ref pointer_type_def pointed to by the
+/// shared_ptrs are different.
+bool
+operator!=(const pointer_type_def_sptr& l, const pointer_type_def_sptr& r)
+{return !operator==(l, r);}
+
 // </pointer_type_def definitions>
 
 // <reference_type_def definitions>
@@ -8071,6 +8216,21 @@ operator==(const reference_type_def_sptr& l, const reference_type_def_sptr& r)
   return *l == *r;
 }
 
+/// Turn inequality of shared_ptr of @ref reference_type_def into a deep
+/// equality; that is, make it compare the pointed to objects too.
+///
+/// @param l the shared_ptr of @ref reference_type_def on left-hand-side
+/// of the equality.
+///
+/// @param r the shared_ptr of @ref reference_type_def on
+/// right-hand-side of the equality.
+///
+/// @return true iff the @ref reference_type_def pointed to by the
+/// shared_ptrs are different.
+bool
+operator!=(const reference_type_def_sptr& l, const reference_type_def_sptr& r)
+{return !operator==(l, r);}
+
 // </reference_type_def definitions>
 
 // <array_type_def definitions>
@@ -8129,6 +8289,16 @@ array_type_def::subrange_type::operator==(const subrange_type& o) const
   return (get_lower_bound() == o.get_lower_bound()
 	  && get_upper_bound() == o.get_upper_bound());
 }
+
+/// Inequality operator.
+///
+/// @param o the other @ref subrange_type to compare against.
+///
+/// @return true iff @p o is different from the current instance of
+/// @ref subrange_type.
+bool
+array_type_def::subrange_type::operator!=(const subrange_type& o) const
+{return !operator==(o);}
 
 const location&
 array_type_def::subrange_type::get_location() const
@@ -8673,6 +8843,17 @@ operator==(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r)
   return *l == *o;
 }
 
+/// Inequality operator for @ref enum_type_decl_sptr.
+///
+/// @param l the first operand to compare.
+///
+/// @param r the second operand to compare.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator!=(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r)
+{return !operator==(l, r);}
+
 /// The type of the private data of an @ref
 /// enum_type_decl::enumerator.
 class enum_type_decl::enumerator::priv
@@ -8731,6 +8912,15 @@ bool
 enum_type_decl::enumerator::operator==(const enumerator& other) const
 {return (get_name() == other.get_name()
 	 && get_value() == other.get_value());}
+
+/// Inequality operator.
+///
+/// @param other the other instance to compare against.
+///
+/// @return true iff @p other is different from the current instance.
+bool
+enum_type_decl::enumerator::operator!=(const enumerator& other) const
+{return !operator==(other);}
 
 /// Getter for the name of the current instance of
 /// enum_type_decl::enumerator.
@@ -10727,6 +10917,18 @@ operator==(const function_decl::parameter_sptr& l,
   return *l == *r;
 }
 
+/// Non-member inequality operator for @ref function_decl::parameter.
+///
+/// @param l the left-hand side of the equality operator
+///
+/// @param r the right-hand side of the equality operator
+///
+/// @return true iff @p l and @p r different.
+bool
+operator!=(const function_decl::parameter_sptr& l,
+	   const function_decl::parameter_sptr& r)
+{return !operator==(l, r);}
+
 /// Traverse the diff sub-tree under the current instance
 /// function_decl.
 ///
@@ -12505,6 +12707,18 @@ operator==(const class_decl_sptr& l, const class_decl_sptr& r)
   return *l == *r;
 }
 
+/// Inequality operator for the @ref class_decl::member_class_template
+/// type.
+///
+/// @param l the first argument of the operator.
+///
+/// @param r the second argument of the operator.
+///
+/// @return true iff the two instances are equal.
+bool
+operator!=(const class_decl_sptr& l, const class_decl_sptr& r)
+{return !operator==(l, r);}
+
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
 ///
@@ -12607,8 +12821,8 @@ class_decl::member_base::operator==(const member_base& o) const
 }
 
 bool
-operator==(const class_decl::base_spec_sptr l,
-	   const class_decl::base_spec_sptr r)
+operator==(const class_decl::base_spec_sptr& l,
+	   const class_decl::base_spec_sptr& r)
 {
   if (l.get() == r.get())
     return true;
@@ -12617,6 +12831,21 @@ operator==(const class_decl::base_spec_sptr l,
 
   return *l == static_cast<const decl_base&>(*r);
 }
+
+/// Inequality operator for smart pointers to @ref
+/// class_decl::base_specs.
+///
+/// This compares the pointed-to objects.
+///
+/// @param l the first instance to consider.
+///
+/// @param r the second instance to consider.
+///
+/// @return true iff @p l is different from @p r.
+bool
+operator!=(const class_decl::base_spec_sptr& l,
+	   const class_decl::base_spec_sptr& r)
+{return !operator==(l, r);}
 
 /// Test if an ABI artifact is a class base specifier.
 ///
@@ -12666,9 +12895,18 @@ class_decl::member_function_template::operator==(const member_base& other) const
   return false;
 }
 
+/// Equality operator for smart pointers to @ref
+/// class_decl::member_function_template.  This is compares the
+/// pointed-to instances.
+///
+/// @param l the first instance to consider.
+///
+/// @param r the second instance to consider.
+///
+/// @return true iff @p l equals @p r.
 bool
-operator==(class_decl::member_function_template_sptr l,
-	   class_decl::member_function_template_sptr r)
+operator==(const class_decl::member_function_template_sptr& l,
+	   const class_decl::member_function_template_sptr& r)
 {
   if (l.get() == r.get())
     return true;
@@ -12677,6 +12915,20 @@ operator==(class_decl::member_function_template_sptr l,
 
   return *l == *r;
 }
+
+/// Inequality operator for smart pointers to @ref
+/// class_decl::member_function_template.  This is compares the
+/// pointed-to instances.
+///
+/// @param l the first instance to consider.
+///
+/// @param r the second instance to consider.
+///
+/// @return true iff @p l equals @p r.
+bool
+operator!=(const class_decl::member_function_template_sptr& l,
+	   const class_decl::member_function_template_sptr& r)
+{return !operator==(l, r);}
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -12743,8 +12995,8 @@ class_decl::member_class_template::operator==
 ///
 /// @return true iff the two instances are equal.
 bool
-operator==(class_decl::member_class_template_sptr l,
-	   class_decl::member_class_template_sptr r)
+operator==(const class_decl::member_class_template_sptr& l,
+	   const class_decl::member_class_template_sptr& r)
 {
   if (l.get() == r.get())
     return true;
@@ -12753,6 +13005,22 @@ operator==(class_decl::member_class_template_sptr l,
 
   return *l == *r;
 }
+
+/// Turn inequality of shared_ptr of class_decl into a deep equality;
+/// that is, make it compare the pointed to objects too.
+///
+/// @param l the shared_ptr of class_decl on left-hand-side of the
+/// equality.
+///
+/// @param r the shared_ptr of class_decl on right-hand-side of the
+/// equality.
+///
+/// @return true if the class_decl pointed to by the shared_ptrs are
+/// different, false otherwise.
+bool
+operator!=(const class_decl::member_class_template_sptr& l,
+	   const class_decl::member_class_template_sptr& r)
+{return !operator==(l, r);}
 
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
@@ -13046,6 +13314,17 @@ template_parameter::operator==(const template_parameter& o) const
   return result;
 }
 
+/// Inequality operator.
+///
+/// @param other the other instance to compare against.
+///
+/// @return true iff the other instance is different from the current
+/// one.
+bool
+template_parameter::operator!=(const template_parameter& other) const
+{return !operator==(other);}
+
+/// Destructor.
 template_parameter::~template_parameter()
 {}
 

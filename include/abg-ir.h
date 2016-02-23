@@ -458,6 +458,9 @@ public:
   bool
   operator==(const translation_unit&) const;
 
+  bool
+  operator!=(const translation_unit&) const;
+
   void
   bind_function_type_life_time(function_type_sptr) const;
 
@@ -490,7 +493,10 @@ bool
 is_cplus_plus_language(translation_unit::language l);
 
 bool
-operator==(translation_unit_sptr, translation_unit_sptr);
+operator==(const translation_unit_sptr&, const translation_unit_sptr&);
+
+bool
+operator!=(const translation_unit_sptr&, const translation_unit_sptr&);
 
 /// Access specifier for class members.
 enum access_specifier
@@ -728,6 +734,9 @@ bool
 operator==(const elf_symbol_sptr& lhs, const elf_symbol_sptr& rhs);
 
 bool
+operator!=(const elf_symbol_sptr& lhs, const elf_symbol_sptr& rhs);
+
+bool
 elf_symbols_alias(const elf_symbol& s1, const elf_symbol& s2);
 
 void
@@ -768,6 +777,9 @@ public:
 
   bool
   operator==(const version& o) const;
+
+  bool
+  operator!=(const version& o) const;
 
   version&
   operator=(const version& o);
@@ -842,6 +854,17 @@ public:
     return (access_ == o.access_
 	    && is_static_ == o.is_static_);
   }
+
+  /// Inequality operator.
+  ///
+  /// @param o the other instance of @ref context_rel to compare the
+  /// current instance against.
+  ///
+  /// @return true iff the current instance of @ref context_rel is
+  /// different from @p o.
+  bool
+  operator!=(const context_rel& o) const
+  {return !operator==(o);}
 
   virtual ~context_rel();
 };// end class context_rel
@@ -949,6 +972,9 @@ operator==(const type_or_decl_base&, const type_or_decl_base&);
 bool
 operator==(const type_or_decl_base_sptr&, const type_or_decl_base_sptr&);
 
+bool
+operator!=(const type_or_decl_base_sptr&, const type_or_decl_base_sptr&);
+
 void
 set_environment_for_artifact(type_or_decl_base* artifact,
 			    environment* env);
@@ -1038,6 +1064,9 @@ public:
 
   virtual bool
   operator==(const decl_base&) const;
+
+  virtual bool
+  operator!=(const decl_base&) const;
 
   virtual bool
   traverse(ir_node_visitor& v);
@@ -1154,6 +1183,9 @@ operator==(const decl_base_sptr&, const decl_base_sptr&);
 bool
 operator==(const type_base_sptr&, const type_base_sptr&);
 
+bool
+operator!=(const type_base_sptr&, const type_base_sptr&);
+
 std::ostream&
 operator<<(std::ostream&, decl_base::visibility);
 
@@ -1257,7 +1289,10 @@ public:
 };//end class scope_decl
 
 bool
-operator==(scope_decl_sptr, scope_decl_sptr);
+operator==(const scope_decl_sptr&, const scope_decl_sptr&);
+
+bool
+operator!=(const scope_decl_sptr&, const scope_decl_sptr&);
 
 /// Hasher for the @ref scope_decl type.
 struct scope_decl::hash
@@ -1351,6 +1386,9 @@ public:
 
   virtual bool
   operator==(const type_base&) const;
+
+  virtual bool
+  operator!=(const type_base&) const;
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -1453,6 +1491,8 @@ public:
   virtual bool
   operator==(const type_decl&) const;
 
+  bool operator!=(const type_decl&)const;
+
   virtual string
   get_pretty_representation(bool internal = false) const;
 
@@ -1467,6 +1507,9 @@ equals(const scope_type_decl&, const scope_type_decl&, change_kind*);
 
 bool
 operator==(const type_decl_sptr&, const type_decl_sptr&);
+
+bool
+operator!=(const type_decl_sptr&, const type_decl_sptr&);
 
 /// A type that introduces a scope.
 class scope_type_decl : public scope_decl, public virtual type_base
@@ -1591,6 +1634,9 @@ public:
 bool
 operator==(const qualified_type_def_sptr&, const qualified_type_def_sptr&);
 
+bool
+operator!=(const qualified_type_def_sptr&, const qualified_type_def_sptr&);
+
 qualified_type_def::CV
 operator|(qualified_type_def::CV, qualified_type_def::CV);
 
@@ -1656,6 +1702,9 @@ bool
 operator==(const pointer_type_def_sptr&, const pointer_type_def_sptr&);
 
 bool
+operator!=(const pointer_type_def_sptr&, const pointer_type_def_sptr&);
+
+bool
 equals(const reference_type_def&, const reference_type_def&, change_kind*);
 
 /// Convenience typedef for a shared pointer on a @ref reference_type_def
@@ -1708,6 +1757,9 @@ public:
 
 bool
 operator==(const reference_type_def_sptr&, const reference_type_def_sptr&);
+
+bool
+operator!=(const reference_type_def_sptr&, const reference_type_def_sptr&);
 
 bool
 equals(const array_type_def&, const array_type_def&, change_kind*);
@@ -1780,6 +1832,9 @@ public:
 
     bool
     operator==(const subrange_type& o) const;
+
+    bool
+    operator!=(const subrange_type& o) const;
 
     const location&
     get_location() const;
@@ -1912,6 +1967,10 @@ public:
 
 bool
 operator==(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r);
+
+bool
+operator!=(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r);
+
 /// The abstraction of an enumerator
 class enum_type_decl::enumerator
 {
@@ -1930,6 +1989,9 @@ public:
 
   bool
   operator==(const enumerator& other) const;
+
+  bool
+  operator!=(const enumerator& other) const;
 
   const string&
   get_name() const;
@@ -2067,6 +2129,10 @@ public:
     return (is_laid_out_ == o.is_laid_out_
 	    && offset_in_bits_ == o.offset_in_bits_);
   }
+
+  bool
+  operator!=(const dm_context_rel& o) const
+  {return !operator==(o);}
 
   virtual ~dm_context_rel();
 };// end class class_decl::dm_context_rel
@@ -2589,6 +2655,9 @@ class template_parameter
 
   virtual bool
   operator==(const template_parameter&) const;
+
+  bool
+  operator!=(const template_parameter&) const;
 
   unsigned
   get_index() const;
@@ -3157,6 +3226,9 @@ operator<<(std::ostream&, access_specifier);
 bool
 operator==(const class_decl_sptr& l, const class_decl_sptr& r);
 
+bool
+operator!=(const class_decl_sptr& l, const class_decl_sptr& r);
+
 /// The base class for member types, data members and member
 /// functions.  Its purpose is mainly to carry the access specifier
 /// (and possibly other properties that might be shared by all class
@@ -3260,8 +3332,12 @@ public:
 };// end class class_decl::base_spec
 
 bool
-operator==(const class_decl::base_spec_sptr l,
-	   const class_decl::base_spec_sptr r);
+operator==(const class_decl::base_spec_sptr& l,
+	   const class_decl::base_spec_sptr& r);
+
+bool
+operator!=(const class_decl::base_spec_sptr& l,
+	   const class_decl::base_spec_sptr& r);
 
 class_decl::base_spec*
 is_class_base_spec(type_or_decl_base*);
@@ -3545,8 +3621,12 @@ public:
 };// end class class_decl::member_function_template
 
 bool
-operator==(class_decl::member_function_template_sptr l,
-	   class_decl::member_function_template_sptr r);
+operator==(const class_decl::member_function_template_sptr& l,
+	   const class_decl::member_function_template_sptr& r);
+
+bool
+operator!=(const class_decl::member_function_template_sptr& l,
+	   const class_decl::member_function_template_sptr& r);
 
 /// Abstracts a member class template template
 class class_decl::member_class_template
@@ -3588,8 +3668,12 @@ public:
 };// end class class_decl::member_class_template
 
 bool
-operator==(class_decl::member_class_template_sptr l,
-	   class_decl::member_class_template_sptr r);
+operator==(const class_decl::member_class_template_sptr& l,
+	   const class_decl::member_class_template_sptr& r);
+
+bool
+operator!=(const class_decl::member_class_template_sptr& l,
+	   const class_decl::member_class_template_sptr& r);
 
 // Forward declarations for select nested hashers.
 struct type_base::shared_ptr_hash
