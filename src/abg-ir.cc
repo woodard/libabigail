@@ -13779,7 +13779,8 @@ function_tdecl::traverse(ir_node_visitor&v)
   if (!v.visit_begin(this))
     {
       visiting(true);
-      get_pattern()->traverse(v);
+      if (get_pattern())
+	get_pattern()->traverse(v);
       visiting(false);
     }
   return v.visit_end(this);
@@ -13872,10 +13873,13 @@ class_tdecl::operator==(const decl_base& other) const
 	    && !!get_pattern() == !!o.get_pattern()))
 	return false;
 
+      if (!get_pattern() || !o.get_pattern())
+	return true;
+
       return get_pattern()->decl_base::operator==(*o.get_pattern());
     }
-  catch(...)
-    {return false;}
+  catch(...) {}
+  return false;
 }
 
 bool
