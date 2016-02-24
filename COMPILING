@@ -1,8 +1,21 @@
 To compile libabigail, you first need to install its dependencies.  At
 the moment the dependencies are the following Free Software packages:
 
+    elfutils
+    libtool
     libxml2
- 
+
+If you are building from the Git repository, then you'd also need the
+following packages:
+
+    autoconf
+    automake
+    libtool
+
+Note that if you are installing these packages in a binary form
+provided by your distribution, then you probably need to install the
+development variant of those that have one.
+
 Once you have installed the development packages of the dependencies,
 there are two options for compiling libabigail, depending on the two
 kinds of source code package you have: either you've got the source

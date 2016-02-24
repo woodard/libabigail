@@ -97,6 +97,8 @@ To compile libabigail, you first need to install its dependencies.  At
 the moment the dependencies are the following Free Software packages:
 
     \li <a href="http://www.gnu.org/software/autoconf/">autoconf</a>
+    \li <a href="http://www.gnu.org/software/automake/">autoconf</a>
+    \li <a href="http://www.gnu.org/software/libtool/">libtool</a>
     \li <a href="http://www.freedesktop.org/wiki/Software/pkg-config/">pkg-config</a>
     \li <a href="http://www.xmlsoft.org">libxml2</a>
     \li <a href="https://fedorahosted.org/elfutils/">elfutils</a>
@@ -127,7 +129,7 @@ exists and is writeable by you.
 The commands above should have built libabigail and its associated
 tools, and installed them under
 <em>/where/you/want/to/install/libabigail</em>.  Note that built
-objects are under the <embuild</emd> sub-directory of the source tree
+objects are under the <em>build</em> sub-directory of the source tree
 of Libabigail which you extracted from the tarball.
 
 \subsection compile-from-git Compiling the code retrieved via the source code repository
