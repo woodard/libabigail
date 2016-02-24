@@ -2697,8 +2697,9 @@ function_suppression::suppresses_function(const function_decl* fn,
   // properties matches.
 
   string fn_return_type_name = fn->get_type()->get_return_type()
-    ? (get_type_declaration(fn->get_type()->get_return_type())
-       ->get_qualified_name())
+    ? static_cast<string>
+    ((get_type_declaration(fn->get_type()->get_return_type())
+      ->get_qualified_name()))
     : "";
 
   if (!get_return_type_name().empty())

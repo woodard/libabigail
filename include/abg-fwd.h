@@ -32,6 +32,7 @@
 #include <typeinfo>
 #include <utility> // for std::rel_ops, at least.
 #include <ostream>
+#include "abg-interned-str.h"
 #include "abg-hash.h"
 
 /// Toplevel namespace for libabigail.
@@ -533,37 +534,38 @@ get_type_scope(type_base*);
 scope_decl*
 get_type_scope(const shared_ptr<type_base>&);
 
-string
+interned_string
 get_type_name(const shared_ptr<type_base>,
 	      bool qualified = true,
 	      bool internal = false);
 
-string
+interned_string
 get_type_name(const type_base*,
 	      bool qualified = true,
 	      bool internal = false);
 
-string
+interned_string
 get_type_name(const type_base&,
 	      bool qualified = true,
 	      bool internal = false);
 
-string
+interned_string
 get_function_type_name(const shared_ptr<function_type>&,
 		       bool internal = false);
 
-string
+interned_string
 get_function_type_name(const function_type*, bool internal = false);
 
-string
+interned_string
 get_function_type_name(const function_type&, bool internal = false);
 
-string
+interned_string
 get_method_type_name(const shared_ptr<method_type>&, bool internal = false);
-string
+
+interned_string
 get_method_type_name(const method_type*, bool internal = false);
 
-string
+interned_string
 get_method_type_name(const method_type&, bool internal = false);
 
 string

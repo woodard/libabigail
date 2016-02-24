@@ -77,34 +77,45 @@ namespace xml_writer
 
 class id_manager
 {
-  unsigned long long m_cur_id;
+  const environment* m_env;
+  mutable unsigned long long m_cur_id;
 
   unsigned long long
-  get_new_id()
+  get_new_id() const
   { return ++m_cur_id; }
 
 public:
-  id_manager() : m_cur_id(0) { }
+  id_manager(const environment* env)
+    : m_env(env),
+      m_cur_id(0) {}
+
+  const environment*
+  get_environment() const
+  {return m_env;}
 
   /// Return a unique string representing a numerical id.
-  string
-  get_id()
+  interned_string
+  get_id() const
   {
     ostringstream o;
     o << get_new_id();
-    return o.str();
+    const environment* env = get_environment();
+    assert(env);
+    return env->intern(o.str());
   }
 
   /// Return a unique string representing a numerical ID, prefixed by
   /// prefix.
   ///
   /// @param prefix the prefix of the returned unique id.
-  string
-  get_id_with_prefix(const string& prefix)
+  interned_string
+  get_id_with_prefix(const string& prefix) const
   {
     ostringstream o;
     o << prefix << get_new_id();
-    return o.str();
+    const environment* env = get_environment();
+    assert(env);
+    return env->intern(o.str());
   }
 };
 
@@ -119,7 +130,7 @@ struct type_hasher
 /// A convenience typedef for a map that associates a pointer to type
 /// to a string.  The pointer to type is hashed as fast as possible.
 typedef unordered_map<type_base*,
-		      string,
+		      interned_string,
 		      type_hasher,
 		      abigail::diff_utils::deep_ptr_eq_functor> type_ptr_map;
 
@@ -133,11 +144,13 @@ typedef unordered_map<shared_ptr<class_tdecl>,
 
 class write_context
 {
+  const environment*			m_env;
   id_manager				m_id_manager;
   config				m_config;
   ostream&				m_ostream;
-  type_ptr_map				m_type_id_map;
-  unordered_map<string, bool>		m_emitted_type_id_map;
+  mutable type_ptr_map				m_type_id_map;
+  mutable unordered_map<interned_string,
+			bool, hash_interned_string> m_emitted_type_id_map;
   type_ptr_map				m_emitted_decl_only_map;
   // A map of types that are referenced by emitted pointers,
   // references or typedefs
@@ -151,8 +164,23 @@ class write_context
 
 public:
 
-  write_context(ostream& os) : m_ostream(os)
+  /// Constructor.
+  ///
+  /// @param env the enviroment we are operating from.
+  ///
+  /// @param os the output stream to write to.
+  write_context(const environment* env, ostream& os)
+    : m_env(env),
+      m_id_manager(env),
+      m_ostream(os)
   {}
+
+  /// Getter of the environment we are operating from.
+  ///
+  /// @return the environment we are operating from.
+  const environment*
+  get_environment() const
+  {return m_env;}
 
   const config&
   get_config() const
@@ -161,6 +189,14 @@ public:
   ostream&
   get_ostream()
   {return m_ostream;}
+
+  /// Getter of the @ref id_manager.
+  ///
+  /// @return the @ref id_manager used by the current instance of @ref
+  /// write_context.
+  const id_manager&
+  get_id_manager() const
+  {return m_id_manager;}
 
   id_manager&
   get_id_manager()
@@ -180,21 +216,22 @@ public:
   /// in a hash table, hashing the type.  So if the type has no id
   /// associated to it, create a new one and return it.  Otherwise,
   /// return the existing id for that type.
-  string
-  get_id_for_type(shared_ptr<type_base> t)
+  interned_string
+  get_id_for_type(const type_base_sptr& t)
   {return get_id_for_type(t.get());}
 
   /// Associate a unique id to a given type.  For that, put the type
   /// in a hash table, hashing the type.  So if the type has no id
   /// associated to it, create a new one and return it.  Otherwise,
   /// return the existing id for that type.
-  string
-  get_id_for_type(type_base* t)
+  interned_string
+  get_id_for_type(type_base* t) const
   {
     type_ptr_map::const_iterator it = m_type_id_map.find(t);
     if (it == m_type_id_map.end())
       {
-	string id = get_id_manager().get_id_with_prefix("type-id-");
+	interned_string id =
+	  get_id_manager().get_id_with_prefix("type-id-");
 	m_type_id_map[t] = id;
 	return id;
       }
@@ -237,7 +274,11 @@ public:
   /// @param id the ID of the type.
   void
   record_type_id_as_emitted(const string& id)
-  {m_emitted_type_id_map[id] = true;}
+  {
+    const environment* env = get_environment();
+    assert(env);
+    m_emitted_type_id_map[env->intern(id)] = true;
+  }
 
   /// Getter of the map of types that were referenced by a pointer,
   /// reference or typedef.
@@ -254,7 +295,7 @@ public:
   /// @param t a shared pointer to a type
   void
   record_type_as_referenced(const type_base_sptr& t)
-  {m_referenced_types_map[t.get()] = true;}
+  {m_referenced_types_map[t.get()] = interned_string();}
 
   /// Test if a given type has been referenced by a pointer, a
   /// reference or a typedef type that was emitted to the XML output.
@@ -358,7 +399,7 @@ public:
   /// @return true if the type has already been emitted, false
   /// otherwise.
   bool
-  type_id_is_emitted(const string& id)
+  type_id_is_emitted(const interned_string& id)
   {return m_emitted_type_id_map.find(id) != m_emitted_type_id_map.end();}
 
   /// Test if a given type has been written out to the XML output.
@@ -372,7 +413,7 @@ public:
   {
     if (!type_has_existing_id(t))
       return false;
-    string id = get_id_for_type(t);
+    const interned_string& id = get_id_for_type(t);
     return type_id_is_emitted(id);
   }
 
@@ -387,7 +428,7 @@ public:
   {
     class_decl* cl = is_class_type(t);
     assert(cl && cl->get_is_declaration_only());
-    m_emitted_decl_only_map[t] = true;
+    m_emitted_decl_only_map[t] = interned_string();
   }
 
   /// Record a declaration-only class as being emitted.
@@ -1257,7 +1298,7 @@ write_translation_unit(const translation_unit&	tu,
 	  && !ctxt.decl_only_type_is_emitted(type))
 	// A referenced type that was not emitted at all must be
 	// emitted now.
-	referenced_types_to_emit[type.get()] = "";
+	referenced_types_to_emit[type.get()] = interned_string();
     }
 
   // Ok, now let's emit the referenced type for good.
@@ -1310,7 +1351,7 @@ write_translation_unit(const translation_unit&	tu,
 	  if (get_type_declaration(type)
 	      && !ctxt.type_is_emitted(type)
 	      && !ctxt.decl_only_type_is_emitted(type))
-	    referenced_types_to_emit[type.get()] = "";
+	    referenced_types_to_emit[type.get()] = interned_string();
 	}
     }
 
@@ -1350,8 +1391,8 @@ write_translation_unit(const translation_unit&	tu,
 		       unsigned		indent,
 		       std::ostream&		out)
 {
-    write_context ctxt(out);
-    return write_translation_unit(tu, ctxt, indent);
+  write_context ctxt(tu.get_environment(), out);
+  return write_translation_unit(tu, ctxt, indent);
 }
 
 /// Serialize a translation unit to a file.
@@ -3141,7 +3182,7 @@ write_corpus_to_native_xml(const corpus_sptr	corpus,
   if (!corpus)
     return false;
 
-  write_context ctxt(out);
+  write_context ctxt(corpus->get_environment(), out);
 
   do_indent_to_level(ctxt, indent, 0);
   out << "<abi-corpus";
@@ -3267,7 +3308,7 @@ using namespace abigail::ir;
 void
 dump(const decl_base_sptr d, std::ostream& o)
 {
-  xml_writer::write_context ctxt(o);
+  xml_writer::write_context ctxt(d->get_environment(), o);
   write_decl(d, ctxt, /*indent=*/0);
   o << "\n";
 }
@@ -3303,7 +3344,7 @@ dump(const type_base_sptr t)
 void
 dump(const var_decl_sptr v, std::ostream& o)
 {
-  xml_writer::write_context ctxt(o);
+  xml_writer::write_context ctxt(v->get_environment(), o);
   write_var_decl(v, ctxt, /*linkage_name*/true, /*indent=*/0);
   cerr << "\n";
 }
@@ -3323,7 +3364,7 @@ dump(const var_decl_sptr v)
 void
 dump(const translation_unit& t, std::ostream& o)
 {
-  xml_writer::write_context ctxt(o);
+  xml_writer::write_context ctxt(t.get_environment(), o);
   write_translation_unit(t, ctxt, /*indent=*/0);
   o << "\n";
 }

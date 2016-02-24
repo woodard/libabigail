@@ -1127,7 +1127,7 @@ read_translation_unit(read_context& ctxt, xmlNodePtr node)
 
   ctxt.set_corpus_node(node);
 
-  tu.reset(new translation_unit("", ctxt.get_environment()));
+  tu.reset(new translation_unit(ctxt.get_environment(), ""));
   tu->set_corpus(ctxt.get_corpus().get());
 
   xml::xml_char_sptr addrsize_str =
@@ -1465,7 +1465,7 @@ read_corpus_from_input(read_context& ctxt)
 
   if (!ctxt.get_corpus())
     {
-      corpus_sptr c(new corpus("", ctxt.get_environment()));
+      corpus_sptr c(new corpus(ctxt.get_environment(), ""));
       ctxt.set_corpus(c);
     }
 
@@ -2059,7 +2059,8 @@ build_namespace_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  shared_ptr<namespace_decl> decl(new namespace_decl(name, loc));
+  const environment* env = ctxt.get_environment();
+  namespace_decl_sptr decl(new namespace_decl(env, name, loc));
   ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
   ctxt.map_xml_node_to_decl(node, decl);
 
@@ -2078,11 +2079,13 @@ build_namespace_decl(read_context&	ctxt,
 /// Build an instance of @ref elf_symbol from an XML element node
 /// which name is 'elf-symbol'.
 ///
+/// @param ctxt the context used for reading the XML input.
+///
 /// @param node the XML node to read.
 ///
 /// @return the @ref elf_symbol built, or nil if it couldn't be built.
 static elf_symbol_sptr
-build_elf_symbol(read_context&, const xmlNodePtr node)
+build_elf_symbol(read_context& ctxt, const xmlNodePtr node)
 {
   elf_symbol_sptr nil;
 
@@ -2142,8 +2145,9 @@ build_elf_symbol(read_context&, const xmlNodePtr node)
 
   elf_symbol::version version(version_string, is_default_version);
 
-  elf_symbol_sptr e = elf_symbol::create(/*index=*/0, size,
-					  name, type, binding,
+  const environment* env = ctxt.get_environment();
+  elf_symbol_sptr e = elf_symbol::create(env, /*index=*/0, size,
+					 name, type, binding,
 					 is_defined, is_common,
 					 version);
   return e;
@@ -2344,6 +2348,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
       type = ctxt.build_or_get_type_decl(type_id, true);
     }
   assert(type);
+  assert(type->get_environment() == ctxt.get_environment());
 
   string name;
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("name"))))
@@ -2412,8 +2417,10 @@ build_function_decl(read_context&	ctxt,
   location loc;
   read_location(ctxt, node, loc);
 
-  std::vector<shared_ptr<function_decl::parameter> > parms;
-  type_base_sptr return_type;
+  environment* env = ctxt.get_environment();
+  assert(env);
+  std::vector<function_decl::parameter_sptr> parms;
+  type_base_sptr return_type = env->get_void_type_decl();
 
   for (xmlNodePtr n = node->children; n ; n = n->next)
     {
@@ -2437,22 +2444,24 @@ build_function_decl(read_context&	ctxt,
 	}
     }
 
-  shared_ptr<function_type> fn_type(as_method_decl
-				    ? new method_type(return_type,
-						      as_method_decl,
-						      parms, size, align)
-				    : new function_type(return_type,
-							parms, size, align));
+  assert(return_type);
 
-  shared_ptr<function_decl> fn_decl(as_method_decl
-				    ? new class_decl::method_decl
-				    (name, fn_type,
-				     declared_inline, loc,
-				     mangled_name, vis, bind)
-				    : new function_decl(name, fn_type,
-							declared_inline, loc,
-							mangled_name, vis,
-							bind));
+  function_type_sptr fn_type(as_method_decl
+			     ? new method_type(return_type,
+					       as_method_decl,
+					       parms, size, align)
+			     : new function_type(return_type,
+						 parms, size, align));
+
+  function_decl_sptr fn_decl(as_method_decl
+			     ? new class_decl::method_decl
+			     (name, fn_type,
+			      declared_inline, loc,
+			      mangled_name, vis, bind)
+			     : new function_decl(name, fn_type,
+						 declared_inline, loc,
+						 mangled_name, vis,
+						 bind));
 
   ctxt.push_decl_to_current_scope(fn_decl, add_to_current_scope);
 
@@ -2597,9 +2606,9 @@ build_type_decl(read_context&		ctxt,
       return ty;
     }
 
-  type_decl_sptr decl(new type_decl(name, size_in_bits,
-				    alignment_in_bits,
-				    loc));
+  const environment* env = ctxt.get_environment();
+  type_decl_sptr decl(new type_decl(env, name, size_in_bits,
+				    alignment_in_bits, loc));
   decl->set_is_anonymous(is_anonymous);
   if (ctxt.push_and_key_type_decl(decl, id, add_to_current_scope))
     {
@@ -2910,8 +2919,10 @@ build_function_type(read_context&	ctxt,
   size_t size = 0, align = 0;
   read_size_and_alignment(node, size, align);
 
+  environment* env = ctxt.get_environment();
+  assert(env);
   std::vector<shared_ptr<function_decl::parameter> > parms;
-  type_base_sptr return_type;
+  type_base_sptr return_type = env->get_void_type_decl();;
 
  function_type_sptr fn_type(new function_type(return_type,
 					      parms, size, align));
@@ -3170,6 +3181,9 @@ build_enum_type_decl(read_context&	ctxt,
 
   assert(!id.empty());
 
+  const environment* env = ctxt.get_environment();
+  assert(env);
+
   string base_type_id;
   enum_type_decl::enumerators enums;
   for (xmlNodePtr n = node->children; n; n = n->next)
@@ -3202,17 +3216,17 @@ build_enum_type_decl(read_context&	ctxt,
 		return nil;
 	    }
 
-	  enums.push_back(enum_type_decl::enumerator(name, value));
+	  enums.push_back(enum_type_decl::enumerator(env, name, value));
 	}
     }
 
-  shared_ptr<type_base> underlying_type =
+  type_base_sptr underlying_type =
     ctxt.build_or_get_type_decl(base_type_id, true);
   assert(underlying_type);
 
-  shared_ptr<enum_type_decl> t(new enum_type_decl(name, loc,
-						  underlying_type,
-						  enums, linkage_name));
+  enum_type_decl_sptr t(new enum_type_decl(name, loc,
+					   underlying_type,
+					   enums, linkage_name));
   if (ctxt.push_and_key_type_decl(t, id, add_to_current_scope))
     {
       ctxt.map_xml_node_to_decl(node, t);
@@ -3391,6 +3405,9 @@ build_class_decl(read_context&		ctxt,
 	return previous_declaration;
     }
 
+  const environment* env = ctxt.get_environment();
+  assert(env);
+
   if (!is_decl_only && previous_definition)
     // We are in the case where we've read this class definition
     // before, but we might need to update it to add some new stuff to
@@ -3401,11 +3418,11 @@ build_class_decl(read_context&		ctxt,
   else
     {
       if (is_decl_only)
-	decl.reset(new class_decl(name, is_struct));
+	decl.reset(new class_decl(env, name, is_struct));
       else
-	decl.reset(new class_decl(name, size_in_bits, alignment_in_bits,
-				  is_struct, loc, vis, bases, mbrs, data_mbrs,
-				  mbr_functions));
+	decl.reset(new class_decl(env, name, size_in_bits, alignment_in_bits,
+				  is_struct, loc, vis, bases, mbrs,
+				  data_mbrs, mbr_functions));
       decl->set_is_anonymous(is_anonymous);
     }
 
@@ -3724,7 +3741,10 @@ build_function_tdecl(read_context& ctxt,
   decl_base::binding bind = decl_base::BINDING_NONE;
   read_binding(node, bind);
 
-  function_tdecl_sptr fn_tmpl_decl(new function_tdecl(loc, vis, bind));
+  const environment* env = ctxt.get_environment();
+  assert(env);
+
+  function_tdecl_sptr fn_tmpl_decl(new function_tdecl(env, loc, vis, bind));
 
   ctxt.push_decl_to_current_scope(fn_tmpl_decl, add_to_current_scope);
 
@@ -3785,7 +3805,10 @@ build_class_tdecl(read_context&	ctxt,
   decl_base::visibility vis = decl_base::VISIBILITY_NONE;
   read_visibility(node, vis);
 
-  class_tdecl_sptr class_tmpl (new class_tdecl(loc, vis));
+  const environment* env = ctxt.get_environment();
+  assert(env);
+
+  class_tdecl_sptr class_tmpl (new class_tdecl(env, loc, vis));
 
   ctxt.push_decl_to_current_scope(class_tmpl, add_to_current_scope);
 
@@ -4534,7 +4557,7 @@ read_corpus_from_native_xml(std::istream* in,
 			    environment* env)
 {
   read_context read_ctxt(xml::new_reader_from_istream(in), env);
-  corpus_sptr corp(new corpus("", read_ctxt.get_environment()));
+  corpus_sptr corp(new corpus(env, ""));
   read_ctxt.set_corpus(corp);
   return read_corpus_from_input(read_ctxt);
 }

@@ -40,6 +40,8 @@ using std::ostream;
 using std::ostringstream;
 using std::vector;
 
+using abigail::ir::environment;
+using abigail::ir::environment_sptr;
 using abigail::dwarf_reader::lookup_symbol_from_elf;
 using abigail::elf_symbol;
 using abigail::elf_symbol_sptr;
@@ -142,8 +144,9 @@ main(int argc, char* argv[])
 	 && opts.symbol_name != 0);
 
   string p = opts.elf_path, n = opts.symbol_name;
+  environment_sptr env(new environment);
   vector<elf_symbol_sptr> syms;
-  if (!lookup_symbol_from_elf(p, n, opts.demangle, syms))
+  if (!lookup_symbol_from_elf(env.get(), p, n, opts.demangle, syms))
     {
       cout << "could not find symbol '"
 	   << opts.symbol_name

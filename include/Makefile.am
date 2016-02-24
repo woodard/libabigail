@@ -1,5 +1,6 @@
 pkginclude_HEADERS =	\
 abg-sptr-utils.h	\
+abg-interned-str.h	\
 abg-ir.h		\
 abg-corpus.h		\
 abg-reader.h		\

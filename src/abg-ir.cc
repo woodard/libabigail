@@ -34,6 +34,7 @@
 #include <tr1/memory>
 #include <tr1/unordered_map>
 #include "abg-sptr-utils.h"
+#include "abg-interned-str.h"
 #include "abg-ir.h"
 #include "abg-corpus.h"
 
@@ -45,11 +46,11 @@ namespace
 class environment_setter : public abigail::ir::ir_node_visitor
 {
   abigail::ir::type_or_decl_base* artifact_;
-  abigail::ir::environment* env_;
+  const abigail::ir::environment* env_;
 
 public:
   environment_setter(abigail::ir::type_or_decl_base*	a,
-		     abigail::ir::environment*		env)
+		     const abigail::ir::environment*	env)
     : artifact_(a),
       env_(env)
   {}
@@ -63,7 +64,7 @@ public:
   bool
   visit_begin(abigail::ir::decl_base* d)
   {
-    if (abigail::ir::environment* env = d->get_environment())
+    if (const abigail::ir::environment* env = d->get_environment())
       {
 	assert(env == env_);
 	return false;
@@ -122,9 +123,6 @@ public:
 namespace abigail
 {
 
-namespace ir
-{
-
 // Inject.
 using std::string;
 using std::list;
@@ -133,6 +131,138 @@ using std::tr1::unordered_map;
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 
+/// Convenience typedef for a map of string -> string*.
+typedef unordered_map<string, string*> pool_map_type;
+
+/// The type of the private data structure of type @ref
+/// intered_string_pool.
+struct interned_string_pool::priv
+{
+  pool_map_type map;
+}; //end struc struct interned_string_pool::priv
+
+/// Default constructor.
+interned_string_pool::interned_string_pool()
+  : priv_(new priv)
+{
+  priv_->map[""] = 0;
+}
+
+/// Test if the interned string pool already contains a string with a
+/// given value.
+///
+/// @param s the string to test for.
+///
+/// @return true if the pool contains a string with the value @p s.
+bool
+interned_string_pool::has_string(const char* s) const
+{return priv_->map.find(s) != priv_->map.end();}
+
+/// Get a pointer to the interned string which has a given value.
+///
+/// @param s the value of the interned string to look for.
+///
+/// @return a pointer to the raw string of characters which has the
+/// value of @p s.  Or null if no string with value @p s was interned.
+const char*
+interned_string_pool::get_string(const char* s) const
+{
+  unordered_map<string, string*>::const_iterator i =
+    priv_->map.find(s);
+  if (i == priv_->map.end())
+    return 0;
+  if (i->second)
+    return i->second->c_str();
+  return "";
+}
+
+/// Create an interned string with a given value.
+///
+/// @param str_value the value of the interned string to create.
+///
+/// @return the new created instance of @ref interned_string created.
+interned_string
+interned_string_pool::create_string(const std::string& str_value)
+{
+  string*& result = priv_->map[str_value];
+  if (!result && !str_value.empty())
+    result = new string(str_value);
+  return interned_string(result);
+}
+
+/// Destructor.
+interned_string_pool::~interned_string_pool()
+{
+  for (pool_map_type::iterator i = priv_->map.begin();
+       i != priv_->map.end();
+       ++i)
+    if (i->second)
+      delete i->second;
+}
+
+/// Equality operator.
+///
+/// @param l the instance of std::string on the left-hand-side of the
+/// equality operator.
+///
+/// @param r the instance of @ref interned_string on the
+/// right-hand-side of the equality operator.
+///
+/// @return true iff the two string are equal.
+bool
+operator==(const std::string& l, const interned_string& r)
+{return r.operator==(l);}
+
+bool
+operator!=(const std::string& l, const interned_string& r)
+{return !(l == r);}
+
+/// Streaming operator.
+///
+/// Streams an instance of @ref interned_string to an output stream.
+///
+/// @param o the destination output stream.
+///
+/// @param s the instance of @ref interned_string to stream out.
+///
+/// @return the output stream this function just streamed to.
+std::ostream&
+operator<<(std::ostream& o, const interned_string& s)
+{
+  o << static_cast<std::string>(s);
+  return o;
+}
+
+/// Concatenation operator.
+///
+/// Concatenate two instances of @ref interned_string, builds an
+/// instance of std::string with the resulting string and return it.
+///
+/// @param s1 the first string to consider.
+///
+/// @param s2 the second string to consider.
+///
+/// @return the resuting concatenated string.
+std::string
+operator+(const interned_string& s1,const std::string& s2)
+{return static_cast<std::string>(s1) + s2;}
+
+/// Concatenation operator.
+///
+/// Concatenate two instances of @ref interned_string, builds an
+/// instance of std::string with the resulting string and return it.
+///
+/// @param s1 the first string to consider.
+///
+/// @param s2 the second string to consider.
+///
+/// @return the resuting concatenated string.
+std::string
+operator+(const std::string& s1, const interned_string& s2)
+{return s1 + static_cast<std::string>(s2);}
+
+namespace ir
+{
 /// @brief the location of a token represented in its simplest form.
 /// Instances of this type are to be stored in a sorted vector, so the
 /// type must have proper relational operators.
@@ -259,7 +389,7 @@ typedef unordered_map<function_type_sptr,
 /// Private type to hold private members of @ref translation_unit
 struct translation_unit::priv
 {
-  environment*					env_;
+  const environment*				env_;
   const corpus*				corp;
   bool						is_constructed_;
   char						address_size_;
@@ -271,7 +401,7 @@ struct translation_unit::priv
   mutable vector<type_base_sptr>		synthesized_types_;
   mutable string_type_base_wptr_map_type	types_;
 
-  priv(environment* env)
+  priv(const environment* env)
     : env_(env),
       corp(),
       is_constructed_(),
@@ -287,17 +417,17 @@ struct translation_unit::priv
 
 /// Constructor of translation_unit.
 ///
-/// @param path the location of the translation unit.
-///
 /// @param env the environment of this translation unit.  Please note
 /// that the life time of the environment must be greater than the
 /// life time of the translation unit because the translation uses
 /// resources that are allocated in the environment.
 ///
+/// @param path the location of the translation unit.
+///
 /// @param address_size the size of addresses in the translation unit,
 /// in bits.
-translation_unit::translation_unit(const std::string&	path,
-				   environment*	env,
+translation_unit::translation_unit(const environment*	env,
+				   const std::string&	path,
 				   char		address_size)
   : priv_(new priv(env))
 {
@@ -361,13 +491,13 @@ translation_unit::get_environment() const
 /// @return the translation unit of the current translation unit.
 environment*
 translation_unit::get_environment()
-{return priv_->env_;}
+{return const_cast<environment*>(priv_->env_);}
 
 /// Setter of the environment of the current @ref translation_unit.
 ///
 /// @param env the environment.
 void
-translation_unit::set_environment(environment* env)
+translation_unit::set_environment(const environment* env)
 {priv_->env_ = env;}
 
 /// Getter of the language of the source code of the translation unit.
@@ -747,6 +877,7 @@ operator!=(const translation_unit_sptr& l, const translation_unit_sptr& r)
 // <elf_symbol stuff>
 struct elf_symbol::priv
 {
+  const environment*	env_;
   size_t		index_;
   size_t		size_;
   string		name_;
@@ -789,7 +920,8 @@ struct elf_symbol::priv
   string		id_string_;
 
   priv()
-    : index_(),
+    : env_(),
+      index_(),
       size_(),
       type_(elf_symbol::NOTYPE_TYPE),
       binding_(elf_symbol::GLOBAL_BINDING),
@@ -797,7 +929,8 @@ struct elf_symbol::priv
       is_common_(false)
   {}
 
-  priv(size_t				i,
+  priv(const environment*		e,
+       size_t				i,
        size_t				s,
        const string&			n,
        elf_symbol::type		t,
@@ -805,7 +938,8 @@ struct elf_symbol::priv
        bool				d,
        bool				c,
        const elf_symbol::version&	v)
-    : index_(i),
+    : env_(e),
+      index_(i),
       size_(s),
       name_(n),
       type_(t),
@@ -837,6 +971,8 @@ elf_symbol::elf_symbol()
 /// should use the @ref elf_symbol::create() function to create
 /// instances of @ref elf_symbol instead.
 ///
+/// @param e the environment we are operating from.
+///
 /// @param i the index of the symbol in the (ELF) symbol table.
 ///
 /// @param s the size of the symbol.
@@ -852,15 +988,16 @@ elf_symbol::elf_symbol()
 /// @param c true if the symbol is a common symbol, false otherwise.
 ///
 /// @param v the version of the symbol.
-elf_symbol::elf_symbol(size_t		i,
-		       size_t		s,
-		       const string&	n,
-		       type		t,
-		       binding		b,
-		       bool		d,
-		       bool		c,
-		       const version&	v)
-  : priv_(new priv(i, s, n, t, b, d, c, v))
+elf_symbol::elf_symbol(const environment*	e,
+		       size_t			i,
+		       size_t			s,
+		       const string&		n,
+		       type			t,
+		       binding			b,
+		       bool			d,
+		       bool			c,
+		       const version&		v)
+  : priv_(new priv(e, i, s, n, t, b, d, c, v))
 {}
 
 /// Factory of instances of @ref elf_symbol.
@@ -881,6 +1018,8 @@ elf_symbol::create()
 ///
 /// This is the function to use to create instances of @ref elf_symbol.
 ///
+/// @param e the environment we are operating from.
+///
 /// @param i the index of the symbol in the (ELF) symbol table.
 ///
 /// @param s the size of the symbol.
@@ -900,7 +1039,8 @@ elf_symbol::create()
 /// @return a (smart) pointer to a newly created instance of @ref
 /// elf_symbol.
 elf_symbol_sptr
-elf_symbol::create(size_t		i,
+elf_symbol::create(const environment*	e,
+		   size_t		i,
 		   size_t		s,
 		   const string&	n,
 		   type		t,
@@ -909,9 +1049,9 @@ elf_symbol::create(size_t		i,
 		   bool		c,
 		   const version&	v)
 {
-  elf_symbol_sptr e(new elf_symbol(i, s, n, t, b, d, c, v));
-  e->priv_->main_symbol_ = e;
-  return e;
+  elf_symbol_sptr sym(new elf_symbol(e, i, s, n, t, b, d, c, v));
+  sym->priv_->main_symbol_ = sym;
+  return sym;
 }
 
 /// Test textual equality between two symbols.
@@ -941,6 +1081,23 @@ textually_equals(const elf_symbol&l,
 
   return equals;
 }
+
+/// Getter of the environment used by the current instance of @ref
+/// elf_symbol.
+///
+/// @return the enviroment used by the current instance of @ref elf_symbol.
+const environment*
+elf_symbol::get_environment() const
+{return priv_->env_;}
+
+/// Setter of the environment used by the current instance of @ref
+/// elf_symbol.
+///
+/// @param The new enviroment used by the current instance of @ref
+/// elf_symbol.
+void
+elf_symbol::set_environment(const environment* e) const
+{priv_->env_ = e;}
 
 /// Getter for the index
 ///
@@ -1860,6 +2017,10 @@ dm_context_rel::~dm_context_rel()
 
 // <environment stuff>
 
+/// Convenience typedef for a map of interned_string -> bool.
+typedef unordered_map<interned_string,
+		      bool, hash_interned_string> interned_string_bool_map_type;
+
 /// The private data of the @ref environment type.
 struct environment::priv
 {
@@ -1867,8 +2028,9 @@ struct environment::priv
   canonical_types_map_type	canonical_types_;
   type_decl_sptr		void_type_decl_;
   type_decl_sptr		variadic_marker_type_decl_;
-  unordered_map<string, bool>	classes_being_compared_;
+  interned_string_bool_map_type classes_being_compared_;
   vector<type_base_sptr>	extra_live_types_;
+  interned_string_pool		string_pool_;
 
   priv()
     : canonicalization_is_done_()
@@ -1900,10 +2062,9 @@ const type_decl_sptr&
 environment::get_void_type_decl() const
 {
   if (!priv_->void_type_decl_)
-    {
-      priv_->void_type_decl_.reset(new type_decl("void", 0, 0, location()));
-      priv_->void_type_decl_->set_environment(const_cast<environment*>(this));
-    }
+    priv_->void_type_decl_.reset(new type_decl(const_cast<environment*>(this),
+					       intern("void"),
+					       0, 0, location()));
   return priv_->void_type_decl_;
 }
 
@@ -1916,13 +2077,10 @@ const type_decl_sptr&
 environment::get_variadic_parameter_type_decl() const
 {
   if (!priv_->variadic_marker_type_decl_)
-    {
-      priv_->variadic_marker_type_decl_.
-	reset(new type_decl("variadic parameter type",
-			    0, 0, location()));
-      priv_->variadic_marker_type_decl_->
-	set_environment(const_cast<environment*>(this));
-    }
+    priv_->variadic_marker_type_decl_.
+      reset(new type_decl(const_cast<environment*>(this),
+			  intern("variadic parameter type"),
+			  0, 0, location()));
   return priv_->variadic_marker_type_decl_;
 }
 
@@ -1949,6 +2107,22 @@ void
 environment::canonicalization_is_done(bool f)
 {priv_->canonicalization_is_done_ = f;}
 
+/// Do intern a string.
+///
+/// If a value of this string already exists in the interned string
+/// pool of the current environment, then this function returns a new
+/// interned_string pointing to that already existing string.
+/// Otherwise, a new string is created, stored in the interned string
+/// pool and a new interned_string instance is created to point to
+/// that new intrerned string, and it's return.
+///
+/// @param s the value of the string to intern.
+///
+/// @return the interned string.
+interned_string
+environment::intern(const string& s) const
+{return const_cast<environment*>(this)->priv_->string_pool_.create_string(s);}
+
 // </environment stuff>
 
 // <type_or_decl_base stuff>
@@ -1956,13 +2130,13 @@ environment::canonicalization_is_done(bool f)
 /// The private data of @ref type_or_decl_base.
 struct type_or_decl_base::priv
 {
-  bool			hashing_started_;
-  environment*		env_;
-  const translation_unit* translation_unit_;
+  bool				hashing_started_;
+  const environment*		env_;
+  const translation_unit*	translation_unit_;
 
-  priv()
+  priv(const environment* e = 0)
     : hashing_started_(),
-      env_(),
+      env_(e),
       translation_unit_()
   {}
 }; // end struct type_or_decl_base
@@ -1970,6 +2144,11 @@ struct type_or_decl_base::priv
 /// Default constructor of @ref type_or_decl_base.
 type_or_decl_base::type_or_decl_base()
   :priv_(new priv)
+{}
+
+/// Constructor of @ref type_or_decl_base.
+type_or_decl_base::type_or_decl_base(const environment* e)
+  :priv_(new priv(e))
 {}
 
 /// Copy constructor of @ref type_or_decl_base.
@@ -2003,7 +2182,7 @@ type_or_decl_base::hashing_started(bool b) const
 ///
 /// @param env the new environment.
 void
-type_or_decl_base::set_environment(environment* env)
+type_or_decl_base::set_environment(const environment* env)
 {priv_->env_ = env;}
 
 /// Getter of the environment of the current ABI artifact.
@@ -2018,7 +2197,7 @@ type_or_decl_base::get_environment() const
 /// @return the environment of the artifact.
 environment*
 type_or_decl_base::get_environment()
-{return priv_->env_;}
+{return const_cast<environment*>(priv_->env_);}
 
 /// Get the @ref corpus this ABI artifact belongs to.
 ///
@@ -2049,6 +2228,19 @@ const translation_unit*
 type_or_decl_base::get_translation_unit() const
 {return priv_->translation_unit_;}
 
+/// Assignment operator for @ref type_or_decl_base.
+///
+/// @param o the other instance to assign the current instance to.
+///
+/// return a reference to the assigned instance of @ref
+/// type_or_decl_base.
+type_or_decl_base&
+type_or_decl_base::operator=(const type_or_decl_base& o)
+{
+  *priv_ = *o.priv_;
+  return *this;
+}
+
 /// Traverse the the ABI artifact.
 ///
 /// @param v the visitor used to traverse the sub-tree nodes of the
@@ -2064,7 +2256,8 @@ type_or_decl_base::traverse(ir_node_visitor&)
 ///
 /// @param env the new environment.
 void
-set_environment_for_artifact(type_or_decl_base* artifact, environment* env)
+set_environment_for_artifact(type_or_decl_base* artifact,
+			     const environment* env)
 {
   assert(artifact && env);
 
@@ -2080,7 +2273,7 @@ set_environment_for_artifact(type_or_decl_base* artifact, environment* env)
 /// @param env the new environment.
 void
 set_environment_for_artifact(type_or_decl_base_sptr artifact,
-			     environment* env)
+			     const environment* env)
 {set_environment_for_artifact(artifact.get(), env);}
 
 /// Non-member equality operator for the @type_or_decl_base type.
@@ -2157,15 +2350,15 @@ struct decl_base::priv
   bool			is_anonymous_;
   location		location_;
   context_rel_sptr	context_;
-  std::string		name_;
-  std::string		qualified_parent_name_;
+  interned_string	name_;
+  interned_string	qualified_parent_name_;
   // This temporary qualified name is the cache used for the qualified
   // name before the type associated to this decl (if applicable) is
   // canonicalized.  Once the type is canonicalized, the cached use is
   // the data member qualified_parent_name_ above.
-  std::string		temporary_qualified_name_;
-  std::string		qualified_name_;
-  std::string		linkage_name_;
+  interned_string	temporary_qualified_name_;
+  interned_string	qualified_name_;
+  interned_string	linkage_name_;
   visibility		visibility_;
 
   priv()
@@ -2174,14 +2367,15 @@ struct decl_base::priv
       visibility_(VISIBILITY_DEFAULT)
   {}
 
-  priv(const std::string& name, const location& locus,
-       const std::string& linkage_name, visibility vis)
+  priv(interned_string name, const location& locus,
+       interned_string linkage_name, visibility vis)
     : in_pub_sym_tab_(false),
       location_(locus),
       name_(name),
       linkage_name_(linkage_name),
       visibility_(vis)
   {
+    qualified_name_ = name;
     is_anonymous_ = name_.empty();
   }
 
@@ -2195,27 +2389,58 @@ struct decl_base::priv
 
 /// Constructor for the @ref decl_base type.
 ///
+/// @param e the environment the current @ref decl_base is being
+/// created in.
+///
 /// @param name the name of the declaration.
 ///
 /// @param locus the location where to find the declaration in the
 /// source code.
 ///
-/// @pram linkage_name the linkage name of the declaration.
+/// @param linkage_name the linkage name of the declaration.
 ///
 /// @param vis the visibility of the declaration.
-decl_base::decl_base(const std::string&	name,
-		     const location&		locus,
-		     const std::string&	linkage_name,
-		     visibility		vis)
-  : priv_(new priv(name, locus, linkage_name, vis))
+decl_base::decl_base(const environment* e,
+		     const string&	name,
+		     const location&	locus,
+		     const string&	linkage_name,
+		     visibility	vis)
+  : type_or_decl_base(e),
+    priv_(new priv(e->intern(name), locus, e->intern(linkage_name), vis))
+{}
+
+/// Constructor.
+///
+/// @param e the environment this instance of @ref decl_base is
+/// created in.
+///
+/// @param name the name of the declaration being constructed.
+///
+/// @param locus the source location of the declaration being constructed.
+///
+/// @param linkage_name the linkage name of the declaration being
+/// constructed.
+///
+/// @param vis the visibility of the declaration being constructed.
+decl_base::decl_base(const environment* e,
+		     const interned_string& name,
+		     const location& locus,
+		     const interned_string& linkage_name,
+		     visibility vis)
+  : type_or_decl_base(e),
+    priv_(new priv(name, locus, linkage_name, vis))
 {}
 
 /// Constructor for the @ref decl_base type.
 ///
+///@param environment the environment this instance of @ref decl_base
+/// is being constructed in.
+///
 /// @param l the location where to find the declaration in the source
 /// code.
-decl_base::decl_base(const location& l)
-  : priv_(new priv(l))
+decl_base::decl_base(const environment* e, const location& l)
+  : type_or_decl_base(e),
+    priv_(new priv(l))
 {}
 
 decl_base::decl_base(const decl_base& d)
@@ -2237,7 +2462,7 @@ decl_base::decl_base(const decl_base& d)
 /// the qualified name.
 ///
 /// @return the qualified name.
-const string&
+const interned_string&
 decl_base::peek_qualified_name() const
 {return priv_->qualified_name_;}
 
@@ -2245,7 +2470,7 @@ decl_base::peek_qualified_name() const
 ///
 /// @param n the new qualified name.
 void
-decl_base::set_qualified_name(const string& n) const
+decl_base::set_qualified_name(const interned_string& n) const
 {priv_->qualified_name_ = n;}
 
 /// Getter of the temporary qualified name of the current declaration.
@@ -2257,7 +2482,7 @@ decl_base::set_qualified_name(const string& n) const
 /// the qualified name cached.
 ///
 /// @return the temporary qualified name.
-const string&
+const interned_string&
 decl_base::peek_temporary_qualified_name() const
 {return priv_->temporary_qualified_name_;}
 
@@ -2272,7 +2497,7 @@ decl_base::peek_temporary_qualified_name() const
 /// it's the result of decl_base::peek_qualified_name() that becomes
 /// the qualified name cached.
 void
-decl_base::set_temporary_qualified_name(const string& n) const
+decl_base::set_temporary_qualified_name(const interned_string& n) const
 {priv_->temporary_qualified_name_ = n;}
 
 ///Getter for the context relationship.
@@ -2376,8 +2601,8 @@ decl_base::set_location(const location& l)
 void
 decl_base::set_name(const string& n)
 {
-  priv_->name_ = n;
-  priv_->is_anonymous_ = priv_->name_.empty();
+  priv_->name_ = get_environment()->intern(n);
+  priv_->is_anonymous_ = n.empty();
 }
 
 /// Test if the current declaration is anonymous.
@@ -2403,7 +2628,7 @@ decl_base::set_is_anonymous(bool f)
 /// Getter for the mangled name.
 ///
 /// @return the new mangled name.
-const string&
+const interned_string&
 decl_base::get_linkage_name() const
 {return priv_->linkage_name_;}
 
@@ -2411,8 +2636,12 @@ decl_base::get_linkage_name() const
 ///
 /// @param m the new linkage name.
 void
-decl_base::set_linkage_name(const std::string& m)
-{priv_->linkage_name_ = m;}
+decl_base::set_linkage_name(const string& m)
+{
+  const environment* env = get_environment();
+  assert(env);
+  priv_->linkage_name_ = env->intern(m);
+}
 
 /// Getter for the visibility of the decl.
 ///
@@ -2444,14 +2673,14 @@ decl_base::get_scope() const
 /// decl.
 ///
 /// @return the newly-built qualified name of the of the current decl.
-const string&
+const interned_string&
 decl_base::get_qualified_parent_name() const
 {return priv_->qualified_parent_name_;}
 
 /// Getter for the name of the current decl.
 ///
 /// @return the name of the current decl.
-const string&
+const interned_string&
 decl_base::get_name() const
 {return priv_->name_;}
 
@@ -2464,7 +2693,7 @@ decl_base::get_name() const
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 void
-decl_base::get_qualified_name(string& qn, bool internal) const
+decl_base::get_qualified_name(interned_string& qn, bool internal) const
 {qn = get_qualified_name(internal);}
 
 /// Get the pretty representatin of the current declaration.
@@ -2490,9 +2719,9 @@ decl_base::get_pretty_representation(bool internal) const
 /// false.
 ///
 /// @return the resulting qualified name.
-const string&
+const interned_string&
 decl_base::get_qualified_name(bool /*internal*/) const
-{return priv_->qualified_name_.empty() ? get_name() : priv_->qualified_name_;}
+{return priv_->qualified_name_;}
 
 change_kind
 operator|(change_kind l, change_kind r)
@@ -2545,10 +2774,11 @@ bool
 equals(const decl_base& l, const decl_base& r, change_kind* k)
 {
   bool result = true;
-  if (!l.get_linkage_name().empty()
-      && !r.get_linkage_name().empty())
+  const interned_string &l_linkage_name = l.get_linkage_name();
+  const interned_string &r_linkage_name = r.get_linkage_name();
+  if (!l_linkage_name.empty() && !r_linkage_name.empty())
     {
-      if (l.get_linkage_name() != r.get_linkage_name())
+      if (l_linkage_name != r_linkage_name)
 	{
 	  // Linkage names are different.  That usually means the two
 	  // decls are different, unless we are looking at two
@@ -3978,7 +4208,7 @@ scope_decl::add_member_decl(const decl_base_sptr member)
 
   update_qualified_name(member);
 
-  if (environment* env = get_environment())
+  if (const environment* env = get_environment())
     set_environment_for_artifact(member, env);
 
   if (const translation_unit* tu = get_translation_unit())
@@ -4019,7 +4249,7 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
 
   update_qualified_name(member);
 
-  if (environment* env = get_environment())
+  if (const environment* env = get_environment())
     set_environment_for_artifact(member, env);
 
   if (const translation_unit* tu = get_translation_unit())
@@ -4526,7 +4756,7 @@ get_type_scope(const type_base_sptr& t)
 ///
 /// @return a copy of the type name if the type has a name, or the
 /// empty string if it does not.
-string
+interned_string
 get_type_name(const type_base_sptr t, bool qualified, bool internal)
 {return get_type_name(t.get(), qualified, internal);}
 
@@ -4544,7 +4774,7 @@ get_type_name(const type_base_sptr t, bool qualified, bool internal)
 ///
 /// @return a copy of the type name if the type has a name, or the
 /// empty string if it does not.
-string
+interned_string
 get_type_name(const type_base* t, bool qualified, bool internal)
 {
   const decl_base* d = dynamic_cast<const decl_base*>(t);
@@ -4573,7 +4803,7 @@ get_type_name(const type_base* t, bool qualified, bool internal)
 ///
 /// @return a copy of the type name if the type has a name, or the
 /// empty string if it does not.
-string
+interned_string
 get_type_name(const type_base& t, bool qualified, bool internal)
 {return get_type_name(&t, qualified, internal);}
 
@@ -4587,7 +4817,7 @@ get_type_name(const type_base& t, bool qualified, bool internal)
 /// false.
 ///
 /// @return a copy of the function type name
-string
+interned_string
 get_function_type_name(const function_type_sptr& fn_type,
 		       bool internal)
 {return get_function_type_name(fn_type.get(), internal);}
@@ -4602,12 +4832,11 @@ get_function_type_name(const function_type_sptr& fn_type,
 /// false.
 ///
 /// @return a copy of the function type name
-string
+interned_string
 get_function_type_name(const function_type* fn_type,
 		       bool internal)
 {
-  if (!fn_type)
-    return "";
+  assert(fn_type);
 
   if (const method_type* method = is_method_type(fn_type))
     return get_method_type_name(method, internal);
@@ -4625,12 +4854,14 @@ get_function_type_name(const function_type* fn_type,
 /// false.
 ///
 /// @return a copy of the function type name
-string
+interned_string
 get_function_type_name(const function_type& fn_type,
 		       bool internal)
 {
   std::ostringstream o;
   type_base_sptr return_type= fn_type.get_return_type();
+  const environment* env = fn_type.get_environment();
+  assert(env);
 
   o <<  get_pretty_representation(return_type, internal);
 
@@ -4645,7 +4876,8 @@ get_function_type_name(const function_type& fn_type,
       o << get_pretty_representation((*i)->get_type(), internal);
     }
   o <<")";
-  return o.str();
+
+  return env->intern(o.str());
 }
 
 /// Get the name of a given method type and return a copy of it.
@@ -4658,7 +4890,7 @@ get_function_type_name(const function_type& fn_type,
 /// false.
 ///
 /// @return a copy of the function type name
-string
+interned_string
 get_method_type_name(const method_type_sptr fn_type,
 		     bool internal)
 {return get_method_type_name(fn_type.get(), internal);}
@@ -4673,14 +4905,14 @@ get_method_type_name(const method_type_sptr fn_type,
 /// false.
 ///
 /// @return a copy of the function type name
-string
+interned_string
 get_method_type_name(const method_type* fn_type,
 		     bool internal)
 {
   if (fn_type)
     get_method_type_name(*fn_type, internal);
 
-  return "";
+  return interned_string();
 }
 
 /// Get the name of a given method type and return a copy of it.
@@ -4693,12 +4925,14 @@ get_method_type_name(const method_type* fn_type,
 /// false.
 ///
 /// @return a copy of the function type name
-string
+interned_string
 get_method_type_name(const method_type& fn_type,
 		     bool internal)
 {
   std::ostringstream o;
   type_base_sptr return_type= fn_type.get_return_type();
+  const environment* env = fn_type.get_environment();
+  assert(env);
 
   o <<  get_pretty_representation(return_type, internal);
 
@@ -4718,7 +4952,8 @@ get_method_type_name(const method_type& fn_type,
       o << get_pretty_representation((*i)->get_type(), internal);
     }
   o <<")";
-  return o.str();
+
+  return env->intern(o.str());
 }
 
 /// Build and return a copy of the pretty representation of an ABI
@@ -5866,7 +6101,7 @@ function_type_sptr
 lookup_function_type_in_translation_unit(const function_type& t,
 					 const translation_unit& tu)
 {
-  string type_name = get_type_name(t), n;
+  interned_string type_name = get_type_name(t), n;
   function_types_type& fn_types = tu.priv_->function_types_;
   for (function_types_type::const_iterator i = fn_types.begin();
        i != fn_types.end();
@@ -5945,9 +6180,6 @@ synthesize_type_from_translation_unit(const type_base_sptr& type,
 	      result.reset(new qualified_type_def(underlying_type,
 						  qual->get_cv_quals(),
 						  qual->get_location()));
-	      // The new qualified type must be in the same environment
-	      // as its underlying type.
-	      result->set_environment(underlying_type->get_environment());
 	    }
 	}
       else if (pointer_type_def_sptr p = is_pointer_type(type))
@@ -6099,7 +6331,7 @@ lookup_var_decl_in_scope(const string& fqn,
 ///
 /// @return the name of the node.
 template<typename NodeKind>
-static const string&
+static const interned_string&
 get_node_name(shared_ptr<NodeKind> node);
 
 /// Gets the name of a class_decl node.
@@ -6108,7 +6340,7 @@ get_node_name(shared_ptr<NodeKind> node);
 ///
 /// @return the name of the node.
 template<>
-const string&
+const interned_string&
 get_node_name(class_decl_sptr node)
 {return node->get_name();}
 
@@ -6118,7 +6350,7 @@ get_node_name(class_decl_sptr node)
 ///
 /// @return the name of the node.
 template<>
-const string&
+const interned_string&
 get_node_name(type_base_sptr node)
 {return get_type_declaration(node)->get_name();}
 
@@ -6128,7 +6360,7 @@ get_node_name(type_base_sptr node)
 ///
 /// @return the name of the node.
 template<>
-const string&
+const interned_string&
 get_node_name(var_decl_sptr node)
 {return node->get_name();}
 
@@ -6188,7 +6420,7 @@ convert_node_to_decl(var_decl_sptr node)
 template<typename NodeKind>
 static const decl_base_sptr
 lookup_node_in_scope(const list<string>& fqn,
-		     const scope_decl_sptr skope)
+		     const scope_decl_sptr& skope)
 {
   decl_base_sptr resulting_decl;
   shared_ptr<NodeKind> node;
@@ -6282,7 +6514,7 @@ lookup_type_in_scope(const type_base& type,
 
   if (a.empty())
     {
-      string n = get_type_name(type, false);
+      interned_string n = get_type_name(type, false);
       for (scope_decl::declarations::const_iterator i =
 	     scope->get_member_decls().begin();
 	   i != scope->get_member_decls().end();
@@ -6296,7 +6528,7 @@ lookup_type_in_scope(const type_base& type,
   else
     {
       first_scope = a.back();
-      string scope_name, cur_scope_name = first_scope->get_name();
+      interned_string scope_name, cur_scope_name = first_scope->get_name();
       for (scope_decl::scopes::const_iterator i =
 	     scope->get_member_scopes().begin();
 	   i != scope->get_member_scopes().end();
@@ -6795,8 +7027,9 @@ canonicalize(type_base_sptr t)
 /// @param s the size of the type, in bits.
 ///
 /// @param a the alignment of the type, in bits.
-type_base::type_base(size_t s, size_t a)
-  : priv_(new priv(s, a))
+type_base::type_base(const environment* e, size_t s, size_t a)
+  : type_or_decl_base(e),
+    priv_(new priv(s, a))
 {}
 
 /// Getter of the canonical type of the current instance of @ref
@@ -6927,15 +7160,33 @@ type_base::~type_base()
 
 //<type_decl definitions>
 
-type_decl::type_decl(const std::string&	name,
-		     size_t			size_in_bits,
-		     size_t			alignment_in_bits,
-		     const location&		locus,
-		     const std::string&	linkage_name,
-		     visibility		vis)
+/// Constructor.
+///
+/// @param env the environment we are operating from.
+///
+/// @param name the name of the type declaration.
+///
+/// @param size_in_bits the size of the current type_decl, in bits.
+///
+/// @param alignment_in_bits the alignment of the current typ, in
+/// bits.
+///
+/// @param locus the source location of the current type declaration.
+///
+/// @param linkage_name the linkage_name of the current type declaration.
+///
+/// @param vis the visibility of the type declaration.
+type_decl::type_decl(const environment* env,
+		     const string&	name,
+		     size_t		size_in_bits,
+		     size_t		alignment_in_bits,
+		     const location&	locus,
+		     const string&	linkage_name,
+		     visibility	vis)
 
-  : decl_base(name, locus, linkage_name, vis),
-    type_base(size_in_bits, alignment_in_bits)
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, linkage_name, vis),
+    type_base(env, size_in_bits, alignment_in_bits)
 {
 }
 
@@ -7012,6 +7263,8 @@ type_decl::operator==(const decl_base& o) const
 /// Note that this does not check the scopes of any of the types.
 ///
 /// @param o the other type_decl to check against.
+///
+/// @return true iff the current isntance equals @p o
 bool
 type_decl::operator==(const type_decl& o) const
 {
@@ -7090,16 +7343,30 @@ type_decl::~type_decl()
 
 // <scope_type_decl definitions>
 
-scope_type_decl::scope_type_decl(const std::string&	name,
+/// Constructor.
+///
+/// @param env the environment we are operating from.
+///
+/// @param name the name of the type.
+///
+/// @param size_in_bits the size of the type, in bits.
+///
+/// @param alignment_in_bits the alignment of the type, in bits.
+///
+/// @param locus the source location where the type is defined.
+///
+/// @param vis the visibility of the type.
+scope_type_decl::scope_type_decl(const environment*	env,
+				 const string&		name,
 				 size_t		size_in_bits,
 				 size_t		alignment_in_bits,
 				 const location&	locus,
 				 visibility		vis)
-  : decl_base(name, locus, "", vis),
-    type_base(size_in_bits, alignment_in_bits),
-    scope_decl(name, locus)
-{
-}
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, "", vis),
+    type_base(env, size_in_bits, alignment_in_bits),
+    scope_decl(env, name, locus)
+{}
 
 /// Compares two instances of @ref scope_type_decl.
 ///
@@ -7213,19 +7480,30 @@ scope_type_decl::~scope_type_decl()
 // </scope_type_decl definitions>
 
 // <namespace_decl>
-namespace_decl::namespace_decl(const std::string&	name,
+
+/// Constructor.
+///
+/// @param the environment we are operatin from.
+///
+/// @param name the name of the namespace.
+///
+/// @param locus the source location where the namespace is defined.
+///
+/// @param vis the visibility of the namespace.
+namespace_decl::namespace_decl(const environment*	env,
+			       const string&		name,
 			       const location&		locus,
 			       visibility		vis)
-  : // We need to call the constructor of decl_base directly here
+    // We need to call the constructor of decl_base directly here
     // because it is virtually inherited by scope_decl.  Note that we
     // just implicitely call the default constructor for scope_decl
     // here, as what we really want is to initialize the decl_base
-    // subobject.  Wow, virtual inheritance is useful, but setting it
+    // subobject.  Wow, virtual inheritance is		useful, but setting it
     // up is ugly.
-  decl_base(name, locus, "", vis),
-  scope_decl(name, locus)
-{
-}
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, "", vis),
+    scope_decl(env, name, locus)
+{}
 
 /// Build and return a copy of the pretty representation of the
 /// namespace.
@@ -7305,10 +7583,10 @@ class qualified_type_def::priv
   qualified_type_def::CV	cv_quals_;
   // Before the type is canonicalized, this is used as a temporary
   // internal name.
-  string			temporary_internal_name_;
+  interned_string		temporary_internal_name_;
   // Once the type is canonicalized, this is used as the internal
   // name.
-  string			internal_name_;
+  interned_string		internal_name_;
   weak_ptr<type_base>		underlying_type_;
 
   priv()
@@ -7371,17 +7649,17 @@ qualified_type_def::build_name(bool fully_qualified, bool internal) const
 /// @param quals a bitfield representing the const/volatile qualifiers
 ///
 /// @param locus the location of the qualified type definition
-qualified_type_def::qualified_type_def(type_base_sptr	type,
-				       CV		quals,
-				       const location&	locus)
-  : type_base(type->get_size_in_bits(),
+qualified_type_def::qualified_type_def(type_base_sptr		type,
+				       CV			quals,
+				       const location&		locus)
+  : type_or_decl_base(type->get_environment()),
+    type_base(type->get_environment(), type->get_size_in_bits(),
 	      type->get_alignment_in_bits()),
-    decl_base("", locus, "",
+    decl_base(type->get_environment(), "", locus, "",
 	      dynamic_pointer_cast<decl_base>(type)->get_visibility()),
     priv_(new priv(quals, type))
 {
-  assert(type);
-  string name = build_name(false);
+  interned_string name = type->get_environment()->intern(build_name(false));
   set_name(name);
 }
 
@@ -7516,7 +7794,7 @@ qualified_type_def::operator==(const qualified_type_def& o) const
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 void
-qualified_type_def::get_qualified_name(string& qualified_name,
+qualified_type_def::get_qualified_name(interned_string& qualified_name,
 				       bool internal) const
 {qualified_name = get_qualified_name(internal);}
 
@@ -7528,9 +7806,12 @@ qualified_type_def::get_qualified_name(string& qualified_name,
 /// false.
 ///
 /// @return the resulting qualified name.
-const string&
+const interned_string&
 qualified_type_def::get_qualified_name(bool internal) const
 {
+  const environment* env = get_environment();
+  assert(env);
+
   if (!get_canonical_type())
     {
       // The type hasn't been canonicalized yet. We want to return a
@@ -7541,7 +7822,7 @@ qualified_type_def::get_qualified_name(bool internal) const
 	  // let's return it from the right cache.
 	  if (priv_->temporary_internal_name_.empty())
 	    priv_->temporary_internal_name_ =
-	      build_name(true, /*internal=*/true);
+	      env->intern(build_name(true, /*internal=*/true));
 	  return priv_->temporary_internal_name_;
 	}
       else
@@ -7549,7 +7830,8 @@ qualified_type_def::get_qualified_name(bool internal) const
 	  // We are asked to return a temporary non-internal name.
 	  // This comes from a different cache.
 	  if (peek_temporary_qualified_name().empty())
-	    set_temporary_qualified_name(build_name(true, /*internal=*/false));
+	    set_temporary_qualified_name
+	      (env->intern(build_name(true, /*internal=*/false)));
 	  return peek_temporary_qualified_name();
 	}
     }
@@ -7561,14 +7843,16 @@ qualified_type_def::get_qualified_name(bool internal) const
 	{
 	  if (priv_->internal_name_.empty())
 	    priv_->internal_name_ =
-	      build_name(/*qualified=*/true, /*internal=*/true);
+	      env->intern(build_name(/*qualified=*/true,
+					    /*internal=*/true));
 	  return priv_->internal_name_;
 	}
       else
 	{
 	  if (peek_qualified_name().empty())
-	    set_qualified_name(build_name(/*qualified=*/true,
-					  /*internal=*/false));
+	    set_qualified_name
+	      (env->intern(build_name(/*qualified=*/true,
+					     /*internal=*/false)));
 	  return peek_qualified_name();
 	}
     }
@@ -7737,8 +8021,8 @@ operator<<(std::ostream& o, qualified_type_def::CV cv)
 struct pointer_type_def::priv
 {
   type_base_wptr pointed_to_type_;
-  string internal_qualified_name_;
-  string temp_internal_qualified_name_;
+  interned_string internal_qualified_name_;
+  interned_string temp_internal_qualified_name_;
 
   priv(const type_base_sptr& t)
     : pointed_to_type_(t)
@@ -7752,17 +8036,20 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
 				   size_t			size_in_bits,
 				   size_t			align_in_bits,
 				   const location&		locus)
-  : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus, ""),
+  : type_or_decl_base(pointed_to->get_environment()),
+    type_base(pointed_to->get_environment(), size_in_bits, align_in_bits),
+    decl_base(pointed_to->get_environment(), "", locus, ""),
     priv_(new priv)
 {
   try
     {
+      assert(pointed_to);
+      const environment* env = pointed_to->get_environment();
       decl_base_sptr pto = dynamic_pointer_cast<decl_base>(pointed_to);
       string name = (pto ? pto->get_name() : string("void")) + "*";
-      set_name(name);
+      set_name(env->intern(name));
       if (pto)
-        set_visibility(pto->get_visibility());
+	set_visibility(pto->get_visibility());
       priv_->pointed_to_type_ = type_base_wptr(type_or_void(pointed_to, 0));
     }
   catch (...)
@@ -7869,7 +8156,7 @@ pointer_type_def::get_pointed_to_type() const
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 void
-pointer_type_def::get_qualified_name(string& qn, bool internal) const
+pointer_type_def::get_qualified_name(interned_string& qn, bool internal) const
 {qn = get_qualified_name(internal);}
 
 /// Build, cache and return the qualified name of the current instance
@@ -7882,27 +8169,36 @@ pointer_type_def::get_qualified_name(string& qn, bool internal) const
 /// false.
 ///
 /// @return the resulting qualified name.
-const string&
+const interned_string&
 pointer_type_def::get_qualified_name(bool internal) const
 {
+  const environment* env = get_pointed_to_type()->get_environment();
+  assert(env);
+
   if (internal)
     {
       if (get_canonical_type())
 	{
 	  if (priv_->internal_qualified_name_.empty())
-	    priv_->internal_qualified_name_ =
-	      get_type_name(get_pointed_to_type(),
-			    /*qualified_name=*/true,
-			    /*internal=*/true) + "*";
+	    {
+	      string n = string(get_type_name(get_pointed_to_type(),
+					      /*qualified_name=*/true,
+					      /*internal=*/true))
+		+ "*";
+	      priv_->internal_qualified_name_ = env->intern(n);
+	    }
 	  return priv_->internal_qualified_name_;
 	}
       else
 	{
 	  if (priv_->temp_internal_qualified_name_.empty())
-	    priv_->temp_internal_qualified_name_ =
-	      get_type_name(get_pointed_to_type(),
-			    /*qualified_name=*/true,
-			    /*internal=*/true) + "*";
+	    {
+	      string n = string(get_type_name(get_pointed_to_type(),
+					      /*qualified_name=*/true,
+					      /*internal=*/true))
+		+ "*";
+	      priv_->temp_internal_qualified_name_ = env->intern(n);
+	    }
 	  return priv_->temp_internal_qualified_name_;
 	}
     }
@@ -7911,16 +8207,20 @@ pointer_type_def::get_qualified_name(bool internal) const
       if (get_canonical_type())
 	{
 	  if (decl_base::peek_qualified_name().empty())
-	    set_qualified_name(get_type_name(get_pointed_to_type(),
-					     /*qualified_name=*/true,
-					     /*internal=*/false) + "*");
+	    {
+	      string qn = get_type_name(get_pointed_to_type(),
+					/*qualified_name=*/true,
+					/*internal=*/false) + "*";
+	      set_qualified_name(env->intern(qn));
+	    }
 	  return decl_base::peek_qualified_name();
 	}
       else
 	{
-	  set_qualified_name(get_type_name(get_pointed_to_type(),
-					   /*qualified_name=*/true,
-					   /*internal=*/false) + "*");
+	  string qn = get_type_name(get_pointed_to_type(),
+				    /*qualified_name=*/true,
+				    /*internal=*/false) + "*";
+	  set_qualified_name(env->intern(qn));
 	  return decl_base::peek_qualified_name();
 	}
     }
@@ -7998,8 +8298,9 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
 				       size_t			size_in_bits,
 				       size_t			align_in_bits,
 				       const location&		locus)
-  : type_base(size_in_bits, align_in_bits),
-    decl_base("", locus, ""),
+  : type_or_decl_base(pointed_to->get_environment()),
+    type_base(pointed_to->get_environment(), size_in_bits, align_in_bits),
+    decl_base(pointed_to->get_environment(), "", locus, ""),
     is_lvalue_(lvalue)
 {
   try
@@ -8009,15 +8310,17 @@ reference_type_def::reference_type_def(const type_base_sptr	pointed_to,
       if (pto)
         {
           set_visibility(pto->get_visibility());
-          name = pto->get_name() + "&";
+          name = string(pto->get_name()) + "&";
         }
       else
-	name = get_type_name(is_function_type(pointed_to),
-			     /*qualified_name=*/true) + "&";
+	name = string(get_type_name(is_function_type(pointed_to),
+				    /*qualified_name=*/true)) + "&";
 
       if (!is_lvalue())
 	name += "&";
-      set_name(name);
+      environment* env = pointed_to->get_environment();
+      assert(env);
+      set_name(env->intern(name));
 
       pointed_to_type_ = type_base_wptr(type_or_void(pointed_to, 0));
     }
@@ -8137,7 +8440,7 @@ reference_type_def::is_lvalue() const
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 void
-reference_type_def::get_qualified_name(string& qn, bool internal) const
+reference_type_def::get_qualified_name(interned_string& qn, bool internal) const
 {qn = get_qualified_name(internal);}
 
 /// Build, cache and return the qualified name of the current instance
@@ -8151,19 +8454,22 @@ reference_type_def::get_qualified_name(string& qn, bool internal) const
 ///
 /// @return the newly-built qualified name of the current instance of
 /// @ref reference_type_def.
-const string&
+const interned_string&
 reference_type_def::get_qualified_name(bool internal) const
 {
   if (peek_qualified_name().empty()
       || !get_canonical_type())
     {
+      const environment* env = get_pointed_to_type()->get_environment();
+      assert(env);
+
       string name = get_type_name(get_pointed_to_type(),
 				  /*qualified_name=*/true,
 				  internal);
       if (is_lvalue())
-	set_qualified_name(name + "&");
+	set_qualified_name(env->intern(name + "&"));
       else
-	set_qualified_name(name + "&&");
+	set_qualified_name(env->intern(name + "&&"));
     }
   return peek_qualified_name();
 }
@@ -8309,8 +8615,8 @@ struct array_type_def::priv
 {
   type_base_wptr	element_type_;
   subranges_type	subranges_;
-  string		temp_internal_qualified_name_;
-  string		internal_qualified_name_;
+  interned_string	temp_internal_qualified_name_;
+  interned_string	internal_qualified_name_;
 
   priv(type_base_sptr t)
     : element_type_(t) {}
@@ -8334,8 +8640,9 @@ struct array_type_def::priv
 array_type_def::array_type_def(const type_base_sptr			e_type,
 			       const std::vector<subrange_sptr>&	subs,
 			       const location&				locus)
-  : type_base(0, e_type->get_alignment_in_bits()),
-    decl_base(locus),
+  : type_or_decl_base(e_type->get_environment()),
+    type_base(e_type->get_environment(), 0, e_type->get_alignment_in_bits()),
+    decl_base(e_type->get_environment(), locus),
     priv_(new priv(e_type))
 {append_subranges(subs);}
 
@@ -8497,7 +8804,9 @@ array_type_def::append_subrange(subrange_sptr sub)
   s += sub->get_length() * get_element_type()->get_size_in_bits();
   set_size_in_bits(s);
   string r = get_pretty_representation();
-  set_name(r);
+  const environment* env = get_environment();
+  assert(env);
+  set_name(env->intern(r));
 }
 
 /// Append subranges from the vector @param subs to the current
@@ -8541,7 +8850,7 @@ array_type_def::get_dimension_count() const
 /// otherwise.  If you don't know what this is for, then set it to
 /// false.
 void
-array_type_def::get_qualified_name(string& qn, bool internal) const
+array_type_def::get_qualified_name(interned_string& qn, bool internal) const
 {qn = get_qualified_name(internal);}
 
 /// Compute the qualified name of the array.
@@ -8552,23 +8861,26 @@ array_type_def::get_qualified_name(string& qn, bool internal) const
 /// false.
 ///
 /// @return the resulting qualified name.
-const string&
+const interned_string&
 array_type_def::get_qualified_name(bool internal) const
 {
+  const environment* env = get_environment();
+  assert(env);
+
   if (internal)
     {
       if (get_canonical_type())
 	{
 	  if (priv_->internal_qualified_name_.empty())
 	    priv_->internal_qualified_name_ =
-	      get_type_representation(*this, /*internal=*/true);
+	      env->intern(get_type_representation(*this, /*internal=*/true));
 	  return priv_->internal_qualified_name_;
 	}
       else
 	{
 	  if (priv_->temp_internal_qualified_name_.empty())
 	    priv_->temp_internal_qualified_name_ =
-	      get_type_representation(*this, /*internal=*/true);
+	      env->intern(get_type_representation(*this, /*internal=*/true));
 	  return priv_->temp_internal_qualified_name_;
 	}
     }
@@ -8577,14 +8889,14 @@ array_type_def::get_qualified_name(bool internal) const
       if (get_canonical_type())
 	{
 	  if (decl_base::peek_qualified_name().empty())
-	    set_qualified_name(get_type_representation(*this,
-						       /*internal=*/false));
+	    set_qualified_name
+	      (env->intern(get_type_representation(*this, /*internal=*/false)));
 	  return decl_base::peek_qualified_name();
 	}
       else
 	{
-	  set_qualified_name(get_type_representation(*this,
-						     /*internal=*/false));
+	  set_qualified_name
+	    (env->intern(get_type_representation(*this, /*internal=*/false)));
 	  return decl_base::peek_qualified_name();
 	}
     }
@@ -8647,15 +8959,31 @@ public:
   {}
 }; // end class enum_type_decl::priv
 
-enum_type_decl::enum_type_decl(const string& name,
-			       const location& locus,
-			       type_base_sptr underlying_type,
-			       enumerators& enums,
-			       const string& mangled_name,
-			       visibility vis)
-  : type_base(underlying_type->get_size_in_bits(),
+/// Constructor.
+///
+/// @param name the name of the type declaration.
+///
+/// @param locus the source location where the type was defined.
+///
+/// @param underlying_type the underlying type of the enum.
+///
+/// @param enums the enumerators of this enum type.
+///
+/// @param linkage_name the linkage name of the enum.
+///
+/// @param vis the visibility of the enum type.
+enum_type_decl::enum_type_decl(const string&	name,
+			       const location&	locus,
+			       type_base_sptr	underlying_type,
+			       enumerators&	enums,
+			       const string&	linkage_name,
+			       visibility	vis)
+  : type_or_decl_base(underlying_type->get_environment()),
+    type_base(underlying_type->get_environment(),
+	      underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
-    decl_base(name, locus, mangled_name, vis),
+    decl_base(underlying_type->get_environment(),
+	      name, locus, linkage_name, vis),
     priv_(new priv(underlying_type, enums))
 {
   for (enumerators::iterator e = get_enumerators().begin();
@@ -8858,21 +9186,27 @@ operator!=(const enum_type_decl_sptr& l, const enum_type_decl_sptr& r)
 /// enum_type_decl::enumerator.
 class enum_type_decl::enumerator::priv
 {
-  string name_;
-  int64_t value_;
-  string qualified_name_;
-  enum_type_decl* enum_type_;
+  const environment*	env_;
+  interned_string	name_;
+  int64_t		value_;
+  interned_string	qualified_name_;
+  enum_type_decl*	enum_type_;
 
-  friend class enum_type_decl::enumerator;
+  friend class	enum_type_decl::enumerator;
 
 public:
 
   priv()
-    : enum_type_()
+    : env_(),
+      enum_type_()
   {}
 
-  priv(const string& name, int64_t value, enum_type_decl* e = 0)
-    : name_(name),
+  priv(const environment* env,
+       const string& name,
+       int64_t value,
+       enum_type_decl* e = 0)
+    : env_(env),
+      name_(env ? env->intern(name) : interned_string()),
       value_(value),
       enum_type_(e)
   {}
@@ -8885,18 +9219,23 @@ enum_type_decl::enumerator::enumerator()
 
 /// Constructor of the @ref enum_type_decl::enumerator type.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param name the name of the enumerator.
 ///
 /// @param value the value of the enumerator.
-enum_type_decl::enumerator::enumerator(const string& name, int64_t value)
-  : priv_(new priv(name, value))
+enum_type_decl::enumerator::enumerator(const environment* env,
+				       const string& name,
+				       int64_t value)
+  : priv_(new priv(env, name, value))
 {}
 
 /// Copy constructor of the @ref enum_type_decl::enumerator type.
 ///
 /// @param other enumerator to copy.
 enum_type_decl::enumerator::enumerator(const enumerator& other)
-  : priv_(new priv(other.get_name(),
+  : priv_(new priv(other.get_environment(),
+		   other.get_name(),
 		   other.get_value(),
 		   other.get_enum_type()))
 {}
@@ -8922,12 +9261,19 @@ bool
 enum_type_decl::enumerator::operator!=(const enumerator& other) const
 {return !operator==(other);}
 
+/// Getter of the environment of this enumerator.
+///
+/// @return the environment of this enumerator.
+const environment*
+enum_type_decl::enumerator::get_environment() const
+{return priv_->env_;}
+
 /// Getter for the name of the current instance of
 /// enum_type_decl::enumerator.
 ///
 /// @return a reference to the name of the current instance of
 /// enum_type_decl::enumerator.
-const string&
+const interned_string&
 enum_type_decl::enumerator::get_name() const
 {return priv_->name_;}
 
@@ -8944,12 +9290,18 @@ enum_type_decl::enumerator::get_name() const
 ///
 /// @return the qualified name of the current instance of
 /// enum_type_decl::enumerator.
-const string&
+const interned_string&
 enum_type_decl::enumerator::get_qualified_name(bool internal) const
 {
   if (priv_->qualified_name_.empty())
-    priv_->qualified_name_ =
-      get_enum_type()->get_qualified_name(internal) + "::" + get_name();
+    {
+      const environment* env = priv_->enum_type_->get_environment();
+      assert(env);
+      priv_->qualified_name_ =
+	env->intern(get_enum_type()->get_qualified_name(internal)
+		    + "::"
+		    + get_name());
+    }
   return priv_->qualified_name_;
 }
 
@@ -8958,7 +9310,11 @@ enum_type_decl::enumerator::get_qualified_name(bool internal) const
 /// @param n the new name.
 void
 enum_type_decl::enumerator::set_name(const string& n)
-{priv_->name_ = n;}
+{
+  const environment* env = get_environment();
+  assert(env);
+  priv_->name_ = env->intern(n);;
+}
 
 /// Getter for the value of @ref enum_type_decl::enumerator.
 ///
@@ -9018,11 +9374,14 @@ struct typedef_decl::priv
 typedef_decl::typedef_decl(const string&		name,
 			   const type_base_sptr	underlying_type,
 			   const location&		locus,
-			   const std::string&		linkage_name,
+			   const string&		linkage_name,
 			   visibility vis)
-  : type_base(underlying_type->get_size_in_bits(),
+  : type_or_decl_base(underlying_type->get_environment()),
+    type_base(underlying_type->get_environment(),
+	      underlying_type->get_size_in_bits(),
 	      underlying_type->get_alignment_in_bits()),
-    decl_base(name, locus, linkage_name, vis),
+    decl_base(underlying_type->get_environment(),
+	      name, locus, linkage_name, vis),
     priv_(new priv(underlying_type))
 {}
 
@@ -9110,8 +9469,8 @@ typedef_decl::operator==(const decl_base& o) const
   if (!other)
     return false;
 
-  if (get_canonical_type() && other->get_canonical_type())
-    return get_canonical_type().get() == other->get_canonical_type().get();
+  if (get_naked_canonical_type() && other->get_naked_canonical_type())
+    return get_naked_canonical_type() == other->get_naked_canonical_type();
 
   return equals(*this, *other, 0);
 }
@@ -9190,31 +9549,51 @@ typedef_decl::~typedef_decl()
 struct var_decl::priv
 {
   type_base_wptr	type_;
+  type_base*		naked_type_;
   decl_base::binding	binding_;
   elf_symbol_sptr	symbol_;
-  string		id_;
+  interned_string	id_;
 
   priv()
-    : binding_(decl_base::BINDING_GLOBAL)
+    : naked_type_(),
+    binding_(decl_base::BINDING_GLOBAL)
   {}
 
   priv(type_base_sptr t,
        decl_base::binding b)
     : type_(t),
+      naked_type_(t.get()),
       binding_(b)
   {}
 }; // end struct var_decl::priv
 
-var_decl::var_decl(const std::string&		name,
-		   shared_ptr<type_base>	type,
-		   const location&		locus,
-		   const std::string&		linkage_name,
-		   visibility			vis,
-		   binding			bind)
-  : decl_base(name, locus, linkage_name, vis),
+/// Constructor
+///
+/// @param name the name of the variable declaration
+///
+/// @param name the type of the variable declaration
+///
+/// @param locus the source location where the variable was defined.
+///
+/// @param linkage_name the linkage name of the variable.
+///
+/// @param vis the visibility of of the variable.
+///
+/// @param bind the binding kind of the variable.
+var_decl::var_decl(const string&	name,
+		   type_base_sptr	type,
+		   const location&	locus,
+		   const string&	linkage_name,
+		   visibility		vis,
+		   binding		bind)
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), name, locus, linkage_name, vis),
     priv_(new priv(type, bind))
 {}
 
+/// Getter of the type of the variable.
+///
+/// @return the type of the variable.
 const type_base_sptr
 var_decl::get_type() const
 {
@@ -9352,7 +9731,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       // The variables have underlying elf symbols that are equal, so
       // now, let's compare the decl_base part of the variables w/o
       // considering their decl names.
-      string n1 = l.get_name(), n2 = r.get_name();
+      const interned_string &n1 = l.get_name(), &n2 = r.get_name();
       const_cast<var_decl&>(l).set_name("");
       const_cast<var_decl&>(r).set_name("");
       bool decl_bases_different = !l.decl_base::operator==(r);
@@ -9429,7 +9808,7 @@ var_decl::operator==(const decl_base& o) const
 /// pretty representation of the variable.
 ///
 /// @return the ID.
-const string&
+interned_string
 var_decl::get_id() const
 {
   if (priv_->id_.empty())
@@ -9440,9 +9819,11 @@ var_decl::get_id() const
 	sym_str = s->get_id_string();
       else if (!get_linkage_name().empty())
 	sym_str = get_linkage_name();
-      priv_->id_ = repr;
+      const environment* env = get_type()->get_environment();
+      assert(env);
+      priv_->id_ = env->intern(repr);
       if (!sym_str.empty())
-	priv_->id_ += "{" + sym_str + "}";
+	priv_->id_ = env->intern(priv_->id_ + "{" + sym_str + "}");
     }
   return priv_->id_;
 }
@@ -9553,7 +9934,8 @@ function_type::function_type(type_base_sptr	return_type,
 			     const parameters&	parms,
 			     size_t		size_in_bits,
 			     size_t		alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits),
+  : type_or_decl_base(return_type->get_environment()),
+    type_base(return_type->get_environment(), size_in_bits, alignment_in_bits),
     priv_(new priv(parms, return_type))
 {
   for (parameters::size_type i = 0, j = 1;
@@ -9578,9 +9960,10 @@ function_type::function_type(type_base_sptr	return_type,
 /// @param size_in_bits the size of this type, in bits.
 ///
 /// @param alignment_in_bits the alignment of this type, in bits.
-function_type::function_type(shared_ptr<type_base> return_type,
+function_type::function_type(type_base_sptr return_type,
 			     size_t size_in_bits, size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits),
+  : type_or_decl_base(return_type->get_environment()),
+    type_base(return_type->get_environment(), size_in_bits, alignment_in_bits),
     priv_(new priv(return_type))
 {}
 
@@ -9588,11 +9971,16 @@ function_type::function_type(shared_ptr<type_base> return_type,
 /// that has no return_type yet.  These missing parts can (and must)
 /// be added later.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param size_in_bits the size of this type, in bits.
 ///
 /// @param alignment_in_bits the alignment of this type, in bits.
-function_type::function_type(size_t size_in_bits, size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits),
+function_type::function_type(const environment* env,
+			     size_t		size_in_bits,
+			     size_t		alignment_in_bits)
+  : type_or_decl_base(env),
+    type_base(env, size_in_bits, alignment_in_bits),
     priv_(new priv)
 {}
 
@@ -9788,10 +10176,10 @@ equals(const function_type& lhs,
   bool compare_result_types = true;
   string lhs_rt_name = lhs_return_type_decl
     ? lhs_return_type_decl->get_qualified_name()
-    : "";
+    : string();
   string rhs_rt_name = rhs_return_type_decl
     ? rhs_return_type_decl->get_qualified_name()
-    : "";
+    : string();
 
   if ((lhs_class && (lhs_class->get_qualified_name() == lhs_rt_name))
       ||
@@ -9983,10 +10371,11 @@ function_type::~function_type()
 /// method_type, expressed in bits.
 method_type::method_type (type_base_sptr return_type,
 			  class_decl_sptr class_type,
-			  const std::vector<shared_ptr<function_decl::parameter> >& parms,
+			  const std::vector<function_decl::parameter_sptr>& parms,
 			  size_t size_in_bits,
 			  size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits),
+  : type_or_decl_base(class_type->get_environment()),
+    type_base(class_type->get_environment(), size_in_bits, alignment_in_bits),
     function_type(return_type, parms, size_in_bits, alignment_in_bits)
 {set_class_type(class_type);}
 
@@ -10014,19 +10403,24 @@ method_type::method_type(type_base_sptr return_type,
 			 const std::vector<shared_ptr<function_decl::parameter> >& parms,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits),
+  : type_or_decl_base(class_type->get_environment()),
+    type_base(class_type->get_environment(), size_in_bits, alignment_in_bits),
     function_type(return_type, parms, size_in_bits, alignment_in_bits)
 {set_class_type(dynamic_pointer_cast<class_decl>(class_type));}
 
 /// Constructor of the qualified_type_def
 ///
+/// @param env the environment we are operating from.
+///
 /// @param size_in_bits the size of the type, expressed in bits.
 ///
 /// @param alignment_in_bits the alignment of the type, expressed in bits
-method_type::method_type(size_t size_in_bits,
-			 size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits),
-    function_type(size_in_bits, alignment_in_bits)
+method_type::method_type(const environment*	env,
+			 size_t		size_in_bits,
+			 size_t		alignment_in_bits)
+  : type_or_decl_base(env),
+    type_base(env, size_in_bits, alignment_in_bits),
+    function_type(env, size_in_bits, alignment_in_bits)
 {}
 
 /// Constructor of instances of method_type.
@@ -10045,9 +10439,10 @@ method_type::method_type(size_t size_in_bits,
 method_type::method_type(shared_ptr<class_decl> class_type,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
-  : type_base(size_in_bits, alignment_in_bits),
-    function_type(size_in_bits, alignment_in_bits)
-{set_class_type(class_type);}
+  : type_or_decl_base(class_typ->get_environment()),
+    type_base(class_typ->get_environment(), size_in_bits, alignment_in_bits),
+    function_type(class_typ->get_environment(), size_in_bits, alignment_in_bits)
+{set_class_type(class_typ);}
 
 /// Sets the class type of the current instance of method_type.
 ///
@@ -10092,7 +10487,7 @@ struct function_decl::priv
   function_type_wptr	type_;
   function_type*	naked_type_;
   elf_symbol_sptr	symbol_;
-  string id_;
+  interned_string id_;
 
   priv()
     : declared_inline_(false),
@@ -10130,7 +10525,8 @@ function_decl::function_decl(const std::string& name,
 			     const std::string& mangled_name,
 			     visibility vis,
 			     binding bind)
-  : decl_base(name, locus, mangled_name, vis),
+  : type_or_decl_base(function_type->get_environment()),
+    decl_base(function_type->get_environment(), name, locus, mangled_name, vis),
     priv_(new priv(function_type, declared_inline, bind))
 {}
 
@@ -10157,14 +10553,15 @@ function_decl::function_decl(const std::string& name,
 ///
 /// @param bind  the kind of the binding of the function
 /// declaration.
-function_decl::function_decl(const std::string& name,
-			     shared_ptr<type_base> fn_type,
-			     bool	declared_inline,
-			     const location& locus,
-			     const std::string& linkage_name,
-			     visibility vis,
-			     binding bind)
-  : decl_base(name, locus, linkage_name, vis),
+function_decl::function_decl(const string&	name,
+			     type_base_sptr	fn_type,
+			     bool		declared_inline,
+			     const location&	locus,
+			     const string&	linkage_name,
+			     visibility	vis,
+			     binding		bind)
+  : type_or_decl_base(fn_type->get_environment()),
+    decl_base(fn_type->get_environment(), name, locus, linkage_name, vis),
     priv_(new priv(dynamic_pointer_cast<function_type>(fn_type),
 		   declared_inline,
 		   bind))
@@ -10496,8 +10893,8 @@ equals(const function_decl& l, const function_decl& r, change_kind* k)
       // The functions have underlying elf symbols that are equal,
       // so now, let's compare the decl_base part of the functions
       // w/o considering their decl names.
-      string n1 = l.get_name(), n2 = r.get_name();
-      string ln1 = l.get_linkage_name(), ln2 = r.get_linkage_name();
+      interned_string n1 = l.get_name(), n2 = r.get_name();
+      interned_string ln1 = l.get_linkage_name(), ln2 = r.get_linkage_name();
       const_cast<function_decl&>(l).set_name("");
       const_cast<function_decl&>(l).set_linkage_name("");
       const_cast<function_decl&>(r).set_name("");
@@ -10624,17 +11021,18 @@ function_decl::get_hash() const
 /// pretty representation of the function.
 ///
 /// @return the ID.
-const string&
+interned_string
 function_decl::get_id() const
 {
   if (priv_->id_.empty())
     {
+      const environment* env = get_type()->get_environment();
       if (!get_linkage_name().empty())
-	priv_->id_= get_linkage_name();
+	priv_->id_= env->intern(get_linkage_name());
       else if (elf_symbol_sptr s = get_symbol())
-	priv_->id_ = s->get_id_string();
+	priv_->id_ = env->intern(s->get_id_string());
       else
-	priv_->id_ = get_pretty_representation();
+	priv_->id_ = env->intern(get_pretty_representation());
     }
   return priv_->id_;
 }
@@ -10717,36 +11115,40 @@ struct function_decl::parameter::priv
 
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    unsigned			index,
-				    const std::string&		name,
+				    const string&		name,
 				    const location&		loc,
 				    bool			is_variadic)
-  : decl_base(name, loc),
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), name, loc),
     priv_(new priv(type, index, is_variadic, /*is_artificial=*/false))
 {}
 
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    unsigned			index,
-				    const std::string&		name,
+				    const string&		name,
 				    const location&		loc,
 				    bool			is_variadic,
 				    bool			is_artificial)
-  : decl_base(name, loc),
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), name, loc),
     priv_(new priv(type, index, is_variadic, is_artificial))
 {}
 
 function_decl::parameter::parameter(const type_base_sptr	type,
-				    const std::string&		name,
+				    const string&		name,
 				    const location&		loc,
 				    bool			is_variadic,
 				    bool			is_artificial)
-  : decl_base(name, loc),
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), name, loc),
     priv_(new priv(type, 0, is_variadic, is_artificial))
 {}
 
 function_decl::parameter::parameter(const type_base_sptr	type,
 				    unsigned			index,
 				    bool			variad)
-  : decl_base("", location()),
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), "", location()),
     priv_(new priv(type, index, variad, /*is_artificial=*/false))
 {}
 
@@ -10759,9 +11161,12 @@ function_decl::parameter::get_type()const
 }
 
 /// @return a copy of the type name of the parameter.
-const string
+interned_string
 function_decl::parameter::get_type_name() const
 {
+  const environment* env = get_environment();
+  assert(env);
+
   string str;
   if (get_variadic_marker())
     str = "...";
@@ -10769,9 +11174,9 @@ function_decl::parameter::get_type_name() const
     {
 	type_base_sptr t = get_type();
 	assert(t);
-	str += abigail::ir::get_type_name(t);
+	str = abigail::ir::get_type_name(t);
     }
-  return str;
+  return env->intern(str);
 }
 
 /// @return a copy of the pretty representation of the type of the
@@ -10794,12 +11199,16 @@ function_decl::parameter::get_type_pretty_representation() const
 /// Get a name uniquely identifying the parameter in the function.
 ///
 ///@return the unique parm name id.
-const string
+interned_string
 function_decl::parameter::get_name_id() const
 {
+  const environment* env = get_environment();
+  assert(env);
+
   std::ostringstream o;
   o << "parameter-" << get_index();
-  return o.str();
+
+  return env->intern(o.str());
 }
 
 unsigned
@@ -10972,7 +11381,7 @@ function_decl::parameter::get_hash() const
 ///
 /// @param qn the resulting qualified name.
 void
-function_decl::parameter::get_qualified_name(string& qualified_name,
+function_decl::parameter::get_qualified_name(interned_string& qualified_name,
 					     bool /*internal*/) const
 {qualified_name = get_name();}
 
@@ -11158,7 +11567,7 @@ struct class_decl::priv
   {
     const environment* env = klass.get_environment();
     assert(env);
-    unordered_map<string, bool>& c = env->priv_->classes_being_compared_;
+    interned_string_bool_map_type& c = env->priv_->classes_being_compared_;
     return (c.find(klass.get_qualified_name()) != c.end());
   }
 
@@ -11174,6 +11583,8 @@ struct class_decl::priv
 };// end struct class_decl::priv
 
 /// A Constructor for instances of \ref class_decl
+///
+/// @param env the environment we are operating from.
 ///
 /// @param name the identifier of the class.
 ///
@@ -11197,15 +11608,16 @@ struct class_decl::priv
 ///
 /// @param mbr_fns the vector of member functions of this instance of
 /// class_decl.
-class_decl::class_decl(const std::string& name, size_t size_in_bits,
-		       size_t align_in_bits, bool is_struct,
-		       const location& locus, visibility vis,
-		       base_specs& bases, member_types& mbr_types,
-		       data_members& data_mbrs,
+class_decl::class_decl(const environment* env, const string& name,
+		       size_t size_in_bits, size_t align_in_bits,
+		       bool is_struct, const location& locus,
+		       visibility vis, base_specs& bases,
+		       member_types& mbr_types, data_members& data_mbrs,
 		       member_functions& mbr_fns)
-  : decl_base(name, locus, name, vis),
-    type_base(size_in_bits, align_in_bits),
-    scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, name, vis),
+    type_base(env, size_in_bits, align_in_bits),
+    scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
     priv_(new priv(is_struct, bases, mbr_types, data_mbrs, mbr_fns))
 {
   for (member_types::iterator i = mbr_types.begin(); i != mbr_types.end(); ++i)
@@ -11226,6 +11638,8 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
 
 /// A constructor for instances of class_decl.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param name the name of the class.
 ///
 /// @param size_in_bits the size of an instance of class_decl, expressed
@@ -11237,28 +11651,32 @@ class_decl::class_decl(const std::string& name, size_t size_in_bits,
 /// @param locus the source location of declaration point this class.
 ///
 /// @param vis the visibility of instances of class_decl.
-class_decl::class_decl(const std::string& name, size_t size_in_bits,
-		       size_t align_in_bits, bool is_struct,
-		       const location& locus, visibility vis)
-  : decl_base(name, locus, name, vis),
-    type_base(size_in_bits, align_in_bits),
-    scope_type_decl(name, size_in_bits, align_in_bits, locus, vis),
+class_decl::class_decl(const environment* env, const string& name,
+		       size_t size_in_bits, size_t align_in_bits,
+		       bool is_struct, const location& locus,
+		       visibility vis)
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, name, vis),
+    type_base(env, size_in_bits, align_in_bits),
+    scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
     priv_(new priv(is_struct))
 {}
 
 /// A constuctor for instances of class_decl that represent a
 /// declaration without definition.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param name the name of the class.
 ///
 /// @param is_declaration_only a boolean saying whether the instance
 /// represents a declaration only, or not.
-class_decl::class_decl(const std::string& name,
-		       bool is_struct,
-		       bool is_declaration_only)
-  : decl_base(name, location(), name),
-    type_base(0, 0),
-    scope_type_decl(name, 0, 0, location()),
+class_decl::class_decl(const environment* env, const string& name,
+		       bool is_struct, bool is_declaration_only)
+  : type_or_decl_base(env),
+    decl_base(env, name, location(), name),
+    type_base(env, 0, 0),
+    scope_type_decl(env, name, 0, 0, location()),
     priv_(new priv(is_declaration_only, is_struct))
 {}
 
@@ -11381,10 +11799,11 @@ class_decl::get_earlier_declaration() const
 void
 class_decl::add_base_specifier(base_spec_sptr b)
 {
+  assert(get_environment());
+  assert(b->get_environment() == get_environment());
   priv_->bases_.push_back(b);
   priv_->bases_map_[b->get_base_class()->get_qualified_name()] = b;
-  assert(!b->get_environment());
-  if (environment* env = get_environment())
+  if (const environment* env = get_environment())
     b->set_environment(env);
 }
 
@@ -11725,7 +12144,8 @@ class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
-  : decl_base(base->get_name(), base->get_location(),
+  : type_or_decl_base(base->get_environment()),
+    decl_base(base->get_environment(), base->get_name(), base->get_location(),
 	      base->get_linkage_name(), base->get_visibility()),
     member_base(a),
     priv_(new priv(base, offset_in_bits, is_virtual))
@@ -11811,11 +12231,12 @@ class_decl::base_spec::traverse(ir_node_visitor& v)
 ///
 /// @param is_virtual if true, means that the current base class is
 /// virtual in it's containing type.
-class_decl::base_spec::base_spec(shared_ptr<type_base> base,
+class_decl::base_spec::base_spec(const type_base_sptr& base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
-  : decl_base(get_type_declaration(base)->get_name(),
+  : type_or_decl_base(base->get_environment()),
+    decl_base(base->get_environment(), get_type_declaration(base)->get_name(),
 	      get_type_declaration(base)->get_location(),
 	      get_type_declaration(base)->get_linkage_name(),
 	      get_type_declaration(base)->get_visibility()),
@@ -11967,15 +12388,15 @@ mem_fn_context_rel::~mem_fn_context_rel()
 /// @param vis the visibility of the method.
 ///
 /// @param bind the binding of the method.
-class_decl::method_decl::method_decl
-(const std::string&			name,
- shared_ptr<method_type>		type,
- bool					declared_inline,
- const location&			locus,
- const std::string&			linkage_name,
- visibility				vis,
- binding				bind)
-  : decl_base(name, locus, linkage_name, vis),
+class_decl::method_decl::method_decl(const string&	name,
+				     method_type_sptr	type,
+				     bool		declared_inline,
+				     const location&	locus,
+				     const string&	linkage_name,
+				     visibility	vis,
+				     binding		bind)
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>(type),
 		  declared_inline, locus,
 		  linkage_name, vis, bind)
@@ -11998,14 +12419,15 @@ class_decl::method_decl::method_decl
 /// @param vis the visibility of the method.
 ///
 /// @param bind the binding of the method.
-class_decl::method_decl::method_decl(const std::string&	name,
-				     shared_ptr<function_type>	type,
-				     bool			declared_inline,
-				     const location&		locus,
-			const std::string&			linkage_name,
-			visibility				vis,
-			binding				bind)
-  : decl_base(name, locus, linkage_name, vis),
+class_decl::method_decl::method_decl(const string&	name,
+				     function_type_sptr type,
+				     bool		declared_inline,
+				     const location&	locus,
+				     const string&	linkage_name,
+				     visibility	vis,
+				     binding		bind)
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, linkage_name, vis, bind)
@@ -12028,14 +12450,15 @@ class_decl::method_decl::method_decl(const std::string&	name,
 /// @param vis the visibility of the method.
 ///
 /// @param bind the binding of the method.
-class_decl::method_decl::method_decl(const std::string&	name,
-				     shared_ptr<type_base>	type,
-				     bool			declared_inline,
-				     const location&		locus,
-				     const std::string&	linkage_name,
-				     visibility		vis,
-				     binding			bind)
-  : decl_base(name, locus, linkage_name, vis),
+class_decl::method_decl::method_decl(const string&	name,
+				     type_base_sptr	type,
+				     bool		declared_inline,
+				     const location&	locus,
+				     const string&	linkage_name,
+				     visibility	vis,
+				     binding		bind)
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, linkage_name, vis, bind)
@@ -12432,8 +12855,8 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 
       if (!def1 || !def2)
 	{
-	  const string& q1 = l.get_qualified_name();
-	  const string& q2 = r.get_qualified_name();
+	  const interned_string& q1 = l.get_qualified_name();
+	  const interned_string& q2 = r.get_qualified_name();
 	  if (q1 == q2)
 	    // Not using RETURN(true) here, because that causes
 	    // performance issues.  We don't need to do
@@ -13196,10 +13619,22 @@ const std::list<template_parameter_sptr>&
 template_decl::get_template_parameters() const
 {return priv_->parms_;}
 
-template_decl::template_decl(const string& name,
+/// Constructor.
+///
+/// @param env the environment we are operating from.
+///
+/// @param name the name of the template decl.
+///
+/// @param locus the source location where the template declaration is
+/// defined.
+///
+/// @param vis the visibility of the template declaration.
+template_decl::template_decl(const environment* env,
+			     const string& name,
 			     const location& locus,
 			     visibility vis)
-  : decl_base(name, locus, /*mangled_name=*/"", vis),
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, /*mangled_name=*/"", vis),
     priv_(new priv)
 {
 }
@@ -13348,9 +13783,10 @@ type_tparameter::type_tparameter(unsigned		index,
 				 template_decl_sptr	enclosing_tdecl,
 				 const std::string&	name,
 				 const location&	locus)
-  : decl_base(name, locus),
-    type_base(0, 0),
-    type_decl(name, 0, 0, locus),
+  : type_or_decl_base(enclosing_tdecl->get_environment()),
+    decl_base(enclosing_tdecl->get_environment(), name, locus),
+    type_base(enclosing_tdecl->get_environment(), 0, 0),
+    type_decl(enclosing_tdecl->get_environment(), name, 0, 0, locus),
     template_parameter(index, enclosing_tdecl),
     priv_(new priv)
 {}
@@ -13420,12 +13856,13 @@ public:
 /// parameter.
 non_type_tparameter::non_type_tparameter(unsigned		index,
 					 template_decl_sptr	enclosing_tdecl,
-					 const std::string&	name,
+					 const string&		name,
 					 type_base_sptr	type,
 					 const location&	locus)
-    : decl_base(name, locus, ""),
-      template_parameter(index, enclosing_tdecl),
-      priv_(new priv(type))
+  : type_or_decl_base(type->get_environment()),
+    decl_base(type->get_environment(), name, locus, ""),
+    template_parameter(index, enclosing_tdecl),
+    priv_(new priv(type))
 {}
 
 /// Getter for the type of the template parameter.
@@ -13502,12 +13939,14 @@ template_tparameter::template_tparameter(unsigned		index,
 					 template_decl_sptr	enclosing_tdecl,
 					 const std::string&	name,
 					 const location&	locus)
-    : decl_base(name, locus),
-      type_base(0, 0),
-      type_decl(name, 0, 0, locus, name, VISIBILITY_DEFAULT),
-      type_tparameter(index, enclosing_tdecl, name, locus),
-      template_decl(name, locus),
-      priv_(new priv)
+  : type_or_decl_base(enclosing_tdecl->get_environment()),
+    decl_base(enclosing_tdecl->get_environment(), name, locus),
+    type_base(enclosing_tdecl->get_environment(), 0, 0),
+    type_decl(enclosing_tdecl->get_environment(), name,
+	      0, 0, locus, name, VISIBILITY_DEFAULT),
+    type_tparameter(index, enclosing_tdecl, name, locus),
+    template_decl(enclosing_tdecl->get_environment(), name, locus),
+    priv_(new priv)
 {}
 
 bool
@@ -13585,7 +14024,8 @@ public:
 type_composition::type_composition(unsigned		index,
 				   template_decl_sptr	tdecl,
 				   type_base_sptr	t)
-  : decl_base("", location()),
+  : type_or_decl_base(tdecl->get_environment()),
+    decl_base(tdecl->get_environment(), "", location()),
     template_parameter(index, tdecl),
     priv_(new priv(t))
 {}
@@ -13649,6 +14089,8 @@ public:
 
 /// Constructor for a function template declaration.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param locus the location of the declaration.
 ///
 /// @param vis the visibility of the declaration.  This is the
@@ -13657,12 +14099,14 @@ public:
 ///
 /// @param bind the binding of the declaration.  This is the binding
 /// the functions instantiated from this template are going to have.
-function_tdecl::function_tdecl(const location&	locus,
-			       visibility	vis,
-			       binding		bind)
-  : decl_base("", locus, "", vis),
-    template_decl("", locus, vis),
-    scope_decl("", locus),
+function_tdecl::function_tdecl(const environment*	env,
+			       const location&		locus,
+			       visibility		vis,
+			       binding			bind)
+  : type_or_decl_base(env),
+    decl_base(env, "", locus, "", vis),
+    template_decl(env, "", locus, vis),
+    scope_decl(env, "", locus),
     priv_(new priv(bind))
 {}
 
@@ -13682,10 +14126,11 @@ function_tdecl::function_tdecl(function_decl_sptr	pattern,
 			       const location&		locus,
 			       visibility		vis,
 			       binding			bind)
-  : decl_base(pattern->get_name(), locus,
+  : type_or_decl_base(pattern->get_environment()),
+    decl_base(pattern->get_environment(), pattern->get_name(), locus,
 	      pattern->get_name(), vis),
-    template_decl(pattern->get_name(), locus, vis),
-    scope_decl(pattern->get_name(), locus),
+    template_decl(pattern->get_environment(), pattern->get_name(), locus, vis),
+    scope_decl(pattern->get_environment(), pattern->get_name(), locus),
     priv_(new priv(pattern, bind))
 {}
 
@@ -13811,15 +14256,20 @@ public:
 
 /// Constructor for the @ref class_tdecl type.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param locus the location of the declaration of the class_tdecl
 /// type.
 ///
 /// @param vis the visibility of the instance of class instantiated
 /// from this template.
-class_tdecl::class_tdecl(const location& locus, visibility vis)
-  : decl_base("", locus, "", vis),
-    template_decl("", locus, vis),
-    scope_decl("", locus),
+class_tdecl::class_tdecl(const environment*	env,
+			 const location&	locus,
+			 visibility		vis)
+  : type_or_decl_base(env),
+    decl_base(env, "", locus, "", vis),
+    template_decl(env, "", locus, vis),
+    scope_decl(env, "", locus),
     priv_(new priv)
 {}
 
@@ -13833,14 +14283,15 @@ class_tdecl::class_tdecl(const location& locus, visibility vis)
 ///
 /// @param vis the visibility of the instances of class instantiated
 /// from this template.
-class_tdecl::class_tdecl(class_decl_sptr pattern,
-			 const location& locus,
-			 visibility vis)
-: decl_base(pattern->get_name(), locus,
-	    pattern->get_name(), vis),
-  template_decl(pattern->get_name(), locus, vis),
-  scope_decl(pattern->get_name(), locus),
-  priv_(new priv(pattern))
+class_tdecl::class_tdecl(class_decl_sptr	pattern,
+			 const location&	locus,
+			 visibility		vis)
+  : type_or_decl_base(pattern->get_environment()),
+    decl_base(pattern->get_environment(), pattern->get_name(),
+	      locus, pattern->get_name(), vis),
+    template_decl(pattern->get_environment(), pattern->get_name(), locus, vis),
+    scope_decl(pattern->get_environment(), pattern->get_name(), locus),
+    priv_(new priv(pattern))
 {}
 
 /// Setter of the pattern of the template.
@@ -14517,15 +14968,19 @@ qualified_name_setter::do_update(abigail::ir::decl_base* d)
   if (abigail::ir::scope_decl* parent = d->get_scope())
     d->priv_->qualified_parent_name_ = parent->get_qualified_name();
   else
-    d->priv_->qualified_parent_name_.clear();
+    d->priv_->qualified_parent_name_ = abigail::interned_string();
 
   if (!d->priv_->qualified_parent_name_.empty())
     {
       if (d->get_name().empty())
-	d->priv_->qualified_name_.clear();
+	d->priv_->qualified_name_ = abigail::interned_string();
       else
+	{
+	  abigail::environment* env = d->get_environment();
+	  assert(env);
 	d->priv_->qualified_name_ =
-	  d->priv_->qualified_parent_name_ + "::" + d->get_name();
+	  env->intern(d->priv_->qualified_parent_name_ + "::" + d->get_name());
+	}
     }
 
   if (!is_scope_decl(d))

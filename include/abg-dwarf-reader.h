@@ -103,13 +103,15 @@ read_corpus_from_elf(const std::string& elf_path,
 		     status&);
 
 bool
-lookup_symbol_from_elf(const string&			elf_path,
+lookup_symbol_from_elf(const environment*		env,
+		       const string&			elf_path,
 		       const string&			symbol_name,
 		       bool				demangle,
 		       vector<elf_symbol_sptr>&	symbols);
 
 bool
-lookup_public_function_symbol_from_elf(const string&			path,
+lookup_public_function_symbol_from_elf(const environment*		env,
+				       const string&			path,
 				       const string&			symname,
 				       vector<elf_symbol_sptr>&	func_syms);
 

@@ -304,7 +304,7 @@ public:
   /// @param fn the function to calculate the ID for.
   ///
   /// @return a reference to a string representing the function ID.
-  const string&
+  interned_string
   get_id(const function_decl& fn)
   {return fn.get_id();}
 
@@ -313,7 +313,7 @@ public:
   /// @param var the variable to calculate the ID for.
   ///
   /// @return a reference to a string representing the variable ID.
-  const string&
+  interned_string
   get_id(const var_decl& var)
   {return var.get_id();}
 
@@ -1173,10 +1173,10 @@ corpus::lookup_canonical_type(const string& qualified_name) const
 
 /// Constructor of the @ref corpus type.
 ///
-/// @param path the path to the file containing the ABI corpus.
-///
 /// @param env the environment of the corpus.
-corpus::corpus(const string& path, ir::environment* env)
+///
+/// @param path the path to the file containing the ABI corpus.
+corpus::corpus(ir::environment* env, const string& path)
 {priv_.reset(new priv(path, env));}
 
 /// Getter of the enviroment of the corpus.

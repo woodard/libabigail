@@ -167,6 +167,9 @@ public:
   void
   canonicalization_is_done(bool);
 
+  interned_string
+  intern(const string&) const;
+
   friend class class_decl;
 
   friend void keep_type_alive(type_base_sptr);
@@ -389,9 +392,9 @@ public:
   };
 
 public:
-  translation_unit(const std::string&	path,
-		   ir::environment*	env,
-		   char		address_size = 0);
+  translation_unit(const ir::environment*	env,
+		   const std::string&		path,
+		   char			address_size = 0);
 
   virtual ~translation_unit();
 
@@ -402,7 +405,7 @@ public:
   get_environment();
 
   void
-  set_environment(environment*);
+  set_environment(const environment*);
 
   language
   get_language() const;
@@ -577,7 +580,8 @@ private:
 
   elf_symbol();
 
-  elf_symbol(size_t		i,
+  elf_symbol(const environment* e,
+	     size_t		i,
 	     size_t		s,
 	     const string&	n,
 	     type		t,
@@ -597,14 +601,21 @@ public:
   create();
 
   static elf_symbol_sptr
-  create(size_t	i,
-	 size_t	s,
-	 const string&	n,
-	 type		t,
-	 binding	b,
-	 bool		d,
-	 bool		c,
-	 const version& v);
+  create(const environment*	e,
+	 size_t		i,
+	 size_t		s,
+	 const string&		n,
+	 type			t,
+	 binding		b,
+	 bool			d,
+	 bool			c,
+	 const version&	v);
+
+  const environment*
+  get_environment() const;
+
+  void
+  set_environment(const environment*) const;
 
   size_t
   get_index() const;
@@ -927,6 +938,8 @@ class type_or_decl_base : public ir_traversable_base
   typedef shared_ptr<priv> priv_sptr;
   mutable priv_sptr priv_;
 
+  type_or_decl_base();
+
 protected:
 
   bool hashing_started() const;
@@ -935,7 +948,7 @@ protected:
 
 public:
 
-  type_or_decl_base();
+  type_or_decl_base(const environment*);
 
   type_or_decl_base(const type_or_decl_base&);
 
@@ -948,7 +961,7 @@ public:
   get_environment();
 
   void
-  set_environment(environment*);
+  set_environment(const environment*);
 
   const corpus*
   get_corpus() const;
@@ -958,6 +971,9 @@ public:
 
   const translation_unit*
   get_translation_unit() const;
+
+  type_or_decl_base&
+  operator=(const type_or_decl_base&);
 
   virtual bool
   traverse(ir_node_visitor&);
@@ -977,11 +993,11 @@ operator!=(const type_or_decl_base_sptr&, const type_or_decl_base_sptr&);
 
 void
 set_environment_for_artifact(type_or_decl_base* artifact,
-			    environment* env);
+			     const environment* env);
 
 void
 set_environment_for_artifact(type_or_decl_base_sptr artifact,
-			     environment* env);
+			     const environment* env);
 
 /// The base type of all declarations.
 class decl_base : public virtual type_or_decl_base
@@ -993,17 +1009,17 @@ class decl_base : public virtual type_or_decl_base
 
 protected:
 
-  const string&
+  const interned_string&
   peek_qualified_name() const;
 
   void
-  set_qualified_name(const string&) const;
+  set_qualified_name(const interned_string&) const;
 
-  const string&
+  const interned_string&
   peek_temporary_qualified_name() const;
 
   void
-  set_temporary_qualified_name(const string&) const;
+  set_temporary_qualified_name(const interned_string&) const;
 
 public:
   // This is public because some internals of the library need to
@@ -1054,11 +1070,19 @@ protected:
   set_context_rel(context_rel_sptr c);
 
 public:
-  decl_base(const std::string&	name, const location& locus,
-	    const std::string&	mangled_name = "",
+  decl_base(const environment* e,
+	    const string& name,
+	    const location& locus,
+	    const string& mangled_name = "",
 	    visibility vis = VISIBILITY_DEFAULT);
 
-  decl_base(const location&);
+  decl_base(const environment* e,
+	    const interned_string& name,
+	    const location& locus,
+	    const interned_string& mangled_name = interned_string(),
+	    visibility vis = VISIBILITY_DEFAULT);
+
+  decl_base(const environment*, const location&);
 
   decl_base(const decl_base&);
 
@@ -1080,9 +1104,10 @@ public:
   get_pretty_representation(bool internal = false) const;
 
   virtual void
-  get_qualified_name(string& qualified_name, bool internal = false) const;
+  get_qualified_name(interned_string& qualified_name,
+		     bool internal = false) const;
 
-  virtual const string&
+  virtual const interned_string&
   get_qualified_name(bool internal = false) const;
 
   bool
@@ -1097,10 +1122,10 @@ public:
   void
   set_location(const location& l);
 
-  const string&
+  const interned_string&
   get_name() const;
 
-  const string&
+  const interned_string&
   get_qualified_parent_name() const;
 
   void
@@ -1112,11 +1137,11 @@ public:
   void
   set_is_anonymous(bool);
 
-  const string&
+  const interned_string&
   get_linkage_name() const;
 
   virtual void
-  set_linkage_name(const std::string& m);
+  set_linkage_name(const string& m);
 
   scope_decl*
   get_scope() const;
@@ -1230,13 +1255,16 @@ protected:
 public:
   struct hash;
 
-  scope_decl(const std::string& name, const location& locus,
+  scope_decl(const environment* env,
+	     const string& name, const location& locus,
 	     visibility	vis = VISIBILITY_DEFAULT)
-    : type_or_decl_base(),
-      decl_base(name, locus, /*mangled_name=*/name, vis)
+    : type_or_decl_base(env),
+      decl_base(env, name, locus, /*mangled_name=*/name, vis)
   {}
 
-  scope_decl(location& l) : decl_base("", l)
+  scope_decl(const environment* env, location& l)
+    : type_or_decl_base(env),
+      decl_base(env, "", l)
   {}
 
   virtual size_t
@@ -1317,8 +1345,10 @@ class global_scope : public scope_decl
   translation_unit* translation_unit_;
 
   global_scope(translation_unit *tu)
-  : decl_base("", location()), scope_decl("", location()),
-    translation_unit_(tu)
+    : type_or_decl_base(tu->get_environment()),
+      decl_base(tu->get_environment(), "", location()),
+      scope_decl(tu->get_environment(), "", location()),
+      translation_unit_(tu)
   {}
 
 public:
@@ -1373,7 +1403,7 @@ public:
   /// runtime type of the type pointed to.
   struct shared_ptr_hash;
 
-  type_base(size_t s, size_t a);
+  type_base(const environment* e, size_t s, size_t a);
 
   friend type_base_sptr
   canonicalize(type_base_sptr);
@@ -1475,12 +1505,13 @@ public:
   /// Facility to hash instance of type_decl
   struct hash;
 
-  type_decl(const std::string& name,
-	    size_t size_in_bits,
-	    size_t alignment_in_bits,
-	    const location& locus,
-	    const std::string&	mangled_name = "",
-	    visibility vis = VISIBILITY_DEFAULT);
+  type_decl(const environment*	env,
+	    const string&	name,
+	    size_t		size_in_bits,
+	    size_t		alignment_in_bits,
+	    const location&	locus,
+	    const string&	mangled_name = "",
+	    visibility		vis = VISIBILITY_DEFAULT);
 
   virtual bool
   operator==(const type_base&) const;
@@ -1521,9 +1552,9 @@ public:
   /// Hasher for instances of scope_type_decl
   struct hash;
 
-  scope_type_decl(const std::string& name, size_t size_in_bits,
-		  size_t alignment_in_bits, const location& locus,
-		  visibility vis = VISIBILITY_DEFAULT);
+  scope_type_decl(const environment* env, const string& name,
+		  size_t size_in_bits, size_t alignment_in_bits,
+		  const location& locus, visibility vis = VISIBILITY_DEFAULT);
 
   virtual bool
   operator==(const decl_base&) const;
@@ -1545,8 +1576,8 @@ class namespace_decl : public scope_decl
 {
 public:
 
-  namespace_decl(const std::string& name, const location& locus,
-		 visibility vis = VISIBILITY_DEFAULT);
+  namespace_decl(const environment* env, const string& name,
+		 const location& locus, visibility vis = VISIBILITY_DEFAULT);
 
   virtual string
   get_pretty_representation(bool internal = false) const;
@@ -1620,9 +1651,10 @@ public:
   get_underlying_type() const;
 
   virtual void
-  get_qualified_name(string& qualified_name, bool internal = false) const;
+  get_qualified_name(interned_string& qualified_name,
+		     bool internal = false) const;
 
-  virtual const string&
+  virtual const interned_string&
   get_qualified_name(bool internal = false) const;
 
   virtual bool
@@ -1687,9 +1719,9 @@ public:
   get_pointed_to_type() const;
 
   virtual void
-  get_qualified_name(string&, bool internal = false) const;
+  get_qualified_name(interned_string&, bool internal = false) const;
 
-  virtual const string&
+  virtual const interned_string&
   get_qualified_name(bool internal = false) const;
 
   virtual bool
@@ -1744,9 +1776,10 @@ public:
   is_lvalue() const;
 
   virtual void
-  get_qualified_name(string& qualified_name, bool internal = false) const;
+  get_qualified_name(interned_string& qualified_name,
+		     bool internal = false) const;
 
-  virtual const string&
+  virtual const interned_string&
   get_qualified_name(bool internal = false) const;
 
   virtual bool
@@ -1851,9 +1884,10 @@ public:
   operator==(const type_base&) const;
 
   virtual void
-  get_qualified_name(string& qualified_name, bool internal = false) const;
+  get_qualified_name(interned_string& qualified_name,
+		     bool internal = false) const;
 
-  virtual const string&
+  virtual const interned_string&
   get_qualified_name(bool internal = false) const;
 
   const type_base_sptr
@@ -1983,7 +2017,7 @@ public:
 
   enumerator();
 
-  enumerator(const string& name, int64_t value);
+  enumerator(const environment* env, const string& name, int64_t value);
 
   enumerator(const enumerator&);
 
@@ -1993,10 +2027,13 @@ public:
   bool
   operator!=(const enumerator& other) const;
 
-  const string&
+  const environment*
+  get_environment() const;
+
+  const interned_string&
   get_name() const;
 
-  const string&
+  const interned_string&
   get_qualified_name(bool internal = false) const;
 
   void
@@ -2191,7 +2228,7 @@ public:
   var_decl_sptr
   clone() const;
 
-  const string&
+  interned_string
   get_id() const;
 
   virtual size_t
@@ -2338,7 +2375,7 @@ public:
   virtual size_t
   get_hash() const;
 
-  const string&
+  interned_string
   get_id() const;
 
   virtual bool
@@ -2394,13 +2431,13 @@ public:
   const type_base_sptr
   get_type()const;
 
-  const string
+  interned_string
   get_type_name() const;
 
   const string
   get_type_pretty_representation() const;
 
-  const string
+  interned_string
   get_name_id() const;
 
   unsigned
@@ -2431,7 +2468,8 @@ public:
   get_hash() const;
 
   virtual void
-  get_qualified_name(string& qualified_name, bool internal = false) const;
+  get_qualified_name(interned_string& qualified_name,
+		     bool internal = false) const;
 
   virtual string
   get_pretty_representation(bool internal = false) const;
@@ -2494,8 +2532,9 @@ public:
 		size_t		size_in_bits,
 		size_t		alignment_in_bits);
 
-  function_type(size_t size_in_bits,
-		size_t alignment_in_bits);
+  function_type(const environment*	env,
+		size_t		size_in_bits,
+		size_t		alignment_in_bits);
 
   type_base_sptr
   get_return_type() const;
@@ -2576,7 +2615,8 @@ public:
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
-  method_type(size_t size_in_bits,
+  method_type(const environment* env,
+	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
   class_decl_sptr
@@ -2615,7 +2655,8 @@ public:
   /// Hasher.
   struct hash;
 
-  template_decl(const string&		name,
+  template_decl(const environment*	env,
+		const string&		name,
 		const location&	locus,
 		visibility		vis = VISIBILITY_DEFAULT);
 
@@ -2871,7 +2912,8 @@ public:
   struct hash;
   struct shared_ptr_hash;
 
-  function_tdecl(const location&	locus,
+  function_tdecl(const environment*	env,
+		 const location&	locus,
 		 visibility		vis = VISIBILITY_DEFAULT,
 		 binding		bind = BINDING_NONE);
 
@@ -2924,7 +2966,8 @@ public:
   struct hash;
   struct shared_ptr_hash;
 
-  class_tdecl(const location& locus, visibility vis = VISIBILITY_DEFAULT);
+  class_tdecl(const environment* env, const location& locus,
+	      visibility vis = VISIBILITY_DEFAULT);
 
   class_tdecl(class_decl_sptr	pattern,
 	      const location&	locus,
@@ -3010,16 +3053,18 @@ protected:
 
 public:
 
-  class_decl(const std::string& name, size_t size_in_bits,
-	     size_t align_in_bits, bool is_struct,
-	     const location& locus, visibility vis,
-	     base_specs& bases, member_types& mbrs,
-	     data_members& data_mbrs, member_functions& member_fns);
+  class_decl(const environment* env, const string& name,
+	     size_t size_in_bits, size_t align_in_bits,
+	     bool is_struct, const location& locus,
+	     visibility vis, base_specs& bases,
+	     member_types& mbrs, data_members& data_mbrs,
+	     member_functions& member_fns);
 
-  class_decl(const std::string& name, size_t size_in_bits,
-	     size_t align_in_bits, bool is_struct,
-	     const location& locus, visibility vis);
-  class_decl(const std::string& name, bool is_struct,
+  class_decl(const environment* env, const string& name,
+	     size_t size_in_bits, size_t align_in_bits,
+	     bool is_struct, const location& locus, visibility vis);
+
+  class_decl(const environment* env, const string& name, bool is_struct,
 	     bool is_declaration_only = true);
 
   virtual void
@@ -3593,7 +3638,8 @@ public:
   member_function_template(function_tdecl_sptr f,
 			   access_specifier access, bool is_static,
 			   bool is_constructor, bool is_const)
-    : decl_base(f->get_name(), location()),
+    : type_or_decl_base(f->get_environment()),
+      decl_base(f->get_environment(), f->get_name(), location()),
       member_base(access, is_static), is_constructor_(is_constructor),
       is_const_(is_const), fn_tmpl_(f)
   {}
@@ -3643,9 +3689,10 @@ public:
   /// Hasher.
   struct hash;
 
-  member_class_template(shared_ptr<class_tdecl> c,
+  member_class_template(class_tdecl_sptr c,
 			access_specifier access, bool is_static)
-    : decl_base(c->get_name(), location()),
+    : type_or_decl_base(c->get_environment()),
+      decl_base(c->get_environment(), c->get_name(), location()),
       member_base(access, is_static),
       class_tmpl_(c)
   {}

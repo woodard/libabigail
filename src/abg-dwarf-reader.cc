@@ -1192,6 +1192,8 @@ get_version_for_symbol(Elf*			elf_handle,
 ///
 /// Use it at your own risks.  :-)
 ///
+///@parm env the environment we are operating from.
+///
 /// @param elf_handle the elf_handle to use.
 ///
 /// @param sym_name the symbol name to look for.
@@ -1208,7 +1210,8 @@ get_version_for_symbol(Elf*			elf_handle,
 /// @param syms_found a vector of symbols found with the name @p
 /// sym_name.  table.
 static bool
-lookup_symbol_from_sysv_hash_tab(Elf*				elf_handle,
+lookup_symbol_from_sysv_hash_tab(const environment*		env,
+				 Elf*				elf_handle,
 				 const string&			sym_name,
 				 size_t			ht_index,
 				 size_t			sym_tab_index,
@@ -1272,7 +1275,8 @@ lookup_symbol_from_sysv_hash_tab(Elf*				elf_handle,
 				     /*get_def_version=*/true, ver))
 	    assert(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
-	    elf_symbol::create(symbol_index,
+	    elf_symbol::create(env,
+			       symbol_index,
 			       sym_size,
 			       sym_name_str,
 			       sym_type,
@@ -1473,7 +1477,8 @@ setup_gnu_ht(Elf* elf_handle,
 ///
 /// @return true if a symbol was actually found.
 static bool
-lookup_symbol_from_gnu_hash_tab(Elf*				elf_handle,
+lookup_symbol_from_gnu_hash_tab(const environment*		env,
+				Elf*				elf_handle,
 				const string&			sym_name,
 				size_t				ht_index,
 				size_t				sym_tab_index,
@@ -1547,7 +1552,7 @@ lookup_symbol_from_gnu_hash_tab(Elf*				elf_handle,
 	    assert(!ver.str().empty());
 
 	  elf_symbol_sptr symbol_found =
-	    elf_symbol::create(i, symbol.st_size, sym_name_str,
+	    elf_symbol::create(env, i, symbol.st_size, sym_name_str,
 			       sym_type, sym_binding,
 			       symbol.st_shndx != SHN_UNDEF,
 			       symbol.st_shndx == SHN_COMMON,
@@ -1571,6 +1576,8 @@ lookup_symbol_from_gnu_hash_tab(Elf*				elf_handle,
 /// This function uses the elf hash table (be it the GNU hash table or
 /// the sysv hash table) for the symbol lookup.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param elf_handle the elf handle to use.
 ///
 /// @param ht_kind the kind of hash table to use.  This is returned by
@@ -1592,7 +1599,8 @@ lookup_symbol_from_gnu_hash_tab(Elf*				elf_handle,
 /// @return true iff the function found the symbol from the elf hash
 /// table.
 static bool
-lookup_symbol_from_elf_hash_tab(Elf*				elf_handle,
+lookup_symbol_from_elf_hash_tab(const environment*		env,
+				Elf*				elf_handle,
 				hash_table_kind		ht_kind,
 				size_t				ht_index,
 				size_t				symtab_index,
@@ -1607,13 +1615,15 @@ lookup_symbol_from_elf_hash_tab(Elf*				elf_handle,
     return false;
 
   if (ht_kind == SYSV_HASH_TABLE_KIND)
-    return lookup_symbol_from_sysv_hash_tab(elf_handle, symbol_name,
+    return lookup_symbol_from_sysv_hash_tab(env,
+					    elf_handle, symbol_name,
 					    ht_index,
 					    symtab_index,
 					    demangle,
 					    syms_found);
   else if (ht_kind == GNU_HASH_TABLE_KIND)
-    return lookup_symbol_from_gnu_hash_tab(elf_handle, symbol_name,
+    return lookup_symbol_from_gnu_hash_tab(env,
+					   elf_handle, symbol_name,
 					   ht_index,
 					   symtab_index,
 					   demangle,
@@ -1622,6 +1632,9 @@ lookup_symbol_from_elf_hash_tab(Elf*				elf_handle,
 }
 
 /// Lookup a symbol from the symbol table directly.
+///
+///
+/// @param env the environment we are operating from.
 ///
 /// @param elf_handle the elf handle to use.
 ///
@@ -1643,7 +1656,8 @@ lookup_symbol_from_elf_hash_tab(Elf*				elf_handle,
 ///
 /// @return true iff the symbol was found.
 static bool
-lookup_symbol_from_symtab(Elf*				elf_handle,
+lookup_symbol_from_symtab(const environment*		env,
+			  Elf*				elf_handle,
 			  const string&		sym_name,
 			  size_t			sym_tab_index,
 			  bool				demangle,
@@ -1687,7 +1701,8 @@ lookup_symbol_from_symtab(Elf*				elf_handle,
 				     ver))
 	    assert(!ver.str().empty());
 	  elf_symbol_sptr symbol_found =
-	    elf_symbol::create(i, sym->st_size, name_str, sym_type,
+	    elf_symbol::create(env, i, sym->st_size,
+			       name_str, sym_type,
 			       sym_binding, sym_is_defined,
 			       sym_is_common, ver);
 	  syms_found.push_back(symbol_found);
@@ -1703,6 +1718,8 @@ lookup_symbol_from_symtab(Elf*				elf_handle,
 
 /// Look into the symbol tables of the underlying elf file and see
 /// if we find a given symbol.
+///
+/// @param env the environment we are operating from.
 ///
 /// @param symbol_name the name of the symbol to look for.
 ///
@@ -1727,7 +1744,8 @@ lookup_symbol_from_symtab(Elf*				elf_handle,
 ///
 /// @return true iff a symbol with the name @p symbol_name was found.
 static bool
-lookup_symbol_from_elf(Elf*				elf_handle,
+lookup_symbol_from_elf(const environment*		env,
+		       Elf*				elf_handle,
 		       const string&			symbol_name,
 		       bool				demangle,
 		       vector<elf_symbol_sptr>&	syms_found)
@@ -1745,14 +1763,16 @@ lookup_symbol_from_elf(Elf*				elf_handle,
       if (!find_symbol_table_section_index(elf_handle, symbol_table_index))
 	return false;
 
-      return lookup_symbol_from_symtab(elf_handle,
+      return lookup_symbol_from_symtab(env,
+				       elf_handle,
 				       symbol_name,
 				       symbol_table_index,
 				       demangle,
 				       syms_found);
     }
 
-  return lookup_symbol_from_elf_hash_tab(elf_handle,
+  return lookup_symbol_from_elf_hash_tab(env,
+					 elf_handle,
 					 ht_kind,
 					 hash_table_index,
 					 symbol_table_index,
@@ -1764,6 +1784,8 @@ lookup_symbol_from_elf(Elf*				elf_handle,
 /// Look into the symbol tables of the underlying elf file and see if
 /// we find a given public (global or weak) symbol of function type.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param elf_handle the elf handle to use for the query.
 ///
 /// @param symbol_name the function symbol to look for.
@@ -1773,17 +1795,16 @@ lookup_symbol_from_elf(Elf*				elf_handle,
 ///
 /// @return true iff the symbol was found.
 static bool
-lookup_public_function_symbol_from_elf(Elf*				elf_handle,
+lookup_public_function_symbol_from_elf(const environment*		env,
+				       Elf*				elf_handle,
 				       const string&			symbol_name,
 				       vector<elf_symbol_sptr>&	func_syms)
 {
   vector<elf_symbol_sptr> syms_found;
   bool found = false;
 
-  if (lookup_symbol_from_elf(elf_handle,
-			     symbol_name,
-			     /*demangle=*/false,
-			     syms_found))
+  if (lookup_symbol_from_elf(env, elf_handle, symbol_name,
+			     /*demangle=*/false, syms_found))
     {
       for (vector<elf_symbol_sptr>::const_iterator i = syms_found.begin();
 	   i != syms_found.end();
@@ -1810,6 +1831,8 @@ lookup_public_function_symbol_from_elf(Elf*				elf_handle,
 /// Look into the symbol tables of the underlying elf file and see if
 /// we find a given public (global or weak) symbol of variable type.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param elf the elf handle to use for the query.
 ///
 /// @param symname the variable symbol to look for.
@@ -1818,17 +1841,15 @@ lookup_public_function_symbol_from_elf(Elf*				elf_handle,
 ///
 /// @return true iff symbol @p symname was found.
 static bool
-lookup_public_variable_symbol_from_elf(Elf*				elf,
+lookup_public_variable_symbol_from_elf(const environment*		env,
+				       Elf*				elf,
 				       const string&			symname,
 				       vector<elf_symbol_sptr>&	var_syms)
 {
   vector<elf_symbol_sptr> syms_found;
   bool found = false;
 
-  if (lookup_symbol_from_elf(elf,
-			     symname,
-			     /*demangle=*/false,
-			     syms_found))
+  if (lookup_symbol_from_elf(env, elf, symname, /*demangle=*/false, syms_found))
     {
       for (vector<elf_symbol_sptr>::const_iterator i = syms_found.begin();
 	   i != syms_found.end();
@@ -3087,7 +3108,8 @@ public:
 			 bool				demangle,
 			 vector<elf_symbol_sptr>&	syms) const
   {
-    return dwarf_reader::lookup_symbol_from_elf(elf_handle(),
+    return dwarf_reader::lookup_symbol_from_elf(env(),
+						elf_handle(),
 						symbol_name,
 						demangle,
 						syms);
@@ -3139,7 +3161,7 @@ public:
 			   v);
 
     elf_symbol_sptr sym =
-      elf_symbol::create(symbol_index, s->st_size, name_str,
+      elf_symbol::create(env(), symbol_index, s->st_size, name_str,
 			 stt_to_elf_symbol_type(GELF_ST_TYPE(s->st_info)),
 			 stb_to_elf_symbol_binding(GELF_ST_BIND(s->st_info)),
 			 sym_is_defined, sym_is_common, v);
@@ -3205,7 +3227,8 @@ public:
   lookup_public_function_symbol_from_elf(const string&			sym_name,
 					 vector<elf_symbol_sptr>&	syms)
   {
-    return dwarf_reader::lookup_public_function_symbol_from_elf(elf_handle(),
+    return dwarf_reader::lookup_public_function_symbol_from_elf(env(),
+								elf_handle(),
 								sym_name,
 								syms);
   }
@@ -3223,7 +3246,8 @@ public:
   lookup_public_variable_symbol_from_elf(const string&			sym_name,
 					 vector<elf_symbol_sptr>&	syms)
   {
-    return dwarf_reader::lookup_public_variable_symbol_from_elf(elf_handle(),
+    return dwarf_reader::lookup_public_variable_symbol_from_elf(env(),
+								elf_handle(),
 								sym_name,
 								syms);
   }
@@ -6651,8 +6675,8 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   ctxt.cur_tu_die(die);
 
   string path = die_string_attribute(die, DW_AT_name);
-  result.reset(new translation_unit(path,
-				    ctxt.env(),
+  result.reset(new translation_unit(ctxt.env(),
+				    path,
 				    address_size));
 
   uint64_t l = 0;
@@ -6782,7 +6806,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   location loc;
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
-  result.reset(new namespace_decl(name, loc));
+  result.reset(new namespace_decl(ctxt.env(), name, loc));
   add_decl_to_scope(result, scope.get());
   ctxt.associate_die_to_decl(dwarf_dieoffset(die), die_is_from_alt_di, result);
 
@@ -6835,9 +6859,8 @@ build_type_decl(read_context&	ctxt,
   location loc;
   die_loc_and_name(ctxt, die, loc, type_name, linkage_name);
 
-  result.reset(new type_decl(type_name, bit_size,
-			     /*alignment=*/0, loc,
-			     linkage_name));
+  result.reset(new type_decl(ctxt.env(), type_name, bit_size,
+			     /*alignment=*/0, loc, linkage_name));
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_from_alt_di,
 			     result);
@@ -6907,7 +6930,7 @@ build_enum_type(read_context& ctxt,
 	  die_loc_and_name(ctxt, &child, loc, n, m);
 	  uint64_t val = 0;
 	  die_unsigned_constant_attribute(&child, DW_AT_const_value, val);
-	  enms.push_back(enum_type_decl::enumerator(n, val));
+	  enms.push_back(enum_type_decl::enumerator(ctxt.env(), n, val));
 	}
       while (dwarf_siblingof(&child, &child) == 0);
     }
@@ -6916,7 +6939,7 @@ build_enum_type(read_context& ctxt,
   // underlying type, so let's create an artificial one here, which
   // sole purpose is to be passed to the constructor of the
   // enum_type_decl type.
-  type_decl_sptr t(new type_decl(underlying_type_name,
+  type_decl_sptr t(new type_decl(ctxt.env(), underlying_type_name,
 				 size, size, location()));
   t->set_is_anonymous(enum_underlying_type_is_anonymous);
   translation_unit_sptr tu = ctxt.cur_tu();
@@ -6958,7 +6981,7 @@ finish_member_function_reading(Dwarf_Die*		die,
 
   bool is_ctor = (f->get_name() == klass->get_name());
   bool is_dtor = (!f->get_name().empty()
-		  && f->get_name()[0] == '~');
+		  && static_cast<string>(f->get_name())[0] == '~');
   bool is_virtual = die_is_virtual(die);
   size_t vindex = 0;
   if (is_virtual)
@@ -7097,7 +7120,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
     }
   else
     {
-      result.reset(new class_decl(name, size, /*alignment=*/0, is_struct, loc,
+      result.reset(new class_decl(ctxt.env(), name, size,
+				  /*alignment=*/0, is_struct, loc,
 				  decl_base::VISIBILITY_DEFAULT));
       result->set_is_anonymous(is_anonymous);
 
@@ -7647,7 +7671,7 @@ build_function_type(read_context&	ctxt,
 	       ? new method_type(is_method,
 				 tu->get_address_size(),
 				 /*alignment=*/0)
-	       : new function_type(tu->get_address_size(),
+	       : new function_type(ctxt.env(), tu->get_address_size(),
 				   /*alignment=*/0));
   tu->bind_function_type_life_time(result);
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
@@ -8154,7 +8178,7 @@ read_debug_info_into_corpus(read_context& ctxt)
 
   if (!ctxt.current_corpus())
     {
-      corpus_sptr corp (new corpus(ctxt.elf_path(), ctxt.env()));
+      corpus_sptr corp (new corpus(ctxt.env(), ctxt.elf_path()));
       ctxt.current_corpus(corp);
       if (!ctxt.env())
 	ctxt.env(corp->get_environment());
@@ -9060,6 +9084,8 @@ read_corpus_from_elf(const std::string& elf_path,
 /// Look into the symbol tables of a given elf file and see if we find
 /// a given symbol.
 ///
+/// @param env the environment we are operating from.
+///
 /// @param elf_path the path to the elf file to consider.
 ///
 /// @param symbol_name the name of the symbol to look for.
@@ -9072,7 +9098,8 @@ read_corpus_from_elf(const std::string& elf_path,
 /// @return true iff the symbol was found among the publicly exported
 /// symbols of the ELF file.
 bool
-lookup_symbol_from_elf(const string&			elf_path,
+lookup_symbol_from_elf(const environment*		env,
+		       const string&			elf_path,
 		       const string&			symbol_name,
 		       bool				demangle,
 		       vector<elf_symbol_sptr>&	syms)
@@ -9093,7 +9120,7 @@ lookup_symbol_from_elf(const string&			elf_path,
   if (elf == 0)
     return false;
 
-  bool value = lookup_symbol_from_elf(elf, symbol_name,
+  bool value = lookup_symbol_from_elf(env, elf, symbol_name,
 				      demangle, syms);
   elf_end(elf);
   close(fd);
@@ -9103,6 +9130,8 @@ lookup_symbol_from_elf(const string&			elf_path,
 
 /// Look into the symbol tables of an elf file to see if a public
 /// function of a given name is found.
+///
+/// @param env the environment we are operating from.
 ///
 /// @param elf_path the path to the elf file to consider.
 ///
@@ -9114,7 +9143,8 @@ lookup_symbol_from_elf(const string&			elf_path,
 /// @return true iff a function with symbol name @p symbol_name is
 /// found.
 bool
-lookup_public_function_symbol_from_elf(const string&			path,
+lookup_public_function_symbol_from_elf(const environment*		env,
+				       const string&			path,
 				       const string&			symname,
 				       vector<elf_symbol_sptr>&	syms)
 {
@@ -9133,7 +9163,7 @@ lookup_public_function_symbol_from_elf(const string&			path,
   if (elf == 0)
     return false;
 
-  bool value = lookup_public_function_symbol_from_elf(elf, symname, syms);
+  bool value = lookup_public_function_symbol_from_elf(env, elf, symname, syms);
   elf_end(elf);
   close(fd);
 

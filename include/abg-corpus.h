@@ -81,13 +81,13 @@ private:
 
 public:
 
-  corpus(const string&, ir::environment*);
-
-  environment*
-  get_environment();
+  corpus(ir::environment*, const string&);
 
   const environment*
   get_environment() const;
+
+  environment*
+  get_environment();
 
   void
   set_environment(environment*) const;
