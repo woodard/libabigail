@@ -2222,6 +2222,9 @@ public:
   const type_base_sptr
   get_type() const;
 
+  const type_base*
+  get_naked_type() const;
+
   binding
   get_binding() const;
 

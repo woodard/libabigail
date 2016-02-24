@@ -9643,6 +9643,16 @@ var_decl::get_type() const
   return type_base_sptr(priv_->type_);
 }
 
+/// Getter of the type of the variable.
+///
+/// This getter returns a bare pointer, as opposed to a smart pointer.
+/// It's to be used on performance sensitive code paths identified by
+/// careful profiling.
+///
+/// @return the type of the variable, as a bare pointer.
+const type_base*
+var_decl::get_naked_type() const
+{return priv_->naked_type_;}
 
 /// Getter of the binding of the variable.
 ///
@@ -9755,7 +9765,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
   bool result = true;
   // If there are underlying elf symbols for these variables,
   // compare them.  And then compare the other parts.
-  elf_symbol_sptr s0 = l.get_symbol(), s1 = r.get_symbol();
+  const elf_symbol_sptr &s0 = l.get_symbol(), &s1 = r.get_symbol();
   if (!!s0 != !!s1)
     {
       result = false;
@@ -9820,7 +9830,7 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
 	return false;
     }
 
-  if (l.get_type() != r.get_type())
+  if (*l.get_naked_type() != *r.get_naked_type())
     {
       result = false;
       if (k)
@@ -14594,8 +14604,8 @@ hash_type_or_decl(const type_or_decl_base *tod)
     {
       // If the type has a canonical type, then use the pointer value
       // as a hash.  This is the fastest we can get.
-      if (t->get_canonical_type())
-	result = reinterpret_cast<size_t>(t->get_canonical_type().get());
+      if (type_base* ct = t->get_naked_canonical_type())
+	result = reinterpret_cast<size_t>(ct);
       else if (const class_decl* cl = is_class_type(t))
 	{
 	  if (cl->get_is_declaration_only()
