@@ -32,7 +32,7 @@ abisym_LDADD = ../src/libabigail.la
 
 abinilint_SOURCES = binilint.cc
 abinilintdir = $(bindir)
-abinilint_LDFLAGS = $(abs_top_builddir)/src/libabigail.la
+abinilint_LDADD = $(abs_top_builddir)/src/libabigail.la
 
 abicompat_SOURCES = abicompat.cc
 abicompatdir = $(bindir)

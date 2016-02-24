@@ -30,7 +30,6 @@ abg-tools-utils.cc			\
 $(CXX11_SOURCES)
 
 libabigail_la_LIBADD = $(DEPS_LIBS)
-libabigail_la_LDFLAGS = -Wl,--as-needed -no-undefined
+libabigail_la_LDFLAGS = -pthread -Wl,--as-needed -no-undefined
 
 AM_CPPFLAGS=$(DEPS_CPPFLAGS) -Wall -I$(abs_top_srcdir)/include -I$(abs_top_builddir)/include -I$(abs_top_builddir)
-
