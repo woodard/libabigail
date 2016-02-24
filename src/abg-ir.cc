@@ -961,8 +961,7 @@ struct elf_symbol::priv
 /// instances of @ref elf_symbol instead.
 elf_symbol::elf_symbol()
   : priv_(new priv)
-{
-}
+{}
 
 /// Constructor of the @ref elf_symbol type.
 ///
@@ -1665,6 +1664,13 @@ elf_symbol::does_alias(const elf_symbol& o) const
   return false;
 }
 
+/// Equality operator for smart pointers to elf_symbol.
+///
+/// @param lhs the first elf symbol to consider.
+///
+/// @param rhs the second elf symbol to consider.
+///
+/// @return true iff @p lhs equals @p rhs.
 bool
 operator==(const elf_symbol_sptr& lhs, const elf_symbol_sptr& rhs)
 {
@@ -4156,7 +4162,6 @@ static void
 maybe_update_types_lookup_map(scope_decl *scope,
 			      decl_base_sptr member)
 {
-  string n = member->get_qualified_name();
   type_base_sptr t = is_type(member);
   bool update_qname_map = t;
   if (update_qname_map)
@@ -8554,41 +8559,77 @@ struct array_type_def::subrange_type::priv
     : lower_bound_(lb), upper_bound_(ub), location_(loc) {}
 };
 
+/// Constructor.
+///
+/// @param lower_bound the lower bound of the array.  This is
+/// generally zero (at least for C and C++).
+///
+/// @param upper_bound the upper bound of the array.
+///
+/// @param loc the source location where the type is defined.
 array_type_def::subrange_type::subrange_type(size_t		lower_bound,
 					     size_t		upper_bound,
 					     const location&	loc)
   : priv_(new priv(lower_bound, upper_bound, loc))
 {}
 
+/// Constructor
+///
+/// @param upper_bound the upper bound of the array.  The lower bound
+/// is considered to be zero.
+///
+/// @param loc the source location of the type.
 array_type_def::subrange_type::subrange_type(size_t		upper_bound,
 					     const location&	loc)
   : priv_(new priv(upper_bound, loc))
 {}
 
+/// Getter of the upper bound of the subrange type.
+///
+/// @return the upper bound of the subrange type.
 size_t
 array_type_def::subrange_type::get_upper_bound() const
 {return priv_->upper_bound_;}
 
+/// Getter of the lower bound of the subrange type.
+///
+/// @return the lower bound of the subrange type.
 size_t
 array_type_def::subrange_type::get_lower_bound() const
 {return priv_->lower_bound_;}
 
+
+/// Setter of the upper bound of the subrange type.
+///
+/// @param ub the new value of the upper bound.
 void
 array_type_def::subrange_type::set_upper_bound(size_t ub)
 {priv_->upper_bound_ = ub;}
 
+/// Setter of the lower bound.
+///
+/// @param lb the new value of the lower bound.
 void
 array_type_def::subrange_type::set_lower_bound(size_t lb)
 {priv_->lower_bound_ = lb;}
 
+/// Getter of the length of the subrange type.
+///
+/// @return the length of the subrange type.
 size_t
 array_type_def::subrange_type::get_length() const
 {return get_upper_bound() - get_lower_bound() + 1;}
 
+/// Test if the length of the subrange type is infinite.
+///
+/// @return true iff the length of the subrange type is infinite.
 bool
 array_type_def::subrange_type::is_infinite() const
 {return get_length() == 0;}
 
+/// Equality operator.
+///
+/// @param o the other instance of subrange_type to compare against.
 bool
 array_type_def::subrange_type::operator==(const subrange_type& o) const
 {
@@ -9602,10 +9643,17 @@ var_decl::get_type() const
   return type_base_sptr(priv_->type_);
 }
 
+
+/// Getter of the binding of the variable.
+///
+/// @return the biding of the variable.
 decl_base::binding
 var_decl::get_binding() const
 {return priv_->binding_;}
 
+/// Setter of the binding of the variable.
+///
+/// @param b the new binding value.
 void
 var_decl::set_binding(decl_base::binding b)
 {priv_->binding_ = b;}
@@ -10400,7 +10448,7 @@ method_type::method_type (type_base_sptr return_type,
 /// method_type, expressed in bits.
 method_type::method_type(type_base_sptr return_type,
 			 type_base_sptr class_type,
-			 const std::vector<shared_ptr<function_decl::parameter> >& parms,
+			 const std::vector<function_decl::parameter_sptr>& parms,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
   : type_or_decl_base(class_type->get_environment()),
@@ -10436,7 +10484,7 @@ method_type::method_type(const environment*	env,
 ///
 /// @param alignment_in_bits the alignment of an instance of
 /// method_type, expressed in bits.
-method_type::method_type(shared_ptr<class_decl> class_type,
+method_type::method_type(class_decl_sptr class_typ,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
   : type_or_decl_base(class_typ->get_environment()),
@@ -10450,7 +10498,7 @@ method_type::method_type(shared_ptr<class_decl> class_type,
 ///
 /// @param t the new class type to set.
 void
-method_type::set_class_type(shared_ptr<class_decl> t)
+method_type::set_class_type(const class_decl_sptr& t)
 {
   if (!t)
     return;
@@ -10516,13 +10564,11 @@ struct function_decl::priv
   {}
 }; // end sruct function_decl::priv
 
-
-
-function_decl::function_decl(const std::string& name,
+function_decl::function_decl(const string& name,
 			     function_type_sptr function_type,
 			     bool declared_inline,
 			     const location& locus,
-			     const std::string& mangled_name,
+			     const string& mangled_name,
 			     visibility vis,
 			     binding bind)
   : type_or_decl_base(function_type->get_environment()),
@@ -12140,7 +12186,7 @@ struct class_decl::base_spec::priv
 ///
 /// @param is_virtual if true, means that the current base class is
 /// virtual in it's containing type.
-class_decl::base_spec::base_spec(shared_ptr<class_decl> base,
+class_decl::base_spec::base_spec(const class_decl_sptr& base,
 				 access_specifier a,
 				 long offset_in_bits,
 				 bool is_virtual)
@@ -13130,14 +13176,17 @@ operator==(const class_decl_sptr& l, const class_decl_sptr& r)
   return *l == *r;
 }
 
-/// Inequality operator for the @ref class_decl::member_class_template
-/// type.
+/// Turn inequality of shared_ptr of class_decl into a deep equality;
+/// that is, make it compare the pointed to objects too.
 ///
-/// @param l the first argument of the operator.
+/// @param l the shared_ptr of class_decl on left-hand-side of the
+/// equality.
 ///
-/// @param r the second argument of the operator.
+/// @param r the shared_ptr of class_decl on right-hand-side of the
+/// equality.
 ///
-/// @return true iff the two instances are equal.
+/// @return true if the class_decl pointed to by the shared_ptrs are
+/// different, false otherwise.
 bool
 operator!=(const class_decl_sptr& l, const class_decl_sptr& r)
 {return !operator==(l, r);}
@@ -13243,6 +13292,16 @@ class_decl::member_base::operator==(const member_base& o) const
 	  && get_is_static() == o.get_is_static());
 }
 
+/// Equality operator for smart pointers to @ref
+/// class_decl::base_specs.
+///
+/// This compares the pointed-to objects.
+///
+/// @param l the first instance to consider.
+///
+/// @param r the second instance to consider.
+///
+/// @return true iff @p l equals @p r.
 bool
 operator==(const class_decl::base_spec_sptr& l,
 	   const class_decl::base_spec_sptr& r)
@@ -13429,17 +13488,14 @@ operator==(const class_decl::member_class_template_sptr& l,
   return *l == *r;
 }
 
-/// Turn inequality of shared_ptr of class_decl into a deep equality;
-/// that is, make it compare the pointed to objects too.
+/// Inequality operator for the @ref class_decl::member_class_template
+/// type.
 ///
-/// @param l the shared_ptr of class_decl on left-hand-side of the
-/// equality.
+/// @param l the first argument of the operator.
 ///
-/// @param r the shared_ptr of class_decl on right-hand-side of the
-/// equality.
+/// @param r the second argument of the operator.
 ///
-/// @return true if the class_decl pointed to by the shared_ptrs are
-/// different, false otherwise.
+/// @return true iff the two instances are equal.
 bool
 operator!=(const class_decl::member_class_template_sptr& l,
 	   const class_decl::member_class_template_sptr& r)
@@ -13636,12 +13692,17 @@ template_decl::template_decl(const environment* env,
   : type_or_decl_base(env),
     decl_base(env, name, locus, /*mangled_name=*/"", vis),
     priv_(new priv)
-{
-}
+{}
 
+/// Destructor.
 template_decl::~template_decl()
 {}
 
+/// Equality operator.
+///
+/// @param o the other instance to compare against.
+///
+/// @return true iff @p equals the current instance.
 bool
 template_decl::operator==(const template_decl& o) const
 {
@@ -13781,7 +13842,7 @@ class type_tparameter::priv
 /// parameter.
 type_tparameter::type_tparameter(unsigned		index,
 				 template_decl_sptr	enclosing_tdecl,
-				 const std::string&	name,
+				 const string&		name,
 				 const location&	locus)
   : type_or_decl_base(enclosing_tdecl->get_environment()),
     decl_base(enclosing_tdecl->get_environment(), name, locus),
@@ -13937,7 +13998,7 @@ class template_tparameter::priv
 /// parameter.
 template_tparameter::template_tparameter(unsigned		index,
 					 template_decl_sptr	enclosing_tdecl,
-					 const std::string&	name,
+					 const string&		name,
 					 const location&	locus)
   : type_or_decl_base(enclosing_tdecl->get_environment()),
     decl_base(enclosing_tdecl->get_environment(), name, locus),

@@ -2339,7 +2339,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
   if (xml_char_sptr a = xml::build_sptr(xmlGetProp(node, BAD_CAST("type-id"))))
     type_id = CHAR_STR(a);
 
-  shared_ptr<type_base> type;
+  type_base_sptr type;
   if (is_variadic)
     type = ctxt.get_environment()->get_variadic_parameter_type_decl();
   else
@@ -2357,8 +2357,9 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
   location loc;
   read_location(ctxt, node, loc);
 
-  shared_ptr<function_decl::parameter> p
-    (new function_decl::parameter(type, name, loc, is_variadic, is_artificial));
+  function_decl::parameter_sptr p
+    (new function_decl::parameter(type, name, loc,
+				  is_variadic, is_artificial));
 
   return p;
 }
@@ -2429,7 +2430,7 @@ build_function_decl(read_context&	ctxt,
 
       else if (xmlStrEqual(n->name, BAD_CAST("parameter")))
 	{
-	  if (shared_ptr<function_decl::parameter> p =
+	  if (function_decl::parameter_sptr p =
 	      build_function_parameter(ctxt, n))
 	    parms.push_back(p);
 	}
@@ -2507,8 +2508,8 @@ build_var_decl(read_context&	ctxt,
   string type_id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "type-id"))
     type_id = CHAR_STR(s);
-  shared_ptr<type_base> underlying_type = ctxt.build_or_get_type_decl(type_id,
-								      true);
+  type_base_sptr underlying_type = ctxt.build_or_get_type_decl(type_id,
+							       true);
   assert(underlying_type);
 
   string mangled_name;
@@ -2524,9 +2525,9 @@ build_var_decl(read_context&	ctxt,
   location locus;
   read_location(ctxt, node, locus);
 
-  shared_ptr<var_decl> decl(new var_decl(name, underlying_type,
-					 locus, mangled_name,
-					 vis, bind));
+  var_decl_sptr decl(new var_decl(name, underlying_type,
+				  locus, mangled_name,
+				  vis, bind));
 
   elf_symbol_sptr sym = build_elf_symbol_from_reference(ctxt, node,
 							/*function_sym=*/false);
@@ -3433,7 +3434,7 @@ build_class_decl(read_context&		ctxt,
 
   if (!def_id.empty())
     {
-      shared_ptr<class_decl> d =
+      class_decl_sptr d =
 	dynamic_pointer_cast<class_decl>(ctxt.get_type_decl(def_id));
       if (d && d->get_is_declaration_only())
 	{

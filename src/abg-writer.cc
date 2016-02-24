@@ -239,7 +239,7 @@ public:
   }
 
   string
-  get_id_for_fn_tmpl(shared_ptr<function_tdecl> f)
+  get_id_for_fn_tmpl(const function_tdecl_sptr& f)
   {
     fn_tmpl_shared_ptr_map::const_iterator it = m_fn_tmpl_id_map.find(f);
     if (it == m_fn_tmpl_id_map.end())
@@ -252,7 +252,7 @@ public:
   }
 
   string
-  get_id_for_class_tmpl(shared_ptr<class_tdecl> c)
+  get_id_for_class_tmpl(const class_tdecl_sptr& c)
   {
     class_tmpl_shared_ptr_map::const_iterator it = m_class_tmpl_id_map.find(c);
     if (it == m_class_tmpl_id_map.end())

@@ -21,6 +21,11 @@
 // Author: Dodji Seketeli
 
 /// @file
+///
+/// Types of the main internal representation of libabigail.
+///
+/// This internal representation abstracts the artifacts that make up
+/// an application binary interface.
 
 #ifndef __ABG_IR_H__
 #define __ABG_IR_H__
@@ -1970,10 +1975,12 @@ public:
   /// @param mangled_name the mangled name of the enum type.
   ///
   /// @param vis the visibility of instances of this type.
-  enum_type_decl(const string& name, const location& locus,
-		 type_base_sptr underlying_type,
-		 enumerators& enms, const std::string& mangled_name = "",
-		 visibility vis = VISIBILITY_DEFAULT);
+  enum_type_decl(const string&		name,
+		 const location&	locus,
+		 type_base_sptr	underlying_type,
+		 enumerators&		enms,
+		 const string&		mangled_name = "",
+		 visibility		vis = VISIBILITY_DEFAULT);
 
   type_base_sptr
   get_underlying_type() const;
@@ -2074,8 +2081,10 @@ public:
   /// Hasher for the typedef_decl type.
   struct hash;
 
-  typedef_decl(const string& name, const shared_ptr<type_base> underlying_type,
-	       const location& locus, const std::string& mangled_name = "",
+  typedef_decl(const string& name,
+	       const type_base_sptr underlying_type,
+	       const location& locus,
+	       const string& mangled_name = "",
 	       visibility vis = VISIBILITY_DEFAULT);
 
   virtual size_t
@@ -2200,12 +2209,12 @@ public:
   /// Equality functor to compare pointers to variable_decl.
   struct ptr_equal;
 
-  var_decl(const std::string&		name,
-	   shared_ptr<type_base>	type,
-	   const location&		locus,
-	   const std::string&		mangled_name,
-	   visibility			vis = VISIBILITY_DEFAULT,
-	   binding			bind = BINDING_NONE);
+  var_decl(const string&	name,
+	   type_base_sptr	type,
+	   const location&	locus,
+	   const string&	mangled_name,
+	   visibility		vis = VISIBILITY_DEFAULT,
+	   binding		bind = BINDING_NONE);
 
   virtual bool
   operator==(const decl_base&) const;
@@ -2300,19 +2309,19 @@ public:
   /// Abtraction for the parameter of a function.
   class parameter;
 
-  function_decl(const std::string& name,
+  function_decl(const string& name,
 		function_type_sptr function_type,
 		bool declared_inline,
 		const location& locus,
-		const std::string& mangled_name,
+		const string& mangled_name,
 		visibility vis,
 		binding bind);
 
-  function_decl(const std::string& name,
-		shared_ptr<type_base> fn_type,
+  function_decl(const string& name,
+		type_base_sptr fn_type,
 		bool declared_inline,
 		const location& locus,
-		const std::string& mangled_name = "",
+		const string& mangled_name = "",
 		visibility vis = VISIBILITY_DEFAULT,
 		binding bind = BINDING_GLOBAL);
 
@@ -2407,19 +2416,19 @@ public:
 
   parameter(const type_base_sptr	type,
 	    unsigned			index,
-	    const std::string&		name,
+	    const string&		name,
 	    const location&		loc,
 	    bool			variadic_marker = false);
 
   parameter(const type_base_sptr	type,
 	    unsigned			index,
-	    const std::string&		name,
+	    const string&		name,
 	    const location&		loc,
 	    bool			variadic_marker,
 	    bool			is_artificial);
 
   parameter(const type_base_sptr	type,
-	    const std::string&		name,
+	    const string&		name,
 	    const location&		loc,
 	    bool			variadic_marker = false,
 	    bool			is_artificial	= false);
@@ -2446,7 +2455,7 @@ public:
   void
   set_index(unsigned i);
 
-   bool
+  bool
   get_artificial() const;
 
   void
@@ -2601,13 +2610,13 @@ public:
 
   method_type(type_base_sptr return_type,
 	      class_decl_sptr class_type,
-	      const std::vector<shared_ptr<function_decl::parameter> >& parms,
+	      const std::vector<function_decl::parameter_sptr>& parms,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
   method_type(type_base_sptr return_type,
 	      type_base_sptr class_type,
-	      const std::vector<shared_ptr<function_decl::parameter> >& parms,
+	      const std::vector<function_decl::parameter_sptr>& parms,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
@@ -2624,7 +2633,7 @@ public:
   {return class_decl_sptr(class_type_);}
 
   void
-  set_class_type(class_decl_sptr t);
+  set_class_type(const class_decl_sptr& t);
 
   virtual string
   get_pretty_representation(bool internal = false) const;
@@ -2635,7 +2644,7 @@ public:
 /// Convenience typedef for shared pointer to template parameter
 typedef shared_ptr<template_parameter> template_parameter_sptr;
 
-/// Convenience typedef for a shared pointer to template_decl
+/// Convenience typedef for a shared pointer to @ref template_decl
 typedef shared_ptr<template_decl> template_decl_sptr;
 
 /// Convenience typedef for a weak pointer to template_decl
@@ -2671,6 +2680,9 @@ public:
 
   virtual ~template_decl();
 };//end class template_decl
+
+/// Convenience typedef for a shared_ptr to @ref template_parameter
+typedef shared_ptr<template_parameter> template_parameter_sptr;
 
 /// Base class for a template parameter.  Client code should use the
 /// more specialized type_template_parameter,
@@ -2742,7 +2754,7 @@ public:
 
   type_tparameter(unsigned		index,
 		  template_decl_sptr	enclosing_tdecl,
-		  const std::string&	name,
+		  const string&	name,
 		  const location&	locus);
 
   virtual bool
@@ -2780,7 +2792,7 @@ public:
 
   non_type_tparameter(unsigned			index,
 		      template_decl_sptr	enclosing_tdecl,
-		      const std::string&	name,
+		      const string&		name,
 		      type_base_sptr		type,
 		      const location&		locus);
   virtual size_t
@@ -2830,7 +2842,7 @@ public:
 
   template_tparameter(unsigned			index,
 		      template_decl_sptr	enclosing_tdecl,
-		      const std::string&	name,
+		      const string&		name,
 		      const location&		locus);
 
   virtual bool
@@ -3348,10 +3360,10 @@ public:
   /// Hasher.
   struct hash;
 
-  base_spec(shared_ptr<class_decl> base, access_specifier a,
+  base_spec(const class_decl_sptr& base, access_specifier a,
 	    long offset_in_bits = -1, bool is_virtual = false);
 
-  base_spec(shared_ptr<type_base> base, access_specifier a,
+  base_spec(const type_base_sptr& base, access_specifier a,
 	    long offset_in_bits = -1, bool is_virtual = false);
 
   class_decl_sptr
@@ -3537,23 +3549,23 @@ class class_decl::method_decl : public function_decl
 
 public:
 
-  method_decl(const std::string& name, method_type_sptr type,
+  method_decl(const string& name, method_type_sptr type,
 	      bool declared_inline, const location& locus,
-	      const std::string& mangled_name = "",
+	      const string& mangled_name = "",
 	      visibility vis = VISIBILITY_DEFAULT,
 	      binding	bind = BINDING_GLOBAL);
 
-  method_decl(const std::string& name,
+  method_decl(const string& name,
 	      function_type_sptr type,
 	      bool declared_inline,
 	      const location& locus,
-	      const std::string& mangled_name = "",
+	      const string& mangled_name = "",
 	      visibility vis  = VISIBILITY_DEFAULT,
 	      binding	bind = BINDING_GLOBAL);
 
-  method_decl(const std::string& name, type_base_sptr type,
+  method_decl(const string& name, type_base_sptr type,
 	      bool declared_inline, const location& locus,
-	      const std::string& mangled_name = "",
+	      const string& mangled_name = "",
 	      visibility vis = VISIBILITY_DEFAULT,
 	      binding bind = BINDING_GLOBAL);
 
