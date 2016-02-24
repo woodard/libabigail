@@ -2634,6 +2634,7 @@ function_suppression::suppresses_function(const function_decl* fn,
 	return false;
 
       if (get_allow_other_aliases()
+	  && fn->get_symbol()
 	  && fn->get_symbol()->get_alias_from_name(fname))
 	{
 	  // So we are in a case of a languages in which the symbol
@@ -2643,8 +2644,8 @@ function_suppression::suppresses_function(const function_decl* fn,
 	  // names of all aliases.
 	  string symbol_name;
 	  elf_symbol_sptr sym = fn->get_symbol();
-	  if (sym)
-	    symbol_name = sym->get_name();
+	  assert(sym);
+	  symbol_name = sym->get_name();
 	  if (sym->has_aliases() && sym->get_alias_from_name(fname))
 	    {
 	      for (elf_symbol_sptr a = sym->get_next_alias();
@@ -2669,6 +2670,7 @@ function_suppression::suppresses_function(const function_decl* fn,
 	return false;
 
       if (get_allow_other_aliases()
+	  && fn->get_symbol()
 	  && fn->get_symbol()->get_alias_from_name(fname))
 	{
 	  // So we are in a case of a languages in which the symbol
@@ -2678,8 +2680,8 @@ function_suppression::suppresses_function(const function_decl* fn,
 	  // the aliases.
 	  string symbol_name;
 	  elf_symbol_sptr sym = fn->get_symbol();
-	  if (sym)
-	    symbol_name = sym->get_name();
+	  assert(sym);
+	  symbol_name = sym->get_name();
 	  if (sym->has_aliases())
 	    {
 	      for (elf_symbol_sptr a = sym->get_next_alias();
@@ -2728,12 +2730,12 @@ function_suppression::suppresses_function(const function_decl* fn,
       fn_sym_version = sym->get_version().str();
     }
 
-  if (!get_symbol_name().empty())
+  if (sym && !get_symbol_name().empty())
     {
       if (fn_sym_name != get_symbol_name())
 	return false;
 
-      if (get_allow_other_aliases())
+      if (sym && get_allow_other_aliases())
 	{
 	  // In this case, we want to allow the suppression of change
 	  // reports about an aliased symbol only if the suppression
@@ -2748,7 +2750,7 @@ function_suppression::suppresses_function(const function_decl* fn,
 	    }
 	}
     }
-  else
+  else if (sym)
     {
       const sptr_utils::regex_t_sptr symbol_name_regex =
 	priv_->get_symbol_name_regex();
@@ -2779,12 +2781,12 @@ function_suppression::suppresses_function(const function_decl* fn,
 
   // Check if the "symbol_version" and "symbol_version_regexp"
   // properties match.
-  if (!get_symbol_version().empty())
+  if (sym && !get_symbol_version().empty())
     {
       if (fn_sym_version != get_symbol_version())
 	return false;
     }
-  else
+  else if (sym)
     {
       const sptr_utils::regex_t_sptr symbol_version_regex =
 	priv_->get_symbol_version_regex();
