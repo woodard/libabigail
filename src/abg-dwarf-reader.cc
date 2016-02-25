@@ -92,6 +92,10 @@ typedef unordered_map<Dwarf_Off, type_base_sptr> die_type_map_type;
 /// corresponding class_decl.
 typedef unordered_map<Dwarf_Off, class_decl_sptr> die_class_map_type;
 
+/// Convenience typedef for a map which key the offset of a dwarf die
+/// and which value is the corresponding function_decl.
+typedef unordered_map<Dwarf_Off, function_decl_sptr> die_function_decl_map_type;
+
 /// Convenience typedef for a map which key is the offset of a dwarf
 /// die and which value is the corresponding function_type.
 typedef unordered_map<Dwarf_Off, function_type_sptr> die_function_type_map_type;
@@ -1929,6 +1933,7 @@ class read_context
   die_type_map_type		alternate_die_type_map_;
   die_class_map_type		die_wip_classes_map_;
   die_function_type_map_type	die_wip_function_types_map_;
+  die_function_decl_map_type	die_function_with_no_symbol_map_;
   vector<Dwarf_Off>		types_to_canonicalize_;
   vector<Dwarf_Off>		alt_types_to_canonicalize_;
   string_classes_map		decl_only_classes_map_;
@@ -2483,6 +2488,17 @@ public:
   die_wip_function_types_map()
   {return die_wip_function_types_map_;}
 
+  /// Getter for a map that associates a die with a function decl
+  /// which has a linkage name but no elf symbol yet.
+  ///
+  /// This is to fixup function decls with linkage names, but with no
+  /// link to their underlying elf symbol.  There are some DIEs like
+  /// that in DWARF sometimes, especially when the compiler optimizes
+  /// stuff aggressively.
+  die_function_decl_map_type&
+  die_function_decl_with_no_symbol_map()
+  {return die_function_with_no_symbol_map_;}
+
   /// Return true iff a given offset is for the DIE of a class that is
   /// being currently built.
   ///
@@ -2646,6 +2662,53 @@ public:
 	      cerr << "    " << i->first << "\n";
 	  }
       }
+  }
+
+  /// Some functions described by DWARF may have their linkage name
+  /// set, but no link to their actual underlying elf symbol.  When
+  /// these are virtual member functions, comparing the enclosing type
+  /// against another one which has its underlying symbol properly set
+  /// might lead to spurious type changes.
+  ///
+  /// If the corpus contains a symbol with the same name as the
+  /// linkage name of the function, then set up the link between the
+  /// function and its underlying symbol.
+  ///
+  /// Note that for the moment, only virtual member functions are
+  /// fixed up like this.  This is because they really are the only
+  /// fuctions of functions that can affect types (in spurious ways).
+  void
+  fixup_functions_with_no_symbols()
+  {
+    corpus_sptr corp = current_corpus();
+    if (!corp)
+      return;
+
+    die_function_decl_map_type &fns_with_no_symbol =
+      die_function_decl_with_no_symbol_map();
+
+    if (do_log())
+	cerr << fns_with_no_symbol.size()
+	     << " functions to fixup, potentially\n";
+
+    for (die_function_decl_map_type::iterator i = fns_with_no_symbol.begin();
+	 i != fns_with_no_symbol.end();
+	 ++i)
+      if (elf_symbol_sptr sym =
+	  corp->lookup_function_symbol(i->second->get_linkage_name()))
+	{
+	  assert(is_member_function(i->second));
+	  assert(get_member_function_is_virtual(i->second));
+	  i->second->set_symbol(sym);
+	  if (do_log())
+	    cerr << "fixed up '"
+		 << i->second->get_pretty_representation()
+		 << "' with symbol '"
+		 << sym->get_id_string()
+		 << "'\n";
+	}
+
+    fns_with_no_symbol.clear();
   }
 
   /// Return a reference to the vector containing the offsets of the
@@ -4198,7 +4261,8 @@ build_function_decl(read_context&	ctxt,
 static void
 finish_member_function_reading(Dwarf_Die*		die,
 			       function_decl_sptr	f,
-			       class_decl_sptr		klass);
+			       class_decl_sptr		klass,
+			       read_context&		ctxt);
 
 /// Setter of the debug info root path for a dwarf reader context.
 ///
@@ -6968,10 +7032,13 @@ build_enum_type(read_context& ctxt,
 /// @param f the function_decl that has just been built from @p die.
 ///
 /// @param klass the class_decl that @p f belongs to.
+///
+/// @param ctxt the context used to read the ELF/DWARF information.
 static void
 finish_member_function_reading(Dwarf_Die*		die,
 			       function_decl_sptr	f,
-			       class_decl_sptr		klass)
+			       class_decl_sptr		klass,
+			       read_context&		ctxt)
 {
   assert(klass);
 
@@ -7035,6 +7102,34 @@ finish_member_function_reading(Dwarf_Die*		die,
 
   if (is_virtual)
     klass->sort_virtual_mem_fns();
+
+  if (is_virtual && !f->get_linkage_name().empty() && !f->get_symbol())
+    {
+      // This is a virtual member function which has a linkage name
+      // but has no underlying symbol set.
+      //
+      // The underlying elf symbol to set to this function can show up
+      // later in the DWARF input or it can be that, because of some
+      // compiler optimization, the relation between this function and
+      // its underlying elf symbol is simply not emitted in the DWARF.
+      //
+      // Let's thus schedule this function for a later fixup pass
+      // (performed by
+      // read_context::fixup_functions_with_no_symbols()) that will
+      // set its underlying symbol.
+      //
+      // Note that if the underying symbol is encountered later in the
+      // DWARF input, then the part of build_function_decl() that
+      // updates the function to set its underlying symbol will
+      // de-schedule this function wrt fixup pass.
+      Dwarf_Off die_offset = dwarf_dieoffset(die);
+      die_function_decl_map_type &fns_with_no_symbol =
+	ctxt.die_function_decl_with_no_symbol_map();
+      die_function_decl_map_type::const_iterator i =
+	fns_with_no_symbol.find(die_offset);
+      if (i == fns_with_no_symbol.end())
+	fns_with_no_symbol[die_offset] = f;
+    }
 }
 
 /// Build a an IR node for class type from a DW_TAG_structure_type or
@@ -7285,7 +7380,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      function_decl_sptr f = dynamic_pointer_cast<function_decl>(r);
 	      assert(f);
 
-	      finish_member_function_reading(&child, f, result);
+	      finish_member_function_reading(&child, f, result, ctxt);
 
 	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
 					 is_in_alt_di, f);
@@ -8140,6 +8235,7 @@ build_function_decl(read_context&	ctxt,
 
   // Check if a function symbol with this name is exported by the elf
   // binary.
+  bool symbol_updated = false;
   Dwarf_Addr fn_addr;
   if (ctxt.get_function_address(die, fn_addr))
     {
@@ -8147,6 +8243,7 @@ build_function_decl(read_context&	ctxt,
 	if (sym->is_function() && sym->is_public())
 	  {
 	    result->set_symbol(sym);
+	    symbol_updated = true;
 	    // If the linkage name is not set or is wrong, set it to
 	    // the name of the underlying symbol.
 	    string linkage_name = result->get_linkage_name();
@@ -8156,10 +8253,20 @@ build_function_decl(read_context&	ctxt,
 	  }
     }
 
-  ctxt.associate_die_to_type(dwarf_dieoffset(die),
-			     is_in_alt_di,
-			     result->get_type());
+  Dwarf_Off die_offset = dwarf_dieoffset(die);
+  ctxt.associate_die_to_type(die_offset, is_in_alt_di, result->get_type());
 
+  if (symbol_updated
+      && fn
+      && is_member_function(fn)
+      && get_member_function_is_virtual(fn)
+      && !result->get_linkage_name().empty())
+    // This function is a virtual member function which has its
+    // linkage name *and* and has its underlying symbol correctly set.
+    // It thus doesn't need any fixup related to elf symbol.  So
+    // remove it from the set of virtual member functions with linkage
+    // names and no elf symbol that need to be fixed up.
+    ctxt.die_function_decl_with_no_symbol_map().erase(die_offset);
   return result;
 }
 
@@ -8184,12 +8291,30 @@ read_debug_info_into_corpus(read_context& ctxt)
 	ctxt.env(corp->get_environment());
     }
 
+  // First set some mundane properties of the corpus gathered from
+  // ELF.
+  ctxt.current_corpus()->set_path(ctxt.elf_path());
+  ctxt.current_corpus()->set_origin(corpus::DWARF_ORIGIN);
+  ctxt.current_corpus()->set_soname(ctxt.dt_soname());
+  ctxt.current_corpus()->set_needed(ctxt.dt_needed());
+  ctxt.current_corpus()->set_architecture_name(ctxt.elf_architecture());
+
+  // Set symbols information to the corpus.
+  ctxt.current_corpus()->set_fun_symbol_map(ctxt.fun_syms_sptr());
+  ctxt.current_corpus()->set_undefined_fun_symbol_map
+    (ctxt.undefined_fun_syms_sptr());
+  ctxt.current_corpus()->set_var_symbol_map(ctxt.var_syms_sptr());
+  ctxt.current_corpus()->set_undefined_var_symbol_map
+    (ctxt.undefined_var_syms_sptr());
+
+  // Get out now if no debug info is found.
   if (!ctxt.dwarf())
     return ctxt.current_corpus();
 
   uint8_t address_size = 0;
   size_t header_size = 0;
 
+  // Set the set of exported declaration that are defined.
   ctxt.exported_decls_builder
     (ctxt.current_corpus()->get_exported_decls_builder().get());
 
@@ -8237,6 +8362,13 @@ read_debug_info_into_corpus(read_context& ctxt)
   if (ctxt.do_log())
     cerr << "resolving declaration only classes ...";
   ctxt.resolve_declaration_only_classes();
+  if (ctxt.do_log())
+    cerr << " DONE@" << ctxt.current_corpus()->get_path() <<"\n";
+
+  if (ctxt.do_log())
+    cerr << "fixing up functions with linkage name but "
+	 << "no advertised underlying symbols ....";
+  ctxt.fixup_functions_with_no_symbols();
   if (ctxt.do_log())
     cerr << " DONE@" << ctxt.current_corpus()->get_path() <<"\n";
 
@@ -8773,7 +8905,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	    class_decl_sptr klass(static_cast<class_decl*>(scope),
 				  sptr_utils::noop_deleter());
 	    assert(klass);
-	    finish_member_function_reading(die, fn, klass);
+	    finish_member_function_reading(die, fn, klass, ctxt);
 	  }
 
 	if (fn)
@@ -9018,16 +9150,6 @@ read_corpus_from_elf(read_context& ctxt, status& status)
   // Read the variable and function descriptions from the debug info
   // we have, through the dwfl handle.
   corpus_sptr corp = read_debug_info_into_corpus(ctxt);
-  corp->set_path(ctxt.elf_path());
-  corp->set_origin(corpus::DWARF_ORIGIN);
-  corp->set_soname(ctxt.dt_soname());
-  corp->set_needed(ctxt.dt_needed());
-  corp->set_architecture_name(ctxt.elf_architecture());
-
-  corp->set_fun_symbol_map(ctxt.fun_syms_sptr());
-  corp->set_undefined_fun_symbol_map(ctxt.undefined_fun_syms_sptr());
-  corp->set_var_symbol_map(ctxt.var_syms_sptr());
-  corp->set_undefined_var_symbol_map(ctxt.undefined_var_syms_sptr());
 
   status |= STATUS_OK;
 
