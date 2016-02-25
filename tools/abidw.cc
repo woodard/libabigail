@@ -75,6 +75,7 @@ struct options
   bool			noout;
   bool			show_locs;
   bool			abidiff;
+  bool			do_log;
 
   options()
     : display_version(),
@@ -85,7 +86,8 @@ struct options
       show_stats(),
       noout(),
       show_locs(true),
-      abidiff()
+      abidiff(),
+      do_log()
   {}
 };
 
@@ -109,7 +111,8 @@ display_usage(const string& prog_name, ostream& out)
     << "  --load-all-types  read all types including those not reachable from"
     "exported declarations\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
-    << "  --stats  show statistics about various internal stuff\n";
+    << "  --stats  show statistics about various internal stuff\n"
+    << "  --verbose show verbose messages about internal stuff\n";
   ;
 }
 
@@ -179,6 +182,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.abidiff = true;
       else if (!strcmp(argv[i], "--stats"))
 	opts.show_stats = true;
+      else if (!strcmp(argv[i], "--verbose"))
+	opts.do_log = true;
       else if (!strcmp(argv[i], "--help")
 	       || !strcmp(argv[i], "--h"))
 	return false;
@@ -266,6 +271,7 @@ main(int argc, char* argv[])
 					    opts.load_all_types);
   read_context& ctxt = *c;
   set_show_stats(ctxt, opts.show_stats);
+  abigail::dwarf_reader::set_do_log(ctxt, opts.do_log);
 
   if (opts.check_alt_debug_info_path)
     {
