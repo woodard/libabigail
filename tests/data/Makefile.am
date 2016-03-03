@@ -76,10 +76,19 @@ test-abidiff/test-PR18791-v0.so.abi     \
 test-abidiff/test-PR18791-v1.so.abi     \
 \
 test-abidiff-exit/test1-voffset-change-report0.txt \
+test-abidiff-exit/test1-voffset-change-report1.txt \
+test-abidiff-exit/test1-voffset-change.abignore \
 test-abidiff-exit/test1-voffset-change-v0.cc \
 test-abidiff-exit/test1-voffset-change-v0.o \
 test-abidiff-exit/test1-voffset-change-v1.cc \
 test-abidiff-exit/test1-voffset-change-v1.o \
+test-abidiff-exit/test2-filtered-removed-fns-report0.txt \
+test-abidiff-exit/test2-filtered-removed-fns-report1.txt \
+test-abidiff-exit/test2-filtered-removed-fns-v0.c \
+test-abidiff-exit/test2-filtered-removed-fns-v1.c \
+test-abidiff-exit/test2-filtered-removed-fns-v0.o \
+test-abidiff-exit/test2-filtered-removed-fns-v1.o \
+test-abidiff-exit/test2-filtered-removed-fns.abignore \
 \
 test-diff-dwarf/test0-v0.cc		\
 test-diff-dwarf/test0-v0.o			\

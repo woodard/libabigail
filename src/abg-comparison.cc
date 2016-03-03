@@ -14624,11 +14624,16 @@ corpus_diff::has_incompatible_changes() const
     apply_filters_and_suppressions_before_reporting();
 
   return (soname_changed()
-	  || stats.num_func_removed() != 0
-	  || stats.num_func_with_virtual_offset_changes() != 0
-	  || stats.num_vars_removed() != 0
-	  || stats.num_func_syms_removed() != 0
-	  || stats.num_var_syms_removed() != 0);
+	  || stats.net_num_func_removed() != 0
+	  || (stats.num_func_with_virtual_offset_changes() != 0
+	      // If all reports about functions with sub-type changes
+	      // have been suppressd, then even those about functions
+	      // that are virtual don't matter anymore because the
+	      // user willingly requested to shut them down
+	      && stats.net_num_func_changed() != 0)
+	  || stats.net_num_vars_removed() != 0
+	  || stats.net_num_removed_func_syms() != 0
+	  || stats.net_num_removed_var_syms() != 0);
 }
 
 /// Test if the current instance of @ref corpus_diff carries subtype
