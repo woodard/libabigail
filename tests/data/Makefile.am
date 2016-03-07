@@ -1053,5 +1053,5 @@ test-diff-pkg/libICE-debuginfo-1.0.6-1.el6.x86_64.rpm \
 test-diff-pkg/libICE-debuginfo-1.0.9-2.el7.x86_64.rpm \
 test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm \
 test-diff-pkg/libICE-1.0.9-2.el7.x86_64.rpm \
-libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt
+test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt
 
