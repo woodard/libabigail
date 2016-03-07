@@ -432,6 +432,41 @@ is_child_node_of_base_diff(const diff* diff)
 /// Test if the current diff node has an ancestor node that has been
 /// filtered out.
 ///
+/// This function detects cycles when walking through the "parent"
+/// path.
+///
+/// @param diff the diff node to take into account.
+///
+/// @param ancestor this is a hash map of the pointers of the parents
+/// that are visited.  It's used to detect cycles while visiting
+/// parents of this diff tree node.
+///
+/// @return true iff the current diff node has an ancestor node that
+/// has been filtered out.
+static bool
+diff_has_ancestor_filtered_out(const diff* d,
+			       unordered_map<size_t, bool>& ancestors)
+{
+  if (!d || !d->parent_node())
+    return false;
+  if (d->parent_node()->is_filtered_out())
+    return true;
+
+  const diff* parent = d->parent_node();
+  unordered_map<size_t, bool>::const_iterator i =
+    ancestors.find(reinterpret_cast<size_t>(parent));
+  if (i != ancestors.end())
+    // We've just detected a cycle in the path made of the parents
+    // that we are visiting.
+    return false;
+  ancestors[reinterpret_cast<size_t>(parent)] = true;
+
+  return diff_has_ancestor_filtered_out(parent, ancestors);
+}
+
+/// Test if the current diff node has an ancestor node that has been
+/// filtered out.
+///
 /// @param diff the diff node to take into account.
 ///
 /// @return true iff the current diff node has an ancestor node that
@@ -439,11 +474,8 @@ is_child_node_of_base_diff(const diff* diff)
 static bool
 diff_has_ancestor_filtered_out(const diff* diff)
 {
-  if (!diff || !diff->parent_node())
-    return false;
-  if (diff->parent_node()->is_filtered_out())
-    return true;
-  return diff_has_ancestor_filtered_out(diff->parent_node());
+  unordered_map<size_t, bool> ancestors_trace;
+  return diff_has_ancestor_filtered_out(diff, ancestors_trace);
 }
 
 /// The default traverse function.
