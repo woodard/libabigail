@@ -11329,13 +11329,15 @@ struct function_type_diff::priv
   // This map contains parameters sub-type changes that don't change
   // the name of the type of the parameter.
   string_fn_parm_diff_sptr_map		subtype_changed_parms_;
-  unsigned_parm_map			deleted_parms_by_id_;
-  unsigned_parm_map			added_parms_by_id_;
+  vector<fn_parm_diff_sptr>		sorted_subtype_changed_parms_;
   // This map contains parameter type changes that actually change the
   // name of the type of the parameter, but in a compatible way;
   // otherwise, the mangling of the function would have changed (in
   // c++ at least).
   unsigned_fn_parm_diff_sptr_map	changed_parms_by_id_;
+  vector<fn_parm_diff_sptr>		sorted_changed_parms_by_id_;
+  unsigned_parm_map			deleted_parms_by_id_;
+  unsigned_parm_map			added_parms_by_id_;
 
   priv()
   {}
@@ -11413,6 +11415,10 @@ function_type_diff::ensure_lookup_tables_populated()
 	}
     }
 
+  sort_string_fn_parm_diff_sptr_map(priv_->subtype_changed_parms_,
+				    priv_->sorted_subtype_changed_parms_);
+  sort_string_fn_parm_diff_sptr_map(priv_->changed_parms_by_id_,
+				    priv_->sorted_changed_parms_by_id_);
   sort_string_parm_map(priv_->deleted_parms_,
 		       priv_->sorted_deleted_parms_);
 
@@ -11616,12 +11622,9 @@ function_type_diff::report(ostream& out, const string& indent) const
   // this shouldn't be as straightforward.
   //
   // Report about the parameter types that have changed sub-types.
-  vector<fn_parm_diff_sptr> sorted_fn_parms;
-  sort_string_fn_parm_diff_sptr_map(priv_->subtype_changed_parms_,
-				    sorted_fn_parms);
   for (vector<fn_parm_diff_sptr>::const_iterator i =
-	 sorted_fn_parms.begin();
-       i != sorted_fn_parms.end();
+	 priv_->sorted_subtype_changed_parms_.begin();
+       i != priv_->sorted_subtype_changed_parms_.end();
        ++i)
     {
       diff_sptr d = *i;
@@ -11632,11 +11635,9 @@ function_type_diff::report(ostream& out, const string& indent) const
   // compatible -- otherwise they would have changed the mangled name
   // of the function and the function would have been reported as
   // removed.
-  sorted_fn_parms.clear();
-  sort_string_fn_parm_diff_sptr_map(priv_->changed_parms_by_id_,
-				    sorted_fn_parms);
-  for (vector<fn_parm_diff_sptr>::const_iterator i = sorted_fn_parms.begin();
-       i != sorted_fn_parms.end();
+  for (vector<fn_parm_diff_sptr>::const_iterator i =
+	 priv_->sorted_changed_parms_by_id_.begin();
+       i != priv_->sorted_changed_parms_by_id_.end();
        ++i)
     {
       diff_sptr d = *i;
@@ -11686,18 +11687,18 @@ function_type_diff::chain_into_hierarchy()
   if (diff_sptr d = return_type_diff())
     append_child_node(d);
 
-  for (string_fn_parm_diff_sptr_map::const_iterator i =
-	 subtype_changed_parms().begin();
-       i != subtype_changed_parms().end();
+  for (vector<fn_parm_diff_sptr>::const_iterator i =
+	 priv_->sorted_subtype_changed_parms_.begin();
+       i != priv_->sorted_subtype_changed_parms_.end();
        ++i)
-    if (diff_sptr d = i->second)
+    if (diff_sptr d = *i)
       append_child_node(d);
 
-  for (unsigned_fn_parm_diff_sptr_map::const_iterator i =
-	 priv_->changed_parms_by_id_.begin();
-       i != priv_->changed_parms_by_id_.end();
+  for (vector<fn_parm_diff_sptr>::const_iterator i =
+	 priv_->sorted_changed_parms_by_id_.begin();
+       i != priv_->sorted_changed_parms_by_id_.end();
        ++i)
-    if (diff_sptr d = i->second)
+    if (diff_sptr d = *i)
       append_child_node(d);
 }
 
