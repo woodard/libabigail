@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2015 Red Hat, Inc.
+// Copyright (C) 2015-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -459,8 +459,8 @@ const string&
 package::extracted_packages_parent_dir()
 {
   // I tried to declare this in thread-local storage, but GCC 4.4.7
-  //won't let me.  So for now, I am just making it static.  I'll deal
-  //with this later when time of multi-threading comes.
+  // won't let me.  So for now, I am just making it static.  I'll deal
+  // with this later when I have to.
 
   //static __thread string p;
   static string p;
@@ -476,7 +476,13 @@ package::extracted_packages_parent_dir()
 
       using abigail::tools_utils::get_random_number_as_string;
 
-      p = p + "/libabigail-tmp-dir-" + get_random_number_as_string();
+      string libabigail_tmp_dir_template = p;
+      libabigail_tmp_dir_template += "/libabigail-tmp-dir-XXXXXX";
+
+      if (!mkdtemp(const_cast<char*>(libabigail_tmp_dir_template.c_str())))
+	abort();
+
+      p = libabigail_tmp_dir_template;
     }
 
   return p;

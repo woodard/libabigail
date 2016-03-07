@@ -32,10 +32,12 @@
 // For package configuration macros.
 #include "config.h"
 #include <sys/wait.h>
+#include <cassert>
 #include <cstring>
 #include <string>
 #include <cstdlib>
 #include <iostream>
+#include "abg-workers.h"
 #include "test-utils.h"
 #include "abg-tools-utils.h"
 
@@ -312,93 +314,168 @@ static InOutSpec in_out_specs[] =
   {0, 0, 0, 0, 0, 0, 0, 0}
 };
 
+/// A task which launches abipkgdiff on the binaries passed to the
+/// constructor of the task.  The test also launches gnu diff on the
+/// result of abipkdiff to compare it against a reference abipkgdiff
+/// result.
+struct test_task : public abigail::workers::task
+{
+  InOutSpec spec;
+  bool is_ok;
+  string diff_cmd;
+  string error_message;
+
+  test_task(const InOutSpec& s)
+    : spec(s),
+      is_ok(true)
+  {}
+
+  /// This virtual function overload actually performs the job of the
+  /// task.
+  ///
+  /// It actually launches abipkgdiff on the binaries passed to the
+  /// constructor of the task.  It also launches gnu diff on the
+  /// result of the abidiff to compare it against a reference abidiff
+  /// result.
+  virtual void
+  perform()
+  {
+    using abigail::tests::get_build_dir;
+    using abigail::tools_utils::ensure_parent_dir_created;
+
+    string first_in_package_path, second_in_package_path,
+      prog_options,
+      ref_abi_diff_report_path, out_abi_diff_report_path, cmd, abipkgdiff,
+      first_in_debug_package_path, second_in_debug_package_path,
+      suppression_path;
+
+    first_in_package_path =
+      string(get_src_dir()) + "/tests/" + spec.first_in_package_path;
+    second_in_package_path =
+      string(get_src_dir()) + "/tests/" + spec.second_in_package_path;
+
+    prog_options = spec.prog_options;
+
+    if (spec.first_in_debug_package_path
+	&& strcmp(spec.first_in_debug_package_path, ""))
+      first_in_debug_package_path =
+	string(get_src_dir()) + "/tests/" + spec.first_in_debug_package_path;
+    else
+      first_in_debug_package_path.clear();
+
+    if (spec.second_in_debug_package_path
+	&& strcmp(spec.second_in_debug_package_path, ""))
+      second_in_debug_package_path =
+	string(get_src_dir()) + "/tests/" + spec.second_in_debug_package_path;
+    else
+      second_in_debug_package_path.clear();
+
+    if (spec.suppression_path
+	&& strcmp(spec.suppression_path, ""))
+      suppression_path =
+	string(get_src_dir()) + "/tests/" + spec.suppression_path;
+    else
+      suppression_path.clear();
+
+    ref_abi_diff_report_path =
+      string(get_src_dir()) + "/tests/" + spec.ref_report_path;
+    out_abi_diff_report_path =
+      string(get_build_dir()) + "/tests/" + spec.out_report_path;
+
+    if (!ensure_parent_dir_created(out_abi_diff_report_path))
+      {
+	cerr << "could not create parent directory for "
+	     << out_abi_diff_report_path;
+	is_ok = false;
+	return;
+      }
+
+    abipkgdiff = string(get_build_dir()) + "/tools/abipkgdiff";
+
+    if (!prog_options.empty())
+      abipkgdiff +=  " " + prog_options;
+
+    if (!first_in_debug_package_path.empty())
+      abipkgdiff += " --d1 " + first_in_debug_package_path;
+    if (!second_in_debug_package_path.empty())
+      abipkgdiff += " --d2 " + second_in_debug_package_path;
+
+    if (!suppression_path.empty())
+      abipkgdiff += " --suppressions " + suppression_path;
+
+    cmd =
+      abipkgdiff + " " + first_in_package_path + " " + second_in_package_path;
+    cmd += " > " + out_abi_diff_report_path;
+
+    bool abipkgdiff_ok = true;
+    int code = system(cmd.c_str());
+    if (!WIFEXITED(code))
+      abipkgdiff_ok = false;
+
+    if (abipkgdiff_ok)
+      {
+	cmd = "diff -u " + ref_abi_diff_report_path + " "
+	  + out_abi_diff_report_path;
+	if (system(cmd.c_str()))
+	  is_ok = false;
+      }
+    else
+      is_ok = false;
+  }
+}; // end struct test_task
+
+/// A convenience typedef for shared
+typedef shared_ptr<test_task> test_task_sptr;
+
 int
 main()
 {
-  using abigail::tests::get_build_dir;
-  using abigail::tools_utils::ensure_parent_dir_created;
+  using std::vector;
+  using std::tr1::dynamic_pointer_cast;
+  using abigail::workers::queue;
+  using abigail::workers::task;
+  using abigail::workers::task_sptr;
+  using abigail::workers::get_number_of_threads;
+
+  /// Create a task queue.  The max number of worker threads of the
+  /// queue is the number of the concurrent threads supported by the
+  /// processor of the machine this code runs on.
+  const size_t num_tests = sizeof(in_out_specs) / sizeof (InOutSpec) - 1;
+  size_t num_workers = std::min(get_number_of_threads(), num_tests);
+  queue task_queue(num_workers);
 
   bool is_ok = true;
-  string first_in_package_path, second_in_package_path,
-    prog_options,
-    ref_abi_diff_report_path, out_abi_diff_report_path, cmd, abipkgdiff,
-    first_in_debug_package_path, second_in_debug_package_path,
-    suppression_path;
+
   for (InOutSpec *s = in_out_specs; s->first_in_package_path; ++s)
     {
-      first_in_package_path =
-        string(get_src_dir()) + "/tests/" + s->first_in_package_path;
-      second_in_package_path =
-        string(get_src_dir()) + "/tests/" + s->second_in_package_path;
-
-      prog_options = s->prog_options;
-
-      if (s->first_in_debug_package_path
-          && strcmp(s->first_in_debug_package_path, ""))
-        first_in_debug_package_path =
-          string(get_src_dir()) + "/tests/" + s->first_in_debug_package_path;
-      else
-        first_in_debug_package_path.clear();
-
-      if (s->second_in_debug_package_path
-          && strcmp(s->second_in_debug_package_path, ""))
-        second_in_debug_package_path =
-          string(get_src_dir()) + "/tests/" + s->second_in_debug_package_path;
-      else
-        second_in_debug_package_path.clear();
-
-      if (s->suppression_path
-          && strcmp(s->suppression_path, ""))
-        suppression_path =
-          string(get_src_dir()) + "/tests/" + s->suppression_path;
-      else
-        suppression_path.clear();
-
-      ref_abi_diff_report_path =
-	string(get_src_dir()) + "/tests/" + s->ref_report_path;
-      out_abi_diff_report_path =
-        string(get_build_dir()) + "/tests/" + s->out_report_path;
-
-      if (!ensure_parent_dir_created(out_abi_diff_report_path))
-        {
-          cerr << "could not create parent directory for "
-               << out_abi_diff_report_path;
-          is_ok = false;
-          continue;
-        }
-
-      abipkgdiff = string(get_build_dir()) + "/tools/abipkgdiff";
-
-      if (!prog_options.empty())
-	abipkgdiff +=  " " + prog_options;
-
-      if (!first_in_debug_package_path.empty())
-        abipkgdiff += " --d1 " + first_in_debug_package_path;
-      if (!second_in_debug_package_path.empty())
-        abipkgdiff += " --d2 " + second_in_debug_package_path;
-
-      if (!suppression_path.empty())
-        abipkgdiff += " --suppressions " + suppression_path;
-
-      cmd =
-        abipkgdiff + " " + first_in_package_path + " " + second_in_package_path;
-      cmd += " > " + out_abi_diff_report_path;
-
-      bool abipkgdiff_ok = true;
-      int code = system(cmd.c_str());
-      if (!WIFEXITED(code))
-	abipkgdiff_ok = false;
-
-      if (abipkgdiff_ok)
-        {
-          cmd = "diff -u " + ref_abi_diff_report_path + " "
-            + out_abi_diff_report_path;
-          if (system(cmd.c_str()))
-            is_ok = false;
-        }
-      else
-        is_ok = false;
-
+      test_task_sptr t(new test_task(*s));
+      assert(task_queue.schedule_task(t));
     }
+
+  /// Wait for all worker threads to finish their job, and wind down.
+  task_queue.wait_for_workers_to_complete();
+
+  // Now walk the results and print whatever error messages need to be
+  // printed.
+
+  const vector<task_sptr>& completed_tasks =
+    task_queue.get_completed_tasks();
+  assert(completed_tasks.size() == num_tests);
+
+  for (vector<task_sptr>::const_iterator ti = completed_tasks.begin();
+       ti != completed_tasks.end();
+       ++ti)
+    {
+      test_task_sptr t = dynamic_pointer_cast<test_task>(*ti);
+      if (!t->is_ok)
+	{
+	  is_ok = false;
+	  if (!t->diff_cmd.empty())
+	    system(t->diff_cmd.c_str());
+	  if (!t->error_message.empty())
+	    cerr << t->error_message << '\n';
+	}
+    }
+
     return !is_ok;
 }
