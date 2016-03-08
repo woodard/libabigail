@@ -161,7 +161,7 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
-    "output/test-diff-pkg/tarpkg-0-report-0.txt"
+    "output/test-diff-pkg/tarpkg-0-report-01.txt"
   },
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar.gz",
@@ -171,7 +171,7 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
-    "output/test-diff-pkg/tarpkg-0-report-0.txt"
+    "output/test-diff-pkg/tarpkg-0-report-02.txt"
   },
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar.bz2",
@@ -181,7 +181,7 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
-    "output/test-diff-pkg/tarpkg-0-report-0.txt"
+    "output/test-diff-pkg/tarpkg-0-report-03.txt"
   },
 #endif //WITH_TAR
 
