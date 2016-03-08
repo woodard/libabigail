@@ -1,3 +1,59 @@
+1.0.rc3
+=======
+Dodji Seketeli:
+      Upate build instructions on the website
+      Bug 19138 - Failure to relate variables address from DWARF and ELF
+      Include missing <algorithm> to abg-dwarf-reader.cc
+      Make enum values take 64 bits on all platforms
+      Use worker threads pattern to speed up some tests
+      Sort the tests run in tests/ by running the slowest ones first
+      Bug 19434 - invalid character in attribute value
+      Bug 19141 - Libabigail doesn't support common ELF symbols
+      Pass parm of elf_symbol::add_alias by reference
+      Bug 19204 - libabigail aborts on DWARF referencing non-existing DIE
+      Comparing aliases of the same symbol must be done by pointer
+      Do not crash when looking up a type from global scope
+      Fix abicompat's handling of library types not used by the application
+      Fix synthesizing of pointer type
+      Fix synthesizing of reference type
+      Bug 19596 - Incorrect exit status for incompatible ABI change
+      Use proper WIFEXITED and WEXITSTATUS macros to get exit code
+      Bug 19604 - abidiff --suppressions doesn't complain about invalid file name
+      Make abipkgdiff return correct exit code on usage error
+      Make abipkgdiff check for the presence of suppression spec files
+      Talk about mandatory properties in suppress_* directives
+      Add a comment about libabigail needing elfutils 0.159 at least.
+      Bug 19606 - Need better error message for invalid options
+      Prefix abidiff error message with the 'abidiff' program name
+      Emit more informational messages on unrecognized options
+      Bug 19619 - failing to suppress added aliased function reports for C++
+      Add function lookup by linkage name to libabigail::corpus
+      Bug 19638 - DWARF reader fails to link clone function to its declaration
+      Add --verbose option to abidiff
+      Bug 19658 - Type canonicalization slow for the 2nd binary loaded
+      Add missing inequality operators for ABI artifacts
+      Fix crash when handling templates with empty patterns
+      Implement string interning for Libabigail
+      Some small speed optimizations
+      Bug 19706 - Core dump from abidiff with suppression
+      Update mentions to the build dependencies in the doc
+      Make libabigail link with pthread
+      Add --verbose to abidw
+      Fixup virtual member functions with linkage and no underlying symbol
+      Bug 19596 - Suppressed removed symbol changes still considered incompatible
+      Bug 19778 - diff_has_ancestor_filtered_out() loops forever
+      Bug 19780 - abipkgdiff doesn't support parallel execution
+      Fix reference to test file in Makefile.am
+      Walk function_type_diff tree in a deterministic way
+
+Mark Wielaard:
+      Fix GCC6 -Wmisleading-indentation warnings.
+      Make make more silent.
+      Remove defined but not used functions pointed out by GCC6.
+
+Ondrej Oprala:
+      Escape the value of the filepath attribute.
+
 1.0.rc2
 ======
 Dodji Seketeli:
