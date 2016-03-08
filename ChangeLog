@@ -1,3 +1,1010 @@
+2016-03-08  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file for 1.0.rc3
+	* NEWS: update for 1.0.rc3
+
+2016-03-07  Dodji Seketeli <dodji@redhat.com>
+
+	Walk function_type_diff tree in a deterministic way
+	* src/abg-comparison.cc
+	(function_type_diff::priv::{sorted_subtype_changed_parms_,
+	sorted_changed_parms_by_id_}): Add two data members.
+	(function_type_diff::ensure_lookup_tables_populated): Sort the
+	changed parameters here ...
+	(function_type_diff::report): ... not here.
+	(function_type_diff::chain_into_hierarchy): Chain the *sorted*
+	changed parameters.
+
+2016-03-07  Dodji Seketeli <dodji@redhat.com>
+
+	Fix reference to test file in Makefile.am
+	* tests/data/Makefile.am: Fix bogus reference to
+	libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt.
+
+2016-03-07  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19780 - abipkgdiff doesn't support parallel execution
+	* tools/abipkgdiff.cc: Update copyright notice.
+	(package::extracted_packages_parent_dir): Use mkdtemp to generate
+	the unique root directory under which packages are extracted.
+	* tests/test-diff-pkg.cc (struct test_task): New type.
+	(main): Use worker threads to run abipkgdiff in parallel,
+	depending on the number of CPUs advertised by the underlying
+	machine.
+
+2016-03-07  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19778 - diff_has_ancestor_filtered_out() loops forever
+	* src/abg-comparison.cc (diff_has_ancestor_filtered_out): Add an
+	overload that takes an additional map of pointer values.  Make the
+	older overload call the new one.
+	* tests/data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm: New test material.
+	* tests/data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt:
+	New reference output.
+	* tests/data/test-diff-pkg/libICE-1.0.9-2.el7.x86_64.rpm: New test material.
+	* tests/data/test-diff-pkg/libICE-debuginfo-1.0.6-1.el6.x86_64.rpm: New test material.
+	* tests/data/test-diff-pkg/libICE-debuginfo-1.0.9-2.el7.x86_64.rpm:
+	New test material.
+	* tests/data/Makefile.am: Add the new test material to source distribution.
+	* tests/test-diff-pkg.cc (in_out_specs): Run this test harness
+	over the new tests material above.
+
+2016-03-07  Dodji Seketeli <dodji@redhat.com>
+
+	Forgot to add test2-filtered-removed-fns-v{0,1}.o
+	* test2-filtered-removed-fns-v{0,1}.o: Add these test input files.
+
+2016-03-03  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19596 - Suppressed removed symbol changes still considered incompatible
+	* src/abg-comparison.cc (corpus_diff::has_incompatible_changes):
+	Consider the *net* number of removed function and variable
+	symbols.  Also, if all function sub-type changes have been
+	suppressed, then no virtual offset change should be considered
+	incompatible.
+	* tests/data/test-abidiff-exit/test1-voffset-change-report1.txt
+	* tests/data/test-abidiff-exit/test1-voffset-change.abignore
+	* tests/data/test-abidiff-exit/test2-filtered-removed-fns-report0.txt
+	* tests/data/test-abidiff-exit/test2-filtered-removed-fns-report1.txt
+	* tests/data/test-abidiff-exit/test2-filtered-removed-fns-v0.c
+	* tests/data/test-abidiff-exit/test2-filtered-removed-fns-v1.c
+	* tests/data/test-abidiff-exit/test2-filtered-removed-fns.abignore
+	* tests/data/Makefile.am: Add the new test material above to
+	source distribution.
+	* tests/test-abidiff-exit.cc (InOutSpec::in_suppr_path): New data
+	member.
+	(in_out_specs): Adjust. Add new test inputs.
+	(main): Adjust.
+
+2016-02-25  Dodji Seketeli <dodji@redhat.com>
+
+	Fixup virtual member functions with linkage and no underlying symbol
+	* src/abg-dwarf-reader.cc (die_function_decl_map_type): New
+	typedef.
+	(read_context::die_function_with_no_symbol_map_): New data member.
+	(read_context::die_function_decl_with_no_symbol_map): New
+	accessor.
+	(read_context::fixup_functions_with_no_symbols): New member
+	function.
+	(finish_member_function_reading): Take a read_context.  Schedule
+	virtual member functions with linkage and no underlying symbol to
+	be fixed up after all the debug info is read.
+	(build_function_decl): After a virtual member function_decl has
+	been updated, if it has its underlying symbol and was scheduled
+	for fixup, then de-schedule it.
+	(build_class_type_and_add_to_ir, build_ir_node_from_die): Adjust
+	call to finish_member_function_reading.
+	(read_corpus_from_elf): Move the pure ELF (symbol and other mundane
+	information) information reading ...
+	(read_debug_info_into_corpus): ...  here.  Make it happen *before*
+	actual reading of DWARF information.  We need symbol information
+	to be present and fully set before we start reading debug info.
+	This is so that we can know when a virtual member function doesn't
+	need to be fixed up.  Also, perform the fixup after the debug
+	information was read.
+	* tests/data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi: Adjust.
+
+2016-02-25  Dodji Seketeli <dodji@redhat.com>
+
+	Add --verbose to abidw
+	* doc/manuals/abidw.rst: Update the manual for the new --verbose
+	option.
+	* tools/abidw.cc (options::do_log): New data member.
+	(options::options): Initialize it.
+	(display_usage): New string for --verbose.
+	(parse_command_line): Parse the --verbose option.
+	(main): Set the the logging option.
+
+2016-02-25  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright information
+	* tools/abidiff.cc: Update copyright info for 2016.
+	* tools/abidw.cc: Likewise.
+
+2016-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Make libabigail link with pthread
+	* src/Makefile.am: Add -pthread to libabigail_la_LDFLAGS.
+	* tools/Makefile.am: Do not use abinilint_LDFLAGS when it should
+	be abinilint_LDADD.  This one was fixed by Michi Henning.
+
+2016-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Update mentions to the build dependencies in the doc
+	* COMPILING: Mention elfutils, libtool, autoconf, automake and
+	libtool.
+	* doc/website/mainpage.txt: Mention automake and libtool.  Fix a typo.
+
+2016-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19706 - Core dump from abidiff with suppression
+	* src/abg-comparison.cc
+	(function_suppression::suppresses_function): Make sure a function
+	has a symbol before (de)referencing it.
+
+2016-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Some small speed optimizations
+	* include/abg-ir.h (var_decl::get_naked_type): Declare new member function.
+	* src/abg-ir.cc (var_decl::get_naked_type): Define it.
+	(equals): For the var_decl overload, avoid copying symbol
+	smart pointers.  Likewise for variable type smart pointers.
+	(hash_type_or_decl): Avoid accessing canonical type smart pointer.
+
+2016-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Mist style cleanups
+	* include/abg-ir.h: Add missing comments.  Space cleanups.  Use
+	shorter typedefs rather than long template instantiation names.
+	Use string rather than the longer std::string.
+	* src/abg-ir.cc: Space cleanups. Add missing comments.  User
+	shorter typedefs.
+	* src/abg-reader.cc: Likewise.
+	* src/abg-writer.cc: Likewise.
+
+2016-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Implement string interning for Libabigail
+	* include/Makefile.am: Add the new abg-interned-str.h file to
+	source distribution.
+	* include/abg-corpus.h (corpus::corpus): Re-arrange the order of
+	* src/abg-corpus.cc
+	(corpus::exported_decls_builder::priv::get_id): Return
+	interned_string rather than std::string.
+	(corpus::corpus): Re-arrange the order of parameters: take an
+	environment as first parameter.  parameters: take an environment
+	as first parameter.
+	* include/abg-dwarf-reader.h (lookup_symbol_from_elf)
+	(lookup_public_function_symbol_from_elf): Likewise.
+	* src/abg-dwarf-reader.cc (lookup_symbol_from_sysv_hash_tab)
+	(lookup_symbol_from_gnu_hash_tab)
+	(lookup_symbol_from_elf_hash_tab, lookup_symbol_from_symtab)
+	(lookup_symbol_from_elf, lookup_public_function_symbol_from_elf)
+	(lookup_public_variable_symbol_from_elf, lookup_symbol_from_elf)
+	(lookup_public_function_symbol_from_elf): Take an environment as
+	first parameter and adjust.
+	(build_translation_unit_and_add_to_ir)
+	(build_namespace_decl_and_add_to_ir, build_type_decl)
+	(build_enum_type, finish_member_function_reading)
+	(build_class_type_and_add_to_ir, build_function_type)
+	(read_debug_info_into_corpus, read_corpus_from_elf): Adjust.
+	* include/abg-fwd.h: Include abg-interned-str.h
+	(get_type_name, get_function_type_name, get_method_type_name):
+	Return a interned_string, rather than a std::string.
+	* include/abg-interned-str.h: New declarations for interned strings
+	and their pool.
+	* include/abg-ir.h (environment::intern): Declare new method.
+	(elf_symbol::{g,s}et_environment): Likewise.
+	(type_or_decl_base::type_or_decl_base): Make the default
+	constructor private.
+	({translation, type_or_decl_base}::set_environment)
+	(set_environment_for_artifact): Take a const environment*.
+	(elf_symbol::elf_symbol)
+	(elf_symbol::create)
+	(type_or_decl_base::type_or_decl_base)
+	(translation::translation, decl_base::decl_base)
+	(scope_decl::scope_decl, type_base::type_base)
+	(type_decl::type_decl, scope_type_decl::scope_type_decl)
+	(namespace_decl::namespace_decl)
+	(enum_type_decl::enumerator::enumerator)
+	(function_type::function_type, method_type::method_type)
+	(template_decl::template_decl, function_tdecl::function_tdecl)
+	(class_tdecl::class_tdecl, class_decl::class_decl): Take an
+	environment.
+	(type_or_decl_base::operator=)
+	(enum_type_decl::enumerator::get_environment): Declare new method.
+	(decl_base::{peek_qualified_name, peek_temporary_qualified_name,
+	get_qualified_name, get_name, get_qualified_parent_name,
+	get_linkage_name}, qualified_type_def::get_qualified_name)
+	(reference_type_def::get_qualified_name)
+	(array_type_def::get_qualified_name)
+	(enum_type_decl::enumerator::{get_name, get_qualified_name})
+	({var,function}_decl::get_id)
+	(function_decl::parameter::{get_type_name, get_name_id}): Return
+	an interned_string, rather than a std::string.
+	(decl_base::{set_qualified_name, set_temporary_qualified_name,
+	get_qualified_name, set_linkage_name})
+	(qualified_type_def::get_qualified_name)
+	(reference_type_def::get_qualified_name)
+	(array_type_def::get_qualified_name)
+	(function_decl::parameter::get_qualified_name): Take an
+	interned_string, rather than a std::string.
+	(class_decl::member_{class,function}_template::member_{class,function}_template):
+	Adjust.
+	* src/abg-ir.cc (environment_setter::env_): Make this be a pointer
+	to const environment.
+	(environment_setter::visit_begin): Adjust.
+	(interned_string_pool::priv): Define new type.
+	(interned_string_pool::*): Define the method declared in
+	abg-interned-str. h.
+	(operator==, operator!=, operator+): Define operator for interned_string and
+	std::string
+	(operator<<): Define for interned_string.
+	(translation_unit::priv::env_): Make this be a pointer to const
+	environment.
+	(translation_unit::priv::priv): Take a pointer to const
+	environment.
+	(elf_symbol::priv::env_): New data member.
+	(elf_symbol::priv::priv): Adjust.  Make an overoad take an
+	environment.
+	(translation_unit::{g,s}et_environment): Adjust.
+	(interned_string_bool_map_type): New typedef.
+	(environment::priv::classes_being_compared_): Make this hastable
+	of string be a hashtable of interned_string.
+	(environment::priv::string_pool_): New data member.
+	(environment::{get_void_type_decl,
+	get_variadic_parameter_type_decl}): Adjust.
+	(type_or_decl_base::priv::env_): Make this be a pointer to const
+	environment.
+	(type_or_decl::base::priv::priv): Adjust.
+	(type_or_decl_base::set_environment)
+	(set_environment_for_artifact): Take a pointer to const
+	environment.
+	(elf_symbol::{g,s}et_environment, environment::intern)
+	(type_or_decl_base::operator=): Define new methods.
+	(decl_base::priv::{name_, qualified_parent_name_,
+	temporary_qualified_name_, qualified_name_, linkage_name_}): Make
+	these data member be of tpe interned_string.
+	(decl_base::priv::priv): Make this take an environment. Adjust.
+	(decl_base::{peek_qualified_name, peek_temporary_qualified_name,
+	get_linkage_name, get_qualified_parent_name, get_name,
+	get_qualified_name}, get_type_name, get_function_type_name)
+	(get_method_type_name, get_node_name)
+	(qualified_type_def::get_qualified_name)
+	(pointer_type_def::get_qualified_name)
+	(array_type_def::get_qualified_name)
+	(enum_type_decl::enumerator::get_qualified_name)
+	(var_decl::get_id, function_decl::get_id)
+	(function_decl::parameter::get_{name_id, type_name}): Return an
+	interned_string.
+	(decl_base::{set_qualified_name, set_temporary_qualified_name})
+	(qualified_type_def::get_qualified_name)
+	(pointer_type_def::get_qualified_name)
+	(reference_type_def::get_qualified_name)
+	(array_type_def::get_qualified_name)
+	(function_decl::parameter::get_qualified_name): Take an
+	interned_string.
+	(decl_base::{set_name, set_linkage_name}): Intern the std::string
+	passed in parameter.
+	(equals): In the overload for decl_base, adjust for a little speed
+	optimization that is justified by profiling.
+	(pointer_type_def::priv::{internal_qualified_name_,
+	temp_internal_qualified_name_}): Make these data member be
+	interned_string.
+	(enum_type_decl::enumerator::priv::env_): New data member.
+	(enum_type_decl::enumerator::priv::{name_, qualified_name}): Make
+	these data member be of type interned_string.
+	(enum_type_decl::enumerator::get_environment): New method.
+	(enum_type_decl::enumerator::priv::priv) Adjust.
+	(typedef_decl::operator==): Implement a little speed optimization.
+	(var_decl::priv::nake_type_): New data member.
+	(var_decl::priv::id_): Make this data member be of type
+	interned_string.
+	(equals): In the overload for var_decl, function_type,
+	function_decl, adjust for the use of interned_string.
+	(function_decl::priv::id_): Make this be of type interned_string.
+	(scope_decl::{add_member_decl, insert_member_decl})
+	(lookup_function_type_in_translation_unit)
+	(synthesize_type_from_translation_unit, lookup_node_in_scope)
+	(lookup_type_in_scope, scope_decl::scope_decl)
+	(qualified_type_def::qualified_type_def)
+	(qualified_type_def::get_qualified_name)
+	(pointer_type_def::pointer_type_def)
+	(reference_type_def::reference_type_def)
+	(array_type_def::array_type_def, array_type_def::append_subrange)
+	(array_type_def::get_qualified_name)
+	(enum_type_decl::enum_type_decl)
+	(enum_type_decl::enumerator::get_qualified_name)
+	(enum_type_decl::enumerator::set_name)
+	(typedef_decl::typedef_decl, var_decl::var_decl)
+	(function_type::function_type, method_type::method_type)
+	(function_decl::function_decl)
+	(function_decl::parameter::parameter)
+	(class_decl::priv::comparison_started)
+	(class_decl::add_base_specifier)
+	(class_decl::base_spec::base_spec)
+	(class_decl::method_decl::method_decl)
+	(type_tparameter::type_tparameter)
+	(non_type_tparameter::non_type_tparameter)
+	(template_tparameter::template_tparameter)
+	(type_composition::type_composition)
+	(function_tdecl::function_tdecl, class_tdecl::class_tdecl)
+	(qualified_name_setter::do_update): Adjust.
+	(translation_unit::translation_unit, elf_symbol::elf_symbol)
+	(elf_symbol::create, type_or_decl_base::type_or_decl_base)
+	(decl_base::decl_base, type_base::type_base)
+	(type_decl::type_decl, scope_type_decl::scope_type_decl)
+	(namespace_decl::namespace_decl)
+	(enum_type_decl::enumerator::enumerator, class_decl::class_decl)
+	(template_decl::template_decl, function_tdecl::function_tdecl)
+	(class_tdecl::class_tdecl): Take an environment.
+	* src/abg-comparison.cc
+	(function_suppression::suppresses_function): Adjust.
+	* src/abg-reader.cc (read_translation_unit)
+	(read_corpus_from_input, build_namespace_decl, build_elf_symbol)
+	(build_function_parameter, build_function_decl, build_type_decl)
+	(build_function_type, build_enum_type_decl, build_enum_type_decl)
+	(build_class_decl, build_function_tdecl, build_class_tdecl)
+	(read_corpus_from_native_xml): Likewise.
+	* src/abg-writer.cc (id_manager::m_cur_id): Make this mutable.
+	(id_manager::m_env): New data member.
+	(id_manager::id_manager): Adjust.
+	(id_manager::get_environment): New method.
+	(id_manager::{get_id, get_id_with_prefix}): Return an
+	interned_string.
+	(type_ptr_map): Make this be a hash map of type_base* ->
+	interned_string, rather a type_base* -> string.
+	(write_context::m_env): New data member.
+	(write_context::m_type_id_map): Make this data member be mutable.
+	(write_context::m_emitted_type_id_map): Make this be a hash map of
+	interned_string -> bool, rather than string -> bool.
+	(write_context::write_context): Take an environment and adjust.
+	(write_context::get_environment): New method.
+	(write_context::get_id_manager): New const overload.
+	(write_context::get_id_for_type): Return an interned_string; adjust.
+	(write_context::{record_type_id_as_emitted,
+	record_type_as_referenced}): Adjust.
+	(write_context::type_id_is_emitted): Take an interned_string.
+	(write_context::{type_is_emitted,
+	record_decl_only_type_as_emitted}): Adjust.
+	(write_translation_unit, write_corpus_to_native_xml, dump):
+	Adjust.
+	* tools/abisym.cc (main): Adjust.
+	* tests/data/test-read-write/test22.xml: Adjust.
+	* tests/data/test-read-write/test23.xml: Adjust.
+	* tests/data/test-read-write/test26.xml: Adjust.
+
+2016-02-24  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright notice
+	* include/abg-corpus.h: Update copyright notice.
+	* include/abg-dwarf-reader.h: Likewise.
+	* src/abg-comparison.cc: Likewise.
+	* src/abg-corpus.cc: Likewise.
+	* src/abg-ir.cc: Likewise.
+
+2016-02-23  Dodji Seketeli <dodji@redhat.com>
+
+	Fix crash when handling templates with empty patterns
+	* src/abg-ir.cc (function_tdecl::traverse): Do not crash when
+	traversing a template with empty pattern.
+	(class_tdecl::operator==): Do not crash when comparing templates
+	with empty patterns.
+
+2016-02-23  Dodji Seketeli <dodji@redhat.com>
+
+	Add missing inequality operators for ABI artifacts
+	* include/abg-ir.h ({translation_unit, elf_symbol::version,
+	context_rel, decl_base, type_base, type_decl,
+	array_type_def::subrange_type, enum_type_def::enumerator,
+	dm_context_rel, template_parameter}::operator!=): Declare.
+	(operator==): Make the overload form translation_unit_sptr,
+	scope_decl_sptr, class_decl::base_spec_sptr,
+	class_decl::member_function_template_sptr,
+	class_decl::member_class_template_sptr take const references.
+	(operator!=): Declare an an overload for the non-member operator
+	!= of translation_unit_sptr, elf_symbol_sptr,
+	type_or_decl_base_sptr, type_base_sptr, scope_decl_sptr,
+	type_decl, qualified_type_def_sptr, pointer_type_def_sptr,
+	reference_type_def_sptr, enum_type_decl_sptr, class_decl_sptr,
+	class_decl::base_spec_sptr,
+	class_decl::member_function_template_sptr,
+	class_decl::member_class_template_sptr.
+	* src/abg-ir.cc ({translation_unit, elf_symbol::version,
+	context_rel, decl_base, type_base, type_decl,
+	array_type_def::subrange_type, enum_type_def::enumerator,
+	dm_context_rel, template_parameter}::operator!=): Define.
+	(operator==): Make the overload for translation_unit_sptr,
+	scope_decl_sptr, class_decl::base_spec_sptr,
+	class_decl::member_function_template_sptr,
+	class_decl::member_class_template_sptr take const references.
+	(operator!=): Define an an overload for the non-member operator !=
+	of translation_unit_sptr, elf_symbol_sptr, type_or_decl_base_sptr,
+	type_base_sptr, scope_decl_sptr, type_decl,
+	qualified_type_def_sptr, pointer_type_def_sptr,
+	reference_type_def_sptr, enum_type_decl_sptr, class_decl_sptr,
+	class_decl::base_spec_sptr,
+	class_decl::member_function_template_sptr,
+	class_decl::member_class_template_sptr.
+
+2016-02-20  Dodji Seketeli <dodji@redhat.com>
+
+	Make the tree pass distcheck again.
+	* tests/data/Makefile.am: Add file
+	test-diff-suppr/test28-add-aliased-function-report-0.txt to source
+	distribution.
+
+2016-02-18  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19658 - Type canonicalization slow for the 2nd binary loaded
+	* include/abg-corpus.h (corpus::{record_canonical_type,
+	lookup_canonical_type}): Declare new member functions.
+	* src/abg-corpus.cc (corpus::priv::canonical_types_): New data
+	member.
+	(corpus::{record_canonical_type, lookup_canonical_type}): Define
+	new member functions.
+	* src/abg-ir.cc (type_base::get_canonical_type_for): Cache the
+	canonical type inside the corpus of the type being canonicalized.
+	Then later when canonicalizing another type, lookup in the cache
+	inside its corpus to see if there is a type with the same name.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt:
+	Adjust.
+
+2016-02-18  Dodji Seketeli <dodji@redhat.com>
+
+	Add --verbose option to abidiff
+	* doc/manuals/abidiff.rst: Add documentation for new --verbose
+	option.
+	* include/abg-dwarf-reader.h (set_do_log): Declare new function.
+	* src/abg-dwarf-reader.cc (read_context::do_log_): New data
+	member.
+	(read_context::read_context): Initialize the new data member.
+	(read_context::do_log): Define accessors.
+	(set_do_log): Define new function;
+	(read_context::canonicalize_types_scheduled)
+	(read_debug_info_into_corpus): Add logs.
+	* tools/abidiff.cc (options::do_log): New data member.
+	(options::options): Initialize it.
+	(display_usage): Add an usage string for --verbose.
+	(parse_command_line): Parse the new --verbose option.
+	(main): Set the dwarf reader's context wrt presence of the
+	--verbose option.
+
+2016-02-18  Dodji Seketeli <dodji@redhat.com>
+
+	Fix indentation
+	* tools/abipkgdiff.cc (parse_command_line): Fix a wrong indentation.
+
+2016-02-17  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19638 - DWARF reader fails to link clone function to its declaration
+	* include/abg-ir.h (decl_base::set_linkage_name): Make this member
+	function virtual.
+	(class_decl::string_mem_fn_ptr_map_type): Define new member type.
+	(class_decl::find_member_function): Declare new member function.
+	(copy_member_function): Declare new function.  Declare it as
+	friend of class_decl.
+	(method_decl::set_linkage_name): Declare an overload for this
+	virtual function.
+	* src/abg-dwarf-reader.cc (build_function_decl): Allow updating of
+	linkage_name even if the linkage_name was already defined.
+	(build_ir_node_from_die): In the case DW_TAG_subprogram, make the
+	lookup of scope of the DIE work even if it has both an abstract
+	origin and a specification (DW_AT_abstract_origin and
+	DW_AT_specification).
+	* src/abg-ir.cc (maybe_adjust_canonical_type): Define new
+	function.
+	(canonicalize): Use it.
+	(function_decl::get_id): Return the linkage name first, if it
+	exist.
+	(class_decl::priv::mem_fns_map_): New data member.
+	(class_decl::find_member_function): Define new member function.
+	(class_decl::method_decl::set_linkage_name): Likewise.
+	(class_decl::add_member_function): Update the new data member
+	class_decl::priv::mem_fns_map_.
+	(copy_member_function): Define new static function.
+	* tests/data/test-abidiff/test-PR18791-report0.txt: Adjust.
+	* tests/data/test-read-dwarf/test10-pr18818-gcc.so.abi: Adjust.
+	* tests/data/test-read-dwarf/test12-pr18844.so.abi: Adjust.
+	* tests/data/test-read-dwarf/test16-pr18904.so.abi: Adjust.
+	* tests/data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi: Adjust.
+	* tests/data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi: Adjust.
+	* tests/data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi: Adjust.
+	* tests/data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi: Adjust.
+	* tests/data/test-read-dwarf/test9-pr18818-clang.so.abi: Adjust.
+
+2016-02-17  Dodji Seketeli <dodji@redhat.com>
+
+	Add function lookup by linkage name to libabigail::corpus
+	* include/abg-corpus.h (corpus::lookup_functions): Declare new
+	member function.
+	* src/abg-corpus.cc (class corpus::exported_decls_builder::priv):
+	Make class corpus be a friend of this type.
+	(corpus::exported_decls_builder::priv::add_fn_to_id_fns_map): Fix
+	a thinko that was preventing the fn_id -> functions map from ever
+	being filled.  Fix this function to make it associate each aliases
+	of a given function to the function, in the hash table.
+	(corpus::lookup_functions): Define new member function.
+
+2016-02-17  Dodji Seketeli <dodji@redhat.com>
+
+	Fix style cleanups
+	* include/abg-ir.h (method_type::{method_type, set_class_type,
+	get_type, set_type}): Use type_base_sptr and class_decl_sptr
+	instead of the full non-typedefed name.
+	(method_type):Do some cleanups in the definition of the
+	convenience typedefs.
+	* src/abg-ir.cc (method_type::{method_type, set_class_type,
+	get_type, set_type}): Use type_base_sptr and class_decl_sptr
+	instead of the full non-typedefed name.
+	* src/abg-writer.cc (write_class_decl): Add a comment.
+
+2016-02-13  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19619 - failing to suppress added aliased function reports for C++
+	* src/abg-comparison.cc
+	(function_suppression::suppresses_function): Make the evaluation
+	of the "name" and "name_regexp" consider the cases of languages in
+	which the function name is the same as the symbol name and the
+	case of languages in which it is not.  In the former case, all
+	symbol alias names must be matched.  In the latter case, if "name"
+	and "name_regexp" match the function name, the suppression
+	specification is considered to match the report about the function
+	change.  Also, use the elf_symbol::is_main_symbol() predicate to
+	test for the symbol being a main symbol, rather than using
+	error-prone pointer equality.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-0.suppr:
+	New test input.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-1.suppr: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-2.suppr: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-3.suppr: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-4.suppr: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-v0.cc: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-v0.o: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-v1.cc: Likewise.
+	* tests/data/test-diff-suppr/test27-add-aliased-function-v1.o: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-0.suppr: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-1.suppr: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-2.suppr: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-3.suppr: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-4.suppr: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-5.suppr: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-0.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-2.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-report-6.txt: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-v0.c: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-v0.o: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-v1.c: Likewise.
+	* tests/data/test-diff-suppr/test28-add-aliased-function-v1.o: Likewise.
+	* tests/data/Makefile.am: Add the new test material above to the
+	source distribution.
+	* tests/test-diff-suppr.cc: Add the new test inputs above to this
+	test harness.
+
+2016-02-12  Dodji Seketeli <dodji@redhat.com>
+
+	Emit more informational messages on unrecognized options
+	* tools/abicompat.cc (options::prog_name): New data member.
+	(display_help, perform_compat_check_in_normal_mode)
+	(perform_compat_check_in_weak_mode, main): Prefix error messages
+	with the name of the program.
+	* tools/abidw.cc (options::wrong_option): New data member.
+	(display_help): Prefix error messages with the name of the
+	program.n
+	(parse_command_line): Record the name of the unrecognized option.
+	(main): Tell the name of the unrecognized option.  Prefix error
+	messages with the name of the program.
+	* tools/abilint.cc (optionqs::wrong_option): New data member
+	(display_usage): Prefix error messages with the name of the
+	program.
+	(parse_command_line): Record the name of the unrecognized option.
+	(main): Tell the name of the unrecognized option.  Prefix error
+	messages with the name of the program.
+	* tools/abipkgdiff.cc (options::{wrong_option, prog_name}): New
+	data members.
+	(package::erase_extraction_directory, display_usage, extract_rpm)
+	(extract_deb, extract_tar)
+	(erase_created_temporary_directories_parent, extract_package)
+	(compare, create_maps_of_package_content): Prefix error messages
+	with the name of the program.
+	(maybe_check_suppression_files): Adjust.
+	(parse_command_line): Record the name of the unrecognized option,
+	and the name of option which lacks an operand.
+	(main): Give the name of the unrecognized option.  Prefix error
+	messages with the name of the program.
+
+2016-02-12  Dodji Seketeli <dodji@redhat.com>
+
+	Prefix abidiff error message with the 'abidiff' program name
+	* include/abg-tools-utils.h (emit_prefix): Declare new function.
+	(check_file): Add a new parameter with a default value, so that
+	existing code keeps compiling.
+	* src/abg-tools-utils.cc (emit_prefix): Define new function.
+	(check_file): Use the emit_prefix function and give it the program
+	name passed as a new parameter.
+	* tools/abidiff.cc (display_usage, main): Use the new emit_prefix
+	to prefix error messages.
+
+2016-02-11  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19606 - Need better error message for invalid options
+	* tools/abidiff.cc (options::wrong_option): New data member.
+	(parse_command_line): Record the name of the unknown option and of
+	the option which value is missing.
+
+2016-02-11  Dodji Seketeli <dodji@redhat.com>
+
+	Add a comment about libabigail needing elfutils 0.159 at least.
+	* configure.ac: Add a comment saying that we require at least
+	elfutils 0.159.
+
+2016-02-11  Dodji Seketeli <dodji@redhat.com>
+
+	Talk about mandatory properties in suppress_* directives
+	* doc/manuals/libabigail-concepts.rst: Talk about the mandatory
+	properties for suppress_type, suppress_function and
+	suppress_variable directives.
+
+2016-02-11  Dodji Seketeli <dodji@redhat.com>
+
+	Make abipkgdiff check for the presence of suppression spec files
+	* tools/abipkgdiff.cc (maybe_check_suppression_files): Define new
+	static function.
+	(main): Use it.
+
+2016-02-11  Dodji Seketeli <dodji@redhat.com>
+
+	Make abipkgdiff return correct exit code on usage error
+	* tools/abipkgdiff.cc (main): Return the correct error code on
+	usage error.
+
+2016-02-11  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19604 - abidiff --suppressions doesn't complain about invalid file name
+	* tools/abidiff.cc (maybe_check_suppression_files): Define new
+	static function.
+	(main): Use it.
+
+2016-02-10  Dodji Seketeli <dodji@redhat.com>
+
+	Use proper WIFEXITED and WEXITSTATUS macros to get exit code
+	* tests/test-diff-dwarf-abixml.cc (main): Use WIFEXITED and
+	WEXITSTATUS macros to get the return code of the abidiff program.
+	* tests/test-diff-filter.cc (test_task::perform): Likewise.
+	* tests/test-diff-pkg.cc (main): Likewise.
+	* tests/test-diff-suppr.cc (main): Likewise.
+
+2016-02-10  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19596 - Incorrect exit status for incompatible ABI change
+	* include/abg-comparison.h (enum diff_category): Adjust the
+	comment for enumerator VIRTUAL_MEMBER_CHANGE_CATEGORY; changes of
+	this category are incompatible ABI changes.
+	(corpus_diff::diff_stats::num_func_with_virtual_offset_changes):
+	Declare new accessors.
+	* src/abg-comparison.cc
+	(corpus_diff::diff_stats::priv::num_func_with_virt_offset_changes):
+	New data member.
+	(corpus_diff::diff_stats::priv::priv): Initialize the new data
+	member.
+	(corpus_diff::diff_stats::num_func_with_virtual_offset_changes):
+	Define new accessors.
+	(corpus_diff::priv::apply_filters_and_compute_diff_stats): Use the
+	new accessor to set the number of functions with virtual offset
+	changes onto the stats data structure.
+	(corpus_diff::has_incompatible_changes): Take functions with
+	virtual offset changes into account.
+	* tests/test-abidiff-exit.cc: New test harness to test for exit
+	codes of abidiff.
+	* tests/Makefile.am: Build the new test harness runtestabidiff
+	from the test-abidiff-exit.cc source file.
+	* tests/data/test-abidiff-exit/test1-voffset-change-report0.txt:
+	New reference test output.
+	* tests/data/test-abidiff-exit/test1-voffset-change-v0.cc: New
+	test input source code.
+	* tests/data/test-abidiff-exit/test1-voffset-change-v0.o: New test input.
+	* tests/data/test-abidiff-exit/test1-voffset-change-v1.cc: New
+	test input source code.
+	* tests/data/test-abidiff-exit/test1-voffset-change-v1.o: New test input.
+	* tests/data/Makefile.am: tests/data/Makefile.am: Add the new test
+	inputs above to the source distribution.
+
+2016-02-04  Dodji Seketeli <dodji@redhat.com>
+
+	Fix synthesizing of reference type
+	* src/abg-ir.cc (synthesize_type_from_translation_unit): Support
+	synthesizing reference types.
+	* tests/data/test-abicompat/libtest9-fn-changed-v0.so: Add new
+	test input.
+	* tests/data/test-abicompat/libtest9-fn-changed-v1.so: Likewise.
+	* tests/data/test-abicompat/test9-fn-changed-app: Likewise.
+	* tests/data/test-abicompat/test9-fn-changed-app.cc: : Likewise.
+	* tests/data/test-abicompat/test9-fn-changed-report-0.txt: Likewise.
+	* tests/data/test-abicompat/test9-fn-changed-v0.cc: Likewise.
+	* tests/data/test-abicompat/test9-fn-changed-v0.h: Likewise.
+	* tests/data/test-abicompat/test9-fn-changed-v1.cc: Likewise.
+	* tests/data/test-abicompat/test9-fn-changed-v1.h: Likewise.
+	* tests/data/Makefile.am: Add the new material to source
+	distribution.
+	* tests/test-abicompat.cc (in_out_specs): Add the new test inputs
+	to the test harness.
+
+2016-02-03  Dodji Seketeli <dodji@redhat.com>
+
+	Fix synthesizing of pointer type
+	* include/abg-ir.h: Update copyright.
+	* src/abg-ir.cc (synthesize_type_from_translation_unit): Support
+	synthesizing pointer types.
+	* tests/data/test-abicompat/libtest8-fn-changed-libapp-v0.so: New
+	test input.
+	* tests/data/test-abicompat/libtest8-fn-changed-libapp-v1.so: Likewise.
+	* tests/data/test-abicompat/test8-fn-changed-app: Likewise.
+	* tests/data/test-abicompat/test8-fn-changed-app.c: Likewise.
+	* tests/data/test-abicompat/test8-fn-changed-libapp-v0.c: Likewise.
+	* tests/data/test-abicompat/test8-fn-changed-libapp-v0.h: Likewise.
+	* tests/data/test-abicompat/test8-fn-changed-libapp-v1.c: Likewise.
+	* tests/data/test-abicompat/test8-fn-changed-libapp-v1.h: Likewise.
+	* tests/data/test-abicompat/test8-fn-changed-report-0.txt: Likewise.
+	* tests/data/Makefile.am: Add the new test input files to source
+	distribution.
+	* tests/test-abicompat.cc (in_out_specs): Add the new test inputs
+	above to the test harness.
+
+2016-01-26  Mark Wielaard <mjw@redhat.com>
+
+	Remove defined but not used functions pointed out by GCC6.
+	* src/abg-ir.cc (convert_node_to_decl(decl_base_sptr)): Remove
+	definition.
+	(get_node_name(decl_base_sptr)): Likewise.
+
+2016-01-26  Mark Wielaard <mjw@redhat.com>
+
+	Make make more silent.
+	* Makefile.am (AM_MAKEFLAGS): Set --no-print-directory.
+
+2016-01-26  Mark Wielaard <mjw@redhat.com>
+
+	Fix GCC6 -Wmisleading-indentation warnings.
+	* src/abg-dwarf-reader.cc (find_import_unit_point_before_die):
+	Properly indent code after if clause.
+	* src/abg-ini.cc (write_property_value): Properly indent return
+	statement after else clause.
+
+2016-01-27  Dodji Seketeli <dodji@redhat.com>
+
+	Fix abicompat's handling of library types not used by the application
+	* tools/abicompat.cc (perform_compat_check_in_weak_mode): If the
+	application doesn't use a given type defined and exported by the
+	library, then skip it.
+
+2016-01-27  Dodji Seketeli <dodji@redhat.com>
+
+	Do not crash when looking up a type from global scope
+	* src/abg-ir.cc (lookup_type_in_scope): Gently Handle empty access
+	path.
+
+2016-01-25  Dodji Seketeli <dodji@redhat.com>
+
+	Comparing aliases of the same symbol must be done by pointer
+	* src/abg-ir.cc (elf_symbol::operator==): Fix thinko and
+	indentation.  What was I thinking ...
+	(elf_symbol::add_alias)
+	(compute_aliases_for_elf_symbol): Do not compare aliases using the
+	equality operator, because it considers all aliases of a given
+	symbol as equal.  Rather, use elf_symbol::is_main_symbol() to test
+	if an alias is the main symbol alias.
+	* src/abg-comp-filter.cc (function_name_changed_but_not_symbol):
+	Likewise.
+	* src/abg-corpus.cc
+	(corpus::priv::build_unreferenced_symbols_tables): Likewise.
+	* src/abg-writer.cc (write_elf_symbol_aliases): Likewise.
+
+2016-01-21  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19204 - libabigail aborts on DWARF referencing non-existing DIE
+	* src/abg-dwarf-reader.cc (get_parent_die): If we couldn't find
+	the parent of a given DIE, return false, do not abort.  Also,
+	assert that if we don't find the parent of a DIE in the main debug
+	info, we don't find it in the alternate debug info either (and
+	vice versa).  This is because I'd like to abort on cases where we
+	look for a DIE in the wrong debug info; those cases are likely to
+	be hint that the DWARF reader is doing something wrong which ought
+	to be investigated and fixed.
+	(get_scope_for_die): If we couldn't get the parent of the DIE,
+	then return a nil scope.
+	* tests/data/test-types-stability/pr19204-libtcmalloc.so.4.2.6-xlc:
+	New test binary input.
+	* tests/data/Makefile.am: Add the new binary test input to the
+	source distribution.
+	* tests/test-types-stability.cc (elf_paths): Account for the new
+	binary input.
+
+2016-01-20  Dodji Seketeli <dodji@redhat.com>
+
+	Pass parm of elf_symbol::add_alias by reference
+	* include/abg-ir.h (elf_symbol::add_alias): Pass parameter by
+	reference.
+	* src/abg-ir.cc (elf_symbol::add_alias): Likewise.
+
+2016-01-20  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19141 - Libabigail doesn't support common ELF symbols
+	* include/abg-ir.h (elf_symbol::elf_symbol): Take a new flag to
+	say if the symbol is common.
+	(elf_symbol::{is_common_symbol, has_other_common_instances,
+	get_next_common_instance, add_common_instance}): New member functions.
+	* src/abg-ir.cc (elf_symbol::priv::{is_common_,
+	next_common_instance_): New data members.
+	(elf_symbol::priv::priv): Adjust.
+	(elf_symbol::{elf_symbol, create}): Take a new flag to say if the
+	symbol is common.
+	(textually_equals): Adjust to account for symbol common-ness.
+	(elf_symbol::{is_common_symbol, has_other_common_instances,
+	get_next_common_instance, add_common_instance}): Define new member
+	functions.
+	(elf_symbol::add_alias): Drive-by fix; compare symbols using
+	pointer value.  Value comparison is not necessary.
+	* src/abg-dwarf-reader.cc (lookup_symbol_from_sysv_hash_tab)
+	(lookup_symbol_from_gnu_hash_tab, lookup_symbol_from_symtab)
+	(read_context::lookup_elf_symbol_from_index): Adjust the creation
+	of the symbol to account for common-ness.
+	(read_context::load_symbol_maps): Recognize instances of a given
+	common symbol and represent them as such.  Do not mistake this
+	with symbol aliases.
+	* src/abg-reader.cc (build_elf_symbol): Adjust the creation of the
+	symbol to account for common-ness.
+	* src/abg-writer.cc (write_elf_symbol): Adjust symbol
+	serialization to account common-ness.
+	* tests/data/test-types-stability/pr19141-get5d.o: Add new test
+	binary input.
+	* tests/data/test-types-stability/pr19142-topo.o: Likewise.
+	* tests/data/Makefile.am: Add the new test inputs to source distribution.
+	* tests/test-types-stability.cc (elf_paths): The the new test
+	inputs into account.
+
+2016-01-13  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19434 - invalid character in attribute value
+	* include/abg-tools-utils.h (string_is_ascii_identifier): Declare
+	new function.
+	* src/abg-tools-utils.cc (string_is_ascii_identifier): Define new function.
+	* src/abg-dwarf-reader.cc (build_function_type): Discard parameter
+	name if it's made of non-identifier ascii characters.
+	* tests/data/test-types-stability/pr19434-elf0: New test binary input file.
+	* tests/data/Makefile.am: Add the new test input to source distribution.
+	* tests/test-types-stability.cc: Test the new test input into account.
+
+2016-01-18  Dodji Seketeli <dodji@redhat.com>
+
+	Sort the tests run in tests/ by running the slowest ones first
+	* tests/Makefile.am: Sort the tests  by running the slowest ones
+	first.
+
+2016-01-15  Dodji Seketeli <dodji@redhat.com>
+
+	Use worker threads pattern to speed up some tests
+	* include/Makefile.am: Add the new abg-workers.h to source
+	distribution.
+	* include/abg-workers.h: New file.
+	* src/Makefile.am: Add the new abg-worker.cc to source
+	distribution.
+	* src/abg-workers.cc: New file.
+	* tests/test-utils.cc: Update copyright.  Make get_src_dir() and
+	get_build_dir() return a const char*, as opposed to returning a
+	string.  Make that const char reside in thread local storage, so
+	that two concurrent threads can safely call these functions in
+	parallel, without any race.
+	* tests/test-utils.h: Make get_src_dir() and get_build_dir()
+	return a const char*, as opposed to returning a string.
+	* tests/test-abicompat.cc: Update copyright.  Adjust for
+	get_src_dir() and get_build_dir() change.
+	* tests/test-abidiff.cc: Likewise.
+	* tests/test-alt-dwarf-file.cc: Likewise.
+	* tests/test-core-diff.cc: Likewise.
+	* tests/test-diff-dwarf-abixml.cc: Likewise.
+	* tests/test-diff-dwarf.cc: Likewise.
+	* tests/test-diff-pkg.cc: Likewise.
+	* tests/test-diff-suppr.cc: Likewise.
+	* tests/test-lookup-syms.cc: Likewise.
+	* tests/test-read-dwarf.cc: Likewise.
+	* tests/test-read-write.cc: Likewise.
+	* tests/test-types-stability.cc: Likewise.  Use the new task queue
+	type to run these tests in parallel.
+	* tests/test-diff-filter.cc: Likewise.
+
+2016-01-18  Ondrej Oprala <ooprala@redhat.com>
+
+	Escape the value of the filepath attribute.
+	* src/abg-writer.cc (write_location): Sanitize the filepath with
+	xml::escape_xml_string().
+	(write_translation_unit): Likewise.
+	(write_corpus_to_native_xml): Likewise.
+	* tests/data/test-types-stability/pr19433-custom0: Add a new test file.
+	* tests/test-types-stability.cc: Add the test file to the test harness.
+	* tests/data/Makefile.am: Add the new test file to the list.
+
+2016-01-09  Dodji Seketeli <dodji@redhat.com>
+
+	Make enum values take 64 bits on all platforms
+	* include/abg-ir.h: Include stdint.h for int64_t.
+	(enumerator::enumerator): Take an int64_t value for the value of
+	the enumerator.
+	(enumerator::{s,g}et_value): Take/return an int64_t value.
+	* src/abg-ir.cc (enum_type_decl::enumerator::priv): Store the
+	value in an int64_t.
+	(enumerator::priv::priv): Take a int64_t for the value.
+	(enum_type_decl::enumerator::enumerator): Likewise.
+	(enum_type_decl::enumerator::{s,g}et_value): Take/returnan int64_t
+	value.
+	* src/abg-dwarf-reader.cc (die_unsigned_constant_attribute): Take
+	an uint64_t value.
+	(die_signed_constant_attribute): Take an int64_t value.
+	(die_location, die_size_in_bits, die_access_specifier)
+	(die_virtuality, die_is_virtual, die_is_declared_inline)
+	(build_translation_unit_and_add_to_ir, build_type_decl)
+	(build_enum_type, build_pointer_type_def, build_array_type):
+	Adjust.
+	* src/abg-reader.cc (build_enum_type_decl): Adjust.
+	* src/abg-writer.cc (write_enum_type_decl): Do not cast the result
+	of enumerator::get_value() anymore, it's value is now a int64_t.
+
+2016-01-08  Dodji Seketeli <dodji@redhat.com>
+
+	Include missing <algorithm> to abg-dwarf-reader.cc
+	* src/abg-dwarf-reader.cc: Add missing <algorithm> include file.
+
+2016-01-08  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19138 - Failure to relate variables address from DWARF and ELF
+	* include/abg-dwarf-reader.h (elf_type::ELF_TYPE_RELOCATABLE): New
+	enumerator.
+	* src/abg-dwarf-reader.cc (find_section): Factorize this from ...
+	(find_text_section, find_bss_section): ... these.
+	(find_rodata_section, find_data_section, find_data1_section):
+	Define new static functions.
+	(elf_file_type): Move this static function definition up.
+	(read_context::{get_elf_file_type, address_is_in_section,
+	get_data_section_for_variable_address}): New member functions.
+	(read_context::maybe_adjust_fn_sym_address): Adjust comment.
+	Adjust to use the new
+	read_context::get_data_section_for_variable_address().
+	* tests/data/test-types-stability/pr19138-elf0: New test input
+	binary.
+	* tests/data/Makefile.am: Add the new test input binary to the
+	test suite.
+	* tests/test-types-stability.cc (elf_paths): Take it into account.
+
+2016-01-08  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version revision to 1.0.rc3
+	* configure.ac: Change version_revision to rc3
+
+2016-01-08  Dodji Seketeli <dodji@redhat.com>
+
+	Add a release announcement text pattern
+	* release-text-template.txt: New file.
+
+2016-01-08  Dodji Seketeli <dodji@redhat.com>
+
+	Upate build instructions on the website
+	* doc/website/mainpage.txt: Add instruction about how to build
+	tarballs.
+
+2016-01-07  Dodji Seketeli <dodji@redhat.com>
+
+	Update website link for 1.0.rc2
+	* doc/website/mainpage.txt: Update tarball link for 1.0.rc2
+
 2016-01-07  Dodji Seketeli <dodji@redhat.com>
 
 	Update ChangeLog before 1.0.rc2
