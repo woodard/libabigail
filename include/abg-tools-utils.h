@@ -132,7 +132,7 @@ enum file_type
 
 /// Exit status for abidiff and abicompat tools.
 ///
-/// It's actually a bit mask.  The valu of each enumerator is a power
+/// It's actually a bit mask.  The value of each enumerator is a power
 /// of two.
 enum abidiff_status
 {
