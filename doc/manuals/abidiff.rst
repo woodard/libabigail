@@ -263,6 +263,20 @@ ABIs being compared might or might not be compatible.  In that case, a
 human being needs to review the ABI changes to decide if they are
 compatible or not.
 
+Note that, at the moment, there are only a few kinds of ABI changes
+that would result in setting the flag ``ABIDIFF_ABI_INCOMPATIBLE_CHANGE``.
+Those ABI chanages are either:
+
+  - the removal of the symbol of a function or variable that has been
+    defined and exported.
+  - the modification of the index of a member of a virtual function
+    table (for C++ programs and libraries).
+
+With time, when more ABI change patterns are found to *always*
+constitute incompatible ABI changes, we will adapt the code to
+recognize those cases and set the ``ABIDIFF_ABI_INCOMPATIBLE_CHANGE``
+accordingly.  So, if you find such patterns, please let us know.
+
 The remaining bits are not used for the moment.
 
 .. _abidiff_usage_example_label:
