@@ -1932,7 +1932,9 @@ class read_context
   // defined in the alternate debug info section.
   die_type_map_type		alternate_die_type_map_;
   die_class_map_type		die_wip_classes_map_;
+  die_class_map_type		alternate_die_wip_classes_map_;
   die_function_type_map_type	die_wip_function_types_map_;
+  die_function_type_map_type	alternate_die_wip_function_types_map_;
   die_function_decl_map_type	die_function_with_no_symbol_map_;
   vector<Dwarf_Off>		types_to_canonicalize_;
   vector<Dwarf_Off>		alt_types_to_canonicalize_;
@@ -2448,36 +2450,87 @@ public:
 			      bool in_alt_die) const
   {
     type_base_sptr result;
-    const die_type_map_type& m = die_type_map(in_alt_die);
-    die_type_map_type::const_iterator i = m.find(die_offset);
+    {
+      const die_type_map_type& m = die_type_map(in_alt_die);
+      die_type_map_type::const_iterator i = m.find(die_offset);
 
-    if (i != m.end())
-      result = i->second;
+      if (i != m.end())
+	result = i->second;
+    }
+
+    if (!result)
+      {
+	// Maybe we are looking for a class type being constructed?
+	const die_class_map_type& m = die_wip_classes_map(in_alt_die);
+	die_class_map_type::const_iterator i = m.find(die_offset);
+
+	if (i != m.end())
+	  result = i->second;
+      }
+
+    if (!result)
+      {
+	// Maybe we are looking for a function type being constructed?
+	const die_function_type_map_type& m =
+	  die_wip_function_types_map(in_alt_die);
+	die_function_type_map_type::const_iterator i = m.find(die_offset);
+
+	if (i != m.end())
+	  result = i->second;
+      }
+
     return result;
   }
 
   /// Getter of a map that associates a die that represents a
   /// class/struct with the declaration of the class, while the class
   /// is being constructed.
+  ///
+  /// @param in_alt_die true iff the DIE is in the alternate debug
+  /// info section.
+  ///
+  /// @return the map that associates a DIE to the class that is being
+  /// built.
   const die_class_map_type&
-  die_wip_classes_map() const
-  {return die_wip_classes_map_;}
+  die_wip_classes_map(bool in_alt_die) const
+  {
+    if (in_alt_die)
+      return alternate_die_wip_classes_map_;
+    return die_wip_classes_map_;
+  }
 
   /// Getter of a map that associates a die that represents a
   /// class/struct with the declaration of the class, while the class
   /// is being constructed.
+  ///
+  /// @param in_alt_die true iff the DIE is in the alternate debug
+  /// info section.
+  ///
+  /// @return the map that associates a DIE to the class that is being
+  /// built.
   die_class_map_type&
-  die_wip_classes_map()
-  {return die_wip_classes_map_;}
+  die_wip_classes_map(bool in_alt_die)
+  {
+    if (in_alt_die)
+      return alternate_die_wip_classes_map_;
+    return die_wip_classes_map_;
+  }
 
   /// Getter for a map that associates a die (that represents a
   /// function type) whith a function type, while the function type is
   /// being constructed (WIP == work in progress).
   ///
+  /// @param in_alt_die true iff the DIE is in the alternate debug
+  /// info section.
+  ///
   /// @return the map of wip function types.
   const die_function_type_map_type&
-  die_wip_function_types_map() const
-  {return die_wip_function_types_map_;}
+  die_wip_function_types_map(bool in_alt_di) const
+  {
+    if (in_alt_di)
+      return alternate_die_wip_function_types_map_;
+    return die_wip_function_types_map_;
+  }
 
   /// Getter for a map that associates a die (that represents a
   /// function type) whith a function type, while the function type is
@@ -2485,8 +2538,12 @@ public:
   ///
   /// @return the map of wip function types.
   die_function_type_map_type&
-  die_wip_function_types_map()
-  {return die_wip_function_types_map_;}
+  die_wip_function_types_map(bool in_alt_die)
+  {
+    if (in_alt_die)
+      return alternate_die_wip_function_types_map_;
+    return die_wip_function_types_map_;
+  }
 
   /// Getter for a map that associates a die with a function decl
   /// which has a linkage name but no elf symbol yet.
@@ -2504,13 +2561,17 @@ public:
   ///
   /// @param offset the DIE offset to consider.
   ///
+   // @param is_in_alt_di true if the DIE is in the alternate debug
+   // info section.
+  ///
   /// @return true iff @p offset is the offset of the DIE of a class
   /// that is being currently built.
   bool
-  is_wip_class_die_offset(Dwarf_Off offset) const
+  is_wip_class_die_offset(Dwarf_Off offset, bool is_in_alt_di) const
   {
-    die_class_map_type::const_iterator i = die_wip_classes_map().find(offset);
-    return (i != die_wip_classes_map().end());
+    die_class_map_type::const_iterator i =
+      die_wip_classes_map(is_in_alt_di).find(offset);
+    return (i != die_wip_classes_map(is_in_alt_di).end());
   }
 
   /// Return true iff a given offset is for the DIE of a function type
@@ -2518,14 +2579,17 @@ public:
   ///
   /// @param offset DIE offset to consider.
   ///
+  /// @param is_in_alt_di true if the DIE is in the alternate debug
+  /// info section.
+  ///
   /// @return true iff @p offset is the offset of the DIE of a
   /// function type that is being currently built.
   bool
-  is_wip_function_type_die_offset(Dwarf_Off offset) const
+  is_wip_function_type_die_offset(Dwarf_Off offset, bool is_in_alt_di) const
   {
     die_function_type_map_type::const_iterator i =
-      die_wip_function_types_map().find(offset);
-    return (i != die_wip_function_types_map().end());
+      die_wip_function_types_map(is_in_alt_di).find(offset);
+    return (i != die_wip_function_types_map(is_in_alt_di).end());
   }
 
   /// Getter for the map of declaration-only classes that are to be
@@ -7181,8 +7245,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   {
     die_class_map_type::const_iterator i =
-      ctxt.die_wip_classes_map().find(dwarf_dieoffset(die));
-    if (i != ctxt.die_wip_classes_map().end())
+      ctxt.die_wip_classes_map(is_in_alt_di).find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_classes_map(is_in_alt_di).end())
       return i->second;
   }
 
@@ -7242,7 +7306,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
     // here.
     return result;
 
-  ctxt.die_wip_classes_map()[dwarf_dieoffset(die)] = result;
+  ctxt.die_wip_classes_map(is_in_alt_di)[dwarf_dieoffset(die)] = result;
 
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>(res);
@@ -7399,13 +7463,13 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   {
     die_class_map_type::const_iterator i =
-      ctxt.die_wip_classes_map().find(dwarf_dieoffset(die));
-    if (i != ctxt.die_wip_classes_map().end())
+      ctxt.die_wip_classes_map(is_in_alt_di).find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_classes_map(is_in_alt_di).end())
       {
 	if (is_member_type(i->second))
 	  set_member_access_specifier(res,
 				      get_member_access_specifier(i->second));
-	ctxt.die_wip_classes_map().erase(i);
+	ctxt.die_wip_classes_map(is_in_alt_di).erase(i);
       }
   }
 
@@ -7772,7 +7836,8 @@ build_function_type(read_context&	ctxt,
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_from_alt_di,
 			     result);
-  ctxt.die_wip_function_types_map()[dwarf_dieoffset(die)] = result;
+  ctxt.die_wip_function_types_map(die_is_from_alt_di)[dwarf_dieoffset(die)] =
+    result;
 
   decl_base_sptr return_type_decl;
   Dwarf_Die ret_type_die;
@@ -7847,9 +7912,10 @@ build_function_type(read_context&	ctxt,
 
   {
     die_function_type_map_type::const_iterator i =
-      ctxt.die_wip_function_types_map().find(dwarf_dieoffset(die));
-    if (i != ctxt.die_wip_function_types_map().end())
-      ctxt.die_wip_function_types_map().erase(i);
+      ctxt.die_wip_function_types_map(die_is_from_alt_di).
+      find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_function_types_map(die_is_from_alt_di).end())
+      ctxt.die_wip_function_types_map(die_is_from_alt_di).erase(i);
   }
 
   return result;
@@ -8439,7 +8505,7 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
     // some DWARF construct).  So we err on the safe side.
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
   else if ((is_function_type(t)
-	    && ctxt.is_wip_function_type_die_offset(die_offset))
+	    && ctxt.is_wip_function_type_die_offset(die_offset, in_alt_di))
 	   || type_has_non_canonicalized_subtype(t))
     ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
   else
@@ -8679,10 +8745,13 @@ build_ir_node_from_die(read_context&	ctxt,
 					   called_from_public_decl,
 					   where_offset);
 	result = klass;
-	maybe_set_member_type_access_specifier(klass, die);
-	maybe_canonicalize_type(dwarf_dieoffset(die),
-				die_is_from_alt_di,
-				ctxt);
+	if (klass)
+	  {
+	    maybe_set_member_type_access_specifier(klass, die);
+	    maybe_canonicalize_type(dwarf_dieoffset(die),
+				    die_is_from_alt_di,
+				    ctxt);
+	  }
       }
       break;
     case DW_TAG_string_type:

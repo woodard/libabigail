@@ -1053,5 +1053,10 @@ test-diff-pkg/libICE-debuginfo-1.0.6-1.el6.x86_64.rpm \
 test-diff-pkg/libICE-debuginfo-1.0.9-2.el7.x86_64.rpm \
 test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm \
 test-diff-pkg/libICE-1.0.9-2.el7.x86_64.rpm \
-test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt
+test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt \
+test-diff-pkg/gtk2-debuginfo-2.24.22-5.el7.i686.rpm \
+test-diff-pkg/gtk2-debuginfo-2.24.28-8.el7.i686.rpm \
+test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686--gtk2-immodule-xim-2.24.28-8.el7.i686-report-0.txt \
+test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686.rpm \
+test-diff-pkg/gtk2-immodule-xim-2.24.28-8.el7.i686.rpm
 
