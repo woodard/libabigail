@@ -34,7 +34,7 @@ AC_ARG_ENABLE(rpm,
 	      ENABLE_RPM=auto)
 
 AC_ARG_ENABLE(deb,
-	      AS_HELP_STRING([--enable-rpm=yes|no|auto],
+	      AS_HELP_STRING([--enable-deb=yes|no|auto],
 			     [enable the support of deb in abipkgdiff (default is auto)]),
 	      ENABLE_DEB=$enableval,
 	      ENABLE_DEB=auto)
@@ -141,7 +141,7 @@ dnl Check for the rpm2cpio and cpio programs
 if test x$ENABLE_RPM = xyes -o x$ENABLE_RPM = xauto; then
   AC_CHECK_PROG(HAS_RPM2CPIO, rpm2cpio, yes, no)
   AC_CHECK_PROG(HAS_CPIO, cpio, yes, no)
-  
+
   if test x$ENABLE_RPM = xauto; then
     if test x$HAS_RPM2CPIO = xyes -a x$HAS_CPIO = xyes; then
        ENABLE_RPM=yes
