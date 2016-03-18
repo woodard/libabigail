@@ -8863,13 +8863,13 @@ build_ir_node_from_die(read_context&	ctxt,
 		      dynamic_pointer_cast<var_decl>(d);
 		    if (var_is_cloned)
 		      m = m->clone();
-		    m = build_var_decl(ctxt, die, spec_die_is_in_alt_di,
+		    m = build_var_decl(ctxt, die, die_is_from_alt_di,
 				       where_offset, m);
 		    if (is_data_member(m))
 		      {
 			set_member_is_static(m, true);
 			ctxt.associate_die_to_decl(dwarf_dieoffset(die),
-						   spec_die_is_in_alt_di, m);
+						   die_is_from_alt_di, m);
 		      }
 		    else
 		      {
