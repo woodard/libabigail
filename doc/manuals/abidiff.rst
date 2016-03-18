@@ -265,7 +265,7 @@ compatible or not.
 
 Note that, at the moment, there are only a few kinds of ABI changes
 that would result in setting the flag ``ABIDIFF_ABI_INCOMPATIBLE_CHANGE``.
-Those ABI chanages are either:
+Those ABI changes are either:
 
   - the removal of the symbol of a function or variable that has been
     defined and exported.
