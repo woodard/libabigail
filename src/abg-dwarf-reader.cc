@@ -2402,7 +2402,7 @@ public:
   ///
   /// @param in_alt_die true iff the DIE is in the alternate debug info section.
   ///
-  /// @return return the map that associated DIEs to the type they represent.
+  /// @return the map that associated DIEs to the type they represent.
   const die_type_map_type&
   die_type_map(bool in_alt_die) const
   {
@@ -2557,7 +2557,8 @@ public:
   {return die_function_with_no_symbol_map_;}
 
   /// Return true iff a given offset is for the DIE of a class that is
-  /// being currently built.
+  /// being built, but that is not fully built yet.  WIP == "work in
+  /// progress".
   ///
   /// @param offset the DIE offset to consider.
   ///
@@ -2575,7 +2576,8 @@ public:
   }
 
   /// Return true iff a given offset is for the DIE of a function type
-  /// that is currently built.  WIP == work in progress.
+  /// that is being built at the moment, but is not fully built yet.
+  /// WIP == work in progress.
   ///
   /// @param offset DIE offset to consider.
   ///
