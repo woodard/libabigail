@@ -97,7 +97,7 @@ To compile libabigail, you first need to install its dependencies.  At
 the moment the dependencies are the following Free Software packages:
 
     \li <a href="http://www.gnu.org/software/autoconf/">autoconf</a>
-    \li <a href="http://www.gnu.org/software/automake/">autoconf</a>
+    \li <a href="http://www.gnu.org/software/automake/">automake</a>
     \li <a href="http://www.gnu.org/software/libtool/">libtool</a>
     \li <a href="http://www.freedesktop.org/wiki/Software/pkg-config/">pkg-config</a>
     \li <a href="http://www.xmlsoft.org">libxml2</a>
