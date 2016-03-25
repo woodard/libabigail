@@ -1027,6 +1027,17 @@ test-diff-pkg/dirpkg-3-report-0.txt \
 test-diff-pkg/dirpkg-3-report-1.txt \
 test-diff-pkg/dirpkg-3-report-2.txt \
 test-diff-pkg/dirpkg-3.suppr \
+test-diff-pkg/symlink-dir-test1-report0.txt \
+test-diff-pkg/symlink-dir-test1/dir1/symlinks/foo.o \
+test-diff-pkg/symlink-dir-test1/dir1/symlinks/libfoo.so \
+test-diff-pkg/symlink-dir-test1/dir1/targets/foo.c \
+test-diff-pkg/symlink-dir-test1/dir1/targets/foo.o \
+test-diff-pkg/symlink-dir-test1/dir1/targets/libfoo.so \
+test-diff-pkg/symlink-dir-test1/dir2/symlinks/foo.o \
+test-diff-pkg/symlink-dir-test1/dir2/symlinks/libfoo.so \
+test-diff-pkg/symlink-dir-test1/dir2/targets/foo.c \
+test-diff-pkg/symlink-dir-test1/dir2/targets/foo.o \
+test-diff-pkg/symlink-dir-test1/dir2/targets/libfoo.so \
 test-diff-pkg/tarpkg-0-dir1.tar \
 test-diff-pkg/tarpkg-0-dir1.ta \
 test-diff-pkg/tarpkg-0-dir1.tar.bz2 \

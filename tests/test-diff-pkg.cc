@@ -142,6 +142,16 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dirpkg-3-report-2.txt",
     "output/test-diff-pkg/dirpkg-3-report-2.txt"
   },
+  {
+    "data/test-diff-pkg/symlink-dir-test1/dir1/symlinks",
+    "data/test-diff-pkg/symlink-dir-test1/dir2/symlinks",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/symlink-dir-test1-report0.txt ",
+    "output/test-diff-pkg/symlink-dir-test1-report0.txt "
+  },
 #if WITH_TAR
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar",

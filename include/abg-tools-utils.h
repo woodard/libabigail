@@ -41,6 +41,8 @@ using std::tr1::shared_ptr;
 bool file_exists(const string&);
 bool is_regular_file(const string&);
 bool is_dir(const string&);
+bool maybe_get_symlink_target_file_path(const string& file_path,
+					string& target_path);
 bool base_name(string const& path,
 	       string& file_name);
 bool dir_name(string const &path,

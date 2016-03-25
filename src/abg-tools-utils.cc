@@ -129,8 +129,9 @@ abidiff_status_has_incompatible_abi_change(abidiff_status s)
   struct stat st; \
   memset(&st, 0, sizeof(st))
 
-/// Get the stat struct (as returned by the stat() function of the C library)
-/// of a file.
+/// Get the stat struct (as returned by the lstat() function of the C
+/// library) of a file.  Note that the function uses lstat, so that
+/// callers can detect symbolic links.
 ///
 /// @param path the path to the function to stat.
 ///
@@ -140,7 +141,7 @@ abidiff_status_has_incompatible_abi_change(abidiff_status s)
 static bool
 get_stat(const string& path,
 	 struct stat* s)
-{return (stat(path.c_str(), s) == 0);}
+{return (lstat(path.c_str(), s) == 0);}
 
 /// Tests whether a path exists;
 ///
@@ -185,6 +186,39 @@ is_dir(const string& path)
     return false;
 
   return !!S_ISDIR(st.st_mode);
+}
+
+/// If a given file is a symbolic link, get the canonicalized absolute
+/// path to the target file.
+///
+/// @param file_path the path to the file to consider.
+///
+/// @param target_path this parameter is set by the function to the
+/// canonicalized path to the target file, if @p file_path is a
+/// symbolic link.  In that case, the function returns true.
+///
+/// @return true iff @p file_path is a symbolic link.  In that case,
+/// the function sets @p target_path to the canonicalized absolute
+/// path of the target file.
+bool
+maybe_get_symlink_target_file_path(const string& file_path,
+				   string& target_path)
+{
+  DECLARE_STAT(st);
+
+  if (!get_stat(file_path, &st))
+    return false;
+
+  if (!S_ISLNK(st.st_mode))
+    return false;
+
+  char *link_target_path = realpath(file_path.c_str(), NULL);
+  if (!link_target_path)
+    return false;
+
+  target_path = link_target_path;
+  free(link_target_path);
+  return true;
 }
 
 /// Return the directory part of a file path.

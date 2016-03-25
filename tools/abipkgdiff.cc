@@ -86,6 +86,7 @@ using std::ostream;
 using std::vector;
 using std::map;
 using std::tr1::shared_ptr;
+using abigail::tools_utils::maybe_get_symlink_target_file_path;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
@@ -804,17 +805,15 @@ first_package_tree_walker_callback_fn(const char *fpath,
 				      const struct stat *,
 				      int /*flag*/)
 {
-  struct stat s;
-  lstat(fpath, &s);
-
-  if (!S_ISLNK(s.st_mode))
+  string path = fpath;
+  // If path is a symbolic link, then set it to the path of its target
+  // file.
+  maybe_get_symlink_target_file_path(path, path);
+  if (guess_file_type(path) == abigail::tools_utils::FILE_TYPE_ELF)
     {
-      if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
-	{
-	  vector<string> *elf_file_paths
-	    = static_cast<vector<string>*>(pthread_getspecific(elf_file_paths_tls_key));
-	  elf_file_paths->push_back(fpath);
-	}
+      vector<string> *elf_file_paths
+	= static_cast<vector<string>*>(pthread_getspecific(elf_file_paths_tls_key));
+      elf_file_paths->push_back(path);
     }
   return 0;
 }
@@ -830,22 +829,21 @@ second_package_tree_walker_callback_fn(const char *fpath,
 				       const struct stat *,
 				       int /*flag*/)
 {
-  struct stat s;
-  lstat(fpath, &s);
-
-  if (!S_ISLNK(s.st_mode))
+  string path = fpath;
+  // If path is a symbolic link, then set it to the path of its target
+  // file.
+  maybe_get_symlink_target_file_path(path, path);
+  if (guess_file_type(path) == abigail::tools_utils::FILE_TYPE_ELF)
     {
-      if (guess_file_type(fpath) == abigail::tools_utils::FILE_TYPE_ELF)
-	{
-	  vector<string> *elf_file_paths
-	    = static_cast<vector<string>*>(pthread_getspecific(elf_file_paths_tls_key));
-	  elf_file_paths->push_back(fpath);
-	}
-      /// We go through the files of the newer (second) pkg to look for
-      /// suppression specifications, matching the "*.abignore" name pattern.
-      else if (prog_options->abignore && string_ends_with(fpath, ".abignore"))
-	prog_options->suppression_paths.push_back(fpath);
+      vector<string> *elf_file_paths
+	= static_cast<vector<string>*>(pthread_getspecific(elf_file_paths_tls_key));
+      elf_file_paths->push_back(path);
     }
+  /// We go through the files of the newer (second) pkg to look for
+  /// suppression specifications, matching the "*.abignore" name pattern.
+  else if (prog_options->abignore && string_ends_with(fpath, ".abignore"))
+    prog_options->suppression_paths.push_back(fpath);
+
   return 0;
 }
 
