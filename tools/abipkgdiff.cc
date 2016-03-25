@@ -983,7 +983,7 @@ compare(const elf_file& elf1,
     emit_prefix("abipkgdiff", cerr)
       << " DONE reading file "
       << elf1.path
-      << " ...\n";
+      << "\n";
 
   if (verbose)
     emit_prefix("abipkgdiff", cerr)
@@ -1020,7 +1020,7 @@ compare(const elf_file& elf1,
 
   if (verbose)
     emit_prefix("abipkgdiff", cerr)
-      << " DONE reading file " << elf2.path << " ...\n";
+      << " DONE reading file " << elf2.path << "\n";
 
 if (verbose)
   emit_prefix("abipkgdiff", cerr)
@@ -1130,7 +1130,7 @@ create_maps_of_package_content(package& package,
       << package.path()
       << " extracted to "
       << package.extracted_dir_path()
-      << " ...";
+      << " ...\n";
 
   if (ftw(package.extracted_dir_path().c_str(), callback, 16))
     {
@@ -1139,6 +1139,11 @@ create_maps_of_package_content(package& package,
 	<< package.extracted_dir_path() << "\n";
       return false;
     }
+
+  if (verbose)
+    emit_prefix("abipkgdiff", cerr)
+      << "Found " << elf_file_paths->size() << " files in "
+      << package.extracted_dir_path() << "\n";
 
   for (vector<string>::const_iterator file =
 	 elf_file_paths->begin();
@@ -1149,13 +1154,23 @@ create_maps_of_package_content(package& package,
       if (opts.compare_dso_only)
 	{
 	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO)
-	    continue;
+	    {
+	      if (verbose)
+		emit_prefix("abipkgdiff", cerr)
+		  << "skipping non-DSO file " << e->path << "\n";
+	      continue;
+	    }
 	}
       else
 	{
 	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO
 	      && e->type != abigail::dwarf_reader::ELF_TYPE_EXEC)
-	    continue;
+	    {
+	      if (verbose)
+		emit_prefix("abipkgdiff", cerr)
+		  << "skipping non-DSO non-executable file " << e->path << "\n";
+	      continue;
+	    }
 	}
 
       if (e->soname.empty())
@@ -1168,7 +1183,8 @@ create_maps_of_package_content(package& package,
   delete elf_file_paths;
 
   if (verbose)
-    emit_prefix("abipkgdiff", cerr) << " DONE\n";
+    emit_prefix("abipkgdiff", cerr)
+      << " Analysis of " << package.path() << " DONE\n";
   return true;
 }
 
