@@ -1955,12 +1955,23 @@ class read_context
   offset_offset_map		alternate_die_parent_map_;
   list<var_decl_sptr>		var_decls_to_add_;
   Elf_Scn*			symtab_section_;
+  // The "Official procedure descriptor section, aka .opd", used in
+  // ppc64 elf v1 binaries.  This section contains the procedure
+  // descriptors on that platform.
+  Elf_Scn*			opd_section_;
   bool				symbol_versionning_sections_loaded_;
   bool				symbol_versionning_sections_found_;
   Elf_Scn*			versym_section_;
   Elf_Scn*			verdef_section_;
   Elf_Scn*			verneed_section_;
   addr_elf_symbol_sptr_map_sptr fun_addr_sym_map_;
+  // On PPC64, the function entry point address is different from the
+  // GElf_Sym::st_value value, which is the address of the descriptor
+  // of the function.  The map below thus associates the address of
+  // the entry point to the function symbol.  If we are not on ppc64,
+  // then this map ought to be empty.  Only the fun_addr_sym_map_ is
+  // used in that case.  On ppc64, though, both maps are used.
+  addr_elf_symbol_sptr_map_sptr fun_entry_addr_sym_map_;
   string_elf_symbols_map_sptr	fun_syms_;
   addr_elf_symbol_sptr_map_sptr var_addr_sym_map_;
   string_elf_symbols_map_sptr	var_syms_;
@@ -1988,6 +1999,7 @@ public:
       elf_path_(elf_path),
       cur_tu_die_(),
       symtab_section_(),
+      opd_section_(),
       symbol_versionning_sections_loaded_(),
       symbol_versionning_sections_found_(),
       versym_section_(),
@@ -3123,6 +3135,19 @@ public:
     return symtab_section_;
   }
 
+  /// Return the "Official Procedure descriptors section."  This
+  /// section is named .opd, and usually present only on PPC64 ELFv1
+  /// binaries.
+  ///
+  /// @return the .opd section, if found.  Return nil otherwise.
+  Elf_Scn*
+  find_opd_section()
+  {
+    if (!opd_section_)
+      opd_section_= find_section(elf_handle(), ".opd", SHT_PROGBITS);
+    return opd_section_;
+  }
+
   /// Return the SHT_GNU_versym, SHT_GNU_verdef and SHT_GNU_verneed
   /// sections that are involved in symbol versionning.
   ///
@@ -3297,6 +3322,89 @@ public:
     return sym;
   }
 
+  /// Lookup the address of the function entry point that corresponds
+  /// to the address of a given function descriptor.
+  ///
+  /// On PPC64, a function pointer is the address of a function
+  /// descriptor.  Function descriptors are located in the .opd
+  /// section.  Each function descriptor is a triplet of three
+  /// addresses, each one on 64 bits.  Among those three address only
+  /// the first one is of any interest to us: the address of the entry
+  /// point of the function.
+  ///
+  /// This function returns the address of the entry point of the
+  /// function whose descriptor's address is given.
+  ///
+  /// http://refspecs.linuxfoundation.org/ELF/ppc64/PPC-elf64abi.html#FUNC-DES
+  ///
+  /// https://www.ibm.com/developerworks/community/blogs/5894415f-be62-4bc0-81c5-3956e82276f3/entry/deeply_understand_64_bit_powerpc_elf_abi_function_descriptors?lang=en
+  ///
+  /// @param fn_desc_address the address of the function descriptor to
+  /// consider.
+  ///
+  /// @return the address of the entry point of the function whose
+  /// descriptor has the address @p fn_desc_address.  If there is no
+  /// .opd section (e.g because we are not on ppc64) or more generally
+  /// if the function descriptor could not be found then this function
+  /// just returns the address of the fuction descriptor.
+  GElf_Addr
+  lookup_ppc64_elf_fn_entry_pointer_address(GElf_Addr fn_desc_address)
+  {
+    if (!elf_handle())
+      return fn_desc_address;
+
+    if (!elf_architecture_is_ppc64())
+      return fn_desc_address;
+
+    bool is_big_endian = elf_architecture_is_big_endian();
+
+    Elf_Scn *opd_section = find_opd_section();
+    if (!opd_section)
+      return fn_desc_address;
+
+    GElf_Shdr header_mem;
+    // The section header of the .opd section.
+    GElf_Shdr *opd_sheader = gelf_getshdr(opd_section, &header_mem);
+
+    // The offset of the function descriptor entry, in the .opd
+    // section.
+    size_t fn_desc_offset = fn_desc_address - opd_sheader->sh_addr;
+    Elf_Data *elf_data = elf_rawdata(opd_section, NULL);
+    if (elf_data->d_size <= fn_desc_offset)
+      return fn_desc_address;
+
+    // A pointer to the data of the .opd section, that we can actually
+    // do something with.
+    uint8_t * bytes = (uint8_t*) elf_data->d_buf;
+
+    // The resulting address we are looking for is going to be formed
+    // in this variable.
+    GElf_Addr result = 0;
+
+    if (is_big_endian)
+      {
+	// In Big Endian, the most significant byte is at the lowest
+	// address.
+	uint8_t* msb = bytes + fn_desc_offset;
+	result = *msb;
+	// Now read the remaining 7 least significant bytes.
+	for (uint i = 1; i < 8; ++i)
+	  result = (result << 8) + msb[i];
+      }
+    else
+      {
+	// In Little Endian, the least significant byte is at the
+	// lowest address.
+	uint8_t* lsb = bytes + fn_desc_offset;
+	result = *lsb;
+	// Now read the remaining 7 most significant bytes.
+	for (uint i = 1; i < 8; ++i)
+	  result = result + (lsb[i] << i * 8);
+      }
+
+    return result;
+  }
+
   /// Given the address of the beginning of a function, lookup the
   /// symbol of the function, build an instance of @ref elf_symbol out
   /// of it and return it.
@@ -3313,9 +3421,9 @@ public:
   lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr)
   {
     addr_elf_symbol_sptr_map_type::const_iterator i,
-      nil = fun_addr_sym_map().end();
+      nil = fun_entry_addr_sym_map().end();
 
-    if ((i = fun_addr_sym_map().find(symbol_start_addr)) == nil)
+    if ((i = fun_entry_addr_sym_map().find(symbol_start_addr)) == nil)
       return elf_symbol_sptr();
 
     return i->second;
@@ -3424,6 +3532,64 @@ public:
     maybe_load_symbol_maps();
     return *fun_addr_sym_map_;
   }
+
+  /// Getter for a pointer to the map that associates the address of
+  /// an entry point of a function with the symbol of that function.
+  ///
+  /// Note that on non-"PPC64 ELFv1" binaries, this map is the same as
+  /// the one that assciates the address of a function with the symbol
+  /// of that function.
+  ///
+  /// @return a pointer to the map that associates the address of an
+  /// entry point of a function with the symbol of that function.
+  addr_elf_symbol_sptr_map_sptr&
+  fun_entry_addr_sym_map_sptr()
+  {
+    maybe_load_symbol_maps();
+    if (elf_architecture_is_ppc64())
+      return fun_entry_addr_sym_map_;
+    return fun_addr_sym_map_;
+  }
+
+  /// Getter for a pointer to the map that associates the address of
+  /// an entry point of a function with the symbol of that function.
+  ///
+  /// Note that on non-"PPC64 ELFv1" binaries, this map is the same as
+  /// the one that assciates the address of a function with the symbol
+  /// of that function.
+  ///
+  /// @return a pointer to the map that associates the address of an
+  /// entry point of a function with the symbol of that function.
+  const addr_elf_symbol_sptr_map_sptr&
+  fun_entry_addr_sym_map_sptr() const
+  {return const_cast<read_context*>(this)->fun_entry_addr_sym_map_sptr();}
+
+
+  /// Getter for the map that associates the address of an entry point
+  /// of a function with the symbol of that function.
+  ///
+  /// Note that on non-"PPC64 ELFv1" binaries, this map is the same as
+  /// the one that assciates the address of a function with the symbol
+  /// of that function.
+  ///
+  /// @return the map that associates the address of an entry point of
+  /// a function with the symbol of that function.
+  addr_elf_symbol_sptr_map_type&
+  fun_entry_addr_sym_map()
+  {return *fun_entry_addr_sym_map_sptr();}
+
+  /// Getter for the map that associates the address of an entry point
+  /// of a function with the symbol of that function.
+  ///
+  /// Note that on non-"PPC64 ELFv1" binaries, this map is the same as
+  /// the one that assciates the address of a function with the symbol
+  /// of that function.
+  ///
+  /// @return the map that associates the address of an entry point of
+  /// a function with the symbol of that function.
+  const addr_elf_symbol_sptr_map_type&
+  fun_entry_addr_sym_map() const
+  { return *fun_entry_addr_sym_map_sptr();}
 
   /// Getter for the map of function symbols (name -> sym).
   ///
@@ -3612,6 +3778,38 @@ public:
   elf_architecture() const
   {return elf_architecture_;}
 
+  /// Test if the architecture of the current binary is ppc64.
+  ///
+  /// @return true iff the architecture of the current binary is ppc64.
+  bool
+  elf_architecture_is_ppc64() const
+  {
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+
+    return (elf_header->e_machine == EM_PPC64);
+  }
+
+  /// Test if the endianness of the current binary is Big Endian.
+  ///
+  /// https://en.wikipedia.org/wiki/Endianness.
+  ///
+  /// @return true iff the current binary is Big Endian.
+  bool
+  elf_architecture_is_big_endian() const
+  {
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+
+    bool is_big_endian = (elf_header->e_ident[EI_DATA] == ELFDATA2MSB);
+      return true;
+
+    if (!is_big_endian)
+      assert(elf_header->e_ident[EI_DATA] == ELFDATA2LSB);
+
+    return false;
+  }
+
   /// Test if the current elf file being read is an executable.
   ///
   /// @return true iff the current elf file being read is an
@@ -3682,6 +3880,9 @@ public:
     if (!fun_addr_sym_map_)
       fun_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
 
+    if (!fun_entry_addr_sym_map_ && elf_architecture_is_ppc64())
+      fun_entry_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
+
     if (!var_syms_)
       var_syms_.reset(new string_elf_symbols_map_type);
 
@@ -3705,6 +3906,8 @@ public:
 
     Elf_Data* symtab = elf_getdata(symtab_section, 0);
     assert(symtab);
+
+    bool is_ppc64 = elf_architecture_is_ppc64();
 
     for (size_t i = 0; i < nb_syms; ++i)
       {
@@ -3742,6 +3945,43 @@ public:
 		    (*fun_addr_sym_map_)[sym->st_value] = symbol;
 		  else
 		    it->second->get_main_symbol()->add_alias(symbol);
+
+		  if (is_ppc64)
+		    {
+		      // For ppc64 ELFv1 binaries, we need to build a
+		      // function entry point address -> function
+		      // symbol map.  This is in addition to the
+		      // function pointer -> symbol map.  This is
+		      // because on ppc64 ELFv1, a function pointer is
+		      // different from a function entry poinut
+		      // address.
+		      //
+		      // On ppc64 ELFv1, the DWARF DIE of a function
+		      // references the address of the entry point of
+		      // the function symbol; whereas the value of the
+		      // function symbol is the function pointer.  As
+		      // these addresses are different, if I we want
+		      // to get to the symbol of a function from its
+		      // entry point address (as referenced by DWARF
+		      // function DIEs) we must have the two maps I
+		      // mentionned right above.
+		      //
+		      // In other words, we need a map that associates
+		      // a function enty point address with the symbol
+		      // of that function, to be able to get the
+		      // function symbol that corresponds to a given
+		      // function DIE, on ppc64.
+		      GElf_Addr fn_desc_addr = sym->st_value;
+		      GElf_Addr fn_entry_point_addr =
+			lookup_ppc64_elf_fn_entry_pointer_address(fn_desc_addr);
+		      addr_elf_symbol_sptr_map_type::const_iterator it2 =
+			fun_entry_addr_sym_map().find(fn_entry_point_addr);
+
+		      if (it2 == fun_entry_addr_sym_map().end())
+			fun_entry_addr_sym_map()[fn_entry_point_addr] = symbol;
+		      else
+			it2->second->get_main_symbol()->add_alias(symbol);
+		    }
 		}
 	      }
 	    else if (load_undefined_fun_map && !symbol->is_defined())
@@ -3951,7 +4191,7 @@ public:
   /// info.  That is, things like various tags, elf architecture and
   /// so on.
   void
-  load_remaining_elf_data()
+  load_elf_properties()
   {
     load_dt_soname_and_needed();
     load_elf_architecture();
@@ -9209,11 +9449,11 @@ read_corpus_from_elf(read_context& ctxt, status& status)
   if (!ctxt.load_debug_info())
     status |= STATUS_DEBUG_INFO_NOT_FOUND;
 
+  ctxt.load_elf_properties();
+
   // First read the symbols for publicly defined decls
   if (!ctxt.load_symbol_maps())
     status |= STATUS_NO_SYMBOLS_FOUND;
-
-  ctxt.load_remaining_elf_data();
 
   if (status & STATUS_NO_SYMBOLS_FOUND)
     return corpus_sptr();

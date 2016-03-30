@@ -400,6 +400,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test31-pr18535-libstdc++-report-1.txt",
     "output/test-diff-filter/test31-pr18535-libstdc++-report-1.txt",
   },
+  {
+    "data/test-diff-filter/libtest32-struct-change-v0.so",
+    "data/test-diff-filter/libtest32-struct-change-v1.so",
+    "--no-linkage-name --no-show-locs --no-redundant",
+    "data/test-diff-filter/test32-ppc64le-struct-change-report0.txt",
+    "output/test-diff-filter/test32-ppc64le-struct-change-report0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

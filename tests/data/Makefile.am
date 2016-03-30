@@ -512,6 +512,11 @@ test-diff-filter/test31-pr18535-libstdc++-4.8.3.so \
 test-diff-filter/test31-pr18535-libstdc++-4.9.2.so \
 test-diff-filter/test31-pr18535-libstdc++-report-0.txt \
 test-diff-filter/test31-pr18535-libstdc++-report-1.txt \
+test-diff-filter/libtest32-struct-change-v0.so \
+test-diff-filter/libtest32-struct-change-v1.so \
+test-diff-filter/test32-ppc64le-struct-change-report0.txt \
+test-diff-filter/test32-ppc64le-struct-change-v0.c \
+test-diff-filter/test32-ppc64le-struct-change-v1.c \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\
