@@ -22,12 +22,14 @@
 
 /// @file
 ///
-/// This test harness program fetch ABI diff between ELF binaries present inside
-/// input packages with optional debuginfo packages.
-/// Resulting ABI diff report is compared with reference one.
+/// This test harness program computes the ABI changes between ELF
+/// binaries present inside input packages.  Some of the input
+/// packages have debuginfo, some don't.  The resulting ABI change
+/// report is then compared with a reference one.
 ///
 /// The set of input files and reference reports to consider should be
-/// present in the source distribution.
+/// present in the source distribution, which means they must be
+/// referenced in tests/data/Makefile.am by the EXTRA_DIST variable.
 
 // For package configuration macros.
 #include "config.h"
