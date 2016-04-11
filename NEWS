@@ -1,3 +1,24 @@
+1.0.rc4
+=======
+Dodji Seketeli:
+      Bug 19844 - Cannot try to canonicalize a type that is being constructed
+      Bug 19846 - variable decl associated with the wrong debug info section
+      Bug 19867 - abipkgdiff skips symbolic links
+      Bug 19885 - Cannot associate a function DIE to a symbol on powerpc64
+      Ease use of soname_regexp/file_name_regexp in suppr specs
+      More docs about ABIDIFF_ABI_INCOMPATIBLE_CHANGE
+      Update copyright dates for the manuals
+      Fix typos on the web page
+      Fix typos in the manual of abidiff
+      Fix typos in the suppression specifications manual
+      Fix a typo in include/abg-tools-utils.h
+      Fix typos in comments in src/abg-dwarf-reader.cc
+      Fix comments in tests/test-diff-pkg.cc
+      Fix logs in abipkgdiff and add some more
+
+Roland McGrath:
+      Fix typo in configure --enable-deb help text
+
 1.0.rc3
 =======
 Dodji Seketeli:
