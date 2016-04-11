@@ -1,6 +1,255 @@
-2016-03-18  Roland McGrath  <roland@hack.frob.com>
+2016-04-11  Dodji Seketeli <dodji@redhat.com>
 
+	Update ChangeLog for 1.0.rc4
+	* ChangeLog: Update automatically by running "make
+	update-changelog"
+
+2016-04-11  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS for 1.0.rc4
+	* NEWS: Update for 1.0.rc4
+
+2016-04-16  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typos in the suppression specifications manual
+	* doc/manuals/libabigail-concepts.rst: Fix typos.
+
+2016-04-16  Dodji Seketeli <dodji@redhat.com>
+
+	Ease use of soname_regexp/file_name_regexp in suppr specs
+	* doc/manuals/libabigail-concepts.rst: Update the manual to
+	reflect the changes in the suppression_type, suppress_function and
+	suppress_variable directives.
+	* src/abg-comparison.cc (read_type_suppression): Accept that
+	the suppress_type directive contains only file_name_regexp
+	or the soname_regexp property.
+	(read_function_suppression): Likewise for the suppress_function
+	directive.
+	(read_variable_suppression): Likewise for the suppress_variable
+	directive.
+	* tests/data/test-diff-suppr/libtest29-soname-v0.so: New binary
+	test input.
+	* tests/data/test-diff-suppr/libtest29-soname-v1.so: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-5.txt: New
+	reference test output.
+	* tests/data/test-diff-suppr/test24-soname-report-6.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-7.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-8.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-5.txt: New test
+	suppression file.
+	* tests/data/test-diff-suppr/test24-soname-suppr-6.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-7.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-8.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-0.txt: New
+	reference test output.
+	* tests/data/test-diff-suppr/test29-soname-report-1.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-v0.cc: Source code for
+	the new binary output above.
+	* tests/data/test-diff-suppr/test29-soname-v1.cc: Likewise.
+	* tests/data/test-diff-suppr/test29-suppr-0.txt: New test
+	suppression file.
+	* tests/data/test-diff-suppr/test29-suppr-1.txt: Likewise.
+	* tests/data/Makefile.am: Add the new test material above to
+	source distribution.
+	* tests/test-diff-suppr.cc (in_out_specs): Make this test harness
+	run over the new test input above.
+
+2016-03-31  Dodji Seketeli <dodji@redhat.com>
+
+	Fix comments in tests/test-diff-pkg.cc
+	* tests/test-diff-pkg.cc: Fix the wording of the introductory
+	comments.
+
+2016-03-30  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19885 - Cannot associates a function DIE to a symbol on powerpc64
+	*from* the address of its entry point.
+	More precisely, on ppc64, the address of a function is the address of
+	a function descriptor.  The function descriptor is a set of three 64
+	bits addresses.  The first element of the triplet is the function
+	entry pointer address.  So to get the symbol a given function entry
+	point address belongs to, one must get to the function descriptor
+	which contains said function entry point address.  And function
+	descriptors are in the ".opd" special section.
+	Unfortunately, Libabigail's  ELF/DWARF reader has no knowledge of all
+	this.  So it cannot get the symbol of a given function DWARF
+	description.  So it considers all functions as having no ELF symbols.
+	So it shows no ABI change pertaining to function sub-types on ppc64.
+	This patch makes Libabigail support function descriptors on ppc64 so
+	it can detect changes on function sub-types there.
+	* src/abg-dwarf-reader.cc (read_context::{opd_section_,
+	fun_entry_addr_sym_map_}): New data members.
+	(read_context::read_context): Initialize the new opd_section_ data
+	member.
+	(read_context::{find_opd_section,
+	lookup_ppc64_elf_fn_entry_pointer_address,
+	fun_entry_addr_sym_map_sptr, fun_entry_addr_sym_map,
+	elf_architecture_is_ppc64, elf_architecture_is_big_endian}): New
+	member functions.
+	(read_context::lookup_elf_fn_symbol_from_address): Adjust to use
+	the new read_context::fun_entry_addr_sym_map() function.
+	(read_context::load_symbol_maps): Populate the function entry
+	addresses -> symbol map, for ppc64 ELFv1.
+	(read_context::load_elf_properties): Renamed
+	read_context::load_remaining_elf_data into this.
+	(read_corpus_from_elf): Load elf properties before trying to load
+	elf symbols information.
+	* tests/data/test-diff-filter/libtest32-struct-change-v0.so: New
+	binary test input, compiled for ppc64le.
+	* tests/data/test-diff-filter/libtest32-struct-change-v1.so: Likewise.
+	* tests/data/test-diff-filter/test32-ppc64le-struct-change-report0.txt:
+	New test reference output.
+	* tests/data/test-diff-filter/test32-ppc64le-struct-change-v0.c:
+	Source code of the new binary test input above.
+	* tests/data/test-diff-filter/test32-ppc64le-struct-change-v1.c:
+	Likewise.
+	* tests/data/Makefile.am: Add the new test material above to
+	source distribution.
+	* tests/test-diff-filter.cc (in_out_spec): Make this test harness
+	run over the new test input binaries above.
+
+2016-03-25  Dodji Seketeli <dodji@redhat.com>
+
+	Fix logs in abipkgdiff and add some more
+	* tools/abipkgdiff.cc (compare): Fix logs to make them more
+	readable in a multithreaded context.
+	(create_maps_of_package_content): Likewise.  Add logs about the
+	number of elf files found in a given directory.  Add logs about
+	skipping files.
+
+2016-03-25  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19867 - abipkgdiff skips symbolic links
+	* include/abg-tools-utils.h (maybe_get_symlink_target_file_path):
+	Declare new function.
+	* src/abg-tools-utils.cc (get_stat): Use lstat here, not stat.
+	Update comment.
+	* tools/abipkgdiff.cc (first_package_tree_walker_callback_fn)
+	(second_package_tree_walker_callback_fn): Follow symbolic links to
+	elf files to get their target paths, and only work with that
+	target path.
+	(maybe_get_symlink_target_file_path): Define new function.
+	* test-diff-pkg/symlink-dir-test1-report0.txt New test material.
+	* test-diff-pkg/symlink-dir-test1/dir1/symlinks/foo.o: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir1/symlinks/libfoo.so: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir1/targets/foo.c: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir1/targets/foo.o: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir1/targets/libfoo.so: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir2/symlinks/foo.o: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir2/symlinks/libfoo.so: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir2/targets/foo.c: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir2/targets/foo.o: Likewise.
+	* test-diff-pkg/symlink-dir-test1/dir2/targets/libfoo.so: Likewise.
+	* tests/data/Makefile.am: Add the new test material to source
+	distribution.
+	* tests/test-diff-pkg.cc (in_out_spec): Run this test harness
+	over the new test material above.
+
+2016-03-21  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typo on the web page
+	* doc/website/mainpage.txt: Fix typo.
+
+2016-03-18  Roland McGrath <roland@hack.frob.com>
+
+	Fix typo in configure --enable-deb help text
 	* configure.ac: Fix typo in --enable-deb usage text.
+
+2016-03-18  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19846 - variable decl associated with the wrong debug info section
+	* src/abg-dwarf-reader.cc (build_ir_node_from_die): Associate the
+	decl of the variable to the same debug info file (alternate or
+	not) as the DIE, not as its specification DIE.
+
+2016-03-18  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typo in the manual of abidiff
+	* doc/manuals/abidiff.rst: Fix typo.
+
+2016-03-18  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typos in comments in src/abg-dwarf-reader.cc
+	* src/abg-dwarf-reader.cc (read_context::{die_type_map,
+	is_wip_class_die_offset, is_wip_function_type_die_offset}): Fix
+	typo in comments.
+
+2016-03-18  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19844 - Cannot try to canonicalize a type that is being constructed
+	* src/abg-dwarf-reader.cc
+	(read_context::{alternate_die_wip_classes_map_,
+	alternate_die_wip_function_types_map_}): New data members.
+	(read_context::lookup_type_from_die_offset): Lookup WIP class and
+	function types too.
+	(read_context::{die_wip_classes_map, die_wip_function_types_map}):
+	Take a flag saying if we should get the map for the alternate
+	debug info section or not.
+	(read_context::{is_wip_class_die_offset,
+	is_wip_function_type_die_offset}): Take a flagy saying if the DIE
+	is in the alternate debug info section or not.
+	(build_class_type_and_add_to_ir, build_function_type)
+	(maybe_canonicalize_type): Adjust.
+	(build_ir_node_from_die): Do not call maybe_canonicalize_type on
+	type DIEs which no type has been constructed for.
+	* tests/data/test-diff-pkg/gtk2-debuginfo-2.24.22-5.el7.i686.rpm:
+	New test input.
+	* tests/data/test-diff-pkg/gtk2-debuginfo-2.24.28-8.el7.i686.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/gtk2-immodule-xim-2.24.28-8.el7.i686.rpm:
+	Likewise.
+	* tests/data/test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686--gtk2-immodule-xim-2.24.28-8.el7.i686-report-0.txt:
+	New test reference output.
+	* tests/data/Makefile.am: Add the new test material to the source
+	distribution.
+	* tests/test-diff-pkg.cc (in_out_spec): Make this test harness run
+	on the new test input above.
+
+2016-03-16  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a typo in include/abg-tools-utils.h
+	* include/abg-tools-utils.h (enum abidiff_status): Fix typo in
+	comment.
+
+2016-03-16  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright dates for the manuals
+	* doc/manuals/conf.py: Update copyright years.
+
+2016-03-16  Dodji Seketeli <dodji@redhat.com>
+
+	More docs about ABIDIFF_ABI_INCOMPATIBLE_CHANGE
+	* doc/manuals/abidiff.rst: Explain the kind of changes that flip
+	the ABIDIFF_ABI_INCOMPATIBLE_CHANGE flag.
+
+2016-03-09  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typos on the web page
+	* doc/website/mainpage.txt: Fix typos.
+
+2016-03-08  Dodji Seketeli <dodji@redhat.com>
+
+	Bump version number to 1.0.rc4
+	* configure.ac: Bump version number to 1.0.rc4
+
+2016-03-08  Dodji Seketeli <dodji@redhat.com>
+
+	Fix potential race condition in test-diff-pkg.cc
+	* tests/test-diff-pkg.cc (in_out_spec): Make the tar format tests
+	output have different names.
+
+2016-03-08  Dodji Seketeli <dodji@redhat.com>
+
+	Updated website to point to 1.0.rc3 tarball
+	* doc/website/mainpage.txt: Updated website to point to 1.0.rc3
+	tarball.
+
+2016-03-08  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog before 1.0.rc3
+	* ChangeLog: Update for 1.0.rc3
 
 2016-03-08  Dodji Seketeli <dodji@redhat.com>
 
@@ -19855,3 +20104,4 @@
 	* src/Makefile.am:
 	* src/abg-ir.cc:
 	* src/abg-ir.h:
+
