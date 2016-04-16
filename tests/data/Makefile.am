@@ -811,11 +811,19 @@ test-diff-suppr/test24-soname-report-1.txt \
 test-diff-suppr/test24-soname-report-2.txt \
 test-diff-suppr/test24-soname-report-3.txt \
 test-diff-suppr/test24-soname-report-4.txt \
+test-diff-suppr/test24-soname-report-5.txt \
+test-diff-suppr/test24-soname-report-6.txt \
+test-diff-suppr/test24-soname-report-7.txt \
+test-diff-suppr/test24-soname-report-8.txt \
 test-diff-suppr/test24-soname-suppr-0.txt \
 test-diff-suppr/test24-soname-suppr-1.txt \
 test-diff-suppr/test24-soname-suppr-2.txt \
 test-diff-suppr/test24-soname-suppr-3.txt \
 test-diff-suppr/test24-soname-suppr-4.txt \
+test-diff-suppr/test24-soname-suppr-5.txt \
+test-diff-suppr/test24-soname-suppr-6.txt \
+test-diff-suppr/test24-soname-suppr-7.txt \
+test-diff-suppr/test24-soname-suppr-8.txt \
 test-diff-suppr/test24-soname-v0.cc \
 test-diff-suppr/test24-soname-v1.cc \
 test-diff-suppr/libtest25-typedef-v0.so \
@@ -869,6 +877,14 @@ test-diff-suppr/test28-add-aliased-function-v0.c \
 test-diff-suppr/test28-add-aliased-function-v0.o \
 test-diff-suppr/test28-add-aliased-function-v1.c \
 test-diff-suppr/test28-add-aliased-function-v1.o \
+test-diff-suppr/libtest29-soname-v0.so \
+test-diff-suppr/libtest29-soname-v1.so \
+test-diff-suppr/test29-soname-report-0.txt \
+test-diff-suppr/test29-soname-report-1.txt \
+test-diff-suppr/test29-soname-v0.cc \
+test-diff-suppr/test29-soname-v1.cc \
+test-diff-suppr/test29-suppr-0.txt \
+test-diff-suppr/test29-suppr-1.txt \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

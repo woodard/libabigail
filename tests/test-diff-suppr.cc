@@ -921,6 +921,38 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test24-soname-report-4.txt"
   },
   {
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-5.txt",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test24-soname-report-5.txt",
+    "output/test-diff-suppr/test24-soname-report-5.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-6.txt",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test24-soname-report-6.txt",
+    "output/test-diff-suppr/test24-soname-report-6.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-7.txt",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test24-soname-report-7.txt",
+    "output/test-diff-suppr/test24-soname-report-7.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest24-soname-v0.so",
+    "data/test-diff-suppr/libtest24-soname-v1.so",
+    "data/test-diff-suppr/test24-soname-suppr-8.txt",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test24-soname-report-8.txt",
+    "output/test-diff-suppr/test24-soname-report-8.txt"
+  },
+  {
     "data/test-diff-suppr/libtest25-typedef-v0.so",
     "data/test-diff-suppr/libtest25-typedef-v1.so",
     "",
@@ -1071,6 +1103,22 @@ InOutSpec in_out_specs[] =
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test28-add-aliased-function-report-6.txt",
     "output/test-diff-suppr/test28-add-aliased-function-report-6.txt"
+  },
+ {
+    "data/test-diff-suppr/libtest29-soname-v0.so",
+    "data/test-diff-suppr/libtest29-soname-v1.so",
+    "data/test-diff-suppr/test29-suppr-0.txt",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test29-soname-report-0.txt",
+    "output/test-diff-suppr/test29-soname-report-0.txt"
+  },
+ {
+    "data/test-diff-suppr/libtest29-soname-v0.so",
+    "data/test-diff-suppr/libtest29-soname-v1.so",
+    "data/test-diff-suppr/test29-suppr-1.txt",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test29-soname-report-1.txt",
+    "output/test-diff-suppr/test29-soname-report-1.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL}
