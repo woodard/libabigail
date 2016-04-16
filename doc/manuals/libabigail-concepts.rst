@@ -169,7 +169,7 @@ of the following properties must be provided:
   ``source_location_not_regexp``.
 
 If none of the following properties are provided, then the
-``[suppression_type]`` directive is simply ignored.
+``[suppress_type]`` directive is simply ignored.
 
 The potential properties of this sections are listed below:
 
@@ -189,9 +189,9 @@ The potential properties of this sections are listed below:
 
   ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
-  Suppresses change reports about ABI artifact that are defined in a
-  shared library which SONAME matches the regular expression specified
-  as value of this property.
+  Suppresses change reports about ABI artifacts that are defined in a
+  shared library which SONAME property matches the regular expression
+  specified as value of this property.
 
 * ``name_regexp``
 
@@ -452,7 +452,7 @@ one of the following properties must be provided:
   ``symbol_version_regexp``.
 
 If none of the following properties are provided, then the
-``[suppression_function]`` directive is simply ignored.
+``[suppress_function]`` directive is simply ignored.
 
 The potential properties of this sections are:
 
