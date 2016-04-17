@@ -25,11 +25,23 @@ AM_MAKEFLAGS = --no-print-directory
 update-changelog:
 	python $(srcdir)/gen-changelog.py > $(srcdir)/ChangeLog
 
+TARBALL = $(PACKAGE_NAME)-$(VERSION).tar.gz
 RELEASED_BRANCH = master
+
+$(TARBALL): distcheck
+
 tag-release-only:
 	git tag -m "$(PACKAGE_NAME) release $(VERSION)" \
 	"$(PACKAGE_NAME)-$(VERSION)" $(RELEASED_BRANCH)
 
 tag-release: tag-release-only
 
+upload-release-only:
+	scp $(TARBALL) sourceware.org:~ftp/pub/libabigail
 
+tarball: $(TARBALL)
+
+upload-release: tag-release
+	$(MAKE) tarball upload-release-only
+
+release: upload-release
