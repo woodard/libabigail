@@ -195,6 +195,16 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
     "output/test-diff-pkg/tarpkg-0-report-03.txt"
   },
+  {
+    "data/test-diff-pkg/tarpkg-1-dir1.tar.gz",
+    "data/test-diff-pkg/tarpkg-1-dir2.tar.gz",
+    "--dso-only",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/tarpkg-1-report-0.txt",
+    "output/test-diff-pkg/tarpkg-1-report-0.txt"
+  },
 #endif //WITH_TAR
 
 #ifdef WITH_RPM

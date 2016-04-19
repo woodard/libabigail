@@ -1870,18 +1870,111 @@ lookup_public_variable_symbol_from_elf(const environment*		env,
   return found;
 }
 
+/// Get data tag information of an ELF file by looking up into its
+/// dynamic segment
+///
+/// @param elf the elf handle to use for the query.
+///
+/// @param dt_tag data tag to look for in dynamic segment
+/// @param dt_tag_data vector of found information for a given @p data_tag
+///
+/// @return true iff data tag @p data_tag was found
+
+bool
+lookup_data_tag_from_dynamic_segment(Elf*                       elf,
+                                     Elf64_Sxword               data_tag,
+                                     vector<string>&            dt_tag_data)
+{
+  size_t num_prog_headers = 0;
+  bool found = false;
+  if (elf_getphdrnum(elf, &num_prog_headers) < 0)
+    return found;
+
+  // Cycle through each program header.
+  for (size_t i = 0; i < num_prog_headers; ++i)
+    {
+      GElf_Phdr phdr_mem;
+      GElf_Phdr *phdr = gelf_getphdr(elf, i, &phdr_mem);
+      if (phdr == NULL || phdr->p_type != PT_DYNAMIC)
+        continue;
+
+      // Poke at the dynamic segment like a section, so that we can
+      // get its section header information; also we'd like to read
+      // the data of the segment by using elf_getdata() but that
+      // function needs a Elf_Scn data structure to act on.
+      // Elfutils doesn't really have any particular function to
+      // access segment data, other than the functions used to
+      // access section data.
+      Elf_Scn *dynamic_section = gelf_offscn(elf, phdr->p_offset);
+      GElf_Shdr  shdr_mem;
+      GElf_Shdr *dynamic_section_header = gelf_getshdr(dynamic_section,
+                                                        &shdr_mem);
+      if (dynamic_section_header == NULL
+          || dynamic_section_header->sh_type != SHT_DYNAMIC)
+        continue;
+
+      // Get data of the dynamic segment (seen as a section).
+      Elf_Data *data = elf_getdata(dynamic_section, NULL);
+      if (data == NULL)
+        continue;
+
+      // Get the index of the section headers string table.
+      size_t string_table_index = 0;
+      assert (elf_getshdrstrndx(elf, &string_table_index) >= 0);
+
+      size_t dynamic_section_header_entry_size = gelf_fsize(elf,
+                                                            ELF_T_DYN, 1,
+                                                            EV_CURRENT);
+
+      GElf_Shdr link_mem;
+      GElf_Shdr *link =
+        gelf_getshdr(elf_getscn(elf,
+                                dynamic_section_header->sh_link),
+                      &link_mem);
+      assert(link != NULL);
+
+      size_t num_dynamic_section_entries =
+        dynamic_section_header->sh_size / dynamic_section_header_entry_size;
+
+      // Now walk through all the DT_* data tags that are in the
+      // segment/section
+      for (size_t j = 0; j < num_dynamic_section_entries; ++j)
+        {
+          GElf_Dyn dynamic_section_mem;
+          GElf_Dyn *dynamic_section = gelf_getdyn(data,
+                                                  j,
+                                                  &dynamic_section_mem);
+          if (dynamic_section->d_tag == data_tag)
+            {
+              dt_tag_data.push_back(elf_strptr(elf,
+                                               dynamic_section_header->sh_link,
+                                              dynamic_section->d_un.d_val));
+              found = true;
+            }
+        }
+    }
+  return found;
+}
+
 /// Convert the type of ELF file into @ref elf_type.
 ///
-/// @param header a elf header to get the ELF file type from.
+/// @param elf the elf handle to use for the query.
 ///
 /// @return the @ref elf_type for a given elf type.
 static elf_type
-elf_file_type(const GElf_Ehdr* header)
+elf_file_type(Elf* elf)
 {
+  GElf_Ehdr ehdr_mem;
+  GElf_Ehdr *header = gelf_getehdr (elf, &ehdr_mem);
+  vector<string> dt_debug_data;
+
   switch (header->e_type)
     {
     case ET_DYN:
-      return ELF_TYPE_DSO;
+      if (lookup_data_tag_from_dynamic_segment(elf, DT_DEBUG, dt_debug_data))
+	return ELF_TYPE_PI_EXEC;
+      else
+	return ELF_TYPE_DSO;
     case ET_EXEC:
       return ELF_TYPE_EXEC;
     case ET_REL:
@@ -3113,10 +3206,7 @@ public:
   elf_type
   get_elf_file_type()
   {
-    Elf* elf = elf_handle();
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
-    return elf_file_type(elf_header);
+    return elf_file_type(elf_handle());
   }
 
   /// The section containing the symbol table from the current ELF
@@ -4087,88 +4177,15 @@ public:
 
   /// Load the DT_NEEDED and DT_SONAME elf TAGS.
   ///
-  /// @return true if the tags could be read, false otherwise.
   void
   load_dt_soname_and_needed()
   {
-    size_t num_prog_headers = 0;
-    if (elf_getphdrnum(elf_handle(), &num_prog_headers) < 0)
-      return;
+    lookup_data_tag_from_dynamic_segment(elf_handle(), DT_NEEDED, dt_needed_);
 
-    unsigned found = 0;
-    // Cycle through each program header.
-    for (size_t i = 0; i < num_prog_headers; ++i)
-      {
-	GElf_Phdr phdr_mem;
-	GElf_Phdr *phdr = gelf_getphdr(elf_handle(), i, &phdr_mem);
-	if (phdr == NULL || phdr->p_type != PT_DYNAMIC)
-	  continue;
-
-	// Poke at the dynamic segment like a section, so that we can
-	// get its section header information; also we'd like to read
-	// the data of the segment by using elf_getdata() but that
-	// function needs a Elf_Scn data structure to act on.
-	// Elfutils doesn't really have any particular function to
-	// access segment data, other than the functions used to
-	// access section data.
-	Elf_Scn *dynamic_section = gelf_offscn(elf_handle(), phdr->p_offset);
-	GElf_Shdr  shdr_mem;
-	GElf_Shdr *dynamic_section_header = gelf_getshdr(dynamic_section,
-							 &shdr_mem);
-	if (dynamic_section_header == NULL
-	    || dynamic_section_header->sh_type != SHT_DYNAMIC)
-	  continue;
-
-	// Get data of the dynamic segment (seen a a section).
-	Elf_Data *data = elf_getdata(dynamic_section, NULL);
-	if (data == NULL)
-	  continue;
-
-	// Get the index of the section headers string table.
-	size_t string_table_index = 0;
-	assert (elf_getshdrstrndx(elf_handle(), &string_table_index) >= 0);
-
-	size_t dynamic_section_header_entry_size = gelf_fsize(elf_handle(),
-							      ELF_T_DYN, 1,
-							      EV_CURRENT);
-
-	GElf_Shdr link_mem;
-	GElf_Shdr *link =
-	  gelf_getshdr(elf_getscn(elf_handle(),
-				  dynamic_section_header->sh_link),
-		       &link_mem);
-	assert(link != NULL);
-
-	size_t num_dynamic_section_entries =
-	  dynamic_section_header->sh_size / dynamic_section_header_entry_size;
-
-	// Now walk through all the DT_* data tags that are in the
-	// segment/section
-	for (size_t j = 0; j < num_dynamic_section_entries; ++j)
-	  {
-	    GElf_Dyn dynamic_section_mem;
-	    GElf_Dyn *dynamic_section = gelf_getdyn(data,
-						    j,
-						    &dynamic_section_mem);
-	    if (dynamic_section == NULL)
-	      break;
-
-	    if (dynamic_section->d_tag == DT_NEEDED)
-	      {
-		string dt_needed = elf_strptr(elf_handle(),
-					      dynamic_section_header->sh_link,
-					      dynamic_section->d_un.d_val);
-		dt_needed_.push_back(dt_needed);
-		++found;
-	      }
-	    else if (dynamic_section->d_tag == DT_SONAME)
-	      {
-		dt_soname_ = elf_strptr(elf_handle(),
-					dynamic_section_header->sh_link,
-					dynamic_section->d_un.d_val);
-	      }
-	  }
-      }
+    vector<string> dt_tag_data;
+    lookup_data_tag_from_dynamic_segment(elf_handle(), DT_SONAME, dt_tag_data);
+    if (!dt_tag_data.empty())
+      dt_soname_ = dt_tag_data[0];
   }
 
   /// Read the string representing the architecture of the current ELF
@@ -9773,10 +9790,7 @@ get_type_of_elf_file(const string& path, elf_type& type)
 
   elf_version (EV_CURRENT);
   Elf *elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
-  GElf_Ehdr ehdr_mem;
-  GElf_Ehdr *ehdr = gelf_getehdr (elf, &ehdr_mem);
-  string soname;
-  type = elf_file_type(ehdr);
+  type = elf_file_type(elf);
   close(fd);
 
   return true;

@@ -1090,5 +1090,8 @@ test-diff-pkg/gtk2-debuginfo-2.24.22-5.el7.i686.rpm \
 test-diff-pkg/gtk2-debuginfo-2.24.28-8.el7.i686.rpm \
 test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686--gtk2-immodule-xim-2.24.28-8.el7.i686-report-0.txt \
 test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686.rpm \
-test-diff-pkg/gtk2-immodule-xim-2.24.28-8.el7.i686.rpm
+test-diff-pkg/gtk2-immodule-xim-2.24.28-8.el7.i686.rpm \
+test-diff-pkg/tarpkg-1-dir1.tar.gz \
+test-diff-pkg/tarpkg-1-dir2.tar.gz \
+test-diff-pkg/tarpkg-1-report-0.txt
 

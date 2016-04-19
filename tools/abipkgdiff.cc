@@ -1164,7 +1164,8 @@ create_maps_of_package_content(package& package,
       else
 	{
 	  if (e->type != abigail::dwarf_reader::ELF_TYPE_DSO
-	      && e->type != abigail::dwarf_reader::ELF_TYPE_EXEC)
+	      && e->type != abigail::dwarf_reader::ELF_TYPE_EXEC
+              && e->type != abigail::dwarf_reader::ELF_TYPE_PI_EXEC)
 	    {
 	      if (verbose)
 		emit_prefix("abipkgdiff", cerr)
@@ -1404,7 +1405,8 @@ compare(package&	first_package,
 
       if (iter != second_package.path_elf_file_sptr_map().end()
 	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
-	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC))
+	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
+              || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC))
 	{
 	  elf_pairs.push_back(compare_args_sptr(new compare_args(*it->second,
 						debug_dir1, *iter->second,
@@ -1456,7 +1458,8 @@ compare(package&	first_package,
 
       if (iter != second_package.path_elf_file_sptr_map().end()
 	  && (iter->second->type == abigail::dwarf_reader::ELF_TYPE_DSO
-	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC))
+	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
+              || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC))
 	{
 	  second_package.path_elf_file_sptr_map().erase(iter);
 	  while (true)
