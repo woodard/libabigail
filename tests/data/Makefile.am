@@ -270,6 +270,11 @@ test-diff-dwarf/test35-pr19173-libfoo-long-gcc-report-0.txt \
 test-diff-dwarf/test35-pr19173-libfoo-long-clang.so \
 test-diff-dwarf/test35-pr19173-libfoo-long-clang2.so \
 test-diff-dwarf/test35-pr19173-libfoo-long-clang-report-0.txt \
+test-diff-dwarf/libtest36-ppc64-aliases-v0.so \
+test-diff-dwarf/libtest36-ppc64-aliases-v1.so \
+test-diff-dwarf/test36-ppc64-aliases-v0.cc \
+test-diff-dwarf/test36-ppc64-aliases-v1.cc \
+test-diff-dwarf/test36-ppc64-aliases-report-0.txt \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

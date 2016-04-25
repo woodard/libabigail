@@ -4070,8 +4070,12 @@ public:
 		      if (it2 == fun_entry_addr_sym_map().end())
 			fun_entry_addr_sym_map()[fn_entry_point_addr] = symbol;
 		      else
-			it2->second->get_main_symbol()->add_alias(symbol);
-		    }
+			// 'symbol' must have been registered as an
+			// alias for it2->second->get_main_symbol(),
+			// right before the "if (ppc64)" statement.
+			assert(it2->second->get_main_symbol()->
+			       does_alias(*symbol));
+		   }
 		}
 	      }
 	    else if (load_undefined_fun_map && !symbol->is_defined())

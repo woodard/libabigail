@@ -284,6 +284,12 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test35-pr19173-libfoo-long-clang-report-0.txt",
     "output/test-diff-dwarf/test35-pr19173-libfoo-long-clang-report-0.txt"
   },
+  {
+    "data/test-diff-dwarf/libtest36-ppc64-aliases-v0.so",
+    "data/test-diff-dwarf/libtest36-ppc64-aliases-v1.so",
+    "data/test-diff-dwarf/test36-ppc64-aliases-report-0.txt",
+    "output/test-diff-dwarf/test36-ppc64-aliases-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };
