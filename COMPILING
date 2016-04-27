@@ -12,6 +12,11 @@ following packages:
     automake
     libtool
 
+If you wan to build the documentation of libabigail, then you also
+need this package (and its dependencies):
+
+     python-sphinx
+
 Note that if you are installing these packages in a binary form
 provided by your distribution, then you probably need to install the
 development variant of those that have one.
@@ -81,3 +86,28 @@ Then compile it:
 Then install the resulting binaries
 
     make install
+
+* Building the documentation of libabigail
+==========================================
+
+To build the documentation of libabigail, you need to install the
+python-sphinx package prior to running configure.
+
+Once you've done that, type:
+
+     make doc
+
+This will generate the documentation in html, info and man format, in
+under the doc/ subdirectory of your build directory.
+
+If you only want the html documentation (mainly the web site, apidoc and manuals) then just type:
+
+   make html-doc
+
+If you only want to generate the man documentation, just type:
+
+   make man
+
+If you only want to generate the info documentation, just type:
+
+   make info

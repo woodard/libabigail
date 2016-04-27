@@ -22,6 +22,20 @@ libabigail.pc.in
 # Don't make make repeat.
 AM_MAKEFLAGS = --no-print-directory
 
+.PHONY: doc
+
+doc: html-doc man info
+
+html-doc:
+	$(MAKE) -C doc html-doc
+	$(MAKE) -C doc/manuals html-doc
+
+man:
+	$(MAKE) -C doc/manuals man
+
+info:
+	$(MAKE) -C doc/manuals info
+
 update-changelog:
 	python $(srcdir)/gen-changelog.py > $(srcdir)/ChangeLog
 
