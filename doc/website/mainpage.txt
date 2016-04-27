@@ -102,6 +102,8 @@ the moment the dependencies are the following Free Software packages:
     \li <a href="http://www.freedesktop.org/wiki/Software/pkg-config/">pkg-config</a>
     \li <a href="http://www.xmlsoft.org">libxml2</a>
     \li <a href="https://fedorahosted.org/elfutils/">elfutils</a>
+    \li <a href="http://www.stack.nl/~dimitri/doxygen/download.html">doxygen</a>
+    \li <a href="http://www.sphinx-doc.org/en/stable/">python-sphinx</a>
 
 \subsection compile-from-tarball Compiling the code from the tarball
 

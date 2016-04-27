@@ -13,8 +13,9 @@ following packages:
     libtool
 
 If you wan to build the documentation of libabigail, then you also
-need this package (and its dependencies):
+need these packages (and its dependencies):
 
+     doxygen
      python-sphinx
 
 Note that if you are installing these packages in a binary form
