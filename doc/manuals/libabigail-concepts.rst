@@ -164,9 +164,9 @@ This directive suppresses report messages about a type change.
 Note that for the ``[suppress_type]`` directive to work, at least one
 of the following properties must be provided:
 
-  ``file_name_regexp``, ``soname_regexp``, ``name``, ``name_regexp``,
-  ``type_kind``, ``source_location_not_in``,
-  ``source_location_not_regexp``.
+  ``file_name_regexp``, ``file_name_not_regexp``, ``soname_regexp``,
+  ``soname_not_regexp``, ``name``, ``name_regexp``, ``type_kind``,
+  ``source_location_not_in``, ``source_location_not_regexp``.
 
 If none of the following properties are provided, then the
 ``[suppress_type]`` directive is simply ignored.
@@ -183,6 +183,17 @@ The potential properties of this sections are listed below:
   binary file which name matches the regular expression specified as
   value of this property.
 
+* ``file_name_not_regexp``
+
+  Usage:
+
+  ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Suppresses change reports about ABI artifacts that are defined in a
+  binary file which name does not match the regular expression
+  specified as value of this property.
+
+
 * ``soname_regexp``
 
   Usage:
@@ -192,6 +203,16 @@ The potential properties of this sections are listed below:
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property matches the regular expression
   specified as value of this property.
+
+* ``soname_not_regexp``
+
+  Usage:
+
+  ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Suppresses change reports about ABI artifacts that are defined in a
+  shared library which SONAME property does not match the regular
+  expression specified as value of this property.
 
 * ``name_regexp``
 
@@ -446,9 +467,10 @@ functions.
 Note that for the ``[suppress_function]`` directive to work, at least
 one of the following properties must be provided:
 
-  ``label``, ``file_name_regexp``, ``soname_regexp``, ``name``,
-  ``name_regexp``, ``parameter``, ``return_type_name``,
-  ``symbol_name``, ``symbol_name_regexp``, ``symbol_version``,
+  ``label``, ``file_name_regexp``, ``file_name_not_regexp``,
+  ``soname_regexp``, ``soname_not_regexp``, ``name``, ``name_regexp``,
+  ``parameter``, ``return_type_name``, ``symbol_name``,
+  ``symbol_name_regexp``, ``symbol_version``,
   ``symbol_version_regexp``.
 
 If none of the following properties are provided, then the
@@ -476,6 +498,17 @@ The potential properties of this sections are:
   binary file which name matches the regular expression specified as
   value of this property.
 
+
+* ``file_name_not_regexp``
+
+  Usage:
+
+  ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Suppresses change reports about ABI artifacts that are defined in a
+  binary file which name does not match the regular expression
+  specified as value of this property.
+
 * ``soname_regexp``
 
   Usage:
@@ -485,6 +518,16 @@ The potential properties of this sections are:
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property matches the regular expression
   specified as value of this property.
+
+* ``soname_not_regexp``
+
+  Usage:
+
+  ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Suppresses change reports about ABI artifacts that are defined in a
+  shared library which SONAME property does not match the regular
+  expression specified as value of this property.
 
 
 * ``name``
@@ -670,9 +713,10 @@ variables.
 Note that for the ``[suppress_variable]`` directive to work, at least
 one of the following properties must be provided:
 
-  ``label``, ``file_name_regexp``, ``soname_regexp``, ``name``,
-  ``name_regexp``, ``symbol_name``, ``symbol_name_regexp``,
-  ``symbol_version``, ``symbol_version_regexp``.
+  ``label``, ``file_name_regexp``, ``file_name_not_regexp``,
+  ``soname_regexp``, ``soname_not_regexp``, ``name``, ``name_regexp``,
+  ``symbol_name``, ``symbol_name_regexp``, ``symbol_version``,
+  ``symbol_version_regexp``.
 
 If none of the following properties are provided, then the
 ``[suppres_variable]`` directive is simply ignored.
@@ -699,6 +743,17 @@ The potential properties of this sections are:
   binary file which name matches the regular expression specified as
   value of this property.
 
+* ``file_name_not_regexp``
+
+  Usage:
+
+  ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Suppresses change reports about ABI artifacts that are defined in a
+  binary file which name does not match the regular expression
+  specified as value of this property.
+
+
 * ``soname_regexp``
 
   Usage:
@@ -708,6 +763,17 @@ The potential properties of this sections are:
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property matches the regular expression
   specified as value of this property.
+
+
+* ``soname_not_regexp``
+
+  Usage:
+
+  ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Suppresses change reports about ABI artifacts that are defined in a
+  shared library which SONAME property does not match the regular
+  expression specified as value of this property.
 
 
 * ``name``

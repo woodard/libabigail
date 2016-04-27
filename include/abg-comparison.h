@@ -433,10 +433,26 @@ public:
   get_file_name_regex_str() const;
 
   void
+  set_file_name_not_regex_str(const string& regexp);
+
+  const string&
+  get_file_name_not_regex_str() const;
+
+  void
   set_soname_regex_str(const string& regexp);
 
   const string&
   get_soname_regex_str() const;
+
+  void
+  set_soname_not_regex_str(const string& regexp);
+
+  const string&
+  get_soname_not_regex_str() const;
+
+  bool names_of_binaries_match(const diff_context& context) const;
+
+  bool sonames_of_binaries_match(const diff_context& context) const;
 
   virtual bool
   suppresses_diff(const diff*) const = 0;

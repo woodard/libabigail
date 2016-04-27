@@ -493,8 +493,12 @@ class suppression_base::priv
   string				label_;
   string				file_name_regex_str_;
   mutable sptr_utils::regex_t_sptr	file_name_regex_;
+  string				file_name_not_regex_str_;
+  mutable sptr_utils::regex_t_sptr	file_name_not_regex_;
   string				soname_regex_str_;
   mutable sptr_utils::regex_t_sptr	soname_regex_;
+  string				soname_not_regex_str_;
+  mutable sptr_utils::regex_t_sptr	soname_not_regex_;
 
 public:
   priv()
@@ -507,12 +511,12 @@ public:
   friend class suppression_base;
 
   /// Get the regular expression object associated to the 'file_name_regex'
-  /// property of @ref type_suppression.
+  /// property of @ref suppression_base.
   ///
   /// If the regular expression object is not created, this method
   /// creates it and returns it.
   ///
-  /// If the 'file_name_regex' property of @ref type_suppression is
+  /// If the 'file_name_regex' property of @ref suppression_base is
   /// empty then this method returns nil.
   const sptr_utils::regex_t_sptr
   get_file_name_regex() const
@@ -531,14 +535,39 @@ public:
     return file_name_regex_;
   }
 
-  /// Get the regular expression object associated to the 'soname_regex'
-  /// property of @ref type_suppression.
+  /// Get the regular expression object associated to the
+  /// 'file_name_not_regex' property of @ref suppression_base.
   ///
   /// If the regular expression object is not created, this method
   /// creates it and returns it.
   ///
-  /// If the 'soname_regex' property of @ref type_suppression is
-  /// empty then this method returns nil.
+  /// If the 'file_name_not_regex' property of @ref suppression_base
+  /// is empty then this method returns nil.
+  const sptr_utils::regex_t_sptr
+  get_file_name_not_regex() const
+  {
+    if (!file_name_not_regex_)
+      {
+	if (!file_name_not_regex_str_.empty())
+	  {
+	    sptr_utils::regex_t_sptr r(new regex_t);
+	    if (regcomp(r.get(),
+			file_name_not_regex_str_.c_str(),
+			REG_EXTENDED) == 0)
+	      file_name_not_regex_ = r;
+	  }
+      }
+    return file_name_not_regex_;
+  }
+
+  /// Get the regular expression object associated to the
+  /// 'soname_regex' property of @ref suppression_base.
+  ///
+  /// If the regular expression object is not created, this method
+  /// creates it and returns it.
+  ///
+  /// If the 'soname_regex' property of @ref suppression_base is empty
+  /// then this method returns nil.
   const sptr_utils::regex_t_sptr
   get_soname_regex() const
   {
@@ -554,6 +583,31 @@ public:
 	  }
       }
     return soname_regex_;
+  }
+
+  /// Get the regular expression object associated to the
+  /// 'soname_not_regex' property of @ref suppression_base.
+  ///
+  /// If the regular expression object is not created, this method
+  /// creates it and returns it.
+  ///
+  /// If the 'soname_not_regex' property of @ref suppression_base is
+  /// empty then this method returns nil.
+  const sptr_utils::regex_t_sptr
+  get_soname_not_regex() const
+  {
+    if (!soname_not_regex_)
+      {
+	if (!soname_not_regex_str_.empty())
+	  {
+	    sptr_utils::regex_t_sptr r(new regex_t);
+	    if (regcomp(r.get(),
+			soname_not_regex_str_.c_str(),
+			REG_EXTENDED) == 0)
+	      soname_not_regex_ = r;
+	  }
+      }
+    return soname_not_regex_;
   }
 
 }; // end clas suppression_base::priv
@@ -604,7 +658,33 @@ const string&
 suppression_base::get_file_name_regex_str() const
 {return priv_->file_name_regex_str_;}
 
-/// Setter of the "soname_regex_str property of the current isntance
+/// Setter for the "file_name_not_regex" property of the current
+/// instance of @ref suppression_base.
+///
+/// The current suppression specification should apply to ABI
+/// artifacts of a file which name does *NOT* match the regular
+/// expression string designated by the "file_name_not_regex"
+/// property.
+///
+/// @param regexp the new regular expression string.
+void
+suppression_base::set_file_name_not_regex_str(const string& regexp)
+{priv_->file_name_not_regex_str_ = regexp;}
+
+/// Getter for the "file_name_not_regex" property of the current
+/// instance of @ref suppression_base.
+///
+/// The current suppression specification should apply to ABI
+/// artifacts of a file which name does *NOT* match the regular
+/// expression string designated by the "file_name_not_regex"
+/// property.
+///
+/// @return the regular expression string.
+const string&
+suppression_base::get_file_name_not_regex_str() const
+{return priv_->file_name_not_regex_str_;}
+
+/// Setter of the "soname_regex_str property of the current instance
 /// of @ref suppression_base.
 ///
 /// The "soname_regex_str" is a regular expression string that
@@ -616,7 +696,7 @@ void
 suppression_base::set_soname_regex_str(const string& regexp)
 {priv_->soname_regex_str_ = regexp;}
 
-/// Getter of the "soname_regex_str property of the current isntance
+/// Getter of the "soname_regex_str property of the current instance
 /// of @ref suppression_base.
 ///
 /// The "soname_regex_str" is a regular expression string that
@@ -627,6 +707,127 @@ suppression_base::set_soname_regex_str(const string& regexp)
 const string&
 suppression_base::get_soname_regex_str() const
 {return priv_->soname_regex_str_;}
+
+/// Setter of the "soname_not_regex_str property of the current
+/// instance of @ref suppression_base.
+///
+/// The current suppression specification should apply to ABI
+/// artifacts of a shared library which SONAME does *NOT* match the
+/// regular expression string designated by the "soname_not_regex"
+/// property.
+///
+/// @param regexp the new regular expression string.
+void
+suppression_base::set_soname_not_regex_str(const string& regexp)
+{priv_->soname_not_regex_str_ = regexp;}
+
+/// Getter of the "soname_not_regex_str property of the current
+/// instance of @ref suppression_base.
+///
+/// The current suppression specification should apply to ABI
+/// artifacts of a shared library which SONAME does *NOT* match the
+/// regular expression string designated by the "soname_not_regex"
+/// property.
+///
+/// @return the regular expression string.
+const string&
+suppression_base::get_soname_not_regex_str() const
+{return priv_->soname_not_regex_str_;}
+
+/// Check if the names of the two binaries being compared match the
+/// content of the properties "file_name_regexp" and
+/// "file_name_not_regexp".
+///
+/// @param ctxt the context of the comparison.
+///
+/// @return false if the regular expression contained in the property
+/// file_name_regexp or in the property "file_name_not_regexp" does
+/// *NOT* match at least one of the names of the two binaries being
+/// compared.  Return true otherwise.
+bool
+suppression_base::names_of_binaries_match(const diff_context& ctxt) const
+{
+  // Check if the names of the binaries match
+  if (sptr_utils::regex_t_sptr regexp =
+      suppression_base::priv_->get_file_name_regex())
+    {
+      string first_binary_path = ctxt.get_first_corpus()->get_path(),
+	second_binary_path = ctxt.get_second_corpus()->get_path();
+
+      string first_binary_name, second_binary_name;
+
+      tools_utils::base_name(first_binary_path, first_binary_name);
+      tools_utils::base_name(second_binary_path, second_binary_name);
+
+      if ((regexec(regexp.get(), first_binary_name.c_str(),
+		   0, NULL, 0) != 0)
+	  && (regexec(regexp.get(), second_binary_name.c_str(),
+		      0, NULL, 0) != 0))
+	return false;
+    }
+
+  if (sptr_utils::regex_t_sptr regexp =
+      suppression_base::priv_->get_file_name_not_regex())
+    {
+      string first_binary_path = ctxt.get_first_corpus()->get_path(),
+	second_binary_path = ctxt.get_second_corpus()->get_path();
+
+      string first_binary_name, second_binary_name;
+
+      tools_utils::base_name(first_binary_path, first_binary_name);
+      tools_utils::base_name(second_binary_path, second_binary_name);
+
+      if ((regexec(regexp.get(), first_binary_name.c_str(),
+		   0, NULL, 0) == 0)
+	  || (regexec(regexp.get(), second_binary_name.c_str(),
+		      0, NULL, 0) == 0))
+	return false;
+    }
+
+  return true;
+}
+
+/// Check if the SONAMEs of the two binaries being compared match the
+/// content of the properties "soname_regexp" and "soname_not_regexp".
+///
+/// @param ctxt the context of the comparison.
+///
+/// @return false if the regular expression contained in the property
+/// soname_regexp or in the property "soname_not_regexp" does *NOT*
+/// match at least one of the SONAMEs of the two binaries being
+/// compared.  Return true otherwise.
+bool
+suppression_base::sonames_of_binaries_match(const diff_context& ctxt) const
+{
+  // Check if the sonames of the binaries match
+  if (sptr_utils::regex_t_sptr regexp =
+      suppression_base::priv_->get_soname_regex())
+    {
+      string first_soname = ctxt.get_first_corpus()->get_soname(),
+	second_soname = ctxt.get_second_corpus()->get_soname();
+
+      if ((regexec(regexp.get(), first_soname.c_str(),
+		   0, NULL, 0) != 0)
+	  && (regexec(regexp.get(), second_soname.c_str(),
+		      0, NULL, 0) != 0))
+	return false;
+    }
+
+  if (sptr_utils::regex_t_sptr regexp =
+      suppression_base::priv_->get_soname_not_regex())
+    {
+      string first_soname = ctxt.get_first_corpus()->get_soname(),
+	second_soname = ctxt.get_second_corpus()->get_soname();
+
+      if ((regexec(regexp.get(), first_soname.c_str(),
+		   0, NULL, 0) == 0)
+	  || (regexec(regexp.get(), second_soname.c_str(),
+		      0, NULL, 0) == 0))
+	return false;
+    }
+
+  return true;
+}
 
 suppression_base::~suppression_base()
 {}
@@ -1161,37 +1362,12 @@ type_suppression::suppresses_type(const type_base_sptr type,
   if (ctxt)
     {
       // Check if the names of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_file_name_regex())
-	{
-	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
-	    second_binary_path = ctxt->get_second_corpus()->get_path();
-
-	  string first_binary_name, second_binary_name;
-
-	  tools_utils::base_name(first_binary_path, first_binary_name);
-	  tools_utils::base_name(second_binary_path, second_binary_name);
-
-	  if ((regexec(regexp.get(), first_binary_name.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_binary_name.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!names_of_binaries_match(*ctxt))
+	return false;
 
       // Check if the sonames of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_soname_regex())
-	{
-	  string first_soname = ctxt->get_first_corpus()->get_soname(),
-	    second_soname = ctxt->get_second_corpus()->get_soname();
-
-	  if ((regexec(regexp.get(), first_soname.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_soname.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!sonames_of_binaries_match(*ctxt))
+	return false;
     }
 
   // If the suppression should consider type kind then, well, check
@@ -1699,10 +1875,24 @@ read_type_suppression(const ini::config::section& section)
   string file_name_regex_str =
     file_name_regex_prop ? file_name_regex_prop->get_value()->as_string() : "";
 
+  ini::simple_property_sptr file_name_not_regex_prop =
+    is_simple_property(section.find_property("file_name_not_regexp"));
+  string file_name_not_regex_str =
+    file_name_not_regex_prop
+    ? file_name_not_regex_prop->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr soname_regex_prop =
     is_simple_property(section.find_property("soname_regexp"));
   string soname_regex_str =
     soname_regex_prop ? soname_regex_prop->get_value()->as_string() : "";
+
+  ini::simple_property_sptr soname_not_regex_prop =
+    is_simple_property(section.find_property("soname_not_regexp"));
+  string soname_not_regex_str =
+    soname_not_regex_prop
+    ? soname_not_regex_prop->get_value()->as_string()
+    : "";
 
   ini::simple_property_sptr name_regex_prop =
     is_simple_property(section.find_property("name_regexp"));
@@ -1920,7 +2110,9 @@ read_type_suppression(const ini::config::section& section)
     }
 
   if (file_name_regex_str.empty()
+      && file_name_not_regex_str.empty()
       && soname_regex_str.empty()
+      && soname_not_regex_str.empty()
       && (!name_regex_prop || name_regex_prop->get_value()->as_string().empty())
       && (!name_prop || name_prop->get_value()->as_string().empty())
       && !consider_type_kind
@@ -1949,8 +2141,14 @@ read_type_suppression(const ini::config::section& section)
   if (!file_name_regex_str.empty())
     suppr->set_file_name_regex_str(file_name_regex_str);
 
+  if (!file_name_not_regex_str.empty())
+    suppr->set_file_name_not_regex_str(file_name_not_regex_str);
+
   if (!soname_regex_str.empty())
     suppr->set_soname_regex_str(soname_regex_str);
+
+  if (!soname_not_regex_str.empty())
+    suppr->set_soname_not_regex_str(soname_not_regex_str);
 
   if (!srcloc_not_in.empty())
     suppr->set_source_locations_to_keep(srcloc_not_in);
@@ -2626,37 +2824,12 @@ function_suppression::suppresses_function(const function_decl* fn,
   if (ctxt)
     {
       // Check if the name of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_file_name_regex())
-	{
-	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
-	    second_binary_path = ctxt->get_second_corpus()->get_path();
-
-	  string first_binary_name, second_binary_name;
-
-	  tools_utils::base_name(first_binary_path, first_binary_name);
-	  tools_utils::base_name(second_binary_path, second_binary_name);
-
-	  if ((regexec(regexp.get(), first_binary_name.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_binary_name.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!names_of_binaries_match(*ctxt))
+	return false;
 
       // Check if the soname of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_soname_regex())
-	{
-	  string first_soname = ctxt->get_first_corpus()->get_soname(),
-	    second_soname = ctxt->get_second_corpus()->get_soname();
-
-	  if ((regexec(regexp.get(), first_soname.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_soname.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!sonames_of_binaries_match(*ctxt))
+	return false;
     }
 
   string fname = fn->get_qualified_name();
@@ -2933,37 +3106,12 @@ function_suppression::suppresses_function_symbol(const elf_symbol* sym,
   if (ctxt)
     {
       // Check if the name of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_file_name_regex())
-	{
-	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
-	    second_binary_path = ctxt->get_second_corpus()->get_path();
-
-	  string first_binary_name, second_binary_name;
-
-	  tools_utils::base_name(first_binary_path, first_binary_name);
-	  tools_utils::base_name(second_binary_path, second_binary_name);
-
-	  if ((regexec(regexp.get(), first_binary_name.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_binary_name.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!names_of_binaries_match(*ctxt))
+	return false;
 
       // Check if the soname of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_soname_regex())
-	{
-	  string first_soname = ctxt->get_first_corpus()->get_soname(),
-	    second_soname = ctxt->get_second_corpus()->get_soname();
-
-	  if ((regexec(regexp.get(), first_soname.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_soname.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!sonames_of_binaries_match(*ctxt))
+	return false;
     }
 
   string sym_name = sym->get_name(), sym_version = sym->get_version().str();
@@ -3178,10 +3326,24 @@ read_function_suppression(const ini::config::section& section)
   string file_name_regex_str =
     file_name_regex_prop ? file_name_regex_prop->get_value()->as_string() : "";
 
+  ini::simple_property_sptr file_name_not_regex_prop =
+    is_simple_property(section.find_property("file_name_not_regexp"));
+  string file_name_not_regex_str =
+    file_name_not_regex_prop
+    ? file_name_not_regex_prop->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr soname_regex_prop =
     is_simple_property(section.find_property("soname_regexp"));
   string soname_regex_str =
     soname_regex_prop ? soname_regex_prop->get_value()->as_string() : "";
+
+  ini::simple_property_sptr soname_not_regex_prop =
+    is_simple_property(section.find_property("soname_not_regexp"));
+  string soname_not_regex_str =
+    soname_not_regex_prop
+    ? soname_not_regex_prop->get_value()->as_string()
+    : "";
 
   ini::simple_property_sptr name_prop =
     is_simple_property(section.find_property("name"));
@@ -3257,7 +3419,9 @@ read_function_suppression(const ini::config::section& section)
       || !name.empty()
       || !name_regex_str.empty()
       || !file_name_regex_str.empty()
+      || !file_name_not_regex_str.empty()
       || !soname_regex_str.empty()
+      || !soname_not_regex_str.empty()
       || !return_type_name.empty()
       || !return_type_regex_str.empty()
       || !sym_name.empty()
@@ -3285,8 +3449,14 @@ read_function_suppression(const ini::config::section& section)
   if (!file_name_regex_str.empty())
     result->set_file_name_regex_str(file_name_regex_str);
 
+  if (!file_name_not_regex_str.empty())
+    result->set_file_name_not_regex_str(file_name_not_regex_str);
+
   if (!soname_regex_str.empty())
     result->set_soname_regex_str(soname_regex_str);
+
+  if (!soname_not_regex_str.empty())
+    result->set_soname_not_regex_str(soname_not_regex_str);
 
   return result;
 }
@@ -3767,37 +3937,12 @@ variable_suppression::suppresses_variable(const var_decl* var,
   if (ctxt)
     {
       // Check if the name of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_file_name_regex())
-	{
-	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
-	    second_binary_path = ctxt->get_second_corpus()->get_path();
-
-	  string first_binary_name, second_binary_name;
-
-	  tools_utils::base_name(first_binary_path, first_binary_name);
-	  tools_utils::base_name(second_binary_path, second_binary_name);
-
-	  if ((regexec(regexp.get(), first_binary_name.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_binary_name.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!names_of_binaries_match(*ctxt))
+	return false;
 
       // Check if the soname of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_soname_regex())
-	{
-	  string first_soname = ctxt->get_first_corpus()->get_soname(),
-	    second_soname = ctxt->get_second_corpus()->get_soname();
-
-	  if ((regexec(regexp.get(), first_soname.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_soname.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!sonames_of_binaries_match(*ctxt))
+	return false;
     }
 
   string var_name = var->get_qualified_name();
@@ -3936,37 +4081,12 @@ variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
   if (ctxt)
     {
       // Check if the name of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_file_name_regex())
-	{
-	  string first_binary_path = ctxt->get_first_corpus()->get_path(),
-	    second_binary_path = ctxt->get_second_corpus()->get_path();
-
-	  string first_binary_name, second_binary_name;
-
-	  tools_utils::base_name(first_binary_path, first_binary_name);
-	  tools_utils::base_name(second_binary_path, second_binary_name);
-
-	  if ((regexec(regexp.get(), first_binary_name.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_binary_name.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!names_of_binaries_match(*ctxt))
+	return false;
 
       // Check if the soname of the binaries match
-      if (sptr_utils::regex_t_sptr regexp =
-	  suppression_base::priv_->get_soname_regex())
-	{
-	  string first_soname = ctxt->get_first_corpus()->get_soname(),
-	    second_soname = ctxt->get_second_corpus()->get_soname();
-
-	  if ((regexec(regexp.get(), first_soname.c_str(),
-		       0, NULL, 0) != 0)
-	      && (regexec(regexp.get(), second_soname.c_str(),
-			  0, NULL, 0) != 0))
-	    return false;
-	}
+      if (!sonames_of_binaries_match(*ctxt))
+	return false;
     }
 
   string sym_name = sym->get_name(), sym_version = sym->get_version().str();
@@ -4117,10 +4237,24 @@ read_variable_suppression(const ini::config::section& section)
   string file_name_regex_str =
     file_name_regex_prop ? file_name_regex_prop->get_value()->as_string() : "";
 
+ ini::simple_property_sptr file_name_not_regex_prop =
+    is_simple_property(section.find_property("file_name_not_regexp"));
+  string file_name_not_regex_str =
+    file_name_not_regex_prop
+    ? file_name_not_regex_prop->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr soname_regex_prop =
     is_simple_property(section.find_property("soname_regexp"));
   string soname_regex_str =
     soname_regex_prop ? soname_regex_prop->get_value()->as_string() : "";
+
+  ini::simple_property_sptr soname_not_regex_prop =
+    is_simple_property(section.find_property("soname_not_regexp"));
+  string soname_not_regex_str =
+    soname_not_regex_prop
+    ? soname_not_regex_prop->get_value()->as_string()
+    : "";
 
   ini::simple_property_sptr name_prop =
     is_simple_property(section.find_property("name"));
@@ -4174,7 +4308,9 @@ read_variable_suppression(const ini::config::section& section)
       && name_str.empty()
       && name_regex_str.empty()
       && file_name_regex_str.empty()
+      && file_name_not_regex_str.empty()
       && soname_regex_str.empty()
+      && soname_not_regex_str.empty()
       && symbol_name.empty()
       && symbol_name_regex_str.empty()
       && symbol_version.empty()
@@ -4195,8 +4331,14 @@ read_variable_suppression(const ini::config::section& section)
   if (!file_name_regex_str.empty())
     result->set_file_name_regex_str(file_name_regex_str);
 
+  if (!file_name_not_regex_str.empty())
+    result->set_file_name_not_regex_str(file_name_not_regex_str);
+
   if (!soname_regex_str.empty())
     result->set_soname_regex_str(soname_regex_str);
+
+  if (!soname_not_regex_str.empty())
+    result->set_soname_not_regex_str(soname_not_regex_str);
 
   return result;
 }
