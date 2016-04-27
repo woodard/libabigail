@@ -26,24 +26,40 @@
 /// pattern.  It aims at performing a set of tasks in parallel, using
 /// the multi-threading capabilities of the underlying processor(s).
 
-/// @defgroup Worker Threads
+#include <assert.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <queue>
+#include <vector>
+#include <iostream>
+#include "abg-workers.h"
+namespace abigail
+{
+
+namespace workers
+{
+
+/// @defgroup thread_pool Worker Threads
 /// @{
 ///
-/// The main interface of this pattern is a queue of tasks to be
-/// performed.  Associated to that queue are a set of worker threads,
-/// that sit there, idle, until at least one task is added to the
-/// queue.
+/// \brief Libabigail's implementation of Thread Pools.
 ///
-/// When a task is added to the queue, one thread is woken up, picks
-/// the task, removes it from the queue, and executes the instructions
-/// carried by the task.  We say the worker thread performs the task.
+/// The main interface of this pattern is a @ref queue of @ref tasks
+/// to be performed.  Associated to that queue are a set of worker
+/// threads (these are native posix threads) that sits there, idle,
+/// until at least one @ref task is added to the queue.
 ///
-/// When the worker thread is done performing the task, the performed
-/// task is added to another queue, named as the "done queue".  Then
-/// the thread looks at the queue of tasks to be performed again, and
-/// if there is at least one task in that queue, the same process as
-/// above is done.  Otherwise, the thread blocks, waiting for a new
-/// task to be added to the queue.
+/// When a @ref task is added to the @ref queue, one thread is woken
+/// up, picks the @ref task, removes it from the @ref queue, and
+/// executes the instructions it carries.  We say the worker thread
+/// performs the @ref task.
+///
+/// When the worker thread is done performing the @ref task, the
+/// performed @ref task is added to another queue, named as the "done
+/// queue".  Then the thread looks at the @ref queue of tasks to be
+/// performed again, and if there is at least one task in that queue,
+/// the same process as above is done.  Otherwise, the thread blocks,
+/// waiting for a new task to be added to the queue.
 ///
 /// By default, the number of worker threads is equal to the number of
 /// execution threads advertised by the underlying processor.
@@ -57,18 +73,6 @@
 /// performed and added to the "done queue".
 ///
 ///@}
-
-#include <assert.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <queue>
-#include <vector>
-#include <iostream>
-#include "abg-workers.h"
-namespace abigail
-{
-namespace workers
-{
 
 /// @return The number of hardware threads of executions advertised by
 /// the underlying processor.

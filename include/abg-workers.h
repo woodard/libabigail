@@ -38,6 +38,10 @@ using std::tr1::shared_ptr;
 
 namespace abigail
 {
+
+/// The namespace of the worker threads (or thread pool)
+/// implementation of libabigail.  This was modelled after the article
+/// https://en.wikipedia.org/wiki/Thread_pool.
 namespace workers
 {
 
@@ -46,6 +50,13 @@ typedef shared_ptr<task> task_sptr;
 
 size_t get_number_of_threads();
 
+/// This represents a task to be performed.
+///
+/// Each instance of this type represents a task that can be performed
+/// concurrently to other instance of the same type.
+///
+/// An instance of @ref task is meant to be performed by a worker
+/// (thread).  A set of tasks can be stored in a @ref queue.
 class task
 {
 public:
@@ -56,6 +67,20 @@ public:
   virtual ~task();
 }; // end class task.
 
+/// This represents a queue of tasks to be performed.
+///
+/// Tasks are performed by a number of worker threads.
+///
+/// When a task is inserted into a @ref queue, the task is said to be
+/// "scheduled for execution".
+///
+/// This is because there are worker threads waiting for tasks to be
+/// added to the queue.  When a task is added to the queue, a worker
+/// thread picks it up, executes it, notifies interested listeners
+/// when the @ref task's execution is completed, and waits for another
+/// task to be added to the queue.
+///
+/// Of course, several worker threads can execute tasks concurrently.
 class queue
 {
 public:
@@ -78,6 +103,8 @@ public:
   ~queue();
 }; // end class queue
 
+/// This functor is to notify listeners that a given task scheduled
+/// for execution has been fully executed.
 struct queue::task_done_notify
 {
   virtual void
