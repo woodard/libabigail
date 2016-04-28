@@ -224,9 +224,9 @@ typedef int (*ftw_cb_type)(const char *, const struct stat*, int);
 /// binaries, and binaries whic ABI changed.
 struct abi_diff
 {
-  vector <string> added_binaries;
-  vector <string> removed_binaries;
-  vector <string> changed_binaries;
+  vector<elf_file_sptr> added_binaries;
+  vector<elf_file_sptr> removed_binaries;
+  vector<string> changed_binaries;
 
   /// Test if the current diff carries changes.
   ///
@@ -1414,7 +1414,7 @@ compare(package&	first_package,
 	}
       else
 	{
-	  diff.removed_binaries.push_back(it->second->name);
+	  diff.removed_binaries.push_back(it->second);
 	  status |= abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE;
 	  status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
 	}
@@ -1515,22 +1515,40 @@ compare(package&	first_package,
 	 second_package.path_elf_file_sptr_map().begin();
        it != second_package.path_elf_file_sptr_map().end();
        ++it)
-    diff.added_binaries.push_back(it->second->name);
+    diff.added_binaries.push_back(it->second);
 
   if (diff.removed_binaries.size())
     {
       cout << "Removed binaries:\n";
-      for (vector<string>::iterator it = diff.removed_binaries.begin();
+      for (vector<elf_file_sptr>::iterator it = diff.removed_binaries.begin();
 	   it != diff.removed_binaries.end(); ++it)
-	cout << "  " << *it << "\n";
+	{
+	  cout << "  " << (*it)->name << ", ";
+	  string soname;
+	  get_soname_of_elf_file((*it)->path, soname);
+	  if (!soname.empty())
+	    cout << "SONAME: " << soname;
+	  else
+	    cout << "no SONAME";
+	  cout << "\n";
+	}
     }
 
   if (opts.show_added_binaries && diff.added_binaries.size())
     {
       cout << "Added binaries:\n";
-      for (vector<string>::iterator it = diff.added_binaries.begin();
+      for (vector<elf_file_sptr>::iterator it = diff.added_binaries.begin();
 	   it != diff.added_binaries.end(); ++it)
-	cout << "  " << *it << "\n";
+	{
+	  cout << "  " << *it << ", ";
+	  string soname;
+	  get_soname_of_elf_file((*it)->path, soname);
+	  if (!soname.empty())
+	    cout << "SONAME: " << soname;
+	  else
+	    cout << "no SONAME";
+	  cout << "\n";
+	}
     }
 
   if (!opts.keep_tmp_files)
