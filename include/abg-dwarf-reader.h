@@ -36,6 +36,7 @@
 namespace abigail
 {
 
+/// The namespace for the DWARF reader.
 namespace dwarf_reader
 {
 
@@ -73,10 +74,15 @@ operator&=(status&, status);
 /// The kind of ELF file we are looking at.
 enum elf_type
 {
+  /// A normal executable binary
   ELF_TYPE_EXEC,
+  /// A Position Independant Executable binary
   ELF_TYPE_PI_EXEC,
+  /// A dynamic shared object, a.k.a shared library binrary.
   ELF_TYPE_DSO,
+  /// A relocatalbe binary.
   ELF_TYPE_RELOCATABLE,
+  /// An unknown kind of binary.
   ELF_TYPE_UNKNOWN
 };
 

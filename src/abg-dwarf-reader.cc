@@ -9781,6 +9781,8 @@ get_soname_of_elf_file(const string& path, string &soname)
 ///
 /// @param path the absolute path to the ELF file to analyzed.
 ///
+/// @param type the kind of the ELF file designated by @p path.
+///
 /// @param out parameter.  Is set to the type of ELF file of @p path.
 /// This parameter is set iff the function returns true.
 ///
