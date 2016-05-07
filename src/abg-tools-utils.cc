@@ -337,7 +337,8 @@ ensure_parent_dir_created(const string& path)
 ostream&
 emit_prefix(const string& prog_name, ostream& out)
 {
-  out << prog_name << ": ";
+  if (!prog_name.empty())
+    out << prog_name << ": ";
   return out;
 }
 

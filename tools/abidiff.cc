@@ -443,7 +443,7 @@ maybe_check_suppression_files(const options& opts)
   for (vector<string>::const_iterator i = opts.suppression_paths.begin();
        i != opts.suppression_paths.end();
        ++i)
-    if (!check_file(*i, cerr))
+    if (!check_file(*i, cerr, "abidiff"))
       return false;
 
   return true;
