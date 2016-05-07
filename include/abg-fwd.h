@@ -739,6 +739,18 @@ hash_type_or_decl(const shared_ptr<type_or_decl_base>&);
 
 using namespace abigail::ir;
 
+namespace suppr
+{
+class suppression_base;
+
+/// Convenience typedef for a shared pointer to a @ref suppression.
+typedef shared_ptr<suppression_base> suppression_sptr;
+
+/// Convenience typedef for a vector of @ref suppression_sptr
+typedef vector<suppression_sptr> suppressions_type;
+
+} // end namespace comparison
+
 void
 dump(const shared_ptr<decl_base>, std::ostream&);
 

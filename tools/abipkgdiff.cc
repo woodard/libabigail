@@ -77,6 +77,7 @@
 #include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-comparison.h"
+#include "abg-suppression.h"
 #include "abg-dwarf-reader.h"
 
 using std::cout;
@@ -99,9 +100,9 @@ using abigail::comparison::diff_context;
 using abigail::comparison::diff_context_sptr;
 using abigail::comparison::compute_diff;
 using abigail::comparison::corpus_diff_sptr;
-using abigail::comparison::suppression_sptr;
-using abigail::comparison::suppressions_type;
-using abigail::comparison::read_suppressions;
+using abigail::suppr::suppression_sptr;
+using abigail::suppr::suppressions_type;
+using abigail::suppr::read_suppressions;
 using abigail::dwarf_reader::get_soname_of_elf_file;
 using abigail::dwarf_reader::get_type_of_elf_file;
 using abigail::dwarf_reader::read_corpus_from_elf;

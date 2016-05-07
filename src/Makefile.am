@@ -16,6 +16,7 @@ abg-ir.cc				\
 abg-corpus.cc				\
 abg-diff-utils.cc			\
 abg-comparison.cc			\
+abg-suppression.cc			\
 abg-comp-filter.cc			\
 abg-reader.cc				\
 abg-dwarf-reader.cc			\

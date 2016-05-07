@@ -54,6 +54,7 @@
 #include "abg-corpus.h"
 #include "abg-dwarf-reader.h"
 #include "abg-comparison.h"
+#include "abg-suppression.h"
 
 using std::string;
 using std::cerr;
@@ -259,9 +260,9 @@ using abigail::comparison::corpus_diff;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::function_type_diff_sptr;
 using abigail::comparison::compute_diff;
-using abigail::comparison::suppression_sptr;
-using abigail::comparison::suppressions_type;
-using abigail::comparison::read_suppressions;
+using abigail::suppr::suppression_sptr;
+using abigail::suppr::suppressions_type;
+using abigail::suppr::read_suppressions;
 
 /// Perform a compatibility check of an application corpus linked
 /// against a first version of library corpus, with a second version

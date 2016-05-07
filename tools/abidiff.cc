@@ -28,6 +28,7 @@
 #include <iostream>
 #include "abg-config.h"
 #include "abg-comp-filter.h"
+#include "abg-suppression.h"
 #include "abg-tools-utils.h"
 #include "abg-reader.h"
 #include "abg-dwarf-reader.h"
@@ -47,9 +48,9 @@ using abigail::comparison::translation_unit_diff_sptr;
 using abigail::comparison::corpus_diff;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
-using abigail::comparison::suppression_sptr;
-using abigail::comparison::suppressions_type;
-using abigail::comparison::read_suppressions;
+using abigail::suppr::suppression_sptr;
+using abigail::suppr::suppressions_type;
+using abigail::suppr::read_suppressions;
 using namespace abigail::dwarf_reader;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
