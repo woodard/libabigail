@@ -726,6 +726,47 @@ variable_suppression::change_kind
 operator|(variable_suppression::change_kind l,
 	  variable_suppression::change_kind r);
 
+class file_suppression;
+
+/// A convenience typedef for a shared_ptr to @ref file_suppression
+typedef shared_ptr<file_suppression> file_suppression_sptr;
+
+/// Abstraction of a suppression specification to avoid loading a
+/// file.
+///
+/// This can be used by a tool that loads (binary) files, to know
+/// which file it has to avoid loading.
+class file_suppression: public suppression_base
+{
+  class priv;
+  typedef shared_ptr<priv> priv_sptr;
+
+  priv_sptr priv_;
+
+  // Forbid this
+  file_suppression();
+
+public:
+
+  file_suppression(const string& label,
+		   const string& file_name_regex,
+		   const string& file_name_not_regex);
+
+  virtual bool
+  suppresses_diff(const diff* diff) const;
+
+  bool
+  suppresses_file(const string& file_path);
+
+  virtual ~file_suppression();
+}; // end file_suppression
+
+file_suppression_sptr
+is_file_suppression(const suppression_sptr);
+
+file_suppression_sptr
+file_is_suppressed(const string& file_path,
+		   const suppressions_type& suppressions);
 
 } // end namespace suppr
 

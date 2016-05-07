@@ -412,6 +412,8 @@ read_function_suppression(const ini::config::section& section);
 static variable_suppression_sptr
 read_variable_suppression(const ini::config::section& section);
 
+static file_suppression_sptr
+read_file_suppression(const ini::config::section& section);
 
 /// Read a vector of suppression specifications from the sections of
 /// an ini::config.
@@ -434,7 +436,8 @@ read_suppressions(const ini::config& config,
        ++i)
     if ((s = read_type_suppression(**i))
 	|| (s = read_function_suppression(**i))
-	|| (s = read_variable_suppression(**i)))
+	|| (s = read_variable_suppression(**i))
+	|| (s = read_file_suppression(**i)))
       suppressions.push_back(s);
 
 }
@@ -3917,5 +3920,153 @@ read_variable_suppression(const ini::config::section& section)
 
 // </variable_suppression stuff>
 
+// <file_suppression stuff>
+
+/// Constructor for the the @ref file_suppression type.
+///
+/// @param label the label of the suppression directive.
+///
+/// @param fname_regex_str the regular expression string that
+/// designates the file name that instances of @ref file_suppression
+/// should match.
+///
+/// @param fname_not_regex_str the regular expression string that
+/// designates the file name that instances of @ref file_suppression
+/// shoult *NOT* match.  In other words, this file_suppression should
+/// be activated if its file name does not match the regular
+/// expression @p fname_not_regex_str.
+file_suppression::file_suppression(const string& label,
+				   const string& fname_regex_str,
+				   const string& fname_not_regex_str)
+  : suppression_base(label,
+		     fname_regex_str,
+		     fname_not_regex_str)
+{}
+
+/// Test if instances of this @ref file_suppression suppresses a
+/// certain instance of @ref diff.
+///
+/// This function always returns false because, obviously, a
+/// file_suppression is meants to prevents Abigail tools from loading
+/// some files.  It is not meant to act on instance of @ref diff.
+/// @return false.
+bool
+file_suppression::suppresses_diff(const diff*) const
+{return false;}
+
+/// Test if a instances of this @ref file_suppression suppresses a
+/// given file.
+///
+/// @param file_path the file path to test against.
+///
+/// @return true iff this file_suppression matches the file path @p
+/// file_path.
+bool
+file_suppression::suppresses_file(const string& file_path)
+{
+  if (file_path.empty())
+    return false;
+
+  string fname;
+  tools_utils::base_name(file_path, fname);
+
+  if (sptr_utils::regex_t_sptr regexp =
+      suppression_base::priv_->get_file_name_regex())
+    if (regexec(regexp.get(), fname.c_str(), 0, NULL, 0) != 0)
+      return false;
+
+  if (sptr_utils::regex_t_sptr regexp =
+      suppression_base::priv_->get_file_name_not_regex())
+    if (regexec(regexp.get(), fname.c_str(), 0, NULL, 0) == 0)
+      return false;
+
+  return true;
+}
+
+/// Destructor of @ref file_suppression.
+file_suppression::~file_suppression()
+{
+}
+
+/// Read a file suppression from an instance of ini::config::section
+/// and build a @ref type_suppression as a result.
+///
+/// @param section the section (from an ini file) to read the file
+/// suppression from.
+///
+/// @return file_suppression_sptr.
+static file_suppression_sptr
+read_file_suppression(const ini::config::section& section)
+{
+  file_suppression_sptr result;
+
+  if (section.get_name() != "suppress_file")
+    return result;
+
+  ini::simple_property_sptr label_prop =
+    is_simple_property(section.find_property("label"));
+  string label_str = (label_prop
+		      ? label_prop->get_value()->as_string()
+		      : "");
+
+  ini::simple_property_sptr file_name_regex_prop =
+    is_simple_property(section.find_property("file_name_regexp"));
+  string file_name_regex_str =
+    file_name_regex_prop ? file_name_regex_prop->get_value()->as_string() : "";
+
+ ini::simple_property_sptr file_name_not_regex_prop =
+    is_simple_property(section.find_property("file_name_not_regexp"));
+  string file_name_not_regex_str =
+    file_name_not_regex_prop
+    ? file_name_not_regex_prop->get_value()->as_string()
+    : "";
+
+  if (file_name_regex_str.empty()
+      && file_name_not_regex_str.empty())
+    return result;
+
+  result.reset(new file_suppression(label_str,
+				    file_name_regex_str,
+				    file_name_not_regex_str));
+
+  return result;
+}
+
+/// Test if a given suppression specification is a file suppression
+/// specification.
+///
+/// @param s the instance of @ref suppression_base to test.
+///
+/// @return the instance of @ref file_suppression that @p s points to,
+/// iff s is an instance of @ref file_suppression.  Otherwise, returns
+/// nil.
+file_suppression_sptr
+is_file_suppression(const suppression_sptr s)
+{return dynamic_pointer_cast<file_suppression>(s);}
+
+
+/// Test if a given file path is "suppressed" by at least one file
+/// suppression specification among a vector of suppression
+/// specifications.
+///
+/// @param file_path the file path to test.
+///
+/// @param sprs the vector of suppressions to use to test if one of
+/// them at lease matches the file path @p file_path.
+///
+/// @return a pointer to the first instance of @ref file_suppression
+/// that matches @p file_path, or nil if no file suppression matches.
+file_suppression_sptr
+file_is_suppressed(const string& file_path,
+		   const suppressions_type& sprs)
+{
+  for (suppressions_type::const_iterator i = sprs.begin(); i != sprs.end(); ++i)
+    if (file_suppression_sptr s = is_file_suppression(*i))
+      if (s->suppresses_file(file_path))
+	return s;
+
+  return file_suppression_sptr();
+}
+// </file_suppression stuff>
 }// end namespace suppr
 } // end namespace abigail

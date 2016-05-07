@@ -613,6 +613,19 @@ main(int argc, char* argv[])
 	c2_status = abigail::dwarf_reader::STATUS_OK;
       corpus_sptr c1, c2;
       char *di_dir1 = 0, *di_dir2 = 0;
+      bool files_suppressed = false;
+
+      diff_context_sptr ctxt(new diff_context);
+      set_diff_context_from_opts(ctxt, opts);
+      suppressions_type& supprs = ctxt->suppressions();
+      files_suppressed = (file_is_suppressed(opts.file1, supprs)
+			  || file_is_suppressed(opts.file2, supprs));
+
+      if (files_suppressed)
+	// We don't have to compare anything because a user
+	// suppression specification file instructs us to avoid
+	// loading either one of the input files.
+	return abigail::tools_utils::ABIDIFF_OK;
 
       switch (t1_type)
 	{
@@ -800,8 +813,6 @@ main(int argc, char* argv[])
 	  set_corpus_keep_drop_regex_patterns(opts, c1);
 	  set_corpus_keep_drop_regex_patterns(opts, c2);
 
-	  diff_context_sptr ctxt(new diff_context);
-	  set_diff_context_from_opts(ctxt, opts);
 	  corpus_diff_sptr diff = compute_diff(c1, c2, ctxt);
 
 	  if (diff->has_net_changes())

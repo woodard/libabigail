@@ -154,7 +154,52 @@ Section names
 ^^^^^^^^^^^^^
 
 Each different section can be thought of as being a directive to
-suppress diff reports for a particular kind of ABI artifact.
+suppress ABI change reports for a particular kind of ABI artifact.
+
+``[suppress_file]``
+$$$$$$$$$$$$$$$$$$$
+
+This directive prevents a given tool from loading a file (binary or
+not) if its file name matches certain properties.  Thus, if the tool
+is meant to compare the ABIs of two files, and if the directive
+prevents it from loading either one of the files, then no comparison
+is performed.
+
+Note that for the ``[suppress_file]`` directive to work, at least one
+of the following properties must be provided:
+
+    ``file_name_regexp``, ``file_name_not_regexp``.
+
+The potential properties of this sections are listed below:
+
+* ``file_name_regexp``
+
+  Usage:
+
+    ``file_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Prevents the system from loading the file which name matches the
+  regular expression specified as value of this property.
+
+* ``file_name_not_regexp``
+
+  Usage:
+
+    ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+  Prevents the system from loading the file which name does not match
+  the regular expression specified as value of this property.
+
+
+* ``label``
+
+ Usage:
+
+   ``label`` ``=`` <some-value>
+
+ Define a label for the section.  A label is just an informative
+ string that might be used by the tool to refer to a type suppression
+ in error messages.
 
 ``[suppress_type]``
 $$$$$$$$$$$$$$$$$$$

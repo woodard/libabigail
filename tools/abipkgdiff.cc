@@ -949,6 +949,23 @@ compare(const elf_file& elf1,
   abigail::dwarf_reader::status c1_status = abigail::dwarf_reader::STATUS_OK,
     c2_status = abigail::dwarf_reader::STATUS_OK;
 
+  diff_context_sptr ctxt(new diff_context);
+  set_diff_context_from_opts(ctxt, opts);
+  suppressions_type& supprs = ctxt->suppressions();
+  bool files_suppressed = (file_is_suppressed(elf1.path, supprs)
+			   ||file_is_suppressed(elf2.path, supprs));
+
+  if (files_suppressed)
+    {
+      if (verbose)
+	emit_prefix("abipkgdiff", cerr)
+	  << "  input file "
+	  << elf1.path << " or " << elf2.path
+	  << " has been suppressed by a suppression specification.\n"
+	  << " Not reading any of them\n";
+      return abigail::tools_utils::ABIDIFF_OK;
+    }
+
   if (verbose)
     emit_prefix("abipkgdiff", cerr)
       << "  Reading file "
@@ -1029,8 +1046,6 @@ if (verbose)
     << "    " << elf1.path << "\n"
     << "    " << elf2.path << "\n";
 
-  diff_context_sptr ctxt(new diff_context);
-  set_diff_context_from_opts(ctxt, opts);
   diff = compute_diff(corpus1, corpus2, ctxt);
 
   if (verbose)

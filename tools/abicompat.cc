@@ -264,11 +264,54 @@ using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
 
+/// Create the context of a diff.
+///
+/// Create the diff context, initialize it and return a smart pointer
+/// to it.
+///
+/// @param opts the options of the program.
+///
+/// @return a smart pointer to the newly created diff context.
+static diff_context_sptr
+create_diff_context(const options& opts)
+{
+  diff_context_sptr ctxt(new diff_context());
+  ctxt->show_added_fns(false);
+  ctxt->show_added_vars(false);
+  ctxt->show_added_symbols_unreferenced_by_debug_info(false);
+  ctxt->show_linkage_names(true);
+  ctxt->show_redundant_changes(opts.show_redundant);
+  ctxt->show_locs(opts.show_locs);
+  ctxt->switch_categories_off
+    (abigail::comparison::ACCESS_CHANGE_CATEGORY
+     | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
+     | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
+     | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
+     | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
+     | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
+     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
+
+  // Load suppression specifications, if there are any.
+  suppressions_type supprs;
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    if (check_file(*i, cerr, opts.prog_name))
+      read_suppressions(*i, supprs);
+
+  if (!supprs.empty())
+    ctxt->add_suppressions(supprs);
+
+  return ctxt;
+}
+
 /// Perform a compatibility check of an application corpus linked
 /// against a first version of library corpus, with a second version
 /// of the same library.
 ///
 /// @param opts the options the tool got invoked with.
+///
+/// @param ctxt the context of the diff to be performed.
 ///
 /// @param app_corpus the application corpus to consider.
 ///
@@ -284,6 +327,7 @@ using abigail::suppr::read_suppressions;
 /// @return a status bitfield.
 static abidiff_status
 perform_compat_check_in_normal_mode(options& opts,
+				    diff_context_sptr& ctxt,
 				    corpus_sptr app_corpus,
 				    corpus_sptr lib1_corpus,
 				    corpus_sptr lib2_corpus)
@@ -322,34 +366,6 @@ perform_compat_check_in_normal_mode(options& opts,
       lib1_corpus->maybe_drop_some_exported_decls();
       lib2_corpus->maybe_drop_some_exported_decls();
     }
-
-  diff_context_sptr ctxt(new diff_context());
-  ctxt->show_added_fns(false);
-  ctxt->show_added_vars(false);
-  ctxt->show_added_symbols_unreferenced_by_debug_info(false);
-  ctxt->show_linkage_names(true);
-  ctxt->show_redundant_changes(opts.show_redundant);
-  ctxt->show_locs(opts.show_locs);
-  ctxt->switch_categories_off
-    (abigail::comparison::ACCESS_CHANGE_CATEGORY
-     | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
-     | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
-     | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
-
-  // load the suppression specifications
-  // before starting to diff the libraries.
-  suppressions_type supprs;
-  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
-       i != opts.suppression_paths.end();
-       ++i)
-    if (check_file(*i, cerr, opts.prog_name))
-      read_suppressions(*i, supprs);
-
-  if (!supprs.empty())
-    ctxt->add_suppressions(supprs);
 
   // Now really do the diffing.
   corpus_diff_sptr changes = compute_diff(lib1_corpus, lib2_corpus, ctxt);
@@ -457,6 +473,7 @@ struct var_change
 /// @return a status bitfield.
 static abidiff_status
 perform_compat_check_in_weak_mode(options& opts,
+				  diff_context_sptr& ctxt,
 				  corpus_sptr app_corpus,
 				  corpus_sptr lib_corpus)
 {
@@ -485,32 +502,6 @@ perform_compat_check_in_weak_mode(options& opts,
   if (!app_corpus->get_sorted_undefined_var_symbols().empty()
       || !app_corpus->get_sorted_undefined_fun_symbols().empty())
     lib_corpus->maybe_drop_some_exported_decls();
-
-  diff_context_sptr ctxt(new diff_context());
-  ctxt->show_added_fns(false);
-  ctxt->show_added_vars(false);
-  ctxt->show_added_symbols_unreferenced_by_debug_info(false);
-  ctxt->show_linkage_names(true);
-  ctxt->show_redundant_changes(opts.show_redundant);
-  ctxt->show_locs(opts.show_locs);
-  ctxt->switch_categories_off
-    (abigail::comparison::ACCESS_CHANGE_CATEGORY
-     | abigail::comparison::COMPATIBLE_TYPE_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY
-     | abigail::comparison::NON_VIRT_MEM_FUN_CHANGE_CATEGORY
-     | abigail::comparison::STATIC_DATA_MEMBER_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_ENUM_CHANGE_CATEGORY
-     | abigail::comparison::HARMLESS_SYMBOL_ALIAS_CHANGE_CATEORY);
-
-  suppressions_type supprs;
-  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
-       i != opts.suppression_paths.end();
-       ++i)
-    if (check_file(*i, cerr, opts.prog_name))
-      read_suppressions(*i, supprs);
-
-  if (!supprs.empty())
-    ctxt->add_suppressions(supprs);
 
   {
     function_type_sptr lib_fn_type, app_fn_type;
@@ -648,6 +639,22 @@ main(int argc, char* argv[])
       return abigail::tools_utils::ABIDIFF_ERROR;
     }
 
+  // Create the context of the diff
+  diff_context_sptr ctxt = create_diff_context(opts);
+
+  // Check if any suppression specification prevents us from
+  // performing the compatibility checking.
+  suppressions_type& supprs = ctxt->suppressions();
+  bool files_suppressed = (file_is_suppressed(opts.app_path, supprs)
+			   || file_is_suppressed(opts.lib1_path, supprs)
+			   ||file_is_suppressed(opts.lib2_path, supprs));
+
+  if (files_suppressed)
+    // We don't have to compare anything because a user
+    // suppression specification file instructs us to avoid
+    // loading either one of the input files.
+    return abigail::tools_utils::ABIDIFF_OK;
+
   // Read the application ELF file.
   char * app_di_root = opts.app_di_root_path.get();
   status status = abigail::dwarf_reader::STATUS_UNKNOWN;
@@ -751,11 +758,11 @@ main(int argc, char* argv[])
   abidiff_status s = abigail::tools_utils::ABIDIFF_OK;
 
   if (opts.weak_mode)
-    s = perform_compat_check_in_weak_mode(opts,
+    s = perform_compat_check_in_weak_mode(opts, ctxt,
 					  app_corpus,
 					  lib1_corpus);
   else
-    s = perform_compat_check_in_normal_mode(opts,
+    s = perform_compat_check_in_normal_mode(opts, ctxt,
 					    app_corpus,
 					    lib1_corpus,
 					    lib2_corpus);

@@ -84,6 +84,15 @@ InOutSpec in_out_specs[] =
     "output/test-abicompat/test0-fn-changed-report-2.txt",
   },
   {
+    "data/test-abicompat/test0-fn-changed-app",
+    "data/test-abicompat/libtest0-fn-changed-libapp-v0.so",
+    "data/test-abicompat/libtest0-fn-changed-libapp-v1.so",
+    "data/test-abicompat/test0-fn-changed-1.suppr",
+    "--show-base-names --no-show-locs --no-redundant",
+    "data/test-abicompat/test0-fn-changed-report-3.txt",
+    "output/test-abicompat/test0-fn-changed-report-3.txt",
+  },
+  {
     "data/test-abicompat/test1-fn-removed-app",
     "data/test-abicompat/libtest1-fn-removed-v0.so",
     "data/test-abicompat/libtest1-fn-removed-v1.so",

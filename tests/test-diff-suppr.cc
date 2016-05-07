@@ -89,6 +89,38 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test0-type-suppr-report-3.txt",
   },
   {
+    "data/test-diff-suppr/test0-type-suppr-v0.o",
+    "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "data/test-diff-suppr/test0-type-suppr-3.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test0-type-suppr-report-4.txt",
+    "output/test-diff-suppr/test0-type-suppr-report-4.txt",
+  },
+  {
+    "data/test-diff-suppr/test0-type-suppr-v0.o",
+    "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "data/test-diff-suppr/test0-type-suppr-4.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test0-type-suppr-report-5.txt",
+    "output/test-diff-suppr/test0-type-suppr-report-5.txt",
+  },
+  {
+    "data/test-diff-suppr/test0-type-suppr-v0.o",
+    "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "data/test-diff-suppr/test0-type-suppr-5.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test0-type-suppr-report-6.txt",
+    "output/test-diff-suppr/test0-type-suppr-report-6.txt",
+  },
+  {
+    "data/test-diff-suppr/test0-type-suppr-v0.o",
+    "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "data/test-diff-suppr/test0-type-suppr-6.suppr",
+    "--no-show-locs --no-redundant",
+    "data/test-diff-suppr/test0-type-suppr-report-7.txt",
+    "output/test-diff-suppr/test0-type-suppr-report-7.txt",
+  },
+  {
     "data/test-diff-suppr/test1-typedef-suppr-v0.o",
     "data/test-diff-suppr/test1-typedef-suppr-v1.o",
     "",
@@ -880,7 +912,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test23-alias-filter-report-5.txt",
     "output/test-diff-suppr/test23-alias-filter-report-5.txt"
   },
-{
+  {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
     "data/test-diff-suppr/test24-soname-suppr-0.txt",
@@ -1176,7 +1208,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test28-add-aliased-function-report-6.txt",
     "output/test-diff-suppr/test28-add-aliased-function-report-6.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-0.txt",
@@ -1184,7 +1216,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test29-soname-report-0.txt",
     "output/test-diff-suppr/test29-soname-report-0.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-1.txt",
@@ -1192,7 +1224,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test29-soname-report-1.txt",
     "output/test-diff-suppr/test29-soname-report-1.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-2.txt",
@@ -1200,7 +1232,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test29-soname-report-2.txt",
     "output/test-diff-suppr/test29-soname-report-2.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-3.txt",
@@ -1208,7 +1240,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test29-soname-report-3.txt",
     "output/test-diff-suppr/test29-soname-report-3.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-4.txt",
@@ -1216,7 +1248,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test29-soname-report-4.txt",
     "output/test-diff-suppr/test29-soname-report-4.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-5.txt",
@@ -1224,7 +1256,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test29-soname-report-5.txt",
     "output/test-diff-suppr/test29-soname-report-5.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-6.txt",
@@ -1232,7 +1264,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test29-soname-report-6.txt",
     "output/test-diff-suppr/test29-soname-report-6.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-7.txt",
@@ -1240,7 +1272,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test29-soname-report-7.txt",
     "output/test-diff-suppr/test29-soname-report-7.txt"
   },
- {
+  {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
     "data/test-diff-suppr/test29-suppr-8.txt",
