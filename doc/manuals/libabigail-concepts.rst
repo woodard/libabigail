@@ -455,8 +455,8 @@ The potential properties of this sections are listed below:
    ``label`` ``=`` <some-value>
 
  Define a label for the section.  A label is just an informative
- string that might be used by abidiff to refer to a type suppression
- in error messages.
+ string that might be used by a tool to refer to a type suppression in
+ error messages.
 
 ``[suppress_function]``
 $$$$$$$$$$$$$$$$$$$$$$$$
