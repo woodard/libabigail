@@ -113,13 +113,13 @@ display_usage(const string& prog_name, ostream& out)
     "undefined symbols of the application\n"
     << "  --show-base-names|b  in the report, only show the base names "
     " of the files; not the full paths\n"
-    << "  --app-debug-info-dir <path-to-app-debug-info>  set the path "
+    << "  --app-debug-info-dir|--appd <path-to-app-debug-info>  set the path "
     "to the debug information directory for the application\n"
-    << "  --lib-debug-info-dir1 <path-to-lib-debug-info1>  set the path "
+    << "  --lib-debug-info-dir1|--libd1 <path-to-lib-debug-info1>  set the path "
     "to the debug information directory for the first library\n"
-    << "  --lib-debug-info-dir2 <path-to-lib-debug-info2>  set the path "
+    << "  --lib-debug-info-dir2|--libd2 <path-to-lib-debug-info2>  set the path "
     "to the debug information directory for the second library\n"
-    <<  "--suppressions <path> specify a suppression file\n"
+    <<  "--suppressions|--suppr <path> specify a suppression file\n"
     << "--no-redundant  do not display redundant changes\n"
     << "--no-show-locs  do now show location information\n"
     << "--redundant  display redundant changes (this is the default)\n"
@@ -159,7 +159,8 @@ parse_command_line(int argc, char* argv[], options& opts)
       else if (!strcmp(argv[i], "--show-base-names")
 	       || !strcmp(argv[i], "-b"))
 	opts.show_base_names = true;
-      else if (!strcmp(argv[i], "--app-debug-info-dir"))
+      else if (!strcmp(argv[i], "--app-debug-info-dir")
+	       || !strcmp(argv[i], "--appd"))
 	{
 	  if (argc <= i + 1
 	      || argv[i + 1][0] == '-')
@@ -170,7 +171,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--lib-debug-info-dir1"))
+      else if (!strcmp(argv[i], "--lib-debug-info-dir1")
+	       || !strcmp(argv[i], "--libd1"))
 	{
 	  if (argc <= i + 1
 	      || argv[i + 1][0] == '-')
@@ -181,7 +183,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--lib-debug-info-dir2"))
+      else if (!strcmp(argv[i], "--lib-debug-info-dir2")
+	       || !strcmp(argv[i], "--libd2"))
 	{
 	  if (argc <= i + 1
 	      || argv[i + 1][0] == '-')
@@ -192,7 +195,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--suppressions"))
+      else if (!strcmp(argv[i], "--suppressions")
+	       || !strcmp(argv[i], "--suppr"))
 	{
 	  int j = i + 1;
 	  if (j >= argc)

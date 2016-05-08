@@ -44,26 +44,33 @@ Options
     scripts that wants to compare names of the application and
     libraries independently of what their directory names are.
 
-  * ``--app-debug-info-dir`` <path-to-app-debug-info-directory>
+  * ``--app-debug-info-dir | --appd`` <path-to-app-debug-info-directory>
 
     Set the path to the directory under which the debug information of
     the application is supposed to be laid out.  This is useful for
     application binaries for which the debug info is in a separate set
     of files.
 
-  * ``--lib-debug-info-dir1`` <path-to-lib1-debug-info>
+  * ``--lib-debug-info-dir1 | --libd1`` <path-to-lib1-debug-info>
 
     Set the path to the directory under which the debug information of
     the first version of the shared library is supposed to be laid
     out.  This is useful for shared library binaries for which the
     debug info is in a separate set of files.
 
-  * ``--lib-debug-info-dir2`` <path-to-lib1-debug-info>
+  * ``--lib-debug-info-dir2 | --libd2`` <path-to-lib1-debug-info>
 
     Set the path to the directory under which the debug information of
     the second version of the shared library is supposed to be laid
     out.  This is useful for shared library binaries for which the
     debug info is in a separate set of files.
+
+  * ``--suppressions | --suppr`` <*path-to-suppressions*>
+
+    Use a :ref:`suppression specification <suppr_spec_label>` file
+    located at *path-to-suppressions*.  Note that this option can
+    appear multiple times on the command line; all the suppression
+    specification files are then taken into account.
 
   * ``--no-show-locs``
 
