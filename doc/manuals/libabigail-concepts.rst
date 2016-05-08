@@ -177,7 +177,7 @@ The potential properties of this sections are listed below:
 
   Usage:
 
-  ``file_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+    ``file_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   binary file which name matches the regular expression specified as
@@ -187,7 +187,7 @@ The potential properties of this sections are listed below:
 
   Usage:
 
-  ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+    ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   binary file which name does not match the regular expression
@@ -198,7 +198,7 @@ The potential properties of this sections are listed below:
 
   Usage:
 
-  ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+    ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property matches the regular expression
@@ -208,7 +208,7 @@ The potential properties of this sections are listed below:
 
   Usage:
 
-  ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+    ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property does not match the regular
@@ -218,7 +218,7 @@ The potential properties of this sections are listed below:
 
  Usage:
 
- ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+   ``name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
  Suppresses change reports involving types whose name matches the
  regular expression specified as value of this property.
@@ -227,7 +227,7 @@ The potential properties of this sections are listed below:
 
  Usage:
 
- ``name`` ``=`` <a-value>
+   ``name`` ``=`` <a-value>
 
  Suppresses change reports involving types whose name equals the value
  of this property.
@@ -270,7 +270,7 @@ The potential properties of this sections are listed below:
 
  Usage:
 
-  ``source_location_not_in`` ``=`` <``list-of-file-paths``>
+    ``source_location_not_in`` ``=`` <``list-of-file-paths``>
 
  Suppresses change reports involving a type which is defined in a file
  which path is *NOT* listed in the value ``list-of-file-paths``.  Note
@@ -289,7 +289,7 @@ The potential properties of this sections are listed below:
 
  Usage:
 
-  ``source_location_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+   ``source_location_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
  Suppresses change reports involving a type which is defined in a file
  which path does *NOT* match the :ref:`regular expression
@@ -503,7 +503,7 @@ The potential properties of this sections are:
 
   Usage:
 
-  ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+    ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   binary file which name does not match the regular expression
@@ -513,7 +513,7 @@ The potential properties of this sections are:
 
   Usage:
 
-  ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+    ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property matches the regular expression
@@ -523,7 +523,7 @@ The potential properties of this sections are:
 
   Usage:
 
-  ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+    ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property does not match the regular
@@ -598,7 +598,7 @@ The potential properties of this sections are:
 
  Usage:
 
- ``parameter`` ``=`` <function-parameter-specification>
+   ``parameter`` ``=`` <function-parameter-specification>
 
  Suppresses change reports involving functions whose
  parameters match the parameter specification indicated as
@@ -673,7 +673,7 @@ The potential properties of this sections are:
 
  Usage:
 
- ``symbol_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+   ``symbol_name_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
  Suppresses change reports involving functions whose symbol name
  matches the regular expression specified as value of this property.
@@ -747,7 +747,7 @@ The potential properties of this sections are:
 
   Usage:
 
-  ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+   ``file_name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   binary file which name does not match the regular expression
@@ -758,7 +758,7 @@ The potential properties of this sections are:
 
   Usage:
 
-  ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+   ``soname_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property matches the regular expression
@@ -769,7 +769,7 @@ The potential properties of this sections are:
 
   Usage:
 
-  ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+    ``soname_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
 
   Suppresses change reports about ABI artifacts that are defined in a
   shared library which SONAME property does not match the regular
