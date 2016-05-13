@@ -928,7 +928,8 @@ def diff_two_nvras_from_koji():
 
 def build_commandline_args_parser():
     parser = argparse.ArgumentParser(
-        description='Compare ABI of shared libraries in RPM packages from the Koji build system')
+        description='Compare ABI of shared libraries in RPM packages from the '
+                    'Koji build system')
 
     parser.add_argument(
         'NVR',
@@ -953,7 +954,8 @@ def build_commandline_args_parser():
         required=False,
         metavar='DISTRO',
         dest='to_distro',
-        help='Fedora distribution name to compare against the baseline, for example, fc24')
+        help='Fedora distribution name to compare against the baseline, for '
+             'example, fc24')
     parser.add_argument(
         '-a',
         '--all-subpackages',
