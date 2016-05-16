@@ -14,6 +14,11 @@ CXX11_TESTS += runtestsvg
 AM_CXXFLAGS = "-std=gnu++11"
 endif
 
+FEDABIPKGDIFF_TEST =
+if ENABLE_FEDABIPKGDIFF
+FEDABIPKGDIFF_TEST += runtestfedabipkgdiff.py
+endif
+
 TESTS=				\
 runtestreaddwarf		\
 runtestcanonicalizetypes.sh	\
@@ -31,8 +36,8 @@ runtestlookupsyms		\
 runtestaltdwarf			\
 runtestcorediff			\
 runtestabidiffexit		\
-runtestfedabipkgdiff.py		\
-$(CXX11_TESTS)
+$(FEDABIPKGDIFF_TEST) $(CXX11_TESTS)
+
 
 EXTRA_DIST = runtestcanonicalizetypes.sh.in runtestfedabipkgdiff.py.in
 CLEANFILES = \
