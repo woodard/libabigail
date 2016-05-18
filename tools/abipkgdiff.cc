@@ -86,6 +86,7 @@ using std::string;
 using std::ostream;
 using std::vector;
 using std::map;
+using std::ostringstream;
 using std::tr1::shared_ptr;
 using abigail::tools_utils::maybe_get_symlink_target_file_path;
 using abigail::tools_utils::emit_prefix;
@@ -120,7 +121,7 @@ static bool verbose;
 static pthread_key_t elf_file_paths_tls_key;
 
 /// A convenience typedef for a map of corpus diffs
-typedef map<string, corpus_diff_sptr> corpora_report_map;
+typedef map<string, shared_ptr<ostringstream> > corpora_report_map;
 /// This map is used to gather the computed diffs of ELF pairs
 static corpora_report_map reports_map;
 
@@ -933,7 +934,8 @@ compare(const elf_file& elf1,
 	const string&	debug_dir2,
 	const options&	opts,
 	abigail::ir::environment_sptr	&env,
-	corpus_diff_sptr	&diff)
+	corpus_diff_sptr	&diff,
+	diff_context_sptr	&ctxt)
 {
   char *di_dir1 = (char*) debug_dir1.c_str(),
 	*di_dir2 = (char*) debug_dir2.c_str();
@@ -949,7 +951,7 @@ compare(const elf_file& elf1,
   abigail::dwarf_reader::status c1_status = abigail::dwarf_reader::STATUS_OK,
     c2_status = abigail::dwarf_reader::STATUS_OK;
 
-  diff_context_sptr ctxt(new diff_context);
+  ctxt.reset(new diff_context);
   set_diff_context_from_opts(ctxt, opts);
   suppressions_type& supprs = ctxt->suppressions();
   bool files_suppressed = (file_is_suppressed(elf1.path, supprs)
@@ -1077,6 +1079,7 @@ pthread_routine_compare(vector<compare_args_sptr> *args)
   abidiff_status s, status = abigail::tools_utils::ABIDIFF_OK;
   compare_args_sptr a;
   corpus_diff_sptr diff;
+  diff_context_sptr ctxt;
 
   while (true)
     {
@@ -1096,14 +1099,17 @@ pthread_routine_compare(vector<compare_args_sptr> *args)
       abigail::ir::environment_sptr env(new abigail::ir::environment);
       status |= s = compare(a->elf1, a->debug_dir1,
 			    a->elf2, a->debug_dir2,
-			    a->opts, env, diff);
+			    a->opts, env, diff, ctxt);
 
       const string key = a->elf1.path;
       if ((s & abigail::tools_utils::ABIDIFF_ABI_CHANGE)
 	  || (verbose && diff->has_changes()))
 	{
+	  const string prefix = "  ";
+	  shared_ptr<ostringstream> out(new ostringstream);
+	  diff->report(*out, prefix);
 	  pthread_mutex_lock(&map_lock);
-	  reports_map[key] = diff;
+	  reports_map[key] = out;
 	  // We need to keep the environment around, until the corpus is
 	  // report()-ed.
 	  env_map[diff] = env;
@@ -1112,7 +1118,7 @@ pthread_routine_compare(vector<compare_args_sptr> *args)
       else
 	{
 	  pthread_mutex_lock(&map_lock);
-	  reports_map[key] = corpus_diff_sptr();
+	  reports_map[key] = shared_ptr<ostringstream>();
 	  pthread_mutex_unlock(&map_lock);
 	}
     }
@@ -1492,7 +1498,7 @@ compare(package&	first_package,
 		break;
 	      else
 		{
-		  // Diff created -> report it.
+		  // Report exist, emit it.
 		  string name = it->second->name;
 		  diff.changed_binaries.push_back(name);
 		  const string prefix = "  ";
@@ -1500,14 +1506,13 @@ compare(package&	first_package,
 		  cout << "================ changes of '"
 		       << name
 		       << "'===============\n";
-		  d->second->report(cout, prefix);
+		  cout << d->second->str();
 
 		  cout << "================ end of changes of '"
 		       << name
 		       << "'===============\n\n";
 
 		  pthread_mutex_lock(&map_lock);
-		  env_map.erase(d->second);
 		  reports_map.erase(d);
 		  pthread_mutex_unlock(&map_lock);
 

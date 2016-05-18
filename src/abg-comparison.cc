@@ -1313,7 +1313,7 @@ struct diff::priv
   vector<diff_sptr>		children_;
   diff*			parent_;
   diff*			canonical_diff_;
-  diff_context_sptr		ctxt_;
+  diff_context_wptr		ctxt_;
   diff_category		local_category_;
   diff_category		category_;
   mutable bool			reported_once_;
@@ -1343,6 +1343,17 @@ public:
       currently_reporting_(currently_reporting)
   {}
 
+  /// Getter of the diff context associated with this diff.
+  ///
+  /// @returnt a smart pointer to the diff context.
+  diff_context_sptr
+  get_context() const
+  {
+    if (ctxt_.expired())
+      return diff_context_sptr();
+    return diff_context_sptr(ctxt_);
+  }
+
   /// Check if a given categorization of a diff node should make it be
   /// filtered out.
   ///
@@ -1350,7 +1361,8 @@ public:
   bool
   is_filtered_out(diff_category category)
   {
-    if (ctxt_->get_allowed_category() == EVERYTHING_CATEGORY)
+    diff_context_sptr ctxt = get_context();
+    if (ctxt->get_allowed_category() == EVERYTHING_CATEGORY)
     return false;
 
   /// We don't want to display nodes suppressed by a user-provided
@@ -1360,7 +1372,7 @@ public:
 
   // We don't want to display redundant diff nodes, when the user
   // asked to avoid seeing redundant diff nodes.
-  if (!ctxt_->show_redundant_changes()
+  if (!ctxt->show_redundant_changes()
       && (category & REDUNDANT_CATEGORY))
     return true;
 
@@ -1370,7 +1382,7 @@ public:
   // Ignore the REDUNDANT_CATEGORY bit when comparing allowed
   // categories and the current set of categories.
   return !((category & ~REDUNDANT_CATEGORY)
-	   & (ctxt_->get_allowed_category()
+	   & (ctxt->get_allowed_category()
 	      & ~REDUNDANT_CATEGORY));
   }
 };// end class diff::priv
@@ -1578,7 +1590,7 @@ diff::append_child_node(diff_sptr d)
 /// @return the context of the current diff.
 const diff_context_sptr
 diff::context() const
-{return priv_->ctxt_;}
+{return priv_->get_context();}
 
 /// Setter of the context of the current diff.
 ///
@@ -9610,9 +9622,9 @@ struct corpus_diff::priv
   bool					finished_;
   string				pretty_representation_;
   vector<diff_sptr>			children_;
-  diff_context_sptr			ctxt_;
   corpus_sptr				first_;
   corpus_sptr				second_;
+  diff_context_wptr			ctxt_;
   corpus_diff::diff_stats_sptr		diff_stats_;
   bool					sonames_equal_;
   bool					architectures_equal_;
@@ -9641,11 +9653,33 @@ struct corpus_diff::priv
   string_elf_symbol_map		deleted_unrefed_var_syms_;
   string_elf_symbol_map		suppressed_deleted_unrefed_var_syms_;
 
+  /// Default constructor of corpus_diff::priv.
   priv()
     : finished_(false),
       sonames_equal_(false),
       architectures_equal_(false)
   {}
+
+  /// Constructor of corpus_diff::priv.
+  ///
+  /// @param first the first corpus of this diff.
+  ///
+  /// @param second the second corpus of this diff.
+  ///
+  /// @param ctxt the context of the diff.
+  priv(corpus_sptr first,
+       corpus_sptr second,
+       diff_context_sptr ctxt)
+    : finished_(false),
+      first_(first),
+      second_(second),
+      ctxt_(ctxt),
+      sonames_equal_(false),
+      architectures_equal_(false)
+  {}
+
+  diff_context_sptr
+  get_context();
 
   bool
   lookup_tables_empty() const;
@@ -9701,6 +9735,17 @@ struct corpus_diff::priv
   maybe_dump_diff_tree();
 }; // end corpus::priv
 
+/// Getter of the context associated with this corpus.
+///
+/// @return a smart pointer to the context associate with the corpus.
+diff_context_sptr
+corpus_diff::priv::get_context()
+{
+  if (ctxt_.expired())
+    return diff_context_sptr();
+  return diff_context_sptr(ctxt_);
+}
+
 /// Tests if the lookup tables are empty.
 ///
 /// @return true if the lookup tables are empty, false otherwise.
@@ -9734,6 +9779,8 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 {
   if (!lookup_tables_empty())
     return;
+
+  diff_context_sptr ctxt = get_context();
 
   {
     edit_script& e = fns_edit_script_;
@@ -9778,7 +9825,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 	      {
 		function_decl_sptr f(j->second, noop_deleter());
 		function_decl_sptr s(added_fn, noop_deleter());
-		function_decl_diff_sptr d = compute_diff(f, s, ctxt_);
+		function_decl_diff_sptr d = compute_diff(f, s, ctxt);
 		if (*j->second != *added_fn)
 		  changed_fns_map_[j->first] = d;
 		deleted_fns_.erase(j);
@@ -9882,7 +9929,7 @@ corpus_diff::priv::ensure_lookup_tables_populated()
 		  {
 		    var_decl_sptr f(j->second, noop_deleter());
 		    var_decl_sptr s(added_var, noop_deleter());
-		    changed_vars_map_[n] = compute_diff(f, s, ctxt_);
+		    changed_vars_map_[n] = compute_diff(f, s, ctxt);
 		  }
 		deleted_vars_.erase(j);
 	      }
@@ -10119,7 +10166,9 @@ variable_is_suppressed(const var_decl* var,
 void
 corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 {
-  const suppressions_type& suppressions = ctxt_->suppressions();
+  diff_context_sptr ctxt = get_context();
+
+  const suppressions_type& suppressions = ctxt->suppressions();
   for (suppressions_type::const_iterator i = suppressions.begin();
        i != suppressions.end();
        ++i)
@@ -10133,7 +10182,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       ++e)
 	    if (function_is_suppressed(e->second, fn_suppr,
 				       function_suppression::ADDED_FUNCTION_CHANGE_KIND,
-				       ctxt_))
+				       ctxt))
 	      suppressed_added_fns_[e->first] = e->second;
 
 	  // Deleted functions.
@@ -10142,7 +10191,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       ++e)
 	    if (function_is_suppressed(e->second, fn_suppr,
 				       function_suppression::DELETED_FUNCTION_CHANGE_KIND,
-				       ctxt_))
+				       ctxt))
 	      suppressed_deleted_fns_[e->first] = e->second;
 
 	  // Added function symbols not referenced by any debug info
@@ -10152,7 +10201,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       ++e)
 	    if (fn_suppr->suppresses_function_symbol(e->second,
 						     function_suppression::ADDED_FUNCTION_CHANGE_KIND,
-						     ctxt_))
+						     ctxt))
 	      suppressed_added_unrefed_fn_syms_[e->first] = e->second;
 
 	  // Removed function symbols not referenced by any debug info
@@ -10162,7 +10211,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       ++e)
 	    if (fn_suppr->suppresses_function_symbol(e->second,
 						     function_suppression::DELETED_FUNCTION_CHANGE_KIND,
-						     ctxt_))
+						     ctxt))
 	      suppressed_deleted_unrefed_fn_syms_[e->first] = e->second;
 	}
       // Added/Deleted variables
@@ -10175,7 +10224,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       ++e)
 	    if (variable_is_suppressed(e->second, var_suppr,
 				       variable_suppression::ADDED_VARIABLE_CHANGE_KIND,
-				       ctxt_))
+				       ctxt))
 	      suppressed_added_vars_[e->first] = e->second;
 
 	  //Deleted variables
@@ -10184,7 +10233,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       ++e)
 	    if (variable_is_suppressed(e->second, var_suppr,
 				       variable_suppression::DELETED_VARIABLE_CHANGE_KIND,
-				       ctxt_))
+				       ctxt))
 	      suppressed_deleted_vars_[e->first] = e->second;
 
 	  // Added variable symbols not referenced by any debug info
@@ -10194,7 +10243,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       ++e)
 	    if (var_suppr->suppresses_variable_symbol(e->second,
 						      variable_suppression::ADDED_VARIABLE_CHANGE_KIND,
-						      ctxt_))
+						      ctxt))
 	      suppressed_added_unrefed_var_syms_[e->first] = e->second;
 
 	  // Removed variable symbols not referenced by any debug info
@@ -10204,7 +10253,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	       ++e)
 	    if (var_suppr->suppresses_variable_symbol(e->second,
 						      variable_suppression::DELETED_VARIABLE_CHANGE_KIND,
-						      ctxt_))
+						      ctxt))
 	      suppressed_deleted_unrefed_var_syms_[e->first] = e->second;
 	}
     }
@@ -10392,6 +10441,8 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
   stat.num_added_vars_filtered_out(suppressed_added_vars_.size());
   stat.num_vars_changed(changed_vars_map_.size());
 
+  diff_context_sptr ctxt = get_context();
+
   // Walk the changed function diff nodes to apply the categorization
   // filters.
   diff_sptr diff;
@@ -10401,7 +10452,7 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
        ++i)
     {
       diff_sptr diff = *i;
-      ctxt_->maybe_apply_filters(diff);
+      ctxt->maybe_apply_filters(diff);
     }
 
   // Walk the changed variable diff nodes to apply the categorization
@@ -10411,7 +10462,7 @@ corpus_diff::priv::apply_filters_and_compute_diff_stats(diff_stats& stat)
        ++i)
     {
       diff_sptr diff = *i;
-      ctxt_->maybe_apply_filters(diff);
+      ctxt->maybe_apply_filters(diff);
     }
 
   categorize_redundant_changed_sub_nodes();
@@ -10519,7 +10570,9 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 	<< " filtered out)";
   out << "\n";
 
-  if (ctxt_->show_symbols_unreferenced_by_debug_info()
+  diff_context_sptr ctxt = get_context();
+
+  if (ctxt->show_symbols_unreferenced_by_debug_info()
       && (s.num_func_syms_removed()
 	  || s.num_func_syms_added()
 	  || s.num_var_syms_removed()
@@ -10527,7 +10580,7 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
     {
       // function symbols changes summary.
 
-      if (!ctxt_->show_added_symbols_unreferenced_by_debug_info()
+      if (!ctxt->show_added_symbols_unreferenced_by_debug_info()
 	  && s.num_func_syms_removed() == 0
 	  && s.num_func_syms_added() != 0)
 	// If the only unreferenced function symbol change is function
@@ -10555,7 +10608,7 @@ corpus_diff::priv::emit_diff_stats(const diff_stats&	s,
 
       // variable symbol changes summary.
 
-      if (!ctxt_->show_added_symbols_unreferenced_by_debug_info()
+      if (!ctxt->show_added_symbols_unreferenced_by_debug_info()
 	  && s.num_var_syms_removed() == 0
 	  && s.num_var_syms_added() != 0)
 	// If the only unreferenced variable symbol change is variable
@@ -10590,7 +10643,9 @@ corpus_diff::priv::categorize_redundant_changed_sub_nodes()
 {
   diff_sptr diff;
 
-  ctxt_->forget_visited_diffs();
+  diff_context_sptr ctxt = get_context();
+
+  ctxt->forget_visited_diffs();
   for (function_decl_diff_sptrs_type::const_iterator i =
 	 changed_fns_.begin();
        i!= changed_fns_.end();
@@ -10640,33 +10695,35 @@ corpus_diff::priv::clear_redundancy_categorization()
 void
 corpus_diff::priv::maybe_dump_diff_tree()
 {
-  if (!ctxt_->dump_diff_tree()
-      || ctxt_->error_output_stream() == 0)
+  diff_context_sptr ctxt = get_context();
+
+  if (!ctxt->dump_diff_tree()
+      || ctxt->error_output_stream() == 0)
     return;
 
   if (!changed_fns_.empty())
     {
-      *ctxt_->error_output_stream() << "changed functions diff tree: \n\n";
+      *ctxt->error_output_stream() << "changed functions diff tree: \n\n";
       for (function_decl_diff_sptrs_type::const_iterator i =
 	     changed_fns_.begin();
 	   i != changed_fns_.end();
 	   ++i)
 	{
 	  diff_sptr d = *i;
-	  print_diff_tree(d, *ctxt_->error_output_stream());
+	  print_diff_tree(d, *ctxt->error_output_stream());
 	}
     }
 
   if (!sorted_changed_vars_.empty())
     {
-      *ctxt_->error_output_stream() << "\nchanged variables diff tree: \n\n";
+      *ctxt->error_output_stream() << "\nchanged variables diff tree: \n\n";
       for (var_diff_sptrs_type::const_iterator i =
 	     sorted_changed_vars_.begin();
 	   i != sorted_changed_vars_.end();
 	   ++i)
 	{
 	  diff_sptr d = *i;
-	  print_diff_tree(d, *ctxt_->error_output_stream());
+	  print_diff_tree(d, *ctxt->error_output_stream());
 	}
     }
 }
@@ -10696,12 +10753,8 @@ corpus_diff::chain_into_hierarchy()
 corpus_diff::corpus_diff(corpus_sptr first,
 			 corpus_sptr second,
 			 diff_context_sptr ctxt)
-  : priv_(new priv)
-{
-  priv_->first_ = first;
-  priv_->second_ = second;
-  priv_->ctxt_ = ctxt;
-}
+  : priv_(new priv(first, second, ctxt))
+{}
 
 /// Finish building the current instance of @ref corpus_diff.
 void
@@ -10728,8 +10781,12 @@ const vector<diff_sptr>&
 corpus_diff::children_nodes() const
 {return priv_->children_;}
 
-/// Append a new child node to the vector of childre nodes for the
+/// Append a new child node to the vector of children nodes for the
 /// current instance of @ref corpus_diff node.
+///
+/// Note that the vector of children nodes for the current instance of
+/// @ref corpus_diff node must remain sorted, using
+/// diff_less_than_functor.
 ///
 /// @param d the new child node.  Note that the life time of the
 /// object held by @p d will thus equal the life time of the current
@@ -10879,7 +10936,7 @@ corpus_diff::added_unrefed_variable_symbols() const
 /// @return the diff context for this diff.
 const diff_context_sptr
 corpus_diff::context() const
-{return priv_->ctxt_;}
+{return priv_->get_context();}
 
 /// @return the pretty representation for the current instance of @ref
 /// corpus_diff
@@ -11260,7 +11317,7 @@ corpus_diff::apply_filters_and_suppressions_before_reporting()
     return *priv_->diff_stats_;
 
   apply_suppressions(this);
-  priv_->diff_stats_.reset(new diff_stats(priv_->ctxt_));
+  priv_->diff_stats_.reset(new diff_stats(context()));
   priv_->apply_filters_and_compute_diff_stats(*priv_->diff_stats_);
   return *priv_->diff_stats_;
 }
