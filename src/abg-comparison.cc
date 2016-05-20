@@ -1462,7 +1462,9 @@ diff::diff(type_or_decl_base_sptr first_subject,
 ///
 /// @param second_subject the second decl (subject) of the diff.
 ///
-/// @param ctxt the context of the diff.
+/// @param ctxt the context of the diff.  Note that this context
+/// object must stay alive during the entire life time of the current
+/// instance of @ref diff.  Otherwise, memory corruption issues occur.
 diff::diff(type_or_decl_base_sptr	first_subject,
 	   type_or_decl_base_sptr	second_subject,
 	   diff_context_sptr	ctxt)
@@ -2037,6 +2039,15 @@ public:
   friend class decl_diff_base;
 };//end class priv
 
+/// Constructor of @ref decl_diff_base.
+///
+/// @param first_subject the first subject of the diff.
+///
+/// @param second_subject the second subject of the diff.
+///
+/// @param ctxt the context of the diff.  This object must stay alive
+/// at least during the life time of the current instance of @ref
+/// decl_diff_base, otherwise, memory corruption issues occur.
 decl_diff_base::decl_diff_base(decl_base_sptr	first_subject,
 			       decl_base_sptr	second_subject,
 			       diff_context_sptr	ctxt)
@@ -2102,7 +2113,10 @@ distinct_diff::chain_into_hierarchy()
 ///
 /// @param second the second entity to consider for the diff.
 ///
-/// @param ctxt the context of the diff.
+/// @param ctxt the context of the diff.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref distinct_diff.  Otherwise memory
+/// corruption issues occur.
 distinct_diff::distinct_diff(type_or_decl_base_sptr first,
 			     type_or_decl_base_sptr second,
 			     diff_context_sptr ctxt)
@@ -6639,7 +6653,10 @@ base_diff::chain_into_hierarchy()
 ///
 /// @param second the second base spec to consider.
 ///
-/// @param ctxt the context of the diff.
+/// @param ctxt the context of the diff.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref base_diff.  Otherwise memory corruption
+/// issues occur.
 base_diff::base_diff(class_decl::base_spec_sptr first,
 		     class_decl::base_spec_sptr second,
 		     class_diff_sptr		underlying,
@@ -7070,7 +7087,10 @@ scope_diff::chain_into_hierarchy()
 ///
 /// @param second_scope the second scope to consider for the diff.
 ///
-/// @param ctxt the diff context to use.
+/// @param ctxt the diff context to use.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref scope_diff.  Otherwise memory corruption
+/// issues occur.
 scope_diff::scope_diff(scope_decl_sptr first_scope,
 		       scope_decl_sptr second_scope,
 		       diff_context_sptr ctxt)
@@ -7512,7 +7532,10 @@ struct fn_parm_diff::priv
 ///
 /// @param second the second subject of the diff.
 ///
-/// @param ctxt the context of the diff.
+/// @param ctxt the context of the diff.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref fn_parm_diff.  Otherwise memory
+/// corruption issues occur.
 fn_parm_diff::fn_parm_diff(const function_decl::parameter_sptr	first,
 			   const function_decl::parameter_sptr	second,
 			   diff_context_sptr			ctxt)
@@ -7821,7 +7844,10 @@ function_type_diff::inserted_parameter_at(int i) const
 /// create.
 ///
 /// @param ctxt the diff context to be used by the newly created
-/// instance of function_type_diff.
+/// instance of function_type_diff.  Note that this context object
+/// must stay alive at least during the life time of the current
+/// instance of @ref function_type_diff.  Otherwise memory corruption
+/// issues occur.
 function_type_diff::function_type_diff(const function_type_sptr first,
 				       const function_type_sptr second,
 				       diff_context_sptr	ctxt)
@@ -8141,6 +8167,11 @@ function_decl_diff::chain_into_hierarchy()
 /// @param first the first function considered by the diff.
 ///
 /// @param second the second function considered by the diff.
+///
+/// @param ctxt the context of the diff.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref function_decl_diff.  Otherwise memory
+/// corruption issues occur.
 function_decl_diff::function_decl_diff(const function_decl_sptr first,
 				       const function_decl_sptr second,
 				       diff_context_sptr	ctxt)
@@ -8610,6 +8641,15 @@ compute_diff(const function_decl_sptr first,
 // <type_decl_diff stuff>
 
 /// Constructor for type_decl_diff.
+///
+/// @param first the first subject of the diff.
+///
+/// @param second the second subject of the diff.
+///
+/// @param ctxt the context of the diff.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref type_decl_diff.  Otherwise memory
+/// corruption issues occur.
 type_decl_diff::type_decl_diff(const type_decl_sptr first,
 			       const type_decl_sptr second,
 			       diff_context_sptr ctxt)
@@ -8783,6 +8823,19 @@ typedef_diff::chain_into_hierarchy()
 {append_child_node(underlying_type_diff());}
 
 /// Constructor for typedef_diff.
+///
+/// @param first the first subject of the diff.
+///
+/// @param second the second subject of the diff.
+///
+/// @param underlying the underlying diff of the @ref typedef_diff.
+/// That is the diff between the underlying types of @p first and @p
+/// second.
+///
+/// @param ctxt the context of the diff.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref typedef_diff.  Otherwise memory
+/// corruption issues occur.
 typedef_diff::typedef_diff(const typedef_decl_sptr	first,
 			   const typedef_decl_sptr	second,
 			   const diff_sptr		underlying,
@@ -8997,6 +9050,11 @@ struct translation_unit_diff::priv
 /// @param first the first translation unit to consider for this diff.
 ///
 /// @param second the second translation unit to consider for this diff.
+///
+/// @param ctxt the context of the diff.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref translation_unit_diff.  Otherwise memory
+/// corruption issues occur.
 translation_unit_diff::translation_unit_diff(translation_unit_sptr first,
 					     translation_unit_sptr second,
 					     diff_context_sptr ctxt)
@@ -9141,6 +9199,11 @@ class corpus_diff::diff_stats::priv
 }; // end class corpus_diff::diff_stats::priv
 
 /// Constructor for the @ref diff_stat type.
+///
+/// @param ctxt the context of the corpus diff.  Note that this
+/// context object must stay alive at least during the life time of
+/// the current instance of @ref corpus_diff::diff_stats.  Otherwise
+/// memory corruption issues occur.
 corpus_diff::diff_stats::diff_stats(diff_context_sptr ctxt)
   : priv_(new priv(ctxt))
 {}
@@ -10814,7 +10877,10 @@ corpus_diff::chain_into_hierarchy()
 ///
 /// @param second the second corpus of the diff.
 ///
-/// @param ctxt the diff context to use.
+/// @param ctxt the diff context to use.  Note that this context
+/// object must stay alive at least during the life time of the
+/// current instance of @ref corpus_diff.  Otherwise memory corruption
+/// issues occur.
 corpus_diff::corpus_diff(corpus_sptr first,
 			 corpus_sptr second,
 			 diff_context_sptr ctxt)

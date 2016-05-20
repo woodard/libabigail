@@ -8145,6 +8145,9 @@ pointer_type_def::operator==(const pointer_type_def& other) const
   return *this == o;
 }
 
+/// Getter of the pointed-to type.
+///
+/// @return the pointed-to type.
 const type_base_sptr
 pointer_type_def::get_pointed_to_type() const
 {
