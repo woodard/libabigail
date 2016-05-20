@@ -1723,6 +1723,9 @@ public:
   const type_base_sptr
   get_pointed_to_type() const;
 
+  type_base*
+  get_naked_pointed_to_type() const;
+
   virtual void
   get_qualified_name(interned_string&, bool internal = false) const;
 

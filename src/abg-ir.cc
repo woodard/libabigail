@@ -8026,14 +8026,17 @@ operator<<(std::ostream& o, qualified_type_def::CV cv)
 struct pointer_type_def::priv
 {
   type_base_wptr pointed_to_type_;
+  type_base* naked_pointed_to_type_;
   interned_string internal_qualified_name_;
   interned_string temp_internal_qualified_name_;
 
   priv(const type_base_sptr& t)
-    : pointed_to_type_(t)
+    : pointed_to_type_(type_or_void(t, 0)),
+      naked_pointed_to_type_(t.get())
   {}
 
   priv()
+    : naked_pointed_to_type_()
   {}
 }; //end struct pointer_type_def
 
@@ -8044,7 +8047,7 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
   : type_or_decl_base(pointed_to->get_environment()),
     type_base(pointed_to->get_environment(), size_in_bits, align_in_bits),
     decl_base(pointed_to->get_environment(), "", locus, ""),
-    priv_(new priv)
+    priv_(new priv(pointed_to))
 {
   try
     {
@@ -8055,7 +8058,6 @@ pointer_type_def::pointer_type_def(const type_base_sptr&	pointed_to,
       set_name(env->intern(name));
       if (pto)
 	set_visibility(pto->get_visibility());
-      priv_->pointed_to_type_ = type_base_wptr(type_or_void(pointed_to, 0));
     }
   catch (...)
     {}
@@ -8151,6 +8153,13 @@ pointer_type_def::get_pointed_to_type() const
   return type_base_sptr(priv_->pointed_to_type_);
 }
 
+/// Getter of a naked pointer to the pointed-to type.
+///
+/// @return a naked pointed to the pointed-to type.
+type_base*
+pointer_type_def::get_naked_pointed_to_type() const
+{return priv_->naked_pointed_to_type_;}
+
 /// Build and return the qualified name of the current instance of
 /// @ref pointer_type_def.
 ///
@@ -8177,7 +8186,8 @@ pointer_type_def::get_qualified_name(interned_string& qn, bool internal) const
 const interned_string&
 pointer_type_def::get_qualified_name(bool internal) const
 {
-  const environment* env = get_pointed_to_type()->get_environment();
+  type_base* pointed_to_type = get_naked_pointed_to_type();
+  const environment* env = pointed_to_type->get_environment();
   assert(env);
 
   if (internal)
@@ -8186,7 +8196,7 @@ pointer_type_def::get_qualified_name(bool internal) const
 	{
 	  if (priv_->internal_qualified_name_.empty())
 	    {
-	      string n = string(get_type_name(get_pointed_to_type(),
+	      string n = string(get_type_name(pointed_to_type,
 					      /*qualified_name=*/true,
 					      /*internal=*/true))
 		+ "*";
@@ -8198,7 +8208,7 @@ pointer_type_def::get_qualified_name(bool internal) const
 	{
 	  if (priv_->temp_internal_qualified_name_.empty())
 	    {
-	      string n = string(get_type_name(get_pointed_to_type(),
+	      string n = string(get_type_name(pointed_to_type,
 					      /*qualified_name=*/true,
 					      /*internal=*/true))
 		+ "*";
@@ -8209,11 +8219,11 @@ pointer_type_def::get_qualified_name(bool internal) const
     }
   else
     {
-      if (get_canonical_type())
+      if (get_naked_canonical_type())
 	{
 	  if (decl_base::peek_qualified_name().empty())
 	    {
-	      string qn = get_type_name(get_pointed_to_type(),
+	      string qn = get_type_name(pointed_to_type,
 					/*qualified_name=*/true,
 					/*internal=*/false) + "*";
 	      set_qualified_name(env->intern(qn));
@@ -8222,7 +8232,7 @@ pointer_type_def::get_qualified_name(bool internal) const
 	}
       else
 	{
-	  string qn = get_type_name(get_pointed_to_type(),
+	  string qn = get_type_name(pointed_to_type,
 				    /*qualified_name=*/true,
 				    /*internal=*/false) + "*";
 	  set_qualified_name(env->intern(qn));
