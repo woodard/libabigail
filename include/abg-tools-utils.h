@@ -25,6 +25,7 @@
 #include <ostream>
 #include <istream>
 #include <iostream>
+#include <abg-suppression.h>
 
 namespace abigail
 {
@@ -54,6 +55,8 @@ bool check_file(const string& path, ostream& out, const string& prog_name = "");
 bool string_ends_with(const string&, const string&);
 bool string_is_ascii(const string&);
 bool string_is_ascii_identifier(const string&);
+suppr::type_suppression_sptr
+gen_suppr_spec_from_headers(const string& hdrs_root_dir);
 
 class temp_file;
 
@@ -191,6 +194,8 @@ file_type guess_file_type(const string& file_path);
 
 std::tr1::shared_ptr<char>
 make_path_absolute(const char*p);
+
+extern const char* PRIVATE_TYPES_SUPPR_SPEC_NAME;
 
 }// end namespace tools_utils
 }//end namespace abigail

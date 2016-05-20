@@ -28,6 +28,7 @@
 #include "abg-suppression.h"
 #include "abg-ini.h"
 #include "abg-sptr-utils.h"
+#include "abg-comp-filter.h"
 #include "abg-tools-utils.h"
 
 namespace abigail
@@ -43,6 +44,7 @@ using std::tr1::dynamic_pointer_cast;
 /// The private data of @ref suppression_base.
 class suppression_base::priv
 {
+  bool					is_artificial_;
   string				label_;
   string				file_name_regex_str_;
   mutable sptr_utils::regex_t_sptr	file_name_regex_;
@@ -55,16 +57,19 @@ class suppression_base::priv
 
 public:
   priv()
+    : is_artificial_()
   {}
 
   priv(const string& label)
-    : label_(label)
+    : is_artificial_(),
+      label_(label)
   {}
 
   priv(const string& label,
        const string& file_name_regex_str,
        const string& file_name_not_regex_str)
-    : label_(label),
+    : is_artificial_(),
+      label_(label),
       file_name_regex_str_(file_name_regex_str),
       file_name_not_regex_str_(file_name_not_regex_str)
   {}
@@ -190,6 +195,26 @@ suppression_base::suppression_base(const string& label,
 {
 }
 
+/// Test is the suppression specification is artificial.
+///
+/// Artificial means that the suppression was automatically generated
+/// by libabigail, rather than being constructed from a suppression
+/// file provided by the user.
+///
+/// @return TRUE iff the suppression specification is artificial.
+bool
+suppression_base::get_is_artificial() const
+{return priv_->is_artificial_;}
+
+/// Set a flag saying if the suppression specification is artificial
+/// or not.
+///
+/// Artificial means that the suppression was automatically generated
+/// by libabigail, rather than being constructed from a suppression
+/// file provided by the user.
+void
+suppression_base::set_is_artificial(bool f)
+{priv_->is_artificial_ = f;}
 
 /// Getter for the label associated to this suppression specification.
 ///
@@ -484,7 +509,7 @@ class type_suppression::priv
   bool					consider_reach_kind_;
   type_suppression::reach_kind		reach_kind_;
   type_suppression::insertion_ranges	insertion_ranges_;
-  vector<string>			source_locations_to_keep_;
+  unordered_set<string>		source_locations_to_keep_;
   string				source_location_to_keep_regex_str_;
   mutable sptr_utils::regex_t_sptr	source_location_to_keep_regex_;
 
@@ -742,10 +767,19 @@ type_suppression::get_data_member_insertion_ranges()
 /// Getter for the array of source location paths of types that should
 /// *NOT* be suppressed.
 ///
+/// @return the set of source locations of types that should *NOT* be
+/// supressed.
+const unordered_set<string>&
+type_suppression::get_source_locations_to_keep() const
+{return priv_->source_locations_to_keep_;}
+
+/// Getter for the array of source location paths of types that should
+/// *NOT* be suppressed.
+///
 /// @return the array of source locations of types that should *NOT*
 /// be supressed.
-const vector<string>&
-type_suppression::get_source_locations_to_keep() const
+unordered_set<string>&
+type_suppression::get_source_locations_to_keep()
 {return priv_->source_locations_to_keep_;}
 
 /// Setter for the array of source location paths of types that should
@@ -753,7 +787,8 @@ type_suppression::get_source_locations_to_keep() const
 ///
 /// @param l the new array.
 void
-type_suppression::set_source_locations_to_keep(const vector<string>& l)
+type_suppression::set_source_locations_to_keep
+(const unordered_set<string>& l)
 {priv_->source_locations_to_keep_ = l;}
 
 /// Getter of the regular expression string that designates the source
@@ -784,7 +819,34 @@ type_suppression::suppresses_diff(const diff* diff) const
 {
   const type_diff_base* d = is_type_diff(diff);
   if (!d)
-    return false;
+    {
+      // So the diff we are looking at is not a type diff.  However,
+      // there are cases where a type suppression can suppress changes
+      // on functions.
+
+      // Typically, if a virtual member function's virtual index (its
+      // index in the vtable of a class) changes and if the current
+      // type suppression is meant to suppress change reports about
+      // the enclosing class of the virtual member function, then this
+      // type suppression should suppress reports about that function
+      // change.
+      const function_decl_diff* d = is_function_decl_diff(diff);
+      if (d)
+	{
+	  // Let's see if 'd' carries a virtual member function
+	  // change.
+	  if (comparison::filtering::has_virtual_mem_fn_change(d))
+	    {
+	      function_decl_sptr f = d->first_function_decl();
+	      class_decl_sptr fc =
+		is_method_type(f->get_type())->get_class_type();
+	      assert(fc);
+	      if (suppresses_type(fc, diff->context()))
+		return true;
+	    }
+	}
+      return false;
+    }
 
   // If the suppression should consider the way the diff node has been
   // reached, then do it now.
@@ -995,6 +1057,17 @@ type_suppression::suppresses_type(const type_base_sptr& type,
   if (decl_base_sptr d = get_type_declaration(type))
     {
       location loc = d->get_location();
+      if (!loc)
+	{
+	  if (class_decl_sptr c = is_class_type(d))
+	    if (c->get_is_declaration_only()
+		&& c->get_definition_of_declaration())
+	      {
+		c = c->get_definition_of_declaration();
+		loc = c->get_location();
+	      }
+	}
+
       if (loc)
 	{
 	  translation_unit* tu = get_translation_unit(d);
@@ -1011,15 +1084,12 @@ type_suppression::suppresses_type(const type_base_sptr& type,
 		  return false;
 
 	      tools_utils::base_name(loc_path, loc_path_base);
-	      for (vector<string>::const_iterator s =
-		     get_source_locations_to_keep().begin();
-		   s != get_source_locations_to_keep().end();
-		   ++s)
-		{
-		  if (tools_utils::string_ends_with(*s, loc_path)
-		      || tools_utils::string_ends_with(*s, loc_path_base))
-		    return false;
-		}
+	      if (get_source_locations_to_keep().find(loc_path_base)
+		  != get_source_locations_to_keep().end())
+		return false;
+	      if (get_source_locations_to_keep().find(loc_path)
+		  != get_source_locations_to_keep().end())
+		return false;
 	    }
 	  else
 	    {
@@ -1034,6 +1104,29 @@ type_suppression::suppresses_type(const type_base_sptr& type,
 	}
       else
 	{
+	  // So the type had no source location.
+	  //
+	  // In the case where this type suppression was automatically
+	  // generated to suppress types not defined in public
+	  // headers, then this might mean that the type is not
+	  // defined in the public headers.  Otherwise, why does it
+	  // not have a source location?
+	  if (get_is_artificial())
+	    {
+	      if (class_decl_sptr cl = is_class_type(d))
+		{
+		  if (cl->get_is_declaration_only())
+		    // We tried hard above to get the definition of
+		    // the declaration.  If we reach this place, it
+		    // means the class has no definition at this point.
+		    assert(!cl->get_definition_of_declaration());
+		  if (get_label() == tools_utils::PRIVATE_TYPES_SUPPR_SPEC_NAME)
+		    // So this looks like what really amounts to an
+		    // opaque type.  So it's not defined in the public
+		    // headers.  So we want to filter it out.
+		    return true;
+		}
+	    }
 	  if (!get_source_locations_to_keep().empty()
 	      || priv_->get_source_location_to_keep_regex())
 	    // The user provided a "source_location_not_regexp" or
@@ -1485,17 +1578,23 @@ read_type_suppression(const ini::config::section& section)
 
   ini::property_sptr srcloc_not_in_prop =
     section.find_property("source_location_not_in");
-  vector<string> srcloc_not_in;
+  unordered_set<string> srcloc_not_in;
   if (srcloc_not_in_prop)
     {
       if (ini::simple_property_sptr p = is_simple_property(srcloc_not_in_prop))
-	srcloc_not_in.push_back(p->get_value()->as_string());
+	srcloc_not_in.insert(p->get_value()->as_string());
       else
 	{
 	  ini::list_property_sptr list_property =
 	    is_list_property(srcloc_not_in_prop);
 	  if (list_property)
-	    srcloc_not_in = list_property->get_value()->get_content();
+	    {
+	      vector<string>::const_iterator i;
+	      for (i = list_property->get_value()->get_content().begin();
+		   i != list_property->get_value()->get_content().end();
+		   ++i)
+		srcloc_not_in.insert(*i);
+	    }
 	}
     }
 

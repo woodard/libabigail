@@ -928,6 +928,18 @@ test-diff-suppr/test29-suppr-5.txt \
 test-diff-suppr/test29-suppr-6.txt \
 test-diff-suppr/test29-suppr-7.txt \
 test-diff-suppr/test29-suppr-8.txt \
+test-diff-suppr/test30-include-dir-v0/test30-pub-lib-v0.h \
+test-diff-suppr/test30-include-dir-v1/test30-pub-lib-v1.h \
+test-diff-suppr/test30-priv-lib-v0.cc \
+test-diff-suppr/test30-priv-lib-v0.h  \
+test-diff-suppr/test30-priv-lib-v1.cc \
+test-diff-suppr/test30-priv-lib-v1.h  \
+test-diff-suppr/test30-pub-lib-v0.cc  \
+test-diff-suppr/test30-pub-lib-v0.so  \
+test-diff-suppr/test30-pub-lib-v1.cc  \
+test-diff-suppr/test30-pub-lib-v1.so  \
+test-diff-suppr/test30-report-0.txt   \
+test-diff-suppr/test30-report-1.txt   \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \
@@ -1125,7 +1137,10 @@ test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm \
 test-diff-pkg/tbb-4.3-3.20141204.fc23.x86_64.rpm \
 test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm \
 test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm \
+test-diff-pkg/tbb-devel-4.1-9.20130314.fc22.x86_64.rpm \
+test-diff-pkg/tbb-devel-4.3-3.20141204.fc23.x86_64.rpm \
 test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt \
+test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-1.txt \
 test-diff-pkg/libICE-debuginfo-1.0.6-1.el6.x86_64.rpm \
 test-diff-pkg/libICE-debuginfo-1.0.9-2.el7.x86_64.rpm \
 test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm \
@@ -1139,4 +1154,5 @@ test-diff-pkg/gtk2-immodule-xim-2.24.28-8.el7.i686.rpm \
 test-diff-pkg/tarpkg-1-dir1.tar.gz \
 test-diff-pkg/tarpkg-1-dir2.tar.gz \
 test-diff-pkg/tarpkg-1-report-0.txt
+
 

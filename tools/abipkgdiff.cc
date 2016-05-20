@@ -89,12 +89,16 @@ using std::map;
 using std::ostringstream;
 using std::tr1::shared_ptr;
 using abigail::tools_utils::maybe_get_symlink_target_file_path;
+using abigail::tools_utils::file_exists;
+using abigail::tools_utils::is_dir;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::string_ends_with;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
+using abigail::tools_utils::base_name;
+using abigail::tools_utils::gen_suppr_spec_from_headers;
 using abigail::tools_utils::abidiff_status;
 using abigail::ir::corpus_sptr;
 using abigail::comparison::diff_context;
@@ -156,6 +160,8 @@ public:
   string	package2;
   string	debug_package1;
   string	debug_package2;
+  string	devel_package1;
+  string	devel_package2;
   bool		keep_tmp_files;
   bool		compare_dso_only;
   bool		show_linkage_names;
@@ -242,18 +248,43 @@ struct abi_diff
   }
 };
 
+class package;
+
+/// Convenience typedef for a shared pointer to a @ref package.
+typedef shared_ptr<package> package_sptr;
+
 /// Abstracts a package.
 class package
 {
+public:
+
+  /// The kind of package we are looking at.
+  enum kind
+  {
+    /// Main package. Contains binaries to ABI-compare.
+    KIND_MAIN = 0,
+    /// Devel package.  Contains public headers files in which public
+    /// types are defined.
+    KIND_DEVEL,
+    /// Debug info package.  Contains the debug info for the binaries
+    /// int he main packge.
+    KIND_DEBUG_INFO,
+    /// Source package.  Contains the source of the binaries in the
+    /// main package.
+    KIND_SRC
+  };
+
+private:
   string				path_;
   string				extracted_dir_path_;
   abigail::tools_utils::file_type	type_;
-  bool					is_debug_info_;
+  kind					kind_;
   map<string, elf_file_sptr>		path_elf_file_sptr_map_;
-  shared_ptr<package>			debug_info_package_;
+  package_sptr				debug_info_package_;
+  package_sptr				devel_package_;
+  suppressions_type			private_types_suppressions_;
 
 public:
-
   /// Constructor for the @ref package type.
   ///
   /// @param path the path to the package.
@@ -261,12 +292,12 @@ public:
   /// @parm dir the temporary directory where to extract the content
   /// of the package.
   ///
-  /// @param is_debug_info true if the pacakge is a debug info package.
+  /// @param pkg_kind the kind of package.
   package(const string&			path,
 	  const string&			dir,
-          bool					is_debug_info = false)
+          kind					pkg_kind = package::KIND_MAIN)
     : path_(path),
-      is_debug_info_(is_debug_info)
+      kind_(pkg_kind)
   {
     type_ = guess_file_type(path);
     if (type_ == abigail::tools_utils::FILE_TYPE_DIR)
@@ -327,19 +358,19 @@ public:
   void type(abigail::tools_utils::file_type t)
   {type_ = t;}
 
-  /// Test if the current package is a debug info package.
+  /// Get the package kind
   ///
-  /// @return true iff the current package is a debug info package.
-  bool
-  is_debug_info() const
-  {return is_debug_info_;}
+  /// @return the package kind
+  kind
+  get_kind() const
+  {return kind_;}
 
-  /// Set the flag that says if the current package is a debug info package.
+  /// Set the package kind
   ///
-  /// @param f the new flag.
+  /// @param k the package kind.
   void
-  is_debug_info(bool f)
-  {is_debug_info_ = f;}
+  set_kind(kind k)
+  {kind_ = k;}
 
   /// Getter for the path <-> elf_file map.
   ///
@@ -371,6 +402,38 @@ public:
   void
   debug_info_package(const shared_ptr<package> p)
   {debug_info_package_ = p;}
+
+  /// Getter for the devel package associated to the current package.
+  ///
+  /// @return the devel package associated to the current package.
+  const package_sptr&
+  devel_package() const
+  {return devel_package_;}
+
+  /// Setter of the devel package associated to the current package.
+  ///
+  /// @param p the new devel package associated to the current package.
+  void
+  devel_package(const package_sptr& p)
+  {devel_package_ = p;}
+
+  /// Getter of the specifications to suppress change reports about
+  /// private types.
+  ///
+  /// @return the vector of specifications to suppress change reports
+  /// about private types.
+  const suppressions_type&
+  private_types_suppressions() const
+  {return private_types_suppressions_;}
+
+  /// Getter of the specifications to suppress change reports about
+  /// private types.
+  ///
+  /// @return the vector of specifications to suppress change reports
+  /// about private types.
+  suppressions_type&
+  private_types_suppressions()
+  {return private_types_suppressions_;}
 
   /// Erase the content of the temporary extraction directory that has
   /// been populated by the @ref extract_package() function;
@@ -409,6 +472,8 @@ public:
     erase_extraction_directory();
     if (debug_info_package())
       debug_info_package()->erase_extraction_directory();
+    if (devel_package())
+      devel_package()->erase_extraction_directory();
   }
 };
 
@@ -424,9 +489,11 @@ struct package_descriptor
 struct compare_args
 {
   const elf_file	elf1;
-  const string&		debug_dir1;
+  const string&	debug_dir1;
+  const suppressions_type&	private_types_suppr1;
   const elf_file	elf2;
-  const string&		debug_dir2;
+  const string&	debug_dir2;
+  const suppressions_type&	private_types_suppr2;
   const options&	opts;
 
   /// Constructor for compare_args, which is used to pass
@@ -444,10 +511,15 @@ struct compare_args
   ///
   /// @param opts the options the current program has been called with.
   compare_args(const elf_file &elf1, const string& debug_dir1,
+	       const suppressions_type& priv_types_suppr1,
 	       const elf_file &elf2, const string& debug_dir2,
+	       const suppressions_type& priv_types_suppr2,
 	       const options& opts)
-    : elf1(elf1), debug_dir1(debug_dir1), elf2(elf2),
-    debug_dir2(debug_dir2), opts(opts)
+    : elf1(elf1), debug_dir1(debug_dir1),
+      private_types_suppr1(priv_types_suppr1),
+      elf2(elf2), debug_dir2(debug_dir2),
+      private_types_suppr2(priv_types_suppr2),
+      opts(opts)
   {}
 };
 /// A convenience typedef for arguments passed to the comparison workers.
@@ -507,10 +579,12 @@ display_usage(const string& prog_name, ostream& out)
     << " where options can be:\n"
     << " --debug-info-pkg1|--d1 <path>  path of debug-info package of package1\n"
     << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
+    << " --devel-pkg1|--devel1 <path>   path of devel package of pakage1\n"
+    << " --devel-pkg2|--devel2 <path>   path of devel package of pakage1\n"
     << " --suppressions|--suppr <path>  specify supression specification path\n"
     << " --keep-tmp-files               don't erase created temporary files\n"
     << " --dso-only                     compare shared libraries only\n"
-    << " --no-linkage-name		  do not display linkage names of "
+    << " --no-linkage-name		do not display linkage names of "
     "added/removed/changed\n"
     << " --redundant                    display redundant changes\n"
     << " --no-show-locs                 do not show location information\n"
@@ -930,8 +1004,10 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 static abidiff_status
 compare(const elf_file& elf1,
 	const string&	debug_dir1,
+	const suppressions_type& priv_types_supprs1,
 	const elf_file& elf2,
 	const string&	debug_dir2,
+	const suppressions_type& priv_types_supprs2,
 	const options&	opts,
 	abigail::ir::environment_sptr	&env,
 	corpus_diff_sptr	&diff,
@@ -967,6 +1043,20 @@ compare(const elf_file& elf1,
 	  << " Not reading any of them\n";
       return abigail::tools_utils::ABIDIFF_OK;
     }
+
+  // Add the first private type suppressions set to the set of
+  // suppressions.
+  for (suppressions_type::const_iterator i = priv_types_supprs1.begin();
+       i != priv_types_supprs1.end();
+       ++i)
+    supprs.push_back(*i);
+
+  // Add the second private type suppressions set to the set of
+  // suppressions.
+  for (suppressions_type::const_iterator i = priv_types_supprs2.begin();
+       i != priv_types_supprs2.end();
+       ++i)
+    supprs.push_back(*i);
 
   if (verbose)
     emit_prefix("abipkgdiff", cerr)
@@ -1097,8 +1187,8 @@ pthread_routine_compare(vector<compare_args_sptr> *args)
 	break;
 
       abigail::ir::environment_sptr env(new abigail::ir::environment);
-      status |= s = compare(a->elf1, a->debug_dir1,
-			    a->elf2, a->debug_dir2,
+      status |= s = compare(a->elf1, a->debug_dir1, a->private_types_suppr1,
+			    a->elf2, a->debug_dir2, a->private_types_suppr2,
 			    a->opts, env, diff, ctxt);
 
       const string key = a->elf1.path;
@@ -1211,6 +1301,55 @@ create_maps_of_package_content(package& package,
   return true;
 }
 
+/// If devel packages were associated to the main package we are
+/// looking at, use the names of the header files (extracted from the
+/// package) to generate suppression specification to filter out types
+/// that are not defined in those header files.
+///
+/// Filtering out types not defined in publi headers amounts to filter
+/// out types that are deemed private to the package we are looking
+/// at.
+///
+/// If the function succeeds, the generated private type suppressions
+/// are available by invoking the
+/// package::private_types_suppressions() accessor of the @p pkg
+/// parameter.
+///
+/// @param pkg the main package we are looking at.
+///
+/// @return true iff suppression specifications were generated for
+/// types private to the package.
+static bool
+maybe_create_private_types_suppressions(package& pkg)
+{
+  if (!pkg.private_types_suppressions().empty())
+    return false;
+
+  package_sptr devel_pkg = pkg.devel_package();
+  if (!devel_pkg
+      || !file_exists(devel_pkg->extracted_dir_path())
+      || !is_dir(devel_pkg->extracted_dir_path()))
+    return false;
+
+  string headers_path = devel_pkg->extracted_dir_path();
+  if (devel_pkg->type() == abigail::tools_utils::FILE_TYPE_RPM
+      ||devel_pkg->type() == abigail::tools_utils::FILE_TYPE_DEB)
+    // For RPM and DEB packages, header files are under the
+    // /usr/include sub-directories.
+    headers_path += "/usr/include";
+
+  if (!is_dir(headers_path))
+    return false;
+
+  suppression_sptr suppr =
+    gen_suppr_spec_from_headers(headers_path);
+
+  if (suppr)
+    pkg.private_types_suppressions().push_back(suppr);
+
+  return suppr;
+}
+
 static inline bool
 pthread_join(pthread_t thr)
 {
@@ -1239,11 +1378,11 @@ pthread_join(pthread_t thr)
 static void
 pthread_routine_extract_pkg_and_map_its_content(package_descriptor *a)
 {
-  pthread_t thr_pkg, thr_debug;
+  pthread_t thr_pkg, thr_debug, thr_devel;
   package& package = a->pkg;
   const options& opts = a->opts;
   ftw_cb_type callback = a->callback;
-  bool has_debug_info_pkg, result = true;
+  bool has_debug_info_pkg, has_devel_pkg, result = true;
 
   // The debug-info package usually takes longer to extract than the main
   // package plus that package's mapping for ELFs and optionally suppression
@@ -1268,6 +1407,29 @@ pthread_routine_extract_pkg_and_map_its_content(package_descriptor *a)
 	}
     }
 
+  if ((has_devel_pkg = package.devel_package()))
+    {
+      // A devel package was provided for 'package'.  Let's extract it
+      // too.
+      if (pthread_create(&thr_devel, /*attr=*/NULL,
+			 reinterpret_cast<void*(*)(void*)>
+			 (pthread_routine_extract_package),
+			 package.devel_package().get()))
+	{
+	  result = false;
+	  goto exit;
+	}
+
+      // Wait for devel package extraction to complete if we're
+      // not running in parallel.
+      if (!opts.parallel)
+	{
+	  result = pthread_join(thr_devel);
+	  if (!result)
+	    goto exit;
+	}
+    }
+
   // Extract the package itself.
   if (pthread_create(&thr_pkg, /*attr=*/NULL,
 		     reinterpret_cast<void*(*)(void*)>(pthread_routine_extract_package),
@@ -1283,7 +1445,14 @@ pthread_routine_extract_pkg_and_map_its_content(package_descriptor *a)
   if (result)
     result = create_maps_of_package_content(package, opts, callback);
 
-  // Let's wait for both extractions to finish before we exit.
+  // Wait for devel package extraction to finish
+  if (has_devel_pkg && opts.parallel)
+    result &= pthread_join(thr_devel);
+
+  maybe_create_private_types_suppressions(package);
+
+  // Let's wait for debug package extractions to finish before
+  // we exit.
   if (has_debug_info_pkg && opts.parallel)
     result &= pthread_join(thr_debug);
 
@@ -1430,9 +1599,15 @@ compare(package&	first_package,
 	      || iter->second->type == abigail::dwarf_reader::ELF_TYPE_EXEC
               || iter->second->type == abigail::dwarf_reader::ELF_TYPE_PI_EXEC))
 	{
-	  elf_pairs.push_back(compare_args_sptr(new compare_args(*it->second,
-						debug_dir1, *iter->second,
-						debug_dir2, opts)));
+	  elf_pairs.push_back
+	    (compare_args_sptr (new compare_args
+				(*it->second,
+				 debug_dir1,
+				 first_package.private_types_suppressions(),
+				 *iter->second,
+				 debug_dir2,
+				 second_package.private_types_suppressions(),
+				 opts)));
 	}
       else
 	{
@@ -1652,6 +1827,34 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
+      else if (!strcmp(argv[i], "--devel-pkg1")
+	       || !strcmp(argv[i], "--devel1"))
+        {
+          int j = i + 1;
+          if (j >= argc)
+            {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+            }
+          opts.devel_package1 =
+	    abigail::tools_utils::make_path_absolute(argv[j]).get();
+          ++i;
+        }
+      else if (!strcmp(argv[i], "--devel-pkg2")
+	       || !strcmp(argv[i], "--devel2"))
+        {
+          int j = i + 1;
+          if (j >= argc)
+            {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+            }
+          opts.devel_package2 =
+	    abigail::tools_utils::make_path_absolute(argv[j]).get();
+          ++i;
+        }
       else if (!strcmp(argv[i], "--keep-tmp-files"))
 	opts.keep_tmp_files = true;
       else if (!strcmp(argv[i], "--dso-only"))
@@ -1765,13 +1968,26 @@ main(int argc, char* argv[])
     first_package->debug_info_package
       (package_sptr(new package(opts.debug_package1,
 				"debug_package1",
-				/*is_debug_info=*/true)));
+				/*pkg_kind=*/package::KIND_DEBUG_INFO)));
 
   if (!opts.debug_package2.empty())
     second_package->debug_info_package
       (package_sptr(new package(opts.debug_package2,
 				"debug_package2",
-				/*is_debug_info=*/true)));
+				/*pkg_kind=*/package::KIND_DEBUG_INFO)));
+
+  if (!opts.devel_package1.empty())
+    first_package->devel_package
+      (package_sptr(new package(opts.devel_package1,
+				"devel_package1",
+				/*pkg_kind=*/package::KIND_DEVEL)));
+    ;
+
+  if (!opts.devel_package2.empty())
+    second_package->devel_package
+      (package_sptr(new package(opts.devel_package2,
+				"devel_package2",
+				/*pkg_kind=*/package::KIND_DEVEL)));
 
   switch (first_package->type())
     {

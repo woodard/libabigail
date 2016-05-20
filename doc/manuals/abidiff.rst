@@ -57,6 +57,18 @@ Options
     to find the split debug information for the
     *second-shared-library* file.
 
+  * ``--headers-dir1 | --hd1`` <headers-directory-path-1>
+
+    Specifies where to find the public headers of the first shared
+    library that the tool has to consider.  The tool will thus filter
+    out ABI changes on types that are not defined in public headers.
+
+  * ``--headers-dir2 | --hd2`` <headers-directory-path-1>
+
+    Specifies where to find the public headers of the second shared
+    library that the tool has to consider.  The tool will thus filter
+    out ABI changes on types that are not defined in public headers.
+
   * ``--stat``
 
     Rather than displaying the detailed ABI differences between

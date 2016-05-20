@@ -48,8 +48,10 @@ struct InOutSpec
 {
   const char* in_elfv0_path;
   const char* in_elfv1_path;
+  const char* headers_dir1;
+  const char* headers_dir2;
   const char* in_suppr_path;
-  const char* bidiff_options;
+  const char* abidiff_options;
   const char* in_report_path;
   const char* out_report_path;
 }; // end struct InOutSpec;
@@ -60,6 +62,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test0-type-suppr-v0.o",
     "data/test-diff-suppr/test0-type-suppr-v1.o",
     NULL,
+    NULL,
+    NULL,
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test0-type-suppr-report-0.txt",
     "output/test-diff-suppr/test0-type-suppr-report-0.txt",
@@ -67,6 +71,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test0-type-suppr-v0.o",
     "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test0-type-suppr-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test0-type-suppr-report-1.txt",
@@ -75,6 +81,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test0-type-suppr-v0.o",
     "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test0-type-suppr-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test0-type-suppr-report-2.txt",
@@ -83,6 +91,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test0-type-suppr-v0.o",
     "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test0-type-suppr-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test0-type-suppr-report-3.txt",
@@ -91,6 +101,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test0-type-suppr-v0.o",
     "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test0-type-suppr-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test0-type-suppr-report-4.txt",
@@ -99,6 +111,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test0-type-suppr-v0.o",
     "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test0-type-suppr-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test0-type-suppr-report-5.txt",
@@ -107,6 +121,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test0-type-suppr-v0.o",
     "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test0-type-suppr-5.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test0-type-suppr-report-6.txt",
@@ -115,6 +131,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test0-type-suppr-v0.o",
     "data/test-diff-suppr/test0-type-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test0-type-suppr-6.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test0-type-suppr-report-7.txt",
@@ -124,6 +142,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test1-typedef-suppr-v0.o",
     "data/test-diff-suppr/test1-typedef-suppr-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test1-typedef-suppr-report-0.txt",
     "output/test-diff-suppr/test1-typedef-suppr-report-0.txt",
@@ -131,6 +151,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test1-typedef-suppr-v0.o",
     "data/test-diff-suppr/test1-typedef-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test1-typedef-suppr-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test1-typedef-suppr-report-1.txt",
@@ -139,6 +161,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test1-typedef-suppr-v0.o",
     "data/test-diff-suppr/test1-typedef-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test1-typedef-suppr-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test1-typedef-suppr-report-2.txt",
@@ -147,6 +171,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test2-struct-suppr-v0.o",
     "data/test-diff-suppr/test2-struct-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test2-struct-suppr-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test2-struct-suppr-report-0.txt",
@@ -155,6 +181,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test2-struct-suppr-v0.o",
     "data/test-diff-suppr/test2-struct-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test2-struct-suppr-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test2-struct-suppr-report-1.txt",
@@ -163,6 +191,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test3-struct-suppr-v0.o",
     "data/test-diff-suppr/test3-struct-suppr-v1.o",
+    "",
+    "",
     NULL,
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test3-struct-suppr-report-0.txt",
@@ -171,6 +201,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test3-struct-suppr-v0.o",
     "data/test-diff-suppr/test3-struct-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test3-struct-suppr-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test3-struct-suppr-report-1.txt",
@@ -179,6 +211,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test3-struct-suppr-v0.o",
     "data/test-diff-suppr/test3-struct-suppr-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test3-struct-suppr-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test3-struct-suppr-report-2.txt",
@@ -187,6 +221,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest4-local-suppr-v0.so",
     "data/test-diff-suppr/libtest4-local-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test4-local-suppr-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test4-local-suppr-report-1.txt",
@@ -196,6 +232,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest4-local-suppr-v0.so",
     "data/test-diff-suppr/libtest4-local-suppr-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs",
     "data/test-diff-suppr/test4-local-suppr-report-0.txt",
     "output/test-diff-suppr/test4-local-suppr-report-0.txt",
@@ -204,6 +242,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest5-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest5-fn-suppr-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test5-fn-suppr-report-0.txt",
     "output/test-diff-suppr/test5-fn-suppr-report-0.txt",
@@ -211,6 +251,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest5-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest5-fn-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test5-fn-suppr-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test5-fn-suppr-report-1.txt",
@@ -219,6 +261,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest5-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest5-fn-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test5-fn-suppr-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test5-fn-suppr-report-2.txt",
@@ -227,6 +271,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest5-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest5-fn-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test5-fn-suppr-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test5-fn-suppr-report-3.txt",
@@ -235,6 +281,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest5-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest5-fn-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test5-fn-suppr-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test5-fn-suppr-report-4.txt",
@@ -243,6 +291,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest5-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest5-fn-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test5-fn-suppr-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test5-fn-suppr-report-5.txt",
@@ -252,6 +302,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest6-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest6-fn-suppr-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test6-fn-suppr-report-0.txt",
     "output/test-diff-suppr/test6-fn-suppr-report-0.txt",
@@ -260,6 +312,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest6-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest6-fn-suppr-v1.so",
     "",
+    "",
+    "",
     "--no-redundant",
     "data/test-diff-suppr/test6-fn-suppr-report-0-1.txt",
     "output/test-diff-suppr/test6-fn-suppr-report-0-1.txt",
@@ -267,6 +321,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest6-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest6-fn-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test6-fn-suppr-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test6-fn-suppr-report-1.txt",
@@ -275,6 +331,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest6-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest6-fn-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test6-fn-suppr-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test6-fn-suppr-report-2.txt",
@@ -283,6 +341,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest6-fn-suppr-v0.so",
     "data/test-diff-suppr/libtest6-fn-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test6-fn-suppr-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test6-fn-suppr-report-3.txt",
@@ -292,6 +352,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-0.txt",
     "output/test-diff-suppr/test7-var-suppr-report-0.txt"
@@ -299,6 +361,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test7-var-suppr-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-1.txt",
@@ -307,6 +371,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test7-var-suppr-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-2.txt",
@@ -315,6 +381,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test7-var-suppr-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-3.txt",
@@ -323,6 +391,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test7-var-suppr-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-4.txt",
@@ -331,6 +401,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test7-var-suppr-5.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-5.txt",
@@ -339,6 +411,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test7-var-suppr-6.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-6.txt",
@@ -347,6 +421,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test7-var-suppr-7.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-7.txt",
@@ -355,6 +431,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest7-var-suppr-v0.so",
     "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test7-var-suppr-8.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test7-var-suppr-report-8.txt",
@@ -364,6 +442,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest8-redundant-fn-v0.so",
     "data/test-diff-suppr/libtest8-redundant-fn-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test8-redundant-fn-report-0.txt",
     "output/test-diff-suppr/test8-redundant-fn-report-0.txt"
@@ -371,6 +451,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest8-redundant-fn-v0.so",
     "data/test-diff-suppr/libtest8-redundant-fn-v1.so",
+    "",
+    "",
     "",
     "--no-show-locs --redundant",
     "data/test-diff-suppr/test8-redundant-fn-report-1.txt",
@@ -380,6 +462,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest9-changed-parm-c-v0.so",
     "data/test-diff-suppr/libtest9-changed-parm-c-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test9-changed-parm-c-report-0.txt",
     "output/test-diff-suppr/est9-changed-parm-c-report-0.txt"
@@ -387,6 +471,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest9-changed-parm-c-v0.so",
     "data/test-diff-suppr/libtest9-changed-parm-c-v1.so",
+    "",
+    "",
     "",
     "--no-show-locs --redundant",
     "data/test-diff-suppr/test9-changed-parm-c-report-1.txt",
@@ -396,6 +482,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest10-changed-parm-c-v0.so",
     "data/test-diff-suppr/libtest10-changed-parm-c-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test10-changed-parm-c-report-0.txt",
     "output/test-diff-suppr/test10-changed-parm-c-report-0.txt"
@@ -404,6 +492,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-0.txt",
     "output/test-diff-suppr/test11-add-data-member-report-0.txt"
@@ -411,6 +501,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
@@ -419,6 +511,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
@@ -427,6 +521,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
@@ -435,6 +531,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
@@ -443,6 +541,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest11-add-data-member-v0.so",
     "data/test-diff-suppr/libtest11-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test11-add-data-member-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test11-add-data-member-report-1.txt",
@@ -452,6 +552,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest12-add-data-member-v0.so",
     "data/test-diff-suppr/libtest12-add-data-member-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test12-add-data-member-report-0.txt",
     "output/test-diff-suppr/test12-add-data-member-report-0.txt"
@@ -459,6 +561,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest12-add-data-member-v0.so",
     "data/test-diff-suppr/libtest12-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test12-add-data-member-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test12-add-data-member-report-1.txt",
@@ -467,6 +571,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest12-add-data-member-v0.so",
     "data/test-diff-suppr/libtest12-add-data-member-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test12-add-data-member-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test12-add-data-member-report-2.txt",
@@ -476,6 +582,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest13-suppr-through-pointer-v0.so",
     "data/test-diff-suppr/libtest13-suppr-through-pointer-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test13-suppr-through-pointer-report-0.txt",
     "output/test-diff-suppr/test13-suppr-through-pointer-report-0.txt"
@@ -483,6 +591,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest13-suppr-through-pointer-v0.so",
     "data/test-diff-suppr/libtest13-suppr-through-pointer-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test13-suppr-through-pointer-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test13-suppr-through-pointer-report-1.txt",
@@ -492,6 +602,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test14-suppr-non-redundant-v0.o",
     "data/test-diff-suppr/test14-suppr-non-redundant-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test14-suppr-non-redundant-report-0.txt",
     "output/test-diff-suppr/test14-suppr-non-redundant-report-0.txt"
@@ -499,6 +611,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test14-suppr-non-redundant-v0.o",
     "data/test-diff-suppr/test14-suppr-non-redundant-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test14-suppr-non-redundant-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test14-suppr-non-redundant-report-1.txt",
@@ -508,6 +622,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test15-suppr-added-fn-v0.o",
     "data/test-diff-suppr/test15-suppr-added-fn-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test15-suppr-added-fn-report-0.txt",
     "output/test-diff-suppr/test15-suppr-added-fn-report-0.txt"
@@ -515,6 +631,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test15-suppr-added-fn-v0.o",
     "data/test-diff-suppr/test15-suppr-added-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test15-suppr-added-fn-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test15-suppr-added-fn-report-1.txt",
@@ -523,6 +641,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test15-suppr-added-fn-v0.o",
     "data/test-diff-suppr/test15-suppr-added-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test15-suppr-added-fn-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test15-suppr-added-fn-report-2.txt",
@@ -531,6 +651,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test15-suppr-added-fn-v0.o",
     "data/test-diff-suppr/test15-suppr-added-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test15-suppr-added-fn-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test15-suppr-added-fn-report-3.txt",
@@ -539,6 +661,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test15-suppr-added-fn-v0.o",
     "data/test-diff-suppr/test15-suppr-added-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test15-suppr-added-fn-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test15-suppr-added-fn-report-4.txt",
@@ -547,6 +671,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test15-suppr-added-fn-v0.o",
     "data/test-diff-suppr/test15-suppr-added-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test15-suppr-added-fn-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test15-suppr-added-fn-report-5.txt",
@@ -556,6 +682,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test16-suppr-removed-fn-v0.o",
     "data/test-diff-suppr/test16-suppr-removed-fn-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test16-suppr-removed-fn-report-0.txt",
     "output/test-diff-suppr/test16-suppr-removed-fn-report-0.txt"
@@ -563,6 +691,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test16-suppr-removed-fn-v0.o",
     "data/test-diff-suppr/test16-suppr-removed-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test16-suppr-removed-fn-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test16-suppr-removed-fn-report-1.txt",
@@ -571,6 +701,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test16-suppr-removed-fn-v0.o",
     "data/test-diff-suppr/test16-suppr-removed-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test16-suppr-removed-fn-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test16-suppr-removed-fn-report-2.txt",
@@ -579,6 +711,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test16-suppr-removed-fn-v0.o",
     "data/test-diff-suppr/test16-suppr-removed-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test16-suppr-removed-fn-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test16-suppr-removed-fn-report-3.txt",
@@ -587,6 +721,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test16-suppr-removed-fn-v0.o",
     "data/test-diff-suppr/test16-suppr-removed-fn-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test16-suppr-removed-fn-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test16-suppr-removed-fn-report-4.txt",
@@ -596,6 +732,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test17-suppr-added-var-v0.o",
     "data/test-diff-suppr/test17-suppr-added-var-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test17-suppr-added-var-report-0.txt",
     "output/test-diff-suppr/test17-suppr-added-var-report-0.txt"
@@ -603,6 +741,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test17-suppr-added-var-v0.o",
     "data/test-diff-suppr/test17-suppr-added-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test17-suppr-added-var-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test17-suppr-added-var-report-1.txt",
@@ -611,6 +751,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test17-suppr-added-var-v0.o",
     "data/test-diff-suppr/test17-suppr-added-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test17-suppr-added-var-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test17-suppr-added-var-report-2.txt",
@@ -619,6 +761,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test17-suppr-added-var-v0.o",
     "data/test-diff-suppr/test17-suppr-added-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test17-suppr-added-var-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test17-suppr-added-var-report-3.txt",
@@ -627,6 +771,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test17-suppr-added-var-v0.o",
     "data/test-diff-suppr/test17-suppr-added-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test17-suppr-added-var-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test17-suppr-added-var-report-4.txt",
@@ -635,6 +781,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test17-suppr-added-var-v0.o",
     "data/test-diff-suppr/test17-suppr-added-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test17-suppr-added-var-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test17-suppr-added-var-report-5.txt",
@@ -644,6 +792,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test18-suppr-removed-var-v0.o",
     "data/test-diff-suppr/test18-suppr-removed-var-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test18-suppr-removed-var-report-0.txt",
     "output/test-diff-suppr/test18-suppr-removed-var-report-0.txt"
@@ -651,6 +801,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test18-suppr-removed-var-v0.o",
     "data/test-diff-suppr/test18-suppr-removed-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test18-suppr-removed-var-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test18-suppr-removed-var-report-1.txt",
@@ -659,6 +811,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test18-suppr-removed-var-v0.o",
     "data/test-diff-suppr/test18-suppr-removed-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test18-suppr-removed-var-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test18-suppr-removed-var-report-2.txt",
@@ -667,6 +821,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test18-suppr-removed-var-v0.o",
     "data/test-diff-suppr/test18-suppr-removed-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test18-suppr-removed-var-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test18-suppr-removed-var-report-3.txt",
@@ -675,6 +831,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test18-suppr-removed-var-v0.o",
     "data/test-diff-suppr/test18-suppr-removed-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test18-suppr-removed-var-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test18-suppr-removed-var-report-4.txt",
@@ -683,6 +841,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test18-suppr-removed-var-v0.o",
     "data/test-diff-suppr/test18-suppr-removed-var-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test18-suppr-removed-var-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test18-suppr-removed-var-report-5.txt",
@@ -692,6 +852,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v0.o",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-report-0.txt",
     "output/test-diff-suppr/test19-suppr-added-fn-sym-report-0.txt"
@@ -699,6 +861,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v0.o",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-report-1.txt",
@@ -707,6 +871,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v0.o",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-report-2.txt",
@@ -715,6 +881,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v0.o",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-report-3.txt",
@@ -723,6 +891,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v0.o",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-report-4.txt",
@@ -731,6 +901,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v0.o",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test19-suppr-added-fn-sym-report-5.txt",
@@ -740,6 +912,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v0.o",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-0.txt",
     "output/test-diff-suppr/test20-suppr-removed-fn-sym-report-0.txt"
@@ -747,6 +921,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v0.o",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-0.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-1.txt",
@@ -755,6 +931,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v0.o",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-1.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-2.txt",
@@ -763,6 +941,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v0.o",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-2.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-3.txt",
@@ -771,6 +951,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v0.o",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-3.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-4.txt",
@@ -779,6 +961,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v0.o",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-4.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test20-suppr-removed-fn-sym-report-5.txt",
@@ -788,6 +972,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test21-suppr-added-var-sym-v0.o",
     "data/test-diff-suppr/test21-suppr-added-var-sym-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test21-suppr-added-var-sym-report-0.txt",
     "output/test-diff-suppr/test21-suppr-added-var-sym-report-0.txt"
@@ -795,6 +981,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test21-suppr-added-var-sym-v0.o",
     "data/test-diff-suppr/test21-suppr-added-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test21-suppr-added-var-sym-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test21-suppr-added-var-sym-report-1.txt",
@@ -803,6 +991,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test21-suppr-added-var-sym-v0.o",
     "data/test-diff-suppr/test21-suppr-added-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test21-suppr-added-var-sym-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test21-suppr-added-var-sym-report-2.txt",
@@ -811,6 +1001,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test21-suppr-added-var-sym-v0.o",
     "data/test-diff-suppr/test21-suppr-added-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test21-suppr-added-var-sym-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test21-suppr-added-var-sym-report-3.txt",
@@ -819,6 +1011,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test21-suppr-added-var-sym-v0.o",
     "data/test-diff-suppr/test21-suppr-added-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test21-suppr-added-var-sym-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test21-suppr-added-var-sym-report-4.txt",
@@ -827,6 +1021,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test21-suppr-added-var-sym-v0.o",
     "data/test-diff-suppr/test21-suppr-added-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test21-suppr-added-var-sym-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test21-suppr-added-var-sym-report-5.txt",
@@ -836,6 +1032,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v0.o",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-report-0.txt",
     "output/test-diff-suppr/test22-suppr-removed-var-sym-report-0.txt"
@@ -843,6 +1041,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v0.o",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-report-1.txt",
@@ -851,6 +1051,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v0.o",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-report-2.txt",
@@ -859,6 +1061,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v0.o",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-report-3.txt",
@@ -867,6 +1071,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v0.o",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test22-suppr-removed-var-sym-report-4.txt",
@@ -876,6 +1082,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest23-alias-filter-v0.so",
     "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test23-alias-filter-report-0.txt",
     "output/test-diff-suppr/test23-alias-filter-report-0.txt"
@@ -883,6 +1091,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest23-alias-filter-v0.so",
     "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "",
+    "",
     "data/test-diff-suppr/test23-alias-filter-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test23-alias-filter-report-1.txt",
@@ -891,6 +1101,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest23-alias-filter-v0.so",
     "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "",
+    "",
     "data/test-diff-suppr/test23-alias-filter-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test23-alias-filter-report-2.txt",
@@ -899,6 +1111,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest23-alias-filter-v0.so",
     "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "",
+    "",
     "data/test-diff-suppr/test23-alias-filter-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test23-alias-filter-report-3.txt",
@@ -907,6 +1121,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest23-alias-filter-v0.so",
     "data/test-diff-suppr/libtest23-alias-filter-v1.so ",
+    "",
+    "",
     "data/test-diff-suppr/test23-alias-filter-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test23-alias-filter-report-5.txt",
@@ -915,6 +1131,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-0.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-0.txt",
@@ -923,6 +1141,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-1.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-1.txt",
@@ -931,6 +1151,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-2.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-2.txt",
@@ -939,6 +1161,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-3.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-3.txt",
@@ -947,6 +1171,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-4.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-4.txt",
@@ -955,6 +1181,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-5.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-5.txt",
@@ -963,6 +1191,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-6.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-6.txt",
@@ -971,6 +1201,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-7.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-7.txt",
@@ -979,6 +1211,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-8.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-8.txt",
@@ -987,6 +1221,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-9.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-9.txt",
@@ -995,6 +1231,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-10.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-10.txt",
@@ -1003,6 +1241,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-11.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-11.txt",
@@ -1011,6 +1251,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-12.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-12.txt",
@@ -1019,6 +1261,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-13.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-13.txt",
@@ -1027,6 +1271,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-13.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-13.txt",
@@ -1035,6 +1281,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-14.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-14.txt",
@@ -1043,6 +1291,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-15.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-15.txt",
@@ -1051,6 +1301,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest24-soname-v0.so",
     "data/test-diff-suppr/libtest24-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test24-soname-suppr-16.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test24-soname-report-16.txt",
@@ -1060,6 +1312,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest25-typedef-v0.so",
     "data/test-diff-suppr/libtest25-typedef-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test25-typedef-report-0.txt",
     "output/test-diff-suppr/test25-typedef-report-0.txt"
@@ -1067,6 +1321,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest25-typedef-v0.so",
     "data/test-diff-suppr/libtest25-typedef-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test25-typedef-suppr-0.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test25-typedef-report-1.txt",
@@ -1076,6 +1332,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest26-loc-suppr-v0.so",
     "data/test-diff-suppr/libtest26-loc-suppr-v1.so",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test26-loc-suppr-report-0.txt",
     "output/test-diff-suppr/test26-loc-suppr-report-0.txt"
@@ -1083,6 +1341,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest26-loc-suppr-v0.so",
     "data/test-diff-suppr/libtest26-loc-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test26-loc-suppr-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test26-loc-suppr-report-1.txt",
@@ -1091,6 +1351,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest26-loc-suppr-v0.so",
     "data/test-diff-suppr/libtest26-loc-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test26-loc-suppr-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test26-loc-suppr-report-2.txt",
@@ -1099,6 +1361,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest26-loc-suppr-v0.so",
     "data/test-diff-suppr/libtest26-loc-suppr-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test26-loc-suppr-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test26-loc-suppr-report-3.txt",
@@ -1108,6 +1372,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test27-add-aliased-function-v0.o",
     "data/test-diff-suppr/test27-add-aliased-function-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test27-add-aliased-function-report-0.txt",
     "output/test-diff-suppr/test27-add-aliased-function-report-0.txt"
@@ -1115,6 +1381,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test27-add-aliased-function-v0.o",
     "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test27-add-aliased-function-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test27-add-aliased-function-report-1.txt",
@@ -1123,6 +1391,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test27-add-aliased-function-v0.o",
     "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test27-add-aliased-function-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test27-add-aliased-function-report-2.txt",
@@ -1131,6 +1401,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test27-add-aliased-function-v0.o",
     "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test27-add-aliased-function-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test27-add-aliased-function-report-3.txt",
@@ -1139,6 +1411,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test27-add-aliased-function-v0.o",
     "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test27-add-aliased-function-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test27-add-aliased-function-report-4.txt",
@@ -1147,6 +1421,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test27-add-aliased-function-v0.o",
     "data/test-diff-suppr/test27-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test27-add-aliased-function-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test27-add-aliased-function-report-5.txt",
@@ -1156,6 +1432,8 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test28-add-aliased-function-v0.o",
     "data/test-diff-suppr/test28-add-aliased-function-v1.o",
     "",
+    "",
+    "",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test28-add-aliased-function-report-0.txt",
     "output/test-diff-suppr/test28-add-aliased-function-report-0.txt"
@@ -1163,6 +1441,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test28-add-aliased-function-v0.o",
     "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test28-add-aliased-function-0.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test28-add-aliased-function-report-1.txt",
@@ -1171,6 +1451,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test28-add-aliased-function-v0.o",
     "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test28-add-aliased-function-1.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test28-add-aliased-function-report-2.txt",
@@ -1179,6 +1461,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test28-add-aliased-function-v0.o",
     "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test28-add-aliased-function-2.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test28-add-aliased-function-report-3.txt",
@@ -1187,6 +1471,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test28-add-aliased-function-v0.o",
     "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test28-add-aliased-function-3.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test28-add-aliased-function-report-4.txt",
@@ -1195,6 +1481,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test28-add-aliased-function-v0.o",
     "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test28-add-aliased-function-4.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test28-add-aliased-function-report-5.txt",
@@ -1203,6 +1491,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/test28-add-aliased-function-v0.o",
     "data/test-diff-suppr/test28-add-aliased-function-v1.o",
+    "",
+    "",
     "data/test-diff-suppr/test28-add-aliased-function-5.suppr",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test28-add-aliased-function-report-6.txt",
@@ -1211,6 +1501,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-0.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-0.txt",
@@ -1219,6 +1511,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-1.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-1.txt",
@@ -1227,6 +1521,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-2.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-2.txt",
@@ -1235,6 +1531,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-3.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-3.txt",
@@ -1243,6 +1541,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-4.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-4.txt",
@@ -1251,6 +1551,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-5.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-5.txt",
@@ -1259,6 +1561,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-6.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-6.txt",
@@ -1267,6 +1571,8 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-7.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-7.txt",
@@ -1275,13 +1581,35 @@ InOutSpec in_out_specs[] =
   {
     "data/test-diff-suppr/libtest29-soname-v0.so",
     "data/test-diff-suppr/libtest29-soname-v1.so",
+    "",
+    "",
     "data/test-diff-suppr/test29-suppr-8.txt",
     "--no-show-locs --no-redundant",
     "data/test-diff-suppr/test29-soname-report-8.txt",
     "output/test-diff-suppr/test29-soname-report-8.txt"
   },
+  {
+    "data/test-diff-suppr/test30-pub-lib-v0.so",
+    "data/test-diff-suppr/test30-pub-lib-v1.so",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-suppr/test30-report-0.txt",
+    "output/test-diff-suppr/test30-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/test30-pub-lib-v0.so",
+    "data/test-diff-suppr/test30-pub-lib-v1.so",
+    "data/test-diff-suppr/test30-include-dir-v0",
+    "data/test-diff-suppr/test30-include-dir-v1",
+    "",
+    "",
+    "data/test-diff-suppr/test30-report-1.txt",
+    "output/test-diff-suppr/test30-report-1.txt"
+  },
   // This should be the last entry
-  {NULL, NULL, NULL, NULL, NULL, NULL}
+  {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };
 
 int
@@ -1293,8 +1621,8 @@ main()
   using abigail::tools_utils::abidiff_status;
 
   bool is_ok = true;
-  string in_elfv0_path, in_elfv1_path,
-    in_suppression_path, bidiff_options, bidiff, cmd,
+  string in_elfv0_path, in_elfv1_path, headers_dir1, headers_dir2,
+    in_suppression_path, abidiff_options, abidiff, cmd,
     ref_diff_report_path, out_diff_report_path;
 
     for (InOutSpec* s = in_out_specs; s->in_elfv0_path; ++s)
@@ -1307,11 +1635,18 @@ main()
 	else
 	  in_suppression_path.clear();
 
-	bidiff_options = s->bidiff_options;
+	abidiff_options = s->abidiff_options;
+
 	ref_diff_report_path =
 	  string(get_src_dir()) + "/tests/" + s->in_report_path;
 	out_diff_report_path =
 	  string(get_build_dir()) + "/tests/" + s->out_report_path;
+
+	if (s->headers_dir1 && strcmp(s->headers_dir1, ""))
+	  headers_dir1 = s->headers_dir1;
+
+	if (s->headers_dir2 && strcmp(s->headers_dir2, ""))
+	  headers_dir2 = s->headers_dir2;
 
 	if (!ensure_parent_dir_created(out_diff_report_path))
 	  {
@@ -1321,13 +1656,21 @@ main()
 	    continue;
 	  }
 
-	bidiff = string(get_build_dir()) + "/tools/abidiff";
-	bidiff += " " + bidiff_options;
+	abidiff = string(get_build_dir()) + "/tools/abidiff";
+	abidiff += " " + abidiff_options;
 
 	if (!in_suppression_path.empty())
-	  bidiff += " --suppressions " + in_suppression_path;
+	  abidiff += " --suppressions " + in_suppression_path;
 
-	cmd = bidiff + " " + in_elfv0_path + " " + in_elfv1_path;
+	if (!headers_dir1.empty())
+	  abidiff +=
+	    " --hd1 " + string(get_src_dir()) + "/tests/" + headers_dir1;
+
+	if (!headers_dir2.empty())
+	  abidiff +=
+	    " --hd2 " + string(get_src_dir()) + "/tests/" + headers_dir2;
+
+	cmd = abidiff + " " + in_elfv0_path + " " + in_elfv1_path;
 	cmd += " > " + out_diff_report_path;
 
 	bool bidiff_ok = true;

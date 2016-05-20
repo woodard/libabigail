@@ -10345,6 +10345,40 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 						     ctxt))
 	      suppressed_deleted_unrefed_fn_syms_[e->first] = e->second;
 	}
+      // Added/Delete virtual member functions changes that might be
+      // suppressed by a type_suppression that matches the enclosing
+      // class of the virtual member function.
+      else if (type_suppression_sptr type_suppr = is_type_suppression(*i))
+	{
+	  // Added virtual functions
+	  for (string_function_ptr_map::const_iterator e = added_fns_.begin();
+	       e != added_fns_.end();
+	       ++e)
+	    if (is_member_function(e->second)
+		&& get_member_function_is_virtual(e->second))
+	      {
+		function_decl *f = e->second;
+		class_decl_sptr c =
+		  is_method_type(f->get_type())->get_class_type();
+		assert(c);
+		if (type_suppr->suppresses_type(c, ctxt))
+		  suppressed_added_fns_[e->first] = e->second;
+	      }
+	  // Deleted virtual functions
+	  for (string_function_ptr_map::const_iterator e = deleted_fns_.begin();
+	       e != deleted_fns_.end();
+	       ++e)
+	    if (is_member_function(e->second)
+		&& get_member_function_is_virtual(e->second))
+	      {
+		function_decl *f = e->second;
+		class_decl_sptr c =
+		  is_method_type(f->get_type())->get_class_type();
+		assert(c);
+		if (type_suppr->suppresses_type(c, ctxt))
+		  suppressed_deleted_fns_[e->first] = e->second;
+	      }
+	}
       // Added/Deleted variables
       else if (variable_suppression_sptr var_suppr =
 	       is_variable_suppression(*i))

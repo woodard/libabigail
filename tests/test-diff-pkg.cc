@@ -55,6 +55,8 @@ struct InOutSpec
   const char* suppression_path;
   const char* first_in_debug_package_path;
   const char* second_in_debug_package_path;
+  const char* first_in_devel_package_path;
+  const char* second_in_devel_package_path;
   const char* ref_report_path;
   const char* out_report_path;
 };// end struct InOutSpec
@@ -69,6 +71,8 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "data/test-diff-pkg/dirpkg-0-report-0.txt",
     "output/test-diff-pkg/dirpkg-0-report-0.txt"
   },
@@ -77,6 +81,8 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dirpkg-1-dir1",
     "data/test-diff-pkg/dirpkg-1-dir2",
     "--no-show-locs",
+    "",
+    "",
     "",
     "",
     "",
@@ -92,6 +98,8 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "data/test-diff-pkg/dirpkg-1-report-1.txt",
     "output/test-diff-pkg/dirpkg-1-report-1.txt"
   },
@@ -101,6 +109,8 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dirpkg-2-dir1",
     "data/test-diff-pkg/dirpkg-2-dir2",
     "--no-show-locs",
+    "",
+    "",
     "",
     "",
     "",
@@ -117,6 +127,8 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dirpkg-3.suppr",
     "",
     "",
+    "",
+    "",
     "data/test-diff-pkg/dirpkg-3-report-0.txt",
     "output/test-diff-pkg/dirpkg-3-report-0.txt"
   },
@@ -131,6 +143,8 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dirpkg-3.suppr",
     "",
     "",
+    "",
+    "",
     "data/test-diff-pkg/dirpkg-3-report-1.txt",
     "output/test-diff-pkg/dirpkg-3-report-1.txt"
   },
@@ -141,12 +155,16 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dirpkg-3.suppr",
     "",
     "",
+    "",
+    "",
     "data/test-diff-pkg/dirpkg-3-report-2.txt",
     "output/test-diff-pkg/dirpkg-3-report-2.txt"
   },
   {
     "data/test-diff-pkg/symlink-dir-test1/dir1/symlinks",
     "data/test-diff-pkg/symlink-dir-test1/dir2/symlinks",
+    "",
+    "",
     "",
     "",
     "",
@@ -162,6 +180,8 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
     "output/test-diff-pkg/tarpkg-0-report-0.txt"
   },
@@ -169,6 +189,8 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/tarpkg-0-dir1.ta",
     "data/test-diff-pkg/tarpkg-0-dir2.ta",
     "--no-show-locs",
+    "",
+    "",
     "",
     "",
     "",
@@ -182,6 +204,8 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
     "output/test-diff-pkg/tarpkg-0-report-02.txt"
   },
@@ -192,6 +216,8 @@ static InOutSpec in_out_specs[] =
     "",
     "",
     "",
+    "",
+    "",
     "data/test-diff-pkg/tarpkg-0-report-0.txt",
     "output/test-diff-pkg/tarpkg-0-report-03.txt"
   },
@@ -199,6 +225,8 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/tarpkg-1-dir1.tar.gz",
     "data/test-diff-pkg/tarpkg-1-dir2.tar.gz",
     "--dso-only",
+    "",
+    "",
     "",
     "",
     "",
@@ -216,55 +244,65 @@ static InOutSpec in_out_specs[] =
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
+    "",
+    "",
     "data/test-diff-pkg/test-rpm-report-0.txt",
     "output/test-diff-pkg/test-rpm-report-0.txt"
   },
   // Two RPM packages with 2nd package debuginfo missing
   {
-  "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
-  "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-  "--no-show-locs",
-  "",
-  "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
-  "",
-  "data/test-diff-pkg/test-rpm-report-1.txt",
-  "output/test-diff-pkg/test-rpm-report-1.txt"
+    "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+    "--no-show-locs",
+    "",
+    "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/test-rpm-report-1.txt",
+    "output/test-diff-pkg/test-rpm-report-1.txt"
   },
 
   // Two RPM packages with first package debuginfo missing
   {
-  "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
-  "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-  "--no-show-locs",
-  "",
-  "",
-  "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
-  "data/test-diff-pkg/test-rpm-report-2.txt",
-  "output/test-diff-pkg/test-rpm-report-2.txt"
+    "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+    "--no-show-locs",
+    "",
+    "",
+    "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/test-rpm-report-2.txt",
+    "output/test-diff-pkg/test-rpm-report-2.txt"
   },
 
   // Two RPM packages with missing debuginfo
   {
-  "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
-  "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-  "--no-show-locs",
-  "",
-  "",
-  "",
-  "data/test-diff-pkg/test-rpm-report-3.txt",
-  "output/test-diff-pkg/test-rpm-report-3.txt"
+    "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+    "--no-show-locs",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/test-rpm-report-3.txt",
+    "output/test-diff-pkg/test-rpm-report-3.txt"
   },
 
   // Two RPM packages with no ABI change
   {
-  "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
-  "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
-  "--no-show-locs",
-  "",
-  "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
-  "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
-  "data/test-diff-pkg/test-rpm-report-4.txt",
-  "output/test-diff-pkg/test-rpm-report-4.txt"
+    "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+    "--no-show-locs",
+    "",
+    "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/test-rpm-report-4.txt",
+    "output/test-diff-pkg/test-rpm-report-4.txt"
   },
   // Two RPM packages with debuginfo available and we don't want to
   // see added symbols.
@@ -275,6 +313,8 @@ static InOutSpec in_out_specs[] =
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
+    "",
+    "",
     "data/test-diff-pkg/test-rpm-report-5.txt",
     "output/test-diff-pkg/test-rpm-report-5.txt"
   },
@@ -285,17 +325,22 @@ static InOutSpec in_out_specs[] =
     "",
     "data/test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-7.el7.ppc64.rpm",
     "data/test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-20.el7.ppc64.rpm",
+    "",
+    "",
     "data/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64--qemu-img-rhev-2.3.0-20.el7.ppc64-report-0.txt",
     "output/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64--qemu-img-rhev-2.3.0-20.el7.ppc64-report-0.txt"
   },
-  {"data/test-diff-pkg/empty-pkg-libvirt-0.9.11.3-1.el7.ppc64.rpm",
-   "data/test-diff-pkg/empty-pkg-libvirt-1.2.17-13.el7_2.2.ppc64.rpm",
-   "",
-   "",
-   "",
-   "",
-   "data/test-diff-pkg/empty-pkg-report-0.txt",
-   "output/test-diff-pkg/empty-pkg-report-0.txt"
+  {
+    "data/test-diff-pkg/empty-pkg-libvirt-0.9.11.3-1.el7.ppc64.rpm",
+    "data/test-diff-pkg/empty-pkg-libvirt-1.2.17-13.el7_2.2.ppc64.rpm",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/empty-pkg-report-0.txt",
+    "output/test-diff-pkg/empty-pkg-report-0.txt"
   },
   {
     "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm",
@@ -304,8 +349,22 @@ static InOutSpec in_out_specs[] =
     "",
     "data/test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm",
     "data/test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm",
+    "",
+    "",
     "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt",
     "output/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-0.txt"
+  },
+  {
+    "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm",
+    "data/test-diff-pkg/tbb-4.3-3.20141204.fc23.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm",
+    "data/test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm",
+    "data/test-diff-pkg/tbb-devel-4.1-9.20130314.fc22.x86_64.rpm",
+    "data/test-diff-pkg/tbb-devel-4.3-3.20141204.fc23.x86_64.rpm",
+    "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-1.txt",
+    "output/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-1.txt"
   },
   {
     "data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm",
@@ -314,6 +373,8 @@ static InOutSpec in_out_specs[] =
     "",
     "data/test-diff-pkg/libICE-debuginfo-1.0.6-1.el6.x86_64.rpm",
     "data/test-diff-pkg/libICE-debuginfo-1.0.9-2.el7.x86_64.rpm",
+    "",
+    "",
     "data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt",
     "output/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm--libICE-1.0.9-2.el7.x86_64.rpm-report-0.txt"
   },
@@ -324,6 +385,8 @@ static InOutSpec in_out_specs[] =
     "",
     "data/test-diff-pkg/gtk2-debuginfo-2.24.22-5.el7.i686.rpm",
     "data/test-diff-pkg/gtk2-debuginfo-2.24.28-8.el7.i686.rpm",
+    "",
+    "",
     "data/test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686--gtk2-immodule-xim-2.24.28-8.el7.i686-report-0.txt",
     "output/test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686--gtk2-immodule-xim-2.24.28-8.el7.i686-report-0.txt"
   },
@@ -338,12 +401,14 @@ static InOutSpec in_out_specs[] =
     "",
     "data/test-diff-pkg/libsigc++-2.0-0c2a-dbgsym_2.4.0-1_amd64.ddeb",
     "data/test-diff-pkg/libsigc++-2.0-0v5-dbgsym_2.4.1-1ubuntu2_amd64.ddeb",
+    "",
+    "",
     "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt",
     "output/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64--libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64-report-0.txt"
   },
 #endif // WITH_DEB
   // This should be the last entry.
-  {0, 0, 0, 0, 0, 0, 0, 0}
+  {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
 /// A task which launches abipkgdiff on the binaries passed to the
@@ -379,6 +444,7 @@ struct test_task : public abigail::workers::task
       prog_options,
       ref_abi_diff_report_path, out_abi_diff_report_path, cmd, abipkgdiff,
       first_in_debug_package_path, second_in_debug_package_path,
+      first_in_devel_package_path, second_in_devel_package_path,
       suppression_path;
 
     first_in_package_path =
@@ -401,6 +467,16 @@ struct test_task : public abigail::workers::task
 	string(get_src_dir()) + "/tests/" + spec.second_in_debug_package_path;
     else
       second_in_debug_package_path.clear();
+
+    if (spec.first_in_devel_package_path
+	&& strcmp(spec.first_in_devel_package_path, ""))
+      first_in_devel_package_path =
+	string(get_src_dir()) + "/tests/" + spec.first_in_devel_package_path;
+
+    if (spec.second_in_devel_package_path
+	&& strcmp(spec.second_in_devel_package_path, ""))
+      second_in_devel_package_path =
+	string(get_src_dir()) + "/tests/" + spec.second_in_devel_package_path;
 
     if (spec.suppression_path
 	&& strcmp(spec.suppression_path, ""))
@@ -431,6 +507,12 @@ struct test_task : public abigail::workers::task
       abipkgdiff += " --d1 " + first_in_debug_package_path;
     if (!second_in_debug_package_path.empty())
       abipkgdiff += " --d2 " + second_in_debug_package_path;
+
+    if (!first_in_devel_package_path.empty())
+      abipkgdiff += " --devel1 " + first_in_devel_package_path;
+
+    if (!second_in_devel_package_path.empty())
+      abipkgdiff += " --devel2 " + second_in_devel_package_path;
 
     if (!suppression_path.empty())
       abipkgdiff += " --suppressions " + suppression_path;

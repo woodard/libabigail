@@ -55,6 +55,7 @@ using namespace abigail::dwarf_reader;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
+using abigail::tools_utils::gen_suppr_spec_from_headers;
 using abigail::tools_utils::abidiff_status;
 
 struct options
@@ -70,6 +71,8 @@ struct options
   vector<string>	drop_var_regex_patterns;
   vector<string>	keep_fn_regex_patterns;
   vector<string>	keep_var_regex_patterns;
+  string		headers_dir1;
+  string		headers_dir2;
   bool			no_arch;
   bool			show_stats_only;
   bool			show_symtabs;
@@ -126,10 +129,12 @@ display_usage(const string& prog_name, ostream& out)
   emit_prefix(prog_name, out)
     << "usage: " << prog_name << " [options] [<file1> <file2>]\n"
     << " where options can be:\n"
+    << " --help|-h  display this message\n "
     << " --version|-v  display program version information and exit\n"
     << " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
     << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
-    << " --help|-h  display this message\n "
+    << " --headers-dir1|--hd1 <path>  the path headers of file1\n"
+    << " --headers-dir2|--hd2 <path>  the path headers of file2\n"
     << " --stat  only display the diff stats\n"
     << " --symtabs  only display the symbol tables of the corpora\n"
     << " --no-architecture  do not take architecture in account\n"
@@ -226,6 +231,32 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  // absolute.
 	  opts.di_root_path2 =
 	    abigail::tools_utils::make_path_absolute(argv[j]);
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--headers-dir1")
+	       || !strcmp(argv[i], "--hd1"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
+	  opts.headers_dir1 = argv[j];
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--headers-dir2")
+	       || !strcmp(argv[i], "--hd2"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
+	  opts.headers_dir2 = argv[j];
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--stat"))
@@ -494,6 +525,26 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
        ++i)
     read_suppressions(*i, supprs);
   ctxt->add_suppressions(supprs);
+
+  if (!opts.headers_dir1.empty())
+    {
+      // Generate suppression specification to avoid showing ABI
+      // changes on types that are not defined in public headers.
+      suppression_sptr suppr =
+	gen_suppr_spec_from_headers(opts.headers_dir1);
+      if (suppr)
+	ctxt->add_suppression(suppr);
+    }
+
+    if (!opts.headers_dir2.empty())
+    {
+      // Generate suppression specification to avoid showing ABI
+      // changes on types that are not defined in public headers.
+      suppression_sptr suppr =
+	gen_suppr_spec_from_headers(opts.headers_dir2);
+      if (suppr)
+	ctxt->add_suppression(suppr);
+    }
 
   ctxt->dump_diff_tree(opts.dump_diff_tree);
 }

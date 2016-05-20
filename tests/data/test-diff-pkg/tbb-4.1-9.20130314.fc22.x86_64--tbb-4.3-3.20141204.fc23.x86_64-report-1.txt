@@ -1,0 +1,160 @@
+================ changes of 'libtbb.so.2'===============
+  Functions changes summary: 0 Removed, 7 Changed (17 filtered out), 17 Added functions
+  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+  Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
+  Variable symbols changes summary: 3 Removed, 0 Added variable symbols not referenced by debug info
+
+  17 Added functions:
+
+    'method int tbb::interface7::internal::task_arena_base::internal_current_slot()'    {_ZN3tbb10interface78internal15task_arena_base21internal_current_slotEv}
+    'method void tbb::interface7::internal::task_arena_base::internal_enqueue(tbb::task&, intptr_t)'    {_ZNK3tbb10interface78internal15task_arena_base16internal_enqueueERNS_4taskEl}
+    'method void tbb::interface7::internal::task_arena_base::internal_execute(tbb::interface7::internal::delegate_base&)'    {_ZNK3tbb10interface78internal15task_arena_base16internal_executeERNS1_13delegate_baseE}
+    'method void tbb::interface7::internal::task_arena_base::internal_initialize()'    {_ZN3tbb10interface78internal15task_arena_base19internal_initializeEv}
+    'method void tbb::interface7::internal::task_arena_base::internal_terminate()'    {_ZN3tbb10interface78internal15task_arena_base18internal_terminateEv}
+    'method void tbb::interface7::internal::task_arena_base::internal_wait()'    {_ZNK3tbb10interface78internal15task_arena_base13internal_waitEv}
+    'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_acquire_reader(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&, bool)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex23internal_acquire_readerERNS2_11scoped_lockEb}
+    'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_acquire_writer(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&, bool)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex23internal_acquire_writerERNS2_11scoped_lockEb}
+    'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_construct()'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex18internal_constructEv}
+    'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_downgrade(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex18internal_downgradeERNS2_11scoped_lockE}
+    'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_release(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex16internal_releaseERNS2_11scoped_lockE}
+    'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_try_acquire_writer(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex27internal_try_acquire_writerERNS2_11scoped_lockE}
+    'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_upgrade(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex16internal_upgradeERNS2_11scoped_lockE}
+    'method void tbb::internal::concurrent_queue_base_v8::internal_push_move()'    {_ZN3tbb8internal24concurrent_queue_base_v818internal_push_moveEPKv}
+    'method bool tbb::internal::concurrent_queue_base_v8::internal_push_move_if_not_full()'    {_ZN3tbb8internal24concurrent_queue_base_v830internal_push_move_if_not_fullEPKv}
+    'method void tbb::internal::concurrent_queue_base_v8::move_content(tbb::internal::concurrent_queue_base_v8&)'    {_ZN3tbb8internal24concurrent_queue_base_v812move_contentERS1_}
+    'method void tbb::task_group_context::capture_fp_settings()'    {_ZN3tbb18task_group_context19capture_fp_settingsEv}
+
+  7 functions with some indirect sub-type change:
+
+    [C]'function void tbb::internal::throw_exception_v4(tbb::internal::exception_id)' at tbb_misc.cpp:119:1 has some indirect sub-type changes:
+      parameter 1 of type 'enum tbb::internal::exception_id' has sub-type changes:
+        1 enumerator insertion:
+          'tbb::internal::exception_id::eid_bad_tagged_msg_cast' value '20'
+
+        1 enumerator change:
+          'tbb::internal::exception_id::eid_max' from value '20' to '21'
+
+
+    [C]'method void tbb::mutex::scoped_lock::internal_acquire(tbb::mutex&)' at mutex.h:129:1 has some indirect sub-type changes:
+      parameter 1 of type 'tbb::mutex&' has sub-type changes:
+        in referenced type 'class tbb::mutex' at mutex.h:40:1:
+          1 base class insertion:
+            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+
+    [C]'method void tbb::pipeline::run(std::size_t, tbb::task_group_context&)' at pipeline.cpp:633:1 has some indirect sub-type changes:
+      parameter 2 of type 'tbb::task_group_context&' has sub-type changes:
+        in referenced type 'class tbb::task_group_context' at task.h:302:1:
+          1 data member insertion:
+            'tbb::internal::cpu_ctl_env_space tbb::task_group_context::my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
+          1 data member changes (2 filtered):
+           type of 'char tbb::task_group_context::_leading_padding[80]' changed:
+             type name changed from 'char[80]' to 'char[72]'
+             array type size changed from 640 to 576 bits:
+             array type subrange 1 changed length from 80 to 72
+
+
+    [C]'method void tbb::queuing_mutex::scoped_lock::acquire(tbb::queuing_mutex&)' at queuing_mutex.h:84:1 has some indirect sub-type changes:
+      parameter 1 of type 'tbb::queuing_mutex&' has sub-type changes:
+        in referenced type 'class tbb::queuing_mutex' at queuing_mutex.h:45:1:
+          1 base class insertion:
+            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+          no data member change (1 filtered);
+
+    [C]'method void tbb::queuing_rw_mutex::scoped_lock::acquire(tbb::queuing_rw_mutex&, bool)' at queuing_rw_mutex.h:95:1 has some indirect sub-type changes:
+      parameter 1 of type 'tbb::queuing_rw_mutex&' has sub-type changes:
+        in referenced type 'class tbb::queuing_rw_mutex' at queuing_rw_mutex.h:47:1:
+          1 base class insertion:
+            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+          no data member change (1 filtered);
+
+    [C]'method void tbb::recursive_mutex::scoped_lock::internal_acquire(tbb::recursive_mutex&)' at recursive_mutex.h:139:1 has some indirect sub-type changes:
+      parameter 1 of type 'tbb::recursive_mutex&' has sub-type changes:
+        in referenced type 'class tbb::recursive_mutex' at recursive_mutex.h:39:1:
+          1 base class insertion:
+            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+
+    [C]'method void tbb::spin_mutex::scoped_lock::internal_acquire(tbb::spin_mutex&)' at spin_mutex.h:66:1 has some indirect sub-type changes:
+      parameter 1 of type 'tbb::spin_mutex&' has sub-type changes:
+        in referenced type 'class tbb::spin_mutex' at spin_mutex.h:40:1:
+          1 base class insertion:
+            class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
+
+
+  3 Removed variable symbols not referenced by debug info:
+
+    _ZTVN3rml16versioned_objectE
+    _ZTVN3rml6clientE
+    _ZTVN3rml6serverE
+
+================ end of changes of 'libtbb.so.2'===============
+
+================ changes of 'libtbbmalloc.so.2'===============
+  Functions changes summary: 9 Removed, 0 Changed, 0 Added functions
+  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+  Function symbols changes summary: 0 Removed, 27 Added function symbols not referenced by debug info
+  Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
+
+  9 Removed functions:
+
+    'function void* rml::internal::__TBB_internal_calloc(size_t, size_t)'    {__TBB_internal_calloc}
+    'function void rml::internal::__TBB_internal_free(void*)'    {__TBB_internal_free}
+    'function void* rml::internal::__TBB_internal_malloc(size_t)'    {__TBB_internal_malloc}
+    'function int rml::internal::__TBB_internal_posix_memalign(void**, size_t, size_t)'    {__TBB_internal_posix_memalign}
+    'function void* rml::internal::__TBB_internal_realloc(void*, size_t)'    {__TBB_internal_realloc}
+    'function void* safer_scalable_aligned_realloc(void*, size_t, size_t, void*)'    {safer_scalable_aligned_realloc}
+    'function void safer_scalable_free(void*, void (void*)*)'    {safer_scalable_free}
+    'function size_t safer_scalable_msize(void*, typedef size_t (void*)*)'    {safer_scalable_msize}
+    'function void* safer_scalable_realloc(void*, size_t, void*)'    {safer_scalable_realloc}
+
+
+  27 Added function symbols not referenced by debug info:
+
+    _Z10BitScanRevm
+    _Z10FencedLoadRVKl
+    _Z11FencedStoreRVll
+    _Z15AtomicIncrementRVl
+    _Z15SpinWaitWhileEqRVKll
+    _Z16AtomicFetchStorePVvm
+    _Z21AtomicCompareExchangeRVlll
+    _Z8AtomicOrPVvm
+    _Z8do_yieldv
+    _Z9AtomicAddRVll
+    _Z9AtomicAndPVvm
+    _ZN11MallocMutex11scoped_lockC1ERS_
+    _ZN11MallocMutex11scoped_lockC1ERS_bPb, aliases _ZN11MallocMutex11scoped_lockC2ERS_bPb
+    _ZN11MallocMutex11scoped_lockC2ERS_, aliases _ZN11MallocMutex11scoped_lockC1ERS_
+    _ZN11MallocMutex11scoped_lockC2ERS_bPb
+    _ZN11MallocMutex11scoped_lockD1Ev, aliases _ZN11MallocMutex11scoped_lockD2Ev
+    _ZN11MallocMutex11scoped_lockD2Ev
+    _ZN11MallocMutexC1Ev, aliases _ZN11MallocMutexC2Ev
+    _ZN11MallocMutexC2Ev
+    _ZdlPvS_
+    _ZnwmPv
+    __TBB_malloc_safer_aligned_msize
+    __TBB_malloc_safer_aligned_realloc
+    __TBB_malloc_safer_free
+    __TBB_malloc_safer_msize
+    __TBB_malloc_safer_realloc
+    scalable_allocation_command
+
+================ end of changes of 'libtbbmalloc.so.2'===============
+
+================ changes of 'libtbbmalloc_proxy.so.2'===============
+  Functions changes summary: 1 Removed, 0 Changed, 5 Added functions
+  Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
+
+  1 Removed function:
+
+    'function bool __TBB_internal_find_original_malloc(int, const char**, void**)'    {__TBB_internal_find_original_malloc}
+
+  5 Added functions:
+
+    'function void __libc_free(void*)'    {__libc_free}
+    'function void* __libc_realloc(void*, size_t)'    {__libc_realloc}
+    'function void* calloc(size_t, size_t)'    {__libc_calloc, aliases calloc}
+    'function size_t malloc_usable_size(void*)'    {malloc_usable_size}
+    'function void* valloc(size_t)'    {__libc_valloc, aliases valloc}
+
+
+================ end of changes of 'libtbbmalloc_proxy.so.2'===============
+

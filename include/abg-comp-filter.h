@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -41,6 +41,9 @@ namespace filtering
 
 bool
 has_harmless_name_change(decl_base_sptr f, decl_base_sptr s);
+
+bool
+has_virtual_mem_fn_change(const function_decl_diff* diff);
 
 class filter_base;
 /// Convenience typedef for a shared pointer to filter_base

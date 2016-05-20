@@ -15,12 +15,6 @@ function and variable sub-types, the two input packages must be
 accompanied with their debug information packages that contain debug
 information in `DWARF`_ format.
 
-.. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
-.. _RPM: https://en.wikipedia.org/wiki/RPM_Package_Manager
-.. _Deb: https://en.wikipedia.org/wiki/Deb_%28file_format%29
-.. _tar: https://en.wikipedia.org/wiki/Tar_%28computing%29
-.. _DWARF: http://www.dwarfstd.org
-
 
 .. _abipkgdiff_invocation_label:
 
@@ -30,6 +24,9 @@ Invocation
 ::
 
   abipkgdiff [option] <package1> <package2>
+
+``package1`` and ``package2`` are the packages that contain the
+binaries to be compared.
 
 .. _abipkgdiff_options_label:
 
@@ -55,6 +52,26 @@ Options
     For cases where the debug information for *package2* is split out
     into a separate file, tells ``abipkgdiff`` where to find that
     separate debug information package.
+
+  * ``--devel-pkg1 | --devel1`` <path>
+
+    Specifies where to find the `Development Package`_ associated with
+    the first package to be compared.  That `Development Package`_ at
+    ``path`` should at least contain header files in which public
+    types exposed by the libraries (of the first package to be
+    compared) are defined.  When this option is provided, the tool
+    filters out reports about ABI changes to types that are *NOT*
+    defined in these header files.
+
+  * ``--devel-pkg2 | --devel2`` <path>
+
+    Specifies where to find the `Development Package`_ associated with
+    the second package to be compared.  That `Development Package`_ at
+    ``path`` should at least contains header files in which public
+    types exposed by the libraries (of the second package to be
+    compared) are defined.  When this option is provided, the tool
+    filters out reports about ABI changes to types that are *NOT*
+    defined in these header files.
 
   * ``--dso-only``
 
@@ -145,3 +162,10 @@ tool encountered an error.
 In the later case, the value of the exit code is the same as for the
 :ref:`abidiff tool <abidiff_return_value_label>`.
 
+
+.. _ELF: http://en.wikipedia.org/wiki/Executable_and_Linkable_Format
+.. _RPM: https://en.wikipedia.org/wiki/RPM_Package_Manager
+.. _Deb: https://en.wikipedia.org/wiki/Deb_%28file_format%29
+.. _tar: https://en.wikipedia.org/wiki/Tar_%28computing%29
+.. _DWARF: http://www.dwarfstd.org
+.. _Development Package: https://fedoraproject.org/wiki/Packaging:Guidelines?rd=Packaging/Guidelines#Devel_Packages

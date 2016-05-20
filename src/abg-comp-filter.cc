@@ -600,7 +600,7 @@ has_virtual_mem_fn_change(const class_diff* diff)
 ///
 /// @return true iff the function_decl_diff node contains changes
 /// involving virtual member functions.
-static bool
+bool
 has_virtual_mem_fn_change(const function_decl_diff* diff)
 {
   if (!diff)

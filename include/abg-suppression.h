@@ -23,6 +23,7 @@
 #ifndef __ABG_SUPPRESSION_H__
 #define __ABG_SUPPRESSION_H__
 
+#include <tr1/unordered_set>
 #include "abg-ini.h"
 #include "abg-comparison.h"
 
@@ -42,6 +43,7 @@ namespace suppr
 {
 
 using namespace abigail::comparison;
+using std::tr1::unordered_set;
 
 /// Base type of the suppression specifications types.
 ///
@@ -65,6 +67,12 @@ public:
   suppression_base(const string& label,
 		  const string& file_name_regex_str,
 		  const string& file_name_not_regex_str);
+
+  bool
+  get_is_artificial() const;
+
+  void
+  set_is_artificial(bool);
 
   const string
   get_label() const;
@@ -230,11 +238,14 @@ public:
   insertion_ranges&
   get_data_member_insertion_ranges();
 
-  const vector<string>&
+  const unordered_set<string>&
   get_source_locations_to_keep() const;
 
+  unordered_set<string>&
+  get_source_locations_to_keep();
+
   void
-  set_source_locations_to_keep(const vector<string>&);
+  set_source_locations_to_keep(const unordered_set<string>&);
 
   const string&
   get_source_location_to_keep_regex_str() const;
