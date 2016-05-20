@@ -10821,12 +10821,27 @@ void
 corpus_diff::append_child_node(diff_sptr d)
 {
   assert(d);
-  priv_->children_.push_back(d);
 
-  diff_less_than_functor comp;
-  std::sort(priv_->children_.begin(),
-	    priv_->children_.end(),
-	    comp);
+  diff_less_than_functor is_less_than;
+  bool inserted = false;
+  for (vector<diff_sptr>::iterator i = priv_->children_.begin();
+       i != priv_->children_.end();
+       ++i)
+    // Look for the point where to insert the diff child node.
+    if (!is_less_than(d, *i))
+      {
+	priv_->children_.insert(i, d);
+	// As we have just inserted 'd' into the vector, the iterator
+	// 'i' is invalidated.  We must *NOT* use it anymore.
+	inserted = true;
+	break;
+      }
+
+  if (!inserted)
+    // We didn't insert anything to the vector, presumably b/c it was
+    // empty or had one element that was "less than" 'd'.  We can thus
+    // just append 'd' to the end of the vector.
+    priv_->children_.push_back(d);
 }
 
 /// @return the bare edit script of the functions changed as recorded
