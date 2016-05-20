@@ -11490,7 +11490,7 @@ struct class_decl::priv
   bool				is_declaration_only_;
   bool				is_struct_;
   decl_base_sptr		declaration_;
-  class_decl_sptr		definition_of_declaration_;
+  class_decl_wptr		definition_of_declaration_;
   base_specs			bases_;
   unordered_map<string, base_spec_sptr>	bases_map_;
   member_types			member_types_;
@@ -11838,9 +11838,13 @@ class_decl::is_struct() const
 /// If this class is declaration-only, get its definition, if any.
 ///
 /// @return the definition of this decl-only class.
-const class_decl_sptr&
+const class_decl_sptr
 class_decl::get_definition_of_declaration() const
-{return priv_->definition_of_declaration_;}
+{
+  if (priv_->definition_of_declaration_.expired())
+    return class_decl_sptr();
+  return class_decl_sptr(priv_->definition_of_declaration_);
+}
 
 /// If this class is a definitin, get its earlier declaration.
 ///

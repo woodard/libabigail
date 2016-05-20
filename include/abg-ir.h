@@ -3112,7 +3112,7 @@ public:
   void
   set_definition_of_declaration(class_decl_sptr);
 
-  const class_decl_sptr&
+  const class_decl_sptr
   get_definition_of_declaration() const;
 
   void
