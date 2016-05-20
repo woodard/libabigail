@@ -377,11 +377,11 @@ check_file(const string& path, ostream& out, const string& prog_name)
 bool
 string_ends_with(const string& str, const string& suffix)
 {
-  if (str.length() < suffix.length())
+  string::size_type str_len = str.length(), suffix_len = suffix.length();
+
+  if (str_len < suffix_len)
     return false;
-  return str.compare(str.length() - suffix.length(),
-		     suffix.length(),
-		     suffix) == 0;
+  return str.compare(str_len - suffix_len, suffix_len, suffix) == 0;
 }
 
 /// Test if a string is made of ascii characters.
