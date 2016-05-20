@@ -300,7 +300,7 @@ main(int argc, char *argv[])
   for (size_t i = 0; i < nprocs; ++i)
     pthread_join(pthr[i], NULL);
 
-  delete pthr;
+  delete [] pthr;
 
   return !is_ok;
 }
