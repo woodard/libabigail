@@ -78,6 +78,12 @@ Options
     Instructs the tool to also compare the ABI of the binaries in the
     sub-packages of the packages specified.
 
+  * ``--dso-only``
+
+    Compares the ABI of shared libraries only.  If this option is not
+    provided, the tool compares the ABI of all ELF binaries found in
+    the packages.
+
 .. _build:
 
 Note that a build is a specific version and release of an RPM package.

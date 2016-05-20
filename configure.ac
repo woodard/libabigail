@@ -294,7 +294,6 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
   AX_PYTHON_MODULE(logging, $FATAL, python2)
   AX_PYTHON_MODULE(os, $FATAL, python2)
   AX_PYTHON_MODULE(re, $FATAL, python2)
-  AX_PYTHON_MODULE(shlex, $FATAL, python2)
   AX_PYTHON_MODULE(subprocess, $FATAL, python2)
   AX_PYTHON_MODULE(sys, $FATAL, python2)
   AX_PYTHON_MODULE(itertools, $FATAL, python2)
@@ -305,6 +304,7 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
   AX_PYTHON_MODULE(xdg, $FATAL, python2)
   AX_PYTHON_MODULE(koji, $FATAL, python2)
   AX_PYTHON_MODULE(mock, $FATAL, python2)
+  AX_PYTHON_MODULE(StringIO, $FATAL, python2)
   ENABLE_FEDABIPKGDIFF=yes
 
   if test x$ENABLE_FEDABIPKGDIFF != xyes; then

@@ -26,7 +26,6 @@ import argparse
 import logging
 import os
 import re
-import shlex
 import subprocess
 import sys
 
@@ -62,6 +61,17 @@ DEFAULT_KOJI_TOPDIR = 'https://kojipkgs.fedoraproject.org'
 # version of fedabipkgdiff, I'll make it configurable by users.
 HOME_DIR = os.path.join(xdg.BaseDirectory.xdg_cache_home,
                         os.path.splitext(os.path.basename(__file__))[0])
+
+# Mask for determining if underlying fedabipkgdiff succeeds or not.
+# This is for when the compared ABIs are equal
+ABIDIFF_OK = 0
+# This bit is set if there an application error.
+ABIDIFF_ERROR = 1
+# This bit is set if the tool is invoked in an non appropriate manner.
+ABIDIFF_USAGE_ERROR = 1 << 1
+# This bit is set if the ABIs being compared are different.
+ABIDIFF_ABI_CHANGE = 1 << 2
+
 
 # Used to construct abipkgdiff command line argument, package and associated
 # debuginfo package
@@ -672,24 +682,39 @@ def abipkgdiff(pkg_info1, pkg_info2):
     :return: return code of underlying abipkgdiff execution.
     :rtype: int
     """
-    cmd = 'abipkgdiff --dso-only --d1 {0} --d2 {1} {2} {3}'.format(
-        pkg_info1.debuginfo_package.downloaded_file,
-        pkg_info2.debuginfo_package.downloaded_file,
-        pkg_info1.package.downloaded_file,
-        pkg_info2.package.downloaded_file)
+    cmd = ['abipkgdiff',
+           '--dso-only' if global_config.dso_only else '',
+           '--d1', pkg_info1.debuginfo_package.downloaded_file,
+           '--d2', pkg_info2.debuginfo_package.downloaded_file,
+           pkg_info1.package.downloaded_file,
+           pkg_info2.package.downloaded_file,
+           ]
 
     if global_config.dry_run:
-        print 'DRY-RUN:', cmd
+        print 'DRY-RUN:', ' '.join(cmd)
         return
 
-    logger.debug('Run: %s', cmd)
+    logger.debug('Run: %s', ' '.join(cmd))
 
     print 'Comparing the ABI of binaries between {0} and {1}:'.format(
         pkg_info1.package.filename, pkg_info2.package.filename)
     print
 
-    proc = subprocess.Popen(shlex.split(cmd))
-    return proc.wait()
+    proc = subprocess.Popen(' '.join(cmd), shell=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = proc.communicate()
+
+    is_ok = proc.returncode == ABIDIFF_OK
+    is_internal_error = proc.returncode & ABIDIFF_ERROR or \
+        proc.returncode & ABIDIFF_USAGE_ERROR
+    has_abi_change = proc.returncode & ABIDIFF_ABI_CHANGE
+
+    if is_internal_error:
+        print >>sys.stderr, stderr
+    elif is_ok or has_abi_change:
+        print stdout
+
+    return proc.returncode
 
 
 def magic_construct(rpms):
@@ -964,6 +989,13 @@ def build_commandline_args_parser():
         dest='check_all_subpackages',
         help='Check all subpackages instead of only the package specificed in '
              'command line.')
+    parser.add_argument(
+        '--dso-only',
+        required=False,
+        action='store_true',
+        dest='dso_only',
+        help='Compare the ABI of shared libraries only.  If this option is not '
+             'provided, the tool compares the ABI of all ELF binaries.')
     parser.add_argument(
         '--debug',
         required=False,

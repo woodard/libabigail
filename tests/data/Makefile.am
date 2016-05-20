@@ -1153,6 +1153,11 @@ test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686.rpm \
 test-diff-pkg/gtk2-immodule-xim-2.24.28-8.el7.i686.rpm \
 test-diff-pkg/tarpkg-1-dir1.tar.gz \
 test-diff-pkg/tarpkg-1-dir2.tar.gz \
-test-diff-pkg/tarpkg-1-report-0.txt
+test-diff-pkg/tarpkg-1-report-0.txt \
+test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
+test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \
+test-fedabipkgdiff/dbus-glib-0.80-3.fc12.x86_64.rpm \
+test-fedabipkgdiff/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm
+
 
 

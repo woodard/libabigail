@@ -20,11 +20,13 @@
 #
 # Author: Chenxiong Qi
 
+import re
 import os
 import itertools
 import unittest
 import tempfile
 import shutil
+from StringIO import StringIO
 
 import koji
 
@@ -43,7 +45,7 @@ except ImportError:
 
 import imp
 # Import the fedabipkgdiff program file from the source directory.
-fedabipkgdiff_mod = imp.load_source('fedabidiff',
+fedabipkgdiff_mod = imp.load_source('fedabipkgdiff',
                                     '@top_srcdir@/tools/fedabipkgdiff')
 
 # Used to generate integer values (greater or equal to zero) in
@@ -54,6 +56,10 @@ counter = itertools.count(0)
 # prefix for creating a temporary file or directory. The name would be
 # fedabipkgdiff-test-slkw3ksox
 temp_file_or_dir_prefix = 'fedabipkgdiff-test-'
+
+# Directory holding data used by following tests
+test_data_dir = os.path.join('@top_srcdir@',
+                             'tests', 'data', 'test-fedabipkgdiff')
 
 
 class UtilsTest(unittest.TestCase):
@@ -363,7 +369,7 @@ class RunAbipkgdiffTest(unittest.TestCase):
         # from self.pkg1_infos
         self.pkg2_infos = self.pkg1_infos.copy()
 
-    @patch('fedabidiff.abipkgdiff')
+    @patch('fedabipkgdiff.abipkgdiff')
     def test_all_success(self, mock_abipkgdiff):
         """
         Ensure run_abipkgdiff returns 0 when it succeeds to run against one or
@@ -379,7 +385,7 @@ class RunAbipkgdiffTest(unittest.TestCase):
                                                   self.pkg2_infos)
         self.assertEquals(0, result)
 
-    @patch('fedabidiff.abipkgdiff')
+    @patch('fedabipkgdiff.abipkgdiff')
     def test_all_failure(self, mock_abipkgdiff):
         """
         Ensure run_abipkgdiff returns the return code from underlying
@@ -396,7 +402,8 @@ class RunAbipkgdiffTest(unittest.TestCase):
                                                   self.pkg2_infos)
         self.assertEquals(4, result)
 
-    @patch('fedabidiff.abipkgdiff', new=lambda param1, param2: counter.next())
+    @patch('fedabipkgdiff.abipkgdiff',
+           new=lambda param1, param2: counter.next())
     def test_partial_failure(self):
         """
         Ensure run_abipkgdiff returns non-zero when partial calls to
@@ -410,6 +417,7 @@ class RunAbipkgdiffTest(unittest.TestCase):
                                                   self.pkg2_infos)
         self.assertTrue(result > 0)
 
+
 class MockGlobalConfig(object):
     """Used to mock global_config
 
@@ -420,11 +428,11 @@ class MockGlobalConfig(object):
     Currently, only koji_server and dry_run are required for running
     tests. If any new test cases need others, please add them add as
     class attribute directly.
-
     """
     koji_server = fedabipkgdiff_mod.DEFAULT_KOJI_SERVER
-
+    koji_topdir = fedabipkgdiff_mod.DEFAULT_KOJI_TOPDIR
     dry_run = False
+    dso_only = True
 
 
 def mock_get_session():
@@ -529,7 +537,7 @@ class MockKojiClientSession(object):
 class GetPackageLatestBuildTest(unittest.TestCase):
     """Test case for get_package_latest_build"""
 
-    @patch('fedabidiff.global_config', new=MockGlobalConfig)
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
     @patch('koji.ClientSession', new=MockKojiClientSession)
     def test_get_latest_one(self):
         """Ensure to get latest build of a package
@@ -542,7 +550,7 @@ class GetPackageLatestBuildTest(unittest.TestCase):
         build = session.get_package_latest_build('httpd', 'fc23')
         self.assertEquals('httpd-2.4.18-1.fc23', build['nvr'])
 
-    @patch('fedabidiff.global_config', new=MockGlobalConfig)
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
     @patch('koji.ClientSession', new=MockKojiClientSession)
     def test_cannot_find_a_latest_build_with_invalid_distro(self):
         """
@@ -584,8 +592,8 @@ class DownloadRPMTest(unittest.TestCase):
         """Return URL to a non-existent remote file"""
         return os.path.join(self.make_remote_file_url(), 'nonexistent-file')
 
-    @patch('fedabidiff.global_config', new=MockGlobalConfig)
-    @patch('__main__.fedabipkgdiff_mod.get_download_dir')
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
+    @patch('fedabipkgdiff.get_download_dir')
     def test_succeed_to_download_a_rpm(self, mock_get_download_dir):
         """Enusre True is returned if curl succeeds to download remote file
 
@@ -598,8 +606,8 @@ class DownloadRPMTest(unittest.TestCase):
         ret = fedabipkgdiff_mod.download_rpm(url)
         self.assertTrue(ret)
 
-    @patch('fedabidiff.global_config', new=MockGlobalConfig)
-    @patch('__main__.fedabipkgdiff_mod.get_download_dir')
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
+    @patch('fedabipkgdiff.get_download_dir')
     def test_failed_to_download_a_rpm(self, mock_get_download_dir):
         """Ensure False is returned if curl fails to download remote file
 
@@ -612,11 +620,12 @@ class DownloadRPMTest(unittest.TestCase):
         ret = fedabipkgdiff_mod.download_rpm(url)
         self.assertFalse(ret)
 
+
 class BrewListRPMsTest(unittest.TestCase):
     """Test case for Brew.listRPMs"""
 
-    @patch('fedabidiff.global_config', new=MockGlobalConfig)
-    @patch('fedabidiff.koji.ClientSession', new=MockKojiClientSession)
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
+    @patch('fedabipkgdiff.koji.ClientSession', new=MockKojiClientSession)
     def test_select_specific_rpms(self):
         """Ensure Brew.listRPMs can select RPMs by a specific selector
 
@@ -632,6 +641,90 @@ class BrewListRPMsTest(unittest.TestCase):
         for rpm in rpms:
             self.assertTrue(rpm['name'] in ('httpd', 'httpd-debuginfo'),
                             '{0} should not be selected'.format(rpm['name']))
+
+
+class RunAbipkgdiffWithDSOOnlyOptionTest(unittest.TestCase):
+    """Test for running abipkgdiff method with --dso-only option or not
+
+    To test whether option --dso-only affects abipkgdiff, and abipkgdiff runs
+    actually against two rpm packages.
+    """
+
+    def setUp(self):
+        self.origin_env_path = os.environ['PATH']
+
+        pattern = r"=+\s?changes of '(.+)'\s*=+"
+        self.regex = re.compile(pattern, re.MULTILINE)
+
+        # The just built abipkgdiff from current codebase must be used instead
+        # of another one (that could be installed in other way) that can be
+        # found from default search path.
+        os.environ['PATH'] = \
+            '@top_builddir@/tools/:{0}'.format(os.environ['PATH'])
+
+        self.pkg_info1 = fedabipkgdiff_mod.PkgInfo(
+            fedabipkgdiff_mod.RPM({
+                'name': 'dbus-glib',
+                'version': '0.104',
+                'release': '3.fc23',
+                'arch': 'x86_64',
+                }),
+            fedabipkgdiff_mod.RPM({
+                'name': 'dbus-glib-debuginfo',
+                'version': '0.104',
+                'release': '3.fc23',
+                'arch': 'x86_64',
+                }))
+        self.pkg_info2 = fedabipkgdiff_mod.PkgInfo(
+            fedabipkgdiff_mod.RPM({
+                'name': 'dbus-glib',
+                'version': '0.80',
+                'release': '3.fc12',
+                'arch': 'x86_64',
+                }),
+            fedabipkgdiff_mod.RPM({
+                'name': 'dbus-glib-debuginfo',
+                'version': '0.80',
+                'release': '3.fc12',
+                'arch': 'x86_64',
+                }))
+
+    def tearDown(self):
+        os.environ['PATH'] = self.origin_env_path
+
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
+    @patch('fedabipkgdiff.pathinfo',
+           new=koji.PathInfo(topdir=MockGlobalConfig.koji_topdir))
+    @patch('fedabipkgdiff.get_download_dir')
+    def test_abipkgdiff_with_dso_only(self,
+                                      mock_get_download_dir, mock_stdout):
+        """Ensure only shared library is compared if --dso-only is specified"""
+        mock_get_download_dir.return_value = test_data_dir
+
+        fedabipkgdiff_mod.abipkgdiff(self.pkg_info1, self.pkg_info2)
+        output = mock_stdout.getvalue()
+
+        binaries = self.regex.findall(output)
+        self.assertEquals(['libdbus-glib-1.so.2.3.2'], binaries)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
+    @patch('fedabipkgdiff.pathinfo',
+           new=koji.PathInfo(topdir=MockGlobalConfig.koji_topdir))
+    @patch('fedabipkgdiff.get_download_dir')
+    def test_abipkgdiff_without_dso_only(self,
+                                         mock_get_download_dir, mock_stdout):
+        """Ensure all binaries are compared if --dso-only is not specified"""
+        mock_get_download_dir.return_value = test_data_dir
+        fedabipkgdiff_mod.global_config.dso_only = False
+
+        fedabipkgdiff_mod.abipkgdiff(self.pkg_info1, self.pkg_info2)
+        output = mock_stdout.getvalue()
+
+        binaries = self.regex.findall(output)
+        self.assertEquals(['dbus-binding-tool', 'libdbus-glib-1.so.2.3.2'],
+                          binaries)
 
 
 if __name__ == '__main__':
