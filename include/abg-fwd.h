@@ -535,7 +535,7 @@ scope_decl*
 get_type_scope(const shared_ptr<type_base>&);
 
 interned_string
-get_type_name(const shared_ptr<type_base>,
+get_type_name(const shared_ptr<type_base>&,
 	      bool qualified = true,
 	      bool internal = false);
 

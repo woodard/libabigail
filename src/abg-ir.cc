@@ -4762,7 +4762,7 @@ get_type_scope(const type_base_sptr& t)
 /// @return a copy of the type name if the type has a name, or the
 /// empty string if it does not.
 interned_string
-get_type_name(const type_base_sptr t, bool qualified, bool internal)
+get_type_name(const type_base_sptr& t, bool qualified, bool internal)
 {return get_type_name(t.get(), qualified, internal);}
 
 /// Get the name of a given type and return a copy of it.

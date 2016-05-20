@@ -79,7 +79,7 @@ public:
   ///
   /// If the 'file_name_regex' property of @ref suppression_base is
   /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr
+  const sptr_utils::regex_t_sptr&
   get_file_name_regex() const
   {
     if (!file_name_regex_)
@@ -104,7 +104,7 @@ public:
   ///
   /// If the 'file_name_not_regex' property of @ref suppression_base
   /// is empty then this method returns nil.
-  const sptr_utils::regex_t_sptr
+  const sptr_utils::regex_t_sptr&
   get_file_name_not_regex() const
   {
     if (!file_name_not_regex_)
@@ -129,7 +129,7 @@ public:
   ///
   /// If the 'soname_regex' property of @ref suppression_base is empty
   /// then this method returns nil.
-  const sptr_utils::regex_t_sptr
+  const sptr_utils::regex_t_sptr&
   get_soname_regex() const
   {
     if (!soname_regex_)
@@ -154,7 +154,7 @@ public:
   ///
   /// If the 'soname_not_regex' property of @ref suppression_base is
   /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr
+  const sptr_utils::regex_t_sptr&
   get_soname_not_regex() const
   {
     if (!soname_not_regex_)
