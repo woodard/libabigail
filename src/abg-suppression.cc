@@ -991,29 +991,6 @@ type_suppression::suppresses_type(const type_base_sptr& type,
 	return false;
     }
 
-  string name = get_name(type);
-
-  // Check if there is an exact type name match.
-  if (!get_type_name().empty())
-    {
-      if (get_type_name() != name)
-	return false;
-    }
-  else
-    {
-      // So now check if there is a regular expression match.
-      //
-      // If the qualified name of the considered type doesn't match
-      // the regular expression of the type name, then this
-      // suppression doesn't apply.
-      const sptr_utils::regex_t_sptr type_name_regex =
-	priv_->get_type_name_regex();
-      if (type_name_regex && (regexec(type_name_regex.get(),
-				      name.c_str(),
-				      0, NULL, 0) != 0))
-	return false;
-    }
-
   // Check if there is a source location related match.
   if (decl_base_sptr d = get_type_declaration(type))
     {
@@ -1077,6 +1054,31 @@ type_suppression::suppresses_type(const type_base_sptr& type,
 	return false;
     }
 
+  if (!get_type_name().empty() || priv_->get_type_name_regex())
+  {
+    string name = get_name(type);
+
+    // Check if there is an exact type name match.
+    if (!get_type_name().empty())
+      {
+	if (get_type_name() != name)
+	  return false;
+      }
+    else
+      {
+	// So now check if there is a regular expression match.
+	//
+	// If the qualified name of the considered type doesn't match
+	// the regular expression of the type name, then this
+	// suppression doesn't apply.
+	const sptr_utils::regex_t_sptr& type_name_regex =
+	  priv_->get_type_name_regex();
+	if (type_name_regex && (regexec(type_name_regex.get(),
+					name.c_str(),
+					0, NULL, 0) != 0))
+	  return false;
+      }
+  }
   return true;
 }
 
