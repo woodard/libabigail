@@ -237,6 +237,8 @@ if test x$ENABLE_BASH_COMPLETION = xauto -o x$ENABLE_BASH_COMPLETION = xyes; the
    if test x$ENABLE_BASH_COMPLETION = xauto; then
      if test x$HAS_BASH_COMPLETION = xyes; then
        ENABLE_BASH_COMPLETION=yes
+     else
+       ENABLE_BASH_COMPLETION=no
     fi
    fi
 fi
