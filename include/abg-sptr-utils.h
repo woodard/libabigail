@@ -45,10 +45,23 @@ using std::tr1::shared_ptr;
 ///
 /// @param p a pointer to wrap in a shared_ptr.
 ///
-/// @return then newly shared_ptr<T>
+/// @return then newly created shared_ptr<T>
 template<class T>
 shared_ptr<T>
 build_sptr(T* p);
+
+/// This is to be specialized for the diverse C types that needs
+/// wrapping in shared_ptr.
+///
+/// This variant creates a pointer to T and wraps it into a
+/// shared_ptr<T>.
+///
+/// @tparam T the type of the C type to wrap in a shared_ptr.
+///
+/// @return then newly created shared_ptr<T>
+template<class T>
+shared_ptr<T>
+build_sptr();
 
 /// A convenience typedef for a shared pointer of xmlTextReader.
 typedef shared_ptr<xmlTextReader> reader_sptr;
@@ -72,6 +85,11 @@ typedef shared_ptr<regex_t> regex_t_sptr;
 template<>
 regex_t_sptr
 build_sptr<regex_t>(regex_t *p);
+
+/// Specialization of sptr_utils::build_sptr for regex_t.
+template<>
+regex_t_sptr
+build_sptr<regex_t>();
 
 /// A deleter for shared pointers that ... doesn't delete the object
 /// managed by the shared pointer.

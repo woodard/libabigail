@@ -86,7 +86,7 @@ public:
       {
 	if (!file_name_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r(new regex_t);
+	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			file_name_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -111,7 +111,7 @@ public:
       {
 	if (!file_name_not_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r(new regex_t);
+	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			file_name_not_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -136,7 +136,7 @@ public:
       {
 	if (!soname_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r(new regex_t);
+	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			soname_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -161,7 +161,7 @@ public:
       {
 	if (!soname_not_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r(new regex_t);
+	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			soname_not_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -520,7 +520,7 @@ public:
       {
 	if (!type_name_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r(new regex_t);
+	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			type_name_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -547,7 +547,7 @@ public:
       {
 	if (!source_location_to_keep_regex_str_.empty())
 	  {
-	    sptr_utils::regex_t_sptr r(new regex_t);
+	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	    if (regcomp(r.get(),
 			source_location_to_keep_regex_str_.c_str(),
 			REG_EXTENDED) == 0)
@@ -1762,7 +1762,7 @@ class function_suppression::parameter_spec::priv
   {
     if (!type_name_regex_ && !type_name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    type_name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -1908,7 +1908,7 @@ class function_suppression::priv
   {
     if (!name_regex_ && !name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -1931,7 +1931,7 @@ class function_suppression::priv
   {
     if (!return_type_regex_ && !return_type_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    return_type_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -1954,7 +1954,7 @@ class function_suppression::priv
   {
     if (!symbol_name_regex_ && !symbol_name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -1977,7 +1977,7 @@ class function_suppression::priv
   {
     if (!symbol_version_regex_ && ! symbol_version_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_version_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -3093,7 +3093,7 @@ class variable_suppression::priv
   {
     if (!name_regex_ && !name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -3116,7 +3116,7 @@ class variable_suppression::priv
   {
     if (!symbol_name_regex_ && !symbol_name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -3139,7 +3139,7 @@ class variable_suppression::priv
   {
     if (!symbol_version_regex_ && !symbol_version_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    symbol_version_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)
@@ -3162,7 +3162,7 @@ class variable_suppression::priv
   {
     if (!type_name_regex_ && !type_name_regex_str_.empty())
       {
-	sptr_utils::regex_t_sptr r(new regex_t);
+	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
 	if (regcomp(r.get(),
 		    type_name_regex_str_.c_str(),
 		    REG_EXTENDED) == 0)

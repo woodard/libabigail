@@ -72,6 +72,16 @@ regex_t_sptr
 build_sptr<regex_t>(regex_t *p)
 {return regex_t_sptr(p, regex_t_deleter());}
 
+/// Specialization of sptr_utils::build_sptr for regex_t.
+///
+/// This creates a pointer to regex_t and wraps it into a shared_ptr<regex_t>.
+///
+/// @return the shared_ptr<regex_t> wrapping the newly created regex_t*
+template<>
+regex_t_sptr
+build_sptr<regex_t>()
+{return build_sptr(new regex_t);}
+
 }// end namespace sptr_utils
 
 namespace ir
