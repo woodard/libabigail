@@ -1,0 +1,42 @@
+{
+ suppress all libpython leaks
+ Memcheck:Leak
+ ...
+ obj:*libpython*.so*
+}
+
+{
+ suppress all _rpm.so leaks (from python)
+ Memcheck:Leak
+ ...
+ obj:*_rpm.so*
+}
+
+{
+ suppress all librpm.so leaks (from python)
+ Memcheck:Leak
+ ...
+ obj:*librpm.so*
+}
+
+{
+ suppress all libfreeblpriv3.so leaks (from python)
+ Memcheck:Leak
+ ...
+ obj:*libfreeblpriv3.so*
+ ...
+}
+
+{
+ suppress all libsoftokn3.so leaks (from python)
+ Memcheck:Leak
+ ...
+ obj:*libsoftokn3.so*
+}
+
+{
+ suppress leaks from bash
+ Memcheck:Leak
+ ...
+ obj:*bash
+}

@@ -39,7 +39,11 @@ runtestabidiffexit		\
 $(FEDABIPKGDIFF_TEST) $(CXX11_TESTS)
 
 
-EXTRA_DIST = runtestcanonicalizetypes.sh.in runtestfedabipkgdiff.py.in
+EXTRA_DIST = \
+runtestcanonicalizetypes.sh.in \
+runtestfedabipkgdiff.py.in \
+test-valgrind-suppressions.supp
+
 CLEANFILES = \
  runtestcanonicalizetypes.output.txt \
  runtestcanonicalizetypes.output.final.txt
@@ -131,3 +135,33 @@ clean-local: clean-local-check
 
 clean-local-check:
 	-rm -rf ${builddir}/output *.svg *.gv
+
+@VALGRIND_CHECK_RULES@
+VALGRIND_SUPPRESSIONS_FILES = ${srcdir}/test-valgrind-suppressions.supp
+
+# These are flags passed to Valgrind so that it follows children
+# processes of the test programs.  This is because many test programs
+# actually fork libabigail command line tools, and we want to valgrind
+# those libabigail command line tools as well.
+#
+# The problem though is that there are many other command line
+# programs that are forked too.  For instance, /bin/sh is forked
+# because tests are using the system() function to execute commands.
+# So we must tell Valgrind to avoid following a bunch of command line
+# programs that we don't care about and that take a lot of time to
+# valgrind.
+RECURSIVE_VALGRIND_FLAGS = \
+--num-callers=30 \
+--trace-children=yes \
+--trace-children-skip=/bin/diff,/bin/rm,/bin/mkdir,/bin/cd,*cpio,/bin/dpkg,/bin/rpm,/bin/test,/bin/tar,/bin/sed,/bin/ls,/bin/g++,/*collect*,/bin/ld
+
+# Use the target below to run tests under Valgrind's memcheck tool by
+# telling it to follow children process, so that it can also check
+# libabigail tools that are forked by the tests.  This usually takes a
+# while.  So, to launch just one test in this configuration, if you
+# are in the top-most source directory you can do:
+#
+#  make -C <build-directory>/tests check-valgrind-memcheck-recursive TESTS=runtestdiffsuppr
+
+check-valgrind-memcheck-recursive:
+	$(MAKE) check-valgrind-memcheck VALGRIND_FLAGS="${RECURSIVE_VALGRIND_FLAGS}"

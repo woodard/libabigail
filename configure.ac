@@ -26,6 +26,10 @@ dnl These two below are for the AX_PROG_PYTHON_VERSION() module.
 m4_include([autoconf-archive/ax_compare_version.m4])
 m4_include([autoconf-archive/ax_prog_python_version.m4])
 
+dnl This one is to be able to run "make check-valgrind"
+dnl and have unit tests run under  der Valgrind.
+m4_include([autoconf-archive/ax_valgrind_check.m4])
+
 AM_INIT_AUTOMAKE([1.11.1 foreign subdir-objects tar-ustar parallel-tests])
 AM_MAINTAINER_MODE([enable])
 
@@ -380,6 +384,15 @@ if test x$ENABLE_MANUAL != xno; then
 fi
 AM_CONDITIONAL(ENABLE_MANUAL, test x$ENABLE_MANUAL = xyes)
 
+dnl Check for the presence of Valgrind and do the plumbing to allow
+dnl the running of "make check-valgrind".
+AX_VALGRIND_DFLT(memcheck, on)
+AX_VALGRIND_DFLT(helgrind, on)
+AX_VALGRIND_DFLT(drd, off)
+AX_VALGRIND_DFLT(sgcheck, off)
+
+AX_VALGRIND_CHECK
+
 dnl Set the list of libraries libabigail depends on
 
 DEPS_LIBS="$XML_LIBS $LIBZIP_LIBS $ELF_LIBS $DW_LIBS"
@@ -469,6 +482,7 @@ AC_MSG_NOTICE([
     Enable GNU tar archive support in abipkgdiff   : ${ENABLE_TAR}
     Enable bash completion	                   : ${ENABLE_BASH_COMPLETION}
     Enable fedabipkgdiff			   : ${ENABLE_FEDABIPKGDIFF}
+    Enable running tests under Valgrind            : ${enable_valgrind}
     Generate html apidoc	                   : ${ENABLE_APIDOC}
     Generate html manual	                   : ${ENABLE_MANUAL}
 ])
