@@ -492,7 +492,7 @@ AC_MSG_NOTICE([
     Enable deb support in abipkgdiff               : ${ENABLE_DEB}
     Enable GNU tar archive support in abipkgdiff   : ${ENABLE_TAR}
     Enable bash completion	                   : ${ENABLE_BASH_COMPLETION}
-    Enable fedabipkgdiff			   : ${ENABLE_FEDABIPKGDIFF}
+    Enable fedabipkgdiff                           : ${ENABLE_FEDABIPKGDIFF}
     Enable running tests under Valgrind            : ${enable_valgrind}
     Generate html apidoc	                   : ${ENABLE_APIDOC}
     Generate html manual	                   : ${ENABLE_MANUAL}

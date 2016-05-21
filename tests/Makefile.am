@@ -45,8 +45,8 @@ runtestfedabipkgdiff.py.in \
 test-valgrind-suppressions.supp
 
 CLEANFILES = \
- runtestcanonicalizetypes.output.txt \
- runtestcanonicalizetypes.output.final.txt
+runtestcanonicalizetypes.output.txt \
+runtestcanonicalizetypes.output.final.txt
 
 noinst_PROGRAMS= $(TESTS) testirwalker testdiff2 printdifftree
 
