@@ -18,7 +18,7 @@ commit.  If the commit relates to a bug filed into bugzilla, the line
 should begin with the bug (or Problem Report) number, followed by a
 white space; e.g:
 
-PR <number-of-the-bug> This is a great commit
+Bug <number-of-the-bug> This is a great commit
 
 The line in its entirety should not be longer than 50 characters.
 
@@ -43,10 +43,37 @@ entry, i.e:
 Note that before the '*', there is a tab that is 8 spaces long.  Also
 note that right after the '*', there is a space.
 
-An exemple of commit message would be:
+An example of commit message would be:
 
 ~=~
-PR 123456 Shorten compilation lines
+Bug 123456 Add super feature
+
+The super feature requires modifying function_bleh to make it call
+function_foo instead of function_bar.  As function_bar is no more
+used, this patch removes it.
+
+	* file1.c (function_foo): Define new static function.
+	* file2.c (function_bar): Removed static function.
+	* file3.c (function_bleh): Modified this function to call
+	function_foo, rather than function function_bar.
+~=~
+
+Note how, in the ChangeLog part of the commit log, each function
+modification is mentioned, by referring to the name of the function in
+parenthesis.  The length of a line should not exceed 72 characters.
+The description of what happens to the function should be succinct.
+Just describe the "what".
+
+The "how" should be described by comments in the code change itself,
+so there is no need to describe in the ChangeLog part of the commit
+log..  The "why" and "general spirit" of the change should be
+described in the introductory text that precedes the ChangeLog part.
+So, again, no need to add to the ChangeLog part.
+
+For files that contain no function definitions, the ChangeLog looks
+like:
+
+~=~ Bug 123456 Shorten compilation lines
 
 	* configure.ac: Shorten compilation lines by regrouping
 	PKG_CHECK_MODULES calls.
@@ -56,7 +83,7 @@ PR 123456 Shorten compilation lines
 Another one could be:
 
 ~=~
-PR 123456 Shorten compilation lines
+Bug 123456 Shorten compilation lines
 
 Blah blah, this is an introductory text explaining the purpose of this
 commit.  It can contain whatever character I want.  It just cannot
@@ -68,6 +95,35 @@ the star character.
 	* tests/Makefile.am: Adjust this.
 ~=~
 
+When it's needed, the introductory text is very important.  Please
+take time to explain the current status of the code (before your
+patch) and why it was in the need of your patch.  In other words, take
+time to explain the problem you are trying to solve.  If the problem
+is explained in a bug in the bugzilla, please try to explain it again,
+using your words.  Just linking to the bugzilla is generally not
+enough.  And then, yes, refer to the bugzilla.
+
+Then explain how your changes address the issue that you've just
+described.
+
+In other words, the introductory text should tell a story.  So please
+be generous :-)
+
+And then the ChangeLog part of the commit log is another exercise.
+This one has to be succinct.  Every single function or global variable
+or type changed (or added/removed) has to be mentioned explicitly by
+name as shown in one of the examples above.
+
+Writing the ChangeLog part of the commit log can seem tedious, but
+it's an excellent way to perform an auto-review of your work.  You'd
+be surprised by the number of issues that you catch in the process.
+
+Also, please keep in mind that reviewers of the code are going to do a
+function-by-function and line-by-line review of your changes, so
+please, take the time to do so as well.  This is a great way to give
+great quality to your code.
 
 We encourage you to look at the existing commit logs or at the
 ChangeLog file for inspiration.
+
+Happy Hacking!
