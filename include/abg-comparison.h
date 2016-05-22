@@ -1279,7 +1279,10 @@ compute_diff(const enum_type_decl_sptr,
 class class_diff : public type_diff_base
 {
   struct priv;
-  shared_ptr<priv> priv_;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+  const priv_sptr& get_priv()const;
 
   void
   clear_lookup_tables(void);

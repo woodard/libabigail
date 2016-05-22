@@ -5465,39 +5465,39 @@ class_diff::chain_into_hierarchy()
 {
   // base class changes.
   for (base_diff_sptrs_type::const_iterator i =
-	 priv_->sorted_changed_bases_.begin();
-       i != priv_->sorted_changed_bases_.end();
+	 get_priv()->sorted_changed_bases_.begin();
+       i != get_priv()->sorted_changed_bases_.end();
        ++i)
     if (diff_sptr d = *i)
       append_child_node(d);
 
   // data member changes
   for (var_diff_sptrs_type::const_iterator i =
-	 priv_->sorted_subtype_changed_dm_.begin();
-       i != priv_->sorted_subtype_changed_dm_.end();
+	 get_priv()->sorted_subtype_changed_dm_.begin();
+       i != get_priv()->sorted_subtype_changed_dm_.end();
        ++i)
     if (diff_sptr d = *i)
       append_child_node(d);
 
   for (unsigned_var_diff_sptr_map::const_iterator i =
-	 priv_->changed_dm_.begin();
-       i != priv_->changed_dm_.end();
+	 get_priv()->changed_dm_.begin();
+       i != get_priv()->changed_dm_.end();
        ++i)
     if (diff_sptr d = i->second)
       append_child_node(d);
 
   // member types changes
   for (diff_sptrs_type::const_iterator i =
-	 priv_->sorted_changed_member_types_.begin();
-       i != priv_->sorted_changed_member_types_.end();
+	 get_priv()->sorted_changed_member_types_.begin();
+       i != get_priv()->sorted_changed_member_types_.end();
        ++i)
     if (diff_sptr d = *i)
       append_child_node(d);
 
   // member function changes
   for (function_decl_diff_sptrs_type::const_iterator i =
-	 priv_->sorted_changed_member_functions_.begin();
-       i != priv_->sorted_changed_member_functions_.end();
+	 get_priv()->sorted_changed_member_functions_.begin();
+       i != get_priv()->sorted_changed_member_functions_.end();
        ++i)
     if (diff_sptr d = *i)
       append_child_node(d);
@@ -5524,6 +5524,33 @@ class_diff::class_diff(shared_ptr<class_decl>	first_scope,
 
 class_diff::~class_diff()
 {}
+
+/// Getter of the private data of the @ref class_diff type.
+///
+/// Note that due to an optimization, the private data of @ref
+/// class_diff can be shared among several instances of class_diff, so
+/// you should never try to access class_diff::priv directly.
+///
+/// When class_diff::priv is shared, this function returns the correct
+/// shared one.
+///
+/// @return the (possibly) shared private data of the current instance
+/// of class_diff.
+const class_diff::priv_sptr&
+class_diff::get_priv() const
+{
+  if (priv_)
+    return priv_;
+
+  // If the current class_diff::priv member is empty, then look for
+  // the shared one, from the canonical type.
+  class_diff *canonical =
+    dynamic_cast<class_diff*>(get_canonical_diff());
+  assert(canonical);
+  assert(canonical->priv_);
+
+  return canonical->priv_;
+}
 
 /// Finish building the current instance of @ref class_diff.
 void
@@ -5585,7 +5612,7 @@ class_diff::second_class_decl() const
 /// @return the edit script of the bases of the two classes.
 const edit_script&
 class_diff::base_changes() const
-{return priv_->base_changes_;}
+{return get_priv()->base_changes_;}
 
 /// Getter for the deleted base classes of the diff.
 ///
@@ -5593,7 +5620,7 @@ class_diff::base_changes() const
 /// their pretty representation.
 const string_base_sptr_map&
 class_diff::deleted_bases() const
-{return priv_->deleted_bases_;}
+{return get_priv()->deleted_bases_;}
 
 /// Getter for the inserted base classes of the diff.
 ///
@@ -5601,59 +5628,59 @@ class_diff::deleted_bases() const
 /// their pretty representation.
 const string_base_sptr_map&
 class_diff::inserted_bases() const
-{return priv_->inserted_bases_;}
+{return get_priv()->inserted_bases_;}
 
 /// Getter for the changed base classes of the diff.
 ///
 /// @return a sorted vector containing the changed base classes
 const base_diff_sptrs_type&
 class_diff::changed_bases()
-{return priv_->sorted_changed_bases_;}
+{return get_priv()->sorted_changed_bases_;}
 
 /// @return the edit script of the bases of the two classes.
 edit_script&
 class_diff::base_changes()
-{return priv_->base_changes_;}
+{return get_priv()->base_changes_;}
 
 /// @return the edit script of the member types of the two classes.
 const edit_script&
 class_diff::member_types_changes() const
-{return priv_->member_types_changes_;}
+{return get_priv()->member_types_changes_;}
 
 /// @return the edit script of the member types of the two classes.
 edit_script&
 class_diff::member_types_changes()
-{return priv_->member_types_changes_;}
+{return get_priv()->member_types_changes_;}
 
 /// @return the edit script of the data members of the two classes.
 const edit_script&
 class_diff::data_members_changes() const
-{return priv_->data_members_changes_;}
+{return get_priv()->data_members_changes_;}
 
 /// @return the edit script of the data members of the two classes.
 edit_script&
 class_diff::data_members_changes()
-{return priv_->data_members_changes_;}
+{return get_priv()->data_members_changes_;}
 
 /// Getter for the data members that got inserted.
 ///
 /// @return a map of data members that got inserted.
 const string_decl_base_sptr_map&
 class_diff::inserted_data_members() const
-{return priv_->inserted_data_members_;}
+{return get_priv()->inserted_data_members_;}
 
 /// Getter for the data members that got deleted.
 ///
 /// @return a map of data members that got deleted.
 const string_decl_base_sptr_map&
 class_diff::deleted_data_members() const
-{return priv_->deleted_data_members_;}
+{return get_priv()->deleted_data_members_;}
 
 /// @return the edit script of the member functions of the two
 /// classes.
 const edit_script&
 class_diff::member_fns_changes() const
-{return priv_->member_fns_changes_;}
+{return get_priv()->member_fns_changes_;}
 
 /// Getter for the virtual members functions that have had a change in
 /// a sub-type, without having a change in their symbol name.
@@ -5662,47 +5689,47 @@ class_diff::member_fns_changes() const
 /// sub-type change.
 const function_decl_diff_sptrs_type&
 class_diff::changed_member_fns() const
-{return priv_->sorted_changed_member_functions_;}
+{return get_priv()->sorted_changed_member_functions_;}
 
 /// @return the edit script of the member functions of the two
 /// classes.
 edit_script&
 class_diff::member_fns_changes()
-{return priv_->member_fns_changes_;}
+{return get_priv()->member_fns_changes_;}
 
 /// @return a map of member functions that got deleted.
 const string_member_function_sptr_map&
 class_diff::deleted_member_fns() const
-{return priv_->deleted_member_functions_;}
+{return get_priv()->deleted_member_functions_;}
 
 /// @return a map of member functions that got inserted.
 const string_member_function_sptr_map&
 class_diff::inserted_member_fns() const
-{return priv_->inserted_member_functions_;}
+{return get_priv()->inserted_member_functions_;}
 
 ///@return the edit script of the member function templates of the two
 ///classes.
 const edit_script&
 class_diff::member_fn_tmpls_changes() const
-{return priv_->member_fn_tmpls_changes_;}
+{return get_priv()->member_fn_tmpls_changes_;}
 
 /// @return the edit script of the member function templates of the
 /// two classes.
 edit_script&
 class_diff::member_fn_tmpls_changes()
-{return priv_->member_fn_tmpls_changes_;}
+{return get_priv()->member_fn_tmpls_changes_;}
 
 /// @return the edit script of the member class templates of the two
 /// classes.
 const edit_script&
 class_diff::member_class_tmpls_changes() const
-{return priv_->member_class_tmpls_changes_;}
+{return get_priv()->member_class_tmpls_changes_;}
 
 /// @return the edit script of the member class templates of the two
 /// classes.
 edit_script&
 class_diff::member_class_tmpls_changes()
-{return priv_->member_class_tmpls_changes_;}
+{return get_priv()->member_class_tmpls_changes_;}
 
 /// A functor to compare instances of @ref class_decl::base_spec.
 struct base_spec_comp
@@ -5966,8 +5993,8 @@ class_diff::report(ostream& out, const string& indent) const
   if (base_changes())
     {
       // Report deletions.
-      int numdels = priv_->deleted_bases_.size();
-      size_t numchanges = priv_->sorted_changed_bases_.size();
+      int numdels = get_priv()->deleted_bases_.size();
+      size_t numchanges = get_priv()->sorted_changed_bases_.size();
 
       if (numdels)
 	{
@@ -5975,16 +6002,16 @@ class_diff::report(ostream& out, const string& indent) const
 			    "base class", indent);
 
 	  for (class_decl::base_specs::const_iterator i
-		 = priv_->sorted_deleted_bases_.begin();
-	       i != priv_->sorted_deleted_bases_.end();
+		 = get_priv()->sorted_deleted_bases_.begin();
+	       i != get_priv()->sorted_deleted_bases_.end();
 	       ++i)
 	    {
-	      if (i != priv_->sorted_deleted_bases_.begin())
+	      if (i != get_priv()->sorted_deleted_bases_.begin())
 		out << "\n";
 
 	      class_decl::base_spec_sptr base = *i;
 
-	      if (priv_->base_has_changed(base))
+	      if (get_priv()->base_has_changed(base))
 		continue;
 	      out << indent << "  "
 		  << base->get_base_class()->get_pretty_representation();
@@ -5995,14 +6022,14 @@ class_diff::report(ostream& out, const string& indent) const
 
       // Report changes.
       bool emitted = false;
-      size_t num_filtered = priv_->count_filtered_bases();
+      size_t num_filtered = get_priv()->count_filtered_bases();
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered, change_kind,
 			    "base class", indent);
 	  for (base_diff_sptrs_type::const_iterator it =
-		 priv_->sorted_changed_bases_.begin();
-	       it != priv_->sorted_changed_bases_.end();
+		 get_priv()->sorted_changed_bases_.begin();
+	       it != get_priv()->sorted_changed_bases_.end();
 	       ++it)
 	    {
 	      base_diff_sptr diff = *it;
@@ -6022,7 +6049,7 @@ class_diff::report(ostream& out, const string& indent) const
 	}
 
       //Report insertions.
-      int numins = priv_->inserted_bases_.size();
+      int numins = get_priv()->inserted_bases_.size();
       if (numins)
 	{
 	  report_mem_header(out, numins, 0, ins_kind,
@@ -6030,8 +6057,8 @@ class_diff::report(ostream& out, const string& indent) const
 
 	  bool emitted = false;
 	  for (class_decl::base_specs::const_iterator i =
-		 priv_->sorted_inserted_bases_.begin();
-	       i != priv_->sorted_inserted_bases_.end();
+		 get_priv()->sorted_inserted_bases_.begin();
+	       i != get_priv()->sorted_inserted_bases_.end();
 	       ++i)
 	    {
 	      class_decl_sptr b = (*i)->get_base_class();
@@ -6049,15 +6076,15 @@ class_diff::report(ostream& out, const string& indent) const
   if (member_fns_changes())
     {
       // report deletions
-      int numdels = priv_->deleted_member_functions_.size();
-      size_t num_filtered = priv_->count_filtered_deleted_mem_fns(context());
+      int numdels = get_priv()->deleted_member_functions_.size();
+      size_t num_filtered = get_priv()->count_filtered_deleted_mem_fns(context());
       if (numdels)
 	report_mem_header(out, numdels, num_filtered, del_kind,
 			  "member function", indent);
       bool emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
-	     priv_->deleted_member_functions_.begin();
-	   i != priv_->deleted_member_functions_.end();
+	     get_priv()->deleted_member_functions_.begin();
+	   i != get_priv()->deleted_member_functions_.end();
 	   ++i)
 	{
 	  if (!(context()->get_allowed_category()
@@ -6066,7 +6093,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    continue;
 
 	  if (emitted
-	      && i != priv_->deleted_member_functions_.begin())
+	      && i != get_priv()->deleted_member_functions_.begin())
 	    out << "\n";
 	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
@@ -6077,15 +6104,15 @@ class_diff::report(ostream& out, const string& indent) const
 	out << "\n";
 
       // report insertions;
-      int numins = priv_->inserted_member_functions_.size();
-      num_filtered = priv_->count_filtered_inserted_mem_fns(context());
+      int numins = get_priv()->inserted_member_functions_.size();
+      num_filtered = get_priv()->count_filtered_inserted_mem_fns(context());
       if (numins)
 	report_mem_header(out, numins, num_filtered, ins_kind,
 			  "member function", indent);
       emitted = false;
       for (string_member_function_sptr_map::const_iterator i =
-	     priv_->inserted_member_functions_.begin();
-	   i != priv_->inserted_member_functions_.end();
+	     get_priv()->inserted_member_functions_.begin();
+	   i != get_priv()->inserted_member_functions_.end();
 	   ++i)
 	{
 	  if (!(context()->get_allowed_category()
@@ -6094,7 +6121,7 @@ class_diff::report(ostream& out, const string& indent) const
 	    continue;
 
 	  if (emitted
-	      && i != priv_->inserted_member_functions_.begin())
+	      && i != get_priv()->inserted_member_functions_.begin())
 	    out << "\n";
 	  class_decl::method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
@@ -6105,15 +6132,15 @@ class_diff::report(ostream& out, const string& indent) const
 	out << "\n";
 
       // report member function with sub-types changes
-      int numchanges = priv_->sorted_changed_member_functions_.size();
-      num_filtered = priv_->count_filtered_changed_mem_fns(context());
+      int numchanges = get_priv()->sorted_changed_member_functions_.size();
+      num_filtered = get_priv()->count_filtered_changed_mem_fns(context());
       if (numchanges)
 	report_mem_header(out, numchanges, num_filtered, change_kind,
 			  "member function", indent);
       emitted = false;
       for (function_decl_diff_sptrs_type::const_iterator i =
-	     priv_->sorted_changed_member_functions_.begin();
-	   i != priv_->sorted_changed_member_functions_.end();
+	     get_priv()->sorted_changed_member_functions_.begin();
+	   i != get_priv()->sorted_changed_member_functions_.end();
 	   ++i)
 	{
 	  if (!(context()->get_allowed_category()
@@ -6131,7 +6158,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  string repr =
 	    (*i)->first_function_decl()->get_pretty_representation();
 	  if (emitted
-	      && i != priv_->sorted_changed_member_functions_.begin())
+	      && i != get_priv()->sorted_changed_member_functions_.begin())
 	    out << "\n";
 	  out << indent << "  '" << repr << "' has some sub-type changes:\n";
 	  diff->report(out, indent + "    ");
@@ -6145,13 +6172,13 @@ class_diff::report(ostream& out, const string& indent) const
   if (data_members_changes())
     {
       // report deletions
-      int numdels = priv_->get_deleted_non_static_data_members_number();
+      int numdels = get_priv()->get_deleted_non_static_data_members_number();
       if (numdels)
 	{
 	  report_mem_header(out, numdels, 0, del_kind,
 			    "data member", indent);
 	  vector<decl_base_sptr> sorted_dms;
-	  sort_data_members(priv_->deleted_data_members_, sorted_dms);
+	  sort_data_members(get_priv()->deleted_data_members_, sorted_dms);
 	  bool emitted = false;
 	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
 	       i != sorted_dms.end();
@@ -6173,13 +6200,13 @@ class_diff::report(ostream& out, const string& indent) const
 	}
 
       //report insertions
-      int numins = priv_->inserted_data_members_.size();
+      int numins = get_priv()->inserted_data_members_.size();
       if (numins)
 	{
 	  report_mem_header(out, numins, 0, ins_kind,
 			    "data member", indent);
 	  vector<decl_base_sptr> sorted_dms;
-	  sort_data_members(priv_->inserted_data_members_, sorted_dms);
+	  sort_data_members(get_priv()->inserted_data_members_, sorted_dms);
 	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
 	       i != sorted_dms.end();
 	       ++i)
@@ -6193,15 +6220,15 @@ class_diff::report(ostream& out, const string& indent) const
 	}
 
       // report change
-      size_t numchanges = priv_->sorted_subtype_changed_dm_.size();
-      size_t num_filtered = priv_->count_filtered_subtype_changed_dm();
+      size_t numchanges = get_priv()->sorted_subtype_changed_dm_.size();
+      size_t num_filtered = get_priv()->count_filtered_subtype_changed_dm();
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    subtype_change_kind, "data member", indent);
 	  for (var_diff_sptrs_type::const_iterator it =
-		priv_->sorted_subtype_changed_dm_.begin();
-	       it != priv_->sorted_subtype_changed_dm_.end();
+		get_priv()->sorted_subtype_changed_dm_.begin();
+	       it != get_priv()->sorted_subtype_changed_dm_.end();
 	       ++it)
 	    {
 	      if ((*it)->to_be_reported())
@@ -6212,15 +6239,15 @@ class_diff::report(ostream& out, const string& indent) const
 	    }
 	}
 
-      numchanges = priv_->sorted_changed_dm_.size();
-      num_filtered = priv_->count_filtered_changed_dm();
+      numchanges = get_priv()->sorted_changed_dm_.size();
+      num_filtered = get_priv()->count_filtered_changed_dm();
       if (numchanges)
 	{
 	  report_mem_header(out, numchanges, num_filtered,
 			    change_kind, "data member", indent);
 	  for (var_diff_sptrs_type::const_iterator it =
-		 priv_->sorted_changed_dm_.begin();
-	       it != priv_->sorted_changed_dm_.end();
+		 get_priv()->sorted_changed_dm_.begin();
+	       it != get_priv()->sorted_changed_dm_.end();
 	       ++it)
 	    {
 	      if ((*it)->to_be_reported())
@@ -6235,8 +6262,8 @@ class_diff::report(ostream& out, const string& indent) const
   // member types
   if (const edit_script& e = member_types_changes())
     {
-      int numchanges = priv_->sorted_changed_member_types_.size();
-      int numdels = priv_->deleted_member_types_.size();
+      int numchanges = get_priv()->sorted_changed_member_types_.size();
+      int numdels = get_priv()->deleted_member_types_.size();
 
       // report deletions
       if (numdels)
@@ -6245,11 +6272,11 @@ class_diff::report(ostream& out, const string& indent) const
 			    "member type", indent);
 
 	  for (string_decl_base_sptr_map::const_iterator i =
-		 priv_->deleted_member_types_.begin();
-	       i != priv_->deleted_member_types_.end();
+		 get_priv()->deleted_member_types_.begin();
+	       i != get_priv()->deleted_member_types_.end();
 	       ++i)
 	    {
-	      if (i != priv_->deleted_member_types_.begin())
+	      if (i != get_priv()->deleted_member_types_.begin())
 		out << "\n";
 	      decl_base_sptr mem_type = i->second;
 	      out << indent << "  '"
@@ -6265,8 +6292,8 @@ class_diff::report(ostream& out, const string& indent) const
 			    "member type", indent);
 
 	  for (diff_sptrs_type::const_iterator it =
-		 priv_->sorted_changed_member_types_.begin();
-	       it != priv_->sorted_changed_member_types_.end();
+		 get_priv()->sorted_changed_member_types_.begin();
+	       it != get_priv()->sorted_changed_member_types_.end();
 	       ++it)
 	    {
 	      if (!(*it)->to_be_reported())
@@ -6308,7 +6335,7 @@ class_diff::report(ostream& out, const string& indent) const
 		  if (emitted)
 		    out << "\n";
 		  mem_type = second->get_member_types()[*j];
-		  if (!priv_->
+		  if (!get_priv()->
 		      member_type_has_changed(get_type_declaration(mem_type)))
 		    {
 		      out << indent << "  '"
@@ -6490,10 +6517,9 @@ compute_diff(const class_decl_sptr	first,
   else
     {
       // changes has a non-empty equivalence class so it's going to
-      // share its private data with its canonical instance.
-      changes->priv_ =
-	dynamic_cast<class_diff*>(changes->get_canonical_diff())->priv_;
-      assert(changes->priv_);
+      // share its private data with its canonical instance.  Next
+      // time class_diff::get_priv() is invoked, it's going to return
+      // the shared private data of the canonical instance.
       return changes;
     }
 
