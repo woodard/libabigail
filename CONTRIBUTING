@@ -1,3 +1,6 @@
+Contact
+=======
+
 The project homepage is at https://sourceware.org/libabigail
 
 The current libabigail source code can be checked out with:
@@ -8,24 +11,27 @@ libabigail@sourceware.org.
 
 The archives of that list are available at http://sourceware.org/ml/libabigail.
 
-Please supply patches using git format-patch or using git send-email.
+File bugs
+=========
 
-Bugs are to be filled in bugzilla at http://sourceware.org/bugzilla.
+Bugs are to be filled in bugzilla at
+https://sourceware.org/bugzilla/enter_bug.cgi?product=libabigail
 
-The source code of the website of libabigail is stored in CVS (sigh,
-yeah, that is so old school).  You can check out that web source code
-by doing:
+Writing and sending patches
+============================
 
-    CVS_RSH=ssh cvs -z9 -d :ext:user@sourceware.org:/cvs/libabigail/ co htdocs
+Please supply patches using git format-patch and git send-email.  If
+you don't know how to use git, send-email, fine.  Just use your
+favorite email client, attach the patch to a nice message, and send us
+the message.
 
-where 'user' is your username on the sourceware system.
-Alternatively, you can check out the the web source code anonymously,
-if you don't have any user account on the sourceware system by doing:
+Patches have to be sent by email to libabigail@sourceware.org.
 
-    export CVSROOT=:pserver:anoncvs@cygwin.com:/cvs/libabigail
-    cvs login
-    (the CVS anonymous password to use is "anoncvs")
-    cvs checkout htdocs
+Please read the file COMMIT-LOG-GUIDELINES in the source tree to learn
+about how to write the commit log accompanying the patch.
+
+Make sure you sign your patch.  To learn about signing, please read
+below.
 
 Sign your work
 ==============
@@ -65,5 +71,24 @@ using your real name (sorry, no pseudonyms or anonymous contributions.)
 
 git commit --signoff will add such a Signed-off-by line at the end of
 the commit log message for you.
+
+Modifying the website
+=====================
+
+The source code of the website of libabigail is stored in CVS (sigh,
+yeah, that is so old school).  You can check out that web source code
+by doing:
+
+    CVS_RSH=ssh cvs -z9 -d :ext:user@sourceware.org:/cvs/libabigail/ co htdocs
+
+where 'user' is your username on the sourceware system.
+Alternatively, you can check out the the web source code anonymously,
+if you don't have any user account on the sourceware system by doing:
+
+    export CVSROOT=:pserver:anoncvs@cygwin.com:/cvs/libabigail
+    cvs login
+    (the CVS anonymous password to use is "anoncvs")
+    cvs checkout htdocs
+
 
 Happy Hacking!
