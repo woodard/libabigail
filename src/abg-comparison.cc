@@ -678,7 +678,10 @@ void
 diff_context::switch_categories_off(diff_category c)
 {priv_->allowed_category_ = priv_->allowed_category_ & ~c;}
 
-/// Add a diff for two decls to the cache of the current diff_context
+/// Add a diff for two decls to the cache of the current diff_context.
+///
+/// Doing this allows to later find the added diff from its two
+/// subject decls.
 ///
 /// @param first the first decl to consider.
 ///
