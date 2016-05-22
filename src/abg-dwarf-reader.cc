@@ -26,6 +26,7 @@
 /// de-serialize an instance of @ref abigail::corpus from a file in
 /// elf format, containing dwarf information.
 
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -839,30 +840,27 @@ get_binary_load_address(Elf *elf_handle,
   return false;
 }
 
-/// Return the alternate debug info associated to a given main debug
-/// info file.
+/// Find the file name of the alternate debug info file, as well as
+/// its build ID.
 ///
 /// @param elf_module the elf module to consider.
 ///
-/// @param alt_file_name output parameter.  This is set to the file
-/// path of the alternate debug info file associated to @p elf_module.
-/// This is set iff the function returns a non-null result.
+/// @param out parameter.  Is set to the file name of the alternate
+/// debug info file, iff this function returns true.
 ///
-/// Note that the alternate debug info file is a DWARF extension as of
-/// DWARF 4 ans is decribed at
-/// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+/// @param out parameter.  Is set to the build ID of the alternate
+/// debug info file.
 ///
-/// @return the alternate debuginfo, or null
-///
-static Dwarf*
-find_alt_debug_info(Dwfl_Module *elf_module,
-		    string& alt_file_name)
+/// @return true iff the location of the alternate debug info file was
+/// found.
+static bool
+find_alt_debug_info_location(Dwfl_Module *elf_module,
+			     string &alt_file_name,
+			     string &build_id)
 {
-  if (elf_module == 0)
-    return 0;
-
   GElf_Addr bias = 0;
-  Elf *elf = dwarf_getelf(dwfl_module_getdwarf(elf_module, &bias));
+  Dwarf *dwarf = dwfl_module_getdwarf(elf_module, &bias);
+  Elf *elf = dwarf_getelf(dwarf);
   GElf_Ehdr ehmem, *elf_header;
   elf_header = gelf_getehdr(elf, &ehmem);
 
@@ -879,8 +877,8 @@ find_alt_debug_info(Dwfl_Module *elf_module,
 					    header->sh_name);
 
       char *alt_name = 0;
-      char *build_id = 0;
-      size_t build_id_len = 0;
+      char *buildid = 0;
+      size_t buildid_len = 0;
       if (section_name != 0
 	  && strcmp(section_name, ".gnu_debugaltlink") == 0)
 	{
@@ -890,39 +888,91 @@ find_alt_debug_info(Dwfl_Module *elf_module,
 	      alt_name = (char*) data->d_buf;
 	      char *end_of_alt_name =
 		(char *) memchr(alt_name, '\0', data->d_size);
-	      build_id_len = data->d_size - (end_of_alt_name - alt_name + 1);
-	      if (build_id_len == 0)
-		return 0;
-	      build_id = end_of_alt_name + 1;
+	      buildid_len = data->d_size - (end_of_alt_name - alt_name + 1);
+	      if (buildid_len == 0)
+		return false;
+	      buildid = end_of_alt_name + 1;
 	    }
 	}
       else
 	continue;
 
-      if (build_id == 0 || alt_name == 0)
-	return 0;
+      if (buildid == 0 || alt_name == 0)
+	return false;
 
-      const char *file_name = 0;
-      void **user_data = 0;
-      Dwarf_Addr low_addr = 0;
-      char *alt_file = 0;
-
-      file_name = dwfl_module_info(elf_module, &user_data,
-				   &low_addr, 0, 0, 0, 0, 0);
-
-      int alt_fd = dwfl_standard_find_debuginfo(elf_module, user_data,
-						file_name, low_addr,
-						alt_name, file_name,
-						0, &alt_file);
-
-      Dwarf *result = dwarf_begin(alt_fd, DWARF_C_READ);
-      if (alt_file)
-	alt_file_name = alt_file;
-
-      return result;
+      build_id = buildid;
+      alt_file_name = alt_name;
+      return true;
     }
 
-  return 0;
+  return false;
+}
+
+/// Return the alternate debug info associated to a given main debug
+/// info file.
+///
+/// @param elf_module the elf module to consider.
+///
+/// @param alt_file_name output parameter.  This is set to the file
+/// path of the alternate debug info file associated to @p elf_module.
+/// This is set iff the function returns a non-null result.
+///
+/// @param alt_fd the file descriptor used to access the alternate
+/// debug info.  If this parameter is set by the function, then the
+/// caller needs to fclose it, otherwise the file descriptor is going
+/// to be leaked.  Note however that on recent versions of elfutils
+/// where libdw.h contains the function dwarf_getalt(), this parameter
+/// is set to 0, so it doesn't need to be fclosed.
+///
+/// Note that the alternate debug info file is a DWARF extension as of
+/// DWARF 4 ans is decribed at
+/// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+///
+/// @return the alternate debuginfo, or null.  If @p alt_fd is
+/// non-zero, then the caller of this function needs to call
+/// dwarf_end() on the returned alternate debuginfo pointer,
+/// otherwise, it's going to be leaked.
+static Dwarf*
+find_alt_debug_info(Dwfl_Module *elf_module,
+		    string& alt_file_name,
+		    int& alt_fd)
+{
+  if (elf_module == 0)
+    return 0;
+
+  Dwarf* result = 0;
+  string build_id;
+  find_alt_debug_info_location(elf_module, alt_file_name, build_id);
+
+#ifdef LIBDW_HAS_DWARF_GETALT
+  // We are on recent versions of elfutils where the function
+  // dwarf_getalt exists, so let's use it.
+  Dwarf_Addr bias = 0;
+  Dwarf* dwarf = dwfl_module_getdwarf(elf_module, &bias);
+  result = dwarf_getalt(dwarf);
+  alt_fd = 0;
+#else
+  // We are on an old version of elfutils where the function
+  // dwarf_getalt doesn't exist yet, so let's open code its
+  // functionality
+  char *alt_name = 0;
+  const char *file_name = 0;
+  void **user_data = 0;
+  Dwarf_Addr low_addr = 0;
+  char *alt_file = 0;
+
+  file_name = dwfl_module_info(elf_module, &user_data,
+			       &low_addr, 0, 0, 0, 0, 0);
+
+  alt_fd = dwfl_standard_find_debuginfo(elf_module, user_data,
+					file_name, low_addr,
+					alt_name, file_name,
+					0, &alt_file);
+
+  result = dwarf_begin(alt_fd, DWARF_C_READ);
+#endif
+
+  return result;
 }
 
 /// Compare a symbol name against another name, possibly demangling
@@ -1999,7 +2049,12 @@ class read_context
   Dwarf*			dwarf_;
   // The alternate debug info.  Alternate debug info sections are a
   // DWARF extension as of DWARF4 and are described at
-  // http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
+  // http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.  Below are
+  // the file desctor used to access the alternate debug info
+  // sections, and the representation of the DWARF debug info.  Both
+  // need to be freed after we are done using them, with fclose and
+  // dwarf_end.
+  int				alt_fd_;
   Dwarf*			alt_dwarf_;
   string			alt_debug_info_path_;
   // The address range of the offline elf file we are looking at.
@@ -2086,6 +2141,7 @@ public:
       dwarf_version_(),
       handle_(),
       dwarf_(),
+      alt_fd_(),
       alt_dwarf_(),
       elf_module_(),
       elf_handle_(),
@@ -2104,6 +2160,17 @@ public:
       do_log_()
   {
     memset(&offline_callbacks_, 0, sizeof(offline_callbacks_));
+  }
+
+  /// Detructor of the @ref read_context type.
+  ~read_context()
+  {
+    if (alt_fd_)
+      {
+	close(alt_fd_);
+	if (alt_dwarf_)
+	  dwarf_end(alt_dwarf_);
+      }
   }
 
   /// Clear the data that is relevant only for the current translation
@@ -2283,9 +2350,11 @@ public:
     dwfl_report_end(dwfl_handle().get(), 0, 0);
 
     Dwarf_Addr bias = 0;
-
     dwarf_ = dwfl_module_getdwarf(elf_module_, &bias);
-    alt_dwarf_ = find_alt_debug_info(elf_module_, alt_debug_info_path_);
+    if (!alt_dwarf_)
+      alt_dwarf_ = find_alt_debug_info(elf_module_,
+				       alt_debug_info_path_,
+				       alt_fd_);
 
     return dwarf_;
   }
@@ -9772,6 +9841,7 @@ get_soname_of_elf_file(const string& path, string &soname)
         }
     }
 
+  elf_end(elf);
   close(fd);
 
   return true;
@@ -9797,6 +9867,7 @@ get_type_of_elf_file(const string& path, elf_type& type)
   elf_version (EV_CURRENT);
   Elf *elf = elf_begin (fd, ELF_C_READ_MMAP, NULL);
   type = elf_file_type(elf);
+  elf_end(elf);
   close(fd);
 
   return true;

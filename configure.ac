@@ -124,10 +124,13 @@ AC_CHECK_HEADER([libelf.h],
 
 DW_LIBS=
 AC_CHECK_LIB(dw, dwfl_begin, [DW_LIBS=-ldw])
+AC_CHECK_LIB(dw, dwarf_getalt,
+	     [FOUND_DWARF_GETALT_IN_LIBDW=yes],
+	     [FOUND_DWARF_GETALT_IN_LIBDW=no])
+
 AC_CHECK_HEADER(elfutils/libdwfl.h,
 		[],
 		[AC_MSG_ERROR([could not find elfutils/libdwfl.h installed])])
-
 
 if test x$ELF_LIBS = x; then
    AC_MSG_ERROR([could not find elfutils elf library installed])
@@ -135,6 +138,11 @@ fi
 
 if test x$DW_LIBS = x; then
    AC_MSG_ERROR([could not find elfutils dwarf library installed])
+fi
+
+if test x$FOUND_DWARF_GETALT_IN_LIBDW=xyes; then
+   AC_DEFINE([LIBDW_HAS_DWARF_GETALT], 1,
+	     [Defined if libdw has the function dwarf_getalt])
 fi
 
 AC_SUBST(DW_LIBS)
@@ -477,6 +485,7 @@ AC_MSG_NOTICE([
  OPTIONAL FEATURES:
     Enable zip archives                            : ${ENABLE_ZIP_ARCHIVE}
     Use a C++-11 compiler                          : ${ENABLE_CXX11}
+    libdw has the dwarf_getalt function            : ${FOUND_DWARF_GETALT_IN_LIBDW}
     Enable rpm support in abipkgdiff               : ${ENABLE_RPM}
     Enable deb support in abipkgdiff               : ${ENABLE_DEB}
     Enable GNU tar archive support in abipkgdiff   : ${ENABLE_TAR}
