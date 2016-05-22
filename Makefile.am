@@ -39,6 +39,9 @@ man:
 info:
 	$(MAKE) -C doc/manuals info
 
+check-valgrind-recursive:
+	$(MAKE) -C tests check-valgrind-memcheck-recursive
+
 update-changelog:
 	python $(srcdir)/gen-changelog.py > $(srcdir)/ChangeLog
 

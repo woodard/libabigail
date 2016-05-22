@@ -31,7 +31,123 @@ Please read the file COMMIT-LOG-GUIDELINES in the source tree to learn
 about how to write the commit log accompanying the patch.
 
 Make sure you sign your patch.  To learn about signing, please read
-below.
+the "Sign your work" chapter below.
+
+One important thing to be before sending your patch is to launch the
+regression tests.
+
+Regression tests
+================
+
+Regression tests are under the directory 'tests'.  They are usually
+written in C++ and are especially designed to be easy to debug.  The
+idea is that if the test fails, the programmer should just have to
+launch them under GDB and debug them right away.  No-bullshit style.
+
+Regression tests are launched by doing:
+
+   make check
+
+If you have N processor cores on your machine, you can launch the
+tests in parallel to make whole thing go faster by doing:
+
+  make -jN -lN check
+
+If you want to test the fabrication of the distribution tarball (this
+is important, because that is how we do to actually release the
+tarball of the project that you can download from the internet) then
+you can do:
+
+  make distcheck
+
+This actually builds the tarball, then untars it, configure/compile
+the untarred source code and launches the regression checks from
+there.
+
+You can also launch this in parallel by doing:
+
+  make -jN -lN distcheck
+
+with N being the number of processor core you have on your system.
+
+Please make sure you always launch "make distcheck" before sending a
+patch, so that you are sure that we can always build a tarball after
+your patch is applied to the source tree.
+
+Launching regression tests in Valgrind
+--------------------------------------
+
+To detect memory management errors, the tests of the regression test
+suite can be run using Valgrind tools, essentially memcheck and
+helgrind.
+
+To do so, please do:
+
+  make check-valgrind
+
+This runs the tests under the control of Valgrind memcheck and
+helgrind tools.
+
+But then, if you want Valgrind to check the libabigail command line
+tools that are *forked* by some of the tests then type:
+
+  make check-valgrind-recursive
+
+This one takes a long time.  On my system for instance, it takes an
+hour.  But then it checks *everything*.  If you don't have that time,
+then "make check-valgrind" is enough, as the regression tests that use
+the libabigail *library* directly (as opposed to forking libabigail
+command line tools) will be verified.
+
+How tests are organized
+-----------------------
+
+There are two kinds of regression tests.  Those that use the
+libabigail *library* directly, and those that spawn one of the
+libabigail command line tools.
+
+Generally, both are usually made of a loop that churns through a set of input
+binaries to compare.  Once the comparison is done, the resulting
+report is compared against a reference report that is provided.
+
+Test executable have names that starts with 'runtest*'.  For instance,
+under <build-directory>/tests/ you can find tests named
+runtestdiffdwarf, runtestabidiff, etc...
+
+If a test executable is named
+<build-directory>/tests/runtestdiffdwarf, then its source code is
+tests/test-diff-dwarf.cc.  Similarly, the source code of the test
+<build-directory>/tests/runtestabidiff is tests/test-abidiff.cc.
+
+The data provided for each test (for instance the input binaries to
+compare and the reference report that should result from the
+comparison) is to be found under tests/data.  So data for the test
+runtestdiffdwarf is to be found under tests/data/test-diff-dwarf.
+Data for the test runtestabidiff is to be found under
+tests/data/test-abidiff.cc.
+
+So adding your own tests usually just amounts to adding the input
+right input into the right sub-directory of tests/data/.  To do so,
+look at several tests/test-*.cc to see which one you'd like to add
+some input binaries to be compared in.
+
+Then once you know which tests/test-*.cc you'd like to extend, and if
+you added your input binaries and reference reports (maybe other
+things too) to the right sub-director of tests/data/, you just need to
+extend the array of input binaries/reference reports that the test
+walks to perform the comparisons.  It's generally a global variable
+before the main() function of the test.  In test-diff-dwarf.cc, for
+instance, the variable name is "in_out_specs".  You just have to add a
+new entry to that array; that new entry contains the paths to your new
+input binaries and reference reports.  Just read the code in there and
+use your brains.  It should be straight forward.
+
+Ah, also, if you added new files for the tests, then the build system
+needs to be told that those files have to be added to the distribution
+tarball when we do "make dist" (or make distcheck).  To do so, please
+make sure to add your new test input files to the
+tests/data/Makefile.am file, in the EXTRA_DIST variable.  Look at how
+things are organized in that file, and please do things similarly.
 
 Sign your work
 ==============
