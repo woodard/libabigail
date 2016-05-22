@@ -541,7 +541,7 @@ struct diff_context::priv
       show_added_syms_unreferenced_by_di_(true),
       dump_diff_tree_()
    {}
- };// end struct diff_context::priv
+};// end struct diff_context::priv
 
 diff_context::diff_context()
   : priv_(new diff_context::priv)
