@@ -1524,13 +1524,13 @@ lookup_symbol_from_gnu_hash_tab(const environment*		env,
   // Let's walk the hash table and record the versions of all the
   // symbols which name equal sym_name.
   for (i = ht.buckets[h1 % ht.nb_buckets],
-	 stop_wordp = &ht.chain[i - ht.first_sym_index],
-	 stop_word = *stop_wordp;
+	 stop_wordp = &ht.chain[i - ht.first_sym_index];
        i != STN_UNDEF
 	 && (stop_wordp
 	     < ht.chain + (ht.sym_count - ht.first_sym_index));
-       ++i, stop_word = *++stop_wordp)
+       ++i, ++stop_wordp)
     {
+      stop_word = *stop_wordp;
       if ((stop_word & ~ 1)!= (h1 & ~1))
 	// A given bucket can reference several hashes.  Here we
 	// stumbled accross a hash value different from the one we are
