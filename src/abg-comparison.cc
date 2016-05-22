@@ -40,7 +40,7 @@ namespace abigail
 
 namespace comparison
 {
-
+using std::tr1::unordered_set;
 using namespace abigail::suppr;
 
 ///
@@ -491,6 +491,7 @@ struct diff_context::priv
 {
   diff_category			allowed_category_;
   types_or_decls_diff_map_type		types_or_decls_diff_map;
+  unordered_diff_sptr_set		live_diffs_;
   vector<diff_sptr>			canonical_diffs;
   vector<filtering::filter_base_sptr>	filters_;
   suppressions_type			suppressions_;
@@ -816,6 +817,18 @@ diff_context::initialize_canonical_diff(const diff_sptr diff)
       diff->set_canonical_diff(canonical.get());
     }
 }
+
+/// Add a diff node to the set of diff nodes that are kept alive for
+/// the life time of the current instance of diff_context.
+///
+/// Note that diff added to the diff cache are kept alive as well, and
+/// don't need to be passed to this function to be kept alive.
+///
+/// @param d the diff node to be kept alive during the life time of
+/// the current instance of @ref diff_context.
+void
+diff_context::keep_diff_alive(diff_sptr& d)
+{priv_->live_diffs_.insert(d);}
 
 /// Test if a diff node has been traversed.
 ///
@@ -1310,7 +1323,7 @@ struct diff::priv
   bool				traversing_;
   type_or_decl_base_sptr	first_subject_;
   type_or_decl_base_sptr	second_subject_;
-  vector<diff_sptr>		children_;
+  vector<diff*>		children_;
   diff*			parent_;
   diff*			canonical_diff_;
   diff_context_wptr		ctxt_;
@@ -1399,7 +1412,7 @@ struct diff_less_than_functor
   ///
   /// @return true if @p l compares less than @p r.
   bool
-  operator()(const diff_sptr l, const diff_sptr r) const
+  operator()(const diff* l, const diff* r) const
   {
     if (!l || !r || !l->first_subject() || !r->first_subject())
       return false;
@@ -1409,6 +1422,18 @@ struct diff_less_than_functor
 
     return l_qn < r_qn;
   }
+
+  /// An operator that takes two instances of @ref diff_sptr returns
+  /// true if its first operand compares less than its second operand.
+  ///
+  /// @param l the first operand to consider.
+  ///
+  /// @param r the second operand to consider.
+  ///
+  /// @return true if @p l compares less than @p r.
+  bool
+  operator()(const diff_sptr& l, const diff_sptr& r) const
+  {return operator()(l.get(), r.get());}
 };
 
 /// Constructor for the @ref diff type.
@@ -1535,7 +1560,7 @@ diff::second_subject() const
 /// Getter for the children nodes of the current @ref diff node.
 ///
 /// @return a vector of the children nodes.
-const vector<diff_sptr>&
+const vector<diff*>&
 diff::children_nodes() const
 {return priv_->children_;}
 
@@ -1575,7 +1600,17 @@ void
 diff::append_child_node(diff_sptr d)
 {
   assert(d);
-  priv_->children_.push_back(d);
+
+  // Ensure 'd' is kept alive for the life time of the context of this
+  // diff.
+  context()->keep_diff_alive(d);
+
+  // Add the underlying pointer of 'd' to the vector of children.
+  // Note that this vector holds no reference to 'd'. This is to avoid
+  // reference cycles.  The reference to 'd' is held by the context of
+  // this diff, thanks to the call to context()->keep_diff_alive(d)
+  // above.
+  priv_->children_.push_back(d.get());
 
   diff_less_than_functor comp;
   std::sort(priv_->children_.begin(),
@@ -1706,7 +1741,7 @@ diff::traverse(diff_node_visitor& v)
       && !already_visited)
     {
       begin_traversing();
-      for (vector<diff_sptr>::const_iterator i = children_nodes().begin();
+      for (vector<diff*>::const_iterator i = children_nodes().begin();
 	   i != children_nodes().end();
 	   ++i)
 	{
@@ -3160,7 +3195,7 @@ report_mem_header(ostream& out,
 /// var_diff.
 struct var_diff::priv
 {
-  diff_sptr type_diff_;
+  diff_wptr type_diff_;
 };//end struct var_diff
 
 /// Populate the vector of children node of the @ref diff base type
@@ -3240,11 +3275,15 @@ var_diff::second_var() const
 diff_sptr
 var_diff::type_diff() const
 {
-  if (!priv_->type_diff_)
-    priv_->type_diff_ = compute_diff(first_var()->get_type(),
-				     second_var()->get_type(),
-				     context());
-  return priv_->type_diff_;
+  if (priv_->type_diff_.expired())
+    {
+      diff_sptr d = compute_diff(first_var()->get_type(),
+				       second_var()->get_type(),
+				       context());
+      context()->keep_diff_alive(d);
+      priv_->type_diff_ = d;
+    }
+  return diff_sptr(priv_->type_diff_);
 }
 
 /// Return true iff the diff node has a change.
@@ -9647,7 +9686,7 @@ struct corpus_diff::priv
 {
   bool					finished_;
   string				pretty_representation_;
-  vector<diff_sptr>			children_;
+  vector<diff*>			children_;
   corpus_sptr				first_;
   corpus_sptr				second_;
   diff_context_wptr			ctxt_;
@@ -10803,7 +10842,7 @@ corpus_diff::second_corpus() const
 {return priv_->second_;}
 
 /// @return the children nodes of the current instance of corpus_diff.
-const vector<diff_sptr>&
+const vector<diff*>&
 corpus_diff::children_nodes() const
 {return priv_->children_;}
 
@@ -10824,13 +10863,14 @@ corpus_diff::append_child_node(diff_sptr d)
 
   diff_less_than_functor is_less_than;
   bool inserted = false;
-  for (vector<diff_sptr>::iterator i = priv_->children_.begin();
+  for (vector<diff*>::iterator i = priv_->children_.begin();
        i != priv_->children_.end();
        ++i)
     // Look for the point where to insert the diff child node.
-    if (!is_less_than(d, *i))
+    if (!is_less_than(d.get(), *i))
       {
-	priv_->children_.insert(i, d);
+	context()->keep_diff_alive(d);
+	priv_->children_.insert(i, d.get());
 	// As we have just inserted 'd' into the vector, the iterator
 	// 'i' is invalidated.  We must *NOT* use it anymore.
 	inserted = true;
@@ -10838,10 +10878,13 @@ corpus_diff::append_child_node(diff_sptr d)
       }
 
   if (!inserted)
-    // We didn't insert anything to the vector, presumably b/c it was
-    // empty or had one element that was "less than" 'd'.  We can thus
-    // just append 'd' to the end of the vector.
-    priv_->children_.push_back(d);
+    {
+      context()->keep_diff_alive(d);
+      // We didn't insert anything to the vector, presumably b/c it was
+      // empty or had one element that was "less than" 'd'.  We can thus
+      // just append 'd' to the end of the vector.
+      priv_->children_.push_back(d.get());
+    }
 }
 
 /// @return the bare edit script of the functions changed as recorded
@@ -12200,7 +12243,7 @@ struct category_propagation_visitor : public diff_node_visitor
     // the first time, then update its canonical node's category too.
     bool update_canonical = !already_visited && canonical;
 
-    for (vector<diff_sptr>::const_iterator i = d->children_nodes().begin();
+    for (vector<diff*>::const_iterator i = d->children_nodes().begin();
 	 i != d->children_nodes().end();
 	 ++i)
       {
@@ -12213,7 +12256,7 @@ struct category_propagation_visitor : public diff_node_visitor
 	// children of 'd' and propagate their categories to 'd'.
 	diff* diff = already_visited
 	  ? (*i)->get_canonical_diff()
-	  : (*i).get();
+	  : *i;
 
 	assert(diff);
 
@@ -12322,11 +12365,11 @@ struct suppression_categorization_visitor : public diff_node_visitor
     if (!(d->get_category() & SUPPRESSED_CATEGORY)
 	&& !d->has_local_changes())
       {
-	for (vector<diff_sptr>::const_iterator i = d->children_nodes().begin();
+	for (vector<diff*>::const_iterator i = d->children_nodes().begin();
 	     i != d->children_nodes().end();
 	     ++i)
 	  {
-	    diff_sptr child = *i;
+	    diff* child = *i;
 	    if (child->has_changes())
 	      {
 		has_non_empty_child = true;
@@ -12624,18 +12667,17 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	      p = p->parent_node();
 
 	    if (p)
-	      for (vector<diff_sptr>::const_iterator s =
+	      for (vector<diff*>::const_iterator s =
 		     p->children_nodes().begin();
 		   s != p->children_nodes().end();
 		   ++s)
 		{
-		  if (s->get() == d)
+		  if (*s == d)
 		    continue;
-		  diff* sib = s->get();
+		  diff* sib = *s;
 		  // If this is a fn_parm_diff, look through the
 		  // fn_parm_diff node to get at the real type node.
-		  if (fn_parm_diff_sptr f =
-		      dynamic_pointer_cast<fn_parm_diff>(*s))
+		  if (fn_parm_diff* f = dynamic_cast<fn_parm_diff*>(*s))
 		    sib = f->get_type_diff().get();
 		  if (sib == d)
 		    continue;
@@ -12726,7 +12768,7 @@ struct redundancy_marking_visitor : public diff_node_visitor
 	  {
 	    bool has_non_redundant_child = false;
 	    bool has_non_empty_child = false;
-	    for (vector<diff_sptr>::const_iterator i =
+	    for (vector<diff*>::const_iterator i =
 		   d->children_nodes().begin();
 		 i != d->children_nodes().end();
 		 ++i)

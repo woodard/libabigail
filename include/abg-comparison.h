@@ -26,6 +26,7 @@
 /// @file
 
 #include <tr1/unordered_map>
+#include <tr1/unordered_set>
 #include <ostream>
 #include "abg-corpus.h"
 #include "abg-diff-utils.h"
@@ -51,6 +52,7 @@ typedef std::vector<filter_base_sptr> filters;
 using std::ostream;
 using std::vector;
 using std::tr1::unordered_map;
+using std::tr1::unordered_set;
 using std::pair;
 
 using diff_utils::insertion;
@@ -62,8 +64,23 @@ class diff;
 /// Convenience typedef for a shared_ptr for the @ref diff class
 typedef shared_ptr<diff> diff_sptr;
 
+/// Convenience typedef for a weak_ptr for the @ref diff class
+typedef weak_ptr<diff> diff_wptr;
+
+/// Hasher for @ref diff_sptr.
+struct diff_sptr_hasher
+{
+  /// The actual hashing functor.
+  size_t
+  operator()(const diff_sptr& t) const
+  {return reinterpret_cast<size_t>(t.get());}
+};
+
 /// Convenience typedef for a vector of @ref diff_sptr.
 typedef vector<diff_sptr> diff_sptrs_type;
+
+/// Convenience typedef for an unoredered set of @ref diff_sptr
+typedef unordered_set<diff_sptr, diff_sptr_hasher> unordered_diff_sptr_set;
 
 class decl_diff_base;
 
@@ -459,6 +476,9 @@ public:
   void
   initialize_canonical_diff(const diff_sptr diff);
 
+  void
+  keep_diff_alive(diff_sptr&);
+
   diff*
   diff_has_been_visited(const diff*) const;
 
@@ -680,7 +700,7 @@ public:
   type_or_decl_base_sptr
   second_subject() const;
 
-  const vector<diff_sptr>&
+  const vector<diff*>&
   children_nodes() const;
 
   const diff*
@@ -1929,7 +1949,7 @@ public:
   corpus_sptr
   second_corpus() const;
 
-  const vector<diff_sptr>&
+  const vector<diff*>&
   children_nodes() const;
 
   void
