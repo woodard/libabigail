@@ -11515,7 +11515,7 @@ corpus_diff::report(ostream& out, const string& indent) const
       if (s.net_num_func_removed() == 1)
 	out << indent << "1 Removed function:\n\n";
       else if (s.net_num_func_removed() > 1)
-	out << indent << s.num_func_removed() << " Removed functions:\n\n";
+	out << indent << s.net_num_func_removed() << " Removed functions:\n\n";
 
       vector<function_decl*>sorted_deleted_fns;
       sort_string_function_ptr_map(priv_->deleted_fns_, sorted_deleted_fns);
