@@ -93,6 +93,7 @@ using abigail::tools_utils::file_exists;
 using abigail::tools_utils::is_dir;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
+using abigail::tools_utils::ensure_dir_path_created;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::string_ends_with;
 using abigail::tools_utils::file_type;
@@ -542,17 +543,25 @@ package::extracted_packages_parent_dir()
 
   if (p.empty())
     {
-      const char *tmpdir = getenv("TMPDIR");
+      const char *cachedir = getenv("XDG_CACHE_HOME");
 
-      if (tmpdir != NULL)
-	p = tmpdir;
+      if (cachedir != NULL)
+        p = cachedir;
       else
-	p = "/tmp";
-
+        {
+	  p = getenv("HOME");
+	  if (p.empty())
+	    p = "~";
+	  p += "/.cache/libabigail";
+	  // Create directory $HOME/.cache/libabigail/ if it doesn't
+	  // exist
+	  bool cache_dir_is_created = ensure_dir_path_created(p);
+	  assert(cache_dir_is_created);
+        }
       using abigail::tools_utils::get_random_number_as_string;
 
       string libabigail_tmp_dir_template = p;
-      libabigail_tmp_dir_template += "/libabigail-tmp-dir-XXXXXX";
+      libabigail_tmp_dir_template += "/abipkgdiff-tmp-dir-XXXXXX";
 
       if (!mkdtemp(const_cast<char*>(libabigail_tmp_dir_template.c_str())))
 	abort();
