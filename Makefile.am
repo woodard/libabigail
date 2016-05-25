@@ -39,6 +39,9 @@ man:
 info:
 	$(MAKE) -C doc/manuals info
 
+check-valgrind:
+	$(MAKE) -C tests check-valgrind
+
 check-valgrind-recursive:
 	$(MAKE) -C tests check-valgrind-memcheck-recursive
 
