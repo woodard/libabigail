@@ -120,8 +120,8 @@ Options
 
     Use a :ref:`suppression specification <suppr_spec_label>` file
     located at *path-to-suppressions*.  Note that this option can
-    appear multiple times on the command line; all the suppression
-    specification files are then taken into account.
+    appear multiple times on the command line.  In that case, all of
+    the suppression specification files are taken into account.
 
   * ``--no-show-locs``
 
