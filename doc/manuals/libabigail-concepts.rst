@@ -43,8 +43,9 @@ Definition
 ----------
 
 A suppression specification file is a way for a user to instruct
-:ref:`abidiff <abidiff_label>` to avoid emitting reports for changes
-involving certain :ref:`ABI artifacts<abi_artifacts_label>`.
+:ref:`abidiff <abidiff_label>`, :ref:`abipkgdiff <abipkgdiff_label>`
+or any other relevant libabigail tool to avoid emitting reports for
+changes involving certain :ref:`ABI artifacts<abi_artifacts_label>`.
 
 It contains directives (or specifications) that describe the set of
 ABI artifacts to avoid emitting change reports about.
