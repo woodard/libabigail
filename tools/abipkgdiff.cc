@@ -151,6 +151,7 @@ class options
 
 public:
   string	wrong_option;
+  string	wrong_arg;
   string	prog_name;
   bool		display_usage;
   bool		display_version;
@@ -1806,7 +1807,10 @@ parse_command_line(int argc, char* argv[], options& opts)
           else if (opts.package2.empty())
             opts.package2 = abigail::tools_utils::make_path_absolute(argv[i]).get();
           else
-            return false;
+	    {
+	      opts.wrong_arg = argv[i];
+	      return false;
+	    }
         }
       else if (!strcmp(argv[i], "--debug-info-pkg1")
 	       || !strcmp(argv[i], "--d1"))
@@ -1926,9 +1930,14 @@ main(int argc, char* argv[])
   vector<package_sptr> packages;
   if (!parse_command_line(argc, argv, opts))
     {
-      emit_prefix("abipkgdiff", cerr)
-	<< "unrecognized option:" << opts.wrong_option
-	<< "\ntry the --help option for more information\n";
+      if (!opts.wrong_option.empty())
+	emit_prefix("abipkgdiff", cerr)
+	  << "unrecognized option: " << opts.wrong_option
+	  << "\ntry the --help option for more information\n";
+      else
+	emit_prefix("abipkgdiff", cerr)
+	  << "unrecognized argument: " << opts.wrong_arg
+	  << "\ntry the --help option for more information\n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
