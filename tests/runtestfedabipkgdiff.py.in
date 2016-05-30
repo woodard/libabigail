@@ -25,7 +25,6 @@ import os
 import itertools
 import unittest
 import tempfile
-import shutil
 from StringIO import StringIO
 
 import koji
@@ -58,8 +57,321 @@ counter = itertools.count(0)
 temp_file_or_dir_prefix = 'fedabipkgdiff-test-'
 
 # Directory holding data used by following tests
-test_data_dir = os.path.join('@top_srcdir@',
-                             'tests', 'data', 'test-fedabipkgdiff')
+TEST_DATA_DIR = os.path.abspath(
+    os.path.join('@top_srcdir@', 'tests', 'data', 'test-fedabipkgdiff'))
+
+# topdir for tests from where to find and be treated as remote rpms to
+# download.
+TEST_TOPDIR = 'file://{0}'.format(TEST_DATA_DIR)
+
+# download cache directory for tests to avoid touch the real xdg_cache_home and
+# break any normal usage with fedabipkgdiff.
+# Note, as `tempfile.mkdtemp` is called, each time to run tests from this
+# module, this cache directory will be created at once.
+TEST_DOWNLOAD_CACHE_DIR = tempfile.mkdtemp(
+    prefix='libabigail-test-fedabipkgdiff-download-cache-')
+
+# Reference to built abipkgdiff command
+BUILT_ABIPKGDIFF = '@top_builddir@/tools/abipkgdiff'
+
+
+# -----------------  Koji resource storage begins ------------------
+#
+# List all necessary Koji resources for running tests within this test
+# module. Currently, packages, builds, and rpms are listed here, and their
+# relationship is maintained well. At the same time, all information including
+# the ID for each package, build and rpm is real and can be queried from Koji,
+# that is for convenience once developers need this.
+#
+# When additional packages, builds and rpms are required for test cases, here
+# is the right place to add them. Just think them as a super simple in-memory
+# database, and methods of MockClientSession knows well how to read them.
+
+packages = [
+    {'id': 612, 'name': 'dbus-glib'},
+    ]
+
+builds = [
+    {'build_id': 428835, 'nvr': 'dbus-glib-0.100-4.fc20',
+     'name': 'dbus-glib', 'release': '4.fc20', 'version': '0.100',
+     'package_id': 612, 'package_name': 'dbus-glib', 'state': 1,
+     },
+    {'build_id': 430720, 'nvr': 'dbus-glib-0.100.2-1.fc20',
+     'name': 'dbus-glib', 'release': '1.fc20', 'version': '0.100.2',
+     'package_id': 612, 'package_name': 'dbus-glib', 'state': 1,
+     },
+    {'build_id': 442366, 'nvr': 'dbus-glib-0.100.2-2.fc20',
+     'name': 'dbus-glib', 'release': '2.fc20', 'version': '0.100.2',
+     'package_id': 612, 'package_name': 'dbus-glib', 'state': 1,
+     },
+    {'build_id': 715478, 'nvr': 'dbus-glib-0.106-1.fc23',
+     'name': 'dbus-glib', 'release': '1.fc23', 'version': '0.106',
+     'package_id': 612, 'package_name': 'dbus-glib', 'state': 1,
+     },
+    {'build_id': 648058, 'nvr': 'dbus-glib-0.104-3.fc23',
+     'name': 'dbus-glib', 'release': '3.fc23', 'version': '0.104',
+     'package_id': 612, 'package_name': 'dbus-glib', 'state': 1,
+     },
+    {'build_id': 613769, 'nvr': 'dbus-glib-0.104-2.fc23',
+     'name': 'dbus-glib', 'release': '2.fc23', 'version': '0.104',
+     'package_id': 612, 'package_name': 'dbus-glib', 'state': 1,
+     }
+    ]
+
+rpms = [
+    {'build_id': 442366,
+     'name': 'dbus-glib', 'release': '2.fc20', 'version': '0.100.2',
+     'arch': 'x86_64', 'nvr': 'dbus-glib-0.100.2-2.fc20',
+     },
+    {'build_id': 442366,
+     'name': 'dbus-glib-devel', 'release': '2.fc20', 'version': '0.100.2',
+     'arch': 'x86_64', 'nvr': 'dbus-glib-devel-0.100.2-2.fc20',
+     },
+    {'build_id': 442366,
+     'name': 'dbus-glib-debuginfo', 'release': '2.fc20', 'version': '0.100.2',
+     'arch': 'x86_64', 'nvr': 'dbus-glib-debuginfo-0.100.2-2.fc20',
+     },
+    {'build_id': 442366,
+     'name': 'dbus-glib-devel', 'release': '2.fc20', 'version': '0.100.2',
+     'arch': 'i686', 'nvr': 'dbus-glib-devel-0.100.2-2.fc20',
+     },
+    {'build_id': 442366,
+     'name': 'dbus-glib-debuginfo', 'release': '2.fc20', 'version': '0.100.2',
+     'arch': 'i686', 'nvr': 'dbus-glib-debuginfo-0.100.2-2.fc20',
+     },
+    {'build_id': 442366,
+     'name': 'dbus-glib', 'version': '0.100.2', 'release': '2.fc20',
+     'arch': 'i686', 'nvr': 'dbus-glib-0.100.2-2.fc20',
+     },
+
+    {'build_id': 715478,
+     'name': 'dbus-glib-debuginfo', 'version': '0.106', 'release': '1.fc23',
+     'arch': 'i686', 'nvr': 'dbus-glib-debuginfo-0.106-1.fc23',
+     },
+    {'build_id': 715478,
+     'name': 'dbus-glib', 'version': '0.106', 'release': '1.fc23',
+     'arch': 'i686', 'nvr': 'dbus-glib-0.106-1.fc23',
+     },
+    {'build_id': 715478,
+     'name': 'dbus-glib-devel', 'version': '0.106', 'release': '1.fc23',
+     'arch': 'i686', 'nvr': 'dbus-glib-devel-0.106-1.fc23',
+     },
+    {'build_id': 715478,
+     'name': 'dbus-glib', 'version': '0.106', 'release': '1.fc23',
+     'arch': 'x86_64', 'nvr': 'dbus-glib-0.106-1.fc23',
+     },
+    {'build_id': 715478,
+     'name': 'dbus-glib-debuginfo', 'version': '0.106', 'release': '1.fc23',
+     'arch': 'x86_64', 'nvr': 'dbus-glib-debuginfo-0.106-1.fc23',
+     },
+    {'build_id': 715478,
+     'name': 'dbus-glib-devel', 'release': '1.fc23', 'version': '0.106',
+     'arch': 'x86_64', 'nvr': 'dbus-glib-devel-0.106-1.fc23',
+     },
+    ]
+
+# -----------------  End of Koji resource storage ------------------
+
+
+class AssertionHelper(object):
+    """A helper class providing methods to assert output of abipkgdiff"""
+
+    def assert_compared_binaries(self, output, expected_binaries):
+        """Assert specific binaries are already compared as expected
+
+        Caller doesn't need to care about the order of elements of
+        expected_binaries, it will be sorted by `list.sort` before assertion.
+
+        :param str output: output from abipkgdiff that is used to parse and
+        assert whether it contains expected binaries.
+        :param list expected_binaries: which binaries are expected to be
+        compared. Each of the binaries is a rpm filename, for example, foo.so.
+        """
+        assert isinstance(expected_binaries, (tuple, list))
+
+        binaries = re.findall(r"=+\s?changes of '(.+)'\s*=+",
+                              output,
+                              re.MULTILINE)
+        binaries = list(set(binaries))
+        binaries.sort()
+        expected_binaries.sort()
+        self.assertEquals(expected_binaries, binaries)
+
+    def assert_compared_rpms(self, output, expected_rpms):
+        """Assert specific rpms are already compared as expected
+
+        Caller doesn't need to care about the order of elements of
+        expected_rpms, but the order of each element, that is ('foo-0.1.rpm',
+        'foo-0.2.rpm') is different from ('foo-0.2.rpm', 'foo-0.1.rpm').
+        expected_rpms will be sorted properly.
+
+        :param str output: output from abipkgdiff that is used to parse and
+        assert whether it contains expected rpms.
+        :param list expected_rpms: which rpms are expected to be compared.
+        """
+        assert isinstance(expected_rpms, (tuple, list))
+
+        compared_rpms = re.findall(
+            r'Comparing the ABI of binaries between ([^\s]+) and ([^\s]+):',
+            output,
+            re.MULTILINE)
+
+        sort_key_func = lambda rpm_pair: ' '.join(rpm_pair)
+        compared_rpms = sorted(compared_rpms, key=sort_key_func)
+        expected_rpms = sorted(expected_rpms, key=sort_key_func)
+        self.assertEquals(expected_rpms, compared_rpms)
+
+    def assert_abi_comparison_result(self,
+                                     output,
+                                     expected_binaries=None,
+                                     expected_rpms=None):
+        """A convenient way to assert expected values
+
+        Parameters will be passed to corresponding methods. Each assertio
+        method called within this method could be invoked individually. This
+        method exists as a convenient way to assert all expected values within
+        only one method call.
+        """
+        if expected_rpms:
+            self.assert_compared_rpms(output, expected_rpms)
+        if expected_binaries:
+            self.assert_compared_binaries(output, expected_binaries)
+
+
+class MockClientSession(object):
+    """Mock koji.ClientSession
+
+    This mock ClientSession aims to avoid touching a real Koji instance to
+    interact with XMLRPC APIs required by fedabipkgdiff.
+
+    For the tests within this module, methods do not necessarily to return
+    complete RPM and build information. So, if you need more additional
+    information, here is the right place to add them.
+    """
+
+    def __init__(self, baseurl):
+        """Initialize a mock ClientSession
+
+        :param str baseurl: the URL to remote kojihub service. As of writing
+        this mock class, `baseurl` is not used at all, just keep it here if
+        it's useful in the future.
+
+        All mock methods have same signature as corresponding kojihub.*
+        methods, and type of parameters may be different and only satify
+        fedabipkgdiff requirement.
+        """
+        self.baseurl = baseurl
+
+    def getPackage(self, name):
+        """Mock kojihub.getPackage
+
+        :param str name: name of package to find and return
+        :return: the found package
+        :rtype: dict
+        """
+        assert isinstance(name, basestring)
+
+        def selector(package):
+            return package['name'] == name
+
+        return filter(selector, packages)[0]
+
+    def getBuild(self, build_id):
+        """Mock kojihub.getBuild
+
+        :param int build_id: ID of build to find and return
+        :return: the found build
+        :rtype: dict
+        """
+        assert isinstance(build_id, int)
+
+        def selector(build):
+            return build['build_id'] == build_id
+
+        return filter(selector, builds)[0]
+
+    def listBuilds(self, packageID, state=None):
+        """Mock kojihub.listBuilds
+
+        :param int packageID: ID of package whose builds is found and returned
+        :param state: build state. If state is omitted, all builds of a package
+        are returned
+        :type state: int or None
+        """
+        assert isinstance(packageID, int)
+        if state is not None:
+            assert isinstance(state, int)
+
+        def selector(build):
+            selected = build['package_id'] == packageID
+            if state is not None:
+                selected = selected and build['state'] == state
+            return selected
+
+        return filter(selector, builds)
+
+    def getRPM(self, rpminfo):
+        """Mock kojihub.getRPM
+
+        :param dict rpminfo: a mapping containing rpm information, at least,
+        it contains name, version, release, and arch.
+        """
+        assert isinstance(rpminfo, dict)
+
+        def selector(rpm):
+            return rpm['name'] == rpminfo['name'] and \
+                rpm['version'] == rpminfo['version'] and \
+                rpm['release'] == rpminfo['release'] and \
+                rpm['arch'] == rpminfo['arch']
+
+        return filter(selector, rpms)[0]
+
+    def listRPMs(self, buildID, arches=None):
+        """Mock kojihub.listRPMs
+
+        :param int buildID: ID of build from which to list rpms
+        :param arches: to list rpms built for specific arches. If arches is
+        omitted, rpms of all arches will be listed.
+        :type arches: list, tuple, str, or None
+        :return: list of rpms
+        :rtype: list
+        """
+        assert isinstance(buildID, int)
+        if arches is not None:
+            assert isinstance(arches, (tuple, list, basestring))
+
+        if arches is not None and isinstance(arches, basestring):
+            arches = [arches]
+
+        def selector(rpm):
+            selected = rpm['build_id'] == buildID
+            if arches is not None:
+                selected = selected and rpm['arch'] in arches
+            return selected
+
+        return filter(selector, rpms)
+
+
+class MockGlobalConfig(object):
+    """Used to mock global_config
+
+    Since tests do not parse options from command line, so this class is
+    helpful for tests to contain all potential parsed (simulated)
+    options.
+
+    Currently, only koji_server and dry_run are required for running
+    tests. If any new test cases need others, please add them add as
+    class attribute directly.
+    """
+    koji_server = fedabipkgdiff_mod.DEFAULT_KOJI_SERVER
+    koji_topdir = fedabipkgdiff_mod.DEFAULT_KOJI_TOPDIR
+    dry_run = False
+    dso_only = True
+    abipkgdiff = BUILT_ABIPKGDIFF
+    no_default_suppr = True
+
+
+# Test Cases go here
 
 
 class UtilsTest(unittest.TestCase):
@@ -418,142 +730,19 @@ class RunAbipkgdiffTest(unittest.TestCase):
         self.assertTrue(result > 0)
 
 
-class MockGlobalConfig(object):
-    """Used to mock global_config
-
-    Since tests do not parse options from command line, so this class is
-    helpful for tests to contain all potential parsed (simulated)
-    options.
-
-    Currently, only koji_server and dry_run are required for running
-    tests. If any new test cases need others, please add them add as
-    class attribute directly.
-    """
-    koji_server = fedabipkgdiff_mod.DEFAULT_KOJI_SERVER
-    koji_topdir = fedabipkgdiff_mod.DEFAULT_KOJI_TOPDIR
-    dry_run = False
-    dso_only = True
-    abipkgdiff = '@top_builddir@/tools/abipkgdiff'
-    no_default_suppr = True
-
-
-def mock_get_session():
-    """Used to mock get_session method to get mocked KojiSession instance"""
-    return MockKojiClientSession(baseurl=fedabipkgdiff_mod.DEFAULT_KOJI_SERVER)
-
-
-class MockKojiClientSession(object):
-    """Mock koji.ClientSession
-
-    This mock ClientSession aims to avoid touching a real Koji instance to
-    interact with XMLRPC APIs required by fedabipkgdiff.
-
-    For the tests within this module, methods do not necessarily to return
-    complete RPM and build information. So, if you need more additional
-    information, here is the right place to add them.
-    """
-
-    def __init__(self, *args, **kwargs):
-        """Accept arbitrary parameters but do nothing for this mock
-
-        Add this method, although it's not used by this mock ClientSession.
-        That is because, when initiate an instance of koji.ClientSession,
-        paramters, at least URL to kojihub, is required and passed.
-        """
-        self.args = args
-        self.kwargs = kwargs
-
-    def getPackage(self, *args, **kwargs):
-        return {
-            'id': 1,
-            'name': 'whatever a name of a package',
-        }
-
-    def listRPMs(self, *args, **kwargs):
-        return [{'arch': 'i686',
-                 'name': 'httpd-debuginfo',
-                 'nvr': 'httpd-debuginfo-2.4.18-1.fc22',
-                 'release': '1.fc22',
-                 'version': '2.4.18'},
-                {'arch': 'i686',
-                 'name': 'mod_session',
-                 'nvr': 'mod_session-2.4.18-1.fc22',
-                 'release': '1.fc22',
-                 'version': '2.4.18'},
-                {'arch': 'i686',
-                 'name': 'httpd',
-                 'nvr': 'httpd-2.4.18-1.fc22',
-                 'release': '1.fc22',
-                 'version': '2.4.18'},
-                {'arch': 'i686',
-                 'name': 'mod_proxy_html',
-                 'nvr': 'mod_proxy_html-2.4.18-1.fc22',
-                 'release': '1.fc22',
-                 'version': '2.4.18'},
-                {'arch': 'i686',
-                 'name': 'mod_ldap',
-                 'nvr': 'mod_ldap-2.4.18-1.fc22',
-                 'release': '1.fc22',
-                 'version': '2.4.18'},
-                {'arch': 'i686',
-                 'name': 'mod_ssl',
-                 'nvr': 'mod_ssl-2.4.18-1.fc22',
-                 'release': '1.fc22',
-                 'version': '2.4.18'}]
-
-    def listBuilds(self, *args, **kwargs):
-        return [
-            {'build_id': 720222,
-             'name': 'httpd',
-             'nvr': 'httpd-2.4.18-2.fc24',
-             'release': '2.fc24',
-             'version': '2.4.18'},
-            {'build_id': 708769,
-             'name': 'httpd',
-             'nvr': 'httpd-2.4.18-1.fc22',
-             'release': '1.fc22',
-             'version': '2.4.18'},
-            {'build_id': 708711,
-             'name': 'httpd',
-             'nvr': 'httpd-2.4.18-1.fc23',
-             'release': '1.fc23',
-             'version': '2.4.18'},
-            {'build_id': 705335,
-             'name': 'httpd',
-             'nvr': 'httpd-2.4.18-1.fc24',
-             'release': '1.fc24',
-             'version': '2.4.18'},
-            {'build_id': 704434,
-             'name': 'httpd',
-             'nvr': 'httpd-2.4.17-4.fc24',
-             'release': '4.fc24',
-             'version': '2.4.17'},
-            {'build_id': 704433,
-             'name': 'httpd',
-             'nvr': 'httpd-2.4.17-4.fc23',
-             'release': '4.fc23',
-             'version': '2.4.17'},
-        ]
-
-
 class GetPackageLatestBuildTest(unittest.TestCase):
     """Test case for get_package_latest_build"""
 
     @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
-    @patch('koji.ClientSession', new=MockKojiClientSession)
+    @patch('koji.ClientSession', new=MockClientSession)
     def test_get_latest_one(self):
-        """Ensure to get latest build of a package
-
-        Brew.listBuilds is mocked to return a series of builds that contains
-        a latest build, which is httpd-2.4.18-1.fc23, of package httpd for
-        Fedora 23, and that must be found and returned.
-        """
+        """Ensure to get latest build of a package"""
         session = fedabipkgdiff_mod.get_session()
-        build = session.get_package_latest_build('httpd', 'fc23')
-        self.assertEquals('httpd-2.4.18-1.fc23', build['nvr'])
+        build = session.get_package_latest_build('dbus-glib', 'fc23')
+        self.assertEquals('dbus-glib-0.106-1.fc23', build['nvr'])
 
     @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
-    @patch('koji.ClientSession', new=MockKojiClientSession)
+    @patch('koji.ClientSession', new=MockClientSession)
     def test_cannot_find_a_latest_build_with_invalid_distro(self):
         """
         Ensure NoCompleteBuilds is raised when trying to find a latest build of
@@ -561,7 +750,8 @@ class GetPackageLatestBuildTest(unittest.TestCase):
         """
         session = fedabipkgdiff_mod.get_session()
         self.assertRaises(fedabipkgdiff_mod.NoCompleteBuilds,
-                          session.get_package_latest_build, 'httpd', 'xxxx')
+                          session.get_package_latest_build,
+                          'dbus-glib', 'xxxx')
 
 
 class DownloadRPMTest(unittest.TestCase):
@@ -579,45 +769,39 @@ class DownloadRPMTest(unittest.TestCase):
         # immediately.
         os.close(self.fd)
 
-        # Used as a fake download directory to mock get_download_dir method
-        self.download_dir = tempfile.mkdtemp(prefix=temp_file_or_dir_prefix)
-
     def tearDown(self):
         os.remove(self.remote_filename)
-        shutil.rmtree(self.download_dir)
 
     def make_remote_file_url(self):
         """Make URL of remote file that is used for downloading this file"""
-        return 'file://{}'.format(self.remote_filename)
+        return 'file://{0}'.format(self.remote_filename)
 
     def make_nonexistent_remote_file_url(self):
         """Return URL to a non-existent remote file"""
         return os.path.join(self.make_remote_file_url(), 'nonexistent-file')
 
     @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
-    @patch('fedabipkgdiff.get_download_dir')
+    @patch('fedabipkgdiff.get_download_dir',
+           return_value=TEST_DOWNLOAD_CACHE_DIR)
     def test_succeed_to_download_a_rpm(self, mock_get_download_dir):
         """Enusre True is returned if curl succeeds to download remote file
 
         Download remote file to a fake download directory. Ensure everything is
         okay, and return value from download_rpm should be truth.
         """
-        mock_get_download_dir.return_value = self.download_dir
-
         url = self.make_remote_file_url()
         ret = fedabipkgdiff_mod.download_rpm(url)
         self.assertTrue(ret)
 
     @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
-    @patch('fedabipkgdiff.get_download_dir')
+    @patch('fedabipkgdiff.get_download_dir',
+           return_value=TEST_DOWNLOAD_CACHE_DIR)
     def test_failed_to_download_a_rpm(self, mock_get_download_dir):
         """Ensure False is returned if curl fails to download remote file
 
         Download remote file to a fake download directory. But, making
         something wrong to cause download_rpm returns false.
         """
-        mock_get_download_dir.return_value = self.download_dir
-
         url = self.make_nonexistent_remote_file_url()
         ret = fedabipkgdiff_mod.download_rpm(url)
         self.assertFalse(ret)
@@ -627,22 +811,29 @@ class BrewListRPMsTest(unittest.TestCase):
     """Test case for Brew.listRPMs"""
 
     @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
-    @patch('fedabipkgdiff.koji.ClientSession', new=MockKojiClientSession)
+    @patch('koji.ClientSession', new=MockClientSession)
     def test_select_specific_rpms(self):
         """Ensure Brew.listRPMs can select RPMs by a specific selector
 
         This test will select RPMs whose name starts with httpd, that is only
         httpd and httpd-debuginfo RPMs are selected and returned.
         """
+        def selector(rpm):
+            return rpm['name'] == 'dbus-glib-debuginfo' and \
+                rpm['arch'] == 'x86_64' and \
+                rpm['release'].endswith('fc20')
+
         session = fedabipkgdiff_mod.get_session()
-        selector = lambda rpm: rpm['name'].startswith('httpd')
-        rpms = session.listRPMs(buildID=1000, selector=selector)
-        self.assertTrue(
-            len(rpms) > 0,
-            'More than one rpms should be selected. But, it\'s empty.')
-        for rpm in rpms:
-            self.assertTrue(rpm['name'] in ('httpd', 'httpd-debuginfo'),
-                            '{0} should not be selected'.format(rpm['name']))
+        rpms = session.listRPMs(buildID=442366, selector=selector)
+        expected_rpms = [{
+            'build_id': 442366,
+            'name': 'dbus-glib-debuginfo',
+            'release': '2.fc20',
+            'version': '0.100.2',
+            'arch': 'x86_64',
+            'nvr': 'dbus-glib-debuginfo-0.100.2-2.fc20',
+            }]
+        self.assertEquals(expected_rpms, rpms)
 
 
 class RunAbipkgdiffWithDSOOnlyOptionTest(unittest.TestCase):
@@ -698,11 +889,10 @@ class RunAbipkgdiffWithDSOOnlyOptionTest(unittest.TestCase):
     @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
     @patch('fedabipkgdiff.pathinfo',
            new=koji.PathInfo(topdir=MockGlobalConfig.koji_topdir))
-    @patch('fedabipkgdiff.get_download_dir')
+    @patch('fedabipkgdiff.get_download_dir', return_value=TEST_DATA_DIR)
     def test_abipkgdiff_with_dso_only(self,
                                       mock_get_download_dir, mock_stdout):
         """Ensure only shared library is compared if --dso-only is specified"""
-        mock_get_download_dir.return_value = test_data_dir
 
         fedabipkgdiff_mod.abipkgdiff(self.pkg_info1, self.pkg_info2)
         output = mock_stdout.getvalue()
@@ -714,11 +904,11 @@ class RunAbipkgdiffWithDSOOnlyOptionTest(unittest.TestCase):
     @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
     @patch('fedabipkgdiff.pathinfo',
            new=koji.PathInfo(topdir=MockGlobalConfig.koji_topdir))
-    @patch('fedabipkgdiff.get_download_dir')
+    @patch('fedabipkgdiff.get_download_dir', return_value=TEST_DATA_DIR)
     def test_abipkgdiff_without_dso_only(self,
                                          mock_get_download_dir, mock_stdout):
         """Ensure all binaries are compared if --dso-only is not specified"""
-        mock_get_download_dir.return_value = test_data_dir
+
         fedabipkgdiff_mod.global_config.dso_only = False
 
         fedabipkgdiff_mod.abipkgdiff(self.pkg_info1, self.pkg_info2)
@@ -727,6 +917,201 @@ class RunAbipkgdiffWithDSOOnlyOptionTest(unittest.TestCase):
         binaries = self.regex.findall(output)
         self.assertEquals(['dbus-binding-tool', 'libdbus-glib-1.so.2.3.2'],
                           binaries)
+
+
+# Integration tests
+#
+# Following integration tests aim to test execution of fedabipkgdiff from
+# command line options to the expected ABI comparison result.
+
+
+class CompareABIFromCommandLineTest(AssertionHelper, unittest.TestCase):
+    """Test case for testing various use cases
+
+    All these tests aim to test fedabipkgdiff by executing against command line
+    options, that is to execute underlying abipkgdiff command. Output of
+    fedabipkgdiff is checked to see if it contains proper compared rpms and
+    binaries.
+
+    Following are mocked when run each test
+
+    * koji.ClientSession: avoid calling to the real Koji instance.
+
+    * --topdir option: let fedabipkgdiff download rpms from fedabipkgdiff's
+      test data directory instead of the remote Koji server.
+
+    * global method get_download_dir: use the fake directory to hold downloaded
+      rpm packages instead of .cache/fedabipkgdiff to break anything.
+
+    * sys.argv: to provide fedabipkgdiff command line options for each test.
+    """
+
+    @patch('koji.ClientSession', new=MockClientSession)
+    @patch('sys.stdout', new_callable=StringIO)
+    @patch('fedabipkgdiff.get_download_dir',
+           return_value=TEST_DOWNLOAD_CACHE_DIR)
+    def run_abipkgdiff(self, mock_get_download_dir, mock_stdout):
+        fedabipkgdiff_mod.main()
+        return mock_stdout.getvalue()
+
+    @patch('sys.argv', new=['fedabipkgdiff', '--topdir', TEST_TOPDIR,
+                            '--abipkgdiff', BUILT_ABIPKGDIFF,
+                            '--from', 'fc20', '--to', 'fc23', 'dbus-glib'])
+    def test_compare_against_latest_build_of_package(self):
+        """Test compare all arches of a package's latest build
+
+        Use case to test::
+
+            fedabipkgdiff --from fc20 --to fc23 dbus-glib
+        """
+        output = self.run_abipkgdiff()
+
+        expected_rpms = [
+            ('dbus-glib-0.100.2-2.fc20.i686.rpm',
+             'dbus-glib-0.106-1.fc23.i686.rpm'),
+            ('dbus-glib-0.100.2-2.fc20.x86_64.rpm',
+             'dbus-glib-0.106-1.fc23.x86_64.rpm'),
+            ]
+        expected_binaries = ['dbus-binding-tool', 'libdbus-glib-1.so.2.2.2']
+
+        self.assert_abi_comparison_result(output,
+                                          expected_binaries=expected_binaries,
+                                          expected_rpms=expected_rpms)
+
+    @patch('sys.argv',
+           new=['fedabipkgdiff', '--topdir', TEST_TOPDIR,
+                '--abipkgdiff', BUILT_ABIPKGDIFF,
+                '--from', 'fc20',
+                os.path.join(TEST_DATA_DIR,
+                             'packages/dbus-glib/0.106/1.fc23/x86_64/'
+                             'dbus-glib-0.106-1.fc23.x86_64.rpm')])
+    def test_compare_local_rpms_with_koji_rpms(self):
+        """Test compare local rpm with remote associated one from Koji
+
+        Use case to test::
+
+            fedabipkgdiff --from fc20 path/to/local/rpm
+        """
+        output = self.run_abipkgdiff()
+
+        expected_rpms = [
+            ('dbus-glib-0.100.2-2.fc20.x86_64.rpm',
+             'dbus-glib-0.106-1.fc23.x86_64.rpm'),
+            ]
+        expected_binaries = ['dbus-binding-tool', 'libdbus-glib-1.so.2.2.2']
+
+        self.assert_abi_comparison_result(output,
+                                          expected_binaries=expected_binaries,
+                                          expected_rpms=expected_rpms)
+
+    @patch('sys.argv', new=['fedabipkgdiff', '--topdir', TEST_TOPDIR,
+                            '--abipkgdiff', BUILT_ABIPKGDIFF,
+                            'dbus-glib-0.100.2-2.fc20',
+                            'dbus-glib-0.106-1.fc23'])
+    def test_compare_rpm_packages(self):
+        """Test compare rpms of packages specified by N-V-R
+
+        Use case to test::
+
+            fedabipkgdiff dbus-glib-0.100.2-2.fc20 dbus-glib-0.106-1.fc23
+        """
+        output = self.run_abipkgdiff()
+
+        expected_rpms = [
+            ('dbus-glib-0.100.2-2.fc20.i686.rpm',
+             'dbus-glib-0.106-1.fc23.i686.rpm'),
+            ('dbus-glib-0.100.2-2.fc20.x86_64.rpm',
+             'dbus-glib-0.106-1.fc23.x86_64.rpm'),
+            ]
+        expected_binaries = ['dbus-binding-tool', 'libdbus-glib-1.so.2.2.2']
+
+        self.assert_abi_comparison_result(output,
+                                          expected_binaries=expected_binaries,
+                                          expected_rpms=expected_rpms)
+
+    @patch('sys.argv', new=['fedabipkgdiff', '--topdir', TEST_TOPDIR,
+                            '--abipkgdiff', BUILT_ABIPKGDIFF,
+                            'dbus-glib-0.100.2-2.fc20.i686',
+                            'dbus-glib-0.106-1.fc23.i686'])
+    def test_compare_rpm_packages_with_specific_arch(self):
+        """Test compare rpms of packages specified by N-V-R-A
+
+        Use case to test::
+
+            fedabipkgdiff \
+                dbus-glib-0.100.2-2.fc20.i686 dbus-glib-0.106-1.fc23.i686
+        """
+        output = self.run_abipkgdiff()
+
+        expected_rpms = [
+            ('dbus-glib-0.100.2-2.fc20.i686.rpm',
+             'dbus-glib-0.106-1.fc23.i686.rpm'),
+            ]
+        expected_binaries = ['dbus-binding-tool', 'libdbus-glib-1.so.2.2.2']
+
+        self.assert_abi_comparison_result(output,
+                                          expected_binaries=expected_binaries,
+                                          expected_rpms=expected_rpms)
+
+    @patch('sys.argv', new=['fedabipkgdiff', '--topdir', TEST_TOPDIR,
+                            '--abipkgdiff', BUILT_ABIPKGDIFF,
+                            '--all-subpackages',
+                            'dbus-glib-0.100.2-2.fc20',
+                            'dbus-glib-0.106-1.fc23'])
+    def test_compare_rpm_packages_all_subpackages(self):
+        """Test compare all rpms instead of the main rpm only
+
+        Use case to test:
+
+            fedabipkgdiff --all-subpackages \
+                dbus-glib-0.100.2-2.fc20.i686 dbus-glib-0.106-1.fc23.i686
+        """
+        output = self.run_abipkgdiff()
+
+        expected_rpms = [
+            ('dbus-glib-devel-0.100.2-2.fc20.i686.rpm',
+             'dbus-glib-devel-0.106-1.fc23.i686.rpm'),
+            ('dbus-glib-0.100.2-2.fc20.i686.rpm',
+             'dbus-glib-0.106-1.fc23.i686.rpm'),
+            ('dbus-glib-0.100.2-2.fc20.x86_64.rpm',
+             'dbus-glib-0.106-1.fc23.x86_64.rpm'),
+            ('dbus-glib-devel-0.100.2-2.fc20.x86_64.rpm',
+             'dbus-glib-devel-0.106-1.fc23.x86_64.rpm')
+            ]
+        expected_binaries = [
+            'dbus-bash-completion-helper',
+            'dbus-binding-tool',
+            'libdbus-glib-1.so.2.2.2',
+            ]
+
+        self.assert_abi_comparison_result(output,
+                                          expected_binaries=expected_binaries,
+                                          expected_rpms=expected_rpms)
+
+    @patch('sys.argv', new=['fedabipkgdiff', '--topdir', TEST_TOPDIR,
+                            '--abipkgdiff', BUILT_ABIPKGDIFF,
+                            '--dso-only',
+                            '--from', 'fc20', '--to', 'fc23', 'dbus-glib'])
+    def test_compare_dso_only(self):
+        """Test only compare shared libraries with --dso-only
+
+        Use case to test:
+
+            fedabipkgdiff --dso-only --from fc20 --to fc23 dbus-glib
+        """
+        output = self.run_abipkgdiff()
+
+        expected_rpms = [
+            ('dbus-glib-0.100.2-2.fc20.i686.rpm',
+             'dbus-glib-0.106-1.fc23.i686.rpm'),
+            ('dbus-glib-0.100.2-2.fc20.x86_64.rpm',
+             'dbus-glib-0.106-1.fc23.x86_64.rpm'),
+            ]
+        expected_binaries = ['libdbus-glib-1.so.2.2.2']
+
+        self.assert_abi_comparison_result(output,
+                                          expected_binaries=expected_binaries,
+                                          expected_rpms=expected_rpms)
 
 
 if __name__ == '__main__':

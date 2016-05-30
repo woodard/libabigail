@@ -1160,6 +1160,18 @@ test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-0.80-3.fc12.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-0.100.2-2.fc20.i686.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-debuginfo-0.100.2-2.fc20.i686.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-devel-0.100.2-2.fc20.i686.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/x86_64/dbus-glib-0.100.2-2.fc20.x86_64.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/x86_64/dbus-glib-debuginfo-0.100.2-2.fc20.x86_64.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/x86_64/dbus-glib-devel-0.100.2-2.fc20.x86_64.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/i686/dbus-glib-0.106-1.fc23.i686.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/i686/dbus-glib-debuginfo-0.106-1.fc23.i686.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/i686/dbus-glib-devel-0.106-1.fc23.i686.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/x86_64/dbus-glib-0.106-1.fc23.x86_64.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/x86_64/dbus-glib-debuginfo-0.106-1.fc23.x86_64.rpm \
+test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/x86_64/dbus-glib-devel-0.106-1.fc23.x86_64.rpm \
 test-default-supprs/test0-type-suppr-0.suppr \
 test-default-supprs/test0-type-suppr-report-0.txt \
 test-default-supprs/test0-type-suppr-v0.o \
@@ -1170,7 +1182,4 @@ test-default-supprs/dirpkg-1-dir1/obj-v0.cc \
 test-default-supprs/dirpkg-1-dir2/dir.abignore \
 test-default-supprs/dirpkg-1-dir2/libobj-v0.so \
 test-default-supprs/dirpkg-1-dir2/obj-v0.cc
-
-
-
 

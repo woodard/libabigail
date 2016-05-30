@@ -299,7 +299,6 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
   AX_PYTHON_MODULE(itertools, $FATAL, python2)
   AX_PYTHON_MODULE(urlparse, $FATAL, python2)
   AX_PYTHON_MODULE(itertools, $FATAL, python2)
-  AX_PYTHON_MODULE(shutil, $FATAL, python2)
   AX_PYTHON_MODULE(unittest, $FATAL, python2)
   AX_PYTHON_MODULE(xdg, $FATAL, python2)
   AX_PYTHON_MODULE(koji, $FATAL, python2)
