@@ -662,6 +662,21 @@ def download_rpms(rpms):
 
 
 @log_call
+def build_path_to_abipkgdiff():
+    """Build the path to the 'abipkgidiff' program to use.
+
+    The path to 'abipkgdiff' is either the argument of the
+    --abipkgdiff command line option, or the path to 'abipkgdiff' as
+    found in the $PATH environment variable.
+
+    :return: a string representing the path to the 'abipkgdiff'
+    command.
+    """
+    if global_config.abipkgdiff:
+        return global_config.abipkgdiff
+    return 'abipkgdiff'
+
+@log_call
 def abipkgdiff(pkg_info1, pkg_info2):
     """Run abipkgdiff against found two RPM packages
 
@@ -682,7 +697,8 @@ def abipkgdiff(pkg_info1, pkg_info2):
     :return: return code of underlying abipkgdiff execution.
     :rtype: int
     """
-    cmd = ['abipkgdiff',
+    abipkgdiff_tool = build_path_to_abipkgdiff();
+    cmd = [abipkgdiff_tool,
            '--dso-only' if global_config.dso_only else '',
            '--d1', pkg_info1.debuginfo_package.downloaded_file,
            '--d2', pkg_info2.debuginfo_package.downloaded_file,
@@ -1023,7 +1039,14 @@ def build_commandline_args_parser():
         dest='koji_topdir',
         default=DEFAULT_KOJI_TOPDIR,
         help='URL for RPM files access')
-
+    parser.add_argument(
+        '--abipkgdiff',
+        required=False,
+        metavar='ABIPKGDIFF',
+        dest='abipkgdiff',
+        default='',
+        help="The path to the 'abipkgtool' command to use. "
+             "By default use the one found in $PATH.")
     return parser
 
 

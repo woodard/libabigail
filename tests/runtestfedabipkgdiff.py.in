@@ -433,6 +433,7 @@ class MockGlobalConfig(object):
     koji_topdir = fedabipkgdiff_mod.DEFAULT_KOJI_TOPDIR
     dry_run = False
     dso_only = True
+    abipkgdiff = '@top_builddir@/tools/abipkgdiff'
 
 
 def mock_get_session():
