@@ -1,0 +1,19 @@
+# This file contains default system-wide suppression specifications to
+# be used by Abigail tools[1] to filter out specific ABI change
+# reports when comparing the ABI of some core system binaries.
+#
+# To learn about the syntax of Abigail suppression specifications,
+# please refer to the relevant section of the online manual[2].
+#
+# If you feel like some suppression specifications should be added to
+# this file so that they can be applied system-wide each time an
+# Abigail tool is invoked to compare a given core system binary,
+# please file an enhance request to
+# https://sourceware.org/bugzilla/enter_bug.cgi?product=libabigail.
+#
+# Or, consider just adding those suppression specification to your
+# ~/.abignore file.
+#
+# [1]: https://sourceware.org/libabigail/manual/libabigail-overview.html
+# [2]: https://sourceware.org/libabigail/manual/libabigail-concepts.html#suppression-specifications.
+#

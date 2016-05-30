@@ -434,6 +434,7 @@ class MockGlobalConfig(object):
     dry_run = False
     dso_only = True
     abipkgdiff = '@top_builddir@/tools/abipkgdiff'
+    no_default_suppr = True
 
 
 def mock_get_session():

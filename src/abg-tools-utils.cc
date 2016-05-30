@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -47,6 +47,23 @@ using namespace abigail::suppr;
 /// on libabigail.
 namespace tools_utils
 {
+
+/// Get the value of $libdir variable of the autotools build
+/// system.  This is where shared libraries are usually installed.
+///
+/// @return a constant string (doesn't have to be free-ed by the
+/// caller) that represent the value of the $libdir variable in the
+/// autotools build system, or NULL if it's not set.
+const char*
+get_system_libdir()
+{
+#ifndef ABIGAIL_ROOT_SYSTEM_LIBDIR
+#error the macro ABIGAIL_ROOT_SYSTEM_LIBDIR must be set at compile time
+#endif
+
+  static __thread const char* system_libdir(ABIGAIL_ROOT_SYSTEM_LIBDIR);
+  return system_libdir;
+}
 
 /// The bitwise 'OR' operator for abidiff_status bit masks.
 ///
@@ -159,7 +176,8 @@ file_exists(const string& path)
   return get_stat(path, &st);
 }
 
-/// Test if path is a path to a regular file.
+/// Test if path is a path to a regular file or a symbolic link to a
+/// regular file.
 ///
 /// @param path the path to consider.
 ///
@@ -172,10 +190,18 @@ is_regular_file(const string& path)
   if (!get_stat(path, &st))
     return false;
 
-  return !!S_ISREG(st.st_mode);
+  if (S_ISREG(st.st_mode))
+    return true;
+
+  string symlink_target_path;
+  if (maybe_get_symlink_target_file_path(path, symlink_target_path))
+    return is_regular_file(symlink_target_path);
+
+  return false;
 }
 
-/// Tests if a given path is a directory.
+/// Tests if a given path is a directory or a symbolic link to a
+/// directory.
 ///
 /// @param path the path to test for.
 ///
@@ -188,7 +214,14 @@ is_dir(const string& path)
   if (!get_stat(path, &st))
     return false;
 
-  return !!S_ISDIR(st.st_mode);
+  if (S_ISDIR(st.st_mode))
+    return true;
+
+  string symlink_target_path;
+  if (maybe_get_symlink_target_file_path(path, symlink_target_path))
+    return is_dir(symlink_target_path);
+
+  return false;
 }
 
 /// If a given file is a symbolic link, get the canonicalized absolute
@@ -844,6 +877,81 @@ gen_suppr_spec_from_headers(const string& headers_root_dir)
     handle_fts_entry(entry, result);
   fts_close(file_hierarchy);
   return result;
+}
+
+/// Get the path to the default system suppression file.
+///
+/// @return a copy of the default system suppression file.
+string
+get_default_system_suppression_file_path()
+{
+  string default_system_suppr_path;
+
+  const char *s = getenv("LIBABIGAIL_DEFAULT_SYSTEM_SUPPRESSION_FILE");
+  if (s)
+    default_system_suppr_path = s;
+
+  if (default_system_suppr_path.empty())
+    default_system_suppr_path =
+      get_system_libdir() + string("/libabigail/default.abignore");
+
+  return default_system_suppr_path;
+}
+
+/// Get the path to the default user suppression file.
+///
+/// @return a copy of the default user suppression file.
+string
+get_default_user_suppression_file_path()
+{
+  string default_user_suppr_path;
+  const char *s = getenv("LIBABIGAIL_DEFAULT_USER_SUPPRESSION_FILE");
+
+  if (s == NULL)
+    {
+      s = getenv("HOME");
+      default_user_suppr_path  = s;
+      if (default_user_suppr_path.empty())
+	default_user_suppr_path = "~";
+      default_user_suppr_path += "/.abignore";
+    }
+  else
+    default_user_suppr_path = s;
+
+  return default_user_suppr_path;
+}
+
+/// Load the default system suppression specification file and
+/// populate a vector of @ref suppression_sptr with its content.
+///
+/// The default system suppression file is located at
+/// $libdir/libabigail/default-libabigail.abignore.
+///
+/// @param supprs the vector to add the suppression specifications
+/// read from the file to.
+void
+load_default_system_suppressions(suppr::suppressions_type& supprs)
+{
+  string default_system_suppr_path =
+    get_default_system_suppression_file_path();
+
+  read_suppressions(default_system_suppr_path, supprs);
+}
+
+/// Load the default user suppression specification file and populate
+/// a vector of @ref suppression_sptr with its content.
+///
+/// The default user suppression file is located at $HOME~/.abignore.
+///
+/// @param supprs the vector to add the suppression specifications
+/// read from the file to.
+void
+load_default_user_suppressions(suppr::suppressions_type& supprs)
+{
+  string default_user_suppr_path =
+    get_default_user_suppression_file_path();
+
+  read_suppressions(default_user_suppr_path, supprs);
 }
 
 }//end namespace tools_utils

@@ -67,7 +67,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-0-dir1",
     "data/test-diff-pkg/dirpkg-0-dir2",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "",
@@ -80,7 +80,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-1-dir1",
     "data/test-diff-pkg/dirpkg-1-dir2",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "",
@@ -94,7 +94,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-1-dir1",
     "data/test-diff-pkg/dirpkg-1-dir2",
-    "--no-abignore --no-show-locs",
+    "--no-default-suppression --no-abignore --no-show-locs",
     "",
     "",
     "",
@@ -108,7 +108,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-2-dir1",
     "data/test-diff-pkg/dirpkg-2-dir2",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "",
@@ -123,7 +123,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-3-dir1",
     "data/test-diff-pkg/dirpkg-3-dir2",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "data/test-diff-pkg/dirpkg-3.suppr",
     "",
     "",
@@ -139,7 +139,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dirpkg-3-dir1",
     "data/test-diff-pkg/dirpkg-3-dir2",
-    "--no-show-locs --no-abignore",
+    "--no-default-suppression --no-show-locs --no-abignore",
     "data/test-diff-pkg/dirpkg-3.suppr",
     "",
     "",
@@ -151,7 +151,7 @@ static InOutSpec in_out_specs[] =
   { // Just like the previous tests, but loc info is emitted.
     "data/test-diff-pkg/dirpkg-3-dir1",
     "data/test-diff-pkg/dirpkg-3-dir2",
-    "--no-abignore",
+    "--no-default-suppression --no-abignore",
     "data/test-diff-pkg/dirpkg-3.suppr",
     "",
     "",
@@ -163,7 +163,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/symlink-dir-test1/dir1/symlinks",
     "data/test-diff-pkg/symlink-dir-test1/dir2/symlinks",
-    "",
+    "--no-default-suppression ",
     "",
     "",
     "",
@@ -176,7 +176,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar",
     "data/test-diff-pkg/tarpkg-0-dir2.tar",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "",
@@ -188,7 +188,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tarpkg-0-dir1.ta",
     "data/test-diff-pkg/tarpkg-0-dir2.ta",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "",
@@ -200,7 +200,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar.gz",
     "data/test-diff-pkg/tarpkg-0-dir2.tar.gz",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "",
@@ -212,7 +212,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tarpkg-0-dir1.tar.bz2",
     "data/test-diff-pkg/tarpkg-0-dir2.tar.bz2",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "",
@@ -224,7 +224,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tarpkg-1-dir1.tar.gz",
     "data/test-diff-pkg/tarpkg-1-dir2.tar.gz",
-    "--dso-only",
+    "--no-default-suppression --dso-only",
     "",
     "",
     "",
@@ -240,7 +240,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -253,7 +253,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "",
@@ -267,7 +267,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -281,7 +281,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "",
     "",
@@ -295,7 +295,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
@@ -309,7 +309,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
-    "--no-show-locs --no-added-syms",
+    "--no-default-suppression --no-show-locs --no-added-syms",
     "",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
     "data/test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm",
@@ -321,7 +321,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/qemu-img-rhev-2.3.0-7.el7.ppc64.rpm",
     "data/test-diff-pkg/qemu-img-rhev-2.3.0-20.el7.ppc64.rpm",
-    "--no-show-locs --no-added-syms",
+    "--no-default-suppression --no-show-locs --no-added-syms",
     "",
     "data/test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-7.el7.ppc64.rpm",
     "data/test-diff-pkg/qemu-kvm-rhev-debuginfo-2.3.0-20.el7.ppc64.rpm",
@@ -345,7 +345,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm",
     "data/test-diff-pkg/tbb-4.3-3.20141204.fc23.x86_64.rpm",
-    "",
+    "--no-default-suppression",
     "",
     "data/test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm",
     "data/test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm",
@@ -357,7 +357,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64.rpm",
     "data/test-diff-pkg/tbb-4.3-3.20141204.fc23.x86_64.rpm",
-    "",
+    "--no-default-suppression",
     "",
     "data/test-diff-pkg/tbb-debuginfo-4.1-9.20130314.fc22.x86_64.rpm",
     "data/test-diff-pkg/tbb-debuginfo-4.3-3.20141204.fc23.x86_64.rpm",
@@ -369,7 +369,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/libICE-1.0.6-1.el6.x86_64.rpm",
     "data/test-diff-pkg/libICE-1.0.9-2.el7.x86_64.rpm",
-    "",
+    "--no-default-suppression",
     "",
     "data/test-diff-pkg/libICE-debuginfo-1.0.6-1.el6.x86_64.rpm",
     "data/test-diff-pkg/libICE-debuginfo-1.0.9-2.el7.x86_64.rpm",
@@ -381,7 +381,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686.rpm",
     "data/test-diff-pkg/gtk2-immodule-xim-2.24.28-8.el7.i686.rpm",
-    "",
+    "--no-default-suppression",
     "",
     "data/test-diff-pkg/gtk2-debuginfo-2.24.22-5.el7.i686.rpm",
     "data/test-diff-pkg/gtk2-debuginfo-2.24.28-8.el7.i686.rpm",
@@ -397,7 +397,7 @@ static InOutSpec in_out_specs[] =
   {
     "data/test-diff-pkg/libsigc++-2.0-0c2a_2.4.0-1_amd64.deb",
     "data/test-diff-pkg/libsigc++-2.0-0v5_2.4.1-1ubuntu2_amd64.deb",
-    "--no-show-locs --fail-no-dbg",
+    "--no-default-suppression --no-show-locs --fail-no-dbg",
     "",
     "data/test-diff-pkg/libsigc++-2.0-0c2a-dbgsym_2.4.0-1_amd64.ddeb",
     "data/test-diff-pkg/libsigc++-2.0-0v5-dbgsym_2.4.1-1ubuntu2_amd64.ddeb",

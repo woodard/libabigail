@@ -17,7 +17,7 @@ cat /dev/null > $outputfile
 for i in $binaries;
 do
   obj=$objdir/$i.$objext
-  cmd="$abidiff $obj $obj"
+  cmd="$abidiff --no-default-suppression $obj $obj"
   `$cmd` > $outputfile
   if test -s $outputfile; then
       echo $cmd >> $finaloutputfile

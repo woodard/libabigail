@@ -86,7 +86,8 @@ main()
 	}
 
       abidiff = string(get_build_dir()) + "/tools/abidiff";
-      cmd = abidiff + " --no-architecture " + in_elf_path + " " + in_abi_path;
+      cmd = abidiff + " --no-default-suppression --no-architecture "
+	+ in_elf_path + " " + in_abi_path;
       cmd += " > " + out_diff_report_path;
 
       bool abidiff_ok = true;

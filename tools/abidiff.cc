@@ -56,6 +56,8 @@ using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::gen_suppr_spec_from_headers;
+using abigail::tools_utils::load_default_system_suppressions;
+using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
 
 struct options
@@ -73,6 +75,7 @@ struct options
   vector<string>	keep_var_regex_patterns;
   string		headers_dir1;
   string		headers_dir2;
+  bool			no_default_supprs;
   bool			no_arch;
   bool			show_stats_only;
   bool			show_symtabs;
@@ -100,6 +103,7 @@ struct options
     : display_usage(),
       display_version(),
       missing_operand(),
+      no_default_supprs(),
       no_arch(),
       show_stats_only(),
       show_symtabs(),
@@ -137,6 +141,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --headers-dir2|--hd2 <path>  the path headers of file2\n"
     << " --stat  only display the diff stats\n"
     << " --symtabs  only display the symbol tables of the corpora\n"
+    << " --no-default-suppression  don't load any "
+       "default suppression specification\n"
     << " --no-architecture  do not take architecture in account\n"
     << " --deleted-fns  display deleted public functions\n"
     << " --changed-fns  display changed public functions\n"
@@ -269,6 +275,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.display_usage = true;
 	  return true;
 	}
+      else if (!strcmp(argv[i], "--no-default-suppression"))
+	opts.no_default_supprs = true;
       else if (!strcmp(argv[i], "--no-architecture"))
 	opts.no_arch = true;
       else if (!strcmp(argv[i], "--deleted-fns"))
@@ -525,6 +533,15 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
        ++i)
     read_suppressions(*i, supprs);
   ctxt->add_suppressions(supprs);
+
+  if (!opts.no_default_supprs && opts.suppression_paths.empty())
+    {
+      // Load the default system and user suppressions.
+      suppressions_type& supprs = ctxt->suppressions();
+
+      load_default_system_suppressions(supprs);
+      load_default_user_suppressions(supprs);
+    }
 
   if (!opts.headers_dir1.empty())
     {

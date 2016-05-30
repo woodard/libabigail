@@ -28,6 +28,33 @@ Invocation
 ``package1`` and ``package2`` are the packages that contain the
 binaries to be compared.
 
+
+Environment
+===========
+
+.. _abipkgdiff_default_supprs_label:
+
+abipkgdiff loads two default :ref:`suppression specifications files
+<suppr_spec_label>`, merges their content and use it to filter out ABI
+change reports that might be considered as false positives to users.
+
+* Default system-wide suppression specification file
+
+  It's located by the optional environment variable
+  LIBABIGAIL_DEFAULT_SYSTEM_SUPPRESSION_FILE.  If that environment
+  variable is not set, then abipkgdiff tries to load the suppression file
+  $libdir/libabigail/libabigail-default.abignore.  If that file is not
+  present, then no default system-wide suppression specification file
+  is loaded.
+
+* Default user suppression specification file.
+
+  It's located by the optional environment
+  LIBABIGAIL_DEFAULT_USER_SUPPRESSION_FILE.  If that environment
+  variable is not set, then abipkgdiff tries to load the suppression file
+  $HOME/.abignore.  If that file is not present, then no default user
+  suppression specification is loaded.
+
 .. _abipkgdiff_options_label:
 
 Options
@@ -116,12 +143,21 @@ Options
     execute concurrently.  This option tells it not to extract packages or run
     comparisons in parallel.
 
+  * ``--no-default-suppression``
+
+    Do not load the :ref:`default suppression specification files
+    <abipkgdiff_default_supprs_label>`.
+
   * ``--suppressions | --suppr`` <*path-to-suppressions*>
 
     Use a :ref:`suppression specification <suppr_spec_label>` file
     located at *path-to-suppressions*.  Note that this option can
     appear multiple times on the command line.  In that case, all of
     the suppression specification files are taken into account.
+
+    Please note that, by default, if this option is not provided, then
+    the :ref:`default suppression specification files
+    <abipkgdiff_default_supprs_label>` are loaded .
 
   * ``--no-show-locs``
 

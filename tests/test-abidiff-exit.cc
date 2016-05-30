@@ -59,7 +59,7 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test1-voffset-change-v0.o",
     "data/test-abidiff-exit/test1-voffset-change-v1.o",
     "",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE
     | abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE,
     "data/test-abidiff-exit/test1-voffset-change-report0.txt",
@@ -69,7 +69,7 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test1-voffset-change-v0.o",
     "data/test-abidiff-exit/test1-voffset-change-v1.o",
     "data/test-abidiff-exit/test1-voffset-change.abignore",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test1-voffset-change-report1.txt",
     "output/test-abidiff-exit/test1-voffset-change-report1.txt"
@@ -78,7 +78,7 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test2-filtered-removed-fns-v0.o",
     "data/test-abidiff-exit/test2-filtered-removed-fns-v1.o",
     "",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     abigail::tools_utils::ABIDIFF_ABI_CHANGE
     | abigail::tools_utils::ABIDIFF_ABI_INCOMPATIBLE_CHANGE,
     "data/test-abidiff-exit/test2-filtered-removed-fns-report0.txt",
@@ -88,7 +88,7 @@ InOutSpec in_out_specs[] =
     "data/test-abidiff-exit/test2-filtered-removed-fns-v0.o",
     "data/test-abidiff-exit/test2-filtered-removed-fns-v1.o",
     "data/test-abidiff-exit/test2-filtered-removed-fns.abignore",
-    "--no-show-locs",
+    "--no-default-suppression --no-show-locs",
     abigail::tools_utils::ABIDIFF_OK,
     "data/test-abidiff-exit/test2-filtered-removed-fns-report1.txt",
     "output/test-abidiff-exit/test2-filtered-removed-fns-report1.txt"

@@ -8,6 +8,10 @@ m4data_DATA = $(srcdir)/abigail.m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libabigail.pc
 
+dist_noinst_DATA = default.abignore
+abigaillibdir = $(pkglibdir)
+abigaillib_DATA = default.abignore
+
 #bashcompletiondir = $(datadir)/bash-completion/completions
 #dist_bashcompletion_DATA =
 

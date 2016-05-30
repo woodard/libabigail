@@ -469,6 +469,8 @@ AC_CONFIG_FILES([tests/runtestcanonicalizetypes.sh],
 		[chmod +x tests/runtestcanonicalizetypes.sh])
 AC_CONFIG_FILES([tests/runtestfedabipkgdiff.py],
 		[chmod +x tests/runtestfedabipkgdiff.py])
+AC_CONFIG_FILES([tests/runtestdefaultsupprs.py],
+		[chmod +x tests/runtestdefaultsupprs.py])
 
 AC_OUTPUT
 

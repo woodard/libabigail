@@ -100,6 +100,10 @@ using abigail::tools_utils::file_type;
 using abigail::tools_utils::make_path_absolute;
 using abigail::tools_utils::base_name;
 using abigail::tools_utils::gen_suppr_spec_from_headers;
+using abigail::tools_utils::get_default_system_suppression_file_path;
+using abigail::tools_utils::get_default_user_suppression_file_path;
+using abigail::tools_utils::load_default_system_suppressions;
+using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
 using abigail::ir::corpus_sptr;
 using abigail::comparison::diff_context;
@@ -164,6 +168,7 @@ public:
   string	debug_package2;
   string	devel_package1;
   string	devel_package2;
+  bool		no_default_suppression;
   bool		keep_tmp_files;
   bool		compare_dso_only;
   bool		show_linkage_names;
@@ -181,6 +186,7 @@ public:
       missing_operand(),
       abignore(true),
       parallel(true),
+      no_default_suppression(),
       keep_tmp_files(),
       compare_dso_only(),
       show_linkage_names(true),
@@ -1868,6 +1874,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[j]).get();
           ++i;
         }
+      else if (!strcmp(argv[i], "--no-default-suppression"))
+	opts.no_default_suppression = true;
       else if (!strcmp(argv[i], "--keep-tmp-files"))
 	opts.keep_tmp_files = true;
       else if (!strcmp(argv[i], "--dso-only"))
@@ -1964,6 +1972,20 @@ main(int argc, char* argv[])
       abigail::abigail_get_library_version(major, minor, revision);
       cout << major << "." << minor << "." << revision << "\n";
       return 0;
+    }
+
+    if (!opts.no_default_suppression && opts.suppression_paths.empty())
+    {
+      // Load the default system and user suppressions.
+      string default_system_suppr_file =
+	get_default_system_suppression_file_path();
+      if (file_exists(default_system_suppr_file))
+	opts.suppression_paths.push_back(default_system_suppr_file);
+
+      string default_user_suppr_file =
+	get_default_user_suppression_file_path();
+      if (file_exists(default_user_suppr_file))
+	opts.suppression_paths.push_back(default_user_suppr_file);
     }
 
   if (!maybe_check_suppression_files(opts))

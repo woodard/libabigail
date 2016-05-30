@@ -699,6 +699,7 @@ def abipkgdiff(pkg_info1, pkg_info2):
     """
     abipkgdiff_tool = build_path_to_abipkgdiff();
     cmd = [abipkgdiff_tool,
+           '--no-default-suppression' if global_config.no_default_suppr else '',
            '--dso-only' if global_config.dso_only else '',
            '--d1', pkg_info1.debuginfo_package.downloaded_file,
            '--d2', pkg_info2.debuginfo_package.downloaded_file,
@@ -1047,6 +1048,12 @@ def build_commandline_args_parser():
         default='',
         help="The path to the 'abipkgtool' command to use. "
              "By default use the one found in $PATH.")
+    parser.add_argument(
+        '--no-default-suppression',
+        required=False,
+        action='store_true',
+        dest='no_default_suppr',
+        help='Do not load default suppression specifications')
     return parser
 
 

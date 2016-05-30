@@ -1157,7 +1157,18 @@ test-diff-pkg/tarpkg-1-report-0.txt \
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-0.80-3.fc12.x86_64.rpm \
-test-fedabipkgdiff/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm
+test-fedabipkgdiff/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm \
+test-default-supprs/test0-type-suppr-0.suppr \
+test-default-supprs/test0-type-suppr-report-0.txt \
+test-default-supprs/test0-type-suppr-v0.o \
+test-default-supprs/test0-type-suppr-v1.o  \
+test-default-supprs/dirpkg-1-dir-report-0.txt \
+test-default-supprs/dirpkg-1-dir1/libobj-v0.so \
+test-default-supprs/dirpkg-1-dir1/obj-v0.cc \
+test-default-supprs/dirpkg-1-dir2/dir.abignore \
+test-default-supprs/dirpkg-1-dir2/libobj-v0.so \
+test-default-supprs/dirpkg-1-dir2/obj-v0.cc
+
 
 
 

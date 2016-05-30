@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -39,6 +39,7 @@ using std::ifstream;
 using std::string;
 using std::tr1::shared_ptr;
 
+const char* get_system_libdir();
 bool file_exists(const string&);
 bool is_regular_file(const string&);
 bool is_dir(const string&);
@@ -55,8 +56,21 @@ bool check_file(const string& path, ostream& out, const string& prog_name = "");
 bool string_ends_with(const string&, const string&);
 bool string_is_ascii(const string&);
 bool string_is_ascii_identifier(const string&);
+
 suppr::type_suppression_sptr
 gen_suppr_spec_from_headers(const string& hdrs_root_dir);
+
+string
+get_default_system_suppression_file_path();
+
+string
+get_default_user_suppression_file_path();
+
+void
+load_default_system_suppressions(suppr::suppressions_type&);
+
+void
+load_default_user_suppressions(suppr::suppressions_type&);
 
 class temp_file;
 

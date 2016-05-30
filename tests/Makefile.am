@@ -36,6 +36,7 @@ runtestlookupsyms		\
 runtestaltdwarf			\
 runtestcorediff			\
 runtestabidiffexit		\
+runtestdefaultsupprs.py		\
 $(FEDABIPKGDIFF_TEST) $(CXX11_TESTS)
 
 
@@ -126,6 +127,9 @@ runtestcanonicalizetypes.sh$(EXEEXT):
 
 runtestfedabipkgdiff_py_SOURCES =
 runtestfedabipkgdiff.py$(EXEEXT):
+
+runtestdefaultsupprs_py_SOURCES =
+runtestdefaultsupprs.py$(EXEEXT):
 
 AM_CPPFLAGS=-I${abs_top_srcdir}/include \
 -I${abs_top_builddir}/include -I${abs_top_srcdir}/tools -fPIC

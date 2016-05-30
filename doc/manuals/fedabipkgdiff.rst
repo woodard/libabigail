@@ -22,6 +22,32 @@ Invocation
 
    fedabipkgdiff [option] <NVR> ...
 
+Environment
+===========
+
+.. _fedabipkgdiff_default_supprs_label:
+
+fedabipkgdiff loads two default :ref:`suppression specifications files
+<suppr_spec_label>`, merges their content and use it to filter out ABI
+change reports that might be considered as false positives to users.
+
+* Default system-wide suppression specification file
+
+  It's located by the optional environment variable
+  LIBABIGAIL_DEFAULT_SYSTEM_SUPPRESSION_FILE.  If that environment
+  variable is not set, then fedabipkgdiff tries to load the
+  suppression file $libdir/libabigail/libabigail-default.abignore.  If
+  that file is not present, then no default system-wide suppression
+  specification file is loaded.
+
+* Default user suppression specification file.
+
+  It's located by the optional environment
+  LIBABIGAIL_DEFAULT_USER_SUPPRESSION_FILE.  If that environment
+  variable is not set, then fedabipkgdiff tries to load the
+  suppression file $HOME/.abignore.  If that file is not present, then
+  no default user suppression specification is loaded.
+
 
 .. _fedabipkgdiff_options_label:
 
@@ -83,6 +109,11 @@ Options
     Compares the ABI of shared libraries only.  If this option is not
     provided, the tool compares the ABI of all ELF binaries found in
     the packages.
+
+  * ``--no-default-suppression``
+
+    Do not load the :ref:`default suppression specification files
+    <fedabipkgdiff_default_supprs_label>`.
 
 .. _build:
 

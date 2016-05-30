@@ -33,4 +33,12 @@ $(CXX11_SOURCES)
 libabigail_la_LIBADD = $(DEPS_LIBS)
 libabigail_la_LDFLAGS = -pthread -Wl,--as-needed -no-undefined
 
-AM_CPPFLAGS=$(DEPS_CPPFLAGS) -Wall -I$(abs_top_srcdir)/include -I$(abs_top_builddir)/include -I$(abs_top_builddir)
+CUSTOM_MACROS = -DABIGAIL_ROOT_SYSTEM_LIBDIR=\"${libdir}\"
+
+AM_CPPFLAGS=\
+$(CUSTOM_MACROS)                  \
+$(DEPS_CPPFLAGS)                  \
+-Wall                             \
+-I$(abs_top_srcdir)/include       \
+-I$(abs_top_builddir)/include     \
+-I$(abs_top_builddir)
