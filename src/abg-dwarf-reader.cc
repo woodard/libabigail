@@ -1004,13 +1004,16 @@ compare_symbol_name(const string& symbol_name,
 ///
 /// @param elf_handle the elf handle to use.
 ///
-/// @param versym_section the SHT_GNU_versym section found.
+/// @param versym_section the SHT_GNU_versym section found.  If the
+/// section wasn't found, this is set to nil.
 ///
-/// @param verdef_section the SHT_GNU_verdef section found.
+/// @param verdef_section the SHT_GNU_verdef section found.  If the
+/// section wasn't found, this is set to nil.
 ///
-/// @param verneed_section the SHT_GNU_verneed section found.
+/// @param verneed_section the SHT_GNU_verneed section found.  If the
+/// section wasn't found, this is set to nil.
 ///
-/// @return true iff the sections where found.
+/// @return true iff at least one of the the sections where found.
 static bool
 get_symbol_versionning_sections(Elf*		elf_handle,
 				Elf_Scn*&	versym_section,
@@ -1030,14 +1033,15 @@ get_symbol_versionning_sections(Elf*		elf_handle,
 	verdef = section;
       else if (h->sh_type == SHT_GNU_verneed)
 	verneed = section;
+    }
 
-      if (versym && verdef && verneed)
-	{
-	  versym_section = versym;
-	  verdef_section = verdef;
-	  verneed_section = verneed;
-	  return true;
-	}
+  if (versym || verdef || verneed)
+    {
+      // At least one the versionning sections was found.  Return it.
+      versym_section = versym;
+      verdef_section = verdef;
+      verneed_section = verneed;
+      return true;
     }
 
   return false;
@@ -1206,9 +1210,14 @@ get_version_for_symbol(Elf*			elf_handle,
 				       verneed_section))
     return false;
 
-  Elf_Data* versym_data = elf_getdata(versym_section, NULL);
   GElf_Versym versym_mem;
-  GElf_Versym* versym = gelf_getversym(versym_data, symbol_index, &versym_mem);
+  Elf_Data* versym_data = (versym_section)
+    ? elf_getdata(versym_section, NULL)
+    : NULL;
+  GElf_Versym* versym = (versym_data)
+    ? gelf_getversym(versym_data, symbol_index, &versym_mem)
+    : NULL;
+
   if (versym == 0 || *versym <= 1)
     // I got these value from the code of readelf.c in elfutils.
     // Apparently, if the symbol version entry has these values, the
@@ -1224,14 +1233,16 @@ get_version_for_symbol(Elf*			elf_handle,
 	// specification.
 	return false;
 
-      if (get_version_definition_for_versym(elf_handle, versym,
-					    verdef_section, version))
+      if (verdef_section
+	  && get_version_definition_for_versym(elf_handle, versym,
+					       verdef_section, version))
 	return true;
     }
   else
     {
-      if (get_version_needed_for_versym(elf_handle, versym,
-					verneed_section, version))
+      if (verneed_section
+	  && get_version_needed_for_versym(elf_handle, versym,
+					   verneed_section, version))
 	return true;
     }
 
@@ -3372,9 +3383,14 @@ public:
 					 verneed_section))
       return false;
 
-    Elf_Data* versym_data = elf_getdata(versym_section, NULL);
     GElf_Versym versym_mem;
-    GElf_Versym* versym = gelf_getversym(versym_data, symbol_index, &versym_mem);
+    Elf_Data* versym_data = (versym_section)
+      ? elf_getdata(versym_section, NULL)
+      : NULL;
+    GElf_Versym* versym = (versym_data)
+      ? gelf_getversym(versym_data, symbol_index, &versym_mem)
+      : NULL;
+
     if (versym == 0 || *versym <= 1)
       // I got these value from the code of readelf.c in elfutils.
       // Apparently, if the symbol version entry has these values, the
@@ -3390,14 +3406,16 @@ public:
 	  // specification.
 	  return false;
 
-	if (get_version_definition_for_versym(elf_handle(), versym,
-					      verdef_section, version))
+	if (verdef_section
+	    && get_version_definition_for_versym(elf_handle(), versym,
+						 verdef_section, version))
 	  return true;
       }
     else
       {
-	if (get_version_needed_for_versym(elf_handle(), versym,
-					  verneed_section, version))
+	if (verneed_section
+	    && get_version_needed_for_versym(elf_handle(), versym,
+					     verneed_section, version))
 	  return true;
       }
 
