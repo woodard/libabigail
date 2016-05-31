@@ -17,3 +17,58 @@
 # [1]: https://sourceware.org/libabigail/manual/libabigail-overview.html
 # [2]: https://sourceware.org/libabigail/manual/libabigail-concepts.html#suppression-specifications.
 #
+
+#############################################
+# Below are glibc suppression specifications
+############################################
+
+# The idea is to suppress ABI change reports on functions and variable
+# which symbol version is "GLIBC_PRIVATE".  The SONAMEs of the
+# libraries these suppression specification are to be applied to are:
+#
+#      ld-linux-x86-64.so.2
+#      libanl.so.1
+#      libcidn.so.1
+#      libcrypt.so.1
+#      libc.so.6
+#      libdl.so.2
+#      libm.so.6
+#      libmvec.so.1
+#      libnsl.so.1
+#      libnss_compat.so.2
+#      libnss_db.so.2
+#      libnss_dns.so.2
+#      libnss_files.so.2
+#      libnss_hesiod.so.2
+#      libnss_nisplus.so.2
+#      libnss_nis.so.2
+#      libpthread.so.0
+#      libresolv.so.2
+#      librt.so.1
+#      libthread_db.so.1
+#      libutil.so.1
+#
+# The SONAMEs above can be derived from
+#  https://sourceware.org/glibc/wiki/ABIList.
+
+[suppress_function]
+  # Suppress ABI change reports about functions which symbol version
+  # is "GLIBC_PRIVATE"
+  symbol_version = GLIBC_PRIVATE
+
+  # And we want to restrict this suppression specification only to
+  # libraries with these SONAMEs:
+  soname_regexp = (libanl|libcidn|libcrypt|libc|libdl|libm|libmvec|libnsl|libnss_compat|libnss_db|libnss_dns|libnss_files|libnss_hesiod|libnss_nisplus|libnss_nis|libpthread|libresolv|librt|libthread_db|libutil|ld\[a-z0-9-\]*)\\.so\\.\[0-9\]*
+
+[suppress_variable]
+  # Suppress ABI change reports about functions which symbol version
+  # is "GLIBC_PRIVATE"
+  symbol_version = GLIBC_PRIVATE
+
+  # And we want to restrict this suppression specification only to
+  # libraries with these SONAMEs:
+  soname_regexp = (libanl|libcidn|libcrypt|libc|libdl|libm|libmvec|libnsl|libnss_compat|libnss_db|libnss_dns|libnss_files|libnss_hesiod|libnss_nisplus|libnss_nis|libpthread|libresolv|librt|libthread_db|libutil|ld\[a-z0-9-\]*)\\.so\\.\[0-9\]*
+
+#############################################
+# End of glibc suppression specifications
+############################################
