@@ -439,6 +439,16 @@ InOutSpec in_out_specs[] =
     "output/test-diff-suppr/test7-var-suppr-report-8.txt"
   },
   {
+    "data/test-diff-suppr/libtest7-var-suppr-v0.so",
+    "data/test-diff-suppr/libtest7-var-suppr-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/test7-var-suppr-9.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test7-var-suppr-report-9.txt",
+    "output/test-diff-suppr/test7-var-suppr-report-9.txt"
+  },
+  {
     "data/test-diff-suppr/libtest8-redundant-fn-v0.so",
     "data/test-diff-suppr/libtest8-redundant-fn-v1.so",
     "",

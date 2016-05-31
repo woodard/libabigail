@@ -871,17 +871,41 @@ public:
   /// Also note that this function handles escaping using the '\'
   /// (backslash) character.
   ///
+  /// @param escaped This is an output parameter.  It's set to true by
+  /// this function if it escaped the peeked character.  Otherwise,
+  /// it's set to false.
+  ///
   /// @return peeked character.
   char
-  peek()
+  peek(bool& escaped)
   {
     if (!buf_.empty())
       return buf_.back();
 
+    escaped = false;
     char c = in_.peek();
     if (handle_escape(c, /*peek=*/true))
-      put_back(c);
+      {
+	put_back(c);
+	escaped = true;
+      }
     return c;
+  }
+
+  /// @return the character that is going to be read by the next
+  /// invocation of read_next_char().
+  ///
+  /// Note that this function doesn't alter the input stream.
+  ///
+  /// Also note that this function handles escaping using the '\'
+  /// (backslash) character.
+  ///
+  /// @return peeked character.
+  char
+  peek()
+  {
+    bool escaped = false;
+    return peek(escaped);
   }
 
   /// Get the next character of the input stream.
@@ -947,7 +971,7 @@ public:
   /// This function must be called whenever the low level character
   /// reading function encountered a backslash character ('\').  In
   /// that case, this function reads the subsequent characters from
-  /// the input stream, sees if it needs to espace those and then
+  /// the input stream, sees if it needs to escape them and then
   /// handles the escaping if need be.  Otherwise, it does nothing.
   ///
   /// This is a subroutine of the read_context::get() and
@@ -1319,22 +1343,28 @@ public:
   /// positive when passed to
   /// read_context::char_is_property_name_char().
   ///
+  /// Note that all escaped characters are suitable to be in a string.
+  ///
   /// @return the string read.
   string
   read_string()
   {
-    int b = peek();
+    bool escaped = false;
+    int b = peek(escaped);
     if (!good())
       return "";
 
-    if (char_is_delimiter(b, /*include_white_space=*/false))
+    if (!escaped && char_is_delimiter(b, /*include_white_space=*/false))
       // Empty property value.  This is accepted.
       return "";
 
     string v;
-    for (b = peek(); good();b = peek())
+    for (b = peek(escaped); good(); b = peek(escaped))
       {
-	if (!char_is_property_value_char(b))
+	// If the current character is not suitable to be a in string,
+	// then we reached the end of the string.  Note that espaced
+	// characters are always suitable to be a string.
+	if (!escaped && !char_is_property_value_char(b))
 	  break;
 	char c = 0;
 	assert(read_next_char(c));

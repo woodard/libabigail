@@ -620,6 +620,7 @@ test-diff-suppr/test7-var-suppr-5.suppr \
 test-diff-suppr/test7-var-suppr-6.suppr \
 test-diff-suppr/test7-var-suppr-7.suppr \
 test-diff-suppr/test7-var-suppr-8.suppr \
+test-diff-suppr/test7-var-suppr-9.suppr \
 test-diff-suppr/test7-var-suppr-report-0.txt \
 test-diff-suppr/test7-var-suppr-report-1.txt \
 test-diff-suppr/test7-var-suppr-report-2.txt \
@@ -629,6 +630,7 @@ test-diff-suppr/test7-var-suppr-report-5.txt \
 test-diff-suppr/test7-var-suppr-report-6.txt \
 test-diff-suppr/test7-var-suppr-report-7.txt \
 test-diff-suppr/test7-var-suppr-report-8.txt \
+test-diff-suppr/test7-var-suppr-report-9.txt \
 test-diff-suppr/test7-var-suppr-version-script \
 test-diff-suppr/libtest8-redundant-fn-v0.so \
 test-diff-suppr/libtest8-redundant-fn-v1.so \
