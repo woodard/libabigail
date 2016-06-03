@@ -19,8 +19,8 @@ dnl
 dnl These macros are coming from the autoconf archive at
 dnl http://www.gnu.org/software/autoconf-archive
 
-dnl This one is for the AX_PYTHON_MODULE() macro.
-m4_include([autoconf-archive/ax_python_module.m4])
+dnl This one is for the AX_CHECK_PYTHON_MODULES() macro.
+m4_include([autoconf-archive/ax_check_python_modules.m4])
 
 dnl These two below are for the AX_PROG_PYTHON_VERSION() module.
 m4_include([autoconf-archive/ax_compare_version.m4])
@@ -289,25 +289,23 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
     AC_MSG_ERROR([could not find a python program of version at least $MINIMAL_PYTHON_VERSION])
   fi
 
-  AX_PYTHON_MODULE(argparse, $FATAL, python2)
-  AX_PYTHON_MODULE(glob, $FATAL, python2)
-  AX_PYTHON_MODULE(logging, $FATAL, python2)
-  AX_PYTHON_MODULE(os, $FATAL, python2)
-  AX_PYTHON_MODULE(re, $FATAL, python2)
-  AX_PYTHON_MODULE(subprocess, $FATAL, python2)
-  AX_PYTHON_MODULE(sys, $FATAL, python2)
-  AX_PYTHON_MODULE(itertools, $FATAL, python2)
-  AX_PYTHON_MODULE(urlparse, $FATAL, python2)
-  AX_PYTHON_MODULE(itertools, $FATAL, python2)
-  AX_PYTHON_MODULE(unittest, $FATAL, python2)
-  AX_PYTHON_MODULE(xdg, $FATAL, python2)
-  AX_PYTHON_MODULE(koji, $FATAL, python2)
-  AX_PYTHON_MODULE(mock, $FATAL, python2)
-  AX_PYTHON_MODULE(StringIO, $FATAL, python2)
-  ENABLE_FEDABIPKGDIFF=yes
+  REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF="\
+   argparse logging os re subprocess sys itertools urlparse \
+   unittest xdg koji mock StringIO"
 
-  if test x$ENABLE_FEDABIPKGDIFF != xyes; then
-    ENABLE_FEDABIPKGDIFF=no
+  if test -x$ENABLE_FEDABIPKGDIFF != xno; then
+    AX_CHECK_PYTHON_MODULES([$REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF],
+			    [python2],
+			    [FOUND_ALL_PYTHON_MODULES=yes],
+			    [FOUND_ALL_PYTHON_MODULES=no])
+
+    if test x$FOUND_ALL_PYTHON_MODULES = xno; then
+       AC_MSG_NOTICE([missing python modules: $MISSING_PYTHON_MODULES])
+       AC_MSG_NOTICE([disabling fedabipkgdiff as a result])
+       ENABLE_FEDABIPKGDIFF=no
+    else
+       ENABLE_FEDABIPKGDIFF=yes
+    fi
   fi
 fi
 
