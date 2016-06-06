@@ -9,9 +9,15 @@ packages.  It's a convenient way to do so without having to manually
 download packages from the `Fedora Build System`_.
 
 ``fedabipkgdiff`` knows how to talk with the `Fedora Build System`_ to
-find the right packages versions and their associated debug
-information, download them, compare their ABI locally, and report
-about the possible ABI changes.
+find the right packages versions, their associated debug information
+and development packages, download them, compare their ABI locally,
+and report about the possible ABI changes.
+
+Note that by default, this tool reports ABI changes about types that
+are defined in public header files found in the development packages
+associated with the packages being compared.  It also reports ABI
+changes about functions and global variables whose symbols are defined
+and exported in the ELF binaries found in the packages being compared.
 
 .. _fedabipkgdiff_invocation_label:
 
@@ -114,6 +120,16 @@ Options
 
     Do not load the :ref:`default suppression specification files
     <fedabipkgdiff_default_supprs_label>`.
+
+  * ``--no-devel-pkg``
+
+    Do not take associated development packages into account when
+    performing the ABI comparison.  This makes the tool report ABI
+    changes about all types that are reachable from functions and
+    global variables which symbols are defined and publicly exported
+    in the binaries being compared, even if those types are not
+    defined in public header files available from the packages being
+    compared.
 
 .. _build:
 

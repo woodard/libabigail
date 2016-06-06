@@ -89,6 +89,7 @@ BUILT_ABIPKGDIFF = '@top_builddir@/tools/abipkgdiff'
 
 packages = [
     {'id': 612, 'name': 'dbus-glib'},
+    {'id': 9041, 'name': 'nss-util'},
     ]
 
 builds = [
@@ -115,7 +116,16 @@ builds = [
     {'build_id': 613769, 'nvr': 'dbus-glib-0.104-2.fc23',
      'name': 'dbus-glib', 'release': '2.fc23', 'version': '0.104',
      'package_id': 612, 'package_name': 'dbus-glib', 'state': 1,
-     }
+     },
+
+    {'build_id': 160295, 'nvr': 'nss-util-3.12.6-1.fc14',
+     'name': 'nss-util', 'version': '3.12.6', 'release': '1.fc14',
+     'package_id': 9041, 'package_name': 'nss-util', 'state': 1,
+     },
+    {'build_id': 767978, 'nvr': 'nss-util-3.24.0-2.0.fc25',
+     'name': 'nss-util', 'version': '3.24.0', 'release': '2.0.fc25',
+     'package_id': 9041, 'package_name': 'nss-util', 'state': 1,
+     },
     ]
 
 rpms = [
@@ -167,6 +177,34 @@ rpms = [
     {'build_id': 715478,
      'name': 'dbus-glib-devel', 'release': '1.fc23', 'version': '0.106',
      'arch': 'x86_64', 'nvr': 'dbus-glib-devel-0.106-1.fc23',
+     },
+
+    # RPMs of build nss-util-3.12.6-1.fc14
+    {'build_id': 160295,
+     'name': 'nss-util', 'release': '1.fc14', 'version': '3.12.6',
+     'arch': 'x86_64', 'nvr': 'nss-util-3.12.6-1.fc14',
+     },
+    {'build_id': 160295,
+     'name': 'nss-util-devel', 'release': '1.fc14', 'version': '3.12.6',
+     'arch': 'x86_64', 'nvr': 'nss-util-devel-3.12.6-1.fc14',
+     },
+    {'build_id': 160295,
+     'name': 'nss-util-debuginfo', 'release': '1.fc14', 'version': '3.12.6',
+     'arch': 'x86_64', 'nvr': 'nss-util-debuginfo-3.12.6-1.fc14',
+     },
+
+    # RPMs of build nss-util-3.24.0-2.0.fc25
+    {'build_id': 767978,
+     'name': 'nss-util-debuginfo', 'release': '2.0.fc25', 'version': '3.24.0',
+     'arch': 'x86_64', 'nvr': 'nss-util-debuginfo-3.24.0-2.0.fc25',
+     },
+    {'build_id': 767978,
+     'name': 'nss-util', 'release': '2.0.fc25', 'version': '3.24.0',
+     'arch': 'x86_64', 'nvr': 'nss-util-3.24.0-2.0.fc25',
+     },
+    {'build_id': 767978,
+     'name': 'nss-util-devel', 'release': '2.0.fc25', 'version': '3.24.0',
+     'arch': 'x86_64', 'nvr': 'nss-util-devel-3.24.0-2.0.fc25',
      },
     ]
 
@@ -221,10 +259,43 @@ class AssertionHelper(object):
         expected_rpms = sorted(expected_rpms, key=sort_key_func)
         self.assertEquals(expected_rpms, compared_rpms)
 
+    def assert_functions_changes_summary(self, output,
+                                         expected_func_change_summary):
+        """Assert functions changes summary is the expected result
+
+        :param str output: output from abipkgdiff that is used to parse and
+        assert whether "Functions changes summary:" contains expected changes.
+        :param dict expected_func_change_summary: a mapping containing
+        expected functions changes summary information, where keys must
+        contain removed, changed, changed_filtered_out, functions_added.
+        """
+        assert isinstance(expected_func_change_summary, dict)
+
+        pattern = r'Functions changes summary: (\d+) Removed, (\d+) Changed \((\d+) filtered out\), (\d+) Added functions'  # noqa
+        match = re.search(pattern, output)
+        if match is None:
+            raise ValueError(
+                'ABI changes does not contain functions changes summary.')
+        else:
+            groups = match.groups()
+            removed = int(groups[0])
+            changed = int(groups[1])
+            changed_filtered_out = int(groups[2])
+            functions_added = int(groups[3])
+
+            self.assertEquals(expected_func_change_summary['removed'], removed)
+            self.assertEquals(expected_func_change_summary['changed'], changed)
+            self.assertEquals(
+                expected_func_change_summary['changed_filtered_out'],
+                changed_filtered_out)
+            self.assertEquals(expected_func_change_summary['functions_added'],
+                              functions_added)
+
     def assert_abi_comparison_result(self,
                                      output,
                                      expected_binaries=None,
-                                     expected_rpms=None):
+                                     expected_rpms=None,
+                                     expected_func_change_summary=None):
         """A convenient way to assert expected values
 
         Parameters will be passed to corresponding methods. Each assertio
@@ -236,6 +307,9 @@ class AssertionHelper(object):
             self.assert_compared_rpms(output, expected_rpms)
         if expected_binaries:
             self.assert_compared_binaries(output, expected_binaries)
+        if expected_func_change_summary:
+            self.assert_functions_changes_summary(output,
+                                                  expected_func_change_summary)
 
 
 class MockClientSession(object):
@@ -369,6 +443,8 @@ class MockGlobalConfig(object):
     dso_only = True
     abipkgdiff = BUILT_ABIPKGDIFF
     no_default_suppr = True
+    no_devel_pkg = None
+    check_all_subpackages = None
 
 
 # Test Cases go here
@@ -448,6 +524,13 @@ class RPMTest(unittest.TestCase):
             'version': '2.4.18'
             }
 
+        self.devel_rpm_info = {
+            'arch': 'x86_64',
+            'name': 'httpd-devel',
+            'release': '1.fc22',
+            'version': '2.4.18'
+            }
+
     def test_attribute_access(self):
         """Ensure wrapped RPM information is accessible via attribute"""
         rpm = fedabipkgdiff_mod.RPM(self.debuginfo_rpm_info)
@@ -476,6 +559,17 @@ class RPMTest(unittest.TestCase):
 
         rpm = fedabipkgdiff_mod.RPM(self.rpm_info)
         self.assertFalse(rpm.is_debuginfo)
+
+    def test_is_devel(self):
+        """Ensure return True if a package is a development package"""
+        rpm = fedabipkgdiff_mod.RPM(self.debuginfo_rpm_info)
+        self.assertFalse(rpm.is_devel)
+
+        rpm = fedabipkgdiff_mod.RPM(self.rpm_info)
+        self.assertFalse(rpm.is_devel)
+
+        rpm = fedabipkgdiff_mod.RPM(self.devel_rpm_info)
+        self.assertTrue(rpm.is_devel)
 
     def test_nvra(self):
         """
@@ -623,6 +717,12 @@ class RunAbipkgdiffTest(unittest.TestCase):
                                        'name': 'httpd-debuginfo',
                                        'release': '2.fc24',
                                        'version': '2.4.18',
+                                       }),
+                fedabipkgdiff_mod.RPM({'arch': 'i686',
+                                       'build_id': 720222,
+                                       'name': 'httpd-devel',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
                                        })
                 ],
             }
@@ -646,6 +746,12 @@ class RunAbipkgdiffTest(unittest.TestCase):
                                        'release': '2.fc24',
                                        'version': '2.4.18',
                                        }),
+                fedabipkgdiff_mod.RPM({'arch': 'i686',
+                                       'build_id': 720222,
+                                       'name': 'httpd-devel',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
                 ],
             'x86_64': [
                 fedabipkgdiff_mod.RPM({'arch': 'x86_64',
@@ -657,6 +763,12 @@ class RunAbipkgdiffTest(unittest.TestCase):
                 fedabipkgdiff_mod.RPM({'arch': 'x86_64',
                                        'build_id': 720222,
                                        'name': 'httpd-debuginfo',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
+                fedabipkgdiff_mod.RPM({'arch': 'x86_64',
+                                       'build_id': 720222,
+                                       'name': 'httpd-devel',
                                        'release': '2.fc24',
                                        'version': '2.4.18',
                                        }),
@@ -674,6 +786,12 @@ class RunAbipkgdiffTest(unittest.TestCase):
                                        'release': '2.fc24',
                                        'version': '2.4.18',
                                        }),
+                fedabipkgdiff_mod.RPM({'arch': 'armv7hl',
+                                       'build_id': 720222,
+                                       'name': 'httpd-devel',
+                                       'release': '2.fc24',
+                                       'version': '2.4.18',
+                                       }),
                 ],
             }
 
@@ -682,6 +800,7 @@ class RunAbipkgdiffTest(unittest.TestCase):
         self.pkg2_infos = self.pkg1_infos.copy()
 
     @patch('fedabipkgdiff.abipkgdiff')
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
     def test_all_success(self, mock_abipkgdiff):
         """
         Ensure run_abipkgdiff returns 0 when it succeeds to run against one or
@@ -698,6 +817,7 @@ class RunAbipkgdiffTest(unittest.TestCase):
         self.assertEquals(0, result)
 
     @patch('fedabipkgdiff.abipkgdiff')
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
     def test_all_failure(self, mock_abipkgdiff):
         """
         Ensure run_abipkgdiff returns the return code from underlying
@@ -716,6 +836,7 @@ class RunAbipkgdiffTest(unittest.TestCase):
 
     @patch('fedabipkgdiff.abipkgdiff',
            new=lambda param1, param2: counter.next())
+    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
     def test_partial_failure(self):
         """
         Ensure run_abipkgdiff returns non-zero when partial calls to
@@ -834,89 +955,6 @@ class BrewListRPMsTest(unittest.TestCase):
             'nvr': 'dbus-glib-debuginfo-0.100.2-2.fc20',
             }]
         self.assertEquals(expected_rpms, rpms)
-
-
-class RunAbipkgdiffWithDSOOnlyOptionTest(unittest.TestCase):
-    """Test for running abipkgdiff method with --dso-only option or not
-
-    To test whether option --dso-only affects abipkgdiff, and abipkgdiff runs
-    actually against two rpm packages.
-    """
-
-    def setUp(self):
-        self.origin_env_path = os.environ['PATH']
-
-        pattern = r"=+\s?changes of '(.+)'\s*=+"
-        self.regex = re.compile(pattern, re.MULTILINE)
-
-        # The just built abipkgdiff from current codebase must be used instead
-        # of another one (that could be installed in other way) that can be
-        # found from default search path.
-        os.environ['PATH'] = \
-            '@top_builddir@/tools/:{0}'.format(os.environ['PATH'])
-
-        self.pkg_info1 = fedabipkgdiff_mod.PkgInfo(
-            fedabipkgdiff_mod.RPM({
-                'name': 'dbus-glib',
-                'version': '0.104',
-                'release': '3.fc23',
-                'arch': 'x86_64',
-                }),
-            fedabipkgdiff_mod.RPM({
-                'name': 'dbus-glib-debuginfo',
-                'version': '0.104',
-                'release': '3.fc23',
-                'arch': 'x86_64',
-                }))
-        self.pkg_info2 = fedabipkgdiff_mod.PkgInfo(
-            fedabipkgdiff_mod.RPM({
-                'name': 'dbus-glib',
-                'version': '0.80',
-                'release': '3.fc12',
-                'arch': 'x86_64',
-                }),
-            fedabipkgdiff_mod.RPM({
-                'name': 'dbus-glib-debuginfo',
-                'version': '0.80',
-                'release': '3.fc12',
-                'arch': 'x86_64',
-                }))
-
-    def tearDown(self):
-        os.environ['PATH'] = self.origin_env_path
-
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
-    @patch('fedabipkgdiff.pathinfo',
-           new=koji.PathInfo(topdir=MockGlobalConfig.koji_topdir))
-    @patch('fedabipkgdiff.get_download_dir', return_value=TEST_DATA_DIR)
-    def test_abipkgdiff_with_dso_only(self,
-                                      mock_get_download_dir, mock_stdout):
-        """Ensure only shared library is compared if --dso-only is specified"""
-
-        fedabipkgdiff_mod.abipkgdiff(self.pkg_info1, self.pkg_info2)
-        output = mock_stdout.getvalue()
-
-        binaries = self.regex.findall(output)
-        self.assertEquals(['libdbus-glib-1.so.2.3.2'], binaries)
-
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
-    @patch('fedabipkgdiff.pathinfo',
-           new=koji.PathInfo(topdir=MockGlobalConfig.koji_topdir))
-    @patch('fedabipkgdiff.get_download_dir', return_value=TEST_DATA_DIR)
-    def test_abipkgdiff_without_dso_only(self,
-                                         mock_get_download_dir, mock_stdout):
-        """Ensure all binaries are compared if --dso-only is not specified"""
-
-        fedabipkgdiff_mod.global_config.dso_only = False
-
-        fedabipkgdiff_mod.abipkgdiff(self.pkg_info1, self.pkg_info2)
-        output = mock_stdout.getvalue()
-
-        binaries = self.regex.findall(output)
-        self.assertEquals(['dbus-binding-tool', 'libdbus-glib-1.so.2.3.2'],
-                          binaries)
 
 
 # Integration tests
@@ -1112,6 +1150,70 @@ class CompareABIFromCommandLineTest(AssertionHelper, unittest.TestCase):
         self.assert_abi_comparison_result(output,
                                           expected_binaries=expected_binaries,
                                           expected_rpms=expected_rpms)
+
+    def test_compare_with_no_devel_pkg(self):
+        """Test compare ABI with and without --no-devel-pkg
+
+        Use case to test::
+
+            fedabipkgdiff --no-devel-pkg \
+                nss-util-3.12.6-1.fc14 nss-util-3.24.0-2.0.fc25
+
+        and
+
+            fedabipkgdiff nss-util-3.12.6-1.fc14 nss-util-3.24.0-2.0.fc25
+        """
+
+        compared_rpms = [('nss-util-3.12.6-1.fc14.x86_64.rpm',
+                          'nss-util-3.24.0-2.0.fc25.x86_64.rpm')]
+        compared_binaries = ['libnssutil3.so']
+
+        # Without --no-devel-pkg, abipkgdiff is run with development packages
+        # by default. In this case, expected changed will be 5 and expected
+        # changed_filtered_out will be 17. Otherwise, with --no-devel-pkg,
+        # changed will be 6 and changed_filtered_out will be 16.
+        abipkgdiff_cmd_results = (
+            (['fedabipkgdiff', '--topdir', TEST_TOPDIR,
+              '--abipkgdiff', BUILT_ABIPKGDIFF,
+              'nss-util-3.12.6-1.fc14.x86_64',
+              'nss-util-3.24.0-2.0.fc25.x86_64',
+              ],
+             {'compared_rpms': compared_rpms,
+              'compared_binaries': compared_binaries,
+              'result': {
+                  'removed': 0,
+                  'changed': 5,
+                  'changed_filtered_out': 17,
+                  'functions_added': 37,
+                  }
+              },
+             ),
+            (['fedabipkgdiff', '--topdir', TEST_TOPDIR,
+              '--abipkgdiff', BUILT_ABIPKGDIFF,
+              '--no-devel-pkg',
+              'nss-util-3.12.6-1.fc14.x86_64',
+              'nss-util-3.24.0-2.0.fc25.x86_64',
+              ],
+             {'compared_rpms': compared_rpms,
+              'compared_binaries': compared_binaries,
+              'result': {
+                  'removed': 0,
+                  'changed': 6,
+                  'changed_filtered_out': 16,
+                  'functions_added': 37,
+                  }
+              })
+            )
+
+        for abipkgdiff_cmd, compare_result in abipkgdiff_cmd_results:
+            with patch('sys.argv', new=abipkgdiff_cmd):
+                output = self.run_abipkgdiff()
+
+            self.assert_abi_comparison_result(
+                output,
+                expected_rpms=compare_result['compared_rpms'],
+                expected_binaries=compare_result['compared_binaries'],
+                expected_func_change_summary=compare_result['result'])
 
 
 if __name__ == '__main__':

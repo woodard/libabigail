@@ -1172,6 +1172,12 @@ test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/i686/dbus-glib-devel-0.106-1.
 test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/x86_64/dbus-glib-0.106-1.fc23.x86_64.rpm \
 test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/x86_64/dbus-glib-debuginfo-0.106-1.fc23.x86_64.rpm \
 test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/x86_64/dbus-glib-devel-0.106-1.fc23.x86_64.rpm \
+test-fedabipkgdiff/packages/nss-util/3.12.6/1.fc14/x86_64/nss-util-3.12.6-1.fc14.x86_64.rpm \
+test-fedabipkgdiff/packages/nss-util/3.12.6/1.fc14/x86_64/nss-util-devel-3.12.6-1.fc14.x86_64.rpm \
+test-fedabipkgdiff/packages/nss-util/3.12.6/1.fc14/x86_64/nss-util-debuginfo-3.12.6-1.fc14.x86_64.rpm \
+test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-debuginfo-3.24.0-2.0.fc25.x86_64.rpm \
+test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-devel-3.24.0-2.0.fc25.x86_64.rpm \
+test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-3.24.0-2.0.fc25.x86_64.rpm \
 test-default-supprs/test0-type-suppr-0.suppr \
 test-default-supprs/test0-type-suppr-report-0.txt \
 test-default-supprs/test0-type-suppr-v0.o \

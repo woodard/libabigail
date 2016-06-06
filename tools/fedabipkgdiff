@@ -83,17 +83,17 @@ ABIDIFF_ABI_CHANGE = 1 << 2
 #       /path/to/package1.rpm \
 #       /path/to/package2.rpm
 #
-# PkgInfo is a two-elements tuple in format
+# PkgInfo is a three-elements tuple in format
 #
-#   (/path/to/package1.rpm, /path/to/package1-debuginfo.rpm)
+#   (/path/to/package1.rpm, /path/to/package1-debuginfo.rpm /path/to/package1-devel.rpm)
 #
-# So, before calling abipkgdiff, fedabipkgdiff must prepare and pass following
-# two package information
+# So, before calling abipkgdiff, fedabipkgdiff must prepare and pass
+# the following information
 #
-#   (/path/to/package1.rpm, /path/to/package1-debuginfo.rpm)
-#   (/path/to/package2.rpm, /path/to/package2-debuginfo.rpm)
+#   (/path/to/package1.rpm, /path/to/package1-debuginfo.rpm /path/to/package1-devel.rpm)
+#   (/path/to/package2.rpm, /path/to/package2-debuginfo.rpm /path/to/package1-devel.rpm)
 #
-PkgInfo = namedtuple('PkgInfo', 'package debuginfo_package')
+PkgInfo = namedtuple('PkgInfo', 'package debuginfo_package devel_package')
 
 
 global_config = None
@@ -232,6 +232,11 @@ class RPM(object):
         return koji.is_debuginfo(self.rpm_info['name'])
 
     @property
+    def is_devel(self):
+        """Check if the name of current RPM denotes a development package"""
+        return self.rpm_info['name'].endswith('-devel')
+
+    @property
     def download_url(self):
         """Get the URL from where to download this RPM"""
         build = session.getBuild(self.build_id)
@@ -281,20 +286,33 @@ class LocalRPM(RPM):
     def download_url(self):
         raise NotImplementedError('LocalRPM has no URL to download')
 
-    @log_call
-    def find_debuginfo(self):
-        """Find debuginfo RPM package from a directory
+    def _find_rpm(self, rpm_filename):
+        """Search an RPM from the directory of the current instance of LocalRPM
 
-        :param str rpm_file: the rpm file name
-        :return: the absolute file name of the found debuginfo rpm
-        :rtype: str or None
+        :param str rpm_filename: filename of rpm to find, for example
+        foo-devel-0.1-1.fc24.
+        :return: an instance of LocalRPM representing the found rpm, or None if
+        no RPM was found.
         """
         search_dir = os.path.dirname(os.path.abspath(self.local_filename))
+        filename = os.path.join(search_dir, rpm_filename)
+        return LocalRPM(filename) if os.path.exists(filename) else None
+
+    @log_call
+    def find_debuginfo(self):
+        """Find debuginfo RPM package from a directory"""
         filename = \
             '%(name)s-debuginfo-%(version)s-%(release)s.%(arch)s.rpm' % \
             self.rpm_info
-        filename = os.path.join(search_dir, filename)
-        return LocalRPM(filename) if os.path.exists(filename) else None
+        return self._find_rpm(filename)
+
+    @log_call
+    def find_devel(self):
+        """Find development package from a directory"""
+        filename = \
+            '%(name)s-devel-%(version)s-%(release)s.%(arch)s.rpm' % \
+            self.rpm_info
+        return self._find_rpm(filename)
 
 
 class Brew(object):
@@ -550,10 +568,10 @@ class Brew(object):
 
         RPMs could be filtered be specific criterias by the parameters.
 
-        By default, fedabipkgdiff requires RPM package and associated debuginfo
-        package, both of these two packages are selected, and noarch and src
-        are excluded.
-
+        By default, fedabipkgdiff requires the RPM package, as well as
+        its associated debuginfo and devel packages.  These three
+        packages are selected, and noarch and src are excluded.
+ 
         :param int build_id: from which build to select rpms.
         :param str package_name: which rpm to select that matches this name.
         :param arches: which arches to select. If arches omits, rpms with all
@@ -570,7 +588,8 @@ class Brew(object):
             return lambda rpm: \
                 rpm['arch'] not in excluded_arches and \
                 (rpm['name'] == package_name or
-                 rpm['name'].endswith('-debuginfo'))
+                 rpm['name'].endswith('-debuginfo') or
+                 rpm['name'].endswith('-devel'))
 
         if select_subpackages:
             selector = lambda rpm: rpm['arch'] not in excluded_arches
@@ -676,6 +695,7 @@ def build_path_to_abipkgdiff():
         return global_config.abipkgdiff
     return 'abipkgdiff'
 
+
 @log_call
 def abipkgdiff(pkg_info1, pkg_info2):
     """Run abipkgdiff against found two RPM packages
@@ -697,15 +717,24 @@ def abipkgdiff(pkg_info1, pkg_info2):
     :return: return code of underlying abipkgdiff execution.
     :rtype: int
     """
-    abipkgdiff_tool = build_path_to_abipkgdiff();
-    cmd = [abipkgdiff_tool,
-           '--no-default-suppression' if global_config.no_default_suppr else '',
-           '--dso-only' if global_config.dso_only else '',
-           '--d1', pkg_info1.debuginfo_package.downloaded_file,
-           '--d2', pkg_info2.debuginfo_package.downloaded_file,
-           pkg_info1.package.downloaded_file,
-           pkg_info2.package.downloaded_file,
-           ]
+    abipkgdiff_tool = build_path_to_abipkgdiff()
+    devel_pkg1 = '' if global_config.no_devel_pkg else \
+        '--devel-pkg1 {0}'.format(pkg_info1.devel_package.downloaded_file)
+    devel_pkg2 = '' if global_config.no_devel_pkg else \
+        '--devel-pkg2 {0}'.format(pkg_info2.devel_package.downloaded_file)
+
+    cmd = [
+        abipkgdiff_tool,
+        '--no-default-suppression' if global_config.no_default_suppr else '',
+        '--dso-only' if global_config.dso_only else '',
+        '--d1', pkg_info1.debuginfo_package.downloaded_file,
+        '--d2', pkg_info2.debuginfo_package.downloaded_file,
+        devel_pkg1,
+        devel_pkg2,
+        pkg_info1.package.downloaded_file,
+        pkg_info2.package.downloaded_file,
+    ]
+    cmd = filter(lambda s: s != '', cmd)
 
     if global_config.dry_run:
         print 'DRY-RUN:', ' '.join(cmd)
@@ -745,8 +774,13 @@ def magic_construct(rpms):
 
     to list of
 
-    (foo-1.0-1.fc22.i686, foo-debuginfo-1.0-1.fc22.i686)
-    (foo-devel-1.0-1.fc22.i686, foo-debuginfo-1.0-1.fc22.i686)
+    (foo-1.0-1.fc22.i686, foo-debuginfo-1.0-1.fc22.i686,
+     foo-devel-1.0-1.fc22.i686)
+
+    and if to check all subpackages
+
+    (foo-devel-1.0-1.fc22.i686, foo-debuginfo-1.0-1.fc22.i686,
+     foo-devel-1.0-1.fc22.i686)
 
     :param rpms: a sequence of RPM packages.
     :type rpms: list or tuple
@@ -755,13 +789,18 @@ def magic_construct(rpms):
     :rtype: list
     """
     debuginfo = None
+    devel_package = None
     packages = []
     for rpm in rpms:
         if rpm.is_debuginfo:
             debuginfo = rpm
+        elif rpm.is_devel:
+            devel_package = rpm
+            if global_config.check_all_subpackages:
+                packages.append(rpm)
         else:
             packages.append(rpm)
-    return [PkgInfo(package, debuginfo) for package in packages]
+    return [PkgInfo(package, debuginfo, devel_package) for package in packages]
 
 
 @log_call
@@ -790,10 +829,13 @@ def run_abipkgdiff(pkg1_infos, pkg2_infos):
                        if rpm.name == pkg_info.package.name][0]
             debuginfo = [rpm for rpm in rpms
                          if rpm.name == pkg_info.debuginfo_package.name][0]
+            devel_package = [rpm for rpm in rpms
+                             if rpm.name == pkg_info.devel_package.name][0]
 
             ret = abipkgdiff(pkg_info,
                              PkgInfo(package=package,
-                                     debuginfo_package=debuginfo))
+                                     debuginfo_package=debuginfo,
+                                     devel_package=devel_package))
             if ret > 0:
                 return_code = ret
 
@@ -825,9 +867,13 @@ def diff_local_rpm_with_latest_rpm_from_koji():
 
     local_rpm = LocalRPM(local_rpm_file)
     local_debuginfo = local_rpm.find_debuginfo()
+    local_devel = local_rpm.find_devel()
     if local_debuginfo is None:
         raise ValueError(
             'debuginfo rpm {0} does not exist.'.format(local_debuginfo))
+    if local_devel is None and global_config.no_devel_pkg is not None:
+        raise ValueError(
+            'development package {0} does not exist.'.format(local_devel))
 
     rpms = session.get_latest_built_rpms(local_rpm.name,
                                          from_distro,
@@ -836,9 +882,13 @@ def diff_local_rpm_with_latest_rpm_from_koji():
     pkg_infos = make_rpms_usable_for_abipkgdiff(rpms)
 
     rpms = pkg_infos.values()[0]
-    package, debuginfo = sorted(rpms, key=lambda rpm: rpm.name)
-    return abipkgdiff(PkgInfo(package, debuginfo),
-                      PkgInfo(local_rpm, local_debuginfo))
+    package, debuginfo, devel_package = sorted(rpms, key=lambda rpm: rpm.name)
+    return abipkgdiff(PkgInfo(package=package,
+                              debuginfo_package=debuginfo,
+                              devel_package=devel_package),
+                      PkgInfo(package=local_rpm,
+                              debuginfo_package=local_debuginfo,
+                              devel_package=local_devel))
 
 
 @log_call
@@ -1011,7 +1061,7 @@ def build_commandline_args_parser():
         required=False,
         action='store_true',
         dest='dso_only',
-        help='Compare the ABI of shared libraries only.  If this option is not '
+        help='Compare the ABI of shared libraries only. If this option is not '
              'provided, the tool compares the ABI of all ELF binaries.')
     parser.add_argument(
         '--debug',
@@ -1054,6 +1104,12 @@ def build_commandline_args_parser():
         action='store_true',
         dest='no_default_suppr',
         help='Do not load default suppression specifications')
+    parser.add_argument(
+        '--no-devel-pkg',
+        required=False,
+        action='store_true',
+        dest='no_devel_pkg',
+        help='Do not compare ABI with development package')
     return parser
 
 
