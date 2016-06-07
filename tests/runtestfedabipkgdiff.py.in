@@ -88,6 +88,7 @@ BUILT_ABIPKGDIFF = '@top_builddir@/tools/abipkgdiff'
 # database, and methods of MockClientSession knows well how to read them.
 
 packages = [
+    {'id': 286, 'name': 'gnutls'},
     {'id': 612, 'name': 'dbus-glib'},
     {'id': 9041, 'name': 'nss-util'},
     ]
@@ -125,6 +126,20 @@ builds = [
     {'build_id': 767978, 'nvr': 'nss-util-3.24.0-2.0.fc25',
      'name': 'nss-util', 'version': '3.24.0', 'release': '2.0.fc25',
      'package_id': 9041, 'package_name': 'nss-util', 'state': 1,
+     },
+
+    # builds of package gnutls
+    {'build_id': 767306, 'nvr': 'gnutls-3.4.12-1.fc23',
+     'name': 'gnutls', 'release': '1.fc23', 'version': '3.4.12',
+     'package_id': 286, 'package_name': 'gnutls', 'state': 1,
+     },
+    {'build_id': 770965, 'nvr': 'gnutls-3.4.13-1.fc23',
+     'name': 'gnutls', 'release': '1.fc23', 'version': '3.4.13',
+     'package_id': 286, 'package_name': 'gnutls', 'state': 1,
+     },
+    {'build_id': 649701, 'nvr': 'gnutls-3.4.2-1.fc23',
+     'name': 'gnutls', 'release': '1.fc23', 'version': '3.4.2',
+     'package_id': 286, 'package_name': 'gnutls', 'state': 1,
      },
     ]
 
@@ -859,8 +874,8 @@ class GetPackageLatestBuildTest(unittest.TestCase):
     def test_get_latest_one(self):
         """Ensure to get latest build of a package"""
         session = fedabipkgdiff_mod.get_session()
-        build = session.get_package_latest_build('dbus-glib', 'fc23')
-        self.assertEquals('dbus-glib-0.106-1.fc23', build['nvr'])
+        build = session.get_package_latest_build('gnutls', 'fc23')
+        self.assertEquals('gnutls-3.4.13-1.fc23', build['nvr'])
 
     @patch('fedabipkgdiff.global_config', new=MockGlobalConfig)
     @patch('koji.ClientSession', new=MockClientSession)
@@ -872,7 +887,7 @@ class GetPackageLatestBuildTest(unittest.TestCase):
         session = fedabipkgdiff_mod.get_session()
         self.assertRaises(fedabipkgdiff_mod.NoCompleteBuilds,
                           session.get_package_latest_build,
-                          'dbus-glib', 'xxxx')
+                          'gnutls', 'xxxx')
 
 
 class DownloadRPMTest(unittest.TestCase):

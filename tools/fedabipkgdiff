@@ -34,6 +34,7 @@ from itertools import groupby
 
 import xdg.BaseDirectory
 
+import rpm
 import koji
 
 # @file
@@ -150,6 +151,26 @@ def is_distro_valid(distro):
     "rtype: bool
     """
     return re.match(r'^(fc|el)\d{1,2}$', distro) is not None
+
+
+def cmp_nvr(left, right):
+    """Compare function for sorting a sequence of NVRs
+
+    This is the compare function used in sorted function to sort builds so that
+    fedabipkgdiff is able to select the latest build. Return value follows the
+    rules described in the part of paramter cmp of sorted documentation.
+
+    :param str left: left nvr to compare.
+    :param str right: right nvr to compare.
+    :return: -1, 0, or 1 that represents left is considered smaller than,
+    equal to, or larger than the right individually.
+    :rtype: int
+    """
+    left_nvr = koji.parse_NVR(left)
+    right_nvr = koji.parse_NVR(right)
+    return rpm.labelCompare(
+        (left_nvr['epoch'], left_nvr['version'], left_nvr['release']),
+        (right_nvr['epoch'], right_nvr['version'], right_nvr['release']))
 
 
 def log_call(func):
@@ -451,8 +472,10 @@ class Brew(object):
         if order_by is not None:
             # FIXME: is it possible to sort builds by using opts parameter of
             # listBuilds
+            cmp_func = cmp_nvr if order_by == 'nvr' else None
             builds = sorted(builds,
                             key=lambda item: item[order_by],
+                            cmp=cmp_func,
                             reverse=reverse)
         if topone:
             builds = builds[0:1]
