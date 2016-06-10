@@ -932,8 +932,7 @@ equals(const decl_base&, const decl_base&, change_kind*);
 
 class type_or_decl_base;
 
-/// Convenience typedef for a shared pointer to @ref
-/// type_or_decl_base.
+/// A convenience typedef for a shared_ptr to @ref type_or_decl_base.
 typedef shared_ptr<type_or_decl_base> type_or_decl_base_sptr;
 
 /// The base class of both types and declarations.

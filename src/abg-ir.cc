@@ -2145,7 +2145,7 @@ struct type_or_decl_base::priv
       env_(e),
       translation_unit_()
   {}
-}; // end struct type_or_decl_base
+}; // end struct type_or_decl_base::priv
 
 /// Default constructor of @ref type_or_decl_base.
 type_or_decl_base::type_or_decl_base()
