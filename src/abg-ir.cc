@@ -11468,15 +11468,13 @@ string
 function_decl::parameter::get_pretty_representation(bool internal) const
 {
   const environment* env = get_environment();
+  assert(env);
 
   string type_repr;
   type_base_sptr t = get_type();
   if (!t)
     type_repr = "void";
-  else if (env
-	   && (t ==
-	       dynamic_pointer_cast<type_base>
-	       (env->get_variadic_parameter_type_decl())))
+  else if (is_type_decl((env->get_variadic_parameter_type_decl())))
     type_repr = "...";
   else
     type_repr = ir::get_pretty_representation(t, internal);
