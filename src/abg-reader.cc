@@ -644,6 +644,9 @@ public:
 
     if (add_to_current_scope)
       add_decl_to_scope(decl, get_cur_scope());
+    if (!decl->get_translation_unit())
+      decl->set_translation_unit(get_translation_unit());
+    assert(decl->get_translation_unit());
     push_decl(decl);
   }
 
@@ -665,6 +668,9 @@ public:
     assert(decl);
 
     push_decl_to_current_scope(decl, add_to_current_scope);
+    if (!t->get_translation_unit())
+      t->set_translation_unit(get_translation_unit());
+    assert(t->get_translation_unit());
     key_type_decl(t, id);
     return true;
   }

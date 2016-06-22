@@ -8981,6 +8981,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (p)
 	  {
 	    result = add_decl_to_scope(p, ctxt.cur_tu()->get_global_scope());
+	    assert(result->get_translation_unit());
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
 				    die_is_from_alt_di,
 				    ctxt);

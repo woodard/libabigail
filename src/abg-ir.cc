@@ -3811,6 +3811,9 @@ strip_typedef(const type_base_sptr type)
   if (!t->get_environment())
     set_environment_for_artifact(t, env);
 
+  if (!t->get_translation_unit())
+    t->set_translation_unit(type->get_translation_unit());
+
   if (!(type->get_canonical_type() && canonicalize(t)))
     keep_type_alive(t);
 
@@ -6784,6 +6787,8 @@ type_base::get_canonical_type_for(type_base_sptr t)
   if (t->get_canonical_type())
     return t->get_canonical_type();
 
+  translation_unit::language lang = t->get_translation_unit()->get_language();
+
   // We want the pretty representation of the type, but for an
   // internal use, not for a user-facing purpose.
   //
@@ -6849,7 +6854,13 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	  // loading of the ABI corpus, looking from the end of the
 	  // vector maximizes the changes of triggering the
 	  // optimization, even when we are reading the second corpus.
+	  translation_unit::language other_lang =
+	    (*it)->get_translation_unit()->get_language();
+
 	  if (t_corpus
+	      && ((is_c_language(lang) || is_cplus_plus_language(lang))
+		  && (is_c_language(other_lang)
+		      || is_cplus_plus_language(other_lang)))
 	      // We are not doing the optimizatin for anymous types
 	      // because, well, two anonymous type have the same name
 	      // (okay, they have no name), but that doesn't mean they
