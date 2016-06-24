@@ -637,7 +637,7 @@ public:
   ///
   /// @param decl the newly created declaration.
   void
-  push_decl_to_current_scope(shared_ptr<decl_base> decl,
+  push_decl_to_current_scope(const decl_base_sptr& decl,
 			     bool add_to_current_scope)
   {
     assert(decl);
