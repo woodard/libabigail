@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/python
 
 '''Runs tests for the default suppression specifications of libabigail.
 
