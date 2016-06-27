@@ -1,3 +1,1276 @@
+2016-06-27  Dodji Seketeli <dodji@redhat.com>
+
+	Update ChangeLog for 1.0.rc5
+	* ChangeLog: Update by doing "make update-changelog" in the build
+	directory.
+
+2016-06-27  Dodji Seketeli <dodji@redhat.com>
+
+	Update NEWS file in preparation for 1.0.rc5
+	* NEWS: update with the edited content of the command:
+	git shortlog libabigail-1.0.rc4..HEAD
+
+2016-06-27  Dodji Seketeli <dodji@redhat.com>
+
+	Fix python interpreter path for el6
+	* tests/runtestdefaultsupprs.py.in: Use the python interpreter at
+	/usr/bin/python, not the one at /bin/python.
+
+2016-06-24  Dodji Seketeli <dodji@redhat.com>
+
+	Misc cleanup in abg-reader.cc
+	* src/abg-reader.cc (read_context::push_decl_to_current_scope):
+	Pass the decl smart pointer by value.
+
+2016-06-22  Dodji Seketeli <dodji@redhat.com>
+
+	Use ODR-based optimization on C/C++ translation unit only
+	* src/abg-ir.cc (strip_typedef): Set the translation unit of the
+	new ABI artifact.
+	(type_base::get_canonical_type_for): Perform the ODR-based
+	optimization only for ABI artifact in C and C++ language
+	translation units.
+	* src/abg-dwarf-reader.cc (build_ir_node_from_die): Assert that
+	the new ABI artifact has its translation unit set.
+	* src/abg-reader.cc (read_context::{push_decl_to_current_scope,
+	push_and_key_type_decl}): Set the translation unit of the current
+	decl, irrespective of if it was added to the current scope or not.
+	Assert that the decl that was newly pushed to the current scope is
+	added to the current translation unit.
+
+2016-06-10  Dodji Seketeli <dodji@redhat.com>
+
+	Misc white space and comment cleanups
+	* include/abg-ir.h (typedef type_or_decl_base): Cleanup comment.
+	* src/abg-ir.cc (struct type_or_decl_base::priv): Fix comment.
+
+2016-06-10  Dodji Seketeli <dodji@redhat.com>
+
+	Cleanup function_decl::parameter::get_pretty_representation
+	* src/abg-ir.cc
+	(function_decl::parameter::get_pretty_representation): Assert that
+	the environment is always non-nil.  Then no needs to check for it
+	being non-nil anymore.  Use is_type_decl instead of
+	dynamic_pointer_cast.
+
+2016-06-07  Chenxiong Qi <cqi@redhat.com>
+
+	Fix package NVR comparison in fedabipkgdiff
+	* configure.ac: Add new dependency.
+	* tests/runtestfedabipkgdiff.py.in (builds): Add new builds for
+	running tests to test selecting latest build from a package.
+	(packages): Add new package gnutls.
+	(GetPackageLatestBuildTest.{test_get_latest_one,
+	test_cannot_find_a_latest_build_with_invalid_distro}): Use new
+	builds of package gnutls to run tests.
+	* tools/fedabipkgdiff (cmp_nvr): New function used to compare nvrs
+	by Python built-in function sorted.
+	(Brew.listBuilds): Use the new cmp_nvr function.
+
+2016-06-06  Chenxiong Qi <cqi@redhat.com>
+
+	Bug 20135 - Make fedabipkgdiff compare ABIs using devel packages
+	* doc/manuals/fedabipkgdiff.rst: Add documentation for the new
+	--no-devel-pkg command line option, as well as for the new default
+	behaviour of taking devel packages into account during ABI
+	comparison.
+	* tools/fedabipkgdiff (PkgInfo): Add new attribute
+	devel_package.
+	(RPM.is_devel): New property to determine if rpm is a
+	development package.
+	(LocalRPM._find_rpm): New method to find a specific rpm.
+	(LocalRPM.find_debuginfo): Use new method _find_rpm to find
+	debuginfo package.
+	(LocalRPM.find_devel): New method to find an associated
+	development package.
+	(Brew.select_rpms_from_a_build): RPMs selector method is
+	changed to select development package also.
+	(abipkgdiff): Construct and run abipkgdiff with and without
+	--devel-pkg[12] options.
+	(magic_construct): Construct PkgInfo with development package.
+	(run_abipkgdiff): Run abipkgdiff against rpms with development
+	packages.
+	(diff_local_rpm_with_latest_rpm_from_koji): Find development
+	package, and call method abipkgdiff with development package.
+	(build_commandline_args_parser): add new option --no-devel-pkg.
+	* tests/runtestfedabipkgdiff.py.in (packages): Add new package
+	nss-util.
+	(builds): Add new builds of nss-utils, nss-util-3.12.6-1.fc14
+	and nss-util-3.24.0-2.0.fc25.
+	(rpms): Add new associated rpms of the two new builds.
+	(AssertionHelper.assert_functions_changes_summary): New method
+	to match and assert functions changes summary.
+	(AssertionHelper.assert_abi_comparison_result): Changed to
+	support to help assert functions changes summary.
+	(MockGlobalConfig.{no_devel_pkg, check_all_subpackages}): New
+	fake options with default value for running tests.
+	(RPMTest.setUp): add new development package for running test
+	case.
+	(RPMTest.test_is_devel): New test to test is_devel property.
+	(RunAbipkgdiffTest.setUp): Add new development packages for
+	running test case.
+	(RunAbipkgdiffTest.{test_all_success, test_all_failure,
+	test_partial_failure}): Mock global config.
+	(RunAbipkgdiffWithDSOOnlyOptionTest): Removed.
+	(CompareABIFromCommandLineTest.test_compare_with_no_devel_pkg):
+	New test to test fedabipkgdiff with or without --no-devel-pkg
+	option.
+	* tests/data/Makefile.am: Add new rpms.
+	* tests/data/test-fedabipkgdiff/packages/nss-util/3.12.6/1.fc14/
+	x86_64/nss-util-3.12.6-1.fc14.x86_64.rpm: New rpm for running
+	tests.
+	* tests/data/test-fedabipkgdiff/packages/nss-util/3.12.6/1.fc14/
+	x86_64/nss-util-debuginfo-3.12.6-1.fc14.x86_64.rpm: New rpm for
+	running tests.
+	* tests/data/test-fedabipkgdiff/packages/nss-util/3.12.6/1.fc14/
+	x86_64/nss-util-devel-3.12.6-1.fc14.x86_64.rpm: New rpm for
+	running tests.
+	* tests/data/test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/
+	x86_64/nss-util-3.24.0-2.0.fc25.x86_64.rpm: New rpm for running
+	tests.
+	* tests/data/test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/
+	x86_64/nss-util-debuginfo-3.24.0-2.0.fc25.x86_64.rpm: New rpm
+	for running tests.
+	* tests/data/test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/
+	x86_64/nss-util-devel-3.24.0-2.0.fc25.x86_64.rpm: New rpm for
+	running tests.
+
+2016-06-03  Dodji Seketeli <dodji@redhat.com>
+
+	Improve python modules detection
+	* configure.ac: Include
+	autoconf-archive/ax_check_python_modules.m4 rather than
+	autoconf-archive/ax_python_module.m4.  Use AX_CHECK_PYTHON_MODULES
+	rather than AX_PYTHON_MODULE.
+	* Makefile.am: Add the new file
+	autoconf-archive/ax_check_python_modules.m4 to source distribution
+	and remove the older autoconf-archive/ax_python_module.m4 one.
+	* autoconf-archive/ax_check_python_modules.m4: New file.
+	* autoconf-archive/ax_python_module.m4: Remove.
+
+2016-05-30  Chenxiong Qi <cqi@redhat.com>
+
+	Add integration tests for fedabipkgdiff
+	* configure.ac: do not detect shutil module.
+	* tests/runtestfedabipkgdiff.py.in: do not import shutil
+	anymore.
+	(BUILT_ABIPKGDIFF): new global variable to reference the
+	abipkgdiff built from source code, as the new test case' tests
+	require this command directly rather than mocking the
+	global_config.
+	(test_data_dir): convert variable name to uppercase,
+	reference to the test data directory by absolute path instead of
+	relative path.
+	(TEST_TOPDIR): new global variable to use data directory as the
+	topdir passed to fedabpkgdiff to download rpms.
+	(TEST_DOWNLOAD_CACHE_DIR): new global variable referencing a
+	fake download cache directory for tests only.
+	(packages, builds, rpms): new global variables as a fake
+	storage holding packages, builds and rpms.
+	(AssertionHelper): new class helping to assert abipkgdiff
+	result easily.
+	(MockClientSession): new class to mock koji.ClientSession.
+	(MockGlobalConfig.abipkgdiff): set this option to global
+	variable BUILT_ABIPKGDIFF.
+	(MockKojiClientSessin): removed.
+	(mock_get_session): removed.
+	(GetPackageLatestBuildTest.{test_get_latest_one,
+	test_cannot_find_a_latest_build_with_invalid_distro,
+	test_cannot_find_a_latest_build_with_invalid_distro}): mock
+	koji.ClientSession with new class MockClientSession. Remove
+	invalid documentation from docstring. Use new package rather
+	than httpd.
+	(DownloadRPMTest.setUp): remove self.download_dir and use global
+	TEST_DOWNLOAD_CACHE_DIR.
+	(DownloadRPMTest.tearDown): do not remove download cache
+	directory.
+	(DownloadRPMTest.make_remote_file_url): do not omit positional
+	argument specifiers in string format.
+	(DownloadRPMTest.{test_succeed_to_download_a_rpm,
+	test_failed_to_download_a_rpm}): set fake download cache
+	directory to mocked get_download_dir in mock.patch decorator.
+	(BrewListRPMsTest.test_select_specific_rpms): use new
+	MockClientSession to mock koji.ClientSession. Rewrite test by
+	using the new package listed in global variable packages.
+	(RunAbipkgdiffWithDSOOnlyOptionTest.{test_abipkgdiff_with_dso_only,
+	test_abipkgdiff_without_dso_only}): set fake download cache
+	directory to mocked get_download_dir in mock.patch decorator.
+	(CompareABIFromCommandLineTest): new integration test case.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/
+	i686/dbus-glib-0.100.2-2.fc20.i686.rpm: new rpm for running tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/
+	i686/dbus-glib-debuginfo-0.100.2-2.fc20.i686.rpm: new rpm for
+	running tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/
+	i686/dbus-glib-devel-0.100.2-2.fc20.i686.rpm: new rpm for
+	running tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/
+	x86_64/dbus-glib-0.100.2-2.fc20.x86_64.rpm: new rpm for running
+	tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/
+	x86_64/dbus-glib-debuginfo-0.100.2-2.fc20.x86_64.rpm: new rpm
+	for running tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/
+	x86_64/dbus-glib-devel-0.100.2-2.fc20.x86_64.rpm: new rpm for
+	running tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/
+	i686/dbus-glib-0.106-1.fc23.i686.rpm: new rpm for running tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/
+	i686/dbus-glib-debuginfo-0.106-1.fc23.i686.rpm: new rpm for
+	running tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/
+	i686/dbus-glib-devel-0.106-1.fc23.i686.rpm: new rpm for running
+	tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/
+	x86_64/dbus-glib-0.106-1.fc23.x86_64.rpm: new rpm for running
+	tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/
+	x86_64/dbus-glib-debuginfo-0.106-1.fc23.x86_64.rpm: new rpm for
+	running tests.
+	* tests/data/test-fedabipkgdiff/packages/dbus-glib/0.106/1.fc23/
+	x86_64/dbus-glib-devel-0.106-1.fc23.x86_64.rpm: new rpm for
+	running tests.
+	* tests/data/Makefile.am: add new rpms.
+
+2016-05-31  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19967 - System-level suppressions for glibc
+	* default.abignore: Add initial suppression specifications for
+	glibc.
+
+2016-05-31  Dodji Seketeli <dodji@redhat.com>
+
+	Escape all characters when reading a string in ini files
+	* src/abg-ini.cc (read_context::peek): Take an output parameter to
+	tell the caller when this function escaped the returned
+	character.  Added an overload without this new parameter.
+	(read_context::read_string): Accept all characters as part of the
+	string.
+	* tests/data/test-diff-suppr/test7-var-suppr-9.suppr: New test
+	input.
+	* tests/data/test-diff-suppr/test7-var-suppr-report-9.txt: New
+	test reference output.
+	* tests/data/Makefile.am: Add the files above to source
+	distribution.
+	* tests/test-diff-suppr.cc (in_out_spec): Run a new comparison of
+	libtest7-var-suppr-v{0,1}.so this time using the new
+	test7-var-suppr-9.suppr specification that exercices a string with
+	the escaped characters that we were having difficulty with.
+
+2016-05-31  Dodji Seketeli <dodji@redhat.com>
+
+	Don't require all version symbol sections to present
+	* src/abg-dwarf-reader.cc (get_symbol_versionning_sections): Allow
+	returning just some of the three version-related section, not
+	necessarily all of them.  Adjust comment.
+	(get_version_for_symbol): Be ready to not necessarily having the
+	three version-related sections available.
+
+2016-05-30  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 20180 - Support system-wide suppression specifications
+	* doc/manuals/abidiff.rst: Document the default suppression
+	scheme, its interaction with the --supprs option and the new
+	--no-default option.
+	* doc/manuals/abipkgdiff.rst: Likewise.
+	* doc/manuals/fedabipkgdiff.rst: Likewise.
+	* configure.ac: Generate the tests/runtestdefaultsupprs.py file
+	from the new tests/runtestdefaultsupprs.py.in template.
+	* default.abignore: New file.
+	* Makefile.am: Add it to source distribution.
+	* src/Makefile.am: Define the ABIGAIL_ROOT_SYSTEM_LIBDIR
+	preprocessor macro that is set the value of the $libdir autotools
+	macro.
+	* include/abg-tools-utils.h: Update copyright years.
+	(get_system_libdir, get_default_system_suppression_file_path)
+	(get_default_user_suppression_file_path)
+	(load_default_system_suppressions)
+	(load_default_user_suppressions): Declare new functions
+	* src/abg-tools-utils.cc (get_system_libdir)
+	(get_default_system_suppression_file_path)
+	(get_default_user_suppression_file_path)
+	(load_default_system_suppressions)
+	(load_default_user_suppressions): Define new functions.
+	(is_regular_file): Amend this so that it return true for symlinks
+	to regular files too.
+	(is_dir): Amend this so that it returns true for symlinks to
+	directories too.
+	* tools/abidiff.cc (options::no_default_supprs): New data member.
+	(options::options): Initialize the new data member.
+	(display_usage): Display a new help string for the new
+	--no-default-suppression command line option.
+	(parse_command_line): Parse this new command line option.
+	(set_diff_context_from_opts): Load the default suppression
+	specifications, unless --no-default-suppression or --supprs was
+	provided.
+	* tools/abipkgdiff.cc (options::no_default_supprs): New data
+	member.
+	(options::options): Initialize the new data member.
+	(parse_command_line): Parse the new --no-default-suppression
+	command line option.
+	(main): Load the default suppression specifications, unless
+	--no-default-suppression or --supprs was provided.
+	* tools/fedabipkgdiff (abipkgdiff): Add --no-default-suppression
+	to the invocation of abipkgdiff if it was provided on the command
+	line.
+	(build_commandline_args_parser): Parse the new
+	--no-default-suppression command line option.
+	* tests/runtestdefaultsupprs.py.in: New test harness template.
+	* tests/Makefile.am: Add the new runtestdefaultsupprs.py to the
+	set of tests.
+	* tests/data/test-default-supprs/test0-type-suppr-0.suppr: New
+	test input.
+	* tests/data/test-default-supprs/test0-type-suppr-report-0.txt: Likewise.
+	* tests/data/test-default-supprs/test0-type-suppr-v0.o: Likewise.
+	* tests/data/test-default-supprs/test0-type-suppr-v1.o: Likewise.
+	* tests/data/test-default-supprs/dirpkg-1-dir-report-0.txt:
+	Likewise.
+	* tests/data/test-default-supprs/dirpkg-1-dir1: Likewise.
+	* tests/data/test-default-supprs/dirpkg-1-dir2: Likewise.
+	* tests/data/Makefile.am: Add new the new tests input above to
+	Makefile.am.
+	* tests/runtestcanonicalizetypes.sh.in: Pass
+	--no-default-suppression to abidiff invocations.
+	* tests/runtestdefaultsupprs.py.in: Likewise.
+	* tests/test-abidiff-exit.cc: Likewise.
+	* tests/test-diff-dwarf-abixml.cc: Likewise.
+	* tests/test-diff-filter.cc: Likewise.
+	* tests/test-diff-suppr.cc: Likewise.
+	* tools/abidiff.cc: Likewise.
+
+2016-05-30  Dodji Seketeli <dodji@redhat.com>
+
+	Add --abipkgdiff option to fedabipkgdiff
+	* tools/fedabipkgdiff (build_path_to_abipkgdiff): Define new
+	function.
+	(abipkgdiff): Invoke the new build_path_to_abipkgdiff() here.
+	(build_commandline_args_parser): Parse the new --abipkgdiff
+	option.
+
+2016-05-28  Dodji Seketeli <dodji@redhat.com>
+
+	Better diagnostics when abipkgdiff has an extra argument
+	* tools/abipkgdiff.cc (options::wrong_arg): New data member.
+	(parse_command_line): Set options::wrong_arg
+	to the wrong argument passed.
+	(main): Tell wrong argument case apart, and report it.
+
+2016-05-26  Dodji Seketeli <dodji@redhat.com>
+
+	Fix suppr spec wording in abipkgdiff manual
+	* doc/manuals/abipkgdiff.rst: Fix the wording for the --suppr
+	option.
+
+2016-05-26  Dodji Seketeli <dodji@redhat.com>
+
+	Update reference to tools in libabigail-concepts manual
+	* doc/manuals/libabigail-concepts.rst: Do not refer just to
+	abidiff when talking about suppression specification.  Also
+	refer to abipkgdiff and other tools.
+
+2016-05-30  Dodji Seketeli <dodji@redhat.com>
+
+	Fix some wording in the Libabigail overview manual page
+	* doc/manuals/libabigail-overview.rst: Cleanup some confusion
+	about Abigail-the-framework and libabigail-the-library.
+
+2016-05-25  Dodji Seketeli <dodji@redhat.com>
+
+	Add test data for tests/runtestfedabipkgdiff.py
+	* tests/data/test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm:
+	New file.
+	* tests/data/test-fedabipkgdiff/dbus-glib-0.80-3.fc12.x86_64.rpm: Likewise.
+	* tests/data/test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm:
+	Likewise.
+	* tests/data/test-fedabipkgdiff/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm:
+	Likewise.
+
+2016-05-25  Dodji Seketeli <dodji@redhat.com>
+
+	Add a 'check-valgrind' target to the top-most Makefile.am
+	* Makefile.am (check-valgrind): Add this new target here.
+
+2016-05-21  Chenxiong Qi <cqi@redhat.com>
+
+	Bug 20085 - Add --dso-only option to fedabipkgdiff
+	* tools/fedabipkgdiff: Do not import shlex anymore.
+	(ABIDIFF_OK, ABIDIFF_ERROR, ABIDIFF_USAGE_ERROR)
+	(ABIDIFF_ABI_CHANGE): New global constant variables.
+	(abipkgdiff): Pass the --dso-only option to the abipkgdiff command
+	line tool, if that option was passed to fedabipkgdiff. Build this
+	abipkgdiff command invocation from an array of strings, rather
+	than from formatting a string.  This makes us get rid of the shlex
+	module.  Fix typo in dry-run logged string.  If there was an
+	internal error reported by abipkgdiff, report it to stderr.
+	(build_commandline_args_parser): Parse the --dso-only command line
+	option.
+	* tests/runtestfedabipkgdiff.py.in (fedabipkgdiff_mod): Fix a typo
+	in initializing this global variable.
+	(test_data_dir): New global variable, that is used to reference
+	tests/data/test-fedabipkgdiff/.
+	(RunAbipkgdiffTest.{test_all_success, test_partial_failure}): Fix
+	typo.
+	(Mockglobalconfig.{koji_topdir, dso_only}): New data members.
+	(GetPackageLatestBuildTest.{test_get_latest_one,
+	test_cannot_find_a_latest_build_with_invalid_distro,
+	test_succeed_to_download_a_rpm, test_failed_to_download_a_rpm}):
+	Fix typo.
+	(BrewListRPMsTest.test_select_specific_rpms): Fix typo.
+	(RunAbipkgdiffWithDSOOnlyOptionTest): New test case class.
+	* doc/manuals/fedabipkgdiff.rst: update document for this new
+	--dso-only option.
+	* tests/data/test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm:
+	New symbolic link to
+	test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm.
+	* tests/data/test-fedabipkgdiff/dbus-glib-0.80-3.fc12.x86_64.rpm:
+	New symbolic link to
+	test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm.
+	* tests/data/test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm:
+	New symbolic link to
+	test-diff-pkg/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm.
+	* tests/data/test-fedabipkgdiff/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm:
+	New symbolic link to
+	test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm.
+	* tests/data/Makefile.am: add tests/data/test-fedabipkgdiff so
+	that this data directory and all things within it can be included
+	in tarball.
+
+2016-05-24  Sinny Kumari <sinny@redhat.com>
+
+	Change parent directory for keeping extracted packages in abipkgdiff
+	* tools/abipkgdiff.cc (extracted_packages_parent_dir): Change
+	TMPDIR environment variable to XDG_CACHE_HOME and default
+	temporary parent directory to $HOME/.cache/libabigail/
+
+2016-05-20  Dodji Seketeli <dodji@redhat.com>
+
+	Make abi{pkg}diff filter out changes about private types
+	* include/abg-comp-filter.h: Update copyright year.
+	* src/abg-comp-filter.cc (has_virtual_mem_fn_change): Make this
+	static function become exported.
+	(has_virtual_mem_fn_change): Declare new function.
+	* include/abg-suppression.h
+	(suppression_base::{get,set}_is_artificial): Declare new
+	accessors.
+	(type_suppression::get_source_locations_to_keep): Return an
+	unordered set of strings, not a vector.  Add a non-const overload.
+	(type_suppression::set_source_locations_to_keep): Set an unordered
+	set of strings, not a vector.
+	* src/abg-suppression.cc (suppression_base::priv::is_artificial_):
+	New data member.
+	(suppression_base::priv::priv): Initialize the new data member.
+	(suppression_base::{get,set}_is_artificial): Define new accessors.
+	(type_suppression::priv::source_locations_to_keep_): Change the
+	vector of strings representing source file names into unordered
+	set of string.
+	(type_suppression::get_source_locations_to_keep): Return an
+	unordered set of strings, not a vector.  Define a non-const
+	overload.
+	(type_suppression::set_source_locations_to_keep): Set an unordered
+	set of strings, not a vector.
+	(type_suppression::suppresses_diff): Make this suppress virtual
+	member function diffs if the enclosing type of the changed virtual
+	member is suppressed by the current type_suppression.
+	(read_type_suppression): Adjust to use the fact that the source
+	locations are not stored in an unordered set, not in a vector
+	anymore.  Otherwise, using a vector here make things too slow.
+	(type_suppression::suppresses_type): Likewise.  Also, If the type
+	we are looking at has no location because it's a true opaque type
+	and if the current suppression is an artificial suppression that
+	is meant to suppress change reports about non-public types, then
+	suppress the type.
+	* include/abg-tools-utils.h (gen_suppr_spec_from_headers): Declare
+	new public function.
+	* src/abg-tools-utils.cc (PRIVATE_TYPES_SUPPR_SPEC_NAME): Define a
+	new constant variable.
+	(handle_fts_entry): Define new static function.
+	(gen_suppr_spec_from_headers): Define new public function.
+	* src/abg-comparison.cc
+	(corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars):
+	If a type suppression suppresses a given class C, make it change
+	added/removed virtual functions whose enclosing type is C.
+	* tools/abidiff.cc (options::{headers_dir1, headers_dir2}): New
+	data members.
+	(display_usage): Add help strings for --headers-dir1 and
+	--headers-dir2.
+	(parse_command_line): Parse the new --headers-dir1 and
+	--headers-dir2 options.
+	(set_diff_context_from_opts): Generate suppression specifications
+	to filter out changes on private types, if --headers-dir1 or
+	--headers-dir2 is given.
+	* tools/abipkgdiff.cc (options::{devel_package1, devel_package2}):
+	New data members.
+	(typedef package_sptr): New typedef.
+	(enum package::kind): New enum.
+	(package::kind_): New data member.  This replaces ...
+	(package::is_debug_info_): ... this data member.
+	(package::{devel_package_, private_types_suppressions_}): New data
+	members.
+	(package::package): Adjust.
+	(package::get_kind): Define new member function.  This replaces
+	...
+	(package::is_debug_info): ... this member function overload.
+	(package::set_kind): Define new member functin.  It replaces ...
+	(package::is_debug_info): ... this member function overload.
+	(package::{devel_package, private_types_suppressions}): Define new
+	accessors.
+	(package::erase_extraction_directies): Erase the sub-directory
+	where development packages are extracted to.
+	(compare_args::private_types_suppr{1,2}): New data members.
+	(compare_args::compare_args): Adjust.
+	(display_usage): Add help strings for --devel-pkg1/--devel-pkg2.
+	(compare): Make the overload that compares elf files take private
+	types suppressions.  Add the private types suppressions to the
+	diff context.
+	(pthread_routine_compare): Adjust the call to compare.
+	(maybe_create_private_types_suppressions): Define new static
+	function.
+	(pthread_routine_extract_pkg_and_map_its_content): If a devel
+	package was specified for the main package then extract it in
+	parallel with the other package extraction.  When the extraction
+	is done, create private types suppressions by visiting the
+	directories that contain the header files.
+	(compare): In the overload that compares packages by scheduling
+	comparison of individual elf files that are in the packages, pass
+	in the private type suppressions too.
+	(parse_command_line): Parse the new --devel-pkg{1,2} command line
+	options.
+	(main): Associate the devel package to the main package, if the
+	--devel-pkg{1,2}.
+	* doc/manuals/abidiff.rst: Add documentation about the new
+	--headers-dir1 and --headers-dir2 options.
+	* doc/manuals/abipkgdiff.rst: Likewise, add documentation about
+	the new --devel-pkg1 and --devel-pkg2 libraries.
+	* tests/data/test-diff-pkg/tbb-4.1-9.20130314.fc22.x86_64--tbb-4.3-3.20141204.fc23.x86_64-report-1.txt:
+	New test reference output.
+	* tests/data/test-diff-pkg/tbb-devel-4.1-9.20130314.fc22.x86_64.rpm:
+	New test input package.
+	* tests/data/test-diff-pkg/tbb-devel-4.3-3.20141204.fc23.x86_64.rpm: Likewise.
+	* tests/test-diff-pkg.cc b/tests/test-diff-pkg.cc
+	(InOutSpec::{first,second}_in_devel_package_path): New data
+	members.
+	(in_out_specs): Adjust.  Also, add a new entry describing the new
+	test inputs above.
+	(test_task::perform): When the new test entry contains devel
+	packages, pass them to abipkgdiff using the --devel1 and --devel2
+	options.
+	* tests/data/test-diff-suppr/test30-include-dir-v0/test30-pub-lib-v0.h:
+	A new test input source code.
+	* tests/data/test-diff-suppr/test30-include-dir-v1/test30-pub-lib-v1.h: Likewise.
+	* tests/data/test-diff-suppr/test30-priv-lib-v0.cc: Likewise.
+	* tests/data/test-diff-suppr/test30-priv-lib-v0.h: Likewise.
+	* tests/data/test-diff-suppr/test30-priv-lib-v1.cc: Likewise.
+	* tests/data/test-diff-suppr/test30-priv-lib-v1.h: Likewise.
+	* tests/data/test-diff-suppr/test30-pub-lib-v0.cc: Likewise.
+	* tests/data/test-diff-suppr/test30-pub-lib-v0.so: Add new test
+	binary input.
+	* tests/data/test-diff-suppr/test30-pub-lib-v1.cc: Add new test
+	input source code.
+	* tests/data/test-diff-suppr/test30-pub-lib-v1.so: Add new test
+	binary input.
+	* tests/data/test-diff-suppr/test30-report-0.txt: Add new test
+	reference output.
+	* tests/data/test-diff-suppr/test30-report-1.txt: Add new test
+	reference output.
+	* tests/test-diff-suppr.cc (InOutSpec::headers_dir{1,2}): New data
+	members.
+	(InOutSpec::abidiff_options): Renamed the bidiff_options data
+	member into this.
+	(in_out_specs): Adjust.  Also, added the new test input above to
+	this.
+	(main): Adjust to invoke abidiff with the new --hd1 and --hd2
+	options if the input specs for the tests has the new
+	InOutSpec::headers_dir{1,2} data member set.  Renamed bidiff into
+	abidiff.
+	* tests/data/Makefile.am: Add the new test inputs to the source
+	distribution.
+
+2016-05-24  Dodji Seketeli <dodji@redhat.com>
+
+	Fix the number of removed functions in change report
+	* src/abg-suppression.cc (corpus_diff::report): Show the net
+	number of removed functions, not the total number of the removed
+	functions.
+
+2016-05-23  Dodji Seketeli <dodji@redhat.com>
+
+	Document how to handle regression tests in CONTRIBUTING
+	* CONTRIBUTING: Add a section about regression tests.
+	* Makefile.am: Add a check-valgrind-recursive target.
+
+2016-05-21  Dodji Seketeli <dodji@redhat.com>
+
+	Fix whitespaces in autotools files
+	* configure.ac: Fix some white spaces.
+	* tests/Makefile.am: Likewise.
+
+2016-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Fix white space in abg-comparison.cc
+	* src/abg-comparison.cc (struct diff_context::priv): Fix indentation.
+
+2016-05-21  Dodji Seketeli <dodji@redhat.com>
+
+	Fix bash completion configure status
+	* configure.ac: If bash completion is disabled, say so.
+
+2016-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Enhance API doc for diff_context::add_diff
+	* src/abg-comparison.cc (diff_context::add_diff): Enhance the API
+	doc string.
+
+2016-05-20  Dodji Seketeli <dodji@redhat.com>
+
+	Add missing API doc strings
+	* src/abg-comparison.cc (diff::diff)
+	(decl_diff_base::decl_diff_base, distinct_diff::distinct_diff)
+	(base_diff::base_diff, scope_diff::scope_diff)
+	(fn_parm_diff::fn_parm_diff)
+	(function_type_diff::function_type_diff)
+	(type_decl_diff::type_decl_diff, typedef_diff::typedef_diff)
+	(translation_unit_diff::translation_unit_diff)
+	(corpus_diff::corpus_diff): Add missing API doc strings.
+
+2016-05-20  Dodji Seketeli <dodji@redhat.com>
+
+	Optimize out some shared_ptr use
+	* include/abg-ir.h (pointer_type_def::get_naked_pointed_to_type):
+	Declare new member function.
+	* src/abg-ir.cc (pointer_type_def::priv::naked_pointed_to_type_):
+	New data member.
+	(pointer_type_def::priv::priv): Adjust to initialize the new data
+	member.
+	(pointer_type_def::pointer_type_def): Adjust to use the
+	constructor pointer_type_def::priv::priv to initialize the
+	pointed-to type (including its new naked pointer variant).  So we
+	do not have to initialize the priv_->pointed_to_type_ explicitely
+	in the constructor anymore.
+	(pointer_type_def::get_naked_pointed_to_type): Define new data
+	member.
+	(pointer_type_def::get_qualified_name): Use a naked pointer to the
+	pointed-to type, rather than a smart pointer.
+
+2016-05-20  Dodji Seketeli <dodji@redhat.com>
+
+	Light optimizations by passing reference to smart pointers around
+	* include/abg-fwd.h (get_type_name): Take a reference to type_sptr.
+	* src/abg-ir.cc (get_type_name): Take a reference to type_sptr.
+	(suppression_base::priv::{get_file_name_regex,
+	get_file_name_not_regex, get_soname_regex, get_soname_not_regex}):
+	Return a reference to regex_t_sptr.
+
+2016-05-20  Dodji Seketeli <dodji@redhat.com>
+
+	Minimize number of string::length calculation
+	* src/abg-tools-utils.cc (string_ends_with): Call string::length
+	just once on each instance of string that matters.
+
+2016-05-20  Dodji Seketeli <dodji@redhat.com>
+
+	Avoid unnecessary computation of type name in suppression evaluation
+	* src/abg-suppression.cc (type_suppression::suppresses_type):  If
+	neither the type suppression "name" or "name_regex" properties
+	where provided in the suppression specification, then do not try
+	to look at the type name.
+
+2016-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Plug leak of diffs of member variables of class type
+	* include/abg-comparison.h (diff_wptr, unordered_diff_sptr_set): New typedefs.
+	(struct diff_sptr_hasher): Define new type.
+	(diff_context::keep_diff_alive): Declare new member function.
+	(diff::children_nodes): Return a vector of diff*, rather than a
+	vector of diff_sptr.
+	* src/abg-comparison.cc (diff_context::priv::live_diffs_): New
+	data member.
+	(diff_context::keep_diff_alive): Define new data member.
+	(diff::priv::children_): Make this be a vector of diff*, rather
+	than a vector of diff_sptr.
+	(diff_less_than_functor::operator()): Add a new overload for
+	diff*.  Make the existing overload of diff_sptr use the new one.
+	(diff::children_nodes): Adjust;
+	(diff::append_child_node): Make sure the child node is kept
+	alive.  Only add the naked pointer to the child node to the vector
+	of children.
+	(diff::traverse): Adjust.
+	(var_diff::priv::type_diff_): Make this be a weak pointer, rather
+	than a shared pointer.
+	(var_diff::type_diff): The var_diff::priv::type_diff_ data member
+	is now a weak pointer, so make this accessor convert it to a
+	shared pointer.
+	(corpus_diff::priv::children_): Turn this into a vector of diff*,
+	rather than a vector of diff_sptr.
+	(corpus_diff::children_nodes): Adjust.
+	(corpus_diff::append_child_node): Make sure the child node is kept
+	alive.  Only add the naked pointer to the child node to the vector
+	of children.
+	(category_propagation_visitor::visit_end): Adjust.
+	(suppression_categorization_visitor::visit_end): Adjust.
+	(redundancy_marking_visitor::{visit_begin, visit_end}): Adjust.
+
+2016-05-20  Dodji Seketeli <dodji@redhat.com>
+
+	Speedup diff node child insertion
+	* src/abg-comparison.cc (corpus_diff::append_child_node): Insert
+	the new child at the right point in the vector of children, so
+	that it remains sorted.
+
+2016-05-21  Dodji Seketeli <dodji@redhat.com>
+
+	Fix invocation of delete operator in test-read-dwarf.cc
+	* tests/test-read-dwarf.cc (main): Call delete[], not delete.
+
+2016-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Plug leak of debug info handles
+	* configure.ac: Check the presence of dwarf_getalt in libdw.  If
+	it's present, define the preprocessor macro
+	LIBDW_HAS_DWARF_GETALT.  Update the autoconf configuration
+	summary.
+	* src/abg-dwarf-reader.cc: Add config.h.
+	(find_alt_debug_info_location): Factorize this out of ...
+	(find_alt_debug_info): ... this function.  Use dwarf_getalt if
+	present, otherwise, keep using dwfl_standard_find_debuginfo.  In
+	the later case, return the file descriptor opened to access the
+	alternate debug info, by parameter, so that the caller can fclose
+	it.
+	(read_context::alt_fd_): New data member.
+	(read_context::read_context): Initialize the new alt_fd_ data
+	member.
+	(read_context::load_debug_info): Store the file descriptor used to
+	access the alternate debug info into the new alt_fd_ data member.
+	(read_context::~read_context): New desctructor.
+	(get_soname_of_elf_file, get_type_of_elf_file): Free the elf
+	handle.
+	(read_context::load_debug_info): Be paranoid in making sure we
+	never override alt_dwarf_.
+	* tests/data/test-alt-dwarf-file/test0-report.txt: Adjust.
+
+2016-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Plug leak of shared private data of class_diff type
+	* include/abg-comparison.h (class_diff::get_priv): Declare new
+	member function.
+	(class_diff::get_priv): Define new member function.
+	(class_diff::{chain_into_hierarchy, base_changes, deleted_bases,
+	inserted_bases, changed_bases, base_changes, member_types_changes,
+	member_types_changes, data_members_changes, inserted_data_members,
+	deleted_data_members, member_fns_changes, changed_member_fns,
+	member_fns_changes, deleted_member_fns, inserted_member_fns,
+	member_fn_tmpls_changes, member_class_tmpls_changes,
+	member_class_tmpls_changes, report}): Rather than accessing
+	class_diff::priv directly, use the new class_diff::get_priv.
+
+2016-05-21  Dodji Seketeli <dodji@redhat.com>
+
+	Remove circular ref from class_decl::priv::definition_of_declaration
+	* include/abg-ir.cc (class_decl::get_definition_of_declaration):
+	Return a shared pointer, rather than a reference to a shared pointer.
+	* src/abg-ir.cc (class_decl::priv::definition_of_declaration_):
+	Make this be a weak pointer.
+	(class_decl::get_definition_of_declaration):
+	Likewise.  And return the shared pointer built out of the weak
+	pointer we have in there now.
+
+2016-05-21  Dodji Seketeli <dodji@redhat.com>
+
+	Plug leak of regex_t in suppression engine
+	* include/abg-sptr-utils.h (build_sptr<T>): Declare an overload that
+	allocates a T* and wraps it into a shared_ptr<T>.
+	(build_sptr<regex_t>): Declare a specialization for regex_t.
+	* src/abg-corpus.cc (build_sptr<regex_t>()): Define the
+	specialization here.
+	* src/abg-suppression.ccp
+	(suppression_base::priv::{get_file_[not]_name_regex,
+	get_soname_[not]_regex}): Use the new build_sptr<regex_t>().
+	(type_suppression::priv::{get_type_name_regex,
+	get_source_location_to_keep_regex}): Likewise.
+	(function_suppression::parameter_spec::priv::get_type_name_regex):
+	Likewise.
+	(function_suppression::priv::{get_name_regex,
+	get_return_type_regex, get_symbol_name_regex,
+	get_symbol_version_regex}): Likewise.
+	(variable_suppression::priv::{get_name_regex,
+	get_symbol_name_regex, get_symbol_version_regex,
+	get_type_name_regex}): Likewise.
+
+2016-05-18  Dodji Seketeli <dodji@redhat.com>
+
+	Plug leak of diff_context_sptr after calling compute_diff
+	* src/abg-comparison.cc (diff::priv::ctxt_): Make this a weak_ptr.
+	(diff::priv::get_context): Convert the weak pointer to the context
+	into a shared_ptr and return it.
+	(diff::priv::is_filtered_out): Adjust to use
+	diff::priv::get_context() to access the context.
+	(diff::context): Likewise.
+	(corpus_diff::priv::ctxt_): Make this a weak_ptr.
+	(corpus_diff::priv::priv): Add a new overload that takes two
+	corpora and a diff context.
+	(corpus_diff::priv::get_context): Convert the weak pointer to the
+	context into a shared_ptr and return it.
+	(corpus_diff::priv::ensure_lookup_tables_populated): Adjust to use
+	the new corpus_diff::priv::get_context to get the context.
+	(variable_is_suppressed): Likewise.
+	(corpus_diff::priv::{apply_suppressions_to_added_removed_fns_vars,
+	apply_filters_and_compute_diff_stats, emit_diff_stats,
+	categorize_redundant_changed_sub_nodes,
+	clear_redundancy_categorization}): Likewise.
+	(corpus_diff::{corpus_diff, context,
+	apply_filters_and_suppressions_before_reporting}): Adjust.
+	* tools/abipkgdiff.cc (compare): Make the overload that compares
+	elf binaries take a diff context output parameter.  After the
+	context is created by this function, it's return to the caller, so
+	that it's life time is bound to the scope this function was
+	called from.
+	(pthread_routine_compare): Create a shared pointer to hold a
+	reference on a diff context.  Pass that shared pointer by
+	reference to the compare function that compares elf binaries.
+	Rather than storing corpora in the reports_map, (as those corpora
+	would then out-live the diff context and thus create memory
+	corruption issues), emit the report directly into an ostringstream
+	and store that stream in reports_map.
+	(compare): In the overoad that compares packages, rather than
+	trying to get corpora from the report_map, just emit the content
+	of the ostringstream that is now there.
+
+2016-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Fix a read passed-the-end in abg-dwarf-reader.cc
+	* src/abg-dwarf-reader.cc (lookup_symbol_from_gnu_hash_tab): Do
+	not read passed the end of the array.
+
+2016-05-21  Dodji Seketeli <dodji@redhat.com>
+
+	Support running "make check-valgrind"
+	* autoconf-archive/ax_valgrind_check.m4: Add new file.  Copied it
+	from http://www.gnu.org/software/autoconf-archive/ax_valgrind_check.html.
+	* configure.ac: Include the new ax_valgrind_check.m4 file.
+	Initialize the valgrind checking on tests.  Update the configure
+	status.
+	* tests/test-valgrind-suppressions.supp: New valgrind suppression
+	file to silence memcheck leak errors from python.
+	* tests/Makefile.am: Add test-valgrind-suppressions.supp to source
+	distribution.  Add check-valgrind-memcheck-recursive target.
+
+2016-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Update the CONTRIBUTING file
+	* CONTRIBUTING: Cleanup.
+
+2016-05-22  Dodji Seketeli <dodji@redhat.com>
+
+	Update the COMMIT-LOG-GUIDELINES file
+	* COMMIT-LOG-GUIDELINES: Various enhancements.
+
+2016-05-16  Dodji Seketeli <dodji@redhat.com>
+
+	Do not run fedabipkgdiff tests if --enable-fedabipkgdiff is turned off
+	* tests/Makefile.am: Make running runtestfedabipkgdiff be
+	dependent on ENABLE_FEDABIPKGDIFF.
+
+2016-05-13  Chenxiong Qi <cqi@redhat.com>
+
+	Fix pep8 error
+	* tools/fedabipkgdiff (build_commandline_args_parser): Fix
+	PEP8 error, line is too long.
+
+2016-05-13  Chenxiong Qi <cqi@redhat.com>
+
+	Use consistent string format
+	* tools/fedabipkgdiff (download_rpm): do not omit positional
+	argument specifiers in string format.
+
+2016-05-16  Dodji Seketeli <dodji@redhat.com>
+
+	Remove config.h.in from the repository
+	* config.h.in: Remove from repository.
+
+2016-02-09  Chenxiong Qi <cqi@redhat.com>
+
+	Bug 19428 - New fedabipkgdiff utility
+	* autoconf-archive/ax_compare_version.m4: New file copied from the
+	autoconf-archive project.
+	* autoconf-archive/ax_prog_python_version.m4: Likewise.
+	* autoconf-archive/ax_python_module.m4: Likewise.
+	* Makefile.am: Add the new files above to the source distribution.
+	* configure.ac: Include the new m4 macros from the autoconf
+	archive. Add a new --enable-fedabipkgdiff option. Update the
+	report at the end of the configure process to show the status of
+	the fedabipkgdiff feature. Add check for prerequisite python
+	modules argparse, glob, logging, os, re, shlex, subprocess, sys,
+	itertools, urlparse, itertools, shutil, unittest, xdg, koji and
+	mock.  These are necessary for the unit test of
+	fedabipkgdiff. Generate tests/runtestfedabipkgdiff.py into the
+	build directory, from the tests/runtestfedabipkgdiff.py.in input
+	file.
+	* tools/Makefile.am: Include the fedabipkgdiff to the source
+	distribution and install it if the "fedabipkgdiff" feature is
+	enabled.
+	* tests/Makefile.am: Rename runtestfedabipkgdiff.sh into
+	runtestfedabipkgdiff.py.  Add the new runtestfedabipkgdiff.py.in
+	autoconf template file in here.
+	* tests/runtestfedabipkgdiff.py.in: New unit test file.
+	* tools/fedabipkgdiff: New fedabipkgdiff tool.
+	* doc/manuals/fedabipkgdiff.rst: New manual.
+
+2016-05-07  Dodji Seketeli <dodji@redhat.com>
+
+	Implement a [suppress_file] suppression directive
+	* doc/manuals/libabigail-concepts.rst: Document the new
+	'suppress_file' directive.
+	* include/abg-suppression.h (file_suppression): Define new class.
+	(file_suppression_sptr): Define new typedef.
+	(is_file_suppression, file_is_suppressed): Declare new functions.
+	* src/abg-suppression.cc ():
+	(read_file_suppression, is_file_suppression, file_is_suppressed):
+	Define new functions.
+	(file_suppression::{file_suppression, suppresses_file,
+	~file_suppression}): Define new member functions.
+	* tools/abidiff.cc (main): If a suppression specification
+	suppresses one of the input files, then do not perform the
+	comparison.
+	* tools/abipkgdiff.cc (compare): If a suppression specification
+	suppresses a file that is to be compared, then do not perform the
+	comparison.
+	* tools/abicompat.cc (create_diff_context): New static function.
+	(perform_compat_check_in_normal_mode)
+	(perform_compat_check_in_weak_mode): Adjust to take a context in
+	parameter.  Do not create a diff context here anymore, do not load
+	suppression files here either.
+	(main): Use the new create_diff_context to create a diff context
+	and initialize it, including loading suppression specifications.
+	If any suppression specification suppresses a file to load, then
+	do not load perform any compatibility checking.  Adjust
+	invocations of perform_compat_check_in_weak_mode and
+	perform_compat_check_in_normal_mode to pass the diff context.
+	* tests/data/test-diff-suppr/test0-type-suppr-3.suppr: New test
+	input.
+	* tests/data/test-diff-suppr/test0-type-suppr-4.suppr: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-5.suppr: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-5.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-6.suppr: Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-6.txt:
+	Likewise.
+	* tests/data/test-diff-suppr/test0-type-suppr-report-7.txt:
+	Likewise.
+	* tests/test-diff-suppr.cc (in_out_specs): Use the new test
+	inputs.
+	* tests/data/test-abicompat/test0-fn-changed-1.suppr: New test
+	input.
+	* tests/data/test-abicompat/test0-fn-changed-report-3.txt:
+	Likewise.
+	* tests/test-abicompat.cc (in_out_specs):: Use the new test
+	inputs.
+	* tests/data/Makefile.am: Add the new test material to source
+	distribution.
+
+2016-05-07  Dodji Seketeli <dodji@redhat.com>
+
+	Split suppression engine off of abg-comparison.{cc,h}
+	* include/Makefile.am: Add abg-suppression.h to source
+	distribution.
+	* include/abg-comparison.h: Remove abg-ini.h include directive.
+	(suppression_sptr, suppressions_type): Move these typedefs to
+	abg-fwd.h.
+	(class suppression_base, type_suppression)
+	(type_suppression::insertion_range)
+	(type_suppression::insertion_range::boundary)
+	(type_suppression::insertion_range::integer_boundary)
+	(type_suppression::insertion_range::fn_call_expr_boundary)
+	(function_suppression, function_suppression::parameter_spec)
+	(variable_suppression): Move these type definitions to the new
+	abg-suppression.h.
+	(read_suppressions, is_type_suppression, is_integer_boundary)
+	(is_fn_call_expr_boundary, is_function_suppression)
+	(is_variable_suppression, operator&)
+	(operator|): Move these function declarations to the new
+	abg-suppression.h.
+	(type_suppression, type_suppression_sptr, type_suppression_type)
+	(function_suppression, function_suppression_sptr)
+	(function_suppressions_type, variable_suppression)
+	(variable_suppression_sptr, variable_suppressions_type): Move
+	these forward declaration and typedefs to the new
+	abg-suppression.h.
+	(diff_context::suppressions): Adjust return type to
+	suppr::suppressions_type&.
+	(diff_context::add_suppression): Adjust parameter type to
+	suppr::suppressions_sptr.
+	(diff_context::add_suppressions): Adjust parameter type
+	suppr::suppressions_type&.
+	(is_type_diff, is_decl_diff, is_var_diff, is_function_decl_diff)
+	(is_pointer_diff, is_reference_diff, is_fn_parm_diff)
+	(is_base_diff, is_child_node_of_function_parm_diff)
+	(is_child_node_of_base_diff): Declare these new functions.  They
+	were previously static, local to abg-comparison.cc only.  Now they
+	need to be exported because they are used by the suppression
+	engine's code that now lives in its one files.
+	* include/abg-fwd.h (suppr::{suppression_base, suppression_sptr,
+	suppressions_type}): Forward declare these here.
+	* include/abg-suppression.h (class suppression_base)
+	(type_suppression, type_suppression::insertion_range)
+	(type_suppression::insertion_range::boundary)
+	(type_suppression::insertion_range::integer_boundary)
+	(type_suppression::insertion_range::fn_call_expr_boundary)
+	(function_suppression, function_suppression::parameter_spec)
+	(variable_suppression): Move these type definitions here, in the
+	namespace suppr.
+	(read_suppressions, is_type_suppression, is_integer_boundary)
+	(is_fn_call_expr_boundary, is_function_suppression)
+	(is_variable_suppression, operator&)
+	(operator|): Move these function decalration here, in the
+	namespace suppr.
+	(type_suppression_sptr, type_suppressions_type)
+	(function_suppression_sptr, function_suppressions_type)
+	(variable_suppression_sptr, variable_suppressions_type): Move
+	these typedefs here, in the namespace suppr.
+	* src/Makefile.am: add src/abg-suppression.cc to source
+	distribution.
+	* src/abg-comparison.cc (is_type_diff, is_decl_diff, is_var_diff)
+	(is_function_decl_diff, is_pointer_diff, is_reference_diff)
+	(is_reference_or_pointer_diff, is_fn_parm_diff, is_base_diff)
+	(is_child_node_of_function_parm_diff, is_child_node_of_base_diff):
+	Export these functions.
+	(*suppression*): Move all the suppression-related definitions to
+	the new abg-suppression.cc.
+	* src/abg-suppression.cc: New file. Contains all the *suppression*
+	definitions from src/abg-comparison.cc, that are put in the suppr
+	namespace.
+	* tools/abicompat.cc: Adjust.
+	* tools/abidiff.cc: Likewise.
+	* tools/abipkgdiff.cc: Likewise.
+
+2016-05-08  Dodji Seketeli <dodji@redhat.com>
+
+	Fix indentation for abidiff manual
+	* doc/manuals/abidiff.rst: Fix indentation for the --suppression
+	paragraph.
+
+2016-05-08  Dodji Seketeli <dodji@redhat.com>
+
+	Add several shortcuts to options for abicompat
+	* doc/manuals/abicompat.rst: Update documentation.
+	* tools/abicompat.cc (display_usage): Update help strings.
+	(parse_command_line): Add shortcuts --suppr, --appd, --libd1 and
+	--libd2.
+
+2016-05-08  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright year in tools/abicompat.cc
+	* tools/abicompat.cc: Update copyright years to 2016.
+
+2016-05-07  Dodji Seketeli <dodji@redhat.com>
+
+	Fix mention of tool's name in abidiff error message
+	* src/abg-tools-utils.cc (emit_prefix): Try to emit the prefix
+	only if the program name was provided.
+	* abidiff.cc (maybe_check_suppression_files): Pass the name of the
+	tool to the check_file function.
+
+2016-05-07  Dodji Seketeli <dodji@redhat.com>
+
+	Update copyright year on abg-comparison.h
+	* include/abg-comparison.h: Update copyright year.
+
+2016-05-08  Dodji Seketeli <dodji@redhat.com>
+
+	Doc not show classes' inherited members in apidoc
+	* doc/api/libabigail.doxy: Don't show inherited member functions
+	or variables of a given class.
+
+2016-05-08  Dodji Seketeli <dodji@redhat.com>
+
+	Fix typo in concept manual
+	* doc/manuals/libabigail-concepts.rst: Do not refer to abidiff
+	specifically for suppressions because several tools use
+	suppressions.
+
+2016-05-08  Dodji Seketeli <dodji@redhat.com>
+
+	Fix indentation in concepts manual
+	* doc/manuals/libabigail-concepts.rst: Fix indentation.
+
+2016-05-06  Dodji Seketeli <dodji@redhat.com>
+
+	Add some apidoc to dwarf_reader
+	* include/abg-dwarf-reader.h (namespace dwarf_reader): Add apidoc.
+	(enum elf_type): Add an apidoc for each enumerator.
+	* src/abg-dwarf-reader.cc (get_type_of_elf_file): Add an apidoc
+	for the 'type' parameter.
+
+2016-04-28  Dodji Seketeli <dodji@redhat.com>
+
+	[abipkgdiff] Show SONAME of removed/added libraries
+	* tools/abipkgdiff.cc (abi_diff::{added,removed}_binaries): Change
+	the type of these data member from vector<string> to
+	vector<elf_file_sptr>.
+	(compare): Adjust.  Show the soname of added/removed binaries.
+
+2016-04-27  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 20015 - support file_name_not_regexp and soname_not_regexp in suppr specs
+	* include/abg-comparison.h
+	(suppression_base::{get,set}_file_name_not_regex_str): Declare new
+	member functions.
+	(suppression_base::{get,set}_soname_not_regex_str): Likewise.
+	(suppression_base::{names,sonames}_of_binaries_match): Likewise.
+	* src/abg-comparison.cc
+	(suppression_base::priv::get_file_name_regex): Fix comment.
+	(suppression_base::priv::get_file_name_not_regex): New member
+	function.
+	(suppression_base::priv::get_soname_regex): Fix comment.
+	(suppression_base::priv::get_soname_not_regex): New member
+	function.
+	(suppression_base::{get,set}_file_name_not_regex_str): Define new
+	member functions.
+	(suppression_base::{get,set}_soname_not_regex_str): Likewise.
+	(suppression_base::{names,sonames}_of_binaries_match): Likewise.
+	These got factorized out of type_suppression::suppresses_type,
+	function_suppression::suppresses_function,
+	function_suppression::suppresses_function_symbol,
+	variable_suppression::suppresses_variable,
+	variable_suppression::suppresses_variable_symbol.
+	(type_suppression::suppresses_type): Use the new
+	suppression_base::{names,sonames}_of_binaries_match.
+	(read_type_suppression): Read the new file_name_not_regexp and
+	soname_not_regexp properties.
+	(function_suppression::{suppresses_function,
+	suppresses_function_symbol}): Use the new
+	suppression_base::{names,sonames}_of_binaries_match.
+	(read_function_suppression): Read the new file_name_not_regexp and
+	soname_not_regexp properties.
+	(variable_suppression::{suppresses_variable,
+	variable_suppression::suppresses_variable_symbol}): Use the new
+	suppression_base::{names,sonames}_of_binaries_match.
+	(read_variable_suppression): Use the new
+	suppression_base::{names,sonames}_of_binaries_match.
+	* doc/manuals/libabigail-concepts.rst: Document the new
+	file_name_not_regexp and soname_not_regexp suppression properties.
+	* tests/data/test-diff-suppr/test24-soname-report-10.txt: New test
+	reference output.
+	* tests/data/test-diff-suppr/test24-soname-report-11.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-12.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-13.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-14.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-15.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-16.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-report-9.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-10.txt: New test input.
+	* tests/data/test-diff-suppr/test24-soname-suppr-11.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-12.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-13.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-14.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-15.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-16.txt: Likewise.
+	* tests/data/test-diff-suppr/test24-soname-suppr-9.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-2.txt: New test
+	reference output.
+	* tests/data/test-diff-suppr/test29-soname-report-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-6.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-7.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-soname-report-8.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-suppr-2.txt: New test input.
+	* tests/data/test-diff-suppr/test29-suppr-3.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-suppr-4.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-suppr-5.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-suppr-6.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-suppr-7.txt: Likewise.
+	* tests/data/test-diff-suppr/test29-suppr-8.txt: Likewise.
+	* tests/data/Makefile.am: Add the new test material to source
+	distribution.
+	* tests/test-diff-suppr.cc (in_out_specs): Make this test harness
+	run over the new test inputs.
+
+2016-04-27  Dodji Seketeli <dodji@redhat.com>
+
+	Make API documentation of thread pools visible
+	* include/abg-workers.h: Document the workers namespace, the task,
+	queue and queue::task_done_notify types.
+	* src/abg-workers.cc: Move the documentation of the thread_pool
+	module inside the abigail::worker namespace, so that references to
+	task and queue types (which are also in the abigail::worker
+	namespace) can be resolved in the apidoc.
+
+2016-04-27  Dodji Seketeli <dodji@redhat.com>
+
+	Update documentation to require doxygen and python-sphinx for building
+	* COMPILING: Add python-sphinx to the set of required packages to
+	build the documentation.
+	* doc/website/mainpage.txt: Update the website to mention doxygen
+	and python-sphinx for documentation.
+
+2016-04-27  Dodji Seketeli <dodji@redhat.com>
+
+	Add doc, info, man and html-doc targets to generate documentation
+	* Makefile.am: Add info, man and html-doc targets to generate
+	documentation in info, man and html formats.  If you want to
+	generate them all, then the doc target is the one to be used.
+	* COMPILING: Add documentation for the above.
+
+2016-04-25  Dodji Seketeli <dodji@redhat.com>
+
+	Bug 19964 - Cannot load function aliases on ppc64
+	* src/abg-dwarf-reader.cc (read_context::load_symbol_maps): While
+	filling the ppc64-specific "function-entry-address => symbol" map,
+	if we stumble accross a function-entry-address that belongs to an
+	alias of 'symbol', then assume the alias must have been registered
+	as an alias already, by the platform-agnostic code.  Do not try to
+	register the alias again.
+	* tests/data/Makefile.am: Add the new test input binaries to the
+	source distribution.
+	* tests/data/test-diff-dwarf/libtest36-ppc64-aliases-v0.so: New
+	binary test input.
+	* tests/data/test-diff-dwarf/libtest36-ppc64-aliases-v1.so: Likewise.
+	* tests/data/test-diff-dwarf/test36-ppc64-aliases-report-0.txt:
+	New test reference output.
+	* tests/data/test-diff-dwarf/test36-ppc64-aliases-v0.cc: Source
+	code for the new binary test input above.
+	* tests/data/test-diff-dwarf/test36-ppc64-aliases-v1.cc: Likewise.
+	* tests/test-diff-dwarf.cc: Add the new test input to the list of
+	test inputs considered by this test harness.
+
+2016-04-20  Sinny Kumari <sinny@redhat.com>
+
+	Bug 19961 - Distinguish between PI executable and shared library
+	* include/abg-dwarf-reader.h (elf_type): Add new enumerator
+	ELF_TYPE_PI_EXEC.
+	* src/abg-dwarf-reader.cc
+	(lookup_data_tag_from_dynamic_segment): New function for
+	data tag lookup in dynamic segment of an elf
+	(elf_file_type): Return ELF_TYPE_PI_EXEC file type for
+	a PI executable.
+	(get_elf_file_type): Change this to take an elf handle.
+	(get_type_of_elf_file): New function that got factorized out of ...
+	(load_dt_soname_and_needed): ... this one.
+	* tools/abipkgdiff.cc (create_maps_of_package_content): Also
+	consider ELF_TYPE_PI_EXEC file type.
+	(compare): Likewise.
+	* tests/test-diff-pkg.cc (in_out_specs): Test case additions
+	* tests/data/Makefile.am: Include test files
+	* tests/data/test-diff-pkg/tarpkg-1-dir1.tar.gz: New test data
+	* tests/data/test-diff-pkg/tarpkg-1-dir2.tar.gz: New test data
+	* tests/data/test-diff-pkg/tarpkg-1-report-0.txt: New test result
+
+2016-04-17  Dodji Seketeli <dodji@redhat.com>
+
+	Update website to 1.0.rc4
+	* doc/website/mainpage.txt: Update tarball reference to 1.0.rc4
+
+2016-04-17  Dodji Seketeli <dodji@redhat.com>
+
+	Bump current version number to 1.0.rc5
+	* configure.ac: Bump current version number to 1.0.rc5
+
+2016-04-17  Dodji Seketeli <dodji@redhat.com>
+
+	Add a 'release' target to main Makefile
+	* Makefile.am: Add tarball, upload-release-only, upload-release
+	and release targets.
+
 2016-04-11  Dodji Seketeli <dodji@redhat.com>
 
 	Update ChangeLog for 1.0.rc4
