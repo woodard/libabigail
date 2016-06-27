@@ -1,3 +1,77 @@
+1.0.rc5
+=======
+Chenxiong:
+      Bug 19428 - New fedabipkgdiff utility
+      Bug 20085 - Add --dso-only option to fedabipkgdiff
+      Bug 20135 - Make fedabipkgdiff compare ABIs using devel packages
+      Add integration tests for fedabipkgdiff
+      Fix package NVR comparison in fedabipkgdiff
+      Use consistent string format in fedabipkgdiff
+      Fix pep8 error in fedabipkgdiff
+
+Dodji Seketeli:
+      Bug 19964 - Cannot load function aliases on ppc64
+      Bug 20015 - support file_name_not_regexp and soname_not_regexp in suppr specs
+      Bug 20180 - Support system-wide suppression specifications
+      Bug 19967 - System-level suppressions for glibc
+      Fix python interpreter path for el6      
+      Add doc, info, man and html-doc targets to top-level Makefile
+      Update documentation to require doxygen and python-sphinx for building
+      Make API documentation of thread pools visible
+      Show SONAME of removed/added libraries in abipkgdiff
+      Fix indentation in concepts manual
+      Fix typo in concept manual
+      Doc not show classes' inherited members in apidoc
+      Fix mention of tool's name in abidiff error message
+      Add several shortcuts to options for abicompat
+      Fix indentation for abidiff manual
+      Split suppression engine off of abg-comparison.{cc,h}
+      Implement a [suppress_file] suppression directive
+      Remove config.h.in from the repository
+      Do not run fedabipkgdiff tests if --enable-fedabipkgdiff is turned off
+      Update the COMMIT-LOG-GUIDELINES file
+      Update the CONTRIBUTING file
+      Support running "make check-valgrind"
+      Fix a read passed-the-end in abg-dwarf-reader.cc
+      Plug leak of diff_context_sptr after calling compute_diff
+      Plug leak of regex_t in suppression engine
+      Remove circular ref from class_decl::priv::definition_of_declaration
+      Plug leak of shared private data of class_diff type
+      Plug leak of debug info handles
+      Fix invocation of delete operator in test-read-dwarf.cc
+      Speedup diff node child insertion
+      Plug leak of diffs of member variables of class type
+      Avoid unnecessary computation of type name in suppression evaluation
+      Minimize number of string::length calculation
+      Light optimizations by passing reference to smart pointers around
+      Optimize out some shared_ptr use
+      Add missing API doc strings
+      Enhance API doc for diff_context::add_diff
+      Fix bash completion configure status
+      Fix white space in abg-comparison.cc
+      Fix whitespaces in autotools files
+      Document how to handle regression tests in CONTRIBUTING
+      Fix the number of removed functions in change report
+      Make abi{pkg}diff filter out changes about private types
+      Add a 'check-valgrind' target to the top-most Makefile.am
+      Add test data for tests/runtestfedabipkgdiff.py
+      Fix some wording in the Libabigail overview manual page
+      Update reference to tools in libabigail-concepts manual
+      Fix suppr spec wording in abipkgdiff manual
+      Better diagnostics when abipkgdiff has an extra argument
+      Add --abipkgdiff option to fedabipkgdiff
+      Don't require all version symbol sections to present
+      Escape all characters when reading a string in ini files
+      Improve python modules detection
+      Cleanup function_decl::parameter::get_pretty_representation
+      Misc white space and comment cleanups
+      Use ODR-based optimization on C/C++ translation unit only
+      Misc cleanup in abg-reader.cc
+
+Sinny Kumari:
+      Bug 19961 - Distinguish between PI executable and shared library
+      Change parent directory for keeping extracted packages in abipkgdiff
+
 1.0.rc4
 =======
 Dodji Seketeli:
