@@ -6,5 +6,6 @@ abidw \
 abilint \
 abinilint \
 abipkgdiff \
-abisym
+abisym \
+fedabipkgdiff
 #endif
