@@ -15,7 +15,8 @@ _fedabipkgdiff_module()
                     --all-subpackages
                     --dso-only
                     --no-default-suppression
-                    --no-devel-pkg"
+                    --no-devel-pkg
+                    --abipkgdiff"
 	    COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
 	    return 0
 	    ;;

@@ -131,10 +131,15 @@ Options
     defined in public header files available from the packages being
     compared.
 
+  * ``--abipkgdiff`` <path/to/abipkgdiff>
+
+    Specify an alternative abipkgdiff instead of the one installed in system.
+
 .. _build:
 
 Note that a build is a specific version and release of an RPM package.
-It's specified by its the package name, version and release.  These are specified by the `Fedora Naming Guidelines <https://fedoraproject.org/wiki/Packaging:NamingGuidelines>`_
+It's specified by its the package name, version and release. These are specified
+by the `Fedora Naming Guidelines <https://fedoraproject.org/wiki/Packaging:NamingGuidelines>`_
 
 
 .. _fedabipkgdiff_return_value_label:
