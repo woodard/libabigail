@@ -213,7 +213,10 @@ bool
 is_anonymous_type(const shared_ptr<type_base>&);
 
 shared_ptr<type_decl>
-is_type_decl(const shared_ptr<type_base>);
+is_type_decl(const shared_ptr<type_base>&);
+
+shared_ptr<type_decl>
+is_type_decl(const shared_ptr<decl_base>&);
 
 shared_ptr<typedef_decl>
 is_typedef(const shared_ptr<type_base>);

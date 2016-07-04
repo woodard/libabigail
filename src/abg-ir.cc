@@ -5547,7 +5547,15 @@ is_anonymous_type(const type_base_sptr& t)
 /// @return the type_decl_sptr for @t if it's type_decl, otherwise,
 /// return nil.
 type_decl_sptr
-is_type_decl(const type_base_sptr t)
+is_type_decl(const type_base_sptr& t)
+{return dynamic_pointer_cast<type_decl>(t);}
+
+/// Test whether a decl is for a type type_decl (a builtin type).
+///
+/// @return the type_decl_sptr for @t if it's a type_decl, otherwise,
+/// return nil.
+type_decl_sptr
+is_type_decl(const decl_base_sptr& t)
 {return dynamic_pointer_cast<type_decl>(t);}
 
 /// Test whether a type is a typedef.
@@ -11485,7 +11493,7 @@ function_decl::parameter::get_pretty_representation(bool internal) const
   type_base_sptr t = get_type();
   if (!t)
     type_repr = "void";
-  else if (is_type_decl((env->get_variadic_parameter_type_decl())))
+  else if (env->get_variadic_parameter_type_decl())
     type_repr = "...";
   else
     type_repr = ir::get_pretty_representation(t, internal);
