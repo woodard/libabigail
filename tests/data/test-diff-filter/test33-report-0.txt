@@ -1,0 +1,94 @@
+Functions changes summary: 0 Removed, 9 Changed (105 filtered out), 0 Added functions
+Variables changes summary: 0 Removed, 1 Changed (2 filtered out), 0 Added variable
+
+9 functions with some indirect sub-type change:
+
+  [C]'function size_t _elf32_xltsize(const Elf_Data*, unsigned int, unsigned int, int)' has some indirect sub-type changes:
+    return type changed:
+      underlying type 'long unsigned int' changed:
+        type name changed from 'long unsigned int' to 'unsigned long'
+
+    parameter 1 of type 'const Elf_Data*' has sub-type changes:
+      in pointed to type 'const Elf_Data':
+        in unqualified underlying type 'typedef Elf_Data':
+          underlying type 'struct __anonymous_struct__' changed:
+            1 data member changes (2 filtered):
+             type of 'off_t __anonymous_struct__::d_off' changed:
+               underlying type 'typedef __off_t' changed:
+                 underlying type 'long int' changed:
+                   type name changed from 'long int' to 'long'
+
+
+
+  [C]'function long int _elf_load_i64M(const unsigned char*)' has some indirect sub-type changes:
+    return type changed:
+      type name changed from 'long int' to 'long'
+
+
+  [C]'function void _elf_store_i64L(unsigned char*, long unsigned int)' has some indirect sub-type changes:
+    parameter 2 of type 'long unsigned int' changed:
+      type name changed from 'long unsigned int' to 'unsigned long'
+
+
+  [C]'function long int elf32_checksum(Elf*)' has some indirect sub-type changes:
+    return type changed:
+      type name changed from 'long int' to 'long'
+
+
+  [C]'function Elf32_Ehdr* elf32_getehdr(Elf*)' has some indirect sub-type changes:
+    return type changed:
+      in pointed to type 'typedef Elf32_Ehdr':
+        underlying type 'struct __anonymous_struct__' changed:
+          1 data member changes (7 filtered):
+           type of 'Elf32_Half __anonymous_struct__::e_ehsize' changed:
+             underlying type 'typedef uint16_t' changed:
+               underlying type 'short unsigned int' changed:
+                 type name changed from 'short unsigned int' to 'unsigned short'
+
+
+
+  [C]'function long int elf64_checksum(Elf*)' has some indirect sub-type changes:
+    return type changed:
+      type name changed from 'long int' to 'long'
+
+
+  [C]'function long int gelf_checksum(Elf*)' has some indirect sub-type changes:
+    return type changed:
+      type name changed from 'long int' to 'long'
+
+
+  [C]'function GElf_Dyn* gelf_getdyn(Elf_Data*, int, GElf_Dyn*)' has some indirect sub-type changes:
+    return type changed:
+      in pointed to type 'typedef GElf_Dyn':
+        underlying type 'typedef Elf64_Dyn' changed:
+          underlying type 'struct __anonymous_struct__' changed:
+            1 data member change:
+             type of 'Elf64_Sxword __anonymous_struct__::d_tag' changed:
+               underlying type 'typedef int64_t' changed:
+                 underlying type 'long int' changed:
+                   type name changed from 'long int' to 'long'
+
+
+
+  [C]'function int nlist(const char*, nlist*)' has some indirect sub-type changes:
+    parameter 2 of type 'nlist*' has sub-type changes:
+      in pointed to type 'struct nlist':
+        2 data member changes (1 filtered):
+         type of 'long int nlist::n_value' changed:
+           type name changed from 'long int' to 'long'
+
+
+         type of 'short int nlist::n_scnum' changed:
+           type name changed from 'short int' to 'short'
+
+
+
+
+1 Changed variable:
+
+  [C]'const const size_t[2][1][17][2] _elf_fmsize' was changed to 'const size_t _elf_fmsize[2][1][17][2]':
+    type of variable changed:
+     entity changed from 'const const size_t[2][1][17][2]' to 'const size_t[2][1][17][2]'
+     type size changed from 1408 to 1408 bits
+
+

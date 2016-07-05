@@ -408,6 +408,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test32-ppc64le-struct-change-report0.txt",
     "output/test-diff-filter/test32-ppc64le-struct-change-report0.txt",
   },
+  {
+    "data/test-diff-filter/test33-libelf.so.0.8.13-gcc",
+    "data/test-diff-filter/test33-libelf.so.0.8.13-intel16.0.3",
+    "--no-default-suppression --no-linkage-name --no-show-locs --no-redundant",
+    "data/test-diff-filter/test33-report-0.txt",
+    "output/test-diff-filter/test33-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

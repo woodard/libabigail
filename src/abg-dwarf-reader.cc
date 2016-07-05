@@ -7327,18 +7327,29 @@ build_type_decl(read_context&	ctxt,
     if (!die_unsigned_constant_attribute(die, DW_AT_bit_size, bit_size))
       return result;
 
-  if (byte_size == 0 && bit_size == 0)
-    return result;
-
-  if (bit_size == 0)
+  if (bit_size == 0 && byte_size != 0)
+    // Update the bit size.
     bit_size = byte_size * 8;
 
   string type_name, linkage_name;
   location loc;
   die_loc_and_name(ctxt, die, loc, type_name, linkage_name);
 
-  result.reset(new type_decl(ctxt.env(), type_name, bit_size,
-			     /*alignment=*/0, loc, linkage_name));
+  if (byte_size == 0)
+    {
+      // The size of the type is zero, that must mean that we are
+      // looking at the definition of the void type.
+      if (type_name == "void")
+	result = is_type_decl(build_ir_node_for_void_type(ctxt));
+      else
+	// A type of size zero that is not void? Hmmh, I am not sure
+	// what that means.  Return nil for now.
+	return result;
+    }
+
+  if (!result)
+    result.reset(new type_decl(ctxt.env(), type_name, bit_size,
+			       /*alignment=*/0, loc, linkage_name));
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
 			     die_is_from_alt_di,
 			     result);
