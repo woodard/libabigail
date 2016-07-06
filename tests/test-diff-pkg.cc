@@ -390,6 +390,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686--gtk2-immodule-xim-2.24.28-8.el7.i686-report-0.txt",
     "output/test-diff-pkg/gtk2-immodule-xim-2.24.22-5.el7.i686--gtk2-immodule-xim-2.24.28-8.el7.i686-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-0.80-3.fc12.x86_64.rpm",
+    "--no-default-suppression --show-identical-binaries",
+    "",
+    "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm",
+    "",
+    "",
+    "data/test-diff-pkg/test-dbus-glib-0.80-3.fc12.x86_64-report-0.txt",
+    "output/test-diff-pkg/test-dbus-glib-0.80-3.fc12.x86_64-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB

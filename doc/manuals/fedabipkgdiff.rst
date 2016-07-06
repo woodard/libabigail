@@ -131,6 +131,13 @@ Options
     defined in public header files available from the packages being
     compared.
 
+  * ``--show-identical-binaries``
+
+   Show the names of the all binaries compared, including the
+   binaries whose ABI compare equal.  By default, when this option is
+   not provided, only binaries with ABI changes are mentionned in the
+   output.
+
   * ``--abipkgdiff`` <path/to/abipkgdiff>
 
     Specify an alternative abipkgdiff instead of the one installed in system.

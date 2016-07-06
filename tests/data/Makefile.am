@@ -1162,10 +1162,16 @@ test-diff-pkg/gtk2-immodule-xim-2.24.28-8.el7.i686.rpm \
 test-diff-pkg/tarpkg-1-dir1.tar.gz \
 test-diff-pkg/tarpkg-1-dir2.tar.gz \
 test-diff-pkg/tarpkg-1-report-0.txt \
+test-diff-pkg/test-dbus-glib-0.80-3.fc12.x86_64-report-0.txt \
+\
 test-fedabipkgdiff/dbus-glib-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.104-3.fc23.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-0.80-3.fc12.x86_64.rpm \
 test-fedabipkgdiff/dbus-glib-debuginfo-0.80-3.fc12.x86_64.rpm \
+test-fedabipkgdiff/test0-from-fc20-to-fc23-dbus-glib-report-0.txt \
+test-fedabipkgdiff/test1-from-fc20-to-dbus-glib-0.106-1.fc23.x86_64-report-0.txt \
+test-fedabipkgdiff/test2-dbus-glib-0.100.2-2.fc20--dbus-glib-0.106-1.fc23-report-0.txt \
+test-fedabipkgdiff/test3-dbus-glib-0.100.2-2.fc20.i686--dbus-glib-0.106-1.fc23.i686-report-0.txt \
 test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-0.100.2-2.fc20.i686.rpm \
 test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-debuginfo-0.100.2-2.fc20.i686.rpm \
 test-fedabipkgdiff/packages/dbus-glib/0.100.2/2.fc20/i686/dbus-glib-devel-0.100.2-2.fc20.i686.rpm \
@@ -1184,6 +1190,7 @@ test-fedabipkgdiff/packages/nss-util/3.12.6/1.fc14/x86_64/nss-util-debuginfo-3.1
 test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-debuginfo-3.24.0-2.0.fc25.x86_64.rpm \
 test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-devel-3.24.0-2.0.fc25.x86_64.rpm \
 test-fedabipkgdiff/packages/nss-util/3.24.0/2.0.fc25/x86_64/nss-util-3.24.0-2.0.fc25.x86_64.rpm \
+\
 test-default-supprs/test0-type-suppr-0.suppr \
 test-default-supprs/test0-type-suppr-report-0.txt \
 test-default-supprs/test0-type-suppr-v0.o \
@@ -1194,4 +1201,3 @@ test-default-supprs/dirpkg-1-dir1/obj-v0.cc \
 test-default-supprs/dirpkg-1-dir2/dir.abignore \
 test-default-supprs/dirpkg-1-dir2/libobj-v0.so \
 test-default-supprs/dirpkg-1-dir2/obj-v0.cc
-

@@ -43,6 +43,7 @@ $(FEDABIPKGDIFF_TEST) $(CXX11_TESTS)
 EXTRA_DIST = \
 runtestcanonicalizetypes.sh.in \
 runtestfedabipkgdiff.py.in \
+mockfedabipkgdiff.in \
 test-valgrind-suppressions.supp
 
 CLEANFILES = \
@@ -50,7 +51,7 @@ runtestcanonicalizetypes.output.txt \
 runtestcanonicalizetypes.output.final.txt
 
 noinst_PROGRAMS= $(TESTS) testirwalker testdiff2 printdifftree
-
+noinst_SCRIPTS = mockfedabipkgdiff
 noinst_LTLIBRARIES = libtestutils.la
 
 libtestutils_la_SOURCES=	\

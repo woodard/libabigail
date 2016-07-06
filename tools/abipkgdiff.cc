@@ -177,6 +177,7 @@ public:
   bool		show_added_syms;
   bool		show_added_binaries;
   bool		fail_if_no_debug_info;
+  bool		show_identical_binaries;
   vector<string> suppression_paths;
 
   options(const string& program_name)
@@ -194,7 +195,8 @@ public:
       show_locs(true),
       show_added_syms(true),
       show_added_binaries(true),
-      fail_if_no_debug_info()
+      fail_if_no_debug_info(),
+      show_identical_binaries()
   {}
 };
 
@@ -609,6 +611,7 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-abignore                  do not look for *.abignore files\n"
     << " --no-parallel                  do not execute in parallel\n"
     << " --fail-no-dbg                  fail if no debug info was found\n"
+    << " --show-identical-binaries      show the names of identical binaries\n"
     << " --verbose                      emit verbose progress messages\n"
     << " --help|-h                      display this help message\n"
     << " --version|-v                   display program version information"
@@ -1224,7 +1227,15 @@ pthread_routine_compare(vector<compare_args_sptr> *args)
       else
 	{
 	  pthread_mutex_lock(&map_lock);
-	  reports_map[key] = shared_ptr<ostringstream>();
+	  if (a->opts.show_identical_binaries)
+	    {
+	      shared_ptr<ostringstream> out(new ostringstream);
+	      *out << "No ABI change detected\n";
+	      reports_map[key] = out;
+	      env_map[diff] = env;
+	    }
+	  else
+	    reports_map[key] = shared_ptr<ostringstream>();
 	  pthread_mutex_unlock(&map_lock);
 	}
     }
@@ -1898,6 +1909,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.abignore = false;
       else if (!strcmp(argv[i], "--no-parallel"))
 	opts.parallel = false;
+      else if (!strcmp(argv[i], "--show-identical-binaries"))
+	opts.show_identical_binaries = true;
       else if (!strcmp(argv[i], "--suppressions")
 	       || !strcmp(argv[i], "--suppr"))
 	{

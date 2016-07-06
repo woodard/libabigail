@@ -63,6 +63,8 @@ DEFAULT_KOJI_TOPDIR = 'https://kojipkgs.fedoraproject.org'
 HOME_DIR = os.path.join(xdg.BaseDirectory.xdg_cache_home,
                         os.path.splitext(os.path.basename(__file__))[0])
 
+DEFAULT_ABIPKGDIFF = 'abipkgdiff'
+
 # Mask for determining if underlying fedabipkgdiff succeeds or not.
 # This is for when the compared ABIs are equal
 ABIDIFF_OK = 0
@@ -716,7 +718,7 @@ def build_path_to_abipkgdiff():
     """
     if global_config.abipkgdiff:
         return global_config.abipkgdiff
-    return 'abipkgdiff'
+    return DEFAULT_ABIPKGDIFF
 
 
 @log_call
@@ -748,6 +750,7 @@ def abipkgdiff(pkg_info1, pkg_info2):
 
     cmd = [
         abipkgdiff_tool,
+        '--show-identical-binaries' if global_config.show_identical_binaries else '',
         '--no-default-suppression' if global_config.no_default_suppr else '',
         '--dso-only' if global_config.dso_only else '',
         '--d1', pkg_info1.debuginfo_package.downloaded_file,
@@ -1133,6 +1136,12 @@ def build_commandline_args_parser():
         action='store_true',
         dest='no_devel_pkg',
         help='Do not compare ABI with development package')
+    parser.add_argument(
+        '--show-identical-binaries',
+        required=False,
+        action='store_true',
+        dest='show_identical_binaries',
+        help='Show information about binaries whose ABI are identical')
     return parser
 
 

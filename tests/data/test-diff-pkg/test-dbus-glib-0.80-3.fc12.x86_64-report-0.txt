@@ -1,0 +1,8 @@
+================ changes of 'dbus-binding-tool'===============
+No ABI change detected
+================ end of changes of 'dbus-binding-tool'===============
+
+================ changes of 'libdbus-glib-1.so.2.1.0'===============
+No ABI change detected
+================ end of changes of 'libdbus-glib-1.so.2.1.0'===============
+

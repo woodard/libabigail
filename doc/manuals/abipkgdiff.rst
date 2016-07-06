@@ -164,6 +164,13 @@ Options
    Do not show information about where in the *second shared library*
    the respective type was changed.
 
+  * ``--show-identical-binaries``
+
+   Show the names of the all binaries compared, including the
+   binaries whose ABI compare equal.  By default, when this option is
+   not provided, only binaries with ABI changes are mentionned in the
+   output.
+
   * ``--fail-no-dbg``
 
     Make the program fail and return a non-zero exit code if couldn't
