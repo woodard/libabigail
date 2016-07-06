@@ -415,6 +415,13 @@ InOutSpec in_out_specs[] =
     "data/test-diff-filter/test33-report-0.txt",
     "output/test-diff-filter/test33-report-0.txt",
   },
+  {
+    "data/test-diff-filter/test34-libjemalloc.so.2-gcc-6.1.0",
+    "data/test-diff-filter/test34-libjemalloc.so.2-intel-16.0.3",
+    "--no-default-suppression --no-linkage-name --no-show-locs --no-redundant",
+    "data/test-diff-filter/test34-report-0.txt",
+    "output/test-diff-filter/test34-report-0.txt",
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL}
 };

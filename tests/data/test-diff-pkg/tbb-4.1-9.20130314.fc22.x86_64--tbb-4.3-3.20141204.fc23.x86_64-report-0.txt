@@ -19,8 +19,8 @@
     'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_release(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex16internal_releaseERNS2_11scoped_lockE}
     'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_try_acquire_writer(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex27internal_try_acquire_writerERNS2_11scoped_lockE}
     'method bool tbb::interface8::internal::x86_rtm_rw_mutex::internal_upgrade(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex16internal_upgradeERNS2_11scoped_lockE}
-    'method void tbb::internal::concurrent_queue_base_v8::internal_push_move()'    {_ZN3tbb8internal24concurrent_queue_base_v818internal_push_moveEPKv}
-    'method bool tbb::internal::concurrent_queue_base_v8::internal_push_move_if_not_full()'    {_ZN3tbb8internal24concurrent_queue_base_v830internal_push_move_if_not_fullEPKv}
+    'method void tbb::internal::concurrent_queue_base_v8::internal_push_move(void*)'    {_ZN3tbb8internal24concurrent_queue_base_v818internal_push_moveEPKv}
+    'method bool tbb::internal::concurrent_queue_base_v8::internal_push_move_if_not_full(void*)'    {_ZN3tbb8internal24concurrent_queue_base_v830internal_push_move_if_not_fullEPKv}
     'method void tbb::internal::concurrent_queue_base_v8::move_content(tbb::internal::concurrent_queue_base_v8&)'    {_ZN3tbb8internal24concurrent_queue_base_v812move_contentERS1_}
     'method void tbb::task_group_context::capture_fp_settings()'    {_ZN3tbb18task_group_context19capture_fp_settingsEv}
 

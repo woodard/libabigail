@@ -172,6 +172,15 @@ public:
   void
   canonicalization_is_done(bool);
 
+  bool
+  is_void_type(const type_decl*) const;
+
+  bool
+  is_void_type(const type_decl_sptr&) const;
+
+  bool
+  is_void_type(const type_base_sptr&) const;
+
   interned_string
   intern(const string&) const;
 

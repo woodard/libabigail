@@ -724,6 +724,8 @@
     <pointer-type-def type-id='type-id-42' size-in-bits='64' id='type-id-43'/>
     <typedef-decl name='__compar_fn_t' type-id='type-id-43' filepath='/usr/include/stdlib.h' line='741' column='1' id='type-id-44'/>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-44'/>
@@ -1484,6 +1486,7 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='fwrite' filepath='/usr/include/stdio.h' line='715' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-95'/>
@@ -1757,6 +1760,8 @@
       <return type-id='type-id-8'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-42'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <return type-id='type-id-5'/>
     </function-type>
   </abi-instr>
@@ -5097,6 +5102,8 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-44'/>
@@ -5731,6 +5738,7 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='fwrite' filepath='/usr/include/stdio.h' line='715' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-95'/>
@@ -6544,20 +6552,25 @@
       <return type-id='type-id-65'/>
     </function-decl>
     <function-decl name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-41'/>
-      <return type-id='type-id-8'/>
+      <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-5'/>
     </function-decl>
     <function-decl name='memcpy' filepath='/usr/include/string.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memmove' filepath='/usr/include/string.h' line='50' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
@@ -7382,6 +7395,8 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-44'/>
@@ -8013,6 +8028,7 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='fwrite' filepath='/usr/include/stdio.h' line='715' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-95'/>
@@ -8825,20 +8841,25 @@
       <return type-id='type-id-65'/>
     </function-decl>
     <function-decl name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-41'/>
-      <return type-id='type-id-8'/>
+      <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-5'/>
     </function-decl>
     <function-decl name='memcpy' filepath='/usr/include/string.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memmove' filepath='/usr/include/string.h' line='50' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
@@ -9207,6 +9228,8 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-44'/>
@@ -9845,6 +9868,7 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='fwrite' filepath='/usr/include/stdio.h' line='715' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-95'/>
@@ -10099,20 +10123,25 @@
       <return type-id='type-id-41'/>
     </function-decl>
     <function-decl name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-41'/>
-      <return type-id='type-id-8'/>
+      <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-5'/>
     </function-decl>
     <function-decl name='memcpy' filepath='/usr/include/string.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memmove' filepath='/usr/include/string.h' line='50' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
@@ -10339,6 +10368,8 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-44'/>
@@ -10970,6 +11001,7 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='fwrite' filepath='/usr/include/stdio.h' line='715' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-95'/>
@@ -11782,20 +11814,25 @@
       <return type-id='type-id-65'/>
     </function-decl>
     <function-decl name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-41'/>
-      <return type-id='type-id-8'/>
+      <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-5'/>
     </function-decl>
     <function-decl name='memcpy' filepath='/usr/include/string.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memmove' filepath='/usr/include/string.h' line='50' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
@@ -12113,6 +12150,8 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-44'/>
@@ -12744,6 +12783,7 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='fwrite' filepath='/usr/include/stdio.h' line='715' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-95'/>
@@ -13556,20 +13596,25 @@
       <return type-id='type-id-65'/>
     </function-decl>
     <function-decl name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-41'/>
-      <return type-id='type-id-8'/>
+      <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-5'/>
     </function-decl>
     <function-decl name='memcpy' filepath='/usr/include/string.h' line='46' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-100'/>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
     </function-decl>
     <function-decl name='memmove' filepath='/usr/include/string.h' line='50' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <return type-id='type-id-39'/>
@@ -13965,6 +14010,8 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-44'/>
@@ -14603,6 +14650,7 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='fwrite' filepath='/usr/include/stdio.h' line='715' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-100'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-95'/>
@@ -14893,6 +14941,8 @@
       <return type-id='type-id-38'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-39'/>
+      <parameter type-id='type-id-39'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-41'/>
       <parameter type-id='type-id-44'/>

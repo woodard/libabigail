@@ -2113,6 +2113,44 @@ void
 environment::canonicalization_is_done(bool f)
 {priv_->canonicalization_is_done_ = f;}
 
+/// Test if a given basic type is a void type as defined in the
+/// current environment.
+///
+/// @param d the basic type to consider.
+///
+/// @return true iff @p d is a void type as defined in the current
+/// environment.
+bool
+environment::is_void_type(const type_decl* d) const
+{return (get_void_type_decl().get() == d);}
+
+/// Test if a given basic type is a void type as defined in the
+/// current environment.
+///
+/// @param d the basic type to consider.
+///
+/// @return true iff @p d is a void type as defined in the current
+/// environment.
+bool
+environment::is_void_type(const type_base_sptr& t) const
+{
+  type_decl_sptr d = is_type_decl(t);
+  if (!d)
+    return false;
+  return is_void_type(d);
+}
+
+/// Test if a given basic type is a void type as defined in the
+/// current environment.
+///
+/// @param d the basic type to consider.
+///
+/// @return true iff @p d is a void type as defined in the current
+/// environment.
+bool
+environment::is_void_type(const type_decl_sptr& d) const
+{return is_void_type(d.get());}
+
 /// Do intern a string.
 ///
 /// If a value of this string already exists in the interned string

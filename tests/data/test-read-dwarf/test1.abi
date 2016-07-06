@@ -75,14 +75,16 @@
         <function-decl name='s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='21' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-11' is-artificial='yes'/>
           <parameter type-id='type-id-8' is-artificial='yes'/>
-          <return type-id='type-id-12'/>
+          <parameter type-id='type-id-12' is-artificial='yes'/>
+          <return type-id='type-id-13'/>
         </function-decl>
       </member-function>
       <member-function access='public' destructor='yes'>
         <function-decl name='~s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='27' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-11' is-artificial='yes'/>
           <parameter type-id='type-id-8' is-artificial='yes'/>
-          <return type-id='type-id-12'/>
+          <parameter type-id='type-id-12' is-artificial='yes'/>
+          <return type-id='type-id-13'/>
         </function-decl>
       </member-function>
       <member-function access='public'>
@@ -95,26 +97,30 @@
         <function-decl name='s0' mangled-name='_ZN2s0C1Ev' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='21' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN2s0C1Ev'>
           <parameter type-id='type-id-11' is-artificial='yes'/>
           <parameter type-id='type-id-8' is-artificial='yes'/>
-          <return type-id='type-id-12'/>
+          <parameter type-id='type-id-12' is-artificial='yes'/>
+          <return type-id='type-id-13'/>
         </function-decl>
       </member-function>
       <member-function access='public' destructor='yes'>
         <function-decl name='~s0' mangled-name='_ZN2s0D1Ev' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='27' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN2s0D1Ev'>
           <parameter type-id='type-id-11' is-artificial='yes'/>
           <parameter type-id='type-id-8' is-artificial='yes'/>
-          <return type-id='type-id-12'/>
+          <parameter type-id='type-id-12' is-artificial='yes'/>
+          <return type-id='type-id-13'/>
         </function-decl>
       </member-function>
     </class-decl>
     <type-decl name='int' size-in-bits='32' id='type-id-8'/>
     <type-decl name='unsigned char' size-in-bits='8' id='type-id-10'/>
-    <type-decl name='void' id='type-id-12'/>
+    <type-decl name='void' id='type-id-13'/>
     <pointer-type-def type-id='type-id-6' size-in-bits='64' id='type-id-11'/>
-    <reference-type-def kind='lvalue' type-id='type-id-6' size-in-bits='64' id='type-id-13'/>
-    <qualified-type-def type-id='type-id-13' id='type-id-14'/>
+    <pointer-type-def type-id='type-id-13' size-in-bits='64' id='type-id-14'/>
+    <pointer-type-def type-id='type-id-14' size-in-bits='64' id='type-id-12'/>
+    <reference-type-def kind='lvalue' type-id='type-id-6' size-in-bits='64' id='type-id-15'/>
+    <qualified-type-def type-id='type-id-15' id='type-id-16'/>
     <function-decl name='foo' mangled-name='_Z3fooR2s0' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z3fooR2s0'>
-      <parameter type-id='type-id-14' name='s' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1'/>
-      <return type-id='type-id-12'/>
+      <parameter type-id='type-id-16' name='s' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='42' column='1'/>
+      <return type-id='type-id-13'/>
     </function-decl>
     <function-decl name='main' mangled-name='main' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='48' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='main'>
       <return type-id='type-id-8'/>

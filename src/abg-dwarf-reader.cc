@@ -7878,16 +7878,20 @@ build_qualified_type(read_context&	ctxt,
 
   Dwarf_Die underlying_type_die;
   bool utype_is_in_alt_di = false;
+  decl_base_sptr utype_decl;
   if (!die_die_attribute(die, die_is_in_alt_di, DW_AT_type,
 			 underlying_type_die,
 			 utype_is_in_alt_di))
-    return result;
+    // So, if no DW_AT_type is present, then this means (if we are
+    // looking at a debug info emitted by GCC) that we are looking
+    // at a qualified void type.
+    utype_decl = build_ir_node_for_void_type(ctxt);
 
-  decl_base_sptr utype_decl =
-    is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
-				   utype_is_in_alt_di,
-				   called_from_public_decl,
-				   where_offset));
+  if (!utype_decl)
+    utype_decl = is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
+						utype_is_in_alt_di,
+						called_from_public_decl,
+						where_offset));
   if (!utype_decl)
     return result;
 
@@ -7945,13 +7949,22 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
 
   decl_base_sptr result = t;
   type_base_sptr u = t->get_underlying_type();
+  environment* env = t->get_environment();
+
   if (t->get_cv_quals() & qualified_type_def::CV_CONST
-      && is_reference_type(t->get_underlying_type()))
+      && (is_reference_type(u)))
     // Let's strip only the const qualifier.  To do that, the "const"
     // qualified is turned into a no-op "none" qualified.
     result.reset(new qualified_type_def
 		 (u, t->get_cv_quals() & ~qualified_type_def::CV_CONST,
 		  t->get_location()));
+  else if (t->get_cv_quals() & qualified_type_def::CV_CONST
+	   && env->is_void_type(u))
+    // So this type is a "const void".  Let's strip the "const"
+    // qualifier out and make this just be "void", so that a "const
+    // void" type and a "void" type compare equal after going through
+    // this function.
+    result = is_decl(u);
 
   return result;
 }

@@ -1992,6 +1992,8 @@
     <pointer-type-def type-id='type-id-77' size-in-bits='64' id='type-id-78'/>
     <typedef-decl name='__compar_fn_t' type-id='type-id-78' filepath='/usr/include/stdlib.h' line='741' column='1' id='type-id-79'/>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-79'/>
@@ -2165,6 +2167,7 @@
           <function-decl name='allocate' mangled-name='_ZN9__gnu_cxx13new_allocatorIcE8allocateEmPKv' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='99' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-92'/>
+            <parameter type-id='type-id-75'/>
             <return type-id='type-id-93'/>
           </function-decl>
         </member-function>
@@ -3799,6 +3802,8 @@
       <return type-id='type-id-7'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-77'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <return type-id='type-id-36'/>
     </function-type>
   </abi-instr>
@@ -8630,6 +8635,7 @@
           <function-decl name='allocate' mangled-name='_ZN9__gnu_cxx13new_allocatorIwE8allocateEmPKv' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='99' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-492' is-artificial='yes'/>
             <parameter type-id='type-id-487'/>
+            <parameter type-id='type-id-75'/>
             <return type-id='type-id-488'/>
           </function-decl>
         </member-function>
@@ -9039,6 +9045,8 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-79'/>
@@ -9749,11 +9757,14 @@
     <namespace-decl name='__cxxabiv1'>
     </namespace-decl>
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-76'/>
-      <return type-id='type-id-7'/>
+      <return type-id='type-id-75'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <return type-id='type-id-36'/>
     </function-decl>
@@ -10041,6 +10052,8 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-79'/>
@@ -10790,11 +10803,14 @@
     <namespace-decl name='__cxxabiv1'>
     </namespace-decl>
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-76'/>
-      <return type-id='type-id-7'/>
+      <return type-id='type-id-75'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <return type-id='type-id-36'/>
     </function-decl>
@@ -10949,6 +10965,8 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-79'/>
@@ -11731,11 +11749,14 @@
       <return type-id='type-id-76'/>
     </function-decl>
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-76'/>
-      <return type-id='type-id-7'/>
+      <return type-id='type-id-75'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <return type-id='type-id-36'/>
     </function-decl>
@@ -11853,6 +11874,8 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-79'/>
@@ -12543,11 +12566,14 @@
     <namespace-decl name='__cxxabiv1'>
     </namespace-decl>
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-76'/>
-      <return type-id='type-id-7'/>
+      <return type-id='type-id-75'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <return type-id='type-id-36'/>
     </function-decl>
@@ -12632,6 +12658,8 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-79'/>
@@ -13323,11 +13351,14 @@
     <namespace-decl name='__cxxabiv1'>
     </namespace-decl>
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-76'/>
-      <return type-id='type-id-7'/>
+      <return type-id='type-id-75'/>
     </function-decl>
     <function-decl name='memcmp' filepath='/usr/include/string.h' line='69' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <return type-id='type-id-36'/>
     </function-decl>
@@ -13533,6 +13564,8 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-79'/>
@@ -14318,6 +14351,8 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='bsearch' filepath='/usr/include/stdlib.h' line='754' column='1' visibility='default' binding='global' size-in-bits='64'>
+      <parameter type-id='type-id-75'/>
+      <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-76'/>
       <parameter type-id='type-id-79'/>

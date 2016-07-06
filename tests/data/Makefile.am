@@ -525,6 +525,9 @@ test-diff-filter/test32-ppc64le-struct-change-v1.c \
 test-diff-filter/test33-libelf.so.0.8.13-gcc \
 test-diff-filter/test33-libelf.so.0.8.13-intel16.0.3 \
 test-diff-filter/test33-report-0.txt \
+test-diff-filter/test34-libjemalloc.so.2-gcc-6.1.0 \
+test-diff-filter/test34-libjemalloc.so.2-intel-16.0.3 \
+test-diff-filter/test34-report-0.txt \
 \
 test-diff-suppr/test0-type-suppr-v0.cc	\
 test-diff-suppr/test0-type-suppr-v1.cc	\

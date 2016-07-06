@@ -95,6 +95,8 @@
   <abi-instr version='1.0' address-size='64' path='libutil/mipmap.c' language='LANG_C99'>
     <typedef-decl name='GLint' type-id='type-id-9' filepath='../../../include/GL/gl.h' line='155' column='1' id='type-id-10'/>
     <typedef-decl name='GLsizei' type-id='type-id-9' filepath='../../../include/GL/gl.h' line='159' column='1' id='type-id-11'/>
+    <type-decl name='void' id='type-id-12'/>
+    <pointer-type-def type-id='type-id-12' size-in-bits='64' id='type-id-13'/>
     <function-decl name='gluBuild3DMipmaps' mangled-name='gluBuild3DMipmaps' filepath='libutil/mipmap.c' line='8482' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluBuild3DMipmaps'>
       <parameter type-id='type-id-6' name='target' filepath='libutil/mipmap.c' line='8482' column='1'/>
       <parameter type-id='type-id-10' name='internalFormat' filepath='libutil/mipmap.c' line='8482' column='1'/>
@@ -103,6 +105,7 @@
       <parameter type-id='type-id-11' name='depth' filepath='libutil/mipmap.c' line='8483' column='1'/>
       <parameter type-id='type-id-6' name='format' filepath='libutil/mipmap.c' line='8484' column='1'/>
       <parameter type-id='type-id-6' name='type' filepath='libutil/mipmap.c' line='8484' column='1'/>
+      <parameter type-id='type-id-13' name='data' filepath='libutil/mipmap.c' line='8484' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluBuild3DMipmapLevels' mangled-name='gluBuild3DMipmapLevels' filepath='libutil/mipmap.c' line='8444' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluBuild3DMipmapLevels'>
@@ -116,15 +119,15 @@
       <parameter type-id='type-id-10' name='userLevel' filepath='libutil/mipmap.c' line='8447' column='1'/>
       <parameter type-id='type-id-10' name='baseLevel' filepath='libutil/mipmap.c' line='8447' column='1'/>
       <parameter type-id='type-id-10' name='maxLevel' filepath='libutil/mipmap.c' line='8447' column='1'/>
+      <parameter type-id='type-id-13' name='data' filepath='libutil/mipmap.c' line='8448' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
-    <type-decl name='void' id='type-id-12'/>
-    <pointer-type-def type-id='type-id-12' size-in-bits='64' id='type-id-13'/>
     <function-decl name='gluScaleImage' mangled-name='gluScaleImage' filepath='libutil/mipmap.c' line='3498' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluScaleImage'>
       <parameter type-id='type-id-6' name='format' filepath='libutil/mipmap.c' line='3498' column='1'/>
       <parameter type-id='type-id-11' name='widthin' filepath='libutil/mipmap.c' line='3498' column='1'/>
       <parameter type-id='type-id-11' name='heightin' filepath='libutil/mipmap.c' line='3498' column='1'/>
       <parameter type-id='type-id-6' name='typein' filepath='libutil/mipmap.c' line='3499' column='1'/>
+      <parameter type-id='type-id-13' name='datain' filepath='libutil/mipmap.c' line='3499' column='1'/>
       <parameter type-id='type-id-11' name='widthout' filepath='libutil/mipmap.c' line='3500' column='1'/>
       <parameter type-id='type-id-11' name='heightout' filepath='libutil/mipmap.c' line='3500' column='1'/>
       <parameter type-id='type-id-6' name='typeout' filepath='libutil/mipmap.c' line='3500' column='1'/>
@@ -137,6 +140,7 @@
       <parameter type-id='type-id-11' name='width' filepath='libutil/mipmap.c' line='3672' column='1'/>
       <parameter type-id='type-id-6' name='format' filepath='libutil/mipmap.c' line='3673' column='1'/>
       <parameter type-id='type-id-6' name='type' filepath='libutil/mipmap.c' line='3673' column='1'/>
+      <parameter type-id='type-id-13' name='data' filepath='libutil/mipmap.c' line='3674' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluBuild1DMipmapLevels' mangled-name='gluBuild1DMipmapLevels' filepath='libutil/mipmap.c' line='3643' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluBuild1DMipmapLevels'>
@@ -148,6 +152,7 @@
       <parameter type-id='type-id-10' name='userLevel' filepath='libutil/mipmap.c' line='3646' column='1'/>
       <parameter type-id='type-id-10' name='baseLevel' filepath='libutil/mipmap.c' line='3646' column='1'/>
       <parameter type-id='type-id-10' name='maxLevel' filepath='libutil/mipmap.c' line='3646' column='1'/>
+      <parameter type-id='type-id-13' name='data' filepath='libutil/mipmap.c' line='3647' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluBuild2DMipmaps' mangled-name='gluBuild2DMipmaps' filepath='libutil/mipmap.c' line='4584' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluBuild2DMipmaps'>
@@ -157,6 +162,7 @@
       <parameter type-id='type-id-11' name='height' filepath='libutil/mipmap.c' line='4585' column='1'/>
       <parameter type-id='type-id-6' name='format' filepath='libutil/mipmap.c' line='4586' column='1'/>
       <parameter type-id='type-id-6' name='type' filepath='libutil/mipmap.c' line='4586' column='1'/>
+      <parameter type-id='type-id-13' name='data' filepath='libutil/mipmap.c' line='4587' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <function-decl name='gluBuild2DMipmapLevels' mangled-name='gluBuild2DMipmapLevels' filepath='libutil/mipmap.c' line='4552' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='gluBuild2DMipmapLevels'>
@@ -169,6 +175,7 @@
       <parameter type-id='type-id-10' name='userLevel' filepath='libutil/mipmap.c' line='4555' column='1'/>
       <parameter type-id='type-id-10' name='baseLevel' filepath='libutil/mipmap.c' line='4555' column='1'/>
       <parameter type-id='type-id-10' name='maxLevel' filepath='libutil/mipmap.c' line='4555' column='1'/>
+      <parameter type-id='type-id-13' name='data' filepath='libutil/mipmap.c' line='4556' column='1'/>
       <return type-id='type-id-10'/>
     </function-decl>
     <class-decl name='_IO_FILE' size-in-bits='1728' is-struct='yes' visibility='default' filepath='/usr/include/libio.h' line='271' column='1' id='type-id-14'>
@@ -6255,6 +6262,7 @@
         <function-decl name='CoveAndTiler' filepath='libnurbs/internals/coveandtiler.cc' line='52' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-283' is-artificial='yes'/>
           <parameter type-id='type-id-9' is-artificial='yes'/>
+          <parameter type-id='type-id-109' is-artificial='yes'/>
           <parameter type-id='type-id-238'/>
           <return type-id='type-id-12'/>
         </function-decl>
@@ -6263,6 +6271,7 @@
         <function-decl name='~CoveAndTiler' filepath='libnurbs/internals/coveandtiler.cc' line='56' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-283' is-artificial='yes'/>
           <parameter type-id='type-id-9' is-artificial='yes'/>
+          <parameter type-id='type-id-109' is-artificial='yes'/>
           <return type-id='type-id-12'/>
         </function-decl>
       </member-function>
@@ -8409,6 +8418,7 @@
         <function-decl name='Hull' filepath='libnurbs/internals/hull.cc' line='51' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-355' is-artificial='yes'/>
           <parameter type-id='type-id-9' is-artificial='yes'/>
+          <parameter type-id='type-id-109' is-artificial='yes'/>
           <return type-id='type-id-12'/>
         </function-decl>
       </member-function>
@@ -8416,6 +8426,7 @@
         <function-decl name='~Hull' filepath='libnurbs/internals/hull.cc' line='54' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-355' is-artificial='yes'/>
           <parameter type-id='type-id-9' is-artificial='yes'/>
+          <parameter type-id='type-id-109' is-artificial='yes'/>
           <return type-id='type-id-12'/>
         </function-decl>
       </member-function>
@@ -8649,6 +8660,7 @@
         <function-decl name='Mesher' filepath='libnurbs/internals/mesher.cc' line='55' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-363' is-artificial='yes'/>
           <parameter type-id='type-id-9' is-artificial='yes'/>
+          <parameter type-id='type-id-109' is-artificial='yes'/>
           <parameter type-id='type-id-238'/>
           <return type-id='type-id-12'/>
         </function-decl>
@@ -8657,6 +8669,7 @@
         <function-decl name='~Mesher' filepath='libnurbs/internals/mesher.cc' line='67' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-363' is-artificial='yes'/>
           <parameter type-id='type-id-9' is-artificial='yes'/>
+          <parameter type-id='type-id-109' is-artificial='yes'/>
           <return type-id='type-id-12'/>
         </function-decl>
       </member-function>
@@ -10567,6 +10580,7 @@
         <function-decl name='Slicer' filepath='libnurbs/internals/slicer.cc' line='1181' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-405' is-artificial='yes'/>
           <parameter type-id='type-id-9' is-artificial='yes'/>
+          <parameter type-id='type-id-109' is-artificial='yes'/>
           <parameter type-id='type-id-238'/>
           <return type-id='type-id-12'/>
         </function-decl>
@@ -10575,6 +10589,7 @@
         <function-decl name='~Slicer' filepath='libnurbs/internals/slicer.cc' line='1192' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-405' is-artificial='yes'/>
           <parameter type-id='type-id-9' is-artificial='yes'/>
+          <parameter type-id='type-id-109' is-artificial='yes'/>
           <return type-id='type-id-12'/>
         </function-decl>
       </member-function>
