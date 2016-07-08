@@ -8278,6 +8278,13 @@ build_function_type(read_context&	ctxt,
 					    /*variadic_marker=*/true,
 					    is_artificial));
 	    function_parms.push_back(p);
+	    // After a DW_TAG_unspecified_parameters tag, we shouldn't
+	    // keep reading for parameters.  The
+	    // unspecified_parameters TAG should be the last parameter
+	    // that we record. For instance, if there are multiple
+	    // DW_TAG_unspecified_parameters DIEs then we should care
+	    // only for the first one.
+	    break;
 	  }
       }
   while (dwarf_siblingof(&child, &child) == 0);
