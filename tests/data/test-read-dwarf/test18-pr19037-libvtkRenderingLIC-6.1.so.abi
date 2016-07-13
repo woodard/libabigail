@@ -3219,14 +3219,14 @@
     <pointer-type-def type-id='type-id-142' size-in-bits='64' id='type-id-144'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-36'/>
     <typedef-decl name='__off_t' type-id='type-id-36' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-145'/>
-    <type-decl name='short unsigned int' size-in-bits='16' id='type-id-139'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-139'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-146'/>
     <array-type-def dimensions='1' type-id='type-id-81' size-in-bits='8' id='type-id-147'>
       <subrange length='1'/>
     </array-type-def>
     <typedef-decl name='__off64_t' type-id='type-id-36' filepath='/usr/include/bits/types.h' line='142' column='1' id='type-id-148'/>
     <pointer-type-def type-id='type-id-6' size-in-bits='64' id='type-id-149'/>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-61'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-61'/>
     <typedef-decl name='size_t' type-id='type-id-61' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='211' column='1' id='type-id-48'/>
     <array-type-def dimensions='1' type-id='type-id-81' size-in-bits='160' id='type-id-150'>
       <subrange length='20'/>

@@ -108,7 +108,7 @@
         in pointed to type 'char':
           entity changed from 'char' to 'const char'
 
-    [C]'function void _IceGetPaAuthData(char*, char*, char*, short unsigned int*, char**)' at getauth.c:88:1 has some indirect sub-type changes:
+    [C]'function void _IceGetPaAuthData(char*, char*, char*, unsigned short int*, char**)' at getauth.c:88:1 has some indirect sub-type changes:
       parameter 1 of type 'char*' changed:
         in pointed to type 'char':
           entity changed from 'char' to 'const char'
@@ -127,7 +127,7 @@
         in pointed to type 'char':
           entity changed from 'char' to 'const char'
 
-    [C]'function void _IceGetPoAuthData(char*, char*, char*, short unsigned int*, char**)' at getauth.c:57:1 has some indirect sub-type changes:
+    [C]'function void _IceGetPoAuthData(char*, char*, char*, unsigned short int*, char**)' at getauth.c:57:1 has some indirect sub-type changes:
       parameter 1 of type 'char*' changed:
         in pointed to type 'char':
           entity changed from 'char' to 'const char'

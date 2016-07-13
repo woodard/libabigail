@@ -2509,7 +2509,7 @@
         </data-member>
       </class-decl>
     </namespace-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-52'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-52'/>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
     <type-decl name='void' id='type-id-4'/>
     <reference-type-def kind='lvalue' type-id='type-id-1' size-in-bits='64' id='type-id-3'/>
@@ -3819,7 +3819,7 @@
     <function-decl name='getwchar' filepath='/usr/include/wchar.h' line='752' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-282'/>
     </function-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-52'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-52'/>
     <typedef-decl name='size_t' type-id='type-id-52' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='212' column='1' id='type-id-290'/>
     <type-decl name='char' size-in-bits='8' id='type-id-291'/>
     <qualified-type-def type-id='type-id-291' const='yes' id='type-id-278'/>
@@ -4162,7 +4162,7 @@
       <parameter type-id='type-id-48'/>
       <return type-id='type-id-311'/>
     </function-decl>
-    <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-312'/>
+    <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-312'/>
     <function-decl name='wcstoull' filepath='/usr/include/wchar.h' line='490' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-289'/>
       <parameter type-id='type-id-308'/>
@@ -5520,7 +5520,7 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-52'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-52'/>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
     <type-decl name='void' id='type-id-4'/>
     <reference-type-def kind='lvalue' type-id='type-id-1' size-in-bits='64' id='type-id-3'/>
@@ -6682,7 +6682,7 @@
       </class-decl>
       <class-decl name='functor_base' size-in-bits='8' is-struct='yes' visibility='default' filepath='../sigc++/functors/functor_trait.h' line='73' column='1' id='type-id-175'/>
     </namespace-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-52'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-52'/>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
     <type-decl name='void' id='type-id-4'/>
     <reference-type-def kind='lvalue' type-id='type-id-1' size-in-bits='64' id='type-id-3'/>

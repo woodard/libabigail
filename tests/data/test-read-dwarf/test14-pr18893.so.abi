@@ -281,13 +281,13 @@
     <pointer-type-def type-id='type-id-14' size-in-bits='64' id='type-id-17'/>
     <type-decl name='long int' size-in-bits='64' id='type-id-27'/>
     <typedef-decl name='__off_t' type-id='type-id-27' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-18'/>
-    <type-decl name='short unsigned int' size-in-bits='16' id='type-id-19'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-19'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-20'/>
     <array-type-def dimensions='1' type-id='type-id-25' size-in-bits='8' id='type-id-21'>
       <subrange length='1'/>
     </array-type-def>
     <typedef-decl name='__off64_t' type-id='type-id-27' filepath='/usr/include/bits/types.h' line='142' column='1' id='type-id-22'/>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-28'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-28'/>
     <typedef-decl name='size_t' type-id='type-id-28' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='211' column='1' id='type-id-23'/>
     <array-type-def dimensions='1' type-id='type-id-25' size-in-bits='160' id='type-id-24'>
       <subrange length='20'/>

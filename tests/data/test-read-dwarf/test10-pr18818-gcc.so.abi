@@ -1987,7 +1987,7 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <pointer-type-def type-id='type-id-7' size-in-bits='64' id='type-id-75'/>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-48'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-48'/>
     <typedef-decl name='size_t' type-id='type-id-48' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='212' column='1' id='type-id-76'/>
     <pointer-type-def type-id='type-id-77' size-in-bits='64' id='type-id-78'/>
     <typedef-decl name='__compar_fn_t' type-id='type-id-78' filepath='/usr/include/stdlib.h' line='741' column='1' id='type-id-79'/>
@@ -3085,7 +3085,7 @@
     <pointer-type-def type-id='type-id-177' size-in-bits='64' id='type-id-169'/>
     <pointer-type-def type-id='type-id-168' size-in-bits='64' id='type-id-170'/>
     <typedef-decl name='__off_t' type-id='type-id-54' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='131' column='1' id='type-id-171'/>
-    <type-decl name='short unsigned int' size-in-bits='16' id='type-id-172'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-172'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-173'/>
     <array-type-def dimensions='1' type-id='type-id-35' size-in-bits='8' id='type-id-174'>
       <subrange length='1'/>

@@ -1541,7 +1541,7 @@
     <pointer-type-def type-id='type-id-8' size-in-bits='64' id='type-id-1'/>
     <type-decl name='void' id='type-id-9'/>
     <pointer-type-def type-id='type-id-9' size-in-bits='64' id='type-id-4'/>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-2'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-2'/>
     <namespace-decl name='__tsan'>
       <function-decl name='max&lt;long unsigned int&gt;' filepath='../../.././libsanitizer/tsan/tsan_defs.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-2'/>
@@ -8662,7 +8662,7 @@
       <parameter type-id='type-id-4' name='addr' filepath='../../.././libsanitizer/tsan/tsan_interface.cc' line='34' column='1'/>
       <return type-id='type-id-9'/>
     </function-decl>
-    <type-decl name='short unsigned int' size-in-bits='16' id='type-id-450'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-450'/>
     <typedef-decl name='uu16' type-id='type-id-451' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_internal_defs.h' line='171' column='1' id='type-id-452'/>
     <qualified-type-def type-id='type-id-452' const='yes' id='type-id-453'/>
     <pointer-type-def type-id='type-id-453' size-in-bits='64' id='type-id-454'/>

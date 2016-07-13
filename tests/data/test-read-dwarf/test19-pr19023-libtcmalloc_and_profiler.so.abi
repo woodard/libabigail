@@ -2603,7 +2603,7 @@
       </member-type>
     </class-decl>
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-46'/>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-18'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-18'/>
     <typedef-decl name='size_t' type-id='type-id-18' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/include/stddef.h' line='211' column='1' id='type-id-29'/>
     <type-decl name='char' size-in-bits='8' id='type-id-65'/>
     <qualified-type-def type-id='type-id-65' const='yes' id='type-id-79'/>
@@ -3195,7 +3195,7 @@
     <pointer-type-def type-id='type-id-131' size-in-bits='64' id='type-id-123'/>
     <pointer-type-def type-id='type-id-122' size-in-bits='64' id='type-id-124'/>
     <typedef-decl name='__off_t' type-id='type-id-96' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-125'/>
-    <type-decl name='short unsigned int' size-in-bits='16' id='type-id-126'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-126'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-127'/>
     <array-type-def dimensions='1' type-id='type-id-65' size-in-bits='8' id='type-id-128'>
       <subrange length='1'/>

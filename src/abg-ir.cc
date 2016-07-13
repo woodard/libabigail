@@ -7220,6 +7220,368 @@ type_base::~type_base()
 
 // </type_base definitions>
 
+// <integral_type definitions>
+
+/// The internal representation of an integral type.
+///
+/// This is a "utility type" used internally to canonicalize the name
+/// of fundamental integral types, so that "unsignd long" and "long
+/// unsined int" end-up having the same name.
+class integral_type
+{
+public:
+  /// The possible base types of integral types.  We might have
+  /// forgotten many of these, so do not hesitate to add new ones.
+  ///
+  /// If you do add new ones, please also consider updating functions
+  /// parse_base_integral_type and integral_type::to_string.
+  enum base_type
+  {
+    /// The "int" base type.
+    INT_BASE_TYPE,
+    /// The "char" base type.
+    CHAR_BASE_TYPE,
+    /// The "bool" base type in C++ or "_Bool" in C11.
+    BOOL_BASE_TYPE,
+    /// The "double" base type.
+    DOUBLE_BASE_TYPE,
+    /// The "float" base type.
+    FLOAT_BASE_TYPE,
+    /// The "char16_t base type.
+    CHAR16_T_BASE_TYPE,
+    /// The "char32_t" base type.
+    CHAR32_T_BASE_TYPE,
+    /// The "wchar_t" base type.
+    WCHAR_T_BASE_TYPE
+  };
+
+  /// The modifiers of the base types above.  Several modifiers can be
+  /// combined for a given base type.  The presence of modifiers is
+  /// usually modelled by a bitmap of modifiers.
+  ///
+  /// If you add a new modifier, please consider updating functions
+  /// parse_integral_type_modifier and integral_type::to_string.
+  enum modifiers_type
+  {
+    NO_MODIFIER = 0,
+    /// The "signed" modifier.
+    SIGNED_MODIFIER = 1,
+    /// The "unsigned" modier.
+    UNSIGNED_MODIFIER = 1 << 1,
+    /// The "short" modifier.
+    SHORT_MODIFIER = 1 << 2,
+    /// The "long" modifier.
+    LONG_MODIFIER = 1 << 3,
+    /// The "long long" modifier.
+    LONG_LONG_MODIFIER = 1 << 4
+  };
+
+private:
+  base_type	base_;
+  modifiers_type modifiers_;
+
+public:
+
+  integral_type();
+  integral_type(const string& name);
+  integral_type(base_type, modifiers_type);
+
+  base_type
+  get_base_type() const;
+
+  modifiers_type
+  get_modifiers() const;
+
+  bool
+  operator==(const integral_type&) const;
+
+  string
+  to_string() const;
+
+  operator string() const;
+}; // end class integral_type
+
+/// Bitwise OR operator for integral_type::modifiers_type.
+///
+/// @param l the left-hand side operand.
+///
+/// @param r the right-hand side operand.
+///
+/// @return the result of the bitwise OR.
+integral_type::modifiers_type
+operator|(integral_type::modifiers_type l, integral_type::modifiers_type r)
+{
+  return static_cast<integral_type::modifiers_type>(static_cast<unsigned>(l)
+						    |static_cast<unsigned>(r));
+}
+
+/// Bitwise AND operator for integral_type::modifiers_type.
+///
+/// @param l the left-hand side operand.
+///
+/// @param r the right-hand side operand.
+///
+/// @return the result of the bitwise AND.
+static integral_type::modifiers_type
+operator&(integral_type::modifiers_type l, integral_type::modifiers_type r)
+{
+  return static_cast<integral_type::modifiers_type>(static_cast<unsigned>(l)
+						    &static_cast<unsigned>(r));
+}
+
+/// Bitwise |= operator for integral_type::modifiers_type.
+///
+/// @param l the left-hand side operand.
+///
+/// @param r the right-hand side operand.
+///
+/// @return the result of the bitwise |=.
+static integral_type::modifiers_type&
+operator|=(integral_type::modifiers_type& l, integral_type::modifiers_type r)
+{
+  l = l | r;
+  return l;
+}
+
+/// Parse a word containing one integral type modifier.
+///
+/// A word is considered to be a string of characters that doesn't
+/// contain any white space.
+///
+/// @param word the word to parse.  It is considered to be a string of
+/// characters that doesn't contain any white space.
+///
+/// @param modifiers out parameter.  It's set by this function to the
+/// parsed modifier iff the function returned true.
+///
+/// @return true iff @word was successfully parsed.
+static bool
+parse_integral_type_modifier(const string& word,
+			     integral_type::modifiers_type &modifiers)
+{
+    if (word == "signed")
+      modifiers |= integral_type::SIGNED_MODIFIER;
+    else if (word == "unsigned")
+      modifiers |= integral_type::UNSIGNED_MODIFIER;
+    else if (word == "short")
+      modifiers |= integral_type::SHORT_MODIFIER;
+    else if (word == "long")
+      modifiers |= integral_type::LONG_MODIFIER;
+    else if (word == "long long")
+      modifiers |= integral_type::LONG_LONG_MODIFIER;
+    else
+      return false;
+
+    return true;
+}
+
+/// Parse a base type of an integral type from a string.
+///
+/// @param type_name the type name to parse.
+///
+/// @param base out parameter.  This is set to the resulting base type
+/// parsed, iff the function returned true.
+///
+/// @return true iff the function could successfully parse the base
+/// type.
+static bool
+parse_base_integral_type(const string& type_name,
+			 integral_type::base_type& base)
+{
+  if (type_name == "int")
+    base = integral_type::INT_BASE_TYPE;
+  else if (type_name == "char")
+    base = integral_type::CHAR_BASE_TYPE;
+  else if (type_name == "bool" || type_name == "_Bool")
+    base = integral_type::BOOL_BASE_TYPE;
+  else if (type_name == "double")
+    base = integral_type::DOUBLE_BASE_TYPE;
+  else if (type_name =="float")
+    base = integral_type::FLOAT_BASE_TYPE;
+  else if (type_name == "char16_t")
+    base = integral_type::CHAR16_T_BASE_TYPE;
+  else if (type_name == "char32_t")
+    base = integral_type::CHAR32_T_BASE_TYPE;
+  else if (type_name == "wchar_t")
+    base = integral_type::WCHAR_T_BASE_TYPE;
+  else
+    return false;
+
+  return true;
+}
+
+/// Parse an integral type, from a string.
+///
+/// @param type_name the string containing the integral type to parse.
+///
+/// @param base out parameter.  Is set by this function to the base
+/// type of the integral type, iff the function returned true.
+///
+/// @param modifiers out parameter  If set by this function to the
+/// modifier of the integral type, iff the function returned true.
+///
+/// @return true iff the function could parse an integral type from @p
+/// type_name.
+static bool
+parse_integral_type(const string&			type_name,
+		    integral_type::base_type&		base,
+		    integral_type::modifiers_type&	modifiers)
+{
+  string input = type_name;
+  string::size_type len = input.length();
+  string::size_type cur_pos = 0, prev_pos = 0;
+  string cur_word, prev_word;
+  bool ok = false;
+
+  while (cur_pos < len)
+    {
+      prev_pos = cur_pos;
+      cur_pos = input.find(" ", prev_pos);
+      prev_word = cur_word;
+      cur_word = input.substr(prev_pos, cur_pos - prev_pos);
+
+      if (cur_pos < len && isspace(input[cur_pos]))
+	do
+	  ++cur_pos;
+	while (cur_pos < len && isspace(input[cur_pos]));
+
+      if (cur_pos < len
+	  && cur_word == "long"
+	  && prev_word != "long")
+	{
+	  prev_pos = cur_pos;
+	  cur_pos = input.find(" ", prev_pos);
+	  string saved_prev_word = prev_word;
+	  prev_word = cur_word;
+	  cur_word = input.substr(prev_pos, cur_pos - prev_pos);
+	  if (cur_word == "long")
+	    cur_word == "long long";
+	  else
+	    {
+	      cur_pos = prev_pos;
+	      cur_word = prev_word;
+	      prev_word = saved_prev_word;
+	    }
+	}
+
+      if (!parse_integral_type_modifier(cur_word, modifiers))
+	{
+	  if (!parse_base_integral_type(cur_word, base))
+	    return false;
+	  else
+	    ok = true;
+	}
+      else
+	ok = true;
+    }
+
+  return ok;
+}
+
+/// Default constructor of the @ref integral_type.
+integral_type::integral_type()
+  : base_(INT_BASE_TYPE),
+    modifiers_(NO_MODIFIER)
+{}
+
+/// Constructor of the @ref integral_type.
+///
+/// @param b the base type of the integral type.
+///
+/// @param m the modifiers of the integral type.
+integral_type::integral_type(base_type b, modifiers_type m)
+  : base_(b), modifiers_(m)
+{}
+
+/// Constructor of the @ref integral_type.
+///
+/// @param the name of the integral type to parse to initialize the
+/// current instance of @ref integral_type.
+integral_type::integral_type(const string& type_name)
+  : base_(INT_BASE_TYPE),
+    modifiers_(NO_MODIFIER)
+{
+  bool could_parse = parse_integral_type(type_name, base_, modifiers_);
+  assert(could_parse);
+}
+
+/// Getter of the base type of the @ref integral_type.
+///
+/// @return the base type of the @ref integral_type.
+integral_type::base_type
+integral_type::get_base_type() const
+{return base_;}
+
+/// Getter of the modifiers bitmap of the @êef integral_type.
+///
+/// @return the modifiers bitmap of the @êef integral_type.
+integral_type::modifiers_type
+integral_type::get_modifiers() const
+{return modifiers_;}
+
+/// Equality operator for the @ref integral_type.
+///
+/// @param other the other integral type to compare against.
+///
+/// @return true iff @p other equals the current instance of @ref
+/// integral_type.
+bool
+integral_type::operator==(const integral_type&other) const
+{return base_ == other.base_ && modifiers_ == other.modifiers_;}
+
+/// Return the string representation of the current instance of @ref
+/// integral_type.
+///
+/// @return the string representation of the current instance of @ref
+/// integral_type.
+string
+integral_type::to_string() const
+{
+  string result;
+
+  // Look at modifiers ...
+  if (modifiers_ & SIGNED_MODIFIER)
+    result += "signed ";
+  if (modifiers_ & UNSIGNED_MODIFIER)
+    result += "unsigned ";
+  if (modifiers_ & SHORT_MODIFIER)
+    result += "short ";
+  if (modifiers_ & LONG_MODIFIER)
+    result += "long ";
+  if (modifiers_ & LONG_LONG_MODIFIER)
+    result += "long long ";
+
+  // ... and look at base types.
+  if (base_ == INT_BASE_TYPE)
+    result += "int";
+  else if (base_ == CHAR_BASE_TYPE)
+    result += "char";
+  else if (base_ == BOOL_BASE_TYPE)
+    result += "bool";
+  else if (base_ == DOUBLE_BASE_TYPE)
+    result += "double";
+  else if (base_ == FLOAT_BASE_TYPE)
+    result += "float";
+  else if (base_ == CHAR16_T_BASE_TYPE)
+    result += "char16_t";
+    else if (base_ == CHAR32_T_BASE_TYPE)
+    result += "char32_t";
+    else if (base_ == WCHAR_T_BASE_TYPE)
+    result += "wchar_t";
+
+  return result;
+}
+
+/// Convert the current instance of @ref integral_type into its string
+/// representation.
+///
+/// @return the string representation of the current instance of @ref
+/// integral_type.
+integral_type::operator string() const
+{return to_string();}
+
+// </integral_type definitions>
+
 //<type_decl definitions>
 
 /// Constructor.
@@ -7250,6 +7612,28 @@ type_decl::type_decl(const environment* env,
     decl_base(env, name, locus, linkage_name, vis),
     type_base(env, size_in_bits, alignment_in_bits)
 {
+  integral_type::base_type base_type = integral_type::INT_BASE_TYPE;
+  integral_type::modifiers_type modifiers = integral_type::NO_MODIFIER;
+
+  if (parse_integral_type(name, base_type, modifiers))
+    {
+      // So this is an integral type.  Let's set its name into a
+      // canonical form, so that "short unsigned" and "unsigned short"
+      // both end-up having the same name, which would be "unsigned
+      // short int".
+      integral_type int_type(base_type, modifiers);
+      // Convert the integral_type into its canonical string
+      // representation.
+      string integral_type_name = int_type;
+
+      // Set the name of this type_decl to the canonical string
+      // representation above
+      set_name(integral_type_name);
+      set_qualified_name(get_name());
+
+      if (!get_linkage_name().empty())
+	set_linkage_name(integral_type_name);
+    }
 }
 
 /// Compares two instances of @ref type_decl.

@@ -458,7 +458,7 @@
     <type-decl name='void' id='type-id-1'/>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
     <type-decl name='int' size-in-bits='32' id='type-id-3'/>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-4'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-4'/>
     <typedef-decl name='size_t' type-id='type-id-4' filepath='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/prev-gcc/include/stddef.h' line='213' column='1' id='type-id-5'/>
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
@@ -679,7 +679,7 @@
     </class-decl>
     <pointer-type-def type-id='type-id-34' size-in-bits='64' id='type-id-27'/>
     <pointer-type-def type-id='type-id-26' size-in-bits='64' id='type-id-28'/>
-    <type-decl name='short unsigned int' size-in-bits='16' id='type-id-29'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-29'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-30'/>
     <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='8' id='type-id-31'>
       <subrange length='1'/>

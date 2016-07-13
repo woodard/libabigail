@@ -2582,7 +2582,7 @@
         </data-member>
       </class-decl>
     </namespace-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-95'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-95'/>
     <pointer-type-def type-id='type-id-89' size-in-bits='64' id='type-id-90'/>
     <type-decl name='void' id='type-id-26'/>
     <reference-type-def kind='lvalue' type-id='type-id-89' size-in-bits='64' id='type-id-91'/>
@@ -3959,7 +3959,7 @@
     <function-decl name='getwchar' filepath='/usr/include/wchar.h' line='752' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-273'/>
     </function-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-95'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-95'/>
     <typedef-decl name='size_t' type-id='type-id-95' filepath='/usr/lib/gcc/x86_64-linux-gnu/5/include/stddef.h' line='216' column='1' id='type-id-281'/>
     <type-decl name='char' size-in-bits='8' id='type-id-282'/>
     <qualified-type-def type-id='type-id-282' const='yes' id='type-id-269'/>
@@ -4302,7 +4302,7 @@
       <parameter type-id='type-id-47'/>
       <return type-id='type-id-302'/>
     </function-decl>
-    <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-303'/>
+    <type-decl name='unsigned long long int' size-in-bits='64' id='type-id-303'/>
     <function-decl name='wcstoull' filepath='/usr/include/wchar.h' line='490' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-280'/>
       <parameter type-id='type-id-299'/>
@@ -5724,7 +5724,7 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-95'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-95'/>
     <pointer-type-def type-id='type-id-89' size-in-bits='64' id='type-id-90'/>
     <type-decl name='void' id='type-id-26'/>
     <reference-type-def kind='lvalue' type-id='type-id-89' size-in-bits='64' id='type-id-91'/>
@@ -6952,7 +6952,7 @@
     </namespace-decl>
     <namespace-decl name=''>
     </namespace-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-95'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-95'/>
     <pointer-type-def type-id='type-id-89' size-in-bits='64' id='type-id-90'/>
     <type-decl name='void' id='type-id-26'/>
     <reference-type-def kind='lvalue' type-id='type-id-89' size-in-bits='64' id='type-id-91'/>

@@ -25606,7 +25606,7 @@
     <pointer-type-def type-id='type-id-2202' size-in-bits='64' id='type-id-1902'/>
     <reference-type-def kind='lvalue' type-id='type-id-367' size-in-bits='64' id='type-id-1903'/>
     <reference-type-def kind='lvalue' type-id='type-id-2202' size-in-bits='64' id='type-id-1904'/>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-231'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-231'/>
     <type-decl name='char' size-in-bits='8' id='type-id-213'/>
     <pointer-type-def type-id='type-id-213' size-in-bits='64' id='type-id-184'/>
     <qualified-type-def type-id='type-id-213' const='yes' id='type-id-206'/>
@@ -35025,7 +35025,7 @@
     <pointer-type-def type-id='type-id-2904' size-in-bits='64' id='type-id-2897'/>
     <pointer-type-def type-id='type-id-2896' size-in-bits='64' id='type-id-2898'/>
     <typedef-decl name='__off_t' type-id='type-id-157' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='131' column='1' id='type-id-2899'/>
-    <type-decl name='short unsigned int' size-in-bits='16' id='type-id-2444'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-2444'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-2900'/>
     <array-type-def dimensions='1' type-id='type-id-213' size-in-bits='8' id='type-id-2901'>
       <subrange length='1'/>

@@ -709,7 +709,7 @@
       <parameter type-id='type-id-18' name='error' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='1115' column='1'/>
       <return type-id='type-id-9'/>
     </function-decl>
-    <type-decl name='long unsigned int' size-in-bits='64' id='type-id-74'/>
+    <type-decl name='unsigned long int' size-in-bits='64' id='type-id-74'/>
     <function-decl name='dbus_bus_get_unix_user' mangled-name='dbus_bus_get_unix_user' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='865' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='dbus_bus_get_unix_user'>
       <parameter type-id='type-id-72' name='connection' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='865' column='1'/>
       <parameter type-id='type-id-3' name='name' filepath='/tmp/legendre/spack-stage/spack-stage-hI99PR/dbus-1.9.0/dbus/dbus-bus.c' line='866' column='1'/>
@@ -3212,7 +3212,7 @@
     <pointer-type-def type-id='type-id-251' size-in-bits='64' id='type-id-242'/>
     <pointer-type-def type-id='type-id-241' size-in-bits='64' id='type-id-243'/>
     <typedef-decl name='__off_t' type-id='type-id-104' filepath='/usr/include/bits/types.h' line='141' column='1' id='type-id-244'/>
-    <type-decl name='short unsigned int' size-in-bits='16' id='type-id-245'/>
+    <type-decl name='unsigned short int' size-in-bits='16' id='type-id-245'/>
     <type-decl name='signed char' size-in-bits='8' id='type-id-246'/>
     <array-type-def dimensions='1' type-id='type-id-1' size-in-bits='8' id='type-id-247'>
       <subrange length='1'/>
