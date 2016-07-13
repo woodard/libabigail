@@ -3024,7 +3024,7 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
 		}
 	    }
 	}
-      else
+      else if (fs != ss)
 	{
 	  out << indent
 	      << "type size changed from " << fs << " to " << ss << " bits";
