@@ -296,7 +296,7 @@ stt_to_elf_symbol_type(unsigned char stt)
     default:
       // An unknown value that probably ought to be supported?  Let's
       // abort right here rather than yielding garbage.
-      abort();
+      ABG_ASSERT_NOT_REACHED;
     }
 
   return t;
@@ -330,7 +330,7 @@ stb_to_elf_symbol_binding(unsigned char stb)
       b = elf_symbol::GNU_UNIQUE_BINDING;
       break;
     default:
-      abort();
+      ABG_ASSERT_NOT_REACHED;
     }
 
   return b;
@@ -1381,7 +1381,7 @@ get_elf_class_size_in_bytes(Elf* elf_handle)
       result = 8;
       break;
     default:
-      abort();
+      ABG_ASSERT_NOT_REACHED;
     }
 
   return result;
@@ -9185,8 +9185,7 @@ build_ir_node_from_die(read_context&	ctxt,
       break;
     case DW_TAG_subrange_type:
       /* we shouldn't get here as this part is handled by build_array_type */
-      abort();
-      break;
+      ABG_ASSERT_NOT_REACHED;
     case DW_TAG_thrown_type:
       break;
     case DW_TAG_interface_type:
@@ -9201,8 +9200,7 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_compile_unit:
       // We shouldn't reach this point b/c this should be handled by
       // build_translation_unit.
-      abort();
-      break;
+      ABG_ASSERT_NOT_REACHED;
 
     case DW_TAG_namespace:
     case DW_TAG_module:
@@ -9374,8 +9372,7 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_formal_parameter:
       // We should not read this case as it should have been dealt
       // with by build_function_decl above.
-      abort();
-      break;
+      ABG_ASSERT_NOT_REACHED;
 
     case DW_TAG_constant:
       break;
@@ -9387,7 +9384,7 @@ build_ir_node_from_die(read_context&	ctxt,
       // For now, the DIEs under these are read lazily when they are
       // referenced by a public decl DIE that is under a
       // DW_TAG_compile_unit, so we shouldn't get here.
-      abort();
+      ABG_ASSERT_NOT_REACHED;
 
       // Other declaration we don't really intend to support yet.
     case DW_TAG_dwarf_procedure:

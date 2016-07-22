@@ -210,6 +210,17 @@ std::tr1::shared_ptr<char>
 make_path_absolute(const char*p);
 
 extern const char* PRIVATE_TYPES_SUPPR_SPEC_NAME;
-
 }// end namespace tools_utils
+
+/// A macro that expands to aborting the program when executed.
+///
+/// Before aborting, the macro emits informatin about the source
+/// location where it was expanded.
+#define ABG_ASSERT_NOT_REACHED \
+  do {									\
+    std::cerr << "in " << __FUNCTION__					\
+	      << " at: " << __FILE__ << ":" << __LINE__			\
+	      << ": execution should not have reached this point!\n";	\
+      abort();								\
+  } while (false)
 }//end namespace abigail
