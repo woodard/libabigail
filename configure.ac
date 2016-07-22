@@ -112,6 +112,32 @@ LT_INIT
 AC_LANG([C++])
 AC_LANG_COMPILER_REQUIRE
 
+dnl
+dnl check if the c++ compiler has support __attribute__((visibility("hidden")))
+dnl
+AC_MSG_NOTICE([checking for GCC visibility attribute support ...])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+struct __attribute__((visibility("hidden"))) Foo
+{
+  int m0;
+
+  Foo()
+   : m0()
+  {}
+};
+                 ]])],
+		 [SUPPORTS_GCC_VISIBILITY_ATTRIBUTE=yes],
+		 [SUPPORTS_GCC_VISIBILITY_ATTRIBUTE=no]
+)
+
+if test x$SUPPORTS_GCC_VISIBILITY_ATTRIBUTE = xyes; then
+   AC_MSG_NOTICE([GCC visibility attribute is supported])
+   AC_DEFINE([HAS_GCC_VISIBILITY_ATTRIBUTE], 1,
+   	     [Defined if the compiler supports the attribution visibility syntax __attribute__((visibility("hidden")))])
+else
+   AC_MSG_NOTICE([GCC visibility attribute is not supported])
+fi
+
 dnl Check for dependency: libelf, libdw, libebl (elfutils)
 dnl Note that we need to use at least elfutils 0.159 but
 dnl at that time elfutils didnt have pkgconfig capabilities
@@ -484,6 +510,7 @@ AC_MSG_NOTICE([
     Source code location                           : ${srcdir}
     C Compiler                                     : ${CC}
     C++ Compiler		                   : ${CXX}
+    GCC visibility attribute supported             : ${SUPPORTS_GCC_VISIBILITY_ATTRIBUTE}
 
  OPTIONAL FEATURES:
     Enable zip archives                            : ${ENABLE_ZIP_ARCHIVE}
