@@ -5660,7 +5660,7 @@ is_enum_type(const type_base_sptr& t)
 ///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl_sptr
-is_compatible_with_class_type(const type_base_sptr t)
+is_compatible_with_class_type(const type_base_sptr& t)
 {
   if (!t)
     return class_decl_sptr();
@@ -5674,7 +5674,7 @@ is_compatible_with_class_type(const type_base_sptr t)
 ///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl_sptr
-is_compatible_with_class_type(const decl_base_sptr t)
+is_compatible_with_class_type(const decl_base_sptr& t)
 {return is_compatible_with_class_type(is_type(t));}
 
 /// Test whether a type is a class.
@@ -5683,8 +5683,8 @@ is_compatible_with_class_type(const decl_base_sptr t)
 ///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl*
-is_class_type(const type_base* t)
-{return dynamic_cast<class_decl*>(const_cast<type_base*>(t));}
+is_class_type(const type_or_decl_base* t)
+{return dynamic_cast<class_decl*>(const_cast<type_or_decl_base*>(t));}
 
 /// Test whether a type is a class.
 ///
@@ -5692,34 +5692,8 @@ is_class_type(const type_base* t)
 ///
 /// @return the class_decl if @p t is a class_decl or null otherwise.
 class_decl_sptr
-is_class_type(const type_base_sptr t)
-{
-  if (!t)
-    return class_decl_sptr();
-  return dynamic_pointer_cast<class_decl>(t);
-}
-
-/// Test if a the declaration of a type is a class.
-///
-/// This function looks through typedefs.
-///
-/// @parm d the declaration of the type to consider.
-///
-/// @return the class_decl if @p t is a class_decl or null otherwise.
-class_decl*
-is_class_type(const decl_base *d)
-{return dynamic_cast<class_decl*>(const_cast<decl_base*>(d));}
-
-/// Test whether a type is a class.
-///
-/// This function looks through typedefs.
-///
-/// @parm d the declaration of the type to consider.
-///
-/// @return the class_decl if @p d is a class_decl or null otherwise.
-class_decl_sptr
-is_class_type(const decl_base_sptr d)
-{return is_class_type(is_type(d));}
+is_class_type(const type_or_decl_base_sptr& d)
+{return dynamic_pointer_cast<class_decl>(d);}
 
 /// Test whether a type is a pointer_type_def.
 ///
