@@ -8578,7 +8578,7 @@ build_function_decl(read_context&	ctxt,
 
   size_t is_inline = die_is_declared_inline(die);
   class_decl_sptr is_method =
-    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die, true, where_offset));
+    is_class_type(get_scope_for_die(ctxt, die, true, where_offset));
 
   if (result)
     {
