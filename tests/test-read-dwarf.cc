@@ -169,6 +169,11 @@ InOutSpec in_out_specs[] =
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
     "output/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
   },
+  {
+    "data/test-read-dwarf/libtest23.so",
+    "data/test-read-dwarf/libtest23.so.abi",
+    "output/test-read-dwarf/libtest23.so.abi",
+  },
   // This should be the last entry.
   {NULL, NULL, NULL}
 };

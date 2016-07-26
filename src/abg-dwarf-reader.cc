@@ -76,6 +76,7 @@ enum die_source
   NO_DEBUG_INFO_DIE_SOURCE,
   PRIMARY_DEBUG_INFO_DIE_SOURCE,
   ALT_DEBUG_INFO_DIE_SOURCE,
+  TYPE_UNIT_DIE_SOURCE,
   NUMBER_OF_DIE_SOURCES,	// This one must always be the latest
 				// enumerator
 };
@@ -2110,6 +2111,7 @@ class read_context
   // described by the DWARF extension (as of DWARF4) described at
   // http://www.dwarfstd.org/ShowIssue.php?issue=120604.1.
   die_decl_map_type		alternate_die_decl_map_;
+  die_decl_map_type		type_unit_die_decl_map_;
   // This is a map that associates DIE offsets to their types.  This
   // is for DIEs that represent types.  Note that it's for DIEs
   // defined in the main debug info section.
@@ -2118,13 +2120,17 @@ class read_context
   // is for DIEs that represent types.  Note that it's for DIEs
   // defined in the alternate debug info section.
   die_type_map_type		alternate_die_type_map_;
+  die_type_map_type		type_unit_die_type_map_;
   die_class_map_type		die_wip_classes_map_;
   die_class_map_type		alternate_die_wip_classes_map_;
+  die_class_map_type		type_unit_die_wip_classes_map_;
   die_function_type_map_type	die_wip_function_types_map_;
   die_function_type_map_type	alternate_die_wip_function_types_map_;
+  die_function_type_map_type	type_unit_die_wip_function_types_map_;
   die_function_decl_map_type	die_function_with_no_symbol_map_;
   vector<Dwarf_Off>		types_to_canonicalize_;
   vector<Dwarf_Off>		alt_types_to_canonicalize_;
+  vector<Dwarf_Off>		type_unit_types_to_canonicalize_;
   string_classes_map		decl_only_classes_map_;
   die_tu_map_type		die_tu_map_;
   corpus_sptr			cur_corpus_;
@@ -2137,9 +2143,11 @@ class read_context
   // A map that associates each tu die to a vector of unit import
   // points, in the alternate debug info
   tu_die_imported_unit_points_map_type alt_tu_die_imported_unit_points_map_;
+  tu_die_imported_unit_points_map_type type_units_tu_die_imported_unit_points_map_;
   // A DIE -> parent map for DIEs coming from the alternate debug info
   // file.
   offset_offset_map		alternate_die_parent_map_;
+  offset_offset_map		type_section_die_parent_map_;
   list<var_decl_sptr>		var_decls_to_add_;
   Elf_Scn*			symtab_section_;
   // The "Official procedure descriptor section, aka .opd", used in
@@ -2515,6 +2523,8 @@ public:
 	else
 	  ABG_ASSERT_NOT_REACHED;
       }
+    else if (tag == DW_TAG_type_unit)
+      source = TYPE_UNIT_DIE_SOURCE;
     else
       return false;
 
@@ -2617,6 +2627,9 @@ public:
       case ALT_DEBUG_INFO_DIE_SOURCE:
 	associate_die_to_decl_alternate(die_offset, decl);
 	break;
+      case TYPE_UNIT_DIE_SOURCE:
+	associate_die_to_decl_from_type_unit(die_offset, decl);
+	break;
       case NO_DEBUG_INFO_DIE_SOURCE:
       case NUMBER_OF_DIE_SOURCES:
 	ABG_ASSERT_NOT_REACHED;
@@ -2662,6 +2675,23 @@ public:
     return it->second;
   }
 
+  /// Lookup the decl for a given DIE.  This works on DIEs that come
+  /// from the type unit section.
+  ///
+  /// @param die_offset the offset of the DIE to consider.
+  ///
+  /// @return the resulting decl, or null if no decl is associated to
+  /// the DIE represented by @p die_offset.
+  decl_base_sptr
+  lookup_decl_from_type_unit_die_offset(size_t die_offset)
+  {
+    die_decl_map_type::const_iterator it =
+      type_unit_die_decl_map_.find(die_offset);
+    if (it == type_unit_die_decl_map_.end())
+      return decl_base_sptr();
+    return it->second;
+  }
+
   /// Lookup the decl for a given DIE.
   ///
   /// @param die_offset the offset of the DIE to consider.
@@ -2688,6 +2718,9 @@ public:
       case ALT_DEBUG_INFO_DIE_SOURCE:
 	result = lookup_decl_from_die_offset_alternate(die_offset);
 	break;
+      case TYPE_UNIT_DIE_SOURCE:
+	result = lookup_decl_from_type_unit_die_offset(die_offset);
+	break;
       case NO_DEBUG_INFO_DIE_SOURCE:
       case NUMBER_OF_DIE_SOURCES:
 	ABG_ASSERT_NOT_REACHED;
@@ -2710,6 +2743,8 @@ public:
 	break;
       case ALT_DEBUG_INFO_DIE_SOURCE:
 	return alternate_die_type_map_;
+      case TYPE_UNIT_DIE_SOURCE:
+	return type_unit_die_type_map_;
       case NO_DEBUG_INFO_DIE_SOURCE:
       case NUMBER_OF_DIE_SOURCES:
 	// We should not reach this point!
@@ -2724,6 +2759,7 @@ public:
   {
     die_type_map_.clear();
     alternate_die_type_map_.clear();
+    type_unit_die_type_map_.clear();
   }
 
   /// Return the map that associates DIEs to the type they represent.
@@ -2832,6 +2868,8 @@ public:
 	break;
       case ALT_DEBUG_INFO_DIE_SOURCE:
 	return alternate_die_wip_classes_map_;
+      case TYPE_UNIT_DIE_SOURCE:
+	return type_unit_die_wip_classes_map_;
       case NO_DEBUG_INFO_DIE_SOURCE:
       case NUMBER_OF_DIE_SOURCES:
 	ABG_ASSERT_NOT_REACHED;
@@ -2866,6 +2904,8 @@ public:
 	break;
       case ALT_DEBUG_INFO_DIE_SOURCE:
 	return alternate_die_wip_function_types_map_;
+      case TYPE_UNIT_DIE_SOURCE:
+	return type_unit_die_wip_function_types_map_;
       case NO_DEBUG_INFO_DIE_SOURCE:
       case NUMBER_OF_DIE_SOURCES:
 	ABG_ASSERT_NOT_REACHED;
@@ -3117,6 +3157,8 @@ public:
 	break;
       case ALT_DEBUG_INFO_DIE_SOURCE:
 	return alt_types_to_canonicalize_;
+      case TYPE_UNIT_DIE_SOURCE:
+	return type_unit_types_to_canonicalize_;
       case NO_DEBUG_INFO_DIE_SOURCE:
       case NUMBER_OF_DIE_SOURCES:
 	ABG_ASSERT_NOT_REACHED;
@@ -3139,6 +3181,7 @@ public:
   {
     types_to_canonicalize_.clear();
     alt_types_to_canonicalize_.clear();
+    type_unit_types_to_canonicalize_.clear();
   }
 
   /// Put the offset of a DIE representing a type on a side vector so
@@ -3312,6 +3355,8 @@ public:
 	break;
       case ALT_DEBUG_INFO_DIE_SOURCE:
 	return alt_tu_die_imported_unit_points_map_;
+      case TYPE_UNIT_DIE_SOURCE:
+	return type_units_tu_die_imported_unit_points_map_;
       case NO_DEBUG_INFO_DIE_SOURCE:
       case NUMBER_OF_DIE_SOURCES:
 	// We cannot reach this point.
@@ -3364,6 +3409,8 @@ public:
 	break;
       case ALT_DEBUG_INFO_DIE_SOURCE:
 	return alternate_die_parent_map_;
+      case TYPE_UNIT_DIE_SOURCE:
+	return type_section_die_parent_map();
       case NO_DEBUG_INFO_DIE_SOURCE:
       case NUMBER_OF_DIE_SOURCES:
 	ABG_ASSERT_NOT_REACHED;
@@ -3372,12 +3419,12 @@ public:
   }
 
   const offset_offset_map&
-  alternate_die_parent_map() const
-  {return alternate_die_parent_map_;}
+  type_section_die_parent_map() const
+  {return type_section_die_parent_map_;}
 
   offset_offset_map&
-  alternate_die_parent_map()
-  {return alternate_die_parent_map_;}
+  type_section_die_parent_map()
+  {return type_section_die_parent_map_;}
 
   const translation_unit_sptr
   current_translation_unit() const
@@ -4879,6 +4926,31 @@ public:
 	Dwarf_Off die_offset = offset + header_size;
 	Dwarf_Die cu;
 	if (!dwarf_offdie(dwarf(), die_offset, &cu))
+	  continue;
+	cur_tu_die(&cu);
+	imported_unit_points_type& imported_units =
+	  tu_die_imported_unit_points_map(source)[die_offset] =
+	  imported_unit_points_type();
+	build_die_parent_relations_under(&cu, source, imported_units);
+      }
+
+    // Build the DIE -> parent relation for DIEs coming from the
+    // .debug_types section.
+    source = TYPE_UNIT_DIE_SOURCE;
+    address_size = 0;
+    header_size = 0;
+    uint64_t type_signature = 0;
+    Dwarf_Off type_offset;
+    for (Dwarf_Off offset = 0, next_offset = 0;
+    (dwarf_next_unit(dwarf(), offset, &next_offset, &header_size,
+      NULL, NULL, &address_size, NULL,
+      &type_signature, &type_offset) == 0);
+    offset = next_offset)
+      {
+	Dwarf_Off die_offset = offset + header_size;
+	Dwarf_Die cu;
+
+	if (!dwarf_offdie_types(dwarf(), die_offset, &cu))
 	  continue;
 	cur_tu_die(&cu);
 	imported_unit_points_type& imported_units =
@@ -6812,6 +6884,9 @@ get_parent_die(read_context&	ctxt,
     case ALT_DEBUG_INFO_DIE_SOURCE:
       assert(dwarf_offdie(ctxt.alt_dwarf(), i->second, &parent_die));
       break;
+    case TYPE_UNIT_DIE_SOURCE:
+      assert(dwarf_offdie_types(ctxt.dwarf(), i->second, &parent_die));
+      break;
     case NO_DEBUG_INFO_DIE_SOURCE:
     case NUMBER_OF_DIE_SOURCES:
       ABG_ASSERT_NOT_REACHED;
@@ -6887,11 +6962,14 @@ get_scope_for_die(read_context& ctxt,
     return scope_decl_sptr();
 
   if (dwarf_tag(&parent_die) == DW_TAG_compile_unit
-      || dwarf_tag(&parent_die) == DW_TAG_partial_unit)
+      || dwarf_tag(&parent_die) == DW_TAG_partial_unit
+      || dwarf_tag(&parent_die) == DW_TAG_type_unit)
     {
-      if (dwarf_tag(&parent_die) == DW_TAG_partial_unit)
+      if (dwarf_tag(&parent_die) == DW_TAG_partial_unit
+	  || dwarf_tag(&parent_die) == DW_TAG_type_unit)
 	{
-	  assert(source_of_die == ALT_DEBUG_INFO_DIE_SOURCE);
+	  assert(source_of_die == ALT_DEBUG_INFO_DIE_SOURCE
+		 || source_of_die == TYPE_UNIT_DIE_SOURCE);
 	  return ctxt.cur_tu()->get_global_scope();
 	}
 

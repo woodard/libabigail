@@ -333,6 +333,10 @@ test-read-dwarf/test21-pr19092.so \
 test-read-dwarf/test21-pr19092.so.abi \
 test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so \
 test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi \
+test-read-dwarf/libtest23.so \
+test-read-dwarf/libtest23.so.abi \
+test-read-dwarf/test23-first-tu.cc \
+test-read-dwarf/test23-first-tu.cc \
 \
 test-types-stability/pr19434-elf0 \
 test-types-stability/pr19139-DomainNeighborMapInst.o \
