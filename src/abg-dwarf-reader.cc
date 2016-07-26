@@ -68,6 +68,29 @@ using std::stack;
 using std::deque;
 using std::list;
 
+/// Where a DIE comes from. For instance, a DIE can come from the main
+/// debug info section, the alternate debug info section or from the
+/// type unit section.
+enum die_source
+{
+  NO_DEBUG_INFO_DIE_SOURCE,
+  PRIMARY_DEBUG_INFO_DIE_SOURCE,
+  ALT_DEBUG_INFO_DIE_SOURCE,
+  NUMBER_OF_DIE_SOURCES,	// This one must always be the latest
+				// enumerator
+};
+
+/// Prefix increment operator for @ref die_source.
+///
+/// @param source the die_source to increment.
+/// @return the incremented source.
+static die_source&
+operator++(die_source& source)
+{
+  source = static_cast<die_source>(source + 1);
+  return source;
+}
+
 /// A functor used by @ref dwfl_sptr.
 struct dwfl_deleter
 {
@@ -139,7 +162,7 @@ struct imported_unit_point
   Dwarf_Off	offset_of_import;
   // The boolean below is true iff the imported unit comes from the
   // alternate debug info file.
-  bool		imported_unit_from_alt_di;
+  die_source	imported_unit_die_source;
   Dwarf_Off	imported_unit_die_off;
   Dwarf_Off	imported_unit_cu_off;
   Dwarf_Off	imported_unit_child_off;
@@ -147,7 +170,7 @@ struct imported_unit_point
   /// Default constructor for @ref the type imported_unit_point.
   imported_unit_point ()
     : offset_of_import(),
-      imported_unit_from_alt_di(),
+      imported_unit_die_source(PRIMARY_DEBUG_INFO_DIE_SOURCE),
       imported_unit_die_off(),
       imported_unit_cu_off(),
       imported_unit_child_off()
@@ -159,7 +182,7 @@ struct imported_unit_point
   /// been imported.
   imported_unit_point (Dwarf_Off import_off)
     : offset_of_import(import_off),
-      imported_unit_from_alt_di(),
+      imported_unit_die_source(PRIMARY_DEBUG_INFO_DIE_SOURCE),
       imported_unit_die_off(),
       imported_unit_cu_off(),
       imported_unit_child_off()
@@ -170,15 +193,14 @@ struct imported_unit_point
   /// @param import_off the offset of the point at which the unit has
   /// been imported.
   ///
-  /// @param imported_from_alt_di true iff the imported DIE comes from
-  /// the alternate debug info file.
+  /// @param from where the imported DIE comes from.
   ///
   /// @param imported_die the die of the unit that has been imported.
   imported_unit_point (Dwarf_Off	import_off,
 		       const Dwarf_Die& imported_die,
-		       bool		imported_from_alt_di)
+		       die_source from)
     : offset_of_import(import_off),
-      imported_unit_from_alt_di(imported_from_alt_di),
+      imported_unit_die_source(from),
       imported_unit_die_off(dwarf_dieoffset
 			    (const_cast<Dwarf_Die*>(&imported_die))),
       imported_unit_cu_off(),
@@ -241,9 +263,15 @@ die_location_address(Dwarf_Die*	die,
 		     Dwarf_Addr&	address,
 		     bool&		is_tls_address);
 
+static bool
+die_die_attribute(Dwarf_Die* die,
+		  unsigned attr_name,
+		  Dwarf_Die& result,
+		  bool look_thru_abstract_origin = true);
+
 static void
 maybe_canonicalize_type(Dwarf_Off	die_offset,
-			bool		in_alt_di,
+			die_source	source,
 			read_context&	ctxt);
 
 static int
@@ -2102,7 +2130,7 @@ class read_context
   corpus_sptr			cur_corpus_;
   translation_unit_sptr	cur_tu_;
   scope_stack_type		scope_stack_;
-  offset_offset_map		die_parent_map_;
+  offset_offset_map		primary_die_parent_map_;
   // A map that associates each tu die to a vector of unit import
   // points, in the main debug info
   tu_die_imported_unit_points_map_type tu_die_imported_unit_points_map_;
@@ -2202,10 +2230,8 @@ public:
   {
     die_decl_map().clear();
     alternate_die_decl_map().clear();
-    die_type_map(/*in_alt_di=*/true).clear();
-    die_type_map(/*in_alt_di=*/false).clear();
-    types_to_canonicalize(/*in_alt_di=*/true).clear();
-    types_to_canonicalize(/*in_alt_di=*/false).clear();
+    clear_die_type_maps();
+    clear_types_to_canonicalize();
   }
 
   /// Getter for the current environment.
@@ -2422,6 +2448,79 @@ public:
   die_decl_map() const
   {return die_decl_map_;}
 
+  /// Get the source of the DIE.
+  ///
+  /// The function returns an enumerator value saying if the DIE comes
+  /// from the .debug_info section of the primary debug info file, the
+  /// .debug_info section of the alternate debug info file, or the
+  /// .debug_types section.
+  ///
+  /// @param die the DIE to get the source of.
+  ///
+  /// @param source out parameter.  The function sets this parameter
+  /// to the source of the DIE @p iff it returns true.
+  ///
+  /// @return true iff the source of the DIE could be determined and
+  /// returned.
+  bool
+  get_die_source(Dwarf_Die *die, die_source &source)
+  {
+    assert(die);
+    return get_die_source(*die, source);
+  }
+
+  /// Get the source of the DIE.
+  ///
+  /// The function returns an enumerator value saying if the DIE comes
+  /// from the .debug_info section of the primary debug info file, the
+  /// .debug_info section of the alternate debug info file, or the
+  /// .debug_types section.
+  ///
+  /// @param die the DIE to get the source of.
+  ///
+  /// @param source out parameter.  The function sets this parameter
+  /// to the source of the DIE @p iff it returns true.
+  ///
+  /// @return true iff the source of the DIE could be determined and
+  /// returned.
+  bool
+  get_die_source(Dwarf_Die &die, die_source &source)
+  {
+    Dwarf_Die cu_die;
+    Dwarf_Die cu_kind;
+    uint8_t address_size = 0, offset_size = 0;
+    if (!dwarf_diecu(&die, &cu_die, &address_size, &offset_size))
+      return false;
+
+    Dwarf_Half version = 0;
+    Dwarf_Off abbrev_offset = 0;
+    uint64_t type_signature = 0;
+    Dwarf_Off type_offset = 0;
+    if (!dwarf_cu_die(cu_die.cu, &cu_kind,
+		      &version, &abbrev_offset,
+		      &address_size, &offset_size,
+		      &type_signature, &type_offset))
+      return false;
+
+    int tag = dwarf_tag(&cu_kind);
+
+    if (tag == DW_TAG_compile_unit
+	|| tag == DW_TAG_partial_unit)
+      {
+	Dwarf *die_dwarf = dwarf_cu_getdwarf(cu_die.cu);
+	if (dwarf() == die_dwarf)
+	  source = PRIMARY_DEBUG_INFO_DIE_SOURCE;
+	else if (alt_dwarf() == die_dwarf)
+	  source = ALT_DEBUG_INFO_DIE_SOURCE;
+	else
+	  ABG_ASSERT_NOT_REACHED;
+      }
+    else
+      return false;
+
+    return true;
+  }
+
   /// Return the map that associates a decl to the DIE that represents
   /// it.  This if for DIEs that come from the main debug info file we
   /// are looking at.
@@ -2482,15 +2581,23 @@ private:
 				  decl_base_sptr decl)
   {alternate_die_decl_map()[die_offset] = decl;}
 
+  /// Add an entry to the die->decl map for DIEs coming from the
+  /// type unit section.
+  ///
+  /// @param die_offset the DIE offset of the DIE we are interested in.
+  ///
+  /// @param decl the decl we are interested in.
+  void
+  associate_die_to_decl_from_type_unit(size_t die_offset, decl_base_sptr decl)
+  {type_unit_die_decl_map_[die_offset] = decl;}
+
 public:
 
   /// Add an entry to the relevant die->decl map.
   ///
   /// @param die_offset the offset of the DIE to add the the map.
   ///
-  /// @param die_is_from_alternate_debug_info true if the DIE comes
-  /// from the alternate debug info file, false if it comes from the
-  /// main debug info file.
+  /// @param source where the DIE comes from.
   ///
   /// Note that "alternate debug info sections" is a GNU extension as
   /// of DWARF4 and is described at
@@ -2499,13 +2606,21 @@ public:
   /// @param decl the decl to consider.
   void
   associate_die_to_decl(size_t die_offset,
-			bool die_is_from_alternate_debug_info,
+			die_source source,
 			decl_base_sptr decl)
   {
-    if (die_is_from_alternate_debug_info)
-      associate_die_to_decl_alternate(die_offset, decl);
-    else
-      associate_die_to_decl_primary(die_offset, decl);
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+	associate_die_to_decl_primary(die_offset, decl);
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	associate_die_to_decl_alternate(die_offset, decl);
+	break;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	ABG_ASSERT_NOT_REACHED;
+      }
   }
 
 public:
@@ -2551,9 +2666,8 @@ public:
   ///
   /// @param die_offset the offset of the DIE to consider.
   ///
-  /// @param is_from_alternate_debug_info true if the DIE represented
-  /// by @p die_offset comes from the alternate debug info section,
-  /// false if it comes from the main debug info sections.
+  /// @param source where the DIE represented by @p die_offset comes
+  /// from.
   ///
   /// Note that "alternate debug info sections" is a GNU extension as
   /// of DWARF4 and is described at
@@ -2562,58 +2676,82 @@ public:
   /// @return the resulting decl, or null if no decl is associated to
   /// the DIE represented by @p die_offset.
   decl_base_sptr
-  lookup_decl_from_die_offset(size_t die_offset,
-			      bool is_from_alternate_debug_info)
+  lookup_decl_from_die_offset(size_t die_offset, die_source source)
   {
-    return is_from_alternate_debug_info
-      ? lookup_decl_from_die_offset_alternate(die_offset)
-      : lookup_decl_from_die_offset_primary(die_offset);
+    decl_base_sptr result;
+
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+	result = lookup_decl_from_die_offset_primary(die_offset);
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	result = lookup_decl_from_die_offset_alternate(die_offset);
+	break;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	ABG_ASSERT_NOT_REACHED;
+      }
+
+    return result;
   }
 
   /// Return the map that associates DIEs to the type they represent.
   ///
-  /// @param in_alt_die true iff the DIE is in the alternate debug info section.
+  /// @param source where the DIE comes from.
   ///
   /// @return return the map that associated DIEs to the type they represent.
   die_type_map_type&
-  die_type_map(bool in_alt_die)
+  die_type_map(die_source source)
   {
-    if (in_alt_die)
-      return alternate_die_type_map_;
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	return alternate_die_type_map_;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	// We should not reach this point!
+	ABG_ASSERT_NOT_REACHED;
+      }
     return die_type_map_;
+  }
+
+  /// Clear the type maps that associate a die to a type.
+  void
+  clear_die_type_maps()
+  {
+    die_type_map_.clear();
+    alternate_die_type_map_.clear();
   }
 
   /// Return the map that associates DIEs to the type they represent.
   ///
-  /// @param in_alt_die true iff the DIE is in the alternate debug info section.
+  /// @param source where the DIE comes from.
   ///
   /// @return the map that associated DIEs to the type they represent.
   const die_type_map_type&
-  die_type_map(bool in_alt_die) const
-  {
-    if (in_alt_die)
-      return alternate_die_type_map_;
-    return die_type_map_;
-  }
+  die_type_map(die_source source) const
+  {return const_cast<read_context*>(this)->die_type_map(source);}
 
   /// Associated a DIE (representing a type) at a given offset to the
   /// type that it represents.
   ///
   /// @param die_offset the offset of the DIE to consider.
   ///
-  /// @param in_alt_di true if the DIE comes from the alternate debug
-  /// info section, false if it does not.
+  /// @param source where the DIE comes from.
   ///
   /// @param type the type to associate the DIE to.
   void
   associate_die_to_type(size_t		die_offset,
-			bool		in_alt_di,
+			die_source	source,
 			type_base_sptr	type)
   {
     if (!type)
       return;
 
-    die_type_map_type& m = die_type_map(in_alt_di);
+    die_type_map_type& m = die_type_map(source);
     m[die_offset] = type;
   }
 
@@ -2625,18 +2763,16 @@ public:
   ///
   /// @param die_offset the offset of the DIE to consider.
   ///
-  /// @param in_alt_di true if the DIE comes from the alternate debug
-  /// info section, false if it does not.
+  /// @param source where the DIE comes from.
   ///
   /// @return the type associated to the DIE of offset @p die_offset,
   /// or NULL if no type is associated to the DIE.
   type_base_sptr
-  lookup_type_from_die_offset(size_t die_offset,
-			      bool in_alt_die) const
+  lookup_type_from_die_offset(size_t die_offset, die_source source) const
   {
     type_base_sptr result;
     {
-      const die_type_map_type& m = die_type_map(in_alt_die);
+      const die_type_map_type& m = die_type_map(source);
       die_type_map_type::const_iterator i = m.find(die_offset);
 
       if (i != m.end())
@@ -2646,7 +2782,7 @@ public:
     if (!result)
       {
 	// Maybe we are looking for a class type being constructed?
-	const die_class_map_type& m = die_wip_classes_map(in_alt_die);
+	const die_class_map_type& m = die_wip_classes_map(source);
 	die_class_map_type::const_iterator i = m.find(die_offset);
 
 	if (i != m.end())
@@ -2657,7 +2793,7 @@ public:
       {
 	// Maybe we are looking for a function type being constructed?
 	const die_function_type_map_type& m =
-	  die_wip_function_types_map(in_alt_die);
+	  die_wip_function_types_map(source);
 	die_function_type_map_type::const_iterator i = m.find(die_offset);
 
 	if (i != m.end())
@@ -2671,33 +2807,35 @@ public:
   /// class/struct with the declaration of the class, while the class
   /// is being constructed.
   ///
-  /// @param in_alt_die true iff the DIE is in the alternate debug
-  /// info section.
+  /// @param source where the DIE is from.
   ///
   /// @return the map that associates a DIE to the class that is being
   /// built.
   const die_class_map_type&
-  die_wip_classes_map(bool in_alt_die) const
-  {
-    if (in_alt_die)
-      return alternate_die_wip_classes_map_;
-    return die_wip_classes_map_;
-  }
+  die_wip_classes_map(die_source source) const
+  {return const_cast<read_context*>(this)->die_wip_classes_map(source);}
 
   /// Getter of a map that associates a die that represents a
   /// class/struct with the declaration of the class, while the class
   /// is being constructed.
   ///
-  /// @param in_alt_die true iff the DIE is in the alternate debug
-  /// info section.
+  /// @param source where the DIE comes from.
   ///
   /// @return the map that associates a DIE to the class that is being
   /// built.
   die_class_map_type&
-  die_wip_classes_map(bool in_alt_die)
+  die_wip_classes_map(die_source source)
   {
-    if (in_alt_die)
-      return alternate_die_wip_classes_map_;
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	return alternate_die_wip_classes_map_;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	ABG_ASSERT_NOT_REACHED;
+      }
     return die_wip_classes_map_;
   }
 
@@ -2705,28 +2843,33 @@ public:
   /// function type) whith a function type, while the function type is
   /// being constructed (WIP == work in progress).
   ///
-  /// @param in_alt_die true iff the DIE is in the alternate debug
-  /// info section.
+  /// @param source where the DIE comes from.n
   ///
   /// @return the map of wip function types.
   const die_function_type_map_type&
-  die_wip_function_types_map(bool in_alt_di) const
-  {
-    if (in_alt_di)
-      return alternate_die_wip_function_types_map_;
-    return die_wip_function_types_map_;
-  }
+  die_wip_function_types_map(die_source source) const
+  {return const_cast<read_context*>(this)->die_wip_function_types_map(source);}
 
   /// Getter for a map that associates a die (that represents a
   /// function type) whith a function type, while the function type is
   /// being constructed (WIP == work in progress).
   ///
+  /// @param source where DIEs of the map come from.
+  ///
   /// @return the map of wip function types.
   die_function_type_map_type&
-  die_wip_function_types_map(bool in_alt_die)
+  die_wip_function_types_map(die_source source)
   {
-    if (in_alt_die)
-      return alternate_die_wip_function_types_map_;
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	return alternate_die_wip_function_types_map_;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	ABG_ASSERT_NOT_REACHED;
+      }
     return die_wip_function_types_map_;
   }
 
@@ -2747,17 +2890,16 @@ public:
   ///
   /// @param offset the DIE offset to consider.
   ///
-   // @param is_in_alt_di true if the DIE is in the alternate debug
-   // info section.
+  /// @param source where the DIE of the map come from.
   ///
   /// @return true iff @p offset is the offset of the DIE of a class
   /// that is being currently built.
   bool
-  is_wip_class_die_offset(Dwarf_Off offset, bool is_in_alt_di) const
+  is_wip_class_die_offset(Dwarf_Off offset, die_source source) const
   {
     die_class_map_type::const_iterator i =
-      die_wip_classes_map(is_in_alt_di).find(offset);
-    return (i != die_wip_classes_map(is_in_alt_di).end());
+      die_wip_classes_map(source).find(offset);
+    return (i != die_wip_classes_map(source).end());
   }
 
   /// Return true iff a given offset is for the DIE of a function type
@@ -2766,17 +2908,16 @@ public:
   ///
   /// @param offset DIE offset to consider.
   ///
-  /// @param is_in_alt_di true if the DIE is in the alternate debug
-  /// info section.
+  /// @param source where the DIE comes from.
   ///
   /// @return true iff @p offset is the offset of the DIE of a
   /// function type that is being currently built.
   bool
-  is_wip_function_type_die_offset(Dwarf_Off offset, bool is_in_alt_di) const
+  is_wip_function_type_die_offset(Dwarf_Off offset, die_source source) const
   {
     die_function_type_map_type::const_iterator i =
-      die_wip_function_types_map(is_in_alt_di).find(offset);
-    return (i != die_wip_function_types_map(is_in_alt_di).end());
+      die_wip_function_types_map(source).find(offset);
+    return (i != die_wip_function_types_map(source).end());
   }
 
   /// Getter for the map of declaration-only classes that are to be
@@ -2965,29 +3106,39 @@ public:
   /// Return a reference to the vector containing the offsets of the
   /// types that need late canonicalizing.
   ///
-  /// @param in_alt_di true iff the vector to return is the one
-  /// containining offsets of DIEs that are in the alternate debug
-  /// info section.
+  /// @param source whe DIEs referred to by the offsets contained in
+  /// the vector to return are from.
   vector<Dwarf_Off>&
-  types_to_canonicalize(bool in_alt_di)
+  types_to_canonicalize(die_source source)
   {
-    if (in_alt_di)
-      return alt_types_to_canonicalize_;
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	return alt_types_to_canonicalize_;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	ABG_ASSERT_NOT_REACHED;
+      }
     return types_to_canonicalize_;
   }
 
   /// Return a reference to the vector containing the offsets of the
   /// types that need late canonicalizing.
   ///
-  /// @param in_alt_di true iff the vector to return is the one
-  /// containining offsets of DIEs that are in the alternate debug
-  /// info section.
+  /// @param source where the DIEs referred to by the offset in the
+  /// returned vector are from.
   const vector<Dwarf_Off>&
-  types_to_canonicalize(bool in_alt_di) const
+  types_to_canonicalize(die_source source) const
+  {return const_cast<read_context*>(this)->types_to_canonicalize(source);}
+
+  /// Clear the containers holding types to canonicalize.
+  void
+  clear_types_to_canonicalize()
   {
-    if (in_alt_di)
-      return alt_types_to_canonicalize_;
-    return types_to_canonicalize_;
+    types_to_canonicalize_.clear();
+    alt_types_to_canonicalize_.clear();
   }
 
   /// Put the offset of a DIE representing a type on a side vector so
@@ -2998,28 +3149,28 @@ public:
   ///
   /// @param o the offset of the type DIE to schedule for late type
   /// canonicalization.
+  ///
+  /// @param source where the DIE referred to by @p o is from.
   void
-  schedule_type_for_late_canonicalization(Dwarf_Off	o,
-					  bool	in_alt_di)
+  schedule_type_for_late_canonicalization(Dwarf_Off o, die_source source)
   {
     // First, some sanity check: ensure that the offset 'o' is for a
     // type DIE that we know about.
-    type_base_sptr t = lookup_type_from_die_offset(o, in_alt_di);
+    type_base_sptr t = lookup_type_from_die_offset(o, source);
     assert(t);
 
     // Then really do the scheduling.
-    types_to_canonicalize(in_alt_di).push_back(o);
+    types_to_canonicalize(source).push_back(o);
   }
 
   /// Canonicalize types which DIE offsets are stored in vectors on
   /// the side.  This is a sub-routine of
   /// read_context::perform_late_type_canonicalizing().
   ///
-  /// @param in_alt_di true if the types to canonicalize are in the
-  /// alternate debug info section, otherwise, the types are in the
-  /// main debug info section.
+  /// @param source where the DIE of the types to canonicalize are
+  /// from.
   void
-  canonicalize_types_scheduled(bool in_alt_di)
+  canonicalize_types_scheduled(die_source source)
   {
     if (do_log())
       {
@@ -3027,19 +3178,19 @@ public:
 	corpus_sptr c = current_corpus();
 	if (c)
 	  cerr << " of corpus " << current_corpus()->get_path();
-	cerr << " (in alt di: " << in_alt_di << ")\n";
+	cerr << " (DIEs source: " << source << ")\n";
       }
 
-    if (!types_to_canonicalize(in_alt_di).empty())
+    if (!types_to_canonicalize(source).empty())
       {
-	size_t total = types_to_canonicalize(in_alt_di).size();
+	size_t total = types_to_canonicalize(source).size();
 	if (do_log())
 	  cerr << total << " types to canonicalize\n";
 	for (size_t i = 0; i < total; ++i)
 	  {
-	    Dwarf_Off element = types_to_canonicalize(in_alt_di)[i];
+	    Dwarf_Off element = types_to_canonicalize(source)[i];
 	    type_base_sptr t =
-	      lookup_type_from_die_offset(element, in_alt_di);
+	      lookup_type_from_die_offset(element, source);
 	    assert(t);
 	    if (do_log())
 	      {
@@ -3056,16 +3207,15 @@ public:
 	  }
       }
     if (do_log())
-      cerr << "finished canonicalizing types.  (in alt di: "
-	   << in_alt_di << ")\n";
+      cerr << "finished canonicalizing types.  (source: "
+	   << source << ")\n";
   }
 
   /// Compute the number of canonicalized and missed types in the late
   /// canonicalization phase.
   ///
-  /// @param in_alt_di if set to yes, this means to look for types in
-  /// the alternate debug info.  If set to no, this means to look for
-  /// the main debug info.
+  /// @param source where the DIEs of the canonicalized types are
+  /// from.
   ///
   /// @param canonicalized the number of types that got canonicalized
   /// is added to the value already present in this parameter.
@@ -3074,16 +3224,16 @@ public:
   /// canonicalization and which couldn't be canonicalized (for a
   /// reason) is added to the value already present in this parameter.
   void
-  add_late_canonicalized_types_stats(bool in_alt_di,
-				     size_t& canonicalized,
-				     size_t& missed) const
+  add_late_canonicalized_types_stats(die_source	source,
+				     size_t&		canonicalized,
+				     size_t&		missed) const
   {
     for (vector<Dwarf_Off>::const_iterator i =
-	   types_to_canonicalize(in_alt_di).begin();
-	 i != types_to_canonicalize(in_alt_di).end();
+	   types_to_canonicalize(source).begin();
+	 i != types_to_canonicalize(source).end();
 	 ++i)
       {
-        type_base_sptr t = lookup_type_from_die_offset(*i, in_alt_di);
+        type_base_sptr t = lookup_type_from_die_offset(*i, source);
 	if (t->get_canonical_type())
 	  ++canonicalized;
 	else
@@ -3104,13 +3254,10 @@ public:
   add_late_canonicalized_types_stats(size_t& canonicalized,
 				     size_t& missed) const
   {
-    add_late_canonicalized_types_stats(/*in_alt_di=*/true,
-				       canonicalized,
-				       missed);
-
-      add_late_canonicalized_types_stats(/*in_alt_di=*/false,
-					 canonicalized,
-					 missed);
+    for (die_source source = PRIMARY_DEBUG_INFO_DIE_SOURCE;
+	 source < NUMBER_OF_DIE_SOURCES;
+	 ++source)
+      add_late_canonicalized_types_stats(source, canonicalized, missed);
   }
 
   // Look at the types that need to be canonicalized after the
@@ -3118,8 +3265,10 @@ public:
   void
   perform_late_type_canonicalizing()
   {
-    canonicalize_types_scheduled(/*in_alt_di=*/false);
-    canonicalize_types_scheduled(/*in_alt_di=*/true);
+    for (die_source source = PRIMARY_DEBUG_INFO_DIE_SOURCE;
+	 source < NUMBER_OF_DIE_SOURCES;
+	 ++source)
+      canonicalize_types_scheduled(source);
 
     if (show_stats())
       {
@@ -3151,36 +3300,25 @@ public:
   /// Getter for the map that associates a translation unit DIE to the
   /// vector of imported unit points that it contains.
   ///
-  /// @return the map.
-  tu_die_imported_unit_points_map_type&
-  tu_die_imported_unit_points_map()
-  {return tu_die_imported_unit_points_map_;}
-
-  /// Getter for the map that associates a translation unit DIE to the
-  /// vector of imported unit points that it contains.
-  ///
-  /// @return the map.
-  const tu_die_imported_unit_points_map_type&
-  tu_die_imported_unit_points_map() const
-  {return tu_die_imported_unit_points_map_;}
-
-  /// Getter for the map that associates a translation unit DIE to the
-  /// vector of imported unit points that it contains.  This is for
-  /// translation units in the alternate debug info file.
+  /// @param source where the DIEs are from.
   ///
   /// @return the map.
   tu_die_imported_unit_points_map_type&
-  alt_tu_die_imported_unit_points_map()
-  {return alt_tu_die_imported_unit_points_map_;}
-
-  /// Getter for the map that associates a translation unit DIE to the
-  /// vector of imported unit points that it contains.  This is for
-  /// translation units in the alternate debug info file.
-  ///
-  /// @return the map.
-  const tu_die_imported_unit_points_map_type&
-  alt_tu_die_imported_unit_points_map() const
-  {return alt_tu_die_imported_unit_points_map_;}
+  tu_die_imported_unit_points_map(die_source source)
+  {
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	return alt_tu_die_imported_unit_points_map_;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	// We cannot reach this point.
+	ABG_ASSERT_NOT_REACHED;
+      }
+    return tu_die_imported_unit_points_map_;
+  }
 
   const corpus_sptr
   current_corpus() const
@@ -3204,39 +3342,39 @@ public:
   /// Get the map that associates each DIE to its parent DIE.  This is
   /// for DIEs coming from the main debug info sections.
   ///
+  /// @param source where the DIEs in the map come from.
+  ///
   /// @return the DIE -> parent map.
   const offset_offset_map&
-  die_parent_map() const
-  {return die_parent_map_;}
+  die_parent_map(die_source source) const
+  {return const_cast<read_context*>(this)->die_parent_map(source);}
 
   /// Get the map that associates each DIE to its parent DIE.  This is
   /// for DIEs coming from the main debug info sections.
   ///
-  /// @return the die -> parent map.
-  offset_offset_map&
-  die_parent_map()
-  {return die_parent_map_;}
-
-  /// Get the map that associates each DIE coming from the alternate
-  /// debug info sections to its parent DIE.
-  ///
-  /// Note that "alternate debug info sections" is a GNU extension as
-  /// of DWARF4 and is described at
-  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
+  /// @param source where the DIEs in the map come from.
   ///
   /// @return the DIE -> parent map.
+  offset_offset_map&
+  die_parent_map(die_source source)
+  {
+    switch(source)
+      {
+      case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+	break;
+      case ALT_DEBUG_INFO_DIE_SOURCE:
+	return alternate_die_parent_map_;
+      case NO_DEBUG_INFO_DIE_SOURCE:
+      case NUMBER_OF_DIE_SOURCES:
+	ABG_ASSERT_NOT_REACHED;
+      }
+    return primary_die_parent_map_;
+  }
+
   const offset_offset_map&
   alternate_die_parent_map() const
   {return alternate_die_parent_map_;}
 
-  /// Get the map that associates each DIE coming from the alternate
-  /// debug info sections to its parent DIE.
-  ///
-  /// Note that "alternate debug info sections" is a GNU extension as
-  /// of DWARF4 and is described at
-  /// http://www.dwarfstd.org/ShowIssue.php?issue=120604.1
-  ///
-  /// @return the DIE -> parent map.
   offset_offset_map&
   alternate_die_parent_map()
   {return alternate_die_parent_map_;}
@@ -4645,12 +4783,115 @@ public:
       if (corpus::exported_decls_builder* b = exported_decls_builder())
 	b->maybe_add_var_to_exported_vars(var);
   }
+
+  /// Walk the DIEs under a given die and for each child, populate the
+  /// die -> parent map to record the child -> parent relationship
+  /// that
+  /// exists between the child and the given die.
+  ///
+  /// The function also builds the vector of places where units are
+  /// imported.
+  ///
+  /// This is done recursively as for each child DIE, this function
+  /// walks its children as well.
+  ///
+  /// @param die the DIE whose children to walk recursively.
+  ///
+  /// @param source where the DIE @p die comes from.
+  ///
+  /// @param imported_units a vector containing all the offsets of the
+  /// points where unit have been imported, under @p die.
+  void
+  build_die_parent_relations_under(Dwarf_Die*			die,
+				   die_source			source,
+				   imported_unit_points_type &	imported_units)
+  {
+    if (!die)
+      return;
+
+    offset_offset_map& parent_of = die_parent_map(source);
+
+    Dwarf_Die child;
+    if (dwarf_child(die, &child) != 0)
+      return;
+
+    do
+      {
+	parent_of[dwarf_dieoffset(&child)] = dwarf_dieoffset(die);
+	if (dwarf_tag(&child) == DW_TAG_imported_unit)
+	  {
+	    Dwarf_Die imported_unit;
+	    if (die_die_attribute(&child, DW_AT_import, imported_unit))
+	      {
+		die_source imported_unit_die_source = NO_DEBUG_INFO_DIE_SOURCE;
+		assert(get_die_source(imported_unit, imported_unit_die_source));
+		imported_units.push_back
+		  (imported_unit_point(dwarf_dieoffset(&child),
+				       imported_unit,
+				       imported_unit_die_source));
+	      }
+	  }
+	build_die_parent_relations_under(&child, source, imported_units);
+      }
+    while (dwarf_siblingof(&child, &child) == 0);
+
+  }
+
+  /// Walk all the DIEs accessible in the debug info (and in the
+  /// alternate debug info as well) and build maps representing the
+  /// relationship DIE -> parent.  That is, make it so that we can get
+  /// the parent for a given DIE.
+  void
+  build_die_parent_maps()
+  {
+    // Build the DIE -> parent relation for DIEs coming from the
+    // .debug_info section in the alternate debug info file.
+    die_source source = ALT_DEBUG_INFO_DIE_SOURCE;
+    uint8_t address_size = 0;
+    size_t header_size = 0;
+    for (Dwarf_Off offset = 0, next_offset = 0;
+	 (dwarf_next_unit(alt_dwarf(), offset, &next_offset, &header_size,
+			  NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
+	 offset = next_offset)
+      {
+	Dwarf_Off die_offset = offset + header_size;
+	Dwarf_Die cu;
+	if (!dwarf_offdie(alt_dwarf(), die_offset, &cu))
+	  continue;
+	cur_tu_die(&cu);
+
+	imported_unit_points_type& imported_units =
+	  tu_die_imported_unit_points_map(source)[die_offset] =
+	  imported_unit_points_type();
+	build_die_parent_relations_under(&cu, source, imported_units);
+      }
+
+    // Build the DIE -> parent relation for DIEs coming from the
+    // .debug_info section of the main debug info file.
+    source = PRIMARY_DEBUG_INFO_DIE_SOURCE;
+    address_size = 0;
+    header_size = 0;
+    for (Dwarf_Off offset = 0, next_offset = 0;
+	 (dwarf_next_unit(dwarf(), offset, &next_offset, &header_size,
+			  NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
+	 offset = next_offset)
+      {
+	Dwarf_Off die_offset = offset + header_size;
+	Dwarf_Die cu;
+	if (!dwarf_offdie(dwarf(), die_offset, &cu))
+	  continue;
+	cur_tu_die(&cu);
+	imported_unit_points_type& imported_units =
+	  tu_die_imported_unit_points_map(source)[die_offset] =
+	  imported_unit_points_type();
+	build_die_parent_relations_under(&cu, source, imported_units);
+      }
+  }
 };// end class read_context.
 
 static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool		die_is_from_alt_di,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
 		       size_t		where_offset);
@@ -4658,7 +4899,6 @@ build_ir_node_from_die(read_context&	ctxt,
 static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool		die_is_from_alt_di,
 		       bool		called_from_public_decl,
 		       size_t		where_offset);
 
@@ -4668,7 +4908,6 @@ build_ir_node_for_void_type(read_context& ctxt);
 static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    Dwarf_Die*		die,
-		    bool		is_in_alt_di,
 		    size_t		where_offset,
 		    function_decl_sptr	fn);
 
@@ -4894,82 +5133,6 @@ die_decl_file_attribute(Dwarf_Die* die)
   return str ? str : "";
 }
 
-/// Tests if a given attribute that resolves to a DIE, resolves to a
-/// DIE that is in the alternate debug info section.  That is, tests
-/// if the resolution is done through a DW_FORM_GNU_ref_alt kind of
-/// attribute.
-///
-/// Note that this function works even if there is a
-/// DW_AT_abstract_origin or DW_AT_specification between @p die and
-/// the finally resolved DIE.
-///
-/// Note also that this function is a subroutine of
-/// die_die_attribute().
-///
-/// @param die the DIE to consider.
-///
-/// @param attr_name the attribute name to consider.
-///
-/// @param thru_abstract_origin true if this function should follow a
-/// DW_AT_specification or DW_AT_abstract_origin and perform the test
-/// on the resulting target.
-///
-/// @return true if the test succeeds, false otherwise.
-static bool
-is_die_attribute_resolved_through_gnu_ref_alt(Dwarf_Die* die,
-					      unsigned attr_name,
-					      bool thru_abstract_origin = true)
-{
-  Dwarf_Attribute attr;
-  if (thru_abstract_origin)
-    {
-      if (!dwarf_attr_integrate(die, attr_name, &attr))
-	return false;
-    }
-  else
-    {
-      if (!dwarf_attr(die, attr_name, &attr))
-	return false;
-    }
-
-  bool is_in_alternate_debug_info = false;
-  Dwarf_Die result;
-  bool r = dwarf_formref_die(&attr, &result);
-  if (r)
-    is_in_alternate_debug_info = (attr.form == DW_FORM_GNU_ref_alt);
-
-  // Now let's see if we got to the attribute attr_name by looking
-  // through either DW_AT_abstract_origin or DW_AT_specification, or
-  // even DW_AT_abstract_origin *and then* DW_AT_specification.  Would
-  // then be looking at a function which definition is in the
-  // alternate debug info file.
-  if (r && !is_in_alternate_debug_info && thru_abstract_origin)
-    {
-      Dwarf_Die origin_die;
-      Dwarf_Attribute mem;
-      Dwarf_Attribute* a = dwarf_attr(die, DW_AT_abstract_origin, &mem);
-      if (a == NULL || a->form != DW_FORM_GNU_ref_alt)
-	{
-	  if (a == NULL)
-	    a = dwarf_attr(die, DW_AT_specification, &mem);
-	  else
-	    {
-	      // so we looked through a DW_AT_abstract_origin
-	      // attribute.  So let's get that origin DIE and see if
-	      // it has an DW_AT_specification attribute ...
-	      assert(dwarf_formref_die(a, &origin_die));
-	      a = dwarf_attr(&origin_die, DW_AT_specification, &mem);
-	    }
-	}
-      // Now if the final function we got by jumping through hoops is
-      // inside an alternate debug info file, we are good.
-      if (a && a->form == DW_FORM_GNU_ref_alt)
-	is_in_alternate_debug_info = true;
-    }
-
-  return is_in_alternate_debug_info;
-}
-
 /// Get the value of an attribute which value is supposed to be a
 /// reference to a DIE.
 ///
@@ -4983,10 +5146,6 @@ is_die_attribute_resolved_through_gnu_ref_alt(Dwarf_Die* die,
 /// @param result the DIE resulting from reading the attribute value.
 /// This is set iff the function returns true.
 ///
-/// @param result_die_is_in_alt_di out parameter.  This is set to true
-/// if the resulting DIE is in the alternate debug info section, false
-/// otherwise.
-///
 /// @param look_thru_abstract_origin if yes, the function looks
 /// through the possible DW_AT_abstract_origin attribute all the way
 /// down to the initial DIE that is cloned and look on that DIE to see
@@ -4995,10 +5154,10 @@ is_die_attribute_resolved_through_gnu_ref_alt(Dwarf_Die* die,
 /// @return true if the DIE @p die contains an attribute named @p
 /// attr_name that is a DIE reference, false otherwise.
 static bool
-die_die_attribute(Dwarf_Die* die, bool die_is_in_alt_di,
-		  unsigned attr_name, Dwarf_Die& result,
-		  bool& result_die_is_in_alt_di,
-		  bool look_thru_abstract_origin = true)
+die_die_attribute(Dwarf_Die* die,
+		  unsigned attr_name,
+		  Dwarf_Die& result,
+		  bool look_thru_abstract_origin)
 {
   Dwarf_Attribute attr;
   if (look_thru_abstract_origin)
@@ -5011,14 +5170,7 @@ die_die_attribute(Dwarf_Die* die, bool die_is_in_alt_di,
       if (!dwarf_attr(die, attr_name, &attr))
 	return false;
     }
-
   bool r = dwarf_formref_die(&attr, &result);
-  if (r)
-    result_die_is_in_alt_di =
-      is_die_attribute_resolved_through_gnu_ref_alt(die, attr_name,
-						    look_thru_abstract_origin);
-
-  result_die_is_in_alt_di |= die_is_in_alt_di;
   return r;
 }
 
@@ -6439,116 +6591,6 @@ die_virtual_function_index(Dwarf_Die* die,
   return true;
 }
 
-/// Walk the DIEs under a given die and for each child, populate the
-/// die -> parent map to record the child -> parent relationship that
-/// exists between the child and the given die.
-///
-/// The function also builds the vector of places where units are
-/// imported.
-///
-/// This is done recursively as for each child DIE, this function
-/// walks its children as well.
-///
-/// @param die the DIE whose children to walk recursively.
-///
-/// @param die_parent_map the die -> parent map to populate.
-///
-/// @param in_alt_di true iff the DIE under which this function is to
-/// build the die parent relations is in the alternate debug info
-/// file.
-///
-/// @param a vector containing all the offsets of the points where
-/// unit have been imported, under @p die.
-static void
-build_die_parent_relations_under(Dwarf_Die*			die,
-				 offset_offset_map&		die_parent_map,
-				 bool				in_alt_di,
-				 imported_unit_points_type &	imported_units)
-{
-  if (!die)
-    return;
-
-  Dwarf_Die child;
-  if (dwarf_child(die, &child) != 0)
-    return;
-
-  do
-    {
-      die_parent_map[dwarf_dieoffset(&child)] = dwarf_dieoffset(die);
-      if (dwarf_tag(&child) == DW_TAG_imported_unit)
-	{
-	  Dwarf_Die imported_unit;
-	  bool unit_imported_from_alt_di = in_alt_di;
-	  if (die_die_attribute(&child,
-				/*die_is_in_alt_di=*/false,
-				DW_AT_import, imported_unit,
-				unit_imported_from_alt_di))
-	    imported_units.push_back
-	      (imported_unit_point(dwarf_dieoffset(&child),
-				   imported_unit,
-				   unit_imported_from_alt_di));
-	}
-      build_die_parent_relations_under(&child, die_parent_map,
-				       in_alt_di, imported_units);
-    }
-  while (dwarf_siblingof(&child, &child) == 0);
-
-}
-
-/// Walk all the DIEs accessible in the debug info (and in the
-/// alternate debug info as well) and build maps representing the
-/// relationship DIE -> parent.  That is, make it so that we can get
-/// the parent for a given DIE.
-///
-/// @param ctxt the read context from which to get the needed
-/// information.
-static void
-build_die_parent_maps(read_context& ctxt)
-{
-  uint8_t address_size = 0;
-  size_t header_size = 0;
-
-  for (Dwarf_Off offset = 0, next_offset = 0;
-       (dwarf_next_unit(ctxt.alt_dwarf(), offset, &next_offset, &header_size,
-			NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
-       offset = next_offset)
-    {
-      Dwarf_Off die_offset = offset + header_size;
-      Dwarf_Die cu;
-      if (!dwarf_offdie(ctxt.alt_dwarf(), die_offset, &cu))
-	continue;
-      ctxt.cur_tu_die(&cu);
-      imported_unit_points_type& imported_units =
-	ctxt.alt_tu_die_imported_unit_points_map()[die_offset] =
-	imported_unit_points_type();
-      build_die_parent_relations_under(&cu,
-				       ctxt.alternate_die_parent_map(),
-				       /*in_alt_di=*/true,
-				       imported_units);
-    }
-
-  address_size = 0;
-  header_size = 0;
-  for (Dwarf_Off offset = 0, next_offset = 0;
-       (dwarf_next_unit(ctxt.dwarf(), offset, &next_offset, &header_size,
-			NULL, NULL, &address_size, NULL, NULL, NULL) == 0);
-       offset = next_offset)
-    {
-      Dwarf_Off die_offset = offset + header_size;
-      Dwarf_Die cu;
-      if (!dwarf_offdie(ctxt.dwarf(), die_offset, &cu))
-	continue;
-      ctxt.cur_tu_die(&cu);
-      imported_unit_points_type& imported_units =
-	ctxt.tu_die_imported_unit_points_map()[die_offset] =
-	imported_unit_points_type();
-      build_die_parent_relations_under(&cu,
-				       ctxt.die_parent_map(),
-				       /*in_alt_di=*/false,
-				       imported_units);
-    }
-}
-
 /// Get the point where a DW_AT_import DIE is used to import a given
 /// (unit) DIE, between two DIEs.
 ///
@@ -6567,9 +6609,8 @@ build_die_parent_maps(read_context& ctxt)
 /// @param first_die_cu_offset the offset of the (compilation) unit
 /// that @p first_die_cu_offset belongs to.
 ///
-/// @param is_from_alt_di true if the @p first_die_cu_offset is for a
-/// unit that comes from the alternate debug
-/// information file.
+/// @param source where the DIE of first_die_cu_offset unit comes
+/// from.
 ///
 /// @param last_die_offset the offset of the last DIE of the up to
 /// which this function looks for the import point of @p
@@ -6589,14 +6630,12 @@ find_import_unit_point_between_dies(read_context&	ctxt,
 				    size_t		partial_unit_offset,
 				    Dwarf_Off		first_die_offset,
 				    Dwarf_Off		first_die_cu_offset,
-				    bool		is_from_alt_di,
+				    die_source		source,
 				    size_t		last_die_offset,
 				    size_t&		imported_point_offset)
 {
   tu_die_imported_unit_points_map_type& tu_die_imported_unit_points_map =
-    is_from_alt_di
-    ? ctxt.alt_tu_die_imported_unit_points_map()
-    : ctxt.tu_die_imported_unit_points_map();
+    ctxt.tu_die_imported_unit_points_map(source);
 
   tu_die_imported_unit_points_map_type::iterator iter =
     tu_die_imported_unit_points_map.find(first_die_cu_offset);
@@ -6634,7 +6673,7 @@ find_import_unit_point_between_dies(read_context&	ctxt,
 						  partial_unit_offset,
 						  i->imported_unit_child_off,
 						  i->imported_unit_cu_off,
-						  i->imported_unit_from_alt_di,
+						  i->imported_unit_die_source,
 						  (Dwarf_Off)-1,
 						  imported_point_offset))
 	    return true;
@@ -6655,7 +6694,7 @@ find_import_unit_point_between_dies(read_context&	ctxt,
 						  partial_unit_offset,
 						  i->imported_unit_child_off,
 						  i->imported_unit_cu_off,
-						  i->imported_unit_from_alt_di,
+						  i->imported_unit_die_source,
 						  (Dwarf_Off)-1,
 						  imported_point_offset))
 	    return true;
@@ -6711,7 +6750,7 @@ find_import_unit_point_before_die(read_context&	ctxt,
   if (find_import_unit_point_between_dies(ctxt, partial_unit_offset,
 					  dwarf_dieoffset(&first_die_of_tu),
 					  dwarf_dieoffset(cu_die),
-					  /*is_from_alt_die=*/false,
+					  /*source=*/PRIMARY_DEBUG_INFO_DIE_SOURCE,
 					  where_offset,
 					  import_point_offset))
     {
@@ -6738,9 +6777,6 @@ find_import_unit_point_before_die(read_context&	ctxt,
 ///
 /// @param die the DIE for which we want the parent.
 ///
-/// @param die_is_from_alt_di true if @p die represent a DIE that
-/// comes from alternate debug info, false otherwise.
-///
 /// @param parent_die the output parameter set to the parent die of
 /// @p die.  Its memory must be allocated and handled by the caller.
 ///
@@ -6754,58 +6790,31 @@ find_import_unit_point_before_die(read_context&	ctxt,
 static bool
 get_parent_die(read_context&	ctxt,
 	       Dwarf_Die*	die,
-	       bool		die_is_from_alt_di,
 	       Dwarf_Die&	parent_die,
 	       size_t		where_offset)
 {
   assert(ctxt.dwarf());
 
-  offset_offset_map::const_iterator i =
-    (die_is_from_alt_di)
-    ? ctxt.alternate_die_parent_map().find(dwarf_dieoffset(die))
-    : ctxt.die_parent_map().find(dwarf_dieoffset(die));
+  die_source source = NO_DEBUG_INFO_DIE_SOURCE;
+  assert(ctxt.get_die_source(die, source));
 
-  if (die_is_from_alt_di)
+  const offset_offset_map& m = ctxt.die_parent_map(source);
+  offset_offset_map::const_iterator i = m.find(dwarf_dieoffset(die));
+
+  if (i == m.end())
+    return false;
+
+  switch(source)
     {
-      if (i == ctxt.alternate_die_parent_map().end())
-	{
-	  // We haven't found the DIE in the alternate debug info.
-	  //
-	  // This could a problem in the debug info (the DIE doesn't
-	  // exist in it).
-	  //
-	  // But first let's make sure the DIE we are looking for is
-	  // not in the main debug info either; if it is, it might
-	  // mean that we are looking for the DIE in the wrong debug
-	  // info.  And that would most likely argue for a wrongdoing
-	  // on our part that ought fixing.
-	  assert(ctxt.die_parent_map().find(dwarf_dieoffset(die))
-		 == ctxt.die_parent_map().end());
-	  return false;
-	}
-      else
-	assert(dwarf_offdie(ctxt.alt_dwarf(), i->second, &parent_die));
-    }
-  else
-    {
-      if (i == ctxt.die_parent_map().end())
-	{
-	  // We haven't found the DIE in the main debug info.
-	  //
-	  // This could a problem in the debug info (the DIE doesn't
-	  // exist in it).
-	  //
-	  // But first let's make sure the DIE we are looking for is not
-	  // in the alternate debug info either; if it is, it might mean
-	  // that we are looking for the DIE int the wrong debug info.
-	  // And that would most likely argue for a wrongdoing on our
-	  // part that ought fixing.
-	  assert(ctxt.alternate_die_parent_map().find(dwarf_dieoffset(die))
-		 == ctxt.alternate_die_parent_map().end());
-	  return false;
-	}
-      else
-	assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
+    case PRIMARY_DEBUG_INFO_DIE_SOURCE:
+      assert(dwarf_offdie(ctxt.dwarf(), i->second, &parent_die));
+      break;
+    case ALT_DEBUG_INFO_DIE_SOURCE:
+      assert(dwarf_offdie(ctxt.alt_dwarf(), i->second, &parent_die));
+      break;
+    case NO_DEBUG_INFO_DIE_SOURCE:
+    case NUMBER_OF_DIE_SOURCES:
+      ABG_ASSERT_NOT_REACHED;
     }
 
   if (dwarf_tag(&parent_die) == DW_TAG_partial_unit)
@@ -6831,7 +6840,6 @@ get_parent_die(read_context&	ctxt,
 			      import_point_offset,
 			      &import_point_die));
 	  return get_parent_die(ctxt, &import_point_die,
-				/*die_is_from_alt_di=*/false,
 				parent_die, where_offset);
 	}
     }
@@ -6850,9 +6858,6 @@ get_parent_die(read_context&	ctxt,
 ///
 /// @param die the DIE to get the scope for.
 ///
-/// @param die_is_from_alt_di true if @p comes from alternate debug
-/// info sections, false otherwise.
-///
 /// @param called_from_public_decl is true if this function has been
 /// initially called within the context of a public decl.
 ///
@@ -6863,27 +6868,22 @@ get_parent_die(read_context&	ctxt,
 static scope_decl_sptr
 get_scope_for_die(read_context& ctxt,
 		  Dwarf_Die*	die,
-		  bool		die_is_from_alt_di,
 		  bool		called_for_public_decl,
 		  size_t	where_offset)
 {
+  die_source source_of_die;
+  assert(ctxt.get_die_source(die, source_of_die));
+
   Dwarf_Die cloned_die;
-  bool cloned_die_is_from_alternate_debug_info = false;
-  if (die_die_attribute(die, die_is_from_alt_di,
-			DW_AT_specification, cloned_die,
-			cloned_die_is_from_alternate_debug_info, false)
-      || die_die_attribute(die, die_is_from_alt_di,
-			   DW_AT_abstract_origin, cloned_die,
-			   cloned_die_is_from_alternate_debug_info, false))
+  if (die_die_attribute(die, DW_AT_specification, cloned_die, false)
+      || die_die_attribute(die, DW_AT_abstract_origin, cloned_die, false))
     return get_scope_for_die(ctxt, &cloned_die,
-			     cloned_die_is_from_alternate_debug_info,
 			     called_for_public_decl,
 			     where_offset);
 
   Dwarf_Die parent_die;
 
-  if (!get_parent_die(ctxt, die, die_is_from_alt_di,
-		      parent_die, where_offset))
+  if (!get_parent_die(ctxt, die, parent_die, where_offset))
     return scope_decl_sptr();
 
   if (dwarf_tag(&parent_die) == DW_TAG_compile_unit
@@ -6891,7 +6891,7 @@ get_scope_for_die(read_context& ctxt,
     {
       if (dwarf_tag(&parent_die) == DW_TAG_partial_unit)
 	{
-	  assert(die_is_from_alt_di);
+	  assert(source_of_die == ALT_DEBUG_INFO_DIE_SOURCE);
 	  return ctxt.cur_tu()->get_global_scope();
 	}
 
@@ -6915,11 +6915,10 @@ get_scope_for_die(read_context& ctxt,
     // function.  Yeah, weird.  So if I drop the typedef DIE, I'd drop
     // the function parm too.  So for that case, let's say that the
     // scope is the scope of the function itself.
-    return get_scope_for_die(ctxt, &parent_die, die_is_from_alt_di,
+    return get_scope_for_die(ctxt, &parent_die,
 			     called_for_public_decl, where_offset);
   else
     d = build_ir_node_from_die(ctxt, &parent_die,
-			       die_is_from_alt_di,
 			       called_for_public_decl,
 			       where_offset);
   s =  dynamic_pointer_cast<scope_decl>(d);
@@ -7171,7 +7170,6 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 
   do
     build_ir_node_from_die(ctxt, &child,
-			   /*die_is_from_alt_di=*/false,
 			   die_is_public_decl(&child),
 			   dwarf_dieoffset(&child));
   while (dwarf_siblingof(&child, &child) == 0);
@@ -7251,9 +7249,6 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 /// @param die the DIE to read from.  Must be either DW_TAG_namespace
 /// or DW_TAG_module.
 ///
-/// @param die_is_from_alt_di true if @p die comes from alternate
-/// debug info sections, false otherwise.
-///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
 /// e.g, DW_TAG_partial_unit that can be included in several places in
@@ -7264,7 +7259,6 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 static namespace_decl_sptr
 build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 				   Dwarf_Die*		die,
-				   bool		die_is_from_alt_di,
 				   size_t		where_offset)
 {
   namespace_decl_sptr result;
@@ -7272,11 +7266,14 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   if (!die)
     return result;
 
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_namespace && tag != DW_TAG_module)
     return result;
 
-  scope_decl_sptr scope = get_scope_for_die(ctxt, die, die_is_from_alt_di,
+  scope_decl_sptr scope = get_scope_for_die(ctxt, die,
 					    /*called_for_public_decl=*/false,
 					    where_offset);
 
@@ -7286,7 +7283,7 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 
   result.reset(new namespace_decl(ctxt.env(), name, loc));
   add_decl_to_scope(result, scope.get());
-  ctxt.associate_die_to_decl(dwarf_dieoffset(die), die_is_from_alt_di, result);
+  ctxt.associate_die_to_decl(dwarf_dieoffset(die), source, result);
 
   Dwarf_Die child;
   if (dwarf_child(die, &child) != 0)
@@ -7295,7 +7292,6 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
   ctxt.scope_stack().push(result.get());
   do
     build_ir_node_from_die(ctxt, &child,
-			   die_is_from_alt_di,
 			   /*called_from_public_decl=*/false,
 			   where_offset);
   while (dwarf_siblingof(&child, &child) == 0);
@@ -7312,15 +7308,16 @@ build_namespace_decl_and_add_to_ir(read_context&	ctxt,
 ///
 /// @return the resulting decl_base_sptr.
 static type_decl_sptr
-build_type_decl(read_context&	ctxt,
-		bool die_is_from_alt_di,
-		Dwarf_Die*	die)
+build_type_decl(read_context& ctxt, Dwarf_Die* die)
 {
   type_decl_sptr result;
 
   if (!die)
     return result;
   assert(dwarf_tag(die) == DW_TAG_base_type);
+
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
 
   uint64_t byte_size = 0, bit_size = 0;
   if (!die_unsigned_constant_attribute(die, DW_AT_byte_size, byte_size))
@@ -7350,9 +7347,7 @@ build_type_decl(read_context&	ctxt,
   if (!result)
     result.reset(new type_decl(ctxt.env(), type_name, bit_size,
 			       /*alignment=*/0, loc, linkage_name));
-  ctxt.associate_die_to_type(dwarf_dieoffset(die),
-			     die_is_from_alt_di,
-			     result);
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), source, result);
   return result;
 }
 
@@ -7364,13 +7359,14 @@ build_type_decl(read_context&	ctxt,
 ///
 /// @return the built enum_type_decl or NULL if it could not be built.
 static enum_type_decl_sptr
-build_enum_type(read_context& ctxt,
-		bool die_is_from_alt_di,
-		Dwarf_Die* die)
+build_enum_type(read_context& ctxt, Dwarf_Die* die)
 {
   enum_type_decl_sptr result;
   if (!die)
     return result;
+
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_enumeration_type)
@@ -7440,9 +7436,7 @@ build_enum_type(read_context& ctxt,
   assert(t);
   result.reset(new enum_type_decl(name, loc, t, enms, linkage_name));
   result->set_is_anonymous(enum_is_anonymous);
-  ctxt.associate_die_to_type(dwarf_dieoffset(die),
-			     die_is_from_alt_di,
-			     result);
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), source, result);
   return result;
 }
 
@@ -7565,9 +7559,6 @@ finish_member_function_reading(Dwarf_Die*		die,
 /// @param die the DIE to read information from.  Must be either a
 /// DW_TAG_structure_type or a DW_TAG_class_type.
 ///
-/// @param is_in_alt_di true if @p die is in the alternate debug
-/// sections, false otherwise.
-///
 /// @param is_struct wheter the class was declared as a struct.
 ///
 /// @param scope a pointer to the scope_decl* under which this class
@@ -7588,7 +7579,6 @@ finish_member_function_reading(Dwarf_Die*		die,
 static class_decl_sptr
 build_class_type_and_add_to_ir(read_context&	ctxt,
 			       Dwarf_Die*	die,
-			       bool		is_in_alt_di,
 			       scope_decl*	scope,
 			       bool		is_struct,
 			       class_decl_sptr  klass,
@@ -7599,6 +7589,9 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   if (!die)
     return result;
 
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+
   unsigned tag = dwarf_tag(die);
 
   if (tag != DW_TAG_class_type && tag != DW_TAG_structure_type)
@@ -7606,8 +7599,8 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   {
     die_class_map_type::const_iterator i =
-      ctxt.die_wip_classes_map(is_in_alt_di).find(dwarf_dieoffset(die));
-    if (i != ctxt.die_wip_classes_map(is_in_alt_di).end())
+      ctxt.die_wip_classes_map(source).find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_classes_map(source).end())
       return i->second;
   }
 
@@ -7659,7 +7652,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       result->set_is_declaration_only(false);
     }
 
-  ctxt.associate_die_to_type(dwarf_dieoffset(die), is_in_alt_di, result);
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), source, result);
   ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
 
   if (!has_child)
@@ -7667,7 +7660,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
     // here.
     return result;
 
-  ctxt.die_wip_classes_map(is_in_alt_di)[dwarf_dieoffset(die)] = result;
+  ctxt.die_wip_classes_map(source)[dwarf_dieoffset(die)] = result;
 
   scope_decl_sptr scop =
     dynamic_pointer_cast<scope_decl>(res);
@@ -7686,15 +7679,11 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      result->set_is_declaration_only(false);
 
 	      Dwarf_Die type_die;
-	      bool type_die_is_in_alternate_debug_info = false;
-	      if (!die_die_attribute(&child, is_in_alt_di,
-				     DW_AT_type, type_die,
-				     type_die_is_in_alternate_debug_info))
+	      if (!die_die_attribute(&child, DW_AT_type, type_die))
 		continue;
 
 	      decl_base_sptr base_type = is_decl(
 		build_ir_node_from_die(ctxt, &type_die,
-				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
 				       where_offset));
 	      class_decl_sptr b = is_compatible_with_class_type(base_type);
@@ -7732,10 +7721,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 		   || tag == DW_TAG_variable)
 	    {
 	      Dwarf_Die type_die;
-	      bool type_die_is_in_alternate_debug_info = false;
-	      if (!die_die_attribute(&child, is_in_alt_di,
-				     DW_AT_type, type_die,
-				     type_die_is_in_alternate_debug_info))
+	      if (!die_die_attribute(&child, DW_AT_type, type_die))
 		continue;
 
 	      string n, m;
@@ -7755,7 +7741,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      decl_base_sptr ty = is_decl(
 		build_ir_node_from_die(ctxt, &type_die,
-				       type_die_is_in_alternate_debug_info,
 				       called_from_public_decl,
 				       where_offset));
 	      type_base_sptr t = is_type(ty);
@@ -7786,16 +7771,13 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      result->add_data_member(dm, access, is_laid_out,
 				      is_static, offset_in_bits);
 	      assert(has_scope(dm));
-	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
-					 is_in_alt_di,
-					 dm);
+	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child), source, dm);
 	    }
 	  // Handle member functions;
 	  else if (tag == DW_TAG_subprogram)
 	    {
 	      decl_base_sptr r =
 		is_decl(build_ir_node_from_die(ctxt, &child,
-					       is_in_alt_di,
 					       result.get(),
 					       called_from_public_decl,
 					       where_offset));
@@ -7807,14 +7789,12 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
 	      finish_member_function_reading(&child, f, result, ctxt);
 
-	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child),
-					 is_in_alt_di, f);
+	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child), source, f);
 	    }
 	  // Handle member types
 	  else if (is_type_die(&child))
 	    decl_base_sptr td =
-	      is_decl(build_ir_node_from_die(ctxt, &child, is_in_alt_di,
-					     result.get(),
+	      is_decl(build_ir_node_from_die(ctxt, &child, result.get(),
 					     called_from_public_decl,
 					     where_offset));
 	} while (dwarf_siblingof(&child, &child) == 0);
@@ -7824,13 +7804,13 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 
   {
     die_class_map_type::const_iterator i =
-      ctxt.die_wip_classes_map(is_in_alt_di).find(dwarf_dieoffset(die));
-    if (i != ctxt.die_wip_classes_map(is_in_alt_di).end())
+      ctxt.die_wip_classes_map(source).find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_classes_map(source).end())
       {
 	if (is_member_type(i->second))
 	  set_member_access_specifier(res,
 				      get_member_access_specifier(i->second));
-	ctxt.die_wip_classes_map(is_in_alt_di).erase(i);
+	ctxt.die_wip_classes_map(source).erase(i);
       }
   }
 
@@ -7845,9 +7825,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 ///
 /// @param die the input DIE to read from.
 ///
-/// @param die_is_in_alt_di true if @p is in alternate debug info
-/// sections.
-///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
 /// is being built.
@@ -7861,13 +7838,15 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 static qualified_type_def_sptr
 build_qualified_type(read_context&	ctxt,
 		     Dwarf_Die*	die,
-		     bool		die_is_in_alt_di,
 		     bool		called_from_public_decl,
 		     size_t		where_offset)
 {
   qualified_type_def_sptr result;
   if (!die)
     return result;
+
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
 
   unsigned tag = dwarf_tag(die);
 
@@ -7877,11 +7856,8 @@ build_qualified_type(read_context&	ctxt,
     return result;
 
   Dwarf_Die underlying_type_die;
-  bool utype_is_in_alt_di = false;
   decl_base_sptr utype_decl;
-  if (!die_die_attribute(die, die_is_in_alt_di, DW_AT_type,
-			 underlying_type_die,
-			 utype_is_in_alt_di))
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
     // So, if no DW_AT_type is present, then this means (if we are
     // looking at a debug info emitted by GCC) that we are looking
     // at a qualified void type.
@@ -7889,7 +7865,6 @@ build_qualified_type(read_context&	ctxt,
 
   if (!utype_decl)
     utype_decl = is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
-						utype_is_in_alt_di,
 						called_from_public_decl,
 						where_offset));
   if (!utype_decl)
@@ -7898,7 +7873,7 @@ build_qualified_type(read_context&	ctxt,
   // The call to build_ir_node_from_die() could have triggered the
   // creation of the type for this DIE.  In that case, just return it.
   if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
-							  die_is_in_alt_di))
+							  source))
     {
       result = is_qualified_type(t);
       assert(result);
@@ -7921,9 +7896,7 @@ build_qualified_type(read_context&	ctxt,
 					qualified_type_def::CV_RESTRICT,
 					location()));
 
-  ctxt.associate_die_to_type(dwarf_dieoffset(die),
-			     die_is_in_alt_di,
-			     result);
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), source, result);
 
   return result;
 }
@@ -7975,9 +7948,6 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
 ///
 /// @param die the DIE to read information from.
 ///
-/// @param die_is_in_alt_di true if @p is in alternate debug info
-/// sections, false otherwise.
-///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
 /// is being built.
@@ -7991,7 +7961,6 @@ maybe_strip_qualification(const qualified_type_def_sptr t)
 static pointer_type_def_sptr
 build_pointer_type_def(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool		die_is_in_alt_di,
 		       bool		called_from_public_decl,
 		       size_t		where_offset)
 {
@@ -8000,6 +7969,9 @@ build_pointer_type_def(read_context&	ctxt,
   if (!die)
     return result;
 
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_pointer_type)
     return result;
@@ -8007,10 +7979,7 @@ build_pointer_type_def(read_context&	ctxt,
   type_or_decl_base_sptr utype_decl;
   Dwarf_Die underlying_type_die;
   bool has_underlying_type_die = false;
-  bool utype_die_is_in_alt_di = false;
-  if (!die_die_attribute(die, die_is_in_alt_di, DW_AT_type,
-			 underlying_type_die,
-			 utype_die_is_in_alt_di))
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
     // If the DW_AT_type attribute is missing, that means we are
     // looking at a pointer to "void".
     utype_decl = build_ir_node_for_void_type(ctxt);
@@ -8019,7 +7988,6 @@ build_pointer_type_def(read_context&	ctxt,
 
   if (!utype_decl && has_underlying_type_die)
     utype_decl = build_ir_node_from_die(ctxt, &underlying_type_die,
-					utype_die_is_in_alt_di,
 					called_from_public_decl,
 					where_offset);
   if (!utype_decl)
@@ -8028,7 +7996,7 @@ build_pointer_type_def(read_context&	ctxt,
   // The call to build_ir_node_from_die() could have triggered the
   // creation of the type for this DIE.  In that case, just return it.
   if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
-							  die_is_in_alt_di))
+							  source))
     {
       result = is_pointer_type(t);
       assert(result);
@@ -8051,13 +8019,9 @@ build_pointer_type_def(read_context&	ctxt,
   // of the current translation unit.
   assert((size_t) ctxt.cur_tu()->get_address_size() == size);
 
-  result.reset(new pointer_type_def(utype, size,
-				    /*alignment=*/0,
-				    location()));
+  result.reset(new pointer_type_def(utype, size, /*alignment=*/0, location()));
   assert(result->get_pointed_to_type());
-  ctxt.associate_die_to_type(dwarf_dieoffset(die),
-			     die_is_in_alt_di,
-			     result);
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), source, result);
   return result;
 }
 
@@ -8067,9 +8031,6 @@ build_pointer_type_def(read_context&	ctxt,
 /// @param ctxt the read context to consider.
 ///
 /// @param die the DIE to read from.
-///
-/// @param die_is_in_alt_di true if @p die is from alternate debug
-/// info section, false otherwise.
 ///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
@@ -8084,7 +8045,6 @@ build_pointer_type_def(read_context&	ctxt,
 static reference_type_def_sptr
 build_reference_type(read_context&	ctxt,
 		     Dwarf_Die*	die,
-		     bool		die_is_from_alt_di,
 		     bool		called_from_public_decl,
 		     size_t		where_offset)
 {
@@ -8093,21 +8053,20 @@ build_reference_type(read_context&	ctxt,
   if (!die)
     return result;
 
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_reference_type
       && tag != DW_TAG_rvalue_reference_type)
     return result;
 
   Dwarf_Die underlying_type_die;
-  bool utype_is_in_alt_di = false;
-  if (!die_die_attribute(die, die_is_from_alt_di,
-			 DW_AT_type, underlying_type_die,
-			 utype_is_in_alt_di))
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
     return result;
 
   type_or_decl_base_sptr utype_decl =
     build_ir_node_from_die(ctxt, &underlying_type_die,
-			   utype_is_in_alt_di,
 			   called_from_public_decl,
 			   where_offset);
   if (!utype_decl)
@@ -8116,7 +8075,7 @@ build_reference_type(read_context&	ctxt,
   // The call to build_ir_node_from_die() could have triggered the
   // creation of the type for this DIE.  In that case, just return it.
   if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
-							  die_is_from_alt_di))
+							  source))
     {
       result = is_reference_type(t);
       assert(result);
@@ -8142,9 +8101,7 @@ build_reference_type(read_context&	ctxt,
   result.reset(new reference_type_def(utype, is_lvalue, size,
 				      /*alignment=*/0,
 				      location()));
-  ctxt.associate_die_to_type(dwarf_dieoffset(die),
-			     die_is_from_alt_di,
-			     result);
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), source, result);
   return result;
 }
 
@@ -8153,9 +8110,6 @@ build_reference_type(read_context&	ctxt,
 /// @param ctxt the read context to consider.
 ///
 /// @param die the DIE to read from.
-///
-/// @param die_is_from_alt_di true if @p is from alternate debug
-/// info.
 ///
 /// @param is_method points to a class declaration iff we're
 /// building the type for a method.
@@ -8169,7 +8123,6 @@ build_reference_type(read_context&	ctxt,
 static function_type_sptr
 build_function_type(read_context&	ctxt,
 		    Dwarf_Die*		die,
-		    bool		die_is_from_alt_di,
 		    class_decl_sptr	is_method,
 		    size_t		where_offset)
 {
@@ -8181,6 +8134,9 @@ build_function_type(read_context&	ctxt,
   assert(dwarf_tag(die) == DW_TAG_subroutine_type
 	 || dwarf_tag(die) == DW_TAG_subprogram);
 
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+
   decl_base_sptr type_decl;
 
   translation_unit_sptr tu = ctxt.cur_tu();
@@ -8189,7 +8145,7 @@ build_function_type(read_context&	ctxt,
   // The call to build_ir_node_from_die() could have triggered the
   // creation of the type for this DIE.  In that case, just return it.
   if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
-							  die_is_from_alt_di))
+							  source))
     {
       result = is_function_type(t);
       assert(result);
@@ -8208,19 +8164,15 @@ build_function_type(read_context&	ctxt,
 				   /*alignment=*/0));
   tu->bind_function_type_life_time(result);
   ctxt.associate_die_to_type(dwarf_dieoffset(die),
-			     die_is_from_alt_di,
-			     result);
-  ctxt.die_wip_function_types_map(die_is_from_alt_di)[dwarf_dieoffset(die)] =
+			     source, result);
+  ctxt.die_wip_function_types_map(source)[dwarf_dieoffset(die)] =
     result;
 
   decl_base_sptr return_type_decl;
   Dwarf_Die ret_type_die;
-  bool ret_type_die_is_in_alternate_debug_info = false;
-  if (die_die_attribute(die, die_is_from_alt_di, DW_AT_type, ret_type_die,
-			ret_type_die_is_in_alternate_debug_info))
+  if (die_die_attribute(die, DW_AT_type, ret_type_die))
     return_type_decl =
       is_decl(build_ir_node_from_die(ctxt, &ret_type_die,
-				     ret_type_die_is_in_alternate_debug_info,
 				     /*called_from_public_decl=*/true,
 				     where_offset));
   if (!return_type_decl)
@@ -8247,13 +8199,9 @@ build_function_type(read_context&	ctxt,
 	    bool is_artificial = die_is_artificial(&child);
 	    decl_base_sptr parm_type_decl;
 	    Dwarf_Die parm_type_die;
-	    bool parm_type_die_is_in_alt_di = false;
-	    if (die_die_attribute(&child, die_is_from_alt_di,
-				  DW_AT_type, parm_type_die,
-				  parm_type_die_is_in_alt_di))
+	    if (die_die_attribute(&child, DW_AT_type, parm_type_die))
 	      parm_type_decl =
 		is_decl(build_ir_node_from_die(ctxt, &parm_type_die,
-					       parm_type_die_is_in_alt_di,
 					       /*called_from_public_decl=*/true,
 					       where_offset));
 	    if (!parm_type_decl)
@@ -8293,10 +8241,10 @@ build_function_type(read_context&	ctxt,
 
   {
     die_function_type_map_type::const_iterator i =
-      ctxt.die_wip_function_types_map(die_is_from_alt_di).
+      ctxt.die_wip_function_types_map(source).
       find(dwarf_dieoffset(die));
-    if (i != ctxt.die_wip_function_types_map(die_is_from_alt_di).end())
-      ctxt.die_wip_function_types_map(die_is_from_alt_di).erase(i);
+    if (i != ctxt.die_wip_function_types_map(source).end())
+      ctxt.die_wip_function_types_map(source).erase(i);
   }
 
   return result;
@@ -8307,9 +8255,6 @@ build_function_type(read_context&	ctxt,
 /// @param ctxt the read context to consider.
 ///
 /// @param die the DIE to read from.
-///
-/// @param die_is_from_alt_di true if @p is from alternate debug
-/// info.
 ///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
@@ -8324,7 +8269,6 @@ build_function_type(read_context&	ctxt,
 static array_type_def_sptr
 build_array_type(read_context&	ctxt,
 		 Dwarf_Die*	die,
-		 bool		die_is_from_alt_di,
 		 bool		called_from_public_decl,
 		 size_t	where_offset)
 {
@@ -8333,6 +8277,9 @@ build_array_type(read_context&	ctxt,
   if (!die)
     return result;
 
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_array_type)
     return result;
@@ -8340,11 +8287,8 @@ build_array_type(read_context&	ctxt,
   decl_base_sptr type_decl;
   Dwarf_Die type_die;
 
-  bool utype_is_in_alt_di = false;
-  if (die_die_attribute(die, die_is_from_alt_di, DW_AT_type,
-			type_die, utype_is_in_alt_di))
+  if (die_die_attribute(die, DW_AT_type, type_die))
     type_decl = is_decl(build_ir_node_from_die(ctxt, &type_die,
-					       utype_is_in_alt_di,
 					       called_from_public_decl,
 					       where_offset));
   if (!type_decl)
@@ -8353,7 +8297,7 @@ build_array_type(read_context&	ctxt,
   // The call to build_ir_node_from_die() could have triggered the
   // creation of the type for this DIE.  In that case, just return it.
   if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
-							  die_is_from_alt_di))
+							  source))
     {
       result = is_array_type(t);
       assert(result);
@@ -8442,9 +8386,6 @@ build_array_type(read_context&	ctxt,
 ///
 /// @param die the DIE to read from.
 ///
-/// @param die_is_from_alt_di true if @p die is from alternate debug
-/// info sections, false otherwise.
-///
 /// @param called_from_public_decl true if this function was called
 /// from a context where either a public function or a public variable
 /// is being built.
@@ -8458,7 +8399,6 @@ build_array_type(read_context&	ctxt,
 static typedef_decl_sptr
 build_typedef_type(read_context&	ctxt,
 		   Dwarf_Die*		die,
-		   bool		die_is_from_alt_di,
 		   bool		called_from_public_decl,
 		   size_t		where_offset)
 {
@@ -8467,20 +8407,19 @@ build_typedef_type(read_context&	ctxt,
   if (!die)
     return result;
 
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+
   unsigned tag = dwarf_tag(die);
   if (tag != DW_TAG_typedef)
     return result;
 
   Dwarf_Die underlying_type_die;
-  bool utype_is_in_alternate_di = false;
-  if (!die_die_attribute(die, die_is_from_alt_di,
-			 DW_AT_type, underlying_type_die,
-			 utype_is_in_alternate_di))
+  if (!die_die_attribute(die, DW_AT_type, underlying_type_die))
     return result;
 
   decl_base_sptr utype_decl =
     is_decl(build_ir_node_from_die(ctxt, &underlying_type_die,
-				   utype_is_in_alternate_di,
 				   called_from_public_decl,
 				   where_offset));
   if (!utype_decl)
@@ -8489,7 +8428,7 @@ build_typedef_type(read_context&	ctxt,
   // The call to build_ir_node_from_die() could have triggered the
   // creation of the type for this DIE.  In that case, just return it.
   if (type_base_sptr t = ctxt.lookup_type_from_die_offset(dwarf_dieoffset(die),
-							  die_is_from_alt_di))
+							  source))
     {
       result = is_typedef(t);
       assert(result);
@@ -8504,9 +8443,7 @@ build_typedef_type(read_context&	ctxt,
   die_loc_and_name(ctxt, die, loc, name, linkage_name);
 
   result.reset(new typedef_decl(name, utype, loc, linkage_name));
-  ctxt.associate_die_to_type(dwarf_dieoffset(die),
-			     die_is_from_alt_di,
-			     result);
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), source, result);
   return result;
 }
 
@@ -8514,10 +8451,7 @@ build_typedef_type(read_context&	ctxt,
 ///
 /// @param ctxt the read context to use.
 ///
-/// @param die the DIE to read from to build the @ref var_decl.
-///
-/// @param die_is_from_alt_di true if @p die is from alternate debug
-/// ifo sections, false otherwise.
+/// @param die the DIE representing the variable we are looking at.
 ///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
@@ -8534,7 +8468,6 @@ build_typedef_type(read_context&	ctxt,
 static var_decl_sptr
 build_var_decl(read_context&	ctxt,
 	       Dwarf_Die	*die,
-	       bool		die_is_from_alt_di,
 	       size_t		where_offset,
 	       var_decl_sptr	result = var_decl_sptr())
 {
@@ -8545,15 +8478,15 @@ build_var_decl(read_context&	ctxt,
   if (!die_is_public_decl(die))
     return result;
 
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+
   type_base_sptr type;
   Dwarf_Die type_die;
-  bool utype_is_in_alt_di = false;
-  if (die_die_attribute(die, die_is_from_alt_di,
-			DW_AT_type, type_die, utype_is_in_alt_di))
+  if (die_die_attribute(die, DW_AT_type, type_die))
     {
       decl_base_sptr ty =
 	is_decl(build_ir_node_from_die(ctxt, &type_die,
-				       utype_is_in_alt_di,
 				       /*called_from_public_decl=*/true,
 				       where_offset));
       if (!ty)
@@ -8612,9 +8545,6 @@ build_var_decl(read_context&	ctxt,
 ///
 /// @param die the DW_TAG_subprogram DIE to read from.
 ///
-/// @param is_in_alt_di true if @p die is a DIE from the alternate
-/// debug info sections.
-///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
 /// e.g, DW_TAG_partial_unit that can be included in several places in
@@ -8625,7 +8555,6 @@ build_var_decl(read_context&	ctxt,
 static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    Dwarf_Die*		die,
-		    bool		is_in_alt_di,
 		    size_t		where_offset,
 		    function_decl_sptr	fn)
 {
@@ -8633,6 +8562,9 @@ build_function_decl(read_context&	ctxt,
   if (!die)
     return result;
   assert(dwarf_tag(die) == DW_TAG_subprogram);
+
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
 
  if (!die_is_public_decl(die))
    return result;
@@ -8646,8 +8578,7 @@ build_function_decl(read_context&	ctxt,
 
   size_t is_inline = die_is_declared_inline(die);
   class_decl_sptr is_method =
-    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die, is_in_alt_di,
-						       true, where_offset));
+    dynamic_pointer_cast<class_decl>(get_scope_for_die(ctxt, die, true, where_offset));
 
   if (result)
     {
@@ -8665,10 +8596,7 @@ build_function_decl(read_context&	ctxt,
     }
   else
     {
-      function_type_sptr fn_type(build_function_type(ctxt,
-						     die,
-						     is_in_alt_di,
-						     is_method,
+      function_type_sptr fn_type(build_function_type(ctxt, die, is_method,
 						     where_offset));
 
       result.reset(is_method
@@ -8701,7 +8629,7 @@ build_function_decl(read_context&	ctxt,
     }
 
   Dwarf_Off die_offset = dwarf_dieoffset(die);
-  ctxt.associate_die_to_type(die_offset, is_in_alt_di, result->get_type());
+  ctxt.associate_die_to_type(die_offset, source, result->get_type());
 
   if (symbol_updated
       && fn
@@ -8770,7 +8698,7 @@ read_debug_info_into_corpus(read_context& ctxt)
   if (ctxt.do_log())
     cerr << "building die -> parent maps ...";
 
-  build_die_parent_maps(ctxt);
+  ctxt.build_die_parent_maps();
 
   if (ctxt.do_log())
     cerr << " DONE@" << ctxt.current_corpus()->get_path() << "\n";
@@ -8864,16 +8792,16 @@ read_debug_info_into_corpus(read_context& ctxt)
 /// read_context::associate_die_to_type() prior to calling this
 /// function.
 ///
-/// @param in_alt_di true if the DIE represented by @p die_offset
-/// comes from the alternate debug info section.
+/// @param die_source where the DIE represented by @p die_offset comes
+/// from.
 ///
 /// @param ctxt the @ref read_context to use.
 static void
 maybe_canonicalize_type(Dwarf_Off	die_offset,
-			bool		in_alt_di,
+			die_source	source,
 			read_context&	ctxt)
 {
-  type_base_sptr t = ctxt.lookup_type_from_die_offset(die_offset, in_alt_di);
+  type_base_sptr t = ctxt.lookup_type_from_die_offset(die_offset, source);
   assert(t);
 
   if (class_decl_sptr klass =
@@ -8884,11 +8812,11 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
     // be able to able detect it here (thinking about classes that are
     // work-in-progress, or classes that might be later amended by
     // some DWARF construct).  So we err on the safe side.
-    ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
+    ctxt.schedule_type_for_late_canonicalization(die_offset, source);
   else if ((is_function_type(t)
-	    && ctxt.is_wip_function_type_die_offset(die_offset, in_alt_di))
+	    && ctxt.is_wip_function_type_die_offset(die_offset, source))
 	   || type_has_non_canonicalized_subtype(t))
-    ctxt.schedule_type_for_late_canonicalization(die_offset, in_alt_di);
+    ctxt.schedule_type_for_late_canonicalization(die_offset, source);
   else
     canonicalize(t);
 }
@@ -8922,9 +8850,6 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
 ///
 /// @param die the DIE to consider.
 ///
-/// @param die_is_from_alt_di true if @p die is a DIE coming from the
-/// alternate debug info sections, false otherwise.
-///
 /// @param scope the scope under which the resulting IR node has to be
 /// added.
 ///
@@ -8945,7 +8870,6 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
 static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool		die_is_from_alt_di,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
 		       size_t		where_offset)
@@ -8970,17 +8894,18 @@ build_ir_node_from_die(read_context&	ctxt,
 	return result;
     }
 
+  die_source source_of_die;
+  assert(ctxt.get_die_source(die, source_of_die));
+
   if (result = ctxt.lookup_decl_from_die_offset(dwarf_dieoffset(die),
-						die_is_from_alt_di))
+						source_of_die))
     return result;
 
   switch (tag)
     {
       // Type DIEs we support.
     case DW_TAG_base_type:
-      if (type_decl_sptr t = build_type_decl(ctxt,
-					     die_is_from_alt_di,
-					     die))
+      if (type_decl_sptr t = build_type_decl(ctxt, die))
 	  {
 	    result = add_decl_to_scope(t, ctxt.cur_tu()->get_global_scope());
 	    canonicalize(t);
@@ -8989,16 +8914,14 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_typedef:
       {
-	typedef_decl_sptr t = build_typedef_type(ctxt, die, die_is_from_alt_di,
+	typedef_decl_sptr t = build_typedef_type(ctxt, die,
 						 called_from_public_decl,
 						 where_offset);
 	result = add_decl_to_scope(t, scope);
 	if (result)
 	  {
 	    maybe_set_member_type_access_specifier(is_decl(result), die);
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
       break;
@@ -9006,16 +8929,14 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_pointer_type:
       {
 	pointer_type_def_sptr p =
-	  build_pointer_type_def(ctxt, die, die_is_from_alt_di,
+	  build_pointer_type_def(ctxt, die,
 				 called_from_public_decl,
 				 where_offset);
 	if (p)
 	  {
 	    result = add_decl_to_scope(p, ctxt.cur_tu()->get_global_scope());
 	    assert(result->get_translation_unit());
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
       break;
@@ -9024,18 +8945,14 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_rvalue_reference_type:
       {
 	reference_type_def_sptr r =
-	  build_reference_type(ctxt, die, die_is_from_alt_di,
+	  build_reference_type(ctxt, die,
 			       called_from_public_decl,
 			       where_offset);
 	if (r)
 	  {
 	    result = add_decl_to_scope(r, ctxt.cur_tu()->get_global_scope());
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       r);
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die), source_of_die, r);
+	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
       break;
@@ -9045,7 +8962,7 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_restrict_type:
       {
 	qualified_type_def_sptr q =
-	  build_qualified_type(ctxt, die, die_is_from_alt_di,
+	  build_qualified_type(ctxt, die,
 			       called_from_public_decl,
 			       where_offset);
 	if (q)
@@ -9057,29 +8974,21 @@ build_ir_node_from_die(read_context&	ctxt,
 	    // Associate the die to type ty again because 'ty'might be
 	    // different from 'q', because 'ty' is 'q' possibly
 	    // stripped from some redundant type qualifier.
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       ty);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die), source_of_die, ty);
 	    result = add_decl_to_scope(d, ctxt.cur_tu()->get_global_scope());
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
       break;
 
     case DW_TAG_enumeration_type:
       {
-	enum_type_decl_sptr e = build_enum_type(ctxt,
-						die_is_from_alt_di,
-						die);
+	enum_type_decl_sptr e = build_enum_type(ctxt, die);
 	result = add_decl_to_scope(e, scope);
 	if (result)
 	  {
 	    maybe_set_member_type_access_specifier(is_decl(result), die);
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
       break;
@@ -9089,20 +8998,15 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	Dwarf_Die spec_die;
 	scope_decl_sptr scop;
-	bool spec_die_is_in_alt_di = false;
 	class_decl_sptr klass;
-	if (die_die_attribute(die, die_is_from_alt_di,
-			      DW_AT_specification, spec_die,
-			      spec_die_is_in_alt_di))
+	if (die_die_attribute(die, DW_AT_specification, spec_die))
 	  {
 	    scope_decl_sptr skope = get_scope_for_die(ctxt, &spec_die,
-						      spec_die_is_in_alt_di,
 						      called_from_public_decl,
 						      where_offset);
 	    assert(skope);
 	    decl_base_sptr cl =
 	      is_decl(build_ir_node_from_die(ctxt, &spec_die,
-					     spec_die_is_in_alt_di,
 					     skope.get(),
 					     called_from_public_decl,
 					     where_offset));
@@ -9112,7 +9016,6 @@ build_ir_node_from_die(read_context&	ctxt,
 
 	    klass =
 	      build_class_type_and_add_to_ir(ctxt, die,
-					     die_is_from_alt_di,
 					     skope.get(),
 					     tag == DW_TAG_structure_type,
 					     klass,
@@ -9121,7 +9024,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  }
 	else
 	  klass =
-	    build_class_type_and_add_to_ir(ctxt, die, die_is_from_alt_di,
+	    build_class_type_and_add_to_ir(ctxt, die,
 					   scope, tag == DW_TAG_structure_type,
 					   class_decl_sptr(),
 					   called_from_public_decl,
@@ -9130,9 +9033,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	if (klass)
 	  {
 	    maybe_set_member_type_access_specifier(klass, die);
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
       break;
@@ -9141,16 +9042,14 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_subroutine_type:
       {
 	function_type_sptr f =
-	  build_function_type(ctxt, die, die_is_from_alt_di,
+	  build_function_type(ctxt, die,
 			      /*called_from_public_decl,*/
 			      class_decl_sptr(),
 			      where_offset);
 	if (f)
 	  {
 	    result = f;
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
       break;
@@ -9160,18 +9059,13 @@ build_ir_node_from_die(read_context&	ctxt,
       {
 	array_type_def_sptr a = build_array_type(ctxt,
 						 die,
-						 die_is_from_alt_di,
 						 called_from_public_decl,
 						 where_offset);
 	if (a)
 	  {
 	    result = add_decl_to_scope(a, ctxt.cur_tu()->get_global_scope());
-	    ctxt.associate_die_to_type(dwarf_dieoffset(die),
-				       die_is_from_alt_di,
-				       a);
-	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+	    ctxt.associate_die_to_type(dwarf_dieoffset(die), source_of_die, a);
+	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
       break;
@@ -9204,34 +9098,24 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_namespace:
     case DW_TAG_module:
-      result = build_namespace_decl_and_add_to_ir(ctxt, die, die_is_from_alt_di,
-						  where_offset);
+      result = build_namespace_decl_and_add_to_ir(ctxt, die, where_offset);
       break;
 
     case DW_TAG_variable:
       {
 	Dwarf_Die spec_die;
 	bool var_is_cloned = false;
-	bool spec_die_is_in_alt_di = false;
-	if (die_die_attribute(die, die_is_from_alt_di,
-			      DW_AT_specification, spec_die,
-			      spec_die_is_in_alt_di,
-			      false)
-	    || (var_is_cloned = die_die_attribute(die, die_is_from_alt_di,
-						  DW_AT_abstract_origin,
-						  spec_die,
-						  spec_die_is_in_alt_di,
-						  false)))
+	if (die_die_attribute(die, DW_AT_specification, spec_die,false)
+	    || (var_is_cloned = die_die_attribute(die, DW_AT_abstract_origin,
+						  spec_die, false)))
 	  {
 	    scope_decl_sptr scop = get_scope_for_die(ctxt, &spec_die,
-						     spec_die_is_in_alt_di,
 						     called_from_public_decl,
 						     where_offset);
 	    if (scop)
 	      {
 		decl_base_sptr d =
 		  is_decl(build_ir_node_from_die(ctxt, &spec_die,
-						 spec_die_is_in_alt_di,
 						 scop.get(),
 						 called_from_public_decl,
 						 where_offset));
@@ -9241,13 +9125,12 @@ build_ir_node_from_die(read_context&	ctxt,
 		      dynamic_pointer_cast<var_decl>(d);
 		    if (var_is_cloned)
 		      m = m->clone();
-		    m = build_var_decl(ctxt, die, die_is_from_alt_di,
-				       where_offset, m);
+		    m = build_var_decl(ctxt, die, where_offset, m);
 		    if (is_data_member(m))
 		      {
 			set_member_is_static(m, true);
 			ctxt.associate_die_to_decl(dwarf_dieoffset(die),
-						   die_is_from_alt_di, m);
+						   source_of_die, m);
 		      }
 		    else
 		      {
@@ -9260,9 +9143,7 @@ build_ir_node_from_die(read_context&	ctxt,
 		  }
 	      }
 	  }
-	else if (var_decl_sptr v = build_var_decl(ctxt, die,
-						  die_is_from_alt_di,
-						  where_offset))
+	else if (var_decl_sptr v = build_var_decl(ctxt, die, where_offset))
 	  {
 	    result = add_decl_to_scope(v, scope);
 	    assert(is_decl(result)->get_scope());
@@ -9285,18 +9166,11 @@ build_ir_node_from_die(read_context&	ctxt,
 	    break;
 
 	  function_decl_sptr fn;
-	  bool is_in_alternate_debug_info = false;
-	  bool has_spec = die_die_attribute(die, die_is_from_alt_di,
-					    DW_AT_specification,
-					    spec_die,
-					    is_in_alternate_debug_info,
-					    true);
+	  bool has_spec = die_die_attribute(die, DW_AT_specification,
+					    spec_die, true);
 	  bool has_abstract_origin =
-	    die_die_attribute(die, die_is_from_alt_di,
-			      DW_AT_abstract_origin,
-			      abstract_origin_die,
-			      is_in_alternate_debug_info,
-			      true);
+	    die_die_attribute(die, DW_AT_abstract_origin,
+			      abstract_origin_die, true);
 	  if (has_spec || has_abstract_origin)
 	    {
 	      interface_die =
@@ -9312,7 +9186,6 @@ build_ir_node_from_die(read_context&	ctxt,
 	      string spec_linkage_name = die_linkage_name(interface_die);
 
 	      scop = get_scope_for_die(ctxt, interface_die,
-				       is_in_alternate_debug_info,
 				       called_from_public_decl,
 				       where_offset);
 	      if (scop)
@@ -9320,7 +9193,6 @@ build_ir_node_from_die(read_context&	ctxt,
 		  decl_base_sptr d =
 		    is_decl(build_ir_node_from_die(ctxt,
 						   origin_die,
-						   is_in_alternate_debug_info,
 						   scop.get(),
 						   called_from_public_decl,
 						   where_offset));
@@ -9336,15 +9208,13 @@ build_ir_node_from_die(read_context&	ctxt,
 			// of 'd'.
 			fn = fn->clone();
 		      ctxt.associate_die_to_decl(dwarf_dieoffset(die),
-						 die_is_from_alt_di,
-						 fn);
+						 source_of_die, fn);
 		    }
 		}
 	    }
 	ctxt.scope_stack().push(scope);
 
-	result = build_function_decl(ctxt, die, die_is_from_alt_di,
-				     where_offset, fn);
+	result = build_function_decl(ctxt, die, where_offset, fn);
 	if (result && !fn)
 	  result = add_decl_to_scope(is_decl(result), scope);
 
@@ -9361,8 +9231,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  {
 	    ctxt.maybe_add_fn_to_exported_decls(fn.get());
 	    maybe_canonicalize_type(dwarf_dieoffset(die),
-				    die_is_from_alt_di,
-				    ctxt);
+				    source_of_die, ctxt);
 	  }
 
 	ctxt.scope_stack().pop();
@@ -9432,7 +9301,7 @@ build_ir_node_from_die(read_context&	ctxt,
 
   if (result && tag != DW_TAG_subroutine_type)
     ctxt.associate_die_to_decl(dwarf_dieoffset(die),
-			       die_is_from_alt_di,
+			       source_of_die,
 			       is_decl(result));
 
   return result;
@@ -9463,9 +9332,6 @@ build_ir_node_for_void_type(read_context& ctxt)
 ///
 /// @param die the DIE to consider.
 ///
-/// @param die_is_from_alt_di true if @p die is a DIE from the
-/// alternate debug info sections, false otherwise.
-///
 /// @param called_from_public_decl set to yes if this function is
 /// called from the functions used to build a public decl (functions
 /// and variables).  In that case, this function accepts building IR
@@ -9483,19 +9349,16 @@ build_ir_node_for_void_type(read_context& ctxt)
 static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
-		       bool		die_is_from_alt_di,
 		       bool		called_from_public_decl,
 		       size_t		where_offset)
 {
   if (!die)
     return decl_base_sptr();
 
-  scope_decl_sptr scope = get_scope_for_die(ctxt, die, die_is_from_alt_di,
+  scope_decl_sptr scope = get_scope_for_die(ctxt, die,
 					    called_from_public_decl,
 					    where_offset);
-  return build_ir_node_from_die(ctxt, die,
-				die_is_from_alt_di,
-				scope.get(),
+  return build_ir_node_from_die(ctxt, die, scope.get(),
 				called_from_public_decl,
 				where_offset);
 }
