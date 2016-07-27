@@ -1,11 +1,13 @@
 lib_LTLIBRARIES=libabigail.la
 libabigaildir=$(libdir)
 
+AM_CXXFLAGS = $(VISIBILITY_FLAGS)
+
 if ENABLE_CXX11
 CXX11_SOURCES = abg-viz-common.cc			\
 		abg-viz-dot.cc				\
 		abg-viz-svg.cc
-AM_CXXFLAGS="-std=gnu++11"
+AM_CXXFLAGS += "-std=gnu++11"
 else
 CXX11_SOURCES =
 endif

@@ -8,10 +8,12 @@ ZIP_ARCHIVE_TESTS += runtestdot
 endif
 endif
 
+AM_CXXFLAGS = $(VISIBILITY_FLAGS)
+
 CXX11_TESTS =
 if ENABLE_CXX11
 CXX11_TESTS += runtestsvg
-AM_CXXFLAGS = "-std=gnu++11"
+AM_CXXFLAGS += "-std=gnu++11"
 endif
 
 FEDABIPKGDIFF_TEST =

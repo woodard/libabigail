@@ -20,8 +20,15 @@
 
 /// @file
 
+#include "abg-internal.h"
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
 #include "abg-hash.h"
 #include "abg-ir.h"
+
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
 
 namespace abigail
 {

@@ -134,9 +134,13 @@ if test x$SUPPORTS_GCC_VISIBILITY_ATTRIBUTE = xyes; then
    AC_MSG_NOTICE([GCC visibility attribute is supported])
    AC_DEFINE([HAS_GCC_VISIBILITY_ATTRIBUTE], 1,
    	     [Defined if the compiler supports the attribution visibility syntax __attribute__((visibility("hidden")))])
+   VISIBILITY_FLAGS="-fvisibility=hidden"
 else
    AC_MSG_NOTICE([GCC visibility attribute is not supported])
+   VISIBILITY_FLAGS=
 fi
+
+AC_SUBST(VISIBILITY_FLAGS)
 
 dnl Check for dependency: libelf, libdw, libebl (elfutils)
 dnl Note that we need to use at least elfutils 0.159 but

@@ -39,8 +39,8 @@
 ///(function or variable) is going to be global.  External ELF files
 ///will be able to link against the symbol.
 #define ABG_EXPORTED __attribute__((visibility("default")))
-#define ABG_BEGIN_EXPORT_DECLARATIONS #pagma GCC visibility push(default)
-#define ABG_END_EXPORT_DECLARATIONS #pragma GCC visibility pop
+#define ABG_BEGIN_EXPORT_DECLARATIONS _Pragma("GCC visibility push(default)")
+#define ABG_END_EXPORT_DECLARATIONS _Pragma("GCC visibility pop")
 #else
 #define ABG_HIDDEN
 #define ABG_EXPORTED

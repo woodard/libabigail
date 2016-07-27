@@ -30,6 +30,11 @@ Patches have to be sent by email to libabigail@sourceware.org.
 Please read the file COMMIT-LOG-GUIDELINES in the source tree to learn
 about how to write the commit log accompanying the patch.
 
+If you are adding a new public header file to the project, or if you
+are defining a new entry point to the API of libabigail, please take
+some time to read the file VISIBILITY about how you need to handle the
+visibility of symbols that are part of the API and ABI of libabigail.
+
 Make sure you sign your patch.  To learn about signing, please read
 the "Sign your work" chapter below.
 

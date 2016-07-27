@@ -25,11 +25,18 @@
 /// This contains the implementation of the suppression engine of
 /// libabigail.
 
+#include "abg-internal.h"
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
 #include "abg-suppression.h"
 #include "abg-ini.h"
 #include "abg-sptr-utils.h"
 #include "abg-comp-filter.h"
 #include "abg-tools-utils.h"
+
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
 
 namespace abigail
 {

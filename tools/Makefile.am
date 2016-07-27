@@ -49,4 +49,6 @@ abipkgdiffdir = $(bindir)
 abipkgdiff_LDADD = $(abs_top_builddir)/src/libabigail.la
 abipkgdiff_LDFLAGS = -pthread
 
-AM_CPPFLAGS=-I$(abs_top_srcdir)/include -I$(abs_top_srcdir)/tools -fPIC
+AM_CXXFLAGS = \
+$(VISIBILITY_FLAGS) -I$(abs_top_srcdir)/include \
+-I$(abs_top_srcdir)/tools -fPIC

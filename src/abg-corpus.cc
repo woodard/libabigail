@@ -28,6 +28,11 @@
 #include <stdexcept>
 #include <algorithm>
 #include <tr1/unordered_map>
+
+#include "abg-internal.h"
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
 #include "abg-sptr-utils.h"
 #include "abg-ir.h"
 #include "abg-corpus.h"
@@ -37,6 +42,9 @@
 #if WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
 #endif
+
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
 
 namespace abigail
 {

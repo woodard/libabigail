@@ -33,10 +33,18 @@
 #include <sstream>
 #include <tr1/memory>
 #include <tr1/unordered_map>
+
+#include "abg-internal.h"
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
 #include "abg-sptr-utils.h"
 #include "abg-interned-str.h"
 #include "abg-ir.h"
 #include "abg-corpus.h"
+
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
 
 namespace
 {

@@ -18,9 +18,17 @@
 // License along with this program; see the file COPYING-LGPLV3.  If
 // not, see <http://www.gnu.org/licenses/>.
 
-#include "abg-viz-svg.h"
 #include <stdexcept>
 #include <fstream>
+
+#include "abg-internal.h"
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
+#include "abg-viz-svg.h"
+
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
 
 namespace abigail
 {

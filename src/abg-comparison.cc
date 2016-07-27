@@ -26,14 +26,22 @@
 /// libabigail.
 
 #include <ctype.h>
+#include <libgen.h>
 #include <algorithm>
 #include <sstream>
-#include <libgen.h>
+
+#include "abg-internal.h"
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
 #include "abg-hash.h"
 #include "abg-suppression.h"
 #include "abg-comp-filter.h"
 #include "abg-sptr-utils.h"
 #include "abg-tools-utils.h"
+
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
 
 namespace abigail
 {

@@ -1,6 +1,6 @@
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -35,12 +35,21 @@
 #include <sstream>
 #include <libxml/xmlstring.h>
 #include <libxml/xmlreader.h>
+
+#include "abg-internal.h"
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
 #include "abg-libxml-utils.h"
+#include "abg-reader.h"
 #include "abg-corpus.h"
 
 #ifdef WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
 #endif
+
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
 
 namespace abigail
 {

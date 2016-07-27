@@ -33,8 +33,16 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#include "abg-internal.h"
+// <headers defining libabigail's API go under here>
+ABG_BEGIN_EXPORT_DECLARATIONS
+
 #include <abg-ir.h>
 #include "abg-tools-utils.h"
+
+ABG_END_EXPORT_DECLARATIONS
+// </headers defining libabigail's API>
 
 using std::string;
 
