@@ -49,7 +49,7 @@ OUTPUT_DIR = '@abs_top_builddir@/tests/output/test-fedabipkgdiff'
 # the first element of the tuple) the result of the comparison is
 # going to be compared against the reference output file, and both
 # must be equal.
-# 
+#
 # If a user wants to add a new test, she must add a new tuple to the
 # variable below, and also add a new reference output to the source
 # distribution.
@@ -72,7 +72,23 @@ FEDABIPKGDIFF_TEST_SPECS = [
     (['dbus-glib-0.100.2-2.fc20.i686', 'dbus-glib-0.106-1.fc23.i686'],
      'data/test-fedabipkgdiff/test3-dbus-glib-0.100.2-2.fc20.i686--dbus-glib-0.106-1.fc23.i686-report-0.txt',
      'output/test-fedabipkgdiff/test3-dbus-glib-0.100.2-2.fc20.i686--dbus-glib-0.106-1.fc23.i686-report-0.txt'),
+
+    ([os.path.join(INPUT_DIR, 'packages/dbus-glib/0.100.2/2.fc20/x86_64/dbus-glib-0.100.2-2.fc20.x86_64.rpm'),
+      os.path.join(INPUT_DIR, 'packages/dbus-glib/0.106/1.fc23/x86_64/dbus-glib-0.106-1.fc23.x86_64.rpm')],
+     'data/test-fedabipkgdiff/test4-glib-0.100.2-2.fc20.x86_64.rpm-glib-0.106-1.fc23.x86_64.rpm-report-0.txt',
+     'output/test-fedabipkgdiff/test4-glib-0.100.2-2.fc20.x86_64.rpm-glib-0.106-1.fc23.x86_64.rpm-report-0.txt'),
+
+    ([os.path.join(INPUT_DIR, 'dbus-glib/dbus-glib-0.100.2-2.fc20.x86_64.rpm'),
+      os.path.join(INPUT_DIR, 'dbus-glib/dbus-glib-0.106-1.fc23.x86_64.rpm')],
+     'data/test-fedabipkgdiff/test5-same-dir-dbus-glib-0.100.2-2.fc20.x86_64--dbus-glib-0.106-1.fc23.x86_64-report-0.txt',
+     'output/test-fedabipkgdiff/test5-same-dir-dbus-glib-0.100.2-2.fc20.x86_64--dbus-glib-0.106-1.fc23.x86_64-report-0.txt'),
+
+    ([os.path.join(INPUT_DIR, 'nss-util/nss-util-3.12.6-1.fc14.x86_64.rpm'),
+      os.path.join(INPUT_DIR, 'nss-util/nss-util-3.24.0-2.0.fc25.x86_64.rpm')],
+     'data/test-fedabipkgdiff/test6-missing-devel-debuginfo-nss-util-3.12.6-1.fc14.x86_64--nss-util-3.24.0-2.0.fc25.x86_64-report-0.txt',
+     'output/test-fedabipkgdiff/test6-missing-devel-debuginfo-nss-util-3.12.6-1.fc14.x86_64--nss-util-3.24.0-2.0.fc25.x86_64-report-0.txt'),
 ]
+
 
 def ensure_output_dir_created():
     '''Create output dir if it's not already created.'''
@@ -83,7 +99,8 @@ def ensure_output_dir_created():
         pass
 
         if not os.path.exists(OUTPUT_DIR):
-            sys.exit(1);
+            sys.exit(1)
+
 
 def run_fedabipkgdiff_tests():
     """Run the fedabipkgdiff tests
@@ -102,7 +119,7 @@ def run_fedabipkgdiff_tests():
     FEDABIPKGDIFF_TEST_SPECS succeed.
     """
 
-    result = True;
+    result = True
     for args, reference_report_path, output_path in FEDABIPKGDIFF_TEST_SPECS:
         reference_report_path = os.path.join(TEST_SRC_DIR, reference_report_path)
         output_path = os.path.join(TEST_BUILD_DIR, output_path)
@@ -119,12 +136,13 @@ def run_fedabipkgdiff_tests():
             else:
                 diffcmd = ['diff', '-u', reference_report_path, output_path]
                 return_code = subprocess.call(diffcmd)
-            if return_code:                
+            if return_code:
                 sys.stderr.write('fedabipkgdiff test failed for ' +
                                  reference_report_path + '\n')
             result &=  not return_code
 
-    return result;
+    return result
+
 
 def main():
     """The main entry point of this program.
@@ -135,10 +153,11 @@ def main():
     """
 
     ensure_output_dir_created()
-    result = 0;
+    result = 0
     result = run_fedabipkgdiff_tests()
     if not result:
-        return result;
+        return result
+
 
 if __name__ == '__main__':
     exit_code = main()

@@ -180,7 +180,15 @@ Below are some usage examples currently supported by
 
        $ fedabipkgdiff --from fc23 ./httpd-2.4.18-2.fc24.x86_64.rpm
 
-  2. Compare the ABI of binaries in the latest build of the ``httpd``
+  2. Compare the ABI of binaries in two local packages.
+
+     Suppose you have built two versions of package httpd, and you want to see
+     what ABI differences between these two versions of RPM files. The
+     commandline invocation would be::
+
+       $ fedabipkgdiff path/to/httpd-2.4.23-3.fc23.x86_64.rpm another/path/to/httpd-2.4.23-4.fc24.x86_64.rpm
+
+  3. Compare the ABI of binaries in the latest build of the ``httpd``
      package in ``Fedora 23`` against the ABI of the binaries in the
      latest build of the same package in 24.
 
@@ -192,7 +200,7 @@ Below are some usage examples currently supported by
 
        $ fedabipkgdiff --from fc23 --to fc24 httpd
 
-  3. Compare the ABI of binaries of two builds of the ``httpd``
+  4. Compare the ABI of binaries of two builds of the ``httpd``
      package, designated their versions and releases.
 
      If we want to do perform the ABI comparison for all the processor
@@ -207,7 +215,7 @@ Below are some usage examples currently supported by
 
        $ fedabipkgdiff httpd-2.8.14.fc23.x86_64 httpd-2.8.14.fc24.x86_64
 
-  4. If the use wants to also compare the sub-packages of a given
+  5. If the use wants to also compare the sub-packages of a given
      package, she can use the --all-subpackages option.  The first
      command of the previous example would thus look like: ::
 

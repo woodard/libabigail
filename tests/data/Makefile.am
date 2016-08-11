@@ -1271,4 +1271,10 @@ test-default-supprs/dirpkg-1-dir1/libobj-v0.so \
 test-default-supprs/dirpkg-1-dir1/obj-v0.cc \
 test-default-supprs/dirpkg-1-dir2/dir.abignore \
 test-default-supprs/dirpkg-1-dir2/libobj-v0.so \
-test-default-supprs/dirpkg-1-dir2/obj-v0.cc
+test-default-supprs/dirpkg-1-dir2/obj-v0.cc \
+\
+test-fedabipkgdiff/dbus-glib/dbus-glib-0.100.2-2.fc20.x86_64.rpm \
+test-fedabipkgdiff/dbus-glib/dbus-glib-0.106-1.fc23.x86_64.rpm \
+test-fedabipkgdiff/nss-util/nss-util-devel-3.24.0-2.0.fc25.x86_64.rpm \
+test-fedabipkgdiff/nss-util/nss-util-3.12.6-1.fc14.x86_64.rpm \
+test-fedabipkgdiff/nss-util/nss-util-3.24.0-2.0.fc25.x86_64.rpm
