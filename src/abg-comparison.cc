@@ -12513,8 +12513,9 @@ apply_suppressions(diff* diff_tree)
       // Apply suppressions to functions and variables that have
       // changed sub-types.
       suppression_categorization_visitor v;
+      diff_tree->context()->forget_visited_diffs();
       bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
-      diff_tree->context()->forbid_visiting_a_node_twice(false);
+      diff_tree->context()->forbid_visiting_a_node_twice(true);
       diff_tree->traverse(v);
       diff_tree->context()->forbid_visiting_a_node_twice(s);
     }
@@ -12545,8 +12546,9 @@ apply_suppressions(const corpus_diff* diff_tree)
       // changed functions, variables, as well as sub-types of these,
       // and apply suppression specifications to these ...
       suppression_categorization_visitor v;
+      diff_tree->context()->forget_visited_diffs();
       bool s = diff_tree->context()->visiting_a_node_twice_is_forbidden();
-      diff_tree->context()->forbid_visiting_a_node_twice(false);
+      diff_tree->context()->forbid_visiting_a_node_twice(true);
       const_cast<corpus_diff*>(diff_tree)->traverse(v);
       diff_tree->context()->forbid_visiting_a_node_twice(s);
 
