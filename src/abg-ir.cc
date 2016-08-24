@@ -6889,25 +6889,12 @@ type_base::get_canonical_type_for(type_base_sptr t)
 	      && ((is_c_language(lang) || is_cplus_plus_language(lang))
 		  && (is_c_language(other_lang)
 		      || is_cplus_plus_language(other_lang)))
-	      // We are not doing the optimizatin for anymous types
-	      // because, well, two anonymous type have the same name
-	      // (okay, they have no name), but that doesn't mean they
-	      // are equal.
-	      && !is_anonymous_type(t)
-	      // We are not doing it for typedefs either, as I've seen
-	      // instances of two typedefs with the same name but
-	      // pointing to deferent types, e.g, in some boost
-	      // library in our testsuite.
-	      && !is_typedef(t)
-	      // We are not doing it for pointers/references/arrays as
-	      // two pointers to a type 'foo' might point to 'foo'
-	      // meaning different things, as we've seen above.
-	      && !is_pointer_type(t)
-	      && !is_reference_type(t)
-	      && !is_array_type(t)
-	      // And we are not doing it for function types either,
-	      // for similar reasons.
-	      && !is_function_type(t))
+	      // We are doing the ODR-based optimization just for
+	      // non-anonymous user-defined types, and built-in types
+	      && (is_class_type(t)
+		  || is_enum_type(t)
+		  || is_type_decl(t))
+	      && !is_anonymous_type(t))
 	    {
 	      if (const corpus* it_corpus = (*it)->get_corpus())
 		{
