@@ -1763,7 +1763,7 @@ compare(package&	first_package,
       for (vector<elf_file_sptr>::iterator it = diff.added_binaries.begin();
 	   it != diff.added_binaries.end(); ++it)
 	{
-	  cout << "  " << *it << ", ";
+	  cout << "  " << (*it)->name << ", ";
 	  string soname;
 	  get_soname_of_elf_file((*it)->path, soname);
 	  if (!soname.empty())
