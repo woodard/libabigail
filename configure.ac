@@ -296,14 +296,22 @@ else
 fi
 
 if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
+  MISSING_FEDABIPKGDIFF_DEP=no
+
   if test x$ENABLE_FEDABIPKGDIFF = xyes; then
-     FATAL=yes
+     MISSING_FEDABIPKGDIFF_DEP_FATAL=yes
+  else
+     MISSING_FEDABIPKGDIFF_DEP_FATAL=no
   fi
 
   AC_PATH_PROG(WGET, wget, no)
 
-  if test x$WGET = x$no; then
-    AC_MSG_ERROR(could not find the wget program)
+  if test x$WGET = xno; then
+    if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
+      AC_MSG_ERROR(could not find the wget program)
+    else
+      MISSING_FEDABIPKGDIFF_DEP=yes
+    fi
   fi
 
   # The minimal python version we want to support is 2.6.6 because EL6
@@ -316,25 +324,35 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
 			 [MINIMAL_PYTHON_VERSION_FOUND=no])
 
   if test x$MINIMAL_PYTHON_VERSION_FOUND = xno; then
-    AC_MSG_ERROR([could not find a python program of version at least $MINIMAL_PYTHON_VERSION])
+    MISSING_FEDABIPKGDIFF_DEP=yes
+    if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
+      AC_MSG_ERROR([could not find a python program of version at least $MINIMAL_PYTHON_VERSION])
+    fi
   fi
 
   REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF="\
    argparse logging os re subprocess sys urlparse \
    xdg koji mock rpm imp tempfile"
 
-  if test -x$ENABLE_FEDABIPKGDIFF != xno; then
+  if test x$ENABLE_FEDABIPKGDIFF != xno; then
     AX_CHECK_PYTHON_MODULES([$REQUIRED_PYTHON_MODULES_FOR_FEDABIPKGDIFF],
 			    [python2],
 			    [FOUND_ALL_PYTHON_MODULES=yes],
 			    [FOUND_ALL_PYTHON_MODULES=no])
 
     if test x$FOUND_ALL_PYTHON_MODULES = xno; then
-       AC_MSG_NOTICE([missing python modules: $MISSING_PYTHON_MODULES])
-       AC_MSG_NOTICE([disabling fedabipkgdiff as a result])
+       MISSING_FEDABIPKGDIFF_DEP=yes
+       if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
+         AC_MSG_ERROR([missing python modules: $MISSING_PYTHON_MODULES]);
+       else
+         AC_MSG_NOTICE([missing python modules: $MISSING_PYTHON_MODULES])
+         AC_MSG_NOTICE([disabling fedabipkgdiff as a result])
+       fi
        ENABLE_FEDABIPKGDIFF=no
     else
-       ENABLE_FEDABIPKGDIFF=yes
+       if test x$MISSING_FEDABIPKGDIFF_DEP = xno; then
+         ENABLE_FEDABIPKGDIFF=yes
+       fi
     fi
   fi
 fi
