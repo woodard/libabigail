@@ -3648,6 +3648,12 @@ public:
   virtual ~method_decl();
 };// end class class_decl::method_decl
 
+class_decl::method_decl*
+is_method_decl(const function_decl*);
+
+class_decl::method_decl_sptr
+is_method_decl(const function_decl_sptr&);
+
 /// Abstract a member function template.
 class class_decl::member_function_template
   : public member_base, public virtual decl_base

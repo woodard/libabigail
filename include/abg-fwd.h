@@ -525,6 +525,19 @@ string
 get_name(const shared_ptr<type_or_decl_base>&,
 	 bool qualified = true);
 
+location
+get_location(const shared_ptr<type_base>& type);
+
+location
+get_location(const shared_ptr<decl_base>& decl);
+
+string
+build_qualified_name(const scope_decl* scope, const string& name);
+
+string
+build_qualified_name(const scope_decl* scope,
+		     const shared_ptr<type_base>& type);
+
 scope_decl*
 get_type_scope(type_base*);
 

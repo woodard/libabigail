@@ -4770,6 +4770,79 @@ get_name(const type_or_decl_base_sptr& tod, bool qualified)
   return result;
 }
 
+/// Build and return a qualified name from a name and its scope.
+///
+/// The name is supposed to be for an entity that is part of the
+/// scope.
+///
+/// @param the scope to consider.
+///
+/// @param name of the name to consider.
+///
+/// @return a copy of the string that represents the qualified name.
+string
+build_qualified_name(const scope_decl* scope, const string& name)
+{
+  if (name.empty())
+    return "";
+
+  string qualified_name;
+  if (scope)
+    qualified_name = scope->get_qualified_name();
+
+  if (qualified_name.empty())
+    qualified_name = name;
+  else
+    qualified_name = qualified_name + "::" + name;
+
+  return qualified_name;
+}
+
+/// Build and return the qualified name of a type in its scope.
+///
+/// @param scope the scope of the type to consider.
+///
+/// @param type the type to consider.
+string
+build_qualified_name(const scope_decl* scope, const type_base_sptr& type)
+{return build_qualified_name(scope, get_name((type)));}
+
+// </scope_decl stuff>
+
+/// Get the location of the declaration of a given type.
+///
+/// @param type the type to consider.
+///
+/// @return the location of the declaration of type @p type.
+location
+get_location(const type_base_sptr& type)
+{
+  if (decl_base_sptr decl = get_type_declaration(type))
+    return get_location(decl);
+  return location();
+}
+
+/// Get the location of a given declaration.
+///
+/// @param decl the declaration to consider.
+///
+/// @return the location of the declaration @p decl.
+location
+get_location(const decl_base_sptr& decl)
+{
+  location loc = decl->get_location();
+  if (!loc)
+    {
+      if (class_decl_sptr c = is_class_type(decl))
+	if (c->get_is_declaration_only() && c->get_definition_of_declaration())
+	  {
+	    c = c->get_definition_of_declaration();
+	    loc = c->get_location();
+	  }
+    }
+  return loc;
+}
+
 /// Get the scope of a given type.
 ///
 /// @param t the type to consider.
@@ -13016,6 +13089,26 @@ class_decl::method_decl::set_scope(scope_decl* scope)
   else
     get_context_rel()->set_scope(scope);
 }
+
+/// Test if a function_decl is actually a class_decl::method_decl.
+///
+///@param d the @ref function_decl to consider.
+///
+/// @return the class_decl::method_decl sub-object of @p d if inherits
+/// a class_decl::method_decl type.
+class_decl::method_decl*
+is_method_decl(const function_decl *d)
+{return dynamic_cast<class_decl::method_decl*>(const_cast<function_decl*>(d));}
+
+/// Test if a function_decl is actually a class_decl::method_decl.
+///
+///@param d the @ref function_decl to consider.
+///
+/// @return the class_decl::method_decl sub-object of @p d if inherits
+/// a class_decl::method_decl type.
+class_decl::method_decl_sptr
+is_method_decl(const function_decl_sptr& d)
+{return dynamic_pointer_cast<class_decl::method_decl>(d);}
 
 /// A "less than" functor to sort a vector of instances of
 /// class_decl::method_decl that are virtual.
