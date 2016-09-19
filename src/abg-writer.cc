@@ -1501,7 +1501,7 @@ static bool
 write_namespace_decl(const shared_ptr<namespace_decl> decl,
 		     write_context& ctxt, unsigned indent)
 {
-  if (!decl)
+  if (!decl || decl->is_empty_or_has_empty_sub_namespaces())
     return false;
 
   ostream& o = ctxt.get_ostream();

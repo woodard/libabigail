@@ -1602,6 +1602,8 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~namespace_decl();
+
+  bool is_empty_or_has_empty_sub_namespaces() const;
 };// end class namespace_decl
 
 bool

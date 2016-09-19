@@ -7949,6 +7949,34 @@ namespace_decl::operator==(const decl_base& o) const
   return scope_decl::operator==(*other);
 }
 
+/// Test if the current namespace_decl is empty or contains empty
+/// namespaces itself.
+///
+/// @return true iff the current namespace_decl is empty or contains
+/// empty itself.
+bool
+namespace_decl::is_empty_or_has_empty_sub_namespaces() const
+{
+  if (is_empty())
+    return true;
+
+  for (declarations::const_iterator i = get_member_decls().begin();
+       i != get_member_decls().end();
+       ++i)
+    {
+      if (!is_namespace(*i))
+	return false;
+
+      namespace_decl_sptr ns = is_namespace(*i);
+      assert(ns);
+
+      if (!ns->is_empty_or_has_empty_sub_namespaces())
+	return false;
+    }
+
+  return true;
+}
+
 /// This implements the ir_traversable_base::traverse pure virtual
 /// function.
 ///

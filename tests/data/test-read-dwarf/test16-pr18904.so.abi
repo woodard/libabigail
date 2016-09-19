@@ -1744,14 +1744,8 @@
     <qualified-type-def type-id='type-id-15' const='yes' id='type-id-20'/>
     <pointer-type-def type-id='type-id-20' size-in-bits='64' id='type-id-21'/>
     <var-decl name='_sys_nerr' type-id='type-id-3' visibility='default' filepath='/usr/include/bits/sys_errlist.h' line='30' column='1'/>
-    <namespace-decl name='std'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
+
+
     <typedef-decl name='ptrdiff_t' type-id='type-id-17' filepath='/export/users/iverbin/gcc_build_host/gcc/include/stddef.h' line='149' column='1' id='type-id-22'/>
     <pointer-type-def type-id='type-id-23' size-in-bits='64' id='type-id-24'/>
     <var-decl name='__morecore' type-id='type-id-24' visibility='default' filepath='/usr/include/malloc.h' line='71' column='1'/>
@@ -1771,8 +1765,7 @@
     <qualified-type-def type-id='type-id-38' volatile='yes' id='type-id-39'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <array-type-def dimensions='1' type-id='type-id-4' size-in-bits='128' id='type-id-40'>
       <subrange length='2'/>
     </array-type-def>
@@ -2797,14 +2790,8 @@
     <var-decl name='stderr' type-id='type-id-6' visibility='default' filepath='/usr/include/stdio.h' line='170' column='1'/>
     <var-decl name='sys_nerr' type-id='type-id-3' visibility='default' filepath='/usr/include/bits/sys_errlist.h' line='26' column='1'/>
     <var-decl name='_sys_nerr' type-id='type-id-3' visibility='default' filepath='/usr/include/bits/sys_errlist.h' line='30' column='1'/>
-    <namespace-decl name='std'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
+
+
     <var-decl name='__morecore' type-id='type-id-24' visibility='default' filepath='/usr/include/malloc.h' line='71' column='1'/>
     <var-decl name='__malloc_initialize_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='147' column='1'/>
     <var-decl name='__free_hook' type-id='type-id-30' visibility='default' filepath='/usr/include/malloc.h' line='150' column='1'/>
@@ -2812,8 +2799,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__tzname' type-id='type-id-40' visibility='default' filepath='/usr/include/time.h' line='282' column='1'/>
     <var-decl name='__daylight' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='283' column='1'/>
     <var-decl name='__timezone' type-id='type-id-17' visibility='default' filepath='/usr/include/time.h' line='284' column='1'/>
@@ -2982,14 +2968,8 @@
     <var-decl name='stderr' type-id='type-id-6' visibility='default' filepath='/usr/include/stdio.h' line='170' column='1'/>
     <var-decl name='sys_nerr' type-id='type-id-3' visibility='default' filepath='/usr/include/bits/sys_errlist.h' line='26' column='1'/>
     <var-decl name='_sys_nerr' type-id='type-id-3' visibility='default' filepath='/usr/include/bits/sys_errlist.h' line='30' column='1'/>
-    <namespace-decl name='std'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
+
+
     <var-decl name='__morecore' type-id='type-id-24' visibility='default' filepath='/usr/include/malloc.h' line='71' column='1'/>
     <var-decl name='__malloc_initialize_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='147' column='1'/>
     <var-decl name='__free_hook' type-id='type-id-30' visibility='default' filepath='/usr/include/malloc.h' line='150' column='1'/>
@@ -2997,8 +2977,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='timer_enabled' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_timer.h' line='39' column='1'/>
     <var-decl name='offload_report_level' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_timer.h' line='76' column='1'/>
     <var-decl name='offload_report_enabled' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_timer.h' line='77' column='1'/>
@@ -4373,14 +4352,11 @@
           </member-function>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
+
       <class-decl name='nothrow_t' size-in-bits='8' is-struct='yes' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='82' column='1' id='type-id-178'/>
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
-      <namespace-decl name='_V2'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-180'>
         <member-type access='private'>
           <typedef-decl name='seekdir' type-id='type-id-182' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ios_base.h' line='455' column='1' id='type-id-181'/>
@@ -4852,10 +4828,8 @@
     <reference-type-def kind='lvalue' type-id='type-id-259' size-in-bits='64' id='type-id-196'/>
     <reference-type-def kind='lvalue' type-id='type-id-188' size-in-bits='64' id='type-id-195'/>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
+
       <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/cstdlib' line='227' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-132'/>
         <parameter type-id='type-id-132'/>
@@ -5749,8 +5723,7 @@
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-325'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-21'/>
@@ -6277,14 +6250,8 @@
     <var-decl name='stderr' type-id='type-id-6' visibility='default' filepath='/usr/include/stdio.h' line='170' column='1'/>
     <var-decl name='sys_nerr' type-id='type-id-3' visibility='default' filepath='/usr/include/bits/sys_errlist.h' line='26' column='1'/>
     <var-decl name='_sys_nerr' type-id='type-id-3' visibility='default' filepath='/usr/include/bits/sys_errlist.h' line='30' column='1'/>
-    <namespace-decl name='std'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
+
+
     <var-decl name='__morecore' type-id='type-id-24' visibility='default' filepath='/usr/include/malloc.h' line='71' column='1'/>
     <var-decl name='__malloc_initialize_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='147' column='1'/>
     <var-decl name='__free_hook' type-id='type-id-30' visibility='default' filepath='/usr/include/malloc.h' line='150' column='1'/>
@@ -6292,8 +6259,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__offload_entries' type-id='type-id-41' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='202' column='1'/>
     <var-decl name='__offload_funcs' type-id='type-id-41' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='203' column='1'/>
     <var-decl name='__offload_vars' type-id='type-id-55' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='204' column='1'/>
@@ -6653,14 +6619,8 @@
     <pointer-type-def type-id='type-id-498' size-in-bits='64' id='type-id-394'/>
     <pointer-type-def type-id='type-id-499' size-in-bits='64' id='type-id-500'/>
     <pointer-type-def type-id='type-id-501' size-in-bits='64' id='type-id-395'/>
-    <namespace-decl name='std'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-    </namespace-decl>
+
+
     <var-decl name='__morecore' type-id='type-id-24' visibility='default' filepath='/usr/include/malloc.h' line='71' column='1'/>
     <var-decl name='__malloc_initialize_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='147' column='1'/>
     <var-decl name='__free_hook' type-id='type-id-30' visibility='default' filepath='/usr/include/malloc.h' line='150' column='1'/>
@@ -6668,8 +6628,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__offload_entries' type-id='type-id-41' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/coi/../offload_table.h' line='202' column='1'/>
     <var-decl name='__offload_funcs' type-id='type-id-41' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/coi/../offload_table.h' line='203' column='1'/>
     <var-decl name='__offload_vars' type-id='type-id-55' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/coi/../offload_table.h' line='204' column='1'/>
@@ -12095,10 +12054,8 @@
           </member-function>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
       <namespace-decl name='__detail'>
         <class-decl name='_List_node_base' size-in-bits='128' is-struct='yes' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_list.h' line='80' column='1' id='type-id-789'>
@@ -21215,10 +21172,8 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
+
       <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/cstdlib' line='227' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-132'/>
         <parameter type-id='type-id-132'/>
@@ -24622,8 +24577,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__tzname' type-id='type-id-40' visibility='default' filepath='/usr/include/time.h' line='282' column='1'/>
     <var-decl name='__daylight' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='283' column='1'/>
     <var-decl name='__timezone' type-id='type-id-17' visibility='default' filepath='/usr/include/time.h' line='284' column='1'/>
@@ -24646,8 +24600,7 @@
     <var-decl name='console_enabled' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='64' column='1'/>
     <var-decl name='prefix' type-id='type-id-21' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='68' column='1'/>
     <var-decl name='offload_number' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='69' column='1'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-301'/>
@@ -28867,15 +28820,12 @@
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
       </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
       <namespace-decl name='__detail'>
       </namespace-decl>
-      <namespace-decl name='_V2'>
-      </namespace-decl>
+
       <class-decl name='move_iterator&lt;const VarTable::Entry**&gt;' size-in-bits='64' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_iterator.h' line='998' column='1' id='type-id-2411'>
         <member-type access='private'>
           <typedef-decl name='iterator_type' type-id='type-id-2413' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/stl_iterator.h' line='1007' column='1' id='type-id-2412'/>
@@ -31517,8 +31467,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-2675' size-in-bits='64' id='type-id-2428'/>
     <reference-type-def kind='lvalue' type-id='type-id-2430' size-in-bits='64' id='type-id-2431'/>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
+
       <namespace-decl name='__ops'>
         <class-decl name='_Iter_comp_val&lt;bool (*)(const VarTable::Entry*, const VarTable::Entry*)&gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/predefined_ops.h' line='133' column='1' id='type-id-2439'>
           <data-member access='public' layout-offset-in-bits='0'>
@@ -32205,8 +32154,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-2488' size-in-bits='64' id='type-id-2489'/>
     <reference-type-def kind='lvalue' type-id='type-id-2491' size-in-bits='64' id='type-id-2492'/>
     <reference-type-def kind='lvalue' type-id='type-id-2494' size-in-bits='64' id='type-id-2495'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-301'/>
@@ -32821,8 +32769,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__offload_entries' type-id='type-id-41' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='202' column='1'/>
     <var-decl name='__offload_funcs' type-id='type-id-41' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='203' column='1'/>
     <var-decl name='__offload_vars' type-id='type-id-55' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='204' column='1'/>
@@ -34103,10 +34050,8 @@
           </member-function>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
       <namespace-decl name='__detail'>
       </namespace-decl>
@@ -35180,10 +35125,8 @@
       <class-decl name='initializer_list&lt;char*&gt;' visibility='default' is-declaration-only='yes' id='type-id-2812'/>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
+
       <class-decl name='new_allocator&lt;std::_List_node&lt;char*&gt; &gt;' size-in-bits='8' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/new_allocator.h' line='58' column='1' id='type-id-2817'>
         <member-type access='private'>
           <typedef-decl name='size_type' type-id='type-id-204' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/ext/new_allocator.h' line='61' column='1' id='type-id-2949'/>
@@ -35575,8 +35518,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-2880' size-in-bits='64' id='type-id-2881'/>
     <reference-type-def kind='lvalue' type-id='type-id-2883' size-in-bits='64' id='type-id-2884'/>
     <reference-type-def kind='lvalue' type-id='type-id-2886' size-in-bits='64' id='type-id-2887'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <var-decl name='__tzname' type-id='type-id-40' visibility='default' filepath='/usr/include/time.h' line='282' column='1'/>
     <var-decl name='__daylight' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='283' column='1'/>
     <var-decl name='__timezone' type-id='type-id-17' visibility='default' filepath='/usr/include/time.h' line='284' column='1'/>
@@ -35732,15 +35674,12 @@
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
       </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
       <namespace-decl name='__detail'>
       </namespace-decl>
-      <namespace-decl name='_V2'>
-      </namespace-decl>
+
       <function-decl name='get&lt;0ul, void const* const&amp;&gt;' mangled-name='_ZSt3getILm0EJRKPKvEERNSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeERS8_' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/tuple' line='1223' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSt3getILm0EJRKPKvEERNSt13tuple_elementIXT_ESt5tupleIJDpT0_EEE4typeERS8_'>
         <parameter type-id='type-id-1169'/>
         <return type-id='type-id-1585'/>
@@ -37276,10 +37215,8 @@
     <reference-type-def kind='lvalue' type-id='type-id-3006' size-in-bits='64' id='type-id-3007'/>
     <reference-type-def kind='lvalue' type-id='type-id-3009' size-in-bits='64' id='type-id-3010'/>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
+
       <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/cstdlib' line='227' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-132'/>
         <parameter type-id='type-id-132'/>
@@ -37387,8 +37324,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__tzname' type-id='type-id-40' visibility='default' filepath='/usr/include/time.h' line='282' column='1'/>
     <var-decl name='__daylight' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='283' column='1'/>
     <var-decl name='__timezone' type-id='type-id-17' visibility='default' filepath='/usr/include/time.h' line='284' column='1'/>
@@ -37411,8 +37347,7 @@
     <var-decl name='console_enabled' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='64' column='1'/>
     <var-decl name='prefix' type-id='type-id-21' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='68' column='1'/>
     <var-decl name='offload_number' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='69' column='1'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-301'/>
@@ -39196,10 +39131,8 @@
           </member-function>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
       <namespace-decl name='__detail'>
       </namespace-decl>
@@ -39819,10 +39752,8 @@
       </class-decl>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
+
       <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/cstdlib' line='227' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-132'/>
         <parameter type-id='type-id-132'/>
@@ -40218,8 +40149,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__tzname' type-id='type-id-40' visibility='default' filepath='/usr/include/time.h' line='282' column='1'/>
     <var-decl name='__daylight' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='283' column='1'/>
     <var-decl name='__timezone' type-id='type-id-17' visibility='default' filepath='/usr/include/time.h' line='284' column='1'/>
@@ -40248,8 +40178,7 @@
     <var-decl name='console_enabled' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='64' column='1'/>
     <var-decl name='prefix' type-id='type-id-21' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='68' column='1'/>
     <var-decl name='offload_number' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='69' column='1'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-301'/>
@@ -41470,10 +41399,8 @@
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
       </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
       <namespace-decl name='__detail'>
       </namespace-decl>
@@ -41521,10 +41448,8 @@
       <class-decl name='pair&lt;std::_Rb_tree_const_iterator&lt;AutoData&gt;, std::_Rb_tree_const_iterator&lt;AutoData&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1702'/>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
+
       <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/cstdlib' line='227' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-132'/>
         <parameter type-id='type-id-132'/>
@@ -41547,8 +41472,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__environ' type-id='type-id-335' visibility='default' filepath='/usr/include/unistd.h' line='543' column='1'/>
     <var-decl name='environ' type-id='type-id-335' visibility='default' filepath='/usr/include/unistd.h' line='545' column='1'/>
     <var-decl name='optarg' type-id='type-id-4' visibility='default' filepath='/usr/include/getopt.h' line='57' column='1'/>
@@ -41577,8 +41501,7 @@
     <var-decl name='console_enabled' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='64' column='1'/>
     <var-decl name='prefix' type-id='type-id-21' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='68' column='1'/>
     <var-decl name='offload_number' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='69' column='1'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-301'/>
@@ -42423,10 +42346,8 @@
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
       </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
       <namespace-decl name='__detail'>
       </namespace-decl>
@@ -42474,10 +42395,8 @@
       <class-decl name='pair&lt;std::_Rb_tree_const_iterator&lt;AutoData&gt;, std::_Rb_tree_const_iterator&lt;AutoData&gt; &gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-1702'/>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
+
       <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/cstdlib' line='227' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-132'/>
         <parameter type-id='type-id-132'/>
@@ -42491,8 +42410,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__offload_entries' type-id='type-id-41' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='202' column='1'/>
     <var-decl name='__offload_funcs' type-id='type-id-41' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='203' column='1'/>
     <var-decl name='__offload_vars' type-id='type-id-55' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_table.h' line='204' column='1'/>
@@ -42508,8 +42426,7 @@
     <var-decl name='console_enabled' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='64' column='1'/>
     <var-decl name='prefix' type-id='type-id-21' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='68' column='1'/>
     <var-decl name='offload_number' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='69' column='1'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-301'/>
@@ -43207,15 +43124,12 @@
     <namespace-decl name='std'>
       <namespace-decl name='__cxx11'>
       </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <var-decl name='nothrow' type-id='type-id-179' mangled-name='_ZSt7nothrow' visibility='default' filepath='/export/users/iverbin/gcc/libstdc++-v3/libsupc++/new' line='84' column='1'/>
       <namespace-decl name='__detail'>
       </namespace-decl>
-      <namespace-decl name='_V2'>
-      </namespace-decl>
+
       <class-decl name='basic_istream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-3427'/>
       <typedef-decl name='istream' type-id='type-id-3427' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/iosfwd' line='138' column='1' id='type-id-3428'/>
       <var-decl name='cin' type-id='type-id-3428' mangled-name='_ZSt3cin' visibility='default' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/iostream' line='60' column='1'/>
@@ -43458,10 +43372,8 @@
     <typedef-decl name='_Atomic_word' type-id='type-id-3' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/x86_64-pc-linux-gnu/bits/atomic_word.h' line='32' column='1' id='type-id-3437'/>
     <pointer-type-def type-id='type-id-3436' size-in-bits='64' id='type-id-3438'/>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__cxx11'>
-      </namespace-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
+
       <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/export/users/iverbin/gcc_build_host/x86_64-pc-linux-gnu/libstdc++-v3/include/cstdlib' line='227' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-132'/>
         <parameter type-id='type-id-132'/>
@@ -43475,8 +43387,7 @@
     <var-decl name='__realloc_hook' type-id='type-id-36' visibility='default' filepath='/usr/include/malloc.h' line='156' column='1'/>
     <var-decl name='__memalign_hook' type-id='type-id-39' visibility='default' filepath='/usr/include/malloc.h' line='160' column='1'/>
     <var-decl name='__after_morecore_hook' type-id='type-id-27' visibility='default' filepath='/usr/include/malloc.h' line='164' column='1'/>
-    <namespace-decl name='__offload'>
-    </namespace-decl>
+
     <var-decl name='__tzname' type-id='type-id-40' visibility='default' filepath='/usr/include/time.h' line='282' column='1'/>
     <var-decl name='__daylight' type-id='type-id-3' visibility='default' filepath='/usr/include/time.h' line='283' column='1'/>
     <var-decl name='__timezone' type-id='type-id-17' visibility='default' filepath='/usr/include/time.h' line='284' column='1'/>
@@ -43496,8 +43407,7 @@
     <var-decl name='console_enabled' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='64' column='1'/>
     <var-decl name='prefix' type-id='type-id-21' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='68' column='1'/>
     <var-decl name='offload_number' type-id='type-id-3' visibility='default' filepath='../../../gcc/liboffloadmic/runtime/offload_common.h' line='69' column='1'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-301'/>

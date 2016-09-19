@@ -635,10 +635,8 @@
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/mongo/db/auth/sasl_options.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <namespace-decl name='__detail'>
         <class-decl name='_List_node_base' size-in-bits='128' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/stl_list.h' line='77' column='1' id='type-id-1'>
           <data-member access='public' layout-offset-in-bits='0'>
@@ -1764,8 +1762,7 @@
         </class-decl>
         <typedef-decl name='seconds' type-id='type-id-172' filepath='/usr/include/c++/4.9/chrono' line='536' column='1' id='type-id-179'/>
       </namespace-decl>
-      <namespace-decl name='placeholders'>
-      </namespace-decl>
+
       <enum-decl name='_Ios_Openmode' id='type-id-180'>
         <underlying-type type-id='type-id-181'/>
         <enumerator name='_S_app' value='1'/>
@@ -22504,8 +22501,7 @@
     </namespace-decl>
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-181'/>
     <namespace-decl name='__gnu_cxx'>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
       <function-decl name='div' mangled-name='_ZN9__gnu_cxx3divExx' filepath='/usr/include/c++/4.9/cstdlib' line='214' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-1887'/>
         <parameter type-id='type-id-1887'/>
@@ -25647,8 +25643,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-246' size-in-bits='64' id='type-id-248'/>
     <reference-type-def kind='rvalue' type-id='type-id-250' size-in-bits='64' id='type-id-251'/>
     <namespace-decl name='mongo'>
-      <namespace-decl name=''>
-      </namespace-decl>
+
       <namespace-decl name='optionenvironment'>
         <class-decl name='OptionSection' size-in-bits='320' visibility='default' filepath='src/mongo/util/options_parser/option_section.h' line='77' column='1' id='type-id-259'>
           <data-member access='private' layout-offset-in-bits='0'>
@@ -31092,8 +31087,7 @@
           </member-function>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='stdx'>
-      </namespace-decl>
+
       <function-decl name='intrusive_ptr_release' mangled-name='_ZN5mongo21intrusive_ptr_releaseEPNS_12SharedBuffer6HolderE' filepath='src/mongo/util/shared_buffer.h' line='93' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5mongo21intrusive_ptr_releaseEPNS_12SharedBuffer6HolderE'>
         <parameter type-id='type-id-2285'/>
         <return type-id='type-id-4'/>
@@ -33410,14 +33404,8 @@
     <qualified-type-def type-id='type-id-2284' const='yes' id='type-id-2654'/>
     <pointer-type-def type-id='type-id-2654' size-in-bits='64' id='type-id-2286'/>
     <namespace-decl name='boost'>
-      <namespace-decl name='exception_detail'>
-      </namespace-decl>
-      <namespace-decl name='mpl'>
-        <namespace-decl name='aux'>
-        </namespace-decl>
-        <namespace-decl name='placeholders'>
-        </namespace-decl>
-      </namespace-decl>
+
+
       <namespace-decl name='type_traits'>
         <class-decl name='ice_eq&lt;8, 16&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/type_traits/detail/ice_eq.hpp' line='17' column='1' id='type-id-2655'>
           <data-member access='public' static='yes'>
@@ -33426,16 +33414,11 @@
         </class-decl>
       </namespace-decl>
       <namespace-decl name='detail'>
-        <namespace-decl name='function'>
-        </namespace-decl>
-        <namespace-decl name='has_left_shift_impl'>
-        </namespace-decl>
-        <namespace-decl name='has_right_shift_impl'>
-        </namespace-decl>
-        <namespace-decl name='indirect_traits'>
-        </namespace-decl>
-        <namespace-decl name='aligned_storage'>
-        </namespace-decl>
+
+
+
+
+
         <class-decl name='integer_traits_base&lt;signed char, -128, 127&gt;' size-in-bits='8' visibility='default' filepath='src/third_party/boost-1.56.0/boost/integer_traits.hpp' line='52' column='1' id='type-id-2656'>
           <data-member access='public' static='yes'>
             <var-decl name='is_integral' type-id='type-id-147' visibility='default' filepath='src/third_party/boost-1.56.0/boost/integer_traits.hpp' line='55' column='1'/>
@@ -33547,29 +33530,18 @@
           </data-member>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='tt_align_ns'>
-      </namespace-decl>
-      <namespace-decl name='move_detail'>
-      </namespace-decl>
-      <namespace-decl name='optional_detail'>
-      </namespace-decl>
-      <namespace-decl name='date_time'>
-      </namespace-decl>
-      <namespace-decl name='CV'>
-      </namespace-decl>
-      <namespace-decl name='gregorian'>
-      </namespace-decl>
-      <namespace-decl name='core'>
-      </namespace-decl>
-      <namespace-decl name='posix_time'>
-      </namespace-decl>
+
+
+
+
+
+
+
+
       <namespace-decl name='program_options'>
-        <namespace-decl name='validators'>
-        </namespace-decl>
-        <namespace-decl name='command_line_style'>
-        </namespace-decl>
-        <namespace-decl name='detail'>
-        </namespace-decl>
+
+
+
         <var-decl name='arg' type-id='type-id-255' mangled-name='_ZN5boost15program_options3argE' visibility='default' filepath='src/third_party/boost-1.56.0/boost/program_options/detail/value_semantic.hpp' line='13' column='1'/>
         <class-decl name='options_description' size-in-bits='832' visibility='default' filepath='src/third_party/boost-1.56.0/boost/program_options/options_description.hpp' line='173' column='1' id='type-id-2672'>
           <data-member access='public' static='yes'>
@@ -33807,42 +33779,17 @@
           </member-function>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='numeric'>
-        <namespace-decl name='convdetail'>
-        </namespace-decl>
-      </namespace-decl>
-      <namespace-decl name='math'>
-        <namespace-decl name='tools'>
-        </namespace-decl>
-        <namespace-decl name='policies'>
-          <namespace-decl name='detail'>
-          </namespace-decl>
-        </namespace-decl>
-        <namespace-decl name='detail'>
-        </namespace-decl>
-      </namespace-decl>
-      <namespace-decl name='iterators'>
-      </namespace-decl>
-      <namespace-decl name='range_adl_barrier'>
-      </namespace-decl>
-      <namespace-decl name='range_detail'>
-      </namespace-decl>
-      <namespace-decl name='concepts'>
-      </namespace-decl>
-      <namespace-decl name='noncopyable_'>
-      </namespace-decl>
-      <namespace-decl name='iterator_range_detail'>
-      </namespace-decl>
-      <namespace-decl name='intrusive'>
-      </namespace-decl>
-      <namespace-decl name='container'>
-        <namespace-decl name='container_detail'>
-        </namespace-decl>
-        <namespace-decl name='container_detail_really_deep_namespace'>
-        </namespace-decl>
-      </namespace-decl>
-      <namespace-decl name='type_traits_detail'>
-      </namespace-decl>
+
+
+
+
+
+
+
+
+
+
+
       <class-decl name='intrusive_ptr&lt;mongo::SharedBuffer::Holder&gt;' size-in-bits='64' visibility='default' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/intrusive_ptr.hpp' line='52' column='1' id='type-id-2287'>
         <data-member access='private' layout-offset-in-bits='0'>
           <var-decl name='px' type-id='type-id-2285' visibility='default' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/intrusive_ptr.hpp' line='190' column='1'/>
@@ -34918,8 +34865,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-250' size-in-bits='64' id='type-id-1693'/>
     <qualified-type-def type-id='type-id-691' const='yes' id='type-id-1694'/>
     <pointer-type-def type-id='type-id-2894' size-in-bits='64' id='type-id-1695'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <typedef-decl name='wint_t' type-id='type-id-616' filepath='/usr/lib/gcc/x86_64-linux-gnu/4.9/include/stddef.h' line='353' column='1' id='type-id-2895'/>
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-160'/>
@@ -35878,8 +35824,7 @@
       <return type-id='type-id-2943'/>
     </function-decl>
     <namespace-decl name='mpl_'>
-      <namespace-decl name='aux'>
-      </namespace-decl>
+
       <class-decl name='bool_&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/mpl/bool.hpp' line='23' column='1' id='type-id-2948'>
         <data-member access='public' static='yes'>
           <var-decl name='value' type-id='type-id-147' mangled-name='_ZN4mpl_5bool_ILb1EE5valueE' visibility='default' filepath='src/third_party/boost-1.56.0/boost/mpl/bool.hpp' line='25' column='1'/>
@@ -36101,8 +36046,7 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <namespace-decl name='__cxxabiv1'>
-    </namespace-decl>
+
     <typedef-decl name='__clock_t' type-id='type-id-157' filepath='/usr/include/x86_64-linux-gnu/bits/types.h' line='135' column='1' id='type-id-2988'/>
     <typedef-decl name='clock_t' type-id='type-id-2988' filepath='/usr/include/time.h' line='59' column='1' id='type-id-2989'/>
     <function-decl name='clock' filepath='/usr/include/time.h' line='189' column='1' visibility='default' binding='global' size-in-bits='64'>

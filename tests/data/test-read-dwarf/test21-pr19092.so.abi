@@ -453,8 +453,7 @@
     <elf-symbol name='vflag' size='1' type='object-type' binding='global-binding' is-defined='yes'/>
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/collect2.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <type-decl name='void' id='type-id-1'/>
     <pointer-type-def type-id='type-id-1' size-in-bits='64' id='type-id-2'/>
     <type-decl name='int' size-in-bits='32' id='type-id-3'/>
@@ -1491,8 +1490,7 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/collect2-aix.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-3'/>
@@ -1543,8 +1541,7 @@
     <var-decl name='stdout' type-id='type-id-28' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/tlink.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-3'/>
@@ -1928,8 +1925,7 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/vec.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-3'/>
@@ -2092,8 +2088,7 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/ggc-none.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-3'/>
@@ -2874,8 +2869,7 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/diagnostic.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-3'/>
@@ -3313,8 +3307,7 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/pretty-print.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-3'/>
@@ -3583,8 +3576,7 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/intl.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-3'/>
@@ -3703,8 +3695,7 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../.././gcc/input.c' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-3'/>

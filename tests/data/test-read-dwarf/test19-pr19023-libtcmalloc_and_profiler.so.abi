@@ -796,8 +796,7 @@
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/tcmalloc.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <function-decl name='_Destroy&lt;MallocExtension::FreeListInfo*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_construct.h' line='119' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-1'/>
         <parameter type-id='type-id-1'/>
@@ -2908,8 +2907,7 @@
     <qualified-type-def type-id='type-id-18' const='yes' id='type-id-103'/>
     <reference-type-def kind='lvalue' type-id='type-id-103' size-in-bits='64' id='type-id-9'/>
     <qualified-type-def type-id='type-id-10' const='yes' id='type-id-11'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <pointer-type-def type-id='type-id-104' size-in-bits='64' id='type-id-105'/>
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
@@ -5749,8 +5747,7 @@
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_double_instead'>
       <var-decl name='FLAGS_tcmalloc_release_rate' type-id='type-id-106' mangled-name='_ZN62FLAG__namespace_do_not_use_directly_use_DECLARE_double_instead27FLAGS_tcmalloc_release_rateE' visibility='default' filepath='src/tcmalloc.cc' line='170' column='1'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <class-decl name='SpinLock' size-in-bits='32' visibility='default' filepath='src/base/spinlock.h' line='48' column='1' id='type-id-248'>
       <member-type access='private'>
         <enum-decl name='__anonymous_enum__' is-anonymous='yes' id='type-id-309'>
@@ -6811,8 +6808,7 @@
     <var-decl name='stdout' type-id='type-id-124' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/linuxthreads.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <typedef-decl name='__pid_t' type-id='type-id-7' filepath='/usr/include/bits/types.h' line='143' column='1' id='type-id-377'/>
     <typedef-decl name='pid_t' type-id='type-id-377' filepath='/usr/include/sched.h' line='37' column='1' id='type-id-378'/>
     <pointer-type-def type-id='type-id-378' size-in-bits='64' id='type-id-379'/>
@@ -6839,8 +6835,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/heap-checker.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <function-decl name='swap&lt;AllocObject*&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/move.h' line='76' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-383'/>
         <parameter type-id='type-id-383'/>
@@ -15374,8 +15369,7 @@
     <pointer-type-def type-id='type-id-408' size-in-bits='64' id='type-id-410'/>
     <qualified-type-def type-id='type-id-407' const='yes' id='type-id-472'/>
     <reference-type-def kind='lvalue' type-id='type-id-472' size-in-bits='64' id='type-id-423'/>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -15894,8 +15888,7 @@
       <var-decl name='FLAGS_heap_check_max_pointer_offset' type-id='type-id-288' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead35FLAGS_heap_check_max_pointer_offsetE' visibility='default' filepath='src/heap-checker.cc' line='204' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead35FLAGS_heap_check_max_pointer_offsetE'/>
       <var-decl name='FLAGS_noheap_check_max_pointer_offset' type-id='type-id-65' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead37FLAGS_noheap_check_max_pointer_offsetE' visibility='default' filepath='src/heap-checker.cc' line='209' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int64_instead37FLAGS_noheap_check_max_pointer_offsetE'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <class-decl name='HeapProfileTable' size-in-bits='832' visibility='default' filepath='src/heap-profile-table.h' line='51' column='1' id='type-id-783'>
       <member-type access='private'>
         <class-decl name='AllocInfo' size-in-bits='192' is-struct='yes' visibility='default' filepath='src/heap-profile-table.h' line='66' column='1' id='type-id-784'>
@@ -18209,14 +18202,9 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/heap-checker-bcad.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -18546,8 +18534,7 @@
     <function-decl name='localeconv' filepath='/usr/include/locale.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-148'/>
     </function-decl>
-    <namespace-decl name='base'>
-    </namespace-decl>
+
     <class-decl name='HeapLeakCheckerGlobalPrePost' size-in-bits='8' visibility='default' filepath='src/heap-checker-bcad.cc' line='60' column='1' id='type-id-979'>
       <data-member access='private' static='yes'>
         <var-decl name='count_' type-id='type-id-7' mangled-name='_ZN28HeapLeakCheckerGlobalPrePost6count_E' visibility='default' filepath='src/heap-checker-bcad.cc' line='87' column='1' elf-symbol-id='_ZN28HeapLeakCheckerGlobalPrePost6count_E'/>
@@ -18585,14 +18572,9 @@
     <var-decl name='__digits' type-id='type-id-42' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIlE8__digitsE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/numeric_traits.h' line='62' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/profiler.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -19565,8 +19547,7 @@
       </namespace-decl>
     </namespace-decl>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='_List_iterator&lt;ProfileHandlerToken*&gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='114' column='1' id='type-id-1048'>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='_M_node' type-id='type-id-1049' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_list.h' line='179' column='1'/>
@@ -20315,8 +20296,7 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -20649,8 +20629,7 @@
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='./src/base/logging.h' line='76' column='1'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <pointer-type-def type-id='type-id-1056' size-in-bits='64' id='type-id-1049'/>
     <reference-type-def kind='lvalue' type-id='type-id-1056' size-in-bits='64' id='type-id-1057'/>
     <pointer-type-def type-id='type-id-1048' size-in-bits='64' id='type-id-1050'/>
@@ -20988,16 +20967,10 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/profiledata.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='base'>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -21442,14 +21415,9 @@
       </class-decl>
     </namespace-decl>
     <pointer-type-def type-id='type-id-1125' size-in-bits='64' id='type-id-1120'/>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -21840,14 +21808,9 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/system-alloc.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -22227,8 +22190,7 @@
         </function-decl>
       </namespace-decl>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_malloc_devmem_start' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_startE' visibility='default' filepath='src/system-alloc.cc' line='130' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_startE'/>
       <var-decl name='FLAGS_malloc_devmem_limit' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_limitE' visibility='default' filepath='src/system-alloc.cc' line='134' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead25FLAGS_malloc_devmem_limitE'/>
@@ -22408,8 +22370,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/memfs_malloc.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-70'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-71'/>
     </namespace-decl>
@@ -22417,8 +22378,7 @@
       <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-64'/>
       <class-decl name='__normal_iterator&lt;const char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-66'/>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -22748,8 +22708,7 @@
     <function-decl name='localeconv' filepath='/usr/include/locale.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-148'/>
     </function-decl>
-    <namespace-decl name='base'>
-    </namespace-decl>
+
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='./src/base/logging.h' line='76' column='1'/>
     </namespace-decl>
@@ -22793,8 +22752,7 @@
       <var-decl name='FLAGS_nomemfs_malloc_ignore_mmap_fail' type-id='type-id-65' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_nomemfs_malloc_ignore_mmap_failE' visibility='default' filepath='src/memfs_malloc.cc' line='84' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead37FLAGS_nomemfs_malloc_ignore_mmap_failE'/>
       <var-decl name='FLAGS_nomemfs_malloc_map_private' type-id='type-id-65' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_nomemfs_malloc_map_privateE' visibility='default' filepath='src/memfs_malloc.cc' line='87' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead32FLAGS_nomemfs_malloc_map_privateE'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <class-decl name='SysAllocator' visibility='default' is-declaration-only='yes' id='type-id-356'>
       <member-function access='private' constructor='yes'>
         <function-decl name='SysAllocator' filepath='./src/gperftools/malloc_extension.h' line='77' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -22893,8 +22851,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/central_freelist.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <function-decl name='max&lt;int&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-1140'/>
         <parameter type-id='type-id-1140'/>
@@ -22921,8 +22878,7 @@
         <return type-id='type-id-81'/>
       </function-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
       <return type-id='type-id-7'/>
@@ -23100,8 +23056,7 @@
       </namespace-decl>
     </namespace-decl>
     <namespace-decl name='tcmalloc'>
-      <namespace-decl name=''>
-      </namespace-decl>
+
       <function-decl name='SLL_SetNext' filepath='src/linked_list.h' line='48' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-92'/>
         <parameter type-id='type-id-92'/>
@@ -23524,14 +23479,9 @@
     <var-decl name='kAllocIncrement' type-id='type-id-42' mangled-name='_ZN8tcmalloc17PageHeapAllocatorINS_15StackTraceTable6BucketEE15kAllocIncrementE' visibility='default' filepath='src/page_heap_allocator.h' line='99' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/page_heap.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -23964,8 +23914,7 @@
     <var-decl name='kAllocIncrement' type-id='type-id-42' mangled-name='_ZN8tcmalloc17PageHeapAllocatorINS_15StackTraceTable6BucketEE15kAllocIncrementE' visibility='default' filepath='src/page_heap_allocator.h' line='99' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/sampler.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='base'>
-    </namespace-decl>
+
     <namespace-decl name='tcmalloc'>
       <namespace-decl name='commandlineflags'>
         <function-decl name='StringToLongLong' filepath='src/base/commandlineflags.h' line='132' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -23976,8 +23925,7 @@
       </namespace-decl>
     </namespace-decl>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <function-decl name='min&lt;double&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='186' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-302'/>
         <parameter type-id='type-id-302'/>
@@ -23996,8 +23944,7 @@
         <return type-id='type-id-81'/>
       </function-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
       <return type-id='type-id-7'/>
@@ -24556,14 +24503,9 @@
     </namespace-decl>
     <namespace-decl name='base'>
     </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -25044,14 +24986,9 @@
         </function-decl>
       </namespace-decl>
     </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -25457,8 +25394,7 @@
       </namespace-decl>
     </namespace-decl>
     <namespace-decl name='tcmalloc'>
-      <namespace-decl name=''>
-      </namespace-decl>
+
       <namespace-decl name='commandlineflags'>
         <function-decl name='StringToBool' filepath='./src/base/commandlineflags.h' line='118' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-34'/>
@@ -25467,14 +25403,9 @@
         </function-decl>
       </namespace-decl>
     </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -25867,8 +25798,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/symbolize.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-70'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-71'/>
       <class-decl name='_Rb_tree&lt;const void*, std::pair&lt;const void* const, const char*&gt;, std::_Select1st&lt;std::pair&lt;const void* const, const char*&gt; &gt;, std::less&lt;const void*&gt;, std::allocator&lt;std::pair&lt;const void* const, const char*&gt; &gt; &gt;' size-in-bits='384' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_tree.h' line='323' column='1' id='type-id-1149'>
@@ -27118,8 +27048,7 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -27449,8 +27378,7 @@
     <function-decl name='localeconv' filepath='/usr/include/locale.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-148'/>
     </function-decl>
-    <namespace-decl name='base'>
-    </namespace-decl>
+
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='src/base/logging.h' line='76' column='1'/>
     </namespace-decl>
@@ -27654,8 +27582,7 @@
       </namespace-decl>
     </namespace-decl>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <function-decl name='max&lt;double&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='209' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-302'/>
         <parameter type-id='type-id-302'/>
@@ -27684,8 +27611,7 @@
         <return type-id='type-id-81'/>
       </function-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -28215,8 +28141,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/malloc_hook.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <function-decl name='__copy_move_a&lt;false, void**, void**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-210'/>
         <parameter type-id='type-id-210'/>
@@ -28248,8 +28173,7 @@
         <return type-id='type-id-81'/>
       </function-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
       <return type-id='type-id-7'/>
@@ -28844,8 +28768,7 @@
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='src/base/logging.h' line='76' column='1'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <function-decl name='bit_cast&lt;void (*)(const void*, size_t), base::subtle::Atomic64&gt;' filepath='./src/base/basictypes.h' line='219' column='1' declared-inline='yes' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-863' name='source' filepath='./src/base/basictypes.h' line='219' column='1'/>
       <return type-id='type-id-153'/>
@@ -29153,8 +29076,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/malloc_extension.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-70'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;const char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-71'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;MallocExtension::FreeListInfo*, std::vector&lt;MallocExtension::FreeListInfo, std::allocator&lt;MallocExtension::FreeListInfo&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-27'/>
@@ -29425,8 +29347,7 @@
         </function-decl>
       </member-function>
     </class-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -29759,8 +29680,7 @@
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='./src/base/logging.h' line='76' column='1'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <function-decl name='LogPrintf' mangled-name='_Z9LogPrintfiPKcP13__va_list_tag' filepath='./src/base/logging.h' line='198' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z9LogPrintfiPKcP13__va_list_tag'>
       <parameter type-id='type-id-7' name='severity' filepath='./src/base/logging.h' line='198' column='1'/>
       <parameter type-id='type-id-34' name='pat' filepath='./src/base/logging.h' line='198' column='1'/>
@@ -29903,14 +29823,9 @@
         </function-decl>
       </namespace-decl>
     </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -30272,8 +30187,7 @@
         </data-member>
       </class-decl>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <pointer-type-def type-id='type-id-1269' size-in-bits='64' id='type-id-1272'/>
     <array-type-def dimensions='1' type-id='type-id-1272' size-in-bits='1920' id='type-id-1271'>
       <subrange length='30'/>
@@ -30309,8 +30223,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/heap-profile-table.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <function-decl name='__equal_aux&lt;const void* const*, const void**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='822' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-693'/>
         <parameter type-id='type-id-693'/>
@@ -31951,8 +31864,7 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -32664,8 +32576,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/heap-profiler.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <var-decl name='nothrow' type-id='type-id-11' mangled-name='_ZSt7nothrow' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/new' line='69' column='1'/>
     </namespace-decl>
     <namespace-decl name='__gnu_cxx'>
@@ -32679,8 +32590,7 @@
         <return type-id='type-id-81'/>
       </function-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
       <return type-id='type-id-7'/>
@@ -33218,8 +33128,7 @@
       <var-decl name='FLAGS_nommap_profile' type-id='type-id-65' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead20FLAGS_nommap_profileE' visibility='default' filepath='src/heap-profiler.cc' line='121' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead20FLAGS_nommap_profileE'/>
       <var-decl name='FLAGS_noonly_mmap_profile' type-id='type-id-65' mangled-name='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead25FLAGS_noonly_mmap_profileE' visibility='default' filepath='src/heap-profiler.cc' line='125' column='1' elf-symbol-id='_ZN60FLAG__namespace_do_not_use_directly_use_DECLARE_bool_instead25FLAGS_noonly_mmap_profileE'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <namespace-decl name='tcmalloc'>
       <namespace-decl name='commandlineflags'>
         <function-decl name='StringToLongLong' filepath='./src/base/commandlineflags.h' line='132' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -33399,14 +33308,9 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -33759,8 +33663,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/memory_region_map.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <function-decl name='__equal_aux&lt;const void* const*, const void**&gt;' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/stl_algobase.h' line='822' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-693'/>
         <parameter type-id='type-id-693'/>
@@ -34753,8 +34656,7 @@
         <return type-id='type-id-81'/>
       </function-decl>
     </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-105'/>
       <return type-id='type-id-7'/>
@@ -35593,16 +35495,10 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/atomicops-internals-x86.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='base'>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -35935,8 +35831,7 @@
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='./src/base/logging.h' line='76' column='1'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <function-decl name='LogPrintf' mangled-name='_Z9LogPrintfiPKcP13__va_list_tag' filepath='./src/base/logging.h' line='198' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7' name='severity' filepath='./src/base/logging.h' line='198' column='1'/>
       <parameter type-id='type-id-34' name='pat' filepath='./src/base/logging.h' line='198' column='1'/>
@@ -35987,8 +35882,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/elf_mem_image.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='base'>
-      <namespace-decl name=''>
-      </namespace-decl>
+
       <class-decl name='ElfMemImage' size-in-bits='576' visibility='default' filepath='./src/base/elf_mem_image.h' line='56' column='1' id='type-id-1445'>
         <member-type access='private'>
           <class-decl name='SymbolInfo' size-in-bits='256' is-struct='yes' visibility='default' filepath='./src/base/elf_mem_image.h' line='64' column='1' id='type-id-1446'>
@@ -36210,14 +36104,9 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -36724,14 +36613,9 @@
     <var-decl name='_S_terminal' type-id='type-id-116' mangled-name='_ZNSbIwSt11char_traitsIwESaIwEE4_Rep11_S_terminalE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='56' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/logging.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -37061,8 +36945,7 @@
     <function-decl name='localeconv' filepath='/usr/include/locale.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-148'/>
     </function-decl>
-    <namespace-decl name='base'>
-    </namespace-decl>
+
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='./src/base/logging.h' line='76' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE'/>
       <var-decl name='FLAGS_noverbose' type-id='type-id-65' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead15FLAGS_noverboseE' visibility='default' filepath='src/base/logging.cc' line='40' column='1' elf-symbol-id='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead15FLAGS_noverboseE'/>
@@ -37105,8 +36988,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/spinlock.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='base'>
-      <namespace-decl name='internal'>
-      </namespace-decl>
+
       <namespace-decl name='subtle'>
         <function-decl name='NoBarrier_CompareAndSwap' filepath='./src/base/atomicops-internals-x86.h' line='74' column='1' visibility='default' binding='global' size-in-bits='64'>
           <parameter type-id='type-id-191'/>
@@ -37131,14 +37013,9 @@
         <return type-id='type-id-2'/>
       </function-decl>
     </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -37471,8 +37348,7 @@
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='./src/base/logging.h' line='76' column='1'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <class-decl name='CycleClock' size-in-bits='8' is-struct='yes' visibility='default' filepath='./src/base/cycleclock.h' line='79' column='1' id='type-id-1488'>
       <member-function access='public' static='yes'>
         <function-decl name='Now' mangled-name='_ZN10CycleClock3NowEv' filepath='./src/base/cycleclock.h' line='81' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -37557,18 +37433,12 @@
     </namespace-decl>
     <qualified-type-def type-id='type-id-1489' const='yes' id='type-id-1491'/>
     <pointer-type-def type-id='type-id-1491' size-in-bits='64' id='type-id-1490'/>
-    <namespace-decl name=''>
-    </namespace-decl>
+
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/stacktrace.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -37898,13 +37768,11 @@
     <function-decl name='localeconv' filepath='/usr/include/locale.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-148'/>
     </function-decl>
-    <namespace-decl name='base'>
-    </namespace-decl>
+
     <namespace-decl name='FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead'>
       <var-decl name='FLAGS_verbose' type-id='type-id-315' mangled-name='_ZN61FLAG__namespace_do_not_use_directly_use_DECLARE_int32_instead13FLAGS_verboseE' visibility='default' filepath='./src/base/logging.h' line='76' column='1'/>
     </namespace-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <namespace-decl name='tcmalloc'>
       <namespace-decl name='commandlineflags'>
         <function-decl name='StringToBool' filepath='src/base/commandlineflags.h' line='118' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -37972,16 +37840,10 @@
     <var-decl name='kInvalidBase' type-id='type-id-720' mangled-name='_ZN4base11ElfMemImage12kInvalidBaseE' visibility='default' filepath='./src/base/elf_mem_image.h' line='59' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/base/sysinfo.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='base'>
-    </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -38631,14 +38493,9 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -38993,14 +38850,9 @@
     <var-decl name='_S_terminal' type-id='type-id-116' mangled-name='_ZNSbIwSt11char_traitsIwESaIwEE4_Rep11_S_terminalE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/basic_string.tcc' line='56' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/maybe_threads.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-    </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-    </namespace-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
+
+
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='386' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-121'/>
@@ -39330,8 +39182,7 @@
     <function-decl name='localeconv' filepath='/usr/include/locale.h' line='128' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-148'/>
     </function-decl>
-    <namespace-decl name='base'>
-    </namespace-decl>
+
     <pointer-type-def type-id='type-id-1115' size-in-bits='64' id='type-id-1515'/>
     <function-decl name='perftools_pthread_once' mangled-name='_Z22perftools_pthread_oncePiPFvvE' filepath='src/maybe_threads.cc' line='128' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z22perftools_pthread_oncePiPFvvE'>
       <parameter type-id='type-id-1515' name='ctl' filepath='src/maybe_threads.cc' line='128' column='1'/>

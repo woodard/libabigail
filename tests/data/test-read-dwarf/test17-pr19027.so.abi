@@ -4464,8 +4464,7 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-font.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <function-decl name='hb_font_funcs_get_empty' mangled-name='hb_font_funcs_get_empty' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-font.cc' line='264' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='hb_font_funcs_get_empty'>
       <return type-id='type-id-314'/>
     </function-decl>
@@ -21098,8 +21097,7 @@
     </function-type>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-map.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <class-decl name='hb_prealloced_array_t&lt;hb_ot_map_builder_t::stage_info_t, 8u&gt;' size-in-bits='1152' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-private.hh' line='329' column='1' id='type-id-1739'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='len' type-id='type-id-10' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-private.hh' line='330' column='1'/>
@@ -22064,8 +22062,7 @@
     <var-decl name='min_size' type-id='type-id-77' mangled-name='_ZN2OT7ArrayOfINS_8OffsetToINS_11SubstLookupENS_7IntTypeItLj2EEEEES4_E8min_sizeE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-open-type-private.hh' line='895' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-default.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22098,8 +22095,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-hangul.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22132,8 +22128,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-hebrew.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22166,8 +22161,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-indic.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <class-decl name='indic_shape_plan_t' size-in-bits='1344' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='507' column='1' id='type-id-1818'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='config' type-id='type-id-1819' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic.cc' line='529' column='1'/>
@@ -22338,8 +22332,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-indic-table.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <function-decl name='hb_indic_get_categories' mangled-name='_Z23hb_indic_get_categoriesj' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic-table.cc' line='859' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-70' name='u' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-complex-indic-table.cc' line='859' column='1'/>
       <return type-id='type-id-155'/>
@@ -22376,8 +22369,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-myanmar.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22410,8 +22402,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-sea.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22444,8 +22435,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-thai.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22478,8 +22468,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-complex-tibetan.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <var-decl name='stdin' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-53' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
@@ -22512,8 +22501,7 @@
     <var-decl name='num_bits' type-id='type-id-77' mangled-name='_ZN27hb_set_digest_lowest_bits_tImLj9EE8num_bitsE' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-set-private.hh' line='55' column='1'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='hb-ot-shape-normalize.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='OT'>
-    </namespace-decl>
+
     <function-decl name='_hb_ot_shape_normalize' mangled-name='_Z22_hb_ot_shape_normalizePK18hb_ot_shape_plan_tP11hb_buffer_tP9hb_font_t' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize.cc' line='288' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-1688' name='plan' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize.cc' line='288' column='1'/>
       <parameter type-id='type-id-143' name='buffer' filepath='/tmp/legendre/spack-stage/spack-stage-04g73E/harfbuzz-0.9.37/src/hb-ot-shape-normalize.cc' line='289' column='1'/>

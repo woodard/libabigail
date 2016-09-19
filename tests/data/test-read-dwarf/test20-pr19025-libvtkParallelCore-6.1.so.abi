@@ -388,8 +388,7 @@
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkCommunicator.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -4617,8 +4616,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -4858,8 +4856,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <pointer-type-def type-id='type-id-282' size-in-bits='64' id='type-id-283'/>
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-283'/>
@@ -9279,8 +9276,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyCommunicator.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -9744,8 +9740,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -9892,8 +9887,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <class-decl name='vtkOStreamWrapper' visibility='default' is-declaration-only='yes' id='type-id-433'>
       <member-type access='private'>
         <class-decl name='EndlType' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkOStreamWrapper.h' line='58' column='1' id='type-id-434'/>
@@ -10114,8 +10108,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkDummyController.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -10651,8 +10644,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -10799,8 +10791,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <class-decl name='vtkOStreamWrapper' visibility='default' is-declaration-only='yes' id='type-id-433'>
       <member-type access='private'>
         <class-decl name='EndlType' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkOStreamWrapper.h' line='58' column='1' id='type-id-434'/>
@@ -11119,8 +11110,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessController.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -21999,8 +21989,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -22147,8 +22136,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-283'/>
       <return type-id='type-id-7'/>
@@ -22774,8 +22762,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkMultiProcessStream.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -24819,8 +24806,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -24967,8 +24953,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <pointer-type-def type-id='type-id-1116' size-in-bits='64' id='type-id-1117'/>
     <qualified-type-def type-id='type-id-1107' const='yes' id='type-id-1145'/>
     <pointer-type-def type-id='type-id-1145' size-in-bits='64' id='type-id-1118'/>
@@ -25076,8 +25061,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcess.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -25606,8 +25590,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -25754,8 +25737,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <class-decl name='vtkObject' visibility='default' is-declaration-only='yes' id='type-id-309'>
       <member-function access='private' static='yes'>
         <function-decl name='IsTypeOf' mangled-name='_ZN9vtkObject8IsTypeOfEPKc' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkObject.h' line='53' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -25957,8 +25939,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkProcessGroup.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -26530,8 +26511,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -26678,8 +26658,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-283'/>
       <return type-id='type-id-7'/>
@@ -27087,8 +27066,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketCommunicator.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -30995,8 +30973,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -31143,8 +31120,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-283'/>
       <return type-id='type-id-7'/>
@@ -32368,8 +32344,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSocketController.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -32831,8 +32806,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -32979,8 +32953,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <class-decl name='vtkOStreamWrapper' visibility='default' is-declaration-only='yes' id='type-id-433'>
       <member-type access='private'>
         <class-decl name='EndlType' size-in-bits='8' is-struct='yes' visibility='default' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkOStreamWrapper.h' line='58' column='1' id='type-id-434'/>
@@ -33275,8 +33248,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubCommunicator.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -33812,8 +33784,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -33960,8 +33931,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <class-decl name='vtkObject' visibility='default' is-declaration-only='yes' id='type-id-309'>
       <member-function access='private' static='yes'>
         <function-decl name='IsTypeOf' mangled-name='_ZN9vtkObject8IsTypeOfEPKc' filepath='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Common/Core/vtkObject.h' line='53' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -34186,8 +34156,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkSubGroup.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -34859,8 +34828,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -35007,8 +34975,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-283'/>
       <return type-id='type-id-7'/>
@@ -35638,8 +35605,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='/tmp/legendre/spack-stage/spack-stage-R_crTC/VTK-6.1.0/Parallel/Core/vtkFieldDataSerializer.cxx' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
+
       <class-decl name='ios_base' visibility='default' is-declaration-only='yes' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='Init' size-in-bits='8' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/ios_base.h' line='538' column='1' id='type-id-2'>
@@ -36168,8 +36134,7 @@
       <parameter type-id='type-id-7'/>
       <return type-id='type-id-234'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='125' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-7'/>
       <parameter type-id='type-id-29'/>
@@ -36316,8 +36281,7 @@
       <parameter type-id='type-id-276'/>
       <return type-id='type-id-7'/>
     </function-decl>
-    <namespace-decl name='detail'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='*memchr' filepath='/usr/include/string.h' line='88' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-195'/>
       <parameter type-id='type-id-7'/>

@@ -412,12 +412,9 @@
   </elf-variable-symbols>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/codecvt_error_category.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__detail'>
-      </namespace-decl>
+
+
+
       <class-decl name='basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' size-in-bits='64' visibility='default' filepath='/usr/include/c++/4.9/bits/basic_string.h' line='112' column='1' id='type-id-1'>
         <member-type access='private'>
           <class-decl name='_Alloc_hider' size-in-bits='64' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/bits/basic_string.h' line='272' column='1' id='type-id-2'>
@@ -2111,8 +2108,7 @@
         <parameter type-id='type-id-90'/>
         <return type-id='type-id-91'/>
       </function-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
       <class-decl name='new_allocator&lt;char&gt;' size-in-bits='8' visibility='default' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='58' column='1' id='type-id-43'>
         <member-type access='public'>
           <typedef-decl name='size_type' type-id='type-id-44' filepath='/usr/include/c++/4.9/ext/new_allocator.h' line='61' column='1' id='type-id-92'/>
@@ -2570,14 +2566,9 @@
       <return type-id='type-id-129'/>
     </function-decl>
     <namespace-decl name='boost'>
-      <namespace-decl name='mpl'>
-        <namespace-decl name='aux'>
-        </namespace-decl>
-      </namespace-decl>
-      <namespace-decl name='type_traits'>
-      </namespace-decl>
-      <namespace-decl name='detail'>
-      </namespace-decl>
+
+
+
       <namespace-decl name='noncopyable_'>
         <class-decl name='noncopyable' size-in-bits='8' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/noncopyable.hpp' line='23' column='1' id='type-id-130'>
           <member-function access='protected' constructor='yes'>
@@ -2616,8 +2607,7 @@
         </class-decl>
       </namespace-decl>
       <namespace-decl name='system'>
-        <namespace-decl name='errc'>
-        </namespace-decl>
+
         <class-decl name='error_condition' size-in-bits='128' visibility='default' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='230' column='1' id='type-id-134'>
           <member-type access='public'>
             <typedef-decl name='unspecified_bool_type' type-id='type-id-73' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='272' column='1' id='type-id-135'/>
@@ -2882,8 +2872,7 @@
         </function-decl>
       </namespace-decl>
       <namespace-decl name='filesystem'>
-        <namespace-decl name='path_traits'>
-        </namespace-decl>
+
         <function-decl name='codecvt_error_category' mangled-name='_ZN5boost10filesystem22codecvt_error_categoryEv' filepath='src/third_party/boost-1.56.0/libs/filesystem/src/codecvt_error_category.cpp' line='77' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem22codecvt_error_categoryEv'>
           <return type-id='type-id-138'/>
         </function-decl>
@@ -2944,8 +2933,7 @@
     <pointer-type-def type-id='type-id-134' size-in-bits='64' id='type-id-137'/>
     <pointer-type-def type-id='type-id-159' size-in-bits='64' id='type-id-139'/>
     <namespace-decl name='mpl_'>
-      <namespace-decl name='aux'>
-      </namespace-decl>
+
       <class-decl name='int_&lt;3&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/mpl/aux_/integral_wrapper.hpp' line='43' column='1' id='type-id-161'>
         <data-member access='public' static='yes'>
           <var-decl name='value' type-id='type-id-115' mangled-name='_ZN4mpl_4int_ILi3EE5valueE' visibility='default' filepath='src/third_party/boost-1.56.0/boost/mpl/aux_/integral_wrapper.hpp' line='45' column='1'/>
@@ -3478,8 +3466,7 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-127'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-34'/>
@@ -3768,8 +3755,7 @@
       <parameter type-id='type-id-191'/>
       <return type-id='type-id-76'/>
     </function-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <var-decl name='__dso_handle' type-id='type-id-75' visibility='default'/>
     <qualified-type-def type-id='type-id-30' const='yes' id='type-id-67'/>
     <qualified-type-def type-id='type-id-65' const='yes' id='type-id-217'/>
@@ -3809,12 +3795,9 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/operations.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__detail'>
-      </namespace-decl>
+
+
+
       <class-decl name='remove_reference&lt;boost::filesystem::filesystem_error::m_imp*&amp;&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/type_traits' line='1504' column='1' id='type-id-224'>
         <member-type access='public'>
           <typedef-decl name='type' type-id='type-id-226' filepath='/usr/include/c++/4.9/type_traits' line='1505' column='1' id='type-id-225'/>
@@ -5725,10 +5708,8 @@
     </namespace-decl>
     <namespace-decl name='boost'>
       <namespace-decl name='mpl'>
-        <namespace-decl name='aux'>
-        </namespace-decl>
-        <namespace-decl name='placeholders'>
-        </namespace-decl>
+
+
         <class-decl name='if_&lt;boost::detail::use_operator_brackets_proxy&lt;const boost::filesystem::path, const boost::filesystem::path&amp;&gt;, boost::detail::operator_brackets_proxy&lt;boost::filesystem::path::iterator&gt;, const boost::filesystem::path&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/mpl/if.hpp' line='55' column='1' id='type-id-318'>
           <member-type access='public'>
             <typedef-decl name='type' type-id='type-id-320' filepath='src/third_party/boost-1.56.0/boost/mpl/if.hpp' line='70' column='1' id='type-id-319'/>
@@ -5750,11 +5731,9 @@
           </member-type>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='type_traits'>
-      </namespace-decl>
+
       <namespace-decl name='detail'>
-        <namespace-decl name='indirect_traits'>
-        </namespace-decl>
+
         <function-decl name='atomic_exchange_and_add' mangled-name='_ZN5boost6detail23atomic_exchange_and_addEPii' filepath='src/third_party/boost-1.56.0/boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp' line='35' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost6detail23atomic_exchange_and_addEPii'>
           <parameter type-id='type-id-328'/>
           <parameter type-id='type-id-36'/>
@@ -7990,8 +7969,7 @@
         </member-type>
       </class-decl>
       <namespace-decl name='system'>
-        <namespace-decl name='errc'>
-        </namespace-decl>
+
         <function-decl name='system_category' mangled-name='_ZN5boost6system15system_categoryEv' filepath='src/third_party/boost-1.56.0/boost/system/error_code.hpp' line='212' column='1' visibility='default' binding='global' size-in-bits='64'>
           <return type-id='type-id-138'/>
         </function-decl>
@@ -8371,12 +8349,9 @@
           </member-type>
         </class-decl>
       </namespace-decl>
-      <namespace-decl name='exception_detail'>
-      </namespace-decl>
-      <namespace-decl name='io'>
-      </namespace-decl>
-      <namespace-decl name='type_traits_detail'>
-      </namespace-decl>
+
+
+
       <function-decl name='addressof&lt;boost::filesystem::directory_entry&gt;' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='108' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-341'/>
         <return type-id='type-id-340'/>
@@ -8575,8 +8550,7 @@
         <parameter type-id='type-id-90'/>
         <return type-id='type-id-91'/>
       </function-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
       <function-decl name='__is_null_pointer&lt;char&gt;' mangled-name='_ZN9__gnu_cxx17__is_null_pointerIcEEbPT_' filepath='/usr/include/c++/4.9/ext/type_traits.h' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx17__is_null_pointerIcEEbPT_'>
         <parameter type-id='type-id-4'/>
         <return type-id='type-id-30'/>
@@ -9165,8 +9139,7 @@
       <return type-id='type-id-129'/>
     </function-decl>
     <namespace-decl name='mpl_'>
-      <namespace-decl name='aux'>
-      </namespace-decl>
+
       <class-decl name='bool_&lt;true&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/mpl/bool.hpp' line='23' column='1' id='type-id-543'>
         <data-member access='public' static='yes'>
           <var-decl name='value' type-id='type-id-67' mangled-name='_ZN4mpl_5bool_ILb1EE5valueE' visibility='default' filepath='src/third_party/boost-1.56.0/boost/mpl/bool.hpp' line='25' column='1'/>
@@ -9556,8 +9529,7 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-127'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-34'/>
@@ -9754,8 +9726,7 @@
       <parameter type-id='type-id-191'/>
       <return type-id='type-id-76'/>
     </function-decl>
-    <namespace-decl name='__cxxabiv1'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
@@ -9808,8 +9779,7 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <qualified-type-def type-id='type-id-341' id='type-id-381'/>
     <pointer-type-def type-id='type-id-380' size-in-bits='64' id='type-id-382'/>
     <qualified-type-def type-id='type-id-380' const='yes' id='type-id-559'/>
@@ -9859,12 +9829,9 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/path.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__detail'>
-      </namespace-decl>
+
+
+
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-20'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-22'/>
       <function-decl name='operator&lt; &lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' mangled-name='_ZStltIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_ES8_' filepath='/usr/include/c++/4.9/bits/basic_string.h' line='2588' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZStltIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_ES8_'>
@@ -10019,8 +9986,7 @@
         <parameter type-id='type-id-90'/>
         <return type-id='type-id-91'/>
       </function-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
       <function-decl name='__is_null_pointer&lt;char const&gt;' mangled-name='_ZN9__gnu_cxx17__is_null_pointerIKcEEbPT_' filepath='/usr/include/c++/4.9/ext/type_traits.h' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN9__gnu_cxx17__is_null_pointerIKcEEbPT_'>
         <parameter type-id='type-id-34'/>
         <return type-id='type-id-30'/>
@@ -10173,16 +10139,12 @@
     </function-decl>
     <namespace-decl name='boost'>
       <namespace-decl name='mpl'>
-        <namespace-decl name='aux'>
-        </namespace-decl>
-        <namespace-decl name='placeholders'>
-        </namespace-decl>
+
+
       </namespace-decl>
-      <namespace-decl name='type_traits'>
-      </namespace-decl>
+
       <namespace-decl name='detail'>
-        <namespace-decl name='indirect_traits'>
-        </namespace-decl>
+
         <class-decl name='operator_brackets_proxy&lt;boost::filesystem::path::iterator&gt;' visibility='default' is-declaration-only='yes' id='type-id-322'/>
         <class-decl name='addr_impl_ref&lt;const boost::filesystem::path&gt;' size-in-bits='64' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='25' column='1' id='type-id-580'>
           <data-member access='public' layout-offset-in-bits='0'>
@@ -10229,8 +10191,7 @@
       <namespace-decl name='noncopyable_'>
       </namespace-decl>
       <namespace-decl name='system'>
-        <namespace-decl name='errc'>
-        </namespace-decl>
+
       </namespace-decl>
       <namespace-decl name='filesystem'>
         <namespace-decl name='path_traits'>
@@ -10265,14 +10226,10 @@
       </namespace-decl>
       <namespace-decl name='iterators'>
       </namespace-decl>
-      <namespace-decl name='exception_detail'>
-      </namespace-decl>
-      <namespace-decl name='core'>
-      </namespace-decl>
-      <namespace-decl name='io'>
-      </namespace-decl>
-      <namespace-decl name='type_traits_detail'>
-      </namespace-decl>
+
+
+
+
       <function-decl name='addressof&lt;const boost::filesystem::path&gt;' filepath='src/third_party/boost-1.56.0/boost/core/addressof.hpp' line='108' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-335'/>
         <return type-id='type-id-334'/>
@@ -10289,8 +10246,7 @@
       </function-decl>
     </namespace-decl>
     <namespace-decl name='mpl_'>
-      <namespace-decl name='aux'>
-      </namespace-decl>
+
     </namespace-decl>
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
@@ -10613,8 +10569,7 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-127'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-34'/>
@@ -10800,8 +10755,7 @@
       <parameter type-id='type-id-191'/>
       <return type-id='type-id-76'/>
     </function-decl>
-    <namespace-decl name='__cxxabiv1'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
@@ -10854,8 +10808,7 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <qualified-type-def type-id='type-id-335' id='type-id-581'/>
     <pointer-type-def type-id='type-id-580' size-in-bits='64' id='type-id-582'/>
     <qualified-type-def type-id='type-id-580' const='yes' id='type-id-587'/>
@@ -10880,12 +10833,9 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/path_traits.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__detail'>
-      </namespace-decl>
+
+
+
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;wchar_t const*, std::basic_string&lt;wchar_t, std::char_traits&lt;wchar_t&gt;, std::allocator&lt;wchar_t&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-247'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;wchar_t*, std::basic_string&lt;wchar_t, std::char_traits&lt;wchar_t&gt;, std::allocator&lt;wchar_t&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-249'/>
       <class-decl name='codecvt&lt;wchar_t, char, __mbstate_t&gt;' visibility='default' is-declaration-only='yes' id='type-id-229'/>
@@ -11059,8 +11009,7 @@
         <parameter type-id='type-id-90'/>
         <return type-id='type-id-91'/>
       </function-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
     </namespace-decl>
     <function-decl name='lldiv' filepath='/usr/include/stdlib.h' line='796' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-90'/>
@@ -11094,19 +11043,13 @@
       <return type-id='type-id-129'/>
     </function-decl>
     <namespace-decl name='boost'>
-      <namespace-decl name='mpl'>
-        <namespace-decl name='aux'>
-        </namespace-decl>
-      </namespace-decl>
-      <namespace-decl name='type_traits'>
-      </namespace-decl>
-      <namespace-decl name='detail'>
-      </namespace-decl>
+
+
+
       <namespace-decl name='noncopyable_'>
       </namespace-decl>
       <namespace-decl name='system'>
-        <namespace-decl name='errc'>
-        </namespace-decl>
+
       </namespace-decl>
       <namespace-decl name='filesystem'>
         <namespace-decl name='path_traits'>
@@ -11237,8 +11180,7 @@
     </namespace-decl>
     <reference-type-def kind='lvalue' type-id='type-id-279' size-in-bits='64' id='type-id-607'/>
     <namespace-decl name='mpl_'>
-      <namespace-decl name='aux'>
-      </namespace-decl>
+
     </namespace-decl>
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
@@ -11561,8 +11503,7 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-127'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-34'/>
@@ -11800,8 +11741,7 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <qualified-type-def type-id='type-id-590' const='yes' id='type-id-613'/>
     <pointer-type-def type-id='type-id-613' size-in-bits='64' id='type-id-596'/>
     <reference-type-def kind='lvalue' type-id='type-id-593' size-in-bits='64' id='type-id-597'/>
@@ -11823,12 +11763,9 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/portability.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__detail'>
-      </namespace-decl>
+
+
+
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-20'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-22'/>
       <function-decl name='operator==&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;' mangled-name='_ZSteqIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_' filepath='/usr/include/c++/4.9/bits/basic_string.h' line='2538' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZSteqIcSt11char_traitsIcESaIcEEbRKSbIT_T0_T1_EPKS3_'>
@@ -11850,8 +11787,7 @@
         <parameter type-id='type-id-90'/>
         <return type-id='type-id-91'/>
       </function-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
     </namespace-decl>
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='519' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-73'/>
@@ -11994,27 +11930,16 @@
       <return type-id='type-id-129'/>
     </function-decl>
     <namespace-decl name='boost'>
-      <namespace-decl name='mpl'>
-        <namespace-decl name='aux'>
-        </namespace-decl>
-        <namespace-decl name='placeholders'>
-        </namespace-decl>
-      </namespace-decl>
-      <namespace-decl name='type_traits'>
-      </namespace-decl>
-      <namespace-decl name='detail'>
-        <namespace-decl name='indirect_traits'>
-        </namespace-decl>
-      </namespace-decl>
+
+
+
       <namespace-decl name='noncopyable_'>
       </namespace-decl>
       <namespace-decl name='system'>
-        <namespace-decl name='errc'>
-        </namespace-decl>
+
       </namespace-decl>
       <namespace-decl name='filesystem'>
-        <namespace-decl name='path_traits'>
-        </namespace-decl>
+
         <function-decl name='native' mangled-name='_ZN5boost10filesystem6nativeERKSs' filepath='src/third_party/boost-1.56.0/libs/filesystem/src/portability.cpp' line='61' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_ZN5boost10filesystem6nativeERKSs'>
           <parameter type-id='type-id-425'/>
           <return type-id='type-id-30'/>
@@ -12040,20 +11965,14 @@
           <return type-id='type-id-30'/>
         </function-decl>
       </namespace-decl>
-      <namespace-decl name='iterators'>
-      </namespace-decl>
-      <namespace-decl name='exception_detail'>
-      </namespace-decl>
-      <namespace-decl name='core'>
-      </namespace-decl>
-      <namespace-decl name='io'>
-      </namespace-decl>
-      <namespace-decl name='type_traits_detail'>
-      </namespace-decl>
+
+
+
+
+
     </namespace-decl>
     <namespace-decl name='mpl_'>
-      <namespace-decl name='aux'>
-      </namespace-decl>
+
     </namespace-decl>
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
@@ -12376,8 +12295,7 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-127'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-34'/>
@@ -12563,8 +12481,7 @@
       <parameter type-id='type-id-191'/>
       <return type-id='type-id-76'/>
     </function-decl>
-    <namespace-decl name='__cxxabiv1'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
@@ -12617,18 +12534,14 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <var-decl name='__dso_handle' type-id='type-id-75' visibility='default'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/unique_path.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__detail'>
-      </namespace-decl>
+
+
+
       <var-decl name='nothrow' type-id='type-id-311' mangled-name='_ZSt7nothrow' visibility='default' filepath='/usr/include/c++/4.9/new' line='101' column='1'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;wchar_t const*, std::basic_string&lt;wchar_t, std::char_traits&lt;wchar_t&gt;, std::allocator&lt;wchar_t&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-247'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;wchar_t*, std::basic_string&lt;wchar_t, std::char_traits&lt;wchar_t&gt;, std::allocator&lt;wchar_t&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-249'/>
@@ -12752,8 +12665,7 @@
         <parameter type-id='type-id-90'/>
         <return type-id='type-id-91'/>
       </function-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
     </namespace-decl>
     <function-decl name='lldiv' filepath='/usr/include/stdlib.h' line='796' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-90'/>
@@ -12788,23 +12700,18 @@
     </function-decl>
     <namespace-decl name='boost'>
       <namespace-decl name='mpl'>
-        <namespace-decl name='aux'>
-        </namespace-decl>
-        <namespace-decl name='placeholders'>
-        </namespace-decl>
+
+
       </namespace-decl>
-      <namespace-decl name='type_traits'>
-      </namespace-decl>
+
       <namespace-decl name='detail'>
-        <namespace-decl name='indirect_traits'>
-        </namespace-decl>
+
         <class-decl name='operator_brackets_proxy&lt;boost::filesystem::path::iterator&gt;' visibility='default' is-declaration-only='yes' id='type-id-322'/>
       </namespace-decl>
       <namespace-decl name='noncopyable_'>
       </namespace-decl>
       <namespace-decl name='system'>
-        <namespace-decl name='errc'>
-        </namespace-decl>
+
       </namespace-decl>
       <namespace-decl name='filesystem'>
         <namespace-decl name='path_traits'>
@@ -12824,21 +12731,15 @@
         </namespace-decl>
       </namespace-decl>
       <class-decl name='enable_if_c&lt;true, void&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='src/third_party/boost-1.56.0/boost/core/enable_if.hpp' line='28' column='1' id='type-id-618'/>
-      <namespace-decl name='iterators'>
-      </namespace-decl>
-      <namespace-decl name='exception_detail'>
-      </namespace-decl>
-      <namespace-decl name='core'>
-      </namespace-decl>
-      <namespace-decl name='io'>
-      </namespace-decl>
-      <namespace-decl name='type_traits_detail'>
-      </namespace-decl>
+
+
+
+
+
     </namespace-decl>
     <reference-type-def kind='lvalue' type-id='type-id-426' size-in-bits='64' id='type-id-617'/>
     <namespace-decl name='mpl_'>
-      <namespace-decl name='aux'>
-      </namespace-decl>
+
     </namespace-decl>
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
@@ -13161,8 +13062,7 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-127'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='setlocale' filepath='/usr/include/locale.h' line='124' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-34'/>
@@ -13348,8 +13248,7 @@
       <parameter type-id='type-id-191'/>
       <return type-id='type-id-76'/>
     </function-decl>
-    <namespace-decl name='__cxxabiv1'>
-    </namespace-decl>
+
     <function-decl name='memchr' mangled-name='memchr' filepath='/usr/include/string.h' line='78' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-75'/>
       <parameter type-id='type-id-36'/>
@@ -13402,15 +13301,12 @@
       <parameter type-id='type-id-34'/>
       <return type-id='type-id-34'/>
     </function-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/utf8_codecvt_facet.cpp' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
-      <namespace-decl name='__debug'>
-      </namespace-decl>
-      <namespace-decl name='__exception_ptr'>
-      </namespace-decl>
+
+
       <class-decl name='codecvt&lt;wchar_t, char, __mbstate_t&gt;' visibility='default' is-declaration-only='yes' id='type-id-229'/>
       <class-decl name='numeric_limits&lt;wchar_t&gt;' size-in-bits='8' is-struct='yes' visibility='default' filepath='/usr/include/c++/4.9/limits' line='650' column='1' id='type-id-619'>
         <data-member access='public' static='yes'>
@@ -13658,8 +13554,7 @@
         <parameter type-id='type-id-90'/>
         <return type-id='type-id-91'/>
       </function-decl>
-      <namespace-decl name='__ops'>
-      </namespace-decl>
+
     </namespace-decl>
     <function-decl name='lldiv' filepath='/usr/include/stdlib.h' line='796' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-90'/>
@@ -14021,8 +13916,7 @@
       <parameter type-id='type-id-36'/>
       <return type-id='type-id-127'/>
     </function-decl>
-    <namespace-decl name='__gnu_debug'>
-    </namespace-decl>
+
     <function-decl name='clearerr' filepath='/usr/include/stdio.h' line='826' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-197'/>
       <return type-id='type-id-7'/>
@@ -14200,8 +14094,7 @@
       <parameter type-id='type-id-191'/>
       <return type-id='type-id-76'/>
     </function-decl>
-    <namespace-decl name=''>
-    </namespace-decl>
+
     <namespace-decl name='boost'>
       <namespace-decl name='filesystem'>
         <namespace-decl name='detail'>
@@ -14328,8 +14221,7 @@
     <qualified-type-def type-id='type-id-623' const='yes' id='type-id-621'/>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='src/third_party/boost-1.56.0/libs/filesystem/src/windows_file_codecvt.cpp' language='LANG_C_plus_plus'>
-    <namespace-decl name='std'>
-    </namespace-decl>
+
     <function-decl name='atexit' filepath='/usr/include/stdlib.h' line='519' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-73'/>
       <return type-id='type-id-36'/>

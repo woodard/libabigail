@@ -28387,8 +28387,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/sanitizer_common/sanitizer_symbolizer_libbacktrace.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='__sanitizer'>
-      <namespace-decl name=''>
-      </namespace-decl>
+
       <var-decl name='SanitizerToolName' type-id='type-id-1' mangled-name='_ZN11__sanitizer17SanitizerToolNameE' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common.h' line='36' column='1'/>
       <function-decl name='InternalAlloc' mangled-name='_ZN11__sanitizer13InternalAllocEmPNS_28SizeClassAllocatorLocalCacheINS_20SizeClassAllocator32ILm0ELy140737488355328ELm16ENS_12SizeClassMapILm17ELm64ELm14EEELm24ENS_15TwoLevelByteMapILy2048ELy4096ENS_20NoOpMapUnmapCallbackEEES5_EEEE' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_allocator_internal.h' line='60' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-3'/>
@@ -28566,8 +28565,7 @@
     </namespace-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/interception/interception_linux.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='__sanitizer'>
-    </namespace-decl>
+
     <namespace-decl name='__interception'>
       <function-decl name='GetRealFunctionAddress' mangled-name='_ZN14__interception22GetRealFunctionAddressEPKcPmmm' filepath='../../.././libsanitizer/interception/interception_linux.cc' line='19' column='1' visibility='default' binding='global' size-in-bits='64'>
         <parameter type-id='type-id-1'/>
@@ -28595,8 +28593,7 @@
     </function-decl>
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/interception/interception_type_test.cc' language='LANG_C_plus_plus'>
-    <namespace-decl name='__sanitizer'>
-    </namespace-decl>
+
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='../../.././libsanitizer/libbacktrace/../../libbacktrace/atomic.c' language='LANG_C89'>
     <var-decl name='stdin' type-id='type-id-502' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
