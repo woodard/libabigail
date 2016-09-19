@@ -41,12 +41,16 @@ using std::ofstream;
 using std::cerr;
 using abigail::tests::get_build_dir;
 using abigail::dwarf_reader::read_corpus_from_elf;
+using abigail::dwarf_reader::read_context;
+using abigail::dwarf_reader::read_context_sptr;
+using abigail::dwarf_reader::create_read_context;
 
 /// This is an aggregate that specifies where a test shall get its
 /// input from, and where it shall write its ouput to.
 struct InOutSpec
 {
   const char* in_elf_path;
+  const char* in_suppr_spec_path;
   const char* in_abi_path;
   const char* out_abi_path;
 };// end struct InOutSpec
@@ -56,126 +60,162 @@ InOutSpec in_out_specs[] =
 {
   {
     "data/test-read-dwarf/test0",
+    "",
     "data/test-read-dwarf/test0.abi",
     "output/test-read-dwarf/test0.abi"
   },
   {
     "data/test-read-dwarf/test1",
+    "",
     "data/test-read-dwarf/test1.abi",
     "output/test-read-dwarf/test1.abi"
   },
   {
     "data/test-read-dwarf/test2.so",
+    "",
     "data/test-read-dwarf/test2.so.abi",
     "output/test-read-dwarf/test2.so.abi"
   },
   {
     "data/test-read-dwarf/test3.so",
+    "",
     "data/test-read-dwarf/test3.so.abi",
     "output/test-read-dwarf/test3.so.abi"
   },
   {
     "data/test-read-dwarf/test4.so",
+    "",
     "data/test-read-dwarf/test4.so.abi",
     "output/test-read-dwarf/test4.so.abi"
   },
   {
     "data/test-read-dwarf/test5.o",
+    "",
     "data/test-read-dwarf/test5.o.abi",
     "output/test-read-dwarf/test5.o.abi"
   },
   {
     "data/test-read-dwarf/test6.so",
+    "",
     "data/test-read-dwarf/test6.so.abi",
     "output/test-read-dwarf/test6.so.abi"
   },
   {
     "data/test-read-dwarf/test7.so",
+    "",
     "data/test-read-dwarf/test7.so.abi",
     "output/test-read-dwarf/test7.so.abi"
   },
   {
     "data/test-read-dwarf/test8-qualified-this-pointer.so",
+    "",
     "data/test-read-dwarf/test8-qualified-this-pointer.so.abi",
     "output/test-read-dwarf/test8-qualified-this-pointer.so.abi"
   },
   {
     "data/test-read-dwarf/test9-pr18818-clang.so",
+    "",
     "data/test-read-dwarf/test9-pr18818-clang.so.abi",
-    "output/test-read-dwarf/test9-pr18818-clang.so.abi",
+    "output/test-read-dwarf/test9-pr18818-clang.so.abi"
   },
   {
     "data/test-read-dwarf/test10-pr18818-gcc.so",
+    "",
     "data/test-read-dwarf/test10-pr18818-gcc.so.abi",
-    "output/test-read-dwarf/test10-pr18818-gcc.so.abi",
+    "output/test-read-dwarf/test10-pr18818-gcc.so.abi"
   },
   {
     "data/test-read-dwarf/test11-pr18828.so",
+    "",
     "data/test-read-dwarf/test11-pr18828.so.abi",
     "output/test-read-dwarf/test11-pr18828.so.abi",
   },
   {
     "data/test-read-dwarf/test12-pr18844.so",
+    "",
     "data/test-read-dwarf/test12-pr18844.so.abi",
     "output/test-read-dwarf/test12-pr18844.so.abi",
   },
   {
     "data/test-read-dwarf/test13-pr18894.so",
+    "",
     "data/test-read-dwarf/test13-pr18894.so.abi",
     "output/test-read-dwarf/test13-pr18894.so.abi",
   },
   {
     "data/test-read-dwarf/test14-pr18893.so",
+    "",
     "data/test-read-dwarf/test14-pr18893.so.abi",
     "output/test-read-dwarf/test14-pr18893.so.abi",
   },
   {
     "data/test-read-dwarf/test15-pr18892.so",
+    "",
     "data/test-read-dwarf/test15-pr18892.so.abi",
     "output/test-read-dwarf/test15-pr18892.so.abi",
   },
   {
     "data/test-read-dwarf/test16-pr18904.so",
+    "",
     "data/test-read-dwarf/test16-pr18904.so.abi",
     "output/test-read-dwarf/test16-pr18904.so.abi",
   },
   {
     "data/test-read-dwarf/test17-pr19027.so",
+    "",
     "data/test-read-dwarf/test17-pr19027.so.abi",
     "output/test-read-dwarf/test17-pr19027.so.abi",
   },
   {
     "data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so",
+    "",
     "data/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi",
     "output/test-read-dwarf/test18-pr19037-libvtkRenderingLIC-6.1.so.abi",
   },
   {
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so",
+    "",
     "data/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
     "output/test-read-dwarf/test19-pr19023-libtcmalloc_and_profiler.so.abi",
   },
   {
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so",
+    "",
     "data/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
     "output/test-read-dwarf/test20-pr19025-libvtkParallelCore-6.1.so.abi",
   },
   {
     "data/test-read-dwarf/test21-pr19092.so",
+    "",
     "data/test-read-dwarf/test21-pr19092.so.abi",
     "output/test-read-dwarf/test21-pr19092.so.abi",
   },
   {
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so",
+    "",
     "data/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
     "output/test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi",
   },
   {
     "data/test-read-dwarf/libtest23.so",
+    "",
     "data/test-read-dwarf/libtest23.so.abi",
     "output/test-read-dwarf/libtest23.so.abi",
   },
+  {
+    "data/test-read-dwarf/libtest24-drop-fns.so",
+    "data/test-read-dwarf/test24-drop-fns-0.suppr",
+    "data/test-read-dwarf/libtest24-drop-fns.so.abi",
+    "output/test-read-dwarf/libtest24-drop-fns.so.abi",
+  },
+  {
+    "data/test-read-dwarf/libtest24-drop-fns.so",
+    "",
+    "data/test-read-dwarf/libtest24-drop-fns-2.so.abi",
+    "output/test-read-dwarf/libtest24-drop-fns-2.so.abi",
+  },
   // This should be the last entry.
-  {NULL, NULL, NULL}
+  {NULL, NULL, NULL, NULL}
 };
 
 // The global pointer to the testsuite paths.
@@ -192,10 +232,39 @@ const string out_abi_base = string(get_build_dir()) + "/tests/";
 const string in_elf_base  = string(abigail::tests::get_src_dir()) + "/tests/";
 const string in_abi_base = in_elf_base;
 
+using abigail::suppr::suppression_sptr;
+using abigail::suppr::suppressions_type;
+using abigail::suppr::read_suppressions;
+
+/// Set the suppression specification to use when reading the ELF binary.
+///
+/// @param read_ctxt the context used to read the ELF binary.
+///
+/// @param path the path to the suppression specification to read.
+static void
+set_suppressions(read_context& read_ctxt, const string& path)
+{
+  suppressions_type supprs;
+  read_suppressions(path, supprs);
+  add_read_context_suppressions(read_ctxt, supprs);
+}
+
+/// Read the current entry of the global in_out_specs variable and
+/// according to the data it contains, read an ELF binary (possibly
+/// taking its accompanying suppression specification into account),
+/// serialize its ABI into the .abi format, compare that .abi against
+/// a reference one using GNU diff.
+///
+/// Also run abidw --abidiff against the ELF binary specified by the
+/// current entry of in_out_specs.
+///
+/// Note that the current entry of in_out_specs is the one pointed to
+/// by the iospec pointer.  This function increments that pointer
+/// after each invocation.
 void
 handle_in_out_spec(void)
 {
-  string in_elf_path, in_abi_path, out_abi_path;
+  string in_elf_path, in_abi_path, in_suppr_spec_path, out_abi_path;
   abigail::ir::environment_sptr env;
   InOutSpec *s;
 
@@ -211,15 +280,22 @@ handle_in_out_spec(void)
     if (!s)
       pthread_exit(NULL);
     in_elf_path = in_elf_base + s->in_elf_path;
+    if (s->in_suppr_spec_path)
+      in_suppr_spec_path = in_elf_base + s->in_suppr_spec_path;
+    else
+      in_suppr_spec_path.clear();
+
     env.reset(new abigail::ir::environment);
     abigail::dwarf_reader::status status =
       abigail::dwarf_reader::STATUS_UNKNOWN;
-    abigail::corpus_sptr corp =
-      read_corpus_from_elf(in_elf_path,
-			   /*debug_info_root_path=*/0,
-			   env.get(),
-			   /*load_all_types=*/false,
-			   status);
+    read_context_sptr ctxt = create_read_context(in_elf_path,
+						 /*debug_info_root_path=*/0,
+						 env.get());
+    assert(ctxt);
+    if (!in_suppr_spec_path.empty())
+      set_suppressions(*ctxt, in_suppr_spec_path);
+
+    abigail::corpus_sptr corp = read_corpus_from_elf(*ctxt, status);
     if (!corp)
       {
 	cerr << "failed to read " << in_elf_path << "\n";

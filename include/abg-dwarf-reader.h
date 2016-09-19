@@ -29,6 +29,7 @@
 #include <ostream>
 #include <elfutils/libdwfl.h>
 #include "abg-corpus.h"
+#include "abg-suppression.h"
 
 #ifndef __ABG_DWARF_READER_H__
 #define __ABG_DWARF_READER_H__
@@ -98,9 +99,12 @@ create_read_context(const std::string&	elf_path,
 		    ir::environment*	environment,
 		    bool		read_all_types = false);
 
+void
+add_read_context_suppressions(read_context& ctxt,
+			      const suppr::suppressions_type& supprs);
+
 corpus_sptr
-read_corpus_from_elf(read_context&	ctxt,
-		     status&);
+read_corpus_from_elf(read_context& ctxt, status& stat);
 
 corpus_sptr
 read_corpus_from_elf(const std::string& elf_path,

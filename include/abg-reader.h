@@ -31,6 +31,7 @@
 
 #include <istream>
 #include "abg-corpus.h"
+#include "abg-suppression.h"
 
 namespace abigail
 {
@@ -52,6 +53,17 @@ translation_unit_sptr
 read_translation_unit_from_istream(std::istream*	in,
 				   environment*	env);
 
+class read_context;
+
+/// A convenience typedef for a shared pointer to read_context.
+typedef shared_ptr<read_context> read_context_sptr;
+
+read_context_sptr
+create_native_xml_read_context(const string& path, environment *env);
+
+read_context_sptr
+create_native_xml_read_context(std::istream* in, environment* env);
+
 abigail::corpus_sptr
 read_corpus_from_file(const string& path);
 
@@ -69,6 +81,13 @@ read_corpus_from_native_xml(std::istream* in,
 corpus_sptr
 read_corpus_from_native_xml_file(const string& path,
 				 environment*  env);
+
+corpus_sptr
+read_corpus_from_input(read_context& ctxt);
+
+void
+add_read_context_suppressions(read_context& ctxt,
+			      const suppr::suppressions_type& supprs);
 
 }//end xml_reader
 }//end namespace abigail

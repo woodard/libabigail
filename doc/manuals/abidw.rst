@@ -56,6 +56,21 @@ Options
     builds the internal representation of the ABI and exits.  This
     option is usually useful for debugging purposes.
 
+  * ``--suppressions | suppr`` <*path-to-suppression-specifications-file*>
+
+    Use a :ref:`suppression specification <suppr_spec_label>` file
+    located at *path-to-suppression-specifications-file*.  Note that
+    this option can appear multiple times on the command line.  In
+    that case, all of the provided suppression specification files are
+    taken into account.  ABI artifacts matched by the suppression
+    specifications are suppressed from the output of this tool.
+
+  * ``--headers-dir | --hd`` <headers-directory-path-1>
+
+    Specifies where to find the public headers of the first shared
+    library that the tool has to consider.  The tool will thus filter
+    out types that are not defined in public headers.
+
   * ``--check-alternate-debug-info`` <*elf-path*>
 
     If the debug info for the file *elf-path* contains a reference to

@@ -61,6 +61,21 @@ Options
     Do not display anything on standard output.  The return code of
     the command is the only way to know if the command succeeded.
 
+  * ``--suppressions | suppr`` <*path-to-suppression-specifications-file*>
+
+    Use a :ref:`suppression specification <suppr_spec_label>` file
+    located at *path-to-suppression-specifications-file*.  Note that
+    this option can appear multiple times on the command line.  In
+    that case, all of the provided suppression specification files are
+    taken into account.  ABI artifacts matched by the suppression
+    specifications are suppressed from the output of this tool.
+
+  * ``--headers-dir | --hd`` <headers-directory-path-1>
+
+    Specifies where to find the public headers of the first shared
+    library that the tool has to consider.  The tool will thus filter
+    out types that are not defined in public headers.
+
   * ``--stdin | --``
 
     Read the input content from standard input.

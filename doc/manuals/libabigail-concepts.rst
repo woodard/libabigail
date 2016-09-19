@@ -11,6 +11,8 @@ An ABI artifact is a relevant part of the ABI of a shared library or
 program.  Examples of ABI artifacts are exported types, variables,
 functions, or `ELF`_ symbols exported by a shared library.
 
+The set of ABI artifact for a binary is called an ABI Corpus.
+
 .. _harmfulchangeconcept_label:
 
 Harmful changes
@@ -133,6 +135,40 @@ targeted at the Ini File parser.
 
 So, in short, to escape a character in a regular expression, always
 prefix the character with the ``\\`` sequence.
+
+Modus operandi
+^^^^^^^^^^^^^^
+
+
+Suppression specifications can be applied at two different points of
+the processing pipeline of libabigail.
+
+.. _late_suppression_mode_label:
+
+In the default operating mode called "late suppression mode",
+suppression specifications are applied to the result of comparing the
+in-memory internal representations of two ABIs.  In this mode, if an
+ABI artifact matches a suppression specification, its changes are not
+mentioned in the ABI change report.  The internal representation of
+the "suppressed" changed ABI artifact is still present in memory; it
+is just not mentioned in the ABI change report.  The change report can
+still mention statistics about the number of changed ABI artifacts
+that were suppressed.
+
+.. _early_suppression_mode_label:
+
+There is another operating mode called the "early suppression mode"
+where suppression specifications are applied during the construction
+of the in-memory internal representation of a given ABI.  In that
+mode, if an ABI artifact matches a suppression specification, no
+in-memory internal representation is built for it.  As a result, no
+change about the matched ABI artifact is going to be mentioned in the
+ABI change report and no statistic about the number of suppressed ABI
+changes is available.  Also, please note that because suppressed ABI
+artifacts are removed from the in-memory internal representation in
+this mode, the amount memory used by the internal representation is
+potentially smaller than the memory consumption in the late
+suppression mode.
 
 Sections
 ^^^^^^^^
@@ -492,6 +528,26 @@ The potential properties of this sections are listed below:
  types accessed either directly or through pointers
  <example_accessed_through_label>`.
 
+* ``drop``
+
+ Usage:
+
+   ``drop`` ``=`` yes | no
+
+ If a type is matched by a suppression specification which contains
+ the "drop" property set to "yes" (or to "true") then the type is not
+ even going to be represented in the internal representation of the
+ ABI being analyzed.  This property makes its enclosing suppression
+ specification to be applied in the :ref:`early suppression
+ specification mode <early_suppression_mode_label>`.  The net effect
+ is that it potentially reduces the memory used to represent the ABI
+ being analyzed.
+
+ Please note that for this property to be effective, the enclosing
+ suppression specification must have at least one of the following
+ properties specified: ``name_regexp``, ``name``, ``name_regexp``,
+ ``source_location_not_in`` or ``source_location_not_regexp``.
+
  .. _suppr_label_property_label:
 
 * ``label``
@@ -515,8 +571,8 @@ one of the following properties must be provided:
 
   ``label``, ``file_name_regexp``, ``file_name_not_regexp``,
   ``soname_regexp``, ``soname_not_regexp``, ``name``, ``name_regexp``,
-  ``parameter``, ``return_type_name``, ``symbol_name``,
-  ``symbol_name_regexp``, ``symbol_version``,
+  ``name_not_regexp``, ``parameter``, ``return_type_name``,
+   ``symbol_name``, ``symbol_name_regexp``, ``symbol_version``,
   ``symbol_version_regexp``.
 
 If none of the following properties are provided, then the
@@ -602,6 +658,19 @@ The potential properties of this sections are:
  at least one of the aliases names, then it must match the names of
  all of the aliases of the function for the directive to actually
  suppress the diff reports for said function.
+
+
+* ``name_not_regexp``
+
+ Usage:
+
+   ``name_not_regexp`` ``=`` <:ref:`regular-expression <suppr_regexp_label>`>
+
+ Suppresses change reports involving functions whose names don't match
+ the regular expression specified as value of this property.
+
+ The rules for functions that have several symbol names are the same
+ rules as for the ``name_regexp`` property above.
 
   .. _suppr_change_kind_property_label:
 
@@ -749,6 +818,26 @@ The potential properties of this sections are:
 
  Suppresses change reports involving functions whose symbol version
  matches the regular expression specified as value of this property.
+
+* ``drop``
+
+ Usage:
+
+   ``drop`` ``=`` yes | no
+
+ If a function is matched by a suppression specification which
+ contains the "drop" property set to "yes" (or to "true") then the
+ function is not even going to be represented in the internal
+ representation of the ABI being analyzed.  This property makes its
+ enclosing suppression specification to be applied in the :ref:`early
+ suppression specification mode <early_suppression_mode_label>`.  The
+ net effect is that it potentially reduces the memory used to
+ represent the ABI being analyzed.
+
+ Please note that for this property to be effective, the enclosing
+ suppression specification must have at least one of the following
+ properties specified: ``name_regexp``, ``name``, ``name_regexp``,
+ ``source_location_not_in`` or ``source_location_not_regexp``.
 
 ``[suppress_variable]``
 $$$$$$$$$$$$$$$$$$$$$$$$

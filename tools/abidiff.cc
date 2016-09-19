@@ -137,8 +137,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --version|-v  display program version information and exit\n"
     << " --debug-info-dir1|--d1 <path> the root for the debug info of file1\n"
     << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
-    << " --headers-dir1|--hd1 <path>  the path headers of file1\n"
-    << " --headers-dir2|--hd2 <path>  the path headers of file2\n"
+    << " --headers-dir1|--hd1 <path>  the path to headers of file1\n"
+    << " --headers-dir2|--hd2 <path>  the path to headers of file2\n"
     << " --stat  only display the diff stats\n"
     << " --symtabs  only display the symbol tables of the corpora\n"
     << " --no-default-suppression  don't load any "
@@ -566,6 +566,34 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
   ctxt->dump_diff_tree(opts.dump_diff_tree);
 }
 
+/// Set suppression specifications to the @p read_context used to load
+/// the ABI corpus from the ELF/DWARF file.
+///
+/// These suppression specifications are going to be applied to drop
+/// some ABI artifacts on the floor (while reading the ELF/DWARF file
+/// or the native XML ABI file) and thus minimize the size of the
+/// resulting ABI corpus.
+///
+/// @param read_ctxt the read context to apply the suppression
+/// specifications to.  Note that the type of this parameter is
+/// generic (class template) because in practise, it can be either an
+/// abigail::dwarf_reader::read_context type or an
+/// abigail::xml_reader::read_context type.
+///
+/// @param opts the options where to get the suppression
+/// specifications from.
+template<class ReadContextType>
+static void
+set_suppressions(ReadContextType& read_ctxt, const options& opts)
+{
+  suppressions_type supprs;
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    read_suppressions(*i, supprs);
+  add_read_context_suppressions(read_ctxt, supprs);
+}
+
 /// Set the regex patterns describing the functions to drop from the
 /// symbol table of a given corpus.
 ///
@@ -715,18 +743,22 @@ main(int argc, char* argv[])
 							 &di_dir1, env.get(),
 							 /*read_all_types=*/false);
 	    assert(ctxt);
-	    abigail::dwarf_reader::set_show_stats
-	      (*ctxt, opts.show_stats);
 
+	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
+	    set_suppressions(*ctxt, opts);
 	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
-
 	    c1 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c1_status);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
-	  c1 =
-	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file1,
+	  {
+	    abigail::xml_reader::read_context_sptr ctxt =
+	      abigail::xml_reader::create_native_xml_read_context(opts.file1,
 								  env.get());
+	    assert(ctxt);
+	    set_suppressions(*ctxt, opts);
+	    c1 = abigail::xml_reader::read_corpus_from_input(*ctxt);
+	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE
@@ -761,17 +793,22 @@ main(int argc, char* argv[])
 							 &di_dir2, env.get(),
 							 /*read_all_types=*/false);
 	    assert(ctxt);
-	    abigail::dwarf_reader::set_show_stats
-	      (*ctxt, opts.show_stats);
+	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
 	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
+	    set_suppressions(*ctxt, opts);
 
 	    c2 = abigail::dwarf_reader::read_corpus_from_elf(*ctxt, c2_status);
 	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
-	  c2 =
-	    abigail::xml_reader::read_corpus_from_native_xml_file(opts.file2,
+	  {
+	    abigail::xml_reader::read_context_sptr ctxt =
+	      abigail::xml_reader::create_native_xml_read_context(opts.file2,
 								  env.get());
+	    assert(ctxt);
+	    set_suppressions(*ctxt, opts);
+	    c2 = abigail::xml_reader::read_corpus_from_input(*ctxt);
+	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #ifdef WITH_ZIP_ARCHIVE

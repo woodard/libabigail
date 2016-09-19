@@ -58,15 +58,20 @@ class suppression_base
   // Forbid default constructor
   suppression_base();
 
-protected:
+public:
   priv_sptr priv_;
 
-public:
   suppression_base(const string& label);
 
   suppression_base(const string& label,
-		  const string& file_name_regex_str,
-		  const string& file_name_not_regex_str);
+		   const string& file_name_regex_str,
+		   const string& file_name_not_regex_str);
+
+  bool
+  get_drops_artifact_from_ir() const;
+
+  void
+  set_drops_artifact_from_ir(bool) const;
 
   bool
   get_is_artificial() const;
@@ -104,10 +109,6 @@ public:
   const string&
   get_soname_not_regex_str() const;
 
-  bool names_of_binaries_match(const diff_context& context) const;
-
-  bool sonames_of_binaries_match(const diff_context& context) const;
-
   virtual bool
   suppresses_diff(const diff*) const = 0;
 
@@ -139,12 +140,12 @@ class type_suppression : public suppression_base
   class priv;
   typedef shared_ptr<priv> priv_sptr;
 
-  priv_sptr priv_;
-
   // Forbid this;
   type_suppression();
 
 public:
+
+  priv_sptr priv_;
 
   /// The kind of the type the current type suppression is supposed to
   /// be about.
@@ -259,6 +260,13 @@ public:
   bool
   suppresses_type(const type_base_sptr& type,
 		  const diff_context_sptr& ctxt) const;
+
+  bool
+  suppresses_type(const type_base_sptr& type) const;
+
+  bool
+  suppresses_type(const type_base_sptr& type,
+		  const scope_decl* type_scope) const;
 }; // end type_suppression
 
 type_suppression_sptr
@@ -390,16 +398,15 @@ typedef vector<function_suppression_sptr> function_suppressions_type;
 /// the purpose of reporting.
 class function_suppression : public suppression_base
 {
-  class priv;
+  struct priv;
   typedef shared_ptr<priv> priv_sptr;
-
-  priv_sptr priv_;
 
   // Forbid this.
   function_suppression();
 
 public:
 
+  priv_sptr priv_;
   class parameter_spec;
 
   /// Convenience typedef for shared_ptr of @ref parameter_spec.
@@ -451,16 +458,22 @@ public:
   set_change_kind(change_kind k);
 
   const string&
-  get_function_name() const;
+  get_name() const;
 
   void
-  set_function_name(const string&);
+  set_name(const string&);
 
   const string&
-  get_function_name_regex_str() const;
+  get_name_regex_str() const;
 
   void
-  set_function_name_regex_str(const string&);
+  set_name_regex_str(const string&);
+
+  const string&
+  get_name_not_regex_str() const;
+
+  void
+  set_name_not_regex_str(const string&);
 
   const string&
   get_return_type_name() const;
@@ -605,7 +618,6 @@ class variable_suppression : public suppression_base
 {
 public:
 
-
   /// The kind of change the current variable suppression should apply
   /// to.
   enum change_kind
@@ -627,12 +639,13 @@ public:
   };
 
 private:
-  class priv;
+  struct priv;
   typedef shared_ptr<priv> priv_sptr;
+
+public:
 
   priv_sptr priv_;
 
-public:
   variable_suppression(const string& label,
 		       const string& name,
 		       const string& name_regex_str,
@@ -665,6 +678,12 @@ public:
 
   void
   set_name_regex_str(const string&);
+
+  const string&
+  get_name_not_regex_str() const;
+
+  void
+  set_name_not_regex_str(const string&);
 
   const string&
   get_symbol_name() const;

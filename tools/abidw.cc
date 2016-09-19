@@ -34,6 +34,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <tr1/memory>
 #include "abg-config.h"
 #include "abg-tools-utils.h"
@@ -48,10 +49,20 @@ using std::cerr;
 using std::cout;
 using std::ostream;
 using std::ofstream;
+using std::vector;
 using std::tr1::shared_ptr;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::temp_file;
 using abigail::tools_utils::temp_file_sptr;
+using abigail::tools_utils::check_file;
+using abigail::ir::environment_sptr;
+using abigail::ir::environment;
+using abigail::corpus;
+using abigail::corpus_sptr;
+using abigail::translation_units;
+using abigail::suppr::suppression_sptr;
+using abigail::suppr::suppressions_type;
+using abigail::suppr::read_suppressions;
 using abigail::comparison::corpus_diff;
 using abigail::comparison::corpus_diff_sptr;
 using abigail::comparison::compute_diff;
@@ -59,6 +70,11 @@ using abigail::comparison::diff_context_sptr;
 using abigail::comparison::diff_context;
 using abigail::xml_writer::write_corpus_to_native_xml;
 using abigail::xml_reader::read_corpus_from_native_xml_file;
+using abigail::dwarf_reader::read_context;
+using abigail::dwarf_reader::read_context_sptr;
+using abigail::dwarf_reader::read_corpus_from_elf;
+using abigail::dwarf_reader::create_read_context;
+using namespace abigail;
 
 struct options
 {
@@ -66,6 +82,8 @@ struct options
   string		in_file_path;
   string		out_file_path;
   shared_ptr<char>	di_root_path;
+  string		headers_dir;
+  vector<string>	suppression_paths;
   bool			display_version;
   bool			check_alt_debug_info_path;
   bool			show_base_name_alt_debug_info_path;
@@ -100,8 +118,10 @@ display_usage(const string& prog_name, ostream& out)
     << "  --help|-h  display this message\n"
     << "  --version|-v  display program version information and exit\n"
     << "  --debug-info-dir|-d <dir-path>  look for debug info under 'dir-path'\n"
+    << "  --headers-dir|--hd <patch> the path to headers of the elf file\n"
     << "  --out-file <file-path>  write the output to 'file-path'\n"
     << "  --noout  do not emit anything after reading the binary\n"
+    << "  --suppressions|--suppr <path> specify a suppression file\n"
     << "  --no-architecture  do not emit architecture info in the output\n"
     << "  --no-show-locs  do now show location information\n"
     << "  --check-alternate-debug-info <elf-path>  check alternate debug info "
@@ -147,6 +167,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--headers-dir")
+	       || !strcmp(argv[i], "--hd"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.headers_dir = argv[j];
+	  ++i;
+	}
       else if (!strcmp(argv[i], "--out-file"))
 	{
 	  if (argc <= i + 1
@@ -155,6 +184,15 @@ parse_command_line(int argc, char* argv[], options& opts)
 	    return false;
 
 	  opts.out_file_path = argv[i + 1];
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--suppressions")
+	       || !strcmp(argv[i], "--suppr"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.suppression_paths.push_back(argv[j]);
 	  ++i;
 	}
       else if (!strcmp(argv[i], "--noout"))
@@ -214,6 +252,54 @@ set_diff_context(diff_context_sptr& ctxt)
      | abigail::comparison::HARMLESS_DECL_NAME_CHANGE_CATEGORY);
 }
 
+/// Check that the suppression specification files supplied are
+/// present.  If not, emit an error on stderr.
+///
+/// @param opts the options instance to use.
+///
+/// @return true if all suppression specification files are present,
+/// false otherwise.
+static bool
+maybe_check_suppression_files(const options& opts)
+{
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    if (!check_file(*i, cerr, "abidiff"))
+      return false;
+
+  return true;
+}
+
+/// Set suppression specifications to the @p read_context used to load
+/// the ABI corpus from the ELF/DWARF file.
+///
+/// These suppression specifications are going to be applied to drop
+/// some ABI artifacts on the floor (while reading the ELF/DWARF file)
+/// and thus minimize the size of the resulting ABI corpus.
+///
+/// @param read_ctxt the read context to apply the suppression
+/// specifications to.
+///
+/// @param opts the options where to get the suppression
+/// specifications from.
+static void
+set_suppressions(read_context& read_ctxt, const options& opts)
+{
+  suppressions_type supprs;
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    read_suppressions(*i, supprs);
+
+  suppression_sptr suppr =
+    abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dir);
+  if (suppr)
+    supprs.push_back(suppr);
+
+  add_read_context_suppressions(read_ctxt, supprs);
+}
+
 int
 main(int argc, char* argv[])
 {
@@ -242,6 +328,9 @@ main(int argc, char* argv[])
   if (!abigail::tools_utils::check_file(opts.in_file_path, cerr, argv[0]))
     return 1;
 
+  if (!maybe_check_suppression_files(opts))
+    return 1;
+
   abigail::tools_utils::file_type type =
     abigail::tools_utils::guess_file_type(opts.in_file_path);
   if (type != abigail::tools_utils::FILE_TYPE_ELF
@@ -252,17 +341,6 @@ main(int argc, char* argv[])
       return 1;
     }
 
-  using abigail::ir::environment_sptr;
-  using abigail::ir::environment;
-  using abigail::corpus;
-  using abigail::corpus_sptr;
-  using abigail::translation_units;
-  using abigail::dwarf_reader::read_context;
-  using abigail::dwarf_reader::read_context_sptr;
-  using abigail::dwarf_reader::read_corpus_from_elf;
-  using abigail::dwarf_reader::create_read_context;
-  using namespace abigail;
-
   char* p = opts.di_root_path.get();
   environment_sptr env(new environment);
   corpus_sptr corp;
@@ -270,7 +348,9 @@ main(int argc, char* argv[])
 					    &p, env.get(),
 					    opts.load_all_types);
   read_context& ctxt = *c;
+
   set_show_stats(ctxt, opts.show_stats);
+  set_suppressions(ctxt, opts);
   abigail::dwarf_reader::set_do_log(ctxt, opts.do_log);
 
   if (opts.check_alt_debug_info_path)
@@ -306,6 +386,7 @@ main(int argc, char* argv[])
 
   dwarf_reader::status s = dwarf_reader::STATUS_UNKNOWN;
   corp = read_corpus_from_elf(ctxt, s);
+  c.reset();
   if (!corp)
     {
       if (s == dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND)

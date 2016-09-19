@@ -47,6 +47,8 @@
 #include <ostream>
 #include <sstream>
 
+#include "abg-suppression-priv.h"
+
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -2091,6 +2093,7 @@ elf_file_type(Elf* elf)
 class read_context
 {
   environment*			env_;
+  suppr::suppressions_type	supprs_;
   unsigned short		dwarf_version_;
   Dwfl_Callbacks		offline_callbacks_;
   dwfl_sptr			handle_;
@@ -2270,6 +2273,22 @@ public:
   void
   env(ir::environment* env)
   {env_ = env;}
+
+  /// Getter of the suppression specifications to be used during
+  /// ELF/DWARF parsing.
+  ///
+  /// @return the suppression specifications.
+  const suppr::suppressions_type&
+  get_suppressions() const
+  {return supprs_;}
+
+  /// Getter of the suppression specifications to be used during
+  /// ELF/DWARF parsing.
+  ///
+  /// @return the suppression specifications.
+  suppr::suppressions_type&
+  get_suppressions()
+  {return supprs_;}
 
   /// Getter for the callbacks of the Dwarf Front End library of
   /// elfutils that is used by this reader to read dwarf.
@@ -2479,7 +2498,7 @@ public:
   /// @return true iff the source of the DIE could be determined and
   /// returned.
   bool
-  get_die_source(Dwarf_Die *die, die_source &source)
+  get_die_source(Dwarf_Die *die, die_source &source) const
   {
     assert(die);
     return get_die_source(*die, source);
@@ -2500,7 +2519,7 @@ public:
   /// @return true iff the source of the DIE could be determined and
   /// returned.
   bool
-  get_die_source(Dwarf_Die &die, die_source &source)
+  get_die_source(Dwarf_Die &die, die_source &source) const
   {
     Dwarf_Die cu_die;
     Dwarf_Die cu_kind;
@@ -3354,6 +3373,16 @@ public:
   /// @param source where the DIEs are from.
   ///
   /// @return the map.
+  const tu_die_imported_unit_points_map_type&
+  tu_die_imported_unit_points_map(die_source source) const
+  {return const_cast<read_context*>(this)->tu_die_imported_unit_points_map(source);}
+
+  /// Getter for the map that associates a translation unit DIE to the
+  /// vector of imported unit points that it contains.
+  ///
+  /// @param source where the DIEs are from.
+  ///
+  /// @return the map.
   tu_die_imported_unit_points_map_type&
   tu_die_imported_unit_points_map(die_source source)
   {
@@ -3434,16 +3463,25 @@ public:
   type_section_die_parent_map()
   {return type_section_die_parent_map_;}
 
+  /// Getter of the current translation unit.
+  ///
+  /// @return the current translation unit being constructed.
   const translation_unit_sptr
-  current_translation_unit() const
+  cur_transl_unit() const
   {return cur_tu_;}
 
-  translation_unit_sptr
-  cur_tu()
+  /// Getter of the current translation unit.
+  ///
+  /// @return the current translation unit being constructed.
+  translation_unit_sptr&
+  cur_transl_unit()
   {return cur_tu_;}
 
+  /// Setter of the current translation unit.
+  ///
+  /// @param tu the current translation unit being constructed.
   void
-  cur_tu(translation_unit_sptr tu)
+  cur_transl_unit(translation_unit_sptr tu)
   {
     if (tu)
       cur_tu_ = tu;
@@ -3462,9 +3500,8 @@ public:
   {
     if (scope_stack().empty())
       {
-	if (cur_tu())
-	  scope_stack().push
-	    (cur_tu()->get_global_scope().get());
+	if (cur_transl_unit())
+	  scope_stack().push(cur_transl_unit()->get_global_scope().get());
       }
     return scope_stack().top();
   }
@@ -4737,6 +4774,186 @@ public:
     return true;
   }
 
+  /// Tests if a suppression specification can match ABI artifacts
+  /// coming from the binary being analyzed.
+  ///
+  /// This tests if the suppression matches the soname of and binary
+  /// name of the ELF binary being analyzed.
+  ///
+  /// @param s the suppression specification to consider.
+  bool
+  suppression_can_match(const suppr::suppression_base& s) const
+  {
+    if (s.priv_->matches_soname(dt_soname())
+	&& s.priv_->matches_binary_name(elf_path()))
+      return true;
+    return false;
+  }
+
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its linkage
+  /// name (symbol name).
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function linkage name
+  ///
+  /// @param fn_linkage_name the linkage name of the function of interest.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose linkage name is @p fn_linkage_name.
+  bool
+  suppression_matches_function_sym_name(const suppr::function_suppression_sptr& s,
+					const string& fn_linkage_name) const
+  {
+    if (!s)
+      return false;
+    return suppression_matches_function_sym_name(*s,fn_linkage_name);
+  }
+
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its linkage
+  /// name (symbol name).
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function linkage name
+  ///
+  /// @param fn_linkage_name the linkage name of the function of interest.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose linkage name is @p fn_linkage_name.
+  bool
+  suppression_matches_function_sym_name(const suppr::function_suppression& s,
+					const string& fn_linkage_name) const
+  {
+    if (!suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_function_sym_name(s, fn_linkage_name);
+  }
+
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its name.
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function name.
+  ///
+  /// @param fn_name the name of the function of interest.  Note that
+  /// this name must be *non* qualified.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose name is @p fn_name.
+  bool
+  suppression_matches_function_name(const suppr::function_suppression_sptr& s,
+				    const string& fn_name) const
+  {
+    if (!s)
+      return false;
+    return suppression_matches_function_name(*s, fn_name);
+  }
+
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its name.
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function name.
+  ///
+  /// @param fn_name the name of the function of interest.  Note that
+  /// this name must be *non* qualified.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose name is @p fn_name.
+  bool
+  suppression_matches_function_name(const suppr::function_suppression& s,
+				    const string& fn_name) const
+  {
+    if (!suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_function_name(s, fn_name);
+  }
+
+  /// Test whether if a given variable suppression specification
+  /// matches a variable denoted by its name.
+  ///
+  /// @param s the variable suppression specification to consider.
+  ///
+  /// @param var_name the name of the variable to consider.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// variable whose name is @p var_name.
+  bool
+  suppression_matches_variable_name(const suppr::variable_suppression& s,
+				    const string& var_name) const
+  {
+    if (!suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_variable_name(s, var_name);
+  }
+
+  /// Test whether if a given variable suppression specification
+  /// matches a variable denoted by its linkage name.
+  ///
+  /// @param s the variable suppression specification to consider.
+  ///
+  /// @param var_linkage_name the linkage name of the variable to consider.
+  ///
+  /// @return true iff variable suppression specification @p s matches
+  /// the variable denoted by linkage name @p var_linkage_name.
+  bool
+  suppression_matches_variable_sym_name(const suppr::variable_suppression& s,
+					const string& var_linkage_name) const
+  {
+    if (!suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_variable_sym_name(s, var_linkage_name);
+  }
+
+  /// Test if a given type suppression specification matches a type
+  /// designated by its name and location.
+  ///
+  /// @param s the suppression specification to consider.
+  ///
+  /// @param type_name the fully qualified type name to consider.
+  ///
+  /// @param type_location the type location to consider.
+  ///
+  /// @return true iff the type suppression specification matches a
+  /// type of a given name and location.
+  bool
+  suppression_matches_type_name_or_location(const suppr::type_suppression& s,
+					    const string& type_name,
+					    const location& type_location) const
+  {
+    if (!suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_type_name_or_location(s, type_name,
+							    type_location);
+  }
+
+  /// Test if a type suppression specification matches the name of a
+  /// type within a given scope.
+  ///
+  /// @param s the type suppression specification to consider.
+  ///
+  /// @param type_scope the type scope to consider.
+  ///
+  /// @param type the type to consider.
+  ///
+  /// @return true iff the type suppression specification matches a
+  /// the name of type @p type.
+  bool
+  suppression_matches_type_name(const suppr::type_suppression&	s,
+				const scope_decl*		type_scope,
+				const type_base_sptr&		type) const
+  {
+    if (!suppression_can_match(s))
+      return false;
+    return suppr::suppression_matches_type_name(s, type_scope, type);
+  }
+
   /// Getter of the exported decls builder object.
   ///
   /// @return the exported decls builder.
@@ -4991,6 +5208,17 @@ build_function_decl(read_context&	ctxt,
 		    size_t		where_offset,
 		    function_decl_sptr	fn);
 
+static var_decl_sptr
+build_var_decl(read_context&	ctxt,
+	       Dwarf_Die	*die,
+	       size_t		where_offset,
+	       var_decl_sptr	result = var_decl_sptr());
+
+static bool
+variable_is_suppressed(const read_context& ctxt,
+		       const scope_decl* scope,
+		       Dwarf_Die *variable_die);
+
 static void
 finish_member_function_reading(Dwarf_Die*		die,
 			       function_decl_sptr	f,
@@ -5111,41 +5339,6 @@ die_unsigned_constant_attribute(Dwarf_Die*	die,
   cst = result;
   return true;
 }
-
-#if 0
-/// Get the value of an attribute that is supposed to be a signed
-/// constant.
-///
-///@param die the DIE to read the information from.
-///
-/// @param attr_name the DW_AT_* name of the attribute.  Must come
-/// from dwarf.h and be an enumerator representing an attribute like,
-/// e.g, DW_AT_decl_line.
-///
-///@param cst the output parameter that is set to the value of the
-/// attribute @p attr_name.  This parameter is set iff the function
-/// return true.
-///
-/// @return true if there was an attribute of the name @p attr_name
-/// and with a value that is a constant, false otherwise.
-static bool
-die_signed_constant_attribute(Dwarf_Die*	die,
-			      unsigned		attr_name,
-			      int64_t&		cst)
-{
-    if (!die)
-    return false;
-
-  Dwarf_Attribute attr;
-  Dwarf_Sword result = 0;
-  if (!dwarf_attr_integrate(die, attr_name, &attr)
-      || dwarf_formsdata(&attr, &result))
-    return false;
-
-  cst = result;
-  return true;
-}
-#endif
 
 /// Get the value of a DIE attribute; that value is meant to be a
 /// flag.
@@ -5279,8 +5472,10 @@ die_address_attribute(Dwarf_Die* die, unsigned attr_name, Dwarf_Addr& result)
 /// @param ctxt the @ref read_context to use.
 ///
 /// @param die the DIE the read the source location from.
+///
+/// @return the location associated with @p die.
 static location
-die_location(read_context& ctxt, Dwarf_Die* die)
+die_location(const read_context& ctxt, Dwarf_Die* die)
 {
   if (!die)
     return location();
@@ -5291,7 +5486,7 @@ die_location(read_context& ctxt, Dwarf_Die* die)
 
   if (!file.empty() && line != 0)
     {
-      translation_unit_sptr tu = ctxt.cur_tu();
+      translation_unit_sptr tu = ctxt.cur_transl_unit();
       location l = tu->get_loc_mgr().create_new_location(file, line, 1);
       return l;
     }
@@ -5310,11 +5505,11 @@ die_location(read_context& ctxt, Dwarf_Die* die)
 ///
 /// @param linkage_name the linkage_name output parameter to set.
 static void
-die_loc_and_name(read_context&	ctxt,
-		 Dwarf_Die*	die,
-		 location&	loc,
-		 string&	name,
-		 string&	linkage_name)
+die_loc_and_name(const read_context&	ctxt,
+		 Dwarf_Die*		die,
+		 location&		loc,
+		 string&		name,
+		 string&		linkage_name)
 {
   loc = die_location(ctxt, die);
   name = die_string_attribute(die, DW_AT_name);
@@ -6706,7 +6901,7 @@ die_virtual_function_index(Dwarf_Die* die,
 /// @return true iff an imported unit is found between @p
 /// first_die_offset and @p last_die_offset.
 static bool
-find_import_unit_point_between_dies(read_context&	ctxt,
+find_import_unit_point_between_dies(const read_context& ctxt,
 				    size_t		partial_unit_offset,
 				    Dwarf_Off		first_die_offset,
 				    Dwarf_Off		first_die_cu_offset,
@@ -6714,15 +6909,15 @@ find_import_unit_point_between_dies(read_context&	ctxt,
 				    size_t		last_die_offset,
 				    size_t&		imported_point_offset)
 {
-  tu_die_imported_unit_points_map_type& tu_die_imported_unit_points_map =
+  const tu_die_imported_unit_points_map_type& tu_die_imported_unit_points_map =
     ctxt.tu_die_imported_unit_points_map(source);
 
-  tu_die_imported_unit_points_map_type::iterator iter =
+  tu_die_imported_unit_points_map_type::const_iterator iter =
     tu_die_imported_unit_points_map.find(first_die_cu_offset);
 
   assert(iter != tu_die_imported_unit_points_map.end());
 
-  imported_unit_points_type& imported_unit_points = iter->second;
+  const imported_unit_points_type& imported_unit_points = iter->second;
   if (imported_unit_points.empty())
     return false;
 
@@ -6809,7 +7004,7 @@ find_import_unit_point_between_dies(read_context&	ctxt,
 /// Note that if an imported unit is found after @p die_offset then @p
 /// imported_point_offset is set and the function return false.
 static bool
-find_import_unit_point_before_die(read_context&	ctxt,
+find_import_unit_point_before_die(const read_context&	ctxt,
 				  size_t		partial_unit_offset,
 				  size_t		where_offset,
 				  size_t&		imported_point_offset)
@@ -6868,10 +7063,10 @@ find_import_unit_point_before_die(read_context&	ctxt,
 /// @return true if the function could get a parent DIE, false
 /// otherwise.
 static bool
-get_parent_die(read_context&	ctxt,
-	       Dwarf_Die*	die,
-	       Dwarf_Die&	parent_die,
-	       size_t		where_offset)
+get_parent_die(const read_context&	ctxt,
+	       Dwarf_Die*		die,
+	       Dwarf_Die&		parent_die,
+	       size_t			where_offset)
 {
   assert(ctxt.dwarf());
 
@@ -6978,7 +7173,7 @@ get_scope_for_die(read_context& ctxt,
 	{
 	  assert(source_of_die == ALT_DEBUG_INFO_DIE_SOURCE
 		 || source_of_die == TYPE_UNIT_DIE_SOURCE);
-	  return ctxt.cur_tu()->get_global_scope();
+	  return ctxt.cur_transl_unit()->get_global_scope();
 	}
 
       // For top level DIEs like DW_TAG_compile_unit, we just want to
@@ -7247,7 +7442,7 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
   result->set_language(dwarf_language_to_tu_language(l));
 
   ctxt.current_corpus()->add(result);
-  ctxt.cur_tu(result);
+  ctxt.cur_transl_unit(result);
   ctxt.die_tu_map()[dwarf_dieoffset(die)] = result;
 
   Dwarf_Die child;
@@ -7283,8 +7478,9 @@ build_translation_unit_and_add_to_ir(read_context&	ctxt,
 	    if (!fqn_comps.empty())
 	      {
 		ty_name = components_to_type_name(fqn_comps);
-		ty_decl = lookup_type_in_translation_unit(ty_name,
-							  *ctxt.cur_tu());
+		ty_decl =
+		  lookup_type_in_translation_unit(ty_name,
+						  *ctxt.cur_transl_unit());
 	      }
 	    if (class_decl_sptr cl = dynamic_pointer_cast<class_decl>(ty_decl))
 	      {
@@ -7513,7 +7709,7 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
   type_decl_sptr t(new type_decl(ctxt.env(), underlying_type_name,
 				 size, size, location()));
   t->set_is_anonymous(enum_underlying_type_is_anonymous);
-  translation_unit_sptr tu = ctxt.cur_tu();
+  translation_unit_sptr tu = ctxt.cur_transl_unit();
   decl_base_sptr d =
     add_decl_to_scope(t, tu->get_global_scope().get());
   canonicalize(t);
@@ -7825,14 +8021,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      if (lookup_var_decl_in_scope(n, result))
 		continue;
 
-	      decl_base_sptr ty = is_decl(
-		build_ir_node_from_die(ctxt, &type_die,
-				       called_from_public_decl,
-				       where_offset));
-	      type_base_sptr t = is_type(ty);
-	      if (!t)
-		continue;
-
 	      ssize_t offset_in_bits = 0;
 	      bool is_laid_out = false;
 	      is_laid_out = die_member_offset(&child, offset_in_bits);
@@ -7841,6 +8029,20 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      // templates, we'll try to be more specific.  For now,
 	      // this approximation should do OK.
 	      bool is_static = !is_laid_out;
+
+	      if (is_static && variable_is_suppressed(ctxt,
+						      result.get(),
+						      &child))
+		continue;
+
+	      decl_base_sptr ty = is_decl(
+		build_ir_node_from_die(ctxt, &type_die,
+				       called_from_public_decl,
+				       where_offset));
+	      type_base_sptr t = is_type(ty);
+	      if (!t)
+		continue;
+
 	      if (!is_static)
 		// We have a non-static data member.  So this class
 		// cannot be a declaration-only class anymore, even if
@@ -8095,7 +8297,7 @@ build_pointer_type_def(read_context&	ctxt,
   // if the DIE for the pointer type doesn't have a byte_size
   // attribute then we assume the size of the pointer is the address
   // size of the current translation unit.
-  uint64_t size = ctxt.cur_tu()->get_address_size();
+  uint64_t size = ctxt.cur_transl_unit()->get_address_size();
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     // The size as expressed by DW_AT_byte_size is in byte, so let's
     // convert it to bits.
@@ -8103,7 +8305,7 @@ build_pointer_type_def(read_context&	ctxt,
 
   // And the size of the pointer must be the same as the address size
   // of the current translation unit.
-  assert((size_t) ctxt.cur_tu()->get_address_size() == size);
+  assert((size_t) ctxt.cur_transl_unit()->get_address_size() == size);
 
   result.reset(new pointer_type_def(utype, size, /*alignment=*/0, location()));
   assert(result->get_pointed_to_type());
@@ -8174,13 +8376,13 @@ build_reference_type(read_context&	ctxt,
   // if the DIE for the reference type doesn't have a byte_size
   // attribute then we assume the size of the reference is the address
   // size of the current translation unit.
-  uint64_t size = ctxt.cur_tu()->get_address_size();
+  uint64_t size = ctxt.cur_transl_unit()->get_address_size();
   if (die_unsigned_constant_attribute(die, DW_AT_byte_size, size))
     size *= 8;
 
   // And the size of the pointer must be the same as the address size
   // of the current translation unit.
-  assert((size_t) ctxt.cur_tu()->get_address_size() == size);
+  assert((size_t) ctxt.cur_transl_unit()->get_address_size() == size);
 
   bool is_lvalue = (tag == DW_TAG_reference_type) ? true : false;
 
@@ -8225,7 +8427,7 @@ build_function_type(read_context&	ctxt,
 
   decl_base_sptr type_decl;
 
-  translation_unit_sptr tu = ctxt.cur_tu();
+  translation_unit_sptr tu = ctxt.cur_transl_unit();
   assert(tu);
 
   // The call to build_ir_node_from_die() could have triggered the
@@ -8396,7 +8598,7 @@ build_array_type(read_context&	ctxt,
   Dwarf_Die child;
   array_type_def::subranges_type subranges;
   translation_unit::language language =
-    ctxt.current_translation_unit()->get_language();
+    ctxt.cur_transl_unit()->get_language();
   uint64_t upper_bound = 0;
   uint64_t lower_bound = get_default_array_lower_bound(language);
   uint64_t count = 0;
@@ -8533,6 +8735,39 @@ build_typedef_type(read_context&	ctxt,
   return result;
 }
 
+/// Build a @ref var_decl out of a DW_TAG_variable DIE iff the
+/// variable denoted by the DIE is not suppressed by a suppression
+/// specification associated to the current read context.
+///
+/// @param ctxt the read context to use.
+///
+/// @param die the DIE representing the variable we are looking at.
+///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+///
+/// @param result if this is set to an existing var_decl, this means
+/// that the function will append the new properties it sees on @p die
+/// to that exising var_decl.  Otherwise, if this parameter is NULL, a
+/// new var_decl is going to be allocated and returned.
+///
+/// @return a pointer to the newly created var_decl.  If the var_decl
+/// could not be built, this function returns NULL.
+static var_decl_sptr
+build_var_decl_if_not_suppressed(read_context&	ctxt,
+				 scope_decl	*scope,
+				 Dwarf_Die	*die,
+				 size_t	where_offset,
+				 var_decl_sptr	result = var_decl_sptr())
+{
+  var_decl_sptr var;
+  if (!variable_is_suppressed(ctxt, scope, die))
+    var = build_var_decl(ctxt, die, where_offset, result);
+  return var;
+}
+
 /// Build a @ref var_decl out of a DW_TAG_variable DIE.
 ///
 /// @param ctxt the read context to use.
@@ -8555,7 +8790,7 @@ static var_decl_sptr
 build_var_decl(read_context&	ctxt,
 	       Dwarf_Die	*die,
 	       size_t		where_offset,
-	       var_decl_sptr	result = var_decl_sptr())
+	       var_decl_sptr	result)
 {
   if (!die)
     return result;
@@ -8625,6 +8860,101 @@ build_var_decl(read_context&	ctxt,
   return result;
 }
 
+/// Test if a given function denoted by its DIE and its scope is
+/// suppressed by any of the suppression specifications associated to
+/// a given context of ELF/DWARF reading.
+///
+/// @param ctxt the ELF/DWARF reading content of interest.
+///
+/// @param scope of the scope of the function.
+///
+/// @param function_die the DIE representing the function.
+///
+/// @return true iff @p function_die is suppressed by at least one
+/// suppression specification attached to the @p ctxt.
+static bool
+function_is_suppressed(const read_context& ctxt,
+		       const scope_decl* scope,
+		       Dwarf_Die *function_die)
+{
+  if (function_die == 0
+      || dwarf_tag(function_die) != DW_TAG_subprogram)
+    return false;
+
+  string fname = die_string_attribute(function_die, DW_AT_name);
+  string flinkage_name = die_linkage_name(function_die);
+  string qualified_name = build_qualified_name(scope, fname);
+
+  return suppr::function_is_suppressed(ctxt, qualified_name,
+				       flinkage_name,
+				       /*require_drop_property=*/true);
+}
+
+/// Test if a given variable denoted by its DIE and its scope is
+/// suppressed by any of the suppression specifications associated to
+/// a given context of ELF/DWARF reading.
+///
+/// @param ctxt the ELF/DWARF reading content of interest.
+///
+/// @param scope of the scope of the variable.
+///
+/// @param variable_die the DIE representing the variable.
+///
+/// @return true iff @p variable_die is suppressed by at least one
+/// suppression specification attached to the @p ctxt.
+static bool
+variable_is_suppressed(const read_context& ctxt,
+		       const scope_decl* scope,
+		       Dwarf_Die *variable_die)
+{
+  if (variable_die == 0
+      || (dwarf_tag(variable_die) != DW_TAG_variable
+	  && dwarf_tag(variable_die) != DW_TAG_member))
+    return false;
+
+  string name = die_string_attribute(variable_die, DW_AT_name);
+  string linkage_name = die_linkage_name(variable_die);
+  string qualified_name = build_qualified_name(scope, name);
+
+  return suppr::variable_is_suppressed(ctxt, qualified_name,
+				       linkage_name,
+				       /*require_drop_property=*/true);
+}
+
+/// Test if a type (designated by a given DIE) in a given scope is
+/// suppressed by the suppression specifications that are associated
+/// to a given read context.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param scope of the scope of the type DIE to consider.
+///
+/// @param type_die the DIE that designates the type to consider.
+///
+/// @return true iff the type designated by the DIE @p type_die, in
+/// the scope @p scope is suppressed by at the suppression
+/// specifications associated to the current read context.
+static bool
+type_is_suppressed(const read_context& ctxt,
+		   const scope_decl* scope,
+		   Dwarf_Die *type_die)
+{
+  if (type_die == 0
+      || (dwarf_tag(type_die) != DW_TAG_enumeration_type
+	  && dwarf_tag(type_die) != DW_TAG_class_type
+	  && dwarf_tag(type_die) != DW_TAG_structure_type))
+    return false;
+
+  string type_name, linkage_name;
+  location type_location;
+  die_loc_and_name(ctxt, type_die, type_location, type_name, linkage_name);
+  string qualified_name = build_qualified_name(scope, type_name);
+
+  return suppr::type_is_suppressed(ctxt, qualified_name,
+				   type_location,
+				   /*require_drop_property=*/true);
+}
+
 /// Build a @ref function_decl our of a DW_TAG_subprogram DIE.
 ///
 /// @param ctxt the read context to use
@@ -8655,7 +8985,7 @@ build_function_decl(read_context&	ctxt,
  if (!die_is_public_decl(die))
    return result;
 
- translation_unit_sptr tu = ctxt.cur_tu();
+ translation_unit_sptr tu = ctxt.cur_transl_unit();
   assert(tu);
 
   string fname, flinkage_name;
@@ -8993,7 +9323,8 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_base_type:
       if (type_decl_sptr t = build_type_decl(ctxt, die))
 	  {
-	    result = add_decl_to_scope(t, ctxt.cur_tu()->get_global_scope());
+	    result =
+	      add_decl_to_scope(t, ctxt.cur_transl_unit()->get_global_scope());
 	    canonicalize(t);
 	  }
       break;
@@ -9020,7 +9351,8 @@ build_ir_node_from_die(read_context&	ctxt,
 				 where_offset);
 	if (p)
 	  {
-	    result = add_decl_to_scope(p, ctxt.cur_tu()->get_global_scope());
+	    result =
+	      add_decl_to_scope(p, ctxt.cur_transl_unit()->get_global_scope());
 	    assert(result->get_translation_unit());
 	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
@@ -9036,7 +9368,8 @@ build_ir_node_from_die(read_context&	ctxt,
 			       where_offset);
 	if (r)
 	  {
-	    result = add_decl_to_scope(r, ctxt.cur_tu()->get_global_scope());
+	    result =
+	      add_decl_to_scope(r, ctxt.cur_transl_unit()->get_global_scope());
 	    ctxt.associate_die_to_type(dwarf_dieoffset(die), source_of_die, r);
 	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
@@ -9061,7 +9394,8 @@ build_ir_node_from_die(read_context&	ctxt,
 	    // different from 'q', because 'ty' is 'q' possibly
 	    // stripped from some redundant type qualifier.
 	    ctxt.associate_die_to_type(dwarf_dieoffset(die), source_of_die, ty);
-	    result = add_decl_to_scope(d, ctxt.cur_tu()->get_global_scope());
+	    result =
+	      add_decl_to_scope(d, ctxt.cur_transl_unit()->get_global_scope());
 	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
@@ -9069,12 +9403,16 @@ build_ir_node_from_die(read_context&	ctxt,
 
     case DW_TAG_enumeration_type:
       {
-	enum_type_decl_sptr e = build_enum_type(ctxt, die);
-	result = add_decl_to_scope(e, scope);
-	if (result)
+	if (!type_is_suppressed(ctxt, scope, die))
 	  {
-	    maybe_set_member_type_access_specifier(is_decl(result), die);
-	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
+	    enum_type_decl_sptr e = build_enum_type(ctxt, die);
+	    result = add_decl_to_scope(e, scope);
+	    if (result)
+	      {
+		maybe_set_member_type_access_specifier(is_decl(result), die);
+		maybe_canonicalize_type(dwarf_dieoffset(die),
+					source_of_die, ctxt);
+	      }
 	  }
       }
       break;
@@ -9082,44 +9420,49 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_class_type:
     case DW_TAG_structure_type:
       {
-	Dwarf_Die spec_die;
-	scope_decl_sptr scop;
-	class_decl_sptr klass;
-	if (die_die_attribute(die, DW_AT_specification, spec_die))
+	if (!type_is_suppressed(ctxt, scope, die))
 	  {
-	    scope_decl_sptr skope = get_scope_for_die(ctxt, &spec_die,
-						      called_from_public_decl,
-						      where_offset);
-	    assert(skope);
-	    decl_base_sptr cl =
-	      is_decl(build_ir_node_from_die(ctxt, &spec_die,
-					     skope.get(),
-					     called_from_public_decl,
-					     where_offset));
-	    assert(cl);
-	    klass = dynamic_pointer_cast<class_decl>(cl);
-	    assert(klass);
+	    Dwarf_Die spec_die;
+	    scope_decl_sptr scop;
+	    class_decl_sptr klass;
+	    if (die_die_attribute(die, DW_AT_specification, spec_die))
+	      {
+		scope_decl_sptr skope =
+		  get_scope_for_die(ctxt, &spec_die,
+				    called_from_public_decl,
+				    where_offset);
+		assert(skope);
+		decl_base_sptr cl =
+		  is_decl(build_ir_node_from_die(ctxt, &spec_die,
+						 skope.get(),
+						 called_from_public_decl,
+						 where_offset));
+		assert(cl);
+		klass = dynamic_pointer_cast<class_decl>(cl);
+		assert(klass);
 
-	    klass =
-	      build_class_type_and_add_to_ir(ctxt, die,
-					     skope.get(),
-					     tag == DW_TAG_structure_type,
-					     klass,
-					     called_from_public_decl,
-					     where_offset);
-	  }
-	else
-	  klass =
-	    build_class_type_and_add_to_ir(ctxt, die,
-					   scope, tag == DW_TAG_structure_type,
-					   class_decl_sptr(),
-					   called_from_public_decl,
-					   where_offset);
-	result = klass;
-	if (klass)
-	  {
-	    maybe_set_member_type_access_specifier(klass, die);
-	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
+		klass =
+		  build_class_type_and_add_to_ir(ctxt, die,
+						 skope.get(),
+						 tag == DW_TAG_structure_type,
+						 klass,
+						 called_from_public_decl,
+						 where_offset);
+	      }
+	    else
+	      klass =
+		build_class_type_and_add_to_ir(ctxt, die, scope,
+					       tag == DW_TAG_structure_type,
+					       class_decl_sptr(),
+					       called_from_public_decl,
+					       where_offset);
+	    result = klass;
+	    if (klass)
+	      {
+		maybe_set_member_type_access_specifier(klass, die);
+		maybe_canonicalize_type(dwarf_dieoffset(die),
+					source_of_die, ctxt);
+	      }
 	  }
       }
       break;
@@ -9149,7 +9492,8 @@ build_ir_node_from_die(read_context&	ctxt,
 						 where_offset);
 	if (a)
 	  {
-	    result = add_decl_to_scope(a, ctxt.cur_tu()->get_global_scope());
+	    result =
+	      add_decl_to_scope(a, ctxt.cur_transl_unit()->get_global_scope());
 	    ctxt.associate_die_to_type(dwarf_dieoffset(die), source_of_die, a);
 	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
@@ -9195,14 +9539,14 @@ build_ir_node_from_die(read_context&	ctxt,
 	    || (var_is_cloned = die_die_attribute(die, DW_AT_abstract_origin,
 						  spec_die, false)))
 	  {
-	    scope_decl_sptr scop = get_scope_for_die(ctxt, &spec_die,
-						     called_from_public_decl,
-						     where_offset);
-	    if (scop)
+	    scope_decl_sptr spec_scope = get_scope_for_die(ctxt, &spec_die,
+							   called_from_public_decl,
+							   where_offset);
+	    if (spec_scope)
 	      {
 		decl_base_sptr d =
 		  is_decl(build_ir_node_from_die(ctxt, &spec_die,
-						 scop.get(),
+						 spec_scope.get(),
 						 called_from_public_decl,
 						 where_offset));
 		if (d)
@@ -9229,7 +9573,9 @@ build_ir_node_from_die(read_context&	ctxt,
 		  }
 	      }
 	  }
-	else if (var_decl_sptr v = build_var_decl(ctxt, die, where_offset))
+	else if (var_decl_sptr v =
+		 build_var_decl_if_not_suppressed(ctxt, scope, die,
+						  where_offset))
 	  {
 	    result = add_decl_to_scope(v, scope);
 	    assert(is_decl(result)->get_scope());
@@ -9247,7 +9593,7 @@ build_ir_node_from_die(read_context&	ctxt,
 	  Dwarf_Die spec_die;
 	  Dwarf_Die abstract_origin_die;
 	  Dwarf_Die *interface_die = 0, *origin_die = 0;
-	  scope_decl_sptr scop;
+	  scope_decl_sptr interface_scope;
 	  if (die_is_artificial(die))
 	    break;
 
@@ -9271,15 +9617,15 @@ build_ir_node_from_die(read_context&	ctxt,
 	      string linkage_name = die_linkage_name(die);
 	      string spec_linkage_name = die_linkage_name(interface_die);
 
-	      scop = get_scope_for_die(ctxt, interface_die,
-				       called_from_public_decl,
-				       where_offset);
-	      if (scop)
+	      interface_scope = get_scope_for_die(ctxt, interface_die,
+						  called_from_public_decl,
+						  where_offset);
+	      if (interface_scope)
 		{
 		  decl_base_sptr d =
 		    is_decl(build_ir_node_from_die(ctxt,
 						   origin_die,
-						   scop.get(),
+						   interface_scope.get(),
 						   called_from_public_decl,
 						   where_offset));
 		  if (d)
@@ -9300,7 +9646,19 @@ build_ir_node_from_die(read_context&	ctxt,
 	    }
 	ctxt.scope_stack().push(scope);
 
-	result = build_function_decl(ctxt, die, where_offset, fn);
+	scope_decl* logical_scope =
+	  interface_scope
+	  ? interface_scope.get()
+	  : scope;
+
+	if (function_is_suppressed(ctxt, logical_scope, die))
+	  // The function has been suppressed by a suppression
+	  // specification, Do not try to build an internal
+	  // representation for it.
+	  ;
+	else
+	  result = build_function_decl(ctxt, die, where_offset, fn);
+
 	if (result && !fn)
 	  result = add_decl_to_scope(is_decl(result), scope);
 
@@ -9405,7 +9763,7 @@ build_ir_node_for_void_type(read_context& ctxt)
   assert(env);
   decl_base_sptr t = env->get_void_type_decl();
   if (!has_scope(t))
-    add_decl_to_scope(t, ctxt.cur_tu()->get_global_scope());
+    add_decl_to_scope(t, ctxt.cur_transl_unit()->get_global_scope());
   canonicalize(is_type(t));
   return t;
 }
@@ -9515,6 +9873,41 @@ create_read_context(const std::string&		elf_path,
   result->load_all_types(load_all_types);
   result->env(environment);
   return result;
+}
+
+/// Add suppressions specifications to the set of suppressions to be
+/// used during the construction of the ABI internal representation
+/// (the ABI corpus) from ELF and DWARF.
+///
+/// During the construction of the ABI corpus, ABI artifacts that
+/// match the a given suppression specification are dropped on the
+/// floor; that is, they are discarded and won't be part of the final
+/// ABI corpus.  This is a way to reduce the amount of data held by
+/// the final ABI corpus.
+///
+/// Note that the suppression specifications provided to this function
+/// are only considered during the construction of the ABI corpus.
+/// For instance, they are not taken into account during e.g
+/// comparisons of two ABI corpora that might happen later.  If you
+/// want to apply suppression specificatins to the comparison (or
+/// reporting) of ABI corpora please refer to the documentation of the
+/// @ref diff_context type to learn how to set suppressions that are
+/// to be used in that context.
+///
+/// @param ctxt the context that is going to be used by functions that
+/// read ELF and DWARF information to construct and ABI corpus.
+///
+/// @param supprs the suppression specifications to be applied during
+/// the construction of the ABI corpus.
+void
+add_read_context_suppressions(read_context& ctxt,
+			      const suppr::suppressions_type& supprs)
+{
+  for (suppr::suppressions_type::const_iterator i = supprs.begin();
+       i != supprs.end();
+       ++i)
+    if ((*i)->get_drops_artifact_from_ir())
+      ctxt.get_suppressions().push_back(*i);
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info

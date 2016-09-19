@@ -856,6 +856,7 @@ handle_fts_entry(const FTSENT *entry,
 					     /*type_name_regexp=*/"",
 					     /*type_name=*/""));
 	  suppr->set_is_artificial(true);
+	  suppr->set_drops_artifact_from_ir(true);
 	  suppr->get_source_locations_to_keep().insert(fname);
 	}
     }

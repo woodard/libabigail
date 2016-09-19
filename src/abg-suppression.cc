@@ -25,13 +25,13 @@
 /// This contains the implementation of the suppression engine of
 /// libabigail.
 
+#include "abg-suppression-priv.h"
+
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
-#include "abg-suppression.h"
 #include "abg-ini.h"
-#include "abg-sptr-utils.h"
 #include "abg-comp-filter.h"
 #include "abg-tools-utils.h"
 
@@ -48,143 +48,6 @@ using std::tr1::dynamic_pointer_cast;
 
 // <suppression_base stuff>
 
-/// The private data of @ref suppression_base.
-class suppression_base::priv
-{
-  bool					is_artificial_;
-  string				label_;
-  string				file_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	file_name_regex_;
-  string				file_name_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	file_name_not_regex_;
-  string				soname_regex_str_;
-  mutable sptr_utils::regex_t_sptr	soname_regex_;
-  string				soname_not_regex_str_;
-  mutable sptr_utils::regex_t_sptr	soname_not_regex_;
-
-public:
-  priv()
-    : is_artificial_()
-  {}
-
-  priv(const string& label)
-    : is_artificial_(),
-      label_(label)
-  {}
-
-  priv(const string& label,
-       const string& file_name_regex_str,
-       const string& file_name_not_regex_str)
-    : is_artificial_(),
-      label_(label),
-      file_name_regex_str_(file_name_regex_str),
-      file_name_not_regex_str_(file_name_not_regex_str)
-  {}
-
-  friend class suppression_base;
-
-  /// Get the regular expression object associated to the 'file_name_regex'
-  /// property of @ref suppression_base.
-  ///
-  /// If the regular expression object is not created, this method
-  /// creates it and returns it.
-  ///
-  /// If the 'file_name_regex' property of @ref suppression_base is
-  /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr&
-  get_file_name_regex() const
-  {
-    if (!file_name_regex_)
-      {
-	if (!file_name_regex_str_.empty())
-	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	    if (regcomp(r.get(),
-			file_name_regex_str_.c_str(),
-			REG_EXTENDED) == 0)
-	      file_name_regex_ = r;
-	  }
-      }
-    return file_name_regex_;
-  }
-
-  /// Get the regular expression object associated to the
-  /// 'file_name_not_regex' property of @ref suppression_base.
-  ///
-  /// If the regular expression object is not created, this method
-  /// creates it and returns it.
-  ///
-  /// If the 'file_name_not_regex' property of @ref suppression_base
-  /// is empty then this method returns nil.
-  const sptr_utils::regex_t_sptr&
-  get_file_name_not_regex() const
-  {
-    if (!file_name_not_regex_)
-      {
-	if (!file_name_not_regex_str_.empty())
-	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	    if (regcomp(r.get(),
-			file_name_not_regex_str_.c_str(),
-			REG_EXTENDED) == 0)
-	      file_name_not_regex_ = r;
-	  }
-      }
-    return file_name_not_regex_;
-  }
-
-  /// Get the regular expression object associated to the
-  /// 'soname_regex' property of @ref suppression_base.
-  ///
-  /// If the regular expression object is not created, this method
-  /// creates it and returns it.
-  ///
-  /// If the 'soname_regex' property of @ref suppression_base is empty
-  /// then this method returns nil.
-  const sptr_utils::regex_t_sptr&
-  get_soname_regex() const
-  {
-    if (!soname_regex_)
-      {
-	if (!soname_regex_str_.empty())
-	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	    if (regcomp(r.get(),
-			soname_regex_str_.c_str(),
-			REG_EXTENDED) == 0)
-	      soname_regex_ = r;
-	  }
-      }
-    return soname_regex_;
-  }
-
-  /// Get the regular expression object associated to the
-  /// 'soname_not_regex' property of @ref suppression_base.
-  ///
-  /// If the regular expression object is not created, this method
-  /// creates it and returns it.
-  ///
-  /// If the 'soname_not_regex' property of @ref suppression_base is
-  /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr&
-  get_soname_not_regex() const
-  {
-    if (!soname_not_regex_)
-      {
-	if (!soname_not_regex_str_.empty())
-	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	    if (regcomp(r.get(),
-			soname_not_regex_str_.c_str(),
-			REG_EXTENDED) == 0)
-	      soname_not_regex_ = r;
-	  }
-      }
-    return soname_not_regex_;
-  }
-
-}; // end clas suppression_base::priv
-
 /// Constructor for @ref suppression_base
 ///
 /// @param a label for the suppression.  This represents just a
@@ -193,6 +56,16 @@ suppression_base::suppression_base(const string& label)
   : priv_(new priv(label))
 {}
 
+/// Constructor for @ref suppression_base
+///
+/// @param a label for the suppression.  This represents just a
+/// comment.
+///
+/// @param file_name_regex_str the regular expression that denotes the
+/// file name to match.
+///
+/// @param file_name_not_regex_str the regular expression that denotes
+/// the file name to *NOT* match.
 suppression_base::suppression_base(const string& label,
 				   const string& file_name_regex_str,
 				   const string& file_name_not_regex_str)
@@ -201,6 +74,26 @@ suppression_base::suppression_base(const string& label,
 		   file_name_not_regex_str))
 {
 }
+
+/// Tests if the current suppression specification is to avoid adding
+/// the matched ABI artifact to the internal representation or not.
+///
+/// @return true iff the current suppression specification is to avoid
+/// adding the matched ABI artifact to the internal representation.
+bool
+suppression_base::get_drops_artifact_from_ir() const
+{return priv_->drops_artifact_;}
+
+/// Set the flag that says whether the current suppression
+/// specification is to avoid adding the matched ABI artifact to the
+/// internal representation or not.
+///
+/// @param f the flag to set to true iff the current suppression
+/// specification is to avoid adding the matched ABI artifact to the
+/// internal representation.
+void
+suppression_base::set_drops_artifact_from_ir(bool f) const
+{priv_->drops_artifact_ = f;}
 
 /// Test is the suppression specification is artificial.
 ///
@@ -337,61 +230,11 @@ const string&
 suppression_base::get_soname_not_regex_str() const
 {return priv_->soname_not_regex_str_;}
 
-/// Check if the names of the two binaries being compared match the
-/// content of the properties "file_name_regexp" and
-/// "file_name_not_regexp".
-///
-/// @param ctxt the context of the comparison.
-///
-/// @return false if the regular expression contained in the property
-/// file_name_regexp or in the property "file_name_not_regexp" does
-/// *NOT* match at least one of the names of the two binaries being
-/// compared.  Return true otherwise.
-bool
-suppression_base::names_of_binaries_match(const diff_context& ctxt) const
-{
-  // Check if the names of the binaries match
-  if (sptr_utils::regex_t_sptr regexp =
-      suppression_base::priv_->get_file_name_regex())
-    {
-      string first_binary_path = ctxt.get_first_corpus()->get_path(),
-	second_binary_path = ctxt.get_second_corpus()->get_path();
-
-      string first_binary_name, second_binary_name;
-
-      tools_utils::base_name(first_binary_path, first_binary_name);
-      tools_utils::base_name(second_binary_path, second_binary_name);
-
-      if ((regexec(regexp.get(), first_binary_name.c_str(),
-		   0, NULL, 0) != 0)
-	  && (regexec(regexp.get(), second_binary_name.c_str(),
-		      0, NULL, 0) != 0))
-	return false;
-    }
-
-  if (sptr_utils::regex_t_sptr regexp =
-      suppression_base::priv_->get_file_name_not_regex())
-    {
-      string first_binary_path = ctxt.get_first_corpus()->get_path(),
-	second_binary_path = ctxt.get_second_corpus()->get_path();
-
-      string first_binary_name, second_binary_name;
-
-      tools_utils::base_name(first_binary_path, first_binary_name);
-      tools_utils::base_name(second_binary_path, second_binary_name);
-
-      if ((regexec(regexp.get(), first_binary_name.c_str(),
-		   0, NULL, 0) == 0)
-	  || (regexec(regexp.get(), second_binary_name.c_str(),
-		      0, NULL, 0) == 0))
-	return false;
-    }
-
-  return true;
-}
-
 /// Check if the SONAMEs of the two binaries being compared match the
-/// content of the properties "soname_regexp" and "soname_not_regexp".
+/// content of the properties "soname_regexp" and "soname_not_regexp"
+/// of the current suppression specification.
+///
+/// @param suppr the suppression specification
 ///
 /// @param ctxt the context of the comparison.
 ///
@@ -399,35 +242,44 @@ suppression_base::names_of_binaries_match(const diff_context& ctxt) const
 /// soname_regexp or in the property "soname_not_regexp" does *NOT*
 /// match at least one of the SONAMEs of the two binaries being
 /// compared.  Return true otherwise.
-bool
-suppression_base::sonames_of_binaries_match(const diff_context& ctxt) const
+static bool
+sonames_of_binaries_match(const suppression_base& suppr,
+			  const diff_context& ctxt)
 {
   // Check if the sonames of the binaries match
-  if (sptr_utils::regex_t_sptr regexp =
-      suppression_base::priv_->get_soname_regex())
-    {
-      string first_soname = ctxt.get_first_corpus()->get_soname(),
-	second_soname = ctxt.get_second_corpus()->get_soname();
+  string first_soname = ctxt.get_first_corpus()->get_soname(),
+    second_soname = ctxt.get_second_corpus()->get_soname();
 
-      if ((regexec(regexp.get(), first_soname.c_str(),
-		   0, NULL, 0) != 0)
-	  && (regexec(regexp.get(), second_soname.c_str(),
-		      0, NULL, 0) != 0))
-	return false;
-    }
+  if (!suppr.priv_->matches_soname(first_soname)
+      && !suppr.priv_->matches_soname(second_soname))
+    return false;
 
-  if (sptr_utils::regex_t_sptr regexp =
-      suppression_base::priv_->get_soname_not_regex())
-    {
-      string first_soname = ctxt.get_first_corpus()->get_soname(),
-	second_soname = ctxt.get_second_corpus()->get_soname();
+  return true;
+}
 
-      if ((regexec(regexp.get(), first_soname.c_str(),
-		   0, NULL, 0) == 0)
-	  || (regexec(regexp.get(), second_soname.c_str(),
-		      0, NULL, 0) == 0))
-	return false;
-    }
+/// Check if the names of the two binaries being compared match the
+/// content of the properties "file_name_regexp" and
+/// "file_name_not_regexp".
+///
+/// @param suppr the current suppression specification.
+///
+/// @param ctxt the context of the comparison.
+///
+/// @return false if the regular expression contained in the property
+/// file_name_regexp or in the property "file_name_not_regexp" does
+/// *NOT* match at least one of the names of the two binaries being
+/// compared.  Return true otherwise.
+static bool
+names_of_binaries_match(const suppression_base& suppr,
+			const diff_context &ctxt)
+{
+   // Check if the file names of the binaries match
+  string first_binary_path = ctxt.get_first_corpus()->get_path(),
+    second_binary_path = ctxt.get_second_corpus()->get_path();
+
+  if (!suppr.priv_->matches_binary_name(first_binary_path)
+      && !suppr.priv_->matches_binary_name(second_binary_path))
+    return false;
 
   return true;
 }
@@ -504,100 +356,6 @@ read_suppressions(const string& file_path,
 // </suppression_base stuff>
 
 // <type_suppression stuff>
-
-/// The private data for @ref type_suppression.
-class type_suppression::priv
-{
-  string				type_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	type_name_regex_;
-  string				type_name_;
-  bool					consider_type_kind_;
-  type_suppression::type_kind		type_kind_;
-  bool					consider_reach_kind_;
-  type_suppression::reach_kind		reach_kind_;
-  type_suppression::insertion_ranges	insertion_ranges_;
-  unordered_set<string>		source_locations_to_keep_;
-  string				source_location_to_keep_regex_str_;
-  mutable sptr_utils::regex_t_sptr	source_location_to_keep_regex_;
-
-  priv();
-
-public:
-  priv(const string&			type_name_regexp,
-       const string&			type_name,
-       bool				consider_type_kind,
-       type_suppression::type_kind	type_kind,
-       bool				consider_reach_kind,
-       type_suppression::reach_kind	reach_kind)
-    : type_name_regex_str_(type_name_regexp),
-      type_name_(type_name),
-      consider_type_kind_(consider_type_kind),
-      type_kind_(type_kind),
-      consider_reach_kind_(consider_reach_kind),
-      reach_kind_(reach_kind)
-  {}
-
-  /// Get the regular expression object associated to the 'type_name_regex'
-  /// property of @ref type_suppression.
-  ///
-  /// If the regular expression object is not created, this method
-  /// creates it and returns it.
-  ///
-  /// If the 'type_name_regex' property of @ref type_suppression is
-  /// empty then this method returns nil.
-  const sptr_utils::regex_t_sptr
-  get_type_name_regex() const
-  {
-    if (!type_name_regex_)
-      {
-	if (!type_name_regex_str_.empty())
-	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	    if (regcomp(r.get(),
-			type_name_regex_str_.c_str(),
-			REG_EXTENDED) == 0)
-	      type_name_regex_ = r;
-	  }
-      }
-    return type_name_regex_;
-  }
-
-  /// Setter for the type_name_regex object.
-  ///
-  /// @param r the new type_name_regex object.
-  void
-  set_type_name_regex(sptr_utils::regex_t_sptr r)
-  {type_name_regex_ = r;}
-
-  /// Getter for the source_location_to_keep_regex object.
-  ///
-  /// This function builds the regex if it's not yet built.
-  const sptr_utils::regex_t_sptr
-  get_source_location_to_keep_regex() const
-  {
-    if (!source_location_to_keep_regex_)
-      {
-	if (!source_location_to_keep_regex_str_.empty())
-	  {
-	    sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	    if (regcomp(r.get(),
-			source_location_to_keep_regex_str_.c_str(),
-			REG_EXTENDED) == 0)
-	      source_location_to_keep_regex_ = r;
-	  }
-      }
-    return source_location_to_keep_regex_;
-  }
-
-  /// Setter for the source_location_to_keep_regex object.
-  ///
-  /// @param r the new regex object.
-  void
-  set_source_location_to_keep_regex(sptr_utils::regex_t_sptr r)
-  {source_location_to_keep_regex_ = r;}
-
-  friend class type_suppression;
-}; // class type_suppression::priv
 
 /// Constructor for @ref type_suppression.
 ///
@@ -1006,19 +764,38 @@ type_suppression::suppresses_type(const type_base_sptr& type,
   if (ctxt)
     {
       // Check if the names of the binaries match
-      if (!names_of_binaries_match(*ctxt))
+      if (!names_of_binaries_match(*this, *ctxt))
 	return false;
 
       // Check if the sonames of the binaries match
-      if (!sonames_of_binaries_match(*ctxt))
+      if (!sonames_of_binaries_match(*this, *ctxt))
 	return false;
     }
 
+  return suppresses_type(type);
+
+}
+
+/// Test if an instance of @ref type_suppression matches a given type.
+///
+/// This function does not take the name of the type into account
+/// while testing if the type matches the type_suppression.
+///
+/// @param s the suppression to evaluate.
+///
+/// @param type the type to consider.
+///
+/// @return true iff the suppression specification matches type @p
+/// type without taking its name into account.
+static bool
+suppression_matches_type_no_name(const type_suppression&	 s,
+				 const type_base_sptr		&type)
+{
   // If the suppression should consider type kind then, well, check
   // for that.
-  if (get_consider_type_kind())
+  if (s.get_consider_type_kind())
     {
-      type_kind tk = get_type_kind();
+      type_suppression::type_kind tk = s.get_type_kind();
       bool matches = true;
       switch (tk)
 	{
@@ -1061,92 +838,105 @@ type_suppression::suppresses_type(const type_base_sptr& type,
     }
 
   // Check if there is a source location related match.
-  if (decl_base_sptr d = get_type_declaration(type))
+  if (!suppression_matches_type_location(s, type))
+    return false;
+
+  return true;
+}
+
+/// Test if a type suppression specification matches a type name.
+///
+/// @param s the type suppression to consider.
+///
+/// @param type_name the type name to consider.
+///
+/// @return true iff the type designated by its name @p type_name is
+/// matched by the type suppression specification @p s.
+bool
+suppression_matches_type_name(const type_suppression&	s,
+			      const string&		type_name)
+{
+  if (!s.get_type_name().empty() || s.priv_->get_type_name_regex())
     {
-      location loc = d->get_location();
-      if (!loc)
+      // Check if there is an exact type name match.
+      if (!s.get_type_name().empty())
 	{
-	  if (class_decl_sptr c = is_class_type(d))
-	    if (c->get_is_declaration_only()
-		&& c->get_definition_of_declaration())
-	      {
-		c = c->get_definition_of_declaration();
-		loc = c->get_location();
-	      }
-	}
-
-      if (loc)
-	{
-	  translation_unit* tu = get_translation_unit(d);
-	  if (tu)
-	    {
-	      string loc_path, loc_path_base;
-	      unsigned loc_line = 0, loc_column = 0;
-	      tu->get_loc_mgr().expand_location(loc, loc_path,
-						loc_line, loc_column);
-
-	      if (sptr_utils::regex_t_sptr regexp =
-		  priv_->get_source_location_to_keep_regex())
-		if (regexec(regexp.get(), loc_path.c_str(), 0, NULL, 0) == 0)
-		  return false;
-
-	      tools_utils::base_name(loc_path, loc_path_base);
-	      if (get_source_locations_to_keep().find(loc_path_base)
-		  != get_source_locations_to_keep().end())
-		return false;
-	      if (get_source_locations_to_keep().find(loc_path)
-		  != get_source_locations_to_keep().end())
-		return false;
-	    }
-	  else
-	    {
-	      if (!get_source_locations_to_keep().empty()
-		  || priv_->get_source_location_to_keep_regex())
-		// The user provided a "source_location_not_regexp" or
-		// a "source_location_not_in" property that was not
-		// triggered.  This means the current type suppression
-		// doesn't suppress the type given.
-		return false;
-	    }
+	  if (s.get_type_name() != type_name)
+	    return false;
 	}
       else
 	{
-	  // So the type had no source location.
+	  // Now check if there is a regular expression match.
 	  //
-	  // In the case where this type suppression was automatically
-	  // generated to suppress types not defined in public
-	  // headers, then this might mean that the type is not
-	  // defined in the public headers.  Otherwise, why does it
-	  // not have a source location?
-	  if (get_is_artificial())
-	    {
-	      if (class_decl_sptr cl = is_class_type(d))
-		{
-		  if (cl->get_is_declaration_only())
-		    // We tried hard above to get the definition of
-		    // the declaration.  If we reach this place, it
-		    // means the class has no definition at this point.
-		    assert(!cl->get_definition_of_declaration());
-		  if (get_label() == tools_utils::PRIVATE_TYPES_SUPPR_SPEC_NAME)
-		    // So this looks like what really amounts to an
-		    // opaque type.  So it's not defined in the public
-		    // headers.  So we want to filter it out.
-		    return true;
-		}
-	    }
-	  if (!get_source_locations_to_keep().empty()
-	      || priv_->get_source_location_to_keep_regex())
-	    // The user provided a "source_location_not_regexp" or
-	    // a "source_location_not_in" property that was not
-	    // triggered.  This means the current type suppression
-	    // doesn't suppress the type given.
+	  // If the qualified name of the considered type doesn't match
+	  // the regular expression of the type name, then this
+	  // suppression doesn't apply.
+	  const sptr_utils::regex_t_sptr& type_name_regex =
+	    s.priv_->get_type_name_regex();
+	  if (type_name_regex && (regexec(type_name_regex.get(),
+					  type_name.c_str(),
+					  0, NULL, 0) != 0))
 	    return false;
 	}
     }
+
+  return true;
+}
+
+/// Test if a type suppression matches a type in a particular scope.
+///
+/// @param s the type suppression to consider.
+///
+/// @param type_scope the scope of the type to consider.
+///
+/// @param type the type to consider.
+///
+/// @return true iff the supression @p s matches type @p type in scope
+/// @p type_scope.
+bool
+suppression_matches_type_name(const suppr::type_suppression&	s,
+			      const scope_decl*		type_scope,
+			      const type_base_sptr&		type)
+{
+  string type_name = build_qualified_name(type_scope, type);
+  return suppression_matches_type_name(s, type_name);
+}
+
+/// Test if a type suppression matches a source location.
+///
+/// @param s the type suppression to consider.
+///
+/// @param loc the location to consider.
+///
+/// @return true iff the suppression @p s matches location @p loc.
+bool
+suppression_matches_type_location(const type_suppression&	s,
+				  const location		loc)
+{
+  if (loc)
+    {
+      // Check if there is a source location related match.
+      string loc_path, loc_path_base;
+      unsigned loc_line = 0, loc_column = 0;
+      loc.expand(loc_path, loc_line, loc_column);
+
+      if (sptr_utils::regex_t_sptr regexp =
+	  s.priv_->get_source_location_to_keep_regex())
+	if (regexec(regexp.get(), loc_path.c_str(), 0, NULL, 0) == 0)
+	  return false;
+
+      tools_utils::base_name(loc_path, loc_path_base);
+      if (s.get_source_locations_to_keep().find(loc_path_base)
+	  != s.get_source_locations_to_keep().end())
+	return false;
+      if (s.get_source_locations_to_keep().find(loc_path)
+	  != s.get_source_locations_to_keep().end())
+	return false;
+    }
   else
     {
-      if (!get_source_locations_to_keep().empty()
-	  || priv_->get_source_location_to_keep_regex())
+      if (!s.get_source_locations_to_keep().empty()
+	  || s.priv_->get_source_location_to_keep_regex())
 	// The user provided a "source_location_not_regexp" or
 	// a "source_location_not_in" property that was not
 	// triggered.  This means the current type suppression
@@ -1154,31 +944,120 @@ type_suppression::suppresses_type(const type_base_sptr& type,
 	return false;
     }
 
-  if (!get_type_name().empty() || priv_->get_type_name_regex())
-  {
-    string name = get_name(type);
+  return true;
+}
 
-    // Check if there is an exact type name match.
-    if (!get_type_name().empty())
-      {
-	if (get_type_name() != name)
-	  return false;
-      }
-    else
-      {
-	// So now check if there is a regular expression match.
-	//
-	// If the qualified name of the considered type doesn't match
-	// the regular expression of the type name, then this
-	// suppression doesn't apply.
-	const sptr_utils::regex_t_sptr& type_name_regex =
-	  priv_->get_type_name_regex();
-	if (type_name_regex && (regexec(type_name_regex.get(),
-					name.c_str(),
-					0, NULL, 0) != 0))
-	  return false;
-      }
-  }
+/// Test if a type suppression matches a type.
+///
+/// @param s the type suppression to consider.
+///
+/// @param type the type to consider.
+///
+/// @return true iff the suppression @p s matches type @p type.
+bool
+suppression_matches_type_location(const type_suppression&	s,
+				  const type_base_sptr&	type)
+{
+  location loc = get_location(type);
+  if (loc)
+    return suppression_matches_type_location(s, loc);
+  else
+    {
+      // The type had no source location.
+      //
+      // In the case where this type suppression was automatically
+      // generated to suppress types not defined in public
+      // headers, then this might mean that the type is not
+      // defined in the public headers.  Otherwise, why does it
+      // not have a source location?
+      if (s.get_is_artificial())
+	{
+	  if (class_decl_sptr cl = is_class_type(type))
+	    {
+	      if (cl->get_is_declaration_only())
+		// We tried hard above to get the definition of
+		// the declaration.  If we reach this place, it
+		// means the class has no definition at this point.
+		assert(!cl->get_definition_of_declaration());
+	      if (s.get_label() == tools_utils::PRIVATE_TYPES_SUPPR_SPEC_NAME)
+		// So this looks like what really amounts to an
+		// opaque type.  So it's not defined in the public
+		// headers.  So we want to filter it out.
+		return true;
+	    }
+	}
+      if (!s.get_source_locations_to_keep().empty()
+	  || s.priv_->get_source_location_to_keep_regex())
+	// The user provided a "source_location_not_regexp" or
+	// a "source_location_not_in" property that was not
+	// triggered.  This means the current type suppression
+	// doesn't suppress the type given.
+	return false;
+    }
+
+  return true;
+}
+
+/// Test if a type suppression matches a type name and location.
+///
+/// @param s the type suppression to consider.
+///
+/// @param type_name the name of the type to consider.
+///
+/// @param type_location the location of the type to consider.
+///
+/// @return true iff suppression @p s matches a type named @p
+/// type_name with a location @p type_location.
+bool
+suppression_matches_type_name_or_location(const type_suppression& s,
+					  const string& type_name,
+					  const location& type_location)
+{
+  if (!suppression_matches_type_name(s, type_name))
+    return false;
+  if (!suppression_matches_type_location(s, type_location))
+    return false;
+  return true;
+}
+
+/// Test if the current instance of @ref type_suppression matches a
+/// given type.
+///
+/// @param type the type to consider.
+///
+/// @return true iff the suppression specification suppresses type @p
+/// type.
+bool
+type_suppression::suppresses_type(const type_base_sptr& type) const
+{
+  if (!suppression_matches_type_no_name(*this, type))
+    return false;;
+
+  if (!suppression_matches_type_name(*this, get_name(type)))
+    return false;;
+
+  return true;
+}
+
+/// Test if the current instance of @ref type_suppression matches a
+/// given type in a given scope.
+///
+/// @param type the type to consider.
+///
+/// @param type_scope the scope of type @p type.
+///
+/// @return true iff the suppression specification suppresses type @p
+/// type from scope @p type_scope.
+bool
+type_suppression::suppresses_type(const type_base_sptr& type,
+				  const scope_decl* type_scope) const
+{
+  if (!suppression_matches_type_no_name(*this, type))
+    return false;
+
+  if (!suppression_matches_type_name(*this, type_scope, type))
+    return false;
+
   return true;
 }
 
@@ -1543,6 +1422,15 @@ read_type_suppression(const ini::config::section& section)
   if (section.get_name() != "suppress_type")
     return nil;
 
+  ini::simple_property_sptr drop_artifact =
+    is_simple_property(section.find_property("drop_artifact"));
+  if (!drop_artifact)
+    drop_artifact = is_simple_property(section.find_property("drop"));
+
+  string drop_artifact_str = drop_artifact
+    ? drop_artifact->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr label =
     is_simple_property(section.find_property("label"));
   string label_str = label ? label->get_value()->as_string() : "";
@@ -1839,46 +1727,17 @@ read_type_suppression(const ini::config::section& section)
   if (!srcloc_not_regexp_str.empty())
     suppr->set_source_location_to_keep_regex_str(srcloc_not_regexp_str);
 
+  if ((drop_artifact_str == "yes" || drop_artifact_str == "true")
+      && ((!name_regex_str.empty()
+	   || !name_str.empty()
+	   || !srcloc_not_regexp_str.empty()
+	   || !srcloc_not_in.empty())))
+    suppr->set_drops_artifact_from_ir(true);
+
   return suppr;
 }
 
 // <function_suppression stuff>
-class function_suppression::parameter_spec::priv
-{
-  friend class function_suppression::parameter_spec;
-  friend class function_suppression;
-
-  size_t				index_;
-  string				type_name_;
-  string				type_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	type_name_regex_;
-
-  priv()
-    : index_()
-  {}
-
-  priv(size_t i, const string& tn)
-    : index_(i), type_name_(tn)
-  {}
-
-  priv(size_t i, const string& tn, const string& tn_regex)
-    : index_(i), type_name_(tn), type_name_regex_str_(tn_regex)
-  {}
-
-  const sptr_utils::regex_t_sptr
-  get_type_name_regex() const
-  {
-    if (!type_name_regex_ && !type_name_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    type_name_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  type_name_regex_ = r;
-      }
-    return type_name_regex_;
-  }
-}; // end class function_suppression::parameter_spec::priv
 
 /// Constructor for the @ref the function_suppression::parameter_spec
 /// type.
@@ -1956,144 +1815,6 @@ void
 function_suppression::parameter_spec::set_parameter_type_name_regex_str
 (const string& type_name_regex_str)
 {priv_->type_name_regex_str_ = type_name_regex_str;}
-
-/// The type of the private data of the @ref function_suppression
-/// type.
-class function_suppression::priv
-{
-  friend class function_suppression;
-
-  change_kind				change_kind_;
-  string				name_;
-  string				name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	name_regex_;
-  string				return_type_name_;
-  string				return_type_regex_str_;
-  mutable sptr_utils::regex_t_sptr	return_type_regex_;
-  parameter_specs_type			parm_specs_;
-  string				symbol_name_;
-  string				symbol_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_name_regex_;
-  string				symbol_version_;
-  string				symbol_version_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
-  bool					allow_other_aliases_;
-
-  priv(const string&			name,
-       const string&			name_regex_str,
-       const string&			return_type_name,
-       const string&			return_type_regex_str,
-       const parameter_specs_type&	parm_specs,
-       const string&			symbol_name,
-       const string&			symbol_name_regex_str,
-       const string&			symbol_version,
-       const string&			symbol_version_regex_str)
-    : change_kind_(ALL_CHANGE_KIND),
-      name_(name),
-      name_regex_str_(name_regex_str),
-      return_type_name_(return_type_name),
-      return_type_regex_str_(return_type_regex_str),
-      parm_specs_(parm_specs),
-      symbol_name_(symbol_name),
-      symbol_name_regex_str_(symbol_name_regex_str),
-      symbol_version_(symbol_version),
-      symbol_version_regex_str_(symbol_version_regex_str),
-      allow_other_aliases_(true)
-  {}
-
-
-  /// Getter for a pointer to a regular expression object built from
-  /// the regular expression string
-  /// function_suppression::priv::name_regex_str_.
-  ///
-  /// If that string is empty, then an empty regular expression object
-  /// pointer is returned.
-  ///
-  /// @return a pointer to the regular expression object of
-  /// function_suppression::priv::name_regex_str_..
-  const sptr_utils::regex_t_sptr
-  get_name_regex() const
-  {
-    if (!name_regex_ && !name_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    name_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  name_regex_ = r;
-      }
-    return name_regex_;
-  }
-
-  /// Getter for a pointer to a regular expression object built from
-  /// the regular expression string
-  /// function_suppression::priv::return_type_regex_str_.
-  ///
-  /// If that string is empty, then an empty regular expression object
-  /// pointer is returned.
-  ///
-  /// @return a pointer to the regular expression object of
-  /// function_suppression::priv::return_type_regex_str_.
-  const sptr_utils::regex_t_sptr
-  get_return_type_regex() const
-  {
-    if (!return_type_regex_ && !return_type_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    return_type_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  return_type_regex_ = r;
-      }
-    return return_type_regex_;
-  }
-
-  /// Getter for a pointer to a regular expression object built from
-  /// the regular expression string
-  /// function_suppression::priv::symbol_name_regex_str_.
-  ///
-  /// If that string is empty, then an empty regular expression object
-  /// pointer is returned.
-  ///
-  /// @return a pointer to the regular expression object of
-  /// function_suppression::priv::symbol_name_regex_str_.
-  const sptr_utils::regex_t_sptr
-  get_symbol_name_regex() const
-  {
-    if (!symbol_name_regex_ && !symbol_name_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    symbol_name_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  symbol_name_regex_ = r;
-      }
-    return symbol_name_regex_;
-  }
-
-  /// Getter for a pointer to a regular expression object built from
-  /// the regular expression string
-  /// function_suppression::priv::symbol_version_regex_str_.
-  ///
-  /// If that string is empty, then an empty regular expression object
-  /// pointer is returned.
-  ///
-  /// @return a pointer to the regular expression object of
-  /// function_suppression::priv::symbol_version_regex_str_.
-  const sptr_utils::regex_t_sptr
-  get_symbol_version_regex() const
-  {
-    if (!symbol_version_regex_ && ! symbol_version_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    symbol_version_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  symbol_version_regex_ = r;
-      }
-    return symbol_version_regex_;
-  }
-}; // end class function_suppression::priv
 
 /// Constructor for the @ref function_suppression type.
 ///
@@ -2210,7 +1931,7 @@ function_suppression::set_change_kind(change_kind k)
 ///
 /// @return the name of the function.
 const string&
-function_suppression::get_function_name() const
+function_suppression::get_name() const
 {return priv_->name_;}
 
 /// Setter for the name of the function the user wants the current
@@ -2219,38 +1940,46 @@ function_suppression::get_function_name() const
 ///
 /// @param n the new function name to set.
 void
-function_suppression::set_function_name(const string& n)
+function_suppression::set_name(const string& n)
 {priv_->name_ = n;}
 
 /// Getter for a regular expression for a family of names of functions
 /// the user wants the current specification to designate.
 ///
-/// If the function name as returned by
-/// function_suppression::get_function_name() is not empty, this
-/// property is ignored at specification evaluation time.  This
-/// property might be empty, in which case it's ignored at evaluation
-/// time.
-///
 /// @return the regular expression for the possible names of the
 /// function(s).
 const string&
-function_suppression::get_function_name_regex_str() const
+function_suppression::get_name_regex_str() const
 {return priv_->name_regex_str_;}
 
 /// Setter for a regular expression for a family of names of functions
 /// the user wants the current specification to designate.
 ///
-/// If the function name as returned by
-/// function_suppression::get_function_name() is not empty, this
-/// property is ignored at specification evaluation time.  This
-/// property might be empty, in which case it's ignored at evaluation
-/// time.
+/// @param r the new the regular expression for the possible names of
+/// the function(s).
+void
+function_suppression::set_name_regex_str(const string& r)
+{priv_->name_regex_str_ = r;}
+
+/// Getter for a regular expression of a family of names of functions
+/// the user wants the current specification to designate the negation
+/// of.
+///
+/// @return the regular expression for the possible names of the
+/// function(s).
+const string&
+function_suppression::get_name_not_regex_str() const
+{return priv_->name_not_regex_str_;}
+
+/// Setter for a regular expression for a family of names of functions
+/// the user wants the current specification to designate the negation
+/// of.
 ///
 /// @param r the new the regular expression for the possible names of
 /// the function(s).
 void
-function_suppression::set_function_name_regex_str(const string& r)
-{priv_->name_regex_str_ = r;}
+function_suppression::set_name_not_regex_str(const string& r)
+{priv_->name_not_regex_str_ = r;}
 
 /// Getter for the name of the return type of the function the user
 /// wants this specification to designate.  This property might be
@@ -2507,20 +2236,20 @@ function_suppression::suppresses_function(const function_decl* fn,
   if (ctxt)
     {
       // Check if the name of the binaries match
-      if (!names_of_binaries_match(*ctxt))
+      if (!names_of_binaries_match(*this, *ctxt))
 	return false;
 
       // Check if the soname of the binaries match
-      if (!sonames_of_binaries_match(*ctxt))
+      if (!sonames_of_binaries_match(*this, *ctxt))
 	return false;
     }
 
   string fname = fn->get_qualified_name();
 
   // Check if the "name" property matches.
-  if (!get_function_name().empty())
+  if (!get_name().empty())
     {
-      if (get_function_name() != fn->get_qualified_name())
+      if (get_name() != fn->get_qualified_name())
 	return false;
 
       if (get_allow_other_aliases()
@@ -2580,6 +2309,41 @@ function_suppression::suppresses_function(const function_decl* fn,
 		if (regexec(name_regex.get(),
 			    a->get_name().c_str(),
 			    0, NULL, 0) != 0)
+		  return false;
+	    }
+	}
+    }
+
+  // check if the "name_not_regexp" property matches.
+  const sptr_utils::regex_t_sptr name_not_regex = priv_->get_name_not_regex();
+  if (name_not_regex)
+    {
+      if (regexec(name_not_regex.get(),
+		  fname.c_str(),
+		  0, NULL, 0) == 0)
+	return false;
+
+      if (get_allow_other_aliases()
+	  && fn->get_symbol()
+	  && fn->get_symbol()->get_alias_from_name(fname))
+	{
+	  // So we are in a case of a languages in which the symbol
+	  // name is the same as the function name and we want to
+	  // allow the removal of change reports on an aliased
+	  // function only if the suppression condition matches *all*
+	  // the aliases.
+	  string symbol_name;
+	  elf_symbol_sptr sym = fn->get_symbol();
+	  assert(sym);
+	  symbol_name = sym->get_name();
+	  if (sym->has_aliases())
+	    {
+	      for (elf_symbol_sptr a = sym->get_next_alias();
+		   a && !a->is_main_symbol();
+		   a = a->get_next_alias())
+		if (regexec(name_regex.get(),
+			    a->get_name().c_str(),
+			    0, NULL, 0) == 0)
 		  return false;
 	    }
 	}
@@ -2789,11 +2553,11 @@ function_suppression::suppresses_function_symbol(const elf_symbol* sym,
   if (ctxt)
     {
       // Check if the name of the binaries match
-      if (!names_of_binaries_match(*ctxt))
+      if (!names_of_binaries_match(*this, *ctxt))
 	return false;
 
       // Check if the soname of the binaries match
-      if (!sonames_of_binaries_match(*ctxt))
+      if (!sonames_of_binaries_match(*this, *ctxt))
 	return false;
     }
 
@@ -2907,6 +2671,164 @@ operator|(function_suppression::change_kind l,
       (static_cast<unsigned>(l) | static_cast<unsigned>(r));
 }
 
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its name.
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function name.
+  ///
+  /// @param fn_name the name of the function of interest.  Note that
+  /// this name must be *non* qualified.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose name is @p fn_name.
+bool
+suppression_matches_function_name(const suppr::function_suppression& s,
+				  const string& fn_name)
+{
+  if (sptr_utils::regex_t_sptr regexp = s.priv_->get_name_regex())
+    {
+      if (regexec(regexp.get(), fn_name.c_str(), 0, NULL, 0) != 0)
+	return false;
+    }
+  else if (sptr_utils::regex_t_sptr regexp = s.priv_->get_name_not_regex())
+    {
+      if (regexec(regexp.get(), fn_name.c_str(), 0, NULL, 0) == 0)
+	return false;
+    }
+  else if (s.priv_->name_.empty())
+    return false;
+  else // if (!s.priv_->name_.empty())
+    {
+      if (s.priv_->name_ != fn_name)
+	return false;
+    }
+
+  return true;
+}
+
+/// Test whether if a given function suppression matches a function
+/// designated by a regular expression that describes its linkage
+/// name (symbol name).
+///
+/// @param s the suppression specification to evaluate to see if it
+/// matches a given function linkage name
+///
+/// @param fn_linkage_name the linkage name of the function of interest.
+///
+/// @return true iff the suppression specification @p s matches the
+/// function whose linkage name is @p fn_linkage_name.
+bool
+suppression_matches_function_sym_name(const suppr::function_suppression& s,
+				      const string& fn_linkage_name)
+{
+  if (sptr_utils::regex_t_sptr regexp = s.priv_->get_symbol_name_regex())
+    {
+      if (regexec(regexp.get(), fn_linkage_name.c_str(), 0, NULL, 0) != 0)
+	return false;
+    }
+  else if (s.priv_->symbol_name_.empty())
+    return false;
+  else // if (!s.priv_->symbol_name_.empty())
+    {
+      if (s.priv_->symbol_name_ != fn_linkage_name)
+	return false;
+    }
+
+  return true;
+}
+
+/// Test if a variable suppression matches a variable denoted by its name.
+///
+/// @param s the variable suppression to consider.
+///
+/// @param var_name the name of the variable to consider.
+///
+/// @return true if the variable is matches by the suppression
+/// specification.
+bool
+suppression_matches_variable_name(const suppr::variable_suppression& s,
+				  const string& var_name)
+{
+  if (sptr_utils::regex_t_sptr regexp = s.priv_->get_name_regex())
+    {
+      if (regexec(regexp.get(), var_name.c_str(), 0, NULL, 0) != 0)
+	return false;
+    }
+  else if (sptr_utils::regex_t_sptr regexp = s.priv_->get_name_not_regex())
+    {
+      if (regexec(regexp.get(), var_name.c_str(), 0, NULL, 0) == 0)
+	return false;
+    }
+  else if (s.priv_->name_.empty())
+    return false;
+  else // if (!s.priv_->name_.empty())
+    {
+      if (s.priv_->name_ != var_name)
+	return false;
+    }
+
+  return true;
+}
+
+/// Test if a variable suppression matches a variable denoted by its
+/// symbol name.
+///
+/// @param s the variable suppression to consider.
+///
+/// @param var_linkage_name the name of the variable to consider.
+///
+/// @return true if the variable is matches by the suppression
+/// specification.
+bool
+suppression_matches_variable_sym_name(const suppr::variable_suppression& s,
+				      const string& var_linkage_name)
+{
+  if (sptr_utils::regex_t_sptr regexp = s.priv_->get_symbol_name_regex())
+    {
+      if (regexec(regexp.get(), var_linkage_name.c_str(), 0, NULL, 0) != 0)
+	return false;
+    }
+  else if (s.priv_->symbol_name_.empty())
+    return false;
+  else // if (!s.priv_->symbol_name_.empty())
+    {
+      if (s.priv_->symbol_name_ != var_linkage_name)
+	return false;
+    }
+
+  return true;
+}
+
+/// Test if a type suppression matches a type designated by its fully
+/// qualified name.
+///
+/// @param s the type suppression to consider.
+///
+/// @param type_name the name of the type to consider.
+///
+/// @return true iff the suppression s matches the type denoted by
+/// name @p type_name.
+bool
+suppression_matches_type(const suppr::type_suppression& s,
+			 const string& type_name)
+{
+  if (sptr_utils::regex_t_sptr regexp = s.priv_->get_type_name_regex())
+    {
+      if (regexec(regexp.get(), type_name.c_str(), 0, NULL, 0) != 0)
+	return false;
+    }
+  else if (!s.get_type_name().empty())
+    {
+      if (s.get_type_name() != type_name)
+	return false;
+    }
+  else
+    return false;
+
+  return true;
+}
+
 /// Parse a string containing a parameter spec, build an instance of
 /// function_suppression::parameter_spec from it and return a pointer
 /// to that object.
@@ -2992,6 +2914,15 @@ read_function_suppression(const ini::config::section& section)
   if (section.get_name() != "suppress_function")
     return nil;
 
+  ini::simple_property_sptr drop_artifact =
+    is_simple_property(section.find_property("drop_artifact"));
+  if (!drop_artifact)
+    drop_artifact = is_simple_property(section.find_property("drop"));
+
+  string drop_artifact_str = drop_artifact
+    ? drop_artifact->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr change_kind_prop =
     is_simple_property(section.find_property("change_kind"));
   string change_kind_str = change_kind_prop
@@ -3038,6 +2969,12 @@ read_function_suppression(const ini::config::section& section)
     is_simple_property(section.find_property("name_regexp"));
   string name_regex_str = name_regex_prop
     ? name_regex_prop->get_value()->as_string()
+    : "";
+
+  ini::simple_property_sptr name_not_regex_prop =
+    is_simple_property(section.find_property("name_not_regexp"));
+  string name_not_regex_str = name_not_regex_prop
+    ? name_not_regex_prop->get_value()->as_string()
     : "";
 
   ini::simple_property_sptr return_type_name_prop =
@@ -3101,6 +3038,7 @@ read_function_suppression(const ini::config::section& section)
   if (!label_str.empty()
       || !name.empty()
       || !name_regex_str.empty()
+      || !name_not_regex_str.empty()
       || !file_name_regex_str.empty()
       || !file_name_not_regex_str.empty()
       || !soname_regex_str.empty()
@@ -3121,6 +3059,15 @@ read_function_suppression(const ini::config::section& section)
 					  sym_name_regex_str,
 					  sym_version,
 					  sym_ver_regex_str));
+
+  if ((drop_artifact_str == "yes" || drop_artifact_str == "true")
+      && (!name.empty()
+	  || !name_regex_str.empty()
+	  || !name_not_regex_str.empty()
+	  || !sym_name.empty()
+	  || !sym_name_regex_str.empty()))
+    result->set_drops_artifact_from_ir(true);
+
   if (result && !change_kind_str.empty())
     result->set_change_kind
       (function_suppression::parse_change_kind(change_kind_str));
@@ -3128,6 +3075,9 @@ read_function_suppression(const ini::config::section& section)
   if (result && !allow_other_aliases.empty())
     result->set_allow_other_aliases(allow_other_aliases == "yes"
 				    || allow_other_aliases == "true");
+
+  if (!name_not_regex_str.empty())
+    result->set_name_not_regex_str(name_not_regex_str);
 
   if (!file_name_regex_str.empty())
     result->set_file_name_regex_str(file_name_regex_str);
@@ -3147,138 +3097,6 @@ read_function_suppression(const ini::config::section& section)
 // </function_suppression stuff>
 
 // <variable_suppression stuff>
-
-/// The type of the private data of the @ref variable_suppression
-/// type.
-class variable_suppression::priv
-{
-  friend class variable_suppression;
-
-  change_kind				change_kind_;
-  string				name_;
-  string				name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	name_regex_;
-  string				symbol_name_;
-  string				symbol_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_name_regex_;
-  string				symbol_version_;
-  string				symbol_version_regex_str_;
-  mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
-  string				type_name_;
-  string				type_name_regex_str_;
-  mutable sptr_utils::regex_t_sptr	type_name_regex_;
-
-  priv(const string& name,
-       const string& name_regex_str,
-       const string& symbol_name,
-       const string& symbol_name_regex_str,
-       const string& symbol_version,
-       const string& symbol_version_regex_str,
-       const string& type_name,
-       const string& type_name_regex_str)
-    : change_kind_(ALL_CHANGE_KIND),
-      name_(name),
-      name_regex_str_(name_regex_str),
-      symbol_name_(symbol_name),
-      symbol_name_regex_str_(symbol_name_regex_str),
-      symbol_version_(symbol_version),
-      symbol_version_regex_str_(symbol_version_regex_str),
-      type_name_(type_name),
-      type_name_regex_str_(type_name_regex_str)
-  {}
-
-  /// Getter for a pointer to a regular expression object built from
-  /// the regular expression string
-  /// variable_suppression::priv::name_regex_str_.
-  ///
-  /// If that string is empty, then an empty regular expression object
-  /// pointer is returned.
-  ///
-  /// @return a pointer to the regular expression object of
-  /// variable_suppression::priv::name_regex_str_.
-  const sptr_utils::regex_t_sptr
-  get_name_regex() const
-  {
-    if (!name_regex_ && !name_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    name_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  name_regex_ = r;
-      }
-    return name_regex_;
-  }
-
-  /// Getter for a pointer to a regular expression object built from
-  /// the regular expression string
-  /// variable_suppression::priv::symbol_name_regex_str_.
-  ///
-  /// If that string is empty, then an empty regular expression object
-  /// pointer is returned.
-  ///
-  /// @return a pointer to the regular expression object of
-  /// variable_suppression::priv::symbol_name_regex_str_.
-  const sptr_utils::regex_t_sptr
-  get_symbol_name_regex() const
-  {
-    if (!symbol_name_regex_ && !symbol_name_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    symbol_name_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  symbol_name_regex_ = r;
-      }
-    return symbol_name_regex_;
-  }
-
-  /// Getter for a pointer to a regular expression object built from
-  /// the regular expression string
-  /// variable_suppression::priv::symbol_version_regex_str_.
-  ///
-  /// If that string is empty, then an empty regular expression object
-  /// pointer is returned.
-  ///
-  /// @return a pointer to the regular expression object of
-  /// variable_suppression::priv::symbol_version_regex_str_.
-  const sptr_utils::regex_t_sptr
-  get_symbol_version_regex()  const
-  {
-    if (!symbol_version_regex_ && !symbol_version_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    symbol_version_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  symbol_version_regex_ = r;
-      }
-    return symbol_version_regex_;
-  }
-
-  /// Getter for a pointer to a regular expression object built from
-  /// the regular expression string
-  /// variable_suppression::priv::type_name_regex_str_.
-  ///
-  /// If that string is empty, then an empty regular expression object
-  /// pointer is returned.
-  ///
-  /// @return a pointer to the regular expression object of
-  /// variable_suppression::priv::type_name_regex_str_.
-  const sptr_utils::regex_t_sptr
-  get_type_name_regex() const
-  {
-    if (!type_name_regex_ && !type_name_regex_str_.empty())
-      {
-	sptr_utils::regex_t_sptr r = sptr_utils::build_sptr<regex_t>();
-	if (regcomp(r.get(),
-		    type_name_regex_str_.c_str(),
-		    REG_EXTENDED) == 0)
-	  type_name_regex_ = r;
-      }
-    return type_name_regex_;
-  }
-};// end class variable_supppression::priv
 
 /// Constructor for the @ref variable_suppression type.
 ///
@@ -3429,6 +3247,20 @@ variable_suppression::get_name_regex_str() const
 void
 variable_suppression::set_name_regex_str(const string& r)
 {priv_->name_regex_str_ = r;}
+
+/// Getter for the "name_not_regexp" property of the specification.
+///
+/// @return the value of the "name_not_regexp" property.
+const string&
+variable_suppression::get_name_not_regex_str() const
+{return priv_->name_not_regex_str_;}
+
+/// Setter for the "name_not_regexp" property of the specification.
+///
+/// @param r the new value of the "name_not_regexp" property.
+void
+variable_suppression::set_name_not_regex_str(const string& r)
+{priv_->name_not_regex_str_ = r;}
 
 /// Getter for the name of the symbol of the variable the user wants
 /// the current specification to designate.
@@ -3620,17 +3452,17 @@ variable_suppression::suppresses_variable(const var_decl* var,
   if (ctxt)
     {
       // Check if the name of the binaries match
-      if (!names_of_binaries_match(*ctxt))
+      if (!names_of_binaries_match(*this, *ctxt))
 	return false;
 
       // Check if the soname of the binaries match
-      if (!sonames_of_binaries_match(*ctxt))
+      if (!sonames_of_binaries_match(*this, *ctxt))
 	return false;
     }
 
   string var_name = var->get_qualified_name();
 
-    // Check for "name" property match.
+  // Check for "name" property match.
   if (!get_name().empty())
     {
       if (get_name() != var_name)
@@ -3639,13 +3471,20 @@ variable_suppression::suppresses_variable(const var_decl* var,
   else
     {
       // If the "name" property is empty, then consider checking for the
-      // "name_regex" property match
+      // "name_regex" and "name_not_regex" properties match
       if (get_name().empty())
 	{
 	  const sptr_utils::regex_t_sptr name_regex = priv_->get_name_regex();
 	  if (name_regex
 	      && (regexec(name_regex.get(), var_name.c_str(),
 			  0, NULL, 0) != 0))
+	    return false;
+
+	  const sptr_utils::regex_t_sptr name_not_regex =
+	    priv_->get_name_not_regex();
+	  if (name_not_regex
+	      && (regexec(name_not_regex.get(), var_name.c_str(),
+			  0, NULL, 0) == 0))
 	    return false;
 	}
     }
@@ -3764,11 +3603,11 @@ variable_suppression::suppresses_variable_symbol(const elf_symbol* sym,
   if (ctxt)
     {
       // Check if the name of the binaries match
-      if (!names_of_binaries_match(*ctxt))
+      if (!names_of_binaries_match(*this, *ctxt))
 	return false;
 
       // Check if the soname of the binaries match
-      if (!sonames_of_binaries_match(*ctxt))
+      if (!sonames_of_binaries_match(*this, *ctxt))
 	return false;
     }
 
@@ -3903,6 +3742,15 @@ read_variable_suppression(const ini::config::section& section)
   if (section.get_name() != "suppress_variable")
     return result;
 
+  ini::simple_property_sptr drop_artifact =
+    is_simple_property(section.find_property("drop_artifact"));
+  if (!drop_artifact)
+    drop_artifact = is_simple_property(section.find_property("drop"));
+
+  string drop_artifact_str = drop_artifact
+    ? drop_artifact->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr change_kind_prop =
     is_simple_property(section.find_property("change_kind"));
   string change_kind_str = change_kind_prop
@@ -3951,6 +3799,12 @@ read_variable_suppression(const ini::config::section& section)
 			   ? name_regex_prop->get_value()->as_string()
 			   : "");
 
+  ini::simple_property_sptr name_not_regex_prop =
+    is_simple_property(section.find_property("name_not_regexp"));
+  string name_not_regex_str = name_not_regex_prop
+    ? name_not_regex_prop->get_value()->as_string()
+    : "";
+
   ini::simple_property_sptr sym_name_prop =
     is_simple_property(section.find_property("symbol_name"));
   string symbol_name = (sym_name_prop
@@ -3990,6 +3844,7 @@ read_variable_suppression(const ini::config::section& section)
   if (label_str.empty()
       && name_str.empty()
       && name_regex_str.empty()
+      && name_not_regex_str.empty()
       && file_name_regex_str.empty()
       && file_name_not_regex_str.empty()
       && soname_regex_str.empty()
@@ -4006,6 +3861,17 @@ read_variable_suppression(const ini::config::section& section)
 					symbol_name, symbol_name_regex_str,
 					symbol_version, symbol_version_regex_str,
 					type_name_str, type_name_regex_str));
+
+  if ((drop_artifact_str == "yes" || drop_artifact_str == "true")
+      && (!name_str.empty()
+	  || !name_regex_str.empty()
+	  || !name_not_regex_str.empty()
+	  || !symbol_name.empty()
+	  || !symbol_name_regex_str.empty()))
+    result->set_drops_artifact_from_ir(true);
+
+  if (!name_not_regex_str.empty())
+    result->set_name_not_regex_str(name_not_regex_str);
 
   if (result && !change_kind_str.empty())
     result->set_change_kind

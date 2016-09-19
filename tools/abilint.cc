@@ -1,6 +1,6 @@
 // -*- Mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -34,6 +34,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "abg-config.h"
 #include "abg-tools-utils.h"
 #include "abg-ir.h"
@@ -41,6 +42,7 @@
 #include "abg-reader.h"
 #include "abg-dwarf-reader.h"
 #include "abg-writer.h"
+#include "abg-suppression.h"
 
 using std::string;
 using std::cerr;
@@ -48,10 +50,14 @@ using std::cin;
 using std::cout;
 using std::ostream;
 using std::ofstream;
+using std::vector;
 using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::file_type;
 using abigail::tools_utils::guess_file_type;
+using abigail::suppr::suppression_sptr;
+using abigail::suppr::suppressions_type;
+using abigail::suppr::read_suppressions;
 using abigail::corpus;
 using abigail::corpus_sptr;
 using abigail::xml_reader::read_translation_unit_from_file;
@@ -74,6 +80,8 @@ struct options
   bool				diff;
   bool				noout;
   std::tr1::shared_ptr<char>	di_root_path;
+  vector<string>		suppression_paths;
+  string			headers_dir;
 
   options()
     : display_version(false),
@@ -93,7 +101,9 @@ display_usage(const string& prog_name, ostream& out)
     << "  --help  display this message\n"
     << "  --version|-v  display program version information and exit\n"
     << "  --debug-info-dir <path> the path under which to look for "
+    << "  --headers-dir|--hd <patch> the path to headers of the elf file\n"
     "debug info for the elf <abi-file>\n"
+    << "  --suppressions|--suppr <path> specify a suppression file\n"
     << "  --diff  for xml inputs, perform a text diff between "
     "the input and the memory model saved back to disk\n"
     << "  --noout  do not display anything on stdout\n"
@@ -138,6 +148,27 @@ parse_command_line(int argc, char* argv[], options& opts)
 	      abigail::tools_utils::make_path_absolute(argv[i + 1]);
 	    ++i;
 	  }
+      else if (!strcmp(argv[i], "--headers-dir")
+	       || !strcmp(argv[i], "--hd"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    return false;
+	  opts.headers_dir = argv[j];
+	  ++i;
+	}
+      else if (!strcmp(argv[i], "--suppressions")
+	       || !strcmp(argv[i], "--suppr"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
+	  opts.suppression_paths.push_back(argv[j]);
+	  ++i;
+	}
 	else if (!strcmp(argv[i], "--stdin"))
 	  opts.read_from_stdin = true;
 	else if (!strcmp(argv[i], "--tu"))
@@ -157,6 +188,59 @@ parse_command_line(int argc, char* argv[], options& opts)
     if (opts.file_path.empty())
       opts.read_from_stdin = true;
     return true;
+}
+
+/// Check that the suppression specification files supplied are
+/// present.  If not, emit an error on stderr.
+///
+/// @param opts the options instance to use.
+///
+/// @return true if all suppression specification files are present,
+/// false otherwise.
+static bool
+maybe_check_suppression_files(const options& opts)
+{
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    if (!check_file(*i, cerr, "abidiff"))
+      return false;
+
+  return true;
+}
+
+/// Set suppression specifications to the @p read_context used to load
+/// the ABI corpus from the ELF/DWARF file.
+///
+/// These suppression specifications are going to be applied to drop
+/// some ABI artifacts on the floor (while reading the ELF/DWARF file
+/// or the native XML ABI file) and thus minimize the size of the
+/// resulting ABI corpus.
+///
+/// @param read_ctxt the read context to apply the suppression
+/// specifications to.  Note that the type of this parameter is
+/// generic (class template) because in practise, it can be either an
+/// abigail::dwarf_reader::read_context type or an
+/// abigail::xml_reader::read_context type.
+///
+/// @param opts the options where to get the suppression
+/// specifications from.
+template<class ReadContextType>
+static void
+set_suppressions(ReadContextType& read_ctxt, const options& opts)
+{
+  suppressions_type supprs;
+  for (vector<string>::const_iterator i = opts.suppression_paths.begin();
+       i != opts.suppression_paths.end();
+       ++i)
+    read_suppressions(*i, supprs);
+
+  suppression_sptr suppr =
+    abigail::tools_utils::gen_suppr_spec_from_headers(opts.headers_dir);
+  if (suppr)
+    supprs.push_back(suppr);
+
+  add_read_context_suppressions(read_ctxt, supprs);
 }
 
 /// Reads a bi (binary instrumentation) file, saves it back to a
@@ -181,6 +265,10 @@ main(int argc, char* argv[])
       cout << major << "." << minor << "." << revision << "\n";
       return 0;
     }
+
+  if (!maybe_check_suppression_files(opts))
+    return true;
+
   abigail::ir::environment_sptr env(new abigail::ir::environment);
   if (opts.read_from_stdin)
     {
@@ -205,7 +293,12 @@ main(int argc, char* argv[])
 	}
       else
 	{
-	  corpus_sptr corp = read_corpus_from_native_xml(&cin, env.get());
+	  abigail::xml_reader::read_context_sptr ctxt =
+	    abigail::xml_reader::create_native_xml_read_context(&cin,
+								env.get());
+	  assert(ctxt);
+	  set_suppressions(*ctxt, opts);
+	  corpus_sptr corp = abigail::xml_reader::read_corpus_from_input(*ctxt);
 	  if (!opts.noout)
 	    write_corpus_to_native_xml(corp, /*indent=*/0, cout);
 	  return false;
@@ -232,16 +325,28 @@ main(int argc, char* argv[])
 	  break;
 	case abigail::tools_utils::FILE_TYPE_ELF:
 	case abigail::tools_utils::FILE_TYPE_AR:
-	  di_root_path = opts.di_root_path.get();
-	  corp = read_corpus_from_elf(opts.file_path,
-				      &di_root_path,
-				      env.get(),
-				      /*load_all_types=*/false,
-				      s);
+	  {
+	    di_root_path = opts.di_root_path.get();
+	    abigail::dwarf_reader::read_context_sptr ctxt =
+	      abigail::dwarf_reader::create_read_context(opts.file_path,
+							 &di_root_path,
+							 env.get(),
+							 /*load_all_types=*/false);
+	    assert(ctxt);
+	    set_suppressions(*ctxt, opts);
+	    corp = read_corpus_from_elf(*ctxt, s);
+	  }
 	  break;
 	case abigail::tools_utils::FILE_TYPE_XML_CORPUS:
-	  corp = read_corpus_from_native_xml_file(opts.file_path, env.get());
-	  break;
+	  {
+	    abigail::xml_reader::read_context_sptr ctxt =
+	      abigail::xml_reader::create_native_xml_read_context(opts.file_path,
+								  env.get());
+	    assert(ctxt);
+	    set_suppressions(*ctxt, opts);
+	    corp = read_corpus_from_input(*ctxt);
+	    break;
+	  }
 	case abigail::tools_utils::FILE_TYPE_ZIP_CORPUS:
 #if WITH_ZIP_ARCHIVE
 	  corp = read_corpus_from_file(opts.file_path);

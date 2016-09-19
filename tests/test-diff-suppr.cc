@@ -1618,6 +1618,46 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test30-report-1.txt",
     "output/test-diff-suppr/test30-report-1.txt"
   },
+  {
+    "data/test-diff-suppr/libtest31-v0.so",
+    "data/test-diff-suppr/libtest31-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/libtest31.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test31-report-0.txt",
+    "output/test-diff-suppr/test31-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest31-v0.so",
+    "data/test-diff-suppr/libtest31-v1.so",
+    "",
+    "",
+    "",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test31-report-1.txt",
+    "output/test-diff-suppr/test31-report-1.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest32-v0.so",
+    "data/test-diff-suppr/libtest32-v1.so",
+    "",
+    "",
+    "",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test32-report-0.txt",
+    "output/test-diff-suppr/test32-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest32-v0.so",
+    "data/test-diff-suppr/libtest32-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/libtest32-0.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test32-report-1.txt",
+    "output/test-diff-suppr/test32-report-1.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };
@@ -1654,9 +1694,13 @@ main()
 
 	if (s->headers_dir1 && strcmp(s->headers_dir1, ""))
 	  headers_dir1 = s->headers_dir1;
+	else
+	  headers_dir1.clear();
 
 	if (s->headers_dir2 && strcmp(s->headers_dir2, ""))
 	  headers_dir2 = s->headers_dir2;
+	else
+	  headers_dir2.clear();
 
 	if (!ensure_parent_dir_created(out_diff_report_path))
 	  {

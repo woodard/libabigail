@@ -26,6 +26,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <cstring>
 #include "abg-ir.h"
 #include "abg-reader.h"
 #include "abg-writer.h"
@@ -54,6 +55,8 @@ using abigail::xml_writer::write_corpus_to_native_xml;
 struct InOutSpec
 {
   const char* in_path;
+  const char* in_suppr_spec_path;
+  const char* ref_out_path;
   const char* out_path;
 };// end struct InOutSpec
 
@@ -62,118 +65,186 @@ InOutSpec in_out_specs[] =
 {
   {
     "data/test-read-write/test0.xml",
+    "",
+    "data/test-read-write/test0.xml",
     "output/test-read-write/test0.xml"
   },
   {
+    "data/test-read-write/test1.xml",
+    "",
     "data/test-read-write/test1.xml",
     "output/test-read-write/test1.xml"
   },
   {
     "data/test-read-write/test2.xml",
+    "",
+    "data/test-read-write/test2.xml",
     "output/test-read-write/test2.xml"
   },
   {
+    "data/test-read-write/test3.xml",
+    "",
     "data/test-read-write/test3.xml",
     "output/test-read-write/test3.xml"
   },
   {
     "data/test-read-write/test4.xml",
+    "",
+    "data/test-read-write/test4.xml",
     "output/test-read-write/test4.xml"
   },
   {
+    "data/test-read-write/test5.xml",
+    "",
     "data/test-read-write/test5.xml",
     "output/test-read-write/test5.xml"
   },
   {
     "data/test-read-write/test6.xml",
+    "",
+    "data/test-read-write/test6.xml",
     "output/test-read-write/test6.xml"
   },
   {
+    "data/test-read-write/test7.xml",
+    "",
     "data/test-read-write/test7.xml",
     "output/test-read-write/test7.xml"
   },
   {
     "data/test-read-write/test8.xml",
+    "",
+    "data/test-read-write/test8.xml",
     "output/test-read-write/test8.xml"
   },
   {
+    "data/test-read-write/test9.xml",
+    "",
     "data/test-read-write/test9.xml",
     "output/test-read-write/test9.xml"
   },
   {
     "data/test-read-write/test10.xml",
+    "",
+    "data/test-read-write/test10.xml",
     "output/test-read-write/test10.xml"
   },
   {
+    "data/test-read-write/test11.xml",
+    "",
     "data/test-read-write/test11.xml",
     "output/test-read-write/test11.xml"
   },
   {
     "data/test-read-write/test12.xml",
+    "",
+    "data/test-read-write/test12.xml",
     "output/test-read-write/test12.xml"
   },
   {
+    "data/test-read-write/test13.xml",
+    "",
     "data/test-read-write/test13.xml",
     "output/test-read-write/test13.xml"
   },
   {
     "data/test-read-write/test14.xml",
+    "",
+    "data/test-read-write/test14.xml",
     "output/test-read-write/test14.xml"
   },
   {
+    "data/test-read-write/test15.xml",
+    "",
     "data/test-read-write/test15.xml",
     "output/test-read-write/test15.xml"
   },
   {
     "data/test-read-write/test16.xml",
+    "",
+    "data/test-read-write/test16.xml",
     "output/test-read-write/test16.xml"
   },
   {
+    "data/test-read-write/test17.xml",
+    "",
     "data/test-read-write/test17.xml",
     "output/test-read-write/test17.xml"
   },
   {
     "data/test-read-write/test18.xml",
+    "",
+    "data/test-read-write/test18.xml",
     "output/test-read-write/test18.xml"
   },
   {
+    "data/test-read-write/test19.xml",
+    "",
     "data/test-read-write/test19.xml",
     "output/test-read-write/test19.xml"
   },
   {
     "data/test-read-write/test20.xml",
+    "",
+    "data/test-read-write/test20.xml",
     "output/test-read-write/test20.xml"
   },
   {
+    "data/test-read-write/test21.xml",
+    "",
     "data/test-read-write/test21.xml",
     "output/test-read-write/test21.xml"
   },
   {
     "data/test-read-write/test22.xml",
+    "",
+    "data/test-read-write/test22.xml",
     "output/test-read-write/test22.xml"
   },
   {
+    "data/test-read-write/test23.xml",
+    "",
     "data/test-read-write/test23.xml",
     "output/test-read-write/test23.xml"
   },
   {
     "data/test-read-write/test24.xml",
+    "",
+    "data/test-read-write/test24.xml",
     "output/test-read-write/test24.xml"
   },
   {
+    "data/test-read-write/test25.xml",
+    "",
     "data/test-read-write/test25.xml",
     "output/test-read-write/test25.xml"
   },
   {
     "data/test-read-write/test26.xml",
+    "",
+    "data/test-read-write/test26.xml",
     "output/test-read-write/test26.xml"
   },
   {
     "data/test-read-write/test27.xml",
+    "",
+    "data/test-read-write/test27.xml",
     "output/test-read-write/test27.xml"
   },
+  {
+    "data/test-read-write/test28.xml",
+    "data/test-read-write/test28-drop-std-fns.abignore",
+    "data/test-read-write/test28-without-std-fns-ref.xml",
+    "output/test-read-write/test28-without-std-fns.xml"
+  },
+  {
+    "data/test-read-write/test28.xml",
+    "data/test-read-write/test28-drop-std-vars.abignore",
+    "data/test-read-write/test28-without-std-vars-ref.xml",
+    "output/test-read-write/test28-without-std-vars.xml"
+  },
   // This should be the last entry.
-  {NULL, NULL}
+  {NULL, NULL, NULL, NULL}
 };
 
 /// Walk the array of InOutSpecs above, read the input files it points
@@ -184,7 +255,7 @@ main()
   unsigned result = 1;
 
   bool is_ok = true;
-  string in_path, out_path;
+  string in_path, out_path, in_suppr_spec_path, ref_out_path;
   for (InOutSpec* s = in_out_specs; s->in_path; ++s)
     {
       string input_suffix(s->in_path);
@@ -194,21 +265,33 @@ main()
       if (!check_file(in_path, cerr))
 	return true;
 
+      string ref_out_path_suffix(s->ref_out_path);
+      ref_out_path =
+	string(abigail::tests::get_src_dir())
+	+ "/tests/" + ref_out_path_suffix;
+
+      if (!check_file(ref_out_path, cerr))
+	return true;
+
+      if (s->in_suppr_spec_path && strcmp(s->in_suppr_spec_path, ""))
+	{
+	  in_suppr_spec_path = string(s->in_suppr_spec_path);
+	  in_suppr_spec_path =
+	    string(abigail::tests::get_src_dir())
+	    + "/tests/"
+	    + in_suppr_spec_path;
+	}
+      else
+	in_suppr_spec_path.clear();
+
       environment_sptr env(new environment);
       translation_unit_sptr tu;
       corpus_sptr corpus;
 
-      bool read = false;
       file_type t = guess_file_type(in_path);
-      if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	read = (tu = read_translation_unit_from_file(in_path, env.get()));
-      else if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	read = (corpus = read_corpus_from_native_xml_file(in_path, env.get()));
-      else
-	abort();
-      if (!read)
+      if (t == abigail::tools_utils::FILE_TYPE_UNKNOWN)
 	{
-	  cerr << "failed to read " << in_path << "\n";
+	  cerr << in_path << "is an unknown file type\n";
 	  is_ok = false;
 	  continue;
 	}
@@ -223,35 +306,18 @@ main()
 	  return result;
 	}
 
-      ofstream of(out_path.c_str(), std::ios_base::trunc);
-      if (!of.is_open())
-	{
-	  cerr << "failed to read " << out_path << "\n";
-	  is_ok = false;
-	  continue;
-	}
-
-      bool r = false;
-
-      if (t == abigail::tools_utils::FILE_TYPE_XML_CORPUS)
-	r = write_corpus_to_native_xml(corpus, /*indent=*/0, of);
-      else if (t == abigail::tools_utils::FILE_TYPE_NATIVE_BI)
-	r = write_translation_unit(*tu, /*indent=*/0, of);
-      else
-	abort();
-
-      is_ok = (is_ok && r);
-      of.close();
       string abilint = string(get_build_dir()) + "/tools/abilint";
-      abilint += " --noout";
-      string cmd = abilint + " " + out_path;
+      if (!in_suppr_spec_path.empty())
+	abilint +=string(" --suppr ") + in_suppr_spec_path;
+      string cmd = abilint + " " + in_path + " > " + out_path;
+
       if (system(cmd.c_str()))
 	{
 	  cerr << "ABI XML file doesn't pass abilint: " << out_path << "\n";
 	  is_ok &= false;
 	}
 
-      cmd = "diff -u " + in_path + " " + out_path;
+      cmd = "diff -u " + ref_out_path + " " + out_path;
       if (system(cmd.c_str()))
 	is_ok &= false;
     }

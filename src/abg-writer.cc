@@ -526,7 +526,7 @@ static void write_decl_in_scope(const decl_base_sptr,
 				unsigned);
 static bool write_type_decl(const shared_ptr<type_decl>,
 			    write_context&, unsigned);
-static bool write_namespace_decl(const shared_ptr<namespace_decl>,
+static bool write_namespace_decl(const namespace_decl_sptr&,
 				 write_context&, unsigned);
 static bool write_qualified_type_def(const shared_ptr<qualified_type_def>,
 				     write_context&, unsigned);
@@ -1498,7 +1498,7 @@ write_type_decl(const type_decl_sptr d,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_namespace_decl(const shared_ptr<namespace_decl> decl,
+write_namespace_decl(const namespace_decl_sptr& decl,
 		     write_context& ctxt, unsigned indent)
 {
   if (!decl || decl->is_empty_or_has_empty_sub_namespaces())

@@ -81,7 +81,7 @@ private:
 
 public:
 
-  corpus(ir::environment*, const string&);
+  corpus(ir::environment*, const string& path= "");
 
   const environment*
   get_environment() const;

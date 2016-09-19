@@ -28,6 +28,13 @@ test-read-write/test24.xml \
 test-read-write/test25.xml \
 test-read-write/test26.xml \
 test-read-write/test27.xml \
+test-read-write/test28.xml \
+test-read-write/test28-drop-std-fns.abignore \
+test-read-write/test28-without-std-fns.xml \
+test-read-write/test28-without-std-fns-ref.xml \
+test-read-write/test28-drop-std-vars.abignore \
+test-read-write/test28-without-std-vars-ref.xml \
+test-read-write/test28-without-std-vars.xml \
 \
 test-write-read-archive/test0.xml \
 test-write-read-archive/test1.xml \
@@ -336,7 +343,11 @@ test-read-dwarf/test22-pr19097-libstdc++.so.6.0.17.so.abi \
 test-read-dwarf/libtest23.so \
 test-read-dwarf/libtest23.so.abi \
 test-read-dwarf/test23-first-tu.cc \
-test-read-dwarf/test23-first-tu.cc \
+test-read-dwarf/libtest24-drop-fns-2.so.abi \
+test-read-dwarf/libtest24-drop-fns.so \
+test-read-dwarf/libtest24-drop-fns.so.abi \
+test-read-dwarf/test24-drop-fns-0.suppr \
+test-read-dwarf/test24-drop-fns.cc \
 \
 test-types-stability/pr19434-elf0 \
 test-types-stability/pr19139-DomainNeighborMapInst.o \
@@ -952,6 +963,27 @@ test-diff-suppr/test30-pub-lib-v1.cc  \
 test-diff-suppr/test30-pub-lib-v1.so  \
 test-diff-suppr/test30-report-0.txt   \
 test-diff-suppr/test30-report-1.txt   \
+test-diff-suppr/libtest31-v0.so \
+test-diff-suppr/libtest31-v1.so \
+test-diff-suppr/libtest31.suppr \
+test-diff-suppr/test31-report-0.txt \
+test-diff-suppr/test31-report-1.txt \
+test-diff-suppr/test31-v0.cc \
+test-diff-suppr/test31-v1.cc \
+test-diff-suppr/libtest32-v0.so \
+test-diff-suppr/libtest32-v1.so \
+test-diff-suppr/libtest32-0.suppr \
+test-diff-suppr/test32-report-0.txt \
+test-diff-suppr/test32-report-1.txt \
+test-diff-suppr/test32-v0.c \
+test-diff-suppr/test32-v1.c \
+test-diff-suppr/libtest33-v0.so \
+test-diff-suppr/libtest33-v1.so \
+test-diff-suppr/test33-suppr-1.txt \
+test-diff-suppr/test33-v0.cc \
+test-diff-suppr/test33-v0.h \
+test-diff-suppr/test33-v1.cc \
+test-diff-suppr/test33-v1.h \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

@@ -36,6 +36,8 @@
 #include <libxml/xmlstring.h>
 #include <libxml/xmlreader.h>
 
+#include "abg-suppression-priv.h"
+
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
@@ -107,6 +109,7 @@ public:
   typedef unordered_map<xmlNodePtr, decl_base_sptr> xml_node_decl_base_sptr_map;
 
 private:
+  string						m_path;
   environment*						m_env;
   unordered_map<string, vector<type_base_sptr> >	m_types_map;
   unordered_map<string, shared_ptr<function_tdecl> >	m_fn_tmpl_map;
@@ -119,7 +122,8 @@ private:
   xmlNodePtr						m_corp_node;
   deque<shared_ptr<decl_base> >			m_decls_stack;
   corpus_sptr						m_corpus;
-  corpus::exported_decls_builder*			m_exported_decls_builder_;
+  corpus::exported_decls_builder*			m_exported_decls_builder;
+  suppr::suppressions_type				m_supprs;
 
   read_context();
 
@@ -129,8 +133,22 @@ public:
     : m_env(env),
       m_reader(reader),
       m_corp_node(),
-      m_exported_decls_builder_()
+      m_exported_decls_builder()
   {}
+
+  /// Getter of the path to the ABI file.
+  ///
+  /// @return the path to the native xml abi file.
+  const string&
+  get_path() const
+  {return m_path;}
+
+  /// Setter of the path to the ABI file.
+  ///
+  /// @param the new path to the native ABI file.
+  void
+  set_path(const string& s)
+  {m_path = s;}
 
   /// Getter for the environment of this reader.
   ///
@@ -331,7 +349,7 @@ public:
 
   /// Return the current lexical scope.
   scope_decl*
-  get_cur_scope()
+  get_cur_scope() const
   {
     shared_ptr<decl_base> cur_decl = get_cur_decl();
 
@@ -703,7 +721,7 @@ public:
   /// @return the exported decls builder.
   corpus::exported_decls_builder*
   get_exported_decls_builder()
-  {return m_exported_decls_builder_;}
+  {return m_exported_decls_builder;}
 
   /// Setter for the object that determines if a given declaration
   /// ought to be put in the set of exported decls of the current
@@ -714,7 +732,23 @@ public:
   /// @return the exported decls builder.
   void
   set_exported_decls_builder(corpus::exported_decls_builder* d)
-  {m_exported_decls_builder_ = d;}
+  {m_exported_decls_builder = d;}
+
+  /// Getter of the vector of the suppression specifications
+  /// associated to the current read context.
+  ///
+  /// @return the vector of suppression specifications.
+  suppr::suppressions_type&
+  get_suppressions()
+  {return m_supprs;}
+
+  /// Getter of the vector of the suppression specifications
+  /// associated to the current read context.
+  ///
+  /// @return the vector of suppression specifications.
+  const suppr::suppressions_type&
+  get_suppressions() const
+  {return const_cast<read_context*>(this)->get_suppressions();}
 
   /// Add a given function to the set of exported functions of the
   /// current corpus, if the function satisfies the different
@@ -836,6 +870,170 @@ public:
 	 ++i)
       canonicalize(*i);
   }
+
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its name.
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function name.
+  ///
+  /// @param fn_name the name of the function of interest.  Note that
+  /// this name must be *non* qualified.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose name is @p fn_name.
+  bool
+  suppression_matches_function_name(const suppr::function_suppression_sptr& s,
+				    const string& fn_name) const
+  {
+    if (!s)
+      return false;
+    return suppression_matches_function_name(*s, fn_name);
+  }
+
+  /// Tests if a suppression specification can match ABI artifacts
+  /// coming from the ABI corpus being analyzed.
+  ///
+  /// This tests if the suppression matches the soname of and binary
+  /// name of the corpus being analyzed.
+  ///
+  /// @param s the suppression specification to consider.
+  bool
+  suppression_can_match(const suppr::suppression_base& s) const
+  {
+    corpus_sptr corp = get_corpus();
+    if (s.priv_->matches_soname(corp->get_soname())
+	&& s.priv_->matches_binary_name(corp->get_path()))
+      return true;
+    return false;
+  }
+
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its name.
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function name.
+  ///
+  /// @param fn_name the name of the function of interest.  Note that
+  /// this name must be *non* qualified.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose name is @p fn_name.
+  bool
+  suppression_matches_function_name(const suppr::function_suppression& s,
+				    const string& fn_name) const
+  {
+    if (!s.get_drops_artifact_from_ir()
+	|| !suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_function_name(s, fn_name);
+  }
+
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its linkage
+  /// name (symbol name).
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function linkage name
+  ///
+  /// @param fn_linkage_name the linkage name of the function of interest.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose linkage name is @p fn_linkage_name.
+  bool
+  suppression_matches_function_sym_name(const suppr::function_suppression_sptr& s,
+					const string& fn_linkage_name) const
+  {
+    if (!s)
+      return false;
+    return suppression_matches_function_sym_name(*s, fn_linkage_name);
+  }
+
+  /// Test whether if a given function suppression matches a function
+  /// designated by a regular expression that describes its linkage
+  /// name (symbol name).
+  ///
+  /// @param s the suppression specification to evaluate to see if it
+  /// matches a given function linkage name
+  ///
+  /// @param fn_linkage_name the linkage name of the function of interest.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// function whose linkage name is @p fn_linkage_name.
+  bool
+  suppression_matches_function_sym_name(const suppr::function_suppression& s,
+					const string& fn_linkage_name) const
+  {
+    if (!s.get_drops_artifact_from_ir()
+	|| !suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_function_sym_name(s, fn_linkage_name);
+  }
+
+  /// Test whether if a given variable suppression specification
+  /// matches a variable denoted by its name.
+  ///
+  /// @param s the variable suppression specification to consider.
+  ///
+  /// @param var_name the name of the variable to consider.
+  ///
+  /// @return true iff the suppression specification @p s matches the
+  /// variable whose name is @p var_name.
+  bool
+  suppression_matches_variable_name(const suppr::variable_suppression& s,
+				    const string& var_name) const
+  {
+    if (!s.get_drops_artifact_from_ir()
+	|| !suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_variable_name(s, var_name);
+  }
+
+  /// Test whether if a given variable suppression specification
+  /// matches a variable denoted by its linkage name.
+  ///
+  /// @param s the variable suppression specification to consider.
+  ///
+  /// @param var_linkage_name the linkage name of the variable to consider.
+  ///
+  /// @return true iff variable suppression specification @p s matches
+  /// the variable denoted by linkage name @p var_linkage_name.
+  bool
+  suppression_matches_variable_sym_name(const suppr::variable_suppression& s,
+					const string& var_linkage_name) const
+  {
+    if (!s.get_drops_artifact_from_ir()
+	|| !suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_variable_sym_name(s, var_linkage_name);
+  }
+
+  /// Test if a given type suppression specification matches a type
+  /// designated by its name and location.
+  ///
+  /// @param s the suppression specification to consider.
+  ///
+  /// @param type_name the fully qualified type name to consider.
+  ///
+  /// @param type_location the type location to consider.
+  ///
+  /// @return true iff the type suppression specification matches a
+  /// type of a given name and location.
+  bool
+  suppression_matches_type_name_or_location(const suppr::type_suppression& s,
+					    const string& type_name,
+					    const location& type_location) const
+  {
+    if (!suppression_can_match(s))
+      return false;
+
+    return suppr::suppression_matches_type_name_or_location(s, type_name,
+							    type_location);
+  }
 };// end class read_context
 
 static int	advance_cursor(read_context&);
@@ -845,7 +1043,7 @@ static translation_unit_sptr read_translation_unit_from_input(read_context&);
 static bool	read_symbol_db_from_input(read_context&,
 					  string_elf_symbols_map_sptr&,
 					  string_elf_symbols_map_sptr&);
-static bool	read_location(read_context&, xmlNodePtr, location&);
+static bool	read_location(const read_context&, xmlNodePtr, location&);
 static bool	read_visibility(xmlNodePtr, decl_base::visibility&);
 static bool	read_binding(xmlNodePtr, decl_base::binding&);
 static bool	read_access(xmlNodePtr, access_specifier&);
@@ -879,15 +1077,30 @@ build_elf_symbol_from_reference(read_context&, const xmlNodePtr,
 static string_elf_symbols_map_sptr
 build_elf_symbol_db(read_context&, const xmlNodePtr, bool);
 
-static shared_ptr<function_decl::parameter>
+static function_decl::parameter_sptr
 build_function_parameter (read_context&, const xmlNodePtr);
 
-static shared_ptr<function_decl>
+static function_decl_sptr
 build_function_decl(read_context&, const xmlNodePtr,
 		    shared_ptr<class_decl>, bool);
 
-static shared_ptr<var_decl>
+static function_decl_sptr
+build_function_decl_if_not_suppressed(read_context&, const xmlNodePtr,
+				      class_decl_sptr, bool);
+
+static bool
+function_is_suppressed(const read_context& ctxt,
+		       xmlNodePtr node);
+
+static var_decl_sptr
+build_var_decl_if_not_suppressed(read_context&, const xmlNodePtr, bool);
+
+static var_decl_sptr
 build_var_decl(read_context&, const xmlNodePtr, bool);
+
+static bool
+variable_is_suppressed(const read_context& ctxt,
+		       xmlNodePtr node);
 
 static shared_ptr<type_decl>
 build_type_decl(read_context&, const xmlNodePtr, bool);
@@ -1176,8 +1389,7 @@ read_translation_unit(read_context& ctxt, xmlNodePtr node)
     {
       if (n->type != XML_ELEMENT_NODE)
 	continue;
-      assert(handle_element_node(ctxt, n,
-				 /*add_decl_to_scope=*/true));
+      handle_element_node(ctxt, n, /*add_decl_to_scope=*/true);
     }
 
   ctxt.pop_scope_or_abort(tu->get_global_scope());
@@ -1452,6 +1664,42 @@ read_elf_needed_from_input(read_context&	ctxt,
   return result;
 }
 
+/// Add suppressions specifications to the set of suppressions to be
+/// used during the construction of the ABI internal representation
+/// (the ABI corpus) from ELF and DWARF.
+///
+/// During the construction of the ABI corpus, ABI artifacts that
+/// match the a given suppression specification are dropped on the
+/// floor; that is, they are discarded and won't be part of the final
+/// ABI corpus.  This is a way to reduce the amount of data held by
+/// the final ABI corpus.
+///
+/// Note that the suppression specifications provided to this function
+/// are only considered during the construction of the ABI corpus.
+/// For instance, they are not taken into account during e.g
+/// comparisons of two ABI corpora that might happen later.  If you
+/// want to apply suppression specificatins to the comparison (or
+/// reporting) of ABI corpora please refer to the documentation of the
+/// @ref diff_context type to learn how to set suppressions that are
+/// to be used in that context.
+///
+/// @param ctxt the context that is going to be used by functions that
+/// read types and declarations information to construct and ABI
+/// corpus.
+///
+/// @param supprs the suppression specifications to be applied during
+/// the construction of the ABI corpus.
+void
+add_read_context_suppressions(read_context& ctxt,
+			      const suppr::suppressions_type& supprs)
+{
+  for (suppr::suppressions_type::const_iterator i = supprs.begin();
+       i != supprs.end();
+       ++i)
+    if ((*i)->get_drops_artifact_from_ir())
+      ctxt.get_suppressions().push_back(*i);
+}
+
 /// Parse the input XML document containing an ABI corpus, represented
 /// by an 'abi-corpus' element node, associated to the current
 /// context.
@@ -1459,7 +1707,7 @@ read_elf_needed_from_input(read_context&	ctxt,
 /// @param ctxt the current input context.
 ///
 /// @return the corpus resulting from the parsing
-static corpus_sptr
+corpus_sptr
 read_corpus_from_input(read_context& ctxt)
 {
   corpus_sptr nil;
@@ -1653,9 +1901,9 @@ handle_element_node(read_context& ctxt, xmlNodePtr node,
 ///
 /// @return true upon sucessful parsing, false otherwise.
 static bool
-read_location(read_context&	ctxt,
-	      xmlNodePtr	node,
-	      location&	loc)
+read_location(const read_context&	ctxt,
+	      xmlNodePtr		node,
+	      location&		loc)
 {
   string file_path;
   size_t line = 0, column = 0;
@@ -1672,10 +1920,10 @@ read_location(read_context&	ctxt,
   if (xml_char_sptr c = xml::build_sptr(xmlGetProp(node, BAD_CAST("column"))))
     column = atoi(CHAR_STR(c));
 
-  loc =
-    ctxt.get_translation_unit()->get_loc_mgr().create_new_location(file_path,
-								   line,
-								   column);
+  read_context& c = const_cast<read_context&>(ctxt);
+  loc = c.get_translation_unit()->get_loc_mgr().create_new_location(file_path,
+								    line,
+								    column);
   return true;
 }
 
@@ -2083,7 +2331,7 @@ build_namespace_decl(read_context&	ctxt,
     {
       if (n->type != XML_ELEMENT_NODE)
 	continue;
-      assert(handle_element_node(ctxt, n, /*add_to_current_scope=*/true));
+      handle_element_node(ctxt, n, /*add_to_current_scope=*/true);
     }
 
   ctxt.pop_scope_or_abort(decl);
@@ -2400,8 +2648,8 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    const xmlNodePtr	node,
-		    shared_ptr<class_decl> as_method_decl,
-		    bool add_to_current_scope)
+		    class_decl_sptr	as_method_decl,
+		    bool		add_to_current_scope)
 {
   shared_ptr<function_decl> nil;
 
@@ -2496,6 +2744,173 @@ build_function_decl(read_context&	ctxt,
   ctxt.maybe_add_fn_to_exported_decls(fn_decl.get());
 
   return fn_decl;
+}
+
+/// Build a function_decl from a 'function-decl' xml node if it's not
+/// been suppressed by a suppression specification that is in the
+/// context.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param node the xml node to build the function_decl from.
+///
+/// @param as_method_decl if this is set to a class_decl pointer, it
+/// means that the 'function-decl' xml node should be parsed as a
+/// method_decl.  The class_decl pointer is the class decl to which
+/// the resulting method_decl is a member function of.  The resulting
+/// shared_ptr<function_decl> that is returned is then really a
+/// shared_ptr<class_decl::method_decl>.
+///
+/// @param add_to_current_scope if set to yes, the resulting of
+/// this function is added to its current scope.
+///
+/// @return a pointer to a newly created function_decl upon successful
+/// completion.  If the function was suppressed by a suppression
+/// specification then returns nil.
+static function_decl_sptr
+build_function_decl_if_not_suppressed(read_context&	ctxt,
+				      const xmlNodePtr	node,
+				      class_decl_sptr	as_method_decl,
+				      bool		add_to_current_scope)
+{
+    function_decl_sptr fn;
+
+  if (function_is_suppressed(ctxt, node))
+    // The function was suppressed by at least one suppression
+    // specification associated to the current read context.  So
+    // don't build any IR for it.
+    ;
+  else
+    fn = build_function_decl(ctxt, node, as_method_decl,
+			     add_to_current_scope);
+  return fn;
+}
+
+/// Test if a given function denoted by its name and linkage name is
+/// suppressed by any of the suppression specifications associated to
+/// a given context of native xml reading.
+///
+/// @param ctxt the native xml reading context of interest.
+///
+/// @param note the XML node that represents the fucntion.
+/// match.
+///
+/// @return true iff at least one function specification matches the
+/// function denoted by the node @p node.
+static bool
+function_is_suppressed(const read_context& ctxt, xmlNodePtr node)
+{
+  string fname;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    fname = xml::unescape_xml_string(CHAR_STR(s));
+
+  string flinkage_name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "mangled-name"))
+    flinkage_name = xml::unescape_xml_string(CHAR_STR(s));
+
+  scope_decl* scope = ctxt.get_cur_scope();
+
+  string qualified_name = build_qualified_name(scope, fname);
+
+  return suppr::function_is_suppressed(ctxt, qualified_name, flinkage_name);
+}
+
+/// Test if a type denoted by its name, context and location is
+/// suppressed by the suppression specifications that are associated
+/// to a given read context.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param note the XML node that represents the type.
+///
+/// @return true iff the type designated by @p node is suppressed by
+///  at least of suppression specifications associated to the current
+///  read context.
+static bool
+type_is_suppressed(const read_context& ctxt, xmlNodePtr node)
+{
+  string type_name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    type_name = xml::unescape_xml_string(CHAR_STR(s));
+
+  location type_location;
+  read_location(ctxt, node, type_location);
+
+  scope_decl* scope = ctxt.get_cur_scope();
+
+  string qualified_name = build_qualified_name(scope, type_name);
+
+  return suppr::type_is_suppressed(ctxt, qualified_name, type_location,
+				   /*require_drop_property=*/true);
+}
+
+/// Build a @ref var_decl out of a an XML node that describes it iff
+/// the variable denoted by the XML node is not suppressed by a
+/// suppression specification associated to the current read context.
+///
+/// @param ctxt the read context to use.
+///
+/// @param node the XML node for the variable to consider.
+///
+/// @parm add_to_current_scope whether to add the built @ref var_decl
+/// to the current scope or not.
+///
+/// @return true iff the @ref var_decl was built.
+static var_decl_sptr
+build_var_decl_if_not_suppressed(read_context&		ctxt,
+				 const xmlNodePtr	node,
+				 bool			add_to_current_scope)
+{
+  var_decl_sptr var;
+  if (!variable_is_suppressed(ctxt, node))
+    var = build_var_decl(ctxt, node, add_to_current_scope);
+  return var;
+}
+
+/// Test if a variable denoted by its XML node is suppressed by a
+/// suppression specification that is present in a given read context.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param node the XML node of the variable to consider.
+///
+/// @return true iff the variable denoted by @p node is suppressed.
+static bool
+variable_is_suppressed(const read_context& ctxt, xmlNodePtr node)
+{
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = xml::unescape_xml_string(CHAR_STR(s));
+
+  string linkage_name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "mangled-name"))
+    linkage_name = xml::unescape_xml_string(CHAR_STR(s));
+
+  scope_decl* scope = ctxt.get_cur_scope();
+
+  string qualified_name = build_qualified_name(scope, name);
+
+  return suppr::variable_is_suppressed(ctxt, qualified_name, linkage_name);
+}
+
+/// Test if a variable in a particular scope is suppressed by a
+/// suppression specification that is present in a given read context.
+///
+/// @parm ctxt the read context to consider.
+///
+/// @param scope the scope of the variable to consider.
+///
+/// @param v the variable to consider.
+///
+/// @return true iff the variable @p v is suppressed.
+static bool
+variable_is_suppressed(const read_context& ctxt,
+		       const scope_decl* scope,
+		       const var_decl& v)
+{
+  string qualified_name = build_qualified_name(scope, v.get_name());
+  return suppr::variable_is_suppressed(ctxt, qualified_name,
+				       v.get_linkage_name());
 }
 
 /// Build pointer to var_decl from a 'var-decl' xml Node
@@ -3148,6 +3563,31 @@ build_array_type_def(read_context&	ctxt,
   return nil;
 }
 
+/// Build an @ref enum_type_decl from the XML node that represents it,
+/// if it was not suppressed by a supression specification present in
+/// the current read_context.
+///
+/// @param ctxt the read_context to take into account.
+///
+/// @param node the XML node representing the @ref enum_type_decl to
+/// build.
+///
+/// @param add_to_current_scope whether to add the built @ref
+/// enum_type_decl to the current scope.
+///
+/// @return the newly built @ref enum_type_decl iff it was effectively
+/// built.
+static enum_type_decl_sptr
+build_enum_type_decl_if_not_suppressed(read_context&	ctxt,
+				       const xmlNodePtr node,
+				       bool		add_to_current_scope)
+{
+  enum_type_decl_sptr enum_type;
+  if (!type_is_suppressed(ctxt, node))
+    enum_type = build_enum_type_decl(ctxt, node, add_to_current_scope);
+  return enum_type;
+}
+
 /// Build an enum_type_decl from an 'enum-type-decl' xml node.
 ///
 /// @param ctxt the context of the parsing.
@@ -3164,7 +3604,7 @@ build_enum_type_decl(read_context&	ctxt,
 		     const xmlNodePtr	node,
 		     bool		add_to_current_scope)
 {
-  shared_ptr<enum_type_decl> nil;
+  enum_type_decl_sptr nil;
 
   if (!xmlStrEqual(node->name, BAD_CAST("enum-decl")))
     return nil;
@@ -3325,6 +3765,28 @@ build_typedef_decl(read_context&	ctxt,
   return nil;
 }
 
+/// Build a class from its XML node if it is not suppressed by a
+/// suppression specification that is present in the read context.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param node the XML node to consider.
+///
+/// @param add_to_current_scope whether to add the built class to the
+/// current context or not.
+///
+/// @return true iff the class was built.
+static class_decl_sptr
+build_class_decl_if_not_suppressed(read_context&	ctxt,
+				   const xmlNodePtr	node,
+				   bool		add_to_current_scope)
+{
+  class_decl_sptr class_type;
+  if (!type_is_suppressed(ctxt, node))
+    class_type = build_class_decl(ctxt, node, add_to_current_scope);
+  return class_type;
+}
+
 /// Build a class_decl from a 'class-decl' xml node.
 ///
 /// @param ctxt the context of the parsing.
@@ -3342,7 +3804,7 @@ build_class_decl(read_context&		ctxt,
 		 const xmlNodePtr	node,
 		 bool			add_to_current_scope)
 {
-  shared_ptr<class_decl> nil;
+  class_decl_sptr nil;
 
   if (!xmlStrEqual(node->name, BAD_CAST("class-decl")))
     return nil;
@@ -3558,19 +4020,17 @@ build_class_decl(read_context&		ctxt,
 		continue;
 
 	      if (type_base_sptr t =
-		  build_type(ctxt, p, /*add_to_current_scope=*/false))
+		  build_type(ctxt, p, /*add_to_current_scope=*/true))
 		{
-		  if (!get_type_declaration(t)->get_scope())
-		    {
-		      type_base_sptr m =
-			decl->add_member_type(t, access);
-		      ctxt.maybe_canonicalize_type(m, !add_to_current_scope);
-		      xml_char_sptr i= XML_NODE_GET_ATTRIBUTE(p, "id");
-		      string id = CHAR_STR(i);
-		      assert(!id.empty());
-		      ctxt.key_type_decl(m, id);
-		      ctxt.map_xml_node_to_decl(p, get_type_declaration(m));
-		    }
+		  decl_base_sptr td = get_type_declaration(t);
+		  assert(td);
+		  set_member_access_specifier(td, access);
+		  ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
+		  xml_char_sptr i= XML_NODE_GET_ATTRIBUTE(p, "id");
+		  string id = CHAR_STR(i);
+		  assert(!id.empty());
+		  ctxt.key_type_decl(t, id);
+		  ctxt.map_xml_node_to_decl(p, td);
 		}
 	    }
 	}
@@ -3597,8 +4057,8 @@ build_class_decl(read_context&		ctxt,
 	      if (p->type != XML_ELEMENT_NODE)
 		continue;
 
-	      if (shared_ptr<var_decl> v =
-		  build_var_decl(ctxt, p, /*add_to_current_scope=*/false))
+	      if (var_decl_sptr v =
+		  build_var_decl(ctxt, p, /*add_to_cur_scope=*/false))
 		{
 		  if (decl->find_data_member(v->get_name()))
 		    {
@@ -3612,10 +4072,12 @@ build_class_decl(read_context&		ctxt,
 		      assert(is_var_decl(d));
 		      continue;
 		    }
-		  decl->add_data_member(v, access,
-					is_laid_out,
-					is_static,
-					offset_in_bits);
+		  if (!is_static
+		      || !variable_is_suppressed(ctxt, decl.get(), *v))
+		    decl->add_data_member(v, access,
+					  is_laid_out,
+					  is_static,
+					  offset_in_bits);
 		}
 	    }
 	}
@@ -3650,11 +4112,10 @@ build_class_decl(read_context&		ctxt,
 		continue;
 
 	      if (function_decl_sptr f =
-		  build_function_decl(ctxt, p, decl,
-				      /*add_to_current_scope=*/true))
+		  build_function_decl_if_not_suppressed(ctxt, p, decl,
+							/*add_to_cur_sc=*/true))
 		{
-		  class_decl::method_decl_sptr m =
-		    dynamic_pointer_cast<class_decl::method_decl>(f);
+		  class_decl::method_decl_sptr m = is_method_decl(f);
 		  assert(m);
 		  set_member_access_specifier(m, access);
 		  set_member_is_static(m, is_static);
@@ -3776,9 +4237,9 @@ build_function_tdecl(read_context& ctxt,
 	  fn_tmpl_decl->add_template_parameter(parm);
 	  ++parm_index;
 	}
-      else if (shared_ptr<function_decl> f =
-	       build_function_decl(ctxt, n, shared_ptr<class_decl>(),
-				   /*add_to_current_scope=*/true))
+      else if (function_decl_sptr f =
+	       build_function_decl_if_not_suppressed(ctxt, n, class_decl_sptr(),
+					 /*add_to_current_scope=*/true))
 	fn_tmpl_decl->set_pattern(f);
     }
 
@@ -3840,8 +4301,9 @@ build_class_tdecl(read_context&	ctxt,
 	  class_tmpl->add_template_parameter(parm);
 	  ++parm_index;
 	}
-      else if (shared_ptr<class_decl> c =
-	       build_class_decl(ctxt, n, add_to_current_scope))
+      else if (class_decl_sptr c =
+	       build_class_decl_if_not_suppressed(ctxt, n,
+						  add_to_current_scope))
 	{
 	  if (c->get_scope())
 	    ctxt.maybe_canonicalize_type(c, /*force_delay=*/false);
@@ -4137,12 +4599,12 @@ build_template_parameter(read_context&		ctxt,
 ///
 /// @return a pointer to the newly built type_base upon successful
 /// completion, a null pointer otherwise.
-static shared_ptr<type_base>
+static type_base_sptr
 build_type(read_context&	ctxt,
 	   const xmlNodePtr	node,
 	   bool		add_to_current_scope)
 {
-  shared_ptr<type_base> t;
+  type_base_sptr t;
 
   ((t = build_type_decl(ctxt, node, add_to_current_scope))
    || (t = build_qualified_type_decl(ctxt, node, add_to_current_scope))
@@ -4150,9 +4612,11 @@ build_type(read_context&	ctxt,
    || (t = build_reference_type_def(ctxt, node , add_to_current_scope))
    || (t = build_function_type(ctxt, node, add_to_current_scope))
    || (t = build_array_type_def(ctxt, node, add_to_current_scope))
-   || (t = build_enum_type_decl(ctxt, node, add_to_current_scope))
+   || (t = build_enum_type_decl_if_not_suppressed(ctxt, node,
+						  add_to_current_scope))
    || (t = build_typedef_decl(ctxt, node, add_to_current_scope))
-   || (t = build_class_decl(ctxt, node, add_to_current_scope)));
+   || (t = build_class_decl_if_not_suppressed(ctxt, node,
+					      add_to_current_scope)));
 
   return t;
 }
@@ -4280,8 +4744,9 @@ handle_enum_type_decl(read_context&	ctxt,
 		      xmlNodePtr	node,
 		      bool		add_to_current_scope)
 {
-  enum_type_decl_sptr decl = build_enum_type_decl(ctxt, node,
-						  add_to_current_scope);
+  enum_type_decl_sptr decl =
+    build_enum_type_decl_if_not_suppressed(ctxt, node,
+					   add_to_current_scope);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -4315,8 +4780,8 @@ handle_var_decl(read_context&	ctxt,
 		xmlNodePtr	node,
 		bool		add_to_current_scope)
 {
-  decl_base_sptr decl = build_var_decl(ctxt, node,
-				       add_to_current_scope);
+  decl_base_sptr decl = build_var_decl_if_not_suppressed(ctxt, node,
+							 add_to_current_scope);
   return decl;
 }
 
@@ -4331,10 +4796,8 @@ handle_function_decl(read_context&	ctxt,
 		     xmlNodePtr	node,
 		     bool		add_to_current_scope)
 {
-  function_decl_sptr fn = build_function_decl(ctxt, node,
-					      class_decl_sptr(),
-					      add_to_current_scope);
-  return fn;
+  return build_function_decl_if_not_suppressed(ctxt, node, class_decl_sptr(),
+					       add_to_current_scope);
 }
 
 /// Parse a 'class-decl' xml element.
@@ -4348,8 +4811,8 @@ handle_class_decl(read_context& ctxt,
 		  xmlNodePtr	node,
 		  bool		add_to_current_scope)
 {
-  class_decl_sptr decl = build_class_decl(ctxt, node,
-					  add_to_current_scope);
+  class_decl_sptr decl =
+    build_class_decl_if_not_suppressed(ctxt, node, add_to_current_scope);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;
@@ -4556,6 +5019,49 @@ read_corpus_from_file(const string& path)
 
 #endif //WITH_ZIP_ARCHIVE
 
+/// Create an xml_reader::read_context to read a native XML ABI file.
+///
+/// @param path the path to the native XML file to read.
+///
+/// @param env the environment to use.
+///
+/// @return the created context.
+read_context_sptr
+create_native_xml_read_context(const string& path, environment *env)
+{
+  read_context_sptr result(new read_context(xml::new_reader_from_file(path),
+					    env));
+  corpus_sptr corp(new corpus(env));
+  result->set_corpus(corp);
+  result->set_path(path);
+  return result;
+}
+
+/// Create an xml_reader::read_context to read a native XML ABI from
+/// an input stream..
+///
+/// @param in the input stream that contains the native XML file to read.
+///
+/// @param env the environment to use.
+///
+/// @return the created context.
+read_context_sptr
+create_native_xml_read_context(std::istream* in, environment* env)
+{
+  read_context_sptr result(new read_context(xml::new_reader_from_istream(in),
+					    env));
+  corpus_sptr corp(new corpus(env, ""));
+  result->set_corpus(corp);
+  return result;
+}
+
+/// Read an ABI corpus from a given reading context.
+///
+/// @return the resulting ABI corpus.
+corpus_sptr
+read_corpus_from_native_xml(read_context& ctxt)
+{return read_corpus_from_input(ctxt);}
+
 /// De-serialize an ABI corpus from an input XML document which root
 /// node is 'abi-corpus'.
 ///
@@ -4572,10 +5078,8 @@ corpus_sptr
 read_corpus_from_native_xml(std::istream* in,
 			    environment* env)
 {
-  read_context read_ctxt(xml::new_reader_from_istream(in), env);
-  corpus_sptr corp(new corpus(env, ""));
-  read_ctxt.set_corpus(corp);
-  return read_corpus_from_input(read_ctxt);
+  read_context_sptr read_ctxt = create_native_xml_read_context(in, env);
+  return read_corpus_from_input(*read_ctxt);
 }
 
 /// De-serialize an ABI corpus from an XML document file which root
@@ -4595,13 +5099,8 @@ corpus_sptr
 read_corpus_from_native_xml_file(const string& path,
 				 environment* env)
 {
-  read_context read_ctxt(xml::new_reader_from_file(path), env);
-  corpus_sptr corp = read_corpus_from_input(read_ctxt);
-  if (corp)
-    {
-      if (corp->get_path().empty())
-	corp->set_path(path);
-    }
+  read_context_sptr read_ctxt = create_native_xml_read_context(path, env);
+  corpus_sptr corp = read_corpus_from_input(*read_ctxt);
   return corp;
 }
 
