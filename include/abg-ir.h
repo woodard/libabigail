@@ -1247,10 +1247,13 @@ public:
   typedef std::vector<function_type_sptr >	function_types;
   /// Convenience typedef for a vector of @ref scope_decl_sptr.
   typedef std::vector<scope_decl_sptr>	scopes;
+  /// The type of the private data of @ref scope_decl.
+  struct priv;
+  /// A convenience typedef for a shared pointer to scope_decl::priv.
+  typedef shared_ptr<priv> priv_sptr;
 
 private:
-  declarations	members_;
-  scopes	member_scopes_;
+  priv_sptr priv_;
 
   scope_decl();
 
@@ -1270,15 +1273,9 @@ public:
 
   scope_decl(const environment* env,
 	     const string& name, const location& locus,
-	     visibility	vis = VISIBILITY_DEFAULT)
-    : type_or_decl_base(env),
-      decl_base(env, name, locus, /*mangled_name=*/name, vis)
-  {}
+	     visibility	vis = VISIBILITY_DEFAULT);
 
-  scope_decl(const environment* env, location& l)
-    : type_or_decl_base(env),
-      decl_base(env, "", l)
-  {}
+  scope_decl(const environment* env, location& l);
 
   virtual size_t
   get_hash() const;
@@ -1287,24 +1284,19 @@ public:
   operator==(const decl_base&) const;
 
   const declarations&
-  get_member_decls() const
-  {return members_;}
+  get_member_decls() const;
 
   declarations&
-  get_member_decls()
-  {return members_;}
+  get_member_decls();
 
   scopes&
-  get_member_scopes()
-  {return member_scopes_;}
+  get_member_scopes();
 
   const scopes&
-  get_member_scopes() const
-  {return member_scopes_;}
+  get_member_scopes() const;
 
   bool
-  is_empty() const
-  {return get_member_decls().empty();}
+  is_empty() const;
 
   bool
   find_iterator_for_member(const decl_base*, declarations::iterator&);

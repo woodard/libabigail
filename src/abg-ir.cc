@@ -4240,6 +4240,84 @@ maybe_update_types_lookup_map(scope_decl *scope,
     }
 }
 
+// <scope_decl stuff>
+
+struct scope_decl::priv
+{
+  declarations members_;
+  scopes member_scopes_;
+}; // end struct scope_decl::priv
+
+/// Constructor of the @ref scope_decl type.
+///
+/// @param the environment to use for the new instance.
+///
+/// @param the name of the scope decl.
+///
+/// @param locus the source location where the scope_decl is defined.
+///
+/// @param vis the visibility of the declaration.
+scope_decl::scope_decl(const environment* env,
+		       const string& name,
+		       const location& locus,
+		       visibility vis)
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, /*mangled_name=*/name, vis),
+    priv_(new priv)
+{}
+
+/// Constructor of the @ref scope_decl type.
+///
+/// @param the environment to use for the new instance.
+///
+/// @param l the source location where the scope_decl is defined.
+///
+/// @param vis the visibility of the declaration.
+scope_decl::scope_decl(const environment* env, location& l)
+  : type_or_decl_base(env),
+    decl_base(env, "", l),
+    priv_(new priv)
+{}
+
+/// Getter for the member declarations carried by the current @ref
+/// scope_decl.
+///
+/// @return the member declarations carried by the current @ref
+/// scope_decl.
+const scope_decl::declarations&
+scope_decl::get_member_decls() const
+{return priv_->members_;}
+
+/// Getter for the member declarations carried by the current @ref
+/// scope_decl.
+///
+/// @return the member declarations carried by the current @ref
+/// scope_decl.
+scope_decl::declarations&
+scope_decl::get_member_decls()
+{return priv_->members_;}
+
+/// Getter for the scopes carried by the current scope.
+///
+/// @return the scopes carried by the current scope.
+scope_decl::scopes&
+scope_decl::get_member_scopes()
+{return priv_->member_scopes_;}
+
+/// Getter for the scopes carried by the current scope.
+///
+/// @return the scopes carried by the current scope.
+const scope_decl::scopes&
+scope_decl::get_member_scopes() const
+{return priv_->member_scopes_;}
+
+/// Test if the current scope is empty.
+///
+/// @return true iff the current scope is empty.
+bool
+scope_decl::is_empty() const
+{return get_member_decls().empty();}
+
 /// Add a member decl to this scope.  Note that user code should not
 /// use this, but rather use add_decl_to_scope.
 ///
@@ -4255,10 +4333,10 @@ scope_decl::add_member_decl(const decl_base_sptr member)
   assert(!has_scope(member));
 
   member->set_scope(this);
-  members_.push_back(member);
+  priv_->members_.push_back(member);
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
-    member_scopes_.push_back(m);
+    priv_->member_scopes_.push_back(m);
 
   update_qualified_name(member);
 
@@ -4296,10 +4374,10 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
   assert(!member->get_scope());
 
   member->set_scope(this);
-  members_.insert(before, member);
+  priv_->members_.insert(before, member);
 
   if (scope_decl_sptr m = dynamic_pointer_cast<scope_decl>(member))
-    member_scopes_.push_back(m);
+   priv_-> member_scopes_.push_back(m);
 
   update_qualified_name(member);
 
@@ -4325,13 +4403,13 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
 void
 scope_decl::remove_member_decl(const decl_base_sptr member)
 {
-  for (declarations::iterator i = members_.begin();
-       i != members_.end();
+  for (declarations::iterator i = priv_->members_.begin();
+       i != priv_->members_.end();
        ++i)
     {
       if (**i == *member)
 	{
-	  members_.erase(i);
+	  priv_->members_.erase(i);
 	  // Do not access i after this point as it's invalided by the
 	  // erase call.
 	  break;
@@ -4341,13 +4419,13 @@ scope_decl::remove_member_decl(const decl_base_sptr member)
   scope_decl_sptr scope = dynamic_pointer_cast<scope_decl>(member);
   if (scope)
     {
-      for (scopes::iterator i = member_scopes_.begin();
-	   i != member_scopes_.end();
+      for (scopes::iterator i = priv_->member_scopes_.begin();
+	   i != priv_->member_scopes_.end();
 	   ++i)
 	{
 	  if (**i == *member)
 	    {
-	      member_scopes_.erase(i);
+	      priv_->member_scopes_.erase(i);
 	      break;
 	    }
 	}
@@ -4739,6 +4817,8 @@ const scope_decl*
 get_top_most_scope_under(const decl_base_sptr decl,
 			 const scope_decl_sptr scope)
 {return get_top_most_scope_under(decl, scope.get());}
+
+// </scope_decl stuff>
 
 /// Build and return a copy of the name of an ABI artifact that is
 /// either a type of a decl.
