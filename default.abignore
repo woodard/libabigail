@@ -72,3 +72,21 @@
 #############################################
 # End of glibc suppression specifications
 ############################################
+
+###########################################################
+# Below are  suppression specifications for webkitgtk
+###########################################################
+
+[suppress_function]
+  soname_regexp = libwebkitgtk-1\\.0\\.so.*
+  name_not_regexp = ^webkit_.*
+  drop = true
+
+[suppress_function]
+  soname_regexp = libwebkit2gtk-4\\.0\\.so.*
+  name_not_regexp = ^webkit_.*
+  drop = true
+
+#######################################################
+# End of webkitgtk suppression specifications
+#######################################################
