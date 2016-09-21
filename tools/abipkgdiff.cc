@@ -687,7 +687,7 @@ extract_deb(const string& package_path,
     emit_prefix("abipkgdiff", cerr)
       << "Extracting package "
       << package_path
-      << "to "
+      << " to "
       << extracted_package_dir_path
       << " ...";
 
