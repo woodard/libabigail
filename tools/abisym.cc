@@ -162,25 +162,25 @@ main(int argc, char* argv[])
   cout << " found symbol '" << n << "'";
   if (n != sym->get_name())
     cout << " (" << sym->get_name() << ")";
-    cout << ", an instance of "
-	 << (elf_symbol::type) sym->get_type()
-	 << " of " << sym->get_binding();
-    if (syms.size() > 1 || !sym->get_version().is_empty())
-      {
-	cout << ", of version";
-	if (syms.size () > 1)
-	  cout << "s";
-	cout << " ";
-	for (vector<elf_symbol_sptr>::const_iterator i = syms.begin();
-	     i != syms.end();
-	     ++i)
-	  {
-	    if (i != syms.begin())
-	      cout << ", ";
-	    cout << "'" << (*i)->get_version().str() << "'";
-	  }
-      }
-    cout << '\n';
+  cout << ", an instance of "
+       << (elf_symbol::type) sym->get_type()
+       << " of " << sym->get_binding();
+  if (syms.size() > 1 || !sym->get_version().is_empty())
+    {
+      cout << ", of version";
+      if (syms.size () > 1)
+	cout << "s";
+      cout << " ";
+      for (vector<elf_symbol_sptr>::const_iterator i = syms.begin();
+	   i != syms.end();
+	   ++i)
+	{
+	  if (i != syms.begin())
+	    cout << ", ";
+	  cout << "'" << (*i)->get_version().str() << "'";
+	}
+    }
+  cout << '\n';
 
   return 0;
 }

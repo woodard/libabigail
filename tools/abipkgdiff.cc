@@ -1151,11 +1151,11 @@ compare(const elf_file& elf1,
     emit_prefix("abipkgdiff", cerr)
       << " DONE reading file " << elf2.path << "\n";
 
-if (verbose)
-  emit_prefix("abipkgdiff", cerr)
-    << "  Comparing the ABIs of: \n"
-    << "    " << elf1.path << "\n"
-    << "    " << elf2.path << "\n";
+  if (verbose)
+    emit_prefix("abipkgdiff", cerr)
+      << "  Comparing the ABIs of: \n"
+      << "    " << elf1.path << "\n"
+      << "    " << elf2.path << "\n";
 
   diff = compute_diff(corpus1, corpus2, ctxt);
 
