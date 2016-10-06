@@ -33,6 +33,7 @@
 
 #include <tr1/memory>
 #include <tr1/functional>
+#include <tr1/unordered_set>
 #include <ostream>
 #include <string>
 
@@ -40,6 +41,8 @@ using std::tr1::shared_ptr;
 
 namespace abigail
 {
+// Inject some std types into this namespace.
+using std::tr1::unordered_set;
 
 /// The abstraction of an interned string.
 ///
@@ -241,6 +244,10 @@ public:
 
   ~interned_string_pool();
 }; // end class interned_string_pool
+
+/// Convenience typedef for a set of @ref interned_string
+typedef unordered_set<interned_string,
+		      hash_interned_string> interned_string_set_type;
 
 } // end namespace abigail
 
