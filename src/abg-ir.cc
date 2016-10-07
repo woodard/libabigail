@@ -2043,6 +2043,7 @@ struct environment::priv
   type_decl_sptr		void_type_decl_;
   type_decl_sptr		variadic_marker_type_decl_;
   interned_string_bool_map_type classes_being_compared_;
+  interned_string_set_type	fn_types_being_compared_;
   vector<type_base_sptr>	extra_live_types_;
   interned_string_pool		string_pool_;
 
@@ -10573,6 +10574,50 @@ struct function_type::priv
   priv(type_base_sptr return_type)
     : return_type_(return_type)
   {}
+
+  /// Mark a given @ref function_type as being compared.
+  ///
+  /// @param type the @ref function_type to mark as being compared.
+  void
+  mark_as_being_compared(const function_type& type) const
+  {
+    const environment* env = type.get_environment();
+    assert(env);
+    interned_string fn_type_name = get_function_type_name(type,
+							  /*internal=*/true);
+    env->priv_->fn_types_being_compared_.insert(fn_type_name);
+  }
+
+  /// If a given @ref function_type was marked as being compared, this
+  /// function unmarks it.
+  ///
+  /// @param type the @ref function_type to mark as *NOT* being
+  /// compared.
+  void
+  unmark_as_being_compared(const function_type& type) const
+  {
+    const environment* env = type.get_environment();
+    assert(env);
+    interned_string fn_type_name = get_function_type_name(type,
+							  /*internal=*/true);
+    env->priv_->fn_types_being_compared_.erase(fn_type_name);
+  }
+
+  /// Tests if a @ref function_type is currently being compared.
+  ///
+  /// @param type the function type to take into account.
+  ///
+  /// @return true if @p type is being compared.
+  bool
+  comparison_started(const function_type& type) const
+  {
+    const environment* env = type.get_environment();
+    assert(env);
+    interned_string fn_type_name = get_function_type_name(type,
+							  /*internal=*/true);
+    interned_string_set_type& c = env->priv_->fn_types_being_compared_;
+    return (c.find(fn_type_name) != c.end());
+  }
 };// end struc function_type::priv
 
 /// The most straightforward constructor for the function_type class.
@@ -10788,6 +10833,20 @@ equals(const function_type& lhs,
        const function_type& rhs,
        change_kind* k)
 {
+#define RETURN(value)				\
+  do {						\
+    lhs.priv_->unmark_as_being_compared(lhs);	\
+    lhs.priv_->unmark_as_being_compared(rhs);	\
+    return value;				\
+  } while(0)
+
+  if (lhs.priv_->comparison_started(lhs)
+      || lhs.priv_->comparison_started(rhs))
+    return true;
+
+  lhs.priv_->mark_as_being_compared(lhs);
+  lhs.priv_->mark_as_being_compared(rhs);
+
   bool result = true;
 
   if (!lhs.type_base::operator==(rhs))
@@ -10796,7 +10855,7 @@ equals(const function_type& lhs,
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
       else
-	return false;
+	RETURN(false);
     }
 
   class_decl* lhs_class = 0, *rhs_class = 0;
@@ -10814,7 +10873,7 @@ equals(const function_type& lhs,
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
       else
-	return false;
+	RETURN(false);
     }
   else if (lhs_class
 	   && (lhs_class->get_qualified_name()
@@ -10824,7 +10883,7 @@ equals(const function_type& lhs,
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
       else
-	return false;
+	RETURN(false);
     }
 
   // Then compare the return type; Beware if it's t's a class type
@@ -10856,7 +10915,7 @@ equals(const function_type& lhs,
 	  if (k)
 	    *k |= SUBTYPE_CHANGE_KIND;
 	  else
-	    return false;
+	    RETURN(false);
 	}
     }
   else
@@ -10866,7 +10925,7 @@ equals(const function_type& lhs,
 	if (k)
 	  *k |= SUBTYPE_CHANGE_KIND;
 	else
-	  return false;
+	  RETURN(false);
       }
 
   class_decl* lcl = 0, * rcl = 0;
@@ -10893,7 +10952,7 @@ equals(const function_type& lhs,
 	  if (k)
 	    *k |= SUBTYPE_CHANGE_KIND;
 	  else
-	    return false;
+	    RETURN(false);
 	}
     }
 
@@ -10904,10 +10963,11 @@ equals(const function_type& lhs,
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
       else
-	return false;
+	RETURN(false);
     }
 
-  return result;
+  RETURN(result);
+#undef RETURN
 }
 
 /// Get the parameter of the function.

@@ -185,6 +185,7 @@ public:
   intern(const string&) const;
 
   friend class class_decl;
+  friend class function_type;
 
   friend void keep_type_alive(type_base_sptr);
 }; // end class environment
@@ -2587,6 +2588,9 @@ public:
   traverse(ir_node_visitor&);
 
   virtual ~function_type();
+
+  friend bool
+  equals(const function_type&, const function_type&, change_kind*);
 };//end class function_type
 
 /// The hashing functor for @ref function_type.
