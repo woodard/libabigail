@@ -2042,7 +2042,7 @@ struct environment::priv
   canonical_types_map_type	canonical_types_;
   type_decl_sptr		void_type_decl_;
   type_decl_sptr		variadic_marker_type_decl_;
-  interned_string_bool_map_type classes_being_compared_;
+  interned_string_set_type	classes_being_compared_;
   interned_string_set_type	fn_types_being_compared_;
   vector<type_base_sptr>	extra_live_types_;
   interned_string_pool		string_pool_;
@@ -12245,7 +12245,7 @@ struct class_decl::priv
   {
     const environment* env = klass.get_environment();
     assert(env);
-    env->priv_->classes_being_compared_[klass.get_qualified_name()] = true;
+    env->priv_->classes_being_compared_.insert(klass.get_qualified_name());
   }
 
   /// Mark a class as being currently compared using the class_decl==
@@ -12318,7 +12318,7 @@ struct class_decl::priv
   {
     const environment* env = klass.get_environment();
     assert(env);
-    interned_string_bool_map_type& c = env->priv_->classes_being_compared_;
+    interned_string_set_type& c = env->priv_->classes_being_compared_;
     return (c.find(klass.get_qualified_name()) != c.end());
   }
 
