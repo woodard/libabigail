@@ -12302,9 +12302,8 @@ struct class_decl::priv
   void
   unmark_as_being_compared(const class_decl* klass) const
   {
-    const environment* env = klass->get_environment();
-    assert(env);
-    env->priv_->classes_being_compared_.erase(klass->get_qualified_name());
+    if (klass)
+      return unmark_as_being_compared(*klass);
   }
 
   /// Test if a given instance of class_decl is being currently
@@ -12330,7 +12329,11 @@ struct class_decl::priv
   /// @return true if @p klass is being compared, false otherwise.
   bool
   comparison_started(const class_decl* klass) const
-  {return comparison_started(*klass);}
+  {
+    if (klass)
+      return comparison_started(*klass);
+    return false;
+  }
 };// end struct class_decl::priv
 
 /// A Constructor for instances of \ref class_decl
@@ -13814,6 +13817,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
   }
 
   RETURN(result);
+#undef RETURN
 }
 
 /// Comparison operator for @ref class_decl.
