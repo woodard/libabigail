@@ -89,6 +89,7 @@ struct options
   bool			show_base_name_alt_debug_info_path;
   bool			write_architecture;
   bool			load_all_types;
+  bool			linux_kernel_mode;
   bool			show_stats;
   bool			noout;
   bool			show_locs;
@@ -101,6 +102,7 @@ struct options
       show_base_name_alt_debug_info_path(),
       write_architecture(true),
       load_all_types(),
+      linux_kernel_mode(true),
       show_stats(),
       noout(),
       show_locs(true),
@@ -130,6 +132,8 @@ display_usage(const string& prog_name, ostream& out)
     "debug info of <elf-path>, and show its base name\n"
     << "  --load-all-types  read all types including those not reachable from "
     "exported declarations\n"
+    << "  --no-linux-kernel-mode  don't consider the input binary as "
+       "a Linux Kernel binary\n"
     << "  --abidiff  compare the loaded ABI against itself\n"
     << "  --stats  show statistics about various internal stuff\n"
     << "  --verbose show verbose messages about internal stuff\n";
@@ -216,6 +220,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	}
       else if (!strcmp(argv[i], "--load-all-types"))
 	opts.load_all_types = true;
+      else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
+	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--abidiff"))
 	opts.abidiff = true;
       else if (!strcmp(argv[i], "--stats"))
@@ -346,7 +352,8 @@ main(int argc, char* argv[])
   corpus_sptr corp;
   read_context_sptr c = create_read_context(opts.in_file_path,
 					    &p, env.get(),
-					    opts.load_all_types);
+					    opts.load_all_types,
+					    opts.linux_kernel_mode);
   read_context& ctxt = *c;
 
   set_show_stats(ctxt, opts.show_stats);

@@ -97,7 +97,8 @@ read_context_sptr
 create_read_context(const std::string&	elf_path,
 		    char**		debug_info_root_path,
 		    ir::environment*	environment,
-		    bool		read_all_types = false);
+		    bool		read_all_types = false,
+		    bool		linux_kernel_mode = false);
 
 void
 add_read_context_suppressions(read_context& ctxt,

@@ -40,6 +40,7 @@
 #include <dwarf.h>
 #include <algorithm>
 #include <tr1/unordered_map>
+#include <tr1/unordered_set>
 #include <stack>
 #include <deque>
 #include <list>
@@ -75,6 +76,7 @@ namespace dwarf_reader
 using std::tr1::dynamic_pointer_cast;
 using std::tr1::static_pointer_cast;
 using std::tr1::unordered_map;
+using std::tr1::unordered_set;
 using std::stack;
 using std::deque;
 using std::list;
@@ -153,6 +155,12 @@ typedef unordered_map<Dwarf_Off, interned_string> die_istring_map_type;
 /// Convenience typedef for a map which key is an elf address and
 /// which value is an elf_symbol_sptr.
 typedef unordered_map<GElf_Addr, elf_symbol_sptr> addr_elf_symbol_sptr_map_type;
+
+/// Convenience typedef for a set of ELF addresses.
+typedef unordered_set<GElf_Addr> address_set_type;
+
+/// Convenience typedef for a shared pointer to an @ref address_set_type.
+typedef shared_ptr<address_set_type> address_set_sptr;
 
 /// Convenience typedef for a shared pointer to an
 /// addr_elf_symbol_sptr_map_type.
@@ -789,7 +797,7 @@ enum hash_table_kind
 ///
 /// @param elf_handle the elf handle to use.
 ///
-/// @param ht_section_offset this is set to the the resulting offset
+/// @param ht_section_offset this is set to the resulting offset
 /// of the hash table section.  This is set iff the function returns true.
 ///
 /// @param symtab_section_offset the offset of the section of the
@@ -990,20 +998,25 @@ get_binary_load_address(Elf *elf_handle,
   GElf_Ehdr eh_mem;
   GElf_Ehdr *elf_header = gelf_getehdr(elf_handle, &eh_mem);
   size_t num_segments = elf_header->e_phnum;
+  GElf_Phdr *lowest_program_header = 0;
 
   for (unsigned i = 0; i < num_segments; ++i)
     {
       GElf_Phdr ph_mem;
-      GElf_Phdr *program_header =gelf_getphdr(elf_handle, i, &ph_mem);
+      GElf_Phdr *program_header = gelf_getphdr(elf_handle, i, &ph_mem);
       if (program_header->p_type == PT_LOAD
-	  && program_header->p_offset == 0)
-	{
-	  // This program header represent the segment containing the
-	  // first byte of this binary.  We want to return the address
-	  // at which the segment is loaded in memory.
-	  load_address = program_header->p_vaddr;
-	  return true;
-	}
+	  && (!lowest_program_header
+	      || program_header->p_vaddr < lowest_program_header->p_vaddr))
+	lowest_program_header = program_header;
+    }
+
+  if (lowest_program_header)
+    {
+      // This program header represent the segment containing the
+      // first byte of this binary.  We want to return the address
+      // at which the segment is loaded in memory.
+      load_address = lowest_program_header->p_vaddr;
+      return true;
     }
   return false;
 }
@@ -1181,7 +1194,7 @@ compare_symbol_name(const string& symbol_name,
 /// @param verneed_section the SHT_GNU_verneed section found.  If the
 /// section wasn't found, this is set to nil.
 ///
-/// @return true iff at least one of the the sections where found.
+/// @return true iff at least one of the sections where found.
 static bool
 get_symbol_versionning_sections(Elf*		elf_handle,
 				Elf_Scn*&	versym_section,
@@ -2393,6 +2406,14 @@ class read_context
   // ppc64 elf v1 binaries.  This section contains the procedure
   // descriptors on that platform.
   Elf_Scn*			opd_section_;
+  /// The special __ksymtab and __ksymtab_gpl sections from linux
+  /// kernel or module binaries.  The former is used to store
+  /// references to symbols exported using the EXPORT_SYMBOL macro
+  /// from the linux kernel.  The latter is used to store references
+  /// to symbols exported using the EXPORT_SYMBOL_GPL macro from the
+  /// linux kernel.
+  Elf_Scn*			ksymtab_section_;
+  Elf_Scn*			ksymtab_gpl_section_;
   bool				symbol_versionning_sections_loaded_;
   bool				symbol_versionning_sections_found_;
   Elf_Scn*			versym_section_;
@@ -2411,10 +2432,15 @@ class read_context
   string_elf_symbols_map_sptr	var_syms_;
   string_elf_symbols_map_sptr	undefined_fun_syms_;
   string_elf_symbols_map_sptr	undefined_var_syms_;
+  address_set_sptr		linux_exported_fn_syms_;
+  address_set_sptr		linux_exported_var_syms_;
+  address_set_sptr		linux_exported_gpl_fn_syms_;
+  address_set_sptr		linux_exported_gpl_var_syms_;
   vector<string>		dt_needed_;
   string			dt_soname_;
   string			elf_architecture_;
   corpus::exported_decls_builder* exported_decls_builder_;
+  bool				load_in_linux_kernel_mode_;
   bool				load_all_types_;
   bool				show_stats_;
   bool				do_log_;
@@ -2435,12 +2461,15 @@ public:
       cur_tu_die_(),
       symtab_section_(),
       opd_section_(),
+      ksymtab_section_(),
+      ksymtab_gpl_section_(),
       symbol_versionning_sections_loaded_(),
       symbol_versionning_sections_found_(),
       versym_section_(),
       verdef_section_(),
       verneed_section_(),
       exported_decls_builder_(),
+      load_in_linux_kernel_mode_(),
       load_all_types_(),
       show_stats_(),
       do_log_()
@@ -4242,10 +4271,11 @@ public:
   ///
   /// @return the symbol table section if found
   Elf_Scn*
-  find_symbol_table_section()
+  find_symbol_table_section() const
   {
     if (!symtab_section_)
-      dwarf_reader::find_symbol_table_section(elf_handle(), symtab_section_);
+      dwarf_reader::find_symbol_table_section(elf_handle(),
+					      const_cast<read_context*>(this)->symtab_section_);
     return symtab_section_;
   }
 
@@ -4255,11 +4285,38 @@ public:
   ///
   /// @return the .opd section, if found.  Return nil otherwise.
   Elf_Scn*
-  find_opd_section()
+  find_opd_section() const
   {
     if (!opd_section_)
-      opd_section_= find_section(elf_handle(), ".opd", SHT_PROGBITS);
+      const_cast<read_context*>(this)->opd_section_=
+	find_section(elf_handle(), ".opd", SHT_PROGBITS);
     return opd_section_;
+  }
+
+  /// Return the __ksymtab section of a linux kernel ELF file (either
+  /// a vmlinux binary or a kernel module).
+  ///
+  /// @return the __ksymtab section if found, nil otherwise.
+  Elf_Scn*
+  find_ksymtab_section() const
+  {
+    if (!ksymtab_section_)
+      const_cast<read_context*>(this)->ksymtab_section_ =
+	find_section(elf_handle(), "__ksymtab", SHT_PROGBITS);
+    return ksymtab_section_;
+  }
+
+  /// Return the __ksymtab_gpl section of a linux kernel ELF file
+  /// (either a vmlinux binary or a kernel module).
+  ///
+  /// @return the __ksymtab_gpl section if found, nil otherwise.
+  Elf_Scn*
+  find_ksymtab_gpl_section() const
+  {
+    if (!ksymtab_gpl_section_)
+      const_cast<read_context*>(this)->ksymtab_gpl_section_ =
+	find_section(elf_handle(), "__ksymtab_gpl", SHT_PROGBITS);
+    return ksymtab_gpl_section_;
   }
 
   /// Return the SHT_GNU_versym, SHT_GNU_verdef and SHT_GNU_verneed
@@ -4443,6 +4500,82 @@ public:
     return sym;
   }
 
+  /// Read 8 bytes and convert their value into an uint64_t.
+  ///
+  /// @param bytes the array of bytes to read the next 8 bytes from.
+  /// Note that this array must be at least 8 bytes long.
+  ///
+  /// @param result where to store the resuting uint64_t that was read.
+  ///
+  /// @param is_big_endian if true, read the 8 bytes in Big Endian
+  /// mode, otherwise, read them in Little Endian.
+  ///
+  /// @param true if the 8 bytes could be read, false otherwise.
+  bool
+  read_uint64_from_array_of_bytes(const uint8_t	*bytes,
+				  bool			is_big_endian,
+				  uint64_t		&result) const
+  {
+    return read_int_from_array_of_bytes(bytes, 8, is_big_endian, result);
+  }
+
+  /// Read N bytes and convert their value into an uint64_t.
+  ///
+  /// Note that N cannot be bigger than 8 for now.
+  ///
+  /// @param bytes the array of bytes to read the next 8 bytes from.
+  /// Note that this array must be at least 8 bytes long.
+  ///
+  /// @param number_of_bytes the number of bytes to read.  This number
+  /// cannot be bigger than 8.
+  ///
+  /// @param is_big_endian if true, read the 8 bytes in Big Endian
+  /// mode, otherwise, read them in Little Endian.
+  ///
+  /// @param result where to store the resuting uint64_t that was read.
+  ///
+  ///
+  /// @param true if the 8 bytes could be read, false otherwise.
+  bool
+  read_int_from_array_of_bytes(const uint8_t	*bytes,
+			       unsigned char	number_of_bytes,
+			       bool		is_big_endian,
+			       uint64_t	&result) const
+  {
+    if (!bytes)
+      return false;
+
+    assert(number_of_bytes <= 8);
+
+    uint64_t res = 0;
+
+    const uint8_t *cur = bytes;
+    if (is_big_endian)
+      {
+	// In Big Endian, the most significant byte is at the lowest
+	// address.
+	const uint8_t* msb = cur;
+	res = *msb;
+
+	// Now read the remaining least significant bytes.
+	for (uint i = 1; i < number_of_bytes; ++i)
+	  res = (res << 8) | ((uint64_t)msb[i]);
+      }
+    else
+      {
+	// In Little Endian, the least significant byte is at the
+	// lowest address.
+	const uint8_t* lsb = cur;
+	res = *lsb;
+	// Now read the remaining most significant bytes.
+	for (uint i = 1; i < number_of_bytes; ++i)
+	  res = res | (((uint64_t)lsb[i]) << i * 8);
+      }
+
+    result = res;
+    return true;
+  }
+
   /// Lookup the address of the function entry point that corresponds
   /// to the address of a given function descriptor.
   ///
@@ -4469,7 +4602,7 @@ public:
   /// if the function descriptor could not be found then this function
   /// just returns the address of the fuction descriptor.
   GElf_Addr
-  lookup_ppc64_elf_fn_entry_pointer_address(GElf_Addr fn_desc_address)
+  lookup_ppc64_elf_fn_entry_point_address(GElf_Addr fn_desc_address) const
   {
     if (!elf_handle())
       return fn_desc_address;
@@ -4490,8 +4623,11 @@ public:
     // The offset of the function descriptor entry, in the .opd
     // section.
     size_t fn_desc_offset = fn_desc_address - opd_sheader->sh_addr;
-    Elf_Data *elf_data = elf_rawdata(opd_section, NULL);
-    if (elf_data->d_size <= fn_desc_offset)
+    Elf_Data *elf_data = elf_rawdata(opd_section, 0);
+
+    // Ensure that the opd_section has at least 8 bytes, starting from
+    // the offset we want read the data from.
+    if (elf_data->d_size <= fn_desc_offset + 8)
       return fn_desc_address;
 
     // A pointer to the data of the .opd section, that we can actually
@@ -4501,27 +4637,8 @@ public:
     // The resulting address we are looking for is going to be formed
     // in this variable.
     GElf_Addr result = 0;
-
-    if (is_big_endian)
-      {
-	// In Big Endian, the most significant byte is at the lowest
-	// address.
-	uint8_t* msb = bytes + fn_desc_offset;
-	result = *msb;
-	// Now read the remaining 7 least significant bytes.
-	for (uint i = 1; i < 8; ++i)
-	  result = (result << 8) + msb[i];
-      }
-    else
-      {
-	// In Little Endian, the least significant byte is at the
-	// lowest address.
-	uint8_t* lsb = bytes + fn_desc_offset;
-	result = *lsb;
-	// Now read the remaining 7 most significant bytes.
-	for (uint i = 1; i < 8; ++i)
-	  result = result + (lsb[i] << i * 8);
-      }
+    assert(read_uint64_from_array_of_bytes(bytes + fn_desc_offset,
+					   is_big_endian, result));
 
     return result;
   }
@@ -4539,7 +4656,7 @@ public:
   /// @return the elf symbol found at address @p symbol_start_addr, or
   /// nil if none was found.
   elf_symbol_sptr
-  lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr)
+  lookup_elf_fn_symbol_from_address(GElf_Addr symbol_start_addr) const
   {
     addr_elf_symbol_sptr_map_type::const_iterator i,
       nil = fun_entry_addr_sym_map().end();
@@ -4561,7 +4678,7 @@ public:
   ///
   /// @return the elf symbol found or nil if none was found.
   elf_symbol_sptr
-  lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr)
+  lookup_elf_var_symbol_from_address(GElf_Addr symbol_start_addr) const
   {
     addr_elf_symbol_sptr_map_type::const_iterator i,
       nil = var_addr_sym_map().end();
@@ -4570,6 +4687,27 @@ public:
       return elf_symbol_sptr();
 
     return i->second;
+  }
+
+  /// Lookup an elf symbol, knowing its address.
+  ///
+  /// This function first looks for a function symbol having this
+  /// address; if it doesn't find any, then it looks for a variable
+  /// symbol.
+  ///
+  /// @param symbol_addr the address of the symbol of the symbol we
+  /// are looking for.  Note that the address is a relative offset
+  /// starting from the beginning of the .text section.  Addresses
+  /// that are presen in the symbol table (the one named .symtab).
+  ///
+  /// @return the elf symbol if found, or nil otherwise.
+  elf_symbol_sptr
+  lookup_elf_symbol_from_address(GElf_Addr symbol_addr) const
+  {
+    elf_symbol_sptr result = lookup_elf_fn_symbol_from_address(symbol_addr);
+    if (!result)
+      result = lookup_elf_var_symbol_from_address(symbol_addr);
+    return result;
   }
 
   /// Look in the symbol tables of the underying elf file and see if
@@ -4601,13 +4739,93 @@ public:
   ///
   /// @return true iff the symbol was found.
   bool
-  lookup_public_variable_symbol_from_elf(const string&			sym_name,
-					 vector<elf_symbol_sptr>&	syms)
+  lookup_public_variable_symbol_from_elf(const string&		  sym_name,
+					 vector<elf_symbol_sptr>& syms)
   {
     return dwarf_reader::lookup_public_variable_symbol_from_elf(env(),
 								elf_handle(),
 								sym_name,
 								syms);
+  }
+
+  /// Test if a given function symbol has been exported.
+  ///
+  /// @param symbol_address the address of the symbol we are looking
+  /// for.  Note that this address must be a relative offset from the
+  /// beginning of the .text section, just like the kind of addresses
+  /// that are present in the .symtab section.
+  ///
+  /// @returnthe elf symbol if found, or nil otherwise.
+  elf_symbol_sptr
+  function_symbol_is_exported(GElf_Addr symbol_address) const
+  {
+    elf_symbol_sptr symbol = lookup_elf_fn_symbol_from_address(symbol_address);
+    if (!symbol)
+      return symbol;
+
+    if (!symbol->is_public())
+      return elf_symbol_sptr();
+
+    address_set_sptr set;
+    bool looking_at_linux_kernel_binary =
+      load_in_linux_kernel_mode() && is_linux_kernel_binary();
+
+    if (looking_at_linux_kernel_binary)
+      {
+	if ((set = linux_exported_fn_syms()))
+	  {
+	    if (set->find(symbol_address) != set->end())
+	      return symbol;
+	  }
+	if ((set = linux_exported_gpl_fn_syms()))
+	  {
+	    if (set->find(symbol_address) != set->end())
+	      return symbol;
+	  }
+	return elf_symbol_sptr();
+      }
+
+    return symbol;
+  }
+
+  /// Test if a given variable symbol has been exported.
+  ///
+  /// @param symbol_address the address of the symbol we are looking
+  /// for.  Note that this address must be a relative offset from the
+  /// beginning of the .text section, just like the kind of addresses
+  /// that are present in the .symtab section.
+  ///
+  /// @returnthe elf symbol if found, or nil otherwise.
+  elf_symbol_sptr
+  variable_symbol_is_exported(GElf_Addr symbol_address) const
+  {
+    elf_symbol_sptr symbol = lookup_elf_var_symbol_from_address(symbol_address);
+    if (!symbol)
+      return symbol;
+
+    if (!symbol->is_public())
+      return elf_symbol_sptr();
+
+    address_set_sptr set;
+    bool looking_at_linux_kernel_binary =
+      load_in_linux_kernel_mode() && is_linux_kernel_binary();
+
+    if (looking_at_linux_kernel_binary)
+      {
+	if ((set = linux_exported_var_syms()))
+	  {
+	    if (set->find(symbol_address) != set->end())
+	      return symbol;
+	  }
+	if ((set = linux_exported_gpl_var_syms()))
+	  {
+	    if (set->find(symbol_address) != set->end())
+	      return symbol;
+	  }
+	return elf_symbol_sptr();
+      }
+
+    return symbol;
   }
 
   /// Getter for the map of function address -> symbol.
@@ -4666,7 +4884,8 @@ public:
   addr_elf_symbol_sptr_map_sptr&
   fun_entry_addr_sym_map_sptr()
   {
-    maybe_load_symbol_maps();
+    if (!fun_entry_addr_sym_map_ && !fun_addr_sym_map_)
+      maybe_load_symbol_maps();
     if (elf_architecture_is_ppc64())
       return fun_entry_addr_sym_map_;
     return fun_addr_sym_map_;
@@ -4884,6 +5103,130 @@ public:
     return *undefined_var_syms_;
   }
 
+  /// Getter for the set of addresses of function symbols that are
+  /// explicitely exported, for a linux kernel (module) binary.  These
+  /// are the addresses of function symbols present in the __ksymtab
+  /// section
+  address_set_sptr&
+  linux_exported_fn_syms()
+  {return linux_exported_fn_syms_;}
+
+  /// Getter for the set of addresses of functions that are
+  /// explicitely exported, for a linux kernel (module) binary.  These
+  /// are the addresses of function symbols present in the __ksymtab
+  /// section.
+  ///
+  /// @return the set of addresses of exported function symbols.
+  const address_set_sptr&
+  linux_exported_fn_syms() const
+  {return const_cast<read_context*>(this)->linux_exported_fn_syms();}
+
+  /// Create an empty set of addresses of functions exported from a
+  /// linux kernel (module) binary, or return the one that already
+  /// exists.
+  ///
+  /// @return the set of addresses of exported function symbols.
+  address_set_sptr&
+  create_or_get_linux_exported_fn_syms()
+  {
+    if (!linux_exported_fn_syms_)
+      linux_exported_fn_syms_.reset(new address_set_type);
+    return linux_exported_fn_syms_;
+  }
+
+  /// Getter for the set of addresses of v ariables that are
+  /// explicitely exported, for a linux kernel (module) binary.  These
+  /// are the addresses of variable symbols present in the __ksymtab
+  /// section.
+  ///
+  /// @return the set of addresses of exported variable symbols.
+  address_set_sptr&
+  linux_exported_var_syms()
+  {return linux_exported_var_syms_;}
+
+  /// Getter for the set of addresses of variables that are
+  /// explicitely exported, for a linux kernel (module) binary.  These
+  /// are the addresses of variable symbols present in the __ksymtab
+  /// section.
+  ///
+  /// @return the set of addresses of exported variable symbols.
+  const address_set_sptr&
+  linux_exported_var_syms() const
+  {return const_cast<read_context*>(this)->linux_exported_var_syms();}
+
+
+  /// Create an empty set of addresses of variables exported from a
+  /// linux kernel (module) binary, or return the one that already
+  /// exists.
+  ///
+  /// @return the set of addresses of exported variable symbols.
+  address_set_sptr&
+  create_or_get_linux_exported_var_syms()
+  {
+    if (!linux_exported_var_syms_)
+      linux_exported_var_syms_.reset(new address_set_type);
+    return linux_exported_var_syms_;
+  }
+
+
+  /// Getter for the set of addresses of function symbols that are
+  /// explicitely exported as GPL, for a linux kernel (module) binary.
+  /// These are the addresses of function symbols present in the
+  /// __ksymtab_gpl section.
+  address_set_sptr&
+  linux_exported_gpl_fn_syms()
+  {return linux_exported_gpl_fn_syms_;}
+
+  /// Getter for the set of addresses of function symbols that are
+  /// explicitely exported as GPL, for a linux kernel (module) binary.
+  /// These are the addresses of function symbols present in the
+  /// __ksymtab_gpl section.
+  const address_set_sptr&
+  linux_exported_gpl_fn_syms() const
+  {return const_cast<read_context*>(this)->linux_exported_gpl_fn_syms();}
+
+  /// Create an empty set of addresses of GPL functions exported from
+  /// a linux kernel (module) binary, or return the one that already
+  /// exists.
+  ///
+  /// @return the set of addresses of exported function symbols.
+  address_set_sptr&
+  create_or_get_linux_exported_gpl_fn_syms()
+  {
+    if (!linux_exported_gpl_fn_syms_)
+      linux_exported_gpl_fn_syms_.reset(new address_set_type);
+    return linux_exported_gpl_fn_syms_;
+  }
+
+  /// Getter for the set of addresses of variable symbols that are
+  /// explicitely exported as GPL, for a linux kernel (module) binary.
+  /// These are the addresses of variable symbols present in the
+  /// __ksymtab_gpl section.
+  address_set_sptr&
+  linux_exported_gpl_var_syms()
+  {return linux_exported_gpl_var_syms_;}
+
+  /// Getter for the set of addresses of variable symbols that are
+  /// explicitely exported as GPL, for a linux kernel (module) binary.
+  /// These are the addresses of variable symbols present in the
+  /// __ksymtab_gpl section.
+  const address_set_sptr&
+  linux_exported_gpl_var_syms() const
+  {return const_cast<read_context*>(this)->linux_exported_gpl_var_syms();}
+
+  /// Create an empty set of addresses of GPL variables exported from
+  /// a linux kernel (module) binary, or return the one that already
+  /// exists.
+  ///
+  /// @return the set of addresses of exported variable symbols.
+  address_set_sptr&
+  create_or_get_linux_exported_gpl_var_syms()
+  {
+    if (!linux_exported_gpl_var_syms_)
+      linux_exported_gpl_var_syms_.reset(new address_set_type);
+    return linux_exported_gpl_var_syms_;
+  }
+
   /// Getter for the ELF dt_needed tag.
   const vector<string>&
   dt_needed() const
@@ -4898,6 +5241,23 @@ public:
   const string&
   elf_architecture() const
   {return elf_architecture_;}
+
+  /// Return the size of a word for the current architecture.
+  /// @return the size of a word.
+  unsigned char
+  architecture_word_size() const
+  {
+    unsigned char word_size = 0;
+    GElf_Ehdr eh_mem;
+    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+    if (elf_header->e_ident[EI_CLASS] == ELFCLASS32)
+      word_size = 4;
+    else if (elf_header->e_ident[EI_CLASS] == ELFCLASS64)
+      word_size = 8;
+    else
+      ABG_ASSERT_NOT_REACHED;
+    return word_size;
+  }
 
   /// Test if the architecture of the current binary is ppc64.
   ///
@@ -4923,12 +5283,11 @@ public:
     GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
 
     bool is_big_endian = (elf_header->e_ident[EI_DATA] == ELFDATA2MSB);
-      return true;
 
     if (!is_big_endian)
       assert(elf_header->e_ident[EI_DATA] == ELFDATA2LSB);
 
-    return false;
+    return is_big_endian;
   }
 
   /// Test if the current elf file being read is an executable.
@@ -4963,10 +5322,7 @@ public:
   /// its nedded.
   const addr_elf_symbol_sptr_map_type&
   var_addr_sym_map() const
-  {
-    maybe_load_symbol_maps();
-    return *var_addr_sym_map_;
-  }
+  {return const_cast<read_context*>(this)->var_addr_sym_map();}
 
   /// Getter for the map of global variables symbol address -> global
   /// variable symbol index.
@@ -4976,46 +5332,31 @@ public:
   addr_elf_symbol_sptr_map_type&
   var_addr_sym_map()
   {
-    maybe_load_symbol_maps();
+    if (!var_addr_sym_map_)
+      maybe_load_symbol_maps();
     return *var_addr_sym_map_;
   }
 
-  /// Load the maps of function symbol address -> function symbol,
-  /// global variable symbol address -> variable symbol and also the
-  /// maps of function and variable undefined symbols.
+  /// Load the maps address -> function symbol, address -> variable
+  /// symbol and the maps of function and variable undefined symbols.
   ///
-  /// @return true iff everything went fine.
+  /// @param load_fun_map whether to load the address to function map.
+  ///
+  /// @param load_var_map whether to laod the address to variable map.
+  ///
+  /// @param load_undefined_fun_map whether to load the undefined
+  /// function map.
+  ///
+  /// @param load_undefined_var_map whether to laod the undefined
+  /// variable map.
+  ///
+  /// @return return true iff the maps have be loaded.
   bool
-  load_symbol_maps()
+  load_symbol_maps_from_symtab_section(bool load_fun_map,
+				       bool load_var_map,
+				       bool load_undefined_fun_map,
+				       bool load_undefined_var_map)
   {
-    bool load_fun_map = !fun_addr_sym_map_ || fun_addr_sym_map_->empty();
-    bool load_var_map = !var_addr_sym_map_ || var_addr_sym_map_->empty();
-    bool load_undefined_fun_map = (!undefined_fun_syms_
-				    || undefined_fun_syms_->empty());
-    bool load_undefined_var_map = (!undefined_var_syms_
-				   || undefined_var_syms_->empty());
-
-    if (!fun_syms_)
-      fun_syms_.reset(new string_elf_symbols_map_type);
-
-    if (!fun_addr_sym_map_)
-      fun_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
-
-    if (!fun_entry_addr_sym_map_ && elf_architecture_is_ppc64())
-      fun_entry_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
-
-    if (!var_syms_)
-      var_syms_.reset(new string_elf_symbols_map_type);
-
-    if (!var_addr_sym_map_)
-      var_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
-
-    if (!undefined_fun_syms_)
-      undefined_fun_syms_.reset(new string_elf_symbols_map_type);
-
-    if (!undefined_var_syms_)
-      undefined_var_syms_.reset(new string_elf_symbols_map_type);
-
     Elf_Scn* symtab_section = find_symbol_table_section();
     if (!symtab_section)
       return false;
@@ -5107,7 +5448,7 @@ public:
 		      // symbol that are in the .opd section.
 		      GElf_Addr fn_desc_addr = sym->st_value;
 		      GElf_Addr fn_entry_point_addr =
-			lookup_ppc64_elf_fn_entry_pointer_address(fn_desc_addr);
+			lookup_ppc64_elf_fn_entry_point_address(fn_desc_addr);
 		      addr_elf_symbol_sptr_map_type::const_iterator it2 =
 			fun_entry_addr_sym_map().find(fn_entry_point_addr);
 
@@ -5235,169 +5576,224 @@ public:
 	      }
 	  }
       }
-
     return true;
   }
 
-  /// Load the symbol maps if necessary.
+  /// An enum for the diffent kinds of kernel symbol table.
+  enum kernel_symbol_table_kind
+  {
+    /// This is for an undefined kind of kernel symbol table.
+    KERNEL_SYMBOL_TABLE_KIND_UNDEFINED,
+
+    /// The __ksymtab symbol table.
+    KERNEL_SYMBOL_TABLE_KIND_KSYMTAB,
+
+    /// The __ksymtab_gpl symbol table.
+    KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL
+  };
+
+  /// Load a given kernel symbol table.
   ///
-  /// @return true iff the symbol maps has been loaded by this
-  /// invocation.
+  /// One can thus retrieve the resulting symbols by using the
+  /// accessors read_context::linux_exported_fn_syms(),
+  /// read_context::linux_exported_var_syms(),
+  /// read_context::linux_exported_gpl_fn_syms(), or
+  /// read_context::linux_exported_gpl_var_syms().
+  ///
+  /// @param kind the kind of kernel symbol table to load.
+  ///
+  /// @return true upon successful completion, false otherwise.
   bool
-  maybe_load_symbol_maps() const
+  load_kernel_symbol_table(kernel_symbol_table_kind kind)
   {
-    if (!fun_addr_sym_map_ || fun_addr_sym_map_->empty()
-	|| !var_addr_sym_map_ || var_addr_sym_map_->empty()
-	|| !fun_syms_ || fun_syms_->empty()
-	|| !var_syms_ || var_syms_->empty()
-	|| !undefined_fun_syms_ || undefined_fun_syms_->empty()
-	|| !undefined_var_syms_ || undefined_var_syms_->empty())
-      return const_cast<read_context*>(this)->load_symbol_maps();
-    return false;
-  }
+    Elf_Scn *section = 0;
+    address_set_sptr linux_exported_fns_set, linux_exported_vars_set;
 
-  /// Load the DT_NEEDED and DT_SONAME elf TAGS.
-  ///
-  void
-  load_dt_soname_and_needed()
-  {
-    lookup_data_tag_from_dynamic_segment(elf_handle(), DT_NEEDED, dt_needed_);
-
-    vector<string> dt_tag_data;
-    lookup_data_tag_from_dynamic_segment(elf_handle(), DT_SONAME, dt_tag_data);
-    if (!dt_tag_data.empty())
-      dt_soname_ = dt_tag_data[0];
-  }
-
-  /// Read the string representing the architecture of the current ELF
-  /// file.
-  void
-  load_elf_architecture()
-  {
-    if (!elf_handle())
-      return;
-
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
-
-    elf_architecture_ = e_machine_to_string(elf_header->e_machine);
-  }
-
-  /// Load various ELF data.
-  ///
-  /// This function loads ELF data that are not symbol maps or debug
-  /// info.  That is, things like various tags, elf architecture and
-  /// so on.
-  void
-  load_elf_properties()
-  {
-    load_dt_soname_and_needed();
-    load_elf_architecture();
-  }
-
-  /// This is a sub-routine of maybe_adjust_fn_sym_address and
-  /// maybe_adjust_var_sym_address.
-  ///
-  /// Given an address that we got by looking at some debug
-  /// information (e.g, a symbol's address referred to by a DWARF
-  /// TAG), If the ELF file we are interested in is a shared library
-  /// or an executable, then adjust the address to be coherent with
-  /// where the executable (or shared library) is loaded.  That way,
-  /// the address can be used to look for symbols in the executable or
-  /// shared library.
-  ///
-  /// @return the adjusted address, or the same address as @p addr if
-  /// it didn't need any adjustment.
-  Dwarf_Addr
-  maybe_adjust_address_for_exec_or_dyn(Dwarf_Addr addr) const
-  {
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr *elf_header = gelf_getehdr(elf_handle(), &eh_mem);
-
-    if (elf_header->e_type == ET_DYN || elf_header->e_type == ET_EXEC)
+    switch(kind)
       {
-	Dwarf_Addr dwarf_elf_load_address = 0, elf_load_address = 0;
-	assert(get_binary_load_address(dwarf_elf_handle(),
-				       dwarf_elf_load_address));
-	assert(get_binary_load_address(elf_handle(),
-				       elf_load_address));
-	if (dwarf_is_splitted()
-	    && (dwarf_elf_load_address != elf_load_address))
-	  // This means that in theory the DWARF an the executable are
-	  // not loaded at the same address.  And addr is meaningful
-	  // only in the context of the DWARF.
-	  //
-	  // So let's transform addr into an offset relative to where
-	  // the DWARF is loaded, and let's add that relative offset
-	  // to the load address of the executable.  That way, addr
-	  // becomes meaningful in the context of the executable and
-	  // can thus be used to compare against the address of
-	  // symbols of the executable, for instance.
-	  addr = addr - dwarf_elf_load_address + elf_load_address;
+      case KERNEL_SYMBOL_TABLE_KIND_UNDEFINED:
+	break;
+      case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB:
+	section = find_ksymtab_section();
+	linux_exported_fns_set = create_or_get_linux_exported_fn_syms();
+	linux_exported_vars_set = create_or_get_linux_exported_var_syms();
+	break;
+      case KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL:
+	section = find_ksymtab_gpl_section();
+	linux_exported_fns_set = create_or_get_linux_exported_gpl_fn_syms();
+	linux_exported_vars_set = create_or_get_linux_exported_gpl_var_syms();
+	break;
       }
 
-    return addr;
-  }
-
-  /// For a relocatable (*.o) elf file, this function expects an
-  /// absolute address, representing a function symbol.  It then
-  /// extracts the address of the .text section from the symbol
-  /// absolute address to get the relative address of the function
-  /// from the beginning of the .text section.
-  ///
-  /// For executable or shared library, this function expects an
-  /// address of a function symbol that was retrieved by looking at a
-  /// DWARF "file".  The function thus adjusts the address to make it
-  /// be meaningful in the context of the ELF file.
-  ///
-  /// In both cases, the address can then be compared against the
-  /// st_value field of a function symbol from the ELF file.
-  ///
-  /// @param addr an adress for a function symbol that was retrieved
-  /// from a DWARF file.
-  ///
-  /// @return the (possibly) adjusted address, or just @p addr if no
-  /// adjustment took place.
-  Dwarf_Addr
-  maybe_adjust_fn_sym_address(Dwarf_Addr addr) const
-  {
-    Elf* elf = elf_handle();
-    GElf_Ehdr eh_mem;
-    GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
-
-    if (elf_header->e_type == ET_REL)
-      {
-	Elf_Scn* text_section = find_text_section(elf);
-	assert(text_section);
-
-	GElf_Shdr sheader_mem;
-	GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
-	assert(text_sheader);
-	addr = addr - text_sheader->sh_addr;
-      }
-    else
-      addr = maybe_adjust_address_for_exec_or_dyn(addr);
-
-    return addr;
-  }
-
-  /// Test if a given address is in a given section.
-  ///
-  /// @param addr the address to consider.
-  ///
-  /// @param section the section to consider.
-  bool
-  address_is_in_section(Dwarf_Addr addr, Elf_Scn* section) const
-  {
-    if (!section)
+    if (!section || !linux_exported_vars_set || !linux_exported_fns_set)
       return false;
 
-    GElf_Shdr sheader_mem;
-    GElf_Shdr* sheader = gelf_getshdr(section, &sheader_mem);
 
-    if (sheader->sh_addr <= addr && addr <= sheader->sh_addr + sheader->sh_size)
-      return true;
+    GElf_Shdr header_mem;
+    GElf_Shdr *section_header = gelf_getshdr(section, &header_mem);
 
+    // The size of an entry in this ksymbol table.
+    size_t entry_size = 2 * architecture_word_size();
+
+    if (section_header->sh_entsize)
+      entry_size = section_header->sh_entsize;
+
+    // The number of entries in the ksymbol table.
+    size_t nb_entries = section_header->sh_size / entry_size;
+
+    // The data of the section.
+    Elf_Data *elf_data = elf_rawdata(section, 0);
+
+    // An array-of-bytes view of the elf data above.  Something we can
+    // actually program with.  Phew.
+    uint8_t *bytes = reinterpret_cast<uint8_t*>(elf_data->d_buf);
+
+    // This is where to store an address of a symbol that we read from
+    // the section.
+    GElf_Addr symbol_address = 0, adjusted_symbol_address = 0;
+
+    // So the section is an array of entries.  Each entry describes a
+    // symbol.  Each entry is made of two words.  Each word is of the
+    // word size of the architecture.  (8-bytes on a 64 bits arch and
+    // 4-bytes on a 32 bits arch) The first word is the address of a
+    // symbol.  The second one is the address of a static global
+    // variable symbol which value is the string representing the
+    // symbol name.  That string is in the __ksymtab_strings symbol.
+    // Here, we are only interested in the first entry.
+    //
+    // Lets thus walk the array of entries, and let's read just the
+    // symbol address part of each entry.
+    bool is_big_endian = elf_architecture_is_big_endian();
+    elf_symbol_sptr symbol;
+    unsigned char word_size = architecture_word_size();
+    assert(entry_size == word_size * 2);
+
+    for (size_t i = 0, entry_index = 0;
+	 i < nb_entries;
+	 ++i, entry_index = entry_size*i)
+      {
+	symbol_address = 0;
+	assert(read_int_from_array_of_bytes(&bytes[entry_index],
+					    word_size,
+					    is_big_endian,
+					    symbol_address));
+
+	adjusted_symbol_address = maybe_adjust_fn_sym_address(symbol_address);
+	symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
+	if (!symbol)
+	  {
+	    adjusted_symbol_address =
+	      maybe_adjust_var_sym_address(symbol_address);
+	    symbol = lookup_elf_symbol_from_address(adjusted_symbol_address);
+	    if (!symbol)
+	      // This must be a symbol that is of type neither FUNC
+	      // (function) nor OBJECT (variable).  There are for intance,
+	      // symbols of type 'NOTYPE' in the ksymtab symbol table.  I
+	      // am not sure what those are.
+	      continue;
+	  }
+
+	address_set_sptr set;
+	if (symbol->is_function())
+	  {
+	    assert(lookup_elf_fn_symbol_from_address(adjusted_symbol_address));
+	    set = linux_exported_fns_set;
+	  }
+	else if (symbol->is_variable())
+	  {
+	    assert(lookup_elf_var_symbol_from_address(adjusted_symbol_address));
+	    set = linux_exported_vars_set;
+	  }
+	else
+	  ABG_ASSERT_NOT_REACHED;
+	set->insert(adjusted_symbol_address);
+      }
+    return true;
+  }
+
+  /// Load the special __ksymtab section. This is for linux kernel
+  /// (module) files.
+  ///
+  /// @return true upon successful completion, false otherwise.
+  bool
+  load_ksymtab_symbols()
+  {
+    return load_kernel_symbol_table(KERNEL_SYMBOL_TABLE_KIND_KSYMTAB);
+  }
+
+  /// Load the special __ksymtab_gpl section. This is for linux kernel
+  /// (module) files.
+  ///
+  /// @return true upon successful completion, false otherwise.
+  bool
+  load_ksymtab_gpl_symbols()
+  {
+    return load_kernel_symbol_table(KERNEL_SYMBOL_TABLE_KIND_KSYMTAB_GPL);
+  }
+
+  /// Load linux kernel (module) specific exported symbol sections.
+  ///
+  /// @return true upon successful completion, false otherwise.
+  bool
+  load_linux_specific_exported_symbol_maps()
+  {
+    bool loaded = false;
+    if (!linux_exported_fn_syms_
+	|| !linux_exported_var_syms_)
+      loaded |= load_ksymtab_symbols();
+
+    if (!linux_exported_gpl_fn_syms_
+	|| !linux_exported_gpl_var_syms_)
+      loaded |= load_ksymtab_gpl_symbols();
+
+    return loaded;
+  }
+
+  /// Load the maps of function symbol address -> function symbol,
+  /// global variable symbol address -> variable symbol and also the
+  /// maps of function and variable undefined symbols.
+  ///
+  /// All these maps are loaded only if they are not loaded already.
+  ///
+  /// @return true iff everything went fine.
+  bool
+  load_symbol_maps()
+  {
+    bool load_fun_map = !fun_addr_sym_map_ ;
+    bool load_var_map = !var_addr_sym_map_;
+    bool load_undefined_fun_map = !undefined_fun_syms_;
+    bool load_undefined_var_map = !undefined_var_syms_;
+
+    if (!fun_syms_)
+      fun_syms_.reset(new string_elf_symbols_map_type);
+
+    if (!fun_addr_sym_map_)
+      fun_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
+
+    if (!fun_entry_addr_sym_map_ && elf_architecture_is_ppc64())
+      fun_entry_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
+
+    if (!var_syms_)
+      var_syms_.reset(new string_elf_symbols_map_type);
+
+    if (!var_addr_sym_map_)
+      var_addr_sym_map_.reset(new addr_elf_symbol_sptr_map_type);
+
+    if (!undefined_fun_syms_)
+      undefined_fun_syms_.reset(new string_elf_symbols_map_type);
+
+    if (!undefined_var_syms_)
+      undefined_var_syms_.reset(new string_elf_symbols_map_type);
+
+    if (load_symbol_maps_from_symtab_section(load_fun_map,
+					     load_var_map,
+					     load_undefined_fun_map,
+					     load_undefined_var_map))
+      {
+	if (load_in_linux_kernel_mode() && is_linux_kernel_binary())
+	  return load_linux_specific_exported_symbol_maps();
+	return true;
+      }
     return false;
   }
 
@@ -5419,10 +5815,172 @@ public:
     return false;
   }
 
-  /// Get the section which a global variable address comes from.
+  /// Load the symbol maps if necessary.
   ///
-  /// @param elf the elf handle to consider.
+  /// @return true iff the symbol maps has been loaded by this
+  /// invocation.
+  bool
+  maybe_load_symbol_maps() const
+  {
+    if (!fun_addr_sym_map_
+	|| !var_addr_sym_map_
+	|| !fun_syms_
+	|| !var_syms_
+	|| !undefined_fun_syms_
+	|| !undefined_var_syms_)
+      return const_cast<read_context*>(this)->load_symbol_maps();
+    return false;
+  }
+
+  /// Load the DT_NEEDED and DT_SONAME elf TAGS.
   ///
+  void
+  load_dt_soname_and_needed()
+  {
+    lookup_data_tag_from_dynamic_segment(elf_handle(), DT_NEEDED, dt_needed_);
+
+    vector<string> dt_tag_data;
+    lookup_data_tag_from_dynamic_segment(elf_handle(), DT_SONAME, dt_tag_data);
+    if (!dt_tag_data.empty())
+       dt_soname_ = dt_tag_data[0];
+   }
+
+   /// Read the string representing the architecture of the current ELF
+   /// file.
+   void
+   load_elf_architecture()
+   {
+     if (!elf_handle())
+       return;
+
+     GElf_Ehdr eh_mem;
+     GElf_Ehdr* elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+
+     elf_architecture_ = e_machine_to_string(elf_header->e_machine);
+   }
+
+   /// Load various ELF data.
+   ///
+   /// This function loads ELF data that are not symbol maps or debug
+   /// info.  That is, things like various tags, elf architecture and
+   /// so on.
+   void
+   load_elf_properties()
+   {
+     load_dt_soname_and_needed();
+     load_elf_architecture();
+   }
+
+   /// This is a sub-routine of maybe_adjust_fn_sym_address and
+   /// maybe_adjust_var_sym_address.
+   ///
+   /// Given an address that we got by looking at some debug
+   /// information (e.g, a symbol's address referred to by a DWARF
+   /// TAG), If the ELF file we are interested in is a shared library
+   /// or an executable, then adjust the address to be coherent with
+   /// where the executable (or shared library) is loaded.  That way,
+   /// the address can be used to look for symbols in the executable or
+   /// shared library.
+   ///
+   /// @return the adjusted address, or the same address as @p addr if
+   /// it didn't need any adjustment.
+   Dwarf_Addr
+   maybe_adjust_address_for_exec_or_dyn(Dwarf_Addr addr) const
+   {
+     GElf_Ehdr eh_mem;
+     GElf_Ehdr *elf_header = gelf_getehdr(elf_handle(), &eh_mem);
+
+     if (elf_header->e_type == ET_DYN || elf_header->e_type == ET_EXEC)
+       {
+	 Dwarf_Addr dwarf_elf_load_address = 0, elf_load_address = 0;
+	 assert(get_binary_load_address(dwarf_elf_handle(),
+					dwarf_elf_load_address));
+	 assert(get_binary_load_address(elf_handle(),
+					elf_load_address));
+	 if (dwarf_is_splitted()
+	     && (dwarf_elf_load_address != elf_load_address))
+	   // This means that in theory the DWARF an the executable are
+	   // not loaded at the same address.  And addr is meaningful
+	   // only in the context of the DWARF.
+	   //
+	   // So let's transform addr into an offset relative to where
+	   // the DWARF is loaded, and let's add that relative offset
+	   // to the load address of the executable.  That way, addr
+	   // becomes meaningful in the context of the executable and
+	   // can thus be used to compare against the address of
+	   // symbols of the executable, for instance.
+	   addr = addr - dwarf_elf_load_address + elf_load_address;
+       }
+
+     return addr;
+   }
+
+   /// For a relocatable (*.o) elf file, this function expects an
+   /// absolute address, representing a function symbol.  It then
+   /// extracts the address of the .text section from the symbol
+   /// absolute address to get the relative address of the function
+   /// from the beginning of the .text section.
+   ///
+   /// For executable or shared library, this function expects an
+   /// address of a function symbol that was retrieved by looking at a
+   /// DWARF "file".  The function thus adjusts the address to make it
+   /// be meaningful in the context of the ELF file.
+   ///
+   /// In both cases, the address can then be compared against the
+   /// st_value field of a function symbol from the ELF file.
+   ///
+   /// @param addr an adress for a function symbol that was retrieved
+   /// from a DWARF file.
+   ///
+   /// @return the (possibly) adjusted address, or just @p addr if no
+   /// adjustment took place.
+   Dwarf_Addr
+   maybe_adjust_fn_sym_address(Dwarf_Addr addr) const
+   {
+     Elf* elf = elf_handle();
+     GElf_Ehdr eh_mem;
+     GElf_Ehdr* elf_header = gelf_getehdr(elf, &eh_mem);
+
+     if (elf_header->e_type == ET_REL)
+       {
+	 Elf_Scn* text_section = find_text_section(elf);
+	 assert(text_section);
+
+	 GElf_Shdr sheader_mem;
+	 GElf_Shdr* text_sheader = gelf_getshdr(text_section, &sheader_mem);
+	 assert(text_sheader);
+	 addr = addr - text_sheader->sh_addr;
+       }
+     else
+       addr = maybe_adjust_address_for_exec_or_dyn(addr);
+
+     return addr;
+   }
+
+   /// Test if a given address is in a given section.
+   ///
+   /// @param addr the address to consider.
+   ///
+   /// @param section the section to consider.
+   bool
+   address_is_in_section(Dwarf_Addr addr, Elf_Scn* section) const
+   {
+     if (!section)
+       return false;
+
+     GElf_Shdr sheader_mem;
+     GElf_Shdr* sheader = gelf_getshdr(section, &sheader_mem);
+
+     if (sheader->sh_addr <= addr && addr <= sheader->sh_addr + sheader->sh_size)
+       return true;
+
+     return false;
+   }
+
+   /// Get the section which a global variable address comes from.
+   ///
+   /// @param elf the elf handle to consider.
+     ///
   /// @param var_addr the address for the variable.
   ///
   /// @return the ELF section the @p var_addr comes from, or nil if no
@@ -5515,7 +6073,7 @@ public:
   /// @return true if the function address was found.
   bool
   get_function_address(Dwarf_Die* function_die,
-		       Dwarf_Addr& address)
+		       Dwarf_Addr& address) const
   {
     Dwarf_Addr low_pc = 0;
     if (!die_address_attribute(function_die, DW_AT_low_pc, low_pc))
@@ -5542,7 +6100,7 @@ public:
   /// @return true if the variable address was found.
   bool
   get_variable_address(Dwarf_Die*	variable_die,
-		       Dwarf_Addr&	address)
+		       Dwarf_Addr&	address) const
   {
     bool is_tls_address = false;
     if (!die_location_address(variable_die, address, is_tls_address))
@@ -5767,6 +6325,23 @@ public:
   load_all_types(bool f)
   {load_all_types_ = f;}
 
+  bool
+  load_in_linux_kernel_mode() const
+  {return load_in_linux_kernel_mode_;}
+
+  void
+  load_in_linux_kernel_mode(bool f)
+  {load_in_linux_kernel_mode_ = f;}
+
+  /// Guess if the current binary is a Linux Kernel or a Linux Kernel module.
+  ///
+  /// To guess that, the function looks for the presence of the
+  /// special "__ksymtab_strings" section in the binary.
+  ///
+  bool
+  is_linux_kernel_binary() const
+  {return find_section(elf_handle(), "__ksymtab_strings", SHT_PROGBITS);}
+
   /// Getter of the "show_stats" flag.
   ///
   /// This flag tells if we should emit statistics about various
@@ -5969,7 +6544,8 @@ build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
-		       size_t		where_offset);
+		       size_t		where_offset,
+		       bool		is_required_decl_spec = false);
 
 static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
@@ -6026,11 +6602,13 @@ build_or_get_var_decl_if_not_suppressed(read_context&	ctxt,
 					scope_decl	*scope,
 					Dwarf_Die	*die,
 					size_t	where_offset,
-					var_decl_sptr	res = var_decl_sptr());
+					var_decl_sptr	res = var_decl_sptr(),
+					bool is_required_decl_spec = false);
 static bool
 variable_is_suppressed(const read_context& ctxt,
 		       const scope_decl* scope,
-		       Dwarf_Die *variable_die);
+		       Dwarf_Die *variable_die,
+		       bool is_required_decl_spec = false);
 
 static void
 finish_member_function_reading(Dwarf_Die*		 die,
@@ -6053,7 +6631,7 @@ set_debug_info_root_path(read_context& ctxt, char** path)
 ///
 /// @param ctxt the dwarf reader context to consider.
 ///
-/// @return a pointer to the the debug info root path.
+/// @return a pointer to the debug info root path.
 ///
 /// time of the read context.
 char**
@@ -11506,6 +12084,10 @@ build_typedef_type(read_context&	ctxt,
 /// to that exising var_decl.  Otherwise, if this parameter is NULL, a
 /// new var_decl is going to be allocated and returned.
 ///
+/// @param is_required_decl_spec this is true iff the variable to
+/// build is referred to as being the specification of another
+/// variable.
+///
 /// @return a pointer to the newly created var_decl.  If the var_decl
 /// could not be built, this function returns NULL.
 static var_decl_sptr
@@ -11513,10 +12095,11 @@ build_or_get_var_decl_if_not_suppressed(read_context&	ctxt,
 					scope_decl	*scope,
 					Dwarf_Die	*die,
 					size_t	where_offset,
-					var_decl_sptr	result)
+					var_decl_sptr	result,
+					bool is_required_decl_spec)
 {
   var_decl_sptr var;
-  if (variable_is_suppressed(ctxt, scope, die))
+  if (variable_is_suppressed(ctxt, scope, die, is_required_decl_spec))
     return var;
 
   if (class_decl* class_type = is_class_type(scope))
@@ -11599,25 +12182,23 @@ build_var_decl(read_context&	ctxt,
     }
 
   // Check if a variable symbol with this name is exported by the elf
-  // binary.
+  // binary.  If it is, then set the symbol of the variable, if it's
+  // not set already.
   if (!result->get_symbol())
     {
       Dwarf_Addr var_addr;
-      if (ctxt.get_variable_address(die, var_addr))
+      elf_symbol_sptr var_sym;
+      if (ctxt.get_variable_address(die, var_addr)
+	  && (var_sym = ctxt.variable_symbol_is_exported(var_addr)))
 	{
-	  if (elf_symbol_sptr sym =
-	      ctxt.lookup_elf_var_symbol_from_address(var_addr))
-	    if (sym->is_variable() && sym->is_public())
-	      {
-		result->set_symbol(sym);
-		// If the linkage name is not set or is wrong, set it to
-		// the name of the underlying symbol.
-		string linkage_name = result->get_linkage_name();
-		if (linkage_name.empty()
-		    || !sym->get_alias_from_name(linkage_name))
-		  result->set_linkage_name(sym->get_name());
-		result->set_is_in_public_symbol_table(true);
-	      }
+	  result->set_symbol(var_sym);
+	  // If the linkage name is not set or is wrong, set it to
+	  // the name of the underlying symbol.
+	  string linkage_name = result->get_linkage_name();
+	  if (linkage_name.empty()
+	      || !var_sym->get_alias_from_name(linkage_name))
+	    result->set_linkage_name(var_sym->get_name());
+	  result->set_is_in_public_symbol_table(true);
 	}
     }
 
@@ -11627,6 +12208,9 @@ build_var_decl(read_context&	ctxt,
 /// Test if a given function denoted by its DIE and its scope is
 /// suppressed by any of the suppression specifications associated to
 /// a given context of ELF/DWARF reading.
+///
+/// Note that a non-member function which symbol is not exported is
+/// also suppressed.
 ///
 /// @param ctxt the ELF/DWARF reading content of interest.
 ///
@@ -11648,6 +12232,16 @@ function_is_suppressed(const read_context& ctxt,
   string fname = die_string_attribute(function_die, DW_AT_name);
   string flinkage_name = die_linkage_name(function_die);
   string qualified_name = build_qualified_name(scope, fname);
+
+  // A non-member function which symbol is not exported is suppressed.
+  if (!is_class_type(scope) && !die_is_declaration_only(function_die))
+    {
+      Dwarf_Addr fn_addr;
+      elf_symbol_sptr fn_sym;
+      if (!ctxt.get_function_address(function_die, fn_addr)
+	  || !(ctxt.function_symbol_is_exported(fn_addr)))
+	return true;
+    }
 
   return suppr::function_is_suppressed(ctxt, qualified_name,
 				       flinkage_name,
@@ -11714,12 +12308,17 @@ build_or_get_fn_decl_if_not_suppressed(read_context&	  ctxt,
 ///
 /// @param variable_die the DIE representing the variable.
 ///
+/// @param is_required_decl_spec if true, means that the @p
+/// variable_die being considered is for a variable decl that is a
+/// specification for a concrete variable being built.
+///
 /// @return true iff @p variable_die is suppressed by at least one
 /// suppression specification attached to the @p ctxt.
 static bool
 variable_is_suppressed(const read_context& ctxt,
 		       const scope_decl* scope,
-		       Dwarf_Die *variable_die)
+		       Dwarf_Die *variable_die,
+		       bool is_required_decl_spec)
 {
   if (variable_die == 0
       || (dwarf_tag(variable_die) != DW_TAG_variable
@@ -11729,6 +12328,24 @@ variable_is_suppressed(const read_context& ctxt,
   string name = die_string_attribute(variable_die, DW_AT_name);
   string linkage_name = die_linkage_name(variable_die);
   string qualified_name = build_qualified_name(scope, name);
+
+  // If a non member variable that is a declaration (has no exported
+  // symbol), is not the specification of another concrete variable,
+  // then it's suppressed.  This is a size optimization; it removes
+  // useless declaration-only variables from the IR.
+  //
+  // Otherwise, if a non-member variable is the specification of
+  // another concrete variable, then this function looks at
+  // suppression specification specifications to know if its
+  // suppressed.
+  if (!is_class_type(scope) && !is_required_decl_spec)
+    {
+      Dwarf_Addr var_addr = 0;
+      elf_symbol_sptr var_sym;
+      if (!ctxt.get_variable_address(variable_die, var_addr)
+	  || !(ctxt.variable_symbol_is_exported(var_addr)))
+	return true;
+    }
 
   return suppr::variable_is_suppressed(ctxt, qualified_name,
 				       linkage_name,
@@ -11844,32 +12461,28 @@ build_function_decl(read_context&	ctxt,
 				       flinkage_name));
     }
 
-  // Check if a function symbol with this name is exported by the elf
-  // binary.
-  bool symbol_updated = false;
-  Dwarf_Addr fn_addr;
-  if (ctxt.get_function_address(die, fn_addr))
+  // Set the symbol of the function.  If the linkage name is not set
+  // or is wrong, set it to the name of the underlying symbol.
+  if (!result->get_symbol())
     {
-      if (elf_symbol_sptr sym = ctxt.lookup_elf_fn_symbol_from_address(fn_addr))
-	if (sym->is_function() && sym->is_public())
-	  {
-	    result->set_symbol(sym);
-	    symbol_updated = true;
-	    // If the linkage name is not set or is wrong, set it to
-	    // the name of the underlying symbol.
-	    string linkage_name = result->get_linkage_name();
-	    if (linkage_name.empty() || !sym->get_alias_from_name(linkage_name))
-	      result->set_linkage_name(sym->get_name());
-	    result->set_is_in_public_symbol_table(true);
-	  }
+      Dwarf_Addr fn_addr;
+      elf_symbol_sptr fn_sym;
+      if (ctxt.get_function_address(die, fn_addr)
+	  && (fn_sym = ctxt.function_symbol_is_exported(fn_addr)))
+	{
+	  result->set_symbol(fn_sym);
+	  string linkage_name = result->get_linkage_name();
+	  if (linkage_name.empty() || !fn_sym->get_alias_from_name(linkage_name))
+	    result->set_linkage_name(fn_sym->get_name());
+	  result->set_is_in_public_symbol_table(true);
+	}
     }
 
   ctxt.associate_die_to_type(die, result->get_type(), where_offset);
 
   size_t die_offset = dwarf_dieoffset(die);
 
-  if (symbol_updated
-      && fn
+  if (fn
       && is_member_function(fn)
       && get_member_function_is_virtual(fn)
       && !result->get_linkage_name().empty())
@@ -11880,6 +12493,62 @@ build_function_decl(read_context&	ctxt,
     // names and no elf symbol that need to be fixed up.
     ctxt.die_function_decl_with_no_symbol_map().erase(die_offset);
   return result;
+}
+
+/// Add a set of addresses (representing function symbols) to a
+/// function symbol name -> symbol map.
+///
+/// For a given symbol address, the function retrieves the name of the
+/// symbol as well as the symbol itself and inserts an entry {symbol
+/// name, symbol} into a map of symbol name -> symbol map.
+///
+/// @param syms the set of symbol addresses to consider.
+///
+/// @param map the map to populate.
+///
+/// @param ctxt the context in which we are loading a given ELF file.
+static void
+add_fn_symbols_to_map(address_set_type& syms,
+		      string_elf_symbols_map_type& map,
+		      read_context& ctxt)
+{
+  for (address_set_type::iterator i = syms.begin(); i != syms.end(); ++i)
+    {
+      elf_symbol_sptr sym = ctxt.lookup_elf_fn_symbol_from_address(*i);
+      assert(sym);
+      string_elf_symbols_map_type::iterator it =
+	ctxt.fun_syms().find(sym->get_name());
+      assert(it != ctxt.fun_syms().end());
+      map.insert(*it);
+    }
+}
+
+/// Add a set of addresses (representing variable symbols) to a
+/// variable symbol name -> symbol map.
+///
+/// For a given symbol address, the variable retrieves the name of the
+/// symbol as well as the symbol itself and inserts an entry {symbol
+/// name, symbol} into a map of symbol name -> symbol map.
+///
+/// @param syms the set of symbol addresses to consider.
+///
+/// @param map the map to populate.
+///
+/// @param ctxt the context in which we are loading a given ELF file.
+static void
+add_var_symbols_to_map(address_set_type& syms,
+		       string_elf_symbols_map_type& map,
+		       read_context& ctxt)
+{
+  for (address_set_type::iterator i = syms.begin(); i != syms.end(); ++i)
+    {
+      elf_symbol_sptr sym = ctxt.lookup_elf_var_symbol_from_address(*i);
+      assert(sym);
+      string_elf_symbols_map_type::iterator it =
+	ctxt.var_syms().find(sym->get_name());
+      assert(it != ctxt.var_syms().end());
+      map.insert(*it);
+    }
 }
 
 /// Read all @ref abigail::translation_unit possible from the debug info
@@ -11912,10 +12581,36 @@ read_debug_info_into_corpus(read_context& ctxt)
   ctxt.current_corpus()->set_architecture_name(ctxt.elf_architecture());
 
   // Set symbols information to the corpus.
-  ctxt.current_corpus()->set_fun_symbol_map(ctxt.fun_syms_sptr());
+  if (ctxt.load_in_linux_kernel_mode() && ctxt.is_linux_kernel_binary())
+    {
+      string_elf_symbols_map_sptr exported_fn_symbols_map
+	(new string_elf_symbols_map_type);
+      add_fn_symbols_to_map(*ctxt.linux_exported_fn_syms(),
+			    *exported_fn_symbols_map,
+			    ctxt);
+      add_fn_symbols_to_map(*ctxt.linux_exported_gpl_fn_syms(),
+			    *exported_fn_symbols_map,
+			    ctxt);
+     ctxt.current_corpus()->set_fun_symbol_map(exported_fn_symbols_map);
+
+      string_elf_symbols_map_sptr exported_var_symbols_map
+	(new string_elf_symbols_map_type);
+      add_var_symbols_to_map(*ctxt.linux_exported_var_syms(),
+			     *exported_var_symbols_map,
+			     ctxt);
+      add_var_symbols_to_map(*ctxt.linux_exported_gpl_var_syms(),
+			     *exported_var_symbols_map,
+			     ctxt);
+      ctxt.current_corpus()->set_var_symbol_map(exported_var_symbols_map);
+    }
+  else
+    {
+      ctxt.current_corpus()->set_fun_symbol_map(ctxt.fun_syms_sptr());
+      ctxt.current_corpus()->set_var_symbol_map(ctxt.var_syms_sptr());
+    }
+
   ctxt.current_corpus()->set_undefined_fun_symbol_map
     (ctxt.undefined_fun_syms_sptr());
-  ctxt.current_corpus()->set_var_symbol_map(ctxt.var_syms_sptr());
   ctxt.current_corpus()->set_undefined_var_symbol_map
     (ctxt.undefined_var_syms_sptr());
 
@@ -12109,13 +12804,18 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
 /// e.g, DW_TAG_partial_unit that can be included in several places in
 /// the DIE tree.
 ///
+/// @param is_required_decl_spec if true, it means the ir node to
+/// build is for a decl that is a specification for another decl that
+/// is concrete.  If you don't know what this is, set it to false.
+///
 /// @return the resulting IR node.
 static type_or_decl_base_sptr
 build_ir_node_from_die(read_context&	ctxt,
 		       Dwarf_Die*	die,
 		       scope_decl*	scope,
 		       bool		called_from_public_decl,
-		       size_t		where_offset)
+		       size_t		where_offset,
+		       bool		is_required_decl_spec)
 {
   type_or_decl_base_sptr result;
 
@@ -12357,8 +13057,6 @@ build_ir_node_from_die(read_context&	ctxt,
     case DW_TAG_shared_type:
       break;
 
-      // Other declarations we intend to support someday, maybe.
-
     case DW_TAG_compile_unit:
       // We shouldn't reach this point b/c this should be handled by
       // build_translation_unit.
@@ -12387,7 +13085,8 @@ build_ir_node_from_die(read_context&	ctxt,
 		  is_decl(build_ir_node_from_die(ctxt, &spec_die,
 						 spec_scope.get(),
 						 called_from_public_decl,
-						 where_offset));
+						 where_offset,
+						 /*is_required_decl_spec=*/true));
 		if (d)
 		  {
 		    var_decl_sptr m =
@@ -12414,7 +13113,9 @@ build_ir_node_from_die(read_context&	ctxt,
 	  }
 	else if (var_decl_sptr v =
 		 build_or_get_var_decl_if_not_suppressed(ctxt, scope, die,
-							 where_offset))
+							 where_offset,
+							 /*result=*/var_decl_sptr(),
+							 is_required_decl_spec))
 	  {
 	    result = add_decl_to_scope(v, scope);
 	    assert(is_decl(result)->get_scope());
@@ -12697,13 +13398,15 @@ read_context_sptr
 create_read_context(const std::string&		elf_path,
 		    char**			debug_info_root_path,
 		    ir::environment*		environment,
-		    bool			load_all_types)
+		    bool			load_all_types,
+		    bool			linux_kernel_mode)
 {
   // Create a DWARF Front End Library handle to be used by functions
   // of that library.
   read_context_sptr result(new read_context(elf_path));
   result->create_default_dwfl(debug_info_root_path);
   result->load_all_types(load_all_types);
+  result->load_in_linux_kernel_mode(linux_kernel_mode);
   result->env(environment);
   return result;
 }

@@ -96,6 +96,17 @@ Options
     library that the tool has to consider.  The tool will thus filter
     out ABI changes on types that are not defined in public headers.
 
+  * ``--no-linux-kernel-mode``
+
+    Without this option, if abidiff detects that the binaries it is
+    looking at are Linux Kernel binaries (either vmlinux or modules)
+    then it only considers functions and variables which ELF symbols
+    are listed in the __ksymtab and __ksymtab_gpl sections.
+
+    With this option, abidiff considers the binary as a non-special
+    ELF binary.  It thus considers functions and variables which are
+    defined and exported in the ELF sense.
+
   * ``--dont-drop-private-types``
 
     This option is to be used with the ``--headers-dir1`` and

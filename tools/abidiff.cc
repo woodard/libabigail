@@ -76,6 +76,7 @@ struct options
   string		headers_dir1;
   string		headers_dir2;
   bool			drop_private_types;
+  bool			linux_kernel_mode;
   bool			no_default_supprs;
   bool			no_arch;
   bool			show_relative_offset_changes;
@@ -107,6 +108,7 @@ struct options
       display_version(),
       missing_operand(),
       drop_private_types(true),
+      linux_kernel_mode(true),
       no_default_supprs(),
       no_arch(),
       show_relative_offset_changes(true),
@@ -147,6 +149,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --headers-dir2|--hd2 <path>  the path to headers of file2\n"
     << "  --dont-drop-private-types\n  keep private types in "
     "internal representation\n"
+    << " --no-linux-kernel-mode  don't consider the input binaries as "
+       "linux kernel binaries\n"
     << " --stat  only display the diff stats\n"
     << " --symtabs  only display the symbol tables of the corpora\n"
     << " --no-default-suppression  don't load any "
@@ -276,6 +280,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.headers_dir2 = argv[j];
 	  ++i;
 	}
+      else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
+	opts.linux_kernel_mode = false;
       else if (!strcmp(argv[i], "--stat"))
 	opts.show_stats_only = true;
       else if (!strcmp(argv[i], "--symtabs"))
@@ -817,7 +823,8 @@ main(int argc, char* argv[])
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context(opts.file1,
 							 &di_dir1, env.get(),
-							 /*read_all_types=*/false);
+							 /*readalltypes*/false,
+							 opts.linux_kernel_mode);
 	    assert(ctxt);
 
 	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
@@ -867,7 +874,8 @@ main(int argc, char* argv[])
 	    abigail::dwarf_reader::read_context_sptr ctxt =
 	      abigail::dwarf_reader::create_read_context(opts.file2,
 							 &di_dir2, env.get(),
-							 /*read_all_types=*/false);
+							 /*readalltypes=*/false,
+							 opts.linux_kernel_mode);
 	    assert(ctxt);
 	    abigail::dwarf_reader::set_show_stats(*ctxt, opts.show_stats);
 	    abigail::dwarf_reader::set_do_log(*ctxt, opts.do_log);
