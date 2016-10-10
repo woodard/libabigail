@@ -6920,6 +6920,42 @@ struct type_base::priv
   {}
 }; // end struct type_base::priv
 
+/// Test if it is OK for a type to be compared against another type
+/// (of the same kind) from the same ABI corpus, just by looking at
+/// its name and size.
+///
+/// This kind of comparison is based on the One Definition Rule of
+/// C++: https://en.wikipedia.org/wiki/One_Definition_Rule.
+///
+/// That is, if two types of the same kind from the same ABI corpus
+/// have the same name, then they designate the same "thing".
+///
+/// Comparing types using this ODR-based approach is much faster than
+/// doing the actual structural (member-wise) comparison.
+///
+/// Note that C doesn't follow the ODR.  Though, in practice, if the
+/// ODR is violated (even for C), something might be going wrong
+/// there.  It is for C, though, that we add the size constraint.
+///
+/// @param type the type to consider.
+///
+/// @return true iff @p type is eligible for the ODR-based comparison
+/// optimization.
+static bool
+type_eligible_for_odr_based_comparison(const type_base_sptr& type)
+{
+  // We are doing the ODR-based optimization just for non-anonymous
+  // user-defined types and built-in types
+  if (type
+      && (is_class_type(type)
+	  || is_enum_type(type)
+	  || is_function_type(type)
+	  || is_type_decl(type))
+      && !is_anonymous_type(type))
+    return true;
+  return false;
+}
+
 /// Compute the canonical type for a given instance of @ref type_base.
 ///
 /// Consider two types T and T'.  The canonical type of T, denoted
@@ -7045,10 +7081,7 @@ type_base::get_canonical_type_for(type_base_sptr t)
 		      || is_cplus_plus_language(other_lang)))
 	      // We are doing the ODR-based optimization just for
 	      // non-anonymous user-defined types, and built-in types
-	      && (is_class_type(t)
-		  || is_enum_type(t)
-		  || is_type_decl(t))
-	      && !is_anonymous_type(t))
+	      && type_eligible_for_odr_based_comparison(t))
 	    {
 	      if (const corpus* it_corpus = (*it)->get_corpus())
 		{
