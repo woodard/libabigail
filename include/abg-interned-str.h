@@ -37,12 +37,14 @@
 #include <ostream>
 #include <string>
 
-using std::tr1::shared_ptr;
 
 namespace abigail
 {
 // Inject some std types into this namespace.
 using std::tr1::unordered_set;
+using std::tr1::shared_ptr;
+using std::string;
+using std::ostream;
 
 /// The abstraction of an interned string.
 ///
@@ -61,7 +63,7 @@ class interned_string
   ///
   /// @param raw the pointer to string that this interned_string
   /// wraps.
-  interned_string(std::string* raw)
+  interned_string(string* raw)
     : raw_(raw)
   {}
 
@@ -93,7 +95,7 @@ public:
   ///
   /// @return a pointer to the underlying std::string, or 0 if this
   /// interned_string is empty.
-  const std::string*
+  const string*
   raw() const
   {return raw_;}
 
@@ -132,7 +134,7 @@ public:
   ///
   /// @return true iff the current instance equals @p o.
   bool
-  operator==(const std::string& o) const
+  operator==(const string& o) const
   {
     if (raw_)
       return *raw_ == o;
@@ -150,7 +152,7 @@ public:
   /// @return true if the current instance of @ref interned_string is
   /// different from @p o.
   bool
-  operator!=(const std::string& o) const
+  operator!=(const string& o) const
   {return ! operator==(o);}
 
   /// "Less than" operator.
@@ -165,12 +167,12 @@ public:
   /// lexicographycally less than the string @p o.
   bool
   operator<(const interned_string& o) const
-  {return static_cast<std::string>(*this) < static_cast<std::string>(o);}
+  {return static_cast<string>(*this) < static_cast<std::string>(o);}
 
   /// Conversion operator to string.
   ///
   /// @return the underlying string this instance refers too.
-  operator std::string() const
+  operator string() const
   {
     if (!raw_)
       return "";
@@ -181,19 +183,19 @@ public:
 }; // end class interned_string
 
 bool
-operator==(const std::string& l, const interned_string& r);
+operator==(const string& l, const interned_string& r);
 
 bool
-operator!=(const std::string& l, const interned_string& r);
+operator!=(const string& l, const interned_string& r);
 
-std::ostream&
-operator<<(std::ostream& o, const interned_string& s);
+ostream&
+operator<<(ostream& o, const interned_string& s);
 
-std::string
-operator+(const interned_string& s1,const std::string& s2);
+string
+operator+(const interned_string& s1,const string& s2);
 
-std::string
-operator+(const std::string& s1, const interned_string& s2);
+string
+operator+(const string& s1, const interned_string& s2);
 
 /// A functor to hash instances of @ref interned_string.
 struct hash_interned_string
