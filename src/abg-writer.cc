@@ -515,48 +515,44 @@ static void write_elf_symbol_binding(elf_symbol::binding, ostream&);
 static bool write_elf_symbol_aliases(const elf_symbol&, ostream&);
 static bool write_elf_symbol_reference(const elf_symbol&, ostream&);
 static bool write_elf_symbol_reference(const elf_symbol_sptr, ostream&);
-static void write_class_is_declaration_only(const shared_ptr<class_decl>,
-					    ostream&);
-static void write_is_struct(const shared_ptr<class_decl>, ostream&);
+static void write_class_is_declaration_only(const class_decl_sptr&, ostream&);
+static void write_is_struct(const class_decl_sptr&, ostream&);
 static void write_is_anonymous(const decl_base_sptr&, ostream&);
-static bool write_decl(const shared_ptr<decl_base>,
-		       write_context&, unsigned);
-static void write_decl_in_scope(const decl_base_sptr,
-				write_context&,
-				unsigned);
-static bool write_type_decl(const shared_ptr<type_decl>,
-			    write_context&, unsigned);
+static bool write_decl(const decl_base_sptr&, write_context&, unsigned);
+static void write_decl_in_scope(const decl_base_sptr&,
+				write_context&, unsigned);
+static bool write_type_decl(const type_decl_sptr&, write_context&, unsigned);
 static bool write_namespace_decl(const namespace_decl_sptr&,
 				 write_context&, unsigned);
-static bool write_qualified_type_def(const shared_ptr<qualified_type_def>,
+static bool write_qualified_type_def(const qualified_type_def_sptr&,
 				     write_context&, unsigned);
-static bool write_pointer_type_def(const shared_ptr<pointer_type_def>,
+static bool write_pointer_type_def(const pointer_type_def_sptr&,
 				   write_context&, unsigned);
-static bool write_reference_type_def(const shared_ptr<reference_type_def>,
+static bool write_reference_type_def(const reference_type_def_sptr&,
 				     write_context&, unsigned);
-static bool write_array_type_def(const shared_ptr<array_type_def>,
+static bool write_array_type_def(const array_type_def_sptr&,
 			         write_context&, unsigned);
-static bool write_enum_type_decl(const shared_ptr<enum_type_decl>,
+static bool write_enum_type_decl(const enum_type_decl_sptr&,
 				 write_context&, unsigned);
-static bool write_typedef_decl(const shared_ptr<typedef_decl>,
+static bool write_typedef_decl(const typedef_decl_sptr&,
 			       write_context&, unsigned);
-static bool write_elf_symbol(const shared_ptr<elf_symbol>,
+static bool write_elf_symbol(const elf_symbol_sptr&,
 			     write_context&, unsigned);
 static bool write_elf_symbols_table(const elf_symbols&,
 				    write_context&, unsigned);
-static bool write_var_decl(const shared_ptr<var_decl>,
+static bool write_var_decl(const var_decl_sptr&,
 			   write_context&, bool, unsigned);
-static bool write_function_decl(const shared_ptr<function_decl>,
+static bool write_function_decl(const function_decl_sptr&,
 				write_context&, bool, unsigned);
-static bool write_function_type(const shared_ptr<function_type>,
+static bool write_function_type(const function_type_sptr&,
 				write_context&, unsigned);
-static bool write_member_type_opening_tag(const type_base_sptr,
+static bool write_member_type_opening_tag(const type_base_sptr&,
 					  write_context&, unsigned);
-static bool write_member_type(const type_base_sptr,
+static bool write_member_type(const type_base_sptr&,
 			      write_context&, unsigned);
-static bool write_class_decl_opening_tag(const class_decl_sptr, const string&,
+static bool write_class_decl_opening_tag(const class_decl_sptr&, const string&,
 					 write_context&, unsigned, bool);
-static bool write_class_decl(const shared_ptr<class_decl>,
+static bool write_class_decl(const class_decl_sptr&,
 			     write_context&, unsigned);
 static bool write_type_tparameter
 (const shared_ptr<type_tparameter>, write_context&, unsigned);
@@ -1059,7 +1055,7 @@ write_cdtor_const_static(bool is_ctor,
 ///
 /// @param o the output stream to serialize to.
 static void
-write_class_is_declaration_only(const shared_ptr<class_decl> klass, ostream& o)
+write_class_is_declaration_only(const class_decl_sptr& klass, ostream& o)
 {
   if (klass->get_is_declaration_only())
     o << " is-declaration-only='yes'";
@@ -1072,7 +1068,7 @@ write_class_is_declaration_only(const shared_ptr<class_decl> klass, ostream& o)
 ///
 /// @param o the output stream to serialize to.
 static void
-write_is_struct(const shared_ptr<class_decl> klass, ostream& o)
+write_is_struct(const class_decl_sptr& klass, ostream& o)
 {
   if (klass->is_struct())
     o << " is-struct='yes'";
@@ -1103,7 +1099,7 @@ write_is_anonymous(const decl_base_sptr& decl, ostream& o)
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_decl(const decl_base_sptr decl, write_context& ctxt, unsigned indent)
+write_decl(const decl_base_sptr& decl, write_context& ctxt, unsigned indent)
 {
   if (write_type_decl(dynamic_pointer_cast<type_decl> (decl),
 		      ctxt, indent)
@@ -1151,7 +1147,7 @@ write_decl(const decl_base_sptr decl, write_context& ctxt, unsigned indent)
 ///
 /// @param initial_indent the number of indentation spaces to use.
 static void
-write_decl_in_scope(const decl_base_sptr	decl,
+write_decl_in_scope(const decl_base_sptr&	decl,
 		    write_context&		ctxt,
 		    unsigned			initial_indent)
 {
@@ -1460,9 +1456,7 @@ write_translation_unit(const translation_unit&	tu,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_type_decl(const type_decl_sptr d,
-		write_context& ctxt,
-		unsigned indent)
+write_type_decl(const type_decl_sptr& d, write_context& ctxt, unsigned indent)
 {
   if (!d)
     return false;
@@ -1554,7 +1548,7 @@ write_namespace_decl(const namespace_decl_sptr& decl,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_qualified_type_def(const qualified_type_def_sptr		decl,
+write_qualified_type_def(const qualified_type_def_sptr&	decl,
 			 const string&				id,
 			 write_context&			ctxt,
 			 unsigned				indent)
@@ -1605,7 +1599,7 @@ write_qualified_type_def(const qualified_type_def_sptr		decl,
 ///
 /// @return true upon successful completion, false otherwise.
 static bool
-write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
+write_qualified_type_def(const qualified_type_def_sptr&	decl,
 			 write_context&			ctxt,
 			 unsigned				indent)
 {return write_qualified_type_def(decl, "", ctxt, indent);}
@@ -1628,7 +1622,7 @@ write_qualified_type_def(const shared_ptr<qualified_type_def>	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_pointer_type_def(const pointer_type_def_sptr	decl,
+write_pointer_type_def(const pointer_type_def_sptr&	decl,
 		       const string&			id,
 		       write_context&			ctxt,
 		       unsigned			indent)
@@ -1673,7 +1667,7 @@ write_pointer_type_def(const pointer_type_def_sptr	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_pointer_type_def(const pointer_type_def_sptr	decl,
+write_pointer_type_def(const pointer_type_def_sptr&	decl,
 		       write_context&			ctxt,
 		       unsigned			indent)
 {return write_pointer_type_def(decl, "", ctxt, indent);}
@@ -1696,7 +1690,7 @@ write_pointer_type_def(const pointer_type_def_sptr	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_reference_type_def(const reference_type_def_sptr		decl,
+write_reference_type_def(const reference_type_def_sptr&	decl,
 			 const string&				id,
 			 write_context&			ctxt,
 			 unsigned				indent)
@@ -1749,7 +1743,7 @@ write_reference_type_def(const reference_type_def_sptr		decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_reference_type_def(const reference_type_def_sptr		decl,
+write_reference_type_def(const reference_type_def_sptr&	decl,
 			 write_context&			ctxt,
 			 unsigned				indent)
 {return write_reference_type_def(decl, "", ctxt, indent);}
@@ -1772,7 +1766,7 @@ write_reference_type_def(const reference_type_def_sptr		decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_array_type_def(const array_type_def_sptr		decl,
+write_array_type_def(const array_type_def_sptr&	decl,
 		     const string&			id,
 		     write_context&			ctxt,
 		     unsigned				indent)
@@ -1847,7 +1841,7 @@ write_array_type_def(const array_type_def_sptr		decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_array_type_def(const array_type_def_sptr	decl,
+write_array_type_def(const array_type_def_sptr& decl,
 		     write_context&		ctxt,
 		     unsigned			indent)
 {return write_array_type_def(decl, "", ctxt, indent);}
@@ -1870,7 +1864,7 @@ write_array_type_def(const array_type_def_sptr	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_enum_type_decl(const enum_type_decl_sptr	decl,
+write_enum_type_decl(const enum_type_decl_sptr& decl,
 		     const string&		id,
 		     write_context&		ctxt,
 		     unsigned			indent)
@@ -1931,7 +1925,7 @@ write_enum_type_decl(const enum_type_decl_sptr	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_enum_type_decl(const enum_type_decl_sptr	decl,
+write_enum_type_decl(const enum_type_decl_sptr& decl,
 		     write_context&		ctxt,
 		     unsigned			indent)
 {return write_enum_type_decl(decl, "", ctxt, indent);}
@@ -1947,7 +1941,7 @@ write_enum_type_decl(const enum_type_decl_sptr	decl,
 ///
 /// @return true iff the function completed successfully.
 static bool
-write_elf_symbol(const shared_ptr<elf_symbol>	sym,
+write_elf_symbol(const elf_symbol_sptr&	sym,
 		 write_context&		ctxt,
 		 unsigned			indent)
 {
@@ -2073,7 +2067,7 @@ write_elf_needed(const vector<string>&	needed,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_typedef_decl(const typedef_decl_sptr	decl,
+write_typedef_decl(const typedef_decl_sptr&	decl,
 		   const string&		id,
 		   write_context&		ctxt,
 		   unsigned			indent)
@@ -2117,7 +2111,7 @@ write_typedef_decl(const typedef_decl_sptr	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_typedef_decl(const typedef_decl_sptr	decl,
+write_typedef_decl(const typedef_decl_sptr&	decl,
 		   write_context&		ctxt,
 		   unsigned			indent)
 {return write_typedef_decl(decl, "", ctxt, indent);}
@@ -2135,7 +2129,7 @@ write_typedef_decl(const typedef_decl_sptr	decl,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_var_decl(const var_decl_sptr decl, write_context& ctxt,
+write_var_decl(const var_decl_sptr& decl, write_context& ctxt,
 	       bool write_linkage_name, unsigned indent)
 {
   if (!decl)
@@ -2183,7 +2177,7 @@ write_var_decl(const var_decl_sptr decl, write_context& ctxt,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
+write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 		    bool skip_first_parm, unsigned indent)
 {
   if (!decl)
@@ -2265,8 +2259,8 @@ write_function_decl(const shared_ptr<function_decl> decl, write_context& ctxt,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_function_type(const shared_ptr<function_type> decl, write_context& ctxt,
-		    unsigned indent)
+write_function_type(const function_type_sptr& decl,
+		    write_context& ctxt, unsigned indent)
 {
   if (!decl)
     return false;
@@ -2343,7 +2337,7 @@ write_function_type(const shared_ptr<function_type> decl, write_context& ctxt,
 ///
 /// @return true upon successful completion.
 static bool
-write_class_decl_opening_tag(const class_decl_sptr	decl,
+write_class_decl_opening_tag(const class_decl_sptr&	decl,
 			     const string&		id,
 			     write_context&		ctxt,
 			     unsigned			indent,
@@ -2413,7 +2407,7 @@ write_class_decl_opening_tag(const class_decl_sptr	decl,
 ///
 /// @param indent the initial indentation to use.
 static bool
-write_class_decl(const class_decl_sptr	decl,
+write_class_decl(const class_decl_sptr& decl,
 		 const string&		id,
 		 write_context&	ctxt,
 		 unsigned		indent)
@@ -2607,7 +2601,7 @@ write_class_decl(const class_decl_sptr	decl,
 ///
 /// @param indent the initial indentation to use.
 static bool
-write_class_decl(const class_decl_sptr	decl,
+write_class_decl(const class_decl_sptr& decl,
 		 write_context&	ctxt,
 		 unsigned		indent)
 {return write_class_decl(decl, "", ctxt, indent);}
@@ -2622,8 +2616,9 @@ write_class_decl(const class_decl_sptr	decl,
 ///
 /// @return true upon successful completion.
 static bool
-write_member_type_opening_tag(const type_base_sptr t,
-			      write_context& ctxt, unsigned indent)
+write_member_type_opening_tag(const type_base_sptr& t,
+			      write_context& ctxt,
+			      unsigned indent)
 {
   ostream& o = ctxt.get_ostream();
 
@@ -2652,8 +2647,7 @@ write_member_type_opening_tag(const type_base_sptr t,
 ///
 /// @param indent the number of levels to use for indentation
 static bool
-write_member_type(const type_base_sptr t,
-		  write_context& ctxt, unsigned indent)
+write_member_type(const type_base_sptr& t, write_context& ctxt, unsigned indent)
 {
   if (!t)
     return false;
@@ -3442,7 +3436,7 @@ dump_decl_location(const decl_base* d)
     dump_decl_location(*d);
 }
 
-/// Serialize the source location of a dcl to stderr for debugging
+/// Serialize the source location of a decl to stderr for debugging
 /// purposes.
 ///
 /// @param d the declaration to consider.

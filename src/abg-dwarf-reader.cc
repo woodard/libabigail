@@ -3273,7 +3273,7 @@ public:
 	      }
 	    canonicalize(t);
 	    if (do_log())
-		cerr << " DONE\n";
+	      cerr << " DONE\n";
 	  }
       }
     if (do_log())

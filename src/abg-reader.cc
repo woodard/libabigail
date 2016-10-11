@@ -3838,7 +3838,7 @@ build_class_decl(read_context&		ctxt,
   class_decl::member_functions mbr_functions;
   class_decl::base_specs  bases;
 
-  shared_ptr<class_decl> decl;
+  class_decl_sptr decl;
 
   bool is_decl_only = false;
   read_is_declaration_only(node, is_decl_only);
