@@ -9014,6 +9014,7 @@ build_function_decl(read_context&	ctxt,
     {
       function_type_sptr fn_type(build_function_type(ctxt, die, is_method,
 						     where_offset));
+      maybe_canonicalize_type(dwarf_dieoffset(die), source, ctxt);
 
       result.reset(is_method
 		   ? new class_decl::method_decl(fname, fn_type,
