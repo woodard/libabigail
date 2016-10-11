@@ -5729,6 +5729,14 @@ is_type(decl_base* decl)
 
 /// Test if a given type is anonymous.
 ///
+/// Note that this function considers that an anonymous class that is
+/// named by a typedef is not anonymous anymore.  This is the C idiom:
+///
+///       typedef struct {int member;} s_type;
+///
+/// The typedef s_type becomes the name of the originally anonymous
+/// struct.
+///
 /// @param t the type to consider.
 ///
 /// @return true iff @p t is anonymous.
@@ -5736,9 +5744,20 @@ bool
 is_anonymous_type(type_base* t)
 {
   decl_base* d = get_type_declaration(t);
-  if (!d)
-    return false;
-  return d->get_is_anonymous();
+  if (d)
+    if (d->get_is_anonymous())
+      {
+	if (class_decl *klass = is_class_type(t))
+	  {
+	    // An anonymous class that is named by a typedef is not
+	    // considered anonymous anymore.
+	    if (!klass->get_naming_typedef())
+	      return true;
+	  }
+	else
+	  return true;
+      }
+  return false;
 }
 
 /// Test if a given type is anonymous.
@@ -12263,6 +12282,7 @@ function_decl::parameter::get_pretty_representation(bool internal) const
 // <class_or_union definitions>
 struct class_or_union::priv
 {
+  typedef_decl_wptr		naming_typedef_;
   decl_base_sptr		declaration_;
   class_or_union_wptr		definition_of_declaration_;
   member_types			member_types_;
@@ -12764,6 +12784,40 @@ class_or_union::set_is_declaration_only(bool f)
 	else
 	  abort();
       }
+}
+
+/// Getter for the naming typedef of the current class.
+///
+/// Consider the C idiom:
+///
+///    typedef struct {int member;} foo_type;
+///
+/// In that idiom, foo_type is the naming typedef of the anonymous
+/// struct that is declared.
+///
+/// @return the naming typedef, if any.  Otherwise, returns nil.
+typedef_decl_sptr
+class_or_union::get_naming_typedef() const
+{
+  if (priv_->naming_typedef_.expired())
+    return typedef_decl_sptr();
+  return typedef_decl_sptr(priv_->naming_typedef_);
+}
+
+/// Set the naming typedef of the current instance of @ref class_decl.
+///
+/// Consider the C idiom:
+///
+///    typedef struct {int member;} foo_type;
+///
+/// In that idiom, foo_type is the naming typedef of the anonymous
+/// struct that is declared.
+///
+/// @param typedef_type the new naming typedef.
+void
+class_or_union::set_naming_typedef(const typedef_decl_sptr& typedef_type)
+{
+  priv_->naming_typedef_ = typedef_type;
 }
 
 /// Set the definition of this declaration-only @ref class_or_union.
@@ -13647,6 +13701,18 @@ class_decl::get_pretty_representation(bool internal) const
   string cl = "class ";
   if (!internal && is_struct())
     cl = "struct ";
+
+  // When computing the pretty representation for internal purposes,
+  // if an anonymous class is named by a typedef, then consider that
+  // it has a name, which is the typedef name.
+  if (internal && get_is_anonymous())
+    if (typedef_decl_sptr d = get_naming_typedef())
+      {
+	string qualified_name =
+	  decl_base::priv_->qualified_parent_name_ + "::" + d->get_name();
+	return cl + qualified_name;
+      }
+
   return cl + get_qualified_name(internal);
 }
 

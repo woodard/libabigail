@@ -519,6 +519,7 @@ static void write_class_or_union_is_declaration_only(const class_or_union_sptr&,
 						     ostream&);
 static void write_is_struct(const class_decl_sptr&, ostream&);
 static void write_is_anonymous(const decl_base_sptr&, ostream&);
+static void write_naming_typedef(const class_decl_sptr&, write_context&);
 static bool write_decl(const decl_base_sptr&, write_context&, unsigned);
 static void write_decl_in_scope(const decl_base_sptr&,
 				write_context&, unsigned);
@@ -1093,6 +1094,27 @@ write_is_anonymous(const decl_base_sptr& decl, ostream& o)
 {
   if (decl->get_is_anonymous())
     o << " is-anonymous='yes'";
+}
+
+/// Serialize the "naming-typedef-id" attribute, if the current
+/// instance of @ref class_decl has a naming typedef.
+///
+/// @param klass the @ref class_decl to consider.
+///
+/// @param ctxt the write context to use.
+static void
+write_naming_typedef(const class_decl_sptr& klass, write_context& ctxt)
+{
+  if (!klass)
+    return;
+
+  ostream &o = ctxt.get_ostream();
+
+  if (typedef_decl_sptr typedef_type = klass->get_naming_typedef())
+    {
+      string id = ctxt.get_id_for_type(typedef_type);
+      o << " naming-typedef-id='" << id << "'";
+    }
 }
 
 /// Serialize a pointer to an of decl_base into an output stream.
@@ -2392,6 +2414,8 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
   write_is_struct(decl, o);
 
   write_is_anonymous(decl, o);
+
+  write_naming_typedef(decl, ctxt);
 
   write_visibility(decl, o);
 

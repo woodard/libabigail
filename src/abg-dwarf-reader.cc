@@ -11134,6 +11134,11 @@ build_typedef_type(read_context&	ctxt,
 
   result.reset(new typedef_decl(name, utype, loc, linkage_name));
   ctxt.associate_die_to_type(die, result, where_offset);
+
+  if (class_decl_sptr klass = is_class_type(utype))
+    if (is_anonymous_type(klass))
+      klass->set_naming_typedef(result);
+
   return result;
 }
 

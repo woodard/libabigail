@@ -2102,6 +2102,9 @@ equals(const typedef_decl&, const typedef_decl&, change_kind*);
 /// Convenience typedef for a shared pointer on a @ref typedef_decl.
 typedef shared_ptr<typedef_decl> typedef_decl_sptr;
 
+/// Convenience typedef for a weak pointer on a @ref typedef_decl.
+typedef weak_ptr<typedef_decl> typedef_decl_wptr;
+
 /// The abstraction of a typedef declaration.
 class typedef_decl : public virtual type_base, public virtual decl_base
 {
@@ -3272,6 +3275,12 @@ public:
 
   virtual void
   set_alignment_in_bits(size_t);
+
+  typedef_decl_sptr
+  get_naming_typedef() const;
+
+  void
+  set_naming_typedef(const typedef_decl_sptr&);
 
   bool
   get_is_declaration_only() const;
