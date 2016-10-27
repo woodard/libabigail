@@ -170,7 +170,7 @@ if test x$DW_LIBS = x; then
    AC_MSG_ERROR([could not find elfutils dwarf library installed])
 fi
 
-if test x$FOUND_DWARF_GETALT_IN_LIBDW=xyes; then
+if test x$FOUND_DWARF_GETALT_IN_LIBDW = xyes; then
    AC_DEFINE([LIBDW_HAS_DWARF_GETALT], 1,
 	     [Defined if libdw has the function dwarf_getalt])
 fi
