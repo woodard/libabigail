@@ -3141,7 +3141,7 @@ has_scope(const decl_base_sptr d)
 /// @return true if @p d is a class member, false otherwise.
 bool
 is_member_decl(const decl_base_sptr d)
-{return is_at_class_scope(d);}
+{return is_at_class_scope(d) || is_method_decl(d);}
 
 /// Tests if a declaration is a class member.
 ///
@@ -3150,7 +3150,7 @@ is_member_decl(const decl_base_sptr d)
 /// @return true if @p d is a class member, false otherwise.
 bool
 is_member_decl(const decl_base* d)
-{return is_at_class_scope(d);}
+{return is_at_class_scope(d) || is_method_decl(d);}
 
 /// Tests if a declaration is a class member.
 ///
@@ -3159,7 +3159,7 @@ is_member_decl(const decl_base* d)
 /// @return true if @p d is a class member, false otherwise.
 bool
 is_member_decl(const decl_base& d)
-{return is_at_class_scope(d);}
+{return is_at_class_scope(d) || is_method_decl(d);}
 
 /// Test if a declaration is a @ref scope_decl.
 ///
@@ -3432,7 +3432,7 @@ get_data_member_is_laid_out(const var_decl_sptr m)
 /// @return true if @p f is a member function, false otherwise.
 bool
 is_member_function(const function_decl& f)
-{return is_at_class_scope(f);}
+{return is_member_decl(f);}
 
 /// Test whether a function_decl is a member function.
 ///
@@ -3441,7 +3441,7 @@ is_member_function(const function_decl& f)
 /// @return true if @p f is a member function, false otherwise.
 bool
 is_member_function(const function_decl* f)
-{return is_member_function(*f);}
+{return is_member_decl(*f);}
 
 /// Test whether a function_decl is a member function.
 ///
@@ -3450,7 +3450,7 @@ is_member_function(const function_decl* f)
 /// @return true if @p f is a member function, false otherwise.
 bool
 is_member_function(const function_decl_sptr& f)
-{return is_member_function(*f);}
+{return is_member_decl(*f);}
 
 /// Test whether a member function is a constructor.
 ///
