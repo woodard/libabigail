@@ -5108,7 +5108,7 @@ get_function_type_name(const function_type& fn_type,
 		       bool internal)
 {
   std::ostringstream o;
-  type_base_sptr return_type= fn_type.get_return_type();
+  type_base_sptr return_type = fn_type.get_return_type();
   const environment* env = fn_type.get_environment();
   assert(env);
 
@@ -5222,11 +5222,9 @@ get_pretty_representation(const type_or_decl_base* tod, bool internal)
 {
   string result;
 
-  if (type_base* t =
-      dynamic_cast<type_base*>(const_cast<type_or_decl_base*>(tod)))
+  if (type_base* t = is_type(const_cast<type_or_decl_base*>(tod)))
     result = get_pretty_representation(t, internal);
-  else if (decl_base* d =
-	   dynamic_cast<decl_base*>(const_cast<type_or_decl_base*>(tod)))
+  else if (decl_base* d = is_decl(const_cast<type_or_decl_base*>(tod)))
     result =  get_pretty_representation(d, internal);
   else
     // We should never reach this point
