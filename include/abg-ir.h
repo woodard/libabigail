@@ -435,10 +435,13 @@ public:
   set_path(const string&);
 
   void
-  set_corpus(const corpus*);
+  set_corpus(corpus*);
 
   const corpus*
   get_corpus() const;
+
+  corpus*
+  get_corpus();
 
   const global_scope_sptr
   get_global_scope() const;
@@ -980,11 +983,17 @@ public:
   const corpus*
   get_corpus() const;
 
+  corpus*
+  get_corpus();
+
   void
-  set_translation_unit(const translation_unit*);
+  set_translation_unit(translation_unit*);
 
   const translation_unit*
   get_translation_unit() const;
+
+  translation_unit*
+  get_translation_unit();
 
   type_or_decl_base&
   operator=(const type_or_decl_base&);
@@ -1173,7 +1182,7 @@ public:
   equals(const var_decl&, const var_decl&, change_kind*);
 
   friend decl_base_sptr
-  add_decl_to_scope(decl_base_sptr dcl, scope_decl* scpe);
+  add_decl_to_scope(decl_base_sptr decl, scope_decl* scpe);
 
   friend void
   remove_decl_from_scope(decl_base_sptr);
@@ -1260,14 +1269,14 @@ private:
 
 protected:
   virtual decl_base_sptr
-  add_member_decl(const decl_base_sptr member);
+  add_member_decl(const decl_base_sptr& member);
 
   virtual decl_base_sptr
-  insert_member_decl(const decl_base_sptr member,
+  insert_member_decl(const decl_base_sptr& member,
 		     declarations::iterator before);
 
   virtual void
-  remove_member_decl(const decl_base_sptr member);
+  remove_member_decl(decl_base_sptr member);
 
 public:
   struct hash;
@@ -1311,7 +1320,7 @@ public:
   virtual ~scope_decl();
 
   friend decl_base_sptr
-  add_decl_to_scope(decl_base_sptr dcl, scope_decl* scpe);
+  add_decl_to_scope(decl_base_sptr decl, scope_decl* scope);
 
   friend decl_base_sptr
   insert_decl_into_scope(decl_base_sptr decl,
@@ -3067,7 +3076,7 @@ private:
 protected:
 
   virtual decl_base_sptr
-  add_member_decl(decl_base_sptr);
+  add_member_decl(const decl_base_sptr&);
 
   virtual decl_base_sptr
   insert_member_decl(decl_base_sptr member, declarations::iterator before);
@@ -3645,10 +3654,13 @@ public:
 };// end class class_decl::method_decl
 
 class_decl::method_decl*
-is_method_decl(const function_decl*);
+is_method_decl(const type_or_decl_base*);
+
+class_decl::method_decl*
+is_method_decl(const type_or_decl_base&);
 
 class_decl::method_decl_sptr
-is_method_decl(const function_decl_sptr&);
+is_method_decl(const type_or_decl_base_sptr&);
 
 /// Abstract a member function template.
 class class_decl::member_function_template

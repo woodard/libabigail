@@ -123,7 +123,7 @@ shared_ptr<decl_base>
 add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
 
 shared_ptr<decl_base>
-add_decl_to_scope (shared_ptr<decl_base>, shared_ptr<scope_decl>);
+add_decl_to_scope(shared_ptr<decl_base>, const shared_ptr<scope_decl>&);
 
 const global_scope*
 get_global_scope(const decl_base&);
@@ -174,13 +174,13 @@ bool
 is_template_parameter(const shared_ptr<decl_base>);
 
 function_decl*
-is_function_decl(const decl_base*);
+is_function_decl(const type_or_decl_base*);
 
 shared_ptr<function_decl>
-is_function_decl(shared_ptr<decl_base>);
+is_function_decl(const shared_ptr<type_or_decl_base>&);
 
 bool
-is_function_decl(const decl_base&);
+is_function_decl(const type_or_decl_base&);
 
 decl_base*
 is_decl(const type_or_decl_base*);
@@ -249,46 +249,46 @@ shared_ptr<class_decl>
 is_compatible_with_class_type(const shared_ptr<decl_base>&);
 
 pointer_type_def*
-is_pointer_type(type_base*);
+is_pointer_type(type_or_decl_base*);
 
 const pointer_type_def*
-is_pointer_type(const type_base*);
+is_pointer_type(const type_or_decl_base*);
 
 shared_ptr<pointer_type_def>
-is_pointer_type(const shared_ptr<type_base>);
+is_pointer_type(const shared_ptr<type_or_decl_base>&);
 
 reference_type_def*
-is_reference_type(type_base*);
+is_reference_type(type_or_decl_base*);
 
 const reference_type_def*
-is_reference_type(const type_base*);
+is_reference_type(const type_or_decl_base*);
 
 shared_ptr<reference_type_def>
-is_reference_type(const shared_ptr<type_base>);
+is_reference_type(const shared_ptr<type_or_decl_base>&);
 
 qualified_type_def*
-is_qualified_type(const type_base*);
+is_qualified_type(const type_or_decl_base*);
 
 shared_ptr<qualified_type_def>
-is_qualified_type(const shared_ptr<type_base>);
+is_qualified_type(const shared_ptr<type_or_decl_base>&);
 
 shared_ptr<function_type>
-is_function_type(const shared_ptr<type_base>);
+is_function_type(const shared_ptr<type_or_decl_base>&);
 
 function_type*
-is_function_type(type_base*);
+is_function_type(type_or_decl_base*);
 
 const function_type*
-is_function_type(const type_base*);
+is_function_type(const type_or_decl_base*);
 
 shared_ptr<method_type>
-is_method_type(const shared_ptr<type_base>);
+is_method_type(const shared_ptr<type_or_decl_base>&);
 
 const method_type*
-is_method_type(const type_base*);
+is_method_type(const type_or_decl_base*);
 
 method_type*
-is_method_type(type_base*);
+is_method_type(type_or_decl_base*);
 
 shared_ptr<class_decl>
 look_through_decl_only_class(shared_ptr<class_decl>);
@@ -314,11 +314,6 @@ is_template_decl(const shared_ptr<decl_base>);
 bool
 is_function_template_pattern(const shared_ptr<decl_base>);
 
-shared_ptr<decl_base>
-add_decl_to_scope(shared_ptr<decl_base>, scope_decl*);
-
-shared_ptr<decl_base>
-add_decl_to_scope(shared_ptr<decl_base>, shared_ptr<scope_decl>);
 
 shared_ptr<decl_base>
 insert_decl_into_scope(shared_ptr<decl_base>,
@@ -348,8 +343,11 @@ is_member_decl(const decl_base&);
 scope_decl*
 is_scope_decl(decl_base*);
 
+shared_ptr<scope_decl>
+is_scope_decl(const shared_ptr<decl_base>&);
+
 bool
-is_member_type(const shared_ptr<type_base>);
+is_member_type(const shared_ptr<type_base>&);
 
 void
 remove_decl_from_scope(shared_ptr<decl_base>);
@@ -382,10 +380,10 @@ shared_ptr<var_decl>
 is_data_member(const shared_ptr<decl_base>&);
 
 array_type_def*
-is_array_type(const type_base* decl);
+is_array_type(const type_or_decl_base* decl);
 
 shared_ptr<array_type_def>
-is_array_type(const shared_ptr<type_base> decl);
+is_array_type(const shared_ptr<type_or_decl_base>& decl);
 
 void
 set_data_member_offset(shared_ptr<var_decl>, size_t);

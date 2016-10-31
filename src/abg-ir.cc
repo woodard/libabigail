@@ -398,7 +398,7 @@ typedef unordered_map<function_type_sptr,
 struct translation_unit::priv
 {
   const environment*				env_;
-  const corpus*				corp;
+  corpus*					corp;
   bool						is_constructed_;
   char						address_size_;
   language					language_;
@@ -448,7 +448,7 @@ translation_unit::translation_unit(const environment*	env,
 /// @return the global scope of the current translation unit.  If
 /// there is not global scope allocated yet, this function creates one
 /// and returns it.
-const shared_ptr<global_scope>
+const global_scope_sptr
 translation_unit::get_global_scope() const
 {
   if (!priv_->global_scope_)
@@ -459,7 +459,8 @@ translation_unit::get_global_scope() const
       // translation unit.
       priv_->global_scope_->
 	set_environment(const_cast<environment*>(get_environment()));
-      priv_->global_scope_->set_translation_unit(this);
+      priv_->global_scope_->set_translation_unit
+	(const_cast<translation_unit*>(this));
     }
   return priv_->global_scope_;
 }
@@ -543,8 +544,16 @@ translation_unit::set_path(const string& a_path)
 ///
 /// @param corpus the corpus.
 void
-translation_unit::set_corpus(const corpus* c)
+translation_unit::set_corpus(corpus* c)
 {priv_->corp = c;}
+
+/// Get the corpus this translation unit is a member of.
+///
+/// @return the parent corpus, or nil if this doesn't belong to any
+/// corpus yet.
+corpus*
+translation_unit::get_corpus()
+{return priv_->corp;}
 
 /// Get the corpus this translation unit is a member of.
 ///
@@ -552,7 +561,7 @@ translation_unit::set_corpus(const corpus* c)
 /// corpus yet.
 const corpus*
 translation_unit::get_corpus() const
-{return priv_->corp;}
+{return const_cast<translation_unit*>(this)->get_corpus();}
 
 /// Getter of the location manager for the current translation unit.
 ///
@@ -673,7 +682,7 @@ translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
   if (const translation_unit* existing_tu = ftype->get_translation_unit())
     assert(existing_tu == this);
   else
-    ftype->set_translation_unit(this);
+    ftype->set_translation_unit(const_cast<translation_unit*>(this));
 }
 
 /// This implements the ir_traversable_base::traverse virtual
@@ -2185,7 +2194,7 @@ struct type_or_decl_base::priv
 {
   bool				hashing_started_;
   const environment*		env_;
-  const translation_unit*	translation_unit_;
+  translation_unit*		translation_unit_;
 
   priv(const environment* e = 0)
     : hashing_started_(),
@@ -2256,22 +2265,40 @@ type_or_decl_base::get_environment()
 ///
 /// @return the corpus this ABI artifact belongs to, or nil if it
 /// belongs to none for now.
-const corpus*
-type_or_decl_base::get_corpus() const
+corpus*
+type_or_decl_base::get_corpus()
 {
-  const translation_unit* tu = get_translation_unit();
+  translation_unit* tu = get_translation_unit();
   if (!tu)
     return 0;
   return tu->get_corpus();
 }
+
+
+/// Get the @ref corpus this ABI artifact belongs to.
+///
+/// @return the corpus this ABI artifact belongs to, or nil if it
+/// belongs to none for now.
+const corpus*
+type_or_decl_base::get_corpus() const
+{return const_cast<type_or_decl_base*>(this)->get_corpus();}
 
 /// Set the @ref translation_unit this ABI artifact belongs to.
 ///
 /// Note that adding an ABI artifact to a containining on should
 /// invoke this member function.
 void
-type_or_decl_base::set_translation_unit(const translation_unit* tu)
+type_or_decl_base::set_translation_unit(translation_unit* tu)
 {priv_->translation_unit_ = tu;}
+
+
+/// Get the @ref translation_unit this ABI artifact belongs to.
+///
+/// @return the translation unit this ABI artifact belongs to, or nil
+/// if belongs to none for now.
+translation_unit*
+type_or_decl_base::get_translation_unit()
+{return priv_->translation_unit_;}
 
 /// Get the @ref translation_unit this ABI artifact belongs to.
 ///
@@ -2279,7 +2306,7 @@ type_or_decl_base::set_translation_unit(const translation_unit* tu)
 /// if belongs to none for now.
 const translation_unit*
 type_or_decl_base::get_translation_unit() const
-{return priv_->translation_unit_;}
+{return const_cast<type_or_decl_base*>(this)->get_translation_unit();}
 
 /// Assignment operator for @ref type_or_decl_base.
 ///
@@ -3140,13 +3167,23 @@ scope_decl*
 is_scope_decl(decl_base* d)
 {return dynamic_cast<scope_decl*>(d);}
 
+/// Test if a declaration is a @ref scope_decl.
+///
+/// @param d the declaration to take in account.
+///
+/// @return the a pointer to the @ref scope_decl sub-object of @p d,
+/// if d is a @ref scope_decl.
+scope_decl_sptr
+is_scope_decl(const decl_base_sptr& d)
+{return dynamic_pointer_cast<scope_decl>(d);}
+
 /// Tests if a type is a class member.
 ///
 /// @param t the type to consider.
 ///
 /// @return true if @p t is a class member type, false otherwise.
 bool
-is_member_type(const type_base_sptr t)
+is_member_type(const type_base_sptr& t)
 {
   decl_base_sptr d = get_type_declaration(t);
   return is_member_decl(d);
@@ -4329,7 +4366,7 @@ scope_decl::is_empty() const
 ///
 /// @param member the new member decl to add to this scope.
 decl_base_sptr
-scope_decl::add_member_decl(const decl_base_sptr member)
+scope_decl::add_member_decl(const decl_base_sptr& member)
 {
   assert(!has_scope(member));
 
@@ -4344,9 +4381,9 @@ scope_decl::add_member_decl(const decl_base_sptr member)
   if (const environment* env = get_environment())
     set_environment_for_artifact(member, env);
 
-  if (const translation_unit* tu = get_translation_unit())
+  if (translation_unit* tu = get_translation_unit())
     {
-      if (const translation_unit* existing_tu = member->get_translation_unit())
+      if (translation_unit* existing_tu = member->get_translation_unit())
 	assert(tu == existing_tu);
       else
 	member->set_translation_unit(tu);
@@ -4369,7 +4406,7 @@ scope_decl::add_member_decl(const decl_base_sptr member)
 /// @param before an interator pointing to the element before which
 /// the new member should be inserted.
 decl_base_sptr
-scope_decl::insert_member_decl(const decl_base_sptr member,
+scope_decl::insert_member_decl(const decl_base_sptr& member,
 			       declarations::iterator before)
 {
   assert(!member->get_scope());
@@ -4385,9 +4422,9 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
   if (const environment* env = get_environment())
     set_environment_for_artifact(member, env);
 
-  if (const translation_unit* tu = get_translation_unit())
+  if (translation_unit* tu = get_translation_unit())
     {
-      if (const translation_unit* existing_tu = member->get_translation_unit())
+      if (translation_unit* existing_tu = member->get_translation_unit())
 	assert(tu == existing_tu);
       else
 	member->set_translation_unit(tu);
@@ -4402,7 +4439,7 @@ scope_decl::insert_member_decl(const decl_base_sptr member,
 ///
 /// @param member the declaration to remove from the scope.
 void
-scope_decl::remove_member_decl(const decl_base_sptr member)
+scope_decl::remove_member_decl(decl_base_sptr member)
 {
   for (declarations::iterator i = priv_->members_.begin();
        i != priv_->members_.end();
@@ -4654,7 +4691,7 @@ add_decl_to_scope(decl_base_sptr decl, scope_decl* scope)
 ///
 /// @param scope the scope to append the decl to
 decl_base_sptr
-add_decl_to_scope(shared_ptr<decl_base> decl, shared_ptr<scope_decl> scope)
+add_decl_to_scope(decl_base_sptr decl, const scope_decl_sptr& scope)
 {return add_decl_to_scope(decl, scope.get());}
 
 /// Remove a given decl from its scope
@@ -5588,8 +5625,8 @@ is_template_parameter(const shared_ptr<decl_base> decl)
 /// @return a shared pointer to @ref function_decl if @p d is a @ref
 /// function_decl.  Otherwise, a nil shared pointer.
 function_decl*
-is_function_decl(const decl_base* d)
-{return dynamic_cast<function_decl*>(const_cast<decl_base*>(d));}
+is_function_decl(const type_or_decl_base* d)
+{return dynamic_cast<function_decl*>(const_cast<type_or_decl_base*>(d));}
 
 /// Test whether a declaration is a @ref function_decl.
 ///
@@ -5597,7 +5634,7 @@ is_function_decl(const decl_base* d)
 ///
 /// @return true if @p d is a function_decl.
 bool
-is_function_decl(const decl_base& d)
+is_function_decl(const type_or_decl_base& d)
 {return is_function_decl(&d);}
 
 /// Test whether a declaration is a @ref function_decl.
@@ -5607,7 +5644,7 @@ is_function_decl(const decl_base& d)
 /// @return a shared pointer to @ref function_decl if @p d is a @ref
 /// function_decl.  Otherwise, a nil shared pointer.
 function_decl_sptr
-is_function_decl(decl_base_sptr d)
+is_function_decl(const type_or_decl_base_sptr& d)
 {return dynamic_pointer_cast<function_decl>(d);}
 
 /// Test whether a declaration is a @ref function_decl.
@@ -5640,8 +5677,8 @@ is_function_parameter(const type_or_decl_base_sptr tod)
 /// @param return the declaration sub-object of @p d if it's a
 /// declaration, or NULL if it is not.
 decl_base*
-is_decl(const decl_base* d)
-{return dynamic_cast<decl_base*>(const_cast<decl_base*>(d));}
+is_decl(const type_or_decl_base* d)
+{return dynamic_cast<decl_base*>(const_cast<type_or_decl_base*>(d));}
 
 /// Test if an ABI artifact is a declaration.
 ///
@@ -5864,7 +5901,7 @@ is_class_type(const type_or_decl_base_sptr& d)
 /// @return the @ref pointer_type_def_sptr if @p t is a
 /// pointer_type_def, null otherwise.
 pointer_type_def*
-is_pointer_type(type_base* t)
+is_pointer_type(type_or_decl_base* t)
 {return dynamic_cast<pointer_type_def*>(t);}
 
 /// Test whether a type is a pointer_type_def.
@@ -5874,7 +5911,7 @@ is_pointer_type(type_base* t)
 /// @return the @ref pointer_type_def_sptr if @p t is a
 /// pointer_type_def, null otherwise.
 const pointer_type_def*
-is_pointer_type(const type_base* t)
+is_pointer_type(const type_or_decl_base* t)
 {return dynamic_cast<const pointer_type_def*>(t);}
 
 /// Test whether a type is a pointer_type_def.
@@ -5884,7 +5921,7 @@ is_pointer_type(const type_base* t)
 /// @return the @ref pointer_type_def_sptr if @p t is a
 /// pointer_type_def, null otherwise.
 pointer_type_def_sptr
-is_pointer_type(const type_base_sptr t)
+is_pointer_type(const type_or_decl_base_sptr &t)
 {return dynamic_pointer_cast<pointer_type_def>(t);}
 
 /// Test whether a type is a reference_type_def.
@@ -5894,7 +5931,7 @@ is_pointer_type(const type_base_sptr t)
 /// @return the @ref reference_type_def_sptr if @p t is a
 /// reference_type_def, null otherwise.
 reference_type_def*
-is_reference_type(type_base* t)
+is_reference_type(type_or_decl_base* t)
 {return dynamic_cast<reference_type_def*>(t);}
 
 /// Test whether a type is a reference_type_def.
@@ -5904,7 +5941,7 @@ is_reference_type(type_base* t)
 /// @return the @ref reference_type_def_sptr if @p t is a
 /// reference_type_def, null otherwise.
 const reference_type_def*
-is_reference_type(const type_base* t)
+is_reference_type(const type_or_decl_base* t)
 {return dynamic_cast<const reference_type_def*>(t);}
 
 /// Test whether a type is a reference_type_def.
@@ -5914,7 +5951,7 @@ is_reference_type(const type_base* t)
 /// @return the @ref reference_type_def_sptr if @p t is a
 /// reference_type_def, null otherwise.
 reference_type_def_sptr
-is_reference_type(const type_base_sptr t)
+is_reference_type(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<reference_type_def>(t);}
 
 /// Test whether a type is a reference_type_def.
@@ -5924,8 +5961,8 @@ is_reference_type(const type_base_sptr t)
 /// @return the @ref reference_type_def_sptr if @p t is a
 /// reference_type_def, null otherwise.
 qualified_type_def*
-is_qualified_type(const type_base* t)
-{return dynamic_cast<qualified_type_def*>(const_cast<type_base*>(t));}
+is_qualified_type(const type_or_decl_base* t)
+{return dynamic_cast<qualified_type_def*>(const_cast<type_or_decl_base*>(t));}
 
 /// Test whether a type is a qualified_type_def.
 ///
@@ -5934,7 +5971,7 @@ is_qualified_type(const type_base* t)
 /// @return the @ref qualified_type_def_sptr if @p t is a
 /// qualified_type_def, null otherwise.
 qualified_type_def_sptr
-is_qualified_type(const type_base_sptr t)
+is_qualified_type(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<qualified_type_def>(t);}
 
 /// Test whether a type is a function_type.
@@ -5943,8 +5980,8 @@ is_qualified_type(const type_base_sptr t)
 ///
 /// @return the @ref function_type_sptr if @p t is a
 /// function_type, null otherwise.
-shared_ptr<function_type>
-is_function_type(const shared_ptr<type_base> t)
+function_type_sptr
+is_function_type(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<function_type>(t);}
 
 /// Test whether a type is a function_type.
@@ -5954,7 +5991,7 @@ is_function_type(const shared_ptr<type_base> t)
 /// @return the @ref function_type_sptr if @p t is a
 /// function_type, null otherwise.
 function_type*
-is_function_type(type_base* t)
+is_function_type(type_or_decl_base* t)
 {return dynamic_cast<function_type*>(t);}
 
 /// Test whether a type is a function_type.
@@ -5964,7 +6001,7 @@ is_function_type(type_base* t)
 /// @return the @ref function_type_sptr if @p t is a
 /// function_type, null otherwise.
 const function_type*
-is_function_type(const type_base* t)
+is_function_type(const type_or_decl_base* t)
 {return dynamic_cast<const function_type*>(t);}
 
 /// Test whether a type is a method_type.
@@ -5973,8 +6010,8 @@ is_function_type(const type_base* t)
 ///
 /// @return the @ref method_type_sptr if @p t is a
 /// method_type, null otherwise.
-shared_ptr<method_type>
-is_method_type(const shared_ptr<type_base> t)
+method_type_sptr
+is_method_type(const type_or_decl_base_sptr& t)
 {return dynamic_pointer_cast<method_type>(t);}
 
 /// Test whether a type is a method_type.
@@ -5984,7 +6021,7 @@ is_method_type(const shared_ptr<type_base> t)
 /// @return the @ref method_type_sptr if @p t is a
 /// method_type, null otherwise.
 const method_type*
-is_method_type(const type_base* t)
+is_method_type(const type_or_decl_base* t)
 {return dynamic_cast<const method_type*>(t);}
 
 /// Test whether a type is a method_type.
@@ -5994,7 +6031,7 @@ is_method_type(const type_base* t)
 /// @return the @ref method_type_sptr if @p t is a
 /// method_type, null otherwise.
 method_type*
-is_method_type(type_base* t)
+is_method_type(type_or_decl_base* t)
 {return dynamic_cast<method_type*>(t);}
 
 /// If a class is a decl-only class, get its definition.  Otherwise,
@@ -6087,18 +6124,18 @@ is_function_template_pattern(const shared_ptr<decl_base> decl)
 ///
 /// @param type the type to consider.
 ///
-/// @return true iff type is an array_type_def.
+/// @return true iff @p type is an array_type_def.
 array_type_def*
-is_array_type(const type_base* type)
-{return dynamic_cast<array_type_def*>(const_cast<type_base*>(type));}
+is_array_type(const type_or_decl_base* type)
+{return dynamic_cast<array_type_def*>(const_cast<type_or_decl_base*>(type));}
 
 /// Test if a type is an array_type_def.
 ///
 /// @param type the type to consider.
 ///
-/// @return true iff type is an array_type_def.
+/// @return true iff @p type is an array_type_def.
 array_type_def_sptr
-is_array_type(const type_base_sptr type)
+is_array_type(const type_or_decl_base_sptr& type)
 {return dynamic_pointer_cast<array_type_def>(type);}
 
 /// Tests whether a decl is a template.
@@ -12792,7 +12829,7 @@ class_decl::insert_member_decl(decl_base_sptr d,
 ///
 /// @param d the member declaration to add.
 decl_base_sptr
-class_decl::add_member_decl(decl_base_sptr d)
+class_decl::add_member_decl(const decl_base_sptr& d)
 {return insert_member_decl(d, get_member_decls().end());}
 
 /// Remove a given decl from the current class scope.
@@ -13273,8 +13310,21 @@ class_decl::method_decl::set_scope(scope_decl* scope)
 /// @return the class_decl::method_decl sub-object of @p d if inherits
 /// a class_decl::method_decl type.
 class_decl::method_decl*
-is_method_decl(const function_decl *d)
-{return dynamic_cast<class_decl::method_decl*>(const_cast<function_decl*>(d));}
+is_method_decl(const type_or_decl_base *d)
+{
+  return dynamic_cast<class_decl::method_decl*>
+    (const_cast<type_or_decl_base*>(d));
+}
+
+/// Test if a function_decl is actually a class_decl::method_decl.
+///
+///@param d the @ref function_decl to consider.
+///
+/// @return the class_decl::method_decl sub-object of @p d if inherits
+/// a class_decl::method_decl type.
+class_decl::method_decl*
+is_method_decl(const type_or_decl_base&d)
+{return is_method_decl(&d);}
 
 /// Test if a function_decl is actually a class_decl::method_decl.
 ///
@@ -13283,7 +13333,7 @@ is_method_decl(const function_decl *d)
 /// @return the class_decl::method_decl sub-object of @p d if inherits
 /// a class_decl::method_decl type.
 class_decl::method_decl_sptr
-is_method_decl(const function_decl_sptr& d)
+is_method_decl(const type_or_decl_base_sptr& d)
 {return dynamic_pointer_cast<class_decl::method_decl>(d);}
 
 /// A "less than" functor to sort a vector of instances of
