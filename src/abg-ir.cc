@@ -4937,7 +4937,7 @@ get_type_scope(type_base* t)
 
   decl_base* d = get_type_declaration(t);
   if (d)
-    d->get_scope();
+    return d->get_scope();
   return 0;
 }
 
