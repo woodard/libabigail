@@ -2604,7 +2604,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 
   type_base_sptr type;
   if (is_variadic)
-    type = ctxt.get_environment()->get_variadic_parameter_type_decl();
+    type = ctxt.get_environment()->get_variadic_parameter_type();
   else
     {
       assert(!type_id.empty());
@@ -2684,7 +2684,7 @@ build_function_decl(read_context&	ctxt,
   environment* env = ctxt.get_environment();
   assert(env);
   std::vector<function_decl::parameter_sptr> parms;
-  type_base_sptr return_type = env->get_void_type_decl();
+  type_base_sptr return_type = env->get_void_type();
 
   for (xmlNodePtr n = node->children; n ; n = n->next)
     {
@@ -3353,7 +3353,7 @@ build_function_type(read_context&	ctxt,
   environment* env = ctxt.get_environment();
   assert(env);
   std::vector<shared_ptr<function_decl::parameter> > parms;
-  type_base_sptr return_type = env->get_void_type_decl();;
+  type_base_sptr return_type = env->get_void_type();;
 
  function_type_sptr fn_type(new function_type(return_type,
 					      parms, size, align));

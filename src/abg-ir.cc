@@ -2049,8 +2049,8 @@ struct environment::priv
 {
   bool				canonicalization_is_done_;
   canonical_types_map_type	canonical_types_;
-  type_decl_sptr		void_type_decl_;
-  type_decl_sptr		variadic_marker_type_decl_;
+  type_base_sptr		void_type_;
+  type_base_sptr		variadic_marker_type_;
   interned_string_set_type	classes_being_compared_;
   interned_string_set_type	fn_types_being_compared_;
   vector<type_base_sptr>	extra_live_types_;
@@ -2082,14 +2082,14 @@ environment::get_canonical_types_map()
 /// environment.
 ///
 /// @return the @ref type_decl that represents a "void" type.
-const type_decl_sptr&
-environment::get_void_type_decl() const
+const type_base_sptr&
+environment::get_void_type() const
 {
-  if (!priv_->void_type_decl_)
-    priv_->void_type_decl_.reset(new type_decl(const_cast<environment*>(this),
+  if (!priv_->void_type_)
+    priv_->void_type_.reset(new type_decl(const_cast<environment*>(this),
 					       intern("void"),
 					       0, 0, location()));
-  return priv_->void_type_decl_;
+  return priv_->void_type_;
 }
 
 /// Get a @ref type_decl instance that represents a the type of a
@@ -2097,15 +2097,15 @@ environment::get_void_type_decl() const
 ///
 /// @return the Get a @ref type_decl instance that represents a the
 /// type of a variadic function parameter.
-const type_decl_sptr&
-environment::get_variadic_parameter_type_decl() const
+const type_base_sptr&
+environment::get_variadic_parameter_type() const
 {
-  if (!priv_->variadic_marker_type_decl_)
-    priv_->variadic_marker_type_decl_.
+  if (!priv_->variadic_marker_type_)
+    priv_->variadic_marker_type_.
       reset(new type_decl(const_cast<environment*>(this),
 			  intern("variadic parameter type"),
 			  0, 0, location()));
-  return priv_->variadic_marker_type_decl_;
+  return priv_->variadic_marker_type_;
 }
 
 /// Test if the canonicalization of types created out of the current
@@ -2131,43 +2131,47 @@ void
 environment::canonicalization_is_done(bool f)
 {priv_->canonicalization_is_done_ = f;}
 
-/// Test if a given basic type is a void type as defined in the
-/// current environment.
-///
-/// @param d the basic type to consider.
-///
-/// @return true iff @p d is a void type as defined in the current
-/// environment.
-bool
-environment::is_void_type(const type_decl* d) const
-{return (get_void_type_decl().get() == d);}
 
-/// Test if a given basic type is a void type as defined in the
-/// current environment.
+/// Test if a given type is a void type as defined in the current
+/// environment.
 ///
-/// @param d the basic type to consider.
+/// @param t the type to consider.
 ///
-/// @return true iff @p d is a void type as defined in the current
+/// @return true iff @p t is a void type as defined in the current
 /// environment.
 bool
 environment::is_void_type(const type_base_sptr& t) const
 {
-  type_decl_sptr d = is_type_decl(t);
-  if (!d)
+  if (!t)
     return false;
-  return is_void_type(d);
+  return t.get() == get_void_type().get();
 }
 
-/// Test if a given basic type is a void type as defined in the
+/// Test if a type is a variadic parameter type as defined in the
 /// current environment.
 ///
-/// @param d the basic type to consider.
+/// @param t the type to consider.
 ///
-/// @return true iff @p d is a void type as defined in the current
-/// environment.
+/// @return true iff @p t is a variadic parameter type as defined in
+/// the current environment.
 bool
-environment::is_void_type(const type_decl_sptr& d) const
-{return is_void_type(d.get());}
+environment::is_variadic_parameter_type(const type_base* t) const
+{
+  if (!t)
+    return false;
+  return t == get_variadic_parameter_type().get();
+}
+
+/// Test if a type is a variadic parameter type as defined in the
+/// current environment.
+///
+/// @param t the type to consider.
+///
+/// @return true iff @p t is a variadic parameter type as defined in
+/// the current environment.
+bool
+environment::is_variadic_parameter_type(const type_base_sptr& t) const
+{return is_variadic_parameter_type(t.get());}
 
 /// Do intern a string.
 ///
@@ -6475,9 +6479,8 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
 
   type_base_sptr return_type = fn_type.get_return_type();
   type_base_sptr result_return_type;
-  if (!return_type
-      || return_type.get() == env->get_void_type_decl().get())
-    result_return_type = type_base_sptr(env->get_void_type_decl());
+  if (!return_type || env->is_void_type(return_type))
+    result_return_type = env->get_void_type();
   else
     result_return_type = synthesize_type_from_translation_unit(return_type, tu);
   if (!result_return_type)
@@ -6915,7 +6918,7 @@ type_or_void(const type_base_sptr t, const environment* env)
   else
     {
       assert(env);
-      r = type_base_sptr(env->get_void_type_decl());
+      r = type_base_sptr(env->get_void_type());
     }
 
   return r;
@@ -12195,7 +12198,7 @@ function_decl::parameter::get_pretty_representation(bool internal) const
   type_base_sptr t = get_type();
   if (!t)
     type_repr = "void";
-  else if (env->get_variadic_parameter_type_decl())
+  else if (env->is_variadic_parameter_type(t))
     type_repr = "...";
   else
     type_repr = ir::get_pretty_representation(t, internal);

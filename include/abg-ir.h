@@ -160,11 +160,11 @@ public:
   canonical_types_map_type&
   get_canonical_types_map();
 
-  const type_decl_sptr&
-  get_void_type_decl() const;
+  const type_base_sptr&
+  get_void_type() const;
 
-  const type_decl_sptr&
-  get_variadic_parameter_type_decl() const;
+  const type_base_sptr&
+  get_variadic_parameter_type() const;
 
   bool
   canonicalization_is_done() const;
@@ -173,13 +173,13 @@ public:
   canonicalization_is_done(bool);
 
   bool
-  is_void_type(const type_decl*) const;
-
-  bool
-  is_void_type(const type_decl_sptr&) const;
-
-  bool
   is_void_type(const type_base_sptr&) const;
+
+  bool
+  is_variadic_parameter_type(const type_base*) const;
+
+  bool
+  is_variadic_parameter_type(const type_base_sptr&) const;
 
   interned_string
   intern(const string&) const;

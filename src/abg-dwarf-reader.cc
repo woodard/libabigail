@@ -8506,7 +8506,7 @@ build_function_type(read_context&	ctxt,
 	    bool is_artificial = die_is_artificial(&child);
 	    ir::environment* env = ctxt.env();
 	    assert(env);
-	    type_decl_sptr parm_type = env->get_variadic_parameter_type_decl();
+	    type_base_sptr parm_type = env->get_variadic_parameter_type();
 	    function_decl::parameter_sptr p
 	      (new function_decl::parameter(parm_type,
 					    /*name=*/"",
@@ -9762,11 +9762,13 @@ build_ir_node_for_void_type(read_context& ctxt)
 {
   ir::environment* env = ctxt.env();
   assert(env);
-  decl_base_sptr t = env->get_void_type_decl();
-  if (!has_scope(t))
-    add_decl_to_scope(t, ctxt.cur_transl_unit()->get_global_scope());
-  canonicalize(is_type(t));
-  return t;
+  type_base_sptr t = env->get_void_type();
+  decl_base_sptr type_declaration = get_type_declaration(t);
+  if (!has_scope(type_declaration))
+    add_decl_to_scope(type_declaration,
+		      ctxt.cur_transl_unit()->get_global_scope());
+  canonicalize(t);
+  return type_declaration;
 }
 
 /// Build an IR node from a given DIE and add the node to the current

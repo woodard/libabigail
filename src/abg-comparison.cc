@@ -13067,15 +13067,11 @@ is_diff_of_variadic_parameter_type(const diff* d)
     return false;
 
   type_base_sptr t = is_type(d->first_subject());
-  if (t
-      && (t.get()
-	  == t->get_environment()->get_variadic_parameter_type_decl().get()))
+  if (t && t->get_environment()->is_variadic_parameter_type(t))
     return true;
 
   t = is_type(d->second_subject());
-  if (t
-      && (t.get()
-	  == t->get_environment()->get_variadic_parameter_type_decl().get()))
+  if (t && t->get_environment()->is_variadic_parameter_type(t))
     return true;
 
   return false;
