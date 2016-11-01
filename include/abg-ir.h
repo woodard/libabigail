@@ -2359,7 +2359,7 @@ public:
   get_pretty_representation(bool internal = false) const;
 
   string
-  get_pretty_representation_of_declarator () const;
+  get_pretty_representation_of_declarator (bool internal = false) const;
 
   const std::vector<parameter_sptr >&
   get_parameters() const;

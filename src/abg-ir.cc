@@ -11414,7 +11414,7 @@ function_decl::get_pretty_representation(bool internal) const
   if (type)
     result += type->get_qualified_name(internal) + " ";
 
-  result += get_pretty_representation_of_declarator();
+  result += get_pretty_representation_of_declarator(internal);
 
   return result;
 }
@@ -11424,10 +11424,15 @@ function_decl::get_pretty_representation(bool internal) const
 /// return type and the other specifiers of the beginning of the
 /// function's declaration ar omitted.
 ///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
 /// @return the pretty representation for the part of the function
 /// declaration that starts at the declarator.
 string
-function_decl::get_pretty_representation_of_declarator () const
+function_decl::get_pretty_representation_of_declarator (bool internal) const
 {
   const method_decl* mem_fn =
     dynamic_cast<const method_decl*>(this);
@@ -11459,12 +11464,13 @@ function_decl::get_pretty_representation_of_declarator () const
       parm = *i;
       if (parm.get() != first_parm.get())
 	result += ", ";
-      if (parm->get_variadic_marker())
+      if (parm->get_variadic_marker()
+	  || get_environment()->is_variadic_parameter_type(parm->get_type()))
 	result += "...";
       else
 	{
 	  decl_base_sptr type_decl = get_type_declaration(parm->get_type());
-	  result += type_decl->get_qualified_name();
+	  result += type_decl->get_qualified_name(internal);
 	}
     }
   result += ")";
@@ -11979,12 +11985,12 @@ function_decl::parameter::get_type_name() const
   const environment* env = get_environment();
   assert(env);
 
+  type_base_sptr t = get_type();
   string str;
-  if (get_variadic_marker())
+  if (get_variadic_marker() || env->is_variadic_parameter_type(t))
     str = "...";
   else
     {
-	type_base_sptr t = get_type();
 	assert(t);
 	str = abigail::ir::get_type_name(t);
     }
@@ -11996,12 +12002,13 @@ function_decl::parameter::get_type_name() const
 const string
 function_decl::parameter::get_type_pretty_representation() const
 {
+  type_base_sptr t = get_type();
   string str;
-  if (get_variadic_marker())
+  if (get_variadic_marker()
+      || get_environment()->is_variadic_parameter_type(t))
     str = "...";
   else
     {
-	type_base_sptr t = get_type();
 	assert(t);
 	str += get_type_declaration(t)->get_pretty_representation();
     }
