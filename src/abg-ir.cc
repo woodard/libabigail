@@ -33,6 +33,7 @@
 #include <sstream>
 #include <tr1/memory>
 #include <tr1/unordered_map>
+#include "abg-ir-priv.h"
 
 #include "abg-internal.h"
 // <headers defining libabigail's API go under here>
@@ -7416,85 +7417,6 @@ type_base::~type_base()
 
 // <integral_type definitions>
 
-/// The internal representation of an integral type.
-///
-/// This is a "utility type" used internally to canonicalize the name
-/// of fundamental integral types, so that "unsignd long" and "long
-/// unsined int" end-up having the same name.
-class integral_type
-{
-public:
-  /// The possible base types of integral types.  We might have
-  /// forgotten many of these, so do not hesitate to add new ones.
-  ///
-  /// If you do add new ones, please also consider updating functions
-  /// parse_base_integral_type and integral_type::to_string.
-  enum base_type
-  {
-    /// The "int" base type.
-    INT_BASE_TYPE,
-    /// The "char" base type.
-    CHAR_BASE_TYPE,
-    /// The "bool" base type in C++ or "_Bool" in C11.
-    BOOL_BASE_TYPE,
-    /// The "double" base type.
-    DOUBLE_BASE_TYPE,
-    /// The "float" base type.
-    FLOAT_BASE_TYPE,
-    /// The "char16_t base type.
-    CHAR16_T_BASE_TYPE,
-    /// The "char32_t" base type.
-    CHAR32_T_BASE_TYPE,
-    /// The "wchar_t" base type.
-    WCHAR_T_BASE_TYPE
-  };
-
-  /// The modifiers of the base types above.  Several modifiers can be
-  /// combined for a given base type.  The presence of modifiers is
-  /// usually modelled by a bitmap of modifiers.
-  ///
-  /// If you add a new modifier, please consider updating functions
-  /// parse_integral_type_modifier and integral_type::to_string.
-  enum modifiers_type
-  {
-    NO_MODIFIER = 0,
-    /// The "signed" modifier.
-    SIGNED_MODIFIER = 1,
-    /// The "unsigned" modier.
-    UNSIGNED_MODIFIER = 1 << 1,
-    /// The "short" modifier.
-    SHORT_MODIFIER = 1 << 2,
-    /// The "long" modifier.
-    LONG_MODIFIER = 1 << 3,
-    /// The "long long" modifier.
-    LONG_LONG_MODIFIER = 1 << 4
-  };
-
-private:
-  base_type	base_;
-  modifiers_type modifiers_;
-
-public:
-
-  integral_type();
-  integral_type(const string& name);
-  integral_type(base_type, modifiers_type);
-
-  base_type
-  get_base_type() const;
-
-  modifiers_type
-  get_modifiers() const;
-
-  bool
-  operator==(const integral_type&) const;
-
-  string
-  to_string() const;
-
-  operator string() const;
-}; // end class integral_type
-
 /// Bitwise OR operator for integral_type::modifiers_type.
 ///
 /// @param l the left-hand side operand.
@@ -7516,7 +7438,7 @@ operator|(integral_type::modifiers_type l, integral_type::modifiers_type r)
 /// @param r the right-hand side operand.
 ///
 /// @return the result of the bitwise AND.
-static integral_type::modifiers_type
+integral_type::modifiers_type
 operator&(integral_type::modifiers_type l, integral_type::modifiers_type r)
 {
   return static_cast<integral_type::modifiers_type>(static_cast<unsigned>(l)
@@ -7530,7 +7452,7 @@ operator&(integral_type::modifiers_type l, integral_type::modifiers_type r)
 /// @param r the right-hand side operand.
 ///
 /// @return the result of the bitwise |=.
-static integral_type::modifiers_type&
+integral_type::modifiers_type&
 operator|=(integral_type::modifiers_type& l, integral_type::modifiers_type r)
 {
   l = l | r;
@@ -7604,7 +7526,7 @@ parse_base_integral_type(const string& type_name,
   return true;
 }
 
-/// Parse an integral type, from a string.
+/// Parse an integral type from a string.
 ///
 /// @param type_name the string containing the integral type to parse.
 ///
@@ -7670,6 +7592,30 @@ parse_integral_type(const string&			type_name,
     }
 
   return ok;
+}
+
+/// Parse an integral type from a string.
+///
+/// @param str the string containing the integral type to parse.
+///
+///@param type the resulting @ref integral_type.  Is set to the result
+///of the parse, iff the function returns true.
+///
+/// @return true iff the function could parse an integral type from @p
+/// str.
+bool
+parse_integral_type(const string& str, integral_type& type)
+{
+  integral_type::base_type base_type = integral_type::INT_BASE_TYPE;
+  integral_type::modifiers_type modifiers = integral_type::NO_MODIFIER;
+
+  if (!parse_integral_type(str, base_type, modifiers))
+    return false;
+
+  // So this is an integral type.
+  integral_type int_type(base_type, modifiers);
+  type = int_type;
+  return true;
 }
 
 /// Default constructor of the @ref integral_type.
@@ -7808,14 +7754,9 @@ type_decl::type_decl(const environment* env,
 {
   integral_type::base_type base_type = integral_type::INT_BASE_TYPE;
   integral_type::modifiers_type modifiers = integral_type::NO_MODIFIER;
-
-  if (parse_integral_type(name, base_type, modifiers))
+  integral_type int_type(base_type, modifiers);
+  if (parse_integral_type(name, int_type))
     {
-      // So this is an integral type.  Let's set its name into a
-      // canonical form, so that "short unsigned" and "unsigned short"
-      // both end-up having the same name, which would be "unsigned
-      // short int".
-      integral_type int_type(base_type, modifiers);
       // Convert the integral_type into its canonical string
       // representation.
       string integral_type_name = int_type;
