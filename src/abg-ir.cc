@@ -39,10 +39,10 @@
 // <headers defining libabigail's API go under here>
 ABG_BEGIN_EXPORT_DECLARATIONS
 
-#include "abg-sptr-utils.h"
 #include "abg-interned-str.h"
 #include "abg-ir.h"
 #include "abg-corpus.h"
+#include "abg-corpus-priv.h"
 
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
@@ -4231,50 +4231,6 @@ static void
 update_qualified_name(decl_base_sptr d)
 {return update_qualified_name(d.get());}
 
-/// Update the map that is going to be used later for lookup of types
-/// in a given scope declaration.
-///
-/// That is, add a new name -> type relationship in the map, for a
-/// given type declaration.
-///
-/// @param member the declaration of the type to update the scope for.
-/// This type declaration must be added to the scope, after or before
-/// invoking this function.  If it appears that this @p member is not
-/// a type, this function does nothing.  Also, if this member is a
-/// declaration-only class, the function does nothing.
-static void
-maybe_update_types_lookup_map(scope_decl *scope,
-			      decl_base_sptr member)
-{
-  type_base_sptr t = is_type(member);
-  bool update_qname_map = t;
-  if (update_qname_map)
-    {
-      if (class_or_union_sptr c = is_class_or_union_type(member))
-	{
-	  if (c->get_is_declaration_only())
-	    {
-	      if (class_or_union_sptr def = c->get_definition_of_declaration())
-		t = def;
-	      else
-		update_qname_map = false;
-	    }
-	}
-    }
-  if (update_qname_map)
-    {
-      translation_unit* tu = get_translation_unit(scope);
-      if (tu)
-	{
-	  string qname = member->get_qualified_name();
-	  string_type_base_wptr_map_type& types = tu->get_types();
-	  string_type_base_wptr_map_type::iterator it = types.find(qname);
-	  if (it == types.end())
-	    types[qname] = t;
-	}
-    }
-}
-
 // <scope_decl stuff>
 
 struct scope_decl::priv
@@ -4386,7 +4342,7 @@ scope_decl::add_member_decl(const decl_base_sptr& member)
 	member->set_translation_unit(tu);
     }
 
-  maybe_update_types_lookup_map(this, member);
+  maybe_update_types_lookup_map(member);
 
   return member;
 }
@@ -4427,7 +4383,7 @@ scope_decl::insert_member_decl(const decl_base_sptr& member,
 	member->set_translation_unit(tu);
     }
 
-  maybe_update_types_lookup_map(this, member);
+  maybe_update_types_lookup_map(member);
 
   return member;
 }
@@ -12249,7 +12205,11 @@ struct class_or_union::priv
   data_members			data_members_;
   data_members			non_static_data_members_;
   member_functions		member_functions_;
+  // A map that associates a linkage name to a member function.
   string_mem_fn_ptr_map_type	mem_fns_map_;
+  // A map that associates function signature strings to member
+  // function.
+  string_mem_fn_ptr_map_type	signature_2_mem_fn_map_;
   member_function_templates	member_function_templates_;
   member_class_templates	member_class_templates_;
   bool				is_declaration_only_;
@@ -12736,7 +12696,7 @@ class_or_union::set_is_declaration_only(bool f)
       {
 	declarations::iterator i;
 	if (s->find_iterator_for_member(this, i))
-	  maybe_update_types_lookup_map(s, *i);
+	  maybe_update_types_lookup_map(*i);
 	else
 	  abort();
       }
@@ -12948,11 +12908,7 @@ class_or_union::get_member_functions() const
 const method_decl*
 class_or_union::find_member_function(const string& linkage_name) const
 {
-  string_mem_fn_ptr_map_type::const_iterator i =
-    priv_->mem_fns_map_.find(linkage_name);
-  if (i == priv_->mem_fns_map_.end())
-    return 0;
-  return i->second;
+  return const_cast<class_or_union*>(this)->find_member_function(linkage_name);
 }
 
 /// Find a method, using its linkage name as a key.
@@ -12970,6 +12926,48 @@ class_or_union::find_member_function(const string& linkage_name)
   return i->second;
 }
 
+/// Find a method (member function) using its signature (pretty
+/// representation) as a key.
+///
+/// @param s the signature of the method.
+///
+/// @return the method found, or nil if none was found.
+const method_decl*
+class_or_union::find_member_function_from_signature(const string& s) const
+{
+  return const_cast<class_or_union*>(this)->find_member_function_from_signature(s);
+}
+
+/// Find a method (member function) using its signature (pretty
+/// representation) as a key.
+///
+/// @param s the signature of the method.
+///
+/// @return the method found, or nil if none was found.
+method_decl*
+class_or_union::find_member_function_from_signature(const string& s)
+{
+  string_mem_fn_ptr_map_type::const_iterator i =
+    priv_->signature_2_mem_fn_map_.find(s);
+  if (i == priv_->signature_2_mem_fn_map_.end())
+    return 0;
+  return i->second;
+}
+
+/// Get the member function templates of this class.
+///
+/// @return a vector of the member function templates of this class.
+const member_function_templates&
+class_or_union::get_member_function_templates() const
+{return priv_->member_function_templates_;}
+
+/// Get the member class templates of this class.
+///
+/// @return a vector of the member class templates of this class.
+const member_class_templates&
+class_or_union::get_member_class_templates() const
+{return priv_->member_class_templates_;}
+
 /// Append a member function template to the @ref class_or_union.
 ///
 /// @param m the member function template to append.
@@ -12983,14 +12981,6 @@ class_or_union::add_member_function_template(member_function_template_sptr m)
   if (!c)
     scope_decl::add_member_decl(m->as_function_tdecl());
 }
-
-/// Get the member function templates of this @ref class_or_union.
-///
-/// @return a vector of the member function templates of this @ref
-/// class_or_union.
-const member_function_templates&
-class_or_union::get_member_function_templates() const
-{return priv_->member_function_templates_;}
 
 /// Append a member class template to the @ref class_or_union.
 ///
@@ -13006,14 +12996,6 @@ class_or_union::add_member_class_template(member_class_template_sptr m)
   if (!c)
     scope_decl::add_member_decl(m->as_class_tdecl());
 }
-
-/// Get the member class templates of this @ref class_or_union.
-///
-/// @return a vector of the member class templates of this @ref
-/// class_or_union.
-const member_class_templates&
-class_or_union::get_member_class_templates() const
-{return priv_->member_class_templates_;}
 
 ///@return true iff the current instance has no member.
 bool
@@ -13584,7 +13566,6 @@ class_decl::get_virtual_mem_fns() const
 void
 class_decl::sort_virtual_mem_fns()
 {sort_virtual_member_functions(priv_->virtual_mem_fns_);}
-
 
 /// Getter of the pretty representation of the current instance of
 /// @ref class_decl.

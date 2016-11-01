@@ -38,6 +38,7 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 #include "abg-corpus.h"
 #include "abg-reader.h"
 #include "abg-writer.h"
+#include "abg-tools-utils.h"
 
 #if WITH_ZIP_ARCHIVE
 #include "abg-libzip-utils.h"
@@ -46,51 +47,10 @@ ABG_BEGIN_EXPORT_DECLARATIONS
 ABG_END_EXPORT_DECLARATIONS
 // </headers defining libabigail's API>
 
+#include "abg-corpus-priv.h"
+
 namespace abigail
 {
-
-namespace sptr_utils
-{
-
-/// A delete functor for a shared_ptr of regex_t.
-struct regex_t_deleter
-{
-  /// The operator called to de-allocate the pointer to regex_t
-  /// embedded in a shared_ptr<regex_t>
-  ///
-  /// @param r the pointer to regex_t to de-allocate.
-  void
-  operator()(::regex_t* r)
-  {
-    regfree(r);
-    delete r;
-  }
-};//end struct regex_deleter
-
-/// Specialization of sptr_utils::build_sptr for regex_t.
-///
-/// This is used to wrap a pointer to regex_t into a
-/// shared_ptr<regex_t>.
-///
-/// @param p the bare pointer to regex_t to wrap into a shared_ptr<regex_t>.
-///
-/// @return the shared_ptr<regex_t> that wraps @p p.
-template<>
-regex_t_sptr
-build_sptr<regex_t>(regex_t *p)
-{return regex_t_sptr(p, regex_t_deleter());}
-
-/// Specialization of sptr_utils::build_sptr for regex_t.
-///
-/// This creates a pointer to regex_t and wraps it into a shared_ptr<regex_t>.
-///
-/// @return the shared_ptr<regex_t> wrapping the newly created regex_t*
-template<>
-regex_t_sptr
-build_sptr<regex_t>()
-{return build_sptr(new regex_t);}
-
-}// end namespace sptr_utils
 
 namespace ir
 {
@@ -108,634 +68,6 @@ using zip_utils::open_file_in_archive;
 #endif // WITH_ZIP_ARCHIVE
 
 using sptr_utils::regex_t_sptr;
-
-/// A convenience typedef for std::vector<regex_t_sptr>.
-typedef vector<regex_t_sptr> regex_t_sptrs_type;
-
-// <corpus::exported_decls_builder>
-
-/// Convenience typedef for a hash map which key is a string an which
-/// data is a vector of abigail::ir::function_decl*
-typedef unordered_map<string, vector<function_decl*> > str_fn_ptrs_map_type;
-/// Convenience typedef for a hash map which key is a string and
-/// which data is an abigail::ir::var_decl*.
-typedef unordered_map<string, var_decl*> str_var_ptr_map_type;
-
-/// The type of the private data of @ref
-/// corpus::exported_decls_builder type.
-class corpus::exported_decls_builder::priv
-{
-  friend class corpus::exported_decls_builder;
-  friend class corpus;
-
-  priv();
-
-  functions&		fns_;
-  variables&		vars_;
-  // A map that associates a function ID (function symbol and its
-  // version) to to a vector of functions with that ID.  Normally, one
-  // would think that in the corpus, there must only one function for
-  // a given ID.  Actually, in c++, there can be two function template
-  // instantiations that produce the same function ID because the
-  // template parameters of the second instantiation are just typedefs
-  // of the first instantiation, for instance.  So there can be cases
-  // where one ID appertains to more than one function.
-  str_fn_ptrs_map_type	id_fns_map_;
-  str_var_ptr_map_type	id_var_map_;
-  strings_type&	fns_suppress_regexps_;
-  regex_t_sptrs_type	compiled_fns_suppress_regexp_;
-  strings_type&	vars_suppress_regexps_;
-  regex_t_sptrs_type	compiled_vars_suppress_regexp_;
-  strings_type&	fns_keep_regexps_;
-  regex_t_sptrs_type	compiled_fns_keep_regexps_;
-  strings_type&	vars_keep_regexps_;
-  regex_t_sptrs_type	compiled_vars_keep_regexps_;
-  strings_type&	sym_id_of_fns_to_keep_;
-  strings_type&	sym_id_of_vars_to_keep_;
-
-public:
-
-  priv(functions& fns,
-       variables& vars,
-       strings_type& fns_suppress_regexps,
-       strings_type& vars_suppress_regexps,
-       strings_type& fns_keep_regexps,
-       strings_type& vars_keep_regexps,
-       strings_type& sym_id_of_fns_to_keep,
-       strings_type& sym_id_of_vars_to_keep)
-    : fns_(fns),
-      vars_(vars),
-      fns_suppress_regexps_(fns_suppress_regexps),
-      vars_suppress_regexps_(vars_suppress_regexps),
-      fns_keep_regexps_(fns_keep_regexps),
-      vars_keep_regexps_(vars_keep_regexps),
-      sym_id_of_fns_to_keep_(sym_id_of_fns_to_keep),
-      sym_id_of_vars_to_keep_(sym_id_of_vars_to_keep)
-  {}
-
-  /// Getter for the compiled regular expressions that designate the
-  /// functions to suppress from the set of exported functions.
-  ///
-  /// @return a vector of the compiled regular expressions.
-  regex_t_sptrs_type&
-  compiled_regex_fns_suppress()
-  {
-    if (compiled_fns_suppress_regexp_.empty())
-      {
-	for (vector<string>::const_iterator i =
-	       fns_suppress_regexps_.begin();
-	     i != fns_suppress_regexps_.end();
-	     ++i)
-	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
-	      compiled_fns_suppress_regexp_.push_back(r);
-	  }
-      }
-    return compiled_fns_suppress_regexp_;
-  }
-
-  /// Getter for the compiled regular expressions that designates the
-  /// functions to keep in the set of exported functions.
-  ///
-  /// @return a vector of compiled regular expressions.
-  regex_t_sptrs_type&
-  compiled_regex_fns_keep()
-  {
-    if (compiled_fns_keep_regexps_.empty())
-      {
-	for (vector<string>::const_iterator i =
-	       fns_keep_regexps_.begin();
-	     i != fns_keep_regexps_.end();
-	     ++i)
-	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
-	      compiled_fns_keep_regexps_.push_back(r);
-	  }
-      }
-    return compiled_fns_keep_regexps_;
-  }
-
-  /// Getter of the compiled regular expressions that designate the
-  /// variables to suppress from the set of exported variables.
-  ///
-  /// @return a vector of compiled regular expressions.
-  regex_t_sptrs_type&
-  compiled_regex_vars_suppress()
-  {
-    if (compiled_vars_suppress_regexp_.empty())
-      {
-	for (vector<string>::const_iterator i =
-	       vars_suppress_regexps_.begin();
-	     i != vars_suppress_regexps_.end();
-	     ++i)
-	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
-	      compiled_vars_suppress_regexp_.push_back(r);
-	  }
-      }
-    return compiled_vars_suppress_regexp_;
-  }
-
-  /// Getter for the compiled regular expressions that designate the
-  /// variables to keep in the set of exported variables.
-  ///
-  /// @return a vector of compiled regular expressions.
-  regex_t_sptrs_type&
-  compiled_regex_vars_keep()
-  {
-    if (compiled_vars_keep_regexps_.empty())
-      {
-	for (vector<string>::const_iterator i =
-	       vars_keep_regexps_.begin();
-	     i != vars_keep_regexps_.end();
-	     ++i)
-	  {
-	    regex_t_sptr r = sptr_utils::build_sptr(new regex_t);
-	    if (regcomp(r.get(), i->c_str(), REG_EXTENDED) == 0)
-	      compiled_vars_keep_regexps_.push_back(r);
-	  }
-      }
-    return compiled_vars_keep_regexps_;
-  }
-
-  /// Getter for a map of the IDs of the functions that are present in
-  /// the set of exported functions.
-  ///
-  /// This map is useful during the construction of the set of
-  /// exported functions, at least to ensure that every function is
-  /// present only once in that set.  Actually, for each symbol ID,
-  /// there can be several functions, given that each of those have
-  /// different declaration names; this can happen with function
-  /// template instantiations which decl names differ because the type
-  /// parameters of the templates are typedefs of each other.
-  ///
-  /// @return a map which key is a string and which data is a pointer
-  /// to a function.
-  const str_fn_ptrs_map_type&
-  id_fns_map() const
-  {return id_fns_map_;}
-
-  /// Getter for a map of the IDs of the functions that are present in
-  /// the set of exported functions.
-  ///
-  /// This map is useful during the construction of the set of
-  /// exported functions, at least to ensure that every function is
-  /// present only once in that set.
-  ///
-  /// @return a map which key is a string and which data is a pointer
-  /// to a function.
-  str_fn_ptrs_map_type&
-  id_fns_map()
-  {return id_fns_map_;}
-
-  /// Getter for a map of the IDs of the variables that are present in
-  /// the set of exported variables.
-  ///
-  /// This map is useful during the construction of the set of
-  /// exported variables, at least to ensure that every function is
-  /// present only once in that set.
-  ///
-  /// @return a map which key is a string and which data is a pointer
-  /// to a function.
-  const str_var_ptr_map_type&
-  id_var_map() const
-  {return id_var_map_;}
-
-  /// Getter for a map of the IDs of the variables that are present in
-  /// the set of exported variables.
-  ///
-  /// This map is useful during the construction of the set of
-  /// exported variables, at least to ensure that every function is
-  /// present only once in that set.
-  ///
-  /// @return a map which key is a string and which data is a pointer
-  /// to a function.
-  str_var_ptr_map_type&
-  id_var_map()
-  {return id_var_map_;}
-
-  /// Returns an ID for a given function.
-  ///
-  /// @param fn the function to calculate the ID for.
-  ///
-  /// @return a reference to a string representing the function ID.
-  interned_string
-  get_id(const function_decl& fn)
-  {return fn.get_id();}
-
-  /// Returns an ID for a given variable.
-  ///
-  /// @param var the variable to calculate the ID for.
-  ///
-  /// @return a reference to a string representing the variable ID.
-  interned_string
-  get_id(const var_decl& var)
-  {return var.get_id();}
-
-  /// Test if a given function ID is in the id-functions map.
-  ///
-  /// If it is, then return a pointer to the vector of functions with
-  /// that ID.  If not, just return nil.
-  ///
-  /// @param fn_id the ID to consider.
-  ///
-  /// @return the pointer to the vector of functions with ID @p fn_id,
-  /// or nil if no function with that ID exists.
-  vector<function_decl*>*
-  fn_id_is_in_id_fns_map(const string& fn_id)
-  {
-    str_fn_ptrs_map_type& m = id_fns_map();
-    str_fn_ptrs_map_type::iterator i = m.find(fn_id);
-    if (i == m.end())
-      return 0;
-    return &i->second;
-  }
-
-  /// Test if a a function if the same ID as a given function is
-  /// present in the id-functions map.
-  ///
-  /// @param fn the function to consider.
-  ///
-  /// @return a pointer to the vector of functions with the same ID as
-  /// @p fn, that are present in the id-functions map, or nil if no
-  /// function with the same ID as @p fn is present in the
-  /// id-functions map.
-  vector<function_decl*>*
-  fn_id_is_in_id_fns_map(const function_decl* fn)
-  {
-    string fn_id = fn->get_id();
-    return fn_id_is_in_id_fns_map(fn_id);
-  }
-
-  /// Test if a given function is present in a vector of functions.
-  ///
-  /// The function compares the ID and the qualified name of
-  /// functions.
-  ///
-  /// @param fn the function to consider.
-  ///
-  /// @parm fns the vector of functions to consider.
-  static bool
-  fn_is_in_fns(const function_decl* fn, const vector<function_decl*>& fns)
-  {
-    if (fns.empty())
-      return false;
-
-    const string fn_id = fn->get_id();
-    for (vector<function_decl*>::const_iterator i = fns.begin();
-	 i != fns.end();
-	 ++i)
-      if ((*i)->get_id() == fn_id
-	  && (*i)->get_qualified_name() == fn->get_qualified_name())
-	return true;
-
-    return false;
-  }
-
-  ///  Test if a function is in the id-functions map.
-  ///
-  ///  @param fn the function to consider.
-  ///
-  ///  @return true iff the function is in the id-functions map.
-  bool
-  fn_is_in_id_fns_map(const function_decl* fn)
-  {
-    vector<function_decl*>* fns = fn_id_is_in_id_fns_map(fn);
-    if (fns && fn_is_in_fns(fn, *fns))
-      return true;
-    return false;
-  }
-
-  /// Add a given function to the map of functions that are present in
-  /// the set of exported functions.
-  ///
-  /// @param fn the function to add to the map.
-  void
-  add_fn_to_id_fns_map(function_decl* fn)
-  {
-    if (!fn)
-      return;
-
-    // First associate the function id to the function.
-    string fn_id = fn->get_id();
-    vector<function_decl*>* fns = fn_id_is_in_id_fns_map(fn_id);
-    if (!fns)
-      fns = &(id_fns_map()[fn_id] = vector<function_decl*>());
-    fns->push_back(fn);
-
-    // Now associate all aliases of the underlying symbol to the
-    // function too.
-    elf_symbol_sptr sym = fn->get_symbol();
-    assert(sym);
-    string sym_id;
-    do
-      {
-	sym_id = sym->get_id_string();
-	if (sym_id == fn_id)
-	  goto loop;
-	fns = fn_id_is_in_id_fns_map(fn_id);
-	if (!fns)
-	  fns = &(id_fns_map()[fn_id] = vector<function_decl*>());
-	fns->push_back(fn);
-      loop:
-	sym = sym->get_next_alias();
-      }
-    while (sym && !sym->is_main_symbol());
-  }
-
-  /// Test if a given (ID of a) varialble is present in the variable
-  /// map.  In other words, it tests if a given variable is present in
-  /// the set of exported variables.
-  ///
-  /// @param fn_id the ID of the variable to consider.
-  ///
-  /// @return true iff the variable designated by @p fn_id is present
-  /// in the set of exported variables.
-  bool
-  var_id_is_in_id_var_map(const string& var_id) const
-  {
-    const str_var_ptr_map_type& m = id_var_map();
-    str_var_ptr_map_type::const_iterator i = m.find(var_id);
-    return i != m.end();
-  }
-
-  /// Add a given variable to the map of functions that are present in
-  /// the set of exported functions.
-  ///
-  /// @param id the variable to add to the map.
-  void
-  add_var_to_map(var_decl* var)
-  {
-    if (var)
-      {
-	const string& var_id = get_id(*var);
-	id_var_map()[var_id] = var;
-      }
-  }
-
-  /// Add a function to the set of exported functions.
-  ///
-  /// @param fn the function to add to the set of exported functions.
-  void
-  add_fn_to_exported(function_decl* fn)
-  {
-    if (!fn_is_in_id_fns_map(fn))
-      {
-	fns_.push_back(fn);
-	add_fn_to_id_fns_map(fn);
-      }
-  }
-
-  /// Add a variable to the set of exported variables.
-  ///
-  /// @param fn the variable to add to the set of exported variables.
-  void
-  add_var_to_exported(var_decl* var)
-  {
-    const string& id = get_id(*var);
-    if (!var_id_is_in_id_var_map(id))
-      {
-	vars_.push_back(var);
-	add_var_to_map(var);
-      }
-  }
-
-  /// Getter for the set of ids of functions to keep in the set of
-  /// exported functions.
-  ///
-  /// @return the set of ids of functions to keep in the set of
-  /// exported functions.
-  const strings_type&
-  sym_id_of_fns_to_keep() const
-  {return sym_id_of_fns_to_keep_;}
-
-  /// Getter for the set of ids of variables to keep in the set of
-  /// exported variables.
-  ///
-  /// @return the set of ids of variables to keep in the set of
-  /// exported variables.
-  const strings_type&
-  sym_id_of_vars_to_keep() const
-  {return sym_id_of_vars_to_keep_;}
-
-  /// Look at the set of functions to keep and tell if if a given
-  /// function is to be kept, according to that set.
-  ///
-  /// @param fn the function to consider.
-  ///
-  /// @return true iff the function is to be kept.
-  bool
-  keep_wrt_id_of_fns_to_keep(const function_decl* fn)
-  {
-    if (!fn)
-      return false;
-
-    bool keep = true;
-
-    if (elf_symbol_sptr sym = fn->get_symbol())
-      {
-	if (!sym_id_of_fns_to_keep().empty())
-	  keep = false;
-	if (!keep)
-	  {
-	    for (vector<string>::const_iterator i =
-		   sym_id_of_fns_to_keep().begin();
-		 i != sym_id_of_fns_to_keep().end();
-		 ++i)
-	      {
-		string sym_name, sym_version;
-		assert(elf_symbol::get_name_and_version_from_id(*i,
-								sym_name,
-								sym_version));
-		if (sym_name == sym->get_name()
-		    && sym_version == sym->get_version().str())
-		  {
-		    keep = true;
-		    break;
-		  }
-	      }
-	  }
-      }
-    else
-      keep = false;
-
-    return keep;
-  }
-
-  /// Look at the set of functions to suppress from the exported
-  /// functions set and tell if if a given function is to be kept,
-  /// according to that set.
-  ///
-  /// @param fn the function to consider.
-  ///
-  /// @return true iff the function is to be kept.
-  bool
-  keep_wrt_regex_of_fns_to_suppress(const function_decl *fn)
-  {
-    if (!fn)
-      return false;
-
-    string frep = fn->get_qualified_name();
-    bool keep = true;
-
-    for (regex_t_sptrs_type::const_iterator i =
-	   compiled_regex_fns_suppress().begin();
-	 i != compiled_regex_fns_suppress().end();
-	 ++i)
-      if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
-	{
-	  keep = false;
-	  break;
-	}
-
-    return keep;
-  }
-
-  /// Look at the regular expressions of the functions to keep and
-  /// tell if if a given function is to be kept, according to that
-  /// set.
-  ///
-  /// @param fn the function to consider.
-  ///
-  /// @return true iff the function is to be kept.
-  bool
-  keep_wrt_regex_of_fns_to_keep(const function_decl *fn)
-  {
-    if (!fn)
-      return false;
-
-    string frep = fn->get_qualified_name();
-    bool keep = true;
-
-    if (!compiled_regex_fns_keep().empty())
-      keep = false;
-
-    if (!keep)
-      for (regex_t_sptrs_type::const_iterator i =
-	     compiled_regex_fns_keep().begin();
-	   i != compiled_regex_fns_keep().end();
-	   ++i)
-	if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
-	  {
-	    keep = true;
-	    break;
-	  }
-
-    return keep;
-  }
-
-  /// Look at the regular expressions of the variables to keep and
-  /// tell if if a given variable is to be kept, according to that
-  /// set.
-  ///
-  /// @param fn the variable to consider.
-  ///
-  /// @return true iff the variable is to be kept.
-  bool
-  keep_wrt_id_of_vars_to_keep(const var_decl* var)
-  {
-    if (!var)
-      return false;
-
-    bool keep = true;
-
-    if (elf_symbol_sptr sym = var->get_symbol())
-      {
-	if (!sym_id_of_vars_to_keep().empty())
-	  keep = false;
-	if (!keep)
-	  {
-	    for (vector<string>::const_iterator i =
-		   sym_id_of_vars_to_keep().begin();
-		 i != sym_id_of_vars_to_keep().end();
-		 ++i)
-	      {
-		string sym_name, sym_version;
-		assert(elf_symbol::get_name_and_version_from_id(*i,
-								sym_name,
-								sym_version));
-		if (sym_name == sym->get_name()
-		    && sym_version == sym->get_version().str())
-		  {
-		    keep = true;
-		    break;
-		  }
-	      }
-	  }
-      }
-    else
-      keep = false;
-
-    return keep;
-  }
-
-  /// Look at the set of variables to suppress from the exported
-  /// variables set and tell if if a given variable is to be kept,
-  /// according to that set.
-  ///
-  /// @param fn the variable to consider.
-  ///
-  /// @return true iff the variable is to be kept.
-  bool
-  keep_wrt_regex_of_vars_to_suppress(const var_decl *var)
-  {
-    if (!var)
-      return false;
-
-    string frep = var->get_qualified_name();
-    bool keep = true;
-
-    for (regex_t_sptrs_type::const_iterator i =
-	   compiled_regex_vars_suppress().begin();
-	 i != compiled_regex_vars_suppress().end();
-	 ++i)
-      if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
-	{
-	  keep = false;
-	  break;
-	}
-
-    return keep;
-  }
-
-  /// Look at the regular expressions of the variables to keep and
-  /// tell if if a given variable is to be kept, according to that
-  /// set.
-  ///
-  /// @param fn the variable to consider.
-  ///
-  /// @return true iff the variable is to be kept.
-  bool
-  keep_wrt_regex_of_vars_to_keep(const var_decl *var)
-  {
-    if (!var)
-      return false;
-
-    string frep = var->get_qualified_name();
-    bool keep = true;
-
-    if (!compiled_regex_vars_keep().empty())
-      keep = false;
-
-    if (!keep)
-      {
-	for (regex_t_sptrs_type::const_iterator i =
-	       compiled_regex_vars_keep().begin();
-	     i != compiled_regex_vars_keep().end();
-	     ++i)
-	  if (regexec(i->get(), frep.c_str(), 0, NULL, 0) == 0)
-	    {
-	      keep = true;
-	      break;
-	    }
-      }
-
-    return keep;
-  }
-}; // end struct corpus::exported_decls_builder::priv
 
 /// Constructor of @ref corpus::exported_decls_builder.
 ///
@@ -866,51 +198,6 @@ corpus::exported_decls_builder::maybe_add_var_to_exported_vars(var_decl* var)
 
 // </corpus::exported_decls_builder>
 
-struct corpus::priv
-{
-  mutable unordered_map<string, type_base_sptr> canonical_types_;
-  environment*				env;
-  corpus::exported_decls_builder_sptr	exported_decls_builder;
-  origin				origin_;
-  vector<string>			regex_patterns_fns_to_suppress;
-  vector<string>			regex_patterns_vars_to_suppress;
-  vector<string>			regex_patterns_fns_to_keep;
-  vector<string>			regex_patterns_vars_to_keep;
-  vector<string>			sym_id_fns_to_keep;
-  vector<string>			sym_id_vars_to_keep;
-  string				path;
-  vector<string>			needed;
-  string				soname;
-  string				architecture_name;
-  translation_units			members;
-  vector<function_decl*>		fns;
-  vector<var_decl*>			vars;
-  string_elf_symbols_map_sptr		var_symbol_map;
-  string_elf_symbols_map_sptr		undefined_var_symbol_map;
-  elf_symbols				sorted_var_symbols;
-  elf_symbols				sorted_undefined_var_symbols;
-  string_elf_symbols_map_sptr		fun_symbol_map;
-  string_elf_symbols_map_sptr		undefined_fun_symbol_map;
-  elf_symbols				sorted_fun_symbols;
-  elf_symbols				sorted_undefined_fun_symbols;
-  elf_symbols				unrefed_fun_symbols;
-  elf_symbols				unrefed_var_symbols;
-
-private:
-  priv();
-
-public:
-  priv(const string &	p,
-       environment*	e)
-    : env(e),
-      origin_(ARTIFICIAL_ORIGIN),
-      path(p)
-  {}
-
-  void
-  build_unreferenced_symbols_tables();
-};
-
 /// Convenience typedef for a hash map of pointer to function_decl and
 /// boolean.
 typedef unordered_map<const function_decl*,
@@ -1023,6 +310,10 @@ struct comp_elf_symbols_functor
 	     const elf_symbol_sptr r) const
   {return operator()(*l, *r);}
 }; // end struct comp_elf_symbols_functor
+
+
+// <corpus stuff>
+
 
 /// Build the tables of symbols that are not referenced by any
 /// function or variables of corpus::get_functions() or
@@ -2214,5 +1505,661 @@ lookup_function_type_in_corpus(const function_type_sptr& fn_type,
   return result;
 }
 
+/// Update the map that associates a fully qualified name of a given
+/// type to that type.
+///
+/// @param scope the scope of the type we are considering.
+///
+/// @param type the type we are considering.
+///
+/// @param types_map the map to update.  It's a map that assciates a
+/// fully qualified name of a type to the type itself.
+template<typename TypeKind>
+void
+maybe_update_types_lookup_map(scope_decl *scope,
+			      const shared_ptr<TypeKind>& type,
+			      istring_type_base_wptr_map_type& types_map)
+{
+  corpus *type_corpus = scope->get_corpus();
+  assert(type_corpus);
+
+  interned_string s = get_type_name(type);
+  if (types_map.find(s) == types_map.end())
+    types_map[s]= type;
+}
+
+/// This is the specialization for type @ref class_decl of the
+/// function template:
+///
+///    maybe_update_types_lookup_map<T>(scope_decl*,
+///					const shared_ptr<T>&,
+///					istring_type_base_wptr_map_type&)
+///
+/// @param scope the scope of the type to consider.
+///
+/// @param class_type the type to consider.
+///
+/// @param types_map the type map to update.
+template<>
+void
+maybe_update_types_lookup_map<class_decl>(scope_decl *scope,
+					  const class_decl_sptr& class_type,
+					  istring_type_base_wptr_map_type& map)
+{
+  class_decl_sptr type = class_type;
+
+  bool update_qname_map = true;
+  if (type->get_is_declaration_only())
+    {
+      if (class_decl_sptr def = class_type->get_definition_of_declaration())
+	type = def;
+      else
+	update_qname_map = false;
+    }
+
+  if (!update_qname_map)
+    return;
+
+  corpus *type_corpus = scope->get_corpus();
+  assert(type_corpus);
+
+  string qname = type->get_qualified_name();
+  interned_string s = type_corpus->get_environment()->intern(qname);
+  if (map.find(s) == map.end())
+    map[s]= type;
+}
+
+/// This is the specialization for type @ref function_type of the
+/// function template:
+///
+///    maybe_update_types_lookup_map<T>(scope_decl*,
+///					const shared_ptr<T>&,
+///					istring_type_base_wptr_map_type&)
+///
+/// @param scope the scope of the type to consider.
+///
+/// @param class_type the type to consider.
+///
+/// @param types_map the type map to update.
+template<>
+void
+maybe_update_types_lookup_map<function_type>
+(scope_decl *scope,
+ const function_type_sptr& type,
+ istring_type_base_wptr_map_type& types_map)
+{
+  corpus *type_corpus = scope->get_corpus();
+  assert(type_corpus);
+
+  string str = get_pretty_representation(type, /*internal=*/true);
+  interned_string s = type->get_environment()->intern(str);
+
+  if (types_map.find(s) == types_map.end())
+    types_map[s]= type;
+}
+
+/// Update the map that associates a fully qualified name of a given
+/// type to that type.
+///
+/// @param type the type we are considering.
+///
+/// @param types_map the map to update.  It's a map that assciates a
+/// fully qualified name of a type to the type itself.
+template<typename TypeKind>
+void
+maybe_update_types_lookup_map(const shared_ptr<TypeKind>& type,
+			      istring_type_base_wptr_map_type& types_map)
+{
+  scope_decl *scope = get_type_scope(type);
+  if (scope)
+    maybe_update_types_lookup_map(scope, type, types_map);
+  else
+    {
+      // This type doesn't have a scope; this is maybe b/c it's a
+      // function type.  Those beasts are usually put in the global
+      // scope of the current translation unit by
+      // translation_unit::bind_function_type_life_time.  For now,
+      // let's say that this function should not be called on those
+      // function types.
+      //
+      // XXXX: But if we really want function types to have a scope,
+      // we should prolly add a get_scope member function to
+      // function_type and make get_type_scope() to call that one.
+      ABG_ASSERT_NOT_REACHED;
+    }
+}
+
+/// Update the map that associates the fully qualified name of a basic
+/// type with the type itself.
+///
+/// @param basic_type the basic type to consider.
+void
+maybe_update_types_lookup_map(const type_decl_sptr& basic_type)
+{
+  if (corpus *type_corpus = basic_type->get_corpus())
+    return maybe_update_types_lookup_map<type_decl>
+      (basic_type, type_corpus->priv_->get_basic_types());
+}
+
+/// Update the map that associates the fully qualified name of a class
+/// type with the type itself.
+///
+/// @param class_type the class type to consider.
+void
+maybe_update_types_lookup_map(const class_decl_sptr& class_type)
+{
+  if (corpus *type_corpus = class_type->get_corpus())
+    maybe_update_types_lookup_map<class_decl>
+      (class_type, type_corpus->priv_->get_class_types());
+}
+
+/// Update the map that associates the fully qualified name of a union
+/// type with the type itself.
+///
+/// @param union_type the union type to consider.
+void
+maybe_update_types_lookup_map(const union_decl_sptr& union_type)
+{
+  if (corpus *type_corpus = union_type->get_corpus())
+    maybe_update_types_lookup_map<union_decl>
+      (union_type, type_corpus->priv_->get_union_types());
+}
+
+/// Update the map that associates the fully qualified name of an enum
+/// type with the type itself.
+///
+/// @param enum_type the type to consider.
+void
+maybe_update_types_lookup_map(const enum_type_decl_sptr& enum_type)
+
+{
+  if (corpus *type_corpus = enum_type->get_corpus())
+    maybe_update_types_lookup_map<enum_type_decl>
+      (enum_type, type_corpus->priv_->get_enum_types());
+}
+
+/// Update the map that associates the fully qualified name of a
+/// typedef type with the type itself.
+///
+/// @param typedef_type the type to consider.
+void
+maybe_update_types_lookup_map(const typedef_decl_sptr& typedef_type)
+
+{
+  if (corpus *type_corpus = typedef_type->get_corpus())
+    maybe_update_types_lookup_map<typedef_decl>
+      (typedef_type, type_corpus->priv_->get_typedef_types());
+}
+
+/// Update the map that associates the fully qualified name of a
+/// qualified type with the type itself.
+///
+/// @param qualified_type the type to consider.
+void
+maybe_update_types_lookup_map(const qualified_type_def_sptr& qualified_type)
+{
+  if (corpus *type_corpus = qualified_type->get_corpus())
+    maybe_update_types_lookup_map<qualified_type_def>
+      (qualified_type, type_corpus->priv_->get_qualified_types());
+}
+
+/// Update the map that associates the fully qualified name of a
+/// pointer type with the type itself.
+///
+/// @param pointer_type the type to consider.
+void
+maybe_update_types_lookup_map(const pointer_type_def_sptr& pointer_type)
+{
+  if (corpus *type_corpus = pointer_type->get_corpus())
+    maybe_update_types_lookup_map<pointer_type_def>
+      (pointer_type, type_corpus->priv_->get_pointer_types());
+}
+
+/// Update the map that associates the fully qualified name of a
+/// reference type with the type itself.
+///
+/// @param reference_type the type to consider.
+void
+maybe_update_types_lookup_map(const reference_type_def_sptr& reference_type)
+{
+  if (corpus *type_corpus = reference_type->get_corpus())
+    maybe_update_types_lookup_map<reference_type_def>
+      (reference_type, type_corpus->priv_->get_reference_types());
+}
+
+/// Update the map that associates the fully qualified name of a type
+/// with the type itself.
+///
+/// @param array_type the type to consider.
+void
+maybe_update_types_lookup_map(const array_type_def_sptr& array_type)
+{
+  if (corpus *type_corpus = array_type->get_corpus())
+    maybe_update_types_lookup_map<array_type_def>
+      (array_type, type_corpus->priv_->get_array_types());
+}
+
+/// Update the map that associates the fully qualified name of a
+/// function type with the type itself.
+///
+/// @param scope the scope of the function type.
+/// @param fn_type the type to consider.
+void
+maybe_update_types_lookup_map(scope_decl *scope,
+			      const function_type_sptr& fn_type)
+{
+  if (corpus *type_corpus = scope->get_corpus())
+    maybe_update_types_lookup_map<function_type>
+      (scope, fn_type, type_corpus->priv_->get_function_types());
+}
+
+/// Update the map that associates the fully qualified name of a type
+/// declaration with the type itself.
+///
+/// @param decl the declaration of the type to consider.
+void
+maybe_update_types_lookup_map(const decl_base_sptr& decl)
+{
+  if (!is_type(decl))
+    return;
+
+  if (type_decl_sptr basic_type = is_type_decl(decl))
+    maybe_update_types_lookup_map(basic_type);
+  else if (class_decl_sptr class_type = is_class_type(decl))
+    maybe_update_types_lookup_map(class_type);
+  else if (union_decl_sptr union_type = is_union_type(decl))
+    maybe_update_types_lookup_map(union_type);
+  else if (enum_type_decl_sptr enum_type = is_enum_type(decl))
+    maybe_update_types_lookup_map(enum_type);
+  else if (typedef_decl_sptr typedef_type = is_typedef(decl))
+    maybe_update_types_lookup_map(typedef_type);
+  else if (qualified_type_def_sptr qualified_type = is_qualified_type(decl))
+    maybe_update_types_lookup_map(qualified_type);
+  else if (pointer_type_def_sptr pointer_type = is_pointer_type(decl))
+    maybe_update_types_lookup_map(pointer_type);
+  else if (reference_type_def_sptr reference_type = is_reference_type(decl))
+    maybe_update_types_lookup_map(reference_type);
+  else if (array_type_def_sptr array_type = is_array_type(decl))
+    maybe_update_types_lookup_map(array_type);
+  else
+    ABG_ASSERT_NOT_REACHED;
+}
+
+/// Update the map that associates the fully qualified name of a type
+/// with the type itself.
+///
+/// @param type the type to consider.
+void
+maybe_update_types_lookup_map(const type_base_sptr& type)
+{
+  if (decl_base_sptr decl = get_type_declaration(type))
+    maybe_update_types_lookup_map(decl);
+  else
+    ABG_ASSERT_NOT_REACHED;
+}
+
+/// Look into a given corpus to find a type which has the same
+/// qualified name as a giventype.
+///
+/// @param t the type which has the same qualified name as the type we
+/// are looking for.
+///
+/// @param corp the ABI corpus to look into for the type.
+type_decl_sptr
+lookup_basic_type(const type_decl& t, corpus& corp)
+{return lookup_basic_type(t.get_name(), corp);}
+
+/// Look into a given corpus to find a basic type which has a given
+/// qualified name.
+///
+/// @param qualified_name the qualified name of the basic type to look
+/// for.
+///
+/// @param corp the corpus to look into.
+type_decl_sptr
+lookup_basic_type(const string &qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& basic_types = corp.priv_->get_basic_types();
+  istring_type_base_wptr_map_type::iterator i =
+    basic_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == basic_types.end())
+    return type_decl_sptr();
+  return is_type_decl(type_base_sptr(i->second));
+}
+
+/// Look into a given corpus to find a class type which has the same
+/// qualified name as a given type.
+///
+/// @param t the class decl type which has the same qualified name as
+/// the type we are looking for.
+///
+/// @param corp the corpus to look into.
+class_decl_sptr
+lookup_class_type(const class_decl& t, corpus& corp)
+{
+  string s = t.get_pretty_representation(/*internal*/true);
+  return lookup_class_type(s, corp);
+}
+
+/// Look into a given corpus to find a type which has a given
+/// qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+class_decl_sptr
+lookup_class_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& class_types = corp.priv_->get_class_types();
+  istring_type_base_wptr_map_type::iterator i =
+    class_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == class_types.end())
+    return class_decl_sptr();
+  return is_class_type(type_base_sptr(i->second));
+}
+
+/// Look into a given corpus to find a enum type which has the same
+/// qualified name as a given enum type.
+///
+/// @param t the enum type which has the same qualified name as the
+/// type we are looking for.
+///
+/// @param corp the corpus to look into.
+enum_type_decl_sptr
+lookup_enum_type(const enum_type_decl& t, corpus& corp)
+{
+  string s = t.get_pretty_representation(/*internal=*/true);
+  return lookup_enum_type(s, corp);
+}
+
+/// Look into a given corpus to find an enum type which has a given
+/// qualified name.
+///
+/// @param qualified_name the qualified name of the enum type to look
+/// for.
+///
+/// @param corp the corpus to look into.
+enum_type_decl_sptr
+lookup_enum_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& enum_types = corp.priv_->get_enum_types();
+  istring_type_base_wptr_map_type::iterator i =
+    enum_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == enum_types.end())
+    return enum_type_decl_sptr();
+  return is_enum_type(type_base_sptr(i->second));
+}
+
+/// Look into a given corpus to find a typedef type which has the
+/// same qualified name as a given typedef type.
+///
+/// @param t the typedef type which has the same qualified name as the
+/// typedef type we are looking for.
+///
+/// @param corp the corpus to look into.
+typedef_decl_sptr
+lookup_typedef_type(const typedef_decl& t, corpus& corp)
+{
+  string s = t.get_pretty_representation(/*internal=*/true);
+  return lookup_typedef_type(s, corp);
+}
+
+/// Look into a given corpus to find a typedef type which has a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the typedef type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+typedef_decl_sptr
+lookup_typedef_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& typedef_types =
+    corp.priv_->get_typedef_types();
+  istring_type_base_wptr_map_type::iterator i =
+    typedef_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == typedef_types.end())
+    return typedef_decl_sptr();
+  return is_typedef(type_base_sptr(i->second));
+}
+
+/// Look into a corpus to find a class or typedef type which has a
+/// given qualified name.
+///
+/// @param qualified_name the name of the type to find.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the typedef or class type found.
+type_base_sptr
+lookup_class_or_typedef_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& class_types =
+    corp.priv_->get_class_types();
+  istring_type_base_wptr_map_type& typedef_types =
+    corp.priv_->get_typedef_types();
+
+  interned_string name = corp.get_environment()->intern(qualified_name);
+
+  istring_type_base_wptr_map_type::iterator i = class_types.find(name);
+  if (i == class_types.end())
+    {
+      i = typedef_types.find(name);
+      if (i == typedef_types.end())
+	return type_base_sptr();
+    }
+  return type_base_sptr(i->second);
+}
+
+/// Look into a corpus to find a class, typedef or enum type which has
+/// a given qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the typedef, class or enum type found.
+type_base_sptr
+lookup_class_typedef_or_enum_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& enum_types = corp.priv_->get_class_types();
+  type_base_sptr result = lookup_class_or_typedef_type(qualified_name, corp);
+
+  if (!result)
+    {
+      interned_string name = corp.get_environment()->intern(qualified_name);
+      istring_type_base_wptr_map_type::iterator i = enum_types.find(name);
+      if (i != enum_types.end())
+	result = type_base_sptr(i->second);
+    }
+
+  return result;
+}
+
+/// Look into a given corpus to find a qualified type which has the
+/// same qualified name as a given type.
+///
+/// @param t the type which has the same qualified name as the
+/// qualified type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the qualified type found.
+qualified_type_def_sptr
+lookup_qualified_type(const qualified_type_def& t, corpus& corp)
+{
+  string s = t.get_pretty_representation(/*internal=*/true);
+  return lookup_qualified_type(s, corp);
+}
+
+/// Look into a given corpus to find a qualified type which has a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the type to look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the type found.
+qualified_type_def_sptr
+lookup_qualified_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& qualified_types =
+    corp.priv_->get_qualified_types();
+  istring_type_base_wptr_map_type::iterator i =
+    qualified_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == qualified_types.end())
+    return qualified_type_def_sptr();
+  return is_qualified_type(type_base_sptr(i->second));
+}
+
+/// Look into a given corpus to find a pointer type which has the same
+/// qualified name as a given pointer type.
+///
+/// @param t the pointer type which has the same qualified name as the
+/// type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the pointer type found.
+pointer_type_def_sptr
+lookup_pointer_type(const pointer_type_def& t, corpus& corp)
+{
+  string s = t.get_pretty_representation(/*internal=*/true);
+  return lookup_pointer_type(s, corp);
+}
+
+/// Look into a given corpus to find a pointer type which has a given
+/// qualified name.
+///
+/// @param qualified_name the qualified name of the pointer type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the pointer type found.
+pointer_type_def_sptr
+lookup_pointer_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& pointer_types =
+    corp.priv_->get_pointer_types();
+  istring_type_base_wptr_map_type::iterator i =
+    pointer_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == pointer_types.end())
+    return pointer_type_def_sptr();
+  return is_pointer_type(type_base_sptr(i->second));
+}
+
+/// Look into a given corpus to find a reference type which has the
+/// same qualified name as a given reference type.
+///
+/// @param t the reference type which has the same qualified name as
+/// the reference type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the reference type found.
+reference_type_def_sptr
+lookup_reference_type(const reference_type_def& t, corpus& corp)
+{
+  string s = t.get_pretty_representation(/*internal=*/true);
+  return lookup_reference_type(s, corp);
+}
+
+/// Look into a given corpus to find a reference type which has a
+/// given qualified name.
+///
+/// @param qualified_name the qualified name of the reference type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the reference type found.
+reference_type_def_sptr
+lookup_reference_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& reference_types =
+    corp.priv_->get_reference_types();
+  istring_type_base_wptr_map_type::iterator i =
+    reference_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == reference_types.end())
+    return reference_type_def_sptr();
+  return is_reference_type(type_base_sptr(i->second));
+}
+
+/// Look into a given corpus to find an array type which has a given
+/// qualified name.
+///
+/// @param qualified_name the qualified name of the array type to look
+/// for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the array type found.
+array_type_def_sptr
+lookup_array_type(const array_type_def& t, corpus& corp)
+{
+  string s = t.get_pretty_representation(/*internal=*/true);
+  return lookup_array_type(s, corp);
+}
+
+/// Look into a given corpus to find an array type which has the same
+/// qualified name as a given array type.
+///
+/// @param t the type which has the same qualified name as the type we
+/// are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the type found.
+array_type_def_sptr
+lookup_array_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& array_types =
+    corp.priv_->get_array_types();
+  istring_type_base_wptr_map_type::iterator i =
+    array_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == array_types.end())
+    return array_type_def_sptr();
+  return is_array_type(type_base_sptr(i->second));
+}
+
+/// Look into a given corpus to find a function type which has the same
+/// qualified name as a given function type.
+///
+/// @param t the function type which has the same qualified name as
+/// the function type we are looking for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the function type found.
+function_type_sptr
+lookup_function_type(const function_type&t, corpus& corp)
+{
+  string s = t.get_pretty_representation(/*internal*/true);
+  return lookup_function_type(s, corp);
+}
+
+/// Look into a given corpus to find a function type which has a given
+/// qualified name.
+///
+/// @param qualified_name the qualified name of the function type to
+/// look for.
+///
+/// @param corp the corpus to look into.
+///
+/// @return the function type found.
+function_type_sptr
+lookup_function_type(const string& qualified_name, corpus& corp)
+{
+  istring_type_base_wptr_map_type& function_types =
+    corp.priv_->get_function_types();
+  istring_type_base_wptr_map_type::iterator i =
+    function_types.find(corp.get_environment()->intern(qualified_name));
+  if (i == function_types.end())
+    return function_type_sptr();
+  return is_function_type(type_base_sptr(i->second));
+}
+
+// </corpus stuff>
 }// end namespace ir
 }// end namespace abigail

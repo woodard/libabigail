@@ -72,14 +72,13 @@ public:
   };
 
 private:
-  shared_ptr<priv> priv_;
-
   corpus();
 
   void record_canonical_type(const type_base_sptr&) const;
   type_base_sptr lookup_canonical_type(const string& qualified_name) const;
 
 public:
+  shared_ptr<priv> priv_;
 
   corpus(ir::environment*, const string& path= "");
 

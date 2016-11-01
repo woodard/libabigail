@@ -14,9 +14,11 @@ endif
 
 libabigail_la_SOURCES =			\
 abg-internal.h				\
+abg-sptr-utils.cc			\
 abg-traverse.cc				\
 abg-ir-priv.h				\
 abg-ir.cc				\
+abg-corpus-priv.h			\
 abg-corpus.cc				\
 abg-diff-utils.cc			\
 abg-comparison.cc			\

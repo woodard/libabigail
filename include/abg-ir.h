@@ -113,6 +113,9 @@ typedef shared_ptr<corpus> corpus_sptr;
 /// Convenience typedef for a weak pointer to a @ref corpus.
 typedef weak_ptr<corpus> corpus_wptr;
 
+/// A convenience typedef for a shared_ptr to @ref type_or_decl_base.
+typedef shared_ptr<type_or_decl_base> type_or_decl_base_sptr;
+
 /// Convenience typedef for a shared pointer on a @ref type_base
 typedef shared_ptr<type_base> type_base_sptr;
 
@@ -363,6 +366,18 @@ struct ir_traversable_base : public traversable_base
 /// A convenience typedef for a map which key is a string and which
 /// value is a @ref type_base_wptr.
 typedef unordered_map<string, type_base_wptr> string_type_base_wptr_map_type;
+
+/// A convenience typedef for a map which key is an @ref
+/// interned_string and which value is a @ref type_base_wptr.
+typedef unordered_map<interned_string, type_base_wptr, hash_interned_string>
+istring_type_base_wptr_map_type;
+
+/// A convenience typedef for a map which key is an @ref
+/// interned_string and which value is a @ref type_base_wptr.
+typedef unordered_map<interned_string,
+		      type_or_decl_base_sptr,
+		      hash_interned_string>
+istring_type_or_decl_base_sptr_map_type;
 
 /// This is the abstraction of the set of relevant artefacts (types,
 /// variable declarations, functions, templates, etc) bundled together
@@ -948,11 +963,6 @@ operator&=(change_kind&, change_kind);
 
 bool
 equals(const decl_base&, const decl_base&, change_kind*);
-
-class type_or_decl_base;
-
-/// A convenience typedef for a shared_ptr to @ref type_or_decl_base.
-typedef shared_ptr<type_or_decl_base> type_or_decl_base_sptr;
 
 /// The base class of both types and declarations.
 class type_or_decl_base : public ir_traversable_base
@@ -3317,6 +3327,12 @@ public:
 
   method_decl*
   find_member_function(const string& mangled_name);
+
+  const method_decl*
+  find_member_function_from_signature(const string& s) const;
+
+  method_decl*
+  find_member_function_from_signature(const string& s);
 
   void
   add_member_function_template(member_function_template_sptr);
