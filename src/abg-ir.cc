@@ -9268,6 +9268,33 @@ const location&
 array_type_def::subrange_type::get_location() const
 {return priv_->location_;}
 
+/// Return a string representation of the sub range.
+///
+/// @return the string representation of the sub range.
+string
+array_type_def::subrange_type::as_string() const
+{
+  string r;
+  std::ostringstream o;
+  o << "["  << get_length() << "]";
+  return o.str();
+}
+
+/// Return a string representation of a vector of subranges
+///
+/// @return the string representation of a vector of sub ranges.
+string
+array_type_def::subrange_type::vector_as_string(const vector<subrange_sptr>& v)
+{
+  string r;
+  for (vector<subrange_sptr>::const_iterator i = v.begin();
+       i != v.end();
+       ++i)
+    r += (*i)->as_string();
+
+  return r;
+}
+
 // </array_type_def::subrange_type>
 struct array_type_def::priv
 {
@@ -9307,16 +9334,7 @@ array_type_def::array_type_def(const type_base_sptr			e_type,
 string
 array_type_def::get_subrange_representation() const
 {
-  string r;
-  for (std::vector<subrange_sptr >::const_iterator i = get_subranges().begin();
-       i != get_subranges().end(); ++i)
-    {
-      r += "[";
-      std::ostringstream o;
-      o << (*i)->get_length();
-      r += o.str();
-      r += "]";
-    }
+  string r = subrange_type::vector_as_string(get_subranges());
   return r;
 }
 

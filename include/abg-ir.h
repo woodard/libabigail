@@ -1891,6 +1891,12 @@ public:
 
     const location&
     get_location() const;
+
+    string
+    as_string() const;
+
+    static string
+    vector_as_string(const vector<subrange_sptr>&);
   };
 
   array_type_def(const type_base_sptr type,
