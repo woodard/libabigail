@@ -39,15 +39,14 @@
 
 
              type of '_IcePingWait* _IceConn::ping_waits' changed:
-               in pointed to type 'typedef _IcePingWait' at ICEconn.h:48:1:
-                 underlying type 'struct _IcePingWait' at ICEconn.h:44:1 changed:
-                   1 data member changes (1 filtered):
-                    type of 'IcePingReplyProc _IcePingWait::ping_reply_proc' changed:
-                      underlying type 'void (typedef IceConn, typedef IcePointer)*' changed:
-                        in pointed to type 'function type void (typedef IceConn, typedef IcePointer)':
-                          parameter 1 of type 'typedef IceConn' has sub-type changes:
-                            underlying type '_IceConn*' changed:
-                              pointed to type 'struct _IceConn' changed; details are being reported
+               in pointed to type 'struct _IcePingWait' at ICEconn.h:44:1:
+                 1 data member changes (1 filtered):
+                  type of 'IcePingReplyProc _IcePingWait::ping_reply_proc' changed:
+                    underlying type 'void (typedef IceConn, typedef IcePointer)*' changed:
+                      in pointed to type 'function type void (typedef IceConn, typedef IcePointer)':
+                        parameter 1 of type 'typedef IceConn' has sub-type changes:
+                          underlying type '_IceConn*' changed:
+                            pointed to type 'struct _IceConn' changed; details are being reported
 
 
 

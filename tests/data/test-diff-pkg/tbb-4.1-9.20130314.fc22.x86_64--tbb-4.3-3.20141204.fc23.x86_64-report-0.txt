@@ -7,11 +7,11 @@
   17 Added functions:
 
     'method int tbb::interface7::internal::task_arena_base::internal_current_slot()'    {_ZN3tbb10interface78internal15task_arena_base21internal_current_slotEv}
-    'method void tbb::interface7::internal::task_arena_base::internal_enqueue(tbb::task&, intptr_t)'    {_ZNK3tbb10interface78internal15task_arena_base16internal_enqueueERNS_4taskEl}
-    'method void tbb::interface7::internal::task_arena_base::internal_execute(tbb::interface7::internal::delegate_base&)'    {_ZNK3tbb10interface78internal15task_arena_base16internal_executeERNS1_13delegate_baseE}
+    'method void tbb::interface7::internal::task_arena_base::internal_enqueue(tbb::task&, intptr_t) const'    {_ZNK3tbb10interface78internal15task_arena_base16internal_enqueueERNS_4taskEl}
+    'method void tbb::interface7::internal::task_arena_base::internal_execute(tbb::interface7::internal::delegate_base&) const'    {_ZNK3tbb10interface78internal15task_arena_base16internal_executeERNS1_13delegate_baseE}
     'method void tbb::interface7::internal::task_arena_base::internal_initialize()'    {_ZN3tbb10interface78internal15task_arena_base19internal_initializeEv}
     'method void tbb::interface7::internal::task_arena_base::internal_terminate()'    {_ZN3tbb10interface78internal15task_arena_base18internal_terminateEv}
-    'method void tbb::interface7::internal::task_arena_base::internal_wait()'    {_ZNK3tbb10interface78internal15task_arena_base13internal_waitEv}
+    'method void tbb::interface7::internal::task_arena_base::internal_wait() const'    {_ZNK3tbb10interface78internal15task_arena_base13internal_waitEv}
     'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_acquire_reader(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&, bool)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex23internal_acquire_readerERNS2_11scoped_lockEb}
     'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_acquire_writer(tbb::interface8::internal::x86_rtm_rw_mutex::scoped_lock&, bool)'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex23internal_acquire_writerERNS2_11scoped_lockEb}
     'method void tbb::interface8::internal::x86_rtm_rw_mutex::internal_construct()'    {_ZN3tbb10interface88internal16x86_rtm_rw_mutex18internal_constructEv}
@@ -33,7 +33,7 @@
             underlying type 'class tbb::internal::concurrent_queue_base_v3' at _concurrent_queue_impl.h:834:1 changed:
               1 data member change:
                type of 'tbb::internal::concurrent_queue_rep* tbb::internal::concurrent_queue_base_v3::my_rep' changed:
-                 in pointed to type 'class tbb::internal::concurrent_queue_rep' at concurrent_queue.cpp:129:1:
+                 in pointed to type 'class tbb::internal::concurrent_queue_rep' at concurrent_queue_v2.cpp:102:1:
                    2 data member changes (1 filtered):
                     type of 'tbb::internal::concurrent_monitor tbb::internal::concurrent_queue_rep::items_avail' changed:
                       1 data member change:

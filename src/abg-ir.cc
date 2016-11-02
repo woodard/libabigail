@@ -671,7 +671,7 @@ translation_unit::bind_function_type_life_time(function_type_sptr ftype) const
 {
   priv_->function_types_.push_back(ftype);
 
-  // The function type must be ouf of the same environment as its
+  // The function type must be out of the same environment as its
   // translation unit.
   if (const environment* env = get_environment())
     {
@@ -3856,9 +3856,8 @@ strip_typedef(const type_base_sptr type)
 	}
       type_base_sptr p = strip_typedef(ty->get_return_type());
       assert(!!p == !!ty->get_return_type());
-      t.reset(new method_type(p,
-			      ty->get_class_type(),
-			      parm,
+      t.reset(new method_type(p, ty->get_class_type(),
+			      parm, ty->get_is_const(),
 			      ty->get_size_in_bits(),
 			      ty->get_alignment_in_bits()));
     }
@@ -8252,7 +8251,11 @@ qualified_type_def::build_name(bool fully_qualified, bool internal) const
     // to make a difference between a no-op qualified type which
     // underlying type is foo (the qualified type is named "none
     // foo"), and the name of foo, which is just "foo".
-    quals = "none";
+    //
+    // Please remember that this has to be kept in sync with what is
+    // done in die_qualified_name, in abg-dwarf-reader.cc.  So if you
+    // change this code here, please change that code there too.
+    quals = "noop-qual";
 
   if (!quals.empty())
     {
@@ -9282,6 +9285,9 @@ bool
 array_type_def::subrange_type::operator!=(const subrange_type& o) const
 {return !operator==(o);}
 
+/// Getter for the source location of a subrange type.
+///
+/// @return the location of the subrange type.
 const location&
 array_type_def::subrange_type::get_location() const
 {return priv_->location_;}
@@ -9314,6 +9320,7 @@ array_type_def::subrange_type::vector_as_string(const vector<subrange_sptr>& v)
 }
 
 // </array_type_def::subrange_type>
+
 struct array_type_def::priv
 {
   type_base_wptr	element_type_;
@@ -11123,6 +11130,16 @@ function_type::~function_type()
 
 // <method_type>
 
+struct method_type::priv
+{
+  class_or_union_wptr class_type_;
+  bool is_const;
+
+  priv()
+    : is_const()
+  {}
+}; // end struct method_type::priv
+
 /// Constructor for instances of method_type.
 ///
 /// Instances of method_decl must be of type method_type.
@@ -11132,7 +11149,11 @@ function_type::~function_type()
 /// @param class_type the base type of the method type.  That is, the
 /// type of the class the method belongs to.
 ///
-/// @param parms the vector of the parameters of the method.
+/// @param p the vector of the parameters of the method.
+///
+/// @param is_const whether this method type is for a const method.
+/// Note that const-ness is a property of the method *type* and of the
+/// relationship between a method *declaration* and its scope.
 ///
 /// @param size_in_bits the size of an instance of method_type,
 /// expressed in bits.
@@ -11141,13 +11162,18 @@ function_type::~function_type()
 /// method_type, expressed in bits.
 method_type::method_type (type_base_sptr return_type,
 			  class_or_union_sptr class_type,
-			  const std::vector<function_decl::parameter_sptr>& parms,
+			  const std::vector<function_decl::parameter_sptr>& p,
+			  bool is_const,
 			  size_t size_in_bits,
 			  size_t alignment_in_bits)
   : type_or_decl_base(class_type->get_environment()),
     type_base(class_type->get_environment(), size_in_bits, alignment_in_bits),
-    function_type(return_type, parms, size_in_bits, alignment_in_bits)
-{set_class_type(class_type);}
+    function_type(return_type, p, size_in_bits, alignment_in_bits),
+    priv_(new priv)
+{
+  set_class_type(class_type);
+  set_is_const(is_const);
+}
 
 /// Constructor of instances of method_type.
 ///
@@ -11161,7 +11187,11 @@ method_type::method_type (type_base_sptr return_type,
 /// help client code that is compiled without rtti and thus cannot
 /// perform dynamic casts.
 ///
-/// @param parms the vector of the parameters of the method type.
+/// @param p the vector of the parameters of the method type.
+///
+/// @param is_const whether this method type is for a const method.
+/// Note that const-ness is a property of the method *type* and of the
+/// relationship between a method *declaration* and its scope.
 ///
 /// @param size_in_bits the size of an instance of method_type,
 /// expressed in bits.
@@ -11170,13 +11200,18 @@ method_type::method_type (type_base_sptr return_type,
 /// method_type, expressed in bits.
 method_type::method_type(type_base_sptr return_type,
 			 type_base_sptr class_type,
-			 const std::vector<function_decl::parameter_sptr>& parms,
+			 const std::vector<function_decl::parameter_sptr>& p,
+			 bool is_const,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
   : type_or_decl_base(class_type->get_environment()),
     type_base(class_type->get_environment(), size_in_bits, alignment_in_bits),
-    function_type(return_type, parms, size_in_bits, alignment_in_bits)
-{set_class_type(dynamic_pointer_cast<class_decl>(class_type));}
+    function_type(return_type, p, size_in_bits, alignment_in_bits),
+    priv_(new priv)
+{
+  set_class_type(is_class_type(class_type));
+  set_is_const(is_const);
+}
 
 /// Constructor of the qualified_type_def
 ///
@@ -11190,7 +11225,8 @@ method_type::method_type(const environment*	env,
 			 size_t		alignment_in_bits)
   : type_or_decl_base(env),
     type_base(env, size_in_bits, alignment_in_bits),
-    function_type(env, size_in_bits, alignment_in_bits)
+    function_type(env, size_in_bits, alignment_in_bits),
+    priv_(new priv)
 {}
 
 /// Constructor of instances of method_type.
@@ -11206,13 +11242,27 @@ method_type::method_type(const environment*	env,
 ///
 /// @param alignment_in_bits the alignment of an instance of
 /// method_type, expressed in bits.
-method_type::method_type(class_or_union_sptr class_typ,
+method_type::method_type(class_or_union_sptr class_type,
+			 bool is_const,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
-  : type_or_decl_base(class_typ->get_environment()),
-    type_base(class_typ->get_environment(), size_in_bits, alignment_in_bits),
-    function_type(class_typ->get_environment(), size_in_bits, alignment_in_bits)
-{set_class_type(class_typ);}
+  : type_or_decl_base(class_type->get_environment()),
+    type_base(class_type->get_environment(), size_in_bits, alignment_in_bits),
+    function_type(class_type->get_environment(),
+		  size_in_bits,
+		  alignment_in_bits),
+    priv_(new priv)
+{
+  set_class_type(class_type);
+  set_is_const(is_const);
+}
+
+/// Get the class type this method belongs to.
+///
+/// @return the class type.
+class_or_union_sptr
+method_type::get_class_type() const
+{return class_or_union_sptr(priv_->class_type_);}
 
 /// Sets the class type of the current instance of method_type.
 ///
@@ -11225,7 +11275,7 @@ method_type::set_class_type(const class_or_union_sptr& t)
   if (!t)
     return;
 
-  class_type_ = t;
+  priv_->class_type_ = t;
 }
 
 /// Return a copy of the pretty representation of the current @ref
@@ -11241,6 +11291,20 @@ method_type::set_class_type(const class_or_union_sptr& t)
 string
 method_type::get_pretty_representation(bool internal) const
 {return ir::get_pretty_representation(*this, internal);}
+
+/// Setter of the "is-const" property of @ref method_type.
+///
+/// @param the new value of the "is-const" property.
+void
+method_type::set_is_const(bool f)
+{priv_->is_const = f;}
+
+/// Getter of the "is-const" property of @ref method_type.
+///
+/// @return true iff the "is-const" property was set.
+bool
+method_type::get_is_const() const
+{return priv_->is_const;}
 
 /// The destructor of method_type
 method_type::~method_type()
@@ -11432,8 +11496,8 @@ function_decl::get_pretty_representation_of_declarator (bool internal) const
   result += ")";
 
   if (mem_fn
-      && is_member_function(mem_fn)
-      && get_member_function_is_const(*mem_fn))
+      &&((is_member_function(mem_fn) && get_member_function_is_const(*mem_fn))
+	 || is_method_type(mem_fn->get_type())->get_is_const()))
     result += " const";
 
   return result;
@@ -13347,6 +13411,7 @@ copy_member_function(const class_or_union_sptr& t, const method_decl* method)
   method_type_sptr new_type(new method_type(old_type->get_return_type(),
 					    t,
 					    old_type->get_parameters(),
+					    old_type->get_is_const(),
 					    old_type->get_size_in_bits(),
 					    old_type->get_alignment_in_bits()));
   new_type->set_environment(t->get_environment());
@@ -13838,9 +13903,12 @@ method_decl::method_decl(const string&		name,
   : type_or_decl_base(type->get_environment()),
     decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>(type),
-		  declared_inline, locus,
-		  linkage_name, vis, bind)
-{}
+		  declared_inline, locus, linkage_name, vis, bind)
+{
+  context_rel_sptr c(new mem_fn_context_rel(0));
+  set_context_rel(c);
+  set_member_function_is_const(*this, type->get_is_const());
+}
 
 /// A constructor for instances of method_decl.
 ///
@@ -13871,7 +13939,10 @@ method_decl::method_decl(const string&		name,
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, linkage_name, vis, bind)
-{}
+{
+  context_rel_sptr c(new mem_fn_context_rel(0));
+  set_context_rel(c);
+}
 
 /// A constructor for instances of method_decl.
 ///
@@ -13902,7 +13973,10 @@ method_decl::method_decl(const string&		name,
     function_decl(name, static_pointer_cast<function_type>
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, linkage_name, vis, bind)
-{}
+{
+  context_rel_sptr c(new mem_fn_context_rel(0));
+  set_context_rel(c);
+}
 
 /// Set the linkage name of the method.
 ///
@@ -14174,7 +14248,6 @@ class_decl::get_hash() const
   class_decl::hash hash_class;
   return hash_class(this);
 }
-
 
 /// Compares two instances of @ref class_decl.
 ///
@@ -14773,7 +14846,6 @@ set_member_is_static(decl_base& d, bool s)
   c->set_is_static(s);
 
   scope_decl* scope = d.get_scope();
-  assert(scope);
 
   if (class_or_union* cl = is_class_or_union_type(scope))
     {

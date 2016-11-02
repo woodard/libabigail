@@ -664,7 +664,7 @@ public:
   ///
   /// @param decl the newly created declaration.
   void
-  push_decl_to_current_scope(const decl_base_sptr& decl,
+  push_decl_to_current_scope(decl_base_sptr decl,
 			     bool add_to_current_scope)
   {
     assert(decl);
@@ -2657,7 +2657,7 @@ build_function_decl(read_context&	ctxt,
 		    class_or_union_sptr as_method_decl,
 		    bool		add_to_current_scope)
 {
-  shared_ptr<function_decl> nil;
+  function_decl_sptr nil;
 
   if (!xmlStrEqual(node->name, BAD_CAST("function-decl")))
     return nil;
@@ -2717,9 +2717,9 @@ build_function_decl(read_context&	ctxt,
   assert(return_type);
 
   function_type_sptr fn_type(as_method_decl
-			     ? new method_type(return_type,
-					       as_method_decl,
-					       parms, size, align)
+			     ? new method_type(return_type, as_method_decl,
+					       parms, /*is_const=*/false,
+					       size, align)
 			     : new function_type(return_type,
 						 parms, size, align));
 
@@ -3165,7 +3165,7 @@ build_qualified_type_decl(read_context&	ctxt,
 ///
 /// @return a pointer to a newly built pointer_type_def upon
 /// successful completion, a null pointer otherwise.
-static shared_ptr<pointer_type_def>
+static pointer_type_def_sptr
 build_pointer_type_def(read_context&	ctxt,
 		       const xmlNodePtr node,
 		       bool		add_to_current_scope)
@@ -3338,19 +3338,26 @@ build_reference_type_def(read_context&		ctxt,
 ///
 /// @return a pointer to a newly built function_type upon
 /// successful completion, a null pointer otherwise.
-static shared_ptr<function_type>
+static function_type_sptr
 build_function_type(read_context&	ctxt,
 		    const xmlNodePtr	node,
 		    bool /*add_to_current_scope*/)
 {
-  shared_ptr<function_type> nil;
+  function_type_sptr nil;
 
   if (!xmlStrEqual(node->name, BAD_CAST("function-type")))
     return nil;
+
   string id;
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
     id = CHAR_STR(s);
   assert(!id.empty());
+
+  string method_class_id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "method-class-id"))
+    method_class_id = CHAR_STR(s);
+
+  bool is_method_t = !method_class_id.empty();
 
   size_t size = 0, align = 0;
   read_size_and_alignment(node, size, align);
@@ -3360,8 +3367,22 @@ build_function_type(read_context&	ctxt,
   std::vector<shared_ptr<function_decl::parameter> > parms;
   type_base_sptr return_type = env->get_void_type();;
 
- function_type_sptr fn_type(new function_type(return_type,
-					      parms, size, align));
+  class_decl_sptr method_class_type;
+  if (is_method_t)
+    {
+      method_class_type =
+	is_class_type(ctxt.build_or_get_type_decl(method_class_id,
+						  /*add_decl_to_scope=*/true));
+      assert(method_class_type);
+    }
+
+
+ function_type_sptr fn_type(is_method_t
+			    ? new method_type(method_class_type,
+					      ctxt.get_environment(),
+					      size, align)
+			    : new function_type(return_type,
+						parms, size, align));
 
   ctxt.get_translation_unit()->bind_function_type_life_time(fn_type);
   ctxt.mark_type_as_wip(fn_type);
@@ -3374,7 +3395,7 @@ build_function_type(read_context&	ctxt,
 
       else if (xmlStrEqual(n->name, BAD_CAST("parameter")))
 	{
-	  if (shared_ptr<function_decl::parameter> p =
+	  if (function_decl::parameter_sptr p =
 	      build_function_parameter(ctxt, n))
 	    parms.push_back(p);
 	}

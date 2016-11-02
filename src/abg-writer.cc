@@ -2282,10 +2282,10 @@ write_function_decl(const function_decl_sptr& decl, write_context& ctxt,
 ///
 /// @return true upon succesful completion, false otherwise.
 static bool
-write_function_type(const function_type_sptr& decl,
+write_function_type(const function_type_sptr& fn_type,
 		    write_context& ctxt, unsigned indent)
 {
-  if (!decl)
+  if (!fn_type)
     return false;
 
   ostream &o = ctxt.get_ostream();
@@ -2294,16 +2294,27 @@ write_function_type(const function_type_sptr& decl,
 
   o << "<function-type";
 
-  write_size_and_alignment(decl, o);
+  write_size_and_alignment(fn_type, o);
+
+  if (method_type_sptr method_type = is_method_type(fn_type))
+    {
+      o << " method-class-id='"
+	<< ctxt.get_id_for_type(method_type->get_class_type())
+	<< "'";
+
+      write_cdtor_const_static(/*is_ctor=*/false, /*is_dtor=*/false,
+			       /*is_const=*/method_type->get_is_const(),
+			       /*is_static=*/false, o);
+    }
 
   o << " id='"
-    << ctxt.get_id_for_type(decl) << "'";
+    << ctxt.get_id_for_type(fn_type) << "'";
   o << ">\n";
 
   type_base_sptr parm_type;
-  for (vector<shared_ptr<function_decl::parameter> >::const_iterator pi =
-       decl->get_parameters().begin();
-       pi != decl->get_parameters().end();
+  for (vector<function_decl::parameter_sptr>::const_iterator pi =
+	 fn_type->get_parameters().begin();
+       pi != fn_type->get_parameters().end();
        ++pi)
     {
       do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
@@ -2328,7 +2339,7 @@ write_function_type(const function_type_sptr& decl,
       o << "/>\n";
     }
 
-  if (shared_ptr<type_base> return_type = decl->get_return_type())
+  if (type_base_sptr return_type = fn_type->get_return_type())
     {
       do_indent(o, indent + ctxt.get_config().get_xml_element_indent());
       o << "<return type-id='" << ctxt.get_id_for_type(return_type) << "'/>\n";
@@ -2338,7 +2349,7 @@ write_function_type(const function_type_sptr& decl,
   do_indent(o, indent);
   o << "</function-type>";
 
-  ctxt.record_type_as_emitted(decl);
+  ctxt.record_type_as_emitted(fn_type);
   return true;
 }
 

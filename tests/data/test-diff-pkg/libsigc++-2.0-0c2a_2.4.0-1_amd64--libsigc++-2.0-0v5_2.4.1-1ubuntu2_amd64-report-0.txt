@@ -45,7 +45,7 @@
 
 
 
-    [C]'method sigc::internal::signal_impl* sigc::signal_base::impl()' has some indirect sub-type changes:
+    [C]'method sigc::internal::signal_impl* sigc::signal_base::impl() const' has some indirect sub-type changes:
       return type changed:
         in pointed to type 'struct sigc::internal::signal_impl':
           type size changed from 192 to 256 bits

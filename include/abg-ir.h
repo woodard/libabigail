@@ -2642,7 +2642,9 @@ typedef shared_ptr<method_type> method_type_sptr;
 /// Abstracts the type of a class member function.
 class method_type : public function_type
 {
-  class_or_union_wptr class_type_;
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
 
   method_type();
 
@@ -2654,16 +2656,19 @@ public:
   method_type(type_base_sptr return_type,
 	      class_or_union_sptr class_type,
 	      const std::vector<function_decl::parameter_sptr>& parms,
+	      bool is_const,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
   method_type(type_base_sptr return_type,
 	      type_base_sptr class_type,
 	      const std::vector<function_decl::parameter_sptr>& parms,
+	      bool is_const,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
   method_type(class_or_union_sptr class_type,
+	      bool is_const,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
@@ -2672,16 +2677,22 @@ public:
 	      size_t alignment_in_bits);
 
   class_or_union_sptr
-  get_class_type() const
-  {return class_or_union_sptr(class_type_);}
+  get_class_type() const;
 
   void
   set_class_type(const class_or_union_sptr& t);
 
+  void set_is_const(bool);
+
+  bool get_is_const() const;
+
+  virtual ~method_type();
+
   virtual string
   get_pretty_representation(bool internal = false) const;
 
-  virtual ~method_type();
+  friend interned_string
+  get_method_type_name(const method_type& fn_type, bool internal);
 };// end class method_type.
 
 /// Convenience typedef for shared pointer to template parameter

@@ -605,19 +605,22 @@
             <data-member access='public' static='yes'>
               <var-decl name='_S_terminal' type-id='type-id-11' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='55' column='1'/>
             </data-member>
+            <data-member access='public' static='yes'>
+              <var-decl name='_S_empty_rep_storage' type-id='type-id-93' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='66' column='1'/>
+            </data-member>
             <member-function access='public' static='yes'>
               <function-decl name='_S_empty_rep' mangled-name='_ZNSs4_Rep12_S_empty_repEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='181' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <return type-id='type-id-93'/>
+                <return type-id='type-id-94'/>
               </function-decl>
             </member-function>
-            <member-function access='public' static='yes'>
+            <member-function access='public' static='yes' const='yes'>
               <function-decl name='_M_is_leaked' mangled-name='_ZNKSs4_Rep12_M_is_leakedEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <return type-id='type-id-94'/>
+                <return type-id='type-id-95'/>
               </function-decl>
             </member-function>
-            <member-function access='public' static='yes'>
+            <member-function access='public' static='yes' const='yes'>
               <function-decl name='_M_is_shared' mangled-name='_ZNKSs4_Rep12_M_is_sharedEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='195' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <return type-id='type-id-94'/>
+                <return type-id='type-id-95'/>
               </function-decl>
             </member-function>
             <member-function access='public' static='yes'>
@@ -647,7 +650,7 @@
             </member-function>
             <member-function access='public' static='yes'>
               <function-decl name='_S_create' mangled-name='_ZNSs4_Rep9_S_createEmmRKSaIcE' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='545' column='1' visibility='default' binding='global' size-in-bits='64'>
-                <return type-id='type-id-95'/>
+                <return type-id='type-id-96'/>
               </function-decl>
             </member-function>
             <member-function access='public' static='yes'>
@@ -678,73 +681,73 @@
         <data-member access='private' layout-offset-in-bits='0'>
           <var-decl name='_M_dataplus' type-id='type-id-61' visibility='default' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='289' column='1'/>
         </data-member>
-        <member-function access='private'>
+        <member-function access='private' const='yes'>
           <function-decl name='_M_data' mangled-name='_ZNKSs7_M_dataEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='292' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-42'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
           <function-decl name='_M_data' mangled-name='_ZNSs7_M_dataEPc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='296' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-42'/>
             <return type-id='type-id-42'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='private' const='yes'>
           <function-decl name='_M_rep' mangled-name='_ZNKSs6_M_repEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='300' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <return type-id='type-id-95'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <return type-id='type-id-96'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='private' const='yes'>
           <function-decl name='_M_ibegin' mangled-name='_ZNKSs9_M_ibeginEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='306' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-82'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='private' const='yes'>
           <function-decl name='_M_iend' mangled-name='_ZNKSs7_M_iendEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='310' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-82'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
           <function-decl name='_M_leak' mangled-name='_ZNSs7_M_leakEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='314' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='private' const='yes'>
           <function-decl name='_M_check' mangled-name='_ZNKSs8_M_checkEmPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='321' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='private' const='yes'>
           <function-decl name='_M_check_length' mangled-name='_ZNKSs15_M_check_lengthEmmPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='329' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='private' const='yes'>
           <function-decl name='_M_limit' mangled-name='_ZNKSs8_M_limitEmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='337' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='private'>
+        <member-function access='private' const='yes'>
           <function-decl name='_M_disjunct' mangled-name='_ZNKSs11_M_disjunctEPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='345' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-94'/>
+            <return type-id='type-id-95'/>
           </function-decl>
         </member-function>
         <member-function access='private' static='yes'>
@@ -812,7 +815,7 @@
         </member-function>
         <member-function access='private'>
           <function-decl name='_M_mutate' mangled-name='_ZNSs9_M_mutateEmmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='468' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
@@ -821,39 +824,39 @@
         </member-function>
         <member-function access='private'>
           <function-decl name='_M_leak_hard' mangled-name='_ZNSs12_M_leak_hardEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='454' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='private' static='yes'>
           <function-decl name='_S_empty_rep' mangled-name='_ZNSs12_S_empty_repEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='426' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <return type-id='type-id-93'/>
+            <return type-id='type-id-94'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='437' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='177' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-98'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-99'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='169' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='183' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-40'/>
@@ -861,137 +864,137 @@
         </member-function>
         <member-function access='public'>
           <function-decl name='basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='193' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
+            <parameter type-id='type-id-62'/>
+            <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-99'/>
-            <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-98'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='205' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-98'/>
+            <parameter type-id='type-id-99'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='212' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
-            <parameter type-id='type-id-98'/>
+            <parameter type-id='type-id-99'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='219' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <parameter type-id='type-id-98'/>
+            <parameter type-id='type-id-99'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public' destructor='yes'>
           <function-decl name='~basic_string' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='538' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-18' is-artificial='yes'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='operator=' mangled-name='_ZNSsaSERKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='546' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
-            <return type-id='type-id-100'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='operator=' mangled-name='_ZNSsaSEPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='554' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='operator=' mangled-name='_ZNSsaSEc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='565' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='begin' mangled-name='_ZNSs5beginEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='605' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <return type-id='type-id-82'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='begin' mangled-name='_ZNKSs5beginEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='616' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-84'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='end' mangled-name='_ZNSs3endEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='624' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <return type-id='type-id-82'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='end' mangled-name='_ZNKSs3endEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='635' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-84'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='rbegin' mangled-name='_ZNSs6rbeginEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='644' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <return type-id='type-id-88'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='rbegin' mangled-name='_ZNKSs6rbeginEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='653' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-86'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='rend' mangled-name='_ZNSs4rendEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='662' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <return type-id='type-id-88'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='rend' mangled-name='_ZNKSs4rendEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='671' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-86'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='size' mangled-name='_ZNKSs4sizeEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='715' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='length' mangled-name='_ZNKSs6lengthEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='721' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='max_size' mangled-name='_ZNKSs8max_sizeEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='726' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='resize' mangled-name='_ZNSs6resizeEmc' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='639' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
             <return type-id='type-id-40'/>
@@ -999,173 +1002,173 @@
         </member-function>
         <member-function access='public'>
           <function-decl name='resize' mangled-name='_ZNSs6resizeEm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='753' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='capacity' mangled-name='_ZNKSs8capacityEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='776' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='reserve' mangled-name='_ZNSs7reserveEm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='501' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='clear' mangled-name='_ZNSs5clearEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='803' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='empty' mangled-name='_ZNKSs5emptyEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='811' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <return type-id='type-id-94'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <return type-id='type-id-95'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='operator[]' mangled-name='_ZNKSsixEm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='826' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-76'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='operator[]' mangled-name='_ZNSsixEm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='843' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-74'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='at' mangled-name='_ZNKSs2atEm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='864' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-76'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='at' mangled-name='_ZNSs2atEm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='883' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-74'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='operator+=' mangled-name='_ZNSspLERKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='932' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
-            <return type-id='type-id-100'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='operator+=' mangled-name='_ZNSspLEPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='941' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='operator+=' mangled-name='_ZNSspLEc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='950' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='append' mangled-name='_ZNSs6appendERKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='324' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
-            <return type-id='type-id-100'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='append' mangled-name='_ZNSs6appendERKSsmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='341' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='append' mangled-name='_ZNSs6appendEPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='297' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='append' mangled-name='_ZNSs6appendEPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1006' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='append' mangled-name='_ZNSs6appendEmc' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='280' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='push_back' mangled-name='_ZNSs9push_backEc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1052' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='assign' mangled-name='_ZNSs6assignERKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='242' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
-            <return type-id='type-id-100'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='assign' mangled-name='_ZNSs6assignERKSsmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1100' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='assign' mangled-name='_ZNSs6assignEPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='258' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='assign' mangled-name='_ZNSs6assignEPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1128' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='assign' mangled-name='_ZNSs6assignEmc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1144' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='insert' mangled-name='_ZNSs6insertEN9__gnu_cxx17__normal_iteratorIPcSsEEmc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1185' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
@@ -1174,51 +1177,51 @@
         </member-function>
         <member-function access='public'>
           <function-decl name='insert' mangled-name='_ZNSs6insertEmRKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1233' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-99'/>
-            <return type-id='type-id-100'/>
+            <parameter type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='insert' mangled-name='_ZNSs6insertEmRKSsmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1255' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='insert' mangled-name='_ZNSs6insertEmPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='359' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='insert' mangled-name='_ZNSs6insertEmPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1296' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='insert' mangled-name='_ZNSs6insertEmmc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1319' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='insert' mangled-name='_ZNSs6insertEN9__gnu_cxx17__normal_iteratorIPcSsEEc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1337' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-28'/>
             <return type-id='type-id-82'/>
@@ -1226,22 +1229,22 @@
         </member-function>
         <member-function access='public'>
           <function-decl name='erase' mangled-name='_ZNSs5eraseEmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1362' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='erase' mangled-name='_ZNSs5eraseEN9__gnu_cxx17__normal_iteratorIPcSsEE' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1378' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <return type-id='type-id-82'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='erase' mangled-name='_ZNSs5eraseEN9__gnu_cxx17__normal_iteratorIPcSsEES2_' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='390' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <return type-id='type-id-82'/>
@@ -1249,156 +1252,156 @@
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEmmRKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1429' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-99'/>
-            <return type-id='type-id-100'/>
+            <parameter type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEmmRKSsmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1451' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEmmPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='413' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEmmPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1496' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEmmmc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1520' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEN9__gnu_cxx17__normal_iteratorIPcSsEES2_RKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1538' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
-            <parameter type-id='type-id-99'/>
-            <return type-id='type-id-100'/>
+            <parameter type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEN9__gnu_cxx17__normal_iteratorIPcSsEES2_PKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1557' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEN9__gnu_cxx17__normal_iteratorIPcSsEES2_PKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1578' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEN9__gnu_cxx17__normal_iteratorIPcSsEES2_mc' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1599' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEN9__gnu_cxx17__normal_iteratorIPcSsEES2_S1_S1_' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1636' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-42'/>
             <parameter type-id='type-id-42'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEN9__gnu_cxx17__normal_iteratorIPcSsEES2_PKcS4_' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1646' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-29'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEN9__gnu_cxx17__normal_iteratorIPcSsEES2_S2_S2_' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1657' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='public'>
           <function-decl name='replace' mangled-name='_ZNSs7replaceEN9__gnu_cxx17__normal_iteratorIPcSsEES2_NS0_IPKcSsEES5_' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1667' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-82'/>
             <parameter type-id='type-id-84'/>
             <parameter type-id='type-id-84'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
           <function-decl name='_M_replace_aux' mangled-name='_ZNSs14_M_replace_auxEmmmc' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='667' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='private'>
           <function-decl name='_M_replace_safe' mangled-name='_ZNSs15_M_replace_safeEmmPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='680' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
-            <return type-id='type-id-100'/>
+            <return type-id='type-id-101'/>
           </function-decl>
         </member-function>
         <member-function access='private' static='yes'>
           <function-decl name='_S_construct_aux_2' mangled-name='_ZNSs18_S_construct_aux_2EmcRKSaIcE' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1738' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <parameter type-id='type-id-98'/>
+            <parameter type-id='type-id-99'/>
             <return type-id='type-id-42'/>
           </function-decl>
         </member-function>
@@ -1406,13 +1409,13 @@
           <function-decl name='_S_construct' mangled-name='_ZNSs12_S_constructEmcRKSaIcE' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='152' column='1' visibility='default' binding='global' size-in-bits='64'>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-28'/>
-            <parameter type-id='type-id-98'/>
+            <parameter type-id='type-id-99'/>
             <return type-id='type-id-42'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='copy' mangled-name='_ZNKSs4copyEPcmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='722' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-42'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
@@ -1421,281 +1424,281 @@
         </member-function>
         <member-function access='public'>
           <function-decl name='swap' mangled-name='_ZNSs4swapERSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='518' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-97' is-artificial='yes'/>
-            <parameter type-id='type-id-100'/>
+            <parameter type-id='type-id-98' is-artificial='yes'/>
+            <parameter type-id='type-id-101'/>
             <return type-id='type-id-40'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='c_str' mangled-name='_ZNKSs5c_strEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1800' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-29'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='data' mangled-name='_ZNKSs4dataEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1810' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-29'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='get_allocator' mangled-name='_ZNKSs13get_allocatorEv' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1817' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <return type-id='type-id-70'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find' mangled-name='_ZNKSs4findEPKcmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='736' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find' mangled-name='_ZNKSs4findERKSsm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1846' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find' mangled-name='_ZNKSs4findEPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1861' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find' mangled-name='_ZNKSs4findEcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='759' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='rfind' mangled-name='_ZNKSs5rfindERKSsm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1891' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='rfind' mangled-name='_ZNKSs5rfindEPKcmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='777' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='rfind' mangled-name='_ZNKSs5rfindEPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1921' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='rfind' mangled-name='_ZNKSs5rfindEcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_first_of' mangled-name='_ZNKSs13find_first_ofERKSsm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1952' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_first_of' mangled-name='_ZNKSs13find_first_ofEPKcmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='815' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_first_of' mangled-name='_ZNKSs13find_first_ofEPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='1982' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_first_of' mangled-name='_ZNKSs13find_first_ofEcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2001' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_last_of' mangled-name='_ZNKSs12find_last_ofERKSsm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2016' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_last_of' mangled-name='_ZNKSs12find_last_ofEPKcmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='830' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_last_of' mangled-name='_ZNKSs12find_last_ofEPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2046' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_last_of' mangled-name='_ZNKSs12find_last_ofEcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2065' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_first_not_of' mangled-name='_ZNKSs17find_first_not_ofERKSsm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2079' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_first_not_of' mangled-name='_ZNKSs17find_first_not_ofEPKcmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='851' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_first_not_of' mangled-name='_ZNKSs17find_first_not_ofEPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2110' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_first_not_of' mangled-name='_ZNKSs17find_first_not_ofEcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='863' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_last_not_of' mangled-name='_ZNKSs16find_last_not_ofERKSsm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2142' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_last_not_of' mangled-name='_ZNKSs16find_last_not_ofEPKcmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='874' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_last_not_of' mangled-name='_ZNKSs16find_last_not_ofEPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2173' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='find_last_not_of' mangled-name='_ZNKSs16find_last_not_ofEcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='895' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-28'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-62'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='substr' mangled-name='_ZNKSs6substrEmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2206' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-3'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='compare' mangled-name='_ZNKSs7compareERKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.h' line='2225' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
+            <parameter type-id='type-id-100'/>
             <return type-id='type-id-18'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='compare' mangled-name='_ZNKSs7compareEmmRKSs' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='915' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-100'/>
             <return type-id='type-id-18'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='compare' mangled-name='_ZNKSs7compareEmmRKSsmm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='930' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
-            <parameter type-id='type-id-99'/>
+            <parameter type-id='type-id-100'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <return type-id='type-id-18'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='compare' mangled-name='_ZNKSs7compareEPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='948' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-18'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='compare' mangled-name='_ZNKSs7compareEmmPKc' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='963' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
             <return type-id='type-id-18'/>
           </function-decl>
         </member-function>
-        <member-function access='public'>
+        <member-function access='public' const='yes'>
           <function-decl name='compare' mangled-name='_ZNKSs7compareEmmPKcm' filepath='/usr/include/c++/4.8.2/bits/basic_string.tcc' line='979' column='1' visibility='default' binding='global' size-in-bits='64'>
-            <parameter type-id='type-id-96' is-artificial='yes'/>
+            <parameter type-id='type-id-97' is-artificial='yes'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-62'/>
             <parameter type-id='type-id-29'/>
@@ -1707,16 +1710,16 @@
     </namespace-decl>
     <class-decl name='allocator&lt;char&gt;' visibility='default' is-declaration-only='yes' id='type-id-71'>
       <member-type access='public'>
-        <typedef-decl name='size_type' type-id='type-id-101' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='95' column='1' id='type-id-63'/>
+        <typedef-decl name='size_type' type-id='type-id-102' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='95' column='1' id='type-id-63'/>
       </member-type>
       <member-type access='public'>
-        <typedef-decl name='difference_type' type-id='type-id-102' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='96' column='1' id='type-id-73'/>
+        <typedef-decl name='difference_type' type-id='type-id-103' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='96' column='1' id='type-id-73'/>
       </member-type>
       <member-type access='public'>
-        <typedef-decl name='reference' type-id='type-id-103' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='99' column='1' id='type-id-75'/>
+        <typedef-decl name='reference' type-id='type-id-104' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='99' column='1' id='type-id-75'/>
       </member-type>
       <member-type access='public'>
-        <typedef-decl name='const_reference' type-id='type-id-104' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='100' column='1' id='type-id-77'/>
+        <typedef-decl name='const_reference' type-id='type-id-105' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='100' column='1' id='type-id-77'/>
       </member-type>
       <member-type access='public'>
         <typedef-decl name='pointer' type-id='type-id-42' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='97' column='1' id='type-id-79'/>
@@ -1726,15 +1729,15 @@
       </member-type>
     </class-decl>
     <namespace-decl name='std'>
-      <typedef-decl name='size_t' type-id='type-id-26' filepath='/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++config.h' line='1857' column='1' id='type-id-101'/>
-      <typedef-decl name='ptrdiff_t' type-id='type-id-44' filepath='/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++config.h' line='1858' column='1' id='type-id-102'/>
+      <typedef-decl name='size_t' type-id='type-id-26' filepath='/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++config.h' line='1857' column='1' id='type-id-102'/>
+      <typedef-decl name='ptrdiff_t' type-id='type-id-44' filepath='/usr/include/c++/4.8.2/x86_64-redhat-linux/bits/c++config.h' line='1858' column='1' id='type-id-103'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-87'/>
       <class-decl name='reverse_iterator&lt;__gnu_cxx::__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-89'/>
     </namespace-decl>
-    <reference-type-def kind='lvalue' type-id='type-id-28' size-in-bits='64' id='type-id-103'/>
-    <reference-type-def kind='lvalue' type-id='type-id-11' size-in-bits='64' id='type-id-104'/>
+    <reference-type-def kind='lvalue' type-id='type-id-28' size-in-bits='64' id='type-id-104'/>
+    <reference-type-def kind='lvalue' type-id='type-id-11' size-in-bits='64' id='type-id-105'/>
     <qualified-type-def type-id='type-id-62' const='yes' id='type-id-92'/>
-    <class-decl name='rebind&lt;char&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-105'>
+    <class-decl name='rebind&lt;char&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-106'>
       <member-type access='public'>
         <typedef-decl name='other' type-id='type-id-71' filepath='/usr/include/c++/4.8.2/bits/allocator.h' line='105' column='1' id='type-id-65'/>
       </member-type>
@@ -1748,29 +1751,30 @@
       <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-83'/>
       <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-85'/>
     </namespace-decl>
-    <reference-type-def kind='lvalue' type-id='type-id-91' size-in-bits='64' id='type-id-93'/>
-    <type-decl name='bool' size-in-bits='8' id='type-id-94'/>
-    <pointer-type-def type-id='type-id-91' size-in-bits='64' id='type-id-95'/>
-    <qualified-type-def type-id='type-id-3' const='yes' id='type-id-106'/>
-    <pointer-type-def type-id='type-id-106' size-in-bits='64' id='type-id-96'/>
-    <pointer-type-def type-id='type-id-3' size-in-bits='64' id='type-id-97'/>
-    <qualified-type-def type-id='type-id-71' const='yes' id='type-id-107'/>
-    <reference-type-def kind='lvalue' type-id='type-id-107' size-in-bits='64' id='type-id-98'/>
-    <reference-type-def kind='lvalue' type-id='type-id-106' size-in-bits='64' id='type-id-99'/>
-    <reference-type-def kind='lvalue' type-id='type-id-3' size-in-bits='64' id='type-id-100'/>
-    <qualified-type-def type-id='type-id-91' const='yes' id='type-id-108'/>
-    <reference-type-def kind='lvalue' type-id='type-id-4' size-in-bits='64' id='type-id-109'/>
-    <qualified-type-def type-id='type-id-109' id='type-id-110'/>
+    <array-type-def dimensions='0' type-id='type-id-26' id='type-id-93'/>
+    <reference-type-def kind='lvalue' type-id='type-id-91' size-in-bits='64' id='type-id-94'/>
+    <type-decl name='bool' size-in-bits='8' id='type-id-95'/>
+    <pointer-type-def type-id='type-id-91' size-in-bits='64' id='type-id-96'/>
+    <qualified-type-def type-id='type-id-3' const='yes' id='type-id-107'/>
+    <pointer-type-def type-id='type-id-107' size-in-bits='64' id='type-id-97'/>
+    <pointer-type-def type-id='type-id-3' size-in-bits='64' id='type-id-98'/>
+    <qualified-type-def type-id='type-id-71' const='yes' id='type-id-108'/>
+    <reference-type-def kind='lvalue' type-id='type-id-108' size-in-bits='64' id='type-id-99'/>
+    <reference-type-def kind='lvalue' type-id='type-id-107' size-in-bits='64' id='type-id-100'/>
+    <reference-type-def kind='lvalue' type-id='type-id-3' size-in-bits='64' id='type-id-101'/>
+    <qualified-type-def type-id='type-id-91' const='yes' id='type-id-109'/>
+    <reference-type-def kind='lvalue' type-id='type-id-4' size-in-bits='64' id='type-id-110'/>
+    <qualified-type-def type-id='type-id-110' id='type-id-111'/>
     <function-decl name='emit' mangled-name='_Z4emitRSs' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-first-tu.cc' line='12' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z4emitRSs'>
-      <parameter type-id='type-id-110' name='s' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-first-tu.cc' line='12' column='1'/>
+      <parameter type-id='type-id-111' name='s' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-first-tu.cc' line='12' column='1'/>
       <return type-id='type-id-40'/>
     </function-decl>
     <var-decl name='__dso_handle' type-id='type-id-39' visibility='default'/>
     <qualified-type-def type-id='type-id-18' const='yes' id='type-id-6'/>
-    <qualified-type-def type-id='type-id-94' const='yes' id='type-id-7'/>
+    <qualified-type-def type-id='type-id-95' const='yes' id='type-id-7'/>
     <qualified-type-def type-id='type-id-26' const='yes' id='type-id-9'/>
-    <type-decl name='short int' size-in-bits='16' id='type-id-111'/>
-    <qualified-type-def type-id='type-id-111' const='yes' id='type-id-13'/>
+    <type-decl name='short int' size-in-bits='16' id='type-id-112'/>
+    <qualified-type-def type-id='type-id-112' const='yes' id='type-id-13'/>
     <qualified-type-def type-id='type-id-44' const='yes' id='type-id-15'/>
 
 
@@ -1786,87 +1790,14 @@
   <abi-instr version='1.0' address-size='64' path='test23-second-tu.cc' language='LANG_C_plus_plus'>
     <namespace-decl name='std'>
 
-      <class-decl name='basic_ostream&lt;char, std::char_traits&lt;char&gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-1'/>
       <var-decl name='cout' type-id='type-id-2' mangled-name='_ZSt4cout' visibility='default' filepath='/usr/include/c++/4.8.2/iostream' line='61' column='1'/>
     </namespace-decl>
-    <namespace-decl name='__gnu_cxx'>
-      <class-decl name='__numeric_traits_integer&lt;int&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-5'>
-        <data-member access='public' static='yes'>
-          <var-decl name='__min' type-id='type-id-6' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIiE5__minE' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='58' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__max' type-id='type-id-6' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIiE5__maxE' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='59' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__is_signed' type-id='type-id-7' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='63' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__digits' type-id='type-id-6' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='64' column='1'/>
-        </data-member>
-      </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;long unsigned int&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-8'>
-        <data-member access='public' static='yes'>
-          <var-decl name='__min' type-id='type-id-9' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='58' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__max' type-id='type-id-9' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='59' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__is_signed' type-id='type-id-7' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='63' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__digits' type-id='type-id-6' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerImE8__digitsE' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='64' column='1'/>
-        </data-member>
-      </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;char&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-10'>
-        <data-member access='public' static='yes'>
-          <var-decl name='__min' type-id='type-id-11' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='58' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__max' type-id='type-id-11' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIcE5__maxE' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='59' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__is_signed' type-id='type-id-7' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='63' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__digits' type-id='type-id-6' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='64' column='1'/>
-        </data-member>
-      </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;short int&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-12'>
-        <data-member access='public' static='yes'>
-          <var-decl name='__min' type-id='type-id-13' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIsE5__minE' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='58' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__max' type-id='type-id-13' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIsE5__maxE' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='59' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__is_signed' type-id='type-id-7' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='63' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__digits' type-id='type-id-6' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='64' column='1'/>
-        </data-member>
-      </class-decl>
-      <class-decl name='__numeric_traits_integer&lt;long int&gt;' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-14'>
-        <data-member access='public' static='yes'>
-          <var-decl name='__min' type-id='type-id-15' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIlE5__minE' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='58' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__max' type-id='type-id-15' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerIlE5__maxE' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='59' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__is_signed' type-id='type-id-7' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='63' column='1'/>
-        </data-member>
-        <data-member access='public' static='yes'>
-          <var-decl name='__digits' type-id='type-id-6' visibility='default' filepath='/usr/include/c++/4.8.2/ext/numeric_traits.h' line='64' column='1'/>
-        </data-member>
-      </class-decl>
-    </namespace-decl>
+
 
     <function-decl name='btowc' filepath='/usr/include/wchar.h' line='353' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-18'/>
       <return type-id='type-id-17'/>
     </function-decl>
-    <class-decl name='_IO_FILE' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-19'/>
     <function-decl name='fgetwc' filepath='/usr/include/wchar.h' line='745' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-21'/>
       <return type-id='type-id-17'/>
@@ -2211,8 +2142,8 @@
       <return type-id='type-id-56'/>
     </function-decl>
     <function-decl name='emit' mangled-name='_Z4emitRSsS_' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-second-tu.cc' line='13' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z4emitRSsS_'>
-      <parameter type-id='type-id-110' name='prefix' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-second-tu.cc' line='13' column='1'/>
-      <parameter type-id='type-id-110' name='s' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-second-tu.cc' line='13' column='1'/>
+      <parameter type-id='type-id-111' name='prefix' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-second-tu.cc' line='13' column='1'/>
+      <parameter type-id='type-id-111' name='s' filepath='/home/dodji/git/libabigail/PR20369/tests/data/test-read-dwarf/test23-second-tu.cc' line='13' column='1'/>
       <return type-id='type-id-40'/>
     </function-decl>
     <var-decl name='__dso_handle' type-id='type-id-39' visibility='default'/>
