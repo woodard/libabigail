@@ -1944,7 +1944,7 @@ public:
   virtual int
   get_dimension_count() const;
 
-   virtual bool
+  virtual bool
   is_infinite() const;
 
   virtual string

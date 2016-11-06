@@ -8279,7 +8279,8 @@ qualified_type_def::build_name(bool fully_qualified, bool internal) const
   if (!quals.empty())
     {
       if (is_pointer_type(get_underlying_type())
-	  || is_reference_type(get_underlying_type()))
+	  || is_reference_type(get_underlying_type())
+	  || is_array_type(get_underlying_type()))
 	{
 	  name += " ";
 	  name += quals;
@@ -9329,6 +9330,9 @@ array_type_def::subrange_type::as_string() const
 string
 array_type_def::subrange_type::vector_as_string(const vector<subrange_sptr>& v)
 {
+  if (v.empty())
+    return "[]";
+
   string r;
   for (vector<subrange_sptr>::const_iterator i = v.begin();
        i != v.end();
@@ -9540,10 +9544,14 @@ array_type_def::append_subranges(const std::vector<subrange_sptr>& subs)
     append_subrange(*i);
 }
 
-/// @return true iff one of the sub-ranges of the array is infinite.
+/// @return true if one of the sub-ranges of the array is infinite, or
+/// if the array has no sub-range at all, also meaning that the size
+/// of the array is infinite.
 bool
 array_type_def::is_infinite() const
 {
+  if (priv_->subranges_.empty())
+    return true;
 
   for (std::vector<shared_ptr<subrange_type> >::const_iterator i =
 	 priv_->subranges_.begin();

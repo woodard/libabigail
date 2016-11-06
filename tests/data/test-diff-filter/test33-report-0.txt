@@ -3,8 +3,8 @@ Variables changes summary: 0 Removed, 1 Changed, 0 Added variable
 
 1 Changed variable:
 
-  [C]'const const size_t[2][1][17][2] _elf_fmsize' was changed to 'const size_t _elf_fmsize[2][1][17][2]':
+  [C]'const size_t[2][1][17][2] const _elf_fmsize' was changed to 'const size_t _elf_fmsize[2][1][17][2]':
     type of variable changed:
-     entity changed from 'const const size_t[2][1][17][2]' to 'const size_t[2][1][17][2]'
+     entity changed from 'const size_t[2][1][17][2] const' to 'const size_t[2][1][17][2]'
 
 
