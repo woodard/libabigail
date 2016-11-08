@@ -10885,7 +10885,7 @@ equals(const function_type& lhs,
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
       else
-	RETURN(false);
+	RETURN(result);
     }
 
   class_decl* lhs_class = 0, *rhs_class = 0;
@@ -10903,7 +10903,7 @@ equals(const function_type& lhs,
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
       else
-	RETURN(false);
+	RETURN(result);
     }
   else if (lhs_class
 	   && (lhs_class->get_qualified_name()
@@ -10913,7 +10913,7 @@ equals(const function_type& lhs,
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
       else
-	RETURN(false);
+	RETURN(result);
     }
 
   // Then compare the return type; Beware if it's t's a class type
@@ -10945,7 +10945,7 @@ equals(const function_type& lhs,
 	  if (k)
 	    *k |= SUBTYPE_CHANGE_KIND;
 	  else
-	    RETURN(false);
+	    RETURN(result);
 	}
     }
   else
@@ -10955,7 +10955,7 @@ equals(const function_type& lhs,
 	if (k)
 	  *k |= SUBTYPE_CHANGE_KIND;
 	else
-	  RETURN(false);
+	  RETURN(result);
       }
 
   class_decl* lcl = 0, * rcl = 0;
@@ -10982,7 +10982,7 @@ equals(const function_type& lhs,
 	  if (k)
 	    *k |= SUBTYPE_CHANGE_KIND;
 	  else
-	    RETURN(false);
+	    RETURN(result);
 	}
     }
 
@@ -10993,7 +10993,7 @@ equals(const function_type& lhs,
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
       else
-	RETURN(false);
+	RETURN(result);
     }
 
   RETURN(result);
@@ -13707,7 +13707,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	if (k)
 	  *k |= LOCAL_CHANGE_KIND;
 	else
-	  RETURN(false);
+	  RETURN(result);
       }
 
     for (class_decl::base_specs::const_iterator
@@ -13737,7 +13737,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	if (k)
 	  *k |= LOCAL_CHANGE_KIND;
 	else
-	  RETURN(false);
+	  RETURN(result);
       }
 
     for (class_decl::data_members::const_iterator
@@ -13755,7 +13755,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	      break;
 	    }
 	  else
-	    RETURN(false);
+	    RETURN(result);
 	}
   }
 
@@ -13773,7 +13773,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	if (k)
 	  *k |= LOCAL_CHANGE_KIND;
 	else
-	  RETURN(false);
+	  RETURN(result);
       }
 
     for (class_decl::member_function_templates::const_iterator
@@ -13791,7 +13791,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	      break;
 	    }
 	  else
-	    RETURN(false);
+	    RETURN(result);
 	}
   }
 
@@ -13804,7 +13804,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	if (k)
 	  *k |= LOCAL_CHANGE_KIND;
 	else
-	  RETURN(false);
+	  RETURN(result);
       }
 
     for (class_decl::member_class_templates::const_iterator
@@ -13822,7 +13822,7 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	      break;
 	    }
 	  else
-	    RETURN(false);
+	    RETURN(result);
 	}
   }
 
