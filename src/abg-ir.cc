@@ -2048,7 +2048,6 @@ typedef unordered_map<interned_string,
 /// The private data of the @ref environment type.
 struct environment::priv
 {
-  bool				canonicalization_is_done_;
   canonical_types_map_type	canonical_types_;
   type_base_sptr		void_type_;
   type_base_sptr		variadic_marker_type_;
@@ -2056,9 +2055,12 @@ struct environment::priv
   interned_string_set_type	fn_types_being_compared_;
   vector<type_base_sptr>	extra_live_types_;
   interned_string_pool		string_pool_;
+  bool				canonicalization_is_done_;
+  bool				do_on_the_fly_canonicalization_;
 
   priv()
-    : canonicalization_is_done_()
+    : canonicalization_is_done_(),
+      do_on_the_fly_canonicalization_(true)
   {}
 };// end struct environment::priv
 
@@ -2132,6 +2134,23 @@ void
 environment::canonicalization_is_done(bool f)
 {priv_->canonicalization_is_done_ = f;}
 
+/// Getter for the "on-the-fly-canonicalization" flag.
+///
+/// @return true iff @ref OnTheFlyCanonicalization
+/// "on-the-fly-canonicalization" is to be performed during
+/// comparison.
+bool
+environment::do_on_the_fly_canonicalization() const
+{return priv_->do_on_the_fly_canonicalization_;}
+
+/// Setter for the "on-the-fly-canonicalization" flag.
+///
+/// @param f If this is true then @ref OnTheFlyCanonicalization
+/// "on-the-fly-canonicalization" is to be performed during
+/// comparison.
+void
+environment::do_on_the_fly_canonicalization(bool f)
+{priv_->do_on_the_fly_canonicalization_ = f;}
 
 /// Test if a given type is a void type as defined in the current
 /// environment.
@@ -6995,6 +7014,10 @@ struct type_base::priv
   {}
 }; // end struct type_base::priv
 
+static void
+maybe_propagate_canonical_type(const type_base& lhs_type,
+			       const type_base& rhs_type);
+
 /// Test if it is OK for a type to be compared against another type
 /// (of the same kind) from the same ABI corpus, just by looking at
 /// its name and size.
@@ -7188,11 +7211,13 @@ type_base::get_canonical_type_for(type_base_sptr t)
 		    }
 		}
 	    }
+	  env->do_on_the_fly_canonicalization(true);
 	  if (*it == t)
 	    {
 	      result = *it;
 	      break;
 	    }
+	  env->do_on_the_fly_canonicalization(false);
 	}
       if (!result)
 	{
@@ -10919,6 +10944,8 @@ equals(const function_type& lhs,
   do {						\
     lhs.priv_->unmark_as_being_compared(lhs);	\
     lhs.priv_->unmark_as_being_compared(rhs);	\
+    if (value == true)				\
+      maybe_propagate_canonical_type(lhs, rhs); \
     return value;				\
   } while(0)
 
@@ -13510,6 +13537,87 @@ copy_member_function(const class_or_union_sptr& t, const method_decl* method)
 
 // </class_or_union definitions>
 
+/// Test if two @ref class_decl or @ref function_type are already
+/// being compared.
+///
+/// @param lhs_type the first type that would be involved in a
+/// potential comparison.
+///
+/// @param rhs_type the second type that would involved in a potential
+/// comparison.
+///
+/// @return true iff @p lhs_type and @p rhs_type are being compared.
+static bool
+types_are_being_compared(const type_base& lhs_type,
+			 const type_base& rhs_type)
+{
+  type_base *l = &const_cast<type_base&>(lhs_type);
+  type_base *r = &const_cast<type_base&>(rhs_type);
+
+  if (class_or_union *l_cou = is_class_or_union_type(l))
+    if (class_or_union *r_cou = is_class_or_union_type(r))
+      return (l_cou->priv_->comparison_started(*l_cou)
+	      || l_cou->priv_->comparison_started(*r_cou));
+
+  if (function_type *l_fn_type = is_function_type(l))
+    if (function_type *r_fn_type = is_function_type(r))
+      return (l_fn_type->priv_->comparison_started(*l_fn_type)
+	      || l_fn_type->priv_->comparison_started(*r_fn_type));
+
+  return false;
+}
+
+/// @defgroup OnTheFlyCanonicalization On-the-fly Canonicalization
+/// @{
+///
+/// During the canonicalization of a type T (which doesn't yet have a
+/// canonical type), T is compared structurally (member-wise) against
+/// a type C which already has a canonical type.  The comparison
+/// expression is C == T.
+///
+/// During that structural comparison, if a subtype of C (which also
+/// already has a canonical type) is structurally compared to a
+/// subtype of T (which doesn't yet have a canonical type) and if they
+/// are equal, then we can deduce that the canonical type of the
+/// subtype of C is the canonical type of the subtype of C.
+///
+/// Thus, we can canonicalize the sub-type of the T, during the
+/// canonicalization of T itself.  That canonicalization of the
+/// sub-type of T is what we call the "on-the-fly canonicalization".
+/// It's on the fly because it happens during a comparison -- which
+/// itself happens during the canonicalization of T.
+///
+/// For now this on-the-fly canonicalization only happens when
+/// comparing @ref class_decl and @ref function_type.
+///
+/// @}
+
+
+/// If on-the-fly canonicalization is turned on, then this function
+/// sets the canonical type of its second parameter to the canonical
+/// type of the first parameter.
+///
+/// @param lhs_type the type which canonical type to propagate.
+///
+/// @param rhs_type the type which canonical type to set.
+static void
+maybe_propagate_canonical_type(const type_base& lhs_type,
+			       const type_base& rhs_type)
+{
+
+  if (const environment *env = lhs_type.get_environment())
+    if (env->do_on_the_fly_canonicalization())
+      if (type_base_sptr canonical_type = lhs_type.get_canonical_type())
+	if (!rhs_type.get_canonical_type()
+	    && !types_are_being_compared(lhs_type, rhs_type))
+	  {
+	    const_cast<type_base&>(rhs_type).priv_->canonical_type =
+	      canonical_type;
+	    const_cast<type_base&>(rhs_type).priv_->naked_canonical_type =
+	      canonical_type.get();
+	  }
+}
+
 // <class_decl definitions>
 
 static void
@@ -14372,6 +14480,8 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
   do {								\
     l.class_or_union::priv_->unmark_as_being_compared(l);	\
     l.class_or_union::priv_->unmark_as_being_compared(r);	\
+    if (value == true)						\
+      maybe_propagate_canonical_type(l, r);			\
     return value;						\
   } while(0)
 
@@ -15230,6 +15340,8 @@ equals(const union_decl& l, const union_decl& r, change_kind* k)
   bool result = equals(static_cast<const class_or_union&>(l),
 		       static_cast<const class_or_union&>(r),
 		       k);
+  if (result == true)
+    maybe_propagate_canonical_type(l, r);
   return result;
 }
 

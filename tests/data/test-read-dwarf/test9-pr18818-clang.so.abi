@@ -1621,12 +1621,12 @@
       <parameter type-id='type-id-57'/>
       <return type-id='type-id-55'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
-    <typedef-decl name='div_t' type-id='type-id-61' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-62'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-61' visibility='default' is-declaration-only='yes' id='type-id-62'/>
+    <typedef-decl name='div_t' type-id='type-id-62' filepath='/usr/include/stdlib.h' line='101' column='1' id='type-id-61'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-5'/>
-      <return type-id='type-id-62'/>
+      <return type-id='type-id-61'/>
     </function-decl>
     <function-decl name='exit' filepath='/usr/include/stdlib.h' line='543' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
@@ -1645,7 +1645,7 @@
       <parameter type-id='type-id-54'/>
       <return type-id='type-id-54'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-63'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-63' visibility='default' filepath='/usr/include/stdlib.h' line='105' column='1' id='type-id-64'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='quot' type-id='type-id-54' visibility='default' filepath='/usr/include/stdlib.h' line='107' column='1'/>
       </data-member>
@@ -1653,11 +1653,11 @@
         <var-decl name='rem' type-id='type-id-54' visibility='default' filepath='/usr/include/stdlib.h' line='108' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='ldiv_t' type-id='type-id-63' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-64'/>
+    <typedef-decl name='ldiv_t' type-id='type-id-64' filepath='/usr/include/stdlib.h' line='109' column='1' id='type-id-63'/>
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-54'/>
       <parameter type-id='type-id-54'/>
-      <return type-id='type-id-64'/>
+      <return type-id='type-id-63'/>
     </function-decl>
     <function-decl name='malloc' filepath='/usr/include/stdlib.h' line='466' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-57'/>
@@ -1753,7 +1753,7 @@
         <return type-id='type-id-77'/>
       </function-decl>
     </namespace-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/stdlib.h' line='117' column='1' id='type-id-78'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-77' visibility='default' filepath='/usr/include/stdlib.h' line='117' column='1' id='type-id-78'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='quot' type-id='type-id-76' visibility='default' filepath='/usr/include/stdlib.h' line='119' column='1'/>
       </data-member>
@@ -1858,14 +1858,14 @@
     <function-decl name='getwchar' filepath='/usr/include/wchar.h' line='752' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-82'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='82' column='1' id='type-id-87'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-87' visibility='default' filepath='/usr/include/wchar.h' line='82' column='1' id='type-id-88'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1' id='type-id-88'>
+        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='85' column='1' id='type-id-89'>
           <data-member access='private'>
             <var-decl name='__wch' type-id='type-id-69' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
           <data-member access='private'>
-            <var-decl name='__wchb' type-id='type-id-89' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
+            <var-decl name='__wchb' type-id='type-id-90' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
@@ -1873,14 +1873,14 @@
         <var-decl name='__count' type-id='type-id-5' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='__value' type-id='type-id-88' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
+        <var-decl name='__value' type-id='type-id-89' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
       </data-member>
     </class-decl>
-    <array-type-def dimensions='1' type-id='type-id-27' size-in-bits='32' id='type-id-89'>
+    <array-type-def dimensions='1' type-id='type-id-27' size-in-bits='32' id='type-id-90'>
       <subrange length='4'/>
     </array-type-def>
-    <typedef-decl name='__mbstate_t' type-id='type-id-87' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-90'/>
-    <typedef-decl name='mbstate_t' type-id='type-id-90' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-91'/>
+    <typedef-decl name='__mbstate_t' type-id='type-id-88' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-87'/>
+    <typedef-decl name='mbstate_t' type-id='type-id-87' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-91'/>
     <pointer-type-def type-id='type-id-91' size-in-bits='64' id='type-id-92'/>
     <qualified-type-def type-id='type-id-92' restrict='yes' id='type-id-93'/>
     <function-decl name='mbrlen' filepath='/usr/include/wchar.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -2312,8 +2312,8 @@
       <return type-id='type-id-5'/>
     </function-decl>
     <qualified-type-def type-id='type-id-112' restrict='yes' id='type-id-113'/>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
-    <typedef-decl name='_G_fpos_t' type-id='type-id-61' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-114'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-114' visibility='default' is-declaration-only='yes' id='type-id-62'/>
+    <typedef-decl name='_G_fpos_t' type-id='type-id-62' filepath='/usr/include/_G_config.h' line='25' column='1' id='type-id-114'/>
     <typedef-decl name='fpos_t' type-id='type-id-114' filepath='/usr/include/stdio.h' line='110' column='1' id='type-id-115'/>
     <pointer-type-def type-id='type-id-115' size-in-bits='64' id='type-id-116'/>
     <qualified-type-def type-id='type-id-116' restrict='yes' id='type-id-117'/>
@@ -2660,7 +2660,7 @@
     <reference-type-def kind='lvalue' type-id='type-id-135' size-in-bits='64' id='type-id-41'/>
     <pointer-type-def type-id='type-id-136' size-in-bits='64' id='type-id-38'/>
     <qualified-type-def type-id='type-id-31' const='yes' id='type-id-35'/>
-    <array-type-def dimensions='0' type-id='type-id-31' id='type-id-36'/>
+    <array-type-def dimensions='0' type-id='type-id-31' size-in-bits='infinite' id='type-id-36'/>
     <reference-type-def kind='lvalue' type-id='type-id-30' size-in-bits='64' id='type-id-44'/>
     <pointer-type-def type-id='type-id-30' size-in-bits='64' id='type-id-43'/>
     <reference-type-def kind='lvalue' type-id='type-id-33' size-in-bits='64' id='type-id-37'/>
@@ -7786,10 +7786,10 @@
     <reference-type-def kind='lvalue' type-id='type-id-379' size-in-bits='64' id='type-id-356'/>
     <pointer-type-def type-id='type-id-379' size-in-bits='64' id='type-id-351'/>
     <qualified-type-def type-id='type-id-351' const='yes' id='type-id-380'/>
-    <array-type-def dimensions='0' type-id='type-id-380' id='type-id-345'/>
+    <array-type-def dimensions='0' type-id='type-id-380' size-in-bits='infinite' id='type-id-345'/>
     <pointer-type-def type-id='type-id-380' size-in-bits='64' id='type-id-350'/>
     <qualified-type-def type-id='type-id-350' const='yes' id='type-id-381'/>
-    <array-type-def dimensions='0' type-id='type-id-381' id='type-id-346'/>
+    <array-type-def dimensions='0' type-id='type-id-381' size-in-bits='infinite' id='type-id-346'/>
     <pointer-type-def type-id='type-id-343' size-in-bits='64' id='type-id-347'/>
     <qualified-type-def type-id='type-id-343' const='yes' id='type-id-382'/>
     <reference-type-def kind='lvalue' type-id='type-id-382' size-in-bits='64' id='type-id-348'/>
@@ -7895,11 +7895,11 @@
       <parameter type-id='type-id-57'/>
       <return type-id='type-id-55'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-61' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-5'/>
-      <return type-id='type-id-62'/>
+      <return type-id='type-id-61'/>
     </function-decl>
     <function-decl name='exit' filepath='/usr/include/stdlib.h' line='543' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
@@ -7920,7 +7920,7 @@
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-54'/>
       <parameter type-id='type-id-54'/>
-      <return type-id='type-id-64'/>
+      <return type-id='type-id-63'/>
     </function-decl>
     <function-decl name='malloc' filepath='/usr/include/stdlib.h' line='466' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-57'/>
@@ -8447,8 +8447,8 @@
       <parameter type-id='type-id-112'/>
       <return type-id='type-id-5'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
-    <typedef-decl name='_G_fpos64_t' type-id='type-id-61' filepath='/usr/include/_G_config.h' line='30' column='1' id='type-id-394'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-394' visibility='default' is-declaration-only='yes' id='type-id-62'/>
+    <typedef-decl name='_G_fpos64_t' type-id='type-id-62' filepath='/usr/include/_G_config.h' line='30' column='1' id='type-id-394'/>
     <typedef-decl name='fpos_t' type-id='type-id-394' filepath='/usr/include/stdio.h' line='112' column='1' id='type-id-395'/>
     <function-decl name='fgetpos' mangled-name='fgetpos64' filepath='/usr/include/stdio.h' line='806' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-113'/>
@@ -10228,11 +10228,11 @@
       <parameter type-id='type-id-57'/>
       <return type-id='type-id-55'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-61' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-5'/>
-      <return type-id='type-id-62'/>
+      <return type-id='type-id-61'/>
     </function-decl>
     <function-decl name='exit' filepath='/usr/include/stdlib.h' line='543' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
@@ -10253,7 +10253,7 @@
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-54'/>
       <parameter type-id='type-id-54'/>
-      <return type-id='type-id-64'/>
+      <return type-id='type-id-63'/>
     </function-decl>
     <function-decl name='malloc' filepath='/usr/include/stdlib.h' line='466' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-57'/>
@@ -10780,7 +10780,7 @@
       <parameter type-id='type-id-112'/>
       <return type-id='type-id-5'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-114' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-113'/>
       <parameter type-id='type-id-117'/>
@@ -11807,7 +11807,7 @@
           <typedef-decl name='result' type-id='type-id-448' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/codecvt.h' line='73' column='1' id='type-id-447'/>
         </member-type>
         <member-type access='private'>
-          <typedef-decl name='state_type' type-id='type-id-87' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/codecvt.h' line='76' column='1' id='type-id-449'/>
+          <typedef-decl name='state_type' type-id='type-id-88' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/codecvt.h' line='76' column='1' id='type-id-449'/>
         </member-type>
         <member-type access='private'>
           <typedef-decl name='intern_type' type-id='type-id-65' filepath='/usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/codecvt.h' line='74' column='1' id='type-id-450'/>
@@ -12020,11 +12020,11 @@
       <parameter type-id='type-id-57'/>
       <return type-id='type-id-55'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-61' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-5'/>
-      <return type-id='type-id-62'/>
+      <return type-id='type-id-61'/>
     </function-decl>
     <function-decl name='exit' filepath='/usr/include/stdlib.h' line='543' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
@@ -12045,7 +12045,7 @@
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-54'/>
       <parameter type-id='type-id-54'/>
-      <return type-id='type-id-64'/>
+      <return type-id='type-id-63'/>
     </function-decl>
     <function-decl name='malloc' filepath='/usr/include/stdlib.h' line='466' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-57'/>
@@ -12579,7 +12579,7 @@
       <parameter type-id='type-id-112'/>
       <return type-id='type-id-5'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-114' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-113'/>
       <parameter type-id='type-id-117'/>
@@ -13133,11 +13133,11 @@
       <parameter type-id='type-id-57'/>
       <return type-id='type-id-55'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-61' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-5'/>
-      <return type-id='type-id-62'/>
+      <return type-id='type-id-61'/>
     </function-decl>
     <function-decl name='exit' filepath='/usr/include/stdlib.h' line='543' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
@@ -13158,7 +13158,7 @@
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-54'/>
       <parameter type-id='type-id-54'/>
-      <return type-id='type-id-64'/>
+      <return type-id='type-id-63'/>
     </function-decl>
     <function-decl name='malloc' filepath='/usr/include/stdlib.h' line='466' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-57'/>
@@ -13685,7 +13685,7 @@
       <parameter type-id='type-id-112'/>
       <return type-id='type-id-5'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-114' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-113'/>
       <parameter type-id='type-id-117'/>
@@ -14881,11 +14881,11 @@
       <parameter type-id='type-id-57'/>
       <return type-id='type-id-55'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-61' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-5'/>
-      <return type-id='type-id-62'/>
+      <return type-id='type-id-61'/>
     </function-decl>
     <function-decl name='exit' filepath='/usr/include/stdlib.h' line='543' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
@@ -14906,7 +14906,7 @@
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-54'/>
       <parameter type-id='type-id-54'/>
-      <return type-id='type-id-64'/>
+      <return type-id='type-id-63'/>
     </function-decl>
     <function-decl name='malloc' filepath='/usr/include/stdlib.h' line='466' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-57'/>
@@ -15433,7 +15433,7 @@
       <parameter type-id='type-id-112'/>
       <return type-id='type-id-5'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-114' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-113'/>
       <parameter type-id='type-id-117'/>
@@ -16735,11 +16735,11 @@
       <parameter type-id='type-id-57'/>
       <return type-id='type-id-55'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-61' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-5'/>
-      <return type-id='type-id-62'/>
+      <return type-id='type-id-61'/>
     </function-decl>
     <function-decl name='exit' filepath='/usr/include/stdlib.h' line='543' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
@@ -16760,7 +16760,7 @@
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-54'/>
       <parameter type-id='type-id-54'/>
-      <return type-id='type-id-64'/>
+      <return type-id='type-id-63'/>
     </function-decl>
     <function-decl name='malloc' filepath='/usr/include/stdlib.h' line='466' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-57'/>
@@ -17294,7 +17294,7 @@
       <parameter type-id='type-id-112'/>
       <return type-id='type-id-5'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-114' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='fgetpos' filepath='/usr/include/stdio.h' line='798' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-113'/>
       <parameter type-id='type-id-117'/>
@@ -17663,11 +17663,11 @@
       <parameter type-id='type-id-57'/>
       <return type-id='type-id-55'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-61' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='div' filepath='/usr/include/stdlib.h' line='788' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
       <parameter type-id='type-id-5'/>
-      <return type-id='type-id-62'/>
+      <return type-id='type-id-61'/>
     </function-decl>
     <function-decl name='exit' filepath='/usr/include/stdlib.h' line='543' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-5'/>
@@ -17688,7 +17688,7 @@
     <function-decl name='ldiv' filepath='/usr/include/stdlib.h' line='790' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-54'/>
       <parameter type-id='type-id-54'/>
-      <return type-id='type-id-64'/>
+      <return type-id='type-id-63'/>
     </function-decl>
     <function-decl name='malloc' filepath='/usr/include/stdlib.h' line='466' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-57'/>
@@ -17860,7 +17860,7 @@
     <function-decl name='getwchar' filepath='/usr/include/wchar.h' line='752' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-82'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-61'/>
+    <class-decl name='__anonymous_struct__' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-87' visibility='default' is-declaration-only='yes' id='type-id-62'/>
     <function-decl name='mbrlen' filepath='/usr/include/wchar.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-68'/>
       <parameter type-id='type-id-57'/>

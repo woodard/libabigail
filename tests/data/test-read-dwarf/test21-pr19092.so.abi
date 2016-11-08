@@ -995,7 +995,7 @@
         <var-decl name='translate_identifiers' type-id='type-id-54' visibility='default' filepath='../.././gcc/pretty-print.h' line='198' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='2688' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././gcc/pretty-print.h' line='76' column='1' id='type-id-71'>
+    <class-decl name='__anonymous_struct__' size-in-bits='2688' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-71' visibility='default' filepath='../.././gcc/pretty-print.h' line='76' column='1' id='type-id-72'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='formatted_obstack' type-id='type-id-46' visibility='default' filepath='../.././gcc/pretty-print.h' line='78' column='1'/>
       </data-member>
@@ -1003,10 +1003,10 @@
         <var-decl name='chunk_obstack' type-id='type-id-46' visibility='default' filepath='../.././gcc/pretty-print.h' line='82' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1408'>
-        <var-decl name='obstack' type-id='type-id-72' visibility='default' filepath='../.././gcc/pretty-print.h' line='86' column='1'/>
+        <var-decl name='obstack' type-id='type-id-73' visibility='default' filepath='../.././gcc/pretty-print.h' line='86' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1472'>
-        <var-decl name='cur_chunk_array' type-id='type-id-73' visibility='default' filepath='../.././gcc/pretty-print.h' line='89' column='1'/>
+        <var-decl name='cur_chunk_array' type-id='type-id-74' visibility='default' filepath='../.././gcc/pretty-print.h' line='89' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1536'>
         <var-decl name='stream' type-id='type-id-36' visibility='default' filepath='../.././gcc/pretty-print.h' line='92' column='1'/>
@@ -1015,27 +1015,27 @@
         <var-decl name='line_length' type-id='type-id-3' visibility='default' filepath='../.././gcc/pretty-print.h' line='95' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1632'>
-        <var-decl name='digit_buffer' type-id='type-id-74' visibility='default' filepath='../.././gcc/pretty-print.h' line='99' column='1'/>
+        <var-decl name='digit_buffer' type-id='type-id-75' visibility='default' filepath='../.././gcc/pretty-print.h' line='99' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-46' size-in-bits='64' id='type-id-72'/>
-    <class-decl name='chunk_info' size-in-bits='3904' is-struct='yes' visibility='default' filepath='../.././gcc/pretty-print.h' line='59' column='1' id='type-id-75'>
+    <pointer-type-def type-id='type-id-46' size-in-bits='64' id='type-id-73'/>
+    <class-decl name='chunk_info' size-in-bits='3904' is-struct='yes' visibility='default' filepath='../.././gcc/pretty-print.h' line='59' column='1' id='type-id-76'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='prev' type-id='type-id-73' visibility='default' filepath='../.././gcc/pretty-print.h' line='62' column='1'/>
+        <var-decl name='prev' type-id='type-id-74' visibility='default' filepath='../.././gcc/pretty-print.h' line='62' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='args' type-id='type-id-76' visibility='default' filepath='../.././gcc/pretty-print.h' line='70' column='1'/>
+        <var-decl name='args' type-id='type-id-77' visibility='default' filepath='../.././gcc/pretty-print.h' line='70' column='1'/>
       </data-member>
     </class-decl>
-    <pointer-type-def type-id='type-id-75' size-in-bits='64' id='type-id-73'/>
-    <array-type-def dimensions='1' type-id='type-id-8' size-in-bits='3840' id='type-id-76'>
+    <pointer-type-def type-id='type-id-76' size-in-bits='64' id='type-id-74'/>
+    <array-type-def dimensions='1' type-id='type-id-8' size-in-bits='3840' id='type-id-77'>
       <subrange length='60'/>
     </array-type-def>
-    <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='1024' id='type-id-74'>
+    <array-type-def dimensions='1' type-id='type-id-6' size-in-bits='1024' id='type-id-75'>
       <subrange length='128'/>
     </array-type-def>
-    <typedef-decl name='output_buffer' type-id='type-id-71' filepath='../.././gcc/pretty-print.h' line='100' column='1' id='type-id-77'/>
-    <pointer-type-def type-id='type-id-77' size-in-bits='64' id='type-id-67'/>
+    <typedef-decl name='output_buffer' type-id='type-id-72' filepath='../.././gcc/pretty-print.h' line='100' column='1' id='type-id-71'/>
+    <pointer-type-def type-id='type-id-71' size-in-bits='64' id='type-id-67'/>
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-78'/>
     <enum-decl name='__anonymous_enum__' is-anonymous='yes' linkage-name='10pp_padding' id='type-id-79'>
       <underlying-type type-id='type-id-78'/>
@@ -1044,7 +1044,7 @@
       <enumerator name='pp_after' value='2'/>
     </enum-decl>
     <typedef-decl name='pp_padding' type-id='type-id-79' filepath='../.././gcc/pretty-print.h' line='108' column='1' id='type-id-68'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././gcc/pretty-print.h' line='113' column='1' id='type-id-80'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-69' visibility='default' filepath='../.././gcc/pretty-print.h' line='113' column='1' id='type-id-80'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='rule' type-id='type-id-81' visibility='default' filepath='../.././gcc/pretty-print.h' line='115' column='1'/>
       </data-member>
@@ -1062,24 +1062,24 @@
     <typedef-decl name='pp_wrapping_mode_t' type-id='type-id-80' filepath='../.././gcc/pretty-print.h' line='120' column='1' id='type-id-69'/>
     <typedef-decl name='pretty_printer' type-id='type-id-66' filepath='../.././gcc/pretty-print.h' line='135' column='1' id='type-id-83'/>
     <pointer-type-def type-id='type-id-83' size-in-bits='64' id='type-id-56'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='320' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././gcc/pretty-print.h' line='34' column='1' id='type-id-84'>
+    <class-decl name='__anonymous_struct__' size-in-bits='320' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-84' visibility='default' filepath='../.././gcc/pretty-print.h' line='34' column='1' id='type-id-85'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='format_spec' type-id='type-id-8' visibility='default' filepath='../.././gcc/pretty-print.h' line='35' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='args_ptr' type-id='type-id-85' visibility='default' filepath='../.././gcc/pretty-print.h' line='36' column='1'/>
+        <var-decl name='args_ptr' type-id='type-id-86' visibility='default' filepath='../.././gcc/pretty-print.h' line='36' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <var-decl name='err_no' type-id='type-id-3' visibility='default' filepath='../.././gcc/pretty-print.h' line='37' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='locus' type-id='type-id-86' visibility='default' filepath='../.././gcc/pretty-print.h' line='38' column='1'/>
+        <var-decl name='locus' type-id='type-id-87' visibility='default' filepath='../.././gcc/pretty-print.h' line='38' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='x_data' type-id='type-id-87' visibility='default' filepath='../.././gcc/pretty-print.h' line='39' column='1'/>
+        <var-decl name='x_data' type-id='type-id-88' visibility='default' filepath='../.././gcc/pretty-print.h' line='39' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-88'>
+    <class-decl name='typedef __va_list_tag __va_list_tag' size-in-bits='192' is-struct='yes' visibility='default' id='type-id-89'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='gp_offset' type-id='type-id-22' visibility='default'/>
       </data-member>
@@ -1093,18 +1093,18 @@
         <var-decl name='reg_save_area' type-id='type-id-2' visibility='default'/>
       </data-member>
     </class-decl>
-    <array-type-def dimensions='1' type-id='type-id-88' size-in-bits='192' id='type-id-89'>
+    <array-type-def dimensions='1' type-id='type-id-89' size-in-bits='192' id='type-id-90'>
       <subrange length='1'/>
     </array-type-def>
-    <typedef-decl name='__gnuc_va_list' type-id='type-id-89' filepath='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/prev-gcc/include/stdarg.h' line='40' column='1' id='type-id-90'/>
-    <typedef-decl name='va_list' type-id='type-id-90' filepath='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/prev-gcc/include/stdarg.h' line='102' column='1' id='type-id-91'/>
-    <pointer-type-def type-id='type-id-91' size-in-bits='64' id='type-id-85'/>
-    <typedef-decl name='source_location' type-id='type-id-22' filepath='../.././gcc/../libcpp/include/line-map.h' line='51' column='1' id='type-id-92'/>
-    <typedef-decl name='location_t' type-id='type-id-92' filepath='../.././gcc/input.h' line='44' column='1' id='type-id-93'/>
-    <pointer-type-def type-id='type-id-93' size-in-bits='64' id='type-id-86'/>
-    <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-87'/>
-    <typedef-decl name='text_info' type-id='type-id-84' filepath='../.././gcc/pretty-print.h' line='40' column='1' id='type-id-94'/>
-    <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-95'/>
+    <typedef-decl name='__gnuc_va_list' type-id='type-id-90' filepath='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/prev-gcc/include/stdarg.h' line='40' column='1' id='type-id-91'/>
+    <typedef-decl name='va_list' type-id='type-id-91' filepath='/tmp/legendre/spack-stage/spack-stage-wfh0ig/gcc-4.7.4/host-x86_64-unknown-linux-gnu/prev-gcc/include/stdarg.h' line='102' column='1' id='type-id-92'/>
+    <pointer-type-def type-id='type-id-92' size-in-bits='64' id='type-id-86'/>
+    <typedef-decl name='source_location' type-id='type-id-22' filepath='../.././gcc/../libcpp/include/line-map.h' line='51' column='1' id='type-id-93'/>
+    <typedef-decl name='location_t' type-id='type-id-93' filepath='../.././gcc/input.h' line='44' column='1' id='type-id-94'/>
+    <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-87'/>
+    <pointer-type-def type-id='type-id-2' size-in-bits='64' id='type-id-88'/>
+    <typedef-decl name='text_info' type-id='type-id-85' filepath='../.././gcc/pretty-print.h' line='40' column='1' id='type-id-84'/>
+    <pointer-type-def type-id='type-id-84' size-in-bits='64' id='type-id-95'/>
     <pointer-type-def type-id='type-id-96' size-in-bits='64' id='type-id-97'/>
     <typedef-decl name='printer_fn' type-id='type-id-97' filepath='../.././gcc/pretty-print.h' line='136' column='1' id='type-id-70'/>
     <array-type-def dimensions='1' type-id='type-id-3' size-in-bits='384' id='type-id-57'>
@@ -1131,7 +1131,7 @@
     <pointer-type-def type-id='type-id-99' size-in-bits='64' id='type-id-58'/>
     <class-decl name='diagnostic_classification_change_t' size-in-bits='96' is-struct='yes' visibility='default' filepath='../.././gcc/diagnostic.h' line='47' column='1' id='type-id-100'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='location' type-id='type-id-93' visibility='default' filepath='../.././gcc/diagnostic.h' line='49' column='1'/>
+        <var-decl name='location' type-id='type-id-94' visibility='default' filepath='../.././gcc/diagnostic.h' line='49' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
         <var-decl name='option' type-id='type-id-3' visibility='default' filepath='../.././gcc/diagnostic.h' line='50' column='1'/>
@@ -1147,10 +1147,10 @@
     <pointer-type-def type-id='type-id-102' size-in-bits='64' id='type-id-103'/>
     <class-decl name='diagnostic_info' size-in-bits='512' is-struct='yes' visibility='default' filepath='../.././gcc/diagnostic.h' line='31' column='1' id='type-id-104'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='message' type-id='type-id-94' visibility='default' filepath='../.././gcc/diagnostic.h' line='33' column='1'/>
+        <var-decl name='message' type-id='type-id-84' visibility='default' filepath='../.././gcc/diagnostic.h' line='33' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='location' type-id='type-id-93' visibility='default' filepath='../.././gcc/diagnostic.h' line='34' column='1'/>
+        <var-decl name='location' type-id='type-id-94' visibility='default' filepath='../.././gcc/diagnostic.h' line='34' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='352'>
         <var-decl name='override_column' type-id='type-id-22' visibility='default' filepath='../.././gcc/diagnostic.h' line='35' column='1'/>
@@ -1185,7 +1185,7 @@
         </union-decl>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='start_location' type-id='type-id-92' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='205' column='1'/>
+        <var-decl name='start_location' type-id='type-id-93' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='205' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='reason' type-id='type-id-116' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='208' column='1'/>
@@ -1224,7 +1224,7 @@
         <var-decl name='macro_locations' type-id='type-id-120' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='168' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='expansion' type-id='type-id-92' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='175' column='1'/>
+        <var-decl name='expansion' type-id='type-id-93' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='175' column='1'/>
       </data-member>
     </class-decl>
     <class-decl name='cpp_hashnode' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='676' column='1' id='type-id-121'>
@@ -1251,7 +1251,7 @@
       </data-member>
     </class-decl>
     <pointer-type-def type-id='type-id-121' size-in-bits='64' id='type-id-119'/>
-    <pointer-type-def type-id='type-id-92' size-in-bits='64' id='type-id-120'/>
+    <pointer-type-def type-id='type-id-93' size-in-bits='64' id='type-id-120'/>
     <enum-decl name='lc_reason' id='type-id-116'>
       <underlying-type type-id='type-id-78'/>
       <enumerator name='LC_ENTER' value='0'/>
@@ -1263,7 +1263,7 @@
     <qualified-type-def type-id='type-id-112' const='yes' id='type-id-125'/>
     <pointer-type-def type-id='type-id-125' size-in-bits='64' id='type-id-65'/>
     <var-decl name='global_dc' type-id='type-id-103' visibility='default' filepath='../.././gcc/diagnostic.h' line='224' column='1'/>
-    <array-type-def dimensions='0' type-id='type-id-6' id='type-id-126'/>
+    <array-type-def dimensions='0' type-id='type-id-6' size-in-bits='infinite' id='type-id-126'/>
     <var-decl name='version_string' type-id='type-id-126' visibility='default' filepath='../.././gcc/version.h' line='3' column='1'/>
     <var-decl name='bug_report_url' type-id='type-id-126' visibility='default' filepath='../.././gcc/version.h' line='5' column='1'/>
     <var-decl name='do_collecting' type-id='type-id-3' mangled-name='do_collecting' visibility='default' filepath='../.././gcc/collect2.c' line='147' column='1' elf-symbol-id='do_collecting'/>
@@ -1276,7 +1276,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='_obstack_newchunk' filepath='../.././gcc/../include/obstack.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -1360,7 +1360,7 @@
       <parameter type-id='type-id-8'/>
       <return type-id='type-id-9'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-88' size-in-bits='64' id='type-id-127'/>
+    <pointer-type-def type-id='type-id-89' size-in-bits='64' id='type-id-127'/>
     <function-decl name='vfprintf' filepath='/usr/include/stdio.h' line='370' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-36'/>
       <parameter type-id='type-id-8'/>
@@ -1402,7 +1402,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='obstack_free' filepath='../.././gcc/../include/obstack.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -1543,7 +1543,7 @@
     <pointer-type-def type-id='type-id-136' size-in-bits='64' id='type-id-137'/>
     <pointer-type-def type-id='type-id-138' size-in-bits='64' id='type-id-139'/>
     <function-decl name='_obstack_begin' filepath='../.././gcc/../include/obstack.h' line='193' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-137'/>
@@ -1697,7 +1697,7 @@
         <var-decl name='exp' type-id='type-id-166' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='51' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
-        <var-decl name='line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='54' column='1'/>
+        <var-decl name='line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='54' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='160'>
         <var-decl name='count' type-id='type-id-22' visibility='default' filepath='../.././libcpp/include/cpp-id-data.h' line='57' column='1'/>
@@ -1753,7 +1753,7 @@
         </union-decl>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='src_loc' type-id='type-id-92' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='224' column='1'/>
+        <var-decl name='src_loc' type-id='type-id-93' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='224' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='24'>
         <var-decl name='type' type-id='type-id-176' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='225' column='1'/>
@@ -1901,7 +1901,7 @@
     <function-type size-in-bits='64' id='type-id-109'>
       <parameter type-id='type-id-103'/>
       <parameter type-id='type-id-8'/>
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <return type-id='type-id-1'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-110'>
@@ -2121,7 +2121,7 @@
       <return type-id='type-id-188'/>
     </function-decl>
     <function-decl name='_obstack_newchunk' filepath='../.././gcc/../include/obstack.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -2153,7 +2153,7 @@
         <var-decl name='del_f' type-id='type-id-192' visibility='default' filepath='../.././gcc/../include/hashtab.h' line='108' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='entries' type-id='type-id-87' visibility='default' filepath='../.././gcc/../include/hashtab.h' line='111' column='1'/>
+        <var-decl name='entries' type-id='type-id-88' visibility='default' filepath='../.././gcc/../include/hashtab.h' line='111' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
         <var-decl name='size' type-id='type-id-5' visibility='default' filepath='../.././gcc/../include/hashtab.h' line='114' column='1'/>
@@ -2213,7 +2213,7 @@
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-188'/>
       <parameter type-id='type-id-209'/>
-      <return type-id='type-id-87'/>
+      <return type-id='type-id-88'/>
     </function-decl>
     <function-decl name='collect_execute' mangled-name='_Z15collect_executePKcPPcS0_S0_i' filepath='../.././gcc/collect2.h' line='26' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-8'/>
@@ -2248,7 +2248,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='obstack_free' filepath='../.././gcc/../include/obstack.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -2281,7 +2281,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='_obstack_begin' filepath='../.././gcc/../include/obstack.h' line='193' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-137'/>
@@ -3387,39 +3387,39 @@
     <function-decl name='diagnostic_set_info_translated' mangled-name='_Z30diagnostic_set_info_translatedP15diagnostic_infoPKcPA1_13__va_list_tagj12diagnostic_t' filepath='../.././gcc/diagnostic.c' line='150' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z30diagnostic_set_info_translatedP15diagnostic_infoPKcPA1_13__va_list_tagj12diagnostic_t'>
       <parameter type-id='type-id-106' name='diagnostic' filepath='../.././gcc/diagnostic.c' line='150' column='1'/>
       <parameter type-id='type-id-8' name='msg' filepath='../.././gcc/diagnostic.c' line='150' column='1'/>
-      <parameter type-id='type-id-85' name='args' filepath='../.././gcc/diagnostic.c' line='151' column='1'/>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='151' column='1'/>
+      <parameter type-id='type-id-86' name='args' filepath='../.././gcc/diagnostic.c' line='151' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='151' column='1'/>
       <parameter type-id='type-id-99' name='kind' filepath='../.././gcc/diagnostic.c' line='152' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='diagnostic_set_info' mangled-name='_Z19diagnostic_set_infoP15diagnostic_infoPKcPA1_13__va_list_tagj12diagnostic_t' filepath='../.././gcc/diagnostic.c' line='166' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z19diagnostic_set_infoP15diagnostic_infoPKcPA1_13__va_list_tagj12diagnostic_t'>
       <parameter type-id='type-id-106' name='diagnostic' filepath='../.././gcc/diagnostic.c' line='166' column='1'/>
       <parameter type-id='type-id-8' name='gmsgid' filepath='../.././gcc/diagnostic.c' line='166' column='1'/>
-      <parameter type-id='type-id-85' name='args' filepath='../.././gcc/diagnostic.c' line='167' column='1'/>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='167' column='1'/>
+      <parameter type-id='type-id-86' name='args' filepath='../.././gcc/diagnostic.c' line='167' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='167' column='1'/>
       <parameter type-id='type-id-99' name='kind' filepath='../.././gcc/diagnostic.c' line='168' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='diagnostic_report_current_module' mangled-name='_Z32diagnostic_report_current_moduleP18diagnostic_contextj' filepath='../.././gcc/diagnostic.c' line='258' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z32diagnostic_report_current_moduleP18diagnostic_contextj'>
       <parameter type-id='type-id-103' name='context' filepath='../.././gcc/diagnostic.c' line='258' column='1'/>
-      <parameter type-id='type-id-93' name='where' filepath='../.././gcc/diagnostic.c' line='258' column='1'/>
+      <parameter type-id='type-id-94' name='where' filepath='../.././gcc/diagnostic.c' line='258' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='diagnostic_classify_diagnostic' mangled-name='_Z30diagnostic_classify_diagnosticP18diagnostic_contexti12diagnostic_tj' filepath='../.././gcc/diagnostic.c' line='323' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z30diagnostic_classify_diagnosticP18diagnostic_contexti12diagnostic_tj'>
       <parameter type-id='type-id-103' name='context' filepath='../.././gcc/diagnostic.c' line='323' column='1'/>
       <parameter type-id='type-id-3' name='option_index' filepath='../.././gcc/diagnostic.c' line='324' column='1'/>
       <parameter type-id='type-id-99' name='new_kind' filepath='../.././gcc/diagnostic.c' line='325' column='1'/>
-      <parameter type-id='type-id-93' name='where' filepath='../.././gcc/diagnostic.c' line='326' column='1'/>
+      <parameter type-id='type-id-94' name='where' filepath='../.././gcc/diagnostic.c' line='326' column='1'/>
       <return type-id='type-id-99'/>
     </function-decl>
     <function-decl name='diagnostic_push_diagnostics' mangled-name='_Z27diagnostic_push_diagnosticsP18diagnostic_contextj' filepath='../.././gcc/diagnostic.c' line='367' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z27diagnostic_push_diagnosticsP18diagnostic_contextj'>
       <parameter type-id='type-id-103' name='context' filepath='../.././gcc/diagnostic.c' line='367' column='1'/>
-      <parameter type-id='type-id-93' name='where' filepath='../.././gcc/diagnostic.c' line='367' column='1'/>
+      <parameter type-id='type-id-94' name='where' filepath='../.././gcc/diagnostic.c' line='367' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='diagnostic_pop_diagnostics' mangled-name='_Z26diagnostic_pop_diagnosticsP18diagnostic_contextj' filepath='../.././gcc/diagnostic.c' line='376' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z26diagnostic_pop_diagnosticsP18diagnostic_contextj'>
       <parameter type-id='type-id-103' name='context' filepath='../.././gcc/diagnostic.c' line='376' column='1'/>
-      <parameter type-id='type-id-93' name='where' filepath='../.././gcc/diagnostic.c' line='376' column='1'/>
+      <parameter type-id='type-id-94' name='where' filepath='../.././gcc/diagnostic.c' line='376' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='trim_filename' mangled-name='_Z13trim_filenamePKc' filepath='../.././gcc/diagnostic.c' line='567' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z13trim_filenamePKc'>
@@ -3457,13 +3457,13 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='error_at' mangled-name='_Z8error_atjPKcz' filepath='../.././gcc/diagnostic.c' line='782' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z8error_atjPKcz'>
-      <parameter type-id='type-id-93' name='loc' filepath='../.././gcc/diagnostic.c' line='782' column='1'/>
+      <parameter type-id='type-id-94' name='loc' filepath='../.././gcc/diagnostic.c' line='782' column='1'/>
       <parameter type-id='type-id-8' name='gmsgid' filepath='../.././gcc/diagnostic.c' line='782' column='1'/>
       <parameter is-variadic='yes'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='error_n' mangled-name='_Z7error_njiPKcS0_z' filepath='../.././gcc/diagnostic.c' line='766' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z7error_njiPKcS0_z'>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='766' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='766' column='1'/>
       <parameter type-id='type-id-3' name='n' filepath='../.././gcc/diagnostic.c' line='766' column='1'/>
       <parameter type-id='type-id-8' name='singular_gmsgid' filepath='../.././gcc/diagnostic.c' line='766' column='1'/>
       <parameter type-id='type-id-8' name='plural_gmsgid' filepath='../.././gcc/diagnostic.c' line='767' column='1'/>
@@ -3476,20 +3476,20 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='permerror' mangled-name='_Z9permerrorjPKcz' filepath='../.././gcc/diagnostic.c' line='736' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z9permerrorjPKcz'>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='736' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='736' column='1'/>
       <parameter type-id='type-id-8' name='gmsgid' filepath='../.././gcc/diagnostic.c' line='736' column='1'/>
       <parameter is-variadic='yes'/>
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='pedwarn' mangled-name='_Z7pedwarnjiPKcz' filepath='../.././gcc/diagnostic.c' line='716' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z7pedwarnjiPKcz'>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='716' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='716' column='1'/>
       <parameter type-id='type-id-3' name='opt' filepath='../.././gcc/diagnostic.c' line='716' column='1'/>
       <parameter type-id='type-id-8' name='gmsgid' filepath='../.././gcc/diagnostic.c' line='716' column='1'/>
       <parameter is-variadic='yes'/>
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='warning_at' mangled-name='_Z10warning_atjiPKcz' filepath='../.././gcc/diagnostic.c' line='690' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z10warning_atjiPKcz'>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='690' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='690' column='1'/>
       <parameter type-id='type-id-3' name='opt' filepath='../.././gcc/diagnostic.c' line='690' column='1'/>
       <parameter type-id='type-id-8' name='gmsgid' filepath='../.././gcc/diagnostic.c' line='690' column='1'/>
       <parameter is-variadic='yes'/>
@@ -3502,7 +3502,7 @@
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='inform_n' mangled-name='_Z8inform_njiPKcS0_z' filepath='../.././gcc/diagnostic.c' line='654' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z8inform_njiPKcS0_z'>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='654' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='654' column='1'/>
       <parameter type-id='type-id-3' name='n' filepath='../.././gcc/diagnostic.c' line='654' column='1'/>
       <parameter type-id='type-id-8' name='singular_gmsgid' filepath='../.././gcc/diagnostic.c' line='654' column='1'/>
       <parameter type-id='type-id-8' name='plural_gmsgid' filepath='../.././gcc/diagnostic.c' line='655' column='1'/>
@@ -3510,14 +3510,14 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='inform' mangled-name='_Z6informjPKcz' filepath='../.././gcc/diagnostic.c' line='640' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z6informjPKcz'>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='640' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='640' column='1'/>
       <parameter type-id='type-id-8' name='gmsgid' filepath='../.././gcc/diagnostic.c' line='640' column='1'/>
       <parameter is-variadic='yes'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='emit_diagnostic' mangled-name='_Z15emit_diagnostic12diagnostic_tjiPKcz' filepath='../.././gcc/diagnostic.c' line='614' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z15emit_diagnostic12diagnostic_tjiPKcz'>
       <parameter type-id='type-id-99' name='kind' filepath='../.././gcc/diagnostic.c' line='614' column='1'/>
-      <parameter type-id='type-id-93' name='location' filepath='../.././gcc/diagnostic.c' line='614' column='1'/>
+      <parameter type-id='type-id-94' name='location' filepath='../.././gcc/diagnostic.c' line='614' column='1'/>
       <parameter type-id='type-id-3' name='opt' filepath='../.././gcc/diagnostic.c' line='614' column='1'/>
       <parameter type-id='type-id-8' name='gmsgid' filepath='../.././gcc/diagnostic.c' line='615' column='1'/>
       <parameter is-variadic='yes'/>
@@ -3562,10 +3562,10 @@
         <var-decl name='trace_includes' type-id='type-id-54' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='273' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
-        <var-decl name='highest_location' type-id='type-id-92' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='276' column='1'/>
+        <var-decl name='highest_location' type-id='type-id-93' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='276' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='480'>
-        <var-decl name='highest_line' type-id='type-id-92' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='279' column='1'/>
+        <var-decl name='highest_line' type-id='type-id-93' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='279' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='512'>
         <var-decl name='max_column_hint' type-id='type-id-22' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='283' column='1'/>
@@ -3598,7 +3598,7 @@
     <typedef-decl name='line_map_round_alloc_size_func' type-id='type-id-220' filepath='../.././gcc/../libcpp/include/line-map.h' line='58' column='1' id='type-id-215'/>
     <pointer-type-def type-id='type-id-212' size-in-bits='64' id='type-id-221'/>
     <var-decl name='line_table' type-id='type-id-221' visibility='default' filepath='../.././gcc/input.h' line='27' column='1'/>
-    <var-decl name='input_location' type-id='type-id-93' visibility='default' filepath='../.././gcc/input.h' line='46' column='1'/>
+    <var-decl name='input_location' type-id='type-id-94' visibility='default' filepath='../.././gcc/input.h' line='46' column='1'/>
     <var-decl name='progname' type-id='type-id-8' mangled-name='progname' visibility='default' filepath='../.././gcc/diagnostic.c' line='50' column='1' elf-symbol-id='progname'/>
     <var-decl name='global_dc' type-id='type-id-103' mangled-name='global_dc' visibility='default' filepath='../.././gcc/diagnostic.c' line='54' column='1' elf-symbol-id='global_dc'/>
     <function-decl name='pp_base_destroy_prefix' mangled-name='_Z22pp_base_destroy_prefixP17pretty_print_info' filepath='../.././gcc/pretty-print.h' line='300' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -3647,10 +3647,10 @@
     <pointer-type-def type-id='type-id-65' size-in-bits='64' id='type-id-223'/>
     <function-decl name='linemap_resolve_location' mangled-name='_Z24linemap_resolve_locationP9line_mapsj24location_resolution_kindPPK8line_map' filepath='../.././gcc/../libcpp/include/line-map.h' line='659' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-222'/>
       <parameter type-id='type-id-223'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='pp_base_newline' mangled-name='_Z15pp_base_newlineP17pretty_print_info' filepath='../.././gcc/pretty-print.h' line='334' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-56'/>
@@ -3681,11 +3681,11 @@
     </function-decl>
     <function-decl name='linemap_compare_locations' mangled-name='_Z25linemap_compare_locationsP9line_mapsjj' filepath='../.././gcc/../libcpp/include/line-map.h' line='577' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
-      <parameter type-id='type-id-92'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
+      <parameter type-id='type-id-93'/>
       <return type-id='type-id-3'/>
     </function-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='588' column='1' id='type-id-224'>
+    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-224' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='588' column='1' id='type-id-225'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='file' type-id='type-id-8' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='590' column='1'/>
       </data-member>
@@ -3699,10 +3699,10 @@
         <var-decl name='sysp' type-id='type-id-54' visibility='default' filepath='../.././gcc/../libcpp/include/line-map.h' line='598' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='expanded_location' type-id='type-id-224' filepath='../.././gcc/../libcpp/include/line-map.h' line='599' column='1' id='type-id-225'/>
+    <typedef-decl name='expanded_location' type-id='type-id-225' filepath='../.././gcc/../libcpp/include/line-map.h' line='599' column='1' id='type-id-224'/>
     <function-decl name='expand_location' mangled-name='_Z15expand_locationj' filepath='../.././gcc/input.h' line='40' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-92'/>
-      <return type-id='type-id-225'/>
+      <parameter type-id='type-id-93'/>
+      <return type-id='type-id-224'/>
     </function-decl>
     <function-decl name='concat_length' filepath='../.././gcc/../include/libiberty.h' line='157' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-8'/>
@@ -3729,7 +3729,7 @@
     </function-decl>
     <function-decl name='linemap_location_in_system_header_p' mangled-name='_Z35linemap_location_in_system_header_pP9line_mapsj' filepath='../.././gcc/../libcpp/include/line-map.h' line='473' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='ngettext' filepath='/usr/include/libintl.h' line='62' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -3939,7 +3939,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='obstack_free' filepath='../.././gcc/../include/obstack.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -3953,7 +3953,7 @@
       <return type-id='type-id-2'/>
     </function-decl>
     <function-decl name='_obstack_begin' filepath='../.././gcc/../include/obstack.h' line='193' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-137'/>
@@ -3961,7 +3961,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='_obstack_newchunk' filepath='../.././gcc/../include/obstack.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -4190,8 +4190,8 @@
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='expand_location' mangled-name='_Z15expand_locationj' filepath='../.././gcc/input.c' line='38' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z15expand_locationj'>
-      <parameter type-id='type-id-92' name='loc' filepath='../.././gcc/input.c' line='38' column='1'/>
-      <return type-id='type-id-225'/>
+      <parameter type-id='type-id-93' name='loc' filepath='../.././gcc/input.c' line='38' column='1'/>
+      <return type-id='type-id-224'/>
     </function-decl>
     <function-decl name='dump_line_table_statistics' mangled-name='_Z26dump_line_table_statisticsv' filepath='../.././gcc/input.c' line='83' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z26dump_line_table_statisticsv'>
       <return type-id='type-id-1'/>
@@ -4200,19 +4200,19 @@
     <var-decl name='stdout' type-id='type-id-28' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <var-decl name='stderr' type-id='type-id-28' visibility='default' filepath='/usr/include/stdio.h' line='167' column='1'/>
     <var-decl name='line_table' type-id='type-id-221' mangled-name='line_table' visibility='default' filepath='../.././gcc/input.c' line='31' column='1' elf-symbol-id='line_table'/>
-    <var-decl name='input_location' type-id='type-id-93' mangled-name='input_location' visibility='default' filepath='../.././gcc/input.c' line='29' column='1' elf-symbol-id='input_location'/>
+    <var-decl name='input_location' type-id='type-id-94' mangled-name='input_location' visibility='default' filepath='../.././gcc/input.c' line='29' column='1' elf-symbol-id='input_location'/>
     <function-decl name='linemap_resolve_location' mangled-name='_Z24linemap_resolve_locationP9line_mapsj24location_resolution_kindPPK8line_map' filepath='../.././gcc/../libcpp/include/line-map.h' line='659' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-222'/>
       <parameter type-id='type-id-223'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='linemap_expand_location' mangled-name='_Z23linemap_expand_locationP9line_mapsPK8line_mapj' filepath='../.././gcc/../libcpp/include/line-map.h' line='679' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
       <parameter type-id='type-id-65'/>
-      <parameter type-id='type-id-92'/>
-      <return type-id='type-id-225'/>
+      <parameter type-id='type-id-93'/>
+      <return type-id='type-id-224'/>
     </function-decl>
     <function-decl name='gettext' filepath='/usr/include/libintl.h' line='40' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-8'/>
@@ -4291,7 +4291,7 @@
     </function-decl>
     <function-decl name='linemap_location_from_macro_expansion_p' filepath='../.././libcpp/line-map.c' line='772' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='772' column='1'/>
-      <parameter type-id='type-id-92' name='location' filepath='../.././libcpp/line-map.c' line='773' column='1'/>
+      <parameter type-id='type-id-93' name='location' filepath='../.././libcpp/line-map.c' line='773' column='1'/>
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='linemap_macro_expansion_map_p' filepath='../.././libcpp/line-map.c' line='611' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -4327,37 +4327,37 @@
     <function-decl name='linemap_enter_macro' mangled-name='linemap_enter_macro' filepath='../.././libcpp/line-map.c' line='305' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='linemap_enter_macro'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='305' column='1'/>
       <parameter type-id='type-id-119' name='macro_node' filepath='../.././libcpp/line-map.c' line='305' column='1'/>
-      <parameter type-id='type-id-92' name='expansion' filepath='../.././libcpp/line-map.c' line='306' column='1'/>
+      <parameter type-id='type-id-93' name='expansion' filepath='../.././libcpp/line-map.c' line='306' column='1'/>
       <parameter type-id='type-id-22' name='num_tokens' filepath='../.././libcpp/line-map.c' line='306' column='1'/>
       <return type-id='type-id-65'/>
     </function-decl>
     <function-decl name='linemap_add_macro_token' mangled-name='linemap_add_macro_token' filepath='../.././libcpp/line-map.c' line='363' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='linemap_add_macro_token'>
       <parameter type-id='type-id-65' name='map' filepath='../.././libcpp/line-map.c' line='363' column='1'/>
       <parameter type-id='type-id-22' name='token_no' filepath='../.././libcpp/line-map.c' line='364' column='1'/>
-      <parameter type-id='type-id-92' name='orig_loc' filepath='../.././libcpp/line-map.c' line='365' column='1'/>
-      <parameter type-id='type-id-92' name='orig_parm_replacement_loc' filepath='../.././libcpp/line-map.c' line='366' column='1'/>
-      <return type-id='type-id-92'/>
+      <parameter type-id='type-id-93' name='orig_loc' filepath='../.././libcpp/line-map.c' line='365' column='1'/>
+      <parameter type-id='type-id-93' name='orig_parm_replacement_loc' filepath='../.././libcpp/line-map.c' line='366' column='1'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='linemap_line_start' mangled-name='_Z18linemap_line_startP9line_mapsjj' filepath='../.././libcpp/line-map.c' line='387' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z18linemap_line_startP9line_mapsjj'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='387' column='1'/>
       <parameter type-id='type-id-117' name='to_line' filepath='../.././libcpp/line-map.c' line='387' column='1'/>
       <parameter type-id='type-id-22' name='max_column_hint' filepath='../.././libcpp/line-map.c' line='388' column='1'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='linemap_position_for_column' mangled-name='_Z27linemap_position_for_columnP9line_mapsj' filepath='../.././libcpp/line-map.c' line='465' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z27linemap_position_for_columnP9line_mapsj'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='465' column='1'/>
       <parameter type-id='type-id-22' name='to_column' filepath='../.././libcpp/line-map.c' line='465' column='1'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='linemap_position_for_line_and_column' mangled-name='_Z36linemap_position_for_line_and_columnP8line_mapjj' filepath='../.././libcpp/line-map.c' line='495' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z36linemap_position_for_line_and_columnP8line_mapjj'>
       <parameter type-id='type-id-216' name='map' filepath='../.././libcpp/line-map.c' line='495' column='1'/>
       <parameter type-id='type-id-117' name='line' filepath='../.././libcpp/line-map.c' line='496' column='1'/>
       <parameter type-id='type-id-22' name='column' filepath='../.././libcpp/line-map.c' line='497' column='1'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='linemap_lookup' mangled-name='_Z14linemap_lookupP9line_mapsj' filepath='../.././libcpp/line-map.c' line='511' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z14linemap_lookupP9line_mapsj'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='511' column='1'/>
-      <parameter type-id='type-id-92' name='line' filepath='../.././libcpp/line-map.c' line='511' column='1'/>
+      <parameter type-id='type-id-93' name='line' filepath='../.././libcpp/line-map.c' line='511' column='1'/>
       <return type-id='type-id-65'/>
     </function-decl>
     <function-decl name='linemap_macro_expansion_map_p' mangled-name='_Z29linemap_macro_expansion_map_pPK8line_map' filepath='../.././libcpp/line-map.c' line='611' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z29linemap_macro_expansion_map_pPK8line_map'>
@@ -4366,12 +4366,12 @@
     </function-decl>
     <function-decl name='linemap_get_expansion_line' mangled-name='linemap_get_expansion_line' filepath='../.././libcpp/line-map.c' line='695' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='linemap_get_expansion_line'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='695' column='1'/>
-      <parameter type-id='type-id-92' name='location' filepath='../.././libcpp/line-map.c' line='696' column='1'/>
+      <parameter type-id='type-id-93' name='location' filepath='../.././libcpp/line-map.c' line='696' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='linemap_get_expansion_filename' mangled-name='linemap_get_expansion_filename' filepath='../.././libcpp/line-map.c' line='719' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='linemap_get_expansion_filename'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='719' column='1'/>
-      <parameter type-id='type-id-92' name='location' filepath='../.././libcpp/line-map.c' line='720' column='1'/>
+      <parameter type-id='type-id-93' name='location' filepath='../.././libcpp/line-map.c' line='720' column='1'/>
       <return type-id='type-id-8'/>
     </function-decl>
     <function-decl name='linemap_map_get_macro_name' mangled-name='_Z26linemap_map_get_macro_namePK8line_map' filepath='../.././libcpp/line-map.c' line='736' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z26linemap_map_get_macro_namePK8line_map'>
@@ -4380,38 +4380,38 @@
     </function-decl>
     <function-decl name='linemap_location_from_macro_expansion_p' mangled-name='_Z39linemap_location_from_macro_expansion_pP9line_mapsj' filepath='../.././libcpp/line-map.c' line='772' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z39linemap_location_from_macro_expansion_pP9line_mapsj'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='772' column='1'/>
-      <parameter type-id='type-id-92' name='location' filepath='../.././libcpp/line-map.c' line='773' column='1'/>
+      <parameter type-id='type-id-93' name='location' filepath='../.././libcpp/line-map.c' line='773' column='1'/>
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='linemap_resolve_location' mangled-name='_Z24linemap_resolve_locationP9line_mapsj24location_resolution_kindPPK8line_map' filepath='../.././libcpp/line-map.c' line='1048' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z24linemap_resolve_locationP9line_mapsj24location_resolution_kindPPK8line_map'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='1048' column='1'/>
-      <parameter type-id='type-id-92' name='loc' filepath='../.././libcpp/line-map.c' line='1049' column='1'/>
+      <parameter type-id='type-id-93' name='loc' filepath='../.././libcpp/line-map.c' line='1049' column='1'/>
       <parameter type-id='type-id-222' name='lrk' filepath='../.././libcpp/line-map.c' line='1050' column='1'/>
       <parameter type-id='type-id-223' name='map' filepath='../.././libcpp/line-map.c' line='1051' column='1'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='linemap_compare_locations' mangled-name='_Z25linemap_compare_locationsP9line_mapsjj' filepath='../.././libcpp/line-map.c' line='847' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z25linemap_compare_locationsP9line_mapsjj'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='847' column='1'/>
-      <parameter type-id='type-id-92' name='pre' filepath='../.././libcpp/line-map.c' line='848' column='1'/>
-      <parameter type-id='type-id-92' name='post' filepath='../.././libcpp/line-map.c' line='849' column='1'/>
+      <parameter type-id='type-id-93' name='pre' filepath='../.././libcpp/line-map.c' line='848' column='1'/>
+      <parameter type-id='type-id-93' name='post' filepath='../.././libcpp/line-map.c' line='849' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='linemap_location_in_system_header_p' mangled-name='_Z35linemap_location_in_system_header_pP9line_mapsj' filepath='../.././libcpp/line-map.c' line='753' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z35linemap_location_in_system_header_pP9line_mapsj'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='753' column='1'/>
-      <parameter type-id='type-id-92' name='location' filepath='../.././libcpp/line-map.c' line='754' column='1'/>
+      <parameter type-id='type-id-93' name='location' filepath='../.././libcpp/line-map.c' line='754' column='1'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='linemap_unwind_toward_expansion' mangled-name='_Z31linemap_unwind_toward_expansionP9line_mapsjPPK8line_map' filepath='../.././libcpp/line-map.c' line='1093' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z31linemap_unwind_toward_expansionP9line_mapsjPPK8line_map'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='1093' column='1'/>
-      <parameter type-id='type-id-92' name='loc' filepath='../.././libcpp/line-map.c' line='1094' column='1'/>
+      <parameter type-id='type-id-93' name='loc' filepath='../.././libcpp/line-map.c' line='1094' column='1'/>
       <parameter type-id='type-id-223' name='map' filepath='../.././libcpp/line-map.c' line='1095' column='1'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='linemap_expand_location' mangled-name='_Z23linemap_expand_locationP9line_mapsPK8line_mapj' filepath='../.././libcpp/line-map.c' line='1120' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z23linemap_expand_locationP9line_mapsPK8line_mapj'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='1120' column='1'/>
       <parameter type-id='type-id-65' name='map' filepath='../.././libcpp/line-map.c' line='1121' column='1'/>
-      <parameter type-id='type-id-92' name='loc' filepath='../.././libcpp/line-map.c' line='1122' column='1'/>
-      <return type-id='type-id-225'/>
+      <parameter type-id='type-id-93' name='loc' filepath='../.././libcpp/line-map.c' line='1122' column='1'/>
+      <return type-id='type-id-224'/>
     </function-decl>
     <function-decl name='linemap_dump' mangled-name='_Z12linemap_dumpP8_IO_FILEP9line_mapsjb' filepath='../.././libcpp/line-map.c' line='1162' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z12linemap_dumpP8_IO_FILEP9line_mapsjb'>
       <parameter type-id='type-id-36' name='stream' filepath='../.././libcpp/line-map.c' line='1162' column='1'/>
@@ -4422,7 +4422,7 @@
     </function-decl>
     <function-decl name='linemap_dump_location' mangled-name='_Z21linemap_dump_locationP9line_mapsjP8_IO_FILE' filepath='../.././libcpp/line-map.c' line='1211' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z21linemap_dump_locationP9line_mapsjP8_IO_FILE'>
       <parameter type-id='type-id-221' name='set' filepath='../.././libcpp/line-map.c' line='1211' column='1'/>
-      <parameter type-id='type-id-92' name='loc' filepath='../.././libcpp/line-map.c' line='1212' column='1'/>
+      <parameter type-id='type-id-93' name='loc' filepath='../.././libcpp/line-map.c' line='1212' column='1'/>
       <parameter type-id='type-id-36' name='stream' filepath='../.././libcpp/line-map.c' line='1213' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -4491,7 +4491,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4507,7 +4507,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4523,7 +4523,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4539,7 +4539,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4555,7 +4555,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4571,7 +4571,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4587,7 +4587,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4603,7 +4603,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4619,7 +4619,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4635,7 +4635,7 @@
             <var-decl name='cur' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='531' column='1'/>
           </data-member>
           <data-member access='public' layout-offset-in-bits='192'>
-            <var-decl name='first_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
+            <var-decl name='first_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='532' column='1'/>
           </data-member>
         </class-decl>
       </member-type>
@@ -4652,7 +4652,7 @@
         <var-decl name='line_table' type-id='type-id-221' visibility='default' filepath='../.././libcpp/internal.h' line='392' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='directive_line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='395' column='1'/>
+        <var-decl name='directive_line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='395' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='448'>
         <var-decl name='a_buff' type-id='type-id-256' visibility='default' filepath='../.././libcpp/internal.h' line='398' column='1'/>
@@ -4676,7 +4676,7 @@
         <var-decl name='directive_result' type-id='type-id-246' visibility='default' filepath='../.././libcpp/internal.h' line='410' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1408'>
-        <var-decl name='invocation_location' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='414' column='1'/>
+        <var-decl name='invocation_location' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='414' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='1440'>
         <var-decl name='set_invocation_location' type-id='type-id-54' visibility='default' filepath='../.././libcpp/internal.h' line='418' column='1'/>
@@ -5189,7 +5189,7 @@
     <qualified-type-def type-id='type-id-246' const='yes' id='type-id-307'/>
     <pointer-type-def type-id='type-id-307' size-in-bits='64' id='type-id-305'/>
     <pointer-type-def type-id='type-id-305' size-in-bits='64' id='type-id-306'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/internal.h' line='146' column='1' id='type-id-308'>
+    <class-decl name='__anonymous_struct__' size-in-bits='192' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-308' visibility='default' filepath='../.././libcpp/internal.h' line='146' column='1' id='type-id-309'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='macro_node' type-id='type-id-119' visibility='default' filepath='../.././libcpp/internal.h' line='148' column='1'/>
       </data-member>
@@ -5200,8 +5200,8 @@
         <var-decl name='cur_virt_loc' type-id='type-id-120' visibility='default' filepath='../.././libcpp/internal.h' line='157' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='macro_context' type-id='type-id-308' filepath='../.././libcpp/internal.h' line='158' column='1' id='type-id-309'/>
-    <pointer-type-def type-id='type-id-309' size-in-bits='64' id='type-id-303'/>
+    <typedef-decl name='macro_context' type-id='type-id-309' filepath='../.././libcpp/internal.h' line='158' column='1' id='type-id-308'/>
+    <pointer-type-def type-id='type-id-308' size-in-bits='64' id='type-id-303'/>
     <pointer-type-def type-id='type-id-257' size-in-bits='64' id='type-id-258'/>
     <enum-decl name='context_tokens_kind' id='type-id-304'>
       <underlying-type type-id='type-id-78'/>
@@ -5392,7 +5392,7 @@
         <var-decl name='value' type-id='type-id-362' visibility='default' filepath='../.././libcpp/expr.c' line='33' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='loc' type-id='type-id-92' visibility='default' filepath='../.././libcpp/expr.c' line='34' column='1'/>
+        <var-decl name='loc' type-id='type-id-93' visibility='default' filepath='../.././libcpp/expr.c' line='34' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='288'>
         <var-decl name='op' type-id='type-id-176' visibility='default' filepath='../.././libcpp/expr.c' line='35' column='1'/>
@@ -5670,7 +5670,7 @@
     </class-decl>
     <class-decl name='cpp_savedstate' is-struct='yes' visibility='default' is-declaration-only='yes' id='type-id-367'/>
     <pointer-type-def type-id='type-id-367' size-in-bits='64' id='type-id-275'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='972' column='1' id='type-id-368'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-276' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='972' column='1' id='type-id-368'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='entries' type-id='type-id-369' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='974' column='1'/>
       </data-member>
@@ -5681,16 +5681,16 @@
         <var-decl name='allocated' type-id='type-id-3' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='980' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='961' column='1' id='type-id-370'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-370' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='961' column='1' id='type-id-371'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='comment' type-id='type-id-9' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='963' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='sloc' type-id='type-id-92' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='966' column='1'/>
+        <var-decl name='sloc' type-id='type-id-93' visibility='default' filepath='../.././libcpp/include/cpplib.h' line='966' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='cpp_comment' type-id='type-id-370' filepath='../.././libcpp/include/cpplib.h' line='967' column='1' id='type-id-371'/>
-    <pointer-type-def type-id='type-id-371' size-in-bits='64' id='type-id-369'/>
+    <typedef-decl name='cpp_comment' type-id='type-id-371' filepath='../.././libcpp/include/cpplib.h' line='967' column='1' id='type-id-370'/>
+    <pointer-type-def type-id='type-id-370' size-in-bits='64' id='type-id-369'/>
     <typedef-decl name='cpp_comment_table' type-id='type-id-368' filepath='../.././libcpp/include/cpplib.h' line='981' column='1' id='type-id-276'/>
     <class-decl name='def_pragma_macro' size-in-bits='256' is-struct='yes' visibility='default' filepath='../.././libcpp/internal.h' line='358' column='1' id='type-id-372'>
       <data-member access='public' layout-offset-in-bits='0'>
@@ -5703,7 +5703,7 @@
         <var-decl name='definition' type-id='type-id-253' visibility='default' filepath='../.././libcpp/internal.h' line='364' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='192'>
-        <var-decl name='line' type-id='type-id-92' visibility='default' filepath='../.././libcpp/internal.h' line='367' column='1'/>
+        <var-decl name='line' type-id='type-id-93' visibility='default' filepath='../.././libcpp/internal.h' line='367' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='31'>
         <var-decl name='syshdr' type-id='type-id-22' visibility='default' filepath='../.././libcpp/internal.h' line='369' column='1'/>
@@ -5813,9 +5813,9 @@
     <function-decl name='linemap_add_macro_token' filepath='../.././libcpp/internal.h' line='839' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-65'/>
       <parameter type-id='type-id-22'/>
-      <parameter type-id='type-id-92'/>
-      <parameter type-id='type-id-92'/>
-      <return type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
+      <parameter type-id='type-id-93'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='abort' filepath='/usr/include/stdlib.h' line='514' column='1' visibility='default' binding='global' size-in-bits='64'>
       <return type-id='type-id-1'/>
@@ -5850,13 +5850,13 @@
     </function-decl>
     <function-decl name='linemap_lookup' mangled-name='_Z14linemap_lookupP9line_mapsj' filepath='../.././libcpp/include/line-map.h' line='450' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <return type-id='type-id-65'/>
     </function-decl>
     <function-decl name='cpp_warning_with_line' mangled-name='_Z21cpp_warning_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='932' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -5941,7 +5941,7 @@
     </function-decl>
     <function-decl name='linemap_get_expansion_filename' filepath='../.././libcpp/internal.h' line='860' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <return type-id='type-id-8'/>
     </function-decl>
     <qualified-type-def type-id='type-id-376' const='yes' id='type-id-381'/>
@@ -5969,7 +5969,7 @@
     </function-decl>
     <function-decl name='linemap_get_expansion_line' filepath='../.././libcpp/internal.h' line='849' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='cpp_push_buffer' mangled-name='_Z15cpp_push_bufferP10cpp_readerPKhmi' filepath='../.././libcpp/include/cpplib.h' line='793' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -6039,7 +6039,7 @@
     <function-decl name='linemap_enter_macro' filepath='../.././libcpp/internal.h' line='812' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
       <parameter type-id='type-id-119'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <return type-id='type-id-65'/>
     </function-decl>
@@ -6078,7 +6078,7 @@
     <function-decl name='cpp_pedwarning_with_line' mangled-name='_Z24cpp_pedwarning_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='935' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -6087,7 +6087,7 @@
     <function-decl name='cpp_error_with_line' mangled-name='_Z19cpp_error_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='929' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -6165,7 +6165,7 @@
     </function-type>
     <function-type size-in-bits='64' id='type-id-336'>
       <parameter type-id='type-id-332'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-143'/>
       <parameter type-id='type-id-8'/>
       <parameter type-id='type-id-3'/>
@@ -6174,19 +6174,19 @@
     </function-type>
     <function-type size-in-bits='64' id='type-id-337'>
       <parameter type-id='type-id-332'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-119'/>
       <return type-id='type-id-1'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-341'>
       <parameter type-id='type-id-332'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-340'/>
       <return type-id='type-id-1'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-342'>
       <parameter type-id='type-id-332'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <return type-id='type-id-1'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-343'>
@@ -6217,10 +6217,10 @@
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
-      <parameter type-id='type-id-85'/>
+      <parameter type-id='type-id-86'/>
       <return type-id='type-id-54'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-351'>
@@ -6330,7 +6330,7 @@
     <function-decl name='cpp_error_with_line' mangled-name='_Z19cpp_error_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='929' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -6369,7 +6369,7 @@
       <parameter type-id='type-id-221'/>
       <parameter type-id='type-id-117'/>
       <parameter type-id='type-id-22'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='_cpp_process_line_notes' filepath='../.././libcpp/internal.h' line='646' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
@@ -6554,7 +6554,7 @@
     <function-decl name='cpp_error_with_line' mangled-name='_Z19cpp_error_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='929' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -6600,7 +6600,7 @@
     <function-decl name='cpp_warning_with_line' mangled-name='_Z21cpp_warning_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='932' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -6609,7 +6609,7 @@
     <function-decl name='cpp_warning_with_line_syshdr' mangled-name='_Z28cpp_warning_with_line_syshdrP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='938' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -6632,7 +6632,7 @@
       <return type-id='type-id-253'/>
     </function-decl>
     <function-decl name='_obstack_newchunk' filepath='../.././libcpp/../include/obstack.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -6714,7 +6714,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='obstack_free' filepath='../.././libcpp/../include/obstack.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -6776,7 +6776,7 @@
       <parameter type-id='type-id-221'/>
       <parameter type-id='type-id-117'/>
       <parameter type-id='type-id-22'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <pointer-type-def type-id='type-id-338' size-in-bits='64' id='type-id-398'/>
     <function-decl name='cpp_interpret_string_notranslate' mangled-name='_Z32cpp_interpret_string_notranslateP10cpp_readerPK10cpp_stringmPS1_9cpp_ttype' filepath='../.././libcpp/include/cpplib.h' line='774' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -6862,7 +6862,7 @@
     <function-decl name='cpp_error_with_line' mangled-name='_Z19cpp_error_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/errors.c' line='154' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z19cpp_error_with_lineP10cpp_readerijjPKcz'>
       <parameter type-id='type-id-332' name='pfile' filepath='../.././libcpp/errors.c' line='154' column='1'/>
       <parameter type-id='type-id-3' name='level' filepath='../.././libcpp/errors.c' line='154' column='1'/>
-      <parameter type-id='type-id-92' name='src_loc' filepath='../.././libcpp/errors.c' line='155' column='1'/>
+      <parameter type-id='type-id-93' name='src_loc' filepath='../.././libcpp/errors.c' line='155' column='1'/>
       <parameter type-id='type-id-22' name='column' filepath='../.././libcpp/errors.c' line='155' column='1'/>
       <parameter type-id='type-id-8' name='msgid' filepath='../.././libcpp/errors.c' line='156' column='1'/>
       <parameter is-variadic='yes'/>
@@ -6871,7 +6871,7 @@
     <function-decl name='cpp_warning_with_line' mangled-name='_Z21cpp_warning_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/errors.c' line='173' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z21cpp_warning_with_lineP10cpp_readerijjPKcz'>
       <parameter type-id='type-id-332' name='pfile' filepath='../.././libcpp/errors.c' line='173' column='1'/>
       <parameter type-id='type-id-3' name='reason' filepath='../.././libcpp/errors.c' line='173' column='1'/>
-      <parameter type-id='type-id-92' name='src_loc' filepath='../.././libcpp/errors.c' line='174' column='1'/>
+      <parameter type-id='type-id-93' name='src_loc' filepath='../.././libcpp/errors.c' line='174' column='1'/>
       <parameter type-id='type-id-22' name='column' filepath='../.././libcpp/errors.c' line='174' column='1'/>
       <parameter type-id='type-id-8' name='msgid' filepath='../.././libcpp/errors.c' line='175' column='1'/>
       <parameter is-variadic='yes'/>
@@ -6880,7 +6880,7 @@
     <function-decl name='cpp_pedwarning_with_line' mangled-name='_Z24cpp_pedwarning_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/errors.c' line='192' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z24cpp_pedwarning_with_lineP10cpp_readerijjPKcz'>
       <parameter type-id='type-id-332' name='pfile' filepath='../.././libcpp/errors.c' line='192' column='1'/>
       <parameter type-id='type-id-3' name='reason' filepath='../.././libcpp/errors.c' line='192' column='1'/>
-      <parameter type-id='type-id-92' name='src_loc' filepath='../.././libcpp/errors.c' line='193' column='1'/>
+      <parameter type-id='type-id-93' name='src_loc' filepath='../.././libcpp/errors.c' line='193' column='1'/>
       <parameter type-id='type-id-22' name='column' filepath='../.././libcpp/errors.c' line='193' column='1'/>
       <parameter type-id='type-id-8' name='msgid' filepath='../.././libcpp/errors.c' line='194' column='1'/>
       <parameter is-variadic='yes'/>
@@ -6889,7 +6889,7 @@
     <function-decl name='cpp_warning_with_line_syshdr' mangled-name='_Z28cpp_warning_with_line_syshdrP10cpp_readerijjPKcz' filepath='../.././libcpp/errors.c' line='212' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z28cpp_warning_with_line_syshdrP10cpp_readerijjPKcz'>
       <parameter type-id='type-id-332' name='pfile' filepath='../.././libcpp/errors.c' line='212' column='1'/>
       <parameter type-id='type-id-3' name='reason' filepath='../.././libcpp/errors.c' line='212' column='1'/>
-      <parameter type-id='type-id-92' name='src_loc' filepath='../.././libcpp/errors.c' line='213' column='1'/>
+      <parameter type-id='type-id-93' name='src_loc' filepath='../.././libcpp/errors.c' line='213' column='1'/>
       <parameter type-id='type-id-22' name='column' filepath='../.././libcpp/errors.c' line='213' column='1'/>
       <parameter type-id='type-id-8' name='msgid' filepath='../.././libcpp/errors.c' line='214' column='1'/>
       <parameter is-variadic='yes'/>
@@ -7050,7 +7050,7 @@
     <function-decl name='cpp_error_with_line' mangled-name='_Z19cpp_error_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='929' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -7115,7 +7115,7 @@
     <function-decl name='cpp_included_before' mangled-name='_Z19cpp_included_beforeP10cpp_readerPKcj' filepath='../.././libcpp/files.c' line='1114' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_Z19cpp_included_beforeP10cpp_readerPKcj'>
       <parameter type-id='type-id-332' name='pfile' filepath='../.././libcpp/files.c' line='1114' column='1'/>
       <parameter type-id='type-id-8' name='fname' filepath='../.././libcpp/files.c' line='1114' column='1'/>
-      <parameter type-id='type-id-92' name='location' filepath='../.././libcpp/files.c' line='1115' column='1'/>
+      <parameter type-id='type-id-93' name='location' filepath='../.././libcpp/files.c' line='1115' column='1'/>
       <return type-id='type-id-54'/>
     </function-decl>
     <function-decl name='_cpp_init_files' mangled-name='_cpp_init_files' filepath='../.././libcpp/files.c' line='1170' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='_cpp_init_files'>
@@ -7305,7 +7305,7 @@
       <parameter type-id='type-id-2'/>
       <parameter type-id='type-id-188'/>
       <parameter type-id='type-id-209'/>
-      <return type-id='type-id-87'/>
+      <return type-id='type-id-88'/>
     </function-decl>
     <function-decl name='strlen' filepath='/usr/include/string.h' line='399' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-8'/>
@@ -7367,7 +7367,7 @@
       <return type-id='type-id-9'/>
     </function-decl>
     <function-decl name='_obstack_newchunk' filepath='../.././libcpp/../include/obstack.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -7457,7 +7457,7 @@
       <return type-id='type-id-208'/>
     </function-decl>
     <function-decl name='_obstack_begin' filepath='../.././libcpp/../include/obstack.h' line='193' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-137'/>
@@ -7465,7 +7465,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='obstack_free' filepath='../.././libcpp/../include/obstack.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -7527,7 +7527,7 @@
       <return type-id='type-id-5'/>
     </function-decl>
     <function-type size-in-bits='64' id='type-id-414'>
-      <parameter type-id='type-id-87'/>
+      <parameter type-id='type-id-88'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-3'/>
     </function-type>
@@ -7563,12 +7563,12 @@
     <var-decl name='stdin' type-id='type-id-28' visibility='default' filepath='/usr/include/stdio.h' line='165' column='1'/>
     <var-decl name='stdout' type-id='type-id-28' visibility='default' filepath='/usr/include/stdio.h' line='166' column='1'/>
     <function-decl name='_obstack_newchunk' filepath='../.././libcpp/../include/obstack.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='obstack_free' filepath='../.././libcpp/../include/obstack.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -7596,7 +7596,7 @@
       <return type-id='type-id-359'/>
     </function-decl>
     <function-decl name='_obstack_begin' filepath='../.././libcpp/../include/obstack.h' line='193' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-137'/>
@@ -7870,12 +7870,12 @@
       <parameter type-id='type-id-221'/>
       <parameter type-id='type-id-117'/>
       <parameter type-id='type-id-22'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='cpp_warning_with_line' mangled-name='_Z21cpp_warning_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='932' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -7884,7 +7884,7 @@
     <function-decl name='cpp_error_with_line' mangled-name='_Z19cpp_error_with_lineP10cpp_readerijjPKcz' filepath='../.././libcpp/include/cpplib.h' line='929' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
       <parameter type-id='type-id-3'/>
-      <parameter type-id='type-id-92'/>
+      <parameter type-id='type-id-93'/>
       <parameter type-id='type-id-22'/>
       <parameter type-id='type-id-8'/>
       <parameter is-variadic='yes'/>
@@ -7957,7 +7957,7 @@
     <function-decl name='linemap_position_for_column' mangled-name='_Z27linemap_position_for_columnP9line_mapsj' filepath='../.././libcpp/include/line-map.h' line='551' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-221'/>
       <parameter type-id='type-id-22'/>
-      <return type-id='type-id-92'/>
+      <return type-id='type-id-93'/>
     </function-decl>
     <function-decl name='_cpp_handle_directive' filepath='../.././libcpp/internal.h' line='665' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-332'/>
@@ -8153,7 +8153,7 @@
       <return type-id='type-id-2'/>
     </function-decl>
     <function-decl name='_obstack_begin' filepath='../.././libcpp/../include/obstack.h' line='193' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-137'/>
@@ -8161,7 +8161,7 @@
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='obstack_free' filepath='../.././libcpp/../include/obstack.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -8170,7 +8170,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='_obstack_newchunk' filepath='../.././libcpp/../include/obstack.h' line='191' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -8184,7 +8184,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='_obstack_memory_used' filepath='../.././libcpp/../include/obstack.h' line='198' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <return type-id='type-id-3'/>
     </function-decl>
     <function-decl name='fprintf' filepath='/usr/include/stdio.h' line='355' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -8430,7 +8430,7 @@
       <return type-id='type-id-272'/>
     </function-decl>
     <function-decl name='_obstack_begin' filepath='../.././libcpp/../include/obstack.h' line='193' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-3'/>
       <parameter type-id='type-id-137'/>
@@ -8447,7 +8447,7 @@
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='obstack_free' filepath='../.././libcpp/../include/obstack.h' line='210' column='1' visibility='default' binding='global' size-in-bits='64'>
-      <parameter type-id='type-id-72'/>
+      <parameter type-id='type-id-73'/>
       <parameter type-id='type-id-2'/>
       <return type-id='type-id-1'/>
     </function-decl>
@@ -9223,7 +9223,7 @@
         <var-decl name='buflen' type-id='type-id-473' visibility='default' filepath='../.././libiberty/../include/md5.h' line='93' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='224'>
-        <var-decl name='buffer' type-id='type-id-74' visibility='default' filepath='../.././libiberty/../include/md5.h' line='94' column='1'/>
+        <var-decl name='buffer' type-id='type-id-75' visibility='default' filepath='../.././libiberty/../include/md5.h' line='94' column='1'/>
       </data-member>
     </class-decl>
     <typedef-decl name='uint32_t' type-id='type-id-22' filepath='/usr/include/stdint.h' line='52' column='1' id='type-id-475'/>
@@ -9651,13 +9651,13 @@
       <parameter type-id='type-id-2' name='element' filepath='../.././libiberty/hashtab.c' line='642' column='1'/>
       <parameter type-id='type-id-188' name='hash' filepath='../.././libiberty/hashtab.c' line='643' column='1'/>
       <parameter type-id='type-id-209' name='insert' filepath='../.././libiberty/hashtab.c' line='643' column='1'/>
-      <return type-id='type-id-87'/>
+      <return type-id='type-id-88'/>
     </function-decl>
     <function-decl name='htab_find_slot' mangled-name='htab_find_slot' filepath='../.././libiberty/hashtab.c' line='710' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='htab_find_slot'>
       <parameter type-id='type-id-208' name='htab' filepath='../.././libiberty/hashtab.c' line='710' column='1'/>
       <parameter type-id='type-id-2' name='element' filepath='../.././libiberty/hashtab.c' line='710' column='1'/>
       <parameter type-id='type-id-209' name='insert' filepath='../.././libiberty/hashtab.c' line='710' column='1'/>
-      <return type-id='type-id-87'/>
+      <return type-id='type-id-88'/>
     </function-decl>
     <function-decl name='htab_remove_elt_with_hash' mangled-name='htab_remove_elt_with_hash' filepath='../.././libiberty/hashtab.c' line='732' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='htab_remove_elt_with_hash'>
       <parameter type-id='type-id-208' name='htab' filepath='../.././libiberty/hashtab.c' line='732' column='1'/>
@@ -9672,7 +9672,7 @@
     </function-decl>
     <function-decl name='htab_clear_slot' mangled-name='htab_clear_slot' filepath='../.././libiberty/hashtab.c' line='752' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='htab_clear_slot'>
       <parameter type-id='type-id-208' name='htab' filepath='../.././libiberty/hashtab.c' line='752' column='1'/>
-      <parameter type-id='type-id-87' name='slot' filepath='../.././libiberty/hashtab.c' line='752' column='1'/>
+      <parameter type-id='type-id-88' name='slot' filepath='../.././libiberty/hashtab.c' line='752' column='1'/>
       <return type-id='type-id-1'/>
     </function-decl>
     <function-decl name='htab_traverse_noresize' mangled-name='htab_traverse_noresize' filepath='../.././libiberty/hashtab.c' line='771' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='htab_traverse_noresize'>

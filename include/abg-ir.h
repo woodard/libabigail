@@ -181,6 +181,12 @@ public:
   canonicalization_is_done(bool);
 
   bool
+  do_on_the_fly_canonicalization() const;
+
+  void
+  do_on_the_fly_canonicalization(bool f);
+
+  bool
   is_void_type(const type_base_sptr&) const;
 
   bool
@@ -1401,7 +1407,7 @@ class type_base : public virtual type_or_decl_base
 {
   struct priv;
 
-protected:
+public:
   // This priv pointer is not handled by a shared_ptr because
   // accessing the data members of the priv struct for this type_base
   // shows up on performance profiles when dealing with big binaries
@@ -1436,8 +1442,7 @@ public:
 
   type_base(const environment* e, size_t s, size_t a);
 
-  friend type_base_sptr
-  canonicalize(type_base_sptr);
+  friend type_base_sptr canonicalize(type_base_sptr);
 
   type_base_sptr
   get_canonical_type() const;
@@ -2558,7 +2563,6 @@ class function_type : public virtual type_base
 {
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
-  priv_sptr priv_;
 
 public:
   /// Hasher for an instance of function_type
@@ -2569,6 +2573,8 @@ public:
   typedef shared_ptr<function_decl::parameter>	parameter_sptr;
   /// Convenience typedef for a vector of @ref parameter_sptr
   typedef std::vector<parameter_sptr>		parameters;
+
+  priv_sptr priv_;
 
 private:
   function_type();
@@ -3222,9 +3228,11 @@ typedef vector<member_class_template_sptr> member_class_templates;
 /// The base type of @ref class_decl and @ref union_decl
 class class_or_union : public scope_type_decl
 {
+public:
   struct priv;
   priv *priv_;
 
+private:
   // Forbidden
   class_or_union();
 

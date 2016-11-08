@@ -915,29 +915,29 @@
         <var-decl name='leq' type-id='type-id-98' visibility='default' filepath='libtess/priorityq-heap.h' line='92' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='libtess/priorityq-heap.h' line='83' column='1' id='type-id-99'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-99' visibility='default' filepath='libtess/priorityq-heap.h' line='83' column='1' id='type-id-100'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='handle' type-id='type-id-97' visibility='default' filepath='libtess/priorityq-heap.h' line='83' column='1'/>
       </data-member>
     </class-decl>
     <typedef-decl name='PQHeapHandle' type-id='type-id-27' filepath='libtess/priorityq-heap.h' line='80' column='1' id='type-id-97'/>
-    <typedef-decl name='PQnode' type-id='type-id-99' filepath='libtess/priorityq-heap.h' line='83' column='1' id='type-id-100'/>
-    <pointer-type-def type-id='type-id-100' size-in-bits='64' id='type-id-95'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-101'>
+    <typedef-decl name='PQnode' type-id='type-id-100' filepath='libtess/priorityq-heap.h' line='83' column='1' id='type-id-99'/>
+    <pointer-type-def type-id='type-id-99' size-in-bits='64' id='type-id-95'/>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-101' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-102'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='key' type-id='type-id-102' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1'/>
+        <var-decl name='key' type-id='type-id-103' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
         <var-decl name='node' type-id='type-id-97' visibility='default' filepath='libtess/priorityq-heap.h' line='84' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='PQHeapKey' type-id='type-id-13' filepath='libtess/priorityq-heap.h' line='79' column='1' id='type-id-102'/>
-    <typedef-decl name='PQhandleElem' type-id='type-id-101' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-103'/>
-    <pointer-type-def type-id='type-id-103' size-in-bits='64' id='type-id-96'/>
+    <typedef-decl name='PQHeapKey' type-id='type-id-13' filepath='libtess/priorityq-heap.h' line='79' column='1' id='type-id-103'/>
+    <typedef-decl name='PQhandleElem' type-id='type-id-102' filepath='libtess/priorityq-heap.h' line='84' column='1' id='type-id-101'/>
+    <pointer-type-def type-id='type-id-101' size-in-bits='64' id='type-id-96'/>
     <pointer-type-def type-id='type-id-104' size-in-bits='64' id='type-id-98'/>
     <typedef-decl name='PriorityQHeap' type-id='type-id-94' filepath='libtess/priorityq-heap.h' line='81' column='1' id='type-id-105'/>
     <pointer-type-def type-id='type-id-105' size-in-bits='64' id='type-id-89'/>
-    <typedef-decl name='PQSortKey' type-id='type-id-102' filepath='libtess/priorityq.h' line='93' column='1' id='type-id-106'/>
+    <typedef-decl name='PQSortKey' type-id='type-id-103' filepath='libtess/priorityq.h' line='93' column='1' id='type-id-106'/>
     <pointer-type-def type-id='type-id-106' size-in-bits='64' id='type-id-90'/>
     <pointer-type-def type-id='type-id-90' size-in-bits='64' id='type-id-91'/>
     <typedef-decl name='PQSortHandle' type-id='type-id-97' filepath='libtess/priorityq.h' line='94' column='1' id='type-id-92'/>
@@ -983,7 +983,7 @@
       <subrange length='8'/>
     </array-type-def>
     <typedef-decl name='__jmp_buf' type-id='type-id-126' filepath='/usr/include/bits/setjmp.h' line='32' column='1' id='type-id-124'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/bits/sigset.h' line='30' column='1' id='type-id-127'>
+    <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-125' visibility='default' filepath='/usr/include/bits/sigset.h' line='30' column='1' id='type-id-127'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__val' type-id='type-id-128' visibility='default' filepath='/usr/include/bits/sigset.h' line='31' column='1'/>
       </data-member>
@@ -1007,8 +1007,8 @@
       <return type-id='type-id-12'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-104'>
-      <parameter type-id='type-id-102'/>
-      <parameter type-id='type-id-102'/>
+      <parameter type-id='type-id-103'/>
+      <parameter type-id='type-id-103'/>
       <return type-id='type-id-9'/>
     </function-type>
     <function-type size-in-bits='64' id='type-id-107'>
@@ -1066,7 +1066,7 @@
     </function-decl>
     <function-decl name='__gl_pqHeapExtractMin' filepath='libtess/priorityq-heap.c' line='211' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89' name='pq' filepath='libtess/priorityq-heap.c' line='211' column='1'/>
-      <return type-id='type-id-102'/>
+      <return type-id='type-id-103'/>
     </function-decl>
     <function-decl name='__gl_pqHeapDelete' filepath='libtess/priorityq-heap.c' line='234' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89' name='pq' filepath='libtess/priorityq-heap.c' line='234' column='1'/>
@@ -1092,7 +1092,7 @@
     </function-decl>
     <function-decl name='__gl_pqHeapInsert' filepath='libtess/priorityq-heap.c' line='163' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-89' name='pq' filepath='libtess/priorityq-heap.c' line='163' column='1'/>
-      <parameter type-id='type-id-102' name='keyNew' filepath='libtess/priorityq-heap.c' line='163' column='1'/>
+      <parameter type-id='type-id-103' name='keyNew' filepath='libtess/priorityq-heap.c' line='163' column='1'/>
       <return type-id='type-id-97'/>
     </function-decl>
     <function-decl name='__gl_pqSortInsert' filepath='libtess/priorityq.c' line='173' column='1' visibility='default' binding='global' size-in-bits='64'>
@@ -2290,7 +2290,7 @@
     <qualified-type-def type-id='type-id-110' const='yes' id='type-id-167'/>
     <var-decl name='ZERO' type-id='type-id-167' mangled-name='_ZN6Mesher4ZEROE' visibility='default' filepath='libnurbs/internals/mesher.h' line='55' column='1'/>
     <var-decl name='MAXSTRIPSIZE' type-id='type-id-166' mangled-name='_ZN12CoveAndTiler12MAXSTRIPSIZEE' visibility='default' filepath='libnurbs/internals/coveandtiler.h' line='53' column='1'/>
-    <array-type-def dimensions='0' type-id='type-id-149' id='type-id-168'/>
+    <array-type-def dimensions='0' type-id='type-id-149' size-in-bits='infinite' id='type-id-168'/>
     <var-decl name='gl_Bernstein' type-id='type-id-168' mangled-name='_ZN14ArcTessellator12gl_BernsteinE' visibility='default' filepath='libnurbs/internals/arctess.h' line='60' column='1'/>
     <function-type size-in-bits='64' id='type-id-163'>
       <parameter type-id='type-id-158'/>
@@ -34412,7 +34412,7 @@
         </function-decl>
       </member-function>
     </class-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='libnurbs/internals/displaylist.h' line='46' column='1' id='type-id-330'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-281' visibility='default' filepath='libnurbs/internals/displaylist.h' line='46' column='1' id='type-id-330'>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__pfn' type-id='type-id-354' visibility='default' filepath='libnurbs/internals/displaylist.h' line='46' column='1'/>
       </data-member>

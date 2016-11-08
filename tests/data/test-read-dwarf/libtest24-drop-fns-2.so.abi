@@ -1533,7 +1533,7 @@
     <pointer-type-def type-id='type-id-4' size-in-bits='64' id='type-id-7'/>
     <qualified-type-def type-id='type-id-10' const='yes' id='type-id-28'/>
     <typedef-decl name='_Atomic_word' type-id='type-id-39' filepath='/usr/include/c++/5.3.1/x86_64-redhat-linux/bits/atomic_word.h' line='32' column='1' id='type-id-26'/>
-    <array-type-def dimensions='0' type-id='type-id-47' id='type-id-30'/>
+    <array-type-def dimensions='0' type-id='type-id-47' size-in-bits='infinite' id='type-id-30'/>
     <reference-type-def kind='lvalue' type-id='type-id-27' size-in-bits='64' id='type-id-31'/>
     <type-decl name='bool' size-in-bits='8' id='type-id-33'/>
     <qualified-type-def type-id='type-id-27' const='yes' id='type-id-78'/>
@@ -1602,14 +1602,14 @@
       <return type-id='type-id-81'/>
     </function-decl>
     <typedef-decl name='size_t' type-id='type-id-47' filepath='/usr/lib/gcc/x86_64-redhat-linux/5.3.1/include/stddef.h' line='216' column='1' id='type-id-89'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-90'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-90' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-91'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-91'>
+        <union-decl name='__anonymous_union__' size-in-bits='32' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='86' column='1' id='type-id-92'>
           <data-member access='private'>
             <var-decl name='__wch' type-id='type-id-80' visibility='default' filepath='/usr/include/wchar.h' line='88' column='1'/>
           </data-member>
           <data-member access='private'>
-            <var-decl name='__wchb' type-id='type-id-92' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
+            <var-decl name='__wchb' type-id='type-id-93' visibility='default' filepath='/usr/include/wchar.h' line='92' column='1'/>
           </data-member>
         </union-decl>
       </member-type>
@@ -1617,14 +1617,14 @@
         <var-decl name='__count' type-id='type-id-39' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='__value' type-id='type-id-91' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
+        <var-decl name='__value' type-id='type-id-92' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
       </data-member>
     </class-decl>
-    <array-type-def dimensions='1' type-id='type-id-38' size-in-bits='32' id='type-id-92'>
+    <array-type-def dimensions='1' type-id='type-id-38' size-in-bits='32' id='type-id-93'>
       <subrange length='4'/>
     </array-type-def>
-    <typedef-decl name='__mbstate_t' type-id='type-id-90' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-93'/>
-    <typedef-decl name='mbstate_t' type-id='type-id-93' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-94'/>
+    <typedef-decl name='__mbstate_t' type-id='type-id-91' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-90'/>
+    <typedef-decl name='mbstate_t' type-id='type-id-90' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-94'/>
     <pointer-type-def type-id='type-id-94' size-in-bits='64' id='type-id-95'/>
     <function-decl name='mbrlen' filepath='/usr/include/wchar.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-37'/>

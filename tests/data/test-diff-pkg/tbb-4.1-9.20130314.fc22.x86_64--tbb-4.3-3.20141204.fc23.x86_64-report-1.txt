@@ -58,14 +58,12 @@
         in referenced type 'class tbb::queuing_mutex' at queuing_mutex.h:45:1:
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
-          no data member change (1 filtered);
 
     [C]'method void tbb::queuing_rw_mutex::scoped_lock::acquire(tbb::queuing_rw_mutex&, bool)' at queuing_rw_mutex.h:95:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::queuing_rw_mutex&' has sub-type changes:
         in referenced type 'class tbb::queuing_rw_mutex' at queuing_rw_mutex.h:47:1:
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
-          no data member change (1 filtered);
 
     [C]'method void tbb::recursive_mutex::scoped_lock::internal_acquire(tbb::recursive_mutex&)' at recursive_mutex.h:139:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::recursive_mutex&' has sub-type changes:

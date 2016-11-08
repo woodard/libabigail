@@ -2691,7 +2691,7 @@
         </member-function>
       </class-decl>
     </namespace-decl>
-    <array-type-def dimensions='0' type-id='type-id-7' id='type-id-10'/>
+    <array-type-def dimensions='0' type-id='type-id-7' size-in-bits='infinite' id='type-id-10'/>
     <type-decl name='unnamed-enum-underlying-type' is-anonymous='yes' size-in-bits='32' alignment-in-bits='32' id='type-id-12'/>
     <qualified-type-def type-id='type-id-11' const='yes' id='type-id-14'/>
     <type-decl name='long long unsigned int' size-in-bits='64' id='type-id-5'/>
@@ -24081,12 +24081,12 @@
           <var-decl name='revents' type-id='type-id-261' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='482' column='1'/>
         </data-member>
       </class-decl>
-      <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='379' column='1' id='type-id-634'>
+      <class-decl name='__anonymous_struct__' size-in-bits='1024' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-634' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='379' column='1' id='type-id-635'>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='fds_bits' type-id='type-id-623' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='380' column='1'/>
         </data-member>
       </class-decl>
-      <typedef-decl name='__sanitizer___kernel_fd_set' type-id='type-id-634' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='381' column='1' id='type-id-635'/>
+      <typedef-decl name='__sanitizer___kernel_fd_set' type-id='type-id-635' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='381' column='1' id='type-id-634'/>
       <class-decl name='__sanitizer___sysctl_args' size-in-bits='640' is-struct='yes' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='129' column='1' id='type-id-636'>
         <data-member access='public' layout-offset-in-bits='0'>
           <var-decl name='name' type-id='type-id-462' visibility='default' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_platform_limits_posix.h' line='130' column='1'/>
@@ -27588,7 +27588,7 @@
       <parameter type-id='type-id-266' name='timeout' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1898' column='1'/>
       <return type-id='type-id-9'/>
     </function-decl>
-    <pointer-type-def type-id='type-id-635' size-in-bits='64' id='type-id-710'/>
+    <pointer-type-def type-id='type-id-634' size-in-bits='64' id='type-id-710'/>
     <function-decl name='__sanitizer_syscall_pre_impl_select' mangled-name='__sanitizer_syscall_pre_impl_select' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1904' column='1' visibility='default' binding='global' size-in-bits='64' elf-symbol-id='__sanitizer_syscall_pre_impl_select'>
       <parameter type-id='type-id-266' name='n' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1904' column='1'/>
       <parameter type-id='type-id-710' name='inp' filepath='../../.././libsanitizer/sanitizer_common/sanitizer_common_syscalls.inc' line='1904' column='1'/>
@@ -36875,15 +36875,15 @@
     </class-decl>
     <typedef-decl name='uint64_t' type-id='type-id-2' filepath='/usr/include/stdint.h' line='56' column='1' id='type-id-1541'/>
     <typedef-decl name='Elf64_Addr' type-id='type-id-1541' filepath='/usr/include/elf.h' line='50' column='1' id='type-id-1538'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='448' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/elf.h' line='551' column='1' id='type-id-1542'>
+    <class-decl name='__anonymous_struct__' size-in-bits='448' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-1542' visibility='default' filepath='/usr/include/elf.h' line='551' column='1' id='type-id-1543'>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='p_type' type-id='type-id-1543' visibility='default' filepath='/usr/include/elf.h' line='552' column='1'/>
+        <var-decl name='p_type' type-id='type-id-1544' visibility='default' filepath='/usr/include/elf.h' line='552' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='p_flags' type-id='type-id-1543' visibility='default' filepath='/usr/include/elf.h' line='553' column='1'/>
+        <var-decl name='p_flags' type-id='type-id-1544' visibility='default' filepath='/usr/include/elf.h' line='553' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='p_offset' type-id='type-id-1544' visibility='default' filepath='/usr/include/elf.h' line='554' column='1'/>
+        <var-decl name='p_offset' type-id='type-id-1545' visibility='default' filepath='/usr/include/elf.h' line='554' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='128'>
         <var-decl name='p_vaddr' type-id='type-id-1538' visibility='default' filepath='/usr/include/elf.h' line='555' column='1'/>
@@ -36892,21 +36892,21 @@
         <var-decl name='p_paddr' type-id='type-id-1538' visibility='default' filepath='/usr/include/elf.h' line='556' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='256'>
-        <var-decl name='p_filesz' type-id='type-id-1545' visibility='default' filepath='/usr/include/elf.h' line='557' column='1'/>
+        <var-decl name='p_filesz' type-id='type-id-1546' visibility='default' filepath='/usr/include/elf.h' line='557' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='320'>
-        <var-decl name='p_memsz' type-id='type-id-1545' visibility='default' filepath='/usr/include/elf.h' line='558' column='1'/>
+        <var-decl name='p_memsz' type-id='type-id-1546' visibility='default' filepath='/usr/include/elf.h' line='558' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='384'>
-        <var-decl name='p_align' type-id='type-id-1545' visibility='default' filepath='/usr/include/elf.h' line='559' column='1'/>
+        <var-decl name='p_align' type-id='type-id-1546' visibility='default' filepath='/usr/include/elf.h' line='559' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='uint32_t' type-id='type-id-26' filepath='/usr/include/stdint.h' line='52' column='1' id='type-id-1546'/>
-    <typedef-decl name='Elf64_Word' type-id='type-id-1546' filepath='/usr/include/elf.h' line='39' column='1' id='type-id-1543'/>
-    <typedef-decl name='Elf64_Off' type-id='type-id-1541' filepath='/usr/include/elf.h' line='54' column='1' id='type-id-1544'/>
-    <typedef-decl name='Elf64_Xword' type-id='type-id-1541' filepath='/usr/include/elf.h' line='45' column='1' id='type-id-1545'/>
-    <typedef-decl name='Elf64_Phdr' type-id='type-id-1542' filepath='/usr/include/elf.h' line='560' column='1' id='type-id-1547'/>
-    <qualified-type-def type-id='type-id-1547' const='yes' id='type-id-1548'/>
+    <typedef-decl name='uint32_t' type-id='type-id-26' filepath='/usr/include/stdint.h' line='52' column='1' id='type-id-1547'/>
+    <typedef-decl name='Elf64_Word' type-id='type-id-1547' filepath='/usr/include/elf.h' line='39' column='1' id='type-id-1544'/>
+    <typedef-decl name='Elf64_Off' type-id='type-id-1541' filepath='/usr/include/elf.h' line='54' column='1' id='type-id-1545'/>
+    <typedef-decl name='Elf64_Xword' type-id='type-id-1541' filepath='/usr/include/elf.h' line='45' column='1' id='type-id-1546'/>
+    <typedef-decl name='Elf64_Phdr' type-id='type-id-1543' filepath='/usr/include/elf.h' line='560' column='1' id='type-id-1542'/>
+    <qualified-type-def type-id='type-id-1542' const='yes' id='type-id-1548'/>
     <pointer-type-def type-id='type-id-1548' size-in-bits='64' id='type-id-1539'/>
     <typedef-decl name='uint16_t' type-id='type-id-470' filepath='/usr/include/stdint.h' line='50' column='1' id='type-id-1549'/>
     <typedef-decl name='Elf64_Half' type-id='type-id-1549' filepath='/usr/include/elf.h' line='34' column='1' id='type-id-1540'/>
@@ -39255,11 +39255,11 @@
         <var-decl name='l_prev' type-id='type-id-1605' visibility='default' filepath='/usr/include/link.h' line='93' column='1'/>
       </data-member>
     </class-decl>
-    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/elf.h' line='643' column='1' id='type-id-1619'>
+    <class-decl name='__anonymous_struct__' size-in-bits='128' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-1619' visibility='default' filepath='/usr/include/elf.h' line='643' column='1' id='type-id-1620'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/usr/include/elf.h' line='646' column='1' id='type-id-1620'>
+        <union-decl name='__anonymous_union__' size-in-bits='64' is-anonymous='yes' visibility='default' filepath='/usr/include/elf.h' line='646' column='1' id='type-id-1621'>
           <data-member access='private'>
-            <var-decl name='d_val' type-id='type-id-1545' visibility='default' filepath='/usr/include/elf.h' line='647' column='1'/>
+            <var-decl name='d_val' type-id='type-id-1546' visibility='default' filepath='/usr/include/elf.h' line='647' column='1'/>
           </data-member>
           <data-member access='private'>
             <var-decl name='d_ptr' type-id='type-id-1538' visibility='default' filepath='/usr/include/elf.h' line='648' column='1'/>
@@ -39267,16 +39267,16 @@
         </union-decl>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
-        <var-decl name='d_tag' type-id='type-id-1621' visibility='default' filepath='/usr/include/elf.h' line='644' column='1'/>
+        <var-decl name='d_tag' type-id='type-id-1622' visibility='default' filepath='/usr/include/elf.h' line='644' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='64'>
-        <var-decl name='d_un' type-id='type-id-1620' visibility='default' filepath='/usr/include/elf.h' line='649' column='1'/>
+        <var-decl name='d_un' type-id='type-id-1621' visibility='default' filepath='/usr/include/elf.h' line='649' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='int64_t' type-id='type-id-266' filepath='/usr/include/sys/types.h' line='198' column='1' id='type-id-1622'/>
-    <typedef-decl name='Elf64_Sxword' type-id='type-id-1622' filepath='/usr/include/elf.h' line='46' column='1' id='type-id-1621'/>
-    <typedef-decl name='Elf64_Dyn' type-id='type-id-1619' filepath='/usr/include/elf.h' line='650' column='1' id='type-id-1623'/>
-    <pointer-type-def type-id='type-id-1623' size-in-bits='64' id='type-id-1618'/>
+    <typedef-decl name='int64_t' type-id='type-id-266' filepath='/usr/include/sys/types.h' line='198' column='1' id='type-id-1623'/>
+    <typedef-decl name='Elf64_Sxword' type-id='type-id-1623' filepath='/usr/include/elf.h' line='46' column='1' id='type-id-1622'/>
+    <typedef-decl name='Elf64_Dyn' type-id='type-id-1620' filepath='/usr/include/elf.h' line='650' column='1' id='type-id-1619'/>
+    <pointer-type-def type-id='type-id-1619' size-in-bits='64' id='type-id-1618'/>
     <pointer-type-def type-id='type-id-1617' size-in-bits='64' id='type-id-1605'/>
     <pointer-type-def type-id='type-id-1624' size-in-bits='64' id='type-id-1606'/>
     <pointer-type-def type-id='type-id-1607' size-in-bits='64' id='type-id-1609'/>

@@ -155,19 +155,19 @@
     <type-decl name='char' size-in-bits='8' id='type-id-28'/>
     <qualified-type-def type-id='type-id-28' const='yes' id='type-id-11'/>
     <pointer-type-def type-id='type-id-11' size-in-bits='64' id='type-id-29'/>
-    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-30'>
+    <class-decl name='__anonymous_struct__' size-in-bits='64' is-struct='yes' is-anonymous='yes' naming-typedef-id='type-id-30' visibility='default' filepath='/usr/include/wchar.h' line='83' column='1' id='type-id-31'>
       <member-type access='public'>
-        <union-decl name='__anonymous_union__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-31'/>
+        <union-decl name='__anonymous_union__' is-anonymous='yes' visibility='default' is-declaration-only='yes' id='type-id-32'/>
       </member-type>
       <data-member access='public' layout-offset-in-bits='0'>
         <var-decl name='__count' type-id='type-id-18' visibility='default' filepath='/usr/include/wchar.h' line='84' column='1'/>
       </data-member>
       <data-member access='public' layout-offset-in-bits='32'>
-        <var-decl name='__value' type-id='type-id-31' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
+        <var-decl name='__value' type-id='type-id-32' visibility='default' filepath='/usr/include/wchar.h' line='93' column='1'/>
       </data-member>
     </class-decl>
-    <typedef-decl name='__mbstate_t' type-id='type-id-30' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-32'/>
-    <typedef-decl name='mbstate_t' type-id='type-id-32' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-33'/>
+    <typedef-decl name='__mbstate_t' type-id='type-id-31' filepath='/usr/include/wchar.h' line='94' column='1' id='type-id-30'/>
+    <typedef-decl name='mbstate_t' type-id='type-id-30' filepath='/usr/include/wchar.h' line='106' column='1' id='type-id-33'/>
     <pointer-type-def type-id='type-id-33' size-in-bits='64' id='type-id-34'/>
     <function-decl name='mbrlen' filepath='/usr/include/wchar.h' line='376' column='1' visibility='default' binding='global' size-in-bits='64'>
       <parameter type-id='type-id-29'/>
@@ -1751,7 +1751,7 @@
       <class-decl name='__normal_iterator&lt;char*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-83'/>
       <class-decl name='__normal_iterator&lt;char const*, std::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;' visibility='default' is-declaration-only='yes' id='type-id-85'/>
     </namespace-decl>
-    <array-type-def dimensions='0' type-id='type-id-26' id='type-id-93'/>
+    <array-type-def dimensions='0' type-id='type-id-26' size-in-bits='infinite' id='type-id-93'/>
     <reference-type-def kind='lvalue' type-id='type-id-91' size-in-bits='64' id='type-id-94'/>
     <type-decl name='bool' size-in-bits='8' id='type-id-95'/>
     <pointer-type-def type-id='type-id-91' size-in-bits='64' id='type-id-96'/>

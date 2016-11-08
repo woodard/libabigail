@@ -27741,7 +27741,7 @@
     <qualified-type-def type-id='type-id-117' const='yes' id='type-id-372'/>
     <reference-type-def kind='lvalue' type-id='type-id-372' size-in-bits='64' id='type-id-119'/>
     <pointer-type-def type-id='type-id-372' size-in-bits='64' id='type-id-120'/>
-    <array-type-def dimensions='0' type-id='type-id-120' id='type-id-373'/>
+    <array-type-def dimensions='0' type-id='type-id-120' size-in-bits='infinite' id='type-id-373'/>
     <var-decl name='_S_id_ctype' type-id='type-id-373' mangled-name='_ZNSt6locale5_Impl11_S_id_ctypeE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_classes.h' line='490' column='1'/>
     <var-decl name='_S_id_numeric' type-id='type-id-373' mangled-name='_ZNSt6locale5_Impl13_S_id_numericE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_classes.h' line='491' column='1'/>
     <var-decl name='_S_id_collate' type-id='type-id-373' mangled-name='_ZNSt6locale5_Impl13_S_id_collateE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_classes.h' line='492' column='1'/>
@@ -27750,7 +27750,7 @@
     <var-decl name='_S_id_messages' type-id='type-id-373' mangled-name='_ZNSt6locale5_Impl14_S_id_messagesE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_classes.h' line='495' column='1'/>
     <qualified-type-def type-id='type-id-120' const='yes' id='type-id-374'/>
     <pointer-type-def type-id='type-id-374' size-in-bits='64' id='type-id-375'/>
-    <array-type-def dimensions='0' type-id='type-id-375' id='type-id-376'/>
+    <array-type-def dimensions='0' type-id='type-id-375' size-in-bits='infinite' id='type-id-376'/>
     <var-decl name='_S_facet_categories' type-id='type-id-376' mangled-name='_ZNSt6locale5_Impl19_S_facet_categoriesE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/bits/locale_classes.h' line='496' column='1'/>
     <qualified-type-def type-id='type-id-69' const='yes' id='type-id-377'/>
     <var-decl name='__min' type-id='type-id-377' mangled-name='_ZN9__gnu_cxx24__numeric_traits_integerImE5__minE' visibility='default' filepath='/usr/lib/gcc/x86_64-redhat-linux/4.4.7/../../../../include/c++/4.4.7/ext/numeric_traits.h' line='56' column='1'/>
