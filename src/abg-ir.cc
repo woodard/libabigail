@@ -5470,8 +5470,21 @@ types_are_compatible(const type_base_sptr type1,
   if (!type1 || !type2)
     return false;
 
-  type_base_sptr t1 = strip_typedef(type1);
-  type_base_sptr t2 = strip_typedef(type2);
+  if (type1 == type2)
+    return true;
+
+  // Normally we should strip typedefs entirely, but this is
+  // potentially costly, especially on binaries with huge changesets
+  // like the Linux Kernel.  So we just get the leaf types for now.
+  //
+  // Maybe there should be an option by which users accepts to pay the
+  // CPU usage toll in exchange for finer filtering?
+
+  // type_base_sptr t1 = strip_typedef(type1);
+  // type_base_sptr t2 = strip_typedef(type2);
+
+  type_base_sptr t1 = peel_typedef_type(type1);
+  type_base_sptr t2 = peel_typedef_type(type2);
 
   return t1 == t2;
 }
@@ -5866,7 +5879,16 @@ is_compatible_with_class_type(const type_base_sptr& t)
 {
   if (!t)
     return class_decl_sptr();
-  type_base_sptr ty = strip_typedef(t);
+
+  // Normally we should strip typedefs entirely, but this is
+  // potentially costly, especially on binaries with huge changesets
+  // like the Linux Kernel.  So we just get the leaf types for now.
+  //
+  // Maybe there should be an option by which users accepts to pay the
+  // CPU usage toll in exchange for finer filtering?
+
+  // type_base_sptr ty = strip_typedef(t);
+  type_base_sptr ty = peel_typedef_type(t);;
   return is_class_type(ty);
 }
 
