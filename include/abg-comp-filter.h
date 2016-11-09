@@ -40,7 +40,7 @@ namespace filtering
 {
 
 bool
-has_harmless_name_change(decl_base_sptr f, decl_base_sptr s);
+has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s);
 
 bool
 has_virtual_mem_fn_change(const function_decl_diff* diff);

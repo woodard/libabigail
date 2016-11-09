@@ -2453,7 +2453,7 @@ struct decl_base::priv
   bool			in_pub_sym_tab_;
   bool			is_anonymous_;
   location		location_;
-  context_rel_sptr	context_;
+  context_rel		*context_;
   interned_string	name_;
   interned_string	qualified_parent_name_;
   // This temporary qualified name is the cache used for the qualified
@@ -2468,6 +2468,7 @@ struct decl_base::priv
   priv()
     : in_pub_sym_tab_(false),
       is_anonymous_(true),
+      context_(),
       visibility_(VISIBILITY_DEFAULT)
   {}
 
@@ -2475,6 +2476,7 @@ struct decl_base::priv
        interned_string linkage_name, visibility vis)
     : in_pub_sym_tab_(false),
       location_(locus),
+      context_(),
       name_(name),
       linkage_name_(linkage_name),
       visibility_(vis)
@@ -2487,8 +2489,14 @@ struct decl_base::priv
     : in_pub_sym_tab_(false),
       is_anonymous_(true),
       location_(l),
+      context_(),
       visibility_(VISIBILITY_DEFAULT)
   {}
+
+  ~priv()
+  {
+    delete context_;
+  }
 };// end struct decl_base::priv
 
 /// Constructor for the @ref decl_base type.
@@ -2609,17 +2617,17 @@ decl_base::set_temporary_qualified_name(const interned_string& n) const
 ///@return the context relationship for the current decl_base.
 const context_rel*
 decl_base::get_context_rel() const
-{return priv_->context_.get();}
+{return priv_->context_;}
 
 ///Getter for the context relationship.
 ///
 ///@return the context relationship for the current decl_base.
 context_rel*
 decl_base::get_context_rel()
-{return priv_->context_.get();}
+{return priv_->context_;}
 
 void
-decl_base::set_context_rel(context_rel_sptr c)
+decl_base::set_context_rel(context_rel *c)
 {priv_->context_ = c;}
 
 /// Get the hash of a decl.  If the hash hasn't been computed yet,
@@ -3008,7 +3016,7 @@ void
 decl_base::set_scope(scope_decl* scope)
 {
   if (!priv_->context_)
-    priv_->context_.reset(new context_rel(scope));
+    priv_->context_ = new context_rel(scope);
   else
     priv_->context_->set_scope(scope);
 }
@@ -10444,10 +10452,7 @@ void
 var_decl::set_scope(scope_decl* scope)
 {
   if (!get_context_rel())
-    {
-      context_rel_sptr c(new dm_context_rel(scope));
-      set_context_rel(c);
-    }
+    set_context_rel(new dm_context_rel(scope));
   else
     get_context_rel()->set_scope(scope);
 }
@@ -10475,6 +10480,18 @@ bool
 equals(const var_decl& l, const var_decl& r, change_kind* k)
 {
   bool result = true;
+
+  // First test types of variables.  This should be fast because in
+  // the general case, most types should be canonicalized.
+  if (*l.get_naked_type() != *r.get_naked_type())
+    {
+      result = false;
+      if (k)
+	*k |= SUBTYPE_CHANGE_KIND;
+      else
+	return false;
+    }
+
   // If there are underlying elf symbols for these variables,
   // compare them.  And then compare the other parts.
   const elf_symbol_sptr &s0 = l.get_symbol(), &s1 = r.get_symbol();
@@ -10538,15 +10555,6 @@ equals(const var_decl& l, const var_decl& r, change_kind* k)
       result = false;
       if (k)
 	*k |= LOCAL_CHANGE_KIND;
-      else
-	return false;
-    }
-
-  if (*l.get_naked_type() != *r.get_naked_type())
-    {
-      result = false;
-      if (k)
-	*k |= SUBTYPE_CHANGE_KIND;
       else
 	return false;
     }
@@ -14087,8 +14095,7 @@ method_decl::method_decl(const string&		name,
     function_decl(name, static_pointer_cast<function_type>(type),
 		  declared_inline, locus, linkage_name, vis, bind)
 {
-  context_rel_sptr c(new mem_fn_context_rel(0));
-  set_context_rel(c);
+  set_context_rel(new mem_fn_context_rel(0));
   set_member_function_is_const(*this, type->get_is_const());
 }
 
@@ -14122,8 +14129,7 @@ method_decl::method_decl(const string&		name,
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, linkage_name, vis, bind)
 {
-  context_rel_sptr c(new mem_fn_context_rel(0));
-  set_context_rel(c);
+  set_context_rel(new mem_fn_context_rel(0));
 }
 
 /// A constructor for instances of method_decl.
@@ -14156,8 +14162,7 @@ method_decl::method_decl(const string&		name,
 		  (dynamic_pointer_cast<method_type>(type)),
 		  declared_inline, locus, linkage_name, vis, bind)
 {
-  context_rel_sptr c(new mem_fn_context_rel(0));
-  set_context_rel(c);
+  set_context_rel(new mem_fn_context_rel(0));
 }
 
 /// Set the linkage name of the method.
@@ -14196,10 +14201,7 @@ void
 method_decl::set_scope(scope_decl* scope)
 {
   if (!get_context_rel())
-    {
-      context_rel_sptr c(new mem_fn_context_rel(scope));
-      set_context_rel(c);
-    }
+    set_context_rel(new mem_fn_context_rel(scope));
   else
     get_context_rel()->set_scope(scope);
 }

@@ -192,7 +192,7 @@ has_type_size_change(const diff* diff)
 ///
 /// @return true iff the access specifier changed.
 static bool
-access_changed(decl_base_sptr f, decl_base_sptr s)
+access_changed(const decl_base_sptr& f, const decl_base_sptr& s)
 {
   if (!is_member_decl(f)
       || !is_member_decl(s))
@@ -219,8 +219,8 @@ access_changed(decl_base_sptr f, decl_base_sptr s)
 ///
 /// @return true if the test is positive, false otherwise.
 static bool
-function_name_changed_but_not_symbol(const function_decl_sptr f,
-				     const function_decl_sptr s)
+function_name_changed_but_not_symbol(const function_decl_sptr& f,
+				     const function_decl_sptr& s)
 {
   if (!f || !s)
     return false;
@@ -294,7 +294,8 @@ data_member_offset_changed(decl_base_sptr f, decl_base_sptr s)
 ///
 /// @param s the second version of the non-static data member.
 static bool
-non_static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
+non_static_data_member_type_size_changed(const decl_base_sptr& f,
+					 const decl_base_sptr& s)
 {
   if (!is_member_decl(f)
       || !is_member_decl(s))
@@ -318,7 +319,8 @@ non_static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
 ///
 /// @param s the second version of the static data member.
 static bool
-static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
+static_data_member_type_size_changed(const decl_base_sptr& f,
+				     const decl_base_sptr& s)
 {
   if (!is_member_decl(f)
       || !is_member_decl(s))
@@ -343,7 +345,7 @@ static_data_member_type_size_changed(decl_base_sptr f, decl_base_sptr s)
 ///
 /// @return true if d1 and d2 are different but compatible.
 static bool
-is_compatible_change(decl_base_sptr d1, decl_base_sptr d2)
+is_compatible_change(const decl_base_sptr& d1, const decl_base_sptr& d2)
 {
   if ((d1 && d2)
       && (d1 != d2)
@@ -360,7 +362,7 @@ is_compatible_change(decl_base_sptr d1, decl_base_sptr d2)
 ///
 /// @return true if d1 and d2 have different names.
 static bool
-decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
+decl_name_changed(const decl_base_sptr& d1, const decl_base_sptr& d2)
 {
   string d1_name, d2_name;
 
@@ -383,7 +385,7 @@ decl_name_changed(decl_base_sptr d1, decl_base_sptr d2)
 ///
 /// @return true iff decl @p s represents a harmless change over @p f.
 bool
-has_harmless_name_change(decl_base_sptr f, decl_base_sptr s)
+has_harmless_name_change(const decl_base_sptr& f, const decl_base_sptr& s)
 {
   return (decl_name_changed(f, s)
 	  && ((is_typedef(f) && is_typedef(s))

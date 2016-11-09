@@ -1112,7 +1112,7 @@ protected:
   get_context_rel();
 
   void
-  set_context_rel(context_rel_sptr c);
+  set_context_rel(context_rel *c);
 
 public:
   decl_base(const environment* e,
