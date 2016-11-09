@@ -86,21 +86,21 @@ class harmless_filter : public filter_base
   visit_end(diff*);
 }; // end class harmless_filter
 
-class harmful_filter;
+class harmless_harmful_filter;
 /// A convenience typedef for a shared pointer to harmful_filter.
-typedef shared_ptr<harmful_filter> harmful_filter_sptr;
+typedef shared_ptr<harmless_harmful_filter> harmful_harmless_filter_sptr;
 
 /// A filter that walks the diff nodes tree and tags relevant diff
-/// nodes into categories considered to represent potentially harmful
-/// changes.
-class harmful_filter : public filter_base
+/// nodes into categories considered to represent potentially harmless
+/// or harmful changes.
+class harmless_harmful_filter : public filter_base
 {
   virtual bool
   visit(diff*, bool);
 
   virtual void
   visit_end(diff*);
-}; // end class harmful_filter
+}; // end class harmless_harmful_filter
 
 } // end namespace filtering
 } // end namespace comparison

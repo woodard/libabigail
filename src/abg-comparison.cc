@@ -557,11 +557,14 @@ diff_context::diff_context()
   // Setup all the diff output filters we have.
   filtering::filter_base_sptr f;
 
-  f.reset(new filtering::harmless_filter);
+  f.reset(new filtering::harmless_harmful_filter);
   add_diff_filter(f);
 
-  f.reset(new filtering::harmful_filter);
-  add_diff_filter(f);
+  // f.reset(new filtering::harmless_filter);
+  // add_diff_filter(f);
+
+  // f.reset(new filtering::harmful_filter);
+  // add_diff_filter(f);
 }
 
 /// Set the corpora that are being compared into the context, so that
