@@ -277,6 +277,11 @@ struct function_suppression::priv
   mutable sptr_utils::regex_t_sptr	symbol_version_regex_;
   bool					allow_other_aliases_;
 
+  priv():
+    change_kind_(ALL_CHANGE_KIND),
+    allow_other_aliases_(true)
+  {}
+
   priv(const string&			name,
        const string&			name_regex_str,
        const string&			return_type_name,

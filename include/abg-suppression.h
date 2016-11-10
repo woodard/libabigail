@@ -401,9 +401,6 @@ class function_suppression : public suppression_base
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
 
-  // Forbid this.
-  function_suppression();
-
 public:
 
   priv_sptr priv_;
@@ -434,6 +431,8 @@ public:
 		       | ADDED_FUNCTION_CHANGE_KIND
 		       | DELETED_FUNCTION_CHANGE_KIND)
   };
+
+  function_suppression();
 
   function_suppression(const string&		label,
 		       const string&		name,

@@ -56,6 +56,7 @@ using abigail::tools_utils::emit_prefix;
 using abigail::tools_utils::check_file;
 using abigail::tools_utils::guess_file_type;
 using abigail::tools_utils::gen_suppr_spec_from_headers;
+using abigail::tools_utils::gen_suppr_spec_from_kernel_abi_whitelist;
 using abigail::tools_utils::load_default_system_suppressions;
 using abigail::tools_utils::load_default_user_suppressions;
 using abigail::tools_utils::abidiff_status;
@@ -69,6 +70,7 @@ struct options
   string		file1;
   string		file2;
   vector<string>	suppression_paths;
+  vector<string>	kernel_abi_whitelist_paths;
   vector<string>	drop_fn_regex_patterns;
   vector<string>	drop_var_regex_patterns;
   vector<string>	keep_fn_regex_patterns;
@@ -151,6 +153,8 @@ display_usage(const string& prog_name, ostream& out)
     "internal representation\n"
     << " --no-linux-kernel-mode  don't consider the input binaries as "
        "linux kernel binaries\n"
+    << " --linux-kernel-abi-whitelist|--lkaw  path to a "
+       "linux kernel abi whitelist\n"
     << " --stat  only display the diff stats\n"
     << " --symtabs  only display the symbol tables of the corpora\n"
     << " --no-default-suppression  don't load any "
@@ -280,8 +284,19 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.headers_dir2 = argv[j];
 	  ++i;
 	}
-      else if (!strcmp(argv[i], "--no-linux-kernel-mode"))
-	opts.linux_kernel_mode = false;
+      else if (!strcmp(argv[i], "--linux-kernel-abi-whitelist")
+	       || !strcmp(argv[i], "--lkaw"))
+	{
+	  int j = i + 1;
+	  if (j >= argc)
+	    {
+	      opts.missing_operand = true;
+	      opts.wrong_option = argv[i];
+	      return true;
+	    }
+	  opts.kernel_abi_whitelist_paths.push_back(argv[j]);
+	  ++i;
+	}
       else if (!strcmp(argv[i], "--stat"))
 	opts.show_stats_only = true;
       else if (!strcmp(argv[i], "--symtabs"))
@@ -533,6 +548,13 @@ maybe_check_suppression_files(const options& opts)
     if (!check_file(*i, cerr, "abidiff"))
       return false;
 
+  for (vector<string>::const_iterator i =
+	 opts.kernel_abi_whitelist_paths.begin();
+       i != opts.kernel_abi_whitelist_paths.end();
+       ++i)
+    if (!check_file(*i, cerr, "abidiff"))
+      return false;
+
   return true;
 }
 
@@ -673,7 +695,13 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
 	}
     }
 
-    add_read_context_suppressions(read_ctxt, supprs);
+  for (vector<string>::const_iterator i =
+	 opts.kernel_abi_whitelist_paths.begin();
+       i != opts.kernel_abi_whitelist_paths.end();
+       ++i)
+    gen_suppr_spec_from_kernel_abi_whitelist(*i, supprs);
+
+  add_read_context_suppressions(read_ctxt, supprs);
 }
 
 /// Set the regex patterns describing the functions to drop from the

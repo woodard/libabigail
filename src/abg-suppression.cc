@@ -1816,6 +1816,15 @@ function_suppression::parameter_spec::set_parameter_type_name_regex_str
 (const string& type_name_regex_str)
 {priv_->type_name_regex_str_ = type_name_regex_str;}
 
+/// Default constructor for the @ref function_suppression type.
+///
+/// It defines no suppression for now.  Suppressions have to be
+/// specified by using the various accessors of the @ref
+/// function_suppression type.
+function_suppression::function_suppression()
+  :  suppression_base(/*label=*/""), priv_(new priv)
+{}
+
 /// Constructor for the @ref function_suppression type.
 ///
 /// @param label an informative text string that the evalution code
