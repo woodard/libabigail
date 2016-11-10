@@ -244,11 +244,16 @@ public:
   simple_property(const string& name,
 		  const string_property_value_sptr& value);
 
+  simple_property(const string& name);
+
   const string_property_value_sptr&
   get_value() const;
 
   void
   set_value(const string_property_value_sptr& value);
+
+  bool
+  has_empty_value() const;
 
   virtual ~simple_property();
 }; // end class simple_property

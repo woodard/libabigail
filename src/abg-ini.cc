@@ -576,6 +576,16 @@ simple_property::simple_property(const string& name,
     priv_(new priv(value))
 {}
 
+/// Constructor for the @ref simple_property type.
+///
+/// This one constructs a property with an empty value.
+///
+/// @param name the name of the property.
+simple_property::simple_property(const string& name)
+  : property(name),
+    priv_(new priv)
+{}
+
 /// Getter for the string value of the property.
 ///
 /// @return the string value of the property.
@@ -589,6 +599,19 @@ simple_property::get_value() const
 void
 simple_property::set_value(const string_property_value_sptr& value)
 {priv_->value_ = value;}
+
+/// Test if the property has an empty value.
+///
+/// An empty value is either no value at all or an empty string value.
+///
+/// @return true iff the property has an empty value.
+bool
+simple_property::has_empty_value() const
+{
+  if (!priv_->value_)
+    return true;
+  return  priv_->value_->as_string().empty();
+}
 
 /// Destructor of the @ref simple_property type.
 simple_property::~simple_property()
@@ -1523,14 +1546,22 @@ public:
       return nil;
 
     skip_white_spaces();
-    if (!good())
-      return nil;
 
-    char c = 0;
-    if (!read_next_char(c) || c != '=')
-      return nil;
+    property_sptr result;
 
-    skip_white_spaces();
+    char c = peek();
+    if (c == '=')
+      {
+	assert(read_next_char(c));
+	assert(c == '=');
+	skip_white_spaces();
+      }
+    else
+      {
+	property_sptr empty_value_property(new simple_property(name));
+	return empty_value_property;
+      }
+
     if (!good())
       return nil;
 
@@ -1538,7 +1569,6 @@ public:
     if (!value)
       return nil;
 
-    property_sptr result;
     if (tuple_property_value_sptr tv = is_tuple_property_value(value))
       result.reset(new tuple_property(name, tv));
     else if (list_property_value_sptr lv = is_list_property_value(value))
@@ -1791,7 +1821,10 @@ write_property_value(const property_sptr& prop)
 {
   string result;
   if (simple_property_sptr simple_prop = is_simple_property(prop))
-    result = simple_prop->get_value()->as_string();
+    {
+      if (!simple_prop->has_empty_value())
+	result = simple_prop->get_value()->as_string();
+    }
   else if (list_property_sptr list_prop = is_list_property(prop))
     result = list_prop->get_value()->as_string();
   else if (tuple_property_sptr tuple_prop = is_tuple_property(prop))
@@ -1813,7 +1846,10 @@ static bool
 write_property(const property_sptr& prop,
 	       std::ostream& out)
 {
-  out << prop->get_name() << " = " << write_property_value(prop);
+  out << prop->get_name();
+  string value = write_property_value(prop);
+  if (!value.empty())
+    out << " = " << write_property_value(prop);
   return out.good();
 }
 
