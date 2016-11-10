@@ -357,7 +357,7 @@ public:
   typedef vector<section_sptr> sections_type;
 
   /// A convenience typedef for a vector of @ref property_sptr
-  typedef vector<property_sptr> property_vector;
+  typedef vector<property_sptr> properties_type;
 
 private:
   priv_sptr priv_;
@@ -398,16 +398,16 @@ class config::section
 public:
   section(const string& name);
 
-  section(const string& name, const property_vector& properties);
+  section(const string& name, const properties_type& properties);
 
   const string&
   get_name() const;
 
-  const property_vector&
+  const properties_type&
   get_properties() const;
 
   void
-  set_properties(const property_vector& properties);
+  set_properties(const properties_type& properties);
 
   void
   add_property(const property_sptr prop);

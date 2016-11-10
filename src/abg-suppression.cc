@@ -3021,7 +3021,7 @@ read_function_suppression(const ini::config::section& section)
 
   function_suppression::parameter_spec_sptr parm;
   function_suppression::parameter_specs_type parms;
-  for (ini::config::property_vector::const_iterator p =
+  for (ini::config::properties_type::const_iterator p =
 	 section.get_properties().begin();
        p != section.get_properties().end();
        ++p)

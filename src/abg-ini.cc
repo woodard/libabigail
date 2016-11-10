@@ -757,7 +757,7 @@ is_tuple_property(const property_sptr p)
 class config::section::priv
 {
   string name_;
-  property_vector properties_;
+  properties_type properties_;
 
   // Forbid this;
   priv();
@@ -785,7 +785,7 @@ config::section::section(const string& name)
 ///
 /// @param properties the properties of the section.
 config::section::section(const string& name,
-			 const property_vector& properties)
+			 const properties_type& properties)
   : priv_(new priv(name))
 {set_properties(properties);}
 
@@ -799,7 +799,7 @@ config::section::get_name() const
 /// Get the properties of the section.
 ///
 /// @return a vector of the properties of the section.
-const config::property_vector&
+const config::properties_type&
 config::section::get_properties() const
 {return priv_->properties_;}
 
@@ -807,7 +807,7 @@ config::section::get_properties() const
 ///
 /// @param properties the new properties to set.
 void
-config::section::set_properties(const property_vector& properties)
+config::section::set_properties(const properties_type& properties)
 {priv_->properties_ = properties;}
 
 /// Add one property to this section.
@@ -828,7 +828,7 @@ config::section::add_property(const property_sptr prop)
 property_sptr
 config::section::find_property(const string& prop_name) const
 {
-  for (property_vector::const_iterator i = get_properties().begin();
+  for (properties_type::const_iterator i = get_properties().begin();
        i != get_properties().end();
        ++i)
     if ((*i)->get_name() == prop_name)
@@ -1582,7 +1582,7 @@ public:
     if (!skip_white_spaces_or_comments())
       return nil;
 
-    config::property_vector properties;
+    config::properties_type properties;
     while (property_sptr prop = read_property())
       {
 	properties.push_back(prop);
@@ -1827,7 +1827,7 @@ write_section(const config::section& section,
 	      std::ostream& out)
 {
   out << "[" << section.get_name() << "]\n";
-  for (config::property_vector::const_iterator i =
+  for (config::properties_type::const_iterator i =
 	 section.get_properties().begin();
        i != section.get_properties().end();
        ++i)
