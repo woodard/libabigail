@@ -604,7 +604,7 @@ type_suppression::suppresses_diff(const diff* diff) const
 	    {
 	      function_decl_sptr f = d->first_function_decl();
 	      class_decl_sptr fc =
-		is_method_type(f->get_type())->get_class_type();
+		is_class_type(is_method_type(f->get_type())->get_class_type());
 	      assert(fc);
 	      if (suppresses_type(fc, diff->context()))
 		return true;

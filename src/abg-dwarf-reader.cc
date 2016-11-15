@@ -127,6 +127,11 @@ typedef unordered_map<Dwarf_Off, type_base_sptr> die_type_map_type;
 /// corresponding class_decl.
 typedef unordered_map<Dwarf_Off, class_decl_sptr> die_class_map_type;
 
+/// Convenience typedef for a map which key is the offset of a dwarf
+/// die, (given by dwarf_dieoffset()) and which value is the
+/// corresponding class_or_union_sptr.
+typedef unordered_map<Dwarf_Off, class_or_union_sptr> die_class_or_union_map_type;
+
 /// Convenience typedef for a map which key the offset of a dwarf die
 /// and which value is the corresponding function_decl.
 typedef unordered_map<Dwarf_Off, function_decl_sptr> die_function_decl_map_type;
@@ -2132,9 +2137,9 @@ class read_context
   // defined in the alternate debug info section.
   die_type_map_type		alternate_die_type_map_;
   die_type_map_type		type_unit_die_type_map_;
-  die_class_map_type		die_wip_classes_map_;
-  die_class_map_type		alternate_die_wip_classes_map_;
-  die_class_map_type		type_unit_die_wip_classes_map_;
+  die_class_or_union_map_type	die_wip_classes_map_;
+  die_class_or_union_map_type	alternate_die_wip_classes_map_;
+  die_class_or_union_map_type	type_unit_die_wip_classes_map_;
   die_function_type_map_type	die_wip_function_types_map_;
   die_function_type_map_type	alternate_die_wip_function_types_map_;
   die_function_type_map_type	type_unit_die_wip_function_types_map_;
@@ -2845,8 +2850,8 @@ public:
     if (!result)
       {
 	// Maybe we are looking for a class type being constructed?
-	const die_class_map_type& m = die_wip_classes_map(source);
-	die_class_map_type::const_iterator i = m.find(die_offset);
+	const die_class_or_union_map_type& m = die_wip_classes_map(source);
+	die_class_or_union_map_type::const_iterator i = m.find(die_offset);
 
 	if (i != m.end())
 	  result = i->second;
@@ -2874,7 +2879,7 @@ public:
   ///
   /// @return the map that associates a DIE to the class that is being
   /// built.
-  const die_class_map_type&
+  const die_class_or_union_map_type&
   die_wip_classes_map(die_source source) const
   {return const_cast<read_context*>(this)->die_wip_classes_map(source);}
 
@@ -2886,7 +2891,7 @@ public:
   ///
   /// @return the map that associates a DIE to the class that is being
   /// built.
-  die_class_map_type&
+  die_class_or_union_map_type&
   die_wip_classes_map(die_source source)
   {
     switch(source)
@@ -2964,7 +2969,7 @@ public:
   bool
   is_wip_class_die_offset(Dwarf_Off offset, die_source source) const
   {
-    die_class_map_type::const_iterator i =
+    die_class_or_union_map_type::const_iterator i =
       die_wip_classes_map(source).find(offset);
     return (i != die_wip_classes_map(source).end());
   }
@@ -3080,7 +3085,7 @@ public:
 	    class_decl_sptr klass = is_class_type(type_decl);
 	    assert(klass);
 	    if (klass->get_is_declaration_only())
-	      klass = klass->get_definition_of_declaration();
+	      klass = is_class_type(klass->get_definition_of_declaration());
 	    assert(!klass->get_is_declaration_only());
 	    for (classes_type::iterator j = i->second.begin();
 		 j != i->second.end();
@@ -5199,6 +5204,23 @@ build_ir_node_from_die(read_context&	ctxt,
 		       bool		called_from_public_decl,
 		       size_t		where_offset);
 
+static class_decl_sptr
+build_class_type_and_add_to_ir(read_context&	ctxt,
+			       Dwarf_Die*	die,
+			       scope_decl*	scope,
+			       bool		is_struct,
+			       class_decl_sptr  klass,
+			       bool		called_from_public_decl,
+			       size_t		where_offset);
+
+static union_decl_sptr
+build_union_type_and_add_to_ir(read_context&	ctxt,
+				Dwarf_Die*	die,
+				scope_decl*	scope,
+				union_decl_sptr  union_type,
+				bool		called_from_public_decl,
+				size_t		where_offset);
+
 static decl_base_sptr
 build_ir_node_for_void_type(read_context& ctxt);
 
@@ -5222,7 +5244,7 @@ variable_is_suppressed(const read_context& ctxt,
 static void
 finish_member_function_reading(Dwarf_Die*		die,
 			       function_decl_sptr	f,
-			       class_decl_sptr		klass,
+			       class_or_union_sptr	klass,
 			       read_context&		ctxt);
 
 /// Setter of the debug info root path for a dwarf reader context.
@@ -7732,19 +7754,18 @@ build_enum_type(read_context& ctxt, Dwarf_Die* die)
 ///
 /// @param f the function_decl that has just been built from @p die.
 ///
-/// @param klass the class_decl that @p f belongs to.
+/// @param klass the @ref class_or_union that @p f belongs to.
 ///
 /// @param ctxt the context used to read the ELF/DWARF information.
 static void
 finish_member_function_reading(Dwarf_Die*		die,
 			       function_decl_sptr	f,
-			       class_decl_sptr		klass,
+			       class_or_union_sptr	klass,
 			       read_context&		ctxt)
 {
   assert(klass);
 
-  class_decl::method_decl_sptr m =
-    dynamic_pointer_cast<class_decl::method_decl>(f);
+  method_decl_sptr m = dynamic_pointer_cast<method_decl>(f);
   assert(m);
 
   bool is_ctor = (f->get_name() == klass->get_name());
@@ -7754,11 +7775,12 @@ finish_member_function_reading(Dwarf_Die*		die,
   size_t vindex = 0;
   if (is_virtual)
     die_virtual_function_index(die, vindex);
-  access_specifier access =
-    klass->is_struct()
-    ? public_access
-    : private_access;
+  access_specifier access = private_access;
+  if (class_decl_sptr c = is_class_type(klass))
+    if (c->is_struct())
+      access = public_access;
   die_access_specifier(die, access);
+
   bool is_static = false;
   {
     // Let's see if the first parameter is a pointer to an instance of
@@ -7802,7 +7824,8 @@ finish_member_function_reading(Dwarf_Die*		die,
   assert(is_member_function(m));
 
   if (is_virtual)
-    klass->sort_virtual_mem_fns();
+    if (class_decl_sptr c = is_class_type(klass))
+      c->sort_virtual_mem_fns();
 
   if (is_virtual && !f->get_linkage_name().empty() && !f->get_symbol())
     {
@@ -7850,7 +7873,7 @@ finish_member_function_reading(Dwarf_Die*		die,
 /// too.  Otherwise, this function just builds the class from scratch.
 ///
 /// @param called_from_public_decl set to true if this class is being
-/// called from a "Pubblic declaration like vars or public symbols".
+/// called from a "Public declaration like vars or public symbols".
 ///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positionned at, in the DIE tree.  This is useful when @p die is
@@ -7880,10 +7903,14 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
     return result;
 
   {
-    die_class_map_type::const_iterator i =
+    die_class_or_union_map_type::const_iterator i =
       ctxt.die_wip_classes_map(source).find(dwarf_dieoffset(die));
     if (i != ctxt.die_wip_classes_map(source).end())
-      return i->second;
+      {
+	class_decl_sptr class_type = is_class_type(i->second);
+	assert(class_type);
+	return class_type;
+      }
   }
 
   string name, linkage_name;
@@ -8091,7 +8118,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   ctxt.scope_stack().pop();
 
   {
-    die_class_map_type::const_iterator i =
+    die_class_or_union_map_type::const_iterator i =
       ctxt.die_wip_classes_map(source).find(dwarf_dieoffset(die));
     if (i != ctxt.die_wip_classes_map(source).end())
       {
@@ -8103,6 +8130,200 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
   }
 
   ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
+  return result;
+}
+
+/// Build an @ref union_decl from a DW_TAG_union_type DIE.
+///
+/// @param ctxt the read context to use.
+///
+/// @param die the DIE to read from.
+///
+/// @param scope the scope the resulting @ref union_decl belongs to.
+///
+/// @param union_type if this parameter is non-nil, then this function
+/// updates the @ref union_decl that it points to, rather than
+/// creating a new @ref union_decl.
+///
+/// @param called_from_public_decl is true if this function has been
+/// initially called within the context of a public decl.
+///
+/// @param where_offset the offset of the DIE where we are "logically"
+/// positionned at, in the DIE tree.  This is useful when @p die is
+/// e.g, DW_TAG_partial_unit that can be included in several places in
+/// the DIE tree.
+static union_decl_sptr
+build_union_type_and_add_to_ir(read_context&	ctxt,
+			       Dwarf_Die*	die,
+			       scope_decl*	scope,
+			       union_decl_sptr  union_type,
+			       bool		called_from_public_decl,
+			       size_t		where_offset)
+{
+  union_decl_sptr result;
+  if (!die)
+    return result;
+
+  unsigned tag = dwarf_tag(die);
+
+  if (tag != DW_TAG_union_type)
+    return result;
+
+  die_source source;
+  assert(ctxt.get_die_source(die, source));
+  {
+    die_class_or_union_map_type::const_iterator i =
+      ctxt.die_wip_classes_map(source).find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_classes_map(source).end())
+      {
+	union_decl_sptr u = is_union_type(i->second);
+	assert(u);
+	return u;
+      }
+  }
+
+  string name, linkage_name;
+  location loc;
+  die_loc_and_name(ctxt, die, loc, name, linkage_name);
+
+  bool is_anonymous = false;
+  if (name.empty())
+    {
+      // So we are looking at an anonymous union.  Let's give it a
+      // name.
+      name = "__anonymous_union__";
+      // But we remember that the type is anonymous.
+      is_anonymous = true;
+    }
+
+  size_t size = 0;
+  die_size_in_bits(die, size);
+
+  bool is_declaration_only = die_is_declaration_only(die);
+
+  if (union_type)
+    {
+      result = union_type;
+      result->set_location(loc);
+    }
+  else
+    {
+      result.reset(new union_decl(ctxt.env(), name, size,
+				  loc, decl_base::VISIBILITY_DEFAULT));
+      result->set_is_anonymous(is_anonymous);
+      if (is_declaration_only)
+	result->set_is_declaration_only(true);
+      result = is_union_type(add_decl_to_scope(result, scope));
+      assert(result);
+    }
+
+  if (size)
+    {
+      result->set_size_in_bits(size);
+      result->set_is_declaration_only(false);
+    }
+
+  ctxt.associate_die_to_type(dwarf_dieoffset(die), source, result);
+  // TODO: maybe schedule declaration-only union for result like we do
+  // for classes:
+  // ctxt.maybe_schedule_declaration_only_class_for_resolution(result);
+
+  Dwarf_Die child;
+  bool has_child = (dwarf_child(die, &child) == 0);
+  if (!has_child)
+    return result;
+
+  ctxt.die_wip_classes_map(source)[dwarf_dieoffset(die)] = result;
+
+  scope_decl_sptr scop =
+    dynamic_pointer_cast<scope_decl>(result);
+  assert(scop);
+  ctxt.scope_stack().push(scop.get());
+
+  if (has_child)
+    {
+      do
+	{
+	  tag = dwarf_tag(&child);
+	  // Handle data members.
+	  if (tag == DW_TAG_member || tag == DW_TAG_variable)
+	    {
+	      Dwarf_Die type_die;
+	      if (!die_die_attribute(&child, DW_AT_type, type_die))
+		continue;
+
+	      string n, m;
+	      location loc;
+	      die_loc_and_name(ctxt, &child, loc, n, m);
+
+	      if (lookup_var_decl_in_scope(n, result))
+		continue;
+
+	      ssize_t offset_in_bits = 0;
+	      decl_base_sptr ty =
+		is_decl(build_ir_node_from_die(ctxt, &type_die,
+					       called_from_public_decl,
+					       where_offset));
+	      type_base_sptr t = is_type(ty);
+	      if (!t)
+		continue;
+
+	      // We have a non-static data member.  So this class
+	      // cannot be a declaration-only class anymore, even if
+	      // some DWARF emitters might consider it otherwise.
+	      result->set_is_declaration_only(false);
+	      access_specifier access = private_access;
+
+	      die_access_specifier(&child, access);
+
+	      var_decl_sptr dm(new var_decl(n, t, loc, m));
+	      result->add_data_member(dm, access, /*is_laid_out=*/true,
+				      /*is_static=*/false,
+				      offset_in_bits);
+	      assert(has_scope(dm));
+	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child), source, dm);
+	    }
+	  // Handle member functions;
+	  else if (tag == DW_TAG_subprogram)
+	    {
+	      decl_base_sptr r =
+		is_decl(build_ir_node_from_die(ctxt, &child,
+					       result.get(),
+					       called_from_public_decl,
+					       where_offset));
+	      if (!r)
+		continue;
+
+	      function_decl_sptr f = dynamic_pointer_cast<function_decl>(r);
+	      assert(f);
+
+	      finish_member_function_reading(&child, f, result, ctxt);
+
+	      ctxt.associate_die_to_decl(dwarf_dieoffset(&child), source, f);
+	    }
+	  // Handle member types
+	  else if (is_type_die(&child))
+	    decl_base_sptr td =
+	      is_decl(build_ir_node_from_die(ctxt, &child, result.get(),
+					     called_from_public_decl,
+					     where_offset));
+	} while (dwarf_siblingof(&child, &child) == 0);
+    }
+
+  ctxt.scope_stack().pop();
+
+  {
+    die_class_or_union_map_type::const_iterator i =
+      ctxt.die_wip_classes_map(source).find(dwarf_dieoffset(die));
+    if (i != ctxt.die_wip_classes_map(source).end())
+      {
+	if (is_member_type(i->second))
+	  set_member_access_specifier(result,
+				      get_member_access_specifier(i->second));
+	ctxt.die_wip_classes_map(source).erase(i);
+      }
+  }
+
   return result;
 }
 
@@ -8399,8 +8620,9 @@ build_reference_type(read_context&	ctxt,
 ///
 /// @param die the DIE to read from.
 ///
-/// @param is_method points to a class declaration iff we're
-/// building the type for a method.
+/// @param is_method points to a class or union declaration iff we're
+/// building the type for a method.  This is the enclosing class or
+/// union of the method.
 ///
 /// @param where_offset the offset of the DIE where we are "logically"
 /// positioned at, in the DIE tree.  This is useful when @p die is
@@ -8411,7 +8633,7 @@ build_reference_type(read_context&	ctxt,
 static function_type_sptr
 build_function_type(read_context&	ctxt,
 		    Dwarf_Die*		die,
-		    class_decl_sptr	is_method,
+		    class_or_union_sptr is_method,
 		    size_t		where_offset)
 {
   function_type_sptr result;
@@ -8942,7 +9164,8 @@ type_is_suppressed(const read_context& ctxt,
   if (type_die == 0
       || (dwarf_tag(type_die) != DW_TAG_enumeration_type
 	  && dwarf_tag(type_die) != DW_TAG_class_type
-	  && dwarf_tag(type_die) != DW_TAG_structure_type))
+	  && dwarf_tag(type_die) != DW_TAG_structure_type
+	  && dwarf_tag(type_die) != DW_TAG_union_type))
     return false;
 
   string type_name, linkage_name;
@@ -8993,8 +9216,8 @@ build_function_decl(read_context&	ctxt,
   die_loc_and_name(ctxt, die, floc, fname, flinkage_name);
 
   size_t is_inline = die_is_declared_inline(die);
-  class_decl_sptr is_method =
-    is_class_type(get_scope_for_die(ctxt, die, true, where_offset));
+  class_or_union_sptr is_method =
+    is_class_or_union_type(get_scope_for_die(ctxt, die, true, where_offset));
 
   if (result)
     {
@@ -9017,9 +9240,9 @@ build_function_decl(read_context&	ctxt,
       maybe_canonicalize_type(dwarf_dieoffset(die), source, ctxt);
 
       result.reset(is_method
-		   ? new class_decl::method_decl(fname, fn_type,
-						 is_inline, floc,
-						 flinkage_name)
+		   ? new method_decl(fname, fn_type,
+				     is_inline, floc,
+				     flinkage_name)
 		   : new function_decl(fname, fn_type,
 				       is_inline, floc,
 				       flinkage_name));
@@ -9221,14 +9444,15 @@ maybe_canonicalize_type(Dwarf_Off	die_offset,
   type_base_sptr t = ctxt.lookup_type_from_die_offset(die_offset, source);
   assert(t);
 
-  if (class_decl_sptr klass =
-      is_class_type(peel_typedef_pointer_or_reference_type(t)))
-    // We delay canonicalization of classes or typedef, pointers,
-    // references and array to classes.  This is because the
-    // (underlying) class might not be finished yet and we might not
-    // be able to able detect it here (thinking about classes that are
-    // work-in-progress, or classes that might be later amended by
-    // some DWARF construct).  So we err on the safe side.
+  type_base_sptr peeled_type = peel_typedef_pointer_or_reference_type(t);
+  if (is_class_type(peeled_type) || is_union_type(peeled_type))
+    // We delay canonicalization of classes/unions or typedef,
+    // pointers, references and array to classes/unions.  This is
+    // because the (underlying) class might not be finished yet and we
+    // might not be able to able detect it here (thinking about
+    // classes that are work-in-progress, or classes that might be
+    // later amended by some DWARF construct).  So we err on the safe
+    // side.
     ctxt.schedule_type_for_late_canonicalization(die_offset, source);
   else if ((is_function_type(t)
 	    && ctxt.is_wip_function_type_die_offset(die_offset, source))
@@ -9250,10 +9474,15 @@ maybe_set_member_type_access_specifier(decl_base_sptr member_type_declaration,
   if (is_type(member_type_declaration)
       && is_member_decl(member_type_declaration))
     {
-      class_decl* cl = is_class_type(member_type_declaration->get_scope());
-      assert(cl);
-      access_specifier access =
-	cl->is_struct() ? public_access : private_access;
+      class_or_union* scope =
+	is_class_or_union_type(member_type_declaration->get_scope());
+      assert(scope);
+
+      access_specifier access = private_access;
+      if (class_decl* cl = is_class_type(scope))
+	if (cl->is_struct())
+	  access = public_access;
+
       die_access_specifier(die, access);
       set_member_access_specifier(member_type_declaration, access);
     }
@@ -9467,6 +9696,23 @@ build_ir_node_from_die(read_context&	ctxt,
 	  }
       }
       break;
+    case DW_TAG_union_type:
+	if (!type_is_suppressed(ctxt, scope, die))
+	  {
+	    union_decl_sptr union_type =
+	      build_union_type_and_add_to_ir(ctxt, die, scope,
+					     union_decl_sptr(),
+					     called_from_public_decl,
+					     where_offset);
+	    if (union_type)
+	      {
+		maybe_set_member_type_access_specifier(union_type, die);
+		maybe_canonicalize_type(dwarf_dieoffset(die),
+					source_of_die, ctxt);
+	      }
+	    result = union_type;
+	  }
+      break;
     case DW_TAG_string_type:
       break;
     case DW_TAG_subroutine_type:
@@ -9482,8 +9728,6 @@ build_ir_node_from_die(read_context&	ctxt,
 	    maybe_canonicalize_type(dwarf_dieoffset(die), source_of_die, ctxt);
 	  }
       }
-      break;
-    case DW_TAG_union_type:
       break;
     case DW_TAG_array_type:
       {

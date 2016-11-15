@@ -332,6 +332,26 @@ const decl_diff_base*
 is_decl_diff(const diff* diff)
 {return dynamic_cast<const decl_diff_base*>(diff);}
 
+/// Test if a diff node is a @ref class_diff node.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to a @ref class_diff iff @p diff is a
+/// @ref class_diff node.
+const class_diff*
+is_class_diff(const diff* diff)
+{return dynamic_cast<const class_diff*>(diff);}
+
+/// Test if a diff node is a @ref union_diff node.
+///
+/// @param diff the diff node to consider.
+///
+/// @return a non-nil pointer to a @ref union_diff iff @p diff is a
+/// @ref class_diff node.
+const union_diff*
+is_union_diff(const diff* diff)
+{return dynamic_cast<const union_diff*>(diff);}
+
 /// Test if a diff node is about differences between variables.
 ///
 /// @param diff the diff node to test.
@@ -437,6 +457,7 @@ is_child_node_of_function_parm_diff(const diff* diff)
 bool
 is_child_node_of_base_diff(const diff* diff)
 {return diff && is_base_diff(diff->parent_node());}
+
 
 /// Test if the current diff node has an ancestor node that has been
 /// filtered out.
@@ -2427,6 +2448,7 @@ compute_diff_for_types(const type_or_decl_base_sptr& first,
 
   ((d = try_to_diff<type_decl>(f, s, ctxt))
    ||(d = try_to_diff<enum_type_decl>(f, s, ctxt))
+   ||(d = try_to_diff<union_decl>(f, s,ctxt))
    ||(d = try_to_diff<class_decl>(f, s,ctxt))
    ||(d = try_to_diff<pointer_type_def>(f, s, ctxt))
    ||(d = try_to_diff<reference_type_def>(f, s, ctxt))
@@ -2713,14 +2735,14 @@ maybe_report_diff_for_symbol(const elf_symbol_sptr&	symbol1,
 /// @param out the output stream to send the representation to
 static void
 represent(const diff_context& ctxt,
-	  class_decl::method_decl_sptr mem_fn,
+	  method_decl_sptr mem_fn,
 	  ostream& out)
 {
   if (!mem_fn || !is_member_function(mem_fn))
     return;
 
-  class_decl::method_decl_sptr meth =
-    dynamic_pointer_cast<class_decl::method_decl>(mem_fn);
+  method_decl_sptr meth =
+    dynamic_pointer_cast<method_decl>(mem_fn);
   assert(meth);
 
   out << "'" << mem_fn->get_pretty_representation() << "'";
@@ -2729,7 +2751,8 @@ represent(const diff_context& ctxt,
     out << ", virtual at voffset "
 	<< get_member_function_vtable_offset(mem_fn)
 	<< "/"
-	<< meth->get_type()->get_class_type()->get_virtual_mem_fns().size();
+	<< is_class_type(meth->get_type()->get_class_type())->
+      get_virtual_mem_fns().size();
 
   if (ctxt.show_linkage_names()
       && (mem_fn->get_symbol()))
@@ -2760,9 +2783,14 @@ represent_data_member(var_decl_sptr d,
   out << "'" << d->get_pretty_representation() << "'";
   if (!get_member_is_static(d))
     {
-      out << ", at offset "
-	  << get_data_member_offset(d)
-	  << " (in bits)";
+      // Do not emit offset information for data member of a union
+      // type because all data members of a union are supposed to be
+      // at offset 0.
+      if (!is_union_type(d->get_scope()))
+	out << ", at offset "
+	    << get_data_member_offset(d)
+	    << " (in bits)";
+
       report_loc_info(d, *ctxt, out);
       out << "\n";
     }
@@ -4444,7 +4472,7 @@ enum_diff::enum_diff(const enum_type_decl_sptr	first,
 		     const enum_type_decl_sptr	second,
 		     const diff_sptr		underlying_type_diff,
 		     const diff_context_sptr	ctxt)
-  : type_diff_base(first, second,ctxt),
+  : type_diff_base(first, second, ctxt),
     priv_(new priv(underlying_type_diff))
 {}
 
@@ -4716,23 +4744,17 @@ compute_diff(const enum_type_decl_sptr first,
 }
 // </enum_diff stuff>
 
-//<class_diff stuff>
+// <class_or_union_diff stuff>
 
-struct class_diff::priv
+/// The type of private data of @ref class_or_union_diff.
+struct class_or_union_diff::priv
 {
-  edit_script base_changes_;
   edit_script member_types_changes_;
   edit_script data_members_changes_;
   edit_script member_fns_changes_;
   edit_script member_fn_tmpls_changes_;
   edit_script member_class_tmpls_changes_;
 
-  string_base_sptr_map deleted_bases_;
-  class_decl::base_specs sorted_deleted_bases_;
-  string_base_sptr_map inserted_bases_;
-  class_decl::base_specs sorted_inserted_bases_;
-  string_base_diff_sptr_map changed_bases_;
-  base_diff_sptrs_type sorted_changed_bases_;
   string_decl_base_sptr_map deleted_member_types_;
   string_decl_base_sptr_map inserted_member_types_;
   string_diff_sptr_map changed_member_types_;
@@ -4760,9 +4782,6 @@ struct class_diff::priv
   string_diff_sptr_map changed_member_class_tmpls_;
   diff_sptrs_type sorted_changed_member_class_tmpls_;
 
-  class_decl::base_spec_sptr
-  base_has_changed(class_decl::base_spec_sptr) const;
-
   type_or_decl_base_sptr
   member_type_has_changed(decl_base_sptr) const;
 
@@ -4779,13 +4798,1253 @@ struct class_diff::priv
   get_inserted_non_static_data_members_number() const;
 
   size_t
-  count_filtered_bases();
-
-  size_t
   count_filtered_subtype_changed_dm();
 
   size_t
   count_filtered_changed_dm();
+
+  size_t
+  count_filtered_changed_mem_fns(const diff_context_sptr&);
+
+  size_t
+  count_filtered_inserted_mem_fns(const diff_context_sptr&);
+
+  size_t
+  count_filtered_deleted_mem_fns(const diff_context_sptr&);
+
+  priv()
+  {}
+}; // end struct class_or_union_diff::priv
+
+/// Test if the current diff node carries a member type change for a
+/// member type which name is the same as the name of a given type
+/// declaration.
+///
+/// @param d the type declaration which name should be equal to the
+/// name of the member type that might have changed.
+///
+/// @return the member type that has changed, iff there were a member
+/// type (which name is the same as the name of @p d) that changed.
+/// Note that the member type that is returned is the new value of the
+/// member type that changed.
+type_or_decl_base_sptr
+class_or_union_diff::priv::member_type_has_changed(decl_base_sptr d) const
+{
+  string qname = d->get_qualified_name();
+  string_diff_sptr_map::const_iterator it =
+    changed_member_types_.find(qname);
+
+  return ((it == changed_member_types_.end())
+	  ? type_or_decl_base_sptr()
+	  : it->second->second_subject());
+}
+
+/// Test if the current diff node carries a data member change for a
+/// data member which name is the same as the name of a given type
+/// declaration.
+///
+/// @param d the type declaration which name should be equal to the
+/// name of the data member that might have changed.
+///
+/// @return the data member that has changed, iff there were a data
+/// member type (which name is the same as the name of @p d) that
+/// changed.  Note that the data member that is returned is the new
+/// value of the data member that changed.
+decl_base_sptr
+class_or_union_diff::priv::subtype_changed_dm(decl_base_sptr d) const
+{
+  string qname = d->get_qualified_name();
+  string_var_diff_sptr_map::const_iterator it =
+    subtype_changed_dm_.find(qname);
+
+  if (it == subtype_changed_dm_.end())
+    return decl_base_sptr();
+  return it->second->second_var();
+}
+
+/// Test if the current diff node carries a member class template
+/// change for a member class template which name is the same as the
+/// name of a given type declaration.
+///
+/// @param d the type declaration which name should be equal to the
+/// name of the member class template that might have changed.
+///
+/// @return the member class template that has changed, iff there were
+/// a member class template (which name is the same as the name of @p
+/// d) that changed.  Note that the member class template that is
+/// returned is the new value of the member class template that
+/// changed.
+decl_base_sptr
+class_or_union_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
+{
+  string qname = d->get_qualified_name();
+  string_diff_sptr_map::const_iterator it =
+    changed_member_class_tmpls_.find(qname);
+
+  return ((it == changed_member_class_tmpls_.end())
+	  ? decl_base_sptr()
+	  : dynamic_pointer_cast<decl_base>(it->second->second_subject()));
+}
+
+/// Get the number of non static data members that were deleted.
+///
+/// @return the number of non static data members that were deleted.
+size_t
+class_or_union_diff::priv::get_deleted_non_static_data_members_number() const
+{
+  size_t result = 0;
+
+  for (string_decl_base_sptr_map::const_iterator i =
+	 deleted_data_members_.begin();
+       i != deleted_data_members_.end();
+       ++i)
+    if (is_member_decl(i->second)
+	&& !get_member_is_static(i->second))
+      ++result;
+
+  return result;
+}
+
+/// Get the number of non static data members that were inserted.
+///
+/// @return the number of non static data members that were inserted.
+size_t
+class_or_union_diff::priv::get_inserted_non_static_data_members_number() const
+{
+  size_t result = 0;
+
+  for (string_decl_base_sptr_map::const_iterator i =
+	 inserted_data_members_.begin();
+       i != inserted_data_members_.end();
+       ++i)
+    if (is_member_decl(i->second)
+	&& !get_member_is_static(i->second))
+      ++result;
+
+  return result;
+}
+
+/// Get the number of data member sub-type changes carried by the
+/// current diff node that were filtered out.
+///
+/// @return the number of data member sub-type changes carried by the
+/// current diff node that were filtered out.
+size_t
+class_or_union_diff::priv::count_filtered_subtype_changed_dm()
+{
+  size_t num_filtered= 0;
+  for (var_diff_sptrs_type::const_iterator i =
+	 sorted_subtype_changed_dm_.begin();
+       i != sorted_subtype_changed_dm_.end();
+       ++i)
+    {
+      if ((*i)->is_filtered_out())
+	++num_filtered;
+    }
+  return num_filtered;
+}
+
+/// Get the number of data member changes carried by the current diff
+/// node that were filtered out.
+///
+/// @return the number of data member changes carried by the current
+/// diff node that were filtered out.
+size_t
+class_or_union_diff::priv::count_filtered_changed_dm()
+{
+  size_t num_filtered= 0;
+
+  for (unsigned_var_diff_sptr_map::const_iterator i = changed_dm_.begin();
+       i != changed_dm_.end();
+       ++i)
+    {
+      diff_sptr diff = i->second;
+      if (diff->is_filtered_out())
+	++num_filtered;
+    }
+  return num_filtered;
+}
+
+/// Skip the processing of the current member function if its
+/// virtual-ness is disallowed by the user.
+///
+/// This is to be used in the member functions below that are used to
+/// count the number of filtered inserted, deleted and changed member
+/// functions.
+#define SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED				\
+  do {									\
+    if (get_member_function_is_virtual(f)					\
+	|| get_member_function_is_virtual(s))				\
+      {								\
+	if (!(allowed_category | VIRTUAL_MEMBER_CHANGE_CATEGORY))	\
+	  continue;							\
+      }								\
+    else								\
+      {								\
+	if (!(allowed_category | NON_VIRT_MEM_FUN_CHANGE_CATEGORY))	\
+	  continue;							\
+      }								\
+  } while (false)
+
+/// Get the number of member functions changes carried by the current
+/// diff node that were filtered out.
+///
+/// @return the number of member functions changes carried by the
+/// current diff node that were filtered out.
+size_t
+class_or_union_diff::priv::count_filtered_changed_mem_fns
+(const diff_context_sptr& ctxt)
+{
+  size_t count = 0;
+  diff_category allowed_category = ctxt->get_allowed_category();
+
+  for (function_decl_diff_sptrs_type::const_iterator i =
+	 sorted_changed_member_functions_.begin();
+       i != sorted_changed_member_functions_.end();
+       ++i)
+    {
+      method_decl_sptr f =
+	dynamic_pointer_cast<method_decl>
+	((*i)->first_function_decl());
+      assert(f);
+
+      method_decl_sptr s =
+	dynamic_pointer_cast<method_decl>
+	((*i)->second_function_decl());
+      assert(s);
+
+      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
+
+      diff_sptr diff = *i;
+      ctxt->maybe_apply_filters(diff);
+
+      if (diff->is_filtered_out())
+	++count;
+    }
+
+  return count;
+}
+
+/// Get the number of member functions insertions carried by the current
+/// diff node that were filtered out.
+///
+/// @return the number of member functions insertions carried by the
+/// current diff node that were filtered out.
+size_t
+class_or_union_diff::priv::count_filtered_inserted_mem_fns
+(const diff_context_sptr& ctxt)
+{
+    size_t count = 0;
+  diff_category allowed_category = ctxt->get_allowed_category();
+
+  for (string_member_function_sptr_map::const_iterator i =
+	 inserted_member_functions_.begin();
+       i != inserted_member_functions_.end();
+       ++i)
+    {
+      method_decl_sptr f = i->second,
+	s = i->second;
+
+      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
+
+      diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
+      ctxt->maybe_apply_filters(diff);
+
+      if (diff->get_category() != NO_CHANGE_CATEGORY
+	  && diff->is_filtered_out())
+	++count;
+    }
+
+  return count;
+}
+
+/// Get the number of member functions deletions carried by the current
+/// diff node that were filtered out.
+///
+/// @return the number of member functions deletions carried by the
+/// current diff node that were filtered out.
+size_t
+class_or_union_diff::priv::count_filtered_deleted_mem_fns
+(const diff_context_sptr& ctxt)
+{
+  size_t count = 0;
+  diff_category allowed_category = ctxt->get_allowed_category();
+
+  for (string_member_function_sptr_map::const_iterator i =
+	 deleted_member_functions_.begin();
+       i != deleted_member_functions_.end();
+       ++i)
+    {
+      method_decl_sptr f = i->second,
+	s = i->second;
+
+      SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
+
+      diff_sptr diff = compute_diff_for_decls(f, s, ctxt);
+      ctxt->maybe_apply_filters(diff);
+
+      if (diff->get_category() != NO_CHANGE_CATEGORY
+	  && diff->is_filtered_out())
+	++count;
+    }
+
+  return count;
+}
+
+/// Clear the lookup tables useful for reporting.
+///
+/// This function must be updated each time a lookup table is added or
+/// removed from the class_or_union_diff::priv.
+void
+class_or_union_diff::clear_lookup_tables()
+{
+  priv_->deleted_member_types_.clear();
+  priv_->inserted_member_types_.clear();
+  priv_->changed_member_types_.clear();
+  priv_->deleted_data_members_.clear();
+  priv_->inserted_data_members_.clear();
+  priv_->subtype_changed_dm_.clear();
+  priv_->deleted_member_functions_.clear();
+  priv_->inserted_member_functions_.clear();
+  priv_->changed_member_functions_.clear();
+  priv_->deleted_member_class_tmpls_.clear();
+  priv_->inserted_member_class_tmpls_.clear();
+  priv_->changed_member_class_tmpls_.clear();
+}
+
+/// Tests if the lookup tables are empty.
+///
+/// @return true if the lookup tables are empty, false otherwise.
+bool
+class_or_union_diff::lookup_tables_empty(void) const
+{
+  return (priv_->deleted_member_types_.empty()
+	  && priv_->inserted_member_types_.empty()
+	  && priv_->changed_member_types_.empty()
+	  && priv_->deleted_data_members_.empty()
+	  && priv_->inserted_data_members_.empty()
+	  && priv_->subtype_changed_dm_.empty()
+	  && priv_->inserted_member_functions_.empty()
+	  && priv_->deleted_member_functions_.empty()
+	  && priv_->changed_member_functions_.empty()
+	  && priv_->deleted_member_class_tmpls_.empty()
+	  && priv_->inserted_member_class_tmpls_.empty()
+	  && priv_->changed_member_class_tmpls_.empty());
+}
+
+/// If the lookup tables are not yet built, walk the differences and
+/// fill them.
+void
+class_or_union_diff::ensure_lookup_tables_populated(void) const
+{
+  {
+    edit_script& e = priv_->member_types_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	decl_base_sptr d =
+	  get_type_declaration(first_class_or_union()->get_member_types()[i]);
+	class_or_union_sptr record_type = is_class_or_union_type(d);
+	if (record_type && record_type->get_is_declaration_only())
+	  continue;
+	string qname = d->get_qualified_name();
+	priv_->deleted_member_types_[qname] = d;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    decl_base_sptr d =
+	      get_type_declaration(second_class_or_union()->get_member_types()[i]);
+	    class_or_union_sptr record_type = is_class_or_union_type(d);
+	    if (record_type && record_type->get_is_declaration_only())
+	      continue;
+	    string qname = d->get_qualified_name();
+	    string_decl_base_sptr_map::const_iterator j =
+	      priv_->deleted_member_types_.find(qname);
+	    if (j != priv_->deleted_member_types_.end())
+	      {
+		if (*j->second != *d)
+		  priv_->changed_member_types_[qname] =
+		    compute_diff(j->second, d, context());
+
+		priv_->deleted_member_types_.erase(j);
+	      }
+	    else
+	      priv_->inserted_member_types_[qname] = d;
+	  }
+      }
+  }
+
+  {
+    edit_script& e = priv_->data_members_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	decl_base_sptr d = first_class_or_union()->get_non_static_data_members()[i];
+	string qname = d->get_qualified_name();
+	assert(priv_->deleted_data_members_.find(qname)
+	       == priv_->deleted_data_members_.end());
+	priv_->deleted_data_members_[qname] = d;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    decl_base_sptr d =
+	      second_class_or_union()->get_non_static_data_members()[i];
+	    var_decl_sptr dm = is_var_decl(d);
+	    string qname = dm->get_qualified_name();
+	    assert(priv_->inserted_data_members_.find(qname)
+		   == priv_->inserted_data_members_.end());
+	    string_decl_base_sptr_map::const_iterator j =
+	      priv_->deleted_data_members_.find(qname);
+	    if (j != priv_->deleted_data_members_.end())
+	      {
+		if (*j->second != *d)
+		  {
+		    var_decl_sptr old_dm = is_var_decl(j->second);
+		    priv_->subtype_changed_dm_[qname]=
+		      compute_diff(old_dm, dm, context());
+		  }
+		priv_->deleted_data_members_.erase(j);
+	      }
+	    else
+	      priv_->inserted_data_members_[qname] = d;
+	  }
+      }
+
+    // Now detect when a data member is deleted from offset N and
+    // another one is added to offset N.  In that case, we want to be
+    // able to say that the data member at offset N changed.
+    for (string_decl_base_sptr_map::const_iterator i =
+	   priv_->deleted_data_members_.begin();
+	 i != priv_->deleted_data_members_.end();
+	 ++i)
+      {
+	unsigned offset = get_data_member_offset(i->second);
+	priv_->deleted_dm_by_offset_[offset] = i->second;
+      }
+
+    for (string_decl_base_sptr_map::const_iterator i =
+	   priv_->inserted_data_members_.begin();
+	 i != priv_->inserted_data_members_.end();
+	 ++i)
+      {
+	unsigned offset = get_data_member_offset(i->second);
+	priv_->inserted_dm_by_offset_[offset] = i->second;
+      }
+
+    for (unsigned_decl_base_sptr_map::const_iterator i =
+	   priv_->inserted_dm_by_offset_.begin();
+	 i != priv_->inserted_dm_by_offset_.end();
+	 ++i)
+      {
+	unsigned_decl_base_sptr_map::const_iterator j =
+	  priv_->deleted_dm_by_offset_.find(i->first);
+	if (j != priv_->deleted_dm_by_offset_.end())
+	  {
+	    var_decl_sptr old_dm = is_var_decl(j->second);
+	    var_decl_sptr new_dm = is_var_decl(i->second);
+	    priv_->changed_dm_[i->first] =
+	      compute_diff(old_dm, new_dm, context());
+	  }
+      }
+
+    for (unsigned_var_diff_sptr_map::const_iterator i =
+	   priv_->changed_dm_.begin();
+	 i != priv_->changed_dm_.end();
+	 ++i)
+      {
+	priv_->deleted_dm_by_offset_.erase(i->first);
+	priv_->inserted_dm_by_offset_.erase(i->first);
+	priv_->deleted_data_members_.erase
+	  (i->second->first_var()->get_qualified_name());
+	priv_->inserted_data_members_.erase
+	  (i->second->second_var()->get_qualified_name());
+      }
+  }
+  sort_string_data_member_diff_sptr_map(priv_->subtype_changed_dm_,
+					priv_->sorted_subtype_changed_dm_);
+  sort_unsigned_data_member_diff_sptr_map(priv_->changed_dm_,
+					  priv_->sorted_changed_dm_);
+
+  {
+    edit_script& e = priv_->member_class_tmpls_changes_;
+
+    for (vector<deletion>::const_iterator it = e.deletions().begin();
+	 it != e.deletions().end();
+	 ++it)
+      {
+	unsigned i = it->index();
+	decl_base_sptr d =
+	  first_class_or_union()->get_member_class_templates()[i]->
+	  as_class_tdecl();
+	string qname = d->get_qualified_name();
+	assert(priv_->deleted_member_class_tmpls_.find(qname)
+	       == priv_->deleted_member_class_tmpls_.end());
+	priv_->deleted_member_class_tmpls_[qname] = d;
+      }
+
+    for (vector<insertion>::const_iterator it = e.insertions().begin();
+	 it != e.insertions().end();
+	 ++it)
+      {
+	for (vector<unsigned>::const_iterator iit =
+	       it->inserted_indexes().begin();
+	     iit != it->inserted_indexes().end();
+	     ++iit)
+	  {
+	    unsigned i = *iit;
+	    decl_base_sptr d =
+	      second_class_or_union()->get_member_class_templates()[i]->
+	      as_class_tdecl();
+	    string qname = d->get_qualified_name();
+	    assert(priv_->inserted_member_class_tmpls_.find(qname)
+		   == priv_->inserted_member_class_tmpls_.end());
+	    string_decl_base_sptr_map::const_iterator j =
+	      priv_->deleted_member_class_tmpls_.find(qname);
+	    if (j != priv_->deleted_member_class_tmpls_.end())
+	      {
+		if (*j->second != *d)
+		  priv_->changed_member_types_[qname]=
+		    compute_diff(j->second, d, context());
+		priv_->deleted_member_class_tmpls_.erase(j);
+	      }
+	    else
+	      priv_->inserted_member_class_tmpls_[qname] = d;
+	  }
+      }
+  }
+  sort_string_diff_sptr_map(priv_->changed_member_types_,
+			    priv_->sorted_changed_member_types_);
+}
+
+/// Allocate the memory for the priv_ pimpl data member of the @ref
+/// class_or_union_diff class.
+void
+class_or_union_diff::allocate_priv_data()
+{
+  if (!priv_)
+    priv_.reset(new priv);
+}
+
+/// Constructor for the @ref class_or_union_diff class.
+///
+/// @param first_scope the first @ref class_or_union of the diff node.
+///
+/// @param second_scope the second @ref class_or_union of the diff node.
+///
+/// @param ctxt the context of the diff.
+class_or_union_diff::class_or_union_diff(class_or_union_sptr first_scope,
+					 class_or_union_sptr second_scope,
+					 diff_context_sptr ctxt)
+  : type_diff_base(first_scope, second_scope, ctxt)
+    //priv_(new priv)
+{}
+
+/// Finish building the current instance of @ref class_or_union_diff.
+void
+class_or_union_diff::finish_diff_type()
+{
+  if (diff::priv_->finished_)
+    return;
+  chain_into_hierarchy();
+  diff::priv_->finished_ = true;
+}
+
+/// Getter of the private data of the @ref class_or_union_diff type.
+///
+/// Note that due to an optimization, the private data of @ref
+/// class_or_union_diff can be shared among several instances of
+/// class_or_union_diff, so you should never try to access
+/// class_or_union_diff::priv directly.
+///
+/// When class_or_union_diff::priv is shared, this function returns
+/// the correct shared one.
+///
+/// @return the (possibly) shared private data of the current instance
+/// of @ref class_or_union_diff.
+const class_or_union_diff::priv_sptr&
+class_or_union_diff::get_priv() const
+{
+  if (priv_)
+    return priv_;
+
+  // If the current class_or_union_diff::priv member is empty, then look for
+  // the shared one, from the canonical type.
+  class_or_union_diff *canonical =
+    dynamic_cast<class_or_union_diff*>(get_canonical_diff());
+  assert(canonical);
+  assert(canonical->priv_);
+
+  return canonical->priv_;
+}
+
+/// Destructor of class_or_union_diff.
+class_or_union_diff::~class_or_union_diff()
+{
+}
+
+/// @return the first @ref class_or_union involved in the diff.
+class_or_union_sptr
+class_or_union_diff::first_class_or_union() const
+{return is_class_or_union_type(first_subject());}
+
+/// @return the second @ref class_or_union involved in the diff.
+class_or_union_sptr
+class_or_union_diff::second_class_or_union() const
+{return is_class_or_union_type(second_subject());}
+
+/// @return the edit script of the member types of the two @ref
+/// class_or_union.
+const edit_script&
+class_or_union_diff::member_types_changes() const
+{return get_priv()->member_types_changes_;}
+
+/// @return the edit script of the member types of the two @ref
+/// class_or_union.
+edit_script&
+class_or_union_diff::member_types_changes()
+{return get_priv()->member_types_changes_;}
+
+/// @return the edit script of the data members of the two @ref
+/// class_or_union.
+const edit_script&
+class_or_union_diff::data_members_changes() const
+{return get_priv()->data_members_changes_;}
+
+/// @return the edit script of the data members of the two @ref
+/// class_or_union.
+edit_script&
+class_or_union_diff::data_members_changes()
+{return get_priv()->data_members_changes_;}
+
+/// Getter for the data members that got inserted.
+///
+/// @return a map of data members that got inserted.
+const string_decl_base_sptr_map&
+class_or_union_diff::inserted_data_members() const
+{return get_priv()->inserted_data_members_;}
+
+/// Getter for the data members that got deleted.
+///
+/// @return a map of data members that got deleted.
+const string_decl_base_sptr_map&
+class_or_union_diff::deleted_data_members() const
+{return get_priv()->deleted_data_members_;}
+
+/// @return the edit script of the member functions of the two @ref
+/// class_or_union.
+const edit_script&
+class_or_union_diff::member_fns_changes() const
+{return get_priv()->member_fns_changes_;}
+
+/// Getter for the virtual members functions that have had a change in
+/// a sub-type, without having a change in their symbol name.
+///
+/// @return a sorted vector of virtual member functions that have a
+/// sub-type change.
+const function_decl_diff_sptrs_type&
+class_or_union_diff::changed_member_fns() const
+{return get_priv()->sorted_changed_member_functions_;}
+
+/// @return the edit script of the member functions of the two
+/// classes.
+edit_script&
+class_or_union_diff::member_fns_changes()
+{return get_priv()->member_fns_changes_;}
+
+/// @return a map of member functions that got deleted.
+const string_member_function_sptr_map&
+class_or_union_diff::deleted_member_fns() const
+{return get_priv()->deleted_member_functions_;}
+
+/// @return a map of member functions that got inserted.
+const string_member_function_sptr_map&
+class_or_union_diff::inserted_member_fns() const
+{return get_priv()->inserted_member_functions_;}
+
+/// @return the edit script of the member function templates of the two
+/// @ref class_or_union.
+const edit_script&
+class_or_union_diff::member_fn_tmpls_changes() const
+{return get_priv()->member_fn_tmpls_changes_;}
+
+/// @return the edit script of the member function templates of the
+/// two @ref class_or_union.
+edit_script&
+class_or_union_diff::member_fn_tmpls_changes()
+{return get_priv()->member_fn_tmpls_changes_;}
+
+/// @return the edit script of the member class templates of the two
+/// @ref class_or_union.
+const edit_script&
+class_or_union_diff::member_class_tmpls_changes() const
+{return get_priv()->member_class_tmpls_changes_;}
+
+/// @return the edit script of the member class templates of the two
+/// @ref class_or_union.
+edit_script&
+class_or_union_diff::member_class_tmpls_changes()
+{return get_priv()->member_class_tmpls_changes_;}
+
+/// Test if the current diff node carries a change.
+bool
+class_or_union_diff::has_changes() const
+{return first_class_or_union() != second_class_or_union();}
+
+/// Test if the current diff node carries a local change.
+bool
+class_or_union_diff::has_local_changes() const
+{
+  ir::change_kind k = ir::NO_CHANGE_KIND;
+  if (!equals(*first_class_or_union(), *second_class_or_union(), &k))
+    return k & LOCAL_CHANGE_KIND;
+  return false;
+}
+
+/// A comparison functor to compare two data members based on their
+/// offset.
+struct data_member_comp
+{
+  /// @param f the first data member to take into account.
+  ///
+  /// @param s the second data member to take into account.
+  ///
+  /// @return true iff f is before s.
+  bool
+  operator()(const decl_base_sptr& f,
+	     const decl_base_sptr& s) const
+  {
+    var_decl_sptr first_dm = is_data_member(f);
+    var_decl_sptr second_dm = is_data_member(s);
+
+    assert(first_dm);
+    assert(second_dm);
+
+    return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
+  }
+};//end struct data_member_comp
+
+/// Sort a map of data members by the offset of their initial value.
+///
+/// @param data_members the map of changed data members to sort.
+///
+/// @param sorted the resulting vector of sorted changed data members.
+static void
+sort_data_members(const string_decl_base_sptr_map &data_members,
+		  vector<decl_base_sptr>& sorted)
+{
+  sorted.reserve(data_members.size());
+  for (string_decl_base_sptr_map::const_iterator i = data_members.begin();
+       i != data_members.end();
+       ++i)
+    sorted.push_back(i->second);
+
+  data_member_comp comp;
+  std::sort(sorted.begin(), sorted.end(), comp);
+}
+
+/// Report the changes carried by the current @ref class_or_union_diff
+/// node in a textual format.
+///
+/// @param out the output stream to write the textual report to.
+///
+/// @param indent the number of white space to use as indentation.
+void
+class_or_union_diff::report(ostream& out, const string& indent) const
+{
+  if (!to_be_reported())
+    return;
+
+  class_or_union_sptr first = first_class_or_union(),
+    second = second_class_or_union();
+
+  // member functions
+  if (member_fns_changes())
+    {
+      // report deletions
+      int numdels = get_priv()->deleted_member_functions_.size();
+      size_t num_filtered = get_priv()->count_filtered_deleted_mem_fns(context());
+      if (numdels)
+	report_mem_header(out, numdels, num_filtered, del_kind,
+			  "member function", indent);
+      bool emitted = false;
+      for (string_member_function_sptr_map::const_iterator i =
+	     get_priv()->deleted_member_functions_.begin();
+	   i != get_priv()->deleted_member_functions_.end();
+	   ++i)
+	{
+	  if (!(context()->get_allowed_category()
+		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+	      && !get_member_function_is_virtual(i->second))
+	    continue;
+
+	  if (emitted
+	      && i != get_priv()->deleted_member_functions_.begin())
+	    out << "\n";
+	  method_decl_sptr mem_fun = i->second;
+	  out << indent << "  ";
+	  represent(*context(), mem_fun, out);
+	  emitted = true;
+	}
+      if (emitted)
+	out << "\n";
+
+      // report insertions;
+      int numins = get_priv()->inserted_member_functions_.size();
+      num_filtered = get_priv()->count_filtered_inserted_mem_fns(context());
+      if (numins)
+	report_mem_header(out, numins, num_filtered, ins_kind,
+			  "member function", indent);
+      emitted = false;
+      for (string_member_function_sptr_map::const_iterator i =
+	     get_priv()->inserted_member_functions_.begin();
+	   i != get_priv()->inserted_member_functions_.end();
+	   ++i)
+	{
+	  if (!(context()->get_allowed_category()
+		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+	      && !get_member_function_is_virtual(i->second))
+	    continue;
+
+	  if (emitted
+	      && i != get_priv()->inserted_member_functions_.begin())
+	    out << "\n";
+	  method_decl_sptr mem_fun = i->second;
+	  out << indent << "  ";
+	  represent(*context(), mem_fun, out);
+	  emitted = true;
+	}
+      if (emitted)
+	out << "\n";
+
+      // report member function with sub-types changes
+      int numchanges = get_priv()->sorted_changed_member_functions_.size();
+      num_filtered = get_priv()->count_filtered_changed_mem_fns(context());
+      if (numchanges)
+	report_mem_header(out, numchanges, num_filtered, change_kind,
+			  "member function", indent);
+      emitted = false;
+      for (function_decl_diff_sptrs_type::const_iterator i =
+	     get_priv()->sorted_changed_member_functions_.begin();
+	   i != get_priv()->sorted_changed_member_functions_.end();
+	   ++i)
+	{
+	  if (!(context()->get_allowed_category()
+		& NON_VIRT_MEM_FUN_CHANGE_CATEGORY)
+	      && !(get_member_function_is_virtual
+		   ((*i)->first_function_decl()))
+	      && !(get_member_function_is_virtual
+		   ((*i)->second_function_decl())))
+	    continue;
+
+	  diff_sptr diff = *i;
+	  if (!diff || !diff->to_be_reported())
+	    continue;
+
+	  string repr =
+	    (*i)->first_function_decl()->get_pretty_representation();
+	  if (emitted
+	      && i != get_priv()->sorted_changed_member_functions_.begin())
+	    out << "\n";
+	  out << indent << "  '" << repr << "' has some sub-type changes:\n";
+	  diff->report(out, indent + "    ");
+	  emitted = true;
+	}
+      if (numchanges)
+	out << "\n";
+    }
+
+  // data members
+  if (data_members_changes())
+    {
+      // report deletions
+      int numdels = class_or_union_diff::
+	get_priv()->get_deleted_non_static_data_members_number();
+      if (numdels)
+	{
+	  report_mem_header(out, numdels, 0, del_kind,
+			    "data member", indent);
+	  vector<decl_base_sptr> sorted_dms;
+	  sort_data_members
+	    (class_or_union_diff::get_priv()->deleted_data_members_,
+	     sorted_dms);
+	  bool emitted = false;
+	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
+	       i != sorted_dms.end();
+	       ++i)
+	    {
+	      var_decl_sptr data_mem =
+		dynamic_pointer_cast<var_decl>(*i);
+	      assert(data_mem);
+	      if (get_member_is_static(data_mem))
+		continue;
+	      if (emitted)
+		out << "\n";
+	      out << indent << "  ";
+	      represent_data_member(data_mem, context(), out);
+	      emitted = true;
+	    }
+	  if (emitted)
+	    out << "\n";
+	}
+
+      //report insertions
+      int numins =
+	class_or_union_diff::get_priv()->inserted_data_members_.size();
+      if (numins)
+	{
+	  report_mem_header(out, numins, 0, ins_kind,
+			    "data member", indent);
+	  vector<decl_base_sptr> sorted_dms;
+	  sort_data_members
+	    (class_or_union_diff::get_priv()->inserted_data_members_,
+	     sorted_dms);
+	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
+	       i != sorted_dms.end();
+	       ++i)
+	    {
+	      var_decl_sptr data_mem =
+		dynamic_pointer_cast<var_decl>(*i);
+	      assert(data_mem);
+	      out << indent << "  ";
+	      represent_data_member(data_mem, context(), out);
+	    }
+	}
+
+      // report change
+      size_t numchanges =
+	class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.size();
+      size_t num_filtered =
+	class_or_union_diff::get_priv()->count_filtered_subtype_changed_dm();
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, num_filtered,
+			    subtype_change_kind, "data member", indent);
+	  for (var_diff_sptrs_type::const_iterator it =
+		 class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.begin();
+	       it != class_or_union_diff::get_priv()->sorted_subtype_changed_dm_.end();
+	       ++it)
+	    {
+	      if ((*it)->to_be_reported())
+		{
+		  represent(*it, context(), out, indent + " ");
+		  out << "\n";
+		}
+	    }
+	}
+
+      numchanges = class_or_union_diff::get_priv()->sorted_changed_dm_.size();
+      num_filtered =
+	class_or_union_diff::get_priv()->count_filtered_changed_dm();
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, num_filtered,
+			    change_kind, "data member", indent);
+	  for (var_diff_sptrs_type::const_iterator it =
+		 class_or_union_diff::get_priv()->sorted_changed_dm_.begin();
+	       it != class_or_union_diff::get_priv()->sorted_changed_dm_.end();
+	       ++it)
+	    {
+	      if ((*it)->to_be_reported())
+		{
+		  represent(*it, context(), out, indent + " ");
+		  out << "\n";
+		}
+	    }
+	}
+    }
+
+  // member types
+  if (const edit_script& e = member_types_changes())
+    {
+      int numchanges =
+	class_or_union_diff::get_priv()->sorted_changed_member_types_.size();
+      int numdels =
+	class_or_union_diff::get_priv()->deleted_member_types_.size();
+
+      // report deletions
+      if (numdels)
+	{
+	  report_mem_header(out, numdels, 0, del_kind,
+			    "member type", indent);
+
+	  for (string_decl_base_sptr_map::const_iterator i =
+		 class_or_union_diff::get_priv()->deleted_member_types_.begin();
+	       i != class_or_union_diff::get_priv()->deleted_member_types_.end();
+	       ++i)
+	    {
+	      if (i != class_or_union_diff::get_priv()->deleted_member_types_.begin())
+		out << "\n";
+	      decl_base_sptr mem_type = i->second;
+	      out << indent << "  '"
+		  << mem_type->get_pretty_representation()
+		  << "'";
+	    }
+	  out << "\n\n";
+	}
+      // report changes
+      if (numchanges)
+	{
+	  report_mem_header(out, numchanges, 0, change_kind,
+			    "member type", indent);
+
+	  for (diff_sptrs_type::const_iterator it =
+		 class_or_union_diff::get_priv()->sorted_changed_member_types_.begin();
+	       it != class_or_union_diff::get_priv()->sorted_changed_member_types_.end();
+	       ++it)
+	    {
+	      if (!(*it)->to_be_reported())
+		continue;
+
+	      type_or_decl_base_sptr o = (*it)->first_subject();
+	      type_or_decl_base_sptr n = (*it)->second_subject();
+	      out << indent << "  '"
+		  << o->get_pretty_representation()
+		  << "' changed ";
+	      report_loc_info(n, *context(), out);
+	      out << ":\n";
+	      (*it)->report(out, indent + "    ");
+	    }
+	  out << "\n";
+	}
+
+      // report insertions
+      int numins = e.num_insertions();
+      assert(numchanges <= numins);
+      numins -= numchanges;
+
+      if (numins)
+	{
+	  report_mem_header(out, numins, 0, ins_kind,
+			    "member type", indent);
+
+	  bool emitted = false;
+	  for (vector<insertion>::const_iterator i = e.insertions().begin();
+	       i != e.insertions().end();
+	       ++i)
+	    {
+	      type_base_sptr mem_type;
+	      for (vector<unsigned>::const_iterator j =
+		     i->inserted_indexes().begin();
+		   j != i->inserted_indexes().end();
+		   ++j)
+		{
+		  if (emitted)
+		    out << "\n";
+		  mem_type = second->get_member_types()[*j];
+		  if (!class_or_union_diff::get_priv()->
+		      member_type_has_changed(get_type_declaration(mem_type)))
+		    {
+		      out << indent << "  '"
+			  << get_type_declaration(mem_type)->
+			get_pretty_representation()
+			  << "'";
+		      emitted = true;
+		    }
+		}
+	    }
+	  out << "\n\n";
+	}
+    }
+
+  // member function templates
+  if (const edit_script& e = member_fn_tmpls_changes())
+    {
+      // report deletions
+      int numdels = e.num_deletions();
+      if (numdels)
+	report_mem_header(out, numdels, 0, del_kind,
+			  "member function template", indent);
+      for (vector<deletion>::const_iterator i = e.deletions().begin();
+	   i != e.deletions().end();
+	   ++i)
+	{
+	  if (i != e.deletions().begin())
+	    out << "\n";
+	  member_function_template_sptr mem_fn_tmpl =
+	    first->get_member_function_templates()[i->index()];
+	  out << indent << "  '"
+	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
+	      << "'";
+	}
+      if (numdels)
+	out << "\n\n";
+
+      // report insertions
+      int numins = e.num_insertions();
+      if (numins)
+	report_mem_header(out, numins, 0, ins_kind,
+			  "member function template", indent);
+      bool emitted = false;
+      for (vector<insertion>::const_iterator i = e.insertions().begin();
+	   i != e.insertions().end();
+	   ++i)
+	{
+	  member_function_template_sptr mem_fn_tmpl;
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
+	       j != i->inserted_indexes().end();
+	       ++j)
+	    {
+	      if (emitted)
+		out << "\n";
+	      mem_fn_tmpl = second->get_member_function_templates()[*j];
+	      out << indent << "  '"
+		  << mem_fn_tmpl->as_function_tdecl()->
+		get_pretty_representation()
+		  << "'";
+	      emitted = true;
+	    }
+	}
+      if (numins)
+	out << "\n\n";
+    }
+
+  // member class templates.
+  if (const edit_script& e = member_class_tmpls_changes())
+    {
+      // report deletions
+      int numdels = e.num_deletions();
+      if (numdels)
+	report_mem_header(out, numdels, 0, del_kind,
+			  "member class template", indent);
+      for (vector<deletion>::const_iterator i = e.deletions().begin();
+	   i != e.deletions().end();
+	   ++i)
+	{
+	  if (i != e.deletions().begin())
+	    out << "\n";
+	  member_class_template_sptr mem_cls_tmpl =
+	    first->get_member_class_templates()[i->index()];
+	  out << indent << "  '"
+	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
+	      << "'";
+	}
+      if (numdels)
+	out << "\n\n";
+
+      // report insertions
+      int numins = e.num_insertions();
+      if (numins)
+	report_mem_header(out, numins, 0, ins_kind,
+			  "member class template", indent);
+      bool emitted = false;
+      for (vector<insertion>::const_iterator i = e.insertions().begin();
+	   i != e.insertions().end();
+	   ++i)
+	{
+	  member_class_template_sptr mem_cls_tmpl;
+	  for (vector<unsigned>::const_iterator j =
+		 i->inserted_indexes().begin();
+	       j != i->inserted_indexes().end();
+	       ++j)
+	    {
+	      if (emitted)
+		out << "\n";
+	      mem_cls_tmpl = second->get_member_class_templates()[*j];
+	      out << indent << "  '"
+		  << mem_cls_tmpl->as_class_tdecl()
+		->get_pretty_representation()
+		  << "'";
+	      emitted = true;
+	    }
+	}
+      if (numins)
+	out << "\n\n";
+    }
+}
+
+/// Populate the vector of children node of the @ref diff base type
+/// sub-object of this instance of @ref class_or_union_diff.
+///
+/// The children node can then later be retrieved using
+/// diff::children_node().
+void
+class_or_union_diff::chain_into_hierarchy()
+{
+  // data member changes
+  for (var_diff_sptrs_type::const_iterator i =
+	 get_priv()->sorted_subtype_changed_dm_.begin();
+       i != get_priv()->sorted_subtype_changed_dm_.end();
+       ++i)
+    if (diff_sptr d = *i)
+      append_child_node(d);
+
+  for (unsigned_var_diff_sptr_map::const_iterator i =
+	 get_priv()->changed_dm_.begin();
+       i != get_priv()->changed_dm_.end();
+       ++i)
+    if (diff_sptr d = i->second)
+      append_child_node(d);
+
+  // member types changes
+  for (diff_sptrs_type::const_iterator i =
+	 get_priv()->sorted_changed_member_types_.begin();
+       i != get_priv()->sorted_changed_member_types_.end();
+       ++i)
+    if (diff_sptr d = *i)
+      append_child_node(d);
+
+  // member function changes
+  for (function_decl_diff_sptrs_type::const_iterator i =
+	 get_priv()->sorted_changed_member_functions_.begin();
+       i != get_priv()->sorted_changed_member_functions_.end();
+       ++i)
+    if (diff_sptr d = *i)
+      append_child_node(d);
+}
+
+// </class_or_union_diff stuff>
+
+//<class_diff stuff>
+
+/// The type of the private data (pimpl sub-object) of the @ref
+/// class_diff type.
+struct class_diff::priv
+{
+  edit_script base_changes_;
+  edit_script member_types_changes_;
+  edit_script member_fns_changes_;
+
+  string_base_sptr_map deleted_bases_;
+  class_decl::base_specs sorted_deleted_bases_;
+  string_base_sptr_map inserted_bases_;
+  class_decl::base_specs sorted_inserted_bases_;
+  string_base_diff_sptr_map changed_bases_;
+  base_diff_sptrs_type sorted_changed_bases_;
+  string_member_function_sptr_map deleted_member_functions_;
+  string_member_function_sptr_map inserted_member_functions_;
+  string_function_decl_diff_sptr_map changed_member_functions_;
+  function_decl_diff_sptrs_type sorted_changed_member_functions_;
+
+  class_decl::base_spec_sptr
+  base_has_changed(class_decl::base_spec_sptr) const;
+
+  size_t
+  count_filtered_bases();
 
   size_t
   count_filtered_changed_mem_fns(const diff_context_sptr&);
@@ -4810,18 +6069,9 @@ class_diff::clear_lookup_tables(void)
   priv_->deleted_bases_.clear();
   priv_->inserted_bases_.clear();
   priv_->changed_bases_.clear();
-  priv_->deleted_member_types_.clear();
-  priv_->inserted_member_types_.clear();
-  priv_->changed_member_types_.clear();
-  priv_->deleted_data_members_.clear();
-  priv_->inserted_data_members_.clear();
-  priv_->subtype_changed_dm_.clear();
   priv_->deleted_member_functions_.clear();
   priv_->inserted_member_functions_.clear();
   priv_->changed_member_functions_.clear();
-  priv_->deleted_member_class_tmpls_.clear();
-  priv_->inserted_member_class_tmpls_.clear();
-  priv_->changed_member_class_tmpls_.clear();
 }
 
 /// Tests if the lookup tables are empty.
@@ -4833,25 +6083,18 @@ class_diff::lookup_tables_empty(void) const
   return (priv_->deleted_bases_.empty()
 	  && priv_->inserted_bases_.empty()
 	  && priv_->changed_bases_.empty()
-	  && priv_->deleted_member_types_.empty()
-	  && priv_->inserted_member_types_.empty()
-	  && priv_->changed_member_types_.empty()
-	  && priv_->deleted_data_members_.empty()
-	  && priv_->inserted_data_members_.empty()
-	  && priv_->subtype_changed_dm_.empty()
 	  && priv_->inserted_member_functions_.empty()
 	  && priv_->deleted_member_functions_.empty()
-	  && priv_->changed_member_functions_.empty()
-	  && priv_->deleted_member_class_tmpls_.empty()
-	  && priv_->inserted_member_class_tmpls_.empty()
-	  && priv_->changed_member_class_tmpls_.empty());
+	  && priv_->changed_member_functions_.empty());
 }
 
 /// If the lookup tables are not yet built, walk the differences and
-/// fill the lookup tables.
+/// fill them.
 void
 class_diff::ensure_lookup_tables_populated(void) const
 {
+  class_or_union_diff::ensure_lookup_tables_populated();
+
   if (!lookup_tables_empty())
     return;
 
@@ -4909,177 +6152,25 @@ class_diff::ensure_lookup_tables_populated(void) const
 				 priv_->sorted_changed_bases_);
 
   {
-    edit_script& e = priv_->member_types_changes_;
+    const class_or_union_diff::priv_sptr &p = class_or_union_diff::priv_;
+
+    edit_script& e = p->member_fns_changes_;
 
     for (vector<deletion>::const_iterator it = e.deletions().begin();
 	 it != e.deletions().end();
 	 ++it)
       {
 	unsigned i = it->index();
-	decl_base_sptr d =
-	  get_type_declaration(first_class_decl()->get_member_types()[i]);
-	class_decl_sptr klass_decl = dynamic_pointer_cast<class_decl>(d);
-	if (klass_decl && klass_decl->get_is_declaration_only())
-	  continue;
-	string qname = d->get_qualified_name();
-	priv_->deleted_member_types_[qname] = d;
-      }
-
-    for (vector<insertion>::const_iterator it = e.insertions().begin();
-	 it != e.insertions().end();
-	 ++it)
-      {
-	for (vector<unsigned>::const_iterator iit =
-	       it->inserted_indexes().begin();
-	     iit != it->inserted_indexes().end();
-	     ++iit)
-	  {
-	    unsigned i = *iit;
-	    decl_base_sptr d =
-	      get_type_declaration(second_class_decl()->get_member_types()[i]);
-	    class_decl_sptr klass_decl = dynamic_pointer_cast<class_decl>(d);
-	    if (klass_decl && klass_decl->get_is_declaration_only())
-	      continue;
-	    string qname = d->get_qualified_name();
-	    string_decl_base_sptr_map::const_iterator j =
-	      priv_->deleted_member_types_.find(qname);
-	    if (j != priv_->deleted_member_types_.end())
-	      {
-		if (*j->second != *d)
-		  priv_->changed_member_types_[qname] =
-		    compute_diff(j->second, d, context());
-
-		priv_->deleted_member_types_.erase(j);
-	      }
-	    else
-	      priv_->inserted_member_types_[qname] = d;
-	  }
-      }
-  }
-
-  {
-    edit_script& e = priv_->data_members_changes_;
-
-    for (vector<deletion>::const_iterator it = e.deletions().begin();
-	 it != e.deletions().end();
-	 ++it)
-      {
-	unsigned i = it->index();
-	decl_base_sptr d = first_class_decl()->get_non_static_data_members()[i];
-	string qname = d->get_qualified_name();
-	assert(priv_->deleted_data_members_.find(qname)
-	       == priv_->deleted_data_members_.end());
-	priv_->deleted_data_members_[qname] = d;
-      }
-
-    for (vector<insertion>::const_iterator it = e.insertions().begin();
-	 it != e.insertions().end();
-	 ++it)
-      {
-	for (vector<unsigned>::const_iterator iit =
-	       it->inserted_indexes().begin();
-	     iit != it->inserted_indexes().end();
-	     ++iit)
-	  {
-	    unsigned i = *iit;
-	    decl_base_sptr d =
-	      second_class_decl()->get_non_static_data_members()[i];
-	    var_decl_sptr dm = dynamic_pointer_cast<var_decl>(d);
-	    string qname = dm->get_qualified_name();
-	    assert(priv_->inserted_data_members_.find(qname)
-		   == priv_->inserted_data_members_.end());
-	    string_decl_base_sptr_map::const_iterator j =
-	      priv_->deleted_data_members_.find(qname);
-	    if (j != priv_->deleted_data_members_.end())
-	      {
-		if (*j->second != *d)
-		  {
-		    var_decl_sptr old_dm =
-		      dynamic_pointer_cast<var_decl>(j->second);
-		    priv_->subtype_changed_dm_[qname]=
-		      compute_diff(old_dm, dm, context());
-		  }
-		priv_->deleted_data_members_.erase(j);
-	      }
-	    else
-	      priv_->inserted_data_members_[qname] = d;
-	  }
-      }
-
-    // Now detect when a data member is deleted from offset N and
-    // another one is added to offset N.  In that case, we want to be
-    // able to say that the data member at offset N changed.
-    for (string_decl_base_sptr_map::const_iterator i =
-	   priv_->deleted_data_members_.begin();
-	 i != priv_->deleted_data_members_.end();
-	 ++i)
-      {
-	unsigned offset = get_data_member_offset(i->second);
-	priv_->deleted_dm_by_offset_[offset] = i->second;
-      }
-
-    for (string_decl_base_sptr_map::const_iterator i =
-	   priv_->inserted_data_members_.begin();
-	 i != priv_->inserted_data_members_.end();
-	 ++i)
-      {
-	unsigned offset = get_data_member_offset(i->second);
-	priv_->inserted_dm_by_offset_[offset] = i->second;
-      }
-
-    for (unsigned_decl_base_sptr_map::const_iterator i =
-	   priv_->inserted_dm_by_offset_.begin();
-	 i != priv_->inserted_dm_by_offset_.end();
-	 ++i)
-      {
-	unsigned_decl_base_sptr_map::const_iterator j =
-	  priv_->deleted_dm_by_offset_.find(i->first);
-	if (j != priv_->deleted_dm_by_offset_.end())
-	  {
-	    var_decl_sptr old_dm = dynamic_pointer_cast<var_decl>(j->second);
-	    var_decl_sptr new_dm = dynamic_pointer_cast<var_decl>(i->second);
-	    priv_->changed_dm_[i->first] =
-	      compute_diff(old_dm, new_dm, context());
-	  }
-      }
-
-    for (unsigned_var_diff_sptr_map::const_iterator i =
-	   priv_->changed_dm_.begin();
-	 i != priv_->changed_dm_.end();
-	 ++i)
-      {
-	priv_->deleted_dm_by_offset_.erase(i->first);
-	priv_->inserted_dm_by_offset_.erase(i->first);
-	priv_->deleted_data_members_.erase
-	  (i->second->first_var()->get_qualified_name());
-	priv_->inserted_data_members_.erase
-	  (i->second->second_var()->get_qualified_name());
-      }
-  }
-  sort_string_data_member_diff_sptr_map(priv_->subtype_changed_dm_,
-					priv_->sorted_subtype_changed_dm_);
-  sort_unsigned_data_member_diff_sptr_map(priv_->changed_dm_,
-					  priv_->sorted_changed_dm_);
-
-
-  {
-    edit_script& e = priv_->member_fns_changes_;
-
-    for (vector<deletion>::const_iterator it = e.deletions().begin();
-	 it != e.deletions().end();
-	 ++it)
-      {
-	unsigned i = it->index();
-	class_decl::method_decl_sptr mem_fn =
+	method_decl_sptr mem_fn =
 	  first_class_decl()->get_virtual_mem_fns()[i];
 	string name = mem_fn->get_linkage_name();
 	if (name.empty())
 	  name = mem_fn->get_pretty_representation();
 	assert(!name.empty());
-	if (priv_->deleted_member_functions_.find(name)
-	    != priv_->deleted_member_functions_.end())
+	if (p->deleted_member_functions_.find(name)
+	    != p->deleted_member_functions_.end())
 	  continue;
-	priv_->deleted_member_functions_[name] = mem_fn;
+	p->deleted_member_functions_[name] = mem_fn;
       }
 
     for (vector<insertion>::const_iterator it = e.insertions().begin();
@@ -5093,29 +6184,29 @@ class_diff::ensure_lookup_tables_populated(void) const
 	  {
 	    unsigned i = *iit;
 
-	    class_decl::method_decl_sptr mem_fn =
+	    method_decl_sptr mem_fn =
 	      second_class_decl()->get_virtual_mem_fns()[i];
 	    string name = mem_fn->get_linkage_name();
 	    if (name.empty())
 	      name = mem_fn->get_pretty_representation();
 	    assert(!name.empty());
-	    if (priv_->inserted_member_functions_.find(name)
-		!= priv_->inserted_member_functions_.end())
+	    if (p->inserted_member_functions_.find(name)
+		!= p->inserted_member_functions_.end())
 	      continue;
 	    string_member_function_sptr_map::const_iterator j =
-	      priv_->deleted_member_functions_.find(name);
+	      p->deleted_member_functions_.find(name);
 
-	    if (j != priv_->deleted_member_functions_.end())
+	    if (j != p->deleted_member_functions_.end())
 	      {
 		if (*j->second != *mem_fn)
-		  priv_->changed_member_functions_[name] =
+		  p->changed_member_functions_[name] =
 		    compute_diff(static_pointer_cast<function_decl>(j->second),
 				 static_pointer_cast<function_decl>(mem_fn),
 				 context());
-		priv_->deleted_member_functions_.erase(j);
+		p->deleted_member_functions_.erase(j);
 	      }
 	    else
-	      priv_->inserted_member_functions_[name] = mem_fn;
+	      p->inserted_member_functions_[name] = mem_fn;
 	  }
       }
 
@@ -5142,7 +6233,7 @@ class_diff::ensure_lookup_tables_populated(void) const
     for (vector<string>::const_iterator i = to_delete.begin();
 	 i != to_delete.end();
 	 ++i)
-      priv_->deleted_member_functions_.erase(*i);
+      p->deleted_member_functions_.erase(*i);
 
     // Do something similar for added functions.
     to_delete.clear();
@@ -5158,62 +6249,22 @@ class_diff::ensure_lookup_tables_populated(void) const
     for (vector<string>::const_iterator i = to_delete.begin();
 	 i != to_delete.end();
 	 ++i)
-      priv_->inserted_member_functions_.erase(*i);
+      p->inserted_member_functions_.erase(*i);
+
+    sort_string_virtual_member_function_diff_sptr_map
+      (p->changed_member_functions_,
+       p->sorted_changed_member_functions_);
   }
+}
 
-  sort_string_virtual_member_function_diff_sptr_map
-    (priv_->changed_member_functions_,
-     priv_->sorted_changed_member_functions_);
-
-  {
-    edit_script& e = priv_->member_class_tmpls_changes_;
-
-    for (vector<deletion>::const_iterator it = e.deletions().begin();
-	 it != e.deletions().end();
-	 ++it)
-      {
-	unsigned i = it->index();
-	decl_base_sptr d =
-	  first_class_decl()->get_member_class_templates()[i]->
-	  as_class_tdecl();
-	string qname = d->get_qualified_name();
-	assert(priv_->deleted_member_class_tmpls_.find(qname)
-	       == priv_->deleted_member_class_tmpls_.end());
-	priv_->deleted_member_class_tmpls_[qname] = d;
-      }
-
-    for (vector<insertion>::const_iterator it = e.insertions().begin();
-	 it != e.insertions().end();
-	 ++it)
-      {
-	for (vector<unsigned>::const_iterator iit =
-	       it->inserted_indexes().begin();
-	     iit != it->inserted_indexes().end();
-	     ++iit)
-	  {
-	    unsigned i = *iit;
-	    decl_base_sptr d =
-	      second_class_decl()->get_member_class_templates()[i]->
-	      as_class_tdecl();
-	    string qname = d->get_qualified_name();
-	    assert(priv_->inserted_member_class_tmpls_.find(qname)
-		   == priv_->inserted_member_class_tmpls_.end());
-	    string_decl_base_sptr_map::const_iterator j =
-	      priv_->deleted_member_class_tmpls_.find(qname);
-	    if (j != priv_->deleted_member_class_tmpls_.end())
-	      {
-		if (*j->second != *d)
-		  priv_->changed_member_types_[qname]=
-		    compute_diff(j->second, d, context());
-		priv_->deleted_member_class_tmpls_.erase(j);
-	      }
-	    else
-	      priv_->inserted_member_class_tmpls_[qname] = d;
-	  }
-      }
-  }
-  sort_string_diff_sptr_map(priv_->changed_member_types_,
-			    priv_->sorted_changed_member_types_);
+/// Allocate the memory for the priv_ pimpl data member of the @ref
+/// class_diff class.
+void
+class_diff::allocate_priv_data()
+{
+  class_or_union_diff::allocate_priv_data();
+  if (!priv_)
+    priv_.reset(new priv);
 }
 
 /// Test whether a given base class has changed.  A base class has
@@ -5236,100 +6287,6 @@ class_diff::priv::base_has_changed(class_decl::base_spec_sptr d) const
 
 }
 
-/// Test whether a given member type has changed.
-///
-/// @param d the declaration for the member type to consider.
-///
-/// @return the new member type if the given member type has changed,
-/// or NULL if it hasn't.
-type_or_decl_base_sptr
-class_diff::priv::member_type_has_changed(decl_base_sptr d) const
-{
-  string qname = d->get_qualified_name();
-  string_diff_sptr_map::const_iterator it =
-    changed_member_types_.find(qname);
-
-  return ((it == changed_member_types_.end())
-	  ? type_or_decl_base_sptr()
-	  : it->second->second_subject());
-}
-
-/// Test whether a given data member has changed.
-///
-/// @param d the declaration for the data member to consider.
-///
-/// @return the new data member if the given data member has changed,
-/// or NULL if if hasn't.
-decl_base_sptr
-class_diff::priv::subtype_changed_dm(decl_base_sptr d) const
-{
-  string qname = d->get_qualified_name();
-  string_var_diff_sptr_map::const_iterator it =
-    subtype_changed_dm_.find(qname);
-
-  if (it == subtype_changed_dm_.end())
-    return decl_base_sptr();
-  return it->second->second_var();
-}
-
-/// Test whether a given member class template has changed.
-///
-/// @param d the declaration for the given member class template to consider.
-///
-/// @return the new member class template if the given one has
-/// changed, or NULL if it hasn't.
-decl_base_sptr
-class_diff::priv::member_class_tmpl_has_changed(decl_base_sptr d) const
-{
-  string qname = d->get_qualified_name();
-  string_diff_sptr_map::const_iterator it =
-    changed_member_class_tmpls_.find(qname);
-
-  return ((it == changed_member_class_tmpls_.end())
-	  ? decl_base_sptr()
-	  : dynamic_pointer_cast<decl_base>(it->second->second_subject()));
-}
-
-/// Get the number of non-static data member that were deleted from
-/// the class which diff we are looking at.
-///
-/// @return the number of deleted non-static data members.
-size_t
-class_diff::priv::get_deleted_non_static_data_members_number() const
-{
-  size_t result = 0;
-
-  for (string_decl_base_sptr_map::const_iterator i =
-	 deleted_data_members_.begin();
-       i != deleted_data_members_.end();
-       ++i)
-    if (is_member_decl(i->second)
-	&& !get_member_is_static(i->second))
-      ++result;
-
-  return result;
-}
-
-/// Get the number of non-static data member that were inserted to the
-/// class which diff we are looking at.
-///
-/// @return the number of inserted non-static data members.
-size_t
-class_diff::priv::get_inserted_non_static_data_members_number() const
-{
-  size_t result = 0;
-
-  for (string_decl_base_sptr_map::const_iterator i =
-	 inserted_data_members_.begin();
-       i != inserted_data_members_.end();
-       ++i)
-    if (is_member_decl(i->second)
-	&& !get_member_is_static(i->second))
-      ++result;
-
-  return result;
-}
-
 /// Count the number of bases classes whose changes got filtered out.
 ///
 /// @return the number of bases classes whose changes got filtered
@@ -5348,68 +6305,6 @@ class_diff::priv::count_filtered_bases()
     }
   return num_filtered;
 }
-
-/// Count the number of data members whose changes got filtered out.
-///
-/// @param ctxt the diff context to use to get the filtering settings
-/// from the user.
-///
-/// @return the number of data members whose changes got filtered out.
-size_t
-class_diff::priv::count_filtered_subtype_changed_dm()
-{
-  size_t num_filtered= 0;
-  for (var_diff_sptrs_type::const_iterator i =
-	 sorted_subtype_changed_dm_.begin();
-       i != sorted_subtype_changed_dm_.end();
-       ++i)
-    {
-      if ((*i)->is_filtered_out())
-	++num_filtered;
-    }
-  return num_filtered;
-}
-
-/// Count the number of data member offsets that have changed.
-///
-/// @return the number of filtered changed data members.
-size_t
-class_diff::priv::count_filtered_changed_dm()
-{
-  size_t num_filtered= 0;
-
-  for (unsigned_var_diff_sptr_map::const_iterator i = changed_dm_.begin();
-       i != changed_dm_.end();
-       ++i)
-    {
-      diff_sptr diff = i->second;
-      if (diff->is_filtered_out())
-	++num_filtered;
-    }
-  return num_filtered;
-
-}
-
-/// Skip the processing of the current member function if its
-/// virtual-ness is disallowed by the user.
-///
-/// This is to be used in the member functions below that are used to
-/// count the number of filtered inserted, deleted and changed member
-/// functions.
-#define SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED				\
-  do {									\
-    if (get_member_function_is_virtual(f)					\
-	|| get_member_function_is_virtual(s))				\
-      {								\
-	if (!(allowed_category | VIRTUAL_MEMBER_CHANGE_CATEGORY))	\
-	  continue;							\
-      }								\
-    else								\
-      {								\
-	if (!(allowed_category | NON_VIRT_MEM_FUN_CHANGE_CATEGORY))	\
-	  continue;							\
-      }								\
-  } while (false)
 
 /// Count the number of member functions whose changes got filtered
 /// out.
@@ -5430,13 +6325,13 @@ class_diff::priv::count_filtered_changed_mem_fns(const diff_context_sptr& ctxt)
        i != sorted_changed_member_functions_.end();
        ++i)
     {
-      class_decl::method_decl_sptr f =
-	dynamic_pointer_cast<class_decl::method_decl>
+      method_decl_sptr f =
+	dynamic_pointer_cast<method_decl>
 	((*i)->first_function_decl());
       assert(f);
 
-      class_decl::method_decl_sptr s =
-	dynamic_pointer_cast<class_decl::method_decl>
+      method_decl_sptr s =
+	dynamic_pointer_cast<method_decl>
 	((*i)->second_function_decl());
       assert(s);
 
@@ -5471,7 +6366,7 @@ class_diff::priv::count_filtered_inserted_mem_fns(const diff_context_sptr& ctxt)
        i != inserted_member_functions_.end();
        ++i)
     {
-      class_decl::method_decl_sptr f = i->second,
+      method_decl_sptr f = i->second,
 	s = i->second;
 
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
@@ -5506,7 +6401,7 @@ class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
        i != deleted_member_functions_.end();
        ++i)
     {
-      class_decl::method_decl_sptr f = i->second,
+      method_decl_sptr f = i->second,
 	s = i->second;
 
       SKIP_MEM_FN_IF_VIRTUALITY_DISALLOWED;
@@ -5530,33 +6425,12 @@ class_diff::priv::count_filtered_deleted_mem_fns(const diff_context_sptr& ctxt)
 void
 class_diff::chain_into_hierarchy()
 {
+  class_or_union_diff::chain_into_hierarchy();
+
   // base class changes.
   for (base_diff_sptrs_type::const_iterator i =
 	 get_priv()->sorted_changed_bases_.begin();
        i != get_priv()->sorted_changed_bases_.end();
-       ++i)
-    if (diff_sptr d = *i)
-      append_child_node(d);
-
-  // data member changes
-  for (var_diff_sptrs_type::const_iterator i =
-	 get_priv()->sorted_subtype_changed_dm_.begin();
-       i != get_priv()->sorted_subtype_changed_dm_.end();
-       ++i)
-    if (diff_sptr d = *i)
-      append_child_node(d);
-
-  for (unsigned_var_diff_sptr_map::const_iterator i =
-	 get_priv()->changed_dm_.begin();
-       i != get_priv()->changed_dm_.end();
-       ++i)
-    if (diff_sptr d = i->second)
-      append_child_node(d);
-
-  // member types changes
-  for (diff_sptrs_type::const_iterator i =
-	 get_priv()->sorted_changed_member_types_.begin();
-       i != get_priv()->sorted_changed_member_types_.end();
        ++i)
     if (diff_sptr d = *i)
       append_child_node(d);
@@ -5577,10 +6451,10 @@ class_diff::chain_into_hierarchy()
 /// @param second_scope the second class of the diff.
 ///
 /// @param ctxt the diff context to use.
-class_diff::class_diff(shared_ptr<class_decl>	first_scope,
-		       shared_ptr<class_decl>	second_scope,
-		       diff_context_sptr	ctxt)
-  : type_diff_base(first_scope, second_scope, ctxt)
+class_diff::class_diff(class_decl_sptr first_scope,
+		       class_decl_sptr second_scope,
+		       diff_context_sptr ctxt)
+  : class_or_union_diff(first_scope, second_scope, ctxt)
     //  We don't initialize the priv_ data member here.  This is an
     //  optimization to reduce memory consumption (and also execution
     //  time) for cases where there are a lot of instances of
@@ -5708,95 +6582,6 @@ class_diff::changed_bases()
 edit_script&
 class_diff::base_changes()
 {return get_priv()->base_changes_;}
-
-/// @return the edit script of the member types of the two classes.
-const edit_script&
-class_diff::member_types_changes() const
-{return get_priv()->member_types_changes_;}
-
-/// @return the edit script of the member types of the two classes.
-edit_script&
-class_diff::member_types_changes()
-{return get_priv()->member_types_changes_;}
-
-/// @return the edit script of the data members of the two classes.
-const edit_script&
-class_diff::data_members_changes() const
-{return get_priv()->data_members_changes_;}
-
-/// @return the edit script of the data members of the two classes.
-edit_script&
-class_diff::data_members_changes()
-{return get_priv()->data_members_changes_;}
-
-/// Getter for the data members that got inserted.
-///
-/// @return a map of data members that got inserted.
-const string_decl_base_sptr_map&
-class_diff::inserted_data_members() const
-{return get_priv()->inserted_data_members_;}
-
-/// Getter for the data members that got deleted.
-///
-/// @return a map of data members that got deleted.
-const string_decl_base_sptr_map&
-class_diff::deleted_data_members() const
-{return get_priv()->deleted_data_members_;}
-
-/// @return the edit script of the member functions of the two
-/// classes.
-const edit_script&
-class_diff::member_fns_changes() const
-{return get_priv()->member_fns_changes_;}
-
-/// Getter for the virtual members functions that have had a change in
-/// a sub-type, without having a change in their symbol name.
-///
-/// @return a sorted vector of virtual member functions that have a
-/// sub-type change.
-const function_decl_diff_sptrs_type&
-class_diff::changed_member_fns() const
-{return get_priv()->sorted_changed_member_functions_;}
-
-/// @return the edit script of the member functions of the two
-/// classes.
-edit_script&
-class_diff::member_fns_changes()
-{return get_priv()->member_fns_changes_;}
-
-/// @return a map of member functions that got deleted.
-const string_member_function_sptr_map&
-class_diff::deleted_member_fns() const
-{return get_priv()->deleted_member_functions_;}
-
-/// @return a map of member functions that got inserted.
-const string_member_function_sptr_map&
-class_diff::inserted_member_fns() const
-{return get_priv()->inserted_member_functions_;}
-
-///@return the edit script of the member function templates of the two
-///classes.
-const edit_script&
-class_diff::member_fn_tmpls_changes() const
-{return get_priv()->member_fn_tmpls_changes_;}
-
-/// @return the edit script of the member function templates of the
-/// two classes.
-edit_script&
-class_diff::member_fn_tmpls_changes()
-{return get_priv()->member_fn_tmpls_changes_;}
-
-/// @return the edit script of the member class templates of the two
-/// classes.
-const edit_script&
-class_diff::member_class_tmpls_changes() const
-{return get_priv()->member_class_tmpls_changes_;}
-
-/// @return the edit script of the member class templates of the two
-/// classes.
-edit_script&
-class_diff::member_class_tmpls_changes()
-{return get_priv()->member_class_tmpls_changes_;}
 
 /// A functor to compare instances of @ref class_decl::base_spec.
 struct base_spec_comp
@@ -5932,48 +6717,6 @@ sort_string_data_member_diff_sptr_map(const string_var_diff_sptr_map& map,
        ++i)
     sorted.push_back(i->second);
   data_member_diff_comp comp;
-  std::sort(sorted.begin(), sorted.end(), comp);
-}
-
-/// A comparison functor to compare two data members based on their
-/// offset.
-struct data_member_comp
-{
-  /// @param f the first data member to take into account.
-  ///
-  /// @param s the second data member to take into account.
-  ///
-  /// @return true iff f is before s.
-  bool
-  operator()(const decl_base_sptr& f,
-	     const decl_base_sptr& s) const
-  {
-    var_decl_sptr first_dm = is_data_member(f);
-    var_decl_sptr second_dm = is_data_member(s);
-
-    assert(first_dm);
-    assert(second_dm);
-
-    return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
-  }
-};//end struct data_member_comp
-
-/// Sort a map of data members by the offset of their initial value.
-///
-/// @param data_members the map of changed data members to sort.
-///
-/// @param sorted the resulting vector of sorted changed data members.
-static void
-sort_data_members(const string_decl_base_sptr_map &data_members,
-		  vector<decl_base_sptr>& sorted)
-{
-  sorted.reserve(data_members.size());
-  for (string_decl_base_sptr_map::const_iterator i = data_members.begin();
-       i != data_members.end();
-       ++i)
-    sorted.push_back(i->second);
-
-  data_member_comp comp;
   std::sort(sorted.begin(), sorted.end(), comp);
 }
 
@@ -6162,7 +6905,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  if (emitted
 	      && i != get_priv()->deleted_member_functions_.begin())
 	    out << "\n";
-	  class_decl::method_decl_sptr mem_fun = i->second;
+	  method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(*context(), mem_fun, out);
 	  emitted = true;
@@ -6190,7 +6933,7 @@ class_diff::report(ostream& out, const string& indent) const
 	  if (emitted
 	      && i != get_priv()->inserted_member_functions_.begin())
 	    out << "\n";
-	  class_decl::method_decl_sptr mem_fun = i->second;
+	  method_decl_sptr mem_fun = i->second;
 	  out << indent << "  ";
 	  represent(*context(), mem_fun, out);
 	  emitted = true;
@@ -6235,295 +6978,10 @@ class_diff::report(ostream& out, const string& indent) const
 	out << "\n";
     }
 
-  // data members
-  if (data_members_changes())
-    {
-      // report deletions
-      int numdels = get_priv()->get_deleted_non_static_data_members_number();
-      if (numdels)
-	{
-	  report_mem_header(out, numdels, 0, del_kind,
-			    "data member", indent);
-	  vector<decl_base_sptr> sorted_dms;
-	  sort_data_members(get_priv()->deleted_data_members_, sorted_dms);
-	  bool emitted = false;
-	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
-	       i != sorted_dms.end();
-	       ++i)
-	    {
-	      var_decl_sptr data_mem =
-		dynamic_pointer_cast<var_decl>(*i);
-	      assert(data_mem);
-	      if (get_member_is_static(data_mem))
-		continue;
-	      if (emitted)
-		out << "\n";
-	      out << indent << "  ";
-	      represent_data_member(data_mem, context(), out);
-	      emitted = true;
-	    }
-	  if (emitted)
-	    out << "\n";
-	}
-
-      //report insertions
-      int numins = get_priv()->inserted_data_members_.size();
-      if (numins)
-	{
-	  report_mem_header(out, numins, 0, ins_kind,
-			    "data member", indent);
-	  vector<decl_base_sptr> sorted_dms;
-	  sort_data_members(get_priv()->inserted_data_members_, sorted_dms);
-	  for (vector<decl_base_sptr>::const_iterator i = sorted_dms.begin();
-	       i != sorted_dms.end();
-	       ++i)
-	    {
-	      var_decl_sptr data_mem =
-		dynamic_pointer_cast<var_decl>(*i);
-	      assert(data_mem);
-	      out << indent << "  ";
-	      represent_data_member(data_mem, context(), out);
-	    }
-	}
-
-      // report change
-      size_t numchanges = get_priv()->sorted_subtype_changed_dm_.size();
-      size_t num_filtered = get_priv()->count_filtered_subtype_changed_dm();
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, num_filtered,
-			    subtype_change_kind, "data member", indent);
-	  for (var_diff_sptrs_type::const_iterator it =
-		get_priv()->sorted_subtype_changed_dm_.begin();
-	       it != get_priv()->sorted_subtype_changed_dm_.end();
-	       ++it)
-	    {
-	      if ((*it)->to_be_reported())
-		{
-		  represent(*it, context(), out, indent + " ");
-		  out << "\n";
-		}
-	    }
-	}
-
-      numchanges = get_priv()->sorted_changed_dm_.size();
-      num_filtered = get_priv()->count_filtered_changed_dm();
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, num_filtered,
-			    change_kind, "data member", indent);
-	  for (var_diff_sptrs_type::const_iterator it =
-		 get_priv()->sorted_changed_dm_.begin();
-	       it != get_priv()->sorted_changed_dm_.end();
-	       ++it)
-	    {
-	      if ((*it)->to_be_reported())
-		{
-		  represent(*it, context(), out, indent + " ");
-		  out << "\n";
-		}
-	    }
-	}
-    }
-
-  // member types
-  if (const edit_script& e = member_types_changes())
-    {
-      int numchanges = get_priv()->sorted_changed_member_types_.size();
-      int numdels = get_priv()->deleted_member_types_.size();
-
-      // report deletions
-      if (numdels)
-	{
-	  report_mem_header(out, numdels, 0, del_kind,
-			    "member type", indent);
-
-	  for (string_decl_base_sptr_map::const_iterator i =
-		 get_priv()->deleted_member_types_.begin();
-	       i != get_priv()->deleted_member_types_.end();
-	       ++i)
-	    {
-	      if (i != get_priv()->deleted_member_types_.begin())
-		out << "\n";
-	      decl_base_sptr mem_type = i->second;
-	      out << indent << "  '"
-		  << mem_type->get_pretty_representation()
-		  << "'";
-	    }
-	  out << "\n\n";
-	}
-      // report changes
-      if (numchanges)
-	{
-	  report_mem_header(out, numchanges, 0, change_kind,
-			    "member type", indent);
-
-	  for (diff_sptrs_type::const_iterator it =
-		 get_priv()->sorted_changed_member_types_.begin();
-	       it != get_priv()->sorted_changed_member_types_.end();
-	       ++it)
-	    {
-	      if (!(*it)->to_be_reported())
-		continue;
-
-	      type_or_decl_base_sptr o = (*it)->first_subject();
-	      type_or_decl_base_sptr n = (*it)->second_subject();
-	      out << indent << "  '"
-		  << o->get_pretty_representation()
-		  << "' changed ";
-	      report_loc_info(n, *context(), out);
-	      out << ":\n";
-	      (*it)->report(out, indent + "    ");
-	    }
-	  out << "\n";
-	}
-
-      // report insertions
-      int numins = e.num_insertions();
-      assert(numchanges <= numins);
-      numins -= numchanges;
-
-      if (numins)
-	{
-	  report_mem_header(out, numins, 0, ins_kind,
-			    "member type", indent);
-
-	  bool emitted = false;
-	  for (vector<insertion>::const_iterator i = e.insertions().begin();
-	       i != e.insertions().end();
-	       ++i)
-	    {
-	      type_base_sptr mem_type;
-	      for (vector<unsigned>::const_iterator j =
-		     i->inserted_indexes().begin();
-		   j != i->inserted_indexes().end();
-		   ++j)
-		{
-		  if (emitted)
-		    out << "\n";
-		  mem_type = second->get_member_types()[*j];
-		  if (!get_priv()->
-		      member_type_has_changed(get_type_declaration(mem_type)))
-		    {
-		      out << indent << "  '"
-			  << get_type_declaration(mem_type)->
-			get_pretty_representation()
-			  << "'";
-		      emitted = true;
-		    }
-		}
-	    }
-	  out << "\n\n";
-	}
-    }
-
-  // member function templates
-  if (const edit_script& e = member_fn_tmpls_changes())
-    {
-      // report deletions
-      int numdels = e.num_deletions();
-      if (numdels)
-	report_mem_header(out, numdels, 0, del_kind,
-			  "member function template", indent);
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
-	   ++i)
-	{
-	  if (i != e.deletions().begin())
-	    out << "\n";
-	  class_decl::member_function_template_sptr mem_fn_tmpl =
-	    first->get_member_function_templates()[i->index()];
-	  out << indent << "  '"
-	      << mem_fn_tmpl->as_function_tdecl()->get_pretty_representation()
-	      << "'";
-	}
-      if (numdels)
-	out << "\n\n";
-
-      // report insertions
-      int numins = e.num_insertions();
-      if (numins)
-	report_mem_header(out, numins, 0, ins_kind,
-			  "member function template", indent);
-      bool emitted = false;
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
-	   ++i)
-	{
-	  class_decl::member_function_template_sptr mem_fn_tmpl;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
-	    {
-	      if (emitted)
-		out << "\n";
-	      mem_fn_tmpl = second->get_member_function_templates()[*j];
-	      out << indent << "  '"
-		  << mem_fn_tmpl->as_function_tdecl()->
-		get_pretty_representation()
-		  << "'";
-	      emitted = true;
-	    }
-	}
-      if (numins)
-	out << "\n\n";
-    }
-
-  // member class templates.
-  if (const edit_script& e = member_class_tmpls_changes())
-    {
-      // report deletions
-      int numdels = e.num_deletions();
-      if (numdels)
-	report_mem_header(out, numdels, 0, del_kind,
-			  "member class template", indent);
-      for (vector<deletion>::const_iterator i = e.deletions().begin();
-	   i != e.deletions().end();
-	   ++i)
-	{
-	  if (i != e.deletions().begin())
-	    out << "\n";
-	  class_decl::member_class_template_sptr mem_cls_tmpl =
-	    first->get_member_class_templates()[i->index()];
-	  out << indent << "  '"
-	      << mem_cls_tmpl->as_class_tdecl()->get_pretty_representation()
-	      << "'";
-	}
-      if (numdels)
-	out << "\n\n";
-
-      // report insertions
-      int numins = e.num_insertions();
-      if (numins)
-	report_mem_header(out, numins, 0, ins_kind,
-			  "member class template", indent);
-      bool emitted = false;
-      for (vector<insertion>::const_iterator i = e.insertions().begin();
-	   i != e.insertions().end();
-	   ++i)
-	{
-	  class_decl::member_class_template_sptr mem_cls_tmpl;
-	  for (vector<unsigned>::const_iterator j =
-		 i->inserted_indexes().begin();
-	       j != i->inserted_indexes().end();
-	       ++j)
-	    {
-	      if (emitted)
-		out << "\n";
-	      mem_cls_tmpl = second->get_member_class_templates()[*j];
-	      out << indent << "  '"
-		  << mem_cls_tmpl->as_class_tdecl()
-		->get_pretty_representation()
-		  << "'";
-	      emitted = true;
-	    }
-	}
-      if (numins)
-	out << "\n\n";
-    }
+  class_or_union_diff::report(out, indent);
 
   currently_reporting(false);
+
   reported_once(true);
 }
 
@@ -6577,10 +7035,10 @@ compute_diff(const class_decl_sptr	first,
   //
   // But if changes is its own canonical instance, then we initialize
   // its private data properly.
-  if (dynamic_cast<class_diff*>(changes->get_canonical_diff()) == changes.get())
+  if (is_class_diff(changes->get_canonical_diff()) == changes.get())
     // changes is its own canonical instance, so it gets a brand new
     // private data.
-    changes->priv_.reset(new class_diff::priv);
+    changes->allocate_priv_data();
   else
     {
       // changes has a non-empty equivalence class so it's going to
@@ -6845,6 +7303,198 @@ compute_diff(const class_decl::base_spec_sptr	first,
 }
 
 // </base_diff stuff>
+
+
+// <union_diff stuff>
+
+/// Clear the lookup tables useful for reporting.
+///
+/// This function must be updated each time a lookup table is added or
+/// removed from the union_diff::priv.
+void
+union_diff::clear_lookup_tables(void)
+{class_or_union_diff::clear_lookup_tables();}
+
+/// Tests if the lookup tables are empty.
+///
+/// @return true if the lookup tables are empty, false otherwise.
+bool
+union_diff::lookup_tables_empty(void) const
+{return class_or_union_diff::lookup_tables_empty();}
+
+/// If the lookup tables are not yet built, walk the differences and
+/// fill them.
+void
+union_diff::ensure_lookup_tables_populated(void) const
+{class_or_union_diff::ensure_lookup_tables_populated();}
+
+/// Allocate the memory for the priv_ pimpl data member of the @ref
+/// union_diff class.
+void
+union_diff::allocate_priv_data()
+{
+  class_or_union_diff::allocate_priv_data();
+}
+
+/// Constructor for the @ref union_diff type.
+///
+/// @param first_union the first object of the comparison.
+///
+/// @param second_union the second object of the comparison.
+///
+/// @param ctxt the context of the comparison.
+union_diff::union_diff(union_decl_sptr first_union,
+		       union_decl_sptr second_union,
+		       diff_context_sptr ctxt)
+  : class_or_union_diff(first_union, second_union, ctxt)
+{}
+
+/// Finish building the current instance of @ref union_diff.
+void
+union_diff::finish_diff_type()
+{class_or_union_diff::finish_diff_type();}
+
+/// Destructor of the union_diff node.
+union_diff::~union_diff()
+{}
+
+/// @return the first object of the comparison.
+union_decl_sptr
+union_diff::first_union_decl() const
+{return is_union_type(first_subject());}
+
+/// @return the second object of the comparison.
+union_decl_sptr
+union_diff::second_union_decl() const
+{return is_union_type(second_subject());}
+
+/// @return the pretty representation of the current diff node.
+const string&
+union_diff::get_pretty_representation() const
+{
+  if (diff::priv_->pretty_representation_.empty())
+    {
+      std::ostringstream o;
+      o << "union_diff["
+	<< first_subject()->get_pretty_representation()
+	<< ", "
+	<< second_subject()->get_pretty_representation()
+	<< "]";
+      diff::priv_->pretty_representation_ = o.str();
+    }
+  return diff::priv_->pretty_representation_;
+}
+
+/// Report the changes carried by the current @ref union_diff node in
+/// a textual format.
+///
+/// @param out the output stream to write the textual report to.
+///
+/// @param indent the number of white space to use as indentation.
+void
+union_diff::report(ostream& out, const string& indent) const
+{
+  RETURN_IF_BEING_REPORTED_OR_WAS_REPORTED_EARLIER(first_subject(),
+						   second_subject());
+
+  currently_reporting(true);
+
+  // Now report the changes about the differents parts of the type.
+  union_decl_sptr first = first_union_decl(),
+    second = second_union_decl();
+
+  if (report_name_size_and_alignment_changes(first, second, context(),
+					     out, indent,
+					     /*start_with_new_line=*/false))
+    out << "\n";
+
+  maybe_report_diff_for_member(first, second, context(), out, indent);
+
+  class_or_union_diff::report(out, indent);
+
+ currently_reporting(false);
+
+  reported_once(true);
+}
+
+/// Compute the difference between two @ref union_decl types.
+///
+/// Note that the two types must hav been created in the same
+/// environment, otherwise, this function aborts.
+///
+/// @param first the first @ref union_decl to consider.
+///
+/// @param second the second @ref union_decl to consider.
+///
+/// @param ctxt the context of the diff to use.
+union_diff_sptr
+compute_diff(const union_decl_sptr	first,
+	     const union_decl_sptr	second,
+	     diff_context_sptr	ctxt)
+{
+  if (first && second)
+    assert(first->get_environment() == second->get_environment());
+
+  union_diff_sptr changes(new union_diff(first, second, ctxt));
+
+  ctxt->initialize_canonical_diff(changes);
+  assert(changes->get_canonical_diff());
+
+  // Ok, so this is an optimization.  Do not freak out if it looks
+  // weird, because, well, it does look weird.  This speeds up
+  // greatly, for instance, the test case given at PR
+  // libabigail/17948.
+  //
+  // We are setting the private data of the new instance of class_diff
+  // (which is 'changes') to the private data of its canonical
+  // instance.  That is, we are sharing the private data of 'changes'
+  // with the private data of its canonical instance to consume less
+  // memory in cases where the equivalence class of 'changes' is huge.
+  //
+  // But if changes is its own canonical instance, then we initialize
+  // its private data properly.
+  if (is_union_diff(changes->get_canonical_diff()) == changes.get())
+    // changes is its own canonical instance, so it gets a brand new
+    // private data.
+    changes->allocate_priv_data();
+  else
+    {
+      // changes has a non-empty equivalence class so it's going to
+      // share its private data with its canonical instance.  Next
+      // time class_diff::get_priv() is invoked, it's going to return
+      // the shared private data of the canonical instance.
+      return changes;
+    }
+
+  // Compare data member
+  compute_diff(first->get_non_static_data_members().begin(),
+	       first->get_non_static_data_members().end(),
+	       second->get_non_static_data_members().begin(),
+	       second->get_non_static_data_members().end(),
+	       changes->data_members_changes());
+
+#if 0
+  // Compare member functions
+  compute_diff(first->get_mem_fns().begin(),
+	       first->get_mem_fns().end(),
+	       second->get_mem_fns().begin(),
+	       second->get_mem_fns().end(),
+	       changes->member_fns_changes());
+
+  // Compare member function templates
+  compute_diff(first->get_member_function_templates().begin(),
+	       first->get_member_function_templates().end(),
+	       second->get_member_function_templates().begin(),
+	       second->get_member_function_templates().end(),
+	       changes->member_fn_tmpls_changes());
+#endif
+
+  changes->ensure_lookup_tables_populated();
+
+  return changes;
+}
+
+// </union_diff stuff>
 
 //<scope_diff stuff>
 struct scope_diff::priv
@@ -8570,8 +9220,10 @@ function_decl_diff::report(ostream& out, const string& indent) const
 	}
 
       // the classes of the two member functions.
-      class_decl_sptr fc = is_method_type(ff->get_type())->get_class_type(),
-	sc = is_method_type(sf->get_type())->get_class_type();
+      class_decl_sptr fc =
+	is_class_type(is_method_type(ff->get_type())->get_class_type());
+      class_decl_sptr sc =
+	is_class_type(is_method_type(sf->get_type())->get_class_type());
 
       // Detect if the virtual member function changes above
       // introduced a vtable change or not.
@@ -10370,7 +11022,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	      {
 		function_decl *f = e->second;
 		class_decl_sptr c =
-		  is_method_type(f->get_type())->get_class_type();
+		  is_class_type(is_method_type(f->get_type())->get_class_type());
 		assert(c);
 		if (type_suppr->suppresses_type(c, ctxt))
 		  suppressed_added_fns_[e->first] = e->second;
@@ -10384,7 +11036,7 @@ corpus_diff::priv::apply_suppressions_to_added_removed_fns_vars()
 	      {
 		function_decl *f = e->second;
 		class_decl_sptr c =
-		  is_method_type(f->get_type())->get_class_type();
+		  is_class_type(is_method_type(f->get_type())->get_class_type());
 		assert(c);
 		if (type_suppr->suppresses_type(c, ctxt))
 		  suppressed_deleted_fns_[e->first] = e->second;
@@ -11588,7 +12240,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (is_member_function(*i) && get_member_function_is_virtual(*i))
 	    {
 	      class_decl_sptr c =
-		is_method_type((*i)->get_type())->get_class_type();
+		is_class_type(is_method_type((*i)->get_type())->get_class_type());
 	      out << indent
 		  << "    "
 		  << "note that this removes an entry from the vtable of "
@@ -11637,7 +12289,7 @@ corpus_diff::report(ostream& out, const string& indent) const
 	  if (is_member_function(*i) && get_member_function_is_virtual(*i))
 	    {
 	      class_decl_sptr c =
-		is_method_type((*i)->get_type())->get_class_type();
+		is_class_type(is_method_type((*i)->get_type())->get_class_type());
 	      out << indent
 		  << "    "
 		  << "note that this adds a new entry to the vtable of "

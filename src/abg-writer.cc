@@ -434,7 +434,7 @@ public:
   void
   record_decl_only_type_as_emitted(type_base* t)
   {
-    class_decl* cl = is_class_type(t);
+    class_or_union* cl = is_class_or_union_type(t);
     assert(cl && cl->get_is_declaration_only());
     m_emitted_decl_only_map[t] = interned_string();
   }
@@ -515,7 +515,8 @@ static void write_elf_symbol_binding(elf_symbol::binding, ostream&);
 static bool write_elf_symbol_aliases(const elf_symbol&, ostream&);
 static bool write_elf_symbol_reference(const elf_symbol&, ostream&);
 static bool write_elf_symbol_reference(const elf_symbol_sptr, ostream&);
-static void write_class_is_declaration_only(const class_decl_sptr&, ostream&);
+static void write_class_or_union_is_declaration_only(const class_or_union_sptr&,
+						     ostream&);
 static void write_is_struct(const class_decl_sptr&, ostream&);
 static void write_is_anonymous(const decl_base_sptr&, ostream&);
 static bool write_decl(const decl_base_sptr&, write_context&, unsigned);
@@ -554,6 +555,11 @@ static bool write_class_decl_opening_tag(const class_decl_sptr&, const string&,
 					 write_context&, unsigned, bool);
 static bool write_class_decl(const class_decl_sptr&,
 			     write_context&, unsigned);
+static bool write_union_decl_opening_tag(const union_decl_sptr&, const string&,
+					 write_context&, unsigned, bool);
+static bool write_union_decl(const union_decl_sptr&, const string&,
+			     write_context&, unsigned);
+static bool write_union_decl(const union_decl_sptr&, write_context&, unsigned);
 static bool write_type_tparameter
 (const shared_ptr<type_tparameter>, write_context&, unsigned);
 static bool write_non_type_tparameter
@@ -1048,16 +1054,18 @@ write_cdtor_const_static(bool is_ctor,
     o << " const='yes'";
 }
 
-/// Serialize the attribute "is-declaration-only", if the class has
-/// its 'is_declaration_only property set.
+/// Serialize the attribute "is-declaration-only", if the class or
+/// union has its 'is_declaration_only property set.
 ///
-/// @param klass the pointer to instance of class_decl to consider.
+/// @param t the pointer to instance of @ref class_or_union to
+/// consider.
 ///
 /// @param o the output stream to serialize to.
 static void
-write_class_is_declaration_only(const class_decl_sptr& klass, ostream& o)
+write_class_or_union_is_declaration_only(const class_or_union_sptr& t,
+					 ostream& o)
 {
-  if (klass->get_is_declaration_only())
+  if (t->get_is_declaration_only())
     o << " is-declaration-only='yes'";
 }
 
@@ -1120,12 +1128,13 @@ write_decl(const decl_base_sptr& decl, write_context& ctxt, unsigned indent)
 			    ctxt, indent)
       || write_var_decl(dynamic_pointer_cast<var_decl>(decl), ctxt,
 			/*write_linkage_name=*/true, indent)
-      || write_function_decl(dynamic_pointer_cast<class_decl::method_decl>
+      || write_function_decl(dynamic_pointer_cast<method_decl>
 			     (decl), ctxt, /*skip_first_parameter=*/true,
 			     indent)
       || write_function_decl(dynamic_pointer_cast<function_decl>(decl),
 			     ctxt, /*skip_first_parameter=*/false, indent)
-      || write_class_decl(dynamic_pointer_cast<class_decl>(decl), ctxt, indent)
+      || write_class_decl(is_class_type(decl), ctxt, indent)
+      || write_union_decl(is_union_type(decl), ctxt, indent)
       || (write_function_tdecl
 	  (dynamic_pointer_cast<function_tdecl>(decl), ctxt, indent))
       || (write_class_tdecl
@@ -1195,6 +1204,20 @@ write_decl_in_scope(const decl_base_sptr&	decl,
 	  write_class_decl_opening_tag(class_type, "", ctxt, indent,
 				       /*prepare_to_handle_members=*/false);
 	  closing_tags.push("</class-decl>");
+	  closing_indents.push(indent);
+
+	  unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
+	  write_member_type_opening_tag(type, ctxt, nb_ws);
+	  indent = nb_ws;
+	  closing_tags.push("</member-type>");
+	  closing_indents.push(nb_ws);
+	}
+      else if (union_decl *u = is_union_type(*i))
+	{
+	  union_decl_sptr union_type(u, noop_deleter());
+	  write_union_decl_opening_tag(union_type, "", ctxt, indent,
+				       /*prepare_to_handle_members=*/false);
+	  closing_tags.push("</union-decl>");
 	  closing_indents.push(indent);
 
 	  unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
@@ -2363,7 +2386,7 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
 
   write_location(decl, o);
 
-  write_class_is_declaration_only(decl, o);
+  write_class_or_union_is_declaration_only(decl, o);
 
   if (decl->get_earlier_declaration())
     {
@@ -2383,6 +2406,68 @@ write_class_decl_opening_tag(const class_decl_sptr&	decl,
   else
     {
       if (decl->has_no_base_nor_member())
+	o << "/>";
+      else
+	o << ">\n";
+    }
+
+  return true;
+}
+
+/// Write the opening tag of a 'union-decl' element.
+///
+/// @param decl the union declaration to serialize.
+///
+/// @param the type ID to use for the 'union-decl' element, or empty
+/// if we need to build a new one.
+///
+/// @param ctxt the write context to use.
+///
+/// @param indent the number of white space to use for indentation.
+///
+/// @param prepare_to_handle_members if set to true, then this function
+/// figures out if the opening tag should be for an empty element or
+/// not.  If set to false, then the opening tag is unconditionnaly for
+/// a non-empty element.
+///
+/// @return true upon successful completion.
+static bool
+write_union_decl_opening_tag(const union_decl_sptr&	decl,
+			     const string&		id,
+			     write_context&		ctxt,
+			     unsigned			indent,
+			     bool			prepare_to_handle_members)
+{
+  if (!decl)
+    return false;
+
+    ostream& o = ctxt.get_ostream();
+
+  do_indent_to_level(ctxt, indent, 0);
+
+  o << "<union-decl name='" << xml::escape_xml_string(decl->get_name()) << "'";
+
+  if (!decl->get_is_declaration_only())
+    write_size_and_alignment(decl, o);
+
+  write_is_anonymous(decl, o);
+
+  write_visibility(decl, o);
+
+  write_location(decl, o);
+
+  write_class_or_union_is_declaration_only(decl, o);
+
+  string i = id;
+  if (i.empty())
+    i = ctxt.get_id_for_type(decl);
+  o << " id='" << i << "'";
+
+  if (!prepare_to_handle_members)
+    o << ">\n";
+  else
+    {
+      if (decl->has_no_member())
 	o << "/>";
       else
 	o << ">\n";
@@ -2540,7 +2625,7 @@ write_class_decl(const class_decl_sptr& decl,
 	  o << "</member-function>\n";
 	}
 
-      for (class_decl::member_function_templates::const_iterator fn =
+      for (member_function_templates::const_iterator fn =
 	     decl->get_member_function_templates().begin();
 	   fn != decl->get_member_function_templates().end();
 	   ++fn)
@@ -2560,7 +2645,7 @@ write_class_decl(const class_decl_sptr& decl,
 	  o << "</member-template>\n";
 	}
 
-      for (class_decl::member_class_templates::const_iterator cl =
+      for (member_class_templates::const_iterator cl =
 	     decl->get_member_class_templates().begin();
 	   cl != decl->get_member_class_templates().end();
 	   ++cl)
@@ -2600,11 +2685,160 @@ write_class_decl(const class_decl_sptr& decl,
 /// @param ctxt the context of the serialization.
 ///
 /// @param indent the initial indentation to use.
+///
+/// @return true upon successful completion.
 static bool
 write_class_decl(const class_decl_sptr& decl,
 		 write_context&	ctxt,
 		 unsigned		indent)
 {return write_class_decl(decl, "", ctxt, indent);}
+
+/// Serialize a @ref union_decl type.
+///
+/// @param decl the pointer to @ref union_decl to serialize.
+///
+/// @param ctxt the context of the serialization.
+///
+/// @param indent the initial indentation to use.
+///
+/// @return true upon successful completion.
+static bool
+write_union_decl(const union_decl_sptr& decl,
+		 const string& id,
+		 write_context& ctxt,
+		 unsigned indent)
+{
+  if (!decl)
+    return false;
+
+  ostream& o = ctxt.get_ostream();
+
+  write_union_decl_opening_tag(decl, id, ctxt, indent,
+			       /*prepare_to_handle_members=*/true);
+  if (!decl->has_no_member())
+    {
+      unsigned nb_ws = get_indent_to_level(ctxt, indent, 1);
+      for (class_decl::member_types::const_iterator ti =
+	     decl->get_member_types().begin();
+	   ti != decl->get_member_types().end();
+	   ++ti)
+	write_member_type(*ti, ctxt, nb_ws);
+
+      for (union_decl::data_members::const_iterator data =
+	     decl->get_data_members().begin();
+	   data != decl->get_data_members().end();
+	   ++data)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<data-member";
+	  write_access(get_member_access_specifier(*data), o);
+
+	  bool is_static = get_member_is_static(*data);
+	  write_cdtor_const_static(/*is_ctor=*/false,
+				   /*is_dtor=*/false,
+				   /*is_const=*/false,
+				   /*is_static=*/is_static,
+				   o);
+	  o << ">\n";
+
+	  write_var_decl(*data, ctxt, is_static,
+			 get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+
+	  do_indent_to_level(ctxt, indent, 1);
+	  o << "</data-member>\n";
+	}
+
+      for (union_decl::member_functions::const_iterator f =
+	     decl->get_member_functions().begin();
+	   f != decl->get_member_functions().end();
+	   ++f)
+	{
+	  function_decl_sptr fn = *f;
+	  if (get_member_function_is_virtual(fn))
+	    // All virtual member functions are emitted together,
+	    // later.
+	    continue;
+
+	  assert(!get_member_function_is_virtual(fn));
+
+	  do_indent(o, nb_ws);
+	  o << "<member-function";
+	  write_access(get_member_access_specifier(fn), o);
+	  write_cdtor_const_static( get_member_function_is_ctor(fn),
+				    get_member_function_is_dtor(fn),
+				    get_member_function_is_const(fn),
+				    get_member_is_static(fn),
+				    o);
+	  o << ">\n";
+
+	  write_function_decl(fn, ctxt,
+			      /*skip_first_parameter=*/false,
+			      get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+
+	  do_indent_to_level(ctxt, indent, 1);
+	  o << "</member-function>\n";
+	}
+
+      for (member_function_templates::const_iterator fn =
+	     decl->get_member_function_templates().begin();
+	   fn != decl->get_member_function_templates().end();
+	   ++fn)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<member-template";
+	  write_access((*fn)->get_access_specifier(), o);
+	  write_cdtor_const_static((*fn)->is_constructor(),
+				   /*is_dtor=*/false,
+				   (*fn)->is_const(),
+				   (*fn)->get_is_static(), o);
+	  o << ">\n";
+	  write_function_tdecl((*fn)->as_function_tdecl(), ctxt,
+			       get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+	  do_indent(o, nb_ws);
+	  o << "</member-template>\n";
+	}
+
+      for (member_class_templates::const_iterator cl =
+	     decl->get_member_class_templates().begin();
+	   cl != decl->get_member_class_templates().end();
+	   ++cl)
+	{
+	  do_indent(o, nb_ws);
+	  o << "<member-template";
+	  write_access((*cl)->get_access_specifier(), o);
+	  write_cdtor_const_static(false, false, false,
+				   (*cl)->get_is_static(), o);
+	  o << ">\n";
+	  write_class_tdecl((*cl)->as_class_tdecl(), ctxt,
+			    get_indent_to_level(ctxt, indent, 2));
+	  o << "\n";
+	  do_indent(o, nb_ws);
+	  o << "</member-template>\n";
+	}
+
+      do_indent_to_level(ctxt, indent, 0);
+
+      o << "</union-decl>";
+    }
+
+  // We allow several *declarations* of the same union in the corpus,
+  // but only one definition.
+  if (!decl->get_is_declaration_only())
+    ctxt.record_type_as_emitted(decl);
+  else
+    ctxt.record_decl_only_type_as_emitted(decl);
+
+  return true;
+}
+
+static bool
+write_union_decl(const union_decl_sptr& decl,
+		 write_context& ctxt,
+		 unsigned indent)
+{return write_union_decl(decl, "", ctxt, indent);}
 
 /// Write the opening tag for a 'member-type' element.
 ///
@@ -2671,7 +2905,9 @@ write_member_type(const type_base_sptr& t, write_context& ctxt, unsigned indent)
 	 || write_enum_type_decl(dynamic_pointer_cast<enum_type_decl>(t),
 				 id, ctxt, nb_ws)
 	 || write_typedef_decl(dynamic_pointer_cast<typedef_decl>(t),
-			    id, ctxt, nb_ws)
+			       id, ctxt, nb_ws)
+	 || write_union_decl(dynamic_pointer_cast<union_decl>(t),
+			     id, ctxt, nb_ws)
 	 || write_class_decl(dynamic_pointer_cast<class_decl>(t),
 			     id, ctxt, nb_ws));
   o << "\n";

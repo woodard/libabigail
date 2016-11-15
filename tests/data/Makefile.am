@@ -282,6 +282,21 @@ test-diff-dwarf/libtest36-ppc64-aliases-v1.so \
 test-diff-dwarf/test36-ppc64-aliases-v0.cc \
 test-diff-dwarf/test36-ppc64-aliases-v1.cc \
 test-diff-dwarf/test36-ppc64-aliases-report-0.txt \
+test-diff-dwarf/libtest37-union-v0.so \
+test-diff-dwarf/libtest37-union-v1.so \
+test-diff-dwarf/libtest38-union-v0.so \
+test-diff-dwarf/libtest38-union-v1.so \
+test-diff-dwarf/libtest39-union-v0.so \
+test-diff-dwarf/libtest39-union-v1.so \
+test-diff-dwarf/test37-union-report-0.txt \
+test-diff-dwarf/test37-union-v0.cc \
+test-diff-dwarf/test37-union-v1.cc \
+test-diff-dwarf/test38-union-report-0.txt \
+test-diff-dwarf/test38-union-v0.cc \
+test-diff-dwarf/test38-union-v1.cc \
+test-diff-dwarf/test39-union-report-0.txt \
+test-diff-dwarf/test39-union-v0.cc \
+test-diff-dwarf/test39-union-v1.cc \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

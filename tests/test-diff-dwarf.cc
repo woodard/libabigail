@@ -290,6 +290,24 @@ InOutSpec in_out_specs[] =
     "data/test-diff-dwarf/test36-ppc64-aliases-report-0.txt",
     "output/test-diff-dwarf/test36-ppc64-aliases-report-0.txt"
   },
+  {
+    "data/test-diff-dwarf/libtest37-union-v0.so",
+    "data/test-diff-dwarf/libtest37-union-v1.so",
+    "data/test-diff-dwarf/test37-union-report-0.txt",
+    "output/test-diff-dwarf/test37-union-report-0.txt"
+  },
+  {
+    "data/test-diff-dwarf/libtest38-union-v0.so",
+    "data/test-diff-dwarf/libtest38-union-v1.so",
+    "data/test-diff-dwarf/test38-union-report-0.txt",
+    "output/test-diff-dwarf/test38-union-report-0.txt"
+  },
+  {
+    "data/test-diff-dwarf/libtest39-union-v0.so",
+    "data/test-diff-dwarf/libtest39-union-v1.so",
+    "data/test-diff-dwarf/test39-union-report-0.txt",
+    "output/test-diff-dwarf/test39-union-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL}
 };

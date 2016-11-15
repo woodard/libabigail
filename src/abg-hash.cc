@@ -1,6 +1,6 @@
 // -*- mode: C++ -*-
 //
-// Copyright (C) 2013-2015 Red Hat, Inc.
+// Copyright (C) 2013-2016 Red Hat, Inc.
 //
 // This file is part of the GNU Application Binary Interface Generic
 // Analysis and Instrumentation Library (libabigail).  This library is
@@ -526,7 +526,7 @@ function_type::hash::operator()(const function_type_sptr t) const
 // </struct function_type::hash stuff>
 
 size_t
-class_decl::member_base::hash::operator()(const member_base& m) const
+member_base::hash::operator()(const member_base& m) const
 {
   std::tr1::hash<int> hash_int;
   return hash_int(m.get_access_specifier());
@@ -550,7 +550,7 @@ class_decl::base_spec::hash::operator()(const base_spec& t) const
 }
 
 size_t
-class_decl::member_function_template::hash::operator()
+member_function_template::hash::operator()
   (const member_function_template& t) const
 {
   std::tr1::hash<bool> hash_bool;
@@ -568,7 +568,7 @@ class_decl::member_function_template::hash::operator()
 }
 
 size_t
-class_decl::member_class_template::hash::operator()
+member_class_template::hash::operator()
   (const member_class_template& t) const
 {
   member_base::hash hash_member;
@@ -581,6 +581,84 @@ class_decl::member_class_template::hash::operator()
   v = hashing::combine_hashes(v, hash_class_tdecl(t));
   return v;
 }
+
+/// Compute a hash for a @ref class_or_union
+///
+/// @param t the class_or_union for which to compute the hash value.
+///
+/// @return the computed hash value.
+size_t
+class_or_union::hash::operator()(const class_or_union& t) const
+{
+  if (t.hashing_started()
+      || (t.get_is_declaration_only() && !t.get_definition_of_declaration()))
+    // All non-resolved decl-only types have a hash of zero.  Their hash
+    // will differ from the resolved hash, but then at least, having
+    // it be zero will give a hint that we couldn't actually compute
+    // the hash.
+    return 0;
+
+  // If the type is decl-only and now has a definition, then hash its
+  // definition instead.
+
+  if (t.get_is_declaration_only())
+    {
+      assert(t.get_definition_of_declaration());
+      size_t v = operator()(*t.get_definition_of_declaration());
+      return v;
+    }
+
+  assert(!t.get_is_declaration_only());
+
+  std::tr1::hash<string> hash_string;
+  scope_type_decl::hash hash_scope_type;
+  var_decl::hash hash_data_member;
+  member_function_template::hash hash_member_fn_tmpl;
+  member_class_template::hash hash_member_class_tmpl;
+
+  size_t v = hash_string(typeid(t).name());
+  v = hashing::combine_hashes(v, hash_scope_type(t));
+
+  t.hashing_started(true);
+
+  // Hash data members.
+  for (class_decl::data_members::const_iterator d =
+	 t.get_non_static_data_members().begin();
+       d != t.get_non_static_data_members().end();
+       ++d)
+    v = hashing::combine_hashes(v, hash_data_member(**d));
+
+  // Do not hash member functions. All of them are not necessarily
+  // emitted per class, in a given TU so do not consider them when
+  // hashing a class.
+
+  // Hash member function templates
+  for (member_function_templates::const_iterator f =
+	 t.get_member_function_templates().begin();
+       f != t.get_member_function_templates().end();
+       ++f)
+    v = hashing::combine_hashes(v, hash_member_fn_tmpl(**f));
+
+  // Hash member class templates
+  for (member_class_templates::const_iterator c =
+	 t.get_member_class_templates().begin();
+       c != t.get_member_class_templates().end();
+       ++c)
+    v = hashing::combine_hashes(v, hash_member_class_tmpl(**c));
+
+  t.hashing_started(false);
+
+  return v;
+};
+
+/// Compute a hash for a @ref class_or_union
+///
+/// @param t the class_or_union for which to compute the hash value.
+///
+/// @return the computed hash value.
+size_t
+class_or_union::hash::operator()(const class_or_union *t) const
+{return t ? operator()(*t) : 0;}
 
 /// Compute a hash for a @ref class_decl
 ///
@@ -605,21 +683,17 @@ class_decl::hash::operator()(const class_decl& t) const
   if (t.get_is_declaration_only())
     {
       assert(t.get_definition_of_declaration());
-      size_t v = operator()(*t.get_definition_of_declaration());
+      size_t v = operator()(*is_class_type(t.get_definition_of_declaration()));
       return v;
     }
 
   assert(!t.get_is_declaration_only());
 
   std::tr1::hash<string> hash_string;
-  scope_type_decl::hash hash_scope_type;
   class_decl::base_spec::hash hash_base;
-  var_decl::hash hash_data_member;
-  class_decl::member_function_template::hash hash_member_fn_tmpl;
-  class_decl::member_class_template::hash hash_member_class_tmpl;
+  class_or_union::hash hash_class_or_union;
 
   size_t v = hash_string(typeid(t).name());
-  v = hashing::combine_hashes(v, hash_scope_type(t));
 
   t.hashing_started(true);
 
@@ -633,30 +707,7 @@ class_decl::hash::operator()(const class_decl& t) const
       v = hashing::combine_hashes(v, hash_base(**b));
     }
 
-  // Hash data members.
-  for (class_decl::data_members::const_iterator d =
-	 t.get_non_static_data_members().begin();
-       d != t.get_non_static_data_members().end();
-       ++d)
-    v = hashing::combine_hashes(v, hash_data_member(**d));
-
-  // Do not hash member functions. All of them are not necessarily
-  // emitted per class, in a given TU so do not consider them when
-  // hashing a class.
-
-  // Hash member function templates
-  for (class_decl::member_function_templates::const_iterator f =
-	 t.get_member_function_templates().begin();
-       f != t.get_member_function_templates().end();
-       ++f)
-    v = hashing::combine_hashes(v, hash_member_fn_tmpl(**f));
-
-  // Hash member class templates
-  for (class_decl::member_class_templates::const_iterator c =
-	 t.get_member_class_templates().begin();
-       c != t.get_member_class_templates().end();
-       ++c)
-    v = hashing::combine_hashes(v, hash_member_class_tmpl(**c));
+  v = hashing::combine_hashes(v, hash_class_or_union(t));
 
   t.hashing_started(false);
 
@@ -917,12 +968,12 @@ type_base::dynamic_hash::operator()(const type_base* t) const
   if (t == 0)
     return 0;
 
-  if (const class_decl::member_function_template* d =
-      dynamic_cast<const class_decl::member_function_template*>(t))
-    return class_decl::member_function_template::hash()(*d);
-  if (const class_decl::member_class_template* d =
-      dynamic_cast<const class_decl::member_class_template*>(t))
-    return class_decl::member_class_template::hash()(*d);
+  if (const member_function_template* d =
+      dynamic_cast<const member_function_template*>(t))
+    return member_function_template::hash()(*d);
+  if (const member_class_template* d =
+      dynamic_cast<const member_class_template*>(t))
+    return member_class_template::hash()(*d);
   if (const template_tparameter* d =
       dynamic_cast<const template_tparameter*>(t))
     return template_tparameter::hash()(*d);
@@ -945,6 +996,8 @@ type_base::dynamic_hash::operator()(const type_base* t) const
     return typedef_decl::hash()(*d);
   if (const class_decl* d = dynamic_cast<const class_decl*>(t))
     return class_decl::hash()(*d);
+  if (const union_decl* d = dynamic_cast<const union_decl*>(t))
+    return union_decl::hash()(*d);
   if (const scope_type_decl* d = dynamic_cast<const scope_type_decl*>(t))
     return scope_type_decl::hash()(*d);
   if (const method_type* d = dynamic_cast<const method_type*>(t))

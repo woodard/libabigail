@@ -1,4 +1,4 @@
-Functions changes summary: 82 Removed, 6 Changed (13 filtered out), 1081 Added functions
+Functions changes summary: 82 Removed, 7 Changed (13 filtered out), 1081 Added functions
 Variables changes summary: 47 Removed, 1 Changed, 11 Added variables
 Function symbols changes summary: 7 Removed, 76 Added function symbols not referenced by debug info
 Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referenced by debug info
@@ -190,9 +190,9 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method _Offload_stream OffloadDescriptor::get_stream()'
   [A] 'method void OffloadDescriptor::get_stream_in_dependencies(uint32_t&, COIEVENT*&)'
   [A] 'method OffloadHostTimerData* OffloadDescriptor::get_timer_data()'
-  [A] 'method bool OffloadDescriptor::offload(const char*, bool, VarDesc*, VarDesc2*, int, void**, int, void**, int, void*)'
+  [A] 'method bool OffloadDescriptor::offload(const char*, bool, VarDesc*, VarDesc2*, int, void**, int, void**, int, void*, OffloadFlags)'
   [A] 'method bool OffloadDescriptor::offload_finish(bool)'
-  [A] 'method bool OffloadDescriptor::offload_wrap(const char*, bool, VarDesc*, VarDesc2*, int, void**, int, void**, int, void*)'
+  [A] 'method bool OffloadDescriptor::offload_wrap(const char*, bool, VarDesc*, VarDesc2*, int, void**, int, void**, int, void*, OffloadFlags)'
   [A] 'method bool OffloadDescriptor::receive_noncontiguous_pointer_data(int, COIBUFFER, COIEVENT*, uint64_t&, uint32_t, COIEVENT*)'
   [A] 'method bool OffloadDescriptor::receive_pointer_data(bool, bool, void*)'
   [A] 'method void OffloadDescriptor::register_omp_event_call_back(const COIEVENT*, void*)'
@@ -413,7 +413,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'function bool __offload_myoProcessTables(void*, TableList<MYOInitTable>::Node*, TableList<MYOVarTable>::Node*, TableList<MYOVarTable>::Node*, TableList<MYOFuncTable>::Node*)'
   [A] 'function void __offload_myoRegisterTables1(TableList<MYOInitTable>::Node*, TableList<MYOVarTable>::Node*, TableList<MYOVarTable>::Node*, TableList<MYOFuncTable>::Node*)'
   [A] 'function void __offload_myoRemoveTables(TableList<MYOInitTable>::Node*, TableList<MYOVarTable>::Node*, TableList<MYOVarTable>::Node*, TableList<MYOFuncTable>::Node*)'
-  [A] 'function int __offload_offload3(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void**, int, void*, void**)'
+  [A] 'function int __offload_offload3(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void**, int, void*, OffloadFlags, void**)'
   [A] 'function OFFLOAD __offload_target_acquire2(TARGET_TYPE, int, int, _Offload_status*, const char*, uint64_t, void**)'
   [A] 'function bool __offload_target_image_is_executable(void*)'
   [A] 'function int for__continue_traceback(_Offload_result)'
@@ -1172,7 +1172,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [A] 'method void std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::vector<Iterator, void>(Iterator, Iterator, const std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::allocator_type&)'
   [A] 'method std::vector<const VarTable::Entry*, std::allocator<const VarTable::Entry*> >::~vector(int)'
 
-6 functions with some indirect sub-type change:
+7 functions with some indirect sub-type change:
 
   [C]'function int ORSLRelease(const int, const int* restrict, const ORSLBusySet* restrict, const restrict ORSLTag)' has some indirect sub-type changes:
     parameter 2 of type 'const int* restrict' changed:
@@ -1311,6 +1311,51 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
           '__anonymous_enum__::c_coipipe_max_number' from value '123' to '133'
 
 
+  [C]'method bool OffloadDescriptor::setup_descriptors(VarDesc*, VarDesc2*, int, int, void*)' has some indirect sub-type changes:
+    parameter 1 of type 'VarDesc*' has sub-type changes:
+      in pointed to type 'struct VarDesc':
+        1 data member change:
+         type of 'VarDesc::__anonymous_union__ VarDesc::flags' changed:
+           type name changed from 'VarDesc::__anonymous_union__' to 'varDescFlags'
+
+           1 data member change:
+            type of 'VarDesc::__anonymous_union__::__anonymous_struct__ ' changed:
+              type name changed from 'VarDesc::__anonymous_union__::__anonymous_struct__' to 'varDescFlags::__anonymous_struct__'
+
+              7 data member deletions:
+                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::is_noncont_dst', at offset 0 (in bits)
+
+                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::is_noncont_src', at offset 0 (in bits)
+
+                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::alloc_disp', at offset 0 (in bits)
+
+                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::is_static', at offset 0 (in bits)
+
+                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::sink_addr', at offset 0 (in bits)
+
+                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::has_length', at offset 0 (in bits)
+
+                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::is_stack_buf', at offset 0 (in bits)
+
+              13 data member insertions:
+                'uint32_t varDescFlags::__anonymous_struct__::always_copy', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::is_pointer', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::alloc_disp', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::pin', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::has_length', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::is_static', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::is_stack_buf', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::targetptr', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::is_noncont_dst', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::sink_addr', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::is_static_dstn', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::always_delete', at offset 0 (in bits)
+                'uint32_t varDescFlags::__anonymous_struct__::preallocated', at offset 0 (in bits)
+              no data member change (1 filtered);
+
+           no data member change (1 filtered);
+
+
   [C]'function int __offload_offload(OFFLOAD, const char*, int, int, VarDesc*, VarDesc2*, int, void**, void*, int, void*)' has some indirect sub-type changes:
     parameter 1 of type 'typedef OFFLOAD' has sub-type changes:
       underlying type 'OffloadDescriptor*' changed:
@@ -1326,7 +1371,7 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
             'bool OffloadDescriptor::m_preallocated_alloc', at offset 2264 (in bits)
             'bool OffloadDescriptor::m_traceback_called', at offset 2272 (in bits)
             'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::m_omp_async_last_event_type', at offset 2304 (in bits)
-          8 data member changes (1 filtered):
+          8 data member changes (2 filtered):
            type of 'Engine& OffloadDescriptor::m_device' changed:
              in referenced type 'struct Engine':
                type size changed from 2752 to 5504 bits

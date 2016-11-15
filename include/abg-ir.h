@@ -119,6 +119,11 @@ typedef shared_ptr<type_base> type_base_sptr;
 /// Convenience typedef for a shared pointer on a @ref type_decl.
 typedef shared_ptr<type_decl> type_decl_sptr;
 
+class class_or_union;
+
+typedef shared_ptr<class_or_union> class_or_union_sptr;
+typedef weak_ptr<class_or_union> class_or_union_wptr;
+
 /// Convenience typedef for a shared pointer to an @ref environment
 typedef shared_ptr<environment> environment_sptr;
 
@@ -184,6 +189,7 @@ public:
   interned_string
   intern(const string&) const;
 
+  friend class class_or_union;
   friend class class_decl;
   friend class function_type;
 
@@ -2626,7 +2632,7 @@ typedef shared_ptr<method_type> method_type_sptr;
 /// Abstracts the type of a class member function.
 class method_type : public function_type
 {
-  class_decl_wptr class_type_;
+  class_or_union_wptr class_type_;
 
   method_type();
 
@@ -2636,7 +2642,7 @@ public:
   struct hash;
 
   method_type(type_base_sptr return_type,
-	      class_decl_sptr class_type,
+	      class_or_union_sptr class_type,
 	      const std::vector<function_decl::parameter_sptr>& parms,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
@@ -2647,7 +2653,7 @@ public:
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
-  method_type(class_decl_sptr class_type,
+  method_type(class_or_union_sptr class_type,
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
@@ -2655,12 +2661,12 @@ public:
 	      size_t size_in_bits,
 	      size_t alignment_in_bits);
 
-  class_decl_sptr
+  class_or_union_sptr
   get_class_type() const
-  {return class_decl_sptr(class_type_);}
+  {return class_or_union_sptr(class_type_);}
 
   void
-  set_class_type(const class_decl_sptr& t);
+  set_class_type(const class_or_union_sptr& t);
 
   virtual string
   get_pretty_representation(bool internal = false) const;
@@ -3033,291 +3039,11 @@ public:
   virtual ~class_tdecl();
 };// end class class_tdecl
 
-bool
-equals(const class_decl&, const class_decl&, change_kind*);
-
-/// Abstracts a class declaration.
-class class_decl : public scope_type_decl
-{
-  // Forbidden
-  class_decl();
-
-public:
-  /// Hasher.
-  struct hash;
-
-  /// Forward declarations.
-  class member_base;
-  class base_spec;
-  class method_decl;
-  class member_function_template;
-  class member_class_template;
-
-  /// Convenience typedef
-  /// @{
-  typedef shared_ptr<base_spec>			base_spec_sptr;
-  typedef vector<base_spec_sptr>			base_specs;
-  typedef vector<type_base_sptr>			member_types;
-  typedef vector<var_decl_sptr>			data_members;
-  typedef shared_ptr<method_decl>			method_decl_sptr;
-  typedef vector<method_decl_sptr>		member_functions;
-  typedef unordered_map<string, method_decl*> string_mem_fn_ptr_map_type;
-  typedef shared_ptr<member_function_template>	member_function_template_sptr;
-  typedef vector<member_function_template_sptr> member_function_templates;
-  typedef shared_ptr<member_class_template>	member_class_template_sptr;
-  typedef vector<member_class_template_sptr> member_class_templates;
-  /// @}
-
-private:
-  struct priv;
-  // This priv it's not handled by a shared_ptr because accessing the
-  // data members of the priv struct for this class_decl shows up on
-  // performance profiles when dealing with big binaries with a lot of
-  // types; dereferencing the shared_ptr involves locking of some sort
-  // and that is slower than just dereferencing a pointer likere here.
-  // There are other types for which the priv pointer is managed using
-  // shared_ptr just fine, because those didn't show up during our
-  // performance profiling.
-  priv * priv_;
-protected:
-
-  virtual decl_base_sptr
-  add_member_decl(const decl_base_sptr&);
-
-  virtual decl_base_sptr
-  insert_member_decl(decl_base_sptr member, declarations::iterator before);
-
-  virtual void
-  remove_member_decl(decl_base_sptr);
-
-public:
-
-  class_decl(const environment* env, const string& name,
-	     size_t size_in_bits, size_t align_in_bits,
-	     bool is_struct, const location& locus,
-	     visibility vis, base_specs& bases,
-	     member_types& mbrs, data_members& data_mbrs,
-	     member_functions& member_fns);
-
-  class_decl(const environment* env, const string& name,
-	     size_t size_in_bits, size_t align_in_bits,
-	     bool is_struct, const location& locus, visibility vis);
-
-  class_decl(const environment* env, const string& name, bool is_struct,
-	     bool is_declaration_only = true);
-
-  virtual void
-  set_size_in_bits(size_t);
-
-  virtual size_t
-  get_size_in_bits() const;
-
-  virtual size_t
-  get_alignment_in_bits() const;
-
-  virtual void
-  set_alignment_in_bits(size_t);
-
-  virtual string
-  get_pretty_representation(bool internal = false) const;
-
-  bool
-  get_is_declaration_only() const;
-
-  void
-  set_is_declaration_only(bool f);
-
-  void
-  is_struct(bool f);
-
-  bool
-  is_struct() const;
-
-  void
-  set_definition_of_declaration(class_decl_sptr);
-
-  const class_decl_sptr
-  get_definition_of_declaration() const;
-
-  void
-  set_earlier_declaration(decl_base_sptr declaration);
-
-  decl_base_sptr
-  get_earlier_declaration() const;
-
-  void
-  add_base_specifier(shared_ptr<base_spec> b);
-
-  const base_specs&
-  get_base_specifiers() const;
-
-  class_decl_sptr
-  find_base_class(const string&) const;
-
-  void
-  insert_member_type(type_base_sptr t,
-		     declarations::iterator before);
-
-  void
-  add_member_type(type_base_sptr t);
-
-  type_base_sptr
-  add_member_type(type_base_sptr t, access_specifier a);
-
-  void
-  remove_member_type(type_base_sptr t);
-
-  const member_types&
-  get_member_types() const;
-
-  type_base_sptr
-  find_member_type(const string& name) const;
-
-  void
-  add_data_member(var_decl_sptr v, access_specifier a,
-		  bool is_laid_out, bool is_static,
-		  size_t offset_in_bits);
-
-  const data_members&
-  get_data_members() const;
-
-  const var_decl_sptr
-  find_data_member(const string&) const;
-
-  const data_members&
-  get_non_static_data_members() const;
-
-  void
-  add_member_function(method_decl_sptr f,
-		      access_specifier a,
-		      bool is_virtual,
-		      size_t vtable_offset,
-		      bool is_static, bool is_ctor,
-		      bool is_dtor, bool is_const);
-
-  const member_functions&
-  get_member_functions() const;
-
-  const member_functions&
-  get_virtual_mem_fns() const;
-
-  void
-  sort_virtual_mem_fns();
-
-  const method_decl*
-  find_member_function(const string& mangled_name) const;
-
-  method_decl*
-  find_member_function(const string& mangled_name);
-
-  void
-  add_member_function_template(shared_ptr<member_function_template>);
-
-  const member_function_templates&
-  get_member_function_templates() const;
-
-  void
-  add_member_class_template(shared_ptr<member_class_template> m);
-
-  const member_class_templates&
-  get_member_class_templates() const;
-
-  bool
-  has_no_base_nor_member() const;
-
-  bool
-  has_virtual_member_functions() const;
-
-  bool
-  has_virtual_bases() const;
-
-  bool
-  has_vtable() const;
-
-  virtual size_t
-  get_hash() const;
-
-  virtual bool
-  operator==(const decl_base&) const;
-
-  virtual bool
-  operator==(const type_base&) const;
-
-  bool
-  operator==(const class_decl&) const;
-
-  virtual bool
-  traverse(ir_node_visitor& v);
-
-  virtual ~class_decl();
-
-  friend method_decl_sptr
-  copy_member_function(class_decl_sptr& clazz,
-		       const method_decl_sptr& m);
-
-  friend method_decl_sptr
-  copy_member_function(class_decl_sptr& clazz,
-		       const method_decl*m);
-
-  friend void
-  fixup_virtual_member_function(method_decl_sptr method);
-
-  friend void
-  set_member_is_static(decl_base& d, bool s);
-
-  friend bool
-  equals(const class_decl&, const class_decl&, change_kind*);
-};// end class class_decl
-
-class_decl::method_decl_sptr
-copy_member_function(class_decl_sptr& clazz,
-		     const class_decl::method_decl_sptr& f);
-
-class_decl::method_decl_sptr
-copy_member_function(class_decl_sptr& clazz,
-		     const class_decl::method_decl* f);
-
-void
-fixup_virtual_member_function(class_decl::method_decl_sptr method);
-
-/// Hasher for the @ref class_decl type
-struct class_decl::hash
-{
-  size_t
-  operator()(const class_decl& t) const;
-
-  size_t
-  operator()(const class_decl* t) const;
-}; // end struct class_decl::hash
-
-enum access_specifier
-get_member_access_specifier(const decl_base&);
-
-enum access_specifier
-get_member_access_specifier(const decl_base_sptr&);
-
-void
-set_member_access_specifier(decl_base&,
-			    access_specifier);
-
-void
-set_member_access_specifier(const decl_base_sptr&,
-			    access_specifier);
-
-std::ostream&
-operator<<(std::ostream&, access_specifier);
-
-bool
-operator==(const class_decl_sptr& l, const class_decl_sptr& r);
-
-bool
-operator!=(const class_decl_sptr& l, const class_decl_sptr& r);
-
 /// The base class for member types, data members and member
 /// functions.  Its purpose is mainly to carry the access specifier
 /// (and possibly other properties that might be shared by all class
 /// members) for the member.
-class class_decl::member_base
+class member_base
 {
 protected:
   enum access_specifier access_;
@@ -3363,7 +3089,480 @@ public:
 
   virtual bool
   operator==(const member_base& o) const;
-};// end class class_decl::member_base
+};// end class member_base
+
+class method_decl;
+typedef shared_ptr<method_decl>			method_decl_sptr;
+
+/// Abstraction of the declaration of a method.
+class method_decl : public function_decl
+{
+  method_decl();
+
+  virtual void
+  set_scope(scope_decl*);
+
+public:
+
+  method_decl(const string& name, method_type_sptr type,
+	      bool declared_inline, const location& locus,
+	      const string& mangled_name = "",
+	      visibility vis = VISIBILITY_DEFAULT,
+	      binding	bind = BINDING_GLOBAL);
+
+  method_decl(const string& name,
+	      function_type_sptr type,
+	      bool declared_inline,
+	      const location& locus,
+	      const string& mangled_name = "",
+	      visibility vis  = VISIBILITY_DEFAULT,
+	      binding	bind = BINDING_GLOBAL);
+
+  method_decl(const string& name, type_base_sptr type,
+	      bool declared_inline, const location& locus,
+	      const string& mangled_name = "",
+	      visibility vis = VISIBILITY_DEFAULT,
+	      binding bind = BINDING_GLOBAL);
+
+  virtual void
+  set_linkage_name(const string&);
+
+  /// @return the type of the current instance of the
+  /// method_decl.
+  const method_type_sptr
+  get_type() const;
+
+  void
+  set_type(const method_type_sptr fn_type)
+  {function_decl::set_type(fn_type);}
+
+  friend bool
+  get_member_function_is_ctor(const function_decl&);
+
+  friend void
+  set_member_function_is_ctor(function_decl&, bool);
+
+  friend void
+  set_member_function_is_ctor(const function_decl_sptr&, bool);
+
+  friend bool
+  get_member_function_is_dtor(const function_decl&);
+
+  friend void
+  set_member_function_is_dtor(function_decl&, bool);
+
+  friend void
+  set_member_function_is_dtor(const function_decl_sptr&, bool);
+
+  friend bool
+  get_member_function_is_static(const function_decl&);
+
+  friend void
+  set_member_function_is_static(const function_decl&, bool);
+
+  friend bool
+  get_member_function_is_const(const function_decl&);
+
+  friend void
+  set_member_function_is_const(function_decl&, bool);
+
+  friend void
+  set_member_function_is_const(const function_decl_sptr&, bool);
+
+  friend size_t
+  get_member_function_vtable_offset(const function_decl&);
+
+  friend void
+  set_member_function_vtable_offset(function_decl&, size_t);
+
+  friend void
+  set_member_function_vtable_offset(const function_decl_sptr&, size_t);
+
+  friend bool
+  get_member_function_is_virtual(const function_decl&);
+
+  friend void
+  set_member_function_is_virtual(function_decl&, bool);
+
+  virtual ~method_decl();
+};// end class method_decl
+
+class member_function_template;
+typedef shared_ptr<member_function_template> member_function_template_sptr;
+typedef vector<member_function_template_sptr> member_function_templates;
+
+class member_class_template;
+typedef shared_ptr<member_class_template> member_class_template_sptr;
+typedef vector<member_class_template_sptr> member_class_templates;
+
+/// The base type of @ref class_decl and @ref union_decl
+class class_or_union : public scope_type_decl
+{
+  struct priv;
+  priv *priv_;
+
+  // Forbidden
+  class_or_union();
+
+protected:
+
+  virtual decl_base_sptr
+  add_member_decl(const decl_base_sptr&);
+
+  virtual decl_base_sptr
+  insert_member_decl(decl_base_sptr member, declarations::iterator before);
+
+  virtual void
+  remove_member_decl(decl_base_sptr);
+
+public:
+  /// Hasher.
+  struct hash;
+
+  /// Convenience typedef
+  /// @{
+  typedef vector<type_base_sptr>			member_types;
+  typedef vector<var_decl_sptr>			data_members;
+  typedef vector<method_decl_sptr>		member_functions;
+  typedef unordered_map<string, method_decl*> string_mem_fn_ptr_map_type;
+  /// @}
+
+  class_or_union(const environment* env, const string& name,
+		 size_t size_in_bits, size_t align_in_bits,
+		 const location& locus, visibility vis,
+		 member_types& mbrs, data_members& data_mbrs,
+		 member_functions& member_fns);
+
+  class_or_union(const environment* env, const string& name,
+		 size_t size_in_bits, size_t align_in_bits,
+		 const location& locus, visibility vis);
+
+  class_or_union(const environment* env, const string& name,
+		 bool is_declaration_only = true);
+
+  virtual void
+  set_size_in_bits(size_t);
+
+  virtual size_t
+  get_size_in_bits() const;
+
+  virtual size_t
+  get_alignment_in_bits() const;
+
+  virtual void
+  set_alignment_in_bits(size_t);
+
+  bool
+  get_is_declaration_only() const;
+
+  void
+  set_is_declaration_only(bool f);
+
+  void
+  set_definition_of_declaration(class_or_union_sptr);
+
+  const class_or_union_sptr
+  get_definition_of_declaration() const;
+
+  decl_base_sptr
+  get_earlier_declaration() const;
+
+  void
+  set_earlier_declaration(decl_base_sptr declaration);
+
+ void
+  insert_member_type(type_base_sptr t,
+		     declarations::iterator before);
+
+  void
+  add_member_type(type_base_sptr t);
+
+  type_base_sptr
+  add_member_type(type_base_sptr t, access_specifier a);
+
+  void
+  remove_member_type(type_base_sptr t);
+
+  const member_types&
+  get_member_types() const;
+
+  type_base_sptr
+  find_member_type(const string& name) const;
+
+  void
+  add_data_member(var_decl_sptr v, access_specifier a,
+		  bool is_laid_out, bool is_static,
+		  size_t offset_in_bits);
+
+  const data_members&
+  get_data_members() const;
+
+  const var_decl_sptr
+  find_data_member(const string&) const;
+
+  const data_members&
+  get_non_static_data_members() const;
+
+  void
+  add_member_function(method_decl_sptr f,
+		      access_specifier a,
+		      bool is_static, bool is_ctor,
+		      bool is_dtor, bool is_const);
+
+  const member_functions&
+  get_member_functions() const;
+
+  const method_decl*
+  find_member_function(const string& mangled_name) const;
+
+  method_decl*
+  find_member_function(const string& mangled_name);
+
+  void
+  add_member_function_template(member_function_template_sptr);
+
+  const member_function_templates&
+  get_member_function_templates() const;
+
+  void
+  add_member_class_template(member_class_template_sptr m);
+
+  const member_class_templates&
+  get_member_class_templates() const;
+
+  bool
+  has_no_member() const;
+
+  virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const class_or_union&) const;
+
+  virtual bool
+  traverse(ir_node_visitor& v);
+
+  virtual ~class_or_union();
+
+  friend method_decl_sptr
+  copy_member_function(class_or_union_sptr& t,
+		       const method_decl*m);
+
+  friend method_decl_sptr
+  copy_member_function(class_or_union_sptr& t,
+		       const method_decl_sptr& m);
+
+  friend void
+  fixup_virtual_member_function(method_decl_sptr method);
+
+  friend void
+  set_member_is_static(decl_base& d, bool s);
+
+  friend bool
+  equals(const class_or_union&, const class_or_union&, change_kind*);
+
+  friend bool
+  equals(const class_decl&, const class_decl&, change_kind*);
+
+  friend class method_decl;
+  friend class class_decl;
+}; // end class class_or_union
+
+method_decl_sptr
+copy_member_function(const class_or_union_sptr& clazz,
+		     const method_decl_sptr& f);
+
+method_decl_sptr
+copy_member_function(const class_or_union_sptr& clazz,
+		     const method_decl* f);
+
+/// Hasher for the @ref class_or_union type
+struct class_or_union::hash
+{
+  size_t
+  operator()(const class_or_union& t) const;
+
+  size_t
+  operator()(const class_or_union* t) const;
+}; // end struct class_decl::hash
+
+/// Abstracts a class declaration.
+class class_decl : public class_or_union
+{
+  // Forbidden
+  class_decl();
+
+protected:
+
+  virtual decl_base_sptr
+  insert_member_decl(decl_base_sptr member, declarations::iterator before);
+
+public:
+  /// Hasher.
+  struct hash;
+
+  /// Forward declarations.
+  class base_spec;
+
+  /// Convenience typedef
+  /// @{
+  typedef shared_ptr<base_spec>			base_spec_sptr;
+  typedef vector<base_spec_sptr>			base_specs;
+
+  /// @}
+
+private:
+  struct priv;
+  // This priv it's not handled by a shared_ptr because accessing the
+  // data members of the priv struct for this class_decl shows up on
+  // performance profiles when dealing with big binaries with a lot of
+  // types; dereferencing the shared_ptr involves locking of some sort
+  // and that is slower than just dereferencing a pointer likere here.
+  // There are other types for which the priv pointer is managed using
+  // shared_ptr just fine, because those didn't show up during our
+  // performance profiling.
+  priv * priv_;
+
+public:
+
+  class_decl(const environment* env, const string& name,
+	     size_t size_in_bits, size_t align_in_bits,
+	     bool is_struct, const location& locus,
+	     visibility vis, base_specs& bases,
+	     member_types& mbrs, data_members& data_mbrs,
+	     member_functions& member_fns);
+
+  class_decl(const environment* env, const string& name,
+	     size_t size_in_bits, size_t align_in_bits,
+	     bool is_struct, const location& locus, visibility vis);
+
+  class_decl(const environment* env, const string& name, bool is_struct,
+	     bool is_declaration_only = true);
+
+  const class_decl_sptr
+  get_definition_of_declaration() const;
+
+  virtual string
+  get_pretty_representation(bool internal = false) const;
+
+  void
+  is_struct(bool f);
+
+  bool
+  is_struct() const;
+
+  void
+  add_base_specifier(shared_ptr<base_spec> b);
+
+  const base_specs&
+  get_base_specifiers() const;
+
+  class_decl_sptr
+  find_base_class(const string&) const;
+
+  void
+  add_member_function(method_decl_sptr f,
+		      access_specifier a,
+		      bool is_virtual,
+		      size_t vtable_offset,
+		      bool is_static, bool is_ctor,
+		      bool is_dtor, bool is_const);
+
+  const member_functions&
+  get_virtual_mem_fns() const;
+
+  void
+  sort_virtual_mem_fns();
+
+  bool
+  has_no_base_nor_member() const;
+
+  bool
+  has_virtual_member_functions() const;
+
+  bool
+  has_virtual_bases() const;
+
+  bool
+  has_vtable() const;
+
+  virtual size_t
+  get_hash() const;
+
+  virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const class_decl&) const;
+
+  virtual bool
+  traverse(ir_node_visitor& v);
+
+  virtual ~class_decl();
+
+  friend void
+  fixup_virtual_member_function(method_decl_sptr method);
+
+  friend void
+  set_member_is_static(decl_base& d, bool s);
+
+  friend bool
+  equals(const class_decl&, const class_decl&, change_kind*);
+
+  friend class method_decl;
+};// end class class_decl
+
+bool
+equals(const class_decl&, const class_decl&, change_kind*);
+
+method_decl_sptr
+copy_member_function(const class_decl_sptr& clazz,
+		     const method_decl_sptr& f);
+
+method_decl_sptr
+copy_member_function(const class_decl_sptr& clazz,
+		     const method_decl* f);
+void
+fixup_virtual_member_function(method_decl_sptr method);
+
+/// Hasher for the @ref class_decl type
+struct class_decl::hash
+{
+  size_t
+  operator()(const class_decl& t) const;
+
+  size_t
+  operator()(const class_decl* t) const;
+}; // end struct class_decl::hash
+
+enum access_specifier
+get_member_access_specifier(const decl_base&);
+
+enum access_specifier
+get_member_access_specifier(const decl_base_sptr&);
+
+void
+set_member_access_specifier(decl_base&,
+			    access_specifier);
+
+void
+set_member_access_specifier(const decl_base_sptr&,
+			    access_specifier);
+
+std::ostream&
+operator<<(std::ostream&, access_specifier);
+
+bool
+operator==(const class_decl_sptr& l, const class_decl_sptr& r);
+
+bool
+operator!=(const class_decl_sptr& l, const class_decl_sptr& r);
 
 bool
 equals(const class_decl::base_spec&,
@@ -3428,6 +3627,57 @@ is_class_base_spec(type_or_decl_base*);
 
 class_decl::base_spec_sptr
 is_class_base_spec(type_or_decl_base_sptr);
+
+typedef shared_ptr<union_decl> union_decl_sptr;
+
+/// Abstracts a union type declaration.
+class union_decl : public class_or_union
+{
+  // Forbid
+  union_decl();
+
+public:
+
+  union_decl(const environment* env, const string& name,
+	     size_t size_in_bits, const location& locus,
+	     visibility vis, member_types& mbrs,
+	     data_members& data_mbrs, member_functions& member_fns);
+
+  union_decl(const environment* env, const string& name,
+	     size_t size_in_bits, const location& locus,
+	     visibility vis);
+
+  union_decl(const environment* env, const string& name,
+	     bool is_declaration_only = true);
+
+  virtual string
+  get_pretty_representation(bool internal = false) const;
+
+  virtual bool
+  operator==(const decl_base&) const;
+
+  virtual bool
+  operator==(const type_base&) const;
+
+  virtual bool
+  operator==(const union_decl&) const;
+
+  virtual bool
+  traverse(ir_node_visitor& v);
+
+  virtual ~union_decl();
+}; // union_decl
+
+bool
+equals(const union_decl&, const union_decl&, change_kind*);
+
+method_decl_sptr
+copy_member_function(const union_decl_sptr& union_type,
+		     const method_decl_sptr& f);
+
+method_decl_sptr
+copy_member_function(const union_decl_sptr& union_type,
+		     const method_decl* f);
 
 class mem_fn_context_rel;
 
@@ -3565,112 +3815,17 @@ public:
   virtual ~mem_fn_context_rel();
 }; // end class mem_fn_context_rel
 
-/// Abstraction of the declaration of a method. This is an
-/// implementation detail for class_decl::member_function.
-class class_decl::method_decl : public function_decl
-{
-  method_decl();
-
-  virtual void
-  set_scope(scope_decl*);
-
-public:
-
-  method_decl(const string& name, method_type_sptr type,
-	      bool declared_inline, const location& locus,
-	      const string& mangled_name = "",
-	      visibility vis = VISIBILITY_DEFAULT,
-	      binding	bind = BINDING_GLOBAL);
-
-  method_decl(const string& name,
-	      function_type_sptr type,
-	      bool declared_inline,
-	      const location& locus,
-	      const string& mangled_name = "",
-	      visibility vis  = VISIBILITY_DEFAULT,
-	      binding	bind = BINDING_GLOBAL);
-
-  method_decl(const string& name, type_base_sptr type,
-	      bool declared_inline, const location& locus,
-	      const string& mangled_name = "",
-	      visibility vis = VISIBILITY_DEFAULT,
-	      binding bind = BINDING_GLOBAL);
-
-  virtual void
-  set_linkage_name(const string&);
-
-  /// @return the type of the current instance of the
-  /// class_decl::method_decl.
-  const method_type_sptr
-  get_type() const;
-
-  void
-  set_type(const method_type_sptr fn_type)
-  {function_decl::set_type(fn_type);}
-
-  friend bool
-  get_member_function_is_ctor(const function_decl&);
-
-  friend void
-  set_member_function_is_ctor(function_decl&, bool);
-
-  friend void
-  set_member_function_is_ctor(const function_decl_sptr&, bool);
-
-  friend bool
-  get_member_function_is_dtor(const function_decl&);
-
-  friend void
-  set_member_function_is_dtor(function_decl&, bool);
-
-  friend void
-  set_member_function_is_dtor(const function_decl_sptr&, bool);
-
-  friend bool
-  get_member_function_is_static(const function_decl&);
-
-  friend void
-  set_member_function_is_static(const function_decl&, bool);
-
-  friend bool
-  get_member_function_is_const(const function_decl&);
-
-  friend void
-  set_member_function_is_const(function_decl&, bool);
-
-  friend void
-  set_member_function_is_const(const function_decl_sptr&, bool);
-
-  friend size_t
-  get_member_function_vtable_offset(const function_decl&);
-
-  friend void
-  set_member_function_vtable_offset(function_decl&, size_t);
-
-  friend void
-  set_member_function_vtable_offset(const function_decl_sptr&, size_t);
-
-  friend bool
-  get_member_function_is_virtual(const function_decl&);
-
-  friend void
-  set_member_function_is_virtual(function_decl&, bool);
-
-  virtual ~method_decl();
-};// end class class_decl::method_decl
-
-class_decl::method_decl*
+method_decl*
 is_method_decl(const type_or_decl_base*);
 
-class_decl::method_decl*
+method_decl*
 is_method_decl(const type_or_decl_base&);
 
-class_decl::method_decl_sptr
+method_decl_sptr
 is_method_decl(const type_or_decl_base_sptr&);
 
 /// Abstract a member function template.
-class class_decl::member_function_template
-  : public member_base, public virtual decl_base
+class member_function_template : public member_base, public virtual decl_base
 {
   bool is_constructor_;
   bool is_const_;
@@ -3712,18 +3867,18 @@ public:
 
   virtual bool
   traverse(ir_node_visitor&);
-};// end class class_decl::member_function_template
+};// end class member_function_template
 
 bool
-operator==(const class_decl::member_function_template_sptr& l,
-	   const class_decl::member_function_template_sptr& r);
+operator==(const member_function_template_sptr& l,
+	   const member_function_template_sptr& r);
 
 bool
-operator!=(const class_decl::member_function_template_sptr& l,
-	   const class_decl::member_function_template_sptr& r);
+operator!=(const member_function_template_sptr& l,
+	   const member_function_template_sptr& r);
 
 /// Abstracts a member class template template
-class class_decl::member_class_template
+class member_class_template
   : public member_base,
     public virtual decl_base
 {
@@ -3760,15 +3915,15 @@ public:
 
   virtual bool
   traverse(ir_node_visitor& v);
-};// end class class_decl::member_class_template
+};// end class member_class_template
 
 bool
-operator==(const class_decl::member_class_template_sptr& l,
-	   const class_decl::member_class_template_sptr& r);
+operator==(const member_class_template_sptr& l,
+	   const member_class_template_sptr& r);
 
 bool
-operator!=(const class_decl::member_class_template_sptr& l,
-	   const class_decl::member_class_template_sptr& r);
+operator!=(const member_class_template_sptr& l,
+	   const member_class_template_sptr& r);
 
 // Forward declarations for select nested hashers.
 struct type_base::shared_ptr_hash
@@ -3855,22 +4010,22 @@ struct class_decl::base_spec::hash
   operator()(const base_spec& t) const;
 };
 
-/// The hashing functor for class_decl::member_base.
-struct class_decl::member_base::hash
+/// The hashing functor for member_base.
+struct member_base::hash
 {
   size_t
   operator()(const member_base& m) const;
 };
 
-/// The hashing functor for class_decl::member_function_template.
-struct class_decl::member_function_template::hash
+/// The hashing functor for member_function_template.
+struct member_function_template::hash
 {
   size_t
   operator()(const member_function_template& t) const;
 };
 
-/// The hashing functor for class_decl::member_class_template
-struct class_decl::member_class_template::hash
+/// The hashing functor for member_class_template
+struct member_class_template::hash
 {
   size_t
   operator()(const member_class_template& t) const;
@@ -3972,17 +4127,23 @@ struct ir_node_visitor : public node_visitor_base
   virtual bool visit_begin(class_tdecl*);
   virtual bool visit_end(class_tdecl*);
 
+  virtual bool visit_begin(class_or_union *);
+  virtual bool visit_end(class_or_union *);
+
   virtual bool visit_begin(class_decl*);
   virtual bool visit_end(class_decl*);
+
+  virtual bool visit_begin(union_decl*);
+  virtual bool visit_end(union_decl*);
 
   virtual bool visit_begin(class_decl::base_spec*);
   virtual bool visit_end(class_decl::base_spec*);
 
-  virtual bool visit_begin(class_decl::member_function_template*);
-  virtual bool visit_end(class_decl::member_function_template*);
+  virtual bool visit_begin(member_function_template*);
+  virtual bool visit_end(member_function_template*);
 
-  virtual bool visit_begin(class_decl::member_class_template*);
-  virtual bool visit_end(class_decl::member_class_template*);
+  virtual bool visit_begin(member_class_template*);
+  virtual bool visit_end(member_class_template*);
 }; // end struct ir_node_visitor
 
 // Debugging facility

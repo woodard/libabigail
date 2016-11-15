@@ -83,7 +83,9 @@ class location;
 class location_manager;
 class corpus;
 class translation_unit;
+class class_or_union;
 class class_decl;
+class union_decl;
 class class_tdecl;
 class type_or_decl_base;
 class decl_base;
@@ -241,6 +243,18 @@ is_class_type(const type_or_decl_base*);
 
 shared_ptr<class_decl>
 is_class_type(const shared_ptr<type_or_decl_base>&);
+
+class_or_union*
+is_class_or_union_type(const type_or_decl_base*);
+
+shared_ptr<class_or_union>
+is_class_or_union_type(const shared_ptr<type_or_decl_base>&);
+
+union_decl*
+is_union_type(const type_or_decl_base*);
+
+shared_ptr<union_decl>
+is_union_type(const shared_ptr<type_or_decl_base>&);
 
 shared_ptr<class_decl>
 is_compatible_with_class_type(const shared_ptr<type_base>&);

@@ -1082,11 +1082,11 @@ build_function_parameter (read_context&, const xmlNodePtr);
 
 static function_decl_sptr
 build_function_decl(read_context&, const xmlNodePtr,
-		    shared_ptr<class_decl>, bool);
+		    class_or_union_sptr, bool);
 
 static function_decl_sptr
 build_function_decl_if_not_suppressed(read_context&, const xmlNodePtr,
-				      class_decl_sptr, bool);
+				      class_or_union_sptr, bool);
 
 static bool
 function_is_suppressed(const read_context& ctxt,
@@ -1131,6 +1131,9 @@ build_typedef_decl(read_context&, const xmlNodePtr, bool);
 
 static class_decl_sptr
 build_class_decl(read_context&, const xmlNodePtr, bool);
+
+static union_decl_sptr
+build_union_decl(read_context&, const xmlNodePtr, bool);
 
 static shared_ptr<function_tdecl>
 build_function_tdecl(read_context&, const xmlNodePtr, bool);
@@ -1184,6 +1187,7 @@ static decl_base_sptr	handle_typedef_decl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_var_decl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_function_decl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_class_decl(read_context&, xmlNodePtr, bool);
+static decl_base_sptr	handle_union_decl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_function_tdecl(read_context&, xmlNodePtr, bool);
 static decl_base_sptr	handle_class_tdecl(read_context&, xmlNodePtr, bool);
 
@@ -1885,6 +1889,8 @@ handle_element_node(read_context& ctxt, xmlNodePtr node,
    || (decl = handle_function_decl(ctxt, node,
 				   add_to_current_scope))
    || (decl = handle_class_decl(ctxt, node,
+				add_to_current_scope))
+   || (decl = handle_union_decl(ctxt, node,
 				add_to_current_scope))
    || (decl = handle_function_tdecl(ctxt, node,
 				    add_to_current_scope))
@@ -2638,7 +2644,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 /// method_decl.  The class_decl pointer is the class decl to which
 /// the resulting method_decl is a member function of.  The resulting
 /// shared_ptr<function_decl> that is returned is then really a
-/// shared_ptr<class_decl::method_decl>.
+/// shared_ptr<method_decl>.
 ///
 /// @param add_to_current_scope if set to yes, the resulting of
 /// this function is added to its current scope.
@@ -2648,7 +2654,7 @@ build_function_parameter(read_context& ctxt, const xmlNodePtr node)
 static function_decl_sptr
 build_function_decl(read_context&	ctxt,
 		    const xmlNodePtr	node,
-		    class_decl_sptr	as_method_decl,
+		    class_or_union_sptr as_method_decl,
 		    bool		add_to_current_scope)
 {
   shared_ptr<function_decl> nil;
@@ -2718,10 +2724,9 @@ build_function_decl(read_context&	ctxt,
 						 parms, size, align));
 
   function_decl_sptr fn_decl(as_method_decl
-			     ? new class_decl::method_decl
-			     (name, fn_type,
-			      declared_inline, loc,
-			      mangled_name, vis, bind)
+			     ? new method_decl (name, fn_type,
+						declared_inline, loc,
+						mangled_name, vis, bind)
 			     : new function_decl(name, fn_type,
 						 declared_inline, loc,
 						 mangled_name, vis,
@@ -2754,12 +2759,12 @@ build_function_decl(read_context&	ctxt,
 ///
 /// @param node the xml node to build the function_decl from.
 ///
-/// @param as_method_decl if this is set to a class_decl pointer, it
-/// means that the 'function-decl' xml node should be parsed as a
-/// method_decl.  The class_decl pointer is the class decl to which
-/// the resulting method_decl is a member function of.  The resulting
-/// shared_ptr<function_decl> that is returned is then really a
-/// shared_ptr<class_decl::method_decl>.
+/// @param as_method_decl if this is set to a class_or_union pointer,
+/// it means that the 'function-decl' xml node should be parsed as a
+/// method_decl.  The class_or_union pointer is the class or union the
+/// resulting method_decl is a member function of.  The resulting @ref
+/// function_decl_sptr that is returned is then really a @ref
+/// method_decl_sptr.
 ///
 /// @param add_to_current_scope if set to yes, the resulting of
 /// this function is added to its current scope.
@@ -2770,7 +2775,7 @@ build_function_decl(read_context&	ctxt,
 static function_decl_sptr
 build_function_decl_if_not_suppressed(read_context&	ctxt,
 				      const xmlNodePtr	node,
-				      class_decl_sptr	as_method_decl,
+				      class_or_union_sptr as_method_decl,
 				      bool		add_to_current_scope)
 {
     function_decl_sptr fn;
@@ -3787,6 +3792,29 @@ build_class_decl_if_not_suppressed(read_context&	ctxt,
   return class_type;
 }
 
+/// Build a @ref union_decl from its XML node if it is not suppressed
+/// by a suppression specification that is present in the read
+/// context.
+///
+/// @param ctxt the read context to consider.
+///
+/// @param node the XML node to consider.
+///
+/// @param add_to_current_scope whether to add the built @ref
+/// union_decl to the current context or not.
+///
+/// @return true iff the @ref union_decl was built.
+static union_decl_sptr
+build_union_decl_if_not_suppressed(read_context&	ctxt,
+				   const xmlNodePtr	node,
+				   bool		add_to_current_scope)
+{
+  union_decl_sptr union_type;
+  if (!type_is_suppressed(ctxt, node))
+    union_type = build_union_decl(ctxt, node, add_to_current_scope);
+  return union_type;
+}
+
 /// Build a class_decl from a 'class-decl' xml node.
 ///
 /// @param ctxt the context of the parsing.
@@ -4115,7 +4143,7 @@ build_class_decl(read_context&		ctxt,
 		  build_function_decl_if_not_suppressed(ctxt, p, decl,
 							/*add_to_cur_sc=*/true))
 		{
-		  class_decl::method_decl_sptr m = is_method_decl(f);
+		  method_decl_sptr m = is_method_decl(f);
 		  assert(m);
 		  set_member_access_specifier(m, access);
 		  set_member_is_static(m, is_static);
@@ -4153,11 +4181,9 @@ build_class_decl(read_context&		ctxt,
 		  build_function_tdecl(ctxt, p,
 				       /*add_to_current_scope=*/true))
 		{
-		  shared_ptr<class_decl::member_function_template> m
-		    (new class_decl::member_function_template(f, access,
-							      is_static,
-							      is_ctor,
-							      is_const));
+		  shared_ptr<member_function_template> m
+		    (new member_function_template(f, access, is_static,
+						  is_ctor, is_const));
 		  assert(f->get_scope());
 		  decl->add_member_function_template(m);
 		}
@@ -4165,9 +4191,337 @@ build_class_decl(read_context&		ctxt,
 		       build_class_tdecl(ctxt, p,
 					 /*add_to_current_scope=*/true))
 		{
-		  shared_ptr<class_decl::member_class_template> m
-		    (new class_decl::member_class_template(c, access,
-							   is_static));
+		  member_class_template_sptr m(new member_class_template(c,
+									 access,
+									 is_static));
+		  assert(c->get_scope());
+		  decl->add_member_class_template(m);
+		}
+	    }
+	}
+    }
+
+  ctxt.pop_scope_or_abort(decl);
+  ctxt.unmark_type_as_wip(decl);
+
+  return decl;
+}
+
+/// Build a union_decl from a 'union-decl' xml node.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @param node the xml node to build the union_decl from.
+///
+/// @param add_to_current_scope if yes, the resulting union node
+/// hasn't triggered voluntarily the adding of the resulting
+/// union_decl_sptr to the current scope.
+///
+/// @return a pointer to union_decl upon successful completion, a null
+/// pointer otherwise.
+static union_decl_sptr
+build_union_decl(read_context& ctxt,
+		 const xmlNodePtr node,
+		 bool add_to_current_scope)
+{
+  union_decl_sptr nil;
+
+  if (!xmlStrEqual(node->name, BAD_CAST("union-decl")))
+    return nil;
+
+  if (decl_base_sptr d = ctxt.get_decl_for_xml_node(node))
+    {
+      union_decl_sptr result = dynamic_pointer_cast<union_decl>(d);
+      assert(result);
+      return result;
+    }
+
+  string name;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "name"))
+    name = xml::unescape_xml_string(CHAR_STR(s));
+
+  size_t size_in_bits = 0, alignment_in_bits = 0;
+  read_size_and_alignment(node, size_in_bits, alignment_in_bits);
+
+  decl_base::visibility vis = decl_base::VISIBILITY_NONE;
+  read_visibility(node, vis);
+
+  string id;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "id"))
+    id = CHAR_STR(s);
+
+  location loc;
+  read_location(ctxt, node, loc);
+
+  union_decl::member_types mbrs;
+  union_decl::data_members data_mbrs;
+  union_decl::member_functions mbr_functions;
+
+  union_decl_sptr decl;
+
+  bool is_decl_only = false;
+  read_is_declaration_only(node, is_decl_only);
+
+  bool is_anonymous = false;
+  read_is_anonymous(node, is_anonymous);
+
+  assert(!id.empty());
+  union_decl_sptr previous_definition, previous_declaration;
+  const vector<type_base_sptr> *types_ptr = ctxt.get_all_type_decls(id);
+  if (types_ptr)
+    {
+      // Lets look at the previous declarations and the first previous
+      // definition of this type that we've already seen while parsing
+      // this corpus.
+      for (vector<type_base_sptr>::const_iterator i = types_ptr->begin();
+	   i != types_ptr->end();
+	   ++i)
+	{
+	  union_decl_sptr onion = is_union_type(*i);
+	  assert(onion);
+	  if (onion->get_is_declaration_only()
+	      && !onion->get_definition_of_declaration())
+	    previous_declaration = onion;
+	  else if (!onion->get_is_declaration_only()
+		   && !previous_definition)
+	    previous_definition = onion;
+	  if (previous_definition && previous_declaration)
+	    break;
+	}
+
+      if (previous_declaration)
+	assert(previous_declaration->get_name() == name);
+
+      if (previous_definition)
+	assert(previous_definition->get_name() == name);
+
+      if (is_decl_only && previous_declaration)
+	return previous_declaration;
+    }
+
+  const environment* env = ctxt.get_environment();
+  assert(env);
+
+  if (!is_decl_only && previous_definition)
+    // We are in the case where we've read this class definition
+    // before, but we might need to update it to add some new stuff to
+    // it; we might thus find the new stuff to add in the current
+    // (new) incarnation of that definition that we are currently
+    // reading.
+    decl = previous_definition;
+  else
+    {
+      if (is_decl_only)
+	decl.reset(new union_decl(env, name));
+      else
+	decl.reset(new union_decl(env, name,
+				  size_in_bits,
+				  loc, vis, mbrs,
+				  data_mbrs,
+				  mbr_functions));
+      decl->set_is_anonymous(is_anonymous);
+    }
+
+  string def_id;
+  bool is_def_of_decl = false;
+  if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "def-of-decl-id"))
+    def_id = CHAR_STR(s);
+
+  if (!def_id.empty())
+    {
+      class_decl_sptr d =
+	dynamic_pointer_cast<class_decl>(ctxt.get_type_decl(def_id));
+      if (d && d->get_is_declaration_only())
+	{
+	  is_def_of_decl = true;
+	  decl->set_earlier_declaration(d);
+	  d->set_definition_of_declaration(decl);
+	}
+    }
+
+  if (!is_decl_only
+      && decl
+      && !decl->get_is_declaration_only()
+      && previous_declaration)
+    {
+      // decl is the definition of the previous declaration
+      // previous_declaration.
+      //
+      // Let's link them.
+      decl->set_earlier_declaration(previous_declaration);
+      for (vector<type_base_sptr>::const_iterator i = types_ptr->begin();
+	   i != types_ptr->end();
+	   ++i)
+	{
+	  union_decl_sptr d = is_union_type(*i);
+	  assert(d);
+	  if (d->get_is_declaration_only()
+	      && !d->get_definition_of_declaration())
+	    {
+	      previous_declaration->set_definition_of_declaration(decl);
+	      is_def_of_decl = true;
+	    }
+	}
+    }
+
+  if (is_decl_only && previous_definition)
+    {
+      // decl is a declaration of the previous definition
+      // previous_definition.  Let's link them.
+      assert(decl->get_is_declaration_only()
+	     && !decl->get_definition_of_declaration());
+      decl->set_definition_of_declaration(previous_definition);
+    }
+
+  assert(!is_decl_only || !is_def_of_decl);
+
+  ctxt.push_decl_to_current_scope(decl, add_to_current_scope);
+
+  ctxt.map_xml_node_to_decl(node, decl);
+  ctxt.mark_type_as_wip(decl);
+  ctxt.key_type_decl(decl, id);
+
+  for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
+    {
+      if (n->type != XML_ELEMENT_NODE)
+	continue;
+
+      if (xmlStrEqual(n->name, BAD_CAST("member-type")))
+	{
+	  access_specifier access = private_access;
+	  read_access(n, access);
+
+	  ctxt.map_xml_node_to_decl(n, decl);
+
+	  for (xmlNodePtr p = n->children; p; p = p->next)
+	    {
+	      if (p->type != XML_ELEMENT_NODE)
+		continue;
+
+	      if (type_base_sptr t =
+		  build_type(ctxt, p, /*add_to_current_scope=*/true))
+		{
+		  decl_base_sptr td = get_type_declaration(t);
+		  assert(td);
+		  set_member_access_specifier(td, access);
+		  ctxt.maybe_canonicalize_type(t, !add_to_current_scope);
+		  xml_char_sptr i= XML_NODE_GET_ATTRIBUTE(p, "id");
+		  string id = CHAR_STR(i);
+		  assert(!id.empty());
+		  ctxt.key_type_decl(t, id);
+		  ctxt.map_xml_node_to_decl(p, td);
+		}
+	    }
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("data-member")))
+	{
+	  ctxt.map_xml_node_to_decl(n, decl);
+
+	  access_specifier access = private_access;
+	  read_access(n, access);
+
+	  bool is_laid_out = true;
+	  size_t offset_in_bits = 0;
+	  bool is_static = false;
+	  read_static(n, is_static);
+
+	  for (xmlNodePtr p = n->children; p; p = p->next)
+	    {
+	      if (p->type != XML_ELEMENT_NODE)
+		continue;
+
+	      if (var_decl_sptr v =
+		  build_var_decl(ctxt, p, /*add_to_cur_scope=*/false))
+		{
+		  if (decl->find_data_member(v->get_name()))
+		    {
+		      // We are in updating mode and the current
+		      // version of this class already has this data
+		      // member, so we are not going to add it again.
+		      // So we need to discard the data member we have
+		      // built (and that was pushed to the current
+		      // stack of decls built) and move on.
+		      decl_base_sptr d = ctxt.pop_decl();
+		      assert(is_var_decl(d));
+		      continue;
+		    }
+		  if (!is_static
+		      || !variable_is_suppressed(ctxt, decl.get(), *v))
+		    decl->add_data_member(v, access,
+					  is_laid_out,
+					  is_static,
+					  offset_in_bits);
+		}
+	    }
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("member-function")))
+	{
+	  ctxt.map_xml_node_to_decl(n, decl);
+
+	  access_specifier access = private_access;
+	  read_access(n, access);
+
+	  bool is_static = false;
+	  read_static(n, is_static);
+
+	  bool is_ctor = false, is_dtor = false, is_const = false;
+	  read_cdtor_const(n, is_ctor, is_dtor, is_const);
+
+	  for (xmlNodePtr p = n->children; p; p = p->next)
+	    {
+	      if (p->type != XML_ELEMENT_NODE)
+		continue;
+
+	      if (function_decl_sptr f =
+		  build_function_decl_if_not_suppressed(ctxt, p, decl,
+							/*add_to_cur_sc=*/true))
+		{
+		  method_decl_sptr m = is_method_decl(f);
+		  assert(m);
+		  set_member_access_specifier(m, access);
+		  set_member_is_static(m, is_static);
+		  set_member_function_is_ctor(m, is_ctor);
+		  set_member_function_is_dtor(m, is_dtor);
+		  set_member_function_is_const(m, is_const);
+		  break;
+		}
+	    }
+	}
+      else if (xmlStrEqual(n->name, BAD_CAST("member-template")))
+	{
+	  ctxt.map_xml_node_to_decl(n, decl);
+
+	  access_specifier access = private_access;
+	  read_access(n, access);
+
+	  bool is_static = false;
+	  read_static(n, is_static);
+
+	  bool is_ctor = false, is_dtor = false, is_const = false;
+	  read_cdtor_const(n, is_ctor, is_dtor, is_const);
+
+	  for (xmlNodePtr p = n->children; p; p = p->next)
+	    {
+	      if (p->type != XML_ELEMENT_NODE)
+		continue;
+
+	      if (function_tdecl_sptr f =
+		  build_function_tdecl(ctxt, p,
+				       /*add_to_current_scope=*/true))
+		{
+		  member_function_template_sptr m
+		    (new member_function_template(f, access, is_static,
+						  is_ctor, is_const));
+		  assert(f->get_scope());
+		  decl->add_member_function_template(m);
+		}
+	      else if (class_tdecl_sptr c =
+		       build_class_tdecl(ctxt, p,
+					 /*add_to_current_scope=*/true))
+		{
+		  member_class_template_sptr m(new member_class_template(c,
+									 access,
+									 is_static));
 		  assert(c->get_scope());
 		  decl->add_member_class_template(m);
 		}
@@ -4616,6 +4970,8 @@ build_type(read_context&	ctxt,
 						  add_to_current_scope))
    || (t = build_typedef_decl(ctxt, node, add_to_current_scope))
    || (t = build_class_decl_if_not_suppressed(ctxt, node,
+					      add_to_current_scope))
+   || (t = build_union_decl_if_not_suppressed(ctxt, node,
 					      add_to_current_scope)));
 
   return t;
@@ -4804,8 +5160,8 @@ handle_function_decl(read_context&	ctxt,
 ///
 /// @param ctxt the context of the parsing.
 ///
-/// @return true upon successful completion of the parsing, false
-/// otherwise.
+/// @return the resulting @ref class_decl built from the XML element
+/// upon successful completion of the parsing, nil otherwise.
 static decl_base_sptr
 handle_class_decl(read_context& ctxt,
 		  xmlNodePtr	node,
@@ -4813,6 +5169,24 @@ handle_class_decl(read_context& ctxt,
 {
   class_decl_sptr decl =
     build_class_decl_if_not_suppressed(ctxt, node, add_to_current_scope);
+  if (decl && decl->get_scope())
+    ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
+  return decl;
+}
+
+/// Parse a 'union-decl' xml element.
+///
+/// @param ctxt the context of the parsing.
+///
+/// @return the resulting @ref union_decl built from the XML element
+/// upon successful completion of the parsing, nil otherwise.
+static decl_base_sptr
+handle_union_decl(read_context& ctxt,
+		  xmlNodePtr	node,
+		  bool		add_to_current_scope)
+{
+  union_decl_sptr decl =
+    build_union_decl_if_not_suppressed(ctxt, node, add_to_current_scope);
   if (decl && decl->get_scope())
     ctxt.maybe_canonicalize_type(decl, /*force_delay=*/false);
   return decl;

@@ -3463,8 +3463,7 @@ get_member_function_is_ctor(const function_decl& f)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  const method_decl* m = is_method_decl(&f);
   assert(m);
 
   const mem_fn_context_rel* ctxt =
@@ -3494,8 +3493,7 @@ set_member_function_is_ctor(function_decl& f, bool c)
 {
   assert(is_member_function(f));
 
-  class_decl::method_decl* m =
-    dynamic_cast<class_decl::method_decl*>(&f);
+  method_decl* m = is_method_decl(&f);
   assert(m);
 
   mem_fn_context_rel* ctxt =
@@ -3524,8 +3522,7 @@ get_member_function_is_dtor(const function_decl& f)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  const method_decl* m = is_method_decl(&f);
   assert(m);
 
   const mem_fn_context_rel* ctxt =
@@ -3553,8 +3550,7 @@ set_member_function_is_dtor(function_decl& f, bool d)
 {
     assert(is_member_function(f));
 
-  class_decl::method_decl* m =
-    dynamic_cast<class_decl::method_decl*>(&f);
+    method_decl* m = is_method_decl(&f);
   assert(m);
 
   mem_fn_context_rel* ctxt =
@@ -3582,8 +3578,7 @@ get_member_function_is_const(const function_decl& f)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  const method_decl* m = is_method_decl(&f);
   assert(m);
 
   const mem_fn_context_rel* ctxt =
@@ -3611,8 +3606,7 @@ set_member_function_is_const(function_decl& f, bool is_const)
 {
   assert(is_member_function(f));
 
-  class_decl::method_decl* m =
-    dynamic_cast<class_decl::method_decl*>(&f);
+  method_decl* m = is_method_decl(&f);
   assert(m);
 
   mem_fn_context_rel* ctxt =
@@ -3640,8 +3634,8 @@ get_member_function_vtable_offset(const function_decl& f)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  const method_decl* m =
+    dynamic_cast<const method_decl*>(&f);
   assert(m);
 
   const mem_fn_context_rel* ctxt =
@@ -3669,8 +3663,7 @@ set_member_function_vtable_offset(function_decl& f, size_t s)
 {
   assert(is_member_function(f));
 
-  class_decl::method_decl* m =
-    dynamic_cast<class_decl::method_decl*>(&f);
+  method_decl* m = is_method_decl(&f);
   assert(m);
 
   mem_fn_context_rel* ctxt =
@@ -3697,8 +3690,8 @@ get_member_function_is_virtual(const function_decl& f)
 {
   assert(is_member_function(f));
 
-  const class_decl::method_decl* m =
-    dynamic_cast<const class_decl::method_decl*>(&f);
+  const method_decl* m =
+    dynamic_cast<const method_decl*>(&f);
   assert(m);
 
   const mem_fn_context_rel* ctxt =
@@ -3735,8 +3728,7 @@ set_member_function_is_virtual(function_decl& f, bool is_virtual)
 {
   assert(is_member_function(f));
 
-  class_decl::method_decl* m =
-    dynamic_cast<class_decl::method_decl*>(&f);
+  method_decl* m = is_method_decl(&f);
   assert(m);
 
   mem_fn_context_rel* ctxt =
@@ -3757,7 +3749,7 @@ set_member_function_is_virtual(const function_decl_sptr& fn, bool is_virtual)
     {
       set_member_function_is_virtual(*fn, is_virtual);
       fixup_virtual_member_function
-	(dynamic_pointer_cast<class_decl::method_decl>(fn));
+	(dynamic_pointer_cast<method_decl>(fn));
     }
 }
 
@@ -4258,11 +4250,11 @@ maybe_update_types_lookup_map(scope_decl *scope,
   bool update_qname_map = t;
   if (update_qname_map)
     {
-      if (class_decl_sptr c = is_class_type(member))
+      if (class_or_union_sptr c = is_class_or_union_type(member))
 	{
 	  if (c->get_is_declaration_only())
 	    {
-	      if (class_decl_sptr def = c->get_definition_of_declaration())
+	      if (class_or_union_sptr def = c->get_definition_of_declaration())
 		t = def;
 	      else
 		update_qname_map = false;
@@ -4956,7 +4948,7 @@ get_location(const decl_base_sptr& decl)
   location loc = decl->get_location();
   if (!loc)
     {
-      if (class_decl_sptr c = is_class_type(decl))
+      if (class_or_union_sptr c = is_class_or_union_type(decl))
 	if (c->get_is_declaration_only() && c->get_definition_of_declaration())
 	  {
 	    c = c->get_definition_of_declaration();
@@ -5186,7 +5178,7 @@ get_method_type_name(const method_type& fn_type,
 
   o <<  get_pretty_representation(return_type, internal);
 
-  class_decl_sptr class_type = fn_type.get_class_type();
+  class_or_union_sptr class_type = fn_type.get_class_type();
   assert(class_type);
 
   o << " (" << class_type->get_qualified_name(internal) << "::*)"
@@ -5579,7 +5571,7 @@ is_at_global_scope(const decl_base& decl)
 ///
 /// @return true iff decl is at global scope.
 bool
-is_at_global_scope(const shared_ptr<decl_base> decl)
+is_at_global_scope(const decl_base_sptr decl)
 {return (decl && is_global_scope(decl->get_scope()));}
 
 /// Tests whether a given decl is at class scope.
@@ -5588,8 +5580,8 @@ is_at_global_scope(const shared_ptr<decl_base> decl)
 ///
 /// @return true iff decl is at class scope.
 bool
-is_at_class_scope(const shared_ptr<decl_base> decl)
-{return (decl && dynamic_cast<class_decl*>(decl->get_scope()));}
+is_at_class_scope(const decl_base_sptr decl)
+{return is_at_class_scope(decl.get());}
 
 /// Tests whether a given decl is at class scope.
 ///
@@ -5598,7 +5590,12 @@ is_at_class_scope(const shared_ptr<decl_base> decl)
 /// @return true iff decl is at class scope.
 bool
 is_at_class_scope(const decl_base* decl)
-{return (decl && dynamic_cast<class_decl*>(decl->get_scope()));}
+{
+  if (!decl)
+    return false;
+
+  return is_at_class_scope(*decl);
+}
 
 /// Tests whether a given decl is at class scope.
 ///
@@ -5607,7 +5604,10 @@ is_at_class_scope(const decl_base* decl)
 /// @return true iff decl is at class scope.
 bool
 is_at_class_scope(const decl_base& decl)
-{return (dynamic_cast<class_decl*>(decl.get_scope()));}
+{
+  scope_decl* scope = decl.get_scope();
+  return (is_class_type(scope) || is_union_type(scope));
+}
 
 /// Tests whether a given decl is at template scope.
 ///
@@ -5918,6 +5918,46 @@ is_class_type(const type_or_decl_base* t)
 class_decl_sptr
 is_class_type(const type_or_decl_base_sptr& d)
 {return dynamic_pointer_cast<class_decl>(d);}
+
+/// Test if a type is a @ref class_or_union.
+///
+/// @param t the type to consider.
+///
+/// @return the @ref class_or_union is @p is a @ref class_or_union, or
+/// nil otherwise.
+class_or_union*
+is_class_or_union_type(const type_or_decl_base* t)
+{return dynamic_cast<class_or_union*>(const_cast<type_or_decl_base*>(t));}
+
+/// Test if a type is a @ref class_or_union.
+///
+/// @param t the type to consider.
+///
+/// @return the @ref class_or_union is @p is a @ref class_or_union, or
+/// nil otherwise.
+shared_ptr<class_or_union>
+is_class_or_union_type(const shared_ptr<type_or_decl_base>& t)
+{return dynamic_pointer_cast<class_or_union>(t);}
+
+/// Test if a type is a @ref union_decl.
+///
+/// @param t the type to consider.
+///
+/// @return the @ref union_decl is @p is a @ref union_decl, or nil
+/// otherwise.n
+union_decl*
+is_union_type(const type_or_decl_base* t)
+{return dynamic_cast<union_decl*>(const_cast<type_or_decl_base*>(t));}
+
+/// Test if a type is a @ref union_decl.
+///
+/// @param t the type to consider.
+///
+/// @return the @ref union_decl is @p is a @ref union_decl, or nil
+/// otherwise.
+union_decl_sptr
+is_union_type(const shared_ptr<type_or_decl_base>& t)
+{return dynamic_pointer_cast<union_decl>(t);}
 
 /// Test whether a type is a pointer_type_def.
 ///
@@ -7054,7 +7094,7 @@ type_base::get_canonical_type_for(type_base_sptr t)
     {
       if (class_declaration->get_is_declaration_only())
 	{
-	  if (class_decl_sptr def =
+	  if (class_or_union_sptr def =
 	      class_declaration->get_definition_of_declaration())
 	    t = def;
 	  else
@@ -7238,7 +7278,7 @@ maybe_adjust_canonical_type(const type_base_sptr& canonical,
 	       ++i)
 	    if ((*i)->get_symbol())
 	      {
-		if (class_decl::method_decl *m = canonical_class->
+		if (method_decl *m = canonical_class->
 		    find_member_function((*i)->get_linkage_name()))
 		  {
 		    elf_symbol_sptr s1 = (*i)->get_symbol();
@@ -10910,7 +10950,7 @@ equals(const function_type& lhs,
 	RETURN(result);
     }
 
-  class_decl* lhs_class = 0, *rhs_class = 0;
+  class_or_union* lhs_class = 0, *rhs_class = 0;
   if (const method_type* m = dynamic_cast<const method_type*>(&lhs))
     lhs_class = m->get_class_type().get();
 
@@ -11144,7 +11184,7 @@ function_type::~function_type()
 /// @param alignment_in_bits the alignment of an instance of
 /// method_type, expressed in bits.
 method_type::method_type (type_base_sptr return_type,
-			  class_decl_sptr class_type,
+			  class_or_union_sptr class_type,
 			  const std::vector<function_decl::parameter_sptr>& parms,
 			  size_t size_in_bits,
 			  size_t alignment_in_bits)
@@ -11202,15 +11242,15 @@ method_type::method_type(const environment*	env,
 /// When constructed with this constructor, and instane of method_type
 /// must set a return type using method_type::set_return_type
 ///
-/// @param class_type the base type of the method type.  That is, the
-/// type of the class the method belongs to.
+/// @param class_typ the base type of the method type.  That is, the
+/// type of the class (or union) the method belongs to.
 ///
 /// @param size_in_bits the size of an instance of method_type,
 /// expressed in bits.
 ///
 /// @param alignment_in_bits the alignment of an instance of
 /// method_type, expressed in bits.
-method_type::method_type(class_decl_sptr class_typ,
+method_type::method_type(class_or_union_sptr class_typ,
 			 size_t size_in_bits,
 			 size_t alignment_in_bits)
   : type_or_decl_base(class_typ->get_environment()),
@@ -11224,7 +11264,7 @@ method_type::method_type(class_decl_sptr class_typ,
 ///
 /// @param t the new class type to set.
 void
-method_type::set_class_type(const class_decl_sptr& t)
+method_type::set_class_type(const class_or_union_sptr& t)
 {
   if (!t)
     return;
@@ -11350,8 +11390,8 @@ function_decl::function_decl(const string&	name,
 string
 function_decl::get_pretty_representation(bool internal) const
 {
-  const class_decl::method_decl* mem_fn =
-    dynamic_cast<const class_decl::method_decl*>(this);
+  const method_decl* mem_fn =
+    dynamic_cast<const method_decl*>(this);
 
   string result = mem_fn ? "method ": "function ";
 
@@ -11389,8 +11429,8 @@ function_decl::get_pretty_representation(bool internal) const
 string
 function_decl::get_pretty_representation_of_declarator () const
 {
-  const class_decl::method_decl* mem_fn =
-    dynamic_cast<const class_decl::method_decl*>(this);
+  const method_decl* mem_fn =
+    dynamic_cast<const method_decl*>(this);
 
   string result;
 
@@ -11449,7 +11489,7 @@ function_decl::get_first_non_implicit_parm() const
   if (get_parameters().empty())
     return get_parameters().end();
 
-  bool is_method = dynamic_cast<const class_decl::method_decl*>(this);
+  bool is_method = dynamic_cast<const method_decl*>(this);
 
   parameters::const_iterator i = get_parameters().begin();
   if (is_method)
@@ -11565,8 +11605,8 @@ function_decl::clone() const
   function_decl_sptr f;
   if (is_member_function(*this))
     {
-      class_decl::method_decl_sptr
-	m(new class_decl::method_decl(get_name(),
+      method_decl_sptr
+	m(new method_decl(get_name(),
 				      get_type(),
 				      is_declared_inline(),
 				      get_location(),
@@ -12193,44 +12233,31 @@ function_decl::parameter::get_pretty_representation(bool internal) const
 
 // </function_decl::parameter definitions>
 
-// <class_decl definitions>
-
-static void
-sort_virtual_member_functions(class_decl::member_functions& mem_fns);
-
-/// The private data for the class_decl type.
-struct class_decl::priv
+// <class_or_union definitions>
+struct class_or_union::priv
 {
-  bool				is_declaration_only_;
-  bool				is_struct_;
   decl_base_sptr		declaration_;
-  class_decl_wptr		definition_of_declaration_;
-  base_specs			bases_;
-  unordered_map<string, base_spec_sptr>	bases_map_;
+  class_or_union_wptr		definition_of_declaration_;
   member_types			member_types_;
   data_members			data_members_;
   data_members			non_static_data_members_;
   member_functions		member_functions_;
   string_mem_fn_ptr_map_type	mem_fns_map_;
-  member_functions		virtual_mem_fns_;
   member_function_templates	member_function_templates_;
   member_class_templates	member_class_templates_;
+  bool				is_declaration_only_;
 
   priv()
-    : is_declaration_only_(false),
-      is_struct_(false)
+    : is_declaration_only_(false)
   {}
 
-  priv(bool is_struct, class_decl::base_specs& bases,
-       class_decl::member_types& mbr_types,
-       class_decl::data_members& data_mbrs,
-       class_decl::member_functions& mbr_fns)
-    : is_declaration_only_(false),
-      is_struct_(is_struct),
-      bases_(bases),
-      member_types_(mbr_types),
+  priv(class_or_union::member_types& mbr_types,
+       class_or_union::data_members& data_mbrs,
+       class_or_union::member_functions& mbr_fns)
+    : member_types_(mbr_types),
       data_members_(data_mbrs),
-      member_functions_(mbr_fns)
+      member_functions_(mbr_fns),
+      is_declaration_only_(false)
   {
     for (data_members::const_iterator i = data_members_.begin();
 	 i != data_members_.end();
@@ -12239,63 +12266,60 @@ struct class_decl::priv
 	non_static_data_members_.push_back(*i);
   }
 
-  priv(bool is_struct)
-    : is_declaration_only_(false),
-      is_struct_(is_struct)
+  priv(bool is_declaration_only)
+    : is_declaration_only_(is_declaration_only)
   {}
 
-  priv(bool is_declaration_only, bool is_struct)
-    : is_declaration_only_(is_declaration_only),
-      is_struct_(is_struct)
-  {}
-
-  /// Mark a class as being currently compared using the class_decl==
-  /// operator.
+  /// Mark a class or union or union as being currently compared using
+  /// the class_or_union== operator.
   ///
   /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class. If via the comparison of a data member or a
-  /// member function a recursive re-comparison of the class is
-  /// attempted, the marking business help to detect that infinite
-  /// loop possibility and avoid it.
+  /// comparing a class or union or union. If via the comparison of a
+  /// data member or a member function a recursive re-comparison of
+  /// the class or union is attempted, the marking business help to
+  /// detect that infinite loop possibility and avoid it.
   ///
-  /// @param klass the class to mark as being currently compared.
+  /// @param klass the class or union or union to mark as being
+  /// currently compared.
   void
-  mark_as_being_compared(const class_decl& klass) const
+  mark_as_being_compared(const class_or_union& klass) const
   {
     const environment* env = klass.get_environment();
     assert(env);
     env->priv_->classes_being_compared_.insert(klass.get_qualified_name());
   }
 
-  /// Mark a class as being currently compared using the class_decl==
-  /// operator.
+  /// Mark a class or union as being currently compared using the
+  /// class_or_union== operator.
   ///
   /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class. If via the comparison of a data member or a
-  /// member function a recursive re-comparison of the class is
-  /// attempted, the marking business help to detect that infinite
-  /// loop possibility and avoid it.
+  /// comparing a class or union. If via the comparison of a data
+  /// member or a member function a recursive re-comparison of the
+  /// class or union is attempted, the marking business help to detect
+  /// that infinite loop possibility and avoid it.
   ///
-  /// @param klass the class to mark as being currently compared.
+  /// @param klass the class or union to mark as being currently
+  /// compared.
   void
-  mark_as_being_compared(const class_decl* klass) const
+  mark_as_being_compared(const class_or_union* klass) const
   {mark_as_being_compared(*klass);}
 
-  /// Mark a class as being currently compared using the class_decl==
-  /// operator.
+  /// Mark a class or union as being currently compared using the
+  /// class_or_union== operator.
   ///
   /// Note that is marking business is to avoid infinite loop when
-  /// comparing a class. If via the comparison of a data member or a
-  /// member function a recursive re-comparison of the class is
-  /// attempted, the marking business help to detect that infinite
-  /// loop possibility and avoid it.
+  /// comparing a class or union. If via the comparison of a data
+  /// member or a member function a recursive re-comparison of the
+  /// class or union is attempted, the marking business help to detect
+  /// that infinite loop possibility and avoid it.
   ///
-  /// @param klass the class to mark as being currently compared.
+  /// @param klass the class or union to mark as being currently
+  /// compared.
   void
-  mark_as_being_compared(const class_decl_sptr& klass) const
+  mark_as_being_compared(const class_or_union_sptr& klass) const
   {mark_as_being_compared(*klass);}
 
-  /// If the instance of class_decl has been previously marked as
+  /// If the instance of class_or_union has been previously marked as
   /// being compared -- via an invocation of mark_as_being_compared()
   /// this method unmarks it.  Otherwise is has no effect.
   ///
@@ -12304,35 +12328,35 @@ struct class_decl::priv
   /// multi-threaded environment you should probably protect the
   /// access to that static data member with a mutex or somesuch.
   ///
-  /// @param klass the instance of class_decl to unmark.
+  /// @param klass the instance of class_or_union to unmark.
   void
-  unmark_as_being_compared(const class_decl& klass) const
+  unmark_as_being_compared(const class_or_union& klass) const
   {
     const environment* env = klass.get_environment();
     assert(env);
     env->priv_->classes_being_compared_.erase(klass.get_qualified_name());
   }
 
-  /// If the instance of class_decl has been previously marked as
+  /// If the instance of class_or_union has been previously marked as
   /// being compared -- via an invocation of mark_as_being_compared()
   /// this method unmarks it.  Otherwise is has no effect.
   ///
-  /// @param klass the instance of class_decl to unmark.
+  /// @param klass the instance of class_or_union to unmark.
   void
-  unmark_as_being_compared(const class_decl* klass) const
+  unmark_as_being_compared(const class_or_union* klass) const
   {
     if (klass)
       return unmark_as_being_compared(*klass);
   }
 
-  /// Test if a given instance of class_decl is being currently
+  /// Test if a given instance of class_or_union is being currently
   /// compared.
   ///
-  ///@param klass the class to test.
+  ///@param klass the class or union to test.
   ///
   /// @return true if @p klass is being compared, false otherwise.
   bool
-  comparison_started(const class_decl& klass) const
+  comparison_started(const class_or_union& klass) const
   {
     const environment* env = klass.get_environment();
     assert(env);
@@ -12340,19 +12364,1062 @@ struct class_decl::priv
     return (c.find(klass.get_qualified_name()) != c.end());
   }
 
-  /// Test if a given instance of class_decl is being currently
+  /// Test if a given instance of class_or_union is being currently
   /// compared.
   ///
-  ///@param klass the class to test.
+  ///@param klass the class or union to test.
   ///
   /// @return true if @p klass is being compared, false otherwise.
   bool
-  comparison_started(const class_decl* klass) const
+  comparison_started(const class_or_union* klass) const
   {
     if (klass)
       return comparison_started(*klass);
     return false;
   }
+}; // end struct class_or_union::priv
+
+/// A Constructor for instances of @ref class_or_union
+///
+/// @param env the environment we are operating from.
+///
+/// @param name the identifier of the class.
+///
+/// @param size_in_bits the size of an instance of @ref
+/// class_or_union, expressed in bits
+///
+/// @param align_in_bits the alignment of an instance of @ref class_or_union,
+/// expressed in bits.
+///
+/// @param locus the source location of declaration point this class.
+///
+/// @param vis the visibility of instances of @ref class_or_union.
+///
+/// @param mem_types the vector of member types of this instance of
+/// @ref class_or_union.
+///
+/// @param data_members the vector of data members of this instance of
+/// @ref class_or_union.
+///
+/// @param member_fns the vector of member functions of this instance
+/// of @ref class_or_union.
+class_or_union::class_or_union(const environment* env, const string& name,
+			       size_t size_in_bits, size_t align_in_bits,
+			       const location& locus, visibility vis,
+			       member_types& mem_types,
+			       data_members& data_members,
+			       member_functions& member_fns)
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, name, vis),
+    type_base(env, size_in_bits, align_in_bits),
+    scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
+    priv_(new priv(mem_types, data_members, member_fns))
+{
+  for (member_types::iterator i = mem_types.begin();
+       i != mem_types.end();
+       ++i)
+    if (!has_scope(get_type_declaration(*i)))
+      add_decl_to_scope(get_type_declaration(*i), this);
+
+  for (data_members::iterator i = data_members.begin();
+       i != data_members.end();
+       ++i)
+    if (!has_scope(*i))
+      add_decl_to_scope(*i, this);
+
+  for (member_functions::iterator i = member_fns.begin();
+       i != member_fns.end();
+       ++i)
+    if (!has_scope(static_pointer_cast<decl_base>(*i)))
+      add_decl_to_scope(*i, this);
+}
+
+/// A constructor for instances of @ref class_or_union.
+///
+/// @param env the environment we are operating from.
+///
+/// @param name the name of the class.
+///
+/// @param size_in_bits the size of an instance of @ref
+/// class_or_union, expressed in bits
+///
+/// @param align_in_bits the alignment of an instance of @ref class_or_union,
+/// expressed in bits.
+///
+/// @param locus the source location of declaration point this class.
+///
+/// @param vis the visibility of instances of @ref class_or_union.
+class_or_union::class_or_union(const environment* env, const string& name,
+			       size_t size_in_bits, size_t align_in_bits,
+			       const location& locus, visibility vis)
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, name, vis),
+    type_base(env, size_in_bits, align_in_bits),
+    scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
+    priv_(new priv)
+{}
+
+/// Constructor of the @ref class_or_union type.
+///
+/// @param env the @ref environment we are operating from.
+///
+/// @param name the name of the @ref class_or_union.
+///
+/// @param is_declaration_only a boolean saying whether the instance
+/// represents a declaration only, or not.
+class_or_union::class_or_union(const environment* env, const string& name,
+			       bool is_declaration_only)
+  :type_or_decl_base(env),
+    decl_base(env, name, location(), name),
+    type_base(env, 0, 0),
+    scope_type_decl(env, name, 0, 0, location()),
+    priv_(new priv(is_declaration_only))
+{}
+
+/// This implements the ir_traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the member nodes of the translation
+/// unit during the traversal.
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
+class_or_union::traverse(ir_node_visitor& v)
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      bool stop = false;
+
+      if (!stop)
+	for (data_members::const_iterator i = get_data_members().begin();
+	     i != get_data_members().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_functions::const_iterator i= get_member_functions().begin();
+	     i != get_member_functions().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_types::const_iterator i = get_member_types().begin();
+	     i != get_member_types().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_function_templates::const_iterator i =
+	       get_member_function_templates().begin();
+	     i != get_member_function_templates().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_class_templates::const_iterator i =
+	       get_member_class_templates().begin();
+	     i != get_member_class_templates().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+      visiting(false);
+    }
+
+  return v.visit_end(this);
+}
+
+/// Destrcutor of the @ref class_or_union type.
+class_or_union::~class_or_union()
+{delete priv_;}
+
+/// Add a member declaration to the current instance of class_or_union.
+/// The member declaration can be either a member type, data member,
+/// member function, or member template.
+///
+/// @param d the member declaration to add.
+decl_base_sptr
+class_or_union::add_member_decl(const decl_base_sptr& d)
+{return insert_member_decl(d, get_member_decls().end());}
+
+/// Remove a given decl from the current @ref class_or_union scope.
+///
+/// Note that only type declarations are supported by this method for
+/// now.  Support for the other kinds of declaration is left as an
+/// exercise for the interested reader of the code.
+///
+/// @param decl the declaration to remove from this @ref
+/// class_or_union scope.
+void
+class_or_union::remove_member_decl(decl_base_sptr decl)
+{
+  type_base_sptr t = is_type(decl);
+
+  // For now we want to support just removing types from classes.  For
+  // other kinds of IR node, we need more work.
+  assert(t);
+
+  remove_member_type(t);
+}
+
+/// Insert a member type.
+///
+/// @param t the type to insert in the @ref class_or_union type.
+///
+/// @param an iterator right before which @p t has to be inserted.
+void
+class_or_union::insert_member_type(type_base_sptr t,
+				   declarations::iterator before)
+{
+  decl_base_sptr d = get_type_declaration(t);
+  assert(d);
+  assert(!has_scope(d));
+
+  priv_->member_types_.push_back(t);
+  scope_decl::insert_member_decl(d, before);
+}
+
+/// Add a member type to the current instance of class_or_union.
+///
+/// @param t the member type to add.  It must not have been added to a
+/// scope, otherwise this will violate an assertion.
+void
+class_or_union::add_member_type(type_base_sptr t)
+{insert_member_type(t, get_member_decls().end());}
+
+/// Add a member type to the current instance of class_or_union.
+///
+/// @param t the type to be added as a member type to the current
+/// instance of class_or_union.  An instance of class_or_union::member_type
+/// will be created out of @p t and and added to the the class.
+///
+/// @param a the access specifier for the member type to be created.
+type_base_sptr
+class_or_union::add_member_type(type_base_sptr t, access_specifier a)
+{
+  decl_base_sptr d = get_type_declaration(t);
+  assert(d);
+  assert(!is_member_decl(d));
+  add_member_type(t);
+  set_member_access_specifier(d, a);
+  return t;
+}
+
+/// Remove a member type from the current @ref class_or_union scope.
+///
+/// @param t the type to remove.
+void
+class_or_union::remove_member_type(type_base_sptr t)
+{
+  for (member_types::iterator i = priv_->member_types_.begin();
+       i != priv_->member_types_.end();
+       ++i)
+    {
+      if (*((*i)) == *t)
+	{
+	  priv_->member_types_.erase(i);
+	  return;
+	}
+    }
+}
+
+/// Getter of the alignment of the @ref class_or_union type.
+///
+/// If this @ref class_or_union is a declaration of a definition that
+/// is elsewhere, then the size of the definition is returned.
+///
+/// @return the alignment of the @ref class_or_union type.
+size_t
+class_or_union::get_alignment_in_bits() const
+{
+  if (get_is_declaration_only() && get_definition_of_declaration())
+    return get_definition_of_declaration()->get_alignment_in_bits();
+
+   return type_base::get_alignment_in_bits();
+}
+
+/// Setter of the alignment of the class type.
+///
+/// If this class is a declaration of a definition that is elsewhere,
+/// then the new alignment is set to the definition.
+///
+/// @param s the new alignment.
+void
+class_or_union::set_alignment_in_bits(size_t a)
+{
+  if (get_is_declaration_only() && get_definition_of_declaration())
+    get_definition_of_declaration()->set_alignment_in_bits(a);
+  else
+    type_base::set_alignment_in_bits(a);
+}
+
+/// Setter of the size of the @ref class_or_union type.
+///
+/// If this @ref class_or_union is a declaration of a definition that
+/// is elsewhere, then the new size is set to the definition.
+///
+/// @param s the new size.
+void
+class_or_union::set_size_in_bits(size_t s)
+{
+  if (get_is_declaration_only() && get_definition_of_declaration())
+    get_definition_of_declaration()->set_size_in_bits(s);
+  else
+    type_base::set_size_in_bits(s);
+}
+
+/// Getter of the size of the @ref class_or_union type.
+///
+/// If this @ref class_or_union is a declaration of a definition that
+/// is elsewhere, then the size of the definition is returned.
+///
+/// @return the size of the @ref class_or_union type.
+size_t
+class_or_union::get_size_in_bits() const
+{
+  if (get_is_declaration_only() && get_definition_of_declaration())
+    return get_definition_of_declaration()->get_size_in_bits();
+
+  return type_base::get_size_in_bits();
+}
+
+/// Test if a @ref class_or_union is a declaration-only @ref
+/// class_or_union.
+///
+/// @return true iff the current @ref class_or_union is a
+/// declaration-only @ref class_or_union.
+bool
+class_or_union::get_is_declaration_only() const
+{return priv_->is_declaration_only_;}
+
+/// Set a flag saying if the @ref class_or_union is a declaration-only
+/// @ref class_or_union.
+///
+/// @param f true if the @ref class_or_union is a decalaration-only
+/// @ref class_or_union.
+void
+class_or_union::set_is_declaration_only(bool f)
+{
+  priv_->is_declaration_only_ = f;
+  if (!f)
+    if (scope_decl* s = get_scope())
+      {
+	declarations::iterator i;
+	if (s->find_iterator_for_member(this, i))
+	  maybe_update_types_lookup_map(s, *i);
+	else
+	  abort();
+      }
+}
+
+/// Set the definition of this declaration-only @ref class_or_union.
+///
+/// @param d the new definition to set.
+void
+class_or_union::set_definition_of_declaration(class_or_union_sptr d)
+{
+  assert(get_is_declaration_only());
+  priv_->definition_of_declaration_ = d;
+  if (d->get_canonical_type())
+    type_base::priv_->canonical_type = d->get_canonical_type();
+}
+
+/// If this @ref class_or_union_sptr is declaration-only, get its
+/// definition, if any.
+///
+/// @return the definition of this decl-only class.
+const class_or_union_sptr
+class_or_union::get_definition_of_declaration() const
+{
+  if (priv_->definition_of_declaration_.expired())
+    return class_or_union_sptr();
+  return class_or_union_sptr(priv_->definition_of_declaration_);
+}
+
+/// If this @ref class_or_union_sptr is a definitin, get its earlier
+/// declaration.
+///
+/// @return the earlier declaration of the class, if any.
+decl_base_sptr
+class_or_union::get_earlier_declaration() const
+{return priv_->declaration_;}
+
+/// set the earlier declaration of this @ref class_or_union definition.
+///
+/// @param declaration the earlier declaration to set.  Note that it's
+/// set only if it's a pure declaration.
+void
+class_or_union::set_earlier_declaration(decl_base_sptr declaration)
+{
+  class_or_union_sptr cl = dynamic_pointer_cast<class_or_union>(declaration);
+  if (cl && cl->get_is_declaration_only())
+    priv_->declaration_ = declaration;
+}
+
+/// Get the member types of this @ref class_or_union.
+///
+/// @return a vector of the member types of this ref class_or_union.
+const class_or_union::member_types&
+class_or_union::get_member_types() const
+{return priv_->member_types_;}
+
+/// Find a member type of a given name, inside the current @ref
+/// class_or_union.
+///
+/// @param name the name of the member type to look for.
+///
+/// @return a pointer to the @ref type_base that represents the member
+/// type of name @p name, for the current class.
+type_base_sptr
+class_or_union::find_member_type(const string& name) const
+{
+  for (member_types::const_iterator i = get_member_types().begin();
+       i != get_member_types().end();
+       ++i)
+    if (get_type_name(*i, /*qualified*/false) == name)
+      return *i;
+  return type_base_sptr();
+}
+
+/// Add a data member to the current instance of class_or_union.
+///
+/// @param v a var_decl to add as a data member.  A proper
+/// class_or_union::data_member is created from @p v and added to the
+/// class_or_union.  This var_decl should not have been already added
+/// to a scope.
+///
+/// @param access the access specifier for the data member.
+///
+/// @param is_laid_out whether the data member was laid out.  That is,
+/// if its offset has been computed.  In the pattern of a class
+/// template for instance, this would be set to false.
+///
+/// @param is_static whether the data memer is static.
+///
+/// @param offset_in_bits if @p is_laid_out is true, this is the
+/// offset of the data member, expressed (oh, surprise) in bits.
+void
+class_or_union::add_data_member(var_decl_sptr v, access_specifier access,
+				bool is_laid_out, bool is_static,
+				size_t offset_in_bits)
+{
+  assert(!has_scope(v));
+
+  priv_->data_members_.push_back(v);
+  scope_decl::add_member_decl(v);
+  set_data_member_is_laid_out(v, is_laid_out);
+  set_data_member_offset(v, offset_in_bits);
+  set_member_access_specifier(v, access);
+  set_member_is_static(v, is_static);
+
+
+  if (!is_static)
+    {
+      // If this is a non-static variable, add it to the set of
+      // non-static variables, if it's not only in there.
+      bool is_already_in = false;
+      for (data_members::const_iterator i =
+	     priv_->non_static_data_members_.begin();
+	   i != priv_->non_static_data_members_.end();
+	   ++i)
+	if (*i == v)
+	  {
+	    is_already_in = true;
+	    break;
+	  }
+      if (!is_already_in)
+	priv_->non_static_data_members_.push_back(v);
+    }
+}
+
+/// Get the data members of this @ref class_or_union.
+///
+/// @return a vector of the data members of this @ref class_or_union.
+const class_or_union::data_members&
+class_or_union::get_data_members() const
+{return priv_->data_members_;}
+
+/// Find a data member of a given name in the current @ref class_or_union.
+///
+/// @param name the name of the data member to find in the current
+/// @ref class_or_union.
+///
+/// @return a pointer to the @ref var_decl that represents the data
+/// member to find inside the current @ref class_or_union.
+const var_decl_sptr
+class_or_union::find_data_member(const string& name) const
+{
+  for (data_members::const_iterator i = get_data_members().begin();
+       i != get_data_members().end();
+       ++i)
+    if ((*i)->get_name() == name)
+      return *i;
+  return var_decl_sptr();
+}
+
+/// Get the non-static data memebers of this @ref class_or_union.
+///
+/// @return a vector of the non-static data members of this @ref
+/// class_or_union.
+const class_or_union::data_members&
+class_or_union::get_non_static_data_members() const
+{return priv_->non_static_data_members_;}
+
+/// Add a member function.
+///
+/// @param f the new member function to add.
+///
+/// @param a the access specifier to use for the new member function.
+///
+/// @param is_static whether the new member function is static.
+///
+/// @param is_ctor whether the new member function is a constructor.
+///
+/// @param is_dtor whether the new member function is a destructor.
+///
+/// @param is_const whether the new member function is const.
+void
+class_or_union::add_member_function(method_decl_sptr f,
+				    access_specifier a,
+				    bool is_static, bool is_ctor,
+				    bool is_dtor, bool is_const)
+{
+  assert(!has_scope(f));
+
+  scope_decl::add_member_decl(f);
+
+  set_member_function_is_ctor(f, is_ctor);
+  set_member_function_is_dtor(f, is_dtor);
+  set_member_access_specifier(f, a);
+  set_member_is_static(f, is_static);
+  set_member_function_is_const(f, is_const);
+
+  priv_->member_functions_.push_back(f);
+
+  // Update the map of linkage name -> member functions.  It's useful,
+  // so that class_or_union::find_member_function() can function.
+  if (!f->get_linkage_name().empty())
+    priv_->mem_fns_map_[f->get_linkage_name()] = f.get();
+}
+
+/// Get the member functions of this @ref class_or_union.
+///
+/// @return a vector of the member functions of this @ref
+/// class_or_union.
+const class_or_union::member_functions&
+class_or_union::get_member_functions() const
+{return priv_->member_functions_;}
+
+/// Find a method, using its linkage name as a key.
+///
+/// @param linkage_name the linkage name of the method to find.
+///
+/// @return the method found, or nil if none was found.
+const method_decl*
+class_or_union::find_member_function(const string& linkage_name) const
+{
+  string_mem_fn_ptr_map_type::const_iterator i =
+    priv_->mem_fns_map_.find(linkage_name);
+  if (i == priv_->mem_fns_map_.end())
+    return 0;
+  return i->second;
+}
+
+/// Find a method, using its linkage name as a key.
+///
+/// @param linkage_name the linkage name of the method to find.
+///
+/// @return the method found, or nil if none was found.
+method_decl*
+class_or_union::find_member_function(const string& linkage_name)
+{
+  string_mem_fn_ptr_map_type::const_iterator i =
+    priv_->mem_fns_map_.find(linkage_name);
+  if (i == priv_->mem_fns_map_.end())
+    return 0;
+  return i->second;
+}
+
+/// Append a member function template to the @ref class_or_union.
+///
+/// @param m the member function template to append.
+void
+class_or_union::add_member_function_template(member_function_template_sptr m)
+{
+  decl_base* c = m->as_function_tdecl()->get_scope();
+  /// TODO: use our own assertion facility that adds a meaningful
+  /// error message or something like a structured error.
+  priv_->member_function_templates_.push_back(m);
+  if (!c)
+    scope_decl::add_member_decl(m->as_function_tdecl());
+}
+
+/// Get the member function templates of this @ref class_or_union.
+///
+/// @return a vector of the member function templates of this @ref
+/// class_or_union.
+const member_function_templates&
+class_or_union::get_member_function_templates() const
+{return priv_->member_function_templates_;}
+
+/// Append a member class template to the @ref class_or_union.
+///
+/// @param m the member function template to append.
+void
+class_or_union::add_member_class_template(member_class_template_sptr m)
+{
+  decl_base* c = m->as_class_tdecl()->get_scope();
+  /// TODO: use our own assertion facility that adds a meaningful
+  /// error message or something like a structured error.
+  m->set_scope(this);
+  priv_->member_class_templates_.push_back(m);
+  if (!c)
+    scope_decl::add_member_decl(m->as_class_tdecl());
+}
+
+/// Get the member class templates of this @ref class_or_union.
+///
+/// @return a vector of the member class templates of this @ref
+/// class_or_union.
+const member_class_templates&
+class_or_union::get_member_class_templates() const
+{return priv_->member_class_templates_;}
+
+///@return true iff the current instance has no member.
+bool
+class_or_union::has_no_member() const
+{
+  return (priv_->member_types_.empty()
+	  && priv_->data_members_.empty()
+	  && priv_->member_functions_.empty()
+	  && priv_->member_function_templates_.empty()
+	  && priv_->member_class_templates_.empty());
+}
+
+/// Insert a data member to this @ref class_or_union type.
+///
+/// @param d the data member to insert.
+///
+/// @param before an iterator to the point before which to insert the
+/// the data member, in the coontainer that contains all the data
+/// members.
+decl_base_sptr
+class_or_union::insert_member_decl(decl_base_sptr d,
+				   declarations::iterator before)
+{
+  if (type_base_sptr t = dynamic_pointer_cast<type_base>(d))
+    insert_member_type(t, before);
+  else if (var_decl_sptr v = dynamic_pointer_cast<var_decl>(d))
+    {
+      add_data_member(v, public_access,
+		      /*is_laid_out=*/false,
+		      /*is_static=*/true,
+		      /*offset_in_bits=*/0);
+      d = v;
+    }
+  else if (method_decl_sptr f = dynamic_pointer_cast<method_decl>(d))
+    add_member_function(f, public_access,
+			/*is_static=*/false,
+			/*is_ctor=*/false,
+			/*is_dtor=*/false,
+			/*is_const=*/false);
+  else if (member_function_template_sptr f =
+	   dynamic_pointer_cast<member_function_template>(d))
+    add_member_function_template(f);
+  else if (member_class_template_sptr c =
+	   dynamic_pointer_cast<member_class_template>(d))
+    add_member_class_template(c);
+  else
+    scope_decl::add_member_decl(d);
+
+  return d;
+}
+
+/// Equality operator.
+///
+/// @param other the other @ref class_or_union to compare against.
+///
+/// @return true iff @p other equals the current @ref class_or_union.
+bool
+class_or_union::operator==(const decl_base& other) const
+{
+  const class_or_union* op = dynamic_cast<const class_or_union*>(&other);
+  if (!op)
+    return false;
+
+  type_base *canonical_type = get_naked_canonical_type(),
+    *other_canonical_type = op->get_naked_canonical_type();
+
+  // If this is a declaration only class with no canonical class, use
+  // the canonical type of the definition, if any.
+  if (!canonical_type
+      && get_is_declaration_only()
+      && get_definition_of_declaration())
+    canonical_type =
+      get_definition_of_declaration()->get_naked_canonical_type();
+
+  // Likewise for the other class.
+  if (!other_canonical_type
+      && op->get_is_declaration_only()
+      && op->get_definition_of_declaration())
+    other_canonical_type =
+      op->get_definition_of_declaration()->get_naked_canonical_type();
+
+  if (canonical_type && other_canonical_type)
+    return canonical_type == other_canonical_type;
+
+  const class_or_union& o = *op;
+  return equals(*this, o, 0);
+}
+
+/// Equality operator.
+///
+/// @param other the other @ref class_or_union to compare against.
+///
+/// @return true iff @p other equals the current @ref class_or_union.
+bool
+class_or_union::operator==(const type_base& other) const
+{
+  const decl_base* o = dynamic_cast<const decl_base*>(&other);
+  if (!o)
+    return false;
+  return *this == *o;
+}
+
+/// Equality operator.
+///
+/// @param other the other @ref class_or_union to compare against.
+///
+/// @return true iff @p other equals the current @ref class_or_union.
+bool
+class_or_union::operator==(const class_or_union& other) const
+{
+  const decl_base& o = other;
+  return class_or_union::operator==(o);
+}
+
+/// Compares two instances of @ref class_or_union.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff it's non-null and if the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const class_or_union& l, const class_or_union& r, change_kind* k)
+{
+#define RETURN(value)				\
+  do {						\
+    l.priv_->unmark_as_being_compared(l);	\
+    l.priv_->unmark_as_being_compared(r);	\
+    return value;				\
+  } while(0)
+
+  // if one of the classes is declaration-only, look through it to
+  // get its definition.
+  bool l_is_decl_only = l.get_is_declaration_only();
+  bool r_is_decl_only = r.get_is_declaration_only();
+  if (l_is_decl_only || r_is_decl_only)
+    {
+      const class_or_union* def1 = l_is_decl_only
+	? l.get_definition_of_declaration().get()
+	: &l;
+
+      const class_or_union* def2 = r_is_decl_only
+	? r.get_definition_of_declaration().get()
+	: &r;
+
+      if (!def1 || !def2)
+	{
+	  const interned_string& q1 = l.get_qualified_name();
+	  const interned_string& q2 = r.get_qualified_name();
+	  if (q1 == q2)
+	    // Not using RETURN(true) here, because that causes
+	    // performance issues.  We don't need to do
+	    // l.priv_->unmark_as_being_compared({l,r}) here because
+	    // we haven't marked l or r as being compared yet, and
+	    // doing so has a peformance cost that shows up on
+	    // performance profiles for *big* libraries.
+	    return true;
+	  else
+	    {
+	      if (k)
+		*k |= LOCAL_CHANGE_KIND;
+	      // Not using RETURN(true) here, because that causes
+	      // performance issues.  We don't need to do
+	      // l.priv_->unmark_as_being_compared({l,r}) here because
+	      // we haven't marked l or r as being compared yet, and
+	      // doing so has a peformance cost that shows up on
+	      // performance profiles for *big* libraries.
+	      return false;
+	    }
+	}
+
+      if (l.priv_->comparison_started(l)
+	  || l.priv_->comparison_started(r))
+	return true;
+
+      l.priv_->mark_as_being_compared(l);
+      l.priv_->mark_as_being_compared(r);
+
+      bool val = *def1 == *def2;
+      if (!val)
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+      RETURN(val);
+    }
+
+  // No need to go further if the classes have different names or
+  // different size / alignment.
+  if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
+    {
+      if (k)
+	*k |= LOCAL_CHANGE_KIND;
+      RETURN(false);
+    }
+
+  if (l.priv_->comparison_started(l)
+      || l.priv_->comparison_started(r))
+    return true;
+
+  l.priv_->mark_as_being_compared(l);
+  l.priv_->mark_as_being_compared(r);
+
+  bool result = true;
+
+  //compare data_members
+  {
+    if (l.get_non_static_data_members().size()
+	!= r.get_non_static_data_members().size())
+      {
+	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  RETURN(result);
+      }
+
+    for (class_or_union::data_members::const_iterator
+	   d0 = l.get_non_static_data_members().begin(),
+	   d1 = r.get_non_static_data_members().begin();
+	 (d0 != l.get_non_static_data_members().end()
+	  && d1 != r.get_non_static_data_members().end());
+	 ++d0, ++d1)
+      if (**d0 != **d1)
+	{
+	  result = false;
+	  if (k)
+	    {
+	      *k |= SUBTYPE_CHANGE_KIND;
+	      break;
+	    }
+	  else
+	    RETURN(result);
+	}
+  }
+
+  // Do not compare member functions.  DWARF does not necessarily
+  // all the member functions, be they virtual or not, in all
+  // translation units.  So we cannot have a clear view of them, per
+  // class
+
+  // compare member function templates
+  {
+    if (l.get_member_function_templates().size()
+	!= r.get_member_function_templates().size())
+      {
+	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  RETURN(result);
+      }
+
+    for (member_function_templates::const_iterator
+	   fn_tmpl_it0 = l.get_member_function_templates().begin(),
+	   fn_tmpl_it1 = r.get_member_function_templates().begin();
+	 fn_tmpl_it0 != l.get_member_function_templates().end()
+	   &&  fn_tmpl_it1 != r.get_member_function_templates().end();
+	 ++fn_tmpl_it0, ++fn_tmpl_it1)
+      if (**fn_tmpl_it0 != **fn_tmpl_it1)
+	{
+	  result = false;
+	  if (k)
+	    {
+	      *k |= LOCAL_CHANGE_KIND;
+	      break;
+	    }
+	  else
+	    RETURN(result);
+	}
+  }
+
+  // compare member class templates
+  {
+    if (l.get_member_class_templates().size()
+	!= r.get_member_class_templates().size())
+      {
+	result = false;
+	if (k)
+	  *k |= LOCAL_CHANGE_KIND;
+	else
+	  RETURN(result);
+      }
+
+    for (member_class_templates::const_iterator
+	   cl_tmpl_it0 = l.get_member_class_templates().begin(),
+	   cl_tmpl_it1 = r.get_member_class_templates().begin();
+	 cl_tmpl_it0 != l.get_member_class_templates().end()
+	   &&  cl_tmpl_it1 != r.get_member_class_templates().end();
+	 ++cl_tmpl_it0, ++cl_tmpl_it1)
+      if (**cl_tmpl_it0 != **cl_tmpl_it1)
+	{
+	  result = false;
+	  if (k)
+	    {
+	      *k |= LOCAL_CHANGE_KIND;
+	      break;
+	    }
+	  else
+	    RETURN(result);
+	}
+  }
+
+  RETURN(result);
+#undef RETURN
+}
+
+
+/// Copy a method of a @ref class_or_union into a new @ref
+/// class_or_union.
+///
+/// @param t the @ref class_or_union into which the method is to be copied.
+///
+/// @param method the method to copy into @p t.
+///
+/// @return the resulting newly copied method.
+method_decl_sptr
+copy_member_function(const class_or_union_sptr& t,
+		     const method_decl_sptr& method)
+{return copy_member_function(t, method.get());}
+
+
+/// Copy a method of a @ref class_or_union into a new @ref
+/// class_or_union.
+///
+/// @param t the @ref class_or_union into which the method is to be copied.
+///
+/// @param method the method to copy into @p t.
+///
+/// @return the resulting newly copied method.
+method_decl_sptr
+copy_member_function(const class_or_union_sptr& t, const method_decl* method)
+{
+  assert(t);
+  assert(method);
+
+  method_type_sptr old_type = method->get_type();
+  assert(old_type);
+  method_type_sptr new_type(new method_type(old_type->get_return_type(),
+					    t,
+					    old_type->get_parameters(),
+					    old_type->get_size_in_bits(),
+					    old_type->get_alignment_in_bits()));
+  new_type->set_environment(t->get_environment());
+  keep_type_alive(new_type);
+
+  method_decl_sptr
+    new_method(new method_decl(method->get_name(),
+			       new_type,
+			       method->is_declared_inline(),
+			       method->get_location(),
+			       method->get_linkage_name(),
+			       method->get_visibility(),
+			       method->get_binding()));
+  new_method->set_symbol(method->get_symbol());
+
+  if (class_decl_sptr class_type = is_class_type(t))
+    class_type->add_member_function(new_method,
+				    get_member_access_specifier(*method),
+				    get_member_function_is_virtual(*method),
+				    get_member_function_vtable_offset(*method),
+				    get_member_is_static(*method),
+				    get_member_function_is_ctor(*method),
+				    get_member_function_is_dtor(*method),
+				    get_member_function_is_const(*method));
+  else
+    t->add_member_function(new_method,
+			   get_member_access_specifier(*method),
+			   get_member_is_static(*method),
+			   get_member_function_is_ctor(*method),
+			   get_member_function_is_dtor(*method),
+			   get_member_function_is_const(*method));
+  return new_method;
+}
+
+// </class_or_union definitions>
+
+// <class_decl definitions>
+
+static void
+sort_virtual_member_functions(class_decl::member_functions& mem_fns);
+
+/// The private data for the class_decl type.
+struct class_decl::priv
+{
+  base_specs			bases_;
+  unordered_map<string, base_spec_sptr>	bases_map_;
+  member_functions		virtual_mem_fns_;
+  bool				is_struct_;
+
+  priv()
+    : is_struct_(false)
+  {}
+
+  priv(bool is_struct, class_decl::base_specs& bases)
+    : bases_(bases),
+      is_struct_(is_struct)
+  {
+  }
+
+  priv(bool is_struct)
+    : is_struct_(is_struct)
+  {}
 };// end struct class_decl::priv
 
 /// A Constructor for instances of \ref class_decl
@@ -12385,29 +13452,16 @@ class_decl::class_decl(const environment* env, const string& name,
 		       size_t size_in_bits, size_t align_in_bits,
 		       bool is_struct, const location& locus,
 		       visibility vis, base_specs& bases,
-		       member_types& mbr_types, data_members& data_mbrs,
+		       member_types& mbr_types,
+		       data_members& data_mbrs,
 		       member_functions& mbr_fns)
   : type_or_decl_base(env),
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, align_in_bits),
-    scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
-    priv_(new priv(is_struct, bases, mbr_types, data_mbrs, mbr_fns))
-{
-  for (member_types::iterator i = mbr_types.begin(); i != mbr_types.end(); ++i)
-    if (!has_scope(get_type_declaration(*i)))
-      add_decl_to_scope(get_type_declaration(*i), this);
-
-  for (data_members::iterator i = data_mbrs.begin(); i != data_mbrs.end();
-       ++i)
-    if (!has_scope(*i))
-      add_decl_to_scope(*i, this);
-
-  for (member_functions::iterator i = mbr_fns.begin(); i != mbr_fns.end();
-       ++i)
-    if (!has_scope(static_pointer_cast<decl_base>(*i)))
-      add_decl_to_scope(*i, this);
-
-}
+    class_or_union(env, name, size_in_bits, align_in_bits,
+		   locus, vis, mbr_types, data_mbrs, mbr_fns),
+    priv_(new priv(is_struct, bases))
+{}
 
 /// A constructor for instances of class_decl.
 ///
@@ -12431,7 +13485,8 @@ class_decl::class_decl(const environment* env, const string& name,
   : type_or_decl_base(env),
     decl_base(env, name, locus, name, vis),
     type_base(env, size_in_bits, align_in_bits),
-    scope_type_decl(env, name, size_in_bits, align_in_bits, locus, vis),
+    class_or_union(env, name, size_in_bits, align_in_bits,
+		   locus, vis),
     priv_(new priv(is_struct))
 {}
 
@@ -12449,94 +13504,13 @@ class_decl::class_decl(const environment* env, const string& name,
   : type_or_decl_base(env),
     decl_base(env, name, location(), name),
     type_base(env, 0, 0),
-    scope_type_decl(env, name, 0, 0, location()),
-    priv_(new priv(is_declaration_only, is_struct))
+    class_or_union(env, name, is_declaration_only),
+    priv_(new priv(is_struct))
 {}
 
-/// Setter of the size of the class type.
-///
-/// If this class is a declaration of a definition that is elsewhere,
-/// then the new size is set to the definition.
-///
-/// @param s the new size.
-void
-class_decl::set_size_in_bits(size_t s)
-{
-  if (get_is_declaration_only() && get_definition_of_declaration())
-    get_definition_of_declaration()->set_size_in_bits(s);
-  else
-    type_base::set_size_in_bits(s);
-}
-
-/// Getter of the size of the class type.
-///
-/// If this class is a declaration of a definition that is elsewhere,
-/// then the size of the definition is returned.
-///
-/// @return the size of the class type.
-size_t
-class_decl::get_size_in_bits() const
-{
-  if (get_is_declaration_only() && get_definition_of_declaration())
-    return get_definition_of_declaration()->get_size_in_bits();
-
-  return type_base::get_size_in_bits();
-}
-
-/// Getter of the alignment of the class type.
-///
-/// If this class is a declaration of a definition that is elsewhere,
-/// then the size of the definition is returned.
-///
-/// @return the alignment of the class type.
-size_t
-class_decl::get_alignment_in_bits() const
-{
-  if (get_is_declaration_only() && get_definition_of_declaration())
-    return get_definition_of_declaration()->get_alignment_in_bits();
-
-   return type_base::get_alignment_in_bits();
-}
-
-/// Setter of the alignment of the class type.
-///
-/// If this class is a declaration of a definition that is elsewhere,
-/// then the new alignment is set to the definition.
-///
-/// @param s the new alignment.
-void
-class_decl::set_alignment_in_bits(size_t a)
-{
-  if (get_is_declaration_only() && get_definition_of_declaration())
-    get_definition_of_declaration()->set_alignment_in_bits(a);
-  else
-    type_base::set_alignment_in_bits(a);
-}
-
-/// Test if a class is a declaration-only class.
-///
-/// @return true iff the current class is a declaration-only class.
-bool
-class_decl::get_is_declaration_only() const
-{return priv_->is_declaration_only_;}
-
-/// Set a flag saying if the class is a declaration-only class.
-///
-/// @param f true if the class is a decalaration-only class.
-void
-class_decl::set_is_declaration_only(bool f)
-{
-  priv_->is_declaration_only_ = f;
-  if (!f)
-    if (scope_decl* s = get_scope())
-      {
-	declarations::iterator i;
-	if (s->find_iterator_for_member(this, i))
-	  maybe_update_types_lookup_map(s, *i);
-	else
-	  abort();
-      }
-}
+const class_decl_sptr
+class_decl::get_definition_of_declaration() const
+{return is_class_type(class_or_union::get_definition_of_declaration());}
 
 /// Set the "is-struct" flag of the class.
 ///
@@ -12551,24 +13525,6 @@ class_decl::is_struct(bool f)
 bool
 class_decl::is_struct() const
 {return priv_->is_struct_;}
-
-/// If this class is declaration-only, get its definition, if any.
-///
-/// @return the definition of this decl-only class.
-const class_decl_sptr
-class_decl::get_definition_of_declaration() const
-{
-  if (priv_->definition_of_declaration_.expired())
-    return class_decl_sptr();
-  return class_decl_sptr(priv_->definition_of_declaration_);
-}
-
-/// If this class is a definitin, get its earlier declaration.
-///
-/// @return the earlier declaration of the class, if any.
-decl_base_sptr
-class_decl::get_earlier_declaration() const
-{return priv_->declaration_;}
 
 /// Add a base specifier to this class.
 ///
@@ -12609,69 +13565,6 @@ class_decl::find_base_class(const string& qualified_name) const
   return class_decl_sptr();
 }
 
-/// Get the member types of this class.
-///
-/// @return a vector of the member types of this class.
-const class_decl::member_types&
-class_decl::get_member_types() const
-{return priv_->member_types_;}
-
-/// Find a member type of a given name, inside the current class @ref
-/// class_decl.
-///
-/// @param name the name of the member type to look for.
-///
-/// @return a pointer to the @ref type_base that represents the member
-/// type of name @p name, for the current class.
-type_base_sptr
-class_decl::find_member_type(const string& name) const
-{
-  for (member_types::const_iterator i = get_member_types().begin();
-       i != get_member_types().end();
-       ++i)
-    if (get_type_name(*i, /*qualified*/false) == name)
-      return *i;
-  return type_base_sptr();
-}
-
-/// Get the data members of this class.
-///
-/// @return a vector of the data members of this class.
-const class_decl::data_members&
-class_decl::get_data_members() const
-{return priv_->data_members_;}
-
-/// Find a data member of a given name in the current class.
-///
-/// @param name the name of the data member to find in the current class.
-///
-/// @return a pointer to the @ref var_decl that represents the data
-/// member to find inside the current class.
-const var_decl_sptr
-class_decl::find_data_member(const string& name) const
-{
-  for (data_members::const_iterator i = get_data_members().begin();
-       i != get_data_members().end();
-       ++i)
-    if ((*i)->get_name() == name)
-      return *i;
-  return var_decl_sptr();
-}
-
-/// Get the non-static data memebers of this class.
-///
-/// @return a vector of the non-static data members of this class.
-const class_decl::data_members&
-class_decl::get_non_static_data_members() const
-{return priv_->non_static_data_members_;}
-
-/// Get the member functions of this class.
-///
-/// @return a vector of the member functions of this class.
-const class_decl::member_functions&
-class_decl::get_member_functions() const
-{return priv_->member_functions_;}
-
 /// Get the virtual member functions of this class.
 ///
 /// @param return a vector of the virtual member functions of this
@@ -12685,49 +13578,6 @@ void
 class_decl::sort_virtual_mem_fns()
 {sort_virtual_member_functions(priv_->virtual_mem_fns_);}
 
-/// Find a method, using its linkage name as a key.
-///
-/// @param linkage_name the linkage name of the method to find.
-///
-/// @return the method found, or nil if none was found.
-const class_decl::method_decl*
-class_decl::find_member_function(const string& linkage_name) const
-{
-  string_mem_fn_ptr_map_type::const_iterator i =
-    priv_->mem_fns_map_.find(linkage_name);
-  if (i == priv_->mem_fns_map_.end())
-    return 0;
-  return i->second;
-}
-
-/// Find a method, using its linkage name as a key.
-///
-/// @param linkage_name the linkage name of the method to find.
-///
-/// @return the method found, or nil if none was found.
-class_decl::method_decl*
-class_decl::find_member_function(const string& linkage_name)
-{
-  string_mem_fn_ptr_map_type::const_iterator i =
-    priv_->mem_fns_map_.find(linkage_name);
-  if (i == priv_->mem_fns_map_.end())
-    return 0;
-  return i->second;
-}
-
-/// Get the member function templates of this class.
-///
-/// @return a vector of the member function templates of this class.
-const class_decl::member_function_templates&
-class_decl::get_member_function_templates() const
-{return priv_->member_function_templates_;}
-
-/// Get the member class templates of this class.
-///
-/// @return a vector of the member class templates of this class.
-const class_decl::member_class_templates&
-class_decl::get_member_class_templates() const
-{return priv_->member_class_templates_;}
 
 /// Getter of the pretty representation of the current instance of
 /// @ref class_decl.
@@ -12747,45 +13597,11 @@ class_decl::get_pretty_representation(bool internal) const
   return cl + get_qualified_name(internal);
 }
 
-/// Set the definition of this declaration-only class.
-///
-/// @param d the new definition to set.
-void
-class_decl::set_definition_of_declaration(class_decl_sptr d)
-{
-  assert(get_is_declaration_only());
-  priv_->definition_of_declaration_ = d;
-  if (d->get_canonical_type())
-    type_base::priv_->canonical_type = d->get_canonical_type();
-}
-
-/// set the earlier declaration of this class definition.
-///
-/// @param declaration the earlier declaration to set.  Note that it's
-/// set only if it's a pure declaration.
-void
-class_decl::set_earlier_declaration(decl_base_sptr declaration)
-{
-  class_decl_sptr cl = dynamic_pointer_cast<class_decl>(declaration);
-  if (cl && cl->get_is_declaration_only())
-    priv_->declaration_ = declaration;
-}
-
 decl_base_sptr
 class_decl::insert_member_decl(decl_base_sptr d,
 			       declarations::iterator before)
 {
-  if (type_base_sptr t = dynamic_pointer_cast<type_base>(d))
-    insert_member_type(t, before);
-  else if (var_decl_sptr v = dynamic_pointer_cast<var_decl>(d))
-    {
-      add_data_member(v, public_access,
-		      /*is_laid_out=*/false,
-		      /*is_static=*/true,
-		      /*offset_in_bits=*/0);
-      d = v;
-    }
-  else if (method_decl_sptr f = dynamic_pointer_cast<method_decl>(d))
+  if (method_decl_sptr f = dynamic_pointer_cast<method_decl>(d))
     add_member_function(f, public_access,
 			/*is_virtual=*/false,
 			/*vtable_offset=*/0,
@@ -12793,100 +13609,10 @@ class_decl::insert_member_decl(decl_base_sptr d,
 			/*is_ctor=*/false,
 			/*is_dtor=*/false,
 			/*is_const=*/false);
-  else if (member_function_template_sptr f =
-	   dynamic_pointer_cast<member_function_template>(d))
-    add_member_function_template(f);
-  else if (member_class_template_sptr c =
-	   dynamic_pointer_cast<member_class_template>(d))
-    add_member_class_template(c);
   else
-    scope_decl::add_member_decl(d);
+    d = class_or_union::insert_member_decl(d, before);
 
   return d;
-}
-
-/// Add a member declaration to the current instance of class_decl.
-/// The member declaration can be either a member type, data member,
-/// member function, or member template.
-///
-/// @param d the member declaration to add.
-decl_base_sptr
-class_decl::add_member_decl(const decl_base_sptr& d)
-{return insert_member_decl(d, get_member_decls().end());}
-
-/// Remove a given decl from the current class scope.
-///
-/// Note that only type declarations are supported by this method for
-/// now.  Support for the other kinds of declaration is left as an
-/// exercise for the interested reader of the code.
-///
-/// @param decl the declaration to remove from this class scope.
-void
-class_decl::remove_member_decl(decl_base_sptr decl)
-{
-  type_base_sptr t = is_type(decl);
-
-  // For now we want to support just removing types from classes.  For
-  // other kinds of IR node, we need more work.
-  assert(t);
-
-  remove_member_type(t);
-}
-
-void
-class_decl::insert_member_type(type_base_sptr t,
-			       declarations::iterator before)
-{
-  decl_base_sptr d = get_type_declaration(t);
-  assert(d);
-  assert(!has_scope(d));
-
-  priv_->member_types_.push_back(t);
-  scope_decl::insert_member_decl(d, before);
-}
-
-/// Add a member type to the current instance of class_decl.
-///
-/// @param t the member type to add.  It must not have been added to a
-/// scope, otherwise this will violate an assertion.
-void
-class_decl::add_member_type(type_base_sptr t)
-{insert_member_type(t, get_member_decls().end());}
-
-/// Add a member type to the current instance of class_decl.
-///
-/// @param t the type to be added as a member type to the current
-/// instance of class_decl.  An instance of class_decl::member_type
-/// will be created out of @p t and and added to the the class.
-///
-/// @param a the access specifier for the member type to be created.
-type_base_sptr
-class_decl::add_member_type(type_base_sptr t, access_specifier a)
-{
-  decl_base_sptr d = get_type_declaration(t);
-  assert(d);
-  assert(!is_member_decl(d));
-  add_member_type(t);
-  set_member_access_specifier(d, a);
-  return t;
-}
-
-/// Remove a member type from the current class scope.
-///
-/// @param t the type to remove.
-void
-class_decl::remove_member_type(type_base_sptr t)
-{
-  for (member_types::iterator i = priv_->member_types_.begin();
-       i != priv_->member_types_.end();
-       ++i)
-    {
-      if (*((*i)) == *t)
-	{
-	  priv_->member_types_.erase(i);
-	  return;
-	}
-    }
 }
 
 /// The private data structure of class_decl::base_spec.
@@ -13094,62 +13820,11 @@ class_decl::base_spec::operator==(const member_base& other) const
   return operator==(static_cast<const decl_base&>(*o));
 }
 
-/// Add a data member to the current instance of class_decl.
-///
-/// @param v a var_decl to add as a data member.  A proper
-/// class_decl::data_member is created from @p v and added to the
-/// class_decl.  This var_decl should not have been already added to a
-/// scope.
-///
-/// @param access the access specifier for the data member.
-///
-/// @param is_laid_out whether the data member was laid out.  That is,
-/// if its offset has been computed.  In the pattern of a class
-/// template for instance, this would be set to false.
-///
-/// @param is_static whether the data memer is static.
-///
-/// @param offset_in_bits if @p is_laid_out is true, this is the
-/// offset of the data member, expressed (oh, surprise) in bits.
-void
-class_decl::add_data_member(var_decl_sptr v, access_specifier access,
-			    bool is_laid_out, bool is_static,
-			    size_t offset_in_bits)
-{
-  assert(!has_scope(v));
-
-  priv_->data_members_.push_back(v);
-  scope_decl::add_member_decl(v);
-  set_data_member_is_laid_out(v, is_laid_out);
-  set_data_member_offset(v, offset_in_bits);
-  set_member_access_specifier(v, access);
-  set_member_is_static(v, is_static);
-
-
-  if (!is_static)
-    {
-      // If this is a non-static variable, add it to the set of
-      // non-static variables, if it's not only in there.
-      bool is_already_in = false;
-      for (data_members::const_iterator i =
-	     priv_->non_static_data_members_.begin();
-	   i != priv_->non_static_data_members_.end();
-	   ++i)
-	if (*i == v)
-	  {
-	    is_already_in = true;
-	    break;
-	  }
-      if (!is_already_in)
-	priv_->non_static_data_members_.push_back(v);
-    }
-}
-
 mem_fn_context_rel::~mem_fn_context_rel()
 {
 }
 
-/// A constructor for instances of class_decl::method_decl.
+/// A constructor for instances of method_decl.
 ///
 /// @param name the name of the method.
 ///
@@ -13165,13 +13840,13 @@ mem_fn_context_rel::~mem_fn_context_rel()
 /// @param vis the visibility of the method.
 ///
 /// @param bind the binding of the method.
-class_decl::method_decl::method_decl(const string&	name,
-				     method_type_sptr	type,
-				     bool		declared_inline,
-				     const location&	locus,
-				     const string&	linkage_name,
-				     visibility	vis,
-				     binding		bind)
+method_decl::method_decl(const string&		name,
+			 method_type_sptr	type,
+			 bool			declared_inline,
+			 const location&	locus,
+			 const string&		linkage_name,
+			 visibility		vis,
+			 binding		bind)
   : type_or_decl_base(type->get_environment()),
     decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>(type),
@@ -13179,7 +13854,7 @@ class_decl::method_decl::method_decl(const string&	name,
 		  linkage_name, vis, bind)
 {}
 
-/// A constructor for instances of class_decl::method_decl.
+/// A constructor for instances of method_decl.
 ///
 /// @param name the name of the method.
 ///
@@ -13196,13 +13871,13 @@ class_decl::method_decl::method_decl(const string&	name,
 /// @param vis the visibility of the method.
 ///
 /// @param bind the binding of the method.
-class_decl::method_decl::method_decl(const string&	name,
-				     function_type_sptr type,
-				     bool		declared_inline,
-				     const location&	locus,
-				     const string&	linkage_name,
-				     visibility	vis,
-				     binding		bind)
+method_decl::method_decl(const string&		name,
+			 function_type_sptr	type,
+			 bool			declared_inline,
+			 const location&	locus,
+			 const string&		linkage_name,
+			 visibility		vis,
+			 binding		bind)
   : type_or_decl_base(type->get_environment()),
     decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>
@@ -13210,7 +13885,7 @@ class_decl::method_decl::method_decl(const string&	name,
 		  declared_inline, locus, linkage_name, vis, bind)
 {}
 
-/// A constructor for instances of class_decl::method_decl.
+/// A constructor for instances of method_decl.
 ///
 /// @param name the name of the method.
 ///
@@ -13227,13 +13902,13 @@ class_decl::method_decl::method_decl(const string&	name,
 /// @param vis the visibility of the method.
 ///
 /// @param bind the binding of the method.
-class_decl::method_decl::method_decl(const string&	name,
-				     type_base_sptr	type,
-				     bool		declared_inline,
-				     const location&	locus,
-				     const string&	linkage_name,
-				     visibility	vis,
-				     binding		bind)
+method_decl::method_decl(const string&		name,
+			 type_base_sptr	type,
+			 bool			declared_inline,
+			 const location&	locus,
+			 const string&		linkage_name,
+			 visibility		vis,
+			 binding		bind)
   : type_or_decl_base(type->get_environment()),
     decl_base(type->get_environment(), name, locus, linkage_name, vis),
     function_decl(name, static_pointer_cast<function_type>
@@ -13245,7 +13920,7 @@ class_decl::method_decl::method_decl(const string&	name,
 ///
 /// @param l the new linkage name of the method.
 void
-class_decl::method_decl::set_linkage_name(const string& l)
+method_decl::set_linkage_name(const string& l)
 {
   decl_base::set_linkage_name(l);
   // Update the linkage_name -> member function map of the containing
@@ -13253,16 +13928,16 @@ class_decl::method_decl::set_linkage_name(const string& l)
   if (!l.empty())
     {
       method_type_sptr t = get_type();
-      class_decl_sptr cl = t->get_class_type();
+      class_or_union_sptr cl = t->get_class_type();
       cl->priv_->mem_fns_map_[l] = this;
     }
 }
 
-class_decl::method_decl::~method_decl()
+method_decl::~method_decl()
 {}
 
 const method_type_sptr
-class_decl::method_decl::get_type() const
+method_decl::get_type() const
 {
   method_type_sptr result;
   if (function_decl::get_type())
@@ -13274,7 +13949,7 @@ class_decl::method_decl::get_type() const
 ///
 /// @param scope the new containing class_decl.
 void
-class_decl::method_decl::set_scope(scope_decl* scope)
+method_decl::set_scope(scope_decl* scope)
 {
   if (!get_context_rel())
     {
@@ -13285,41 +13960,41 @@ class_decl::method_decl::set_scope(scope_decl* scope)
     get_context_rel()->set_scope(scope);
 }
 
-/// Test if a function_decl is actually a class_decl::method_decl.
+/// Test if a function_decl is actually a method_decl.
 ///
 ///@param d the @ref function_decl to consider.
 ///
-/// @return the class_decl::method_decl sub-object of @p d if inherits
-/// a class_decl::method_decl type.
-class_decl::method_decl*
+/// @return the method_decl sub-object of @p d if inherits
+/// a method_decl type.
+method_decl*
 is_method_decl(const type_or_decl_base *d)
 {
-  return dynamic_cast<class_decl::method_decl*>
+  return dynamic_cast<method_decl*>
     (const_cast<type_or_decl_base*>(d));
 }
 
-/// Test if a function_decl is actually a class_decl::method_decl.
+/// Test if a function_decl is actually a method_decl.
 ///
 ///@param d the @ref function_decl to consider.
 ///
-/// @return the class_decl::method_decl sub-object of @p d if inherits
-/// a class_decl::method_decl type.
-class_decl::method_decl*
+/// @return the method_decl sub-object of @p d if inherits
+/// a method_decl type.
+method_decl*
 is_method_decl(const type_or_decl_base&d)
 {return is_method_decl(&d);}
 
-/// Test if a function_decl is actually a class_decl::method_decl.
+/// Test if a function_decl is actually a method_decl.
 ///
 ///@param d the @ref function_decl to consider.
 ///
-/// @return the class_decl::method_decl sub-object of @p d if inherits
-/// a class_decl::method_decl type.
-class_decl::method_decl_sptr
+/// @return the method_decl sub-object of @p d if inherits
+/// a method_decl type.
+method_decl_sptr
 is_method_decl(const type_or_decl_base_sptr& d)
-{return dynamic_pointer_cast<class_decl::method_decl>(d);}
+{return dynamic_pointer_cast<method_decl>(d);}
 
 /// A "less than" functor to sort a vector of instances of
-/// class_decl::method_decl that are virtual.
+/// method_decl that are virtual.
 struct virtual_member_function_less_than
 {
   /// The less than operator.  First, it sorts the methods by their
@@ -13334,8 +14009,8 @@ struct virtual_member_function_less_than
   ///
   /// @param s the second method to consider.
   bool
-  operator()(const class_decl::method_decl& f,
-	     const class_decl::method_decl& s)
+  operator()(const method_decl& f,
+	     const method_decl& s)
   {
     assert(get_member_function_is_virtual(f));
     assert(get_member_function_is_virtual(s));
@@ -13379,8 +14054,8 @@ struct virtual_member_function_less_than
   ///
   /// @param s the second method to consider.
   bool
-  operator()(const class_decl::method_decl_sptr f,
-	     const class_decl::method_decl_sptr s)
+  operator()(const method_decl_sptr f,
+	     const method_decl_sptr s)
   {return operator()(*f, *s);}
 }; // end struct virtual_member_function_less_than
 
@@ -13420,24 +14095,10 @@ class_decl::add_member_function(method_decl_sptr f,
 				bool is_static, bool is_ctor,
 				bool is_dtor, bool is_const)
 {
-  assert(!has_scope(f));
-
-  scope_decl::add_member_decl(f);
-
-  set_member_function_is_ctor(f, is_ctor);
-  set_member_function_is_dtor(f, is_dtor);
+  class_or_union::add_member_function(f, a, is_static, is_ctor,
+				      is_dtor, is_const);
   set_member_function_is_virtual(f, is_virtual);
   set_member_function_vtable_offset(f, vtable_offset);
-  set_member_access_specifier(f, a);
-  set_member_is_static(f, is_static);
-  set_member_function_is_const(f, is_const);
-
-  priv_->member_functions_.push_back(f);
-
-  // Update the map of linkage name -> member functions.  It's useful,
-  // so that class_decl::find_member_function() can function.
-  if (!f->get_linkage_name().empty())
-    priv_->mem_fns_map_[f->get_linkage_name()] = f.get();
 
   if (is_virtual)
     sort_virtual_member_functions(priv_->virtual_mem_fns_);
@@ -13450,12 +14111,12 @@ class_decl::add_member_function(method_decl_sptr f,
 ///
 /// @param method the method to fixup.
 void
-fixup_virtual_member_function(class_decl::method_decl_sptr method)
+fixup_virtual_member_function(method_decl_sptr method)
 {
   if (!method || !get_member_function_is_virtual(method))
     return;
 
-  class_decl_sptr klass = method->get_type()->get_class_type();
+  class_decl_sptr klass = is_class_type(method->get_type()->get_class_type());
   class_decl::member_functions::iterator m;
   for (m = klass->priv_->virtual_mem_fns_.begin();
        m != klass->priv_->virtual_mem_fns_.end();
@@ -13469,47 +14130,10 @@ fixup_virtual_member_function(class_decl::method_decl_sptr method)
     }
 }
 
-/// Append a member function template to the class.
-///
-/// @param m the member function template to append.
-void
-class_decl::add_member_function_template
-(shared_ptr<member_function_template> m)
-{
-  decl_base* c = m->as_function_tdecl()->get_scope();
-  /// TODO: use our own assertion facility that adds a meaningful
-  /// error message or something like a structured error.
-  priv_->member_function_templates_.push_back(m);
-  if (!c)
-    scope_decl::add_member_decl(m->as_function_tdecl());
-}
-
-/// Append a member class template to the class.
-///
-/// @param m the member function template to append.
-void
-class_decl::add_member_class_template(shared_ptr<member_class_template> m)
-{
-  decl_base* c = m->as_class_tdecl()->get_scope();
-  /// TODO: use our own assertion facility that adds a meaningful
-  /// error message or something like a structured error.
-  m->set_scope(this);
-  priv_->member_class_templates_.push_back(m);
-  if (!c)
-    scope_decl::add_member_decl(m->as_class_tdecl());
-}
-
 /// Return true iff the class has no entity in its scope.
 bool
 class_decl::has_no_base_nor_member() const
-{
-  return (priv_->bases_.empty()
-	  && priv_->member_types_.empty()
-	  && priv_->data_members_.empty()
-	  && priv_->member_functions_.empty()
-	  && priv_->member_function_templates_.empty()
-	  && priv_->member_class_templates_.empty());
-}
+{return priv_->bases_.empty() && has_no_member();}
 
 /// Test if the current instance of @ref class_decl has virtual member
 /// functions.
@@ -13563,62 +14187,6 @@ class_decl::get_hash() const
   return hash_class(this);
 }
 
-/// Copy a method of a class into a new class.
-///
-/// @param klass the class into which the method is to be copied.
-///
-/// @param method the method to copy into @p klass.
-///
-/// @return the resulting newly copied method.
-class_decl::method_decl_sptr
-copy_member_function(class_decl_sptr& klass,
-		     const class_decl::method_decl* method)
-{
-  assert(klass);
-  assert(method);
-
-  method_type_sptr old_type = method->get_type();
-  assert(old_type);
-  method_type_sptr new_type(new method_type(old_type->get_return_type(),
-					    klass,
-					    old_type->get_parameters(),
-					    old_type->get_size_in_bits(),
-					    old_type->get_alignment_in_bits()));
-  new_type->set_environment(klass->get_environment());
-  keep_type_alive(new_type);
-
-  class_decl::method_decl_sptr
-    new_method(new class_decl::method_decl(method->get_name(),
-					   new_type,
-					   method->is_declared_inline(),
-					   method->get_location(),
-					   method->get_linkage_name(),
-					   method->get_visibility(),
-					   method->get_binding()));
-  new_method->set_symbol(method->get_symbol());
-
-  klass->add_member_function(new_method,
-			     get_member_access_specifier(*method),
-			     get_member_function_is_virtual(*method),
-			     get_member_function_vtable_offset(*method),
-			     get_member_is_static(*method),
-			     get_member_function_is_ctor(*method),
-			     get_member_function_is_dtor(*method),
-			     get_member_function_is_const(*method));
-  return new_method;
-}
-
-/// Copy a method of a class into a new class.
-///
-/// @param klass the class into which the method is to be copied.
-///
-/// @param method the method to copy into @p klass.
-///
-/// @return the resulting newly copied method.
-class_decl::method_decl_sptr
-copy_member_function(class_decl_sptr& klass,
-		     const class_decl::method_decl_sptr& method)
-{return copy_member_function(klass, method.get());}
 
 /// Compares two instances of @ref class_decl.
 ///
@@ -13642,87 +14210,37 @@ copy_member_function(class_decl_sptr& klass,
 bool
 equals(const class_decl& l, const class_decl& r, change_kind* k)
 {
-#define RETURN(value)				\
-  do {						\
-    l.priv_->unmark_as_being_compared(l);	\
-    l.priv_->unmark_as_being_compared(r);	\
-    return value;				\
-  } while(0)
+  if (l.class_or_union::priv_->comparison_started(l)
+      || l.class_or_union::priv_->comparison_started(r))
+    return true;
 
-  // if one of the classes is declaration-only, look through it to
-  // get its definition.
+  bool result = true;
+  if (!equals(static_cast<const class_or_union&>(l),
+	      static_cast<const class_or_union&>(r),
+	      k))
+    {
+      result = false;
+      if (!k)
+	return result;
+    }
+
+  // if one of the classes is declaration-only then we are done.
   bool l_is_decl_only = l.get_is_declaration_only();
   bool r_is_decl_only = r.get_is_declaration_only();
   if (l_is_decl_only || r_is_decl_only)
-    {
-      const class_decl* def1 = l_is_decl_only
-	? l.get_definition_of_declaration().get()
-	: &l;
+    return result;
 
-      const class_decl* def2 = r_is_decl_only
-	? r.get_definition_of_declaration().get()
-	: &r;
+  l.class_or_union::priv_->mark_as_being_compared(l);
+  l.class_or_union::priv_->mark_as_being_compared(r);
 
-      if (!def1 || !def2)
-	{
-	  const interned_string& q1 = l.get_qualified_name();
-	  const interned_string& q2 = r.get_qualified_name();
-	  if (q1 == q2)
-	    // Not using RETURN(true) here, because that causes
-	    // performance issues.  We don't need to do
-	    // l.priv_->unmark_as_being_compared({l,r}) here because
-	    // we haven't marked l or r as being compared yet, and
-	    // doing so has a peformance cost that shows up on
-	    // performance profiles for *big* libraries.
-	    return true;
-	  else
-	    {
-	      if (k)
-		*k |= LOCAL_CHANGE_KIND;
-	      // Not using RETURN(true) here, because that causes
-	      // performance issues.  We don't need to do
-	      // l.priv_->unmark_as_being_compared({l,r}) here because
-	      // we haven't marked l or r as being compared yet, and
-	      // doing so has a peformance cost that shows up on
-	      // performance profiles for *big* libraries.
-	      return false;
-	    }
-	}
-
-      if (l.priv_->comparison_started(l)
-	  || l.priv_->comparison_started(r))
-	return true;
-
-      l.priv_->mark_as_being_compared(l);
-      l.priv_->mark_as_being_compared(r);
-
-      bool val = *def1 == *def2;
-      if (!val)
-	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
-      RETURN(val);
-    }
-
-  // No need to go further if the classes have different names or
-  // different size / alignment.
-  if (!(l.decl_base::operator==(r) && l.type_base::operator==(r)))
-    {
-      if (k)
-	*k |= LOCAL_CHANGE_KIND;
-      RETURN(false);
-    }
-
-  if (l.priv_->comparison_started(l)
-      || l.priv_->comparison_started(r))
-    return true;
-
-  l.priv_->mark_as_being_compared(l);
-  l.priv_->mark_as_being_compared(r);
-
-  bool result = true;
+#define RETURN(value)						\
+  do {								\
+    l.class_or_union::priv_->unmark_as_being_compared(l);	\
+    l.class_or_union::priv_->unmark_as_being_compared(r);	\
+    return value;						\
+  } while(0)
 
   // Compare bases.
-  {
     if (l.get_base_specifiers().size() != r.get_base_specifiers().size())
       {
 	result = false;
@@ -13746,111 +14264,34 @@ equals(const class_decl& l, const class_decl& r, change_kind* k)
 	      *k |= SUBTYPE_CHANGE_KIND;
 	      break;
 	    }
-	  RETURN(false);
-	}
-  }
-
-  //compare data_members
-  {
-    if (l.get_non_static_data_members().size()
-	!= r.get_non_static_data_members().size())
-      {
-	result = false;
-	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
-	else
 	  RETURN(result);
-      }
-
-    for (class_decl::data_members::const_iterator
-	   d0 = l.get_non_static_data_members().begin(),
-	   d1 = r.get_non_static_data_members().begin();
-	 (d0 != l.get_non_static_data_members().end()
-	  && d1 != r.get_non_static_data_members().end());
-	 ++d0, ++d1)
-      if (**d0 != **d1)
-	{
-	  result = false;
-	  if (k)
-	    {
-	      *k |= SUBTYPE_CHANGE_KIND;
-	      break;
-	    }
-	  else
-	    RETURN(result);
 	}
-  }
-
-  // Do not compare member functions.  DWARF does not necessarily
-  // all the member functions, be they virtual or not, in all
-  // translation units.  So we cannot have a clear view of them, per
-  // class
-
-  // compare member function templates
-  {
-    if (l.get_member_function_templates().size()
-	!= r.get_member_function_templates().size())
-      {
-	result = false;
-	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
-	else
-	  RETURN(result);
-      }
-
-    for (class_decl::member_function_templates::const_iterator
-	   fn_tmpl_it0 = l.get_member_function_templates().begin(),
-	   fn_tmpl_it1 = r.get_member_function_templates().begin();
-	 fn_tmpl_it0 != l.get_member_function_templates().end()
-	   &&  fn_tmpl_it1 != r.get_member_function_templates().end();
-	 ++fn_tmpl_it0, ++fn_tmpl_it1)
-      if (**fn_tmpl_it0 != **fn_tmpl_it1)
-	{
-	  result = false;
-	  if (k)
-	    {
-	      *k |= LOCAL_CHANGE_KIND;
-	      break;
-	    }
-	  else
-	    RETURN(result);
-	}
-  }
-
-  // compare member class templates
-  {
-    if (l.get_member_class_templates().size()
-	!= r.get_member_class_templates().size())
-      {
-	result = false;
-	if (k)
-	  *k |= LOCAL_CHANGE_KIND;
-	else
-	  RETURN(result);
-      }
-
-    for (class_decl::member_class_templates::const_iterator
-	   cl_tmpl_it0 = l.get_member_class_templates().begin(),
-	   cl_tmpl_it1 = r.get_member_class_templates().begin();
-	 cl_tmpl_it0 != l.get_member_class_templates().end()
-	   &&  cl_tmpl_it1 != r.get_member_class_templates().end();
-	 ++cl_tmpl_it0, ++cl_tmpl_it1)
-      if (**cl_tmpl_it0 != **cl_tmpl_it1)
-	{
-	  result = false;
-	  if (k)
-	    {
-	      *k |= LOCAL_CHANGE_KIND;
-	      break;
-	    }
-	  else
-	    RETURN(result);
-	}
-  }
 
   RETURN(result);
 #undef RETURN
 }
+
+/// Copy a method of a class into a new class.
+///
+/// @param klass the class into which the method is to be copied.
+///
+/// @param method the method to copy into @p klass.
+///
+/// @return the resulting newly copied method.
+method_decl_sptr
+copy_member_function(const class_decl_sptr& clazz, const method_decl_sptr& f)
+{return copy_member_function(static_pointer_cast<class_or_union>(clazz), f);}
+
+/// Copy a method of a class into a new class.
+///
+/// @param klass the class into which the method is to be copied.
+///
+/// @param method the method to copy into @p klass.
+///
+/// @return the resulting newly copied method.
+method_decl_sptr
+copy_member_function(const class_decl_sptr& clazz, const method_decl* f)
+{return copy_member_function(static_pointer_cast<class_or_union>(clazz), f);}
 
 /// Comparison operator for @ref class_decl.
 ///
@@ -14051,7 +14492,7 @@ context_rel::~context_rel()
 {}
 
 bool
-class_decl::member_base::operator==(const member_base& o) const
+member_base::operator==(const member_base& o) const
 {
   return (get_access_specifier() == o.get_access_specifier()
 	  && get_is_static() == o.get_is_static());
@@ -14118,12 +14559,12 @@ is_class_base_spec(type_or_decl_base_sptr tod)
 {return dynamic_pointer_cast<class_decl::base_spec>(tod);}
 
 bool
-class_decl::member_function_template::operator==(const member_base& other) const
+member_function_template::operator==(const member_base& other) const
 {
   try
     {
-      const class_decl::member_function_template& o =
-	dynamic_cast<const class_decl::member_function_template&>(other);
+      const member_function_template& o =
+	dynamic_cast<const member_function_template&>(other);
 
       if (!(is_constructor() == o.is_constructor()
 	    && is_const() == o.is_const()
@@ -14143,7 +14584,7 @@ class_decl::member_function_template::operator==(const member_base& other) const
 }
 
 /// Equality operator for smart pointers to @ref
-/// class_decl::member_function_template.  This is compares the
+/// member_function_template.  This is compares the
 /// pointed-to instances.
 ///
 /// @param l the first instance to consider.
@@ -14152,8 +14593,8 @@ class_decl::member_function_template::operator==(const member_base& other) const
 ///
 /// @return true iff @p l equals @p r.
 bool
-operator==(const class_decl::member_function_template_sptr& l,
-	   const class_decl::member_function_template_sptr& r)
+operator==(const member_function_template_sptr& l,
+	   const member_function_template_sptr& r)
 {
   if (l.get() == r.get())
     return true;
@@ -14164,8 +14605,8 @@ operator==(const class_decl::member_function_template_sptr& l,
 }
 
 /// Inequality operator for smart pointers to @ref
-/// class_decl::member_function_template.  This is compares the
-/// pointed-to instances.
+/// member_function_template.  This is compares the pointed-to
+/// instances.
 ///
 /// @param l the first instance to consider.
 ///
@@ -14173,8 +14614,8 @@ operator==(const class_decl::member_function_template_sptr& l,
 ///
 /// @return true iff @p l equals @p r.
 bool
-operator!=(const class_decl::member_function_template_sptr& l,
-	   const class_decl::member_function_template_sptr& r)
+operator!=(const member_function_template_sptr& l,
+	   const member_function_template_sptr& r)
 {return !operator==(l, r);}
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -14186,7 +14627,7 @@ operator!=(const class_decl::member_function_template_sptr& l,
 /// @return true if the entire IR node tree got traversed, false
 /// otherwise.
 bool
-class_decl::member_function_template::traverse(ir_node_visitor& v)
+member_function_template::traverse(ir_node_visitor& v)
 {
   if (visiting())
     return true;
@@ -14201,13 +14642,18 @@ class_decl::member_function_template::traverse(ir_node_visitor& v)
   return v.visit_end(this);
 }
 
+/// Equality operator of the the @ref member_class_template class.
+///
+/// @param other the other @ref member_class_template to compare against.
+///
+/// @return true iff the current instance equals @p other.
 bool
-class_decl::member_class_template::operator==(const member_base& other) const
+member_class_template::operator==(const member_base& other) const
 {
   try
     {
-      const class_decl::member_class_template& o =
-	dynamic_cast<const class_decl::member_class_template&>(other);
+      const member_class_template& o =
+	dynamic_cast<const member_class_template&>(other);
 
       if (!member_base::operator==(o))
 	return false;
@@ -14218,22 +14664,21 @@ class_decl::member_class_template::operator==(const member_base& other) const
     {return false;}
 }
 
-/// Comparison operator for the @ref class_decl::member_class_template
+/// Comparison operator for the @ref member_class_template
 /// type.
 ///
 /// @param other the other instance of @ref
-/// class_decl::member_class_template to compare against.
+/// member_class_template to compare against.
 ///
 /// @return true iff the two instances are equal.
 bool
-class_decl::member_class_template::operator==
-(const member_class_template& other) const
+member_class_template::operator==(const member_class_template& other) const
 {
   const decl_base* o = dynamic_cast<const decl_base*>(&other);
   return *this == *o;
 }
 
-/// Comparison operator for the @ref class_decl::member_class_template
+/// Comparison operator for the @ref member_class_template
 /// type.
 ///
 /// @param l the first argument of the operator.
@@ -14242,8 +14687,8 @@ class_decl::member_class_template::operator==
 ///
 /// @return true iff the two instances are equal.
 bool
-operator==(const class_decl::member_class_template_sptr& l,
-	   const class_decl::member_class_template_sptr& r)
+operator==(const member_class_template_sptr& l,
+	   const member_class_template_sptr& r)
 {
   if (l.get() == r.get())
     return true;
@@ -14253,7 +14698,7 @@ operator==(const class_decl::member_class_template_sptr& l,
   return *l == *r;
 }
 
-/// Inequality operator for the @ref class_decl::member_class_template
+/// Inequality operator for the @ref member_class_template
 /// type.
 ///
 /// @param l the first argument of the operator.
@@ -14262,8 +14707,8 @@ operator==(const class_decl::member_class_template_sptr& l,
 ///
 /// @return true iff the two instances are equal.
 bool
-operator!=(const class_decl::member_class_template_sptr& l,
-	   const class_decl::member_class_template_sptr& r)
+operator!=(const member_class_template_sptr& l,
+	   const member_class_template_sptr& r)
 {return !operator==(l, r);}
 
 /// This implements the ir_traversable_base::traverse pure virtual
@@ -14275,7 +14720,7 @@ operator!=(const class_decl::member_class_template_sptr& l,
 /// @return true if the entire IR node tree got traversed, false
 /// otherwise.
 bool
-class_decl::member_class_template::traverse(ir_node_visitor& v)
+member_class_template::traverse(ir_node_visitor& v)
 {
   if (visiting())
     return true;
@@ -14342,7 +14787,7 @@ set_member_is_static(decl_base& d, bool s)
   scope_decl* scope = d.get_scope();
   assert(scope);
 
-  if (class_decl* cl = is_class_type(scope))
+  if (class_or_union* cl = is_class_or_union_type(scope))
     {
       if (var_decl* v = is_var_decl(&d))
 	{
@@ -14362,7 +14807,7 @@ set_member_is_static(decl_base& d, bool s)
 	  else
 	    {
 	      bool is_already_in_non_static_data_members = false;
-	      for (class_decl::data_members::iterator i =
+	      for (class_or_union::data_members::iterator i =
 		     cl->priv_->non_static_data_members_.begin();
 		   i != cl->priv_->non_static_data_members_.end();
 		   ++i)
@@ -14377,7 +14822,7 @@ set_member_is_static(decl_base& d, bool s)
 		{
 		  var_decl_sptr var;
 		  // add to non-static data members.
-		  for (class_decl::data_members::const_iterator i =
+		  for (class_or_union::data_members::const_iterator i =
 			 cl->priv_->data_members_.begin();
 		       i != cl->priv_->data_members_.end();
 		       ++i)
@@ -14409,6 +14854,281 @@ set_member_is_static(const decl_base_sptr& d, bool s)
 {set_member_is_static(*d, s);}
 
 // </class_decl>
+
+// <union_decl>
+
+/// Constructor for the @ref union_decl type.
+///
+/// @param env the @ref environment we are operating from.
+///
+/// @param name the name of the union type.
+///
+/// @param size_in_bits the size of the union, in bits.
+///
+/// @param locus the location of the type.
+///
+/// @param vis the visibility of instances of @ref union_decl.
+///
+/// @param mbr_types the member types of the union.
+///
+/// @param data_mbrs the data members of the union.
+///
+/// @param member_fns the member functions of the union.
+union_decl::union_decl(const environment* env, const string& name,
+		       size_t size_in_bits, const location& locus,
+		       visibility vis, member_types& mbr_types,
+		       data_members& data_mbrs, member_functions& member_fns)
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, name, vis),
+    type_base(env, size_in_bits, 0),
+    class_or_union(env, name, size_in_bits, 0,
+		   locus, vis, mbr_types, data_mbrs, member_fns)
+{}
+
+/// Constructor for the @ref union_decl type.
+///
+/// @param env the @ref environment we are operating from.
+///
+/// @param name the name of the union type.
+///
+/// @param size_in_bits the size of the union, in bits.
+///
+/// @param locus the location of the type.
+///
+/// @param vis the visibility of instances of @ref union_decl.
+union_decl::union_decl(const environment* env, const string& name,
+		       size_t size_in_bits, const location& locus,
+		       visibility vis)
+  : type_or_decl_base(env),
+    decl_base(env, name, locus, name, vis),
+    type_base(env, size_in_bits, 0),
+    class_or_union(env, name, size_in_bits,
+		   0, locus, vis)
+{}
+
+/// Constructor for the @ref union_decl type.
+///
+/// @param env the @ref environment we are operating from.
+///
+/// @param name the name of the union type.
+///
+/// @param is_declaration_only a boolean saying whether the instance
+/// represents a declaration only, or not.
+union_decl::union_decl(const environment* env,
+		       const string& name,
+		       bool is_declaration_only)
+  : type_or_decl_base(env),
+    decl_base(env, name, location(), name),
+    type_base(env, 0, 0),
+    class_or_union(env, name, is_declaration_only)
+{}
+
+/// Getter of the pretty representation of the current instance of
+/// @ref union_decl.
+///
+/// @param internal set to true if the call is intended for an
+/// internal use (for technical use inside the library itself), false
+/// otherwise.  If you don't know what this is for, then set it to
+/// false.
+///
+/// @return the pretty representaion for a union_decl.
+string
+union_decl::get_pretty_representation(bool internal) const
+{
+  string repr = "union ";
+  return repr + get_qualified_name(internal);
+}
+
+/// Comparison operator for @ref union_decl.
+///
+/// @param other the instance of @ref union_decl to compare against.
+///
+/// @return true iff the current instance of @ref union_decl equals @p
+/// other.
+bool
+union_decl::operator==(const decl_base& other) const
+{
+  const union_decl* op = dynamic_cast<const union_decl*>(&other);
+  if (!op)
+    return false;
+
+  type_base *canonical_type = get_naked_canonical_type(),
+    *other_canonical_type = op->get_naked_canonical_type();
+
+  if (canonical_type && other_canonical_type)
+    return canonical_type == other_canonical_type;
+
+  const union_decl &o = *op;
+  return equals(*this, o, 0);
+}
+
+/// Equality operator for union_decl.
+///
+/// Re-uses the equality operator that takes a decl_base.
+///
+/// @param other the other union_decl to compare against.
+///
+/// @return true iff the current instance equals the other one.
+bool
+union_decl::operator==(const type_base& other) const
+{
+  const decl_base *o = dynamic_cast<const decl_base*>(&other);
+  if (!o)
+    return false;
+  return *this == *o;
+}
+
+/// Comparison operator for @ref union_decl.
+///
+/// @param other the instance of @ref union_decl to compare against.
+///
+/// @return true iff the current instance of @ref union_decl equals @p
+/// other.
+bool
+union_decl::operator==(const union_decl& other) const
+{
+  const decl_base& o = other;
+  return *this == o;
+}
+
+/// This implements the ir_traversable_base::traverse pure virtual
+/// function.
+///
+/// @param v the visitor used on the current instance and on its
+/// members.
+///
+/// @return true if the entire IR node tree got traversed, false
+/// otherwise.
+bool
+union_decl::traverse(ir_node_visitor& v)
+{
+  if (visiting())
+    return true;
+
+  if (v.visit_begin(this))
+    {
+      visiting(true);
+      bool stop = false;
+
+      if (!stop)
+	for (data_members::const_iterator i = get_data_members().begin();
+	     i != get_data_members().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_functions::const_iterator i= get_member_functions().begin();
+	     i != get_member_functions().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_types::const_iterator i = get_member_types().begin();
+	     i != get_member_types().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_function_templates::const_iterator i =
+	       get_member_function_templates().begin();
+	     i != get_member_function_templates().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+
+      if (!stop)
+	for (member_class_templates::const_iterator i =
+	       get_member_class_templates().begin();
+	     i != get_member_class_templates().end();
+	     ++i)
+	  if (!(*i)->traverse(v))
+	    {
+	      stop = true;
+	      break;
+	    }
+      visiting(false);
+    }
+
+  return v.visit_end(this);
+}
+
+/// Destructor of the @ref union_decl type.
+union_decl::~union_decl()
+{}
+
+/// Compares two instances of @ref union_decl.
+///
+/// If the two intances are different, set a bitfield to give some
+/// insight about the kind of differences there are.
+///
+/// @param l the first artifact of the comparison.
+///
+/// @param r the second artifact of the comparison.
+///
+/// @param k a pointer to a bitfield that gives information about the
+/// kind of changes there are between @p l and @p r.  This one is set
+/// iff @p k is non-null and the function returns false.
+///
+/// Please note that setting k to a non-null value does have a
+/// negative performance impact because even if @p l and @p r are not
+/// equal, the function keeps up the comparison in order to determine
+/// the different kinds of ways in which they are different.
+///
+/// @return true if @p l equals @p r, false otherwise.
+bool
+equals(const union_decl& l, const union_decl& r, change_kind* k)
+{
+  bool result = equals(static_cast<const class_or_union&>(l),
+		       static_cast<const class_or_union&>(r),
+		       k);
+  return result;
+}
+
+/// Copy a method of a @ref union_decl into a new @ref
+/// union_decl.
+///
+/// @param t the @ref union_decl into which the method is to be copied.
+///
+/// @param method the method to copy into @p t.
+///
+/// @return the resulting newly copied method.
+method_decl_sptr
+copy_member_function(const union_decl_sptr& union_type,
+		     const method_decl_sptr& f)
+{return copy_member_function(union_type, f.get());}
+
+/// Copy a method of a @ref union_decl into a new @ref
+/// union_decl.
+///
+/// @param t the @ref union_decl into which the method is to be copied.
+///
+/// @param method the method to copy into @p t.
+///
+/// @return the resulting newly copied method.
+method_decl_sptr
+copy_member_function(const union_decl_sptr& union_type,
+		     const method_decl* f)
+{
+  const class_or_union_sptr t = union_type;
+  return copy_member_function(t, f);
+}
+
+// </union_decl>
 
 // <template_decl stuff>
 
@@ -15419,7 +16139,7 @@ hash_type_or_decl(const type_or_decl_base *tod)
 	}
       else if (class_decl::base_spec *bs = is_class_base_spec(d))
 	{
-	  class_decl::member_base::hash hash_member;
+	  member_base::hash hash_member;
 	  std::tr1::hash<size_t> hash_size;
 	  std::tr1::hash<bool> hash_bool;
 	  type_base_sptr type = bs->get_base_class();
@@ -15599,11 +16319,27 @@ ir_node_visitor::visit_end(class_tdecl* d)
 {return visit_end(static_cast<decl_base*>(d));}
 
 bool
+ir_node_visitor::visit_begin(class_or_union* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(class_or_union* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
 ir_node_visitor::visit_begin(class_decl* t)
 {return visit_begin(static_cast<type_base*>(t));}
 
 bool
 ir_node_visitor::visit_end(class_decl* t)
+{return visit_end(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_begin(union_decl* t)
+{return visit_begin(static_cast<type_base*>(t));}
+
+bool
+ir_node_visitor::visit_end(union_decl* t)
 {return visit_end(static_cast<type_base*>(t));}
 
 bool
@@ -15615,19 +16351,19 @@ ir_node_visitor::visit_end(class_decl::base_spec* d)
 {return visit_end(static_cast<decl_base*>(d));}
 
 bool
-ir_node_visitor::visit_begin(class_decl::member_function_template* d)
+ir_node_visitor::visit_begin(member_function_template* d)
 {return visit_begin(static_cast<decl_base*>(d));}
 
 bool
-ir_node_visitor::visit_end(class_decl::member_function_template* d)
+ir_node_visitor::visit_end(member_function_template* d)
 {return visit_end(static_cast<decl_base*>(d));}
 
 bool
-ir_node_visitor::visit_begin(class_decl::member_class_template* d)
+ir_node_visitor::visit_begin(member_class_template* d)
 {return visit_begin(static_cast<decl_base*>(d));}
 
 bool
-ir_node_visitor::visit_end(class_decl::member_class_template* d)
+ir_node_visitor::visit_end(member_class_template* d)
 {return visit_end(static_cast<decl_base*>(d));}
 
 // <debugging facilities>

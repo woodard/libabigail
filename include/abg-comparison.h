@@ -225,8 +225,8 @@ typedef unordered_map<string,
 /// representing a changed member function.  The first element of the
 /// pair is the initial member function and the second element is the
 /// changed one.
-typedef pair<class_decl::method_decl_sptr,
-	     class_decl::method_decl_sptr> changed_member_function_sptr;
+typedef pair<method_decl_sptr,
+	     method_decl_sptr> changed_member_function_sptr;
 
 /// Convenience typedef for a hash map of strings and changed member functions.
 typedef unordered_map<string,
@@ -234,9 +234,7 @@ typedef unordered_map<string,
 				string_changed_member_function_sptr_map;
 
 /// Convenience typedef for a hash map of strings  and member functions.
-typedef unordered_map<string,
-		      class_decl::method_decl_sptr>
-string_member_function_sptr_map;
+typedef unordered_map<string, method_decl_sptr> string_member_function_sptr_map;
 
 /// Convenience typedef for a map which key is a string and which
 /// value is a point to @ref var_decl.
@@ -1295,14 +1293,13 @@ compute_diff(const enum_type_decl_sptr,
 	     const enum_type_decl_sptr,
 	     diff_context_sptr);
 
-/// This type abstracts changes for a class_decl.
-class class_diff : public type_diff_base
+/// This is the base class of @ref class_diff and @ref union_diff.
+class class_or_union_diff : public type_diff_base
 {
+protected:
   struct priv;
   typedef shared_ptr<priv> priv_sptr;
   priv_sptr priv_;
-
-  const priv_sptr& get_priv()const;
 
   void
   clear_lookup_tables(void);
@@ -1313,39 +1310,31 @@ class class_diff : public type_diff_base
   void
   ensure_lookup_tables_populated(void) const;
 
+  void
+  allocate_priv_data();
+
 protected:
-  class_diff(class_decl_sptr first_scope,
-	     class_decl_sptr second_scope,
-	     diff_context_sptr ctxt = diff_context_sptr());
+  class_or_union_diff(class_or_union_sptr first_scope,
+		      class_or_union_sptr second_scope,
+		      diff_context_sptr ctxt = diff_context_sptr());
 
   virtual void
   finish_diff_type();
 
 public:
+
+  const class_or_union_diff::priv_sptr&
+  get_priv() const;
+
   //TODO: add change of the name of the type.
 
-  virtual ~class_diff();
+  virtual ~class_or_union_diff();
 
-  class_decl_sptr
-  first_class_decl() const;
+  class_or_union_sptr
+  first_class_or_union() const;
 
-  class_decl_sptr
-  second_class_decl() const;
-
-  const edit_script&
-  base_changes() const;
-
-  edit_script&
-  base_changes();
-
-  const string_base_sptr_map&
-  deleted_bases() const;
-
-  const string_base_sptr_map&
-  inserted_bases() const;
-
-  const base_diff_sptrs_type&
-  changed_bases();
+  class_or_union_sptr
+  second_class_or_union() const;
 
   const edit_script&
   member_types_changes() const;
@@ -1392,14 +1381,82 @@ public:
   edit_script&
   member_class_tmpls_changes();
 
-  virtual const string&
-  get_pretty_representation() const;
+  virtual bool
+  has_changes() const;
+
+  virtual bool
+  has_local_changes() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  virtual void
+  chain_into_hierarchy();
+}; // end class_or_union_diff;
+
+/// This type abstracts changes for a class_decl.
+class class_diff : public class_or_union_diff
+{
+  struct priv;
+  typedef shared_ptr<priv> priv_sptr;
+  priv_sptr priv_;
+
+  const priv_sptr& get_priv()const;
+
+  void
+  clear_lookup_tables(void);
+
+  bool
+  lookup_tables_empty(void) const;
+
+  void
+  ensure_lookup_tables_populated(void) const;
+
+  void
+   allocate_priv_data();
+
+protected:
+  class_diff(class_decl_sptr first_scope,
+	     class_decl_sptr second_scope,
+	     diff_context_sptr ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
+
+public:
+  //TODO: add change of the name of the type.
+
+  virtual ~class_diff();
+
+  class_decl_sptr
+  first_class_decl() const;
+
+  class_decl_sptr
+  second_class_decl() const;
+
+  const edit_script&
+  base_changes() const;
+
+  edit_script&
+  base_changes();
+
+  const string_base_sptr_map&
+  deleted_bases() const;
+
+  const string_base_sptr_map&
+  inserted_bases() const;
+
+  const base_diff_sptrs_type&
+  changed_bases();
 
   virtual bool
   has_changes() const;
 
   virtual bool
   has_local_changes() const;
+
+  virtual const string&
+  get_pretty_representation() const;
 
   virtual void
   report(ostream&, const string& indent = "") const;
@@ -1417,6 +1474,58 @@ class_diff_sptr
 compute_diff(const class_decl_sptr	first,
 	     const class_decl_sptr	second,
 	     diff_context_sptr		ctxt);
+
+class union_diff;
+typedef shared_ptr<union_diff> union_diff_sptr;
+
+class union_diff : public class_or_union_diff
+{
+  void
+  clear_lookup_tables(void);
+
+  bool
+  lookup_tables_empty(void) const;
+
+  void
+  ensure_lookup_tables_populated(void) const;
+
+  void
+  allocate_priv_data();
+
+protected:
+  union_diff(union_decl_sptr first_union,
+	     union_decl_sptr second_union,
+	     diff_context_sptr ctxt = diff_context_sptr());
+
+  virtual void
+  finish_diff_type();
+
+public:
+
+  virtual ~union_diff();
+
+  union_decl_sptr
+  first_union_decl() const;
+
+  union_decl_sptr
+  second_union_decl() const;
+
+  virtual const string&
+  get_pretty_representation() const;
+
+  virtual void
+  report(ostream&, const string& indent = "") const;
+
+  friend union_diff_sptr
+  compute_diff(const union_decl_sptr	first,
+	       const union_decl_sptr	second,
+	       diff_context_sptr	ctxt);
+}; // end class union_diff
+
+union_diff_sptr
+compute_diff(const union_decl_sptr	first,
+	     const union_decl_sptr	second,
+	     diff_context_sptr	ctxt);
 
 /// An abstraction of a diff between two instances of class_decl::base_spec.
 class base_diff : public diff
@@ -2338,6 +2447,12 @@ is_type_diff(const diff* diff);
 
 const decl_diff_base*
 is_decl_diff(const diff* diff);
+
+const class_diff*
+is_class_diff(const diff* diff);
+
+const union_diff*
+is_union_diff(const diff* diff);
 
 const var_diff*
 is_var_diff(const diff* diff);
