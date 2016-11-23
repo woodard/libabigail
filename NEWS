@@ -1,6 +1,69 @@
+1.0.rc6
+=======
+Chenxiong Qi:
+      Update bash completion for fedabipkgdiff
+      Add fedabipkgdiff bash completion to dist
+      Add --abipkgdiff option in manual and bash completion
+      Make fedabipkgdiff consistent with Libabigail's other tests
+
+Dodji Seketeli:
+      Bug 20332 - too many ...'s counted as parameters
+      Bug 20194 - Fail to recognize void type represented by DW_TAG_base_type
+      Bug 20199 - Consider integral type synonyms as being equal
+      Bug 20420 - Wrong ODR-based type comparison optimization on qualified type
+      Bug 20534 - abipkgdiff wrongly displays the name of added binary files
+      Bug 20740 - Broken check for dwarf_getalt in configure.ac
+      Add a new overload for is_type_decl
+      Better recognize qualified void type
+      Fix spurious type size change report for distinct_diff
+      Prepare support for symbol visibility control
+      Add ABG_ASSERT_NOT_REACHED macro
+      Cleanup is_class and is_compatible_with_class_type
+      Generalize DIE source concept in DWARF reader
+      Support DW_TAG_type_unit
+      Control symbols exported from libabigail.so
+      Don't walk diff trees indefinitely when applying suppressions
+      Fix misleading indentation issues
+      Do not emit empty namespaces in abixml
+      Add new helper functions
+      Pimplify the abigail::ir::scope_decl type
+      Drop suppressed ABI artifacts from the IR
+      Add default suppression specification for webkitgtk
+      Add default suppression specifications for C++ binaries
+      Better handle fedabipkgdiff dependencies detection
+      Update reference output of runtestreaddwarf
+      Define a new interned_string_set_type typedef
+      Prevent infinite loops while comparing two function_type
+      Apply ODR-based type comparison optimization to function types
+      Cleanup class_decl inifite comparison detection
+      Cleanup functions to detect infinite comparison of class_decl
+      Cleanup namespace importing in abg-interned-str.h
+      Canonicalize function types when reading from DWARF
+      Fix abigail::ir::get_type_scope()
+      Cleanup some entry points in abg-fwd.h
+      Cleanup void and variadic parameter type interfaces
+      Consider a method_decl as always being a member decl
+      Factorize out parsing of integral types
+      Factorize out string representation of array_type_def::subrange_type
+      Avoid stripping typedefs too much
+      Apply harmless and harmful filters in one pass
+      Rename config::property_vector into config::properties_type
+      Support empty properties in INI files
+      Support union types
+      Better diagnostics when wget is missing
+      Lexicographically sort union data members in change reports
+      Support reading data member offset from DW_AT_bit_offset
+      Fix indentation in abg-writer.cc
+      Fix offset type mismatch
+      Fix a compiler warning issued by GCC 6.2.1
+      Avoid using size_t to get DWARF data
+
+Matthias Klose:
+      Fix typo in abipkgdiff
+
 1.0.rc5
 =======
-Chenxiong:
+Chenxiong Qi:
       Bug 19428 - New fedabipkgdiff utility
       Bug 20085 - Add --dso-only option to fedabipkgdiff
       Bug 20135 - Make fedabipkgdiff compare ABIs using devel packages
