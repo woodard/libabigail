@@ -1322,36 +1322,14 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
             type of 'VarDesc::__anonymous_union__::__anonymous_struct__ ' changed:
               type name changed from 'VarDesc::__anonymous_union__::__anonymous_struct__' to 'varDescFlags::__anonymous_struct__'
 
-              7 data member deletions:
-                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::alloc_disp', at offset 0 (in bits) at offload_common.h:246:1
-
-                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::has_length', at offset 0 (in bits) at offload_common.h:240:1
-
-                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::is_noncont_dst', at offset 0 (in bits) at offload_common.h:250:1
-
-                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::is_noncont_src', at offset 0 (in bits) at offload_common.h:248:1
-
-                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::is_stack_buf', at offset 0 (in bits) at offload_common.h:242:1
-
-                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::is_static', at offset 0 (in bits) at offload_common.h:236:1
-
-                'uint32_t VarDesc::__anonymous_union__::__anonymous_struct__::sink_addr', at offset 0 (in bits) at offload_common.h:244:1
-
-              13 data member insertions:
-                'uint32_t varDescFlags::__anonymous_struct__::alloc_disp', at offset 0 (in bits) at offload_common.h:237:1
-                'uint32_t varDescFlags::__anonymous_struct__::always_copy', at offset 0 (in bits) at offload_common.h:244:1
-                'uint32_t varDescFlags::__anonymous_struct__::always_delete', at offset 0 (in bits) at offload_common.h:246:1
-                'uint32_t varDescFlags::__anonymous_struct__::has_length', at offset 0 (in bits) at offload_common.h:224:1
-                'uint32_t varDescFlags::__anonymous_struct__::is_noncont_dst', at offset 0 (in bits) at offload_common.h:241:1
-                'uint32_t varDescFlags::__anonymous_struct__::is_pointer', at offset 0 (in bits) at offload_common.h:232:1
-                'uint32_t varDescFlags::__anonymous_struct__::is_stack_buf', at offset 0 (in bits) at offload_common.h:226:1
-                'uint32_t varDescFlags::__anonymous_struct__::is_static', at offset 0 (in bits) at offload_common.h:220:1
-                'uint32_t varDescFlags::__anonymous_struct__::is_static_dstn', at offset 0 (in bits) at offload_common.h:222:1
-                'uint32_t varDescFlags::__anonymous_struct__::pin', at offset 0 (in bits) at offload_common.h:248:1
-                'uint32_t varDescFlags::__anonymous_struct__::preallocated', at offset 0 (in bits) at offload_common.h:230:1
-                'uint32_t varDescFlags::__anonymous_struct__::sink_addr', at offset 0 (in bits) at offload_common.h:235:1
-                'uint32_t varDescFlags::__anonymous_struct__::targetptr', at offset 0 (in bits) at offload_common.h:228:1
-              no data member change (1 filtered);
+              6 data member insertions:
+                'uint32_t varDescFlags::__anonymous_struct__::pin', at offset 18 (in bits) at offload_common.h:248:1
+                'uint32_t varDescFlags::__anonymous_struct__::always_delete', at offset 19 (in bits) at offload_common.h:246:1
+                'uint32_t varDescFlags::__anonymous_struct__::always_copy', at offset 20 (in bits) at offload_common.h:244:1
+                'uint32_t varDescFlags::__anonymous_struct__::is_noncont_dst', at offset 21 (in bits) at offload_common.h:241:1
+                'uint32_t varDescFlags::__anonymous_struct__::is_noncont_src', at offset 22 (in bits) at offload_common.h:239:1
+                'uint32_t varDescFlags::__anonymous_struct__::alloc_disp', at offset 23 (in bits) at offload_common.h:237:1
+              no data member changes (8 filtered);
 
            no data member change (1 filtered);
 

@@ -6251,7 +6251,7 @@
     <pointer-type-def type-id='type-id-278' size-in-bits='64' id='type-id-280'/>
     <pointer-type-def type-id='type-id-277' size-in-bits='64' id='type-id-279'/>
     <class-decl name='CoveAndTiler' size-in-bits='2688' visibility='default' filepath='libnurbs/internals/coveandtiler.h' line='46' column='1' id='type-id-281'>
-      <base-class access='public' layout-offset-in-bits='24' is-virtual='yes' type-id='type-id-282'/>
+      <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-282'/>
       <data-member access='private' layout-offset-in-bits='64'>
         <var-decl name='backend' type-id='type-id-231' visibility='default' filepath='libnurbs/internals/coveandtiler.h' line='52' column='1'/>
       </data-member>
@@ -8433,7 +8433,7 @@
   </abi-instr>
   <abi-instr version='1.0' address-size='64' path='libnurbs/internals/hull.cc' language='LANG_C_plus_plus'>
     <class-decl name='Hull' size-in-bits='4800' visibility='default' filepath='libnurbs/internals/hull.h' line='47' column='1' id='type-id-355'>
-      <base-class access='public' layout-offset-in-bits='24' is-virtual='yes' type-id='type-id-282'/>
+      <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-282'/>
       <member-type access='private'>
         <class-decl name='Side' size-in-bits='256' is-struct='yes' visibility='default' filepath='libnurbs/internals/hull.h' line='55' column='1' id='type-id-356'>
           <data-member access='public' layout-offset-in-bits='0'>
@@ -8678,7 +8678,7 @@
       <return type-id='type-id-152'/>
     </function-decl>
     <class-decl name='Mesher' size-in-bits='7680' visibility='default' filepath='libnurbs/internals/mesher.h' line='47' column='1' id='type-id-363'>
-      <base-class access='public' layout-offset-in-bits='24' is-virtual='yes' type-id='type-id-282'/>
+      <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-282'/>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-355'/>
       <data-member access='private' static='yes'>
         <var-decl name='ZERO' type-id='type-id-168' mangled-name='_ZN6Mesher4ZEROE' visibility='default' filepath='libnurbs/internals/mesher.cc' line='53' column='1'/>
@@ -10567,7 +10567,7 @@
     </function-decl>
     <class-decl name='Slicer' size-in-bits='8064' visibility='default' filepath='libnurbs/internals/slicer.h' line='49' column='1' id='type-id-226'>
       <base-class access='public' layout-offset-in-bits='0' type-id='type-id-281'/>
-      <base-class access='public' layout-offset-in-bits='16' type-id='type-id-363'/>
+      <base-class access='public' layout-offset-in-bits='128' type-id='type-id-363'/>
       <data-member access='private' layout-offset-in-bits='5248'>
         <var-decl name='backend' type-id='type-id-231' visibility='default' filepath='libnurbs/internals/slicer.h' line='72' column='1'/>
       </data-member>

@@ -57,8 +57,8 @@
     </class-decl>
     <type-decl name='double' size-in-bits='64' id='type-id-5'/>
     <class-decl name='s0' size-in-bits='384' is-struct='yes' visibility='default' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='13' column='1' id='type-id-6'>
-      <base-class access='public' layout-offset-in-bits='24' is-virtual='yes' type-id='type-id-1'/>
-      <base-class access='public' layout-offset-in-bits='32' is-virtual='yes' type-id='type-id-4'/>
+      <base-class access='public' layout-offset-in-bits='192' is-virtual='yes' type-id='type-id-1'/>
+      <base-class access='public' layout-offset-in-bits='256' is-virtual='yes' type-id='type-id-4'/>
       <member-type access='public'>
         <typedef-decl name='integer' type-id='type-id-8' filepath='/home/dodji/git/libabigail/dwarf/tests/data/test-read-dwarf/test1.cc' line='15' column='1' id='type-id-7'/>
       </member-type>

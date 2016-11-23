@@ -6772,25 +6772,32 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 /// value of the DW_AT_data_member_location attribute.
 ///
 /// There is a huge gotcha in here.  The value of the
-/// DW_AT_data_member_location is not a constant that one would just
-/// read and be done with it.  Rather, it's a DWARF expression that
-/// one has to interpret.  There are three general cases to consider:
+/// DW_AT_data_member_location is not necessarily a constant that one
+/// would just read and be done with it.  Rather, it can be a DWARF
+/// expression that one has to interpret.  In general, the offset can
+/// be given by the DW_AT_bit_offset attribute.  In that case the
+/// offset is a constant.  But it can also be given by the
+/// DW_AT_data_member_location attribute.  In that case it's a DWARF
+/// location expression.
 ///
-///     1/ The offset in the vtable where the offset of the of a
-///        virtual base can be found, aka vptr offset.  Given the
-///        address of a given object O, the vptr offset for B is given
-///        by the (DWARF) expression:
+/// When the it's the DW_AT_data_member_location that is present,
+/// there are three cases to possibly take into account:
+///
+///     1/ The offset in the vtable where the offset of a virtual base
+///        can be found, aka vptr offset.  Given the address of a
+///        given object O, the vptr offset for B is given by the
+///        (DWARF) expression:
 ///
 ///            address(O) + *(*address(0) - VIRTUAL_OFFSET)
 ///
 ///        where VIRTUAL_OFFSET is a constant value; In this case,
 ///        this function returns the constant VIRTUAL_OFFSET, as this
-///        is enough to detect changes in the place of a given virtual
-///        base, relative to the other virtual bases.
+///        is enough to detect changes in a given virtual base
+///        relative to the other virtual bases.
 ///
 ///     2/ The offset of a regular data member.  Given the address of
-///        a struct object, the memory location for a particular data
-///        member is given by the (DWARF) expression:
+///        a struct object named O, the memory location for a
+///        particular data member is given by the (DWARF) expression:
 ///
 ///            address(O) + OFFSET
 ///
@@ -6804,23 +6811,39 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 ///
 ///@param die the DIE to read the information from.
 ///
-///@param offset the resulting constant.  This argument is set iff the
-///function returns true.
+///@param offset the resulting constant offset, in bits.  This
+///argument is set iff the function returns true.
 static bool
-die_member_offset(Dwarf_Die* die,
-		  ssize_t& offset)
+die_member_offset(Dwarf_Die* die, ssize_t& offset)
 {
   Dwarf_Op* expr = NULL;
   size_t expr_len = 0;
+  size_t off = 0;
+
+  if (die_unsigned_constant_attribute(die, DW_AT_bit_offset, off))
+    {
+      // The DW_AT_bit_offset is present.  If it contains a non-zero
+      // value, let's read that one.
+      if (off != 0)
+	{
+	  offset = off;
+	  return true;
+	}
+    }
 
   if (!die_location_expr(die, DW_AT_data_member_location, &expr, &expr_len))
     return false;
+
+  // Otherwise, the DW_AT_data_member_location attribute is present.
+  // In that case, let's evaluate it and get its constant
+  // sub-expression and return that one.
 
   bool is_tls_address = false;
   if (!eval_last_constant_dwarf_sub_expr(expr, expr_len,
 					 offset, is_tls_address))
     return false;
 
+  offset *= 8;
   return true;
 }
 
@@ -8051,7 +8074,6 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      ssize_t offset_in_bits = 0;
 	      bool is_laid_out = false;
 	      is_laid_out = die_member_offset(&child, offset_in_bits);
-	      offset_in_bits *= 8;
 	      // For now, is_static == !is_laid_out.  When we have
 	      // templates, we'll try to be more specific.  For now,
 	      // this approximation should do OK.
