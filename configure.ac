@@ -307,10 +307,13 @@ if test x$CHECK_DEPS_FOR_FEDABIPKGDIFF = xyes; then
   AC_PATH_PROG(WGET, wget, no)
 
   if test x$WGET = xno; then
+    ENABLE_FEDABIPKGDIFF=no
     if test x$MISSING_FEDABIPKGDIFF_DEP_FATAL = xyes; then
       AC_MSG_ERROR(could not find the wget program)
     else
       MISSING_FEDABIPKGDIFF_DEP=yes
+      AC_MSG_NOTICE([could not find the wget program])
+      AC_MSG_NOTICE([disabling fedabipkgdiff as a result])
     fi
   fi
 
