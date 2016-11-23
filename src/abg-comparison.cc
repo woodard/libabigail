@@ -5543,7 +5543,19 @@ struct data_member_comp
     assert(first_dm);
     assert(second_dm);
 
-    return get_data_member_offset(first_dm) < get_data_member_offset(second_dm);
+    size_t first_offset = get_data_member_offset(first_dm);
+    size_t second_offset = get_data_member_offset(second_dm);
+
+    // The data member at the smallest offset comes first.
+    if (first_offset != second_offset)
+      return first_offset < second_offset;
+
+    string first_dm_name = first_dm->get_name();
+    string second_dm_name = second_dm->get_name();
+
+    // But in case the two data members are at the same offset, then
+    // sort them lexicographically.
+    return first_dm_name < second_dm_name;
   }
 };//end struct data_member_comp
 
