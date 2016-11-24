@@ -6817,8 +6817,8 @@ static bool
 die_member_offset(Dwarf_Die* die, ssize_t& offset)
 {
   Dwarf_Op* expr = NULL;
-  size_t expr_len = 0;
-  size_t off = 0;
+  uint64_t expr_len = 0;
+  uint64_t off = 0;
 
   if (die_unsigned_constant_attribute(die, DW_AT_bit_offset, off))
     {
