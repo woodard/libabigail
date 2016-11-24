@@ -6994,7 +6994,7 @@ find_import_unit_point_between_dies(const read_context& ctxt,
 						  i->imported_unit_child_off,
 						  i->imported_unit_cu_off,
 						  i->imported_unit_die_source,
-						  (Dwarf_Off)-1,
+						  /*(Dwarf_Off)*/-1,
 						  imported_point_offset))
 	    return true;
 	}
@@ -7015,7 +7015,7 @@ find_import_unit_point_between_dies(const read_context& ctxt,
 						  i->imported_unit_child_off,
 						  i->imported_unit_cu_off,
 						  i->imported_unit_die_source,
-						  (Dwarf_Off)-1,
+						  /*(Dwarf_Off)*/-1,
 						  imported_point_offset))
 	    return true;
 	}
