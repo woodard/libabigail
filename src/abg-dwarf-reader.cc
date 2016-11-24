@@ -5548,7 +5548,7 @@ die_loc_and_name(const read_context&	ctxt,
 ///
 /// @return true if the size attribute was found.
 static bool
-die_size_in_bits(Dwarf_Die* die, size_t& size)
+die_size_in_bits(Dwarf_Die* die, uint64_t& size)
 {
   if (!die)
     return false;
@@ -5798,7 +5798,7 @@ static bool
 die_location_expr(Dwarf_Die* die,
 		  unsigned attr_name,
 		  Dwarf_Op** expr,
-		  size_t* expr_len)
+		  uint64_t* expr_len)
 {
   if (!die)
     return false;
@@ -5806,7 +5806,14 @@ die_location_expr(Dwarf_Die* die,
   Dwarf_Attribute attr;
   if (!dwarf_attr_integrate(die, attr_name, &attr))
     return false;
-  return (dwarf_getlocation(&attr, expr, expr_len) == 0);
+
+  size_t len = 0;
+  bool result = (dwarf_getlocation(&attr, expr, &len) == 0);
+
+  if (result)
+    *expr_len = len;
+
+  return result;
 }
 
 /// An abstraction of a value representing the result of the
@@ -5817,7 +5824,7 @@ die_location_expr(Dwarf_Die* die,
 class expr_result
 {
   bool is_const_;
-  ssize_t const_value_;
+  int64_t const_value_;
 
 public:
   expr_result()
@@ -5830,7 +5837,7 @@ public:
       const_value_(0)
   {}
 
-  explicit expr_result(ssize_t v)
+  explicit expr_result(int64_t v)
     :is_const_(true),
      const_value_(v)
   {}
@@ -5856,7 +5863,7 @@ public:
   ///
   ///@return true if this has a constant value, false otherwise.
   bool
-  const_value(ssize_t& value)
+  const_value(int64_t& value)
   {
     if (is_const())
       {
@@ -5872,18 +5879,18 @@ public:
   /// otherwise the current process is aborted.
   ///
   /// @return the constant value of the current @ref expr_result.
-  ssize_t
+  int64_t
   const_value() const
   {
     assert(is_const());
     return const_value_;
   }
 
-  operator ssize_t() const
+  operator int64_t() const
   {return const_value();}
 
   expr_result&
-  operator=(const ssize_t v)
+  operator=(const int64_t v)
   {
     const_value_ = v;
     return *this;
@@ -5919,7 +5926,7 @@ public:
   }
 
   expr_result&
-  operator+=(ssize_t v)
+  operator+=(int64_t v)
   {
     const_value_ += v;
     return *this;
@@ -6102,15 +6109,15 @@ struct dwarf_expr_eval_context
 /// value onto the DEVM stack, false otherwise.
 static bool
 op_pushes_constant_value(Dwarf_Op*			ops,
-			 size_t			ops_len,
-			 size_t			index,
-			 size_t&			next_index,
+			 uint64_t			ops_len,
+			 uint64_t			index,
+			 uint64_t&			next_index,
 			 dwarf_expr_eval_context&	ctxt)
 {
   assert(index < ops_len);
 
   Dwarf_Op& op = ops[index];
-  ssize_t value = 0;
+  int64_t value = 0;
 
   switch (op.atom)
     {
@@ -6266,9 +6273,9 @@ op_pushes_constant_value(Dwarf_Op*			ops,
 /// non-constant value onto the DEVM stack, false otherwise.
 static bool
 op_pushes_non_constant_value(Dwarf_Op* ops,
-			     size_t ops_len,
-			     size_t index,
-			     size_t& next_index,
+			     uint64_t ops_len,
+			     uint64_t index,
+			     uint64_t& next_index,
 			     dwarf_expr_eval_context& ctxt)
 {
   assert(index < ops_len);
@@ -6392,9 +6399,9 @@ op_pushes_non_constant_value(Dwarf_Op* ops,
 /// DEVM stack, false otherwise.
 static bool
 op_manipulates_stack(Dwarf_Op* expr,
-		     size_t expr_len,
-		     size_t index,
-		     size_t& next_index,
+		     uint64_t expr_len,
+		     uint64_t index,
+		     uint64_t& next_index,
 		     dwarf_expr_eval_context& ctxt)
 {
   Dwarf_Op& op = expr[index];
@@ -6516,9 +6523,9 @@ op_manipulates_stack(Dwarf_Op* expr,
 /// arithmetic or logic operation.
 static bool
 op_is_arith_logic(Dwarf_Op* expr,
-		  size_t expr_len,
-		  size_t index,
-		  size_t& next_index,
+		  uint64_t expr_len,
+		  uint64_t index,
+		  uint64_t& next_index,
 		  dwarf_expr_eval_context& ctxt)
 {
   assert(index < expr_len);
@@ -6649,9 +6656,9 @@ op_is_arith_logic(Dwarf_Op* expr,
 /// control flow operation, false otherwise.
 static bool
 op_is_control_flow(Dwarf_Op* expr,
-		   size_t expr_len,
-		   size_t index,
-		   size_t& next_index,
+		   uint64_t expr_len,
+		   uint64_t index,
+		   uint64_t& next_index,
 		   dwarf_expr_eval_context& ctxt)
 {
     assert(index < expr_len);
@@ -6732,19 +6739,19 @@ op_is_control_flow(Dwarf_Op* expr,
 /// to evaluate, false otherwise.
 static bool
 eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
-				  size_t	expr_len,
-				  ssize_t&	value,
+				  uint64_t	expr_len,
+				  int64_t&	value,
 				  bool&	is_tls_address)
 {
   dwarf_expr_eval_context eval_ctxt;
 
-  size_t index = 0, next_index = 0;
+  uint64_t index = 0, next_index = 0;
   do
     {
       if (op_is_arith_logic(expr, expr_len, index,
-			       next_index, eval_ctxt)
+			    next_index, eval_ctxt)
 	  || op_pushes_constant_value(expr, expr_len, index,
-				   next_index, eval_ctxt)
+				      next_index, eval_ctxt)
 	  || op_manipulates_stack(expr, expr_len, index,
 				  next_index, eval_ctxt)
 	  || op_pushes_non_constant_value(expr, expr_len, index,
@@ -6814,7 +6821,7 @@ eval_last_constant_dwarf_sub_expr(Dwarf_Op*	expr,
 ///@param offset the resulting constant offset, in bits.  This
 ///argument is set iff the function returns true.
 static bool
-die_member_offset(Dwarf_Die* die, ssize_t& offset)
+die_member_offset(Dwarf_Die* die, int64_t& offset)
 {
   Dwarf_Op* expr = NULL;
   uint64_t expr_len = 0;
@@ -6864,13 +6871,13 @@ die_location_address(Dwarf_Die*	die,
 		     bool&		is_tls_address)
 {
   Dwarf_Op* expr = NULL;
-  size_t expr_len = 0;
+  uint64_t expr_len = 0;
 
   is_tls_address = false;
   if (!die_location_expr(die, DW_AT_location, &expr, &expr_len))
     return false;
 
-  ssize_t addr = 0;
+  int64_t addr = 0;
   if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, addr, is_tls_address))
     return false;
 
@@ -6891,18 +6898,18 @@ die_location_address(Dwarf_Die*	die,
 /// attribute.
 static bool
 die_virtual_function_index(Dwarf_Die* die,
-			   size_t& vindex)
+			   uint64_t& vindex)
 {
   if (!die)
     return false;
 
   Dwarf_Op* expr = NULL;
-  size_t expr_len = 0;
+  uint64_t expr_len = 0;
   if (!die_location_expr(die, DW_AT_vtable_elem_location,
 			 &expr, &expr_len))
     return false;
 
-  ssize_t i = 0;
+  int64_t i = 0;
   bool is_tls_addr = false;
   if (!eval_last_constant_dwarf_sub_expr(expr, expr_len, i, is_tls_addr))
     return false;
@@ -7795,7 +7802,7 @@ finish_member_function_reading(Dwarf_Die*		die,
   bool is_dtor = (!f->get_name().empty()
 		  && static_cast<string>(f->get_name())[0] == '~');
   bool is_virtual = die_is_virtual(die);
-  size_t vindex = 0;
+  uint64_t vindex = 0;
   if (is_virtual)
     die_virtual_function_index(die, vindex);
   access_specifier access = private_access;
@@ -7950,7 +7957,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
       is_anonymous = true;
     }
 
-  size_t size = 0;
+  uint64_t size = 0;
   die_size_in_bits(die, size);
 
   Dwarf_Die child;
@@ -8032,7 +8039,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      die_access_specifier(&child, access);
 
 	      bool is_virt= die_is_virtual(&child);
-	      ssize_t offset = 0;
+	      int64_t offset = 0;
 	      bool is_offset_present =
 		die_member_offset(&child, offset);
 
@@ -8071,7 +8078,7 @@ build_class_type_and_add_to_ir(read_context&	ctxt,
 	      if (lookup_var_decl_in_scope(n, result))
 		continue;
 
-	      ssize_t offset_in_bits = 0;
+	      int64_t offset_in_bits = 0;
 	      bool is_laid_out = false;
 	      is_laid_out = die_member_offset(&child, offset_in_bits);
 	      // For now, is_static == !is_laid_out.  When we have
@@ -8218,7 +8225,7 @@ build_union_type_and_add_to_ir(read_context&	ctxt,
       is_anonymous = true;
     }
 
-  size_t size = 0;
+  uint64_t size = 0;
   die_size_in_bits(die, size);
 
   bool is_declaration_only = die_is_declaration_only(die);
