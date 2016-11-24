@@ -2441,7 +2441,7 @@ write_union_decl_opening_tag(const union_decl_sptr&	decl,
   if (!decl)
     return false;
 
-    ostream& o = ctxt.get_ostream();
+  ostream& o = ctxt.get_ostream();
 
   do_indent_to_level(ctxt, indent, 0);
 
