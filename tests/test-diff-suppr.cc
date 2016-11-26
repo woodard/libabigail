@@ -1658,6 +1658,16 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test32-report-1.txt",
     "output/test-diff-suppr/test32-report-1.txt"
   },
+  {
+    "data/test-diff-suppr/libtest33-v0.so",
+    "data/test-diff-suppr/libtest33-v1.so",
+    "",
+    "",
+    "data/test-diff-suppr/libtest33-1.suppr",
+    "--no-default-suppression --no-show-locs --no-redundant",
+    "data/test-diff-suppr/test33-report-0.txt",
+    "output/test-diff-suppr/test33-report-0.txt"
+  },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };
