@@ -1,5 +1,5 @@
 ================ changes of 'libtbb.so.2'===============
-  Functions changes summary: 0 Removed, 7 Changed (17 filtered out), 17 Added functions
+  Functions changes summary: 0 Removed, 7 Changed (9 filtered out), 17 Added functions
   Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   Function symbols changes summary: 0 Removed, 0 Added function symbol not referenced by debug info
   Variable symbols changes summary: 3 Removed, 0 Added variable symbols not referenced by debug info
@@ -46,7 +46,7 @@
         in referenced type 'class tbb::task_group_context' at task.h:302:1:
           1 data member insertion:
             'tbb::internal::cpu_ctl_env_space tbb::task_group_context::my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
-          1 data member changes (2 filtered):
+          1 data member changes (1 filtered):
            type of 'char tbb::task_group_context::_leading_padding[80]' changed:
              type name changed from 'char[80]' to 'char[72]'
              array type size changed from 640 to 576 bits:

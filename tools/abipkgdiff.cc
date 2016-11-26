@@ -113,6 +113,8 @@ using abigail::comparison::corpus_diff_sptr;
 using abigail::suppr::suppression_sptr;
 using abigail::suppr::suppressions_type;
 using abigail::suppr::read_suppressions;
+using abigail::dwarf_reader::read_context_sptr;
+using abigail::dwarf_reader::create_read_context;
 using abigail::dwarf_reader::get_soname_of_elf_file;
 using abigail::dwarf_reader::get_type_of_elf_file;
 using abigail::dwarf_reader::read_corpus_from_elf;
@@ -1083,18 +1085,23 @@ compare(const elf_file& elf1,
       << elf1.path
       << " ...\n";
 
-  corpus_sptr corpus1 = read_corpus_from_elf(elf1.path, &di_dir1, env.get(),
-					     /*load_all_types=*/false,
-					     c1_status);
-  if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
-    {
-      if (verbose)
-	emit_prefix("abipkgdiff", cerr)
-	  << "Could not read file '"
-	  << elf1.path
-	  << "' properly\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
-    }
+  corpus_sptr corpus1;
+  {
+    read_context_sptr c = create_read_context(elf1.path, &di_dir1, env.get(),
+					      /*load_all_types=*/false);
+    add_read_context_suppressions(*c, priv_types_supprs1);
+    corpus1 = read_corpus_from_elf(*c, c1_status);
+
+    if (!(c1_status & abigail::dwarf_reader::STATUS_OK))
+      {
+	if (verbose)
+	  emit_prefix("abipkgdiff", cerr)
+	    << "Could not read file '"
+	    << elf1.path
+	    << "' properly\n";
+	return abigail::tools_utils::ABIDIFF_ERROR;
+      }
+  }
 
   if (opts.fail_if_no_debug_info
       && (c1_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND))
@@ -1120,18 +1127,23 @@ compare(const elf_file& elf1,
       << elf2.path
       << " ...\n";
 
-  corpus_sptr corpus2 = read_corpus_from_elf(elf2.path, &di_dir2, env.get(),
-					     /*load_all_types=*/false,
-					     c2_status);
-  if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
-    {
-      if (verbose)
-	emit_prefix("abipkgdiff", cerr)
-	  << "Could not find the read file '"
-	  << elf2.path
-	  << "' properly\n";
-      return abigail::tools_utils::ABIDIFF_ERROR;
-    }
+  corpus_sptr corpus2;
+  {
+    read_context_sptr c = create_read_context(elf2.path, &di_dir2, env.get(),
+					      /*load_all_types=*/false);
+    add_read_context_suppressions(*c, priv_types_supprs2);
+    corpus2 = read_corpus_from_elf(*c, c2_status);
+
+    if (!(c2_status & abigail::dwarf_reader::STATUS_OK))
+      {
+	if (verbose)
+	  emit_prefix("abipkgdiff", cerr)
+	    << "Could not find the read file '"
+	    << elf2.path
+	    << "' properly\n";
+	return abigail::tools_utils::ABIDIFF_ERROR;
+      }
+  }
 
   if (opts.fail_if_no_debug_info
       && (c2_status & abigail::dwarf_reader::STATUS_DEBUG_INFO_NOT_FOUND))

@@ -1604,7 +1604,7 @@ InOutSpec in_out_specs[] =
     "",
     "",
     "",
-    "--no-default-suppression",
+    "--no-default-suppression --dont-drop-private-types",
     "data/test-diff-suppr/test30-report-0.txt",
     "output/test-diff-suppr/test30-report-0.txt"
   },
@@ -1614,7 +1614,7 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/test30-include-dir-v0",
     "data/test-diff-suppr/test30-include-dir-v1",
     "",
-    "--no-default-suppression",
+    "--no-default-suppression --dont-drop-private-types",
     "data/test-diff-suppr/test30-report-1.txt",
     "output/test-diff-suppr/test30-report-1.txt"
   },
@@ -1663,10 +1663,20 @@ InOutSpec in_out_specs[] =
     "data/test-diff-suppr/libtest33-v1.so",
     "",
     "",
-    "data/test-diff-suppr/libtest33-1.suppr",
+    "data/test-diff-suppr/test33-suppr-1.txt",
     "--no-default-suppression --no-show-locs --no-redundant",
     "data/test-diff-suppr/test33-report-0.txt",
     "output/test-diff-suppr/test33-report-0.txt"
+  },
+  {
+    "data/test-diff-suppr/libtest34-v0.so",
+    "data/test-diff-suppr/libtest34-v1.so",
+    "data/test-diff-suppr/test34-pub-include-dir-v0",
+    "data/test-diff-suppr/test34-pub-include-dir-v1",
+    "",
+    "--no-default-suppression --dont-drop-private-types",
+    "data/test-diff-suppr/test34-report-0.txt",
+    "output/test-diff-suppr/test34-report-0.txt"
   },
   // This should be the last entry
   {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL}

@@ -999,6 +999,15 @@ test-diff-suppr/test33-v0.cc \
 test-diff-suppr/test33-v0.h \
 test-diff-suppr/test33-v1.cc \
 test-diff-suppr/test33-v1.h \
+test-diff-suppr/libtest34-v0.so \
+test-diff-suppr/libtest34-v1.so \
+test-diff-suppr/test34-priv-include-dir-v0/test34-priv-include-v0.h \
+test-diff-suppr/test34-priv-include-dir-v1/test34-priv-include-v1.h \
+test-diff-suppr/test34-pub-include-dir-v0/test34-pub-include-v0.h \
+test-diff-suppr/test34-pub-include-dir-v1/test34-pub-include-v1.h \
+test-diff-suppr/test34-report-0.txt \
+test-diff-suppr/test34-v0.c \
+test-diff-suppr/test34-v1.c \
 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1 \
 test-diff-dwarf-abixml/test0-pr19026-libvtkIOSQL-6.1.so.1.abi \

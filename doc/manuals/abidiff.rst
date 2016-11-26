@@ -96,6 +96,23 @@ Options
     library that the tool has to consider.  The tool will thus filter
     out ABI changes on types that are not defined in public headers.
 
+  * ``--dont-drop-private-types``
+
+    This option is to be used with the ``--headers-dir1`` and
+    ``--headers-dir2`` options.  Without this option, types that are
+    *NOT* defined in the headers are entirely dropped from the
+    internal representation build by Libabigail to represent the ABI.
+    They thus don't have to be filtered out from the final ABI change
+    report because they are not even present in Libabigail's
+    representation.
+
+    With this option however, those private types are kept in the
+    internal representation and later filtered out from the report.
+
+    This options thus potentially makes Libabigail to potentially
+    consume more memory.  It's meant to be mainly used for debugging
+    purposes.
+
   * ``--stat``
 
     Rather than displaying the detailed ABI differences between

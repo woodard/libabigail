@@ -75,6 +75,7 @@ struct options
   vector<string>	keep_var_regex_patterns;
   string		headers_dir1;
   string		headers_dir2;
+  bool			drop_private_types;
   bool			no_default_supprs;
   bool			no_arch;
   bool			show_stats_only;
@@ -103,6 +104,7 @@ struct options
     : display_usage(),
       display_version(),
       missing_operand(),
+      drop_private_types(true),
       no_default_supprs(),
       no_arch(),
       show_stats_only(),
@@ -139,6 +141,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --debug-info-dir2|--d2 <path> the root for the debug info of file2\n"
     << " --headers-dir1|--hd1 <path>  the path to headers of file1\n"
     << " --headers-dir2|--hd2 <path>  the path to headers of file2\n"
+    << "  --dont-drop-private-types\n  keep private types in "
+    "internal representation\n"
     << " --stat  only display the diff stats\n"
     << " --symtabs  only display the symbol tables of the corpora\n"
     << " --no-default-suppression  don't load any "
@@ -275,6 +279,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	  opts.display_usage = true;
 	  return true;
 	}
+      else if (!strcmp(argv[i], "--dont-drop-private-types"))
+	opts.drop_private_types = false;
       else if (!strcmp(argv[i], "--no-default-suppression"))
 	opts.no_default_supprs = true;
       else if (!strcmp(argv[i], "--no-architecture"))
@@ -591,7 +597,39 @@ set_suppressions(ReadContextType& read_ctxt, const options& opts)
        i != opts.suppression_paths.end();
        ++i)
     read_suppressions(*i, supprs);
-  add_read_context_suppressions(read_ctxt, supprs);
+
+  if (opts.drop_private_types)
+    {
+      if (!opts.headers_dir1.empty())
+	{
+	  // Generate suppression specification to avoid showing ABI
+	  // changes on types that are not defined in public headers.
+	  //
+	  // As these suppression specifications are applied during the
+	  // corpus loading, they are going to be dropped from the
+	  // internal representation altogether.
+	  suppression_sptr suppr =
+	    gen_suppr_spec_from_headers(opts.headers_dir1);
+	  if (suppr)
+	    supprs.push_back(suppr);
+	}
+
+      if (!opts.headers_dir2.empty())
+	{
+	  // Generate suppression specification to avoid showing ABI
+	  // changes on types that are not defined in public headers.
+	  //
+	  // As these suppression specifications are applied during the
+	  // corpus loading, they are going to be dropped from the
+	  // internal representation altogether.
+	  suppression_sptr suppr =
+	    gen_suppr_spec_from_headers(opts.headers_dir2);
+	  if (suppr)
+	    supprs.push_back(suppr);
+	}
+    }
+
+    add_read_context_suppressions(read_ctxt, supprs);
 }
 
 /// Set the regex patterns describing the functions to drop from the

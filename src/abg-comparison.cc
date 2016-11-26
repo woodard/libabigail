@@ -1944,7 +1944,15 @@ diff::set_local_category(diff_category c)
 /// @return true iff the current diff node should NOT be reported.
 bool
 diff::is_filtered_out() const
-{return priv_->is_filtered_out(get_category());}
+{
+  if (diff * canonical = get_canonical_diff())
+    if (canonical->get_category() & SUPPRESSED_CATEGORY)
+      // The canonical type was suppressed.  This means all the class
+      // of equivalence of that canonical type was suppressed.  So
+      // this node should be suppressed too.
+      return true;
+  return priv_->is_filtered_out(get_category());
+}
 
 /// Test if this diff tree node is to be filtered out for reporting
 /// purposes, but by considering only the categories that were *NOT*
@@ -13116,7 +13124,15 @@ struct suppression_categorization_visitor : public diff_node_visitor
   visit_begin(diff* d)
   {
     if (d->is_suppressed())
-      d->add_to_local_and_inherited_categories(SUPPRESSED_CATEGORY);
+      {
+	d->add_to_local_and_inherited_categories(SUPPRESSED_CATEGORY);
+
+	// If a node was suppressed, all the other nodes of its class
+	// of equivalence are suppressed too.
+	diff *canonical_diff = d->get_canonical_diff();
+	if (canonical_diff != d)
+	  canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
+      }
   }
 
   /// After visiting the children nodes of a given diff node,
@@ -13161,7 +13177,14 @@ struct suppression_categorization_visitor : public diff_node_visitor
 	if (has_non_empty_child
 	    && has_suppressed_child
 	    && !has_non_suppressed_child)
-	  d->add_to_category(SUPPRESSED_CATEGORY);
+	  {
+	    d->add_to_category(SUPPRESSED_CATEGORY);
+	    // If a node was suppressed, all the other nodes of its class
+	    // of equivalence are suppressed too.
+	    diff *canonical_diff = d->get_canonical_diff();
+	    if (canonical_diff != d)
+	      canonical_diff->add_to_category(SUPPRESSED_CATEGORY);
+	  }
       }
   }
 }; //end struct suppression_categorization_visitor
