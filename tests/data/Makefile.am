@@ -994,6 +994,7 @@ test-diff-suppr/test32-v0.c \
 test-diff-suppr/test32-v1.c \
 test-diff-suppr/libtest33-v0.so \
 test-diff-suppr/libtest33-v1.so \
+test-diff-suppr/test33-report-0.txt \
 test-diff-suppr/test33-suppr-1.txt \
 test-diff-suppr/test33-v0.cc \
 test-diff-suppr/test33-v0.h \
