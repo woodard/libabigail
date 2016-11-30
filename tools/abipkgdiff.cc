@@ -564,12 +564,11 @@ package::extracted_packages_parent_dir()
 	  if (p.empty())
 	    p = "~";
 	  p += "/.cache/libabigail";
-	  // Create directory $HOME/.cache/libabigail/ if it doesn't
-	  // exist
-	  bool cache_dir_is_created = ensure_dir_path_created(p);
-	  assert(cache_dir_is_created);
         }
-      using abigail::tools_utils::get_random_number_as_string;
+
+      // Create the cache directory if it doesn't exist
+      bool cache_dir_is_created = ensure_dir_path_created(p);
+      assert(cache_dir_is_created);
 
       string libabigail_tmp_dir_template = p;
       libabigail_tmp_dir_template += "/abipkgdiff-tmp-dir-XXXXXX";
