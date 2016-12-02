@@ -15,7 +15,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
              type size changed from 32 to 64 bits
              1 data member insertion:
                'char private_data::private_data1', at offset 32 (in bits)
-         and offset changed from 0 to 64 (in bits)
+         and offset changed from 0 to 64 (in bits) (by +64 bits)
     parameter 2 of type 'a_not_private_type*' has sub-type changes:
       in pointed to type 'struct a_not_private_type':
         type size changed from 32 to 64 bits

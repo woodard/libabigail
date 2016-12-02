@@ -6,6 +6,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void foo(MyType*)' has some indirect sub-type changes:
     parameter 1 of type 'MyType*' has sub-type changes:
       in pointed to type 'struct MyType':
+        type size hasn't changed
         1 data member change:
          type of 'MyType::Private* MyType::priv' changed:
            in pointed to type 'struct MyType::Private':

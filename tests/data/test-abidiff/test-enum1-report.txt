@@ -1,5 +1,6 @@
 1 changed type:
   'enum E' changed:
+    type size hasn't changed
     1 enumerator insertion:
       'E::e1' value '1'
 
@@ -9,6 +10,7 @@
 1 changed declaration:
   'function void foo(E)' was changed to 'function void foo(E)':
     parameter 1 of type 'enum E' has sub-type changes:
+      type size hasn't changed
       1 enumerator insertion:
         'E::e1' value '1'
 

@@ -7,6 +7,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function float add(float, float)' has some indirect sub-type changes:
     return type changed:
       type name changed from 'float' to 'int'
+      type size hasn't changed
 
 
   [C]'function void print(const Student)' has some indirect sub-type changes:

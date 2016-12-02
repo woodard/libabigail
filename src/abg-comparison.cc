@@ -533,6 +533,7 @@ struct diff_context::priv
   ostream*				default_output_stream_;
   ostream*				error_output_stream_;
   bool					forbid_visiting_a_node_twice_;
+  bool					show_relative_offset_changes_;
   bool					show_stats_only_;
   bool					show_soname_change_;
   bool					show_architecture_change_;
@@ -554,6 +555,7 @@ struct diff_context::priv
       default_output_stream_(),
       error_output_stream_(),
       forbid_visiting_a_node_twice_(true),
+      show_relative_offset_changes_(true),
       show_stats_only_(false),
       show_soname_change_(true),
       show_architecture_change_(true),
@@ -1074,6 +1076,27 @@ diff_context::add_suppressions(const suppressions_type& supprs)
   priv_->suppressions_.insert(priv_->suppressions_.end(),
 			      supprs.begin(), supprs.end());
 }
+
+/// Set a flag saying if offset changes should be reported in a
+/// relative way.  That is, if the report should say how of many bits
+/// a class/struct data member did move.
+///
+/// @param f the new boolean value of the flag.
+void
+diff_context::show_relative_offset_changes(bool f)
+{priv_->show_relative_offset_changes_ = f;}
+
+/// Get the flag saying if offset changes should be reported in a
+/// relative way.  That is, if the report should say how of many bits
+/// a class/struct data member did move.
+///
+/// @return the boolean value of the flag.
+bool
+diff_context::show_relative_offset_changes(void)
+{return priv_->show_relative_offset_changes_;}
+
+  bool
+  show_relative_offset_changes(void);
 
 /// Set a flag saying if the comparison module should only show the
 /// diff stats.
@@ -2804,6 +2827,56 @@ represent_data_member(var_decl_sptr d,
     }
 }
 
+/// If a given @ref var_diff node carries a data member change in
+/// which the offset of the data member actually changed, then emit a
+/// string (to an output stream) that represents that offset change.
+///
+/// For instance, if the offset of the data member increased by 32
+/// bits then the string emitted is going to be "by +32 bits".
+///
+/// If, on the other hand, the offset of the data member decreased by
+/// 64 bits then the string emitted is going to be "by -64 bits".
+///
+/// This function is a sub-routine used by the reporting system.
+///
+/// @param diff the diff node that potentially carries the data member
+/// change.
+///
+/// @param ctxt the context in which the diff is being reported.
+///
+/// @param out the output stream to emit the string to.
+static void
+maybe_show_relative_offset_change(var_diff_sptr diff,
+				  diff_context& ctxt,
+				  ostream&	out)
+{
+  if (!ctxt.show_relative_offset_changes())
+    return;
+
+  var_decl_sptr o = diff->first_var();
+  var_decl_sptr n = diff->second_var();
+
+  uint64_t first_offset = get_data_member_offset(o),
+    second_offset = get_data_member_offset(n);
+
+  string sign;
+  uint64_t change = 0;
+  if (first_offset < second_offset)
+    {
+      sign = "+";
+      change = second_offset - first_offset;
+    }
+  else if (first_offset > second_offset)
+    {
+      sign = "-";
+      change = first_offset - second_offset;
+    }
+  else
+    return;
+
+  out << " (by " << sign << change << " bits)";
+}
+
 /// Represent the changes carried by an instance of @ref var_diff that
 /// represent a difference between two class data members.
 ///
@@ -2903,6 +2976,9 @@ represent(var_diff_sptr	diff,
 	  << get_data_member_offset(o)
 	  << " to " << get_data_member_offset(n)
 	  << " (in bits)";
+
+      maybe_show_relative_offset_change(diff, *ctxt, out);
+
       emitted = true;
     }
   if (o->get_binding() != n->get_binding())
@@ -3014,69 +3090,74 @@ report_size_and_alignment_changes(type_or_decl_base_sptr	first,
   if (nl)
     out << "\n";
 
-  if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
-      && (fs != ss || fdc != sdc))
+  if (ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
     {
-      if (first_array && second_array)
+      if (fs != ss || fdc != sdc)
 	{
-	  // We are looking at size or alignment changes between two
-	  // arrays ...
-	  out << indent << "array type size changed from ";
-	  if (first_array->is_infinite())
-	    out << "infinity";
-	  else
-	    out << first_array->get_size_in_bits();
-	  out << " to ";
-	  if (second_array->is_infinite())
-	    out << "infinity";
-	  else
-	    out << second_array->get_size_in_bits();
-	  out << " bits:\n";
+	  if (first_array && second_array)
+	    {
+	      // We are looking at size or alignment changes between two
+	      // arrays ...
+	      out << indent << "array type size changed from ";
+	      if (first_array->is_infinite())
+		out << "infinity";
+	      else
+		out << first_array->get_size_in_bits();
+	      out << " to ";
+	      if (second_array->is_infinite())
+		out << "infinity";
+	      else
+		out << second_array->get_size_in_bits();
+	      out << " bits:\n";
 
-	  if (sdc != fdc)
-	    {
-	      out << indent + "  "
-		  << "number of dimensions changed from "
-		  << fdc
-		  << " to "
-		  << sdc
-		  << "\n";
-	    }
-	  array_type_def::subranges_type::const_iterator i, j;
-	  for (i = first_array->get_subranges().begin(),
-		 j = second_array->get_subranges().begin();
-	       (i != first_array->get_subranges().end()
-		&& j != second_array->get_subranges().end());
-	       ++i, ++j)
-	    {
-	      if ((*i)->get_length() != (*j)->get_length())
+	      if (sdc != fdc)
 		{
-		  out << indent
-		      << "array type subrange "
-		      << i - first_array->get_subranges().begin() + 1
-		      << " changed length from ";
-
-		  if ((*i)->is_infinite())
-		    out << "infinity";
-		  else
-		    out << (*i)->get_length();
-
-		  out << " to ";
-
-		  if ((*j)->is_infinite())
-		    out << "infinity";
-		  else
-		    out << (*j)->get_length();
-		  out << "\n";
+		  out << indent + "  "
+		      << "number of dimensions changed from "
+		      << fdc
+		      << " to "
+		      << sdc
+		      << "\n";
 		}
+	      array_type_def::subranges_type::const_iterator i, j;
+	      for (i = first_array->get_subranges().begin(),
+		     j = second_array->get_subranges().begin();
+		   (i != first_array->get_subranges().end()
+		    && j != second_array->get_subranges().end());
+		   ++i, ++j)
+		{
+		  if ((*i)->get_length() != (*j)->get_length())
+		    {
+		      out << indent
+			  << "array type subrange "
+			  << i - first_array->get_subranges().begin() + 1
+			  << " changed length from ";
+
+		      if ((*i)->is_infinite())
+			out << "infinity";
+		      else
+			out << (*i)->get_length();
+
+		      out << " to ";
+
+		      if ((*j)->is_infinite())
+			out << "infinity";
+		      else
+			out << (*j)->get_length();
+		      out << "\n";
+		    }
+		}
+	    } // end if (first_array && second_array)
+	  else if (fs != ss)
+	    {
+	      out << indent
+		  << "type size changed from " << fs << " to " << ss << " bits";
+	      n = true;
 	    }
-	}
-      else if (fs != ss)
-	{
-	  out << indent
-	      << "type size changed from " << fs << " to " << ss << " bits";
-	  n = true;
-	}
+	} // end if (fs != ss || fdc != sdc)
+      else
+	if (ctxt->show_relative_offset_changes())
+	  out << indent << "type size hasn't changed\n";
     }
   if ((ctxt->get_allowed_category() & SIZE_OR_OFFSET_CHANGE_CATEGORY)
       && (fa != sa))

@@ -10,13 +10,13 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
         1 data member insertion:
           'char S::inserted_char_member', at offset 0 (in bits)
         1 data member change:
-         'int S::int_member' offset changed from 0 to 32 (in bits)
+         'int S::int_member' offset changed from 0 to 32 (in bits) (by +32 bits)
     parameter 2 of type 'C&' has sub-type changes:
       in referenced type 'class C':
         type size changed from 32 to 64 bits
         1 data member insertion:
           'char C::inserted_char_member', at offset 0 (in bits)
         1 data member change:
-         'int C::int_member' offset changed from 0 to 32 (in bits)
+         'int C::int_member' offset changed from 0 to 32 (in bits) (by +32 bits)
 
 

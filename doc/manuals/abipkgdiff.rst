@@ -164,6 +164,13 @@ Options
    Do not show information about where in the *second shared library*
    the respective type was changed.
 
+  *  ``--no-show-relative-offset-changes``
+
+     Without this option, when the offset of a data member changes,
+     the change report not only mentions the older and newer offset,
+     but it also mentions by how many bits the data member changes.
+     With this option, the latter is not shown.
+
   * ``--show-identical-binaries``
 
    Show the names of the all binaries compared, including the

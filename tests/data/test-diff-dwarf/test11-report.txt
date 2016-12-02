@@ -17,6 +17,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
            type name changed from 'int[6][4]' to 'int[6][5]'
            array type size changed from 320 to 352 bits:
            array type subrange 2 changed length from 4 to 5
-         and offset changed from 480 to 576 (in bits)
+         and offset changed from 480 to 576 (in bits) (by +96 bits)
 
 

@@ -297,6 +297,11 @@ test-diff-dwarf/test38-union-v1.cc \
 test-diff-dwarf/test39-union-report-0.txt \
 test-diff-dwarf/test39-union-v0.cc \
 test-diff-dwarf/test39-union-v1.cc \
+test-diff-dwarf/libtest40-v0.so \
+test-diff-dwarf/libtest40-v1.so \
+test-diff-dwarf/test40-report-0.txt \
+test-diff-dwarf/test40-v0.c \
+test-diff-dwarf/test40-v1.c \
 \
 test-read-dwarf/test0			\
 test-read-dwarf/test0.abi			\

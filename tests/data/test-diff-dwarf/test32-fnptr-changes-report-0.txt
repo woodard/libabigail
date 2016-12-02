@@ -28,6 +28,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
 
   [C]'function void foo(S)' has some indirect sub-type changes:
     parameter 1 of type 'class S' has sub-type changes:
+      type size hasn't changed
       3 data member changes:
        type of 'int ()* S::fnptr0' changed:
          in pointed to type 'function type int ()':

@@ -3371,7 +3371,7 @@ is_data_member(const decl_base_sptr& d)
 ///
 /// @param o the offset, in bits.
 void
-set_data_member_offset(var_decl_sptr m, size_t o)
+set_data_member_offset(var_decl_sptr m, uint64_t o)
 {
   assert(is_data_member(m));
 
@@ -3387,7 +3387,7 @@ set_data_member_offset(var_decl_sptr m, size_t o)
 /// @param m the data member to consider.
 ///
 /// @return the offset (in bits) of @p m in its containing class.
-size_t
+uint64_t
 get_data_member_offset(const var_decl& m)
 {
   assert(is_data_member(m));
@@ -3402,7 +3402,7 @@ get_data_member_offset(const var_decl& m)
 /// @param m the data member to consider.
 ///
 /// @return the offset (in bits) of @p m in its containing class.
-size_t
+uint64_t
 get_data_member_offset(const var_decl_sptr m)
 {return get_data_member_offset(*m);}
 
@@ -3411,7 +3411,7 @@ get_data_member_offset(const var_decl_sptr m)
 /// @param m the data member to consider.
 ///
 /// @return the offset (in bits) of @p m in its containing class.
-size_t
+uint64_t
 get_data_member_offset(const decl_base_sptr d)
 {return get_data_member_offset(dynamic_pointer_cast<var_decl>(d));}
 

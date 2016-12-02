@@ -17,9 +17,9 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             1 data member insertion:
               'unsigned int B0S0::m2', at offset 32 (in bits)
             1 data member change:
-             'char B0S0::m1' offset changed from 32 to 64 (in bits)
+             'char B0S0::m1' offset changed from 32 to 64 (in bits) (by +32 bits)
 
         1 data member change:
-         'int S0::m0' offset changed from 64 to 96 (in bits)
+         'int S0::m0' offset changed from 64 to 96 (in bits) (by +32 bits)
 
 

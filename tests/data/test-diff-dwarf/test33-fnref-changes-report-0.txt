@@ -29,6 +29,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void foo(S&)' has some indirect sub-type changes:
     parameter 1 of type 'S&' has sub-type changes:
       in referenced type 'class S':
+        type size hasn't changed
         3 data member changes:
          type of 'int ()& S::fnref0' changed:
            in referenced type 'function type int ()':
@@ -38,6 +39,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
          type of 'int ()& S::fnref1' changed:
            in referenced type 'function type int ()':
              entity changed from 'function type int ()' to 'int*'
+             type size hasn't changed
 
          type of 'int ()& S::fnref2' changed:
            in referenced type 'function type int ()':

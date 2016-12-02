@@ -19,6 +19,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
                type name changed from 'int' to 'char'
                type size changed from 32 to 8 bits
            type name changed from 'int*[10]' to 'char*[10]'
-         and offset changed from 512 to 640 (in bits)
+           type size hasn't changed
+         and offset changed from 512 to 640 (in bits) (by +128 bits)
 
 

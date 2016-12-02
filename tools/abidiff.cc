@@ -78,6 +78,7 @@ struct options
   bool			drop_private_types;
   bool			no_default_supprs;
   bool			no_arch;
+  bool			show_relative_offset_changes;
   bool			show_stats_only;
   bool			show_symtabs;
   bool			show_deleted_fns;
@@ -107,6 +108,7 @@ struct options
       drop_private_types(true),
       no_default_supprs(),
       no_arch(),
+      show_relative_offset_changes(true),
       show_stats_only(),
       show_symtabs(),
       show_deleted_fns(),
@@ -159,6 +161,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --no-unreferenced-symbols  do not display changes "
     "about symbols not referenced by debug info\n"
     << " --no-show-locs  do now show location information\n"
+    << " --no-show-relative-offset-changes  do not show relative"
+    " offset changes\n"
     << " --suppressions|--suppr <path> specify a suppression file\n"
     << " --drop <regex>  drop functions and variables matching a regexp\n"
     << " --drop-fn <regex> drop functions matching a regexp\n"
@@ -327,6 +331,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_symbols_not_referenced_by_debug_info = false;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
+      else if (!strcmp(argv[i], "--no-show-relative-offset-changes"))
+	opts.show_relative_offset_changes = false;
       else if (!strcmp(argv[i], "--suppressions")
 	       || !strcmp(argv[i], "--suppr"))
 	{
@@ -506,6 +512,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 {
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
+  ctxt->show_relative_offset_changes(opts.show_relative_offset_changes);
   ctxt->show_stats_only(opts.show_stats_only);
   ctxt->show_deleted_fns(opts.show_all_fns || opts.show_deleted_fns);
   ctxt->show_changed_fns(opts.show_all_fns || opts.show_changed_fns);

@@ -19,6 +19,6 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
             details were reported earlier
 
         1 data member change:
-         'int S::m0' offset changed from 32 to 64 (in bits)
+         'int S::m0' offset changed from 32 to 64 (in bits) (by +32 bits)
 
 

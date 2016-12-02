@@ -538,6 +538,12 @@ public:
   add_suppressions(const suppr::suppressions_type& supprs);
 
   void
+  show_relative_offset_changes(bool f);
+
+  bool
+  show_relative_offset_changes(void);
+
+  void
   show_stats_only(bool f);
 
   bool

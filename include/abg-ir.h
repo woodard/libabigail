@@ -2300,12 +2300,12 @@ public:
   virtual ~var_decl();
 
   friend void
-  set_data_member_offset(var_decl_sptr m, size_t o);
+  set_data_member_offset(var_decl_sptr m, uint64_t o);
 
-  friend size_t
+  friend uint64_t
   get_data_member_offset(const var_decl_sptr m);
 
-  friend size_t
+  friend uint64_t
   get_data_member_offset(const var_decl& m);
 
   friend void

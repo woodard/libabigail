@@ -170,6 +170,7 @@ public:
   string	debug_package2;
   string	devel_package1;
   string	devel_package2;
+  bool		show_relative_offset_changes;
   bool		no_default_suppression;
   bool		keep_tmp_files;
   bool		compare_dso_only;
@@ -189,6 +190,7 @@ public:
       missing_operand(),
       abignore(true),
       parallel(true),
+      show_relative_offset_changes(true),
       no_default_suppression(),
       keep_tmp_files(),
       compare_dso_only(),
@@ -607,6 +609,8 @@ display_usage(const string& prog_name, ostream& out)
     "added/removed/changed\n"
     << " --redundant                    display redundant changes\n"
     << " --no-show-locs                 do not show location information\n"
+    << " --no-show-relative-offset-changes  do not show relative"
+    " offset changes\n"
     << " --no-added-syms                do not display added functions or variables\n"
     << " --no-added-binaries            do not display added binaries\n"
     << " --no-abignore                  do not look for *.abignore files\n"
@@ -973,6 +977,7 @@ set_diff_context_from_opts(diff_context_sptr ctxt,
 {
   ctxt->default_output_stream(&cout);
   ctxt->error_output_stream(&cerr);
+  ctxt->show_relative_offset_changes(opts.show_relative_offset_changes);
   ctxt->show_redundant_changes(opts.show_redundant_changes);
   ctxt->show_locs(opts.show_locs);
   ctxt->show_linkage_names(opts.show_linkage_names);
@@ -1908,6 +1913,8 @@ parse_command_line(int argc, char* argv[], options& opts)
 	opts.show_redundant_changes = true;
       else if (!strcmp(argv[i], "--no-show-locs"))
 	opts.show_locs = false;
+      else if (!strcmp(argv[i], "--no-show-relative-offset-changes"))
+	opts.show_relative_offset_changes = false;
       else if (!strcmp(argv[i], "--no-added-syms"))
 	opts.show_added_syms = false;
       else if (!strcmp(argv[i], "--no-added-binaries"))

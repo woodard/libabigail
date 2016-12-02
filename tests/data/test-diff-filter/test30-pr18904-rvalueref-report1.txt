@@ -1177,22 +1177,27 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [C]'function int ORSLRelease(const int, const int* restrict, const ORSLBusySet* restrict, const restrict ORSLTag)' at orsl-lite.c:327:1 has some indirect sub-type changes:
     parameter 2 of type 'const int* restrict' changed:
       entity changed from 'const int* restrict' to 'const int*'
+      type size hasn't changed
     parameter 3 of type 'const ORSLBusySet* restrict' changed:
       entity changed from 'const ORSLBusySet* restrict' to 'const ORSLBusySet*'
+      type size hasn't changed
     parameter 4 of type 'const restrict ORSLTag' changed:
       'const restrict ORSLTag' changed to 'const ORSLTag'
 
   [C]'function int ORSLReservePartial(const ORSLPartialGranularity, const int, const int* restrict, ORSLBusySet* restrict, const restrict ORSLTag)' at orsl-lite.c:290:1 has some indirect sub-type changes:
     parameter 3 of type 'const int* restrict' changed:
       entity changed from 'const int* restrict' to 'const int*'
+      type size hasn't changed
     parameter 4 of type 'ORSLBusySet* restrict' changed:
       entity changed from 'ORSLBusySet* restrict' to 'ORSLBusySet*'
+      type size hasn't changed
     parameter 5 of type 'const restrict ORSLTag' changed:
       'const restrict ORSLTag' changed to 'const ORSLTag'
 
   [C]'method void OffloadDescriptor::report_coi_error(error_types, COIRESULT)' at offload_host.h:206:1 has some indirect sub-type changes:
     parameter 1 of type 'typedef error_types' has sub-type changes:
       underlying type 'enum __anonymous_enum__' changed:
+        type size hasn't changed
         21 enumerator insertions:
           '__anonymous_enum__::c_process_set_cache_size' value '32'
           '__anonymous_enum__::c_bad_ptr_mem_alloc' value '56'
@@ -1314,13 +1319,16 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
   [C]'method bool OffloadDescriptor::setup_descriptors(VarDesc*, VarDesc2*, int, int, void*)' at offload_host.h:157:1 has some indirect sub-type changes:
     parameter 1 of type 'VarDesc*' has sub-type changes:
       in pointed to type 'struct VarDesc' at offload_common.h:254:1:
+        type size hasn't changed
         1 data member change:
          type of 'VarDesc::__anonymous_union__ VarDesc::flags' changed:
            type name changed from 'VarDesc::__anonymous_union__' to 'varDescFlags'
+           type size hasn't changed
 
            1 data member change:
             type of 'VarDesc::__anonymous_union__::__anonymous_struct__ ' changed:
               type name changed from 'VarDesc::__anonymous_union__::__anonymous_struct__' to 'varDescFlags::__anonymous_struct__'
+              type size hasn't changed
 
               6 data member insertions:
                 'uint32_t varDescFlags::__anonymous_struct__::pin', at offset 18 (in bits) at offload_common.h:248:1
@@ -1375,11 +1383,13 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                      type of 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_M_t' changed:
                        underlying type 'class std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' at stl_set.h:90:1 changed:
                          type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >' to 'std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >'
+                         type size hasn't changed
 
                          1 data member change:
                           type of 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true> std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_M_impl' changed:
                             entity changed from 'struct std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to compatible type 'typedef std::set<PtrData, std::less<PtrData>, std::allocator<PtrData> >::_Rep_type' at stl_set.h:115:1
                               type name changed from 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >::_Rb_tree_impl<std::less<PtrData>, true>' to 'std::_Rb_tree<PtrData, PtrData, std::_Identity<PtrData>, std::less<PtrData>, std::allocator<PtrData> >'
+                              type size hasn't changed
 
                               1 base class deletion:
                                 class std::allocator<std::_Rb_tree_node<PtrData> > at allocator.h:95:1
@@ -1404,16 +1414,16 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
 
 
 
-                'Engine::SignalMap Engine::m_signal_map' offset changed from 1664 to 2368 (in bits)
-                'mutex_t Engine::m_signal_lock' offset changed from 2048 to 2752 (in bits)
+                'Engine::SignalMap Engine::m_signal_map' offset changed from 1664 to 2368 (in bits) (by +704 bits)
+                'mutex_t Engine::m_signal_lock' offset changed from 2048 to 2752 (in bits) (by +704 bits)
                 type of 'coifunction* Engine::m_funcs[6]' changed:
                   type name changed from 'coifunction*[6]' to 'coifunction*[7]'
                   array type size changed from 384 to 448 bits:
                   array type subrange 1 changed length from 6 to 7
-                and offset changed from 2368 to 5056 (in bits)
+                and offset changed from 2368 to 5056 (in bits) (by +2688 bits)
 
-           'bool OffloadDescriptor::m_is_mandatory' offset changed from 320 to 328 (in bits)
-           'const bool OffloadDescriptor::m_is_openmp' offset changed from 328 to 336 (in bits)
+           'bool OffloadDescriptor::m_is_mandatory' offset changed from 320 to 328 (in bits) (by +8 bits)
+           'const bool OffloadDescriptor::m_is_openmp' offset changed from 328 to 336 (in bits) (by +8 bits)
            type of 'OffloadDescriptor::VarExtra* OffloadDescriptor::m_vars_extra' changed:
              in pointed to type 'struct OffloadDescriptor::VarExtra' at offload_host.h:216:1:
                type size changed from 576 to 640 bits
@@ -1421,28 +1431,28 @@ Variable symbols changes summary: 0 Removed, 0 Added variable symbol not referen
                  'void* OffloadDescriptor::VarExtra::alloc', at offset 320 (in bits) at offload_host.h:222:1
                  'OffloadDescriptor::OmpAsyncLastEventType OffloadDescriptor::VarExtra::omp_last_event_type', at offset 608 (in bits) at offload_host.h:227:1
                4 data member changes (3 filtered):
-                'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_src' offset changed from 320 to 384 (in bits)
+                'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_src' offset changed from 320 to 384 (in bits) (by +64 bits)
                 type of 'CeanReadRanges* OffloadDescriptor::VarExtra::read_rng_dst' changed:
                   in pointed to type 'struct CeanReadRanges' at cean_util.h:58:1:
                     type size changed from 512 to 576 bits
                     1 data member insertion:
                       'Arr_Desc* CeanReadRanges::arr_desc', at offset 0 (in bits) at cean_util.h:59:1
                     7 data member changes:
-                     'void* CeanReadRanges::ptr' offset changed from 0 to 64 (in bits)
-                     'int64_t CeanReadRanges::current_number' offset changed from 64 to 128 (in bits)
-                     'int64_t CeanReadRanges::range_max_number' offset changed from 128 to 192 (in bits)
-                     'int64_t CeanReadRanges::range_size' offset changed from 192 to 256 (in bits)
-                     'int CeanReadRanges::last_noncont_ind' offset changed from 256 to 320 (in bits)
-                     'int64_t CeanReadRanges::init_offset' offset changed from 320 to 384 (in bits)
-                     'CeanReadDim CeanReadRanges::Dim[1]' offset changed from 384 to 448 (in bits)
-                and offset changed from 384 to 448 (in bits)
-                'int64_t OffloadDescriptor::VarExtra::ptr_arr_offset' offset changed from 448 to 512 (in bits)
-                'bool OffloadDescriptor::VarExtra::is_arr_ptr_el' offset changed from 512 to 576 (in bits)
+                     'void* CeanReadRanges::ptr' offset changed from 0 to 64 (in bits) (by +64 bits)
+                     'int64_t CeanReadRanges::current_number' offset changed from 64 to 128 (in bits) (by +64 bits)
+                     'int64_t CeanReadRanges::range_max_number' offset changed from 128 to 192 (in bits) (by +64 bits)
+                     'int64_t CeanReadRanges::range_size' offset changed from 192 to 256 (in bits) (by +64 bits)
+                     'int CeanReadRanges::last_noncont_ind' offset changed from 256 to 320 (in bits) (by +64 bits)
+                     'int64_t CeanReadRanges::init_offset' offset changed from 320 to 384 (in bits) (by +64 bits)
+                     'CeanReadDim CeanReadRanges::Dim[1]' offset changed from 384 to 448 (in bits) (by +64 bits)
+                and offset changed from 384 to 448 (in bits) (by +64 bits)
+                'int64_t OffloadDescriptor::VarExtra::ptr_arr_offset' offset changed from 448 to 512 (in bits) (by +64 bits)
+                'bool OffloadDescriptor::VarExtra::is_arr_ptr_el' offset changed from 512 to 576 (in bits) (by +64 bits)
 
-           'OffloadHostTimerData* OffloadDescriptor::m_timer_data' offset changed from 1984 to 2048 (in bits)
-           'uint64_t OffloadDescriptor::m_in_datalen' offset changed from 2048 to 2112 (in bits)
-           'uint64_t OffloadDescriptor::m_out_datalen' offset changed from 2112 to 2176 (in bits)
-           'bool OffloadDescriptor::m_need_runfunction' offset changed from 2176 to 2240 (in bits)
+           'OffloadHostTimerData* OffloadDescriptor::m_timer_data' offset changed from 1984 to 2048 (in bits) (by +64 bits)
+           'uint64_t OffloadDescriptor::m_in_datalen' offset changed from 2048 to 2112 (in bits) (by +64 bits)
+           'uint64_t OffloadDescriptor::m_out_datalen' offset changed from 2112 to 2176 (in bits) (by +64 bits)
+           'bool OffloadDescriptor::m_need_runfunction' offset changed from 2176 to 2240 (in bits) (by +64 bits)
 
   [C]'function void __offload_register_image(void*)' at offload_host.cpp:5531:1 has some indirect sub-type changes:
     return type changed:

@@ -6,6 +6,7 @@ Variables changes summary: 0 Removed, 0 Changed, 0 Added variable
   [C]'function void foo(some_union_type*)' has some indirect sub-type changes:
     parameter 1 of type 'some_union_type*' has sub-type changes:
       in pointed to type 'union some_union_type':
+        type size hasn't changed
         1 data member deletion:
           'int some_union_type::m0'
 

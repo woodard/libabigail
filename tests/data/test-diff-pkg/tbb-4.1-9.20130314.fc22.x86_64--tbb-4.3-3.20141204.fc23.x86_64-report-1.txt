@@ -28,6 +28,7 @@
 
     [C]'function void tbb::internal::throw_exception_v4(tbb::internal::exception_id)' at tbb_misc.cpp:119:1 has some indirect sub-type changes:
       parameter 1 of type 'enum tbb::internal::exception_id' has sub-type changes:
+        type size hasn't changed
         1 enumerator insertion:
           'tbb::internal::exception_id::eid_bad_tagged_msg_cast' value '20'
 
@@ -38,12 +39,14 @@
     [C]'method void tbb::mutex::scoped_lock::internal_acquire(tbb::mutex&)' at mutex.h:129:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::mutex&' has sub-type changes:
         in referenced type 'class tbb::mutex' at mutex.h:40:1:
+          type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
     [C]'method void tbb::pipeline::run(std::size_t, tbb::task_group_context&)' at pipeline.cpp:633:1 has some indirect sub-type changes:
       parameter 2 of type 'tbb::task_group_context&' has sub-type changes:
         in referenced type 'class tbb::task_group_context' at task.h:302:1:
+          type size hasn't changed
           1 data member insertion:
             'tbb::internal::cpu_ctl_env_space tbb::task_group_context::my_cpu_ctl_env', at offset 896 (in bits) at task.h:380:1
           1 data member changes (1 filtered):
@@ -56,24 +59,28 @@
     [C]'method void tbb::queuing_mutex::scoped_lock::acquire(tbb::queuing_mutex&)' at queuing_mutex.h:84:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::queuing_mutex&' has sub-type changes:
         in referenced type 'class tbb::queuing_mutex' at queuing_mutex.h:45:1:
+          type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
     [C]'method void tbb::queuing_rw_mutex::scoped_lock::acquire(tbb::queuing_rw_mutex&, bool)' at queuing_rw_mutex.h:95:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::queuing_rw_mutex&' has sub-type changes:
         in referenced type 'class tbb::queuing_rw_mutex' at queuing_rw_mutex.h:47:1:
+          type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
     [C]'method void tbb::recursive_mutex::scoped_lock::internal_acquire(tbb::recursive_mutex&)' at recursive_mutex.h:139:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::recursive_mutex&' has sub-type changes:
         in referenced type 'class tbb::recursive_mutex' at recursive_mutex.h:39:1:
+          type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
     [C]'method void tbb::spin_mutex::scoped_lock::internal_acquire(tbb::spin_mutex&)' at spin_mutex.h:66:1 has some indirect sub-type changes:
       parameter 1 of type 'tbb::spin_mutex&' has sub-type changes:
         in referenced type 'class tbb::spin_mutex' at spin_mutex.h:40:1:
+          type size hasn't changed
           1 base class insertion:
             class tbb::internal::mutex_copy_deprecated_and_disabled at tbb_stddef.h:334:1
 
