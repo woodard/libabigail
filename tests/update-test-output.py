@@ -1,11 +1,13 @@
 #!/bin/python
 
 # This program generates the copy commands you should use to update
-# the reference data for test <build-dir>/tests/runtestreaddwarf,
-# which source code is test-read-dwarf.cc.  It takes in argument the
-# diff result emitted by <build-dir>/tests/runtestreaddwarf, and emits
-# on standard output a series of 'cp <src> <dest>' commands to execute
-# to update reference data of the test.
+# the reference data for tests <build-dir>/tests/runtest* that emit an
+# output that is compared against a reference output.
+# 
+# It takes in argument the diff result emitted by
+# <build-dir>/tests/runtest*, and emits on standard output a series of
+# 'cp <src> <dest>' commands to execute to update reference data of
+# the test.
 
 import fileinput
 import re
