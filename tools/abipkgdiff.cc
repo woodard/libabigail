@@ -562,9 +562,17 @@ package::extracted_packages_parent_dir()
         p = cachedir;
       else
         {
-	  p = getenv("HOME");
+	  const char* s = getenv("HOME");
+	  if (s != NULL)
+	    p = s;
 	  if (p.empty())
-	    p = "~";
+	    {
+	      s = getenv("TMPDIR");
+	      if (s != NULL)
+		p = s;
+	      else
+		p = "/tmp";
+	    }
 	  p += "/.cache/libabigail";
         }
 

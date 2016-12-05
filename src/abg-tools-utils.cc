@@ -919,6 +919,8 @@ get_default_user_suppression_file_path()
   if (s == NULL)
     {
       s = getenv("HOME");
+      if (s == NULL)
+	return "";
       default_user_suppr_path  = s;
       if (default_user_suppr_path.empty())
 	default_user_suppr_path = "~";
