@@ -4102,8 +4102,8 @@ public:
   }
 
   /// Return the "Official Procedure descriptors section."  This
-  /// section is named .opd, and usually present only on PPC64 ELFv1
-  /// binaries.
+  /// section is named .opd, and is usually present only on PPC64
+  /// ELFv1 binaries.
   ///
   /// @return the .opd section, if found.  Return nil otherwise.
   Elf_Scn*
@@ -4944,6 +4944,19 @@ public:
 		      // of that function, to be able to get the
 		      // function symbol that corresponds to a given
 		      // function DIE, on ppc64.
+		      //
+		      // The value of the function pointer (the value
+		      // of the symbol) usually refers to the offset
+		      // of a table in the .opd section.  But
+		      // sometimes, for a symbol named "foo", the
+		      // corresponding symbol named ".foo" (note the
+		      // dot before foo) which value is the entry
+		      // point address of the function; that entry
+		      // point address refers to a region in the .text
+		      // section.
+		      //
+		      // So we are only interested in values of the
+		      // symbol that are in the .opd section.
 		      GElf_Addr fn_desc_addr = sym->st_value;
 		      GElf_Addr fn_entry_point_addr =
 			lookup_ppc64_elf_fn_entry_pointer_address(fn_desc_addr);
@@ -4952,12 +4965,45 @@ public:
 
 		      if (it2 == fun_entry_addr_sym_map().end())
 			fun_entry_addr_sym_map()[fn_entry_point_addr] = symbol;
-		      else
-			// 'symbol' must have been registered as an
-			// alias for it2->second->get_main_symbol(),
-			// right before the "if (ppc64)" statement.
-			assert(it2->second->get_main_symbol()->
-			       does_alias(*symbol));
+		      else if (address_is_in_opd_section(fn_desc_addr))
+			{
+			  // Either
+			  //
+			  // 'symbol' must have been registered as an
+			  // alias for it2->second->get_main_symbol(),
+			  // right before the "if (ppc64)" statement.
+			  //
+			  // Or
+			  //
+			  // if the name of 'symbol' is foo, then the
+			  // name of it2->second is ".foo".  That is,
+			  // foo is the name of the symbol when it
+			  // refers to the function descriptor in the
+			  // .opd section and ".foo" is an internal
+			  // name for the address of the entry point
+			  // of foo.
+			  //
+			  // In the latter case, we just want to keep
+			  // a refernce to "foo" as .foo is an
+			  // internal name.
+
+			  bool two_symbols_alias =
+			    it2->second->get_main_symbol()->does_alias(*symbol);
+			  bool symbol_is_foo_and_prev_symbol_is_dot_foo =
+			    (it2->second->get_name()
+			     == string(".") + symbol->get_name());
+
+			  assert(two_symbols_alias
+				 || symbol_is_foo_and_prev_symbol_is_dot_foo);
+
+			  if (symbol_is_foo_and_prev_symbol_is_dot_foo)
+			    // Let's just keep a reference of the
+			    // symbol that the user sees in the source
+			    // code (the one named foo).  The symbol
+			    // which name is prefixed with a "dot" is
+			    // an artificial one.
+			    fun_entry_addr_sym_map()[fn_entry_point_addr] = symbol;
+			}
 		   }
 		}
 	      }
@@ -5204,6 +5250,24 @@ public:
     if (sheader->sh_addr <= addr && addr <= sheader->sh_addr + sheader->sh_size)
       return true;
 
+    return false;
+  }
+
+  /// Return true if an address is in the ".opd" section that is
+  /// present on the ppc64 platform.
+  ///
+  /// @param addr the address to consider.
+  ///
+  /// @return true iff @p addr is designates a word that is in the
+  /// ".opd" section.
+  bool
+  address_is_in_opd_section(Dwarf_Addr addr)
+  {
+    Elf_Scn * opd_section = find_opd_section();
+    if (!opd_section)
+      return false;
+    if (address_is_in_section(addr, opd_section))
+      return true;
     return false;
   }
 
