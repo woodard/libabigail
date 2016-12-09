@@ -370,16 +370,7 @@ perform_compat_check_in_normal_mode(options& opts,
   // Now really do the diffing.
   corpus_diff_sptr changes = compute_diff(lib1_corpus, lib2_corpus, ctxt);
 
-  const corpus_diff::diff_stats& s =
-    changes->apply_filters_and_suppressions_before_reporting();
-
-  if (changes->soname_changed()
-      || s.num_func_removed() != 0
-      || s.num_vars_removed() != 0
-      || s.num_func_syms_removed() != 0
-      || s.num_var_syms_removed() != 0
-      || s.net_num_func_changed() != 0
-      || s.net_num_vars_changed() != 0)
+  if (changes->has_net_changes())
     {
       string app_path = opts.app_path,
 	lib1_path = opts.lib1_path,
@@ -394,11 +385,7 @@ perform_compat_check_in_normal_mode(options& opts,
 
       status |= abigail::tools_utils::ABIDIFF_ABI_CHANGE;
 
-      bool abi_broke_for_sure = changes->soname_changed()
-	|| s.num_vars_removed()
-	|| s.num_func_removed()
-	|| s.num_var_syms_removed()
-	|| s.num_func_syms_removed();
+      bool abi_broke_for_sure = changes->has_incompatible_changes();
 
       cout << "ELF file '" << app_path << "'";
       if (abi_broke_for_sure)

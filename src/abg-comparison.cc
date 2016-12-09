@@ -11953,7 +11953,7 @@ corpus_diff::has_incompatible_changes() const
   const diff_stats& stats = const_cast<corpus_diff*>(this)->
     apply_filters_and_suppressions_before_reporting();
 
-  return (soname_changed()
+  return (soname_changed() || architecture_changed()
 	  || stats.net_num_func_removed() != 0
 	  || (stats.num_func_with_virtual_offset_changes() != 0
 	      // If all reports about functions with sub-type changes
@@ -11995,15 +11995,18 @@ corpus_diff::has_net_changes() const
     const diff_stats& stats = const_cast<corpus_diff*>(this)->
       apply_filters_and_suppressions_before_reporting();
 
-  return (stats.net_num_func_changed()
-	  || stats.net_num_vars_changed()
-	  || stats.net_num_func_added()
-	  || stats.net_num_added_func_syms()
-	  || stats.net_num_func_removed()
-	  || stats.net_num_removed_func_syms()
-	  || stats.net_num_vars_added()
-	  || stats.net_num_added_var_syms()
-	  || stats.net_num_removed_var_syms());
+    return (architecture_changed()
+	    || soname_changed()
+	    || stats.net_num_func_changed()
+	    || stats.net_num_vars_changed()
+	    || stats.net_num_func_added()
+	    || stats.net_num_added_func_syms()
+	    || stats.net_num_func_removed()
+	    || stats.net_num_removed_func_syms()
+	    || stats.net_num_vars_added()
+	    || stats.net_num_added_var_syms()
+	    || stats.net_num_vars_removed()
+	    || stats.net_num_removed_var_syms());
 }
 
 /// "Less than" functor to compare instances of @ref function_decl.

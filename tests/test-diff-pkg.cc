@@ -414,6 +414,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/test-dbus-glib-0.80-3.fc12.x86_64-report-0.txt",
     "output/test-diff-pkg/test-dbus-glib-0.80-3.fc12.x86_64-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64.rpm",
+    "data/test-diff-pkg/dbus-glib-0.104-3.fc23.armv7hl.rpm",
+    "--no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64--dbus-glib-0.104-3.fc23.armv7hl-report-0.txt",
+    "output/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64--dbus-glib-0.104-3.fc23.armv7hl-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB
