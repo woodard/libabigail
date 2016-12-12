@@ -773,7 +773,7 @@ template_decl::hash::operator()(const template_decl& t) const
   template_parameter::shared_ptr_hash hash_template_parameter;
 
   size_t v = hash_string(typeid(t).name());
-  v = hash_string(t.get_qualified_name());
+  v = hashing::combine_hashes(v, hash_string(t.get_qualified_name()));
 
   for (list<template_parameter_sptr>::const_iterator p =
 	 t.get_template_parameters().begin();
