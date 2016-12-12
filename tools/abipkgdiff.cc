@@ -610,6 +610,8 @@ display_usage(const string& prog_name, ostream& out)
     << " --debug-info-pkg2|--d2 <path>  path of debug-info package of package2\n"
     << " --devel-pkg1|--devel1 <path>   path of devel package of pakage1\n"
     << " --devel-pkg2|--devel2 <path>   path of devel package of pakage1\n"
+    << " --no-default-suppression       don't load any default "
+       "suppression specifications\n"
     << " --suppressions|--suppr <path>  specify supression specification path\n"
     << " --keep-tmp-files               don't erase created temporary files\n"
     << " --dso-only                     compare shared libraries only\n"
