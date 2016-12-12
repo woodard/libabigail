@@ -807,7 +807,7 @@ suppression_matches_type_no_name(const type_suppression&	 s,
 	case type_suppression::STRUCT_TYPE_KIND:
 	  {
 	    class_decl_sptr klass = is_class_type(type);
-	    if (!klass || (klass && !klass->is_struct()))
+	    if (!klass || !klass->is_struct())
 	      matches = false;
 	  }
 	  break;

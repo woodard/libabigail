@@ -151,7 +151,7 @@ struct types_or_decls_hash
 struct types_or_decls_equal
 {
   bool
-  operator()(const types_or_decls_type d1, const types_or_decls_type d2) const
+  operator()(const types_or_decls_type &d1, const types_or_decls_type &d2) const
   {return d1.first == d2.first && d1.second == d2.second;}
 };
 
@@ -6326,8 +6326,7 @@ class_diff::ensure_lookup_tables_populated(void) const
 	// We assume that all the functions we look at here have ELF
 	// symbols.
 	if (!i->second->get_symbol()
-	    || (i->second->get_symbol()
-		&& s->lookup_function_symbol(*i->second->get_symbol())))
+		|| s->lookup_function_symbol(*i->second->get_symbol()))
 	  to_delete.push_back(i->first);
 
 
