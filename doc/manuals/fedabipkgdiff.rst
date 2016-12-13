@@ -184,9 +184,12 @@ Below are some usage examples currently supported by
 
      Suppose you have built two versions of package httpd, and you want to see
      what ABI differences between these two versions of RPM files. The
-     commandline invocation would be::
+     command line invocation would be::
 
        $ fedabipkgdiff path/to/httpd-2.4.23-3.fc23.x86_64.rpm another/path/to/httpd-2.4.23-4.fc24.x86_64.rpm
+
+     All what fedabipkgdiff does happens on local machine without the need of
+     querying or downloading RPMs from Koji.
 
   3. Compare the ABI of binaries in the latest build of the ``httpd``
      package in ``Fedora 23`` against the ABI of the binaries in the
