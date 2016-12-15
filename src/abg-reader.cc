@@ -3900,12 +3900,9 @@ build_class_decl(read_context&		ctxt,
   read_is_anonymous(node, is_anonymous);
 
   string naming_typedef_id;
-  typedef_decl_sptr naming_typedef;
 
   if (xml_char_sptr s = XML_NODE_GET_ATTRIBUTE(node, "naming-typedef-id"))
     naming_typedef_id = xml::unescape_xml_string(CHAR_STR(s));
-  if (!naming_typedef_id.empty())
-      naming_typedef = is_typedef(ctxt.get_type_decl(naming_typedef_id));
 
   assert(!id.empty());
   class_decl_sptr previous_definition, previous_declaration;
@@ -3961,9 +3958,6 @@ build_class_decl(read_context&		ctxt,
 				  data_mbrs, mbr_functions));
       decl->set_is_anonymous(is_anonymous);
     }
-
-  if (naming_typedef)
-    decl->set_naming_typedef(naming_typedef);
 
   string def_id;
   bool is_def_of_decl = false;
@@ -4023,6 +4017,15 @@ build_class_decl(read_context&		ctxt,
   ctxt.map_xml_node_to_decl(node, decl);
   ctxt.mark_type_as_wip(decl);
   ctxt.key_type_decl(decl, id);
+
+  // If this class has a naming typedef, get it and refer to it.
+  if (!naming_typedef_id.empty())
+    {
+      typedef_decl_sptr naming_typedef =
+	is_typedef(ctxt.build_or_get_type_decl(naming_typedef_id, true));
+      assert(naming_typedef);
+      decl->set_naming_typedef(naming_typedef);
+    }
 
   for (xmlNodePtr n = node->children; !is_decl_only && n; n = n->next)
     {
