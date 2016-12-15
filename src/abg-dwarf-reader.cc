@@ -10901,8 +10901,7 @@ build_function_type(read_context&	ctxt,
 	       : new function_type(ctxt.env(), tu->get_address_size(),
 				   /*alignment=*/0));
   ctxt.associate_die_to_type(die, result, where_offset);
-  ctxt.die_wip_function_types_map(source)[dwarf_dieoffset(die)] =
-    result;
+  ctxt.die_wip_function_types_map(source)[dwarf_dieoffset(die)] = result;
 
   type_base_sptr return_type;
   Dwarf_Die ret_type_die;
