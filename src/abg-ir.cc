@@ -5774,11 +5774,11 @@ is_anonymous_type(type_base* t)
   if (d)
     if (d->get_is_anonymous())
       {
-	if (class_decl *klass = is_class_type(t))
+	if (class_or_union *cou = is_class_or_union_type(t))
 	  {
 	    // An anonymous class that is named by a typedef is not
 	    // considered anonymous anymore.
-	    if (!klass->get_naming_typedef())
+	    if (!cou->get_naming_typedef())
 	      return true;
 	  }
 	else
