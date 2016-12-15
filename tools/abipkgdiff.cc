@@ -162,6 +162,7 @@ public:
   bool		display_usage;
   bool		display_version;
   bool		missing_operand;
+  bool		nonexistent_file;
   bool		abignore;
   bool		parallel;
   string	package1;
@@ -188,6 +189,7 @@ public:
       display_usage(),
       display_version(),
       missing_operand(),
+      nonexistent_file(),
       abignore(true),
       parallel(true),
       show_relative_offset_changes(true),
@@ -1846,14 +1848,26 @@ parse_command_line(int argc, char* argv[], options& opts)
       if (argv[i][0] != '-')
         {
           if (opts.package1.empty())
-            opts.package1 = abigail::tools_utils::make_path_absolute(argv[i]).get();
+            {
+              opts.package1 = abigail::tools_utils::make_path_absolute(argv[i]).get();
+              opts.nonexistent_file = !file_exists(opts.package1);
+            }
           else if (opts.package2.empty())
-            opts.package2 = abigail::tools_utils::make_path_absolute(argv[i]).get();
+            {
+              opts.package2 = abigail::tools_utils::make_path_absolute(argv[i]).get();
+              opts.nonexistent_file = !file_exists(opts.package2);
+            }
           else
 	    {
 	      opts.wrong_arg = argv[i];
 	      return false;
 	    }
+
+          if (opts.nonexistent_file)
+            {
+              opts.wrong_option = argv[i];
+              return true;
+            }
         }
       else if (!strcmp(argv[i], "--debug-info-pkg1")
 	       || !strcmp(argv[i], "--d1"))
@@ -2000,6 +2014,17 @@ main(int argc, char* argv[])
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }
 
+  if (opts.nonexistent_file)
+    {
+      string input_file;
+      base_name(opts.wrong_option, input_file);
+      emit_prefix("abipkgdiff", cerr)
+	<< "The input file " << input_file << " doesn't exist\n"
+	"try the --help option for more information\n";
+      return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
+	      | abigail::tools_utils::ABIDIFF_ERROR);
+    }
+
   if (opts.display_usage)
     {
       display_usage(argv[0], cout);
@@ -2070,13 +2095,15 @@ main(int argc, char* argv[])
 				"devel_package2",
 				/*pkg_kind=*/package::KIND_DEVEL)));
 
+  string package_name;
   switch (first_package->type())
     {
     case abigail::tools_utils::FILE_TYPE_RPM:
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_RPM)
 	{
+	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
-	    << opts.package2 << " should be an RPM file\n";
+	    << package_name << " should be an RPM file\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
@@ -2085,8 +2112,9 @@ main(int argc, char* argv[])
     case abigail::tools_utils::FILE_TYPE_DEB:
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_DEB)
 	{
+	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
-	    << opts.package2 << " should be a DEB file\n";
+	    << package_name << " should be a DEB file\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
@@ -2095,8 +2123,9 @@ main(int argc, char* argv[])
     case abigail::tools_utils::FILE_TYPE_DIR:
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_DIR)
 	{
+	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
-	    << opts.package2 << " should be a directory\n";
+	    << package_name << " should be a directory\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
@@ -2105,16 +2134,18 @@ main(int argc, char* argv[])
     case abigail::tools_utils::FILE_TYPE_TAR:
       if (second_package->type() != abigail::tools_utils::FILE_TYPE_TAR)
 	{
+	  base_name(opts.package2, package_name);
 	  emit_prefix("abipkgdiff", cerr)
-	    << opts.package2 << " should be a GNU tar archive\n";
+	    << package_name << " should be a GNU tar archive\n";
 	  return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 		  | abigail::tools_utils::ABIDIFF_ERROR);
 	}
       break;
 
     default:
+      base_name(opts.package1, package_name);
       emit_prefix("abipkgdiff", cerr)
-	<< opts.package1 << " should be a valid package file \n";
+	<< package_name << " should be a valid package file \n";
       return (abigail::tools_utils::ABIDIFF_USAGE_ERROR
 	      | abigail::tools_utils::ABIDIFF_ERROR);
     }

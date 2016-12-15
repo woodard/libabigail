@@ -426,6 +426,18 @@ static InOutSpec in_out_specs[] =
     "data/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64--dbus-glib-0.104-3.fc23.armv7hl-report-0.txt",
     "output/test-diff-pkg/dbus-glib-0.104-3.fc23.x86_64--dbus-glib-0.104-3.fc23.armv7hl-report-0.txt"
   },
+  {
+    "data/test-diff-pkg/nonexistent-0.rpm",
+    "data/test-diff-pkg/nonexistent-1.rpm",
+    "--no-default-suppression",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "data/test-diff-pkg/test-nonexistent-report-0.txt",
+    "output/test-diff-pkg/test-nonexistent-report-0.txt"
+  },
 #endif //WITH_RPM
 
 #ifdef WITH_DEB
@@ -555,7 +567,7 @@ struct test_task : public abigail::workers::task
 
     cmd =
       abipkgdiff + " " + first_in_package_path + " " + second_in_package_path;
-    cmd += " > " + out_abi_diff_report_path;
+    cmd += " > " + out_abi_diff_report_path + " 2>&1";
 
     bool abipkgdiff_ok = true;
     int code = system(cmd.c_str());
