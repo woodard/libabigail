@@ -838,7 +838,8 @@ public:
 	&& !is_pointer_type(t)
 	&& !is_qualified_type(t)
 	&& !is_typedef(t)
-	&& !is_enum_type(t))
+	&& !is_enum_type(t)
+	&& !is_function_type(t))
       canonicalize(t);
     else
       {
