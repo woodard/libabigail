@@ -1073,7 +1073,7 @@ def diff_latest_rpms_based_on_distros():
         raise InvalidDistroError('Invalid distro {0}'.format(from_distro))
 
     if not is_distro_valid(to_distro):
-        raise InvalidDistroError('Invalid distro {0}'.format(distro))
+        raise InvalidDistroError('Invalid distro {0}'.format(to_distro))
 
     package_name = global_config.NVR[0]
 
