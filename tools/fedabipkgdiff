@@ -482,6 +482,8 @@ class RPMCollection(object):
 
     def get_peer_rpm(self, rpm):
         """Get peer rpm of rpm from this collection"""
+        if rpm.arch not in self.rpms:
+            return None
         for _rpm in self.rpms[rpm.arch]:
             if _rpm.is_peer(rpm):
                 return _rpm
