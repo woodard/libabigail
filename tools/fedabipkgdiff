@@ -851,7 +851,7 @@ def download_rpm(url):
     :return: True if a RPM is downloaded successfully, False otherwise.
     :rtype: bool
     """
-    cmd = 'curl --silent {0} -o {1}'.format(
+    cmd = 'curl --location --silent {0} -o {1}'.format(
         url, os.path.join(get_download_dir(),
                           os.path.basename(url)))
     if global_config.dry_run:
