@@ -85,7 +85,7 @@ Options
     Specifies the URL of the `Koji`_ XMLRPC service the tool talks to.
     The default value of this option is http://koji.fedoraproject.org/kojihub.
 
-  * ``--topdir`` <URL>
+  * ``--topurl`` <URL>
 
     Specifies the URL of the package store the tool downloads RPMs
     from.  The default value of this option is https://kojipkgs.fedoraproject.org.

@@ -56,8 +56,9 @@ import koji
 # something wrong.
 
 
-DEFAULT_KOJI_SERVER = 'http://koji.fedoraproject.org/kojihub'
-DEFAULT_KOJI_TOPDIR = 'https://kojipkgs.fedoraproject.org'
+koji_config = koji.read_config('koji')
+DEFAULT_KOJI_SERVER = koji_config['server']
+DEFAULT_KOJI_TOPURL = koji_config['topurl']
 
 # The working directory where to hold all data including downloaded RPM
 # packages Currently, it's not configurable and hardcode here. In the future
@@ -1207,11 +1208,11 @@ def build_commandline_args_parser():
         help='URL of koji XMLRPC service. Default is {0}'.format(
             DEFAULT_KOJI_SERVER))
     parser.add_argument(
-        '--topdir',
+        '--topurl',
         required=False,
         metavar='URL',
-        dest='koji_topdir',
-        default=DEFAULT_KOJI_TOPDIR,
+        dest='koji_topurl',
+        default=DEFAULT_KOJI_TOPURL,
         help='URL for RPM files access')
     parser.add_argument(
         '--abipkgdiff',
@@ -1257,7 +1258,7 @@ def main():
     global_config = args
 
     global pathinfo
-    pathinfo = koji.PathInfo(topdir=global_config.koji_topdir)
+    pathinfo = koji.PathInfo(topdir=global_config.koji_topurl)
 
     global session
     session = get_session()
