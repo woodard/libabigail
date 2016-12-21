@@ -107,29 +107,6 @@ namespace ir
 // Inject some std::tr1 types in here.
 using std::tr1::unordered_map;
 
-/// Convenience typedef for a shared pointer to a @ref corpus.
-typedef shared_ptr<corpus> corpus_sptr;
-
-/// Convenience typedef for a weak pointer to a @ref corpus.
-typedef weak_ptr<corpus> corpus_wptr;
-
-/// A convenience typedef for a shared_ptr to @ref type_or_decl_base.
-typedef shared_ptr<type_or_decl_base> type_or_decl_base_sptr;
-
-/// Convenience typedef for a shared pointer on a @ref type_base
-typedef shared_ptr<type_base> type_base_sptr;
-
-/// Convenience typedef for a shared pointer on a @ref type_decl.
-typedef shared_ptr<type_decl> type_decl_sptr;
-
-class class_or_union;
-
-typedef shared_ptr<class_or_union> class_or_union_sptr;
-typedef weak_ptr<class_or_union> class_or_union_wptr;
-
-/// Convenience typedef for a shared pointer to an @ref environment
-typedef shared_ptr<environment> environment_sptr;
-
 /// This is an abstraction of the set of resources necessary to manage
 /// several aspects of the internal representations of the Abigail
 /// library.
@@ -320,40 +297,6 @@ public:
   expand_location(const location& location, std::string& path,
 		  unsigned& line, unsigned& column) const;
 };
-
-struct ir_node_visitor;
-
-/// Convenience typedef for a shared pointer on a @ref
-/// translation_unit type.
-typedef shared_ptr<translation_unit> translation_unit_sptr;
-
-/// Convenience typedef for a vector of @ref translation_unit_sptr.
-typedef std::vector<translation_unit_sptr> translation_units;
-
-/// Convenience typedef for a weak pointer on a @ref type_base
-typedef weak_ptr<type_base> type_base_wptr;
-
-/// Convenience typedef for a smart pointer on @ref decl_base.
-typedef shared_ptr<decl_base> decl_base_sptr;
-
-class function_type;
-
-class function_decl;
-
-/// Convenience typedef for a shared pointer on a @ref function_type
-typedef shared_ptr<function_type> function_type_sptr;
-
-/// Convenience typedef fo a vector of @ref function_type_sptr
-typedef vector<function_type_sptr> function_types_type;
-
-/// Convenience typedef for a weak pointer on a @ref function_type
-typedef weak_ptr<function_type> function_type_wptr;
-
-struct ir_traversable_base;
-
-/// Convenience typedef for a shared pointer to @ref
-/// ir_traversable_base.
-typedef shared_ptr<ir_traversable_base> ir_traversable_base_sptr;
 
 /// The base of an entity of the intermediate representation that is
 /// to be traversed.
@@ -925,17 +868,6 @@ public:
   virtual ~context_rel();
 };// end class context_rel
 
-class class_decl;
-
-/// Convenience typedef for a shared pointer on a @ref class_decl
-typedef shared_ptr<class_decl> class_decl_sptr;
-
-/// Convenience typedef for a vector of @ref class_decl_sptr
-typedef vector<class_decl_sptr> classes_type;
-
-/// Convenience typedef for a weak pointer on a @ref class_decl.
-typedef weak_ptr<class_decl> class_decl_wptr;
-
 /// A bitfield that gives callers of abigail::ir::equals() some
 /// insight about how different two internal representation artifacts
 /// are.
@@ -1265,9 +1197,6 @@ operator<<(std::ostream&, decl_base::binding);
 bool
 equals(const scope_decl&, const scope_decl&, change_kind*);
 
-/// Convenience typedef for a shared pointer on a @ref scope_decl.
-typedef shared_ptr<scope_decl> scope_decl_sptr;
-
 /// A declaration that introduces a scope.
 class scope_decl : public virtual decl_base
 {
@@ -1368,9 +1297,6 @@ struct scope_decl::hash
   size_t
   operator()(const scope_decl* d) const;
 };
-
-/// Convenience typedef for shared pointer on @ref global_scope.
-typedef shared_ptr<global_scope> global_scope_sptr;
 
 /// This abstracts the global scope of a given translation unit.
 ///
@@ -1604,9 +1530,6 @@ public:
   virtual ~scope_type_decl();
 };
 
-/// Convenience typedef for a shared pointer on namespace_decl.
-typedef shared_ptr<namespace_decl> namespace_decl_sptr;
-
 /// The abstraction of a namespace declaration
 class namespace_decl : public scope_decl
 {
@@ -1631,8 +1554,6 @@ public:
 
 bool
 equals(const qualified_type_def&, const qualified_type_def&, change_kind*);
-
-typedef shared_ptr<qualified_type_def> qualified_type_def_sptr;
 
 /// The abstraction of a qualified type.
 class qualified_type_def : public virtual type_base, public virtual decl_base
@@ -1722,9 +1643,6 @@ operator<<(std::ostream&, qualified_type_def::CV);
 bool
 equals(const pointer_type_def&, const pointer_type_def&, change_kind*);
 
-/// Convenience typedef for a shared pointer on a @ref pointer_type_def
-typedef shared_ptr<pointer_type_def> pointer_type_def_sptr;
-
 /// The abstraction of a pointer type.
 class pointer_type_def : public virtual type_base, public virtual decl_base
 {
@@ -1780,8 +1698,6 @@ operator!=(const pointer_type_def_sptr&, const pointer_type_def_sptr&);
 bool
 equals(const reference_type_def&, const reference_type_def&, change_kind*);
 
-/// Convenience typedef for a shared pointer on a @ref reference_type_def
-typedef shared_ptr<reference_type_def> reference_type_def_sptr;
 
 /// Abstracts a reference type.
 class reference_type_def : public virtual type_base, public virtual decl_base
@@ -1837,9 +1753,6 @@ operator!=(const reference_type_def_sptr&, const reference_type_def_sptr&);
 
 bool
 equals(const array_type_def&, const array_type_def&, change_kind*);
-
-/// Convenience typedef for a shared pointer on a @ref array_type_def
-typedef shared_ptr<array_type_def> array_type_def_sptr;
 
 /// The abstraction of an array type.
 class array_type_def : public virtual type_base, public virtual decl_base
@@ -1974,9 +1887,6 @@ public:
 bool
 equals(const enum_type_decl&, const enum_type_decl&, change_kind*);
 
-/// Convenience typedef for shared pointer on enum_type_decl.
-typedef shared_ptr<enum_type_decl> enum_type_decl_sptr;
-
 /// Abstracts a declaration for an enum type.
 class enum_type_decl : public virtual type_base, public virtual decl_base
 {
@@ -2104,12 +2014,6 @@ public:
 bool
 equals(const typedef_decl&, const typedef_decl&, change_kind*);
 
-/// Convenience typedef for a shared pointer on a @ref typedef_decl.
-typedef shared_ptr<typedef_decl> typedef_decl_sptr;
-
-/// Convenience typedef for a weak pointer on a @ref typedef_decl.
-typedef weak_ptr<typedef_decl> typedef_decl_wptr;
-
 /// The abstraction of a typedef declaration.
 class typedef_decl : public virtual type_base, public virtual decl_base
 {
@@ -2155,11 +2059,6 @@ public:
 
   virtual ~typedef_decl();
 };// end class typedef_decl
-
-class dm_context_rel;
-
-/// A convenience typedef for a shared pointer to dm_context_rel.
-typedef shared_ptr<dm_context_rel> dm_context_rel_sptr;
 
 /// The abstraction for a data member context relationship.  This
 /// relates a data member to its parent class.
@@ -2230,9 +2129,6 @@ public:
 
 bool
 equals(const var_decl&, const var_decl&, change_kind*);
-
-/// Convenience typedef for a shared pointer on a @ref var_decl
-typedef shared_ptr<var_decl> var_decl_sptr;
 
 /// Abstracts a variable declaration.
 class var_decl : public virtual decl_base
@@ -2320,9 +2216,6 @@ public:
 
 bool
 equals(const function_decl&, const function_decl&, change_kind*);
-
-/// Convenience typedef for a shared pointer on a @ref function_decl
-typedef shared_ptr<function_decl> function_decl_sptr;
 
 /// Abstraction for a function declaration.
 class function_decl : public virtual decl_base
@@ -2646,8 +2539,6 @@ struct function_type::hash
   operator()(const function_type_sptr t) const;
 };// end struct function_type::hash
 
-/// Convenience typedef for shared pointer to @ref method_type.
-typedef shared_ptr<method_type> method_type_sptr;
 /// Abstracts the type of a class member function.
 class method_type : public function_type
 {
@@ -2704,15 +2595,6 @@ public:
   get_method_type_name(const method_type& fn_type, bool internal);
 };// end class method_type.
 
-/// Convenience typedef for shared pointer to template parameter
-typedef shared_ptr<template_parameter> template_parameter_sptr;
-
-/// Convenience typedef for a shared pointer to @ref template_decl
-typedef shared_ptr<template_decl> template_decl_sptr;
-
-/// Convenience typedef for a weak pointer to template_decl
-typedef weak_ptr<template_decl> template_decl_wptr;
-
 /// The base class of templates.
 class template_decl : public virtual decl_base
 {
@@ -2743,9 +2625,6 @@ public:
 
   virtual ~template_decl();
 };//end class template_decl
-
-/// Convenience typedef for a shared_ptr to @ref template_parameter
-typedef shared_ptr<template_parameter> template_parameter_sptr;
 
 /// Base class for a template parameter.  Client code should use the
 /// more specialized type_template_parameter,
@@ -2796,9 +2675,6 @@ struct template_decl::hash
     operator()(const template_decl& t) const;
 };// end struct template_decl::hash
 
-/// Convenience typedef for a shared pointer to @ref type_tparameter.
-typedef shared_ptr<type_tparameter> type_tparameter_sptr;
-
 /// Abstracts a type template parameter.
 class type_tparameter : public template_parameter, public virtual type_decl
 {
@@ -2831,10 +2707,6 @@ public:
 
   virtual ~type_tparameter();
 };// end class type_tparameter.
-
-/// Convenience typedef for shared pointer to @ref
-/// non_type_template_parameter
-typedef shared_ptr<non_type_tparameter> non_type_tparameter_sptr;
 
 /// Abstracts non type template parameters.
 class non_type_tparameter : public template_parameter, public virtual decl_base
@@ -2885,9 +2757,6 @@ struct non_type_tparameter::hash
 
 class template_tparameter;
 
-/// Convenience typedef for a shared_ptr to @ref template_tparameter.
-typedef shared_ptr<template_tparameter> template_tparameter_sptr;
-
 /// Abstracts a template template parameter.
 class template_tparameter : public type_tparameter, public template_decl
 {
@@ -2919,9 +2788,6 @@ public:
 
   virtual ~template_tparameter();
 };
-
-/// Convenience typedef for shared pointer to type_composition
-typedef shared_ptr<type_composition> type_composition_sptr;
 
 /// This abstracts a composition of types based on template type
 /// parameters.  The result of the composition is a type that can be
@@ -2966,9 +2832,6 @@ struct type_composition::hash
   operator()(const type_composition* t) const;
 
 }; //struct type_composition::hash
-
-/// Convenience typedef for a shared pointer on a @ref function_tdecl
-typedef shared_ptr<function_tdecl> function_tdecl_sptr;
 
 /// Abstract a function template declaration.
 class function_tdecl : public template_decl, public scope_decl
@@ -3020,9 +2883,6 @@ public:
 
   virtual ~function_tdecl();
 }; // end class function_tdecl.
-
-/// Convenience typedef for a shared pointer on a @ref class_tdecl
-typedef shared_ptr<class_tdecl> class_tdecl_sptr;
 
 /// Abstract a class template.
 class class_tdecl : public template_decl, public scope_decl
@@ -3121,9 +2981,6 @@ public:
   operator==(const member_base& o) const;
 };// end class member_base
 
-class method_decl;
-typedef shared_ptr<method_decl>			method_decl_sptr;
-
 /// Abstraction of the declaration of a method.
 class method_decl : public function_decl
 {
@@ -3216,14 +3073,6 @@ public:
 
   virtual ~method_decl();
 };// end class method_decl
-
-class member_function_template;
-typedef shared_ptr<member_function_template> member_function_template_sptr;
-typedef vector<member_function_template_sptr> member_function_templates;
-
-class member_class_template;
-typedef shared_ptr<member_class_template> member_class_template_sptr;
-typedef vector<member_class_template_sptr> member_class_templates;
 
 /// The base type of @ref class_decl and @ref union_decl
 class class_or_union : public scope_type_decl
@@ -3672,8 +3521,6 @@ is_class_base_spec(type_or_decl_base*);
 class_decl::base_spec_sptr
 is_class_base_spec(type_or_decl_base_sptr);
 
-typedef shared_ptr<union_decl> union_decl_sptr;
-
 /// Abstracts a union type declaration.
 class union_decl : public class_or_union
 {
@@ -3722,12 +3569,6 @@ copy_member_function(const union_decl_sptr& union_type,
 method_decl_sptr
 copy_member_function(const union_decl_sptr& union_type,
 		     const method_decl* f);
-
-class mem_fn_context_rel;
-
-/// A convenience typedef for a shared pointer to @ref
-/// mem_fn_context_rel.
-typedef shared_ptr<mem_fn_context_rel> mem_fn_context_rel_sptr;
 
 /// Abstraction of a member function context relationship.  This
 /// relates a member function to its parent class.

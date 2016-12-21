@@ -5858,17 +5858,8 @@ is_typedef(type_base* t)
 ///
 /// @return the enum_type_decl_sptr if @p d is an enum, nil otherwise.
 enum_type_decl_sptr
-is_enum_type(const decl_base_sptr& d)
+is_enum_type(const type_or_decl_base_sptr& d)
 {return dynamic_pointer_cast<enum_type_decl>(d);}
-
-/// Test if a type is an enum_type_decl
-///
-/// @param t the type to test for.
-///
-/// @return the enum_type_decl_sptr if @p t is an enum, nil otherwise.
-enum_type_decl_sptr
-is_enum_type(const type_base_sptr& t)
-{return dynamic_pointer_cast<enum_type_decl>(t);}
 
 /// Test if a type is a class. This function looks through typedefs.
 ///
@@ -6138,7 +6129,7 @@ is_var_decl(const type_or_decl_base* tod)
 /// @return the var_decl_sptr iff decl is a variable declaration; nil
 /// otherwise.
 var_decl_sptr
-is_var_decl(const shared_ptr<decl_base> decl)
+is_var_decl(const type_or_decl_base_sptr& decl)
 {return dynamic_pointer_cast<var_decl>(decl);}
 
 /// Tests if a declaration is a namespace declaration.
@@ -6588,7 +6579,7 @@ synthesize_function_type_from_translation_unit(const function_type& fn_type,
 /// @param skope the scope to look into.
 ///
 /// @return the declaration of the type if found, NULL otherwise.
-const decl_base_sptr
+const type_base_sptr
 lookup_type_in_scope(const string& fqn,
 		     const scope_decl_sptr& skope)
 {
@@ -6710,11 +6701,11 @@ convert_node_to_decl(var_decl_sptr node)
 /// @return the declaration of the looked up node, or NULL if it
 /// wasn't found.
 template<typename NodeKind>
-static const decl_base_sptr
+static const type_or_decl_base_sptr
 lookup_node_in_scope(const list<string>& fqn,
 		     const scope_decl_sptr& skope)
 {
-  decl_base_sptr resulting_decl;
+  type_or_decl_base_sptr resulting_decl;
   shared_ptr<NodeKind> node;
   bool it_is_last = false;
   scope_decl_sptr cur_scope = skope, new_scope, scope;
@@ -6749,7 +6740,7 @@ lookup_node_in_scope(const list<string>& fqn,
 		    if (cl->get_is_declaration_only()
 			&& !cl->get_definition_of_declaration())
 		      continue;
-		  resulting_decl = convert_node_to_decl(node);
+		  resulting_decl = node;
 		  break;
 		}
 	    }
@@ -6770,10 +6761,10 @@ lookup_node_in_scope(const list<string>& fqn,
 /// @param skope the scope to look into.
 ///
 /// @return the declaration of the type found.
-const decl_base_sptr
+const type_base_sptr
 lookup_type_in_scope(const list<string>& comps,
 		     const scope_decl_sptr& scope)
-{return lookup_node_in_scope<type_base>(comps, scope);}
+{return is_type(lookup_node_in_scope<type_base>(comps, scope));}
 
 /// lookup a type in a scope.
 ///
@@ -6872,7 +6863,7 @@ lookup_type_in_scope(const type_base_sptr type,
 const decl_base_sptr
 lookup_var_decl_in_scope(const std::list<string>& comps,
 			 const scope_decl_sptr& skope)
-{return lookup_node_in_scope<var_decl>(comps, skope);}
+{return is_var_decl(lookup_node_in_scope<var_decl>(comps, skope));}
 
 /// Lookup an IR node from a translation unit.
 ///
@@ -6886,7 +6877,7 @@ lookup_var_decl_in_scope(const std::list<string>& comps,
 ///
 /// @return the declaration of the IR node found, NULL otherwise.
 template<typename NodeKind>
-static const decl_base_sptr
+static const type_or_decl_base_sptr
 lookup_node_in_translation_unit(const list<string>& fqn,
 				const translation_unit& tu)
 {return lookup_node_in_scope<NodeKind>(fqn, tu.get_global_scope());}
@@ -6899,10 +6890,10 @@ lookup_node_in_translation_unit(const list<string>& fqn,
 /// @param tu the translation unit to perform lookup from.
 ///
 /// @return the declaration of the IR node found, NULL otherwise.
-const decl_base_sptr
-lookup_type_in_translation_unit(const list<string>& fqn,
-				const translation_unit& tu)
-{return lookup_node_in_translation_unit<type_base>(fqn, tu);}
+type_base_sptr
+lookup_type_through_scopes(const list<string>& fqn,
+			   const translation_unit& tu)
+{return is_type(lookup_node_in_translation_unit<type_base>(fqn,tu));}
 
 /// Lookup a class type from a translation unit.
 ///
